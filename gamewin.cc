@@ -48,7 +48,6 @@ Game_window::Game_window
 	    brightness(100), 
 	    skip_lift(16), debug(0), shapewin(0),
 	    tqueue(new Time_queue()), clock(tqueue),
-	    script(0),
 	    main_actor(0),
 	    conv_choices(0),
 	    main_actor_inside(0), mode(intro), showing_item(0), npcs(0),

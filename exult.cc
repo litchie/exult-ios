@@ -409,7 +409,10 @@ static int Play()
 		prev_mouse = mouse;
 					// Get current time.
 		gettimeofday(&timer, 0);
+		gwin->get_tqueue()->activate(timer);
+#if 0
 		gwin->animate(timer);
+#endif
 		gwin->show();		// Update screen if necessary.
 		}
 	delete gwin;
@@ -718,7 +721,7 @@ LONG APIENTRY Handle_event (HWND hWnd, UINT Message, UINT wParam, LONG lParam) {
     case WM_TIMER: //timer event
 		  struct timeval TVAL;
 		  gettimeofday(&TVAL,0);
-		  gwin->animate(TVAL);
+		gwin->get_tqueue()->activate(timer);
       gwin->show();
       break;
 
