@@ -1,3 +1,11 @@
+2001-09-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* combat.cc: If can't walk to target, wander a bit.
+	* actors.cc:  Only call 'equipped' usecode for a few items in
+	Black Gate.
+	* egg.cc:  Teleport eggs are flagged as 'solid', and you now have
+	to be at the exact lift to trigger one.
+
 2001-09-11  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* mapedit/studio.cc: More reliable getcwd. Prevent crashes if cancelling 'open static'
