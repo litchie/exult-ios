@@ -291,8 +291,15 @@ void Slider_gump::key_down
 	int chr
 	)
 {
-	if (chr == SDLK_RETURN)
-	{
+	switch(chr) {
+	case SDLK_RETURN:
 		done = 1;
-	}
+		break;
+	case SDLK_LEFT:
+		clicked_arrow(left_arrow);
+		break;
+	case SDLK_RIGHT:
+		clicked_arrow(right_arrow);
+		break;
+	} 
 }
