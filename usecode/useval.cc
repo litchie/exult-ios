@@ -511,6 +511,7 @@ bool Usecode_value::restore
 	int buflen
 	)
 	{
+	undefined = false;
 	type = (Val_type) *ptr++;
 	switch (type)
 		{

@@ -80,7 +80,7 @@ static int enum_val = -1;		// Keeps track of enum elements.
 %token IF ELSE RETURN WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
-%token ADD HIDE SCRIPT AFTER TICKS
+%token ADD HIDE SCRIPT AFTER TICKS STATIC_
 
 /*
  *	Script keywords:
@@ -150,6 +150,7 @@ global_decl:
 		}
 	| const_int_decl
 	| enum_decl
+	| static_decl
 	;
 
 function:
@@ -159,6 +160,7 @@ function:
 		{ 
 		function->set_statement($3);
 		functions.push_back(function);
+		function = 0;
 		}
 	;
 
@@ -237,6 +239,8 @@ declaration:
 			delete $1;
 		$$ = 0;
 		}
+	| static_decl
+		{ $$ = 0; }
 	;
 
 var_decl_list:
@@ -320,6 +324,25 @@ var_decl:
 		Uc_var_symbol *var = function->add_symbol($1);
 		$$ = new Uc_assignment_statement(
 				new Uc_var_expression(var), $3);
+		}
+	;
+
+static_decl:
+	STATIC_ VAR static_var_decl_list ';'
+	;
+
+static_var_decl_list:
+	static_var
+	| static_var_decl_list ',' static_var
+	;
+
+static_var:
+	IDENTIFIER
+		{
+		if (function)
+			function->add_static($1);
+		else
+			Uc_function::add_global_static($1);
 		}
 	;
 

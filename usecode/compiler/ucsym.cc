@@ -140,6 +140,38 @@ Uc_expression *Uc_var_symbol::create_expression
 	}
 
 /*
+ *	Assign value on stack.
+ *
+ *	Output: 0 if can't do this.
+ */
+
+int Uc_static_var_symbol::gen_assign
+	(
+	vector<char>& out
+	)
+	{
+	out.push_back((char) UC_POPSTATIC);
+	Write2(out, offset);
+	return 1;
+	}
+
+/*
+ *	Generate code to push variable's value on stack.
+ *
+ *	Output: 0 if can't do this.
+ */
+
+int Uc_static_var_symbol::gen_value
+	(
+	vector<char>& out
+	)
+	{
+	out.push_back((char) UC_PUSHSTATIC);
+	Write2(out, offset);
+	return 1;
+	}
+
+/*
  *	Generate code to push variable's value on stack.
  *
  *	Output: 0 if can't do this.

@@ -38,6 +38,7 @@ using std::memcpy;
 
 Uc_scope Uc_function::globals(0);	// Stores intrinic symbols.
 vector<Uc_intrinsic_symbol *> Uc_function::intrinsics;
+int Uc_function::num_global_statics = 0;
 int Uc_function::add_answer = -1, Uc_function::remove_answer = -1,
 	Uc_function::push_answers = -1, Uc_function::pop_answers = -1,
 	Uc_function::show_face = -1, Uc_function::remove_face = -1;
@@ -50,7 +51,7 @@ Uc_function::Uc_function
 	(
 	Uc_function_symbol *p
 	) : top(0), proto(p), cur_scope(&top), num_parms(0),
-	    num_locals(0), text_data(0), text_data_size(0),
+	    num_locals(0), num_statics(0), text_data(0), text_data_size(0),
 	    statement(0), reloffset(0)
 	{
 	char *nm = (char *) proto->get_name();
@@ -147,6 +148,22 @@ Uc_var_symbol *Uc_function::add_symbol
 	}
 
 /*
+ *	Add a new static variable to the current scope.
+ */
+
+void Uc_function::add_static
+	(
+	char *nm
+	)
+	{
+	if (is_dup(cur_scope, nm))
+		return;
+					// Create & assign slot.
+	Uc_var_symbol *var = new Uc_static_var_symbol(nm, num_statics++);
+	cur_scope->add(var);
+	}
+
+/*
  *	Add a new string constant to the current scope.
  */
 
@@ -202,6 +219,24 @@ Uc_symbol *Uc_function::add_global_int_const_symbol
 	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value);
 	globals.add(var);
 	return var;
+	}
+
+/*
+ *	Add a global static.
+ */
+
+void Uc_function::add_global_static
+	(
+	char *nm
+	)
+	{
+	if (is_dup(&globals, nm))
+		return;
+	num_global_statics++;		// These start with 1.
+					// Create & assign slot.
+	Uc_var_symbol *var = new Uc_static_var_symbol(nm, 
+							-num_global_statics);
+	globals.add(var);
 	}
 
 /*
