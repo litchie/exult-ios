@@ -5,6 +5,8 @@
 	* version.cc: fixed version output for MetroWerks CodeWarrior
 	* tools/expack.cc: fixed incorrect usage of crc32, now uses crc32_syspath
 	* files/crc.cc: specify std::ios::in when opening file
+	* files/util.h: fixed various Read* methods to work properly once more
+	  (hint: the order in which (foo | bar) is evaluated is not defined in ANSI C)
 
 2002-03-08  Dominik Reichardt <gigdr@tesionmail.de>
 	* FAQ, ReadMe updated
