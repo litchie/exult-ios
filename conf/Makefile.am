@@ -1,8 +1,8 @@
 INCLUDES = -I.. -I../files $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
-bin_PROGRAMS = confregress
+noinst_PROGRAMS = confregress
 
-lib_LTLIBRARIES = libconf.la
+noinst_LTLIBRARIES = libconf.la
 
 libconf_la_SOURCES =	\
 	Configuration.cc	\

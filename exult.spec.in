@@ -6,7 +6,7 @@
 %define prefix   @prefix@
 %define name	 @PACKAGE@
 
-Summary: Ultima VII emulator
+Summary: Ultima VII Engine
 Name: %name
 Version: %ver
 Release: %rel
@@ -15,7 +15,7 @@ Group: Amusements/Games
 Source: http://download.sourceforge.net/projects/exult/exult-%{ver}.tar.gz
 BuildRoot: /var/tmp/exult
 Obsoletes: exult
-Packager: Tristan Tarrant <tarrant_tristan@emc.com>
+Packager: Tristan Tarrant <nadir@users.sourceforge.net>
 URL: http://exult.sourceforge.net
 Prereq: /sbin/install-info
 Prefix: %{prefix}
@@ -26,6 +26,10 @@ Requires: SDL >= 1.1.3
 Exult: an implementation of the Ultima VII engine for modern Operating Systems.
 
 %changelog
+* Tue Nov 7 2000  Tristan Tarrant <nadir@users.sourceforge.net>
+
+- A few fixes
+
 * Sat Sep 9 2000  Tristan Tarrant <nadir@users.sourceforge.net>
 
 - Install exult.flx in the right place
@@ -63,3 +67,4 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS COPYING ChangeLog NEWS README
 %{prefix}/bin/*
 %{prefix}/share/exult/exult.flx
+%{prefix}/share/exult/midisfx.flx
