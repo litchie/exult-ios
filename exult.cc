@@ -791,6 +791,8 @@ static void Handle_keystroke
 		gwin->get_win()->toggle_fullscreen();
 		gwin->paint();
 		break;
+	default:
+		break;
 	}
 }
 

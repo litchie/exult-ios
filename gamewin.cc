@@ -50,20 +50,19 @@ Game_window::Game_window
 	(
 	int width, int height		// Window dimensions.
 	) : 
-	    chunkx(64), chunky(136), 	// Start in Trinsic (BG).
-	    painted(0), focus(1),
-	    palette(-1), brightness(100), 
-	    skip_lift(16), debug(0), paint_eggs(1),
-	    tqueue(new Time_queue()), clock(tqueue),
-		npc_prox(new Npc_proximity_handler(this)),
-	    main_actor(0), monster_info(0),
-	    conv_choices(0), texts(0), num_faces(0), last_face_shown(-1),
-	    open_gumps(0),
-	    skip_above_actor(31), mode(splash), npcs(0),
-	    shapes(), dragging(0), dragging_save(0),
+	    mode(splash),
+            tqueue(new Time_queue()), clock(tqueue),
+	    npc_prox(new Npc_proximity_handler(this)),
+	    texts(0), open_gumps(0), num_faces(0), last_face_shown(-1),
+	    conv_choices(0), painted(0), focus(1), shapes(),
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
 	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
-	    endshape(ENDSHAPE_FLX)
+	    endshape(ENDSHAPE_FLX),
+	    main_actor(0), skip_above_actor(31), npcs(0),
+	    monster_info(0), 
+	    chunkx(64), chunky(136), 	// Start in Trinsic (BG).
+	    palette(-1), brightness(100), dragging(0), dragging_save(0),
+	    skip_lift(16), paint_eggs(1), debug(0)
 	{
 	game_window = this;		// Set static ->.
 	if (!shapes.is_good())

@@ -66,10 +66,10 @@ Actor::Actor
 	int shapenum, 
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
-	) : Container_game_object(), npc_num(num), party_id(-1),
-	    schedule_type((int) Schedule::loiter), frame_time(0),
-	    usecode(uc), flags(0), action(0), usecode_dir(0), two_handed(0),
-	    two_fingered(false)
+	) : Container_game_object(), usecode(uc), npc_num(num), party_id(-1),
+	    schedule_type((int) Schedule::loiter), two_handed(0), 
+	    two_fingered(false), usecode_dir(0), flags(0), action(0),
+	    frame_time(0)
 	{
 	name = nm == 0 ? 0 : strdup(nm);
 	set_shape(shapenum, 0); 
@@ -1030,7 +1030,7 @@ Walk_to_schedule::Walk_to_schedule
 	Npc_actor *n,
 	Tile_coord d,			// Destination.
 	int new_sched			// Schedule when we get there.
-	) : Schedule(n), dest(d), new_schedule(new_sched), legs(0), retries(0)
+	) : Schedule(n), dest(d), new_schedule(new_sched), retries(0), legs(0)
 	{
 	}
 
@@ -1138,8 +1138,8 @@ Npc_actor::Npc_actor
 	int fshape, 
 	int uc
 	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
-		num_schedules(0), 
-		schedules(0), schedule(0), dormant(1), alignment(0)
+		dormant(1), num_schedules(0), 
+		schedule(0), schedules(0), alignment(0)
 	{
 	}
 
