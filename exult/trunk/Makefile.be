@@ -3,7 +3,8 @@
 
 # Base of the exult source
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode
+VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes
+
 VERSION=0.90alpha1
 
 ### Modify these paths
@@ -11,7 +12,8 @@ SDL_INCLUDES=-I/boot/develop/tools/gnupro/include/SDL
 SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
-	-DNO_INTRO -DAUTOCONFIGURED -I$(SRC)/imagewin -I$(SRC)/files \
+	-DNO_INTRO -DAUTOCONFIGURED -I$(SRC)/imagewin -I$(SRC)/files\
+	-I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/gumps -I$(SRC)/pathfinder \
 	$(SDL_INCLUDES)
 CXXFLAGS=-O2 -Wall
@@ -21,12 +23,12 @@ LIBS=$(SDL_LIBS) -lmidi -lbe
 
 EXEC=exult
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
-	args.o barge.o bggame.o bodies.o browser.o cheat.o\
+	args.o barge.o bggame.o browser.o cheat.o\
 	combat.o delobjs.o dir.o drag.o effects.o egg.o exult.o font.o \
 	game.o gameclk.o gamedat.o gamerend.o gametxt.o gamewin.o \
-	gumps.o items.o lists.o menulist.o mouse.o \
+	gumps.o lists.o menulist.o mouse.o \
 	npcnear.o npctime.o objs.o palette.o paths.o readnpcs.o schedule.o \
-	segfile.o sigame.o spells.o tqueue.o txtscroll.o vgafile.o virstone.o
+	segfile.o sigame.o spells.o tqueue.o txtscroll.o virstone.o
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
@@ -42,9 +44,10 @@ GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	Scroll_gump.o Sign_gump.o  Slider_gump.o  Spellbook_gump.o  Stats_gump.o  \
 	Text_gump.o  Yesno_gump.o
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o
+SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o
 # unused: test.o
 USECODE_OBJS=ucmachine.o ucsched.o intrinsics.o useval.o
-OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
 
 EXULT_FLX_OBJECTS = \
 	data/exult_quotes.shp \

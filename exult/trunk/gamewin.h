@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "iwin8.h"
 #include "objs.h"
-#include "vgafile.h"
+#include "shapevga.h"
 #include "gameclk.h"
 #include "fnames.h"
 #include "palette.h"
