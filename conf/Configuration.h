@@ -31,7 +31,7 @@ public:
 		{ read_config_file(s); }
 
 	bool	read_config_file(const char *input_filename)
-			{ read_config_file(std::string(input_filename)); };
+			{ return read_config_file(std::string(input_filename)); };
 	bool	read_config_file(const string &input_filename);
 	
 	bool	read_config_string(const std::string &);

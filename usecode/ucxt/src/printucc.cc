@@ -15,7 +15,7 @@
 #include "ucdata.h"
 
 //#define DEBUG(x) x
-#define DEBUG(x)
+//#define DEBUG(x)
 
 #define VARNAME "uvar"
 
