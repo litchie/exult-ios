@@ -61,6 +61,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exceptions.h"
 #include "logo.xpm"
 #include "fnames.h"
+#include "execbox.h"
 
 using std::cerr;
 using std::cout;
@@ -184,6 +185,13 @@ on_reload_usecode_menu_activate        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	ExultStudio::get_instance()->reload_usecode();
+}
+
+C_EXPORT void
+on_compile_usecode_menu_activate       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->compile();
 }
 
 C_EXPORT void
@@ -410,7 +418,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
-	equipwin(0), locwin(0), combowin(0)
+	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -561,6 +569,11 @@ ExultStudio::~ExultStudio()
 	if (equipwin)
 		gtk_widget_destroy(equipwin);
 	equipwin = 0;
+	if (compilewin)
+		gtk_widget_destroy(compilewin);
+	compilewin = 0;
+	delete compile_box;
+	compile_box = 0;
 	if (locwin)
 		delete locwin;
 	if (combowin)

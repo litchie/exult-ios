@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <unistd.h>
 #include <signal.h>
+#include <sys/wait.h>
+#include <iostream.h>	/* Debugging only */
 
 /*
  *	Create.
@@ -35,8 +37,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Exec_box::Exec_box
 	(
-	GtkText *b
-	) : box(b), child_stdin(-1), child_stdout(-1), child_stderr(-1),
+	GtkText *b,
+	GtkStatusbar *s
+	) : box(b), status(s),
+	    child_stdin(-1), child_stdout(-1), child_stderr(-1),
 	    child_pid(-1), stdout_tag(-1), stderr_tag(-1)
 	{
 	}
@@ -104,6 +108,31 @@ static void Close_pipes
 	}
 
 /*
+ *	See if child is still alive.
+ *
+ *	Output:	True if child is still running.
+ */
+
+bool Exec_box::check_child
+	(
+	)
+	{
+	if (child_pid < 0)
+		return false;		// No child.
+	int status;
+					// Don't wait.
+	int ret = waitpid(child_pid, &status, WNOHANG);
+	if (ret != child_pid)
+		return true;		// Still running.
+	else
+		{
+		cout << "Exec_box:  Child done." << endl;
+		//+++++++++Set status bar.
+		return false;
+		}
+	}
+
+/*
  *	Read from child & display in the text box.
  */
 
@@ -125,10 +154,12 @@ void Exec_box::read_from_child
 	char buf[1024];
 	int len;
 	gtk_text_freeze(box);		// Looks better this way.
-	while ((len = read(id, buf, sizeof(buf))) >= 0)
+	while ((len = read(id, buf, sizeof(buf))) > 0)
 		gtk_text_insert(box, NULL, NULL, NULL, buf, len);
 
 	gtk_text_thaw(box);
+	if (!check_child())		// Child done?
+		kill_child();		// Clean up.
 	}
 
 /*
@@ -140,7 +171,7 @@ void Exec_box::read_from_child
 bool Exec_box::exec
 	(
 	const char *file, 		// PATH will be searched.
-	char *const argv[]		// Args.  1st is filename, last is 0.
+	char *argv[]			// Args.  1st is filename, last is 0.
 	)
 	{
 					// Pipes for talking to child:
@@ -148,6 +179,8 @@ bool Exec_box::exec
 	stdin_pipe[0] = stdin_pipe[1] = stdout_pipe[0] = stdout_pipe[1] = 
 	stderr_pipe[0] = stderr_pipe[1] = -1;
 	kill_child();			// Kill running process.
+	gtk_text_set_point(box, 0);	// Clear out old text.
+	gtk_text_forward_delete(box, gtk_text_get_length(box));
 					// Create pipes.
 	if (pipe(stdin_pipe) != 0 || pipe(stdout_pipe) != 0 ||
 	    pipe(stderr_pipe) != 0)
@@ -182,6 +215,8 @@ bool Exec_box::exec
 	close(stdout_pipe[1]);
 	child_stderr = stderr_pipe[0];
 	close(stderr_pipe[1]);
+cout << "Child_stdout is " << child_stdout << ", Child_stderr is " <<
+		child_stderr << endl;
 	stdout_tag = gdk_input_add(child_stdout,
 			GDK_INPUT_READ, Read_from_child, this);
 	stderr_tag = gdk_input_add(child_stderr,
