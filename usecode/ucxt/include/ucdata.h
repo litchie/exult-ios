@@ -48,7 +48,7 @@ class UCData
 		
 		bool fail() const { return _file.fail(); };
 	
-		const std::map<unsigned short, UCFuncSet> &funcmap() { return _funcmap; };	
+		const std::map<unsigned int, UCFuncSet> &funcmap() { return _funcmap; };	
 		
 		const UCOptions &opt() { return options; };
 		
@@ -65,7 +65,7 @@ class UCData
 		std::string _output_redirect;
 		std::string _input_usecode_file;
 		
-		unsigned short _funcid;
+		unsigned int _funcid;
 		
 		std::vector<UCc> _codes;
 		

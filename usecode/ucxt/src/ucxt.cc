@@ -357,6 +357,7 @@ void usage()
 	     << "\t\t-uc\t- output automatically generated 'useless' comments" << endl
 	     << "\t\t-b\t- only do 'basic' optimisations" << endl
 	     << "\t\t-dbg\t- output debugging information if present in USECODE." << endl
+	     << "\t\t-ext32\t- 'convert' function to ext32 format if not already." << endl
 	     << "\tGame Specifier Flags (only one of these):" << endl
 	     << "\t\t-bg\t- select the black gate usecode file" << endl
 	     << "\t\t-si\t- select the serpent isle usecode file" << endl

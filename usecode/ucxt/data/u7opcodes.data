@@ -29,7 +29,7 @@
 #               by 1.
 
 # DataType Notes:
-# long == 4 bytes
+# long == dataoffset32 == offset32 == 4 bytes
 # flag == extoffset == dataoffset == varoffset == offset == short == 2 bytes
 # byte == 1 byte
 
@@ -830,6 +830,127 @@ Debug opcode -- currently only found in the .es version of SI
 Debug opcode -- currently only found in the .es version of SI
 		-->
 	</>
+	<0x82>
+		<name> LOOP </>
+		<asm_nmo> `next32\t[%1], [%2], [%3], [%4], %5` </>
+		<asm_comment> `\t\t\t;` </>
+		<ucs_nmo> `for (var%3 in var%4 with var%1 to var%2 atend label%f*_%n5)` </>
+		<num_bytes> 12 </>
+		<param_types> {short,short,short,varoffset,offset32} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<call_effect> 0 </>
+		<!-- The 32bit version of 0x02 - LOOP -->
+	</>
+	<0x84>
+		<name> CONV32 </>
+		<asm_nmo> `ask32\t%1` </>
+		<asm_comment> `` </>
+		<ucs_nmo> `UcAsk32` </>
+		<num_bytes> 4 </>
+		<param_types> {offset32} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<call_effect> 0 </>
+		<!-- The 32bit version of 0x04 - ASK -->
+	</>
+	<0x85>
+		<name> JNE32 </>
+		<asm_nmo> `jne32\t%1` </>
+		<asm_comment> `` </>
+		<ucs_nmo> `if(!%p1) goto label%f*_%n1` </>
+		<num_bytes> 4 </>
+		<param_types> {offset32} </>
+		<num_pop> 1 </>
+		<num_push> 0 </>
+		<call_effect> 0 </>
+		<!-- The 32bit version of 0x05 - JNE -->
+	</>
+	<0x86>
+		<name> JMP32 </>
+		<asm_nmo> `jmp32\t%1` </>
+		<asm_comment> `` </>
+		<ucs_nmo> `goto label%f*_%n1` </>
+		<num_bytes> 4 </>
+		<param_types> {offset32} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<call_effect> 0 </>
+		<!-- The 32bit version of 0x06 - JMP -->
+	</>
+	<0x87>
+		<name> CMPS32 </>
+		<asm_nmo> `cmps32\t%1H, %n2` </>
+		<asm_comment> `\t\t;` </>
+		<ucs_nmo> `cmps32(%p,)` </>
+		<num_bytes> 6 </>
+		<param_types> {short,offset32} </>
+		<num_pop> 0xFF </>
+		<num_push> 0 </>
+		<call_effect> 0 </>
+		<!-- The 32bit version of 0x07 - CMPS -->
+	</>
+	<0x9C>
+		<name> ADDSI32 </>
+		<asm_nmo> `addsi32\t%n1H` </>
+		<asm_comment> `\t\t\t; %tc1` </>
+		<ucs_nmo> `UcMessage(\"%t1\")` </>
+		<num_bytes> 4 </>
+		<param_types> {dataoffset32} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<call_effect> 0 </>
+		<!-- The 32bit version of 0x1C - ADDSI -->
+	</>
+	<0x9D>
+		<name> PUSHS32 </>
+		<asm_nmo> `pushs32\t%n1H` </>
+		<asm_comment> `\t\t\t; %tc1` </>
+		<ucs_nmo> `\"%t1\"` </>
+		<num_bytes> 4 </>
+		<param_types> {dataoffset32} </>
+		<num_pop> 0 </>
+		<num_push> 1 </>
+		<call_effect> 0 </>
+		<!-- The 32bit version of 0x1D - PUSHS -->
+	</>
+	<0x9F>
+		<name> PUSHI32 </>
+		<asm_nmo> `pushi32\t%n1H` </>
+		<asm_comment> `\t\t\t; %d1` </>
+		<ucs_nmo> `0x%1` </>
+		<num_bytes> 4 </>
+		<param_types> {long} </>
+		<num_pop> 0 </>
+		<num_push> 1 </>
+		<call_effect> 0 </>
+		<!-- The 32bit version of 0x1F - PUSHI -->
+	</>
+	<0xAE>
+		<name> ENUM32 </>
+		<asm_nmo> `enum32` </>
+		<asm_comment> `` </>
+		<ucs_nmo> `enum32()` </>
+		<num_bytes> 0 </>
+		<param_types> {} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<call_effect> 0 </>
+		<!-- The 32bit version of 0x2E - ENUM -->
+	</>
+	<0xB2>
+		<name> RTS32 </>
+		<asm_nmo> `rts32` </>
+		<asm_comment> `` </>
+		<ucs_nmo> `return rr` </>
+		<num_bytes> 0 </>
+		<param_types> {} </>
+		<num_pop> 0 </>
+		<num_push> 0 </>
+		<call_effect> 0 </>
+		<return/>
+		<!-- The 32bit version of 0x32 - RTS -->
+	</>
 	<0x101>
 		<name> LABEL </>
 		<asm_nmo> `(invalid)` </>
@@ -842,7 +963,7 @@ Debug opcode -- currently only found in the .es version of SI
 		<call_effect> 0 </>
 		<indent_tmpdec/>
 		<!--
-Fake opcode -- for use with optimsations within ucxt
+Fake opcode -- for use with optimisations within ucxt
 		-->
 	</>
 </>
