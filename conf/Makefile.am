@@ -11,6 +11,9 @@ CXXFLAGS += $(DEBUG_FLAGS)
 
 OFILES=	xmlparse.o xmldump.o XMLEntity.o Configuration.o
 
+SOURCES= Configuration.cc Configuration.h XMLEntity.cc XMLEntity.h \
+		xmain.cc xmldump.cc xmlparse.cc
+
 libconf.a:	$(OFILES)
 	ar rs libconf.a $(OFILES)
 
