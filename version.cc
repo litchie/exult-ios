@@ -22,9 +22,16 @@
 
 #include <iostream>
 
-void getVersionInfo(ostream& out)
+#ifdef WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#endif
+
+void getVersionInfo(std::ostream& out)
 {
-	out << "Exult version " << VERSION << endl;
+	out << "Exult version " << VERSION << std::endl;
 
 #if (defined(__TIME__) || defined(__DATE))
 	out << "Built at: ";
@@ -34,7 +41,7 @@ void getVersionInfo(ostream& out)
 #ifdef __TIME__
 	out << __TIME__;
 #endif
-	out << endl;
+	out << std::endl;
 #endif
 	
 	out << "Compile-time options: ";
@@ -88,7 +95,7 @@ void getVersionInfo(ostream& out)
 	out << "HAVE_ZIP_SUPPORT";
 #endif
 
-	out << endl;
+	out << std::endl;
 
 	out << "Platform: ";
 
@@ -99,28 +106,65 @@ void getVersionInfo(ostream& out)
 #elif (defined(__sun__) || defined(__sun))
 	out << "Solaris" << endl;
 #elif (defined(WIN32))
-	out << "Win32" << endl;
+	out << "Windows ";
+	{
+		// Get the version
+		OSVERSIONINFO info;
+		info.dwOSVersionInfoSize = sizeof (info);
+		GetVersionEx (&info);
+
+		// Platform is NT
+		if (info.dwPlatformId == 2)
+		{
+			if (info.dwMajorVersion < 4) out << "NT";
+			else if (info.dwMajorVersion == 4) out << "NT4";
+			else if (info.dwMajorVersion == 5 && info.dwMinorVersion == 0) out << 2000;
+			else if (info.dwMajorVersion == 5 && info.dwMinorVersion == 1) out << "XP";
+			else out << "Unknown NT";
+
+			if (info.szCSDVersion[0]) out << " " << info.szCSDVersion;
+		}
+		else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 0)
+		{
+			out << 95;
+			if (info.szCSDVersion[1] != ' ') out << info.szCSDVersion;
+		}
+		else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 10)
+		{
+			out << 98;
+			if ( info.szCSDVersion[1] == 'A' ) out << " SE";
+			else if (info.szCSDVersion[1] != ' ') out << info.szCSDVersion;
+		}
+		else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 90)
+			out << "Me";
+
+		out << " Version " << info.dwMajorVersion << "." << info.dwMinorVersion << " Build " << LOWORD(info.dwBuildNumber&0xFFFF) << std::endl;
+	}
 #else
-	out << "Unknown" << endl;
+	out << "Unknown" << std::endl;
 #endif
  
 	out << "Compiler: ";
 #if (defined(__GNUC__))
 	out << "gcc";
 #if defined(__VERSION__)
-	out << ", version: " << __VERSION__ << endl;
+	out << ", version: " << __VERSION__ << std::endl;
 #elif (defined(__GNUC_MINOR__))
 	out << ", version " << __GNUC__ << "." << __GNUC_MINOR__;
 #if (defined(__GNUC_PATCHLEVEL__))
 	out << "." << __GNUC_PATCHLEVEL__;
 #endif
-	out << endl;
+	out << std::endl;
 #endif
 
-#elif (defined(__MSC_VER))
-	out << "MSVC" << endl;
+#elif (defined(_MSC_FULL_VER))
+	out << "MSC, version: " << (_MSC_FULL_VER/1000000) << "."
+				<< ((_MSC_FULL_VER/10000)%100) << "."
+				<< (_MSC_FULL_VER%10000) << std::endl;
+#elif (defined(_MSC_VER))
+	out << "MSC, version: " << (_MSC_VER/100) << "." << (_MSC_VER%100) << std::endl;
 #else
-	out << "Unknown" << endl;
+	out << "Unknown" << std::endl;
 #endif
 
 
