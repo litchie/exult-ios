@@ -1,3 +1,6 @@
+2001-04-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* mapedit/u7shp.c: corrected a palette entry
+
 2001-04-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/*.shp, data/flx.in, Makefile.*: added lots of shapes for new savegame gump
 	* configure.in, Makefile.*: increased version to 0.93cvs
