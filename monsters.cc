@@ -112,8 +112,8 @@ static int Monster_food[] = {
 	509, 12,			// Fish.
 	811, 14,			// Rabbit - small leg.
 	970, 8,				// Sheep - mutton.
-	727, 23				// Horse - ribs.
-//	???, 11				// Pig - ham.
+	727, 23,			// Horse - ribs.
+	329, 11				// Boar - ham.
 	};
 
 /*
