@@ -288,7 +288,7 @@ void Slider_gump::mouse_drag
  *	Handle ASCII character typed.
  */
 
-void Slider_gump::key_down(int chr, SDL_Event& ev)
+void Slider_gump::key_down(int chr)
 {
 	switch(chr) {
 	case SDLK_RETURN:

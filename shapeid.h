@@ -56,7 +56,6 @@ enum Pixel_colors {POISON_PIXEL = 0, PROTECT_PIXEL, CURSED_PIXEL, HIT_PIXEL,
 class Shape_manager : public Game_singletons
 	{
 	static Shape_manager *instance;	// There shall be only one.
-	Image_buffer8 *ibuf;		// Paint to this.
 	Shapes_vga_file shapes;		// Main 'shapes.vga' file.
 	Vga_file files[(int) SF_COUNT];	// The files we manage.
 	Fonts_vga_file *fonts;		// "fonts.vga" file.
@@ -75,8 +74,6 @@ public:
 	~Shape_manager();
 	static Shape_manager *get_instance()
 		{ return instance; }
-	void set_ibuf(Image_buffer8 *ib)
-		{ ibuf = ib; Shape_frame::set_to_render(ib, 0); }
 	void load();			// Read in files.
 	void reload_shapes(int dragtype);	// Reload a shape file.
 	Vga_file& get_file(enum ShapeFile f)
