@@ -482,6 +482,74 @@ void Actor::use_food
 	}
 
 /*
+ *	Periodic check for freezing.
+ */
+
+void Actor::check_temperature
+	(
+	bool freeze			// Avatar's flag applies to party.
+	)
+	{
+	if (!freeze)			// Not in a cold area?
+		{
+		if (!temperature)	// 0 means warm.
+			return;		// Nothing to do.
+					// Warming up.
+		temperature -= (temperature >= 5 ? 5 : temperature);
+		if (rand()%3 == 0)
+			if (temperature >= 30)
+				say(1218, 1221);
+			else
+				say(1214, 1217);
+		return;
+		}
+	int warmth = figure_warmth();	// (This could be saved for speed.)
+	if (warmth >= 100)		// Enough clothing?
+		{
+		if (!temperature)
+			return;		// Already warm.
+		int decr = 1 + (warmth - 100)/10;
+		decr = decr > temperature ? temperature : decr;
+		temperature -= decr;
+		if (rand()%3 == 0)
+			if (temperature >= 30)
+				say(1201, 1205);
+			else
+				say(1194, 1200);
+		return;
+		}
+	int incr = 1 + (100 - warmth)/20;
+	temperature += incr;
+	if (temperature > 63)
+		temperature = 63;
+	if (rand()%3 == 0) switch (temperature/10)
+		{
+	case 0:
+		say(1182, 1184);	// A bit chilly.
+		break;
+	case 1:
+		say(1185, 1187);	// It's colder.
+		break;
+	case 2:
+		say(1188, 1190);
+		break;
+	case 3:
+		say(1191, 1193);	// Frostbite.
+		break;
+	case 4:
+		say(1206, 1208);
+		break;
+	case 5:
+		say(1209, 1211);
+		break;
+	case 6:
+		say(1212, 1213);	// Frozen.
+		reduce_health(1 + rand()%3);
+		break;
+		}
+	}
+
+/*
  *	Get sequence of frames for an attack.
  *
  *	Output:	# of frames stored.

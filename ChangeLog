@@ -1,5 +1,7 @@
 2001-10-07  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* effects.cc:  Show text by owner of object if gump not open.
+	* actors.cc,gameclk.cc: check_temperature().
 	* actors.cc (public): Figure_warmth() written (but not tested).
 	* gumps/Stats_gump.cc (Stats_gump): Show frame for temperature if
 	Avatar is in frozen region.

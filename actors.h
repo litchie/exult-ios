@@ -128,7 +128,8 @@ public:
 	int add_dirty(Game_window *gwin, int figure_rect = 0);
 	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
 	void use_food();		// Decrement food level.
-	void check_temperature();	// Increment/decrement temperature.
+					// Increment/decrement temperature.
+	void check_temperature(bool freeze);
 					// Get frame seq. for given dir.
 	static Frames_sequence *get_frames(int dir)
 		{ return frames[dir]; }

@@ -533,7 +533,7 @@ static inline Tile_coord Figure_text_pos
 	if (gump)
 		box = gump->get_shape_rect(item);
 	else
-		box = gwin->get_shape_rect(item);
+		box = gwin->get_shape_rect(item->get_outermost());
 	return Tile_coord(gwin->get_scrolltx() + box.x/c_tilesize, 
 			  gwin->get_scrollty() + box.y/c_tilesize, 0);
 	}

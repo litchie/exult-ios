@@ -93,6 +93,8 @@ void Stats_gump::paint
 		int framenum = temp/10;	// Want it 1-5.
 		if (framenum <= 0)
 			framenum = 1;
+		else if (framenum > 5)
+			framenum = 5;
 		set_frame(framenum);
 		}
 					// Paint the gump itself.
