@@ -2183,7 +2183,7 @@ void Game_window::double_clicked
 	cout << "Showing xform for ncnt = " << ncnt << endl;
 	std::size_t nxforms = sizeof(xforms)/sizeof(xforms[0]);
 	pal->load(PALETTES_FLX, 0, XFORMTBL, nxforms - 1 - ncnt);
-	pal->update();
+	pal->apply(false);
 	ncnt = (ncnt + 1)%nxforms;
 //^^^^^^^^^^^^TESTING
 #endif

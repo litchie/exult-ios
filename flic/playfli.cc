@@ -253,7 +253,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 
 		streampos += frame_size;
 
-		if (changepal) palette->update();
+		if (changepal) palette->apply(false);
 		changepal = false;
 
 		if (frame < first_frame)

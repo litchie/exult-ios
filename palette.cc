@@ -349,7 +349,3 @@ int Palette::get_max_val()
 {
 	return max_val;
 }
-void Palette::update()
-{
-	win->set_palette(pal1, max_val, brightness);
-}	
