@@ -275,18 +275,42 @@ Uc_function_symbol::Uc_function_symbol
 	std::vector<char *>& p
 	) :  Uc_symbol(nm), parms(p), usecode_num(num)
 	{
-	last_num = usecode_num = num >= 0 ? num : (last_num + 1);
+	}
+
+/*
+ *	Create new function symbol or return existing one (which could
+ *	have been declared EXTERN).
+ */
+
+Uc_function_symbol *Uc_function_symbol::create
+	(
+	char *nm, 
+	int num, 			// Function #, or -1 to assign
+					//  1 + last_num.
+	std::vector<char *>& p
+	)
+	{
+	int ucnum;
+	Uc_function_symbol *sym;
+	last_num = ucnum = num >= 0 ? num : (last_num + 1);
 					// Keep track of #'s used.
-	Sym_nums::const_iterator it = nums_used.find(usecode_num);
+	Sym_nums::const_iterator it = nums_used.find(ucnum);
 	if (it == nums_used.end())	// Unused?  That's good.
-		nums_used[usecode_num] = this;
-	else
+		{
+		sym = new Uc_function_symbol(nm, ucnum, p);
+		nums_used[ucnum] = sym;
+		return sym;
+		}
+	sym = (*it).second;
+	if (sym->name != nm || sym->get_num_parms() != p.size())
 		{
 		char buf[256];
-		sprintf(buf, "Function 0x%x already used for '%s'.",
-				usecode_num, ((*it).second)->get_name());
+		sprintf(buf, 
+			"Function 0x%x already used for '%s' with %d params.",
+			ucnum, sym->get_name(), sym->get_num_parms());
 		Uc_location::yyerror(buf);
 		}
+	return sym;
 	}
 
 /*
@@ -411,7 +435,9 @@ int Uc_scope::add_function_symbol
 		return 1;
 		}
 	Uc_function_symbol *fun2 = dynamic_cast<Uc_function_symbol *> (found);
-	if (!fun2)			// Non-function name.
+	if (fun2 == fun)		// The case for an EXTERN.
+		return 1;
+	else if (!fun2)			// Non-function name.
 		{
 		sprintf(buf, "'%s' already declared", nm);
 		Uc_location::yyerror(buf);

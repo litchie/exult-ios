@@ -169,7 +169,7 @@ function:
 function_proto:
 	opt_var IDENTIFIER opt_int '(' opt_identifier_list ')'
 		{
-		$$ = new Uc_function_symbol($2, $3, *$5);
+		$$ = Uc_function_symbol::create($2, $3, *$5);
 		delete $5;		// A copy was made.
 		}
 	;
