@@ -8,7 +8,7 @@ LPRODUCTS := confregress
 CONF_COMMON := ../conf/Configuration.o ../conf/XMLEntity.o
 
 
-confregress_SRC := xmain.o $(CONF_COMMON) ../files/utils.o
+confregress_OBJ := xmain.o $(CONF_COMMON) ../files/utils.o
 
 # Common rules
 include common.mk
