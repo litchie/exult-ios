@@ -1,3 +1,7 @@
+2001-02-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc: cleaned up 'build game map' code. Now accessible using a
+	cmdline parameter. (-buildmap 0|1|2), where 0,1,2 determines skiplift
+
 2001-02-16  Ryan Nunn  <triforce@merlin.net.au>
 	* actor*.*, gamewin.*, objs/eggs.*, objs/objs.h: Caching system of the 
 	  originals is now emulated by Exult. This solves the Army of Darkness
