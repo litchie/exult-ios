@@ -1,3 +1,7 @@
+2002-04-23  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* configure.in: applied patch by Kevin Lacquement to fix some
+	header detection problems in configure
+
 2002-04-21  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.cc,actions.cc:  notify_object_gone() method tells
