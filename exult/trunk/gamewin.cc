@@ -1544,9 +1544,14 @@ void Game_window::start_actor
 	)
 	{
 	// +++++++++++Check for moving_barge.
-	main_actor->walk_to_point(get_scrolltx()*tilesize + winx, 
+	if (moving_barge)
+		cout << "Moving barge" << endl;
+	else
+		{
+		main_actor->walk_to_point(get_scrolltx()*tilesize + winx, 
 				get_scrollty()*tilesize + winy, speed);
-	main_actor->get_followers();
+		main_actor->get_followers();
+		}
 	}
 
 /*
