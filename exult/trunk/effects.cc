@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 using std::rand;
+using std::string;
 using std::strlen;
 
 int Cloud::randcnt = 0;
@@ -322,11 +323,11 @@ void Projectile_effect::paint
 
 Text_effect::Text_effect
 	(
-	const char *m, 			// A copy is made.
+	const string &m, 			// A copy is made.
 	Game_object *it,		// Item text is on, or null.
 	int t_x, int t_y, 		// Abs. tile coords.
 	int w, int h
-	) : msg(strdup(m)), item(it), tx(t_x), ty(t_y), width(w), height(h)
+	) : msg(m), item(it), tx(t_x), ty(t_y), width(w), height(h)
 	{
 	}
 
@@ -362,7 +363,7 @@ void Text_effect::paint
 	Game_window *gwin
 	)
 	{
-	const char *ptr = msg;
+	const char *ptr = msg.c_str();
 	if (*ptr == '@')
 		ptr++;
 	int len = strlen(ptr);

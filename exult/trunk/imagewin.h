@@ -75,7 +75,7 @@ public:
 	friend class Image_buffer16;
 	virtual ~Image_buffer_base()
 		{
-		delete bits;		// In case Image_window didn't.
+		delete[] bits;		// In case Image_window didn't.
 		}
 	friend class Image_window;
 	friend class Image_buffer;
