@@ -274,7 +274,7 @@ inline Actor *Combat_schedule::find_foe
 	{
 	if (npc->get_attack_mode() == Actor::manual)
 		return 0;		// Find it yourself.
-	return find_foe((int) npc->get_attack_mode());
+	return find_foe(static_cast<int>(npc->get_attack_mode()));
 	}
 
 /*
