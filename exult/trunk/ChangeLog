@@ -1,3 +1,8 @@
+2002-07-31  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gumps/Spellbook_gump.cc,objs/spellbook.cc:  Move functionality
+	to Spellbook_object in preparation for spellbook combat.
+
 2002-07-30  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* gamemap.cc,spellbook.{cc,h}:  Save/restore bookmarked spell.
