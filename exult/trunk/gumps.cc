@@ -366,6 +366,8 @@ int Gump_text::mouse_clicked
 					cursor--;
 				break;
 				}
+		if (cursor > length)
+			cursor--;	// Passed the end.
 		}
 	return (1);
 	}
