@@ -57,6 +57,63 @@ void Game_object::move
 	}
 
 /*
+ *	Find nearby objects.
+ *
+ *	Output:	# found, appended to vec.
+ */
+
+int Game_object::find_nearby
+	(
+	Vector& vec,			// Objects appended to this.
+	int shapenum,			// Shape to look for.  -1=any,
+					//   -359=any NPC.
+	int quality,			// +++Not used/understood.
+	int mask			// +++Same here.
+	)
+	{
+	int vecsize = vec.get_cnt();
+	Game_window *gwin = Game_window::get_game_window();
+	int atx, aty, atz;		// Get abs. tile coords.
+	get_abs_tile(atx, aty, atz);
+	const int delta = 4;		// Let's try 4 tiles each dir.
+	Rectangle tiles(atx - delta, aty - delta, 2*delta, 2*delta);
+					// Stay within world.
+	Rectangle world(0, 0, num_chunks*tiles_per_chunk, 
+						num_chunks*tiles_per_chunk);
+	tiles = tiles.intersect(world);
+					// Figure range of chunks.
+	int start_cx = tiles.x/tiles_per_chunk,
+	    end_cx = (tiles.x + tiles.w - 1)/tiles_per_chunk;
+	int start_cy = tiles.y/tiles_per_chunk,
+	    end_cy = (tiles.y + tiles.h - 1)/tiles_per_chunk;
+					// Go through all covered chunks.
+	for (int cy = start_cy; cy <= end_cy; cy++)
+		for (int cx = start_cx; cx <= end_cx; cx++)
+			{		// Go through objects.
+			Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+			for (Game_object *obj = chunk->get_first(); obj;
+						obj = chunk->get_next(obj))
+				{	// Check shape.
+				if (shapenum >= 0)
+					{
+					if (obj->get_shapenum() != shapenum)
+						continue;
+					}
+				else if (shapenum == -359 &&
+							!obj->get_npc_num())
+					continue;
+				int tx, ty, tz;
+				obj->get_abs_tile(tx, ty, tz);
+				if (tx >= atx && tx < atx + 4 &&
+						tiles.has_point(tx, ty))
+					vec.append(obj);
+				}
+			}
+					// Return # added.
+	return (vec.get_cnt() - vecsize);
+	}
+
+/*
  *	Run usecode when double-clicked.
  */
 
@@ -491,14 +548,10 @@ void Chunk_cache::setup
 int Chunk_cache::is_blocked
 	(
 	int lift,			// Given lift.
-	int tx, int ty,		// Square to test.
+	int tx, int ty,			// Square to test.
 	int& new_lift			// New lift returned.
 	)
 	{
-#if 0			/* ++++++Until we get the right footprint dims. */
-	new_lift = lift;
-	return (0);
-#else			/* ++++++Got them now!  This works. */
 					// Get bits.
 	unsigned short tflags = blocked[ty*tiles_per_chunk + tx];
 	if (tflags & (1<<lift))		// Something there?
@@ -514,7 +567,6 @@ int Chunk_cache::is_blocked
 		;
 	new_lift = i + 1;
 	return (0);
-#endif
 	}
 
 /*
