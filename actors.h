@@ -33,6 +33,7 @@ class Actor_action;
 class Schedule;
 class Schedule_change;
 class Monster_info;
+class Monster_actor;
 class Weapon_info;
 class Dead_body;
 class Npc_timer_list;
@@ -406,6 +407,7 @@ public:
 					int ammo_shape = 0);
 	virtual void die();		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
+	Monster_actor *clone();		// Create another nearby to this.
 	void mend_hourly();		// Restore HP's hourly.
 					// Read from file.
 	void read(std::istream& nfile, int num, int has_usecode);

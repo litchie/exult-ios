@@ -265,6 +265,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(set_attack_mode);
 	USECODE_INTRINSIC_DECL(get_attack_mode);
 	USECODE_INTRINSIC_DECL(set_opponent);
+	USECODE_INTRINSIC_DECL(clone);
 	USECODE_INTRINSIC_DECL(get_oppressor);
 	USECODE_INTRINSIC_DECL(set_oppressor);
 	USECODE_INTRINSIC_DECL(get_weapon);
