@@ -241,6 +241,12 @@ CONFREGRESS_OBJS=Configuration.o XMLEntity.o xmain.o utils.o
 conf/confregress.exe  : $(CONFREGRESS_OBJS)
 	$(CXX) $(LFLAGS) -o confregress.exe $(CONFREGRESS_OBJS) -mconsole
 
+head2data.exe : head2data.o $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o head2data.exe head2data.o $(FILE_OBJS) -mconsole
+
+head2data.test: 
+	head2data data/u7bgintrinsics.data data/u7siintrinsics.data
+
 clean:
 	del $(OBJS) $(EXEC)
 	del expack.exe expack.o
@@ -279,7 +285,7 @@ dist:   $(EXEC)
 	copy SDL\README-SDL.txt $(U7PATH)\Exult\README-SDL.txt
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult\SDL.dll
 
-tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe 
+tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
 toolsclean:
 	del mklink.o mklink.exe 
@@ -309,7 +315,9 @@ toolsinstall: tools
 	copy usecode\ucxt\data\events.data $(U7PATH)\data\events.data
 	copy usecode\ucxt\data\flags.data $(U7PATH)\data\flags.data
 	copy usecode\ucxt\data\opcodes.txt $(U7PATH)\data\opcodes.txt
-	copy usecode\ucxt\data\u7misc.data $(U7PATH)\data\u7misc.data 
+	copy usecode\ucxt\data\u7misc.data $(U7PATH)\data\u7misc.data
+	copy data\u7bgintrinsics.data $(U7PATH)\data\u7bgintrinsics.data
+	copy data\u7siintrinsics.data $(U7PATH)\data\u7siintrinsics.data
 
 toolsdist: tools
 	if not exist $(TOOLSPATH) md $(TOOLSPATH)
@@ -328,7 +336,9 @@ toolsdist: tools
 	copy usecode\ucxt\data\events.data $(TOOLSPATH)\data\events.data
 	copy usecode\ucxt\data\flags.data $(TOOLSPATH)\data\flags.data
 	copy usecode\ucxt\data\opcodes.txt $(TOOLSPATH)\data\opcodes.txt
-	copy usecode\ucxt\data\u7misc.data $(TOOLSPATH)\data\u7misc.data 
+	copy usecode\ucxt\data\u7misc.data $(TOOLSPATH)\data\u7misc.data
+	copy data\u7bgintrinsics.data $(TOOLSPATH)\data\u7bgintrinsics.data
+	copy data\u7siintrinsics.data $(TOOLSPATH)\data\u7siintrinsics.data
 	copy tools\expack.txt $(TOOLSPATH)\tools
 	copy tools\intrins1.txt $(TOOLSPATH)\tools
 	copy tools\intrins2.txt $(TOOLSPATH)\tools

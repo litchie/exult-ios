@@ -11,7 +11,7 @@ CC=gcc
 SRC=.
 VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SRC)/files:$(SRC)/files/zip:$(SRC)/flic: \
 $(SRC)/gumps:$(SRC)/imagewin:$(SRC)/objs:$(SRC)/pathfinder:$(SRC)/shapes:$(SRC)/server:$(SRC)/tools: \
-$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt/src
+$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
@@ -241,6 +241,12 @@ CONFREGRESS_OBJS=Configuration.o XMLEntity.o xmain.o utils.o
 confregress.exe  : $(CONFREGRESS_OBJS)
 	$(CXX) $(LFLAGS) -o confregress.exe $(CONFREGRESS_OBJS) -mconsole
 
+head2data.exe : head2data.o $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o head2data.exe head2data.o $(FILE_OBJS) -mconsole
+
+head2data.test: 
+	./head2data data/u7bgintrinsics.data data/u7siintrinsics.data
+
 # This should work with the Cygwin rm
 clean:
 	rm -f $(OBJS) expack.o $(EXEC) expack.exe data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
@@ -279,7 +285,7 @@ dist:   $(EXEC)
 	u2d $(U7PATH)/Exult/AUTHORS.txt $(U7PATH)/Exult/ChangeLog.txt $(U7PATH)/Exult/COPYING.txt $(U7PATH)/Exult/FAQ.txt $(U7PATH)/Exult/NEWS.txt $(U7PATH)/Exult/README.txt $(U7PATH)/Exult/README.1ST.txt $(U7PATH)/Exult/README.win32.txt
 	u2d $(U7PATH)/Exult/bgdefaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 
-tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe
+tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
 toolsclean:
 	rm -f mklink.o mklink.exe
@@ -292,6 +298,7 @@ toolsclean:
 	rm -f $(UCXT_OBJS) ucxt.exe
 	rm -f $(UCC_OBJS) ucc.exe ucparse.cc ucparse.h uclex.cc
 	rm -f $(CONFREGRESS_OBJS) confregress.exe
+	rm -f head2data.exe data/u7bgintrinsics.data data/u7siintrinsics.data
 
 toolsinstall: tools
 	mkdir -p $(U7PATH)/tools
@@ -310,6 +317,8 @@ toolsinstall: tools
 	cp usecode/ucxt/data/flags.data $(U7PATH)/data/flags.data
 	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/data/opcodes.txt
 	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data/u7misc.data 
+	cp data/u7bgintrinsics.data $(U7PATH)/data/u7bgintrinsics.data
+	cp data/u7siintrinsics.data $(U7PATH)/data/u7siintrinsics.data
 
 toolsdist: tools
 	mkdir -p $(TOOLSPATH)
@@ -329,6 +338,8 @@ toolsdist: tools
 	cp usecode/ucxt/data/flags.data $(TOOLSPATH)/data/flags.data
 	cp usecode/ucxt/data/opcodes.txt $(TOOLSPATH)/data/opcodes.txt
 	cp usecode/ucxt/data/u7misc.data $(TOOLSPATH)/data/u7misc.data 
+	cp data/u7bgintrinsics.data $(TOOLSPATH)/data/u7bgintrinsics.data
+	cp data/u7siintrinsics.data $(TOOLSPATH)/data/u7siintrinsics.data
 	cp tools/expack.txt $(TOOLSPATH)/tools/expack.txt
 	cp tools/intrins1.txt $(TOOLSPATH)/tools/intrins1.txt
 	cp tools/intrins2.txt $(TOOLSPATH)/tools/intrins2.txt
