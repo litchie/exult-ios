@@ -66,7 +66,8 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/firesword.shp		\
 	bg/greencloak.shp		\
 	bg/greycloak.shp		\
-	bg/ring_of_protection.shp
+	bg/ring_of_protection.shp	\
+	bg/greentop.shp
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\
