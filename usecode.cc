@@ -3386,7 +3386,7 @@ void Usecode_machine::run
 			}
 		case 0x47:		// CALLE.
 			offset = Read2(ip);
-			call_usecode_function(offset);
+			call_usecode_function(offset, event);
 			break;
 		case 0x48:		// PUSH EVENTID.
 			pushi(event);
@@ -3509,7 +3509,9 @@ int Usecode_machine::read
 	{
 	ifstream in;
 	if (!U7open(in, FLAGINIT))	// Read global flags.
-		return (0);
+					// +++++Eventually, remove this:
+		if (!U7open(in, "static/flaginit.dat"))
+			return (0);
 	in.read((char*)gflags, sizeof(gflags));
 	in.close();
 	if (!U7open(in, USEDAT))

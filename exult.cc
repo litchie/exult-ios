@@ -830,12 +830,19 @@ static void Handle_keystroke
 		break;
 	case SDLK_m:			// Show next mouse cursor.
 		{
+		static int mnum = 0;
+		if (shift && mnum > 0)
+			audio->start_music(--mnum, 0);
+		else
+			audio->start_music(mnum++, 0);
+#if 0
 #ifdef MOUSE
 		static int mcur = 0;
 		mouse->set_shape(++mcur);
 		gwin->set_painted();
 #if DEBUG
 		cout << "Mouse cursor:  " << mcur << endl;
+#endif
 #endif
 #endif
 		break;
