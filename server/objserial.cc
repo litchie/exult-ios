@@ -45,7 +45,7 @@ public:
 		{ Write2(buf, v); return *this; }
 	Serial_out& operator<<(bool v)
 		{ *buf++ = (v ? 1 : 0); return *this; }
-	Serial_out& operator<<(string& s);
+	Serial_out& operator<<(std::string& s);
 	};
 
 /*
@@ -53,13 +53,13 @@ public:
  */
 Serial_out& Serial_out::operator<<
 	(
-	string& s
+	std::string& s
 	)
 	{
 	const char *str = s.c_str();
-	int len = strlen(str);		// Get length.
+	int len = std::strlen(str);		// Get length.
 	*this << len;			// First the length.
-	memcpy(buf, str, len);		// Then the bytes.
+	std::memcpy(buf, str, len);		// Then the bytes.
 	buf += len;
 	return *this;
 	}
@@ -81,7 +81,7 @@ public:
 		{ v = Read2(buf); return *this; }
 	Serial_in& operator<<(bool &v)
 		{ v = *buf++ ? true : false; return *this; }
-	Serial_in& operator<<(string& s);
+	Serial_in& operator<<(std::string& s);
 	};
 
 /*
@@ -89,7 +89,7 @@ public:
  */
 Serial_in& Serial_in::operator<<
 	(
-	string& s
+	std::string& s
 	)
 	{
 	int len;
