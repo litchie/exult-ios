@@ -108,9 +108,11 @@ public:
 					// Add array element. (No checking!)
 	void put_elem(int i, Usecode_value& val)
 		{ value.array[i] = val; }
-					// Get an array element.
+					// Get an array element, or *this.
 	Usecode_value& get_elem(int i)
-		{ return value.array[i]; }
+		{
+		return type == (int) array_type ? value.array[i] : *this;
+		}
 	int is_false()			// Represents a FALSE value?
 		{
 		return is_int() ? value.intval == 0
@@ -317,6 +319,7 @@ public:
 	USECODE_INTRINSIC_DECL(remove_item);
 	USECODE_INTRINSIC_DECL(get_equipment_list);
 	USECODE_INTRINSIC_DECL(advance_time);
+	USECODE_INTRINSIC_DECL(run_usecode);
 	USECODE_INTRINSIC_DECL(direction_from);
 	USECODE_INTRINSIC_DECL(get_npc_flag);
 	USECODE_INTRINSIC_DECL(set_npc_flag);
