@@ -38,3 +38,16 @@ Cantra 0x440()
 		cantra.say("Perhaps... or was that someone else...");
 		}
 	}
+
+/*
+ *	This is called when the 'bucket' is used.
+ */
+Dump_bucket 0x88a(bucket)
+	{
+	var target = UI_click_on_item();
+	if (!target)
+		return;
+	UI_set_intercept_item(target);
+	// Put code to detect dumping correct water on Cantra here.
+	Dump_bucket.original(bucket);
+	}
