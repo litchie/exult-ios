@@ -1109,7 +1109,7 @@ int Usecode_internal::path_run_usecode
 	int usefun = useval.get_elem0().get_int_value();
 	Game_object *obj = get_item(itemval);
 	int sz = locval.get_array_size();
-	if (!npc || !obj || sz < 2)
+	if (!npc || sz < 2)
 		{
 		CERR("Path_run_usecode: bad inputs");
 		return 0;
@@ -1139,6 +1139,8 @@ int Usecode_internal::path_run_usecode
 		    src.distance(dest) <= 1)
 			return 1;	// Maiden loop in SI.  Kludge+++++++
 		}
+	if (!obj)			// Just skip the usecode part.
+		return npc->walk_path_to_tile(dest, gwin->get_std_delay(), 0);
 					// Walk there and execute.
 	If_else_path_actor_action *action = 
 		new If_else_path_actor_action(npc, dest,
@@ -1148,8 +1150,8 @@ int Usecode_internal::path_run_usecode
 		action->set_failure(
 				new Usecode_actor_action(usefun, obj, 
 						eventval.get_int_value()));
-	npc->set_action(action);
-	npc->start(200, 0);		// Get into time queue.
+	npc->set_action(action);	// Get into time queue.
+	npc->start(gwin->get_std_delay(), 0);
 	return !action->done_and_failed();
 }
 

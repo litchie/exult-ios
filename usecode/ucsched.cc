@@ -384,6 +384,14 @@ void Usecode_script::handle_event
 			usecode->item_say(objval, strval);
 			break;
 			}
+		case Ucscript::step:	// Parm. is dir. (0-7).  0=north.
+			{
+					// Get dir.
+			Usecode_value& val = code->get_elem(++i);
+					// It may be 0x3x.
+			step(usecode, val.get_int_value()&7);
+			break;
+			}
 		case music:		// Unknown.
 		        cout << "Und sched. opcode " << hex << 
 				"0x" << setfill((char)0x30) << setw(2) 
@@ -458,8 +466,10 @@ void Usecode_script::handle_event
 				}
 					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode < 0x38)
-					// Step in dir. opcode&7.
+				{	// Step in dir. opcode&7.
 				step(usecode, opcode&7);
+				do_another = 1;	// Guessing.
+				}
 			else
 				{
 			        cout << "Und sched. opcode " << hex << 
