@@ -1,3 +1,8 @@
+2001-02-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* schedule.cc: 'Street maintenance' - turn lights off/on,
+	open/close shutters.
+
 2001-02-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.cc (Walk_to_schedule): Moved door detection to

@@ -75,6 +75,136 @@ void Schedule::set_action_sequence
 	}
 
 /*
+ *	Look for lamps to light/unlight and shutters to open/close.
+ *
+ *	Output:	1 if successful, which means npc's schedule has changed!
+ */
+
+int Schedule::try_street_maintenance
+	(
+	)
+	{
+					// What to look for:
+	static int night[] = {322, 372, 889};
+	static int day[] = {290, 291, 526};
+
+	if (npc->Actor::get_npc_num() <= 0)
+		return 0;		// Only want normal NPC's.
+	int *shapes;
+	Game_window *gwin = Game_window::get_game_window();
+	int hour = gwin->get_hour();
+	if (hour >= 9 && hour <= 18)
+		shapes = &day[0];
+	else if (hour >= 20 || hour < 6)
+		shapes = &night[0];
+	else
+		return 0;		// Dusk or dawn.
+	Astar *path = new Astar();
+	Tile_coord npcpos = npc->get_abs_tile_coord();
+					// Get to within 1 tile.
+	Actor_pathfinder_dist_client cost(1);
+	Game_object *found = 0;		// Find one we can get to.
+	for (int i = 0; !found && i < sizeof(night)/sizeof(night[0]); i++)
+		{
+		Game_object_vector objs;// Find nearby.
+		int cnt = npc->find_nearby(objs, shapes[i], 20, 0);
+		int j;
+		for (j = 0; j < cnt; j++)
+			{
+			if (path->NewPath(npcpos, 
+				objs[j]->get_abs_tile_coord(), &cost))
+				{
+				found = objs[j];
+				break;
+				}
+			}
+		}
+	if (!found)
+		{
+		delete path;
+		return 0;		// Failed.
+		}
+					// Set actor to walk there.
+	npc->set_schedule_type(Schedule::street_maintenance,
+			new Street_maintenance_schedule(npc, path, found));
+	return 1;
+	}
+
+/*
+ *	Create schedule to turn lamps on/off, open/close shutters.
+ */
+
+Street_maintenance_schedule::Street_maintenance_schedule
+	(
+	Actor *n, 
+	Astar *p, 
+	Game_object *o
+	) : Schedule(n), path(p), obj(o), shapenum(o->get_shapenum())
+	{
+	}
+
+/*
+ *	Street-maintenance schedule.
+ */
+
+void Street_maintenance_schedule::now_what
+	(
+	)
+	{
+	if (path)			// First time?
+		{			// Set to follow given path.
+		cout << npc->get_name() << 
+			" walking for street maintenance" << endl;
+		npc->set_action(new Path_walking_actor_action(path));
+		npc->start(250);
+		path = 0;
+		return;
+		}
+	if (npc->distance(obj) == 1 &&	// We're there.
+	    obj->get_shapenum() == shapenum)
+		{
+		cout << npc->get_name() << 
+			" about to perform street maintenance" << endl;
+		int dir = npc->get_direction(obj);
+		char frames[2];
+		frames[0] = npc->get_dir_framenum(dir, Actor::standing);
+		frames[1] = npc->get_dir_framenum(dir, 3);
+		char standframe = frames[0];
+		npc->set_action(new Sequence_actor_action(
+			new Frames_actor_action(frames, sizeof(frames)),
+			new Activate_actor_action(obj),
+			new Frames_actor_action(&standframe, 1)));
+		npc->start(250);
+		switch (shapenum)
+			{
+		case 322:		// Closing shutters.
+		case 372:
+			npc->say(first_close_shutters, last_close_shutters);
+			break;
+		case 290:		// Open shutters.
+		case 291:
+			npc->say(first_open_shutters, last_open_shutters);
+			break;
+		case 889:		// Turn on lamp.
+			npc->say(first_lamp_on, last_lamp_on);
+			break;
+		case 526:		// Turn off lamp.
+			npc->say(lamp_off, lamp_off);
+			break;
+			}
+		return;
+		}
+	cout << npc->get_name() << 
+			" done with street maintenance" << endl;
+				// Set back to old schedule.
+	Game_window *gwin = Game_window::get_game_window();
+	int period = gwin->get_hour()/3;
+	Npc_actor *nnpc = dynamic_cast<Npc_actor *> (npc);
+	if (nnpc)
+		nnpc->update_schedule(gwin, period, 7);
+	}
+
+/*
  *	Create a horizontal pace schedule.
  */
 
@@ -112,6 +242,9 @@ void Pace_schedule::now_what
 	(
 	)
 	{
+	if (rand() % 6 == 0)		// Check for lamps, etc.
+		if (try_street_maintenance())
+			return;		// We no longer exist.
 	which = !which;			// Flip direction.
 	int delay = 750;		// Delay .75 secs.
 	if (blocked.tx != -1 &&		// Blocked?
@@ -225,6 +358,9 @@ void Patrol_schedule::now_what
 	(
 	)
 	{
+	if (rand() % 8 == 0)		// Check for lamps, etc.
+		if (try_street_maintenance())
+			return;		// We no longer exist.
 	const int PATH_SHAPE = 607;
 	pathnum++;			// Find next path.
 					// Already know its location?
@@ -370,6 +506,9 @@ void Loiter_schedule::now_what
 	(
 	)
 	{
+	if (rand() % 3 == 0)		// Check for lamps, etc.
+		if (try_street_maintenance())
+			return;		// We no longer exist.
 	int newx = center.tx - dist + rand()%(2*dist);
 	int newy = center.ty - dist + rand()%(2*dist);
 					// Wait a bit.
@@ -533,6 +672,9 @@ void Wander_schedule::now_what
 	(
 	)
 	{
+	if (rand() % 2)			// 1/2 time, check for lamps, etc.
+		if (try_street_maintenance())
+			return;		// We no longer exist.
 	Tile_coord pos = npc->get_abs_tile_coord();
 	const int legdist = 32;
 					// Go a ways from current pos.
@@ -925,6 +1067,9 @@ void Waiter_schedule::now_what
 	(
 	)
 	{
+	if (rand() % 4 == 0)		// Check for lamps, etc.
+		if (try_street_maintenance())
+			return;		// We no longer exist.
 	if (first)			// First time?
 		{
 		first = 0;		// Find tables.
