@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "gamewin.h"
 #include "objs.h"
+#include "vec.h"
 
 /*
  *	Get array size.
@@ -988,7 +989,7 @@ Usecode_machine::Usecode_machine
 	(
 	istream& file,
 	Game_window *gw
-	) : num_funs(0), string(0), gwin(gw), caller_item(0),
+	) : string(0), gwin(gw), caller_item(0),
 	    stack(new Usecode_value[1024]), user_choice(0),
 	    saved_answers(0)
 	{
@@ -1002,9 +1003,18 @@ Usecode_machine::Usecode_machine
 	file.seekg(0, ios::end);
 	int size = file.tellg();	// Get file size.
 	file.seekg(0);
+	funs = new Vector(10);		// A slot for funs. n/256.
 					// Read in all the functions.
-	while (num_funs < max_funs && file.tellg() < size)
-		funs[num_funs++] = new Usecode_function(file);
+	while (file.tellg() < size)
+		{
+		Usecode_function *fun = new Usecode_function(file);
+					// Get slot.
+		Vector *slot = (Vector *) funs->get(fun->id/0x100);
+		if (!slot)
+			funs->put(fun->id/0x100, (slot = new Vector(10)));
+					// Store in slot.
+		slot->put(fun->id%0x100, fun);
+		}
 	}
 
 /*
@@ -1017,8 +1027,18 @@ Usecode_machine::~Usecode_machine
 	{
 	delete [] stack;
 	delete string;
-	for (int i = 0; i < num_funs; i++)
-		delete funs[i];
+	int num_slots = funs->get_cnt();
+	for (int i = 0; i < num_slots; i++)
+		{
+		Vector *slot = (Vector *) funs->get(i);
+		if (!slot)
+			continue;
+		int cnt = slot->get_cnt();
+		for (int j = 0; j < cnt; j++)
+			delete (Usecode_function *) slot->get(j);
+		delete slot;
+		}
+	delete funs;
 	}
 
 int debug = 0;				// 2 for more stuff.
@@ -1412,18 +1432,18 @@ int Usecode_machine::call_usecode_function
 	Usecode_value *parm0		// If non-zero, pass this parm.
 	)
 	{
-	int i;				// +++++Hash them!
-	for (i = 0; i < num_funs; i++)
-		if (funs[i]->id == id)
-			break;
-	if (i == num_funs)
+					// Look up in table.
+	Vector *slot = (Vector *) funs->get(id/0x100);
+	Usecode_function *fun = slot ? (Usecode_function *) slot->get(id%0x100)
+				     : 0;
+	if (!fun)
 		{
 		cout << "Usecode " << id << " not found.\n";
 		return (0);
 		}
 	if (parm0)
 		push(*parm0);
-	run(funs[i], event);		// Do it.
+	run(fun, event);		// Do it.
 	return (1);
 	}
 
