@@ -1,0 +1,169 @@
+\CEXULT ACKNOWLEDGEMENTS
+
+
+
+\CTHE CODING TEAM
+
+
+\CJeff S. "DrCode" Freedman
+\C<jsf@users.sourceforge.net>
+\CThe man who started it all: from usecode 
+\Cto map browser to usecode to animation 
+\Cto usecode to ExultStudio to usecode.
+\CHe's the leader ! (Did we mention usecode?)
+
+
+\CDancer Vesperman
+\C<dancer@users.sourceforge.net>
+\CMusic, sounds, XML configuration, usecode...
+\Cwhat more could you possibly ask for ?
+
+
+\CWillem Jan Palenstijn
+\C<wjpalenstijn@users.sourceforge.net>
+\CPorting to obscure OSs (Windows) and less
+\Cobscure ones (BeOS), cheats, autoconf, 
+\Cexultbot and lots more !
+
+
+\CTristan "Nadir" Tarrant
+\C<nadir@users.sourceforge.net>
+\CIntro, ending, menus, autoconf/automake, 
+\CGIMP plugin, FLEX packing, CVS config,
+\CFree Software advocate, Forum police
+
+
+\CMax "Fingolfin" Horn
+\C<max@quendi.de>
+\CPorting to MacOS, error handling,
+\CC++ standard police, the webpage
+
+
+\CLuke "Coder Infidel" Dunstan
+\C<coder_infidel@hotmail.com>
+\CHunter of lost info in U7's data files,
+\Cweapon animations, bits of combat.
+
+
+\CRyan "Colourless" Nunn
+\C<triforce@merlin.net.au>
+\CXMIDI meister, endings, roof removalist,
+\CSI Intro, NPC flag IO, Avatar identity,
+\CBG Paperdolls, "Big Commits(tm)"
+
+
+\CPatrick Burke
+\C<takhisisii@yahoo.com.au>
+\CUsecode decompiler/disassembler/docs
+
+
+\CDominik "Dominus" Reichardt
+\C<gigdr@tesionmail.de>
+\COur trusty FAQ maintainer
+
+
+\CChristoph "Jameson" Reichenbach
+\C<jameson@linuxgames.com>
+\CPorting to Alpha
+
+
+\CRuediger Hanke
+\C<tomjoad@muenster.de>
+\CPorting to MorphOS/AmigaOS
+
+
+\CDerek Liauw Kie Fa
+\C2xSaI scaler
+\CSuperEagle scaler
+\CSuper2xSaI scaler
+
+
+\CChristian Ohm
+\C<chr.ohm@gmx.net>
+\CGameplay Options menu, fast mouse, 
+\Cmiddle mouse button support
+
+
+\CMark Siewert
+\C<Mark.Siewert@t-online.de>
+\CExult Studio for Windows
+
+\CSimon Quinn
+\C<simonquinn@users.sourceforge.net>
+\CAudio enhancements
+
+\CAurelien "Artaxerxes" Marchand
+\C<artaxerxes@users.sourceforge.net>
+\CZaurus port and Exult Studio tools
+
+\COTHER CONTRIBUTORS
+
+\COlivier Marcoux
+
+\CGary Thompson
+
+\CMatthias Ho
+
+\CMichael A. Cornelius
+
+\CTroy Forrest
+
+\CByun DongHo
+
+\CMaxim Shatskih
+
+\CJakob Shonberg
+
+\CWouter Dijkslag
+
+\CMark Winterrowd
+
+\CAlex Botero-Lowry
+
+\CPaul Hebble
+
+\CRobert Bihlmeyer
+
+
+\CARTISTS
+
+\CAdam Delman
+
+\CPhilip Gottschalk
+
+\COblivious
+
+\CJoseph Applegate
+
+
+\CTHANKS
+
+
+\P0
+\CSourceForge & VA Linux
+\CFor making it easy to code together.
+
+\CJackchaos.com
+\CFor hosting the old Exult message board
+
+\CTravis "Kirben" Howell
+\CFor making daily Windows binaries
+
+\CSam Lantinga
+\CAuthor of SDL, for making porting easier
+
+\CMatt Kimmich
+\CFor giving us permission to use his MIDI
+\Ctracks
+
+\CJoseph Morris
+\CFor the digital SFX packs
+
+\Cand...
+
+
+\CORIGIN Systems Inc,
+\CRichard Garriot,
+\CWarren Spector
+\Cand the Ultima VII & Serpent Isle teams for
+\Cmaking these great games in the first place

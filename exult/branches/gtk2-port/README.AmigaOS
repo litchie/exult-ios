@@ -1,0 +1,28 @@
+Exult instructions for AmigaOS
+------------------------------
+
+
+To play
+-------
+First you need to get Ultima 7. Either you own it already, or
+you buy it somewhere. Then you must install it on a DOS/Windows
+machine in order to get the data file. If you do not have a
+DOS/Windows machine,	using an emulator like Bochs should do the
+job.
+
+Alternatively, the 'Ultima Collection' already contains a
+pre-installed version of U7. (in the directory /ultima7)
+
+
+Notes
+------
+* You can build exult from the source yourself if you want. You'll
+need a working Geek Gadgets installation and the AmigaOS SDL library
+(available from http://ggreco.interfree.it/sdl.html). StormC 4 is able
+as well to compile Exult in GCC mode, but I had some strange problems
+with it so if you must use StormC and run into trouble you're on your
+own.
+
+To build, copy Makefile.MorphOS to Makefile and run 'make'.
+
+If you need help, feel free to contact me at <mailto:tomjoad@muenster.de>
