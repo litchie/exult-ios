@@ -60,8 +60,8 @@ void playfli::play(Image_window *win)
     int chunk_type;
     unsigned char *pixbuf;
     int streampos = fli_stream.tellg();
-    int xoffset=160;
-    int yoffset=120;
+    int xoffset=(win->get_width()-fli_width)/2;
+    int yoffset=(win->get_height()-fli_height)/2;
 	
     pixbuf = new unsigned char[fli_width];
     // Play frames...

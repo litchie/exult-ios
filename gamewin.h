@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vgafile.h"
 #include "gameclk.h"
 #include "fnames.h"
+#include "palette.h"
 
 #include <string>	// STL string
 #include <vector>	// STL container
@@ -53,6 +54,7 @@ class Game_window
 	{
 	static Game_window *game_window;// There's just one.
 	Image_window8 *win;		// Window to display into.
+	Palette *pal;
 public:
 	enum Game_mode {		// Can be in different modes.
 		splash,			// Splash screen.
@@ -462,8 +464,6 @@ public:
 	void set_palette(int pal_num, int new_brightness = -1);
 	int get_brightness()		// Percentage:  100 = normal.
 		{ return brightness; }
-					// Set palette from Flex
-	void set_palette(const char *fname, int res, int fade=0);
 	void brighten(int per);		// Brighten/darken by percentage for
 					//   the user.
 	void restore_users_brightness();// Restore to user's setting.
@@ -556,9 +556,6 @@ public:
 	const char *get_shape_file_name(int n);
 	Vga_file *get_shape_file_data(int n);
 	int get_shape_file_count();
-	void play_flic(const char *archive, int index);
-	void paint_splash();
-	void end_game();
 	int find_roof(int cx, int cy);
 	};
 

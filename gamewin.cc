@@ -47,6 +47,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "flic/playfli.h"
 #include "Configuration.h"
 #include "schedule.h"
+#include "titles.h"
 
 extern	Configuration *config;
 					// THE game window:
@@ -149,6 +150,7 @@ Game_window::Game_window
 	win = new Image_window8(width, height, scale, fullscreen);
 					// Set title.
 	win->set_title("Exult Ultima7 Engine");
+	pal = new Palette();
 
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
@@ -164,7 +166,7 @@ Game_window::Game_window
 #endif
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
 	clock.set_palette();		// Set palette for correct time.
-	brighten(20);			// Brighten 20%.
+	pal->brighten(20);			// Brighten 20%.
 	}
 
 /*
@@ -946,88 +948,6 @@ void Game_window::read_map_data
 	}	
 
 /*
- *      Paint splash screen
- */
-
-void Game_window::paint_splash
-	(
-	)
-	{
-		Vga_file shapes(ENDSHAPE_FLX);
-		int x = get_width()/2-160;
-		int y = get_height()/2-100;
-		set_palette("static/intropal.dat",3);
-		paint_shape(x,y,shapes.get_shape(0x11,0));
-		paint_text_box(0,"With the help of Jeff Freedman, Dancer Vesperman, " \
-				 "Willem Jan Palenstijn, Tristan Tarrant", x, y+160, 320, 200);
-		set_palette("static/intropal.dat",3,1);
-		SDL_Delay(2000);
-		set_palette("static/intropal.dat",3,-1);
-		
-		
-		paint_shape(x,y,shapes.get_shape(0x12,0));
-		paint_shape(x+160,y+30,shapes.get_shape(0x0D,0));
-		paint_text_box(0,"Driven by the Exult game engine", x, y+160, 320, 200);
-		set_palette("static/intropal.dat",4,1);
-		SDL_Delay(1500);
-		set_palette("static/intropal.dat",4,-1);
-	
-		Vga_file menushapes(MAINSHP_FLX);
-		
-		paint_shape(x,y,menushapes.get_shape(0x2,0));
-		set_palette("static/intropal.dat",0,1);
-		
-		paint_shape(x+120,y+110,menushapes.get_shape(0x4,0));
-		paint_shape(x+120,y+120,menushapes.get_shape(0x5,0));
-		paint_shape(x+120,y+130,menushapes.get_shape(0x8,0));
-		paint_shape(x+120,y+140,menushapes.get_shape(0x6,0));
-		show(1);
-		SDL_Delay(1500);
-
-		// The main man :)
-		if(get_usecode()->get_global_flag(Usecode_machine::did_first_scene)==0)	{
-		set_palette("static/intropal.dat",2,0);
-		// First
-		for(int i=9; i>0; i--) {
-			win->fill8(0,get_width(),get_height(),0,0);
-			paint_shape(x,y,shapes.get_shape(0x21,i));
-			win->show();
-			SDL_Delay(50);
-		}
-		for(int i=1; i<10; i++) {
-			win->fill8(0,get_width(),get_height(),0,0);
-			paint_shape(x,y,shapes.get_shape(0x21,i));
-			win->show();
-			SDL_Delay(50);
-		}
-		// Second 
-		for(int i=0; i<10; i++) {
-			win->fill8(0,get_width(),get_height(),0,0);
-			paint_shape(x,y,shapes.get_shape(0x22,i));
-			win->show();
-			SDL_Delay(50);
-		}
-		for(int i=9; i>=0; i--) {
-			win->fill8(0,get_width(),get_height(),0,0);
-			paint_shape(x,y,shapes.get_shape(0x22,i));
-			win->show();
-			SDL_Delay(50);
-		}
-		for(int i=0; i<16; i++) {
-			win->fill8(0,get_width(),get_height(),0,0);
-			paint_shape(x,y,shapes.get_shape(0x23,i));
-			win->show();
-			SDL_Delay(50);
-		}
-		paint_shape(x,y,shapes.get_shape(0x20,1));
-		win->show();
-		// Guardian speech
-		audio->playfile(INTROSND,false);
-		}
-		win->fill8(0,get_width(),get_height(),0,0);
-	}
-
-/*
  *	Paint a rectangle in the window by pulling in vga chunks.
  */
 
@@ -1039,12 +959,6 @@ void Game_window::paint
 	if (!win->ready())
 		return;
 	win->set_clip(x, y, w, h);	// Clip to this area.
-#if 0	/* ++++Now called from exult.cc. */
-	if (mode == splash) {
-		paint_splash();
-		return;
-	}
-#endif
 	int light_sources = 0;		// Count light sources found.
 	int scrolltx = get_scrolltx(), scrollty = get_scrollty();
 					// Get chunks to start with, starting
@@ -1263,39 +1177,11 @@ void Game_window::fade_palette
 	int pal_num			// 0-11, or -1 for current.
 	)
 	{
-	if (cycles < 1)
-		return;
-	if (pal_num != -1)
-		palette = pal_num;
-	ifstream pal;
-	u7open(pal, PALETTES_FLX);
-	pal.seekg(256 + 3*256*palette);	// Get to desired palette.
-	unsigned char colors[3*256];	// Read it in.	
-	pal.read((char*)colors, sizeof(colors));
-	int dir, start, stop;
-	if (inout > 0)			// Fading in?
-		{
-		dir = 1;
-		start = 0;
-		stop = cycles + 1;
-		faded_out = 0;
-		}
-	else
-		{
-		dir = -1;
-		start = cycles;
-		stop = -1;
-		faded_out = 1;
-		}
-	unsigned char fade_pal[3*256];	// Animate.
-	for (int i = start; i != stop; i += dir)
-		{
-		for(int c=0; c < 3*256; c++)
-			fade_pal[c] = (colors[c]*i)/cycles;
-		win->set_palette(fade_pal, 63, brightness);
-		win->show();
-		SDL_Delay(20);
-		}
+	  pal->load(PALETTES_FLX, pal_num);
+	  if(inout)
+		  pal->fade_in(cycles);
+	  else
+		  pal->fade_out(cycles);
 	}
 
 /*
@@ -1306,23 +1192,12 @@ void Game_window::flash_palette_red
 	(
 	)
 	{
-#if 0		/* Cycle through palettes. +++*/
-	int savepal = palette;
-	for (int i = 0; i < 12; i++)
-		{
-		set_palette(i);
-		win->show();
-		SDL_Delay(2000);
-		}
-	set_palette(savepal);
-#else
 	int savepal = palette;
 	set_palette(8);			// Palette 8 is the red one.
 	win->show();
 	SDL_Delay(100);
 	set_palette(savepal);
 	painted = 1;
-#endif
 	}
 
 /*
@@ -1343,64 +1218,9 @@ void Game_window::set_palette
 		brightness = new_brightness;
 	if (faded_out)
 		return;			// In the black.
-	ifstream pal;
-	u7open(pal, PALETTES_FLX);
-	pal.seekg(256 + 3*256*palette); // Get to desired palette.
-	unsigned char colors[3*256];	// Read it in.	
-	pal.read((char*)colors, sizeof(colors));
-					// They use 6 bits.
-	win->set_palette(colors, 63, brightness);
-	}
-
-void Game_window::set_palette
-	(
-	const char *fname,
-	int pal_num,
-	int fade
-	)
-	{
-	U7object pal(fname, pal_num);
-	char *colors_raw = 0;
-	size_t len;
-	pal.retrieve(&colors_raw,len);
-	unsigned char colors[768];
-	for(int i=0;i<768;i++)
-		colors[i]=colors_raw[i*2];
-					// They use 6 bits.
-	switch(fade) 
-		{
-		case -1:
-			{
-				unsigned char fade_pal[768];
-				for(int i=30;i>=0;i--) {
-					for(int c=0;c<768;c++)
-						fade_pal[c] = colors[c]*i/30;
-					win->set_palette(fade_pal, 63);
-					win->show();
-					SDL_Delay(20);
-				}
-				break;
-			}
-		case 0:
-			win->set_palette(colors, 63);
-			break;
-		case 1:
-			{
-				unsigned char fade_pal[768];
-				for(int i=0;i<=30;i++) {
-					for(int c=0;c<768;c++)
-						fade_pal[c] = colors[c]*i/30;
-					win->set_palette(fade_pal, 63);
-					win->show();
-					SDL_Delay(20);
-				}
-				break;
-			}
-		default:
-			break;
-		}
-	
-	delete[] colors_raw;
+	pal->load(PALETTES_FLX, pal_num);
+	pal->set_brightness(brightness);
+	pal->apply();
 	}
 
 /*
@@ -2494,26 +2314,5 @@ Vga_file *Game_window::get_shape_file_data
 	default:
 		return 0;
 	}
-	}
-
-void Game_window::play_flic(const char *archive, int index) 
-	{
-		U7object flic(archive, index);
-		flic.retrieve("flic.fli");
-		playfli fli("flic.fli");
-		fli.play(win);
-	}
-
-void Game_window::end_game() 
-	{
-		// Clear screen
-		win->fill8(0,get_width(),get_height(),0,0);
-		// Start endgame music.
-		// It should actually play endscore.xmi, but we can't
-		// handle XMIs yet... :-(
-		audio->start_music(40,false);
-		play_flic(ENDGAME,0);
-		play_flic(ENDGAME,1);
-		play_flic(ENDGAME,2);
 	}
 
