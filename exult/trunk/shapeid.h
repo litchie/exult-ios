@@ -46,6 +46,10 @@ enum ShapeFile {
 	SF_COUNT		// # of preceding entries.
 };
 
+					// Special pixels.
+enum Pixel_colors {POISON_PIXEL = 0, PROTECT_PIXEL, CURSED_PIXEL, HIT_PIXEL,
+			NPIXCOLORS};
+
 /*
  *	Manage the set of shape files.
  */
@@ -59,6 +63,7 @@ class Shape_manager : public Game_singletons
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
 	Xform_palette invis_xform;	// For showing invisible NPC's.
+	unsigned char special_pixels[NPIXCOLORS];	// Special colors.
 	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
 					//   is found when playing BG
 	bool bg_paperdolls;		// True if paperdolls are wanted in BG
@@ -110,6 +115,15 @@ public:
 		if (shape) shape->paint_rle_transformed(ibuf,
 						xoff, yoff, invis_xform);
 		}
+					// Paint outline around a shape.
+	inline void paint_outline(int xoff, int yoff, Shape_frame *shape, 
+							Pixel_colors pix)
+		{
+		if (shape) shape->paint_rle_outline(ibuf,
+					xoff, yoff, special_pixels[(int) pix]);
+		}
+	unsigned char get_special_pixel(Pixel_colors pix)
+		{ return special_pixels[(int) pix]; }
 
 					// Paint text using "fonts.vga".
 	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
@@ -204,6 +218,9 @@ public:
 		}
 	void paint_invisible(int xoff, int yoff)
 		{ sman->paint_invisible(xoff, yoff, get_shape()); }
+					// Paint outline around a shape.
+	inline void paint_outline(int xoff, int yoff, Pixel_colors pix)
+		{ sman->paint_outline(xoff, yoff, get_shape(), pix); }
 	int get_num_frames() const;
 	Shape_info& get_info() const	// Get info. about shape.
 		{ return Shape_manager::instance->shapes.get_info(shapenum); }

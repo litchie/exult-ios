@@ -236,15 +236,15 @@ void Portrait_button::paint()
 
 		if (hit)
 		{
-			gwin->paint_outline(px, py, s, HIT_PIXEL);
+			sman->paint_outline(px, py, s, HIT_PIXEL);
 		}
 		else if (pois)
 		{
-			gwin->paint_outline(px, py, s, POISON_PIXEL);
+			sman->paint_outline(px, py, s, POISON_PIXEL);
 		}
 		else if (prot)
 		{
-			gwin->paint_outline(px, py, s, PROTECT_PIXEL);
+			sman->paint_outline(px, py, s, PROTECT_PIXEL);
 		}
 	}
 

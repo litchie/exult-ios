@@ -145,6 +145,7 @@ void Game_render::paint_terrain_only
 	{
 	Game_window *gwin = Game_window::get_instance();
 	Game_map *map = gwin->map;
+	Shape_manager *sman = Shape_manager::get_instance();
 	int cx, cy;			// Chunk #'s.
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
@@ -157,13 +158,13 @@ void Game_render::paint_terrain_only
 			chunk->get_terrain()->render_all(cx, cy);
 			if (cheat.in_map_editor())
 				Paint_chunk_outline(gwin, 
-				    gwin->special_pixels[HIT_PIXEL], cx, cy,
+				    sman->get_special_pixel(HIT_PIXEL), cx, cy,
 				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
 					// Paint tile grid if desired.
 	if (cheat.show_tile_grid())
-		Paint_grid(gwin, Shape_manager::get_instance()->get_xform(10));
+		Paint_grid(gwin, sman->get_xform(10));
 	}
 
 /*
@@ -180,6 +181,7 @@ int Game_render::paint_map
 	{
 	Game_window *gwin = Game_window::get_instance();
 	Game_map *map = gwin->map;
+	Shape_manager *sman = gwin->shape_man;
 	render_seq++;			// Increment sequence #.
 	gwin->painted = 1;
 	int scrolltx = gwin->scrolltx, scrollty = gwin->scrollty;
@@ -217,7 +219,7 @@ int Game_render::paint_map
 
 			if (cheat.in_map_editor())
 				Paint_chunk_outline(gwin, 
-				    gwin->special_pixels[HIT_PIXEL], cx, cy,
+				    sman->get_special_pixel(HIT_PIXEL), cx, cy,
 				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
@@ -258,12 +260,12 @@ int Game_render::paint_map
 				obj->get_lift() < gwin->skip_above_actor)
 			{
 			gwin->get_shape_location(obj, x, y);
-			gwin->paint_outline(x, y, obj->get_shape(), HIT_PIXEL);
+			obj->paint_outline(x, y, HIT_PIXEL);
 			}
 		}
 					// Paint tile grid if desired.
 	if (cheat.in_map_editor() && cheat.show_tile_grid())
-		Paint_grid(gwin, Shape_manager::get_instance()->get_xform(10));
+		Paint_grid(gwin, sman->get_xform(10));
 	return light_sources;
 	}
 
