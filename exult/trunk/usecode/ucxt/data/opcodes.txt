@@ -13,7 +13,7 @@
 # Column 8: number of elements it pops from the stack
 # Column 9: number of elements it pushes to the stack
 # Column 10: the 'call effect' true false (1/0) if this is a 'call type' opcode
-#Column 11: Flags. Each 0/1 reperesents a false/true condition for each of the
+# Column 11: Flags. Each 0/1 reperesents a false/true condition for each of the
 #		flags listed below:
 #	Flag 1: Return flag. If true, it signifises that the function this
 #		opcode is found in, returns a variable on the stack.
@@ -60,7 +60,7 @@ TODO: To be done...
 Display the Avatar's conversation options and ask for the user's input.
 It jumps to {offset} if there is no conversation answers available.
 
-> 0x05	JNE	"jne\t%1"	""	"if(!%p1) goto labelFunc_%1;"	2	{offset}	1	0	0	0
+> 0x05	JNE	"jne\t%1"	""	"if(!%p1) goto label%f*_%1;"	2	{offset}	1	0	0	0
 
 Pops a value from the stack, tests if it's false, if it's false jumps to
 the relative {offset}.
@@ -354,10 +354,8 @@ TODO: document
 
 > 0x49	NULL	"null"	""	"null()"	0	{}	0	0	0	0
 
-> 0x4a	ARRA	"arra"	"\t\t\t\t;"	"arra()"	0	{}	0	0	0	0
-
-# TODO: Needs more documenting, need to find the pop/push numbers.
-TODO: document
+> 0x4a	ARRA	"arra"	"\t\t\t\t;"	"append(%p1,%p2)"	0	{}	2	1	0	0
+Appends second param. to the list in first param.
 
 > 0x4b	POPEID	"pop\teventid"	""	"popeid()"	0	{}	1	0	0	0
 
@@ -366,4 +364,7 @@ TODO: document
 TODO: document
 
 
+> 0x4c	DBGLINE	"dbgline %1"	""	"// Line: %1"	2	{short}	0	0	0	0
+
+> 0x4d	DBGFUNC	"dbgfunc %1 %2 "	"; %t1"	"// Function: %t1 %2"	4	{short,dataoffset}	0	0	0	0
 
