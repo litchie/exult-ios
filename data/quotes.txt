@@ -72,3 +72,7 @@
 \C"BTW I don't stack kids anymore,
 \CI now put them into a queue."
 \L- Max on ##exult
+
+\C"Uh oh, Iolo is upset at me
+\Cfor moving a tree."
+\L- Willem Jan

@@ -1,6 +1,8 @@
 2001-01-01  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* palette.c: fixed fades when fades are disabled
+	* palette.cc: fixed fades when fades are disabled, added set_color()
 	* bggame.cc: still working on intro
+	* shapes/font.cc: fixed get_text_height(), which broke text rendering
+	* gumps/Text_gump.cc: compensate for new get_text_height()
 
 2000-12-31  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in, various Makefile.am: added --disable-tools and
