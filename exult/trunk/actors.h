@@ -390,6 +390,7 @@ public:
 	virtual Weapon_info *get_weapon(int& points, int& shape);	
 	Weapon_info *get_weapon(int& points)
 		{ int sh; return get_weapon(points, sh); }
+	static bool roll_to_win(int attacker, int defender);
 					// Hit-point algorithm:
 	int figure_hit_points(Actor *attacker, int weapon_shape, 
 							int ammo_shape);

@@ -2346,6 +2346,27 @@ Weapon_info *Actor::get_weapon
 	}
 
 /*
+ *	Roll a 25-sided die to determine a win-lose outcome, adding a
+ *	bias for the attacker and for the defender.
+ */
+
+bool Actor::roll_to_win
+	(
+	int attacker,			// Points added.
+	int defender			// Points subtracted.
+	)
+	{
+	const int sides = 25;
+	int roll = rand()%sides;
+	if (roll == 0)			// Always lose.
+		return false;
+	else if (roll == sides - 1)	// High?  Always win.
+		return true;
+	else
+		return roll + attacker - defender >= sides/2;
+	}
+
+/*
  *	Figure hit points lost from an attack, and subtract from total.
  *
  *	Output:	# of hit points lost (already subtracted).
