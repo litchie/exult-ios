@@ -77,7 +77,7 @@
 	USECODE_INTRINSIC_PTR(get_party_list),			// 0x2b
 	
 	USECODE_INTRINSIC_PTR(create_new_object),		// 0x2c - Known
-	USECODE_INTRINSIC_PTR(create_new_object),		// 0x2d - Create NPC
+	USECODE_INTRINSIC_PTR(create_new_object2),		// 0x2d
 
 	USECODE_INTRINSIC_PTR(set_last_created),		// 0x2e 
 	USECODE_INTRINSIC_PTR(update_last_created),		// 0x2f - Known
