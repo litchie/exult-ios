@@ -158,7 +158,10 @@ void Main_actor::handle_event
 //++++++++TESTING Remove the above!!!!!!!+++++++++++++++++++++++++++++
 		int new_lift;		// Might climb/descend.
 		if (olist->is_blocked(get_lift(), sx, sy, new_lift))
+			{
+			stop();
 			return;
+			}
 		if (new_lift != get_lift())
 			cout << "New lift is " << new_lift << '\n';
 #else
