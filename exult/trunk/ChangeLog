@@ -1,3 +1,9 @@
+2001-01-22  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Better reporting in Usecode function tracing.  Also, SETR now
+	does a RTS as well in BLACK GATE.  This fixes the test for blocked
+	gangplank.
+	
 2001-01-22  Max Horn  <max@quendi.de>
 	* utils.c: fixed switch_slashes() on MacOS to properly work with absolute path's; 
 	  changed U7mkdir() to call switch_slashes()

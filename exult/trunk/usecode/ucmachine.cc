@@ -1344,11 +1344,6 @@ int Usecode_machine::run
 	call_depth++;
 	int abort = 0;			// Flag if ABRT executed.
 	unsigned char *catch_ip = 0;	// IP for catching an ABRT.
-#if DEBUG
-	if (debug >= 0)
-//		printf("Running usecode %04x with event %d\n", fun->id, event);
-		cout << "Running usecode " << hex << fun->id << " with event " << dec << event << endl;
-#endif
 					// Save/set function.
 	Usecode_function *save_fun = cur_function;
 	cur_function = fun;
@@ -1374,6 +1369,21 @@ int Usecode_machine::run
 		Usecode_value val = pop();
 		locals[num_args - i - 1] = val;
 		}
+#if DEBUG
+	if (debug >= 0)
+		{
+		cout << "Running usecode " << hex << setfill((char)0x30) 
+			<< setw(4) << fun->id << dec << setfill(' ') <<
+			" (";
+		for (int i = 0; i < num_args; i++)
+			{
+			if (i)
+				cout << ", ";
+			locals[i].print(cout);
+			}
+		cout << ") with event " << event << endl;
+		}
+#endif
 	Usecode_value *save_sp = sp;	// NOW, save TOS, last-created.
 	int num_externs = Read2(ip);	// # of external refs. following.
 	unsigned char *externals = ip;	// Save -> to them.
@@ -1655,10 +1665,12 @@ int Usecode_machine::run
 					// But 1st takes precedence.
 			if (!set_ret_value)
 				ret_value = r;
+#if 0	/* ++++Looks like BG does too.  Need to for gangplank test. */
 					// Looks like SI rets. here.
 			if (Game::get_game_type() == SERPENT_ISLE ||
 					// Fix infinite loop (0x944) bug.
 				 set_ret_value > 40)
+#endif
 				{
 				sp = save_sp;	// Restore stack, force ret.
 				push(ret_value);
@@ -1837,8 +1849,18 @@ int Usecode_machine::run
 	delete [] locals;
 #if DEBUG
 	if (debug >= 1)
-//		printf("RETurning from usecode %04x\n", fun->id);
-		cout << "RETurning from usecode " << hex << fun->id << dec << endl;
+		{
+		cout << "RETurning ";
+		if (set_ret_value)
+			{
+			cout << "(";
+			ret_value.print(cout);
+			cout << ") ";
+			}
+		cout << "from usecode " << hex << setw(4) << 
+			setfill((char)0x30) << fun->id << dec << setfill(' ')
+			<< endl;
+		}
 #endif
 	cout.flush();
 	cur_function = save_fun;
