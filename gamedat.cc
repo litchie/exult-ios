@@ -510,8 +510,8 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 	}
 	catch(...)
 	{
-		map = NULL;
+		// yes, this is weird, but seems to work-around a compiler
+		// problem... (gcc-2.95.2-12mdk)    -wjp
+		map = 0; map = 0;
 	}
-
-
 }

@@ -16,37 +16,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _GAMEMENU_GUMP_H
-#define _GAMEMENU_GUMP_H
-
-#include "Modal_gump.h"
-
-class Gump_button;
-
-class Gamemenu_gump : public Modal_gump
-{
-	UNREPLICATABLE_CLASS_I(Gamemenu_gump,Modal_gump(0,0,0,0));
-
- private:
-	Gump_button* buttons[6];
-
- public:
-	Gamemenu_gump();
-	~Gamemenu_gump();
-
-					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
-	virtual void close(Game_window *gwin)
-		{ done = 1; }
-					// Handle events:
-	virtual void mouse_down(int mx, int my);
-	virtual void mouse_up(int mx, int my);
-
-	void quit(bool return_to_menu = false);
-	void loadsave();
-	void video_options();
-	void audio_options();
-	void gameplay_options();
-};
-
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
 #endif
+
+#include "Gump_ToggleButton.h"
+#include "gamewin.h"
+#include "Gump.h"
+
+void Gump_ToggleButton::activate(Game_window *gwin)
+{
+	framenum += 2;
+	if (framenum >= 2*numselections) framenum = 0;
+	toggle(framenum/2);
+	parent->paint_button(gwin, (Gump_button*)this);
+	gwin->set_painted();
+}

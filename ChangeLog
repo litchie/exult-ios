@@ -1,3 +1,17 @@
+2001-04-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/flx.in, Makefile.*, data/aud*.shp: audio options gump shapes
+	* Makefile.*, gumps/Gump_ToggleButton.*: a button which toggles 
+	between multiple selections
+	* Makefile.*, gumps/Gump.cc, gumps/AudioOptions_gump.*: audio options
+	* gumps/Gamemenu_gump.*: activate audio options gump
+	* gumps/gump_utils.cc: remove gumps when displaying a modal gump
+	* gumps/misc_buttons.cc: point disk icon to new file gump
+	* data/defaultkeys.txt: change escape to close gumps or game menu
+	* gamedat.cc: work around compiler problem
+	* keys.*, keyactions.*: actions for game menu, new escape function
+	* audio/Audio.*: added is_audio_enabled(), set_audio_enabled() funcs
+	* audio/Midi.cc: fixed midi conversion typo
+
 2001-04-29  Christoph Reichenbach  <jameson@linuxgames.com>
 
 	* usecode/compiler/ucparse.yy: Included config.h

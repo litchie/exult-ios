@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL_events.h"
 
 #include "Gamemenu_gump.h"
+#include "AudioOptions_gump.h"
 #include "Gump_button.h"
 #include "Yesno_gump.h"
 #include "gamewin.h"
@@ -32,8 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gump_utils.h"
 
 
-int Gamemenu_gump::rowy[6] = { 14, 28, 40, 52, 66, 78 };
-int Gamemenu_gump::colx = 138;
+static const int rowy[6] = { 14, 28, 40, 52, 66, 78 };
+static const int colx = 138;
 
 class Gamemenu_button : public Gump_button {
 public:
@@ -78,7 +79,6 @@ Gamemenu_gump::~Gamemenu_gump()
 {
 	for (int i=0; i<6; i++)
 		delete buttons[i];
-	Game_window::get_game_window()->set_all_dirty();
 }
 
 //++++++ IMPLEMENT RETURN_TO_MENU!
@@ -107,6 +107,9 @@ void Gamemenu_gump::video_options()
 
 void Gamemenu_gump::audio_options()
 {
+	AudioOptions_gump *aud_opts = new AudioOptions_gump();
+	Do_Modal_gump(aud_opts, Mouse::hand);
+	delete aud_opts;
 }
 
 void Gamemenu_gump::gameplay_options()
@@ -127,12 +130,12 @@ void Gamemenu_gump::mouse_down(int mx, int my)
 	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
-	if (!pushed) for (int i=0; i<6; i++)
-		if (buttons[i]->on_button(gwin, mx, my))
-		{
-			pushed = buttons[i];
-			break;
-		}
+	if (!pushed)
+		for (int i=0; i<6; i++)
+			if (buttons[i]->on_button(gwin, mx, my)) {
+				pushed = buttons[i];
+				break;
+			}
 
 	if (pushed)			// On a button?
 	{

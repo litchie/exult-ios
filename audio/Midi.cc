@@ -363,7 +363,7 @@ bool MyMidiPlayer::init_device(void)
 	if (s == "none")
 		effects_conversion = XMIDI_CONVERT_NOCONVERSION;
 	else if (s == "gs127")
-		music_conversion = XMIDI_CONVERT_NOCONVERSION;
+		effects_conversion = XMIDI_CONVERT_NOCONVERSION;
 	else
 	{
 		effects_conversion = XMIDI_CONVERT_GS127_TO_GS;
