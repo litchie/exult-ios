@@ -176,13 +176,13 @@ void Cheat::toggle_map_editor (void) {
 void Cheat::toggle_tile_grid (void) {
 	if (!enabled) return;
 	tile_grid = !tile_grid;
-	gwin->paint();
+	gwin->set_all_dirty();
 }
 
 void Cheat::set_edit_lift(int lift) {
 	if (!enabled) return;
 	edit_lift = lift;
-	gwin->paint();
+	gwin->set_all_dirty();
 }
 
 void Cheat::toggle_infravision (void) {
