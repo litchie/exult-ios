@@ -1,3 +1,8 @@
+2001-10-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* paths.cc,actors.cc:  Pathfinding for > 1x1 NPC's was messed up.
+	* drag.cc:  Set dragging_gump to 0 in one last place.
+
 2001-10-25  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* credits.txt: added Oblivious as an artist
 
