@@ -54,7 +54,7 @@ Game_window::Game_window
 	    conv_choices(0), texts(0), num_faces(0), last_face_shown(-1),
 	    open_gumps(0),
 	    main_actor_inside(0), mode(intro), npcs(0),
-	    shapes(), dragging(0),
+	    shapes(), dragging(0), dragging_save(0),
 	    faces(FACES_VGA), gumps(GUMPS_VGA)
 	{
 	game_window = this;		// Set static ->.
@@ -106,6 +106,7 @@ Game_window::~Game_window
 	{
 	win->close_font(font12);
 	delete win;
+	delete dragging_save;
 	delete [] conv_choices;
 	}
 

@@ -86,6 +86,7 @@ private:
 					// Last mouse, paint positions:
 	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
 	Rectangle dragging_rect;	// Rectangle to repaint.
+	Image_buffer *dragging_save;	// Image below dragged object.
 					// Open a U7 file.
 	int u7open(ifstream& in, char *fname, int dont_abort = 0);
 public:
