@@ -144,8 +144,8 @@ void getVersionInfo(std::ostream& out)
 	// Metrowerks CodeWarrior
 #elif (defined(__MWERKS__))
 	out << "Metrowerks CodeWarrior, version: ";
-	out << ((__MWERKS__&0xf000)>>24) << ".";
-	out << ((__MWERKS__&0x0f00)>>16) << ".";
+	out << ((__MWERKS__&0xf000)>>12) << ".";
+	out << ((__MWERKS__&0x0f00)>>8) << ".";
 	out << (__MWERKS__&0xff);
 #else
 	out << "Unknown";
