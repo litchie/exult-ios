@@ -8673,7 +8673,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton54</name>
+	      <name>shinfo_weapon_explodes</name>
 	      <can_focus>True</can_focus>
 	      <label>Explodes</label>
 	      <active>False</active>

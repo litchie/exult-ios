@@ -112,6 +112,10 @@ public:
 		{ return m_returns; }
 	void set_returns(bool tf)
 		{ m_returns = tf; }
+	bool explodes() const
+		{ return m_explodes; }
+	void set_explodes(bool tf)
+		{ m_explodes = tf; }
 	bool no_blocking() const
 		{ return m_no_blocking; }
 	void set_no_blocking(bool tf)

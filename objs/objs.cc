@@ -1205,10 +1205,13 @@ int Game_object::attack_object
 Game_object *Game_object::attacked
 	(
 	Actor *attacker,
-	int weapon_shape,		// Weapon shape, or 0 to use readied.
+	int weapon_shape,		// Weapon shape, or 0 to use readied,
+					//   or -weapon shape if explosion.
 	int ammo_shape
 	)
 	{
+	if (weapon_shape < 0)		// We ignore this flag.
+		weapon_shape = -weapon_shape;
 	int wpoints = attack_object(attacker, weapon_shape, ammo_shape);
 	int shnum = get_shapenum();
 	int frnum = get_framenum();

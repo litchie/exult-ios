@@ -291,11 +291,6 @@ void Follow_avatar_schedule::now_what
 		npc->start(gwin->get_std_delay(), next_path_time - curtime);
 		return;
 		}
-					//+++++Maybe stand aside?
-#ifdef DEBUG
-	cout << npc->get_name() << " at distance " << dist2lead 
-				<< " trying to catch up." << endl;
-#endif
 					// Find a free spot within 3 tiles.
 	Map_chunk::Find_spot_where where = Map_chunk::anywhere;
 					// And try to be inside/outside.
@@ -304,12 +299,16 @@ void Follow_avatar_schedule::now_what
 	Tile_coord goal = Map_chunk::find_spot(leaderpos, 3, npc, 0, where);
 	if (goal.tx == -1)		// No free spot?  Give up.
 		{
-		cout << "... but is blocked." << endl;
+		cout << npc->get_name() << " can't find free spot" << endl;
 		next_path_time = SDL_GetTicks() + 1000;
 		return;
 		}
 	if (pos.distance(goal) <= 3)
 		return;			// Already close enough!
+#ifdef DEBUG
+	cout << npc->get_name() << " at distance " << dist2lead 
+				<< " trying to catch up." << endl;
+#endif
 					// Get his speed.
 	int speed = av->get_frame_time();
 	if (!speed)			// Avatar stopped?
