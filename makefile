@@ -10,7 +10,8 @@ CXX = g++
 CXXFLAGS = -g
 CPPFLAGS = -DXWIN -D_REENTRANT -DRELNUM=$(RELNUM) -I/usr/local/include/SDL -Inpc -Iscript
 ifdef RELEASE
-STATIC = -static
+# STATIC = -static
+STATIC =
 else
 STATIC =
 endif
