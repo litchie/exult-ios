@@ -103,6 +103,12 @@ public:
 		exp = 8,		// Experience.
 		food_level = 9
 		};
+	enum Frames {			// Frames 0-15.  16-31 are the same,
+					//   only S instead of N.
+		sit_frame = 10,
+		to_sit_frame = 11,
+		sleep_frame = 13
+		};
 	int get_face_shapenum()		// Get "portrait" shape #.
 		{ return npc_num; }	// It's the NPC's #.
 	int get_usecode()
@@ -218,14 +224,6 @@ public:
 	11-13	Lying down N.
 	14	Hands raised, N.
 	15	Hands outstretched, N.
-	16	Standing S.
-	17,18	Walking S.
-	19,20	Walking SW.
-	21,22	Walking SE.
-	26	Sitting S.
-	27-29	Lying down S.
-	30	Hands raised, S.
-	31	Hands outstretched, S.
 
 These were contributed by a user:
 0-2: walking
@@ -349,6 +347,16 @@ class Loiter_schedule : public Schedule
 	Tile_coord center;		// Center of rectangle.
 public:
 	Loiter_schedule(Npc_actor *n);
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
+ *	Sleep in a  bed.
+ */
+class Sleep_schedule : public Schedule
+	{
+public:
+	Sleep_schedule(Npc_actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	};
 

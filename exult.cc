@@ -564,8 +564,6 @@ static void shape_showcase(
 		100, 300,  gwin->get_width(), gwin->get_height());
 	}
 
-
-
 /*
  *	Handle a keystroke.
  */
@@ -585,9 +583,11 @@ static void Handle_keystroke
 	switch (sym)
 		{
 	case SDLK_PLUS:			// Brighten.
+	case SDLK_KP_PLUS:
 		gwin->brighten(20);
 		break;
 	case SDLK_MINUS:		// Darken.
+	case SDLK_KP_MINUS:
 		gwin->brighten(-20);
 		break;
 	case SDLK_b:

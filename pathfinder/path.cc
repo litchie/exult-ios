@@ -390,5 +390,6 @@ Tile_coord *Find_path
 				}
 			}
 		}
-	return 0;			// Failed if here.
+	pathlen = 0;			// Failed if here.
+	return 0;	
 	}
