@@ -59,6 +59,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapedraw.h"
 #include "paledit.h"
 #include "locator.h"
+#include "Configuration.h"
 
 using std::cerr;
 using std::cout;
@@ -66,6 +67,8 @@ using std::endl;
 using std::string;
 
 ExultStudio *ExultStudio::self = 0;
+Configuration *config = 0;
+const std::string c_empty_string;	// Used by config. library.
 
 enum ExultFileTypes {
 	ShapeArchive =1,
@@ -240,10 +243,13 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	gtk_init( &argc, &argv );
 	gdk_rgb_init();
 	glade_init();
+	config = new Configuration;
+	config->read_config_file(USER_CONFIGURATION_FILE);
 					// Get options.
-	char *xmldir = 0;		// Default:  Look here for .glade.
-	char *gamedir = 0;		// User has to choose 'static'.
-	static char *optstring = "x:d:";
+	const char *xmldir = 0;		// Default:  Look here for .glade.
+	const char *gamedir = 0;	// User has to choose 'static'.
+	const char *game = 0;		// Game to look up in .exult.cfg.
+	static char *optstring = "g:x:d:";
 	extern int optind, opterr, optopt;
 	extern char *optarg;
 	opterr = 0;			// Don't let getopt() print errs.
@@ -251,6 +257,9 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	while ((optchr = getopt(argc, argv, optstring)) != -1)
 		switch (optchr)
 			{
+		case 'g':		// Game.  Replaces use of -d, -x.
+			game = optarg;
+			break;
 		case 'x':		// XML (.glade) directory.
 			xmldir = optarg;
 			break;
@@ -259,6 +268,16 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 			break;
 			}
 
+	string dirstr, datastr;
+	if (game)			// Game given?
+		{
+		string d("config/disk/game/");
+		d += game; d += "/path";
+		config->value(d.c_str(), dirstr, ".");
+		gamedir = dirstr.c_str();
+		config->value("config/disk/data_path", datastr, EXULT_DATADIR);
+		xmldir = datastr.c_str();
+		}
 	char path[256];			// Set up paths.
 	if(xmldir)
 		strcpy(path, xmldir);
