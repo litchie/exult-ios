@@ -92,13 +92,13 @@ void Windows_MidiOut::init_device()
 	string s;
 	
 	config->value("config/audio/midi/reverb",s,"64");
-	reverb_value = atoi(s.data());
+	reverb_value = atoi(s.c_str());
 	if (reverb_value > 127) reverb_value = 127;
 	else if (reverb_value < 0) reverb_value = 0;
 	config->set("config/audio/midi/reverb",reverb_value,true);
 	
 	config->value("config/audio/midi/chorus",s,"16");
-	chorus_value = atoi(s.data());
+	chorus_value = atoi(s.c_str());
 	if (chorus_value > 127) reverb_value = 127;
 	else if (chorus_value < 0) reverb_value = 0;
 	config->set("config/audio/midi/chorus",chorus_value,true);
