@@ -127,7 +127,8 @@ int main
 
 	cout << "Exult V" << VERSION << "." << endl <<
 	    "Copyright (C) 2000 J. S. Freedman, Dancer Vesperman, " << endl <<
-	    "                   Willem Jan Palenstijn, Tristan Tarrant"<< endl;
+	    "                   Willem Jan Palenstijn, Tristan Tarrant, " << endl <<
+	    "                   Max Horn, Luke Dunstan, Ryan Nunn" << endl;
 	cout << "Low level graphics use the 'SDL' library."<< endl;
 
         config = new Configuration;	// Create configuration object

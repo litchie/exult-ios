@@ -20,6 +20,8 @@
 #include <stdio.h>
 #include <fstream>
 
+typedef char * charptr;
+
 class DataSource
 {
 public:

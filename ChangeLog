@@ -1,3 +1,8 @@
+2000-07-27 Tristan Tarrant  <tarrant_tristan@emc.com>
+	
+	* titles.cc: use Infidel's real name, correct some spelling mistakes, 
+	put the "Damn you..." in the correct position even in unscaled 640x480.
+
 2000-07-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Support ABRT & CATCH opcodes; fixes Skara Brae problems.
@@ -13,9 +18,11 @@
 
 2000-07-20 Tristan Tarrant  <tarrant_tristan@emc.com>
 
-	* files/databuf.h: implemented an abstract DataSource class and Buffer, Stream and 
-	File derivatives of it to enable reading data from any of these.
-	* vgafile.h, vgafile.cc: use new DataSource classes. More classes should do this.
+	* files/databuf.h: implemented an abstract DataSource class and Buffer, 
+	Stream and File derivatives of it to enable reading data from any of 
+	these.
+	* vgafile.h, vgafile.cc: use new DataSource classes. More classes 
+	should do this.
 
 2000-07-18  Jeff Freedman  <jeff@amy.nerble.net>
 
