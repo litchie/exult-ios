@@ -656,7 +656,7 @@ void Stats_gump_object::paint
 						x + textx, y + texty[6]);
   	Paint_num(gwin, act->get_property(Actor::exp),
 						x + textx, y + texty[7]);
-	//++++Level?
+	Paint_num(gwin, act->get_level(), x + textx, y + texty[8]);
   	Paint_num(gwin, act->get_property(Actor::training),
 						x + textx, y + texty[9]);
 	}

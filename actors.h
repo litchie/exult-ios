@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_ACTORS	1
 
 #include "objs.h"
+#include "utils.h"
 
 class Image_window;
 class Game_window;
@@ -86,6 +87,8 @@ public:
 		}
 	virtual int get_property(int prop)
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
+	int get_level()			// Get experience level.
+		{ return 1 + Log2(get_property(exp)/50); }
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag);
 	virtual void clear_flag(int flag);

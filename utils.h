@@ -93,4 +93,9 @@ int U7open
 	char *fname			// May be converted to upper-case.
 	);
 
+int Log2
+	(
+	unsigned int n
+	);
+
 #endif
