@@ -5,9 +5,17 @@ To play
 ---------
 Copy exult.exe into your Ultima 7 directory.
 If you are currently playing a game of Ultima 7, be sure 
-to make a backup of the gamedat directory.
+ to remove the gamedat directory. (don't forget to back
+ it up first...)
 Run exult.exe
 Have fun!
+
+
+
+Exult generates the files 'stdout.txt' and 'stderr.txt'.
+These may give you some idea of what is going on
+under the hood. When Exult suddenly quits, sometimes
+these files can help.
 
 
 To build
@@ -52,3 +60,9 @@ to make a backup of the gamedat directory.
  
 4) Have fun :-)
 
+
+Note: 
+It is also possible to build Exult using the Windows version 
+of Mingw32. (see www.mingw.org)
+Since I have not yet tried this myself, I am unable to give
+exact instructions for this.
