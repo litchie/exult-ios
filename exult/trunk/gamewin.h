@@ -104,7 +104,8 @@ class Game_window
 	Game_object_vector bodies;	// Corresponding Dead_body's.
 	int num_monsters;		// Number of monster types.
 	Monster_info *monster_info;	// Array from 'monsters.dat'.
-	std::vector<Egg_object *> path_eggs;// Path eggs, indexed by 'quality'.
+					// Path eggs, indexed by 'quality'.
+	Exult_vector<Egg_object *> path_eggs;
 					// Flat chunk areas:
 	Exult_vector<Chunk_terrain *> chunk_terrains;
 	int num_chunk_terrains;		// Total #.
@@ -285,7 +286,7 @@ public:
 					// Find monster info. for shape.
 	Monster_info *get_monster_info(int shapenum);
 	Egg_object *get_path_egg(int q)	// Get path egg by quality.
-		{ return path_eggs[q]; }
+		{ return q < path_eggs.size() ? path_eggs[q] : 0; }
 	void add_path_egg(Egg_object *egg);
 	int get_num_npcs()
 		{ return npcs.size(); }
