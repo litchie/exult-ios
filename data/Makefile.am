@@ -24,7 +24,7 @@ EXULT_FLX_OBJECTS = \
 	sfx_conversion.shp	\
 	palette_fades.shp	\
 	defaultkeys.txt		\
-	data/hoe_of_destruction.shp \
+	hoe_of_destruction.shp  \
 	scaling_method.shp
 
 flexdir = $(datadir)/exult
