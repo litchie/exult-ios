@@ -1888,10 +1888,9 @@ void Chunk_cache::update_egg
 	Game_window *gwin = Game_window::get_game_window();
 					// Get footprint with abs. tiles.
 	Rectangle foot = egg->get_area();
-#if 1
 	Rectangle crect;		// Gets tiles within each chunk.
 	int cx, cy;
-	if (egg->get_criteria() == Egg_object::cached_in)
+	if (egg->is_solid_area())
 		{			// Do solid rectangle.
 		Chunk_intersect_iterator all(foot);
 		while (all.get_next(crect, cx, cy))
@@ -1917,29 +1916,6 @@ void Chunk_cache::update_egg
 	while (rights.get_next(crect, cx, cy))
 		gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
 
-#else	/* ++++++Old way */
-					// Figure range of chunks.
-	int start_cx = tiles.x/tiles_per_chunk,
-	    end_cx = (tiles.x + tiles.w - 1)/tiles_per_chunk;
-	int start_cy = tiles.y/tiles_per_chunk,
-	    end_cy = (tiles.y + tiles.h - 1)/tiles_per_chunk;
-					// Go through all covered chunks.
-	for (int cy = start_cy; cy <= end_cy; cy++)
-		for (int cx = start_cx; cx <= end_cx; cx++)
-			{
-			Chunk_object_list *chunk = gwin->get_objects(cx, cy);
-					// Figure intersection with egg's.
-			Rectangle crect(cx*tiles_per_chunk, cy*tiles_per_chunk,
-					tiles_per_chunk, tiles_per_chunk);
-			crect = crect.intersect(tiles);
-			if (crect.w > 0 && crect.h > 0)
-				{
-				crect.shift(-cx*tiles_per_chunk, 
-							-cy*tiles_per_chunk);
-				chunk->set_egged(egg, crect);
-				}
-			}
-#endif
 	}
 
 /*

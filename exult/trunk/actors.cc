@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Astar.h"
 #include "dir.h"
 #include "items.h"
+#include "egg.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 const char Actor::attack_frames1[4] = {3, 4, 5, 6};
@@ -1574,6 +1575,19 @@ int Monster_actor::get_weapon_points
 		return inf ? inf->weapon/4 : 0;
 	else
 		return points;
+	}
+
+/*
+ *	We're dead.  We're removed from the world, but not deleted.
+ */
+
+void Monster_actor::die
+	(
+	)
+	{
+	Actor::die();
+	if (creator)
+		creator->monster_died();
 	}
 
 /*
