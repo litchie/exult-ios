@@ -40,16 +40,16 @@ public:
 
 	XMLnode &operator=(const XMLnode &n) { id=n.id; content=n.content; nodelist=n.nodelist; return *this; }
 	const std::string &reference(const std::string &,bool &);
-	XMLnode *subtree(const std::string &);
+	const XMLnode *subtree(const std::string &) const;
 	
-	const std::string &value(void)
+	const std::string &value(void) const
 		{ return content; }
 	
 	std::string dump(int depth = 0);
 	void	xmlassign(std::string &key,std::string &value);
 	void	xmlparse(std::string &s,std::size_t &pos);
 
-	void	listkeys(const std::string &,std::vector<std::string> &, bool longformat=true);
+	void	listkeys(const std::string &,std::vector<std::string> &, bool longformat=true) const;
 };
 
 #endif

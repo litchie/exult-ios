@@ -2,18 +2,38 @@
 This file is currently a random pile of useful information... someday it'll
 be ordered in a coherent format.
 
+* Error: "error: could not locate */Docs/opcodes.txt. exiting"
+	ucxt needs to find the abovementioned file for details of the
+	opcodes. You either need to run ucxt in the path exult/usecode/ucxt
+	or add the following to exult.cfg:
+
+	(inside the <config> tag)
+	 <ucxt>
+	  <root>
+	  (the path to ucxt goes here (eg: /home/pb/exult/usecode/ucxt))
+	  </root>
+	 <ucxt>
 
 * Error: "Failed to locate usecode file. Exiting."
-	ucxt hunts for the usecode file under the following filenames:
-		usecode
+	ucxt attempts to locate the exult.cfg file to find the locations
+	of black gate (ultima7) and serpent isle (serpent).
+
+	ucxt hunts for the usecode file under all permutations of the
+	following filenamesthe following filenames:
+
+		$MAINPATH = (bg path from exult.cfg) | (si path from exult.cfg)
+			| "ultima7" | "ULTIMA7" | "serpent" | "SERPENT"
+		$STATICPATH = "static" | "STATIC"
+		$USECODENAME = "usecode" | "USECODE"
+
+		$MAINPATH/$STATICPATH/$USECODE
+		$STATICPATH/$USECODE
+		$USECODE
+
+	It also searches under:
+		
 		usecode.u7
 		usecode.si
-		ultima7/static/usecode
-		serpent/static/usecode
-		ULTIMA7/STATIC/USECODE
-		SERPENT/STATIC/USECODE
-	Relative to the directory it is run in, and in that order, fixing it
-	so it works nicer is on my "TODO" list. Integrating ucxt into the main
-	config file would probably be a good idea.
 
+	It's a mess, but I'm trying to be thorough. <grin>
 

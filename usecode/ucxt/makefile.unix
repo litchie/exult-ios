@@ -3,10 +3,10 @@ CXX = g++
 SRC = src/
 IDIR   = -Iinclude -I../ -I../../ -I../../conf/ -I../../files/
 
-CXXFLAGS = -O $(IDIR)
+CXXFLAGS = -Wall -O $(IDIR)
 
 EXTOBJS = ../../conf/Configuration.o ../../conf/XMLEntity.o \
-	../../conf/xmldump.o ../../conf/xmlparse.o ../../files/utils.o
+	../../files/utils.o
 
 PGM = ucxt
 OBJS = $(SRC)opcodec_.o $(SRC)printucc.o $(SRC)stacki.o \

@@ -26,8 +26,6 @@
  12-Oct-99
   - the good deal of intrinsic functions is now known
  
- The source must be buildable on any Win32 compiler - patch fopen()'s "wb"
-  modes for UNIX. Help in porting on non-Win32 platforms is greatly appreciated.
  See source file comments for the description of usecode opcodes & intrinsic functions
   (the latter one differs between BG & SI)
  
@@ -105,6 +103,8 @@
 
 // include xml configuration stuff
 #include "Configuration.h"
+#include "exult_constants.h"
+const std::string c_empty_string; // Ob for exult_constants.h
 
 //#define DEBUG(x) x
 #define DEBUG(x)
@@ -113,7 +113,7 @@
 /* Functions */
 void usage();
 void output_flags(const vector<UCFunc *> &funcs);
-void load_usecode_file(UCData &uc);
+void open_usecode_file(UCData &uc, const Configuration &config);
 
 int main(int argc, char** argv)
 {
@@ -128,18 +128,35 @@ int main(int argc, char** argv)
 	cout << setfill('0') << setbase(16);
 	cout.setf(ios::uppercase);
 
-	// init the compile time tables
-	init_static_usecodetables();
-	// init the run time tables
-	init_usecodetables();
-	
+	// get the parameters
 	uc.parse_params(argc, argv);
+	if(uc.verbose()) cout << "Parameters parsed..." << endl;
 
+	Configuration config;
+	
+	// attempt to find an exult.cfg file... _somewhere_
+	if(uc.noconf() == false)
+	{
+		if(uc.verbose()) cout << "Loading exult configuration file..." << endl;
+		if(config.read_config_file("exult.cfg") == false)
+		{
+			cout << "Failed to locate exult.cfg. Run exult before running ucxt or use the -nc switch. Exiting." << endl;
+			exit(1);
+		}
+	}
+	
+	// init the compile time tables
+	if(uc.verbose()) cout << "Initing static tables..." << endl;
+	init_static_usecodetables(config);
+	// init the run time tables
+	if(uc.verbose()) cout << "Initing runtime tables..." << endl;
+	init_usecodetables(config, uc);
+	
 	// ICK! Don't try this at home kids...
 	// done because for some reason it started crashing upon piping or redirection to file... vierd.
 	// yes, it's a hack to fix an eldritch bug I can't find... it seems appropriate
 	ofstream outputstream;
-	streambuf *coutbuf;
+	streambuf *coutbuf=0;
 	if(uc.output_redirect().size())
 	{
 		outputstream.open(uc.output_redirect().c_str(), ios::out);
@@ -151,11 +168,12 @@ int main(int argc, char** argv)
 		coutbuf = cout.rdbuf();
 		cout.rdbuf(outputstream.rdbuf());
 	}
-	
+	// you man now uncover your eyes <grin>
+
 	if( uc.mode() == MODE_NONE )
 		usage();
 
-	load_usecode_file(uc);
+	open_usecode_file(uc, config);
 	
 	/* Embedded function table pointer
 	   TODO: set to bg_func_table or si_func_table depending on the command line
@@ -176,7 +194,7 @@ int main(int argc, char** argv)
 	{
 		uc.dump_flags(func_table);
 	}
-	else if( uc.mode() ==MODE_LIST )
+	else if( uc.mode() == MODE_ALL )
 	{
 		uc.list_funcs(func_table);
 	}
@@ -190,43 +208,8 @@ int main(int argc, char** argv)
 	return 0;
 }
 
-
-void usage()
+void open_usecode_file(UCData &uc, const Configuration &config)
 {
-  cout << "Usage:" << endl
-       << "\tucxt [-v] [-nc] [-bg | -si] [-ofile] -l" << endl
-       << "\t\t- prints list of all functions" << endl
-//       << "\tucdump -c - scans the whole usecode file for unknown opcodes" << endl
-//       << "\tucdump -o <hex number> - prints list of functions which use "
-//       << "the given opcode" << endl
-//       << "\tucdump -i <hex number> - prints list of functions which use "
-//       << "the given intrinsic function\n" << endl
-//       << "\tucxt -f - prints list of all flags x functions" << endl
-       << "\tucxt [-v] [-nc] [-bg | -si] [-ofile] <hex number>" << endl
-       << "\t\t- disassembles single function to stdout" << endl
-       << endl
-       << "\t-nc\t- don't look for exult's .xml config file" << endl
-       << "\t-bg\t- select the black gate usecode file" << endl
-       << "\t-si\t- select the serpent isle usecode file" << endl
-       << "\t-v \t- turns on verbose output mode" << endl
-       << "\t-ofile\t- output to the specified file" << endl;
-  exit(1);
-}
-
-void load_usecode_file(UCData &uc)
-{
-	Configuration config;
-	
-	if(uc.noconf() == false)
-	{
-		if(uc.verbose()) cout << "Loading exult configuration file..." << endl;
-		if(config.read_config_file("exult.cfg") == false)
-		{
-			cout << "Failed to locate exult.cfg. Run exult before running ucxt or use the -nc switch. Exiting." << endl;
-			exit(1);
-		}
-	}
-	
 	string bgpath;
 	if(uc.noconf() == false) config.value("config/disk/game/blackgate/path", bgpath);
 	string sipath;
@@ -354,4 +337,59 @@ void load_usecode_file(UCData &uc)
 		exit(1);
 	}
 }
+
+
+void usage()
+{
+  cout << "Usage:" << endl
+       << "\tucxt [-v] [-nc] [-bg | -si] [-ofile] [-fa | -fs | -fl] -a" << endl
+       << "\t\t- prints all of the functions" << endl
+       << "\tucxt [-v] [-nc] [-bg | -si] [-ofile] [-fa | -fs | -fl] <hex number>" << endl
+       << "\t\t- disassembles single function to stdout" << endl
+//       << "\tucdump -c - scans the whole usecode file for unknown opcodes" << endl
+//       << "\tucdump -o <hex number> - prints list of functions which use "
+//       << "the given opcode" << endl
+//       << "\tucdump -i <hex number> - prints list of functions which use "
+//       << "the given intrinsic function\n" << endl
+//       << "\tucxt -f - prints list of all flags x functions" << endl
+       << endl
+	     << "\tMisc Flags:" << endl
+       << "\t\t-nc\t- don't look for exult's .xml config file" << endl
+       << "\t\t-v \t- turns on verbose output mode" << endl
+       << "\t\t-ofile\t- output to the specified file" << endl
+	     << "\tGame Specifier Flags:" << endl
+       << "\t\t-bg\t- select the black gate usecode file" << endl
+       << "\t\t-si\t- select the serpent isle usecode file" << endl
+	     << "\tOutput Format Flags:" << endl
+	     << "\t\t-fl\t- output using brief \"list\" format" << endl
+	     << "\t\t-fa\t- output using \"assembler\" format (default)" << endl
+	     << "\t\t-fs\t- output using \"exult script\" format" << endl
+	     ;
+  exit(1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
