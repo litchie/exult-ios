@@ -1,12 +1,12 @@
 /**	-*-mode: Fundamental; tab-width: 8; -*-
  **
- **	Usecode.h - Interpreter for usecode.
+ **	ucmachine.h - Interpreter for usecode.
  **
  **	Written: 8/12/99 - JSF
  **/
 
-#ifndef INCL_USECODE
-#define INCL_USECODE	1
+#ifndef _UCMACHINE_H
+#define _UCMACHINE_H
 
 /*
 Copyright (C) 1999  Jeffrey S. Freedman
@@ -34,11 +34,9 @@ class Text_gump;
 class Vector;
 class Deleted_objects;
 class Actor;
-#ifdef MACOS
-  #include "useval.h"
-#else
-  class Usecode_value;
-#endif
+class Usecode_machine;
+
+#include "useval.h"
 
 #include "exceptions.h"
 #include "tiles.h"
@@ -48,7 +46,6 @@ class Actor;
 #include <string>	// STL string
 
 
-#define	USECODE_INTRINSIC(NAME)	Usecode_value	Usecode_machine:: UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 #define	USECODE_INTRINSIC_DECL(NAME)	Usecode_value UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 
 /*
