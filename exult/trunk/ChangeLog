@@ -1,3 +1,6 @@
+2001-07-05  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* server.cc: removed double config.h, added #ifdef HAVE_CONFIG_H
+	
 2001-07-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Pre-render flat areas for each chunk.
