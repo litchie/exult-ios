@@ -33,17 +33,19 @@ class Shape_group_file;
 /*
  *	A group of shape/chunk #'s:
  */
-class Shape_group : public vector<int>
+class Shape_group : vector<int>		// Not public on purpose.
 	{
 	std::string name;		// What this group is called.
 	Shape_group_file *file;		// Where this comes from.
 public:
+	friend class Shape_group_file;
 	Shape_group(char *nm, Shape_group_file *f);
 	~Shape_group() {  }
 	const char *get_name() const
 		{ return name.c_str(); }
 	void set_name(char *nm)
 		{ name = nm; }
+	void add(int id);		// Add ID, checking for duplicate 1st.
 	};
 
 /*
@@ -57,7 +59,7 @@ class Shape_group_file
 	vector<Shape_group *> groups;	// List of groups from the file.
 	bool modified;			// Changed since last save.
 public:
-	Shape_group_file(char *nm);
+	Shape_group_file(const char *nm);
 	~Shape_group_file();
 	int size()
 		{ return groups.size(); }

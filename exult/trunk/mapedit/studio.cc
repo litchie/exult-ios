@@ -55,6 +55,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dirbrowser.h"
 #include "utils.h"
 #include "u7drag.h"
+#include "shapegroup.h"
 
 using std::cerr;
 using std::cout;
@@ -201,7 +202,7 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	vgafile(0), facefile(0), chunkfile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
 	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), 
-	egg_ctx(0),
+	egg_ctx(0), groups(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
 	equipwin(0)
@@ -287,6 +288,7 @@ ExultStudio::~ExultStudio()
 	delete vgafile;
 	delete facefile;
 	delete chunkfile;
+	delete groups;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 #ifndef WIN32
@@ -362,7 +364,7 @@ Object_browser *ExultStudio::create_shape_browser(const char *fname)
 		chooser->set_shape_names(names);
 		chooser->set_shapes_file((Shapes_vga_file *) vgafile);
 	}	
-		
+	setup_groups(fname);		// Set up 'groups' page.
 	return chooser;
 }
 
@@ -397,6 +399,7 @@ Object_browser *ExultStudio::create_chunk_browser(const char *fname)
 		cerr << "Error opening file '" << fname << "'.\n";
 		abort();
 	}
+	setup_groups(fname);		// Set up 'groups' page.
 	return new Chunk_chooser(vgafile, *chunkfile, palbuf, 400, 64);
 }
 
