@@ -816,14 +816,15 @@ void Notebook_gump::write
 	{
 	ofstream out;
 
-	if (!initialized)
-		return;
 	U7open(out, NOTEBOOKXML);
 	out << "<notebook>" << endl;
-	for (vector<One_note*>::iterator it = notes.begin();
+	if (initialized)
+		{
+		for (vector<One_note*>::iterator it = notes.begin();
 					it != notes.end(); ++it)
-		if ((*it)->textlen || !(*it)->is_new)
-			(*it)->write(out);
+			if ((*it)->textlen || !(*it)->is_new)
+				(*it)->write(out);
+		}
 	out << "</notebook>" << endl;
 	out.close();
 	}
