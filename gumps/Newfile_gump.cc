@@ -1103,6 +1103,8 @@ void Newfile_gump::FreeSaveGameDetails()
 	delete [] gd_party;
 	gd_party = 0;
 
+	filename = 0;
+
 	// The SaveInfo struct will delete everything that it's got allocated
 	// So we don't need to worry about that
 	delete [] games;
