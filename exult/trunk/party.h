@@ -23,6 +23,9 @@
 #ifndef INCL_PARTY_H
 #define INCL_PARTY_H 1
 
+#include "singles.h"
+#include "tiles.h"
+
 class Actor;
 
 #define EXULT_PARTY_MAX 8
@@ -30,7 +33,7 @@ class Actor;
 /*
  *	Manage the party.
  */
-class Party_manager
+class Party_manager : public Game_singletons
 	{
 	int party[EXULT_PARTY_MAX];	// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
@@ -60,6 +63,9 @@ public:
 					//   was resurrected.
 	void update_party_status(Actor *npc);
 	void link_party();		// Set party's id's.
+					// Formation-walking:
+	void move_followers(Actor *npc, int dir);
+	void step(Actor *npc, int dir, Tile_coord dest);
 	};
 
 
