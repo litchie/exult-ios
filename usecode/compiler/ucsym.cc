@@ -117,6 +117,22 @@ int Uc_function_symbol::gen_value
 	}
 
 /*
+ *	Delete.
+ */
+
+Uc_scope::~Uc_scope
+	(
+	)
+	{
+	for (map<char *, Uc_symbol *>::iterator it = symbols.begin();
+				it != symbols.end(); it++)
+		delete (*it).second;
+	for (vector<Uc_scope *>::iterator it = scopes.begin();
+				it != scopes.end(); it++)
+		delete *it;
+	}
+
+/*
  *	Search upwards through scope.
  *
  *	Output:	->symbol if found, else 0.

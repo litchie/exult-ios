@@ -50,14 +50,14 @@ public:
 	};
 
 /*
- *	A (constant) string:
+ *	A (constant) string.  The offset is within the usecode function's
+ *	text_data field.
  */
 class Uc_string_symbol : public Uc_symbol
 	{
-	string text;			// What is stored.
 public:
-	Uc_string_symbol(char *nm, int off, char *t)
-		: Uc_symbol(nm, off), text(t)
+	Uc_string_symbol(char *nm, int off)
+		: Uc_symbol(nm, off)
 		{  }
 					// Gen. code to put result on stack.
 	virtual int gen_value(ostream& out);
@@ -80,6 +80,8 @@ public:
 	virtual int gen_value(ostream& out);
 					// Gen. to assign from stack.
 	virtual int gen_assign(ostream& out);
+	const vector<char *>& get_parms()
+		{ return parms; }
 	};
 
 /*
@@ -89,9 +91,13 @@ class Uc_scope
 	{
 	Uc_scope *parent;		// ->parent.
 	map<char *, Uc_symbol *> symbols;// For finding syms. by name.
+	vector<Uc_scope *> scopes;	// Scopes within.
 public:
 	Uc_scope(Uc_scope *p) : parent(p)
 		{  }
+	~Uc_scope();
+	Uc_scope *get_parent()
+		{ return parent; }
 	Uc_symbol *search(char *nm)	// Look in this scope.
 		{
 		map<char *, Uc_symbol *>::const_iterator it = symbols.find(nm);
@@ -105,6 +111,12 @@ public:
 		{
 		char *nm = (char *) sym->name.data();
 		symbols[nm] = sym; 
+		}
+	Uc_scope *add_scope()		// Create new scope.
+		{
+		Uc_scope *newscope = new Uc_scope(this);
+		scopes.push_back(newscope);
+		return newscope;
 		}
 	};
 
