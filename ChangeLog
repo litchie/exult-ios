@@ -1,3 +1,8 @@
+2002-11-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: For theft, see if NPC is facing Avatar.
+	* objs/objs.cc: get_dir_facing().
+
 2002-11-08  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/egg.cc (Egg_object): Implement sound-effect eggs.

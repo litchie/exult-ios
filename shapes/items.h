@@ -65,6 +65,7 @@ const int last_open_shutters = 0x476;
 const int first_hunger = 0x477;		// A little hungry.  (3 of each).
 const int first_needfood = 0x47a;	// Must have food.
 const int first_starving = 0x47b;	// Starving.
+const int heard_something = 0x495;
 const int first_awakened = 0x495;
 const int last_awakened = 0x49a;
 
