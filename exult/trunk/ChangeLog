@@ -1,3 +1,6 @@
+2001-07-20  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* objs.cc: allowing destroying of debris (Silver Seed)
+
 2001-07-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamerend.cc: Show grid when map-editing.
