@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Actor;
 class Game_object;
+class Game_window;
 
 /*
  *	This class provides A* cost methods.
@@ -62,6 +63,21 @@ class Onecoord_pathfinder_client : public Actor_pathfinder_client
 public:
 	Onecoord_pathfinder_client(int mf = 1 << 5)
 		{ set_move_flags(mf); }
+					// Estimate cost between two points.
+	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
+					// Is tile at the goal?
+	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
+	};
+
+/*
+ *	This client succeeds when the path makes it offscreen.
+ *	Only the tz coord. of the dest. is used.
+ */
+class Offscreen_pathfinder_client : public Actor_pathfinder_client
+	{
+	Rectangle screen;		// Screen rect. in tiles.
+public:
+	Offscreen_pathfinder_client(Game_window *gwin, int mf = 1 << 5);
 					// Estimate cost between two points.
 	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
 					// Is tile at the goal?

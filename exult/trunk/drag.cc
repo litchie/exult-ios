@@ -228,9 +228,12 @@ void Game_window::drop
 					// Get orig. loc. info.
 	int oldcx = dragging->get_cx(), oldcy = dragging->get_cy();
 	int oldtx = oldcx*tiles_per_chunk + dragging->get_tx(),
-	    oldty = oldcy*tiles_per_chunk + dragging->get_ty();
+	    oldty = oldcy*tiles_per_chunk + dragging->get_ty(),
+	    oldtz = dragging->get_lift();
 	int dropped = 0;		// 1 when dropped.
+	int dropped_in_something = 0;	// For detecting theft.
 	Game_object *to_drop = dragging;// If quantity, split it off.
+	int okay_to_take = to_drop->get_flag(Game_object::okay_to_take);
 					// Save original footprint.
 	Rectangle old_foot(0, 0, 0, 0);
 	if (!dragging_gump)		// Get old footprint, top in world.
@@ -264,7 +267,7 @@ void Game_window::drop
 			int lift;
 			Game_object *found = find_object(x, y);
 			if (found && found != dragging && found->drop(to_drop))
-				dropped = 1;
+				dropped = dropped_in_something = 1;
 					// Try to place on 'found'.
 			else if (found && (lift = found->get_lift() +
 				get_info(found).get_3d_height()) <= max_lift &&
@@ -286,6 +289,13 @@ void Game_window::drop
 		if (!dragging_gump)	// Do eggs where it came from.
 			get_objects(oldcx, oldcy)->activate_eggs(dragging,
 			    oldtx, oldty, dragging->get_lift(), oldtx, oldty);
+					// Check for theft.
+		if (!okay_to_take &&
+		    (dragging_gump != on_gump || dropped_in_something ||
+		     (!dragging_gump && 
+		      to_drop->get_abs_tile_coord().distance(
+					Tile_coord(oldtx, oldty, oldtz)) > 2)))
+			theft();			
 		if (to_drop == dragging)// Whole thing?
 			{		// Watch for stuff on top of it.
 			if (old_foot.w > 0)

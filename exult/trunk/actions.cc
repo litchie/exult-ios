@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Astar.h"
 #include "paths.h"
 #include "dir.h"
+#include "usecode.h"
 
 /*
  *	Set to walk from one point to another the dumb way.
@@ -75,7 +76,8 @@ Path_walking_actor_action::Path_walking_actor_action
 	(
 	PathFinder *p,			// Already set to path.
 	int maxblk			// Max. retries when blocked.
-	) : path(p), frame_index(0), blocked(0), max_blocked(maxblk)
+	) : path(p), frame_index(0), from_offscreen(0),
+	    blocked(0), max_blocked(maxblk)
 	{
 	Tile_coord src = p->get_src(), dest = p->get_dest();
 	original_dir = (int) Get_direction4(
@@ -129,7 +131,13 @@ cout << "Actor " << actor->get_name() << " blocked.  Retrying." << endl;
 	Frames_sequence *frames = actor->get_frames(newdir);
 					// Get frame (updates frame_index).
 	int frame = frames->get_next(frame_index);
-	if (actor->step(tile, frame))	// Successful.
+	if (from_offscreen)		// Teleport to 1st spot.
+		{
+		from_offscreen = 0;
+		actor->move(tile.tx, tile.ty, tile.tz);
+		return speed;
+		}
+	else if (actor->step(tile, frame))	// Successful.
 		return speed;
 	if (!max_blocked ||		// No retries allowed?
 	    actor->is_dormant())	// Or actor off-screen?
@@ -167,21 +175,42 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	int move_flags
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	blocked = 0;			// Clear 'blocked' count.
+	from_offscreen = 0;
 					// Set up new path.
 					// Don't care about 1 coord.?
 	if (dest.tx == -1 || dest.ty == -1)
 		{
-		Onecoord_pathfinder_client cost(move_flags);
-		if (!path->NewPath(src, dest, &cost))
-			return (0);
+		if (dest.tx == dest.ty)	// Completely off-screen?
+			{
+			Offscreen_pathfinder_client cost(gwin, move_flags);
+			if (!path->NewPath(src, dest, &cost))
+				return (0);
+			}
+		else
+			{
+			Onecoord_pathfinder_client cost(move_flags);
+			if (!path->NewPath(src, dest, &cost))
+				return (0);
+			}
 		}
 					// How about from source?
 	else if (src.tx == -1 || src.ty == -1)
 		{			// Figure path in opposite dir.
-		Onecoord_pathfinder_client cost(move_flags);
-		if (!path->NewPath(dest, src, &cost))
-			return (0);
+		if (src.tx == src.ty)	// Both -1?
+			{
+			Offscreen_pathfinder_client cost(gwin, move_flags);
+			if (!path->NewPath(dest, src, &cost))
+				return (0);
+			from_offscreen = 1;
+			}
+		else
+			{
+			Onecoord_pathfinder_client cost(move_flags);
+			if (!path->NewPath(dest, src, &cost))
+				return (0);
+			}
 					// Set to go backwards.
 		if (!path->set_backwards())
 			return (0);
@@ -255,6 +284,24 @@ int Activate_actor_action::handle_event
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	obj->activate(gwin->get_usecode());
+	return 0;			// That's all.
+	}
+
+/*
+ *	Handle a time event.
+ *
+ *	Output:	0 if done with this action, else delay for next frame.
+ */
+
+int Usecode_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->get_usecode()->call_usecode(fun, item, 
+			(Usecode_machine::Usecode_events) eventid);
+	gwin->set_mode(Game_window::normal);
 	return 0;			// That's all.
 	}
 
