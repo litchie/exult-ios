@@ -64,6 +64,7 @@ int Weapon_info::read
 	damage = *ptr++;
 	unsigned char flags0 = *ptr++;
 	m_explodes = (flags0>>1)&1;
+	m_no_blocking = (flags0>>2)&1;
 	damage_type = (flags0>>4)&15;
 	range = *ptr++;
 	uses = (range>>1)&3;		// Throwable, etc.:
@@ -123,7 +124,9 @@ int Ammo_info::read
 	type2 = Read2(ptr);		// ???
 	damage = *ptr++;
 	ptr += 2;			// 2 unknown.
-	damage_type = (*ptr++>>4)&15;
+	unsigned char flags0 = *ptr++;
+	m_no_blocking = (flags0>>3)&1;
+	damage_type = (flags0>>4)&15;
 	powers = *ptr++;
 					// Last 2 unknown.
 	return shapenum;

@@ -56,6 +56,7 @@ protected:
 	unsigned char strike_range, projectile_range, max_range;
 	bool is_thrown;			// Daggers, etc.
 	bool returns;			// Boomerang, magic axe.
+	bool no_blocking;		// Weapon/ammo goes through walls.
 	unsigned char yelled;		// Yell when first opponent targeted.
 	bool started_battle;		// 1st opponent targeted.
 	unsigned char fleed;		// Incremented when fleeing.

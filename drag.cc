@@ -490,7 +490,8 @@ bool Dragging_info::drop
 	if (barge)
 		barge->set_to_gather();	// Refigure what's on barge.
 					// Check for theft.
-	if (!okay_to_move && !cheat.in_hack_mover() && possible_theft)
+	if (!okay_to_move && !cheat.in_hack_mover() && possible_theft &&
+	    !gwin->is_in_dungeon())
 		gwin->theft();			
 	if (to_drop == obj)		// Whole thing?
 		{			// Watch for stuff on top of it.
