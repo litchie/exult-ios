@@ -1,0 +1,31 @@
+Documentation for the bugs in usecode and the corrections that can be made
+Author: Artaxerxes (artaxerxes@users.sf.net)
+
+Forewords:
+every action on usecode should be done on the _decompiled_ usecode. Please use "rip" and "wud" to decompile usecode appropriately. Once the changes are made, recompile using "wuc" and "rip". Those tools can be found on Exult's download page.
+
+================================
+Gwenno and the Diamond Necklace:
+================================
+No matter who has the diamond necklace, Iolo is going to say he's lost it during the adventures to find Gwenno. This is due to an error in the usecode function that checks whether you have the diamond or not. It is looking for the wrong item (the wrong shape actually).
+
+Usecode function: 0495
+
+Code to replace:
+01A5: 1F 05 00 		pushi	0005H			; 5
+01A8: 1F 99 FE 		pushi	FE99H			; -359
+01AB: 1F BB 03 		pushi	03BBH			; 955
+01AE: 1F 01 00 		pushi	0001H			; 1
+01B1: 1F 9B FE 		pushi	FE9BH			; -357
+01B4: 24 05 00 		call	[0005]			; 1200H
+
+Replace it with:
+01A5: 1F 05 00 		pushi	0005H			; 5
+01A8: 1F 99 FE 		pushi	FE99H			; -359
+01AB: 1F BB 03 		pushi	03BBH			; 955
+01AE: 1F 08 00 		pushi	0008H			; 8
+01B1: 1F 9B FE 		pushi	FE9BH			; -357
+01B4: 24 05 00 		call	[0005]			; 1200H
+
+
+===============================
