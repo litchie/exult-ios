@@ -707,11 +707,10 @@ int XMIDI::ExtractTracksFromXmi (const unsigned char *stream, const uint32 size)
 		if (!memcmp(stream+i,"FORM",4))
 			i+= 12;
 
-//		len = stream[i+7];
-//		len |= stream[i+6] << 8;
-//		len |= stream[i+5] << 16;
-//		len |= stream[i+4] << 24;
-		len = Read4high (stream+i+4);
+		len = stream[i+7];
+		len |= stream[i+6] << 8;
+		len |= stream[i+5] << 16;
+		len |= stream[i+4] << 24;
 
 		i+= 8;
 
@@ -750,11 +749,10 @@ int XMIDI::ExtractTracksFromMid (const unsigned char *stream, const uint32 size)
 	{
 		i+= len;
 
-//		len = stream[i+7];
-//		len |= stream[i+6] << 8;
-//		len |= stream[i+5] << 16;
-//		len |= stream[i+4] << 24;
-		len = Read4high ((stream+(i+4)));
+		len = stream[i+7];
+		len |= stream[i+6] << 8;
+		len |= stream[i+5] << 16;
+		len |= stream[i+4] << 24;
 
 		i+= 8;
 
@@ -812,21 +810,19 @@ int XMIDI::ExtractTracks (const unsigned char *stream)
 			// Assume correct length??
 			// No way!
 			
-			len = Read4high(stream+4);
-//			len = stream[7];
-//			len |= stream[6] << 8;
-//			len |= stream[5] << 16;
-//			len |= stream[4] << 24;
+			len = stream[7];
+			len |= stream[6] << 8;
+			len |= stream[5] << 16;
+			len |= stream[4] << 24;
 			
 			info.tracks = 0;
 		
 			for (i = 12; i < len; i++)
 			{
-				chunk_len = Read4high (stream+i);
-//				chunk_len = stream[i+3];
-//				chunk_len |= stream[i+2] << 8;
-//				chunk_len |= stream[i+1] << 16;
-//				chunk_len |= stream[i] << 24;
+				chunk_len = stream[i+3];
+				chunk_len |= stream[i+2] << 8;
+				chunk_len |= stream[i+1] << 16;
+				chunk_len |= stream[i] << 24;
 			
 				i+=8;
 				
@@ -867,13 +863,11 @@ int XMIDI::ExtractTracks (const unsigned char *stream)
 			i += 4;
 		}
 		
-//		len = stream[i+3];
-//		len |= stream[i+2] << 8;
-//		len |= stream[i+1] << 16;
-//		len |= stream[i] << 24;
-		
-		len = Read4high (stream+i);
-
+		len = stream[i+3];
+		len |= stream[i+2] << 8;
+		len |= stream[i+1] << 16;
+		len |= stream[i] << 24;
+	
 		i+=4;
 
 		// Not an XMID
@@ -918,12 +912,11 @@ int XMIDI::ExtractTracks (const unsigned char *stream)
 	else if (!memcmp (stream, "MThd", 4))
 	{
 		// Simple read length of header
-//		len = stream[7];
-//		len |= stream[6] << 8;
-//		len |= stream[5] << 16;
-//		len |= stream[4] << 24;
-		len = Read4high (stream+4);
-		cout << (uint16) stream+4 << " " <<  (uint16)stream+5 << " " <<  (uint16)stream+6 << " " <<  (uint16)stream+7 << cout;
+		len = stream[7];
+		len |= stream[6] << 8;
+		len |= stream[5] << 16;
+		len |= stream[4] << 24;
+
 		if (len < 6)
 		{
 			cerr << "Not a valid MIDI" << endl;
@@ -939,7 +932,6 @@ int XMIDI::ExtractTracks (const unsigned char *stream)
 		
 		events = new midi_event*[info.tracks];
 		timing = new short[info.tracks];
-		cout << info.type << " " << info.tracks << " " << len << endl;
 		for (j = 0; j < info.tracks; j++)
 		{
 			timing[j] = stream[12] << 8;
@@ -982,19 +974,17 @@ int XMIDI::ExtractTracks (const unsigned char *stream)
 		// Assume correct length??
 		// No way!
 			
-//		len = stream[4];
-//		len |= stream[5] << 8;
-//		len |= stream[6] << 16;
-//		len |= stream[7] << 24;
-		len = Read4 (stream+4);
+		len = stream[4];
+		len |= stream[5] << 8;
+		len |= stream[6] << 16;
+		len |= stream[7] << 24;
 
 		for (i = 12; i < len; i++)
 		{
-//			chunk_len = stream[i];
-//			chunk_len |= stream[i+1] << 8;
-//			chunk_len |= stream[i+2] << 16;
-//			chunk_len |= stream[i+3] << 24;
-			chunk_len = Read4 (stream+4);
+			chunk_len = stream[i];
+			chunk_len |= stream[i+1] << 8;
+			chunk_len |= stream[i+2] << 16;
+			chunk_len |= stream[i+3] << 24;
 			
 			i+=8;
 				
