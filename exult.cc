@@ -557,9 +557,7 @@ static void Handle_keystroke
 		shape_frame = 0;
 		if (--shape_cnt < 0)
 			shape_cnt = gwin->get_num_shapes() - 1;
-#if DEBUG
 		cout << "Painting shape " << shape_cnt << '\n';
-#endif
 		gwin->paint();
 		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
 		break;
