@@ -139,7 +139,7 @@ void Shape_manager::load
 		if (!files[SF_PAPERDOL_VGA].is_good())
 			gwin->abort("Can't open 'paperdol.vga' file.");
 		}
-	else
+	else if (Game::get_game_type()==BLACK_GATE) // NOT for devel. games.
 		{
 		try
 			{
