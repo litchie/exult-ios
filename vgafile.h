@@ -53,7 +53,8 @@ public:
 	Shape_frame() : data(0)
 		{  }
 					// Read in shape/frame.
-	unsigned char read(ifstream& shapes, int shnum, int frnum);
+	unsigned char read(ifstream& shapes, unsigned long shapeoff,
+					unsigned long shapelen, int frnum);
 	int has_point(int x, int y);	// Is a point within the shape?
 	int get_width()			// Get dimensions.
 		{ return xleft + xright; }
@@ -72,10 +73,13 @@ public:
  */
 class Shape
 	{
+protected:
 	Shape_frame **frames;		// List of ->'s to frames.
 	unsigned char num_frames;	// # of frames.
 					// Read in shape/frame.
 	Shape_frame *read(ifstream& shapes, int shnum, int frnum);
+					// Store shape that was read.
+	Shape_frame *store_frame(Shape_frame *frame, int framenum);
 public:
 	friend class Vga_file;
 	Shape() : frames(0)
@@ -83,6 +87,20 @@ public:
 	Shape_frame *get(ifstream& shapes, int shnum, int frnum)
 		{ return (frames && frames[frnum]) ? frames[frnum] 
 					: read(shapes, shnum, frnum); }
+	};
+
+/*
+ *	A shape file just has one shape with multiple frames.  They're all
+ *	read in during construction.
+ */
+class Shape_file : private Shape
+	{
+public:
+	Shape_file(char *nm);
+	int get_num_frames()
+		{ return num_frames; }
+	Shape_frame *get_frame(int framenum)
+		{ return framenum < num_frames ? frames[framenum] : 0; }
 	};
 
 /*
