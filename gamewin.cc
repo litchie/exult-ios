@@ -82,6 +82,7 @@
 #include "drag.h"
 #include "glshape.h"
 #include "party.h"
+#include "Notebook_gump.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -1236,6 +1237,7 @@ void Game_window::write
 		(*it)->write_ireg();	// Write ireg files.
 	write_npcs();			// Write out npc.dat.
 	usecode->write();		// Usecode.dat (party, global flags).
+	Notebook_gump::write();		// Write out journal.
 	write_gwin();			// Write our data.
 	write_saveinfo();
 	}
