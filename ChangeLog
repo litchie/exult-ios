@@ -1,3 +1,7 @@
+2002-02-03  Darke  <darkepaw@users.sourceforge.net>
+	* audio/Audio.cc, mapedit/shapelst.h: Namespaces.
+	* usecode/ucxt/*: Code cleanup & optimisations.
+
 2002-02-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Don't call 'unreadied' usecode if Actor is dead.

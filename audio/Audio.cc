@@ -64,7 +64,8 @@ using std::memset;
 using std::string;
 using std::strncmp;
 using std::vector;
-
+using std::min;
+using std::max;
 
 #if defined(WIN32) && !defined(FORCE_44KHZ)
 /* 44100 caused the freeze upon exit in Win! */

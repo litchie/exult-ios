@@ -67,7 +67,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	int framenum0;			// Default frame # to display.
 	Shape_entry *info;		// An entry for each shape drawn.
 	int info_cnt;			// # entries in info.
-	vector<short> row_indices;	// Index at start of each row.
+	std::vector<short> row_indices;	// Index at start of each row.
 	int row0;			// Row # at top of window.
 	int nrows;			// Last #rows rendered.
 	void (*sel_changed)();		// Called when selection changes.

@@ -63,12 +63,10 @@ using std::map;
 
 #define MAX_NO_OPCODES 512
 vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
+
 vector<pair<unsigned int, unsigned int> > opcode_jumps;
 
 map<unsigned int, string> uc_intrinsics;
-//map<unsigned int, string> si_uc_intrinsics;
-
-vector<string> str2vec(const string &s);
 
 map<string, pair<unsigned int, bool> > type_size_map;
 
@@ -88,9 +86,13 @@ void ucxtInit::init(const Configuration &config, const UCOptions &options)
 	si_intrinsics_data = "u7siintrinsics.data";
 	si_intrinsics_root = "intrinsics";
 	
+	if(options.verbose) cout << "Initing misc..." << endl;
 	misc();
+	
+	if(options.verbose) cout << "Initing opcodes..." << endl;
 	opcodes();
 	
+	if(options.verbose) cout << "Initing intrinsics..." << endl;
 	if(options.game_bg())
 		intrinsics(bg_intrinsics_data, bg_intrinsics_root);
 	else if(options.game_si())

@@ -118,6 +118,7 @@ void UCData::open_usecode(const string &filename)
 		return;
 }
 
+// FIXME: Pass ostream to this, rather then cout-ing everything
 void UCData::disassamble()
 {
 	load_funcs();
@@ -144,27 +145,24 @@ void UCData::disassamble()
 			bool _func_printed=false; // to test if we've actually printed a function ouput
 
 			if(options.output_list)
-			{
-				_funcs[i]->output_list(cout, i, options);
-				_func_printed=true;
-			}
+				_func_printed = _funcs[i]->output_list(cout, i, options);
 			
 			if(options.output_ucs)
 			{
 				_funcs[i]->parse_ucs(_funcmap, uc_intrinsics, options);
-				_funcs[i]->output_ucs(cout, _funcmap, uc_intrinsics, options);
-				_func_printed=true;
+				_func_printed = _funcs[i]->output_ucs(cout, _funcmap, uc_intrinsics, options);
+				//_func_printed=true;
 			}
 
 			if(options.output_trans_table)
 			{
-				_funcs[i]->output_tt(cout);
-				_func_printed=true;
+				_func_printed=_funcs[i]->output_tt(cout);
+				//_func_printed=true;
 			}
 			
 			// if we haven't printed one by now, we'll print an asm output.
 			if(options.output_asm || (_func_printed==false))
-				print_asm(*_funcs[i], cout, _funcmap, uc_intrinsics, options);
+				_funcs[i]->output_asm(cout, _funcmap, uc_intrinsics, options);
 		}
 	}
 
@@ -196,6 +194,7 @@ void UCData::dump_flags(ostream &o)
 	}
 	load_funcs();
 	
+	if(options.verbose) cout << "Finding flags..." << endl;
 	vector<FlagData> flags;
 
 	// *BLEH* ugly!
@@ -267,8 +266,22 @@ void UCData::file_open(const string &filename)
 	U7open(_file, filename.c_str(), false);
 }
 
+#undef LOAD_SPEED_TEST
+
+#ifdef LOAD_SPEED_TEST
+#include "tools/dbgutils.h"
+#endif
+
 void UCData::load_funcs()
 {
+	if(options.verbose) cout << "Loading functions..." << endl;
+	
+	#ifdef LOAD_SPEED_TEST
+	dbg::DateDiff dd;
+	dbg::timeDateDiff(cout);
+	dd.start();
+	#endif
+	
 	bool eof=false;
 	while( !eof )
 	{
@@ -288,6 +301,17 @@ void UCData::load_funcs()
 			_file.unget();
 		}
 	}
+	
+	#ifdef LOAD_SPEED_TEST
+	dd.end();
+	cout << setbase(10) << setfill(' ');
+	dd.print_start(cout) << endl;
+	dd.print_end(cout) << endl;
+	dd.print_diff(cout) << endl;
+	cout << setbase(16) << setfill('0');
+	#endif
+	
+	if(options.verbose) cout << "Creating function map..." << endl;
 	
 	for(vector<UCFunc *>::iterator i=_funcs.begin(); i!=_funcs.end(); i++)
 	{
@@ -309,7 +333,6 @@ void UCData::output_extern_header(ostream &o)
 	for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); func++)
 	{
 		(*func)->output_ucs_funcname(o << "extern ", _funcmap, (*func)->_funcid, (*func)->_num_args, (*func)->return_var) << ';' << endl;
-
 	}
 }
 
