@@ -41,6 +41,7 @@ namespace Exult_server
 const unsigned short magic = 0xf381;
 const int maxlength = 600;		// Big enough to hold a 'terrain'.
 const int hdrlength = 5;
+
 enum Msg_type
 	{
 	say = 0,			// For testing.  Data is text.
@@ -79,6 +80,9 @@ int Receive_data
 	unsigned char *data,
 	int datalen
 	);
+
+// Wait for given ms for a response. return false if no response
+bool wait_for_response(int socket, int ms);
 
 }// Exult_server namespace.
 

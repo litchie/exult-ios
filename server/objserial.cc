@@ -29,6 +29,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "objserial.h"
 #include "servemsg.h"
+#include <iostream>
+
+using std::cout;
+using std::endl;
 
 /*
  *	Encode.
@@ -128,7 +132,7 @@ void Common_obj_io
 template <class Serial> 
 void Object_io
 	(
-	unsigned char *& buf,		// Where to store data.
+	Serial &io,			// Where to store data.
 	unsigned long& addr,		// Address.
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
 	int& shape, int& frame,
@@ -136,7 +140,6 @@ void Object_io
 	std::string& name
 	)
 	{
-	Serial io(buf);
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
 	io << quality << name;
 	}
@@ -150,7 +153,7 @@ void Object_io
 template <class Serial> 
 void Egg_object_io
 	(
-	unsigned char *& buf,		// Where to store data.
+	Serial &io,			// Where to store data.
 	unsigned long& addr,		// Address.
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
 	int& shape, int& frame,
@@ -165,7 +168,6 @@ void Egg_object_io
 	int& data1, int& data2
 	)
 	{
-	Serial io(buf);
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
 	io << type << criteria << probability << distance << 
 		nocturnal << once << hatched << auto_reset << data1 << data2;
@@ -178,9 +180,9 @@ void Egg_object_io
  *	Output:	1 if successful, else 0.
  */
 template <class Serial> 
-void Npc_actor_io
+static void Npc_actor_io
 	(
-	unsigned char *& buf,		// Where to store data.
+	Serial &io,			// Where to store data.
 	unsigned long& addr,		// Address.
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
 	int& shape, int& frame, int& face,
@@ -198,7 +200,6 @@ void Npc_actor_io
 	Serial_schedule *schedules	// Schedule changes.  Room for 8.
 	)
 	{
-	Serial io(buf);
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
 	io << face << name << npc_num << ident << usecode;
 	int i;
@@ -227,9 +228,10 @@ int Object_out
 	std::string name
 	)
 	{
-	unsigned char buf[Exult_server::maxlength];
+	static unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
-	Object_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame, quality,
+	Serial_out io(ptr);
+	Object_io(io, addr, tx, ty, tz, shape, frame, quality,
 		name);
 	return Exult_server::Send_data(fd, Exult_server::obj, buf, ptr - buf);
 	}
@@ -252,7 +254,8 @@ int Object_in
 	)
 	{
 	unsigned char *ptr = data;
-	Object_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame, quality,
+	Serial_in io(ptr);
+	Object_io(io, addr, tx, ty, tz, shape, frame, quality,
 		name);
 	return (ptr - data) == datalen;
 	}
@@ -280,9 +283,10 @@ int Egg_object_out
 	int data1, int data2
 	)
 	{
-	unsigned char buf[Exult_server::maxlength];
+	static unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
-	Egg_object_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame,
+	Serial_out io(ptr);
+	Egg_object_io(io, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
 		nocturnal, once, hatched, auto_reset,
 		data1, data2);
@@ -314,7 +318,8 @@ int Egg_object_in
 	)
 	{
 	unsigned char *ptr = data;
-	Egg_object_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame,
+	Serial_in io(ptr);
+	Egg_object_io(io, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
 		nocturnal, once, hatched, auto_reset, data1, data2);
 	return (ptr - data) == datalen;
@@ -346,9 +351,10 @@ int Npc_actor_out
 	Serial_schedule *schedules	// Schedule changes.
 	)
 	{
-	unsigned char buf[Exult_server::maxlength];
+	static unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
-	Npc_actor_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame, face,
+	Serial_out io(ptr);
+	Npc_actor_io(io, addr, tx, ty, tz, shape, frame, face,
 		name, npc_num, ident, usecode, 
 		properties, attack_mode, alignment,
 		oflags, siflags, type_flags,
@@ -384,7 +390,8 @@ int Npc_actor_in
 	)
 	{
 	unsigned char *ptr = data;
-	Npc_actor_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame, face,
+	Serial_in io(ptr);
+	Npc_actor_io(io, addr, tx, ty, tz, shape, frame, face,
 		name, npc_num, ident, usecode, 
 		properties, attack_mode, alignment,
 		oflags, siflags, type_flags,

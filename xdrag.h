@@ -25,8 +25,8 @@ const int max_types = 15;
 
 typedef void (*Move_shape_handler_fun)(int shape, int frame, int x, int y,
 							int prevx, int prevy);
-typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y);
-typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y);
+typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y, void *data);
+typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y, void *data);
 
 /*
  *	This supports the 'drop' side of Xdnd:

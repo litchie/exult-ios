@@ -286,14 +286,14 @@ void Xdnd::select_msg
 		XFree(data);
 		if (file == U7_SHAPE_SHAPES)
 					// For now, just allow "shapes.vga".
-			(*shape_handler)(shape, frame, x, y);
+			(*shape_handler)(shape, frame, x, y, 0);
 		}
 	else if (sev.target == chunkid_atom)
 		{			// A whole chunk.
 		int chunknum;
 		Get_u7_chunkid(data, chunknum);
 		XFree(data);
-		(*chunk_handler)(chunknum, x, y);
+		(*chunk_handler)(chunknum, x, y, 0);
 		}
 	}
 #endif
