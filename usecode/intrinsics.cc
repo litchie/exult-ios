@@ -793,8 +793,15 @@ USECODE_INTRINSIC(click_on_item)
 	//   clicks on an item.  Rets. item.
 	Game_object *obj;
 	int tx, ty, tz;
+
+	// intercept this click?
+	if (intercept_item) {
+		obj = intercept_item;
+		intercept_item = 0;
+		obj->get_abs_tile(tx, ty, tz);
+
 					// Special case for weapon hit:
-	if (event == weapon && caller_item)
+	} else if (event == weapon && caller_item)
 		{
 		obj = caller_item;
 		obj->get_abs_tile(tx, ty, tz);

@@ -811,20 +811,6 @@ int Get_click
 	return (ret);
 	}
 
-int Put_click
-	(
-	int x, int y, int button
-	)
-	{
-	SDL_Event e;
-	e.type = SDL_MOUSEBUTTONUP;
-	e.button.button = button;
-	int scale = gwin->get_win()->get_scale();
-	e.button.x = x * scale;
-	e.button.y = y * scale;
-	return !SDL_PushEvent(&e);
-	}
-
 /*
  *	Wait for someone to stop walking.  If a timeout is given, at least
  *	one animation cycle will still always occur.

@@ -41,7 +41,6 @@ extern int Get_click
 	Mouse::Mouse_shapes shape,	// Mouse shape to use.
 	char *chr = 0			// Char. returned if not null.
 	);
-extern int Put_click(int x, int y, int button = 1);
 
 /*
  *	Make a screenshot of the current screen display
