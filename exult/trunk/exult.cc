@@ -410,6 +410,7 @@ static void Init
 			game->play_intro();
 	} while(!game->show_menu());
 	gwin->init_files();
+	gwin->read_gwin();
 	gwin->setup_game();		// This will start the scene.
 					// Get scale factor for mouse.
 #ifdef USE_EXULTSTUDIO

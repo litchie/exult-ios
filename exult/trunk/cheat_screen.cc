@@ -1035,7 +1035,7 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 	char	buf[512];
 	if (actor)
 	{
-		int	x, y, z;
+		int	x, y, z, t;
 		actor->get_abs_tile(x, y, z);
 	
 		// Paint the actors shape
@@ -1043,7 +1043,7 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 		if (shape) gwin->paint_shape (shape->get_xright()+240, shape->get_yabove(), *actor); 
 
 		// Now the info
-		std::snprintf (buf, 512, "NPC %i - %s", actor->get_npc_num(), actor->get_npc_name().c_str());
+		std::snprintf (buf, 512, "NPC %i - %s", num, actor->get_npc_name().c_str());
 		font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
 
 		std::snprintf (buf, 512, "Loc (%04i, %04i, %02i)", x, y, z);
@@ -1063,10 +1063,23 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 		std::snprintf (buf, 512, "Training: %2i  Health: %2i", actor->get_property(Actor::training), actor->get_property(Actor::health));
 		font->paint_text_fixedwidth(ibuf, buf, 0, 54, 8);
 
+		if (num != -1)
+		{
+			int ucitemnum = 0x10000-num;
+			if (!num) ucitemnum = 0xfe9c;
+			std::snprintf (buf, 512, "Usecode item %4x function %x", ucitemnum, actor->get_usecode());
+			font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+		}
+		else
+		{
+			std::snprintf (buf, 512, "Usecode function %x", actor->get_usecode());
+			font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+		}
+
 		if (actor->get_polymorph() != -1)
 		{
 			std::snprintf (buf, 512, "Polymorphed from %04i", actor->get_polymorph());
-			font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+			font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
 		}
 	}
 	else

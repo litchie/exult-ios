@@ -78,7 +78,9 @@ public:
 	void	set_effects_conversion(int conv);
 	int	get_effects_conversion() { return effects_conversion; }
 	
-	bool	is_track_playing(int num) { return current_track==num && midi_device->is_playing(); }
+	inline bool	is_track_playing(int num) { return current_track==num && midi_device->is_playing(); }
+	inline int	get_current_track() { return midi_device->is_playing()?current_track:-1; }
+	inline int	is_repeating() { return repeating; }
 	
 private:
 	MyMidiPlayer(const MyMidiPlayer &m) ; // Cannot call
@@ -86,6 +88,7 @@ private:
 	void    kmidi_start_track(int num,bool continuous=false);
 	std::vector<std::string>	midi_bank;
 	int	current_track;
+	bool	repeating;
 	MidiAbstract	*midi_device;
 	bool	initialized;
 

@@ -1,3 +1,11 @@
+2001-09-18  Ryan Nunn <triforce@merlin.net.au>
+	* audio/Midi.cc, audio/Midi.h : Fixed some potential bugs and added
+	  some extra methods to retreive the current playing track and if the
+	  current track is repeating.
+	* cheat_screen.cc : Added some usecode related info the actor display
+	* exult.cc, gamewin.cc : Made it so the current playing song number is
+	  saved and the song is restarted on restore.
+
 2001-09-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucinternal.cc: Run_usecode() handles case where obj==0.

@@ -63,9 +63,12 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	// -1 and 255 are stop tracks
 	if (num == -1 || num == 255)
 	{
-		midi_device->stop_track();
+		stop_music();
 		return;
 	}
+
+	current_track = num;
+	repeating = repeat;
 
 	U7object	track(midi_bank[bank].c_str(),num);
 
@@ -127,6 +130,9 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 {
 	if (!fname || (!midi_device && !init_device()))
 	        return;
+
+	current_track = -1;
+	repeating = repeat;
 
   #ifdef DEBUG
         cout << "Audio subsystem request: Music track # " << num << " in file "<< fname << endl;
@@ -223,7 +229,6 @@ void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
 		return;
 	if(current_track==num&&midi_device->is_playing())
 		return;	// Already playing it
-	current_track=num;
 	start_track(num,repeat,bank);
 }
 
@@ -231,7 +236,6 @@ void	MyMidiPlayer::start_music(const char *fname,int num,bool repeat)
 {
 	if(!fname || (!midi_device && !init_device()))
 		return;
-	current_track=-1;
 	start_track(fname,num,repeat);
 }
 
@@ -239,9 +243,11 @@ void	MyMidiPlayer::stop_music()
 {
 	if(!midi_device && !init_device())
 		return;
+
+	current_track = -1;
+	repeating = false;
 	
 	midi_device->stop_track();
-	current_track=-1;
 }
 
 bool	MyMidiPlayer::add_midi_bank(const char *bankname)
@@ -413,8 +419,8 @@ bool MyMidiPlayer::init_device(void)
 	return true;
 }
 
-MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0),
-				  initialized(false),
+MyMidiPlayer::MyMidiPlayer()	: current_track(-1),repeating(false),
+				  midi_device(0), initialized(false),
 				  music_conversion(XMIDI_CONVERT_MT32_TO_GM),
 				  effects_conversion(XMIDI_CONVERT_GS127_TO_GS)
 {
