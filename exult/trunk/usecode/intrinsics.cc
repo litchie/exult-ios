@@ -955,6 +955,13 @@ USECODE_INTRINSIC(move_object)
 			Map_chunk::try_all_eggs(ava, tile.tx, 
 				tile.ty, tile.tz, oldpos.tx, oldpos.ty);
 			}
+					// Close?  Add to 'nearby' list.
+		else if (ava->distance(act) < gwin->get_width()/c_tilesize)
+			{
+			Npc_actor *npc = dynamic_cast<Npc_actor *>(act);
+			if (npc)
+				gwin->add_nearby_npc(npc);
+			}
 		}
 	return(no_ret);
 }
@@ -1042,7 +1049,9 @@ USECODE_INTRINSIC(set_lift)
 		{
 		int x, y, z;
 		obj->get_abs_tile(x, y, z);
-		obj->move(x, y, parms[1].get_int_value());
+		int lift = parms[1].get_int_value();
+		if (lift >= 0 && lift < 20)
+			obj->move(x, y, lift);
 		gwin->paint();
 		gwin->show();
 		}
