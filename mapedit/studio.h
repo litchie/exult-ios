@@ -87,6 +87,8 @@ public:
 	void read_map();
 	void reload_usecode();
 	void set_play(gboolean play);
+	void set_tile_grid(gboolean grid);
+	void set_edit_lift(int lift);
 	void open_egg_window(unsigned char *data = 0, int datalen = 0);
 	void close_egg_window();
 	int init_egg_window(unsigned char *data, int datalen);

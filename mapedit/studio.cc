@@ -116,6 +116,22 @@ on_play_button_clicked			(GtkToggleButton *button,
 				gtk_toggle_button_get_active(button));
 }
 
+extern "C" void
+on_tile_grid_button_toggled		(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	ExultStudio::get_instance()->set_tile_grid(
+				gtk_toggle_button_get_active(button));
+}
+
+extern "C" void
+on_edit_lift_spin_changed		(GtkSpinButton *button,
+					 gpointer	  user_data)
+{
+	ExultStudio::get_instance()->set_edit_lift(
+				gtk_spin_button_get_value_as_int(button));
+}
+
 void on_choose_directory               (gchar *dir)
 {
 	ExultStudio::get_instance()->set_static_path(dir);
@@ -501,6 +517,40 @@ void ExultStudio::set_play
 	unsigned char *ptr = &data[0];
 	Write2(ptr, play ? 0 : 1);	// Map_edit = !play.
 	if (Send_data(server_socket, Exult_server::map_editing_mode,
+						data, ptr - data) == -1)
+		cerr << "Error sending to server" << endl;
+	}
+
+/*
+ *	Tell Exult to show or not show the tile grid.
+ */
+
+void ExultStudio::set_tile_grid
+	(
+	gboolean grid			// True to show.
+	)
+	{
+	unsigned char data[Exult_server::maxlength];
+	unsigned char *ptr = &data[0];
+	Write2(ptr, grid ? 1 : 0);	// Map_edit = !play.
+	if (Send_data(server_socket, Exult_server::tile_grid,
+						data, ptr - data) == -1)
+		cerr << "Error sending to server" << endl;
+	}
+
+/*
+ *	Tell Exult to edit at a given lift.
+ */
+
+void ExultStudio::set_edit_lift
+	(
+	int lift
+	)
+	{
+	unsigned char data[Exult_server::maxlength];
+	unsigned char *ptr = &data[0];
+	Write2(ptr, lift);
+	if (Send_data(server_socket, Exult_server::edit_lift,
 						data, ptr - data) == -1)
 		cerr << "Error sending to server" << endl;
 	}
