@@ -14,7 +14,7 @@ SDL_CFLAGS=-I$(SRC)/sdl/include
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
-# mingw32 automatically defines WIN32
+# mingw automatically defines WIN32
 CPPFLAGS=-DVERSION=\"0.95cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
@@ -22,12 +22,12 @@ CPPFLAGS=-DVERSION=\"0.95cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-I$(SRC)/usecode -I$(SRC)/data $(SDL_CFLAGS) -DHAVE_SNPRINTF
 
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
-CXXFLAGS=-O2 -mwindows -Wno-long-long -include mingw_kludges.h
+CXXFLAGS=-O2 -Wno-long-long -include mingw_kludges.h
 
 LFLAGS=-mwindows
 LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
 
-EXEC=exult.exe
+EXEC=Exult.exe
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	args.o bggame.o browser.o cheat.o  \
 	combat.o delobjs.o dir.o drag.o effects.o exult.o exultmenu.o \
@@ -211,10 +211,23 @@ clean:
 
 install: $(EXEC)
 	strip $(EXEC) -o $(U7PATH)\\$(EXEC)
-	if not exist $(U7PATH)\data md  $(U7PATH)\data
-	copy data\exult.flx  $(U7PATH)\data
+	if not exist $(U7PATH)\data md $(U7PATH)\data
+	copy data\exult.flx $(U7PATH)\data
 	copy data\exult_bg.flx $(U7PATH)\data
 	copy data\exult_si.flx $(U7PATH)\data
+
+dist:   install
+	copy AUTHORS $(U7PATH)\Exult\AUTHORS.txt
+	copy ChangeLog $(U7PATH)\Exult\ChangeLog.txt
+	copy COPYING $(U7PATH)\Exult\COPYING.txt
+	copy FAQ $(U7PATH)\Exult\FAQ.txt
+	copy NEWS $(U7PATH)\Exult\NEWS.txt
+	copy README $(U7PATH)\Exult\README.txt
+	copy README.win32 $(U7PATH)\Exult\README.win32.txt
+	copy data\bg\defaultkeys.txt $(U7PATH)\Exult\bgdefaultkeys.txt
+	copy data\si\defaultkeys.txt $(U7PATH)\Exult\sidefaultkeys.txt
+	copy SDL\README-SDL.txt $(U7PATH)\Exult\README-SDL.txt
+	copy SDL\lib\SDL.dll $(U7PATH)\Exult\SDL.dll
 
 tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe
 
@@ -244,6 +257,14 @@ toolsinstall: tools
 	strip tools/ucdump.exe -o $(U7PATH)\tools\ucdump.exe
 	strip tools/wuc.exe -o $(U7PATH)\tools\wuc.exe
 	strip tools/wud.exe -o $(U7PATH)\tools\wud.exe
+
+toolsdist: toolsinstall
+	copy tools\expack.txt $(U7PATH)\tools
+	copy tools\intrins1.txt $(U7PATH)\tools
+	copy tools\intrins2.txt $(U7PATH)\tools
+	copy tools\u7bgflag.txt $(U7PATH)\tools
+	copy tools\u7siflag.txt $(U7PATH)\tools
+	copy tools\ucformat.txt $(U7PATH)\tools
 
 all: $(EXEC) tools
 
