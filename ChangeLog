@@ -1,3 +1,15 @@
+2001-09-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc,flags.h:  Polymorph flagged moved to where Usecode
+	checks for it (bit 32 of regular flags).
+
+	* actors.cc (public): Enumerate shapes to call 'readied' Usecode
+	on for SI.
+	* actors.cc: Check for weapon frame being out of range.
+
+	* drag.cc: Pass MOVE_WALK instead of MOVE_FLY.  Fixes bug where
+	things get dropped into walls, and (hopefully!) doesn't break anything.
+
 2001-09-26  Ryan Nunn <triforce@merlin.net.au>
 	* actorio.cc, actors.h, cheat_screen.cc, gumps/Book_gump.*, 
 	  gumps/Scroll_gump.* gumps/Sign_gump.*, gumps/Text_gump.*,

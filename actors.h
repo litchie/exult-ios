@@ -193,7 +193,6 @@ public:
 	enum Serpent_flags {		// Bit #'s of flags:
 		freeze = 0,
 //		tournament = 2,  This is really !si_killable in Usecode funs.
-		polymorph = 3,
 		// petra = 4,
 		// met = 5,
 		no_spell_casting = 6,

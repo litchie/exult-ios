@@ -46,6 +46,7 @@ namespace  Obj_flags
 		met = 28,			// Has the npc been met
 		si_tournament = 29,	// SI-Call usecode (eventid=7)
 		// Flags > 31
+		polymorph = 32,		// SI.  Pretty sure about this.
 		tattooed = 33,			// Guess (SI).
 		read = 34,			// Guess (SI).
 		petra = 35			// Guess

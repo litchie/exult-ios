@@ -1504,7 +1504,7 @@ void CheatScreen::FlagMenu (Actor *actor)
 	}
 
 	// Polymorph
-	std::snprintf (buf, 512, "[2] Polymo.%c", actor->get_siflag(Actor::polymorph)?'Y':'N');
+	std::snprintf (buf, 512, "[2] Polymo.%c", actor->get_flag(Obj_flags::polymorph)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 208, maxy-36, 8);
 
 	// Patra (AV SI ONLY)
