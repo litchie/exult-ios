@@ -519,6 +519,8 @@ public:
 					// Resize event occurred.
 	void resized(unsigned int neww, unsigned int nehh);
 	void show();			// Repaint entire window.
+					// Repaint rectangle.
+	void show(int x, int y, int w, int h);
 
 	void toggle_fullscreen();
 
