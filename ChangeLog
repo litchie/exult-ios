@@ -8,6 +8,9 @@
 
 	* usecode/ucxt/src/opcodes.cc: Fixed compile problems under mingw.
 
+	* usecode/ucxt/*: Renamed src/ucdump.cc to src/ucxt.cc to avoid name
+	conflict, specifically under win32.
+
 2002-01-23  Darke  <darkepaw@users.sourceforge.net>
 	* exult.cc: Fixed a compile error with people compiling using
 	--enable-usecode-debugger.

@@ -5,7 +5,7 @@ INCLUDES = -I$(srcdir)/../include -I$(srcdir)/../../../conf -I$(srcdir)/../.. \
 ucxt_SOURCES = \
 	opcodes.cc \
 	ucdata.cc \
-	ucdump.cc \
+	ucxt.cc \
 	ucfunc.cc
 
 ucxt_LDADD = \
