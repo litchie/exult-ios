@@ -1,3 +1,9 @@
+exult (1.00-alpha2) unstable; urgency=low
+
+  * Changed Suggests: timidity to Recommends: timidity
+
+ -- Dancer Vesperman <dancer@users.sourceforge.net>  Fri, 10 Nov 2000 13:42:37 +1100
+
 exult (1.00-alpha1) unstable; urgency=low
 
   * Initial Alpha Release.
