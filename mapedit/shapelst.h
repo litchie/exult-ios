@@ -79,7 +79,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 					// List of files being edited by an
 					//   external program (Gimp, etc.)
 	static std::vector<Editing_file*> editing_files;
-
+	static int check_editing_timer;	// For monitoring files being edited.
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
 	virtual void show()
@@ -140,7 +140,7 @@ public:
 	void edit_shape();		// Edit selected shape-frame.
 					// Deal with list of files being edited
 					//   by an external prog. (Gimp).
-	static void check_editing_files();
+	static gint check_editing_files(gpointer data = 0);
 	static void import_shape(Editing_file *ed);
 	static void clear_editing_files();
 					// Give dragged shape.
