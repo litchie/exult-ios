@@ -49,6 +49,7 @@ class Actor : public Container_game_object, public Time_sensitive
 					// A frame sequence for each dir.:
 	static Frames_sequence *frames[8];
 protected:
+	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Game_object *spots[12];		// Where things can go.  See 'Spots'
 					//   below for description.
 	unsigned char two_handed;	// Carrying a two-handed item.
@@ -58,6 +59,8 @@ protected:
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   actor not moving.
 	void init();			// Clear stuff during construction.
+					// Read from file.
+	Actor(istream& nfile, int num, int has_usecode);
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
@@ -246,6 +249,8 @@ public:
 	Main_actor(char *nm, int shapenum, int num = -1, int uc = -1)
 		: Actor(nm, shapenum, num, uc)
 		{  }
+					// Read from file.
+	Main_actor(istream& nfile, int num, int has_usecode);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 	void get_followers();		// Get party to follow.
@@ -418,13 +423,14 @@ class Npc_actor : public Actor
 					//   to avoid being added twice.
 protected:
 	unsigned char dormant;		// I.e., off-screen.
-	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	unsigned char num_schedules;	// # entries below.
 	Schedule *schedule;		// Current schedule.
 	Schedule_change *schedules;	// List of schedule changes.
 	short alignment;		// 'Feelings' towards Avatar.
 public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
+					// Read from file.
+	Npc_actor(istream& nfile, int num, int has_usecode);
 	~Npc_actor();
 	Npc_actor *get_next()
 		{ return next; }
@@ -488,6 +494,8 @@ public:
 	Monster_actor(char *nm, int shapenum, int fshape = -1, int uc = -1)
 		: Npc_actor(nm, shapenum, fshape, uc)
 		{  }
+					// Read from file.
+	Monster_actor(istream& nfile, int num, int has_usecode);
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
 	};
