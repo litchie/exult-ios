@@ -292,6 +292,20 @@ void Actor::activate
 	}
 
 /*
+ *	Drop another onto this.
+ *
+ *	Output:	0 to reject, 1 to accept.
+ */
+
+int Actor::drop
+	(
+	Game_object *obj
+	)
+	{
+	return (add(obj));		// We'll take it.
+	}
+
+/*
  *	Get name.
  */
 
@@ -783,6 +797,86 @@ void Loiter_schedule::now_what
 	}
 
 /*
+ *	Create schedule for walking to the next schedule's destination.
+ */
+
+Walk_to_schedule::Walk_to_schedule
+	(
+	Npc_actor *n,
+	Tile_coord d,			// Destination.
+	int new_sched			// Schedule when we get there.
+	) : Schedule(n), dest(d), new_schedule(new_sched), legs(0), retries(0)
+	{
+	}
+
+/*
+ *	Schedule change for walking to another schedule destination.
+ */
+
+void Walk_to_schedule::now_what
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (npc->get_abs_tile_coord().distance(dest) <= 3)
+		{			// Close enough!
+					// Careful!  We're deleting ourself.
+		int newsched = new_schedule;
+		npc->set_schedule_type(newsched);
+		return;
+		}
+	if (legs >= 3 || retries >= 3)	// Trying too hard?
+		{			// Going to jump there.
+					// Store old chunk list.
+		Chunk_object_list *olist = gwin->get_objects(
+						npc->get_cx(), npc->get_cy());
+		int cx = dest.tx/tiles_per_chunk, cy = dest.ty/tiles_per_chunk,
+		    tx = dest.tx%tiles_per_chunk, ty = dest.ty%tiles_per_chunk;
+		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+		gwin->add_dirty(npc);	// Want to repaint old area.
+					// Move it.
+		npc->move(olist, cx, cy, nlist, tx, ty, -1);
+		gwin->add_dirty(npc);	// And repaint new area.
+		if (nlist != olist)
+			npc->switched_chunks(olist, nlist);
+		int newsched = new_schedule;
+		npc->set_schedule_type(newsched);
+		return;
+		}
+					// Get screen rect. in tiles.
+	Rectangle screen(gwin->get_chunkx()*tiles_per_chunk,
+			gwin->get_chunky()*tiles_per_chunk,
+			1 + gwin->get_width()/tilesize,
+			1 + gwin->get_height()/tilesize);
+	screen.enlarge(16);		// Enlarge by a chunk in all dirs.
+					// Destination off the screen?
+	if (!screen.has_point(dest.tx, dest.ty))
+		{
+		Tile_coord cur = npc->get_abs_tile_coord();
+#if 0
+		if (!screen.has_point(cur.tx, cur.ty))
+#endif
+			{		// Force teleport on next tick.
+			retries = 100;
+			npc->walk_to_tile(dest, 200, 100);
+			return;
+			}
+				// ++++Want to just walk off screen?
+		}
+					// Create path to dest.
+	if (!npc->walk_path_to_tile(dest))
+		{			// Wait 1/3 sec., then try again.
+		npc->walk_to_tile(dest, 200, 300);
+		retries++;		// Failed.  Try again next tick.
+		}
+	else				// Okay.  He's walking there.
+		{
+		legs++;
+		retries = 0;
+		}
+	}
+
+/*
  *	Set a schedule.
  */
 
@@ -841,21 +935,13 @@ void Npc_actor::update_schedule
 	for (int i = 0; i < num_schedules; i++)
 		if (schedules[i].get_time() == hour3)
 			{		// Found entry.
-					// Store old chunk list.
-			Chunk_object_list *olist = gwin->get_objects(
-							get_cx(), get_cy());
-			int new_cx, new_cy, tx, ty;
-			schedules[i].get_pos(new_cx, new_cy, tx, ty);
-#if DEBUG
-cout << "Npc " << get_name() << " has new schedule " << schedule << '\n';
-#endif
-			Chunk_object_list *nlist = 
-					gwin->get_objects(new_cx, new_cy);
-					// Move it.
-			move(olist, new_cx, new_cy, nlist, tx, ty, -1);
-			if (nlist != olist)
-				switched_chunks(olist, nlist);
-			set_schedule_type(schedules[i].get_type());
+			stop();		// Stop moving.
+					// Going to walk there.
+			schedule_type = Schedule::walk_to_schedule;
+			delete schedule;
+			schedule = new Walk_to_schedule(this, 
+						schedules[i].get_pos(),
+						schedules[i].get_type());
 			return;
 			}
 	}
