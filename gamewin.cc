@@ -1765,9 +1765,11 @@ int Game_window::get_party
 /*
  *	Find a given shaped item amongst the party, and 'activate' it.  This
  *	is used, for example, by the 'f' command to feed.
+ *
+ *	Output:	True if the item was found, else false.
  */
 
-void Game_window::activate_item
+bool Game_window::activate_item
 	(
 	int shnum,			// Desired shape.
 	int frnum,			// Desired frame
@@ -1783,9 +1785,10 @@ void Game_window::activate_item
 		if (obj)
 			{
 			obj->activate();
-			return;
+			return true;
 			}
 		}
+	return false;
 	}
 /*
  *	Find the top object that can be selected, dragged, or activated.

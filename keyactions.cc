@@ -220,6 +220,16 @@ void ActionUseItem(int *params)
 	Mouse::mouse->set_speed_cursor();
 }
 
+//  { ActionUseItem, 3, "Use food", false, false, NONE },
+void ActionUseFood(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	if (!gwin->activate_item(377) &&	// First try normal food items.
+	    GAME_SI)			// SI has 'everlasting goblet'.
+		gwin->activate_item(0x268, 20);
+	Mouse::mouse->set_speed_cursor();
+}
+
 //  { ActionCombat, 0, "Toggle combat", true, false, NONE },
 void ActionCombat(int *params)
 {

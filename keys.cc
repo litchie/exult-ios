@@ -98,6 +98,7 @@ const struct Action {
 	  ActionFullscreen, 0, "Toggle fullscreen", true, false, NONE, true },
 	
 	{ "USEITEM", ActionUseItem, 0, "Use item", false, false, NONE, false },
+	{ "USEFOOD", ActionUseFood, 0, "Use food", false, false, NONE, false },
 	{ "TOGGLE_COMBAT", ActionCombat, 0, "Toggle combat", true, false, NONE, false },
 	{ "TARGET_MODE", ActionTarget, 0, "Target mode", true, false, NONE, false },
 	{ "INVENTORY", ActionInventory, 0, "Show inventory", true, false, NONE, false },
