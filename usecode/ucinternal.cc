@@ -1298,7 +1298,7 @@ const char *Usecode_internal::get_user_choice
 	)
 	{
 	if (!conv->get_num_answers())
-		return (0);		// Shouldn't happen.
+		return (0);		// This does happen (Emps-honey).
 	if (!user_choice)		// May have already been done.
 		get_user_choice_num();
 	return (user_choice);
@@ -1529,11 +1529,13 @@ int Usecode_internal::run
 		switch (opcode)
 			{
 		case 0x04:  // start conversation
-			get_user_choice();
+			{
+			offset = (short) Read2(ip);
 			found_answer = false;
-			ip += 2; // what does this parameter do???
-
+			if (!get_user_choice())	// Exit conv. if no choices.
+				ip += offset;	// (Emp's and honey.)
 			break;
+			}
 		case 0x05:		// JNE.
 			{
 			offset = (short) Read2(ip);
