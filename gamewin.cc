@@ -761,6 +761,35 @@ void Game_window::clear_world
 	}
 
 /*
+ *	Look throughout the map for a given shape.  The search starts at
+ *	the first currently-selected shape, if possible.
+ *
+ *	Output:	true if found, else 0.
+ */
+
+bool Game_window::locate_shape
+	(
+	int shapenum,			// Desired shape.
+	bool upwards			// If true, search upwards.
+	)
+	{
+					// Get (first) selected object.
+	const std::vector<Game_object *>& sel = cheat.get_selected();
+	Game_object *start = sel.size() ? sel[0] : 0;
+	Game_object *obj = map->locate_shape(shapenum, upwards, start);
+	if (!obj)
+		return false;		// Not found.
+	cheat.clear_selected();		// Select obj.
+	cheat.append_selected(obj);
+					//++++++++Got to show it.
+	Game_object *owner = obj->get_outermost(); //+++++TESTING
+	if (owner != obj)
+		cheat.append_selected(owner);
+	center_view(owner->get_tile());	//++++Testing.
+	return true;
+	}
+
+/*
  *	Set location to ExultStudio.
  */
 

@@ -154,6 +154,9 @@ public:
 	void abort_terrain_edits();
 					// Search entire game for unused.
 	void find_unused_shapes(unsigned char *found, int foundlen);
+					// Locate shape (for EStudio).
+	Game_object *locate_shape(int shapenum, bool upwards, 
+							Game_object *start);
 	};
 
 #endif
