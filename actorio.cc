@@ -54,7 +54,7 @@ Actor::Actor
 	int num,			// NPC #, or -1.
 	int has_usecode			// 1 if a 'type1' NPC.
 	) : Container_game_object(), npc_num(num), party_id(-1), 
-	    shape_save(-1), oppressor(-1),
+	    shape_save(-1), oppressor(-1), target(0),
 	    attack_mode(nearest), schedule(0), schedule_loc(0,0,0),
 	    next_schedule(255), dormant(true), hit(false), alignment(0),
 	    two_handed(0),

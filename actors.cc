@@ -378,7 +378,7 @@ Actor::Actor
 	int uc				// Usecode #.
 	) : Container_game_object(), name(nm),usecode(uc), 
 	    npc_num(num), party_id(-1), shape_save(-1), 
-	    oppressor(-1), attack_mode(nearest),
+	    oppressor(-1), target(0), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
 	    dead(false), hit(false), combat_protected(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
@@ -838,27 +838,15 @@ void Actor::get_tile_info
  *	Set combat opponent.
  */
 
-void Actor::set_opponent
+void Actor::set_target
 	(
-	Game_object *obj
+	Game_object *obj,
+	bool start_combat		// If true, set sched. to combat.
 	)
 	{
-	if (schedule_type != Schedule::combat || !schedule)
+	target = obj;
+	if (start_combat && schedule_type != Schedule::combat || !schedule)
 		set_schedule_type(Schedule::combat);
-	if (schedule)
-		schedule->set_opponent(obj);
-	start(100);			// Get going if not already.
-	}
-
-/*
- *	Return current opponent.
- */
-
-Game_object *Actor::get_opponent
-	(
-	)
-	{
-	return schedule ? schedule->get_opponent() : 0;
 	}
 
 /*

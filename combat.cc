@@ -53,6 +53,10 @@ void Combat_schedule::start_battle
 	(
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+					// But only if Avatar is main char.
+	if (gwin->get_camera_actor() != gwin->get_main_actor())
+		return;
 	unsigned long curtime = SDL_GetTicks();
 					// .5 minute since last start?
 	if (!started_battle && curtime - battle_time >= 30000)
@@ -116,7 +120,7 @@ void Combat_schedule::find_opponents
 	if (opponents.empty() && npc->get_party_id() >= 0 &&
 	    npc != gwin->get_main_actor())
 	{
-		Game_object *opp = gwin->get_main_actor()->get_opponent();
+		Game_object *opp = gwin->get_main_actor()->get_target();
 		if (opp && opp != npc && (opp->get_npc_num() > 0 ||
 					opp->is_monster()))
 			opponents.push((Actor *)opp);
@@ -154,7 +158,7 @@ Actor *Combat_schedule::find_protected_attacker
 						it != opponents.end(); ++it)
 		{
 		Actor *opp = *it;
-		if (opp->get_opponent() == prot_actor &&
+		if (opp->get_target() == prot_actor &&
 		    (dist = npc->distance(opp)) < best_dist)
 			{
 			best_dist = dist;
@@ -272,6 +276,7 @@ void Combat_schedule::approach_foe
 	(
 	)
 	{
+	Game_object *opponent = npc->get_target();
 					// Find opponent.
 	if (!opponent && !(opponent = find_foe()))
 		{
@@ -279,6 +284,7 @@ void Combat_schedule::approach_foe
 		npc->start(200, 200);	// Try again in 1/5 sec.
 		return;			// No one left to fight.
 		}
+	npc->set_target(opponent);
 	Actor::Attack_mode mode = npc->get_attack_mode();
 	Game_window *gwin = Game_window::get_game_window();
 					// Time to run?
@@ -297,7 +303,7 @@ void Combat_schedule::approach_foe
 	if (!path->NewPath(pos, opponent->get_abs_tile_coord(), &cost))
 		{			// Failed?  Try nearest opponent.
 		failures++;
-		opponent = find_foe(Actor::nearest);
+		npc->set_target(opponent = find_foe(Actor::nearest));
 		Monster_pathfinder_client cost(npc, max_range, opponent);
 		if (!opponent || !path->NewPath(
 				pos, opponent->get_abs_tile_coord(), &cost))
@@ -383,6 +389,7 @@ void Combat_schedule::start_strike
 	Rectangle& opprect	// Npc, opponent rectangles.
 	)
 	{
+	Game_object *opponent = npc->get_target();
 					// Close enough to strike?
 	if (strike_range && (!projectile_range ||
 		npcrect.enlarge(strike_range).intersects(opprect)))
@@ -434,9 +441,10 @@ void Combat_schedule::start_strike
 		Audio::get_ptr()->play_sound_effect(sfx);
 					// Have them attack back.
 	Actor *opp = dynamic_cast<Actor *> (opponent);
-					// But only if it's a monster.????Why??
-	if (opp && !opp->get_opponent() /* +++Why?? && opp->is_monster() */)
-		opp->set_opponent(npc);
+					// But not if it's a party member.
+	if (opp && !opp->get_target() && opp != gwin->get_main_actor() &&
+	    opp->get_party_id() < 0)
+		opp->set_target(npc, true);
 	}
 
 /*
@@ -625,16 +633,17 @@ void Combat_schedule::now_what
 		return;
 		}
 					// Check if opponent still breathes.
-	if (Need_new_opponent(gwin, opponent))
+	if (Need_new_opponent(gwin, npc->get_target()))
 		{
-		opponent = 0;
+		npc->set_target(0);
 		if (state != initial)
 			state = approach;
 		}
+	Game_object *opponent = npc->get_target();
 	switch (state)			// Note:  state's action has finished.
 		{
 	case initial:			// Way far away (50 tiles)?
-		if (npc->distance(gwin->get_main_actor()) > 50)
+		if (npc->distance(gwin->get_camera_actor()) > 50)
 			return;		// Just go dormant.
 		state = approach;	// FALL THROUGH.
 	case approach:
@@ -671,7 +680,7 @@ void Combat_schedule::now_what
 				set_weapon_info();
 				}
 					// This may delete us!
-			opponent = opponent->attacked(npc);
+			opponent->attacked(npc);
 			return;		// We may no longer exist!
 			}
 		break;
@@ -767,6 +776,7 @@ void Combat_schedule::ending
 		}
 	}
 
+#if 0
 /*
  *	Set opponent.  (Gets called when you double-click on one.)
  */
@@ -784,17 +794,7 @@ void Combat_schedule::set_opponent
 	    (opp = dynamic_cast<Actor *>(obj)) != 0)
 		start_battle();			// Play music.
 	}
-
-/*
- *	Get opponent.
- */
-
-Game_object *Combat_schedule::get_opponent
-	(
-	)
-	{
-	return opponent;
-	}
+#endif
 
 /*
  *	Create duel schedule.
@@ -820,10 +820,11 @@ void Duel_schedule::find_opponents
 	opponents.clear();
 	Actor_vector vec;			// Find all nearby NPC's.
 	npc->find_nearby_actors(vec, c_any_shapenum, 24);
-	for (Actor_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Actor_vector::const_iterator it = vec.begin(); it != vec.end();
+									 ++it)
 		{
 		Actor *opp = *it;
-		Game_object *oppopp = opp->get_opponent();
+		Game_object *oppopp = opp->get_target();
 		if (opp != npc && opp->get_schedule_type() == duel &&
 		    (!oppopp || oppopp == npc))
 			if (rand()%2)
@@ -850,7 +851,7 @@ void Duel_schedule::now_what
 		}
 	if (attacks%8 == 0)		// Time to break off.
 		{
-		opponent = 0;
+		npc->set_target(0);
 		Tile_coord pos = start;
 		pos.tx += rand()%24 - 12;
 		pos.ty += rand()%24 - 12;
