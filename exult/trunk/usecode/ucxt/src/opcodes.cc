@@ -5,6 +5,7 @@
 #include "opcodes.h"
 #include <cstdlib>
 #include <iomanip>
+#include <fstream>
 
 /* Opcode table - common to BG & SI */
 const opcode_desc opcode_table[] =
@@ -632,8 +633,12 @@ const char* bg_func_table[] =
     */
 };
 
+vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
+
 map<unsigned int, string> bg_uc_intrinsics;
 map<unsigned int, string> si_uc_intrinsics;
+
+vector<string> str2vec(const string &s);
 
 /* constructs the static usecode tables from other include files in the /exult hierachy,
    static by compilation.
@@ -661,7 +666,31 @@ void init_static_usecodetables()
 /* constructs the usecode tables from datafiles in the /ucxt hierachy */
 void init_usecodetables()
 {
-
+	// TODO: Some REAL file handling? Please?
+	ifstream file("Docs/opcodes.txt");
+	
+	if(file.fail())
+	{
+		cout << "error. could not locate Docs/opcodes.txt. exiting." << endl;
+		exit(1);
+	}
+	
+	string s;
+	while(!file.eof())
+	{
+		getline(file, s);
+		if(s.size() && s[0]=='>')
+		{
+			UCOpcodeData uco(str2vec(s));
+			assert(uco.opcode<MAX_NO_OPCODES);
+			opcode_table_data[uco.opcode] = uco;
+		}	
+	}
+	#if 0 //test
+	for(vector<UCOpcodeData>::iterator i=opcode_table_data.begin(); i!=opcode_table_data.end(); i++)
+		if(i->asm_nmo!="" || i->ucs_nmo!="")
+			cout << i->opcode << "\t" << i->asm_nmo << "\t" << i->ucs_nmo << "\t" << i->num_bytes << "\t" << i->param_types << endl;
+	#endif ///test
 }
 
 vector<string> str2vec(const string &s)
@@ -692,7 +721,7 @@ vector<string> str2vec(const string &s)
 
 			lasti=i+1;
 		}
-		if(i==s.size())
+		if(i==s.size()-1)
 			if(lasti!=i)
 			{
 				if((s[lasti]=='"') && (s[i]=='"'))
@@ -701,8 +730,8 @@ vector<string> str2vec(const string &s)
 						vs.push_back(s.substr(lasti+1, i-lasti-2));
 				}
 				else
-					vs.push_back(s.substr(lasti, i-lasti));
-			}
+					vs.push_back(s.substr(lasti, i-lasti+1));
+		}
 	}
 
 	#if 0 //test

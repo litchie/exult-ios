@@ -1,3 +1,9 @@
+2001-07-26  Patrick Burke <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*.[cc|h]: integration with exult .xml config file;
+	proto-integration with opcodes.txt data file; replaced all legacy
+	FILE* with C++ iostreams.
+	* usecode/ucxt/Docs/opcodes.txt: corrections and additions.
+
 2001-07-25  Tristan Tarrant <nadir@users.sourceforge.net>
 	* mapedit/*.cc: wrapped gdkx.h header in #ifdef XWIN/#endif
 

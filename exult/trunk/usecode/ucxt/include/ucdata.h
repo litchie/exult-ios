@@ -14,6 +14,8 @@ enum { GAME_BG=1, GAME_SI=2 };
 const unsigned int MAX_OPCODE_BUF = 256;
 const unsigned int MAX_INTRINSIC_BUF = 256;
 
+class UCFuncNew;
+
 class UCData
 {
 	public:
@@ -32,10 +34,14 @@ class UCData
 		void disassamble_all(const char **func_table);
 		void dump_flags(const char **func_table);
 		
+		bool noconf() const { return _noconf; };
+		bool verbose() const { return _verbose; };
+		
  		unsigned int mode() const { return _mode; };
  		void mode(const unsigned int mode) { _mode=mode; };
 		unsigned int game() const { return _game; };
  		//unsigned long filesize() const { return _filesize; }
+		string output_redirect() const { return _output_redirect; };
 		
 		bool fail() const { return _file.fail();/*_fail;*/ };
 	
@@ -44,16 +50,19 @@ class UCData
 		void file_open(const string &filename);
 		void file_seek_start() { _file.seekg(0, ios::beg); /*fseek(_file, 0, SEEK_SET);*/ };
 		void file_seek_end() { _file.seekg(0, ios::end); /*fseek(_file, 0, SEEK_END);*/ };
-		// FIXME: file_size() is destructive to current position, complient with ucdump
-		//long file_size() { file_seek_end(); long fs = ftell(_file); file_seek_start(); return fs; };
 		
+		// temporary
+		void readbin_UCFunc(ifstream &f, UCFuncNew &ucf);
+
 		ifstream _file;
 		
-  		//bool _fail;
+		bool _noconf;
+		bool _verbose;
+		
 		unsigned int _mode;
 		unsigned int _game;
 		
-		//unsigned long _filesize;
+		string _output_redirect;
 		
 		unsigned int _funcid;
 		

@@ -23,7 +23,6 @@ UCFunc::~UCFunc()
 /* Prints module's data segment */
 void UCFunc::process_data_seg()
 {
-  //long pos = ftell();
 	streampos pos = _file->tellg();
 	
 	unsigned short off = 0;
@@ -44,7 +43,7 @@ void UCFunc::process_data_seg()
 		off+=data.size()+1;
 
 	}
-	fseekbeg(pos); //fseek(pos, SEEK_SET);
+	fseekbeg(pos);
 }
 
 #include "opcodes.h"
