@@ -167,7 +167,6 @@ void Shape_chooser::render
 		select(new_selected);
 }
 	
-
 /*
  *	Configure the viewing window.
  */
@@ -180,24 +179,11 @@ gint Shape_chooser::configure
 	)
 	{
 	Shape_chooser *chooser = (Shape_chooser *) data;
-	if (!chooser->iwin)		// First time?
-		{
-		chooser->drawgc = gdk_gc_new(widget->window);
-					// Foreground = yellow.
-		gdk_rgb_gc_set_foreground(chooser->drawgc,
-							(255<<16) + (255<<8));
-		chooser->iwin = new Image_buffer8(
-			widget->allocation.width, widget->allocation.height);
-		}
-	else
-		{
-		delete chooser->iwin;
-		chooser->iwin = new Image_buffer8(
-			widget->allocation.width, widget->allocation.height);
-		}
+	chooser->Shape_draw::configure(widget);
 	chooser->render();
 	return (TRUE);
 	}
+
 
 /*
  *	Handle an expose event.
