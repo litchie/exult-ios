@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "ucmachine.h"
 #include "Spellbook_gump.h"
+#include "spellbook.h"
 
 extern Cheat cheat;
 

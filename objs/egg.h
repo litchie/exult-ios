@@ -32,7 +32,7 @@ class	Animator;
 class   Monster_actor;
 class 	Missile_launcher;
 
-#include "objs.h"
+#include "iregobjs.h"
 
 /*
  *	Here's a class for eggs and paths; i.e., objects that generally aren't

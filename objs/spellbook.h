@@ -1,12 +1,12 @@
 /**	-*-mode: Fundamental; tab-width: 8; -*-
  **
- **	Virstone.h - Virtue stones.
+ **	Spellbook.h - Spellbook object.
  **
- **	Written: 10/27/2000 - JSF
+ **	Written: 10/1/98 - JSF
  **/
 
 /*
-Copyright (C) 2000  Jeffrey S. Freedman
+Copyright (C) 2000 The Exult Team.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,29 +23,28 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef INCL_VIRSTONE
-#define INCL_VIRSTONE	1
+#ifndef INCL_SPELLBOOK
+#define INCL_SPELLBOOK	1
 
-#include "objs.h"
+#include "iregobjs.h"
 
 /*
- *	A virtue stone can be set to a position on the map.
+ *	A spellbook:
  */
-class Virtue_stone_object : public Ireg_game_object
+class Spellbook_object : public Ireg_game_object
 	{
-	Tile_coord pos;			// Position it teleports to.
+	unsigned char circles[9];	// Spell-present flags for each circle.
+	unsigned long flags;		// Unknown at present.
+	int bookmark;			// Spell # that bookmark is on, or -1.
 public:
-	Virtue_stone_object(int shapenum, int framenum, unsigned int tilex, 
-				unsigned int tiley, unsigned int lft)
-		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
-			pos(0, 0, 0)
-		{  }
-	void set_pos(Tile_coord t)	// Set/get position.
-		{ pos = t; }
-	void set_pos(unsigned char tilex, unsigned char tiley,
-			unsigned char schunk, unsigned char lft);
-	Tile_coord get_pos()
-		{ return pos; }
+	friend class Spellbook_gump;
+					// Create from ireg. data.
+	Spellbook_object(int shapenum, int framenum, unsigned int shapex,
+		unsigned int shapey, unsigned int lft, unsigned char *c,
+		unsigned long f);
+	int add_spell(int spell);	// Add a spell.
+					// Run usecode function.
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Write out to IREG file.
 	virtual void write_ireg(std::ostream& out);
 	};
