@@ -361,7 +361,7 @@ void Spellbook_gump::change_page
 	int nframes = shape.get_num_frames();
 	int i;
 	turning_frame = turning_page == 1 ? 0 : nframes - 1;
-	for (int i = 0; i < nframes; i++)	// Animate.
+	for (i = 0; i < nframes; i++)	// Animate.
 		{
 		if (i == nframes/2)
 			{

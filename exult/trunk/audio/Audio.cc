@@ -563,7 +563,7 @@ static	sint16 *resample_new(uint8 *src,
 	// Compute the output size (times 4 since it is 16 stereo)
 	size = (size * wanted_rate / rate) << 2;
 
-	sint16 *stereo_data = new sint16[size];
+	sint16 *stereo_data = new sint16 [size];
 	sint16 *data = stereo_data;
 	uint8 *src_end = src + sourcelen;
 

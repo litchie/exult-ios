@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GX /Zi /O1 /Ob0 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /I "..\tools" /FI"msvc_kludges.h" /D "NDEBUG" /D "_CONSOLE" /D "EXULT" /D "WIN32" /D "_MBCS" /Yu"msvc_kludges.h" /FD /TP /c
+# ADD CPP /nologo /G6 /MT /W3 /GX /Zi /O1 /Ob0 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /I "..\tools" /FI"msvc_kludges.h" /D "NDEBUG" /D "_CONSOLE" /D "EXULT" /D "WIN32" /D "_MBCS" /Yu"msvc_kludges.h" /FD /TP /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
@@ -822,6 +822,14 @@ SOURCE=..\palette.cc
 # End Source File
 # Begin Source File
 
+SOURCE=..\party.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\party.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\paths.cc
 # End Source File
 # Begin Source File
@@ -926,6 +934,14 @@ SOURCE=..\files\listfiles.cc
 # End Source File
 # Begin Source File
 
+SOURCE=..\files\msgfile.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\msgfile.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\files\Table.cc
 # End Source File
 # Begin Source File
@@ -970,6 +986,10 @@ SOURCE=..\gumps\AudioOptions_gump.h
 # Begin Source File
 
 SOURCE=..\gumps\Book_gump.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gumps\CombatOptions_gump.h
 # End Source File
 # Begin Source File
 
@@ -1095,6 +1115,10 @@ SOURCE=..\gumps\AudioOptions_gump.cc
 # Begin Source File
 
 SOURCE=..\gumps\Book_gump.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\gumps\CombatOptions_gump.cc
 # End Source File
 # Begin Source File
 
@@ -1898,11 +1922,11 @@ SOURCE=..\Makefile.common
 # End Source File
 # Begin Source File
 
-SOURCE=..\Makefile.cygwin
+SOURCE=..\Makefile.mingw
 # End Source File
 # Begin Source File
 
-SOURCE=..\Makefile.win32
+SOURCE=..\Makefile.MorphOS
 # End Source File
 # Begin Source File
 
@@ -1945,9 +1969,5 @@ SOURCE=..\README.MacOS
 SOURCE=..\README.win32
 # End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\pocket.txt
-# End Source File
 # End Target
 # End Project
