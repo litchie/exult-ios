@@ -672,7 +672,13 @@ void Slider_gump_object::set_val
 	{
 	val = newval;
 	static int xdist = xmax - xmin;
-	diamondx = xmin + ((val - min_val)*xdist)/(max_val - min_val);
+	if(max_val-min_val==0)
+		{
+		val=0;
+		diamondx=xmin;
+		}
+	else
+		diamondx = xmin + ((val - min_val)*xdist)/(max_val - min_val);
 	Game_window *gwin = Game_window::get_game_window();
 	}
 
