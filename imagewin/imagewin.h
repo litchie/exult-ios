@@ -179,6 +179,8 @@ public:
 					// Put rect. back.
 	void put(Image_buffer *src, int destx, int desty)
 		{ ibuf->put(src, destx, desty); }
+
+	bool screenshot(SDL_RWops *dst);
 	};
 
 
