@@ -1,17 +1,19 @@
 Exult Studio Documentation
-last changed: 06 May 2002(GMT)
+last changed: 19 May 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/studio.php
 
 
 0. Changes to the Documentation
-0.1. 06 May 2002
-0.2. 03 May 2002
-0.3. 07 April 2002
+0.1. 19 May 2002
+0.2. 06 May 2002
+0.3. 03 May 2002
+0.4. 07 April 2002
 
 1. Introduction
 1.1. What is Exult Studio?
-1.2. Terms we use in regard to Exult and Ultima 7
+1.2. About this Documentation.
+1.3. Terms we use in regard to Exult and Ultima 7
 
 2. Configurations
 2.1. Installation
@@ -55,7 +57,16 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. 06 May 2002
+0.1. 19 May 2002
+* 1.2. About this Documentation. Some notes for the reader.
+* 3.3. Mode Select-mode is now implemented and added a note about dragging.
+* 3.5. Tool bar added "Hide lift" option.
+* 5.2. The shape editor "New Shape" also lets you add a font shape.
+* 5.5. Creating Combination files Combinations now do work fully.
+
+
+
+0.2. 06 May 2002
 * 2.4. Command line options -d option no longer exists.
 * 3.3. Mode more information on Pick- and Combo-mode.
 * 4. Main Working Window added (working title only).
@@ -64,7 +75,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. 03 May 2002
+0.3. 03 May 2002
 This is the second draft of the Exult Studio documentation.
 * 2.4. Command line options I had spaces between the commands and the options.
 * 3. Menu Options description of all the Menu Options.
@@ -77,7 +88,7 @@ This is the second draft of the Exult Studio documentation.
 
 
 
-0.3. 07 April 2002
+0.4. 07 April 2002
 This is the first draft of the Exult Studio documentation. So please bear with me. It is by no means perfect and I ask you to send me all your comments on how to better express some stuff or to point out what I just plain forgot. Dominus
 
 
@@ -91,7 +102,12 @@ Currently there are many steps required to create a new game but at the moment t
 Editing a copyrighted game may or may not be allowed. Please exercise caution especially if you want to distribute your changes.
 
 
-1.2. Terms we use in regard to Exult and Ultima 7
+1.2. About this Documentation.
+Exult Studio is work in progress. How things work may change and new features are added very frequently. Due to the lazy nature of the maintainer (Dominus) of this documentation it might not always be up to date. As we do not have an official release yet this documentation refers to recent snapshots.
+Note that you also need an up to date (aka recent snapshot) version of Exult to have Exult Studio working properly.
+
+
+1.3. Terms we use in regard to Exult and Ultima 7
 Along with the terms explained in ReadMe.txt there are some more terms that need to be explained for the usage of Exult Studio
 * tile: 8x8 pixels
 * chunk: 16x16 tiles
@@ -200,10 +216,11 @@ It describes how the mouse behaves inside Exult when map-editing.
 * Move This is the normal mode where you can drag things with the mouse, or single-click to identify objects.
 * Paint a single-left-click inserts the last-selected shape from 'shapes.vga', and dragging with the left-button inserts that shape in every tile (so you'd probably only want to do this with 8x8 flat shapes). Also, in 'Paint' mode, the footprint at ground level is shown (though this may be changed in the future). If you hold the alt key down, random frames from the currently-selected shape will be painted (handy for grassy areas).
 * Pick for Combo Picks objects for a new combo file. Double-left-click to add objects to the combo, single-left-click to identify object. See 5.5. Creating Combination files
-* Select not yet implemented (?)
+* Select In this mode you can select objects and move the selection Ctrl-arrow (x,y coordinates) and ctrl-page keys (z coordinates).
 * Hide not yet implemented (?)
 * Unhide not yet implemented (?)
 
+Note that you can only drag objects in the game window when you are in "Move" mode.
 
 
 3.4. Tools
@@ -213,9 +230,10 @@ It describes how the mouse behaves inside Exult when map-editing.
 
 
 3.5. Tool bar
-* Play Game This is the same as pressing 'Alt+Ctrl+M' in Exult. It exits the Map Edit Mode and lets you play the game. By pressing it again you enter Map Edit Mode again.
+* Play This is the same as pressing 'Alt+Ctrl+M' in Exult. It exits the Map Edit Mode and lets you play the game. By pressing it again you enter Map Edit Mode again.
 * Tile Grid Shows a grid in the game window for better control on placing objects.
 * Edit lift: Changes the lift of a selected object in the game window. Lift means the distance of an object from the ground.
+* Hide lift: Hides objects that are above the choosen height.
 * Edit terrain See 5.1. What you can do at the moment. Note that a terrain is used in multiple instances of the map and changing it in one place changes it in all the others as well.
 
 
@@ -302,7 +320,7 @@ When you right click on a shape in the Shape browser (e.g. Files-Shapes.vga) you
 * Edit...: Brings up your image-editor on the chosen frame. When you save in the image-editor, ES will read the changes back within 5 seconds. This is especially convenient if you have 'gimp-remote', as it will open a window for the frame in an already-running gimp.
 * Edit tiled: This is only for 'flat' (8x8) shapes. It forms an image from all the frames and brings it up in the image-editor. This is really handy for making lots of terrain frames like grass. A dialog lets you choose the dimensions.
 * New frame: Creates a new frame after the currently-selected one. The 'insert' key also does this (and the 'del' key deletes a frame, though it's buggy if there's just one frame left).
-* New shape: Gives you a dialog for choosing the shape #, as well as the initial # of frames.
+* New shape: Gives you a dialog for choosing the shape #, as well as the initial # of frames. You can also create a new font shape from TrueType or Type1 font files. It's mainly a convenience for someone creating a whole new game, as their only single-colored. Maybe in the future we'll have some functions to create two-colored fonts like the main one in U7, although it might take hand-editing to make the letters look that nice.
 * Import/Export frame: Let's you import a single frame from a .png file or export to a .png.
 
 Note:Edit... doesn't work on Windows system. It stores the shape as PNG file in GAMEDIR/itmp/ (e.g. blackgate/itmp). If you manually open the file with an image editor of your liking and then save it, ES doesn't read the changes back.
@@ -317,7 +335,7 @@ sorry, not documented yet (very extensive work).
 
 
 5.5. Creating Combination files
-Create 'combination shapes', like a fence or an entire roof by selecting "Tools-New Combo" (see 3.4.). It's about half-done. To see what's there, choose the 'Combo pick' choice in the 'Modes' menu, and an empty window should pop up. In the game window, double-click a group of objects, and they should appear in the window. You can then select an object there and tweak its position. Nothing gets saved yet, when it does your combinations get saved in a file called combos.flx.
+Create 'combination shapes', like a fence or an entire roof by selecting "Tools-New Combo" (see 3.4.). When you run Exult Studio the first time a file called combos.flx gets automatically created in the "Patch" directory. Choose the 'Pick for Combo' choice in the 'Modes' menu, and an empty window should pop up. In the game window, double-click a group of objects, and they should appear in the window. You can then select an object there and tweak its position. When you are done hit aply and the combo gets temporally saved until you hit "Save all" or "Save - Save map". You can drag and drop combinations into the game window.
 
 
 5.6. Custom Usecode

@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="15 April 2002(GMT)">
+<readme title="Exult" changed="19 May 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="19052002">
+			<header>- 19 May 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="wave_sfx"/> added selection move keys.</li>
+				<li><ref1 target="linux_alsa"/> we advice using ALSA instead of OSS.</li>
+				<li><ref1 target="exult_cheats"/> added selection move keys.</li>			
+				</ul>
+			</body>
+		</sub>
 		<sub name="15042002">
 			<header>- 15 April 2002</header>
 			<body>
@@ -9,52 +19,6 @@
 				<li><ref1 target="whatis_exult"/> the Add-ons are NOT required for Exult to run.</li>
 				<li><ref1 target="exult_config"/> added Hebble's changes to set different paths.</li>
 				<li><ref1 target="path_config"/> example for Hebble's changes.</li>				
-				</ul>
-			</body>
-		</sub>
-		<sub name="07042002">
-			<header>- 07 April 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="whatis_exult"/> somehow we didn't mention Serpent Isle.</li>
-				<li><ref1 target="terms"/> added so people know what we are actually talking about.</li>
-				<li><ref1 target="exult_config"/> fixed error with save_compression_level.</li>				
-				<li><ref1 target="path_config"/> warned of spaces in paths.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="07032002">
-			<header>- 07 March 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_config"/> added &lt;combat&gt;&lt;difficulty&gt; and  
-					&lt;right_click_closes_gumps&gt;.</li>
-				<li><ref1 target="command_line"/> buildmap requires <Exult/> to run in windowed mode.</li>
-				<li><ref1 target="scaler"/> BillinearPlus.</li>
-				<li><ref1 target="gameplay_gump"/> Right click closes Gump added.</li>				
-				</ul>
-			</body>
-		</sub>
-		<sub name="07012002">
-			<header>- 07 January 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_config"/> added &lt;force_wavout&gt; and 
-					&lt;looping&gt;.</li>
-				<li><ref1 target="command_line"/> Some parameters for whoever dares to use them.</li>
-				<li><ref1 target="audio_gump"/> looping added.</li>
-				<li><ref1 target="quit_menu"/> removed in snapshots.</li>				
-				</ul>
-			</body>
-		</sub>		
-		<sub name="25112001">
-			<header>- 25 November 2001</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_config"/> added &lt;save_compression_level&gt; to zip up savegames,
-					&lt;waves&gt; no longer needs path set if in data dir.</li>
-				<li><ref1 target="wave_sfx"/> no longer needs paths for sfx pack (if in data dir).</li>
-				<li><ref1 target="scaler"/> updated link To Derek Liauw's scaler page.</li>
 				</ul>
 			</body>
 		</sub>
@@ -704,14 +668,10 @@
 					Note that configuring your soundfonts is not needed for digital wave sfx.
 				</para>
 				<para> 
-					The sfx pack made by Joseph Morris can be found at 
-					<extref target="http://prdownloads.sourceforge.net/exult/jmsfx.zip"/> (~4.55 MB) 
-					for "The Black Gate" and 
-					<extref target="http://prdownloads.sourceforge.net/exult/jmsfxsi.zip"/> (~6.01 MB) 
-					for "Serpent Isle".<br/>
-					J.Morris recorded the original sfx used in BG and SI which meant a lot of work. Don't 
-					complain that the sfx sounds strange, instead load up the original and you will 
-					find that it sounds the same. Enjoy!
+					 We curently have two soundpacks for each game. Joseph Morris recorded the original
+					 SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on
+					 our download page at 
+					<extref target="http://exult.sourceforge.net/download.php"/>.	
 				</para>
 				<para>
 					Extract the zip files into your Exult data directory and write down the name of the 
@@ -749,6 +709,19 @@
 					Press <key>Esc</key> to turn
 					on/off Music, Speech and SoundFX or change the settings in exult.cfg 
 					- see <ref target="exult_config"/>.
+				</para>
+			</body>
+		</sub>
+		<sub name="linux_alsa">
+			<header>Linux and Audio</header>
+			<body>
+				<para>
+					Apparently <Exult/> has some problem with OSS (Open Sound System - a commercial 
+					product that comes included with many Linux distributions).<br/>
+					Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture)
+					found at <extref target="http://www.alsa-project.org"/>. ALSA is going to replace OSS
+					in the upcoming 2.5 Kernel anyway.<br/>
+					We are sorry for this.
 				</para>
 			</body>
 		</sub>
@@ -903,6 +876,8 @@
 					<keydesc name="Alt-+/-">Switch resolution( you may have to use the keypad)</keydesc>
 					<keydesc name="Arrow keys">Scroll map</keydesc>
 					<keydesc name="Home">Recenter map</keydesc>
+					<keydesc name="Ctrl-Arrow keys">move selection (x,y coordinates)</keydesc>
+					<keydesc name="Ctrl-Page keys">move selection (z coordinates)</keydesc>
 					<keydesc name="F2">Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options</keydesc>
 					<keydesc name="F3">Map teleport</keydesc>
 					<keydesc name="F10">Show endgame</keydesc>

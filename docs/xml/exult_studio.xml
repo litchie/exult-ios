@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="06 May 2002(GMT)">
+<studiodoc title="Exult" changed="19 May 2002(GMT)">
 	<section title="Changes to the Documentation">		
+		<sub name="19052002">
+			<header>19 May 2002</header>
+			<body>
+				<ul>
+					<li><ref1 target="about_doc"/> Some notes for the reader.</li>
+					<li><ref1 target="mode_menu"/> Select-mode is now implemented and added a note 
+						about dragging.</li>
+						<li><ref1 target="tool_bar"/> added "Hide lift" option.</li>
+					<li><ref1 target="shape_edit"/> "New Shape" also lets you add a font shape.</li>
+					<li><ref1 target="combo_edit"/> Combinations now do work fully.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="06052002">
 			<header>06 May 2002</header>
 			<body>
@@ -63,6 +76,21 @@
 				<para>
 					Editing a copyrighted game may or may not be allowed. Please exercise caution especially
 					if you want to distribute your changes.
+				</para>
+			</body>
+		</sub>
+		<sub name="about_doc">
+			<header>About this Documentation.</header>
+			<body>
+				<para>
+					<Studio/> is work in progress. How things work may change and new features are
+					added very frequently. Due to the lazy nature of the maintainer (Dominus) of this
+					documentation it might not always be up to date. As we do not have an official 
+					release yet this documentation refers to recent snapshots.
+				</para>
+				<para>
+				Note that you also need an up to date (aka recent snapshot) version of <Exult/> to
+				have <Studio/> working properly.
 				</para>
 			</body>
 		</sub>
@@ -294,12 +322,16 @@
 					Picks objects for a new combo file. Double-left-click to add objects to the combo, 
 					single-left-click to identify object. See <ref1 target="combo_edit"/></li>
 					<li><strong>Select</strong><br/>
-					not yet implemented (?)</li>
+					In this mode you can select objects and move the selection Ctrl-arrow (x,y coordinates)
+					and ctrl-page keys (z coordinates).</li>
 					<li><strong>Hide</strong><br/>
 					not yet implemented (?)</li>
 					<li><strong>Unhide</strong><br/>
 					not yet implemented (?)</li>
 				</ul>
+				<para>
+					Note that you can only drag objects in the game window when you are in "Move" mode.
+				</para>
 			</body>
 		</sub>
 		<sub name="tools_menu">
@@ -318,7 +350,7 @@
 			<header>Tool bar</header>
 			<body>
 				<ul>
-					<li><strong>Play Game</strong><br/>
+					<li><strong>Play</strong><br/>
 					This is the same as pressing <key>Alt+Ctrl+M</key> in Exult. It exits the Map Edit Mode
 					and lets you play the game. By pressing it again you enter Map Edit Mode again.</li>
 					<li><strong>Tile Grid</strong><br/>
@@ -326,6 +358,8 @@
 					<li><strong>Edit lift:</strong><br/>
 					Changes the lift of a selected object in the game window. Lift means the distance of
 					an object from the ground.</li>
+					<li><strong>Hide lift:</strong><br/>
+					Hides objects that are above the choosen height.</li>
 					<li><strong>Edit terrain</strong><br/>
 					See <ref1 target="can_do_atm"/>. Note that a terrain is used in multiple instances of the 
 					map and changing it in one place changes it in all the others as well.</li>
@@ -535,7 +569,12 @@
 						buggy if there's just one frame left).</li>
 					<li><strong>New shape</strong>:<br/>
 						Gives you a dialog for choosing the shape #, as well as the 
-						initial # of frames.</li>
+						initial # of frames.<br/>
+						You can also create a new font shape from TrueType or Type1 font files.
+						It's mainly a convenience for someone creating a whole new game, as their
+						only single-colored.  Maybe in the future we'll have some functions to
+						create two-colored fonts like the main one in U7, although it might take
+						hand-editing to make the letters look that nice.</li>
 					<li><strong>Import/Export frame</strong>:<br/>
 						Let's you import a single frame from a .png file or 
 						export to a .png.</li>
@@ -571,12 +610,14 @@
 			<body>
 				<para>
 					Create 'combination shapes', like a fence or an entire roof by selecting 
-					"Tools-New Combo" (see <ref target="tools_menu"/>).  It's about half-done.
-					To see what's there, choose the 'Combo pick' choice in the 'Modes' menu, and 
-					an empty window should pop up. In the game window, double-click a group of objects,
-					and they should appear in the window.  You can then select an object there and tweak 
-					its position. Nothing gets saved yet, when it does your combinations get saved in
-					a file called combos.flx. 
+					"Tools-New Combo" (see <ref target="tools_menu"/>). When you run <Studio/> the first
+					time a file called combos.flx gets automatically created in the "Patch" directory.
+					Choose the 'Pick for Combo' choice in the 'Modes' menu, and an empty window should 
+					pop up. In the game window, double-click a group of objects, and they should appear 
+					in the window. You can then select an object there and tweak its position. When you 
+					are done hit aply and the combo gets temporally saved until you hit "Save all" or 
+					"Save - Save map".<br/>
+					You can drag and drop combinations into the game window.
 				</para>
 			</body>
 		</sub>
