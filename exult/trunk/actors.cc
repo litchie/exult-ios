@@ -299,7 +299,7 @@ void Actor::activate
 	else if (gwin->get_mode() == Game_window::gump)
 		{			// Show companions' pictures.
 					// +++++Check for companions.
-		if (npc_num <= 10)
+		if (npc_num >= 1 && npc_num <= 10)
 			gwin->show_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
 		}
 	else if (usecode == -1)
@@ -1571,52 +1571,3 @@ Npc_actor *Monster_info::create
 	return (monster);
 	}
 
-#if 0
-/*
- *	Figure where the sprite will be in the next frame.
- *
- *	Output:	0 if don't need to move.
- */
-
-int Area_actor::next_frame
-	(
-	unsigned long time,		// Current time.
-	int& new_cx, int& new_cy,	// New chunk coords. returned.
-	int& new_sx, int& new_sy,	// New shape (tile) coords. returned.
-	int& next_frame			// Next frame # returned.
-	)
-	{
-					// See if we should change motion.
-	if (time < next_change)
-		return (Actor::next_frame(new_cx, new_cy,
-						new_sx, new_sy, next_frame));
-	if (is_walking())
-		{
-		stop();
-		new_cx = get_cx();
-		new_cy = get_cy();
-		new_sx = get_tx();
-		new_sy = get_ty();
-		next_frame = get_framenum();
-					// Wait 0 to 5 seconds.
-		next_change.tv_sec = time.tv_sec +
-			(long) (5.0*rand()/(RAND_MAX + 1.0));
-		return (1);
-		}
-	else
-		{			// Where should we aim for?
-		long deltax = 64 - 
-			(1 + (long) (128.0*rand()/(RAND_MAX + 1.0)));
-		long deltay = 64 - 
-			(1 + (long) (128.0*rand()/(RAND_MAX + 1.0)));
-		long newx = get_worldx() + deltax;
-		long newy = get_worldy() + deltay;
-					// Move every 1/4 second.
-		start(newx, newy, 250);
-					// Go 1 to 4 seconds.
-		next_change.tv_sec = time.tv_sec + 1 +
-			(long) (4.0*rand()/(RAND_MAX + 1.0));
-		return (0);
-		}
-	}
-#endif

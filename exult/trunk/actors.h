@@ -610,22 +610,4 @@ public:
 								int lift);
 	};
 
-#if 0
-/*
- *	Here's an actor that's just hanging around an area.
- */
-class Area_actor : public Npc_actor
-	{
-	unsigned long next_change;	// When to change motion.
-public:
-	Area_actor(char *nm, int shapenum, int fshape = -1) : Npc_actor(nm, shapenum, fshape)
-		{
-		next_change.tv_sec = next_change.tv_usec = 0;
-		}
-					// Figure next frame location.
-	virtual int next_frame(unsigned long time,
-		int& new_cx, int& new_cy, int& new_sx, int& new_sy,
-		int& new_frame);
-	};
-#endif
 #endif
