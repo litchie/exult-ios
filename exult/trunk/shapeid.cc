@@ -26,6 +26,10 @@
 #include "fnames.h"
 #include "game.h"
 #include "Configuration.h"
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
 
 Shape_manager *Shape_manager::instance = 0;
 
