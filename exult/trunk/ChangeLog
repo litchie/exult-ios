@@ -1,5 +1,6 @@
 2001-03-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.be: added exult_bg.flx to dependencies
+	* gumps/Spellbook_gump.cc: fixed crash when enabling wizardmode when spellbook open
 
 2001-03-26  Jeff Freedman  <jeff@amy.nerble.net>
 
