@@ -114,7 +114,7 @@ public:
 		{
 		Chunk_object_list *list = objects[cx][cy];
 		if (!list)
-			list = objects[cx][cy] = new Chunk_object_list;
+			list = objects[cx][cy] = new Chunk_object_list(cx, cy);
 		return (list);
 		}
 	Actor *get_main_actor()

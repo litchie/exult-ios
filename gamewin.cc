@@ -1,5 +1,5 @@
-// -*-mode: Fundamental; tab-width: 8; -*-
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Gamewin.cc - X-windows Ultima7 map browser.
  **
  **	Written: 7/22/98 - JSF

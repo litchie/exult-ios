@@ -91,19 +91,86 @@ Chunk_cache::~Chunk_cache
 	}
 
 /*
- *	Set the blocked flags in a region.
+ *	Set/unset the blocked flags in a region.
  */
 
 void Chunk_cache::set_blocked
 	(
 	int startx, int starty,		// Starting tile #'s.
 	int endx, int endy,		// Ending tile #'s.
-	int lift, int ztiles		// Lift, height info.
+	int lift, int ztiles,		// Lift, height info.
+	int set				// 1 to add, 0 to remove.
 	)
 	{
-	for (int y = starty; y <= endy; y++)
-		for (int x = startx; x <= endx; x++)
-			set_blocked_tile(x, y, lift, ztiles);
+	if (set)
+		{
+		for (int y = starty; y <= endy; y++)
+			for (int x = startx; x <= endx; x++)
+				set_blocked_tile(x, y, lift, ztiles);
+		}
+	else
+		{
+		for (int y = starty; y <= endy; y++)
+			for (int x = startx; x <= endx; x++)
+				clear_blocked_tile(x, y, lift, ztiles);
+		}
+	}
+
+/*
+ *	Add/remove an object to/from the cache.
+ */
+
+void Chunk_cache::update_object
+	(
+	Game_window *gwin,
+	Chunk_object_list *chunk,
+	Game_object *obj,
+	int add				// 1 to add, 0 to remove.
+	)
+	{
+	Shapes_vga_file& shapes = gwin->get_shapes();
+	int shnum = obj->get_shapenum();
+	Shape_info& info = shapes.get_info(shnum);
+	int ztiles = info.get_3d_height(); 
+	if (!ztiles)
+		return;			// Skip if not an obstacle.
+					// Get chunk coords.
+	int cx = chunk->get_cx(), cy = chunk->get_cy();
+					// Get lower-right corner of obj.
+	int endx = obj->get_shape_pos_x();
+	int endy = obj->get_shape_pos_y();
+					// Get footprint dimensions.
+	int xtiles = info.get_3d_xtiles();
+	int ytiles = info.get_3d_ytiles();
+	int lift = obj->get_lift();
+	if (xtiles == 1 && ytiles == 1)	// Simplest case?
+		{
+		if (add)
+			set_blocked_tile(endx, endy, lift, ztiles);
+		else
+			clear_blocked_tile(endx, endy, lift, ztiles);
+		return;
+		}
+	int startx = endx - xtiles + 1, starty = endy - ytiles + 1;
+					// First this chunk.
+	int this_startx = startx < 0 ? 0 : startx;
+	int this_starty = starty < 0 ? 0 : starty;
+	set_blocked(this_startx, this_starty, endx, endy, lift, ztiles, add);
+	if (startx < 0 && cx > 0)	// Overlaps chunk to the left?
+		{
+		gwin->get_objects(cx - 1, cy)->set_blocked(
+				startx + tiles_per_chunk,
+				this_starty, 15, endy, lift, ztiles, add);
+					// Chunk to left and above?
+		if (starty < 0 && cy > 0)
+			gwin->get_objects(cx - 1, cy - 1)->set_blocked(
+					startx + tiles_per_chunk,
+					starty + tiles_per_chunk, 
+					15, 15, lift, ztiles, add);
+		}
+	if (starty < 0 && cy > 0)	// Chunk directly above?
+		gwin->get_objects(cx, cy - 1)->set_blocked(this_startx,
+			starty + tiles_per_chunk, endx, 15, lift, ztiles, add);
 	}
 
 /*
@@ -113,7 +180,6 @@ void Chunk_cache::set_blocked
 void Chunk_cache::setup
 	(
 	Game_window *gwin,
-	int cx, int cy,			// This chunk's (absolute) coords.
 	Chunk_object_list *chunk
 	)
 	{
@@ -121,52 +187,7 @@ void Chunk_cache::setup
 					// Set 'blocked' tiles.
 	for (Game_object *obj = chunk->get_first(); obj; 
 						obj = chunk->get_next(obj))
-		{
-		int shnum = obj->get_shapenum();
-		Shape_info& info = shapes.get_info(shnum);
-		int ztiles = info.get_3d_height(); 
-		if (!ztiles)
-			continue;	// Skip if not an obstacle.
-					// Get lower-right corner of obj.
-		int endx = obj->get_shape_pos_x();
-		int endy = obj->get_shape_pos_y();
-					// Get footprint dimensions.
-		int xtiles = info.get_3d_xtiles();
-		int ytiles = info.get_3d_ytiles();
-		int lift = obj->get_lift();
-					// Simplest case?
-		if (xtiles == 1 && ytiles == 1)
-			{
-			set_blocked_tile(endx, endy, lift, ztiles);
-			continue;
-			}
-		int startx = endx - xtiles + 1, starty = endy - ytiles + 1;
-					// First this chunk.
-		int this_startx = startx < 0 ? 0 : startx;
-		int this_starty = starty < 0 ? 0 : starty;
-		set_blocked(this_startx, this_starty, endx, endy, 
-								lift, ztiles);
-					// Overlaps chunk to the left?
-		if (startx < 0 && cx > 0)
-			{
-			gwin->get_objects(cx - 1, cy)->set_blocked(
-				startx + tiles_per_chunk,
-				this_starty, 15, endy, lift, ztiles);
-					// Chunk to left and above?
-			if (starty < 0 && cy > 0)
-				gwin->get_objects(cx - 1, cy - 1)->set_blocked(
-					startx + tiles_per_chunk,
-					starty + tiles_per_chunk, 
-					15, 15, lift, ztiles);
-			}
-					// Chunk directly above?
-		if (starty < 0 && cy > 0)
-			gwin->get_objects(cx, cy - 1)->set_blocked(
-				this_startx,
-				starty + tiles_per_chunk, endx, 15,
-				lift, ztiles);
-
-		}
+		update_object(gwin, chunk, obj, 1);
 	setup_done = 1;
 	}
 
@@ -213,7 +234,9 @@ int Chunk_cache::is_blocked
 
 Chunk_object_list::Chunk_object_list
 	(
-	) : objects(0), roof(0), egg_objects(0), num_eggs(0), npcs(0), cache(0)
+	int chunkx, int chunky		// Absolute chunk coords.
+	) : objects(0), roof(0), egg_objects(0), num_eggs(0), npcs(0),
+	    cache(0), cx(chunkx), cy(chunky)
 	{
 	memset((char *) &eggs[0], 0xff, sizeof(eggs));
 	}

@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Objs.h - Game objects.
  **
  **	Written: 10/1/98 - JSF
@@ -100,6 +101,9 @@ class Game_object : public ShapeID
 	unsigned char lift;		// Raise by 4* this number.
 	short quality;			// Some sort of game attribute.
 	Game_object *next;		// ->next in chunk list.
+protected:
+	void set_lift(int l)
+		{ lift = l; }
 public:
 	friend class Chunk_object_list;
 	Game_object(unsigned char *ifix)// Create from ifix record.
@@ -120,8 +124,6 @@ public:
 		{ return shape_pos & 0xf; }
 	int get_lift()
 		{ return lift; }
-	void set_lift(int l)
-		{ lift = l; }
 	int get_quality()
 		{ return quality; }
 	void set_quality(int q)
@@ -243,17 +245,25 @@ class Chunk_cache
 	friend class Chunk_object_list;
 	Chunk_cache();			// Create empty one.
 	~Chunk_cache();
-					// Set blocked region.
+					// Set/unset blocked region.
 	void set_blocked(int startx, int starty, int endx, int endy,
-						int lift, int ztiles);
+						int lift, int ztiles, int set);
+					// Add/remove object.
+	void update_object(Game_window *gwin, Chunk_object_list *chunk,
+						Game_object *obj, int add);
 					// Set up with chunk's data.
-	void setup(Game_window *gwin, int cx, int cy, 
-						Chunk_object_list *chunk);
+	void setup(Game_window *gwin, Chunk_object_list *chunk);
 					// Set blocked tile's bits.
 	void set_blocked_tile(int tx, int ty, int lift, int ztiles)
 		{
 		blocked[ty*tiles_per_chunk + tx] |= 
 						((1 << ztiles) - 1) << lift;
+		}
+					// Clear blocked tile's bits.
+	void clear_blocked_tile(int tx, int ty, int lift, int ztiles)
+		{
+		blocked[ty*tiles_per_chunk + tx] &= 
+					~(((1 << ztiles) - 1) << lift);
 		}
 					// Is a spot occupied?
 	int is_blocked(int lift, int tilex, int tiley, int& new_lift);
@@ -277,9 +287,10 @@ class Chunk_object_list
 	unsigned char eggs[256];	// For each (x,y), index of egg in
 					//  egg_objects, or -1 if no egg there.
 	unsigned char roof;		// 1 if a roof present.
+	unsigned char cx, cy;		// Absolute chunk coords. of this.
 public:
 	friend class Npc_actor;
-	Chunk_object_list();
+	Chunk_object_list(int chunkx, int chunky);
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add an egg.
 	void remove(Game_object *obj);	// Remove an object.
@@ -294,6 +305,10 @@ public:
 		}
 	int is_roof()			// Is there a roof?
 		{ return roof; }
+	int get_cx()
+		{ return cx; }
+	int get_cy()
+		{ return cy; }
 	Npc_actor *get_npcs()		// Get ->first npc in chunk.
 		{ return npcs; }
 					// Set/get flat shape.
@@ -312,16 +327,16 @@ public:
 		return cache ? cache 
 				: (cache = new Chunk_cache()); 
 		}
-	void setup_cache(Game_window *gwin, int cx, int cy)
+	void setup_cache(Game_window *gwin)
 		{ 
 		if (!cache || !cache->setup_done)
-			need_cache()->setup(gwin, cx, cy, this);
+			need_cache()->setup(gwin, this);
 		}
-					// Set blocked region.
+					// Set/unset blocked region.
 	void set_blocked(int startx, int starty, int endx, int endy,
-							int lift, int ztiles)
+						int lift, int ztiles, int set)
 		{ need_cache()->set_blocked(startx, starty, endx, endy,
-							lift, ztiles); }
+							lift, ztiles, set); }
 					// Is a spot occupied?
 	int is_blocked(int lift, int tilex, int tiley, int& new_lift)
 		{ return cache->is_blocked(lift, tilex, tiley, new_lift); }
