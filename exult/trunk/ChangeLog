@@ -1,3 +1,6 @@
+2001-09-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* configure.in: fixed minor bug
+
 2001-09-03  Ryan Nunn <triforce@merlin.net.au>
 	* audio/midi_drivers/win_midiout.cc : Fixed 'Lising' typo.
 	* objs/chunks.cc : Namespace
