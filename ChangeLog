@@ -1,5 +1,10 @@
 2002-04-23  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* usecode/ucsched.cc (Usecode_script): Whoops!  Next_frame_max
+	wasn't stopping at the right number.
+
+	* actors.cc: Allow anything to go in 'back' spot.
+
 	* gamedat.cc,gamewin.cc,game.cc:  get_game_identity() moved into
 	Game_window class, handles compressed savegames, and is used to
 	check IDENTITY before doing a restore.

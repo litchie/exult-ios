@@ -1079,6 +1079,9 @@ bool Actor::fits_in_spot (Game_object *obj, int spot, FIS_Type type)
 	// If in left or right hand allow it
 	else if (spot == lhand || spot == rhand)
 		return true;
+	// I think the back spot is good for anything too.
+	else if (spot == back)
+		return true;
 	// Special Checks for Belt
 	else if (spot == belt)
 	{
