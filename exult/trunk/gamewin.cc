@@ -65,14 +65,12 @@ Game_window::Game_window
 	(
 	int width, int height, int scale		// Window dimensions.
 	) : 
-	    win(0), usecode(new Usecode_machine(this)),mode(splash), combat(0),
+	    win(0), usecode(0), mode(splash), combat(0),
             tqueue(new Time_queue()), clock(tqueue),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
 	    conv_choices(0), render_seq(0), painted(0), focus(1), 
-	    teleported(0), shapes(),
-	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
-	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
+	    teleported(0), 
 	    moving_barge(0), main_actor(0), skip_above_actor(31), npcs(0),
 	    monster_info(0), 
 	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
@@ -84,51 +82,6 @@ Game_window::Game_window
 	set_window_size(width, height, scale);
 
 	Game *game = Game::create_game("static");
-
-	// Go to starting chunk
-	scrolltx = game->get_start_tile_x();
-	scrollty = game->get_start_tile_y();
-
-	if (!shapes.is_good())
-		abort("Can't open 'shapes.vga' file.");
-	if (!faces.is_good())
-		abort("Can't open 'faces.vga' file.");
-	if (!gumps.is_good())
-		abort("Can't open 'gumps.vga' file.");
-	if (!fonts.is_good())
-		abort("Can't open 'fonts.vga' file.");
-	if (!sprites.is_good())
-		abort("Can't open 'sprites.vga' file.");
-	
-	u7open(chunks, U7CHUNKS);
-	u7open(u7map, U7MAP);
-	ifstream textflx;	
-  	u7open(textflx, TEXT_FLX);
-	Setup_item_names(textflx);	// Set up list of item names.
-					// Read in shape dimensions.
-	if (!shapes.read_info())
-		abort(
-		"Can't read shape data (tfa.dat, wgtvol.dat, shpdims.dat).");
-	Segment_file xf(XFORMTBL);	// Read in translucency tables.
-	int len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
-	for (int i = 0; i < nxforms; i++)
-		if (!xf.read_segment(i, xforms[nxforms - 1 - i], len))
-			abort("Error reading %s.", XFORMTBL);
-
-	unsigned long timer = SDL_GetTicks();
-	srand(timer);			// Use time to seed rand. generator.
-					// Force clock to start.
-	tqueue->add(timer, &clock, (long) this);
-					// Clear object lists, flags.
-#if 1
-	for (int i1 = 0; i1 < num_chunks; i1++)
-		for (int i2 = 0; i2 < num_chunks; i2++)
-			objects[i1][i2] = 0;
-#else	/* Old way +++++++*/
-	memset((char *) objects, 0, sizeof(objects));
-#endif
-	memset((char *) schunk_read, 0, sizeof(schunk_read));
-	
 	}
 
 void Game_window::set_window_size(int width, int height, int scale)
@@ -187,6 +140,62 @@ void Game_window::abort
 	cerr << "Exult (fatal): " << buf << endl;
 	delete this;
 	exit(-1);
+	}
+
+void Game_window::init_files()
+	{
+		usecode = new Usecode_machine(this);
+		faces.load(FACES_VGA);
+		if (!faces.is_good())
+			abort("Can't open 'faces.vga' file.");
+		gumps.load(GUMPS_VGA);
+		if (!gumps.is_good())
+			abort("Can't open 'gumps.vga' file.");
+		fonts.load(FONTS_VGA);
+		if (!fonts.is_good())
+			abort("Can't open 'fonts.vga' file.");
+		sprites.load(SPRITES_VGA);
+		if (!sprites.is_good())
+			abort("Can't open 'sprites.vga' file.");
+		mainshp.load(MAINSHP_FLX);
+		if (!mainshp.is_good())
+			abort("Can't open 'mainshp.vga' file.");
+		shapes.init();
+		if (!shapes.is_good())
+			abort("Can't open 'shapes.vga' file.");
+
+		u7open(chunks, U7CHUNKS);
+		u7open(u7map, U7MAP);
+		ifstream textflx;	
+	  	u7open(textflx, TEXT_FLX);
+		Setup_item_names(textflx);	// Set up list of item names.
+					// Read in shape dimensions.
+		if (!shapes.read_info())
+			abort(
+			"Can't read shape data (tfa.dat, wgtvol.dat, shpdims.dat).");
+		Segment_file xf(XFORMTBL);	// Read in translucency tables.
+		int len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
+		for (int i = 0; i < nxforms; i++)
+			if (!xf.read_segment(i, xforms[nxforms - 1 - i], len))
+				abort("Error reading %s.", XFORMTBL);
+
+		unsigned long timer = SDL_GetTicks();
+		srand(timer);			// Use time to seed rand. generator.
+						// Force clock to start.
+		tqueue->add(timer, &clock, (long) this);
+						// Clear object lists, flags.
+#if 1
+		for (int i1 = 0; i1 < num_chunks; i1++)
+			for (int i2 = 0; i2 < num_chunks; i2++)
+				objects[i1][i2] = 0;
+#else	/* Old way +++++++*/
+		memset((char *) objects, 0, sizeof(objects));
+#endif
+		memset((char *) schunk_read, 0, sizeof(schunk_read));
+
+		// Go to starting chunk
+		scrolltx = Game::get_game()->get_start_tile_x();
+		scrollty = Game::get_game()->get_start_tile_y();
 	}
 	
 

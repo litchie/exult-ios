@@ -1,3 +1,14 @@
+2000-09-08  Tristan Tarrant  <nadir@users.sourceforge.net>
+
+	* vgafile.*: Allow empty initialization constructor and implement 
+	load() methods for most classes
+	* autoarray.h: Implement a set_size() method and an empty constructor
+	* gamewin.cc: Moved all file loading/initialization from constructor
+	to init_files() method
+	* exult.cc: Call init_files() appropriately
+	* data/quotes.txt: Make quotes fit
+	* audio/Mixer.cc: No need to be so verbose even if DEBUG is set
+
 2000-09-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Schedules:  Duel, kid_games, wander, mine, farm.

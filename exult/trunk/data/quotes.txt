@@ -22,6 +22,7 @@
 \L- Jeff
 
 \C"Holy S!*@!"
-\L- Jeff on Horizons Tavern
-\Lafter seeing a screenshot 
-\Lof Exult with 2xSaI
+\L- Jeff 
+\C(on Horizons Tavern
+\Cafter seeing a screenshot 
+\Cof Exult with 2xSaI)
