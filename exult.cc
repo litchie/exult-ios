@@ -591,6 +591,20 @@ static void Handle_event
 			gwin->start_actor(event.button.x / scale, 
 				event.button.y / scale, Mouse::mouse->avatar_speed);
 			}
+		if (event.button.button == 4 || event.button.button == 5) {
+			if (!cheat()) break;
+			SDLMod mod = SDL_GetModState();
+			if (event.button.button == 4)
+				if (mod & KMOD_ALT)
+					ActionScrollLeft(0);
+				else
+					ActionScrollUp(0);
+			else
+				if (mod & KMOD_ALT)
+					ActionScrollRight(0);
+				else
+					ActionScrollDown(0);
+		}
 		break;
 	case SDL_MOUSEBUTTONUP:
         if (dont_move_mode)
