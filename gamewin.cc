@@ -907,7 +907,12 @@ void Game_window::paint_splash
 		SDL_Delay(1500);
 		
 		win->fill8(0,get_width(),get_height(),0,0);
-
+	// The main man :)
+	if(get_usecode()->get_global_flag(Usecode_machine::did_first_scene)==0)
+		{
+		// Guardian speech
+		audio->playfile(INTROSND,false);
+		}
 	}
 
 /*
