@@ -472,9 +472,33 @@ void get_game_paths(const string &gametitle)
 		<< " static directory to: " << static_dir << endl;
 #endif
 
+	const char *home = 0;		// Will get $HOME.
+	string home_game("");		// Gets $HOME/.exult/gametitle.
 	config_path = "config/disk/game/" + gametitle + "/gamedat_path";
 	default_dir = data_directory + "/gamedat";
-	config->value(config_path.c_str(), gamedat_dir, default_dir.c_str());
+	config->value(config_path.c_str(), gamedat_dir, "");
+	if (gamedat_dir == "" &&	// Not set?
+					// And default doesn't exist?
+	    !U7exists(default_dir.c_str()) && (home = getenv("HOME")) != 0)
+		{
+		home_game = home;
+		home_game += "/.exult";
+					// Create $HOME/.exult/gametitle.
+		U7mkdir(home_game.c_str(), 0755);
+		home_game = home_game + '/' + gametitle;
+		U7mkdir(home_game.c_str(), 0755);
+					// Successfully created dir?
+		if (U7exists(home_game.c_str()))
+			{		// Use $HOME/.exult/gametitle/gamedat.
+			gamedat_dir = home_game + "/gamedat";
+//			config->set(config_path.c_str(), gamedat_dir.c_str(),
+//								true);
+			}
+		else
+			home_game = "";	// Failed.
+		}
+	if (gamedat_dir == "")		// Didn't create it in $HOME/.exult?
+		gamedat_dir = default_dir;
 	add_system_path("<" + system_path_tag + "_GAMEDAT>", gamedat_dir);
 #if 0
 	cout << "setting " << gametitle
@@ -482,7 +506,15 @@ void get_game_paths(const string &gametitle)
 #endif
 
 	config_path = "config/disk/game/" + gametitle + "/savegame_path";
-	config->value(config_path.c_str(), savegame_dir, data_directory.c_str());
+	if (home_game == "")
+		config->value(config_path.c_str(), savegame_dir, 
+						data_directory.c_str());
+	else
+		{			// Store saves under $HOME/....
+		config->value(config_path.c_str(), savegame_dir,
+						home_game.c_str());
+//		config->set(config_path.c_str(), savegame_dir.c_str(), true);
+		}
 	add_system_path("<" + system_path_tag + "_SAVEGAME>", savegame_dir);
 #if 0
 	cout << "setting " << gametitle
