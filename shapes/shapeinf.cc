@@ -159,3 +159,99 @@ Shape_info::~Shape_info()
 		delete [] weapon_offsets;
 	delete monstinf;
 	}
+
+/*
+ *	Create/delete 'info' for weapons, ammo, etc.
+ *
+ *	Output: Possibly updated ->info .
+ */
+
+Weapon_info *Shape_info::set_weapon_info(bool tf)
+	{
+	if (!tf)
+		{
+		delete weapon;
+		weapon = 0;
+		}
+	else
+		{
+		if (!weapon)
+			weapon = new Weapon_info();
+		}
+	return weapon;
+	}
+Ammo_info *Shape_info::set_ammo_info(bool tf)
+	{
+	if (!tf)
+		{
+		delete ammo;
+		ammo = 0;
+		}
+	else
+		{
+		if (!ammo)
+			ammo = new Ammo_info();
+		}
+	return ammo;
+	}
+Monster_info *Shape_info::set_monster_info(bool tf)
+	{
+	if (!tf)
+		{
+		delete monstinf;
+		monstinf = 0;
+		}
+	else
+		{
+		if (!monstinf)
+			monstinf = new Monster_info();
+		}
+	return monstinf;
+	}
+
+/*
+ *	Set 3D dimensions.
+ */
+
+void Shape_info::set_3d
+	(
+	int xt, int yt, int zt		// In tiles.
+	)
+	{
+	xt = (xt - 1) & 7;		// Force legal values.
+	yt = (yt - 1) & 7;
+	zt &= 7;
+	tfa[2] = (tfa[2]&~63)|xt|(yt<<3);
+	tfa[0] = (tfa[0]&~(7<<5))|(zt<<5);
+	dims[0] = xt + 1;
+	dims[1] = yt + 1;
+	dims[2] = zt;
+	}
+
+/*
+ *	Set weapon offsets for given frame.
+ */
+
+void Shape_info::set_weapon_offset
+	(
+	int frame, 			// 0-31.
+	unsigned char x, unsigned char y// 255 means "dont' draw".
+	)
+	{
+	if (frame < 0 || frame > 31)
+		return;
+	if (x == 255 && y == 255)
+		{
+		if (weapon_offsets)	// +++Could delete if all 255's now.
+			weapon_offsets[frame*2] =
+			weapon_offsets[frame*2 + 1] = 255;
+		return;
+		}
+	if (!weapon_offsets)
+		{
+		weapon_offsets = new unsigned char[64];
+		memset(weapon_offsets, 255, sizeof(weapon_offsets));
+		}
+	weapon_offsets[frame*2] = x;
+	weapon_offsets[frame*2 + 1] = y;
+	}

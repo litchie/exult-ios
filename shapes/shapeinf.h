@@ -80,11 +80,12 @@ public:
 		{ return damage; }
 	int get_damage_type() const
 		{ return damage_type; }
+	void set_damage(int dmg, int dmgtype)
+		{ damage = dmg; damage_type = dmgtype; }
 	unsigned char get_powers() const
 		{ return powers; }
 	void set_powers(unsigned char p)
 		{ powers = p; }
-	void set_damage(int dmg, int dmgtype);
 	int get_ammo_consumed()
 		{ return ammo > 0 ? ammo : 0; }
 	void set_ammo(int a)			// Raw value, for map-editor.
