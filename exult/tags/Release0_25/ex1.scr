@@ -1,0 +1,30 @@
+npc Neko
+	{
+	topic
+		{
+		state
+			{
+		start say "How may I help you?";
+		"Name?"
+			begin topic Name;
+		"Job?"
+			begin topic Job;
+			}
+		}
+	topic Name
+		{
+		state
+			start 
+				{
+				say "My name is Neko.";
+				state = next;
+				}
+		state
+			{
+			start say "I told you, it's Neko.";
+			always topic = previous;
+			}
+		}
+	}
+
+			
