@@ -1,3 +1,8 @@
+2001-07-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Ucinternal.{cc,h}:  Separated out most of Usecode_machine here
+	to cut down on included code (ucmachine.h is much smaller now).
+
 2001-07-18  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/faq/: updated FAQ
 	* docs/IslandAddOn.txt added with all the ideas so far for a BG Add-On
