@@ -209,8 +209,12 @@ bool Dragging_info::moved
 	paintx += deltax;
 	painty += deltay;
 	if (obj)
-		gwin->paint_shape(paintx, painty, obj->get_shape(),
-						obj->is_translucent());
+		{
+		if (obj->get_flag(Obj_flags::invisible))
+			gwin->paint_invisible(paintx, painty,obj->get_shape());
+		else
+			gwin->paint_shape(paintx, painty, *obj);
+		}
 	else				// Obj whole gump.
 		{
 		gump->set_pos(paintx, painty);
