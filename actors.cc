@@ -2395,12 +2395,10 @@ void Npc_actor::update_schedule
 		{			// Not found?  Look at prev.?
 					// Always if noon of first day.
 		long hour = gwin->get_total_hours();
-		if (backwards-- || hour == 12)
-			{
-			i = find_schedule_change((hour3 + 7)%8);
-			if (i < 0 && (backwards || hour == 12))
-				i = find_schedule_change((hour3 + 6)%8);
-			}
+		if (hour == 12 && !backwards)
+			backwards++;
+		while (backwards-- && i < 0)
+			i = find_schedule_change((--hour3 + 8)%8);
 		if (i < 0)
 			return;
 		if (schedule_type == schedules[i].get_type())

@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "actors.h"
 #include "cheat.h"
+#include "game.h"
 
 extern Cheat cheat;
 
@@ -169,7 +170,15 @@ void Game_clock::handle_event
 	long udata			// ->game window.
 	)
 	{
+	static int first = 1;		// For starting SI schedules.
 	Game_window *gwin = (Game_window *) udata;
+	if (first)
+		{
+		first = 0;
+					// Start SI schedules immediately.
+		if (!day && hour == 6 && Game::get_game_type() == SERPENT_ISLE)
+			gwin->schedule_npcs(hour, 6);
+		}
 	if ((minute += time_factor) >= 60)// 1 real minute = 15 game minutes.
 		{
 		minute -= 60;
