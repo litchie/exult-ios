@@ -100,7 +100,7 @@ MenuList::~MenuList()
 {
 	MenuObject *entry;
 	for(int i=0; i<entries->get_cnt(); i++) {
-		MenuObject *entry = (MenuObject *)entries->get(i);
+		entry = (MenuObject *)entries->get(i);
 		delete entry;
 	}
 	delete entries;
