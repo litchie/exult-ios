@@ -60,6 +60,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 #include "objserial.h"
 #include "exceptions.h"
+#include "logo.xpm"
 
 using std::cerr;
 using std::cout;
@@ -1409,6 +1410,20 @@ int ExultStudio::prompt
 	const char *choice2		// 3rd choice, or NULL.
 	)
 	{
+	static GdkPixmap *logo_pixmap = NULL;
+	static GdkBitmap *logo_mask = NULL;
+	if (!logo_pixmap)		// First time?
+		{
+		logo_pixmap = gdk_pixmap_create_from_xpm_d(app->window, 
+				&logo_mask, NULL, logo_xpm);
+		GtkWidget *pix = gtk_pixmap_new(logo_pixmap, logo_mask);
+		gtk_widget_show(pix);
+		GtkWidget *hbox = glade_xml_get_widget(app_xml, 
+							"prompt3_hbox");
+		gtk_box_pack_start(GTK_BOX(hbox), pix, FALSE, FALSE, 12);
+					// Make logo show to left.
+		gtk_box_reorder_child(GTK_BOX(hbox), pix, 0);
+		}
 	GtkWidget *dlg = glade_xml_get_widget(app_xml, "prompt3_dialog");
 	gtk_label_set_text(
 		GTK_LABEL(glade_xml_get_widget(app_xml, "prompt3_label")),
