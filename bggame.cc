@@ -1250,9 +1250,9 @@ bool BG_Game::new_game(Vga_file &shapes)
 	int menuy = topy+110;
 	Font *font = fontManager.get_font("MENU_FONT");
 	
-	char npc_name[17];
-	char disp_name[18];
-	int max_len = 16;
+	const int max_name_len = 16;
+	char npc_name[max_name_len+1];
+	char disp_name[max_name_len+2];
 	npc_name[0] = 0;
 	int sex = 0;
 	int selected = 0;
@@ -1274,9 +1274,9 @@ bool BG_Game::new_game(Vga_file &shapes)
 			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
 			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
 			if(selected==0)
-				sprintf(disp_name, "%s_", npc_name);
+				snprintf(disp_name, max_name_len+2, "%s_", npc_name);
 			else
-				sprintf(disp_name, "%s", npc_name);
+				snprintf(disp_name, max_name_len+2, "%s", npc_name);
 			font->draw_text(ibuf, topx+50, menuy+10, disp_name);
 			pal.apply();
 			redraw = false;

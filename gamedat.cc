@@ -56,6 +56,8 @@ using std::ios;
 using std::memset;
 using std::ofstream;
 using std::ostream;
+using std::size_t;
+using std::snprintf;
 using std::strchr;
 using std::strcpy;
 using std::strlen;
@@ -136,7 +138,7 @@ void Game_window::restore_gamedat
 	)
 	{
 	char fname[50];			// Set up name.
-	sprintf(fname, SAVENAME, num);
+	snprintf(fname, 50, SAVENAME, num);
 	restore_gamedat(fname);
 	}
 
@@ -256,7 +258,7 @@ void Game_window::save_gamedat
 	)
 	{
 	char fname[50];			// Set up name.
-	sprintf(fname, SAVENAME, num);
+	snprintf(fname, 50, SAVENAME, num);
 	save_gamedat(fname, savename);
 	delete [] save_names[num];	// Update name
 	save_names[num] = newstrdup(savename);
@@ -272,7 +274,7 @@ void Game_window::read_save_names
 	for (size_t i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
 	{
 		char fname[50];		// Set up name.
-		sprintf(fname, SAVENAME, i);
+		snprintf(fname, 50, SAVENAME, i);
 		ifstream in;
 		try
 		{

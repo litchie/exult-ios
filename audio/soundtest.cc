@@ -71,8 +71,8 @@ void SoundTester::test_sound()
 	
 	do
 	{
-		        if (redraw)
-		        {
+		if (redraw)
+		{
 		     
 			scroll = new Scroll_gump();
 			scroll->add_text(" ~");
@@ -108,7 +108,7 @@ void SoundTester::test_sound()
 			font->paint_text_fixedwidth(ibuf, "    S - Stop Music", left, line, width);
 
 
-			sprintf (buf,	"%2s Music %c %3i %c %s",
+			snprintf (buf, 256, "%2s Music %c %3i %c %s",
 					active==0?"->":"",
 					active==0?'<':' ',
 					song,
@@ -118,7 +118,7 @@ void SoundTester::test_sound()
 			font->paint_text_fixedwidth(ibuf, buf, left, line, width);
 			
 			
-			sprintf (buf,	"%2s SFX   %c %3i %c",
+			snprintf (buf, 256, "%2s SFX   %c %3i %c",
 					active==1?"->":"",
 						active==1?'<':' ',
 					sfx,
@@ -128,7 +128,7 @@ void SoundTester::test_sound()
 			font->paint_text_fixedwidth(ibuf, buf, left, line, width);
 
 
-			sprintf (buf,	"%2s Voice %c %3i %c",
+			snprintf (buf, 256, "%2s Voice %c %3i %c",
 					active==2?"->":"",
 					active==2?'<':' ',
 					voice,

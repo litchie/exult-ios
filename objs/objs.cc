@@ -47,6 +47,7 @@ using std::memcpy;
 using std::memset;
 using std::rand;
 using std::ostream;
+using std::snprintf;
 using std::strchr;
 using std::string;
 
@@ -733,7 +734,7 @@ static void get_plural_name
 	{
 	char buf[20];
 
-	sprintf(buf, "%d ", quantity);	// Output the quantity
+	snprintf(buf, 20, "%d ", quantity);	// Output the quantity
 	output_name = buf;
 
 					// Skip the first part
@@ -817,7 +818,7 @@ string Game_object::get_name
 			{
 			char buf[50];
 
-			sprintf(buf, "%d %s", quantity, name);
+			snprintf(buf, 50, "%d %s", quantity, name);
 			display_name = buf;
 			}
 		}

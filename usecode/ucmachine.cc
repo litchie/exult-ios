@@ -31,24 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <cstring>
 #  include <cstdlib>
 #endif
-#include "utils.h"
-#include "schedule.h"
-#include "mouse.h"
-#include "barge.h"
-#include "ucmachine.h"
-#include "gamewin.h"
-#include "delobjs.h"
-#include "animate.h"
-#include "vec.h"
-#include "tqueue.h"
-#include "Gump.h"
-#include "Text_gump.h"
-#include "useval.h"
-#include "game.h"
+
 #include <iomanip>
-#include "ucsched.h"
-#include "chunks.h"
-#include "conversation.h"
 
 #ifdef XWIN
 #include <signal.h>
@@ -56,6 +40,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #if USECODE_DEBUGGER
 #include <algorithm>       // STL function things
 #endif
+
+#include "Gump.h"
+#include "Text_gump.h"
+#include "animate.h"
+#include "barge.h"
+#include "chunks.h"
+#include "conversation.h"
+#include "delobjs.h"
+#include "game.h"
+#include "gamewin.h"
+#include "mouse.h"
+#include "schedule.h"
+#include "tqueue.h"
+#include "ucmachine.h"
+#include "ucsched.h"
+#include "useval.h"
+#include "utils.h"
+#include "vec.h"
 
 using std::cerr;
 using std::cout;
@@ -70,6 +72,8 @@ using std::hex;
 using std::memset;
 using std::setfill;
 using std::setw;
+using std::size_t;
+using std::snprintf;
 using std::string;
 using std::strcat;
 using std::strchr;
@@ -1342,7 +1346,8 @@ int Usecode_machine::run
 	unsigned char *catch_ip = 0;	// IP for catching an ABRT.
 #if DEBUG
 	if (debug >= 0)
-		printf("Running usecode %04x with event %d\n", fun->id, event);
+//		printf("Running usecode %04x with event %d\n", fun->id, event);
+		cout << "Running usecode " << hex << fun->id << " with event " << dec << event << endl;
 #endif
 					// Save/set function.
 	Usecode_function *save_fun = cur_function;
@@ -1388,8 +1393,10 @@ int Usecode_machine::run
 		if (usecode_trace)
 			{
 			int curip = ip - 1 - code;
-			printf("SP = %d, IP = %04x, op = %02x\n", sp - stack,
-						curip, opcode);
+//			printf("SP = %d, IP = %04x, op = %02x\n", sp - stack,
+//						curip, opcode);
+			cout << "SP = " << sp - stack << ", IP = " << hex << curip
+				 << ", op = "<< opcode << dec << endl;
 			if (ucbp_fun == fun->id && ucbp_ip == curip)
 				cout << "At breakpoint" << endl;
 			cout.flush();
@@ -1457,7 +1464,7 @@ int Usecode_machine::run
 				else if (v2.get_type() == 
 						Usecode_value::string_type)
 					{
-					sprintf(buf, "%ld%s", 
+					snprintf(buf, 300, "%ld%s", 
 						v1.get_int_value(),
 						v2.get_str_value());
 					sum = Usecode_value(buf);
@@ -1467,7 +1474,7 @@ int Usecode_machine::run
 				{
 				if (v2.get_type() == Usecode_value::int_type)
 					{
-					sprintf(buf, "%s%ld", 
+					snprintf(buf, 300, "%s%ld", 
 							v1.get_str_value(),
 							v2.get_int_value());
 					sum = Usecode_value(buf);
@@ -1475,7 +1482,7 @@ int Usecode_machine::run
 				else if (v2.get_type() == 
 						Usecode_value::string_type)
 					{
-					sprintf(buf, "%s%s", 
+					snprintf(buf, 300, "%s%s", 
 							v1.get_str_value(),
 							v2.get_str_value());
 					sum = Usecode_value(buf);
@@ -1706,7 +1713,7 @@ int Usecode_machine::run
 			else		// Convert integer.
 				{
 				char buf[20];
-				sprintf(buf, "%ld",
+				snprintf(buf, 20, "%ld",
 					locals[offset].get_int_value());
 				append_string(buf);
 				}
@@ -1830,7 +1837,8 @@ int Usecode_machine::run
 	delete [] locals;
 #if DEBUG
 	if (debug >= 1)
-		printf("RETurning from usecode %04x\n", fun->id);
+//		printf("RETurning from usecode %04x\n", fun->id);
+		cout << "RETurning from usecode " << hex << fun->id << dec << endl;
 #endif
 	cout.flush();
 	cur_function = save_fun;

@@ -40,7 +40,7 @@ using std::endl;
 using std::FILE;
 using std::perror;
 using std::size_t;
-using std::sprintf;
+using std::snprintf;
 
 Configuration::Configuration() : xmltree(),filename(""),is_file(false)
 {}
@@ -168,7 +168,7 @@ void	Configuration::set(const char *key,int value,bool write_out)
 	std::string	k(key),v;
 	char	buf[32];
 
-	sprintf(buf,"%d",value);
+	snprintf(buf,32,"%d",value);
 	v=buf;
 	set(k,v,write_out);
 }

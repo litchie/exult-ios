@@ -127,7 +127,7 @@ int	timidity_play(string filename, bool repeat, string &newfilename, pid_t &pid)
 	unlink(filename.c_str());
 #endif
 	char nbuf[32];
-	sprintf(nbuf,"%lu", Audio::get_ptr()->actual.freq);
+	snprintf(nbuf,32,"%lu", Audio::get_ptr()->actual.freq);
 	string repstr = "-id";
 	if(repeat)
 		repstr += "l";

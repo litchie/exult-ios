@@ -20,7 +20,7 @@ using std::FILE;
 using std::ifstream;
 using std::ofstream;
 using std::size_t;
-using std::sprintf;
+using std::snprintf;
 using std::strlen;
 
 enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD };
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
 			if(argc==4) {
 				U7object f(fname,atoi(argv[3]));
 				char outfile[32];
-				sprintf(outfile,"%d.%s",atoi(argv[3]),ext);
+				snprintf(outfile,32,"%d.%s",atoi(argv[3]),ext);
 				f.retrieve(outfile);	// may throw!
 			} else {
 				U7FileManager fm;
@@ -156,7 +156,7 @@ int main(int argc, char **argv)
 				for(index=0; index<count; index++) {
 					U7object o(fname,index);
 					char outfile[32];
-					sprintf(outfile,"%d.%s",index,ext);
+					snprintf(outfile,32,"%d.%s",index,ext);
 					o.retrieve(outfile);
 				}
 				delete f;
@@ -181,7 +181,7 @@ int main(int argc, char **argv)
 			
 			// The FLEX title
 			char title[0x50];
-			sprintf(title,"Exult Archive");
+			snprintf(title,0x50,"Exult Archive");
 			fs.write(title, 0x50);
 			// The FLEX magic
 			fs.write4(0xFFFF1A00);

@@ -1,3 +1,10 @@
+2001-01-22  Max Horn  <max@quendi.de>
+	* utils.c: fixed switch_slashes() on MacOS to properly work with absolute path's; 
+	  changed U7mkdir() to call switch_slashes()
+	* ucmachine.cc: changed printf to cout
+	* lots-of-files: changed sprintf to snprintf (to prevent potential overflow bugs)
+	* lots-of-files: added some using std:: directives and some some std:: prefixes
+
 2001-01-22  Tristan Tarrant <nadir@users.sourceforge.net>
 	* txtscroll.cc: pressing shift during scroll makes it faster
 

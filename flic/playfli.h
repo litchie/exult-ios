@@ -52,7 +52,7 @@ class playfli {
     Palette	*palette;
  public:
     playfli(const char *fli_name);
-    playfli(char *buffer, size_t len);
+    playfli(char *buffer, std::size_t len);
     ~playfli();
     void info(fliinfo *fi = NULL);
     int play(Image_window *win, int first_frame = 0, int last_frame = -1, unsigned long ticks = 0, int brightness = 100);
