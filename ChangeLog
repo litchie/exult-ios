@@ -8,6 +8,8 @@
 	* exult.cc, *game.cc: cleared up startup output a bit
 	* audio/Midi.cc: show errors when unable to find .ogg files
 	* actorio.cc: made the "NPC #x is unused" messages debug-only
+	* exult.cc: changed default music path to music subdir of the
+	current data path (instead of the hardcoded default data path)
 
 2003-12-16    <jeff@mini.nerble.net>
 
