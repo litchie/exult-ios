@@ -289,7 +289,7 @@ static void Init
 	gwin = new Game_window(sw, sh, scaleval);
 	current_res = find_resolution(sw, sh, scaleval);
 	audio = new Audio;
-	audio->Init(22050,2);
+	audio->Init(44100,2);
 
 #ifdef WIN32
 	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
