@@ -178,14 +178,19 @@ int Game_object::get_volume
 
 int Game_object::modify_quantity
 	(
-	int delta			// >=0 to add, <0 to remove.
+	int delta,			// >=0 to add, <0 to remove.
+	bool *del			// If !null, true ret'd if deleted.
 	)
 	{
+	if (del)
+		*del = false;
 	if (!Has_quantity(get_shapenum()))
 		{			// Can't do quantity here.
 		if (delta > 0)
 			return (delta);
 		remove_this();		// Remove from container (or world).
+		if (del)
+			*del = true;
 		return (delta + 1);
 		}
 	int quant = quality&0x7f;	// Get current quality.
@@ -200,6 +205,8 @@ int Game_object::modify_quantity
 	else if (newquant <= 0)		// Subtracting.
 		{
 		remove_this();		// We're done for.
+		if (del)
+			*del = true;
 		return (delta + quant);
 		}
 	int oldvol = get_volume();	// Get old volume used.

@@ -143,7 +143,7 @@ public:
 	virtual void set_obj_hp(int hp);
 	int get_volume() const;		// Get space taken.
 					// Add/remove to/from quantity.
-	int modify_quantity(int delta);
+	int modify_quantity(int delta, bool *del = 0);
 					// Set shape coord. within chunk.
 	void set_shape_pos(unsigned int shapex, unsigned int shapey)
 		{ shape_pos = (shapex << 4) + shapey; }

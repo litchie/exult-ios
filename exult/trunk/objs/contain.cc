@@ -254,23 +254,24 @@ int Container_game_object::remove_quantity
 	if (objects.is_empty())
 		return delta;		// Empty.
 	Game_object *obj = objects.get_first();
-	Game_object *first = obj;	// Save first.
+	Game_object *last = obj->get_prev();	// Save last.
 	Game_object *next;
-	int done = 0;
-	while (!done && delta)
+	while (obj && delta)
 		{
-		next = obj->get_next();	// Might be deleting obj.
+					// Might be deleting obj.
+		next = obj == last ? 0 : obj->get_next();
+		bool del = false;	// Gets 'deleted' flag.
 		if (obj->get_shapenum() == shapenum &&
 		    (qual == c_any_qual || obj->get_quality() == qual) &&
-		    (framenum == c_any_framenum || obj->get_framenum() == framenum))
-			delta = -obj->modify_quantity(-delta);
-					// Still there?
-		if (next->get_prev() == obj)
+		    (framenum == c_any_framenum || 
+					obj->get_framenum() == framenum))
+			delta = -obj->modify_quantity(-delta, &del);
+
+		if (!del)		// Still there?
 					// Do it recursively.
 			delta = obj->remove_quantity(delta, shapenum, 
 							qual, framenum);
 		obj = next;
-		done = (!obj || obj == first);
 		}
 	return (delta);
 	}
