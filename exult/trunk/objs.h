@@ -642,9 +642,6 @@ public:
 	friend class Object_iterator_backwards;
 	Chunk_object_list(int chunkx, int chunky);
 	~Chunk_object_list();		// Delete everything in chunk.
-#if 0
-	void add_flat(Game_object *obj);// Add 'flat' object.
-#endif
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add/remove an egg.
 	void remove_egg(Egg_object *egg);
@@ -712,6 +709,12 @@ public:
 					// Use this when teleported in.
 	static void try_all_eggs(Game_object *obj, int tx, int ty, int tz,
 						int from_tx, int from_ty);
+	int in_dungeon(int tx, int ty)	// Is object within dungeon?
+		{ return 1; }		// ++++++Implement.
+	int in_dungeon(Game_object *obj)// Is object within dungeon?
+		{ return in_dungeon(obj->get_tx(), obj->get_ty()); }
+	int has_dungeon()		// Any tiles within dungeon?
+		{ return 0; }		// +++++Need to implement.
 	};
 
 /*
