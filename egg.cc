@@ -144,8 +144,10 @@ Egg_object::Egg_object
 	distance = (itype >> 10) & 0x1f;
 	unsigned char noct = (itype >> 7) & 1;
 	unsigned char do_once = (itype >> 8) & 1;
-					// Cached_in eggs can be rehatched.
-	unsigned char htch = criteria == cached_in ? 0 : ((itype >> 9) & 1);
+					// Cached_in eggs can be rehatched, as
+					//   can missile eggs.
+	unsigned char htch = (criteria == cached_in || type == missile) ? 0 
+					: ((itype >> 9) & 1);
 	solid_area = (criteria == cached_in || criteria == something_on) ? 1 
 								: 0;
 	unsigned char ar = (itype >> 15) & 1;
