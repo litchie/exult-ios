@@ -509,6 +509,8 @@ USECODE_INTRINSIC(create_new_object)
 			obj = gwin->create_ireg_object(
 				gwin->get_info(shapenum), shapenum, 0,
 								tx, ty, lift);
+					// Be liberal about taking stuff.
+			obj->set_flag(Obj_flags::okay_to_take);
 			cout << " ireg object " << endl;
 		}
 	}
