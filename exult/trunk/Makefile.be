@@ -111,5 +111,6 @@ bindist: finishedbinary
 	cp README README.BeOS COPYING NEWS AUTHORS ChangeLog exult-$(VERSION)/doc
 	cp data/exult.flx data/midisfx.flx exult-$(VERSION)/data
 	cp $(HOME)/lib/libSDL.so $(HOME)/lib/README-SDL.txt exult-$(VERSION)/lib
-	zip -r exult-$(VERSION).beos.zip exult-$(VERSION)
+	rm -f exult-$(VERSION).x86.beos.zip
+	zip -r exult-$(VERSION).x86.beos.zip exult-$(VERSION)
 	rm -rf exult-$(VERSION) 
