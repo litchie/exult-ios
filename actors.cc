@@ -735,11 +735,13 @@ void Actor::follow
 		if (Chunk_object_list::is_blocked(goal, 3, get_type_flags()))
 					// Find a free spot.
 			goal = leader->find_unblocked_tile(1, 3);
-		if (goal.tx == -1)	//+++++Testing
+		if (goal.tx == -1)	// No free spot?  Give up.
+			{
 			cout << "... but is blocked." << endl;
-		if (goal.tx == -1 ||	// No free spot?  Give up.
-		    walk_path_to_tile(goal, speed - speed/4, 0))
 			return;
+			}
+		if (walk_path_to_tile(goal, speed - speed/4, 0))
+			return;		// Success.
 		else
 			cout << "... but failed to find path." << endl;
 		}

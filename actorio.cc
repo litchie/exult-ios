@@ -87,7 +87,6 @@ Actor::Actor
 					// Guessing:  !!  (Want to get signed.)
 	int health_val = (int) (char) Read1(nfile);
 	set_property((int) Actor::health, health_val);
-	dead = is_dying();
 	nfile.seekg(3, ios::cur);	// Skip 3 bytes.
 	int iflag2 = Read2(nfile);	// Another inventory flag.
 
@@ -140,7 +139,8 @@ Actor::Actor
 
 		if ((strength_val << 7) & 1) set_siflag (Actor::freeze);
 	}
-	
+
+	dead = is_dying();		// Now we know health, strength.
 
 	// Dexterity
 	set_property((int) Actor::dexterity, Read1(nfile));
