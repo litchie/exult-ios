@@ -237,11 +237,9 @@ dist:   $(EXEC)
 	cp AUTHORS $(U7PATH)/Exult/AUTHORS.txt
 	cp ChangeLog $(U7PATH)/Exult/ChangeLog.txt
 	cp COPYING $(U7PATH)/Exult/COPYING.txt
-	cp docs/faq.html $(U7PATH)/Exult/faq.html
-	cp docs/images/back.gif $(U7PATH)/Exult/images/back.gif
-	cp docs/images/exult_logo.gif $(U7PATH)/Exult/images/exult_logo.gif
+	cp FAQ $(U7PATH)/Exult/FAQ.txt
 	cp NEWS $(U7PATH)/Exult/NEWS.txt
-	cp docs/ReadMe.html $(U7PATH)/Exult/ReadMe.html
+	cp README $(U7PATH)/Exult/README.txt
 	cp README.win32 $(U7PATH)/Exult/README.win32.txt
 	cp data/bg/defaultkeys.txt $(U7PATH)/Exult/bgdefaultkeys.txt
 	cp data/si/defaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
