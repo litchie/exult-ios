@@ -534,7 +534,7 @@ int Monster_pathfinder_client::get_max_cost
 	)
 	{
 	int max_cost = 2*cost_to_goal;	// Don't try to hard.
-	int icost = 2*intelligence;	// Limit by intelligence.
+	int icost = 2 + 2*intelligence;	// Limit by intelligence.
 	if (max_cost > icost)		// Note: intel. ranges from 0 to 30.
 		max_cost = icost;
 	Game_window *gwin = Game_window::get_instance();
@@ -542,8 +542,8 @@ int Monster_pathfinder_client::get_max_cost
 	int scost = ((3*gwin->get_width())/4)/c_tilesize;
 	if (max_cost > scost)
 		max_cost = scost;
-	if (max_cost < 14)		// But not too small.
-		max_cost = 14;
+	if (max_cost < 15)		// But not too small.
+		max_cost = 15;
 	return max_cost;
 	}
 
