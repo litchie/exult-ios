@@ -68,10 +68,9 @@ Actor::Actor
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
 	) : Container_game_object(), usecode(uc), npc_num(num), party_id(-1),
-	    schedule_type((int) Schedule::loiter), two_handed(0), 
+	    schedule(0), schedule_type((int) Schedule::loiter), two_handed(0), 
 	    two_fingered(false), light_sources(0), usecode_dir(0), flags(0),
-	    action(0),
-	    frame_time(0)
+	    action(0), dormant(1), frame_time(0)
 	{
 	name = nm == 0 ? 0 : strdup(nm);
 	set_shape(shapenum, 0); 
@@ -246,6 +245,79 @@ void Actor::stop
 	}
 
 /*
+ *	Want one value to approach another.
+ */
+
+inline int Approach
+	(
+	int from,
+	int to,
+	int dist			// Desired distance.
+	)
+	{
+	if (from <= to)			// Going forwards?
+		return (to - from <= dist ? from : to - dist);
+	else				// Going backwards.
+		return (from - to <= dist ? from : to + dist);
+	}
+
+/*
+ *	Follow the leader.
+ */
+
+void Actor::follow
+	(
+	Actor *leader
+	)
+	{
+					// How close to aim for.
+	int dist = 2 + Actor::get_party_id()/3;
+					// Aim for leader's dest.
+// ++++Try later.	Tile_coord goal = leader->get_dest();
+	Tile_coord goal = leader->get_abs_tile_coord();
+	Tile_coord pos = get_abs_tile_coord();
+					// Tiles to leader.
+	int goaldist = goal.distance(pos);
+	if (goaldist < dist)		// Already close enough?
+		return;
+					// Figure where to aim.
+	goal.tx = Approach(pos.tx, goal.tx, dist);
+	goal.ty = Approach(pos.ty, goal.ty, dist);
+	if (!leader->is_moving())	// Leader stopped?
+		{
+		goal.tx += 1 - rand()%3;// Jiggle a bit.
+		goal.ty += 1 - rand()%3;
+		}
+					// Get his speed.
+	int speed = leader->get_frame_time();
+	if (!speed)			// Not moving?
+		speed = 125;
+	speed += 10 - rand()%50;	// Let's try varying it a bit.
+	if (goaldist > 32 &&		// Getting kind of far away?
+	    get_party_id() >= 0)	// And a member of the party.
+		{			// Teleport.
+		int pixels = goaldist*tilesize;
+		Game_window *gwin = Game_window::get_game_window();
+		if (pixels > gwin->get_width() + 16)
+			{
+			move(goal.tx, goal.ty, goal.tz);
+			Rectangle box = gwin->get_shape_rect(this);
+			gwin->add_text("Thou shan't lose me so easily!", 
+							box.x, box.y);
+			gwin->paint();
+			return;
+			}
+		}
+	if (!leader->is_moving())	// Leader stopped?
+		{			// A little stuck?
+		if (goaldist >= 8 && get_party_id() >= 0)
+			walk_path_to_tile(goal, speed);
+		return;			// Otherwise, take a rest.
+		}
+	walk_to_tile(goal, speed);
+	}
+
+/*
  *	Find the best spot where an item may be readied.
  *
  *	Output:	Index, or -1 if none found.
@@ -291,6 +363,60 @@ int Actor::find_best_spot
 	case other:
 	default:
 		return free_hand();
+		}
+	}
+
+/*
+ *	Set new schedule by type.
+ */
+
+void Actor::set_schedule_type
+	(
+	int new_schedule_type
+	)
+	{
+	stop();				// Stop moving.
+	schedule_type = new_schedule_type;
+	delete schedule;		// Done with the old.
+	schedule = 0;
+	switch ((Schedule::Schedule_types) schedule_type)
+		{
+	case Schedule::horiz_pace:
+		schedule = Pace_schedule::create_horiz(this);
+		break;
+	case Schedule::vert_pace:
+		schedule = Pace_schedule::create_vert(this);
+		break;
+	case Schedule::talk:
+		schedule = new Talk_schedule(this);
+		break;
+	case Schedule::loiter:
+	case Schedule::hound:		// For now.
+	case Schedule::graze:
+		schedule = new Loiter_schedule(this);
+		break;
+	case Schedule::sleep:
+		schedule = new Sleep_schedule(this);
+		break;
+	case Schedule::eat:		// For now.
+	case Schedule::eat_at_inn:	// For now.
+	case Schedule::sit:
+		schedule = new Sit_schedule(this);
+		break;
+	case Schedule::patrol:
+		schedule = new Patrol_schedule(this);
+		break;
+	case Schedule::wait:		// Loiter just a little
+//+++++Figure out why this messes up Mayor's talk at intro.
+//		schedule = new Loiter_schedule(this, 1);
+		break;
+	default:
+		break;
+		}
+	if (schedule)			// Try to start it.
+		{
+		dormant = 0;
+		schedule->now_what();
 		}
 	}
 
@@ -793,8 +919,8 @@ Npc_actor::Npc_actor
 	int fshape, 
 	int uc
 	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
-		dormant(1), num_schedules(0), 
-		schedule(0), schedules(0), alignment(0)
+		num_schedules(0), 
+		schedules(0), alignment(0)
 	{
 	}
 
@@ -851,60 +977,6 @@ void Npc_actor::update_schedule
 			schedule->now_what();
 			return;
 			}
-	}
-
-/*
- *	Set new schedule by type.
- */
-
-void Npc_actor::set_schedule_type
-	(
-	int new_schedule_type
-	)
-	{
-	stop();				// Stop moving.
-	schedule_type = new_schedule_type;
-	delete schedule;		// Done with the old.
-	schedule = 0;
-	switch ((Schedule::Schedule_types) schedule_type)
-		{
-	case Schedule::horiz_pace:
-		schedule = Pace_schedule::create_horiz(this);
-		break;
-	case Schedule::vert_pace:
-		schedule = Pace_schedule::create_vert(this);
-		break;
-	case Schedule::talk:
-		schedule = new Talk_schedule(this);
-		break;
-	case Schedule::loiter:
-	case Schedule::hound:		// For now.
-	case Schedule::graze:
-		schedule = new Loiter_schedule(this);
-		break;
-	case Schedule::sleep:
-		schedule = new Sleep_schedule(this);
-		break;
-	case Schedule::eat:		// For now.
-	case Schedule::eat_at_inn:	// For now.
-	case Schedule::sit:
-		schedule = new Sit_schedule(this);
-		break;
-	case Schedule::patrol:
-		schedule = new Patrol_schedule(this);
-		break;
-	case Schedule::wait:		// Loiter just a little
-//+++++Figure out why this messes up Mayor's talk at intro.
-//		schedule = new Loiter_schedule(this, 1);
-		break;
-	default:
-		break;
-		}
-	if (schedule)			// Try to start it.
-		{
-		dormant = 0;
-		schedule->now_what();
-		}
 	}
 
 /*
@@ -999,79 +1071,6 @@ int Npc_actor::step
 		return (0);
 		}
 	return (frame_time);		// Add back to queue for next time.
-	}
-
-/*
- *	Want one value to approach another.
- */
-
-inline int Approach
-	(
-	int from,
-	int to,
-	int dist			// Desired distance.
-	)
-	{
-	if (from <= to)			// Going forwards?
-		return (to - from <= dist ? from : to - dist);
-	else				// Going backwards.
-		return (from - to <= dist ? from : to + dist);
-	}
-
-/*
- *	Follow the leader.
- */
-
-void Npc_actor::follow
-	(
-	Actor *leader
-	)
-	{
-					// How close to aim for.
-	int dist = 2 + Npc_actor::get_party_id()/3;
-					// Aim for leader's dest.
-// ++++Try later.	Tile_coord goal = leader->get_dest();
-	Tile_coord goal = leader->get_abs_tile_coord();
-	Tile_coord pos = get_abs_tile_coord();
-					// Tiles to leader.
-	int goaldist = goal.distance(pos);
-	if (goaldist < dist)		// Already close enough?
-		return;
-					// Figure where to aim.
-	goal.tx = Approach(pos.tx, goal.tx, dist);
-	goal.ty = Approach(pos.ty, goal.ty, dist);
-	if (!leader->is_moving())	// Leader stopped?
-		{
-		goal.tx += 1 - rand()%3;// Jiggle a bit.
-		goal.ty += 1 - rand()%3;
-		}
-					// Get his speed.
-	int speed = leader->get_frame_time();
-	if (!speed)			// Not moving?
-		speed = 125;
-	speed += 10 - rand()%50;	// Let's try varying it a bit.
-	if (goaldist > 32 &&		// Getting kind of far away?
-	    get_party_id() >= 0)	// And a member of the party.
-		{			// Teleport.
-		int pixels = goaldist*tilesize;
-		Game_window *gwin = Game_window::get_game_window();
-		if (pixels > gwin->get_width() + 16)
-			{
-			Npc_actor::move(goal.tx, goal.ty, goal.tz);
-			Rectangle box = gwin->get_shape_rect(this);
-			gwin->add_text("Thou shan't lose me so easily!", 
-							box.x, box.y);
-			gwin->paint();
-			return;
-			}
-		}
-	if (!leader->is_moving())	// Leader stopped?
-		{			// A little stuck?
-		if (goaldist >= 8 && get_party_id() >= 0)
-			walk_path_to_tile(goal, speed);
-		return;			// Otherwise, take a rest.
-		}
-	walk_to_tile(goal, speed);
 	}
 
 /*
