@@ -1243,6 +1243,11 @@ void Game_map::find_unused_shapes
 		{
 		cout << '.';
 		cout.flush();
+		char msg[80];
+		snprintf(msg, sizeof(msg), "Scanning superchunk %d", sc);
+		gwin->center_text(msg);
+		gwin->paint();
+		gwin->show();
 		if (!schunk_read[sc])
 			get_superchunk_objects(sc);
 		}

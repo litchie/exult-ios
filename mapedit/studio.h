@@ -154,6 +154,7 @@ public:
 	void set_hide_lift(int lift);
 	void set_edit_terrain(gboolean terrain);
 	void set_edit_mode(int md);
+	void show_unused_shapes(unsigned char *data, int datalen);
 					// Open/create shape files:
 	Shape_file_info *open_shape_file(const char *fname);
 	void new_shape_file(bool single);

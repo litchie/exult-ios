@@ -1232,6 +1232,54 @@ void ExultStudio::set_edit_mode
 	}
 
 /*
+ *	Insert 0-delimited text into an edit box.
+ */
+
+static void Insert_text
+	(
+	GtkEditable *ed,
+	const char *text,
+	int& pos			// Where to insert.  Updated.
+	)
+	{
+	gtk_editable_insert_text(ed, text, strlen(text), &pos);
+	}
+
+/*
+ *	Show unused shape list received from exult.
+ */
+
+void ExultStudio::show_unused_shapes
+	(
+	unsigned char *data,		// Bits set for unused shapes.
+	int datalen			// #bytes.
+	)
+	{
+	int nshapes = datalen*8;
+	GtkText *text = GTK_TEXT(glade_xml_get_widget(app_xml, "msg_text"));
+	gtk_text_set_point(text, 0);	// Clear out old text.
+	gtk_text_forward_delete(text, gtk_text_get_length(text));
+	set_visible("msg_win", TRUE);	// Show message window.
+	int pos = 0;
+	GtkEditable *ed = GTK_EDITABLE(text);
+	Insert_text(ed,
+		"The following shapes were not found.\n", pos);
+	Insert_text(ed,
+		"Note that some may be created by usecode (script)\n\n", pos);
+	for (int i = 0x96; i < nshapes; i++)	// Ignore flats (<0x96).
+		if (!(data[i/8]&(1<<(i%8))))
+			{
+			const char *nm = get_shape_name(i);
+			char *msg = g_strdup_printf("  Shape %4d:    %s\n",
+							i, nm ? nm : "");
+			Insert_text(ed, msg, pos);
+			g_free(msg);
+			}
+	gtk_text_set_point(text, 0);	// Scroll back to top.
+	}
+
+
+/*
  *	Open a shape (or chunks) file in 'patch' or 'static' directory.
  *
  *	Output:	->file info (may already have existed), or 0 if error.
@@ -2055,6 +2103,9 @@ void ExultStudio::read_from_server
 		open_combo_window();	// Open if necessary.
 		if (combowin)
 			combowin->add(data, datalen);
+		break;
+	case Exult_server::unused_shapes:
+		show_unused_shapes(data, datalen);
 		break;
 	case Exult_server::usecode_debugging:
 		std::cerr << "Warning: got a usecode debugging message! (ignored)"
