@@ -209,7 +209,8 @@ void Game_map::init
 	catch(const file_exception & f)
 		{
 		if (!Game::is_editing())	// Ok if map-editing.
-			throw f;
+			cerr << "Map file '" << fname << "' not found." <<
+								endl;
 		nomap = true;
 		}
 	for (int schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
@@ -584,7 +585,8 @@ void Game_map::get_ifix_objects
 		catch(const file_exception & f)
 		{
 		if (!Game::is_editing())	// Ok if map-editing.
-			throw f;
+			cerr << "Ifix file '" << fname << "' not found." <<
+								endl;
 		return;
 		}
 	StreamDataSource ifix(&ifix_stream);
