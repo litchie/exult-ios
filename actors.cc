@@ -1920,6 +1920,10 @@ void Actor::set_property
 			val = 0;
 		properties[prop] = static_cast<short>(val);
 		break;
+	case combat:			// These two are limited to 30.
+	case magic:
+		properties[prop] = static_cast<short>(val > 30 ? 30 : val);
+		break;
 	default:
 		if (prop >= 0 && prop < 12)
 			properties[prop] = static_cast<short>(val);
