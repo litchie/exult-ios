@@ -624,6 +624,11 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x1b:			// Takes -npc.  Returns index?
 					// Just return -npc for now.++++++
 		return Usecode_value(-parms[0].get_int_value());
+	case 0x1d:			// SetSchedule?(npc, schedtype).
+	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
+	// 'bNum' field in schedules.
+		//+++++++++++++++++++++
+		break;
 	case 0x1e:			// NPC joins party.
 		add_to_party(-parms[0].get_int_value());
 		break;
