@@ -1087,9 +1087,14 @@ USECODE_INTRINSIC(summon)
 	if (!info)
 		return Usecode_value(0);
 	Tile_coord start = gwin->get_main_actor()->get_abs_tile_coord();
+	Tile_coord dest = Map_chunk::find_spot(start, 5, shapenum, 0, 1,
+			-1, gwin->is_main_actor_inside() ?
+				Map_chunk::inside : Map_chunk::outside);
+#if 0	/* +++Old way */
 	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
 	for (int i = 0; dest.tx == -1 && i < 5; i++)
 		dest = Game_object::find_unblocked_tile(start, i);
+#endif
 	if (dest.tx == -1)
 		return Usecode_value(0);
 	Monster_actor *monst = Monster_actor::create(shapenum,

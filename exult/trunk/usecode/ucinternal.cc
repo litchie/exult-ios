@@ -1000,6 +1000,7 @@ Usecode_value Usecode_internal::remove_cont_items
 	return Usecode_value(0);
 	}
 
+#if 0	/* ++++Old way */
 /*
  *	Find an unblocked tile within a distance of 3 from a given point.
  *
@@ -1027,7 +1028,7 @@ static Tile_coord Find_unblocked
 	else
 		return dest;
 	}
-
+#endif
 
 /*
  *	Have an NPC walk somewhere and then execute usecode.
@@ -1066,8 +1067,13 @@ int Usecode_internal::path_run_usecode
 		dest.tz = 0;
 	if (find_free)
 		{
+		Tile_coord d = Map_chunk::find_spot(dest, 3, npc, dest.tz%5);
+		if (d.tx != -1)		// Found it?
+			dest = d;
+#if 0	/* ++++Old way */
 		int ht = gwin->get_info(npc).get_3d_height();
 		dest = Find_unblocked(dest, ht, src.tz);
+#endif
 		if (usefun == 0x60a &&	// ++++Added 7/21/01 to fix Iron
 		    src.distance(dest) <= 1)
 			return 1;	// Maiden loop in SI.  Kludge+++++++
@@ -1085,71 +1091,6 @@ int Usecode_internal::path_run_usecode
 	npc->start(200, 0);		// Get into time queue.
 	return !action->done_and_failed();
 }
-
-
-#if 0	/* +++++++++Old way */
-int Usecode_internal::path_run_usecode
-	(
-	Usecode_value& npcval,		// # or ref.
-	Usecode_value& locval,		// Where to walk to.
-	Usecode_value& useval,		// Usecode #.
-	Usecode_value& itemval,		// Use as itemref in Usecode fun.
-	Usecode_value& eventval,	// Eventid.
-	int find_free			// Not sure.  For SI.  
-	)
-	{
-	Actor *npc = as_actor(get_item(npcval));
-	if (!npc)
-		return 0;
-	int usefun = useval.get_int_value();
-	int sz = locval.get_array_size();
-	if (sz != 3)			// Looks like tile coords.
-		{	//++++++Not sure about this.
-		cout << "0x7d Location not a 3-int array" << endl;
-		return 0;
-		}
-					// Get source, dest.
-	Tile_coord src = npc->get_abs_tile_coord();
-	int dx = locval.get_elem(0).get_int_value();
-	int dy = locval.get_elem(1).get_int_value();
-	int dz = locval.get_elem(2).get_int_value();
-	cout << endl << "Path_run_usecode:  first walk to (" << 
-			dx << ", " << dy << ", " << dz << ")" << endl;
-	Tile_coord dest(dx, dy, dz);
-	if (find_free && dest != src)
-		{
-		dest = Find_unblocked(dest, src.tz);
-		if (usefun == 0x60a &&	// ++++Added 7/21/01 to fix Iron
-		    src.distance(dest) <= 1)
-			return 1;	// Maiden loop in SI.  Kludge+++++++
-		if (src != dest && !npc->walk_path_to_tile(dest))
-			{		// Try again at npc's level.
-			dest.tz = src.tz;
-			dest = Find_unblocked(dest, src.tz);
-			if (src != dest && !npc->walk_path_to_tile(dest))
-				{
-				cout << "Failed to find path" << endl;
-				return 0;
-				}
-			}
-		}
-	else if (src != dest &&		// Just try once.
-	    !npc->walk_path_to_tile(dest))
-		{			// Failed to find path.
-		cout << "Failed to find path" << endl;
-		return 0;
-		}
-	Wait_for_arrival(npc, dest);
-	Game_object *obj = get_item(itemval);
-	if (obj)
-		{
-		call_usecode(usefun, obj, 
-				(Usecode_events) eventval.get_int_value());
-		return 1;	// Success.
-		}
-	return 0;
-	}
-#endif
 
 /*
  *	Schedule a script.
