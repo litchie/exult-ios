@@ -1,3 +1,6 @@
+2001-07-12  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Paperdoll_gump_info.cc: fixed Gwani cloak bug
+
 2001-07-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actions.cc, actors.cc: Start schedule even if NPC is not within
