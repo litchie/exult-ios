@@ -79,7 +79,8 @@ void Actor::activate
 	)
 	{
 	if (usecode == -1)
-		Game_object::activate(umachine);
+		umachine->call_usecode(get_shapenum(), this,
+				Usecode_machine::double_click);
 	else
 		umachine->call_usecode(usecode, this, 
 					Usecode_machine::double_click);

@@ -142,8 +142,9 @@ public:
 			}
 		return 0;
 		}
-	Actor *get_npc(int npc_num)
-		{ return npc_num < num_npcs ? npcs[npc_num] : 0; }
+	Actor *get_npc(long npc_num)
+		{ return (npc_num > 0 && npc_num < num_npcs) ? npcs[npc_num] 
+									: 0; }
 	int get_num_npcs()
 		{ return num_npcs; }
 	int get_num_shapes()
