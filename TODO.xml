@@ -18,8 +18,7 @@
 </project>
 <project>
 	<description>
-		Implement "Return to Menu" in BG and SI's menus and in the in-game menu
-		to go back to the Exult menu
+		Implement "Return to Menu" in the in-game menu to go back to the Exult menu
 	</description>
 	<difficulty>
 		Easy
@@ -132,19 +131,6 @@
 	</difficulty>
 	<owner>
 		Nobody
-	</owner>
-</project>
-<project>
-	<description>
-		Implement a "status bar" at the bottom of the screen with the portrait of
-		the party member and a red health bar. The Avatar would in addition have a
-		blue mana bar
-	</description>
-	<difficulty>
-		Medium
-	</difficulty>
-	<owner>
-		Ryan Nunn
 	</owner>
 </project>
 </todo>
