@@ -385,12 +385,12 @@ void	Audio::build_speech_vector(void)
 
 void	Audio::set_external_signal(int fh)
 {
-	mixer->set_auxilliary_audio(fh);
+	// mixer->set_auxilliary_audio(fh);
 }
 
 void	Audio::terminate_external_signal(void)
 {
-	mixer->set_auxilliary_audio(-1);
+	// mixer->set_auxilliary_audio(-1);
 }
 
 Audio	*Audio::get_ptr(void)

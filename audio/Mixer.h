@@ -31,6 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <list>
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
+#include "pcb.h"
+#include <list>
 
 //---- Mixer -----------------------------------------------------------
 
@@ -38,11 +40,12 @@ class Mixer
 {
 private:
 	Mixer(const Mixer &m);	// Cannot call me
+	list<ProducerConsumerBuf *>	audio_streams;
 public:
-    Mixer();
+	Mixer();
 	Mixer(unsigned int, unsigned int, unsigned char);
-    Mixer(size_t ringsize,size_t bufferlength);
-    ~Mixer();
+	Mixer(size_t ringsize,size_t bufferlength);
+	~Mixer();
 
 	struct	MixBuffer
 		{
@@ -63,9 +66,10 @@ public:
 	void	cancel(void);
 	void fill_audio_func(void *, Uint8 *, int);
 	void play(Uint8 *, unsigned int);
+	ProducerConsumerBuf *Create_Audio_Stream(void);
 
-	void	set_auxilliary_audio(int);
-	int	auxilliary_audio;
+	// void	set_auxilliary_audio(int);
+	// int	auxilliary_audio;
 };
 
 
