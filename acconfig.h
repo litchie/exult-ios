@@ -23,8 +23,11 @@
 /* Using alternative memory scheme? */
 #undef WANT_ALTERNATE_ALLOCATOR
 
-/* Set memoryu before usage? */
+/* Set memory to zero before usage? */
 #undef INITIALISE_ALLOCATED_BLOCKS
+
+/* Set memory to a non-zero pattern before usage? */
+#undef POISON_ALLOCATED_BLOCKS
 
 /* Define if the libraries have mkstemp() */
 #undef HAVE_MKSTEMP
