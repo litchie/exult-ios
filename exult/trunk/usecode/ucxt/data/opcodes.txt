@@ -79,40 +79,40 @@ any of the previous CMPSs since the last ASK.
 
 > 0x08	NULL	"null"	""	"null()"	0	{}	0	0	0	0
 
-> 0x09	ADD	"add"	""	"(%p2 + %p1)"	0	{}	2	1	0	0
+> 0x09	ADD	"add"	""	"(%p1 + %p2)"	0	{}	2	1	0	0
 
 Pops two values from the stack (pop v2, then pop v1), adds them together
 (v1 + v2), and then pushes the result on the stack. Integers are added,
 strings are concatenated, collections are appended.
 
-> 0x0A	SUB	"sub"	""	"(%p2 - %p1)"	0	{}	2	1	0	0
+> 0x0A	SUB	"sub"	""	"(%p1 - %p2)"	0	{}	2	1	0	0
 
 Pops two values from the stack (pop v2, then pop v1), subtracts them
 from each other (v1 - v2) then pushes the result to the stack. Only works
 with integers.
 
-> 0x0B	DIV	"div"	""	"(%p2 / %p1)"	0	{}	2	1	0	0
+> 0x0B	DIV	"div"	""	"(%p1 / %p2)"	0	{}	2	1	0	0
 
 Pops two values from the stack (pop v2, then pop v1), divides v1 by v2
 (v1 / v2), then pushes the result to the stack. Only works with integers.
 
-> 0x0C	MUL	"mul"	""	"(%p2 * %p1)"	0	{}	2	1	0	0
+> 0x0C	MUL	"mul"	""	"(%p1 * %p2)"	0	{}	2	1	0	0
 
 Pops two elements from the stack, multiplies them and pushes them back on
 the stack (multiplication is commutative). Only works with integers.
 
-> 0x0D	MOD	"mod"	""	"(%p2 %% %p1)"	0	{}	2	1	0	0
+> 0x0D	MOD	"mod"	""	"(%p1 %% %p2)"	0	{}	2	1	0	0
 
 Pops two elements from the stack (pop v2, then pop v1), mods v1 by v2
 (v1 % v2), then pushes the result on the stack. Only works with integers.
 
-> 0x0E	AND	"and"	""	"(%p2 && %p1)"	0	{}	2	1	0	0
+> 0x0E	AND	"and"	""	"(%p1 && %p2)"	0	{}	2	1	0	0
 
 Pops two elements from the stack, converts them to true/false, logically
 "and"s the values, and pushes the resulting truth value back on the stack
 as a 1/0(true/false).
 
-> 0x0F	OR	"or"	""	"(%p2 || %p1)"	0	{}	2	1	0	0
+> 0x0F	OR	"or"	""	"(%p1 || %p2)"	0	{}	2	1	0	0
 
 The "logical or" counterpart the the "logical and" (opcode 0x0E). Refer to
 that opcode for more information.
@@ -140,25 +140,25 @@ Pushes false onto the stack.
 
 > 0x15	NULL	"null"	""	"null()"	0	{}	0	0	0	0
 
-> 0x16	CMPGT	"cmpgt"	""	"(%p2 > %p1)"	0	{}	2	1	0	0
+> 0x16	CMPGT	"cmpgt"	""	"(%p1 > %p2)"	0	{}	2	1	0	0
 
 Pops two values from the stack (pop v2, then pop v1), perform the logical
 comparison "greater then" on them (v1 > v2), and push the resultant truth
 value back on the stack. Only works with integers.
 
-> 0x17	CMPLT	"cmplt"	""	"(%p2 < %p1)"	0	{}	2	1	0	0
+> 0x17	CMPLT	"cmplt"	""	"(%p1 < %p2)"	0	{}	2	1	0	0
 
 As CMPGT, except using the "less than" comparison (<).
 
-> 0x18	CMPGE	"cmpge"	""	"(%p2 >= %p1)"	0	{}	2	1	0	0
+> 0x18	CMPGE	"cmpge"	""	"(%p1 >= %p2)"	0	{}	2	1	0	0
 
 As CMPGT, except using the "greater then or equal to" comparison (>=).
 
-> 0x19	CMPLE	"cmple"	""	"(%p2 <= %p1)"	0	{}	2	1	0	0
+> 0x19	CMPLE	"cmple"	""	"(%p1 <= %p2)"	0	{}	2	1	0	0
 
 As CMPLE, except using the "less then or equal to" comparison (<=).
 
-> 0x1A	CMPNE	"cmpne"	""	"(%p2 != %p1)"	0	{}	2	1	0	0
+> 0x1A	CMPNE	"cmpne"	""	"(%p1 != %p2)"	0	{}	2	1	0	0
 
 As CMPNE, except using the "not equal to" comparison (!=).
 
@@ -279,7 +279,7 @@ book, whatever). Has the side effect of clearing the string register.
 
 > 0x37	NULL	"null"	""	"null()"	0	{}	0	0	0	0
 
-> 0x38	CALLIS	"callis\t%i1@%b2"	"\t\t; %1"	"callis(%i1, %p,)"	3	{short,byte}	0xFE 1	0	0
+> 0x38	CALLIS	"callis\t%i1@%b2"	"\t\t; %1"	"%i1(%p,)"	3	{short,byte}	0xFE 1	0	0
 
 Calls the intrinsic {short} with {byte} number of parameters popped from the
 stack passed to it. Eg: if you were calling intrinsic 23 (short) with 3 (byte)
@@ -291,7 +291,7 @@ The intrinsic called will return a value on the stack.
 
 The intrinsic called also has the same "event" flag as the caller function.
 
-> 0x39	CALLI	"calli\t%i1@%b2"	"\t\t; %1"	"calli(%i1, %p,)"	3	{short,byte}	0xFE	0	0	0
+> 0x39	CALLI	"calli\t%i1@%b2"	"\t\t; %1"	"%i1(%p,)"	3	{short,byte}	0xFE	0	0	0
 
 Same as opcode CALLIS (0x38), except no return value.
 
