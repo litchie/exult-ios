@@ -294,6 +294,7 @@ dist:   $(EXEC)
 	copy data\si\defaultkeys.txt $(U7PATH)\Exult\sidefaultkeys.txt
 	copy SDL\README-SDL.txt $(U7PATH)\Exult
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult
+	u2d $(U7PATH)/Exult/*.txt
 
 tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
@@ -370,6 +371,7 @@ toolsdist: tools
 	copy tools\u7bgflag.txt $(TOOLSPATH)\tools
 	copy tools\u7siflag.txt $(TOOLSPATH)\tools
 	copy tools\ucformat.txt $(TOOLSPATH)\tools
+	u2d $(TOOLSPATH)/tools/*.txt
 
 all: $(EXEC) tools
 
