@@ -120,6 +120,12 @@ void Gump::initialize
 		checkx = 8;
 		checky = 46;
 	}
+	else if(shnum==game->get_shape("gumps/tree"))
+	{
+		object_area = Rectangle(65, 28, 92, 57);
+		checkx = 8;
+		checky = 100;
+	}
 	else if(shnum==game->get_shape("gumps/slider"))
 	{
 		object_area = Rectangle(0, 0, 0, 0);

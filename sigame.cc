@@ -85,6 +85,18 @@ SI_Game::SI_Game()
 		add_shape("gumps/tombstone", 45);
 		add_shape("gumps/goldsign", 46);
 		add_shape("gumps/body", 48);
+		add_shape("gumps/tree", 64);
+
+		// Need to be doing
+		add_shape("gumps/spell_scroll",65);
+		add_shape("gumps/jawbone", 56);
+		add_shape("gumps/tooth", 57);
+		add_shape("gumps/cstats/1",58);
+		add_shape("gumps/cstats/2",59);
+		add_shape("gumps/cstats/3",60);
+		add_shape("gumps/cstats/4",61);
+		add_shape("gumps/cstats/5",62);
+		add_shape("gumps/cstats/6",63);
 
 		add_resource("files/shapes/count", 0, 6);
 		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
