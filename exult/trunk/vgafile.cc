@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "rect.h"
 #include "imagewin.h"
 #include "vgafile.h"
+#include "databuf.h"
 
 #if 1	/* For debugging. */
 #include <iomanip.h>
