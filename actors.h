@@ -379,6 +379,7 @@ public:
 		}
 	virtual void call_readied_usecode(Game_window *gwin, int index,
 					Game_object *obj, int eventid);
+	virtual int get_max_weight();	// Get max. weight allowed.
 					// Change member shape.
 	virtual void change_member_shape(Game_object *obj, int newshape);
 					// Move out of the way.

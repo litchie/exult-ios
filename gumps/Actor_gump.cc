@@ -269,7 +269,7 @@ void Actor_gump::paint
 	if (halo_button) halo_button->paint(gwin);
 	if (cmode_button) cmode_button->paint(gwin);
 					// Show weight.
-	int max_weight = 2*container->get_property(Actor::strength);
+	int max_weight = container->get_max_weight();
 	int weight = container->get_weight()/10;
 	char text[20];
 	snprintf(text, 20, "%d/%d", weight, max_weight);

@@ -84,10 +84,10 @@ public:
 	virtual int drop(Game_object *obj);
 					// Count contained objs.
 	virtual int count_objects(int shapenum, int qual = c_any_qual,
-							int framenum = c_any_framenum);
+						int framenum = c_any_framenum);
 					// Get contained objs.
-	virtual int get_objects(Game_object_vector& vec, int shapenum, int qual,
-						int framenum);
+	virtual int get_objects(Game_object_vector& vec, int shapenum, 
+					int qual, int framenum);
 	virtual void set_flag_recursively(int flag);
 					// Write out to IREG file.
 	virtual void write_ireg(std::ostream& out);

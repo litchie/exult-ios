@@ -2038,6 +2038,19 @@ void Actor::set_type_flags
 	}
 
 /*
+ *	Get maximum weight in stones that can be held.
+ *
+ *	Output:	Max. allowed, or 0 if no limit (i.e., not carried by an NPC).
+ */
+
+int Actor::get_max_weight
+	(
+	)
+	{
+	return 2*properties[(int) Actor::strength];
+	}
+
+/*
  *	Call usecode function for an object that's readied/unreadied.
  */
 
