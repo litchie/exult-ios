@@ -272,7 +272,8 @@ inline int Need_new_opponent
 		return 1;
 					// See if off screen.
 	Tile_coord t = opponent->get_abs_tile_coord();
-	return !gwin->get_win_tile_rect().enlarge(2).has_point(t.tx, t.ty);
+	Rectangle screen = gwin->get_win_tile_rect().enlarge(2);
+	return (!screen.has_point(t.tx, t.ty));
 	}
 
 /*
@@ -317,14 +318,34 @@ void Combat_schedule::now_what
 	default:
 		break;
 		}
-	if (failures > 5 && npc->get_party_id() >= 0)
+	if (failures > 5)
 		{			// Too many failures.  Give up for now.
 		cout << npc->get_name() << " is giving up" << endl;
-		npc->walk_to_tile(
-			gwin->get_main_actor()->get_abs_tile_coord());
+		if (npc->get_party_id() >= 0)
+			{		// Party member.
+			npc->walk_to_tile(
+				gwin->get_main_actor()->get_abs_tile_coord());
 					// WARNING:  Destroys ourself.
-		npc->set_schedule_type(Schedule::follow_avatar);
+			npc->set_schedule_type(Schedule::follow_avatar);
+			}
+		else if (npc->get_alignment() == Npc_actor::friendly &&
+						prev_schedule != combat)
+			npc->set_schedule_type(prev_schedule);
 		}
+	}
+
+/*
+ *	Npc just went dormant (probably off-screen).
+ */
+
+void Combat_schedule::im_dormant
+	(
+	)
+	{
+	if (npc->get_alignment() == Npc_actor::friendly && 
+			prev_schedule != combat && npc->is_monster())
+					// Friendly, so end combat.
+		npc->set_schedule_type(prev_schedule);
 	}
 
 /*

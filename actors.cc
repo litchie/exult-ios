@@ -379,7 +379,7 @@ void Actor::follow
 	Actor *leader
 	)
 	{
-	if (schedule_type == Schedule::combat)
+	if (schedule_type == Schedule::combat || Actor::is_dead_npc())
 		return;			// Not when fighting.
 	int delay = 0;
 					// How close to aim for.
@@ -434,8 +434,14 @@ void Actor::follow
 		cout << get_name() << " trying to catch up." << endl;
 					// Don't try again for a few seconds.
 		next_path_time = SDL_GetTicks() + 4000;
-		if (walk_path_to_tile(goal, speed - speed/20, 0))
+		if (Chunk_object_list::is_blocked(goal, 3))
+					// Find a free spot.
+			goal = leader->find_unblocked_tile(1, 3);
+		if (goal.tx == -1 ||	// No free spot?  Give up.
+		    walk_path_to_tile(goal, speed - speed/20, 0))
 			return;
+		else
+			cout << "... but failed to find path." << endl;
 		}
 	walk_to_tile(goal, speed, delay);
 	}
@@ -519,13 +525,15 @@ void Actor::set_schedule_type
 	stop();				// Stop moving.
 	if (schedule)
 		schedule->ending();	// Finish up old if necessary.
+					// Save old for a moment.
+	Schedule::Schedule_types old_schedule = schedule_type;
 	schedule_type = new_schedule_type;
 	delete schedule;		// Done with the old.
 	schedule = 0;
 	switch ((Schedule::Schedule_types) schedule_type)
 		{
 	case Schedule::combat:
-		schedule = new Combat_schedule(this);
+		schedule = new Combat_schedule(this, old_schedule);
 		break;
 	case Schedule::horiz_pace:
 		schedule = Pace_schedule::create_horiz(this);
@@ -1029,6 +1037,9 @@ void Actor::die
 					// Get location.
 	Tile_coord pos = get_abs_tile_coord();
 	set_action(0);
+	delete schedule;
+	schedule = 0;
+	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	remove_this(1);			// Remove (but don't delete this).
 	cx = cy = 0xff;			// Set to invalid chunk coords.
 	int shnum, frnum;		// Lookup body shape/frame.
@@ -1257,7 +1268,8 @@ void Main_actor::move
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Store old chunk list.
-	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
+	Chunk_object_list *olist = gwin->get_objects_safely(
+						get_cx(), get_cy());
 					// Move it.
 	Game_object::move(newtx, newty, newlift);
 	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
@@ -1495,7 +1507,8 @@ void Npc_actor::move
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Store old chunk list.
-	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
+	Chunk_object_list *olist = gwin->get_objects_safely(
+							get_cx(), get_cy());
 					// Move it.
 	Game_object::move(newtx, newty, newlift);
 	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());

@@ -46,6 +46,7 @@ class Combat_schedule : public Schedule
 		parry = 4,		// In the process of parrying a blow.
 		stunned = 5		// Just been hit.
 		} state;
+	Schedule_types prev_schedule;	// Before going into combat.
 	Slist opponents;		// Possible opponents.
 	Game_object *opponent;		// Current opponent.
 	int max_reach;			// Max. weapon reach in tiles.
@@ -61,11 +62,13 @@ class Combat_schedule : public Schedule
 	void approach_foe();		// Approach foe.
 	void start_strike();		// Start to hit.
 public:
-	Combat_schedule(Actor *n) : Schedule(n), state(approach), 
+	Combat_schedule(Actor *n, Schedule_types prev_sched) 
+		: Schedule(n), state(approach), prev_schedule(prev_sched),
 			opponent(0),
 			max_reach(1), yelled(0), failures(0)
 		{  }
 	virtual void now_what();	// Npc calls this when it's done
+	virtual void im_dormant();	// Npc calls this when it goes dormant.
 					// Set opponent in combat.
 	virtual void set_opponent(Game_object *obj);
 	};
