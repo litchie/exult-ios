@@ -81,6 +81,8 @@ private:
 	unsigned char main_actor_inside;// 1 if actor is in a building.
 	int num_npcs;			// Number of NPC's.
 	Actor **npcs;			// List of NPC's + the Avatar.
+	int num_monsters;		// Number of monster types.
+	Monster_info *monster_info;	// Array from 'monsters.dat'.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
@@ -164,6 +166,9 @@ public:
 		{ return main_actor_inside; }
 	Actor *get_npc(long npc_num)
 		{ return (npc_num > 0 && npc_num < num_npcs) ? npcs[npc_num] 
+									: 0; }
+	Monster_info *get_monster_info(int num)
+		{ return (num >=0 && num < num_monsters) ? &monster_info[num]
 									: 0; }
 	int get_num_npcs()
 		{ return num_npcs; }
@@ -338,6 +343,15 @@ public:
 		}
 	void add_dirty(Rectangle r)	// Add rectangle to dirty area.
 		{ dirty = dirty.w > 0 ? dirty.add(r) : r; }
+					// Add dirty rect. for obj.  Rets. 0
+					//   if not on screen.
+	int add_dirty(Game_object *obj)
+		{
+		Rectangle rect = get_shape_rect(obj);
+		rect.enlarge(5);
+		rect = clip_to_win(rect);
+		return (rect.w > 0 && rect.h > 0);
+		}
 					// Paint a bit of text.
 	void paint_text_object(Text_object *txt);
 					// Paint "flat" scenery in a chunk.
