@@ -625,6 +625,8 @@ Image_buffer::Image_buffer
 		ibuf = new Image_buffer16(w, h, dpth);
 		break;
 	case 32:
+		cout << "Ouch. No 32 bit support. Try a 16 bit or an 8 bit display" << endl;
+		exit(-1);
 	default:
 		ibuf = 0;		// Later.
 		}
