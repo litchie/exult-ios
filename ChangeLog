@@ -1,4 +1,10 @@
 2001-05-28  Dancer Vesperman <dancer@users.sourceforge.net>
+	* actors.cc: uninline static method called from external translation
+		units. (Otherwise we cannot link under some compilers. Duh)
+	** Double extra bonus points. We now fully compile and link under G++
+	   version 3.0 (at least, so far)
+
+2001-05-28  Dancer Vesperman <dancer@users.sourceforge.net>
 	* mapedit/shapelst.cc: std::cout,std::endl
 	* audio/midi_drivers/Timidity_binary.cc: std::cout,std::endl,
 		std::string
