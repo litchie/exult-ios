@@ -205,7 +205,8 @@ void Palette::fade_out(int cycles)
 int Palette::find_color(int r, int g, int b) {
 	int best_index = -1;
 	long best_distance = 0xfffffff;
-	for (int i = 0; i < 256; i++) {
+					// But don't search rotating colors.
+	for (int i = 0; i < 0xe0; i++) {
 					// Get deltas.
 		long dr = r - pal1[3*i], dg = g - pal1[3*i + 1], 
 							db = b - pal1[3*i + 2];

@@ -1,3 +1,9 @@
+2001-10-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* palette.cc (Palette): find_color() shouldn't look at the
+	rotating colors at the end of the palette.
+	* npctime.cc,actors.cc,gamewin.cc:  Support for 'cursed' flag.
+
 2001-10-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/shapeinf.cc: Ammo_info::read().

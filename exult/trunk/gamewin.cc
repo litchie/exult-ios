@@ -302,6 +302,8 @@ void Game_window::init_files(bool cycle)
 	poison_pixel = pal->find_color(4, 63, 4);
 					// Get a light gray.
 	protect_pixel = pal->find_color(62, 62, 55);
+					// Yellow for cursed.
+	cursed_pixel = pal->find_color(62, 62, 5);
 					// Red for hit in battle.
 	hit_pixel = pal->find_color(63, 4, 4);
 	// What about charmed/cursed/paralyzed?

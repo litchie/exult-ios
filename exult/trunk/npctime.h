@@ -30,7 +30,7 @@ class Npc_poison_timer;
 class Npc_sleep_timer;
 class Npc_invisibility_timer;
 class Npc_protection_timer;
-class Npc_might_timer;
+class Npc_flag_timer;
 
 /*
  *	List of references to timers for an NPC.
@@ -43,16 +43,16 @@ class Npc_timer_list
 	Npc_sleep_timer *sleep;
 	Npc_invisibility_timer *invisibility;
 	Npc_protection_timer *protection;
-	Npc_might_timer *might;
+	Npc_flag_timer *might, *curse;
 public:
 	friend class Npc_hunger_timer;
 	friend class Npc_poison_timer;
 	friend class Npc_sleep_timer;
 	friend class Npc_invisibility_timer;
 	friend class Npc_protection_timer;
-	friend class Npc_might_timer;
+	friend class Npc_flag_timer;
 	Npc_timer_list(Actor *n) : npc(n), hunger(0), poison(0), sleep(0),
-				invisibility(0), protection(0), might(0)
+			invisibility(0), protection(0), might(0), curse(0)
 		{  }
 	~Npc_timer_list();
 	void start_hunger();
@@ -61,6 +61,7 @@ public:
 	void start_invisibility();
 	void start_protection();
 	void start_might();
+	void start_curse();
 	};
 
 #endif	/* INCL_NPCTIME */

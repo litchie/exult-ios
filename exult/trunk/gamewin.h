@@ -89,6 +89,7 @@ class Game_window
 	bool focus;			// Do we have focus?
 	unsigned char poison_pixel;	// For rendering poisoned actors.
 	unsigned char protect_pixel;	// For rendering protected actors.
+	unsigned char cursed_pixel;	// For the cursed.
 	unsigned char hit_pixel;	// For rendering 'hit' actors.
 	bool teleported;		// true if just teleported.
 	unsigned int in_dungeon;	// true if inside a dungeon.
@@ -452,6 +453,8 @@ public:
 		{ paint_outline(xoff, yoff, shnum, frnum, poison_pixel); }
 	void paint_protect_outline(int xoff, int yoff, int shnum, int frnum)
 		{ paint_outline(xoff, yoff, shnum, frnum, protect_pixel); }
+	void paint_cursed_outline(int xoff, int yoff, int shnum, int frnum)
+		{ paint_outline(xoff, yoff, shnum, frnum, cursed_pixel); }
 	void paint_hit_outline(int xoff, int yoff, int shnum, int frnum)
 		{ paint_outline(xoff, yoff, shnum, frnum, hit_pixel); }
 	void paint_exult_shape(int xoff, int yoff, int shapenum, int framenum)
