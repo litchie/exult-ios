@@ -1,5 +1,6 @@
 2001-07-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Paperdoll_gump_info.cc: fixed "can't wear leather collar" bug
+	* exultmenu.cc: fixed annoying flash between menus
 
 2001-07-06  Jeff Freedman  <jeff@amy.nerble.net>
 
