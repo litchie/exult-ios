@@ -91,9 +91,9 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 
 void	Mac_QT_midi::stop_track(void)
 {
+#if 0
 	OSErr	err;
 
-#if 0
 	err = TuneStop(mTunePlayer, 0);
 #endif
 
@@ -102,9 +102,9 @@ void	Mac_QT_midi::stop_track(void)
 
 void	Mac_QT_midi::stop_sfx(void)
 {
+#if 0
 	OSErr	err;
 
-#if 0
 	err = TuneStop(mTunePlayer, 0);
 #endif
 
