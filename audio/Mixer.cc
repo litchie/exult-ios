@@ -254,3 +254,16 @@ void	Mixer::Destroy_Audio_Stream(Uint32 id)
 	SDL::PauseAudio(0);
 }
 
+bool	Mixer::is_playing(Uint32 id)
+{
+	for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
+		it!=audio_streams.end();++it)
+			{
+			ProducerConsumerBuf *p=*it;
+			if(p->id==id)
+				{
+				return true;
+				}
+			}
+	return false;
+}

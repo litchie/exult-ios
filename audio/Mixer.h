@@ -68,6 +68,7 @@ public:
 	void play(Uint8 *, unsigned int);
 	ProducerConsumerBuf *Create_Audio_Stream(void);
 	void	Destroy_Audio_Stream(Uint32 id);
+	bool	is_playing(Uint32 id);
 
 	// void	set_auxilliary_audio(int);
 	// int	auxilliary_audio;
