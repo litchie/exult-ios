@@ -13,7 +13,8 @@ else
 EXTRATOOLS =
 endif
 
-noinst_PROGRAMS = expack $(EXTRATOOLS)
+bin_PROGRAMS = expack
+noinst_PROGRAMS = $(EXTRATOOLS)
 
 expack_SOURCES = \
 	expack.cc
@@ -58,6 +59,7 @@ EXTRA_DIST = \
 	README \
 	u7bgflag.txt \
 	u7siflag.txt \
-	ucformat.txt
+	ucformat.txt \
+	expack.txt
 
 CLEANFILES = *~
