@@ -1,3 +1,9 @@
+2004-01-03    <jeff@mini.nerble.net>
+
+	* gamerend.cc,chunks.cc:  Handle dungeons slightly differently to
+	avoid black squares in SI Sunrise Isle area.  I'm assuming a
+	certain shape (941 with frame 0) means "whole chunk is dungeon".
+
 2004-01-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc, *game.cc: cleared up startup output a bit
 	* audio/Midi.cc: show errors when unable to find .ogg files

@@ -490,8 +490,17 @@ void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 
 			// Need the chunk cache (needs to be setup!)
 			Map_chunk *mc = gwin->map->get_chunk(cx, cy);
+#if 0
 			Chunk_cache *chunk = mc->need_cache();
-
+#else
+			if (!mc->has_dungeon())
+			{
+				gwin->win->fill8(index, 
+					c_tilesize*c_tiles_per_chunk,
+					c_tilesize*c_tiles_per_chunk, xoff, y);
+				continue;
+			}
+#endif
 			// For each line in the chunk
 			for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 			{
@@ -503,9 +512,14 @@ void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 				for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 				{
 					// If the tile is blocked by 'roof'
+#if 0
 					if (!chunk->is_blocked_fast(
 						tilex, tiley,
 						gwin->skip_above_actor))
+#else
+					if (mc->is_dungeon(tilex, tiley)
+						< gwin->skip_above_actor)
+#endif
 					{
 						// Add to the width of the area
 						w += c_tilesize;
