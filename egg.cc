@@ -169,7 +169,8 @@ int Egg_object::is_active
 	case cached_in:			// Anywhere in square.
 		return area.has_point(tx, ty);
 	case party_near:
-		return obj->get_party_id() >= 0 &&
+		return (obj->get_party_id() >= 0 || 
+					obj == gwin->get_main_actor()) &&
 			area.has_point(tx, ty) && tz == get_lift() &&
 					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
@@ -190,7 +191,8 @@ int Egg_object::is_active
 						area.has_point(tx, ty);
 	case party_footpad:
 		return area.has_point(tx, ty) && tz == get_lift() &&
-						obj->get_party_id() >= 0;
+			(obj->get_party_id() >= 0 || 
+						obj == gwin->get_main_actor());
 	case something_on:
 		return obj != gwin->get_main_actor() && 
 			tz >= get_lift() && tz - get_lift() <= 3 &&
