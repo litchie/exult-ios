@@ -166,7 +166,8 @@ bool Game_window::drag
 				}
 			else
 				gump_man->remove_gump(dragging_gump);
-		else {
+		else {			// +++++Really should remove_this(1),
+					//   but then have to save cx,cy.
 			get_chunk(dragging->get_cx(), 
 				dragging->get_cy())->remove(dragging);
 		}
@@ -458,15 +459,8 @@ bool Game_window::drop_at_lift
 	    Fast_pathfinder_client::is_grabable(
 		main_actor->get_abs_tile_coord(), Tile_coord(tx, ty, lift))))
 		{
-#if 0
-//		to_drop->set_lift(lift);
-//		int rtx = tx%c_tiles_per_chunk, rty = ty%c_tiles_per_chunk;
-//		to_drop->set_shape_pos(rtx, rty);
-//		chunk->add(to_drop);
-#else
-		to_drop->set_shape_pos(255,255);
+		to_drop->set_invalid();
 		to_drop->move(tx, ty, lift);
-#endif
 cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
 							<< ")"<<endl;
 					// On an egg?

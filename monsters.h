@@ -77,6 +77,7 @@ public:
  */
 class Slime_actor : public Monster_actor
 	{
+	void update_frames(Tile_coord src, Tile_coord dest);
 public:
 	Slime_actor(const std::string &nm, int shapenum, int num = -1, 
 							int uc = -1)
@@ -84,6 +85,10 @@ public:
 		{  }
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
+					// Remove/delete this object.
+	virtual void remove_this(int nodel = 0);
+					// Move to new abs. location.
+	virtual void move(int newtx, int newty, int newlift);
 	};
 
 #endif
