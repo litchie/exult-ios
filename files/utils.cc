@@ -43,6 +43,7 @@
 #include <windows.h>
 #endif
 
+#include <cassert>
 #include <exception>
 #include "exceptions.h"
 #include "utils.h"
