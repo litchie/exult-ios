@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ordinfo.h"
 #include "game.h"
 #include "animate.h"
+#include "dir.h"
 
 using std::memset;
 
@@ -1005,8 +1006,8 @@ Tile_coord Map_chunk::find_spot
 	int shapenum,			// Shape, frame to find spot for.
 	int framenum,
 	int max_drop,			// Allow to drop by this much.
-	int dir				// Preferred direction (0-7), or -1 if
-					//   don't care.
+	int dir				// Preferred direction (0-7), or -1 for
+					//   random.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -1021,30 +1022,54 @@ Tile_coord Map_chunk::find_spot
 		pos.ty - ys + 1, xs, ys, new_lift, mflags, max_drop))
 		return Tile_coord(pos.tx, pos.ty, new_lift);
 	if (dir < 0)
-		dir = 7;		// Start in NW as default.
+		dir = rand()%8;		// Choose dir. randomly.
 	dir = (dir + 1)%8;		// Make NW the 0 point.
 	for (int d = 1; d < dist; d++)	// Look outwards.
 		{
-		int square_cnt = 8*dist;// # tiles in square's perim.
+		int square_cnt = 8*d	;// # tiles in square's perim.
 					// Get square (starting in NW).
 		Tile_coord *square = Get_square(pos, d);
-		int index = dir*dist;	// Get index of preferred spot.
+		int index = dir*d;	// Get index of preferred spot.
 					// Get start of preferred range.
-		index = (index - dist/2 + square_cnt)%square_cnt;
+		index = (index - d/2 + square_cnt)%square_cnt;
 		for (int cnt = square_cnt; cnt; cnt--, index++)
 			{
 			Tile_coord& p = square[index%square_cnt];
 			if (!Map_chunk::is_blocked(zs, p.tz, p.tx - xs + 1,
 				p.ty - ys + 1, xs, ys, new_lift, mflags,
 								max_drop))
-				{
+				{	// Use tile before deleting.
+				Tile_coord ret(p.tx, p.ty, new_lift);
 				delete [] square;
-				return Tile_coord(p.tx, p.ty, new_lift);
+				return ret;
 				}
 			}
 		delete [] square;
 		}
 	return Tile_coord(-1, -1, -1);
+	}
+
+/*
+ *	Find a free area for an object (usually an NPC) that we want to
+ *	approach a given position.
+ *
+ *	Output:	Tile if successful, else (-1, -1, -1).
+ */
+
+Tile_coord Map_chunk::find_spot
+	(
+	Tile_coord pos,			// Starting point.
+	int dist,			// Distance to look outwards.  (0 means
+					//   only check 'pos'.
+	Game_object *obj,		// Object that we want to move.
+	int max_drop			// Allow to drop by this much.
+	)
+	{
+	Tile_coord t2 = obj->get_abs_tile_coord();
+					// Get direction from pos. to object.
+	int dir = (int) Get_direction(pos.ty - t2.ty, t2.tx - pos.tx);
+	return find_spot(pos, dist, obj->get_shapenum(), obj->get_framenum(),
+			max_drop, dir);
 	}
 
 /*

@@ -667,7 +667,7 @@ AudioID Audio::play_wave_sfx
 {
 	if (!effects_enabled || !sfx_file || !mixer) 
 		return AudioID(0, 0);  // no .wav sfx available
-
+	CERR("Playing SFX: " << num);
 #if 0
 	if (Game::get_game_type() == BLACK_GATE)
 		num = bgconv[num];

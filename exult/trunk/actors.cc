@@ -745,13 +745,16 @@ void Actor::follow
 	if (goaldist > 32 &&		// Getting kind of far away?
 	    get_party_id() >= 0 &&	// And a member of the party.
 	    !leaderpath)		// But leader is not following path.
-		{			// Teleport.
+		{			// Approach, or teleport.
 		int pixels = goaldist*c_tilesize;
 		Game_window *gwin = Game_window::get_game_window();
 		if (pixels > gwin->get_width() + 16)
-			{
+			{		// Try to approach from offscreen.
+			if (approach_another(leader))
+				return;
 					// Find a free spot.
-			goal = leader->find_unblocked_tile(2, 3);
+			goal = Map_chunk::find_spot(
+				leader->get_abs_tile_coord(), 2, this);
 			if (goal.tx != -1)
 				{
 				move(goal.tx, goal.ty, goal.tz);
@@ -777,9 +780,8 @@ void Actor::follow
 #endif
 					// Don't try again for a second.
 		next_path_time = SDL_GetTicks() + 1000;
-		if (Map_chunk::is_blocked(goal, 3, get_type_flags()))
-					// Find a free spot.
-			goal = leader->find_unblocked_tile(1, 3);
+					// Find a free spot within 3 tiles.
+		goal = Map_chunk::find_spot(goal, 3, this);
 		if (goal.tx == -1)	// No free spot?  Give up.
 			{
 			cout << "... but is blocked." << endl;
@@ -807,10 +809,14 @@ int Actor::approach_another
 	bool wait			// If true, game hangs until arrival.
 	)
 	{
-	Tile_coord startdest = other->get_abs_tile_coord();
+	Tile_coord dest = other->get_abs_tile_coord();
+#if 0
 	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
 	for (int i = 2; dest.tx == -1 && i < 8; i++)
 		dest = Game_object::find_unblocked_tile(startdest, i);
+#endif
+					// Look outwards for free spot.
+	dest = Map_chunk::find_spot(dest, 8, get_shapenum(), get_framenum());
 	if (dest.tx == -1)
 		return 0;
 					// Where are we now?
