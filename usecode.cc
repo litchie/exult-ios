@@ -2744,16 +2744,16 @@ USECODE_INTRINSIC(nap_time)
 	int cnt = bed->find_nearby(npcs, -359, 0, 8);
 	if (cnt > 0)
 		{
-		int i;
-		for (i = 0; i < cnt; i++)
+		GOVector::const_iterator it;
+		for (it = npcs.begin(); it != npcs.end(); ++it)
 			{
-			Game_object *npc = npcs[i];
+			Game_object *npc = *it;
 			int zdiff = npc->get_lift() - bed->get_lift();
 			if (npc != gwin->get_main_actor() &&
 						zdiff <= 2 && zdiff >= -2)
 				break;	// Found one.
 			}
-		if (i < cnt)
+		if (it != npcs.end())
 			{		// Show party member's face.
 			int npcnum = get_party_member(
 						rand()%get_party_count());

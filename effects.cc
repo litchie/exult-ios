@@ -116,8 +116,7 @@ Explosion_effect::~Explosion_effect
 	Game_object::find_nearby(vec, pos, -359, 3, 0);
 	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Game_object *obj = *it;
-		obj->attacked(0, 704, 0);
+		(**it).attacked(0, 704, 0);
 		}
 	}
 
