@@ -594,51 +594,45 @@ void Scale_SuperEagle
  **/
 
 
+typedef unsigned int COMPONENT;
 
 
-/*
- *	Going horizontally, split one pixel into two.
- */
-template <class Source_pixel, class Dest_pixel, class Manip_pixels>
-inline void Interp_horiz
+// fill `row' with the the disassembled color components from the original
+// pixel values in `from'; if we run out of source pixels, just keep copying
+// the last one we got
+template <class Source_pixel, class Manip_pixels>
+inline void fill_rgb_row
 	(
-	Source_pixel *& from,		// ->source pixels.
-	Dest_pixel *& to,		// ->dest pixels.
-	const Manip_pixels& manip	// Manipulator methods.
-	)
-	{
-	Source_pixel pix0 = *from++;
-	Source_pixel pix1 = *from;
-	manip.copy(*to++, pix0);
-	unsigned int r0, r1, g0, g1, b0, b1;
-	manip.split_source(pix0, r0, g0, b0);
-	manip.split_source(pix1, r1, g1, b1);
-	*to++ = manip.rgb((r0 + r1)>>1, (g0 + g1)>>1, (b0 + b1)>>1);
+	 Source_pixel *from,
+	 int src_width,	// number of pixels to read from 'from'
+	 COMPONENT *row,
+	 int width,		// number of pixels to write into 'row'
+	 const Manip_pixels& manip
+	 )
+{
+	COMPONENT *copy_start = row + src_width*3;
+	COMPONENT *all_stop = row + width*3;
+	while (row < copy_start)
+		{
+		COMPONENT& r = *row++;
+		COMPONENT& g = *row++;
+		COMPONENT& b = *row++;
+		manip.split_source(*from++, r, g, b);
+		}
+	// any remaining elements to be written to 'row' are a replica of the
+	// preceding pixel
+	COMPONENT *p = row-3;
+	while (row < all_stop) {
+		// we're guaranteed three elements per pixel; could unroll the loop
+		// further, especially with a Duff's Device, but the gains would be
+		// probably limited (judging by profiler output)
+		*row++ = *p++;
+		*row++ = *p++;
+		*row++ = *p++;
 	}
-
-/*
- *	Form new row by interpolating the pixels above and below.
- */
-template <class Dest_pixel, class Manip_pixels>
-inline void Interp_vert
-	(
-	Dest_pixel *& from0,		// ->row above.
-	Dest_pixel *& from1,		// ->row below.
-	Dest_pixel *& to,		// ->dest pixels.
-	const Manip_pixels& manip	// Manipulator methods.
-	)
-	{
-	Dest_pixel pix0 = *from0++, pix1 = *from1++;
-	unsigned int r0, r1, g0, g1, b0, b1;
-	manip.split_dest(pix0, r0, g0, b0);
-	manip.split_dest(pix1, r1, g1, b1);
-	*to++ = manip.rgb((r0 + r1)>>1, (g0 + g1)>>1, (b0 + b1)>>1);
-	}
+}
 
 
-/*
- *	Scale X2 with bilinear interpolation.
- */
 template <class Source_pixel, class Dest_pixel, class Manip_pixels>
 void Scale_2xBilinear
 	(
@@ -652,82 +646,99 @@ void Scale_2xBilinear
 	const Manip_pixels& manip	// Manipulator methods.
 	)
 {
-
 	Source_pixel *from = source + srcy*sline_pixels + srcx;
 	Dest_pixel *to = dest + 2*srcy*dline_pixels + 2*srcx;
+	Dest_pixel *to_odd = to + dline_pixels;
 
-	Dest_pixel *from0 = to;		// We'll use in 2nd pass.
-	int right_edge = 0;		// Row ends at rt. edge of window.
-
-	int swidth = srcw;
-	if (srcx + swidth >= sline_pixels)
-		{
-		right_edge = 1;
-		swidth = sline_pixels - srcx - 1;
-		}
-					// Do each row, interpolating horiz.
-	int y;
-	for (y = 0; y < srch; y++)
-		{
-		int count = swidth;
-		register Source_pixel *source_line = from;
-		register Dest_pixel *dest_line = to;
-		register int n = ( count + 7 ) >>3;
-		switch( count % 8 )
-			{
-	             	case 0: do { Interp_horiz(from, to, manip);
-        	     	case 7:      Interp_horiz(from, to, manip);
-	             	case 6:      Interp_horiz(from, to, manip);
-        	     	case 5:      Interp_horiz(from, to, manip);
-	             	case 4:      Interp_horiz(from, to, manip);
-        	     	case 3:      Interp_horiz(from, to, manip);
-	             	case 2:      Interp_horiz(from, to, manip);
-        	     	case 1:      Interp_horiz(from, to, manip);
-                	       } while( --n > 0 );
-			}
-		if (right_edge)		// Handle right edge.
-			{
-			manip.copy(*to++, *from);
-			manip.copy(*to++, *from++);
-			}
-		from = source_line + sline_pixels;
-					// Skip odd rows.
-		to = dest_line + 2*dline_pixels;
-		}
-					// Interpolate vertically.
-	Dest_pixel *from1;
-	int bottom_edge = 0;
-	int dheight = srch;
-	if (srcy + srch >= sheight)	// Watch for bottom row.
-		{
-		bottom_edge = 1;
-		dheight = sheight - srcy - 1;
-		}
-	for (y = 0; y < dheight; y++)
-		{
-		to = from0 + dline_pixels;
-		from1 = to + dline_pixels;
-		Dest_pixel *source_line1 = from1;
-		int count = 2*srcw;
-		int n = ( count + 7 ) / 8;
-		switch( count % 8 )
-			{
-	             	case 0: do { Interp_vert(from0, from1, to, manip);
-        	     	case 7:      Interp_vert(from0, from1, to, manip);
-	             	case 6:      Interp_vert(from0, from1, to, manip);
-        	     	case 5:      Interp_vert(from0, from1, to, manip);
-	             	case 4:      Interp_vert(from0, from1, to, manip);
-        	     	case 3:      Interp_vert(from0, from1, to, manip);
-	             	case 2:      Interp_vert(from0, from1, to, manip);
-        	     	case 1:      Interp_vert(from0, from1, to, manip);
-                	       } while( --n > 0 );
-			}
-					// Doing every other line.
-		from0 = source_line1;
-		}
-	if (bottom_edge)		// Just copy last row.
-		memcpy(from0 + dline_pixels, from0, 2*srcw*sizeof(*from0));
+	// the following are static because we don't want to be freeing and
+	// reallocating space on each call, as malloc()s are usually very
+	// expensive; we do allow it to grow though
+	static unsigned buff_size = 0;
+	static COMPONENT *rgb_row_cur  = 0;
+	static COMPONENT *rgb_row_next = 0;
+	if (buff_size < sline_pixels+1) {
+		delete [] rgb_row_cur;
+		delete [] rgb_row_next;
+		buff_size = sline_pixels+1;
+		rgb_row_cur  = new COMPONENT[buff_size*3];
+		rgb_row_next = new COMPONENT[buff_size*3];
 	}
+
+	int from_width = sline_pixels - srcx;
+	if (srcw+1 < from_width)
+		from_width = srcw+1;
+
+	fill_rgb_row(from, from_width, rgb_row_cur, srcw+1, manip);
+
+	for (unsigned y=0; y < srch; y++)
+		{
+		Source_pixel *from_orig = from;
+		Dest_pixel *to_orig = to;
+
+		if (y+1 < sheight)
+			fill_rgb_row(from+sline_pixels, from_width, rgb_row_next, 
+						 srcw+1, manip);
+		else
+			fill_rgb_row(from, from_width, rgb_row_next, srcw+1, manip);
+
+		// every pixel in the src region, is extended to 4 pixels in the
+		// destination, arranged in a square 'quad'; if the current src
+		// pixel is 'a', then in what follows 'b' is the src pixel to the
+		// right, 'c' is the src pixel below, and 'd' is the src pixel to
+		// the right and down
+		COMPONENT *cur_row  = rgb_row_cur;
+		COMPONENT *next_row = rgb_row_next;
+		COMPONENT *ar = cur_row++;
+		COMPONENT *ag = cur_row++;
+		COMPONENT *ab = cur_row++;
+		COMPONENT *cr = next_row++;
+		COMPONENT *cg = next_row++;
+		COMPONENT *cb = next_row++;
+		for (unsigned x=0; x < srcw; x++)
+			{
+			COMPONENT *br = cur_row++;
+			COMPONENT *bg = cur_row++;
+			COMPONENT *bb = cur_row++;
+			COMPONENT *dr = next_row++;
+			COMPONENT *dg = next_row++;
+			COMPONENT *db = next_row++;
+
+			// upper left pixel in quad: just copy it in
+			*to++ = manip.rgb(*ar, *ag, *ab);
+
+			// upper right
+			*to++ = manip.rgb((*ar+*br)>>1, (*ag+*bg)>>1, (*ab+*bb)>>1);
+
+			// lower left
+			*to_odd++ = manip.rgb((*ar+*cr)>>1, (*ag+*cg)>>1, (*ab+*cb)>>1);
+
+			// lower right
+			*to_odd++ = manip.rgb((*ar+*br+*cr+*dr)>>2,
+					  		      (*ag+*bg+*cg+*dg)>>2,
+							      (*ab+*bb+*cb+*db)>>2);
+
+			// 'b' becomes 'a', 'd' becomes 'c'
+			ar = br;
+			ag = bg;
+			ab = bb;
+			cr = dr;
+			cg = dg;
+			cb = db;
+			}
+
+		// the "next" rgb row becomes the current; the old current rgb row is
+		// recycled and serves as the new "next" row
+		COMPONENT *temp;
+		temp = rgb_row_cur;
+		rgb_row_cur = rgb_row_next;
+		rgb_row_next = temp;
+
+		// update the pointers for start of next pair of lines
+		from = from_orig + sline_pixels;
+		to = to_orig + 2*dline_pixels;
+		to_odd = to + dline_pixels;
+		}
+}
 
 
 #if 0	/* Testing */
