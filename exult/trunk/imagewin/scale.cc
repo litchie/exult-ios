@@ -1287,7 +1287,7 @@ void Scale2x_noblur
 	const unsigned char * limit_y = src1 + srch*sline_pixels;
 	const unsigned char * limit_x = src1 + srcw;
 					// Very end of source surface:
-	const unsigned char * end_src = src1 + sheight*sline_pixels;
+	const unsigned char * end_src = src + sheight*sline_pixels;
 
 	if (src0 < src)
 		src0 = src1;		// Don't go before row 0.
