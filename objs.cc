@@ -1251,12 +1251,13 @@ void Ireg_game_object::write_ireg
 
 Spellbook_object::Spellbook_object
 	(
-	unsigned char l, unsigned char h, 
+	int shapenum, int framenum,
 	unsigned int shapex, unsigned int shapey, 
 	unsigned int lft, 
 	unsigned char *c,		// Circle spell flags.
 	unsigned long f			// Flags (unknown).
-	) : Ireg_game_object(l, h, shapex, shapey, lft), flags(f), bookmark(-1)
+	) : Ireg_game_object(shapenum, framenum,
+			shapex, shapey, lft), flags(f), bookmark(-1)
 	{
 	memcpy(circles, c, sizeof(circles));
 	}

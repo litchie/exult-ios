@@ -66,13 +66,13 @@ int Egglike_game_object::is_findable
 
 Egg_object::Egg_object
 	(
-	unsigned char l, unsigned char h, 
-	unsigned int shapex, unsigned int shapey, 
+	int shapenum, int framenum,
+	unsigned int tilex, unsigned int tiley, 
 	unsigned int lft, 
 	unsigned short itype,
 	unsigned char prob, 
 	short d1, short d2
-	) : Egglike_game_object(l, h, shapex, shapey, lft),
+	) : Egglike_game_object(shapenum, framenum, tilex, tiley, lft),
 	    probability(prob), data1(d1), data2(d2),
 	    area(Rectangle(0, 0, 0, 0)), monster_created(0)
 	{
@@ -92,6 +92,42 @@ Egg_object::Egg_object
 		set_quality(data1&0xff);
 	if (type == path)		// Store paths.
 		Game_window::get_game_window()->add_path_egg(this);
+	}
+
+/*
+ *	Init. for a field.
+ */
+
+inline void Egg_object::init_field
+	(
+	unsigned char ty		// Egg (field) type.
+	)
+	{
+	type = ty;
+	probability = 100;
+	data1 = data2 = 0;
+	monster_created = 0;
+	area = Rectangle(0, 0, 0, 0);
+	criteria = avatar_footpad;
+	distance = 0;
+	solid_area = 0;
+	flags = (1 << auto_reset);
+	}
+
+/*
+ *	Create an egg representing a field.
+ */
+
+Egg_object::Egg_object
+	(
+	int shapenum,
+	int framenum,
+	unsigned int tilex, unsigned int tiley, 
+	unsigned int lft, 
+	unsigned char ty		// Egg (field) type.
+	) : Egglike_game_object(shapenum, framenum, tilex, tiley, lft)
+	{
+	init_field(ty);
 	}
 
 /*
@@ -241,19 +277,6 @@ int Egg_object::is_active
 		return 0;
 		}
 	}
-
-static	inline int	distance_between_points(int ax,int ay,int az,int bx,int by,int bz)
-{
-	int	dx(abs(ax-bx)),dy(abs(ay-by)),dz(abs(az-bz));
-	return	(int)sqrt(float(dx*dx+dy*dy+dz*dz));	// the cast to float is required to prevent ambiguity!
-}
-
-static	inline int	distance_between_points(int ax,int ay,int bx,int by)
-{
-	int	dx(abs(ax-bx)),dy(abs(ay-by));
-	return	(int)sqrt(float(dx*dx+dy*dy));			// the cast to float is required to prevent ambiguity!
-}
-
 
 /*
  *	Run usecode when double-clicked.
@@ -491,12 +514,13 @@ void Egg_object::write_ireg
  */
 Animated_egg_object::Animated_egg_object
 	(
-	unsigned char l, unsigned char h, 
-	unsigned int shapex,
-	unsigned int shapey, unsigned int lft, 
+	int shapenum, int framenum,
+	unsigned int tilex,
+	unsigned int tiley, unsigned int lft, 
 	unsigned short itype,
 	unsigned char prob, short d1, short d2
-	) : Egg_object(l, h, shapex, shapey, lft, itype, prob, d1, d2)
+	) : Egg_object(shapenum, framenum, 
+				tilex, tiley, lft, itype, prob, d1, d2)
 	{ 
 	animator = new Frame_animator(this, 1); 
 	}
@@ -518,7 +542,7 @@ void Animated_egg_object::paint
 	Game_window *gwin
 	)
 	{
-	Game_object::paint(gwin);	// Always paint these.
+	Ireg_game_object::paint(gwin);	// Always paint these.
 	animator->want_animation();	// Be sure animation is on.
 	}
 
@@ -528,10 +552,37 @@ void Animated_egg_object::paint
 
 void Animated_egg_object::activate
 	(
-	Usecode_machine *umachine
+	Usecode_machine *umachine,
+	int event
 	)
 	{
-	Egg_object::activate(umachine);
+	Egg_object::activate(umachine, event);
 	flags &= ~(1 << (int) hatched);	// Moongate:  reset always.
 	}
 
+
+/*
+ *	Run usecode when double-clicked or when activated by proximity.
+ *	(Generally, nothing will happen.)
+ */
+
+void Field_object::activate
+	(
+	Usecode_machine *umachine,
+	int event
+	)
+	{
+	Ireg_game_object::activate(umachine, event);
+	}
+
+/*
+ *	Write out.  These are stored as normal game objects.
+ */
+
+void Field_object::write_ireg
+	(
+	ostream& out
+	)
+	{
+	Ireg_game_object::write_ireg(out);
+	}

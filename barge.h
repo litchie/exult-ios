@@ -56,10 +56,11 @@ class Barge_object : public Container_game_object, public Time_sensitive
 					// Finish up move/rotate operation.
 	void finish_move(Tile_coord *positions);
 public:
-	Barge_object(unsigned char l, unsigned char h, 
+	Barge_object(int shapenum, int framenum,
 		unsigned int shapex, unsigned int shapey, unsigned int lft,
 			int xt, int yt, int d)
-		: Container_game_object(l, h, shapex, shapey, lft),
+		: Container_game_object(shapenum, framenum,
+							shapex, shapey, lft),
 			perm_count(0),
 			xtiles(xt), ytiles(yt), dir(d),
 			complete(0), boat(-1), frame_time(0), path(0)

@@ -88,9 +88,6 @@ class Animated_object : public Game_object
 	{
 	Animator *animator;		// Controls animation.
 public:
-	Animated_object(unsigned char l, unsigned char h, 
-				unsigned int shapex, unsigned int shapey, 
-				unsigned int lft = 0);
 	Animated_object(int shapenum, int framenum, unsigned int tilex, 
 	       unsigned int tiley, unsigned int lft = 0);
 	virtual ~Animated_object();
@@ -112,9 +109,6 @@ class Animated_ireg_object : public Ireg_game_object
 	{
 	Animator *animator;		// Controls animation.
 public:
-	Animated_ireg_object(unsigned char l, unsigned char h, 
-				unsigned int shapex, unsigned int shapey, 
-				unsigned int lft = 0);
 	Animated_ireg_object(int shapenum, int framenum, unsigned int tilex, 
 	       unsigned int tiley, unsigned int lft = 0);
 	virtual ~Animated_ireg_object();

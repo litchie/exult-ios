@@ -541,13 +541,14 @@ void Game_window::get_chunk_objects
 				}
 			if (shape->rle)
 				{
-				int shapenum = id.get_shapenum();
+				int shapenum = id.get_shapenum(),
+				    framenum = id.get_framenum();
 				Shape_info& info = shapes.get_info(shapenum);
 				Game_object *obj = info.is_animated() ?
-					new Animated_object(
-					    data[0], data[1], tilex, tiley)
-					: new Game_object(
-					    data[0], data[1], tilex, tiley);
+					new Animated_object(shapenum,
+					    	framenum, tilex, tiley)
+					: new Game_object(shapenum,
+					    	framenum, tilex, tiley);
 				olist->add(obj);
 				}
 			else		// Flat.
@@ -763,9 +764,10 @@ void Game_window::read_ireg_objects
 					// Get coord. #'s where shape goes.
 		int tilex = entry[0] & 0xf;
 		int tiley = entry[1] & 0xf;
-					// Get shape #.
-		int shapeid = entry[2]+256*(entry[3]&3);
-		Shape_info& info = shapes.get_info(shapeid);
+					// Get shape #, frame #.
+		int shnum = entry[2]+256*(entry[3]&3);
+		int frnum = entry[3] >> 2;
+		Shape_info& info = shapes.get_info(shnum);
 		unsigned int lift, quality, type;
 		Ireg_game_object *obj;
 					// An "egg"?
@@ -774,7 +776,7 @@ void Game_window::read_ireg_objects
 			int anim = info.is_animated() ||
 					// Watch for BG itself.
 				(Game::get_game_type() == BLACK_GATE &&
-						shapeid == 305);
+						shnum == 305);
 			Egg_object *egg = create_egg(entry, anim);
 			get_objects(scx + cx, scy + cy)->add_egg(egg);
 			continue;
@@ -786,13 +788,13 @@ void Game_window::read_ireg_objects
 			quality = entry[5];
 			if (info.is_animated())
 				obj = new Animated_ireg_object(
-				   entry[2], entry[3], tilex, tiley, lift);
-			else if (shapeid == 607)
+				   shnum, frnum, tilex, tiley, lift);
+			else if (shnum == 607)
 				obj = new Egglike_game_object(
-				   entry[2], entry[3], tilex, tiley, lift);
+				   shnum, frnum, tilex, tiley, lift);
 			else
 				obj = new Ireg_game_object(
-				   entry[2], entry[3], tilex, tiley, lift);
+				   shnum, frnum, tilex, tiley, lift);
 				   
 			obj->set_low_lift (entry[4] & 0xF);
 			obj->set_high_shape (entry[3] >> 7);
@@ -805,10 +807,10 @@ void Game_window::read_ireg_objects
 			oflags =	// Override flags (I think).
 			    ((entry[11]&1) << Game_object::invisible) |
 			    (((entry[11]>>3)&1) << Game_object::okay_to_take);
-			if (shapeid == 961)
+			if (shnum == 961)
 				{
 				Barge_object *b = new Barge_object(
-				    entry[2], entry[3], tilex, tiley, lift,
+				    shnum, frnum, tilex, tiley, lift,
 					entry[4], entry[5],
 					(quality>>1)&3);
 				obj = b;
@@ -817,14 +819,14 @@ void Game_window::read_ireg_objects
 				}
 			else if (quality == 1 && entry[8] >= 0x80)
 				obj = new Dead_body(
-				    entry[2], entry[3], tilex, tiley, lift,
+				    shnum, frnum, tilex, tiley, lift,
 							entry[8] - 0x80);
-			else if (Is_body(shapeid))
+			else if (Is_body(shnum))
 				obj = new Dead_body(
-				    entry[2], entry[3], tilex, tiley, lift,-1);
+				    shnum, frnum, tilex, tiley, lift,-1);
 			else
 				obj = new Container_game_object(
-				    entry[2], entry[3], tilex, tiley, lift,
+				    shnum, frnum, tilex, tiley, lift,
 							entry[10]);
 					// Read container's objects.
 			if (type)	// (0 if empty.)
@@ -843,7 +845,7 @@ void Game_window::read_ireg_objects
 			unsigned char *ptr = &entry[14];
 			unsigned long flags = Read4(ptr);
 			obj = new Spellbook_object(
-				entry[2], entry[3], tilex, tiley, lift,
+				shnum, frnum, tilex, tiley, lift,
 				&circles[0], flags);
 			}
 		obj->set_quality(quality);
@@ -864,16 +866,18 @@ Egg_object *Game_window::create_egg
 	int animated
 	)
 	{
+	int shnum = entry[2]+256*(entry[3]&3);
+	int frnum = entry[3] >> 2;
 	unsigned short type = entry[4] + 256*entry[5];
 	int prob = entry[6];		// Probability (1-100).
 	int data1 = entry[7] + 256*entry[8];
 	int lift = entry[9] >> 4;
 	int data2 = entry[10] + 256*entry[11];
 	Egg_object *obj = animated ?
-		new Animated_egg_object(entry[2], entry[3], 
+		new Animated_egg_object(shnum, frnum,
 			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
 						data1, data2)
-		: new Egg_object(entry[2], entry[3], 
+		: new Egg_object(shnum, frnum,
 			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
 						data1, data2);
 	return (obj);

@@ -150,21 +150,6 @@ void Wiggle_animator::handle_event
 	}
 
 /*
- *	Create an animated object.
- */
-
-Animated_object::Animated_object
-	(
-	unsigned char l, unsigned char h, 
-	unsigned int shapex,
-	unsigned int shapey,
-	unsigned int lft
-	) : Game_object(l, h, shapex, shapey, lft)
-	{
-	animator = Animator::create(this, 0);
-	}
-
-/*
  *	Create at given position.
  */
 
@@ -201,21 +186,6 @@ void Animated_object::paint
 	{
 	Game_object::paint(gwin);
 	animator->want_animation();	// Be sure animation is on.
-	}
-
-/*
- *	Create an animated object.
- */
-
-Animated_ireg_object::Animated_ireg_object
-	(
-	unsigned char l, unsigned char h, 
-	unsigned int shapex,
-	unsigned int shapey,
-	unsigned int lft
-	) : Ireg_game_object(l, h, shapex, shapey, lft)
-	{
-	animator = Animator::create(this, 1);
 	}
 
 /*
