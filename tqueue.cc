@@ -74,7 +74,7 @@ void Time_queue::add
 	{
 	obj->queue_cnt++;		// It's going in, no matter what.
 	Queue_entry	newent;
-	if (paused)			// Paused?
+	if (paused && !obj->always)	// Paused?
 					// Messy, but we need to fix time.
 		t -= SDL_GetTicks() - pause_time;
 	newent.set(t,obj,ud);
@@ -279,7 +279,8 @@ void Time_queue::resume
 	for(Temporal_sequence::iterator it=data.begin();
 		it!=data.end(); ++it)
 		{
-		it->time += diff;	// Push entries ahead.
+		if (!(*it).handler->always)
+			it->time += diff;	// Push entries ahead.
 		}
 	}
 
