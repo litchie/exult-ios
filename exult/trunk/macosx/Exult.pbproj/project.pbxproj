@@ -106,29 +106,11 @@
 //102
 //103
 //104
-		1058C7A0FEA54F0111CA2CBB = {
-			children = (
-				1058C7A1FEA54F0111CA2CBB,
-			);
-			isa = PBXGroup;
-			name = "Linked Frameworks";
-			refType = 4;
-		};
 		1058C7A1FEA54F0111CA2CBB = {
 			isa = PBXFrameworkReference;
 			name = Cocoa.framework;
 			path = /System/Library/Frameworks/Cocoa.framework;
 			refType = 0;
-		};
-		1058C7A2FEA54F0111CA2CBB = {
-			children = (
-				29B97325FDCFA39411CA2CEA,
-				29B97324FDCFA39411CA2CEA,
-				F564B3EC0129A8C901000001,
-			);
-			isa = PBXGroup;
-			name = "Other Frameworks";
-			refType = 4;
 		};
 //100
 //101
@@ -312,8 +294,11 @@
 		29B97323FDCFA39411CA2CEA = {
 			children = (
 				F564B3F20129B1C701000001,
-				1058C7A0FEA54F0111CA2CBB,
-				1058C7A2FEA54F0111CA2CBB,
+				1058C7A1FEA54F0111CA2CBB,
+				29B97325FDCFA39411CA2CEA,
+				29B97324FDCFA39411CA2CEA,
+				F564B3EC0129A8C901000001,
+				F5BF69A20131EC1B01000001,
 			);
 			isa = PBXGroup;
 			name = Frameworks;
@@ -374,12 +359,14 @@
 	<string>exult.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Exult</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.1</string>
+	<string>0.94cvs</string>
 	<key>NSMainNibFile</key>
 	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
@@ -675,9 +662,9 @@
 				F5947687011C6DA901000001,
 				F5947688011C6DA901000001,
 				F5947689011C6DA901000001,
-				F564B3D40129710B01000001,
 				F5739A34012B079001000001,
 				F5161FFB01305D8801000001,
+				F5BF69A40131EC7401000001,
 			);
 			isa = PBXSourcesBuildPhase;
 			name = Sources;
@@ -687,6 +674,10 @@
 			files = (
 				F564B3ED0129A8C901000001,
 				F564B3F30129B1C701000001,
+				F5BF699F0131EB6301000001,
+				F5BF69A00131EB6301000001,
+				F5BF69A10131EB6301000001,
+				F5BF69A30131EC1B01000001,
 			);
 			isa = PBXFrameworksBuildPhase;
 			name = "Frameworks & Libraries";
@@ -796,12 +787,6 @@
 		};
 		F564B3D30129710B01000001 = {
 			fileRef = F564B3D20129710B01000001;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		F564B3D40129710B01000001 = {
-			fileRef = F564B3D10129710B01000001;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -4026,6 +4011,42 @@
 			isa = PBXGroup;
 			path = macosx;
 			refType = 4;
+		};
+		F5BF699F0131EB6301000001 = {
+			fileRef = 29B97324FDCFA39411CA2CEA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5BF69A00131EB6301000001 = {
+			fileRef = 29B97325FDCFA39411CA2CEA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5BF69A10131EB6301000001 = {
+			fileRef = 1058C7A1FEA54F0111CA2CBB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5BF69A20131EC1B01000001 = {
+			isa = PBXFrameworkReference;
+			name = Carbon.framework;
+			path = /System/Library/Frameworks/Carbon.framework;
+			refType = 0;
+		};
+		F5BF69A30131EC1B01000001 = {
+			fileRef = F5BF69A20131EC1B01000001;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		F5BF69A40131EC7401000001 = {
+			fileRef = F564B3D10129710B01000001;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 	};
 	rootObject = 29B97313FDCFA39411CA2CEA;

@@ -19,13 +19,17 @@
  */
 
 //MacOS-specific code
-#ifdef MACOS
+#if defined(MACOS) || defined(MACOSX)
 
 #include <iomanip>
 #include <cstdlib>
 #include <string>
 
 #include "mac_midi.h"
+
+#ifdef MACOSX
+#include <QuickTime/QuickTimeMusic.h>
+#endif
 
 using std::cout;
 using std::endl;
@@ -34,7 +38,7 @@ using std::free;
 using std::realloc;
 using std::memset;
 
-static UInt32 *BuildTuneHeader(int part_poly_max[32], int part_to_inst[32], int numParts);
+static uint32 *BuildTuneHeader(int part_poly_max[32], int part_to_inst[32], int numParts);
 
 
 Mac_QT_midi::Mac_QT_midi()
@@ -72,7 +76,7 @@ Mac_QT_midi::~Mac_QT_midi(void)
 			int timeDiff = eventPos->time - lastEventTime;	\
 			if(timeDiff)	\
 			{	\
-				timeDiff *= tick;	\
+				timeDiff = (int)(timeDiff*tick);	\
 				qtma_StuffRestEvent(*tunePos, timeDiff);	\
 				tunePos++;	\
 				lastEventTime = eventPos->time;	\
@@ -143,6 +147,10 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 		int status = (eventPos->status&0xF0)>>4;
 		int channel = eventPos->status&0x0F;
 		int part = channel_to_part[channel];
+        int velocity, pitch;
+        int value, controller;
+        int bend;
+        int newInst;
 		
 		// Check if we are running low on space...
 		if((tunePos+16) > endPos)
@@ -195,8 +203,8 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 			assert(part<=31);
 			
 			// Decode pitch & velocity
-			int pitch = eventPos->data[0];
-			int velocity = eventPos->data[1];
+			pitch = eventPos->data[0];
+			velocity = eventPos->data[1];
 			
 			if (velocity == 0)
 			{
@@ -230,7 +238,7 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 				if (noteOffPos)
 				{
 					// We found a NOTE OFF, now calculate the note duration
-					int duration = (noteOffPos->time - eventPos->time)*tick;
+					int duration = (int)((noteOffPos->time - eventPos->time)*tick);
 					
 					REST_IF_NECESSARY();
 					// Now we need to check if we get along with a normal Note Even, or if we need an extended one...
@@ -260,8 +268,8 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 			COUT("MIDI_STATUS_AFTERTOUCH");
 			break;
 		case MIDI_STATUS_CONTROLLER:
-			int controller = eventPos->data[0];
-			int value = eventPos->data[1];
+			controller = eventPos->data[0];
+			value = eventPos->data[1];
 
 			switch(controller)
 			{
@@ -299,7 +307,7 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 			break;
 		case MIDI_STATUS_PROG_CHANGE:
 			// Instrument changed
-			int newInst = eventPos->data[0];
+			newInst = eventPos->data[0];
 			// Channel 9 (the 10th channel) is different, it indicates a drum kit
 			if (channel == 9)
 				newInst += kFirstDrumkit;
@@ -340,7 +348,7 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 			// In the midi spec, 0x2000 = center, 0x0000 = - 2 semitones, 0x3FFF = +2 semitones
 			// but for QTMA, we specify it as a 8.8 fixed point of semitones
 			// TODO: detect "pitch bend range changes"
-			int bend = eventPos->data[0] & 0x7f | (eventPos->data[1] & 0x7f) << 7;
+			bend = eventPos->data[0] & 0x7f | (eventPos->data[1] & 0x7f) << 7;
 			
 			// "Center" the bend
 			bend -= 0x2000;
@@ -400,7 +408,7 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 		DebugStr("\pMIDI error during TuneSetTimeScale");
 
 	// Set the header, to tell what instruments are used
-	tpError = TuneSetHeader(mTunePlayer, mTuneHeader);
+	tpError = TuneSetHeader(mTunePlayer, (UInt32 *)mTuneHeader);
 	if (tpError != noErr)
 		DebugStr("\pMIDI error during TuneSetHeader");
 	
@@ -415,7 +423,7 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 		DebugStr("\pMIDI error during TuneSetVolume");
 	
 	// Finally, start playing the full song
-	tpError = TuneQueue(mTunePlayer,mTuneSequence,0x00010000,0,0xFFFFFFFF,queueFlags,NULL,0);
+	tpError = TuneQueue(mTunePlayer, (UInt32 *)mTuneSequence, 0x00010000, 0, 0xFFFFFFFF, queueFlags, NULL, 0);
 	if (tpError != noErr)
 		DebugStr("\pMIDI error during TuneQueue");
 
@@ -441,6 +449,9 @@ bail:
 
 void	Mac_QT_midi::stop_track(void)
 {
+	if(0 == mTuneSequence)
+        return;
+
 // For some resons, using a non-zero stopflag doesn't stop the music at all:/
 //	TuneStop(mTunePlayer, kTuneStopFade | kTuneStopInstant | kTuneStopReleaseChannels);
 
@@ -481,14 +492,13 @@ const	char *Mac_QT_midi::copyright(void)
 #define kMarkerEventLength			(1) 										// number of (32-bit) long words in a marker event
 #define kGeneralEventLength			(2) 										// number of (32-bit) long words in a general event, minus its data
 
-UInt32 *BuildTuneHeader(int part_poly_max[32], int part_to_inst[32], int numParts)
+uint32 *BuildTuneHeader(int part_poly_max[32], int part_to_inst[32], int numParts)
 {
-	unsigned long			*myHeader;
-	unsigned long			*myPos1, *myPos2;		// pointers to the head and tail long words of a music event
-	NoteRequest				*myNoteRequest;
-	NoteAllocator			myNoteAllocator;		// for the NAStuffToneDescription call
-	long					myLongsInInst = 0L;		// the number of long words occupied by the atomic instrument
-	ComponentResult			myErr = noErr;
+	uint32			*myHeader;
+	uint32			*myPos1, *myPos2;		// pointers to the head and tail long words of a music event
+	NoteRequest		*myNoteRequest;
+	NoteAllocator	myNoteAllocator;		// for the NAStuffToneDescription call
+	ComponentResult	myErr = noErr;
 
 	myHeader = NULL;
 	myNoteAllocator = NULL;
@@ -503,8 +513,8 @@ UInt32 *BuildTuneHeader(int part_poly_max[32], int part_to_inst[32], int numPart
 	/*
 	 * Allocate space for the tune header
 	 */
-	myHeader = (unsigned long *)
-			NewPtrClear((numParts * kNoteRequestEventLength + kMarkerEventLength) * sizeof(long));
+	myHeader = (uint32 *)
+			NewPtrClear((numParts * kNoteRequestEventLength + kMarkerEventLength) * sizeof(uint32));
 	if (myHeader == NULL)
 		goto bail;
 	

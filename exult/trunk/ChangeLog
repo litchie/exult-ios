@@ -1,3 +1,7 @@
+2001-08-21  Max Horn <max@quendi.de>
+	* audio/Midi.cc: enabled MIDI driver on OS X
+	* audio/midi_drivers/mac_midi.* enabled MIDI driver on OS X
+	
 2001-08-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: fixed Gwenno bug. (also accept NPCnums < 0x80 for bodies)
 	* contain.cc: fixed infinite-volume containers (eg. hollow tree)

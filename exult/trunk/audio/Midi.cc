@@ -397,7 +397,7 @@ bool MyMidiPlayer::init_device(void)
 #if (defined(XWIN) && !defined(OPENBSD))
 	TRY_MIDI_DRIVER(forked_player)
 #endif
-#if defined(MACOS) // || defined(MACOSX)
+#if defined(MACOS) || defined(MACOSX)
 	TRY_MIDI_DRIVER(Mac_QT_midi)
 #endif
 
