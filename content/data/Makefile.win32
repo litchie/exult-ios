@@ -45,7 +45,7 @@ uclex.cc:
 
 clean:
 	del $(IPACK_OBJS) ipack.exe ipack.o $(UCC_OBJS) ucc.exe ucparse.cc ucparse.h uclex.cc
-	del faces.vga shapes.vga
+	del ..\islefaq\usecode faces.vga shapes.vga
 
 patch: ucc.exe ipack.exe
 	if not exist $(U7PATH)\patch md $(U7PATH)\patch
