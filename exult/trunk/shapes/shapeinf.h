@@ -82,30 +82,47 @@ public:
 		{ return damage_type; }
 	unsigned char get_powers() const
 		{ return powers; }
+	void set_powers(unsigned char p)
+		{ powers = p; }
+	void set_damage(int dmg, int dmgtype);
 	int get_ammo_consumed()
 		{ return ammo > 0 ? ammo : 0; }
+	void set_ammo(int a)			// Raw value, for map-editor.
+		{ ammo = a; }
 	bool uses_charges()
 		{ return ammo == -2; }
 	bool is_thrown() const
 		{ return uses == 1 || uses == 2 || m_returns; }
 	bool returns() const
 		{ return m_returns; }
+	void set_returns(bool tf)
+		{ m_returns = tf; }
 	unsigned char get_uses() const
 		{ return uses; }
+	void set_uses(unsigned char u)
+		{ uses = u; }
 	int get_range()			// Raw # (for map-editor).
 		{ return range; }
+	void set_range(int r)
+		{ range = r; }
 	int get_striking_range()	// Guessing about div. by 2.
 		{ return uses < 3 ? range/2 : 0; }
 	int get_projectile_range()	// +++Guess for thrown weapons.
 		{ return uses == 3 ? range : is_thrown() ? 20 : 0; }
 	int get_projectile()
 		{ return projectile; }
+	void set_projectile(int p)
+		{ projectile = p; }
 	int get_usecode()
 		{ return usecode; }
+	void set_usecode(int u)
+		{ usecode = u; }
 	int get_sfx()			// Return sound-effects #, or -1.
 		{ return sfx; }
 	int get_hitsfx()
 		{ return hitsfx; }
+	void set_sfxs(int s, int hits)
+		{ sfx = s; hitsfx = hits; }
 	};
 
 /*
@@ -181,6 +198,9 @@ class Shape_info
 		dims[1] = 1 + ((tfa[2]>>3)&7);
 		dims[2] = (tfa[0] >> 5);
 		}
+					// Set/clear tfa bit.
+	void set_tfa(int i, int bit, bool tf)
+		{ tfa[i] = tf ? (tfa[i]|(1<<bit)) : (tfa[i]&~(1<<bit)); }
 	// This private copy constructor and assignment operator are never
 	// defined so copying will cause a link error (intentional)
 	Shape_info(const Shape_info & other);
@@ -199,16 +219,22 @@ public:
 		{ return weight; }
 	int get_volume()
 		{ return volume; }
+	void set_weight_volume(int w, int v)
+		{ weight = w; volume = v; }
 	int get_armor()			// Get armor protection.
 		{ return armor ? armor->prot : 0; }
 	Weapon_info *get_weapon_info()
 		{ return weapon; }
+	Weapon_info *set_weapon_info(bool tf);
 	Ammo_info *get_ammo_info()
 		{ return ammo; }
+	Ammo_info *set_ammo_info(bool tf);
 	Armor_info *get_armor_info()
 		{ return armor; }
+	Armor_info *set_armor_info(bool tf);
 	Monster_info *get_monster_info()
 		{ return monstinf; }
+	Monster_info *set_monster_info(bool tf);
 					// Get tile dims., flipped for
 					//   reflected (bit 5) frames.
 	int get_3d_xtiles(unsigned int framenum = 0)
@@ -217,36 +243,64 @@ public:
 		{ return dims[1 ^ ((framenum >> 5)&1)]; }
 	int get_3d_height()		// Height (in lifts?).
 		{ return dims[2]; }
+	void set_3d(int xt, int yt, int zt);
 	unsigned char get_tfa(int i)	// For debugging:
 		{ return tfa[i]; }
 	int has_sfx()			// Has a sound effect (guessing).
 		{ return (tfa[0] & (1<<0)) != 0; }
+	void set_sfx(bool tf)
+		{ set_tfa(0, 0, tf); }
 	int has_strange_movement()	// Slimes, sea monsters.
 		{ return (tfa[0] & (1<<1)) != 0; }
+	void set_strange_movement(bool tf)
+		{ set_tfa(0, 1, tf); }
 	int is_animated()
 		{ return (tfa[0] & (1<<2)) != 0; }
+	void set_animated(bool tf)
+		{ set_tfa(0, 2, tf); }
 	int is_solid()			// Guessing.  Means can't walk through.
 		{ return (tfa[0] & (1<<3)) != 0; }
+	void set_solid(bool tf)
+		{ set_tfa(0, 3, tf); }
 	int is_water()			// Guessing.
 		{ return (tfa[0] & (1<<4)) != 0; }
+	void set_water(bool tf)
+		{ set_tfa(0, 4, tf); }
 	int is_poisonous()		// Swamps.  Applies to tiles.
 		{ return (tfa[1] & (1<<4)) != 0; }
 	int is_field()			// Applies to Game_objects??
 		{ return (tfa[1] & (1<<4)) != 0; }
+	void set_field(bool tf)
+		{ set_tfa(1, 4, tf); }
 	int is_door()
 		{ return (tfa[1] & (1<<5)) != 0; }
+	void set_door(bool tf)
+		{ set_tfa(1, 5, tf); }
 	int is_barge_part()
 		{ return (tfa[1] & (1<<6)) != 0; }
+	void set_barge_part(bool tf)
+		{ set_tfa(1, 6, tf); }
 	int is_transparent()		// ??
 		{ return (tfa[1] & (1<<7)) != 0; }
+	void set_transparent(bool tf)
+		{ set_tfa(1, 7, tf); }
 	int is_light_source()
 		{ return (tfa[2] & (1<<6)) != 0; }
+	void set_light_source(bool tf)
+		{ set_tfa(2, 6, tf); }
 	int has_translucency()
 		{ return (tfa[2] & (1<<7)) != 0; }
+	void set_translucency(bool tf)
+		{ set_tfa(2, 7, tf); }
 	int is_xobstacle()		// Obstacle in x-dir.???
 		{ return (shpdims[1] & 1) != 0; }
 	int is_yobstacle()		// Obstacle in y-dir.???
 		{ return (shpdims[0] & 1) != 0; }
+	void set_obstacle(bool x, bool y)
+		{
+		shpdims[1] = x ? (shpdims[1]|1) : (shpdims[1]&~1);
+		shpdims[0] = y ? (shpdims[0]|1) : (shpdims[0]&~1);
+		}
 	/*
 	 *	TFA[1][b0-b3] seems to indicate object types:
 	 */
@@ -268,6 +322,8 @@ public:
 		};
 	Shape_class get_shape_class()
 		{ return (Shape_class) (tfa[1]&15); }
+	void set_shape_class(Shape_class c)
+		{ tfa[1] = (tfa[1]&~15)|(int) c; }
 	bool is_npc()
 		{
 		Shape_class c = get_shape_class();
@@ -294,8 +350,12 @@ public:
 		}
 	bool occludes() const
 		{ return occludes_flag; }
+	void set_occludes(bool tf)
+		{ occludes_flag = tf; }
 	unsigned char get_ready_type()
 		{ return ready_type; }
+	void set_ready_type(unsigned char t)
+		{ ready_type = t; }
 	// Sets x to 255 if there is no weapon offset
 	void get_weapon_offset(int frame, unsigned char& x, unsigned char& y)
 		{
@@ -308,6 +368,7 @@ public:
 			y = weapon_offsets[frame * 2 + 1];
 			}
 		}
+	void set_weapon_offset(int frame, unsigned char x, unsigned char y);
 	};
 
 #endif
