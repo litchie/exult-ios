@@ -1602,8 +1602,8 @@ USECODE_INTRINSIC(apply_damage)
 	// apply_damage(??str?, hps, ??type?, NPC);
 	int hps = parms[1].get_int_value();
 	Actor *npc = as_actor(get_item(parms[3]));
-	if (npc)			// Treat avatar as attacker.
-		npc->reduce_health(hps, gwin->get_main_actor());
+	if (npc)
+		npc->reduce_health(hps);
 	return Usecode_value(1);	// ?? Guessing.
 }
 
