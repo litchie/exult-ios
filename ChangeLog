@@ -1,3 +1,5 @@
+2001-05-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* server/servemsg.cc: #include <cstring> for memcpy
 
 2001-05-30  Jeff Freedman  <jeff@amy.nerble.net>
 
