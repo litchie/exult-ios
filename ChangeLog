@@ -3,6 +3,9 @@
 	
 2001-12-07  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* readnpcs.cc: BG NPC's 293-297 are not valid and should be skipped.
+	* usecode/ucinternal.cc: Don't create script for NULL object.
+
 	* objs/chunks.cc: Found a case where it's BAD to use an iterator,
 	since the vector can change.  This fixes a memory-corruption crash.
 
