@@ -1,5 +1,6 @@
 2001-03-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* menulist.cc: disable sound-related options in setup when no MIDI
+	* Audio.cc: write config/audio/enabled setting to file when not present
 
 2001-03-07  Jeff Freedman  <jeff@amy.nerble.net>
 
