@@ -61,25 +61,26 @@ enum Msg_type
 	reload_usecode = 12,		// Reload patched usecode.
 	locate_terrain = 13,		// Locate desired chunk terrain.
 	swap_terrain = 14,		// Swap two terrains.
-	insert_terrain = 15,		// Insert new chunk terrain
-	send_terrain = 16,		// Send 512-byte terrain to client.
-	terrain_editing_mode = 17,	// 1 to turn on, 0 for off, -1 to undo.
-	set_edit_shape = 18,		// Set shape/frame to 'paint' with.
-	view_pos = 19,			// Tile loc., size, scale of what's
+	insert_terrain = 15,		// Insert new chunk terrain.
+	delete_terrain = 16,		// Delete (unused) terrain.
+	send_terrain = 17,		// Send 512-byte terrain to client.
+	terrain_editing_mode = 18,	// 1 to turn on, 0 for off, -1 to undo.
+	set_edit_shape = 19,		// Set shape/frame to 'paint' with.
+	view_pos = 20,			// Tile loc., size, scale of what's
 					//   shown in gamewin.  Sent both ways.
-	set_edit_mode = 20,		// Move(0), paint(1), select(2).
-	combo_pick = 21,		// Sending shape to add to combo.
-	hide_lift = 22,			// Lift passed: 1-16.
-	reload_shapes = 23,		// Reload a .vga file.
-	unused_shapes = 24,		// Find unused shapes in game.
-	locate_shape = 25,		// Find shape in world.
-	cut = 26,			// Cut/copy.
-	paste = 27,			// ... from clipboard.
-	select_status = 28,		// Flags:  selection, clipboard avail.
-	npc_info = 29,			// Get #NPC's, first unused.
-	edit_selected = 30,		// Edit selected object.
-	set_edit_chunknum = 31,		// Set chunk# to paint with.
-	game_pos = 32,			// Returns tx, ty, tz of main char.
+	set_edit_mode = 21,		// Move(0), paint(1), select(2).
+	combo_pick = 22,		// Sending shape to add to combo.
+	hide_lift = 23,			// Lift passed: 1-16.
+	reload_shapes = 24,		// Reload a .vga file.
+	unused_shapes = 25,		// Find unused shapes in game.
+	locate_shape = 26,		// Find shape in world.
+	cut = 27,			// Cut/copy.
+	paste = 28,			// ... from clipboard.
+	select_status = 29,		// Flags:  selection, clipboard avail.
+	npc_info = 30,			// Get #NPC's, first unused.
+	edit_selected = 31,		// Edit selected object.
+	set_edit_chunknum = 32,		// Set chunk# to paint with.
+	game_pos = 33,			// Returns tx, ty, tz of main char.
 	usecode_debugging = 128
 	};
 

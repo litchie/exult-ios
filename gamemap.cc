@@ -1282,6 +1282,40 @@ bool Game_map::insert_terrain
 	}
 
 /*
+ *	Remove a terrain, updating the map.
+ *
+ *	Output:	false if unsuccessful.
+ */
+
+bool Game_map::delete_terrain
+	(
+	int tnum
+	)
+	{
+	if (tnum < 0 || tnum >= chunk_terrains.size())
+		return false;		// Out of bounds.
+	map_modified = true;
+	int sz = chunk_terrains.size();
+	delete chunk_terrains[tnum];
+	for (int i = tnum + 1; i < sz; i++)
+		{			// Move the rest downwards.
+		Chunk_terrain *tmp = get_terrain(i);
+		tmp->set_modified();
+		chunk_terrains[i - 1] = tmp;
+		}
+	chunk_terrains.resize(sz - 1);
+					// Update terrain map.
+	for (int cy = 0; cy < c_num_chunks; cy++)
+		for (int cx = 0; cx < c_num_chunks; cx++)
+			{
+			if (terrain_map[cx][cy] >= tnum)
+				terrain_map[cx][cy]--;
+			}
+	Game_window::get_instance()->set_all_dirty();
+	return true;
+	}
+
+/*
  *	Commit edits made to terrain chunks.
  */
 
