@@ -44,6 +44,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/un.h>
 #endif
 #include <fcntl.h>
+#include <cstdarg>
 
 #include "shapelst.h"
 #include "paledit.h"
@@ -1162,6 +1163,37 @@ int ExultStudio::prompt
 	gtk_widget_hide(dlg);
 	assert(prompt_choice >= 0 && prompt_choice <= 2);
 	return prompt_choice;
+	}
+
+/*
+ *	Same as ExultStudio::prompt, but as a routine.
+ */
+int Prompt
+	(
+	const char *msg,		// Question to ask.
+	const char *choice0,		// 1st choice.
+	const char *choice1,		// 2nd choice, or NULL.
+	const char *choice2		// 3rd choice, or NULL.
+	)
+	{
+	return ExultStudio::get_instance()->prompt(msg, choice0, choice1,
+							choice2);
+	}
+
+/*
+ *	Just print a message (usually an error).
+ */
+void Alert
+	(
+	const char *msg,		// May be in printf format.
+	...
+	)
+	{
+	std::va_list args;
+	va_start(args, msg);
+	char *fullmsg = g_strdup_vprintf(msg, args);
+	Prompt(fullmsg, "Okay");
+	g_free(fullmsg);
 	}
 
 /*

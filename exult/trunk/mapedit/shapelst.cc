@@ -821,15 +821,16 @@ void Shape_chooser::edit_shape
 #ifndef WIN32
 	int ret = system(cmd.c_str());
 	if (ret == 127 || ret == -1)
-		cout << "Couldn't run image_editor" << endl;
+		Alert("Can't launch '%s'", studio->get_image_editor());
 #else
 	PROCESS_INFORMATION	pi;
 	STARTUPINFO		si;
 	std::memset (&si, 0, sizeof(si));
 	si.cb = sizeof(si);
-	int ret = CreateProcess (NULL, const_cast<char *>(cmd.c_str()), NULL, NULL, FALSE, 0,
-				NULL, NULL, &si, &pi);
-	if (!ret) cout << "Couldn't run image-editor" << endl;
+	int ret = CreateProcess (NULL, const_cast<char *>(cmd.c_str()), 
+			NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	if (!ret)
+		Alert("Can't launch '%s'", studio->get_image_editor());
 #endif
 	if (check_editing_timer == -1)	// Monitor files every 6 seconds.
 		check_editing_timer = gtk_timeout_add(6000,
@@ -982,8 +983,7 @@ void Shape_chooser::export_frame
 		{
 		char *msg = g_strdup_printf(
 			"'%s' already exists.  Overwrite?", fname);
-		int answer = ExultStudio::get_instance()->prompt(msg,
-					"Yes", "No");
+		int answer = Prompt(msg, "Yes", "No");
 		g_free(msg);
 		if (answer != 0)
 			return;

@@ -859,8 +859,7 @@ bool Palette_edit::closing
 	{
 	if (!modified)
 		return true;
-	ExultStudio *studio = ExultStudio::get_instance();
-	int choice = studio->prompt("Palette(s) modified.  Save?",
+	int choice = Prompt("Palette(s) modified.  Save?",
 		"Yes", "No", can_cancel ? "Cancel" : 0);
 	if (choice == 2)		// Cancel?
 		return false;
@@ -907,8 +906,7 @@ void Palette_edit::save
 	try {
 	U7open(out, fname.c_str());
 	} catch (exult_exception& e) {
-		ExultStudio::get_instance()->prompt("Error creating file.",
-								"Okay");
+		Alert("Error creating '%s'.", fname.c_str());
 		return;
 	}
 	int cnt = palettes.size();
@@ -926,11 +924,7 @@ void Palette_edit::save
 		flex.mark_section_done();
 		}
 	if (!flex.close())
-		{
-		string msg("Error writing '");
-		msg += fname; msg += "'.";
-		ExultStudio::get_instance()->prompt(msg.c_str(), "Okay");
-		}
+		Alert("Error writing '%s'", fname.c_str());
 	}
 
 /*
@@ -1010,7 +1004,7 @@ void Palette_edit::remove_palette
 					// Don't delete the last one.
 	if (cur_pal < 0 || palettes.size() < 2)
 		return;
-	if (ExultStudio::get_instance()->prompt(
+	if (Prompt(
 		"Do you really want to delete the palette you're viewing?",
 							"Yes", "No") != 0)
 		return;
@@ -1041,8 +1035,7 @@ void Palette_edit::export_palette
 		{
 		char *msg = g_strdup_printf(
 			"'%s' already exists.  Overwrite?", fname);
-		int answer = ExultStudio::get_instance()->prompt(msg,
-					"Yes", "No");
+		int answer = Prompt(msg, "Yes", "No");
 		g_free(msg);
 		if (answer != 0)
 			return;
@@ -1080,7 +1073,7 @@ void Palette_edit::import_palette
 	Palette_edit *ed = (Palette_edit *) user_data;
 	char *msg = g_strdup_printf(
 			"Overwrite current palette from '%s'?", fname);
-	int answer = ExultStudio::get_instance()->prompt(msg, "Yes", "No");
+	int answer = Prompt(msg, "Yes", "No");
 	g_free(msg);
 	if (answer != 0)
 		return;
@@ -1091,9 +1084,7 @@ void Palette_edit::import_palette
 	in.getline(buf, sizeof(buf));	// Skip 1st line.
 	if (!in.good())
 		{
-		char *msg = g_strdup_printf("Error reading '%s'", fname);
-		ExultStudio::get_instance()->prompt(msg, "Okay");
-		g_free(msg);
+		Alert("Error reading '%s'", fname);
 		return;
 		}
 	int i = 0;			// Color #.

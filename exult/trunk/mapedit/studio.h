@@ -221,4 +221,8 @@ public:
 			const char *choice1 = 0,const char *choice2 = 0);
 };
 
+int Prompt(const char *msg, const char *choice0, 
+			const char *choice1 = 0,const char *choice2 = 0);
+void Alert(const char *msg, ...);
+
 #endif
