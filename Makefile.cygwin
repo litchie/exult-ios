@@ -7,7 +7,9 @@ U7PATH=C:/Ultima7
 CC=gcc
 # Base of the exult source
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/files/zip:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs:$(SRC)/data:$(SRC)/server:$(SRC)/usecode/compiler
+VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SRC)/files:$(SRC)/files/zip:$(SRC)/flic: \
+$(SRC)/gumps:$(SRC)/imagewin:$(SRC)/objs:$(SRC)/pathfinder:$(SRC)/shapes:$(SRC)/server:$(SRC)/tools: \
+$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt/src
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
@@ -178,51 +180,51 @@ FLEXES = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
 $(EXEC) : $(FLEXES) $(OBJS) 
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
-tools/expack.exe : tools/expack.o $(FILE_OBJS) 
-	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) -mconsole
+expack.exe : expack.o $(FILE_OBJS) 
+	$(CXX) $(LFLAGS) -o expack.exe expack.o $(FILE_OBJS) -mconsole
 
-$(EXULT_FLX): tools/expack.exe $(EXULT_FLX_OBJECTS)
-	tools/expack.exe -i data/flx.in
+$(EXULT_FLX): expack.exe $(EXULT_FLX_OBJECTS)
+	expack.exe -i data/flx.in
 
-$(EXULT_BG_FLX): tools/expack.exe $(EXULT_BG_FLX_OBJECTS)
-	tools/expack.exe -i data/bg/flx.in
+$(EXULT_BG_FLX): expack.exe $(EXULT_BG_FLX_OBJECTS)
+	expack.exe -i data/bg/flx.in
 
-$(EXULT_SI_FLX): tools/expack.exe $(EXULT_SI_FLX_OBJECTS)
-	tools/expack.exe -i data/si/flx.in
+$(EXULT_SI_FLX): expack.exe $(EXULT_SI_FLX_OBJECTS)
+	expack.exe -i data/si/flx.in
 
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres --include-dir win32 win32/exultico.rc exultico.o
 
-tools/mklink.exe : tools/mklink.o
-	$(CXX) $(LFLAGS) -o tools/mklink.exe tools/mklink.o -mconsole
+mklink.exe : mklink.o
+	$(CXX) $(LFLAGS) -o mklink.exe mklink.o -mconsole
 
-tools/rip.exe : tools/rip.o
-	$(CXX) $(LFLAGS) -o tools/rip.exe tools/rip.o -mconsole
+rip.exe : rip.o
+	$(CXX) $(LFLAGS) -o rip.exe rip.o -mconsole
 
-tools/shp2pcx.exe : tools/shp2pcx.o
-	$(CXX) $(LFLAGS) $(SDL_CFLAGS) -o tools/shp2pcx.exe tools/shp2pcx.o -mconsole
+shp2pcx.exe : shp2pcx.o
+	$(CXX) $(LFLAGS) $(SDL_CFLAGS) -o shp2pcx.exe shp2pcx.o -mconsole
 
-tools/splitshp.exe : tools/splitshp.o
-	$(CXX) $(LFLAGS) -o tools/splitshp.exe tools/splitshp.o -mconsole
+splitshp.exe : splitshp.o
+	$(CXX) $(LFLAGS) -o splitshp.exe splitshp.o -mconsole
 
-tools/ucdump.exe : tools/ucdump.o
-	$(CXX) $(LFLAGS) -o tools/ucdump.exe tools/ucdump.o -mconsole
+ucdump.exe : ucdump.o
+	$(CXX) $(LFLAGS) -o ucdump.exe ucdump.o -mconsole
 
-tools/wud.exe : tools/wud.o tools/uctools.h usecode/bgintrinsics.h usecode/siintrinsics.h 
-	$(CXX) $(LFLAGS) -o tools/wud.exe tools/wud.o -mconsole
+wud.exe : wud.o uctools.h bgintrinsics.h siintrinsics.h 
+	$(CXX) $(LFLAGS) -o wud.exe wud.o -mconsole
 
-tools/wuc.exe : tools/wuc.o
-	$(CXX) $(LFLAGS) -o tools/wuc.exe tools/wuc.o -mconsole
+wuc.exe : wuc.o
+	$(CXX) $(LFLAGS) -o wuc.exe wuc.o -mconsole
 
-UCXT_OBJS=conf/Configuration.o conf/XMLEntity.o files/utils.o usecode/ucxt/src/ucdata.o usecode/ucxt/src/ucdump.o usecode/ucxt/src/ucfunc.o usecode/ucxt/src/opcodes.o
+UCXT_OBJS=Configuration.o XMLEntity.o utils.o ucdata.o ucdump.o ucfunc.o opcodes.o
 
-usecode/ucxt/src/ucxt.exe : $(UCXT_OBJS)
-	$(CXX) $(LFLAGS) -o usecode/ucxt/src/ucxt.exe $(UCXT_OBJS) -mconsole
+ucxt.exe : $(UCXT_OBJS)
+	$(CXX) $(LFLAGS) -o ucxt.exe $(UCXT_OBJS) -mconsole
 
-UCC_OBJS=ucparse.o uclex.o usecode/compiler/ucmain.o usecode/compiler/ucexpr.o usecode/compiler/ucfun.o usecode/compiler/ucloc.o usecode/compiler/ucstmt.o usecode/compiler/ucsym.o
+UCC_OBJS=ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o
 
-usecode/compiler/ucc.exe : $(UCC_OBJS)
-	$(CXX) $(LFLAGS) -o usecode/compiler/ucc.exe $(UCC_OBJS) -mconsole
+ucc.exe : $(UCC_OBJS)
+	$(CXX) $(LFLAGS) -o ucc.exe $(UCC_OBJS) -mconsole
 
 ucparse.cc:  
 	bison -d usecode/compiler/ucparse.yy -o ucparse.c
@@ -232,14 +234,14 @@ uclex.cc:
 	flex usecode/compiler/uclex.ll 
 	mv lex.yy.c uclex.cc
 
-CONFREGRESS_OBJS=conf/Configuration.o conf/XMLEntity.o conf/xmain.o files/utils.o
+CONFREGRESS_OBJS=Configuration.o XMLEntity.o xmain.o utils.o
 
-conf/confregress.exe  : $(CONFREGRESS_OBJS)
-	$(CXX) $(LFLAGS) -o conf/confregress.exe $(CONFREGRESS_OBJS) -mconsole
+confregress.exe  : $(CONFREGRESS_OBJS)
+	$(CXX) $(LFLAGS) -o confregress.exe $(CONFREGRESS_OBJS) -mconsole
 
 # This should work with the Cygwin rm
 clean:
-	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
+	rm -f $(OBJS) expack.o $(EXEC) expack.exe data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
 
 install: $(EXEC)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
@@ -275,32 +277,32 @@ dist:   $(EXEC)
 	u2d $(U7PATH)/Exult/AUTHORS.txt $(U7PATH)/Exult/ChangeLog.txt $(U7PATH)/Exult/COPYING.txt $(U7PATH)/Exult/FAQ.txt $(U7PATH)/Exult/NEWS.txt $(U7PATH)/Exult/README.txt $(U7PATH)/Exult/README.1ST.txt $(U7PATH)/Exult/README.win32.txt
 	u2d $(U7PATH)/Exult/bgdefaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 
-tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe usecode/ucxt/src/ucxt.exe usecode/compiler/ucc.exe
+tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe
 
 toolsclean:
-	rm -f tools/mklink.o tools/mklink.exe
-	rm -f tools/rip.o tools/rip.exe
-	rm -f tools/shp2pcx.o tools/shp2pcx.exe
-	rm -f tools/splitshp.o tools/splitshp.exe
-	rm -f tools/ucdump.o tools/ucdump.exe
-	rm -f tools/wuc.o tools/wuc.exe
-	rm -f tools/wud.o tools/wud.exe
-	rm -f $(UCXT_OBJS) usecode/ucxt/src/ucxt.exe
-	rm -f $(UCC_OBJS) usecode/compiler/ucc.exe ucparse.cc ucparse.h uclex.cc
-	rm -f $(CONFREGRESS_OBJS) conf/confregress.exe
+	rm -f mklink.o mklink.exe
+	rm -f rip.o rip.exe
+	rm -f shp2pcx.o shp2pcx.exe
+	rm -f splitshp.o splitshp.exe
+	rm -f ucdump.o ucdump.exe
+	rm -f wuc.o wuc.exe
+	rm -f wud.o wud.exe
+	rm -f $(UCXT_OBJS) ucxt.exe
+	rm -f $(UCC_OBJS) ucc.exe ucparse.cc ucparse.h uclex.cc
+	rm -f $(CONFREGRESS_OBJS) confregress.exe
 
 toolsinstall: tools
 	mkdir -p $(U7PATH)/tools
-	strip tools/expack.exe -o $(U7PATH)/tools/expack.exe
-	strip tools/mklink.exe -o $(U7PATH)/tools/mklink.exe
-	strip tools/rip.exe -o $(U7PATH)/tools/rip.exe
-	strip tools/shp2pcx.exe -o $(U7PATH)/tools/shp2pcx.exe
-	strip tools/splitshp.exe -o $(U7PATH)/tools/splitshp.exe
-	strip tools/ucdump.exe -o $(U7PATH)/tools/ucdump.exe
-	strip tools/wuc.exe -o $(U7PATH)/tools/wuc.exe
-	strip tools/wud.exe -o $(U7PATH)/tools/wud.exe
-	strip usecode/ucxt/src/ucxt.exe -o $(U7PATH)/tools/ucxt.exe
-	strip usecode/compiler/ucc.exe -o $(U7PATH)/tools/ucc.exe
+	strip expack.exe -o $(U7PATH)/tools/expack.exe
+	strip mklink.exe -o $(U7PATH)/tools/mklink.exe
+	strip rip.exe -o $(U7PATH)/tools/rip.exe
+	strip shp2pcx.exe -o $(U7PATH)/tools/shp2pcx.exe
+	strip splitshp.exe -o $(U7PATH)/tools/splitshp.exe
+	strip ucdump.exe -o $(U7PATH)/tools/ucdump.exe
+	strip wuc.exe -o $(U7PATH)/tools/wuc.exe
+	strip wud.exe -o $(U7PATH)/tools/wud.exe
+	strip ucxt.exe -o $(U7PATH)/tools/ucxt.exe
+	strip ucc.exe -o $(U7PATH)/tools/ucc.exe
 	mkdir -p $(U7PATH)/tools/data
 	cp usecode/ucxt/data/events.data $(U7PATH)/tools/data/events.data
 	cp usecode/ucxt/data/flags.data $(U7PATH)/tools/data/flags.data
