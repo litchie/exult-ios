@@ -1,0 +1,8 @@
+<config>
+<audio>
+<midi_device>5</midi_device>
+</audio>
+<disk>
+<u7path>/home/dancer/projects/u7/</u7path>
+</disk>
+</config>
