@@ -1583,7 +1583,9 @@ bool BG_Game::new_game(Vga_file &shapes)
 
 	if(ok)
 	{
+#ifdef DEBUG
 		std::cout << "Skin is: " << (3-(sex/2)) << " Sex is: " << (sex%2) << std::endl;
+#endif
 		set_avskin(3-(sex/2));
 		set_avname (npc_name);
 		set_avsex (sex%2);

@@ -130,18 +130,18 @@ void Shape_manager::load
 			    files[SF_BG_SIGUMP_FLX].is_good() && 
 			    files[SF_BG_SISHAPES_VGA].is_good())
 				{
-					std::cout << "Support for SI Paperdolls and Multiracial Avatars in BG is ENABLED." << std::endl;
+					std::cout << "Support for SI Paperdolls and Multiracial Avatars in BG is enabled." << std::endl;
 				bg_paperdolls_allowed = true;
 				bg_multiracial_allowed = true;
 				}
 			else
 				std::cout << "Bad SI 'paperdol.vga', 'gumps.vga' or 'shapes.vga'." << std::endl
-						  << "Support for SI Paperdolls and Multiracial Avatars in BG is DISABLED." << std::endl;
+						  << "Support for SI Paperdolls and Multiracial Avatars in BG is disabled." << std::endl;
 			}
 		catch (const exult_exception &e)	
 			{
 				std::cerr << "Couldn't open SI 'paperdol.vga', 'gumps.vga' or 'shapes.vga'." << std::endl
-						  << "Support for SI Paperdolls and Multiracial Avatars in BG is DISABLED." << std::endl;
+						  << "Support for SI Paperdolls and Multiracial Avatars in BG is disabled." << std::endl;
 			}
 
 		}
