@@ -526,14 +526,14 @@ on_insert_btn_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
 	Palette_edit *ed = (Palette_edit *) user_data;
-//+++++++++
+	ed->add_palette();
 }
 void
 on_remove_btn_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
 	Palette_edit *ed = (Palette_edit *) user_data;
-//+++++++++
+	ed->remove_palette();
 }
 void
 on_up_btn_clicked                      (GtkButton       *button,
@@ -672,12 +672,14 @@ void Palette_edit::enable_controls
 		{
 		gtk_widget_set_sensitive(down_btn, false);
 		gtk_widget_set_sensitive(up_btn, false);
+		gtk_widget_set_sensitive(remove_btn, false);
 		}
 	else
 		{
 		gtk_widget_set_sensitive(down_btn,
 					cur_pal < palettes.size() - 1);
 		gtk_widget_set_sensitive(up_btn, cur_pal > 0);
+		gtk_widget_set_sensitive(remove_btn, palettes.size() > 1);
 		}
 	}
 
@@ -752,6 +754,22 @@ void Palette_edit::setup
 	}
 
 /*
+ *	Create a new palette.
+ */
+
+static GdkRgbCmap *New_palette
+	(
+	)
+	{
+	guint32 colors[256];		// R, G, B, then all black.
+	memset(&colors[0], 0, sizeof(colors));
+	colors[0] = 255<<16;
+	colors[1] = 255<<8;
+	colors[2] = 255;
+	return gdk_rgb_cmap_new(colors, 256);
+	}
+
+/*
  *	Create the list for a single palette.
  */
 
@@ -774,11 +792,8 @@ Palette_edit::Palette_edit
 		file = fname.c_str();
 		}
 	if (!U7exists(file))		// File non-existent?
-		{			// Create 1 blank palette.
-		guint32 colors[256];
-		memset(&colors[0], 0, sizeof(colors));
-		palettes.push_back(gdk_rgb_cmap_new(colors, 256));
-		}
+					// Create 1 blank palette.
+		palettes.push_back(New_palette());
 	else
 		{
 		U7object pal(file, 0);
@@ -971,6 +986,45 @@ void Palette_edit::move_palette
 			}
 		}
 	modified = true;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pspin), cur_pal);
+	}
+
+/*
+ *	Add a new palette at the end of the list.
+ */
+
+void Palette_edit::add_palette
+	(
+	)
+	{
+	modified = true;
+	palettes.push_back(New_palette());
+	cur_pal = palettes.size() - 1;	// Set to display new palette.
+					// This will update the display:
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pspin), cur_pal);
+	}
+
+/*
+ *	Remove the current palette.
+ */
+
+void Palette_edit::remove_palette
+	(
+	)
+	{
+					// Don't delete the last one.
+	if (cur_pal < 0 || palettes.size() < 2)
+		return;
+	if (ExultStudio::get_instance()->prompt(
+		"Do you really want to delete the palette you're viewing?",
+							"Yes", "No") != 0)
+		return;
+	modified = true;
+	gdk_rgb_cmap_free(palettes[cur_pal]);
+	palettes.erase(palettes.begin() + cur_pal);
+	if (cur_pal >= palettes.size())
+		cur_pal = palettes.size() - 1;
+					// This will update the display:
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pspin), cur_pal);
 	}
 
