@@ -1401,22 +1401,23 @@ void show_help (void)
 	Scroll_gump *scroll;
 	scroll = new Scroll_gump();
 
-	scroll->add_text("Keyboard commands~");
-	scroll->add_text("+/- - Change brightness\n");
-	scroll->add_text("c - Combat mode\n");
-	scroll->add_text("f - Use food\n");
-	scroll->add_text("i - Show inventory\n");
-	scroll->add_text("k - Try keys\n");
-	scroll->add_text("m - Show map\n");
-	scroll->add_text("p - Use lockpick\n");
-	scroll->add_text("ctrl-p - Repaint screen\n");
-	scroll->add_text("ctrl-s - Quick Save\n");
-	scroll->add_text("ctrl-r - Restore\n");
-	scroll->add_text("s - Show save box\n");
-	scroll->add_text("v - About box\n");
-	scroll->add_text("w - Watch\n");
-	scroll->add_text("F4 - Toggle fullscreen\n");
-	scroll->add_text("ctrl-h - Cheat Commands\n");
+	scroll->add_text("Keyboard commands\n");
+	scroll->add_text("+/- - Change brightness\n"
+			"c - Combat mode\n"
+			"f - Use food\n"
+			"h - Show keyboard commands\n"
+			"ctrl-h - Show cheat commands\n"
+			"i - Show inventory\n"
+			"k - Try keys\n"
+			"m - Show map\n"
+			"p - Use lockpick\n"
+			"ctrl-p - Repaint screen\n"
+			"ctrl-s - Quick Save\n"
+			"ctrl-r - Restore\n"
+			"s - Show save box\n"
+			"v - About box\n"
+			"w - Use watch\n"
+			"F4 - Toggle fullscreen\n");
 
 	scroll->paint(gwin);
 	do
@@ -1433,32 +1434,33 @@ void show_cheat_help (void)
 	Scroll_gump *scroll;
 	scroll = new Scroll_gump();
 
-	scroll->add_text("Cheat commands~");
-	scroll->add_text("Arrow keys - scroll map\n");
-	scroll->add_text("Home - recenter map\n");
-	scroll->add_text("alt-+/- - Switch resolution\n");
-	scroll->add_text("ctrl-1 - Sound Tester\n");
-	scroll->add_text("ctrl-b - Shape Browser\n");
-	scroll->add_text("ctrl-c - Create Object\n");
-	scroll->add_text("ctrl-d - Delete Object\n");
-	scroll->add_text("e - Toggle Egg display\n");
-	scroll->add_text("alt-g - Toggle God Mode\n");
-	scroll->add_text("g - Change Avatar gender\n");
-	scroll->add_text("ctrl-alt-h - Heal party\n");
-	scroll->add_text("alt-i - Toggle infravision\n");
-	scroll->add_text("ctrl-l - Level up party\n");
-	scroll->add_text("ctrl-m - Get 100 gold coins\n");
-	scroll->add_text("ctrl-alt-m - Hack-Mover\n");
-	scroll->add_text("ctrl-t - Next time period\n");
-	scroll->add_text("alt-t  - Teleport\n");
-	scroll->add_text("ctrl-alt-t - Map Teleport\n");
-	scroll->add_text("alt-w - Archwizard mode~");
+	scroll->add_text("Cheat commands\n");
+	scroll->add_text("Arrow keys - scroll map\n"
+			"Home - recenter map\n"
+			"alt-+/- - Switch resolution\n"
+			"ctrl-1 - Sound Tester\n"
+			"ctrl-b - Shape Browser\n"
+			"ctrl-c - Create Object\n"
+			"ctrl-d - Delete Object\n"
+			"e - Toggle Egg display\n"
+			"alt-g - Toggle God Mode\n"
+			"g - Change Avatar gender\n"
+			"ctrl-alt-h - Heal party\n"
+			"alt-i - Toggle infravision\n"
+			"ctrl-l - Level up party\n"
+			"ctrl-m - Get 100 gold coins\n"
+			"ctrl-alt-m - Toggle Hack-Mover\n"
+			"ctrl-t - Next time period\n"
+			"alt-t  - Teleport\n"
+			"ctrl-alt-t - Map Teleport\n"
+			"alt-w - Toggle Archwizard mode\n");
+
 	if(Game::get_game_type() == SERPENT_ISLE)
 	{
-		scroll->add_text("SI-only keys~");
-		scroll->add_text("alt-n - Toggle Naked flag\n");
-		scroll->add_text("alt-p - Toggle Petra mode\n");
-		scroll->add_text("alt-s - Change skin color\n");
+		scroll->add_text("SI-only keys\n");
+		scroll->add_text("alt-n - Toggle Naked flag\n"
+				"alt-p - Toggle Petra mode\n"
+				"alt-s - Change skin color\n");
 	}
 
 	scroll->paint(gwin);

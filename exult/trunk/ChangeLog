@@ -2,6 +2,7 @@
 	* drag.cc: fixed 'hack-moving monsters crash' bug
 	re-center screen when hack-moving yourself,
 	allow stealing while in hack-mover
+	* exult.cc, audio/soundtest.cc: fixed scoll rendering bug
 
 2000-12-12  Willem Jan Palnestijn <palenstijn@wanadoo.nl>
 	* mapedit/.cvsignore: added
