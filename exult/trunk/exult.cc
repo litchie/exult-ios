@@ -268,7 +268,8 @@ int exult_main(const char *runpath)
 {
 	string data_path;
 
-	cout << "Exult V" << VERSION << "." << endl;
+	//cout << "Exult V" << VERSION << "." << endl;
+	getVersionInfo(cout);
 
 	// Read in configuration file
 	config = new Configuration;
