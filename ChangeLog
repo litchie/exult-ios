@@ -1,3 +1,14 @@
+2001-11-02  Christian Ohm  <chr.ohm@gmx.net>
+
+	* exult.cc, gamewin.cc/h, gumps/GameplayOptions_gump.cc/h
+	gumps/Gump_manager.cc/h, gumps/gump_utils.cc, data/flx.in,
+	data/gameplayoptions.shp: added larger gameoptions menu shape
+	* made paperdolls in bg default to on
+	* removed weird event loops
+	* rearranged layout of gameoptions window
+	* added 'doubleclick closes gumps'-option
+	* added 'walk after teleport'-option for si
+	  
 2001-11-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* npctime.cc (Npc_timer_list): Paralyze timer.
