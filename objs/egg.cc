@@ -575,10 +575,6 @@ void Egg_object::set_weather
 		}
 	}
 
-/*
- *	Remove an object from the world.
- *	The object is deleted.
- */
 
 void Egg_object::remove_this
 	(
@@ -591,7 +587,7 @@ void Egg_object::remove_this
 	if (chunk)
 		chunk->remove_egg(this);
 	if (!nodel)
-		delete this;
+		Game_window::get_game_window()->delete_object(this);
 	}
 
 /*

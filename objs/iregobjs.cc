@@ -77,7 +77,7 @@ void Ireg_game_object::remove_this
 	if (!nodel)
 	{
 		cheat.set_grabbed_actor(0);	// Could be an actor
-		delete this;
+		Game_window::get_game_window()->delete_object(this);
 	}
 	}
 
