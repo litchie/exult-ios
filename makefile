@@ -12,7 +12,7 @@ STATIC = -static
 else
 STATIC =
 endif
-LFLAGS = -g -L /usr/X11R6/lib -L /usr/local/lib
+LFLAGS = -g -L /usr/X11R6/lib -L /usr/local/lib -v
 LIBS = -lttf -lSDL -lX11 -lXext -lpthread
 
 all:
