@@ -101,8 +101,10 @@ Actor_gump::Actor_gump
 		combat_button = new Combat_button(this, combatx, combaty);
 	else
 		combat_button = NULL;
-	halo_button = new Halo_button(this, halox, haloy);
-	cmode_button = new Combat_mode_button(this, cmodex, cmodey, (Actor *) cont);
+	halo_button = new Halo_button(this, halox, haloy,
+							(Actor *) cont);
+	cmode_button = new Combat_mode_button(this, cmodex, cmodey, 
+							(Actor *) cont);
 							
 	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 	{			// Set object coords.

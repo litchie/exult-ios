@@ -124,6 +124,51 @@ void Combat_schedule::find_opponents
 }		
 
 /*
+ *	Find 'protected' party member's attackers.
+ *
+ *	Output:	->attacker, or 0 if not found.
+ */
+
+Actor *Combat_schedule::find_protected_attacker
+	(
+	)
+	{
+	if (npc->get_party_id() < 0)	// Not in party?
+		return 0;
+	Game_window *gwin = Game_window::get_game_window();
+	Actor *party[9];		// Get entire party, including Avatar.
+	int cnt = gwin->get_party(party, 1);
+	Actor *prot_actor = 0;
+	for (int i = 0; i < cnt; i++)
+		if (party[i]->is_combat_protected())
+			{
+			prot_actor = party[i];
+			break;
+			}
+	if (!prot_actor)		// Not found?
+		return 0;
+					// Find closest attacker.
+	int dist, best_dist = 4*c_tiles_per_chunk;
+	Actor *best_opp = 0;
+	for (Actor_queue::const_iterator it = opponents.begin(); 
+						it != opponents.end(); ++it)
+		{
+		Actor *opp = *it;
+		if (opp->get_opponent() == prot_actor &&
+		    (dist = npc->distance(opp)) < best_dist)
+			{
+			best_dist = dist;
+			best_opp = opp;
+			}
+		}
+	if (!best_opp)
+		return 0;
+	if (failures < 5 && yelled && rand()%2 && npc != prot_actor)
+		npc->say(first_will_help, last_will_help);
+	return best_opp;
+	}
+
+/*
  *	Find a foe.
  *
  *	Output:	Opponent that was found.
@@ -188,7 +233,11 @@ Actor *Combat_schedule::find_foe
 			}
 		break;
 		}
-	case Actor::protect:		// ++++++For now, do random.
+	case Actor::protect:
+		new_opponent = find_protected_attacker();
+		if (new_opponent)
+			break;		// Found one.
+					// FALL THROUGH to 'random'.
 	case Actor::random:
 	default:			// Default to random.
 		new_opponent = opponents.empty() ? 0 : opponents.front();

@@ -380,7 +380,7 @@ Actor::Actor
 	    npc_num(num), party_id(-1), shape_save(-1), 
 	    oppressor(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
-	    dead(false), alignment(0),
+	    dead(false), combat_protected(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), skin_color(-1), 
 	    action(0), 
@@ -2313,6 +2313,9 @@ Game_object *Actor::attacked
 		if (attacker->get_schedule_type() == Schedule::duel)
 			return this;	// Just play-fighting.
 		set_oppressor(attacker->get_npc_num());
+		if (is_combat_protected() && Actor::get_party_id() >= 0 &&
+		    rand()%5 == 0)
+			say(first_need_help, last_need_help);
 		}
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
