@@ -41,6 +41,10 @@ Boston, MA  02111-1307, USA.
 #include "SDL_video.h"
 #include "SDL_error.h"
 
+#ifdef HAVE_OPENGL
+#include <GL/gl.h>
+#endif
+
 bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst);
 
 using std::cout;
@@ -598,4 +602,25 @@ void Image_window::set_title(const char *title)
 	SDL_WM_SetCaption(title, 0);
 }
 
+#ifdef HAVE_OPENGL
+/*
+ *	Clear/set clip when in OpenGL.
+ */
+
+void Image_window::opengl_clear_clip
+	(
+	)
+	{
+	glDisable(GL_SCISSOR_TEST);
+	}
+void Image_window::opengl_set_clip
+	(
+	int x, int y, 
+	int w, int h
+	)
+	{
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(x*scale, (ibuf->height - y - h)*scale, w*scale, h*scale);
+	}
+#endif
 

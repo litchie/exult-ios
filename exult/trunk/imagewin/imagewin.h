@@ -34,6 +34,12 @@ Boston, MA  02111-1307, USA.
 struct SDL_Surface;
 struct SDL_RWops;
 
+#ifdef HAVE_OPENGL
+#define IF_OPENGL(a,b) if (scaler == OpenGL) a; else b
+#else
+#define IF_OPENGL(a,b) b
+#endif
+
 /*
  *	Here's the top-level class to use for image buffers.  Image_window
  *	should be derived from it.
@@ -217,13 +223,21 @@ public:
 		{ ibuf->copy_transparent8(src_pixels, srcw, srch,
 							destx, desty); }
 	/*
+	 *	OpenGL:
+	 */
+#ifdef HAVE_OPENGL
+	void opengl_clear_clip();
+	void opengl_set_clip(int x, int y, int w, int h);
+#endif
+	/*
 	 *	Depth-independent methods:
 	 */
 	void clear_clip()		// Reset clip to whole window.
-		{ ibuf->clear_clip(); }
+		{ IF_OPENGL(opengl_clear_clip(), ibuf->clear_clip()); }
 					// Set clip.
 	void set_clip(int x, int y, int w, int h)
-		{ ibuf->set_clip(x, y, w, h); }
+		{ IF_OPENGL(opengl_set_clip(x, y, w, h), 
+					ibuf->set_clip(x, y, w, h)); }
 					// Copy within itself.
 	void copy(int srcx, int srcy, int srcw, int srch, 
 						int destx, int desty)
