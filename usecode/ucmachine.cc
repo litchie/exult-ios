@@ -1349,6 +1349,13 @@ Usecode_machine::Usecode_machine
         U7open(file, USECODE);
 	_init_(file);
 	file.close();
+					// Get custom usecode functions.
+	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_USECODE))
+		{
+		U7open(file, PATCH_USECODE);
+		read_usecode(file);
+		file.close();
+		}
 	}
 
 void Usecode_machine::_init_

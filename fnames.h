@@ -51,6 +51,7 @@
 #define SHPDIMS_DAT	"<STATIC>/shpdims.dat"
 #define INITGAME	"<STATIC>/initgame.dat"
 #define USECODE		"<STATIC>/usecode"
+#define PATCH_USECODE	"<PATCH>/usecode"
 #define POINTERS	"<STATIC>/pointers.shp"
 #define MAINMUS		"<STATIC>/mt32mus.dat"
 #define INTROMUS	"<STATIC>/intrordm.dat"

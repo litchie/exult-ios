@@ -1,3 +1,8 @@
+2001-07-12  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Exult Studio now has a 'save map' option.  Files are stored in
+	the <PATCH> directory (specified in 'exult.cfg'.
+
 2001-07-11  Max Horn <max@quendi.de>
 	* data/quotes.txt: new quote ;)
 	* various files: removed the emacs header that force the fundamental mode to be used

@@ -284,21 +284,6 @@ void Game_window::init_files()
 					// Red for hit in battle.
 	hit_pixel = pal->find_color(63, 4, 4);
 	usecode = new Usecode_machine(this);
-					// Get custom usecode functions.
-	string gametitle = Game::get_game_type() == BLACK_GATE ?
-		"blackgate" : "serpentisle";
-	string d = "config/disk/game/" + gametitle + "/userusecode";
-	string useruc;
-	config->value(d.c_str(), useruc, "");
-	if (useruc != "")
-		{
-		ifstream file;
-		const char *nm = useruc.c_str();
-		cout << "Reading user usecode:  " << nm << endl;
-		U7open(file, nm);
-		usecode->read_usecode(file);
-		file.close();
-		}
 	cerr << "Loading exult.flx..." << endl;
 	exult_flx.load("<DATA>/exult.flx");
 
@@ -360,6 +345,7 @@ void Game_window::init_files()
 		for (int i2 = 0; i2 < c_num_chunks; i2++)
 			objects[i1][i2] = 0;
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
+	memset((char *) schunk_modified, 0, sizeof(schunk_modified));
 
 		// Go to starting chunk
 	scrolltx = game->get_start_tile_x();
@@ -623,6 +609,7 @@ void Game_window::clear_world
 		//++++++++Clear monsters list when we have it.
 					// Clear 'read' flags.
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
+	memset((char *) schunk_modified, 0, sizeof(schunk_modified));
 	}
 
 /*
@@ -1632,8 +1619,8 @@ void Game_window::write_map
 	U7mkdir(PATCHDAT, 0755);	// Create dir if not already there.
 	int schunk;			// Write each superchunk to 'static'.
 	for (schunk = 0; schunk < 12*12 - 1; schunk++)
-					// Only write what we've read.
-		if (schunk_read[schunk])
+					// Only write what we've modified.
+		if (schunk_modified[schunk])
 			write_ifix_objects(schunk);
 #if 0	/* +++++Finish later. Don't delete this! */
 	ofstream ochunks;		// Open file for chunks data.
