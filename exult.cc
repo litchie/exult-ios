@@ -189,9 +189,10 @@ static void Init
 	gwin = new Game_window(640, 480);
 #endif
 	string skip_intro;		// Skip intro. scene?
-	config.value("gameplay/skip_intro", skip_intro, "yes");
-	gwin->get_usecode()->set_global_flag(
-		Usecode_machine::did_first_scene, skip_intro == "yes");
+	config.value("config/gameplay/skip_intro", skip_intro, "yes");
+	if (skip_intro == "yes")
+		gwin->get_usecode()->set_global_flag(
+			Usecode_machine::did_first_scene, 1);
 	}
 
 /*
@@ -231,11 +232,11 @@ static int Filter_splash_events
 	{
 	switch (event->type)
 		{
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_KEYDOWN:
-		return 0;
 	case SDL_MOUSEBUTTONUP:
 	case SDL_KEYUP:
+		return 0;
+	case SDL_MOUSEBUTTONDOWN:
+	case SDL_KEYDOWN:
 					// Now handle intro. scene.
 		SDL_SetEventFilter(Filter_intro_events);
 		return 0;
@@ -256,7 +257,7 @@ static int Filter_intro_events
 					Usecode_machine::did_first_scene))
 		{
 		SDL_SetEventFilter(0);	// Intro. is done.
-		return 1;
+		return 0;
 		}
 	switch (event->type)
 		{

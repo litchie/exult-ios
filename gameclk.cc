@@ -19,6 +19,26 @@ const int PALETTE_NIGHT = 2;
 const int PALETTE_DAWN = 3;
 
 /*
+ *	Set palette.
+ */
+
+inline void Set_palette
+	(
+	Game_window *gwin,
+	int hour
+	)
+	{
+	if (hour == 5)
+		gwin->set_palette(PALETTE_DAWN);
+	if (hour == 6)
+		gwin->set_palette(PALETTE_DAY);
+	if (hour == 19)
+		gwin->set_palette(PALETTE_DUSK);
+	if (hour == 21)
+		gwin->set_palette(PALETTE_NIGHT);
+	}
+
+/*
  *	Animation.
  */
 
@@ -37,14 +57,7 @@ void Game_clock::handle_event
 			hour -= 24;
 			day++;
 			}
-		if (hour == 5)
-			gwin->set_palette(PALETTE_DAWN);
-		if (hour == 6)
-			gwin->set_palette(PALETTE_DAY);
-		if (hour == 19)
-			gwin->set_palette(PALETTE_DUSK);
-		if (hour == 21)
-			gwin->set_palette(PALETTE_NIGHT);
+		Set_palette(gwin, hour);
 		if (hour%3 == 0)	// New 3-hour period?
 					// Update NPC schedules.
 			gwin->schedule_npcs(hour/3);
@@ -65,6 +78,7 @@ void Game_clock::fake_next_period
 	minute = 0;
 	hour = ((hour/3 + 1)*3)%24;
 	Game_window *gwin = Game_window::get_game_window();
+	Set_palette(gwin, hour);
 	gwin->schedule_npcs(hour/3);
 	cout << "The hour is now " << hour << '\n';
 	}
