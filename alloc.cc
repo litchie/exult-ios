@@ -4,6 +4,10 @@
 
 
 #ifdef WANT_ALTERNATE_ALLOCATOR
+#ifdef POISON_ALLOCATED_BLOCKS
+#undef INITIALISE_ALLOCATED_BLOCKS
+#define INITIALISE_ALLOCATED_BLOCKS 0xf1
+#endif
 
 void	*operator new(size_t n)
 {
