@@ -237,12 +237,12 @@ void Combat_schedule::approach_foe
 		}
 	PathFinder *path = new Astar();
 					// Try this for now:
-	Monster_pathfinder_client cost(npc, max_reach, opponent);
+	Monster_pathfinder_client cost(npc, max_range, opponent);
 	if (!path->NewPath(pos, opponent->get_abs_tile_coord(), &cost))
 		{			// Failed?  Try nearest opponent.
 		failures++;
 		opponent = find_foe(Actor::nearest);
-		Monster_pathfinder_client cost(npc, max_reach, opponent);
+		Monster_pathfinder_client cost(npc, max_range, opponent);
 		if (!opponent || !path->NewPath(
 				pos, opponent->get_abs_tile_coord(), &cost))
 			{
@@ -310,9 +310,15 @@ static int Swap_weapons
 
 void Combat_schedule::start_strike
 	(
+	Rectangle& npcrect, 
+	Rectangle& opprect	// Npc, opponent rectangles.
 	)
 	{
-	if (projectile_shape)		// Firing?
+					// Close enough to strike?
+	if (strike_range && (!projectile_range ||
+		npcrect.enlarge(strike_range).intersects(opprect)))
+		state = strike;
+	else
 		{
 		Game_object *aobj;
 		if (ammo_shape &&
@@ -326,9 +332,14 @@ void Combat_schedule::start_strike
 			npc->start(200, 500);
 			return;
 			}
+		Rectangle foot = npc->get_footprint();
 		Tile_coord pos = npc->get_abs_tile_coord();
-		if (!Fast_pathfinder_client::is_straight_path(pos,
-					opponent->get_abs_tile_coord()))
+		Tile_coord opos = opponent->get_abs_tile_coord();
+		if (opos.tx < pos.tx)	// Going left?
+			pos.tx = foot.x;
+		if (opos.ty < pos.ty)	// Going north?
+			pos.ty = foot.y;
+		if (!Fast_pathfinder_client::is_straight_path(pos, opos))
 			{		// Blocked.  Find another spot.
 			pos.tx += rand()%7 - 3;
 			pos.ty += rand()%7 - 3;
@@ -338,8 +349,6 @@ void Combat_schedule::start_strike
 			}
 		state = fire;		// Clear to go.
 		}
-	else
-		state = strike;
 	cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
 	int dir = npc->get_direction(opponent);
 	char frames[12];		// Get frames to show.
@@ -354,7 +363,7 @@ void Combat_schedule::start_strike
 	}
 
 /*
- *	Set weapon 'max_reach' and 'ammo'.
+ *	Set weapon 'max_range' and 'ammo'.
  */
 
 void Combat_schedule::set_weapon_info
@@ -363,13 +372,29 @@ void Combat_schedule::set_weapon_info
 	{
 	int points;
 	Weapon_info *info = npc->get_weapon(points, weapon_shape);
-	projectile_shape = info ? info->get_projectile() : 0;
-	ammo_shape = info ? info->get_ammo_consumed() : 0;
+	if (!info)
+		{
+		projectile_shape = ammo_shape = 0;
+		projectile_range = strike_range = 0;
+		is_thrown = false;
+		}
+	else
+		{
+		projectile_shape = info->get_projectile();
+		ammo_shape = info->get_ammo_consumed();
+		strike_range = info->get_striking_range();
+		projectile_range = info->get_projectile_range();
+		is_thrown = info->is_thrown();
+		}
+	max_range = projectile_range > strike_range ? projectile_range
+					: strike_range;
+#if 0
 					// Not shooting?
 	if (!projectile_shape)
-		max_reach = 1;		// For now.
+		max_range = 1;		// For now.
 	else
-		max_reach = 20;		// Guessing.
+		max_range = 20;		// Guessing.
+#endif
 	}
 
 /*
@@ -441,6 +466,23 @@ static int Use_ammo
 	}
 
 /*
+ *	Does this weapon come back?
+ */
+
+static bool Boomerangs
+	(
+	int shapenum
+	)
+	{
+	if (shapenum == 552 ||		// Magic axe.
+	    shapenum == 605 ||		// Boomerang.
+	    shapenum == 557)		// Juggernaut hammer.
+		return true;
+	else
+		return false;
+	}
+
+/*
  *	Previous action is finished.
  */
 
@@ -470,15 +512,22 @@ void Combat_schedule::now_what
 			return;		// Just go dormant.
 		state = approach;	// FALL THROUGH.
 	case approach:
-		if (opponent && Get_tiles(npc).enlarge(max_reach).intersects(
-						Get_tiles(opponent)))
-					// Close enough.  ++++Need to parry??
-			start_strike();	// Start strike animation, for now.
-		else
-			approach_foe();
+		if (opponent)
+			{
+			Rectangle npctiles = Get_tiles(npc),
+				  opptiles = Get_tiles(opponent);
+			Rectangle wtiles = npctiles;
+			if (wtiles.enlarge(max_range).intersects(opptiles))
+				{	// Close enough.  ++++Need to parry??
+					// Start strike animation.
+				start_strike(npctiles, opptiles);	
+				break;
+				}
+			}
+		approach_foe();
 		break;
 	case strike:			// He hasn't moved away?
-		if (Get_tiles(npc).enlarge(max_reach).intersects(
+		if (Get_tiles(npc).enlarge(strike_range).intersects(
 						Get_tiles(opponent)))
 			{
 			int dir = npc->get_direction(opponent);
@@ -493,8 +542,23 @@ void Combat_schedule::now_what
 		break;
 	case fire:			// Range weapon.
 		{
-		int ashape = !ammo_shape ? projectile_shape
-				: Use_ammo(npc, ammo_shape, projectile_shape);
+		int ashape = 0;
+		if (is_thrown)		// Throwing the weapon?
+			{
+			if (Boomerangs(weapon_shape))
+				ashape = weapon_shape;
+			else if (npc->remove_quantity(1, weapon_shape,
+					c_any_qual, c_any_framenum) == 0)
+				{
+				ashape = weapon_shape;
+				set_weapon_info();
+				}
+			}
+		else			// Ammo required?
+			ashape = ammo_shape ? Use_ammo(
+					npc, ammo_shape, projectile_shape)
+				: (projectile_shape ? projectile_shape
+					: weapon_shape);
 		if (ashape > 0)
 			gwin->add_effect(new Projectile_effect(npc, opponent,
 				ashape, weapon_shape));

@@ -1,3 +1,8 @@
+2001-02-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Fixed bug where monsters weren't attacking.
+	* Weapons:  Guessing at ranges.  Dragon's breath works now.
+
 2001-02-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes, etc.:  Figured out more info. about weapons.
