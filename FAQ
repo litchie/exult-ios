@@ -1,21 +1,22 @@
 ExultF.A.Q. (frequently asked questions)
-last changed: 19 July 2001(GMT)
+last changed: 10 August 2001(GMT)
 
-A html version can be found at http://exult.sourceforge.net/faq.shtml
+A html version can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 19 July 2001
+0.1. - 10 August 2001
+0.2. - 19 July 2001
 
 1. Introduction
 1.1. Why is it called Exult - what is the meaning of this name?
 1.2. Is Exult free ?
 1.3. Does Origin support Exult?
 1.4. Will Exult support other Ultimas?
-1.5. Where do I find Exult?
-1.6. What is a snapshot? Are these screen shots or what?
-1.7. How do I compile a source code snapshot under Linux?
-1.8. How do I compile a source code snapshot under Win 9x?
+1.5. Will there be a multiplayer Exult?
+1.6. Where do I find Exult?
+1.7. What is a snapshot? Are these screenshots or what?
+1.8. How do I compile a source code snapshot for my OS?
 1.9. What is the latest version of Exult?
 1.10. On what platform does Exult run?
 
@@ -48,13 +49,14 @@ A html version can be found at http://exult.sourceforge.net/faq.shtml
 4.7. What's next?
 4.8. What's with this client/server stuff?
 
-5. Bugs, known issues, and not yet implemented features
+5. Bugs, known issues and not yet implemented features
 5.1. Bugs
-5.2. Known Issues
-5.3. Not yet implemented
+5.2. How do I submit a proper bug report?
+5.3. Known Issues
+5.4. Not yet implemented
 
-6. Questions and Answers, Bugreports
-6.1. How can I get answers concerning Ultima 7/Exult? Where should I send Bugreports?
+6. Questions and Answers
+6.1. How can I get answers concerning Ultima 7/Exult?
 6.2. How do I contact the author of this FAQ?
 
 7. Links and Thanks
@@ -65,7 +67,19 @@ A html version can be found at http://exult.sourceforge.net/faq.shtml
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 19 July 2001
+0.1. - 10 August 2001
+* 1.3. Does Origin support Exult? noted praise from LB and Ken Demarest.
+* 1.5. Will there be a multiplayer Exult? This gets asked quite often.
+* 1.7. What is a snapshot? Are these screenshots or what? added some more information.
+* 1.8. How do I compile a source code snapshot for my OS? made this gnereic for all the OS'.
+* 1.10. On what platform does Exult run? added OSX.
+* 2.4. Do the Add-Ons work? reported both as bug-free.
+* 3.6. Any other improvements/features? added the status bars.
+* 5.2. How do I submit a proper bug report? not that anyone reads the FAQ anyway. But it should get all the alpha testers on the right track.
+
+
+
+0.2. - 19 July 2001
 * With the updated Documentation parts of the FAQ are no longer necessary and thus left out. So see the Documentation for all your configuration problems
 
 
@@ -89,41 +103,42 @@ Exult is more than free: it's Free (notice the caps). Exult is released under th
 1.3. Does Origin support Exult?
 First of all, Origin has been owned by EA for a long time now and from recent developements it seems that Origin only exists now to maintain Ultima Online. Furthermore, Origin and/or people that worked for Origin claim that the source code for Ultima 7 (BG/SI) has been lost for some time. So there is no chance for the Exult team to have a look at the actual code.
 Also the team tried to contact some people from Origin earlier but got no positive or negative response on the Exult project. So far it seems that both Origin and EA have decided to ignore Exult.
+On the other hand former Origin employees contacted the team and congratulated the team on their effort. Most noticeable are Lord British himself and Ken Demarest (Programming Manager of Ultima 7)(hint:spell his name backwards).
 
 
 1.4. Will Exult support other Ultimas?
 Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any other Ultima nor do members of the team plan to develop something similar. The reasons for this are that no other Ultima is similar to Ultima 7 in the internal workings and also the team is quite sick of reverse engineering a game allready.
 
 
-1.5. Where do I find Exult?
-The latest official version is found on http://exult.sourceforge.net/ Daily snapshots of the Win32 binary and of the CVS source tree can be found at http://exult.on.openave.net/
+1.5. Will there be a multiplayer Exult?
+No.
+
+Jeff on the Forum:
+The question is 'why?'. I continue working on Exult, in large part, because nobody makes games like Ultima7 anymore. While I think a multi-player game would be technically interesting, I don't see the need. There are lots of them already, and many experienced people working on new ones.
+Note however that Exult is open source. If you want a multiplayer U7 no one holds you back to code it in.
 
 
-1.6. What is a snapshot? Are these screen shots or what?
-The snapshot is the newest source code of the program. It is updated almost daily, sometimes twice a day. There is information on how to build your own binary of the source but there is also the newest pre-compiled Windows binary.
+1.6. Where do I find Exult?
+The latest official version is found on http://exult.sourceforge.net/ Daily snapshots of the Win32 binary and of the CVS source tree can be found at http://exult.sourceforge.net/download.php
 
 
-1.7. How do I compile a source code snapshot under Linux?
-1. Install the latest version of SDL (http://www.libsdl.org)
-2. Extract the Exult source code archive to ~/exult: unzip exult.zip -d ~
-3. Create a fresh install of U7. I'll assume that you've installed U7 in ~/ultima7
-4. Run autogen.sh to create a configure script, then compile Exult: cd ~/exult; chmod u+x autogen.sh; ./autogen.sh; ./configure; make
-5. Install Exult and the Exult data file: cp exult ~/ultima7; mkdir ~/ultima7/data; cp ./data/exult.flx ~/ultima7/data
-6. Run Exult: cd ~/ultima7; ./exult
+1.7. What is a snapshot? Are these screenshots or what?
+Bugs and not yet implemented features in Exult get fixed almost daily in the code. A release is very time consuming that's why there are so few.
+The snapshot is the newest source code of the program. It is updated almost daily, sometimes twice a day. There is information on how to build your own binary in the source but there is also the newest pre-compiled Windows binary. If you there is no new one this means that either there were no changes to the code or the source failed to compile.
+Also this FAQ mainly addresses the snapshots as people use them and ask question.
 
 
-
-1.8. How do I compile a source code snapshot under Win 9x?
-The source code snapshots contain a file called "README.win32" that explains everything.
+1.8. How do I compile a source code snapshot for my OS?
+The source code snapshots contain a file called "README.OS" (like Readme.win32, Readme.MacOS) that explains everything.
 
 
 1.9. What is the latest version of Exult?
-The current official release is V0.93 Alpha4. See also 1.5. to learn where to get the latest version.
+The current official release is V0.93 Alpha4. See also 1.6. to learn where to get the latest version.
 To find out which version you are running, press 'v' while in game.
 
 
 1.10. On what platform does Exult run?
-Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT/2000).
+Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS, OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT/2000).
 
 
 
@@ -141,7 +156,7 @@ V0.91 Alpha2 adds fixes for the french version, which should work now. No work h
 
 
 2.3. How about Serpent Isle?
-The team is working on it. It is not yet fully playable but you can walk around, talk to some people, finish some quests... Plotwise you will get quite far but you certainly won't be able to play through it yet.
+The team is working on it. It is not yet fully playable but you can walk around, talk to people, finish a lot of quests... Plotwise you will get quite far but you certainly won't be able to play through it yet.
 Old quotes on this topic from the time when SI wasn't playable at all in Exult.
 
 Colourless:
@@ -152,7 +167,7 @@ My feelings about SI are the same as Colourless, who has done all the work so fa
 
 
 2.4. Do the Add-Ons work?
-"Forge of Virtue" (Add-On to Black Gate) is supported. Even though SI is not yet fully running the same holds true for "The Silver Seed".
+"Forge of Virtue" (Add-On to Black Gate) and the "The Silver Seed" (Add-On to Serpent Isle) are bug-free now.
 
 
 2.5. Can you play through U7 yet?
@@ -198,7 +213,8 @@ Recently Ryan added paperdoll support in Black Gate. Though it is still buggy (s
 
 
 3.6. Any other improvements/features?
-Since the Alpha 4 release a new game menu was added with an improved sound settings box and a very much improved (awesome) savegame box. This allows you much more savegames than the original (you should run out of disc space before you run out of savegame slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The game menu is opened via 'Esc' and the save game box is opened either via the game menu or the 's' key.
+Since the Alpha 4 release a new game menu was added with improved Audio and Video Options boxes (the Gameplay Options don't work yet) and a very much improved (awesome)savegame box. This allows you much more savegames than the original (you should run out of disc space before you run out of savegame slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The game menu is opened via 'Esc' and the save game box is opened either via the game menu or the 's' key.
+Post Alpha 4 the team added status bars to the game. Press 'r' while playing to see it.
 In Exult, you can still move your party even if there is a box/body/stats open/on. In the original, the world was kind of frozen. Now it is only frozen if you hit the 't' or 's' key.
 
 
@@ -284,12 +300,23 @@ Also, I (Jeff) wanted to get a little experience programming with sockets:-)
 
 --------------------------------------------------------------------------------
 
-5. Bugs, known issues, and not yet implemented features
+5. Bugs, known issues and not yet implemented features
 5.1. Bugs
 To see a list of open bugs and bugreports go to http://sourceforge.net/bugs/?group_id=2335
 
 
-5.2. Known Issues
+5.2. How do I submit a proper bug report?
+1. Read the Documentation and this FAQ to see if that is not allready covered and you have all set up correctly.
+2. Before you report a bug to the bug tracker please try the latest snapshot. If the bug still occurs make sure that no one else allready reported the bug.
+3. If you are not a sourceforge member please include your e-mail address this is important so we can get back to you. If you are a sourceforge member please log in before submitting a bug.
+4. Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more sense. Sadly the space for the topics is limited. Explain the topic in "Detailed Description".
+5. State which Operating System you use (Windows 9X, Linux, ...).
+6. Please include a savegame (use common sense if it is really needed). You will find those in the game directories you put in the exult.cfg. They are called exult**bg.sav (** is a number) for BG and exult**si.sav for SI. Zip it (important as Sourceforge seems to have a size limit). As some parts of the game may require you to complete other quests or stuff before you get to the bug you want to report it's much easier for the team to look at the problem (speeds the process up a bit as they are much more likely you take a look at the problem this way).
+
+So if you want to have a bug fixed follow these steps!
+
+
+5.3. Known Issues
 * Movement is sometimes jerky or slow.
 * We don't know what all the data in 'weapons.dat' and 'ammo.dat' means, so hit points and damage don't work as well as in the original game.
 * Sound effects in SI are sometimes odd with the wave pack as some sounds were coded in Exult to correspond to the sfx number in BG. This is a bug and will be addressed in due time.
@@ -297,22 +324,20 @@ To see a list of open bugs and bugreports go to http://sourceforge.net/bugs/?gro
 * If you run a resolution higher than the original (320x200) some NPCs that are further away from the Avatar may seem to disappear and reappear when you get away or closer to them.
 * With scalers enabled you might encounter slow downs of the game. The team is working on this right now and it is already a lot faster.
 * The speech in the intro is out of synch with the lips animations. But now it matches the speed of the text.
-* There are reported problems with digital sound effects or speech when using Vortex series sound cards under Win9x/ME. It's not sure if this is a driver or Exult issue.
+* There are reported problems with digital sound effects or speech when using Vortex series sound cards (like the Diamond MX 300) under Win9x/ME. Exult is triggering a bug in the drivers. No workaround for now.
 
 
 
-5.3. Not yet implemented
+5.4. Not yet implemented
+A few magic spells don't work yet.
 
-				A few magic spells don't work yet.
-			
 
 
 --------------------------------------------------------------------------------
 
-6. Questions and Answers, Bugreports
-6.1. How can I get answers concerning Ultima 7/Exult? Where should I send Bugreports?
+6. Questions and Answers
+6.1. How can I get answers concerning Ultima 7/Exult?
 The best way to get answers to questions is to go to the Online discussion forum at: http://exult.sourceforge.net/forum/
-The best way to submit bugreports is to use Sourceforge's bug database at: http://sourceforge.net/bugs/?group_id=2335
 To get answers concerning Ultima 7 in general go to the Ultima newsgroup: news://rec.games.computer.ultima.series
 Or go to the Ultima Dragons homepage http://www.udic.org and find your way from there (this is an online Ultima fanclub)
 Some Exult developers like to hang out on IRC on irc.openprojects.net, channel #exult.
@@ -327,7 +352,7 @@ This FAQ is maintained by Dominus Dragon of the UDIC aka Dominik Reichardt. Feel
 
 7. Links and Thanks
 7.1. Important Links
-Exult homepage at http://exult.sourceforge.net/ Daily code snapshot at http://exult.on.openave.net/ Message board at http://exult.sourceforge.net/forum/ Bugreports to http://sourceforge.net/bugs/?group_id=2335
+Exult homepage at http://exult.sourceforge.net/ Daily code snapshot at http://exult.sourceforge.net/download.php Message board at http://exult.sourceforge.net/forum/ Bugreports to http://sourceforge.net/bugs/?group_id=2335
 
 
 7.2. Thanks

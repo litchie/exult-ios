@@ -1,3 +1,10 @@
+2001-08-10  Dominik Reichardt <gigdr@tesionmail.de>
+	* FAQ and docs/faq/exult_faq.xml: updated FAQ
+	* docs/faq/faq_text.xsl: link to html FAQ updated 
+	* docs/readme/makefile.*: generate docs.dat instead of doc.dat
+	* README and docs/readme/readme.xml: Updated with MacOS midi and Status bar
+	* docs/readme/*.xsl: some changes
+
 2001-08-09  Max Horn <max@quendi.de>
 	* audio/midi_drivers/mac_midi.cc: channel pan/volume; tempo; fixed note off
 	  recognition; fixed polyphony calculation; dealloc the midi event list properly
