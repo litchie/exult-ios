@@ -84,7 +84,12 @@ void Game_window::restore_gamedat
 					// Watch for names ending in '.'.
 		if (fname[namelen - 1] == '.')
 			fname[namelen - 1] = 0;
+#ifdef MACOS
+		ofstream out;
+		U7open(out, fname);
+#else
 		ofstream out(fname, ios::out + ios::trunc + ios::binary);
+#endif
 					// Now read the file.
 		char *buf = new char[len];
 		in.read(buf, len);
