@@ -1,6 +1,6 @@
 //-*-Mode: C++;-*-
 /*
-Copyright (C) 2000  Dancer A.L Vesperman
+Copyright (C) 2000  Ryan Nunn
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -17,44 +17,37 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _MIDI_driver_forked_player_h_
-#define _MIDI_driver_forked_player_h_
+#ifndef _MIDI_driver_win_midiout_h_
+#define _MIDI_driver_win_midiout_h_
 
 #if (__GNUG__ >= 2) && (!defined WIN32)
 #  pragma interface
 #endif
 
+#ifdef WIN32
+
 #if !AUTOCONFIGURED
-#include "../../autoconfig.h"
+#include "../autoconfig.h"
 #endif
 
-#include <vector>
-#include <sys/types.h>
-#include "SDL_mapping.h"
-#include <SDL_audio.h>
-#include "Flex.h"
-#include "Table.h"
-#include "Mixer.h"
 #include "Midi.h"
-#if HAVE_LIBKMIDI
-#include <libkmid.h>
-#endif
+#include "xmidi.h"
+#include "SDL_syswm.h"
+#include "mmsystem.h"
 
-
-class	forked_player	:	virtual public MidiAbstract
+class	Windows_MidiOut : virtual public MidiAbstract
 {
-	bool	repeat_;
 public:
-	virtual void	start_track(const char *,bool repeat);
-	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat) { }
-	virtual void	stop_track(void);
-	virtual	bool	is_playing(void);
-	virtual const	char *copyright(void);
+	virtual void start_track(const char *,bool repeat) { }
+	virtual void start_track(midi_event *evntlist, int ppqn, bool repeat);
+	virtual void stop_track(void);
+	virtual bool is_playing(void);
+	virtual const char *copyright(void);
 
-	forked_player();
-	virtual ~forked_player();
-private:
-	pid_t	forked_job;
+	Windows_MidiOut();
+	virtual ~Windows_MidiOut();
 };
+
+#endif
 
 #endif
