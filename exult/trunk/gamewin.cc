@@ -51,8 +51,8 @@ Game_window::Game_window
 	    tqueue(new Time_queue()), clock(tqueue),
 		npc_prox(new Npc_proximity_handler(this)),
 	    main_actor(0),
-	    conv_choices(0),
-	    main_actor_inside(0), mode(intro), showing_item(0), npcs(0),
+	    conv_choices(0), texts(0),
+	    main_actor_inside(0), mode(intro), npcs(0),
 	    shapes(SHAPES_VGA),
 	    faces(FACES_VGA),
 	    gumps(GUMPS_VGA)
@@ -844,11 +844,25 @@ void Game_window::paint
 		int w = get_width() - x, h = get_height() - y;
 		win->draw_text_box(font, "Welcome to EXULT V 0.10, a free RPG game engine.\n\nCopyright 2000 J. S. Freedman\nGraphics copyrighted by Origin\nText rendered by FreeType", x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
 		}
-	if (showing_item)		// ID'ing an item?
-		win->draw_text(font12, showing_item, showing_rect.x,
-							showing_rect.y);
+					// Draw text.
+	for (Text_object *txt = texts; txt; txt = txt->next)
+		paint_text(txt);
 	win->clear_clip();
 	painted = 1;
+	}
+
+/*
+ *	Paint a text object.
+ */
+
+void Game_window::paint_text
+	(
+	Text_object *txt
+	)
+	{
+	win->draw_text(font12, txt->msg, 
+			(txt->cx - chunkx)*chunksize + txt->sx*tilesize,
+		        (txt->cy - chunky)*chunksize + txt->sy*tilesize);
 	}
 
 /*
@@ -1238,20 +1252,48 @@ void Game_window::show_items
 					// Show name.
 		char *item_name = item_names[obj->get_shapenum()];
 		if (item_name)
-			{		// Just do the first one found.
-			showing_item = item_name;
-			showing_rect.x = x;
-			showing_rect.y = y;
-			showing_rect.w = 8 + win->get_text_width(
-							font12, item_name);
-			showing_rect.h = 8 + win->get_text_height(font12);
-					// Clip to screen.
-			showing_rect = clip_to_win(showing_rect);
-			paint(showing_rect.x, showing_rect.y,
-				showing_rect.w, showing_rect.h);
-			return;
+			{
+					// Stagger if more than 1.
+			int tx = x + i*win->get_text_width(font12, " ");
+			int ty = y + i*win->get_text_height(font12);
+			Text_object *txt = new Text_object(item_name,
+				chunkx + tx/chunksize, chunky + ty/chunksize,
+				(tx%chunksize)/tilesize,
+				(ty%chunksize)/tilesize,
+				8 + win->get_text_width(font12, item_name),
+				8 + win->get_text_height(font12));
+					// Draw it.
+			paint_text(txt);
+					// Insert into chain.
+			txt->next = texts->next;
+			txt->prev = 0;
+			if (txt->next)
+				txt->next->prev = txt;
+			texts = txt;
+			timeval curval;	// Show for a couple seconds.
+			gettimeofday(&curval, 0);
+			curval.tv_sec += 2;
+			tqueue->add(curval, txt, (long) this);
 			}
 		}
+	}
+
+/*
+ *	Remove a text item from the chain and delete it.
+ */
+
+void Game_window::remove_text
+	(
+	Text_object *txt
+	)
+	{
+	if (txt->next)
+		txt->next->prev = txt->prev;
+	if (txt->prev)
+		txt->prev->next = txt->next;
+	else				// Head of chain.
+		texts = txt->next;
+	delete txt;
 	}
 
 /*
