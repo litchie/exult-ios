@@ -268,6 +268,7 @@ void Game::scroll_text(vector<char *> *text)
 	int startline = 0;
 	unsigned int maxlines = text->size();
 	bool looping = true;
+	int next_time = SDL_GetTicks() + 200;
 	while(looping) {
 		int ypos = starty;
 		int curline = startline;
@@ -286,7 +287,9 @@ void Game::scroll_text(vector<char *> *text)
 			}
 		} while (ypos<endy);
 		pal.apply();
-		looping = looping && !wait_delay(120);
+		while (next_time > SDL_GetTicks());
+		next_time += 120;
+		looping = looping && !wait_delay(0);
 		if(!looping)
 			pal.fade_out(30);
 		starty --;
