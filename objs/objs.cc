@@ -841,8 +841,8 @@ string Game_object::get_name
 
 
 	} else if (Game::get_game_type() == SERPENT_ISLE) {
-		//TODO: yourself, oilskin
-		//TODO: Dave, >= text.flx nr. 1502
+		//TODO: yourself, oilskin, broken glass, throne
+		//TODO: Dave, >= text.flx nr. 1540
 		
 		switch (shnum)			// More special cases!
 		{
@@ -940,6 +940,82 @@ string Game_object::get_name
 				name = item_names[0x5dd];
 			else if (frnum == 6)
 				name = item_names[0x5da];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x390:         // Acid
+			if (frnum == 24)
+				name = item_names[0x5de];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x31F:        // Body parts
+			name = item_names[0x5df + frnum];
+			break;
+		case 0x258:        // Bottles
+			switch (frnum) {
+			case 1:
+				name = item_names[0x5f2]; // wine decanter
+				break;
+			case 9:
+				name = item_names[0x5f3]; // fawnish ale
+				break;
+			case 16:
+				name = item_names[0x5f4]; // ice wine
+				break;
+			case 17:
+				name = item_names[0x5f5]; // vintage wine
+				break;
+			case 18:
+				name = item_names[0x5f6]; // wineskin
+				break;
+		    case 20:
+				name = item_names[0x5f7]; // everlasting goblet
+				break;
+			default:
+				name = item_names[shnum];
+			}
+			break;
+		case 0x1df:      // claw + gwani amulet
+			name = item_names[0x5f8 + frnum/2];
+			break;
+		case 0x11d:      // brush
+			if (frnum == 6)
+				name = item_names[0x5fa];
+			else
+				name = item_names[shnum];
+			break;
+#if 0
+			// probably wrong
+		case 0x222:      // broken dish
+			switch(frnum) {
+			case 4: case 6: case 7: case 8: case 9:
+			case 11: case 12: case 14: case 15:
+				name = item_names[0x5fb];  // broken glass
+			default:
+				name = item_names[shnum];
+			}
+			break;
+#endif
+#if 0
+			// not sure
+		case 0x124:      // seat
+			if (frnum == 17 || frnum == 18 || frnum == 21 || frnum == 22)
+				name = item_names[0x5fc];
+			else
+				name = item_names[shnum];
+#endif
+		case 0x320:      // chest
+			if (frnum == 4 || frnum == 5)
+				name = item_names[0x5fd];
+			else if (frnum == 6 || frnum == 7)
+				name = item_names[0x5fe];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x0e3:      // cloak
+			if (frnum <= 4)
+				name = item_names[0x5ff + frnum];
 			else
 				name = item_names[shnum];
 			break;
