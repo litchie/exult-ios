@@ -141,7 +141,7 @@ void UCData::disassamble()
 
 			if(output_ucz())
 			{
-				_funcs[i]->parse_ucs(_funcmap);
+				_funcs[i]->parse_ucs(_funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics));
 				_funcs[i]->output_ucs(cout, _funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), false);
 				_func_printed=true;
 			}

@@ -192,13 +192,13 @@ class UCFunc
 		void output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, unsigned int indent);
 		void output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, const map<unsigned int, string> &intrinsics, unsigned int);
 		
-		void parse_ucs(const FuncMap &funcmap);
+		void parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &intrinsics);
 		void parse_ucs_pass1(vector<UCNode *> &nodes);
 		void parse_ucs_pass1a(vector<UCNode *> &nodes);
-		void parse_ucs_pass2a(vector<GotoSet> &gotoset, const FuncMap &funcmap);
+		void parse_ucs_pass2a(vector<GotoSet> &gotoset, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics);
 		vector<UCc *> parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current,
 		                               vector<pair<UCc *, bool> > &vec, unsigned int opsneeded,
-		                               const FuncMap &funcmap);
+		                               const FuncMap &funcmap, const map<unsigned int, string> &intrinsics);
 
 //	private:
 	
