@@ -929,6 +929,7 @@ Usecode_value Usecode_machine::find_nearby
 	)
 	{
 	Game_object *obj = get_item(objval);
+	//++++++++parm[0] may be a location (tx, ty, tz,...).
 	if (!obj)
 		return Usecode_value(0, 0);
 	Vector vec;			// Gets list.
@@ -1011,6 +1012,7 @@ Usecode_value Usecode_machine::count_objects
 	Usecode_value& frameval		// Frame (-359=any).
 	)
 	{
+	//++++++++++Got to pass qualit to count_objects()++++++++++
 	long oval = objval.get_int_value();
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
@@ -1672,7 +1674,7 @@ USECODE_INTRINSIC(count_objects)
 {
 	// How many?
 	// ((npc?-357==party, -356=avatar), 
-	//   item, quality?, frame?).
+	//   item, quality, frame (-359 = any)).
 	// Quality/frame -359 means any.
 	Usecode_value u(count_objects(parms[0], parms[1], parms[2], parms[3]));
 	return(u);
