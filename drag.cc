@@ -153,7 +153,7 @@ bool Dragging_info::start
 	if (gump)			// Remove from actual position.
 		if (obj)
 			{
-			Container_game_object *owner = gump->get_container();
+			Container_game_object *owner = gump->get_cont_or_actor(x,y);
 			if (owner)
 				readied_index = owner->find_readied(obj);
 			gump->remove(obj);
@@ -340,7 +340,7 @@ bool Dragging_info::drop
 		}
 	if (on_gump)			// Dropping on a gump?
 		{
-		if (!Check_weight(gwin, to_drop, on_gump->get_container()))
+		if (!Check_weight(gwin, to_drop, on_gump->get_cont_or_actor(x,y)))
 			return false;
 		if (!on_gump->add(to_drop, x, y, paintx, painty))
 			{
@@ -387,11 +387,11 @@ bool Dragging_info::drop
 					old_pos.tx, old_pos.ty);
 	else if (readied_index >= 0)
 					// Do 'unreadied' usecode.
-		gump->get_container()->call_readied_usecode(
+		gump->get_cont_or_actor(x,y)->call_readied_usecode(
 			gwin, readied_index, obj, Usecode_machine::unreadied);
 	if (on_gump)			// Do 'readied' usecode.
 		{
-		Container_game_object *owner = on_gump->get_container();
+		Container_game_object *owner = on_gump->get_cont_or_actor(x,y);
 		int index = owner ? owner->find_readied(obj) : -1;
 		if (index >= 0)
 			owner->call_readied_usecode(gwin, index,

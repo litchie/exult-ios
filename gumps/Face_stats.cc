@@ -457,7 +457,7 @@ int Face_stats::add
 	return (0);
 }
 
-Game_object *Face_stats::find_actor(int mx, int my)
+Container_game_object *Face_stats::find_actor(int mx, int my)
 {
 	Game_window *gwin = Game_window::get_game_window();
 

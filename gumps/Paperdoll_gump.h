@@ -244,7 +244,7 @@ public:
 	// Generic Method to check a shape
 	bool check_shape (Game_window *gwin, int px, int py, int shape, int frame, ShapeFile file);
 
-	virtual Game_object *find_actor(int mx, int my);
+	virtual Container_game_object *find_actor(int mx, int my);
 };
 
 #endif

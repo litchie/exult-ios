@@ -26,15 +26,14 @@
 #include "vec.h"
 #include "flags.h"
 #include <string>	// STL string
+#include <iostream>
 
-class ifstream;
 class Map_chunk;
 class Chunk_terrain;
 class Map_patch_collection;
 class Ireg_game_object;
 class Egg_object;
 class Shape_info;
-class ifstream;
 class Shapes_vga_file;
 
 /*

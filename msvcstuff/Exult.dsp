@@ -505,6 +505,10 @@ SOURCE=..\gamedat.cc
 # End Source File
 # Begin Source File
 
+SOURCE=..\gamemap.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\gamerend.cc
 # End Source File
 # Begin Source File
@@ -1186,6 +1190,10 @@ SOURCE=..\game.h
 # Begin Source File
 
 SOURCE=..\gameclk.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gamemap.h
 # End Source File
 # Begin Source File
 
