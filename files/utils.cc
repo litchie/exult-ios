@@ -420,7 +420,8 @@ int U7mkdir
 {
 	string name = get_system_path(dirname);
 	cerr << "creating dir: " << name;
-#ifdef MACOSX
+#if (defined(MACOSX) || defined(BEOS))
+	// remove any trailing slashes
 	string::size_type pos = name.find_last_not_of('/');
 	if (pos != string::npos)
 	  name.resize(pos+1);
