@@ -22,6 +22,9 @@
 #include "imagewin.h"
 #include "vgafile.h"
 
+using std::cout;
+using std::endl;
+
 FontManager fontManager;
 
 /*

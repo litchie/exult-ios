@@ -17,15 +17,12 @@
 #ifndef GAME_H
 #define GAME_H
 
-#ifdef MACOS
-  #include <hashmap.h>
-#else
-  #include <hash_map>
-#endif
+#include <hash_map>
 #include <string>
 #include <vector>
 #ifdef MACOS
   #include "utils.h"
+  using Metrowerks::hash_map;
 #else
   #include "files/utils.h"
 #endif

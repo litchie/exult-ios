@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern	Configuration *config;
 
 #include <cstdio>
+#include <stdlib.h>
 #include <unistd.h>
 
 #define	TRAILING_VOC_SLOP 32
@@ -45,6 +46,12 @@ extern	Configuration *config;
   #include <sys/types.h>
 #endif
 #include <fcntl.h>
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
+using std::vector;
 
 
 //---- Audio ---------------------------------------------------------

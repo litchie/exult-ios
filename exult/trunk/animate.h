@@ -120,7 +120,7 @@ public:
 			Tile_coord(-animator->get_deltax(), 
 				   -animator->get_deltay(), 0); }
 					// Write out to IREG file.
-	virtual void write_ireg(ostream& out);
+	virtual void write_ireg(std::ostream& out);
 	};
 #endif
 

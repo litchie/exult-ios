@@ -38,6 +38,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 extern	Configuration	*config;
 
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
+
+
 void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 {
   #if DEBUG

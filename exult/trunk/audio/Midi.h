@@ -88,7 +88,7 @@ private:
 	MyMidiPlayer(const MyMidiPlayer &m) ; // Cannot call
 	MyMidiPlayer &operator=(const MyMidiPlayer &); // Cannot call
 	void    kmidi_start_track(int num,bool continuous=false);
-	vector<string>	midi_bank;
+	std::vector<std::string>	midi_bank;
 	int	current_track;
 	MidiAbstract	*midi_device;
 

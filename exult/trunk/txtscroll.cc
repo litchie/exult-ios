@@ -14,12 +14,16 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <string.h>
+#include <stdlib.h>
 #include "files/common_types.h"
 #include "files/U7file.h"
 #include "gamewin.h"
 #include "txtscroll.h"
 #include "font.h"
 #include "game.h"
+
+using std::vector;
 
 TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp)
 {

@@ -52,8 +52,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <signal.h>
 #endif
 #if USECODE_DEBUGGER
-#include <algo.h>       // STL function things
+#include <algorithm>       // STL function things
 #endif
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::istream;
+using std::ifstream;
+using std::ofstream;
+using std::ios;
+using std::dec;
+using std::hex;
+using std::setfill;
+using std::setw;
+using std::string;
+using std::vector;
 
 
 // External globals..
@@ -65,7 +79,7 @@ extern Mouse *mouse;
 extern unsigned char quitting_time;
 
 #if USECODE_DEBUGGER
-vector<int> intrinsic_breakpoints;
+std::vector<int> intrinsic_breakpoints;
 
 void	initialise_usecode_debugger(void)
 {
@@ -1443,7 +1457,7 @@ Usecode_value Usecode_machine::Execute_Intrinsic(UsecodeIntrinsicFn func,const c
 	if(usecode_debugging)
 		{
 		// Examine the list of intrinsics for function breakpoints.
-		if(find(intrinsic_breakpoints.begin(),intrinsic_breakpoints.end(),intrinsic)!=intrinsic_breakpoints.end())
+		if(std::find(intrinsic_breakpoints.begin(),intrinsic_breakpoints.end(),intrinsic)!=intrinsic_breakpoints.end())
 			{
 			raise(SIGIO);	// Breakpoint
 			}

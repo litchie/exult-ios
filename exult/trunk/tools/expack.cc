@@ -3,8 +3,15 @@
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
+#include <stdlib.h>
 #include "utils.h"
 #include "databuf.h"
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ifstream;
+using std::ofstream;
 
 enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD };
 
@@ -35,7 +42,7 @@ int mac_main(int argc, char **argv);
 
 int main()
 {
-	const	mac_argc = 25;
+	const	int mac_argc = 25;
 	char	*mac_argv[mac_argc] =
 		{
 			"expack",

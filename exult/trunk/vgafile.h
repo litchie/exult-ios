@@ -146,7 +146,7 @@ public:
  */
 class Vga_file
 	{
-	ifstream file;
+	std::ifstream file;
 	DataSource *shape_source;
 protected:
 	int num_shapes;			// Total # of shapes.
@@ -172,9 +172,9 @@ public:
 		if(!r)
 			{
 #if DEBUG
-				cerr << "get_shape(" <<
+				std::cerr << "get_shape(" <<
 					shapenum << "," <<
-					framenum << ") -> NULL" << endl;
+					framenum << ") -> NULL" << std::endl;
 #endif
 			}
 		return r;

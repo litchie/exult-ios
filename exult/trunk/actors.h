@@ -108,7 +108,7 @@ protected:
 					// Force repaint of area taken.
 	int add_dirty(Game_window *gwin, int figure_rect = 0);
 					// Read from file.
-	Actor(istream& nfile, int num, int has_usecode);
+	Actor(std::istream& nfile, int num, int has_usecode);
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
@@ -262,7 +262,7 @@ public:
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
-	virtual string get_name() const;
+	virtual std::string get_name() const;
 	virtual void set_property(int prop, int val);
 	void reduce_health(int delta);	// Lose HP's and check for death.
 	virtual int get_property(int prop) const
@@ -336,9 +336,9 @@ public:
 	virtual void die();		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
 					// Don't write out to IREG file.
-	virtual void write_ireg(ostream& out)
+	virtual void write_ireg(std::ostream& out)
 		{  }
-	void write(ostream& nfile);	// Write out (to 'npc.dat').
+	void write(std::ostream& nfile);	// Write out (to 'npc.dat').
 	void set_actor_shape(); 	// Set shape based on sex and color and petra flag
 	
 	};
@@ -371,7 +371,7 @@ public:
 		: Actor(nm, shapenum, num, uc)
 		{  }
 					// Read from file.
-	Main_actor(istream& nfile, int num, int has_usecode);
+	Main_actor(std::istream& nfile, int num, int has_usecode);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 	void get_followers();		// Get party to follow.
@@ -401,7 +401,7 @@ public:
 	Npc_actor(const std::string &nm, int shapenum, int fshape = -1, 
 								int uc = -1);
 					// Read from file.
-	Npc_actor(istream& nfile, int num, int has_usecode);
+	Npc_actor(std::istream& nfile, int num, int has_usecode);
 	~Npc_actor();
 					//   Usecode tells them to.
 	Npc_actor *get_next()
@@ -500,7 +500,7 @@ public:
 		in_world_cnt++;
 		}
 					// Read from file.
-	Monster_actor(istream& nfile, int num, int has_usecode);
+	Monster_actor(std::istream& nfile, int num, int has_usecode);
 	virtual ~Monster_actor();
 					// Methods to retrieve them all:
 	static Monster_actor *get_first_in_world()
@@ -524,7 +524,7 @@ public:
 	virtual int is_monster()
 		{ return 1; }
 	virtual void die();		// We're dead.
-	void write(ostream& nfile);	// Write out (to 'monsnpc.dat').
+	void write(std::ostream& nfile);	// Write out (to 'monsnpc.dat').
 	};
 
 /*
