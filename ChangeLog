@@ -1,3 +1,7 @@
+2001-09-13  Tristan Tarrant <nadir@users.sourceforge.net>
+	* game.cc: make menu more compact when entries are missing
+	* data/quotes.txt: added a quote by Max
+
 2001-09-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* siintrinsics.h,intrinsics.cc:  Added (a guess) init_conversation().
