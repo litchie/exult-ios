@@ -36,6 +36,33 @@
 using std::cout;
 using std::endl;
 
+long Actor_action::seqcnt = 0;
+
+/*
+ *	Handle an event and check to see if we were deleted.
+ *
+ *	Output:	Delay value from handle_event (0 if we've been deleted).
+ */
+
+Actor_action::handle_event_safely
+	(
+	Actor *actor,
+	bool& deleted			// True returned if we're gone!
+	)
+	{
+	Actor_action *old_action = actor->get_action();
+	long old_seq = old_action->seq;
+					// Do current action.
+	int delay = handle_event(actor);
+	if (actor->get_action() != old_action ||
+	    old_action->seq != old_seq)
+		{
+		deleted = true;		// We've been deleted.
+		return 0;
+		}
+	deleted = false;
+	return delay;
+	}
 
 /*
  *	Set to walk from one point to another the dumb way.
@@ -491,16 +518,19 @@ int If_else_path_actor_action::handle_event
 	{
 	if (done)
 		return 0;		// Shouldn't really get here.
+	bool del;
 	int delay;
 	if (succeeded)			// Doing the success action?
 		{
-		if ((delay = success->handle_event(actor)) == 0)
+		if ((delay = success->handle_event_safely(actor, del)) == 0 &&
+		    !del)
 			done = true;
 		return delay;
 		}
 	else if (failed)
 		{
-		if ((delay = failure->handle_event(actor)) == 0)
+		if ((delay = failure->handle_event_safely(actor, del)) == 0 &&
+		    !del)
 			done = true;
 		return delay;
 		}
@@ -512,7 +542,12 @@ int If_else_path_actor_action::handle_event
 		if (failure)
 			{
 			failed = true;
-			delay = failure->handle_event(actor);
+#if DEBUG
+			cout << "Executing 'failure' path usecode" << endl;
+#endif
+			delay = failure->handle_event_safely(actor, del);
+			if (del)	// Are we gone?
+				return 0;
 			}
 		}
 	else				// Success.
@@ -520,7 +555,9 @@ int If_else_path_actor_action::handle_event
 		if (success)
 			{
 			succeeded = true;
-			delay = success->handle_event(actor);
+			delay = success->handle_event_safely(actor, del);
+			if (del)	// Are we gone?
+				return 0;
 			}
 		}
 	if (!delay)
@@ -677,12 +714,10 @@ int Sequence_actor_action::handle_event
 	{
 	if (!actions[index])		// Done?
 		return (0);
-	int old_sched_type = actor->get_schedule_type();
-	Actor_action *old_action = actor->get_action();
 					// Do current action.
-	int delay = actions[index]->handle_event(actor);
-	if (actor->get_action() != old_action ||
-	    actor->get_schedule_type() != old_sched_type)
+	bool deleted;
+	int delay = actions[index]->handle_event_safely(actor, deleted);
+	if (deleted)
 		return 0;		// We've been deleted!
 	if (!delay)
 		{
