@@ -45,6 +45,8 @@ int Game_window::start_dragging
 	dragging_mousex = x;
 	dragging_mousey = y;
 	dragging_rect = Rectangle(0, 0, 0, 0);
+	delete dragging_save;
+	dragging_save = 0;
 	Game_object *found[100];	// See what was clicked on.
 	int cnt;
 					// First see if it's a gump.
@@ -109,12 +111,6 @@ void Game_window::drag
 			(dragging ? dragging_gump->get_shape_rect(dragging)
 				  : get_gump_rect(dragging_gump))
 			: get_shape_rect(dragging);
-					// Pad more if dragging gump.
-		int pad = dragging ? 8 : 12;
-		dragging_rect.x -= pad;	// Make a little bigger.
-		dragging_rect.y -= pad;
-		dragging_rect.w += 2*pad;
-		dragging_rect.h += 2*pad;
 					// Remove from actual position.
 		if (dragging_gump)
 			if (dragging)
@@ -125,15 +121,27 @@ void Game_window::drag
 		else
 			get_objects(dragging->get_cx(), 
 				dragging->get_cy())->remove(dragging);
+		Rectangle rect = dragging_rect;
+		const int pad = 12;
+		rect.x -= pad;		// Make a little bigger.
+		rect.y -= pad;
+		rect.w += 2*pad;
+		rect.h += 2*pad;
+		rect = clip_to_win(rect);
+		paint(rect);		// Paint over obj's. area.
+					// Create buffer to backup background.
+		dragging_save = win->create_buffer(dragging_rect.w,
+							dragging_rect.h);
 		}
-	win->set_clip(0, 0, get_width(), get_height());
-	Rectangle rect = clip_to_win(dragging_rect);
-	paint(rect);			// Paint over last place shown.
+	else				// Not first time?  Restore beneath.
+		win->put(dragging_save, dragging_rect.x, dragging_rect.y);
 	int deltax = x - dragging_mousex, deltay = y - dragging_mousey;
 	dragging_mousex = x;
 	dragging_mousey = y;
 					// Shift to new position.
 	dragging_rect.shift(deltax, deltay);
+					// Save background.
+	win->get(dragging_save, dragging_rect.x, dragging_rect.h);
 	dragging_paintx += deltax;
 	dragging_painty += deltay;
 	if (dragging)
@@ -144,7 +152,6 @@ void Game_window::drag
 		dragging_gump->set_pos(dragging_paintx, dragging_painty);
 		dragging_gump->paint(this);
 		}
-	win->clear_clip();
 	}
 
 /*
@@ -173,6 +180,8 @@ void Game_window::drop_dragged
 	drop(x, y);			// Drop it.
 	dragging = 0;
 	dragging_gump = 0;
+	delete dragging_save;
+	dragging_save = 0;
 	paint();
 	}
 
