@@ -1,3 +1,8 @@
+2001-08-22  Max Horn <max@quendi.de>
+	* audio/midi_drivers/mac_midi.*: changed copyright back to "Max Horn"
+	  with consent of the team. This was done so that the code can be used
+	  for SDL_mixer, too.
+
 2001-08-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc, actions.cc: fixed compile error + warning
 
@@ -11,7 +16,7 @@
 
 2001-08-21  Max Horn <max@quendi.de>
 	* audio/Midi.cc: enabled MIDI driver on OS X
-	* audio/midi_drivers/mac_midi.* enabled MIDI driver on OS X
+	* audio/midi_drivers/mac_midi.*: enabled MIDI driver on OS X
 	
 2001-08-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: fixed Gwenno bug. (also accept NPCnums < 0x80 for bodies)
