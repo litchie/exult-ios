@@ -158,13 +158,17 @@ Egg_object::Egg_object
 	    area(Rectangle(0, 0, 0, 0)), launcher(0)
 	{
 	type = itype&0xf;
+					// Teleport destination?
+	if (type == teleport && framenum == 6)
+		type = path;		// (Mountains N. of Vesper).
 	criteria = (itype & (7<<4)) >> 4;
 	distance = (itype >> 10) & 0x1f;
 	unsigned char noct = (itype >> 7) & 1;
 	unsigned char do_once = (itype >> 8) & 1;
 					// Missile eggs can be rehatched
 	unsigned char htch = (type == missile) ? 0 : ((itype >> 9) & 1);
-	solid_area = (criteria == something_on || criteria == cached_in) ? 1 : 0;
+	solid_area = (criteria == something_on || criteria == cached_in) ? 1 
+									: 0;
 	unsigned char ar = (itype >> 15) & 1;
 	flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
@@ -609,12 +613,13 @@ void Egg_object::activate
 			break;
 			}
 		case teleport:
-			{
-			Tile_coord pos;	// Get position to jump to.
+			{		// Get position to jump to.
+			Tile_coord pos(-1, -1, -1);	
 			if (get_quality() == 255)
 				{	// Jump to coords.
 				int schunk = data1 >> 8;
-				pos = Tile_coord((schunk%12)*c_tiles_per_schunk +
+				pos = Tile_coord(
+					(schunk%12)*c_tiles_per_schunk +
 								(data2&0xff), 
 					(schunk/12)*c_tiles_per_schunk +
 								(data2>>8), 0);
@@ -623,13 +628,13 @@ void Egg_object::activate
 				{
 				Egg_object *path =
 					gwin->get_path_egg(get_quality());
-				if (!path)
-					break;
-				pos = path->get_abs_tile_coord();
+				if (path)
+					pos = path->get_abs_tile_coord();
 				}
 			cout << "Should teleport to (" << pos.tx << ", " <<
 					pos.ty << ')' << endl;
-			if (obj && (obj == gwin->get_main_actor() ||
+			if (pos.tx != -1 &&
+				obj && (obj == gwin->get_main_actor() ||
 					obj->get_party_id() >= 0))
 					// Teleport everyone!!!
 				gwin->teleport_party(pos);

@@ -2657,7 +2657,7 @@ int Main_actor::step
 		stop();
 		return (0);
 		}
-	if (poison)
+	if (poison && new_lift == 0)
 		Actor::set_flag((int) Obj_flags::poisoned);
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
@@ -3265,7 +3265,7 @@ int Npc_actor::step
 			dormant = true;	// Go dormant.
 		return (0);		// Done.
 		}
-	if (poison)
+	if (poison && new_lift == 0)
 		Actor::set_flag((int) Obj_flags::poisoned);
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
