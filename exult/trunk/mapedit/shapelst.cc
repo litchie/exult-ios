@@ -55,6 +55,8 @@ using std::cout;
 using std::endl;
 using std::strlen;
 using std::string;
+using EStudio::Prompt;
+using EStudio::Alert;
 
 std::vector<Editing_file*> Shape_chooser::editing_files;
 int Shape_chooser::check_editing_timer = -1;
