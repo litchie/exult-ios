@@ -105,6 +105,12 @@ void Game_window::read_npcs
 	catch(...)
 	{
 	}
+	if (moving_barge)		// Gather all NPC's on barge.
+		{
+		Barge_object *b = moving_barge;
+		moving_barge = 0;
+		set_moving_barge(b);
+		}
 	read_schedules();		// Now get their schedules.
 	if (!monster_info)		// Might be a 'restore'.
 		{

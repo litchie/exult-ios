@@ -112,7 +112,8 @@ inline Tile_coord Rotate90r
 	Tile_coord r = Rotate90r(obj->get_abs_tile_coord(), c);
 					// New hotspot is what used to be the
 					//   upper-right corner.
-	r.tx += ytiles;
+	r.tx = (r.tx + ytiles + c_num_tiles)%c_num_tiles;
+	r.ty = (r.ty + c_num_tiles)%c_num_tiles;
 	return r;
 	}
 
@@ -132,7 +133,8 @@ inline Tile_coord Rotate90l
 					// Rotate hot spot.
 	Tile_coord r = Rotate90l(obj->get_abs_tile_coord(), c);
 					// New hot-spot is old lower-left.
-	r.ty += xtiles;
+	r.ty = (r.ty + xtiles + c_num_tiles)%c_num_tiles;
+	r.tx = (r.tx + c_num_tiles)%c_num_tiles;
 	return r;
 	}
 
@@ -153,8 +155,8 @@ inline Tile_coord Rotate180
 	Tile_coord r = Rotate180(obj->get_abs_tile_coord(), c);
 					// New hotspot is what used to be the
 					//   upper-left corner.
-	r.tx += xtiles;
-	r.ty += ytiles;
+	r.tx = (r.tx + xtiles + c_num_tiles)%c_num_tiles;
+	r.ty = (r.ty + ytiles + c_num_tiles)%c_num_tiles;
 	return r;
 	}
 
@@ -181,7 +183,8 @@ inline Rectangle Barge_object::get_tile_footprint
 	{
 	Tile_coord pos = get_abs_tile_coord();
 	int xts = get_xtiles(), yts = get_ytiles();
-	Rectangle foot(pos.tx - xts + 1, pos.ty - yts + 1, xts, yts);
+	Rectangle foot((pos.tx - xts + 1 + c_num_tiles)%c_num_tiles, 
+		(pos.ty - yts + 1 + c_num_tiles)%c_num_tiles, xts, yts);
 	return foot;
 	}
 
@@ -194,12 +197,13 @@ inline void Barge_object::set_center
 	)
 	{
 	center = get_abs_tile_coord();
-	center.tx -= xtiles/2;
-	center.ty -= ytiles/2;
+	center.tx = (center.tx - xtiles/2 + c_num_tiles)%c_num_tiles;
+	center.ty = (center.ty - ytiles/2 + c_num_tiles)%c_num_tiles;
 	}
 
 /*
  *	See if okay to rotate.
+ +++++++++++Handle wrapping here+++++++++++
  */
 
 int Barge_object::okay_to_rotate
@@ -402,7 +406,9 @@ void Barge_object::travel_to_tile
 		Game_window *gwin = Game_window::get_game_window();
 					// Figure new direction.
 		Tile_coord cur = get_abs_tile_coord();
-		int ndir = Get_direction4(cur.ty - dest.ty, dest.tx - cur.tx);
+		int dy = Tile_coord::delta(cur.ty, dest.ty),
+		    dx = Tile_coord::delta(cur.tx, dest.tx);
+		int ndir = Get_direction4(-dy, dx);
 		face_direction(ndir);
 		if (!in_queue())	// Not already in queue?
 			gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
