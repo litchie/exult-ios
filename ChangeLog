@@ -1,6 +1,11 @@
 2001-01-25  Tristan Tarrant <nadir@users.sourceforge.net>
 	mapedit/*: more work.
 
+2001-01-25  Jeff Freedman  <jeff@amy.nerble.net>
+	* SI:  Fixed some usecode assignments (so Knight's test isn't so
+	broken).  Fixed dungeon rendering there too.
+	* wud.c - Give "-a" as func. # to print whole thing.
+
 2001-01-25  Tristan Tarrant <nadir@users.sourceforge.net>
 	* configure.in: check for libglade
 	* mapedit/*: general hacking resulting in a libglade'ified ExultStudio.

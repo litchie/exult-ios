@@ -232,6 +232,10 @@ void printcodeseg(FILE* f, unsigned short ds, unsigned short s,
 	free(pdata);
 }
 
+/*
+ *	Note:  func = -1 just to print header, funcnum to print it all, or
+ *		-2 for any function.
+ */
 void printfunc(FILE* f, long func, int i, const char **func_table, int funsize)
 {
 	unsigned short s, ds, funcnum;	
@@ -247,7 +251,7 @@ void printfunc(FILE* f, long func, int i, const char **func_table, int funsize)
 	if( func == -1 )
 		printf("\tFunction #%d (%04XH), offset = %08lx, size = %04x, data = %04x\n", i,
 			funcnum, off, s, ds);
-	if( funcnum == func )
+	if( funcnum == func || func == -2)
 	{
 		printf("\t\t.funcnumber\t%04XH\n", funcnum);
 		// Dump function contents
@@ -293,7 +297,10 @@ int main(int argc, char** argv)
 	if( argc > findex + 1 )
 	{
 		char* stopstr;
-		func = strtoul(argv[findex + 1], &stopstr, 16);
+		if (strcmp(argv[findex + 1], "-a") == 0)
+			func = -2;	// Print ALL functions.
+		else
+			func = strtoul(argv[findex + 1], &stopstr, 16);
 	}
 	while( ftell(f) < sz )
 	{		

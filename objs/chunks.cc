@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 #include "objs.h"
 #include "ordinfo.h"
-
+#include "game.h"
 
 using std::memset;
 
@@ -912,6 +912,16 @@ void Chunk_object_list::setup_dungeon_bits
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+					// Special SI weirdness:
+	if (Game::get_game_type() == SERPENT_ISLE &&
+					// Knight's Test dungeon:
+	    cx >= 54 && cx <= 60 && cy >= 134 && cy <= 139)
+		{			// Set whole thing.
+		if (!dungeon_bits)
+			dungeon_bits = new unsigned char[256/8];
+		memset(dungeon_bits, 0xff, 256/8);
+		return;
+		}
 	Object_iterator next(objects);
 	Game_object *each;
 	while ((each = next.get_next()) != 0)
