@@ -1,4 +1,7 @@
 2001-08-05  Max Horn <max@quendi.de>
+	* keys.cc, gumps/Gamemenu.cc: added forgotten #include "exult.h"
+
+2001-08-05  Max Horn <max@quendi.de>
 	* shapes/bodies.cc/h: moved Is_body from gamewin.cc to here
 	* bggame.cc: added missing prototypes (making compiler happy)
 	* exult.h: added, allowed to remove "extern ..." in many files
