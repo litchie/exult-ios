@@ -3501,7 +3501,7 @@ void Main_actor::switched_chunks
 		}
 	for (int y = yfrom; y <= yto; y++)
 		for (int x = xfrom; x <= xto; x++)
-			gmap->get_chunk(x, y)->setup_cache();
+			nlist->get_map()->get_chunk(x, y)->setup_cache();
 
 	// If change in Superchunk number, apply Old Style caching emulation
 	gwin->emulate_cache(olist, nlist);
