@@ -1,3 +1,8 @@
+2002-02-17  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/barge.cc (Barge_object): Recheck for boat in 'gather',
+	since it sometimes gets called before the boat is properly placed.
+
 2002-02-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc (Game_window): If XFORM.TBL doesn't exist, create

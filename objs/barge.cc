@@ -267,13 +267,15 @@ void Barge_object::gather
 	(
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
+	if (!gmap->get_chunk_safely(get_cx(), get_cy()))
+		return;			// Not set in world yet.
 	ice_raft = false;		// We'll just detect it each time.
 	objects.resize(perm_count);	// Start fresh.
 					// Get footprint in tiles.
 	Rectangle foot = get_tile_footprint();
 	int lift = get_lift();		// How high we are.
-	Game_window *gwin = Game_window::get_game_window();
-	Game_map *gmap = gwin->get_map();
 					// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
 	Rectangle tiles;
@@ -310,13 +312,12 @@ void Barge_object::gather
 				}
 			}
 		}
-					// Test landscape under center.
 	set_center();
-	if (boat == -1)			// Test for boat the first time.
+					// Test for boat.
+	Map_chunk *chunk = gmap->get_chunk_safely(
+		center.tx/c_tiles_per_chunk, center.ty/c_tiles_per_chunk);
+	if (boat == -1 && chunk != 0)
 		{
-		Map_chunk *chunk = gmap->get_chunk(
-			center.tx/c_tiles_per_chunk, 
-					center.ty/c_tiles_per_chunk);
 		ShapeID flat = chunk->get_flat(center.tx%c_tiles_per_chunk,
 						center.ty%c_tiles_per_chunk);
 		if (flat.is_invalid())
