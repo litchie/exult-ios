@@ -41,6 +41,18 @@ inline void Set_palette
 	}
 
 /*
+ *	Set palette.  Used for restoring a game.
+ */
+
+void Game_clock::set_palette
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Set_palette(gwin, hour);	// Update palette to new time.
+	}
+
+/*
  *	Increment clock.
  */
 

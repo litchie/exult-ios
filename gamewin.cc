@@ -141,7 +141,7 @@ Game_window::Game_window
 					// Clear object lists, flags.
 	memset((char *) objects, 0, sizeof(objects));
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
-	set_palette(0);			// Try first palette.
+	clock.set_palette();		// Set palette for correct time.
 	brighten(20);			// Brighten 20%.
 	}
 
@@ -797,7 +797,10 @@ int Game_window::read
 	read_npcs();			// Read in NPC's, monsters.
 	if (!usecode->read())		// Usecode.dat (party, global flags).
 		return (0);
-	return (read_gwin());		// Read our data.
+	if (!read_gwin())		// Read our data.
+		return (0);
+	clock.set_palette();		// Set palette for time-of-day.
+	return (1);
 	}
 
 /*
