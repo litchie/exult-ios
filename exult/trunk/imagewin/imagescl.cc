@@ -189,6 +189,21 @@ public:
 		{ return ((r&0x1f)<<10) | ((g&0x1f)<<5) | (b&0x1f); }
 	};
 
+
+inline void increase_area(int& x, int& y, int& w, int& h,
+			int left, int right, int top, int bottom,
+			int buf_width, int buf_height)
+{
+	x -= left; w += left+right;
+	y -= top; h += top+bottom;
+
+	if (x < 0) { w += x; x = 0; }
+	if (y < 0) { h += y; y = 0; }
+
+	if (x + w > buf_width) w = buf_width - x;
+	if (y + h > buf_height) h = buf_height - y;
+}
+
 /*
  *	Scaling methods:
  */
@@ -201,6 +216,8 @@ void Image_window::show_scaled8to16_2xSaI
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
 	Manip8to16 manip(surface->format->palette->colors,
 						scaled_surface->format);
 	Scale_2xSaI<unsigned char, uint16, Manip8to16>
@@ -218,6 +235,8 @@ void Image_window::show_scaled8to555_2xSaI
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
 	Manip8to555 manip(surface->format->palette->colors);
 	Scale_2xSaI<unsigned char, uint16, Manip8to555>
 		(ibuf->get_bits(), x, y, w, h,
@@ -234,6 +253,8 @@ void Image_window::show_scaled8to565_2xSaI
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
 	Manip8to565 manip(surface->format->palette->colors);
 	Scale_2xSaI<unsigned char, uint16, Manip8to565>
 		(ibuf->get_bits(), x, y, w, h,
@@ -250,6 +271,8 @@ void Image_window::show_scaled8to32_2xSaI
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
 	Manip8to32 manip(surface->format->palette->colors,
 						scaled_surface->format);
 	Scale_2xSaI<unsigned char, uint32, Manip8to32>
@@ -270,6 +293,8 @@ void Image_window::show_scaled8to16_SuperEagle
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
 	Manip8to16 manip(surface->format->palette->colors,
 						scaled_surface->format);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to16>
@@ -287,6 +312,8 @@ void Image_window::show_scaled8to555_SuperEagle
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
 	Manip8to555 manip(surface->format->palette->colors);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to555>
 		(ibuf->get_bits(), x, y, w, h,
@@ -303,6 +330,8 @@ void Image_window::show_scaled8to565_SuperEagle
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
 	Manip8to565 manip(surface->format->palette->colors);
 	Scale_SuperEagle<unsigned char, uint16, Manip8to565>
 		(ibuf->get_bits(), x, y, w, h,
@@ -319,6 +348,8 @@ void Image_window::show_scaled8to32_SuperEagle
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
 	Manip8to32 manip(surface->format->palette->colors,
 						scaled_surface->format);
 	Scale_SuperEagle<unsigned char, uint32, Manip8to32>
@@ -339,6 +370,8 @@ void Image_window::show_scaled8to16_bilinear
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
+
 	Manip8to16 manip(surface->format->palette->colors,
 						scaled_surface->format);
 	Scale_2xBilinear<unsigned char, uint16, Manip8to16>
@@ -356,6 +389,8 @@ void Image_window::show_scaled8to555_bilinear
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
+
 	Manip8to555 manip(surface->format->palette->colors);
 	Scale_2xBilinear<unsigned char, uint16, Manip8to555>
 		(ibuf->get_bits(), x, y, w, h,
@@ -372,6 +407,8 @@ void Image_window::show_scaled8to565_bilinear
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
+
 	Manip8to565 manip(surface->format->palette->colors);
 	Scale_2xBilinear<unsigned char, uint16, Manip8to565>
 		(ibuf->get_bits(), x, y, w, h,
@@ -388,6 +425,8 @@ void Image_window::show_scaled8to32_bilinear
 	int x, int y, int w, int h	// Area to show.
 	)
 	{
+	increase_area(x,y,w,h, 1,1,1,1, ibuf->width, ibuf->height);
+
 	Manip8to32 manip(surface->format->palette->colors,
 						scaled_surface->format);
 	Scale_2xBilinear<unsigned char, uint32, Manip8to32>
