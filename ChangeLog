@@ -1,3 +1,6 @@
+2002-01-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* tools/wuc.c, rip.c: minor bugfixes
+
 2002-01-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/:  'Groups' of shapes are starting to work, with a group
