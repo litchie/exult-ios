@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef WIN32
 #include <mmsystem.h>   //for MM_MCINOTIFY message
+#include "audio/midi_drivers/win_MCI.h"
 #endif
 
 #include "gamewin.h"
@@ -42,6 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "gumps.h"
 #include "args.h"
+
 
 Audio *audio;
 Configuration *config;
@@ -544,8 +546,11 @@ static void Handle_event
 	case SDL_SYSWMEVENT:
 //		printf("SYSWMEVENT received, %x\n", event.syswm.msg->msg);
 		if (event.syswm.msg->msg == MM_MCINOTIFY) {
-			// call repeat MIDI function here
-			cerr << "MCINOTIFY message received!\n";
+#if DEBUG
+			cerr << "MM_MCINOTIFY message received\n";
+#endif
+			((Windows_MCI*)(audio->get_midi()))->callback(event.syswm.msg->wParam, 
+							event.syswm.msg->hwnd);
 		}
 		break;
 #endif

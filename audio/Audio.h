@@ -28,8 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../autoconfig.h"
 #endif
 
-//#ifndef WIN32
-
 #include <vector>
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
@@ -67,6 +65,10 @@ public:
 //	static	const	int	persecond=2;
 //	static	const	int	buffering_unit=1024;
 
+#ifdef WIN32
+  MyMidiPlayer *get_midi() {return midi;}
+#endif
+
 private:
 	Uint8 * convert_VOC(Uint8 *,unsigned int &);
 	SDL_AudioSpec wanted,actual;
@@ -77,7 +79,7 @@ private:
 };
 
 //#else
-#if 0
+#if 0   //old pre-sound windows code
 
 class Audio {
 public:

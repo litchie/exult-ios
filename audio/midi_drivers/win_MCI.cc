@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
+//Windows-specific code
 #ifdef WIN32
 
 #include "win_MCI.h"
@@ -33,6 +34,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <stdio.h>
 
+UINT MCI_Command(LPCTSTR lpszCommand, LPTSTR lpszReturnString, 
+		 UINT cchReturn, HANDLE hWndCallBack)
+{
+  DWORD code = mciSendString(lpszCommand, lpszReturnString, cchReturn, hWndCallBack);
+  if (code) {
+    unsigned char buf[128];
+    UINT l;
+
+    mciGetErrorString(code, buf, l);
+    cerr << "MCI error code " << code << ": ";
+    cerr << buf << endl;
+  }
+  return code;
+}
+  
+
 Windows_MCI::Windows_MCI()
 {
   device_open = false;
@@ -40,9 +57,8 @@ Windows_MCI::Windows_MCI()
 
 void Windows_MCI::stop_track(void)
 {
-  int ret;
   if (device_open) {
-    ret = mciSendString("close u7midi", 0, 0, 0);
+    MCI_Command("close u7midi", 0, 0, 0);
     device_open = false;
   }
 }
@@ -54,13 +70,16 @@ Windows_MCI::~Windows_MCI(void)
 
 bool	Windows_MCI::is_playing(void)
 {
-  int ret;
   char buf[512];
 
   if (!device_open)
     return false;
 
-  ret = mciSendString("status u7midi mode", buf, 510, 0);
+  MCI_Command("status u7midi mode", buf, 510, 0);
+
+#if DEBUG
+  cerr << "MIDI status command returned: " << buf << endl;
+#endif
 
   if (strcmp(buf, "playing")==0)
     return true;
@@ -69,9 +88,8 @@ bool	Windows_MCI::is_playing(void)
 }
 
 
-void	Windows_MCI::start_track(const char *name,bool repeat)
+void Windows_MCI::start_track(const char *name,bool repeat)
 {
-  int ret;
   char buf[512];
   HWND hWnd = 0;
   SDL_SysWMinfo info;		// Get system info.
@@ -81,28 +99,69 @@ void	Windows_MCI::start_track(const char *name,bool repeat)
     SDL_GetWMInfo(&info);
 
     hWnd = info.window;
-    printf("Detected window handle %x\n", hWnd); //debugging
   }
-  //#if DEBUG
-  cerr << "Starting midi sequence with Windows_MCI" << endl;
 
+#if DEBUG
   cerr << "Stopping any running track" << endl;
-  //#endif
+#endif
   stop_track();
 
-// TODO: repeats not implemented yet
-
-// TODO: use return value
+#if DEBUG
+  cerr << "Starting midi sequence with Windows_MCI, repeat = " 
+       << (repeat?"true":"false") << endl;
+#endif
 
   //open MCI device
   sprintf(buf, "open %s type sequencer alias u7midi", name);
-  ret = mciSendString(buf, NULL, 0, 0);
+  MCI_Command(buf, NULL, 0, 0);
   device_open = true;
 
+  repeating = repeat;
+
   //start playing
-  sprintf(buf, "play u7midi"); //  repeat?"notify":"");
-  //  cerr << buf << endl;
-  ret = mciSendString(buf, 0, 0, hWnd);
+  MCI_Command("play u7midi notify", 0, 0, hWnd);
+}
+
+void Windows_MCI::callback(WPARAM wParam, HWND hWnd)
+{
+
+#if DEBUG
+  cerr << "Entering MCI_callback: ";
+  switch(wParam) {
+  case MCI_NOTIFY_ABORTED:
+    cerr << "MCI_NOTIFY_ABORTED\n";
+    break;
+  case MCI_NOTIFY_FAILURE:
+    cerr << "MCI_NOTIFY_FAILURE\n";
+    break;
+  case MCI_NOTIFY_SUCCESSFUL:
+    cerr << "MCI_NOTIFY_SUCCESFUL\n";
+    break;
+  case MCI_NOTIFY_SUPERSEDED:
+    cerr << "MCI_NOTIFY_SUPERSEDED\n";
+    break;
+  default:
+    cerr << "Unknown flag!\n";
+  }
+#endif
+  
+  if ((wParam == MCI_NOTIFY_SUCCESSFUL) && repeating) {
+    //music stopped playing, so start over
+
+#if DEBUG
+    cerr << "Starting repeated MIDI playback\n";
+#endif
+
+    MCI_Command("seek u7midi to start", 0, 0, 0);  //rewind
+    MCI_Command("play u7midi notify", 0, 0, hWnd); //play
+  } else {
+
+    //error or non-continuous playback, so ok to close MIDI device
+    if (device_open) {
+      MCI_Command("close u7midi", 0, 0, 0);
+      device_open = false;
+    }
+  }
 }
 
 const	char *Windows_MCI::copyright(void)
