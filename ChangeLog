@@ -1,3 +1,6 @@
+2001-04-18  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Makefile.cygwin: Travis' changes
+
 2001-04-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gumps/Gump.cc: fixed "ok to load?"/"ok to save?" dialog boxes.
 	* data/savegump.shp: added borders for larger resolutions
