@@ -85,7 +85,8 @@ void Palette::fade_in(int cycles)
 				fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
 				win->set_palette(fade_pal, 63);
 				win->show();
-				while (ticks >= SDL_GetTicks());
+				while (ticks >= SDL_GetTicks())
+					;
 				ticks+= 20;
 		}
 	}
@@ -99,7 +100,8 @@ void Palette::fade_out(int cycles)
 				fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
 				win->set_palette(fade_pal, 63);
 				win->show();
-				while (ticks >= SDL_GetTicks());
+				while (ticks >= SDL_GetTicks())
+					;
 				ticks+= 20;
 		}
 	}
