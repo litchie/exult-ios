@@ -11189,7 +11189,7 @@ Random
 
 	<widget>
 	  <class>GtkSpinButton</class>
-	  <name>spinbutton63</name>
+	  <name>new_shape_num</name>
 	  <width>72</width>
 	  <can_focus>True</can_focus>
 	  <climb_rate>1</climb_rate>
