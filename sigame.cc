@@ -1261,8 +1261,9 @@ bool SI_Game::new_game(Vga_file &shapes)
 	int menuy = topy+110;
 	Font *font = fontManager.get_font("MENU_FONT");
 
-	Vga_file faces_vga(FACES_VGA);
-	
+	Vga_file faces_vga;
+
+	faces_vga.load(FACES_VGA, PATCH_FACES);	
 	const int max_len = 16;
 	char npc_name[max_len+1];
 	char disp_name[max_len+2];
