@@ -40,6 +40,7 @@ binary-arch: checkroot build
 	cp desktop/*.png debian/tmp/usr/share/pixmaps
 	# Documentation
 	gzip -c README > debian/tmp/usr/doc/exult/README.gz
+	gzip -c data/README > debian/tmp/usr/doc/exult/README-flx.gz
 	gzip -c AUTHORS > debian/tmp/usr/doc/exult/AUTHORS.gz
 	gzip -c COPYING > debian/tmp/usr/doc/exult/COPYING.gz
 # Must have debmake installed for this to work. Otherwise please copy
