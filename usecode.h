@@ -315,7 +315,9 @@ public:
 		double_click = 1,
 		internal_exec = 2,	// Internal call via intr. 1 or 2.
 		egg_proximity = 3,
-		weapon = 4		// From weapons.dat.
+		weapon = 4,		// From weapons.dat.
+		readied = 5,		// Wear an item.
+		unreadied = 6		// Removed an item.
 		};
 	enum Global_flag_names {
 		did_first_scene = 0x3b,	// Went through 1st scene with Iolo.
