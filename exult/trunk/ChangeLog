@@ -1,3 +1,9 @@
+2002-09-21  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* pathfinder/*:  GetNextStep returns a 'done' flag if the tile
+	returned is the last in the path.
+	* actions.cc:  Check for last step & return 0 if so.
+
 2002-09-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucsched.cc (Usecode_script): Moved the 'no_halt' test to

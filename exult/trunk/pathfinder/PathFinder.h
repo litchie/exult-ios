@@ -65,7 +65,12 @@ public:
 	Tile_coord get_dest()
 		{ return dest; }
 	// Retrieve the coordinates of the next step on the path
-	virtual	int GetNextStep(Tile_coord& n)=0;
+	virtual	int GetNextStep(Tile_coord& n, bool& done)=0;
+	int GetNextStep(Tile_coord& n)
+		{			// If you don't care about last step.
+		bool d;
+		return GetNextStep(n, d);
+		}
 	// Set to retrieve in opposite order.
 	virtual int set_backwards()
 		{ return 0; }		// Default: Can't do it.

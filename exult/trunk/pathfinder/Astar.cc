@@ -51,12 +51,16 @@ int Astar::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *client)
  *
  *	Output:	0 if all done.
  */
-int Astar::GetNextStep(Tile_coord& n)
+int Astar::GetNextStep(Tile_coord& n, bool& done)
 {
 	if (next_index == stop)
+		{
+		done = true;
 		return (0);
+		}
 	n = path[next_index];
 	next_index += dir;
+	done = (next_index == stop);
 	return 1;
 }
 
