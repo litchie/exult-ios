@@ -64,7 +64,7 @@ inline ostream &tab_indent(const unsigned int indent, ostream &o)
 void UCFunc::output_list(ostream &o, unsigned int funcno, bool debug)
 {
 	o << "#" << setbase(10) << setw(4) << funcno << setbase(16) << ": "
-	  << (_return_var ? '&' : ' ')
+	  << (return_var ? '&' : ' ')
 	  << setw(4) << _funcid    << "H  "
 	  << setw(8) << _offset    << "  "
 	  << setw(4) << _funcsize  << "  "
@@ -86,20 +86,20 @@ void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	for(vector<unsigned short>::iterator e=_externs.begin(); e!=_externs.end(); e++)
 	{
 		FuncMap::const_iterator fmp = funcmap.find(*e);
-		output_ucs_funcname(tab_indent(indent, o) << "extern ", *e, fmp->second.num_args, fmp->second.return_var) << ';' << endl;
+		output_ucs_funcname(tab_indent(indent, o) << "extern ", funcmap, *e, fmp->second.num_args, fmp->second.return_var) << ';' << endl;
 	}
 	
 	if(_externs.size()) o << endl;
 	
 	// output the function name
-	output_ucs_funcname(tab_indent(indent, o), _funcid, _num_args, _return_var) << endl;
+	output_ucs_funcname(tab_indent(indent, o), funcmap, _funcid, _num_args, return_var) << endl;
 	// start of func
 	tab_indent(indent++, o) << '{' << endl;
 	
 	for(unsigned int i=_num_args; i<_num_args+_num_locals; i++)
 		tab_indent(indent, o) << VARNAME << ' ' << VARPREFIX << setw(4) << i << ';' << endl;
 		
-	if(_return_var) tab_indent(indent, o) << VARNAME << ' ' << "rr" << ';' << endl;
+	if(return_var) tab_indent(indent, o) << VARNAME << ' ' << "rr" << ';' << endl;
 	
 	if(_num_locals>0) o << endl;
 	
@@ -110,7 +110,8 @@ void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned i
 
 /* outputs the general 'function name' in long format. For function
 	declarations and externs */
-ostream &UCFunc::output_ucs_funcname(ostream &o, unsigned int funcid,
+ostream &UCFunc::output_ucs_funcname(ostream &o, const FuncMap &funcmap,
+                                     unsigned int funcid,
                                      unsigned int numargs, bool return_var)
 {
 	// do we return a variable
@@ -118,9 +119,22 @@ ostream &UCFunc::output_ucs_funcname(ostream &o, unsigned int funcid,
 	
 	// output the "function name"
 	// TODO: Probably want to grab this from a file in the future...
-	o << "Func" << setw(4) << funcid
+	//o << demunge_ocstring(*this, funcmap, "%f1", ucc._params_parsed, intrinsics, ucc, true)
+	
+	FuncMap::const_iterator fmp = funcmap.find(funcid);
+	if(fmp->second.funcname.size())
+	{
+		if(fmp->second.funcname[0]=='&')
+			o << fmp->second.funcname.substr(1, fmp->second.funcname.size()-1);
+		else
+			o << fmp->second.funcname;
+	}
+	else
+		o << "Func" << setw(4) << funcid;
+	
+	// << "Func" << setw(4) << funcid
 	// output the "function number"
-	  << " 0x" << funcid
+	o << " 0x" << funcid
 	// output ObCurly braces
 	  << " (";
 	
@@ -134,12 +148,16 @@ ostream &UCFunc::output_ucs_funcname(ostream &o, unsigned int funcid,
 
 void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, unsigned int indent)
 {
+	vector<unsigned int> labeltmp(1);
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
 	{
 		// we don't want to output the first "jump" (the start of the function)
 		if(i!=gotoset.begin())
-			tab_indent(indent++, o) << setbase(16) << "labelFunc" << setw(4) << _funcid << "_" << setw(4) << i->offset() << ":" << endl;
-
+		{
+			labeltmp[0]=i->offset();
+			tab_indent(indent++, o) << demunge_ocstring(*this, funcmap, "label%f*_%1:", labeltmp, intrinsics, UCc(), true) << endl;
+		}
+		
 		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); j++)
 		{
 			const UCc &ucc = *(j->first);
@@ -281,6 +299,8 @@ void UCFunc::parse_ucs_pass2(vector<GotoSet> &gotoset, const FuncMap &funcmap, c
 		parse_ucs_pass2a((*i)().rbegin(), (*i)(), 0, funcmap, intrinsics);
 	}
 }
+
+extern UCData uc;
 
 vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics)
 {
@@ -527,7 +547,18 @@ void readbin_UCFunc(ifstream &f, UCFunc &ucf)
 			/* if we're an opcode that sets a return value, we need to mark the
 				function as one that returns a value */
 			if(otd.flag_return==true)
-				ucf._return_var=true;
+				ucf.return_var=true;
+			
+			/* if we're a function debugging opcode, set the debuging flag, and
+				assign the variable name string offset
+				TODO: Add this to opcodes.txt */
+			if((uc.game_bg() || uc.game_si()) && ucop._id==0x4D)
+			{
+				ucf.debugging_info=true;
+				assert(ucop._params_parsed.size()>=2);
+				ucf.debugging_offset = ucop._params_parsed[1];
+				ucf.funcname = ucf._data.find(0x0000)->second;
+			}
 			
 			ucf._opcodes.push_back(ucop);
 
@@ -594,21 +625,23 @@ void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const map<unsign
 	if(uc.verbose()) cout << "Printing function..." << endl;
 
 	o << "Function at file offset " << setw(8) << ucf._offset << "H" << endl;
-	o << "\t.funcnumber " << setw(4) << ucf._funcid << "H" << endl;
-	o << "\t.msize      " << setw(4) << ucf._funcsize << "H" << endl;
-	o << "\t.dsize      " << setw(4) << ucf._datasize << "H" << endl;
+	o << "\t.funcnumber  " << setw(4) << ucf._funcid << "H" << endl;
+	o << "\t.msize       " << setw(4) << ucf._funcsize << "H" << endl;
+	o << "\t.dsize       " << setw(4) << ucf._datasize << "H" << endl;
 
-	// debugging remove comments!
+	if(ucf.debugging_info)
+		o << "\t  .dbgoffset " << setw(4) << ucf.debugging_offset << "H" << endl;
+	
 	if(ucf._data.size())
     print_asm_data(ucf, o);
 
 	o << "Code segment at file offset " << setw(8) << ucf._codeoffset << "H" << endl;
-	o << "\t.argc       " << setw(4) << ucf._num_args << "H" << endl;
-	o << "\t.localc     " << setw(4) << ucf._num_locals << "H" << endl;
-	o << "\t.externsize " << setw(4) << ucf._externs.size() << "H" << endl;
+	o << "\t.argc        " << setw(4) << ucf._num_args << "H" << endl;
+	o << "\t.localc      " << setw(4) << ucf._num_locals << "H" << endl;
+	o << "\t.externsize  " << setw(4) << ucf._externs.size() << "H" << endl;
 
 	for(unsigned int i=0; i<ucf._externs.size(); i++)
-		o << '\t' << "  .extern   " << setw(4) << ucf._externs[i] << "H" << endl;
+		o << '\t' << "  .extern    " << setw(4) << ucf._externs[i] << "H" << endl;
 
 	//o << "-----" << endl;
     //_opcodes[i]->print_asm(cout);
@@ -820,7 +853,15 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 						
 						if(c=='*')
 						{
-							str << "Func" << setw(4) << ucf._funcid;
+							if(ucf.funcname.size())
+							{
+								if(ucf.funcname[0]=='&')
+									str << ucf.funcname.substr(1, ucf.funcname.size()-1);
+								else
+									str << ucf.funcname;
+							}
+							else
+								str << "Func" << setw(4) << ucf._funcid;
 						}
 						else
 						{
@@ -829,7 +870,17 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 							assert(ucf._externs.size()>=t);
 							assert(t!=0);
 							assert(op._params_parsed.size()>=1);
-							str << "Func" << setw(4) << ucf._externs[op._params_parsed[t-1]];
+							
+							FuncMap::const_iterator fmp = funcmap.find(ucf._externs[op._params_parsed[t-1]]);
+							if(fmp->second.funcname.size())
+							{
+								if(fmp->second.funcname[0]=='&')
+									str << fmp->second.funcname.substr(1, fmp->second.funcname.size()-1);
+								else
+									str << fmp->second.funcname;
+							}
+							else
+								str << "Func" << setw(4) << ucf._externs[op._params_parsed[t-1]];
 						}
 						break;
 					}

@@ -8,6 +8,15 @@
 
 #include "ucfunc.h"
 
+class UCOptions
+{
+	public:
+		UCOptions() : output_extern_header(false)
+		{};
+		
+		bool output_extern_header;
+};
+
 class UCData
 {
 	public:
@@ -23,6 +32,7 @@ class UCData
 		
 		void disassamble();
 		void dump_flags(ostream &o);
+		void output_extern_header(ostream &o);
 		
 		string output_redirect() const { return _output_redirect; };
 		string input_usecode_file() const { return _input_usecode_file; };
@@ -50,6 +60,8 @@ class UCData
 		bool fail()         const { return _file.fail(); };
 	
 		const map<unsigned short, UCFuncSet> &funcmap() { return _funcmap; };	
+		
+		const UCOptions &opt() { return options; };
 		
 	private:
 		
@@ -97,6 +109,7 @@ class UCData
 		long _search_intrinsic;
 		long _search_func;
 
+		UCOptions options;
 };
 
 #endif

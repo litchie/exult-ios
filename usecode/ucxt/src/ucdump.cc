@@ -12,7 +12,6 @@
 */
 
 /* TODO:
-	* enum...next needs to be 'finished'
 */
 
 #ifdef HAVE_CONFIG_H
@@ -98,7 +97,11 @@ int main(int argc, char** argv)
 
 	open_usecode_file(uc, config);
 
-	if     ( uc.mode_dis() || uc.mode_all() )
+	if(uc.opt().output_extern_header)
+	{
+		uc.output_extern_header(cout);
+	}
+	else if     ( uc.mode_dis() || uc.mode_all() )
 	{
 		uc.disassamble();
 	}

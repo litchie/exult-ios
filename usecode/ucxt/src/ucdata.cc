@@ -56,6 +56,8 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 		else if(strcmp(argv[i], "-fs" )==0) _output_ucz  = true;
 		else if(strcmp(argv[i], "-ff" )==0) _output_flag = true;
 
+		else if(strcmp(argv[i], "--extern-header" )==0) options.output_extern_header = true;
+		
 		else if(argv[i][0] != '-')
 		{
 			char* stopstr;
@@ -256,12 +258,22 @@ void UCData::load_funcs()
 	
 	for(vector<UCFunc *>::iterator i=_funcs.begin(); i!=_funcs.end(); i++)
 	{
-		_funcmap.insert(FuncMapPair((*i)->_funcid, UCFuncSet((*i)->_funcid, (*i)->_num_args, (*i)->_return_var)));
+		_funcmap.insert(FuncMapPair((*i)->_funcid, UCFuncSet((*i)->_funcid, (*i)->_num_args, (*i)->return_var, (*i)->funcname)));
 	}
 /*	for(map<unsigned short, UCFuncSet>::iterator i=_funcmap.begin(); i!=_funcmap.end(); i++)
 		cout << i->first << "\t" << i->second.num_args << endl;*/
 		
 }
 
+void UCData::output_extern_header(ostream &o)
+{
+	load_funcs();
+
+	for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); func++)
+	{
+		(*func)->output_ucs_funcname(o, _funcmap, (*func)->_funcid, (*func)->_num_args, (*func)->return_var) << endl;
+
+	}
+}
 
 

@@ -14,6 +14,7 @@ class UCc
 		   : _id(id), _offset(offset), _params(params), _tagged(false) {};
 		UCc(const unsigned int id, const string &miscstr)
 		   : _id(id), _miscstr(miscstr) {};
+        //UCc() : _id(0), _offset(0), _tagged(false) {};
 
 		unsigned int          _id;
 		string                _miscstr;
