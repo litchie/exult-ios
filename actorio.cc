@@ -150,7 +150,7 @@ Actor::Actor
 		else 
 			set_skin_color (-1);
 
-		if ((strength_val << 7) & 1) set_siflag (Actor::freeze);
+		if ((strength_val << 7) & 1) set_flag (Obj_flags::freeze);
 	}
 
 	if (is_dying() &&		// Now we know health, strength.
@@ -190,16 +190,16 @@ Actor::Actor
 	int magic_val = Read1(nfile);
 	int mana_val = Read1(nfile);
 
-
 	if (num == 0)
 	{
-		set_property(static_cast<int>(Actor::magic), magic_val);
+		int magic = magic_val&0x1f, mana = mana_val&0x1f;
+		set_property(static_cast<int>(Actor::magic), magic);
 		
 		// Need to make sure that mana is less than magic
-		if ((mana_val & 0x1F) < (magic_val & 0x1F))
-			set_property(static_cast<int>(Actor::mana), mana_val);
+		if (mana < magic)
+			set_property(static_cast<int>(Actor::mana), mana);
 		else
-			set_property(static_cast<int>(Actor::mana), magic_val);
+			set_property(static_cast<int>(Actor::mana), magic);
 
 		set_flag (Obj_flags::met);
 	}
@@ -212,7 +212,7 @@ Actor::Actor
 	}
 
 
-//	set_temperature (((magic_val >> 2) & 0x38) + (mana_val >> 5));
+	set_temperature (((magic_val >> 2) & 0x38) + ((mana_val >> 5) & 7));
 
 //	nfile.seekg(1	, ios::cur);	// Index2???? (refer to U7tech.txt)
 	face_num = Read1(nfile);
@@ -467,7 +467,7 @@ void Actor::write
 					// Write char. attributes.
 	iout = get_property(Actor::strength);
 	if (Game::get_game_type() != BLACK_GATE) iout |= (get_skin_color () & 3) << 5;
-	if (get_siflag (Actor::freeze)) iout |= 1 << 7;
+	if (get_flag (Obj_flags::freeze)) iout |= 1 << 7;
 	nfile.put(iout);
 	
 	nfile.put(get_property(Actor::dexterity));
@@ -513,8 +513,8 @@ void Actor::write
 	}
 
 	// Tempertures
-//	mana_val |= (get_temperature () & 0x1F) << 5;
-//	magic_val |= (get_temperature () & 0x38) << 2;
+	mana_val |= (get_temperature () & 0x1F) << 5;
+	magic_val |= (get_temperature () & 0x38) << 2;
 
 	nfile.put (magic_val);
 	nfile.put (mana_val);

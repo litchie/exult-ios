@@ -258,9 +258,9 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb5
 	USECODE_INTRINSIC_PTR(set_new_schedules),		// 0xb6 Set New Schedules
 	USECODE_INTRINSIC_PTR(run_schedule),			// 0xb7 Run the scheduled activity
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb8
+	USECODE_INTRINSIC_PTR(get_temperature),			// 0xb8
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb9 UNUSED
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xba SetTemperature???
+	USECODE_INTRINSIC_PTR(set_temperature),			// 0xba
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xbb UNUSED
 	USECODE_INTRINSIC_PTR(get_npc_id),			// 0xbc - Known
 	USECODE_INTRINSIC_PTR(set_npc_id),			// 0xbd - Known

@@ -49,7 +49,8 @@ namespace  Obj_flags
 		polymorph = 32,		// SI.  Pretty sure about this.
 		tattooed = 33,			// Guess (SI).
 		read = 34,			// Guess (SI).
-		petra = 35			// Guess
+		petra = 35,			// Guess
+		freeze = 37		// SI.  Pretty sure.
 	};
 }
 
