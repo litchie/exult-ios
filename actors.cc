@@ -2090,6 +2090,14 @@ int Actor::figure_hit_points
 			say("\"Cheater!\"");
 		else
 			say(first_ouch, last_ouch);
+	if (get_flag(Obj_flags::zombie) ||	// Can't kill zombies.
+					// A guess for SI's Cantra-vs-Batlin.
+					// (+++++Probably wrong, but fixes
+					//  crystal-ball scene for now!)
+	    (this == gwin->get_camera_actor() && 
+					this != gwin->get_main_actor()))
+		if (newhp < 1)		// Don't go < 1.
+			hp = oldhealth - 1;
 	reduce_health(hp);
 	cout << "Attack damage was " << hp << " hit points, leaving " << 
 		properties[(int) health] << " remaining" << endl;
@@ -2470,8 +2478,13 @@ void Main_actor::die
 		gwin->toggle_combat();	// Hope this is safe....
 	gwin->end_gump_mode();		// Obviously.
 					// Special function for dying:
-	gwin->get_usecode()->call_usecode(
+	if (Game::get_game_type() == BLACK_GATE)
+		gwin->get_usecode()->call_usecode(
 				0x60e, this, Usecode_machine::weapon);
+
+		else
+			gwin->get_usecode()->call_usecode(0x400, this,
+					Usecode_machine::died);
 	}
 
 /*
