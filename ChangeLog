@@ -1,3 +1,6 @@
+2002-07-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objnames.cc: implemented "x's ashes" name in SI
+
 2002-07-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc (Game_window): Set singleton after creating pal.
