@@ -503,6 +503,65 @@ void Game_window::get_ifix_chunk_objects
 	}
 
 /*
+ *	Get the name of an ireg file.
+ *
+ *	Output:	->fname, where name is stored.
+ */
+
+static char *Get_ireg_name
+	(
+	int schunk,			// Superchunk # (0-143).
+	char *fname			// Name is stored here.
+	)
+	{
+	strcpy(fname, U7IREG);
+	int len = strlen(fname);
+	fname[len] = '0' + schunk/16;
+	int lb = schunk%16;
+	fname[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
+	fname[len + 2] = 0;
+	return (fname);
+	}
+
+/*
+ *	Write out one of the "u7ireg" files.
+ *
+ *	Output:	0 if error, which is reported.
+ */
+
+int Game_window::write_ireg_objects
+	(
+	int schunk			// Superchunk # (0-143).
+	)
+	{
+	char fname[128];		// Set up name.
+	ofstream ireg;			// There it is.
+	if (!U7open(ireg, Get_ireg_name(schunk, fname)))
+		{			// +++++Better error???
+		cerr << "Exult:  Error opening '" << fname <<
+				"' for writing\n";
+		return (0);
+		}
+	int scy = 16*(schunk/12);	// Get abs. chunk coords.
+	int scx = 16*(schunk%12);
+					// Go through chunks.
+	for (int cy = 0; cy < 16; cy++)
+		for (int cx = 0; cx < 16; cx++)
+			{
+			Chunk_object_list *chunk = get_objects(scx + cx,
+							       scy + cy);
+			for (Game_object *obj = chunk->get_first(); obj;
+						obj = chunk->get_next(obj))
+				obj->write_ireg(ireg);
+			}
+	ireg.flush();
+	int result = ireg.good();
+	if (!result)			// ++++Better error system needed??
+		cerr << "Exult:  Error writing '" << fname << "'\n";
+	return (result);
+	}
+
+/*
  *	Read in the objects for a superchunk from one of the "u7ireg" files.
  *	(These are the moveable objects.)
  */
@@ -513,14 +572,8 @@ void Game_window::get_ireg_objects
 	)
 	{
 	char fname[128];		// Set up name.
-	strcpy(fname, U7IREG);
-	int len = strlen(fname);
-	fname[len] = '0' + schunk/16;
-	int lb = schunk%16;
-	fname[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
-	fname[len + 2] = 0;
 	ifstream ireg;			// There it is.
-	if (!u7open(ireg, fname, 1))
+	if (!u7open(ireg, Get_ireg_name(schunk, fname), 1))
 		return;			// Just don't show them.
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
