@@ -183,7 +183,8 @@ public:
 		// met = 5,
 		no_spell_casting = 6,
 		zombie = 7,
-		naked = 8
+		naked = 8,
+		dont_move = 9
 		};
 	enum type_flags {
 		tf_fly = 4,

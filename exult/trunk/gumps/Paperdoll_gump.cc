@@ -578,7 +578,11 @@ Game_object * Paperdoll_gump::find_object
 	mx -= box.x;
 	my -= box.y;
 
+	// Get the information required about ourself
+	Actor *actor = dynamic_cast<Actor *> (container);
 	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
+	if (!info) info = GetCharacterInfo (actor->get_shape_real());
+	if (!info) info = Characters;
 
 	int	shieldx, shieldy,
 		back2x,  back2y,

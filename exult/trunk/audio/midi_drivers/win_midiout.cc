@@ -212,44 +212,36 @@ void Windows_MidiOut::thread_play ()
 			}	
 		
 		 	event = event->next;
-	 		if (!event || (thread_com != W32MO_THREAD_COM_READY))
-		 	{
-		 		if (!repeat || (thread_com != W32MO_THREAD_COM_READY))
-		 		{
-		 			// Clean up
-					midiOutReset (midi_port);
-					XMIDI::DeleteEventList (evntlist);
-					evntlist = NULL;
-					event = NULL;
-					InterlockedExchange (&playing, false);
-					
-					// If stop was requested, we are ready to receive another song
-					if (thread_com == W32MO_THREAD_COM_STOP)
-						InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
-		 		}
-	 			else
-	 			{
-	 				event = evntlist;
-					last_tick = 0;
-					last_time = 0;
-					wmoInitClock();
-	 			}
-		 	}
 		}
 
-		// Got issued a music play command
-		// set up the music playing routine
-		if (thread_com == W32MO_THREAD_COM_PLAY)
+	 	if ((diff <= 0 && !event) || (thread_com != W32MO_THREAD_COM_READY))
 		{
-			if (evntlist)
-			{
+		 	if (!repeat || thread_com != W32MO_THREAD_COM_READY || last_tick == 0)
+		 	{
+		 		// Clean up
 				midiOutReset (midi_port);
 				XMIDI::DeleteEventList (evntlist);
 				evntlist = NULL;
 				event = NULL;
 				InterlockedExchange (&playing, false);
-			}
+				
+				// If stop was requested, we are ready to receive another song
+				if (thread_com == W32MO_THREAD_COM_STOP)
+					InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
+		 	}
+	 		else
+	 		{
+	 			event = evntlist;
+				last_tick = 0;
+				last_time = 0;
+				wmoInitClock();
+	 		}
+		}
 
+		// Got issued a music play command
+		// set up the music playing routine
+		if (!evntlist && thread_com == W32MO_THREAD_COM_PLAY)
+		{
 			// Manual Reset since I don't trust midiOutReset()
 			for (int i = 0; i < 16; i++) reset_channel (i);
 			
@@ -273,11 +265,9 @@ void Windows_MidiOut::thread_play ()
 			last_time = 0;
 			
 			wmoInitClock ();
-
-			playing = true;
+	
+			InterlockedExchange (&playing, true);
 		}
-
-
 
 	 	if (s_event)
 	 	{
@@ -307,33 +297,33 @@ void Windows_MidiOut::thread_play ()
 			}	
 		
 		 	s_event = s_event->next;
-	 		if ((!s_event) || (thread_com == W32MO_THREAD_COM_EXIT) || (sfx_com != W32MO_THREAD_COM_READY))
+		}
+	 	if (s_evntlist && (!s_event || thread_com == W32MO_THREAD_COM_EXIT || sfx_com != W32MO_THREAD_COM_READY))
+		{
+		 	// Play all the remaining note offs 
+		 	while (s_event)
 		 	{
-		 		// Play all the remaining note offs 
-		 		while (s_event)
-		 		{
-					if ((s_event->status >> 4) == MIDI_STATUS_NOTE_OFF || 
-						((s_event->status >> 4) == MIDI_STATUS_NOTE_OFF && s_event->data[1] == 0 ))
-						
-						midiOutShortMsg (midi_port, s_event->status + (s_event->data[0] << 8) + (s_event->data[1] << 16));
-				 	s_event = s_event->next;
-		 		}
-		 		
-		 		// Also reset the played tracks
-				for (int i = 0; i < 16; i++) if ((s_track >> i)&1) reset_channel (i);
-
-				XMIDI::DeleteEventList (s_evntlist);
-				s_evntlist = NULL;
-				s_event = NULL;
-				InterlockedExchange (&s_playing, false);
-				InterlockedExchange (&sfx_com, W32MO_THREAD_COM_READY);
+				if ((s_event->status >> 4) == MIDI_STATUS_NOTE_OFF || 
+					((s_event->status >> 4) == MIDI_STATUS_NOTE_OFF && s_event->data[1] == 0 ))
+					
+					midiOutShortMsg (midi_port, s_event->status + (s_event->data[0] << 8) + (s_event->data[1] << 16));
+				s_event = s_event->next;
 		 	}
+		 	
+		 	// Also reset the played tracks
+			for (int i = 0; i < 16; i++) if ((s_track >> i)&1) reset_channel (i);
+
+			XMIDI::DeleteEventList (s_evntlist);
+			s_evntlist = NULL;
+			s_event = NULL;
+			InterlockedExchange (&s_playing, false);
+			if (sfx_com != W32MO_THREAD_COM_PLAY) InterlockedExchange (&sfx_com, W32MO_THREAD_COM_READY);
 		}
 
 
 		// Got issued a sound effect play command
 		// set up the sound effect playing routine
-		if (sfx_com == W32MO_THREAD_COM_PLAY)
+		if (!s_evntlist && sfx_com == W32MO_THREAD_COM_PLAY)
 		{
 			cout << "Play sfx command" << endl;
 			// Make sure that the data exists
@@ -383,6 +373,8 @@ void Windows_MidiOut::thread_play ()
 
 		if (diff > 0 && s_diff > 0) wmoDelay (1000);
 	}
+	if (evntlist) XMIDI::DeleteEventList (evntlist);
+	if (s_evntlist) XMIDI::DeleteEventList (s_evntlist);
 	midiOutReset (midi_port);
 }
 
