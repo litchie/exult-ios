@@ -99,8 +99,8 @@ class Npc_invisibility_timer : public Npc_timer
 	uint32 end_time;		// Time when it wears off.
 public:
 	Npc_invisibility_timer(Npc_timer_list *l) : Npc_timer(l)
-		{			// Lasts 10-20 seconds..
-		end_time = SDL_GetTicks() + 10000 + rand()%10000;
+		{			// Lasts 60-80 seconds..
+		end_time = SDL_GetTicks() + 60000 + rand()%20000;
 		}
 	virtual ~Npc_invisibility_timer()
 		{ list->invisibility = 0; }
@@ -116,8 +116,8 @@ class Npc_protection_timer : public Npc_timer
 	uint32 end_time;		// Time when it wears off.
 public:
 	Npc_protection_timer(Npc_timer_list *l) : Npc_timer(l)
-		{			// Lasts 10-20 seconds..
-		end_time = SDL_GetTicks() + 10000 + rand()%10000;
+		{			// Lasts 60-80 seconds..
+		end_time = SDL_GetTicks() + 60000 + rand()%20000;
 		}
 	virtual ~Npc_protection_timer()
 		{ list->protection = 0; }
