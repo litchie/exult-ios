@@ -2495,8 +2495,8 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 	int cnt = 0;
 	int actor_lift = main_actor->get_lift();
 //	int start = actor_lift > 0 ? -1 : 0;
-					// Start on floor below actor.
-	int start = actor_lift - actor_lift%5;
+					// Look downward at most one 'floor'.
+	int start = actor_lift >= 5 ?  actor_lift - 5 : 0;
 	int not_above = skip_lift;
 	if (skip_above_actor < not_above)
 		not_above = skip_above_actor;
@@ -2534,7 +2534,7 @@ int Game_window::find_objects
 	(
 	int lift,			// Look for objs. with this lift.
 	int x, int y,			// Pos. on screen.
-	Game_object_vector& list		// Objects found are appended here.
+	Game_object_vector& list	// Objects found are appended here.
 	)
 {
 					// Figure chunk #'s.
