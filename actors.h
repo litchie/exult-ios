@@ -120,6 +120,7 @@ public:
 	~Actor();
 	int ready_ammo();		// Find and ready appropriate ammo.
 	void ready_best_weapon();	// Find best weapon and ready it.
+	void unready_weapon(int spot);	// Try to sheath weapon.
 	void use_food();		// Decrement food level.
 					// Get frame seq. for given dir.
 	static Frames_sequence *get_frames(int dir)
