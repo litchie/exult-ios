@@ -157,7 +157,7 @@ void Projectile_effect::init
 		frame_num = 8 + dir;
 		}
 	else if (frames == 1 && shape_num != 704)
-		frame_num == 0;		// (Don't show powder keg!)
+		frame_num = 0;		// (Don't show powder keg!)
 	else
 		frame_num = -1;		// We just won't show it.
 					// Start immediately.
