@@ -71,6 +71,8 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	int row0;			// Row # at top of window.
 	int nrows;			// Last #rows rendered.
 	bool frames_mode;		// Show all frames horizontally.
+	int hoffset;			// Horizontal offset in pixels (when in
+					//   frames_mode).
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
