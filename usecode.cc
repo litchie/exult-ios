@@ -1490,21 +1490,33 @@ USECODE_INTRINSIC(set_item_quality)
 	return(no_ret);
 }
 
-USECODE_INTRINSIC(count_npc_inventory)
+USECODE_INTRINSIC(get_item_quantity)
 {
-	// Get # of items in NPC??????
-	//   Count(item, -npc).
-	//+++++++++++++
-	Unhandled(intrinsic, num_parms, parms);
-	return(no_ret);
+	// Get quantity of an item.
+	//   Get_quantity(item, mystery).
+	Usecode_value ret(0);
+	Game_object *obj = get_item(parms[0]);
+	if (obj)
+		ret = Usecode_value(obj->get_quantity());
+	return(ret);
 }
 
-USECODE_INTRINSIC(set_npc_inventory_count)
+USECODE_INTRINSIC(set_item_quantity)
 {
-	// Set # of items??? (item, newcount).
-	//+++++++++++++
-	Unhandled(intrinsic, num_parms, parms);
-	return(no_ret);
+	// Set_quantity (item, newcount).  Rets ???.
+	Usecode_value ret(0);
+	Game_object *obj = get_item(parms[0]);
+	if (obj)
+		{
+		int oldquant = obj->get_quantity();
+		int delta = parms[1].get_int_value() - oldquant;
+					// Note:  This can delete the obj.
+		int newdelta = obj->modify_quantity(delta);
+					// Guess:  Return new quantity.
+		ret = Usecode_value(oldquant + newdelta);
+					// ++++Maybe repaint?
+		}
+	return(ret);
 }
 
 USECODE_INTRINSIC(get_object_position)
@@ -2180,8 +2192,8 @@ struct
 	USECODE_INTRINSIC_PTR(set_item_frame), // 0x13
 	USECODE_INTRINSIC_PTR(get_item_quality), // 0x14
 	USECODE_INTRINSIC_PTR(set_item_quality), // 0x15
-	USECODE_INTRINSIC_PTR(count_npc_inventory), // 0x16
-	USECODE_INTRINSIC_PTR(set_npc_inventory_count), // 0x17
+	USECODE_INTRINSIC_PTR(get_item_quantity), // 0x16
+	USECODE_INTRINSIC_PTR(set_item_quantity), // 0x17
 	USECODE_INTRINSIC_PTR(get_object_position), // 0x18
 	USECODE_INTRINSIC_PTR(get_distance), // 0x19
 	USECODE_INTRINSIC_PTR(find_direction), // 0x1a
