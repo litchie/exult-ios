@@ -12,7 +12,7 @@ SRC=.
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDLmain -lSDL
-SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ljpeg -lz
+SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ljpeg -lz -mconsole
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
@@ -53,9 +53,6 @@ include Makefile.common
 
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres --include-dir win32 win32/exultico.rc exultico.o
-
-clean:
-	rm -f $(OBJS) expack.o $(EXEC) expack.exe data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
 
 install: $(EXEC)
 	mkdir -p $(U7PATH)

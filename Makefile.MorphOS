@@ -28,7 +28,3 @@ include Makefile.common
 
 .cc.o:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
-
-clean:
-	rm -f $(OBJS) $(EXEC) data/exult.flx data/exult_bg.flx data/exult_si.flx expack expack.o
-

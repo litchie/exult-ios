@@ -29,9 +29,6 @@ include Makefile.common
 beos/exult.rsrc : beos/exult.rsrc
 	xres -o $(EXEC) beos/exult.rsrc
 
-clean:
-	rm -f $(OBJS) $(EXEC) data/exult.flx data/exult_bg.flx data/exult_si.flx expack expack.o
-
 finishedbinary: $(EXEC)
 	strip $(EXEC)
 	xres -o $(EXEC) beos/exult.rsrc
