@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS=foreign
 
-SUBDIRS=audio conf
+SUBDIRS=$(TOP_LEVEL_SUBDIRS)
 
 OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o \
 	gametxt.o \
@@ -18,13 +18,14 @@ EXTRA_DIST = CHANGELOG
 SUFFIXES=.cc .h
 
 INCLUDES += -I.
-INCLUDES += -Iaudio
+INCLUDES += $(AUDIO_INCLUDES)
 INCLUDES += -Iconf
 INCLUDES += $(SDL_INCLUDES)
 INCLUDES += $(KMID_INCLUDES)
 
-LIBS += $(SDL_LIBS) -Laudio -Lconf 
+LIBS += $(SDL_LIBS) -Lconf 
 LIBS += $(KMID_LIBS)
+LIBS += $(AUDIO_LIBRARY)
 
 CXXFLAGS += $(PEDANTIC)
 CXXFLAGS += -DRELNUM=$(RELNUM)
@@ -36,13 +37,16 @@ CXXFLAGS += $(DEBUG_FLAGS)
 
 
 
-				# X-windows.
 LFLAGS += -g -L /usr/X11R6/lib -L /usr/local/lib
-LIBS += -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -laudio -lconf
+LIBS += -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -lconf
+LIBS += $(AUDIO_LIBRARY)
 
-all-local: exult
+all-local: $(EXE_TARGET)
 
-exult: $(OBJECTS) audio/libaudio.a
+exult: $(OBJECTS)
+	$(CXX) $(LFLAGS) -o $@ $(OBJECTS) $(STATIC) $(LIBS)
+
+exult.exe: $(OBJECTS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJECTS) $(STATIC) $(LIBS)
 
 tar:	exult
