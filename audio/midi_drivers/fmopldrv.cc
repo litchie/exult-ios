@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopldrv.cc,v 1.3 2003/06/24 16:34:58 wjpalenstijn Exp $
+ * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopldrv.cc,v 1.4 2003/07/05 01:51:55 jsf Exp $
  */
 
 /*
@@ -712,7 +712,7 @@ static int fnums[] =
    Copyright (C) 1999-2001 Masanao Izumo <mo@goice.co.jp>
    Copyright (C) 1995 Tuukka Toivonen <tt@cgs.fi>
 */
-float bend_fine[256] = {
+static float ex_bend_fine[256] = {
 	1.0, 1.0002256593050698, 1.0004513695322617, 1.0006771306930664,
 	1.0009029427989777, 1.0011288058614922, 1.0013547198921082, 1.0015806849023274,
 	1.0018067009036538, 1.002032767907594, 1.0022588859256572, 1.0024850549693551,
@@ -779,7 +779,7 @@ float bend_fine[256] = {
 	1.0585073227945128, 1.0587461848213857, 1.058985100749698, 1.0592240705916123
 };
 
-float bend_coarse[128] = {
+static float ex_bend_coarse[128] = {
 	1.0, 1.0594630943592953, 1.122462048309373, 1.189207115002721,
 	1.2599210498948732, 1.3348398541700344, 1.4142135623730951, 1.4983070768766815,
 	1.5874010519681994, 1.681792830507429, 1.7817974362806785, 1.8877486253633868,
@@ -825,11 +825,11 @@ void OplDriver::midi_fm_playnote(int voice, int note, int volume, int pitchbend)
 	if (pitchbend != 0) {
 		pitchbend *= 2;
 		if (pitchbend >= 0)
-			pf = (float)(bend_fine[(pitchbend >> 5) & 0xFF] * bend_coarse[(pitchbend >> 13) & 0x7F]);
+			pf = (float)(ex_bend_fine[(pitchbend >> 5) & 0xFF] * ex_bend_coarse[(pitchbend >> 13) & 0x7F]);
 		else {
 			pitchbend = -pitchbend;
 			pf =
-				(float)(1.0 / (bend_fine[(pitchbend >> 5) & 0xFF] * bend_coarse[(pitchbend >> 13) & 0x7F]));
+				(float)(1.0 / (ex_bend_fine[(pitchbend >> 5) & 0xFF] * ex_bend_coarse[(pitchbend >> 13) & 0x7F]));
 		}
 		freq = (int)((float)freq * pf);
 
