@@ -98,11 +98,11 @@ void Shapes_vga_file::read_info
 					// Shape to strike with, or projectile
 					//   shape if shoot/throw.
 		short strikeshape = Read2(weapon);
-#if 1
+#if 0
 		extern char **item_names;
 		cout << dec << "Weapon " << item_names[shapenum]
 			<< '(' << shapenum << ')' << endl;
-		cout << "bytes1-2 = " << ammoshape << ", bytes2-3 = " 
+		cout << "ammoshape = " << ammoshape << ", strikeshape = " 
 				<< strikeshape
 				<< endl;
 #endif
@@ -116,16 +116,22 @@ void Shapes_vga_file::read_info
 		unsigned short special = Read1(weapon);
 		Read1(weapon);		// Skip (0).
 		short usecode = Read2(weapon);
-#if 1
+		unsigned char unk6[6];
+		weapon.read(unk6, sizeof(unk6));
+#if 0
 		cout << "Damage = " << damage << ", flags0 = " << hex
-			<< " 0x" << setw(2) << flags0 << ", range?? = " <<
+			<< " 0x" << setfill('0') << 
+			setw(2) << flags0 << ", range?? = " <<
 			hex << "0x" << range << hex << ", unk1 = " << setw(2)
 			<< "0x" << unk1 << endl;
 		cout << "Special flags = " << "0x" << special <<
 			", usecode = 0x" << usecode << endl;
-		cout << endl;
+		cout << "Unknown at end:  ";
+		for (int i = 0; i < sizeof(unk6); i++)
+			cout << setw(2) << setfill('0') <<
+						(short) unk6[i] << ' ';
+		cout << dec << endl << endl;
 #endif
-		weapon.seekg(6, ios::cur);	// Skip unknown.
 		info[shapenum].weapon = new Weapon_info(damage, special,
 					ammoshape, strikeshape, usecode);
 		}
