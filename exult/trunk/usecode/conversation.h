@@ -60,6 +60,7 @@ class Conversation {
   void clear_avatar_choices();
   int conversation_choice(int x, int y);
   void set_slot(int i) { last_face_shown = i; }	// SI.
+  void paint();				// Paint entire conversation.
 
   void add_answer(Usecode_value& val);
   void remove_answer(Usecode_value& val);
