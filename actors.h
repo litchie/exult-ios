@@ -43,7 +43,8 @@ class Actor : public Sprite
 	{
 	char *name;			// Its name.
 	int usecode;			// # of usecode function.
-	int npc_num;			// # in Game_window::npcs list, or -1.
+	short npc_num;			// # in Game_window::npcs list, or -1.
+	short party_id;			// Index in party, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
 protected:
 	unsigned long flags;		// 32 flags used in 'usecode'.
@@ -102,6 +103,10 @@ public:
 	virtual int get_flag(int flag);
 	virtual int get_npc_num()	// Get its ID (1-num_npcs).
 		{ return npc_num; }
+	virtual int get_party_id()	// Get/set index within party.
+		{ return party_id; }
+	virtual void set_party_id(int i)
+		{ party_id = i; }
 #if 0	/* ++++++ Trying to init. 1st-day schedules in gameclk.cc. */
 	struct	{
 		int cx;
@@ -160,10 +165,10 @@ class Main_actor : public Actor
 public:
 	Main_actor(char *nm, int shapenum, int num = -1, int uc = -1)
 		: Actor(nm, shapenum, num, uc)
-		{ 
-		}
+		{  }
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
+	void get_followers();		// Get party to follow.
 	virtual int walk();		// Walk towards a direction.
 	};
 
@@ -305,6 +310,7 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 	virtual int walk();		// Walk towards a direction.
+	void follow(Actor *leader);	// Follow the leader.
 					// Update chunks after NPC moved.
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);

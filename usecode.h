@@ -368,6 +368,10 @@ public:
 		{ return gflags[i]; }
 	void set_global_flag(int i, int val = 1)
 		{ gflags[i] = (val == 1); }
+	int get_party_count()		// Get # party members.
+		{ return party_count; }
+	int get_party_member(int i)	// Get npc# of i'th party member.
+		{ return party[i]; }
 					// Call desired function.
 	int call_usecode(int id, Game_object *obj, Usecode_events event)
 		{
