@@ -2798,7 +2798,24 @@ bool Actor::figure_hit_points
 
 	cout << "Hit probability is " << prob << endl;
 	if (rand()%100 > prob)
-		return false;		// Missed.
+		{			// Missed.
+					// See if we should drop ammo.
+		if (winf && ammo_shape && attacker &&
+		    ((winf->is_thrown() && !winf->returns()) ||
+			winf->get_ammo_consumed() > 0))
+			{
+			Tile_coord pos = Map_chunk::find_spot(get_tile(), 3,
+							ammo_shape, 0, 1);
+			if (pos.tx == -1)
+				return false;
+			Game_object *aobj = gwin->create_ireg_object(
+								ammo_shape, 0);
+			if (attacker->get_flag(	Obj_flags::is_temporary))
+				aobj->set_flag(	Obj_flags::is_temporary);
+			aobj->move(pos);
+			}
+		return false;
+		}
 					// Compute hit points to lose.
 	int attacker_str = Get_effective_prop(attacker, strength, 8)/4;
 	int hp;
