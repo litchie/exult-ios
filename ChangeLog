@@ -1,3 +1,10 @@
+2001-12-29  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*: Added output for -fl to show whether the function
+	returns a value or not. Polishing off -fz output, including outputting
+	'extern' declarations of functions used, and the parameters being passed
+	to the function.
+	* usecode/ucxt/data/opcodes.txt: Fixed setr opcode output under -fz.
+
 2001-12-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/*.{cc,h} (Chunk_chooser): 'Locate' is somewhat working.

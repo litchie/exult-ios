@@ -12,8 +12,7 @@
 */
 
 /* TODO:
-	* cmps() doesn't have a jump target set, the jump target list of opcodes is static and needs to be fixed.
-	* jmp(): "if(!%p1) goto labelFunc_%1;" Need to alter it to find a way to access the 'current' function number.
+	* enum...next needs to be 'finished'
 */
 
 #ifdef HAVE_CONFIG_H
