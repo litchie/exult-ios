@@ -1393,6 +1393,8 @@ void Actor::die
 		{			// Exec. usecode before dying.
 		gwin->get_usecode()->call_usecode(
 				shnum, this, Usecode_machine::internal_exec);
+					// Restore mode.
+		gwin->set_mode(Game_window::normal);
 		if (get_cx() == 255)	// Invalid now?
 			return;
 		}
