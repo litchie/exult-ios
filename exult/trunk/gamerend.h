@@ -39,6 +39,7 @@ public:
 	int paint_map(int x, int y, int w, int h);
 					// Paint "flat" scenery in a chunk.
 	void paint_chunk_flats(int cx, int cy, int xoff, int yoff);
+	void paint_chunk_flat_rles(int cx, int cy, int xoff, int yoff);
 	//				// Paint blackness in a dungeon
 	//void paint_dungeon_black(int cx, int cy, int xoff, int yoff, int index=0);
 					// Paint objects in given chunk at
