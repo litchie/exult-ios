@@ -55,6 +55,9 @@
 /* Some platforms don't have snprintf */
 #undef HAVE_SNPRINTF
 
+/* Do we have gtk development files? */
+#undef HAVE_GTK
+
 @BOTTOM@
 
 #ifdef ALPHA_LINUX_CXX
