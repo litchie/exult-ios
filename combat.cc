@@ -304,18 +304,28 @@ void Combat_schedule::approach_foe
 		bool retry_ok = false;
 		if (npc->get_attack_mode() != Actor::manual)
 			{
-			npc->set_target(opponent = find_foe(Actor::nearest));
-			Monster_pathfinder_client cost(npc, max_range, 
+			Actor *closest = find_foe(Actor::nearest);
+			if (closest && closest != opponent)
+				{
+				opponent = closest;
+				npc->set_target(opponent);
+				Monster_pathfinder_client cost(npc, max_range, 
 								opponent);
-			retry_ok = (opponent != 0 && path->NewPath(
-				pos, opponent->get_abs_tile_coord(), &cost));
+				retry_ok = (opponent != 0 && path->NewPath(
+				  pos, opponent->get_abs_tile_coord(), &cost));
+				}
 			}
 		if (!retry_ok)
 			{
 			delete path;	// Really failed.  Try again in 
-					//  .5 - 2 secs.
-			npc->start(200, failures < 20 ? 500 : 
-					failures < 50 ? 1000 : 2000);
+					//  after wandering.
+					// Just try to walk somewhere.
+			Tile_coord pos = opponent->get_abs_tile_coord();
+			if (rand()%3 == 0)
+				pos = pos + Tile_coord(rand()%12 - 6,
+							rand()%12 - 6, 0);
+			npc->walk_to_tile(pos, 2*c_std_delay, 
+							500 + rand()%500);
 			failures++;
 			return;
 			}

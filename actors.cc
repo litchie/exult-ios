@@ -2064,20 +2064,32 @@ void Actor::call_readied_usecode
 	int eventid
 	)
 	{
+#if 0	/* I think this isn't needed. */
 	if (index != Actor::rfinger && index != Actor::lfinger && 
 	    index != Actor::belt &&
 	    index != Actor::neck &&
 	    index != Actor::head && index != Actor::hands2_spot &&
 	    index != Actor::lhand && index != Actor::rhand)
 		return;
-	if (obj->get_shapenum() == 297)	// Fix special case:  ring of protect.
-		{
-		if (eventid == Usecode_machine::readied)
-			Actor::set_flag(Obj_flags::protection);
-		else
-			Actor::clear_flag(Obj_flags::protection);
-		return;
-		}
+#endif
+					// In BG, limit to certain types.
+	if (Game::get_game_type() == BLACK_GATE)
+		switch (obj->get_shapenum())
+			{
+		case 297:		// Fix special case:  ring of protect.
+			if (eventid == Usecode_machine::readied)
+				Actor::set_flag(Obj_flags::protection);
+			else
+				Actor::clear_flag(Obj_flags::protection);
+			return;
+		case 296:		// Ring of invibility.
+		case 298:		// Ring of regeneration.
+		case 701:		// Lit torch.
+		case 338:		// Lit light source.
+			break;		// We'll do these.
+		default:
+			return;		// Nothing else in BG.
+			}
 	Shape_info& info = gwin->get_info(obj);
 	if (info.get_shape_class() != Shape_info::container)
 		{
