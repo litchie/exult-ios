@@ -38,12 +38,12 @@ MIDI_DRV_OBJS=be_midi.o
 AUDIO_OBJS=Audio.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 FLIC_OBJS=playfli.o
-FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o
+FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o filelist.o
 GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	gump_utils.o  Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
 	Paperdoll_gump_info.o Scroll_gump.o Sign_gump.o  Slider_gump.o \
 	Spellbook_gump.o Stats_gump.o Text_gump.o  Yesno_gump.o \
-	Gamemenu_gump.o
+	Gamemenu_gump.o Newfile_gump.o
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o
 SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o
