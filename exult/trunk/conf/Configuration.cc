@@ -29,8 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include "utils.h"
 
-using std::string;
-using std::vector;
 
 using std::atoi;
 using std::cerr;
@@ -52,14 +50,14 @@ Configuration::~Configuration()
 {}
 
 
-string	&Configuration::value(const char *key,bool &exists)
+std::string	&Configuration::value(const char *key,bool &exists)
 {
-	string	s=key;
+	std::string	s=key;
 	exists=false;
 	XMLnode *sub=xmltree.subtree(s);
 	if(!sub)
 		{
-		static string dummy("");
+		static std::string dummy("");
 		exists=false;
 		return dummy;
 		}
@@ -70,7 +68,7 @@ string	&Configuration::value(const char *key,bool &exists)
 		}
 }
 
-void	Configuration::value(const char *key,string &s,const char *defaultvalue)
+void	Configuration::value(const char *key,std::string &s,const char *defaultvalue)
 {
 	bool	exists;
 	s=value(key,exists);
@@ -81,7 +79,7 @@ void	Configuration::value(const char *key,string &s,const char *defaultvalue)
 void	Configuration::value(const char *key,int &n,int defaultvalue)
 {
 	n=0;
-	string	s;
+	std::string	s;
 	bool	exists;
 
 	s=value(key,exists);
@@ -92,10 +90,10 @@ void	Configuration::value(const char *key,int &n,int defaultvalue)
 }
 
 // This function does not make sense here. It should be in XMLEntity
-static	void	xmlassign(XMLnode *walk,string &key,string &value)
+static	void	xmlassign(XMLnode *walk,std::string &key,std::string &value)
 {
 		// cout << "xmlassign(" << key << "," << value << ")"<<endl;
-		if(key.find('/')==string::npos)
+		if(key.find('/')==std::string::npos)
 			{
 			// Must refer to me.
 			if(walk->entity.id==key)
@@ -110,10 +108,10 @@ static	void	xmlassign(XMLnode *walk,string &key,string &value)
 				return;
 				}
 		}
-		string k;
+		std::string k;
 		k=key.substr(key.find('/')+1);
-		string k2=k.substr(0,k.find('/'));
-		for(vector<XMLnode*>::iterator it=walk->nodelist.begin();
+		std::string k2=k.substr(0,k.find('/'));
+		for(std::vector<XMLnode*>::iterator it=walk->nodelist.begin();
 			it!=walk->nodelist.end();++it)
 			{
 			if((*it)->entity.id==k2)
@@ -126,16 +124,16 @@ static	void	xmlassign(XMLnode *walk,string &key,string &value)
 		t->entity.id=k2;
 		walk->nodelist.push_back(t);
 		// cout << "New node " << k2 << endl;
-		vector<XMLnode*>::reverse_iterator rit=walk->nodelist.rbegin();
+		std::vector<XMLnode*>::reverse_iterator rit=walk->nodelist.rbegin();
 		xmlassign(*rit,k,value);
 		return;
 
 
 }
 
-void	Configuration::set(string &key,string &value,bool write_out)
+void	Configuration::set(std::string &key,std::string &value,bool write_out)
 {
-	string	k=key;
+	std::string	k=key;
 	XMLnode *walk;
 
 	walk=&xmltree;
@@ -150,7 +148,7 @@ void	Configuration::set(string &key,string &value,bool write_out)
 	// Must remember that.
 	if(xmltree.entity.id.length()==0)
 		{
-		string k;
+		std::string k;
 		k=key.substr(0,key.find('/'));
 		xmltree.entity.id=k;
 		}
@@ -161,19 +159,19 @@ void	Configuration::set(string &key,string &value,bool write_out)
 
 void	Configuration::set(const char *key,const char *value,bool write_out)
 {
-	string	k(key),v(value);
+	std::string	k(key),v(value);
 	set(k,v,write_out);
 }
 
-void	Configuration::set(const char *key,const string &value,bool write_out)
+void	Configuration::set(const char *key,const std::string &value,bool write_out)
 {
-	string	k(key),v(value);
+	std::string	k(key),v(value);
 	set(k,v,write_out);
 }
 
 void	Configuration::set(const char *key,int value,bool write_out)
 {
-	string	k(key),v;
+	std::string	k(key),v;
 	char	buf[32];
 
 	sprintf(buf,"%d",value);
@@ -183,11 +181,11 @@ void	Configuration::set(const char *key,int value,bool write_out)
 
 
 
-extern	void    xmlparse(string &s,size_t &pos,XMLnode *x);
+extern	void    xmlparse(std::string &s,size_t &pos,XMLnode *x);
 
-bool	Configuration::read_config_string(const string &s)
+bool	Configuration::read_config_string(const std::string &s)
 {
-	string	sbuf(s);
+	std::string	sbuf(s);
         size_t  nn=1;
         xmlparse(sbuf,nn,&xmltree);
 	is_file=false;
@@ -197,7 +195,7 @@ bool	Configuration::read_config_string(const string &s)
 bool	Configuration::read_config_file(const char *n)
 {
         char    buf[4096];
-        string  sbuf;
+        std::string  sbuf;
 
 	filename=n;
 	// Don't frob the filename if it starts with a dot and
@@ -242,10 +240,10 @@ bool	Configuration::read_config_file(const char *n)
 }
 
 
-string	Configuration::dump(void)
+std::string	Configuration::dump(void)
 {
-	extern	void xmldump(string &,XMLnode *,int);
-	string	out("");
+	extern	void xmldump(std::string &,XMLnode *,int);
+	std::string	out("");
 	xmldump(out,&xmltree,0);
 	return out;
 }
@@ -255,7 +253,7 @@ void	Configuration::write_back(void)
 {
 	if(!is_file)
 		return;	// Don't write back if not from a file
-	string	s=dump();
+	std::string	s=dump();
 	FILE *fp=U7open(filename.c_str(),"w");
 	if(!fp)
 		{
@@ -267,17 +265,17 @@ void	Configuration::write_back(void)
 }
 
 
-vector<string>	Configuration::listkeys(string &key,bool longformat)
+std::vector<std::string>	Configuration::listkeys(std::string &key,bool longformat)
 {
-	vector<string>	vs;
+	std::vector<std::string>	vs;
 	XMLnode *sub=xmltree.subtree(key);
 	if(!sub)
 		return vs;
 
-	for(vector<XMLnode*>::const_iterator it=sub->nodelist.begin();
+	for(std::vector<XMLnode*>::const_iterator it=sub->nodelist.begin();
 		it!=sub->nodelist.end(); ++it)
 		{
-		string	s=key;
+		std::string	s=key;
 		s+="/";
 		if(!longformat)
 			s="";
@@ -288,9 +286,9 @@ vector<string>	Configuration::listkeys(string &key,bool longformat)
 	return vs;
 }
 
-vector<string>	Configuration::listkeys(const char *key,bool longformat)
+std::vector<std::string>	Configuration::listkeys(const char *key,bool longformat)
 {
-	string s(key);
+	std::string s(key);
 	return listkeys(s,longformat);
 }
 
