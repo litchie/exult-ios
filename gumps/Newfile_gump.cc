@@ -873,6 +873,7 @@ void Newfile_gump::LoadSaveGameDetails()
 	cur_details->real_minute = timeinfo->tm_min;
 	cur_details->real_month = timeinfo->tm_mon+1;
 	cur_details->real_year = timeinfo->tm_year + 1900;
+	cur_details->real_second = timeinfo->tm_sec;
 
 	// Current Party
 	cur_party = new SaveGame_Party[cur_details->party_size];
@@ -1038,6 +1039,11 @@ int Newfile_gump::SaveInfo::CompareThis(const SaveInfo *other) const
 		if (details->real_minute < other->details->real_minute)
 			return 1;
 		if (details->real_minute > other->details->real_minute)
+			return -1;
+
+		if (details->real_second < other->details->real_second)
+			return 1;
+		if (details->real_second > other->details->real_second)
 			return -1;
 	}
 	else if (details)	// If the other doesn't have time we are first
