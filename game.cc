@@ -295,11 +295,13 @@ bool Game::show_menu()
 		if(!menu) {
 			entries = 0;
 			menu = new MenuList();	
+			int offset = 0;
 			for(int i=0; i<num_choices; i++) {
 				if((i!=4 && i!=5) || (i==4 && U7exists("<SAVEGAME>/quotes.flg")) || (i==5 && U7exists("<SAVEGAME>/endgame.flg"))) {
 					menu->add_entry(new MenuEntry(menushapes.get_shape(menuchoices[i],1),
 						      menushapes.get_shape(menuchoices[i],0),
-						      centerx, menuy+entries*11));
+						      centerx, menuy+offset));
+					offset += menushapes.get_shape(menuchoices[i],1)->get_ybelow() + 3;
 					menuentries[entries++]=i;
 				}
 			}
