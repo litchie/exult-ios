@@ -54,7 +54,7 @@ Knives			615		-
 Custom sword		635		-		(using Dragon Slayer)
 Hoe of destruction	548		Tristan
 Firedoom staff		553		Adam
-Death Scythe		562		-
+Death Scythe		562		Willem Jan
 Fellowship staff	885		Willem Jan
 Tripple crossbow	647		-
 Musket			278		-
