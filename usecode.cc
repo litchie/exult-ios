@@ -108,9 +108,9 @@ Usecode_value::Usecode_value
 	}
 
 /*
- *	Resize array.
+ *	Resize array (or turn single element into an array).
  *
- *	Output:	false if not an array.
+ *	Output:	Always true.
  */
 
 int Usecode_value::resize
@@ -118,8 +118,12 @@ int Usecode_value::resize
 	int new_size
 	)
 	{
-	if (type != (int) array_type)
-		return (0);
+	if (type != (int) array_type)	// Turn it into an array.
+		{
+		Usecode_value elem(*this);
+		*this = Usecode_value(new_size, &elem);
+		return (1);
+		}
 	int size = count_array(*this);	// Get current size.
 	if (new_size == size)
 		return (1);		// Nothing to do.
@@ -980,6 +984,9 @@ Usecode_value Usecode_machine::click_on_item
 
 /*
  *	Execute a list of instructions in an array.
+ *	++++++++++Maybe each instruction should be added to the time queue,
+ *	with 0x27 controlling the timing (i.e., adding delay for the next
+ *	instruction pushed.++++++++++
  */
 
 void Usecode_machine::exec_array
@@ -992,6 +999,9 @@ void Usecode_machine::exec_array
 	if (!obj)
 		return;
 	int cnt = arrayval.get_array_size();
+					// Not an array?
+	if (!cnt && !arrayval.is_array())
+		cnt = 1;		// Get_elem(0) works for non-arrays.
 	for (int i = 0; i < cnt; i++)	// Go through instructions.
 		{
 					// Let's try to animate.
@@ -1638,6 +1648,19 @@ USECODE_INTRINSIC(advance_time)
 	USECODE_RETURN(no_ret);
 }
 
+USECODE_INTRINSIC(run_usecode)
+	// exec(loc(x,y,z)?, usecode#, itemref, eventid).
+	Usecode_value u(0);
+	Game_object *obj = get_item(parms[2].get_int_value());
+	if (obj)
+		{			// +++For now.  Real return from fun?
+		int ret = call_usecode(parms[1].get_int_value(), obj, 
+				(Usecode_events) parms[3].get_int_value());
+		u = Usecode_value(ret);
+		}
+	USECODE_RETURN(u);
+}
+
 USECODE_INTRINSIC(direction_from)
 	// ?Direction from parm[0] -> parm[1].
 	// Rets. 0-7.  Is 0 north?
@@ -1822,7 +1845,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7c
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7d
+	USECODE_INTRINSIC_PTR(run_usecode),	// 0x7d
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7f
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80
@@ -2382,14 +2405,6 @@ void Usecode_machine::run
 				break;
 				}
 			Usecode_value& val = locals[offset];
-			int sz = val.get_array_size();
-			if (sz <= 0 || sval < 0 || sval >= sz)
-				{
-				cerr << 
-				"AIDX index out of range, or not an array\n";
-				pushi(0);
-				break;
-				}
 			push(val.get_elem(sval));
 			break;
 			}
