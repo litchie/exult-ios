@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma interface
 #endif
 
-#ifndef WIN32
+//#ifndef WIN32
 
 #if !AUTOCONFIGURED
 #include "../autoconfig.h"
@@ -74,7 +74,8 @@ private:
 
 };
 
-#else
+//#else
+#if 0
 
 class MyMidiPlayer
 {

@@ -84,7 +84,7 @@ else
 	echo "Let's assume it's Windows as an alternative."
 	WINDOWING_SYSTEM="-DWIN32"
 	TOP_LEVEL_SUBDIRS="audio conf pathfinder files"
-	AUDIO_LIBRARY="-Laudio -laudio"
+	AUDIO_LIBRARY="-Laudio -laudio -lwinmm"
 	AUDIO_INCLUDES="-Iaudio"
 	EXE_TARGET="exult.exe"
 	disable_kmid="yes"
