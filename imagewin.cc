@@ -28,9 +28,6 @@ Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <iostream.h>
 #include <string>
-#include "Configuration.h"
-
-extern	Configuration *config;
 
 /*
  *	Clip to current clip rectangle.
@@ -819,9 +816,11 @@ static int Get_best_depth
 Image_window::Image_window
 	(
 	unsigned int w,			// Desired width, height.
-	unsigned int h
+	unsigned int h,
+	bool fs				// Fullscreen.
 	) : Image_buffer(w, h, Get_best_depth()),
-	    scale(1), surface(0), scaled_surface(0), show_scaled(0)
+	    scale(1), fullscreen(fs),
+	    surface(0), scaled_surface(0), show_scaled(0)
 	{
 	create_surface(w, h);
 	}
@@ -847,18 +846,10 @@ void Image_window::create_surface
 	unsigned int h
 	)
 	{
-	string	fullscreenstr;
-	bool	fullscreen=false;
-	config->value("config/video/fullscreen",fullscreenstr,"no");
-	if(fullscreenstr=="yes")
-		fullscreen=true;
-	config->set("config/video/fullscreen",fullscreenstr,true);
 	ibuf->width = w;
 	ibuf->height = h;
 	int flags = (fullscreen?SDL_FULLSCREEN:0) |
 					SDL_SWSURFACE |  SDL_HWPALETTE;
-					// Let 'config' override scale.
-	config->value("config/video/scale", scale, 1);
 	show_scaled = 0;
 	surface = scaled_surface = 0;
 	if (scale == 2)			// We support 2X scaling.
@@ -869,7 +860,7 @@ void Image_window::create_surface
 				<< hwdepth << " not yet supported." << endl;
 		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
 						hwdepth, flags)) != 0 &&
-			 (surface = SDL_CreateRGBSurface(flags, w, h,
+			 (surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
 							8, 0, 0, 0, 0)) != 0)
 			show_scaled = hwdepth == 16 ? 
 				&Image_window::show_scaled8to16
@@ -984,6 +975,26 @@ void Image_window::toggle_fullscreen() {
 
         w = surface->w;
         h = surface->h;
+        bpp = scaled_surface ? scaled_surface->format->BitsPerPixel
+			     : surface->format->BitsPerPixel;
+#if 1
+        if ( fullscreen ) {
+		cout << "Switching to windowed mode."<<endl;
+                flags = surface->flags & ~SDL_FULLSCREEN;
+        } else {
+		cout << "Switching to fullcsreen mode."<<endl;
+                flags = surface->flags | SDL_FULLSCREEN;
+        }
+					// First see if it's allowed.
+        if ( SDL_VideoModeOK(w, h, bpp, flags) )
+		{
+		free_surface();		// Delete old.
+		fullscreen = !fullscreen;
+		create_surface(w, h);	// Create new.
+		}
+
+#else	/* Old way++++++*/
+
         bpp = surface->format->BitsPerPixel;
         if ( surface->flags & SDL_FULLSCREEN ) {
 		cout << "Switching to windowed mode."<<endl;
@@ -1007,5 +1018,6 @@ void Image_window::toggle_fullscreen() {
 	
 		// show();  // Why doesn't this work??
         }
+#endif
 }
 
