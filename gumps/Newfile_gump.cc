@@ -472,7 +472,8 @@ void Newfile_gump::paint
 	if (screenshot) gwin->paint_shape(x + 222, y + 2, screenshot->get_frame(0));
 
 	// Need to ensure that the avatar's shape actually exists
-	if (party && party[0].shape_file == SF_BG_SISHAPES_VGA && !gwin->can_use_multiracial())
+	if (party && party[0].shape_file == SF_BG_SISHAPES_VGA && 
+		!Shape_manager::get_instance()->can_use_multiracial())
 	{
 		party[0].shape_file = SF_SHAPES_VGA;
 

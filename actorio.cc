@@ -300,7 +300,7 @@ void Actor::read
 	shnum = nfile->read2();
 	if (!fix_first && shnum)
 	{
-		if (GAME_BG && !gwin->can_use_multiracial() && shnum > 1024 && npc_num == 0)
+		if (GAME_BG && !Shape_manager::get_instance()->can_use_multiracial() && shnum > 1024 && npc_num == 0)
 			set_actor_shape();
 		else
 			set_shape(shnum);		// 16 Bit Shape Number
