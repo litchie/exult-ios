@@ -591,8 +591,6 @@ void Game_window::clear_world
 	(
 	)
 	{
-//	delete tqueue;			// Want a fresh queue.
-//	tqueue = new Time_queue();
 	tqueue->clear();		// Remove all entries.
 	clear_dirty();
 	removed->flush();		// Delete.
@@ -617,7 +615,6 @@ void Game_window::clear_world
 	bodies.resize(0);
 	moving_barge = 0;		// Get out of barge mode.
 	special_light = 0;		// Clear out light spells.
-		//++++++++Clear monsters list when we have it.
 					// Clear 'read' flags.
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
 	memset((char *) schunk_modified, 0, sizeof(schunk_modified));
@@ -1527,37 +1524,11 @@ void Game_window::read
 	{
 	Audio::get_ptr()->cancel_streams();
 	clear_world();			// Wipe clean.
-	read_gwin();		// Read our data.
+	read_gwin();			// Read our data.
 					// DON'T do anything that might paint()
 					//   before calling read_npcs!!
-	read_npcs();			// Read in NPC's, monsters, and get
-					//   active gump.
-	end_gump_mode();		// Kill gumps, and paint new data.
-	
-	try
-	{
-		usecode->read();	// Usecode.dat (party, global flags).
-
-		if (Game::get_game_type() == BLACK_GATE)
-			{
-			if (usecode->get_global_flag(
-					Usecode_machine::did_first_scene))
-				main_actor->clear_flag(Obj_flags::dont_render);
-			else
-				main_actor->set_flag(Obj_flags::dont_render);
-			}
-	}
-	catch(...)
-	{
-	}
-	Actor *party[9];
-	int cnt = get_party(party, 1);	// Get entire party.
-	for (int i = 0; i < cnt; i++)	// Init. rings.
-		party[i]->init_readied();
-	faded_out = 0;
-	time_stopped = 0;
-	clock.set_palette();		// Set palette for time-of-day.
-	set_all_dirty();		// Force entire repaint.
+	setup_game();			// Read NPC's, usecode.
+	end_gump_mode();		// Kill gumps.
 	}
 
 /*
@@ -3135,12 +3106,6 @@ void Game_window::setup_game
 			usecode->set_global_flag(
 				Usecode_machine::did_first_scene, 1);
 
-					// Have Trinsic password?
-		config->value("config/gameplay/have_trinsic_password", yn, 
-								"no");
-		if (yn == "yes")
-			usecode->set_global_flag(
-				Usecode_machine::have_trinsic_password, 1);
 					// Should Avatar be visible?
 		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
 			main_actor->clear_flag(Obj_flags::dont_render);
@@ -3153,18 +3118,19 @@ void Game_window::setup_game
 	for (int i = 0; i < cnt; i++)	// Init. rings.
 		party[i]->init_readied();
 	faded_out = 0;
+	time_stopped = 0;
 	clock.set_palette();		// Set palette for time-of-day.
-	set_all_dirty();		// Force entire repaint.
-
-//	Audio::get_ptr()->cancel_raw();
 	Audio::get_ptr()->cancel_streams();
+//+++++The below wasn't prev. done by ::read(), so maybe it should be
+//+++++controlled by a 'first-time' flag.
 				// Want to activate first egg.
 	Map_chunk *olist = get_chunk(
 			main_actor->get_cx(), main_actor->get_cy());
 	olist->setup_cache();
 	Tile_coord t = main_actor->get_abs_tile_coord();
 	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1);
-	paint();
+//	paint();
+	set_all_dirty();		// Force entire repaint.
 	}
 
 /*
