@@ -38,6 +38,9 @@ like:
   </fullscreen>
  </video>
  <gameplay>
+  <cheat>
+  no
+  </cheat>
   <skip_intro>
   no
   </skip_intro>

@@ -1,6 +1,12 @@
 ??/??/00:	V??.??
 		Better introduction sequence. Can be interrupted by
 		keypress.
+		
+		Cheating mode: any keys which enable additional features can
+		be disabled/enabled from the config file
+
+		Support for barges (Flying carpet, ships, carts...)
+
 
 		...
 
