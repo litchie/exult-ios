@@ -1790,8 +1790,8 @@ void Container_game_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = resistance;		// Resistance.
 					// Flags:  B0=invis. B3=okay_to_take.
-	*ptr++ = get_flag(Game_object::invisible) +
-		 (get_flag(Game_object::okay_to_take) << 3);
+	*ptr++ = get_flag((Game_object::invisible) != 0) +
+		 ((get_flag(Game_object::okay_to_take) != 0) << 3);
 	out.write((char*)buf, sizeof(buf));
 	write_contents(out);		// Write what's contained within.
 	}
