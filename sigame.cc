@@ -181,7 +181,8 @@ void SI_Game::play_intro()
 		font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
 		win->show();
 
-		SDL_Delay (3000);
+		if (wait_delay (3000))
+			return;
 
 		for (j = 20; j; j--)
 		{

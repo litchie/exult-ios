@@ -292,9 +292,6 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(uint32 type)
 	ProducerConsumerBuf *buf = 0;
 	SDL::LockAudio();
 	stream_lock();
-#if DEBUG
-	cerr << "Create_Audio_Stream()" << endl;
-#endif
 	int i;				// Find an inactive stream.
 	for (i = 0; i < MAX_AUDIO_STREAMS && streams[i]->is_active(); i++)
 		;
@@ -303,7 +300,9 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(uint32 type)
 		buf = streams[i];
 		buf->init(type);
 		SDL::PauseAudio(0);	// Enable filling.
+#ifdef DEBUG
 		cerr << "Create_Audio_Stream:  " << i << endl;
+#endif
 		}
 	stream_unlock();
 	SDL::UnlockAudio();
@@ -312,7 +311,9 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(uint32 type)
 
 void	Mixer::Destroy_Audio_Stream(uint32 type)
 {
+#ifdef DEBUG
 	cerr << "Destroy_Audio_Stream:  " << type << endl;
+#endif
 	SDL::LockAudio();
 	stream_lock();
 	for (int i = 0; i < MAX_AUDIO_STREAMS; i++)

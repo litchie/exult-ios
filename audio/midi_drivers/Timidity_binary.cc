@@ -228,14 +228,12 @@ void	Timidity_binary::stop_track(void)
 		pthread_join(midi_thread, 0);
 	midi_thread = 0;
 	stop_music_flag = false;
-	fprintf(stderr,"Closed music\n");
 	}
 
 void	Timidity_binary::stop_sfx(void)
 	{
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic_sfx);
 	pthread_join(sfx_thread, 0);
-	fprintf(stderr,"Closed sfx\n");
 	}
 
 bool	Timidity_binary::is_playing(void)
@@ -261,7 +259,7 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 #endif
 	filename=name;
 	do_repeat=repeat;
-	fprintf(stderr, "Creating new player thread\n");
+	cerr << "Creating new player thread" << endl;
 	if(pthread_create(&midi_thread, 0, midi_process, this)==-1)
 		perror("pthread_create");
 }

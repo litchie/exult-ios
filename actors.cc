@@ -741,8 +741,10 @@ void Actor::follow
 	      get_party_id() >= 0 && 
 	      (!is_moving() || !action || !action->following_smart_path()))
 		{			// A little stuck?
+#ifdef DEBUG
 		cout << get_name() << " at distance " << dist2lead 
 				<< " trying to catch up." << endl;
+#endif
 					// Don't try again for a second.
 		next_path_time = SDL_GetTicks() + 1000;
 		if (Chunk_object_list::is_blocked(goal, 3, get_type_flags()))
@@ -2693,8 +2695,9 @@ void Main_actor::die
  */
 void Actor::set_actor_shape()
 {
+#ifdef DEBUG
 	cerr << "Told to set Shape. Num " << get_npc_num() << " Polymorph " << get_siflag (polymorph) << endl;
-
+#endif
 	if (get_npc_num() != 0 || get_siflag (polymorph))
 		return;
 
@@ -2719,9 +2722,9 @@ void Actor::set_actor_shape()
 		sn = 989;
 	else
 		sn = 721;
-
+#ifdef DEBUG
 	cerr << "Setting Shape to " << sn << endl;
-
+#endif
 	set_shape (sn, get_framenum());
 }
 
