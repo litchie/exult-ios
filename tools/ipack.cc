@@ -450,6 +450,66 @@ static void Create
 	}
 
 /*
+ *	Update an archive with a set of image files.  May throw an exception.
+ *	The archive is rewritten with its original shapes, plus those
+ *	specified in the script.
+ */
+
+static void Update
+	(
+	char *imagename,		// Image archive name.
+	char *palname,			// Palettes file (palettes.flx).
+	Shape_specs& specs,		// List of things to extract.
+	const char *title		// For storing in Flex file.
+	)
+	{
+	if (U7exists(palname))		// Palette?
+		{
+		cout << "Palette file '" << palname << 
+			"' exists, so we won't overwrite it" << endl;
+		palname = 0;
+		}
+	Flex in(imagename);		// May throw exception.
+	int oldcnt = in.number_of_objects();
+	vector<char *> data(oldcnt);	// Read in all the entries.
+	vector<int> lengths(oldcnt);
+	int i;
+	for (i = 0; i < oldcnt; i++)
+		{
+		size_t len;
+		data[i] = in.retrieve(i, len);
+		lengths[i] = len;
+		if (!len)		// Empty?
+			{
+			delete data[i];
+			data[i] = 0;
+			}
+		}
+	ofstream out;
+	U7open(out, imagename);		// May throw exception.
+	int newcnt = oldcnt > specs.size() ? oldcnt : specs.size();
+	Flex_writer writer(out, title, specs.size());
+	for (i = 0; i < newcnt; i++)	// Write out new entries.
+		{
+					// New entry for this shape?
+		if (i < specs.size() && specs[i].filename != 0)
+			{
+			Write_exult(out, specs[i].filename,
+				specs[i].nframes, specs[i].flat, palname);
+			palname = 0;	// Only write 1st palette.
+			}
+					// Write old entry.
+		else if (i < oldcnt && data[i])
+			out.write(data[i], lengths[i]);
+		writer.mark_section_done();
+		}
+	if (!writer.close())
+		throw file_write_exception(imagename);
+	for (i = 0; i < oldcnt; i++)	// Clean up.
+		delete data[i];
+	}
+
+/*
  *	Extract from the archive.  May throw an exception.
  */
 
@@ -557,7 +617,12 @@ int main
 		}
 		break;
 	case 'u':
-		//++++++++++++
+		try {
+			Update(imagename, palname, specs, "Exult image file");
+		} catch (exult_exception& e){
+			cerr << e.what() << endl;
+			exit(1);
+		}
 		break;
 	default:
 		Usage();
