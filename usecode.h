@@ -171,13 +171,11 @@ class Usecode_machine
 	int party_count;		// # of NPC's in party.
 	Game_object *caller_item;	// Item this is being called on.
 	char *user_choice;		// String user clicked on.
-	int user_choice_num;		// User choice # (0 if first).
 	char *string;			// The single string register.
 	void append_string(char *txt);	// Append to string.
 	void say_string();		// "Say" the string.
 	Usecode_value *stack;		// Stack.
 	Usecode_value *sp;		// Stack ptr.  Grows upwards.
-	unsigned char choice_made;	// 1 when user clicks on a choice.
 	void stack_error(int under);
 	void push(Usecode_value& val)	// Push/pop stack.
 		{ *sp++ = val; }
@@ -233,7 +231,8 @@ class Usecode_machine
 					// Call instrinsic function.
 	Usecode_value call_intrinsic(int intrinsic, int num_parms);
 	void click_to_continue();	// Wait for user to click.
-	int get_user_choice();		// Get user's choice.
+	char *get_user_choice();	// Get user's choice.
+	int get_user_choice_num();
 					// Run the function.
 	void run(Usecode_function *fun, int event);
 					// Call desired function.
@@ -258,8 +257,6 @@ public:
 		caller_item = 0;
 		return ret;
 		}
-					// User clicked on a response.
-	void chose_response(int response);
 	};
 
 #endif	/* INCL_USECODE */

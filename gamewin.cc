@@ -1442,9 +1442,11 @@ void Game_window::show_avatar_choices
 
 /*
  *	User clicked during a conversation.
+ *
+ *	Output:	Index (0-n) of choice, or -1 if not on a choice.
  */
 
-void Game_window::conversation_choice
+int Game_window::conversation_choice
 	(
 	int x, int y			// Where mouse was clicked.
 	)
@@ -1454,7 +1456,10 @@ void Game_window::conversation_choice
 			!conv_choices[i].has_point(x, y); i++)
 		;
 	if (conv_choices[i].w != 0)	// Found one?
-		usecode->chose_response(i);
+		return (i);
+	else
+		return (-1);
+//++++		usecode->chose_response(i);
 	}
 
 /*
