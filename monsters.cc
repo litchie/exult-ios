@@ -165,7 +165,7 @@ Monster_actor *Monster_actor::create
 	{
 	Game_window *gwin = Game_window::get_instance();
 					// Get 'monsters.dat' info.
-	const Monster_info *inf = gwin->get_info(shnum).get_monster_info();
+	const Monster_info *inf = ShapeID::get_info(shnum).get_monster_info();
 	if (!inf)
 		inf = Monster_info::get_default();
 	Monster_actor *monster = create(shnum);

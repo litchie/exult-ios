@@ -1661,7 +1661,7 @@ void Lab_schedule::now_what
 				{
 				int nframes = ShapeID(340, 0).get_num_frames();
 				Game_object *p = gwin->create_ireg_object(
-					gwin->get_info(340), 340,
+					ShapeID::get_info(340), 340,
 					rand()%nframes, 0, 0, 0);
 				p->move(t);
 				}

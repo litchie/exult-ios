@@ -65,8 +65,6 @@ public:
 		{ return files[(int) f]; };
 	Shapes_vga_file& get_shapes()
 		{ return shapes; }
-	Shape_info& get_info(int shnum)	// Get info. about shape.
-		{ return shapes.get_info(shnum); }
 	// BG Only
 	inline bool can_use_paperdolls() const
 	{ return bg_paperdolls_allowed; }
@@ -153,7 +151,10 @@ public:
 		{ shapefile = shfile; shape = 0; }
 
 	int get_num_frames() const;
-	Shape_info& get_info() const;	// Get info. about shape.
+	Shape_info& get_info() const	// Get info. about shape.
+		{ return Shape_manager::instance->shapes.get_info(shapenum); }
+	static Shape_info& get_info(int shnum)	// Get info. about shape.
+		{ return Shape_manager::instance->shapes.get_info(shnum); }
 	};
 
 #endif

@@ -238,18 +238,15 @@ void Portrait_button::paint(Game_window *gwin)
 
 		if (hit)
 		{
-			s->paint_rle_outline(gwin->get_win()->get_ib8(), px, py,
-				gwin->get_hit_pixel());
+			gwin->paint_outline(px, py, s, HIT_PIXEL);
 		}
 		else if (pois)
 		{
-			s->paint_rle_outline(gwin->get_win()->get_ib8(), px, py,
-				gwin->get_poison_pixel());
+			gwin->paint_outline(px, py, s, POISON_PIXEL);
 		}
 		else if (prot)
 		{
-			s->paint_rle_outline(gwin->get_win()->get_ib8(), px, py,
-				gwin->get_protect_pixel());
+			gwin->paint_outline(px, py, s, PROTECT_PIXEL);
 		}
 	}
 
