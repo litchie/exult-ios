@@ -1495,7 +1495,7 @@ int Game_object::compare
 		return 0;		// Equal.
 	if (xover & yover & zover)	// Complete overlap?
 		if (!inf1.zs)		// Flat one is always drawn first.
-			return -1;
+			return !inf2.zs ? 0 : -1;
 		else if (!inf2.zs)
 			return 1;
 	if (xcmp >= 0 && ycmp >= 0 && zcmp >= 0)
