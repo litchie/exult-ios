@@ -5,7 +5,7 @@
 /*
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@
 #include "gamewin.h"	/* With some work, could get rid of this. */
 #include "bodies.h"
 #include "game.h"
-#include "objiter.h"
+#include "objiter.cc"	/* Yes we #include the .cc here on purpose! Please don't "fix" this */
 #include <fstream>
 
 using std::cerr;
@@ -73,7 +73,6 @@ using std::string;
 using std::strlen;
 using std::srand;
 using std::vector;
-using std::snprintf;
 
 /*
  *	Create a chunk.

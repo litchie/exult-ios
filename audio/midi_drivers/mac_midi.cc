@@ -143,36 +143,24 @@ void	Mac_QT_midi::start_track(XMIDIEventList *elist, bool repeat)
 
 	// Set the time scale (units per second), we want milliseconds
 	tpError = TuneSetTimeScale(mTunePlayer, 1000);
-	if (tpError != noErr)
-		DebugStr("\pMIDI error during TuneSetTimeScale");
+	assert (tpError == noErr);
 
 	// Set the header, to tell what instruments are used
 	tpError = TuneSetHeader(mTunePlayer, (UInt32 *)mTuneHeader);
-	if (tpError != noErr)
-		DebugStr("\pMIDI error during TuneSetHeader");
+	assert (tpError == noErr);
 	
 	// Have it allocate whatever resources are needed
 	tpError = TunePreroll(mTunePlayer);
-	if (tpError != noErr)
-		DebugStr("\pMIDI error during TunePreroll");
+	assert (tpError == noErr);
 
 	// We want to play at normal volume
 	tpError = TuneSetVolume(mTunePlayer, 0x00010000);
-	if (tpError != noErr)
-		DebugStr("\pMIDI error during TuneSetVolume");
+	assert (tpError == noErr);
 	
 	// Finally, start playing the full song
 	tpError = TuneQueue(mTunePlayer, (UInt32 *)mTuneSequence, 0x00010000, 0, 0xFFFFFFFF, queueFlags, NULL, 0);
-	if (tpError != noErr)
-		DebugStr("\pMIDI error during TuneQueue");
+	assert (tpError == noErr);
 
-
-#if defined(DEBUG) && 0
-	// Loop until music is finished
-	while(is_playing() && !Button())
-		;
-#endif
-	
 	return;
 	
 bail:

@@ -22,10 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma implementation
-#endif
-
 //Windows-specific code
 #ifdef WIN32
 

@@ -58,7 +58,6 @@ using std::memcpy;
 using std::memset;
 using std::rand;
 using std::ostream;
-using std::snprintf;
 using std::strchr;
 using std::string;
 

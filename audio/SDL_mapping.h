@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,10 +18,6 @@
 
 #ifndef _SDL_mapping_h_
 #define _SDL_mapping_h_
-
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma interface
-#endif
 
 #include <SDL_audio.h>
 #include <SDL_timer.h>

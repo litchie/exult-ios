@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,10 +21,6 @@
 #endif
 
 #ifndef PENTAGRAM // Exult only at this stage. 
-
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma implementation
-#endif
 
 #include "SDL_mapping.h"
 #include <SDL.h>

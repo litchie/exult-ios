@@ -30,7 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 using std::size_t;
-using std::snprintf;
 
 #define TWO_HANDED_BROWN_SHAPE	48
 #define TWO_HANDED_BROWN_FRAME	0

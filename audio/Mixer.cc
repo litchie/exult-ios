@@ -22,10 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef PENTAGRAM // Exult only at this stage. 
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma implementation
-#endif
-
 #include "Mixer.h"
 
 #include <SDL_audio.h>

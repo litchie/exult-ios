@@ -102,7 +102,6 @@ using std::string;
 using std::strlen;
 using std::srand;
 using std::vector;
-using std::snprintf;
 
 					// THE game window:
 Game_window *Game_window::game_window = 0;

@@ -92,8 +92,8 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DCOCOA"
 		AC_DEFINE(MACOSX)
 		AC_MSG_RESULT(Cocoa (MacOS X))
-		SYSLIBS="-lstdc++ -framework QuickTime"
-		CXXFLAGS="$CXXFLAGS -fpascal-strings"
+		SYSLIBS="-framework QuickTime"
+		CXXFLAGS="$CXXFLAGS"
 		EXULT_DATADIR="data"
 		ARCH=macosx
 		;;
@@ -354,7 +354,7 @@ fi
 # ---------------------------------------------------------------------
 AC_MSG_CHECKING(whether to enable support for Exult Studio)
 AC_ARG_ENABLE(exult-studio-support, [  --enable-exult-studio-support   Enable ExultStudio support [default yes]],,enable_exult_studio_support=yes)
-if test $WINDOWING_SYSTEM != -DXWIN ; then
+if test "$WINDOWING_SYSTEM" != -DXWIN ; then
 	enable_exult_studio_support=no
 fi
 
@@ -742,13 +742,3 @@ echo Build ExultStudio.......... : $enable_exult_studio
 
 echo
 echo "Now type 'make' to build Exult"
-
-
-
-
-
-
-
-
-
-
