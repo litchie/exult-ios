@@ -403,6 +403,7 @@ void Audio::Init(int _samplerate,int _channels)
          if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
                  fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
          }
+	SDL_PauseAudio(1);		// Disable playing.
 
 #if 0
          cout << "We think SDL will call-back for " << actual.samples <<" bytes at a time." << endl;
@@ -417,9 +418,10 @@ void Audio::Init(int _samplerate,int _channels)
 #if DEBUG
 	cout << "Audio system assembled. Audio buffer at "<<_buffering_unit<<endl;
 #endif
+	SDL::LockAudio();
 	midi=new MyMidiPlayer();
 	mixer=new Mixer(this, _buffering_unit,_channels,actual.silence);
-	SDL_PauseAudio(0);		// Enable playing.
+	SDL::UnlockAudio();
 #if DEBUG
 	cout << "Audio initialisation OK" << endl;
 #endif
