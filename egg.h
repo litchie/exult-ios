@@ -40,11 +40,10 @@ class   Monster_actor;
 class Egglike_game_object : public Ireg_game_object
 	{
 public:
-					// Create from ireg. data.
-	Egglike_game_object(unsigned char l, unsigned char h, 
-				unsigned int shapex,
-				unsigned int shapey, unsigned int lft = 0)
-		: Ireg_game_object(l, h, shapex, shapey, lft)
+	Egglike_game_object(int shapenum, int framenum,
+				unsigned int tilex,
+				unsigned int tiley, unsigned int lft = 0)
+		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
 					// Render.
 	virtual void paint(Game_window *gwin);
@@ -68,6 +67,7 @@ protected:
 	Rectangle area;			// Active area.
 	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
 	Monster_actor *monster_created;	// ->monster created.
+	void init_field(unsigned char ty);
 public:
 	enum Egg_types {		// Types of eggs:
 		monster = 1,
@@ -79,7 +79,11 @@ public:
 		teleport = 7,
 		weather = 8,
 		path = 9,
-		button = 10
+		button = 10,
+					// Our own:
+		fire_field = 128,
+		sleep_field = 129,
+		poison_field = 130
 		};
 	enum Egg_flag_shifts {
 		nocturnal = 0,
@@ -98,11 +102,15 @@ public:
 		external_criteria = 7	// Appears on Isle of Avatar.  Guessing
 					//   these set off all nearby.
 		};
-					// Create from ireg. data.
-	Egg_object(unsigned char l, unsigned char h, unsigned int shapex,
-		unsigned int shapey, unsigned int lft, 
+					// Create normal eggs.
+	Egg_object(int shapenum, int framenum, unsigned int tilex,
+		unsigned int tiley, unsigned int lft, 
 		unsigned short itype,
 		unsigned char prob, short d1, short d2);
+					// Ctor. for fields:
+	Egg_object(int shapenum, int framenum, unsigned int tilex, 
+				unsigned int tiley, unsigned int lft,
+				unsigned char ty);
 	virtual ~Egg_object();
 	void set_area();		// Set up active area.
 	int get_distance() const
@@ -119,9 +127,6 @@ public:
 		{ return area; }
 	int is_solid_area() const
 		{ return solid_area; }
-#if 0	/* ++++Going away. Is_active() does the test. */
-	int within_distance(int abs_tx, int abs_ty) const;
-#endif
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 	void activate(Usecode_machine *umachine, Game_object *obj,
@@ -136,18 +141,22 @@ public:
 
 /*
  *	An object that cycles through its frames, or wiggles if just one
- *	frame.  The base class is for non-Ireg ones.
+ *	frame.
  */
 class Animated_egg_object : public Egg_object
 	{
 	Animator *animator;		// Controls animation.
 public:
-					// Create from ireg. data.
-	Animated_egg_object(unsigned char l, unsigned char h, 
-		unsigned int shapex,
-		unsigned int shapey, unsigned int lft, 
+	Animated_egg_object(int shapenum, int framenum,
+		unsigned int tilex,
+		unsigned int tiley, unsigned int lft, 
 		unsigned short itype,
 		unsigned char prob, short d1, short d2);
+	Animated_egg_object(int shapenum, int framenum, unsigned int tilex, 
+				unsigned int tiley, unsigned int lft,
+				unsigned char ty)
+		: Egg_object(shapenum, framenum, tilex, tiley, lft, ty)
+		{  }
 	virtual ~Animated_egg_object();
 					// Render.
 	virtual void paint(Game_window *gwin);
@@ -155,7 +164,25 @@ public:
 	virtual int is_findable(Game_window *gwin)
 		{ return Ireg_game_object::is_findable(gwin); }
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
+	};
+
+/*
+ *	Fields are activated like eggs.
+ */
+
+class Field_object : public Animated_egg_object
+	{
+public:
+	Field_object(int shapenum, int framenum, unsigned int tilex, 
+		unsigned int tiley, unsigned int lft, unsigned char ty)
+		: Animated_egg_object(shapenum, framenum, tilex, tiley,
+							lft, ty)
+		{  }
+					// Run usecode function.
+	virtual void activate(Usecode_machine *umachine, int event = 1);
+					// Write out to IREG file.
+	virtual void write_ireg(ostream& out);
 	};
 
 #endif

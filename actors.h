@@ -437,10 +437,6 @@ class Dead_body : public Container_game_object
 	Dead_body *next_body, *prev_body;
 	void link();			// Add to list & set decay hour.
 public:
-	Dead_body(unsigned char l, unsigned char h, unsigned int shapex,
-				unsigned int shapey, unsigned int lft, int n)
-		: Container_game_object(l, h, shapex, shapey, lft), npc_num(n)
-		{ link(); }
 	Dead_body(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft, int n)
 		: Container_game_object(shapenum, framenum, tilex, tiley, lft),

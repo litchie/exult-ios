@@ -102,12 +102,6 @@ public:
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
 			  lift(ifix[1] & 0xf), quality(0), cx(255), cy(255)
 		{  }
-					// Create from ireg. data.
-	Game_object(unsigned char l, unsigned char h, unsigned int shapex,
-				unsigned int shapey, unsigned int lft = 0)
-		: ShapeID(l, h), shape_pos((shapex << 4) + shapey), 
-			lift(lft), quality(0), cx(255), cy(255)
-		{  }
 	Game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: ShapeID(shapenum, framenum),
@@ -390,17 +384,11 @@ protected:
 	unsigned flags:32;		// 32 flags used in 'usecode'.
 	unsigned flags2:32;		// Another 32 flags used in 'usecode'.
 public:
-					// Create from ireg. data.
-	Ireg_game_object(unsigned char l, unsigned char h, 
-				unsigned int shapex,
-				unsigned int shapey, unsigned int lft = 0)
-		: Game_object(l, h, shapex, shapey, lft), owner(0), 
-			flags(0),flags2(0),lowlift(-1), highshape (-1)
-		{  }
 	Ireg_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
-				owner(0), flags(0), flags2(0), lowlift(-1), highshape (-1)
+				owner(0), flags(0), flags2(0), lowlift(-1), 
+				highshape (-1)
 		{  }
 					// Copy constructor.
 	Ireg_game_object(const Ireg_game_object& obj2)
@@ -471,7 +459,7 @@ class Spellbook_object : public Ireg_game_object
 public:
 	friend class Spellbook_gump;
 					// Create from ireg. data.
-	Spellbook_object(unsigned char l, unsigned char h, unsigned int shapex,
+	Spellbook_object(int shapenum, int framenum, unsigned int shapex,
 		unsigned int shapey, unsigned int lft, unsigned char *c,
 		unsigned long f);
 	int add_spell(int spell);	// Add a spell.
@@ -493,17 +481,11 @@ protected:
 	int get_max_volume() const	// Max. we'll hold. (0 == infinite).
 		{ return 4*get_volume(); }
 public:
-	Container_game_object(unsigned char l, unsigned char h, 
-				unsigned int shapex,
-				unsigned int shapey, unsigned int lft,
-				unsigned char res = 0)
-		: Ireg_game_object(l, h, shapex, shapey, lft),
-		  volume_used(0), resistance(res), objects(0)
-		{  }
 	Container_game_object(int shapenum, int framenum, unsigned int tilex, 
-				unsigned int tiley, unsigned int lft = 0)
+				unsigned int tiley, unsigned int lft,
+				unsigned char res = 0)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
-		  volume_used(0), resistance(0), objects(0)
+		  volume_used(0), resistance(res), objects(0)
 		{  }
 	Container_game_object() : volume_used(0), resistance(0),
 		objects(0) {  }
