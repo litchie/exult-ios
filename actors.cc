@@ -1640,10 +1640,8 @@ int Actor::inventory_shapenum()
 	else if (!serpent && !Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
 		return (65);
 	// Pickpocket Cheat paperdolls
-	else if (serpent)
+	else /* if (serpent) */
 		return (123);
-	
-	return 0;
 }
 
 

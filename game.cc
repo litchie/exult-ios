@@ -36,6 +36,8 @@
 #include "flic/playfli.h"
 #include "font.h"
 #include "game.h"
+#include "bggame.h"
+#include "sigame.h"
 #include "gamewin.h"
 #include "keys.h"
 #include "mouse.h"
@@ -428,7 +430,7 @@ bool wait_delay(int ms, int startcol, int ncol)
 				mouse_down = true;
 				break;
 			case SDL_MOUSEBUTTONUP:
-				if (mouse_down)
+				//if (mouse_down)
 					return true;
 				break;
 			default:
@@ -447,5 +449,6 @@ bool wait_delay(int ms, int startcol, int ncol)
 		else
 			SDL_Delay(delay - (ticks2 - ticks1));
 	}
+	
 	return false;
 }

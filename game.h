@@ -113,44 +113,6 @@ public:
 	void clear_jive () {jive = false;}
 };
 
-class BG_Game: public Game {
-public:
-	BG_Game();
-	~BG_Game();
-	
-	virtual void play_intro();
-	virtual void end_game(bool success);
-	virtual void top_menu();
-	virtual void show_quotes();
-	virtual void show_credits();
-	virtual bool new_game(Vga_file &shapes);
-	virtual int  get_start_tile_x()
-		{ return (64*c_tiles_per_chunk); }
-	virtual int  get_start_tile_y()
-		{ return (136*c_tiles_per_chunk); }
-	virtual void show_journey_failed();
-	static bool is_installed(const char *path);
-};
-
-class SI_Game: public Game {
-public:
-	SI_Game();
-	~SI_Game();
-	
-	virtual void play_intro();
-	virtual void end_game(bool success);
-	virtual void top_menu();
-	virtual void show_quotes();
-	virtual void show_credits();
-	virtual bool new_game(Vga_file &shapes);
-	virtual int  get_start_tile_x()
-		{ return (25*c_tiles_per_chunk); }
-	virtual int  get_start_tile_y()
-		{ return (155*c_tiles_per_chunk); }
-	virtual void show_journey_failed();
-	static bool is_installed(const char *path);
-};
-
 extern Game *game;
 extern bool wait_delay(int ms, int startcol = 0, int ncol = 0);
 extern Exult_Game exult_menu(Game_window *gwin);

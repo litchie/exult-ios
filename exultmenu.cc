@@ -27,6 +27,8 @@
 #include "gamewin.h"
 #include "ibuf8.h"
 #include "game.h"
+#include "bggame.h"
+#include "sigame.h"
 #include "Audio.h"
 #include "font.h"
 #include "cheat.h"

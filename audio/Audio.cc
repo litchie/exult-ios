@@ -376,13 +376,8 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 		sint16 *stereo_data=new sint16[l*2];
 		for(size_t i=0,j=0;i<l;i++)
 		{
-#if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
-			stereo_data[j++]=(new_data[i]-128);
-			stereo_data[j++]=(new_data[i]-128);
-#else
 			stereo_data[j++]=(new_data[i]-128)<<8;
 			stereo_data[j++]=(new_data[i]-128)<<8;
-#endif
 		}
 		l *= 4; // because it's 16bit
 		delete [] new_data;
@@ -515,13 +510,13 @@ void	Audio::start_music(const char *fname, int num, bool repetition)
 {
 	if(audio_enabled && music_enabled && midi != 0)
 		midi->start_music(fname,num,repetition);
-	}
+}
 
 void Audio::start_music(XMIDI *mid_file,bool repetition)
 {
 	if(audio_enabled && music_enabled && midi != 0)
 		midi->start_track(mid_file,repetition);
-	}
+}
 
 void	Audio::start_music_combat (Combat_song song, bool repetition, int bank)
 {

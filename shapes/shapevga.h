@@ -1,35 +1,33 @@
-/**
- **	Shapevga.h - Handle the 'shapes.vga' file and associated info.
- **
- **	Written: 4/29/99 - JSF
- **/
+/*
+ *	shapevga.h - Handle the 'shapes.vga' file and associated info.
+ *
+ *  Copyright (C) 1999  Jeffrey S. Freedman
+ *  Copyright (C) 2000-2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifndef INCL_SHAPEVGA
 #define INCL_SHAPEVGA	1
-
-/*
-Copyright (C) 1998  Jeffrey S. Freedman
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
 
 #include <fstream>
 #include <iostream>
 #ifdef MACOS
   #include <cassert>
 #endif
+#include "autoarray.h"
 #include "fnames.h"
 #include "imagebuf.h"
 #include "vgafile.h"
