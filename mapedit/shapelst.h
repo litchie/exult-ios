@@ -109,7 +109,7 @@ public:
 		{ framenum0 = f; }
 	void shape_dropped_here(int file, int shapenum, int framenum);
 	int get_count();		// Get # shapes we can display.
-	virtual void search(char *srch, int dir);
+	virtual void search(const char *srch, int dir);
 	virtual void locate(bool upwards);	// Locate shape on game map.
 					// Turn off selection.
 	void unselect(bool need_render = true);

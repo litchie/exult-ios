@@ -2,6 +2,7 @@
 #  include <config.h>
 #endif
 
+#include <ctype.h>
 #include <gdk/gdkkeysyms.h>
 #include "objbrowse.h"
 #include "shapegroup.h"
@@ -32,48 +33,35 @@ void Object_browser::set_widget(GtkWidget *w)
 	widget = w;
 }
 
-#if 0	/* ++++++Remove*/
 /*
- *	Save current position in 'file' this came from.
+ *	Search a name for a string, ignoring case.
  */
 
-void Object_browser::save_pos
+bool Object_browser::search_name
 	(
+	const char *nm,
+	const char *srch
 	)
 	{
-	if (file_info)
+	char first = tolower(*srch);
+	while (*nm)
 		{
-		int vvalue = 0;		// Get vertical scroll.
-		if (vscroll)
+		if (tolower(*nm) == first)
 			{
-			GtkAdjustment *adj = gtk_range_get_adjustment(
-						GTK_RANGE(vscroll));
-			vvalue = (int) adj->value;
+			const char *np = nm + 1, *sp = srch + 1;
+			while (*sp && tolower(*np) == tolower(*sp))
+				{
+				sp++;
+				np++;
+				}
+			if (!*sp)	// Matched to end of search string.
+				return true;
 			}
-		file_info->set_save_pos(selected, vvalue);
+		nm++;
 		}
+	return false;
 	}
 
-/*
- *	Restore position from the last time.
- */
-
-void Object_browser::restore_pos
-	(
-	)
-	{
-	if (!file_info)
-		return;
-	int vvalue;			// Get prev. values.
-	file_info->get_save_pos(selected, vvalue);
-	if (vscroll)			// Restore vertical scroll.
-		{
-		GtkAdjustment *adj = gtk_range_get_adjustment(
-						GTK_RANGE(vscroll));
-		gtk_adjustment_set_value(adj, vvalue);
-		}
-	}
-#endif
 
 bool Object_browser::server_response(int , unsigned char *, int )
 {

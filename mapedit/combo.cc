@@ -1626,7 +1626,7 @@ void Combo_chooser::move
 
 void Combo_chooser::search
 	(
-	char *srch,			// What to search for.
+	const char *srch,		// What to search for.
 	int dir				// 1 or -1.
 	)
 	{
@@ -1643,7 +1643,7 @@ void Combo_chooser::search
 		{
 		int num = group ? (*group)[i] : i;
 		const char *nm = combos[i]->name.c_str();
-		if (nm && strstr(nm, srch))
+		if (nm && search_name(nm, srch))
 			break;		// Found it.
 		}
 	if (i == stop)
