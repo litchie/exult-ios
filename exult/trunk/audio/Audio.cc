@@ -227,7 +227,7 @@ void Audio::Init(int _samplerate,int _channels)
 void	Audio::Init_sfx()
 {
 	if (sfx_file)
-		return;			// Already done.
+		delete sfx_file;
 
 	if (Game::get_game_type() == SERPENT_ISLE)
 		bg2si_sfxs = bgconv;

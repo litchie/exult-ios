@@ -1,5 +1,6 @@
 2001-08-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs.cc: fixed serpent ring/ring naming problem
+	* game.*, gamewin.cc, exult.cc: fixed 'return to menu' problem with SFX
 
 2001-08-05  Max Horn <max@quendi.de>
 	* flic/playfli.h: was not double include protected! (caused troubles when using precompile headers)

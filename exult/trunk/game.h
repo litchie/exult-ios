@@ -55,10 +55,12 @@ private:
 	std::map<const char*, str_int_pair, ltstr> resources;
 #endif
 	Mouse *menu_mouse;
+	static std::string gametitle;
 protected:
 	int topx, topy, centerx, centery;
 	Vga_file menushapes;
 	bool	jive;
+
 public:
 	Game_window *gwin;
 	Image_window8 *win;
@@ -83,6 +85,8 @@ public:
 	static void clear_avname ();
 	static void clear_avsex ();
 	static void clear_avskin ();
+
+	static std::string get_gametitle() { return gametitle; }
 	
 	virtual void play_intro() =0;
 	virtual void end_game(bool success) =0;
