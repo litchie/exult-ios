@@ -2721,8 +2721,8 @@ USECODE_INTRINSIC(nap_time)
 	if (!bed)
 		return no_ret;
 					// !!! Seems 622 handles sleeping.
-	Vector npcs;			// See if bed is occupied.
-	int cnt = bed->find_nearby(npcs, -359, 0, 0);
+	Vector npcs;			// See if bed is occupied by an NPC.
+	int cnt = bed->find_nearby(npcs, -359, 0, 8);
 	if (cnt > 0)
 		{
 		int i;
