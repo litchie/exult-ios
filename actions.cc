@@ -74,7 +74,8 @@ Actor_action *Actor_action::walk_to_tile
 	(
 	Tile_coord src,
 	Tile_coord dest,
-	int move_flags
+	int move_flags,
+	int /* dist */			// Ignored.
 	)
 	{
 	Zombie *path = new Zombie();
@@ -375,13 +376,15 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	(
 	Tile_coord src,			// tx=-1 or ty=-1 means don't care.
 	Tile_coord dest,		// Same here.
-	int move_flags
+	int move_flags,
+	int dist			// Distance to get to within dest.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	blocked = 0;			// Clear 'blocked' count.
 	reached_end = false;		// Starting new path.
 	from_offscreen = false;
+				//+++++Should dist be used below??:
 					// Set up new path.
 					// Don't care about 1 coord.?
 	if (dest.tx == -1 || dest.ty == -1)
@@ -421,7 +424,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 		}
 	else
 		{
-		Actor_pathfinder_client cost(move_flags);
+		Actor_pathfinder_client cost(move_flags, dist);
 		if (!path->NewPath(src, dest, &cost))
 			return (0);
 		}
