@@ -513,8 +513,8 @@ static void Handle_events
 		if (show_mouse)
 			Mouse::mouse->show();	// Re-display mouse.
 
-					// Rotate less often if scaling.
-		if (ticks > last_rotate + (100 << (scale==1?0:1)))
+					// Rotate less often if scaling and not paletized.
+		if (ticks > last_rotate + (100 << (gwin->get_win()->is_palettized()||scale==1?0:1)))
 			{		// (Blits in simulated 8-bit mode.)
 			gwin->get_win()->rotate_colors(0xf8, 4, 0);
 			gwin->get_win()->rotate_colors(0xf4, 4, 0);

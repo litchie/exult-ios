@@ -1,4 +1,7 @@
 2001-09-18  Ryan Nunn <triforce@merlin.net.au>
+	* exult.cc : Always do full speed palette cycling in 8 bit modes
+
+2001-09-18  Ryan Nunn <triforce@merlin.net.au>
 	* audio/Midi.cc, audio/Midi.h : Fixed some potential bugs and added
 	  some extra methods to retreive the current playing track and if the
 	  current track is repeating.
