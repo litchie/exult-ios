@@ -43,7 +43,6 @@ using std::ostream;
 
 void Ireg_game_object::paint
 	(
-	Game_window *gwin
 	)
 	{
 	int x, y;

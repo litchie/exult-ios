@@ -249,13 +249,12 @@ void Monster_actor::delete_all
 
 void Monster_actor::paint
 	(
-	Game_window *gwin
 	)
 	{
 	// Animate first
 	if (animator)			// Be sure animation is on.
 		animator->want_animation();
-	Npc_actor::paint(gwin);		// Draw on screen.
+	Npc_actor::paint();		// Draw on screen.
 	}
 
 /*

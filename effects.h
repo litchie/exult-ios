@@ -76,7 +76,7 @@ public:
 	virtual ~Special_effect()
 		{  }
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	virtual int is_weather()	// Need to distinguish weather.
 		{ return 0; }
 	virtual int is_text(Game_object *it = 0)
@@ -105,7 +105,7 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	};
 
 /*
@@ -148,7 +148,7 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	};
 
 /*
@@ -169,7 +169,7 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	};
 
 /*
@@ -193,7 +193,7 @@ public:
 					// At timeout, remove from screen.
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Check for matching item if !null.
 	virtual int is_text(Game_object *it = 0)
 		{ return !it || it == item; }
@@ -257,7 +257,7 @@ public:
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	};
 
 /*
@@ -321,7 +321,7 @@ public:
 	Cloud(short dx, short dy);
 					// Move to next position & paint.
 	void next(Game_window *gwin, unsigned long curtime, int w, int h);
-	void paint(Game_window *gwin);
+	void paint();
 	};
 
 /*
@@ -336,7 +336,7 @@ public:
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	virtual ~Clouds_effect()
 		{ delete [] clouds; }
 	};

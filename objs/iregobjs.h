@@ -54,8 +54,8 @@ public:
 	void set_flags(uint32 f)	// For initialization.
 		{ flags = f; }
 					// Render.
-	virtual void paint(Game_window *gwin);
-	virtual void paint_terrain(Game_window *gwin) {  }
+	virtual void paint();
+	virtual void paint_terrain() {  }
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
 	void move(Tile_coord t)

@@ -83,7 +83,7 @@ protected:
 					// A frame sequence for each dir.:
 	static Frames_sequence *frames[8];
 					// Draw weapon in hand
-	void paint_weapon(Game_window *gwin);
+	void paint_weapon();
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Tile_coord schedule_loc;	// Location (x,y) of Shedule
 	unsigned char next_schedule;	// Used so correct schedule type 
@@ -328,7 +328,7 @@ public:
 					int backwards = 0, int delay = -1)
 		{  }
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 	virtual bool edit();		// Edit in ExultStudio.
@@ -542,7 +542,7 @@ public:
 	virtual void update_schedule(Game_window *gwin, int hour3, 
 					int backwards = 0, int delay = -1);
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// For Time_sensitive:

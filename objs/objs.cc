@@ -637,7 +637,6 @@ void Game_object::say
 
 void Game_object::paint
 	(
-	Game_window *gwin
 	)
 	{
 	int x, y;
@@ -1579,10 +1578,9 @@ void Game_object::write_common_ireg
 
 void Terrain_game_object::paint_terrain
 	(
-	Game_window *gwin
 	)
 	{
-	paint(gwin);
+	paint();
 	}
 
 /*

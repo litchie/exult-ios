@@ -333,7 +333,7 @@ void Game_render::paint_chunk_flats
 	Flat_object_iterator next(olist);// Now do flat RLE objects.
 	Game_object *obj;
 	while ((obj = next.get_next()) != 0)
-		obj->paint(gwin);
+		obj->paint();
 	}
 
 /*
@@ -386,7 +386,7 @@ void Game_render::paint_object
 		if (dep && dep->render_seq != render_seq)
 			paint_object(dep);
 		}
-	obj->paint(Game_window::get_instance());// Finally, paint this one.
+	obj->paint();			// Finally, paint this one.
 	}
 
 /*
