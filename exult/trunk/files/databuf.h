@@ -25,6 +25,7 @@
 #  include <cassert>
 #endif
 #include <fstream>
+#include <iomanip>
 #include "U7file.h"
 #include "utils.h"
 
@@ -235,7 +236,10 @@ public:
 class BufferDataSource: public DataSource
 {
 protected:
-	unsigned char *buf, *buf_ptr;
+	/* const solely so that no-one accidentally modifies it.
+		data is being passed 'non-const' anyway */
+	const unsigned char *buf;
+	unsigned char *buf_ptr;
 	std::size_t size;
 public:
 	BufferDataSource(char *data, unsigned int len)
@@ -336,7 +340,7 @@ public:
 		buf_ptr += len;
 	};
 	
-	virtual void seek(unsigned int pos) { buf_ptr = buf+pos; };
+	virtual void seek(unsigned int pos) { buf_ptr = const_cast<unsigned char *>(buf)+pos; };
 	
 	virtual void skip(int pos) { buf_ptr += pos; };
 	
@@ -347,6 +351,80 @@ public:
 	unsigned char *getPtr() { return buf_ptr; };
 };
 
+/*<Darke> Ok. So the 'working stack' (StackBufferDataSource, can you think of a better name?
+ *grin*) needs an additional set of push??() operators, that take the value to push, and
+an offset to the end of the stack. And it will also need a constructor and a destructor
+that will new and delete a fixed buffer, so I don't have to worry about carrying pointers
+around to delete them afterwards. *grin*
+<Colourless> well, bufferdatasource already knows where the end of the buffer is
+<Colourless> buf_ptr can be used as the stack pointer
+<Colourless> when the stack is created it is just set to buf+size
+<Colourless> push2 would then decrement buf by 2, then writes 2 bytes
+<Colourless> push4 would do the same, but for 4 bytes
+<Colourless> getting the current stack pointer is as simple as just using getPos()
+<Colourless> um oops, push2 would acually work from buf_ptr, not buf as i wrote
+<Darke> Thanks. *grin* I was just trying to work out why you were decrementing rather then incrementing. *grin*
+<Colourless> skip() will also work as the add sp instructor
+<Colourless> instrucion i mean
+<Colourless> instruction actually :-)
+*/
+class StackBufferDataSource : protected BufferDataSource
+{
+	public:
+		StackBufferDataSource(unsigned int len=32768) : BufferDataSource(new char[len], len)
+		{
+			buf_ptr = const_cast<unsigned char *>(buf)+len;
+		};
+		~StackBufferDataSource() { delete buf; };
+		
+		void push2(uint16 val)
+		{
+			buf_ptr-=2;
+			buf_ptr[0] =  val     & 0xFF;
+			buf_ptr[1] = (val>>8) & 0xFF;
+		}
+		
+		void push4(uint32 val)
+		{
+			buf_ptr-=4;
+			buf_ptr[0] =  val      & 0xFF;
+			buf_ptr[1] = (val>>8)  & 0xFF;
+			buf_ptr[2] = (val>>16) & 0xFF;
+			buf_ptr[4] = (val>>24) & 0xFF;
+		}
+		
+		uint16 access2(const uint32 offset) const
+		{
+			return (buf_ptr[offset] | (buf_ptr[offset+1] << 8));
+		};
+		
+		uint32 access4(const uint32 offset) const
+		{
+			return (buf_ptr[offset] | (buf_ptr[offset+1]<<8) | (buf_ptr[offset+2]<<16) | (buf_ptr[offset+3]<<24));
+		};
+		
+		uint32 stacksize() const { return buf+size-buf_ptr; };
+		
+		/* temp debugging */
+		std::ostream &print(std::ostream &o)
+		{
+//			o << std::setfill('0') << std::hex;
+			/*char fill = o.fill();
+			o.fill('0');
+			std::ios::fmtflags oldflags = o.flags();
+			o.unsetf(std::ios::dec);
+			o.setf(std::ios::uppercase | std::ios::hex);*/
+			for(const unsigned char *c=buf_ptr; c!=buf+size; ++c)
+				printf(" %02X", static_cast<unsigned int>(*c));
+//				o << ' ' << std::setw(2) << static_cast<unsigned int>(*c);
+//			o.fill(fill);
+//			o.flags(oldflags);
+			return o;
+		}
+		
+	private:
+};
+
 class ExultDataSource: public BufferDataSource {
 public:
 	ExultDataSource(const char *fname, int index):
@@ -354,7 +432,7 @@ public:
 	{
 		U7object obj(fname, index);
 		buf = reinterpret_cast<unsigned char*>(obj.retrieve(size));
-		buf_ptr = buf;
+		buf_ptr = const_cast<unsigned char *>(buf);
 	};
 	
 	~ExultDataSource()
