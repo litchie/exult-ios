@@ -44,6 +44,7 @@ class Combo_member
 public:
 	friend class Combo;
 	friend class Combo_editor;
+	friend class Combo_chooser;
 	Combo_member(short x, short y, short z, short sh, short fr)
 		: tx(x), ty(y), tz(z), shapenum(sh), framenum(fr)
 		{  }
