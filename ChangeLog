@@ -1,4 +1,7 @@
-2001-05-11  Jeff Freedman  <jeff@amy.nerble.net>
+2001-05-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* keys.*: cleaned up
+
+2001-05-10  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* In Linux:  Link exult_studio.glade into the Exult data
 	directory, and be sure data_path is set in .exult.cfg.  Then,
