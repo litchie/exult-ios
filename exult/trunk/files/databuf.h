@@ -290,7 +290,7 @@ class BufferDataSource: public DataSource
 {
 protected:
 	unsigned char *buf, *buf_ptr;
-	unsigned int size;
+	size_t size;
 public:
 	BufferDataSource(char *data, unsigned int len)
 	{
