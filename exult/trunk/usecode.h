@@ -265,24 +265,10 @@ public:
 	USECODE_FUNCTION_DECL(input_numeric_value);
 	USECODE_FUNCTION_DECL(set_item_shape);
 	USECODE_FUNCTION_DECL(die_roll);
-#if 0
-	Usecode_value	UI_NOP(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_UNKNOWN(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_get_random(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_execute_usecode_array(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_delayed_execute_usecode_array(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_show_npc_face(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_remove_npc_face(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_add_answer(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_remove_answer(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_push_answers(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_pop_answers(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_select_from_menu(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_select_from_menu2(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_input_numeric_value(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_set_item_shape(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_die_roll(int event,int intrinsic,Usecode_value parms[12]);
-#endif
+	USECODE_FUNCTION_DECL(get_item_shape);
+	USECODE_FUNCTION_DECL(get_item_frame);
+	USECODE_FUNCTION_DECL(set_item_frame);
+
 
 
 
