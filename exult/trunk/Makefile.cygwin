@@ -158,6 +158,9 @@ tools/mklink.exe : tools/mklink.o
 tools/rip.exe : tools/rip.o
 	$(CXX) $(LFLAGS) -o tools/rip.exe tools/rip.o -mconsole
 
+tools/shp2pcx.exe : tools/shp2pcx.o
+	$(CXX) $(LFLAGS) $(SDL_INCLUDES) -o tools/shp2pcx.exe tools/shp2pcx.o -mconsole
+
 tools/ucdump.exe : tools/ucdump.o
 	$(CXX) $(LFLAGS) -o tools/ucdump.exe tools/ucdump.o -mconsole
 
@@ -178,20 +181,22 @@ install: $(EXEC)
 	cp data/exult_bg.flx $(U7PATH)/data/exult_bg.flx
 	cp data/midisfx.flx  $(U7PATH)/data/midisfx.flx
 
-tools:  tools/expack.exe tools/wuc.exe tools/wud.exe tools/ucdump.exe tools/mklink.exe tools/rip.exe
+tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe
 
 toolsclean:
-	rm -f tools/wuc.o tools/wuc.exe
-	rm -f tools/wud.o tools/wud.exe
-	rm -f tools/ucdump.o tools/ucdump.exe
 	rm -f tools/mklink.o tools/mklink.exe
 	rm -f tools/rip.o tools/rip.exe
+	rm -f tools/shp2pcx.o tools/shp2pcx.exe
+	rm -f tools/ucdump.o tools/ucdump.exe
+	rm -f tools/wuc.o tools/wuc.exe
+	rm -f tools/wud.o tools/wud.exe
 
 toolsinstall: tools
 	mkdir -p $(U7PATH)/tools
 	strip tools/expack.exe -o $(U7PATH)/tools/expack.exe
 	strip tools/mklink.exe -o $(U7PATH)/tools/mklink.exe
 	strip tools/rip.exe -o $(U7PATH)/tools/rip.exe
+	strip tools/shp2pcx.exe -o $(U7PATH)/tools/shp2pcx.exe
 	strip tools/ucdump.exe -o $(U7PATH)/tools/ucdump.exe
 	strip tools/wuc.exe -o $(U7PATH)/tools/wuc.exe
 	strip tools/wud.exe -o $(U7PATH)/tools/wud.exe
