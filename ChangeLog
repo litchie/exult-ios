@@ -1,3 +1,7 @@
+2002-04-15  Max Horn  <max@quendi.de>
+
+	* docs/xml/*: Makeover of the XML doc system.
+
 2002-04-14  Ryan Nunn  <triforce@merlin.net.au>
 	* exult.cc : Fixed a path problem
 	* palette.cc : std namespace stuff

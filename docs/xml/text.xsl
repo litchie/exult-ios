@@ -1,4 +1,4 @@
-<?xml version="1.0"?> 
+<?xml version="1.0"?>
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns="http://www.w3.org/1999/xhtml">
@@ -24,8 +24,8 @@
 <!-- Faq Templates -->
 <xsl:template name="TOC">
 	<xsl:for-each select="section">
-		<xsl:number level="multiple" 
-					count="section" 
+		<xsl:number level="multiple"
+					count="section"
 					format="1. "
 					value="position() -1"/>
 		<xsl:value-of select="@title"/><xsl:text>&#xA;</xsl:text>
@@ -65,9 +65,9 @@
 	<xsl:text> Documentation&#xA;</xsl:text>
 	<xsl:text>last changed: </xsl:text>
 	<xsl:value-of select="@changed"/>
-	<xsl:text>&#xA;&#xA;</xsl:text>	
-	<xsl:text>The latest version of this document can be found at http://exult.sourceforge.net/docs.php&#xA;</xsl:text>	
-	<xsl:text>&#xA;&#xA;</xsl:text>	
+	<xsl:text>&#xA;&#xA;</xsl:text>
+	<xsl:text>The latest version of this document can be found at http://exult.sourceforge.net/docs.php&#xA;</xsl:text>
+	<xsl:text>&#xA;&#xA;</xsl:text>
 
 	<!-- BEGIN TOC -->
 	<xsl:call-template name="TOC"/>
@@ -84,9 +84,9 @@
 	<xsl:text> Studio Documentation&#xA;</xsl:text>
 	<xsl:text>last changed: </xsl:text>
 	<xsl:value-of select="@changed"/>
-	<xsl:text>&#xA;&#xA;</xsl:text>	
-	<xsl:text>The latest version of this document can be found at http://exult.sourceforge.net/studio.php&#xA;</xsl:text>	
-	<xsl:text>&#xA;&#xA;</xsl:text>	
+	<xsl:text>&#xA;&#xA;</xsl:text>
+	<xsl:text>The latest version of this document can be found at http://exult.sourceforge.net/studio.php&#xA;</xsl:text>
+	<xsl:text>&#xA;&#xA;</xsl:text>
 
 	<!-- BEGIN TOC -->
 	<xsl:call-template name="TOC"/>
@@ -116,9 +116,9 @@
 		<xsl:number level="multiple"
 					count="section|sub"
 					format="1."
-					value="count(ancestor::section/preceding-sibling::section)"/>									
+					value="count(ancestor::section/preceding-sibling::section)"/>
 		<xsl:number format="1. "/>
-	</xsl:variable> 
+	</xsl:variable>
 	<xsl:value-of select="$num_idx"/><xsl:apply-templates select="header"/>
 	<xsl:text>&#xA;</xsl:text>
 	<xsl:apply-templates select="body"/>
@@ -133,7 +133,7 @@
 	 +-->
 	<xsl:variable name = "spaced_text">
 		<xsl:apply-templates/>
-	</xsl:variable> 
+	</xsl:variable>
 	<xsl:value-of select="normalize-space($spaced_text)"/>
 </xsl:template>
 
@@ -147,34 +147,27 @@
 <!-- Internal Link Templates -->
 <!--=========================-->
 <xsl:template match="ref">
-	<xsl:choose>
-		<xsl:when test="count(child::node())>0">
-				<xsl:value-of select="."/>
-		</xsl:when>
-		<xsl:otherwise>
-			<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)"/>
-			<xsl:text>.</xsl:text>
-			<xsl:value-of select="count(key('sub_ref',@target)/preceding-sibling::sub)+1"/>
-			<xsl:text>.</xsl:text>
-		</xsl:otherwise>
-	</xsl:choose>
+	<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)"/>
+	<xsl:text>.</xsl:text>
+	<xsl:value-of select="count(key('sub_ref',@target)/preceding-sibling::sub)+1"/>
+	<xsl:text>.</xsl:text>
 </xsl:template>
 
-<xsl:template match="ref1">		
-		<xsl:text>&#xA;</xsl:text>
-		<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)"/>
-		<xsl:text>.</xsl:text>
-		<xsl:value-of select="count(key('sub_ref',@target)/preceding-sibling::sub)+1"/>
-		<xsl:text>. </xsl:text>
-		<xsl:apply-templates select="key('sub_ref',@target)/child::header"/>
+<xsl:template match="ref1">
+	<xsl:text>&#xA;</xsl:text>
+	<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)"/>
+	<xsl:text>.</xsl:text>
+	<xsl:value-of select="count(key('sub_ref',@target)/preceding-sibling::sub)+1"/>
+	<xsl:text>. </xsl:text>
+	<xsl:apply-templates select="key('sub_ref',@target)/child::header"/>
 </xsl:template>
 
 
-<xsl:template match="ref2">				
-		<xsl:text>&#xA;</xsl:text>
-		<xsl:value-of select="count(key('section_ref',@target)/preceding-sibling::section)"/>
-		<xsl:text>. </xsl:text>
-  		<xsl:apply-templates select="key('section_ref',@target)/@title"/>  		
+<xsl:template match="section_ref">
+	<xsl:text>&#xA;</xsl:text>
+	<xsl:value-of select="count(key('section_ref',@target)/preceding-sibling::section)"/>
+	<xsl:text>. </xsl:text>
+	<xsl:apply-templates select="key('section_ref',@target)/@title"/>
 </xsl:template>
 
 <!-- External Link Template -->
@@ -183,24 +176,21 @@
 		<xsl:when test="count(child::node())>0">
 				<xsl:value-of select="."/>
 		</xsl:when>
+		<xsl:when test="@doc='faq'">
+			<xsl:text>FAQ.txt</xsl:text>
+		</xsl:when>
+		<xsl:when test="@doc='docs'">
+			<xsl:text>ReadMe.txt</xsl:text>
+		</xsl:when>
+		<xsl:when test="@doc='studio'">
+			<xsl:text>exult_studio.txt</xsl:text>
+		</xsl:when>
 		<xsl:otherwise>
 			<xsl:value-of select="@target"/>
 		</xsl:otherwise>
 	</xsl:choose>
 </xsl:template>
 
-<!-- External Link Template to link between the FAQ/Readme/Studio docs -->
-<xsl:template match="extref1">
-	<a><xsl:text>FAQ.txt</xsl:text></a>
-</xsl:template>
-
-<xsl:template match="extref2">
-	<a><xsl:text>ReadMe.txt</xsl:text></a>
-</xsl:template>
-
-<xsl:template match="extref3">
-	<a><xsl:text>exult_studio.txt</xsl:text></a>
-</xsl:template>
 
 <!--================-->
 <!-- Misc Templates -->
@@ -210,7 +200,7 @@
 	<!-- Same trick as in the header template -->
 	<xsl:variable name = "data">
 		<xsl:apply-templates/>
-	</xsl:variable> 
+	</xsl:variable>
 	<xsl:value-of select="normalize-space($data)"/>
 	<xsl:text>&#xA;</xsl:text>
 </xsl:template>
@@ -224,7 +214,7 @@
 	<!-- Same trick as in the header template -->
 	<xsl:variable name = "data">
 		<xsl:apply-templates/>
-	</xsl:variable> 
+	</xsl:variable>
 	<xsl:value-of select="normalize-space($data)"/>
 	<xsl:text>&#xA;</xsl:text>
 </xsl:template>
@@ -236,7 +226,7 @@
 		<xsl:number format="1. "/>
 		<xsl:variable name = "data">
 			<xsl:apply-templates/>
-		</xsl:variable> 
+		</xsl:variable>
 		<xsl:value-of select="normalize-space($data)"/>
 		<xsl:text>&#xA;</xsl:text>
 	</xsl:for-each>
@@ -248,7 +238,7 @@
 		<xsl:text>* </xsl:text>
 		<xsl:variable name = "data">
 			<xsl:apply-templates/>
-		</xsl:variable> 
+		</xsl:variable>
 		<xsl:value-of select="normalize-space($data)"/>
 		<xsl:text>&#xA;</xsl:text>
 	</xsl:for-each>
@@ -301,7 +291,7 @@
 			<font color="maroon"><xsl:value-of select="@name"/></font>
 		</td>
 		<td><xsl:text> : </xsl:text></td>
-		<td><xsl:value-of select="."/></td>		
+		<td><xsl:value-of select="."/></td>
 		<xsl:text>&#xA;</xsl:text>
 	</tr>
 </xsl:template>
@@ -338,7 +328,7 @@
 </xsl:template>
 
 <!-- Clone template. Allows one to use any XHTML in the source file -->
-<!-- 
+<!--
 <xsl:template match="@*|node()">
 	<xsl:copy>
 		<xsl:apply-templates select="@*|node()"/>
