@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="07 April 2002(GMT)">
+<studiodoc title="Exult" changed="03 May 2002(GMT)">
 	<section title="Changes to the Documentation">		
+		<sub name="03052002">
+			<header>03 May 2002</header>
+			<body>
+				<para>
+					This is the second draft of the <Studio/> documentation. 					
+				</para>
+				<li><ref1 target="command_line"/> I had spaces between the commands and the options.</li>
+				<li><section_ref target="Menu Options"/> description of all the Menu Options.</li>
+				<li><ref1 target="can_do_atm"/> added warning on editing terrains.</li>
+				<li><ref1 target="egg_edit"/> added place holder for actual documentation.</li>
+				<li><ref1 target="npc_edit"/> added place holder for actual documentation.</li>
+				<li><ref1 target="combo_edit"/> the latest addition.</li>
+				<li><ref1 target="usecode_edit"/> link to latest patch and link to Pertex'documentation.</li>
+				<li><ref1 target="what_next"/> 'scratched' the stuff I think got implemented.</li>
+			</body>
+		</sub>
 		<sub name="07042002">
 			<header>07 April 2002</header>
 			<body>
@@ -60,7 +76,7 @@
 			<body>
 				<ul>
 					<li>You need <Exult/> and you need to install it properly 
-						(see <extref doc="docs" target="installation"/></li>
+						(see <extref doc="docs" target="installation"/>)</li>
 					<li>For U*ix platforms you need to build <Studio/> from the source avillable from our 
 						source snapshot at <extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 						You will also need the GTK+ library installed as well as
@@ -136,7 +152,7 @@
 					<line>&lt;/default_game&gt;</line>
 					<line>&lt;image_editor&gt;</line>
 					<line>gimp-remote -n
-						<comment>** command that calls the image editor. Only usefull on U*ix 
+						<comment>** command that calls the image editor. Only useful on U*ix 
 						platforms for now.
 						</comment></line>
 					<line>&lt;/image_editor&gt;</line>
@@ -158,16 +174,144 @@
 					<Studio/> offers some "hidden" command line options:
 				</para>
 				<ul>
-					<li>-g GAMENAME<br/>
+					<li>-gGAMENAME<br/>
 						specifies GAMENAME and <Studio/> will read the game base directory from exult.cfg.
 						GAMENAME can be choosen from the games specified in &lt;game&gt; part of exult.cfg.</li>
-					<li>-d DIRECTORY<br/>
+					<li>-dDIRECTORY<br/>
 						specifies DIRECTORY as the game base directory.</li>
-					<li>-x DIRECTORY<br/>
+					<li>-xDIRECTORY<br/>
 						tells exult_studio to look in DIRECTORY for its user-interface specification 
 						(exult_studio.glade).<br/>
   						This option is only useful to developers who want to edit exult_studio.glade 
   						themselves.</li>
+				</ul>
+			</body>
+		</sub>
+	</section>
+	<section title="Menu Options">
+		<sub name="file_menu">
+			<header>File</header>
+			<body>
+				<ul>
+					<li><strong>New Game...</strong><br/>
+						This lets you begin the work on a new game. Jeff wrote an extensive description of
+						how to use this and how it works.<br/>
+						See 
+						<extref target="http://exult.sourceforge.net/newgame.txt">New Game manual</extref>.</li>
+					<li><strong>Open Game...</strong><br/>
+						Choose the Game directory of the game you want to edit.</li>
+					<li><strong>Save all</strong><key>Ctrl+S</key><br/>
+						Saves map, shape infos and groups you edited (see below).</li>
+					<li><strong>New...</strong><br/>
+						<strong>Shapes file...</strong><br/>
+						Lets you choose the directory where you want to create a new vga file and requires 
+						you to enter a name for it (e.g. mygame.vga).<br/>
+						<strong>Single shape file...</strong><br/>
+						Lets you choose the directory where you want to create a new shape file and requires 
+						you to enter a name for it (e.g. mygame.shp).</li>
+					<li><strong>Save...</strong><br/>
+						<strong>Map</strong><br/>
+						Saves the map of the edited game.<br/>
+						<strong>Shape info</strong><br/>
+						When you right click a shape in a vga file you can change the info of the shape.
+						This saves this changed info.<br/>
+						<strong>Groups</strong><br/>
+						You can "bundle" shapes of vga files into groups to make world building easier. 
+						These groups get saved with this option.</li>
+					<li><strong>Reload...</strong><br/>
+						<strong>Map</strong><key>Ctrl+R</key><br/>
+						Reloads the map. All changes made since the last save get discarded.<br/>
+						<strong>Usecode</strong><br/>
+						Very useful when you edit the usecode of a game or add new usecode to an 
+						existing game. Normally this would require a restart of Exult.</li>
+					<li><strong>Connect</strong><br/>
+						Connects <Exult/> and <Studio/> if one of them had to be restarted.</li>
+					<li><strong>Preferences</strong><br/>
+						<strong>Image Editor Command:</strong><br/>
+						This executes the chosen image editor when you want to edit a shape when you
+						right click it.<br/>
+						<strong>Image-Edit Filetype:</strong><br/>
+						Choose which filetype gets executed with the above cosen image editor.<br/>
+						<strong>Default Game Name:</strong><br/>
+						Choose the game <Studio/> opens by default. Use the name specified in exult.cfg.<br/>
+						<strong>Shape List Background:</strong><br/>
+						Sometimes the default black background may make certain shapes hard to see. Choose 
+						a different background colour here.</li>
+					<li><strong>Exit</strong><key>Ctrl+Q</key><br/>
+						Exits <Studio/>.</li>
+				</ul>
+				<para>
+					Note that the default location for saving and creation of new files is the STATIC directory
+					of a game if there is no PATCH directory specified. See <ref1 target="can_do_atm"/>.
+				</para>
+			</body>
+		</sub>
+		<sub name="objects_menu">
+			<header>Objects</header>
+			<body>
+				<ul>
+					<li><strong>Egg...</strong><br/>
+					Create or edit eggs with this.
+					See <ref1 target="egg_edit"/> for more information (not yet there).</li>
+					<li><strong>NPC...</strong><br/>
+					Create or edit NPCs with this.
+					See <ref1 target="npc_edit"/> for more information (not yet there).</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="mode_menu">
+			<header>Mode</header>
+			<body>
+				<para>
+				It describes how the mouse behaves inside Exult when map-editing.
+				</para>
+				<ul>
+					<li><strong>Move</strong><br/>
+					This is the normal mode where you can drag things with the mouse, or single-click to 
+					identify objects.</li>
+					<li><strong>Paint</strong><br/>
+					a single-left-click inserts the last-selected shape from 'shapes.vga', and dragging 
+					with the left-button inserts that shape in every tile (so you'd probably only want 
+					to do this with 8x8 flat shapes).  Also, in 'Paint' mode, the footprint at ground 
+					level is shown (though this may be changed in the future).</li>
+					<li><strong>Pick for Combo</strong><br/>
+					Picks objects for a new combo file. See <ref1 target="combo_edit"/></li>
+					<li><strong>Select</strong><br/>
+					not yet implemented (?)</li>
+					<li><strong>Hide</strong><br/>
+					not yet implemented (?)</li>
+					<li><strong>Unhide</strong><br/>
+					not yet implemented (?)</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="tools_menu">
+			<header>Tools</header>
+			<body>
+				<ul>
+					<li><strong>Locator...</strong><key>Ctrl+L</key><br/>
+					shows where the current game window is within the entire map, and lets you move 
+					the view by double-clicking a location or by dragging the little box</li>
+					<li><strong>New Combo</strong><br/>
+					Creates a new Combo file. See <ref1 target="combo_edit"/>.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="tool_bar">
+			<header>Tool bar</header>
+			<body>
+				<ul>
+					<li><strong>Play Game</strong><br/>
+					This is the same as pressing <key>Alt+Ctrl+M</key> in Exult. It exits the Map Edit Mode
+					and lets you play the game. By pressing it again you enter Map Edit Mode again.</li>
+					<li><strong>Tile Grid</strong><br/>
+					Shows a grid in the game window for better control on placing objects.</li>
+					<li><strong>Edit lift:</strong><br/>
+					Changes the lift of a selected object in the game window. Lift means the distance of
+					an object from the ground.</li>
+					<li><strong>Edit terrain</strong><br/>
+					See <ref1 target="can_do_atm"/>. Note that a terrain is used in multiple instances of the 
+					map and changing it in one place changes it in all the others as well.</li>
 				</ul>
 			</body>
 		</sub>
@@ -227,7 +371,7 @@
 							dragging with the left mouse button 'paints' the currently-selected
 							shape (generally one of the flat tiles near the top of the shapes
 							browser).  Note that a 'terrain' is generally used in multiple places
-							in the map.</li>
+							in the mapand changing it in one place changes it in all the others as well.</li>
 						<li>save the map using ExultStudio's "File-Save map" pulldown.
 							In order to avoid writing over files inadvertantly, the files that
 							would normally go into the 'static' directory, will, instead, go into
@@ -291,6 +435,37 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="egg_edit">
+			<header>Creating/editing Eggs</header>
+			<body>
+				<para>
+					sorry, not documented yet (very extensive work). But make sure you resize the egg-window 
+					to show all the possible eggs. To know what 'egg' means, see 
+					<extref doc="docs" target="terms"/>.
+				</para>
+			</body>
+		</sub>
+		<sub name="npc_edit">
+			<header>Creating/editing NPCs</header>
+			<body>
+				<para>
+					sorry, not documented yet (very extensive work).
+				</para>
+			</body>
+		</sub>
+		<sub name="combo_edit">
+			<header>Creating Combination files</header>
+			<body>
+				<para>
+					Create 'combination shapes', like a fence or an entire roof by selecting 
+					"Tools-New Combo" (see <ref target="tools_menu"/>).  It's about half-done.
+					To see what's there, choose the 'Combo pick' choice in the 'Modes' menu, and 
+					an empty window should pop up. In the game window, double-click a group of objects,
+					and they should appear in the window.  You can then select an object there and tweak 
+					its position.  Nothing gets saved yet.
+				</para>
+			</body>
+		</sub>
 		<sub name="usecode_edit">
 			<header>Custom Usecode</header>
 			<body>
@@ -302,25 +477,31 @@
 				</para>
 				<para>
 					For an example of how Usecode may look like download our experimental patch for BG at
-					<extref target="http://prdownloads.sourceforge.net/exult/bgpatch3.zip"/>.<br/>
+					<extref target="http://exult.sourceforge.net/snapshots/patch.zip"/>.<br/>
 					In that zip you'll find a readme.txt which tells you how to run it.<br/>
 					You will also see two files called usecode.uc and usecode.
 				</para>
 				<para>
-					Usecode is the usecode script that will help you understand our usecode language.<br/>
-					When you run ucc (see <ref target="tools"/> with that file (e.g. "ucc usecode.uc" you 
-					will get a file called usecode.uco. Rename usecode.uco to usecode and you will have the 
-					actual usecode that can be run with exult.
+					Usecode.uc is the usecode script that will help you understand our usecode language.<br/>
+					When you run ucc (see <ref target="tools"/>) with that file 
+					(e.g. "ucc -o usecode usecode.uc") you will get the file called usecode. This file 
+					'usecode' should be the same as the one in the zip file.
+				</para>
+				<para>
+					Someone does have to write extensive documentation for this but I (Dominus) am not
+					really up for that task.<br/>
+					Pertex has written some documentation at <extref target="http://www.sophen.de/exult/"/>
+					that might be able help you.
 				</para>
 			</body>
 		</sub>
 	</section>
 	<section title="Miscellaneous">
 		<sub name="tools">
-			<header>Other tools that might be usefull</header>
+			<header>Other tools that might be useful</header>
 			<body>
 				<para>
-					In the process of creating <Exult/> the team came up with some usefull 
+					In the process of creating <Exult/> the team came up with some useful 
 					tools that might help in editing/making a game.<br/>
 					These can be built from the <Exult/> source or you can download
 					the Windows binary snapshot. The source and binary snapshot can be found at
@@ -345,7 +526,7 @@
 						can be used edit text flex files. 
 						See <extref target="http://exult.sourceforge.net/textpack.txt">manual</extref>.</li>
 					<li><strong>ucc</strong>:<br/>
-						can be used to create custom usecode (see <ref target="usecode_edit"/>.</li>
+						can be used to create custom usecode (see <ref target="usecode_edit"/>).</li>
 					<li><strong>The GIMP Plug-in</strong>:<br/>
 						can be used for editing shapes in the GIMP. Handles multiframe Shape files. 
 						See <extref target="http://www.gimp.org"/> for inormation on the GIMP.</li>
@@ -414,7 +595,7 @@
 				<para>
 					The basic idea is that each 'chunk' of flat terrain, 16x16 tiles, is
 					stored in 'u7chunks', and is indexed by its position in this file (0,
-					1, 2, ....  The 'u7map' file specifies, for each 'chunk' in the U7
+					1, 2, ...). The 'u7map' file specifies, for each 'chunk' in the U7
 					map, which of the terrains is to be used.  Since the entire map has
 					192x192 chunks, or a total of 36,864, and since 'u7chunks' has 3072
 					entries, each terrain is shared an average of over 10 times.  When you
@@ -449,13 +630,8 @@
 					The next things to be implemented are:
 				</para>
 				<ul>
-   				<li>The main menu needs a 'Save' that saves all the various files.  Right 
-					now, saving is an inconsistent mess.</li>
 				<li><Studio/>needs to be able to automatically create palettes 1-n from palette 0 
 					using the code from ipack. </li>
-   				<li>A way to to create an entirely new game.  This is a fairly big issue,
-					since it involves having <Exult/> run when many of its files don't yet
-					exist (this is currently in progress).</li>
 				<li>It will also be very nice to have a Usecode debugger someday as well 
 					(Willem is actually working on it).</li>
    				<li>A 'flags' editor for viewing and editing the global Usecode flags by name.</li>
