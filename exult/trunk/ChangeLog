@@ -1,3 +1,6 @@
+2000-11-24  Dancer Vesperman <dancer@users.sourceforge.net>
+	* files/utils.h: Make the hash function inlineable
+
 2000-11-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Don't dup. text when an item is clicked on.
