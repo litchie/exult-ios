@@ -113,26 +113,36 @@ void to_uppercase
 }
 
 /*
- *	Vonvert just the last part of a filename to uppercase.
+ *	Convert just the last 'count' parts of a filename to uppercase.
+ *  returns false if there are less than 'count' parts
  */
 
-void base_to_uppercase
+bool base_to_uppercase
 	(
-	string& str
+	 string& str, int count
 	)
 {
+	if (count <= 0) return true;
+
+	int todo = count;
 					// Go backwards.
 	for(string::reverse_iterator X = str.rbegin(); X != str.rend(); ++X)
 		{
 					// Stop at separator.
 		if (*X == '/' || *X == '\\' || *X == ':')
+			todo--;
+		if (todo <= 0)
 			break;
+
 #if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN))
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = std::toupper(*X);
 #endif         
 	}
+
+	// false if it didn't reach 'count' parts
+	return (todo <= 0);
 }
 
 
@@ -213,17 +223,16 @@ void U7open
 	// We first "clear" the stream object. This is done to prevent
 	// problems when re-using stream objects
 	in.clear();
-	in.open(name.c_str(), mode);		// Try to open original name.
-	if (in.good())
-		return;
-	base_to_uppercase(name);		// No good?  Try upper-case.
-	in.open(name.c_str(), mode);
-	if (in.good())
-		return;
-	to_uppercase(name);
-	in.open(name.c_str(), mode);
-	if (!in.good())
-		throw file_open_exception(name);
+
+	int uppercasecount = 0;
+	do {
+		in.open(name.c_str(), mode);		// Try to open
+		if (in.good())
+			return; // found it!
+	} while (base_to_uppercase(name, ++uppercasecount));
+
+	// file not found.
+	throw file_open_exception(get_system_path(fname));
 }
 
 #ifdef ALPHA_LINUX_CXX
@@ -270,17 +279,16 @@ void U7open
 	// problems when re-using stream objects
 	out.clear();
 
-	out.open(name.c_str(), mode);		// Try to open original name.
-	if (out.good())
-		return;
-	base_to_uppercase(name);		// No good?  Try upper-case.
-	out.open(name.c_str(), mode);
-	if (out.good())
-		return;
-	to_uppercase(name);
-	out.open(name.c_str(), mode);
-	if (!out.good())
-		throw file_open_exception(name);
+	int uppercasecount = 0;
+	do {
+		out.open(name.c_str(), mode);		// Try to open
+		if (out.good())
+			return; // found it!
+		
+	} while (base_to_uppercase(name, ++uppercasecount));
+
+	// file not found.
+	throw file_open_exception(get_system_path(fname));
 }
 
 #ifdef ALPHA_LINUX_CXX
@@ -310,21 +318,18 @@ std::FILE* U7open
 	const char *mode		   // File access mode.
 	)
 {
+	std::FILE* f;
 	string name = get_system_path(fname);
 
-	std::FILE *f = std::fopen(name.c_str(), mode);
-	if (f)
-		return (f);
-					// No good?  Try upper-case.
-	base_to_uppercase(name);
-	f = std::fopen(name.c_str(), mode);
-	if (f)
-		return (f);
-	to_uppercase(name);
-	f = std::fopen(name.c_str(), mode);
-	if (!f)
-		throw file_open_exception(name);
-	return (f);
+	int uppercasecount = 0;
+	do {
+		f = std::fopen(name.c_str(), mode); // Try to open
+		if (f)
+			return f; // found it!
+	} while (base_to_uppercase(name, ++uppercasecount));
+
+	// file not found.
+	throw file_open_exception(get_system_path(fname));
 }
 
 /*
@@ -356,20 +361,19 @@ int U7exists
 	
 	string name = get_system_path(fname);
 	
-	exists = (stat(name.c_str(), &sbuf) == 0);
-	if( exists )
-		return exists;
-	base_to_uppercase(name);
-	exists = (stat(name.c_str(), &sbuf) == 0);
-	if (exists)
-		return exists;
-	to_uppercase(name);
-	exists = (stat(name.c_str(), &sbuf) == 0);
-	return exists;
+	int uppercasecount = 0;
+	do {
+		exists = (stat(name.c_str(), &sbuf) == 0);
+		if (exists)
+			return true; // found it!
+	} while (base_to_uppercase(name, ++uppercasecount));
+
+	// file not found
+	return false;
 }
 
 /*
- *	See if a file exists.
+ *	Create a directory
  */
 
 int U7mkdir
@@ -388,7 +392,7 @@ int U7mkdir
 }
 
 /*
- *	See if a file exists.
+ *	Change the current directory
  */
 
 int U7chdir
