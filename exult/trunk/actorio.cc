@@ -294,13 +294,11 @@ void Actor::read
 	nfile->skip (2);	// V1 ????? (refer to U7tech.txt)
 	nfile->skip (2);	// V2 ????? (refer to U7tech.txt)
 
-	Game_window *gwin = Game_window::get_instance();
-
 	// 16 Bit Shape Numbers, allows for shapes > 1023
 	shnum = nfile->read2();
 	if (!fix_first && shnum)
 	{
-		if (GAME_BG && !Shape_manager::get_instance()->can_use_multiracial() && shnum > 1024 && npc_num == 0)
+		if (GAME_BG && !sman->can_use_multiracial() && shnum > 1024 && npc_num == 0)
 			set_actor_shape();
 		else
 			set_shape(shnum);		// 16 Bit Shape Number
@@ -399,7 +397,7 @@ void Actor::read
 	int tilex = locx & 0xf;
 	int tiley = locy & 0xf;
 	set_shape_pos(tilex, tiley);
-	Map_chunk *olist = gwin->get_chunk_safely(scx + cx, scy + cy);
+	Map_chunk *olist = gmap->get_chunk_safely(scx + cx, scy + cy);
 	set_invalid();			// Not in world yet.
 	if (olist && !is_dead() &&	// Valid & alive?  Put into chunk list.
 	    !unused)

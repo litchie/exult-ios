@@ -25,6 +25,7 @@
 
 #include "tqueue.h"
 #include "tiles.h"
+#include "singles.h"
 
 class PathFinder;
 class Game_object;
@@ -64,7 +65,7 @@ public:
 /*
  *	Base class for special-effects:
  */
-class Special_effect : public Time_sensitive
+class Special_effect : public Time_sensitive, public Game_singletons
 	{
 	Special_effect *next, *prev;	// All of them are chained together in
 					//   Game_window.

@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
  *	An animator:
  */
-class Animator : public Time_sensitive
+class Animator : public Time_sensitive, public Game_singletons
 	{
 protected:
 	Game_object *obj;		// Object we're controlling.
