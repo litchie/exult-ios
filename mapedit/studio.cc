@@ -144,24 +144,45 @@ extern "C" gboolean on_egg_window_delete_event
 	}
 
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
-	eggwin(0), server_socket(-1)
+	eggwin(0), server_socket(-1), static_path(0), browser(0)
 {
 	// Initialize the various subsystems
 	self = this;
 	gtk_init( &argc, &argv );
 	gdk_rgb_init();
 	glade_init();
-	
+					// Get options.
+	char *xmldir = 0;		// Default:  Look here for .glade.
+	char *gamedir = 0;		// User has to choose 'static'.
+	static char *optstring = "x:d:";
+	extern int optind, opterr, optopt;
+	extern char *optarg;
+	opterr = 0;			// Don't let getopt() print errs.
+	int optchr;
+	while ((optchr = getopt(argc, argv, optstring)) != -1)
+		switch (optchr)
+			{
+		case 'x':		// XML (.glade) directory.
+			xmldir = optarg;
+			break;
+		case 'd':		// Game directory.
+			gamedir = optarg;
+			break;
+			}
+
+	char path[256];			// Set up paths.
+	strcpy(path, xmldir ? xmldir : ".");
+	strcat(path, "/exult_studio.glade");
 	// Load the Glade interface
-	app_xml = glade_xml_new( "./exult_studio.glade", NULL);
+	app_xml = glade_xml_new(path, NULL);
 	app = glade_xml_get_widget( app_xml, "main_window" );
-	
+
 	// Connect signals
+#if 0
 	GtkWidget *temp;
 	temp = glade_xml_get_widget( app_xml, "exit" );
 	gtk_signal_connect(GTK_OBJECT(temp), "activate",
 				GTK_SIGNAL_FUNC(gtk_main_quit), 0);
-#if 0
 	temp = glade_xml_get_widget( app_xml, "file_list" );
 	gtk_signal_connect(GTK_OBJECT(temp), "tree_select_row",
 			GTK_SIGNAL_FUNC(on_filelist_tree_select_row), this);
@@ -173,8 +194,12 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 					// Connect signals automagically.
 	glade_xml_signal_autoconnect(app_xml);
 	gtk_widget_show( app );
-	browser = 0;
-	static_path = 0;
+	if (gamedir)			// Game directory given?
+		{
+		strcpy(path, gamedir);
+		strcat(path, "/static/");// Set up path to static.
+		set_static_path(path);
+		}
 }
 
 ExultStudio::~ExultStudio()
