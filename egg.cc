@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "Audio.h"
 #include "usecode.h"
+#include "useval.h"
 #include "effects.h"
 
 #include <math.h>
@@ -307,6 +308,13 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 					pos.ty << ')' << endl;
 			//+++++if (obj) obj->move(pos);
 					// Can keep doing it.
+			Usecode_value tmp(pos.tx);
+			Usecode_value u(1,&tmp);
+			u.push_back(pos.ty);
+			u.push_back(0);
+			// Now we want to call the intrinsic move_object
+			// with obj's objnum, and the array we just built as
+			// the target coordinates
 			flags &= ~((1 << (int) hatched));
 			break;
 			}
