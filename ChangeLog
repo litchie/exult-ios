@@ -1,3 +1,10 @@
+2001-09-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/iregobjs.cc, gamewin.cc: Get okay_to_take flag from bit 7
+	of quality for 'quantity' items.
+
+	* usecode/ucinternal.cc: Fixed add_party_items() return value for SI.
+
 2001-09-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: undid the fix I made to returning party items
 	(Jeff's fix worked better :-) )

@@ -163,11 +163,6 @@ int Game_object::get_volume
 	{
 	int vol = Game_window::get_game_window()->get_info(this).get_volume();
 	return vol;			// I think U7 ignores quantity!
-#if 0
-	int quant = get_quantity();
-	quant = 1 + (quant - 1)/8;	// Be liberal about multiples.
-	return (quant*vol);
-#endif
 	}
 
 /*
@@ -205,7 +200,7 @@ int Game_object::modify_quantity
 		return (delta + quant);
 		}
 	int oldvol = get_volume();	// Get old volume used.
-	quality = 0x80|(char) newquant;	// Store new value.
+	quality = (char) newquant;	// Store new value.
 	int shapenum = get_shapenum();
 	Game_window *gwin = Game_window::get_game_window();
 					// Set appropriate shape.
