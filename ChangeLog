@@ -1,3 +1,9 @@
+2001-08-29  Ryan Nunn <triforce@merlin.net.au>
+	* audio/midi_drivers/win_midiout.* : Enumerate the midi devices and
+	  output the list to stdout. Allow setting of the midi device with the
+	  config key "config/audio/midi/win32_device". -1 (Midi Mapper) is
+	  defualt as always.
+
 2001-08-29  Max Horn <max@quendi.de>
 	* audio/midi_drivers/mac_midi.cc: OS X build via makefile fixed
 	* macosx/exult.icns: added icon file for OS X

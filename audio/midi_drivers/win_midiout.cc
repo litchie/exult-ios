@@ -1,7 +1,5 @@
-//-*-Mode: C++;-*-
-
 /*
-Copyright (C) 2000  Ryan Nunn
+Copyright (C) 2001  Ryan Nunn
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -73,7 +71,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-Windows_MidiOut::Windows_MidiOut()
+Windows_MidiOut::Windows_MidiOut() : dev_num(-1)
 {
 	giveinfo();
 	InterlockedExchange (&playing, false);
@@ -132,11 +130,17 @@ void Windows_MidiOut::init_device()
 	giveinfo();
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_INIT);
 	
+	// Get Win32 Midi Device num
+	config->value("config/audio/midi/win32_device", dev_num, -1);
+
 	giveinfo();
 	thread_handle = (HANDLE*) CreateThread (NULL, 0, thread_start, this, 0, &thread_id);
 	
 	giveinfo();
 	while (thread_com == W32MO_THREAD_COM_INIT) Sleep (1);
+
+	// Set Win32 Midi Device num
+	config->set("config/audio/midi/win32_device", dev_num, true);
 	
 	giveinfo();
 	if (thread_com == W32MO_THREAD_COM_INIT_FAILED) cerr << "Failure to initialize midi playing thread" << endl;
@@ -153,13 +157,35 @@ DWORD __stdcall Windows_MidiOut::thread_start(void *data)
 
 DWORD Windows_MidiOut::thread_main()
 {
+	int i;
 	thread_data = NULL;
 	giveinfo();
 	InterlockedExchange (&playing, false);
 	InterlockedExchange (&s_playing, false);
 
 	giveinfo();
-	UINT mmsys_err = midiOutOpen (&midi_port, MIDI_MAPPER, 0, 0, 0);
+
+	// List all the midi devices.
+	MIDIOUTCAPS caps;
+	sint32 dev_count = (sint32) midiOutGetNumDevs(); 
+	std::cout << dev_count << " Midi Devices Detected" << endl;
+	std::cout << "Lising midi devices:" << endl;
+
+	for (i = -1; i < dev_count; i++)
+	{
+		midiOutGetDevCaps ((UINT) i, &caps, sizeof(caps));
+		std::cout << i << ": " << caps.szPname << endl;
+	}
+
+	if (dev_num < -1 || dev_num >= dev_count)
+	{
+		std::cerr << "Warning Midi device in config is out of range." << endl;
+		dev_num = -1;
+	}
+	midiOutGetDevCaps ((UINT) dev_num, &caps, sizeof(caps));
+	std::cout << "Using device " << dev_num << ": "<< caps.szPname << endl;
+
+	UINT mmsys_err = midiOutOpen (&midi_port, dev_num, 0, 0, 0);
 
 	giveinfo();
 	if (mmsys_err != MMSYSERR_NOERROR)
