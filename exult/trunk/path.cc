@@ -28,19 +28,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 
 /*
- *	Statics:
- */
-int Neighbor_iterator::coords[2][8] = {
-	{-1, -1}, {0, -1}, {1, -1},
-	{0, -1},           {0, 1},
-	{1, -1},  {1, 0},  {1, 1}
-	};
-
-/*
  *	A node for our search:
  */
 class Search_node
 	{
+public:
 	friend class Game_window;
 	friend class Compare;
 	Tile_coord tile;		// The coords (x, y, z) in tiles.
@@ -79,16 +71,44 @@ public:
 		{
 		while (index < 8)
 			{
-			newt = Tile_coord(t.tx + coords[index][0],
-					t.ty + coords[index][1], t.tz);
+			newt = Tile_coord(tile.tx + coords[index][0],
+					tile.ty + coords[index][1], tile.tz);
 			index++;
-			if (nt.tx >= 0 && nt.tx < num_tiles &&
-			    nt.ty >= 0 && nt.ty < num_tiles)
+			if (newt.tx >= 0 && newt.tx < num_tiles &&
+			    newt.ty >= 0 && newt.ty < num_tiles)
 				return (1);
 			}
 		return (0);
 		}
 	};
+
+/*
+ *	Statics:
+ */
+int Neighbor_iterator::coords[2][8] = {
+	-1, -1, 0, -1, 1, -1,
+	0, -1,           0, 1,
+	1, -1,  1, 0,  1, 1
+	};
+
+/*
+ *	Estimate cost from one point to another.
+ */
+
+static int Cost_to_goal
+	(
+	Tile_coord& from,
+	Tile_coord& to
+	)
+	{
+	int dy = to.ty - from.ty;
+	int dx = to.tx - from.tx;
+	if (dy < 0)			// Just take longer abs. value.
+		dy = -dy;
+	if (dx < 0)
+		dx = -dx;
+	return (dy > dx ? dy : dx);
+	}
 
 /*
  *	For sorting:
@@ -107,7 +127,8 @@ public:
  *	Output:	->(allocated) array of Tile_coords to follow, or 0 if failed.
  */
 
-Tile_coord *Game_window::find_path
+//Tile_coord *Game_window::find_path
+Tile_coord *Find_path
 	(
 	Tile_coord start,		// Where to start from.
 	Tile_coord goal			// Where to end up.
@@ -129,11 +150,11 @@ Tile_coord *Game_window::find_path
 			}
 					// Go through surrounding tiles.
 		Neighbor_iterator get_next(node->tile);
-		Tile_coord ntile;
+		Tile_coord ntile(0, 0, 0);
 		while (get_next(ntile))
 			{		// Calc. cost from start.
-			int new_cost = node->cost_from_start + 
-							Cost(tile, ntile);
+					// +++++See if occupied. For now:  1.
+			int new_cost = node->cost_from_start + 1;
 					// See if next tile already seen.
 			int open_index, closed_index = -1;
 			Search_node *next = Find(open, ntile, open_index);
@@ -147,7 +168,7 @@ Tile_coord *Game_window::find_path
 				next = new Search_node(ntile, new_cost,
 						new_cost_to_goal, node);
 			else
-+++++++++++++++Update pos. in queue!!!!!!!!!
+//+++++++++++++++Update pos. in queue!!!!!!!!!
 				next.update(new_cost, new_cost_to_goal, node);
 					// Remove from closed.
 			if (closed_index != -1)
