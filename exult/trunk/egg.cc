@@ -98,9 +98,12 @@ void Egg_object::set_area
 					2*distance + 3, 2*distance + 3);
 		break;
 	default:
+		{
+		int width = distance ? 2*distance : 1;
 		area = Rectangle(tx - distance, ty - distance, 
-					2*distance, 2*distance);
+					width, width);
 		break;
+		}
 		}
 					// Don't go outside the world.
 	Rectangle world(0, 0, num_chunks*tiles_per_chunk,
