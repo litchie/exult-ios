@@ -192,8 +192,10 @@ public:
 						bool sensitive = true);
 	void set_entry(char *name, const char *val, bool sensitive = true);
 	void set_statusbar(char *name, int context, char *msg);
+	void set_button(char *name, const char *text);
 	void set_visible(char *name, bool vis);
 	void set_sensitive(char *name, bool vis);
+	int prompt2(const char *msg, const char *choice1, const char *choice2);
 };
 
 #endif
