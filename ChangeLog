@@ -1,3 +1,6 @@
+2001-11-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Midi.h: is_track_playing didn't check if midi_device == NULL (Thanks Michael Z.)
+
 2001-11-22 Ryan Nunn <triforce@merlin.net.au>
 	* msvcstuff/Exult.dsp : Getting rid of a link warning
 
