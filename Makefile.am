@@ -73,7 +73,7 @@ exult_SOURCES =	\
 	txtscroll.h	\
 	vec.h
 
-exult_LDADD = 			\
+EXULTLIBS = \
 	pathfinder/libpathfinder.la		\
 	audio/libaudio.la	\
 	audio/midi_drivers/libmididrv.la	\
@@ -84,10 +84,13 @@ exult_LDADD = 			\
 	usecode/libusecode.la	\
 	shapes/libshapes.la \
 	objs/libobjs.la \
-	gumps/libgumps.la \
+	gumps/libgumps.la
+
+exult_LDADD = 			\
+	$(EXULTLIBS) \
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE)
 
-exult_DEPENDENCIES = $(ICON_FILE)
+exult_DEPENDENCIES = $(ICON_FILE) $(EXULTLIBS)
 
 EXTRA_DIST = 	\
 	README.win32 \
