@@ -2033,24 +2033,27 @@ int Npc_actor::find_schedule_change
 void Npc_actor::update_schedule
 	(
 	Game_window *gwin,
-	int hour3			// 0=midnight, 1=3am, etc.
+	int hour3,			// 0=midnight, 1=3am, etc.
+	int backwards			// Extra periods to look backwards.
 	)
 	{
 	if (!gwin->get_objects(get_cx(), get_cy()))
 		return;			// Not on the map.
 	int i = find_schedule_change(hour3);
 	if (i < 0)
-		{
+		{			// Not found?  Look at prev.?
+					// Always if noon of first day.
 		long hour = gwin->get_total_hours();
-		if (hour != 12)		// Noon of first day?
+		if (backwards-- || hour == 12)
+			{
+			i = find_schedule_change((hour3 + 7)%8);
+			if (i < 0 && (backwards || hour == 12))
+				i = find_schedule_change((hour3 + 6)%8);
+			}
+		if (i < 0)
 			return;
-					// Check for 9am or 6am schedule.
-		if ((i = find_schedule_change(9/3)) == -1 &&
-		    (i = find_schedule_change(6/3)) == -1)
-			return;		// No schedule.
 		if (schedule_type == schedules[i].get_type())
 			return;		// Already in it.
-					// Put that schedule in effect now.
 		}
 	stop();				// Stop moving.
 	if (schedule)			// End prev.
