@@ -163,7 +163,6 @@ void Main_actor::handle_event
 	if (next_frame(curtime, cx, cy, sx, sy, frame))
 		{
 		Chunk_object_list *olist = gwin->get_objects(cx, cy);
-#if 1 /* Need to fix renderer first. */
 		olist->setup_cache();	//++++++++++++++++
 //++++++++TESTING Remove the above!!!!!!!+++++++++++++++++++++++++++++
 		int new_lift;		// Might climb/descend.
@@ -174,9 +173,6 @@ void Main_actor::handle_event
 			}
 		if (new_lift != get_lift())
 			cout << "New lift is " << new_lift << '\n';
-#else
-		int new_lift = get_lift();
-#endif
 					// Add back to queue for next time.
 		gwin->get_tqueue()->add(curtime + frame_time,
 							this, udata);
@@ -201,9 +197,7 @@ void Main_actor::handle_event
 					// Move it.
 		move(cx, cy, olist, sx, sy, frame, new_lift);
 				// Near an egg?
-		Egg_object *egg = olist->find_egg(sx, sy);
-		if (egg)
-			egg->activate(gwin->get_usecode());
+		olist->activate_eggs(sx, sy);
 		int inside;		// See if moved inside/outside.
 					// In a new chunk?
 		if ((get_cx() != old_cx || get_cy() != old_cy) &&

@@ -262,6 +262,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 //TESTING:
 	static int cnt = 0;
 //	audio.start_speech(cnt++);//++++++++++++
+	flags |= (1 << (int) hatched);	// Flag it as done.
         if (type == jukebox)
                 {
                 audio.start_music((data1)&0xff);
@@ -393,8 +394,11 @@ void Chunk_cache::set_egged
 	{
 					// Egg already there?
 	int eggnum = egg_objects.find(egg);
-	if (eggnum < 0)
-		eggnum = egg_objects.append(egg);
+	if (eggnum < 0)			// No.  Is there a free spot?
+		if ((eggnum = egg_objects.find(0)) >= 0)
+			egg_objects.put(eggnum, egg);
+		else			// No free spot.
+			eggnum = egg_objects.append(egg);
 	if (eggnum > 15)		// We only have 16 bits.
 		eggnum = 15;
 	short mask = (1<<eggnum);
@@ -523,9 +527,9 @@ void Chunk_cache::activate_eggs
 						i++, eggbits = eggbits >> 1)
 		{
 		Egg_object *egg;
-		if (!(eggbits&1) || !(egg = (Egg_object *) egg_objects.get(i)))
-			continue;	// This one's not set.
-		egg->activate(usecode);
+		if ((eggbits&1) && (egg = (Egg_object *) egg_objects.get(i)) &&
+		    egg->is_active())
+			egg->Egg_object::activate(usecode);
 		}
 	if (eggbits)			// Check 15th bit.
 		{
@@ -536,8 +540,9 @@ void Chunk_cache::activate_eggs
 		for ( ; i < num_eggs; i++)
 			{
 			Egg_object *egg = (Egg_object *) egg_objects.get(i);
-			if (egg && egg->within_distance(atx, aty))
-				egg->activate(usecode);
+			if (egg && egg->within_distance(atx, aty) &&
+			    egg->is_active())
+				egg->Egg_object::activate(usecode);
 			}
 		}
 	}
@@ -549,10 +554,9 @@ void Chunk_cache::activate_eggs
 Chunk_object_list::Chunk_object_list
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
-	) : objects(0), roof(0), egg_objects(0), num_eggs(0), npcs(0),
+	) : objects(0), roof(0), npcs(0),
 	    cache(0), cx(chunkx), cy(chunky)
 	{
-	memset((char *) &eggs[0], 0xff, sizeof(eggs));
 	}
 
 /*
@@ -592,29 +596,17 @@ void Chunk_object_list::add
 	}
 
 /*
- *	Add a game object to a chunk's list.
+ *	Add an egg.
  */
 
 void Chunk_object_list::add_egg
 	(
-	Egg_object *egg			// Object to add.
+	Egg_object *egg
 	)
 	{
-					// Get x,y of shape within chunk.
-	int x = egg->get_tx(), y = egg->get_ty();
-	unsigned char& spot = eggs[y*16 + x];
-	if (spot != 0xff)		// One already there?
-		return;
-	int new_cnt = num_eggs + 1;	// Create new list.
-	Egg_object **newlist = new Egg_object*[new_cnt];
-	for (int i = 0; i < num_eggs; i++)
-		newlist[i] = egg_objects[i];
-	spot = num_eggs;		// Store offset in list.
-	newlist[num_eggs++] = egg;	// Store new egg at end.
-	delete [] egg_objects;
-	egg_objects = newlist;
-					// ++++Testing:
-	add(egg);			// So we can see it.
+	add(egg);			// Add it normally.
+	if (cache)			// Add to cache.
+		cache->add_egg(this, egg);
 	}
 
 /*
