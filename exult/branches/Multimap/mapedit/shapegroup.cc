@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "studio.h"
 #include "objbrowse.h"
 #include "shapefile.h"
+#include "shapevga.h"
 
 using std::vector;
 using std::ios;
@@ -51,9 +52,47 @@ using EStudio::Alert;
 Shape_group::Shape_group
 	(
 	const char *nm,			// Name.  Copied.
-	Shape_group_file *f
-	) : name(nm), file(f)
+	Shape_group_file *f,
+	int built			// Builtin type.
+	) : name(nm), file(f), builtin(built)
 	{
+	if (builtin == -1)
+		return;
+					// Add shapes for builtin group.
+	ExultStudio *es = ExultStudio::get_instance();
+	Shapes_vga_file *vgafile = (Shapes_vga_file *)
+					es->get_vgafile()->get_ifile();	
+	int i, cnt = vgafile->get_num_shapes();
+
+	if (builtin >= 0 && builtin <= 15)
+		{
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).get_shape_class() == builtin)
+				add(i);
+		}
+	else switch(builtin)
+		{
+	case ammo_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).get_ammo_info())
+				add(i);
+		break;
+	case armour_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).get_armor_info())
+				add(i);
+		break;
+	case monsters_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).get_monster_info())
+				add(i);
+		break;
+	case weapons_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).get_weapon_info())
+				add(i);
+		break;
+		}
 	}
 
 /*

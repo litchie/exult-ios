@@ -2062,6 +2062,11 @@ void Shape_chooser::shape_dropped_here
 					// Got to be from same file type.
 	if (ifile->get_u7drag_type() == file && group != 0)
 		{			// Add to group.
+		if (group->is_builtin())
+			{
+			Alert("Can't modify builtin group.");
+			return;
+			}
 		group->add(shape);
 					// Update all windows for this group.
 		ExultStudio::get_instance()->update_group_windows(group);
