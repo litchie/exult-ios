@@ -1029,6 +1029,9 @@ int Actor::figure_hit_points
 		say(first_ouch, last_ouch);
 	cout << "Attack damage was " << hp << " hit points, leaving " << 
 		properties[(int) health] << " remaining" << endl;
+					// Flash red if Avatar badly hurt.
+	if (this == gwin->get_main_actor() && oldhealth - hp < maxhealth/8)
+		gwin->flash_palette_red();
 	return hp;
 	}
 
