@@ -2119,7 +2119,7 @@ void Actor::clear_flag
 			pos.tz -= pos.tz%5;	// Want floor level.
 			pos = Map_chunk::find_spot(pos, 6, get_shapenum(),
 				Actor::standing, 0);
-			if (pos.tx != 0)
+			if (pos.tx >= 0)
 				move(pos);
 			add_dirty(gwin);
 			set_frame(Actor::standing);
