@@ -723,7 +723,8 @@ int Shapes_vga_file::read_info
 		info[shapenum].ready_type = type;
 		ready.seekg(6, ios::cur);// Skip 9 bytes.
 		}
-#if 0	/* ++++Uncomment when tested. */
+	ready.close();
+#if 1	/* ++++Uncomment when tested. */
 	ifstream armor;
 	if (!U7open(armor, ARMOR))
 		return (0);
@@ -735,6 +736,24 @@ int Shapes_vga_file::read_info
 		info[shapenum].armor = points;
 		armor.seekg(7, ios::cur);// Skip 7 bytes.
 		}
+	armor.close();
+	ifstream weapon;
+	if (!U7open(weapon, WEAPONS))
+		return (0);
+	cnt = Read1(weapon);
+	for (int i = 0; i < cnt; i++)
+		{
+		unsigned short shapenum = Read2(weapon);
+		short points = Read2(weapon);
+		unsigned short ammoshape = Read2(weapon);
+		if (ammoshape == shapenum)
+			ammoshape = 0;
+		else if (ammoshape == points)
+			points = 0;
+		weapon.seekg(15, ios::cur);	// Skip unknown.
+		info[shapenum].weapon = new Weapon_info(-points, ammoshape);
+		}
+	weapon.close();	
 #endif
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;
@@ -770,6 +789,7 @@ int Shapes_vga_file::read_info
 
 Shape_info::~Shape_info()
 	{
+	delete weapon;
 	if(weapon_offsets)
 		delete [] weapon_offsets;
 	}

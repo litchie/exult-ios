@@ -63,6 +63,45 @@ void Actor::init
 	}
 
 /*
+ *	If no weapon readied, look through all possessions for the best one.
+ */
+
+void Actor::ready_best_weapon
+	(
+	)
+	{
+	int hand = free_hand();		// Find a free hand.
+	if (hand == -1 || Actor::get_weapon_points() > 0)
+		return;			// Already have one (or hands full).
+	Game_window *gwin = Game_window::get_game_window();
+	Vector vec(0, 50);		// Get list of all possessions.
+	int cnt = get_objects(vec, -359, -359);
+	Game_object *best = 0;
+	int best_damage = -20;
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *obj = (Game_object *) vec.get(i);
+		Shape_info& info = gwin->get_info(obj);
+		Weapon_info *winf = info.get_weapon_info();
+		if (!winf)
+			continue;	// Not a weapon.
+					// +++Might be a class to check.
+		int damage = winf->get_damage();
+		if (damage > best_damage)
+			{
+			best = obj;
+			best_damage = damage;
+			}
+		}
+	if (best)			// Found one?
+		{
+		best->remove_this(1);
+		add_readied(best, hand);
+		}
+	}
+
+
+/*
  *	Create character.
  */
 
@@ -851,12 +890,12 @@ int Actor::get_weapon_points
 	Game_window *gwin = Game_window::get_game_window();
 	Game_object *weapon = spots[(int) lhand];
 	if (weapon)
-		points = gwin->get_info(weapon).get_weapon();
+		points = gwin->get_info(weapon).get_weapon_damage();
 					// Try both hands.
 	weapon = spots[(int) rhand];
 	if (weapon)
 		{
-		int rpoints = gwin->get_info(weapon).get_weapon();
+		int rpoints = gwin->get_info(weapon).get_weapon_damage();
 		if (rpoints > points)
 			points = rpoints;
 		}
@@ -916,7 +955,19 @@ void Actor::attacked
 	{
 	figure_hit_points(attacker);
 	if (is_dead_npc())
-		die();			// +++++++Wimp.
+		{
+		die();
+					// Experience gained = strength???
+		int expval = get_property((int) strength);
+		if (is_monster())
+			{		// Attacker gains experience.
+			int old_level = attacker->get_level();
+			attacker->properties[(int) exp] += expval;
+					// New level?  Get training points.
+			if (attacker->get_level() > old_level)
+				attacker->properties[(int) training] += 3;
+			}
+		}
 	}
 
 /*

@@ -89,6 +89,7 @@ protected:
 	unsigned long next_path_time;	// Next time we're allowed to use
 					//   pathfinding to follow leader.
 	void init();			// Clear stuff during construction.
+	void ready_best_weapon();	// Find best weapon and ready it.
 					// Read from file.
 	Actor(istream& nfile, int num, int has_usecode);
 public:

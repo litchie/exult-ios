@@ -112,13 +112,19 @@ int Game_window::paint_text_box
 			continue;
 		case ' ':		// Space.
 		case '\t':
-					// Pass space.
+			{		// Pass space.
 			wrd = Pass_space(text);
 			if (wrd != text)
-				curx += get_text_width(fontnum, text, 
+				{
+				int w = get_text_width(fontnum, text, 
 								wrd - text);
+				if (!w)
+					w = get_text_width(fontnum, " ", 1);
+				curx += w;
+				}
 			text = wrd;
 			break;
+			}
 			}
 					// Pass word & get its width.
 		const char *ewrd = Pass_word(text);
