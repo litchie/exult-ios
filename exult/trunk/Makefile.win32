@@ -67,7 +67,7 @@ imagescl.o: imagescl.cc scale.cc
 	$(CXX) $(CPPFLAGS) -O3 -c imagescl.cc -o imagescl.o
 
 clean:
-	del $(OBJS) tools\expack.exe expack\txt2cc.o $(EXEC) exult.flx
+	del $(OBJS) tools\expack.exe expack\txt2cc.o $(EXEC) data\exult.flx
 
 install: $(EXEC)
 	strip $(EXEC) -o c:/ultima7/$(EXEC)
