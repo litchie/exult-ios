@@ -1301,15 +1301,11 @@ int Main_actor::step
 	nlist->activate_eggs(this, t.tx, t.ty, oldtile.tx, oldtile.ty);
 					// In a new chunk?
 	if (olist != nlist)
-		{
 		switched_chunks(olist, nlist);
-		if (gwin->set_above_main_actor(nlist->is_roof(), new_lift))
-					// Repaint all.
-			gwin->set_all_dirty();
-		}
-	else if (old_lift != new_lift &&
-		 gwin->set_above_main_actor(new_lift))
-			gwin->set_all_dirty();
+
+	if (gwin->set_above_main_actor (nlist->is_roof (tx, ty, new_lift)))
+		gwin->set_all_dirty();
+
 	return (1);
 	}
 
@@ -1392,7 +1388,7 @@ void Main_actor::move
 	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
 	if (nlist != olist)
 		switched_chunks(olist, nlist);
-	gwin->set_above_main_actor(nlist->is_roof(), newlift);
+	gwin->set_above_main_actor(nlist->is_roof(get_tx(), get_ty(), newlift));
 	}
 
 /*
