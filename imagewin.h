@@ -476,6 +476,7 @@ public:
 class Image_window : public Image_buffer
 	{
 	int scale;			// Only 1 or 2 for now.
+	bool fullscreen;		// Rendering fullscreen.
 	SDL_Surface *surface;		// Represents window in memory.
 	SDL_Surface *scaled_surface;	// 2X surface if scaling, else 0.
 					// Method to blit scaled:
@@ -498,10 +499,12 @@ class Image_window : public Image_buffer
 
 public:
 					// Create to match hardware depth.
-	Image_window(unsigned int w, unsigned int h);
+	Image_window(unsigned int w, unsigned int h, bool fs = false);
 					// Create with given depth.
-	Image_window(unsigned int w, unsigned int h, int dpth, int scl = 1)
-		: Image_buffer(w, h, dpth), scale(scl), surface(0), 
+	Image_window(unsigned int w, unsigned int h, int dpth, int scl = 1,
+							bool fs = false)
+		: Image_buffer(w, h, dpth), scale(scl), fullscreen(fs), 
+		  surface(0), 
 		  scaled_surface(0), show_scaled(0)
 		{ create_surface(w, h); }
 	virtual ~Image_window();
@@ -539,8 +542,9 @@ class Image_window8 : public Image_window
 	{
 	Image_buffer8 *ib8;		// Cast to 8-bit buffer.
 public:
-	Image_window8(unsigned int w, unsigned int h)
-		: Image_window(w, h, 8)
+	Image_window8(unsigned int w, unsigned int h, int scl = 1, 
+							bool fs = false)
+		: Image_window(w, h, 8, scl, fs)
 		{
 		ib8 = (Image_buffer8 *) ibuf;
 		}

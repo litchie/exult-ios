@@ -47,6 +47,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "flic/playfli.h"
 #include "Configuration.h"
 #include "schedule.h"
+
+extern	Configuration *config;
 					// THE game window:
 Game_window *Game_window::game_window = 0;
 
@@ -135,9 +137,16 @@ Game_window::Game_window
 					//   scroll coords.
 		}
 	read_save_names();		// Read in saved-game names.
+	string	fullscreenstr;		// Check config. for fullscreen mode.
+	bool	fullscreen=false;
+	config->value("config/video/fullscreen",fullscreenstr,"no");
+	if(fullscreenstr=="yes")
+		fullscreen=true;
+	config->set("config/video/fullscreen",fullscreenstr,true);
+	int scale;			// Let 'config' override scale.
+	config->value("config/video/scale", scale, 1);
 					// Create 8-bit depth window.
-	win = new Image_window8(width, height); //<- error in timer
-//	win = new Image_window(width, height); //<- error in timer
+	win = new Image_window8(width, height, scale, fullscreen);
 					// Set title.
 	win->set_title("Exult Ultima7 Engine");
 
