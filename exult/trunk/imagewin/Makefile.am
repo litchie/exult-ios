@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/.. $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
 		$(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libimagewin.la
