@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapelst.h"
 #include "vgafile.h"
 #include "ibuf8.h"
+#include "U7file.h"
 
 /*
  *	Blit onto screen.
@@ -38,9 +39,11 @@ inline void Shape_chooser::show
 	int x, int y, int w, int h	// Area to blit.
 	)
 	{
+	int stride = iwin->get_line_width();
 	gdk_draw_indexed_image(draw->window, drawgc, x, y, w, h,
 			GDK_RGB_DITHER_NORMAL,
-			iwin->get_bits(), iwin->get_line_width(), palette);
+			iwin->get_bits() + y*stride + x, 
+			stride, palette);
 	}
 
 /*
@@ -246,9 +249,18 @@ Shape_chooser::Shape_chooser
 	Vga_file *i,			// Where they're kept.
 	GtkWidget *box,			// Where to put this.
 	int w, int h			// Dimensions.
-	) : ifile(i), iwin(0), shapenum0(0), framenum0(0),
+	) : ifile(i), iwin(0), shapenum0(0), framenum0(0), palette(0),
 		info(0), info_cnt(0), selected(-1), sel_changed(0)
 	{
+	U7object pal("static/palettes.flx", 0);
+	size_t len;
+	unsigned char *buf;		// this may throw an exception
+	buf = (unsigned char *) pal.retrieve(len);
+	guint32 colors[256];
+	for (int i = 0; i < 256; i++)
+		colors[i] = (buf[3*i]<<16)*4 + (buf[3*i+1]<<8)*4 + 
+							buf[3*i+2]*4;
+	palette = gdk_rgb_cmap_new(colors, 256);
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(box), vbox, TRUE, TRUE, 0);
@@ -258,7 +270,7 @@ Shape_chooser::Shape_chooser
 	GtkWidget *frame = gtk_frame_new(NULL);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
-	gtk_box_pack_start(GTK_BOX(vbox), frame, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
 	draw = gtk_drawing_area_new();	// Create drawing area window.
 					// Indicate the events we want.
 	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
@@ -304,6 +316,7 @@ Shape_chooser::~Shape_chooser
 	(
 	)
 	{
+	gdk_rgb_cmap_free(palette);
 	delete [] info;
 	delete iwin;
 	}
@@ -324,4 +337,62 @@ void Shape_chooser::unselect
 		if (sel_changed)	// Tell client.
 			(*sel_changed)();
 		}
+	}
+
+//++++++++++++Testing:
+
+Vga_file *ifile = 0;
+GtkWidget *topwin = 0;
+Shape_chooser *chooser = 0;
+
+/*
+ *	Quit.
+ */
+
+int Quit
+	(
+	)
+	{
+	delete chooser;
+	gtk_exit(0);
+	return (FALSE);			// Shouldn't get here.
+	}
+
+/*
+ *	Main program.
+ */
+
+int main
+	(
+	int argc,
+	char **argv
+	)
+	{
+					// Open file.
+	ifile = new Vga_file("static/shapes.vga");
+	if (!ifile->is_good())
+		{
+		cerr << "Error opening image file 'shapes.vga'.\n";
+		return (1);
+		}
+	gtk_init(&argc, &argv);
+	gdk_rgb_init();
+					// Create top-level window.
+	topwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title(GTK_WINDOW(topwin), "Shape-Browser Test");
+					// Set delete handler.
+	gtk_signal_connect(GTK_OBJECT(topwin), "delete_event",
+				GTK_SIGNAL_FUNC(Quit), NULL);
+					// Set border width of top window.
+	gtk_container_border_width(GTK_CONTAINER(topwin), 10);
+	/*
+ 	 *	Create shape chooser.
+	 */
+	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(topwin), vbox);
+	gtk_widget_show(vbox);
+	chooser = new Shape_chooser(ifile, vbox, 400, 64);
+	gtk_widget_show(topwin);	// Show top window.
+	gtk_main();
+	return (0);
 	}
