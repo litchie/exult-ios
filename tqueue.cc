@@ -155,6 +155,28 @@ void Time_queue::activate0
 	}
 
 /*
+ *	Resume after a pause.
+ */
+
+void Time_queue::resume
+	(
+	uint32 curtime
+	)
+	{
+	if (!pause_time)
+		return;			// Not paused.
+	int diff = curtime - pause_time;
+	pause_time = 0;
+	if (diff < 0)			// Should not happen.
+		return;
+	for(Temporal_sequence::iterator it=data.begin();
+		it!=data.end(); ++it)
+		{
+		it->time += diff;	// Push entries ahead.
+		}
+	}
+
+/*
  *	Get next element in queue.
  */
 
