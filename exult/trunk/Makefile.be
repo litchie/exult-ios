@@ -28,7 +28,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
 	npcnear.o npctime.o objs.o palette.o paths.o readnpcs.o \
 	scale.o schedule.o \
 	segfile.o spells.o tqueue.o usecode.o \
-	useval.o utils.o vec.o vgafile.o game.o sigame.o bggame.o virstone.o \
+	useval.o utils.o vgafile.o game.o sigame.o bggame.o virstone.o \
 	font.o menulist.o txtscroll.o
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o

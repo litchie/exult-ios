@@ -223,7 +223,7 @@ void Patrol_schedule::now_what
 	const int PATH_SHAPE = 607;
 	pathnum++;			// Find next path.
 					// Already know its location?
-	Game_object *path =  paths.at(pathnum);
+	Game_object *path =  pathnum < paths.size() ? paths.at(pathnum) : 0;
 	if (!path)			// No, so look around.
 		{
 		GOVector nearby;
@@ -233,7 +233,7 @@ void Patrol_schedule::now_what
 			Game_object *obj = nearby.at(i);
 			int framenum = obj->get_framenum();
 					// Cache it.
-			paths.at(framenum) = obj;
+			paths.put(framenum, obj);
 			if (framenum == pathnum)
 				{	// Found it.
 				path = obj;

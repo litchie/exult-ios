@@ -247,15 +247,16 @@ public:
  */
 class A_star_queue
 	{
-	Vector open;			// Nodes to be done, by priority. Each
+	FeatureVector<Search_node*> open;// Nodes to be done, by priority. Each
 					//   is a ->last node in chain.
 	int best;			// Index of 1st non-null ent. in open.
 					// For finding each tile's node:
 	hash_set<Search_node *, Hash_node, Equal_nodes> lookup;
 public:
 	A_star_queue() : open(256), lookup(1000)
-		{  
-		best = open.get_cnt();	// Best is past end.
+		{
+		open.insert(open.begin(), 256, (Search_node *) 0);
+		best = open.size();	// Best is past end.
 		}
 	~A_star_queue()
 		{
@@ -264,7 +265,8 @@ public:
 	void add_back(Search_node *nd)	// Add an existing node back to 'open'.
 		{
 		int total_cost = nd->get_total_cost();
-		Search_node *last = (Search_node *) open.get(total_cost);
+		Search_node *last = total_cost < open.size() ?
+						open[total_cost] : 0;
 		nd->add_to_chain(last);	// Add node to this chain.
 		open.put(total_cost, last);
 		if (total_cost < best)
@@ -281,7 +283,8 @@ public:
 		if (!nd->is_open())
 			return;		// Nothing to do.
 		int total_cost = nd->get_total_cost();
-		Search_node *last = (Search_node *) open.get(total_cost);
+		Search_node *last = total_cost < open.size() ?
+						open[total_cost] : 0;
 		nd->remove_from_chain(last);
 					// Store updated 'last'.
 		open.put(total_cost, last);
@@ -289,16 +292,16 @@ public:
 			{
 			if (total_cost == best)
 				{
-				int cnt = open.get_cnt();
+				int cnt = open.size();
 				for (best++; best < cnt; best++)
-					if (open.get(best) != 0)
+					if (open[best] != 0)
 						break;
 				}
 			}
 		}
 	Search_node *pop()		// Pop best from priority queue.
 		{
-		Search_node *last = (Search_node *) open.get(best);
+		Search_node *last = best < open.size() ? open[best] : 0;
 		if (!last)
 			return (0);
 					// Return 1st in list.
@@ -307,9 +310,9 @@ public:
 		open.put(best, last);
 		if (!last)		// List now empty?
 			{
-			int cnt = open.get_cnt();
+			int cnt = open.size();
 			for (best++; best < cnt; best++)
-				if (open.get(best) != 0)
+				if (open[best] != 0)
 					break;
 			}
 		return node;

@@ -38,11 +38,23 @@ public:
 		{}
 	FeatureVector<T>(size_type n) : baseClass()
 		{ reserve(n); }
-	
+
+	T& at(int i) { return (*this)[i]; }
+	void put(int i, T& v)		// Set i'th entry.
+		{
+		if (i >= size())
+			{
+			T *iter = begin() + size();
+			insert(begin() + size(), i - size(), 0);
+			push_back(v);
+			}
+		else
+			(*this)[i] = v;
+		}
 	size_type	find( const T obj ) const
 		{
 			size_type pos = 0;
-			for(const_iterator X = begin(); X != end(); ++X, ++pos)
+			for (const T *X = begin(); X != end(); ++X, ++pos)
 			{
 				if( *X == obj )
 					return pos;
@@ -58,7 +70,7 @@ public:
 
 	void		remove( const T obj )
 		{
-			for(iterator X = begin(); X != end(); ++X)
+			for(T *X = begin(); X != end(); ++X)
 				if( *X == obj )
 				{
 					erase(X);
@@ -77,7 +89,7 @@ typedef	FeatureVector<Egg_object*>	EggVector;
 typedef	FeatureVector<Actor*>		ActorVector;
 
 
-#if 1
+#if 0
 /*
  *	Here's a vector that resizes itself.
  */
