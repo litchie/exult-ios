@@ -38,8 +38,7 @@ short Mouse::long_arrows[8] = {24, 25, 26, 27, 28, 29, 30, 31};
 Mouse::Mouse
 	(
 	Game_window *gw			// Where to draw.
-	) : pointers(POINTERS), gwin(gw), backup(0), cur(0), mousex(-1),
-	    mousey(-1), iwin(gwin->get_win()), cur_framenum(0)
+	) : pointers(POINTERS), gwin(gw), iwin(gwin->get_win()),backup(0),mousex(-1), mousey(-1),cur_framenum(0),cur(0) 
 	{
 					// Get max. backup size.
 	int cnt = pointers.get_num_frames();
