@@ -368,7 +368,7 @@ public:
 			else
 				break;
 			}
-		Buffer.push_back((const char *)p,l);
+		Buffer.push_back(reinterpret_cast<const char *>(p),l);
 		unlock();
 		}
 	size_t	consume(void *p,size_t l)
@@ -376,7 +376,7 @@ public:
 		if(!l)
 			return producing?0:-1;
 		lock();
-		l=Buffer.pop_front((char *)p, l, repeat);
+		l=Buffer.pop_front(reinterpret_cast<char *>(p), l, repeat);
 		unlock();
 		return l?l:(producing?0:-1);
 		}
