@@ -41,6 +41,30 @@ static void DummY()
 	}
 
 /*
+ *	Create to start after/before a given object within a chunk.
+ */
+
+template<class D> 
+D_Recursive_object_iterator<D>::D_Recursive_object_iterator<D>
+	(
+	Game_object *start		// Start here.
+	) : elems(Game_window::get_game_window()->get_chunk(
+		start->get_outermost())->get_objects()), child(0)
+	{
+					// Get what obj. is in (or itself).
+	Game_object *owner = start->get_outermost();
+	Game_object *obj;		// Find owner within its chunk.
+	while ((obj = get_next()) != 0 && obj != owner)
+		;
+	if (!obj)
+		return;			// Bad.  It wasn't found.
+	if (obj != start)		// Given object contained?
+					// Look within for it.
+		while ((obj = get_next()) != 0 && obj != start)
+			;
+	}
+
+/*
  *	Get next game object, going down recursively into containers.
  *
  *	Output:	Next in world, or 0 if done.
@@ -66,7 +90,7 @@ template<class D> Game_object *D_Recursive_object_iterator<D>::get_next
 	Container_game_object *c = 
 			dynamic_cast<Container_game_object *> (obj);
 	if (c)				// Container?  Set to go through it.
-		child = new D_Recursive_object_iterator<class D>(
+		child = new D_Recursive_object_iterator<D>(
 							c->get_objects());
 	return obj;
 	}
