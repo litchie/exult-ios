@@ -77,7 +77,7 @@ Cheat::~Cheat() {
 void Cheat::init (void) {
 	enabled = false;
 	std::string cheating;
-	config->value("config/gameplay/cheat",cheating,"yes");
+	config->value("config/gameplay/cheat",cheating,"no");
 	if (cheating == "yes")
 		enabled = true;
 }
