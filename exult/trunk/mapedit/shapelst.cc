@@ -248,7 +248,7 @@ void Shape_chooser::render
 		unselect(false);
 	else
 		select(new_selected);
-	adjust_scrollbar();		// Set new scroll values.
+	adjust_vscrollbar();		// Set new scroll values.
 }
 
 /*
@@ -310,19 +310,7 @@ void Shape_chooser::render_frames
 		{
 		selshape = info[selected].shapenum;
 		selframe = info[selected].framenum;
-		Shape *shape = ifile->extract_shape(selshape);
-		int xoff = Get_x_offset(shape, selframe);
-		if (xoff < hoffset)	// Left of visual area?
-			hoffset = xoff > border ? xoff - border : 0;
-		else
-			{
-			int sw = shape->get_frame(selframe)->get_width();
-			if (xoff + sw + border - hoffset > winw)
-				hoffset = xoff + sw + border - winw;
-			}
 		}
-	else
-		hoffset = 0;		// +++++Until we have a horiz. sbar.
 					// Remove "selected" message.
 	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	delete [] info;			// Delete old info. list.
@@ -390,8 +378,38 @@ void Shape_chooser::render_frames
 	else
 		select(new_selected);
 	iwin->clear_clip();
-	adjust_scrollbar();		// Set new scroll values.
+	adjust_vscrollbar();		// Set new scroll values.
 }
+
+/*
+ *	Horizontally scroll so that the selected frame is visible (in frames
+ *	mode).
+ */
+
+void Shape_chooser::scroll_to_frame
+	(
+	)
+	{
+	if (selected >= 0)		// Save selection info.
+		{
+		int selshape = info[selected].shapenum;
+		int selframe = info[selected].framenum;
+		Shape *shape = ifile->extract_shape(selshape);
+		int xoff = Get_x_offset(shape, selframe);
+		if (xoff < hoffset)	// Left of visual area?
+			hoffset = xoff > border ? xoff - border : 0;
+		else
+			{
+			gint winw = draw->allocation.width;
+			int sw = shape->get_frame(selframe)->get_width();
+			if (xoff + sw + border - hoffset > winw)
+				hoffset = xoff + sw + border - winw;
+			}
+		GtkAdjustment *adj = gtk_range_get_adjustment(
+						GTK_RANGE(shape_hscroll));
+		gtk_adjustment_set_value(adj, hoffset);
+		}
+	}
 
 /*
  *	Find start of next row.
@@ -541,6 +559,7 @@ gint Shape_chooser::configure
 	chooser->index0 = 0;
 	chooser->goto_index(i0);
 	chooser->index0 = chooser->row_indices[chooser->row0];
+	chooser->adjust_hscrollbar(-1);
 	chooser->render();		// This also adjusts scrollbar.
 					// Set handler for shape dropped here,
 					//   BUT not more than once.
@@ -815,7 +834,7 @@ gint Shape_chooser::drag_begin
  *	Scroll to a new shape/frame.
  */
 
-void Shape_chooser::scroll
+void Shape_chooser::vscroll
 	(
 	int newindex			// Abs. index of row to show.
 	)
@@ -843,14 +862,15 @@ void Shape_chooser::scroll
 	}
 
 /*
- *	Adjust scroll amounts.
+ *	Adjust vertical scroll amounts.
  */
 
-void Shape_chooser::adjust_scrollbar
+void Shape_chooser::adjust_vscrollbar
 	(
 	)
 	{	
-	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(shape_scroll));
+	GtkAdjustment *adj = gtk_range_get_adjustment(
+						GTK_RANGE(shape_vscroll));
 	int known_rows = row_indices.size() - 1;
 	float num_per_row = known_rows > 0 ? 
 		((float) row_indices[known_rows])/known_rows : 1;
@@ -863,10 +883,30 @@ void Shape_chooser::adjust_scrollbar
 	}
 
 /*
+ *	Adjust horizontal scroll amounts.
+ */
+
+void Shape_chooser::adjust_hscrollbar
+	(
+	int newmax			// New max., or -1 to leave alone.
+	)
+	{	
+	GtkAdjustment *adj = gtk_range_get_adjustment(
+						GTK_RANGE(shape_hscroll));
+	if (newmax > 0)
+		adj->upper = newmax;
+	adj->page_increment = draw->allocation.width;
+	adj->page_size = draw->allocation.width;
+	if (adj->page_size > adj->upper)
+		adj->upper = adj->page_size;
+	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+	}
+
+/*
  *	Handle a scrollbar event.
  */
 
-void Shape_chooser::scrolled
+void Shape_chooser::vscrolled		// For vertical scrollbar.
 	(
 	GtkAdjustment *adj,		// The adjustment.
 	gpointer data			// ->Shape_chooser.
@@ -875,7 +915,18 @@ void Shape_chooser::scrolled
 	Shape_chooser *chooser = (Shape_chooser *) data;
 cout << "Scrolled to " << adj->value << '\n';
 	gint newindex = (gint) adj->value;
-	chooser->scroll(newindex);
+	chooser->vscroll(newindex);
+	}
+void Shape_chooser::hscrolled		// For horizontal scrollbar.
+	(
+	GtkAdjustment *adj,		// The adjustment.
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	Shape_chooser *chooser = (Shape_chooser *) data;
+	chooser->hoffset = (gint) adj->value;
+	chooser->render_frames();
+	chooser->show();
 	}
 
 /*
@@ -898,6 +949,8 @@ cout << "Frame changed to " << adj->value << '\n';
 		if (newframe >= nframes)	// Just checking
 			return;
 		shinfo.framenum = newframe;
+		if (chooser->frames_mode)	// Get sel. frame in view.
+			chooser->scroll_to_frame();
 		chooser->render();
 		chooser->show();
 		}
@@ -916,6 +969,10 @@ void Shape_chooser::all_frames_toggled
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	chooser->frames_mode = on;
+	if (on)				// Frame => show horiz. scrollbar.
+		gtk_widget_show(chooser->shape_hscroll);
+	else
+		gtk_widget_hide(chooser->shape_hscroll);
 	chooser->render();
 	chooser->show();
 	}
@@ -993,9 +1050,10 @@ void Shape_chooser::search
 	if (i == stop)
 		return;			// Not found.
 	goto_index(i);
-	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(shape_scroll));
+	GtkAdjustment *adj = gtk_range_get_adjustment(
+						GTK_RANGE(shape_vscroll));
 	if (row0 >= adj->value)		// Beyond apparent end?
-		adjust_scrollbar();	// Needs updating.
+		adjust_vscrollbar();	// Needs updating.
 	gtk_adjustment_set_value(adj, row0);
 	int newsel = i - row_indices[row0];
 	if (newsel >= 0 && newsel < info_cnt)
@@ -1183,18 +1241,29 @@ Shape_chooser::Shape_chooser
 	gtk_container_add (GTK_CONTAINER (frame), draw);
 	gtk_drawing_area_size(GTK_DRAWING_AREA(draw), w, h);
 	gtk_widget_show(draw);
-					// Want a scrollbar for the shapes.
+					// Want vert. scrollbar for the shapes.
 	GtkObject *shape_adj = gtk_adjustment_new(0, 0, 
 				get_count()/4, 1, 1, 1);
-	shape_scroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(shape_adj));
+	shape_vscroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(shape_adj));
 					// Update window when it stops.
-	gtk_range_set_update_policy(GTK_RANGE(shape_scroll),
+	gtk_range_set_update_policy(GTK_RANGE(shape_vscroll),
 					GTK_UPDATE_DELAYED);
-	gtk_box_pack_start(GTK_BOX(hbox), shape_scroll, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), shape_vscroll, FALSE, TRUE, 0);
 					// Set scrollbar handler.
 	gtk_signal_connect(GTK_OBJECT(shape_adj), "value_changed",
-					GTK_SIGNAL_FUNC(scrolled), this);
-	gtk_widget_show(shape_scroll);
+					GTK_SIGNAL_FUNC(vscrolled), this);
+	gtk_widget_show(shape_vscroll);
+					// Horizontal scrollbar.
+	shape_adj = gtk_adjustment_new(0, 0, 640, 8, 16, 16);
+	shape_hscroll = gtk_hscrollbar_new(GTK_ADJUSTMENT(shape_adj));
+					// Update window when it stops.
+	gtk_range_set_update_policy(GTK_RANGE(shape_hscroll),
+					GTK_UPDATE_DELAYED);
+	gtk_box_pack_start(GTK_BOX(vbox), shape_hscroll, FALSE, TRUE, 0);
+					// Set scrollbar handler.
+	gtk_signal_connect(GTK_OBJECT(shape_adj), "value_changed",
+					GTK_SIGNAL_FUNC(hscrolled), this);
+//++++	gtk_widget_hide(shape_hscroll);	// Only shown in 'frames' mode.
 					// At the bottom, status bar & frame:
 	GtkWidget *hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0);

@@ -59,7 +59,8 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
 	GtkWidget *fspin;		// Spin button for frame #.
-	GtkWidget *shape_scroll;	// Vertical scrollbar.
+	GtkWidget *shape_vscroll;	// Vertical scrollbar.
+	GtkWidget *shape_hscroll;	// Horizontal scrollbar.
 	GtkWidget *find_text;		// For searching.
 	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
 	int index0;			// Index of top-leftmost in
@@ -83,12 +84,14 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
 	void render_frames();		// Show all frames.
+	void scroll_to_frame();		// Scroll so sel. frame is visible.
 	int next_row(int start);	// Down/up 1 row.
 	void goto_index(int index);	// Get desired index in view.
 	virtual int get_selected_id()
 		{ return selected < 0 ? -1 : info[selected].shapenum; }
-	void scroll(int newindex);	// Scroll.
-	void adjust_scrollbar();	// Set new scroll amounts.
+	void vscroll(int newindex);	// Scroll.
+	void adjust_vscrollbar();	// Set new scroll amounts.
+	void adjust_hscrollbar(int newmax);
 	GtkWidget *create_search_controls();
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
@@ -137,7 +140,8 @@ public:
 	static gint drag_begin(GtkWidget *widget, GdkDragContext *context,
 							gpointer data);
 					// Handle scrollbar.
-	static void scrolled(GtkAdjustment *adj, gpointer data);
+	static void vscrolled(GtkAdjustment *adj, gpointer data);
+	static void hscrolled(GtkAdjustment *adj, gpointer data);
 					// Handle spin-button for frames.
 	static void frame_changed(GtkAdjustment *adj, gpointer data);
 	static void all_frames_toggled(GtkToggleButton *btn,
