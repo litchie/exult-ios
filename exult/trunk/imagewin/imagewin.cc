@@ -605,6 +605,7 @@ void Image_window::set_title(const char *title)
 #ifdef HAVE_OPENGL
 /*
  *	Clear/set clip when in OpenGL.
+++++++++++I think these can go away - jsf.
  */
 
 void Image_window::opengl_clear_clip

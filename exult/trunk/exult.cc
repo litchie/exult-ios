@@ -864,8 +864,7 @@ static void Handle_events
 				gwin->set_painted();
 			}
 		if (!gwin->show() &&	// Blit to screen if necessary.
-		    Mouse::mouse_update &&	// If not, did mouse change?
-		    !GL_manager::get_instance())
+		    Mouse::mouse_update)	// If not, did mouse change?
 			Mouse::mouse->blit_dirty();
 		}
 	}
@@ -1247,8 +1246,7 @@ static int Get_click
 		Mouse::mouse->show();		// Turn on mouse.
 
 		if (!gwin->show() &&	// Blit to screen if necessary.
-		    Mouse::mouse_update &&
-		    !GL_manager::get_instance())
+		    Mouse::mouse_update)
 			Mouse::mouse->blit_dirty();
 		}
 	return (0);			// Shouldn't get here.
