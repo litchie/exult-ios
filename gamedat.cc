@@ -46,7 +46,7 @@ void Game_window::restore_gamedat
 	{
 	ifstream in;
 	u7open(in, fname);		// Open file & abort if error.
-#if defined(XWIN)
+#if defined(XWIN) || defined(BEOS)
 	mkdir("gamedat", 0755);		// Create dir. if not already there.
 #else
 	mkdir("gamedat");
