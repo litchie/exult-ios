@@ -1,3 +1,8 @@
+2004-05-22    <jeff@mini.nerble.net>
+
+	* exult.cc: Skip intro if "development" game.
+	* gumps/Face_stats.cc (Face_stats): Same for face stats.
+
 2004-05-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gumps/Face_stats.cc: fix crash
 

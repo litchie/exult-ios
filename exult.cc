@@ -741,7 +741,10 @@ static void Init
 					// Skip splash screen?
 		bool skip_splash;
 		config->value("config/gameplay/skip_splash", skip_splash);
-		if(!skip_splash) 
+		if(!skip_splash && 
+					// Skip intro. if devel. game.
+		   (Game::get_game_type() != EXULT_DEVEL_GAME ||
+					U7exists("<STATIC>/intro.dat")))
 			game->play_intro();
 	} while(!game->show_menu(arg_nomenu));
 	gwin->init_files();
