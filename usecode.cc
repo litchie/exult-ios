@@ -890,7 +890,7 @@ void Usecode_machine::run
 			break;
 		case 0x0a:		// SUB.
 			sval = popi();
-			pushi(sval + popi());
+			pushi(popi() - sval);
 			break;
 		case 0x0b:		// DIV.
 			sval = popi();

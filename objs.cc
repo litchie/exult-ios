@@ -172,7 +172,7 @@ Frames_sequence::Frames_sequence
 Sprite::Sprite
 	(
 	int shapenum
-	)  : Game_object(), cx(-1), cy(-1), chunk(0),
+	)  : Container_game_object(), cx(-1), cy(-1), chunk(0),
 		x_dir(0), major_frame_incr(8), frames_seq(0)
 	{
 	set_shape(shapenum, 0); 
