@@ -548,7 +548,7 @@ static void Handle_keystroke
 	int shift
 	)
 	{
-	static int shape_cnt = 0x21e, shape_frame = 0;
+	static int shape_cnt = 720, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = -1, gump_frame = 0;
 	static int font_cnt = -1, font_frame = 0;
@@ -622,6 +622,10 @@ static void Handle_keystroke
 	case SDLK_e:
 		gwin->paint_eggs = 1-gwin->paint_eggs;
 		gwin->paint();
+		break;
+	case SDLK_r:			// Show rotated frame.
+		gwin->paint();
+		gwin->paint_shape(200, 200, shape_cnt, 32+shape_frame);
 		break;
 	case SDLK_s:		// Show next shape.
 		if (!shift) {

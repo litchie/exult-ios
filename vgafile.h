@@ -49,6 +49,7 @@ class Shape_frame
 	void get_rle_shape(ifstream& shapes, long filepos, long len);
 public:
 	friend class Game_window;
+	friend class Shape;
 	Shape_frame() : data(0)
 		{  }
 					// Read in shape/frame.
@@ -79,6 +80,8 @@ class Shape
 protected:
 	Shape_frame **frames;		// List of ->'s to frames.
 	unsigned char num_frames;	// # of frames.
+					// Create reflected frame.
+	Shape_frame *reflect(ifstream& shapes, int shnum, int frnum);
 					// Read in shape/frame.
 	Shape_frame *read(ifstream& shapes, int shnum, int frnum);
 					// Store shape that was read.
