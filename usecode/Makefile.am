@@ -17,6 +17,7 @@ libusecode_la_SOURCES = \
 	ucmachine.h	\
 	ucsched.h	\
 	ucsched.cc	\
+	ucscriptop.h	\
 	useval.cc	\
 	useval.h	\
 	conversation.cc \

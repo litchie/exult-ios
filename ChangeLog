@@ -1,3 +1,9 @@
+2001-08-08  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucsched.cc (Usecode_script): Changed name, cleaned up
+	constructors so the header doesn't depend on useval.h
+	* usecode/ucscriptop.h:  Script opcodes.
+
 2001-08-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* uctools.h: brought up-to-date to the rest of exult
 	* ucinternal.*: risky usecode changes to (hopefully) fix conversations.

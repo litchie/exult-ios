@@ -51,7 +51,7 @@ protected:
 
 	Conversation *conv;		// Handles conversations
 public:
-	friend class Scheduled_usecode;
+	friend class Usecode_script;
 					// Create Usecode_internal.
 	static Usecode_machine *create(Game_window *gw);
 	Usecode_machine(Game_window *gw);

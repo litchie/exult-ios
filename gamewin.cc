@@ -2649,7 +2649,7 @@ void Game_window::double_clicked
 	    main_actor->Actor::get_flag(Obj_flags::dont_render))
 		return;
 					// Nothing going on?
-	if (!Scheduled_usecode::get_count())
+	if (!Usecode_script::get_count())
 		removed->flush();	// Flush removed objects.
 					// Look for obj. in open gump.
 	Game_object *obj = 0;
