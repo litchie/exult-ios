@@ -196,6 +196,7 @@ static bool right_on_gump = false;	// Right clicked on gump?
 static int show_items_x = 0, show_items_y = 0;
 static int show_items_time = 0;
 static bool show_items_clicked = false;
+static int left_down_x = 0, left_down_y = 0;
 
 /*
  *	A handy breakpoint.
@@ -1035,6 +1036,7 @@ static void Handle_event
 			dragging = gwin->start_dragging(x, y);
 			//Mouse::mouse->set_shape(Mouse::hand);
 			dragged = false;
+			left_down_x = x; left_down_y = y;
 			}
 					// Move sprite toward mouse
 					//  when right button pressed.
@@ -1115,8 +1117,10 @@ static void Handle_event
 				Mouse::mouse->set_speed_cursor();
 			}
 					// Last click within .5 secs?
-			if (curtime - last_b1_click < 500)
-				{
+			if (curtime - last_b1_click < 500 &&
+				show_items_x - 1 <= x && x <= show_items_x + 1 &&
+				show_items_y - 1 <= y && y <= show_items_y + 1)
+			{
 				dragging = dragged = false;
 				gwin->double_clicked(x, y);
 				Mouse::mouse->set_speed_cursor();
@@ -1126,12 +1130,15 @@ static void Handle_event
 			if (!dragging || !dragged)
 				last_b1_click = curtime;
 
-			if (!click_handled) {
+			if (!click_handled && 
+				left_down_x - 1 <= x && x <= left_down_x + 1 &&
+				left_down_y - 1 <= y && y <= left_down_y + 1)
+			{
+				show_items_x = x; show_items_y = y;
 				// Identify item(s) clicked on.
 				if (cheat.in_map_editor()) {
 					gwin->show_items(x,y,(SDL_GetModState() & KMOD_CTRL) != 0);
 				} else {
-					show_items_x = x; show_items_y = y;
 					show_items_time = curtime + 500;
 					show_items_clicked = true;
 				}
