@@ -540,6 +540,25 @@ void Barge_object::done
 	)
 	{
 	gathered = false;		// Clear for next time.
+	static int norecurse = 0;	// Don't recurse on the code below.
+	if (norecurse > 0)
+		return;
+	norecurse++;
+	if (boat == 1)			// Look for sails on boat.
+		{			// Pretend they were clicked on.
+		int cnt = objects.size();	// Look for open sail.
+		for (int i = 0; i < cnt; i++)
+			{
+			Game_object *obj = objects[i];
+			if (obj->get_shapenum() == 251 &&
+			    (obj->get_framenum()&7) < 4)
+				{
+				obj->activate();
+				break;
+				}
+			}
+		}
+	norecurse--;
 	}
 
 /*
