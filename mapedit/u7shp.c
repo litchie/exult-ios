@@ -351,8 +351,10 @@ static gint32 load_image (gchar *filename)
 	gint16 slice_length;
 	gint16 block_type;
 	gint16 block_length;
-	gint32 max_width;
-	gint32 max_height;
+	/*	gint32 max_width;
+		gint32 max_height;*/
+	gint16 max_leftX = -1, max_rightX = -1;
+	gint16 max_leftY = -1, max_rightY = -1;
 	signed int offsetX;
 	signed int offsetY;
 	gchar *framename;
@@ -387,8 +389,9 @@ static gint32 load_image (gchar *filename)
 		fseek(fp, 0, SEEK_SET);		/* Return to start of file */
 		printf("num_frames = %d\n", shape.num_frames);
 		shape.frames = g_new(struct u7frame, shape.num_frames);
-		max_width = 8;
-		max_height = 8;
+		max_leftX = 0; max_leftY = 0; max_rightX = 7; max_rightY = 7;
+		/*		max_width = 8;
+				max_height = 8;*/
 		for(i=0; i<shape.num_frames; i++) {
 			frame = &shape.frames[i];
 			frame->width = 8;
@@ -402,8 +405,8 @@ static gint32 load_image (gchar *filename)
 		image_type = GIMP_INDEXEDA_IMAGE;
 		hdr_size = read4(fp);
 		shape.num_frames = (hdr_size-4)/4;
-		max_width = -1;
-		max_height = -1;
+		/*		max_width = -1;
+				max_height = -1;*/
 		printf("num_frames = %d\n", shape.num_frames);
 		shape.frames = g_new(struct u7frame, shape.num_frames);
 	
@@ -417,12 +420,22 @@ static gint32 load_image (gchar *filename)
 			frame->leftX = read2(fp);
 			frame->leftY = read2(fp);
 			frame->rightY = read2(fp);
+
+			if (frame->leftX > max_leftX)
+			  max_leftX = frame->leftX;
+			if (frame->rightX > max_rightX)
+			  max_rightX = frame->rightX;
+			if (frame->leftY > max_leftY)
+			  max_leftY = frame->leftY;
+			if (frame->rightY > max_rightY)
+			  max_rightY = frame->rightY;
+
 			frame->width = frame->leftX+frame->rightX+1;
-			if(frame->width>max_width)
-				max_width = frame->width;
+			/*			if(frame->width>max_width)
+						max_width = frame->width;*/
 			frame->height = frame->leftY+frame->rightY+1;
-			if(frame->height>max_height)
-				max_height = frame->height;
+			/*			if(frame->height>max_height)
+						max_height = frame->height;*/
 			pixptr = frame->pixels = g_new0(char, frame->width*frame->height*2);
 			eod = frame->pixels+frame->width*frame->height*2;
 			while((slice=read2(fp))!=0) {
@@ -476,7 +489,8 @@ static gint32 load_image (gchar *filename)
 			}
 		}
 	}
-	image_ID = gimp_image_new (max_width, max_height, GIMP_INDEXED);
+	image_ID = gimp_image_new (max_leftX+max_rightX+1, 
+				   max_leftY+max_rightY+1, GIMP_INDEXED);
 	gimp_image_set_filename (image_ID, filename);
 	gimp_image_set_cmap (image_ID, gimp_cmap, 256);
 	for(i=0; i<shape.num_frames; i++) {
@@ -487,7 +501,8 @@ static gint32 load_image (gchar *filename)
 			image_type, 100, GIMP_NORMAL_MODE);
 		g_free (framename);
 		gimp_image_add_layer (image_ID, layer_ID, 0);
-		gimp_layer_translate (layer_ID, (gint)0, (gint)0);
+		gimp_layer_translate (layer_ID, (gint)(max_leftX-frame->leftX),
+				      (gint)(max_leftY-frame->leftY));
 
 		drawable = gimp_drawable_get (layer_ID);
 		
@@ -496,17 +511,6 @@ static gint32 load_image (gchar *filename)
 
 		gimp_drawable_flush (drawable);
 		gimp_drawable_detach (drawable);
-		
-		if(i==0) {	/* FIXME: Do this for first frame only... */
-			if(frame->leftY>0) {
-				gimp_image_add_hguide(image_ID, frame->leftY);
-				printf("Added hguide=%d\n", frame->leftY);
-			}
-			if(frame->leftX>0) {
-				gimp_image_add_vguide(image_ID, frame->leftX);
-				printf("Added vguide=%d\n", frame->leftX);
-			}
-		}
 	}
 
 	fclose(fp);
@@ -517,6 +521,11 @@ static gint32 load_image (gchar *filename)
 
 	g_free(shape.frames);
 
+	gimp_image_add_hguide(image_ID, max_leftY);
+	printf("Added hguide=%d\n", max_leftY);
+	gimp_image_add_vguide(image_ID, max_leftX);
+	printf("Added vguide=%d\n", max_leftX);
+	
 	return image_ID;
 }
 
@@ -643,11 +652,11 @@ static gint32 save_image (gchar  *filename,
 	for (k=0;k<nlayers;k++) {
 		frame = &shape.frames[k];
 		drawable = gimp_drawable_get (layers[k]);
-		//gimp_drawable_offsets (layers[k], &offsetX, &offsetY);
+		gimp_drawable_offsets (layers[k], &offsetX, &offsetY);
 		frame->width = drawable->width;
 		frame->height = drawable->height;
-		frame->leftX = hotx;
-		frame->leftY = hoty;
+		frame->leftX = hotx - offsetX;
+		frame->leftY = hoty - offsetY;
 		frame->rightX = frame->width-frame->leftX-1;
 		frame->rightY = frame->height-frame->leftY-1;
 		pix = (gchar *)malloc(frame->width*frame->height*2);

@@ -1,3 +1,7 @@
+2001-02-13  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* u7shp.c: added support for a different origin for each frame
+	* hoe_of_destruction.shp: fixed origins
+
 2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* audio/Audio.cc, audio/midi_drivers/Timidity_binary.cc:
 	  use 16 bit audio. Makes Timidity music much cleaner
