@@ -405,8 +405,11 @@ public:
 	void paint_chunk_objects(int at_lift, int cx, int cy, int flat_only);
 					// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj, int at_lift, int flat_only);
+					// Fade palette in/out.
+	void fade_palette(int cycles, int inout, int pal_num = -1);
 	void set_palette(int pal_num);	// Set desired palette.
-	void set_palette(const char *fname, int res, int fade=0);	// Set palette from Flex
+					// Set palette from Flex
+	void set_palette(const char *fname, int res, int fade=0);
 	void brighten(int per);		// Brighten/darken by percentage.
 	void view_right();		// Move view 1 chunk to right.
 	void view_left();		// Move view left by 1 chunk.

@@ -204,16 +204,21 @@ void Scheduled_usecode::handle_event
 			delay = 200*(delayval.get_int_value());
 			break;		
 			}
-		case 0x2d:		// ?? Remove itemref?
+#if 0
+		case 0x2c:		// Quit if there's already scheduled
+					//   code for item?
+			break;
+#endif
+		case 0x2d:		// Remove itemref.
 			usecode->remove_item(obj);
 			break;
-		case 0x46:		// ?? 1 parm. This IS a frame.
-			{		// Set frame?  Pretty sure.
+		case 0x46:
+			{		// Set frame.
 			Usecode_value& fval = arrval.get_elem(++i);
 			usecode->set_item_frame(objval, fval);
 			break;
 			}
-		case 0x4e:		// Guessing: Show next frame.
+		case 0x4e:		// Show next frame.
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
 							obj->get_shapenum());
@@ -250,9 +255,11 @@ void Scheduled_usecode::handle_event
 			{
 					// Look in that dir.
 			Usecode_value& val = arrval.get_elem(++i);
-			obj->set_usecode_dir(val.get_int_value());
+					// It may be 0x3x.  Face dir?
+			int dir = val.get_int_value()&7;
+			obj->set_usecode_dir(dir);
 			Usecode_value v(obj->get_dir_framenum(
-					val.get_int_value(), Actor::standing));
+							dir, Actor::standing));
 			usecode->set_item_frame(objval, v);
 			break;
 			}
@@ -2240,7 +2247,7 @@ USECODE_INTRINSIC(advance_time)
 	return(no_ret);
 }
 
-USECODE_INTRINSIC(run_usecode)
+USECODE_INTRINSIC(path_run_usecode)
 {
 	// exec(loc(x,y,z)?, usecode#, itemref, eventid).
 	// Think it should have Avatar walk path to loc, return 0
@@ -2256,8 +2263,8 @@ USECODE_INTRINSIC(run_usecode)
 		int dy = loc.get_elem(1).get_int_value();
 		int dz = loc.get_elem(2).get_int_value();
 		Tile_coord dest(dx, dy, dz);
-		cout << endl << "Run_usecode:  first walk to (" << dx << ", " <<
-				dy << ", " << dz << ")" << endl;
+		cout << endl << "Paty_run_usecode:  first walk to (" << 
+			dx << ", " << dy << ", " << dz << ")" << endl;
 		if (!gwin->get_main_actor()->walk_path_to_tile(dest))
 			{		// Failed to find path.  Return 0.
 			cout << "Failed to find path" << endl;
@@ -2361,6 +2368,25 @@ USECODE_INTRINSIC(clear_npc_flag)
 			gwin->show();
 			}
 		}
+	return(no_ret);
+}
+
+USECODE_INTRINSIC(run_usecode)
+{
+	// run_usecode(fun, itemref, eventid)
+	Game_object *obj = get_item(parms[1]);
+	if (obj)
+		call_usecode(parms[0].get_int_value(), obj, 
+				(Usecode_events) parms[2].get_int_value());
+	return(no_ret);
+}
+
+USECODE_INTRINSIC(fade_palette)
+{
+	// Fade(cycles?, ??(always 1), in_out (0=fade to black, 1=fade in)).
+	int cycles = parms[0].get_int_value();
+	int inout = parms[2].get_int_value();
+	gwin->fade_palette(cycles, inout);
 	return(no_ret);
 }
 
@@ -2525,7 +2551,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7c
-	USECODE_INTRINSIC_PTR(run_usecode),	// 0x7d
+	USECODE_INTRINSIC_PTR(path_run_usecode),	// 0x7d
 	USECODE_INTRINSIC_PTR(close_gumps),	// 0x7e   PlaySpeech (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7f
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80
@@ -2539,10 +2565,8 @@ struct
 	USECODE_INTRINSIC_PTR(get_npc_flag),	// 0x88
 	USECODE_INTRINSIC_PTR(set_npc_flag),	// 0x89
 	USECODE_INTRINSIC_PTR(clear_npc_flag),	// 0x8a
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8b
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8c ++++Cycles palettes dark-light.
-//					//   Takes 3 parms.(12 or 36, 
-//						always 1?, 0/1?).
+	USECODE_INTRINSIC_PTR(run_usecode),	// 0x8b 
+	USECODE_INTRINSIC_PTR(fade_palette),	// 0x8c 
 	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8e  In_combat().
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8f
