@@ -27,8 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <vector>
 #include "objbrowse.h"
+#include "shapedraw.h"
 
-class Shape_draw;
 class Shapes_vga_file;
 
 /*
@@ -62,7 +62,27 @@ public:
 					// Add a new object.
 	void add(int tx, int ty, int tz, int shnum, int frnum);
 	void remove(int i);		// Remove object #i.
-	void draw(Shape_draw *draw);	// Paint shapes in drawing area.
+					// Paint shapes in drawing area.
+	void draw(Shape_draw *draw, int selected = -1);
+	};
+
+/*
+ *	The 'combo editor' window:
+ */
+class Combo_editor : public Shape_draw
+	{
+	GtkWidget *win;			// Main window.
+	Combo *combo;			// Combo being edited.
+	int selected;			// Index of selected item in combo.
+public:
+	Combo_editor(Shapes_vga_file *svga, unsigned char *palbuf);
+	~Combo_editor();
+	void show(bool tf);		// Show/hide.
+	void render(GdkRectangle *area = 0);
+					// Handle mouse.
+	gint mouse_press(GdkEventButton *event);
+	gint mouse_release(GdkEventButton *event);
+	gint mouse_motion(GdkEventMotion *event);
 	};
 
 #endif	/* INCL_COMBO_H */
