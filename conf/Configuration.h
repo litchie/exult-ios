@@ -37,10 +37,10 @@ public:
 	~Configuration();
 
 	bool	read_config_file(const char *);
-	string	&value(const char *);
-	void	value(const char *,string &);
-	void	value(const char *,int &);
+	void	value(const char *key,string &ret,const char *defaultvalue="");
+	void	value(const char *key,int &ret,int defaultvalue=0);
 private:
+	string	&value(const char *key,bool &exists);
 	XMLnode xmltree;
 	string	filename;
 };
