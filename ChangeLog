@@ -1,3 +1,6 @@
+2000-11-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* usecode.cc: fix for Test of Love conv. bug. See mailing list.
+
 2000-11-25  Dancer Vesperman <dancer@users.sourceforge.net>
 	* audio/Audio.cc: Remove some cruft that used to support the ring-buffers. Should prevent occasional SDL breakage.
 
