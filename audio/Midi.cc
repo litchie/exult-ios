@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern	Configuration	*config;
 
 
-void    MyMidiPlayer::start_track(int num,int repeats,int bank)
+void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 {
   #if DEBUG
         cout << "Audio subsystem request: Music track # " << num << endl;
@@ -49,17 +49,17 @@ void    MyMidiPlayer::start_track(int num,int repeats,int bank)
 	if(!track.retrieve(MIDITMPFILE))
 	        return;
 
-	midi_device->start_track(MIDITMPFILE,repeats);
+	midi_device->start_track(MIDITMPFILE,repeat);
 }
 
-void	MyMidiPlayer::start_music(int num,int repeats,int bank)
+void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
 {
 	if(!midi_device)
 		return;
 	if(current_track==num&&midi_device->is_playing())
 		return;	// Already playing it
 	current_track=num;
-	start_track(num,repeats,bank);
+	start_track(num,repeat,bank);
 }
 
 bool	MyMidiPlayer::add_midi_bank(const char *bankname)

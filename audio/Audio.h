@@ -57,7 +57,7 @@ public:
 	void	mixfile(const char *fname);
 	bool	playing(void);
 	void	clear(Uint8 *,int);
-	void	start_music(int num,int repetition);
+	void	start_music(int num,bool continuous);
 	void	start_speech(int num,bool wait=false);
 	void	set_external_signal(int);
 	void	terminate_external_signal(void);
@@ -82,7 +82,7 @@ private:
 class Audio {
 public:
   void Init(int _samplerate, int _channels) {};
-  void start_music(int num, int repetition) {};
+  void start_music(int num, bool continuous) {};
   void start_speech(int num, bool wait=false) {};
 };
 

@@ -96,11 +96,11 @@ KMIDI::~KMIDI()
 {}
 
 
-void	KMIDI::start_track(const char * name,int numrepeats)
+void	KMIDI::start_track(const char * name,bool repeat)
 {
 	if(is_playing())
 		stop_track();
-	repeats=numrepeats;
+	repeat_=repeat;
 #if DEBUG
 	cerr << "Starting midi sequence with KMIDI: " << name << endl;
 #endif
@@ -111,7 +111,7 @@ void	KMIDI::start_track(const char * name,int numrepeats)
 	// rid of the repeating track a problem. This fixes it:
 	signal(SIGTERM,SIG_DFL);
 
-	KMidSimpleAPI::kMidPlay((repeats<0)?255:repeats);
+	KMidSimpleAPI::kMidPlay((repeat)?255:0);
 }
 
 void	KMIDI::stop_track(void)
