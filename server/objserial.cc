@@ -182,6 +182,7 @@ static void Npc_actor_io
 int Object_out
 	(
 	int fd,				// Socket.
+	Exult_server::Msg_type id,	// Message id.
 	unsigned long addr,		// Address.
 	int tx, int ty, int tz,		// Absolute tile coords.
 	int shape, int frame,
@@ -194,7 +195,7 @@ int Object_out
 	Serial_out io(ptr);
 	Object_io(io, addr, tx, ty, tz, shape, frame, quality,
 		name);
-	return Exult_server::Send_data(fd, Exult_server::obj, buf, ptr - buf);
+	return Exult_server::Send_data(fd, id, buf, ptr - buf);
 	}
 
 /*

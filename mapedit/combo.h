@@ -90,6 +90,10 @@ public:
 	gint mouse_press(GdkEventButton *event);
 	void set_order();		// Set selected to desired order.
 	void set_position();		// Set selected to desired position.
+					// Add object/shape picked from Exult.
+	void add(unsigned char *data, int datalen);
+	bool is_visible()
+		{ return GTK_WIDGET_VISIBLE(win); }
 	};
 
 #endif	/* INCL_COMBO_H */

@@ -67,6 +67,7 @@ enum Msg_type
 	view_pos = 19,			// Tile loc., size, scale of what's
 					//   shown in gamewin.  Sent both ways.
 	set_edit_mode = 20,		// Move(0), paint(1), select(2).
+	combo_pick = 21,		// Sending shape to add to combo.
 	usecode_debugging = 128
 	};
 

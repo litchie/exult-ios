@@ -1965,6 +1965,11 @@ void ExultStudio::read_from_server
 		if (locwin)
 			locwin->view_changed(data, datalen);
 		break;
+	case Exult_server::combo_pick:
+		open_combo_window();	// Open if necessary.
+		if (combowin)
+			combowin->add(data, datalen);
+		break;
 		}
 	}
 
