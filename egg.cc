@@ -223,6 +223,36 @@ void Egg_object::activate
 	}
 
 /*
+ *	Teleport the party.
+ */
+
+static void Teleport
+	(
+	Game_window *gwin,
+	Tile_coord t			// Where to go.
+	)
+	{
+	Actor *av = gwin->get_main_actor();
+	av->move(t);			// Move Avatar.
+	Usecode_machine *usecode = gwin->get_usecode();
+	int cnt = usecode->get_party_count();
+	for (int i = 0; i < cnt; i++)
+		{
+		int party_member=usecode->get_party_member(i);
+		Actor *person = gwin->get_npc(party_member);
+		if (person)
+			{
+			Tile_coord t1(-1, -1, -1);
+			for (int dist = 1; dist < 8 && t1.tx == -1; dist++)
+				t1 = av->find_unblocked_tile(dist, 3);
+			if (t1.tx != -1)
+				person->move(t1);
+			}
+		}
+	gwin->center_view(t);		// Bring pos. into view.
+	}
+
+/*
  *	Run usecode when double-clicked or when activated by proximity.
  */
 
@@ -308,15 +338,20 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				}
 			cout << "Should teleport to (" << pos.tx << ", " <<
 					pos.ty << ')' << endl;
-			//+++++if (obj) obj->move(pos);
-					// Can keep doing it.
+			if (obj && (obj == gwin->get_main_actor() ||
+					obj->get_party_id() >= 0))
+					// Teleport everyone!!!
+				Teleport(gwin, pos);
+#if 0
 			Usecode_value tmp(pos.tx);
 			Usecode_value u(1,&tmp);
 			u.push_back(pos.ty);
 			u.push_back(0);
+#endif
 			// Now we want to call the intrinsic move_object
 			// with obj's objnum, and the array we just built as
 			// the target coordinates
+					// Can keep doing it.
 			flags &= ~((1 << (int) hatched));
 			break;
 			}
