@@ -108,6 +108,18 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
+	    <name>new_game</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_new_game_activate</handler>
+	      <last_modification_time>Tue, 02 Apr 2002 08:00:29 GMT</last_modification_time>
+	    </signal>
+	    <label>New game...</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
 	    <name>open_game</name>
 	    <signal>
 	      <name>activate</name>
@@ -139,6 +151,42 @@
 	    <class>GtkMenuItem</class>
 	    <name>separator4</name>
 	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>new</name>
+	    <label>_New...</label>
+	    <right_justify>False</right_justify>
+
+	    <widget>
+	      <class>GtkMenu</class>
+	      <name>new_menu</name>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>new_shapes_file</name>
+		<signal>
+		  <name>activate</name>
+		  <handler>on_new_shapes_file_activate</handler>
+		  <last_modification_time>Tue, 02 Apr 2002 08:08:49 GMT</last_modification_time>
+		</signal>
+		<label>Shapes file...</label>
+		<right_justify>False</right_justify>
+	      </widget>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>new_shape_file</name>
+		<signal>
+		  <name>activate</name>
+		  <handler>on_new_shape_file_activate</handler>
+		  <last_modification_time>Tue, 02 Apr 2002 08:08:49 GMT</last_modification_time>
+		</signal>
+		<label>Single shape file...</label>
+		<right_justify>False</right_justify>
+	      </widget>
+	    </widget>
 	  </widget>
 
 	  <widget>
