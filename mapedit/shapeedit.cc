@@ -136,14 +136,51 @@ void ExultStudio::init_shape_notebook
 	set_visible("shinfo_weapon_box", winfo != 0);
 	if (winfo)			// Setup weapon page.
 		{
-		//++++++++Finish.
+		set_spin("shinfo_weapon_damage", winfo->get_damage());
+		set_spin("shinfo_weapon_range", winfo->get_range());
+		set_optmenu("shinfo_weapon_type", winfo->get_damage_type());
+		int ammo = winfo->get_ammo_consumed();
+		int ammo_use = ammo > 0 ? 0 :
+			winfo->uses_charges() ? 2 :
+			winfo->is_thrown() ? 3 : 1;	// 1 == "None".
+		set_optmenu("shinfo_weapon_ammo", ammo_use);
+		set_spin("shinfo_weapon_ammo_shape", ammo, ammo > 0);
+		set_spin("shinfo_weapon_proj", winfo->get_projectile());
+		set_optmenu("shinfo_weapon_uses", winfo->get_uses());
+		set_spin("shinfo_weapon_sfx", winfo->get_sfx());
+		set_spin("shinfo_weapon_hitsfx", winfo->get_hitsfx());
+					// Show usecode in hex.
+		set_entry("shinfo_weapon_uc", winfo->get_usecode(), true);
+		static char *powers[] = {
+					"shinfo_weapon_pow0",
+					"shinfo_weapon_pow1",
+					"shinfo_weapon_pow2",
+					"shinfo_weapon_pow3",
+					"shinfo_weapon_pow4",
+					"shinfo_weapon_pow5" };
+		set_bit_toggles(&powers[0], 
+			sizeof(powers)/sizeof(powers[0]), winfo->get_powers());
+					// 'Explode'???
+		set_toggle("shinfo_weapon_returns", winfo->returns());
 		}
 	Ammo_info *ainfo = Ammo_info::find(shnum);
 	set_toggle("shinfo_ammo_check", ainfo != 0);
 	set_visible("shinfo_ammo_box", ainfo != 0);
 	if (ainfo)			// Setup armor page.
 		{
-		// +++++++++Finish.
+		set_spin("shinfo_ammo_damage", ainfo->get_damage());
+		set_spin("shinfo_ammo_family", ainfo->get_family_shape());
+		set_optmenu("shinfo_ammo_type", ainfo->get_damage());
+		static char *powers[] = {
+					"shinfo_ammo_pow0",
+					"shinfo_ammo_pow1",
+					"shinfo_ammo_pow2",
+					"shinfo_ammo_pow3",
+					"shinfo_ammo_pow4",
+					"shinfo_ammo_pow5" };
+		set_bit_toggles(&powers[0], 
+			sizeof(powers)/sizeof(powers[0]), ainfo->get_powers());
+					// 'Explode'???
 		}
 	int armor = info.get_armor();	// (Should eventually become a class.)
 	set_toggle("shinfo_armor_check", armor > 0);
@@ -166,7 +203,31 @@ void ExultStudio::init_shape_notebook
 		set_spin("shinfo_monster_reach", minfo->get_reach());
 		set_spin("shinfo_monster_equip", minfo->get_equip_offset());
 		set_optmenu("shinfo_monster_align", minfo->get_alignment());
-			// +++++++Finish:  Flags.
+		static char *vuln[] = {	"shinfo_monster_vuln0",
+					"shinfo_monster_vuln1",
+					"shinfo_monster_vuln2",
+					"shinfo_monster_vuln3" };
+		static char *immun[] = {"shinfo_monster_immun0",
+					"shinfo_monster_immun1",
+					"shinfo_monster_immun2",
+					"shinfo_monster_immun3" };
+		set_bit_toggles(&vuln[0], sizeof(vuln)/sizeof(vuln[0]),
+						minfo->get_vulnerable());
+		set_bit_toggles(&immun[0], 
+			sizeof(immun)/sizeof(immun[0]), minfo->get_immune());
+		set_toggle("shinfo_monster_splits", minfo->splits());
+		set_toggle("shinfo_monster_cant_die", minfo->cant_die());
+		set_toggle("shinfo_monster_cant_yell", minfo->cant_yell());
+		set_toggle("shinfo_monster_cant_bleed", minfo->cant_bleed());
+		set_toggle("shinfo_monster_poison_safe",
+						minfo->poison_safe());
+		static char *flags[] = {"shinfo_monster_flag0",
+					"shinfo_monster_flag1",
+					"shinfo_monster_flag2",
+					"shinfo_monster_flag3",
+					"shinfo_monster_flag4" };
+		set_bit_toggles(&flags[0],
+			sizeof(flags)/sizeof(flags[0]), minfo->get_flags());
 		}
 	gtk_widget_show(book);
 	}

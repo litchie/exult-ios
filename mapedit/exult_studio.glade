@@ -7585,7 +7585,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton107</name>
+	      <name>shinfo_weapon_damage</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -7626,7 +7626,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton108</name>
+	      <name>shinfo_weapon_range</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -7673,7 +7673,7 @@ LR Hand
 
 	      <widget>
 		<class>GtkOptionMenu</class>
-		<name>optionmenu4</name>
+		<name>shinfo_weapon_ammo</name>
 		<can_focus>True</can_focus>
 		<items>Use
 None
@@ -7690,7 +7690,7 @@ Thrown
 
 	      <widget>
 		<class>GtkSpinButton</class>
-		<name>spinbutton109</name>
+		<name>shinfo_weapon_ammo_shape</name>
 		<width>64</width>
 		<can_focus>True</can_focus>
 		<climb_rate>1</climb_rate>
@@ -7738,7 +7738,7 @@ Thrown
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton110</name>
+	      <name>shinfo_weapon_proj</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -7779,7 +7779,7 @@ Thrown
 
 	    <widget>
 	      <class>GtkEntry</class>
-	      <name>entry4</name>
+	      <name>shinfo_weapon_uc</name>
 	      <width>80</width>
 	      <can_focus>True</can_focus>
 	      <editable>True</editable>
@@ -7813,7 +7813,7 @@ Thrown
 
 	    <widget>
 	      <class>GtkOptionMenu</class>
-	      <name>optionmenu5</name>
+	      <name>shinfo_weapon_uses</name>
 	      <can_focus>True</can_focus>
 	      <items>Hand
 Thrown (poor)
@@ -7848,7 +7848,7 @@ Fires
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton111</name>
+	      <name>shinfo_weapon_sfx</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -7889,7 +7889,7 @@ Fires
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton112</name>
+	      <name>shinfo_weapon_hitsfx</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -7930,7 +7930,7 @@ Fires
 
 	    <widget>
 	      <class>GtkOptionMenu</class>
-	      <name>optionmenu3</name>
+	      <name>shinfo_weapon_type</name>
 	      <can_focus>True</can_focus>
 	      <items>Normal
 Fire
@@ -7966,7 +7966,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton48</name>
+	      <name>shinfo_weapon_pow0</name>
 	      <can_focus>True</can_focus>
 	      <label>Sleep</label>
 	      <active>False</active>
@@ -7989,7 +7989,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton49</name>
+	      <name>shinfo_weapon_pow1</name>
 	      <can_focus>True</can_focus>
 	      <label>Charm</label>
 	      <active>False</active>
@@ -8012,7 +8012,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton50</name>
+	      <name>shinfo_weapon_pow2</name>
 	      <can_focus>True</can_focus>
 	      <label>Curse</label>
 	      <active>False</active>
@@ -8035,7 +8035,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton51</name>
+	      <name>shinfo_weapon_pow3</name>
 	      <can_focus>True</can_focus>
 	      <label>Poison</label>
 	      <active>False</active>
@@ -8058,7 +8058,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton52</name>
+	      <name>shinfo_weapon_pow4</name>
 	      <can_focus>True</can_focus>
 	      <label>Paralyze</label>
 	      <active>False</active>
@@ -8081,7 +8081,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton53</name>
+	      <name>shinfo_weapon_pow5</name>
 	      <can_focus>True</can_focus>
 	      <label>Magebane</label>
 	      <active>False</active>
@@ -8127,7 +8127,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton55</name>
+	      <name>shinfo_weapon_returns</name>
 	      <can_focus>True</can_focus>
 	      <label>Returns</label>
 	      <active>False</active>
@@ -8208,7 +8208,7 @@ Poison
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton113</name>
+	      <name>shinfo_ammo_damage</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -8249,7 +8249,7 @@ Poison
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton114</name>
+	      <name>shinfo_ammo_family</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -8290,7 +8290,7 @@ Poison
 
 	    <widget>
 	      <class>GtkOptionMenu</class>
-	      <name>optionmenu6</name>
+	      <name>shinfo_ammo_type</name>
 	      <can_focus>True</can_focus>
 	      <items>Normal
 Fire
@@ -8326,7 +8326,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton62</name>
+	      <name>shinfo_ammo_pow0</name>
 	      <can_focus>True</can_focus>
 	      <label>Sleep</label>
 	      <active>False</active>
@@ -8349,7 +8349,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton63</name>
+	      <name>shinfo_ammo_pow1</name>
 	      <can_focus>True</can_focus>
 	      <label>Charm</label>
 	      <active>False</active>
@@ -8372,7 +8372,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton64</name>
+	      <name>shinfo_ammo_pow2</name>
 	      <can_focus>True</can_focus>
 	      <label>Curse</label>
 	      <active>False</active>
@@ -8395,7 +8395,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton65</name>
+	      <name>shinfo_ammo_pow3</name>
 	      <can_focus>True</can_focus>
 	      <label>Poison</label>
 	      <active>False</active>
@@ -8418,7 +8418,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton66</name>
+	      <name>shinfo_ammo_pow4</name>
 	      <can_focus>True</can_focus>
 	      <label>Paralyze</label>
 	      <active>False</active>
@@ -8441,7 +8441,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton67</name>
+	      <name>shinfo_ammo_pow5</name>
 	      <can_focus>True</can_focus>
 	      <label>Magebane</label>
 	      <active>False</active>
@@ -9115,7 +9115,7 @@ Random
 
 	      <widget>
 		<class>GtkCheckButton</class>
-		<name>checkbutton81</name>
+		<name>shinfo_monster_vuln0</name>
 		<can_focus>True</can_focus>
 		<label>Normal</label>
 		<active>False</active>
@@ -9138,7 +9138,7 @@ Random
 
 	      <widget>
 		<class>GtkCheckButton</class>
-		<name>checkbutton82</name>
+		<name>shinfo_monster_vuln1</name>
 		<can_focus>True</can_focus>
 		<label>Fire</label>
 		<active>False</active>
@@ -9161,7 +9161,7 @@ Random
 
 	      <widget>
 		<class>GtkCheckButton</class>
-		<name>checkbutton83</name>
+		<name>shinfo_monster_vuln2</name>
 		<can_focus>True</can_focus>
 		<label>Magic</label>
 		<active>False</active>
@@ -9184,7 +9184,7 @@ Random
 
 	      <widget>
 		<class>GtkCheckButton</class>
-		<name>checkbutton84</name>
+		<name>shinfo_monster_vuln3</name>
 		<can_focus>True</can_focus>
 		<label>Poison</label>
 		<active>False</active>
@@ -9231,7 +9231,7 @@ Random
 
 	      <widget>
 		<class>GtkCheckButton</class>
-		<name>checkbutton85</name>
+		<name>shinfo_monster_immun0</name>
 		<can_focus>True</can_focus>
 		<label>Normal</label>
 		<active>False</active>
@@ -9254,7 +9254,7 @@ Random
 
 	      <widget>
 		<class>GtkCheckButton</class>
-		<name>checkbutton86</name>
+		<name>shinfo_monster_immun1</name>
 		<can_focus>True</can_focus>
 		<label>Fire</label>
 		<active>False</active>
@@ -9277,7 +9277,7 @@ Random
 
 	      <widget>
 		<class>GtkCheckButton</class>
-		<name>checkbutton87</name>
+		<name>shinfo_monster_immun2</name>
 		<can_focus>True</can_focus>
 		<label>Magic</label>
 		<active>False</active>
@@ -9300,7 +9300,7 @@ Random
 
 	      <widget>
 		<class>GtkCheckButton</class>
-		<name>checkbutton88</name>
+		<name>shinfo_monster_immun3</name>
 		<can_focus>True</can_focus>
 		<label>Poison</label>
 		<active>False</active>
@@ -9373,7 +9373,7 @@ Random
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton89</name>
+	      <name>shinfo_monster_splits</name>
 	      <can_focus>True</can_focus>
 	      <label>Splits</label>
 	      <active>False</active>
@@ -9396,7 +9396,7 @@ Random
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton96</name>
+	      <name>shinfo_monster_poison_safe</name>
 	      <can_focus>True</can_focus>
 	      <label>Poison-safe</label>
 	      <active>False</active>
@@ -9419,7 +9419,7 @@ Random
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton97</name>
+	      <name>shinfo_monster_flag3</name>
 	      <can_focus>True</can_focus>
 	      <label>Ethereal</label>
 	      <active>False</active>
@@ -9442,7 +9442,7 @@ Random
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton90</name>
+	      <name>shinfo_monster_cant_die</name>
 	      <can_focus>True</can_focus>
 	      <label>Can't die</label>
 	      <active>False</active>
@@ -9465,7 +9465,7 @@ Random
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton95</name>
+	      <name>shinfo_monster_flag0</name>
 	      <can_focus>True</can_focus>
 	      <label>Flies</label>
 	      <active>False</active>
@@ -9488,7 +9488,7 @@ Random
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton98</name>
+	      <name>shinfo_monster_flag4</name>
 	      <can_focus>True</can_focus>
 	      <label>No body</label>
 	      <active>False</active>
@@ -9511,7 +9511,7 @@ Random
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton91</name>
+	      <name>shinfo_monster_cant_yell</name>
 	      <can_focus>True</can_focus>
 	      <label>Can't yell</label>
 	      <active>False</active>
@@ -9534,7 +9534,7 @@ Random
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton94</name>
+	      <name>shinfo_monster_flag1</name>
 	      <can_focus>True</can_focus>
 	      <label>Swims</label>
 	      <active>False</active>
@@ -9582,7 +9582,7 @@ Random
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton92</name>
+	      <name>shinfo_monster_cant_bleed</name>
 	      <can_focus>True</can_focus>
 	      <label>Can't bleed</label>
 	      <active>False</active>
@@ -9605,7 +9605,7 @@ Random
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton93</name>
+	      <name>shinfo_monster_flag2</name>
 	      <can_focus>True</can_focus>
 	      <label>Walks</label>
 	      <active>False</active>

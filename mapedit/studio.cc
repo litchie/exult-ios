@@ -652,6 +652,22 @@ void ExultStudio::set_toggle
 	}
 
 /*
+ *	Set a group of toggles based on a sequential (0, 1, 2...) set of bit
+ *	flags.
+ */
+
+void ExultStudio::set_bit_toggles
+	(
+	char **names,			// Names for bit 0, 1, 2,...
+	int num,			// # of names/bits.
+	unsigned char bits
+	)
+	{
+	for (int i = 0; i < num; i++)
+		set_toggle(names[i], (bits&(1<<i)) != 0);
+	}
+
+/*
  *	Get value of option-menu button (-1 if unsuccessful).
  */
 

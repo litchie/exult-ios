@@ -67,6 +67,7 @@ private:
 					// GTK/Glade utils:
 	bool get_toggle(char *name);
 	void set_toggle(char *name, bool val);
+	void set_bit_toggles(char **names, int num, unsigned char bits);
 	int get_optmenu(char *name);
 	void set_optmenu(char *name, int val);
 	int get_spin(char *name);
