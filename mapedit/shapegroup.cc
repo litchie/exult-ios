@@ -55,6 +55,21 @@ Shape_group::Shape_group
 	}
 
 /*
+ *	Add a new entry if not already there.
+ */
+
+void Shape_group::add
+	(
+	int id
+	)
+	{
+	for (vector<int>::const_iterator it = begin(); it != end(); ++it)
+		if ((*it) == id)
+			return;		// Already there.
+	push_back(id);
+	}
+
+/*
  *	Init. and read in (if it exists) a groups file.
  */
 
@@ -393,10 +408,9 @@ void ExultStudio::open_group_window
 	GladeXML *xml = glade_xml_new(glade_path, "group_window");
 	GtkWidget *grpwin = glade_xml_get_widget(xml, "group_window");
 	Shape_chooser *chooser = new Shape_chooser(curfile->get_ifile(), 
-							palbuf, 400, 64);
+							palbuf, 400, 64, grp);
 //	if (strcasecmp(fname, "fonts.vga") == 0)
 //		chooser->set_framenum0('A');
-	chooser->set_group(grp);
 	if (curfile == vgafile)		// Main 'shapes.vga' file?
 		{
 		chooser->set_shape_names(names);
