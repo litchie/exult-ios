@@ -108,7 +108,7 @@ void Windows_MidiOut::init_device()
 	
 	while (thread_com == W32MO_THREAD_COM_INIT) SDL_Delay (1);
 	
-	if (thread_com == W32MO_THREAD_COM_INIT_FAILED) cerr << "Failier to initialize midi playing thread" << endl;
+	if (thread_com == W32MO_THREAD_COM_INIT_FAILED) cerr << "Failure to initialize midi playing thread" << endl;
 }
 
 DWORD Windows_MidiOut::thread_start(void *data)

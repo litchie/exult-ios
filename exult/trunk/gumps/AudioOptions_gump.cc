@@ -254,8 +254,8 @@ void AudioOptions_gump::save_settings()
 	config->set("config/audio/effects/enabled",sfx_enabled?"yes":"no", true);
 	config->set("config/audio/speech/enabled",speech_enabled?"yes":"no", true);
 
-	config->set("config/audio/midi/chorus", midi_chorus ? "yes" : "no", true);
-	config->set("config/audio/midi/reverb", midi_reverb ? "yes" : "no", true);
+	config->set("config/audio/midi/chorus/enabled", midi_chorus ? "yes" : "no", true);
+	config->set("config/audio/midi/reverb/enabled", midi_reverb ? "yes" : "no", true);
 
 	if (Audio::get_ptr()->get_midi()) {
 		Audio::get_ptr()->get_midi()->set_music_conversion(midi_conversion);
