@@ -71,7 +71,7 @@ bool	usecode_debugging=false;	// Do we enable the usecode debugger?
 static void Init();
 static int Play();
 static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl);
-int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
+int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 
 /*
  *	A handy breakpoint.
@@ -862,13 +862,14 @@ static void Handle_keystroke
 }
 
 /*
- *	Wait for a click.
+ *	Wait for a click, or optionally, a kbd. chr.
  *
  *	Output:	0 if user hit ESC.
  */
 static int Get_click
 	(
-	int& x, int& y
+	int& x, int& y,
+	char *chr			// Char. returned if not null.
 	)
 	{
 	while (1)
@@ -899,9 +900,19 @@ static int Get_click
 				quitting_time = 1;
 				return (0);
 			case SDL_KEYDOWN:
-				if (event.key.keysym.sym == SDLK_ESCAPE)
+				{
+				int c = event.key.keysym.sym;
+				if (c == SDLK_ESCAPE)
 					return (0);
+				if (chr)// Looking for a character?
+					{
+					*chr = (event.key.keysym.mod & 
+							KMOD_SHIFT)
+						? toupper(c) : c;
+					return (1);
+					}
 				break;
+				}
 				}
 #ifdef MOUSE
 		mouse->show();		// Turn on mouse.
@@ -912,23 +923,27 @@ static int Get_click
 	}
 
 /*
- *	Get a click.
+ *	Get a click, or, optionally, a keyboard char.
  *
  *	Output:	0 if user hit ESC.
+ *		Chr gets keyboard char., or 0 if it's was a mouse click.
  */
 
 int Get_click
 	(
 	int& x, int& y,			// Location returned (if not ESC).
-	Mouse::Mouse_shapes shape	// Mouse shape to use.
+	Mouse::Mouse_shapes shape,	// Mouse shape to use.
+	char *chr			// Char. returned if not null.
 	)
 	{
+	if (chr)
+		*chr = 0;		// Init.
 	Mouse::Mouse_shapes saveshape = mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		mouse->set_shape(shape);
 	mouse->show();
 	gwin->show(1);			// Want to see new mouse.
-	int ret = Get_click(x, y);
+	int ret = Get_click(x, y, chr);
 	mouse->set_shape(saveshape);
 	return (ret);
 	}

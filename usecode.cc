@@ -50,7 +50,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // External globals..
 
-extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
+extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 extern void Wait_for_arrival(Actor *actor);
 extern	bool	usecode_trace,usecode_debugging;
 extern Mouse *mouse;
@@ -2935,11 +2935,17 @@ int Usecode_machine::get_user_choice_num
 	int x, y;			// Get click.
 	int choice_num;
 	do
-		if (!Get_click(x, y, Mouse::hand))
+		{
+		char chr;		// Allow '1', '2', etc.
+		if (!Get_click(x, y, Mouse::hand, &chr))
 			return (-1);
+		if (chr >= '1' && chr <= '9')
+			choice_num = chr - '1';
+		else
+			choice_num = gwin->conversation_choice(x, y);
+		}
 					// Wait for valid choice.
-	while ((choice_num = gwin->conversation_choice(x, y)) < 0 ||
-		choice_num >= (int)answers.answers.size());
+	while (choice_num  < 0 || choice_num >= (int)answers.answers.size());
 					// Store ->answer string.
 	user_choice = answers.answers[choice_num].c_str();
 	return (choice_num);		// Return choice #.
