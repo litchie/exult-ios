@@ -105,8 +105,6 @@ class Game_object : public ShapeID
 	Game_object *next;		// ->next in chunk list.
 protected:
 	unsigned char cx, cy;		// (Absolute) chunk coords.
-	void set_lift(int l)
-		{ lift = l; }
 public:
 	friend class Chunk_object_list;
 					// Create from ifix record.
@@ -122,7 +120,7 @@ public:
 		{  }
 	Game_object() : ShapeID()	// Create fake entry.
 		{  }
-	int get_shape_pos_x()
+	int get_shape_pos_x()		// Really the tiles.
 		{ return (shape_pos >> 4) & 0xf; }
 	int get_shape_pos_y()
 		{ return shape_pos & 0xf; }
@@ -135,6 +133,8 @@ public:
 					// Set shape coord. within chunk.
 	void set_shape_pos(unsigned int shapex, unsigned int shapey)
 		{ shape_pos = (shapex << 4) + shapey; }
+	void set_lift(int l)
+		{ lift = l; }
 	Game_object *get_next()
 		{ return next; }
 	void set_next(Game_object *obj) // Set next in list.
