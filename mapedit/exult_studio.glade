@@ -1733,7 +1733,7 @@ Clouds
 
 	      <widget>
 		<class>GtkEntry</class>
-		<name>entry3</name>
+		<name>npc_name_entry</name>
 		<can_focus>True</can_focus>
 		<editable>True</editable>
 		<text_visible>True</text_visible>
@@ -1766,7 +1766,7 @@ Clouds
 
 	      <widget>
 		<class>GtkEntry</class>
-		<name>entry4</name>
+		<name>npc_ident_entry</name>
 		<can_focus>True</can_focus>
 		<editable>True</editable>
 		<text_visible>True</text_visible>
@@ -2346,7 +2346,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton2</name>
+	  <name>npc_flag_tf_10</name>
 	  <can_focus>True</can_focus>
 	  <label>Bleeding</label>
 	  <active>False</active>
@@ -2369,7 +2369,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton1</name>
+	  <name>npc_flag_of_01</name>
 	  <can_focus>True</can_focus>
 	  <label>Asleep</label>
 	  <active>False</active>
@@ -2392,7 +2392,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton3</name>
+	  <name>npc_flag_of_02</name>
 	  <can_focus>True</can_focus>
 	  <label>Charmed</label>
 	  <active>False</active>
@@ -2415,7 +2415,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton4</name>
+	  <name>npc_flag_of_25</name>
 	  <can_focus>True</can_focus>
 	  <label>Confused</label>
 	  <active>False</active>
@@ -2438,7 +2438,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton5</name>
+	  <name>npc_flag_tf_14</name>
 	  <can_focus>True</can_focus>
 	  <label>Conjured</label>
 	  <active>False</active>
@@ -2461,7 +2461,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton6</name>
+	  <name>npc_flag_of_03</name>
 	  <can_focus>True</can_focus>
 	  <label>Cursed</label>
 	  <active>False</active>
@@ -2484,7 +2484,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton7</name>
+	  <name>npc_flag_of_15</name>
 	  <can_focus>True</can_focus>
 	  <label>Dancing</label>
 	  <active>False</active>
@@ -2507,7 +2507,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton8</name>
+	  <name>npc_flag_of_16</name>
 	  <can_focus>True</can_focus>
 	  <label>Don't move</label>
 	  <active>False</active>
@@ -2530,7 +2530,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton9</name>
+	  <name>npc_flag_tf_07</name>
 	  <can_focus>True</can_focus>
 	  <label>Ethereal</label>
 	  <active>False</active>
@@ -2553,7 +2553,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton10</name>
+	  <name>npc_flag_tf_04</name>
 	  <can_focus>True</can_focus>
 	  <label>Fly</label>
 	  <active>False</active>
@@ -2576,7 +2576,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton11</name>
+	  <name>npc_flag_si_00</name>
 	  <can_focus>True</can_focus>
 	  <label>Freeze</label>
 	  <active>False</active>
@@ -2599,7 +2599,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton12</name>
+	  <name>npc_flag_tf_13</name>
 	  <can_focus>True</can_focus>
 	  <label>In action</label>
 	  <active>False</active>
@@ -2622,7 +2622,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton13</name>
+	  <name>npc_flag_of_26</name>
 	  <can_focus>True</can_focus>
 	  <label>In motion</label>
 	  <active>False</active>
@@ -2645,7 +2645,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton14</name>
+	  <name>npc_flag_of_06</name>
 	  <can_focus>True</can_focus>
 	  <label>In party</label>
 	  <active>False</active>
@@ -2668,30 +2668,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton15</name>
-	  <can_focus>True</can_focus>
-	  <label>Invisible</label>
-	  <active>False</active>
-	  <draw_indicator>True</draw_indicator>
-	  <child>
-	    <left_attach>2</left_attach>
-	    <right_attach>3</right_attach>
-	    <top_attach>4</top_attach>
-	    <bottom_attach>5</bottom_attach>
-	    <xpad>0</xpad>
-	    <ypad>0</ypad>
-	    <xexpand>False</xexpand>
-	    <yexpand>False</yexpand>
-	    <xshrink>False</xshrink>
-	    <yshrink>False</yshrink>
-	    <xfill>True</xfill>
-	    <yfill>False</yfill>
-	  </child>
-	</widget>
-
-	<widget>
-	  <class>GtkCheckButton</class>
-	  <name>checkbutton16</name>
+	  <name>npc_flag_of_00</name>
 	  <can_focus>True</can_focus>
 	  <label>Invisible</label>
 	  <active>False</active>
@@ -2714,7 +2691,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton17</name>
+	  <name>npc_flag_of_28</name>
 	  <can_focus>True</can_focus>
 	  <label>Met</label>
 	  <active>False</active>
@@ -2737,7 +2714,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton18</name>
+	  <name>npc_flag_si_08</name>
 	  <can_focus>True</can_focus>
 	  <label>Naked</label>
 	  <active>False</active>
@@ -2760,7 +2737,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton19</name>
+	  <name>npc_flag_si_06</name>
 	  <can_focus>True</can_focus>
 	  <label>No magic</label>
 	  <active>False</active>
@@ -2783,7 +2760,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton20</name>
+	  <name>npc_flag_of_21</name>
 	  <can_focus>True</can_focus>
 	  <label>Okay to land</label>
 	  <active>False</active>
@@ -2806,7 +2783,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton21</name>
+	  <name>npc_flag_of_07</name>
 	  <can_focus>True</can_focus>
 	  <label>Paralyzed</label>
 	  <active>False</active>
@@ -2852,7 +2829,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton23</name>
+	  <name>npc_flag_of_08</name>
 	  <can_focus>True</can_focus>
 	  <label>Poisoned</label>
 	  <active>False</active>
@@ -2875,7 +2852,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton24</name>
+	  <name>npc_flag_si_03</name>
 	  <can_focus>True</can_focus>
 	  <label>Polymorph</label>
 	  <active>False</active>
@@ -2898,7 +2875,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton25</name>
+	  <name>npc_flag_of_09</name>
 	  <can_focus>True</can_focus>
 	  <label>Protection</label>
 	  <active>False</active>
@@ -2921,7 +2898,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton26</name>
+	  <name>npc_flag_tf_09</name>
 	  <can_focus>True</can_focus>
 	  <label>Female</label>
 	  <active>False</active>
@@ -2944,7 +2921,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton27</name>
+	  <name>npc_flag_tf_15</name>
 	  <can_focus>True</can_focus>
 	  <label>Summoned</label>
 	  <active>False</active>
@@ -2967,7 +2944,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton28</name>
+	  <name>npc_flag_tf_06</name>
 	  <can_focus>True</can_focus>
 	  <label>Swim</label>
 	  <active>False</active>
@@ -3013,9 +2990,9 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton30</name>
+	  <name>npc_flag_of_29</name>
 	  <can_focus>True</can_focus>
-	  <label>Tremor</label>
+	  <label>Tournament</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <child>
@@ -3036,9 +3013,9 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton31</name>
+	  <name>npc_flag_of_12</name>
 	  <can_focus>True</can_focus>
-	  <label>Walk</label>
+	  <label>Tremor</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <child>
@@ -3059,9 +3036,9 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>checkbutton32</name>
+	  <name>npc_flag_tf_05</name>
 	  <can_focus>True</can_focus>
-	  <label>Zombie</label>
+	  <label>Walk</label>
 	  <active>False</active>
 	  <draw_indicator>True</draw_indicator>
 	  <child>
@@ -3081,8 +3058,31 @@ Manual
 	</widget>
 
 	<widget>
+	  <class>GtkCheckButton</class>
+	  <name>npc_flag_si_07</name>
+	  <can_focus>True</can_focus>
+	  <label>Zombie</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <child>
+	    <left_attach>2</left_attach>
+	    <right_attach>3</right_attach>
+	    <top_attach>10</top_attach>
+	    <bottom_attach>11</bottom_attach>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <xexpand>False</xexpand>
+	    <yexpand>False</yexpand>
+	    <xshrink>False</xshrink>
+	    <yshrink>False</yshrink>
+	    <xfill>True</xfill>
+	    <yfill>False</yfill>
+	  </child>
+	</widget>
+
+	<widget>
 	  <class>GtkLabel</class>
-	  <name>label33</name>
+	  <name>label38</name>
 	  <label></label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
@@ -3093,8 +3093,8 @@ Manual
 	  <child>
 	    <left_attach>2</left_attach>
 	    <right_attach>3</right_attach>
-	    <top_attach>10</top_attach>
-	    <bottom_attach>11</bottom_attach>
+	    <top_attach>4</top_attach>
+	    <bottom_attach>5</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
 	    <xexpand>True</xexpand>
