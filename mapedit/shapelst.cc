@@ -681,6 +681,37 @@ GtkWidget *Shape_chooser::create_search_controls
 		      this);
 	return frame;
 	}
+#if 0
+/*
+ *	Set up popup menu for shape browser.
+ */
+
+static void Create_browser_popup
+	(
+	)
+	{
+					// Create popup menu.
+	GtkWidget *popup = gtk_menu_new();
+	GtkWidget *mitem = gtk_menu_item_new_with_label("Info...");
+	gtk_menu_append(GTK_MENU(popup), mitem);
+	Shape_group_file *groups = ExultStudio::instance()->get_groups();
+	int gcnt = groups ? groups->size() : 0;
+	if (gcnt > 0)			// Groups?
+		{
+		mitem = gtk_menu_item_new_with_label("Add to group...");
+		gtk_menu_append(GTK_MENU(popup), mitem);
+		GtkWidget *group_menu = gtk_menu_new();
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), group_menu);
+		for (int i = 0; i < gcnt; i++)
+			{
+			Shape_group *grp = groups->get(i);
+			GtkWidget *gitem = gtk_menu_item_new_with_label(
+							grp->get_name());
+			gtk_menu_append(GTK_MENU(group_menu), gitem)
+			}
+		}
+	}
+#endif
 
 /*
  *	Create the list.
