@@ -42,6 +42,7 @@ exult_SOURCES =	\
 	egg.h		\
 	exult.cc	\
 	fnames.h	\
+	frameseq.h	\
 	game.cc		\
 	game.h		\
 	gameclk.cc	\
