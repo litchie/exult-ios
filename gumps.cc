@@ -181,8 +181,14 @@ void Gump_object::initialize
 		object_area = Rectangle(0, 0, 0, 0);
 		checkx = 6; checky = 30;
 		break;
-	case 49: case 50:		// Signs. ++++++++Verify.
-		object_area = Rectangle(2, 2, 80, 80);
+	case 49: 			// Wood signs.
+		object_area = Rectangle(0, 4, 196, 92);
+		break;
+	case 50:			// Tombstones.
+		object_area = Rectangle(0, 8, 200, 112);
+		break;
+	case 51:			// Gold signs.
+		object_area = Rectangle(0, 4, 232, 96);
 		break;
 	default:
 					// Character pictures:
@@ -763,6 +769,7 @@ void Sign_gump::paint
 				(object_area.w - 
 				    gwin->get_text_width(font, lines[i]))/2,
 			ypos);
+		ypos += lheight;
 		}
 	gwin->set_painted();
 	}

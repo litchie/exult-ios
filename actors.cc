@@ -128,7 +128,8 @@ void Actor::walk_to_point
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	set_action(new Walking_actor_action());
+	if (!is_moving())
+		set_action(new Walking_actor_action());
 	start(destx, desty, speed, 0);
 	}
 
