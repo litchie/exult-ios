@@ -604,7 +604,7 @@ int Actor::get_attack_frames
 		break;
 		}
 					// Check for empty shape.
-	Shape_frame *shape = ShapeID(get_shapenum(), which[1]).get_shape();
+	Shape_frame *shape = ShapeID(get_shapenum(), which[1], get_shapefile()).get_shape();
 	if (!shape || shape->is_empty())
 					// If empty, the other usually isn't.
 		which = two_handed ? attack_frames1 : attack_frames2;
