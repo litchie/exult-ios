@@ -522,6 +522,14 @@ void Usecode_script::handle_event
 				act->reduce_health(hps.get_int_value());
 			break;
 			}
+		case resurrect:
+			{
+			Dead_body *body = (Dead_body *) obj;
+			Actor *act = gwin->get_npc(body->get_live_npc_num());
+			if (act)
+				act->resurrect(body);
+			break;
+			}
 		default:
 					// Frames with dir.  U7-verified!
 			if (opcode >= 0x61 && opcode <= 0x70)
