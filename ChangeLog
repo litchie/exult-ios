@@ -1,3 +1,7 @@
+2001-07-08  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Recoded write_map().
+
 2001-07-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* chunkter.cc: check for NULL shape before drawing flat. (for FoV)
 
