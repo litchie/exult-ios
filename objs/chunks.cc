@@ -387,9 +387,16 @@ int Chunk_cache::is_blocked
 				break;	// Okay.
 			}
 		}
-	if (new_lift > max_lift)// Spot not found?
-		return 1;		// Blocked.
-	if (new_lift == lift)		// Not blocked?  See if falling.
+	if (new_lift > max_lift)	// Spot not found at lift or higher?
+		{			// Look downwards.
+		new_lift = get_highest_blocked(lift, tflags) + 1;
+		if (new_lift >= lift)	// Couldn't drop?
+			return 1;
+		int new_high = get_lowest_blocked(new_lift, tflags);
+		if (new_high != -1 && new_high < new_lift + height)
+			return 1;	// Still blocked above.
+		}
+	if (new_lift <= lift)		// Not going up?  See if falling.
 		{
 		new_lift =  (move_flags & MOVE_NODROP) ? lift :
 				get_highest_blocked(lift, tflags) + 1;
