@@ -90,6 +90,7 @@ class Usecode_internal : public Usecode_machine
 	Game_object *caller_item;	// Item this is being called on.
 	Game_object *last_created;	// Last item created with intrins. x24.
 	const char *user_choice;	// String user clicked on.
+	Tile_coord saved_pos;		// For a couple SI intrinsics.
 	char *String;			// The single string register.
 	void append_string(const char *txt);	// Append to string.
 	void show_pending_text();	// Make sure user's seen all text.
@@ -331,6 +332,8 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(a_or_an);
 	USECODE_INTRINSIC_DECL(add_to_keyring);
 	USECODE_INTRINSIC_DECL(is_on_keyring);
+	USECODE_INTRINSIC_DECL(save_pos);
+	USECODE_INTRINSIC_DECL(teleport_to_saved_pos);
 
 	/*
 	 *	Other private methods:

@@ -1342,7 +1342,7 @@ Usecode_internal::Usecode_internal
 	Game_window *gw
 	) : Usecode_machine(gw), cur_function(0),
 	    book(0), caller_item(0),
-	    last_created(0), user_choice(0),
+	    last_created(0), user_choice(0), saved_pos(-1, -1, -1),
 	    String(0), stack(new Usecode_value[1024])
 	{
 	ifstream file;                // Read in usecode.
@@ -2013,6 +2013,9 @@ void Usecode_internal::write
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		Write4(out, timers[t]);
+	Write2(out, saved_pos.tx);	// Write saved pos.
+	Write2(out, saved_pos.ty);
+	Write2(out, saved_pos.tz);
 	out.flush();
 	if( !out.good() )
 		throw file_write_exception(USEDAT);
@@ -2063,18 +2066,12 @@ void Usecode_internal::read
 		timers[t] = Read4(in);
 	if (!in.good())
 		throw file_read_exception(USEDAT);
-#if 0
-					// +++++No longer needed:
-	for (i = 0; i < 8; i++)	// Virtue stones.
-		{
-		virtue_stones[i].tx = Read2(in);
-		virtue_stones[i].ty = Read2(in);
-		virtue_stones[i].tz = Read2(in);
-		}
-	if (!in.good())			// Failed.+++++Can remove this later.
-		for (size_t i = 0; i < 8; i++)
-			virtue_stones[i] = Tile_coord(0, 0, 0);
-#endif
+	saved_pos.tx = Read2(in);	// Read in saved position.
+	saved_pos.ty = Read2(in);
+	saved_pos.tz = Read2(in);
+	if (!in.good() ||		// Failed.+++++Can remove this later.
+	    saved_pos.tz < 0 || saved_pos.tz > 13)
+		saved_pos = Tile_coord(-1, -1, -1);
 	}
 
 /*
