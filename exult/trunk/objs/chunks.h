@@ -184,7 +184,8 @@ public:
 		const int move_flags = MOVE_ALL_TERRAIN, int max_drop = 1);
 					// Check for > 1x1 object.
 	static int is_blocked(int xtiles, int ytiles, int ztiles,
-			Tile_coord from, Tile_coord to, const int move_flags);
+			Tile_coord from, Tile_coord to, const int move_flags,
+							int max_drop = 1);
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles, bool add)
 		{ need_cache()->set_egged(egg, tiles, add); }

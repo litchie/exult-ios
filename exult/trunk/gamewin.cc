@@ -1595,9 +1595,11 @@ void Game_window::start_actor
 		{			// Want to move center there.
 		Tile_coord atile = moving_barge->get_center(),
 			   btile = moving_barge->get_abs_tile_coord();
+					// Go faster than walking.
 		moving_barge->travel_to_tile(
 			Tile_coord(tx + btile.tx - atile.tx, 
-				   ty + btile.ty - atile.ty, btile.tz), speed);
+				   ty + btile.ty - atile.ty, btile.tz), 
+					speed/2);
 		}
 	else
 		{

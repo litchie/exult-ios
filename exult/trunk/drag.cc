@@ -271,7 +271,8 @@ void Game_window::drop
 	bool dropped = false;			// 1 when dropped.
 	bool dropped_in_something = false;	// For detecting theft.
 	Game_object *to_drop = dragging;// If quantity, split it off.
-	int okay_to_take = to_drop->get_flag(Game_object::okay_to_take);
+	int okay_to_take = to_drop->get_flag(Game_object::okay_to_take),
+	    okay_to_move = to_drop->get_flag(Game_object::okay_to_move);
 					// Save original footprint.
 	Rectangle old_foot(0, 0, 0, 0);
 	if (!dragging_gump)		// Get old footprint, top in world.
@@ -336,7 +337,8 @@ void Game_window::drop
 					// Check for theft.
 		if (!okay_to_take &&
 		    (dragging_gump != on_gump || dropped_in_something ||
-		     (!dragging_gump && 
+					// Moving:
+		     (!dragging_gump && !okay_to_move &&
 		      to_drop->get_abs_tile_coord().distance(
 					Tile_coord(oldtx, oldty, oldtz)) > 2)))
 			theft();			
