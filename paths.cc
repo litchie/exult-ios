@@ -85,7 +85,7 @@ int Actor_pathfinder_client::get_step_cost
 	int old_lift = to.tz;		// Might climb/descend.
 	if (npc->is_blocked(to, &from))
 		{			// Blocked, but check for a door.
-		Game_object *block = Game_object::find_blocking(to);
+		Game_object *block = Game_object::find_door(to);
 		if (!block)
 			return -1;
 		if (!block->is_closed_door() ||

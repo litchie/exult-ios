@@ -556,6 +556,31 @@ Rectangle Game_object::get_footprint
 	}
 
 /*
+ *	Does this object block a given tile?
+ */
+
+bool Game_object::blocks
+	(
+	Tile_coord tile
+	)
+	{
+	Tile_coord t = get_tile();
+	if (t.tx < tile.tx || t.ty < tile.ty || t.tz > tile.tz)
+		return false;		// Out of range.
+	Shape_info& info = get_info();
+	int ztiles = info.get_3d_height(); 
+	if (!ztiles || !info.is_solid())
+		return false;		// Skip if not an obstacle.
+					// Occupies desired tile?
+	int frame = get_framenum();
+	if (tile.tx > t.tx - info.get_3d_xtiles(frame) &&
+	    tile.ty > t.ty - info.get_3d_ytiles(frame) &&
+	    tile.tz < t.tz + ztiles)
+		return true;
+	return false;
+	}
+
+/*
  *	Find the game object that's blocking a given tile.
  *
  *	Output:	->object, or 0 if not found.
@@ -571,23 +596,25 @@ Game_object *Game_object::find_blocking
 	Game_object *obj;
 	Object_iterator next(chunk->get_objects());
 	while ((obj = next.get_next()) != 0)
-		{
-					// Get object's coords.
-		Tile_coord t = obj->get_tile();
-		if (t.tx < tile.tx || t.ty < tile.ty || t.tz > tile.tz)
-			continue;	// Out of range.
-		Shape_info& info = obj->get_info();
-		int ztiles = info.get_3d_height(); 
-		if (!ztiles || !info.is_solid())
-			continue;	// Skip if not an obstacle.
-					// Occupies desired tile?
-		int frame = obj->get_framenum();
-		if (tile.tx > t.tx - info.get_3d_xtiles(frame) &&
-		    tile.ty > t.ty - info.get_3d_ytiles(frame) &&
-		    tile.tz < t.tz + ztiles)
-			return (obj);	// Found it.
-		}
+		if (obj->blocks(tile))
+			return obj;
 	return (0);
+	}
+
+/*
+ *	Find door blocking a given tile.
+ *
+ *	Output:	->door, or 0 if not found.
+ */
+
+Game_object *Game_object::find_door
+	(
+	Tile_coord tile
+	)
+	{
+	Map_chunk *chunk = gmap->get_chunk(tile.tx/c_tiles_per_chunk,
+						    tile.ty/c_tiles_per_chunk);
+	return chunk->find_door(tile);
 	}
 
 /*

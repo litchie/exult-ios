@@ -272,7 +272,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	    !cheat.in_map_editor())	// And NOT map-editing?
 					// +++++Check for intelligence?
 		{
-		Game_object *door = Game_object::find_blocking(tile);
+		Game_object *door = Game_object::find_door(tile);
 		if (door != 0 && door->is_closed_door() &&
 					// Make sure it's not locked!
 		    door->get_framenum()%4 < 2)

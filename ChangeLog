@@ -1,3 +1,7 @@
+2003-02-17  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/chunks.{cc,h},etc:  find_door() speeds up pathfinding.
+
 2003-02-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* drag.cc (Dragging_info): Don't drop above where we can see.
