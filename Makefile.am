@@ -3,8 +3,9 @@ AUTOMAKE_OPTIONS=foreign
 SUBDIRS=audio conf npc script
 
 OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o \
+	gametxt.o \
 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o \
-	tqueue.o gameclk.o mouse.o imagetxt.o text.o items.o lists.o vec.o
+	tqueue.o gameclk.o mouse.o items.o lists.o vec.o
 
 SUFFIXES=.cc .h
 
@@ -12,7 +13,6 @@ INCLUDES += -I.
 INCLUDES += -Iaudio
 INCLUDES += -Iconf
 INCLUDES += $(SDL_INCLUDES)
-INCLUDES += -I$(FREETYPE_DIR)
 INCLUDES += $(KMID_INCLUDES)
 
 LIBS += $(SDL_LIBS) -Laudio -Lconf 
@@ -29,7 +29,7 @@ CXXFLAGS += $(DEBUG_FLAGS)
 
 				# X-windows.
 LFLAGS += -g -L /usr/X11R6/lib -L /usr/local/lib
-LIBS += -lttf -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -laudio -lconf
+LIBS += -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -laudio -lconf
 
 all-local: exult
 

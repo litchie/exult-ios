@@ -89,12 +89,12 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = audio conf npc script
 
-OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o 	tqueue.o gameclk.o mouse.o imagetxt.o text.o items.o lists.o vec.o
+OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o 	gametxt.o 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o 	tqueue.o gameclk.o mouse.o items.o lists.o vec.o
 
 
 SUFFIXES = .cc .h
-INCLUDES =  -I. -Iaudio -Iconf $(SDL_INCLUDES) -I$(FREETYPE_DIR) $(KMID_INCLUDES)
-LIBS =  $(SDL_LIBS) -Laudio -Lconf  $(KMID_LIBS) -lttf -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -laudio -lconf
+INCLUDES =  -I. -Iaudio -Iconf $(SDL_INCLUDES) $(KMID_INCLUDES)
+LIBS =  $(SDL_LIBS) -Laudio -Lconf  $(KMID_LIBS) -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -laudio -lconf
 CXXFLAGS =  -DRELNUM=$(RELNUM) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS)
 LFLAGS =  -g -L /usr/X11R6/lib -L /usr/local/lib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4

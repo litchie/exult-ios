@@ -88,7 +88,6 @@ int main
 	{
 	cout << "Exult V0." << RELNUM << 
 				".  Copyright (C) 2000 J. S. Freedman and Dancer Vesperman\n";
-	cout << "Text rendering done using the 'FreeType' font engine.\n";
 	cout << "Low level graphics use the 'SDL' library.\n";
 
 	config.read_config_file(USER_CONFIGURATION_FILE);
