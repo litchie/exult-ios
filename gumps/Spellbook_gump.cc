@@ -20,6 +20,7 @@
 #  include <config.h>
 #endif
 
+#include <SDL_timer.h>
 #include "actors.h"
 #include "cheat.h"
 #include "gamewin.h"
@@ -193,7 +194,7 @@ void Spellbook_gump::set_avail
 Spellbook_gump::Spellbook_gump
 	(
 	Spellbook_object *b
-	) : Spelltype_gump(SPELLBOOK), page(0), book(b)
+	) : Spelltype_gump(SPELLBOOK), page(0), book(b), turning_page(0)
 {
 	set_object_area(Rectangle(36, 28, 102, 66), 7, 54);
 
@@ -283,11 +284,29 @@ void Spellbook_gump::change_page
 	int delta
 	)
 {
+	if (delta > 0)
+		{
+		if (page == 8)
+			return;
+		turning_page = -1;
+		}
+	else if (delta < 0)
+		{
+		if (page == 0)
+			return;
+		turning_page = 1;
+		}
+	ShapeID shape(TURNINGPAGE, 0, SF_GUMPS_VGA);
+	int nframes = shape.get_num_frames();
+	turning_frame = turning_page == 1 ? 0 : nframes - 1;
+	while (nframes--)		// Animate.
+		{
+		gwin->add_dirty(get_rect());
+		gwin->paint_dirty();
+		gwin->show();
+		SDL_Delay(50);		// 1/20 sec.
+		}
 	page += delta;
-	if (page < 0)
-		page = 0;
-	else if (page > 8)
-		page = 8;
 	paint();
 }
 
@@ -419,6 +438,18 @@ void Spellbook_gump::paint
 		int by = object_area.y - 14 + bshape->get_yabove();
 		bm.paint_shape(x + bx, y + by);
 	}
+	if (turning_page)		// Animate turning page.
+		{
+		ShapeID shape(TURNINGPAGE, turning_frame, SF_GUMPS_VGA);
+		Shape_frame *fr = shape.get_shape();
+		int spritex = x + object_area.x + fr->get_xleft() + 4;
+		int spritey = y + fr->get_yabove();
+		shape.paint_shape(spritex, spritey);
+		turning_frame += turning_page;
+		if (turning_frame < 0 || turning_frame >= 
+						shape.get_num_frames())
+			turning_page = 0;	// Last one.
+		}
 	gwin->set_painted();
 }
 
