@@ -1,3 +1,5 @@
+2000-12-07  Dancer Vesperman <dancer@users.sourceforge.net>
+	* Give a useful diagnostic if pthread_create() fails in the timidity driver
 2000-12-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Changes to barges and Chunk_object_list::is_blocked to handle
