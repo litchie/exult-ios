@@ -1,9 +1,9 @@
-*** EXULT BETA - READ CAREFULLY ***
+*** EXULT 1.0 - READ CAREFULLY ***
 
 After more than three years since the first release by Jeff in September
 1998, Exult has finally reached a level of maturity and playbility which
-we believe warrants its release as Beta software.
-What does the Exult Team mean by Beta ? We mean that you can play both
+we believe warrants its release as an 1.0 version.
+What does the Exult Team mean by 1.0 ? We mean that you can play both
 "Ultima VII: The Black Gate" and "Ultima VII part 2: Serpent Isle" from
 beginning to end, with no plot holes. This does not mean the experience 
 is perfect: we are not aiming for a perfect replica of the originals
@@ -14,14 +14,15 @@ the fun and enjoyment of playing these great games. We've done our best
 to add improvements which we believe add to the game, and give it a more
 modern feel. Most of these can be disabled and enabled at will.
 
-During the Beta phase, no new features will be added to Exult (if we can
-help it :-), and we will work exclusively on stabilization and
-documentation. Once we are satisfied with stability on all platforms, we
-will release Exult 1.0. At this point development will branch in two: a
+During the Beta phase, no new features have been added to Exult (if we can
+help it :-), and we worked exclusively on stabilization and
+documentation. Now that we are been satisfied with stability on all platforms, we
+are ready to release Exult 1.0. Recently our development branched in two: a
 stable branch, to which only bugfixes will be applied, and from which
-subsequent 1.0.x releases will be made, and a development branch which
+subsequent 1.0.x releases will be made, and a development 1.1.x branch which
 will focus on new features and especially on getting ExultStudio and the
-other tools working.
+other tools working. The differences between the two branches will be listed
+further down this file in the Appendix.
 
 If you have used Exult before, you should really start new games for both 
 BG and SI as previous versions may have generated incorrect savegames. If 
@@ -44,3 +45,22 @@ irc.openprojects.net) and we will try and help as much as we can.
 Have fun
 
 The Exult Team
+
+
+APPENDIX: Differences between Exult 1.0.x and Exult 1.1.x
+
+As 1.0.x is only for bug fixes new features have only been added to 1.1.x.
+These features are:
+- Exult Studio works only with 1.1.x now
+- Only the 1.1.x branch has been ported to the Zaurus
+- keyboard movement
+- Digital music as better sounding alternative to MIDI music
+- FM Synth emulation, another alternative to MIDI music
+- Gumps now optionally pause the game
+- Combat with the Spellbook works now
+- bookmarked Spell is saved and restored
+- Using "evil" spells can now get you into trouble with the guards
+- Walking formation has been changed
+- Feeding also uses drinks now
+- Avatar always uses the correct bed now ?
+
