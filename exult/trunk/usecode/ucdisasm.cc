@@ -2,7 +2,7 @@
  *	ucdisasm.cc - Disassembled usecode trace
  *
  *  Copyright (C) 1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -46,15 +46,20 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 	uint8* param_ip = ip;
 	_opcode_desc* pdesc = &(opcode_table[opcode]);
 	signed short immed;
-	unsigned short offset;
 	unsigned short varref;
 	unsigned short func;
+	int immed32;
+	int offset;
 
 	std::printf("      %04X: ", func_ip);
 
-	std::printf("%s", pdesc->mnemonic);
-	if (strlen(pdesc->mnemonic) < 4)
-		std::printf("\t");
+	if (pdesc->mnemonic) {
+		std::printf("%s", pdesc->mnemonic);
+		if (strlen(pdesc->mnemonic) < 4)
+			std::printf("\t");
+	} else {
+		std::printf("<unknown>");
+	}
 
 	if (pdesc->nbytes > 0) {
 		switch( pdesc->type )
@@ -67,12 +72,21 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				immed = Read2(ip);
 				std::printf("\t%04hXH\t\t; %d", immed, immed);
 				break;
+			case IMMED32:
+				immed32 = (sint32)Read4(ip);
+				std::printf("\t%04hXH\t\t; %d", immed32, immed32);
+				break;
 			case DATA_STRING:
+			case DATA_STRING32:
 				{
 					char* pstr;
 					int len;
 					// Print data string operand
-					offset = Read2(ip);
+					if (pdesc->type == DATA_STRING)
+						offset = Read2(ip);
+					else
+						offset = (sint32)Read4(ip);
+
 					pstr = (char*)data + offset;
 					len = strlen(pstr);
 					if( len > 20 )
@@ -91,6 +105,10 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				std::printf("\t%04X",
 							(offset + func_ip+1+pdesc->nbytes)&0xFFFF);
 				break;
+			case RELATIVE_JUMP32:
+				offset = (sint32)Read4(ip);
+				std::printf("\t%04X", offset + func_ip+1+pdesc->nbytes);
+				break;				
 			case SLOOP:
 				if (pdesc->nbytes == 11)
 					ip++;
@@ -103,12 +121,30 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 					   (offset +func_ip+1+pdesc->nbytes)&0xFFFF);
 				locals[varref].print(cout, true); // print value (short format)
 				break;
+			case SLOOP32:
+				if (pdesc->nbytes == 13)
+					ip++;
+				Read2(ip);
+				Read2(ip);
+				Read2(ip);
+				varref = Read2(ip);
+				offset = (sint32)Read4(ip);
+				std::printf("\t[%04X], %04X\t= ", varref, 
+					   offset +func_ip+1+pdesc->nbytes);
+				locals[varref].print(cout, true); // print value (short format)
+				break;
 			case IMMED_AND_RELATIVE_JUMP:
 				immed = Read2(ip);
 				offset = Read2(ip);
 				std::printf("\t%04hXH, %04X", immed, 
 					   (offset + func_ip+1+pdesc->nbytes)&0xFFFF);
 				break;
+			case IMMED_RELJUMP32:
+				immed = Read2(ip);
+				offset = (sint32)Read4(ip);
+				std::printf("\t%04hXH, %04X", immed, 
+					   offset + func_ip+1+pdesc->nbytes);
+				break;				
 			case CALL:
 				{
 					func = Read2(ip);

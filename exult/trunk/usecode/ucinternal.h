@@ -76,6 +76,8 @@ class Usecode_function
 					//   game item # the function gets
 					//   called for.)
 	int len;			// Length.
+
+	bool extended; // is this an 'extented' function? (aka 32 bit function)
 	unsigned char *code;		// The code.
 	friend class Usecode_internal;
 					// Create from file.

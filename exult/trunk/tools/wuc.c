@@ -53,6 +53,14 @@ void emit_word(int i)
 	emit_byte((i>>8)&0xff);
 }
 
+void emit_dword(int i)
+{
+	emit_byte(i&0xff);
+	emit_byte((i>>8)&0xff);
+	emit_byte((i>>16)&0xff);
+	emit_byte((i>>24)&0xff);
+}
+
 void add_label(void)
 {
 	int i;
