@@ -355,6 +355,25 @@ Tile_coord Game_object::find_unblocked_tile
 	}
 
 /*
+ *	Get footprint in absolute tiles.
+ */
+
+Rectangle Game_object::get_footprint
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(this);
+					// Get footprint.
+	int frame = get_framenum();
+	int xtiles = info.get_3d_xtiles(frame);
+	int ytiles = info.get_3d_ytiles(frame);
+	Tile_coord t = get_abs_tile_coord();
+	Rectangle foot(t.tx - xtiles + 1, t.ty - ytiles + 1, xtiles, ytiles);
+	return foot;
+	}
+
+/*
  *	Find the game object that's blocking a given tile.
  *
  *	Output:	->object, or 0 if not found.
@@ -2326,6 +2345,56 @@ int Chunk_object_list::is_blocked
 	return (0);			// All clear.
 	}
 
+/*
+ *	Recursively apply gravity over a given rectangle that is known to be
+ *	unblocked below a given lift.
+ */
+
+void Chunk_object_list::gravity
+	(
+	Rectangle area,			// Unblocked tiles (in abs. coords).
+	int lift			// Lift where tiles are free.
+	)
+	{
+	Vector list(0, 20);		// Gets list of objs. that dropped.
+	Game_window *gwin = Game_window::get_game_window();
+					// Go through interesected chunks.
+	Chunk_intersect_iterator next_chunk(area);
+	Rectangle tiles;		// Rel. tiles.  Not used.
+	int cx, cy;
+	while (next_chunk.get_next(tiles, cx, cy))
+		{
+		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+		Object_iterator objs(chunk);
+		Game_object *obj;
+		while ((obj = objs.get_next()) != 0)
+			{
+			Tile_coord t = obj->get_abs_tile_coord();
+					// Get footprint.
+			Rectangle foot = obj->get_footprint();
+			int new_lift;
+					// Above area?
+			if (t.tz == lift && foot.intersects(area) &&
+					// Unblocked below itself?  Let drop.
+			    !is_blocked(1, t.tz - 1, foot.x, foot.y,
+					foot.w, foot.h, new_lift, 100))
+				{	// Save it, and drop it.
+				list.append(obj);
+				obj->move(t.tx, t.ty, new_lift);
+				}
+			}
+		}
+	int cnt = list.get_cnt();	// Get # objs. that dropped.
+	for (int i = 0; i < cnt; i++)	// Recurse on each one.
+		{
+		Game_object *obj = (Game_object *) list.get(i);
+					// Get footprint.
+		Rectangle foot = obj->get_footprint();
+		gravity(foot, obj->get_lift() +
+					gwin->get_info(obj).get_3d_height());
+		}
+	}
+	
 /*
  *  Finds if there is a 'roof' above lift in tile (tx, ty)
  *  of the chunk. Point is taken 4 above lift

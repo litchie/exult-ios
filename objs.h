@@ -227,6 +227,7 @@ public:
 	Game_object *find_closest(int *shapenums, int num_shapes);
 					// Find nearby unblocked tile.
 	Tile_coord find_unblocked_tile(int dist, int height = 1);
+	Rectangle get_footprint();	// Get tile footprint.
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
 	int is_closed_door() const;	// Checking for a closed door.
@@ -579,7 +580,10 @@ public:
 	void add_egg(Egg_object *egg);	// Add/remove an egg.
 	void remove_egg(Egg_object *egg);
 	void remove(Game_object *obj);	// Remove an object.
-	int is_roof(int tx, int ty, int lift);// Is there a roof? Returns height
+					// Apply gravity over given area.
+	void gravity(Rectangle area, int lift);
+					// Is there a roof? Returns height
+	int is_roof(int tx, int ty, int lift);
 	int get_cx() const
 		{ return cx; }
 	int get_cy() const
