@@ -124,6 +124,10 @@ const short Actor::party_pos[4][10][2] = {
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 const char Actor::attack_frames1[4] = {3, 4, 5, 6};
 const char Actor::attack_frames2[4] = {3, 7, 8, 9};
+// inline int Is_attack_frame(int i) { return i >= 3 && i <= 9; }
+inline int Is_attack_frame(int i) { return i == 6 || i == 9; }
+inline int Get_dir_from_frame(int i)
+	{ return ((((i&16)/8) - ((i&32)/32)) + 4)%4; }
 Dead_body *Dead_body::in_world = 0;
 Equip_record *Monster_info::equip = 0;
 int Monster_info::equip_cnt = 0;
@@ -1207,13 +1211,6 @@ void Actor::paint
 /*
  *	Draw the weapon in the actor's hand (if any).
  */
-/* Weapon frames:
-	0 - normal item
-	1 - in hand, actor facing north/south
-	2 - attacking (pointing north)
-	3 - attacking (pointing east)
-	4 - attacking (pointing south)
-*/
 void Actor::paint_weapon
 	(
 	Game_window *gwin
@@ -1247,6 +1244,13 @@ void Actor::paint_weapon
  *
  *	Output:	0 if don't need to paint weapon.
  */
+/* Weapon frames:
+	0 - normal item
+	1 - in hand, actor facing north/south
+	2 - attacking (pointing north)
+	3 - attacking (pointing east)
+	4 - attacking (pointing south)
+*/
 
 int Actor::figure_weapon_pos
 	(
@@ -1261,13 +1265,23 @@ int Actor::figure_weapon_pos
 		return 0;
 	Game_window *gwin = Game_window::get_game_window();
 	// Get offsets for actor shape
-	gwin->get_info(this).get_weapon_offset(get_framenum() & 0x1f, actor_x,
+	int myframe = get_framenum();
+	gwin->get_info(this).get_weapon_offset(myframe & 0x1f, actor_x,
 			actor_y);
 	// Get offsets for weapon shape
 	// NOTE: when combat is implemented, weapon frame should depend on
 	// actor's current attacking frame
 	weapon_frame = 1;
-	gwin->get_info(weapon).get_weapon_offset(weapon_frame, wx,
+	int baseframe = myframe&0xf;
+	if (gwin->in_combat() && Is_attack_frame(baseframe))
+		{			// Get direction (0-4).
+		int dir = Get_dir_from_frame(myframe);
+		if (dir < 3)		// N, E, S?
+			weapon_frame = 2 + dir;
+		else			// W = N reflected.
+			weapon_frame = 2 | 32;
+		}
+	gwin->get_info(weapon).get_weapon_offset(weapon_frame&0xf, wx,
 			wy);
 	// actor_x will be 255 if (for example) the actor is lying down
 	// wx will be 255 if the actor is not holding a proper weapon
@@ -1276,10 +1290,12 @@ int Actor::figure_weapon_pos
 		weapon_x = wx - actor_x;
 		weapon_y = wy - actor_y;
 		// Need to swap offsets if actor's shape is reflected
-		if(get_framenum() & 32)
+		if((get_framenum() & 32))
 			{
 			swap(weapon_x, weapon_y);
-			weapon_frame |= 32;
+					// Combat frames are already done.
+			if (weapon_frame == 1)
+				weapon_frame |= 32;
 			}
 		return 1;
 		}
