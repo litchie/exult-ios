@@ -210,11 +210,15 @@ void Usecode_value::print
 	switch ((Val_type) type)
 		{
 	case int_type:
-		out << (value.intval&0xffff); break;
+		cout << hex << setfill(0x30) << setw(4);
+		out << (value.intval&0xffff);
+		cout << dec;
+		break;
 	case string_type:
 		out << '"' << value.str << '"'; break;
 	case array_type:
 		{
+		out << "[ ";
 		for (int i = 0; value.array[i].type != (int) end_of_array_type;
 									i++)
 			{
@@ -222,6 +226,7 @@ void Usecode_value::print
 				out << ", ";
 			value.array[i].print(out);
 			}
+		out << " ]";
 		}
 		break;
 	default:
@@ -874,7 +879,6 @@ static void Usecode_Trace
 		<< intrinsic << "]: " << name << "(";
 	for (int i = 0; i < num_parms; i++)
 		{
-		cout << setfill(0x30) << setw(4) << hex;
 		parms[i].print(cout);
 		if(i!=num_parms-1)
 			cout << ", ";
@@ -887,7 +891,6 @@ static void Usecode_Trace
 static	void	Usecode_TraceReturn(Usecode_value &v)
 {
 #if TRACE_INTRINSIC_CALLS
-	cout << hex << setfill(0x30) << setw(4);
 	v.print(cout);
 	cout << dec << endl;
 #endif
@@ -1198,9 +1201,12 @@ USECODE_FUNCTION(update_last_created)
 		last_created->move(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
 			  arr.get_elem(2).get_int_value());
+#if DEBUG
 	else
-		{ cout << "Intrinsic 0x26:  "; arr.print(cout);
-			cout << '\n'; }
+		{
+		cout << " { Intrinsic 0x26:  "; arr.print(cout); cout << endl << "} ";
+		}
+#endif
 	gwin->paint();
 	gwin->show();		// ??
 	Usecode_value u(1);// ??
