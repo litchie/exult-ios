@@ -47,11 +47,13 @@ class Schedule
 protected:
 	Actor *npc;			// Who this controls.
 	Tile_coord blocked;		// Tile where actor was blocked.
+	short prev_type;		// Actor's previous schedule.
 public:
-	Schedule(Actor *n) : npc(n), blocked(-1, -1, -1)
-		{  }
+	Schedule(Actor *n);
 	virtual ~Schedule()
 		{  }
+	int get_prev_type()
+		{ return prev_type; }
 	void set_blocked(Tile_coord b)
 		{ blocked = b; }
 	enum Schedule_types {

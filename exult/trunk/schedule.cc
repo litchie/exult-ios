@@ -42,6 +42,17 @@ using std::endl;
 using std::rand;
 
 /*
+ *	Create. 
+ */
+Schedule::Schedule
+	(
+	Actor *n
+	) : npc(n), blocked(-1, -1, -1)
+	{
+	prev_type = npc ? npc->get_schedule_type() : -1;
+	}
+
+/*
  *	Set up an action to get an actor to a location (via pathfinding), and
  *	then execute another action when he gets there.
  */
