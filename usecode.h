@@ -242,6 +242,7 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(set_lift);
 	USECODE_INTRINSIC_DECL(sit_down);
 	USECODE_INTRINSIC_DECL(display_map);
+	USECODE_INTRINSIC_DECL(resurrect);
 	USECODE_INTRINSIC_DECL(add_spell);
 	USECODE_INTRINSIC_DECL(sprite_effect);
 	USECODE_INTRINSIC_DECL(book_mode);

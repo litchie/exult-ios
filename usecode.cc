@@ -2004,6 +2004,19 @@ USECODE_INTRINSIC(display_map)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(resurrect)
+{
+	// resurrect(body).  Returns actor if successful.
+	Game_object *body = get_item(parms[0]);
+	int npc_num = body ? body->get_live_npc_num() : -1;
+	if (npc_num < 0)
+		return Usecode_value(0);
+	Actor *actor = gwin->get_npc(npc_num);
+	if (actor)
+		actor = actor->resurrect((Dead_body *) body);
+	return Usecode_value((long) actor);
+}
+
 USECODE_INTRINSIC(add_spell)
 {
 	// add_spell(spell# (0-71), ??, spoolbook).
@@ -2457,7 +2470,7 @@ struct Usecode_machine::IntrinsicTableEntry
                          	// on FoV gem. (gift from LB) display area???
                                 // ShowCrystalBall  (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50     ShowWizardEye (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51     ResurrectNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(resurrect),// 0x51     ResurrectNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(add_spell),// 0x52     AddSpellToBook (ucdump.c)
 	USECODE_INTRINSIC_PTR(sprite_effect),// 0x53 ExecuteSprite (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54  ++++Explode???

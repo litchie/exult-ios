@@ -1009,11 +1009,12 @@ void Actor::die
 	Tile_coord pos = get_abs_tile_coord();
 	set_action(0);
 	remove_this(1);			// Remove (but don't delete this).
+	cx = cy = 0xff;			// Set to invalid chunk coords.
 	int shnum = 400;		// +++++Figure out correct shape.
 	int frnum = 3;			// +++++
 					// Put body here.
-	Container_game_object *body = 
-			new Container_game_object(shnum, frnum, 0, 0);
+	Dead_body *body = new Dead_body(shnum, frnum, 0, 0, 0, 
+						npc_num > 0 ? npc_num : -1);
 	body->move(pos);
 	Game_object *item;		// Move all the items.
 	while ((item = get_first_object()) != 0)
@@ -1022,6 +1023,33 @@ void Actor::die
 		body->add(item, 1);	// Always succeed at adding.
 		}
 	gwin->add_dirty(body);
+	}
+
+/*
+ *	Restore from body.  It must not be owned by anyone.
+ *
+ *	Output:	->actor if successful, else 0.
+ */
+
+Actor *Actor::resurrect
+	(
+	Dead_body *body			// Must be this actor's body.
+	)
+	{
+	if (body->get_owner())		// Must be on ground.
+		return (0);
+	Game_object *item;		// Get back all the items.
+	while ((item = body->get_first_object()) != 0)
+		{
+		body->remove(item);
+		add(item, 1);		// Always succeed at adding.
+		}
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->add_dirty(body);		// Need to repaint here.
+	Tile_coord pos = body->get_abs_tile_coord();
+	body->remove_this();		// Remove and delete body.
+	move(pos);			// Move back to life.
+	return (this);
 	}
 
 /*
@@ -1441,6 +1469,17 @@ void Npc_actor::move
 	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
 	if (nlist != olist)
 		switched_chunks(olist, nlist);
+	}
+
+/*
+ *	Get # of NPC a body came from (or -1 if not known).
+ */
+
+int Dead_body::get_live_npc_num
+	(
+	)
+	{
+	return npc_num;
 	}
 
 /*
