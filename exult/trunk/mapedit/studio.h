@@ -55,6 +55,7 @@ private:
 	GtkWidget		*app;
 	GladeXML		*app_xml;
 	char 			*static_path;
+	char			*image_editor;
 	static ExultStudio	*self;
 	Shape_file_set		*files;		// All the shape files.
 	std::vector<GtkWindow*>	group_windows;	// All 'group' windows.
@@ -110,6 +111,8 @@ public:
 		{ return server_socket; }
 	char *get_shape_name(int shnum)
 		{ return names ? names[shnum] : 0; }
+	const char *get_image_editor()
+		{ return image_editor; }
 	Shape_group_file *get_cur_groups();
 	void set_browser(const char *name, Object_browser *obj);
 

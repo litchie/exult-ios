@@ -231,7 +231,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	names(0), glade_path(0),
 	vgafile(0), facefile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
-	static_path(0), 
+	static_path(0), image_editor(0),
 	browser(0), palbuf(0), egg_monster_draw(0), 
 	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
@@ -313,6 +313,10 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 		{
 		set_game_path(gamedir);
 		}
+	string iedit;			// Get image-editor command.
+	config->value("config/estudio/image_editor", iedit, "");
+	if (iedit != "")
+		image_editor = g_strdup(iedit.c_str());
 #ifdef WIN32
     OleInitialize(NULL);
 #endif
@@ -374,6 +378,7 @@ ExultStudio::~ExultStudio()
 		Exult_server::disconnect_from_server();
 #endif
 	g_free(static_path);
+	g_free(image_editor);
 	self = 0;
 	delete config;
 	config = 0;
@@ -562,6 +567,8 @@ GtkCTreeNode *Create_subtree( GtkCTree *ctree,
 
 void ExultStudio::set_game_path(const char *gamepath)
 {
+					// Set top-level path.
+	add_system_path("<GAME>", gamepath);
 	if(static_path)
 		g_free(static_path);
 					// Set up path to static.
