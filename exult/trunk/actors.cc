@@ -2330,6 +2330,7 @@ void Npc_actor::remove_this
 							get_cx(), get_cy());
 	Actor::remove_this(nodel);	// Remove.
 	switched_chunks(olist, 0);
+	cx = cy = 0xff;			// Set to invalid chunk coords.
 	}
 
 /*
