@@ -1,3 +1,7 @@
+2001-09-15  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* acconfig.h, configure.in: Check for gtk support seperately to exult studio.
+
 2001-09-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* intrinsics.cc:  Treat 'last_created' as a 1-element stack.
