@@ -707,10 +707,10 @@ void Game_window::resized
 	{			
 	win->resized(neww, newh, newsc, newsclr);
 	Set_renderer(win, pal);
+	center_view(get_main_actor()->get_tile());
+	paint();
 	// Do the following only if in game (not for menus)
-	if(usecode) {
-		center_view(get_main_actor()->get_tile());
-		paint();
+	if(!gump_man->gump_mode()) {
 		char msg[80];
 		snprintf(msg, 80, "%dx%dx%d", neww, newh, newsc);
 		effects->center_text(msg);

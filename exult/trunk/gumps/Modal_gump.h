@@ -32,23 +32,21 @@ class Modal_gump : public Gump
 
 protected:
 	bool done;			// true when user clicks checkmark.
-	bool restore_background;
 	Gump_button *pushed;		// Button currently being pushed.
 
 public:
 	Modal_gump(Container_game_object *cont, int initx, int inity, 
 			   int shnum, ShapeFile shfile = SF_GUMPS_VGA)
-		: Gump(cont, initx, inity, shnum, shfile), done(false), restore_background(true), pushed(0)
+		: Gump(cont, initx, inity, shnum, shfile), done(false),
+		  pushed(0)
 		{  }
 					// Create centered.
 	Modal_gump(Container_game_object *cont, int shnum, 
 			   ShapeFile shfile = SF_GUMPS_VGA)
-		: Gump(cont, shnum, shfile), done(false), restore_background(true), pushed(0)
+		: Gump(cont, shnum, shfile), done(false), pushed(0)
 		{  }
 	bool is_done()
 		{ return done; }
-	bool want_restore_background()
-		{ return restore_background; }
 					// Handle events:
 	virtual void mouse_down(int mx, int my) = 0;
 	virtual void mouse_up(int mx, int my) = 0;

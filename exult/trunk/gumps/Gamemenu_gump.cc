@@ -111,11 +111,7 @@ void Gamemenu_gump::loadsave()
 	Newfile_gump *fileio = new Newfile_gump();
 	gumpman->do_modal_gump(fileio, Mouse::hand);
 	if (fileio->restored_game())
-	{
 		done = true;
-		// Since we just loaded a new game, we don't want do_modal_gump to restore the background.
-		restore_background = false;
-	}
 	delete fileio;
 }
 
@@ -124,12 +120,10 @@ void Gamemenu_gump::video_options()
 	VideoOptions_gump *vid_opts = new VideoOptions_gump();
 	gumpman->do_modal_gump(vid_opts, Mouse::hand);
 
-	if (!vid_opts->want_restore_background()) {
 		// resolution could have changed, so recenter & repaint menu.
-		set_pos();
-		paint();
-		restore_background = false;
-	}
+	set_pos();
+	gwin->paint();
+	gwin->show();
 	delete vid_opts;
 
 	gclock->set_palette();
