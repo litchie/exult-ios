@@ -104,7 +104,7 @@ public:
 
 class	wrong_file_type_exception : public file_exception {
 public:
-	wrong_file_type_exception (const std::string& file, const std::string& type): file_exception("File "+file+"is not of type "+type) {  }
+	wrong_file_type_exception (const std::string& file, const std::string& type): file_exception("File "+file+" is not of type "+type) {  }
 };
 
 
