@@ -1,3 +1,10 @@
+2001-02-16  Ryan Nunn  <triforce@merlin.net.au>
+	* actor*.*, gamewin.*, objs/eggs.*, objs/objs.h: Caching system of the 
+	  originals is now emulated by Exult. This solves the Army of Darkness
+	  Bug as well as many of the bugs in SI related to cached in Usecode
+	  eggs.
+	* exult_constants.h: Added c_num_schunks.
+
 2001-02-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* mapedit/u7shp.c: check if image is indexed before saving. (fixes crash)
 	* mapedit/uniquepal.c: little tool to 'uniquify' a palette. (not included in main build)

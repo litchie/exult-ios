@@ -509,7 +509,6 @@ class Monster_actor : public Npc_actor
 	static int in_world_cnt;	// # in list.
 					// Links for 'in_world' list.
 	Monster_actor *next_monster, *prev_monster;
-	Egg_object *creator;		// Egg that create it, or 0.
 	Monster_info *info;		// Info. about this monster.
 					// Are new tiles blocked?
 	int is_blocked(int destx, int desty);
@@ -523,8 +522,7 @@ class Monster_actor : public Npc_actor
 public:
 	friend class Monster_info;
 	Monster_actor(const std::string &nm, int shapenum, int fshape = -1, int uc = -1)
-		: Npc_actor(nm, shapenum, fshape, uc), prev_monster(0),
-		  creator(0), info(0)
+		: Npc_actor(nm, shapenum, fshape, uc), prev_monster(0), info(0)
 		{
 		if (in_world)
 			in_world->prev_monster = this;
@@ -540,8 +538,6 @@ public:
 		{ return in_world; }
 	Monster_actor *get_next_in_world()
 		{ return next_monster; }
-	void set_creator(Egg_object *egg)
-		{ creator = egg; }
 	static int get_num_in_world()
 		{ return in_world_cnt; }
 	static void delete_all();	// Delete all monsters.
