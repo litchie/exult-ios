@@ -1,3 +1,7 @@
+2001-06-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Spellbook_gump.cc:  Added SI reagants table (untested).
+
 2001-06-18  Max Horn  <max@quendi.de>
 	* files/listfiles.cc: changed interface of U7ListFiles and removed U7FreeFileList;
 	  implemented MacOS version of U7ListFiles

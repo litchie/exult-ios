@@ -43,7 +43,8 @@ public:
 class Spellbook_gump : public Spelltype_gump
 	{
 					// Reagants needed for each spell:
-	static unsigned char reagants[9*8];
+	static unsigned short bg_reagants[9*8], si_reagants[9*8];
+	unsigned short *reagants;	// ->appropriate table.
 	short avail[9*8];		// For each spell, # which the
 					//   available reagants make possible.
 	int page;			// Starting with 0 (= circle #).

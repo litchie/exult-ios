@@ -2845,6 +2845,25 @@ void Actor::set_polymorph_default()
 }
 
 /*
+ *	Get 'real' shape for Usecode.
+ */
+
+int Actor::get_shape_real
+	(
+	)
+	{
+	if (Game::get_game_type() == BLACK_GATE)
+		return get_shapenum();
+	if (npc_num != 0)		// Not the avatar?
+		return shape_save!=-1?shape_save:get_shapenum();
+					// Taking guess (6/18/01):
+	if (get_type_flag(Actor::tf_sex))
+		return 989;
+	else
+		return 721;
+	}
+
+/*
  *	Create NPC.
  */
 
