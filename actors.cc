@@ -1436,6 +1436,7 @@ int Monster_actor::is_blocked
 			int new_lift;
 			Chunk_object_list *olist = gwin->get_objects(
 					x/tiles_per_chunk, cy);
+			olist->setup_cache();
 			if (olist->is_blocked(height, lift, x%tiles_per_chunk,
 							rty, new_lift) ||
 			    new_lift != lift)
@@ -1451,6 +1452,7 @@ int Monster_actor::is_blocked
 			int new_lift;
 			Chunk_object_list *olist = gwin->get_objects(
 					cx, y/tiles_per_chunk);
+			olist->setup_cache();
 			if (olist->is_blocked(height, lift, rtx,
 					y%tiles_per_chunk, new_lift) ||
 			    new_lift != lift)

@@ -969,7 +969,7 @@ int Modal_gump
 	gwin->get_win()->put(back, box.x, box.y);
 	delete back;
 	mouse->set_shape(saveshape);
-	mouse->show();
+					// Leave mouse off.
 	gwin->set_painted();
 	gwin->show();
 	return (!escaped);
