@@ -96,7 +96,7 @@ void Cheat::init (void) {
 }
 
 void Cheat::finish_init (void) {
-	gwin = Game_window::get_game_window();
+	gwin = Game_window::get_instance();
 
 	browser = new ShapeBrowser();
 	tester = new SoundTester();

@@ -40,7 +40,7 @@ Sign_gump::Sign_gump
 	if (Game::get_game_type() == SERPENT_ISLE && shapenum==49)
 	{
 		// check for avatar read here
-		Main_actor *avatar = Game_window::get_game_window()->get_main_actor();
+		Main_actor *avatar = Game_window::get_instance()->get_main_actor();
 		if (!avatar->get_flag(Obj_flags::read))
 			serpentine = true;
 
@@ -94,7 +94,7 @@ void Sign_gump::add_text
 		return;
 
 	// check for avatar read here
-	Main_actor *avatar = Game_window::get_game_window()->get_main_actor();
+	Main_actor *avatar = Game_window::get_instance()->get_main_actor();
 
 	if (!serpentine && avatar->get_flag(Obj_flags::read))
 	{

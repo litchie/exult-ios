@@ -212,7 +212,7 @@ void GameplayOptions_gump::build_buttons()
 
 void GameplayOptions_gump::load_settings()
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	fastmouse = gwin->get_fastmouse();
 	mouse3rd = gwin->get_mouse3rd();
 	walk_after_teleport = gwin->get_walk_after_teleport();
@@ -275,7 +275,7 @@ GameplayOptions_gump::~GameplayOptions_gump()
 
 void GameplayOptions_gump::save_settings()
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	gwin->set_text_bg(text_bg-1);
 	config->set("config/gameplay/textbackground", text_bg-1, true);
 	int fps = framerates[frames];
@@ -328,7 +328,7 @@ void GameplayOptions_gump::paint(Game_window* gwin)
 
 void GameplayOptions_gump::mouse_down(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
@@ -348,7 +348,7 @@ void GameplayOptions_gump::mouse_down(int mx, int my)
 
 void GameplayOptions_gump::mouse_up(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (pushed)			// Pushing a button?
 	{
 		pushed->unpush(gwin);

@@ -52,8 +52,8 @@ static Actor *Get_party_member
 {
 	int npc_num = 0;	 	// Default to Avatar
 	if (num > 0)
-		npc_num = Game_window::get_game_window()->get_usecode()->get_party_member(num - 1);
-	return Game_window::get_game_window()->get_npc(npc_num);
+		npc_num = Game_window::get_instance()->get_usecode()->get_party_member(num - 1);
+	return Game_window::get_instance()->get_npc(npc_num);
 }
 
 
@@ -89,7 +89,7 @@ void ActionFileGump(int *params)
 //  { ActionQuicksave, 0, "Quick-save", true, false, NONE },
 void ActionQuicksave(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	try {
 		gwin->write();
 	}
@@ -103,7 +103,7 @@ void ActionQuicksave(int *params)
 //  { ActionQuickrestore, 0, "Quick-restore", true, false, NONE },
 void ActionQuickrestore(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	try {
 		gwin->read();
 	}
@@ -118,7 +118,7 @@ void ActionQuickrestore(int *params)
 //  { ActionAbout, 0, "About Exult", true, false, NONE },
 void ActionAbout(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Scroll_gump *scroll;
 	scroll = new Scroll_gump();
 	
@@ -146,13 +146,13 @@ void ActionHelp(int *params)
 //  { ActionCloseGumps, 0, "Close gumps", false, false, NONE },
 void ActionCloseGumps(int *params)
 {
-	Game_window::get_game_window()->get_gump_man()->close_all_gumps();
+	Game_window::get_instance()->get_gump_man()->close_all_gumps();
 }
 
 //  { ActionCloseOrMenu, "Game menu", true, false, NONE },
 void ActionCloseOrMenu(int* params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (gwin->get_gump_man()->showing_gumps(true))
 		gwin->get_gump_man()->close_all_gumps();
 	else
@@ -168,7 +168,7 @@ void ActionScreenshot(int *params)
 //  { ActionRepaint, 0, "Repaint screen", false, false, NONE },
 void ActionRepaint(int *params)
 {
-	Game_window::get_game_window()->paint();
+	Game_window::get_instance()->paint();
 }
 
 //  { ActionResIncrease, 0, "Increase resolution", true, true, NONE },
@@ -198,7 +198,7 @@ void ActionDarker(int *params)
 //  { ActionFullscreen, 0, "Toggle fullscreen", true, false, NONE },
 void ActionFullscreen(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	gwin->get_win()->toggle_fullscreen();
 	gwin->paint();
 }
@@ -211,7 +211,7 @@ void ActionUseItem(int *params)
 {
 	if (params[1] == -1) params[1] = c_any_framenum;
 	if (params[2] == -1) params[2] = c_any_qual;
-	Game_window::get_game_window()->activate_item(params[0], params[1], params[2]);
+	Game_window::get_instance()->activate_item(params[0], params[1], params[2]);
 
 	Mouse::mouse->set_speed_cursor();
 }
@@ -219,7 +219,7 @@ void ActionUseItem(int *params)
 //  { ActionCombat, 0, "Toggle combat", true, false, NONE },
 void ActionCombat(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	gwin->toggle_combat();
 	gwin->paint();
 	Mouse::mouse->set_speed_cursor();
@@ -231,7 +231,7 @@ void ActionTarget(int *params)
 	int x, y;
 	if (!Get_click(x, y, Mouse::greenselect))
 		return;
-	Game_window::get_game_window()->double_clicked(x, y);
+	Game_window::get_instance()->double_clicked(x, y);
 	Mouse::mouse->set_speed_cursor();
 }
 
@@ -239,7 +239,7 @@ void ActionTarget(int *params)
 // params[0] = party member (0-7), or -1 for 'next'
 void ActionInventory(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	static int inventory_page = -1;
 	Actor *actor;
 	
@@ -282,7 +282,7 @@ void ActionInventory(int *params)
 //  { ActionTryKeys, 0, "Try keys", true, false, NONE },
 void ActionTryKeys(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int x, y;			// Allow dragging.
 	if (!Get_click(x, y, Mouse::greenselect, 0, true))
 		return;
@@ -315,7 +315,7 @@ void ActionTryKeys(int *params)
 // params[0] = party member (0-7), or -1 for 'next'
 void ActionStats(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	static int stats_page = -1;
 	Actor *actor;
 	
@@ -355,7 +355,7 @@ void ActionStats(int *params)
 //  { ActionCombatStats, 0, "Show Combat stats", true, false, SERPENT_ISLE }
 void ActionCombatStats(int* params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int cnt = gwin->get_usecode()->get_party_count();
 	gwin->get_gump_man()->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }
@@ -371,7 +371,7 @@ void ActionFaceStats(int* params)
 //  { ActionSIIntro, 0,  "Show SI intro", true, true, SERPENT_ISLE },
 void ActionSIIntro(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	game->set_jive();
 	game->play_intro();
 	game->clear_jive();
@@ -385,7 +385,7 @@ void ActionSIIntro(int *params)
 // params[0] = -1,0 = won, 1 = lost
 void ActionEndgame(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	game->end_game(params[0] != 1);
 	gwin->clear_screen(true);
 	gwin->set_palette(0);
@@ -396,7 +396,7 @@ void ActionEndgame(int *params)
 //  { ActionScrollLeft, 0, "Scroll left", true, true, NONE },
 void ActionScrollLeft(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_left();
 }
@@ -404,7 +404,7 @@ void ActionScrollLeft(int *params)
 //  { ActionScrollRight, 0, "Scroll right", true, true, NONE },
 void ActionScrollRight(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_right();
 }
@@ -412,7 +412,7 @@ void ActionScrollRight(int *params)
 //  { ActionScrollUp, 0, "Scroll up", true, true, NONE },
 void ActionScrollUp(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_up();
 }
@@ -420,7 +420,7 @@ void ActionScrollUp(int *params)
 //  { ActionScrollDown, 0, "Scroll down", true, true, NONE },
 void ActionScrollDown(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	for (int i = 16; i; i--)
 		gwin->view_down();
 }
@@ -428,7 +428,7 @@ void ActionScrollDown(int *params)
 //  { ActionCenter, 0, "Center screen", true, true, NONE },
 void ActionCenter(int *params)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	gwin->center_view(gwin->get_camera_actor()->get_tile());
 	gwin->paint();
 }
@@ -449,7 +449,7 @@ void ActionCreateShape(int *params)
 	if (params[0] == -1) {
 		cheat.create_last_shape();
 	} else {
-		Game_window *gwin = Game_window::get_game_window();
+		Game_window *gwin = Game_window::get_instance();
 		if (params[1] == -1) params[1] = 0;
 		if (params[2] == -1) params[2] = 1;
 		if (params[3] == -1) params[3] = c_any_qual;

@@ -54,7 +54,7 @@ Dragging_info::Dragging_info
 	    readied_index(-1), mousex(-1), mousey(-1), rect(0, 0, 0, 0),
 	    save(0), okay(true), possible_theft(false)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	rect = gwin->get_shape_rect(obj);
 	rect.enlarge(8);		// Make a little bigger.
 					// Create buffer to backup background.
@@ -73,7 +73,7 @@ Dragging_info::Dragging_info
 	    readied_index(-1), mousex(x), mousey(y), rect(0, 0, 0, 0),
 	    save(0), okay(false), possible_theft(false)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// First see if it's a gump.
 	gump = gwin->get_gump_man()->find_gump(x, y);
 	if (gump)
@@ -144,7 +144,7 @@ bool Dragging_info::start
 	int x, int y			// Mouse position.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (x - mousex <= 2 && mousex - x <= 2 &&
 	    y - mousey <= 2 && mousey - y <= 2)
 		return (false);		// Wait for greater motion.
@@ -207,7 +207,7 @@ bool Dragging_info::moved
 	{
 	if (!obj && !gump)
 		return (false);
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (rect.w == 0)
 		{
 		if (!start(x, y))
@@ -253,7 +253,7 @@ bool Dragging_info::drop
 	)
 	{
 	bool handled = moved;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (button)
 		{
 		button->unpush(gwin);
@@ -343,7 +343,7 @@ bool Dragging_info::drop_on_gump
 	Gump *on_gump			// Gump to drop it on.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (!Check_weight(gwin, to_drop, on_gump->get_cont_or_actor(x,y)))
 		return false;
 	if (on_gump != gump)		// Not moving within same gump?
@@ -375,7 +375,7 @@ bool Dragging_info::drop_on_map
 	Game_object *to_drop		// == obj if whole thing.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int max_lift = cheat.in_hack_mover() ? 13 :
 					gwin->get_main_actor()->get_lift() + 4;
 					// Drop where we last painted it.
@@ -428,7 +428,7 @@ bool Dragging_info::drop
 	)
 	{
 	extern int Prompt_for_number(int, int, int, int);
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Get orig. loc. info.
 	int oldcx = old_pos.tx/c_tiles_per_chunk, 
 	    oldcy = old_pos.ty/c_tiles_per_chunk;

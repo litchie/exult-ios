@@ -61,7 +61,7 @@ void Handle_client_debug_message(int& fd)
 
 void Handle_debug_message(unsigned char* data, int datalen)
 {
-	Usecode_machine *ucm = Game_window::get_game_window()->get_usecode();
+	Usecode_machine *ucm = Game_window::get_instance()->get_usecode();
 	Usecode_internal *uci = dynamic_cast<Usecode_internal*>(ucm);
 	
 	if (uci == 0)

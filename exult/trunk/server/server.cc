@@ -231,7 +231,7 @@ static void Handle_client_message
 	if (datalen < 0)
 		return;
 	unsigned char *ptr = &data[0];
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	switch (id)
 		{
 	case Exult_server::obj:

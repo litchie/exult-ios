@@ -36,7 +36,7 @@ int Game_object::find_nearby
 	if (shapenum > 0 && mask == 4)	// Ignore mask=4 if shape given!
 		mask = 0;
 	int vecsize = vec.size();
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Rectangle tiles(pos.tx - delta, pos.ty - delta, 1 + 2*delta, 1 + 
 								2*delta);
 					// Stay within world.

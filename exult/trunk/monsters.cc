@@ -82,7 +82,7 @@ Monster_actor::Monster_actor
 	    next_monster(0), animator(0)
 	{
 					// Check for animated shape.
-	Shape_info& info = Game_window::get_game_window()->get_info(this);
+	Shape_info& info = Game_window::get_instance()->get_info(this);
 	if (info.is_animated())
 		animator = Animator::create(this, 1);
 	}
@@ -163,7 +163,7 @@ Monster_actor *Monster_actor::create
 	bool equipment
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Get 'monsters.dat' info.
 	const Monster_info *inf = gwin->get_info(shnum).get_monster_info();
 	if (!inf)
@@ -271,7 +271,7 @@ int Monster_actor::step
 	int frame			// New frame #.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	
 	// If move not allowed do I remove or change destination?
 	// I'll do nothing for now
@@ -376,7 +376,7 @@ int Monster_actor::get_armor_points
 	)
 	{
 	Monster_info *inf =
-	    Game_window::get_game_window()->get_info(this).get_monster_info();
+	    Game_window::get_instance()->get_info(this).get_monster_info();
 					// Kind of guessing here.
 	return Actor::get_armor_points() + (inf ? inf->armor : 0);
 	}
@@ -391,7 +391,7 @@ Weapon_info *Monster_actor::get_weapon
 	int& shape
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Monster_info *inf = gwin->get_info(this).get_monster_info();
 					// Kind of guessing here.
 	Weapon_info *winf = Actor::get_weapon(points, shape);
@@ -475,7 +475,7 @@ void Slime_actor::update_frames
 	{
 	Tile_coord neighbors[4];	// Gets surrounding spots for slimes.
 	int dir;			// Get direction of neighbor.
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Game_object_vector nearby;		// Get nearby slimes.
 	if (src.tx != -1)
 		if (dest.tx != -1)	// Assume within 2 tiles.
@@ -554,7 +554,7 @@ int Slime_actor::step
 	if (newpos != oldpos && rand()%9 == 0 &&
 	    !find_nearby(blood, oldpos, 912, 1, 0))
 		{
-		Game_window *gwin = Game_window::get_game_window();
+		Game_window *gwin = Game_window::get_instance();
 					// Frames 4-11 are green.
 		Game_object *b = gwin->create_ireg_object(912, 4 + rand()%8);
 		b->set_flag(Obj_flags::is_temporary);

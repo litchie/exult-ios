@@ -161,7 +161,7 @@ CheatScreen::~CheatScreen()
 void CheatScreen::show_screen()
 {
 		
-	gwin = Game_window::get_game_window();
+	gwin = Game_window::get_instance();
 	ibuf = gwin->get_win()->get_ib8();
 	font = fontManager.get_font("MENU_FONT");
 	clock = gwin->get_clock();
@@ -855,7 +855,7 @@ CheatScreen::Cheat_Prompt CheatScreen::GlobalFlagLoop (int num)
 		
 	for (i = 0; i < 17; i++) input[i] = 0;
 
-	Usecode_machine *usecode = Game_window::get_game_window()->get_usecode();
+	Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
 
 	while (looping)
 	{
@@ -1194,7 +1194,7 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		break;
 
 		case '\'':	// Teleport
-		Game_window::get_game_window()->teleport_party(actor->get_tile());
+		Game_window::get_instance()->teleport_party(actor->get_tile());
 		break;
 
 
@@ -2090,7 +2090,7 @@ void CheatScreen::BusinessActivate (char *input, int &command, Cheat_Prompt &mod
 
 
 		case 'r':	// Revert
-		Game_window::get_game_window()->revert_schedules(actor);
+		Game_window::get_instance()->revert_schedules(actor);
 		break;
 
 

@@ -118,7 +118,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		} else {
 			build_buttons();
 		}
-		paint(Game_window::get_game_window());
+		paint(Game_window::get_instance());
 	} else if (btn == buttons[1]) {	// midi on/off 
 		midi_enabled = state;
 		if (state == 0) {
@@ -129,7 +129,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		} else {
 			build_midi_buttons();
 		}
-		paint(Game_window::get_game_window());
+		paint(Game_window::get_instance());
 	} else if (btn == buttons[2]) { // midi conversion
 		midi_conversion = state;
 	} else if (btn == buttons[3]) { // midi reverb
@@ -146,7 +146,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		} else {
 			build_sfx_buttons();
 		}
-		paint(Game_window::get_game_window());
+		paint(Game_window::get_instance());
 #ifdef ENABLE_MIDISFX
 	} else if (btn == buttons[7]) { // sfx conversion
 		if (state == 1) {
@@ -378,7 +378,7 @@ void AudioOptions_gump::paint(Game_window* gwin)
 
 void AudioOptions_gump::mouse_down(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
@@ -398,7 +398,7 @@ void AudioOptions_gump::mouse_down(int mx, int my)
 
 void AudioOptions_gump::mouse_up(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (pushed)			// Pushing a button?
 	{
 		pushed->unpush(gwin);

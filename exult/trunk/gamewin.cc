@@ -2174,7 +2174,7 @@ void Game_window::show_items
 		cheat.clear_selected();	
 
 					// Do we want the NPC number?
-	Actor *npc = dynamic_cast<Actor *>(obj);
+	Actor *npc = obj ? obj->as_actor() : 0;
 	if (npc && cheat.number_npcs() &&
 	    (npc->get_npc_num() > 0 || npc==main_actor))
 	{
@@ -2210,7 +2210,7 @@ void Game_window::show_items
 			info.get_3d_xtiles(frnum) << ", " <<
 			info.get_3d_ytiles(frnum) << ", " <<
 			info.get_3d_height();
-		Actor *npc = dynamic_cast<Actor *>(obj);
+		Actor *npc = obj->as_actor();
 		if (npc)
 			cout  << ", sched = " << 
 			npc->get_schedule_type() << ", align = " <<
@@ -2591,7 +2591,7 @@ void Game_window::double_clicked
 			}
 #endif
 		// Check path, except if an NPC, sign, or if editing.
-	    	if (obj && !dynamic_cast<Actor *>(obj) &&
+	    	if (obj && !obj->as_actor() &&
 			!cheat.in_map_editor() &&
 			!Is_sign(obj->get_shapenum()) &&
 			!Fast_pathfinder_client::is_grabable(
@@ -2607,7 +2607,7 @@ void Game_window::double_clicked
 	if (combat && !gump &&		// In combat?
 	    !gump_man->gump_mode())
 		{
-		Actor *npc = dynamic_cast<Actor *>(obj);
+		Actor *npc = obj->as_actor();
 					// But don't attack party members.
 		if ((!npc || !npc->is_in_party()) &&
 					// Or bodies.

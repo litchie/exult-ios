@@ -60,7 +60,7 @@ class Npc_face_info {
 Conversation::Conversation() :
   num_faces(0), last_face_shown(0), conv_choices(0)
 {
-  gwin = Game_window::get_game_window();
+  gwin = Game_window::get_instance();
 
   const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
   for (int i = 0; i < max_faces; i++)

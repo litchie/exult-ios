@@ -329,7 +329,7 @@ void Paperdoll_gump::set_to_spot
 	int index			// Spot index.
 	)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	
 	// Get shape.
 	Shape_frame *shape = obj->get_shape();
@@ -367,7 +367,7 @@ void Paperdoll_gump::paint
 	check_button->paint(gwin);
 
 	// Get the information required about ourself
-	Actor *actor = dynamic_cast<Actor *> (container);
+	Actor *actor = container->as_actor();
 	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
 	if (!info) info = GetCharacterInfo (actor->get_shape_real());
 	if (!info && Game::get_game_type() != BLACK_GATE) info = Characters;
@@ -739,7 +739,7 @@ Game_object * Paperdoll_gump::find_object
 	)
 {
 
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	
 	// Check Objects
 	Rectangle box = object_area;	// Paint objects inside.
@@ -748,7 +748,7 @@ Game_object * Paperdoll_gump::find_object
 	my -= box.y;
 
 	// Get the information required about ourself
-	Actor *actor = dynamic_cast<Actor *> (container);
+	Actor *actor = container->as_actor();
 	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
 	if (!info) info = GetCharacterInfo (actor->get_shape_real());
 	if (!info && Game::get_game_type() != BLACK_GATE) info = Characters;

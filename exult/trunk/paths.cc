@@ -52,7 +52,7 @@ int Actor_pathfinder_client::get_max_cost
 	)
 	{
 	int max_cost = 3*cost_to_goal;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Do at least 3 screens width.
 	int min_max_cost = (gwin->get_width()/c_tilesize)*2*3;
 	return max_cost > min_max_cost ? max_cost : min_max_cost;
@@ -72,7 +72,7 @@ int Actor_pathfinder_client::get_step_cost
 					//   field may be modified.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int cx = to.tx/c_tiles_per_chunk, cy = to.ty/c_tiles_per_chunk;
 	Map_chunk *olist = gwin->get_chunk(cx, cy);
 	int tx = to.tx%c_tiles_per_chunk;	// Get tile within chunk.
@@ -227,7 +227,7 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 	(
 	Actor *n
 	) : Actor_pathfinder_client(n), screen(
-	      Game_window::get_game_window()->get_win_tile_rect().enlarge(3)),
+	      Game_window::get_instance()->get_win_tile_rect().enlarge(3)),
 	    best(-1, -1, -1)
 	{
 	}
@@ -241,13 +241,13 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 	Actor *n,
 	Tile_coord b			// Best offscreen pt. to aim for.
 	) : Actor_pathfinder_client(n), screen(
-	      Game_window::get_game_window()->get_win_tile_rect().enlarge(3)),
+	      Game_window::get_instance()->get_win_tile_rect().enlarge(3)),
 	    best(b)
 	{
 	if (best.tx != -1)		// Scale (roughly) to edge of screen.
 		{
 		Rectangle scr = 
-			Game_window::get_game_window()->get_win_tile_rect();
+			Game_window::get_instance()->get_win_tile_rect();
 					// Get center.
 		int cx = scr.x + scr.w/2, cy = scr.y + scr.h/2;
 					// More than 4 screens away?
@@ -373,7 +373,7 @@ int Fast_pathfinder_client::get_step_cost
 					//   field may be modified.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int cx = to.tx/c_tiles_per_chunk, cy = to.ty/c_tiles_per_chunk;
 	Map_chunk *olist = gwin->get_chunk(cx, cy);
 	int tx = to.tx%c_tiles_per_chunk;	// Get tile within chunk.
@@ -439,7 +439,7 @@ int Fast_pathfinder_client::is_grabable
 	if (from.distance(to) <= 1)
 		return 1;		// Already okay.
 	Fast_pathfinder_client client(1, 
-	   Game_window::get_game_window()->get_main_actor()->get_type_flags());
+	   Game_window::get_instance()->get_main_actor()->get_type_flags());
 	Astar path;
 	return path.NewPath(from, to, &client);
 	}
@@ -480,7 +480,7 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	) : Fast_pathfinder_client(dist), destbox(dest.tx, dest.ty, 0, 0)
 	{
 	intelligence = npc->get_property(Actor::intelligence);
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info1 = gwin->get_info(npc);
 	axtiles = info1.get_3d_xtiles();
 	aytiles = info1.get_3d_ytiles();
@@ -501,7 +501,7 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	) : Fast_pathfinder_client(reach), destbox(0, 0, 0, 0)
 	{
 	intelligence = attacker->get_property(Actor::intelligence);
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info1 = gwin->get_info(attacker);
 	axtiles = info1.get_3d_xtiles();
 	aytiles = info1.get_3d_ytiles();
@@ -530,7 +530,7 @@ int Monster_pathfinder_client::get_max_cost
 	int icost = 2*intelligence;	// Limit by intelligence.
 	if (max_cost > icost)		// Note: intel. ranges from 0 to 30.
 		max_cost = icost;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Limit to 3/4 screen width.
 	int scost = ((3*gwin->get_width())/4)/c_tilesize;
 	if (max_cost > scost)

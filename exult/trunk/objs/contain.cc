@@ -97,7 +97,7 @@ bool Container_game_object::add
 
 	if (combine)			// Should we try to combine?
 		{
-		Game_window *gwin = Game_window::get_game_window();
+		Game_window *gwin = Game_window::get_instance();
 		Shape_info& info = gwin->get_info(obj->get_shapenum());
 		int quant = obj->get_quantity();
 					// Combine, but don't add.
@@ -157,7 +157,7 @@ static int Add2keyring
 	)
 	{
 	Keyring *ring = 
-		Game_window::get_game_window()->get_usecode()->getKeyring();
+		Game_window::get_instance()->get_usecode()->getKeyring();
 					// Valid quality & not already there?
 	if (qual != c_any_qual && !ring->checkkey(qual))
 		{
@@ -181,7 +181,7 @@ static bool Get_combine_info
 	bool& quantity_frame		// Rets. true if frame depends on quan.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = gwin->get_info(shapenum);
 	quantity_frame = false;
 	if (!info.has_quantity())
@@ -301,13 +301,13 @@ int Container_game_object::create_quantity
 					// Usecode container?
 	if (get_shapenum() == 486 && Game::get_game_type() == SERPENT_ISLE)
 		return delta;
-	Shape_info& shp_info=Game_window::get_game_window()->get_info(
+	Shape_info& shp_info=Game_window::get_instance()->get_info(
 								shnum);
 	if (!shp_info.has_quality())	// Not a quality object?
 		qual = c_any_qual;	// Then don't set it.
 	while (delta)			// Create them here first.
 		{
-		Game_object *newobj = Game_window::get_game_window()->
+		Game_object *newobj = Game_window::get_instance()->
 			create_ireg_object(shp_info, shnum, frnum,0,0,0);
 
 		if (!add(newobj))
@@ -423,7 +423,7 @@ void Container_game_object::activate
 	if (edit())
 		return;			// Map-editing.
 	int shnum = get_shapenum();
-	Gump_manager *gump_man = Game_window::get_game_window()->get_gump_man();
+	Gump_manager *gump_man = Game_window::get_instance()->get_gump_man();
 
 	if (Game::get_game_type() == BLACK_GATE)  switch(shnum)	// Watch for gumps.
 	{

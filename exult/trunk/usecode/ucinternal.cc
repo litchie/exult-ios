@@ -427,7 +427,7 @@ Actor *Usecode_internal::as_actor
 	{
 	if (!obj)
 		return 0;
-	return (dynamic_cast<Actor *> (obj));
+	return (obj->as_actor());
 	}
 
 /*

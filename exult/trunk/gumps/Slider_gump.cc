@@ -157,7 +157,7 @@ void Slider_gump::move_diamond(int dir)
 		newval = max_val;
 
 	set_val(newval);
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	paint(gwin);
 	gwin->set_painted();
 }
@@ -197,7 +197,7 @@ void Slider_gump::mouse_down
 	)
 {
 	dragging = 0;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Gump_button *btn = Gump::on_button(gwin, mx, my);
 	if (btn)
 		pushed = btn;
@@ -233,7 +233,7 @@ void Slider_gump::mouse_down
 		int newval = min_val + delta;
 		if (newval != val)		// Set value.
 			val = newval;
-		paint(Game_window::get_game_window());
+		paint(Game_window::get_instance());
 	}
 }
 
@@ -246,7 +246,7 @@ void Slider_gump::mouse_up
 	int mx, int my			// Position in window.
 	)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (dragging)			// Done dragging?
 	{
 		set_val(val);		// Set diamond in correct pos.
@@ -286,7 +286,7 @@ void Slider_gump::mouse_drag
 	int newval = min_val + delta;
 	if (newval != val)		// Set value.
 		val = newval;
-	paint(Game_window::get_game_window());
+	paint(Game_window::get_instance());
 }
 
 /*

@@ -45,7 +45,7 @@ CombatStats_gump::CombatStats_gump(int initx, int inity) :
 {
 	set_object_area(Rectangle(0,0,0,0), 7, 95);
 
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	party_size = gwin->get_party(party, 1);
 
