@@ -135,6 +135,7 @@ public:
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 	virtual void activate(Usecode_machine *umachine, Game_object *obj,
 							int must = 0);
+	static void set_weather(Game_window *gwin, int weather, int len = 15);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual int is_egg() const	// An egg?

@@ -897,6 +897,20 @@ USECODE_INTRINSIC(set_lift)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(get_weather)
+{
+	// Get_weather()
+	return Usecode_value(gwin->get_weather());
+}
+
+USECODE_INTRINSIC(set_weather)
+{
+	// Set_weather(i)
+	Egg_object::set_weather(gwin, parms[0].get_int_value());
+	return no_ret;
+}
+
+
 USECODE_INTRINSIC(sit_down)
 {
 	// Sit_down(npc, chair).

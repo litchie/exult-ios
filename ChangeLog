@@ -1,3 +1,7 @@
+2001-01-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Weather intrinsics implemented, also 'Ambrosia' rain.
+
 2001-01-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* files/utils.cc: always #include <unistd.h> (not just on MacOS)
 

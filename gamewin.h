@@ -523,6 +523,7 @@ public:
 	void remove_all_effects();
 	void remove_text_effects();
 	void remove_weather_effects();	// Remove just the weather.
+	int get_weather();		// Get # of last weather added.
 					// Handle a double-click in window.
 	void double_clicked(int x, int y);
 	void show_gump(Game_object *obj, int shapenum);
