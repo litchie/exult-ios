@@ -819,8 +819,8 @@ USECODE_INTRINSIC(click_on_item)
 		}
 	else
 		{
-		int x, y;
-		if (!Get_click(x, y, Mouse::greenselect))
+		int x, y;		// Allow dragging while here:
+		if (!Get_click(x, y, Mouse::greenselect, 0, true))
 			return Usecode_value(0);
 					// Get abs. tile coords. clicked on.
 		t = Tile_coord(gwin->get_scrolltx() + x/c_tilesize,

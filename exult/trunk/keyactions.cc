@@ -283,8 +283,8 @@ void ActionInventory(int *params)
 void ActionTryKeys(int *params)
 {
 	Game_window *gwin = Game_window::get_game_window();
-	int x, y;
-	if (!Get_click(x, y, Mouse::greenselect))
+	int x, y;			// Allow dragging.
+	if (!Get_click(x, y, Mouse::greenselect, 0, true))
 		return;
 	// Look for obj. in open gump.
 	Gump *gump = gwin->get_gump_man()->find_gump(x, y);
