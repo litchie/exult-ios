@@ -124,6 +124,8 @@ int current_res = 0;
 int xfd = 0;			// X connection #.
 static class Xdnd *xdnd = 0;
 
+extern void Server_init();
+extern void Server_delay();
 #endif
 
 
@@ -403,6 +405,7 @@ static void Init
 #ifdef XWIN
         SDL_GetWMInfo(&info);
         xfd = ConnectionNumber(info.info.x11.display);
+	Server_init();			// Initialize server (for map-editor).
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
 				info.info.x11.window, Drop_dragged_shape);
 #endif
@@ -501,7 +504,11 @@ static void Handle_events
 	 */
 	while (!*stop)
 		{
+#ifdef XWIN
+		Server_delay();		// Handle requests.
+#else
 		Delay();		// Wait a fraction of a second.
+#endif
 
 		Mouse::mouse->hide();		// Turn off mouse.
 		Mouse::mouse_update = false;
