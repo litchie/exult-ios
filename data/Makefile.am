@@ -28,7 +28,9 @@ EXULT_FLX_OBJECTS = \
 	hoe_of_destruction.shp  \
 	caddellite_helmet.shp	\
 	great_dagger.shp	\
-	magic_boomerang.shp
+	magic_boomerang.shp	\
+	gorget.shp		\
+	magicgorget.shp
 
 flexdir = $(datadir)/exult
 
