@@ -31,16 +31,16 @@ int bgconv[] = {
 	42,			//Explos #3
 	127,			//Whip pta  
 	71,			//Thunder 
-	39,			//Fireball  
+	44,			//Fireball  
 	65,			//Torches   
-	1,			//Gumps!!!!!
+	93,			//Gumps!!!!!
 	56,			//Gavel     
 	121,			//Treadle   
 	117,			//Clock tick
 	118,			//Clock tock
 	16,			//Chime  
-	47,			//Fire 1  
-	47,			//Fire 2  
+	45,			//Fire 1  
+	46,			//Fire 2  
 	47,			//Fire 3 
 	28,			//Bell Ding 
 	30,			//Bell Dong 
@@ -48,18 +48,18 @@ int bgconv[] = {
 	78,			//Mill Stone
 	68,			//Key       
 	70,			//Lever     
-	135,			//Roulette  
+	27,			//Roulette  
 	32,			//Creeeeaack
 	31,			//Creeeeaack
 	89,			//Portcullis
 	88,			//Portcullis close
 	34,			//Drawbridge
 	35,			//Drawbridge
-	135,			//Fuse  ???    
+	7,			//Fuse  ???    
 	95,			//Shadoobie 
 	99,			//Splash    
 	126,			//W. Anchor 
-	79,			//D. Anchor 
+	99,			//D. Anchor 
 	32,			//Creeeeaack
 	31,			//Creeeeaack
 	2,			//gumpster  
@@ -67,11 +67,11 @@ int bgconv[] = {
 	49,			//Forge     
 	33,			//Douse
 	7,			//Bellows   
-	107,			//Fountain  
+	7,			//Fountain  
 	109,			//Surf's up 
-	50,			//Stream    
-	104,			//Waterfall
-	133,			//Wind    ???  
+	107,			//Stream    
+	133,			//Waterfall
+	129,			//Wind    ???  
 	50,			//Rainman  ??? 
 	114,			//Swamp 1   
 	110,			//Swamp 2   
@@ -79,21 +79,21 @@ int bgconv[] = {
 	112,			//Swamp 4   
 	113,			//Swamp 5   
 	132,			//Waterwheel
-	135,			//Eruption ???
+	39,			//Eruption ???
 	22,			//Crickets  
 	116,			//Thunder  
 	128,			//Whirlpool 
 	64,			//Heal      
 	20,			//Spell     
 	67,			//Spell
-	135,			//Wizard   ??? 
+	130,			//Wizard   ??? 
 	57,			//General   
 	48,			//Fizzle    
 	84,			//New Spell 
 	82,			//MPdrain   
 	83,			//MPgain    
-	0,			//Footstep L
-	0,			//Footstep R
+	134,			//Footstep L
+	134,			//Footstep R
 	108,			//Success   
 	43,			//Failure   
 	55,			//Moongate  
@@ -111,14 +111,14 @@ int bgconv[] = {
 	135,			//MISSING
 	36,			//Drink ???     
 	38,			//Eat   ??? 
-	135,			//Whip ptb  
-	32,			//Doorslam  
+	127,			//Whip ptb  
+	31,			//Doorslam  
 	89,			//Portcullis
 	88,			//Drawbridge
 	80,			//Closed
 	100,			//SpinnWheel
-	135,			//Minning   ???
-	19,			//Minning   ???
+	79,			//Minning   ???
+	80,			//Minning   ???
 	9,			//Shutters 
 	135,			//1armbandit ???
 	73,			//Loom      
@@ -129,8 +129,8 @@ int bgconv[] = {
 	62,			//Yo yo LA ??? 
 	131,			//Wind Spell
 	90,			//Protect   
-	135,			//PoisonSpel ???
-	91,			//IgniteSpel
+	86,			//PoisonSpel ???
+	66,			//IgniteSpel
 	21,			//CradleRock
 	5,			//Beeezzzzz 
 	74,			//Machines  
