@@ -2195,7 +2195,10 @@ void Game_window::double_clicked
 	if (obj)
 		{
 		if (combat && !gump && obj != main_actor &&
-						obj->get_party_id() < 0)
+					// But don't attack party members.
+						obj->get_party_id() < 0 &&
+					// Or bodies.
+						!Is_body(obj->get_shapenum()))
 			{		// In combat mode.
 					// Want everyone to be in combat.
 			combat = 0;
