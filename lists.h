@@ -127,19 +127,4 @@ public:
 		}
 	};
 
-/*
- *	A stack.
- */
-class Stack : public Slist
-	{
-public:
-	Stack() : Slist() {  }
-	void push(void *e)
-		{ insert(e); }
-	void *pop()
-		{ return remove_first(); }
-	void *get_tos()			// Get top-of-stack.
-		{ return get_first(); }
-	};
-
 #endif
