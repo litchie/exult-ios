@@ -32,6 +32,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::size_t;
 using std::snprintf;
 
+#define TWO_HANDED_BROWN_SHAPE	48
+#define TWO_HANDED_BROWN_FRAME	0
+#define TWO_FINGER_BROWN_SHAPE	48
+#define TWO_FINGER_BROWN_FRAME	1
 
 /*
  *	Statics:
@@ -262,7 +266,25 @@ void Actor_gump::paint
 		if (obj)//&& !obj->get_cx() && !obj->get_cy())
 			set_to_spot(obj, i);
 	}
+
 	Gump::paint(gwin);	// Paint gump & objects.
+
+	// Paint over blue lines for 2 handed
+	Actor *actor = container->as_actor();
+	if (actor) {
+		if (actor->is_two_fingered()) {
+			int sx = x + 36,	// Note this is the right finger slot shifted slightly
+				sy = y + 70;
+			ShapeID sid(TWO_FINGER_BROWN_SHAPE, TWO_FINGER_BROWN_FRAME, SF_GUMPS_VGA);
+			sid.paint_shape (sx,sy);
+		}
+		if (actor->is_two_handed()) {
+			int sx = x + 36,	// Note this is the right hand slot shifted slightly
+				sy = y + 55;
+			ShapeID sid(TWO_HANDED_BROWN_SHAPE, TWO_HANDED_BROWN_FRAME, SF_GUMPS_VGA);
+			sid.paint_shape (sx,sy);
+		}
+	}
 					// Paint buttons.
 	if (heart_button) heart_button->paint(gwin);
 	if (disk_button) disk_button->paint(gwin);

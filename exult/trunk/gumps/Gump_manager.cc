@@ -206,7 +206,6 @@ void Gump_manager::add_gump
 	)
 {
 	Game_window *gwin = Game_window::get_instance();
-	Main_actor *main_actor = gwin->get_main_actor();
 	int paperdoll = 0;
 	
 	if (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP
@@ -218,8 +217,6 @@ void Gump_manager::add_gump
 	if (shapenum == 123 && (Game::get_game_type() == SERPENT_ISLE ||
 		(sman->can_use_paperdolls() && sman->get_bg_paperdolls())))
 		paperdoll=2;
-	else if (paperdoll && obj == main_actor)
-		shapenum += main_actor->get_type_flag(Actor::tf_sex);
 	
 	Gump *dragged = gwin->get_dragging_gump();
 	
@@ -264,7 +261,7 @@ void Gump_manager::add_gump
 	Actor *npc = obj->as_actor();
 	if (npc && paperdoll == 2)
 		new_gump = new Paperdoll_gump(npc, x, y, npc->get_npc_num());
-	else if (npc && paperdoll)
+	else if (npc && paperdoll) 
 		new_gump = new Actor_gump(npc, x, y, shapenum);
 	else if (shapenum == game->get_shape("gumps/statsdisplay"))
 		new_gump = new Stats_gump((Container_game_object *) obj, x, y);
