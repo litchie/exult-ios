@@ -47,10 +47,18 @@ static	string	encode_entity(string &s)
 	return ret;
 }
 
-void	xmldump(string &s,XMLnode *x,int depth)
+static	string	indent(int depth)
 {
+	string s("");
+
 	for(int i=0;i<depth;i++)
 		s+=' ';
+	return s;
+}
+
+void	xmldump(string &s,XMLnode *x,int depth)
+{
+	s+=indent(depth);
 	
 	s+="<";
 	s+=x->entity.id;
@@ -60,22 +68,22 @@ void	xmldump(string &s,XMLnode *x,int depth)
 		it!=x->nodelist.end();
 		++it)
 		{
-		for(int i=0;i<depth;i++)
-			s+=' ';
 		xmldump(s,it,depth+1);
 		}
-	for(int i=0;i<depth+1;i++)
-		s+=' ';
-	s+=encode_entity(x->entity.content);
+
+	if(x->entity.content.length())
+		{
+		s+=indent(depth);
+		s+=encode_entity(x->entity.content);
+		}
 	if(x->entity.id[0]=='?')
 		{
 		return;
 		}
 	if(x->entity.content.length())
 		s+="\n";
-	for(int i=0;i<=depth;i++)
-		s+=' ';
-	
+
+	s+=indent(depth);
 	s+="</";
 	s+=x->entity.id;
 	s+=">\n";
