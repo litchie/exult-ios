@@ -533,15 +533,20 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	if (game)			// Game given?
 		{
 		string d("config/disk/game/");
-		d += game; d += "/path";
-		config->value(d.c_str(), dirstr, "");
+		d += game; 
+		string gd = d + "/path";
+		config->value(gd.c_str(), dirstr, "");
 		if (dirstr == "")
 			{
 			cerr << "Game '" << game << 
 				"' path not found in config. file" << endl;
 			exit(1);
 			}
-		set_game_path(dirstr.c_str());
+		string pd = d + "/patch";	// Look up patch dir. too.
+		string ptchstr;
+		config->value(pd.c_str(), ptchstr, "");
+		set_game_path(dirstr.c_str(), ptchstr == "" ? 0 
+						: ptchstr.c_str());
 		}
 	string iedit;			// Get image-editor command.
 	config->value("config/estudio/image_editor", iedit, "gimp-remote -n");
@@ -875,8 +880,10 @@ void ExultStudio::choose_game_path()
 
 
 
-
-void ExultStudio::set_game_path(const char *gamepath)
+/*
+ *	Note:	Patchpath may be NULL,in which case gamepath/patch is used.
+ */
+void ExultStudio::set_game_path(const char *gamepath, const char *patchpath)
 {
 					// Finish up external edits.
 	Shape_chooser::clear_editing_files();
@@ -887,7 +894,8 @@ void ExultStudio::set_game_path(const char *gamepath)
 					// Set up path to static.
 	static_path = g_strdup_printf("%s/static", gamepath);
 	add_system_path("<STATIC>", static_path);
-	char *patch_path = g_strdup_printf("%s/patch", gamepath);
+	char *patch_path = patchpath ? g_strdup(patchpath) :
+					g_strdup_printf("%s/patch", gamepath);
 	add_system_path("<PATCH>", patch_path);
 	if (!U7exists(patch_path))	// Create patch if not there.
 		U7mkdir(patch_path, 0755);
