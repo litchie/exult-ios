@@ -151,7 +151,8 @@ bool	Configuration::read_config_file(const char *n)
 	FILE *fp;
 	try {
 	        fp=U7open(filename.c_str(),"r");
-	} catch (...) {
+	}
+	catch(exult_exception &e) {
 	        // configuration file not found
 	        return false;
 	}

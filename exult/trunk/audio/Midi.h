@@ -79,7 +79,7 @@ public:
 	int	get_effects_conversion() { return effects_conversion; }
 	
 	inline bool	is_track_playing(int num) { return current_track==num && midi_device->is_playing(); }
-	inline int	get_current_track() { return midi_device->is_playing()?current_track:-1; }
+	inline int	get_current_track() { return (midi_device!=0)&&midi_device->is_playing()?current_track:-1; }
 	inline int	is_repeating() { return repeating; }
 	
 private:
