@@ -202,38 +202,38 @@ int Barge_object::okay_to_rotate
 	)
 	{
 	int lift = get_lift();
-	if (lift >= 11)			// Flying carpet?
-		return 1;
+					// Special case for carpet.
+	int move_type = (lift >= 11) ? MOVE_FLY : MOVE_ALL_TERRAIN;
 					// Get footprint in tiles.
 	Rectangle foot = get_tile_footprint();
 	int xts = get_xtiles(), yts = get_ytiles();
 					// Get where new footprint will be.
 	Rectangle newfoot(pos.tx - yts + 1, pos.ty - xts + 1, yts, xts);
-	int new_lift;			// Ignored.
+	int new_lift;
 	if (newfoot.y < foot.y)		// Got a piece above the old one?
 					// Check area.  (No dropping allowed.)
 		if (Chunk_object_list::is_blocked(4, lift,
 			newfoot.x, newfoot.y, newfoot.w, foot.y - newfoot.y,
-						new_lift, MOVE_ALL_TERRAIN, 0))
+				new_lift, move_type, 0) || new_lift != lift)
 			return 0;
 	if (foot.y + foot.h < newfoot.y + newfoot.h)
 					// A piece below old one.
 		if (Chunk_object_list::is_blocked(4, lift,
 			newfoot.x, foot.y + foot.h, newfoot.w, 
-				newfoot.y + newfoot.h - (foot.y + foot.h),
-						new_lift, MOVE_ALL_TERRAIN, 0))
+			newfoot.y + newfoot.h - (foot.y + foot.h),
+				new_lift, move_type, 0) || new_lift != lift)
 			return 0;
 	if (newfoot.x < foot.x)		// Piece to the left?
 		if (Chunk_object_list::is_blocked(4, lift,
 			newfoot.x, newfoot.y, foot.x - newfoot.x, newfoot.h,
-						new_lift, MOVE_ALL_TERRAIN, 0))
+				new_lift, move_type, 0) || new_lift != lift)
 			return 0;
 	if (foot.x + foot.w < newfoot.x + newfoot.w)
 					// Piece to the right.
 		if (Chunk_object_list::is_blocked(4, lift,
 			foot.x + foot.w, newfoot.y,
 			newfoot.x + newfoot.w - (foot.x + foot.w), newfoot.h,
-						new_lift, MOVE_ALL_TERRAIN, 0))
+				new_lift, move_type, 0) || new_lift != lift)
 			return 0;
 	return 1;
 	}
@@ -536,8 +536,11 @@ void Barge_object::handle_event
 	Game_window *gwin = Game_window::get_game_window();
 	if (!path || !frame_time || gwin->get_moving_barge() != this)
 		return;			// We shouldn't be doing anything.
-	Tile_coord tile;		// Get spot & walk there.
+	Tile_coord tile;		// Get spot & walk there.	
+					// Take two steps for speed.
 	if (!path->GetNextStep(tile) || !step(tile))
+		frame_time = 0;
+	else if (!path->GetNextStep(tile) || !step(tile))
 		frame_time = 0;
 	else
 		gwin->get_tqueue()->add(curtime + frame_time, this, udata);
@@ -660,15 +663,13 @@ int Barge_object::step
 	{
 	Tile_coord cur = get_abs_tile_coord();
 					// Blocked? (Assume ht.=4, for now.)
-	if (cur.tz < 11) 		// But don't check flying carpet.
-		{
-		int move_type;
-		if (boat) move_type = MOVE_SWIM;
-		else move_type = MOVE_WALK;
-        	if (Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
-						4, cur, t, move_type))
-			return (0);	// Done.
-		}
+	int move_type;
+	if (boat) move_type = MOVE_SWIM;
+	else if (cur.tz >= 11) move_type = MOVE_FLY;
+	else move_type = MOVE_WALK;
+       	if (Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
+						4, cur, t, move_type, 0))
+		return (0);		// Done.
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.
 	Game_window *gwin = Game_window::get_game_window();
 					// Near an egg?
