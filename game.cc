@@ -25,7 +25,7 @@
 Game *game = 0;
 Exult_Game game_type = BLACK_GATE;
 
-Game::Game()
+Game::Game() : menushapes(MAINSHP_FLX)
 {
 	gwin = Game_window::get_game_window();
 	win = gwin->get_win();
@@ -132,7 +132,7 @@ int Game::get_shape(const char *name)
 
 void Game::add_resource(const char *name, const char *str, int num) 
 {
-	resources[name].str = str;
+	resources[name].str = (char *)str;
 	resources[name].num = num;
 }
 
@@ -141,7 +141,7 @@ str_int_pair Game::get_resource(const char *name)
 	return resources[name];
 }
 
-void Game::show_text_line(int x, int y, const char *s)
+int Game::show_text_line(int left, int right, int y, const char *s)
 {
 	// FIXME:
 	//The texts used in the main menu contains backslashed sequences that
@@ -149,13 +149,63 @@ void Game::show_text_line(int x, int y, const char *s)
 	// \Px   include picture number x (frame of MAINSHP.FLX shape 14h)
 	// \C    center line
 	// \L    left-aligned line
+	// \R	 right-aligned line
 
-	char *ptr = s;
-	int xpos = x;
+	char *txt = new char[strlen(s)+1];
+	char *ptr = (char *)s;
+	char *txtptr = txt;
+	int ypos = y;
+	int vspace = 2; // 2 extra pixels between lines
+	// Align text to the left by default
+	int align = -1;
+	int xpos = left;
+	int center = (right+left)/2;
+	bool add_line = true;
 	
-	if(!strncmp(s,"\\C",2)) {
-		ptr += 2;
+	while(*ptr) {
+		if(!strncmp(ptr,"\\P",2)) {
+			int pix = *(ptr+2)-'0';
+			ptr +=3;
+			Shape_frame *shape = menushapes.get_shape(0x14,pix);
+			gwin->paint_shape(center-shape->get_width()/2,
+					  ypos, shape);
+			ypos += shape->get_height()+vspace;
+		} else if(!strncmp(ptr,"\\C",2)) {
+			ptr += 2;
+			align = 0;
+		} else if(!strncmp(ptr,"\\L",2)) {
+			ptr += 2;
+			align = 1;
+		} else if(!strncmp(ptr,"\\R",2)) {
+			ptr += 2;
+			align = -1;
+		} else if(*ptr=='|' || *(ptr+1)==0) {
+			if(*(ptr+1)==0)
+				if(*ptr!='|') {
+					*txtptr++ = *ptr;
+					add_line = true;
+				} else
+					add_line = false;
+			*txtptr = 0;
+			
+			if(align<0)
+				xpos = left;
+			else if(align==0)
+				xpos = center-gwin->get_text_width(MAINSHP_FONT1, txt)/2;
+			else
+				xpos = right-gwin->get_text_width(MAINSHP_FONT1, txt);
+			gwin->paint_text(MAINSHP_FONT1,txt,xpos,ypos);
+			ypos += gwin->get_text_height(MAINSHP_FONT1)+vspace;
+			txtptr = txt;	// Go to beginning of string
+			++ptr;
+		} else
+			*txtptr++ = *ptr++;
 	}
+	
+	delete [] txt;
+	if(add_line)
+		ypos += gwin->get_text_height(MAINSHP_FONT1);
+	return ypos;
 }
 
 vector<char *> *Game::load_text(const char *archive, int index)
@@ -172,13 +222,14 @@ vector<char *> *Game::load_text(const char *archive, int index)
 	while(ptr<end) {
 		char *start = ptr;
 		ptr = strchr(ptr, '\r');
-		*ptr = 0;
-		text->push_back(strdup(start));
-		ptr += 2;
+		if(ptr) {
+			*ptr = 0;
+			text->push_back(strdup(start));
+			ptr += 2;
+		} else
+			break;
 	}
 	delete [] txt;
-	for(int i=0; i<text->size(); i++)
-		printf("%d - %s\n", i, (*text)[i]);
 	return text;
 }
 
@@ -189,13 +240,43 @@ void Game::destroy_text(vector<char *> *text)
 	delete text;
 }
 
+void Game::scroll_text(vector<char *> *text)
+{
+	int endy = topy+200;
+	int starty = endy;
+	int startline = 0;
+	unsigned int maxlines = text->size();
+	bool looping = true;
+	while(looping) {
+		int ypos = starty;
+		int curline = startline;
+		clear_screen();
+		do {
+			if(curline==maxlines)
+				break;
+			ypos = show_text_line(topx, topx+320, ypos, (*text)[curline++]);
+			if(ypos<topy) {		// If this line doesn't appear, don't show it next time
+				++startline;
+				starty = ypos;
+				if(startline>maxlines) {
+					looping = false;
+					break;
+				}
+			}
+		} while (ypos<endy);
+		pal.apply();
+		looping = !wait_delay(70);
+		if(!looping)
+			pal.fade_out(30);
+		starty -= 2;
+	}
+}
+
 void Game::show_menu()
 	{
-		Vga_file menushapes(MAINSHP_FLX);
-
 		int menuy = topy+110;
 
-		top_menu(menushapes);
+		top_menu();
 		
 		int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12 };
 		int num_choices = sizeof(menuchoices)/sizeof(int);
@@ -238,8 +319,9 @@ void Game::show_menu()
 			bool created = false;
 			switch(selected) {
 			case 0: // Intro
+				pal.fade_out(30);
 				play_intro();
-				top_menu(menushapes);
+				top_menu();
 				break;
 			case 2: // Journey Onwards
 				created = gwin->init_gamedat(false);
@@ -254,16 +336,19 @@ void Game::show_menu()
 					selected = 2; // This will start the game
 				break;
 			case 3: // Credits
+				pal.fade_out(30);
 				show_credits();
-				top_menu(menushapes);
+				top_menu();
 				break;
 			case 4: // Quotes
+				pal.fade_out(30);
 				show_quotes();
-				top_menu(menushapes);
+				top_menu();
 				break;
 			case 5: // End Game
+				pal.fade_out(30);
 				end_game(true);
-				top_menu(menushapes);
+				top_menu();
 				break;
 			default:
 				break;
