@@ -774,7 +774,8 @@ void Game_object::say
 {
 	if (from > to) return;
 	int offset = rand()%(to - from + 1);
-	say(item_names[from + offset]);
+	if (from + offset < num_item_names)
+		say(item_names[from + offset]);
 }
 
 /*
