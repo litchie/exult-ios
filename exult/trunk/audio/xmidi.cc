@@ -40,7 +40,6 @@ using std::endl;
 using std::memcmp;
 using std::memcpy;
 using std::memset;
-using std::printf;
 using std::size_t;
 using std::string;
 
@@ -821,7 +820,7 @@ struct uint64 {
 	}
 
 	void printx() {
-		if (high) printf ("%X%08X", high, low);
+		if (high) std::printf ("%X%08X", high, low);
 		else printf ("%X", low);
 	}
 };
