@@ -36,6 +36,7 @@ class GameplayOptions_gump : public Modal_gump
 	int doubleclick;
 	int cheats;
 	int paperdolls;
+	int text_bg;
 
  public:
 	GameplayOptions_gump();

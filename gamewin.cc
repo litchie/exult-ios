@@ -183,7 +183,7 @@ Game_window::Game_window
 	    teleported(false), in_dungeon(0), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
-	    chunk_terrains(0), num_chunk_terrains(0),
+            text_bg(false), chunk_terrains(0), num_chunk_terrains(0),
 	    palette(-1), brightness(100), user_brightness(100), 
 	    faded_out(false), fades_enabled(true),
 	    special_light(0), last_restore_hour(6),
@@ -206,6 +206,9 @@ Game_window::Game_window
 	set_window_size(width, height, scale, scaler);
 	pal = new Palette();
 	string str;
+	config->value("config/gameplay/textbackground", str, "no");
+	if (str == "yes")
+		text_bg = true;
 	config->value("config/gameplay/mouse3rd", str, "no");
 	if (str == "yes")
 		mouse3rd = true;
@@ -3281,8 +3284,10 @@ void Game_window::setup_game
  *	Text-drawing methods:
  */
 int Game_window::paint_text_box(int fontnum, const char *text, 
-		int x, int y, int w, int h, int vert_lead, int pbreak)
-	{ return fonts->paint_text_box(win->get_ib8(),
+		int x, int y, int w, int h, int vert_lead, int pbreak, bool shaded)
+	{ if(shaded)
+		win->fill_translucent8(0, w, h, x, y, xforms[2]);
+	  return fonts->paint_text_box(win->get_ib8(),
 			fontnum, text, x, y, w, h, vert_lead, pbreak); }
 int Game_window::paint_text(int fontnum, const char *text, int xoff, int yoff)
 	{ return fonts->paint_text(win->get_ib8(), fontnum, text,
