@@ -136,8 +136,14 @@ void Flex::write_header
 bool Flex::is_flex(std::istream& in)
 {
 	long pos = in.tellg();		// Fill to data (past table at 0x80).
-	in.seekg(0x50);
-	uint32 magic = Read4(in);
+	in.seekg(0, ios::end);		// Check length.
+	long len = in.tellg() - pos;
+	uint32 magic = 0;
+	if (len >= 0x80)		// Has to be at least this long.
+		{
+		in.seekg(0x50);
+		magic = Read4(in);
+		}
 	in.seekg(pos);
 
 	// Is a flex

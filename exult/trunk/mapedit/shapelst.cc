@@ -1799,7 +1799,7 @@ int Shape_chooser::get_count
 	(
 	)
 	{
-	return group ? group->size() : num_shapes;
+	return group ? group->size() : ifile->get_num_shapes();
 	}
 
 /*
