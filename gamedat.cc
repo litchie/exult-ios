@@ -87,5 +87,3 @@ void Game_window::write_gamedat
 	delete [] finfo;
 	}
 
-	
-
