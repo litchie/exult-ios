@@ -37,6 +37,7 @@
 #include "ucmachine.h"
 #include "ucsched.h"
 #include "ucscriptop.h"
+#include "monstinf.h"
 
 using std::cout;
 using std::endl;
@@ -384,12 +385,13 @@ void Pace_schedule::now_what
 			return;		// We no longer exist.
 	which = !which;			// Flip direction.
 	int delay = 750;		// Delay .75 secs.
-	if (blocked.tx != -1 &&		// Blocked?
-	    !npc->is_monster())
+	if (blocked.tx != -1)		// Blocked?
 		{
 		Game_object *obj = Game_object::find_blocking(blocked);
 		blocked.tx = -1;
-		if (obj && obj->as_actor() != 0)
+		Monster_info *minfo = npc->get_info().get_monster_info();
+		if (obj && obj->as_actor() != 0 &&
+		    (!minfo || !minfo->cant_yell()))
 			{
 			npc->say(first_move_aside, last_move_aside);
 			delay = 1200;	// Wait longer.
