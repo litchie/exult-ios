@@ -1,7 +1,11 @@
 /* 
- * SHP loading file filter for The GIMP version 1.2
+ * SHP loading file filter for The GIMP version 1.2.x and 1.3.11+
  *
  * (C) 2000-2001 Tristan Tarrant
+ * (C) 2001-2004 Willem Jan Palenstijn
+ *
+ * You can find the most recent version of this file in the Exult sources,
+ * available from http://exult.sf.net/
  */
 
 #include "config.h"
