@@ -101,7 +101,7 @@ U7FileManager   *U7FileManager::self=0;
 U7FileManager::U7FileManager()
 {
 	if(self) {
-		throw (exclusive());
+		throw exclusive();
 		std::exit(-1);
 	}
 	else
