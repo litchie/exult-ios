@@ -1,3 +1,6 @@
+2001-05-11  Dominik Reichardt <gigdr@tesionmail.de>
+	* tools/expack.txt: added small documentation for expack by Marc Winterrowd
+
 2001-05-11  Dancer Vesperman <dancer@users.sourceforge.net>
 	* server.cc: std::string, using std::cout/endl/cerr
 	* cheat.cc: std::string
