@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="18 June 2002(GMT)">
+<readme title="Exult" changed="24 July 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="24072002">
+			<header>- 24 July 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> Walk_after_teleport removed (it is always enabled now)</li>
+				<li><ref1 target="command_line"/> added -c and --nomenu, fixed --buildmap.</li>
+				<li><ref1 target="movement"/> Keyboard walking implemented.</li>
+				<li><ref1 target="exult_keys"/> walking keys added.</li>
+				<li><ref1 target="exult_cheats"/> scroll the world now with Alt-arrow keys.</li>
+				<li><ref1 target="gameplay_gump"/> Walk_after_teleport removed here as well</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="18062002">
 			<header>- 18 June 2002</header>
 			<body>
@@ -12,33 +25,6 @@
 				<li><ref1 target="linux_alsa"/> timidity.cfg needs to be where the exult executable is.</li>
 				<li><ref1 target="exult_keys"/> <key>Ctrl+c</key> is now used for "copy" and 
 					<key>Insert</key> for create object.</li>		
-				</ul>
-			</body>
-		</sub>
-		<sub name="05062002">
-			<header>- 05 June 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="movement"/> no keyboard movement.</li>
-				<li><ref1 target="exult_keys"/> added cut/paste selection keys..</li>		
-				</ul>
-			</body>
-		</sub>
-		<sub name="22052002">
-			<header>- 22 May 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="linux_alsa"/> after some discussion we rephrased this a bit.</li>		
-				</ul>
-			</body>
-		</sub>
-		<sub name="19052002">
-			<header>- 19 May 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="wave_sfx"/> added selection move keys.</li>
-				<li><ref1 target="linux_alsa"/> we advice using ALSA instead of OSS.</li>
-				<li><ref1 target="exult_cheats"/> added selection move keys.</li>			
 				</ul>
 			</body>
 		</sub>
@@ -318,11 +304,6 @@
 						<comment>**yes enables SI style paperdolls in BG.
 						</comment></line>
 					<line>&lt;/bg_paperdolls&gt;</line>
-					<line>&lt;walk_after_teleport&gt;</line>
-					<line>no
-						<comment>**when set to no you stop after walking onto a teleporter.
-						</comment></line>
-					<line>&lt;/walk_after_teleport&gt;</line>
 					<line>&lt;combat&gt;</line>
 					<line>&lt;difficulty&gt;</line>
 					<line>0
@@ -547,23 +528,27 @@
 						Shows all the command line parameters in stderr (stderr.txt on Windows systems)</li>
 					<li>-v or --version<br/>
 						Shows version information in stderr</li>
+					<li>-c configfile<br/>
+						Specify alternate config file (relative or absolute paths work)</li>
 					<li>--bg<br/>
 						Starts the game with the Black Gate menu</li>
 					<li>--si<br/>
 						Starts the game with the Serpent Isle menu</li>
-					<li>--nocrc<br/>
-						Recently we added a crc check that Exult doesn't start when the
-						exult*.flx files in the data dir aren't the same it got compiled with.
-						This parameter lets the game start nethertheless. Don't try this if you 
-						don't know what you are doing.</li>
+					<li>--nomenu<br/>
+						Skips game menu.</li>
 					<li>--buildmap x<br/>
 						x = 0 shows all roofs, x = 2 pops them all.<br/>
-						You have to specify the game first (Example: exult --bg buildmap 0).<br/>
+						You have to specify the game first (Example: exult --bg --buildmap 0).<br/>
 						Builds the map of the game specified.The map is <strong>huge</strong> and in pcx 
 						format, you will need a lot of ram to even look at this map once it is build 
 						(and even that requires a lot of patience)<br/>
 						<Exult/> is required to be run in windowed mode and you get the best map if you 
 						started a new game before you build the map.</li>
+					<li>--nocrc<br/>
+						Recently we added a crc check that Exult doesn't start when the
+						exult*.flx files in the data dir aren't the same it got compiled with.
+						This parameter lets the game start nethertheless. Don't try this if you 
+						don't know what you are doing.</li>
 					<li>--game gamename<br/>
 						Unused yet. Loads a game specified in exult.cfg when there are other games made
 						with <Studio/>.</li>
@@ -852,8 +837,9 @@
 					mouse button to have the functionality of a right mouse button.
 				</para>
 				<para>
-					Currently we are not supporting moving the Avatar/party with the keyboard 
-					arrows but Nadir is planning to implement it after the 1.0 release.
+					Nadir implemented keyboard walking in the 1.1 (unstable) branch of our source. 
+					The Avatar can be moved with the arrow keys (or the keypad keys for more precise
+					movement). When you move while holding shift the Avatar runs.
 				</para>
   			</body>
 		</sub>
@@ -875,11 +861,37 @@
 				<para>
 					During the game press <key>h</key> to see a help
 					screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen
-					shows the correct key combination for MacOS).
+					shows the correct key combination for MacOS). <key>KP</key> means keypad.
 				</para>
 				<keytable title="Default keyboard commands">
-					<keydesc name="+/-">Change brightness (you may have to use the keypad)</keydesc>
+					<keydesc name="KP+/-">Change brightness</keydesc>
+					<keydesc name="Alt-KP+/-">Change resolution</keydesc>
 					<keydesc name="F4">Toggle fullscreen</keydesc>
+					<keydesc name="right">walk east</keydesc>
+					<keydesc name="left">walk west</keydesc>
+					<keydesc name="up">walk north</keydesc>
+					<keydesc name="down">walk south</keydesc>
+					<keydesc name="KP1">walk southwest</keydesc>
+					<keydesc name="KP2">walk south</keydesc>
+					<keydesc name="KP3">walk southeast</keydesc>
+					<keydesc name="KP4">walk west</keydesc>
+					<keydesc name="KP5">recenter map</keydesc>
+					<keydesc name="KP6">walk east</keydesc>
+					<keydesc name="KP7">walk northwest</keydesc>
+					<keydesc name="KP8">walk north</keydesc>
+					<keydesc name="KP9">walk northeast</keydesc>
+					<keydesc name="Shift-right">run east</keydesc>
+					<keydesc name="Shift-left">run west</keydesc>
+					<keydesc name="Shift-up">run north</keydesc>
+					<keydesc name="Shift-down">run south</keydesc>
+					<keydesc name="Shift-KP1">run southwest</keydesc>
+					<keydesc name="Shift-KP2">run south</keydesc>
+					<keydesc name="Shift-KP3">run southeast</keydesc>
+					<keydesc name="Shift-KP4">run west</keydesc>
+					<keydesc name="Shift-KP6">run east</keydesc>
+					<keydesc name="Shift-KP7">run northwest</keydesc>
+					<keydesc name="Shift-KP8">run north</keydesc>
+					<keydesc name="Shift-KP9">run northeast</keydesc>
 					<keydesc name="Ctrl-x">Cut selected object (when in Map Edit mode)</keydesc>
 					<keydesc name="Ctrl-c">Copy selected object (when in Map Edit mode)</keydesc>
 					<keydesc name="Ctrl-v">Paste selected object (when in Map Edit mode)</keydesc>
@@ -930,12 +942,12 @@
 			<body>
 				<para>
 					Press <key>ctrl-h</key> during the game to see a help screen with all 
-					the cheat keys.
+					the cheat keys. <key>KP</key> means keypad.
 				</para>
 				<keytable title="Cheat commands">
 					<keydesc name="Alt-+/-">Switch resolution( you may have to use the keypad)</keydesc>
-					<keydesc name="Arrow keys">Scroll map</keydesc>
-					<keydesc name="Home">Recenter map</keydesc>
+					<keydesc name="Alt-Arrow keys">Scroll map</keydesc>
+					<keydesc name="home">Recenter map</keydesc>
 					<keydesc name="Ctrl-Arrow keys">move selection (x,y coordinates)</keydesc>
 					<keydesc name="Ctrl-Page keys">move selection (z coordinates)</keydesc>
 					<keydesc name="F2">Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options</keydesc>
@@ -1060,9 +1072,6 @@
 					<li><strong>Paperdolls</strong><br/>
 						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls 
 						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
-					<li><strong>Walk after teleport</strong><br/>
-						only available in <strong>Serpent Isle</strong>. The normal behavior is that 
-						you stop walking after you have been teleported. This enables walking on.</li>
 					<li><strong>Fast Mouse</strong><br/>
 						makes the mouse cursor move faster in fullscreen modes. Enable or disable it.</li>
 					<li><strong>Use middle mouse button</strong><br/>

@@ -1,14 +1,12 @@
 Exult Documentation
-last changed: 18 June 2002(GMT)
+last changed: 24 July 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 18 June 2002
-0.2. - 05 June 2002
-0.3. - 22 May 2002
-0.4. - 19 May 2002
+0.1. - 24 July 2002
+0.2. - 18 June 2002
 
 1. Introduction
 1.1. What is Exult?
@@ -59,30 +57,22 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 18 June 2002
+0.1. - 24 July 2002
+* 2.2. Settings in exult.cfg Walk_after_teleport removed (it is always enabled now)
+* 2.4. Command line options added -c and --nomenu, fixed --buildmap.
+* 5.1. Movement Keyboard walking implemented.
+* 5.2. Keyboard commands walking keys added.
+* 5.3. Cheat keys scroll the world now with Alt-arrow keys.
+* 6.5. Gameplay Options Walk_after_teleport removed here as well
+
+
+
+0.2. - 18 June 2002
 * 2.2. Settings in exult.cfg added disablepause for digital music.
 * 3.1. Music You can play Music either through MIDI or Digital Music.
 * 3.4. Digital Music Digital Music now works and is documented.
 * 3.8. Linux and Audio timidity.cfg needs to be where the exult executable is.
 * 5.2. Keyboard commands 'Ctrl+c' is now used for "copy" and 'Insert' for create object.
-
-
-
-0.2. - 05 June 2002
-* 5.1. Movement no keyboard movement.
-* 5.2. Keyboard commands added cut/paste selection keys..
-
-
-
-0.3. - 22 May 2002
-* 3.8. Linux and Audio after some discussion we rephrased this a bit.
-
-
-
-0.4. - 19 May 2002
-* 3.5. Digital Wave Sound Effects added selection move keys.
-* 3.8. Linux and Audio we advice using ALSA instead of OSS.
-* 5.3. Cheat keys added selection move keys.
 
 
 
@@ -269,11 +259,6 @@ no
 						**yes enables SI style paperdolls in BG.
 						
 </bg_paperdolls>
-<walk_after_teleport>
-no
-						**when set to no you stop after walking onto a teleporter.
-						
-</walk_after_teleport>
 <combat>
 <difficulty>
 0
@@ -453,10 +438,12 @@ Note: Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\). So
 Exult offers some "hidden" command line options:
 * -h or --help Shows all the command line parameters in stderr (stderr.txt on Windows systems)
 * -v or --version Shows version information in stderr
+* -c configfile Specify alternate config file (relative or absolute paths work)
 * --bg Starts the game with the Black Gate menu
 * --si Starts the game with the Serpent Isle menu
+* --nomenu Skips game menu.
+* --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg --buildmap 0). Builds the map of the game specified.The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map.
 * --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data dir aren't the same it got compiled with. This parameter lets the game start nethertheless. Don't try this if you don't know what you are doing.
-* --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg buildmap 0). Builds the map of the game specified.The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map.
 * --game gamename Unused yet. Loads a game specified in exult.cfg when there are other games made with Exult Studio.
 
 
@@ -564,17 +551,43 @@ More information on the excellent scaling engines by Derek Liauw is available at
 * Double-click on doors, shutters with left button to open or close them.
 
 Note that on MacOS you have to hold down the 'Cmd' key and the mouse button to have the functionality of a right mouse button.
-Currently we are not supporting moving the Avatar/party with the keyboard arrows but Nadir is planning to implement it after the 1.0 release.
+Nadir implemented keyboard walking in the 1.1 (unstable) branch of our source. The Avatar can be moved with the arrow keys (or the keypad keys for more precise movement). When you move while holding shift the Avatar runs.
 
 
 5.2. Keyboard commands
 Starting with V0.91 Alpha2 all key commands can be changed. However, there is a default setting which closely follows the original with the addition of some improvements.
 To change your key bindings first edit the file defaultkeys.txt in your Exult directory, change the bindings and save the file (e.g. as my_keys.txt). Now you have to change exult.cfg to use that file. You can even choose if you want to change your key bindings for BG or SI. See the keys settings at 2.2.. Change (default) to my_keys.txt.
-During the game press 'h' to see a help screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen shows the correct key combination for MacOS).
+During the game press 'h' to see a help screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen shows the correct key combination for MacOS). 'KP' means keypad.
 
 Default keyboard commands
-+/- : Change brightness (you may have to use the keypad)
+KP+/- : Change brightness
+Alt-KP+/- : Change resolution
 F4 : Toggle fullscreen
+right : walk east
+left : walk west
+up : walk north
+down : walk south
+KP1 : walk southwest
+KP2 : walk south
+KP3 : walk southeast
+KP4 : walk west
+KP5 : recenter map
+KP6 : walk east
+KP7 : walk northwest
+KP8 : walk north
+KP9 : walk northeast
+Shift-right : run east
+Shift-left : run west
+Shift-up : run north
+Shift-down : run south
+Shift-KP1 : run southwest
+Shift-KP2 : run south
+Shift-KP3 : run southeast
+Shift-KP4 : run west
+Shift-KP6 : run east
+Shift-KP7 : run northwest
+Shift-KP8 : run north
+Shift-KP9 : run northeast
 Ctrl-x : Cut selected object (when in Map Edit mode)
 Ctrl-c : Copy selected object (when in Map Edit mode)
 Ctrl-v : Paste selected object (when in Map Edit mode)
@@ -615,12 +628,12 @@ In conversations you now have the ability not just click on the answer with the 
 
 
 5.3. Cheat keys
-Press 'ctrl-h' during the game to see a help screen with all the cheat keys.
+Press 'ctrl-h' during the game to see a help screen with all the cheat keys. 'KP' means keypad.
 
 Cheat commands
 Alt-+/- : Switch resolution( you may have to use the keypad)
-Arrow keys : Scroll map
-Home : Recenter map
+Alt-Arrow keys : Scroll map
+home : Recenter map
 Ctrl-Arrow keys : move selection (x,y coordinates)
 Ctrl-Page keys : move selection (z coordinates)
 F2 : Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options
@@ -695,7 +708,6 @@ Look at 3. Audio to see explanation on the settings.
 * Status Bars You can either disable the status bars or choose its position on the bottom of the screen (left, middle, right).
 * Text Background shows a tinted background behind text in conversations to make it easier to read. Either disable it or choose between the colours purple, orange, light gray, green, yellow,pale blue, dark green, red, bright white, dark gray and white.
 * Paperdolls only available in Black Gate. Enables or disable Paperdolls (inventory screen) in the style of Serpent Isle.
-* Walk after teleport only available in Serpent Isle. The normal behavior is that you stop walking after you have been teleported. This enables walking on.
 * Fast Mouse makes the mouse cursor move faster in fullscreen modes. Enable or disable it.
 * Use middle mouse button In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't' ). For modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations. Enable or disable it.
 * Doubleclick closes gumps pretty straightforward, right?
