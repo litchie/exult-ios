@@ -20,7 +20,8 @@ OFILES=	Mixer.o Midi.o Audio.o SDL_mapping.o
 
 SOURCES = Audio.cc Audio.h Midi.cc Midi.h \
 		Mixer.cc Mixer.h SDL_mapping.cc SDL_mapping.h \
-		common.h test.cc
+		common.h test.cc \
+		Flex.cc Flex.h IFF.cc IFF.h Table.cc Table.h
 
 libaudio.a:	$(OFILES)
 	ar rs libaudio.a $(OFILES) midi_drivers/*.o
