@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
  *	For the time being, we'll only inflict this on X users.
  */
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 
 /*
  *	An entry sent between client and server will have the following format:
@@ -80,6 +80,6 @@ int Receive_data
 
 }// Exult_server namespace.
 
-#endif	/* XWIN */
+#endif	/* USE_EXULTSTUDIO */
 
 #endif	/* INCL_SERVEMSG */
