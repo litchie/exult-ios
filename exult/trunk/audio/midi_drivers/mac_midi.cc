@@ -92,9 +92,15 @@ void	Mac_QT_midi::start_track(midi_event *evntlist_head, int ppqn, bool repeat)
 	int			part_poly_max[32];
 	int			part_to_inst[32];
 	int			channel_to_part[16];
+	
+	int			channel_pan[16];
+	int			channel_vol[16];
+	
 	int			numParts = 0;
-	int			last_time = 0;
+	int			lastEventTime = 0;
 	int			tempo = 500000;
+	double		Ippqn = 1.0 / ppqn;
+	double		tick = tempo * Ippqn;
 	midi_event	*eventPos = evntlist_head;
 	uint32 		*tunePos, *endPos;
 	UInt32		queueFlags = 0;
@@ -118,6 +124,8 @@ void	Mac_QT_midi::start_track(midi_event *evntlist_head, int ppqn, bool repeat)
 	
 	memset(part_to_inst,-1,sizeof(part_to_inst));
 	memset(channel_to_part,-1,sizeof(channel_to_part));
+	memset(channel_pan,-1,sizeof(channel_pan));
+	memset(channel_vol,-1,sizeof(channel_vol));
 
 	/*
 	 * Now the major work - iterate over all GM events,
@@ -151,71 +159,148 @@ void	Mac_QT_midi::start_track(midi_event *evntlist_head, int ppqn, bool repeat)
 			break;
 		case MIDI_STATUS_NOTE_ON:
 			ASSERT(part>=0 && part<=31);
-TODO
-if no part is yet specified, we should default to the first instrument - piano/drum kit 1
-
-
-			// Remember the maximum polyphony for the current part
-			int foo = ++part_poly[part];
-			if (part_poly_max[part] < foo)
-				part_poly_max[part] = foo;
+			if(part<0 || part>31)
+//			if (part == -1)
+			{
+				// If no part is specified yet, we default to the first instrument, which
+				// is piano (or the first drum kit if we are on the drum channel)
+				int newInst;
+				
+				if (channel == 9)
+					newInst = kFirstDrumkit + 1;		// the first drum kit is the "no drum" kit!
+				else
+					newInst = kFirstGMInstrument;
+				part = channel_to_part[channel] = numParts;
+				part_to_inst[numParts++] = newInst;
+			}
 			
 			// Decode pitch & velocity
 			int pitch = eventPos->data[0];
 			int velocity = eventPos->data[1];
 			
-			// Now scan forward to find the matching NOTE OFF event
-			midi_event *noteOffPos;
-			for(noteOffPos = eventPos; noteOffPos; noteOffPos = noteOffPos->next)
+			if (velocity == 0)
 			{
-				if ((noteOffPos->status&0xF0)>>4 == MIDI_STATUS_NOTE_OFF
-					&& pitch == noteOffPos->data[0])
-					break;
-				// NOTE ON with velocity == 0 is the same as a NOTE OFF
-				if ((noteOffPos->status&0xF0)>>4 == MIDI_STATUS_NOTE_ON
-					&& pitch == noteOffPos->data[0]
-					&& 0 == noteOffPos->data[1])
-					break;
+				// was a NOTE OFF in disguise, so we decrement the polyphony
+				part_poly[part]--;
 			}
-			
-			// Did we find a note off? Should always be the case, but who knows...
-			if (noteOffPos)
+			else
 			{
-				// We found a NOTE OFF, now calculate the note duration
-				int duration = noteOffPos->time - eventPos->time;
+				// Keep track of the polyphony of the current part
+				int foo = ++part_poly[part];
+				if (part_poly_max[part] < foo)
+					part_poly_max[part] = foo;
 
-				// Now we need to check if we get along with a normal Note Even, or if we need an extended one...
-				if (duration < 2048 && pitch>=32 && part<=95 && velocity>=0 && velocity<=127)
-					qtma_StuffNoteEvent(*tunePos, part, pitch, velocity, duration);
-				else
-					qtma_StuffXNoteEvent(*tunePos, *(tunePos+1), part, pitch, velocity, duration);
-				tunePos++;
-			}
-			
-			// Check if the timer advanced since the last NOTE ON, if yes,
-			// insert a REST event
-			if(eventPos->time != last_time)
-			{
-				qtma_StuffRestEvent(*tunePos, eventPos->time - last_time);
-				tunePos++;
-				last_time = eventPos->time;
+				// Now scan forward to find the matching NOTE OFF event
+				midi_event *noteOffPos;
+				for(noteOffPos = eventPos; noteOffPos; noteOffPos = noteOffPos->next)
+				{
+					if ((noteOffPos->status&0xF0)>>4 == MIDI_STATUS_NOTE_OFF
+						&& pitch == noteOffPos->data[0])
+						break;
+					// NOTE ON with velocity == 0 is the same as a NOTE OFF
+					if ((noteOffPos->status&0xF0)>>4 == MIDI_STATUS_NOTE_ON
+						&& pitch == noteOffPos->data[0]
+						&& 0 == noteOffPos->data[1])
+						break;
+				}
+				
+				// Did we find a note off? Should always be the case, but who knows...
+				if (noteOffPos)
+				{
+					// We found a NOTE OFF, now calculate the note duration
+					int duration = noteOffPos->time - eventPos->time;
+					int oldDuration = duration;
+					
+					duration *= tick / 1000;
+			ASSERT((duration & 0xFFC00000) == 0);
+					double foo = oldDuration;
+					foo *= tick;
+					
+					// Now we need to check if we get along with a normal Note Even, or if we need an extended one...
+					if (duration < 2048 && pitch>=32 && part<=95 && velocity>=0 && velocity<=127)
+						qtma_StuffNoteEvent(*tunePos, part, pitch, velocity, duration);
+					else
+						qtma_StuffXNoteEvent(*tunePos, *(tunePos+1), part, pitch, velocity, duration);
+					tunePos++;
+				}
 			}
 			break;
 		case MIDI_STATUS_AFTERTOUCH:
 			break;
 		case MIDI_STATUS_CONTROLLER:
+/*
+enum {
+  kControllerModulationWheel    = 1,
+  kControllerBreath             = 2,
+  kControllerFoot               = 4,
+  kControllerPortamentoTime     = 5,    // time in 8.8 seconds, portamento on/off is omitted, 0 time = 'off'
+  kControllerVolume             = 7,    // main volume control
+  kControllerBalance            = 8,
+  kControllerPan                = 10,   // 0 - "default", 1 - n: positioned in output 1-n (incl fractions)
+  kControllerExpression         = 11,   // secondary volume control
+  kControllerPitchBend          = 32,   // positive & negative semitones, with 8 bits fraction, same units as transpose controllers
+  kControllerAfterTouch         = 33,   // aka channel pressure
+  kControllerPartTranspose      = 40,   // identical to pitchbend, for overall part xpose
+  kControllerTuneTranspose      = 41,   // another pitchbend, for "song global" pitch offset
+  kControllerPartVolume         = 42,   // another volume control, passed right down from note allocator part volume
+  kControllerTuneVolume         = 43,   // another volume control, used for "song global" volume - since we share one synthesizer across multiple tuneplayers
+  kControllerSustain            = 64,   // boolean - positive for on, 0 or negative off
+  kControllerPortamento         = 65,   // boolean
+  kControllerSostenuto          = 66,   // boolean
+  kControllerSoftPedal          = 67,   // boolean
+  kControllerReverb             = 91,
+  kControllerTremolo            = 92,
+  kControllerChorus             = 93,
+  kControllerCeleste            = 94,
+  kControllerPhaser             = 95,
+  kControllerEditPart           = 113,  // last 16 controllers 113-128 and above are global controllers which respond on part zero
+  kControllerMasterTune         = 114,
+  kControllerMasterTranspose    = 114,  // preferred
+  kControllerMasterVolume       = 115,
+  kControllerMasterCPULoad      = 116,
+  kControllerMasterPolyphony    = 117,
+  kControllerMasterFeatures     = 118
+};
+*/
 /*	FIX ME - we might not yet have a Part for this channel!!! so what we want to do:
 	save controller settings in an array for each channel, then whenever a new part
 	is defined for that channel, apply these settings to that part.
 	If a part *is* already specified, then also apply the setting immediatly to the current channel
-			int controller = evntlist->data[0];
-			int value = evntlist->data[1] << 8;
 			if(part < 0 || part > 31)
 				DebugStr("\ppart out of range");
 			if (controller == 7)
 				qtma_StuffControlEvent(*tunePos, part, controller, value);
 			tunePos++;
 */
+			int controller = eventPos->data[0];
+			int value = eventPos->data[1];
+
+			switch(controller)
+			{
+			case kControllerVolume:
+				if(channel_vol[channel] != value<<8)
+				{
+					channel_vol[channel] = value<<8;
+					if(part>=0 && part<=31)
+					{
+						qtma_StuffControlEvent(*tunePos, part, kControllerVolume, channel_vol[channel]);
+						tunePos++;
+					}
+				}
+				break;
+			case kControllerPan:
+				if(channel_pan[channel] != ((value-64)<<8))
+				{
+					channel_pan[channel] = (value-64)<<8;
+					if(part>=0 && part<=31)
+					{
+						qtma_StuffControlEvent(*tunePos, part, kControllerPan, channel_pan[channel]);
+						tunePos++;
+					}
+				}
+				break;
+			}
+			
 			break;
 		case MIDI_STATUS_PROG_CHANGE:
 			// Instrument changed
@@ -228,9 +313,21 @@ if no part is yet specified, we should default to the first instrument - piano/d
 			// Only if the instrument for this channel *really* changed, add a new part.
 			if(newInst != part_to_inst[part])
 			{
-				channel_to_part[channel] = numParts;
+				part = channel_to_part[channel] = numParts;
 				part_to_inst[numParts++] = newInst;
 			}
+#if 1
+			if(channel_vol[channel] > 0)
+			{
+				qtma_StuffControlEvent(*tunePos, part, kControllerVolume, channel_vol[channel]);
+				tunePos++;
+			}
+			if(channel_pan[channel] > 0)
+			{
+				qtma_StuffControlEvent(*tunePos, part, kControllerPan, channel_pan[channel]);
+				tunePos++;
+			}
+#endif
 			break;
 		case MIDI_STATUS_PRESSURE:
 			break;
@@ -262,9 +359,20 @@ if no part is yet specified, we should default to the first instrument - piano/d
 					(eventPos->buffer[1] << 8) +
 					eventPos->buffer[2];
 					
-				int tick = tempo/ppqn;
+				tick = tempo * Ippqn;
 			}	
 			break;
+		}
+		
+		// Check if the timer advanced since the last NOTE ON, if yes,
+		// insert a REST event
+		if(eventPos->time != lastEventTime)
+		{
+			int restDuration = (eventPos->time - lastEventTime) * tick / 1000;
+			ASSERT((restDuration & 0xFF000000) == 0);
+			qtma_StuffRestEvent(*tunePos, restDuration);
+			tunePos++;
+			lastEventTime = eventPos->time;
 		}
 		
 		eventPos = eventPos->next;
@@ -284,9 +392,9 @@ if no part is yet specified, we should default to the first instrument - piano/d
 	if(repeat)
 		queueFlags |= kTuneLoopUntil;
 
-	// tell that we have 600 units per second
-	thisError = TuneSetTimeScale(mTunePlayer, ppqn * 500 / 384);
-//	thisError = TuneSetTimeScale(mTunePlayer, 500);
+	// Set the time scale (units per second)
+//	thisError = TuneSetTimeScale(mTunePlayer, ppqn * 500 / 384);
+	thisError = TuneSetTimeScale(mTunePlayer, 1000);
 //	thisError = TuneSetTimeScale(mTunePlayer, 600);
 	if (thisError != noErr)
 		DebugStr("\pMIDI error during TuneSetTimeScale");
@@ -314,12 +422,18 @@ if no part is yet specified, we should default to the first instrument - piano/d
 //	while(is_playing() && !Button())
 //		;
 	
+	// Free the event list
+	XMIDI::DeleteEventList (evntlist_head);
+
 	return;
 	
 bail:
 
-	stop_track();
+	// Free the event list
+	XMIDI::DeleteEventList (evntlist_head);
 
+	// This disposes of the allocated tune header/sequence
+	stop_track();
 }
 
 void	Mac_QT_midi::stop_track(void)
@@ -436,227 +550,5 @@ bail:
 
 	return myHeader;
 }
-
-
-#if 0
-Handle BuildTuneSequence(midi_event *evntlist)
-{
-	unsigned long 			*mySequence;
-	unsigned long 			*myPos;
-	Handle					myHandle;
-
-	// allocate space for the tune header
-	myHandle = NewHandleClear(22 * sizeof(long));
-	if (myHandle == NULL)
-		goto bail;
-		
-	HLock(myHandle);
-	mySequence = (unsigned long *)*myHandle;
-
-	myPos = mySequence;
-
-	// *** do NOT attempt to do the following:
-	// ***
-	// ***	qtma_StuffNoteEvent(*myPos++, 1, 60, 100, kNoteDuration);
-	// ***
-	// *** your application will die a horrible death if you do....
-	
-	qtma_StuffNoteEvent(*myPos, 1, 60, 100, kNoteDuration);						// piano C
-	myPos++;
-	qtma_StuffRestEvent(*myPos, kRestDuration);
-	myPos++;
-	qtma_StuffNoteEvent(*myPos, 2, 60, 100, kNoteDuration);						// violin C
-	myPos++;
-	qtma_StuffRestEvent(*myPos, kRestDuration);
-	myPos++;
-
-	qtma_StuffNoteEvent(*myPos, 1, 63, 100, kNoteDuration);						// piano
-	myPos++;
-	qtma_StuffRestEvent(*myPos, kRestDuration);
-	myPos++;
-	qtma_StuffNoteEvent(*myPos, 2, 64, 100, kNoteDuration);						// violin
-	myPos++;
-	qtma_StuffRestEvent(*myPos, kRestDuration);
-	myPos++;
-
-	// make the 5th and 6th notes much softer, just for fun
-	qtma_StuffNoteEvent(*myPos, 1, 67, 60, kNoteDuration);						// piano
-	myPos++;
-	qtma_StuffRestEvent(*myPos, kRestDuration);
-	myPos++;
-	qtma_StuffNoteEvent(*myPos, 2, 66, 60, kNoteDuration);						// violin
-	myPos++;
-	qtma_StuffRestEvent(*myPos, kRestDuration);
-	myPos++;
-
-	qtma_StuffNoteEvent(*myPos, 1, 72, 100, kNoteDuration);						// piano
-	myPos++;
-	qtma_StuffRestEvent(*myPos, kRestDuration);
-	myPos++;
-	qtma_StuffNoteEvent(*myPos, 2, 73, 100, kNoteDuration);						// violin
-	myPos++;
-	qtma_StuffRestEvent(*myPos, kRestDuration);
-	myPos++;
-
-	qtma_StuffNoteEvent(*myPos, 1, 60, 100, kNoteDuration);						// piano
-	myPos++;
-	qtma_StuffNoteEvent(*myPos, 1, 67, 100, kNoteDuration);						// piano
-	myPos++;
-	qtma_StuffNoteEvent(*myPos, 2, 63, 100, kNoteDuration);						// violin
-	myPos++;
-	qtma_StuffNoteEvent(*myPos, 2, 72, 100, kNoteDuration);						// violin
-	myPos++;
-	qtma_StuffRestEvent(*myPos, kRestDuration);
-	myPos++;
-
-	*myPos = kEndMarkerValue;													// end marker
-
-bail:
-	return(myHandle);
-}
-
-#else
-Handle BuildTuneSequence(midi_event *evntlist_head)
-{
-#define	MAX_NOTES		10000
-
-	unsigned long 		*mySequence;
-	unsigned long 		*myPos, *endPos;
-	Handle				myHandle;
-
-	// allocate space for the tune header
-	myHandle = NewHandleClear(MAX_NOTES * sizeof(long));
-	if (myHandle == NULL)
-		goto bail;
-		
-	HLock(myHandle);
-	mySequence = (unsigned long *)*myHandle;
-
-	myPos = mySequence;
-	endPos = myPos + MAX_NOTES;
-
-	int part_poly[32];
-	int part_poly_max[32];
-	int part_to_inst[32];
-	int channel_to_part[16];
-	int numParts = 0;
-	int last_time = 0;
-	midi_event *pos = evntlist_head;
-
-	// Initialise the arrays
-	memset(part_poly,0,sizeof(part_poly));
-	memset(part_poly_max,0,sizeof(part_poly_max));
-	memset(part_to_inst,-1,sizeof(part_to_inst));
-	memset(channel_to_part,-1,sizeof(channel_to_part));
-
-	// Loop over all sounds
-	while(pos && (myPos < endPos))
-	{
-		int status = (pos->status&0xF0)>>4;
-		int channel = pos->status&0x0F;
-		int part = channel_to_part[channel];
-
-		switch (status)
-		{
-		case MIDI_STATUS_NOTE_OFF:
-			// Keep track of the polyphony of the current part
-			if (part > 0)
-				part_poly[part]--;
-			break;
-		case MIDI_STATUS_NOTE_ON:
-			// Remember the maximum polyphony for the current part
-			int foo = ++part_poly[part];
-			if (part_poly_max[part] < foo)
-				part_poly_max[part] = foo;
-			
-			// Decode pitch & velocity
-			int pitch = pos->data[0];
-			int velocity = pos->data[1];
-
-			if(part<0 || part>31 || pitch<32 || pitch > 95 || velocity<0 || velocity>127)
-				DebugStr("\ppart/pitch/velocity out of range");
-
-			// Now scan forward to find the matching NOTE OFF event
-			midi_event *noteOffPos;
-			for(noteOffPos = pos; noteOffPos; noteOffPos = noteOffPos->next)
-			{
-				if ((noteOffPos->status&0xF0)>>4 == MIDI_STATUS_NOTE_OFF
-					&& pitch == noteOffPos->data[0])
-					break;
-				// NOTE ON with velocity == 0 is also NOTE OFF
-				if ((noteOffPos->status&0xF0)>>4 == MIDI_STATUS_NOTE_ON
-					&& pitch == noteOffPos->data[0]
-					&& 0 == noteOffPos->data[1])
-					break;
-			}
-			
-			if (noteOffPos)
-			{
-				// We found a NOTE OFF, now calculate the note duration
-				int duration = noteOffPos->time - pos->time;
-				// If the duration needs more than 11 bits, we need to stuff the note
-				// into an extended note event.
-				if (duration < 2048)
-					qtma_StuffNoteEvent(*myPos, part, pitch, velocity, duration);
-				else
-					qtma_StuffXNoteEvent(*myPos, *(myPos+1), part, pitch, velocity, duration);
-				myPos++;
-			}
-			
-			// Check if the timer advanced since the last NOTE ON, if yes,
-			// insert a REST event
-			if(pos->time != last_time)
-			{
-				qtma_StuffRestEvent(*myPos, pos->time - last_time);
-				myPos++;
-				
-				last_time = pos->time;
-			}
-			break;
-		case MIDI_STATUS_AFTERTOUCH:
-			break;
-		case MIDI_STATUS_CONTROLLER:
-/*	FIX ME - we might not yet have a Part for this channel!!! so what we want to do:
-	save controller settings in an array for each channel, then whenever a new part
-	is defined for that channel, apply these settings to that part.
-	If a part *is* already specified, then also apply the setting immediatly to the current channel
-			int controller = evntlist->data[0];
-			int value = evntlist->data[1] << 8;
-			if(part < 0 || part > 31)
-				DebugStr("\ppart out of range");
-			if (controller == 7)
-				qtma_StuffControlEvent(*myPos, part, controller, value);
-			myPos++;
-*/
-			break;
-		case MIDI_STATUS_PROG_CHANGE:
-			int newInst = pos->data[0];
-			if (channel == 9)	// Drum channel
-				newInst += kFirstDrumkit;
-			else
-				newInst += kFirstGMInstrument;
-			if(newInst != part_to_inst[part])	// Was the instrument actually changed?
-			{
-				channel_to_part[channel] = numParts;
-				part_to_inst[numParts++] = newInst;
-			}
-			break;
-		case MIDI_STATUS_PRESSURE:
-			break;
-		case MIDI_STATUS_PITCH_WHEEL:
-			break;
-		//TODO - recognize "mute all"
-		}
-		
-
-		pos = pos->next;
-	}
-
-	*myPos = kEndMarkerValue;													// end marker
-
-bail:
-	return(myHandle);
-}
-#endif
 
 #endif
