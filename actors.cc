@@ -1982,7 +1982,8 @@ inline void Call_readied_usecode
 	{
 	if (index != Actor::rfinger && index != Actor::lfinger && 
 	    index != Actor::belt &&
-	    index != Actor::head)
+	    index != Actor::head && index != Actor::hands2_spot &&
+	    index != Actor::lhand && index != Actor::rhand)
 		return;
 	if (obj->get_shapenum() == 297)	// Fix special case:  ring of protect.
 		{
@@ -2022,6 +2023,15 @@ void Actor::init_readied
 						Usecode_machine::readied);
 	if (spots[head])
 		Call_readied_usecode(gwin, this, head, spots[head],
+						Usecode_machine::readied);
+	if (spots[hands2_spot])
+		Call_readied_usecode(gwin, this, hands2_spot, 
+				spots[hands2_spot], Usecode_machine::readied);
+	if (spots[lhand])
+		Call_readied_usecode(gwin, this, lhand, spots[lhand],
+						Usecode_machine::readied);
+	if (spots[rhand])
+		Call_readied_usecode(gwin, this, rhand, spots[rhand],
 						Usecode_machine::readied);
 	}
 

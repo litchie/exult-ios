@@ -228,6 +228,32 @@ void Spell_button::double_clicked
 	}
 
 /*
+ *	Test for Ring of Reagants.
+ */
+
+static bool Has_ring
+	(
+	Game_object *npcobj
+	)
+	{
+	if (Game::get_game_type() == SERPENT_ISLE)
+		{
+		Actor *npc = dynamic_cast<Actor *>(npcobj);
+		if (!npc)
+			return false;
+		Game_object *obj = npc->get_readied(Actor::lfinger);
+		if (obj && obj->get_shapenum() == 0x128 &&
+						obj->get_framenum() == 3)
+			return true;
+		obj = npc->get_readied(Actor::rfinger);
+		if (obj && obj->get_shapenum() == 0x128 &&
+						obj->get_framenum() == 3)
+			return true;
+		}
+	return false;
+	}
+
+/*
  *	Figure the availability of the spells.
  */
 
@@ -245,8 +271,14 @@ void Spellbook_gump::set_avail
 	for (r = 0; r < NREAGENTS; r++)	// Count, by frame (frame==bit#).
 		reagent_counts[r] = book_owner->count_objects(
 						REAGENTS, c_any_qual, r);
+	bool has_ring = Has_ring(book_owner);
 	for (i = 0; i < 9*8; i++)	// Now figure what's available.
 	{
+		if (has_ring)
+			{
+			avail[i] = 99;
+			continue;
+			}
 		avail[i] = 10000;	// 'infinite'.
 		unsigned short flags = reagents[i];
 					// Go through bits.
@@ -349,8 +381,7 @@ void Spellbook_gump::do_spell
 					// Figure what we used.
 		unsigned short flags = reagents[spell];
 
-		if (!cheat.in_wizard_mode())
-					// +++++Test for ring-of-reagents.
+		if (!cheat.in_wizard_mode() && !Has_ring(book_owner))
 		{
 					// Go through bits.
 			for (int r = 0; flags; r++, flags = flags >> 1)
