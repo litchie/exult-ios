@@ -1,3 +1,7 @@
+2002-05-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* exult.cc: If map-editing, you can only drag things if in 'Move' mode.
+
 2002-05-03  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/exult_studio.* updated
 	* docs/xml/exult_studio.xml updated
