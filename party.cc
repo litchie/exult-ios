@@ -31,6 +31,7 @@
 #include "gamewin.h"
 #include "frameseq.h"
 #include "dir.h"
+#include "schedule.h"
 
 using std::cout;
 using std::endl;
@@ -293,9 +294,14 @@ void Party_manager::get_followers
 		    npc->get_flag(Obj_flags::paralyzed) ||
 		    npc->is_dead())
 			continue;	// Not available.
-		if (npc->in_queue())	// Already walking?
-			continue;	// For now, let him continue...
-		valid[validcnt++] = npc;
+		int sched = npc->get_schedule_type();
+					// Skip if in combat or set to 'wait'.
+		if (sched != Schedule::combat &&
+		    sched != Schedule::wait &&
+					// Loiter added for SI.
+		    sched != Schedule::loiter &&
+		    !npc->in_queue())	// Already walking?
+			valid[validcnt++] = npc;
 		}
 	if (validcnt)
 		move_followers(gwin->get_main_actor(), -1, dir);
