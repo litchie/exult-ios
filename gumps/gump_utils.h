@@ -102,8 +102,4 @@ inline void Delay
 #endif
 }
 
-
-char *newstrdup(const char *s);
-
-
 #endif

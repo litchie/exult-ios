@@ -316,10 +316,6 @@ int U7chdir(
 	const char *dirname
 	);
 
-int Log2
-	(
-	uint32 n
-	);
 
 bool is_system_path_defined(const char *path);
 void store_system_paths();
@@ -329,5 +325,9 @@ std::string get_system_path(const std::string &path);
 
 void to_uppercase(std::string &str);
 std::string to_uppercase(const std::string &str);
+
+int Log2(uint32 n);
+
+char *newstrdup(const char *s);
 
 #endif	/* _UTILS_H_ */

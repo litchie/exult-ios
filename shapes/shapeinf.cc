@@ -264,7 +264,7 @@ void Shape_info::set_weapon_offset
 	if (!weapon_offsets)
 		{
 		weapon_offsets = new unsigned char[64];
-		memset(weapon_offsets, 255, sizeof(weapon_offsets));
+		std::memset(weapon_offsets, 255, sizeof(weapon_offsets));
 		}
 	weapon_offsets[frame*2] = x;
 	weapon_offsets[frame*2 + 1] = y;

@@ -21,12 +21,13 @@
 #endif
 
 #ifndef ALPHA_LINUX_CXX
-#  include <unistd.h>
+#  include <cassert>
 #  include <cstdio>
 #  include <cmath>
 #  include <iostream>
 #  include <cmath>
 #endif
+#include <unistd.h>
 #include "../files/utils.h"
 #include "xmidi.h"
 #include "../conf/Configuration.h"
@@ -38,6 +39,9 @@ using std::cerr;
 using std::endl;
 using std::memcmp;
 using std::memcpy;
+using std::memset;
+using std::printf;
+using std::size_t;
 using std::string;
 
 #include "gamma.h"
@@ -1177,7 +1181,6 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi, first_state
 int XMIDI::ExtractTracksFromXmi (DataSource *source)
 {
 	int				num = 0;
-	signed short	ppqn;
 	uint32			len = 0;
 	char			buf[32];
 
