@@ -135,9 +135,9 @@ public:
 	int get_volume() const;		// Get space taken.
 					// Add/remove to/from quantity.
 	int modify_quantity(int delta, bool *del = 0);
-					// Set shape coord. within chunk.
+					// Set shape coord. in chunk/gump.
 	void set_shape_pos(unsigned int shapex, unsigned int shapey)
-		{ tx = shapex&0xf; ty = shapey&0xf; }
+		{ tx = shapex; ty = shapey; }
 	void set_lift(int l)
 		{ lift = l; }
 	Game_object *get_next()
