@@ -914,22 +914,31 @@ void Animated_egg_object::activate
 
 /*
  *	Apply field.
+ *
+ *	Output:	True to delete field.
  */
 
-void Field_object::field_effect
+bool Field_object::field_effect
 	(
 	Actor *actor
 	)
 	{
+	bool del = false;		// Only delete poison, sleep fields.
 	switch (type)
 		{
 	case poison_field:
 		if (rand()%2)
+			{
 			actor->set_flag(Obj_flags::poisoned);
+			del = true;
+			}
 		break;
 	case sleep_field:
 		if (rand()%2)
+			{
 			actor->set_flag(Obj_flags::asleep);
+			del = true;
+			}
 		break;
 	case fire_field:
 					// Blue fire (serpent isle)?
@@ -956,6 +965,7 @@ void Field_object::field_effect
 			}
 		break;
 		}
+	return del;
 	}
 
 /*
@@ -987,7 +997,8 @@ void Field_object::activate
 	Main_actor *av = gwin->get_main_actor();
 	if (obj != av && obj->get_party_id() < 0)
 		return;			// Not a party member.
-	field_effect((Actor *) obj);	// Apply field.
+	if (field_effect((Actor *) obj))// Apply field.
+		remove_this(0);		// Delete sleep/poison if applied.
 	}
 
 /*

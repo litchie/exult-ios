@@ -180,13 +180,13 @@ public:
 
 class Field_object : public Animated_egg_object
 	{
+	bool field_effect(Actor *actor);// Apply field.
 public:
 	Field_object(int shapenum, int framenum, unsigned int tilex, 
 		unsigned int tiley, unsigned int lft, unsigned char ty)
 		: Animated_egg_object(shapenum, framenum, tilex, tiley,
 							lft, ty)
 		{  }
-	void field_effect(Actor *actor);// Apply field.
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 	virtual void activate(Usecode_machine *umachine, Game_object *obj,

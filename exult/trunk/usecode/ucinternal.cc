@@ -973,7 +973,9 @@ Usecode_value Usecode_internal::add_party_items
 		if (quantity < prev)	// Added to this NPC.
 			result.concat(party.get_elem(i));
 		}
-	int todo = quantity;		// Put remaining on the ground.
+	if (GAME_BG)			// Black gate?  Just return result.
+		return result;
+	int todo = quantity;		// SI:  Put remaining on the ground.
 	if (framenum == c_any_framenum)
 		framenum = 0;
 	while (todo > 0)
@@ -994,11 +996,8 @@ Usecode_value Usecode_internal::add_party_items
 			todo = newobj->modify_quantity(todo);
 		}
 					// SI?  Append # left on ground.
-	if (Game::get_game_type() == SERPENT_ISLE)
-		{
-		Usecode_value ground(quantity - todo);
-		result.concat(ground);
-		}
+	Usecode_value ground(quantity - todo);
+	result.concat(ground);
 	return result;
 	}
 
