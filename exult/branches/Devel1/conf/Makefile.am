@@ -26,3 +26,8 @@ test: libconf.a xmain.o
 %.o : %.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
 
+Configuration.o: Configuration.h XMLEntity.h
+XMLEntity.o: XMLEntity.h
+xmain.o: Configuration.h XMLEntity.h
+xmldump.o: XMLEntity.h
+xmlparse.o: XMLEntity.h
