@@ -237,6 +237,8 @@ public:
 		{ return exprs; }
 					// Gen. code to put result on stack.
 	virtual void gen_value(std::ostream& out);
+					// Gen code to push value(s).
+	virtual int gen_values(std::ostream& out);
 	};
 
 /*

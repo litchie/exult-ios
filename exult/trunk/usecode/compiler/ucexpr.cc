@@ -255,7 +255,7 @@ void Uc_response_expression::gen_jmp_if_false
 	)
 	{
 					// Push string(s) on stack.
-	int cnt = operand.gen_values(out);
+	int cnt = operand->gen_values(out);
 	out.put((char) UC_CMPS);
 	Write2(out, cnt);		// # strings on stack.
 	Write2(out, offset);		// Offset to jmp if false.
