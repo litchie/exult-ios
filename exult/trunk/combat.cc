@@ -47,6 +47,10 @@ using std::rand;
 
 unsigned long Combat_schedule::battle_time = 0;
 
+int Combat::difficulty = 0;
+Combat::Mode Combat::mode = Combat::original;
+bool Combat::show_hits = false;
+
 /*
  *	Is a given ammo shape in a given family.
  */
