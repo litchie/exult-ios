@@ -178,6 +178,7 @@ speech		return SPEECH;
 sfx		return SFX;
 face		return FACE;
 hit		return HIT;
+actor		return ACTOR;
 
 north		return NORTH;
 south		return SOUTH;
