@@ -946,6 +946,8 @@ void Shape_chooser::edit_shape
 /*
  *	Check the list of files being edited externally, and read in any that
  *	have changed.
+ *
+ *	Output:	1 always.
  */
 
 gint Shape_chooser::check_editing_files
@@ -955,8 +957,15 @@ gint Shape_chooser::check_editing_files
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
 					// Is focus in main window?
-	if (!studio->is_exiting() && !studio->has_focus())
-		return 1;		// No, so try again later.
+	if (studio->has_focus())
+		check_editing_files();
+	return 1;			// Keep repeating.
+	}
+					// This one doesn't check focus.
+gint Shape_chooser::check_editing_files
+	(
+	)
+	{
 	bool modified = false;
 	for (std::vector<Editing_file*>::iterator it = editing_files.begin();
 				it != editing_files.end(); it++)
@@ -977,6 +986,7 @@ gint Shape_chooser::check_editing_files
 		}
 	if (modified)			// Write out changed files.
 		{
+		ExultStudio *studio = ExultStudio::get_instance();
 		studio->get_files()->flush();
 		Object_browser *browser = studio->get_browser();
 		if (browser)
@@ -1361,6 +1371,8 @@ void Shape_chooser::create_new_shape
 	Image_buffer8 img(w, h);
 	img.fill8(1);			// Just use color #1.
 	img.fill8(2, w - 2, h - 2, 1, 1);
+					// Include some transparency.
+	img.fill8(255, w/2, h/2, w/4, h/4);
 	for (int i = 0; i < nframes; i++)
 		shape->add_frame(new Shape_frame(img.get_bits(),
 			w, h, xleft, yabove, !flat), i);
