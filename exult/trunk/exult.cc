@@ -517,7 +517,8 @@ static void Handle_events
 			gwin->get_win()->rotate_colors(0xe8, 8, 0);
 			gwin->get_win()->rotate_colors(0xe0, 8, 1);
 			last_rotate = ticks;
-			if (gwin->get_win()->is_palettized())	// Non palettized requires explicit blit.
+					// Non palettized needs explicit blit.
+			if (!gwin->get_win()->is_palettized())
 				gwin->set_painted();
 			}
 		if (!gwin->show() &&	// Blit to screen if necessary.
