@@ -31,6 +31,11 @@ extern char **item_names;		// The game items' names.
 
 void Setup_item_names (ifstream& items);
 
+/*
+ *	Some offsets in text.flx:
+ */
+const int first_awakened = 0x495;
+const int last_awakened = 0x49a;
 
 #endif
 

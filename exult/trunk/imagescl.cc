@@ -33,11 +33,11 @@ Boston, MA  02111-1307, USA.
  */
 class Manip8to16
 	{
-	SDL_Color *colors;		// Lookup table (palette).
+	SDL_Color *colors;		// Palette for source window.
 	SDL_PixelFormat *fmt;		// Format of dest. pixels.
 public:
-	Manip8to16(SDL_PixelFormat *f)
-		: fmt(f), colors(f->palette->colors)
+	Manip8to16(SDL_Color *c, SDL_PixelFormat *f)
+		: colors(c), fmt(f)
 		{  }
 	unsigned short rgb(unsigned short r, unsigned short g,
 							unsigned short b) const
@@ -51,13 +51,20 @@ public:
 		SDL_Color& color = colors[src];
 		dest = rgb(color.r, color.g, color.b);
 		}
-	void split(unsigned char pix, unsigned short& r,
+	void split_source(unsigned char pix, unsigned short& r,
 				unsigned short& g, unsigned short& b) const
 		{
 		SDL_Color& color = colors[pix];
 		r = color.r;
 		g = color.g;
 		b = color.b;
+		}
+	void split_dest(unsigned short pix, unsigned short& r,
+				unsigned short& g, unsigned short& b) const
+		{
+		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
+		g = ((pix&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
+		b = ((pix&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
 		}
 	};
 
@@ -66,11 +73,11 @@ public:
  */
 class Manip8to32
 	{
-	SDL_Color *colors;		// Lookup table (palette).
+	SDL_Color *colors;		// Source palette.
 	SDL_PixelFormat *fmt;		// Format of dest. pixels.
 public:
-	Manip8to32(SDL_PixelFormat *f)
-		: fmt(f), colors(f->palette->colors)
+	Manip8to32(SDL_Color *c, SDL_PixelFormat *f)
+		: colors(c), fmt(f)
 		{  }
 	unsigned long rgb(unsigned short r, unsigned short g,
 							unsigned short b) const
@@ -84,13 +91,20 @@ public:
 		SDL_Color& color = colors[src];
 		dest = rgb(color.r, color.g, color.b);
 		}
-	void split(unsigned char pix, unsigned short& r,
+	void split_source(unsigned char pix, unsigned short& r,
 				unsigned short& g, unsigned short& b) const
 		{
 		SDL_Color& color = colors[pix];
 		r = color.r;
 		g = color.g;
 		b = color.b;
+		}
+	void split_dest(unsigned long pix, unsigned short& r,
+				unsigned short& g, unsigned short& b) const
+		{
+		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
+		g = ((pix&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
+		b = ((pix&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
 		}
 	};
 
@@ -102,13 +116,16 @@ class Manip16to16
 public:
 	static void copy(unsigned short& dest, unsigned short src)
 		{ dest = src; }
-	static void split(unsigned short pix, unsigned short& r,
+	static void split_source(unsigned short pix, unsigned short& r,
 					unsigned short& g, unsigned short& b)
 		{
 		r = (pix>>10)&0x1f;
 		g = (pix>>5)&0x1f;
 		b = pix&0x1f;
 		}
+	static void split_dest(unsigned short pix, unsigned short& r,
+					unsigned short& g, unsigned short& b)
+		{ return split_source(pix, r, g, b); }
 	static unsigned short rgb(unsigned short r, unsigned short g,
 							unsigned short b)
 		{ return ((r&0x1f)<<10) | ((g&0x1f)<<5) | (b&0x1f); }
@@ -122,19 +139,29 @@ void Image_window::show_scaled8to16
 	(
 	)
 	{
-	Manip8to16 manip(scaled_surface->format);
+	Manip8to16 manip(surface->format->palette->colors,
+						scaled_surface->format);
 	Scale2x<unsigned char, unsigned short, Manip8to16>
-		(ibuf->get_bits(), ibuf->width, ibuf->height, 
-		    (unsigned short *) scaled_surface->pixels, manip);
+		(ibuf->get_bits(), ibuf->line_width, ibuf->height, 
+		    (unsigned short *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip);
+	SDL_UpdateRect(scaled_surface, 0, 0, 2*ibuf->width, 2*ibuf->height);
 	}
 
 void Image_window::show_scaled8to32
 	(
 	)
 	{
-	Manip8to32 manip(scaled_surface->format);
+	Manip8to32 manip(surface->format->palette->colors,
+						scaled_surface->format);
 	Scale2x<unsigned char, unsigned long, Manip8to32>
 		(ibuf->get_bits(), 
-			ibuf->width, ibuf->height, 
-		    	(unsigned long *) scaled_surface->pixels, manip);
+			ibuf->line_width, ibuf->height, 
+			(unsigned long *) scaled_surface->pixels,
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+								manip);
+	SDL_UpdateRect(scaled_surface, 0, 0, 2*ibuf->width, 2*ibuf->height);
 	}
