@@ -1,5 +1,8 @@
 2001-06-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* ucmachine.cc: 'find_nearby' also accepts an size-1 array as shapenum
+	* ucmachine.*, usecode/keyring.*, siintrinsics.h, intrinsics.cc:
+	implemented Silver Seed keyring. Data is saved in 'gamedat/keyring.dat'
+	* /data/si/defaultkeys.txt: mapped 'k' to use keyring
 
 2001-06-24  Ryan Nunn <triforce@merlin.net.au>
 	* actors.cc: Fixed a minor bug with two handed/two fingered items.

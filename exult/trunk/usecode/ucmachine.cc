@@ -59,6 +59,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "useval.h"
 #include "utils.h"
 #include "vec.h"
+#include "keyring.h"
 
 using std::cerr;
 using std::cout;
@@ -1329,10 +1330,10 @@ Usecode_machine::Usecode_machine
 	(
 	istream& file,
 	Game_window *gw
-	) : gwin(gw), call_depth(0), cur_function(0),
+	) : gwin(gw), call_depth(0), cur_function(0), keyring(0),
 	    speech_track(-1), book(0),  caller_item(0),
 	    last_created(0), user_choice(0),
-	    String(0), stack(new Usecode_value[1024])
+	    String(0), stack(new Usecode_value[1024]), conv(0)
 	{
 	_init_(file);
 	}
@@ -1340,9 +1341,10 @@ Usecode_machine::Usecode_machine
 Usecode_machine::Usecode_machine
 	(
 	Game_window *gw
-	) : gwin(gw), call_depth(0), cur_function(0), book(0), caller_item(0),
+	) : gwin(gw), call_depth(0), cur_function(0), keyring(0),
+	    book(0), caller_item(0),
 	    last_created(0), user_choice(0),
-	    String(0), stack(new Usecode_value[1024])
+	    String(0), stack(new Usecode_value[1024]), conv(0)
 	{
 	ifstream file;                // Read in usecode.
         U7open(file, USECODE);
@@ -1364,6 +1366,7 @@ void Usecode_machine::_init_
 	memset((char *) &party[0], 0, sizeof(party));
 	party_count = 0;
 	conv = new Conversation;
+	keyring = new Keyring;
 	read_usecode(file);
 	}
 
@@ -1403,6 +1406,7 @@ Usecode_machine::~Usecode_machine
 	delete [] stack;
 	delete [] String;
 	delete conv;
+	delete keyring;
 //	int num_slots = funs->get_cnt();
 	int num_slots = sizeof(funs)/sizeof(funs[0]);
 	for (int i = 0; i < num_slots; i++)
@@ -1994,6 +1998,7 @@ int Usecode_machine::call_usecode
 
 /*
  *	Write out global data to 'gamedat/usecode.dat'.
+ *	(and 'gamedat/keyring.dat')
  *
  *	Output:	0 if error.
  */
@@ -2002,6 +2007,9 @@ void Usecode_machine::write
 	(
 	)
 	{
+	if (Game::get_game_type() == SERPENT_ISLE)
+		keyring->write();	// write keyring data
+
 	ofstream out;
 	U7open(out, FLAGINIT);	// Write global flags.
 	out.write((char*)gflags, sizeof(gflags));
@@ -2026,7 +2034,8 @@ void Usecode_machine::write
 	}
 
 /*
- *	Read in global data to 'gamedat/usecode.dat'.
+ *	Read in global data from 'gamedat/usecode.dat'.
+ *	(and 'gamedat/keyring.dat')
  *
  *	Output:	0 if error.
  */
@@ -2035,6 +2044,10 @@ void Usecode_machine::read
 	(
 	)
 	{
+	if (Game::get_game_type() == SERPENT_ISLE)
+		keyring->read();	// read keyring data
+	
+
 	ifstream in;
 	try
 	{
