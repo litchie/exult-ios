@@ -683,8 +683,9 @@ USECODE_INTRINSIC(find_in_owner)
 
 USECODE_INTRINSIC(get_cont_items)
 {
-        // Get cont. items(container, shape, qual, frame).
-        Usecode_value u(get_objects(parms[0], parms[1], parms[2], parms[3]));
+	// Get cont. items(container, shape, qual, frame).
+	// recursively find items in container
+	Usecode_value u(get_objects(parms[0], parms[1], parms[2], parms[3]));
 	return(u);
 }
 
