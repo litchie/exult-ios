@@ -108,4 +108,18 @@ public:
 	virtual void gen(ostream& out);
 	};
 
+/*
+ *	An RETURN statement:
+ */
+class Uc_return_statement : public Uc_statement
+	{
+	Uc_expression *expr;		// What to return.  May be 0.
+public:
+	Uc_return_statement(Uc_expression *e = 0) : expr(e)
+		{  }
+	~Uc_return_statement();
+					// Generate code.
+	virtual void gen(ostream& out);
+	};
+
 #endif

@@ -100,10 +100,27 @@ Uc_symbol *Uc_function::add_string_symbol
 		return sym;
 		}
 					// Create & assign slot.
-	sym = new Uc_string_symbol(nm, text_data.length());
-	text_data.append(text);
+	sym = new Uc_string_symbol(nm, add_string(text));
 	cur_scope->add(sym);
 	return sym;
+	}
+
+/*
+ *	Add a string to the data area.
+ *
+ *	Output:	offset of string.
+ */
+
+int Uc_function::add_string
+	(
+	char *text
+	)
+	{
+					// NOTE:  We could search for an
+					//   existing string & return that!
+	int offset = text_data.length();// This is where it will go.
+	text_data.append(text);
+	return offset;
 	}
 
 /*

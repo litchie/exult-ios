@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_UCEXPR
 #define INCL_UCEXPR	1
 
+#include <vector>
 #include "ucloc.h"
 
 class Uc_symbol;
@@ -100,6 +101,34 @@ class Uc_int_expression : public Uc_expression
 public:
 	Uc_int_expression(int v) : value(v)
 		{  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
+	};
+
+/*
+ *	String value.
+ */
+class Uc_string_expression : public Uc_expression
+	{
+	int offset;			// Offset in function's data area.
+public:
+	Uc_string_expression(int o) : offset(o)
+		{  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
+	};
+
+/*
+ *	A concatenation, which generates an array:
+ */
+class Uc_array_expression : public Uc_expression
+	{
+	vector<Uc_expression*> exprs;
+public:
+	Uc_array_expression() {  }
+	~Uc_array_expression();
+	void add(Uc_expression *e)	// Append an expression.
+		{ exprs.push_back(e); }
 					// Gen. code to put result on stack.
 	virtual void gen_value(ostream& out);
 	};
