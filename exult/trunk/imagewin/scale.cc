@@ -744,22 +744,25 @@ void test()
 	}
 #endif
 
+
 //
 // Point Sampling Scaler
 //
 void Scale_point
 (
-	unsigned char *source,		// ->source pixels.
-	int srcx, int srcy,		// Start of rectangle within src.
-	int srcw, int srch,		// Dims. of rectangle.
-	int sline_pixels,		// Pixels (words)/line for source.
-	int sheight,			// Source height.
-	unsigned char *dest,		// ->dest pixels.
-	int dline_pixels,		// Pixels (words)/line for dest.
-	int factor			// Scale factor
+         unsigned char *source,          // ->source pixels.
+         int srcx, int srcy,             // Start of rectangle within src.
+         int srcw, int srch,             // Dims. of rectangle.
+         int sline_pixels,               // Pixels (words)/line for source.
+         int sheight,                    // Source height.
+         unsigned char *dest,            // ->dest pixels.
+         int dline_pixels,               // Pixels (words)/line for dest.
+         int factor                      // Scale factor
 )
 {
-	int x, y, ss, ds;
+	int x, y, ss, off_x, off_y;
+	char data;
+	unsigned char *dest2, *source2;
 
 	srch+=srcy;
 	srcw+=srcx;
@@ -767,20 +770,56 @@ void Scale_point
 	if (srch>sheight) srch = sheight;
 	if (srcw>sline_pixels) srcw = sline_pixels;
 
-	srch *= factor;
-	srcw *= factor;
-	srcx *= factor;
-	srcy *= factor;
+	if (factor == 2) {
+		source += srcy*sline_pixels + srcx;
+		dest += (srcy*2)*dline_pixels + srcx*2;
+		for (y = srcy; y < srch; ++y)
+		{
+			dest2 = dest;
+			source2 = source;
+			for (x = srcx; x < srcw; ++x)
+			{
+				data = *source2++;
+				*dest2++ = data;
+				*dest2++ = data;
+			}
+			dest += dline_pixels;
 
-	for (y = srcy; y < srch; y++)
-	{
-		ss = (y/factor)*sline_pixels;
-		ds = y*dline_pixels;
-		
-		for (x = srcx; x < srcw; x++)
-			dest[ds+x]  = source[ss+(x/factor)];
+			dest2 = dest;
+			source2 = source;
+			for (x = srcx; x < srcw; ++x)
+			{
+				data = *source2++;
+				*dest2++ = data;
+				*dest2++ = data;
+			}
+			dest += dline_pixels;
+
+			source += sline_pixels;
+		}
+	} else {
+		source += srcy*sline_pixels + srcx;
+		dest += (srcy*factor)*dline_pixels + srcx*factor;
+		for (y = srcy; y < srch; ++y)
+		{
+			for (off_y = 0; off_y < factor; ++off_y)
+			{
+				dest2 = dest;
+				source2 = source;
+				for (x = srcx; x < srcw; ++x)
+				{
+					data = *source2++;
+					for (off_x = 0; off_x < factor; ++off_x)
+						*dest2++ = data;
+				}
+				dest += dline_pixels;
+			}
+			source += sline_pixels;
+		}
 	}
 }
+
+
 
 //
 // Interlaced Point Sampling Scaler
@@ -797,7 +836,9 @@ void Scale_interlace
 	int factor			// Scale factor
 )
 {
-	int x, y, ss, ds;
+	int x, y, ss, off_x, off_y;
+	char data;
+	unsigned char *dest2, *source2;
 
 	srch+=srcy;
 	srcw+=srcx;
@@ -805,19 +846,47 @@ void Scale_interlace
 	if (srch>sheight) srch = sheight;
 	if (srcw>sline_pixels) srcw = sline_pixels;
 
-	srch *= factor;
-	srcw *= factor;
-	srcx *= factor;
-	srcy *= factor;
+	if (factor == 2) {
+		source += srcy*sline_pixels + srcx;
+		dest += (srcy*2)*dline_pixels + srcx*2;
+		for (y = srcy; y < srch; ++y)
+		{
+			dest2 = dest;
+			source2 = source;
+			for (x = srcx; x < srcw; ++x)
+			{
+				data = *source2++;
+				*dest2++ = data;
+				*dest2++ = data;
+			}
+			dest += dline_pixels;
+			dest += dline_pixels;
 
-	for (y = srcy; y < srch; y++)
-	{
-		if (y % 2) continue;
-
-		ss = (y/factor)*sline_pixels;
-		ds = y*dline_pixels;
-		
-		for (x = srcx; x < srcw; x++)
-			dest[ds+x]  = source[ss+(x/factor)];
+			source += sline_pixels;
+		}
+	} else {
+		bool visible_line = ((srcy * factor) % 2 == 0);
+		source += srcy*sline_pixels + srcx;
+		dest += (srcy*factor)*dline_pixels + srcx*factor;
+		for (y = srcy; y < srch; ++y)
+		{
+			for (off_y = 0; off_y < factor; ++off_y)
+			{
+				if (visible_line)
+				{
+					dest2 = dest;
+					source2 = source;
+					for (x = srcx; x < srcw; ++x)
+					{
+						data = *source2++;
+						for (off_x = 0; off_x < factor; ++off_x)
+							*dest2++ = data;
+					}
+				}
+				dest += dline_pixels;
+				visible_line = !visible_line;
+			}
+			source += sline_pixels;
+		}
 	}
 }

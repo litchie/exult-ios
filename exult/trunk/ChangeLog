@@ -1,6 +1,8 @@
 2001-07-03  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in, Makefile.*: version to 0.94cvs
 	* exult_faq.xml: updated URL to Travis' snapshots page
+	* scale.cc: new, fast Point & Interlaced scalers (mostly by Max)
+	* ibuf8.cc: new & improved copy8 (mostly by Ryan :-) )
 	
 2001-06-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* tools/splitshp.cc: implemented merging shapes
