@@ -1494,7 +1494,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 	bool si_installed = SI_Game::is_installed(si_dir.c_str());
 
 	U7object faces_u7o("<DATA>/exult_bg.flx", EXULT_BG_FLX_MR_INTRO_SHP);
-	unsigned int shapesize;
+	size_t shapesize;
 	char *shape_buf = faces_u7o.retrieve(shapesize);
 	BufferDataSource faces_ds(shape_buf, shapesize);
 	Shape_file faces_shape(&faces_ds);
