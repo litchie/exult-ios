@@ -299,7 +299,6 @@ void Cheat::create_last_shape (void) const {
     gwin->center_text("Can only create from 'shapes.vga'");
 }
 
-
 void Cheat::delete_object (void) const {
   if (!enabled) return;
 
