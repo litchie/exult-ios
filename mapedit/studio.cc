@@ -155,6 +155,13 @@ on_save_groups1_activate               (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
+on_preferences_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->open_preferences();
+}
+
+C_EXPORT void
 on_play_button_clicked			(GtkToggleButton *button,
 					 gpointer	  user_data)
 {
@@ -231,7 +238,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	names(0), glade_path(0),
 	vgafile(0), facefile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
-	static_path(0), image_editor(0),
+	static_path(0), image_editor(0), default_game(0), background_color(0),
 	browser(0), palbuf(0), egg_monster_draw(0), 
 	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
@@ -273,6 +280,14 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 		{
 		config->value("config/disk/data_path", datastr, EXULT_DATADIR);
 		xmldir = datastr.c_str();
+		}
+	string defgame;			// Default game name.
+	config->value("config/estudio/default_game", defgame, "");
+	if (defgame != "")
+		{
+		default_game = g_strdup(defgame.c_str());
+		if (!game && !gamedir)
+			game = default_game;
 		}
 	char path[256];			// Set up paths.
 	if(xmldir)
@@ -317,6 +332,10 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	config->value("config/estudio/image_editor", iedit, "");
 	if (iedit != "")
 		image_editor = g_strdup(iedit.c_str());
+					// Background color for shape browser.
+	int bcolor;
+	config->value("config/estudio/background_color", bcolor, 0);
+	background_color = bcolor;
 #ifdef WIN32
     OleInitialize(NULL);
 #endif
@@ -381,6 +400,7 @@ ExultStudio::~ExultStudio()
 #endif
 	g_free(static_path);
 	g_free(image_editor);
+	g_free(default_game);
 	self = 0;
 	delete config;
 	config = 0;
@@ -1140,6 +1160,103 @@ int ExultStudio::prompt
 	gtk_widget_hide(dlg);
 	assert(prompt_choice >= 0 && prompt_choice <= 2);
 	return prompt_choice;
+	}
+
+/*
+ *	'Preferences' window events.
+ */
+
+C_EXPORT void
+on_prefs_cancel_clicked			(GtkButton *button,
+					 gpointer   user_data)
+{
+	gtk_widget_hide(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+}
+C_EXPORT void
+on_prefs_apply_clicked			(GtkButton *button,
+					 gpointer   user_data)
+{
+	ExultStudio::get_instance()->save_preferences();
+}
+C_EXPORT void
+on_prefs_okay_clicked			(GtkButton *button,
+					 gpointer   user_data)
+{
+	ExultStudio::get_instance()->save_preferences();
+	gtk_widget_hide(gtk_widget_get_toplevel(GTK_WIDGET(button)));
+}
+C_EXPORT void
+on_prefs_background_choose_clicked	(GtkButton *button,
+					 gpointer   user_data)
+{
+//++++++++++++++++++++++++Color chooser.
+}
+					// Background color area exposed.
+C_EXPORT gboolean on_prefs_background_expose_event
+	(
+	GtkWidget *widget,		// The draw area.
+	GdkEventExpose *event,
+	gpointer data
+	)
+	{
+#if 0
+	gdk_draw_rectangle(widget->window, drawgc, TRUE, event->area.x, 
+			event->area.y, event->area.width, event->area.height);
+#endif
+	return (TRUE);
+	}
+
+					// X at top of window.
+C_EXPORT gboolean on_prefs_window_delete_event
+	(
+	GtkWidget *widget,
+	GdkEvent *event,
+	gpointer user_data
+	)
+	{
+	gtk_widget_hide(widget);
+	return TRUE;
+	}
+
+/*
+ *	Open preferences window.
+ */
+
+void ExultStudio::open_preferences
+	(
+	)
+	{
+	set_entry("prefs_image_editor", image_editor ? image_editor : "");
+	set_entry("prefs_default_game", default_game ? default_game : "");
+	GtkWidget *backgrnd = glade_xml_get_widget(app_xml, 
+							"prefs_background");
+	gtk_object_set_user_data(GTK_OBJECT(backgrnd), 
+						(gpointer) background_color);
+	GtkWidget *win = glade_xml_get_widget(app_xml, "prefs_window");
+	gtk_widget_show(win);
+	}
+
+/*
+ *	Save preferences.
+ */
+
+void ExultStudio::save_preferences
+	(
+	)
+	{
+	char *text = get_text_entry("prefs_image_editor");
+	g_free(image_editor);
+	image_editor = g_strdup(text);
+	config->set("config/estudio/image_editor", image_editor, true);
+	text = get_text_entry("prefs_default_game");
+	g_free(default_game);
+	default_game = g_strdup(text);
+	config->set("config/estudio/default_game", default_game, true);
+	GtkWidget *backgrnd = glade_xml_get_widget(app_xml, 
+							"prefs_background");
+	background_color = (guint32) gtk_object_get_user_data(
+						GTK_OBJECT(backgrnd));
+	config->set("config/estudio/background_color", background_color, true);
 	}
 
 void ExultStudio::run()

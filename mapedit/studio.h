@@ -56,6 +56,8 @@ private:
 	GladeXML		*app_xml;
 	char 			*static_path;
 	char			*image_editor;
+	char			*default_game;
+	guint32			background_color;
 	static ExultStudio	*self;
 	Shape_file_set		*files;		// All the shape files.
 	std::vector<GtkWindow*>	group_windows;	// All 'group' windows.
@@ -190,6 +192,9 @@ public:
 				unsigned char *data = 0, int datalen = 0);
 	void read_from_server();
 	bool connect_to_server();
+					// Preferences.
+	void open_preferences();
+	void save_preferences();
 					// GTK/Glade utils:
 	bool get_toggle(char *name);
 	void set_toggle(char *name, bool val);

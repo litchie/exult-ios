@@ -220,6 +220,18 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
+	    <name>preferences</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_preferences_activate</handler>
+	      <last_modification_time>Sun, 17 Mar 2002 05:59:05 GMT</last_modification_time>
+	    </signal>
+	    <label>Preferences...</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
 	    <name>exit</name>
 	    <accelerator>
 	      <modifiers>GDK_CONTROL_MASK</modifiers>
@@ -10791,6 +10803,11 @@ Random
   <class>GtkWindow</class>
   <name>prefs_window</name>
   <visible>False</visible>
+  <signal>
+    <name>delete_event</name>
+    <handler>on_prefs_window_delete_event</handler>
+    <last_modification_time>Sun, 17 Mar 2002 05:53:23 GMT</last_modification_time>
+  </signal>
   <title>ExultStudio Preferences</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -10911,7 +10928,7 @@ Random
 
 	<widget>
 	  <class>GtkEntry</class>
-	  <name>entry3</name>
+	  <name>prefs_default_game</name>
 	  <can_focus>True</can_focus>
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
@@ -10951,7 +10968,7 @@ Random
 
 	  <widget>
 	    <class>GtkEntry</class>
-	    <name>entry2</name>
+	    <name>prefs_image_editor</name>
 	    <can_focus>True</can_focus>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
@@ -11037,6 +11054,11 @@ Random
 	      <class>GtkDrawingArea</class>
 	      <name>prefs_background</name>
 	      <width>39</width>
+	      <signal>
+		<name>expose_event</name>
+		<handler>on_prefs_background_expose_event</handler>
+		<last_modification_time>Sun, 17 Mar 2002 05:55:35 GMT</last_modification_time>
+	      </signal>
 	    </widget>
 	  </widget>
 
@@ -11044,6 +11066,11 @@ Random
 	    <class>GtkButton</class>
 	    <name>prefs_background_choose</name>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>on_prefs_background_choose_clicked</handler>
+	      <last_modification_time>Sun, 17 Mar 2002 05:53:43 GMT</last_modification_time>
+	    </signal>
 	    <label>...</label>
 	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <child>
@@ -11076,6 +11103,11 @@ Random
 	<name>prefs_okay</name>
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_prefs_okay_clicked</handler>
+	  <last_modification_time>Sun, 17 Mar 2002 05:52:07 GMT</last_modification_time>
+	</signal>
 	<label>Okay</label>
 	<relief>GTK_RELIEF_NORMAL</relief>
       </widget>
@@ -11085,6 +11117,11 @@ Random
 	<name>prefs_apply</name>
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_prefs_apply_clicked</handler>
+	  <last_modification_time>Sun, 17 Mar 2002 05:52:16 GMT</last_modification_time>
+	</signal>
 	<label>Apply</label>
 	<relief>GTK_RELIEF_NORMAL</relief>
       </widget>
@@ -11094,6 +11131,11 @@ Random
 	<name>prefs_cancel</name>
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_prefs_cancel_clicked</handler>
+	  <last_modification_time>Sun, 17 Mar 2002 05:52:25 GMT</last_modification_time>
+	</signal>
 	<label>Cancel</label>
 	<relief>GTK_RELIEF_NORMAL</relief>
       </widget>
