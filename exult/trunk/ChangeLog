@@ -1,3 +1,7 @@
+2002-06-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/Makefile.am: add estudio/new files to dist/data
+	* exult.spec.in: add estudio/new files to studio rpm
+
 2002-06-08  Darke <darkepaw@users.sourceforge.net>
 	* usecode/ucxt/src/ucfunc.cc: Removed the 'fix' we needed for
 	strstreams.
