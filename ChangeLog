@@ -1,3 +1,8 @@
+2001-06-25  Christoph Reichenbach  <jameson@linuxgames.com>
+
+	* audio/SDL_mapping.h: const'ed MixAudio()'s 2nd parameter to silence
+	cxx
+
 2001-06-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* actors.cc: put reduce_health() call back in combat :-)
 	
