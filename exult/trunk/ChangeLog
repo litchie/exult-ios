@@ -1,3 +1,7 @@
+2003-08-31  Ryan Nunn  <colourles@users.sourceforge.net>
+	* imagewin/scale.cc : Fixing 2xSaI (No mouse problems, should generally
+	  look better)
+
 2003-08-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* all: if we're GPL, don't refer to the LGPL for details.
 	  (thanks to Colourless for spotting this one)
