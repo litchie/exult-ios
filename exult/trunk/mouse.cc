@@ -25,12 +25,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "alpha_kludges.h"
 
+#include "SDL_mouse.h"
+#include "SDL_timer.h"
 #include "mouse.h"
 #include "gamewin.h"
 #include "fnames.h"
 
-#include "SDL_mouse.h"
-#include "SDL_timer.h"
 
 short Mouse::short_arrows[8] = {8, 9, 10, 11, 12, 13, 14, 15};
 short Mouse::med_arrows[8] = {16, 17, 18, 19, 20, 21, 22, 23};

@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #endif
+#include <cstdio>
 
 using std::cerr;
 using std::cout;
