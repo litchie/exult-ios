@@ -456,8 +456,10 @@ void Game_window::read_ireg_objects
 			else
 				continue;
 		if (entlen != 6 && entlen != 12 && entlen != 18)
-			{		// 
+			{
 			long pos = ireg.tellg();
+			cout << "Unknown entlen " << entlen << " at pos. " <<
+					pos << '\n';
 			ireg.seekg(pos + entlen);
 			continue;	// Only know these two types.
 			}
@@ -664,14 +666,14 @@ void Game_window::paint
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy < stop_chunky; cy++)
 		for (cx = start_chunkx; cx < stop_chunkx; cx++)
+			{
 			paint_chunk_flats(cx, cy);
-
-					// Do each level going upwards.
-	for (int lift = 0; lift < 16; lift++)
+			paint_chunk_objects(0, cx, cy, 1);
+			}
 					// Draw the chunks' objects.
-		for (cy = start_chunky; cy < stop_chunky; cy++)
-			for (cx = start_chunkx; cx < stop_chunkx; cx++)
-				paint_chunk_objects(lift, cx, cy);
+	for (cy = start_chunky; cy < stop_chunky; cy++)
+		for (cx = start_chunkx; cx < stop_chunkx; cx++)
+			paint_chunk_objects(-1, cx, cy, 0);
 	if (mode == intro && win->ready())
 		{
 		int x = 15, y = 15;
@@ -745,31 +747,60 @@ void Game_window::paint_chunk_flats
 
 void Game_window::paint_chunk_objects
 	(
-	int at_lift,			// Only paint this lift.
-	int cx, int cy			// Chunk coords (0 - 12*16).
+	int at_lift,			// Only paint this lift.  -1=all.
+	int cx, int cy,			// Chunk coords (0 - 12*16).
+	int flat_only			// Only paint 0-height objects if 1,
+					//   >0 height if 0.
 	)
 	{
 	Game_object *obj;
 	Chunk_object_list *olist = get_objects(cx, cy);
-	int above_actor;		// If inside, figure height above
+	int save_skip = skip_lift;	// ++++Clean this stuff up.
+					// If inside, figure height above
 	if (main_actor_inside)		//   actor's head.
 		{
-		above_actor = main_actor->get_lift() + 
+		skip_lift = main_actor->get_lift() + 
 		  shapes.get_info(main_actor->get_shapenum()).get_3d_height();
 		}
-	else
-		above_actor = 32;
+					// +++++Clear flag.
 	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
+		obj->rendered = 0;
+	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
+		if (!obj->rendered)
+			paint_object(obj, at_lift, flat_only);
+	skip_lift = save_skip;
+	}
+
+/*
+ *	Render an object after first rendering any that it depends on.
+ */
+
+void Game_window::paint_object
+	(
+	Game_object *obj,
+	int at_lift,			// Only paint this lift.  -1=all.
+	int flat_only			// Only paint 0-height objects if 1,
+					//   >0 height if 0.
+	)
+	{
+	obj->rendered = 1;
+	int lift = obj->get_lift();
+	if (at_lift >= 0 && at_lift != lift)
+		return;
+	if (lift >= skip_lift)
+		return;
+					// Check height.
+	Shape_info& info = shapes.get_info(obj->get_shapenum());
+	if ((info.get_3d_height() == 0) != flat_only)
+		return;
+	int cnt = obj->get_dependency_count();
+	for (int i = 0; i < cnt; i++)
 		{
-		int lift = obj->get_lift();
-		if (lift > at_lift)	// They're sorted by lift first.
-			break;
-		if (lift != at_lift || lift >= skip_lift)
-			continue;	// Don't show things off ground.
-					// Is actor inside?  Skip roofs if so.
-		if (lift < above_actor)
-			obj->paint(this);
+		Game_object *dep = obj->get_dependency(i);
+		if (dep && !dep->rendered)
+			paint_object(dep, at_lift, flat_only);
 		}
+	obj->paint(this);		// Finally, paint this one.
 	}
 
 /*
@@ -987,6 +1018,8 @@ int Game_window::find_objects
 	Game_object **list		// Objects found are stored here.
 	)
 	{
+cout << "Clicked at tile (" << chunkx*tiles_per_chunk + x/tilesize << ", " <<
+		chunky*tiles_per_chunk + y/tilesize << ")\n";
 	int cnt = 0;
 	int actor_lift = main_actor->get_lift();
 	int start = actor_lift > 0 ? -1 : 0;
@@ -1106,10 +1139,15 @@ void Game_window::show_items
 			info.get_3d_height() << ", sched = " <<
 			obj->get_schedule()
 			<< '\n';
+		int tx, ty, tz;
+		obj->get_abs_tile(tx, ty, tz);
+		cout << "tx = " << tx << ", ty = " << ty << '\n';
+		cout << "obj = " << (void *) obj << '\n';
+#if 0
 		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << '\n';
 		cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << '\n';
 		cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << '\n';
-		cout << "Weight = " << info.get_weight() << '\n';
+#endif
 		if (info.is_animated())
 			cout << "Object is ANIMATED\n";
 		if (info.has_transparency())

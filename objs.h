@@ -104,6 +104,10 @@ class Game_object : public ShapeID
 	unsigned char lift;		// Raise by 4* this number.
 	short quality;			// Some sort of game attribute.
 	Game_object *next;		// ->next in chunk list or container.
+	Vector dependencies;		// Objects which must be painted before
+					//   this can be rendered.
+public:	//++++++Testing.  Maybe replace with a seq. number.
+	unsigned char rendered;		// 1 when rendered.
 protected:
 	unsigned char cx, cy;		// (Absolute) chunk coords., or if this
 					//   is in a container, coords. within
@@ -162,7 +166,8 @@ public:
 		{ return next; }
 	void set_next(Game_object *obj) // Set next in list.
 		{ next = obj; }
-	int lt(Game_object& obj2)	// Is this less than another in pos.?
+	int lt(Game_object& obj2);	// Is this less than another in pos.?
+#if 0
 		{
 		int y = get_ty(), y2 = obj2.get_ty();
 		int l = lift, l2 = obj2.lift;
@@ -170,6 +175,7 @@ public:
 			(y < y2 || (y == y2 && 
 				get_tx() < obj2.get_tx()))));
 		} 
+#endif
 					// Return chunk coords.
 	int get_cx()
 		{ return cx; }
@@ -177,6 +183,18 @@ public:
 		{ return cy; }
 					// Move to new abs. location.
 	void move(int newtx, int newty, int newlift);
+	int get_dependency_count()	// Get objs. to paint first.
+		{ return dependencies.get_cnt(); }
+	Game_object *get_dependency(int i)
+		{ return (Game_object *) dependencies.get(i); }
+					// Remove a dependency.
+	void remove_dependency(Game_object *obj2)
+		{
+		int i = dependencies.find(obj2);
+		if (i >= 0)
+			dependencies.put(i, 0);
+		}
+	void clear_dependencies();	// Remove all dependencies.
 					// Find nearby objects.
 	int find_nearby(Vector& vec, int shapenum, int quality, int mask);
 					// Render.

@@ -62,6 +62,8 @@ public:
 		{ return yabove + ybelow; }
 	int get_xleft()
 		{ return xleft; }
+	int get_xright()
+		{ return xright; }
 	int get_yabove()
 		{ return yabove; }
 	int get_ybelow()
