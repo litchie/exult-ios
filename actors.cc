@@ -1370,7 +1370,8 @@ int Actor::drop
 	Game_object *obj
 	)
 	{
-	if (get_party_id() >= 0)	// In party?
+	if (get_party_id() >= 0 ||	// In party?
+	    this == Game_window::get_game_window()->get_main_actor())
 		return (add(obj));	// We'll take it.
 	else
 		return 0;
