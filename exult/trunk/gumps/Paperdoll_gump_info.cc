@@ -1336,6 +1336,7 @@ Paperdoll_gump::Paperdoll_item *Paperdoll_gump::GetItemInfo(int shape, int frame
 		it = Items_BG;
 	else
 		it = Items;
+	frame &= 0x1f;			// Mask off 'rotated' bit.
 
 	while (it[i].world_shape)
 	{
