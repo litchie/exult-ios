@@ -16,3 +16,4 @@ Issues Remaining with Audio Code
 * Guardian voice clicks
 * BG Guardian Intro & Ending animation out of sync with Music/SFX
 * Find out when background SFX tracks change in original U7, only currently using 2 out of 5 possible
+* Implement config option for pause audio/music (on/off)
