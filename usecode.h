@@ -118,6 +118,7 @@ private:
 	void stack_error(int under);
 	void push(Usecode_value& val);	// Push/pop stack.
 	Usecode_value pop();
+	void pushref(Game_object* obj); // Push itemref
 	void pushi(long val);		// Push/pop integers.
 	int popi();
 					// Push/pop strings.
