@@ -29,6 +29,11 @@ class Game_object;
 class Game_window;
 class Gump_button;
 
+#ifndef _GUMPSHAPEFILE
+#define _GUMPSHAPEFILE
+enum Gumpshapefile { GSF_GUMPS_VGA, GSF_EXULT_FLX };
+#endif
+
 /*
  *	A gump contains an image of an open container from "gumps.vga".
  */
@@ -41,6 +46,7 @@ protected:
 	Gump *next;		// ->next to draw.
 	Container_game_object *container;// What this gump shows.
 	int x, y;			// Location on screen.
+	Gumpshapefile shapefile;
 	unsigned char shapenum;
 	Rectangle object_area;		// Area to paint objects in, rel. to
 					// Where the 'checkmark' goes.
@@ -51,9 +57,11 @@ protected:
 
 public:
 	Gump(Container_game_object *cont, int initx, int inity, 
-								int shnum, bool pdoll = false);
+								int shnum, bool pdoll = false,
+								Gumpshapefile shfile = GSF_GUMPS_VGA);
 					// Create centered.
-	Gump(Container_game_object *cont, int shnum);
+	Gump(Container_game_object *cont, int shnum,
+								Gumpshapefile shfile = GSF_GUMPS_VGA);
 	virtual ~Gump();
 	int get_x()			// Get coords.
 		{ return x; }

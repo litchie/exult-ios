@@ -38,6 +38,10 @@ int Gump_widget::on_widget
 {
 	mx -= parent->get_x() + x;	// Get point rel. to gump.
 	my -= parent->get_y() + y;
-	Shape_frame *cshape = gwin->get_gump_shape(shapenum, 0);
+	Shape_frame *cshape;
+	if (shapefile == GSF_GUMPS_VGA)
+		cshape = gwin->get_gump_shape(shapenum, 0);
+	else if (shapefile == GSF_EXULT_FLX)
+		cshape = gwin->get_exult_shape(shapenum, 0);
 	return (cshape->has_point(mx, my));
 }

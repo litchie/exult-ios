@@ -34,7 +34,14 @@ EXULT_FLX_OBJECTS = \
 	sav_down.shp		\
 	sav_up.shp		\
 	sav_upup.shp		\
-	sav_slider.shp
+	sav_slider.shp		\
+	gamemenu.shp		\
+	gam_loadsave.shp	\
+	gam_audio.shp		\
+	gam_video.shp		\
+	gam_gameplay.shp	\
+	gam_quitmenu.shp	\
+	gam_quit.shp
 
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in			\
