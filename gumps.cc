@@ -1842,6 +1842,7 @@ void Yesno_gump_object::paint
 					// Paint text.
 	gwin->paint_text_box(2, text, x + object_area.x, y + object_area.y,
 			object_area.w, object_area.h, 2);
+	gwin->set_painted();
 	}
 
 /*
