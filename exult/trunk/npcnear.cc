@@ -41,8 +41,12 @@ void Npc_proximity_handler::handle_event
 	Rectangle vchunks(gwin->get_chunkx(), gwin->get_chunky(),
 		(gwin->get_width() + (chunksize - 1))/chunksize,
 		(gwin->get_height() + (chunksize - 1))/chunksize);
+					// No longer visible?
 	if (!vchunks.has_point(npc->get_cx(), npc->get_cy()))
+		{
+		npc->clear_nearby();
 		return;
+		}
 	gwin->get_usecode()->call_usecode(npc->get_usecode(), npc,
 					Usecode_machine::npc_proximity);
 	add(curtime, npc);		// Add back for next time.

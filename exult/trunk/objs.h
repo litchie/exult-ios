@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Vga_file;
 class Game_window;
+class Npc_actor;
 
 /*
  *	Sizes:
@@ -235,12 +236,15 @@ class Chunk_object_list
 	ShapeID flats[256];		// Flat (non-RLE) shapes.  The unused
 					//   are "invalid" entries.
 	Game_object *objects;		// ->first in ordered list.
+	Npc_actor *npcs;		// List of NPC's in this chunk.
+					//   (Managed by Npc_actor class.)
 	Egg_object **egg_objects;	// ->eggs in chunk.
 	int num_eggs;
 	unsigned char eggs[256];	// For each (x,y), index of egg in
 					//  egg_objects, or -1 if no egg there.
 	unsigned char roof;		// 1 if a roof present.
 public:
+	friend class Npc_actor;
 	Chunk_object_list();
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add an egg.
@@ -256,6 +260,8 @@ public:
 		}
 	int is_roof()			// Is there a roof?
 		{ return roof; }
+	Npc_actor *get_npcs()		// Get ->first npc in chunk.
+		{ return npcs; }
 					// Set/get flat shape.
 	void set_flat(int shapex, int shapey, ShapeID id)
 		{ flats[16*shapey + shapex] = id; }

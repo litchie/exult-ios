@@ -79,17 +79,20 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		int shapex = locx & 0xf;
 		int shapey = locy & 0xf;
 		Actor *actor;
+		Npc_actor *npc_actor = 0;
 		if (i == 0)		// Main character?
 			actor = main_actor =
 				new Main_actor(namebuf, 
 				shape[0] + 256*(shape[1]&0x3), i, usecode);
 		else			// Create NPC.
-			actor = new Npc_actor(namebuf, 
+			actor = npc_actor = new Npc_actor(namebuf, 
 				shape[0] + 256*(shape[1]&0x3), i, usecode);
 		npcs[i] = actor;	// Store in list.
-		actor->move(scx + cx, scy + cy, 
-				get_objects(scx + cx, scy + cy),
+		Chunk_object_list *olist = get_objects(scx + cx, scy + cy);
+		actor->move(scx + cx, scy + cy, olist,
 				shapex, shapey, (shape[1]>>2) & 0x1f, lift);
+		if (npc_actor)		// Put in chunk's NPC list.
+			npc_actor->switched_chunks(0, olist);
 #if 0
 cout << i << " Creating " << namebuf << ", shape = " << 
 	actor->get_shapenum() <<
