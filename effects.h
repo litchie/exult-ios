@@ -199,6 +199,7 @@ class Cloud
 	int count;			// Counts down to 0.
 	int max_count;
 	unsigned long start_time;	// When to start.
+	static int randcnt;		// For generating random times.
 	void set_start_pos(Shape_frame *shape, int w, int h, int& x, int& y);
 public:
 	Cloud(short dx, short dy);

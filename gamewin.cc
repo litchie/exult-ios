@@ -46,6 +46,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "files/U7file.h"
 #include "flic/playfli.h"
 #include "Configuration.h"
+#include "schedule.h"
 					// THE game window:
 Game_window *Game_window::game_window = 0;
 
@@ -214,6 +215,27 @@ void Game_window::add_path_egg
 		{
 		path_eggs.reserve(qual + 1);
 		path_eggs[qual] = egg;
+		}
+	}
+
+/*
+ *	Toggle combat mode.
+ */
+
+void Game_window::toggle_combat
+	(
+	)
+	{ 
+	combat = !combat;
+					// Change party member's schedules.
+	int newsched = combat ? Schedule::combat : Schedule::follow_avatar;
+	int cnt = usecode->get_party_count();
+	for (int i = 0; i < cnt; i++)
+		{
+		int party_member=usecode->get_party_member(i);
+		Actor *person=get_npc(party_member);
+		if (person)
+			person->set_schedule_type(newsched);
 		}
 	}
 

@@ -225,8 +225,7 @@ public:
 		{ return mode; }
 	inline int in_combat()		// In combat mode?
 		{ return combat; }
-	inline void toggle_combat()
-		{ combat = !combat; }
+	void toggle_combat();
 					// Resize event occurred.
 	void resized(unsigned int neww, unsigned int newh);
 	inline void set_painted()		// Force blit.
