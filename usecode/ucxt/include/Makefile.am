@@ -1,5 +1,5 @@
 noinst_HEADERS = \
-	opcodes.h	\
+	ops.h	\
 	ucc.h		\
 	ucdata.h	\
 	ucfunc.h
