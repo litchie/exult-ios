@@ -86,6 +86,7 @@ protected:
 	Schedule *schedule;		// Current schedule.
 	bool dormant;			// I.e., off-screen.
 	bool dead;
+	bool hit;			// Just hit in combat.
 	bool combat_protected;		// 'Halo' on paperdoll screen.
 	short alignment;		// 'Feelings' towards Ava. See below.
 	Game_object *spots[18];		// Where things can go.  See 'Spots'
@@ -114,6 +115,7 @@ protected:
 					// Read from file.
 	Actor(std::istream& nfile, int num, int has_usecode);
 public:
+	friend class Clear_hit;
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
 	~Actor();

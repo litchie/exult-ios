@@ -118,8 +118,10 @@ void Shapes_vga_file::read_info
 		unsigned short special = Read1(weapon);
 		Read1(weapon);		// Skip (0).
 		short usecode = Read2(weapon);
-		unsigned char unk6[6];
-		weapon.read((char *)unk6, sizeof(unk6));
+		short usesfx = Read2(weapon) - 1;
+		short hitsfx = Read2(weapon) - 1;
+		unsigned char unk2[2];
+		weapon.read((char *)unk2, sizeof(unk2));
 #if 0
 		cout << "Damage = " << damage << ", flags0 = " << hex
 			<< " 0x" << setfill('0') << 
@@ -128,15 +130,17 @@ void Shapes_vga_file::read_info
 			<< "0x" << unk1 << endl;
 		cout << "Special flags = " << "0x" << special <<
 			", usecode = 0x" << usecode << endl;
+		cout << dec << "Sfx = " << usesfx << ", hitsfx = " <<
+				hitsfx << endl;
 		cout << "Unknown at end:  ";
-		for (int i = 0; i < sizeof(unk6); i++)
+		for (int i = 0; i < sizeof(unk2); i++)
 			cout << setw(2) << setfill('0') <<
-						(short) unk6[i] << ' ';
+						(short) unk2[i] << ' ';
 		cout << dec << endl << endl;
 #endif
 		info[shapenum].weapon = new Weapon_info(damage, 
 			(range>>4)&0xf, range&0xf, special,
-					ammoshape, strikeshape, usecode);
+			ammoshape, strikeshape, usecode, usesfx, hitsfx);
 		}
 	weapon.close();	
 	ifstream ammo;

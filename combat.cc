@@ -424,6 +424,14 @@ void Combat_schedule::start_strike
 	int cnt = npc->get_attack_frames(dir, frames);
 	npc->set_action(new Frames_actor_action(frames, cnt));
 	npc->start();			// Get back into time queue.
+	int sfx;			// Play sfx.
+	Game_window *gwin = Game_window::get_game_window();
+	Weapon_info *winf = gwin->get_info(weapon_shape).get_weapon_info();
+	if (winf && (sfx = winf->get_sfx()) >= 0 &&
+					// But only if Ava. involved.
+	    (npc == gwin->get_main_actor() || 
+				opponent == gwin->get_main_actor()))
+		Audio::get_ptr()->play_sound_effect(sfx);
 					// Have them attack back.
 	Actor *opp = dynamic_cast<Actor *> (opponent);
 					// But only if it's a monster.????Why??
@@ -770,8 +778,10 @@ void Combat_schedule::set_opponent
 	{
 	opponent = obj;
 	state = approach;
-					// A real battle?
-	if (npc->get_attack_mode() != Actor::flee)
+			
+	Actor *opp;			// A real battle?
+	if (npc->get_attack_mode() != Actor::flee &&
+	    (opp = dynamic_cast<Actor *>(obj)) != 0)
 		start_battle();			// Play music.
 	}
 

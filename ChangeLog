@@ -1,3 +1,8 @@
+2001-06-12  Jeff Freedman  <jeff@amy.nerble.net>
+	* shapes: SFX fields read from weapons.dat.
+	* combat.cc,actors.cc: Play weapon SFX.
+	* actors.cc,gamewin.cc:  Flash red outline when injured.
+
 2001-06-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* actors.*, keyactions.cc: double clicking avatar shows inventory again
 	* gumps/gump_types.h: extracted Gumpshapefile to a header file

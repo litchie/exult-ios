@@ -380,7 +380,7 @@ Actor::Actor
 	    npc_num(num), party_id(-1), shape_save(-1), 
 	    oppressor(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
-	    dead(false), combat_protected(false), alignment(0),
+	    dead(false), hit(false), combat_protected(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), skin_color(-1), 
 	    action(0), 
@@ -1355,7 +1355,11 @@ void Actor::paint
 			gwin->paint_shape(xoff, yoff, get_shapenum(),
 							get_framenum());
 		paint_weapon(gwin);
-		if (flags & ((1L<<Obj_flags::protection) | (1L << Obj_flags::poisoned)))
+		if (hit)		// Want a momentary red outline.
+			gwin->paint_hit_outline(xoff, yoff,
+					get_shapenum(), get_framenum());
+		else if (flags & ((1L<<Obj_flags::protection) | 
+						(1L << Obj_flags::poisoned)))
 			{
 			if (flags & (1L << Obj_flags::poisoned))
 				gwin->paint_poison_outline(xoff, yoff,
@@ -1611,6 +1615,25 @@ void Actor::set_property
 	}
 
 /*
+ *	A class whose whole purpose is to clear the 'hit' flag.
+ */
+class Clear_hit : public Time_sensitive
+	{
+public:
+	Clear_hit()
+		{  }
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+void Clear_hit::handle_event(unsigned long curtime, long udata)
+	{ 
+	Actor *a = (Actor *) udata;
+	a->hit = false;
+	Game_window *gwin = Game_window::get_game_window();
+	a->add_dirty(gwin);
+	delete this;
+	}
+
+/*
  *	This method should be called to decrement health from attacks, traps.
  */
 
@@ -1630,10 +1653,17 @@ void Actor::reduce_health
 	int val = oldhp - delta;
 	properties[(int) health] = val;
 	Game_window *gwin = Game_window::get_game_window();
-	if (this == gwin->get_main_actor() && val < maxhp/8)
+	if (this == gwin->get_main_actor() && val < maxhp/8 &&
 					// Flash red if Avatar badly hurt.
-		if (rand()%2)
-			gwin->flash_palette_red();
+	    rand()%2)
+		gwin->flash_palette_red();
+	else
+		{
+		hit = true;		// Flash red outline.
+		add_dirty(gwin);
+		Clear_hit *c = new Clear_hit();
+		gwin->get_tqueue()->add(SDL_GetTicks() + 200, c, (long) this);
+		}
 	Game_object_vector vec;		// Create blood.
 	const int blood = 912;
 	if (delta >= 3 && rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
@@ -2303,6 +2333,12 @@ int Actor::figure_hit_points
 			wpoints - armor;
 	if (hp < 1)
 		hp = 1;
+	int sfx;			// Play 'hit' sfx.
+	if (winf && (sfx = winf->get_hitsfx()) >= 0 &&
+					// But only if Ava. involved.
+	    (this == gwin->get_main_actor() || 
+				attacker == gwin->get_main_actor()))
+		Audio::get_ptr()->play_sound_effect(sfx);
 	int oldhealth = properties[(int) health];
 	int maxhealth = properties[(int) strength];
 
@@ -2324,8 +2360,12 @@ int Actor::figure_hit_points
 		else
 			say(first_ouch, last_ouch);
 	reduce_health(hp);
-	cout << "Attack damage was " << hp << " hit points, leaving " << 
+	cout << (attacker ? attacker->get_name() : "<trap>") << 
+		" hits " << get_name() <<
+		" for " << hp << " hit points, leaving " <<
 		properties[(int) health] << " remaining" << endl;
+//	cout << "Attack damage was " << hp << " hit points, leaving " << 
+//		properties[(int) health] << " remaining" << endl;
 	return hp;
 	}
 
