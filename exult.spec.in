@@ -142,3 +142,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %{bindir}/exult_studio
 %{datadir}/exult/exult_studio.glade
+%{datadir}/estudio/new/combos.flx
+%{datadir}/estudio/new/faces.vga
+%{datadir}/estudio/new/gumps.vga
+%{datadir}/estudio/new/palettes.flx
+%{datadir}/estudio/new/shapes.vga
+%{datadir}/estudio/new/sprites.vga
+%{datadir}/estudio/new/text.flx
