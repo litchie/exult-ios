@@ -58,6 +58,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "config.h"
 #include "utils.h"
 #include "egg.h"
+#include "actors.h"
 
 using std::cout;
 using std::cerr;
@@ -185,6 +186,8 @@ static void Handle_client_message
 		return;
 	if (id == Exult_server::egg)
 		Egg_object::update_from_studio(&data[0], datalen);
+	if (id == Exult_server::npc)
+		Actor::update_from_studio(&data[0], datalen);
 	}
 
 /*

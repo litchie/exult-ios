@@ -49,6 +49,7 @@ const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
  */
 class Actor : public Container_game_object, public Time_sensitive
 	{
+	static Actor *editing;		// NPC being edited by ExultStudio.
 protected:
 	std::string name;			// Its name.
 	int usecode;			// # of usecode function.
@@ -314,6 +315,8 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
+					// Saved from ExultStudio.
+	static void update_from_studio(unsigned char *data, int datalen);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 	virtual std::string get_name() const;
