@@ -2213,6 +2213,8 @@ int Actor::figure_warmth
 	if (worn && worn->get_shapenum() == 1004 &&
 	    (frnum = worn->get_framenum()) < sizeof(hats)/sizeof(hats[0]))
 		warmth += hats[frnum];
+	if (worn && worn->get_shapenum() == 1013)
+		warmth += hats[1]; // Helm of Light behaves like fur hat
 	worn = spots[(int) cloak_spot];	// Cloak.
 	if (worn && worn->get_shapenum() == 227 &&
 	    (frnum = worn->get_framenum()) < sizeof(cloaks)/sizeof(cloaks[0]))
