@@ -283,24 +283,46 @@ void Sleep_schedule::now_what
 		return;			// Already sleeping.
 					// Find closest EW or NS bed.
 	static int bedshapes[2] = {696, 1011};
+	Game_window *gwin = Game_window::get_game_window();
 	bed = npc->find_closest(bedshapes, 2);
 	if (!bed)
 		{			// Just lie down at current spot.
-		Game_window *gwin = Game_window::get_game_window();
 		gwin->add_dirty(npc);
 		int dirbits = npc->get_framenum()&(0x30);
 		npc->set_frame(Actor::sleep_frame|dirbits);
 		gwin->add_dirty(npc);
 		return;
 		}
+	Vector tops;			// Want to find top of bed.
+	int cnt = bed->find_nearby(tops, bed->get_shapenum(), 1, 0);
+	if (cnt > 0)
+		for (int i = 0; i < cnt; i++)
+			{
+			Game_object *top = (Game_object *) tops.get(i);
+			int frnum = top->get_framenum();
+			if (frnum >= 3 && frnum <= 16)
+				{
+				bed = top;
+				break;
+				}
+			}
 	int dir = bed->get_shapenum() == 696 ? west : north;
 	npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
 					// Get bed info.
 	Shape_info& info = Game_window::get_game_window()->get_info(bed);
 	Tile_coord bedloc = bed->get_abs_tile_coord();
 	floorloc = npc->get_abs_tile_coord();
+	int bedframe = bed->get_framenum();// Unmake bed.
+	if (bedframe >= 3 && bedframe < 16 && (bedframe%2))
+		{
+		bedframe++;
+		bed->set_frame(bedframe);
+		gwin->add_dirty(bed);
+		}
+	int bedspread = (bedframe >= 4 && !(bedframe%2));
 					// Put NPC on top of bed.
-	npc->move(bedloc.tx, bedloc.ty, bedloc.tz + info.get_3d_height() + 1);
+	npc->move(bedloc.tx, bedloc.ty, bedloc.tz + 
+				(bedspread ? 0 : info.get_3d_height()));
 	}
 
 /*
@@ -315,8 +337,14 @@ void Sleep_schedule::ending
 	if (new_type == (int) wait)	// Needed for Skara Brae.
 		return;			// ++++Does this leave NPC's stuck?++++
 	if (bed)			// Locate free spot.
+		{		//++++++Got to look on floor.
 		for (int dist = 1; dist < 8 && floorloc.tx == -1; dist++)
 			floorloc = npc->find_unblocked_tile(dist, 4);
+					// Make bed.
+		int frnum = bed->get_framenum();
+		if (frnum >= 4 && frnum <= 16 && !(frnum%2))
+			bed->set_frame(frnum - 1);
+		}
 	if (floorloc.tx >= 0)		// Get back on floor.
 		npc->move(floorloc);
 	npc->set_frame(Actor::standing);
