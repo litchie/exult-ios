@@ -322,6 +322,15 @@ inline Tile_coord Get_step_tile
 	)
 	{
 	int dx = dest.tx - pos.tx, dy = dest.ty - pos.ty;
+	if (dx < -1)
+		dx = -1;		// Limit to 1 tile.
+	else if (dx > 1)
+		dx = 1;
+	if (dy < -1)
+		dy = -1;
+	else if (dy > 1)
+		dy = 1;
+#if 0	/* ++++++I don't think this is good.	*/
 					// Get adjacent tile in given dir.
 	Tile_coord adj = pos.get_neighbor(dir);
 					// See if we're past desired spot.
@@ -353,6 +362,7 @@ inline Tile_coord Get_step_tile
 		else if (dy > 1)
 			dy = 1;
 		}
+#endif
 	return pos + Tile_coord(dx, dy, 0);
 	}
 
