@@ -1378,7 +1378,9 @@ Usecode_machine::~Usecode_machine
 	delete funs;
 	}
 
+#if DEBUG
 int debug = 0;				// 2 for more stuff.
+#endif
 
 /*
  *	Interpret a single usecode function.
@@ -1391,8 +1393,10 @@ void Usecode_machine::run
 	)
 	{
 	call_depth++;
+#if DEBUG
 	if (debug >= 0)
 		printf("Running usecode %04x with event %d\n", fun->id, event);
+#endif
 	Usecode_value *save_sp = sp;	// Save TOS.
 	Answers save_answers;		// Save answers list.
 	save_answers = answers;
@@ -1429,9 +1433,11 @@ void Usecode_machine::run
 	while (ip < endp)
 		{
 		int opcode = *ip++;
+#if DEBUG
 		if (debug >= 2)
 			printf("SP = %d, IP = %04x, op = %02x\n", sp - stack,
 						ip - code, opcode);
+#endif
 		switch (opcode)
 			{
 		case 0x04:		// Jump if done with function.
@@ -1758,8 +1764,10 @@ void Usecode_machine::run
 	delete [] locals;
 					// Restore list of answers.
 	answers = save_answers;
+#if DEBUG
 	if (debug >= 1)
 		printf("RETurning from usecode %04x\n", fun->id);
+#endif
 	call_depth--;
 	}
 
