@@ -156,6 +156,8 @@ public:
 		{ return 1 + (tfa[2]&7); }
 	int get_3d_ytiles()		// Dimension in tiles - Y.
 		{ return 1 + ((tfa[2]>>3)&7); }
+	int is_animated()
+		{ return (tfa[0] & (1<<2)) != 0; }
 	int is_light_source()
 		{ return (tfa[2] & (1<<6)) != 0; }
 	int is_transparent()		// ??

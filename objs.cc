@@ -114,6 +114,22 @@ int Game_object::find_nearby
 	}
 
 /*
+ *	Paint at given spot in world.
+ */
+
+void Game_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	int xoff = (cx - gwin->get_chunkx())*chunksize;
+	int yoff = (cy - gwin->get_chunky())*chunksize;
+	gwin->paint_shape(xoff + (1 + get_tx())*tilesize - 4*lift, 
+				yoff + (1 + get_ty())*tilesize - 4*lift,
+					get_shapenum(), get_framenum());
+	}
+
+/*
  *	Run usecode when double-clicked.
  */
 
@@ -193,28 +209,6 @@ int Egg_object::within_distance
 	}
 
 /*
- *	Add an object.
- */
-
-void Container_game_object::add
-	(
-	Game_object *obj
-	)
-	{
-	if (!last_object)		// First one.
-		{
-		last_object = obj;
-		obj->set_next(obj);
-		}
-	else
-		{
-		obj->set_next(last_object->get_next());
-		last_object->set_next(obj);
-		last_object = obj;
-		}
-	}
-
-/*
  *	Remove an object.
  */
 
@@ -243,6 +237,31 @@ void Container_game_object::remove
 		prev = prev->get_next();
 		}
 	while (prev != last_object);
+	}
+
+/*
+ *	Add an object.
+ *
+ *	Output:	1, meaning object is completely contained in this.
+ */
+
+int Container_game_object::add
+	(
+	Game_object *obj
+	)
+	{
+	if (!last_object)		// First one.
+		{
+		last_object = obj;
+		obj->set_next(obj);
+		}
+	else
+		{
+		obj->set_next(last_object->get_next());
+		last_object->set_next(obj);
+		last_object = obj;
+		}
+	return 1;
 	}
 
 /*
@@ -350,6 +369,33 @@ int Container_game_object::get_objects
 	}
 
 /*
+ *	Add an object.
+ *
+ *	Output:	0, meaning object should also be added to chunk.
+ */
+
+int Barge_object::add
+	(
+	Game_object *obj
+	)
+	{
+	return (0);			//+++++++Later, dude.
+	}
+
+/*
+ *	Paint at given spot in world.
+ */
+
+void Barge_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+					// DON'T paint barge shape itself.
+					// The objects are in the chunk too.
+	}
+
+/*
  *	Run usecode when double-clicked or when activated by proximity.
  */
 
@@ -358,16 +404,17 @@ void Egg_object::activate
 	Usecode_machine *umachine
 	)
 	{
-	int roll = 1 + rand()%100;
-	if (roll > probability)
-		return;			// Out of luck.
 #if DEBUG
 cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		", distance = " << (int) distance << ", crit = " <<
 		(int) criteria << ", once = " <<
 	((flags & (1<<(int)once) != 0)) << ", areset = " <<
-	((flags & (1<<(int)auto_reset) != 0)) << '\n';
+	((flags & (1<<(int)auto_reset) != 0)) << ", data2 = " << data2
+		<< '\n';
 #endif
+	int roll = 1 + rand()%100;
+	if (roll > probability)
+		return;			// Out of luck.
 //TESTING:
 	static int cnt = 0;
 //	audio.start_speech(cnt++);//++++++++++++

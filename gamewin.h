@@ -273,7 +273,7 @@ public:
 					// Get moveable objects.
 	void get_ireg_objects(int schunk);
 	void read_ireg_objects(ifstream& ireg, int scx, int scy,
-					Container_game_object *container = 0);
+					Game_object *container = 0);
 					// Create special objects.
 	Egg_object *create_egg(unsigned char *entry);
 					// Get all superchunk objects.
@@ -288,11 +288,10 @@ public:
 					// Paint a bit of text.
 	void paint_text_object(Text_object *txt);
 					// Paint "flat" scenery in a chunk.
-	void paint_chunk_flats(int cx, int cy, int xoff, int yoff);
+	void paint_chunk_flats(int cx, int cy);
 					// Paint objects in given chunk at
 					//   given lift.
-	void paint_chunk_objects(int at_lift,
-				int cx, int cy, int xoff, int yoff);
+	void paint_chunk_objects(int at_lift, int cx, int cy);
 					// Get desired palette.
 	void get_palette(int pal_num, int brightness = 100);
 	void brighten(int per);		// Brighten/darken by percentage.

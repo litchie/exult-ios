@@ -443,7 +443,7 @@ void Game_window::read_ireg_objects
 	(
 	ifstream& ireg,			// File to read from.
 	int scx, int scy,		// Abs. chunk coords. of superchunk.
-	Container_game_object *container// Container, or null.
+	Game_object *container		// Container, or null.
 	)
 	{
 	int entlen;			// Gets entry length.
@@ -472,7 +472,8 @@ void Game_window::read_ireg_objects
 		int shapeid = entry[2]+256*(entry[3]&3);
 		unsigned int lift, quality, type;
 		Game_object *obj;
-		if (shapeid == 275)	// An "egg"?
+					// An "egg"?
+		if (shapeid == 275)
 			{
 			Egg_object *egg = create_egg(entry);
 			get_objects(scx + cx, scy + cy)->add_egg(egg);
@@ -497,21 +498,21 @@ for (int e = 0; e < 12; e++)
 	cout << (void *) entry[e] << ' ';
 cout << '\n';
 #endif
-			Container_game_object *cobj = 
-				new Container_game_object(
-				entry[2], entry[3], shapex, shapey, lift);
+			if (shapeid == 961)
+				obj = new Barge_object(
+				    entry[2], entry[3], shapex, shapey, lift);
+			else
+				obj = new Container_game_object(
+				    entry[2], entry[3], shapex, shapey, lift);
 					// Read container's objects.
 			if (type)	// ???Don't understand this yet.
-				read_ireg_objects(ireg, scx, scy, cobj);
-			obj = cobj;
+				read_ireg_objects(ireg, scx, scy, obj);
 			}
 		else
 			continue;	// FOR NOW.
 		obj->set_quality(quality);
-		if (!container)
+		if (!container || !container->add(obj))
 			get_objects(scx + cx, scy + cy)->add(obj);
-		else
-			container->add(obj);
 #if 0	/* Not sure about this yet. */
 		if (entlen == 12 &&	// Container?
 					// Not an egg or ??.
@@ -621,7 +622,6 @@ void Game_window::paint
 						(stopy%chunksize != 0) + 1;
 	if (stop_chunky > num_chunks)
 		stop_chunky = num_chunks;
-	int xoff, yoff;			// Offsets on screen.
 	int cx, cy;			// Chunk #'s.
 					// Read in "map", "ifix" objects for
 					//  all visible superchunks.
@@ -658,27 +658,23 @@ void Game_window::paint
 		cy += num_chunks_y;
 		}
 					// Paint all the flat scenery.
-	for (yoff = starty, cy = start_chunky; cy < stop_chunky; 
-						yoff += chunksize, cy++)
-		for (xoff = startx, cx = start_chunkx; 
-				cx < stop_chunkx; xoff += chunksize, cx++)
-			paint_chunk_flats(cx, cy, xoff, yoff);
+	for (cy = start_chunky; cy < stop_chunky; cy++)
+		for (cx = start_chunkx; cx < stop_chunkx; cx++)
+			paint_chunk_flats(cx, cy);
 
 					// Do each level going upwards.
 	for (int lift = 0; lift < 16; lift++)
 					// Draw the chunks' objects.
-		for (yoff = starty, cy = start_chunky; cy < stop_chunky; 
-						yoff += chunksize, cy++)
-			for (xoff = startx, cx = start_chunkx; 
-				cx < stop_chunkx; xoff += chunksize, cx++)
-				paint_chunk_objects(lift, cx, cy, xoff, yoff);
+		for (cy = start_chunky; cy < stop_chunky; cy++)
+			for (cx = start_chunkx; cx < stop_chunkx; cx++)
+				paint_chunk_objects(lift, cx, cy);
 	if (mode == intro && win->ready())
 		{
 		int x = 15, y = 15;
 		int w = get_width() - x, h = get_height() - y;
 		char buf[512];
 		sprintf(buf, "Welcome to EXULT V 0.%02d,\na free RPG game engine.\n\nCopyright 2000 J. S. Freedman\n              and Dancer Vesperman\n\nGraphics and audio remain\n the property of Origin Systems", RELNUM);
-		paint_text_box(7, buf, 
+		paint_text_box(0, buf, 
 				x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
 		}
 					// Draw text.
@@ -718,10 +714,11 @@ void Game_window::paint_text_object
 
 void Game_window::paint_chunk_flats
 	(
-	int cx, int cy,			// Chunk coords (0 - 12*16).
-	int xoff, int yoff		// Where to place chunk.
+	int cx, int cy			// Chunk coords (0 - 12*16).
 	)
 	{
+	int xoff = (cx - chunkx)*chunksize;
+	int yoff = (cy - chunky)*chunksize;
 	Chunk_object_list *olist = get_objects(cx, cy);
 					// Go through array of shapes.
 	for (int shapey = 0; shapey < 16; shapey++)
@@ -745,8 +742,7 @@ void Game_window::paint_chunk_flats
 void Game_window::paint_chunk_objects
 	(
 	int at_lift,			// Only paint this lift.
-	int cx, int cy,			// Chunk coords (0 - 12*16).
-	int xoff, int yoff		// Where to place chunk.
+	int cx, int cy			// Chunk coords (0 - 12*16).
 	)
 	{
 	Game_object *obj;
@@ -761,23 +757,14 @@ void Game_window::paint_chunk_objects
 		above_actor = 32;
 	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
 		{
-		int tilex = obj->get_tx();
-		int tiley = obj->get_ty();
 		int lift = obj->get_lift();
 		if (lift > at_lift)	// They're sorted by lift first.
 			break;
 		if (lift != at_lift || lift >= skip_lift)
 			continue;	// Don't show things off ground.
 					// Is actor inside?  Skip roofs if so.
-		if (lift >= above_actor)
-			continue;
-					// Get shape & frame.
-		int shapenum = obj->get_shapenum();
-		int framenum = obj->get_framenum();
-					// Draw shape.
-		paint_shape(xoff + (1 + tilex)*tilesize - 4*lift, 
-				yoff + (1 + tiley)*tilesize - 4*lift,
-					shapenum, framenum);
+		if (lift < above_actor)
+			obj->paint(this);
 		}
 	}
 
@@ -1116,6 +1103,8 @@ void Game_window::show_items
 			info.get_3d_xtiles() << ", " <<
 			info.get_3d_ytiles() << ", " <<
 			info.get_3d_height() << '\n';
+		if (info.is_animated())
+			cout << "Object is ANIMATED\n";
 #endif
 		}
 #endif
