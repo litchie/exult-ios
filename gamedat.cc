@@ -94,7 +94,7 @@ void Game_window::restore_gamedat
 static char *savefiles[] = {
 	NPC_DAT,	MONSNPCS,
 	IDENTITY,	USEDAT,
-	GWINDAT
+	FLAGINIT,	GWINDAT
 	};
 static const int numsavefiles = sizeof(savefiles)/sizeof(savefiles[0]);
 
