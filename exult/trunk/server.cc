@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef XWIN
 
 #include <unistd.h>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/socket.h>
@@ -42,9 +43,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *	Sockets, etc.
  */
 extern int xfd;				// X-windows fd.
-int mapedit_listen_socket = -1;		// Listen here for map-editor.
-int mapedit_socket = -1;		// Socket to the map-editor.
+int listen_socket = -1;			// Listen here for map-editor.
+int client_socket = -1;			// Socket to the map-editor.
 int highest_fd = -1;			// Largest fd + 1.
+
+/*
+ *	Set the 'highest_fd' value to 1 + <largest fd>.
+ */
+inline void Set_highest_fd
+	(
+	)
+	{
+	int highest_fd = xfd;		// Figure highest to listen to.
+	if (listen_socket > highest_fd)
+		highest_fd = listen_socket;
+	if (client_socket > highest_fd)
+		highest_fd = client_socket;
+	highest_fd++;			// Select wants 1+highest.
+	}
+
 /*
  *	Initialize server for map-editing.  Call this AFTER xfd has been set.
  */
@@ -53,8 +70,8 @@ void Server_init
 	(
 	)
 	{
-	mapedit_listen_socket = socket(PF_LOCAL, SOCK_SEQPACKET, 0);
-	if (mapedit_listen_socket < 0)
+	listen_socket = socket(PF_LOCAL, SOCK_SEQPACKET, 0);
+	if (listen_socket < 0)
 		cerr << "Failed to open map-editor socket" << endl;
 	else 
 		{
@@ -63,19 +80,34 @@ void Server_init
 		struct sockaddr_un addr;
 		addr.sun_family = AF_UNIX;
 		strcpy(addr.sun_path, servename.c_str());
-		if (bind(mapedit_listen_socket, (struct sockaddr *) &addr, 
+		if (bind(listen_socket, (struct sockaddr *) &addr, 
 		      sizeof(addr.sun_family) + strlen(addr.sun_path)) == -1 ||
-		    listen(mapedit_listen_socket, 1) == -1)
+		    listen(listen_socket, 1) == -1)
 			{
 			perror("Bind or listen failed");
-			close(mapedit_listen_socket);
-			mapedit_listen_socket = -1;
+			close(listen_socket);
+			listen_socket = -1;
 			}
+		else			// Set to be non-blocking.
+			fcntl(listen_socket, F_SETFL, 
+				fcntl(listen_socket, F_GETFL) | O_NONBLOCK);
 		}
-	int highest_fd = xfd;		// Figure highest to listen to.
-	if (mapedit_listen_socket > highest_fd)
-		highest_fd = mapedit_listen_socket;
-	highest_fd++;			// Select wants 1+highest.
+	Set_highest_fd();
+	}
+
+/*
+ *	A message from a client is available, so handle it.
+ */
+
+static void Handle_client_message
+	(
+	int fd				// Socket to client.
+	)
+	{
+	char buf[256];
+	int len = read(fd, buf, sizeof(buf));
+	cerr << "Client message read: " << len << " bytes" << endl;
+	//+++++++++++
 	}
 
 /*
@@ -94,14 +126,23 @@ void Server_delay
 	timer.tv_usec = 50000;		// Try 1/50 second.
 	FD_ZERO(&rfds);
 	FD_SET(xfd, &rfds);
-	if (mapedit_listen_socket > 0)
-		FD_SET(mapedit_listen_socket, &rfds);
-	if (mapedit_socket > 0)
-		FD_SET(mapedit_socket, &rfds);
+	if (listen_socket >= 0)
+		FD_SET(listen_socket, &rfds);
+	if (client_socket >= 0)
+		FD_SET(client_socket, &rfds);
 					// Wait for timeout or event.
 	if (select(highest_fd, &rfds, 0, 0, &timer) > 0)
 		{			// Something's come in.
-//+++++++++++++++++++
+		if (FD_ISSET(listen_socket, &rfds)
+			{		// New client connection.
+					// For now, just one at a time.
+			if (client_socket >= 0)
+				close(client_socket);
+			client_socket = accept(listen_socket, 0, 0);
+			Set_highest_fd();
+			}
+		if (FD_ISSET(client_socket, &rfds))
+			Handle_client_message(client_socket);
 		}
 	}
 
