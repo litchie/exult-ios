@@ -211,12 +211,15 @@ public:
 		{ return main_actor; }
 	int is_main_actor_inside()
 		{ return skip_above_actor < 31 ; }
-	int set_above_main_actor(int lift)// Returns if skip_above_actor changed!
+					// Returns if skip_above_actor changed!
+	int set_above_main_actor(int lift)
 		{
 		if (skip_above_actor == lift) return false;
 		skip_above_actor = lift;
 		return true;
 		}
+	inline void set_in_dungeon(int tf)
+		{ in_dungeon = tf; }
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < num_npcs) ? 
 				npcs[npc_num] : 0; }
