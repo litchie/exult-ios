@@ -544,6 +544,7 @@ static void Handle_events
 					// Rotate less often if scaling.
 		if (ticks > last_rotate + (100 << (scale==1?0:1)))
 			{		// (Blits in simulated 8-bit mode.)
+			gwin->get_win()->rotate_colors(0xf8, 4, 0);
 			gwin->get_win()->rotate_colors(0xf4, 4, 0);
 			gwin->get_win()->rotate_colors(0xf0, 4, 0);
 			gwin->get_win()->rotate_colors(0xe8, 8, 0);

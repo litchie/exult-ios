@@ -64,6 +64,7 @@ void ActionInfravision(int* params);
 void ActionSkipLift(int* params);
 void ActionLevelup(int* params);
 void ActionMapEditor(int* params);
+void ActionHackMover(int* params);
 void ActionMapTeleport(int* params);
 void ActionTeleport(int* params);
 void ActionTime(int* params);

@@ -193,6 +193,17 @@ void Cheat::toggle_pickpocket (void) {
 		gwin->center_text("Pick Pocket Disabled");	
 }
 
+void Cheat::toggle_hack_mover (void) {
+	if (!enabled) return;
+
+	hack_mover = !hack_mover;
+	if (hack_mover) {
+		gwin->center_text("Hack mover Enabled");
+	} else {
+		gwin->center_text("Hack mover Disabled");
+	}
+}
+
 void Cheat::change_gender (void) const {
 	if (!enabled) return;
 
