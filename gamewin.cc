@@ -1717,6 +1717,7 @@ void Game_window::teleport_party
 	Tile_coord oldpos = main_actor->get_tile();
 	main_actor->set_action(0);	// Definitely need this, or you may
 					//   step back to where you came from.
+	moving_barge = 0;		// Calling 'done()' could be risky...
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
 	set_all_dirty();
 
