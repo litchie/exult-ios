@@ -213,8 +213,6 @@ void ExultStudio::init_equip_window
 		}
 	}
 
-#if 0
-
 /*
  *	Store the fields to a given record.
  */
@@ -231,15 +229,15 @@ void ExultStudio::save_equip_window
 		{
 		Equip_element& elem = rec.get(row);
 		Equip_row_widgets& widgets = equip_rows[row];
-		elem.set(gtk_spin_button_get_value(
+		elem.set(gtk_spin_button_get_value_as_int(
 					GTK_SPIN_BUTTON(widgets.shape)), 
-			 gtk_spin_button_get_value(
+			 gtk_spin_button_get_value_as_int(
 					GTK_SPIN_BUTTON(widgets.chance)),
-			 gtk_spin_button_get_value(
+			 gtk_spin_button_get_value_as_int(
 					GTK_SPIN_BUTTON(widgets.count)));
 		}
 	}
-#endif
+
 /*
  *	Open the equip-editing window.
  */
@@ -424,6 +422,7 @@ void ExultStudio::init_shape_notebook
 	set_toggle("shinfo_animated_check", info.is_animated());
 	set_toggle("shinfo_solid_check", info.is_solid());
 	set_toggle("shinfo_water_check", info.is_water());
+			// ++++Set poison for flats, field for non-flats.
 	set_toggle("shinfo_poison_check", info.is_poisonous());
 	set_toggle("shinfo_field_check", info.is_field());
 	set_toggle("shinfo_door_check", info.is_door());
@@ -549,32 +548,32 @@ void ExultStudio::init_shape_notebook
 void ExultStudio::save_shape_notebook
 	(
 	Shape_info& info,
-	GtkWidget *book,		// The notebook.
 	int shnum,			// Shape #.
 	int frnum			// Frame #.
 	)
 	{
 	static int classes[] = {0, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14};
-	int shclass = classes[get_optmenu("shinfo_shape_class")];
-					classes[shclass] : 0);
-	int xtiles = get_spin("shinfo_xtiles");
-	int ytiles = get_spin("shinfo_ytiles");
-	int ztiles = set_spin("shinfo_ztiles");
-	int spot = get_optment("shinfo_ready_spot");
+	info.set_shape_class((Shape_info::Shape_class)
+			classes[get_optmenu("shinfo_shape_class")]);
+	info.set_3d(get_spin("shinfo_xtiles"), get_spin("shinfo_ytiles"),
+						get_spin("shinfo_ztiles"));
+	int spot = get_optmenu("shinfo_ready_spot");
 	if (spot == 18)			// LR hand.
 		spot = 100;
-	int weight = get_spin("shinfo_weight");
-	int volume = get_spin("shinfo_volume");
-	unsigned char wx = get_spin("shinfo_wihx"),
-		      wy = get_spin("shinfo_wihy");
+	info.set_ready_type(spot);
+	info.set_weight_volume(get_spin("shinfo_weight"),
+						get_spin("shinfo_volume"));
+	info.set_weapon_offset(frnum, get_spin("shinfo_wihx"),
+		      				get_spin("shinfo_wihy"));
 					// Bunch of flags:
 	info.set_sfx(get_toggle("shinfo_sfx_check"));
 	info.set_strange_movement(get_toggle("shinfo_strange_check"));
 	info.set_animated(get_toggle("shinfo_animated_check"));
 	info.set_solid(get_toggle("shinfo_solid_check"));
 	info.set_water(get_toggle("shinfo_water_check"));
-	info.set_poisonous(get_toggle("shinfo_poison_check"));
-	info.set_field(get_toggle("shinfo_field_check"));
+			// ++++Set poison for flats, field for non-flats.
+	info.set_field(get_toggle("shinfo_field_check") ||
+			get_toggle("shinfo_poison_check"));
 	info.set_door(get_toggle("shinfo_door_check"));
 	info.set_barge_part(get_toggle("shinfo_barge_check"));
 	info.set_transparent(get_toggle("shinfo_transp_check"));
@@ -584,27 +583,28 @@ void ExultStudio::save_shape_notebook
 			get_toggle("shinfo_obstacley_check"));
 	info.set_occludes(get_toggle("shinfo_occludes_check"));
 					// Extras.
-++++++++++++++++++
-	Weapon_info *winfo = info.get_weapon_info();
-	set_toggle("shinfo_weapon_check", winfo != 0);
-	set_visible("shinfo_weapon_box", winfo != 0);
-	if (winfo)			// Setup weapon page.
+	if (!get_toggle("shinfo_weapon_check"))
+		info.set_weapon_info(false);	// Not a weapon.
+	else
 		{
-		set_spin("shinfo_weapon_damage", winfo->get_damage());
-		set_spin("shinfo_weapon_range", winfo->get_range());
-		set_optmenu("shinfo_weapon_type", winfo->get_damage_type());
-		int ammo = winfo->get_ammo_consumed();
-		int ammo_use = ammo > 0 ? 0 :
-			winfo->uses_charges() ? 2 :
-			winfo->is_thrown() ? 3 : 1;	// 1 == "None".
-		set_optmenu("shinfo_weapon_ammo", ammo_use);
-		set_spin("shinfo_weapon_ammo_shape", ammo, ammo > 0);
-		set_spin("shinfo_weapon_proj", winfo->get_projectile());
-		set_optmenu("shinfo_weapon_uses", winfo->get_uses());
-		set_spin("shinfo_weapon_sfx", winfo->get_sfx());
-		set_spin("shinfo_weapon_hitsfx", winfo->get_hitsfx());
-					// Show usecode in hex.
-		set_entry("shinfo_weapon_uc", winfo->get_usecode(), true);
+		Weapon_info *winfo = info.set_weapon_info(true);
+		winfo->set_damage(
+			get_spin("shinfo_weapon_damage"),
+			get_optmenu("shinfo_weapon_type"));
+		winfo->set_range(get_spin("shinfo_weapon_range"));
+		int ammo_use = get_optmenu("shinfo_weapon_ammo");
+		int ammo = ammo_use == 0 ? 
+				get_spin("shinfo_weapon_ammo_shape")
+			:  ammo_use == 2 ? -2		// Charges.
+			:  ammo_use == 3 ? -3		// Thrown.
+			:  -1;				// None.
+		winfo->set_ammo(ammo);
+		winfo->set_projectile(get_spin("shinfo_weapon_proj"));
+		winfo->set_uses(get_optmenu("shinfo_weapon_uses"));
+		winfo->set_sfxs(get_spin("shinfo_weapon_sfx"),
+				get_spin("shinfo_weapon_hitsfx"));
+					// Get usecode in hex.
+		winfo->set_usecode(get_num_entry("shinfo_weapon_uc"));
 		static char *powers[] = {
 					"shinfo_weapon_pow0",
 					"shinfo_weapon_pow1",
@@ -612,11 +612,12 @@ void ExultStudio::save_shape_notebook
 					"shinfo_weapon_pow3",
 					"shinfo_weapon_pow4",
 					"shinfo_weapon_pow5" };
-		set_bit_toggles(&powers[0], 
-			sizeof(powers)/sizeof(powers[0]), winfo->get_powers());
+		winfo->set_powers(get_bit_toggles(&powers[0], 
+					sizeof(powers)/sizeof(powers[0])));
 					// 'Explode'???
-		set_toggle("shinfo_weapon_returns", winfo->returns());
+		winfo->set_returns(get_toggle("shinfo_weapon_returns"));
 		}
+//++++++++++++++++++++
 	Ammo_info *ainfo = info.get_ammo_info();
 	set_toggle("shinfo_ammo_check", ainfo != 0);
 	set_visible("shinfo_ammo_box", ainfo != 0);
@@ -689,9 +690,9 @@ void ExultStudio::save_shape_notebook
 		set_bit_toggles(&flags[0],
 			sizeof(flags)/sizeof(flags[0]), minfo->get_flags());
 		}
-	gtk_widget_show(book);
 	}
 #endif
+
 /*
  *	Open the shape-editing window.
  */

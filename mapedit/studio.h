@@ -118,10 +118,12 @@ public:
 	static void schedule_btn_clicked(GtkWidget *btn, gpointer data);
 					// Shapes:
 	void init_equip_window(int recnum);
+	void save_equip_window();
 	void open_equip_window(int recnum);
 	void close_equip_window();
 	void init_shape_notebook(Shape_info& info, GtkWidget *book, 
 							int shnum, int frnum);
+	void save_shape_notebook(Shape_info& info, int shnum, int frnum);
 	void open_shape_window(int shnum, int frnum, Vga_file *ifile,
 					char *shname, Shape_info *info = 0);
 	void close_shape_window();
@@ -136,6 +138,7 @@ public:
 	bool get_toggle(char *name);
 	void set_toggle(char *name, bool val);
 	void set_bit_toggles(char **names, int num, unsigned char bits);
+	unsigned char get_bit_toggles(char **names, int num);
 	int get_optmenu(char *name);
 	void set_optmenu(char *name, int val);
 	int get_spin(char *name);
