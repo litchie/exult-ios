@@ -1651,39 +1651,8 @@ void Actor::activate
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-#ifdef USE_EXULTSTUDIO
-	if (client_socket >= 0 &&	// Talking to ExultStudio?
-	    cheat.in_map_editor())
-		{
-		editing = 0;
-		Tile_coord t = get_tile();
-		unsigned long addr = reinterpret_cast<unsigned long>(this);
-		int num_schedules;	// Set up schedule-change list.
-		Schedule_change *changes;
-		get_schedules(changes, num_schedules);
-		Serial_schedule schedules[8];
-		for (int i = 0; i < num_schedules; i++)
-			{
-			schedules[i].time = changes[i].get_time();
-			schedules[i].type = changes[i].get_type();
-			Tile_coord p = changes[i].get_pos();
-			schedules[i].tx = p.tx;
-			schedules[i].ty = p.ty;
-			}
-		if (Npc_actor_out(client_socket, addr, t.tx, t.ty, t.tz,
-			get_shapenum(), get_framenum(), get_face_shapenum(),
-			name, npc_num, ident, usecode, properties, attack_mode,
-			alignment, flags, siflags, type_flags,
-				num_schedules, schedules) != -1)
-			{
-			cout << "Sent npc data to ExultStudio" << endl;
-			editing = this;
-			}
-		else
-			cout << "Error sending npc data to ExultStudio" <<endl;
+	if (edit())
 		return;
-		}
-#endif
 	// We are serpent if we can use serpent isle paperdolls
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||
 		(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
@@ -1719,6 +1688,52 @@ void Actor::activate
 		umachine->call_usecode(usecode, this, 
 			(Usecode_machine::Usecode_events) event);
 	
+	}
+
+/*
+ *	Edit in ExultStudio.
+ *
+ *	Output:	True if map-editing & ES is present.
+ */
+
+bool Actor::edit
+	(
+	)
+	{
+#ifdef USE_EXULTSTUDIO
+	if (client_socket >= 0 &&	// Talking to ExultStudio?
+	    cheat.in_map_editor())
+		{
+		editing = 0;
+		Tile_coord t = get_tile();
+		unsigned long addr = reinterpret_cast<unsigned long>(this);
+		int num_schedules;	// Set up schedule-change list.
+		Schedule_change *changes;
+		get_schedules(changes, num_schedules);
+		Serial_schedule schedules[8];
+		for (int i = 0; i < num_schedules; i++)
+			{
+			schedules[i].time = changes[i].get_time();
+			schedules[i].type = changes[i].get_type();
+			Tile_coord p = changes[i].get_pos();
+			schedules[i].tx = p.tx;
+			schedules[i].ty = p.ty;
+			}
+		if (Npc_actor_out(client_socket, addr, t.tx, t.ty, t.tz,
+			get_shapenum(), get_framenum(), get_face_shapenum(),
+			name, npc_num, ident, usecode, properties, attack_mode,
+			alignment, flags, siflags, type_flags,
+				num_schedules, schedules) != -1)
+			{
+			cout << "Sent npc data to ExultStudio" << endl;
+			editing = this;
+			}
+		else
+			cout << "Error sending npc data to ExultStudio" <<endl;
+		return true;
+		}
+#endif
+	return false;
 	}
 
 /*

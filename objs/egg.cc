@@ -359,10 +359,9 @@ int Egg_object::is_active
 			(obj->get_party_id() >= 0 || 
 						obj == gwin->get_main_actor());
 	case something_on:
-		return obj != gwin->get_main_actor() && 
-					// Guessing.  At SI end, deltaz == -1.
+		return	 		// Guessing.  At SI end, deltaz == -1.
 			deltaz >= -1 && deltaz <= 3 &&
-			area.has_point(tx, ty) && obj->get_npc_num() <= 0;
+			area.has_point(tx, ty) && !dynamic_cast<Actor *>(obj);
 	case external_criteria:
 	default:
 		return 0;
@@ -394,6 +393,20 @@ void Egg_object::activate
 	int /* event */
 	)
 	{
+	if (!edit())
+		activate(umachine, 0, 0);
+	}
+
+/*
+ *	Edit in ExultStudio.
+ *
+ *	Output:	True if map-editing & ES is present.
+ */
+
+bool Egg_object::edit
+	(
+	)
+	{
 #ifdef USE_EXULTSTUDIO
 	if (client_socket >= 0 &&	// Talking to ExultStudio?
 	    cheat.in_map_editor())
@@ -413,11 +426,12 @@ void Egg_object::activate
 			}
 		else
 			cout << "Error sending egg data to ExultStudio" <<endl;
-		return;
+		return true;
 		}
 #endif
-	activate(umachine, 0, 0);
+	return false;
 	}
+
 
 /*
  *	Message to update from ExultStudio.

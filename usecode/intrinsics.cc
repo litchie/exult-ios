@@ -395,13 +395,13 @@ USECODE_INTRINSIC(set_schedule_type)
 	// SetSchedule?(npc, schedtype).
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
-	Game_object *obj = get_item(parms[0]);
-	if (obj)
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc)
 		{
 		int newsched = parms[1].get_int_value();
-		obj->set_schedule_type(newsched);
+		npc->set_schedule_type(newsched);
 					// Taking Avatar out of combat?
-		if (obj == gwin->get_main_actor() && gwin->in_combat() &&
+		if (npc == gwin->get_main_actor() && gwin->in_combat() &&
 		    newsched != Schedule::combat)
 					// End combat mode (for L.Field).
 			{
@@ -435,20 +435,20 @@ USECODE_INTRINSIC(get_npc_prop)
 {
 	// Get NPC prop (item, prop_id).
 	//   (9 is food level).
-	Game_object *obj = get_item(parms[0]);
-	Usecode_value u(obj ? 
-		obj->get_property(parms[1].get_int_value()) : 0);
+	Actor *npc = as_actor(get_item(parms[0]));
+	Usecode_value u(npc ? 
+		npc->get_property(parms[1].get_int_value()) : 0);
 	return(u);
 }
 
 USECODE_INTRINSIC(set_npc_prop)
 {
 	// Set NPC prop (item, prop_id, delta_value).
-	Game_object *obj = get_item(parms[0]);
-	if (obj)
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc)
 		{			// NOTE: 3rd parm. is a delta!
 		int prop = parms[1].get_int_value();
-		obj->set_property(prop, obj->get_property(prop) +
+		npc->set_property(prop, npc->get_property(prop) +
 						parms[2].get_int_value());
 		return Usecode_value(1);// SI needs return.
 		}
@@ -748,18 +748,8 @@ USECODE_INTRINSIC(find_nearby_avatar)
 USECODE_INTRINSIC(is_npc)
 {
 	// Is item an NPC?
-	Game_object *obj = get_item(parms[0]);
-					// ++++In future, check for monsters.
-	if(!obj)
-		{
-#ifdef DEBUG
-		cerr << "is_npc: get_item returned a NULL pointer" << endl;
-#endif
-		Usecode_value u((Game_object*) NULL);
-		return(u);
-		}
-	Usecode_value u(obj == gwin->get_main_actor() ||
-			obj->get_npc_num());// > 0);
+	Actor *npc = as_actor(get_item(parms[0]));
+	Usecode_value u(npc != 0);
 	return(u);
 }
 
@@ -901,14 +891,14 @@ USECODE_INTRINSIC(get_npc_number)
 {
 	// Returns NPC# of item. (-356 =
 	//   avatar).
-	Game_object *obj = get_item(parms[0]);
-	if (obj == gwin->get_main_actor())
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc == gwin->get_main_actor())
 		{
 		Usecode_value u(-356);
 		return(u);
 		}
-	int npc = obj ? obj->get_npc_num() : 0;
-	Usecode_value u(-npc);
+	int num = npc ? npc->get_npc_num() : 0;
+	Usecode_value u(-num);
 	return(u);
 }
 
@@ -922,8 +912,8 @@ USECODE_INTRINSIC(part_of_day)
 USECODE_INTRINSIC(get_alignment)
 {
 	// Get npc's alignment.
-	Game_object *obj = get_item(parms[0]);
-	Usecode_value u(obj ? obj->get_alignment() : 0);
+	Actor *npc = as_actor(get_item(parms[0]));
+	Usecode_value u(npc ? npc->get_alignment() : 0);
 	return(u);
 }
 

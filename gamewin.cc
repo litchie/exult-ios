@@ -2172,11 +2172,13 @@ void Game_window::show_items
 	else				// All other cases:  unselect.
 		cheat.clear_selected();	
 
-	// Do we want the NPC number?
-	if (obj && cheat.number_npcs() && (obj->get_npc_num() > 0 || obj==main_actor))
+					// Do we want the NPC number?
+	Actor *npc = dynamic_cast<Actor *>(obj);
+	if (npc && cheat.number_npcs() &&
+	    (npc->get_npc_num() > 0 || npc==main_actor))
 	{
 		char str[64];
-		snprintf (str, 64, "(%i) %s", obj->get_npc_num(), 
+		snprintf (str, 64, "(%i) %s", npc->get_npc_num(), 
 				  obj->get_name().c_str());
 		add_text(str, obj);
 	}
@@ -2192,8 +2194,9 @@ void Game_window::show_items
 		add_text(str, x, y);
 		}
 	// If it's an actor and we want to grab the actor, grab it.
-	if (obj && cheat.grabbing_actor() && (obj->get_npc_num() || obj==main_actor))
-		cheat.set_grabbed_actor (static_cast<Actor *>(obj));
+	if (npc && cheat.grabbing_actor() && 
+	    (npc->get_npc_num() || npc==main_actor))
+		cheat.set_grabbed_actor (npc);
 
 #ifdef DEBUG
 	int shnum, frnum;
@@ -2205,11 +2208,14 @@ void Game_window::show_items
 					" has 3d tiles (x, y, z): " <<
 			info.get_3d_xtiles(frnum) << ", " <<
 			info.get_3d_ytiles(frnum) << ", " <<
-			info.get_3d_height() << ", sched = " <<
-			obj->get_schedule_type() << ", align = " <<
-			obj->get_alignment() << ", npcnum = " <<
-			obj->get_npc_num()
-			<< endl;
+			info.get_3d_height();
+		Actor *npc = dynamic_cast<Actor *>(obj);
+		if (npc)
+			cout  << ", sched = " << 
+			npc->get_schedule_type() << ", align = " <<
+			npc->get_alignment() << ", npcnum = " <<
+			npc->get_npc_num();
+		cout << endl;
 		Tile_coord t = obj->get_tile();
 		cout << "tx = " << t.tx << ", ty = " << t.ty << ", tz = " <<
 			t.tz << ", quality = " <<
@@ -2584,7 +2590,7 @@ void Game_window::double_clicked
 			}
 #endif
 		// Check path, except if an NPC, sign, or if editing.
-	    	if (obj && obj->get_npc_num() <= 0 && !obj->is_monster() &&
+	    	if (obj && !dynamic_cast<Actor *>(obj) &&
 			!cheat.in_map_editor() &&
 			!Is_sign(obj->get_shapenum()) &&
 			!Fast_pathfinder_client::is_grabable(
@@ -2610,11 +2616,16 @@ void Game_window::double_clicked
 			main_actor->set_target(obj);
 			toggle_combat();
 					// Being a bully?
-			int align = obj->get_alignment();
-			bool bully = (align == Actor::friendly ||
+			bool bully = false;
+			Actor *npc = dynamic_cast<Actor *>(obj);
+			if (npc)
+				{
+				int align = npc->get_alignment();
+				bully = npc->get_npc_num() > 0 &&
+					(align == Actor::friendly ||
 						align == Actor::neutral);
-			if (obj->get_npc_num() > 0 && bully &&
-			   get_info(obj).get_shape_class() ==
+				}
+			if (bully && get_info(obj).get_shape_class() ==
 							Shape_info::human &&
 			   Game::get_game_type() == BLACK_GATE)
 				attack_avatar(1 + rand()%3);
