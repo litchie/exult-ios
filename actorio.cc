@@ -611,10 +611,10 @@ void Monster_info::read
 	combat = (*ptr++ >> 2) & 63;
 	splits = (*ptr & 1) != 0;	// Byte 6 (slimes).
 	cant_die = (*ptr & 2) != 0;
-	armor = (*ptr++ >> 4) & 31;
+	armor = (*ptr++ >> 4) & 15;
 	ptr++;				// Unknown.
-	reach = (*ptr >> 4) & 31;	// Byte 8 - weapon reach.
-	weapon = *ptr++ & 31;
+	reach = *ptr && 15;		// Byte 8 - weapon reach.
+	weapon = (*ptr++ >> 4) & 15;
 	flags = *ptr++;			// Byte 9.
 	ptr += 4;			// Unknown (more flags?).
 	equip_offset = *ptr++;		// Byte 13.

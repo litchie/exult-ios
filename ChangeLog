@@ -1,3 +1,10 @@
+2001-08-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* schedule.cc: Use better pathfinder for Talk schedule.
+
+	* actorio.cc,actors.h:  Monster_info::read() replaces set(), with
+	a few more fields figured out.
+
 2001-08-10  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* cheat.cc: Ctrl-D now properly checks inside gumps
 	* contain.*: extract items inside container when destroying it

@@ -681,19 +681,6 @@ public:
 		};
 	int get_shapenum()
 		{ return shapenum; }
-	void set(int sh, int str, int dex, int intel, int comb, int ar,
-					int weap, int flgs, int eqoff)
-		{
-		shapenum = sh;
-		strength = str & 63;	// Low 6 bits.
-		dexterity = dex & 63;
-		intelligence = intel & 63;
-		combat = comb & 63;
-		armor = ar & 15;	// Low 4 bits.
-		weapon = weap;		//+++++I don't think this is right.
-		flags = flgs;
-		equip_offset = eqoff;
-		}
 					// Create an instance.
 	Monster_actor *create(int chunkx, int chunky, int tilex, int tiley, 
 		int lift, int sched = -1, int align = (int) Actor::neutral, 
