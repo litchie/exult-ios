@@ -37,14 +37,18 @@ private:
 	Vga_file		*vgafile;	// Main 'shapes.vga'.
 	char			**names;
 	Object_browser		*browser;
+	unsigned char 		*palbuf;
+					// Egg editor:
 	GtkWidget		*eggwin;// Egg window.
 	Shape_draw		*egg_monster_draw;
 	int			egg_ctx;
+					// Npc editor:
 	GtkWidget		*npcwin;
+	Shape_draw		*npc_draw;
 	int			npc_ctx;
+					// Server data.
 	int			server_socket;
 	gint			server_input_tag;
-	unsigned char 		*palbuf;
 	Msg_callback		waiting_for_server;
 					// GTK/Glade utils:
 	bool get_toggle(char *name);
@@ -55,7 +59,7 @@ private:
 	void set_spin(char *name, int val, bool sensitive = true);
 	int get_num_entry(char *name);
 	void set_entry(char *name, int val, bool hex = false,
-						bool sensitive = false);
+						bool sensitive = true);
 	void set_statusbar(char *name, int context, char *msg);
 public:
 	ExultStudio(int argc, char **argv);
@@ -79,6 +83,8 @@ public:
 	void set_egg_monster(int shape, int frame);
 	void open_npc_window(unsigned char *data = 0, int datalen = 0);
 	void close_npc_window();
+	void show_npc_shape(int x = 0, int y = 0, int w = -1, int h = -1);
+	void set_npc_shape(int shape, int frame);
 	void run();
 	void read_from_server();
 	void connect_to_server();

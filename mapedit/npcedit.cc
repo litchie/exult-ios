@@ -85,6 +85,52 @@ extern "C" gboolean on_npc_window_delete_event
 	}
 
 /*
+ *	Draw shape in NPC shape area.
+ */
+extern "C" gboolean on_npc_draw_expose_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventExpose *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	ExultStudio::get_instance()->show_npc_shape(
+		event->area.x, event->area.y, event->area.width,
+							event->area.height);
+	return (TRUE);
+	}
+
+/*
+ *	Npc shape # lost focus, so update shape displayed.
+ */
+extern "C" gboolean on_npc_shape_focus_out_event
+	(
+	GtkWidget *widget,
+	GdkEventFocus *event,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->show_npc_shape();
+	return TRUE;
+	}
+
+/*
+ *	Callback for when a shape is dropped on the NPC draw area.
+ */
+
+static void Npc_shape_dropped
+	(
+	int file,			// U7_SHAPE_SHAPES.
+	int shape,
+	int frame,
+	void *udata
+	)
+	{
+	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < 1024)
+		((ExultStudio *) udata)->set_npc_shape(shape, frame);
+	}
+
+/*
  *	Open the npc-editing window.
  */
 
@@ -99,10 +145,9 @@ void ExultStudio::open_npc_window
 		npcwin = glade_xml_get_widget( app_xml, "npc_window" );
 		if (vgafile && palbuf)
 			{
-//			npc_monster_draw = new Shape_draw(vgafile, palbuf,
-//			    glade_xml_get_widget(app_xml, "npc_monster_draw"));
-//			npc_monster_draw->enable_drop(Npc_monster_dropped,
-//								this);
+			npc_draw = new Shape_draw(vgafile, palbuf,
+			    glade_xml_get_widget(app_xml, "npc_draw"));
+			npc_draw->enable_drop(Npc_shape_dropped, this);
 			}
 		npc_ctx = gtk_statusbar_get_context_id(
 			GTK_STATUSBAR(glade_xml_get_widget(
@@ -131,3 +176,41 @@ void ExultStudio::close_npc_window
 		gtk_widget_hide(npcwin);
 	}
 
+/*
+ *	Paint the shape in the NPC draw area.
+ */
+
+void ExultStudio::show_npc_shape
+	(
+	int x, int y, int w, int h	// Rectangle. w=-1 to show all.
+	)
+	{
+	if (!npc_draw)
+		return;
+	npc_draw->configure();
+					// Yes, this is kind of redundant...
+	int shnum = get_num_entry("npc_shape");
+	int frnum = get_num_entry("npc_frame");
+	if (!shnum)			// Don't draw shape 0.
+		shnum = -1;
+	npc_draw->draw_shape_centered(shnum, frnum);
+	if (w != -1)
+		npc_draw->show(x, y, w, h);
+	else
+		npc_draw->show();
+	}
+
+/*
+ *	Set NPC shape.
+ */
+
+void ExultStudio::set_npc_shape
+	(
+	int shape,
+	int frame
+	)
+	{
+	set_entry("npc_shape", shape);
+	set_entry("npc_frame", frame);
+	show_npc_shape();
+	}
