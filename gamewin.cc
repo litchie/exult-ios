@@ -1643,7 +1643,7 @@ void Game_window::write_map
 			ochunks.seekp(i*512);
 			unsigned char data[512];
 			ter->write_flats(data);
-			ochunks.write(data, 512);
+			ochunks.write((char*)data, 512);
 			}
 		}
 	if (!ochunks.good())
@@ -2702,7 +2702,7 @@ void Game_window::double_clicked
 			{
 		 	Gump_button *btn = gump->on_button(this, x, y);
 			if (btn)
-				btn->double_clicked(this);
+				btn->double_clicked(this, x, y);
 			return;
 			}
 		}
