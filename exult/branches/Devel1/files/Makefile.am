@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS=foreign
 
-OBJECTS = Flex.o Table.o U7file.o 
+OBJECTS = Flex.o Table.o U7file.o IFF.o
 
-HFILES = Flex.h  Table.h  U7file.h  common_types.h
+HFILES = Flex.h  Table.h  U7file.h  common_types.h IFF.h
 
 SOURCES = $(HFILES) $(OBJECTS:%.o=%.cc)
 

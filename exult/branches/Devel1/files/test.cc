@@ -11,7 +11,7 @@
 int	main(void)
 {
 	chdir("/home/dancer2/projects/u7");
-	U7object	u("static/adlibmus.dat",23);
+	U7object	u("static/endgame.dat",8);
 
 	if(u.retrieve("/tmp/blah"))
 		cout << "Got object ok" << endl;
