@@ -30,6 +30,7 @@
 #include "actors.h"
 #include "gamewin.h"
 #include "frameseq.h"
+#include "dir.h"
 
 using std::cout;
 using std::endl;
@@ -280,7 +281,7 @@ static int right_offsets[4][2] = {	// Follower is behind and to right.
 void Party_manager::move_followers
 	(
 	Actor *npc,			// Party member who just stepped.
-	int dir				// Direction (0-7) they're going.
+	int dir				// Direction (0-7) he stepped in.
 	)
 	{
 	int id = npc->get_party_id();	// (-1 if Avatar).
@@ -294,18 +295,18 @@ void Party_manager::move_followers
 					: gwin->get_npc(party[lnum]);
 	Actor *rnpc = (rnum == -1 || rnum >= party_count) ? 0 
 					: gwin->get_npc(party[rnum]);
-	bool lmoved = false, rmoved = false;
+	int ldir = -1, rdir = -1;
 					// Have each take a step.
 	if (lnpc)
-		lmoved = step(lnpc, npc, dir, pos + Tile_coord(
+		ldir = step(lnpc, npc, dir, pos + Tile_coord(
 			left_offsets[dir4][0], left_offsets[dir4][1], 0));
 	if (rnpc)
-		rmoved = step(rnpc, npc, dir, pos + Tile_coord(
+		rdir = step(rnpc, npc, dir, pos + Tile_coord(
 			right_offsets[dir4][0], right_offsets[dir4][1], 0));
-	if (lmoved)
-		move_followers(lnpc, dir);
-	if (rmoved)
-		move_followers(rnpc, dir);
+	if (ldir >= 0)
+		move_followers(lnpc, ldir);
+	if (rdir >= 0)
+		move_followers(rnpc, rdir);
 	}
 
 /*
@@ -494,12 +495,26 @@ inline bool Is_step_okay
 	}
 
 /*
- *	Move one follower to its destination (if possible).
- *
- *	Output:	True if he moved.
+ *	Get the direction we just stepped towards.
  */
 
-bool Party_manager::step
+inline int Get_dir_from
+	(
+	Actor *npc,
+	Tile_coord& from
+	)
+	{
+	Tile_coord pos = npc->get_tile();
+	return Get_direction(from.ty - pos.ty, pos.tx - from.tx);
+	}
+
+/*
+ *	Move one follower to its destination (if possible).
+ *
+ *	Output:	Direction (0-7) moved, or -1 if unsuccessful.
+ */
+
+int Party_manager::step
 	(
 	Actor *npc,
 	Actor *leader,			// Who NPC is following.
@@ -510,7 +525,7 @@ bool Party_manager::step
 	Tile_coord pos = npc->get_tile();	// Current position.
 	Tile_coord to = Get_step_tile(pos, dest, dir);
 	if (to.tx == pos.tx && to.ty == pos.ty)
-		return false;		// Not moving.
+		return -1;		// Not moving.
 	Frames_sequence *frames = npc->get_frames(dir);
 	int& step_index = npc->get_step_index();
 	if (!step_index)		// First time?  Init.
@@ -525,14 +540,13 @@ bool Party_manager::step
 			to = Get_step_tile(npc->get_tile(), dest, dir);
 			npc->step(to, frame);
 			}
-		return true;		// Moved.
 		}
-	int destdir = npc->get_direction(dest);
-	int cost0, cost1;
-					// Try next/prev dir.
-	if (Take_best_step(npc, leader, pos, frame, destdir))
-		return true;
-	frames->decrement(step_index);	// We didn't take the step.
-	return false;
+	else if (!Take_best_step(npc, leader, pos, frame, 	
+						npc->get_direction(dest)))
+		{			// Failed to take a step.
+		frames->decrement(step_index);
+		return -1;
+		}
+	return Get_dir_from(npc, pos);
 	}
 

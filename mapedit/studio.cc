@@ -507,7 +507,8 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	config->value("config/estudio/main/width", w, 0);
 	config->value("config/estudio/main/height", h, 0);
 	if (w > 0 && h > 0)
-		gtk_window_set_default_size(GTK_WINDOW(app), w, h);
+//++++Used to work	gtk_window_set_default_size(GTK_WINDOW(app), w, h);
+		gtk_window_resize(GTK_WINDOW(app), w, h);
 	gtk_widget_show( app );
 					// Background color for shape browser.
 	int bcolor;
