@@ -624,6 +624,62 @@ int Egg_object::within_distance
 	}
 
 /*
+ *	Paint at given spot in world.
+ */
+
+void Egg_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	if(gwin->paint_eggs)
+		Game_object::paint(gwin);
+	}
+
+/*
+ *	Run usecode when double-clicked or when activated by proximity.
+ */
+
+void Egg_object::activate
+	(
+	Usecode_machine *umachine
+	)
+	{
+#if DEBUG
+cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
+		", distance = " << (int) distance << ", crit = " <<
+		(int) criteria << ", once = " <<
+	((flags & (1<<(int)once) != 0)) << ", areset = " <<
+	((flags & (1<<(int)auto_reset) != 0)) << ", data2 = " << data2
+		<< '\n';
+#endif
+	int roll = 1 + rand()%100;
+	if (roll > probability)
+		return;			// Out of luck.
+	flags |= (1 << (int) hatched);	// Flag it as done.
+	switch(type)
+		{
+		case jukebox:
+#if DEBUG
+			cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0xff) << endl;
+#endif
+			audio->start_music((data1)&0xff,(data1>>8)&0xff);
+			break;
+		case voice:
+			audio->start_speech((data1)&0xff);
+			break;
+		case usecode:
+			// Data2 is the usecode function.
+			umachine->call_usecode(data2, this,
+					Usecode_machine::egg_proximity);
+			break;
+		default:
+			cout << "Egg not actioned" << endl;
+                }
+
+	}
+
+/*
  *	Remove an object.
  */
 
@@ -974,49 +1030,6 @@ void Barge_object::paint
 	{
 					// DON'T paint barge shape itself.
 					// The objects are in the chunk too.
-	}
-
-/*
- *	Run usecode when double-clicked or when activated by proximity.
- */
-
-void Egg_object::activate
-	(
-	Usecode_machine *umachine
-	)
-	{
-#if DEBUG
-cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
-		", distance = " << (int) distance << ", crit = " <<
-		(int) criteria << ", once = " <<
-	((flags & (1<<(int)once) != 0)) << ", areset = " <<
-	((flags & (1<<(int)auto_reset) != 0)) << ", data2 = " << data2
-		<< '\n';
-#endif
-	int roll = 1 + rand()%100;
-	if (roll > probability)
-		return;			// Out of luck.
-	flags |= (1 << (int) hatched);	// Flag it as done.
-	switch(type)
-		{
-		case jukebox:
-#if DEBUG
-			cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0xff) << endl;
-#endif
-			audio->start_music((data1)&0xff,(data1>>8)&0xff);
-			break;
-		case voice:
-			audio->start_speech((data1)&0xff);
-			break;
-		case usecode:
-			// Data2 is the usecode function.
-			umachine->call_usecode(data2, this,
-					Usecode_machine::egg_proximity);
-			break;
-		default:
-			cout << "Egg not actioned" << endl;
-                }
-
 	}
 
 /*
