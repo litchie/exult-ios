@@ -40,6 +40,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "config.h"
 #include "utils.h"
 
+using std::cout;
+using std::cerr;
+using std::endl;
 /*
  *	Sockets, etc.
  */
@@ -77,7 +80,7 @@ void Server_init
 	else 
 		{
 					// Get location of socket file.
-		string servename = get_system_path("<GAMEDAT>/exultserver");
+		std::string servename = get_system_path("<GAMEDAT>/exultserver");
 					// Make sure it isn't there.
 		unlink(servename.c_str());
 		struct sockaddr_un addr;
