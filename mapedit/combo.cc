@@ -193,7 +193,7 @@ Combo::Combo
 	const Combo& c2
 	) : shapes_file(c2.shapes_file), starttx(c2.starttx),
 	    startty(c2.startty), xtiles(c2.xtiles), ytiles(c2.ytiles),
-	    ztiles(c2.ztiles), hot_index(c2.hot_index)
+	    ztiles(c2.ztiles), hot_index(c2.hot_index), name(c2.name)
 	{
 	for (vector<Combo_member *>::const_iterator it = c2.members.begin();
 					it != c2.members.end(); ++it)
@@ -376,10 +376,13 @@ unsigned char *Combo::write
 					//   returned here.
 	)
 	{
+	int namelen = name.length();	// Name length.
 					// Room for our data + members.
-	unsigned char *buf = new unsigned char[7*4 + members.size()*(5*4)];
+	unsigned char *buf = new unsigned char[namelen + 1 + 
+						7*4 + members.size()*(5*4)];
 	unsigned char *ptr = buf;
 	Serial_out out(ptr);
+	out << name;
 	out << hot_index << starttx << startty << xtiles << ytiles << ztiles;
 	out << (short) members.size();	// # members to follow.
 	for (std::vector<Combo_member *>::const_iterator it = members.begin();
@@ -407,6 +410,7 @@ unsigned char *Combo::read
 	{
 	unsigned char *ptr = buf;
 	Serial_in in(ptr);
+	in << name;
 	in << hot_index << starttx << startty << xtiles << ytiles << ztiles;
 	short cnt;
 	in << cnt;			// # members to follow.
@@ -433,6 +437,8 @@ void Combo_editor::set_combo
 	combo = newcombo;
 	file_index = findex;
 	selected = -1;
+	ExultStudio::get_instance()->set_entry(
+			"combo_name", combo->name.c_str(), true);
 	set_controls();			// No selection now.
 	render();
 	}
@@ -672,6 +678,8 @@ void Combo_editor::save
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
+					// Get name from field.
+	combo->name = studio->get_text_entry("combo_name");
 	Flex_file_info *flex_info = dynamic_cast<Flex_file_info *>
 				(studio->get_files()->create("combos.flx"));
 	if (!flex_info)
@@ -725,10 +733,17 @@ void Combo_chooser::select
 	selected = new_sel;
 	enable_controls();
 	int num = info[selected].num;
+	Combo *combo = combos[num];
 					// Remove prev. selection msg.
 //	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	char buf[150];			// Show new selection.
 	g_snprintf(buf, sizeof(buf), "Combo %d", num);
+	if (combo && !combo->name.empty())
+		{
+		int len = strlen(buf);
+		g_snprintf(buf + len, sizeof(buf) - len, 
+				":  '%s'", combo->name.c_str());
+		}
 	gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
 	}
 
@@ -761,6 +776,12 @@ void Combo_chooser::unselect
 		g_snprintf(buf, sizeof(buf), "Combos %d to %d",
 			info[0].num, info[info_cnt - 1].num);
 		gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
+		}
+	else
+		{
+//		gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+		gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel,
+							"No combos");
 		}
 	}
 
