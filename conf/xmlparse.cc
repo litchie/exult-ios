@@ -93,6 +93,12 @@ void	xmlparse(string &s,size_t &pos,XMLnode *x)
 				}
 			case '>':
 				// End of tag
+				if(s[pos-1]=='/')
+					{
+					cout << "Empty tag" << x->entity.id<< endl;
+					++pos;
+					return; // An empty tag
+					}
 				++pos; intag=false; if(s[pos]<32) ++pos;
 				break;
 			case '&':
