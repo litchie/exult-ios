@@ -1041,6 +1041,14 @@ void Game_window::get_ireg_objects
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 	read_ireg_objects(ireg, scx, scy);
+					// A fixup:
+	if (schunk == 10*12 + 11 && Game::get_game_type() == SERPENT_ISLE)
+		{			// Lever in SilverSeed:
+		Game_object_vector vec;
+		if (Game_object::find_nearby(vec, Tile_coord(2936, 2726, 0),
+					787, 0, 0, c_any_qual, 5))
+			vec[0]->move(2937, 2727, 2);
+		}
 	}
 
 /*
