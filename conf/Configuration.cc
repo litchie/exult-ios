@@ -212,6 +212,9 @@ bool	Configuration::read_config_file(const char *n)
         filename=n;
 #endif
 	FILE	*fp=fopen(filename.c_str(),"r");
+
+	is_file=true; // set to file, even if file not found
+
 	if(!fp)
 		return false;
 
