@@ -3037,7 +3037,15 @@ Monster_actor *Monster_info::create
 	monster->movef(0, olist, tilex, tiley, 0, lift);
 					// ++++++For now:
 	if (flags & ((1<<walk)|(1<<fly)|(1<<swim)|(1<<ethereal)))
-		monster->set_schedule_type(Schedule::loiter);
+		{
+		Game_object_vector paths;
+					// Want to set initial 'bunny'.
+		if (Game::get_game_type() == SERPENT_ISLE &&
+		    monster->find_nearby(paths, 607, 8, 0) > 0)
+			monster->set_schedule_type(Schedule::patrol);
+		else
+			monster->set_schedule_type(Schedule::loiter);
+		}
 	else				// For the wounded men in bed:
 		monster->set_schedule_type(Schedule::wait);
 					// Get equipment.

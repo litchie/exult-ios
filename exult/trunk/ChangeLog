@@ -2,6 +2,8 @@
 
 	* SI - Schedules take effect immediately.
 	* SI - Guard opens gate (Intrinsic 0xc1 added).
+	* SI - Starting scene works!!  (Well somewhat, and you do have to
+	wait several seconds, hanging around the bunny.)
 	* Usecode compiler - 1st pass pretty much complete.
 
 2001-01-10  Ryan Nunn <triforce@merlin.net.au>
