@@ -74,7 +74,7 @@ public:
 	void		remove( const T& obj )
 		{
 #if __GNUG__ > 2
-			for(std::vector<T>::iterator X = begin(); X != end(); ++X)
+			for(typename std::vector<T>::iterator X = begin(); X != end(); ++X)
 #else
 			for(T *X = begin(); X != end(); ++X)
 #endif

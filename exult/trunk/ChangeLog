@@ -1,4 +1,7 @@
 2002-01-14  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* vec.h: explicity typename
+
+2002-01-14  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* Makefile.MorphOS, README.AmigaOS, README.MorphOS, 
 	  audio/midi_drivers/amiga_midi.*, cheat_screen.cc,
 	  files/listfiles.cc, files/utils.cc, version.cc, fnames.h, 
