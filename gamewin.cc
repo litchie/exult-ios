@@ -531,6 +531,7 @@ void Game_window::clear_world
 //	tqueue = new Time_queue();
 	tqueue->clear();		// Remove all entries.
 	clear_dirty();
+	removed->flush();		// Delete.
 					// Delete all chunks (& their objs).
 	for (int y = 0; y < c_num_chunks; y++)
 		for (int x = 0; x < c_num_chunks; x++)
