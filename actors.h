@@ -329,7 +329,7 @@ public:
 	virtual int get_type_flags() const
 		{ return type_flags; }
 
-	virtual unsigned char get_ident() { return ident; }
+	virtual unsigned char get_ident() { return dead ? 0 : ident; }
 	virtual void set_ident(unsigned char id) { ident = id; }
 
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).

@@ -285,6 +285,7 @@ void Frame_animator::handle_event
 		case 614:		// Magic music box (SI).
 		case 655:		// Planets (SI). (Groups of 6).
 		case 695:		// Grandfather clock (SI).
+		case 794:		// Severed limb (SI).
 		case 992:		// Burning urn (SI).
 					// 0-5 face one way, 6-11 the other.
 			framenum = (framenum + 1)%6 + 6*(framenum/6);

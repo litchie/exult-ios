@@ -2,7 +2,10 @@
 
 	* combat.cc: Added support for the 'protected' halo button and the
 	'protect' combat mode.
-
+	* actors.h: In SI Knight's Test, the Usecode for the invisible
+	pikeman stops repeating when you kill him.
+	* animate.cc:  Fixed body parts animation on Erstam's island.
+	
 2001-05-16  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in: fixed checks for getaddrinfo() and mkstemp()
 

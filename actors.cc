@@ -1636,6 +1636,7 @@ void Actor::reduce_health
 			if (!execed ||
 					// For now, check for special cases:
 			   usecode == 0x175 ||	// Mummy
+			   usecode == 0x16b ||	// Magic gremlin.
 			   (was_killable && !get_flag(Obj_flags::si_killable)))
 				die();
 					// Else restore health.
