@@ -1,3 +1,8 @@
+2000-04-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Use direction to get correct frames for Usecode animations.
+	* The 'bucket bug' is partly fixed.
+
 2000-04-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Re-enabled sound in Windows (Where did it go??)
 	* added some more #ifndef WIN32 to the pragma's

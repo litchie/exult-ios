@@ -192,14 +192,21 @@ void Scheduled_usecode::handle_event
 			i++;		// Perhaps a soundfx or sprite??
 			break;
 		case 0x59:		// Parm. is dir. (0-7).  0=north?
-				// +++++++Walk in that dir.??
-			i++;
+			{
+					// Look in that dir.
+			Usecode_value& val = arrval.get_elem(++i);
+			obj->set_usecode_dir(val.get_int_value());
 			break;
+			}
 		default:
-					// ??Guessing these are frames:
+					// Frames with direction.
 			if (opcode >= 0x60 && opcode <= 0x7f)
 				{	// Looks okay, so far.
-				Usecode_value v(opcode & 0xf);
+					// Bit 5=S, Bit6=reflect. on diag.
+				static unsigned char rotate[8] =
+					{ 0, 0, 48, 48, 16, 16, 32, 32};
+				int dir = obj->get_usecode_dir();
+				Usecode_value v(rotate[dir] + (opcode & 0xf));
 				usecode->set_item_frame(objval, v);
 				}
 			else
@@ -1012,7 +1019,8 @@ Usecode_value Usecode_machine::find_direction
 		int x1, y1, z1, x2, y2, z2;
 		o1->get_abs_tile(x1, y1, z1);
 		o2->get_abs_tile(x2, y2, z2);
-		angle = (int) Get_direction(y2 - y1, x2 - x1);
+					// Treat as cartesian coords.
+		angle = (int) Get_direction(y1 - y2, x2 - x1);
 		}
 	return Usecode_value(angle);
 	}
