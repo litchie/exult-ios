@@ -412,6 +412,7 @@ public:
 			}
 		}
 	void set_weapon_offset(int frame, unsigned char x, unsigned char y);
+	int get_rotated_frame(int curframe, int quads);
 	};
 
 #endif

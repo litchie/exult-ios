@@ -1,3 +1,7 @@
+2004-12-01    <jeff@mini.nerble.net>
+
+	* mapedit/objedit.cc,etc.:  Added 'rotate' button to obj-edit dialog.
+
 2004-10-16    <jeff@mini.nerble.net>
 
 	* mapedit/bargeedit.cc: EStudio dialog for adding a barge.
