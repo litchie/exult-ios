@@ -56,6 +56,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "args.h"
 #include "game.h"
 #include "browser.h"
+#include "barge.h"
 
 Audio *audio;
 Configuration *config;
@@ -507,8 +508,16 @@ inline void Set_mouse_and_speed
 	int mousex, int mousey		// Physical mouse location.
 	)
 	{
-	int ax, ay;			// Get Avatar screen location.
-	gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
+	int ax, ay;			// Get Avatar/barge screen location.
+	Barge_object *barge = gwin->get_moving_barge();
+	if (barge)
+		{			// Use center of barge.
+		gwin->get_shape_location(barge, ax, ay);
+		ax -= barge->get_xtiles()*(tilesize/2);
+		ay -= barge->get_ytiles()*(tilesize/2);
+		}
+	else				
+		gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
 	int dy = ay - (mousey >> scale), dx = (mousex >> scale) - ax;
 	Direction dir = Get_direction(dy, dx);
 	int dist = dy*dy + dx*dx;

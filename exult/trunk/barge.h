@@ -45,10 +45,12 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   not moving.
 	PathFinder *path;		// For traveling.
+	Tile_coord center;		// Center of barge.
 	Game_object *get_object(int i)
 		{ return (Game_object *) objects.get(i); }
 	void swap_dims();
 	Rectangle get_tile_footprint();
+	void set_center();
 	int okay_to_rotate(Tile_coord pos);
 	void add_dirty(Game_window *gwin);
 					// Finish up move/rotate operation.
@@ -68,6 +70,8 @@ public:
 		{ return xtiles; }
 	int get_ytiles()
 		{ return ytiles; }
+	Tile_coord get_center()
+		{ return center; }
 	virtual ~Barge_object();
 	void gather();			// Gather up objects on barge.
 					// Start rolling/sailing.

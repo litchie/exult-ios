@@ -1,3 +1,7 @@
+2000-08-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Use center of barge as hot spot for moving.
+
 2000-08-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* All books should work now.

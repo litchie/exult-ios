@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "actions.h"
 #include "dir.h"
+#include "items.h"
 
 /*
  *	Set up an action to get an actor to a location (via pathfinding), and
@@ -98,8 +99,22 @@ void Pace_schedule::now_what
 	)
 	{
 	which = !which;			// Flip direction.
-					// Wait .75 sec. before moving.
-	npc->walk_to_tile(which ? p1 : p0, 250, 750);
+	int delay = 750;		// Delay .75 secs.
+	if (blocked.tx != -1 &&		// Blocked?
+	    !npc->is_monster())
+		{
+		Game_window *gwin = Game_window::get_game_window();
+		Game_object *obj = Game_object::find_blocking(blocked);
+		blocked.tx = -1;
+		if (obj && (obj->get_npc_num() > 0 || 
+					obj == gwin->get_main_actor()))
+			{
+			npc->say(first_move_aside, last_move_aside);
+			delay = 1200;	// Wait longer.
+			}
+		}
+					// Wait 1 sec. before moving.
+	npc->walk_to_tile(which ? p1 : p0, 250, delay);
 	}
 
 /*

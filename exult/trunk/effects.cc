@@ -132,10 +132,13 @@ Projectile_effect::Projectile_effect
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
 	path->NewPath(pos, to->get_abs_tile_coord(), 0);
-					// Use frames 8-23, for direction
-					//   going clockwise from North.
-	int dir = Get_dir16(attacker, to);
-	frame_num = 8 + dir;
+	if (frames >= 24)		// Use frames 8-23, for direction
+		{			//   going clockwise from North.
+		int dir = Get_dir16(attacker, to);
+		frame_num = 8 + dir;
+		}
+	else
+		frame_num = -1;		// We just won't show it.
 					// Start immediately.
 	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
 	}
@@ -160,7 +163,7 @@ inline void Projectile_effect::add_dirty
 	Game_window *gwin
 	)
 	{
-	if (pos.tx == -1)
+	if (pos.tx == -1 || frame_num == -1)
 		return;			// Already at destination.
 	Shape_frame *shape = gwin->get_shape(shape_num, frame_num);
 					// Force repaint of prev. position.
@@ -204,7 +207,7 @@ void Projectile_effect::paint
 	Game_window *gwin
 	)
 	{
-	if (pos.tx == -1)
+	if (pos.tx == -1 || frame_num == -1)
 		return;			// Already at destination.
 	int liftpix = pos.tz*tilesize/2;
 	gwin->paint_shape((pos.tx - gwin->get_scrolltx())*tilesize - liftpix,
