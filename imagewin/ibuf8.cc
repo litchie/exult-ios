@@ -550,3 +550,32 @@ void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *inptr)
 		}
 	}
 }
+
+/*
+ *	Convert this image to 32-bit RGBA and return the allocated buffer.
+ */
+
+unsigned char *Image_buffer8::rgba
+	(
+	unsigned char *pal,		// 3*256 bytes (rgbrgbrgb...).
+	unsigned char transp		// Transparent value.
+	)
+	{
+	int cnt = line_width*height;	// Allocate destination buffer.
+	uint32 *buf32 = new uint32[cnt];
+	uint32 *ptr32 = buf32;
+	unsigned char *pixels = bits;
+	for (int i = 0; i < cnt; i++)
+		{
+		unsigned char pix = *pixels++;
+		if (pix == transp)	// Transparent?  Store Alpha=0.
+			*ptr32++ = 0;
+		else
+			*ptr32++ = 
+				(static_cast<uint32>(pal[3*pix])<<24) +
+				(static_cast<uint32>(pal[3*pix + 1]) << 16) +
+				(static_cast<uint32>(pal[3*pix + 2]) << 8) +
+				   0xff;	// Alpha = opaque.
+		}
+	return reinterpret_cast<unsigned char *>(buf32);
+	}

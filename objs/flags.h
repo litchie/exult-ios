@@ -35,9 +35,11 @@ namespace  Obj_flags
 		on_moving_barge = 10,	// ??Guessing.
 		okay_to_take = 11,	// Okay to take??
 		might = 12,		// Double strength, dext, intel.
+		no_spell_casting = 13,
 		cant_die = 14,		// Test flag in Monster_info.
 		dancing = 15,		// ??Not sure.
-		dont_render = 16,	// Completely invisible.
+		dont_move = 16,		// User can't move.  In BG,
+					//   completely invisible.
 		si_on_moving_barge = 17,// SI's version of 10?
 		is_temporary = 18,	// Is temporary
 		okay_to_land = 21,	// Used for flying-carpet.

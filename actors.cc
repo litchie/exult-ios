@@ -1534,7 +1534,8 @@ void Actor::paint
 	(
 	)
 	{
-	if (!(flags & (1L << Obj_flags::dont_render)) ||
+					// In BG, dont_move means don't render.
+	if (!(flags & (1L << Obj_flags::dont_move)) ||
 	    Game::get_game_type() == SERPENT_ISLE)
 		{
 		int xoff, yoff;
@@ -2111,10 +2112,6 @@ void Actor::set_flag
 	{
 //	cout << "Set flag for NPC " << get_npc_num() << " = " << flag << endl;
 
-	// Hack :)
-	if (flag == Obj_flags::dont_render && Game::get_game_type() == SERPENT_ISLE)
-		set_siflag(dont_move);
-
 	if (flag >= 0 && flag < 32)
 		flags |= ((uint32) 1 << flag);
 	else if (flag >= 32 && flag < 64)
@@ -2185,8 +2182,6 @@ void Actor::clear_flag
 	)
 	{
 //	cout << "Clear flag for NPC " << get_npc_num() << " = " << flag << endl;
-	if (flag == Obj_flags::dont_render && Game::get_game_type() == SERPENT_ISLE)
-		clear_siflag(dont_move);
 	if (flag >= 0 && flag < 32)
 		flags &= ~(static_cast<uint32>(1) << flag);
 	else if (flag >= 32 && flag < 64)

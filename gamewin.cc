@@ -510,8 +510,7 @@ bool Game_window::is_moving
 
 bool Game_window::main_actor_dont_move()
     { 
-    return main_actor->get_siflag(Actor::dont_move)
-            || main_actor->get_flag(Obj_flags::dont_render);
+    return main_actor->get_flag(Obj_flags::dont_move);
     }
 
 /*
@@ -2373,9 +2372,9 @@ void Game_window::setup_game
 
 					// Should Avatar be visible?
 		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-			main_actor->clear_flag(Obj_flags::dont_render);
+			main_actor->clear_flag(Obj_flags::dont_move);
 		else
-			main_actor->set_flag(Obj_flags::dont_render);
+			main_actor->set_flag(Obj_flags::dont_move);
 	}
 
 	CYCLE_RED_PLASMA();

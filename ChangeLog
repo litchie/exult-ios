@@ -1,3 +1,10 @@
+2002-07-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/flags.h,actors.h,etc:  Moved 'dont_move' and
+	'no_spell_casting' flags to the spots in Obj_flags where they're
+	referred to in Usecode.
+	*imagewin/ibuf.{cc,h}:  rgba() converts to 32-bit format (untested).
+
 2002-07-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* orangedress.shp, bluedress.shp: new paperdoll art by sbx
 
