@@ -883,6 +883,7 @@ USECODE_FUNCTION(NOP)
 
 USECODE_FUNCTION(UNKNOWN)
 {
+	Unhandled(intrinsic, num_parms, parms);
 	return no_ret;
 }
 
@@ -1013,7 +1014,58 @@ USECODE_FUNCTION(set_item_frame)
 	return no_ret;
 }
 
-typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,Usecode_value parms[12]);
+USECODE_FUNCTION(get_item_quality)
+{
+	Game_object *obj = get_item(parms[0].get_int_value());
+	return Usecode_value(obj ? obj->get_quality() : 0);
+}
+
+USECODE_FUNCTION(set_item_quality)
+{
+	// Guessing it's 
+	//  set_quality(item, value).
+	Game_object *obj = get_item(parms[0].get_int_value());
+	if (obj)
+		obj->set_quality(parms[1].get_int_value());
+	return no_ret;
+}
+
+USECODE_FUNCTION(count_npc_inventory)
+{
+	// Get # of items in NPC??????
+	//   Count(item, -npc).
+	//+++++++++++++
+	Unhandled(intrinsic, num_parms, parms);
+	return no_ret;
+}
+
+USECODE_FUNCTION(set_npc_inventory_count)
+{
+	// Set # of items??? (item, newcount).
+	//+++++++++++++
+	Unhandled(intrinsic, num_parms, parms);
+	return no_ret;
+}
+
+USECODE_FUNCTION(get_object_position)
+{
+	// Takes itemref.  ?Think it rets.
+	//  hotspot coords: (x, y, z, obj).
+	int tx, ty, tz;		// Get tile coords.
+	Game_object *obj = get_item(parms[0].get_int_value());
+	if (obj)
+		obj->get_abs_tile(tx, ty, tz);
+	else
+		tx = ty = tz = 0;
+	Usecode_value vx(tx), vy(ty), vz(tz), vobj((long) obj);
+	Usecode_value arr(4, &vx);
+	arr.put_elem(1, vy);
+	arr.put_elem(2, vz);
+	arr.put_elem(3, vobj);
+	return arr;
+}
+
+typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
 UsecodeIntrinsicFn intrinsic_table[]=
 	{
@@ -1037,9 +1089,15 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_FUNCTION_PTR(get_item_shape), // 0x11
 	USECODE_FUNCTION_PTR(get_item_frame), // 0x12
 	USECODE_FUNCTION_PTR(set_item_frame), // 0x13
+	USECODE_FUNCTION_PTR(get_item_quality), // 0x14
+	USECODE_FUNCTION_PTR(set_item_quality), // 0x15
+	USECODE_FUNCTION_PTR(count_npc_inventory), // 0x16
+	USECODE_FUNCTION_PTR(set_npc_inventory_count), // 0x17
+	USECODE_FUNCTION_PTR(get_object_position), // 0x18
+	USECODE_FUNCTION_PTR(UNKNOWN), // 0x19
 	};
 
-int	max_bundled_intrinsics=0x13;	// Index of the last intrinsic in this table
+int	max_bundled_intrinsics=0x19;	// Index of the last intrinsic in this table
 
 /*
  *	Call an intrinsic function.
@@ -1061,50 +1119,11 @@ Usecode_value Usecode_machine::call_intrinsic
 	if(intrinsic<=max_bundled_intrinsics)
 		{
 		UsecodeIntrinsicFn func=intrinsic_table[intrinsic];
-		return ((*this).*func)(event,intrinsic,parms);
+		return ((*this).*func)(event,intrinsic,num_parms,parms);
 		}
 	else
 	switch (intrinsic)
 		{
-	case 0x14:			// Get item quality.
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		return Usecode_value(obj ? obj->get_quality() : 0);
-		break;
-		}
-	case 0x15:			// Guessing it's 
-					//  set_quality(item, value).
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		if (obj)
-			obj->set_quality(parms[1].get_int_value());
-		break;
-		}
-	case 0x16:			// Get # of items in NPC??????
-					//   Count(item, -npc).
-		//+++++++++++++
-		Unhandled(intrinsic, num_parms, parms);
-		break;
-	case 0x17:			// Set # of items??? (item, newcount).
-		//+++++++++++++
-		Unhandled(intrinsic, num_parms, parms);
-		break;
-	case 0x18:			// Takes itemref.  ?Think it rets.
-					//  hotspot coords: (x, y, z, obj).
-		{
-		int tx, ty, tz;		// Get tile coords.
-		Game_object *obj = get_item(parms[0].get_int_value());
-		if (obj)
-			obj->get_abs_tile(tx, ty, tz);
-		else
-			tx = ty = tz = 0;
-		Usecode_value vx(tx), vy(ty), vz(tz), vobj((long) obj);
-		Usecode_value arr(4, &vx);
-		arr.put_elem(1, vy);
-		arr.put_elem(2, vz);
-		arr.put_elem(3, vobj);
-		return arr;
-		}
 	case 0x1a:			// Direction from parm[0] -> parm[1].
 					// Rets. 0-7.  Is 0 east?
 		return find_direction(parms[0], parms[1]);
