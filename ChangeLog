@@ -1,5 +1,8 @@
 2001-08-05  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamewin.cc,actors.cc,actorio.cc:  Turn off 'flee' mode when
+	switching to combat unless user explicitly choose 'flee'.
+
 	* audio/Audio.h (public): Got rid of annoying warning.
 	* conversation.cc: No face for Smith the Nightmare.
 	* keyactions.cc: Applied Put_click() patch for keys.
