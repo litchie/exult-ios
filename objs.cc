@@ -1788,42 +1788,6 @@ Direction Get_direction4
 								: west);
 	}
 
-/*
- *	Figure cost going from one tile to an adjacent tile (for pathfinding).
- *
- *	Output:	Cost, or -1 if blocked.
- *		The 'tz' field in tile may be modified.
- */
-
-int Get_cost
-	(
-	int tx, int ty, int& tz		// The tile we're going to.  The 'tz'
-					//   field may be modified.
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-	int cx = tx/tiles_per_chunk, cy = ty/tiles_per_chunk;
-	Chunk_object_list *olist = gwin->get_objects(cx, cy);
-	tx = tx%tiles_per_chunk;	// Get tile within chunk.
-	ty = ty%tiles_per_chunk;
-	olist->setup_cache();		// Make sure cache is valid.
-	int new_lift;			// Might climb/descend.
-					// For now, assume height=3.
-	if (olist->is_blocked(3, tz, tx, ty, new_lift))
-		{			//+++++++Check for door.
-					//+++++++Need method to get shape.
-		return -1;
-		}
-	int cost = 1;
-	if (new_lift != tz)
-		{
-		cost++;
-		tz = new_lift;
-		}
-					// Maybe check types of ground?
-	return (cost);
-	}
-
 #if 0
 /*
  *	Lookup arctangent in a table for degrees 0-85.

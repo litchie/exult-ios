@@ -23,10 +23,89 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "gamewin.h"
 #include "actions.h"
 #include "actors.h"
 #include "Zombie.h"
 #include "Astar.h"
+
+/*
+ *	This class provides A* cost methods.
+ */
+class Actor_pathfinder_client : public Pathfinder_client
+	{
+public:
+					// Figure cost for a single step.
+	virtual int get_step_cost(Tile_coord from, Tile_coord& to);
+					// Estimate cost between two points.
+	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
+					// Is tile at the goal?
+	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
+	};
+
+/*
+ *	Figure cost going from one tile to an adjacent tile (for pathfinding).
+ *
+ *	Output:	Cost, or -1 if blocked.
+ *		The 'tz' field in tile may be modified.
+ */
+
+int Actor_pathfinder_client::get_step_cost
+	(
+	Tile_coord from,
+	Tile_coord& to			// The tile we're going to.  The 'tz'
+					//   field may be modified.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int cx = to.tx/tiles_per_chunk, cy = to.ty/tiles_per_chunk;
+	Chunk_object_list *olist = gwin->get_objects(cx, cy);
+	int tx = to.tx%tiles_per_chunk;	// Get tile within chunk.
+	int ty = to.ty%tiles_per_chunk;
+	olist->setup_cache();		// Make sure cache is valid.
+	int new_lift;			// Might climb/descend.
+					// For now, assume height=3.
+	if (olist->is_blocked(3, to.tz, tx, ty, new_lift))
+		{			//+++++++Check for door.
+					//+++++++Need method to get shape.
+		return -1;
+		}
+	int cost = 1;
+	if (new_lift != to.tz)
+		{
+		cost++;
+		to.tz = new_lift;
+		}
+					// Maybe check types of ground?
+	return (cost);
+	}
+
+/*
+ *	Estimate cost from one point to another.
+ */
+
+int Actor_pathfinder_client::estimate_cost
+	(
+	Tile_coord& from,
+	Tile_coord& to
+	)
+	{
+	return from.distance(to);
+	}
+
+/*
+ *	Is tile at goal?
+ */
+
+int Actor_pathfinder_client::at_goal
+	(
+	Tile_coord& tile,
+	Tile_coord& goal
+	)
+	{
+	return (tile.tx == goal.tx && tile.ty == goal.ty &&
+		(goal.tz == -1 || tile.tz == goal.tz));
+	}
 
 /*
  *	Set to walk from one point to another the dumb way.
@@ -42,7 +121,7 @@ Actor_action *Actor_action::walk_to_tile
 	{
 	Zombie *path = new Zombie();
 					// Set up new path.
-	if (path->NewPath(src, dest, Get_cost))
+	if (path->NewPath(src, dest, 0))
 		return (new Path_walking_actor_action(path));
 	else
 		{
@@ -124,8 +203,9 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	Tile_coord dest
 	)
 	{
+	Actor_pathfinder_client cost;
 					// Set up new path.
-	if (!path->NewPath(src, dest, Get_cost))
+	if (!path->NewPath(src, dest, &cost))
 		return (0);
 					// Reset direction (but not index).
 	original_dir = (int) Get_direction4(

@@ -819,9 +819,4 @@ inline void Game_object::move
 	new_chunk->add(this);
 	}
 
-extern int Get_cost
-	(
-	int tx, int ty, int& tz		// The tile we're going to.  The 'tz'
-					//   field may be modified.
-	);
 #endif

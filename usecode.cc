@@ -1020,7 +1020,6 @@ Usecode_value Usecode_machine::find_nearest
 
 /*
  *	Find the angle (0-7) from one object to another.
- *	++++++Not sure which dir.  0 represents.  Assuming East for now.
  */
 
 Usecode_value Usecode_machine::find_direction
@@ -1029,7 +1028,7 @@ Usecode_value Usecode_machine::find_direction
 	Usecode_value& to
 	)
 	{
-	unsigned angle;			// Gets angle 0-7 (east - southeast).
+	unsigned angle;			// Gets angle 0-7 (north - northwest)
 	Game_object *o1 = get_item(from);
 	Game_object *o2 = get_item(to);
 #if 1 /* +++++Try this */
@@ -1335,14 +1334,14 @@ USECODE_INTRINSIC(remove_npc_face)
 USECODE_INTRINSIC(add_answer)
 {
 	answers.add_answer(parms[0]);
-	user_choice = 0;	//++++Exp. 4/9/00
+	user_choice = 0;
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(remove_answer)
 {
 	answers.remove_answer(parms[0]);
-	user_choice = 0;	//++++Exp. 4/9/00
+	user_choice = 0;
 	return(no_ret);
 }
 
@@ -1360,7 +1359,6 @@ USECODE_INTRINSIC(pop_answers)
 		answers=answer_stack.front();
 		answer_stack.pop_front();
 		}
-// +++Maybe not	user_choice = 0;		// Seems like a good idea.
 	return(no_ret);
 }
 
@@ -1929,7 +1927,9 @@ USECODE_INTRINSIC(earthquake)
 USECODE_INTRINSIC(is_pc_female)
 {
 	// Is player female?
-	Usecode_value u(0);
+	int shapenum = gwin->get_main_actor()->get_shapenum();
+					// This works for Black Gate:
+	Usecode_value u(shapenum != 721);
 	return(u);
 }
 
@@ -1940,8 +1940,12 @@ USECODE_INTRINSIC(run_endgame)
 
 USECODE_INTRINSIC(get_array_size)
 {
-	Usecode_value u(parms[0].get_array_size());
-					// ++++++++Return 1 if not an array?
+	int cnt;
+	if (parms[0].is_array())	// An array?  We might return 0.
+		cnt = parms[0].get_array_size();
+	else				// Not an array?  Usecode wants a 1.
+		cnt = 1;
+	Usecode_value u(cnt);
 	return(u);
 }
 
@@ -2029,11 +2033,10 @@ USECODE_INTRINSIC(run_usecode)
 	Wait_for_arrival(gwin->get_main_actor());
 	Game_object *obj = get_item(parms[2]);
 	if (obj)
-		{			// +++For now.  Real return from fun?
-		int ret = call_usecode(parms[1].get_int_value(), obj, 
+		{
+		call_usecode(parms[1].get_int_value(), obj, 
 				(Usecode_events) parms[3].get_int_value());
-//		u = Usecode_value(ret);
-		u = Usecode_value(1);	// +++++For now.
+		u = Usecode_value(1);	// Success.
 		}
 	return(u);
 }
@@ -2252,7 +2255,9 @@ struct
 	USECODE_INTRINSIC_PTR(set_npc_flag),	// 0x89
 	USECODE_INTRINSIC_PTR(clear_npc_flag),	// 0x8a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8b
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8c
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8c ++++Cycles palettes dark-light.
+//					//   Takes 3 parms.(12 or 36, 
+//						always 1?, 0/1?).
 	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8e  In_combat().
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8f
@@ -2393,22 +2398,9 @@ Usecode_value Usecode_machine::call_intrinsic
 		{
 		UsecodeIntrinsicFn func=intrinsic_table[intrinsic].func;
 		const char *name=intrinsic_table[intrinsic].name;
-		return Execute_Intrinsic(func,name,event,intrinsic,num_parms,parms);
+		return Execute_Intrinsic(func,name,event,intrinsic,
+							num_parms,parms);
 		}
-#if 0
-	// Switch is no longer required
-	else
-	switch (intrinsic)
-		{
-//	case 0x8c:			// Cycles palettes dark-light.
-//					//   ++++Takes 3 parms.(12 or 36, 
-//						always 1?, 0/1?).
-	default:
-		Unhandled(intrinsic, num_parms, parms);
-		break;
-		}
-	Usecode_value no_ret;				// Dummy return.
-#endif
 	return(no_ret);
 	}
 
@@ -2617,7 +2609,6 @@ void Usecode_machine::run
 			if (set_ret_value || !answers.answers.size())
 				{
 				ip += offset;
-					// ++++Experimenting 4/9/00:
 				user_choice = 0;
 				}
 			break;

@@ -24,7 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <hash_set>
-#include "objs.h"
+#include "PathFinder.h"
+#include "../objs.h"
 
 #define DEBUG 1
 
@@ -63,19 +64,6 @@ int Neighbor_iterator::coords[16] = {
 	-1,  0,        1,  0,
 	-1,  1, 0,  1, 1,  1
 	};
-
-/*
- *	Estimate cost from one point to another.
- */
-
-inline int Cost_to_goal
-	(
-	Tile_coord& from,
-	Tile_coord& to
-	)
-	{
-	return from.distance(to);
-	}
 
 /*
  *	A node for our search:
@@ -349,11 +337,11 @@ Tile_coord *Find_path
 	(
 	Tile_coord start,		// Where to start from.
 	Tile_coord goal,		// Where to end up.
-	int (*get_cost)(int, int, int&)	// Gets cost of moving to a tile.
+	Pathfinder_client *client	// Provides costs.
 	)
 	{
 	A_star_queue nodes;		// The priority queue & hash table.
-	int max_cost = Cost_to_goal(start, goal);
+	int max_cost = client->estimate_cost(start, goal);
 					// Create start node.
 	nodes.add(new Search_node(start, 0, max_cost, 0));
 	max_cost *= 3;			// Don't try forever.
@@ -366,20 +354,19 @@ Tile_coord *Find_path
 			cout << "Goal: (" << goal.tx << ", " << goal.ty <<
 			"), Node: (" << node->get_tile().tx << ", " <<
 			node->get_tile().ty << ")\n";
-		if (node->get_tile() == goal)
+		Tile_coord curtile = node->get_tile();
+		if (client->at_goal(curtile, goal))
 					// Success.
 			return node->create_path();
 					// Go through surrounding tiles.
-		Neighbor_iterator get_next(node->get_tile());
+		Neighbor_iterator get_next(curtile);
 		Tile_coord ntile(0, 0, 0);
 		while (get_next(ntile))
 			{		// Get cost to next tile.
-			int tz = ntile.tz;
-			int step_cost = get_cost(ntile.tx, ntile.ty, tz);
+			int step_cost = client->get_step_cost(curtile, ntile);
 					// Blocked?
 			if (step_cost == -1)
 				continue;
-			ntile.tz = (short) tz;
 					// Get cost from start to ntile.
 			int new_cost = node->get_start_cost() + step_cost;
 					// See if next tile already seen.
@@ -387,7 +374,7 @@ Tile_coord *Find_path
 					// Already there, and cheaper?
 			if (next && next->get_start_cost() <= new_cost)
 				continue;
-			int new_goal_cost = Cost_to_goal(ntile, goal);
+			int new_goal_cost = client->estimate_cost(ntile, goal);
 					// Skip nodes too far away.
 			if (new_goal_cost >= max_cost)
 				continue;
