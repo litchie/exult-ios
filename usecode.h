@@ -270,6 +270,7 @@ public:
 	USECODE_INTRINSIC_DECL(remove_answer);
 	USECODE_INTRINSIC_DECL(push_answers);
 	USECODE_INTRINSIC_DECL(pop_answers);
+	USECODE_INTRINSIC_DECL(clear_answers);
 	USECODE_INTRINSIC_DECL(select_from_menu);
 	USECODE_INTRINSIC_DECL(select_from_menu2);
 	USECODE_INTRINSIC_DECL(input_numeric_value);
