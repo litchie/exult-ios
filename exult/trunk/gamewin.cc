@@ -1467,7 +1467,8 @@ void Game_window::show_gump
 	static int cnt = 0;		// For staggering them.
 	Gump_object *gmp;		// See if already open.
 	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
-		if (gmp->get_container() == obj)
+		if (gmp->get_container() == obj &&
+		    gmp->get_shapenum() == shapenum)
 			break;
 	if (gmp)			// Found it?
 		{			// Move it to end.
@@ -1484,6 +1485,8 @@ void Game_window::show_gump
 	Gump_object *new_gump = (shapenum >= ACTOR_FIRST_GUMP &&
 		shapenum <= ACTOR_LAST_GUMP) ?
 			new Actor_gump_object(obj, x, y, shapenum)
+			: shapenum == STATSDISPLAY ?
+				new Stats_gump_object(obj, x, y)
 			: new Gump_object(obj, x, y, shapenum);
 					// Paint new one last.
 	new_gump->append_to_chain(open_gumps);
@@ -1510,6 +1513,21 @@ void Game_window::end_gump_mode
 	mode = normal;
 	npc_prox->wait(4);		// Delay "barking" for 4 secs.
 	paint();
+	}
+
+/*
+ *	Remove a gump.
+ */
+
+void Game_window::remove_gump
+	(
+	Gump_object *gump
+	)
+	{
+	gump->remove_from_chain(open_gumps);
+	delete gump;
+	if (!open_gumps)		// Last one?  Out of gump mode.
+		mode = normal;
 	}
 
 /*

@@ -41,7 +41,7 @@ int Game_window::start_dragging
 	{
 	dragging = 0;
 	dragging_gump = 0;
-	closing_gump = 0;
+	dragging_gump_button = 0;
 	dragging_mousex = x;
 	dragging_mousey = y;
 	dragging_rect = Rectangle(0, 0, 0, 0);
@@ -60,11 +60,11 @@ int Game_window::start_dragging
 			dragging_gump->get_shape_location(dragging,
 					dragging_paintx, dragging_painty);
 			}
-		else if (dragging_gump->on_checkmark(this, x, y))
+		else if ((dragging_gump_button = 
+				dragging_gump->on_button(this, x, y)) != 0)
 			{
-			closing_gump = dragging_gump;
 			dragging_gump = 0;
-			closing_gump->push_checkmark(this);
+			dragging_gump_button->push(this);
 			painted = 1;
 			}
 		else
@@ -169,16 +169,13 @@ void Game_window::drop_dragged
 	int moved			// 1 if mouse moved from starting pos.
 	)
 	{
-	if (closing_gump)
+	if (dragging_gump_button)
 		{
-		if (closing_gump->on_checkmark(this, x, y))
-			{		// Clicked on checkmark.
-			closing_gump->remove_from_chain(open_gumps);
-			delete closing_gump;
-			if (!open_gumps)// Last one?  Out of gump mode.
-				mode = normal;
-			}
-		closing_gump = 0;
+		dragging_gump_button->unpush(this);
+		if (dragging_gump_button->on_button(this, x, y))
+					// Clicked on button.
+			dragging_gump_button->activate(this);
+		dragging_gump_button = 0;
 		}
 	else if (!dragging)		// Only dragging a gump?
 		{
@@ -212,28 +209,29 @@ void Game_window::drop
 	Gump_object *on_gump = find_gump(x, y);
 	if (on_gump)
 		{			// +++++++++Watch for failure!!
-		on_gump->add(dragging, x, y);
-		return;
-		}
-	Game_object *found[100];	// Was it dropped on something?
-	int cnt = find_objects(x, y, found);
-	for (int i = cnt - 1; i >= 0; i--)
-		if (found[i]->drop(dragging))
+		if (on_gump->add(dragging, x, y))
 			return;
-					// Find where to drop it.
-	int max_lift = main_actor->get_lift() + 4;
-	int lift;
-	for (lift = dragging->get_lift(); lift < max_lift; lift++)
-		if (drop_at_lift(lift))
-			break;
-	if (lift == max_lift)		// Couldn't drop?  Put it back.
-		{
-		if (dragging_gump)
-			dragging_gump->add(dragging);
-		else
-			get_objects(dragging->get_cx(), 
-					dragging->get_cy())->add(dragging);
 		}
+	else
+		{			// Was it dropped on something?
+		Game_object *found[100];
+		int cnt = find_objects(x, y, found);
+		for (int i = cnt - 1; i >= 0; i--)
+			if (found[i]->drop(dragging))
+				return;
+					// Find where to drop it.
+		int max_lift = main_actor->get_lift() + 4;
+		int lift;
+		for (lift = dragging->get_lift(); lift < max_lift; lift++)
+			if (drop_at_lift(lift))
+				return;
+		}
+					// Couldn't drop?  Put it back.
+	if (dragging_gump)
+		dragging_gump->add(dragging);
+	else
+		get_objects(dragging->get_cx(), 
+				dragging->get_cy())->add(dragging);
 	}
 
 /*
