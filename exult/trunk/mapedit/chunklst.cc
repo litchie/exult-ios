@@ -39,6 +39,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_constants.h"
 #include "shapeid.h"
 
+#include <iosfwd>
+
 using std::cout;
 using std::endl;
 using std::strlen;
@@ -148,7 +150,7 @@ void Chunk_chooser::render_chunk
 	)
 	{
 	unsigned char buf[512];
-	chunkfile.read(buf, 512);
+	chunkfile.read(reinterpret_cast<char *>(buf), 512);
 	unsigned char *data = &buf[0];
 	int y = c_tilesize;
 	for (int ty = 0; ty < c_tiles_per_chunk; ty++, y += c_tilesize)
@@ -397,14 +399,14 @@ cout << "Scrolled to " << adj->value << '\n';
 Chunk_chooser::Chunk_chooser
 	(
 	Vga_file *i,			// Where they're kept.
-	istream& cfile,			// Chunks file (512bytes/entry).
+	std::istream& cfile,			// Chunks file (512bytes/entry).
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h			// Dimensions.
 	) : Shape_draw(i, palbuf, gtk_drawing_area_new()),
 		chunkfile(cfile), chunknum0(0),
 		info(0), info_cnt(0), selected(-1), sel_changed(0)
 	{
-	chunkfile.seekg(0, ios::end);	// Figure total #chunks.
+	chunkfile.seekg(0, std::ios::end);	// Figure total #chunks.
 	num_chunks = chunkfile.tellg()/(c_tiles_per_chunk*c_tiles_per_chunk*2);
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)

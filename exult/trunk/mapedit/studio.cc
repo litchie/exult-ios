@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <glib.h>
 #include <unistd.h>
 
-#include <stdio.h>			/* These are for sockets. */
+#include <cstdio>			/* These are for sockets. */
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <fcntl.h>
@@ -44,6 +44,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 #include "utils.h"
 #include "u7drag.h"
+
+using std::cerr;
+using std::cout;
+using std::endl;
 
 ExultStudio *ExultStudio::self = 0;
 
@@ -321,7 +325,7 @@ Object_browser *ExultStudio::create_chunk_browser(const char *fname)
 	delete_chunk_browser();
 					// Get file for this path.
 	char *fullname = g_strdup_printf("%s%s", static_path, fname);	
-	chunkfile = new ifstream(fullname);
+	chunkfile = new std::ifstream(fullname);
 	g_free(fullname);
 	if (!chunkfile->good()) {
 		cerr << "Error opening file '" << fname << "'.\n";
