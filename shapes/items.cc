@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../alpha_kludges.h"
 
+// #include <iomanip>			/* Debugging */
 #include <fstream>
 #include "items.h"
 #include "utils.h"
@@ -67,6 +68,9 @@ void Setup_item_names (ifstream& items) {
 		items.seekg(itemoffs);
 		item_names[i] = new char[itemlen];
 		items.read(item_names[i], itemlen);
-//		cout << i << "\t" << item_names[i] << endl;
+#if 0
+		cout << dec << i << " 0x" << hex << i << dec
+			<< "\t" << item_names[i] << endl;
+#endif
 	}
 } 

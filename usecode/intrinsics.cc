@@ -1418,8 +1418,9 @@ USECODE_INTRINSIC(nap_time)
 			}
 		if (it != npcs.end())
 			{		// Show party member's face.
-			int npcnum = get_party_member(
-						rand()%get_party_count());
+			int party_cnt = get_party_count();
+			int npcnum = party_cnt ? get_party_member(
+						rand()%party_cnt) : 356;
 			Usecode_value actval(-npcnum), frval(0);
 			show_npc_face(actval, frval);
 			conv->show_npc_message(msgs[rand()%nummsgs]);
