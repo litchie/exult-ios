@@ -74,7 +74,7 @@ using std::vector;
 
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 extern void Wait_for_arrival(Actor *actor);
-extern	bool	usecode_trace,usecode_debugging;
+extern	bool intrinsic_trace,usecode_trace,usecode_debugging;
 extern Mouse *mouse;
 extern unsigned char quitting_time;
 
@@ -1408,7 +1408,7 @@ Usecode_value Usecode_machine::Execute_Intrinsic(UsecodeIntrinsicFn func,const c
 		}
 #endif
 #endif
-	if(usecode_trace)
+	if(intrinsic_trace)
 		{
 		Usecode_Trace(name,intrinsic,num_parms,parms);
 		cout.flush();
@@ -3979,7 +3979,7 @@ int Usecode_machine::run
 		{
 		int opcode = *ip++;
 #if DEBUG
-		if (debug >= 2)
+		if (usecode_trace)
 			{
 			int curip = ip - 1 - code;
 			printf("SP = %d, IP = %04x, op = %02x\n", sp - stack,
