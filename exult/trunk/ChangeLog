@@ -1,3 +1,8 @@
+2001-08-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* shapes/shapeinf.h,shapevga.cc:  Read in 'occludes.dat' & set
+	occlude_flag in Shape_info.
+
 2001-08-19  Max Horn <max@quendi.de>
 	* exult.cc: no more "exception caught" upon a normal quite
 	* keys.cc: no keys except for quit are handled when dont_move flag is set

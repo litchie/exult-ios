@@ -100,6 +100,7 @@
 #define AMMO		"<STATIC>/ammo.dat"
 #define PATCH_AMMO	"<PATCH>/ammo.dat"
 #define PAPERDOL	"<STATIC>/paperdol.vga"
+#define OCCLUDE		"<STATIC>/occlude.dat"
 
 #define GSCRNSHOT	"<GAMEDAT>/scrnshot.shp"
 #define GSAVEINFO	"<GAMEDAT>/saveinfo.dat"

@@ -129,6 +129,7 @@ class Shape_info
 	unsigned char shpdims[2];	// From "shpdims.dat".
 	unsigned char ready_type;	// From "ready.dat":  where item can
 					//   be worn.
+	bool occludes_flag;		// Flagged in 'occlude.dat'.  Roof.
 	unsigned char *weapon_offsets;	// From "wihh.dat": pixel offsets
 					//   for drawing weapon in hand
 	unsigned char armor;		// Armor, from armor.dat.
@@ -148,7 +149,7 @@ public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : weight(0), volume(0),
 		ready_type(0), weapon_offsets(0), armor(0), weapon(0),
-		monstinf(0)
+		monstinf(0), occludes_flag(false)
 		{
 		tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
 		dims[0] = dims[1] = dims[2] = 0;
@@ -228,6 +229,8 @@ public:
 		Shape_class c = get_shape_class();
 		return c == human || c == monster;
 		}
+	bool occludes() const
+		{ return occludes_flag; }
 	unsigned char get_ready_type()
 		{ return ready_type; }
 	// Sets x to 255 if there is no weapon offset
