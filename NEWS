@@ -7,6 +7,8 @@
 		Exult's data files have a CRC now, so it is easier to 
 		detect a mismatch between them and the main executable
 
+		Music looping is user-configurable
+
 		Tons of bugfixes (see ChangeLog for details)
 		
 

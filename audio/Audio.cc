@@ -165,6 +165,8 @@ Audio::Audio() :
 	music_enabled = (s!="no");
 	config->value("config/audio/effects/enabled",s,"---");
 	effects_enabled = (s!="no");
+	config->value("config/audio/midi/looping",s,"yes");
+	allow_music_looping = (s!="no");
 
 	midi = 0;
 	mixer = 0;
@@ -533,25 +535,25 @@ bool	Audio::playing(void)
 }
 
 
-void	Audio::start_music(int num, bool repetition, int bank)
+void	Audio::start_music(int num, bool continuous, int bank)
 {
 	if(audio_enabled && music_enabled && midi != 0)
-		midi->start_music(num,repetition,bank);
+		midi->start_music(num,continuous && allow_music_looping,bank);
 }
 
-void	Audio::start_music(const char *fname, int num, bool repetition)
+void	Audio::start_music(const char *fname, int num, bool continuous)
 {
 	if(audio_enabled && music_enabled && midi != 0)
-		midi->start_music(fname,num,repetition);
+		midi->start_music(fname,num,continuous && allow_music_looping);
 }
 
-void Audio::start_music(XMIDI *mid_file,bool repetition)
+void Audio::start_music(XMIDI *mid_file,bool continuous)
 {
 	if(audio_enabled && music_enabled && midi != 0)
-		midi->start_track(mid_file,repetition);
+		midi->start_track(mid_file,continuous && allow_music_looping);
 }
 
-void	Audio::start_music_combat (Combat_song song, bool repetition, int bank)
+void	Audio::start_music_combat (Combat_song song, bool continuous, int bank)
 {
 	if(!audio_enabled || !music_enabled || midi == 0)
 		return;
@@ -627,7 +629,7 @@ void	Audio::start_music_combat (Combat_song song, bool repetition, int bank)
 		break;
 	}
 	
-	midi->start_music(num,repetition,bank);
+	midi->start_music(num,continuous && allow_music_looping,bank);
 }
 
 void	Audio::stop_music()
