@@ -393,6 +393,98 @@ cout << "Scrolled to " << adj->value << '\n';
 	}
 
 /*
+ *	Create box with 'find' and 'edit' controls.
+ */
+
+GtkWidget *Chunk_chooser::create_controls
+	(
+	)
+	{
+					// Create main box.
+	GtkWidget *topframe = gtk_frame_new (NULL);
+	gtk_widget_show(topframe);
+	GtkWidget *hbox0 = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox0);
+	gtk_container_add (GTK_CONTAINER (topframe), hbox0);
+	/*
+	 *	The 'Locate' controls.
+	 */
+	GtkWidget *frame = gtk_frame_new ("Locate");
+	gtk_widget_show(frame);
+	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
+	GtkWidget *hbuttonbox = gtk_hbutton_box_new ();
+	gtk_widget_show (hbuttonbox);
+	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
+							GTK_BUTTONBOX_START);
+	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
+
+	GtkWidget *loc_chunk_down = gtk_button_new_with_label ("Down");
+	gtk_widget_show (loc_chunk_down);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), loc_chunk_down);
+	GTK_WIDGET_SET_FLAGS (loc_chunk_down, GTK_CAN_DEFAULT);
+
+	GtkWidget *loc_chunk_up = gtk_button_new_with_label ("Up");
+	gtk_widget_show (loc_chunk_up);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), loc_chunk_up);
+	GTK_WIDGET_SET_FLAGS (loc_chunk_up, GTK_CAN_DEFAULT);
+	/*
+	 *	The 'Insert' controls.
+	 */
+	frame = gtk_frame_new ("Insert");
+	gtk_widget_show(frame);
+	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
+	hbuttonbox = gtk_hbutton_box_new ();
+	gtk_widget_show (hbuttonbox);
+	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
+							GTK_BUTTONBOX_START);
+	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
+
+	GtkWidget *insert_chunk_new = gtk_button_new_with_label ("New");
+	gtk_widget_show (insert_chunk_new);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_chunk_new);
+	GTK_WIDGET_SET_FLAGS (insert_chunk_new, GTK_CAN_DEFAULT);
+
+	GtkWidget *insert_chunk_dup = gtk_button_new_with_label ("Dup");
+	gtk_widget_show (insert_chunk_dup);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_chunk_dup);
+	GTK_WIDGET_SET_FLAGS (insert_chunk_dup, GTK_CAN_DEFAULT);
+	/*
+	 *	The 'Move' controls.
+	 */
+	frame = gtk_frame_new ("Move");
+	gtk_widget_show(frame);
+	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
+	hbuttonbox = gtk_hbutton_box_new ();
+	gtk_widget_show (hbuttonbox);
+	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
+							GTK_BUTTONBOX_START);
+	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
+
+	GtkWidget *move_chunk_down = gtk_button_new_with_label ("Down");
+	gtk_widget_show (move_chunk_down);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_down);
+	GTK_WIDGET_SET_FLAGS (move_chunk_down, GTK_CAN_DEFAULT);
+
+	GtkWidget *move_chunk_up = gtk_button_new_with_label ("Up");
+	gtk_widget_show (move_chunk_up);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_up);
+	GTK_WIDGET_SET_FLAGS (move_chunk_up, GTK_CAN_DEFAULT);
+
+#if 0
+	gtk_signal_connect (GTK_OBJECT (loc_chunk_down), "clicked",
+                      GTK_SIGNAL_FUNC (on_loc_chunk_down_clicked),
+                      this);
+	gtk_signal_connect (GTK_OBJECT (loc_chunk_up), "clicked",
+                      GTK_SIGNAL_FUNC (on_loc_chunk_up_clicked),
+                      this);
+#endif
+	return topframe;
+	}
+
+/*
  *	Create the list.
  */
 
@@ -476,6 +568,8 @@ Chunk_chooser::Chunk_chooser
 							"selection");
 	gtk_box_pack_start(GTK_BOX(hbox1), sbar, TRUE, TRUE, 0);
 	gtk_widget_show(sbar);
+					// Add search/edit controls to bottom.
+	gtk_box_pack_start(GTK_BOX(vbox), create_controls(), FALSE, FALSE, 0);
 	}
 
 /*

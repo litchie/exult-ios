@@ -73,6 +73,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	virtual void render();		// Draw list.
 	void render_chunk(int xoff, int yoff);
 	void scroll(int newindex);	// Scroll.
+	GtkWidget *create_controls();
 public:
 	Chunk_chooser(Vga_file *i, std::istream& cfile, unsigned char *palbuf, 
 							int w, int h);
