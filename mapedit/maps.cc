@@ -61,7 +61,11 @@ static void on_map_activate
 	gpointer udata
 	)
 	{
-	// ExultStudio::get_instance()->goto_map((int) udata);
+	unsigned char data[50];
+	unsigned char *ptr = &data[0];
+	Write2(ptr, (int) udata);
+	ExultStudio::get_instance()->send_to_server(Exult_server::goto_map,
+					&data[0], ptr - data);
 	}
 C_EXPORT void on_main_map_activate
 	(

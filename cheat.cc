@@ -742,9 +742,9 @@ void Cheat::next_map_teleport() const
 			}
 		}
 	gwin->teleport_party(gwin->get_main_actor()->get_tile(), true, newmap);
-	std::string msg = "To map #";
-	msg += newmap;
-	eman->center_text(msg.c_str());
+	char msg[80];
+	sprintf(msg, "To map #%02x", newmap);
+	eman->center_text(msg);
 	}
 
 void Cheat::create_coins (void) const {
