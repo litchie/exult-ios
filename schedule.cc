@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "schedule.h"
 #include "actors.h"
 #include "Astar.h"
+#include "Zombie.h"
 #include "gamewin.h"
 #include "actions.h"
 #include "dir.h"
@@ -341,6 +342,105 @@ void Loiter_schedule::now_what
 	int newy = center.ty - dist + rand()%(2*dist);
 					// Wait a bit.
 	npc->walk_to_tile(newx, newy, center.tz, 350, rand()%2000);
+	}
+
+/*
+ *	Schedule change for 'dance':
+ */
+
+void Dance_schedule::now_what
+	(
+	)
+	{
+	Tile_coord dest = center;	// Pick new spot to walk to.
+	dest.tx += center.tx -dist + rand()%(2*dist);
+	dest.ty += -dist + rand()%(2*dist);
+	Tile_coord cur = npc->get_abs_tile_coord();
+	int dir = (int) Get_direction4(cur.ty - dest.ty, dest.tx - cur.tx);
+	char frames[4];
+	for (int i = 0; i < 4; i++)
+					// Spin with 'hands outstretched'.
+		frames[i] = npc->get_dir_framenum((2*(dir + i))%8, 15);
+					// Create action to walk.
+	Actor_action *walk = new Path_walking_actor_action(new Zombie());
+	walk->walk_to_tile(cur, dest, npc->get_type_flags());
+					// Walk, then spin.
+	npc->set_action(new Sequence_actor_action(walk,
+		new Frames_actor_action(frames, sizeof(frames), 100)));
+	npc->start(200, 500);		// Start in 1/2 sec.
+	}
+
+/*
+ *	Schedule change for mining/farming:
+ */
+
+void Tool_schedule::now_what
+	(
+	)
+	{
+	if (!tool)			// First time?
+		{
+		tool = new Ireg_game_object(toolshape, 0, 0, 0, 0);
+					// Free up both hands.
+		Game_object *obj = npc->get_readied(Actor::rhand);
+		if (obj)
+			obj->remove_this();
+		if ((obj = npc->get_readied(Actor::lhand)) != 0)
+			obj->remove_this();
+		if (!npc->add_readied(tool, Actor::lrhand))
+			npc->add_readied(tool, Actor::lhand);
+		}
+	if (rand()%2)			// 1/2 time, walk somewhere.
+		{
+		Loiter_schedule::now_what();
+		return;
+		}
+	char frames[12];		// Use pick.
+	int cnt = npc->get_attack_frames(rand()%8, frames);
+	npc->set_action(new Frames_actor_action(frames, cnt));
+	npc->start();			// Get back into time queue.
+	}
+
+/*
+ *	End of mining/farming:
+ */
+
+void Tool_schedule::ending
+	(
+	int
+	)
+	{
+	tool->remove_this();		// Should safely remove from NPC.
+	}
+
+/*
+ *	Schedule change for 'wander':
+ */
+
+void Wander_schedule::now_what
+	(
+	)
+	{
+	Tile_coord pos = npc->get_abs_tile_coord();
+	const int legdist = 32;
+					// Go a ways from current pos.
+	pos.tx += -legdist + rand()%(2*legdist);
+	pos.ty += -legdist + rand()%(2*legdist);
+					// Don't go too far from center.
+	if (pos.tx - center.tx > dist)
+		pos.tx = center.tx + dist;
+	else if (center.tx - pos.tx > dist)
+		pos.tx = center.tx - dist;
+	if (pos.ty - center.ty > dist)
+		pos.ty = center.ty + dist;
+	else if (center.ty - pos.ty > dist)
+		pos.ty = center.ty - dist;
+	Tile_coord dest(-1, -1, -1);	// Find a free spot.
+	for (int i = 0; i < 4 && dest.tx == -1; i++)
+		dest = npc->find_unblocked_tile(pos, i, 4);
+	if (dest.tx != -1 || !npc->walk_path_to_tile(dest, 250, rand()%2000))
+					// Failed?  Try again a little later.
+		npc->start(250, rand()%3000);
 	}
 
 /*
