@@ -239,7 +239,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 					   event.button.x >> scale, 
 					   event.button.y >> scale)) {
 			        exit_loop = entry->handle_event(event);
-			}			
+			}
 		} else if(event.type==SDL_KEYDOWN) {
 			mouse->hide();
 			mouse->blit_dirty();
@@ -284,6 +284,8 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 				}
 				break;
 			}
+		} else if(event.type==SDL_QUIT) {
+                        return -1;
 		}
 	} while(!exit_loop);
 	mouse->hide();

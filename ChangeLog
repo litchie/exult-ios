@@ -1,3 +1,6 @@
+2000-12-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* menulist.cc: handle SDL_QUIT event in menus
+	
 2000-12-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Restore mode after 'p' for 'lockpicking'.
