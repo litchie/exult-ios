@@ -171,6 +171,8 @@ public:
 	virtual void set_flag(int flag) { }
 	virtual void clear_flag(int flag) { }
 	virtual int get_flag(int flag) { return 0; }
+	virtual int get_npc_num()	// Get its ID (1-num_npcs).
+		{ return 0; }
 	};
 
 /*

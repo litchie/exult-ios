@@ -604,6 +604,12 @@ void Usecode_machine::exec_array
 			break;
 		case 0x50:		// ??
 			break;
+		case 0x52:		// Say string.
+			{
+			Usecode_value& strval = arrayval.get_elem(++i);
+			item_say(objval, strval);
+			break;
+			}
 		case 0x55:		// Call?
 			{
 			Usecode_value& val = arrayval.get_elem(++i);
@@ -766,14 +772,10 @@ Usecode_value Usecode_machine::call_intrinsic
 		arr.put_elem(0, z);
 		return arr;
 		}
-	case 0x1b:			// Takes -npc.  Returns index?
+	case 0x1b:			// Takes -npc.  Returns object?
 		{
-		long val = parms[0].get_int_value();
-		if ((val >= 0 && val < gwin->get_num_npcs()) ||
-		    (val < 0 && -val < gwin->get_num_npcs()))
-					// Just return -npc for now.++++++
-			return Usecode_value(-val);
-		return parms[0];
+		Game_object *obj = get_item(parms[0].get_int_value());
+		return Usecode_value((long) obj);
 		}
 	case 0x1c:			// GetSchedule(npc).  Rets. schedtype.
 		{
@@ -857,10 +859,19 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 	case 0x38:			// Return. game time hour (0-23).
 		return Usecode_value(gwin->get_hour());
-		break;
 	case 0x39:			// Return minute (0-59).
 		return Usecode_value(gwin->get_minute());
-		break;
+	case 0x3a:			// Returns NPC# of item. (-356 =
+					//   avatar).
+		{
+		Game_object *obj = get_item(parms[0].get_int_value());
+		if (obj == gwin->get_main_actor())
+			return Usecode_value(-356);
+		int npc = obj ? obj->get_npc_num() : 0;
+		return Usecode_value(-npc);
+		}
+	case 0x3b:			// Return 3-hour # (0-7, 0=midnight).
+		return Usecode_value(gwin->get_hour()/3);
 	case 0x40:			// Show str. near item (item, str).
 		item_say(parms[0], parms[1]);
 		break;
