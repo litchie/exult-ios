@@ -383,8 +383,8 @@ void Actor::follow
 	Actor *leader
 	)
 	{
-	if (schedule_type == Schedule::combat || Actor::is_dead_npc())
-		return;			// Not when fighting.
+	if (Actor::is_dead_npc())
+		return;			// Not when dead.
 	int delay = 0;
 					// How close to aim for.
 	int dist = 3 + Actor::get_party_id()/3;
@@ -559,7 +559,8 @@ int Actor::find_best_spot
 
 void Actor::set_schedule_type
 	(
-	int new_schedule_type
+	int new_schedule_type,
+	Schedule *newsched		// New sched., or 0 to create here.
 	)
 	{
 	stop();				// Stop moving.
@@ -571,44 +572,45 @@ void Actor::set_schedule_type
 								schedule_type;
 	schedule_type = new_schedule_type;
 	delete schedule;		// Done with the old.
-	schedule = 0;
-	switch ((Schedule::Schedule_types) schedule_type)
-		{
-	case Schedule::combat:
-		schedule = new Combat_schedule(this, old_schedule);
-		break;
-	case Schedule::horiz_pace:
-		schedule = Pace_schedule::create_horiz(this);
-		break;
-	case Schedule::vert_pace:
-		schedule = Pace_schedule::create_vert(this);
-		break;
-	case Schedule::talk:
-		schedule = new Talk_schedule(this);
-		break;
-	case Schedule::loiter:
-	case Schedule::hound:		// For now.
-	case Schedule::graze:
-		schedule = new Loiter_schedule(this);
-		break;
-	case Schedule::sleep:
-		schedule = new Sleep_schedule(this);
-		break;
-	case Schedule::eat:		// For now.
-	case Schedule::eat_at_inn:	// For now.
-	case Schedule::sit:
-		schedule = new Sit_schedule(this);
-		break;
-	case Schedule::patrol:
-		schedule = new Patrol_schedule(this);
-		break;
-	case Schedule::wait:		// Loiter just a little
+	schedule = newsched;
+	if (!schedule)
+		switch ((Schedule::Schedule_types) schedule_type)
+			{
+		case Schedule::combat:
+			schedule = new Combat_schedule(this, old_schedule);
+			break;
+		case Schedule::horiz_pace:
+			schedule = Pace_schedule::create_horiz(this);
+			break;
+		case Schedule::vert_pace:
+			schedule = Pace_schedule::create_vert(this);
+			break;
+		case Schedule::talk:
+			schedule = new Talk_schedule(this);
+			break;
+		case Schedule::loiter:
+		case Schedule::hound:	// For now.
+		case Schedule::graze:
+			schedule = new Loiter_schedule(this);
+			break;
+		case Schedule::sleep:
+			schedule = new Sleep_schedule(this);
+			break;
+		case Schedule::eat:		// For now.
+		case Schedule::eat_at_inn:	// For now.
+		case Schedule::sit:
+			schedule = new Sit_schedule(this);
+			break;
+		case Schedule::patrol:
+			schedule = new Patrol_schedule(this);
+			break;
+		case Schedule::wait:	// Loiter just a little
 //+++++Figure out why this messes up Mayor's talk at intro.
-//		schedule = new Loiter_schedule(this, 1);
-		break;
-	default:
-		break;
-		}
+//			schedule = new Loiter_schedule(this, 1);
+			break;
+		default:
+			break;
+			}
 	if (schedule)			// Try to start it.
 		{
 		dormant = 0;
@@ -1346,8 +1348,17 @@ void Main_actor::get_followers
 		{
 		Npc_actor *npc = (Npc_actor *) gwin->get_npc(
 						uc->get_party_member(i));
-		if (npc)
+		if (!npc)
+			continue;
+		int sched = npc->get_schedule_type();
+					// Skip if in combat.
+		if (sched != Schedule::combat)
+			{
+			if (sched != Schedule::follow_avatar)
+				npc->set_schedule_type(
+						Schedule::follow_avatar);
 			npc->follow(this);
+			}
 		}
 	}
 

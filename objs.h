@@ -46,6 +46,7 @@ class Container_game_object;
 class Egg_object;
 class PathFinder;
 class Actor;
+class Schedule;
 
 enum Exult_Game {
 	BLACK_GATE,
@@ -237,7 +238,8 @@ public:
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 					// Set new NPC schedule.
-	virtual void set_schedule_type(int new_schedule_type)
+	virtual void set_schedule_type(int new_schedule_type,
+						Schedule *newsched = 0)
 		{  }
 					// Return NPC schedule.
 	virtual int get_schedule_type()	const
