@@ -20,6 +20,8 @@
 #  include <config.h>
 #endif
 
+#include <memory>
+
 #include "SDL_events.h"
 
 #include "files/U7file.h"
