@@ -393,6 +393,7 @@ int Actor::add
 		index = rhand;
 		}
 	spots[index] = obj;		// Store in correct spot.
+	obj->cx = obj->cy = 0;		// Clear coords. (set by gump).
 	return (1);
 	}
 
@@ -423,6 +424,7 @@ int Actor::add_readied
 		if (!Container_game_object::add(obj))
 			return (0);	// No room, or too heavy.
 		spots[index] = obj;
+		obj->cx = obj->cy = 0;	// Clear coords. (set by gump).
 		if (best_index == lrhand)
 			two_handed = 1;	// Must be a two-handed weapon.
 		return (1);
