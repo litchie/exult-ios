@@ -104,7 +104,7 @@ int num_res = sizeof(res_list)/sizeof(struct resolution);
 int current_res = 0;
 
 #ifdef XWIN
-static int xfd = -1;			// X connection #.
+int xfd = -1;			// X connection #.
 static Display *display = 0;
 #endif
 
