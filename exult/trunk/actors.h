@@ -140,6 +140,7 @@ public:
 		{ return attack_mode; }
 	void set_attack_mode(Attack_mode amode)
 		{ attack_mode = amode; }
+					//+++++These really apply to all items.
 	enum Item_flags {		// Bit #'s of flags:
 		invisible = 0,
 		asleep = 1,
@@ -154,6 +155,7 @@ public:
 		dancing = 15,		// ??Not sure.
 		dont_render = 16,	// Completely invisible.
 		unknown1 = 18,		// ??Used for Usecode-created items.
+		okay_to_land = 21,	// Used for flying-carpet.
 		confused = 25,		// ??Guessing.
 		in_motion = 26		// ??Guessing (cart, boat)??
 		};
