@@ -23,6 +23,8 @@
 
 const int max_types = 15;
 
+typedef void (*Move_shape_handler_fun)(int shape, int frame, int x, int y,
+							int prevx, int prevy);
 typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y);
 typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y);
 
@@ -57,10 +59,11 @@ class Xdnd
 	int chunknum;			// Set when a chunk is dragged.
 	bool data_valid;		// True when the above is retrieved.
 
+	Move_shape_handler_fun move_handler;	// For dragging shapes.
 	Drop_shape_handler_fun shape_handler;	// For dropping shapes.
 	Drop_chunk_handler_fun chunk_handler;	// For dropping chunks.
 public:
-	Xdnd(Display *d, Window xw, Window xgw, 
+	Xdnd(Display *d, Window xw, Window xgw, Move_shape_handler_fun movefun,
 		Drop_shape_handler_fun shapefun, Drop_chunk_handler_fun cfun);
 	void client_msg(XClientMessageEvent& cev);
 	void select_msg(XSelectionEvent& sev);
