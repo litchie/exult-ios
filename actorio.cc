@@ -234,8 +234,8 @@ Actor::Actor
 		name = namebuf;		// Store copy of it.
 
 
-	if (num != -1) cout << name;
-	else cout << get_name();
+	if (name.empty()) cout << get_name();
+	else cout << name;
 
 	cout << " (" << num << ") flags ";
 
