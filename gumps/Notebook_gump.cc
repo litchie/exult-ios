@@ -36,6 +36,9 @@ vector<Notebook_top_left> Notebook_gump::page_info;
 #define LEFTPAGE  (GAME_BG ? 44 : 39)	// At top-left of left page.
 #define RIGHTPAGE  (GAME_BG ? 45 : 40)	// At top-right of right page.
 
+const int font = 4;			// Small black.
+const int vlead = 1;			// Extra inter-line spacing.
+
 /*
  *	setup one note (from already-allocated text).
  */
@@ -54,6 +57,16 @@ void One_note::set
 	delete text;
 	text = txt;
 	textlen = text ? strlen(text) : 0;
+	}
+
+/*
+ *	Get left/right text area.
+ */
+
+inline Rectangle Get_text_area(bool right)
+	{
+	return right ? Rectangle(174, 10, 122, 130)
+		     : Rectangle(36, 10, 122, 130);
 	}
 
 /*
@@ -101,9 +114,9 @@ Notebook_gump::Notebook_gump
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
  	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
 	// ++++TESTING:
-	notes.push_back(new One_note(1, 1, 10, 10, strdup("Note #1\nHello")));
+	notes.push_back(new One_note(1, 1, 10, 10, strdup("Note  #1\nHello")));
 	notes.push_back(new One_note(2, 2, 20, 20, strdup(
-				"Note #2\nworld.\n\nHow are you?")));
+				"Note  #2\nworld.\n\nHow are you?")));
 	notes.push_back(new One_note(3, 3, 30, 30, strdup(
 				"Note #3")));
 	}
@@ -140,17 +153,13 @@ int Notebook_gump::paint_page
 	int pagenum
 	)
 {
-	const int font = 4;		// Black.
-	const int vlead = 1;		// Extra inter-line spacing.
-	int ypos = 0;
 	int textheight = sman->get_text_height(font) + vlead;
 	char *str = note->text + start;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
-			y + box.y + ypos, box.w, box.h - ypos, vlead,
+			y + box.y, box.w, box.h, vlead,
 			0, -1, pagenum == curpage ? &cursor : 0);
 	if (endoff > 0)			// All painted?
 		{			// Value returned is height.
-		ypos += endoff;		// ????Need to do this?
 		str = note->text + note->textlen;
 		}
 	else				// Out of room.
@@ -178,18 +187,21 @@ void Notebook_gump::change_page
 		if (nxt >= page_info.size())
 			return;
 		curpage = topleft + 2;
+		cursor.offset = 0;
 		}
 	else if (delta < 0)
 		{
 		if (topleft == 0)
 			return;
 		curpage = topleft - 2;
+		cursor.offset = 0;
 		}
 	paint();
 }
 
 /*
- *	Is a given screen point on one of our buttons?
+ *	Is a given screen point on one of our buttons?  If not, we try to
+ *	set cursor pos. within the text.
  *
  *	Output: ->button if so.
  */
@@ -206,6 +218,40 @@ Gump_button *Notebook_gump::on_button
 		return leftpage;
 	else if (rightpage->on_button(mx, my))
 		return rightpage;
+	Rectangle box = Get_text_area(false);	// Left page.
+	int curnote = page_info[curpage/2].notenum;
+	if (curnote < 0)
+		return 0;
+	int offset = page_info[curpage/2].offset;
+	One_note *note = notes[curnote];
+	int coff = sman->find_cursor(font, note->text + offset, x + box.x,
+			y + box.y, box.w, box.h, mx, my, vlead);
+	if (coff >= 0)			// Found it?
+		{
+		curpage = curpage & ~1;
+		cursor.offset = offset + coff;
+		paint();
+		}
+	else
+		{
+		offset += -coff;		// New offset.
+		if (offset >= note->textlen)
+			{
+			if (curnote == notes.size() - 1)
+				return 0;	// No more.
+			note = notes[++curnote];
+			offset = 0;
+			}
+		box = Get_text_area(true);	// Right page.
+		coff = sman->find_cursor(font, note->text + offset, x + box.x,
+			y + box.y, box.w, box.h, mx, my, vlead);
+		if (coff >= 0)			// Found it?
+			{
+			curpage = curpage | 1;
+			cursor.offset = offset + coff;
+			paint();
+			}
+		}
 	return 0;
 }
 
@@ -227,8 +273,7 @@ void Notebook_gump::paint
 	One_note *note = notes[curnote];
 	int topleft = curpage & ~1;
 					// Paint left page.
-	offset = paint_page(Rectangle(36, 10, 122, 130), note, offset, 
-								topleft);
+	offset = paint_page(Get_text_area(false), note, offset, topleft);
 	if (offset >= note->textlen)	// Finished note?
 		{
 		if (curnote == notes.size() - 1)
@@ -238,8 +283,7 @@ void Notebook_gump::paint
 		offset = 0;
 		}
 					// Paint right page.
-	offset = paint_page(Rectangle(174, 10, 122, 130), note, offset,
-								topleft + 1);
+	offset = paint_page(Get_text_area(true), note, offset, topleft + 1);
 	if (offset >= note->textlen)	// Finished note?
 		{
 		if (curnote == notes.size() - 1)

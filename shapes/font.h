@@ -74,6 +74,9 @@ public:
 					// Get text height, baseline.
 	int get_text_height();
 	int get_text_baseline();
+	int find_cursor(const char *text, int x, int y, int w, int h,
+					int cx, int cy, int vert_lead);
+	int find_xcursor(const char *text, int textlen, int cx);
 
 	int draw_text(Image_buffer8 *win, int x, int y, const char *s)
 		{ return paint_text(win, s, x, y); }
