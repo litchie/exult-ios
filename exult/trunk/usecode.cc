@@ -3125,7 +3125,6 @@ int Usecode_machine::run
 	if (debug >= 0)
 		printf("Running usecode %04x with event %d\n", fun->id, event);
 #endif
-	Usecode_value *save_sp = sp;	// Save TOS, last-created.
 					// Save/set function.
 	Usecode_function *save_fun = cur_function;
 	cur_function = fun;
@@ -3146,6 +3145,7 @@ int Usecode_machine::run
 		Usecode_value val = pop();
 		locals[num_args - i - 1] = val;
 		}
+	Usecode_value *save_sp = sp;	// NOW, save TOS, last-created.
 	int num_externs = Read2(ip);	// # of external refs. following.
 	unsigned char *externals = ip;	// Save -> to them.
 	ip += 2*num_externs;		// ->actual bytecode.
@@ -3275,11 +3275,21 @@ int Usecode_machine::run
 			pushi(popi() % sval);
 			break;
 		case 0x0e:		// AND.
-			pushi(pop().is_true() & pop().is_true());
+			{
+			Usecode_value v1 = pop();
+			Usecode_value v2 = pop();
+			int result = v1.is_true() && v2.is_true();
+			pushi(result);
 			break;
+			}
 		case 0x0f:		// OR.
-			pushi(pop().is_true() | pop().is_true());
+			{
+			Usecode_value v1 = pop();
+			Usecode_value v2 = pop();
+			int result = v1.is_true() || v2.is_true();
+			pushi(result);
 			break;
+			}
 		case 0x10:		// NOT.
 			pushi(!pop().is_true());
 			break;
@@ -3404,7 +3414,7 @@ int Usecode_machine::run
 			ip = endp;	// End the loop.
 			break;
 		case 0x2d:		// Set return value (SETR).
-#if 1
+#if 0
 					// But 1st takes precedence.
 			if (!set_ret_value)
 				ret_value = pop();
