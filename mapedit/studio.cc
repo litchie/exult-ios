@@ -559,8 +559,9 @@ void ExultStudio::set_browser(const char *name, Object_browser *obj)
 
 Object_browser *ExultStudio::create_browser(const char *fname)
 {
-	curfile = files->create(fname);
-
+	curfile = open_shape_file(fname);
+	if (!curfile)
+		return 0;
 	Object_browser *chooser = curfile->create_browser(vgafile, names,
 								palbuf);
 	setup_groups(fname);		// Set up 'groups' page.
@@ -754,8 +755,8 @@ void ExultStudio::set_game_path(const char *gamepath)
 	}
 	delete files;			// Close old shape files.
 	files = new Shape_file_set();
-	vgafile = files->create("shapes.vga");
-	facefile = files->create("faces.vga");
+	vgafile = open_shape_file("shapes.vga");
+	facefile = open_shape_file("faces.vga");
 					// Read in shape names.
 	int num_shapes = vgafile->get_ifile()->get_num_shapes();
 	names = new char *[num_shapes];
@@ -1019,6 +1020,24 @@ void ExultStudio::set_edit_mode
 	Write2(ptr, md);
 					//   haven't got an interface yet.
 	send_to_server(Exult_server::set_edit_mode, data, ptr - data);
+	}
+
+/*
+ *	Open a shape (or chunks) file in 'patch' or 'static' directory.
+ *
+ *	Output:	->file info (may already have existed), or 0 if error.
+ */
+
+Shape_file_info *ExultStudio::open_shape_file
+	(
+	const char *basename		// Base name of file to open.
+	)
+	{
+	Shape_file_info *info = files->create(basename);
+	if (!info)
+		EStudio::Alert("'%s' not found in static or patch directories",
+							basename);
+	return info;
 	}
 
 /*

@@ -1121,8 +1121,10 @@ void Shape_chooser::read_back_edited
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-	Shape_file_info *finfo = studio->get_files()->create(
+	Shape_file_info *finfo = studio->open_shape_file(
 						ed->vga_basename.c_str());
+	if (!finfo)
+		return;
 	if (!ed->tiles)
 		Import_png(ed->pathname.c_str(), finfo, 
 						ed->shapenum, ed->framenum);
