@@ -37,6 +37,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define XMIDI_CONVERT_MT32_TO_GS127DRUM		4
 #define XMIDI_CONVERT_GS127_TO_GS		5
 
+// Midi Status Bytes
+#define MIDI_STATUS_NOTE_OFF	0x8
+#define MIDI_STATUS_NOTE_ON		0x9
+#define MIDI_STATUS_AFTERTOUCH	0xA
+#define MIDI_STATUS_CONTROLLER	0xB
+#define MIDI_STATUS_PROG_CHANGE	0xC
+#define MIDI_STATUS_PRESSURE	0xD
+#define MIDI_STATUS_PITCH_WHEEL	0xE
+#define MIDI_STATUS_SYSEX		0xF
+
 struct midi_event
 {
 	int		time;

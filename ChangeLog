@@ -1,3 +1,9 @@
+2000-12-01  Ryan Nunn  <triforce@merlin.net.au>
+	* Added MidiInfo.txt: Contains some information about midi. Unfinished.
+	* Makefile.win32: Was broken, now works. Also removed -g added -O2
+	* audio/Midi.cc: Added SFX conversion option gs127 (same as none)
+	* audio/xmidi.cc: Fixed potential rare memory leak.
+
 2000-11-29  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Font-handling move to shapes directory.

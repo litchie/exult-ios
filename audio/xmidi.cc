@@ -532,11 +532,6 @@ int XMIDI::PutVLQ(DataSource *dest, uint32 value)
 //
 // This little function attempts to correct errors in midi files
 // that relate to patch, volume and pan changing
-//
-// FIXME!!
-//
-// THIS ISN'T SAFE!!!!!
-// Really badly formed midi files will cause a memory leak
 void XMIDI::MovePatchVolAndPan (int channel)
 {
 	if (channel == -1)
@@ -551,49 +546,18 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	midi_event *vol = NULL;
 	midi_event *pan = NULL;
 	midi_event *bank = NULL;
-
-	midi_event *prev = NULL;
+	midi_event *temp;
 	
 	for (current = list; current; )
 	{
 		if (!patch && (current->status >> 4) == 0xC && (current->status & 0xF) == channel)
-		{
 			patch = current;
-
-			if (prev) prev->next = patch->next;
-			else list = patch->next;			
-
-			current = prev;
-		}
 		else if (!vol && (current->status >> 4) == 0xB && current->data[0] == 7 && (current->status & 0xF) == channel)
-		{
 			vol = current;
-
-			if (prev) prev->next = vol->next;
-			else list = vol->next;
-
-			current = prev;
-		}
 		else if (!pan && (current->status >> 4) == 0xB && current->data[0] == 10 && (current->status & 0xF) == channel)
-		{
 			pan = current;
-
-			if (prev) prev->next = pan->next;
-			else list = pan->next;
-
-			current = prev;
-		}
 		else if (!bank && (current->status >> 4) == 0xB && current->data[0] == 0 && (current->status & 0xF) == channel)
-		{
 			bank = current;
-
-			if (prev) prev->next = bank->next;
-			else list = bank->next;
-
-			current = prev;
-		}
-		else
-			prev = current;
 
 		if (pan && vol && patch) break;
 
@@ -601,59 +565,69 @@ void XMIDI::MovePatchVolAndPan (int channel)
 		else current = list;
 	}
 
-	// Got none of them, do nothing
+	// Got no patch change, return and don't try fixing it
 	if (!patch) return;
 
-	if (!patch)
-	{
-		patch = new midi_event;
-		patch->status = channel + 0xC0;
-		patch->data[0] = 0;
-		patch->len = 0;
-		patch->buffer = NULL;
-	}
 
+	// Copy Patch Change Event
+	temp = patch;
+	patch = new midi_event;
+	patch->time = temp->time;
+	patch->status = channel + 0xC0;
+	patch->len = 0;
+	patch->buffer = NULL;
+	patch->data[0] = temp->data[0];
+
+
+	// Copy Volume
 	if (vol && (vol->time > patch->time+PATCH_VOL_PAN_BIAS || vol->time < patch->time-PATCH_VOL_PAN_BIAS))
-	{
 		vol = NULL;
-	}
-	if (!vol)
-	{
-		vol = new midi_event;
-		vol->status = channel + 0xB0;
-		vol->data[0] = 7;
+
+	temp = vol;
+	vol = new midi_event;
+	vol->status = channel + 0xB0;
+	vol->data[0] = 7;
+	vol->len = 0;
+	vol->buffer = NULL;
+
+	if (temp)
+		vol->data[1] = temp->data[1];
+	else
 		vol->data[1] = 64;
-		vol->len = 0;
-		vol->buffer = NULL;
-	}
 
+
+	// Copy Bank
 	if (bank && (bank->time > patch->time+PATCH_VOL_PAN_BIAS || bank->time < patch->time-PATCH_VOL_PAN_BIAS))
-	{
 		bank = NULL;
-	}
-	if (!bank)
-	{
-		bank = new midi_event;
-		bank->status = channel + 0xB0;
-		bank->data[0] = 0;
-		bank->data[1] = 0;
-		bank->len = 0;
-		bank->buffer = NULL;
-	}
 
+	temp = bank;
+	
+	bank = new midi_event;
+	bank->status = channel + 0xB0;
+	bank->data[0] = 0;
+	bank->len = 0;
+	bank->buffer = NULL;
+
+	if (!bank)
+		bank->data[1] = 0;
+	else
+		bank->data[1] = temp->data[1];
+
+	// Copy Pan
 	if (pan && (pan->time > patch->time+PATCH_VOL_PAN_BIAS || pan->time < patch->time-PATCH_VOL_PAN_BIAS))
-	{
 		pan = NULL;
-	}
-	if (!pan)
-	{
-		pan = new midi_event;
-		pan->status = channel + 0xB0;
-		pan->data[0] = 10;
+
+	temp = pan;
+	pan = new midi_event;
+	pan->status = channel + 0xB0;
+	pan->data[0] = 10;
+	pan->len = 0;
+	pan->buffer = NULL;
+
+	if (!temp)
 		pan->data[1] = 64;
-		pan->len = 0;
-		pan->buffer = NULL;
-	}
+	else
+		pan->data[1] = temp->data[1];
 
 	
 	vol->time = 0;
@@ -899,6 +873,7 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 	int		tempo_set = 0;
 	uint32		status = 0;
 	int		play_size = 2;
+	int		file_size = source->getSize();
 	
 	if (is_xmi) play_size = 3;
 
@@ -911,7 +886,7 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 		current->data[1] = 127;			
 	}
 
-	while (!end && source->getPos() < source->getSize())
+	while (!end && source->getPos() < file_size)
 	{
 
 		if (!is_xmi)
@@ -938,28 +913,27 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 		
 		switch (status >> 4)
 		{
-			
-			// Note On
-			case 0x9:
+			case MIDI_STATUS_NOTE_ON:
 			ConvertEvent (time, status, source, play_size);
 			break;
 
 			// 2 byte data
-			// Note off, Aftertouch, Controller and Pitch Wheel
-			case 0x8: case 0xA: case 0xB: case 0xE:
+			case MIDI_STATUS_NOTE_OFF:
+			case MIDI_STATUS_AFTERTOUCH:
+			case MIDI_STATUS_CONTROLLER:
+			case MIDI_STATUS_PITCH_WHEEL:
 			ConvertEvent (time, status, source, 2);
 			break;
 			
 
 			// 1 byte data
-			// Program Change and Channel Pressure
-			case 0xC: case 0xD:
+			case MIDI_STATUS_PROG_CHANGE:
+			case MIDI_STATUS_PRESSURE:
 			ConvertEvent (time, status, source, 1);
 			break;
 			
 
-			// SysEx
-			case 0xF:
+			case MIDI_STATUS_SYSEX:
 			if (status == 0xFF)
 			{
 				int	pos = source->getPos();
@@ -987,7 +961,6 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 			}
 			ConvertSystemMessage (time, status, source);
 			break;
-
 
 			default:
 			break;
