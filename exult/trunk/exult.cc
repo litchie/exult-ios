@@ -856,6 +856,56 @@ static void Handle_keystroke
 		break;
 	case SDLK_h:	// Help keys, ctrl = cheat keys
 		{
+
+		Scroll_gump *scroll;
+		scroll = new Scroll_gump();
+
+		if (!ctrl) {
+			scroll->add_text("Keyboard commands~");
+			scroll->add_text("+/- - Change brightness\n");
+			scroll->add_text("c - Combat mode\n");
+			scroll->add_text("i - Show inventory\n");
+			scroll->add_text("m - Toggle music\n");
+			scroll->add_text("p - Repaint screen\n");
+			scroll->add_text("ctrl-s - Quick Save\n");
+			scroll->add_text("ctrl-r - Restore\n");
+			scroll->add_text("s - Show save box\n");
+			scroll->add_text("F4 - Toggle fullscreen\n");
+			scroll->add_text("ctrl-h - Cheat Commands\n");
+		} else {
+			scroll->add_text("Cheat commands~");
+			scroll->add_text("Arrow keys - scroll map\n");
+			scroll->add_text("Home - recenter map\n");
+			scroll->add_text("alt-+/- - Switch resolution\n");
+			scroll->add_text("ctrl-b - Shape Browser\n");
+			scroll->add_text("ctrl-c - Create Object\n");
+			scroll->add_text("ctrl-d - Delete Object\n");
+			scroll->add_text("e - Toggle Egg display\n");
+			scroll->add_text("alt-g - Toggle God Mode\n");
+			scroll->add_text("g - Change Avatar gender\n");
+			scroll->add_text("alt-i - Toggle infravision\n");
+			scroll->add_text("ctrl-m - Get 100 gold coins\n");
+			scroll->add_text("ctrl-alt-m - Toggle hack-mover\n");
+			scroll->add_text("alt-n  - Toggle Naked flag (SI)\n");
+			scroll->add_text("alt-p  - Toggle Petra mode (SI)\n");
+			scroll->add_text("alt-s - Change skin color (SI)\n");
+			scroll->add_text("ctrl-t - Fake time period change\n");
+			scroll->add_text("alt-t  - Teleport\n");
+			scroll->add_text("ctrl-alt-t - Map Teleport\n");
+			scroll->add_text("alt-w - Toggle Archwizard Mode\n");
+			scroll->add_text("ctrl-w - Test weather\n");
+		}
+
+		scroll->paint(gwin);
+		do {
+			int x, y;
+			Get_click(x,y, Mouse::hand);
+		} while (scroll->show_next_page(gwin));
+		gwin->paint();
+		delete scroll;
+		break;
+
+/*
 		char buf[1024];
 
 		if (!ctrl)
@@ -904,6 +954,7 @@ static void Handle_keystroke
 			5, 5, 300, 400);
 		gwin->get_win()->show();
 		break;
+*/
 		}
 	case SDLK_i:
 		if (alt && cheat) {    // infravision
