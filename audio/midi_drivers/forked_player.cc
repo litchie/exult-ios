@@ -37,7 +37,10 @@
 #include "exult.h"
 #include "fnames.h"
 #include "forked_player.h"
+#include <iostream>
 
+using std::cerr;
+using std::endl;
 
 static  void    playFJmidifile(const char *name)
 {
