@@ -512,7 +512,7 @@ Field_frame_animator::Field_frame_animator
 	(
 	Game_object *o,
 	int rcy				// Frame to start recycling at.
-	) : Animator(o), recycle(rcy)
+	) : Animator(o), recycle(rcy), activated(true)
 	{
 	int shapenum = obj->get_shapenum();
 	frames = obj->get_num_frames();
@@ -543,6 +543,8 @@ void Field_frame_animator::handle_event
 					// Add back to queue for next time.
 	if (animating)
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
+	if (activated && rand()%10 == 0)// Check for damage?
+		obj->activate(0);
 	}
 
 /*

@@ -1005,8 +1005,10 @@ bool Field_object::field_effect
 			actor->reduce_health(2 + rand()%3);
 			say(first_ouch, last_ouch);
 			}
-		break;
+		return false;
 		}
+	if (!del)			// Tell animator to keep checking.
+		((Field_frame_animator *) animator)->activated = true;
 	return del;
 	}
 
@@ -1020,7 +1022,24 @@ void Field_object::activate
 	int event
 	)
 	{
-	Ireg_game_object::activate(event);
+					// Field_frame_animator calls us with
+					//   event==0 to check for damage.
+	if (event != Usecode_machine::npc_proximity)
+		Ireg_game_object::activate(event);
+	Actor_queue npcs;		// Find all nearby NPC's.
+	gwin->get_nearby_npcs(npcs);
+	Rectangle eggfoot = get_footprint();
+					// Clear flag to check.
+	((Field_frame_animator *) animator)->activated = false;
+	for (Actor_queue::const_iterator it = npcs.begin(); 
+						it != npcs.end(); ++it)
+		{
+		Actor *actor = *it;
+		if (actor->is_dead() || Game_object::distance(actor) > 4)
+			continue;
+		if (actor->get_footprint().intersects(eggfoot))
+			Field_object::activate(actor);
+		}
 	}
 
 /*
@@ -1033,7 +1052,7 @@ void Field_object::activate
 	bool /* must */			// If 1, skip dice roll.
 	)
 	{
-	Main_actor *av = gwin->get_main_actor();
+//++++++Maybe this test should be removed:
 	if (!obj->get_flag(Obj_flags::in_party))
 		return;			// Not a party member.
 	if (field_effect((Actor *) obj))// Apply field.
