@@ -1304,10 +1304,10 @@ void Shy_schedule::now_what
 		   npcpos = npc->get_abs_tile_coord();
 					// How far away is Avatar?
 	int dist = npcpos.distance(avpos);
-	if (dist > 9)			// Far enough?
+	if (dist > 10)			// Far enough?
 		{			// Check again in a few seconds.
 		if (rand()%3)		// Just wait.
-			npc->start(250, 1000 + rand()%2000);
+			npc->start(250, 1000 + rand()%1000);
 		else			// Sometimes wander.
 			npc->walk_to_tile(
 				Tile_coord(npcpos.tx + rand()%6 - 3,
@@ -1320,11 +1320,22 @@ void Shy_schedule::now_what
 	int ady = dy < 0 ? -dy : dy;
 					// Which is farthest?
 	int farthest = adx < ady ? ady : adx;
-	int factor = farthest < 3 ? 3 : farthest < 5 ? 2 : 1;
+	int factor = farthest < 2 ? 9 : farthest < 4 ? 4 
+				: farthest < 7 ? 2 : 1;
 					// Walk away.
 	Tile_coord dest = npcpos + Tile_coord(dx*factor, dy*factor, 0);
-	Tile_coord delta = Tile_coord(rand()%3 - 1, rand()%3 - 1, 0);
-	npc->walk_to_tile(dest + delta, 250, 250);
+	Tile_coord delta = Tile_coord(rand()%3, rand()%3, 0);
+	dest = dest + delta;
+	Monster_pathfinder_client cost(npc, dest, 4);
+	Actor_action *pact = Path_walking_actor_action::create_path(
+							npcpos, dest, cost);
+	if (pact)			// Found path?
+		{
+		npc->set_action(pact);
+		npc->start(200);		// Start walking.
+		}
+	else					// Try again in a couple secs.
+		npc->start(250, 500 + rand()%1000);
 	}
 
 

@@ -120,30 +120,19 @@ public:
 	};
 
 /*
- *	Combat pathfinder (for 1x1 NPC's):
+ *	Pathfinding for monsters, who may be bigger than 1x1:
  */
-class Combat_pathfinder_client : public Fast_pathfinder_client
+class Monster_pathfinder_client : public Fast_pathfinder_client
 	{
-protected:
 	Rectangle destbox;		// Got to intersect this box.
-	int axtiles, aytiles, aztiles;	// Attacker's dims. in tiles.
+	int axtiles, aytiles, aztiles;	// NPC's dims. in tiles.
 public:
-	Combat_pathfinder_client(Actor *attacker, int reach,
+	Monster_pathfinder_client(Actor *npc, Tile_coord dest, int dist);
+					// For combat:
+	Monster_pathfinder_client(Actor *attacker, int reach,
 						Game_object *opponent);
 					// Is tile at the goal?
 	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
-	};
-
-/*
- *	Combat pathfinding for monsters, who may be bigger than 1x1:
- */
-class Monster_pathfinder_client : public Combat_pathfinder_client
-	{
-public:
-	Monster_pathfinder_client(Actor *attacker, int reach,
-						Game_object *opponent)
-		: Combat_pathfinder_client(attacker, reach, opponent)
-		{  }
 					// Figure cost for a single step.
 	virtual int get_step_cost(Tile_coord from, Tile_coord& to);
 	};
