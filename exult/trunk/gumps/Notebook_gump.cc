@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_button.h"
 #include "exult_flx.h"
 #include "game.h"
-// #include "gamewin.h"
+#include "gamewin.h"
 
 vector<One_note *> Notebook_gump::notes;
 bool Notebook_gump::initialized = false;	// Set when read in.
@@ -92,6 +92,7 @@ Notebook_gump::Notebook_gump
 	(
 	) : Gump(0, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curpage(0)
 	{
+	cursor.offset = 0;
 					// (Obj. area doesn't matter.)
 	set_object_area(Rectangle(36, 10, 100, 100), 7, 40);
 	page_info.push_back(Notebook_top_left(0, 0));
@@ -135,7 +136,8 @@ int Notebook_gump::paint_page
 	(
 	Rectangle box,			// Display box rel. to gump.
 	One_note *note,			// Note to print.
-	int start			// Starting offset into text.
+	int start,			// Starting offset into text.
+	int pagenum
 	)
 {
 	const int font = 4;		// Black.
@@ -143,27 +145,20 @@ int Notebook_gump::paint_page
 	int ypos = 0;
 	int textheight = sman->get_text_height(font) + vlead;
 	char *str = note->text + start;
-	while (*str && ypos + textheight <= box.h)
-		{
-		if (*str == '\n')	// Empty paragraph?
-			{
-			ypos += textheight;
-			str++;
-			continue;
-			}
-		int endoff = sman->paint_text_box(font, str, x + box.x,
-				y + box.y + ypos, box.w, box.h - ypos, vlead);
-		if (endoff > 0)		// All painted?
-			{		// Value returned is height.
-			ypos += endoff;	// ????Need to do this?
-			str = note->text + note->textlen;
-			}
-		else			// Out of room.
-			{
-			str += -endoff;
-			break;
-			}
+	int endoff = sman->paint_text_box(font, str, x + box.x,
+			y + box.y + ypos, box.w, box.h - ypos, vlead,
+			0, -1, pagenum == curpage ? &cursor : 0);
+	if (endoff > 0)			// All painted?
+		{			// Value returned is height.
+		ypos += endoff;		// ????Need to do this?
+		str = note->text + note->textlen;
 		}
+	else				// Out of room.
+		str += -endoff;
+	if (pagenum == curpage && cursor.x >= 0)
+		gwin->get_win()->fill8(sman->get_special_pixel(POISON_PIXEL), 
+			1, 
+			sman->get_text_height(font), cursor.x-1, cursor.y-1);
 	return (str - note->text);	// Return offset past end.
 }
 
@@ -176,18 +171,19 @@ void Notebook_gump::change_page
 	int delta
 	)
 {
+	int topleft = curpage & ~1;
 	if (delta > 0)
 		{
 		int nxt = curpage/2 + 1;
 		if (nxt >= page_info.size())
 			return;
-		curpage += 2;
+		curpage = topleft + 2;
 		}
 	else if (delta < 0)
 		{
-		if (curpage == 0)
+		if (topleft == 0)
 			return;
-		curpage -= 2;
+		curpage = topleft - 2;
 		}
 	paint();
 }
@@ -229,8 +225,10 @@ void Notebook_gump::paint
 		return;
 	int offset = page_info[curpage/2].offset;
 	One_note *note = notes[curnote];
+	int topleft = curpage & ~1;
 					// Paint left page.
-	offset = paint_page(Rectangle(36, 10, 122, 130), note, offset);
+	offset = paint_page(Rectangle(36, 10, 122, 130), note, offset, 
+								topleft);
 	if (offset >= note->textlen)	// Finished note?
 		{
 		if (curnote == notes.size() - 1)
@@ -240,7 +238,8 @@ void Notebook_gump::paint
 		offset = 0;
 		}
 					// Paint right page.
-	offset = paint_page(Rectangle(174, 10, 122, 130), note, offset);
+	offset = paint_page(Rectangle(174, 10, 122, 130), note, offset,
+								topleft + 1);
 	if (offset >= note->textlen)	// Finished note?
 		{
 		if (curnote == notes.size() - 1)

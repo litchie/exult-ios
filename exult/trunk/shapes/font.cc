@@ -85,7 +85,8 @@ int Font::paint_text_box
 	int x, int y,			// Top-left corner of box.
 	int w, int h,			// Dimensions.
 	int vert_lead,			// Extra spacing between lines.
-	int pbreak			// End at punctuation.
+	int pbreak,			// End at punctuation.
+	Cursor_info *cursor		// We set x, y if not NULL.
 	)
 	{
 	const char *start = text;	// Remember the start.
@@ -100,9 +101,20 @@ int Font::paint_text_box
 	const char *last_punct_end = 0;// ->last period, qmark, etc.
 					// Last punct in 'lines':
 	int last_punct_line = -1, last_punct_offset = -1;
+	int coff = -1;
 
+	if (cursor)
+		{
+		coff = cursor->offset;
+		cursor->x = -1;
+		}
 	while (*text)
 		{
+		if (text - start == coff)
+			{
+			cursor->x = curx;
+			cursor->y = cury;
+			}
 		switch (*text)		// Special cases.
 			{
 		case '\n':		// Next line.
