@@ -1,6 +1,7 @@
 #include "U7file.h"
 #include "Flex.h"
 #include "Table.h"
+#include <cstdio>
 
 #define	TRY_FILE_TYPE(uf,CLASS_NAME)	\
 	if(!uf) \
@@ -15,10 +16,11 @@
 
 U7file  *U7FileManager::get_file_object(const string &s)
 {
-	U7file	*uf;
+	U7file	*uf=0;
 	if(file_list.count(s))
 		{
 		// Found it in our cache. Return it
+		cerr << "File manager Cache hit" << endl;
 		return file_list[s];
 		}
 	// Not in our cache. Attempt to figure it out.
@@ -27,6 +29,17 @@ U7file  *U7FileManager::get_file_object(const string &s)
 	TRY_FILE_TYPE(uf,Table);
 
 	return uf;
+}
+U7FileManager::~U7FileManager() {}
+
+U7FileManager   *U7FileManager::self=0;
+
+U7FileManager::U7FileManager()
+{
+	if(self)
+		throw 0;
+	else
+		self=this;
 }
 
 
@@ -42,7 +55,27 @@ U7object::~U7object()	{}
 
 int	U7object::retrieve(char **buf,size_t &len)
 {
-	return 0;
+	U7file *uf=U7FileManager::get_ptr()->get_file_object(filename);
+	if(!uf)
+		return 0;
+	return uf->retrieve(objnumber,buf,&len);
 }
 
-int	U7object::retrieve(const char *fname) { return 0; };
+int	U7object::retrieve(const char *fname)
+{
+	FILE	*fp=fopen(fname,"wb");
+	if(!fp)
+		return 0;
+
+	char	*n;
+	size_t	l;
+
+	if(!retrieve(&n,l))
+		{
+		fclose(fp);
+		return 0;
+		}
+	fwrite(n,l,1,fp);	// &&&& Should check return value
+	fclose(fp);
+	return !0;
+}

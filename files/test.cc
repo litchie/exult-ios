@@ -8,6 +8,7 @@
 
 
 
+U7FileManager	u7fm;
 
 int	main(void)
 {

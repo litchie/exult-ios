@@ -20,6 +20,7 @@ public:
 
 class	U7FileManager
 	{
+	static	U7FileManager	*self;
 protected:
 	map<const string,U7file *> file_list;
 public:
@@ -27,6 +28,7 @@ public:
 	~U7FileManager();
 
 	U7file	*get_file_object(const string &s);
+	static U7FileManager *get_ptr(void) { return self; };
 	};
 
 class	U7object
