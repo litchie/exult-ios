@@ -1,3 +1,9 @@
+2000-04-28  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* autogen.sh: clear old generated files first
+	* configure.in: if I don't have kmid build without it anyway, don't
+	tell me to run configure with --disable-kmid
+
 2000-04-26  Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* exult.cc: Implement 'h' key to show a simple help page
