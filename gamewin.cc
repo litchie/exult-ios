@@ -277,7 +277,7 @@ Game_window::~Game_window
 	int nxforms = sizeof(xforms)/sizeof(xforms[0]);
 	for (i = 0; i < nxforms; i++)
 		delete [] xforms[nxforms - 1 - i];
-	delete [] invis_xform;
+//++++Now points into xforms	delete [] invis_xform;
 	delete gump_man;
 	delete background_noise;
 	delete tqueue;
@@ -308,6 +308,26 @@ void Game_window::abort
 	delete this;
 	throw quit_exception(-1);
 	}
+
+#if 0
+#define BLEND(alpha, newc, oldc) ((newc*255L) - (oldc*(255L-alpha)))/alpha
+void Analyze_xform(unsigned char *xform, int alpha, Palette *pal)
+	{
+	long br = 0, bg = 0, bb = 0;	// Trying to figure out blend color.
+	for (int i = 0; i < 256; i++)
+		{
+		int xi = xform[i];	// Index of color mapped to.
+		br += BLEND(alpha, pal->get_red(xi), pal->get_red(i));
+		bg += BLEND(alpha, pal->get_green(xi), pal->get_green(i));
+		bb += BLEND(alpha, pal->get_blue(xi), pal->get_blue(i));
+		}
+	br /= 256;			// Take average.
+	bg /= 256;
+	bb /= 256;
+	cout << "Blend (r,g,b) = " << br << ',' << bg << ',' << bb << endl;
+	}
+#endif
+
 
 void Game_window::init_files(bool cycle)
 {
@@ -352,21 +372,52 @@ void Game_window::init_files(bool cycle)
 //	mainshp.load(MAINSHP_FLX);
 //	CYCLE_RED_PLASMA();
 	shapes.init();
-//	map->init();	++++++Moved to setup_game().
 
 	ifstream textflx;	
   	U7open(textflx, TEXT_FLX);
 	Setup_item_names(textflx);	// Set up list of item names.
 					// Read in shape dimensions.
 	shapes.read_info(GAME_BG);
-	Segment_file xf(XFORMTBL);	// Read in translucency tables.
 	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
-	for (int i = 0; i < nxforms; i++)
-	{
-		xforms[nxforms - 1 - i] = (uint8*)xf.retrieve(i, len);
-		CYCLE_RED_PLASMA();
-	}
-	invis_xform = (uint8*)xf.retrieve(2, len);
+	if (U7exists(XFORMTBL))
+		{			// Read in translucency tables.
+		Segment_file xf(XFORMTBL);
+		for (int i = 0; i < nxforms; i++)
+			{
+			xforms[nxforms - 1 - i] = (uint8*)xf.retrieve(i, len);
+			CYCLE_RED_PLASMA();
+#if 0	/* +++++++Testing */
+			pal->load(PALETTES_FLX, 0);	// ++++++TESTING
+			cout << "XFORM " << (nxforms - 1 - i) << ":" << endl;
+			cout << "Alpha = 64: ";
+			Analyze_xform(xforms[nxforms - 1 - i], 64, pal);
+			cout << "Alpha = 128: ";
+			Analyze_xform(xforms[nxforms - 1 - i], 128, pal);
+			cout << "Alpha = 192: ";
+			Analyze_xform(xforms[nxforms - 1 - i], 192, pal);
+#endif
+			}
+		}
+	else				// Create algorithmically.
+		{
+		pal->load(PALETTES_FLX, 0);
+					// RGB blend colors:
+		static unsigned char blends[3*11] = {
+			36,10,48, 24,10,4, 25,27,29, 17,33,7, 63,52,12, 
+			7,13,63,
+			2,17,0, 63,2,2, 65,61,62, 14,10,8, 49,48,46};
+		static int alphas[11] = {128, 128, 192, 128, 64, 128,
+					128, 128, 128, 128, 128};
+		for (int i = 0; i < nxforms; i++)
+			{
+			xforms[i] = new unsigned char[256];
+			pal->create_trans_table(blends[3*i],
+				blends[3*i+1], blends[3*i+2],
+				alphas[i], xforms[i]);
+			}
+		}
+
+	invis_xform = xforms[nxforms - 1 - 2];   // ->entry 2.
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
 					// Force clock to start.
@@ -551,21 +602,6 @@ long Game_window::check_time_stopped
 	time_stopped = 0;		// Done.
 	return 0;
 	}
-#if 0	/* +++++Going away */
-/*
- *	Add a 'path' egg to our list.
- */
-
-void Game_window::add_path_egg
-	(
-	Egg_object *egg
-	)
-	{
-	int qual = egg->get_quality();
-	if (qual >= 0 && qual < 255)
-		path_eggs.put(qual, egg);
-	}
-#endif
 
 /*
  *	Toggle combat mode.
@@ -1876,7 +1912,6 @@ void Game_window::show_items
 	if (obj && cheat.grabbing_actor() && (obj->get_npc_num() || obj==main_actor))
 		cheat.set_grabbed_actor (static_cast<Actor *>(obj));
 
-	//++++++++Testing
 #ifdef DEBUG
 	int shnum, frnum;
 	if (obj)
@@ -2222,6 +2257,16 @@ void Game_window::double_clicked
 	int x, int y			// Coords in window.
 	)
 	{
+#if 0
+//++++++++++++TESTING
+	static int ncnt = 0;
+	cout << "Showing xform for ncnt = " << ncnt << endl;
+	std::size_t nxforms = sizeof(xforms)/sizeof(xforms[0]);
+	pal->load(PALETTES_FLX, 0, XFORMTBL, nxforms - 1 - ncnt);
+	pal->update();
+	ncnt = (ncnt + 1)%nxforms;
+//^^^^^^^^^^^^TESTING
+#endif
 					// Animation in progress?
 	if (main_actor_dont_move())
 		return;
