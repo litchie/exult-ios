@@ -689,18 +689,53 @@ int timbre[16] = {
 };
 #endif 
 
+static bool tchange[16] = {
+	false, false, false, false,
+	false, false, false, false,
+	false, false, false, false,
+	false, false, false, false
+};
+
 int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size)
 {
 	uint32	delta = 0;
 	int	data;
-	
+
+	data = source->read1();
+
+
+	// Temporary change for bank 127 MT32 patch
+	// Do this first
+	if ((status >> 4) == 0xB && data == 0)
+	{
+		data = source->read1();
+		
+		if (data == 127)
+		{
+			tchange[(status&0xF)]=true;
+			return 2;
+		}
+		else
+		{
+			tchange[(status&0xF)]=false;
+
+			CreateNewEvent (time);
+			current->status = status;
+			current->data[0] = 0;
+			current->data[1] = data;
+
+			return 2;
+		}
+	}
+
+
 	CreateNewEvent (time);
 	current->status = status;
 
-	data = current->data[0] = source->read1();
+	current->data[0] = data;
 
 	// Handling for patch change mt32 conversion, probably should go elsewhere
-	if (((status >> 4) == 0xC) && convert_from_mt32) 
+	if (((status >> 4) == 0xC) && (convert_from_mt32 || tchange[(status&0xF)])) 
 		current->data[0] = mt32asgm[current->data[0]];
 
 #if 0	// This was just for a test, when working with the SFX
