@@ -1677,19 +1677,6 @@ int Game_window::find_objects
 				(x + 4*lift)/tilesize)/tiles_per_chunk;
 	int start_cy = (get_scrollty() + 
 				(y + 4*lift)/tilesize)/tiles_per_chunk;
-
-#if 0
-	int start_cx = chunkx + (x + 4*lift)/chunksize;
-	int start_cy = chunky + (y + 4*lift)/chunksize;
-
-        // Prevent the selection of indoor items through roofs
-        // unless the player is inside, of course
-        // ... Dang. This prevents doors and wall-mounted things
-        // (like plaques) from working. Otherwise it's good
-        if(!main_actor_inside&&find_roof(start_cx,start_cy))
-                return 0;
-#endif
-
 	Game_object *obj;
 	int cnt = 0;			// Count # found.
 					// Check 1 chunk down & right too.
@@ -1980,14 +1967,22 @@ void Game_window::show_face
 					// Get text height.
 		int text_height = get_text_height(0);
 					// Figure starting y-coord.
-		int starty = prev ? prev->text_rect.y + prev->text_rect.h +
-					2*text_height : 16;
-		actbox = clip_to_win(Rectangle(16, starty,
+		int starty;
+		if (prev)
+			{
+			starty = prev->text_rect.y + prev->last_text_height;
+			if (starty < prev->face_rect.y + prev->face_rect.h)
+				starty = prev->face_rect.y + prev->face_rect.h;
+			starty += 2*text_height;
+			}
+		else
+			starty = 12;
+		actbox = clip_to_win(Rectangle(8, starty,
 			face->get_width() + 4, face->get_height() + 4));
 		info->face_rect = actbox;
 					// This is where NPC text will go.
 		info->text_rect = clip_to_win(Rectangle(
-			actbox.x + actbox.w + 16, actbox.y,
+			actbox.x + actbox.w + 16, actbox.y + 8,
 			get_width() - actbox.x - actbox.w - 32,
 							8*text_height));
 		info->last_text_height = info->text_rect.h;
@@ -2091,16 +2086,24 @@ void Game_window::show_avatar_choices
 	int space_width = get_text_width(0, "   ");
 					// Get main actor's portrait.
 	Shape_frame *face = faces.get_shape(main_actor->get_face_shapenum());
-#if 1	/* Old way. */
+#if 0	/* Old way. */
 	Rectangle mbox(16, sbox.h - face->get_height() - 3*height,
 			face->get_width() + 4, face->get_height() + 4);
 #else
 					// Get last one shown.
 	Npc_face_info *prev = num_faces ? face_info[num_faces - 1] : 0;
-	Rectangle mbox(prev ? prev->face_rect.x + prev->face_rect.w + 4 : 16,
-		prev ? prev->text_rect.y + prev->last_text_height + height
-			    : sbox.h - face->get_height() - 3*height,
-			face->get_width() + 4, face->get_height() + 4);
+	int fx = prev ? prev->face_rect.x + prev->face_rect.w + 4 : 16;
+	int fy;
+	if (!prev)
+		fy = sbox.h - face->get_height() - 3*height;
+	else
+		{
+		fy = prev->text_rect.y + prev->last_text_height + height;
+		if (fy < prev->face_rect.x + prev->face_rect.h)
+			fy = prev->face_rect.x + prev->face_rect.h;
+		fy += height;
+		}
+	Rectangle mbox(fx, fy, face->get_width() + 4, face->get_height() + 4);
 #endif
 					// Draw portrait.
 	paint_shape(mbox.x + mbox.w - 2, 
