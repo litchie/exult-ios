@@ -36,7 +36,7 @@ int Uc_location::num_errors = 0;
 
 void Uc_location::set_cur
 	(
-	char *s, 
+	const char *s, 
 	int l
 	)
 	{

@@ -42,7 +42,7 @@ public:
 	Uc_location()			// Use current location.
 		: source(cur_source), line(cur_line)
 		{  }
-	static void set_cur(char *s, int l);
+	static void set_cur(const char *s, int l);
 	static void increment_cur_line()
 		{ cur_line++; }
 	const int get_line()

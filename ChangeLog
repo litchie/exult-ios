@@ -1,3 +1,7 @@
+2001-01-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Ucc - C-comments and #include added.
+
 2001-01-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Bugs fixed:  Crash (out of memory) at end, guards, walking in
