@@ -24,7 +24,11 @@
 
 // This will get prepended with different things at runtime
 // depending on the OS
-#define	USER_CONFIGURATION_FILE	"exult.cfg"
+#if defined(__MORPHOS__) || defined(AMIGA)
+#define USER_CONFIGURATION_FILE "PROGDIR:exult.cfg"
+#else
+#define USER_CONFIGURATION_FILE "exult.cfg"
+#endif
 
 #if (defined(MACOS) || defined(MACOSX)) && !defined(EXULT_DATADIR)
 #define EXULT_DATADIR	"data"

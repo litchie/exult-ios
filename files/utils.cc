@@ -96,6 +96,29 @@ string get_system_path(const string &path)
 	string new_path;
 	string::size_type pos;
 	
+#if defined(__MORPHOS__) || defined(AMIGA)
+  pos = path.find( "../" );
+  if( pos != string::npos )
+	  new_path = path.substr( 0, pos )+path.substr( pos+2 );
+  else
+	  new_path = path;
+
+  pos = new_path.find( "./" );
+  if( pos != string::npos )
+	  new_path = new_path.substr( 0, pos )+new_path.substr( pos+2 );
+
+  pos = new_path.find('/');
+  // If there is no separator, return the path as is
+  if(pos != string::npos)
+  {
+	  // See if we can translate this prefix
+	  string new_prefix(path_map[new_path.substr(0, pos).c_str()]);
+
+	  // If the prefix path is not recognised, return the path as is
+	  if(!new_prefix.empty())
+		  new_path = new_prefix + new_path.substr(pos);
+  }
+#else
 	pos = path.find('/');
 	// If there is no separator, return the path as is
 	if(pos == string::npos)
@@ -112,6 +135,7 @@ string get_system_path(const string &path)
 			new_path = new_prefix + path.substr(pos);
 		}
 	}
+#endif
 	switch_slashes(new_path);
 	return new_path;
 }
@@ -127,7 +151,7 @@ void to_uppercase(string &str)
 {
 	for(string::iterator X = str.begin(); X != str.end(); ++X)
 	{
-#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN))
+#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = std::toupper(*X);
@@ -162,7 +186,7 @@ static bool base_to_uppercase(string& str, int count)
 		if (todo <= 0)
 			break;
 
-#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN))
+#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN) || defined(__MORPHOS__))
 		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = std::toupper(*X);

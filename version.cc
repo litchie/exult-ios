@@ -219,6 +219,10 @@ void getVersionInfo(std::ostream& out)
 	out << "Mac OS X";
 #elif (defined(MACOS))
 	out << "MacOS";
+#elif (defined(__MORPHOS__))
+	out << "MorphOS";
+#elif (defined(AMIGA))
+	out << "Amiga";
 #else
 	out << "Unknown";
 #endif
