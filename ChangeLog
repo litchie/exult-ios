@@ -1,3 +1,6 @@
+2002-07-22  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* mouse.h: #ifdef HAVE_OPENGL was missing around call to GL stuff
+
 2002-07-21  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/conversation.cc (Conversation): Still a bit rough, but
