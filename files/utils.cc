@@ -59,19 +59,22 @@ void add_system_path(const string& key, const string& value)
 
 string get_system_path(const string &path)
 {
+	string new_path;
 	string::size_type pos = path.find('/');
 	// If there is no separator, return the path as is
 	if(pos == string::npos)
-		return path;
-		
-	// See if we can translate this prefix
-	string new_prefix(path_map[path.substr(0, pos).c_str()]);
+		new_path = path;
+	else
+	{
+		// See if we can translate this prefix
+		string new_prefix(path_map[path.substr(0, pos).c_str()]);
 
-	// If the prefix path is not recognised, return the path as is
-	if(new_prefix.empty())
-		return path;
-	
-	string new_path = new_prefix + path.substr(pos);
+		// If the prefix path is not recognised, return the path as is
+		if(new_prefix.empty())
+			new_path = path;
+		else
+			new_path = new_prefix + path.substr(pos);
+	}
 	switch_slashes(new_path);
 	return new_path;
 }
