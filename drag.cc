@@ -49,7 +49,6 @@ int Game_window::start_dragging
 	dragging_gump = find_gump(x, y);
 	if (dragging_gump)
 		{
-cout << "Dragging_gump != 0\n";
 		cnt = dragging_gump->find_objects(this, x, y, found);
 		if (cnt)
 			{
@@ -61,6 +60,8 @@ cout << "Dragging_gump != 0\n";
 			{		// Dragging whole gump.
 			dragging_paintx = dragging_gump->get_x();
 			dragging_painty = dragging_gump->get_y();
+cout << "(x,y) rel. to gump is (" << (x-dragging_paintx) << ", " <<
+		(y-dragging_painty) << ")\n";
 			}
 		}
 	else if (!dragging)		// Not found in gump?

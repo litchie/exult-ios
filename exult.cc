@@ -368,7 +368,6 @@ static void Handle_keystroke
 		gwin->paint_shape(gwin->get_win(),
 			200, 200, shape_cnt, shape_frame);
 #else
-		cout << "Num. gumps = " << gwin->get_num_gumps() << '\n';
 		gump_frame = 0;
 		if (++gump_cnt == gwin->get_num_gumps())
 			gump_cnt = 0;
@@ -451,95 +450,6 @@ int Get_click
 		}
 	return (0);			// Shouldn't get here.
 	}
-
-#if 0	/* +++++Going away. */
-static int Handle_gump_event(SDL_Event&);
-
-/*
- *	Handle events in 'gump' mode.  (A 'gump' is an opened bag, chest,
- *	etc.)
- */
-
-void Gump_events
-	(
-	)
-	{
-	while (1)
-		{
-		SDL_Event event;
-		Delay();		// Wait a fraction of a second.
-		while (SDL_PollEvent(&event))
-			if (!Handle_gump_event(event))
-				return;
-#if 1	/* ++++Not sure yet. */
-					// Get current time.
-		unsigned long ticks = SDL_GetTicks();
-					// Animate unless dormant.
-		if (gwin->have_focus())
-			gwin->get_tqueue()->activate(ticks);
-#endif
-		gwin->show();		// Blit to screen if necessary.
-		}
-	}
-
-/*
- *	Handle a single gump event.
- *
- *	Output:	1 to stay in gump mode, 0 to stop.
- */
-
-static int Handle_gump_event
-	(
-	SDL_Event& event
-	)
-	{
-					// Object or gump being moved.
-	static int dragging = 0;
-	static int dragged = 0;		// Flag for when obj. moved.
-	switch (event.type)
-		{
-	case SDL_MOUSEBUTTONDOWN:
-		if (event.button.button == 1)
-			{
-cout << "Mouse down at (" << event.button.x << ", " <<
-	event.button.y << ")\n";
-			dragging = gwin->start_dragging(event.button.x,
-							event.button.y);
-			dragged = 0;
-			}
-		break;
-	case SDL_MOUSEBUTTONUP:
-					// Done if nothing chosen.???
-		if (event.button.button == 1)
-			{
-			if (!dragging && !dragged)
-				return (0);
-			gwin->drop_dragged(event.button.x, event.button.y);
-			if (!dragged)
-					// Identify item(s) clicked on.
-				gwin->show_items(event.button.x,
-							event.button.y);
-			dragging = 0;
-			}
-		break;
-	case SDL_MOUSEMOTION:		// Moving with left button down.
-		if (event.motion.state & SDL_BUTTON(1))
-			{
-			gwin->drag(event.motion.x, event.motion.y);
-			dragged = 1;
-			}
-		break;
-	case SDL_QUIT:
-		quitting_time = 1;
-		return (0);
-	case SDL_KEYDOWN:
-		if (event.key.keysym.sym == SDLK_ESCAPE)
-			return (0);
-		break;
-		}
-	return (1);
-	}
-#endif
 
 #if 0
 // The old win32 code.

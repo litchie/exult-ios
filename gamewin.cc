@@ -202,7 +202,8 @@ Rectangle Game_window::get_gump_rect
 	{
 	Shape_frame *s = gumps.get_shape(gump->get_shapenum(),
 						gump->get_framenum());
-	return Rectangle(gump->get_x() - s->xleft, gump->get_y() - s->yabove,
+	return Rectangle(gump->get_x() - s->xleft, 
+			gump->get_y() - s->yabove,
 					s->get_width(), s->get_height());
 	}
 

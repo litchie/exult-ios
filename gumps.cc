@@ -36,7 +36,8 @@ Gump_object::Gump_object
 	int shnum			// Shape #.
 	) : container(cont), x(initx), y(inity), ShapeID(shnum, 0)
 	{
-					// +++++Depends on shnum:
+	checkx = 8; checky = 64;	//++++default.
+
 	switch (shnum)			// Different shapes.
 		{
 	case 1:				// Crate.
@@ -47,6 +48,7 @@ Gump_object::Gump_object
 		break;
 	case 9:				// Bag.
 		object_area = Rectangle(48, 20, 66, 44);
+		checkx = 8; checky = 64;
 		break;
 	case 10:			// Backpack.
 		object_area = Rectangle(36, 36, 72, 40);
@@ -60,6 +62,7 @@ Gump_object::Gump_object
 	default:
 		object_area = Rectangle(52, 22, 60, 40);
 		}
+	checkx += 16; checky -= 12;
 	}
 
 /*
@@ -163,6 +166,8 @@ void Gump_object::paint
 	{
 					// Paint the gump itself.
 	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+					// Paint red "checkmark".
+	gwin->paint_gump(x + checkx, y + checky, 2, 0);
 	Game_object *last_object = container->get_last_object();
 	if (!last_object)
 		return;			// Empty.
