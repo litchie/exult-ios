@@ -2725,3 +2725,106 @@ void Game_window::plasma(int w, int h, int x, int y, int startc, int endc)
 	}
 }
 
+
+/*
+ *	Superchunk Caching Emulation
+ *
+ *      TODO: Temp Objects
+ */
+void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
+{
+
+	// First check to see if they are the same superchunk
+	// If they are, return
+	int	oldsx = oldx/c_chunks_per_schunk,
+		oldsy = oldy/c_chunks_per_schunk,
+		newsx = newx/c_chunks_per_schunk,
+		newsy = newy/c_chunks_per_schunk;
+	if (oldx != -1 && oldy != -1 && newsx == oldsx && newsy == oldsy)
+		return;
+
+
+	// Which schunks need changing
+	char	schunks[c_num_schunks][c_num_schunks];
+	int	minx, maxx, miny, maxy, x, y;
+	int	aminx = 0, amaxx = c_num_schunks,
+		aminy = 0, amaxy = c_num_schunks;
+
+	// Set to 0
+	memset(schunks, 0, sizeof(schunks));
+
+	// First we write which super chunks we were last near
+	if (oldx != -1 && oldy != -1)
+	{
+		aminx = minx = c_num_schunks + oldsx - 1;
+		aminy = miny = c_num_schunks + oldsy - 1;
+		amaxx = maxx = c_num_schunks + oldsx + 1;
+		amaxy = maxy = c_num_schunks + oldsy + 1;
+		for (y = miny; y <= maxy; y++) for (x = minx; x <= maxx; x++)
+			schunks[x%c_num_schunks][y%c_num_schunks] += 1;
+	}
+	if ((minx = c_num_schunks + newsx - 1) < aminx) aminx = minx;
+	if ((miny = c_num_schunks + newsy - 1) < aminy) aminy = miny;
+	if ((maxx = c_num_schunks + newsx + 1) > amaxx) amaxx = maxx;
+	if ((maxy = c_num_schunks + newsy + 1) > amaxy) amaxy = maxy;
+
+	// Now we write what we are now near
+	for (y = miny; y <= maxy; y++) for (x = minx; x <= maxx; x++)
+		schunks[x%c_num_schunks][y%c_num_schunks] += 2;
+
+	// Swapout any superchanks that are no longer needed (set to 1)
+	for (y = aminy; y <= amaxy; y++) for (x = aminx; x <= amaxx; x++)
+		if (schunks[x%c_num_schunks][y%c_num_schunks] == 1) emulate_swapout(x%c_num_schunks, y%c_num_schunks);
+
+}
+
+// Delete any monster NPCs or Temporary Items in superchunk (scx, scy)
+// ang Reset any Cached in eggs in this superchunk
+void Game_window::emulate_swapout (int scx, int scy)
+{
+
+	int x, y;
+	Game_object_vector removes;
+	for (y = 0; y < c_chunks_per_schunk; y++) for (x = 0; x < c_chunks_per_schunk; x++)
+	{
+		Chunk_object_list *list = get_objects(x+scx*c_chunks_per_schunk, y+scy*c_chunks_per_schunk);
+		if (!list) continue;
+
+		Object_iterator it(list->get_objects());
+		Game_object *each;
+		while ((each = it.get_next()) != 0)
+		{
+			if (each->is_egg())
+				each->reset_cached_in();
+			else if (each->get_npc_num() == -1)
+				removes.push_back(each);
+		}
+	}
+
+	for (Game_object_vector::const_iterator it=removes.begin(); it!=removes.end(); ++it)
+		(*it)->remove_this();
+
+}
+
+// Tests to see if a move goes out of range of the actors superchunk
+bool Game_window::emulate_is_move_allowed(int tx, int ty)
+{
+	int ax = get_main_actor()->get_cx() / c_chunks_per_schunk;
+	int ay = get_main_actor()->get_cy() / c_chunks_per_schunk;
+	tx /= c_tiles_per_schunk;
+	ty /= c_tiles_per_schunk;
+
+	int difx = ax - tx;
+	int dify = ay - ty;
+	
+	if (difx < 0) difx = -difx;
+	if (dify < 0) dify = -dify;
+
+	// Is it within 1 superchunk range?
+	if ((!difx || difx == 1 || difx == c_num_schunks || difx == c_num_schunks-1) && 
+		(!dify || dify == 1 || dify == c_num_schunks || dify == c_num_schunks-1))
+		return true;
+
+	return false;
+}
+

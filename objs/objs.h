@@ -350,6 +350,9 @@ public:
 	virtual int get_low_lift() const { return -1; }
 	virtual void set_low_lift(int l) { }
 
+	virtual void reset_cached_in()
+		{ }
+
 	};
 
 #endif

@@ -2407,6 +2407,10 @@ void Main_actor::switched_chunks
 	for (int y = yfrom; y <= yto; y++)
 		for (int x = xfrom; x <= xto; x++)
 			gwin->get_objects(x, y)->setup_cache();
+
+	// If change in Superchunk number, apply Old Style caching emulation
+	if (olist) gwin->emulate_cache(olist->get_cx(), olist->get_cy(), newcx, newcy);
+	else gwin->emulate_cache(-1, -1, newcx, newcy);
 	}
 
 /*
@@ -3161,8 +3165,6 @@ Monster_actor::~Monster_actor
 	(
 	)
 	{
-	if (creator)
-		creator->monster_gone();
 					// Remove from chain.
 	if (next_monster)
 		next_monster->prev_monster = prev_monster;
@@ -3200,9 +3202,15 @@ int Monster_actor::step
 	int frame			// New frame #.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+	
+	// If move not allowed do I remove or change destination?
+	// I'll do nothing for now
+	if (!gwin->emulate_is_move_allowed(t.tx, t.ty))
+		return (0);
+
 					// Store old chunk.
 	int old_cx = get_cx(), old_cy = get_cy();
-	Game_window *gwin = Game_window::get_game_window();
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get rel. tile coords.
@@ -3302,9 +3310,6 @@ void Monster_actor::die
 	)
 	{
 	Actor::die();
-	if (creator)
-		creator->monster_gone();
-	creator = 0;
 	Audio::get_ptr()->start_music_combat ( CSVictory, 0);
 					// Got to delete this somewhere, but
 					//   doing it here crashes.
