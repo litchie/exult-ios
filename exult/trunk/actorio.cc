@@ -247,7 +247,7 @@ Actor::Actor
 	if (get_type_flag(tf_fly)) cout << "fly ";
 	if (get_type_flag(tf_swim)) cout << "swim ";
 	if (get_type_flag(tf_walk)) cout << "walk ";
-	if (get_type_flag(tf_ethereal)) cout << "etheral ";
+	if (get_type_flag(tf_ethereal)) cout << "ethereal ";
 	if (get_type_flag(tf_in_party)) cout << "in party ";
 	cout << endl;
 	
