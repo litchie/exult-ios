@@ -214,7 +214,8 @@ public:
 	void set_palette()		// Set for time, flags, lighting.
 		{ clock.set_palette(); }
 	bool is_chunk_read(int cx, int cy)
-		{ return schunk_read[12*(cy/c_chunks_per_schunk) +
+		{ return cx < c_num_chunks && cy < c_num_chunks &&
+			schunk_read[12*(cy/c_chunks_per_schunk) +
 						cx/c_chunks_per_schunk]; }
 	void set_ifix_modified(int cx, int cy)
 		{ schunk_modified[12*(cy/c_chunks_per_schunk) +

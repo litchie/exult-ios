@@ -377,7 +377,6 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 			Offscreen_pathfinder_client cost(gwin, move_flags);
 			if (!path->NewPath(dest, src, &cost))
 				return (0);
-			from_offscreen = true;
 			}
 		else
 			{
@@ -385,6 +384,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 			if (!path->NewPath(dest, src, &cost))
 				return (0);
 			}
+		from_offscreen = true;
 					// Set to go backwards.
 		if (!path->set_backwards())
 			return (0);
