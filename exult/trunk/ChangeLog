@@ -1,4 +1,7 @@
 2001-01-04  Ryan Nunn <triforce@merlin.net.au>
+	* game.cc : Fixed a divide be zero
+
+2001-01-04  Ryan Nunn <triforce@merlin.net.au>
 	* gamewin.cc : Font *get_font(fontnum) method
 	* gamewin.h : Font *get_font(fontnum) method
 	* shapes/fontvga.h : Font *get_font(fontnum) method
