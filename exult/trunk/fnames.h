@@ -25,7 +25,7 @@
 #define WGTVOL		"static/wgtvol.dat"		
 #define U7CHUNKS	"static/u7chunks"
 #define U7MAP		"static/u7map"
-#define TEST_FLX	"static/text.flx"
+#define TEXT_FLX	"static/text.flx"
 #define AVATAR_TTF	"avatar.ttf"
 #define U7IFIX		"static/u7ifix"
 #define U7IREG		"gamedat/u7ireg"
@@ -40,6 +40,7 @@
 #define ADLIBMUS	"static/adlibmus.dat"
 #define	XMIDI_MT	"static/xmidi.mt"
 #define U7SPEECH	"static/u7speech.spc"
+#define XFORM		"static/xform.tbl"
 
 #else
 
@@ -53,7 +54,7 @@
 #define WGTVOL		"static\\wgtvol.dat"		
 #define U7CHUNKS	"static\\u7chunks"
 #define U7MAP		"static\\u7map"
-#define TEST_FLX	"static\\text.flx"
+#define TEXT_FLX	"static\\text.flx"
 #define AVATAR_TTF	"avatar.ttf"
 #define U7IFIX		"static\\u7ifix"
 #define U7IREG		"gamedat\\u7ireg"
@@ -68,6 +69,7 @@
 #define ADLIBMUS	"static\\adlibmus.dat"
 #define	XMIDI_MT	"static\\xmidi.mt"
 #define U7SPEECH	"static\\u7speech.spc"
+#define XFORM		"static\\xform.tbl"
 
 #endif
 

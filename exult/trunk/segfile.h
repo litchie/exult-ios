@@ -42,6 +42,13 @@ public:
 		{ return (num_segments != 0); }
 					// Return allocated buffer with data.
 	int read_segment(int index, char *&data, int& len);
+	int read_segment(int index, unsigned char *&data, int& len)
+		{
+		char *d;
+		int ret = read_segment(index, d, len);
+		data = (unsigned char *) d;
+		return ret;
+		}
 	};
 
 #endif

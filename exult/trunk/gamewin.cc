@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "npcnear.h"
 #include "gumps.h"
+#include "segfile.h"
 #include "Audio.h"
 extern	Audio	audio;
 
@@ -75,12 +76,17 @@ Game_window::Game_window
 	usecode = new Usecode_machine(ucfile, this);
 	ucfile.close();
 	ifstream textflx;	
-  	u7open(textflx, TEST_FLX);
+  	u7open(textflx, TEXT_FLX);
 	Setup_item_names(textflx);	// Set up list of item names.
 					// Read in shape dimensions.
 	if (!shapes.read_info())
 		abort(
 		"Can't read shape data (tfa.dat, wgtvol.dat, shpdims.dat).");
+	Segment_file xf(XFORM);		// Read in translucency tables.
+	int len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
+	for (int i = 0; i < nxforms; i++)
+		if (!xf.read_segment(i, xforms[nxforms - 1 - i], len))
+			abort("Error reading %s.", XFORM);
 					// Create window.
 	win = new Image_window(width, height); //<- error in timer
 					// Set title.
