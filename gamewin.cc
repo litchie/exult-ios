@@ -1438,15 +1438,22 @@ void Game_window::start_actor_alt
 		dir = (dir+7)%8;
 	else if (blocked[dir])
 	{
-		stop_actor();
-		if (main_actor->get_lift()%5)// Up on something?
-			{		// See if we're stuck in the air.
-			start.tz--;
-			if (!Chunk_object_list::is_blocked(start, 1, 
+	   	Game_object *block = main_actor->is_moving() ? 0
+			: Game_object::find_blocking(start.get_neighbor(dir));
+		if (block == main_actor || !block || !block->move_aside(
+						main_actor, dir))
+			{
+			stop_actor();
+			if (main_actor->get_lift()%5)// Up on something?
+				{	// See if we're stuck in the air.
+				start.tz--;
+				if (!Chunk_object_list::is_blocked(start, 1, 
 						MOVE_WALK, 100))
-				main_actor->move(start.tx, start.ty, start.tz);
+					main_actor->move(start.tx, start.ty, 
+								start.tz);
+				}
+			return;
 			}
-		return;
 	}
 
 	const int delta = 8*tilesize;	// Trying to avoid 'chicken dance'.

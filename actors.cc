@@ -1290,13 +1290,14 @@ void Actor::change_member_shape
 	}
 
 /*
- *	Step aside to a free tile.
+ *	Step aside to a free tile, or try to swap places.
  *
  *	Output:	1 if successful, else 0.
  */
 
 int Actor::move_aside
 	(
+	Actor *for_actor,		// Moving aside for this one.
 	int dir				// Direction to avoid (0-7).
 	)
 	{
@@ -1311,12 +1312,13 @@ int Actor::move_aside
 			{
 			to = cur.get_neighbor(i);
 					// Assume height = 3.
-			if (!Chunk_object_list::is_blocked(to, 3, get_type_flags()))
+			if (!Chunk_object_list::is_blocked(
+						to, 3, get_type_flags()))
 				break;
 			}
 	int stepdir = i;		// This is the direction.
-	if (to.tx < 0)			// Failed?
-		return (0);
+	if (i == 8 || to.tx < 0)	// Failed?  Try to swap places.
+		return swap_positions(for_actor);
 					// Step, and face direction.
 	step(to, get_dir_framenum(stepdir, (int) Actor::standing));
 	Tile_coord newpos = get_abs_tile_coord();
@@ -1692,12 +1694,14 @@ int Main_actor::step
 	Game_object *block;		// Just assume height==3.
 	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift, 
 							get_type_flags()) &&
-	   (!(block = Game_object::find_blocking(t)) || block == this
+	   (!(block = Game_object::find_blocking(t)) || block == this ||
 					// Try to get blocker to move aside.
-	                     || !block->move_aside(get_direction(block)) ||
+	        !block->move_aside(this, get_direction(block)) ||
+					// (May have swapped places.)
+		(t != get_abs_tile_coord() &&
 					// If okay, try one last time.
-   		nlist->is_blocked(3, old_lift, tx, ty, new_lift, 
-							get_type_flags())))
+   		 nlist->is_blocked(3, old_lift, tx, ty, new_lift, 
+							get_type_flags()))))
 		{
 		stop();
 		return (0);
