@@ -26,6 +26,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "imagewin.h"
 
 class playfli {
+ public:
+ struct fliinfo {
+    int frames;
+    int width;
+    int height;
+    int depth;
+    int speed;
+ };
  private:
     ifstream fli_stream;
     int fli_size;
@@ -36,9 +44,10 @@ class playfli {
     int fli_depth;
     int fli_flags;
     int fli_speed;
+    int streamstart;
  public:
     playfli(const char *fli_name);
     ~playfli();
-    void info();
-    void play(Image_window *win);
+    void info(fliinfo *fi = NULL);
+    int play(Image_window *win, int first_frame = 0, int last_frame = -1, unsigned long ticks = 0, int brightness = 100);
 };

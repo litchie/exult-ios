@@ -323,18 +323,266 @@ void Titles::play_midi(int track)
 
 void Titles::end_game(bool success) 
 	{
+		int	i, j, next = 0;
+		int	starty;
+		int	centerx = gwin->get_width() /2;
+		Uint8	*buffer;
+		size_t	size;
+
 		// Clear screen
 		clear_screen();
+
+		U7object flic1(ENDGAME, 0);
+		U7object flic2(ENDGAME, 1);
+		U7object flic3(ENDGAME, 2);
+		U7object speech1(ENDGAME, 7);
+		U7object speech2(ENDGAME, 8);
+		U7object speech3(ENDGAME, 9);
+		flic1.retrieve("flic1.fli");
+		flic2.retrieve("flic2.fli");
+		flic3.retrieve("flic3.fli");
+
+/* There seems to be something wrong with the shapes. Needs investigating
+		U7object shapes(ENDGAME, 10);
+		shapes.retrieve("endgame.shp");
+		Shape_file sf("endgame.shp");
+		int x = get_width()/2-160;
+		int y = get_height()/2-100;
+		cout << "Shape in Endgame.dat has " << sf.get_num_frames() << endl;
+*/
+
+		playfli fli1("flic1.fli");
+		playfli fli2("flic2.fli");
+		playfli fli3("flic3.fli");
+
+		speech1.retrieve (& (char*)buffer, size);
+
+		fli1.play(win, 0, 0, 0);
+		
 		// Start endgame music.
-		// It should actually play endscore.xmi, but we can't
-		// handle XMIs yet... :-(
-		play_midi(40);
-		play_flic(ENDGAME,0);
-		play_audio(ENDGAME,7);
-		play_flic(ENDGAME,1);
-		play_audio(ENDGAME,8);
-		play_flic(ENDGAME,2);
-		play_audio(ENDGAME,9);
+		audio->start_music(ENDSCORE_XMI,1,false);
+		
+		for (i = 0; i < 240; i++)
+		{
+			next = fli1.play(win, 0, 1, next);
+			win->show();
+		}
+
+		next = fli1.play(win, 1, 150, next);
+
+		audio->play (buffer+8, size-8, false);
+		delete [] buffer;
+
+		next = fli1.play(win, 150, -1, next);
+
+		// Set new music
+		audio->start_music(ENDSCORE_XMI,2,false);
+		
+		// Set speech
+		speech2.retrieve (& (char*)buffer, size);
+		audio->play (buffer+8, size-8, false);
+		delete [] buffer;
+
+		next = fli2.play(win, 0, -1, next);
+		
+		next+=5000;
+
+		for (i = 200; i > 0; i-=5)
+			fli2.play(win, 0, 0, next, i/2);
+
+		// Text message 1
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		// Paint text
+		char 	*message = "The Black Gate is destroyed.";
+		int	height = (gwin->get_height() - gwin->get_text_baseline(0)) / 2;
+		int	width = (gwin->get_width() - gwin->get_text_width(0,message)) / 2;
+
+		gwin->paint_text (0, message, width, height);
+
+		// Fade in for 1 sec (50 cycles)
+		gwin->fade_palette (50, 1, 0);
+
+		// Display text for 3 seonds
+		SDL_Delay(3000); 
+
+		// Fade out for 1 sec (50 cycles)
+		gwin->fade_palette (50, 0, 0);
+
+		
+		// Now the second text message
+
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		// Paint text
+		message = "The Guardian has been stopped.";
+		width = (gwin->get_width() - gwin->get_text_width(0,message)) / 2;
+
+		gwin->paint_text (0, message, width, height);
+
+		// Fade in for 1 sec (50 cycles)
+		gwin->fade_palette (50, 1, 0);
+
+		// Display text for 3 seonds
+		SDL_Delay(3000); 
+
+		// Fade out for 1 sec (50 cycles)
+		gwin->fade_palette (50, 0, 0);
+
+
+		// Now for the final flic
+
+		next = 0;
+		playfli::fliinfo fi;
+		fli3.info (&fi);
+		for (j = 0, i = 0; i <= 200; i+=7, j++)
+			next = fli3.play(win, j%fi.frames, (j%fi.frames)+1, next, i/2);
+
+		speech3.retrieve (& (char*)buffer, size);
+		audio->play (buffer+8, size-8, false);
+		delete [] buffer;
+
+		for (i = next+29000; i > next; )
+			next = fli3.play(win, 0, -1, next);
+
+		
+		for (i = 200; i > 0; i-=5)
+			fli3.play(win, 0, 0, next, i/2);
+
+		// Text Screen 1
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+
+		char *txt_screen1[] = {
+			"In the months following the climactic",
+			"battle at The Black Gate, Britannia",
+			"is set upon the long road to recovery",
+			"from its various plights.",
+			" ",
+			"Upon your return to Britain,",
+			"Lord British decreed that",
+			"The Fellowship be outlawed",
+			"and all of the branches were",
+			"soon destroyed."
+		};
+
+		starty = (gwin->get_height() - gwin->get_text_height(0)*10)/2;
+		
+		for(i=0; i<10; i++)
+			gwin->paint_text(0, txt_screen1[i], centerx-gwin->get_text_width(0, txt_screen1[i])/2, starty+gwin->get_text_height(0)*i);
+
+		// Fade in for 1 sec (50 cycles)
+		gwin->fade_palette (50, 1, 0);
+
+		// Display text for 20 seonds
+		SDL_Delay(10000); 
+
+		// Fade out for 1 sec (50 cycles)
+		gwin->fade_palette (50, 0, 0);
+
+
+
+		// Text Screen 2
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		char *txt_screen2[] = {
+			"The frustration you feel at having been",
+			"stranded in Britannia is somewhat",
+			"alleviated by the satisfaction that you",
+			"solved the gruesome murders committed",
+			"by The Fellowship and even avenged the",
+			"death of Spark's father."
+		};
+
+		starty = (gwin->get_height() - gwin->get_text_height(0)*6)/2;
+		
+		for(i=0; i<6; i++)
+			gwin->paint_text(0, txt_screen2[i], centerx-gwin->get_text_width(0, txt_screen2[i])/2, starty+gwin->get_text_height(0)*i);
+
+
+		// Fade in for 1 sec (50 cycles)
+		gwin->fade_palette (50, 1, 0);
+
+		// Display text for 20 seonds
+		SDL_Delay(8000); 
+
+		// Fade out for 1 sec (50 cycles)
+		gwin->fade_palette (50, 0, 0);
+
+
+
+		// Text Screen 3 
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		char *txt_screen3[] = {
+			"And although you are, at the moment,",
+			"helpless to do anything about",
+			"The Guardian's final threat,",
+			"another thought nags at you...",
+			"what became of Batlin, the fiend",
+			"who got away?"
+		};
+
+		starty = (gwin->get_height() - gwin->get_text_height(0)*6)/2;
+		
+		for(i=0; i<6; i++)
+			gwin->paint_text(0, txt_screen3[i], centerx-gwin->get_text_width(0, txt_screen3[i])/2, starty+gwin->get_text_height(0)*i);
+
+		// Fade in for 1 sec (50 cycles)
+		gwin->fade_palette (50, 1, 0);
+
+		// Display text for 20 seonds
+		SDL_Delay(8000); 
+
+		// Fade out for 1 sec (50 cycles)
+		gwin->fade_palette (50, 0, 0);
+
+
+
+		// Text Screen 4
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		char *txt_screen4[] = {
+			"That is another story...", 
+			"one that will take you",
+			"to a place called",
+			"The Serpent Isle..."
+		};
+
+		starty = (gwin->get_height() - gwin->get_text_height(0)*4)/2;
+		
+		for(i=0; i<4; i++)
+			gwin->paint_text(0, txt_screen4[i], centerx-gwin->get_text_width(0, txt_screen4[i])/2, starty+gwin->get_text_height(0)*i);
+
+
+		// Fade in for 1 sec (50 cycles)
+		gwin->fade_palette (50, 1, 0);
+
+		// Display text for 10 seonds
+		SDL_Delay(5000); 
+
+		// Fade out for 1 sec (50 cycles)
+		gwin->fade_palette (50, 0, 0);
+
+
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		// Fade in for .5 sec (25 cycles)
+		gwin->fade_palette (25, 1, 0);
 	}
 
 void Titles::show_quotes()
