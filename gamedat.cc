@@ -104,6 +104,7 @@ void Game_window::restore_gamedat
 	U7remove ("<STATIC>/flags.flg");
 	U7remove (GSCRNSHOT);
 	U7remove (GSAVEINFO);
+	U7remove (KEYRINGDAT);
 
 	cout.flush();
 
@@ -172,7 +173,7 @@ static const char *savefiles[] = {
 	NPC_DAT,	MONSNPCS,
 	IDENTITY,	USEDAT,
 	FLAGINIT,	GWINDAT,
-	GSCHEDULE
+	GSCHEDULE,	KEYRINGDAT
 	};
 static const int numsavefiles = sizeof(savefiles)/sizeof(savefiles[0]);
 
