@@ -388,8 +388,9 @@ void Egg_object::activate
 		if (Egg_object_out(client_socket, addr, t.tx, t.ty, t.tz,
 			get_shapenum(), get_framenum(), 
 			type, criteria, probability, distance,
-			(flags>>nocturnal)&1, (flags>>once)&1,
-			(flags>>auto_reset)&1, data1, data2))
+			(flags>>nocturnal)&1, (flags>>once)&1, 
+			(flags>>hatched)&1, (flags>>auto_reset)&1, 
+			data1, data2))
 			cout << "Sent egg data to ExultStudio" << endl;
 		else
 			cout << "Error sending egg data to ExultStudio" <<endl;
