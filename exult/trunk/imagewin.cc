@@ -40,9 +40,9 @@ Image_buffer_base::Image_buffer_base
 	unsigned int w,			// Desired width, height.
 	unsigned int h,
 	int dpth			// Depth (bits/pixel).
-	) : width(w), height(h), depth(dpth),
+	) : width(w), height(h), depth(dpth), bits(0), line_width(w),
 	    clipx(0), clipy(0),
-	    clipw(w), cliph(h), bits(0), line_width(w)
+	    clipw(w), cliph(h)
 	{
 	switch (depth)			// What depth?
 		{
