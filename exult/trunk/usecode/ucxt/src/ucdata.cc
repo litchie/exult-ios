@@ -141,7 +141,7 @@ void UCData::disassamble()
 			if(output_ucz())
 			{
 				_funcs[i]->parse_ucs(_funcmap);
-				_funcs[i]->output_ucs(cout, _funcmap, false);
+				_funcs[i]->output_ucs(cout, _funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), false);
 				_func_printed=true;
 			}
 
@@ -159,7 +159,7 @@ void UCData::disassamble()
 
 			// if we haven't printed one by now, we'll print an asm output.
 			if(output_asm() || (_func_printed==false))
-				print_asm(*_funcs[i], cout, _funcmap, *this);
+				print_asm(*_funcs[i], cout, _funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), *this);
 		}
 	}
 
