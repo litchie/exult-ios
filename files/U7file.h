@@ -83,6 +83,7 @@ public:
 	U7object(const std::string &file,int objnum) : filename(file),objnumber(objnum) {}
 	virtual	~U7object() {}
 
+	uint32	number_of_objects(void);
 	virtual	char *	retrieve(std::size_t &len);
 	void			retrieve(const char *fname);
 					// FIX ME - this is only used in Game::play_audio and should be removed

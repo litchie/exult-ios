@@ -34,6 +34,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Flex.h"
 #include "paledit.h"
 #include "u7drag.h"
+#include "U7file.h"
+#include "utils.h"
 #include <iostream>
 
 /*
@@ -444,18 +446,152 @@ gint Palette_edit::drag_begin
 	}
 
 /*
- *	Create the list.
+ *	Handle a change to the 'Palette #' spin button.
  */
 
-Palette_edit::Palette_edit
+void Palette_edit::palnum_changed
 	(
-	guint32 *colors,		// 256-entry RGB palette.
-	int w, int h			// Dimensions.
-	) : image(0), width(0), height(0),
-		palette(0), colorsel(0),
-		selected(-1)
+	GtkAdjustment *adj,		// The adjustment.
+	gpointer data			// ->Shape_chooser.
+	)
 	{
-	palette = gdk_rgb_cmap_new(colors, 256);
+	Palette_edit *ed = (Palette_edit *) data;
+	gint newnum = (gint) adj->value;
+	ed->show_palette(newnum);
+	ed->render();
+	ed->show();
+	}
+
+/*
+ *	Create box with 'Palette #', 'Import', 'Move' controls.
+ */
+
+GtkWidget *Palette_edit::create_controls
+	(
+	)
+	{
+					// Create main box.
+	GtkWidget *topframe = gtk_frame_new (NULL);
+	gtk_widget_show(topframe);
+	GtkWidget *hbox0 = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox0);
+	gtk_container_add (GTK_CONTAINER (topframe), hbox0);
+	/*
+	 *	The 'Palette' controls.
+	 */
+	GtkWidget *frame = gtk_frame_new ("Palette #");
+	gtk_widget_show(frame);
+	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
+					// A spin button for palette#.
+	palnum_adj = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 
+				count - 1, 1,
+				2, 2));
+	GtkWidget *spin = gtk_spin_button_new(palnum_adj, 1, 0);
+	gtk_signal_connect(GTK_OBJECT(palnum_adj), "value_changed",
+					GTK_SIGNAL_FUNC(palnum_changed), this);
+	gtk_container_add (GTK_CONTAINER (frame), spin);
+	gtk_widget_show(spin);
+	/*
+	 *	The 'Insert' controls.
+	 */
+	frame = gtk_frame_new ("Insert");
+	gtk_widget_show(frame);
+	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
+	GtkWidget *hbuttonbox = gtk_hbutton_box_new ();
+	gtk_widget_show (hbuttonbox);
+	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
+							GTK_BUTTONBOX_START);
+	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
+
+	GtkWidget *insert_new = gtk_button_new_with_label ("New");
+	gtk_widget_show (insert_new);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_new);
+	GTK_WIDGET_SET_FLAGS (insert_new, GTK_CAN_DEFAULT);
+
+	GtkWidget *insert_dup = gtk_button_new_with_label ("Dup");
+	gtk_widget_show (insert_dup);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_dup);
+	GTK_WIDGET_SET_FLAGS (insert_dup, GTK_CAN_DEFAULT);
+#if 0
+	gtk_signal_connect (GTK_OBJECT (insert_new), "clicked",
+			GTK_SIGNAL_FUNC (on_insert_new_clicked),
+			this);
+	gtk_signal_connect (GTK_OBJECT (insert_dup), "clicked",
+			GTK_SIGNAL_FUNC (on_insert_dup_clicked),
+			this);
+#endif
+#if 0
+	/*
+	 *	The 'Move' controls.
+	 */
+	frame = gtk_frame_new ("Move");
+	gtk_widget_show(frame);
+	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
+	hbuttonbox = gtk_hbutton_box_new ();
+	gtk_widget_show (hbuttonbox);
+	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
+							GTK_BUTTONBOX_START);
+	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
+
+	move_chunk_down = gtk_button_new_with_label ("Down");
+	gtk_widget_show (move_chunk_down);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_down);
+	GTK_WIDGET_SET_FLAGS (move_chunk_down, GTK_CAN_DEFAULT);
+
+	move_chunk_up = gtk_button_new_with_label ("Up");
+	gtk_widget_show (move_chunk_up);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_up);
+	GTK_WIDGET_SET_FLAGS (move_chunk_up, GTK_CAN_DEFAULT);
+	gtk_signal_connect (GTK_OBJECT (move_chunk_down), "clicked",
+			GTK_SIGNAL_FUNC (on_move_chunk_down_clicked),
+			this);
+	gtk_signal_connect (GTK_OBJECT (move_chunk_up), "clicked",
+			GTK_SIGNAL_FUNC (on_move_chunk_up_clicked),
+			this);
+#endif
+	/*
+	 *	The 'File' controls.
+	 */
+	frame = gtk_frame_new ("File");
+	gtk_widget_show(frame);
+	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
+	hbuttonbox = gtk_hbutton_box_new ();
+	gtk_widget_show (hbuttonbox);
+	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
+							GTK_BUTTONBOX_START);
+	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
+
+	GtkWidget *importbtn = gtk_button_new_with_label ("Import");
+	gtk_widget_show (importbtn);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), importbtn);
+	GTK_WIDGET_SET_FLAGS (importbtn, GTK_CAN_DEFAULT);
+
+	GtkWidget *exportbtn = gtk_button_new_with_label ("Export");
+	gtk_widget_show (exportbtn);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), exportbtn);
+	GTK_WIDGET_SET_FLAGS (exportbtn, GTK_CAN_DEFAULT);
+#if 0
+	gtk_signal_connect (GTK_OBJECT (importbtn), "clicked",
+			GTK_SIGNAL_FUNC (on_importbtn_clicked),
+			this);
+	gtk_signal_connect (GTK_OBJECT (exportbtn), "clicked",
+			GTK_SIGNAL_FUNC (on_exportbtn_clicked),
+			this);
+#endif
+	return topframe;
+	}
+
+/*
+ *	Set up box.
+ */
+
+void Palette_edit::setup
+	(
+	)
+	{
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox);
@@ -466,7 +602,7 @@ Palette_edit::Palette_edit
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
 	draw = gtk_drawing_area_new();	// Create drawing area window.
-	gtk_drawing_area_size(GTK_DRAWING_AREA(draw), w, h);
+//	gtk_drawing_area_size(GTK_DRAWING_AREA(draw), w, h);
 					// Indicate the events we want.
 	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
 		| GDK_POINTER_MOTION_HINT_MASK |
@@ -488,7 +624,6 @@ Palette_edit::Palette_edit
 	gtk_signal_connect (GTK_OBJECT(draw), "selection_clear_event",
 				GTK_SIGNAL_FUNC(selection_clear), this);
 	gtk_container_add (GTK_CONTAINER (frame), draw);
-	gtk_drawing_area_size(GTK_DRAWING_AREA(draw), w, h);
 	gtk_widget_show(draw);
 					// At bottom, a status bar.
 	sbar = gtk_statusbar_new();
@@ -496,7 +631,27 @@ Palette_edit::Palette_edit
 							"selection");
 					// At the bottom, status bar & frame:
 	gtk_box_pack_start(GTK_BOX(vbox), sbar, FALSE, FALSE, 0);
+					// Add search/edit controls to bottom.
+	gtk_box_pack_start(GTK_BOX(vbox), create_controls(), FALSE, FALSE, 0);
 	gtk_widget_show(sbar);
+	}
+
+/*
+ *	Create the list for a single palette.
+ */
+
+Palette_edit::Palette_edit
+	(
+	const char *fullname		// Full filename.
+	) : image(0), width(0), height(0),
+		palette(0), colorsel(0),
+		selected(-1), file(g_strdup(fullname))
+	{
+	U7object pal(file, 0);
+	count = U7exists(file) ? pal.number_of_objects() : 0;
+	setup();
+	if (count > 0)
+		show_palette(0);	// Show 1st palette.
 	}
 
 /*
@@ -507,9 +662,32 @@ Palette_edit::~Palette_edit
 	(
 	)
 	{
+	g_free(file);
 	gdk_rgb_cmap_free(palette);
 	gtk_widget_destroy(get_widget());
 	delete image;
+	}
+
+/*
+ *	Get i'th palette.
+ */
+
+void Palette_edit::show_palette
+	(
+	int palnum
+	)
+	{
+	U7object pal(file, palnum);
+	size_t len;
+	unsigned char *buf;		// this may throw an exception
+	buf = (unsigned char *) pal.retrieve(len);
+	assert(len = 3*256);
+	guint32 colors[256];
+	for (int i = 0; i < 256; i++)
+		colors[i] = (buf[3*i]<<16)*4 + (buf[3*i+1]<<8)*4 + 
+							buf[3*i+2]*4;
+	palette = gdk_rgb_cmap_new(colors, 256);
+	delete buf;
 	}
 
 /*

@@ -105,6 +105,11 @@ U7FileManager::U7FileManager()
 		self=this;
 }
 
+uint32	U7object::number_of_objects(void)
+{
+	U7file *uf=U7FileManager::get_ptr()->get_file_object(filename);
+	return uf->number_of_objects();
+}
 
 char*	U7object::retrieve(size_t &len)
 {

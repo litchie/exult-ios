@@ -29,11 +29,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objbrowse.h"
 #include "rect.h"
 
+class Flex;
+class U7object;
+
 /*
  *	Show a palette.
  */
 class Palette_edit: public Object_browser
 	{
+	char *file;			// Full filename.
+	int count;			// # palettes in file.
 	guchar *image;			// Holds data to render.
 	int width, height;		// Dimensions of image.
 	GtkWidget *draw;		// GTK draw area to display them in.
@@ -41,6 +46,7 @@ class Palette_edit: public Object_browser
 	GdkRgbCmap *palette;		// The palette to display.
 	GtkColorSelectionDialog *colorsel;// Open color selector.
 	GtkWidget *sbar;		// Status bar.
+	GtkAdjustment *palnum_adj;	// Spin btn. for palette #.
 	guint sbar_sel;			// Status bar context for selection.
 	int selected;			// Index of user-selected entry.
 	Rectangle selected_box;		// Location of selected color.
@@ -57,9 +63,12 @@ class Palette_edit: public Object_browser
 	static void color_cancel(GtkWidget *widget, gpointer data);
 	static void color_okay(GtkWidget *widget, gpointer data);
 	void double_clicked();		// Handle double-click on a color.
+	GtkWidget *create_controls();	// Controls at bottom of browser.
+	void setup();			// Setup box.
 public:
-	Palette_edit(guint32 *colors, int w, int h);
+	Palette_edit(const char *fullname);
 	~Palette_edit();
+	void show_palette(int palnum);	// Show desired palette.
 					// Turn off selection.
 	void unselect(bool need_render = true);
 					// Configure when created/resized.
@@ -79,6 +88,7 @@ public:
 				GdkEventSelection *event, gpointer data);
 	static gint drag_begin(GtkWidget *widget, GdkDragContext *context,
 							gpointer data);
+	static void palnum_changed(GtkAdjustment *adj, gpointer data);
 	};
 
 #endif
