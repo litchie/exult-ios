@@ -24,6 +24,7 @@
 
 #include "combat.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "actors.h"
 #include "paths.h"
 #include "Astar.h"
@@ -925,7 +926,7 @@ void Ready_duel_weapon
 	int ashape			// Ammo shape, or -1.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_map *gmap = Game_window::get_instance()->get_map();
 	Game_object *weap = npc->get_readied(Actor::lhand);
 	if (!weap || weap->get_shapenum() != wshape)
 		{			// Need a bow.
@@ -934,7 +935,7 @@ void Ready_duel_weapon
 		if (newweap)		// Have it?
 			newweap->remove_this(1);
 		else			// Create new one.
-			newweap = gwin->create_ireg_object(wshape, 0);
+			newweap = gmap->create_ireg_object(wshape, 0);
 		if (weap)		// Remove old item.
 			weap->remove_this(1);
 		npc->add(newweap, 1);	// Should go in correct spot.
@@ -947,7 +948,7 @@ void Ready_duel_weapon
 	Game_object *aobj = npc->get_readied(Actor::ammo);
 	if (aobj)
 		aobj->remove_this();	// Toss current ammo.
-	Game_object *arrows = gwin->create_ireg_object(ashape, 0);
+	Game_object *arrows = gmap->create_ireg_object(ashape, 0);
 	int extra = rand()%3;		// Add 1 or 2.
 	if (extra)
 		arrows->modify_quantity(extra);

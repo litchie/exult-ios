@@ -27,6 +27,7 @@
 #include "cheat.h"
 #include "exult.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "ucmachine.h"
 #include "Configuration.h"
 #include "game.h"
@@ -537,8 +538,8 @@ void Cheat::cut(bool copy)
 		Tile_coord t = obj->get_outermost()->get_tile();
 		if (copy)
 					// TEST+++++REALLY want a 'clone()'.
-			obj = gwin->create_ireg_object(obj->get_shapenum(),
-							obj->get_framenum());
+			obj = gwin->get_map()->create_ireg_object(
+				obj->get_shapenum(), obj->get_framenum());
 		else			// Cut:  Remove but don't delete.
 			obj->remove_this(true);
 					// Set pos. & add to list.
@@ -573,7 +574,8 @@ static Game_object *Create_object
 		sclass != Shape_info::building);
 	Game_object *newobj;
 	if (ireg)
-		newobj = gwin->create_ireg_object(info, shape, frame, 0, 0, 0);
+		newobj = gwin->get_map()->create_ireg_object(info, 
+						shape, frame, 0, 0, 0);
 	else
 		newobj = new Ifix_game_object(shape, frame, 0, 0, 0);
 	return newobj;
@@ -722,7 +724,9 @@ void Cheat::create_last_shape (void) const {
 	int current_shape = 0;
 	int current_frame = 0;
 	if(browser->get_shape(current_shape, current_frame)) {
-		gwin->get_main_actor()->add(gwin->create_ireg_object(current_shape, current_frame), 1);
+		gwin->get_main_actor()->add(
+			gwin->get_map()->create_ireg_object(
+					current_shape, current_frame), 1);
 		eman->center_text("Object created");
 	} else
 		eman->center_text("Can only create from 'shapes.vga'");

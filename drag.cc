@@ -437,7 +437,7 @@ bool Dragging_info::drop
 		return false;
 	if (quantity < obj->get_quantity())
 		{			// Need to drop a copy.
-		to_drop = gwin->create_ireg_object(
+		to_drop = gmap->create_ireg_object(
 				obj->get_shapenum(), obj->get_framenum());
 		to_drop->modify_quantity(quantity - 1);
 		if (okay_to_move)	// Make sure copy is okay to take.

@@ -1135,31 +1135,6 @@ bool Game_window::init_gamedat(bool create)
 	}
 
 /*
- *	Create non-container IREG objects.
- */
-
-Ireg_game_object *Game_window::create_ireg_object
-	(
-	Shape_info& info,		// Info. about shape.
-	int shnum, int frnum,		// Shape, frame.
-	int tilex, int tiley,		// Tile within chunk.
-	int lift			// Desired lift.
-	)
-	{
-	return map->create_ireg_object(info, shnum, frnum, tilex, tiley, lift);
-	}
-
-Ireg_game_object *Game_window::create_ireg_object
-	(
-	int shnum, int frnum
-	)
-	{
-	return map->create_ireg_object(ShapeID::get_info(shnum), shnum, frnum,
-						0, 0, 0); 	
-	}
-
-
-/*
  *	Save game by writing out to the 'gamedat' directory.
  *
  *	Output:	0 if error, already reported.
