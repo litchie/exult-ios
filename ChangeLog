@@ -1,5 +1,8 @@
 2002-07-08  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
+	* objs/egg.cc (Animated_egg_object): Fields continue to check for
+	NPC's standing in them so they can add damage.
+
 	* shapes/vgafile.h (public): Added set_offset();
 	* mapedit/shapeedit.cc:  Update shape origin.
 
