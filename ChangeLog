@@ -1,3 +1,9 @@
+2001-02-12  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* keys.h, imagewin/imagewin.h, usecode/intrinsics.cc: fixed warnings
+	* cheat_screen.cc: include config.h
+	* NEWS: fixed typos
+	* gamewin.h: added a check for NULL shape data. (avoids sword crash)
+
 2001-02-12  Ryan Nunn <triforce@merlin.net.au>
 	* makefile.* : cheat_screen.cc
 	* NEWS, exult.cc, imagewin/*.* : Multiple Scalers.
