@@ -241,6 +241,8 @@ bool Exec_process::check_child
 		}
 	}
 
+#endif
+
 /*
  *	Create.
  */
@@ -363,6 +365,3 @@ void Exec_box::kill_child
 	{
 	executor->kill_child();
 	}
-
-
-#endif
