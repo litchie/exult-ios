@@ -34,6 +34,8 @@ const int c_num_tiles = c_tiles_per_chunk*c_num_chunks;
 
 const int c_fade_in_time = 30;	// Time for fade in
 const int c_fade_out_time = 30;	// Time for fade out
+const int c_std_delay = 200;	// Standard animation delay.  May want to
+				//   make this settable!
 
 const int c_any_shapenum = -359;
 const int c_any_qual = -359;
