@@ -2150,7 +2150,7 @@ void File_gump_object::key_down
 		}
 	if (chr < ' ')
 		return;			// Ignore other special chars.
-	if (isascii(chr))
+	if (chr < 256 && isascii(chr))
 		{
 		int old_length = focus->get_length();
 		focus->insert(chr);
