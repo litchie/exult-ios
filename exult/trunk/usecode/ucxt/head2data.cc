@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <vector>
 #include <fstream>
+#include "files/utils.h"
 
 using std::cout;
 using std::cerr;
@@ -31,7 +32,8 @@ using std::ofstream;
 
 void bg_out(const string &fname)
 {
-	ofstream o(fname.c_str());
+	ofstream o;
+	U7open(o, fname.c_str());
 	
 	if(o.fail())
 	{
@@ -59,7 +61,8 @@ void bg_out(const string &fname)
 
 void si_out(const string &fname)
 {
-	ofstream o(fname.c_str());
+	ofstream o;
+	U7open(o, fname.c_str());
 	
 	if(o.fail())
 	{
