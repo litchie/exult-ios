@@ -227,3 +227,29 @@ void	Configuration::write_back(void)
 }
 
 
+vector<string>	Configuration::listkeys(string &key)
+{
+	vector<string>	vs;
+	XMLnode *sub;
+
+	sub=xmltree.subtree(key);
+	if(!sub)
+		return vs;
+
+	for(vector<XMLnode>::const_iterator it=sub->nodelist.begin();
+		it!=sub->nodelist.end(); ++it)
+		{
+		string	s=key;
+		s+=it->entity.id;
+		vs.push_back(s);
+		}
+
+	return vs;
+}
+
+vector<string>	Configuration::listkeys(const char *key)
+{
+	string s(key);
+	return listkeys(s);
+}
+
