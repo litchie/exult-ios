@@ -1,3 +1,8 @@
+2001-09-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/objs.cc: Give fake HP's to serpent statue in SI.
+	* objs/egg.cc: Greater range of lift for 'something_on' eggs.
+
 2001-09-28  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* keys.cc: get my own casts right :)...oh, and others, too
