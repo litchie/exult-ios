@@ -1850,6 +1850,8 @@ int File_gump_object::toggle_option
 		{
 		bool music = !audio->is_music_enabled();
 		audio->set_music_enabled(music);
+		if (!music)		// Stop what's playing.
+			audio->stop_music();
 		return music ? 1 : 0;
 		}
 	if (btn == buttons[4])		// Speech?
