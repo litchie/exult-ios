@@ -28,7 +28,7 @@ To build in Windows using MinGW
 (Thanks to Travis Howell)
 
 Download MinGW 1.0 or later from (for example):    (one line)
-http://prdownloads.sourceforge.net/mingw/Mingw-1.0.1-20010726.tar.gz
+http://prdownloads.sourceforge.net/mingw/MinGW-1.1.tar.gz
 
 Extract the files to a mingw directory in root directory of drive
 (ie C:\mingw\ )
