@@ -1,4 +1,4 @@
-2001-05-08  Ryan Nunn <triforce@merlin.net.au>
+2001-05-15  Ryan Nunn <triforce@merlin.net.au>
 	* audio/xmidi.cc: Amazing optimization. 2 Lines of code added,
 	  potential 100x speed increase when reading .xmi files.
 
