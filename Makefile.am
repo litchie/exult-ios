@@ -1,10 +1,11 @@
-INCLUDES = -I. -Iimagewin -Iconf -Ifiles -Igumps -Iaudio -Ipathfinder -Iusecode\
+INCLUDES = -I. -Iimagewin -Ishapes -Iconf -Ifiles -Igumps -Iaudio -Ipathfinder -Iusecode\
 	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
 	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\""$(datadir)/exult"\"
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
-SUBDIRS = audio pathfinder files gumps conf flic tools data docs desktop imagewin usecode
+SUBDIRS = audio pathfinder files gumps conf flic tools data docs desktop \
+	shapes imagewin usecode
 
 bin_PROGRAMS = exult
 
@@ -23,8 +24,6 @@ exult_SOURCES =	\
 	barge.cc	\
 	barge.h		\
 	bggame.cc	\
-	bodies.cc	\
-	bodies.h	\
 	browser.cc	\
 	browser.h	\
 	cheat.cc	\
@@ -54,8 +53,6 @@ exult_SOURCES =	\
 	gametxt.cc	\
 	gamewin.cc	\
 	gamewin.h	\
-	items.cc	\
-	items.h		\
 	lists.cc	\
 	lists.h		\
 	menulist.cc	\
@@ -88,8 +85,6 @@ exult_SOURCES =	\
 	txtscroll.cc	\
 	txtscroll.h	\
 	vec.h		\
-	vgafile.cc	\
-	vgafile.h	\
 	virstone.cc	\
 	virstone.h
 
@@ -102,6 +97,7 @@ exult_LDADD = 			\
 	files/libu7file.la	\
 	imagewin/libimagewin.la	\
 	usecode/libusecode.la	\
+	shapes/libshapes.la \
 	gumps/libgumps.la \
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE)
 
