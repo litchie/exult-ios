@@ -109,6 +109,7 @@ protected:
 	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
 	Rectangle weapon_rect;		// Screen area weapon was drawn in.
 	void init();			// Clear stuff during construction.
+	int is_blocked(Tile_coord& t);	// Blocked moving onto tile 't'?
 					// Move and change frame.
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
@@ -561,7 +562,6 @@ class Monster_actor : public Npc_actor
 					// Links for 'in_world' list.
 	Monster_actor *next_monster, *prev_monster;
 	Animator *animator;		// For wounded men.
-	int is_blocked(Tile_coord& t);	// Are new tiles blocked?
 	void init();			// For constructors.
 public:
 	Monster_actor(const std::string &nm, int shapenum, int num = -1, 
