@@ -385,9 +385,9 @@ void Game_window::init_files()
 	}
 	
 
-Chunk_object_list *Game_window::get_objects(Game_object *obj)
+Map_chunk *Game_window::get_chunk(Game_object *obj)
 {
-	return get_objects(obj->get_cx(), obj->get_cy());
+	return get_chunk(obj->get_cx(), obj->get_cy());
 }
 
 /*
@@ -548,12 +548,12 @@ void Game_window::resized
  *	Create a chunk.
  */
 
-Chunk_object_list *Game_window::create_chunk
+Map_chunk *Game_window::create_chunk
 	(
 	int cx, int cy
 	)
 	{
-	return (objects[cx][cy] = new Chunk_object_list(cx, cy));
+	return (objects[cx][cy] = new Map_chunk(cx, cy));
 	}
 
 /*
@@ -646,7 +646,7 @@ void Game_window::set_scrolls
 		}
 					// Set where to skip rendering.
 	int cx = camera_actor->get_cx(), cy = camera_actor->get_cy();	
-	Chunk_object_list *nlist = get_objects(cx, cy);
+	Map_chunk *nlist = get_chunk(cx, cy);
 	nlist->setup_cache();					 
 	int tx = camera_actor->get_tx(), ty = camera_actor->get_ty();
 	set_above_main_actor(nlist->is_roof (tx, ty,
@@ -858,7 +858,7 @@ void Game_window::get_chunk_objects
 	)
 	{
 					// Get list we'll store into.
-	Chunk_object_list *chunk = get_objects(cx, cy);
+	Map_chunk *chunk = get_chunk(cx, cy);
 	int chunk_num = terrain_map[cx][cy];
 					// Already have this one?
 	Chunk_terrain *ter = chunk_num < chunk_terrains.size() ?
@@ -938,7 +938,7 @@ void Game_window::write_ifix_objects
 					// Store file position in table.
 			long start = ifix.tellp();
 			Write4(tptr, start);
-			Chunk_object_list *chunk = get_objects(scx + cx,
+			Map_chunk *chunk = get_chunk(scx + cx,
 							       scy + cy);
 					// Restore original order (sort of).
 			Object_iterator_backwards next(chunk);
@@ -1010,7 +1010,7 @@ void Game_window::get_ifix_chunk_objects
 	unsigned char *ent = entries;
 	ifix.read((char*)entries, 4*cnt);	// Read them in.
 					// Get object list for chunk.
-	Chunk_object_list *olist = get_objects(cx, cy);
+	Map_chunk *olist = get_chunk(cx, cy);
 	for (int i = 0; i < cnt; i++, ent += 4)
 		{
 		Ifix_game_object *obj = new Ifix_game_object(ent);
@@ -1040,7 +1040,7 @@ void Game_window::write_ireg_objects
 	for (int cy = 0; cy < 16; cy++)
 		for (int cx = 0; cx < 16; cx++)
 			{
-			Chunk_object_list *chunk = get_objects(scx + cx,
+			Map_chunk *chunk = get_chunk(scx + cx,
 							       scy + cy);
 			Game_object *obj;
 					// Restore original order (sort of).
@@ -1188,7 +1188,7 @@ void Game_window::read_ireg_objects
 				(Game::get_game_type() == BLACK_GATE &&
 						shnum == 305);
 			Egg_object *egg = create_egg(entry, anim);
-			get_objects(scx + cx, scy + cy)->add_egg(egg);
+			get_chunk(scx + cx, scy + cy)->add_egg(egg);
 			continue;
 			}
 		else if (entlen == 6 || entlen == 10)	// Simple entry?
@@ -1288,7 +1288,7 @@ void Game_window::read_ireg_objects
 				continue;
 		}
 
-		Chunk_object_list *chunk = get_objects(
+		Map_chunk *chunk = get_chunk(
 				scx + cx, scy + cy);
 		if (is_egg)
 			chunk->add_egg((Egg_object *) obj);
@@ -1938,7 +1938,7 @@ void Game_window::start_actor_alt
 		int cx = dest.tx/c_tiles_per_chunk, cy = dest.ty/c_tiles_per_chunk;
 		int tx = dest.tx%c_tiles_per_chunk, ty = dest.ty%c_tiles_per_chunk;
 
-		Chunk_object_list *clist = get_objects_safely(cx, cy);
+		Map_chunk *clist = get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		blocked[dir] = clist->is_blocked (height, main_actor->get_lift(), tx, ty, nlift, main_actor->get_type_flags(), 1);
 	}
@@ -1960,7 +1960,7 @@ void Game_window::start_actor_alt
 			if (main_actor->get_lift()%5)// Up on something?
 				{	// See if we're stuck in the air.
 				start.tz--;
-				if (!Chunk_object_list::is_blocked(start, 1, 
+				if (!Map_chunk::is_blocked(start, 1, 
 						MOVE_WALK, 100))
 					main_actor->move(start.tx, start.ty, 
 								start.tz);
@@ -2163,7 +2163,7 @@ void Game_window::teleport_party
 	center_view(t);			// Bring pos. into view.
 	main_actor->get_followers();
 					// Check all eggs around new spot.
-	Chunk_object_list::try_all_eggs(main_actor, t.tx, t.ty, t.tz,
+	Map_chunk::try_all_eggs(main_actor, t.tx, t.ty, t.tz,
 					oldpos.tx, oldpos.ty);
 	teleported = 1;
 	}
@@ -2348,7 +2348,7 @@ int Game_window::find_objects
 		for (int xcnt = 0; xcnt < 2; xcnt++)
 			{
 			int cx = (start_cx + xcnt)%c_num_chunks;
-			Chunk_object_list *olist = objects[cx][cy];
+			Map_chunk *olist = objects[cx][cy];
 			if (!olist)
 				continue;
 			Object_iterator next(olist->get_objects());
@@ -2450,7 +2450,7 @@ void Game_window::show_items
 		int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
 		tx = tx%c_tiles_per_chunk;
 		ty = ty%c_tiles_per_chunk;
-		Chunk_object_list *chunk = get_objects(cx, cy);
+		Map_chunk *chunk = get_chunk(cx, cy);
 		ShapeID id = chunk->get_flat(tx, ty);
 		shnum = id.get_shapenum();
 		cout << "Clicked on flat shape " << 
@@ -2920,7 +2920,7 @@ void Game_window::add_nearby_npcs
 	unsigned long curtime = SDL_GetTicks();
 	for (int cy = from_cy; cy != stop_cy; cy = INCR_CHUNK(cy))
 		for (int cx = from_cx; cx != stop_cx; cx = INCR_CHUNK(cx))
-			for (Npc_actor *npc = get_objects(cx, cy)->get_npcs();
+			for (Npc_actor *npc = get_chunk(cx, cy)->get_npcs();
 						npc; npc = npc->get_next())
 				if (!npc->is_nearby())
 					{
@@ -3144,7 +3144,7 @@ void Game_window::setup_game
 //	Audio::get_ptr()->cancel_raw();
 	Audio::get_ptr()->cancel_streams();
 				// Want to activate first egg.
-	Chunk_object_list *olist = get_objects(
+	Map_chunk *olist = get_chunk(
 			main_actor->get_cx(), main_actor->get_cy());
 	olist->setup_cache();
 	Tile_coord t = main_actor->get_abs_tile_coord();
@@ -3254,7 +3254,7 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 			{
 			if (nearby[x][y] != 0)
 				continue;
-			Chunk_object_list *list = get_objects_safely(
+			Map_chunk *list = get_chunk_safely(
 				(old_minx + x)%c_num_chunks,
 				(old_miny + y)%c_num_chunks);
 			if (!list) continue;

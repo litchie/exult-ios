@@ -298,7 +298,7 @@ Actor::Actor
 	int tilex = locx & 0xf;
 	int tiley = locy & 0xf;
 	set_shape_pos(tilex, tiley);
-	Chunk_object_list *olist = gwin->get_objects_safely(
+	Map_chunk *olist = gwin->get_chunk_safely(
 							scx + cx, scy + cy);
 	if (olist && !is_dead())	// Put into chunk list.
 		olist->add(this);
@@ -503,8 +503,8 @@ Main_actor::Main_actor
 	int has_usecode			// 1 if a 'type1' NPC.
 	) : Actor(nfile, num, has_usecode)
 	{
-	Chunk_object_list *olist = Game_window::get_game_window()->
-				get_objects_safely(get_cx(), get_cy());
+	Map_chunk *olist = Game_window::get_game_window()->
+				get_chunk_safely(get_cx(), get_cy());
 	if (olist)
 		switched_chunks(0, olist);
 	}
@@ -522,8 +522,8 @@ Npc_actor::Npc_actor
 		num_schedules(0), 
 		schedules(0)
 	{
-	Chunk_object_list *olist = Game_window::get_game_window()->
-				get_objects_safely(get_cx(), get_cy());
+	Map_chunk *olist = Game_window::get_game_window()->
+				get_chunk_safely(get_cx(), get_cy());
 	if (olist)			// Might be invalide (a bug).
 		switched_chunks(0, olist);	// Put in chunk's NPC list.
 	}

@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vec.h"
 #include "chunkter.h"
 
-class Chunk_object_list;
+class Map_chunk;
 class Egg_object;
 class Game_object;
 class Npc_actor;
@@ -48,7 +48,7 @@ class Chunk_terrain;
  */
 class Chunk_cache
 	{
-	Chunk_object_list *obj_list;
+	Map_chunk *obj_list;
 	unsigned char setup_done;	// Already setup.
 	unsigned short blocked[256];	// For each tile, a bit for each lift
 					//   level if it's blocked by an obj.
@@ -58,7 +58,7 @@ class Chunk_cache
 					//   influence.  Bit 15 means it's 1 or
 					//   more of 
 					//   egg_objects[15-(num_eggs-1)].
-	friend class Chunk_object_list;
+	friend class Map_chunk;
 	Chunk_cache();			// Create empty one.
 	~Chunk_cache();
 	int get_num_eggs()
@@ -67,14 +67,14 @@ class Chunk_cache
 	void set_blocked(int startx, int starty, int endx, int endy,
 						int lift, int ztiles, bool set);
 					// Add/remove object.
-	void update_object(Chunk_object_list *chunk,
+	void update_object(Map_chunk *chunk,
 						Game_object *obj, bool add);
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles, bool add);
 					// Add egg.
-	void update_egg(Chunk_object_list *chunk, Egg_object *egg, bool add);
+	void update_egg(Map_chunk *chunk, Egg_object *egg, bool add);
 					// Set up with chunk's data.
-	void setup(Chunk_object_list *chunk);
+	void setup(Map_chunk *chunk);
 					// Set blocked tile's bits.
 	void set_blocked_tile(int tx, int ty, int lift, int ztiles)
 		{
@@ -97,10 +97,10 @@ class Chunk_cache
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift,
 				const int move_flags, int max_drop = 1);
 					// Activate eggs nearby.
-	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
+	void activate_eggs(Game_object *obj, Map_chunk *chunk, 
 			int tx, int ty, int tz,
 			int from_tx, int from_ty, unsigned short eggbits);
-	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
+	void activate_eggs(Game_object *obj, Map_chunk *chunk, 
 			int tx, int ty, int tz, int from_tx, int from_ty)
 		{
 		unsigned short eggbits = eggs[
@@ -116,7 +116,7 @@ class Chunk_cache
  *	Game objects are stored in a list for each chunk, sorted from top-to-
  *	bottom, left-to-right.
  */
-class Chunk_object_list
+class Map_chunk
 	{
 	Chunk_terrain *terrain;		// Flat landscape tiles.
 	Object_list objects;		// ->first in list of all objs.  'Flat'
@@ -135,12 +135,12 @@ class Chunk_object_list
 	void add_dungeon_bits(Rectangle& tiles);
 	void add_dependencies(Game_object *newobj,
 					class Ordering_info& newinfo);
-	static Chunk_object_list *add_outside_dependencies(int cx,
+	static Map_chunk *add_outside_dependencies(int cx,
 		int cy, Game_object *newobj, class Ordering_info& newinfo);
 public:
 	friend class Npc_actor;
-	Chunk_object_list(int chunkx, int chunky);
-	~Chunk_object_list();		// Delete everything in chunk.
+	Map_chunk(int chunkx, int chunky);
+	~Map_chunk();		// Delete everything in chunk.
 	void set_terrain(Chunk_terrain *ter);
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add/remove an egg.

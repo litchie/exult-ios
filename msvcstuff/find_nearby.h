@@ -52,7 +52,7 @@ int Game_object::find_nearby
 	for (int cy = start_cy; cy <= end_cy; cy++)
 		for (int cx = start_cx; cx <= end_cx; cx++)
 			{		// Go through objects.
-			Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+			Map_chunk *chunk = gwin->get_chunk(cx, cy);
 			Object_iterator next(chunk->get_objects());
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)

@@ -515,7 +515,7 @@ USECODE_INTRINSIC(create_new_object)
 			cout << " ireg object " << endl;
 		}
 	}
-	Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+	Map_chunk *chunk = gwin->get_chunk(cx, cy);
 	if (obj->is_egg())
 		chunk->add_egg((Egg_object *) obj);
 	else
@@ -563,7 +563,7 @@ USECODE_INTRINSIC(update_last_created)
 		if (info.get_3d_height() < 5 &&
 					// And skip if BG.  Causes FoV probs.
 		    Game::get_game_type() != BLACK_GATE)
-			while (Chunk_object_list::is_blocked(pos) &&
+			while (Map_chunk::is_blocked(pos) &&
 			      Game_object::find_blocking(dest) != last_created)
 				{	// Try up to ceiling.
 				if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
@@ -878,7 +878,7 @@ USECODE_INTRINSIC(move_object)
 			{		// Teleported Avatar?
 					// Make new loc. visible, test eggs.
 			gwin->center_view(tile);
-			Chunk_object_list::try_all_eggs(ava, tile.tx, 
+			Map_chunk::try_all_eggs(ava, tile.tx, 
 				tile.ty, tile.tz, oldpos.tx, oldpos.ty);
 			}
 		}
@@ -1607,7 +1607,7 @@ USECODE_INTRINSIC(is_water)
 		    y = (t.ty - gwin->get_scrollty())*c_tilesize;
 		if (t.tz != 0 || gwin->find_object(x, y))
 			return Usecode_value(0);
-		ShapeID sid = gwin->get_objects(t.tx/c_tiles_per_chunk,
+		ShapeID sid = gwin->get_chunk(t.tx/c_tiles_per_chunk,
 				t.ty/c_tiles_per_chunk)->get_flat(
 			t.tx%c_tiles_per_chunk, t.ty%c_tiles_per_chunk);
 		Shape_info& info = gwin->get_info(sid.get_shapenum());
@@ -1769,7 +1769,7 @@ USECODE_INTRINSIC(is_not_blocked)
 		tile.ty - info.get_3d_ytiles(framenum) + 1,
 		info.get_3d_xtiles(framenum), info.get_3d_ytiles(framenum));
 	int new_lift;
-	int blocked = Chunk_object_list::is_blocked(
+	int blocked = Map_chunk::is_blocked(
 		info.get_3d_height(), tile.tz, 
 		footprint.x, footprint.y, footprint.w, footprint.h,
 		new_lift, MOVE_ALL_TERRAIN);
@@ -1784,7 +1784,7 @@ USECODE_INTRINSIC(is_not_blocked)
 	Tile_coord lcpos = last_created->get_abs_tile_coord();
 	last_created->remove_this(1);
 	last_created->set_invalid();
-	blocked = Chunk_object_list::is_blocked(
+	blocked = Map_chunk::is_blocked(
 		info.get_3d_height(), tile.tz, 
 		footprint.x, footprint.y, footprint.w, footprint.h,
 		new_lift, MOVE_ALL_TERRAIN);
@@ -2323,7 +2323,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cx = (sx+i)/c_tiles_per_chunk;
 		tx = (sx+i)%c_tiles_per_chunk;
 
-		Chunk_object_list *clist = gwin->get_objects_safely(cx, cy);
+		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2345,7 +2345,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cy = (sy+i)/c_tiles_per_chunk;
 		ty = (sy+i)%c_tiles_per_chunk;
 
-		Chunk_object_list *clist = gwin->get_objects_safely(cx, cy);
+		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2367,7 +2367,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cx = (ex-i)/c_tiles_per_chunk;
 		tx = (ex-i)%c_tiles_per_chunk;
 
-		Chunk_object_list *clist = gwin->get_objects_safely(cx, cy);
+		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2389,7 +2389,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cy = (ey-i)/c_tiles_per_chunk;
 		ty = (ey-i)%c_tiles_per_chunk;
 
-		Chunk_object_list *clist = gwin->get_objects_safely(cx, cy);
+		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2453,7 +2453,7 @@ USECODE_INTRINSIC(remove_from_area)
 	if (area.w <= 0 || area.h <= 0)
 		return no_ret;
 	Game_object_vector vec;		// Find objects.
-	Chunk_object_list::find_in_area(vec, area, shnum, frnum);
+	Map_chunk::find_in_area(vec, area, shnum, frnum);
 					// Remove them.
 	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();
 								it++)

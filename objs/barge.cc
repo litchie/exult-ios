@@ -221,25 +221,25 @@ int Barge_object::okay_to_rotate
 	int new_lift;
 	if (newfoot.y < foot.y)		// Got a piece above the old one?
 					// Check area.  (No dropping allowed.)
-		if (Chunk_object_list::is_blocked(4, lift,
+		if (Map_chunk::is_blocked(4, lift,
 			newfoot.x, newfoot.y, newfoot.w, foot.y - newfoot.y,
 				new_lift, move_type, 0) || new_lift != lift)
 			return 0;
 	if (foot.y + foot.h < newfoot.y + newfoot.h)
 					// A piece below old one.
-		if (Chunk_object_list::is_blocked(4, lift,
+		if (Map_chunk::is_blocked(4, lift,
 			newfoot.x, foot.y + foot.h, newfoot.w, 
 			newfoot.y + newfoot.h - (foot.y + foot.h),
 				new_lift, move_type, 0) || new_lift != lift)
 			return 0;
 	if (newfoot.x < foot.x)		// Piece to the left?
-		if (Chunk_object_list::is_blocked(4, lift,
+		if (Map_chunk::is_blocked(4, lift,
 			newfoot.x, newfoot.y, foot.x - newfoot.x, newfoot.h,
 				new_lift, move_type, 0) || new_lift != lift)
 			return 0;
 	if (foot.x + foot.w < newfoot.x + newfoot.w)
 					// Piece to the right.
-		if (Chunk_object_list::is_blocked(4, lift,
+		if (Map_chunk::is_blocked(4, lift,
 			foot.x + foot.w, newfoot.y,
 			newfoot.x + newfoot.w - (foot.x + foot.w), newfoot.h,
 				new_lift, move_type, 0) || new_lift != lift)
@@ -278,7 +278,7 @@ void Barge_object::gather
 	int cx, cy;
 	while (next_chunk.get_next(tiles, cx, cy))
 		{
-		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+		Map_chunk *chunk = gwin->get_chunk(cx, cy);
 		Game_object *obj;
 		Object_iterator next(chunk->get_objects());
 		while ((obj = next.get_next()) != 0)
@@ -299,7 +299,7 @@ void Barge_object::gather
 	set_center();
 	if (boat == -1)			// Test for boat the first time.
 		{
-		Chunk_object_list *chunk = gwin->get_objects(
+		Map_chunk *chunk = gwin->get_chunk(
 			center.tx/c_tiles_per_chunk, center.ty/c_tiles_per_chunk);
 		ShapeID flat = chunk->get_flat(center.tx%c_tiles_per_chunk,
 						center.ty%c_tiles_per_chunk);
@@ -535,7 +535,7 @@ int Barge_object::okay_to_land
 	int cx, cy;
 	while (next_chunk.get_next(tiles, cx, cy))
 		{			// Check each tile.
-		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+		Map_chunk *chunk = gwin->get_chunk(cx, cy);
 		for (int ty = tiles.y; ty < tiles.y + tiles.h; ty++)
 			for (int tx = tiles.x; tx < tiles.x + tiles.w; tx++)
 				if (chunk->get_highest_blocked(lift, tx, ty)
@@ -702,13 +702,13 @@ int Barge_object::step
 			move_type |= MOVE_WALK;
 		}
 	else move_type = MOVE_WALK;
-       	if (Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
+       	if (Map_chunk::is_blocked(get_xtiles(), get_ytiles(), 
 						4, cur, t, move_type, 0))
 		return (0);		// Done.
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.
 	Game_window *gwin = Game_window::get_game_window();
 					// Near an egg?
-	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
+	Map_chunk *nlist = gwin->get_chunk(get_cx(), get_cy());
 	nlist->activate_eggs(gwin->get_main_actor(), t.tx, t.ty, t.tz, 
 						cur.tx, cur.ty);
 	return (1);			// Add back to queue for next time.

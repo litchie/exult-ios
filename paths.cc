@@ -64,7 +64,7 @@ int Actor_pathfinder_client::get_step_cost
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int cx = to.tx/c_tiles_per_chunk, cy = to.ty/c_tiles_per_chunk;
-	Chunk_object_list *olist = gwin->get_objects(cx, cy);
+	Map_chunk *olist = gwin->get_chunk(cx, cy);
 	int tx = to.tx%c_tiles_per_chunk;	// Get tile within chunk.
 	int ty = to.ty%c_tiles_per_chunk;
 	int cost = 1;
@@ -298,7 +298,7 @@ int Fast_pathfinder_client::get_step_cost
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int cx = to.tx/c_tiles_per_chunk, cy = to.ty/c_tiles_per_chunk;
-	Chunk_object_list *olist = gwin->get_objects(cx, cy);
+	Map_chunk *olist = gwin->get_chunk(cx, cy);
 	int tx = to.tx%c_tiles_per_chunk;	// Get tile within chunk.
 	int ty = to.ty%c_tiles_per_chunk;
 	olist->setup_cache();		// Make sure cache is valid.
@@ -382,7 +382,7 @@ int Fast_pathfinder_client::is_straight_path
 		return 0;
 	Tile_coord t;			// Check each tile.
 	while (path.GetNextStep(t))
-		if (t != from && t != to && Chunk_object_list::is_blocked(t))
+		if (t != from && t != to && Map_chunk::is_blocked(t))
 			return 0;	// Blocked.
 	return 1;			// Looks okay.
 	}
@@ -464,7 +464,7 @@ int Monster_pathfinder_client::get_step_cost
 					//   field may be modified.
 	)
 	{
-	if (Chunk_object_list::is_blocked(axtiles, aytiles, aztiles,
+	if (Map_chunk::is_blocked(axtiles, aytiles, aztiles,
 						from, to, get_move_flags()))
 		return -1;
 	else

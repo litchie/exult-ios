@@ -450,7 +450,7 @@ void Usecode_machine::set_item_shape
 //	Rectangle rect = gwin->get_shape_rect(item);
 	gwin->add_dirty(item);
 					// Get chunk it's in.
-	Chunk_object_list *chunk = gwin->get_objects(item);
+	Map_chunk *chunk = gwin->get_chunk(item);
 	chunk->remove(item);		// Remove and add to update cache.
 	item->set_shape(shape);
 	chunk->add(item);

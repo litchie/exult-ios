@@ -1,3 +1,8 @@
+2001-07-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Name changes:  Chunk_object_list -> Map_chunk.
+	gwin->get_objects() -> gwin->get_chunk().
+
 2001-07-13  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* egg.cc: #include cheat.h not only for XWIN
 	* font.cc: check for NULL shape in get_text_width()
