@@ -5,7 +5,7 @@
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs
 
-VERSION=0.92alpha3
+VERSION=0.93cvs
 
 ### Modify these paths
 SDL_INCLUDES=-I/boot/develop/tools/gnupro/include/SDL
