@@ -2480,6 +2480,7 @@ void Game_window::setup_game
 	
 	// Force entire repaint.
 	set_all_dirty();
+	painted = true;			// Main loop uses this.
 	gump_man->close_all_gumps(true);		// Kill gumps.
 	Face_stats::load_config(config);
 
