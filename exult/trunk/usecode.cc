@@ -2427,6 +2427,19 @@ USECODE_INTRINSIC(sprite_effect)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(explode)
+{
+	// Explode(obj??, item-to-explode, powder-keg-shape).
+	Game_object *exp = get_item(parms[1]);
+	if (!exp)
+		return Usecode_value(0);
+	Tile_coord pos = exp->get_abs_tile_coord();
+					// Sprite 1,4,5 look like explosions.
+	gwin->add_effect(new Explosion_effect(pos.tx - pos.tz/2,
+				pos.ty - pos.tz/2, exp));
+	return Usecode_value(1);
+}
+
 USECODE_INTRINSIC(book_mode)
 {
 	// Display book or scroll.
@@ -3129,7 +3142,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(resurrect),// 0x51     ResurrectNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(add_spell),// 0x52     AddSpellToBook (ucdump.c)
 	USECODE_INTRINSIC_PTR(sprite_effect),// 0x53 ExecuteSprite (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54  ++++Explode???
+	USECODE_INTRINSIC_PTR(explode),	// 0x54
 	USECODE_INTRINSIC_PTR(book_mode),// 0x55
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.
                            // StopTime (ucdump.c)
