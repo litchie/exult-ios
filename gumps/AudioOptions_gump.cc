@@ -40,8 +40,11 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 5,  19, 29, 41, 53, 65,  79, 89, 101,  
-							115, 125,  146 };
+static const int rowy[] = { 5,  
+			    19, 29, 41, 53, 65, 77,  
+			    89, 101,  
+			    115, 125,  
+			    135, 156 };
 static const int colx[] = { 35, 55, 130 };
 
 class AudioOptions_button : public Gump_button {
@@ -94,7 +97,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 	if (btn == buttons[0]) {		// audio on/off
 		audio_enabled = state;
 		if (state == 0) {
-			for (int i=1; i<8; i++) {
+			for (int i=1; i<9; i++) {
 				if (buttons[i]) delete buttons[i];
 				buttons[i] = 0;
 			}
@@ -105,7 +108,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 	} else if (btn == buttons[1]) {	// midi on/off 
 		midi_enabled = state;
 		if (state == 0) {
-			for (int i=2; i<5; i++) {
+			for (int i=2; i<6; i++) {
 				if (buttons[i]) delete buttons[i];
 				buttons[i] = 0;
 			}
@@ -119,28 +122,30 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		midi_reverb = state;
 	} else if (btn == buttons[4]) { // midi chorus
 		midi_chorus = state;
-	} else if (btn == buttons[5]) { // sfx on/off
+	} else if (btn == buttons[5]) { // midi looping
+		midi_looping = state;
+	} else if (btn == buttons[6]) { // sfx on/off
 		sfx_enabled = state;
 		if (state == 0) {
-			if (buttons[6]) delete buttons[6];
-			buttons[6] = 0;
+			if (buttons[7]) delete buttons[7];
+			buttons[7] = 0;
 		} else {
 			build_sfx_buttons();
 		}
 		paint(Game_window::get_game_window());
 #ifdef ENABLE_MIDISFX
-	} else if (btn == buttons[6]) { // sfx conversion
+	} else if (btn == buttons[7]) { // sfx conversion
 		if (state == 1) {
-			buttons[6]->set_frame(4);
-//			((AudioToggle*)buttons[6])->framenum = 4;
+			buttons[7]->set_frame(4);
+//			((AudioToggle*)buttons[7])->framenum = 4;
 			sfx_conversion = XMIDI_CONVERT_GS127_TO_GS;
 		} else {
 			buttons[6]->set_frame(0);
-//			((AudioToggle*)buttons[6])->framenum = 0;
+//			((AudioToggle*)buttons[7])->framenum = 0;
 			sfx_conversion = XMIDI_CONVERT_NOCONVERSION;
 		}
 #endif
-	} else if (btn == buttons[7]) { // speech on/off
+	} else if (btn == buttons[8]) { // speech on/off
 		speech_enabled = state;
 	}
 }
@@ -158,12 +163,12 @@ void AudioOptions_gump::build_buttons()
 			build_midi_buttons();
 
 		// sfx on/off
-		buttons[5] = new AudioToggle(this, colx[2], rowy[7], EXULT_FLX_AUD_ENABLED_SHP,sfx_enabled,2);
+		buttons[6] = new AudioToggle(this, colx[2], rowy[8], EXULT_FLX_AUD_ENABLED_SHP,sfx_enabled,2);
 		if (sfx_enabled)
 			build_sfx_buttons();
 
 		// speech on/off
-		buttons[7] =new AudioToggle(this,colx[2],rowy[10],EXULT_FLX_AUD_ENABLED_SHP,speech_enabled,2);
+		buttons[8] =new AudioToggle(this,colx[2],rowy[11],EXULT_FLX_AUD_ENABLED_SHP,speech_enabled,2);
 	}
 }
 
@@ -175,13 +180,16 @@ void AudioOptions_gump::build_midi_buttons()
 	buttons[3] = new AudioToggle(this, colx[2], rowy[4], EXULT_FLX_AUD_ENABLED_SHP, midi_reverb, 2);
 	// chorus on/off
 	buttons[4] = new AudioToggle(this, colx[2], rowy[5], EXULT_FLX_AUD_ENABLED_SHP, midi_chorus, 2);
+	// looping on/off
+	buttons[5] = new AudioToggle(this, colx[2], rowy[6], EXULT_FLX_AUD_ENABLED_SHP, midi_looping, 2);
+
 }
 
 void AudioOptions_gump::build_sfx_buttons()
 {
 #ifdef ENABLE_MIDISFX
 	// sfx conversion
-	buttons[6] = new AudioToggle(this, colx[2], rowy[8],EXULT_FLX_AUD_CONVERSION_SHP,sfx_conversion/2,2);
+	buttons[7] = new AudioToggle(this, colx[2], rowy[9],EXULT_FLX_AUD_CONVERSION_SHP,sfx_conversion/2,2);
 #endif
 }
 
@@ -192,6 +200,7 @@ void AudioOptions_gump::load_settings()
 	midi_enabled = (Audio::get_ptr()->is_music_enabled() ? 1 : 0);
 	sfx_enabled = (Audio::get_ptr()->are_effects_enabled() ? 1 : 0);
 	speech_enabled = (Audio::get_ptr()->is_speech_enabled() ? 1 : 0);
+	midi_looping = (Audio::get_ptr()->is_music_looping_allowed() ? 1 : 0);
 
 	if (Audio::get_ptr()->get_midi()) {
 		midi_conversion = Audio::get_ptr()->get_midi()->get_music_conversion();
@@ -227,27 +236,29 @@ void AudioOptions_gump::load_settings()
 
 	config->value("config/audio/midi/chorus/enabled",s,"no");
 	midi_chorus = (s == "yes" ? 1 : 0);
+	
+	
 }
 
 AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SHP, SF_EXULT_FLX)
 {
-	set_object_area(Rectangle(0,0,0,0), 8, 162);//++++++ ???
+	set_object_area(Rectangle(0,0,0,0), 8, 172);//++++++ ???
 
-	for (int i=0; i<10; i++) buttons[i] = 0;
+	for (int i=0; i<11; i++) buttons[i] = 0;
 
 	load_settings();
 	
 	build_buttons();
 
 	// Ok
-	buttons[8] = new AudioOptions_button(this, colx[0], rowy[11], EXULT_FLX_AUD_OK_SHP);
+	buttons[9] = new AudioOptions_button(this, colx[0], rowy[12], EXULT_FLX_AUD_OK_SHP);
 	// Cancel
-	buttons[9] = new AudioOptions_button(this, colx[2], rowy[11], EXULT_FLX_AUD_CANCEL_SHP);
+	buttons[10] = new AudioOptions_button(this, colx[2], rowy[12], EXULT_FLX_AUD_CANCEL_SHP);
 }
 
 AudioOptions_gump::~AudioOptions_gump()
 {
-	for (int i=0; i<10; i++)
+	for (int i=0; i<11; i++)
 		if (buttons[i]) delete buttons[i];
 }
 
@@ -261,6 +272,7 @@ void AudioOptions_gump::save_settings()
 	if (!sfx_enabled)		// Stop what's playing.
 		Audio::get_ptr()->stop_sound_effects();
 	Audio::get_ptr()->set_speech_enabled(speech_enabled == 1);
+	Audio::get_ptr()->set_allow_music_looping(midi_looping == 1);
 
 	config->set("config/audio/enabled", audio_enabled ? "yes" : "no", true);
 	config->set("config/audio/midi/enabled",midi_enabled ? "yes" : "no", true);
@@ -269,6 +281,7 @@ void AudioOptions_gump::save_settings()
 
 	config->set("config/audio/midi/chorus/enabled", midi_chorus ? "yes" : "no", true);
 	config->set("config/audio/midi/reverb/enabled", midi_reverb ? "yes" : "no", true);
+	config->set("config/audio/midi/looping", midi_looping ? "yes" : "no", true);
 
 	if (Audio::get_ptr()->get_midi()) {
 		Audio::get_ptr()->get_midi()->set_music_conversion(midi_conversion);
@@ -305,7 +318,7 @@ void AudioOptions_gump::save_settings()
 void AudioOptions_gump::paint(Game_window* gwin)
 {
 	Gump::paint(gwin);
-	for (int i=0; i<10; i++)
+	for (int i=0; i<11; i++)
 		if (buttons[i])
 			buttons[i]->paint(gwin);
 
@@ -317,16 +330,17 @@ void AudioOptions_gump::paint(Game_window* gwin)
 			gwin->paint_text(2, "conversion", x + colx[1], y + rowy[3] + 1);
 			gwin->paint_text(2, "reverb", x + colx[1], y + rowy[4] + 1);
 			gwin->paint_text(2, "chorus", x + colx[1], y + rowy[5] + 1);
+			gwin->paint_text(2, "looping", x + colx[1], y + rowy[6] + 1);
 		}
-		gwin->paint_text(2, "SFX options:", x + colx[0], y + rowy[6] + 1);
-		gwin->paint_text(2, "SFX", x + colx[1], y + rowy[7] + 1);
+		gwin->paint_text(2, "SFX options:", x + colx[0], y + rowy[7] + 1);
+		gwin->paint_text(2, "SFX", x + colx[1], y + rowy[8] + 1);
 #ifdef ENABLE_MIDISFX
 		if (sfx_enabled) {
-			gwin->paint_text(2, "conversion", x + colx[1], y + rowy[8] + 1);
+			gwin->paint_text(2, "conversion", x + colx[1], y + rowy[9] + 1);
 		}
 #endif
-		gwin->paint_text(2, "Speech options:", x + colx[0], y + rowy[9] + 1);
-		gwin->paint_text(2, "speech", x + colx[1], y + rowy[10] + 1);
+		gwin->paint_text(2, "Speech options:", x + colx[0], y + rowy[10] + 1);
+		gwin->paint_text(2, "speech", x + colx[1], y + rowy[11] + 1);
 	}
 	gwin->set_painted();
 }
@@ -338,7 +352,7 @@ void AudioOptions_gump::mouse_down(int mx, int my)
 					// First try checkmark.
 	// Try buttons at bottom.
 	if (!pushed)
-		for (int i=0; i<10; i++)
+		for (int i=0; i<11; i++)
 			if (buttons[i] && buttons[i]->on_button(gwin, mx, my)) {
 				pushed = buttons[i];
 				break;

@@ -58,6 +58,7 @@ private:
 	static	int *bg2si_sfxs;	// Converts BG sfx's to SI sfx's.
 	bool truthful_;
 	bool audio_enabled, speech_enabled, music_enabled, effects_enabled;
+	bool allow_music_looping;
 	bool SDL_open;
 	SFX_cached *sfxs;		// ->list of cached .wav snd. effects.
 	Flex *sfx_file;			// Holds .wav sound effects.
@@ -121,6 +122,8 @@ public:
 	void	set_effects_enabled(bool ena) { effects_enabled = ena; }
 	bool	is_audio_enabled() const { return audio_enabled; }
 	void	set_audio_enabled(bool ena);
+	bool	is_music_looping_allowed() const { return allow_music_looping; }
+	void	set_allow_music_looping(bool ena) { allow_music_looping = ena; }
 	bool	can_sfx(const std::string &game) const;
 
 	ProducerConsumerBuf	*Create_Audio_Stream(uint32 id) {
