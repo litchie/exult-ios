@@ -332,6 +332,11 @@ int U7chdir(
 	const char *dirname
 	);
 
+void U7copy
+	(
+	const char *src,
+	const char *dest
+	);
 
 bool is_system_path_defined(const char *path);
 void store_system_paths();
