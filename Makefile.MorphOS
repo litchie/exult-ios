@@ -38,8 +38,8 @@ CONF_OBJS=conf/Configuration.o conf/XMLEntity.o
 # unused: xmain.o
 MIDI_DRV_OBJS=audio/midi_drivers/amiga_midi.o
 # unused: KMIDI.o Timidity_binary.o forked_player.o win_MCI.o
-AUDIO_OBJS=audio/Audio.o audio/conv.o audio/Midi.o audio/Mixer.o audio/SDL_mapping.o \
-	audio/pcb.o audio/xmidi.o audio/soundtest.o $(MIDI_DRV_OBJS)
+AUDIO_OBJS=audio/Audio.o audio/conv.o audio/Midi.o \
+	audio/xmidi.o audio/soundtest.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 FLIC_OBJS=flic/playfli.o
 FILE_OBJS=files/U7file.o files/Flex.o files/IFF.o files/Table.o files/Flat.o \

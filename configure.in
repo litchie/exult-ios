@@ -278,6 +278,11 @@ AM_PATH_SDL($SDL_VERSION,
 	AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
 
+AC_CHECK_LIB(SDL_mixer, Mix_QuickLoad_RAW,
+	SDL_LIBS="$SDL_LIBS -lSDL_mixer",
+	AC_MSG_ERROR([*** SDL_mixer version 1.2.4 or later not found!])
+)
+
 
 # ---------------------------------------------------------------------
 # Optional components
