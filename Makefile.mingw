@@ -12,6 +12,7 @@ SRC=.
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDLmain -lSDL
+SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL -lSDL_image
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
@@ -98,26 +99,6 @@ dist:   $(EXEC)
 	cp SDL/lib/SDL_mixer.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
 
-tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe wuc.exe wud.exe u7voice2syx.exe ucc.exe ucxt.exe head2data.exe head2data.test
-
-toolsclean:
-	rm -f expack.o expack.exe $(FILE_OBJS)
-	rm -f cmanip.exe cmanip.o
-	rm -f ipack.o ipack.exe $(IPACK_OBJS)
-	rm -f mklink.o mklink.exe
-	rm -f rip.o rip.exe
-	rm -f shp2pcx.o shp2pcx.exe
-	rm -f splitshp.o splitshp.exe
-	rm -f textpack.o textpack.exe
-	rm -f ucc.o ucc.exe
-	rm -f u7voice2syx.o u7voice2syx.exe
-	rm -f wuc.o wuc.exe
-	rm -f wud.o wud.exe
-	rm -f $(UCXT_OBJS) ucxt.exe
-	rm -f $(UCC_OBJS) ucc.exe ucparse.cc ucparse.h uclex.cc
-	rm -f $(CONFREGRESS_OBJS) confregress.exe
-	rm -f head2data.o head2data.exe data/u7bgintrinsics.data data/u7siintrinsics.data
-
 toolsinstall: tools
 	mkdir -p $(U7PATH)
 	mkdir -p $(U7PATH)/tools
@@ -125,8 +106,10 @@ toolsinstall: tools
 	strip cmanip.exe -o $(U7PATH)/tools/cmanip.exe
 	strip ipack.exe -o $(U7PATH)/tools/ipack.exe
 	strip mklink.exe -o $(U7PATH)/tools/mklink.exe
+	strip mockup.exe -o $(U7PATH)/tools/mockup.exe
 	strip rip.exe -o $(U7PATH)/tools/rip.exe
 	strip shp2pcx.exe -o $(U7PATH)/tools/shp2pcx.exe
+	strip smooth.exe -o $(U7PATH)/tools/smooth.exe
 	strip splitshp.exe -o $(U7PATH)/tools/splitshp.exe
 	strip textpack.exe -o $(U7PATH)/tools/textpack.exe
 	strip u7voice2syx.exe -o $(U7PATH)/tools/u7voice2syx.exe
@@ -141,6 +124,7 @@ toolsinstall: tools
 	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data
 	cp data/u7bgintrinsics.data $(U7PATH)/data
 	cp data/u7siintrinsics.data $(U7PATH)/data
+	cp SDL/lib/SDL.dll $(U7PATH)/tools
 
 toolsdist: tools
 	mkdir -p $(TOOLSPATH)
@@ -149,8 +133,10 @@ toolsdist: tools
 	strip cmanip.exe -o $(TOOLSPATH)/tools/cmanip.exe
 	strip ipack.exe -o $(TOOLSPATH)/tools/ipack.exe
 	strip mklink.exe -o $(TOOLSPATH)/tools/mklink.exe
+	strip mockup.exe -o $(TOOLSPATH)/tools/mockup.exe
 	strip rip.exe -o $(TOOLSPATH)/tools/rip.exe
 	strip shp2pcx.exe -o $(TOOLSPATH)/tools/shp2pcx.exe
+	strip smooth.exe -o $(TOOLSPATH)/tools/smooth.exe
 	strip splitshp.exe -o $(TOOLSPATH)/tools/splitshp.exe
 	strip textpack.exe -o $(TOOLSPATH)/tools/textpack.exe
 	strip u7voice2syx.exe -o $(TOOLSPATH)/tools/u7voice2syx.exe
@@ -176,6 +162,7 @@ toolsdist: tools
 	cp tools/u7siflag.txt $(TOOLSPATH)/tools
 	cp tools/ucformat.txt $(TOOLSPATH)/tools
 	u2d $(TOOLSPATH)/tools/*.txt
+	cp SDL/lib/SDL.dll $(TOOLSPATH)/tools
 
 allclean: clean toolsclean
 

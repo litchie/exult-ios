@@ -1,6 +1,6 @@
 VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SRC)/files:$(SRC)/files/zip:$(SRC)/flic: \
-$(SRC)/gumps:$(SRC)/imagewin:$(SRC)/objs:$(SRC)/pathfinder:$(SRC)/shapes:$(SRC)/server:$(SRC)/tools: \
-$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src
+$(SRC)/gumps:$(SRC)/imagewin:$(SRC)/mapedit/tools/mockup:$(SRC)/mapedit/tools/smooth:$(SRC)/objs:$(SRC)/pathfinder \
+$(SRC)/shapes:$(SRC)/server:$(SRC)/tools:$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src
 
 VERSION=1.1.10cvs
 
@@ -172,8 +172,16 @@ ipack$(EXEEXT) : $(IPACK_OBJS)
 mklink$(EXEEXT) : mklink.o
 	$(CXX) $(LFLAGS) -o $(@) $+
 
+mockup$(EXEEXT): main.o
+	$(CC) $(LFLAGS) -o $(@) $+ $(SDL_IMAGE_LIBS)
+
 rip$(EXEEXT) : rip.o
 	$(CXX) $(LFLAGS) -o $(@) $+
+
+SMOOTH_OBJS=config.o image.o linked.o param.o plugin.o smooth.o
+
+smooth$(EXEEXT) : $(SMOOTH_OBJS)
+	$(CC) $(LFLAGS) -o $(@) $+ $(SDL_IMAGE_LIBS)
 
 shp2pcx$(EXEEXT) : shp2pcx.o
 	$(CXX) $(LFLAGS) -o $(@) $+
@@ -223,3 +231,27 @@ head2data.test:
 	head2data data/u7bgintrinsics.data data/u7siintrinsics.data
 
 all: $(EXEC)
+
+tools:  expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) wud$(EXEEXT) u7voice2syx$(EXEEXT) ucc$(EXEEXT) ucxt$(EXEEXT) head2data$(EXEEXT) head2data.test
+
+toolsclean:
+	rm -f expack.o expack$(EXEEXT) $(FILE_OBJS)
+	rm -f cmanip$(EXEEXT) cmanip.o
+	rm -f ipack.o ipack$(EXEEXT) $(IPACK_OBJS)
+	rm -f mockup.o mockup$(EXEEXT)
+	rm -f mklink.o mklink$(EXEEXT)
+	rm -f rip.o rip$(EXEEXT)
+	rm -f shp2pcx.o shp2pcx$(EXEEXT)
+	rm -f splitshp.o splitshp$(EXEEXT)
+	rm -f smooth.o smooth$(EXEEXT)
+	rm -f textpack.o textpack$(EXEEXT)
+	rm -f ucc.o ucc$(EXEEXT)
+	rm -f u7voice2syx.o u7voice2syx$(EXEEXT)
+	rm -f wuc.o wuc$(EXEEXT)
+	rm -f wud.o wud$(EXEEXT)
+	rm -f $(UCXT_OBJS) ucxt$(EXEEXT)
+	rm -f $(UCC_OBJS) ucc$(EXEEXT) ucparse.cc ucparse.h uclex.cc
+	rm -f $(CONFREGRESS_OBJS) confregress$(EXEEXT)
+	rm -f head2data.o head2data$(EXEEXT) data/u7bgintrinsics.data data/u7siintrinsics.data
+
+
