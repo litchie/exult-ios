@@ -157,9 +157,9 @@ void Shapes_vga_file::write_info
 		{
 		Equip_record& rec = Monster_info::get_equip(i);
 					// 10 elements/record.
-		for (int elem = 0; elem < 10; elem++)
+		for (int e = 0; e < 10; e++)
 			{
-			Equip_element& elem = rec.get(i);
+			Equip_element& elem = rec.get(e);
 			Write2(mfile, elem.get_shapenum());
 			mfile.put(elem.get_probability());
 			mfile.put(elem.get_quantity());
