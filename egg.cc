@@ -29,7 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "animate.h"
 #include "Audio.h"
 #include "usecode.h"
-#include "useval.h"
 #include "effects.h"
 #include "game.h"
 #include "items.h"
