@@ -3,6 +3,10 @@
 	* usecode/ucxt/*.[cc|h]: rewrote entire usecode file parser inherited
 	from ucdump, twice as slow, but it's maintainable.
 
+	* docs/usecode_ff.txt: Added a quick and dirty BNF overview of the
+	USECODE file format that was generated whilst rewriting the above.
+	It should be correct, maybe just not understandable.
+
 2001-07-26  Tristan Tarrant <nadir@users.sourceforge.net>
 	* exult.cc, game.cc, game.h: implement "Return to menu" functionality
 	* files/IFF.cc, files/utils.cc: clean up some printouts
