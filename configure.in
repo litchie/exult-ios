@@ -219,13 +219,13 @@ AC_CHECK_BOOL
 
 
 dnl this is for debug
-DEBUG_FLAGS="-O2"
+DEBUG_FLAGS="-O2 -fno-default-inline"
 AC_ARG_ENABLE(debug, [  --enable-debug          enable debug messages [default no]],,enable_debug=no)
 AC_MSG_CHECKING(whether to enable debug)
 if test x$enable_debug = xyes; then
   AC_MSG_RESULT(yes)
   AC_DEFINE(DEBUG)
-  DEBUG_FLAGS="-O -g"
+  DEBUG_FLAGS="-O -g -fno-default-inline"
 else
   AC_MSG_RESULT(no)
 fi
