@@ -492,7 +492,8 @@ void Gump::paint
 				py = endy;
 			obj->set_chunk(px - shape->get_xright(),
 					py - shape->get_ybelow());
-			curx += 8;
+					// Mostly avoid overlap.
+			curx += shape->get_width() - 1;
 			if (curx >= endx)
 			{
 				cury += 8;
