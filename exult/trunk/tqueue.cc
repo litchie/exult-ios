@@ -26,6 +26,24 @@ Time_sensitive::~Time_sensitive
 	}
 
 /*
+ *	Remove all entries.
+ */
+
+void Time_queue::clear
+	(
+	)
+	{
+	Temporal_sequence::iterator it;
+	while ((it=data.begin()) != data.end())
+		{
+		Queue_entry ent = *it;
+		Time_sensitive *obj = ent.handler;
+		data.erase(it);
+		obj->queue_cnt--;
+		}
+	}
+
+/*
  *	Add an entry to the queue.
  */
 
