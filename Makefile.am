@@ -19,6 +19,8 @@ exult_SOURCES =	\
 	args.cc		\
 	args.h		\
 	autoarray.h	\
+	combat.cc	\
+	combat.h	\
 	delobjs.cc	\
 	delobjs.h	\
 	dir.cc		\

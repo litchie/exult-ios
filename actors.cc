@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "actions.h"
 #include "ready.h"
-#include "schedule.h"
+#include "combat.h"
 #include "Zombie.h"
 #include "Astar.h"
 #include "dir.h"
@@ -401,6 +401,9 @@ void Actor::set_schedule_type
 	schedule = 0;
 	switch ((Schedule::Schedule_types) schedule_type)
 		{
+	case Schedule::combat:
+		schedule = new Combat_schedule(this);
+		break;
 	case Schedule::horiz_pace:
 		schedule = Pace_schedule::create_horiz(this);
 		break;
