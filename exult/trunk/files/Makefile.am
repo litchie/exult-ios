@@ -27,6 +27,8 @@ libu7file_la_SOURCES =	\
 	databuf.h	\
 	listfiles.cc	\
 	listfiles.h	\
+	crc.cc		\
+	crc.h		\
 	$(SNPRINTF)
 
 EXTRA_DIST = 		\

@@ -644,7 +644,7 @@ public:
 			   int qual=c_any_qual); // Activate item in party.
 					// Find object (x, y) is in.
 	Game_object *find_object(int x, int y);
-	int find_objects(int lift, int x, int y, Game_object **list);
+	int find_objects(int lift, int x, int y, Game_object_vector& list);
 	void show_items(int x, int y);	// Show names of items clicked on.
 					// Schedule object for deletion.
 	void delete_object(Game_object *obj);

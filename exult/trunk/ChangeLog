@@ -1,3 +1,18 @@
+2001-12-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: don't allow Npc_actor::remove_this to delete the NPC
+	* contain.cc, objs.cc: catch possible (but unlikely) divisions by zero
+	* files/crc.*, Makefile.*: CRC-32 algo
+	* tools/expack.cc: compute CRC of resulting .flx file
+	* exult.cc: check CRC of exult*.flx files
+	* Spellbook_gump.cc: fixed reagents of BG 1st circle
+	* ucinternal.cc: fixed Dagger Isle cyclops conversation
+	* gamewin.cc: fixed crash when find_objects finds too many objects
+	* debian/*: new debian files from Michael Z.
+	* bggame.cc, sigame.cc: check for exult_bg/si.flx in is_installed()
+	* schedule.cc: fix dancing Naga (missing frames)
+	* barge.cc, animate.cc, actors.cc, contain.cc: call inherited functions
+	of direct parent, not Game_object
+	
 2001-12-03  Ryan Nunn <triforce@merlin.net.au>
 	* objs/animate.cc : Fixed Minoc millsaw animation. Requires new game to
 	  work 100% properly.

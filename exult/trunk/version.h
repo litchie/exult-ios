@@ -1,3 +1,6 @@
+#ifndef _VERSION_H
+#define _VERSION_H
+
 /*
  *  Copyright (C) 2001  The Exult Team
  *
@@ -19,3 +22,5 @@
 #include <iostream>
 
 void getVersionInfo(std::ostream& out);
+
+#endif

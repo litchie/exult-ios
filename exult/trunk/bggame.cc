@@ -1692,5 +1692,5 @@ bool BG_Game::is_installed(const char *path)
 	std::string buf(path);
 	buf+="/static/endgame.dat";
 	std::cout << "is_installed: " << buf << std::endl;
-	return U7exists(buf)!=0;
+	return U7exists(buf) && U7exists("<DATA>/exult_bg.flx");
 }

@@ -766,10 +766,11 @@ void Game_object::say
 	(
 	int from, int to		// Range (inclusive).
 	)
-	{
+{
+	if (from > to) return;
 	int offset = rand()%(to - from + 1);
 	say(item_names[from + offset]);
-	}
+}
 
 /*
  *	Paint at given spot in world.
