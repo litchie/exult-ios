@@ -57,6 +57,7 @@ protected:
 	short properties[12];		// Properties set/used in 'usecode'.
 	short shape_save;		// Our old shape, or -1.
 	short oppressor;		// NPC ID (>= 0) of oppressor, or -1.
+	Game_object *target;		// Who/what we're attacking.
 public:
 	enum Attack_mode {		// Setting from gump.+++++Save/restore.
 		nearest = 0,
@@ -278,8 +279,9 @@ public:
 		Game_window *gwin, Chunk_object_list *nlist,
 				int tx, int ty, int& water, int& poison);
 					// Set combat opponent.
-	void set_opponent(Game_object *obj);
-	Game_object *get_opponent();	// Get opponent.
+	void set_target(Game_object *obj, bool start_combat = false);
+	Game_object *get_target()	// Get who/what we're attacking.
+		{ return target; }
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
 	int get_prev_schedule_type();	// Get previous schedule.

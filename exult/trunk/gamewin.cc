@@ -2659,8 +2659,8 @@ void Game_window::double_clicked
 			{		// In combat mode.
 					// Want everyone to be in combat.
 			combat = 0;
+			main_actor->set_target(obj);
 			toggle_combat();
-			main_actor->set_opponent(obj);
 					// Being a bully?
 			if (obj->get_npc_num() > 0 && obj->get_alignment() ==
 							Actor::friendly)
@@ -2976,7 +2976,7 @@ void Game_window::attack_avatar
 			main_actor->get_cx() + 8, 
 			main_actor->get_cy() + 8, 0, 0, 0);
 		add_nearby_npc(guard);
-		guard->set_opponent(main_actor);
+		guard->set_target(main_actor, true);
 		guard->approach_another(main_actor);
 		}
 
@@ -2990,7 +2990,7 @@ void Game_window::attack_avatar
 		if ((npc->get_shapenum() == 0x3b2 || !npc->is_monster()) && 
 		    npc != main_actor &&
 		    npc->get_party_id() < 0)
-			npc->set_opponent(main_actor);
+			npc->set_target(main_actor, true);
 		}
 	}
 
