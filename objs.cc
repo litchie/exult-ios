@@ -894,6 +894,42 @@ int Game_object::lt
 	}
 
 /*
+ *	Get frame if rotated 1, 2, or 3 quadrants clockwise.  This is to
+ *	support barges (ship, cart, flying carpet).
+ */
+
+int Game_object::get_rotated_frame
+	(
+	int quads			// 1=90, 2=180, 3=270.
+	)
+	{
+	int curframe = get_framenum();
+	switch (get_shapenum())		// Wish I knew a better way...
+		{
+	case 292:			// Seat.  Sequential frames for dirs.
+		{
+		int dir = curframe%4;	// Current dir (0-3).
+		return (curframe - dir) + (dir + quads)%4;
+		}
+	case 840:			// Magic carpet.
+		{
+		if (curframe >= 24)	// Plain square.
+			return curframe;
+		static char rot[24] = {	// Values for 90 degrees:
+		//      0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+			7, 4, 5, 6, 3, 0, 1, 2,14,12,13,15,11, 8,10, 9,22,
+		//	17 18 19 20 21 22 23
+			20,21,23,16,19,17,18 };
+		while (quads--)
+			curframe = rot[curframe];
+		return curframe;
+		}
+	default:
+		return curframe;
+		}
+	}
+
+/*
  *	Being attacked.
  */
 

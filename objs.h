@@ -285,6 +285,8 @@ public:
 		{ return get_abs_tile_coord(); }
 	virtual int move_aside(int dir)	// Move out of the way.
 		{ return 0; }		// For now.
+					// Get frame if rotated clockwise.
+	virtual int get_rotated_frame(int quads);
 					// Under attack.
 	virtual void attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
