@@ -1,3 +1,6 @@
+2001-05-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* tools/Makefile.am, tools/splitshp.cc: split a shape into its frames
+	
 2001-05-13  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.spec.in: added exult_bg.flx... ouch!
 	
