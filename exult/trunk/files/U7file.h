@@ -19,6 +19,8 @@ public:
 	virtual	int	number_of_objects(const char *)=0;
 	virtual	int	retrieve(int objnum,char **,std::size_t *len)=0; // To a memory block
 	virtual	int	retrieve(int objnum,const char *)=0;	// To a file
+
+	virtual const char *get_archive_type()=0;
 	virtual	~U7file();
 	};
 

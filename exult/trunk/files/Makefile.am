@@ -11,7 +11,9 @@ libu7file_la_SOURCES =	\
 	IFF.cc		\
 	IFF.h		\
 	U7file.cc	\
-	U7file.h
+	U7file.h	\
+	utils.cc	\
+	utils.h
 
 EXTRA_DIST = 		\
 	README
