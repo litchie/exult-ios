@@ -136,7 +136,7 @@ int Font::paint_text_box
 					// Pass word & get its width.
 		const char *ewrd = Pass_word(text);
 		int width = get_text_width(text, ewrd - text);
-		if (curx + width > endx)
+		if (curx + width - hor_lead > endx)
 			{		// Word-wrap.
 			curx = x;
 			cur_line++;
@@ -312,7 +312,7 @@ int Font::paint_text_box_fixedwidth
 					// Pass word & get its width.
 		const char *ewrd = Pass_word(text);
 		int width = (ewrd - text) * char_width;
-		if (curx + width > endx)
+		if (curx + width - hor_lead > endx)
 			{		// Word-wrap.
 			curx = x;
 			cur_line++;
