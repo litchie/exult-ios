@@ -59,7 +59,7 @@ Usecode_script::Usecode_script
 	int nhalt, 
 	int del
 	) : obj(item), code(cd), i(0), frame_index(findex), 
-	    no_halt(nhalt != 0), delay(del)
+	    no_halt(nhalt != 0), must_finish(false), delay(del)
 	{
 	cnt = code->get_array_size();
 	}
@@ -73,7 +73,7 @@ Usecode_script::Usecode_script
 	Game_object *o,
 	Usecode_value *cd		// May be NULL for empty script.
 	) : obj(o), code(cd), cnt(0), i(0), frame_index(0), no_halt(false),
-	    delay(0)
+	    must_finish(false), delay(0)
 	{
 	if (!code)			// Empty?
 		code = new Usecode_value(0, 0);
@@ -86,12 +86,6 @@ Usecode_script::Usecode_script
 			cnt = 1;
 			}
 		}
-#if 0	/* ++++++++Moved to start(). */
-	if (!is_no_halt())		// If flag not set,
-					// Remove other entries that aren't
-					//   'no_halt'.
-		Usecode_script::terminate(obj);
-#endif
 	}
 
 /*
@@ -121,11 +115,16 @@ void Usecode_script::start
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	if (code->get_array_size())	// Check initial elem.
+	int cnt = code->get_array_size();// Check initial elems.
+	for (int i = 0; i < cnt; i++)
 		{
-		int opval0 = code->get_elem(0).get_int_value();
-		if (opval0 == 0x23)
+		int opval0 = code->get_elem(i).get_int_value();
+		if (opval0 == Ucscript::dont_halt)
 			no_halt = true;
+		else if (opval0 == Ucscript::finish)
+			must_finish = true;
+		else
+			break;
 		}
 	if (!is_no_halt())		// If flag not set,
 					// Remove other entries that aren't
@@ -256,6 +255,8 @@ void Usecode_script::purge
 								spot) > dist)
 			{		// Force it to halt.
 			each->no_halt = false;
+			if (each->must_finish)	// ++++++Finish this.
+				cout << "MUST finish this script" << endl;
 			each->halt();
 			}
 		}
@@ -347,6 +348,10 @@ void Usecode_script::handle_event
 			break;
 			}
 		case nop:		// Just a nop.
+			break;
+		case Ucscript::finish:	// Flag to finish if deleted.
+			must_finish = true;
+			do_another = 1;
 			break;
 		case dont_halt:		// ?? Always appears first.
 					// Maybe means "don't let

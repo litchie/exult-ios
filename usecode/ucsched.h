@@ -39,6 +39,7 @@ class Usecode_script : public Time_sensitive
 	int i;				// Current index.
 	int frame_index;		// For taking steps.
 	bool no_halt;			// 1 to ignore halt().
+	bool must_finish;		// 1 to finish before deleting.
 	int delay;			// Used for restoring.
 					// For restore:
 	Usecode_script(Game_object *item, Usecode_value *cd, int findex,
