@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/.. $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
+INCLUDES = -I$(srcdir)/.. $(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 		$(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libu7file.la

@@ -1,7 +1,7 @@
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../imagewin -I$(srcdir)/../shapes \
 		-I$(srcdir)/../pathfinder -I$(srcdir)/../files \
 		-I$(srcdir)/../server -I$(srcdir)/../gumps \
-		-I$(srcdir)/../audio -I$(srcdir)/../usecode $(SDL_INCLUDES) \
+		-I$(srcdir)/../audio -I$(srcdir)/../usecode $(SDL_CFLAGS) \
 		$(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libobjs.la

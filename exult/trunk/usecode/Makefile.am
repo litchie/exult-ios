@@ -1,7 +1,7 @@
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin \
 		-I$(srcdir)/../shapes -I$(srcdir)/../objs -I$(srcdir)/../audio \
 		-I$(srcdir)/../gumps \
-	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 SUBDIRS = compiler # Compile errors: ucxt
 
