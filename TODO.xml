@@ -123,5 +123,17 @@
 		Nobody
 	</owner>
 </project>
+<project>
+	<description>
+		Implement ZIP support for the Zaurus.
+	</description>
+	<difficulty>
+		Easy
+	</difficulty>
+	<owner>
+		Artaxerxes
+	</owner>
+</project>
+
 
 </todo>
