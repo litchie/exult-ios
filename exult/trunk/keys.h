@@ -112,14 +112,10 @@ struct ltSDLkeysym
 };
 
 typedef std::map<SDL_keysym, ActionType, ltSDLkeysym>   KeyMap;
-typedef std::map<std::string, SDLKey> ParseKeyMap;
-typedef std::map<std::string, ActionCode> ParseCodeMap;
 
 class KeyBinder {
 private:
         KeyMap bindings;
-	ParseKeyMap keys;
-	ParseCodeMap codes;
 
 	std::vector<std::string> keyhelp;
 	std::vector<std::string> cheathelp;
@@ -147,7 +143,7 @@ public:
 private:
 	void ParseText(char *text);
 	void ParseLine(char *line);
-	void FillParseMaps();
+	static void FillParseMaps();
 };
 
 #endif /* KEYS_H */

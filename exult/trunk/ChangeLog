@@ -1,3 +1,7 @@
+2001-02-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* keys.*: applied Grant's patch
+	* actors.h: fixed warning/bug
+
 2001-02-20  Ryan Nunn  <triforce@merlin.net.au>
 	* exult.cc, exultmenu.cc imagewin/*.*: Added in Derek Liauw Kie Fa's
 	  SuperEagle scaler.

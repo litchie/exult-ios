@@ -34,6 +34,7 @@
 
 extern Cheat cheat;
 
+using std::pair;
 using std::atoi;
 using std::cerr;
 using std::clog;
@@ -48,6 +49,12 @@ extern void to_uppercase(string &str);
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 
 typedef void(*ActionFunc)(int*);
+
+typedef std::map<std::string, SDLKey> ParseKeyMap;
+typedef std::map<std::string, ActionCode> ParseCodeMap;
+
+static ParseKeyMap keys;
+static ParseCodeMap codes;
 
 struct Action {
   ActionFunc func;
@@ -113,6 +120,123 @@ struct Action {
   { ActionSkinColour, "Change skin colour", true, true, SERPENT_ISLE },
   { ActionSoundTester, "Sound tester", false, true, NONE }
 };
+
+const struct {
+  const char *s;
+  SDLKey k;
+} SDLKeyStringTable[] = {
+  {"BACKSPACE", SDLK_BACKSPACE},
+  {"TAB",       SDLK_TAB}, 
+  {"ENTER",     SDLK_RETURN}, 
+  {"PAUSE",     SDLK_PAUSE}, 
+  {"ESC",       SDLK_ESCAPE}, 
+  {"SPACE",     SDLK_SPACE}, 
+  {"DEL",       SDLK_DELETE}, 
+  {"KP0",       SDLK_KP0}, 
+  {"KP1",       SDLK_KP1}, 
+  {"KP2",       SDLK_KP2}, 
+  {"KP3",       SDLK_KP3}, 
+  {"KP4",       SDLK_KP4}, 
+  {"KP5",       SDLK_KP5}, 
+  {"KP6",       SDLK_KP6}, 
+  {"KP7",       SDLK_KP7}, 
+  {"KP8",       SDLK_KP8}, 
+  {"KP9",       SDLK_KP9}, 
+  {"KP.",       SDLK_KP_PERIOD}, 
+  {"KP/",       SDLK_KP_DIVIDE}, 
+  {"KP*",       SDLK_KP_MULTIPLY}, 
+  {"KP-",       SDLK_KP_MINUS}, 
+  {"KP+",       SDLK_KP_PLUS}, 
+  {"KP_ENTER",  SDLK_KP_ENTER}, 
+  {"UP",        SDLK_UP}, 
+  {"DOWN",      SDLK_DOWN}, 
+  {"RIGHT",     SDLK_RIGHT}, 
+  {"LEFT",      SDLK_LEFT}, 
+  {"INSERT",    SDLK_INSERT}, 
+  {"HOME",      SDLK_HOME}, 
+  {"END",       SDLK_END}, 
+  {"PAGEUP",    SDLK_PAGEUP}, 
+  {"PAGEDOWN",  SDLK_PAGEDOWN}, 
+  {"F1",        SDLK_F1}, 
+  {"F2",        SDLK_F2}, 
+  {"F3",        SDLK_F3}, 
+  {"F4",        SDLK_F4}, 
+  {"F5",        SDLK_F5}, 
+  {"F6",        SDLK_F6}, 
+  {"F7",        SDLK_F7}, 
+  {"F8",        SDLK_F8}, 
+  {"F9",        SDLK_F9}, 
+  {"F10",       SDLK_F10}, 
+  {"F11",       SDLK_F11}, 
+  {"F12",       SDLK_F12}, 
+  {"F13",       SDLK_F13}, 
+  {"F14",       SDLK_F14}, 
+  {"F15",       SDLK_F15},
+  {"", SDLK_UNKNOWN} // terminator
+};
+
+const struct {
+  const char* s;
+  ActionCode a;
+} ActionStringTable[] = {
+  {"QUIT",                  ACTION_QUIT},         
+  {"SAVE_RESTORE",          ACTION_SAVE_RESTORE},         
+  {"QUICKSAVE",             ACTION_QUICKSAVE},         
+  {"QUICKRESTORE",          ACTION_QUICKRESTORE},         
+  {"ABOUT",                 ACTION_ABOUT},         
+  {"HELP",                  ACTION_HELP},         
+  {"CLOSE_GUMPS",           ACTION_CLOSE_GUMPS},         
+  {"SCREENSHOT",            ACTION_SCREENSHOT},         
+
+  {"REPAINT",               ACTION_REPAINT},         
+  {"RESOLUTION_INCREASE",   ACTION_RESOLUTION_INCREASE},         
+  {"RESOLUTION_DECREASE",   ACTION_RESOLUTION_DECREASE},         
+  {"BRIGHTER",              ACTION_BRIGHTER},         
+  {"DARKER",                ACTION_DARKER},         
+  {"TOGGLE_FULLSCREEN",     ACTION_TOGGLE_FULLSCREEN},         
+
+  {"USEITEM",               ACTION_USEITEM},         
+  {"TOGGLE_COMBAT",         ACTION_TOGGLE_COMBAT},         
+  {"TARGET_MODE",           ACTION_TARGET_MODE},         
+  {"INVENTORY",             ACTION_INVENTORY},         
+  {"TRY_KEYS",              ACTION_TRY_KEYS},         
+  {"STATS",                 ACTION_STATS},         
+
+  {"SHOW_SI_INTRO",         ACTION_SHOW_SI_INTRO},         
+  {"SHOW_ENDGAME",          ACTION_SHOW_ENDGAME},         
+  {"SCROLL_LEFT",           ACTION_SCROLL_LEFT},         
+  {"SCROLL_RIGHT",          ACTION_SCROLL_RIGHT},         
+  {"SCROLL_UP",             ACTION_SCROLL_UP},         
+  {"SCROLL_DOWN",           ACTION_SCROLL_DOWN},         
+  {"CENTER_SCREEN",         ACTION_CENTER_SCREEN},         
+  {"SHAPE_BROWSER",         ACTION_SHAPE_BROWSER},         
+  {"CREATE_ITEM",           ACTION_CREATE_SHAPE},         
+  {"DELETE_OBJECT",         ACTION_DELETE_OBJECT},         
+  {"TOGGLE_EGGS",           ACTION_TOGGLE_EGGS},         
+  {"TOGGLE_GOD_MODE",       ACTION_TOGGLE_GOD_MODE},         
+  {"CHANGE_GENDER",         ACTION_CHANGE_GENDER},         
+  {"CHEAT_HELP",            ACTION_CHEAT_HELP},         
+  {"TOGGLE_INFRAVISION",    ACTION_TOGGLE_INFRAVISION},         
+  {"SKIPLIFT_DECREMENT",    ACTION_SKIPLIFT_DECREMENT},         
+  {"TOGGLE_MAP_EDITOR",     ACTION_TOGGLE_MAP_EDITOR},         
+  {"MAP_TELEPORT",          ACTION_MAP_TELEPORT},         
+  {"CURSOR_TELEPORT",       ACTION_CURSOR_TELEPORT},         
+  {"NEXT_TIME_PERIOD",      ACTION_NEXT_TIME_PERIOD},         
+  {"TOGGLE_WIZARD_MODE",    ACTION_TOGGLE_WIZARD_MODE},         
+  {"PARTY_HEAL",            ACTION_PARTY_HEAL},         
+  {"PARTY_INCREASE_LEVEL",  ACTION_PARTY_INCREASE_LEVEL},         
+  {"CHEAT_SCREEN",          ACTION_CHEAT_SCREEN},         
+  {"PICK_POCKET",           ACTION_PICK_POCKET},         
+  {"NPC_NUMBERS",           ACTION_NPC_NUMBERS},         
+  {"GRAB_ACTOR",            ACTION_GRAB_ACTOR},         
+  {"PLAY_MUSIC",            ACTION_PLAY_MUSIC},         
+  {"TOGGLE_NAKED",          ACTION_TOGGLE_NAKED},         
+  {"TOGGLE_PETRA",          ACTION_TOGGLE_PETRA},         
+  {"CHANGE_SKIN",           ACTION_CHANGE_SKIN},         
+  {"SOUND_TESTER",          ACTION_SOUND_TESTER},
+  {"", ACTION_NOTHING} //terminator
+};
+
 
 KeyBinder::KeyBinder()
 {
@@ -249,7 +373,7 @@ static void skipspace(string &s) {
 
 void KeyBinder::ParseLine(char *line)
 {
-  int i;
+  size_t i;
   SDL_keysym k;
   ActionType a;
   k.sym      = SDLK_UNKNOWN;
@@ -437,112 +561,11 @@ void KeyBinder::LoadDefaults()
 }
 
 // codes used in keybindings-files. (use uppercase here)
-void KeyBinder::FillParseMaps()
+static void KeyBinder::FillParseMaps()
 {
-  keys["BACKSPACE"] = SDLK_BACKSPACE;
-  keys["TAB"]       = SDLK_TAB;
-  keys["ENTER"]     = SDLK_RETURN;
-  keys["PAUSE"]     = SDLK_PAUSE;
-  keys["ESC"]       = SDLK_ESCAPE;
-  keys["SPACE"]     = SDLK_SPACE;
-  keys["DEL"]       = SDLK_DELETE;
-  keys["KP0"]       = SDLK_KP0;
-  keys["KP1"]       = SDLK_KP1;
-  keys["KP2"]       = SDLK_KP2;
-  keys["KP3"]       = SDLK_KP3;
-  keys["KP4"]       = SDLK_KP4;
-  keys["KP5"]       = SDLK_KP5;
-  keys["KP6"]       = SDLK_KP6;
-  keys["KP7"]       = SDLK_KP7;
-  keys["KP8"]       = SDLK_KP8;
-  keys["KP9"]       = SDLK_KP9;
-  keys["KP."]       = SDLK_KP_PERIOD;
-  keys["KP/"]       = SDLK_KP_DIVIDE;
-  keys["KP*"]       = SDLK_KP_MULTIPLY;
-  keys["KP-"]       = SDLK_KP_MINUS;
-  keys["KP+"]       = SDLK_KP_PLUS;
-  keys["KP_ENTER"]  = SDLK_KP_ENTER;
-  
-  keys["UP"]        = SDLK_UP;
-  keys["DOWN"]      = SDLK_DOWN;
-  keys["RIGHT"]     = SDLK_RIGHT;
-  keys["LEFT"]      = SDLK_LEFT;
-  keys["INSERT"]    = SDLK_INSERT;
-  keys["HOME"]      = SDLK_HOME;
-  keys["END"]       = SDLK_END;
-  keys["PAGEUP"]    = SDLK_PAGEUP;
-  keys["PAGEDOWN"]  = SDLK_PAGEDOWN;
-  
-  keys["F1"]        = SDLK_F1;
-  keys["F2"]        = SDLK_F2;
-  keys["F3"]        = SDLK_F3;
-  keys["F4"]        = SDLK_F4;
-  keys["F5"]        = SDLK_F5;
-  keys["F6"]        = SDLK_F6;
-  keys["F7"]        = SDLK_F7;
-  keys["F8"]        = SDLK_F8;
-  keys["F9"]        = SDLK_F9;
-  keys["F10"]       = SDLK_F10;
-  keys["F11"]       = SDLK_F11;
-  keys["F12"]       = SDLK_F12;
-  keys["F13"]       = SDLK_F13;
-  keys["F14"]       = SDLK_F14;
-  keys["F15"]       = SDLK_F15;
+  for (int i = 0; strlen(SDLKeyStringTable[i].s) > 0; i++)
+    keys[SDLKeyStringTable[i].s] = SDLKeyStringTable[i].k;
 
-  codes["QUIT"] = ACTION_QUIT;
-  codes["SAVE_RESTORE"] = ACTION_SAVE_RESTORE;
-  codes["QUICKSAVE"] = ACTION_QUICKSAVE;
-  codes["QUICKRESTORE"] = ACTION_QUICKRESTORE;
-  codes["ABOUT"] = ACTION_ABOUT;
-  codes["HELP"] = ACTION_HELP;
-  codes["CLOSE_GUMPS"] = ACTION_CLOSE_GUMPS;
-  codes["SCREENSHOT"] = ACTION_SCREENSHOT;
-
-  codes["REPAINT"] = ACTION_REPAINT;
-  codes["RESOLUTION_INCREASE"] = ACTION_RESOLUTION_INCREASE;
-  codes["RESOLUTION_DECREASE"] = ACTION_RESOLUTION_DECREASE;
-  codes["BRIGHTER"] = ACTION_BRIGHTER;
-  codes["DARKER"] = ACTION_DARKER;
-  codes["TOGGLE_FULLSCREEN"] = ACTION_TOGGLE_FULLSCREEN;
-
-  codes["USEITEM"] = ACTION_USEITEM;
-  codes["TOGGLE_COMBAT"] = ACTION_TOGGLE_COMBAT;
-  codes["TARGET_MODE"] = ACTION_TARGET_MODE;
-  codes["INVENTORY"] = ACTION_INVENTORY;
-  codes["TRY_KEYS"] = ACTION_TRY_KEYS;
-  codes["STATS"] = ACTION_STATS;
-
-  codes["SHOW_SI_INTRO"] = ACTION_SHOW_SI_INTRO;
-  codes["SHOW_ENDGAME"] = ACTION_SHOW_ENDGAME;
-  codes["SCROLL_LEFT"] = ACTION_SCROLL_LEFT;
-  codes["SCROLL_RIGHT"] = ACTION_SCROLL_RIGHT;
-  codes["SCROLL_UP"] = ACTION_SCROLL_UP;
-  codes["SCROLL_DOWN"] = ACTION_SCROLL_DOWN;
-  codes["CENTER_SCREEN"] = ACTION_CENTER_SCREEN;
-  codes["SHAPE_BROWSER"] = ACTION_SHAPE_BROWSER;
-  codes["CREATE_ITEM"] = ACTION_CREATE_SHAPE;
-  codes["DELETE_OBJECT"] = ACTION_DELETE_OBJECT;
-  codes["TOGGLE_EGGS"] = ACTION_TOGGLE_EGGS;
-  codes["TOGGLE_GOD_MODE"] = ACTION_TOGGLE_GOD_MODE;
-  codes["CHANGE_GENDER"] = ACTION_CHANGE_GENDER;
-  codes["CHEAT_HELP"] = ACTION_CHEAT_HELP;
-  codes["TOGGLE_INFRAVISION"] = ACTION_TOGGLE_INFRAVISION;
-  codes["SKIPLIFT_DECREMENT"] = ACTION_SKIPLIFT_DECREMENT;
-  codes["TOGGLE_MAP_EDITOR"] = ACTION_TOGGLE_MAP_EDITOR;
-  codes["MAP_TELEPORT"] = ACTION_MAP_TELEPORT;
-  codes["CURSOR_TELEPORT"] = ACTION_CURSOR_TELEPORT;
-  codes["NEXT_TIME_PERIOD"] = ACTION_NEXT_TIME_PERIOD;
-  codes["TOGGLE_WIZARD_MODE"] = ACTION_TOGGLE_WIZARD_MODE;
-  codes["PARTY_HEAL"] = ACTION_PARTY_HEAL;
-  codes["PARTY_INCREASE_LEVEL"] = ACTION_PARTY_INCREASE_LEVEL;
-  codes["CHEAT_SCREEN"] = ACTION_CHEAT_SCREEN;
-  codes["PICK_POCKET"] = ACTION_PICK_POCKET;
-  codes["NPC_NUMBERS"] = ACTION_NPC_NUMBERS;
-  codes["GRAB_ACTOR"] = ACTION_GRAB_ACTOR;
-  
-  codes["PLAY_MUSIC"] = ACTION_PLAY_MUSIC;
-  codes["TOGGLE_NAKED"] = ACTION_TOGGLE_NAKED;
-  codes["TOGGLE_PETRA"] = ACTION_TOGGLE_PETRA;
-  codes["CHANGE_SKIN"] = ACTION_CHANGE_SKIN;
-  codes["SOUND_TESTER"] = ACTION_SOUND_TESTER;
+  for (int i = 0; strlen(ActionStringTable[i].s) > 0; i++)
+    codes[ActionStringTable[i].s] = ActionStringTable[i].a;
 }
