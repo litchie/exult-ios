@@ -1106,6 +1106,8 @@ void Game_window::show_items
 		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << '\n';
 		if (info.is_animated())
 			cout << "Object is ANIMATED\n";
+		if (info.has_transparency())
+			cout << "Object has TRANSPARENCY\n";
 		if (info.is_transparent())
 			cout << "Object is TRANSPARENT\n";
 		if (info.is_light_source())
