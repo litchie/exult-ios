@@ -2497,6 +2497,21 @@ USECODE_INTRINSIC(run_schedule)
 	return no_ret;
 }
 
+USECODE_INTRINSIC(get_temperature)
+{
+	Actor *npc = as_actor(get_item(parms[0]));
+	return Usecode_value(npc ? npc->get_temperature() : 0);
+}
+
+USECODE_INTRINSIC(set_temperature)
+{
+	// set_temperature(npc, value (0-63)).
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc)
+		npc->set_temperature(parms[1].get_int_value());
+	return no_ret;
+}
+
 #if 0	/* +++++Not used at the moment. */
 USECODE_INTRINSIC(add_removed_npc)
 {

@@ -349,6 +349,8 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(set_new_schedules);
 	USECODE_INTRINSIC_DECL(revert_schedule);
 	USECODE_INTRINSIC_DECL(run_schedule);
+	USECODE_INTRINSIC_DECL(get_temperature);
+	USECODE_INTRINSIC_DECL(set_temperature);
 //	USECODE_INTRINSIC_DECL(add_removed_npc);
 	USECODE_INTRINSIC_DECL(approach_avatar);
 	USECODE_INTRINSIC_DECL(a_or_an);
