@@ -211,6 +211,17 @@ public:
 	};
 
 /*
+ *	Hound the Avatar.
+ */
+class Hound_schedule : public Schedule
+	{
+public:
+	Hound_schedule(Actor *n) : Schedule(n)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	Wander all over the place, using pathfinding.
  */
 class Wander_schedule : public Loiter_schedule
@@ -244,6 +255,17 @@ public:
 	Sit_schedule(Actor *n, Game_object *ch = 0);
 	virtual void now_what();	// Now what should NPC do?
 	static void set_action(Actor *actor, Game_object *chairobj);
+	};
+
+/*
+ *	Shy away from Avatar.
+ */
+class Shy_schedule : public Schedule
+	{
+public:
+	Shy_schedule(Actor *n) : Schedule(n)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
 	};
 
 /*
