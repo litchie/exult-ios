@@ -273,7 +273,7 @@ Game_window::Game_window
 	    effects(new Effects_manager(this)), 
 	    gump_man(new Gump_manager), render(new Game_render),
 	    painted(false), focus(true), 
-	    teleported(false), in_dungeon(0), ice_dungeon(false),
+	    in_dungeon(0), ice_dungeon(false),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
             text_bg(false), 
@@ -1549,7 +1549,7 @@ void Game_window::start_actor
 		return;			// Zzzzz....
 	if (main_actor_dont_move() || gump_man->gump_mode())
 		return;
-	teleported = 0;
+//	teleported = 0;
 	if (moving_barge)
 		{			// Want to move center there.
 		int lift = main_actor->get_lift();
@@ -1601,7 +1601,7 @@ void Game_window::start_actor_along_path
 					// Animation in progress?
 	if (main_actor_dont_move())
 		return;
-	teleported = 0;
+//	teleported = 0;
 	int lift = main_actor->get_lift();
 	int liftpixels = 4*lift;	// Figure abs. tile.
 	Tile_coord dest(get_scrolltx() + (winx + liftpixels)/c_tilesize,
@@ -1669,7 +1669,7 @@ void Game_window::teleport_party
 	if (!skip_eggs)			// Check all eggs around new spot.
 		Map_chunk::try_all_eggs(main_actor, t.tx, t.ty, t.tz,
 					oldpos.tx, oldpos.ty);
-	teleported = 1;
+//	teleported = 1;
 	// generate mousemotion event
 	int x, y;
 	SDL_GetMouseState(&x, &y);

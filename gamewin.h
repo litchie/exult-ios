@@ -98,7 +98,6 @@ class Game_window
 	bool focus;			// Do we have focus?
 	bool ice_dungeon;		// true if inside ice dungeon
 	bool painted;			// true if we updated image buffer.
-	bool teleported;		// true if just teleported.
 		// Game state values:
 	int skip_above_actor;		// Level above actor to skip rendering.
 	unsigned int in_dungeon;	// true if inside a dungeon.
@@ -288,8 +287,6 @@ public:
 		{ bodies.put(npc_num, body); }
 	Dead_body *get_body(int npc_num)
 		{ return bodies[npc_num]; }
-	inline bool was_teleported()
-		{ return teleported; }
 	int get_num_npcs()
 		{ return npcs.size(); }
 	int get_unused_npc();		// Find first unused NPC #.
