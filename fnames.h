@@ -118,6 +118,8 @@
 #define PATCH_PAPERDOL	"<PATCH>/paperdol.vga"
 #define OCCLUDE		"<STATIC>/occlude.dat"
 #define PATCH_OCCLUDE	"<PATCH>/occlude.dat"
+#define CONTAINER	"<STATIC>/container.dat"
+#define PATCH_CONTAINER	"<PATCH>/container.dat"
 
 #define GSCRNSHOT	"<GAMEDAT>/scrnshot.shp"
 #define GSAVEINFO	"<GAMEDAT>/saveinfo.dat"

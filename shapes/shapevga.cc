@@ -60,9 +60,13 @@ static bool U7open2
 		}
 	catch(const file_exception & f)
 		{
+#if 0
 		if (editing)
 			return false;
 		throw f;
+#else	/* This is preferable. */
+		return false;
+#endif
 		}
 	return true;
 	}
@@ -162,6 +166,21 @@ void Shapes_vga_file::read_info
 			info[shapenum].ammo = ainf;
 			}
 		ammo.close();
+		}
+	ifstream container;
+	if (U7open2(container, patch_name(PATCH_CONTAINER), CONTAINER,editing))
+		{
+		int vers = Read1(container);
+		cnt = Read1(container);
+		for (i = 0; i < cnt; i++)
+			{
+			uint8 buf[4];
+			uint8 *ptr = &buf[0];
+			container.read((char *)&buf[0], sizeof(buf));
+			int shapenum = Read2(ptr);
+			info[shapenum].container_gump = Read2(ptr);
+			}
+		container.close();
 		}
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;
