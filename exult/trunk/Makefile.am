@@ -143,6 +143,9 @@ EXTRA_DIST = 	\
 	README.BeOS \
 	README.MacOS \
 	README.MacOSX \
+	README.AmigaOS \
+	README.MorphOS \
+	README.Qtopia \
 	Makefile.be \
 	Makefile.common \
 	Makefile.mingw \
