@@ -137,7 +137,10 @@ void Game_window::paint
 		int carried_light = 0;
 		for (int i = 0; !carried_light && i < cnt; i++)
 			carried_light = party[i]->has_light_source();
-			// Set palette for lights.
+					// Also check light spell.
+		if (special_light && clock.get_total_minutes() > special_light)
+			special_light = 0;
+					// Set palette for lights.
 		clock.set_light_source(carried_light + (light_sources > 0));
 		}
 	}

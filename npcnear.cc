@@ -75,7 +75,9 @@ void Npc_proximity_handler::handle_event
 		npc->set_schedule_type(Schedule::combat);
 		}
 					// Do it 50% of the time.
-	else if (!(curtime < wait_until) && rand()%2 == 1)
+	else if (!(curtime < wait_until) && rand()%2 == 1 &&
+					// And not for party members.
+			npc->get_party_id() < 0)
 		{
 		gwin->get_usecode()->call_usecode(npc->get_usecode(), npc,
 					Usecode_machine::npc_proximity);

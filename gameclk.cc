@@ -47,7 +47,9 @@ void Game_clock::set_time_palette
 		else if (new_palette == PALETTE_DUSK)
 			new_palette = PALETTE_DAWN;
 		}
-	if (gwin->get_mode() == Game_window::gump &&
+					// Gump mode, or light spell?
+	if ((gwin->get_mode() == Game_window::gump || 
+						gwin->is_special_light()) &&
 					new_palette == PALETTE_NIGHT)
 		new_palette = PALETTE_DAWN;
 	gwin->set_palette(new_palette);
