@@ -399,6 +399,7 @@ public:
 	void read();			// Read in 'gamedat'.
 	void write_gwin();		// Write gamedat/gamewin.dat.
 	void read_gwin();		// Read gamedat/gamewin.dat.
+	bool was_map_modified();	// Was any map modified?
 	void write_map();		// Write map data to <PATCH> dir.
 	void read_map();		// Reread initial game map.
 	void reload_usecode();		// Reread (patched) usecode.

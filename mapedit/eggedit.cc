@@ -336,6 +336,16 @@ int ExultStudio::init_egg_window
 	case 10:			// Button:
 		set_spin("btnegg_distance", data1&0xff);
 		break;
+	case 11:			// Intermap:
+		{
+		int mapnum = data1&0xff, schunk = data1>>8;
+		set_spin("intermap_mapnum", mapnum);
+		set_entry("intermap_x",
+				(schunk%12)*c_tiles_per_schunk + (data2&0xff));
+		set_entry("intermap_y",
+				(schunk/12)*c_tiles_per_schunk + (data2>>8));
+		break;
+		}
 	default:
 		break;
 		}
@@ -446,6 +456,17 @@ int ExultStudio::save_egg_window
 	case 10:			// Button:
 		data1 = get_spin("btnegg_distance")&0xff;
 		break;
+	case 11:			// Intermap.
+		{
+		int tx = get_num_entry("intermap_x"),
+		    ty = get_num_entry("intermap_y"),
+		    mapnum = get_spin("intermap_mapnum");
+		data2 = (tx&0xff) + ((ty&0xff)<<8);
+		int sx = tx/c_tiles_per_schunk,
+		    sy = ty/c_tiles_per_schunk;
+		data1 = mapnum + ((sy*12 + sx)<<8);
+		break;
+		}
 	default:
 		cout << "Unknown egg type" << endl;
 		return 0;
