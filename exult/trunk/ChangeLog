@@ -1,5 +1,6 @@
 2004-01-26  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: update version to 1.1.9rc1, adjust copyright dates
+	* configure.ac: remove --enable-usecode-debugger configure option
 
 2004-01-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs/egg.cc: never set hatched on the Serpent Staff egg (bug#879253)
