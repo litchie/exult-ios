@@ -1,3 +1,7 @@
+2001-01-25  Ryan Nunn <triforce@merlin.net.au>
+	* mingw_kuldges.h: Added so Exult can once again be compiled in Win32
+	* makefile.win32, makefile.cygwin: -include mingw_kludges.h
+
 2001-01-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Sprite effects no longer get split up (at SI start).
