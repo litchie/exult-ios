@@ -184,7 +184,7 @@ extern "C" gboolean on_monst_shape_focus_out_event
 	gpointer user_data
 	)
 	{
-	ExultStudio::get_instance()->show_egg_monster(0, 0, -1, -1);
+	ExultStudio::get_instance()->show_egg_monster();
 	return TRUE;
 	}
 
@@ -454,6 +454,22 @@ void ExultStudio::set_static_path(const char *path)
 }
 
 /*
+ *	Callback for when a shape is dropped on the Egg 'monster' area.
+ */
+
+static void Egg_monster_dropped
+	(
+	int file,			// U7_SHAPE_SHAPES.
+	int shape,
+	int frame,
+	void *udata
+	)
+	{
+	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < 1024)
+		((ExultStudio *) udata)->set_egg_monster(shape, frame);
+	}
+
+/*
  *	Open the egg-editing window.
  */
 
@@ -470,7 +486,8 @@ void ExultStudio::open_egg_window
 			{
 			egg_monster_draw = new Shape_draw(vgafile, palbuf,
 			    glade_xml_get_widget(app_xml, "egg_monster_draw"));
-			egg_monster_draw->set_drag_dest(0, 0); //+++++++
+			egg_monster_draw->enable_drop(Egg_monster_dropped,
+								this);
 			}
 		}
 	if (data)
@@ -871,6 +888,21 @@ void ExultStudio::show_egg_monster
 		egg_monster_draw->show(x, y, w, h);
 	else
 		egg_monster_draw->show();
+	}
+
+/*
+ *	Set egg monster shape.
+ */
+
+void ExultStudio::set_egg_monster
+	(
+	int shape,
+	int frame
+	)
+	{
+	Set_entry(app_xml, "monst_shape", shape);
+	Set_entry(app_xml, "monst_frame", frame);
+	show_egg_monster();
 	}
 
 void ExultStudio::run()
