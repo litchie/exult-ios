@@ -121,94 +121,6 @@ Usecode_function::Usecode_function
 	}
 
 /*
- *	Add a possible 'answer'.
- */
-
-Answers::Answers()
-{}
-
-void Answers::clear(void)
-{
-	answers.clear();
-}
-
-void Answers::add_answer
-	(
-	const char *str
-	)
-	{
-	_remove_answer(str);
-	string	s(str);
-	answers.push_back(s);
-	}
-
-/*
- *	Add an answer to the list.
- */
-
-void Answers::add_answer
-	(
-	Usecode_value& val		// Array or string.
-	)
-	{
-	const char *str;
-	int size = val.get_array_size();
-	if (size)			// An array?
-		{
-		for (int i = 0; i < size; i++)
-			add_answer(val.get_elem(i));
-		}
-	else if ((str = val.get_str_value()) != 0)
-		add_answer(str);
-	}
-
-/*
- *	Remove an answer from the list.
- */
-
-void Answers::_remove_answer(const char *str)
-{
-	vector<string>::iterator it;
-
-	for(it=answers.begin();
-		it!=answers.end();
-		++it)
-		{
-	//	cerr << "'" << *it << "' ~ '" << str << "'"<<endl;
-		if(*it==str)
-			break;
-		}
-	if(it!=answers.end())
-		answers.erase(it);
-}
-
-void Answers::remove_answer
-	(
-	Usecode_value& val		// String or array of strings
-	)
-	{
-#if 0
-	const char *str = val.get_str_value();
-	if (!str)
-		return;
-	_remove_answer(str);
-#else
-	const char *str;
-	if (val.is_array()) {
-		int size = val.get_array_size();
-		for (int i=0; i < size; i++) {
-			str = val.get_elem(i).get_str_value();
-			if (str) _remove_answer(str);
-		}
-	} else {
-		str = val.get_str_value();
-		_remove_answer(str);
-	}
-#endif
-}
-
-
-/*
  *	Append a string.
  */
 
@@ -361,7 +273,7 @@ void Usecode_machine::show_pending_text
 		gwin->paint();
 		}
 					// Normal conversation:
-	else if (gwin->is_npc_text_pending())
+	else if (conv.is_npc_text_pending())
 		click_to_continue();
 	}
 
@@ -404,11 +316,11 @@ void Usecode_machine::say_string
 			break;
 		if (!eol)		// Not found?
 			{
-			gwin->show_npc_message(str);
+			conv.show_npc_message(str);
 			break;
 			}
 		*eol = 0;
-		gwin->show_npc_message(str);
+		conv.show_npc_message(str);
 		click_to_continue();
 		str = eol + 1;
 		if (*str == '~')
@@ -454,7 +366,7 @@ void Usecode_machine::show_npc_face
 	gwin->end_gump_mode();
 //	gwin->set_all_dirty();
 	gwin->paint();
-	gwin->show_face(shape, frame);
+	conv.show_face(shape, frame);
 //	user_choice = 0;		// Seems like a good idea.
 // Also seems to create a conversation bug in Test of Love :-(
 
@@ -471,7 +383,7 @@ void Usecode_machine::remove_npc_face
 	{
 	show_pending_text();
 	int shape = -arg1.get_int_value();
-	gwin->remove_face(shape);
+	conv.remove_face(shape);
 	}
 
 /*
@@ -1136,7 +1048,7 @@ void Usecode_machine::click_to_continue
 	char c;
 	if (!gwin->is_palette_faded_out())// If black screen, skip!
 		Get_click(xx, yy, Mouse::hand, &c);
-	gwin->clear_text_pending();
+	conv.clear_text_pending();
 	user_choice = 0;		// Clear it.
 	}
 
@@ -1164,7 +1076,7 @@ const char *Usecode_machine::get_user_choice
 	(
 	)
 	{
-	if (!answers.answers.size())
+	if (!conv.get_num_answers())
 		return (0);		// Shouldn't happen.
 	if (!user_choice)		// May have already been done.
 		get_user_choice_num();
@@ -1183,10 +1095,7 @@ int Usecode_machine::get_user_choice_num
 	)
 	{
 	user_choice = 0;
-//	cout << "Choose: ";		// TESTING.
-//	for (int i = 0; i < answers.num_answers; i++)
-//		cout << ' ' << answers.answers[i] << '(' << i << ") ";
-	gwin->show_avatar_choices(answers.answers);
+	conv.show_avatar_choices();
 	int x, y;			// Get click.
 	int choice_num;
 	do
@@ -1194,31 +1103,21 @@ int Usecode_machine::get_user_choice_num
 		char chr;		// Allow '1', '2', etc.
 		int result=Get_click(x, y, Mouse::hand, &chr);
 		if (result<=0) {	// ESC pressed, select 'bye' if poss.
-			vector<string>::iterator it;
-			choice_num = 0;
-			for(it=answers.answers.begin(); 
-				it!=answers.answers.end(); ++it)
-			{
-				if(*it=="bye")
-					break;
-				choice_num++;
-			}
-			if(it==answers.answers.end())
-				choice_num = -1;
+			choice_num = conv.locate_answer("bye");
 		} else if (chr) {		// key pressed
-			if (chr>='1' && chr <='0'+(int)answers.answers.size()){
+			if (chr>='1' && chr <='0'+conv.get_num_answers()) {
 				choice_num = chr - '1';
 			} else
 				choice_num = -1;	//invalid key
 		} else
-			choice_num = gwin->conversation_choice(x, y);
+			choice_num = conv.conversation_choice(x, y);
 		}
 					// Wait for valid choice.
-	while (choice_num  < 0 || choice_num >= (int)answers.answers.size());
+	while (choice_num  < 0 || choice_num >= conv.get_num_answers());
 
-	gwin->clear_avatar_choices();
+	conv.clear_avatar_choices();
 					// Store ->answer string.
-	user_choice = answers.answers[choice_num].c_str();
+	user_choice = conv.get_answer(choice_num);
 	return (choice_num);		// Return choice #.
 	}
 
@@ -1409,7 +1308,7 @@ int Usecode_machine::run
 			offset = (short) Read2(ip);
 			catch_ip = ip + offset;
 					// ++++++Not sure if this is needed:
-			if (set_ret_value || !answers.answers.size() || abort)
+			if (set_ret_value || !conv.get_num_answers() || abort)
 				{
 				ip = catch_ip;
 				user_choice = 0;
@@ -1894,7 +1793,7 @@ int Usecode_machine::call_usecode
 		return (0);
 	Game_object *prev_item = caller_item;
 	caller_item = obj;
-	answers.clear();
+	conv.clear_answers();
 	int ret = call_usecode_function(id, event, 0);
 	set_book(0);
 	caller_item = prev_item;
@@ -2004,3 +1903,8 @@ void Usecode_machine::link_party
 			}
 		}
 	}
+
+void Usecode_machine::init_conversation()
+{
+	conv.init_faces();
+}

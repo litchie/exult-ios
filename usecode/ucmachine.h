@@ -44,7 +44,7 @@ class Usecode_machine;
 #include "tiles.h"
 #include "utils.h"
 #include "vec.h"	// Includes STL vector.
-#include <deque>	// STL container
+#include "conversation.h"
 #include <string>	// STL string
 
 
@@ -67,21 +67,6 @@ class Usecode_function
 		{ delete [] code; }
 	};
 
-
-/*
- *	A set of answers:
- */
-struct Answers
-	{
-	friend class Usecode_machine;
-	std::vector<std::string> answers;	// What we can click on.
-	Answers();
-	void add_answer(const char *str);	// Add to the list.
-	void add_answer(Usecode_value& val);
-	void remove_answer(Usecode_value& val);
-	void _remove_answer(const char *);
-	void	clear(void);
-	};	
 
 /*
  *	Here's our virtual machine for running usecode.
@@ -123,8 +108,7 @@ private:
 	int popi();
 					// Push/pop strings.
 	void pushs(char *s);
-	Answers answers;		// What user can click on.
-	std::deque< Answers > answer_stack;
+	Conversation conv;		// What user can click on.
 					// Get ->obj. from 'itemref'.
 	Game_object *get_item(Usecode_value& itemref);
 					// "Safe" cast to Actor.
@@ -356,7 +340,11 @@ public:
 	void write();			// Write out 'gamedat/usecode.dat'.
 	void read();			// Reat in 'gamedat/usecode.dat'.
 	void link_party();		// Set party's id's.
-	
+
+	void init_conversation();
+	int get_num_faces_on_screen() const
+		{ return conv.get_num_faces_on_screen(); }
+
 	};
 
 #if USECODE_DEBUGGER

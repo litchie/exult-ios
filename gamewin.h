@@ -80,11 +80,6 @@ private:
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
 	Special_effect *effects;	// Text snippets, sprite effects.
 	Gump *open_gumps;	// Open containers on screen.
-	Npc_face_info *face_info[3];	// NPC's on-screen faces in convers.
-	int num_faces;			// # of faces.
-	int last_face_shown;		// Index of last npc face shown.
-	Rectangle avatar_face;		// Area take by Avatar in conversation.
-	Rectangle *conv_choices;	// Choices during a conversation.
 	unsigned long render_seq;	// For marking rendered objects.
 	bool painted;			// true if we updated image buffer.
 	bool focus;			// Do we have focus?
@@ -94,9 +89,9 @@ private:
 	bool in_dungeon;		// true if inside a dungeon.
 	std::ifstream chunks;		// "u7chunks" file.
 	Shapes_vga_file shapes;		// "shapes.vga" file.
-	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	Vga_file paperdolls;		// "paperdoll.vga" - paperdolls in SI
+	Vga_file faces;			// "faces.vga" - faces for conv.
 	Fonts_vga_file *fonts;		// "fonts.vga" file.
 	Shape_file *extra_fonts[5];	// extra font shapes
 	Vga_file sprites;		// "sprites.vga" file.
@@ -262,7 +257,7 @@ public:
 		{ return num_npcs; }
 	int get_num_shapes()
 		{ return shapes.get_num_shapes(); }
-	int get_num_faces()
+ 	int get_num_faces() 
 		{ return faces.get_num_shapes(); }
 	int get_num_gumps()
 		{ return gumps.get_num_shapes(); }
@@ -407,13 +402,6 @@ public:
 		{ paint_outline(xoff, yoff, shnum, frnum, poison_pixel); }
 	void paint_protect_outline(int xoff, int yoff, int shnum, int frnum)
 		{ paint_outline(xoff, yoff, shnum, frnum, protect_pixel); }
-					// A "face" is used in conversations.
-	void paint_face(int xoff, int yoff, int shapenum, int framenum)
-		{
-		Shape_frame *shape = faces.get_shape(shapenum, framenum);
-		if (shape)
-			paint_shape(xoff, yoff, shape);
-		}
 					// A "gump" is an open container.
 	void paint_gump(int xoff, int yoff, int shapenum, int framenum, bool paperdoll = false)
 		{
@@ -422,6 +410,15 @@ public:
 		if (shape)
 			paint_shape(xoff, yoff, shape);
 		}
+	Shape_frame *get_face(int shapenum, int framenum) {
+		return faces.get_shape(shapenum, framenum);
+	}
+	void paint_face(int xoff, int yoff, int shapenum, int framenum) {
+		Shape_frame *shape = faces.get_shape(shapenum, framenum);
+		if (shape)
+			paint_shape(xoff, yoff, shape);
+	}
+
 	void paint_sprite(int xoff, int yoff, int shapenum, int framenum)
 		{
 		Shape_frame *shape = sprites.get_shape(shapenum, framenum);
@@ -556,22 +553,6 @@ public:
 	void remove_weather_effects();	// Remove just the weather.
 					// Handle a double-click in window.
 	void double_clicked(int x, int y);
-	void init_faces();		// Clear out face list.
-					// Show a "face" on the screen.
-	void show_face(int shape, int frame);
-	void remove_face(int shape);	// Remove "face" from screen.
-	inline int get_num_faces_on_screen() const // # of faces on screen.
-		{ return num_faces; }
-					// Show what NPC said.
-	void show_npc_message(const char *msg);
-	int is_npc_text_pending();	// Need to prompt user?
-	void clear_text_pending();	// Don't need to prompt.
-					// Show what Avatar can say.
-	void show_avatar_choices(int num_choices, char **choices);
-	void show_avatar_choices(std::vector<std::string> &choices);
-	void clear_avatar_choices();
-					// User clicked on a choice.
-	int conversation_choice(int x, int y);
 	void show_gump(Game_object *obj, int shapenum);
 	void end_gump_mode();		// Remove gumps from screen.
 					// Remove a gump from screen.
