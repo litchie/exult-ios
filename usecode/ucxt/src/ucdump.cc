@@ -1,6 +1,24 @@
 /*
+ *  Copyright (C) 2001-2002  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+/*
 	ucxt: Ultima 7 usecode dump/disassembly/convert-to-something-more-readable utility
-		Based heavily on, and including code from ucdump created and maintained by:
+		Based heavily on ucdump created and maintained by:
 			Maxim S. Shatskih aka Moscow Dragon (maxim__s@mtu-net.ru)
 	
 	Maintainter:
@@ -41,7 +59,6 @@ const std::string c_empty_string; // Ob for exult_constants.h
 
 /* Functions */
 void usage();
-void output_flags(const vector<UCFunc *> &funcs);
 void open_usecode_file(UCData &uc, const Configuration &config);
 
 UCData uc;
@@ -71,7 +88,7 @@ int main(int argc, char** argv)
 	
 	// init the compile time tables
 	if(uc.verbose()) cout << "Initing static tables..." << endl;
-	init_static_usecodetables(config);
+	init_static_usecodetables();
 
 	// init the run time tables
 	if(uc.verbose()) cout << "Initing runtime tables..." << endl;
