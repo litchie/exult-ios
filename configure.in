@@ -525,6 +525,7 @@ if test x$enable_gtk_interface = xyes; then
 	fi
 else
 	AM_CONDITIONAL(HAVE_GTK, false)
+	AM_CONDITIONAL(HAVE_GLADE, false)
 	AC_MSG_RESULT(no)
 fi
 
