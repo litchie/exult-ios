@@ -1918,6 +1918,7 @@ class Npc_face_info
 					//   has not yet been prompted.
 	Rectangle face_rect;		// Rectangle where face is shown.
 	Rectangle text_rect;		// Rectangle NPC statement is shown in.
+	int last_text_height;		// Height of last text painted.
 	friend class Game_window;
 	Npc_face_info(int sh) : shape(sh), text_pending(0)
 		{  }
@@ -1976,24 +1977,20 @@ void Game_window::show_face
 		info = new Npc_face_info(shape);
 		last_face_shown = num_faces;
 		face_info[num_faces++] = info;
-					// Get screen rectangle.
-		Rectangle sbox = get_win_rect();
 					// Get text height.
 		int text_height = get_text_height(0);
 					// Figure starting y-coord.
 		int starty = prev ? prev->text_rect.y + prev->text_rect.h +
 					2*text_height : 16;
-		actbox = Rectangle(16, starty,
-			face->get_width() + 4, face->get_height() + 4);
-					// Clip to screen.
-		actbox = sbox.intersect(actbox);
+		actbox = clip_to_win(Rectangle(16, starty,
+			face->get_width() + 4, face->get_height() + 4));
 		info->face_rect = actbox;
 					// This is where NPC text will go.
-		info->text_rect = Rectangle(actbox.x + actbox.w + 16,
-				actbox.y,
-				sbox.w - actbox.x - actbox.w - 32,
-				8*text_height);
-		info->text_rect = sbox.intersect(info->text_rect);
+		info->text_rect = clip_to_win(Rectangle(
+			actbox.x + actbox.w + 16, actbox.y,
+			get_width() - actbox.x - actbox.w - 32,
+							8*text_height));
+		info->last_text_height = info->text_rect.h;
 		}
 	else
 		actbox = info->face_rect;
@@ -2042,7 +2039,9 @@ void Game_window::show_npc_message
 	Npc_face_info *info = face_info[last_face_shown];
 	Rectangle& box = info->text_rect;
 	paint(box);			// Clear what was there before.
-	paint_text_box(0, msg, box.x, box.y, box.w, box.h);
+	int height = paint_text_box(0, msg, box.x, box.y, box.w, box.h);
+					// All fit?  Store height painted.
+	info->last_text_height = height > 0 ? height : box.h;
 	info->text_pending = 1;
 	painted = 1;
 	show();
@@ -2092,12 +2091,17 @@ void Game_window::show_avatar_choices
 	int space_width = get_text_width(0, "   ");
 					// Get main actor's portrait.
 	Shape_frame *face = faces.get_shape(main_actor->get_face_shapenum());
-
+#if 1	/* Old way. */
 	Rectangle mbox(16, sbox.h - face->get_height() - 3*height,
-//npc_text_rect.y + npc_text_rect.h + 6*height,
 			face->get_width() + 4, face->get_height() + 4);
-	//win->fill8(1, mbox.w + 4, mbox.h + 4, mbox.x - 2, mbox.y - 2);
-	//win->fill8(0, mbox.w, mbox.h, mbox.x, mbox.y);
+#else
+					// Get last one shown.
+	Npc_face_info *prev = num_faces ? face_info[num_faces - 1] : 0;
+	Rectangle mbox(prev ? prev->face_rect.x + prev->face_rect.w + 4 : 16,
+		prev ? prev->text_rect.y + prev->last_text_height + height
+			    : sbox.h - face->get_height() - 3*height,
+			face->get_width() + 4, face->get_height() + 4);
+#endif
 					// Draw portrait.
 	paint_shape(mbox.x + mbox.w - 2, 
 				mbox.y + mbox.h - face->ybelow - 2, 
