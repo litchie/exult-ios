@@ -533,7 +533,7 @@ public:
 	void show(int x, int y, int w, int h);
 
 	void toggle_fullscreen();
-
+	bool is_fullscreen() { return fullscreen; }
 	};
 
 /*

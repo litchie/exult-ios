@@ -54,7 +54,13 @@ EXULT_FLX_OBJECTS = \
 	data/black_gate.shp \
 	data/serpent_isle.shp \
 	data/meditown.mid \
-	data/font.shp
+	data/font.shp \
+	data/setup.shp \
+	data/play_intro.shp \
+	data/full_screen.shp \
+	data/cheating.shp \
+	data/ok.shp \
+	data/cancel.shp
 
 $(EXEC) : $(OBJS) data/exult.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)

@@ -102,6 +102,9 @@ int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
 static void Try_key(Game_window *);
 void increase_resolution (void);
 void decrease_resolution (void);
+int find_resolution(int w, int h, int s);
+bool get_play_introduction (void);
+void set_play_introduction (bool);
 void toggle_fullscreen (void);
 void quick_save (void);
 void quick_restore (void);
@@ -110,6 +113,7 @@ void target_mode (void);
 void gump_next_inventory (void);
 void gump_next_stats (void);
 void gump_file (void);
+void show_about (void);
 void show_help (void);
 void show_cheat_help (void);
 
@@ -200,9 +204,9 @@ int main
 		usecode_debugging=true;	// Enable usecode debugger
 	initialise_usecode_debugger();
 #endif
-	Init();				// Create main window.
-	
 	cheat.init();
+	
+	Init();				// Create main window.
 
 	mouse = new Mouse(gwin);
 	mouse->set_shape(Mouse::hand);
@@ -265,6 +269,7 @@ static void Init
 	
 	int w, h, sc;
 
+	// Default resolution is 320x200 with 2x scaling
 	w = 320;
 	h = 200;
 	sc = 2;
@@ -274,6 +279,7 @@ static void Init
 	config->value("config/video/height", sh, h);
 	config->value("config/video/scale", scaleval, sc);
 	gwin = new Game_window(sw, sh, scaleval);
+	current_res = find_resolution(sw, sh, scaleval);
 	audio = new Audio;
 	audio->Init(22050,2);
 
@@ -284,10 +290,11 @@ static void Init
 #endif //WIN32
 
 	// Show the banner
-	Exult_Game mygame = exult_menu(gwin);
+	ExultMenu exult_menu(gwin);
+	Exult_Game mygame = exult_menu.run();
 	Game::create_game(mygame);
 #if 0	
-	// Init has to be reimplemented so that new sample rates can be set
+	// Audio->Init has to be reimplemented so that new sample rates can be set
 	if (mygame == BLACK_GATE)
 		audio->Init(9615*2,2);
 	else if (mygame == SERPENT_ISLE)
@@ -876,6 +883,11 @@ static void Handle_keystroke
 			target_mode();
 		}
 		break;
+	case SDLK_v:
+		if(ctrl && !alt) {
+			show_about();
+		}
+		break;
 	case SDLK_w:
 		if (alt && !ctrl) {  		// Alt-w : toggle archwizard mode
 			cheat.toggle_wizard();
@@ -1285,6 +1297,31 @@ static void Try_key
 		}
 	mouse->flash_shape(Mouse::redx);	// Nothing matched.
 	}
+	
+int get_resolution (void)
+{
+	return current_res;
+}
+
+void set_resolution (int new_res, bool save)
+{
+	if(new_res>=0 && new_res<num_res) {
+		current_res = new_res;
+		gwin->resized(res_list[current_res].x,
+			res_list[current_res].y,
+			res_list[current_res].scale);
+		scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
+		if(save) {
+			char val[20];
+			sprintf(val, "%d", res_list[current_res].x);
+			config->set("config/video/width",val,true);
+			sprintf(val, "%d", res_list[current_res].y);
+			config->set("config/video/height",val,true);
+			sprintf(val, "%d", res_list[current_res].scale);
+			config->set("config/video/scale",val,true);
+		}
+	}
+}
 
 void decrease_resolution (void) {
 	if (!cheat()) return;
@@ -1292,10 +1329,7 @@ void decrease_resolution (void) {
 	current_res--;
 	if(current_res<0)
 		current_res = num_res-1;
-	gwin->resized(res_list[current_res].x,
-			res_list[current_res].y,
-			res_list[current_res].scale);
-	scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
+	set_resolution(current_res,false);
 }
 
 void increase_resolution (void) {
@@ -1304,11 +1338,29 @@ void increase_resolution (void) {
 	current_res++;
 	if(current_res>=num_res)
 		current_res = 0;
-	gwin->resized(res_list[current_res].x,
-			res_list[current_res].y,
-			res_list[current_res].scale);
-	// Get scale factor for mouse.
-	scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
+	set_resolution(current_res,false);
+}
+
+int find_resolution(int w, int h, int s)
+{
+	int res = 0;
+	for(int i=0; i<num_res; i++) {
+		if(res_list[i].x==w && res_list[i].y==h && res_list[i].scale==s)
+			res = i;
+	}
+	return res;
+}
+
+bool get_play_intro (void)
+{
+	std::string yn;
+	config->value("config/gameplay/skip_splash", yn, "no");
+	return(yn=="no");
+}
+
+void set_play_intro (bool play)
+{
+	config->set("config/gameplay/skip_splash", play?"no":"yes", true);
 }
 
 void toggle_fullscreen (void) {
@@ -1382,6 +1434,24 @@ void gump_file (void) {
 	delete fileio;
 }
 
+void show_about (void) {
+	Scroll_gump *scroll;
+	scroll = new Scroll_gump();
+
+	scroll->add_text("Exult V"VERSION"\n");
+	scroll->add_text("(C) 1999-2000 Exult Team\n\n");
+	scroll->add_text("Available under the terms of the ");
+	scroll->add_text("GNU General Public License\n\n");
+	scroll->add_text("http://exult.sourceforge.net\n");
+
+	scroll->paint(gwin);
+	do {
+		int x, y;
+		Get_click(x,y, Mouse::hand);
+	} while (scroll->show_next_page(gwin));
+	gwin->paint();
+	delete scroll;
+}
 
 void show_help (void) {
 	Scroll_gump *scroll;
@@ -1398,6 +1468,7 @@ void show_help (void) {
 	scroll->add_text("ctrl-s - Quick Save\n");
 	scroll->add_text("ctrl-r - Restore\n");
 	scroll->add_text("s - Show save box\n");
+	scroll->add_text("ctrl-v - About box\n");
 	scroll->add_text("w - Watch\n");
 	scroll->add_text("F4 - Toggle fullscreen\n");
 	scroll->add_text("ctrl-h - Cheat Commands\n");

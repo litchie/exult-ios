@@ -40,6 +40,7 @@ private:
 
 public:
   bool operator() (void) const { return enabled; }
+  void set_enabled(bool en);
 
   bool in_god_mode (void) const { return god_mode; }
   bool in_wizard_mode (void) const { return wizard_mode; }
