@@ -602,10 +602,7 @@ void Usecode_machine::remove_item
 	Rectangle rect = gwin->get_shape_rect(obj);
 	rect.enlarge(8);
 	gwin->clip_to_win(rect);
-					// Remove from world.  ?? What if it's
-					//   in a container.+++++++????
-	gwin->get_objects(obj->get_cx(), obj->get_cy())->remove(obj);
-	delete obj;
+	obj->remove();			// Remove from world or container.
 	gwin->paint(rect);
 	}
 

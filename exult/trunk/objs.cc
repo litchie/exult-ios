@@ -120,7 +120,7 @@ int Game_object::modify_quantity
 		{			// Can't do quantity here.
 		if (delta > 0)
 			return (delta);
-		remove(owner);		// Remove from container (or world).
+		remove();		// Remove from container (or world).
 		return (delta + 1);
 		}
 	int quant = quality&0x7f;	// Get current quality.
@@ -132,7 +132,7 @@ int Game_object::modify_quantity
 		}
 	else if (newquant <= 0)		// Subtracting.
 		{
-		remove(owner);		// We're done for.
+		remove();		// We're done for.
 		return (delta + quant);
 		}
 	quality = 0x80|(char) newquant;	// Store new value.
@@ -141,29 +141,6 @@ int Game_object::modify_quantity
 	if (owner)			// Update owner's volume.
 		owner->modify_volume_used(objvol*(newquant - quant));
 	return (delta - (newquant - quant));
-	}
-
-/*
- *	Remove an object from its container, or from the world.
- *	The object is deleted.
- */
-
-void Game_object::remove
-	(
-	Container_game_object *owner	// Container it's in, or null if obj.
-					//   is in a chunk.
-	)
-	{
-	if (owner)			// In a bag, box, or person.
-		owner->remove(this);
-	else				// In the outside world.
-		{
-		Chunk_object_list *chunk = 
-			Game_window::get_game_window()->get_objects(cx, cy);
-		if (chunk)
-			chunk->remove(this);
-		}
-	delete this;
 	}
 
 /*
@@ -302,6 +279,22 @@ char *Game_object::get_name
 	}
 
 /*
+ *	Remove an object from the world.
+ *	The object is deleted.
+ */
+
+void Game_object::remove
+	(
+	)
+	{
+	Chunk_object_list *chunk = 
+			Game_window::get_game_window()->get_objects(cx, cy);
+	if (chunk)
+		chunk->remove(this);
+	delete this;
+	}
+
+/*
  *	Can this be dragged?
  */
 
@@ -416,6 +409,27 @@ int Game_object::lt
 			return (0);
 		}
 	return (-1);
+	}
+
+/*
+ *	Remove an object from its container, or from the world.
+ *	The object is deleted.
+ */
+
+void Ireg_game_object::remove
+	(
+	)
+	{
+	if (owner)			// In a bag, box, or person.
+		owner->remove(this);
+	else				// In the outside world.
+		{
+		Chunk_object_list *chunk = 
+			Game_window::get_game_window()->get_objects(cx, cy);
+		if (chunk)
+			chunk->remove(this);
+		}
+	delete this;
 	}
 
 /*
@@ -672,6 +686,7 @@ void Container_game_object::remove
 		if (prev->get_next() == obj)
 			{		// Found it.
 			volume_used -= obj->get_volume();
+			obj->set_owner(0);
 			if (prev == obj)
 				{	// Last one.
 				last_object = 0;
@@ -703,6 +718,7 @@ int Container_game_object::add
 	if (objvol + volume_used > get_volume())
 		return (0);		// Doesn't fit.
 	volume_used += objvol;
+	obj->set_owner(this);		// Set us as the owner.
 	if (!last_object)		// First one.
 		{
 		last_object = obj;

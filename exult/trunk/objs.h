@@ -184,8 +184,6 @@ public:
 	int get_volume();		// Get space taken.
 					// Add/remove to/from quantity.
 	int modify_quantity(Container_game_object *owner, int delta);
-					// Remove/delete this object.
-	void remove(Container_game_object *owner);
 					// Set shape coord. within chunk.
 	void set_shape_pos(unsigned int shapex, unsigned int shapey)
 		{ shape_pos = (shapex << 4) + shapey; }
@@ -227,10 +225,13 @@ public:
 	virtual int get_schedule_type()	// Return NPC schedule.
 		{ return 11; }		// Loiter.
 	virtual char *get_name();
+	virtual void remove();		// Remove/delete this object.
 	virtual void set_property(int prop, int val)
 		{  }
 	virtual int get_property(int prop)
 		{ return 0; }
+	virtual void set_owner(Container_game_object *o)
+		{  }
 	virtual int is_dragable();	// Can this be dragged?
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
@@ -271,19 +272,24 @@ public:
  */
 class Ireg_game_object : public Game_object
 	{
+	Container_game_object *owner;	// Container this is in, or 0.
 public:
 					// Create from ireg. data.
 	Ireg_game_object(unsigned char l, unsigned char h, 
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
-		: Game_object(l, h, shapex, shapey, lft)
+		: Game_object(l, h, shapex, shapey, lft), owner(0)
 		{  }
 	Ireg_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
-		: Game_object(shapenum, framenum, tilex, tiley, lft)
+		: Game_object(shapenum, framenum, tilex, tiley, lft),
+						owner(0)
 		{  }
 	Ireg_game_object()		// Create fake entry.
 		{  }
+	virtual void remove();		// Remove/delete this object.
+	virtual void set_owner(Container_game_object *o)
+		{ owner = o; }
 	virtual int is_dragable();	// Can this be dragged?
 	};
 
