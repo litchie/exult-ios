@@ -1078,6 +1078,17 @@ void Shape_chooser::new_frame
 	}
 
 /*
+ *	Callback for new-shape 'okay'.
+ */
+C_EXPORT void
+on_new_shape_okay_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+//+++++++++++++++++Finish.
+}
+
+
+/*
  *	Add a new shape.
  */
 
@@ -1085,7 +1096,12 @@ void Shape_chooser::new_shape
 	(
 	)
 	{
-	//+++++++++++++
+	ExultStudio *studio = ExultStudio::get_instance();
+	GladeXML *xml = studio->get_xml();
+	GtkWidget *win = glade_xml_get_widget(xml, "new_shape_window");
+	gtk_window_set_modal(GTK_WINDOW(win), true);
+	//++++++++Init. shape #, Max. # shapes/frames.
+	gtk_widget_show(win);
 	}
 
 /*
