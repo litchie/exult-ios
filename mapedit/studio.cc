@@ -107,8 +107,9 @@ extern "C" void on_main_window_destroy_event
 
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	vgafile(0), eggwin(0), server_socket(-1), server_input_tag(-1), 
-	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), egg_ctx(0),
-	waiting_for_server(0), npcwin(0), npc_ctx(0)
+	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), 
+	egg_ctx(0),
+	waiting_for_server(0), npcwin(0), npc_draw(0), npc_ctx(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -175,6 +176,10 @@ ExultStudio::~ExultStudio()
 		gtk_widget_destroy(eggwin);
 	delete egg_monster_draw;
 	eggwin = 0;
+	if (npcwin)
+		gtk_widget_destroy(npcwin);
+	delete npc_draw;
+	npcwin = 0;
 	delete vgafile;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );

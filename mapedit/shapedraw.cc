@@ -70,14 +70,16 @@ void Shape_draw::draw_shape
 
 void Shape_draw::draw_shape_centered
 	(
-	int shapenum,
+	int shapenum,			// -1 to not draw shape.
 	int framenum
 	)
 	{
+	iwin->fill8(0);			// ++++Which color?
+	if (shapenum < 0)
+		return;
 	Shape_frame *shape = ifile->get_shape(shapenum, framenum);
 	if (!shape)
 		return;
-	iwin->fill8(0);			// ++++Which color?
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width, winh = draw->allocation.height;
 	draw_shape(shape, (winw - shape->get_width())/2,

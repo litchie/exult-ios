@@ -1577,6 +1577,11 @@ Clouds
   <class>GtkWindow</class>
   <name>npc_window</name>
   <visible>False</visible>
+  <signal>
+    <name>delete_event</name>
+    <handler>on_npc_window_delete_event</handler>
+    <last_modification_time>Sat, 09 Jun 2001 20:39:12 GMT</last_modification_time>
+  </signal>
   <title>Exult NPC</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -1657,7 +1662,7 @@ Clouds
 
 	      <widget>
 		<class>GtkEntry</class>
-		<name>entry2</name>
+		<name>npc_frame</name>
 		<can_focus>True</can_focus>
 		<editable>True</editable>
 		<text_visible>True</text_visible>
@@ -1690,12 +1695,12 @@ Clouds
 
 	      <widget>
 		<class>GtkEntry</class>
-		<name>entry1</name>
+		<name>npc_shape</name>
 		<can_focus>True</can_focus>
 		<signal>
 		  <name>focus_out_event</name>
-		  <handler>on_monst_shape_focus_out_event</handler>
-		  <last_modification_time>Mon, 04 Jun 2001 07:36:00 GMT</last_modification_time>
+		  <handler>on_npc_shape_focus_out_event</handler>
+		  <last_modification_time>Sat, 09 Jun 2001 20:42:02 GMT</last_modification_time>
 		</signal>
 		<editable>True</editable>
 		<text_visible>True</text_visible>
@@ -1785,8 +1790,13 @@ Clouds
 
 	  <widget>
 	    <class>GtkDrawingArea</class>
-	    <name>drawingarea1</name>
+	    <name>npc_draw</name>
 	    <width>20</width>
+	    <signal>
+	      <name>expose_event</name>
+	      <handler>on_npc_draw_expose_event</handler>
+	      <last_modification_time>Sat, 09 Jun 2001 20:41:24 GMT</last_modification_time>
+	    </signal>
 	  </widget>
 	</widget>
       </widget>
@@ -3751,8 +3761,8 @@ Manual
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>clicked</name>
-	  <handler>on_egg_apply_btn_clicked</handler>
-	  <last_modification_time>Sun, 03 Jun 2001 07:48:54 GMT</last_modification_time>
+	  <handler>on_npc_apply_btn_clicked</handler>
+	  <last_modification_time>Sat, 09 Jun 2001 20:40:17 GMT</last_modification_time>
 	</signal>
 	<label>Apply</label>
       </widget>
@@ -3764,8 +3774,8 @@ Manual
 	<can_focus>True</can_focus>
 	<signal>
 	  <name>clicked</name>
-	  <handler>on_egg_cancel_btn_clicked</handler>
-	  <last_modification_time>Wed, 02 May 2001 18:50:31 GMT</last_modification_time>
+	  <handler>on_npc_cancel_btn_clicked</handler>
+	  <last_modification_time>Sat, 09 Jun 2001 20:39:54 GMT</last_modification_time>
 	</signal>
 	<label>Cancel</label>
       </widget>
