@@ -435,18 +435,14 @@ void Patrol_schedule::now_what
 					// SI:  Special scenes.
 	if (npc == gwin->get_camera_actor())
 		{
-		if (!pathnum ||		// At start/end?
-		    npc->get_shapenum() == 0x12b)	// Or Cantra?
+		if (npc->get_shapenum() == 0x12b)	// Cantra?
+			{
+			if (pathnum)	// Don't do it right away.
+				npc->activate(gwin->get_usecode(), 0);
+			}
+		else if (!pathnum)	// At start/end?
 			npc->activate(gwin->get_usecode(), 0);
 		}
-#if 0
-	if (!pathnum)			// At start/end?  Needed for SI.
-		{			// Ends crystal-ball space scene.
-		cout << "Pathnum = " << pathnum << "'Cycling'" << endl;
-		Game_window *gwin = Game_window::get_game_window();
-		if (npc == gwin->get_camera_actor())
-		}
-#endif
 	}
 
 /*
