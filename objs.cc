@@ -1531,12 +1531,12 @@ int Container_game_object::remove_quantity
 	}
 
 /*
- *	Remove and return a desired item.
+ *	Find and return a desired item.
  *
  *	Output:	->object if found, else 0.
  */
 
-Game_object *Container_game_object::remove_and_return
+Game_object *Container_game_object::find_item
 	(
 	int shapenum,			// Shape #.
 	int qual,			// Quality, or -359 for any. ???+++++
@@ -1552,13 +1552,10 @@ Game_object *Container_game_object::remove_and_return
 		if (obj->get_shapenum() == shapenum &&
 		    (framenum == -359 || obj->get_framenum() == framenum))
 					// ++++++Quality???
-			{		// Found.
-			remove(obj);
 			return (obj);
-			}
+
 					// Do it recursively.
-		Game_object *found = 
-			obj->remove_and_return(shapenum, qual, framenum);
+		Game_object *found = obj->find_item(shapenum, qual, framenum);
 		if (found)
 			return (found);
 		}
@@ -2032,7 +2029,8 @@ inline void Check_terrain
 	Game_window *gwin,
 	Chunk_object_list *nlist,	// Chunk.
 	int tx, int ty,			// Tile within chunk.
-	int& terrain			// Sets: bit0 if land, bit1 if water.
+	int& terrain			// Sets: bit0 if land, bit1 if water,
+					//   bit2 if solid.
 	)
 	{
 	ShapeID flat = nlist->get_flat(tx, ty);
@@ -2040,7 +2038,9 @@ inline void Check_terrain
 		{
 		if (gwin->get_info(flat.get_shapenum()).is_water())
 			terrain |= 2;
-		else if (!gwin->get_info(flat.get_shapenum()).is_solid())
+		else if (gwin->get_info(flat.get_shapenum()).is_solid())
+			terrain |= 4;
+		else
 			terrain |= 1;
 		}
 
@@ -2077,7 +2077,7 @@ int Chunk_cache::is_blocked
 	unsigned short tflags = blocked[ty*tiles_per_chunk + tx];
 
 	int new_high;
-					// Something there? and we are not flying
+					// Something there? and not flying
 	if (tflags & (1 << lift) && !(move_flags & MOVE_FLY))		
 	{
 		new_lift = lift + 1;	// Maybe we can step up.
@@ -2098,7 +2098,8 @@ int Chunk_cache::is_blocked
 			new_high = get_lowest_blocked (new_lift, tflags);
 			if (new_lift > 15)
 				return (1);	// In sky
-			else if (new_high != -1 && new_high < (new_lift + height))
+			else if (new_high != -1 && new_high < 
+							(new_lift + height))
 				return (1);	// Blocked by something above
 		}
 	}
@@ -2116,14 +2117,14 @@ int Chunk_cache::is_blocked
 	}
 		
 	
-	// Found a new place to go, lets test to see if we can actually move there
+	// Found a new place to go, lets test if we can actually move there
 	
 	// Lift 0 tests
 	if (new_lift == 0)
 	{
 		int ter = 0;
-		Check_terrain (Game_window::get_game_window(), obj_list, tx, ty, ter);
-			
+		Check_terrain (Game_window::get_game_window(), obj_list, 
+								tx, ty, ter);
 		if (ter & 2)	// Water
 		{
 			if (move_flags & (MOVE_FLY+MOVE_SWIM))
@@ -2138,16 +2139,10 @@ int Chunk_cache::is_blocked
 			else
 				return 1;
 		}
+		else if (ter & 4)	// Blocked
+			return (move_flags & MOVE_FLY) ? 0 : 1;
 		else	// Other
 			return 0;
-#if 0	/* Let's be liberal so carts don't get blocked by flowers. */
-		{
-			if (move_flags & MOVE_FLY)
-				return 0;
-			else
-				return 1;
-		}
-#endif
 	}
 	else if (move_flags & (MOVE_FLY|MOVE_WALK))
 		return 0;

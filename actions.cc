@@ -224,7 +224,7 @@ int Move_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	if (dest.tx < 0)
+	if (dest.tx < 0 || actor->get_abs_tile_coord() == dest)
 		return (0);		// Done.
 	actor->move(dest);		// Zip right there.
 	dest.tx = -1;			// Set to stop.
