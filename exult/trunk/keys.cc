@@ -37,6 +37,7 @@ extern Cheat cheat;
 using std::pair;
 using std::atoi;
 using std::cerr;
+using std::cout;
 using std::clog;
 using std::endl;
 using std::ifstream;
