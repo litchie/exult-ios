@@ -24,9 +24,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Spellbook_object;
 
 /*
+ *	Abstract base class for spellbook, spell-scrolls:
+ */
+class Spelltype_gump : public Gump
+	{
+public:
+	Spelltype_gump(int shnum) : Gump(0, shnum) {  }
+	virtual ~Spelltype_gump() {  }
+					// Perform spell.
+	virtual void do_spell(int spell) = 0;
+					// Set bookmark.
+	virtual void select_spell(int spell) = 0;
+	};
+
+/*
  *	Open spellbook.  The spells are drawn in the object area.
  */
-class Spellbook_gump : public Gump
+class Spellbook_gump : public Spelltype_gump
 	{
 					// Reagants needed for each spell:
 	static unsigned char reagants[9*8];
@@ -43,9 +57,32 @@ class Spellbook_gump : public Gump
 public:
 	Spellbook_gump(Spellbook_object *b);
 	~Spellbook_gump();
-	void do_spell(int spell);	// Perform spell.
+	virtual void do_spell(int spell);	// Perform spell.
 	void change_page(int delta);	// Page forward/backward.
-	void set_bookmark(int spell);	// Set bookmark.
+	virtual void select_spell(int spell);	// Set bookmark.
+	virtual Game_object *get_owner();// Get object this belongs to.
+					// Is a given point on a button?
+	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
+					// Paint button.
+	virtual void paint_button(Game_window *gwin, Gump_button *btn);
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
+ *	Open spell-scroll in Serpent Isle.
+ */
+class Spellscroll_gump : public Spelltype_gump
+	{
+	Game_object *scroll;		// Scroll clicked on.
+	Gump_button *spell;
+	int spwidth, spheight;		// Dimensions of a spell shape.
+public:
+	Spellscroll_gump(Game_object *s);
+	~Spellscroll_gump();
+	virtual void do_spell(int spell);	// Perform spell.
+	virtual void select_spell(int)
+		{  }
 	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
