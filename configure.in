@@ -435,4 +435,5 @@ tools/Makefile \
 data/Makefile \
 docs/Makefile \
 desktop/Makefile \
-imagewin/Makefile )
+imagewin/Makefile \
+usecode/Makefile )
