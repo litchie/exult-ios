@@ -1,3 +1,6 @@
+2001-05-19  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
+	* keyactions.cc: fixed typo breaking UseItem
+
 2001-05-18  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keyactions.cc, gamewin.*: you can now specify a framenum and quality
 	for the 'useitem' action
