@@ -81,6 +81,7 @@
 #include "u7drag.h"
 #include "drag.h"
 #include "palette.h"
+#include "glshape.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
