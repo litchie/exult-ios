@@ -298,6 +298,7 @@ using std::_off_t;
 #include "../files/Table.h"
 #include "../files/U7file.h"
 #include "../files/utils.h"
+#include "../files/crc.h"
 
 // When doing a DEBUG compile we will output to the console
 // However, SDL doesn't want us to do that

@@ -593,6 +593,10 @@ SOURCE=..\xdrag.cc
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=..\files\crc.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\files\Flat.cc
 # End Source File
 # Begin Source File
@@ -1287,6 +1291,10 @@ SOURCE=..\xdrag.h
 # Begin Group "files h"
 
 # PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\files\crc.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\files\databuf.h
