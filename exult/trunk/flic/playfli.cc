@@ -222,7 +222,8 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 
           if(win && fli_buf) win->put (fli_buf, xoffset, yoffset);
 
-	  while (SDL_GetTicks() < ticks);
+	  while (SDL_GetTicks() < ticks)
+	  	;
 	  
 	  ticks += fli_speed*10;
 
