@@ -2218,7 +2218,7 @@ USECODE_INTRINSIC(si_path_run_usecode)
 		//++++++Wrong!  Mustn't teleport if no path!
 	npc->set_action(Actor_action::create_action_sequence(
 			npc, dest, new Usecode_actor_action(
-					parms[4].get_elem(0).get_int_value(), 
+					parms[4].get_elem0().get_int_value(), 
 					obj, parms[2].get_int_value()),
 			false, true));	// Don't teleport if path not found.
 	npc->start(200, 0);		// Get into time queue.

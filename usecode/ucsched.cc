@@ -70,14 +70,14 @@ Scheduled_usecode::Scheduled_usecode
 	objpos = obj ? obj->get_abs_tile_coord() : Tile_coord(-1, -1, -1);
 					// Not an array?
 	if (!cnt && !arrval.is_array())
-		cnt = 1;		// Get_elem(0) works for non-arrays.
+		cnt = 1;		// Get_elem0 works for non-arrays.
 	count++;			// Keep track of total.
 	next = first;			// Put in chain.
 	prev = 0;
 	if (first)
 		first->prev = this;
 	first = this;
-	int opval0 = arrval.get_elem(0).get_int_value();
+	int opval0 = arrval.get_elem0().get_int_value();
 	if (opval0 == 0x23)		// PURE GUESS:
 		no_halt = 1;
 	}
