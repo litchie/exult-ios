@@ -1267,9 +1267,17 @@ void Game_map::find_unused_shapes
 	int i;
 	for (i = 0; i < maxbits; i++)	// Add all possible monsters.
 		{
-		Monster_info *minf = gwin->get_info(i).get_monster_info();
+		Shape_info& info = gwin->get_info(i);
+		Monster_info *minf = info.get_monster_info();
 		if (minf)
-			found[i/8] |= (1<<(i&8));
+			found[i/8] |= (1<<(i%8));
+		Weapon_info *winf = info.get_weapon_info();
+		if (winf)		// Get projectiles for weapons.
+			{
+			int proj = winf->get_projectile();
+			if (proj > 0 && proj < maxbits)
+				found[proj/8] |= (1<<(proj%8));
+			}
 		}
 	for (i = 0x96; i < maxbits; i++)	// Ignore flats (<0x96).
 		if (!(found[i/8]&(1<<(i%8))))
