@@ -147,135 +147,127 @@
 				<p>
 					Note: yes means enabled, no means disabled
 				</p>
-				<table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;config&gt;</td></tr><tr><td colspan="2">&lt;disk&gt;</td></tr><tr><td colspan="2">&lt;save_compression_level&gt;</td></tr><tr><td width="150">1
-						</td><td rowspan="2">**save games are now compressed as zip files. 0 disables compression,
-						1 enables it, 2 compresses even a bit better. Default is 1.
-						</td></tr><tr><td colspan="2">&lt;/save_compression_level&gt;</td></tr><tr><td colspan="2">&lt;data_path&gt;</td></tr><tr><td width="150">data
-						</td><td rowspan="2">**see <a href="#path_config">2.3.</a> for pathsettings
-						</td></tr><tr><td colspan="2">&lt;/data_path&gt;</td></tr><tr><td colspan="2">&lt;game&gt;</td></tr><tr><td colspan="2">&lt;blackgate&gt;</td></tr><tr><td colspan="2">&lt;title&gt;</td></tr><tr><td colspan="2">blackgate</td></tr><tr><td colspan="2">&lt;/title&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;savegame_path&gt;</td></tr><tr><td width="150">./blackgate
-						</td><td rowspan="2">**optional. Default is the same as &lt;path&gt;, change to whatever you like.
-						Also see <a href="#dir_config">2.4.</a> before changing it.
-						</td></tr><tr><td colspan="2">&lt;/savegame_path&gt;</td></tr><tr><td colspan="2">&lt;static_path&gt;</td></tr><tr><td width="150">./blackgate/static
-						</td><td rowspan="2">**optional. See <a href="#dir_config">2.4.</a> before changing it.
-						</td></tr><tr><td colspan="2">&lt;/static_path&gt;</td></tr><tr><td colspan="2">&lt;gamedat_path&gt;</td></tr><tr><td width="150">./blackgate/gamedat
-						</td><td rowspan="2">**optional. See <a href="#dir_config">2.4.</a> before changing it.
-						</td></tr><tr><td colspan="2">&lt;/gamedat_path&gt;</td></tr><tr><td colspan="2">&lt;keys&gt;</td></tr><tr><td width="150">(default)
-						</td><td rowspan="2">**configure custom key bindings or leave the (default)
-						- see <a href="#exult_keys">5.2.</a>
-						</td></tr><tr><td colspan="2">&lt;/keys&gt;</td></tr><tr><td colspan="2">&lt;waves&gt;</td></tr><tr><td width="150">jmsfx.flx
-						</td><td rowspan="2">**optional setting see <a href="#wave_sfx">3.5.</a> for configuration
-						</td></tr><tr><td colspan="2">&lt;/waves&gt;</td></tr><tr><td colspan="2">&lt;/blackgate&gt;</td></tr><tr><td colspan="2">&lt;serpentisle&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./serpentisle</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;savegame_path&gt;</td></tr><tr><td width="150">./serpentisle
-						</td><td rowspan="2">**optional. Default is the same as &lt;path&gt;, change to whatever you like.
-						Also see <a href="#dir_config">2.4.</a> before changing it.
-						</td></tr><tr><td colspan="2">&lt;/savegame_path&gt;</td></tr><tr><td colspan="2">&lt;static_path&gt;</td></tr><tr><td width="150">./serpentisle/static
-						</td><td rowspan="2">**optional. See <a href="#dir_config">2.4.</a> before changing it.
-						</td></tr><tr><td colspan="2">&lt;/static_path&gt;</td></tr><tr><td colspan="2">&lt;gamedat_path&gt;</td></tr><tr><td width="150">./serpentisle/gamedat
-						</td><td rowspan="2">**optional. See <a href="#dir_config">2.4.</a> before changing it.
-						</td></tr><tr><td colspan="2">&lt;/gamedat_path&gt;</td></tr><tr><td colspan="2">&lt;keys&gt;</td></tr><tr><td colspan="2">(default)</td></tr><tr><td colspan="2">&lt;/keys&gt;</td></tr><tr><td colspan="2">&lt;waves&gt;</td></tr><tr><td width="150">jmsisfx.flx
-						</td><td rowspan="2">**optional setting see <a href="#wave_sfx">3.5.</a> for configuration
-						</td></tr><tr><td colspan="2">&lt;/waves&gt;</td></tr><tr><td colspan="2">&lt;/serpentisle&gt;</td></tr><tr><td colspan="2">&lt;/game&gt;</td></tr><tr><td colspan="2">&lt;/disk&gt;</td></tr><tr><td colspan="2">&lt;debug&gt;</td></tr><tr><td colspan="2">&lt;trace&gt;</td></tr><tr><td colspan="2">&lt;usecode&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**options are yes/no/verbose. This is used to trace the
-						executed Usecode (you shouldn't need this unless you are a programmer).
-						</td></tr><tr><td colspan="2">&lt;/usecode&gt;</td></tr><tr><td colspan="2">&lt;/trace&gt;</td></tr><tr><td colspan="2">&lt;/debug&gt;</td></tr><tr><td colspan="2">&lt;gameplay&gt;</td></tr><tr><td colspan="2">&lt;double_click_closes_gumps&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**doesn't need an explanation, right?
-						</td></tr><tr><td colspan="2">&lt;double_click_closes_gumps&gt;</td></tr><tr><td colspan="2">&lt;right_click_closes_gumps&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**same as above
-						</td></tr><tr><td colspan="2">&lt;right_click_closes_gumps&gt;</td></tr><tr><td colspan="2">&lt;cheat&gt;</td></tr><tr><td width="150">yes
-						</td><td rowspan="2">**enable/disable cheats for that
-						</td></tr><tr><td colspan="2">&lt;/cheat&gt;</td></tr><tr><td colspan="2">&lt;skip_intro&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**this skips the intro in BG when you started a new game; Iolo talks to
-						Peter, the Avatar appears, Iolo talks to you, the mayor talks to you and so on.
-						</td></tr><tr><td colspan="2">&lt;/skip_intro&gt;</td></tr><tr><td colspan="2">&lt;skip_splash&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**this skips the splash screen, the intro before you get to the
-						game menu, disabling it brings you straight to the game menu
-						</td></tr><tr><td colspan="2">&lt;/skip_splash&gt;</td></tr><tr><td colspan="2">&lt;facestats&gt;</td></tr><tr><td width="150">0
-						</td><td rowspan="2">**activates the status faces and the position on the screen.
-						-1 disable,0 right, 1 middle, 2 right.
-						</td></tr><tr><td colspan="2">&lt;/facestats&gt;</td></tr><tr><td colspan="2">&lt;mouse3rd&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**yes enables using of the middle mouse button.
-						</td></tr><tr><td colspan="2">&lt;/mouse3rd&gt;</td></tr><tr><td colspan="2">&lt;fastmouse&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**yes enables faster cursor movement in full screen mode.
-						</td></tr><tr><td colspan="2">&lt;/fastmouse&gt;</td></tr><tr><td colspan="2">&lt;bg_paperdolls&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**yes enables SI style paperdolls in BG.
-						</td></tr><tr><td colspan="2">&lt;/bg_paperdolls&gt;</td></tr><tr><td colspan="2">&lt;combat&gt;</td></tr><tr><td colspan="2">&lt;difficulty&gt;</td></tr><tr><td width="150">0
-						</td><td rowspan="2">**0 is default, negative values make combat easier, positive makes it
-						harder. It affects the chance of a hit, and the HP's lost if a hit occurs.
-						Ranges from -3 to 3 (easiest to hardest)
-						</td></tr><tr><td colspan="2">&lt;/difficulty&gt;</td></tr><tr><td colspan="2">&lt;mode&gt;</td></tr><tr><td width="150">original
-						</td><td rowspan="2">**original or keypause. On keypause the game pauses when you hit space
-						so you can make changes in combat.
-						</td></tr><tr><td colspan="2">&lt;/mode&gt;</td></tr><tr><td colspan="2">&lt;show_hits&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**no is default. With yes you see the hitpoints of NPCs in brackets
-						after their name.
-						</td></tr><tr><td colspan="2">&lt;/show_hits&gt;</td></tr><tr><td colspan="2">&lt;/combat&gt;</td></tr><tr><td colspan="2">&lt;gumps_dont_pause_game&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**yes doesn't pause the game when gumps are shown.
-						</td></tr><tr><td colspan="2">&lt;/gumps_dont_pause_game&gt;</td></tr><tr><td colspan="2">&lt;step_tile_delta&gt;</td></tr><tr><td width="150">8
-						</td><td rowspan="2">**Controls how far the Avatar will move before Exult recalculates the
-						Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other
-						problems.
-						</td></tr><tr><td colspan="2">&lt;/step_tile_delta&gt;</td></tr><tr><td colspan="2">&lt;allow_double_right_move&gt;</td></tr><tr><td width="150">yes
-						</td><td rowspan="2">**double right-click lets the Avatar walk automatically
-						to where you clicked.
-						</td></tr><tr><td colspan="2">&lt;/allow_double_right_move&gt;</td></tr><tr><td colspan="2">&lt;formation&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**yes forces the party to walk in a formation similar to the
-						original game.
-						</td></tr><tr><td colspan="2">&lt;/formation&gt;</td></tr><tr><td colspan="2">&lt;/gameplay&gt;</td></tr><tr><td colspan="2">&lt;audio&gt;</td></tr><tr><td colspan="2">&lt;enabled&gt;</td></tr><tr><td width="150">yes
-						</td><td rowspan="2">**enable/disable all audio - this takes precedence over the
-						other audio settings (you can change this in game via
-						
+				<table cellspacing="0" cellpadding="0" border="0"><tr><td style="text-indent:0pt">&lt;config&gt;</td></tr><tr><td style="text-indent:20pt">&lt;disk&gt;</td></tr><tr><td style="text-indent:40pt">&lt;save_compression_level&gt;</td><td rowspan="3">**save games are now compressed as zip files. 0 disables compression,1 enables it, 2 compresses even a bit better. Default is 1.</td></tr><tr><td style="text-indent:40pt">
+							1
+							</td></tr><tr><td style="text-indent:40pt">&lt;/save_compression_level&gt;</td></tr><tr><td style="text-indent:40pt">&lt;data_path&gt;</td><td rowspan="3">**see <a href="#path_config">2.3.</a> for pathsettings</td></tr><tr><td style="text-indent:40pt">
+							data
+							</td></tr><tr><td style="text-indent:40pt">&lt;/data_path&gt;</td></tr><tr><td style="text-indent:40pt">&lt;game&gt;</td></tr><tr><td style="text-indent:60pt">&lt;blackgate&gt;</td></tr><tr><td style="text-indent:80pt">&lt;title&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									blackgate
+									</td></tr><tr><td style="text-indent:80pt">&lt;/title&gt;</td></tr><tr><td style="text-indent:80pt">&lt;path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									./blackgate
+									</td></tr><tr><td style="text-indent:80pt">&lt;/path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;savegame_path&gt;</td><td rowspan="3">**optional. Default is the same as &lt;path&gt;, change to whatever you like.Also see <a href="#dir_config">2.4.</a> before changing it.</td></tr><tr><td style="text-indent:80pt">
+									./blackgate
+									</td></tr><tr><td style="text-indent:80pt">&lt;/savegame_path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;static_path&gt;</td><td rowspan="3">**optional. See <a href="#dir_config">2.4.</a> before changing it.</td></tr><tr><td style="text-indent:80pt">
+									./blackgate/static
+									</td></tr><tr><td style="text-indent:80pt">&lt;/static_path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;gamedat_path&gt;</td><td rowspan="3">**optional. See <a href="#dir_config">2.4.</a> before changing it.</td></tr><tr><td style="text-indent:80pt">
+									./blackgate/gamedat
+									</td></tr><tr><td style="text-indent:80pt">&lt;/gamedat_path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;keys&gt;</td><td rowspan="3">**configure custom key bindings or leave the (default)- see <a href="#exult_keys">5.2.</a></td></tr><tr><td style="text-indent:80pt">
+									(default)
+									</td></tr><tr><td style="text-indent:80pt">&lt;/keys&gt;</td></tr><tr><td style="text-indent:80pt">&lt;waves&gt;</td><td rowspan="3">**optional setting see <a href="#wave_sfx">3.5.</a> for configuration</td></tr><tr><td style="text-indent:80pt">
+									jmsfx.flx
+									</td></tr><tr><td style="text-indent:80pt">&lt;/waves&gt;</td></tr><tr><td style="text-indent:60pt">&lt;/blackgate&gt;</td></tr><tr><td style="text-indent:60pt">&lt;serpentisle&gt;</td></tr><tr><td style="text-indent:80pt">&lt;title&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									serpentisle
+									</td></tr><tr><td style="text-indent:80pt">&lt;/title&gt;</td></tr><tr><td style="text-indent:80pt">&lt;path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									./serpentisle
+									</td></tr><tr><td style="text-indent:80pt">&lt;/path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;savegame_path&gt;</td><td rowspan="3">**optional. Default is the same as &lt;path&gt;, change to whatever you like.Also see <a href="#dir_config">2.4.</a> before changing it.</td></tr><tr><td style="text-indent:80pt">
+									./serpentisle
+									</td></tr><tr><td style="text-indent:80pt">&lt;/savegame_path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;static_path&gt;</td><td rowspan="3">**optional. See <a href="#dir_config">2.4.</a> before changing it.</td></tr><tr><td style="text-indent:80pt">
+									./serpentisle/static
+									</td></tr><tr><td style="text-indent:80pt">&lt;/static_path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;gamedat_path&gt;</td><td rowspan="3">**optional. See <a href="#dir_config">2.4.</a> before changing it.</td></tr><tr><td style="text-indent:80pt">
+									./serpentisle/gamedat
+									</td></tr><tr><td style="text-indent:80pt">&lt;/gamedat_path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;keys&gt;</td><td rowspan="3">**configure custom key bindings or leave the (default)- see <a href="#exult_keys">5.2.</a></td></tr><tr><td style="text-indent:80pt">
+									(default)
+									</td></tr><tr><td style="text-indent:80pt">&lt;/keys&gt;</td></tr><tr><td style="text-indent:80pt">&lt;waves&gt;</td><td rowspan="3">**optional setting see <a href="#wave_sfx">3.5.</a> for configuration</td></tr><tr><td style="text-indent:80pt">
+									jmsisfx.flx
+									</td></tr><tr><td style="text-indent:80pt">&lt;/waves&gt;</td></tr><tr><td style="text-indent:60pt">&lt;/serpentisle&gt;</td></tr><tr><td style="text-indent:40pt">&lt;/game&gt;</td></tr><tr><td style="text-indent:20pt">&lt;/disk&gt;</td></tr><tr><td style="text-indent:20pt">&lt;debug&gt;</td></tr><tr><td style="text-indent:40pt">&lt;trace&gt;</td></tr><tr><td style="text-indent:60pt">&lt;usecode&gt;</td><td rowspan="3">**options are yes/no/verbose. This is used to trace theexecuted Usecode. (You shouldn't need this unless you are a programmer.)</td></tr><tr><td style="text-indent:60pt">
+								no
+								</td></tr><tr><td style="text-indent:60pt">&lt;/usecode&gt;</td></tr><tr><td style="text-indent:60pt">&lt;intrinsics&gt;</td><td rowspan="3">**options are yes/no. Used to trace intrinsics.(You shouldn't need this unless you are a programmer.)</td></tr><tr><td style="text-indent:60pt">
+								no
+								</td></tr><tr><td style="text-indent:60pt">&lt;/intrinsics&gt;</td></tr><tr><td style="text-indent:40pt">&lt;/trace&gt;</td></tr><tr><td style="text-indent:20pt">&lt;/debug&gt;</td></tr><tr><td style="text-indent:20pt">&lt;gameplay&gt;</td></tr><tr><td style="text-indent:40pt">&lt;double_click_closes_gumps&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/double_click_closes_gumps&gt;</td></tr><tr><td style="text-indent:40pt">&lt;right_click_closes_gumps&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/right_click_closes_gumps&gt;</td></tr><tr><td style="text-indent:40pt">&lt;cheat&gt;</td><td rowspan="3">**enable/disable cheats</td></tr><tr><td style="text-indent:40pt">
+							yes
+							</td></tr><tr><td style="text-indent:40pt">&lt;/cheat&gt;</td></tr><tr><td style="text-indent:40pt">&lt;skip_intro&gt;</td><td rowspan="3">**this skips the in-game intro in BG; Iolo talks to Petre, the Avatar appears,Iolo talks to you, the mayor talks to you and so on.</td></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/skip_intro&gt;</td></tr><tr><td style="text-indent:40pt">&lt;skip_splash&gt;</td><td rowspan="3">**this skips the splash screen, the intro before you get to thegame menu. Disabling it brings you straight to the game menu.</td></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/skip_splash&gt;</td></tr><tr><td style="text-indent:40pt">&lt;facestats&gt;</td><td rowspan="3">**activates the status faces and the position on the screen.-1 disable,0 right, 1 middle, 2 right.</td></tr><tr><td style="text-indent:40pt">
+							0
+							</td></tr><tr><td style="text-indent:40pt">&lt;/facestats&gt;</td></tr><tr><td style="text-indent:40pt">&lt;mouse3rd&gt;</td><td rowspan="3">**yes enables using of the middle mouse button.</td></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/mouse3rd&gt;</td></tr><tr><td style="text-indent:40pt">&lt;fastmouse&gt;</td><td rowspan="3">**yes enables faster cursor movement in full screen mode.</td></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/fastmouse&gt;</td></tr><tr><td style="text-indent:40pt">&lt;bg_paperdolls&gt;</td><td rowspan="3">**yes enables SI style paperdolls in BG.</td></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/bg_paperdolls&gt;</td></tr><tr><td style="text-indent:40pt">&lt;combat&gt;</td></tr><tr><td style="text-indent:60pt">&lt;difficulty&gt;</td><td rowspan="3">**0 is default, negative values make combat easier, positive makes itharder. It affects the chance of a hit, and the HP's lost if a hit occurs.Ranges from -3 to 3 (easiest to hardest).</td></tr><tr><td style="text-indent:60pt">
+								0
+								</td></tr><tr><td style="text-indent:60pt">&lt;/difficulty&gt;</td></tr><tr><td style="text-indent:60pt">&lt;mode&gt;</td><td rowspan="3">**original or keypause. On keypause the game pauses when you hit spaceso you can make changes in combat.</td></tr><tr><td style="text-indent:60pt">
+								original
+								</td></tr><tr><td style="text-indent:60pt">&lt;/mode&gt;</td></tr><tr><td style="text-indent:60pt">&lt;show_hits&gt;</td><td rowspan="3">**no is default. With yes you see the hitpoints of NPCsin brackets after their name.</td></tr><tr><td style="text-indent:60pt">
+								no
+								</td></tr><tr><td style="text-indent:60pt">&lt;/show_hits&gt;</td></tr><tr><td style="text-indent:40pt">&lt;/combat&gt;</td></tr><tr><td style="text-indent:40pt">&lt;gumps_dont_pause_game&gt;</td><td rowspan="3">**yes doesn't pause the game when gumps are shown.</td></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/gumps_dont_pause_game&gt;</td></tr><tr><td style="text-indent:40pt">&lt;step_tile_delta&gt;</td><td rowspan="3">**Controls how far the Avatar will move before Exult recalculates theAvatar's and the party's movement. Bigger # avoids jerkiness, but may cause otherproblems.</td></tr><tr><td style="text-indent:40pt">
+							8
+							</td></tr><tr><td style="text-indent:40pt">&lt;/step_tile_delta&gt;</td></tr><tr><td style="text-indent:40pt">&lt;allow_double_right_move&gt;</td><td rowspan="3">**double right-click lets the Avatar walk automaticallyto where you clicked.</td></tr><tr><td style="text-indent:40pt">
+							yes
+							</td></tr><tr><td style="text-indent:40pt">&lt;/allow_double_right_move&gt;</td></tr><tr><td style="text-indent:40pt">&lt;formation&gt;</td><td rowspan="3">**yes forces the party to walk in a formation similar to the original game.</td></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/formation&gt;</td></tr><tr><td style="text-indent:20pt">&lt;/gameplay&gt;</td></tr><tr><td style="text-indent:20pt">&lt;audio&gt;</td></tr><tr><td style="text-indent:40pt">&lt;enabled&gt;</td><td rowspan="3">**enable/disable all audio - this takes precedence over theother audio settings. (You can change this in game via
 	'<font color="maroon">Esc</font>'
- - the setting is saved)
-						</td></tr><tr><td colspan="2">&lt;/enabled&gt;</td></tr><tr><td colspan="2">&lt;disablepause&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**enable/disable the pausing of SFX and digital music when the
-						game pauses (e.g. not the focused window). MIDI music is currently not paused.
-						</td></tr><tr><td colspan="2">&lt;/disablepause&gt;</td></tr><tr><td colspan="2">&lt;force_waveout&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**yes forces Exult to use waveout instead of directsound. This may
-						fix problems some people have with Exult and sound in Windows
-						(it's a Windows-only option)
-						</td></tr><tr><td colspan="2">&lt;/force_waveou&gt;</td></tr><tr><td colspan="2">&lt;effects&gt;</td></tr><tr><td colspan="2">&lt;enabled&gt;</td></tr><tr><td width="150">yes
-						</td><td rowspan="2">**enable/disable sound effects (you can change this in game via
-						
+ - the setting is saved.)</td></tr><tr><td style="text-indent:40pt">
+							yes
+							</td></tr><tr><td style="text-indent:40pt">&lt;/enabled&gt;</td></tr><tr><td style="text-indent:40pt">&lt;disablepause&gt;</td><td rowspan="3">**enable/disable the pausing of SFX and digital music when thegame pauses (e.g. not the focused window). MIDI music is currently not paused.</td></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/disablepause&gt;</td></tr><tr><td style="text-indent:40pt">&lt;force_waveout&gt;</td><td rowspan="3">**yes forces Exult to use waveout instead of directsound. This mayfix problems some people have with Exult and sound in Windows.(This is a Windows-only option.)</td></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/force_waveout&gt;</td></tr><tr><td style="text-indent:40pt">&lt;effects&gt;</td></tr><tr><td style="text-indent:60pt">&lt;enabled&gt;</td><td rowspan="3">**enable/disable sound effects. (You can change this in game via
 	'<font color="maroon">Esc</font>'
- - the setting is saved)
-						</td></tr><tr><td colspan="2">&lt;/enabled&gt;</td></tr><tr><td colspan="2">&lt;/effects&gt;</td></tr><tr><td colspan="2">&lt;driver&gt;</td></tr><tr><td width="150">normal
-						</td><td rowspan="2">**choose your music driver between normal, digital, fmsynth. See <a href="#music">3.1.</a> for details.
-						</td></tr><tr><td colspan="2">&lt;/driver&gt;</td></tr><tr><td colspan="2">&lt;midi&gt;</td></tr><tr><td colspan="2">&lt;enabled&gt;</td></tr><tr><td width="150">yes
-						</td><td rowspan="2">**enable/disable MIDI effects (you can change this in game via
-						
+ - the setting is saved.)</td></tr><tr><td style="text-indent:60pt">
+								yes
+								</td></tr><tr><td style="text-indent:60pt">&lt;/enabled&gt;</td></tr><tr><td style="text-indent:40pt">&lt;/effects&gt;</td></tr><tr><td style="text-indent:40pt">&lt;driver&gt;</td><td rowspan="3">**choose your music driver between normal, digital, fmsynth.See <a href="#music">3.1.</a> for details.</td></tr><tr><td style="text-indent:40pt">
+							normal
+							</td></tr><tr><td style="text-indent:40pt">&lt;/driver&gt;</td></tr><tr><td style="text-indent:40pt">&lt;midi&gt;</td></tr><tr><td style="text-indent:60pt">&lt;enabled&gt;</td><td rowspan="3">**enable/disable MIDI effects. (You can change this in game via
 	'<font color="maroon">Esc</font>'
- - the setting is saved)
-						</td></tr><tr><td colspan="2">&lt;/enabled&gt;</td></tr><tr><td colspan="2">&lt;convert&gt;</td></tr><tr><td width="150">gm
-						</td><td rowspan="2">**see <a href="#music">3.1.</a>
-						</td></tr><tr><td colspan="2">&lt;/convert&gt;</td></tr><tr><td colspan="2">&lt;volume_curve&gt;</td></tr><tr><td width="150">1.000000
-   						</td><td rowspan="2">**set volume (kind of at least, best don't change)
-   						</td></tr><tr><td colspan="2">&lt;/volume_curve&gt;</td></tr><tr><td colspan="2">&lt;win32_device&gt;</td></tr><tr><td width="150">-1
-   						</td><td rowspan="2">**choose the Windows MIDI Device. See <a href="#win32_device">3.3.</a>
-   						</td></tr><tr><td colspan="2">&lt;/win32_device&gt;</td></tr><tr><td colspan="2">&lt;looping&gt;</td></tr><tr><td width="150">Yes
-   						</td><td rowspan="2">**No disables music looping. See <a href="#audio_gump">6.4.</a>
-   						</td></tr><tr><td colspan="2">&lt;/looping&gt;</td></tr><tr><td colspan="2">&lt;dual_opl&gt;</td></tr><tr><td width="150">Yes
-   						</td><td rowspan="2">**No disables 'dual' mode for stereo sound when &lt;driver&gt; is set to fmsynth.
-   						</td></tr><tr><td colspan="2">&lt;/dual_opl&gt;</td></tr><tr><td colspan="2">&lt;/midi&gt;</td></tr><tr><td colspan="2">&lt;speech&gt;</td></tr><tr><td colspan="2">&lt;enabled&gt;</td></tr><tr><td width="150">yes
-						</td><td rowspan="2">**enable/disable speech (you can change this in game via
-						
+ - the setting is saved.)</td></tr><tr><td style="text-indent:60pt">
+								yes
+								</td></tr><tr><td style="text-indent:60pt">&lt;/enabled&gt;</td></tr><tr><td style="text-indent:60pt">&lt;convert&gt;</td><td rowspan="3">**see <a href="#music">3.1.</a></td></tr><tr><td style="text-indent:60pt">
+								gm
+								</td></tr><tr><td style="text-indent:60pt">&lt;/convert&gt;</td></tr><tr><td style="text-indent:60pt">&lt;volume_curve&gt;</td><td rowspan="3">**set volume (kind of at least, best don't change)</td></tr><tr><td style="text-indent:60pt">
+								1.000000
+								</td></tr><tr><td style="text-indent:60pt">&lt;/volume_curve&gt;</td></tr><tr><td style="text-indent:60pt">&lt;win32_device&gt;</td><td rowspan="3">**choose the Windows MIDI Device. See <a href="#win32_device">3.3.</a></td></tr><tr><td style="text-indent:60pt">
+								-1
+								</td></tr><tr><td style="text-indent:60pt">&lt;/win32_device&gt;</td></tr><tr><td style="text-indent:60pt">&lt;looping&gt;</td><td rowspan="3">**No disables music looping. See <a href="#audio_gump">6.4.</a></td></tr><tr><td style="text-indent:60pt">
+								yes
+								</td></tr><tr><td style="text-indent:60pt">&lt;/looping&gt;</td></tr><tr><td style="text-indent:60pt">&lt;dual_opl&gt;</td><td rowspan="3">**No disables 'dual' mode for stereo sound when &lt;driver&gt; is set to fmsynth.</td></tr><tr><td style="text-indent:60pt">
+								yes
+								</td></tr><tr><td style="text-indent:60pt">&lt;/dual_opl&gt;</td></tr><tr><td style="text-indent:40pt">&lt;/midi&gt;</td></tr><tr><td style="text-indent:40pt">&lt;speech&gt;</td></tr><tr><td style="text-indent:60pt">&lt;enabled&gt;</td><td rowspan="3">**enable/disable speech. (You can change this in game via
 	'<font color="maroon">Esc</font>'
- - the setting is saved)
-						</td></tr><tr><td colspan="2">&lt;/enabled&gt;</td></tr><tr><td colspan="2">&lt;/speech&gt;</td></tr><tr><td colspan="2">&lt;/audio&gt;</td></tr><tr><td colspan="2">&lt;video&gt;</td></tr><tr><td colspan="2">&lt;width&gt;</td></tr><tr><td width="150">320
-						</td><td rowspan="2">**here you choose your resolution, it can be as big as your
-						monitor allows. 320x200 is the resolution of the original.
-						</td></tr><tr><td colspan="2">&lt;/width&gt;</td></tr><tr><td colspan="2">&lt;height&gt;</td></tr><tr><td colspan="2">200</td></tr><tr><td colspan="2">&lt;/height&gt;</td></tr><tr><td colspan="2">&lt;scale&gt;</td></tr><tr><td width="150">2
-						</td><td rowspan="2">**2 enables / 1 disables scaling, some scalers support higher values.
-						See <a href="#scaler">4.2.</a>.
-						</td></tr><tr><td colspan="2">&lt;/scale&gt;</td></tr><tr><td colspan="2">&lt;fullscreen&gt;</td></tr><tr><td width="150">yes
-						</td><td rowspan="2">**do you want to play full screen?
-						</td></tr><tr><td colspan="2">&lt;/fullscreen&gt;</td></tr><tr><td colspan="2">&lt;disable_fades&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**"no" enables fading between different menu points
-						</td></tr><tr><td colspan="2">&lt;/disable_fades&gt;</td></tr><tr><td colspan="2">&lt;scale_method&gt;</td></tr><tr><td width="150">SuperEagle
-						</td><td rowspan="2">**choose different scalers here - see <a href="#scaler">4.2.</a>
-						</td></tr><tr><td colspan="2">&lt;/scale_method&gt;</td></tr><tr><td width="150">&lt;gamma&gt;
-						</td><td rowspan="2">**set gamma levels to adjust brightness, same as +/- in game
-						</td></tr><tr><td colspan="2">&lt;red&gt;</td></tr><tr><td colspan="2">1</td></tr><tr><td colspan="2">&lt;/red&gt;</td></tr><tr><td colspan="2">&lt;green&gt;</td></tr><tr><td colspan="2">1</td></tr><tr><td colspan="2">&lt;/green&gt;</td></tr><tr><td colspan="2">&lt;blue&gt;</td></tr><tr><td colspan="2">1</td></tr><tr><td colspan="2">&lt;/blue&gt;</td></tr><tr><td colspan="2">&lt;/gamma&gt;</td></tr><tr><td colspan="2">&lt;fps&gt;</td></tr><tr><td width="150">10
-   						</td><td rowspan="2">**Speed setting. Might help when the game seems too slow or too fast.
-   						</td></tr><tr><td colspan="2">&lt;/fps&gt;</td></tr><tr><td colspan="2">&lt;/video&gt;</td></tr><tr><td colspan="2">&lt;/config&gt;</td></tr></table>
+ - the setting is saved.)</td></tr><tr><td style="text-indent:60pt">
+								yes
+								</td></tr><tr><td style="text-indent:60pt">&lt;/enabled&gt;</td></tr><tr><td style="text-indent:40pt">&lt;/speech&gt;</td></tr><tr><td style="text-indent:20pt">&lt;/audio&gt;</td></tr><tr><td style="text-indent:20pt">&lt;video&gt;</td></tr><tr><td style="text-indent:40pt">&lt;width&gt;</td><td rowspan="3">**here you choose your resolution, it can be as big as yourmonitor allows. 320x200 is the resolution of the original.</td></tr><tr><td style="text-indent:40pt">
+							320
+							</td></tr><tr><td style="text-indent:40pt">&lt;/width&gt;</td></tr><tr><td style="text-indent:40pt">&lt;height&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:40pt">
+							200
+							</td></tr><tr><td style="text-indent:40pt">&lt;/height&gt;</td></tr><tr><td style="text-indent:40pt">&lt;scale&gt;</td><td rowspan="3">**2 enables / 1 disables scaling, some scalers support higher values.See <a href="#scaler">4.2.</a>.</td></tr><tr><td style="text-indent:40pt">
+							2
+							</td></tr><tr><td style="text-indent:40pt">&lt;/scale&gt;</td></tr><tr><td style="text-indent:40pt">&lt;fullscreen&gt;</td><td rowspan="3">**do you want to play full screen?</td></tr><tr><td style="text-indent:40pt">
+							yes
+							</td></tr><tr><td style="text-indent:40pt">&lt;/fullscreen&gt;</td></tr><tr><td style="text-indent:40pt">&lt;disable_fades&gt;</td><td rowspan="3">**"no" enables fading between different menu points</td></tr><tr><td style="text-indent:40pt">
+							no
+							</td></tr><tr><td style="text-indent:40pt">&lt;/disable_fades&gt;</td></tr><tr><td style="text-indent:40pt">&lt;scale_method&gt;</td><td rowspan="3">**choose different scalers here - see <a href="#scaler">4.2.</a></td></tr><tr><td style="text-indent:40pt">
+							SuperEagle
+							</td></tr><tr><td style="text-indent:40pt">&lt;/scale_method&gt;</td></tr><tr><td style="text-indent:40pt">&lt;gamma&gt;</td></tr><tr><td style="text-indent:60pt">&lt;red&gt;</td><td rowspan="3">**set gamma levels to adjust brightness, same as +/- in game</td></tr><tr><td style="text-indent:60pt">
+								1
+								</td></tr><tr><td style="text-indent:60pt">&lt;/red&gt;</td></tr><tr><td style="text-indent:60pt">&lt;green&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:60pt">
+								1
+								</td></tr><tr><td style="text-indent:60pt">&lt;/green&gt;</td></tr><tr><td style="text-indent:60pt">&lt;blue&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:60pt">
+								1
+								</td></tr><tr><td style="text-indent:60pt">&lt;/blue&gt;</td></tr><tr><td style="text-indent:40pt">&lt;/gamma&gt;</td></tr><tr><td style="text-indent:40pt">&lt;fps&gt;</td><td rowspan="3">**Speed setting. Might help when the game seems too slow or too fast.</td></tr><tr><td style="text-indent:40pt">
+							10
+							</td></tr><tr><td style="text-indent:40pt">&lt;/fps&gt;</td></tr><tr><td style="text-indent:20pt">&lt;/video&gt;</td></tr><tr><td style="text-indent:0pt">&lt;/config&gt;</td></tr></table>
 			</td></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="path_config">2.3. Path-Settings</a></strong></td></tr><tr><td>
 				<p>
 					You have two choices on how to setup <em>Exult</em>.
@@ -295,7 +287,17 @@
 					Extract the compiled <em>Exult</em> to c:\ultima7<br />
 					Now you have to edit the exult.cfg file like this:
 				</p>
-				<table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;disk&gt;</td></tr><tr><td colspan="2">&lt;data_path&gt;</td></tr><tr><td colspan="2">data</td></tr><tr><td colspan="2">&lt;/data_path&gt;</td></tr><tr><td colspan="2">&lt;game&gt;</td></tr><tr><td colspan="2">&lt;blackgate&gt;</td></tr><tr><td colspan="2">&lt;title&gt;</td></tr><tr><td colspan="2">blackgate</td></tr><tr><td colspan="2">&lt;/title&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;/blackgate&gt;</td></tr><tr><td colspan="2">&lt;serpentisle&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./serpentisle</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;/serpentisle&gt;</td></tr><tr><td colspan="2">&lt;/game&gt;</td></tr><tr><td colspan="2">&lt;/disk&gt;</td></tr></table>
+				<table cellspacing="0" cellpadding="0" border="0"><tr><td style="text-indent:0pt">&lt;config&gt;</td></tr><tr><td style="text-indent:20pt">&lt;disk&gt;</td></tr><tr><td style="text-indent:40pt">&lt;data_path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:40pt">
+							data
+							</td></tr><tr><td style="text-indent:40pt">&lt;/data_path&gt;</td></tr><tr><td style="text-indent:40pt">&lt;game&gt;</td></tr><tr><td style="text-indent:60pt">&lt;blackgate&gt;</td></tr><tr><td style="text-indent:80pt">&lt;title&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									blackgate
+									</td></tr><tr><td style="text-indent:80pt">&lt;/title&gt;</td></tr><tr><td style="text-indent:80pt">&lt;path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									./blackgate
+									</td></tr><tr><td style="text-indent:80pt">&lt;/path&gt;</td></tr><tr><td style="text-indent:60pt">&lt;/blackgate&gt;</td></tr><tr><td style="text-indent:60pt">&lt;serpentisle&gt;</td></tr><tr><td style="text-indent:80pt">&lt;title&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									serpentisle
+									</td></tr><tr><td style="text-indent:80pt">&lt;/title&gt;</td></tr><tr><td style="text-indent:80pt">&lt;path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									./serpentisle
+									</td></tr><tr><td style="text-indent:80pt">&lt;/path&gt;</td></tr><tr><td style="text-indent:60pt">&lt;/serpentisle&gt;</td></tr><tr><td style="text-indent:40pt">&lt;/game&gt;</td></tr><tr><td style="text-indent:20pt">&lt;/disk&gt;</td></tr></table>
 				<p>
 				    You can either use the relative (e.g. ./blackgate) or absolute (e.g. c:\ultima\blackgate) path
 				    to point to the correct directory.
@@ -325,13 +327,25 @@
 						contains the (dynamic) data for the game you're currently playing. It's where the "journey onward" 'savegame' is stored.</li>
 				</ul>
 				<p>
-					If you don't change the loaction of either the Static or Gamedat directories, <em>Exult</em> expects to find both directories in the
+					If you don't change the location of either the Static or Gamedat directories, <em>Exult</em> expects to find both directories in the
 					path you specified in &lt;path&gt;. <strong>Don't ever</strong> point these two at the same directory.
 				</p>
 				<p>
 					My recommendations and example for BG (for SI use the same syntax) are:
 				</p>
-				<table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;disk&gt;</td></tr><tr><td colspan="2">&lt;data_path&gt;</td></tr><tr><td colspan="2">data</td></tr><tr><td colspan="2">&lt;/data_path&gt;</td></tr><tr><td colspan="2">&lt;game&gt;</td></tr><tr><td colspan="2">&lt;blackgate&gt;</td></tr><tr><td colspan="2">&lt;title&gt;</td></tr><tr><td colspan="2">blackgate</td></tr><tr><td colspan="2">&lt;/title&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;savegame_path&gt;</td></tr><tr><td colspan="2">./blackgate/savegames</td></tr><tr><td colspan="2">&lt;/savegame_path&gt;</td></tr><tr><td colspan="2">&lt;static_path&gt;</td></tr><tr><td colspan="2">./blackgate/static</td></tr><tr><td colspan="2">&lt;/static_path&gt;</td></tr><tr><td colspan="2">&lt;gamedat_path&gt;</td></tr><tr><td colspan="2">./blackgate/gamedat</td></tr><tr><td colspan="2">&lt;/gamedat_path&gt;</td></tr><tr><td colspan="2">&lt;/blackgate&gt;</td></tr></table>
+				<table cellspacing="0" cellpadding="0" border="0"><tr><td style="text-indent:0pt">&lt;config&gt;</td></tr><tr><td style="text-indent:20pt">&lt;disk&gt;</td></tr><tr><td style="text-indent:40pt">&lt;data_path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:40pt">
+							data
+							</td></tr><tr><td style="text-indent:40pt">&lt;/data_path&gt;</td></tr><tr><td style="text-indent:40pt">&lt;game&gt;</td></tr><tr><td style="text-indent:60pt">&lt;blackgate&gt;</td></tr><tr><td style="text-indent:80pt">&lt;title&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									blackgate
+									</td></tr><tr><td style="text-indent:80pt">&lt;/title&gt;</td></tr><tr><td style="text-indent:80pt">&lt;path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									./blackgate
+									</td></tr><tr><td style="text-indent:80pt">&lt;/path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;savegame_path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									./blackgate
+									</td></tr><tr><td style="text-indent:80pt">&lt;/savegame_path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;static_path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									./blackgate/static
+									</td></tr><tr><td style="text-indent:80pt">&lt;/static_path&gt;</td></tr><tr><td style="text-indent:80pt">&lt;gamedat_path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:80pt">
+									./blackgate/gamedat
+									</td></tr><tr><td style="text-indent:80pt">&lt;/gamedat_path&gt;</td></tr><tr><td style="text-indent:60pt">&lt;/blackgate&gt;</td></tr></table>
 			</td></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="command_line">2.5. Command line options</a></strong></td></tr><tr><td>
 				<p>
 					<em>Exult</em> offers some "hidden" command line options:
@@ -382,7 +396,7 @@
 					You can choose between:
 				</p>
 				<ul>
-      				<li><strong>Nromal</strong><br />
+      				<li><strong>Normal</strong><br />
         				This setting utilizes the MIDI driver of your system. See the MIDI conversion order below.</li>
       				<li><strong>Digital</strong><br />
         				Digital Music plays the OGG files which must be located in the <em>Exult</em> data/music
@@ -460,7 +474,9 @@
 					in the Windows Multimedia Properties).<br />
 					To change the MIDI Device open exult.cfg and change
 				 </p>
-				 <table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;win32_device&gt;</td></tr><tr><td colspan="2">-1</td></tr><tr><td colspan="2">&lt;/win32_device&gt;</td></tr></table>
+				 <table cellspacing="0" cellpadding="0" border="0"><tr><td style="text-indent:0pt">&lt;win32_device&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:0pt">
+					-1
+					</td></tr><tr><td style="text-indent:0pt">&lt;/win32_device&gt;</td></tr></table>
 				<p>
 					with the device you want to use.
 				</p>
@@ -508,7 +524,11 @@
 					set correct paths anymore if the pack is in the data directory.<br />
 					An example of how the relevant part of exult.cfg looks with these packs:
 				</p>
-				<table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;blackgate&gt;</td></tr><tr><td colspan="2">&lt;waves&gt;</td></tr><tr><td colspan="2">jmsfx.flx</td></tr><tr><td colspan="2">&lt;/waves&gt;</td></tr><tr><td colspan="2">&lt;/blackgate&gt;</td></tr><tr><td colspan="2">&lt;serpentisle&gt;</td></tr><tr><td colspan="2">&lt;waves&gt;</td></tr><tr><td colspan="2">jmsisfx.flx</td></tr><tr><td colspan="2">&lt;/waves&gt;</td></tr><tr><td colspan="2">&lt;/serpentisle&gt;</td></tr></table>
+				<table cellspacing="0" cellpadding="0" border="0"><tr><td style="text-indent:0pt">&lt;blackgate&gt;</td></tr><tr><td style="text-indent:20pt">&lt;waves&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:20pt">
+						jmsfx.flx
+						</td></tr><tr><td style="text-indent:20pt">&lt;/waves&gt;</td></tr><tr><td style="text-indent:0pt">&lt;/blackgate&gt;</td></tr><tr><td style="text-indent:0pt">&lt;serpentisle&gt;</td></tr><tr><td style="text-indent:20pt">&lt;waves&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:20pt">
+						jmsisfx.flx
+						</td></tr><tr><td style="text-indent:20pt">&lt;/waves&gt;</td></tr><tr><td style="text-indent:0pt">&lt;/serpentisle&gt;</td></tr></table>
 			</td></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="speech">3.6. Speech</a></strong></td></tr><tr><td>
 				<p>
 					<em>Exult</em> can play the Ultima VII's speech through SDL, and its own
