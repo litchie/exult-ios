@@ -36,7 +36,6 @@ Gump_object::Gump_object
 	int shnum			// Shape #.
 	) : container(cont), x(initx), y(inity), ShapeID(shnum, 0)
 	{
-cout << "Creating gump at " << initx << ", " << inity << '\n';
 					// +++++Depends on shnum:
 	switch (shnum)			// Different shapes.
 		{
@@ -196,7 +195,6 @@ void Gump_object::paint
 					shape->get_xleft();
 			obj->cy = py - shape->get_height() + 
 					shape->get_yabove();
-cout << "Object set to " << (int) obj->cx << ", " << (int) obj->cy << '\n';
 			curx += 8;
 			if (curx >= endx)
 				{
@@ -206,8 +204,6 @@ cout << "Object set to " << (int) obj->cx << ", " << (int) obj->cy << '\n';
 					cury = 2*(++loop);
 				}
 			}
-cout << "Painting gump obj. at " << box.x + obj->cx << ", " <<
-			box.y + obj->cy << '\n';
 		gwin->paint_shape(box.x + obj->cx,
 				  box.y + obj->cy, 
 						obj->get_shapenum(),
