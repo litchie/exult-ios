@@ -1,3 +1,11 @@
+2001-03-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* SI - Crystal-ball space scene starting to work, except sometimes
+	you can see the cat(!).
+	* The Cantra-vs-Batlin scene in the crystal ball is also
+	appearing, except (1) usually Batlin is being chased by Cantra,
+	and (2) somebody ends up dying in the battle.
+
 2001-03-25  Ryan Nunn <triforce@merlin.net.au>
 	* Makefile.cygwin, Makefile.win32: Some changes for the tools. Also
 	  fixed expack writing output to text files when using Makefile.cygwin.

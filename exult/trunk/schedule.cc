@@ -88,10 +88,11 @@ int Schedule::try_street_maintenance
 	static int sinight[] = {290, 291, 889};
 	static int day[] = {290, 291, 526};
 
-	if (npc->Actor::get_npc_num() <= 0)
+	Game_window *gwin = Game_window::get_game_window();
+	if (npc->Actor::get_npc_num() <= 0 ||
+	    npc == gwin->get_camera_actor())
 		return 0;		// Only want normal NPC's.
 	int *shapes;
-	Game_window *gwin = Game_window::get_game_window();
 	int hour = gwin->get_hour();
 	bool bg = (Game::get_game_type() == BLACK_GATE);
 	if (hour >= 9 && hour < 18)
@@ -384,7 +385,6 @@ void Patrol_schedule::now_what
 		if (try_street_maintenance())
 			return;		// We no longer exist.
 	const int PATH_SHAPE = 607;
-	bool cycled = false;
 	pathnum++;			// Find next path.
 					// Already know its location?
 	Game_object *path =  pathnum < paths.size() ? paths[pathnum] : 0;
@@ -406,8 +406,7 @@ void Patrol_schedule::now_what
 				}
 			}
 		if (!path)		// Turn back if at end.
-			{		// This also happens at start (0).
-			cycled = true;	// WANT this at start, end.
+			{
 			pathnum = 0;
 			path = paths.size() ? paths[0] : 0;
 			}
@@ -432,12 +431,22 @@ void Patrol_schedule::now_what
 	npc->set_lift(path->get_lift());
 					// Delay up to 2 secs.
 	npc->walk_to_tile(path->get_abs_tile_coord(), 250, rand()%2000);
-	if (cycled)			// At end?  Needed for SI.
-		{			// Ends crystal-ball space scene.
-		Game_window *gwin = Game_window::get_game_window();
-		if (npc == gwin->get_camera_actor())
+	Game_window *gwin = Game_window::get_game_window();
+					// SI:  Special scenes.
+	if (npc == gwin->get_camera_actor())
+		{
+		if (!pathnum ||		// At start/end?
+		    npc->get_shapenum() == 0x12b)	// Or Cantra?
 			npc->activate(gwin->get_usecode(), 0);
 		}
+#if 0
+	if (!pathnum)			// At start/end?  Needed for SI.
+		{			// Ends crystal-ball space scene.
+		cout << "Pathnum = " << pathnum << "'Cycling'" << endl;
+		Game_window *gwin = Game_window::get_game_window();
+		if (npc == gwin->get_camera_actor())
+		}
+#endif
 	}
 
 /*
@@ -1844,7 +1853,7 @@ void Walk_to_schedule::now_what
 		npc->set_schedule_type(new_schedule);
 		return;
 		}
-	if (legs >= 12 || retries >= 2)	// Trying too hard?
+	if (legs >= 30 || retries >= 2)	// Trying too hard?
 		{			// Going to jump there.
 		npc->move(dest.tx, dest.ty, dest.tz);
 		npc->set_schedule_type(new_schedule);
