@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <unistd.h>
 #include <csignal>
+#include "../fnames.h"
 
 #include "Configuration.h"
 extern	Configuration	config;
@@ -216,8 +217,8 @@ void	MyMidiPlayer::start_music(int num,int repeats)
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 {
 	bool	no_device=true;
-	midi_tracks=AccessFlexFile("static/adlibmus.dat");
-	instrument_patches=AccessTableFile("static/xmidi.mt");
+	midi_tracks=AccessFlexFile(ADLIBMUS);
+	instrument_patches=AccessTableFile(XMIDI_MT);
 #if DEBUG
 	cerr << "Read in " << midi_tracks.object_list.size() << " tracks" << endl;
 #endif
