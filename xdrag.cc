@@ -69,12 +69,15 @@ Xdnd::Xdnd
 	Window xgw,			// Game's display window in xw.
 	Move_shape_handler_fun movefun,
 	Drop_shape_handler_fun shapefun,
-	Drop_chunk_handler_fun cfun
+	Drop_chunk_handler_fun cfun,
+	Drop_combo_handler_fun cmbfun
 	) : display(d), xwmwin(xw), xgamewin(xgw),
 		num_types(0), lastx(-1), lasty(-1),
 		file(-1), shape(-1), frame(-1), chunknum(-1), 
+		combo_cnt(-1), combo(0),
 		data_valid(false), move_handler(movefun),
-		shape_handler(shapefun), chunk_handler(cfun)
+		shape_handler(shapefun), chunk_handler(cfun),
+		combo_handler(cmbfun)
 	{
 	shapeid_atom = XInternAtom(display, U7_TARGET_SHAPEID_NAME, 0);
 	chunkid_atom = XInternAtom(display, U7_TARGET_CHUNKID_NAME, 0);
@@ -94,7 +97,19 @@ Xdnd::Xdnd
 					// Create XdndAware property.
 	if (xwmwin)
 		XChangeProperty(display, xwmwin, xdnd_aware, XA_ATOM, 32,
-			PropModeReplace, reinterpret_cast<unsigned char *>(&xdnd_version), 1);
+			PropModeReplace, reinterpret_cast<unsigned char *>(
+							&xdnd_version), 1);
+	}
+
+/*
+ *	Cleanup.
+ */
+
+Xdnd::~Xdnd
+	(
+	)
+	{
+	delete combo;
 	}
 
 /*
@@ -190,7 +205,8 @@ void Xdnd::client_msg
 		int i;			// For now, just do shapes, chunks.
 		for (i = 0; i < num_types; i++)
 			if (drag_types[i] == shapeid_atom ||
-			    drag_types[i] == chunkid_atom)
+			    drag_types[i] == chunkid_atom ||
+			    drag_types[i] == comboid_atom)
 				break;
 		bool okay = data_valid && i < num_types;
 		num_types = 0;
@@ -204,6 +220,8 @@ void Xdnd::client_msg
 			}
 		else if (chunknum >= 0)	// A whole chunk.
 			(*chunk_handler)(chunknum, lastx, lasty, 0);
+		else if (combo_cnt >= 0 && combo)
+			(*combo_handler)(combo_cnt, combo, lastx, lasty, 0);
 
 		data_valid = false;
 		}
@@ -221,9 +239,15 @@ void Xdnd::select_msg
 	cout << "SelectionEvent received with target type: " <<
 		XGetAtomName(display, sev.target) << endl;
 	if (sev.selection != xdnd_selection || 
-		(sev.target != shapeid_atom && sev.target != chunkid_atom) ||
+		(sev.target != shapeid_atom && sev.target != chunkid_atom &&
+		 sev.target != comboid_atom) ||
 	    sev.property == None)
 		return;			// Wrong type.
+	file = shape = frame = -1;	// Invalidate old data.
+	chunknum = -1;
+	combo_cnt = -1;
+	delete combo;
+	combo = 0;
 	Atom type = None;		// Get data.
 	int format;
 	unsigned long nitems, after;
@@ -239,68 +263,21 @@ void Xdnd::select_msg
 		{
 					// Get shape info.
 		Get_u7_shapeid(data, file, shape, frame);
-		XFree(data);
-		chunknum = -1;
 		data_valid = true;
 		}
 	else if (sev.target == chunkid_atom)
 		{			// A whole chunk.
 		Get_u7_chunkid(data, chunknum);
-		XFree(data);
-		file = shape = frame = -1;
 		data_valid = true;
 		}
+	else if (sev.target == comboid_atom)
+		{
+		Get_u7_comboid(data, combo_cnt, combo);
+		data_valid = true;
+		}
+	XFree(data);
 	}
 
-#if 0	/* ++++++Old */
-/*
- *	Get the selection and paste it in.
- */
-
-void Xdnd::select_msg
-	(
-	XSelectionEvent& sev
-	)
-	{
-	cout << "SelectionEvent received with target type: " <<
-		XGetAtomName(display, sev.target) << endl;
-	if (sev.selection != xdnd_selection || 
-		(sev.target != shapeid_atom && sev.target != chunkid_atom) ||
-	    sev.property == None)
-		return;			// Wrong type.
-	Atom type = None;		// Get data.
-	int format;
-	unsigned long nitems, after;
-	unsigned char *data;		
-	if (XGetWindowProperty(display, sev.requestor, sev.property,
-		      0, 65000, False, AnyPropertyType,
-		      &type, &format, &nitems, &after, &data) != Success)
-		{
-		cout << "Error in getting selection" << endl;
-		return;
-		}
-	int x, y;			// Figure relative pos. within window.
-	Get_window_coords(display, xgamewin, x, y);
-	x = lastx - x;
-	y = lasty - y;
-	if (sev.target == shapeid_atom)	// Dropping a shape?
-		{
-		int file, shape, frame;	// Get shape info.
-		Get_u7_shapeid(data, file, shape, frame);
-		XFree(data);
-		if (file == U7_SHAPE_SHAPES)
-					// For now, just allow "shapes.vga".
-			(*shape_handler)(shape, frame, x, y, 0);
-		}
-	else if (sev.target == chunkid_atom)
-		{			// A whole chunk.
-		int chunknum;
-		Get_u7_chunkid(data, chunknum);
-		XFree(data);
-		(*chunk_handler)(chunknum, x, y, 0);
-		}
-	}
-#endif
 
 #endif	/* USE_EXULTSTUDIO */
 

@@ -78,6 +78,7 @@
 #include "ucmachine.h"
 #include "utils.h"
 #include "version.h"
+#include "u7drag.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
@@ -160,6 +161,8 @@ static void Move_dragged_shape(int shape, int frame, int x, int y,
 				int prevx, int prevy, bool show);
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *d);
 static void Drop_dragged_chunk(int chunknum, int x, int y, void *d);
+static void Drop_dragged_combo(int cnt, U7_combo_data *combo, 
+							int x, int y, void *d);
 #endif
 static void BuildGameMap();
 static void Handle_events();
@@ -656,7 +659,8 @@ static void Init
 	Server_init();			// Initialize server (for map-editor).
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
 		info.info.x11.window, Move_dragged_shape, 
-				Drop_dragged_shape, Drop_dragged_chunk);
+				Drop_dragged_shape, Drop_dragged_chunk, 
+							Drop_dragged_combo);
 #else
 	SDL_GetWMInfo(&info);
 	Server_init();			// Initialize server (for map-editor).
@@ -1645,6 +1649,30 @@ static void Move_dragged_shape
 	}
 
 /*
+ *	Create an object as moveable (IREG) or fixed.
+ */
+
+static Game_object *Create_object
+	(
+	int shape, int frame,		// What to create.
+	bool& ireg			// Rets. TRUE if ireg (moveable).
+	)
+	{
+	Shape_info& info = gwin->get_info(shape);
+	int sclass = info.get_shape_class();
+					// Is it an ireg (changeable) obj?
+	ireg = (sclass != Shape_info::unusable &&
+		sclass != Shape_info::building);
+	Game_object *newobj;
+	if (ireg)
+		newobj = gwin->get_map()->create_ireg_object(
+						info, shape, frame, 0, 0, 0);
+	else
+		newobj = new Ifix_game_object(shape, frame, 0, 0, 0);
+	return newobj;
+	}
+
+/*
  *	Drop a shape dragged from a shape-chooser via drag-and-drop.  Dnd is
  *	only supported under X for now.
  */
@@ -1686,18 +1714,8 @@ static void Drop_dragged_shape
 	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;
 	cout << "Create shape (" << shape << '/' << frame << ')' <<
 								endl;
-					// Create object.
-	Shape_info& info = gwin->get_info(shape);
-	int sclass = info.get_shape_class();
-					// Is it an ireg (changeable) obj?
-	bool ireg = (sclass != Shape_info::unusable &&
-		     sclass != Shape_info::building);
-	Game_object *newobj;
-	if (ireg)
-		newobj = gwin->get_map()->create_ireg_object(
-						info, shape, frame, 0, 0, 0);
-	else
-		newobj = new Ifix_game_object(shape, frame, 0, 0, 0);
+	bool ireg;			// Create object.
+	Game_object *newobj = Create_object(shape, frame, ireg);
 					// First see if it's a gump.
 	Gump *on_gump = ireg ? gwin->get_gump_man()->find_gump(x, y) : 0;
 	if (on_gump)
@@ -1750,4 +1768,54 @@ static void Drop_dragged_chunk
 	gwin->get_map()->set_chunk_terrain(cx, cy, chunknum);
 	gwin->paint();
 	}
+
+/*
+ *	Drop a combination object dragged from ExultStudio.
+ */
+
+void Drop_dragged_combo
+	(
+	int cnt,			// # shapes.
+	U7_combo_data *combo,		// The shapes.
+	int x, int y,			// Mouse coords. within window.
+	void *data			// Passed data, unused by exult
+	)
+	{
+	int scale = gwin->get_win()->get_scale();
+	if (!cheat.in_map_editor())	// Get into editing mode.
+		cheat.toggle_map_editor();
+	x /= scale;			// Watch for scaled window.
+	y /= scale;
+					// Figure tile at mouse pos.
+	int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles,
+	    ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
+	for (int i = 0; i < cnt; i++)
+		{			// Drop each shape.
+		U7_combo_data& elem = combo[i];
+					// Figure new tile coord.
+		int ntx = (tx + elem.tx)%c_num_tiles, 
+		    nty = (ty + elem.ty)%c_num_tiles, 
+		    ntz = cheat.get_edit_lift() + elem.tz;
+		if (ntz < 0)
+			ntz = 0;
+		ShapeID sid(elem.shape, elem.frame);
+		if (gwin->skip_lift == 0)// Editing terrain?
+			{
+			int cx = ntx/c_tiles_per_chunk, 
+			    cy = nty/c_tiles_per_chunk;
+			Map_chunk *chunk = gwin->get_chunk(cx, cy);
+			Chunk_terrain *ter = chunk->get_terrain();
+			ntx %= c_tiles_per_chunk; nty %= c_tiles_per_chunk;
+			ter->set_flat(ntx, nty, sid);
+			gwin->set_all_dirty();
+			continue;
+			}
+		bool ireg;		// Create object.
+		Game_object *newobj = Create_object(elem.shape, 
+							elem.frame, ireg);
+		newobj->set_invalid();	// Not in world.
+		newobj->move(ntx, nty, ntz);
+		}
+	}
+
 #endif

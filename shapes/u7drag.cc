@@ -155,7 +155,7 @@ int Store_u7_comboid
  *		ents = ALLOCATED array of shapes with offsets rel. to hot-spot.
  */
 
-void Store_u7_comboid
+void Get_u7_comboid
 	(
 	unsigned char *data, 
 	int& cnt, 
@@ -163,7 +163,7 @@ void Store_u7_comboid
 	)
 	{
 	unsigned char *ptr = data;
-	cnt = Read2(data);
+	cnt = Read2(ptr);
 	ents = new U7_combo_data[cnt];
 	for (int i = 0; i < cnt; i++)
 		{			// Tiles can be negative!
