@@ -58,6 +58,9 @@ class Path_walking_actor_action : public Actor_action
 	PathFinder *path;		// Allocated pathfinder.
 	int original_dir;		// From src. to dest. (0-7).
 	int frame_index;		// Index within frame sequence.
+	unsigned char blocked;		// Blocked-tile retries.
+	unsigned char blocked_frame;	// Frame for blocked tile.
+	Tile_coord blocked_tile;	// Tile to retry.
 public:
 	Path_walking_actor_action(PathFinder *p);
 	virtual ~Path_walking_actor_action();

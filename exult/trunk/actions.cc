@@ -224,7 +224,7 @@ Actor_action *Actor_action::walk_to_tile
 Path_walking_actor_action::Path_walking_actor_action
 	(
 	PathFinder *p			// Already set to path.
-	) : path(p), frame_index(0)
+	) : path(p), frame_index(0), blocked(0)
 	{
 	Tile_coord src = p->get_src(), dest = p->get_dest();
 	original_dir = (int) Get_direction4(
@@ -254,6 +254,17 @@ int Path_walking_actor_action::handle_event
 	)
 	{
 	Tile_coord tile;
+	if (blocked)
+		{
+		int new_delay = actor->step(blocked_tile, blocked_frame);
+		if (new_delay)		// Successful?
+			{
+			blocked = 0;
+			return new_delay;
+			}
+					// Wait up to 1.6 secs.
+		return (blocked++ > 3 ? 0 : 100 + blocked*(rand()%500));
+		}
 	if (!path->GetNextStep(tile))
 		return (0);
 	Tile_coord cur = actor->get_abs_tile_coord();
@@ -261,7 +272,13 @@ int Path_walking_actor_action::handle_event
 	Frames_sequence *frames = actor->get_frames(newdir);
 					// Get frame (updates frame_index).
 	int frame = frames->get_next(frame_index);
-	return actor->step(tile, frame);
+	int new_delay = actor->step(tile, frame);
+	if (new_delay)
+		return (new_delay);	// Successful.
+	blocked = 1;
+	blocked_tile = tile;
+	blocked_frame = frame;
+	return (100 + rand()%500);	// Wait .1 to .6 seconds.
 	}
 
 /*
@@ -290,6 +307,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	Tile_coord dest			// Same here.
 	)
 	{
+	blocked = 0;			// Clear 'blocked' count.
 					// Set up new path.
 					// Don't care about 1 coord.?
 	if (dest.tx == -1 || dest.ty == -1)
