@@ -232,7 +232,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
-	equipwin(0)
+	equipwin(0), locwin(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -321,6 +321,9 @@ ExultStudio::~ExultStudio()
 	if (equipwin)
 		gtk_widget_destroy(equipwin);
 	equipwin = 0;
+	if (locwin)
+		gtk_widget_destroy(locwin);
+	locwin = 0;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 #ifndef WIN32

@@ -594,6 +594,7 @@ static int Play()
 	return (0);
 }
 
+#ifdef USE_EXULTSTUDIO			// Shift-click means 'paint'.
 /*
  *	Add a shape while map-editing.
  */
@@ -618,7 +619,7 @@ static void Drop_in_map_editor
 	int shnum = cheat.get_edit_shape();
 	int frnum;
 	SDLMod mod = SDL_GetModState();
-	if (mod & KMOD_SHIFT)		// SHIFT?  Pick random frame.
+	if (mod & KMOD_ALT)		// ALT?  Pick random frame.
 		{
 		ShapeID id(shnum, 0);
 		frnum = rand()%id.get_num_frames();
@@ -634,6 +635,7 @@ static void Drop_in_map_editor
 		frnum = cheat.get_edit_frame();
 	Drop_dragged_shape(shnum, frnum, event.button.x, event.button.y, 0);
 	}
+#endif
 
 /*
  *	Handle events until a flag is set.

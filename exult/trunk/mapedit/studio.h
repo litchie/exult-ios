@@ -78,7 +78,8 @@ private:
 	GtkWidget		*shapewin;
 	Shape_draw		*shape_draw;
 	GtkWidget		*equipwin;
-
+					// Map locator:
+	GtkWidget		*locwin;
 	// For Win32 DND
 #ifdef WIN32
 	HWND			egghwnd;
@@ -172,7 +173,8 @@ public:
 	void save_shape_window();
 	void close_shape_window();
 	void show_shinfo_shape(int x = 0, int y = 0, int w = -1, int h = -1);
-
+					// Map locator.
+	void open_locator_window();
 	void run();
 	bool send_to_server(Exult_server::Msg_type id,
 				unsigned char *data = 0, int datalen = 0);
