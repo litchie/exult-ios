@@ -129,6 +129,8 @@ public:
 		{ return area; }
 	int is_solid_area() const
 		{ return solid_area; }
+					// Render.
+	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 	virtual void activate(Usecode_machine *umachine, Game_object *obj,
