@@ -1226,8 +1226,20 @@ static int Get_click
 					}
 				break;
 				}
+			case SDL_KEYUP:
+				switch (event.key.keysym.sym)
+					{
+				case SDLK_RALT:		// Right alt.
+				case SDLK_RMETA:
+					altkeys &= ~1;	// Clear flag.
+					break;
+				case SDLK_LALT:
+				case SDLK_LMETA:
+					altkeys &= ~2;
+					break;
+					}
+				break;
 				}
-
 		mouse->show();		// Turn on mouse.
 
 		if (!gwin->show() &&	// Blit to screen if necessary.
