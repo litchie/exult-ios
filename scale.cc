@@ -118,7 +118,7 @@ void test()
 					(src, 20, 40, dest, manip);
 
 	unsigned char *src8;
-	Manip8to16 manip8(0, 0);		// ++++DOn't try to run this!
+	Manip8to16 manip8(0);		// ++++DOn't try to run this!
 	Scale2x<unsigned char, unsigned short, Manip8to16>
 					(src8, 20, 40, dest, manip8);
 	}
