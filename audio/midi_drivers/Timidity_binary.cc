@@ -126,7 +126,12 @@ void	Timidity_binary::player(void)
 #endif
 
 	audiostream->id=Timidity_binary_magic;
-	string	s="timidity -Oru8S -id -s 22050 -o- "+newfilename;
+	char nbuf[32];
+	sprintf(nbuf,"%ul",Audio::get_ptr()->actual.freq);
+	string	s="timidity -Oru8S -id -s ";
+	s+=nbuf;
+	s+=" -o- ";
+	s+=newfilename;
 #ifndef DEBUG
 	s+=" 2>/dev/null";	// Swallow extraneous output if !debug
 #endif
@@ -173,7 +178,15 @@ void	Timidity_binary::sfxplayer(void)
 #endif
 
 	audiostream->id=Timidity_binary_magic_sfx;
-	string	s="timidity -Oru8S -id -s 22050 -o- "+newfilename;
+	char nbuf[32];
+	sprintf(nbuf,"%ul",Audio::get_ptr()->actual.freq);
+	string	s="timidity -Oru8S -id -s ";
+	s+=nbuf;
+	s+=" -o- ";
+	s+=newfilename;
+#ifndef DEBUG
+	s+=" 2>/dev/null";	// Swallow extraneous output if !debug
+#endif
 	FILE *data=popen(s.c_str(),"r");
 	if(!data)
 		return;
