@@ -4,11 +4,15 @@
 # Base of the exult source
 SRC=.
 
-VERSION=1.1.0cvs
-
 ### Modify these paths
 SDL_CFLAGS=-I/boot/develop/tools/gnupro/include/SDL
 SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL -lSDL_mixer
+
+RM      = rm -f
+MKDIR = mkdir -p
+ECHO  = echo -n
+CAT    = cat
+RM      = rm -f
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
 	-DHAVE_ZIP_SUPPORT -I$(SRC)/files/zip \
