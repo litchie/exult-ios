@@ -49,7 +49,7 @@ void Gump::initialize
 	if (shapefile == GSF_GUMPS_VGA) {
 		if(shnum==game->get_shape("gumps/yesnobox"))
 		{
-			object_area = Rectangle(6, 6, 116, 28);
+			object_area = Rectangle(6, 6, 116, 30);
 		}
 		else if(shnum==game->get_shape("gumps/fileio"))
 		{
