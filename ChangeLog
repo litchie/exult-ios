@@ -3,6 +3,7 @@
 	* effects.*: 'backported' delayed-blast fix from main branch
 	* useval.*: added operator!= (and changed operator== to return bool)
 	* objs.cc: removed "x's ashes" code again. (not correct)
+	* objs.cc: fixed "x's ashes" code for teleported urn at start
 
 2002-07-05  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
