@@ -45,6 +45,7 @@ private:
   bool map_editor;
   bool tile_grid;
   int  edit_lift;
+  int  edit_shape, edit_frame;		// What to 'paint' with.
   bool infravision;
   bool pickpocket;
   bool grab_actor;
@@ -62,6 +63,8 @@ public:
   bool in_map_editor(void) const { return map_editor; }
   bool show_tile_grid(void) const { return map_editor && tile_grid; }
   int  get_edit_lift(void) const { return edit_lift; }
+  int  get_edit_shape(void) const { return edit_shape; }
+  int  get_edit_frame(void) const { return edit_frame; }
   bool in_infravision (void) const { return infravision; }
   bool in_pickpocket (void) const {return pickpocket; }
   bool in_hack_mover (void) const { return (hack_mover || map_editor); }
@@ -73,6 +76,7 @@ public:
   void toggle_map_editor (void);
   void toggle_tile_grid (void);
   void set_edit_lift(int lift);
+  void set_edit_shape(int sh, int fr);
   void set_map_editor (bool map) { map_editor = map; }
   void toggle_infravision (void);
   void set_infravision (bool infra) { infravision = infra; }

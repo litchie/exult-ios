@@ -11,10 +11,8 @@ endif
 GTK_LIBS = @GTK_LIBS@
 
 if HAVE_GTK
-GTK_APPS = shapetest paltest
 OUTPUT_LIBS = libmapedit.la
 else
-GTK_APPS = 
 OUTPUT_LIBS =
 endif
 
@@ -25,10 +23,6 @@ GLADE_APPS =
 endif
 
 u7shp_SOURCES = u7shp.c
-
-shapetest_SOURCES = shapetest.cc
-
-paltest_SOURCES = paltest.cc
 
 exult_studio_SOURCES = \
 	chunklst.cc \
@@ -44,7 +38,7 @@ exult_studio_SOURCES = \
 
 bin_PROGRAMS = $(GLADE_APPS)
 
-noinst_PROGRAMS = $(GIMP_PLUGINS) $(GTK_APPS)
+noinst_PROGRAMS = $(GIMP_PLUGINS)
 
 shapetest_LDADD = \
 	./libmapedit.la			\
@@ -53,8 +47,6 @@ shapetest_LDADD = \
 	../shapes/libshapes.la 		\
 	../server/libserver.la		\
 	$(GTK_LIBS) $(SYSLIBS) $(x_libraries)
-
-paltest_LDADD = $(shapetest_LDADD)
 
 exult_studio_LDADD = $(shapetest_LDADD) $(LIBGLADE_LIBS)
 exult_studio_CFLAGS = $(LIBGLADE_CFLAGS)

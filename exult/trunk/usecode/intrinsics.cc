@@ -1848,9 +1848,7 @@ USECODE_INTRINSIC(is_water)
 		    y = (t.ty - gwin->get_scrollty())*c_tilesize;
 		if (t.tz != 0 || gwin->find_object(x, y))
 			return Usecode_value(0);
-		ShapeID sid = gwin->get_chunk(t.tx/c_tiles_per_chunk,
-				t.ty/c_tiles_per_chunk)->get_flat(
-			t.tx%c_tiles_per_chunk, t.ty%c_tiles_per_chunk);
+		ShapeID sid = gwin->get_flat(x, y);
 		Shape_info& info = gwin->get_info(sid.get_shapenum());
 		return Usecode_value(info.is_water());
 		}

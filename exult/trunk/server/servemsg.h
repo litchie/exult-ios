@@ -59,7 +59,9 @@ enum Msg_type
 	locate_terrain = 13,		// Locate desired chunk terrain.
 	swap_terrain = 14,		// Swap two terrains.
 	insert_terrain = 15,		// Insert new chunk terrain
-	send_terrain = 16		// Send 512-byte terrain to client.
+	send_terrain = 16,		// Send 512-byte terrain to client.
+	terrain_editing_mode = 17,	// 1 to turn on, 0 for off.
+	set_edit_shape = 18		// Set shape/frame to 'paint' with.
 	};
 
 // I/O routines:
