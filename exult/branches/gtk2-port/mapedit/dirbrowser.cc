@@ -244,7 +244,7 @@ GtkWidget *xmms_create_dir_browser(gchar * title, gchar * current_path, GtkSelec
 	DirNode *dirnode;
 	gboolean leaf;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), title);
 	gtk_container_border_width(GTK_CONTAINER(window), 10);
 

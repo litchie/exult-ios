@@ -927,7 +927,7 @@ void ExultStudio::save_shape_window
 	if (info &&			// If 'shapes.vga', get name.
 	    shnum < 1024)		// But only for the first 1024.
 		{
-		char *nm = get_text_entry("shinfo_name");
+		const gchar *nm = get_text_entry("shinfo_name");
 		if (!nm)
 			nm = "";
 		char *oldname = get_shape_name(shnum);

@@ -90,7 +90,7 @@ void ExultStudio::open_compile_window
 		{
 		compilewin = glade_xml_get_widget( app_xml, "compile_win" );
 		compile_box = new Exec_box(
-			GTK_TEXT(
+			GTK_TEXT_VIEW(
 			    glade_xml_get_widget(app_xml, "compile_msgs")),
 			GTK_STATUSBAR(
 			    glade_xml_get_widget(app_xml, "compile_status")),
