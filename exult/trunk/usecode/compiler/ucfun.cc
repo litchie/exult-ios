@@ -254,7 +254,7 @@ void Uc_function::set_intrinsics
 		}
 	for (int i = 0; i < cnt; i++)
 		{
-		char *nm = table[i];
+		char *nm = (char *)table[i];
 		if (!globals.search(nm))
 					// ++++Later, get num parms.
 			globals.add(new Uc_intrinsic_symbol(nm, i));
