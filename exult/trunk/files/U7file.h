@@ -5,13 +5,11 @@
 #include <string>
 #include <map>
 
-using namespace std;
-
 
 class	U7file
 	{
 protected:
-	string	filename;
+	std::string	filename;
 public:
 	U7file() {};
 	U7file(const char *name) : filename(name) {};
@@ -19,7 +17,7 @@ public:
 		{  }
 	U7file &operator=(const U7file &u) { filename=u.filename; return *this; }
 	virtual	int	number_of_objects(const char *)=0;
-	virtual	int	retrieve(int objnum,char **,size_t *len)=0; // To a memory block
+	virtual	int	retrieve(int objnum,char **,std::size_t *len)=0; // To a memory block
 	virtual	int	retrieve(int objnum,const char *)=0;	// To a file
 	virtual	~U7file();
 	};
@@ -30,27 +28,27 @@ class	U7FileManager
 protected:
 	struct ltstr
 	{
-	  bool operator()(const string &s1, const string &s2) const
+	  bool operator()(const std::string &s1, const std::string &s2) const
 	  {
 	    return s1<s2;
 	  }
 	};
-	map<const string,U7file *,ltstr> file_list;
+	std::map<const std::string,U7file *,ltstr> file_list;
 public:
 	U7FileManager();
 	~U7FileManager();
 
-	U7file	*get_file_object(const string &s);
+	U7file	*get_file_object(const std::string &s);
 	static U7FileManager *get_ptr(void);
 	};
 
 class	U7object
 	{
 protected:
-	string	filename;
+	std::string	filename;
 	int	objnumber;
 public:
-	virtual	int retrieve(char **,size_t &len);	// Retrieve to a memory block
+	virtual	int retrieve(char **,std::size_t &len);	// Retrieve to a memory block
 	virtual int retrieve(const char *);		// Retrieve to a filename
 
 	U7object(const char *file,int objnum);

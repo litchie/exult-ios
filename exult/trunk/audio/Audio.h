@@ -33,7 +33,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <SDL_audio.h>
 #include "Mixer.h"
 #include "Midi.h"
-#include "../utils.h"
+#ifdef MACOS
+  #include "utils.h"
+#else
+  #include "../utils.h"
+#endif
 
 //---- Audio -----------------------------------------------------------
 

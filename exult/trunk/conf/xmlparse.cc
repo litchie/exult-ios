@@ -25,6 +25,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMLEntity.h"
 #include <iostream>
 
+using std::string;
+
+using std::size_t;
+using std::strlen;
+
+
 static	void	trim(string &s)
 {
 	// Clean off leading whitespace

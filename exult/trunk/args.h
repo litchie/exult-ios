@@ -7,8 +7,6 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
 class	Args
 	{
 	struct Opts
@@ -27,12 +25,12 @@ class	Args
 		Opts() :option(""),valuetype(no_type) {};
 		~Opts() {};
 		};
-	vector<Opts> options;
+	std::vector<Opts> options;
 	public:
 	Args() {};
 	~Args() {};
 	void	declare(const char *s,bool *b,bool defval=true);
-	void	declare(const char *s,string *b,const char *defval=0);
+	void	declare(const char *s,std::string *b,const char *defval=0);
 	void	declare(const char *s,int *b,int defval=0);
 	void	declare(const char *s,unsigned long *b,unsigned long defval=0);
 	void	process(int argc,char **argv);

@@ -37,28 +37,28 @@ public:
 	~Configuration();
 
 	bool	read_config_file(const char *);
-	bool	read_config_string(const string &);
-	void	value(const char *key,string &ret,const char *defaultvalue="");
+	bool	read_config_string(const std::string &);
+	void	value(const char *key,std::string &ret,const char *defaultvalue="");
 	void	value(const char *key,int &ret,int defaultvalue=0);
 	void    set(const char *key,const char *value,bool write_to_file);
-	void    set(const char *key,const string &value,bool write_to_file);
+	void    set(const char *key,const std::string &value,bool write_to_file);
 	void    set(const char *key,int,bool write_to_file);
 
 	// Return a list of keys that are subsidiary to the supplied
 	// key
-	vector<string>	listkeys(string &key,bool longformat=true);
-	vector<string>	listkeys(const char *key,bool longformat=true);
+	std::vector<std::string>	listkeys(std::string &key,bool longformat=true);
+	std::vector<std::string>	listkeys(const char *key,bool longformat=true);
 
-	string	dump(void); // Assembles a readable representation
+	std::string	dump(void); // Assembles a readable representation
 
 	void	write_back(void);
 
 
 private:
-	string	&value(const char *key,bool &exists);
-	void    set(string &key,string &value,bool write_to_file);
+	std::string	&value(const char *key,bool &exists);
+	void    set(std::string &key,std::string &value,bool write_to_file);
 	XMLnode xmltree;
-	string	filename;
+	std::string	filename;
 	bool	is_file;
 };
 

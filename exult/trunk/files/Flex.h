@@ -43,21 +43,21 @@ protected:
 		uint32 size;
 		Reference() : offset(0),size(0) {};
 		};
-	vector<Reference> object_list;
+	std::vector<Reference> object_list;
 public:
 	Flex(const char *fname);
-	Flex(const string &fname);
+	Flex(const std::string &fname);
 	Flex(const Flex &f) : magic1(f.magic1),count(f.count),magic2(f.magic2),object_list(f.object_list)
-		{ memcpy(title,f.title,sizeof(title));
-		  memcpy(padding,f.padding,sizeof(padding)); }
+		{ std::memcpy(title,f.title,sizeof(title));
+		  std::memcpy(padding,f.padding,sizeof(padding)); }
 	Flex &operator=(const Flex &f)
 		{
 		magic1=f.magic1;
 		count=f.count;
 		magic2=f.magic2;
 		object_list=f.object_list;
-		memcpy(title,f.title,sizeof(title));
-		memcpy(padding,f.padding,sizeof(padding));
+		std::memcpy(title,f.title,sizeof(title));
+		std::memcpy(padding,f.padding,sizeof(padding));
 		return *this;
 		}
 		
@@ -65,7 +65,7 @@ public:
 	
 	// char *read_object(int objnum,uint32 &length);
         virtual int     number_of_objects(const char *) { return object_list.size(); };
-        virtual int     retrieve(int objnum,char **,size_t *len); // To a memory block
+        virtual int     retrieve(int objnum,char **,std::size_t *len); // To a memory block
         virtual int     retrieve(int objnum,const char *);       // To a file
 private:
 	Flex();	// No default constructor

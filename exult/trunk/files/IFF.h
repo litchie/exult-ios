@@ -40,14 +40,14 @@ public:
 		IFFhdr() {  }
 		IFFhdr(const IFFhdr &i) : size(i.size)
 			{
-			memcpy(form_magic,i.form_magic,sizeof(form_magic));
-			memcpy(data_type,i.data_type,sizeof(data_type));
+			std::memcpy(form_magic,i.form_magic,sizeof(form_magic));
+			std::memcpy(data_type,i.data_type,sizeof(data_type));
 			}
 		IFFhdr &operator=(const IFFhdr &i)
 			{
 			size=i.size;
-			memcpy(form_magic,i.form_magic,sizeof(form_magic));
-			memcpy(data_type,i.data_type,sizeof(data_type));
+			std::memcpy(form_magic,i.form_magic,sizeof(form_magic));
+			std::memcpy(data_type,i.data_type,sizeof(data_type));
 			return *this;
 			}
 		};
@@ -70,10 +70,10 @@ public:
                 };
 protected:
 	IFFhdr	header;
-        vector<Reference> object_list;
+        std::vector<Reference> object_list;
 public:
         IFF(const char *fname);
-        IFF(const string &fname);
+        IFF(const std::string &fname);
 	IFF(const IFF &i) : header(i.header),object_list(i.object_list)
 		{  }
 	IFF operator=(const IFF &i)
@@ -86,7 +86,7 @@ public:
 
         // char *read_object(int objnum,uint32 &length);
         virtual int     number_of_objects(const char *) { return object_list.size(); };
-        virtual int     retrieve(int objnum,char **,size_t *len); // To a memory block
+        virtual int     retrieve(int objnum,char **,std::size_t *len); // To a memory block
         virtual int     retrieve(int objnum,const char *);       // To a file
 private:
         IFF(); // No default constructor

@@ -26,21 +26,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifdef MACOS
-#include <iostream>
-using namespace std;
+#include <iosfwd>
 
-#else
-class istream;
-class ostream;
-#endif
 class Game_window;
 class Game_object;
 class Text_gump;
 class Vector;
 class Deleted_objects;
 class Actor;
-class Usecode_value;
+#ifdef MACOS
+  #include "useval.h"
+#else
+  class Usecode_value;
+#endif
 
 #include "tiles.h"
 #include "utils.h"
