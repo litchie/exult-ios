@@ -166,7 +166,6 @@ EXTRA_DIST = 	\
 	msvcstuff/Exult_flx.dsp \
 	msvcstuff/Exult_si_flx.dsp \
 	msvcstuff/Exult_Tools.dsp \
-	msvcstuff/find_nearby.h \
 	msvcstuff/Flexes.dsp \
 	msvcstuff/mklink.dsp \
 	msvcstuff/msvc_kludges.cc \
