@@ -1,3 +1,8 @@
+2004-02-03 Dominik Reichardt <dominus@users.sourceforge.net>
+	* docs/xml/exult_studio.xml: converted JPGs to PNGs
+	* docs/exult_studio.html: converted JPGs to PNGs
+	* docs/images/*.jpg removed, *.png added instead
+
 2004-02-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gumps/Gump_manager.cc: don't disable unicode if any modal gumps left
 
