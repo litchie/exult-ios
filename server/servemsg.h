@@ -39,7 +39,7 @@ Bytes	Description
 namespace Exult_server
 {
 const unsigned short magic = 0xf381;
-const int maxlength = 256;
+const int maxlength = 600;		// Big enough to hold a 'terrain'.
 const int hdrlength = 5;
 enum Msg_type
 	{
@@ -58,7 +58,8 @@ enum Msg_type
 	reload_usecode = 12,		// Reload patched usecode.
 	locate_terrain = 13,		// Locate desired chunk terrain.
 	swap_terrain = 14,		// Swap two terrains.
-	insert_terrain = 15		// Insert new chunk terrain
+	insert_terrain = 15,		// Insert new chunk terrain
+	send_terrain = 16		// Send 512-byte terrain to client.
 	};
 
 // I/O routines:
