@@ -50,7 +50,7 @@ typedef pair<DoOps, vector<string> > DoListPair;
 typedef vector<DoListPair> DoList;
 
 DoList			dolist;
-Configuration	*config;
+Configuration	*config= new Configuration();
 string			config_file_name;
 bool			verbose=false; // dump verbose output to cerr
 
@@ -143,11 +143,13 @@ void process_ops()
 			if(verbose)
 			{
 				string s;
+				assert(config!=0);
 				config->value(i->second[0].c_str(),s,"---nil---");
 				cerr << "Original value of " << i->second[0] << " was " << s << endl;
 			
 			}
 			
+			assert(config!=0);
 			config->set(i->second[0].c_str(), i->second[1].c_str(), false);
 			
 			if(verbose)
@@ -159,11 +161,13 @@ void process_ops()
 			if(verbose)
 			{
 				string s;
+				assert(config!=0);
 				config->value(i->second[0].c_str(),s,"---nil---");
 				cerr << "Original value was " << i->second[0] << " was " << s << endl;
 			
 			}
 			
+			assert(config!=0);
 			config->set(i->second[0].c_str(), "", false);
 			
 			if(verbose)
@@ -191,10 +195,12 @@ int main(int argc, char *argv[])
 		}
 	}
 	
+	assert(config!=0);
 	config->read_config_file(config_file_name.c_str());
 	
 	process_ops();
 	
+	assert(config!=0);
 	config->write_back();
 	
 	return 0;
