@@ -502,6 +502,11 @@ void Actor::check_temperature
 				say(1214, 1217);
 		return;
 		}
+	int shnum = get_shapenum();
+	if ((shnum == 658 || shnum == 734 || shnum == 747) && GAME_SI)
+		return;			// Automatons don't get cold.
+	if (get_schedule_type() == Schedule::wait)
+		return;			// Not following leader?  Leave alone.
 	int warmth = figure_warmth();	// (This could be saved for speed.)
 	if (warmth >= 100)		// Enough clothing?
 		{
