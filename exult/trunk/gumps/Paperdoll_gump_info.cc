@@ -187,9 +187,9 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items[] =
 	// Wolf
 	{     227,  3, Actor::cloak_spot,   OT_Normal,  false, paperdoll,    116,    0,     -1 },
 	{     227,  3, Actor::special_spot, OT_Normal,   true, paperdoll,    116,    1,     -1 },
-	// Gwanni
-	{     227,  3, Actor::cloak_spot,   OT_Normal,  false, paperdoll,    164,    0,     -1 },
-	{     227,  3, Actor::special_spot, OT_Normal,   true, paperdoll,    164,    1,     -1 },
+	// Gwani
+	{     227,  4, Actor::cloak_spot,   OT_Normal,  false, paperdoll,    164,    0,     -1 },
+	{     227,  4, Actor::special_spot, OT_Normal,   true, paperdoll,    164,    1,     -1 },
 	// 'Cloak'
 	{     403,  0, Actor::cloak_spot,   OT_Normal,  false, paperdoll,     28,    0,     -1 },
 	{     403,  0, Actor::special_spot, OT_Normal,   true, paperdoll,     28,    1,     -1 },
