@@ -34,7 +34,7 @@ Extract the files to a mingw directory in root directory of drive
 (ie C:\mingw\ )
 
 Get the SDL binaries & headers from:
-http://exult.on.openave.net/SDL-1.2.2.zip
+http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
 Unzip this file into the Exult directory. (it should add a SDL subdirectory)
 
 Open Command Prompt or MS-DOS Prompt
