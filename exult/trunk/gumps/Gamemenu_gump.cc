@@ -104,7 +104,12 @@ void Gamemenu_gump::loadsave()
 	//File_gump *fileio = new File_gump();
 	Newfile_gump *fileio = new Newfile_gump();
 	Do_Modal_gump(fileio, Mouse::hand);
-	if (fileio->restored_game()) done = 1;
+	if (fileio->restored_game())
+	{
+		done = true;
+		// Since we just loaded a new game, we don't want Do_Modal_gump to restore the background.
+		restore_background = false;
+	}
 	delete fileio;
 }
 
