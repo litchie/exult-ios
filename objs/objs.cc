@@ -1254,7 +1254,7 @@ int Game_object::drop
 	return (1);
 	}
 
-#define DEBUGLT
+//#define DEBUGLT
 #ifdef DEBUGLT
 static int rx1 = -1, ry1 = -1, rx2 = -1, ry2 = -1;
 
@@ -1469,6 +1469,16 @@ int Game_object::compare
 							zcmp, zover);
 	if (xcmp >= 0 && ycmp >= 0 && zcmp >= 0)
 		return 1;		// GTE in all dimensions.
+#if 1	/* Seems to work so far... */
+					// Experiment to fix tapestries in
+					//   Fawn:
+	if (xover && yover && zover && inf1.tz == inf2.tz &&
+	    Game::get_game_type() == SERPENT_ISLE)
+		{
+		if (!xcmp || !ycmp)	// Inside N-S wall?  Take shorter.
+			return -zcmp;
+		}
+#endif
 	if (xcmp <= 0 && ycmp <= 0 && zcmp <= 0)
 		return -1;		// LTE in all dimensions.
 	if (yover)			// Y's overlap.
@@ -1514,7 +1524,7 @@ int Game_object::compare
 	else if (ycmp == 1)		// o1 Y after o2 Y?
 		if (zover || zcmp >= 0)
 			return 1;
-#if 1
+#if 1	/* So far, this seems to work without causing problems: */
 					// Experiment:  Fixes Brit. museum
 					//   statue-through-roof.
 		else if (inf1.ztop/5 < inf2.zbot/5)
@@ -1539,7 +1549,13 @@ int Game_object::lt
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Ordering_info ord(gwin, this);
+#define TESTNEWCMP
+#ifdef TESTNEWCMP	/* Just #define it to use the new one. */
+	int cmp = compare(ord, &obj2);
+	return cmp == -1 ? 1 : cmp == 1 ? 0 : -1;
+#else
 	return lt(ord, &obj2);
+#endif
 	}
 
 
