@@ -132,28 +132,19 @@ int Container_game_object::add_quantity
 	int dontcreate			// If 1, don't create new objs.
 	)
 	{
-					// Get volume of 1 object.
-	int objvol = Game_window::get_game_window()->get_info(
-			shapenum).get_volume();
-	int maxvol = get_max_volume();	// 0 means anything (NPC's?).
-	int roomfor = maxvol && objvol ? (maxvol - volume_used)/objvol : 20000;
-	int todo = delta < roomfor ? delta : roomfor;
+					// Note:  quantity is ignored for
+					//   figuring volume.
 	Game_object *obj;
 	if (!objects.is_empty())
 		{			// First try existing items.
 		Object_iterator next(objects);
-		while (todo && (obj = next.get_next()) != 0)
+		while (delta && (obj = next.get_next()) != 0)
 			{
 			if (obj->get_shapenum() == shapenum &&
 		    	 (framenum == c_any_framenum || 
 					obj->get_framenum() == framenum))
-					// ++++++Quality???
-				{
-				int used = 
-				    todo - obj->modify_quantity(todo);
-				todo -= used;
-				delta -= used;
-				}
+
+				delta = obj->modify_quantity(delta);
 			}
 		next.reset();			// Now try recursively.
 		while ((obj = next.get_next()) != 0)
@@ -176,23 +167,23 @@ int Container_game_object::add_quantity
 int Container_game_object::create_quantity
 	(
 	int delta,			// Quantity to add.
-	int shapenum,			// Shape #.
+	int shnum,			// Shape #.
 	int qual,			// Quality, or c_any_qual for any.
-	int framenum,			// Frame.
+	int frnum,			// Frame.
 	bool temporary			// Create temporary quantity
 	)
 	{
+					// Usecode container?
+	if (get_shapenum() == 486 && Game::get_game_type() == SERPENT_ISLE)
+		return delta;
 	Shape_info& shp_info=Game_window::get_game_window()->get_info(
-								shapenum);
-					// Get volume of 1 object.
-	int objvol = shp_info.get_volume();
-	int maxvol = get_max_volume();	// 0 means anything (NPC's?).
-	int roomfor = maxvol && objvol ? (maxvol - volume_used)/objvol : 20000;
-	int todo = delta < roomfor ? delta : roomfor;
-	while (todo)			// Create them here first.
+								shnum);
+	if (!shp_info.has_quality())	// Not a quality object?
+		qual = c_any_qual;	// Then don't set it.
+	while (delta)			// Create them here first.
 		{
 		Game_object *newobj = Game_window::get_game_window()->
-			create_ireg_object(shp_info, shapenum, framenum,0,0,0);
+			create_ireg_object(shp_info, shnum, frnum,0,0,0);
 
 		if (!add(newobj))
 			{
@@ -205,14 +196,9 @@ int Container_game_object::create_quantity
 
 		if (qual != c_any_qual)	// Set desired quality.
 			newobj->set_quality(qual);
-		todo--; delta--;
-		if (todo > 0)
-			{
-			int used = 
-				todo - newobj->modify_quantity(todo);
-			todo -= used;
-			delta -= used;
-			}
+		delta--;
+		if (delta > 0)
+			delta =  newobj->modify_quantity(delta);
 		}
 	if (!delta)			// All done?
 		return (0);
@@ -222,7 +208,7 @@ int Container_game_object::create_quantity
 		return (delta);
 	Object_iterator next(objects);
 	while ((obj = next.get_next()) != 0)
-		delta = obj->create_quantity(delta, shapenum, qual, framenum);
+		delta = obj->create_quantity(delta, shnum, qual, frnum);
 	return (delta);
 	}		
 
