@@ -623,6 +623,20 @@ void Egg_object::activate
 an effort to fix the 'monsters spawning too often' bug.   NEED to see if this
 breaks anything!  */
 
+	/*
+	  MAJOR HACK!
+	  This is an attempt at a work-around of a potential bug in the original
+	  Serpent Isle. See SourceForge bug #879253
+
+	  Prevent the Serpent Staff egg from hatching only once
+	*/
+	Tile_coord eggpos = get_tile();
+	if (GAME_SI && eggpos.tx == 1287 && eggpos.ty == 2568 && eggpos.tz == 0) {
+		flags &= ~(1 << (int) hatched);
+	}
+	/* end hack */
+
+
 	int roll = must ? 0 : 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
