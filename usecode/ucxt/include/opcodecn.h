@@ -7,7 +7,7 @@
 class Label
 {
   public:
-    Label(const unsigned int offset) : _offset(offset) { };
+    Label(const unsigned int funcid, const unsigned int offset) : _funcid(funcid), _offset(offset) { };
     vector<Opcode *> &operator()() { return _opcodes; };
     void print_asm(ostream &o)
     {
@@ -15,7 +15,25 @@ class Label
         _opcodes[i]->print_asm(o);
     };
 
+    void print_c(ostream &o)
+    {
+      vector<unsigned int> ocvi;
+      MiscOpcode oc(1, 1, ocvi);
+
+      oc.indent(o);
+
+      o << "label" << setw(4) << _funcid << "_" << setw(4) << _offset << ":" << endl;
+
+      oc.indent_inc();
+      for(unsigned int i=0; i<_opcodes.size(); i++)
+      {
+        _opcodes[i]->print_c(o);
+      }
+      oc.indent_dec();
+    };
+
   private:
+    unsigned int _funcid;
     unsigned int _offset;
     vector<Opcode *> _opcodes;
 };
