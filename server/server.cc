@@ -335,8 +335,8 @@ static void Handle_client_message
 		int tnum = (short) Read2(ptr);
 		Write2(ptr, gwin->get_map()->get_num_chunk_terrains());
 		Chunk_terrain *ter = gwin->get_map()->get_terrain(tnum);
-		ter->write_flats(ptr);	// Serialize it.
-		ptr += 512;		// I just happen to know the length...
+					// Serialize it.
+		ptr += ter->write_flats(ptr, Game_map::is_v2_chunks());	
 		Exult_server::Send_data(client_socket, 
 			Exult_server::send_terrain, data, ptr - data);
 		break;

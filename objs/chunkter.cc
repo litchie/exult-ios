@@ -107,7 +107,8 @@ inline void Chunk_terrain::paint_tile
 
 Chunk_terrain::Chunk_terrain
 	(
-	unsigned char *data		// Chunk data.
+	unsigned char *data,		// Chunk data.
+	bool v2_chunks			// 3 bytes/shape.
 	) : undo_shapes(0),
 	    rendered_flats(0), glflats(0), 
 	    num_clients(0), render_queue_next(0),
@@ -116,11 +117,21 @@ Chunk_terrain::Chunk_terrain
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			{
-			int shnum = data[0]+256*(data[1]&3),
-			    frnum = (data[1]>>2)&0x1f;
+			int shnum, frnum;
+			if (v2_chunks)
+				{ 
+				shnum = data[0] + 256*data[1];
+				frnum = data[2];
+				data += 3;
+				}
+			else
+				{
+				shnum = data[0]+256*(data[1]&3),
+			    	frnum = (data[1]>>2)&0x1f;
+				data += 2;
+				}
 			ShapeID id(shnum, frnum);
 			shapes[16*tiley + tilex] = id;
-			data += 2;
 			}
 	}
 
@@ -321,21 +332,35 @@ void Chunk_terrain::render_all
 
 /*
  *	Write out to a chunk.
+ *
+ *	Output:	Length of data stored.
  */
 	
-void Chunk_terrain::write_flats
+int Chunk_terrain::write_flats
 	(
-	unsigned char *chunk_data
+	unsigned char *chunk_data,
+	bool v2_chunks				// 3 bytes/entry.
 	)
 	{
+	unsigned char *start = chunk_data;
 	for (int ty = 0; ty < c_tiles_per_chunk; ty++)
 		for (int tx = 0; tx < c_tiles_per_chunk; tx++)
 			{
 			ShapeID id = get_flat(tx, ty);
 			int shapenum = id.get_shapenum(), 
 			    framenum = id.get_framenum();
-			*chunk_data++ = shapenum&0xff;
-			*chunk_data++ = ((shapenum>>8)&3) | (framenum<<2);
+			if (v2_chunks)
+				{
+				*chunk_data++ = shapenum&0xff;
+				*chunk_data++ = (shapenum>>8)&0xff;
+				*chunk_data++ = framenum;
+				}
+			else
+				{
+				*chunk_data++ = shapenum&0xff;
+				*chunk_data++ =((shapenum>>8)&3)|(framenum<<2);
+				}
 			}
+	return chunk_data - start;
 	}
 
