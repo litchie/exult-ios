@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include "objiter.h"
 #include "contain.h"
+#include "gamewin.h"
+#include "gamemap.h"
 
 // Make linker happy.
 
@@ -35,6 +37,8 @@ static void DummY()
 	Object_list dummylist;
 	Recursive_object_iterator dummy(dummylist);
 	Recursive_object_iterator_backwards dummyb(dummylist);
+	Recursive_object_iterator dum2((Game_object *)0);
+	Recursive_object_iterator_backwards dum2b((Game_object *)0);
 
 	dummy.get_next();
 	dummyb.get_next();
