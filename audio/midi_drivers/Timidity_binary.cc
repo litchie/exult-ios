@@ -129,7 +129,6 @@ int	timidity_play(string filename, bool repeat, string &newfilename, pid_t &pid)
 		repstr += "l";
 	int pdes[2];
 	pipe(pdes);
-	cerr << "timidity_play fork and exec" << endl;
 	switch(pid = fork())
 	{
 		case -1:
