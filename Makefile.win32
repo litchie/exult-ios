@@ -4,6 +4,7 @@
 # Where is Ultima 7 installed
 U7PATH=C:\Ultima7
 
+CC=gcc
 # Base of the exult source
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs
@@ -229,14 +230,14 @@ toolsclean:
 
 toolsinstall: tools
 	if not exist $(U7PATH)\tools md $(U7PATH)\tools
-	strip tools/expack.exe -o $(U7PATH)/tools/expack.exe
-	strip tools/mklink.exe -o $(U7PATH)/tools/mklink.exe
-	strip tools/rip.exe -o $(U7PATH)/tools/rip.exe
-	strip tools/shp2pcx.exe -o $(U7PATH)/tools/shp2pcx.exe
-	strip tools/splitshp.exe -o $(U7PATH)/tools/splitshp.exe
-	strip tools/ucdump.exe -o $(U7PATH)/tools/ucdump.exe
-	strip tools/wuc.exe -o $(U7PATH)/tools/wuc.exe
-	strip tools/wud.exe -o $(U7PATH)/tools/wud.exe
+	strip tools/expack.exe -o $(U7PATH)\tools\expack.exe
+	strip tools/mklink.exe -o $(U7PATH)\tools\mklink.exe
+	strip tools/rip.exe -o $(U7PATH)\tools\rip.exe
+	strip tools/shp2pcx.exe -o $(U7PATH)\tools\shp2pcx.exe
+	strip tools/splitshp.exe -o $(U7PATH)\tools\splitshp.exe
+	strip tools/ucdump.exe -o $(U7PATH)\tools\ucdump.exe
+	strip tools/wuc.exe -o $(U7PATH)\tools\wuc.exe
+	strip tools/wud.exe -o $(U7PATH)\tools\wud.exe
 
 all: $(EXEC) tools
 
