@@ -62,8 +62,8 @@ class Combo
 	short hot_index;		// Index of obj. whose 'hot spot' we'll
 					//   use.
 	short starttx, startty;		// Offset represented by top-left.
-	short xtiles, ytiles, ztiles;	// Dimensions.
 	std::string name;		// Name given by user.
+	Rectangle tilefoot;		// Footprint in tiles.
 public:
 	friend class Combo_editor;
 	friend class Combo_chooser;

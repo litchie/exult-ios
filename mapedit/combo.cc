@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 const int border = 2;			// Border at bottom, sides of each
 					//   combo in browser.
+const int maxtiles = 32;		// Max. width/height in tiles.
 
 /*
  *	Open combo window (if not already open).
@@ -203,8 +204,8 @@ Combo::Combo
 	(
 	Shapes_vga_file *svga
 	) : shapes_file(svga),
-	    starttx(c_num_tiles), startty(c_num_tiles), xtiles(0), ytiles(0), 
-	    ztiles(0), hot_index(-1)
+	    starttx(c_num_tiles), startty(c_num_tiles), hot_index(-1),
+	    tilefoot(0, 0, 0, 0)
 	{
 					// Read info. the first time.
 	shapes_file->read_info(false, true);//+++++BG?
@@ -218,14 +219,15 @@ Combo::Combo
 	(
 	const Combo& c2
 	) : shapes_file(c2.shapes_file), starttx(c2.starttx),
-	    startty(c2.startty), xtiles(c2.xtiles), ytiles(c2.ytiles),
-	    ztiles(c2.ztiles), hot_index(c2.hot_index), name(c2.name)
+	    startty(c2.startty), 
+	    hot_index(c2.hot_index), name(c2.name), tilefoot(c2.tilefoot)
 	{
 	for (vector<Combo_member *>::const_iterator it = c2.members.begin();
 					it != c2.members.end(); ++it)
 		{
 		Combo_member *m = *it;
-		add(m->tx, m->ty, m->tz, m->shapenum, m->framenum);
+		members.push_back(new Combo_member(m->tx, m->ty, m->tz, 
+					m->shapenum, m->framenum));
 		}
 	}
 
@@ -261,28 +263,35 @@ void Combo::add
 		    shnum == m->shapenum && frnum == m->framenum)
 			return;		// Don't add same one twice.
 		}
-#if 0	/* This doesn't work right. */
-	if (members.size() != 0)	// Not the first?
-		{			// Push within current range.
-		if (tx < starttx - 16)
-			tx = starttx - 16;
-		else if (tx > starttx + 16)
-			tx = starttx + 16;
-		if (ty < startty - 16)
-			ty = startty - 16;
-		else if (ty > startty + 16)
-			ty = startty + 16;
-		}
-#endif
-	Combo_member *memb = new Combo_member(tx, ty, tz, shnum, frnum);
-	members.push_back(memb);
-					// Figure visible top-left tile.
+					// Get tile dims.
 	Shape_info& info = shapes_file->get_info(shnum);
 	int xtiles = info.get_3d_xtiles(frnum),
 	    ytiles = info.get_3d_ytiles(frnum),
 	    ztiles = info.get_3d_height();
-	int vtx = tx - xtiles - (tz + ztiles + 1)/2, 
-	    vty = ty - ytiles - (tz + ztiles + 1)/2;
+					// Get tile footprint.
+	Rectangle box(tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles);
+	if (!members.size())		// First one?
+		tilefoot = box;		// Init. total footprint.
+	else
+		{			// Too far away?
+		if (tilefoot.x + tilefoot.w - box.x > maxtiles ||
+		    box.x + box.w - tilefoot.x > maxtiles ||
+		    tilefoot.y + tilefoot.h - box.y > maxtiles ||
+		    box.y + box.h - tilefoot.y > maxtiles)
+			{
+			EStudio::Alert(
+				"New object is too far (> 32) from others");
+			return;
+			}
+					// Add to footprint.
+		tilefoot = tilefoot.add(box);
+		}
+	Combo_member *memb = new Combo_member(tx, ty, tz, shnum, frnum);
+	members.push_back(memb);
+					// Figure visible top-left tile, with
+					//   1 to spare.
+	int vtx = tx - xtiles - 1 - (tz + ztiles + 1)/2, 
+	    vty = ty - ytiles - 1 - (tz + ztiles + 1)/2;
 	if (vtx < starttx)		// Adjust our starting point.
 		starttx = vtx;
 	if (vty < startty)
@@ -308,18 +317,31 @@ void Combo::remove
 	Combo_member *m = *it;
 	members.erase(it);
 	delete m;
-	if (hot_index == i)		// Was it the hot-spot?
+	hot_index = -1;			// Figure new hot-spot, footprint.
+	tilefoot = Rectangle(0, 0, 0, 0);
+	for (vector<Combo_member *>::iterator it = members.begin();
+						it != members.end(); ++it)
 		{
-		hot_index = members.size() - 1;
-		for (vector<Combo_member *>::iterator it = members.begin();
-					it != members.end(); ++it)
+		Combo_member *m = *it;
+					// Get tile dims.
+		Shape_info& info = shapes_file->get_info(m->shapenum);
+		int xtiles = info.get_3d_xtiles(m->framenum),
+		    ytiles = info.get_3d_ytiles(m->framenum);
+					// Get tile footprint.
+		Rectangle box(m->tx - xtiles + 1, m->ty - ytiles + 1, 
+							xtiles, ytiles);
+		if (hot_index == -1)	// First?
 			{
-			Combo_member *m = *it;
+			hot_index = 0;
+			tilefoot = box;
+			}
+		else
+			{
 			if (hot_spot_compare(*m, *members[hot_index]) == 0)
 				hot_index = (it - members.begin());
+			tilefoot = tilefoot.add(box);
 			}
 		}
-	// +++++++Mayby re-adjust top tx, ty???
 	}
 
 /*
@@ -421,7 +443,7 @@ unsigned char *Combo::write
 	unsigned char *ptr = buf;
 	Serial_out out(ptr);
 	out << name;
-	out << hot_index << starttx << startty << xtiles << ytiles << ztiles;
+	out << hot_index << starttx << startty;
 	out << (short) members.size();	// # members to follow.
 	for (std::vector<Combo_member *>::const_iterator it = members.begin();
 					it != members.end(); ++it)
@@ -449,7 +471,7 @@ unsigned char *Combo::read
 	unsigned char *ptr = buf;
 	Serial_in in(ptr);
 	in << name;
-	in << hot_index << starttx << startty << xtiles << ytiles << ztiles;
+	in << hot_index << starttx << startty;
 	short cnt;
 	in << cnt;			// # members to follow.
 	for (int i = 0; i < cnt; i++)
@@ -944,8 +966,6 @@ cout << "Buflen = " << buflen << endl;
 	U7_combo_data *ents = new U7_combo_data[cnt];
 					// Get 'hot-spot' member.
 	Combo_member *hot = combo->members[combo->hot_index];
-					// And figure range.
-	int fromtx = 0, totx = -1, fromty = 0, toty = -1;
 	for (int i = 0; i < cnt; i++)
 		{
 		Combo_member *m = combo->members[i];
@@ -954,23 +974,11 @@ cout << "Buflen = " << buflen << endl;
 		ents[i].tz = m->tz - hot->tz;
 		ents[i].shape = m->shapenum;
 		ents[i].frame = m->framenum;
-		if (ents[i].tx > totx)
-			totx = ents[i].tx;
-		if (ents[i].ty > toty)
-			toty = ents[i].ty;
-		Shape_info& info = combo->shapes_file->get_info(m->shapenum);
-		int tx0 = ents[i].tx - info.get_3d_xtiles() + 1,
-		    ty0 = ents[i].ty - info.get_3d_ytiles() + 1;
-		if (tx0 < fromtx)
-			fromtx = tx0;
-		if (ty0 < fromty)
-			fromty = ty0;
 		}
-cout << "Combo: xtiles=" << totx-fromtx+1 << ", ytiles=" << toty-fromty+1 <<
-	", tiles_right=" << totx << ", tiles_below=" <<
-					toty << endl;
-	int len = Store_u7_comboid(buf, totx - fromtx + 1, toty - fromty + 1, 
-				totx, toty, cnt, ents);
+	Rectangle foot = combo->tilefoot;
+	int len = Store_u7_comboid(buf, foot.w, foot.h,
+			foot.x + foot.w - 1 - hot->tx,
+			foot.y + foot.h - 1 - hot->ty, cnt, ents);
 	assert(len <= buflen);
 #ifdef WIN32
 	windragdata *wdata = (windragdata *)seldata;
