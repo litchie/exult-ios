@@ -27,7 +27,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_UTILS	1
 //#include <stdio.h>
 //#include <fstream>
-#include <iosfwd>
+#ifdef MACOS
+  #include <iostream>
+  // it is not sufficient to #include <iosfwd> here because Read1() etc.
+  // call methods of class istream
+#else
+  #include <iosfwd>
+#endif
 #include <exception>
 #include <string>
         class replication_error : public std::exception
