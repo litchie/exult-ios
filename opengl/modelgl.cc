@@ -123,13 +123,14 @@ void Object3d::render
 			{
 			unsigned int vindex = (*faceit).vertex_indices[v];
 					// Set normal for vertex.
-			glNormal3f(normals[vindex].x, normals[vindex].y,
-							normals[vindex].z);
+			Vector3& norm = normals[vindex];
+			glNormal3f(norm.x, norm.y, norm.z);
 			if (mat && mat->texture_loaded &&
 				    vindex < tex_vertices.size())
-					// Set texture coord.
-				glTexCoord2f(tex_vertices[vindex].x,
-						tex_vertices[vindex].y);
+				{	// Set texture coord.
+				Vector2& tv = tex_vertices[vindex];
+				glTexCoord2f(tv.x, tv.y);
+				}
 					// Finally, the vertex:
 			Vector3& vert = vertices[vindex];
 			glVertex3f(vert.x, vert.y, vert.z);

@@ -1,3 +1,8 @@
+2002-04-21  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* schedule.cc (Sleep_schedule): Make sure NPC is still by bed when
+	waking up.
+
 2002-04-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* game.cc, exult.cc: fixed setting the PATCH directory
 
