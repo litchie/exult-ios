@@ -2174,7 +2174,7 @@ void Game_window::double_clicked
 		if (mode == conversation)
 			{
 			// We had a conversation with an NPC, set the met flag true (BG Only)
-			obj->set_siflag (Actor::met);
+			obj->set_flag (Actor::met);
 			mode = savemode;
 			paint();
 			}

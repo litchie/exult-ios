@@ -318,7 +318,8 @@ public:
 		egg_proximity = 3,
 		weapon = 4,		// From weapons.dat.
 		readied = 5,		// Wear an item.
-		unreadied = 6		// Removed an item.
+		unreadied = 6,		// Removed an item.
+		chat = 9		// When a NPC wants to talk to you in SI
 		};
 	enum Global_flag_names {
 		did_first_scene = 0x3b,	// Went through 1st scene with Iolo.

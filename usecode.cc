@@ -1361,7 +1361,7 @@ Usecode_value Usecode_machine::Execute_Intrinsic(UsecodeIntrinsicFn func,const c
 	if(usecode_trace)
 		{
 		Usecode_Trace(name,intrinsic,num_parms,parms);
-		cout << endl;
+		cout.flush();
 		Usecode_value u=((*this).*func)(event,intrinsic,num_parms,parms);
 		Usecode_TraceReturn(u);
 		return (u);
@@ -3676,6 +3676,7 @@ int Usecode_machine::run
 						curip, opcode);
 			if (ucbp_fun == fun->id && ucbp_ip == curip)
 				cout << "At breakpoint" << endl;
+			cout.flush();
 			}
 #endif
 		switch (opcode)

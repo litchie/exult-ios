@@ -498,7 +498,8 @@ void Game_object::paint
 
 void Game_object::activate
 	(
-	Usecode_machine *umachine
+	Usecode_machine *umachine,
+	int event
 	)
 	{
 	int usefun = get_shapenum();
@@ -506,7 +507,7 @@ void Game_object::activate
 	if (usefun == 0x282 && get_quality() >= 100)
 		usefun = 0x638;
 	umachine->call_usecode(usefun, this,
-				Usecode_machine::double_click);
+				(Usecode_machine::Usecode_events) event);
 	}
 
 /*
