@@ -96,7 +96,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G6 /MD /W3 /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O1 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -341,7 +341,7 @@ SOURCE=..\audio\Audio.cc
 !ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
 
 # ADD BASE CPP /Ze /O2
-# ADD CPP /Ze /O1
+# ADD CPP /Ze /O2
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
 
