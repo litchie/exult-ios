@@ -7473,6 +7473,11 @@ LR Hand
 	      <class>GtkCheckButton</class>
 	      <name>shinfo_weapon_check</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_shinfo_weapon_check_toggled</handler>
+		<last_modification_time>Fri, 18 Jan 2002 01:30:57 GMT</last_modification_time>
+	      </signal>
 	      <label>Weapon</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
@@ -7487,6 +7492,11 @@ LR Hand
 	      <class>GtkCheckButton</class>
 	      <name>shinfo_ammo_check</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_shinfo_ammo_check_toggled</handler>
+		<last_modification_time>Fri, 18 Jan 2002 01:31:04 GMT</last_modification_time>
+	      </signal>
 	      <label>Ammo</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
@@ -7501,6 +7511,11 @@ LR Hand
 	      <class>GtkCheckButton</class>
 	      <name>shinfo_armor_check</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_shinfo_armor_check_toggled</handler>
+		<last_modification_time>Fri, 18 Jan 2002 01:31:11 GMT</last_modification_time>
+	      </signal>
 	      <label>Armor</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
@@ -7515,6 +7530,11 @@ LR Hand
 	      <class>GtkCheckButton</class>
 	      <name>shinfo_monster_check</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_shinfo_monster_check_toggled</handler>
+		<last_modification_time>Fri, 18 Jan 2002 01:31:20 GMT</last_modification_time>
+	      </signal>
 	      <label>Monster</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
