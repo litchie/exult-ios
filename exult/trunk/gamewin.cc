@@ -77,7 +77,7 @@ Game_window::Game_window
 	    npcs(0),
 	    monster_info(0), 
 	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
-	    special_light(0),
+	    special_light(0), last_restore_hour(0),
 	    dragging(0), dragging_save(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    skip_lift(16), paint_eggs(0), debug(0)
@@ -864,8 +864,13 @@ void Game_window::read_ireg_objects
 				    shnum, frnum, tilex, tiley, lift,
 							entry[8] - 0x80);
 			else if (Is_body(shnum))
+				{
+				if (clock.get_total_hours() - last_restore_hour
+								> 3)
+					continue;// Body decayed.
 				obj = new Dead_body(
 				    shnum, frnum, tilex, tiley, lift,-1);
+				}
 			else
 				obj = new Container_game_object(
 				    shnum, frnum, tilex, tiley, lift,
@@ -1168,6 +1173,7 @@ int Game_window::read_gwin
 	clock.set_day(Read2(gin));
 	clock.set_hour(Read2(gin));
 	clock.set_minute(Read2(gin));
+	last_restore_hour = clock.get_total_hours();
 	if (!clock.in_queue())		// Be sure clock is running.
 		tqueue->add(SDL_GetTicks(), &clock, (long) this);
 	int okay = gin.good();		// Next ones were added recently.
