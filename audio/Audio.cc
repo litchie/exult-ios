@@ -237,7 +237,7 @@ bool	Audio::can_sfx(const std::string &game) const
 
 	// Also just check in the actual data dir
 	d = "<DATA>/" + s;
-	if (U7exists(s.c_str()))
+	if (U7exists(d.c_str()))
 		return true;
 
 #ifdef ENABLE_MIDISFX
