@@ -41,8 +41,11 @@ short Mouse::med_combat_arrows[8] = {40, 41, 42, 43, 44, 45, 46, 47};
 Mouse::Mouse
 	(
 	Game_window *gw			// Where to draw.
-	) : gwin(gw), iwin(gwin->get_win()),backup(0),mousex(-1), mousey(-1),cur_framenum(0),cur(0) 
+	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0) 
 	{
+	SDL_GetMouseState(&mousex, &mousey);
+	mousex /= iwin->get_scale();
+	mousey /= iwin->get_scale();
 	pointers.load(POINTERS);
 	Init();
 	set_short_arrow(east);		// +++++For now.
@@ -52,8 +55,11 @@ Mouse::Mouse
 	(
 	Game_window *gw,		// Where to draw.
 	DataSource &shapes
-	) : gwin(gw), iwin(gwin->get_win()),backup(0),mousex(-1), mousey(-1),cur_framenum(0),cur(0) 
+	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0) 
 	{
+	SDL_GetMouseState(&mousex, &mousey);
+	mousex /= iwin->get_scale();
+	mousey /= iwin->get_scale();
 	pointers.load(shapes);
 	Init();
 	set_shape0(0);
