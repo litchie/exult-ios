@@ -26,10 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef BEOS
 
-#ifdef HAVE_CONFIG_H
-#include "../autoconfig.h"
-#endif
-
 #include "Midi.h"
 #include <be/midi/Midi.h>   //name clash; MidiSynthFile.h includes Exult's Midi.h 'accidently'
 #include <be/midi/MidiSynthFile.h>

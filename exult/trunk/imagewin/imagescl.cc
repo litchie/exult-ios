@@ -24,18 +24,16 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 */
 
-#include "../alpha_kludges.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include "imagewin.h"
 #include "scale.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #endif
-#ifdef MACOS
-#  include "exult_types.h"
-#else
-#  include "../exult_types.h"
-#endif
+#include "exult_types.h"
 
 /*
  *	Manipulate from 8-bit to 16-bit pixels.

@@ -17,7 +17,6 @@
 #ifndef DATA_H
 #define DATA_H
 
-#include "alpha_kludges.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
 #  include <cstring>

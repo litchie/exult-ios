@@ -25,11 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_ITEMS
 #define INCL_ITEMS 1
 
-#ifdef ALPHA_LINUX_CXX
-#  include "../alpha_kludges.h"
-#else
-#  include	<iosfwd>
-#endif
+#include	<iosfwd>
 
 extern char **item_names;		// The game items' names.
 

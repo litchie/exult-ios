@@ -1,4 +1,6 @@
-#include "../alpha_kludges.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifndef ALPHA_LINUX_CXX
 #  include <unistd.h>
@@ -110,7 +112,7 @@ int main(int argc, char **argv)
 				break;
 			case 'c':
 				for(int i=0;i<argc-3;i++) {
-					file_names.push_back(argv[i]);
+					file_names.push_back(argv[i+3]);
 				}
 				set_mode(mode,CREATE);
 				break;

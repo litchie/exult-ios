@@ -23,14 +23,11 @@
 #ifndef ALPHA_KLUDGES_H
 #define ALPHA_KLUDGES_H
 
-#ifdef HAVE_CONFIG_H
-#  include "autoconfig.h"
-#  ifndef HAVE_HASH_MAP
-#    define DONT_HAVE_HASH_MAP
-#  endif
-#  ifndef HAVE_HASH_SET
-#    define DONT_HAVE_HASH_SET
-#  endif
+#ifndef HAVE_HASH_MAP
+#  define DONT_HAVE_HASH_MAP
+#endif
+#ifndef HAVE_HASH_SET
+#  define DONT_HAVE_HASH_SET
 #endif
 
 

@@ -1,17 +1,27 @@
-2001-02-06  Jeff Freedman  <jeff@amy.nerble.net>
+2001-02-06  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* tools/expack.cc: fix -c behaviour
+	* Makefile.cygwin, Makefile.win32: use new -i switch for expack
 
+	Fixed once and for all "alpha_kludges.h" ugliness:
+
+	* autoconfig.h: renamed to config.h to be consistent with autoconf
+	  guidelines
+	* acconfig.h: use @BOTTOM@ directive to conditionally include
+	  alpha_kludges.h if necessary
+	* */*: removed all instances of #include "alpha_kludges.h" and
+	  added the standard #ifdef HAVE_CONFIG_H bit to all .cc files
+
+2001-02-06  Jeff Freedman  <jeff@amy.nerble.net>
 	* actors.cc: Weapon animations are set during combat (so Great
 	Dagger is rendered correctly now).
 
 2001-02-06  Christoph Reichenbach  <jameson@linuxgames.com>
-
 	* vast amount of files: "Fixed" alpha_kludges.h includes. I'll get
 	nightmares from the sheer ugliness I introduced again.
 	
 	* actorio.cc: Fixed typo (?) in line 296: Game::Game::get_avname()
 
 2001-02-05  Jeff Freedman  <jeff@amy.nerble.net>
-
 	* combat.cc: Glass sword self-destructs.
 	* actors.cc:  Fiddled with ::follow().
 

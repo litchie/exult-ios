@@ -24,20 +24,18 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 */
 
-#include "../alpha_kludges.h"
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #endif
 #include "SDL_video.h"
 #include "iwin8.h"
-#ifdef MACOS
-#  include "exult_types.h"
-#	include "gamma.h"
-#else
-#  include "../exult_types.h"
-#	include "../gamma.h"
-#endif
+#include "exult_types.h"
+#include "gamma.h"
 
 
 using std::memmove;

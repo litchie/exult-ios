@@ -24,14 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma interface
 #endif
 
-#ifdef HAVE_CONFIG_H
-#  include "../autoconfig.h"
-#endif
-
-#ifdef ALPHA_LINUX_CXX
-#  include "../alpha_kludges.h"
-#endif
-
 #include <vector>
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
