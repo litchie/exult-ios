@@ -33,12 +33,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Uc_function::Uc_function
 	(
 	Uc_function_symbol *p
-	) : top(0), proto(p), cur_scope(&top), num_locals(0)
+	) : top(0), proto(p), cur_scope(&top), num_locals(0), statement(0)
 	{
 	const vector<char *>& parms = proto->get_parms();
 	for (vector<char *>::const_iterator it = parms.begin();
 				it != parms.end(); it++)
 		add_symbol(*it);
+	}
+
+/*
+ *	Delete.
+ */
+
+Uc_function::~Uc_function
+	(
+	)
+	{
+	delete statement;
+	delete proto;
 	}
 
 /*
