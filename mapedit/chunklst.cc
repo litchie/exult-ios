@@ -51,6 +51,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 using std::strlen;
+using EStudio::Add_menu_item;
 using EStudio::Create_arrow_button;
 
 const int border = 2;			// Border at bottom, sides of each
@@ -643,6 +644,7 @@ cout << "Scrolled to " << adj->value << '\n';
 	chooser->scroll(newindex);
 	}
 
+#if 0	/* +++++++GOING AWAY */
 /*
  *	Callbacks for controls:
  */
@@ -772,6 +774,7 @@ GtkWidget *Chunk_chooser::create_controls
 
 	return topframe;
 	}
+#endif
 
 /*
  *	Enable/disable controls after selection changed.
@@ -783,26 +786,70 @@ void Chunk_chooser::enable_controls
 	{
 	if (selected == -1)		// No selection.
 		{
-		gtk_widget_set_sensitive(loc_chunk_down, false);
-		gtk_widget_set_sensitive(loc_chunk_up, false);
+		gtk_widget_set_sensitive(loc_down, false);
+		gtk_widget_set_sensitive(loc_up, false);
 		if (!group)
 			{
-			gtk_widget_set_sensitive(insert_chunk_dup, false);
-			gtk_widget_set_sensitive(move_chunk_down, false);
-			gtk_widget_set_sensitive(move_chunk_up, false);
+			gtk_widget_set_sensitive(move_down, false);
+			gtk_widget_set_sensitive(move_up, false);
 			}
 		return;
 		}
-	gtk_widget_set_sensitive(loc_chunk_down, true);
-	gtk_widget_set_sensitive(loc_chunk_up, true);
+	gtk_widget_set_sensitive(loc_down, true);
+	gtk_widget_set_sensitive(loc_up, true);
 	if (!group)
 		{
-		gtk_widget_set_sensitive(insert_chunk_dup, true);
-		gtk_widget_set_sensitive(move_chunk_down, 
+		gtk_widget_set_sensitive(move_down, 
 					info[selected].num < num_chunks - 1);
-		gtk_widget_set_sensitive(move_chunk_up, 
+		gtk_widget_set_sensitive(move_up, 
 					info[selected].num > 0);
 		}
+	}
+
+/*
+ *	Handle popup menu items.
+ */
+
+static void on_insert_empty
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	Chunk_chooser *chooser = (Chunk_chooser *) udata;
+	chooser->insert(false);
+	}
+
+static void on_insert_dup
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	Chunk_chooser *chooser = (Chunk_chooser *) udata;
+	chooser->insert(true);
+	}
+
+/*
+ *	Set up popup menu.
+ */
+
+GtkWidget *Chunk_chooser::create_popup
+	(
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	Object_browser::create_popup();	// Create popup with groups, files.
+	if (group != 0)			// Filtering?  Skip the rest.
+		return popup;
+	GtkWidget *mitem = Add_menu_item(popup, "New...");
+	GtkWidget *new_menu = gtk_menu_new();
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), new_menu);
+	Add_menu_item(new_menu, "Empty", GTK_SIGNAL_FUNC(on_insert_empty));
+	if (selected >= 0)
+		Add_menu_item(new_menu, "Duplicate", 
+					GTK_SIGNAL_FUNC(on_insert_dup));
+	return popup;
 	}
 
 /*
@@ -824,13 +871,6 @@ Chunk_chooser::Chunk_chooser
 	chunkfile.seekg(0, std::ios::end);	// Figure total #chunks.
 	num_chunks = chunkfile.tellg()/(c_tiles_per_chunk*c_tiles_per_chunk*2);
 	chunklist.resize(num_chunks);	// Init. list of ->'s to chunks.
-#if 0	/* Done in shapedraw.cc */
-	guint32 colors[256];
-	for (int i = 0; i < 256; i++)
-		colors[i] = (palbuf[3*i]<<16)*4 + (palbuf[3*i+1]<<8)*4 + 
-							palbuf[3*i+2]*4;
-	palette = gdk_rgb_cmap_new(colors, 256);
-#endif
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	set_widget(vbox); // This is our "widget"
@@ -899,8 +939,10 @@ Chunk_chooser::Chunk_chooser
 							"selection");
 	gtk_box_pack_start(GTK_BOX(hbox1), sbar, TRUE, TRUE, 0);
 	gtk_widget_show(sbar);
-					// Add search/edit controls to bottom.
-	gtk_box_pack_start(GTK_BOX(vbox), create_controls(), FALSE, FALSE, 0);
+					// Add locate/move controls to bottom.
+	gtk_box_pack_start(GTK_BOX(vbox), 
+		create_controls(locate_controls|(!group ? move_controls : 0)),
+							FALSE, FALSE, 0);
 	}
 
 /*

@@ -732,7 +732,6 @@ void ExultStudio::create_new_game
 				U7copy(src.c_str(), dest.c_str());
 			} catch (exult_exception& e) {
 				EStudio::Alert(e.what());
-				break;
 			}
 			}
 		closedir(dirrd);
