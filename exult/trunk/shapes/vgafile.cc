@@ -759,6 +759,8 @@ Shape_frame *Shape::read
 		shapeoff = shapes->read4();
 		shapelen = shapes->read4();
 	}
+	if (!shapelen)
+		return 0;		// Empty shape.
 					// Read it in and get frame count.
 	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
