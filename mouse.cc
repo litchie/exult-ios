@@ -191,15 +191,13 @@ void Mouse::flash_shape
 void Mouse::set_speed_cursor()
 {
 	Game_window *gwin = Game_window::get_game_window();
-    Main_actor *main_actor = gwin->get_main_actor();
 	Gump_manager *gump_man = gwin->get_gump_man();
    
 	int cursor = dontchange;
 	int ax, ay;			// Get Avatar/barge screen location.
 
     // Check if we are in dont_move mode, in this case display the hand cursor
-	if (main_actor->get_siflag(Actor::dont_move)
-            || main_actor->get_flag(Obj_flags::dont_render))
+	if (gwin->main_actor_dont_move())
     {
         cursor = hand;
     }

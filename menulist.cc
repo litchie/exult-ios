@@ -262,7 +262,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 					return -1;
 				}
 				break;
-#ifdef MACOS
+#if defined(MACOS) || defined(MACOSX)
 			case SDLK_q:
 				if(event.key.keysym.mod & KMOD_META) {
 					return -1;
