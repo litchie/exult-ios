@@ -1,3 +1,6 @@
+2001-11-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* imagewin.cc: typo
+
 2001-11-15  Tristan Tarrant <nadir@users.sourceforge.net>
 	* exult.cc: search for data file under the executable's directory too
 
