@@ -1036,7 +1036,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     552, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     77,     1 },
 	// Hawk
 	{     555, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_HAWK_SHP,     0 },
-	{     555, -1,       Actor::back2h_spot,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_HAWK_SHP,     1 },
+	{     555, -1,  Actor::back2h_spot, OT_Single,  true,  SF_GAME_FLX,     EXULT_BG_FLX_HAWK_SHP,     1 },
 	// Magebane
 	{     559, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     67,     0},
 	{     559, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     67,     1},
