@@ -1482,28 +1482,12 @@ Frames_sequence::Frames_sequence
 Sprite::Sprite
 	(
 	int shapenum
-	)  : Container_game_object(), chunk(0),
+	)  : Container_game_object(),
 		major_dir(0), major_frame_incr(8), frames_seq(0)
 	{
 	set_shape(shapenum, 0); 
 	for (int i = 0; i < 8; i++)
 		frames[i] = 0;
-	}
-
-/*
- *	Move to a new absolute location.
- */
-
-void Sprite::move
-	(
-	int newtx, 
-	int newty, 
-	int newlift
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-	Game_object::move(newtx, newty, newlift);
-	chunk = gwin->get_objects(get_cx(), get_cy());
 	}
 
 /*
@@ -1650,33 +1634,6 @@ int Sprite::next_frame
 	else
 		next_frame = -1;
 	return (1);
-	}
-
-/*
- *	Animation.
- */
-
-void Sprite::handle_event
-	(
-	unsigned long curtime,		// Current time of day.
-	long udata			// Game window.
-	)
-	{
-	Game_window *gwin = (Game_window *) udata;
-	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
-	int frame;
-	if (next_frame(cx, cy, sx, sy, frame))
-		{
-					// Add back to queue for next time.
-		gwin->get_tqueue()->add(curtime + frame_time,
-							this, udata);
-					// Get old rectangle.
-		Rectangle oldrect = gwin->get_shape_rect(this);
-					// Move it.
-		move(cx, cy, gwin->get_objects(cx, cy), sx, sy, frame);
-					// Repaint.
-		gwin->repaint_sprite(this, oldrect);
-		}
 	}
 
 /*

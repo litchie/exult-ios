@@ -283,11 +283,11 @@ int Main_actor::walk
 	int frame;
 	if (next_frame(cx, cy, sx, sy, frame))
 		{
-		Chunk_object_list *olist = gwin->get_objects(cx, cy);
-		olist->setup_cache();
+		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+		nlist->setup_cache();
 		int new_lift;		// Might climb/descend.
 					// Just assume height==3.
-		if (olist->is_blocked(3, get_lift(), sx, sy, new_lift) ||
+		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift) ||
 		    at_destination())
 			{
 			stop();
@@ -307,18 +307,18 @@ int Main_actor::walk
 					// At bottom?
 		else if ((cy - chunky)*16 + sy >= gwin->get_height()/8 - 4)
 			gwin->view_down();
-					// Get old chunk it's in.
-		int old_cx = get_cx(), old_cy = get_cy();
 					// Get old rectangle.
 		Rectangle oldrect = gwin->get_shape_rect(this);
+					// Get old chunk.
+		Chunk_object_list *olist = gwin->get_objects(
+						get_cx(), get_cy());
 					// Move it.
-		move(cx, cy, olist, sx, sy, frame, new_lift);
+		move(olist, cx, cy, nlist, sx, sy, frame, new_lift);
 					// Near an egg?
-		olist->activate_eggs(sx, sy);
+		nlist->activate_eggs(sx, sy);
 		int inside;		// See if moved inside/outside.
 					// In a new chunk?
-		if ((get_cx() != old_cx || get_cy() != old_cy) &&
-		    gwin->check_main_actor_inside())
+		if (olist != nlist && gwin->check_main_actor_inside())
 			gwin->paint();
 		else
 			gwin->repaint_sprite(this, oldrect);
@@ -533,7 +533,7 @@ cout << "Npc " << get_name() << " has new schedule " << schedule << '\n';
 			Chunk_object_list *nlist = 
 					gwin->get_objects(new_cx, new_cy);
 					// Move it.
-			move(new_cx, new_cy, nlist, tx, ty, -1);
+			move(olist, new_cx, new_cy, nlist, tx, ty, -1);
 			if (nlist != olist)
 				switched_chunks(olist, nlist);
 			set_schedule_type(schedules[i].get_type());
@@ -654,15 +654,12 @@ int Npc_actor::walk
 			return (0);	// Done.
 			}
 		gwin->add_dirty(this);	// Set to repaint old area.
+					// Get old chunk.
+		Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
 					// Move it.
-		move(cx, cy, nlist, sx, sy, frame, new_lift);
-					// In new chunk?
-		if (cx != old_cx || cy != old_cy)
-			{
-			Chunk_object_list *olist = 
-				gwin->get_objects(old_cx, old_cy);
+		move(olist, cx, cy, nlist, sx, sy, frame, new_lift);
+		if (olist != nlist)	// In new chunk?
 			switched_chunks(olist, nlist);
-			}
 		if (!gwin->add_dirty(this))
 			{		// No longer on screen.
 			stop();
@@ -799,7 +796,7 @@ Npc_actor *Monster_info::create
 					// Place in world.
 	Game_window *gwin = Game_window::get_game_window();
 	Chunk_object_list *olist = gwin->get_objects(chunkx, chunky);
-	monster->move(chunkx, chunky, olist, tilex, tiley, 0, lift);
+	monster->move(0, chunkx, chunky, olist, tilex, tiley, 0, lift);
 					// Put in chunk's NPC list.
 	monster->switched_chunks(0, olist);
 	return (monster);
