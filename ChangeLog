@@ -1,3 +1,6 @@
+2004-02-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs/chunks.cc: fix crash after activating eggs and teleporting
+
 2004-02-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/pants.shp: pants paperdoll art (by servus)
 	* data/bg/collar.shp: leather collar paperdoll art (by servus)
