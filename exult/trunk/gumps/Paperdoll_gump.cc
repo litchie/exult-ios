@@ -329,9 +329,9 @@ void Paperdoll_gump::set_to_spot
 	Game_window *gwin = Game_window::get_game_window();
 	
 	// Get shape.
-	Shape_frame *shape = gwin->get_shape(*obj);
-	if (!shape)			// Funny?  Try frame 0.
-		shape = gwin->get_shape(obj->get_shapenum(), 0);
+	Shape_frame *shape = obj->get_shape();
+	//if (!shape)			// Funny?  Try frame 0.
+	//	shape = gwin->get_shape(obj->get_shapenum(), 0);
 	if (!shape)
 		return;
 
@@ -553,7 +553,7 @@ void Paperdoll_gump::paint_object
 				s);
 
 		gwin->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy(), 
-			obj->get_shapenum(), obj->get_framenum());
+			*obj);
 
 		return;
 	}
@@ -976,7 +976,7 @@ Game_object * Paperdoll_gump::check_object
 
 	if (check_shape (gwin, mx - sx, my - sy, item->shape, f, item->file))
 	{
-		Shape_frame *shape = gwin->get_shape(*obj);
+		Shape_frame *shape = obj->get_shape();
 		int w = shape->get_width(), h = shape->get_height();
 					// Set object's position.
 		obj->set_chunk(mx + shape->get_xleft() - w/2, my + shape->get_yabove() - h/2);

@@ -73,8 +73,7 @@ void Jawbone_gump::paint(Game_window *gwin)
 
 void Jawbone_gump::paint_tooth(Game_window* gwin, int index)
 {
-	Shape_frame *shape = gwin->get_gump_shape(
-								game->get_shape("gumps/tooth"), index);
+	ShapeID shape(game->get_shape("gumps/tooth"), index, SF_GUMPS_VGA);
 
 	int objx = toothx[index];
 	int objy = toothy[index];
@@ -115,8 +114,8 @@ bool Jawbone_gump::on_tooth(int sx, int sy, int index)
 {
 	Game_window* gwin = Game_window::get_game_window();
 
-	Shape_frame *shape = gwin->get_gump_shape(game->get_shape("gumps/tooth"), 
-											  index);
+	ShapeID sid(game->get_shape("gumps/tooth"), index, SF_GUMPS_VGA);
+	Shape_frame *shape = sid.get_shape();
 
 	int objx = toothx[index];
 	int objy = toothy[index];
@@ -136,10 +135,9 @@ void Jawbone_gump::set_to_spot(Game_object *obj, int sx, int sy)
 		return;
 
 	int fr = obj->get_framenum();
-	Game_window *gwin = Game_window::get_game_window();
 	
 	// Get shape.
-	Shape_frame *shape = gwin->get_shape(*obj);
+	Shape_frame *shape = obj->get_shape();
 	
 	// Height and width
 	int w = shape->get_width(), h = shape->get_height();

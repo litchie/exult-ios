@@ -999,14 +999,15 @@ void Wizard_eye
 				Shift_wizards_eye(x/scale, y/scale);
 			gwin->paint_dirty();
 					// Paint sprite over view.
-			Shape_frame *spr = gwin->get_sprite_shape(10, 0);
+			ShapeID eye(10, 0, SF_SPRITES_VGA);
+			Shape_frame *spr = eye.get_shape();
 					// Center it.
 			int w = gwin->get_width(), h = gwin->get_height();
 			int sw = spr->get_width(), sh = spr->get_height();
 			int topx = (w - sw)/2,
 			    topy = (h - sh)/2;
 			gwin->paint_shape(topx + spr->get_xleft(),
-					topy + spr->get_yabove(), spr, 1);
+					topy + spr->get_yabove(), eye);
 			if (topy > 0)	// Black-fill area around sprite.
 				{
 				gwin->get_win()->fill8(0, w, topy, 0, 0);

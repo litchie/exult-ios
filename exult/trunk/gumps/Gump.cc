@@ -109,7 +109,7 @@ Rectangle Gump::get_shape_rect
 	Game_object *obj
 	)
 {
-	Shape_frame *s = Game_window::get_game_window()->get_shape(*obj);
+	Shape_frame *s = obj->get_shape();
 	if (!s)
 		return Rectangle(0, 0, 0, 0);
 	return Rectangle(x + object_area.x + obj->get_cx() - s->get_xleft(), 

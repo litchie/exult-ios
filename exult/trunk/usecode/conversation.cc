@@ -27,6 +27,7 @@
 #include "gamewin.h"
 #include "mouse.h"
 #include "useval.h"
+#include "data/exult_bg_flx.h"
 
 using std::cout;
 using std::endl;
@@ -44,14 +45,15 @@ using std::vector;
  */
 class Npc_face_info {
  public:
-  int shape;			// NPC's face shape #.
-  int frame;
+  ShapeID shape;
+  int face_num;			// NPC's face shape #.
+  //int frame;
   bool text_pending;	// Text has been written, but user
   //   has not yet been prompted.
   Rectangle face_rect;		// Rectangle where face is shown.
   Rectangle text_rect;		// Rectangle NPC statement is shown in.
   int last_text_height;		// Height of last text painted.
-  Npc_face_info(int sh, int fr) : shape(sh), frame(fr), text_pending(0)
+  Npc_face_info(ShapeID &sid, int num) : shape(sid), face_num(num), text_pending(0)
   {  }
 };
 
@@ -185,6 +187,8 @@ static int SI_get_frame
 
 void Conversation::show_face(int shape, int frame, int slot)
 {
+	ShapeID face_sid(shape, frame, SF_FACES_VGA);
+
         bool SI = Game::get_game_type()==SERPENT_ISLE;
 	Main_actor* main_actor = gwin->get_main_actor();
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
@@ -197,20 +201,36 @@ void Conversation::show_face(int shape, int frame, int slot)
 	if (SI)				// Serpent Isle?
 	{				// Petra?  ???+++Is this right?
 		if (shape == 28 && main_actor->get_flag(Obj_flags::petra))
+		{
 			shape = main_actor->get_face_shapenum();
+			face_sid.set_shape(shape);
+		}
 		if (shape == 0)		// In any case, get correct frame.
-			{
+		{
 			frame = SI_get_frame(main_actor);
 			if (main_actor->get_flag(Obj_flags::tattooed))
 				shape = 299;
-			}
+
+			face_sid.set_shape(shape);
+		}
+	}
+	// BG Multiracial Hack
+	else if (shape == 0)
+	{
+		if (main_actor->get_skin_color() != 3)
+		{
+			shape = EXULT_BG_FLX_MR_FACES_SHP;
+			frame = SI_get_frame(main_actor);
+			face_sid.set_file(SF_GAME_FLX);
+			face_sid.set_shape(shape, frame);
+		}
 	}
 					// Get screen dims.
 	int screenw = gwin->get_width(), screenh = gwin->get_height();
 	Npc_face_info *info = 0;
 					// See if already on screen.
 	for (int i = 0; i < max_faces; i++)
-		if (face_info[i] && face_info[i]->shape == shape)
+		if (face_info[i] && face_info[i]->face_num == shape)
 			{
 			info = face_info[i];
 			last_face_shown = i;
@@ -221,7 +241,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 		if (num_faces == max_faces)
 					// None free?  Steal last one.
 			remove_slot_face(max_faces - 1);
-		info = new Npc_face_info(shape, frame);
+		info = new Npc_face_info(face_sid, shape);
 		if (slot == -1)		// Want next one?
 			slot = num_faces;
 					// Get last one shown.
@@ -236,8 +256,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 		int text_height = gwin->get_text_height(0);
 					// Figure starting y-coord.
 					// Get character's portrait.
-		Shape_frame *face = shape >= 0 ? 
-					gwin->get_face(shape, frame) : 0;
+		Shape_frame *face = shape >= 0 ? face_sid.get_shape() : 0;
 		int face_w = 32, face_h = 32;
 		if (face)
 			{
@@ -284,7 +303,7 @@ void Conversation::remove_face(int shape)
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 	int i;				// See if already on screen.
 	for (i = 0; i < max_faces; i++)
-		if (face_info[i] && face_info[i]->shape == shape)
+		if (face_info[i] && face_info[i]->face_num == shape)
 			break;
 	if (i == max_faces)
 		return;			// Not found.
@@ -393,7 +412,7 @@ void Conversation::clear_text_pending()
 
 void Conversation::show_avatar_choices(int num_choices,	char **choices)
 {
-        bool SI = Game::get_game_type()==SERPENT_ISLE;
+       bool SI = Game::get_game_type()==SERPENT_ISLE;
 	Main_actor *main_actor = gwin->get_main_actor();
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 					// Get screen rectangle.
@@ -406,22 +425,50 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 					// Get main actor's portrait.
 	int shape = main_actor->get_face_shapenum();
 	int frame;
+	ShapeID face_sid(shape, 0, SF_FACES_VGA);
 
-	if (SI && main_actor->get_flag(Obj_flags::petra)) // Petra
+ 
+	if (SI && (main_actor->get_flag(Obj_flags::petra) || (main_actor->get_skin_color() == 3 && main_actor->get_type_flag(Actor::tf_sex)))) // Petra
 	{
 		shape = 28;
 		frame = 0;
+		face_sid.set_shape(shape, frame);
+	}
+	else if (SI && main_actor->get_skin_color() == 3) // Automaton
+	{
+		shape = 298;
+		frame = 0;
+		face_sid.set_shape(shape, frame);
 	}
 	else if (SI)
-		{
+	{
 		frame = SI_get_frame(main_actor);
 		if (shape == 0 && main_actor->get_flag(Obj_flags::tattooed))
+		{
 			shape = 299;
+			face_sid.set_shape(shape);
 		}
-	else
-		frame = main_actor->get_type_flag(Actor::tf_sex);
 
-	Shape_frame *face = gwin->get_face(shape, frame);
+	}
+	else
+	{
+		std::cout << main_actor->get_skin_color() << std::endl;
+		// BG Multiracial Hack
+		if (main_actor->get_skin_color() >= 0 && main_actor->get_skin_color() <= 2)
+		{
+			shape = EXULT_BG_FLX_MR_FACES_SHP;
+			frame = SI_get_frame(main_actor);
+			face_sid.set_file(SF_GAME_FLX);
+			face_sid.set_shape(shape, frame);
+		}
+		else
+			frame = main_actor->get_type_flag(Actor::tf_sex);
+	}
+
+
+	face_sid.set_frame(frame);
+
+	Shape_frame *face = face_sid.get_shape();
 	int empty;			// Find face prev. to 1st empty slot.
 	for (empty = 0; empty < max_faces; empty++)
 		if (!face_info[empty])
@@ -547,8 +594,8 @@ void Conversation::paint
 		Npc_face_info *finfo = face_info[i];
 		if (!finfo)
 			continue;
-		Shape_frame *face = finfo->shape >= 0 ? 
-				gwin->get_face(finfo->shape, finfo->frame) : 0;
+		Shape_frame *face = finfo->face_num >= 0 ? 
+				finfo->shape.get_shape() : 0;
 		int face_xleft = 0, face_yabove = 0;
 		if (face)
 			{

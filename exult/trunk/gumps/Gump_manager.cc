@@ -214,7 +214,13 @@ void Gump_manager::add_gump
 		paperdoll=2;
 	else if (paperdoll && obj == main_actor)
 		shapenum += main_actor->get_type_flag(Actor::tf_sex);
-		
+	
+	Gump *dragged = gwin->get_dragging_gump();
+	
+	// If we are dragging the same, just return
+	if (dragged && dragged->get_owner() == obj && dragged->get_shapenum() == shapenum)
+		return;
+
 	static int cnt = 0;		// For staggering them.
 	Gump_list *gmp;			// See if already open.
 	for (gmp = open_gumps; gmp; gmp = gmp->next)

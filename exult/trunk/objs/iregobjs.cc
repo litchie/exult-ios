@@ -45,9 +45,9 @@ void Ireg_game_object::paint
 	int x, y;
 	gwin->get_shape_location(this, x, y);
 	if (flags & (1L << Obj_flags::invisible))
-		gwin->paint_invisible(x, y, get_shapenum(), get_framenum());
+		gwin->paint_invisible(x, y, this->get_shape());
 	else
-		gwin->paint_shape(x, y, get_shapenum(), get_framenum());
+		gwin->paint_shape(x, y, *this);
 	}
 
 /*

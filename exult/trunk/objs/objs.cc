@@ -778,7 +778,7 @@ void Game_object::paint
 	{
 	int x, y;
 	gwin->get_shape_location(this, x, y);
-	gwin->paint_shape(x, y, get_shapenum(), get_framenum());
+	gwin->paint_shape(x, y, *this);
 	}
 
 /*
@@ -1637,7 +1637,7 @@ int Game_object::compare
 int Game_object::lt
 	(
 	Game_object& obj2
-	) const
+	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Ordering_info ord(gwin, this);

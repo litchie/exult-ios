@@ -26,6 +26,8 @@
 
 Shape_frame *ShapeID::cache_shape()
 {
+	if (framenum == -1) return 0;
+
 	Game_window *gwin = Game_window::get_game_window();
 	if (has_trans != 2) has_trans = 0;
 
@@ -42,6 +44,7 @@ Shape_frame *ShapeID::cache_shape()
 		break;
 	case SF_SPRITES_VGA:
 		shape = gwin->get_sprite_shape (shapenum, framenum);
+		has_trans = 1;
 		break;
 	case SF_FACES_VGA:
 		shape = gwin->get_face (shapenum, framenum);
@@ -55,6 +58,9 @@ Shape_frame *ShapeID::cache_shape()
 	case SF_BG_SIGUMP_FLX:
 		shape = gwin->get_bg_sigump_shape(shapenum, framenum);
 		break;
+	case SF_BG_SISHAPES_VGA:
+		shape = gwin->get_bg_sishape(shapenum, framenum);
+		break;
 	default:
 		std::cerr << "Error! Wrong ShapeFile!" << std::endl;
 		return 0;
@@ -62,4 +68,45 @@ Shape_frame *ShapeID::cache_shape()
 
 	return shape;
 
+}
+
+int ShapeID::get_num_frames() const
+{
+	Game_window *gwin = Game_window::get_game_window();
+
+	switch (shapefile) {
+
+	case SF_SHAPES_VGA:
+		return gwin->get_shape_num_frames(shapenum);
+
+	case SF_GUMPS_VGA:
+		return gwin->get_gump_num_frames (shapenum);
+
+	case SF_PAPERDOL_VGA:
+		return gwin->get_paperdoll_num_frames (shapenum);
+
+	case SF_SPRITES_VGA:
+		return gwin->get_sprite_num_frames (shapenum);
+
+	case SF_FACES_VGA:
+		return gwin->get_face_num_frames (shapenum);
+
+	case SF_EXULT_FLX:
+		return gwin->get_exult_num_frames(shapenum);
+
+	case SF_GAME_FLX:
+		return gwin->get_gameflx_num_frames (shapenum);
+
+	case SF_BG_SIGUMP_FLX:
+		return gwin->get_bg_sigump_num_frames(shapenum);
+
+	case SF_BG_SISHAPES_VGA:
+		return gwin->get_bg_sishape_num_frames(shapenum);
+
+	default:
+		std::cerr << "Error! Wrong ShapeFile!" << std::endl;
+		return 0;
+	} 
+
+	return 0;
 }

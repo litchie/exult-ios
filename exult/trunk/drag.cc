@@ -196,8 +196,8 @@ bool Game_window::drag
 	dragging_paintx += deltax;
 	dragging_painty += deltay;
 	if (dragging)
-		paint_shape(dragging_paintx, dragging_painty, 
-			dragging->get_shapenum(), dragging->get_framenum());
+		paint_shape(dragging_paintx, dragging_painty, dragging->get_shape(),
+			dragging->is_translucent());
 	else				// Dragging whole gump.
 		{
 		dragging_gump->set_pos(dragging_paintx, dragging_painty);
@@ -211,7 +211,7 @@ bool Game_window::drag
  *	Mouse was released, so drop object. 
  *      Return true iff the dropping mouseclick has been handled. 
  *		(by buttonpress, drag)
- *	Output:	MUST set dragging = 0.
+ *	Output:	MUST set dragging = 0 and dragging_gump = 0.
  */
 
 bool Game_window::drop_dragged

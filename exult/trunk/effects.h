@@ -60,8 +60,9 @@ public:
 class Sprites_effect : public Special_effect
 	{
 protected:
-	int sprite_num;			// Which one.
-	int frame_num;			// Current frame.
+	ShapeID sprite;
+	//int sprite_num;		// Which one.
+	//int frame_num;		// Current frame.
 	int frames;			// # frames.
 	Game_object *item;		// Follows this around if not null.
 	Tile_coord pos;			// Position within world.
@@ -97,10 +98,11 @@ class Projectile_effect : public Special_effect
 	{
 	Actor *attacker;		// Source of attack/spell.
 	Game_object *target;		// Target of path.
-	int shape_num;			// Shape # in 'shapes.vga' of projec.
+	ShapeID projectile;
+	//int shape_num;			// Shape # in 'shapes.vga' of projec.
 					//   or spell to 'attack' with.
 	int weapon;			// Shape # of firing weapon, or 0.
-	int frame_num;			// Current frame.
+	//int frame_num;			// Current frame.
 	int frames;			// # frames.
 	PathFinder *path;		// Determines path.
 	Tile_coord pos;			// Current position.
@@ -126,9 +128,9 @@ public:
  */
 class Death_vortex : public Special_effect
 	{
+	ShapeID vortex;
 	Actor *target;			// We'll follow this around if not 0.
 	Tile_coord pos;			// Current position.
-	int frame_num;			// Current frame.
 	int frames;			// # frames.
 	uint32 stop_time;		// Time in 1/1000 secs. to stop.
 	uint32 next_damage_time;	// When to check for NPC's beneath us.
@@ -278,7 +280,7 @@ public:
  */
 class Cloud
 	{
-	int frame;			// Frame #.
+	ShapeID cloud;
 	long wx, wy;			// Position within world.
 	short deltax, deltay;		// How to move.
 	int count;			// Counts down to 0.

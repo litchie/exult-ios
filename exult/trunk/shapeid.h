@@ -27,7 +27,7 @@
 class Shape_frame;
 
 enum ShapeFile {
-	SF_SHAPES_VGA,		// <STATIC>/shapes.vga
+	SF_SHAPES_VGA = 0,	// <STATIC>/shapes.vga
 	SF_GUMPS_VGA,		// <STATIC>/gumps.vga
 	SF_PAPERDOL_VGA,	// <STATIC>/paperdol.vga
 	SF_SPRITES_VGA,		// <STATIC>/sprites.vga
@@ -35,6 +35,7 @@ enum ShapeFile {
 	SF_EXULT_FLX,		// <DATA>/exult.flx
 	SF_GAME_FLX,		// <DATA>/bg_data.flx or <DATA>/si_data.flx
 	SF_BG_SIGUMP_FLX,	// BG only for Paperdolls
+	SF_BG_SISHAPES_VGA,	// BG only for Multiracial
 	// Not yet
 	//SF_FONTS_VGA,		// <STATIC>/fonts.vga
 
@@ -44,8 +45,8 @@ enum ShapeFile {
 class ShapeID
 	{
 	short shapenum;			// Shape #.
-	unsigned char framenum;		// Frame # within shape.
-	unsigned char has_trans;
+	char framenum;			// Frame # within shape.
+	char has_trans;
 	ShapeFile shapefile;
 	Shape_frame *shape;
 
@@ -108,8 +109,7 @@ public:
 	void set_file(ShapeFile shfile)	// Set to new flex
 		{ shapefile = shfile; shape = 0; }
 
-
-	 
+	int get_num_frames() const;
 	};
 
 #endif

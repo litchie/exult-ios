@@ -265,13 +265,13 @@ void Cheat::toggle_naked (void) const {
 }
 
 void Cheat::change_skin (void) const {
-	if (!enabled || (Game::get_game_type() != SERPENT_ISLE)) return;
+	if (!enabled || (Game::get_game_type() != SERPENT_ISLE && !gwin->can_use_multiracial())) return;
 
 	int color = gwin->get_main_actor()->get_skin_color();
   
-	if (color < 0 || color > 2)
-		return;
-	color = (color + 4) %3;
+	if (GAME_BG) color = (color+1) %4;
+	else color = (color+1) %3;
+
 	gwin->get_main_actor()->set_skin_color(color);
 	gwin->set_all_dirty();
 }
@@ -342,9 +342,9 @@ void Cheat::map_teleport (void) const {
 	// display map
 
 #if 0
-	map = gwin->get_sprite_shape(game->get_shape("sprites/map"), 0);
+	map = ShapeID(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA).get_shape();
 #else
-	map = gwin->get_gameflx_shape(game->get_shape("sprites/cheatmap"), 1);
+	map = ShapeID(game->get_shape("sprites/cheatmap"), 1, SF_GAME_FLX).get_shape();
 #endif
 
 	// Get coords. for centered view.
