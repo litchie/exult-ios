@@ -132,6 +132,39 @@ static void Npc_shape_dropped
 	}
 
 					// Schedule names.
+/*
+ *	Draw face.
+ */
+extern "C" gboolean on_npc_face_draw_expose_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventExpose *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	ExultStudio::get_instance()->show_npc_face(
+		event->area.x, event->area.y, event->area.width,
+							event->area.height);
+	return (TRUE);
+	}
+
+/*
+ *	Callback for when a shape is dropped on the NPC face area.
+ */
+
+static void Npc_face_dropped
+	(
+	int file,			// U7_SHAPE_FACES
+	int shape,
+	int frame,
+	void *udata
+	)
+	{
+	if (file == U7_SHAPE_FACES && shape >= 0 && shape < 1024)
+		((ExultStudio *) udata)->set_npc_face(shape, frame);
+	}
+
+					// Schedule names.
 static char *sched_names[32] = {
 		"Combat", "Horiz. Pace", "Vert. Pace", "Talk", "Dance",
 		"Eat", "Farm", "Tend Shop", "Miner", "Hound", "Stand",
@@ -230,6 +263,12 @@ void ExultStudio::open_npc_window
 			    glade_xml_get_widget(app_xml, "npc_draw"));
 			npc_draw->enable_drop(Npc_shape_dropped, this);
 			}
+		if (facefile && palbuf)
+			{
+			npc_face_draw = new Shape_draw(facefile, palbuf,
+			    glade_xml_get_widget(app_xml, "npc_face_draw"));
+			npc_face_draw->enable_drop(Npc_face_dropped, this);
+			}
 		npc_ctx = gtk_statusbar_get_context_id(
 			GTK_STATUSBAR(glade_xml_get_widget(
 				app_xml, "npc_status")), "Npc Editor");
@@ -259,6 +298,8 @@ void ExultStudio::open_npc_window
 			if (len > 0)
 				npc_num = Read2(ptr);
 			set_entry("npc_num_entry", npc_num, true, false);
+					// Usually, face = npc_num.
+			set_npc_face(npc_num, 0);
 			}
 		}
 	gtk_widget_show(npcwin);
@@ -356,7 +397,7 @@ int ExultStudio::init_npc_window
 	{
 	unsigned long addr;
 	int tx, ty, tz;
-	int shape, frame;
+	int shape, frame, face;
 	std::string name;
 	short npc_num, ident;
 	int usecode;
@@ -367,7 +408,7 @@ int ExultStudio::init_npc_window
 	unsigned long type_flags;	// Movement flags.
 	short num_schedules;
 	Serial_schedule schedules[8];
-	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame,
+	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame, face,
 		name, npc_num, ident, usecode, properties, 
 			attack_mode, alignment,
 			oflags, siflags, type_flags, num_schedules, schedules))
@@ -385,6 +426,7 @@ int ExultStudio::init_npc_window
 					// Shape/frame.
 	set_entry("npc_shape", shape);
 	set_entry("npc_frame", frame);
+	set_npc_face(face, 0);
 					// Usecode #.
 	set_entry("npc_usecode_entry", usecode, true);
 					// Combat:
@@ -468,6 +510,8 @@ int ExultStudio::save_npc_window
 	short ident = get_num_entry("npc_ident_entry");
 	int shape = get_num_entry("npc_shape");
 	int frame = get_num_entry("npc_frame");
+	GtkWidget *fw = glade_xml_get_widget(app_xml, "npc_face_frame");
+	int face = (int) gtk_object_get_user_data(GTK_OBJECT(fw));
 	int usecode = get_num_entry("npc_usecode_entry");
 	short attack_mode = get_optmenu("npc_attack_mode");
 	short alignment = get_optmenu("npc_alignment");
@@ -508,7 +552,7 @@ int ExultStudio::save_npc_window
 	for (int i = 0; i < 8; i++)
 		if (Get_schedule_line(app_xml, i, schedules[num_schedules]))
 			num_schedules++;
-	if (Npc_actor_out(server_socket, addr, tx, ty, tz, shape, frame,
+	if (Npc_actor_out(server_socket, addr, tx, ty, tz, shape, frame, face,
 		name, npc_num, ident, usecode, 
 			properties, attack_mode, alignment,
 			oflags, siflags, type_flags, 
@@ -569,6 +613,49 @@ void ExultStudio::set_npc_shape
 	set_entry("npc_shape", shape);
 	set_entry("npc_frame", frame);
 	show_npc_shape();
+	}
+
+/*
+ *	Paint the face.
+ */
+
+void ExultStudio::show_npc_face
+	(
+	int x, int y, int w, int h	// Rectangle. w=-1 to show all.
+	)
+	{
+	if (!npc_face_draw)
+		return;
+	npc_face_draw->configure();
+	GtkWidget *frame = glade_xml_get_widget(app_xml, "npc_face_frame");
+	int shnum = (int) gtk_object_get_user_data(GTK_OBJECT(frame));
+	npc_face_draw->draw_shape_centered(shnum, 0);
+	if (w != -1)
+		npc_face_draw->show(x, y, w, h);
+	else
+		npc_face_draw->show();
+	}
+
+/*
+ *	Set NPC face.
+ */
+
+void ExultStudio::set_npc_face
+	(
+	int shape,
+	int frame
+	)
+	{
+//	set_entry("npc_shape", shape);
+//	set_entry("npc_frame", frame);
+	if (shape < 0)
+		shape = 1;		// Default to 1st after Avatar.
+	GtkWidget *widget = glade_xml_get_widget(app_xml, "npc_face_frame");
+	gtk_object_set_user_data(GTK_OBJECT(widget), (gpointer) shape);
+	char *label = g_strdup_printf("Face #%d", shape);
+	gtk_frame_set_label(GTK_FRAME(widget), label);
+	g_free(label);
+	show_npc_face();
 	}
 
 /*

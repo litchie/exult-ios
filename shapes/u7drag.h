@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define U7_TARGET_SHAPEID 137
 
 //	Shape files:
+#define U7_SHAPE_UNK	-1		/* Unknown.			*/
 #define U7_SHAPE_SHAPES	0		/* shapes.vga			*/
 #define U7_SHAPE_GUMPS	1		/* gumps.vga			*/
 #define U7_SHAPE_FONTS	2		/* fonts.vga			*/

@@ -260,7 +260,9 @@ void Shape_chooser::drag_data_get
 	if (chooser->selected < 0 || info != U7_TARGET_SHAPEID)
 		return;			// Not sure about this.
 	guchar buf[30];
-	int file = U7_SHAPE_SHAPES;	// +++++For now.
+	int file = chooser->ifile->get_u7drag_type();
+	if (file == U7_SHAPE_UNK)
+		U7_SHAPE_SHAPES;	// Just assume it's shapes.vga.
 	Shape_info& shinfo = chooser->info[chooser->selected];
 	int len = Store_u7_shapeid(buf, file, shinfo.shapenum, 
 							shinfo.framenum);
