@@ -109,6 +109,8 @@ public:
 		else
 			return win;
   }
+	Actor *get_main_actor()
+		{ return main_actor; }
 	int get_num_shapes()
 		{ return shapes.get_num_shapes(); }
 	int get_num_faces()

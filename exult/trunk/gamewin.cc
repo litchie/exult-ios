@@ -683,7 +683,7 @@ void Game_window::init_actors
 	(
 	)
 	{
-	if (main_actor->in_world())	// Already done?
+	if (main_actor)			// Already done?
 		return;
 	read_npcs();			// Read in all U7 NPC's.
 	}
@@ -784,7 +784,7 @@ void Game_window::paint
 		{
 		int x = 15, y = 15;
 		int w = get_width() - x, h = get_height() - y;
-		win->draw_text_box(font, "Welcome to EXULT V 0.09, a free RPG game engine.\n\nCopyright 1998 J. S. Freedman\nGraphics copyrighted by Origin\nText rendered by FreeType", x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
+		win->draw_text_box(font, "Welcome to EXULT V 0.10, a free RPG game engine.\n\nCopyright 2000 J. S. Freedman\nGraphics copyrighted by Origin\nText rendered by FreeType", x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
 		}
 	if (showing_item)		// ID'ing an item?
 		win->draw_text(font12, showing_item, showing_rect.x,
@@ -1193,6 +1193,7 @@ void Game_window::double_clicked
 	for (int i = 0; i < cnt; i++)	// Go through them.
 		{
 		Game_object *obj = found[i];
+cout << "Object name is " << obj->get_name() << '\n';
 		enum Game_mode save_mode = mode;
 		usecode->call_usecode(obj->get_usecode(), obj);
 		mode = save_mode;

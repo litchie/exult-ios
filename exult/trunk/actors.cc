@@ -76,7 +76,10 @@ int Actor::get_usecode
 	(
 	)
 	{
-	return usecode;
+	if (usecode != -1)
+		return usecode;
+	else
+		return Game_object::get_usecode();
 	}
 
 /*

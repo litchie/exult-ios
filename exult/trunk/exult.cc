@@ -82,7 +82,7 @@ int main
 	char *argv[]
 	)
 	{
-	cout << "Exult V0.09.  Copyright (C) 1998 J. S. Freedman\n";
+	cout << "Exult V0.10.  Copyright (C) 2000 J. S. Freedman\n";
 	cout << "Text rendering done using the 'FreeType' font engine.\n";
 	Init();				// Create main window.
 #if 0	/* Make this an option. */
@@ -90,7 +90,7 @@ int main
 		gwin->set_chunk_offsets(atoi(argv[1]), atoi(argv[2]));
 	else				// Else start in Trinsic.
 #endif
-		gwin->set_chunk_offsets(64, 135);
+		gwin->set_chunk_offsets(64, 136);
 	struct stat sbuf;		// Create gamedat files 1st time.
 	if (stat(U7NBUF_DAT, &sbuf) != 0 &&
 	    stat(NPC_DAT, &sbuf) != 0)
