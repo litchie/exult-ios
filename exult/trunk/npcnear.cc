@@ -19,6 +19,7 @@
 #include "schedule.h"
 #include "items.h"
 #include "game.h"
+#include "cheat.h"
 
 #include "SDL_timer.h"
 
@@ -104,7 +105,7 @@ void Npc_proximity_handler::handle_event
 		npc->set_schedule_type(Schedule::combat);
 		}
 			
-	else if (!(curtime < wait_until) && 
+	else if (!(curtime < wait_until) && !cheat.in_map_editor() && 
 					// Do it 50% of the time OR if
 					//   a rabbit (SI start).
 		 (rand()%2 == 1 || npc->get_shapenum() == 811)  &&
@@ -114,6 +115,7 @@ void Npc_proximity_handler::handle_event
 					//  in SI. !!Guessing.
 		 (Game::get_game_type() != SERPENT_ISLE ||
 			(npc->get_schedule_type() != (int) Schedule::patrol &&
+			 npc->get_schedule_type() != (int) Schedule::wait &&
 			 !npc->is_monster())))
 				
 		{
