@@ -93,6 +93,7 @@ dist: $(EXEC)
 	if not exist $(STUDIOPATH) md $(STUDIOPATH)
 	strip $(EXEC) -o  $(STUDIOPATH)\\$(EXEC)
 	if not exist $(STUDIOPATH)\data md $(STUDIOPATH)\data
+	copy docs\exult_studio.html $(STUDIOPATH)
 	copy docs\exult_studio.txt $(STUDIOPATH)
 	copy mapedit\exult_studio.glade $(STUDIOPATH)\data
 	if not exist $(STUDIOPATH)\data\estudio md $(STUDIOPATH)\data\estudio
