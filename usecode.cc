@@ -3143,7 +3143,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(summon),	// 0x47     SummonCreature (ucdump.c)
 	USECODE_INTRINSIC_PTR(display_map),	// 0x48
 	USECODE_INTRINSIC_PTR(kill_npc),// 0x49
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4a ??(strength, egg-quality)
 	USECODE_INTRINSIC_PTR(set_attack_mode),	// 0x4b
 	USECODE_INTRINSIC_PTR(set_opponent),	// 0x4c
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d     CloneNPC (ucdump.c)
