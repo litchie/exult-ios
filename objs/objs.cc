@@ -1366,19 +1366,6 @@ void Game_object::write_common_ireg
 	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
 	}
 
-/*
- *	Report iterator problem.
- */
-
-void Object_list::report_problem
-	(
-	)
-	{
-	cerr << "Danger! Danger! Object list modified while being iterated." 
-						<< endl;
-	cerr.flush();
-	}
-
 #if 0
 /*
  *	Create a moveable sprite.
