@@ -934,18 +934,18 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     576, -1,        Actor::legs,     OT_Normal,   true, SF_PAPERDOL_VGA,     87,     0 },
 	// Magic Leggings
 	{     686, -1,        Actor::legs,     OT_Normal,   true, SF_PAPERDOL_VGA,     72,     0 },
-	// Pants **NEEDS ART**
-	{     738,  0,        Actor::legs,     OT_Normal,   true, SF_PAPERDOL_VGA,     60,     0 },
-	// Pants **NEEDS ART**
-	{     738,  1,        Actor::legs,     OT_Normal,   true, SF_PAPERDOL_VGA,     60,     0 },
-	// Pants **NEEDS ART**
-	{     738,  2,        Actor::legs,     OT_Normal,   true, SF_PAPERDOL_VGA,     60,     0 },
-	// Pants **NEEDS ART**
-	{     738,  3,        Actor::legs,     OT_Normal,   true, SF_PAPERDOL_VGA,     60,     0 },
-	// Pants **NEEDS ART**
-	{     738,  4,        Actor::legs,     OT_Normal,   true, SF_PAPERDOL_VGA,     60,     0 },
-	// Pants **NEEDS ART**
-	{     738,  5,        Actor::legs,     OT_Normal,   true, SF_PAPERDOL_VGA,     60,     0 },
+	// Pants
+	{     738,  0,        Actor::legs,     OT_Normal,   true, SF_GAME_FLX,     EXULT_BG_FLX_PANTS_SHP,     2 },
+	// Pants
+	{     738,  1,        Actor::legs,     OT_Normal,   true, SF_GAME_FLX,     EXULT_BG_FLX_PANTS_SHP,     2 },
+	// Pants
+	{     738,  2,        Actor::legs,     OT_Normal,   true, SF_GAME_FLX,     EXULT_BG_FLX_PANTS_SHP,     4 },
+	// Pants
+	{     738,  3,        Actor::legs,     OT_Normal,   true, SF_GAME_FLX,     EXULT_BG_FLX_PANTS_SHP,     0 },
+	// Pants
+	{     738,  4,        Actor::legs,     OT_Normal,   true, SF_GAME_FLX,     EXULT_BG_FLX_PANTS_SHP,     4 },
+	// Pants
+	{     738,  5,        Actor::legs,     OT_Normal,   true, SF_GAME_FLX,     EXULT_BG_FLX_PANTS_SHP,     0 },
 
 	
 	// GLOVES

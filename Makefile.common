@@ -138,6 +138,7 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/musket_ammo.shp \
 	data/bg/shoes.shp \
 	data/bg/triple_xbow.shp \
+	data/bg/pants.shp \
 	data/bg/flx.in
 
 

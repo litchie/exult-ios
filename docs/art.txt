@@ -38,9 +38,9 @@ Dark-brown hood		444/0		-
 Light-brown hood	444/1		-
 Caddellite helmet	638/0		Willem Jan
 Greaves			353		Oblivious
-Brown pants		738/0,1		-
-Green pants		738/2,4		-
-Brownish pants		738/3,5		-
+Brown pants		738/0,1		Sam Matthews
+Green pants		738/2,4		Sam
+Brownish pants		738/3,5		Sam
 Shoes			585		Willem Jan
 Spiked Shield		578		Oblivious
 Magic boomerang		550		Willem Jan
