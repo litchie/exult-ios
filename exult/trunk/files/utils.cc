@@ -162,7 +162,15 @@ std::FILE* U7open
 	{
 	char name[512];
 	Switch_slash(name, fname);
-	return std::fopen(name, mode);
+	std::FILE *f = std::fopen(name, mode);
+	if (!f)				// No good?  Try upper-case.
+		{
+		char upper[512];
+		f = std::fopen(To_upper(std::strcpy(upper, name)), mode);
+		if (!f)
+			return (0);
+		}
+	return (f);
 	}
 	
 /*
