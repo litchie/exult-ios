@@ -1108,21 +1108,6 @@ void Game_window::show_items
 		cnt = gump->find_objects(this, x, y, found);
 	else				// Search rest of world.
 		cnt = find_objects(x, y, found);
-#if 0
-	for (int i = 0; i < cnt; i++)	// Go through them.
-		{
-		Game_object *obj = found[i];
-					// Show name.
-		char *item_name = item_names[obj->get_shapenum()];
-		if (item_name)
-			{
-					// Stagger if more than 1.
-			int tx = x + i*win->get_text_width(font12, " ");
-			int ty = y + i*win->get_text_height(font12);
-			add_text(item_name, tx, ty);
-			}
-		}
-#else
 					// Just do top item.
 	if (cnt)
 		{
@@ -1160,7 +1145,6 @@ void Game_window::show_items
 			cout << "Object is LIGHT_SOURCE\n";
 #endif
 		}
-#endif
 	}
 
 /*

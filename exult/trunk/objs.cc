@@ -247,9 +247,19 @@ int Game_object::lt
 			return (0);	// We're to the right.
 		}
 					// Handle intersecting objects.
+	if (atx1 == atx2 &&		// Watch for paintings on NS walls.
+	    x1 == x2)
+		if (y1 < y2)		// Take narrower 2nd.
+			return (0);
+		else if (y2 > y1)
+			return (1);
+		else if (z1 < z2)	// The narrower one?
+			return (0);
+		else if (z1 > z2)
+			return (1);
 					// If x's overlap, see if in front.
-	if ((x1 > y1) && ((atx1 > atx2 - x2 && atx1 <= atx2) ||
-	    (atx2 > atx1 - x1 && atx2 <= atx1)))
+	if ((atx1 > atx2 - x2 && atx1 <= atx2) ||
+	    (atx2 > atx1 - x1 && atx2 <= atx1))
 		{
 		if (aty1 < aty2)
 			return (1);
@@ -263,8 +273,6 @@ int Game_object::lt
 			return (0);
 		else if (z1 > z2)
 			return (1);
-		else
-			return (-1);
 		}
 					// If y's overlap, see if to left.
 	if ((aty1 > aty2 - y2 && aty1 <= aty2) ||
@@ -274,14 +282,6 @@ int Game_object::lt
 			return (1);
 		else if (atx1 > atx2)
 			return (0);
-		else if (y1 < y2)	// Take narrower 2nd.
-			return (0);
-		else if (y2 > y1)
-			return (1);
-		else if (z1 < z2)	// The narrower one?
-			return (0);
-		else if (z1 > z2)
-			return (1);
 		}
 	return (-1);
 	}
