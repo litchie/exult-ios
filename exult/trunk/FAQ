@@ -1,23 +1,26 @@
 Exult F.A.Q. (frequently asked questions)
 
-last changed: 02 May 2001(GMT)
+last changed: 07 June 2001(GMT)
 --------------------------------------------------------------------------------
 
 An html version can be found at http://exult.sourceforge.net/faq.shtml
 
+
 0. Changes to the FAQ
-0.1. 02 May 2001
+0.1. - 02 May 2001
+0.2. - 07 June 2001
 
 
 1. Introduction
 1.1. What is Exult?
 1.2. Why is it called Exult - what is the meaning of this name?
-1.3. Where do I find Exult?
-1.4. What is a snapshot? Are these screen shots or what?
-1.5. How do I compile a source code snapshot under Linux?
-1.6. How do I compile a source code snapshot under Win 9x?
-1.7. What is latest version of Exult?
-1.8. On what platform does Exult run?
+1.3. Is Exult free ?
+1.4. Where do I find Exult?
+1.5. What is a snapshot? Are these screen shots or what?
+1.6. How do I compile a source code snapshot under Linux?
+1.7. How do I compile a source code snapshot under Win 9x?
+1.8. What is latest version of Exult?
+1.9. On what platform does Exult run?
 
 
 2. Exult and Ultima 7
@@ -35,9 +38,10 @@ An html version can be found at http://exult.sourceforge.net/faq.shtml
 3.2. What do I have to change in the Path-Settings?
 3.3. Do music and sound effects play?
 3.4. The sound effects sound horrible
-3.5. How do I enable Exult to play wave Sfx?
-3.6. How to turn of audio?
+3.5. How do I enable Exult to play digital wave sfx?
+3.6. How to turn off audio?
 3.7. What does the Scale option mean?
+3.8. Is Exult case sensitive?
 
 
 4. Keyboard Commands, Miscellaneous
@@ -52,41 +56,65 @@ An html version can be found at http://exult.sourceforge.net/faq.shtml
 4.9. I heard that Exult is meant to be a game engine. Can I make my own game with Exult? 
 
 
-5. Bugs, known issues, and not yet implemented features
-5.1. Bugs
-5.2. Known Issues
-5.3. Not yet implemented
+5. Exult Studio
+5.1. What is it?
+5.2. Who came up with the cool name?
+5.3. What do you need to run it?
+5.4. When will it be ported to other platforms?
+5.5. How do you run it?
+5.6. What can you do at the moment?
+5.7. What's next?
+5.8. What's with this client/server stuff?
 
 
-6. Questions and Answers, Bugreports
-6.1. How can I get answers concerning Ultima 7/Exult? Where should I send Bugreports?
-6.2. How do I contact the author of this FAQ?
+6. Bugs, known issues, and not yet implemented features
+6.1. Bugs
+6.2. Known Issues
+6.3. Not yet implemented
 
 
-7. Links and Thanks
-7.1. Important Links
-7.2. Thanks
+7. Questions and Answers, Bugreports
+7.1. How can I get answers concerning Ultima 7/Exult? Where should I send Bugreports?
+7.2. How do I contact the author of this FAQ?
+
+
+8. Links and Thanks
+8.1. Important Links
+8.2. Thanks
 
 
 
 --------------------------------------------------------------------------------
 0. Changes to the FAQ 
   
-0.1. 02 May 2001 
-"0. Changes to the FAQ" added on popular demand and began numbering of XSL style sheet at "0" with a lot of help from Fingolfin (I don't know much about XSL).
-"1.7 What is latest version of Exult?" updated to Alpha3
-"1.8 On what platform does Exult run?" added OpenBSD, FreeBSD, Solaris.
-"2.2 Does Exult work on all versions of the game?" added info that a Spanish version of BG exists and that SI was English-only.
-"2.3 How about Serpent Isle?" updated.
-"2.5 Can you play through U7 yet?" moved from Section 1 to 2.
-"2.6 Do savegames from the original work in Exult?" added for those that don't bother with the readme file.
-"3.1 What is it with the exult.cfg file?" added gamma and volume_curve settings, also aplied changes made necessary by the new game menu in snapshots later than 29.04.2001.
-"3.6 How to turn of audio?" changed to point to new game menu.
-"3.7 What does the Scale option mean?" added some more info from the News file as people don't seem to read it.
-"4.1 What are the keys used in Exult?" added 'Esc' for game menu.
-"4.7 Any other improvements/features?" praise to the new game menu and savegame box.
-"4.8 How do I disable all improvements?" added as this was asked on Jackchaos and might interest others (don't see why actually).
+0.1. - 02 May 2001 
 
+"0. Changes to the FAQ" added on popular demand and began numbering of XSL style sheet at "0" with a lot of help from Fingolfin (I don't know much about XSL). 
+"1.8 What is latest version of Exult?" updated to Alpha3 
+"1.9 On what platform does Exult run?" added OpenBSD, FreeBSD, Solaris. 
+"2.2 Does Exult work on all versions of the game?" added info that a Spanish version of BG exists and that SI was English-only. 
+"2.3 How about Serpent Isle?" updated. 
+"2.5 Can you play through U7 yet?" moved from Section 1 to 2. 
+"2.6 Do savegames from the original work in Exult?" added for those that don't bother with the readme file. 
+"3.1 What is it with the exult.cfg file?" added gamma and volume_curve settings, also aplied changes made necessary by the new game menu in snapshots later than 29.04.2001. 
+"3.6 How to turn off audio?" changed to point to new game menu. 
+"3.7 What does the Scale option mean?" added some more info from the News file as people don't seem to read it. 
+"4.1 What are the keys used in Exult?" added 'Esc' for game menu. 
+"4.7 Any other improvements/features?" praise to the new game menu and savegame box. 
+"4.8 How do I disable all improvements?" added as this was asked on Jackchaos and might interest others (don't see why actually). 
+ 
+  
+0.2. - 07 June 2001 
+
+"1.3 Is Exult free ?" added 
+"3.4 The sound effects sound horrible" Notice added on discontinueing support for MIDI sfx. 
+"3.5 How do I enable Exult to play digital wave sfx?" mentioned the SI sfx pack, point to the proper Sourceforge links and added note that you don't need to configure soundfonts for wave sfx. 
+"3.8 Is Exult case sensitive?" added this answer. 
+"4.8 How do I disable all improvements?" forgot to mention the cheat menu option to disable Paperdolls in BG. 
+"4.9 Can I make my own game with Exult?" point to new section "Exult Studio" 
+"5.1 Exult Studio" added this new section by Jeff. 
+"6.2 Known Issues" added bug with taken seats in Fellowship meetings and problem with SI sfx playback 
+"6.3 Not yet implemented" noted that all magic spells in BG work but not in SI 
  
 
 --------------------------------------------------------------------------------
@@ -97,30 +125,34 @@ Ultima 7, an RPG from the early 1990's, still has a huge following. But, being a
 
 Exult is being developed in C++ under Linux, MacOS and Windows using the SDL library to make porting to other platforms relatively easy. The current version supports much of the game's plot, allowing you to talk to NPCs, use items, solve quests, and even fight monsters. Music, speech, and the full introduction are also implemented. This, and further development, is only possible due to the work done by other fans who have decoded the various Ultima 7 data files, especially Gary Thompson, Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag. 
 
-Exult aims to let those people who own Ultima 7 (copyright 1993) play the game on modern hardware, in as close to (or perhaps even surpassing) its original splendor as is possible. You need to own Ultima 7: The Black Gate in order to use Exult, and we encourage you to buy a legal copy. 
+Exult aims to let those people who own Ultima 7 (copyright 1993) play the game on modern hardware, in as close to (or perhaps even surpassing) its original splendor as is possible. You need to own "Ultima 7: The Black Gate" in order to use Exult, and we encourage you to buy a legal copy. 
  
   
 1.2. Why is it called Exult - what is the meaning of this name? 
 Jeff wrote on the Boards:
-I originally wrote it [Exult] solely for X-windows, so that's where the 'X' comes from. The ult, of course, comes from Ultima. It was only about 6 months ago that I replaced the X code with SDL, which is multiplatform. Then Arthuris ported it to Win32 (and to BeOS). He had also ported the earlier version, but it was much harder to maintain that way. 
+I originally wrote it [Exult] solely for X-windows, so that's where the 'X' comes from. The "ult", of course, comes from Ultima. It was only about 6 months ago that I replaced the X code with SDL, which is multiplatform. Then Arthuris ported it to Win32 (and to BeOS). He had also ported the earlier version, but it was much harder to maintain that way. 
 
 Ibrahim Holtzmann:
-I'd like to point out that exult; is also an English verb that means to rejoice, to show extreme happiness. 
+I'd like to point out that "exult" is also an English verb that means "to rejoice, to exhibit great happiness". 
  
   
-1.3. Where do I find Exult? 
+1.3. Is Exult free ? 
+Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exult's components you are required to make them freely available in turn when you make this modified Exult publicly availlable. 
+ 
+  
+1.4. Where do I find Exult? 
 The latest official version is found on http://exult.sourceforge.net/ 
 Daily snapshots of the Win32 binary and of the CVS source tree can be found at http://io.spaceports.com/~kirben/ 
  
   
-1.4. What is a snapshot? Are these screen shots or what? 
+1.5. What is a snapshot? Are these screen shots or what? 
 The snapshot is the newest source code of the program. It is updated almost daily, sometimes twice a day. There is information on how to build your own binary of the source but there is also the newest pre-compiled Windows binary. 
  
   
-1.5. How do I compile a source code snapshot under Linux? 
+1.6. How do I compile a source code snapshot under Linux? 
 Install the latest version of SDL (http://www.libsdl.org/)
 Extract the Exult source code archive to ~/exult:
-unzip Exult.zip -d ~ 
+unzip exult.zip -d ~ 
 Create a fresh install of U7. I'll assume that you've installed U7 in ~/ultima7 
 Run autogen.sh to create a configure script, then compile Exult:
 cd ~/exult; chmod u+x autogen.sh; ./autogen.sh; ./configure; make 
@@ -130,17 +162,17 @@ Run Exult:
 cd ~/ultima7; ./exult 
  
   
-1.6. How do I compile a source code snapshot under Win 9x? 
-The source code snapshots contain a file called README.win32 that explains everything. 
+1.7. How do I compile a source code snapshot under Win 9x? 
+The source code snapshots contain a file called "README.win32" that explains everything. 
  
   
-1.7. What is latest version of Exult? 
-The current official release is V0.92 Alpha3. See also 1.3 to learn where to get the latest version. 
+1.8. What is latest version of Exult? 
+The current official release is V0.92 Alpha3. See also 1.4 to learn where to get the latest version. 
 
 To find out which version you are running, press 'v' while in game. 
  
   
-1.8. On what platform does Exult run? 
+1.9. On what platform does Exult run? 
 Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT/2000). 
  
 
@@ -152,7 +184,7 @@ Yes. Exult won't work without the original files.
  
   
 2.2. Does Exult work on all versions of the game? 
-It seems to run most of the available versions of the game. The most common one nowadays with added Forge of Virtue runs for sure. 
+It seems to run most of the available versions of the game. The most common one nowadays with added "Forge of Virtue" runs for sure. 
 
 However there are reported problems with the localized versions of the game (French, German and Spanish). Conversation threads don't seem to skip to the next line in the proper places and therefore are unreadable in some cases. SI was only published in English so no localization problems with that. 
 
@@ -166,11 +198,11 @@ Colourless:
 I can't say much about the what will happen except that a completely working Serpent Isle will be an annoying task to complete. It is close to BG in some ways, but very different in others. 
 
 Jeff:
-My feelings about SI are the same as Colourless, who has done all the work so far on it. I'd much prefer to add enhancements to BG (which would apply to SI as well), and perhaps write a new RPG. Now, if EA would provide us with information about SI's internals, that would change things. And also, since Exult is open-source, it would be fine if anyone wants to volunteer to work on SI. 
+My feelings about SI are the same as Colourless, who has done all the work so far on it. I'd much prefer to add enhancements to BG (which would apply to SI as well), and perhaps write a new RPG. Now, if EA would provide us with information about SI's internals, that would change things. And also, since is open-source, it would be fine if anyone wants to volunteer to work on SI. 
  
   
 2.4. Do the Add-Ons work? 
-Forge of Virtue (Add-On to Black Gate) is supported. Even though SI is not yet fully running the same holds true for The Silver Seed. 
+"Forge of Virtue" (Add-On to Black Gate) is supported. Even though SI is not yet fully running the same holds true for "The Silver Seed". 
  
   
 2.5. Can you play through U7 yet? 
@@ -192,10 +224,10 @@ Don't ask the team for copies.
 3. Configurations, Resolution, Music 
   
 3.1. What is it with the exult.cfg file? 
-Most of the switches in the exult.cfg file are now handled via Setup when you start up Exult. For further understanding read the following descriptions. 
+Most of the switches in the exult.cfg file are now handled via "Setup" when you start up Exult. For further understanding read the following descriptions. 
 
 From the ReadMe:
-The file uses a simple hierarchical XML-like syntax, which should be simple to understand and modify. Take care though. Handling of syntax errors in this file is not well tested. Exult will create this file for you, with some sensible defaults, and you can then edit it to suit your preferences. 
+The file uses a simple hierarchical XML-like syntax, which should be simple to understand and modify. Take care though. Handling of syntax errors in this file is not well tested. will create this file for you, with some sensible defaults, and you can then edit it to suit your preferences. 
 
 okay, the default file looks like this (do not copy the **and following - these are my remarks). 
 
@@ -209,7 +241,7 @@ data
 <game> 
 <blackgate> 
 <path> 
-. 
+./blackgate 
 </path> 
 <title> 
 blackgate 
@@ -223,11 +255,14 @@ blackgate
 </blackgate> 
 <serpentisle> 
 <path> 
-. 
+./serpentisle 
 </path> 
 <keys> 
 (default) 
 </keys> 
+<waves> 
+./data/jmsisfx.flx  **optional setting see 3.5 for configuration 
+</waves> 
 </serpentisle> 
 </game> 
 </disk> 
@@ -258,15 +293,15 @@ yes  **enable/disable all audio - this takes precedence over the other audio set
 yes  **enable/disable sound effects (you can change this in game via 's' (or 'Esc' in snapshots dated 29.04.2001 or later) - the setting is saved) 
 </enabled> 
 <convert> 
-gs  **you can choose between gs and none - try out which sounds best for you when playing sfx through midi - see 3.4 
+none  **you can choose between "gs" and "none" - try out which sounds best for you when playing sfx through MIDI, takes no effect when you choose to play sfx via the wave pack - see 3.4 
 </convert> 
 </effects> 
 <midi> 
 <enabled> 
-yes  **enable/disable midi effects (you can change this in game via 's' (or 'Esc' in snapshots dated 29.04.2001 or later) - the setting is saved) 
+yes  **enable/disable MIDI effects (you can change this in game via 's' (or 'Esc' in snapshots dated 29.04.2001 or later) - the setting is saved) 
 </enabled> 
 <convert> 
-gm  **you can choose between gm,gs,gs127 and none - try out which sounds best for you 
+gm  **you can choose between "gm","gs","gs127" and "none" - try out which sounds best for you 
 </convert> 
 <volume_curve> 
 1.000000  **set volume (kind of at least, best don't change) 
@@ -292,7 +327,7 @@ yes  **enable/disable speech (you can change this in game via 's' (or 'Esc' in s
 yes  **do you want to play fullscreen? 
 </fullscreen> 
 <disable_fades> 
-no  **no enables fading between different menu points 
+no  **"no" enables fading between different menu points 
 </disable_fades> 
 <scale_method> 
 SuperEagle  **choose different scalers here: SuperEagle, 2xSaI, bilinear, point, interlaced - see 3.7 
@@ -318,10 +353,10 @@ You have two choices on how to setup Exult.
 The first one is very easy, just extract all the files from the compiled snapshot archive to the directory where you have The Black Gate or Serpent Isle installed. Concerning the paths you don't have to configure anything. 
 
 The other is a little more complicated but appeals to control freaks like me:
-Make a directory C:\Ultima7
-make two subfolders named "Blackgate" and "Serpentisle" (without the quotes of course)
-Extract or install the two Ultima 7 games into the appropiate folder (The Black Gate to C:\Ultima7\Blackgate and Serpent Isle to C:\Ultima7\Serpentisle)
-Extract the compiled Exult to C:\Ultima7
+Make a directory c:\ultima7
+make two subfolders named "blackgate" and "serpentisle" (without the quotes of course)
+Extract or install the two Ultima 7 games into the appropiate folder ("The Black Gate" to c:\ultima7\blackgate and "Serpent Isle" to c:\ultima7\serpentisle)
+Extract the compiled Exult to c:\ultima7
 Now you have to edit the exult.cfg file like this: 
 
 <disk> 
@@ -331,7 +366,7 @@ data
 <game> 
 <blackgate> 
 <path> 
-./Blackgate 
+./blackgate 
 </path> 
 <title> 
 blackgate 
@@ -339,43 +374,47 @@ blackgate
 </blackgate> 
 <serpentisle> 
 <path> 
-./Serpentisle 
+./serpentisle 
 </path> 
 </serpentisle> 
 </game> 
 </disk> 
 
-You can either use the relative (./Blackgate) or absolute (C:\Ultima\Blackgate) path to point to the correct directory. 
+You can either use the relative (./blackgate) or absolute (c:\Ultima\blackgate) path to point to the correct directory. 
 
 Word of advice: Don't copy the files from the one game into the directory of the other. 
  
   
 3.3. Do music and sound effects play? 
-Yes. Music plays via MIDI and sounds quite like the original. Sound effects either play via digital (.wav) SFX or also via Midi. Even speech is supported.
+Yes. Music plays via MIDI and sounds quite like the original. Sound effects either play via digital (.wav) sfx or also via MIDI. Even speech is supported.
 You can change the way the music and the sound effects play via the setup menu or the exult.cfg file. 
  
   
 3.4. The sound effects sound horrible 
 Well the music plays okay but the sound effects sound horrible, especially when opening a door. What's up? 
 
-This is due to the fact that the SFX is played using MIDI. For that to work properly you need the proper soundfont selected for your card. Not every soundcard supports soundfont-managing. Creative's AWE and Live! series do support it.
+This is due to the fact that the sfx is played using MIDI. For that to work properly you need the proper soundfont selected for your card. Not every soundcard supports soundfont-managing. Creative's AWE and Live! series do support it.
 If your card doesn't or you want to hear better sfx you are much better off when you select wave sfx. The next section 3.5 covers that!
 If you have on of those cards that do allow soundfont-managing this is how you should get some decent sound out of it (description only for Win32): 
 
-Load up the Control Panel, select Multimedia Properties (or Sounds and Multimedia). Make sure that the MIDI playback device is the right one. For the SB Live! it has to be SB Live! MIDI Synth. Don't choose Microsoft Synth or similar. 
+Load up the Control Panel, select "Multimedia Properties" (or "Sounds and Multimedia"). Make sure that the MIDI playback device is the right one. For the SB Live! it has to be "SB Live! MIDI Synth". Don't choose "Microsoft Synth" or similar. 
 You need a Sound Font Manager. Creative either provides the AWE-Control panel or the Vienna Sound Font Manager, other sound card producers should have something similar. There also should be some Soundfont files (*.sf2 or *.sbk) 
 Select Bank: 000 or Synth
 Load 4gmgsmt.sf2 or similar (You may have to try around a bit). 
 Now go into the game and test how the music works and if the SoundFX sound okay. 
+Important notice:
+MIDI sound effects are disabled in source code in 23.05.2001 PM and later snapshots. The team decided to drop MIDI sfx and with the next release it will no longer be supported and this answer will disappear. 
  
   
-3.5. How do I enable Exult to play wave Sfx? 
-You have to set a path to the sfx pack in the waves settings in exult.cfg (see 3.1). If you leave this blank the sfx will be played through midi. For now there is only one pack and as the sfx in BG and SI varies a bit it's probably better if you don't configure SI to use it (leave the wave settings blank so the sfx is played throug midi). 
+3.5. How do I enable Exult to play digital wave sfx? 
+You have to set a path to the sfx pack in the waves settings in exult.cfg (see 3.1). If you leave this blank the sfx will be played through MIDI. You have to download seperate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI (see 6.2). 
 
-The sfx pack made by Joseph Morris can be found at http://ftp1.sourceforge.net/exult/jmsfx.zip (4.55 MB). He recorded the original 114 sfx used in Black Gate which must have been a lot of work. If your soundcard doesn't support soundfonts this pack is a must-have. Enjoy! 
+Note that configuring your soundfonts is not needed for digital wave sfx. 
+
+The sfx pack made by Joseph Morris can be found at http://prdownloads.sourceforge.net/exult/jmsfx.zip (4.55 MB) for "The Black Gate" and http://prdownloads.sourceforge.net/exult/jmsfxsi.zip (6.01 MB) for "Serpent Isle". He recorded the original 114 sfx used in Black Gate which must have been a lot of work. If your soundcard doesn't support soundfonts this pack is a "must-have". Enjoy! 
  
   
-3.6. How to turn of audio? 
+3.6. How to turn off audio? 
 Press 's' (or 'Esc' in snapshots dated 29.04.2001 or later) to turn on/off Music, Speech and SoundFX or change the settings in exult.cfg - see 3.1. 
  
   
@@ -385,6 +424,10 @@ By default Exult runs at 320x200 (which is the resolution the original Ultima VI
 Your screen should be set to 16-bit color mode. 
 
 Within the game you can use the 'Alt +' and 'Alt -' to switch resolution. The game will save the last selected mode and reuse it the next time you run Exult. 
+ 
+  
+3.8. Is Exult case sensitive? 
+Case sensitiveness is a slight problem with Exult when you are not using the Windows port. Exult tries lower and uppercase versions, and reports the error after trying the last (ie. uppercase) filename. If the "static" directory and the files within are uppercase you might run into problems. Better make sure that all these are lowercase. When unzipping the Ultima files from a zip in Linux you can set it to extract in lowercase with the "-L" switch (e.g. 'unzip -L ultima7.zip'). 
  
 
 --------------------------------------------------------------------------------
@@ -420,7 +463,7 @@ w   Use watch, shows the time if you got a watch
 Alt-x   Exit game 
 z   Show stats 
 
-In conversations you now have the ability not just click on the answer with the mouse but also to use the numeric keys. The response options aren't numbered visually but logically with the dots. Also press 'Esc' to select bye if possible. 
+In conversations you now have the ability not just click on the answer with the mouse but also to use the numeric keys. The response options aren't numbered visually but logically with the dots. Also press 'Esc' to select "bye" if possible. 
  
   
 4.2. I remember that there were Cheat codes for the original. Does Exult support these? 
@@ -455,7 +498,7 @@ Ctrl-Alt-t   Map teleport
 Ctrl-t   Advance to next time period 
 Alt-t   Teleport (to current cursor position) 
 Alt-w   Toggle archwizard mode (all spells etc.) 
-Alt-1   Test music, SFX, speech 
+Alt-1   Test music, sfx, speech 
 Ctrl-Alt-g   Grab NPC for cheat screen 
 Ctrl-Alt-p   Pick pocket cheat, when enabled double-clicking on a NPC displays the actors inventory 
 Ctrl-n   NPC number, When enabled, clicking an a NPC will display their number instead of their name. Usefull for the cheat screen. 
@@ -484,7 +527,7 @@ Recently Ryan added paperdoll support in Black Gate. Though it is still buggy (s
 4.7. Any other improvements/features? 
 In recent snapshots (since 29th of April) a new game menu was added with an improved sound settings box and a very much improved (awesome) savegame box. This allows you much more savegames than the original (you should run out of disc space before you run out of savegame slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The game menu is opened via 'Esc' and the save game box is opened either via the game menu or the 's' key. 
 
-In exult, you can still move your party even if there is a box/body/stats open/on. In the original, the world was kind of frozen. Now it is only frozen if you hit the 't' or 's' key. 
+In Exult, you can still move your party even if there is a box/body/stats open/on. In the original, the world was kind of frozen. Now it is only frozen if you hit the 't' or 's' key. 
  
   
 4.8. How do I disable all improvements?  
@@ -493,36 +536,103 @@ To get an Ultima 7 that looks and behaves as close to the original as possible t
 make custom keybindings files (see 4.1) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. In snapshots dated 29.04.2001 or later you have to assign 's' to old_file_gump to enable the old savegame menu (the line in your custom keybindings file should look like: S old_file_gump) 
 Edit the exult.cfg file to point to those custom keys. 
 Don't set the path to the Serpent Isle files (see 3.2) and put SI and a second copy of Exult in a seperate directory (note: you can no longer launch both BG and SI from the same exult.exe). This disables SI paperdolls in BG. 
+Alternatively you can leave the cheat menu binding in the keybindings file ( 'F2' ) and disable "Paperdolls" each time you run Exult. 
 Edit the exult.cfg to use the resolution of 320x200, to run in full screen and disable scalers. 
 The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot be altered. Sorry! 
  
   
 4.9. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?  
-Work has begun on Exult Studio which is aimed to be an editor for all kinds of files that are used by Ultima 7. As of now there is already a Gimp plug-in to edit shapes. 
+Work has begun on "Exult Studio" which is aimed to be an editor for all kinds of files that are used by Ultima 7. As of now there is already a Gimp plug-in to edit shapes. 
+
+For much more information "Exult Studio" see 0.1. 
 
 Jeff:
 As for the future, my main plan is to add editing capabilities, with the long-range goal of writing an original RPG. 
  
 
 --------------------------------------------------------------------------------
-5. Bugs, known issues, and not yet implemented features 
+5. Exult Studio 
   
-5.1. Bugs 
+5.1. What is it? 
+Exult Studio is a map-editor for Exult, allowing you to modify the map of a game and, eventually, to create a completely new landscape for a new game. 
+ 
+  
+5.2. Who came up with the cool name? 
+Tristan 
+ 
+  
+5.3. What do you need to run it? 
+Currently, you need to be running Exult on X (Linux, Unix, etc.), with Exult set to run in a window (not fullscreen). You also need the GTK+ library installed. 
+ 
+  
+5.4. When will it be ported to other platforms? 
+That depends on when someone volunteers to do the work :-) There are three issues: 
+
+GTK has to be ported to the platform. I think this is already true for Win32. 
+Exult Studio uses sockets to communicate with Exult. This also shouldn't be a problem for Win32. 
+X drag-n-drop is used to put new objects on the landscape. The 'drop' part of this will have to be rewritten for Win32 Exult, OR, drag-n-drop could be an enhancement to SDL someday. 
+ 
+  
+5.5. How do you run it? 
+You can run Exult Studio all by itself, but it isn't useful that way, as it uses Exult as a server. What you really want to do is: 
+
+Put 'exult_studio.glade' in the Exult 'data' directory. 
+Be sure 'exult_studio' is in your path. 
+Run Exult. 
+Press 'alt-ctrl-m' to go into 'map-editor' mode. If all is set up correctly, exult_studio will start up, and will have a list of files on the left side of its window. 
+
+You can also start up one or the other separately, and they'll reconnect: 
+
+If Exult isn't running, start it up. Then, in Exult Studio, use the 'File' menu to choose the static directory (for the game you're playing). 
+If Exult Studio isn't running start it up with: exult_studio -x (path to dir containing exult_studio.glade) -d (path to game directory) 
+ 
+  
+5.6. What can you do at the moment? 
+
+You can browse shapes in the main window. 
+You can drag a shape from the shape browser to Exult, and that object will be placed in the game. (Note: Not all such objects are saved with the game yet; saving things like buildings will be implemented soon.) 
+You can edit an 'egg' by double-clicking on it. An edit box should appear. 
+You can create a new 'egg' using the pull-down menu in Exult Studio. In the Egg edit box, after you hit 'Apply', you'll be prompted to click in Exult where you want the egg to appear. 
+If editing a 'monster' egg, you can set the monster by dragging the shape from the browser to the area that displays the monster. 
+ 
+  
+5.7. What's next? 
+The next things to be implemented are: 
+
+An NPC editor, similar to the one for Eggs (but with lots more stuff to set). 
+A simple object editor, that lets you modify an object's 'quality', 'quantity' and flags. 
+A 'save-map' function in Exult to save the whole map (not just the moveable objects that 'save-game' stores). 
+ 
+  
+5.8. What's with this client/server stuff? 
+A map-editor needs to provide the ability to display the game, place objects on the map, and move objects around. That functionality is already in Exult, and it makes sense to reuse it. So we could have made Exult a part of Exult Studio. However, Exult is already a huge program, and is getting unwieldy to work on. 
+
+With this architecture, Exult Studio can have all the messy code for displaying/editing dialog boxes, while Exult only needs a little bit of work to handle requests. 
+
+Also, I (Jeff) wanted to get a little experience programming with sockets:-) 
+ 
+
+--------------------------------------------------------------------------------
+6. Bugs, known issues, and not yet implemented features 
+  
+6.1. Bugs 
 To see a list of open bugs and bugreports go to http://sourceforge.net/bugs/?group_id=2335 
  
   
-5.2. Known Issues 
+6.2. Known Issues 
 Movement is sometimes jerky or slow. 
 We don't know what all the data in 'weapons.dat' and 'ammo.dat' means, so hit points and damage don't work as well as in the original game. 
+Sound effects in SI are sometimes odd with the wave pack as some sounds were coded in Exult to correspond to the sfx number in BG. This is a bug and will be addressed in due time. 
+In Fellowship meetings some NPCs appear not to attend these though they should and sometimes even speak there. This is due to a bug in Exult which makes NPCs sit on already taken seats and only the top most NPC can be seen. Moving the top most via Hackmover makes the others visible. 
  
   
-5.3. Not yet implemented 
-Maybe a few magic spells that don't work 
+6.3. Not yet implemented 
+Maybe a few magic spells that don't work in SI but spells in BG are working properly. 
 
 --------------------------------------------------------------------------------
-6. Questions and Answers, Bugreports 
+7. Questions and Answers, Bugreports 
   
-6.1. How can I get answers concerning Ultima 7/Exult? Where should I send Bugreports? 
+7.1. How can I get answers concerning Ultima 7/Exult? Where should I send Bugreports? 
 The best way to get answers to questions is to go to the Online discussion forum at:
 http://www.jackchaos.com/cgi-bin/UltraBoard/UltraBoard.pl?Action=ShowBoard&Board=exult 
 
@@ -537,22 +647,22 @@ Or go to the Ultima Dragons homepage http://www.udic.org and find your way from 
 Some Exult developers like to hang out on IRC on irc.openprojects.net, channel #exult. 
  
   
-6.2. How do I contact the author of this FAQ? 
-This FAQ is maintained by Dominus Dragon of the UDIC (http://www.udic.org/) aka Dominik Reichardt (gigdr@tesionmail.de). Feel free to contact me with improvements or complaints regarding the FAQ. I recently became part of the Exult Team though I only write the FAQ and don't code at all. 
+7.2. How do I contact the author of this FAQ? 
+This FAQ is maintained by Dominus Dragon of the UDIC aka Dominik Reichardt (gigdr@tesionmail.de). Feel free to contact me with improvements or complaints regarding the FAQ. I recently became part of the Exult Team though I only write the FAQ and don't code at all. 
  
 
 --------------------------------------------------------------------------------
-7. Links and Thanks 
+8. Links and Thanks 
   
-7.1. Important Links 
+8.1. Important Links 
 Exult Hompage at http://exult.sourceforge.net/
 Daily code snapshot at http://io.spaceports.com/~kirben/
 Message board at http://www.jackchaos.com/cgi-bin/UltraBoard/UltraBoard.pl?Action=ShowBoard&Board=exult
 Bugreports to http://sourceforge.net/bugs/?group_id=2335 
  
   
-7.2. Thanks 
-Of course big thanks go to the Exult-Team for breathing life back into this jewel of a game. 
+8.2. Thanks 
+Of course big thanks go to the Exult Team for breathing life back into this jewel of a game. 
 
 Max Horn deserves my gratitude for making the FAQ easier to maintain via XML/XSL. 
 
@@ -565,6 +675,10 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 
 --------------------------------------------------------------------------------
  
+  
+  
+  
 Problems with Exult or this webpage? Contact us (exult-general@lists.sourceforge.net). 
  
-Last modified: 02 May 2001(GMT) 
+Last modified: 07 June 2001(GMT) 
+ 

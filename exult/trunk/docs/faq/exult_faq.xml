@@ -2,61 +2,95 @@
 
 <!DOCTYPE faqs SYSTEM "faqs.dtd">
 
-<faqs title="Exult" changed="02 May 2001(GMT)">
+<faqs title="Exult" changed="07 June 2001(GMT)">
 
 	<section title="Changes to the FAQ">
 	
 		<faq name="02052001">
 		
-			<question>02 May 2001</question>
+			<question>- 02 May 2001</question>
 			
 			<answer>
 
 				<para>
-				"0. Changes to the FAQ" added on popular demand and began numbering of XSL style sheet
 				
-				at "0" with a lot of help from Fingolfin (I don't know much about XSL).<br/>
+				<li>"0. Changes to the FAQ" added on popular demand and began numbering of XSL style sheet
 				
-				"<ref target="latest_version"/> What is latest version of Exult?" updated to Alpha3<br/>
+				at "0" with a lot of help from Fingolfin (I don't know much about XSL).</li>
 				
-				"<ref target="what_platforms"/> On what platform does Exult run?" added OpenBSD, FreeBSD, Solaris.<br/>
+				<li>"<ref target="latest_version"/> What is latest version of <Exult/>?" updated to Alpha3</li>
 				
-				"<ref target="u7_versions"/> Does Exult work on all versions of the game?" added info that a Spanish version of BG
+				<li>"<ref target="what_platforms"/> On what platform does <Exult/> run?" added OpenBSD, FreeBSD, Solaris.</li>
 				
-				exists and that SI was English-only.<br/>
+				<li>"<ref target="u7_versions"/> Does <Exult/> work on all versions of the game?" added info that a Spanish version of BG
 				
-				"<ref target="si_support"/> How about Serpent Isle?" updated.<br/>
+				exists and that SI was English-only.</li>
 				
-				"<ref target="play_through_u7"/> Can you play through U7 yet?" moved from Section 1 to 2.<br/>
+				<li>"<ref target="si_support"/> How about Serpent Isle?" updated.</li>
 				
-				"<ref target="old_savegames"/> Do savegames from the original work in Exult?" added for those that
+				<li>"<ref target="play_through_u7"/> Can you play through U7 yet?" moved from Section 1 to 2.</li>
 				
-				don't bother with the readme file.<br/>
+				<li>"<ref target="old_savegames"/> Do savegames from the original work in <Exult/>?" added for those that
 				
-				"<ref target="exult_config"/> What is it with the exult.cfg file?" added gamma and volume_curve settings, also aplied
+				don't bother with the readme file.</li>
 				
-				changes made necessary by the new game menu in snapshots later than 29.04.2001.<br/>
+				<li>"<ref target="exult_config"/> What is it with the exult.cfg file?" added gamma and volume_curve settings, also aplied
 				
-				"<ref target="sound_turnoff"/> How to turn of audio?" changed to point to new game menu.<br/>
+				changes made necessary by the new game menu in snapshots later than 29.04.2001.</li>
 				
-				"<ref target="scaler"/> What does the Scale option mean?" added some more info from the News file as people
+				<li>"<ref target="sound_turnoff"/> How to turn off audio?" changed to point to new game menu.</li>
 				
-				don't seem to read it.<br/>
+				<li>"<ref target="scaler"/> What does the Scale option mean?" added some more info from the News file as people
 				
-				"<ref target="exult_keys"/> What are the keys used in Exult?" added <key>Esc</key> for game menu.<br/>
+				don't seem to read it.</li>
 				
-				"<ref target="other_improvements"/> Any other improvements/features?" praise to the new game menu and savegame box.<br/>
+				<li>"<ref target="exult_keys"/> What are the keys used in <Exult/>?" added <key>Esc</key> for game menu.</li>
 				
-				"<ref target="disable_improvements"/> How do I disable all improvements?" added as this was asked on Jackchaos
+				<li>"<ref target="other_improvements"/> Any other improvements/features?" praise to the new game menu and savegame box.</li>
 				
-				and might interest others (don't see why actually).<br/>
+				<li>"<ref target="disable_improvements"/> How do I disable all improvements?" added as this was asked on Jackchaos
+				
+				and might interest others (don't see why actually).</li>
 				
 				</para>
 				
 			</answer>
 
 		</faq>
-		
+
+		<faq name="07062001">
+
+			<question>- 07 June 2001</question>
+
+			<answer>
+
+				<para>
+				
+				<li>"<ref target="is_exult_free"/> Is <Exult/> free ?" added</li>
+				
+				<li>"<ref target="sound_horrible"/> The sound effects sound horrible" Notice added on discontinueing support for MIDI sfx.</li>
+				
+				<li>"<ref target="wave_sfx"/> How do I enable <Exult/> to play digital wave sfx?" mentioned the SI sfx pack, 
+				
+				point to the proper Sourceforge links and added note that you don't need to configure soundfonts for wave sfx.</li>
+				
+				<li>"<ref target="case_sensitiveness"/> Is <Exult/> case sensitive?" added this answer.</li>
+				
+				<li>"<ref target="disable_improvements"/> How do I disable all improvements?" forgot to mention the cheat menu option to disable Paperdolls in BG.</li>
+				
+				<li>"<ref target="exult_engine"/> Can I make my own game with <Exult/>?" point to new section "<Studio/>"</li>
+				
+				<li>"<ref target="what_is_studio"/> <Studio/>" added this new section by Jeff.</li>
+				
+				<li>"<ref target="known_issues"/> Known Issues" added bug with taken seats in Fellowship meetings and problem with SI sfx playback</li>
+				
+				<li>"<ref target="not_yet_implemented"/> Not yet implemented" noted that all magic spells in BG work but not in SI</li>
+				
+				</para>
+
+			</answer>
+
+		</faq>		
 	</section>
 	
 	
@@ -84,7 +118,7 @@
 
 				<para>
 
-				Exult is being developed in C++ under Linux, MacOS and Windows
+				<Exult/> is being developed in C++ under Linux, MacOS and Windows
 
 				using the SDL library to make porting to other platforms relatively easy.
 
@@ -104,13 +138,13 @@
 
 				<para>
 
-				Exult aims to let those people who own Ultima 7 (copyright 1993)
+				<Exult/> aims to let those people who own Ultima 7 (copyright 1993)
 
 				play the game on modern hardware, in as close to (or perhaps even surpassing)
 
 				its original splendor as is possible. You need to <strong>own</strong>
 
-				<q>Ultima 7: The Black Gate</q> in order to use <Exult/>, and we encourage
+				"Ultima 7: The Black Gate" in order to use <Exult/>, and we encourage
 
 				you to buy a legal copy.
 
@@ -119,8 +153,6 @@
 			</answer>
 
 		</faq>
-
-
 
 		<faq name="why_name_exult">
 
@@ -132,7 +164,7 @@
 
 					I originally wrote it [Exult] solely for X-windows, so that's where
 
-					the 'X' comes from. The <q>ult</q>, of course, comes from Ultima. It
+					the 'X' comes from. The "ult", of course, comes from Ultima. It
 
 					was only about 6 months ago that I replaced the X code with SDL,
 
@@ -146,9 +178,9 @@
 
 				<cite name="Ibrahim Holtzmann">
 
-					I'd like to point out that <q>exult</q>; is also an English verb that
+					I'd like to point out that "exult" is also an English verb that
 
-					means <q>to rejoice, to show extreme happiness.</q>
+					means "to rejoice, to exhibit great happiness".
 
 				</cite>
 
@@ -156,8 +188,32 @@
 
 		</faq>
 
+		<faq name="is_exult_free">
 
+			<question>Is <Exult/> free ?</question>
 
+			<answer>
+
+				<para>
+				
+				<Exult/> is more than free: it's Free (notice the caps). <Exult/> is released 
+				
+				under the GNU GPL (General Public License). This means that the source 
+				
+				code for <Exult/> is freely available and you can do whatever you want with 
+				
+				it. However, if you make modifications to any of Exult's components you 
+				
+				are required to make them freely available in turn when you make this modified 
+				
+				<Exult/> publicly availlable.
+				
+				</para>
+
+			</answer>
+
+		</faq>		
+		
 		<faq name="whereis_exult">
 
 			<question>Where do I find <Exult/>?</question>
@@ -215,9 +271,9 @@
 
 						</li>
 
-					<li>Extract the Exult source code archive to ~/exult:<br/>
+					<li>Extract the <Exult/> source code archive to ~/exult:<br/>
 
-						<kbd>unzip Exult.zip -d ~</kbd>
+						<kbd>unzip exult.zip -d ~</kbd>
 
 						</li>
 
@@ -231,7 +287,7 @@
 
 						</li>
 
-					<li>Install <Exult/> and the Exult data file:<br/>
+					<li>Install <Exult/> and the <Exult/> data file:<br/>
 
 						<kbd>cp exult ~/ultima7; mkdir ~/ultima7/data; cp ./data/exult.flx ~/ultima7/data</kbd>
 
@@ -259,7 +315,7 @@
 
 				<para>
 
-				The source code snapshots contain a file called <q>README.win32</q> that explains everything.
+				The source code snapshots contain a file called "README.win32" that explains everything.
 
 				</para>
 
@@ -302,7 +358,7 @@
 
 				<para>
 
-				Exult should be able to be compiled (with minor modifications) on
+				<Exult/> should be able to be compiled (with minor modifications) on
 
 				any platform that SDL supports. Right now the source can be compiled
 
@@ -329,7 +385,7 @@
 				
 				<para>
 				
-				Yes. Exult won't work without the original files.
+				Yes. <Exult/> won't work without the original files.
 				
 				</para>
 				
@@ -347,7 +403,7 @@
 
 				It seems to run most of the available versions of the game. The most common
 
-				one nowadays with added <q>Forge of Virtue</q> runs for sure.
+				one nowadays with added "Forge of Virtue" runs for sure.
 
 				</para>
 
@@ -413,7 +469,7 @@
 
 					Now, if EA would provide us with information about SI's internals,
 
-					that would change things. And also, since Exult is open-source,
+					that would change things. And also, since <Exult/> is open-source,
 
 					it would be fine if anyone wants to volunteer to work on SI.
 
@@ -431,9 +487,9 @@
 
 				<para>
 
-				<q>Forge of Virtue</q> (Add-On to Black Gate) is supported. Even though SI
+				"Forge of Virtue" (Add-On to Black Gate) is supported. Even though SI
 
-				is not yet fully running the same holds true for <q>The Silver Seed</q>.
+				is not yet fully running the same holds true for "The Silver Seed".
 
 				</para>
 
@@ -463,7 +519,7 @@
 
 		<faq name="old_savegames">
 		
-			<question>Do savegames from the original work in Exult?</question>
+			<question>Do savegames from the original work in <Exult/>?</question>
 
 			<answer>
 
@@ -471,7 +527,7 @@
 
 				Savegames that were made with the original Ultima 7 or U7Run don't work
 				
-				with Exult. You have to start a new game when you begin playing with Exult.
+				with <Exult/>. You have to start a new game when you begin playing with <Exult/>.
 				
 				Sorry! 
 
@@ -490,7 +546,7 @@
 
 				<em>Don't!</em> You may be able to find it on the net but it would be
 
-				pirating the game and the Exult team doesn't support pirates. Look for
+				pirating the game and the <Exult/> team doesn't support pirates. Look for
 
 				the Ultima Collection in stores or on <extref target="http://www.ebay.com">Ebay</extref>.
 
@@ -522,7 +578,7 @@
 
 					Most of the switches in the exult.cfg file are now handled via
 
-					<q>Setup</q> when you start up Exult. For further understanding
+					"Setup" when you start up <Exult/>. For further understanding
 
 					read the following descriptions.
 
@@ -534,7 +590,7 @@
 
 					be simple to understand and modify. Take care though. Handling of
 
-					syntax errors in this file is not well tested. Exult will create
+					syntax errors in this file is not well tested. <Exult/> will create
 
 					this file for you, with some sensible defaults, and you can then
 
@@ -576,7 +632,7 @@
 
 					<line>&lt;path&gt;</line>
 
-					<line>.</line>
+					<line>./blackgate</line>
 
 					<line>&lt;/path&gt;</line>
 
@@ -608,7 +664,7 @@
 					
 					<line>&lt;path&gt;</line>
 
-					<line>.</line>
+					<line>./serpentisle</line>
 
 					<line>&lt;/path&gt;</line>
 
@@ -617,6 +673,14 @@
 					<line>(default)</line>
 
 					<line>&lt;/keys&gt;</line>
+					
+					<line>&lt;waves&gt;</line>
+					
+					<line>./data/jmsisfx.flx
+					
+					<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment></line>
+					
+					<line>&lt;/waves&gt;</line>
 
 					<line>&lt;/serpentisle&gt;</line>
 
@@ -700,13 +764,15 @@
 
 					<line>&lt;convert&gt;</line>
 
-					<line>gs
+					<line>none
 
-						<comment>**you can choose between <q>gs</q> and <q>none</q> -
+						<comment>**you can choose between "gs" and "none" -
 
-						try out which sounds best for you when playing sfx through midi -
+						try out which sounds best for you when playing sfx through MIDI, 
 						
-						see <ref target="sound_horrible"/></comment></line>
+						takes no effect when you choose to play sfx via the wave pack 
+						
+						- see <ref target="sound_horrible"/></comment></line>
 
 					<line>&lt;/convert&gt;</line>
 
@@ -718,7 +784,7 @@
 
 					<line>yes
 
-						<comment>**enable/disable midi effects (you can change this in game via
+						<comment>**enable/disable MIDI effects (you can change this in game via
 
 						<key>s</key> (or <key>Esc</key> in snapshots dated 29.04.2001 or later) - the setting is saved)</comment></line>
 
@@ -728,9 +794,9 @@
 
 					<line>gm
 
-						<comment>**you can choose between <q>gm</q>,<q>gs</q>,<q>gs127</q>
+						<comment>**you can choose between "gm","gs","gs127"
 
-						and <q>none</q> - try out which sounds best for you</comment></line>
+						and "none" - try out which sounds best for you</comment></line>
 
 					<line>&lt;/convert&gt;</line>
 					
@@ -798,7 +864,7 @@
 
 					<line>no
 
-						<comment>**<q>no</q> enables fading between different menu points</comment></line>
+						<comment>**"no" enables fading between different menu points</comment></line>
 
 					<line>&lt;/disable_fades&gt;</line>
 
@@ -850,7 +916,7 @@
 
 			<answer>
 
-				<para>You have two choices on how to setup Exult.</para>
+				<para>You have two choices on how to setup <Exult/>.</para>
 
 				<para>
 
@@ -868,15 +934,15 @@
 
 					The other is a little more complicated but appeals to control freaks like me:<br/>
 
-					Make a directory C:\Ultima7<br/>
+					Make a directory c:\ultima7<br/>
 
-					make two subfolders named <q>Blackgate</q> and <q>Serpentisle</q> (without the quotes of course)<br/>
+					make two subfolders named "blackgate" and "serpentisle" (without the quotes of course)<br/>
 
 					Extract or install the two Ultima 7 games into the appropiate folder
 
-					(<q>The Black Gate</q> to C:\Ultima7\Blackgate and <q>Serpent Isle</q> to C:\Ultima7\Serpentisle)<br/>
+					("The Black Gate" to c:\ultima7\blackgate and "Serpent Isle" to c:\ultima7\serpentisle)<br/>
 
-					Extract the compiled Exult to C:\Ultima7<br/>
+					Extract the compiled <Exult/> to c:\ultima7<br/>
 
 					Now you have to edit the exult.cfg file like this:
 
@@ -898,7 +964,7 @@
 
 					<line>&lt;path&gt;</line>
 
-					<line>./Blackgate</line>
+					<line>./blackgate</line>
 
 					<line>&lt;/path&gt;</line>
 
@@ -914,7 +980,7 @@
 
 					<line>&lt;path&gt;</line>
 
-					<line>./Serpentisle</line>
+					<line>./serpentisle</line>
 
 					<line>&lt;/path&gt;</line>
 
@@ -928,7 +994,7 @@
 
 				<para>
 
-				    You can either use the relative (./Blackgate) or absolute (C:\Ultima\Blackgate) path 
+				    You can either use the relative (./blackgate) or absolute (c:\ultima\blackgate) path 
 
 				    to point to the correct directory.
 
@@ -956,7 +1022,7 @@
 
 				Yes. Music plays via MIDI and sounds quite like the original. Sound
 
-				effects either play via digital (.wav) SFX  or also via Midi. Even speech is supported.<br/>
+				effects either play via digital (.wav) sfx  or also via MIDI. Even speech is supported.<br/>
 
 				You can change the way the music and the sound effects play via the
 
@@ -984,7 +1050,7 @@
 
 				<para>
 
-					This is due to the fact that the SFX is played using MIDI. For that to
+					This is due to the fact that the sfx is played using MIDI. For that to
 
 					work properly you need the proper soundfont selected for your card.
 
@@ -1006,13 +1072,13 @@
 
 					<li>
 
-						Load up the Control Panel, select <q>Multimedia Properties</q>
+						Load up the Control Panel, select "Multimedia Properties"
 
-						(or <q>Sounds and Multimedia</q>). Make sure that the MIDI playback
+						(or "Sounds and Multimedia"). Make sure that the MIDI playback
 
 						device is the right one. For the SB Live! it has to be
 
-						<q>SB Live! MIDI Synth</q>. Don't choose <q>Microsoft Synth</q> or similar.
+						"SB Live! MIDI Synth". Don't choose "Microsoft Synth" or similar.
 
 					</li>
 
@@ -1043,13 +1109,25 @@
 					</li>
 
 				</ol>
-
+				
+				<para>
+				
+				<em>Important notice:</em><br/>
+				
+				MIDI sound effects are disabled in source code in 23.05.2001 PM and later snapshots.
+				
+				The team decided to drop MIDI sfx and with the next release it will no longer be 
+				
+				supported and this answer will disappear.
+				
+				</para>
+				
 			</answer>
 
 		</faq>
 	<faq name="wave_sfx">
 
-			<question>How do I enable Exult to play wave Sfx?</question>
+			<question>How do I enable <Exult/> to play digital wave sfx?</question>
 
 			<answer>
 
@@ -1057,13 +1135,17 @@
 				
 				You have to set a path to the sfx pack in the waves settings in exult.cfg (see <ref target="exult_config"/>).
 				
-				If you leave this blank the sfx will be played through midi. For now there
+				If you leave this blank the sfx will be played through MIDI. You have to download
 				
-				is only one pack and as the sfx in BG and SI varies a bit it's probably better
+				seperate packs for each game as order of the sfx in BG and SI varies a bit and 
 				
-				if you don't configure SI to use it (leave the wave settings blank so the sfx
+				otherwise will sound odd. However there is a little issue with sfx playback in SI (see <ref target="known_issues"/>).
 				
-				is played throug midi).
+				</para>
+				
+				<para>
+				
+				Note that configuring your soundfonts is not needed for digital wave sfx.
 				
 				</para>
 				
@@ -1071,13 +1153,15 @@
 				
 				The sfx pack made by Joseph Morris can be found at 
 				
-				<extref target="http://ftp1.sourceforge.net/exult/jmsfx.zip"/> (4.55 MB).
+				<extref target="http://prdownloads.sourceforge.net/exult/jmsfx.zip"/> (4.55 MB) for "The Black Gate"
+				
+				and <extref target="http://prdownloads.sourceforge.net/exult/jmsfxsi.zip"/> (6.01 MB) for "Serpent Isle".
 				
 				He recorded the original 114 sfx used in Black Gate which must
 				
 				have been a lot of work. If your soundcard doesn't support soundfonts
 				
-				this pack is a <q>must-have</q>. Enjoy!
+				this pack is a "must-have". Enjoy!
 				
 				</para>
 			
@@ -1087,7 +1171,7 @@
 				
 		<faq name="sound_turnoff">
 
-			<question>How to turn of audio?</question>
+			<question>How to turn off audio?</question>
 
 			<answer>
 
@@ -1111,9 +1195,9 @@
 
 				<para>
 
-					By default Exult runs at 320x200 (which is the resolution the original
+					By default <Exult/> runs at 320x200 (which is the resolution the original
 
-					Ultima VII used). Exult uses different scaling engines to
+					Ultima VII used). <Exult/> uses different scaling engines to
 
 					double the size to 640x400 and increase the quality of the graphics.
 
@@ -1123,7 +1207,7 @@
 
 					The scalers also work with higher resolutions. To change the scaling method either
 
-					use the Exult menu or change your exult.cfg - see <ref target="exult_config"/>.
+					use the <Exult/> menu or change your exult.cfg - see <ref target="exult_config"/>.
 					
 					"2xSaI" is the new scaler, "bilinear" is the old one, "point" duplicates the pixels,
 					
@@ -1147,14 +1231,44 @@
 
 					to switch resolution. The game will save the last
 
-					selected mode and reuse it the next time you run Exult.
+					selected mode and reuse it the next time you run <Exult/>.
 
 				</para>
 
 			</answer>
 
 		</faq>
+		
+		<faq name="case_sensitiveness">
 
+			<question>Is <Exult/> case sensitive?</question>
+
+			<answer>
+
+				<para>
+				
+				Case sensitiveness is a slight problem with <Exult/> when you are 
+				
+				not using the Windows port.
+				
+				<Exult/> tries lower and uppercase versions, and reports the error after 
+				
+				trying the last (ie. uppercase) filename. If the "static" directory and 
+				
+				the files within are uppercase you might run into problems. Better make 
+				
+				sure that all these are lowercase. When unzipping the Ultima files from 
+				
+				a zip in Linux you can set it to extract in lowercase with the "-L" switch 
+				
+			    (e.g. 'unzip -L ultima7.zip').
+				
+				</para>
+
+			</answer>
+
+		</faq>
+				
 	</section>
 
  
@@ -1165,7 +1279,7 @@
 
 		<faq name="exult_keys">
 
-			<question>What are the keys used in Exult?</question>
+			<question>What are the keys used in <Exult/>?</question>
 
 			<answer>
 
@@ -1181,7 +1295,7 @@
 
 				<para>
 
-				To change your key bindings first edit the file defaultkeys.txt in your Exult directory,
+				To change your key bindings first edit the file defaultkeys.txt in your <Exult/> directory,
 				
 				change the bindings and save the file (e.g. as my_keys.txt). Now you have to change exult.cfg
 				
@@ -1257,7 +1371,7 @@
 
 				aren't numbered visually but logically with the dots. Also press <key>Esc</key>
 
-				to select <q>bye</q> if possible.
+				to select "bye" if possible.
 
 				</para>
 
@@ -1267,7 +1381,7 @@
 
 		<faq name="exult_cheats">
 
-			<question>I remember that there were Cheat codes for the original. Does Exult support these?</question>
+			<question>I remember that there were Cheat codes for the original. Does <Exult/> support these?</question>
 
 			<answer>
 
@@ -1339,7 +1453,7 @@
 
 					<keydesc name="Alt-w">Toggle archwizard mode (all spells etc.)</keydesc>
 
-					<keydesc name="Alt-1">Test music, SFX, speech</keydesc>
+					<keydesc name="Alt-1">Test music, sfx, speech</keydesc>
 
 					<keydesc name="Ctrl-Alt-g">Grab NPC for cheat screen</keydesc>
 
@@ -1483,7 +1597,7 @@
 				
 				<para>
 
-				In exult, you can still move your party even if there is a box/body/stats
+				In <Exult/>, you can still move your party even if there is a box/body/stats
 
 				open/on. In the original, the world was kind of frozen. Now it is only
 
@@ -1529,9 +1643,13 @@
 				
 				<li>Don't set the path to the Serpent Isle files (see <ref target="path_config"/>) and put
 				
-				SI and a second copy of Exult in a seperate directory (note: you can no longer launch both 
+				SI and a second copy of <Exult/> in a seperate directory (note: you can no longer launch both 
 				
 				BG and SI from the same exult.exe). This disables SI paperdolls in BG.</li>
+				
+				<li>Alternatively you can leave the cheat menu binding in the keybindings file (<key>F2</key>) 
+				
+				and disable "Paperdolls" each time you run <Exult/>.</li>
 				
 				<li>Edit the exult.cfg to use the resolution of 320x200, to run in full screen and disable scalers.</li>
 				
@@ -1549,7 +1667,7 @@
 
 			<question>
 
-				I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+				I heard that <Exult/> is meant to be a game engine. Can I make my own game with <Exult/>?
 
 			</question>
 
@@ -1557,12 +1675,18 @@
 
 				<para>
 
-				Work has begun on <q>Exult Studio</q> which is aimed to be an editor for
+				Work has begun on "<Studio/>" which is aimed to be an editor for
 
 				all kinds of files that are used by Ultima 7. As of now there is already
 
 				a <extref target="http://www.gimp.org/">Gimp</extref> plug-in to edit shapes.
 
+				</para>
+				
+				<para>
+				
+				For much more information "<Studio/>" see <ref target="what_is"/>.
+				
 				</para>
 
 				<cite name="Jeff">
@@ -1578,7 +1702,253 @@
 		</faq>
 
 	</section>
+	
+	<section title="Exult Studio">
+		
+		<faq name="what_is_studio">
 
+			<question>What is it?</question>
+
+			<answer>
+
+				<para>
+				
+				<Studio/> is a map-editor for <Exult/>, allowing you to modify the map of a 
+				
+				game and, eventually, to create a completely new landscape for a new game.
+				
+				</para>
+
+			</answer>
+
+		</faq>
+		
+		<faq name="cool_name">
+
+			<question>Who came up with the cool name?</question>
+
+			<answer>
+
+				<para>
+				
+				Tristan
+				
+				</para>
+
+			</answer>
+
+		</faq>
+		
+		<faq name="need_to_run">
+
+			<question>What do you need to run it?</question>
+
+			<answer>
+
+				<para>
+				
+				Currently, you need to be running <Exult/> on X (Linux, Unix, etc.), with
+				
+				<Exult/> set to run in a window (not fullscreen).  You also need the GTK+
+				
+				library installed.
+				
+				</para>
+
+			</answer>
+
+		</faq>		
+		
+		<faq name="port_platforms">
+
+			<question>When will it be ported to other platforms?</question>
+
+			<answer>
+
+				<para>
+				
+				That depends on when someone volunteers to do the work :-) There are
+				
+				three issues:
+				
+   				<li>GTK has to be ported to the platform. I think this is already
+				
+				true for Win32.</li>
+				
+   				<li><Studio/> uses sockets to communicate with <Exult/>.  This also 
+				
+				shouldn't be a problem for Win32.</li>
+   				
+   				<li>X drag-n-drop is used to put new objects on the landscape.  The
+				
+				'drop' part of this will have to be rewritten for Win32 <Exult/>, OR,
+				
+				drag-n-drop could be an enhancement to SDL someday.</li>
+				
+				</para>
+
+			</answer>
+
+		</faq>
+
+		<faq name="how_to_run">
+
+			<question>How do you run it?</question>
+
+			<answer>
+
+				<para>
+				
+				You can run <Studio/> all by itself, but it isn't useful that way,
+				
+				as it uses <Exult/> as a server.  What you really want to do is:
+
+   				<li>Put 'exult_studio.glade' in the <Exult/> 'data' directory.</li>
+   				
+   				<li>Be sure 'exult_studio' is in your path.</li>
+   				
+   				<li>Run <Exult/>.</li>
+   				
+   				<li>Press 'alt-ctrl-m' to go into 'map-editor' mode.  If all is set
+				
+				up correctly, exult_studio will start up, and will have a list of files
+				
+				on the left side of its window.</li>
+				
+				</para>
+				
+				<para>
+				
+				You can also start up one or the other separately, and they'll
+				
+				reconnect:
+
+    			<li>If <Exult/> isn't running, start it up.  Then, in <Studio/>,
+				
+				use the 'File' menu to choose the static directory (for the game you're
+				
+				playing).</li>
+   				
+   				<li>If <Studio/> isn't running start it up with:
+        		
+        		exult_studio -x (path to dir containing exult_studio.glade) -d (path to game directory)</li>
+				
+				</para>
+
+			</answer>
+
+		</faq>
+		
+		<faq name="what_can_do_at_moment">
+
+			<question>What can you do at the moment?</question>
+
+			<answer>
+
+				<para>
+				
+				<li>You can browse shapes in the main window.</li>
+   				
+   				<li>You can drag a shape from the shape browser to <Exult/>, and that
+				
+				object will be placed in the game.  (Note:  Not all such objects 
+				
+				are saved with the game yet; saving things like buildings will be 
+				
+				implemented soon.)</li>
+				
+   				<li>You can edit an 'egg' by double-clicking on it.  An edit box
+				
+				should appear.</li>
+				
+   				<li>You can create a new 'egg' using the pull-down menu in <Studio/>.  
+				
+				In the Egg edit box, after you hit 'Apply', you'll be prompted to
+				
+				click in <Exult/> where you want the egg to appear.</li>
+   				
+   				<li>If editing a 'monster' egg, you can set the monster by dragging
+				
+				the shape from the browser to the area that displays the monster.</li>
+				
+				</para>
+
+			</answer>
+
+		</faq>
+
+		<faq name="what_next">
+
+			<question>What's next?</question>
+
+			<answer>
+
+				<para>
+				
+				The next things to be implemented are:
+
+    			<li>An NPC editor, similar to the one for Eggs (but with lots more
+				
+				stuff to set).</li>
+   
+   				<li>A simple object editor, that lets you modify an object's
+				
+				'quality', 'quantity' and flags.</li>
+   
+   				<li>A 'save-map' function in <Exult/> to save the whole map (not just
+				
+				the moveable objects that 'save-game' stores).</li>
+				
+				</para>
+
+			</answer>
+
+		</faq>
+
+		<faq name="client_server_stuff">
+
+			<question>What's with this client/server stuff?</question>
+
+			<answer>
+
+				<para>
+				
+				A map-editor needs to provide the ability to display the game, place
+				
+				objects on the map, and move objects around.  That functionality is already in
+				
+				<Exult/>, and it makes sense to reuse it.  So we could have made <Exult/> a part of
+				
+				<Studio/>.  However, <Exult/> is already a huge program, and is getting
+				
+				unwieldy to work on.
+				
+				</para>
+				
+				<para>  
+
+				With this architecture, <Studio/> can have all the messy code for 
+				
+				displaying/editing dialog boxes, while <Exult/> only needs a little bit
+				
+				of work to handle requests.
+				
+				</para>
+				
+				<para>
+
+				Also, I (Jeff) wanted to get a little experience programming with
+				
+				sockets:-)
+				
+				</para>
+
+			</answer>
+
+		</faq>						
+	
+	</section>
+				
   
   	<section title="Bugs, known issues, and not yet implemented features">
 
@@ -1616,6 +1986,20 @@
 
 					game.</li>
 					
+					<li>Sound effects in SI are sometimes odd with the wave pack as some 
+					
+					sounds were coded in <Exult/> to correspond to the sfx number in BG. This 
+					
+					is a bug and will be addressed in due time.</li>
+					
+					<li>In Fellowship meetings some NPCs appear not to attend these though
+					
+					they should and sometimes even speak there. This is due to a bug in <Exult/> 
+					
+					which makes NPCs sit on already taken seats and only the top most NPC can 
+					
+					be seen. Moving the top most via Hackmover makes the others visible.</li>
+				
 				</ul>
 
 			</answer>
@@ -1626,7 +2010,7 @@
 
 			<question>Not yet implemented</question>
 
-			<answer>Maybe a few magic spells that don't work</answer>
+			<answer>Maybe a few magic spells that don't work in SI but spells in BG are working properly.</answer>
 
 		</faq>
 
@@ -1637,7 +2021,7 @@
 
 		<faq name="howto_get_answers">
 
-			<question>How can I get answers concerning Ultima 7/Exult? Where should I send Bugreports?</question>
+			<question>How can I get answers concerning Ultima 7/<Exult/>? Where should I send Bugreports?</question>
 
 			<answer>
 
@@ -1675,7 +2059,7 @@
 
 				<para>
 
-				Some Exult developers like to hang out on IRC on irc.openprojects.net, channel #exult.
+				Some <Exult/> developers like to hang out on IRC on irc.openprojects.net, channel #exult.
 
 				</para>
 
@@ -1697,7 +2081,7 @@
 
 					Feel free to contact me with improvements or complaints regarding
 
-					the FAQ. I recently became part of the Exult Team though I only
+					the FAQ. I recently became part of the <Exult/> Team though I only
 
 					write the FAQ and don't code at all.
 
@@ -1720,7 +2104,7 @@
 
 				<para>
 
-					Exult Hompage at <extref target="http://exult.sourceforge.net/"/><br/>
+					<Exult/> Hompage at <extref target="http://exult.sourceforge.net/"/><br/>
 
 					Daily code snapshot at <extref target="http://io.spaceports.com/~kirben/"/><br/>
 
@@ -1742,7 +2126,7 @@
 
 				<para>
 
-				Of course big thanks go to the Exult-Team for breathing life back into
+				Of course big thanks go to the <Exult/> Team for breathing life back into
 
 				this jewel of a game.
 

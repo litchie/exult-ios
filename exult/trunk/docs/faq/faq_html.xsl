@@ -212,6 +212,9 @@
 	<em>Exult</em>
 </xsl:template>
 
+<xsl:template match="Studio">
+	<em>Exult Studio</em>
+</xsl:template>
 
 <xsl:template match="cite">
 		<p>
