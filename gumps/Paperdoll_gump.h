@@ -47,8 +47,13 @@ public:
 		OT_Helm = 7
 	};
 
-	private:
-	UNREPLICATABLE_CLASS(Paperdoll_gump);
+	enum Paperdoll_file
+	{
+		paperdoll = 0,
+		exult_flx = 1,
+		ex_pdolls = 2,
+		shapes = 3
+	};
 
 	// This contains info on how to render an item when it's in a certain spot
 	struct Paperdoll_item
@@ -61,6 +66,7 @@ public:
 		
 		bool			gender;				// Is this object gender specific
 
+		Paperdoll_file		file;				// Which  VGA file is the shape in
 		int			shape;				// The shape (if -1 use world shape and frame)
 		int			frame;				// The frame
 		int			frame2;				// Second Frame (if used)
@@ -73,6 +79,7 @@ public:
 	{
 		int			npc_shape;			// Choose the NPC based on shape, not NPC number
 		bool			is_female;			// Is the NPC Female (or more specifically not male)
+		Paperdoll_file		file;				// Which VGA file the head shape is in
 
 		// Body info
 		int			body_shape;			// Body Shape
@@ -80,13 +87,16 @@ public:
 
 		int			head_shape;			// Head Shape
 		int			head_frame;			// Normal Head Frame
-		int			head_frame_helm;	// Frame when wearing a helm
+		int			head_frame_helm;		// Frame when wearing a helm
 
 		int			arms_shape;			// Shape for Arms
 		int			arms_frame;			// Normal Arms Frame
-		int			arms_frame_2h;		// Frame when holding a two handed weapon
-		int			arms_frame_staff;	// Frame when holding staff style weapon
+		int			arms_frame_2h;			// Frame when holding a two handed weapon
+		int			arms_frame_staff;		// Frame when holding staff style weapon
 	};
+
+private:
+	UNREPLICATABLE_CLASS(Paperdoll_gump);
 
 protected:
 
@@ -238,7 +248,7 @@ public:
 	bool check_arms (Game_window *gwin, int mx, int my, Paperdoll_npc *info);
 
 	// Generic Method to check a shape
-	bool check_shape (Game_window *gwin, int px, int py, int shape, int frame, bool notpd = false);
+	bool check_shape (Game_window *gwin, int px, int py, int shape, int frame, Paperdoll_file file);
 
 };
 

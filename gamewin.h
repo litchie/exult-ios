@@ -86,6 +86,7 @@ private:
 	bool teleported;		// true if just teleported.
 	bool in_dungeon;		// true if inside a dungeon.
 	std::ifstream chunks;		// "u7chunks" file.
+	Vga_file exult_flx;		// "<data>/exult.flx"
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	Vga_file paperdolls;		// "paperdoll.vga" - paperdolls in SI
@@ -327,6 +328,8 @@ public:
 	Rectangle get_shape_rect(const Game_object *obj);
 	Shape_frame *get_gump_shape(int shapenum, int framenum, bool paperdoll = false)
 		{ return paperdoll ? paperdolls.get_shape(shapenum, framenum) : gumps.get_shape(shapenum, framenum); }
+	Shape_frame *get_exult_shape(int shapenum, int framenum)
+		{ return exult_flx.get_shape(shapenum, framenum); }
 					// Get screen area of a gump.
 					//   for painting it.
 	Rectangle get_gump_rect(Gump *gump);
@@ -394,6 +397,11 @@ public:
 		Shape_frame *shape = bg_serpgumps.get_shape(shapenum, framenum);
 		if (shape)
 			paint_shape(xoff, yoff, shape);
+		}
+	void paint_exult_shape(int xoff, int yoff, int shapenum, int framenum)
+		{
+		Shape_frame *shape = exult_flx.get_shape(shapenum, framenum);
+		if (shape) paint_shape(xoff, yoff, shape);
 		}
 	Shape_frame *get_face(int shapenum, int framenum) {
 		return faces.get_shape(shapenum, framenum);
