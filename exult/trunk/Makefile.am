@@ -27,6 +27,8 @@ exult_SOURCES =	\
 	bodies.h	\
 	browser.cc	\
 	browser.h	\
+	cheat.cc	\
+	cheat.h		\
 	citerate.h	\
 	combat.cc	\
 	combat.h	\
