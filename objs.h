@@ -47,6 +47,7 @@ class Npc_actor;
 /*
  *	Sizes:
  */
+const int tilesize = 8;			// A tile (shape) is 8x8 pixels.
 const int chunksize = 16 * 8;		// A chunk has 16 8x8 shapes.
 const int num_chunks = 12*16;		// Total # of chunks in each dir.
 
@@ -460,6 +461,28 @@ public:					// Let's make it all public.
 		return (r);
 		}
 		
+	};
+
+/*
+ *	A text object is a message that stays on the screen for just a couple
+ *	of seconds.  These are all kept in a single list, and managed by
+ *	Game_window.
+ */
+class Text_object : public Time_sensitive
+	{
+	Text_object *next, *prev;	// All of them are chained together.
+	char *msg;			// What to print.
+	int cx, cy;			// Chunk coords of upper-left corner.
+	unsigned char sx, sy;		// Tile coords. within chunk.
+	short width, height;		// Dimensions of rectangle.
+public:
+	friend class Game_window;
+	Text_object(char *m, int c_x, int c_y, int s_x, int s_y, int w, int h)
+		: msg(m), cx(c_x), cy(c_y), sx(s_x), sy(s_y),
+		  width(w), height(h)
+		{  }
+					// At timeout, remove from screen.
+	virtual void handle_event(timeval curtime, long udata);
 	};
 
 #endif
