@@ -267,8 +267,9 @@ std::vector<std::string>	Configuration::listkeys(const char *key,bool longformat
 void Configuration::clear(std::string new_root)
 {
 	CTRACE("Configuration::clear");
-
-	delete xmltree;
+	
+	if(xmltree!=0)
+		delete xmltree;
 	CTRACE("Configuration::clear - xmltree deleted");
 	if(new_root.size())
 		rootname=new_root;
