@@ -180,6 +180,10 @@ void Gump::initialize
 				checkx = -22;
 				checky = 190;
 				break;
+			case 43: // Audio Options
+				object_area = Rectangle(0,0,0,0); //++++++ ???
+				checkx = 8;
+				checky = 162;
 		}
 	}
 

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "actors.h"
-#include "File_gump.h"
+#include "Gamemenu_gump.h"
 #include "game.h"
 #include "gamewin.h"
 #include "gump_utils.h"
@@ -89,9 +89,9 @@ void Disk_button::activate
 	Game_window *gwin
 	)
 {
-	File_gump *fileio = new File_gump();
-	Do_Modal_gump(fileio, Mouse::hand);
-	delete fileio;
+	Gamemenu_gump *menu = new Gamemenu_gump();
+	Do_Modal_gump(menu, Mouse::hand);
+	delete menu;
 }
 
 /*

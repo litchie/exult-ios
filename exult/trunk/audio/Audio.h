@@ -94,12 +94,14 @@ public:
 	bool	start_speech(int num,bool wait=false);
 	void	set_external_signal(int);
 	void	terminate_external_signal(void);
-	bool	is_speech_enabled() { return speech_enabled; }
+	bool	is_speech_enabled() const { return speech_enabled; }
 	void	set_speech_enabled(bool ena) { speech_enabled = ena; }
-	bool	is_music_enabled() { return music_enabled; }
+	bool	is_music_enabled() const { return music_enabled; }
 	void	set_music_enabled(bool ena) { music_enabled = ena; }
-	bool	are_effects_enabled() { return effects_enabled; }
+	bool	are_effects_enabled() const { return effects_enabled; }
 	void	set_effects_enabled(bool ena) { effects_enabled = ena; }
+	bool	is_audio_enabled() const { return audio_enabled; }
+	void	set_audio_enabled(bool ena);
 
 	ProducerConsumerBuf	*Create_Audio_Stream(uint32 id) { return !mixer?0:mixer->Create_Audio_Stream(id); }
 	void    Destroy_Audio_Stream(uint32 id) { if(mixer) mixer->Destroy_Audio_Stream(id); }
@@ -120,6 +122,7 @@ private:
 
 	void build_speech_vector(void);
 
+	bool initialized;
 };
 
 #endif
