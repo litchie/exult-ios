@@ -24,9 +24,11 @@ EXULT_FLX_OBJECTS = \
 	sfx_conversion.shp	\
 	palette_fades.shp	\
 	defaultkeys.txt		\
+	scaling_method.shp	\
 	hoe_of_destruction.shp  \
 	caddellite_helmet.shp	\
-	scaling_method.shp
+	great_dagger.shp	\
+	magic_boomerang.shp
 
 flexdir = $(datadir)/exult
 
