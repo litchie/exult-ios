@@ -141,7 +141,7 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 
 	// Read the data into the XMIDI class
 
-	mid_file = U7open(fname, "rb");
+	mid_file = U7open(fname, "rb"); // DARKE FIXME
 	mid_data = new FileDataSource(mid_file);
 
 	XMIDI		midfile(mid_data, music_conversion);

@@ -1549,7 +1549,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 //
 int	XMIDIEventList::Write (const char *filename)
 {
-	std::FILE *file = U7open (filename, "wb");
+	std::FILE *file = U7open (filename, "wb"); // DARKE FIXME
 	FileDataSource ds(file);
 	int ret = Write(&ds);
 	fclose (file);

@@ -57,7 +57,13 @@ Flex::Flex(const string &n) : U7file(n)
 void	Flex::IndexFlexFile(void)
 {
 	FILE	*fp;
+	try {
 	fp=U7open(filename.c_str(),"rb");
+	} catch (const file_open_exception &e)
+	{
+		cerr << e.what() << ". exiting." << endl;
+		exit(1);
+	}
 	std::fread(title,sizeof(title),1,fp);
 	magic1 = Read4(fp);
 	count = Read4(fp);
@@ -95,7 +101,13 @@ char *	Flex::retrieve(uint32 objnum, size_t &len)
 	if (objnum >= object_list.size())
 		throw exult_exception("objnum too large in Flex::retrieve()");
 
+	try {
 	fp = U7open(filename.c_str(), "rb");
+	} catch (const file_open_exception &e)
+	{
+		cerr << e.what() << ". exiting." << endl;
+		exit(1);
+	}
 	fseek(fp, object_list[objnum].offset, SEEK_SET);
 	len = object_list[objnum].size;
 	buffer = new char[len];
@@ -157,7 +169,13 @@ bool Flex::is_flex(const char *fname)
 {
 	bool is = false;
 	std::ifstream in;
-	U7open (in, fname);
+	try {
+		U7open (in, fname);
+	} catch (const file_open_exception &e)
+	{
+		cerr << e.what() << ". exiting." << endl;
+		exit(1);
+	}
 
 	if (in.good()) is = is_flex(in);
 

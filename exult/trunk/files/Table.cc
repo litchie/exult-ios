@@ -53,7 +53,13 @@ void	Table::IndexTableFile(void)
 {
 	Table	&ret=*this;
 	FILE	*fp;
-	fp=U7open(ret.filename.c_str(),"rb");
+	try {
+		fp=U7open(ret.filename.c_str(),"rb");
+	} catch (const file_open_exception &e)
+	{
+		cerr << e.what() << ". exiting." << endl;
+		exit(1);
+	}
 	fseek(fp,0,SEEK_END);
 	size_t file_size=ftell(fp);
 	fseek(fp,0,SEEK_SET);
@@ -91,7 +97,14 @@ char	*Table::read_object(int objnum,uint32 &length)
 		cerr << "objnum too large in read_object()" << endl;
 		return 0;
 		}
-	FILE	*fp=U7open(filename.c_str(),"rb");
+	FILE *fp;
+	try {
+		fp=U7open(filename.c_str(),"rb");
+	} catch (const file_open_exception &e)
+	{
+		cerr << e.what() << ". exiting." << endl;
+		exit(1);
+	}
 	if(!fp)
 		{
 		cerr << "File open failed in read_object: " << filename << endl;

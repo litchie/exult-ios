@@ -54,7 +54,13 @@ void	IFF::IndexIFFFile(void)
 {
 	FILE	*fp;
 	char	ckid[4];
-	fp=U7open(filename.c_str(),"rb");
+	try {
+		fp=U7open(filename.c_str(),"rb");
+	} catch (const file_open_exception &e)
+	{
+		cerr << e.what() << ". exiting." << endl;
+		exit(1);
+	}
 	std::fread(ckid,4,1,fp);
 	if(memcmp(ckid,"FORM",4))
 		throw wrong_file_type_exception(filename,"IFF");	// Not an IFF file we recognise
@@ -115,8 +121,14 @@ char *	IFF::retrieve(uint32 objnum, size_t &len)
 
 	if (objnum >= object_list.size())
 		throw exult_exception("objnum too large in IFF::retrieve()");
-
+	
+	try {
 	fp = U7open(filename.c_str(), "rb");
+	} catch (const file_open_exception &e)
+	{
+		cerr << e.what() << ". exiting." << endl;
+		exit(1);
+	}
 	fseek(fp, object_list[objnum].offset, SEEK_SET);
 	len = object_list[objnum].size;
 	buffer = new char[len];
