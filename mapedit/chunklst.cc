@@ -396,6 +396,20 @@ gint Chunk_chooser::win32_drag_motion
 	return true;
 	};
 
+#else
+gint Chunk_chooser::drag_motion
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventMotion *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	Chunk_chooser *chooser = (Chunk_chooser *) data;
+	if (!chooser->dragging)
+		chooser->start_drag(U7_TARGET_CHUNKID_NAME, 
+			U7_TARGET_CHUNKID, (GdkEvent *) event);
+	return true;
+	}
 #endif
 
 gint Chunk_chooser::mouse_press
@@ -431,14 +445,6 @@ gint Chunk_chooser::mouse_press
 // position is *still* inside the shape. So if you move the mouse too fast,
 // we are stuck.
 			win32_button = true;
-#else
-			GtkTargetEntry tents[1];
-			tents[0].target = U7_TARGET_CHUNKID_NAME;
-			tents[0].flags = 0;
-			tents[0].info = U7_TARGET_CHUNKID;
-			gtk_drag_source_set (chooser->draw, 
-				GDK_BUTTON1_MASK, tents, 1,
-			   (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE));
 #endif
 
 			chooser->selected = i;
@@ -454,6 +460,20 @@ gint Chunk_chooser::mouse_press
 		gtk_menu_popup(GTK_MENU(chooser->create_popup()), 0, 0, 0, 0, 
 					event->button, event->time);
 	return (TRUE);
+	}
+
+/*
+ *	Handle a mouse button-release event.
+ */
+static gint Mouse_release
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventButton *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	Chunk_chooser *chooser = (Chunk_chooser *) data;
+	chooser->mouse_up();
 	}
 
 /*
@@ -786,6 +806,7 @@ Chunk_chooser::Chunk_chooser
 					// NOTE:  draw is in Shape_draw.
 					// Indicate the events we want.
 	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
+		| GDK_BUTTON_RELEASE_MASK
 		| GDK_POINTER_MOTION_HINT_MASK |
 		GDK_BUTTON1_MOTION_MASK);
 					// Set "configure" handler.
@@ -797,6 +818,8 @@ Chunk_chooser::Chunk_chooser
 					// Set mouse click handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "button_press_event",
 				GTK_SIGNAL_FUNC(mouse_press), this);
+	gtk_signal_connect(GTK_OBJECT(draw), "button_release_event",
+				GTK_SIGNAL_FUNC(Mouse_release), this);
 					// Mouse motion.
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
 				GTK_SIGNAL_FUNC(drag_begin), this);
@@ -804,9 +827,10 @@ Chunk_chooser::Chunk_chooser
 // required to override GTK+ Drag and Drop
 	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
 				GTK_SIGNAL_FUNC(win32_drag_motion), this);
+#else
+	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
+				GTK_SIGNAL_FUNC(drag_motion), this);
 #endif
-//	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
-//				GTK_SIGNAL_FUNC(Mouse_drag_motion), this);
 	gtk_signal_connect (GTK_OBJECT(draw), "drag_data_get",
 				GTK_SIGNAL_FUNC(drag_data_get), this);
 	gtk_signal_connect (GTK_OBJECT(draw), "selection_clear_event",
@@ -923,7 +947,6 @@ void Chunk_chooser::unselect
 		{
 		selected = -1;
 		locate_cx = locate_cy = -1;
-		gtk_drag_source_unset(draw);
 		if (need_render)
 			{
 			render();
