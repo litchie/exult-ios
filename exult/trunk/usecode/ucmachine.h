@@ -62,7 +62,7 @@ class Usecode_function
 					// Create from file.
 	Usecode_function(std::istream& file);
 	inline ~Usecode_function()
-		{ delete code; }
+		{ delete [] code; }
 	};
 
 
