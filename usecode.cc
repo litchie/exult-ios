@@ -1610,7 +1610,7 @@ USECODE_INTRINSIC(create_new_object)
 	Game_object *at = caller_item;
 	if (!at)
 		at = gwin->get_main_actor();
-	Shape_info& info = gwin->get_shapes().get_info(shapenum);
+	Shape_info& info = gwin->get_info(shapenum);
 	Game_object *obj = (info.is_animated()) ?
 			new Animated_object(shapenum, 0,
 			  at->get_tx(), at->get_ty(), at->get_lift())
