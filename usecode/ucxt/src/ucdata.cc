@@ -102,7 +102,7 @@ void UCData::disassamble()
 {
 	load_funcs();
 
-	cout << "Looking for function number " << setw(8) << _search_func << endl << endl;
+	if(verbose()) cout << "Looking for function number " << setw(8) << _search_func << endl << endl;
 
 	if(output_list())
 		cout << "Function       offset    size  data  code" << (ucdebug() ? " funcname" : "") << endl;

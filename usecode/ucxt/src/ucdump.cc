@@ -50,12 +50,6 @@ UCData uc;
 
 int main(int argc, char** argv)
 {
-	cout << "Ultima 7 usecode disassembler v0.6.2" << endl
-	#ifdef HAVE_CONFIG_H
-	     << "    compiled with " << PACKAGE << " " << VERSION << endl
-	#endif
-	     << endl;
-	
 	// Tends to make life easier
 	cout << setfill('0') << setbase(16);
 	cout.setf(ios::uppercase);
@@ -255,6 +249,12 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 
 void usage()
 {
+	cout << "Ultima 7 usecode disassembler v0.6.2" << endl
+	#ifdef HAVE_CONFIG_H
+	     << "    compiled with " << PACKAGE << " " << VERSION << endl
+	#endif
+	     << endl;
+	
 	cout << "Usage:" << endl
 	     << "\tucxt [options] -a" << endl
 	     << "\t\t- prints all of the functions" << endl
