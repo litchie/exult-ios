@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include "../fnames.h"
 #include "../files/U7file.h"
+#include "xmidi.h"
 
 #include "Configuration.h"
 extern	Configuration	*config;
@@ -47,9 +48,18 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	//stop track before writing to temp. file
 	midi_device->stop_track();
 #endif
-	if(!track.retrieve(MIDITMPFILE))
+	
+	char		*buffer;
+	size_t		size;
+	
+	if(!track.retrieve(&buffer, size))
 	        return;
 
+	XMIDI		midfile((unsigned char *)buffer, size);
+	
+	if(!midfile.retrieve(0, MIDITMPFILE))
+	        return;
+	
 	midi_device->start_track(MIDITMPFILE,repeat);
 }
 
