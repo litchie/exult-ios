@@ -30,7 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gameclk.h"
 
 #include <string>	// STL string
-#include <vector>	// STL container
+//#include <vector>	// STL container
+#include "vec.h"
 
 class Actor;
 class Barge_object;
@@ -98,11 +99,11 @@ private:
 	Barge_object *moving_barge;	// ->cart/ship that's moving, or 0.
 	Main_actor *main_actor;		// Main sprite to move around.
 	int skip_above_actor;		// Level above actor to skip rendering.
-	int num_npcs, num_npcs1;	// Numbers of NPC's, type1 NPC's.
-	Actor **npcs;			// List of NPC's + the Avatar.
+	int num_npcs1;			// Number of type1 NPC's.
+	Actor_vector npcs;		// Array of NPC's + the Avatar.
 	int num_monsters;		// Number of monster types.
 	Monster_info *monster_info;	// Array from 'monsters.dat'.
-	std::vector<Egg_object *> path_eggs;	// Path eggs, indexed by 'quality'.
+	std::vector<Egg_object *> path_eggs;// Path eggs, indexed by 'quality'.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[c_num_chunks][c_num_chunks];
 	Deleted_objects *removed;	// List of 'removed' objects.
@@ -259,8 +260,10 @@ public:
 	long is_time_stopped()
 		{ return !time_stopped ? 0 : check_time_stopped(); }
 	inline Actor *get_npc(long npc_num) const
-		{ return (npc_num >= 0 && npc_num < num_npcs) ? 
+		{ return (npc_num >= 0 && npc_num < npcs.size()) ? 
 				npcs[npc_num] : 0; }
+	int add_npc(Actor *npc)		// Add new one & return #.
+		{ return npcs.append(npc); }
 	inline bool was_teleported()
 		{ return teleported; }
 					// Find monster info. for shape.
@@ -269,7 +272,7 @@ public:
 		{ return path_eggs[q]; }
 	void add_path_egg(Egg_object *egg);
 	int get_num_npcs()
-		{ return num_npcs; }
+		{ return npcs.size(); }
 	int get_num_shapes()
 		{ return shapes.get_num_shapes(); }
  	int get_num_faces() 

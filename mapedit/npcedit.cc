@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 #include "objserial.h"
 #include "exult_constants.h"
+#include "utils.h"
 
 /*
  *	Open npc window.
@@ -241,8 +242,25 @@ void ExultStudio::open_npc_window
 	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
 						"npc_apply_btn"), true);
 	if (data)
+		{
 		if (!init_npc_window(data, datalen))
 			return;
+		}
+	else				// Got to get what new NPC # will be.
+		{
+		int npc_num = -1;
+		if (Send_data(server_socket, Exult_server::num_npcs) != -1)
+			{		// Should get immediate answer.
+			unsigned char data[Exult_server::maxlength];
+			Exult_server::Msg_type id;
+			int len = Exult_server::Receive_data(server_socket, 
+						id, data, sizeof(data));
+			unsigned char *ptr = &data[0];
+			if (len > 0)
+				npc_num = Read2(ptr);
+			set_entry("npc_num_entry", npc_num, true, false);
+			}
+		}
 	gtk_widget_show(npcwin);
 	}
 
@@ -340,7 +358,7 @@ int ExultStudio::init_npc_window
 	int tx, ty, tz;
 	int shape, frame;
 	std::string name;
-	short ident;
+	short npc_num, ident;
 	int usecode;
 	short properties[12];
 	short attack_mode, alignment;
@@ -350,7 +368,8 @@ int ExultStudio::init_npc_window
 	short num_schedules;
 	Serial_schedule schedules[8];
 	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame,
-		name, ident, usecode, properties, attack_mode, alignment,
+		name, npc_num, ident, usecode, properties, 
+			attack_mode, alignment,
 			oflags, siflags, type_flags, num_schedules, schedules))
 		{
 		cout << "Error decoding npc" << endl;
@@ -358,8 +377,10 @@ int ExultStudio::init_npc_window
 		}
 					// Store address with window.
 	gtk_object_set_user_data(GTK_OBJECT(npcwin), (gpointer) addr);
-					// Store name, ident.
+					// Store name, ident, num.
 	set_entry("npc_name_entry", name.c_str());
+					// (Not allowed to change npc#.).
+	set_entry("npc_num_entry", npc_num, true, false);
 	set_entry("npc_ident_entry", ident);
 					// Shape/frame.
 	set_entry("npc_shape", shape);
@@ -443,6 +464,7 @@ int ExultStudio::save_npc_window
 							GTK_OBJECT(npcwin));
 	int tx = -1, ty = -1, tz = -1;	// +++++For now.
 	std::string name(get_text_entry("npc_name_entry"));
+	short npc_num = get_num_entry("npc_num_entry");
 	short ident = get_num_entry("npc_ident_entry");
 	int shape = get_num_entry("npc_shape");
 	int frame = get_num_entry("npc_frame");
@@ -487,7 +509,8 @@ int ExultStudio::save_npc_window
 		if (Get_schedule_line(app_xml, i, schedules[num_schedules]))
 			num_schedules++;
 	if (Npc_actor_out(server_socket, addr, tx, ty, tz, shape, frame,
-		name, ident, usecode, properties, attack_mode, alignment,
+		name, npc_num, ident, usecode, 
+			properties, attack_mode, alignment,
 			oflags, siflags, type_flags, 
 			num_schedules, schedules) == -1)
 		{

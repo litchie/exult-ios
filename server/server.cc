@@ -59,6 +59,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "egg.h"
 #include "actors.h"
+#include "gamewin.h"
 
 using std::cout;
 using std::cerr;
@@ -184,10 +185,25 @@ static void Handle_client_message
 	int datalen = Exult_server::Receive_data(fd, id, data, sizeof(data));
 	if (datalen < 0)
 		return;
-	if (id == Exult_server::egg)
+	Game_window *gwin = Game_window::get_game_window();
+	switch (id)
+		{
+	case Exult_server::egg:
 		Egg_object::update_from_studio(&data[0], datalen);
-	if (id == Exult_server::npc)
+		break;
+	case Exult_server::npc:
 		Actor::update_from_studio(&data[0], datalen);
+		break;
+	case Exult_server::num_npcs:
+		{
+		unsigned char data[16];
+		unsigned char *ptr = &data[0];
+		Write2(ptr, gwin->get_num_npcs());
+		Send_data(client_socket, Exult_server::num_npcs, data,
+							ptr - data);
+		break;
+		}
+		}
 	}
 
 /*

@@ -1,3 +1,8 @@
+2001-07-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.h,npcedit.cc: ExultStudio can now add new NPC's to the
+	game (but schedule-setting still needs a bit of work).
+
 2001-07-04  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/faq/exult_faq.xml: FAQ updated see FAQ for details
 	* Faq: updated
