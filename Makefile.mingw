@@ -12,7 +12,7 @@ SRC=.
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDLmain -lSDL
-SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ljpeg -lz -mconsole
+SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ljpeg -lz
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
@@ -22,8 +22,8 @@ SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ljp
 
 ### Zip File support. Comment out if ZLib isn't installed
 ### Modify paths, if required
-ZIP_CFLAGS=-I$(SRC)/zlib-1.1.4 -DHAVE_ZIP_SUPPORT 
-ZIP_LIBS=-L$(SRC)/zlib-1.1.4 -lZ
+ZIP_CFLAGS=-I$(SRC)/zlib -DHAVE_ZIP_SUPPORT 
+ZIP_LIBS=-L$(SRC)/zlib -lz
 
 # Leave this option empty
 EXTRA_OPTIONS=

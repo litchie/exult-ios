@@ -172,7 +172,7 @@ ipack$(EXEEXT) : $(IPACK_OBJS)
 mklink$(EXEEXT) : mklink.o
 	$(CXX) $(LFLAGS) -o $(@) $+
 
-mockup$(EXEEXT): main.o $(SDL_IMAGE_CFLAGS)
+mockup$(EXEEXT): main.o
 	$(CC) $(LFLAGS) -o $(@) $+ $(SDL_IMAGE_LIBS)
 
 rip$(EXEEXT) : rip.o
