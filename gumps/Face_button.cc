@@ -31,6 +31,7 @@ Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 	Paperdoll_gump::Paperdoll_npc *npcinfo =
 		Paperdoll_gump::GetCharacterInfo(a->get_shapenum());
 
+	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(a->get_sexed_coloured_shape());
 	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(a->get_shape_real());
 
 	set_shape(npcinfo->head_shape);
@@ -49,6 +50,7 @@ void Face_button::update_widget()
 	Paperdoll_gump::Paperdoll_npc *npcinfo =
 		Paperdoll_gump::GetCharacterInfo(actor->get_shapenum());
 
+	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(actor->get_sexed_coloured_shape());
 	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(actor->get_shape_real());
 
 	if (get_shapenum() != npcinfo->head_shape ||
