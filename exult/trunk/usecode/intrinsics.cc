@@ -504,7 +504,7 @@ USECODE_INTRINSIC(create_new_object)
 		}
 		else
 		{
-			obj = gwin->create_ireg_object(shapenum, 0);
+			obj = gmap->create_ireg_object(shapenum, 0);
 					// Be liberal about taking stuff.
 			obj->set_flag(Obj_flags::okay_to_take);
 			cout << " ireg object " << endl;

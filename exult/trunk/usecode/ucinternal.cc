@@ -48,6 +48,7 @@
 #include "exult.h"
 #include "game.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "keyring.h"
 #include "mouse.h"
 #include "schedule.h"
@@ -1182,7 +1183,7 @@ Usecode_value Usecode_internal::add_party_items
 			break;
 		Shape_info& info = ShapeID::get_info(shapenum);
 					// Create and place.
-		Game_object *newobj = gwin->create_ireg_object(
+		Game_object *newobj = gmap->create_ireg_object(
 					info, shapenum, framenum, 0, 0, 0);
 		if (quality != c_any_qual)
 			newobj->set_quality(quality); // set quality

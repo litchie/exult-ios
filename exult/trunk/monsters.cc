@@ -543,7 +543,7 @@ int Slime_actor::step
 	    !find_nearby(blood, oldpos, 912, 1, 0))
 		{
 					// Frames 4-11 are green.
-		Game_object *b = gwin->create_ireg_object(912, 4 + rand()%8);
+		Game_object *b = gmap->create_ireg_object(912, 4 + rand()%8);
 		b->set_flag(Obj_flags::is_temporary);
 		b->move(oldpos);
 		}
