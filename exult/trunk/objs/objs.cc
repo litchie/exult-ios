@@ -672,7 +672,7 @@ void Game_object::activate
 	int usefun = get_shapenum();
 					// !!!Special case:  books in BG.
 	if (usefun == 0x282 && get_quality() >= 100)
-		usefun = 0x638;
+		usefun = Game::get_game_type() == BLACK_GATE ? 0x638 : 0x63b;
 	umachine->call_usecode(usefun, this,
 			(Usecode_machine::Usecode_events) event);
 	}

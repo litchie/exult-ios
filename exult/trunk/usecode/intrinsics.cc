@@ -1748,6 +1748,22 @@ USECODE_INTRINSIC(get_party_list2)
 	return(u);
 }
 
+USECODE_INTRINSIC(get_party_ids)
+{
+	// Return list of party ID's, including -356 for Avatar.
+	Usecode_value arr(1 + party_count, 0);
+					// Add avatar.
+	Usecode_value aval(-356);
+	arr.put_elem(0, aval);	
+	int num_added = 1;
+	for (int i = 0; i < party_count; i++)
+		{
+		Usecode_value val(party[i]);
+		arr.put_elem(num_added++, val);
+		}
+	return arr;
+}
+
 USECODE_INTRINSIC(in_combat)
 {
 	// Are we in combat mode?
