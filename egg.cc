@@ -57,6 +57,19 @@ Egg_object::Egg_object
 		set_quality(data1&0xff);
 	}
 
+static	int	distance_between_points(int ax,int ay,int az,int bx,int by,int bz)
+{
+	int	dx(abs(ax-bx)),dy(abs(ay-by)),dz(abs(az-bz));
+	return	(int)sqrt(dx*dx+dy*dy+dz*dz);
+}
+
+static	int	distance_between_points(int ax,int ay,int bx,int by)
+{
+	int	dx(abs(ax-bx)),dy(abs(ay-by));
+	return	(int)sqrt(dx*dx+dy*dy);
+}
+
+
 /*
  *	Is a given tile within this egg's influence?
  */
@@ -68,7 +81,7 @@ int Egg_object::within_distance
 	{
 	int egg_tx = ((int) cx)*tiles_per_chunk + get_tx();
 	int egg_ty = ((int) cy)*tiles_per_chunk + get_ty();
-	if (criteria == avatar_footpad)	// Must stop on it?
+	if (criteria == avatar_footpad)	// Must step on it?
 		{
 		Game_window *gwin = Game_window::get_game_window();
 		Shape_info& info = gwin->get_info(this);
@@ -77,11 +90,7 @@ int Egg_object::within_distance
 		        abs_ty <= egg_ty &&
 			abs_ty > egg_ty - info.get_3d_ytiles());
 		}
-	int deltax = abs_tx - egg_tx;
-	if (deltax >= distance || -deltax >= distance)
-		return (0);
-	int deltay = abs_ty - egg_ty;
-	return (deltay < distance && -deltay < distance);
+	return distance_between_points(abs_tx,abs_ty,egg_tx,egg_ty)<=distance;
 	}
 
 /*
