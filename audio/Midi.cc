@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
+#ifndef WIN32
 
 #include "Midi.h"
 
@@ -147,3 +148,4 @@ MyMidiPlayer::~MyMidiPlayer()
 		midi_device->stop_track();
 }
 
+#endif
