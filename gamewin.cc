@@ -532,10 +532,7 @@ void Game_window::read_ireg_objects
 			lift = entry[4] >> 4;
 			quality = entry[5];
 			Shape_info& info = shapes.get_info(shapeid);
-			obj = info.is_light_source() ?
-				new Lightsource_object(
-				   entry[2], entry[3], shapex, shapey, lift)
-				: info.is_animated() ?
+			obj = (info.is_animated()) ?
 				new Animated_object(
 				   entry[2], entry[3], shapex, shapey, lift)
 				: new Ireg_game_object(
@@ -1072,7 +1069,9 @@ cout << "Clicked at tile (" << chunkx*tiles_per_chunk + x/tilesize << ", " <<
 					// Find 'best' one.
 	Game_object *obj = found[cnt - 1];
 	for (int i = 0; i < cnt - 1; i++)
-		if (obj->lt(*found[i]) == 1)
+		if (obj->lt(*found[i]) == 1 ||
+					// Try to avoid 'transparent' objs.
+		    shapes.get_info(obj->get_shapenum()).is_transparent())
 			obj = found[i];
 	return (obj);
 	}

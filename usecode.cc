@@ -1198,8 +1198,12 @@ Usecode_value Usecode_machine::call_intrinsic
 		Game_object *at = caller_item;
 		if (!at)
 			at = gwin->get_main_actor();
-		Game_object *obj = new Game_object(shapenum, 0,
-				at->get_tx(), at->get_ty(), at->get_lift());
+		Shape_info& info = gwin->get_shapes().get_info(shapenum);
+		Game_object *obj = (info.is_animated()) ?
+				new Animated_object(shapenum, 0,
+				  at->get_tx(), at->get_ty(), at->get_lift())
+				:new Game_object(shapenum, 0,
+				  at->get_tx(), at->get_ty(), at->get_lift());
 		gwin->get_objects(at->get_cx(), at->get_cy())->add(obj);
 		gwin->show();
 		last_created = obj;
