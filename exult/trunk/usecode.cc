@@ -1949,6 +1949,18 @@ USECODE_INTRINSIC(move_object)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(remove_npc)
+{
+	// Remove_npc(npc) - Remove npc from world.
+	Game_object *npc = get_item(parms[0]);
+	if (npc)
+		{
+		gwin->add_dirty(npc);
+		npc->remove_this(1);	// Remove, but don't delete.
+		}
+	return (no_ret);
+}
+
 USECODE_INTRINSIC(item_say)
 {
 	// Show str. near item (item, str).
@@ -2012,6 +2024,20 @@ USECODE_INTRINSIC(sit_down)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(summon)
+{
+	// summon(shape, flag??).  Create monster of desired shape.
+
+	int shapenum = parms[0].get_int_value();
+	Monster_info *info = gwin->get_monster_info(shapenum);
+	if (info)
+		{
+		//+++++++Create monster & find free spot near Avatar.
+		// return Usecode_value((long) monst);
+		}
+	return Usecode_value(0);
+}
+
 USECODE_INTRINSIC(display_map)
 {
 	// Display map.
@@ -2025,6 +2051,16 @@ USECODE_INTRINSIC(display_map)
 	Get_click(xx, yy, Mouse::hand);
 	gwin->paint();
 	return(no_ret);
+}
+
+USECODE_INTRINSIC(kill_npc)
+{
+	// kill_npc(npc).
+	Game_object *item = get_item(parms[0]);
+	Actor *npc = as_actor(item);
+	if (npc)
+		npc->die();
+	return (no_ret);
 }
 
 USECODE_INTRINSIC(resurrect)
@@ -2505,19 +2541,18 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(get_alignment),	// 0x3c
 	USECODE_INTRINSIC_PTR(set_alignment),	// 0x3d
 	USECODE_INTRINSIC_PTR(move_object),	// 0x3e
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f  +++++++Vanish NPC?
-                     // (according to ucdump.c)
+	USECODE_INTRINSIC_PTR(remove_npc),	// 0x3f
 	USECODE_INTRINSIC_PTR(item_say),	// 0x40
 	USECODE_INTRINSIC_PTR(projectile_effect),	// 0x41
 	USECODE_INTRINSIC_PTR(get_lift),	// 0x42
 	USECODE_INTRINSIC_PTR(set_lift),	// 0x43
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x44++++Get_something() (0-3)
 	// 3==can't do magic here?         GetWeather (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x45++++Set_something(i) SetWeather (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x45++++SetWeather(0-3) (ucdump.c)
 	USECODE_INTRINSIC_PTR(sit_down),// 0x46
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x47     SummonCreature (ucdump.c)
+	USECODE_INTRINSIC_PTR(summon),	// 0x47     SummonCreature (ucdump.c)
 	USECODE_INTRINSIC_PTR(display_map),	// 0x48
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x49     KillNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(kill_npc),// 0x49
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4b     SetNPCAttackMode (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4c     SetTargetNPCToAttack (ucdump.c)
