@@ -102,19 +102,18 @@ public:
 		total_cost = gcost + scost;
 		parent = p;
 		}
-	Tile_coord *create_path()	// Create path back to start, ending
-					//   with Tile_coord(-1, -1, -1).
+					// Create path back to start.
+	Tile_coord *create_path(int& pathlen)
 		{
-		int cnt = 2;		// This, and fake after it.
+		int cnt = 1;		// This.
 					// Count back to start.
 		Search_node *each = this;
 		while ((each = each->parent) != 0)
 			cnt++;
-					// Don't want starting tile.
-		Tile_coord *result = new Tile_coord[cnt - 1];
-		result[cnt - 2] = Tile_coord(-1, -1, -1);
+		pathlen = cnt - 1;	// Don't want starting tile.
+		Tile_coord *result = new Tile_coord[pathlen];
 		each = this;
-		for (int i = cnt - 3; i >= 0; i--)
+		for (int i = pathlen - 1; i >= 0; i--)
 			{
 			result[i] = each->tile;
 			each = each->parent;
@@ -335,7 +334,8 @@ Tile_coord *Find_path
 	(
 	Tile_coord start,		// Where to start from.
 	Tile_coord goal,		// Where to end up.
-	Pathfinder_client *client	// Provides costs.
+	Pathfinder_client *client,	// Provides costs.
+	int& pathlen			// Length of path returned.
 	)
 	{
 	A_star_queue nodes;		// The priority queue & hash table.
@@ -355,7 +355,7 @@ Tile_coord *Find_path
 		Tile_coord curtile = node->get_tile();
 		if (client->at_goal(curtile, goal))
 					// Success.
-			return node->create_path();
+			return node->create_path(pathlen);
 					// Go through surrounding tiles.
 		Neighbor_iterator get_next(curtile);
 		Tile_coord ntile(0, 0, 0);
