@@ -210,7 +210,7 @@ Uc_scope::~Uc_scope
 	(
 	)
 	{
-	for (map<char *, Uc_symbol *>::iterator it = symbols.begin();
+	for (map<char *, Uc_symbol *, String_compare>::iterator it = symbols.begin();
 				it != symbols.end(); it++)
 		delete (*it).second;
 	for (vector<Uc_scope *>::iterator it = scopes.begin();
