@@ -80,7 +80,7 @@
 					<li><strong>flex files</strong>:<br/>
 						or flexes are used by the original to store the data files.
 						Also when you choose not use compressed save games (see save_compression_level in
-						<ref target="exult_config"/>) our save games are also "flexed".</li>
+						<extref doc="docs" target="exult_config"/>) our save games are also "flexed".</li>
 					<li><strong>gumps</strong>:<br/>
 						the windows used in the game interface for containers, characters, menus, etc..</li>
 					<li><strong>paperdoll</strong>:<br/>

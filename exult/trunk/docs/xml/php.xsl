@@ -86,7 +86,7 @@
 	<p>last changed: <xsl:value-of select="@changed"/></p>
 	<hr/>
 	<p>
-		A text only version can be found <a href="http://exult.sourceforge.net/exultstudio.txt">here</a>
+		A text only version can be found <a href="http://exult.sourceforge.net/exult_studio.txt">here</a>
 	</p>
 	<br/>
 
@@ -195,13 +195,13 @@
 	<xsl:attribute name="href">
 		<xsl:choose>
 			<xsl:when test="@doc='faq'">
-				faq.php#
+				<xsl:text>faq.php#</xsl:text>
 			</xsl:when>
 			<xsl:when test="@doc='docs'">
-				docs.php#
+				<xsl:text>docs.php#</xsl:text>
 			</xsl:when>
 			<xsl:when test="@doc='studio'">
-				studio.php#
+				<xsl:text>studio.php#</xsl:text>
 			</xsl:when>
 		</xsl:choose>
 		<xsl:value-of select="@target"/>
