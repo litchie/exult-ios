@@ -551,7 +551,7 @@ long Game_window::check_time_stopped
 	time_stopped = 0;		// Done.
 	return 0;
 	}
-
+#if 0	/* +++++Going away */
 /*
  *	Add a 'path' egg to our list.
  */
@@ -565,6 +565,7 @@ void Game_window::add_path_egg
 	if (qual >= 0 && qual < 255)
 		path_eggs.put(qual, egg);
 	}
+#endif
 
 /*
  *	Toggle combat mode.

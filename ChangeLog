@@ -1,3 +1,10 @@
+2002-01-07  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/egg.cc: Rewrote method for finding path eggs when
+	teleporting.
+	* objs/objs.cc:  Added qual, frnum parms to find_nearby_eggs().
+	* gamewin.cc:  Removed list of path eggs.
+
 2002-01-07  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* configure.in, mapedit/Makefile.am: it's libglade not glade
 
