@@ -1,3 +1,6 @@
+2002-06-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs.cc: finally fixed 'blood' names
+
 2002-06-24  Ryan Nunn  <triforce@merlin.net.au>
 	* ChangeLog : Removed comment that was meant for the other branch
 
