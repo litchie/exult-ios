@@ -47,7 +47,8 @@ void	xmldump(string &s,XMLnode *x,int depth)
 		{
 		return;
 		}
-	s+="\n";
+	if(x->entity.content.length())
+		s+="\n";
 	for(int i=0;i<=depth;i++)
 		s+=' ';
 	
