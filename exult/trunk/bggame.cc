@@ -1491,9 +1491,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 	Font *font = fontManager.get_font("MENU_FONT");
 
 	// Need to know if SI is installed
-	std::string si_dir;
-	config->value("config/disk/game/serpentisle/path",si_dir,".");
-	bool si_installed = SI_Game::is_installed(si_dir.c_str());
+	bool si_installed = SI_Game::is_installed();
 
 	U7object faces_u7o("<DATA>/exult_bg.flx", EXULT_BG_FLX_MR_INTRO_SHP);
 	size_t shapesize;
@@ -1692,10 +1690,9 @@ bool BG_Game::new_game(Vga_file &shapes)
 	return ok;
 }
 
-bool BG_Game::is_installed(const char *path)
+bool BG_Game::is_installed()
 {
-	std::string buf(path);
-	buf+="/static/endgame.dat";
+	std::string buf("<BLACKGATE_STATIC>/endgame.dat");
 	std::cout << "is_installed: " << buf << std::endl;
 	return U7exists(buf) && U7exists("<DATA>/exult_bg.flx");
 }

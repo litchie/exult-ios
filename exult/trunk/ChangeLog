@@ -1,5 +1,8 @@
-2002-04-15  Max Horn  <max@quendi.de>
+2002-04-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* *game.cc, files/utils.*: patch by Paul Hebble:
+	changed BG/SI_Game::is_installed not to require a path anymore
 
+2002-04-15  Max Horn  <max@quendi.de>
 	* docs/xml/*: Makeover of the XML doc system.
 
 2002-04-14  Ryan Nunn  <triforce@merlin.net.au>

@@ -83,13 +83,19 @@ void add_system_path(const string& key, const string& value)
 	path_map[key] = value;
 }
 
+void clear_system_path(const string& key)
+{
+	std::map<string, string>::iterator iter = path_map.find(key);
+	if (iter != path_map.end())
+		path_map.erase(iter);
+}
+
 /*
  *	Has a path been entered?
  */
-bool is_system_path_defined(const char *path)
+bool is_system_path_defined(const string& path)
 	{
-	const string s(path);
-	return path_map.find(s) != path_map.end();
+	return path_map.find(path) != path_map.end();
 	}
 
 /*

@@ -52,6 +52,10 @@
 #include "chunkter.h"
 #endif
 
+#if (defined(USECODE_DEBUGGER) && defined(XWIN))
+#include <csignal>
+#endif
+
 #include "Audio.h"
 #include "Configuration.h"
 #include "Gump_manager.h"
@@ -110,7 +114,7 @@ bool ignore_crc = false;
 
 const std::string c_empty_string;
 
-#if USECODE_DEBUGGER
+#if 0 && USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
 extern void initialise_usecode_debugger(void);
 #endif
@@ -173,8 +177,6 @@ static bool run_si = false;		// skip menu and run si
 
 static string arg_gamename = "default";	// cmdline arguments
 static int arg_buildmap = -1;
-
-
 
 /*
  *	A handy breakpoint.
@@ -407,11 +409,16 @@ int exult_main(const char *runpath)
 	if (save_compression < 0 || save_compression > 2) save_compression = 1;
 	config->set("config/disk/save_compression_level", save_compression, true);
 
-#if USECODE_DEBUGGER
+#if 0 && USECODE_DEBUGGER
 	// Enable usecode debugger
 	config->value("config/debug/debugger/enable",usecode_debugging);
 	initialise_usecode_debugger();
 #endif
+
+#if (defined(USECODE_DEBUGGER) && defined(XWIN))
+	signal(SIGUSR1, SIG_IGN);
+#endif
+
 	cheat.init();
 
 	Init();				// Create main window.
@@ -436,6 +443,51 @@ int exult_main(const char *runpath)
 	return result;
 }
 
+/*
+ *	Calculate paths for the given game, using the config file and
+ *	falling back to defaults if necessary.  These are stored in
+ *	per-game system_path entries, which are then used later once the
+ *	game is selected.
+ */
+void get_game_paths(const string &gametitle)
+{
+	string data_directory, static_dir, gamedat_dir, savegame_dir,
+		default_dir, system_path_tag(to_uppercase(gametitle)),
+		config_path("config/disk/game/" + gametitle + "/path");
+
+	config->value(config_path.c_str(), data_directory, ".");
+	if (data_directory == ".")
+		config->set(config_path.c_str(), data_directory, true);
+	cout << "setting " << gametitle
+		<< " game directories to: " << data_directory << endl;
+
+	config_path = "config/disk/game/" + gametitle + "/static_path";
+	default_dir = data_directory + "/static";
+	config->value(config_path.c_str(), static_dir, default_dir.c_str());
+	add_system_path("<" + system_path_tag + "_STATIC>", static_dir);
+	cout << "setting " << gametitle
+		<< " static directory to: " << static_dir << endl;
+
+	config_path = "config/disk/game/" + gametitle + "/gamedat_path";
+	default_dir = data_directory + "/gamedat";
+	config->value(config_path.c_str(), gamedat_dir, default_dir.c_str());
+	add_system_path("<" + system_path_tag + "_GAMEDAT>", gamedat_dir);
+	cout << "setting " << gametitle
+		<< " gamedat directory to: " << gamedat_dir << endl;
+
+	config_path = "config/disk/game/" + gametitle + "/savegame_path";
+	config->value(config_path.c_str(), savegame_dir, data_directory.c_str());
+	add_system_path("<" + system_path_tag + "_SAVEGAME>", savegame_dir);
+	cout << "setting " << gametitle
+		<< " savegame directory to: " << savegame_dir << endl;
+
+	// A patch directory is optional.
+	config_path = "config/disk/game/" + gametitle + "/patch";
+	string patch_directory;
+	config->value(config_path.c_str(), patch_directory, "");
+	if (patch_directory != "")
+		add_system_path("<" + system_path_tag + "_PATCH>", patch_directory.c_str());
+}
 
 /*
  *	Initialize and create main window.
@@ -505,6 +557,19 @@ static void Init
 	// Show the banner
 	Exult_Game mygame;
 	game = 0;
+
+	// Figure out all the games' paths, before we store them.  That
+	// way, we don't have to recalculate them if we come back to the
+	// main menu and make another selection.
+	if (arg_gamename == "default") {
+		// We're going to the menu, so just load the two default
+		// games.
+		get_game_paths("blackgate");
+		get_game_paths("serpentisle");
+	} else
+		// The user gave us a game title, so load that one's
+		// paths.
+		get_game_paths(arg_gamename);
 
 	store_system_paths();
 
