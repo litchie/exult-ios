@@ -1089,11 +1089,9 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	
 	// WEAPONS 2H
 
-	// Hoe of Destruction **NEEDS ART**
+	// Hoe of Destruction
 	{     548, -1,      Actor::lhand,    OT_Staff,  false, exult_flx,    25,     0 },
 	{     548, -1,Actor::back2h_spot,    OT_Staff,  false, exult_flx,    25,     1 },
-	//{     548, -1,      Actor::lhand,    OT_Staff,  false, paperdoll,    52,     0 },
-	//{     548, -1,Actor::back2h_spot,    OT_Staff,  false, paperdoll,    52,     1 },
 	// Firedoom Staff
 	{     553, -1,      Actor::lhand,    OT_Staff,  false, paperdoll,    43,     0 },
 	{     553, -1,Actor::back2h_spot,    OT_Staff,  false, paperdoll,    43,     1 },

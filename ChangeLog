@@ -1,3 +1,7 @@
+2001-02-14  Ryan Nunn  <triforce@merlin.net.au>
+	* paperdoll_gump_info.cc: Hoe of Destruction no longer marked as
+	  needing art.
+
 2001-02-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.be: changed version to 0.92 too
 
