@@ -149,7 +149,7 @@ void Conversation::init_faces()
  *	Show a "face" on the screen.  Npc_text_rect is also set.
  */
 
-void Conversation::show_face(int shape, int frame)
+void Conversation::show_face(int shape, int frame, int slot)
 {
 	Main_actor* main_actor = gwin->get_main_actor();
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
@@ -199,11 +199,17 @@ void Conversation::show_face(int shape, int frame)
 							" faces" << endl;
 			return;
 			}
-					// Get last one shown.
-		Npc_face_info *prev = num_faces ? face_info[num_faces - 1] : 0;
 		info = new Npc_face_info(shape);
-		last_face_shown = num_faces;
-		face_info[num_faces++] = info;
+		if (slot == -1)		// Want next one?
+			slot = num_faces;
+					// Get last one shown.
+		Npc_face_info *prev = slot ? face_info[slot - 1] : 0;
+		last_face_shown = slot;
+		if (!face_info[slot])
+			num_faces++;	// We're adding one (not replacing).
+		else
+			delete face_info[slot];
+		face_info[slot] = info;
 					// Get text height.
 		int text_height = gwin->get_text_height(0);
 					// Figure starting y-coord.
@@ -261,7 +267,17 @@ void Conversation::remove_face(int shape)
 		last_face_shown = num_faces - 1;
 }
 
+/*
+ *	Remove the last face shown (SI).  (Or maybe it's just slot 1 always?)
+ */
 
+void Conversation::remove_last_face
+	(
+	)
+	{
+	if (last_face_shown >= 0 && face_info[last_face_shown])
+		remove_face(face_info[last_face_shown]->shape);
+	}
 
 /*
  *	Show what the NPC had to say.

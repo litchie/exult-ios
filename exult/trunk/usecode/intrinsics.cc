@@ -1757,6 +1757,38 @@ USECODE_INTRINSIC(add_cont_items)
 	return(no_ret);
 }
 
+/*
+ *	SI-specific functions.
+ */
+
+USECODE_INTRINSIC(show_npc_face0)
+{
+	// Show_npc_face0(npc, frame).  Show in position 0.
+	show_npc_face(parms[0], parms[1], 0);
+	return no_ret;
+}
+
+USECODE_INTRINSIC(show_npc_face1)
+{
+	// Show_npc_face1(npc, frame).  Show in position 1.
+	show_npc_face(parms[0], parms[1], 1);
+	return no_ret;
+}
+
+USECODE_INTRINSIC(remove_last_face)
+{
+	show_pending_text();
+	conv->remove_last_face();
+	return no_ret;
+}
+
+USECODE_INTRINSIC(set_conversation_slot)
+{
+	// set_conversation_slot(0 or 1) - Choose which face is talking.
+	conv->set_slot(parms[0].get_int_value());
+	return no_ret;
+}
+
 USECODE_INTRINSIC(si_path_run_usecode)
 {
 	// exec(npc, loc(x,y,z)?, eventid, itemref, usecode#, ??true/false).
