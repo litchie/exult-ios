@@ -289,10 +289,12 @@ Weather_effect::Weather_effect
 
 inline void Raindrop::paint
 	(
-	Image_window8 *iwin,		// Where to draw.	
+	Image_window8 *iwin,		// Where to draw.
+	int scrolltx, int scrollty,	// Tile at top-left corner.
 	Xform_palette xform		// Transform array.
 	)
 	{
+	int x = (tx - scrolltx)/tilesize, y = (ty - scrollty)/tilesize;
 	oldpix = iwin->get_pixel8(x, y);	// Get pixel.
 	iwin->put_pixel8(xform[oldpix], x, y);
 	}
@@ -304,37 +306,31 @@ inline void Raindrop::paint
 inline void Raindrop::next
 	(
 	Image_window8 *iwin,		// Where to draw.	
+	int scrolltx, int scrollty,	// Tile at top-left corner.
 	Xform_palette xform,		// Transform array.
-	int w, int h			// Dims. of window.
+	int tw, int th			// Dims. of window in tiles.
 	)
 	{
+	int x = (tx - scrolltx)/tilesize, y = (ty - scrollty)/tilesize;
 	if (x >= 0)			// Not the first time?  Restore pix.
 		iwin->put_pixel8(oldpix, x, y);
 					// Time to restart?
-	if (x < 0 || x >= w - 8 || y >= h - 10)
+	if (tx < 0 || tx >= tw - 1 || ty >= th - 1)
 		{			
 		int r = rand();
 					// Have a few fall faster.
 		yperx = (r%4) ? 1 : 2;
-		x = r%(w - w/8);
-		y = r%(h - h/4);
-#if 0
-		int vert = (7*h)/8;	// Top of vert. area.
-		int horiz = (7*w)/8;	// Left part of horiz. area.
-		int start = r%(vert + horiz);
-		if (start < vert)	// Start on left edge.
-			{ x = 0; y = h - start; }
-		else
-			{ x = start - vert; y = 0; };
-#endif
+		tx = r%(tw - tw/8);
+		ty = r%(th - th/4);
 		}
 	else				// Next spot.
 		{
-		int delta = 1 + rand()%5;
-		x += delta;
-		y += delta + yperx;
+		int delta = 1 + rand()%2;
+		tx += delta;
+		ty += delta + yperx;
 		}
-	paint(iwin, xform);		// Save old pixel & paint new.
+					// Save old pixel & paint new.
+	paint(iwin, scrolltx, scrollty, xform);
 	}
 
 /*
@@ -351,13 +347,16 @@ void Rain_effect::handle_event
 	if (!gwin->is_main_actor_inside())
 		{			// Don't show rain inside buildings!
 		Image_window8 *win = gwin->get_win();
-		int w = win->get_width(), h = win->get_height();
+		int tw = win->get_width()/tilesize, 
+		    th = win->get_height()/tilesize;
 					// Get transform table.
 		Xform_palette xform = gwin->get_xform(8);//++++Experiment.
 		const int num_drops = sizeof(drops)/sizeof(drops[0]);
+		int scrolltx = gwin->get_scrolltx(),
+		    scrollty = gwin->get_scrollty();
 					// Move drops.
 		for (int i = 0; i < num_drops; i++)
-			drops[i].next(win, xform, w, h);
+			drops[i].next(win, scrolltx, scrollty, xform, tw, th);
 		gwin->set_painted();
 		}
 	if (curtime < stop_time)	// Keep going?
