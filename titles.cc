@@ -347,9 +347,6 @@ void Titles::end_game(bool success)
 		U7object speech1(ENDGAME, 7);
 		U7object speech2(ENDGAME, 8);
 		U7object speech3(ENDGAME, 9);
-		flic1.retrieve("flic1.fli");
-		flic2.retrieve("flic2.fli");
-		flic3.retrieve("flic3.fli");
 
 /* There seems to be something wrong with the shapes. Needs investigating
 		U7object shapes(ENDGAME, 10);
@@ -359,10 +356,18 @@ void Titles::end_game(bool success)
 		int y = get_height()/2-100;
 		cout << "Shape in Endgame.dat has " << sf.get_num_frames() << endl;
 */
+		size_t	flisize;
+		char	*fli_b[3];
 
-		playfli fli1("flic1.fli");
-		playfli fli2("flic2.fli");
-		playfli fli3("flic3.fli");
+		flic1.retrieve(&(fli_b[0]), flisize);
+		playfli fli1(fli_b[0]+8, flisize-8);
+
+		flic2.retrieve(&(fli_b[1]), flisize);
+		playfli fli2(fli_b[1]+8, flisize-8);
+
+		flic3.retrieve(&(fli_b[2]), flisize);
+		playfli fli3(fli_b[2]+8, flisize-8);
+
 		char *buf;
 		speech1.retrieve (&buf, size);
 		buffer = (Uint8 *) buf;
@@ -378,6 +383,9 @@ void Titles::end_game(bool success)
 			if (wait_delay (10))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -389,6 +397,9 @@ void Titles::end_game(bool success)
 			{
 				refresh_screen();
 				delete [] buffer;
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -409,6 +420,9 @@ void Titles::end_game(bool success)
 			if (wait_delay (10))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -425,7 +439,7 @@ void Titles::end_game(bool success)
 		message = "Damn you Avatar!  Damn you!";
 		width = (gwin->get_width() - gwin->get_text_width(ENDGAME_FONT2,message)) / 2;
 
-		for (i = 0; i < 50; i++)
+		for (i = 0; i < 320; i++)
 		{
 			next = fli2.play(win, i, i, next);
 			if (1) gwin->paint_text (ENDGAME_FONT2, message, width, height);
@@ -434,19 +448,23 @@ void Titles::end_game(bool success)
 			if (wait_delay (10))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
 
-		next+=5000;
-
-		// Eh, this wont work properly for 
-		for (i = 100; i > 0; i-=10)
+		for (i = 1000 + next; i > next; )
 		{
-			next = fli2.play(win, 0, 0, next, i);
+			next = fli2.play(win, -1, -1, next, (next-i)/-10);
+			win->show ();
 			if (wait_delay (10))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -472,6 +490,9 @@ void Titles::end_game(bool success)
 			if (wait_delay (100))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -501,6 +522,9 @@ void Titles::end_game(bool success)
 			if (wait_delay (100))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -518,6 +542,9 @@ void Titles::end_game(bool success)
 			if (wait_delay (10))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -555,6 +582,9 @@ void Titles::end_game(bool success)
 				if (wait_delay (10))
 				{
 					refresh_screen();
+					delete [] fli_b[0];
+					delete [] fli_b[1];
+					delete [] fli_b[2];
 					return;
 				}
 			}
@@ -567,6 +597,9 @@ void Titles::end_game(bool success)
 			if (wait_delay (10))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -604,6 +637,9 @@ void Titles::end_game(bool success)
 			if (wait_delay (100))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -614,6 +650,9 @@ void Titles::end_game(bool success)
 		if (wait_delay (10))
 		{
 			refresh_screen();
+			delete [] fli_b[0];
+			delete [] fli_b[1];
+			delete [] fli_b[2];
 			return;
 		}
 
@@ -646,6 +685,9 @@ void Titles::end_game(bool success)
 			if (wait_delay (100))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -657,6 +699,9 @@ void Titles::end_game(bool success)
 		if (wait_delay (10))
 		{
 			refresh_screen();
+			delete [] fli_b[0];
+			delete [] fli_b[1];
+			delete [] fli_b[2];
 			return;
 		}
 
@@ -689,6 +734,9 @@ void Titles::end_game(bool success)
 			if (wait_delay (100))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -700,6 +748,9 @@ void Titles::end_game(bool success)
 		if (wait_delay (10))
 		{
 			refresh_screen();
+			delete [] fli_b[0];
+			delete [] fli_b[1];
+			delete [] fli_b[2];
 			return;
 		}
 
@@ -731,6 +782,9 @@ void Titles::end_game(bool success)
 			if (wait_delay (100))
 			{
 				refresh_screen();
+				delete [] fli_b[0];
+				delete [] fli_b[1];
+				delete [] fli_b[2];
 				return;
 			}
 		}
@@ -740,6 +794,9 @@ void Titles::end_game(bool success)
 
 
 		refresh_screen();
+		delete [] fli_b[0];
+		delete [] fli_b[1];
+		delete [] fli_b[2];
 	}
 
 void Titles::show_quotes()
