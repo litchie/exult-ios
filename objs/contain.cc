@@ -88,10 +88,10 @@ int Container_game_object::add
 	while ((parent = parent->get_owner()) != 0);
 
 	if (!dont_check)
-		{			// Note:  NPC's have 0 volume.
+		{
 		int maxvol = get_max_volume();
-//		if (maxvol > 0 &&
-		if (objvol + volume_used > maxvol)
+		// maxvol = 0 means infinite (ship's hold, hollow tree, etc...)
+		if (maxvol > 0 && objvol + volume_used > maxvol)
 			return (0);	// Doesn't fit.
 		}
 	volume_used += objvol;
