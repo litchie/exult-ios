@@ -910,13 +910,15 @@ int Get_click
 	}
 
 /*
- *	Wait for someone to stop walking.
+ *	Wait for someone to stop walking.  If a timeout is given, at least
+ *	one animation cycle will still always occur.
  */
 
 void Wait_for_arrival
 	(
 	Actor *actor,			// Whom to wait for.
-	Tile_coord dest			// Where he's going.
+	Tile_coord dest,		// Where he's going.
+	long maxticks			// Max. # msecs. to wait, or 0.
 	)
 	{
 	// Mouse scale factor
@@ -925,8 +927,10 @@ void Wait_for_arrival
 	unsigned char os = Mouse::mouse->is_onscreen();
 	uint32 last_repaint = 0;	// For insuring animation repaints.
 	Actor_action *orig_action = actor->get_action();
+	uint32 stop_time = SDL_GetTicks() + maxticks;
+	bool timeout = false;
 	while (actor->is_moving() && actor->get_action() == orig_action &&
-	       actor->get_abs_tile_coord() != dest)
+	       actor->get_abs_tile_coord() != dest && !timeout)
 		{
 		Delay();		// Wait a fraction of a second.
 
@@ -945,6 +949,8 @@ void Wait_for_arrival
 				}
 					// Get current time, & animate.
 		uint32 ticks = SDL_GetTicks();
+		if (maxticks && ticks > stop_time)
+			timeout = true;
 		if (gwin->have_focus())
 			gwin->get_tqueue()->activate(ticks);
 					// Show animation every 1/20 sec.

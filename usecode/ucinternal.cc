@@ -88,7 +88,7 @@ using std::vector;
 
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 extern	bool intrinsic_trace,usecode_trace,usecode_debugging;
-extern void Wait_for_arrival(Actor *actor, Tile_coord dest);
+extern void Wait_for_arrival(Actor *actor, Tile_coord dest, long maxticks = 0);
 
 #if USECODE_DEBUGGER
 std::vector<int> intrinsic_breakpoints;
