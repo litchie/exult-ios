@@ -6239,6 +6239,11 @@ Manual
   <class>GtkWindow</class>
   <name>shape_window</name>
   <visible>False</visible>
+  <signal>
+    <name>delete_event</name>
+    <handler>on_shape_window_delete_event</handler>
+    <last_modification_time>Thu, 10 Jan 2002 07:31:02 GMT</last_modification_time>
+  </signal>
   <title>Exult Shape Info</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -6283,7 +6288,7 @@ Manual
 
 	  <widget>
 	    <class>GtkDrawingArea</class>
-	    <name>drawingarea1</name>
+	    <name>shinfo_draw</name>
 	    <width>96</width>
 	    <height>96</height>
 	  </widget>
@@ -6327,7 +6332,7 @@ Manual
 
 	    <widget>
 	      <class>GtkEntry</class>
-	      <name>entry1</name>
+	      <name>shinfo_shape</name>
 	      <width>80</width>
 	      <can_focus>True</can_focus>
 	      <editable>False</editable>
@@ -6361,7 +6366,7 @@ Manual
 
 	    <widget>
 	      <class>GtkEntry</class>
-	      <name>entry2</name>
+	      <name>shinfo_name</name>
 	      <width>80</width>
 	      <can_focus>True</can_focus>
 	      <editable>True</editable>
@@ -6395,7 +6400,7 @@ Manual
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton63</name>
+	      <name>shinfo_frame</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -6436,7 +6441,7 @@ Manual
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton64</name>
+	      <name>shinfo_num_frames</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -6483,7 +6488,7 @@ Manual
 
 	      <widget>
 		<class>GtkSpinButton</class>
-		<name>spinbutton65</name>
+		<name>shinfo_originx</name>
 		<can_focus>True</can_focus>
 		<climb_rate>1</climb_rate>
 		<digits>0</digits>
@@ -6506,7 +6511,7 @@ Manual
 
 	      <widget>
 		<class>GtkSpinButton</class>
-		<name>spinbutton66</name>
+		<name>shinfo_originy</name>
 		<can_focus>True</can_focus>
 		<climb_rate>1</climb_rate>
 		<digits>0</digits>
@@ -6559,7 +6564,7 @@ Manual
 
 	      <widget>
 		<class>GtkArrow</class>
-		<name>arrow1</name>
+		<name>shinfo_frame_up</name>
 		<arrow_type>GTK_ARROW_UP</arrow_type>
 		<shadow_type>GTK_SHADOW_OUT</shadow_type>
 		<xalign>0.5</xalign>
@@ -6575,7 +6580,7 @@ Manual
 
 	      <widget>
 		<class>GtkArrow</class>
-		<name>arrow2</name>
+		<name>shinfo_frame_down</name>
 		<arrow_type>GTK_ARROW_DOWN</arrow_type>
 		<shadow_type>GTK_SHADOW_OUT</shadow_type>
 		<xalign>0.5</xalign>
@@ -6627,7 +6632,7 @@ Manual
 
 	<widget>
 	  <class>GtkEntry</class>
-	  <name>entry3</name>
+	  <name>shinfo_filename</name>
 	  <can_focus>True</can_focus>
 	  <editable>False</editable>
 	  <text_visible>True</text_visible>
@@ -6657,7 +6662,7 @@ Manual
 
     <widget>
       <class>GtkNotebook</class>
-      <name>notebook3</name>
+      <name>shinfo_notebook</name>
       <border_width>8</border_width>
       <can_focus>True</can_focus>
       <show_tabs>True</show_tabs>
@@ -6723,7 +6728,7 @@ Manual
 
 	      <widget>
 		<class>GtkSpinButton</class>
-		<name>spinbutton100</name>
+		<name>shinfo_xtiles</name>
 		<can_focus>True</can_focus>
 		<climb_rate>1</climb_rate>
 		<digits>0</digits>
@@ -6746,7 +6751,7 @@ Manual
 
 	      <widget>
 		<class>GtkSpinButton</class>
-		<name>spinbutton101</name>
+		<name>shinfo_ytiles</name>
 		<can_focus>True</can_focus>
 		<climb_rate>1</climb_rate>
 		<digits>0</digits>
@@ -6769,7 +6774,7 @@ Manual
 
 	      <widget>
 		<class>GtkSpinButton</class>
-		<name>spinbutton102</name>
+		<name>shinfo_ztiles</name>
 		<can_focus>True</can_focus>
 		<climb_rate>1</climb_rate>
 		<digits>0</digits>
@@ -6816,7 +6821,7 @@ Manual
 
 	    <widget>
 	      <class>GtkOptionMenu</class>
-	      <name>optionmenu1</name>
+	      <name>shinfo_shape_class</name>
 	      <can_focus>True</can_focus>
 	      <items>Unusable
 Quality
@@ -6909,7 +6914,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton103</name>
+	      <name>shinfo_weight</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -6950,7 +6955,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton104</name>
+	      <name>shinfo_volume</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -6997,7 +7002,7 @@ LR Hand
 
 	      <widget>
 		<class>GtkSpinButton</class>
-		<name>spinbutton105</name>
+		<name>shinfo_wihx</name>
 		<can_focus>True</can_focus>
 		<climb_rate>1</climb_rate>
 		<digits>0</digits>
@@ -7020,7 +7025,7 @@ LR Hand
 
 	      <widget>
 		<class>GtkSpinButton</class>
-		<name>spinbutton106</name>
+		<name>shinfo_wihy</name>
 		<can_focus>True</can_focus>
 		<climb_rate>1</climb_rate>
 		<digits>0</digits>
@@ -7068,7 +7073,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton33</name>
+	      <name>shinfo_sfx_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Sound effect</label>
 	      <active>False</active>
@@ -7091,7 +7096,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton34</name>
+	      <name>shinfo_strange_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Strange</label>
 	      <active>False</active>
@@ -7114,7 +7119,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton35</name>
+	      <name>shinfo_animated_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Animated</label>
 	      <active>False</active>
@@ -7137,7 +7142,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton36</name>
+	      <name>shinfo_solid_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Solid</label>
 	      <active>False</active>
@@ -7160,7 +7165,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton37</name>
+	      <name>shinfo_water_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Water</label>
 	      <active>False</active>
@@ -7183,7 +7188,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton38</name>
+	      <name>shinfo_poison_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Poisonous</label>
 	      <active>False</active>
@@ -7206,7 +7211,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton39</name>
+	      <name>shinfo_field_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Field</label>
 	      <active>False</active>
@@ -7229,7 +7234,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton40</name>
+	      <name>shinfo_door_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Door</label>
 	      <active>False</active>
@@ -7252,7 +7257,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton41</name>
+	      <name>shinfo_barge_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Barge part</label>
 	      <active>False</active>
@@ -7275,7 +7280,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton42</name>
+	      <name>shinfo_transp_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Transparent</label>
 	      <active>False</active>
@@ -7298,7 +7303,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton43</name>
+	      <name>shinfo_light_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Light source</label>
 	      <active>False</active>
@@ -7321,7 +7326,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton45</name>
+	      <name>shinfo_obstaclex_check</name>
 	      <can_focus>True</can_focus>
 	      <label>X-obstacle</label>
 	      <active>False</active>
@@ -7344,7 +7349,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton46</name>
+	      <name>shinfo_obstacley_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Y-obstacle</label>
 	      <active>False</active>
@@ -7367,7 +7372,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton47</name>
+	      <name>shinfo_occludes_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Occludes	</label>
 	      <active>False</active>
@@ -7390,7 +7395,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton44</name>
+	      <name>shinfo_transl_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Translucent</label>
 	      <active>False</active>
@@ -7460,7 +7465,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton69</name>
+	      <name>shinfo_weapon_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Weapon</label>
 	      <active>False</active>
@@ -7474,7 +7479,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton70</name>
+	      <name>shinfo_ammo_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Ammo</label>
 	      <active>False</active>
@@ -7488,7 +7493,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton72</name>
+	      <name>shinfo_armor_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Armor</label>
 	      <active>False</active>
@@ -7502,7 +7507,7 @@ LR Hand
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton71</name>
+	      <name>shinfo_monster_check</name>
 	      <can_focus>True</can_focus>
 	      <label>Monster</label>
 	      <active>False</active>
@@ -9649,15 +9654,16 @@ Random
 
       <widget>
 	<class>GtkButton</class>
-	<name>button27</name>
+	<name>shinfo_okay</name>
 	<can_default>True</can_default>
+	<has_default>True</has_default>
 	<can_focus>True</can_focus>
 	<label>Okay</label>
       </widget>
 
       <widget>
 	<class>GtkButton</class>
-	<name>button28</name>
+	<name>shinfo_apply</name>
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
 	<label>Apply</label>
@@ -9665,9 +9671,14 @@ Random
 
       <widget>
 	<class>GtkButton</class>
-	<name>button29</name>
+	<name>shinfo_cancel</name>
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_shinfo_cancel_clicked</handler>
+	  <last_modification_time>Thu, 10 Jan 2002 07:29:38 GMT</last_modification_time>
+	</signal>
 	<label>Cancel</label>
       </widget>
     </widget>

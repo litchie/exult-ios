@@ -32,6 +32,7 @@ exult_studio_SOURCES = \
 	eggedit.cc \
 	npcedit.cc \
 	objedit.cc \
+	shapeedit.cc \
 	studio.cc \
 	studio.h \
 	exult_studio.cc
