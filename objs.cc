@@ -1278,7 +1278,6 @@ static int Attack_object
 	if (winf && (usefun = winf->get_usecode()) != 0)
 		gwin->get_usecode()->call_usecode(usefun, obj,
 					Usecode_machine::weapon);
-	int shnum = obj->get_shapenum();	// Only do doors for now.
 	if (!wpoints && winf)
 		wpoints = winf->get_damage();
 	return wpoints;
@@ -1300,15 +1299,15 @@ Game_object *Game_object::attacked
 	Game_window *gwin = Game_window::get_game_window();
 	int wpoints = Attack_object(gwin, this, 
 					attacker, weapon_shape, ammo_shape);
-	if (wpoints < 10)
+	if (wpoints < 8)
 		return this;		// Fail.
-	if (wpoints < 20)
+	if (wpoints < 16)
 		wpoints = wpoints/2;	// Unlikely.
 	int shnum = get_shapenum();	// Only do doors for now.
 	if (shnum != 433 && shnum != 432 && shnum != 270 && shnum != 376)
 		return this;
-					// Let's guess points = percentage.
-	if (rand()%100 < wpoints)
+					// Guessing:
+	if (rand()%90 < wpoints)
 		{
 		gwin->add_dirty(this);
 		remove_this();
@@ -1928,8 +1927,8 @@ Game_object *Container_game_object::attacked
 		return this;		// Fail.
 	if (wpoints < 16)
 		wpoints = wpoints/2;	// Unlikely.
-					// Let's guess points = percentage.
-	if (rand()%100 >= wpoints)
+					// Guessing:
+	if (rand()%90 >= wpoints)
 		return this;		// Failed.
 	Tile_coord pos = get_abs_tile_coord();
 	gwin->add_dirty(this);
