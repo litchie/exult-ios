@@ -2168,6 +2168,7 @@ int Usecode_internal::run
 			{
 				int funcname = (sint32)Read4(ip);
 				int paramnames = (sint32)Read4(ip);
+				break;
 			}
 		default:
 			cout << "Opcode " << opcode << " not known." << endl;
