@@ -3,11 +3,13 @@ INCLUDES = -I. -Iconf -Ifiles -Iaudio -Ipathfinder \
 	$(DEBUG_FLAGS) $(CPPFLAGS) \
 	-DRELNUM=$(RELNUM)
 
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
+
 SUBDIRS = audio conf pathfinder files flic
 
 bin_PROGRAMS = exult
 
-exult_SOURCES = 	\
+exult_SOURCES =	\
 	actions.cc	\
 	actions.h	\
 	actorio.cc	\
