@@ -1,13 +1,13 @@
 Exult Studio Documentation
-last changed: 04 May 2003(GMT)
+last changed: 08 August 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/studio.php
 
 
 0. Changes to the Documentation
-0.1. - 04 May 2003
-0.2. 28 October 2002
-0.3. 23 October 2002
+0.1. - 08 August 2003
+0.2. - 04 May 2003
+0.3. - 28 October 2002
 
 1. Introduction
 1.1. What is Exult Studio?
@@ -88,21 +88,23 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 04 May 2003
+0.1. - 08 August 2003
+* 2.1. Installation only use latest snapshots not latest release.
+* 2.3. Step-by-step instructions to run Exult Studio you need to set up the patch path in exult.cfg.
+* 9.6. Known Bugs with the Win32 portExult Studio now works on all Win32 platforms.
+
+
+
+0.2. - 04 May 2003
 * 9.6. Known Bugs with the Win32 port two bugs fixed in the win32 port.
 
 
 
-0.2. 28 October 2002
+0.3. - 28 October 2002
 * 1.3. Terms we use in regard to Exult and Ultima 7 added NPC schedules.
 * 2.2. Running Exult Studio the -d command line arg is now -gGAME.
 * 2.4. What you can do at the moment 'Paint with chunk' added.
 * 3.2. Shape files 'Frames' mode mentioned and explained.
-
-
-
-0.3. 23 October 2002
-* Currently I'm trying to merge my docs with the great work by Jeffrey Hoeksma. So many things changed that it's no use listing all the changes. And please take our many spelling and grammar mistakes with humor!
 
 
 
@@ -145,7 +147,7 @@ Of course the terms explained in ReadMe.txt are also used in this Documentation 
 
 2. Configurations
 2.1. Installation
-* You need Exult and you need to install it properly (see ReadMe.txt). Also make sure that you are using the latest snapshot of the 1.1.x branch of Exult.
+* You need Exult and you need to install it properly (see ReadMe.txt). Also make sure that you are using the latest snapshot of the 1.1.x branch of Exult. Exult Studio only works with the latest snapshot, not the latest release.
 * For U*ix platforms you need to build Exult Studio from the source avilable from our source snapshot at http://exult.sourceforge.net/download.php. You will also need the GTK+ library installed as well as libglade.
 * For Win32 platforms (Win9x,ME,2k,XP) you need to download http://exult.sourceforge.net/snapshots/2.0/ExultStudio.exe and install it in the same directory where you installed Exult.
 
@@ -171,9 +173,10 @@ The above instructions may still be too technical for everybody. You have to mak
 1. While it is not explicitly needed it is usefull to have a working copy of either BG or SI properly installed onto your computer.
 2. Next, you need to have the Exult 1.1x snapshot and the SDL mixer installed properly onto your computer and working correctly. If you are currently playing either BG or SI on your machine this is probably done right. To make sure you have the correct version, ensure that it says 1.10 CVS during Exult's start-up screen.
 3. You need to make sure the newest version of Exult Studio is installed properly onto your computer as well. Exult Studio should be installed in the same directory as the Exult 1.10x snapshot.
-4. In order for Exult Studio to work properly, you need to have Exult running in windowed mode. If you can see your desktop while playing, then you're doing it right.
-5. Make sure you have Cheats enabled. This can be enabled int eh Gameplay options of the Game menu.
-6. While running Exult in windowed mode, hit 'ctrl+alt+m' to enter map-editing mode. Exult Studio should open up if you did everything correctly. In map-editing mode the world is frozen, but you are still able to move your characters around in order to place objects. You're now ready to start your world editing. You should be seeing something like this:
+4. You need to set up the path for the patch to save any changes to existing games. See 2.4. What you can do at the moment on how to change exult.cfg accordingly.
+5. In order for Exult Studio to work properly, you need to have Exult running in windowed mode. If you can see your desktop while playing, then you're doing it right.
+6. Make sure you have Cheats enabled. This can be enabled int eh Gameplay options of the Game menu.
+7. While running Exult in windowed mode, hit 'ctrl+alt+m' to enter map-editing mode. Exult Studio should open up if you did everything correctly. In map-editing mode the world is frozen, but you are still able to move your characters around in order to place objects. You're now ready to start your world editing. You should be seeing something like this:
 
 
 
@@ -215,7 +218,7 @@ You can change the settings of Exult Studio either with the preferences dialog o
 <main>
 <width>
 640
-						** width of the program window 
+						** width of the program window
 						
 </width>
 <height>
@@ -226,19 +229,19 @@ You can change the settings of Exult Studio either with the preferences dialog o
 </main>
 <default_game>
 gamename
-						** default game to edit (games must be specified in 
+						** default game to edit (games must be specified in
 						<game> part of exult.cfg)
 						
 </default_game>
 <image_editor>
 gimp-remote -n
-						** command that calls the image editor. Only useful on U*ix 
+						** command that calls the image editor. Only useful on U*ix
 						platforms for now.
 						
 </image_editor>
 <background_color>
 0
-						** background color for the shape-chooser. Use the preference 
+						** background color for the shape-chooser. Use the preference
 						dialog of Exult Studio for this.
 						
 </background_color>
@@ -604,9 +607,7 @@ The next things to be implemented are:
 
 
 9.6. Known Bugs with the Win32 port
-Exult Studio is of course far from perfect and the Win32 port still has some bugs:
-* Windows NT4 and Windows 2k don't work at the moment as there is some strange connection problem between Exult and Exult Studio. We have not yet been able to figure out the problem.
-
+Exult Studio runs fine on all versions of Win32. However there may still be unexpected crashes. If you can reproduce a crash, please contact us.
 
 
 
