@@ -28,6 +28,34 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucparse.h"
 #include "ucloc.h"
 
+/*
+ *	Set location from a preprocessor string.
+ */
+
+static void Set_location
+	(
+	char *text			// ->first digit of line #.
+	)
+	{
+	char *name;
+	int line = strtol(text, &name, 10);
+	while (*name && *name != '"')	// Find start of filename.
+		name++;
+	if (!*name)
+		return;
+	name++;				// Point to name.
+	char *ename = name;		// Find end.
+	while (*ename && *ename != '"')
+		ename++;
+	if (!*ename)
+		return;
+	*ename = 0;
+//cout << "Setting location at line " << line - 1 << endl;
+					// We're 0-based.
+	Uc_location::set_cur(name, line - 1);
+	*name = '"';			// Restore text.
+	}
+
 extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
 
 %}
@@ -81,6 +109,11 @@ UcItem		return ITEM;
 "<="			{ return LTEQUALS; }
 ">="			{ return GTEQUALS; }
 
+"# "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 2); }
+"#line "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 6); }
+
+\#.*			/* Ignore other cpp directives. */
+
 [ \t]+						/* Ignore spaces. */
 "//".*						/* Comments. */
 \n			{ Uc_location::increment_cur_line(); }
@@ -88,3 +121,4 @@ UcItem		return ITEM;
 
 
 %%
+

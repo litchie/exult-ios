@@ -25,14 +25,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_UCLOC
 #define INCL_UCLOC	1
 
-#include <set>
+#include <vector>
 
 /*
  *	Location in source code.
  */
 class Uc_location
 	{
-	static set<char *> source_names;// All filenames.
+	static vector<char *> source_names;// All filenames.
 	static char *cur_source;	// Source filename.
 	static int cur_line;		// Line #.
 	static int num_errors;		// Total #.
@@ -42,11 +42,7 @@ public:
 	Uc_location()			// Use current location.
 		: source(cur_source), line(cur_line)
 		{  }
-	static void set_cur(char *s, int l)
-		{
-		cur_line = l;
-		cur_source = *(source_names.insert(s).first);
-		}
+	static void set_cur(char *s, int l);
 	static void increment_cur_line()
 		{ cur_line++; }
 	const int get_line()
