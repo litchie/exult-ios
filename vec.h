@@ -74,8 +74,10 @@ public:
 	void		remove( const T& obj )
 		{
 #if __GNUG__ > 2
+			// Correct way. An iterator isn't a pointer, necessarily
 			for(typename std::vector<T>::iterator X = begin(); X != end(); ++X)
 #else
+			// If an iterator _is_ a pointer, then this is a little faster
 			for(T *X = begin(); X != end(); ++X)
 #endif
 				if( *X == obj )

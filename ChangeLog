@@ -1,3 +1,8 @@
+2002-11-09  Dancer Vesperman <dancer@users.sourceforge.net>
+	* configure.in: --enable-mmx	(default: off)
+	* configure.in: --enable-3dnow (default: off)
+	* vec.h: Explanatory comment.
+
 2002-11-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: For theft, see if NPC is facing Avatar.
