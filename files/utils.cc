@@ -195,6 +195,20 @@ void U7open
 	}
 }
 
+#ifdef ALPHA_LINUX_CXX
+/*
+ * Wraps around a bug in Compaq's cxx, which doesn't generate an external
+ * symbol for this one implicitly because of is_text = false
+ *
+ * See function above for a functional description
+ */
+void U7open(std::ifstream& in,
+	    const char *fname)
+{
+	U7open(in, fname, false);
+}
+#endif
+
 /*
  *	Open a file for output,
  *	trying the original name (lower case), and the upper case version 
@@ -230,6 +244,20 @@ void U7open
 			throw file_open_exception(name);
 	}
 }
+
+#ifdef ALPHA_LINUX_CXX
+/*
+ * Wraps around a bug in Compaq's cxx, which doesn't generate an external
+ * symbol for this one implicitly because of is_text = false
+ *
+ * See function above for a functional description
+ */
+void U7open(std::ofstream& out,
+	    const char *fname)
+{
+	U7open(out, fname, false);
+}
+#endif
 
 /*
  *	Open a file with the access rights specified in mode,
