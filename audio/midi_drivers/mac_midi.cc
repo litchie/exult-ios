@@ -398,9 +398,9 @@ uint32 *BuildTuneSequence(midi_event *evntlist, int ppqn, int part_poly_max[32],
 				}
 				break;
 			case kControllerPan:
-				if(channel_pan[channel] != ((value-64)<<8))
+				if(channel_pan[channel] != ((value << 1) + 256))
 				{
-					channel_pan[channel] = (value-64)<<8;
+					channel_pan[channel] = ((value << 1) + 256);
 					if(part>=0 && part<=31)
 					{
 						REST_IF_NECESSARY();
