@@ -142,9 +142,10 @@ bool Game_window::drag
 			else
 				dragging_gump->remove_from_chain(
 							open_gumps);
-		else
+		else {
 			get_objects(dragging->get_cx(), 
 				dragging->get_cy())->remove(dragging);
+		}
 					// Make a little bigger.
 		int pad = dragging ? 8 : 12;
 		dragging_rect.x -= pad;		
@@ -389,12 +390,17 @@ bool Game_window::drop_at_lift
 	    Fast_pathfinder_client::is_grabable(
 		main_actor->get_abs_tile_coord(), Tile_coord(tx, ty, lift))))
 		{
-		to_drop->set_lift(lift);
-		int rtx = tx%tiles_per_chunk, rty = ty%tiles_per_chunk;
-		to_drop->set_shape_pos(rtx, rty);
+#if 0
+//		to_drop->set_lift(lift);
+//		int rtx = tx%tiles_per_chunk, rty = ty%tiles_per_chunk;
+//		to_drop->set_shape_pos(rtx, rty);
+//		chunk->add(to_drop);
+#else
+		to_drop->set_shape_pos(255,255);
+		to_drop->move(tx, ty, lift);
+#endif
 cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
 							<< ")"<<endl;
-		chunk->add(to_drop);
 					// On an egg?
 		chunk->activate_eggs(to_drop, tx, ty, lift, tx, ty);
 		return (true);
