@@ -43,7 +43,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapelst.h"
 #include "shapevga.h"
 #include "ibuf8.h"
-#include "Flex.h"
 #include "u7drag.h"
 #include "studio.h"
 #include "utils.h"
