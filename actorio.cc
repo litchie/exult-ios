@@ -277,8 +277,13 @@ void Actor::read
 			set_shape(shnum);		// 16 Bit Shape Number
 
 		shnum = (sint16) Read2(nfile);	// 16 Bit Polymorph Shape Number
-		if (get_flag (Obj_flags::polymorph)) set_polymorph(shnum);
-		
+		if (get_flag (Obj_flags::polymorph)) 
+			{			// Try to fix messed-up flag.
+			if (shnum != get_shapenum())
+				set_polymorph(shnum);
+			else
+				clear_flag(Obj_flags::polymorph);
+			}
 	}
 	else
 	{
@@ -299,9 +304,12 @@ void Actor::read
 		f = Read2(nfile);
 		siflags |= f;
 
-		// Flags2
+		// Flags2	But don't set polymorph.
+		bool polym = get_flag(Obj_flags::polymorph);
 		f = Read4(nfile);
 		flags2 |= f;
+		if (!polym && get_flag(Obj_flags::polymorph))
+			clear_flag(Obj_flags::polymorph);
 	}
 	else
 	{
