@@ -1,3 +1,6 @@
+2004-02-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* gumps/Gump_manager.cc: don't disable unicode if any modal gumps left
+
 2004-01-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* audio/Audio.cc: prevent crash when loading an invalid wave file
 	* docs/xml/docs.xml: updated a bit
