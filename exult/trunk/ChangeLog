@@ -1,4 +1,7 @@
 2003-06-24  Max Horn  <max@quendi.de>
+	* audio/midi_drivers/mac_midi.cc: Fixed pan controller in QuickTime midi.
+
+2003-06-24  Max Horn  <max@quendi.de>
 	* files/rwregress.cc, conf/xmain.cc, usecode/compiler/ucfun.cc,
 	  usecode/ucxt/include/ops.h: added #include <cassert> to please GCC 3.3
 
