@@ -726,18 +726,16 @@ Audio	*Audio::get_ptr(void)
 /*
  *	This returns a 'unique' ID, but only for .wav SFX's (for now).
  */
-AudioID	Audio::play_sound_effect (int num)
+AudioID	Audio::play_sound_effect (int num, int volume)
 {
 	if (!audio_enabled || !effects_enabled) return AudioID(0, 0);
 
 	// Where sort of sfx are we using????
 	if (sfx_file != 0)		// Digital .wav's?
-		return play_wave_sfx(num);
+		return play_wave_sfx(num, volume);
 	else if (midi != 0) 
-		{
 		midi->start_sound_effect(num);
-		return AudioID(0, 0);
-		}
+	return AudioID(0, 0);
 }
 
 /*
@@ -745,7 +743,8 @@ AudioID	Audio::play_sound_effect (int num)
  */
 AudioID Audio::play_wave_sfx
 	(
-	int num
+	int num,
+	int volume			// 0-128.
 	)
 	{
 	extern int bgconv[];
@@ -781,7 +780,7 @@ AudioID Audio::play_wave_sfx
 			each->next = sfxs;
 			sfxs = each;
 			}
-		return mixer->play(each->buf, each->len);
+		return mixer->play(each->buf, each->len, volume);
 		}
 	if (cnt == max_cached)		// Hit our limit?  Remove last.
 		{
@@ -813,7 +812,7 @@ AudioID Audio::play_wave_sfx
 	SDL_ConvertAudio(&cvt);
 					// Cache at head of chain.
 	sfxs = new SFX_cached(num, cvt.buf, cvt.len_cvt, sfxs);
-	return mixer->play(cvt.buf,cvt.len_cvt);
+	return mixer->play(cvt.buf, cvt.len_cvt, volume);
 	}
 
 

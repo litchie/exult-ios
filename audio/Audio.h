@@ -85,8 +85,8 @@ public:
 	void	start_music(XMIDI *midfile,bool continuous);
 	bool	start_music_combat(Combat_song song,bool continuous,int bank=0);
 	void	stop_music();
-	AudioID	play_sound_effect (int num);
-	AudioID	play_wave_sfx(int num);
+	AudioID	play_sound_effect (int num, int volume = SDL_MIX_MAXVOLUME);
+	AudioID	play_wave_sfx(int num, int volume = SDL_MIX_MAXVOLUME);
 	bool	start_speech(int num,bool wait=false);
 	void	set_external_signal(int);
 	void	terminate_external_signal(void);

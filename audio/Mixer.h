@@ -42,6 +42,8 @@ public:
 	AudioID(ProducerConsumerBuf *p, uint32 s) : pcb(p), seq(s)
 		{  }
 	void set_volume(int v);		// 0-128.
+	bool is_active()
+		{ return pcb && pcb->get_seq() == seq && pcb->is_active(); }
 	};
 
 //---- Mixer -----------------------------------------------------------
@@ -67,7 +69,7 @@ public:
 	void	stream_lock(void) { SDL_mutexP(stream_mutex); };
 	void	stream_unlock(void) { SDL_mutexV(stream_mutex); };
 	void fill_audio_func(void *, uint8 *, int);
-	AudioID play(uint8 *, uint32);
+	AudioID play(uint8 *, uint32, int volume = SDL_MIX_MAXVOLUME);
 	ProducerConsumerBuf *Create_Audio_Stream(uint32 type);
 	void	Destroy_Audio_Stream(uint32 type);
 	void	cancel_streams(void);
