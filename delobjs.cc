@@ -37,6 +37,9 @@ void Deleted_objects::flush
 	(
 	)
 	{
-	clear();			// I think this deletes them.
+	for(set<Game_object *,Less_objs>::iterator X = begin(); 
+						X != end(); ++X)
+		delete *X;
+	clear();
 	}
 

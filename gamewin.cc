@@ -61,6 +61,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucmachine.h"
 #include "utils.h"
 #include "virstone.h"
+#include "delobjs.h"
+#include "ucsched.h"			/* Only used to flush objects. */
 
 #include "Actor_gump.h"
 #include "Paperdoll_gump.h"
@@ -174,6 +176,7 @@ Game_window::Game_window
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    background_noise(new Background_noise(this)),
 	    bg_paperdolls_allowed(false), bg_paperdolls(false),
+	    removed(new Deleted_objects()), 
 	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0)
 	{
 	game_window = this;		// Set static ->.
@@ -232,6 +235,7 @@ Game_window::~Game_window
 	delete dragging_save;
 	delete pal;
 	delete usecode;
+	delete removed;
 	delete fonts;
 	}
 
@@ -2222,6 +2226,21 @@ void Game_window::show_items
 	}
 
 /*
+ *	Remove an item from the world and set it for later deletion.
+ */
+
+void Game_window::delete_object
+	(
+	Game_object *obj
+	)
+	{
+	obj->remove_this(1);		// Remove from world or container, but
+					//   don't delete.
+	obj->set_invalid();		// Set to invalid chunk.
+	removed->insert(obj);		// Add to pool instead.
+	}
+
+/*
  *	Add a text object at a given spot.
  */
 
@@ -2412,6 +2431,9 @@ void Game_window::double_clicked
 	int x, int y			// Coords in window.
 	)
 	{
+					// Nothing going on?
+	if (!Scheduled_usecode::get_count())
+		removed->flush();	// Flush removed objects.
 					// Look for obj. in open gump.
 	Gump *gump = find_gump(x, y);
 	Game_object *obj;
@@ -2947,7 +2969,7 @@ void Game_window::emulate_swapout (int scx, int scy)
 	}
 
 	for (Game_object_vector::const_iterator it=removes.begin(); it!=removes.end(); ++it)
-		(*it)->remove_this();
+		delete_object(*it);	// Remove & schedule for deletion.
 
 }
 
