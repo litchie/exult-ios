@@ -419,8 +419,6 @@ Gump_button *Spellbook_gump::on_button
 		return leftpage;
 	else if (rightpage->on_button(mx, my))
 		return rightpage;
-	else if (bookmark->on_button(mx, my))
-		return bookmark;
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Check spells.
 	{
@@ -428,6 +426,8 @@ Gump_button *Spellbook_gump::on_button
 		if (spell && spell->on_button(mx, my))
 			return spell;
 	}
+	if (bookmark->on_button(mx, my))
+		return bookmark;
 	return 0;
 }
 
