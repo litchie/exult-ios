@@ -411,8 +411,8 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	else if (src.tx == -1 || src.ty == -1)
 		{			// Figure path in opposite dir.
 		if (src.tx == src.ty)	// Both -1?
-			{
-			Offscreen_pathfinder_client cost(npc);
+			{		// Aim from NPC's current pos.
+			Offscreen_pathfinder_client cost(npc, npc->get_tile());
 			if (!path->NewPath(dest, src, &cost))
 				return (0);
 			}

@@ -971,9 +971,10 @@ int Actor::approach_another
 		return 0;
 		}
 	set_action(action);
-	start(150);			// Walk fairly fast.
-	if (wait)			// Only wait 1/10 sec.
-		Wait_for_arrival(this, dest, 100);
+	int speed = gwin->get_std_delay()/2;
+	start(speed);			// Walk fairly fast.
+	if (wait)			// Only wait ~1/5 sec.
+		Wait_for_arrival(this, dest, 2*gwin->get_std_delay());
 	return 1;
 	}
 

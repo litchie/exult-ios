@@ -227,8 +227,48 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 	(
 	Actor *n
 	) : Actor_pathfinder_client(n), screen(
-		Game_window::get_game_window()->get_win_tile_rect().enlarge(3))
+	      Game_window::get_game_window()->get_win_tile_rect().enlarge(3)),
+	    best(-1, -1, -1)
 	{
+	}
+
+/*
+ *	Client to get offscreen.
+ */
+
+Offscreen_pathfinder_client::Offscreen_pathfinder_client
+	(
+	Actor *n,
+	Tile_coord b			// Best offscreen pt. to aim for.
+	) : Actor_pathfinder_client(n), screen(
+	      Game_window::get_game_window()->get_win_tile_rect().enlarge(3)),
+	    best(b)
+	{
+	}
+
+/*
+ *	Figure cost going from one tile to an adjacent tile (for pathfinding).
+ *
+ *	Output:	Cost, or -1 if blocked.
+ *		The 'tz' field in tile may be modified.
+ */
+
+int Offscreen_pathfinder_client::get_step_cost
+	(
+	Tile_coord from,
+	Tile_coord& to			// The tile we're going to.  The 'tz'
+					//   field may be modified.
+	)
+	{
+	int cost = Actor_pathfinder_client::get_step_cost(from, to);
+	if (best.tx != -1)		// Penalize for moving away from best.
+		{
+		if ((to.tx - from.tx)*(best.tx - from.tx) < 0)
+			cost++;
+		if ((to.ty - from.ty)*(best.ty - from.ty) < 0)
+			cost++;
+		}
+	return cost;
 	}
 
 /*
@@ -241,6 +281,8 @@ int Offscreen_pathfinder_client::estimate_cost
 	Tile_coord& to			// Should be the goal.
 	)
 	{
+	if (best.tx != -1)		// Off-screen goal?
+		return Actor_pathfinder_client::estimate_cost(from, best);
 //++++++World-wrapping here????
 	int dx = from.tx - screen.x;	// Figure shortest dist.
 	int dx1 = screen.x + screen.w - from.tx;
