@@ -28,8 +28,10 @@ shapetest_SOURCES = shapetest.cc
 paltest_SOURCES = paltest.cc
 
 exult_studio_SOURCES = \
-	studio.h \
+	dirbrowser.cc \
+	dirbrowser.h \
 	studio.cc \
+	studio.h \
 	exult_studio.cc
 
 bin_PROGRAMS = $(GTK_APPS) $(GIMP_PLUGINS) $(GLADE_APPS)
@@ -48,6 +50,8 @@ exult_studio_LDADD = $(shapetest_LDADD) -lglade -lxml
 noinst_LTLIBRARIES = $(OUTPUT_LIBS)
 
 libmapedit_la_SOURCES = \
+	objbrowse.h \
+	objbrowse.cc \
 	paledit.cc \
 	paledit.h \
 	shapelst.cc \

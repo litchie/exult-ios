@@ -25,6 +25,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "objbrowse.h"
 #include "rect.h"
 
 class Vga_file;
@@ -49,9 +50,8 @@ class Shape_info
 /*
  *	This class manages a list of shapes from an image file.
  */
-class Shape_chooser
+class Shape_chooser: public Object_browser
 	{
-	GtkWidget *chooser;		// The main widget
 	Vga_file *ifile;		// Where the shapes come from.
 	int num_shapes;			// Total # shapes in ifile.
 	char **names;			// Names of shapes (or null).
@@ -78,11 +78,8 @@ class Shape_chooser
 	void scroll(int newindex);	// Scroll.
 public:
 	Shape_chooser(Vga_file *i, int w, int h);
-	~Shape_chooser();
+	virtual ~Shape_chooser();
 	
-	GtkWidget *get_widget() 
-		{ return chooser; }
-		
 	void set_shape_names(char **nms);
 					// Turn off selection.
 	void unselect(bool need_render = true);
