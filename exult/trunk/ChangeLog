@@ -1,3 +1,8 @@
+2002-09-29  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/intrinsics.cc: Get_distance() looks at owners of objs.
+	This fixes the bug with selling the bread you bake in BG.
+
 2002-09-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/intrinsics.cc: Guessing 'npc_nearby2()'.  Fixes
