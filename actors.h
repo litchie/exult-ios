@@ -39,7 +39,7 @@ const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
 /*
  *	An actor:
  */
-class Actor : public Sprite
+class Actor : public Container_game_object, public Time_sensitive
 	{
 	char *name;			// Its name.
 	int usecode;			// # of usecode function.
@@ -55,6 +55,8 @@ protected:
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 	unsigned long flags;		// 32 flags used in 'usecode'.
 	Actor_action *action;		// Controls current animation.
+	int frame_time;			// Time between frames in msecs.  0 if
+					//   actor not moving.
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
@@ -104,19 +106,21 @@ public:
 		{ return npc_num; }	// It's the NPC's #.
 	int get_usecode()
 		{ return usecode; }
+	int get_frame_time()		// Return frame time if moving.
+		{ return frame_time; }
+	int is_moving()
+		{ return frame_time != 0; }
 					// Set new action.
 	void set_action(Actor_action *newact);
 					// Walk to a desired spot.
+	void walk_to_tile(Tile_coord dest, int speed = 250, int delay = 0);
 	void walk_to_tile(int tx, int ty, int tz, int speed = 250, 
-							int delay = 0);
-	void walk_to_tile(Tile_coord p, int speed = 250, int delay = 0)
-		{ walk_to_tile(p.tx, p.ty, p.tz, speed, delay); }
+							int delay = 0)
+		{ walk_to_tile(Tile_coord(tx, ty, tz), speed, delay); }
 					// Walk to desired point.
 	void walk_to_point(unsigned long destx, unsigned long desty, 
 								int speed);
-#ifdef NEWPATH
-	void stop();
-#endif
+	void stop();			// Stop walking.
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
 					// Render.
@@ -181,8 +185,6 @@ public:
 		initial_location.lift=new_lift;
 		};
 #endif
-	virtual int walk()		// Walk towards a direction.
-		{ return 0; }
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame)
 		{ return 0; }
@@ -232,7 +234,6 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 	void get_followers();		// Get party to follow.
-	virtual int walk();		// Walk towards a direction.
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
 					// Update chunks after NPC moved.
@@ -402,7 +403,8 @@ public:
 	virtual void paint(Game_window *gwin);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
-	virtual int walk();		// Walk towards a direction.
+					// Step onto an (adjacent) tile.
+	virtual int step(Tile_coord t, int frame);
 	void follow(Actor *leader);	// Follow the leader.
 					// Update chunks after NPC moved.
 	void switched_chunks(Chunk_object_list *olist,
@@ -421,7 +423,8 @@ public:
 	Monster_actor(char *nm, int shapenum, int fshape = -1, int uc = -1)
 		: Npc_actor(nm, shapenum, fshape, uc)
 		{  }
-	virtual int walk();		// Walk towards a direction.
+					// Step onto an (adjacent) tile.
+	virtual int step(Tile_coord t, int frame);
 	};
 
 /*

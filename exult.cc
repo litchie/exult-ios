@@ -806,7 +806,7 @@ void Wait_for_arrival
 #ifdef MOUSE
 	mouse->hide();			// Turn off mouse.
 #endif
-	while (actor->is_walking())
+	while (actor->is_moving())
 		{
 		Delay();		// Wait a fraction of a second.
 					// Get current time, & animate.

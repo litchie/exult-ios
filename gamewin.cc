@@ -995,27 +995,6 @@ void Game_window::view_up
 	}
 
 /*
- *	Repaint a sprite after it has been moved.
- */
-
-void Game_window::repaint_sprite
-	(
-	Sprite *sprite,
-	Rectangle& oldrect		// Where it used to be.
-	)
-	{
-					// Get new rectangle.
-	Rectangle newrect = get_shape_rect(sprite);
-					// Merge them.
-	Rectangle sum = oldrect.add(newrect);
-	sum.enlarge(4);			// Make a little bigger.
-					// Intersect with screen.
-	sum = clip_to_win(sum);
-	if (sum.w > 0 && sum.h > 0)	// Watch for negatives.
-		paint(sum.x, sum.y, sum.w, sum.h);
-	}
-
-/*
  *	Start moving the actor.
  */
 

@@ -1522,6 +1522,7 @@ Frames_sequence::Frames_sequence
 	memcpy(frames, f, cnt);		// Copy in the list.
 	}
 
+#if 0
 /*
  *	Create a moveable sprite.
  */
@@ -1682,7 +1683,7 @@ int Sprite::next_frame
 		next_frame = -1;
 	return (1);
 	}
-
+#endif
 /*
  *	Create a text object.
  */
