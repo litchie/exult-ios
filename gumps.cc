@@ -99,7 +99,7 @@ public:
 		  max_size(maxsz), length(0), textx(x + tx), texty(y + ty),
 		  cursor(0), focus(0)
 		{
-		text[0] = 0;
+		text[0] = text[maxsz] = 0;
 		Shape_frame *shape = Game_window::get_game_window()->
 			get_gump_shape(shnum, 0);
 					// Want text coords. rel. to parent.
@@ -110,15 +110,18 @@ public:
 		{ delete text; }
 	int get_length()
 		{ return length; }
+	char *get_text()
+		{ return text; }
+	void set_text(char *newtxt)	// Set text.
+		{
+		strncpy(text, newtxt ? newtxt : "", max_size);
+		length = strlen(text);
+		}
 	void paint();			// Paint.
 					// Handle mouse click.
 	int mouse_clicked(Game_window *gwin, int mx, int my);
 	void insert(int chr);		// Insert a character.
-	void lose_focus()
-		{
-		focus = 0;
-		paint();
-		}
+	void lose_focus();
 	};
 
 /*
@@ -280,8 +283,6 @@ int Gump_text::mouse_clicked
 				break;
 				}
 		}
-	paint();
-	gwin->set_painted();
 	return (1);
 	}
 
@@ -301,6 +302,18 @@ void Gump_text::insert
 	text[cursor++] = chr;		// Store, and increment cursor.
 	length++;
 	text[length] = 0;
+	paint();
+	}
+
+/*
+ *	Lose focus.
+ */
+
+void Gump_text::lose_focus
+	(
+	)
+	{
+	focus = 0;
 	paint();
 	}
 
@@ -368,7 +381,11 @@ void Disk_gump_button::activate
 	extern int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
 	File_gump_object *fileio = new File_gump_object();
 	Modal_gump(fileio, Mouse::hand);
+					// Did user restore a game?
+	int restored = fileio->restored_game();
 	delete fileio;
+	if (restored)
+		parent->close(gwin);	// If so, close gump.
 	}
 
 /*
@@ -1417,12 +1434,16 @@ void Slider_gump_object::mouse_drag
 
 File_gump_object::File_gump_object
 	(
-	) : Modal_gump_object(0, FILEIO), pushed_text(0), focus(0)
+	) : Modal_gump_object(0, FILEIO), pushed_text(0), focus(0), restored(0)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	int i;
 	int ty = texty;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++, ty += texth)
+		{
 		names[i] = new Gump_text(this, FNTEXT, textx, ty, 30, 12, 2);
+		names[i]->set_text(gwin->get_save_name(i));
+		}
 					// First row of buttons:
 	buttons[0] = buttons[1] = 0;	// No load/save until name chosen.
 	buttons[2] = new Quit_gump_button(this, btn_cols[2], btn_rows[0]);
@@ -1452,6 +1473,23 @@ File_gump_object::~File_gump_object
 	}
 
 /*
+ *	Get the index of one of the text fields (savegame #).
+ *
+ *	Output:	Index, or -1 if not found.
+ */
+
+int File_gump_object::get_save_index
+	(
+	Gump_text *txt
+	)
+	{
+	for (int i = 0; i < sizeof(names)/sizeof(names[0]); i++)
+		if (names[i] == txt)
+			return (i);
+	return (-1);
+	}
+
+/*
  *	'Load' clicked.
  */
 
@@ -1459,9 +1497,17 @@ void File_gump_object::load
 	(
 	)
 	{
-	if (!focus)			// This would contain the name.
+	if (!focus ||			// This would contain the name.
+	    !focus->get_length())
 		return;
-//++++++++++
+	int num = get_save_index(focus);// Which one is it?
+	if (num == -1)
+		return;			// Shouldn't ever happen.
+					// +++++Ask if sure.
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->restore_gamedat(num);	// Aborts if unsuccessful.
+	done = 1;
+	restored = 1;
 	}
 
 /*
@@ -1472,9 +1518,17 @@ void File_gump_object::save
 	(
 	)
 	{
-	if (!focus)			// This would contain the name.
+	if (!focus || 			// This would contain the name.
+	    !focus->get_length())
 		return;
-//+++++++++
+	int num = get_save_index(focus);// Which one is it?
+	if (num == -1)
+		return;			// Shouldn't ever happen.
+	Game_window *gwin = Game_window::get_game_window();
+	if (*gwin->get_save_name(num))	// Already a game in this slot?
+		;			// ++++++++++Ask if sure!
+	if (gwin->save_gamedat(num, focus->get_text()))
+		cout << "Saved game #" << num << " successfully.\n";
 	}
 
 /*
@@ -1563,34 +1617,42 @@ void File_gump_object::mouse_up
 		pushed->unpush(gwin);
 		if (pushed->on_button(gwin, mx, my))
 			pushed->activate(gwin);
+		pushed = 0;
 		}
-	else if (pushed_text && pushed_text->mouse_clicked(gwin, mx, my))
-		{			// Clicked on text.
-		if (focus && focus != pushed_text)
-					// Another had focus.
-			focus->lose_focus();
-		focus = pushed_text;
-					// Need load/save buttons?
-		int have_ls = (buttons[0] != 0);
-		if (focus->get_length() && !have_ls)
-			{
-			buttons[0] = new Load_save_gump_button(this,
-				btn_cols[0], btn_rows[0], LOADBTN);
-			buttons[1] = new Load_save_gump_button(this,
-				btn_cols[1], btn_rows[0], SAVEBTN);
-			}
-		else if (!focus->get_length() && have_ls)
-			{		// No name yet.
-			delete buttons[0];
-			delete buttons[1];
-			buttons[0] = buttons[1] = 0;
-			}
-		if (have_ls != (buttons[0] != 0))
-			paint(gwin);	// Repaint if changed.
-		gwin->set_painted();
+	if (!pushed_text)
+		return;
+					// Let text field handle it.
+	if (!pushed_text->mouse_clicked(gwin, mx, my) ||
+	    pushed_text == focus)	// Same field already selected?
+		{
+		pushed_text->paint();
+		pushed_text = 0;
+		return;
 		}
-	pushed = 0;
+	if (focus)			// Another had focus.
+		{
+		focus->set_text(gwin->get_save_name(get_save_index(focus)));
+		focus->lose_focus();
+		}
+	focus = pushed_text;		// Switch focus to new field.
 	pushed_text = 0;
+	if (focus->get_length())	// Need load/save buttons?
+		{
+		if (!buttons[0])
+			buttons[0] = new Load_save_gump_button(this,
+					btn_cols[0], btn_rows[0], LOADBTN);
+		if (!buttons[1])
+			buttons[1] = new Load_save_gump_button(this,
+					btn_cols[1], btn_rows[0], SAVEBTN);
+		}
+	else if (!focus->get_length())
+		{			// No name yet.
+		delete buttons[0];
+		delete buttons[1];
+		buttons[0] = buttons[1] = 0;
+		}
+	paint(gwin);			// Repaint.
+	gwin->set_painted();
 	}
 
 /*
@@ -1605,6 +1667,18 @@ void File_gump_object::key_down
 	if (chr < ' ')
 		return;			// For now, ignore these.
 	if (focus)			// Text field?
+		{
+		int old_length = focus->get_length();
 		focus->insert(chr);
+					// Added first character?  Need 
+					//   'Save' button.
+		if (!old_length && focus->get_length() && !buttons[1])
+			{
+			buttons[1] = new Load_save_gump_button(this,
+					btn_cols[1], btn_rows[0], SAVEBTN);
+			paint_button(Game_window::get_game_window(),
+								buttons[1]);
+			}
+		}
 	}
 

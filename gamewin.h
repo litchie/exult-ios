@@ -93,6 +93,7 @@ private:
 	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
 	Rectangle dirty;		// Dirty rectangle.
+	char *save_names[10];		// Names of saved games.
 					// Dragging info:
 	Game_object *dragging;		// What's being dragged.
 	Gump_object *dragging_gump;
@@ -104,6 +105,7 @@ private:
 					// Open a U7 file.
 	int u7open(ifstream& in, char *fname, int dont_abort = 0);
 	void clear_world();		// Clear out world's contents.
+	void read_save_names();		// Read in saved-game names.
 public:
 	int skip_lift;			// Skip objects with lift > 0.
 	int paint_eggs;
@@ -381,6 +383,8 @@ public:
 		else
 			return 0;
 		}
+	char *get_save_name(int i)	// Get ->saved-game name.
+		{ return save_names[i]; }
 					// Paint a bit of text.
 	void paint_text_object(Text_object *txt);
 					// Paint "flat" scenery in a chunk.
@@ -468,8 +472,10 @@ private:
 	int drop_at_lift(int at_lift);
 public:
 	void restore_gamedat(char *fname);// Explode a savegame into "gamedat".
+	void restore_gamedat(int num);
 					// Save "gamedat".
 	int save_gamedat(char *fname, char *savename);
+	int save_gamedat(int num, char *savename);
 	char *get_game_identity(char *fname);
 	char *get_shape_file_name(int n);
 	Vga_file *get_shape_file_data(int n);

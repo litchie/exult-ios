@@ -54,6 +54,7 @@
 #define IDENTITY	"gamedat/identity"
 #define ENDGAME		"static/endgame.dat"
 #define MIDITMPFILE     "u7midi"
+#define SAVENAME	"game%02d.u7"
 
 #endif
 

@@ -129,6 +129,7 @@ Game_window::Game_window
 			read_gwin();	// Read in 'gamewin.dat' to set clock,
 					//   scroll coords.
 		}
+	read_save_names();		// Read in saved-game names.
 					// Create window.
 	win = new Image_window(width, height); //<- error in timer
 					// Set title.
