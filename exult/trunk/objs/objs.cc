@@ -166,7 +166,7 @@ int Game_object::get_volume
 	(
 	) const
 	{
-	int vol = Game_window::get_instance()->get_info(this).get_volume();
+	int vol = get_info().get_volume();
 	return vol;			// I think U7 ignores quantity!
 	}
 
@@ -276,8 +276,8 @@ int Game_object::swap_positions
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	Shape_info& inf1 = gwin->get_info(this);
-	Shape_info& inf2 = gwin->get_info(obj2);
+	Shape_info& inf1 = get_info();
+	Shape_info& inf2 = obj2->get_info();
 	if (inf1.get_3d_xtiles() != inf2.get_3d_xtiles() ||
 	    inf1.get_3d_ytiles() != inf2.get_3d_ytiles())
 		return 0;		// Not the same size.
@@ -325,7 +325,7 @@ static int Check_mask
 	int mask
 	)
 	{
-	Shape_info& info = gwin->get_info(obj);
+	Shape_info& info = obj->get_info();
 	if ((mask&(4|8)) &&		// Both seem to be all NPC's.
 	    !info.is_npc())
 		return 0;
@@ -589,7 +589,7 @@ Rectangle Game_object::get_footprint
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = gwin->get_info(this);
+	Shape_info& info = get_info();
 					// Get footprint.
 	int frame = get_framenum();
 	int xtiles = info.get_3d_xtiles(frame);
@@ -623,7 +623,7 @@ Game_object *Game_object::find_blocking
 		Tile_coord t = obj->get_tile();
 		if (t.tx < tile.tx || t.ty < tile.ty || t.tz > tile.tz)
 			continue;	// Out of range.
-		Shape_info& info = gwin->get_info(obj);
+		Shape_info& info = obj->get_info();
 		int ztiles = info.get_3d_height(); 
 		if (!ztiles || !info.is_solid())
 			continue;	// Skip if not an obstacle.
@@ -646,7 +646,7 @@ int Game_object::is_closed_door
 	) const
 	{
 	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = gwin->get_info(this);
+	Shape_info& info = get_info();
 	if (!info.is_door())
 		return 0;
 					// Get door's footprint.
@@ -1489,7 +1489,7 @@ int Game_object::get_rotated_frame
 	Game_window *gwin = Game_window::get_instance();
 	int curframe = get_framenum();
 	int shapenum = get_shapenum();
-	Shape_info& info = gwin->get_info(shapenum);
+	Shape_info& info = get_info();
 	if (shapenum == 292)		// Seat is a special case.
 		{
 		int dir = curframe%4;	// Current dir (0-3).
@@ -1544,34 +1544,6 @@ int Game_object::attack_object
 			attacker->get_property((int) Actor::strength);
 	return wpoints;
 	}
-#if 0	/* ++++++++NOT USED */
-/*
- *	Get all connected pieces of an object.
- */
-
-static void Get_connected
-	(
-	Game_object *obj,
-	Game_object_vector& vec		// All returned here.
-	)
-	{
-	vec.append(obj);
-	Game_object_vector newones;
-					// (Delta = 2 ok for glass counters.)
-	obj->find_nearby(newones, obj->get_shapenum(), 2, 0, c_any_qual, c_any_framenum);
-	bool found = false;
-	for (Game_object_vector::const_iterator it = newones.begin();
-						it != newones.end(); ++it)
-		{
-		Game_object *newobj = *it;
-		if (vec.find(newobj) == -1)
-			{		// Look recursively.
-			Get_connected(newobj, vec);
-			found = true;
-			}
-		}
-	}
-#endif
 
 /*
  *	Being attacked.

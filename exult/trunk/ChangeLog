@@ -1,5 +1,7 @@
 2002-06-19  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
+	* shapeid.cc,etc:  Game_window::get_info(Game_object *) is
+	replaced by ShapeID.get_info().
 	* Lots:  Cleanup:  Game_window::get_game_window() => get_instance().
 	* Lots:  ::as_actor() replaces lots of dynamic_cast's.
 

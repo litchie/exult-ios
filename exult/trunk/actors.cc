@@ -246,7 +246,7 @@ void Actor::ready_best_weapon
 		if (obj->get_shapenum() == 595)
 			continue;	// Don't pick the torch. (Don't under-
 					//   stand weapons.dat well, yet!)
-		Shape_info& info = gwin->get_info(obj);
+		Shape_info& info = obj->get_info();
 		Weapon_info *winf = info.get_weapon_info();
 		if (!winf)
 			continue;	// Not a weapon.
@@ -296,8 +296,7 @@ void Actor::unready_weapon
 	Game_object *obj = spots[spot];
 	if (!obj)
 		return;
-	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = gwin->get_info(obj);
+	Shape_info& info = obj->get_info();
 	if (!info.get_weapon_info())	// A weapon?
 		return;
 	if (!spots[belt])		// Belt free?
@@ -361,15 +360,14 @@ int Actor::is_blocked
 	Tile_coord *f			// Step from here, or curpos if null.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = gwin->get_info(this);
+	Shape_info& info = get_info();
 					// Get dim. in tiles.
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
 	int ztiles = info.get_3d_height();
 	if (xtiles == 1 && ytiles == 1)	// Simple case?
 		{
-		Map_chunk *nlist = gwin->get_chunk(t.tx/c_tiles_per_chunk,
-						   t.ty/c_tiles_per_chunk);
+		Map_chunk *nlist = Game_window::get_instance()->get_chunk(
+			t.tx/c_tiles_per_chunk, t.ty/c_tiles_per_chunk);
 		nlist->setup_cache();
 		int new_lift;
 		int blocked = nlist->is_blocked(ztiles, t.tz,
@@ -966,7 +964,7 @@ void Actor::get_tile_info
 		water = poison = 0;
 	else
 		{
-		Shape_info& finfo = gwin->get_info(flat.get_shapenum());
+		Shape_info& finfo = flat.get_info();
 		water = finfo.is_water();
 		poison = finfo.is_poisonous();
 					// Check for swamp/swamp boots.
@@ -983,8 +981,8 @@ void Actor::get_tile_info
 				poison = 0;
 			else
 				{	// Safe from poisoning?
-				Monster_info *minf = gwin->get_info(
-				    actor->get_shapenum()).get_monster_info();
+				Monster_info *minf = 
+					actor->get_info().get_monster_info();
 				if (minf && minf->poison_safe())
 					poison = 0;
 				}
@@ -1066,7 +1064,7 @@ void Actor::get_prefered_slots
 	)
 {
 
-	Shape_info& info = Game_window::get_instance()->get_info(obj);
+	Shape_info& info = obj->get_info();
 
 	// Defaults
 	fistype = FIS_Other;
@@ -1551,7 +1549,7 @@ int Actor::figure_weapon_pos
 	Game_window *gwin = Game_window::get_instance();
 	// Get offsets for actor shape
 	int myframe = get_framenum();
-	gwin->get_info(this).get_weapon_offset(myframe & 0x1f, actor_x,
+	get_info().get_weapon_offset(myframe & 0x1f, actor_x,
 			actor_y);
 	// Get offsets for weapon shape
 	// NOTE: when combat is implemented, weapon frame should depend on
@@ -1566,7 +1564,7 @@ int Actor::figure_weapon_pos
 		else			// W = N reflected.
 			weapon_frame = 2 | 32;
 		}
-	gwin->get_info(weapon).get_weapon_offset(weapon_frame&0xf, wx,
+	weapon->get_info().get_weapon_offset(weapon_frame&0xf, wx,
 			wy);
 	// actor_x will be 255 if (for example) the actor is lying down
 	// wx will be 255 if the actor is not holding a proper weapon
@@ -1954,12 +1952,12 @@ bool Actor::reduce_health
 	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
 		return false;
 	Game_window *gwin = Game_window::get_instance();
-	Monster_info *minf = gwin->get_info(this).get_monster_info();
+	Monster_info *minf = get_info().get_monster_info();
 	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
 		return false;
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
-			gwin->get_info(this).has_translucency() &&
+			get_info().has_translucency() &&
 			party_id < 0)	// Don't include Spark here!!
 		return false;
 	bool defeated = false;
@@ -2310,7 +2308,7 @@ void Actor::call_readied_usecode
 			return;
 			}
 
-	Shape_info& info = gwin->get_info(obj);
+	Shape_info& info = obj->get_info();
 	if (info.get_shape_class() != Shape_info::container)
 		{
 		Ready_type type = (Ready_type) info.get_ready_type();
@@ -2376,7 +2374,7 @@ void Actor::remove
 	Container_game_object::remove(obj);
 	if (index >= 0)
 		{			// Update light-source count.
-		if (gwin->get_info(obj).is_light_source())
+		if (obj->get_info().is_light_source())
 			light_sources--;
 		spots[index] = 0;
 		if (index == rhand || index == lhand)
@@ -2453,7 +2451,7 @@ bool Actor::add
 	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
 	Game_window *gwin = Game_window::get_instance();
 					// (Readied usecode now in drop().)
-	if (gwin->get_info(obj).is_light_source())
+	if (obj->get_info().is_light_source())
 		light_sources++;
 	return true;
 	}
@@ -2514,7 +2512,7 @@ int Actor::add_readied
 //						Usecode_machine::readied);
 
 	// Lightsource?
-	if (gwin->get_info(obj).is_light_source()) light_sources++;
+	if (obj->get_info().is_light_source()) light_sources++;
 
 	if (index == lhand && schedule)
 		schedule->set_weapon();	// Tell combat-schedule about it.
@@ -2548,11 +2546,10 @@ void Actor::change_member_shape
 	int newshape
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	if (gwin->get_info(obj).is_light_source())
+	if (obj->get_info().is_light_source())
 		light_sources--;
 	Container_game_object::change_member_shape(obj, newshape);
-	if (gwin->get_info(obj).is_light_source())
+	if (obj->get_info().is_light_source())
 		light_sources++;
 	}
 
@@ -2621,12 +2618,11 @@ int Actor::get_armor_points
 	static enum Spots aspots[] = {neck, torso, lfinger, rfinger, head,
 					rhand, legs, feet};
 	const int num_armor_spots = sizeof(aspots)/sizeof(aspots[0]);
-	Game_window *gwin = Game_window::get_instance();
 	for (int i = 0; i < num_armor_spots; i++)
 		{
 		Game_object *armor = spots[static_cast<int>(aspots[i])];
 		if (armor)
-			points += gwin->get_info(armor).get_armor();
+			points += armor->get_info().get_armor();
 		}
 	return points;
 	}
@@ -2643,10 +2639,9 @@ Weapon_info *Actor::get_weapon
 	{
 	points = 0;
 	Weapon_info *winf = 0;
-	Game_window *gwin = Game_window::get_instance();
 	Game_object *weapon = spots[static_cast<int>(lhand)];
 	if (weapon)
-		if ((winf = gwin->get_info(weapon).get_weapon_info()) != 0)
+		if ((winf = weapon->get_info().get_weapon_info()) != 0)
 			{
 			points = winf->get_damage();
 			shape = weapon->get_shapenum();
@@ -2655,7 +2650,7 @@ Weapon_info *Actor::get_weapon
 	weapon = spots[static_cast<int>(rhand)];
 	if (weapon)
 		{
-		Weapon_info *rwinf = gwin->get_info(weapon).get_weapon_info();
+		Weapon_info *rwinf = weapon->get_info().get_weapon_info();
 		int rpoints;
 		if (rwinf && (rpoints = rwinf->get_damage()) > points)
 			{
@@ -2735,7 +2730,7 @@ bool Actor::figure_hit_points
 	if (were_party && cheat.in_god_mode())
 		return false;
 	Game_window *gwin = Game_window::get_instance();
-	Monster_info *minf = gwin->get_info(this).get_monster_info();
+	Monster_info *minf = get_info().get_monster_info();
 	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
 		return false;
 	bool theyre_party = attacker &&
@@ -2943,7 +2938,7 @@ Game_object *Actor::attacked
 		}
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
-		gwin->get_info(this).has_translucency() && 
+		get_info().has_translucency() && 
 			party_id < 0)	// But don't include Spark!!
 		return this;
 	bool defeated = figure_hit_points(attacker, weapon_shape, ammo_shape);
@@ -3009,7 +3004,7 @@ void Actor::die
 			return;
 		}
 	properties[static_cast<int>(health)] = -50;
-	Shape_info& info = gwin->get_info(get_shapenum());
+	Shape_info& info = get_info();
 	Monster_info *minfo = info.get_monster_info();
 	remove_this(1);			// Remove (but don't delete this).
 	set_invalid();
@@ -3090,8 +3085,7 @@ Monster_actor *Actor::clone
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = gwin->get_info(this);
+	Shape_info& info = get_info();
 					// Base distance on greater dim.
 	int xs = info.get_3d_xtiles(), ys = info.get_3d_ytiles();
 					// Find spot.

@@ -1046,7 +1046,7 @@ void Sleep_schedule::now_what
 			}
 		Tile_coord bloc = bed->get_tile();
 		bloc.tz -= bloc.tx%5;	// Round down to floor level.
-		Shape_info& info = gwin->get_info(bed);
+		Shape_info& info = bed->get_info();
 		bloc.tx -= info.get_3d_xtiles(bed->get_framenum())/2;
 		bloc.ty -= info.get_3d_ytiles(bed->get_framenum())/2;
 					// Get within 3 tiles.
@@ -1064,7 +1064,7 @@ void Sleep_schedule::now_what
 		int dir = bed->get_shapenum() == 696 ? west : north;
 		npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
 					// Get bed info.
-		Shape_info& info = gwin->get_info(bed);
+		Shape_info& info = bed->get_info();
 		Tile_coord bedloc = bed->get_tile();
 		floorloc = npc->get_tile();
 		int bedframe = bed->get_framenum();// Unmake bed.
@@ -1636,7 +1636,7 @@ void Lab_schedule::now_what
 							npcpos, spot, cost0);
 		if (!pact)
 			break;		// Failed.
-		Shape_info& info = gwin->get_info(table);
+		Shape_info& info = table->get_info();
 		spot_on_table.tz += info.get_3d_height();
 		npc->set_action(new Sequence_actor_action(pact,
 			new Face_pos_actor_action(spot_on_table, 200)));
@@ -1859,7 +1859,7 @@ int Waiter_schedule::find_serving_spot
 								: foot.y + foot.h - 1;
 				if (foot.has_point(spot.tx, spot.ty))
 					{	// Passes test.
-					Shape_info& info = gwin->get_info(table);
+					Shape_info& info = table->get_info();
 					spot.tz = table->get_lift() +
 							info.get_3d_height();
 					return 1;
@@ -2115,7 +2115,7 @@ void Sew_schedule::now_what
 					npcpos, tpos, cost);
 					// Find where to put cloth.
 		Rectangle foot = work_table->get_footprint();
-		Shape_info& info = gwin->get_info(work_table);
+		Shape_info& info = work_table->get_info();
 		Tile_coord cpos(foot.x + foot.w/2, foot.y + foot.h/2,
 			work_table->get_lift() + info.get_3d_height());
 		if (pact)
@@ -2213,7 +2213,7 @@ void Sew_schedule::now_what
 					npcpos, tpos, cost);
 					// Find where to put cloth.
 		Rectangle foot = wares_table->get_footprint();
-		Shape_info& info = gwin->get_info(wares_table);
+		Shape_info& info = wares_table->get_info();
 		Tile_coord cpos(foot.x + rand()%foot.w, foot.y + rand()%foot.h,
 			wares_table->get_lift() + info.get_3d_height());
 		if (pact)
@@ -2362,7 +2362,7 @@ void Bake_schedule::now_what()
 
 					// Find where to put dough.
 		Rectangle foot = worktable->get_footprint();
-		Shape_info& info = gwin->get_info(worktable);
+		Shape_info& info = worktable->get_info();
 		Tile_coord cpos(foot.x + rand()%foot.w, foot.y + rand()%foot.h,
 			worktable->get_lift() + info.get_3d_height());
 		Tile_coord tablepos = cpos;
@@ -2486,7 +2486,7 @@ void Bake_schedule::now_what()
 					npcpos, tpos, cost);
 					// Find where to put cloth.
 		Rectangle foot = displaytable->get_footprint();
-		Shape_info& info = gwin->get_info(displaytable);
+		Shape_info& info = displaytable->get_info();
 		Tile_coord cpos(foot.x + rand()%foot.w, foot.y + rand()%foot.h,
 			displaytable->get_lift() + info.get_3d_height());
 		if (pact) {
@@ -2566,7 +2566,7 @@ void Bake_schedule::now_what()
 					npcpos, tpos, cost);
 
 		Rectangle foot = oven->get_footprint();
-		Shape_info& info = gwin->get_info(oven);
+		Shape_info& info = oven->get_info();
 		Tile_coord cpos(foot.x + 1, foot.y,
 				oven->get_lift() + info.get_3d_height());
 
@@ -2657,7 +2657,7 @@ void Forge_schedule::now_what
 				npcpos, tpos, cost);
 
 		Rectangle foot = firepit->get_footprint();
-		Shape_info& info = gwin->get_info(firepit);
+		Shape_info& info = firepit->get_info();
 		Tile_coord bpos(foot.x + foot.w/2 + 1, foot.y + foot.h/2,
 			firepit->get_lift() + info.get_3d_height());
 		if (pact) {
@@ -2767,7 +2767,7 @@ void Forge_schedule::now_what
 				tpos, tpos2, cost);
 
 		Rectangle foot = anvil->get_footprint();
-		Shape_info& info = gwin->get_info(anvil);
+		Shape_info& info = anvil->get_info();
 		Tile_coord bpos(foot.x + 2, foot.y,
 			anvil->get_lift() + info.get_3d_height());
 		if (pact && pact2) {

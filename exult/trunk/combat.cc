@@ -407,11 +407,10 @@ static int Swap_weapons
 	Actor *npc
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Game_object *bobj = npc->get_readied(Actor::belt);
 	if (!bobj)
 		return 0;
-	Shape_info& info = gwin->get_info(bobj);
+	Shape_info& info = bobj->get_info();
 	Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
 		return 0;		// Not a weapon.
@@ -688,7 +687,7 @@ Combat_schedule::Combat_schedule
 	Combat_schedule::set_weapon();
 					// Cache some data.
 	Game_window *gwin = Game_window::get_instance();
-	Monster_info *minf = gwin->get_info(npc).get_monster_info();
+	Monster_info *minf = npc->get_info().get_monster_info();
 	can_yell = !minf || !minf->cant_yell();
 	}
 
@@ -743,7 +742,7 @@ void Combat_schedule::now_what
 		}
 	Game_object *opponent = npc->get_target();
 					// Flag for slimes:
-	bool strange = gwin->get_info(npc).has_strange_movement() != false;
+	bool strange = npc->get_info().has_strange_movement() != false;
 	switch (state)			// Note:  state's action has finished.
 		{
 	case approach:

@@ -107,9 +107,8 @@ int Ireg_game_object::is_dragable
 	(
 	) const
 	{
-	Game_window *gwin = Game_window::get_instance();
 					// 0 weight means 'too heavy'.
-	return gwin->get_info(this).get_weight() > 0;
+	return get_info().get_weight() > 0;
 	}
 
 /*
@@ -129,8 +128,7 @@ void Ireg_game_object::write_ireg
 					// Special case for 'quantity' items:
 	if (get_flag(Obj_flags::okay_to_take))
 		{
-		Shape_info& info = Game_window::get_instance()->get_info(
-									this);
+		Shape_info& info = get_info();
 		if (info.has_quantity())
 			buf[6] |= 0x80;
 		else if (info.has_quality_flags())

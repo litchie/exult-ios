@@ -82,7 +82,7 @@ Monster_actor::Monster_actor
 	    next_monster(0), animator(0)
 	{
 					// Check for animated shape.
-	Shape_info& info = Game_window::get_instance()->get_info(this);
+	Shape_info& info = get_info();
 	if (info.is_animated())
 		animator = Animator::create(this, 1);
 	}
@@ -375,8 +375,7 @@ int Monster_actor::get_armor_points
 	(
 	)
 	{
-	Monster_info *inf =
-	    Game_window::get_instance()->get_info(this).get_monster_info();
+	Monster_info *inf = get_info().get_monster_info();
 					// Kind of guessing here.
 	return Actor::get_armor_points() + (inf ? inf->armor : 0);
 	}
@@ -391,14 +390,13 @@ Weapon_info *Monster_actor::get_weapon
 	int& shape
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Monster_info *inf = gwin->get_info(this).get_monster_info();
+	Monster_info *inf = get_info().get_monster_info();
 					// Kind of guessing here.
 	Weapon_info *winf = Actor::get_weapon(points, shape);
 	if (!winf)			// No readied weapon?
 		{			// Look up monster itself.
 		shape = 0;
-		winf = gwin->get_info(get_shapenum()).get_weapon_info();
+		winf = get_info().get_weapon_info();
 		if (winf)
 			points = winf->get_damage();
 		else			// Guessing:
