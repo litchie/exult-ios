@@ -43,6 +43,8 @@ namespace  Obj_flags
 		si_on_moving_barge = 17,// SI's version of 10?
 		is_temporary = 18,	// Is temporary
 		okay_to_land = 21,	// Used for flying-carpet.
+		in_dungeon = 23,	// Pretty sure.  If set, you won't
+					//   be accused of stealing food.
 		confused = 25,		// ??Guessing.
 		in_motion = 26,		// ??Guessing (cart, boat)??
 		met = 28,			// Has the npc been met

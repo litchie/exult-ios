@@ -493,7 +493,8 @@ void Combat_schedule::start_strike
 			pos.ty = npctiles.y;
 		else			// South.
 			opos.ty = opptiles.y;
-		if (!Fast_pathfinder_client::is_straight_path(pos, opos))
+		if (!no_blocking &&
+		    !Fast_pathfinder_client::is_straight_path(pos, opos))
 			{		// Blocked.  Find another spot.
 			pos.tx += rand()%7 - 3;
 			pos.ty += rand()%7 - 3;
@@ -580,7 +581,7 @@ void Combat_schedule::set_weapon
 		projectile_shape = ammo_shape = 0;
 		projectile_range = 0;
 		strike_range = 1;	// Can always bite.
-		is_thrown = returns = false;
+		is_thrown = returns = no_blocking = false;
 		}
 	else
 		{
@@ -591,6 +592,15 @@ void Combat_schedule::set_weapon
 
 		returns = info->returns();
 		is_thrown = info->is_thrown();
+		no_blocking = info->no_blocking();
+		if (ammo_shape)
+			{
+			Ammo_info *ainfo = 
+				ShapeID::get_info(ammo_shape).get_ammo_info();
+			if (ainfo)
+				no_blocking = 
+					no_blocking || ainfo->no_blocking();
+			}
 		}
 	max_range = projectile_range > strike_range ? projectile_range
 					: strike_range;
@@ -683,7 +693,8 @@ Combat_schedule::Combat_schedule
 		weapon_shape(0),
 		ammo_shape(0), projectile_shape(0), 
 		strike_range(0), projectile_range(0), max_range(0),
-		practice_target(0), is_thrown(false), yelled(0), 
+		practice_target(0), is_thrown(false), yelled(0),
+		no_blocking(false),
 		started_battle(false), fleed(0), failures(0)
 	{
 	Combat_schedule::set_weapon();
