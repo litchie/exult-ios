@@ -1647,7 +1647,8 @@ static void Move_grid
 	tx -= xtiles - 1;		// Get top-left of footprint.
 	ty -= ytiles - 1;
 					// Let's try a green outline.
-	int pix = gwin->get_special_pixel(POISON_PIXEL);
+	int pix = Shape_manager::get_instance()->get_special_pixel(
+								POISON_PIXEL);
 	Image_window8 *win = gwin->get_win();
 	win->set_clip(0, 0, win->get_width(), win->get_height());
 	for (int Y = 0; Y <= ytiles; Y++)

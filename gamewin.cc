@@ -415,18 +415,6 @@ void Analyze_xform(unsigned char *xform, int alpha, Palette *pal)
 void Game_window::init_files(bool cycle)
 {
 	
-	// Determine some colors based on the default palette
-	pal->load(PALETTES_FLX, 0);	// could throw!
-					// Get a bright green.
-	special_pixels[POISON_PIXEL] = pal->find_color(4, 63, 4);
-					// Get a light gray.
-	special_pixels[PROTECT_PIXEL] = pal->find_color(62, 62, 55);
-					// Yellow for cursed.
-	special_pixels[CURSED_PIXEL] = pal->find_color(62, 62, 5);
-					// Red for hit in battle.
-	special_pixels[HIT_PIXEL] = pal->find_color(63, 4, 4);
-	// What about charmed/cursed/paralyzed?
-
 #ifdef RED_PLASMA
 	// Display red plasma during load...
 	if (cycle)

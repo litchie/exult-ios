@@ -553,8 +553,7 @@ void Paperdoll_gump::paint_object
 		obj->paint_shape(ox, oy);
 		if (cheat.is_selected(obj))
 					// Outline selected obj.
-			gwin->paint_outline(ox, oy, obj->get_shape(),
-								HIT_PIXEL);
+			obj->paint_outline(ox, oy, HIT_PIXEL);
 
 		return;
 	}
@@ -585,8 +584,7 @@ void Paperdoll_gump::paint_object
 	ShapeID s(item->shape, f, item->file);
 	s.paint_shape(box.x + sx, box.y + sy, 1);
 	if (cheat.is_selected(obj))	// Outline selected obj.
-		gwin->paint_outline(box.x + sx, box.y + sy, s.get_shape(),
-								HIT_PIXEL);
+		s.paint_outline(box.x + sx, box.y + sy, HIT_PIXEL);
 }
 
 /*
