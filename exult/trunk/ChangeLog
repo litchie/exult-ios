@@ -1,3 +1,7 @@
+2001-06-05  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* files/utils.cc: try converting all path-components to uppercase in turn when file not found. Report original filename on error.
+	* gamewin.cc: updated 'SI paperdoll files not found' error message
+
 2001-06-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* ExultStudio: You can insert a new egg by using the pulldown menu.
