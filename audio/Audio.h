@@ -78,18 +78,6 @@ private:
 
 };
 
-//#else
-#if 0   //old pre-sound windows code
-
-class Audio {
-public:
-  void Init(int _samplerate, int _channels) {};
-  void start_music(int num, bool continuous) {};
-  void start_speech(int num, bool wait=false) {};
-};
-
-#endif
-
 extern	Audio *audio;
 
 #endif

@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
-#ifndef WIN32
+#ifdef XWIN
 
 #include "Midi.h"
 
@@ -185,8 +185,6 @@ const	char *Timidity_binary::copyright(void)
 	return "Internal cheapass forked timidity synthesiser";
 }
 
-#endif
+#endif // HAVE_TIMIDITY_BIN
 
-
-
-#endif
+#endif // XWIN
