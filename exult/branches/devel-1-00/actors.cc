@@ -3602,8 +3602,10 @@ int Actor::get_shape_real
 	(
 	)
 	{
+#if 0	/* Messes up start of BG after earthquake if you use an SI shape */
 	if (Game::get_game_type() == BLACK_GATE)
 		return get_shapenum();
+#endif
 	if (npc_num != 0)		// Not the avatar?
 		return shape_save!=-1?shape_save:get_shapenum();
 					// Taking guess (6/18/01):
