@@ -31,6 +31,7 @@ protected:
 	static class Effects_manager *eman;
 	static class Shape_manager *sman;
 	static class Usecode_machine *ucmachine;
+	static class Game_clock *gclock;
 public:
 	static void init(Game_window *g);
 	};

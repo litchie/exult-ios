@@ -184,6 +184,7 @@ static bool run_si = false;		// skip menu and run si
 
 static string arg_gamename = "default";	// cmdline arguments
 static int arg_buildmap = -1;
+static 	bool arg_nomenu = false;
 
 /*
  *	A handy breakpoint.
@@ -229,6 +230,7 @@ int main
 	parameters.declare("/h",&needhelp,true);
 	parameters.declare("--bg",&run_bg,true);
 	parameters.declare("--si",&run_si,true);
+	parameters.declare("--nomenu", &arg_nomenu, true);
 	parameters.declare("-v",&showversion,true);
 	parameters.declare("--version",&showversion,true);
 	parameters.declare("--game",&arg_gamename,"default");
@@ -244,6 +246,7 @@ int main
 			"--help\t\tShow this information" << endl <<
 			"--bg\t\tSkip menu and run Black Gate" << endl <<
 			"--si\t\tSkip menu and run Serpent Isle" << endl <<
+			"--nomenu\tSkip BG/SI game menu" << endl <<
 			"--version\tShow version info" << endl <<
 			"--buildmap\tCreate a fullsize map of the game world in u7map??.pcx" << endl <<
 			"\t\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl <<
@@ -653,7 +656,7 @@ static void Init
 		config->value("config/gameplay/skip_splash", skip_splash);
 		if(!skip_splash) 
 			game->play_intro();
-	} while(!game->show_menu());
+	} while(!game->show_menu(arg_nomenu));
 	gwin->init_files();
 	gwin->read_gwin();
 	gwin->setup_game();		// This will start the scene.

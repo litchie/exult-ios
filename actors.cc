@@ -47,6 +47,7 @@
 #include "game.h"
 #include "gamewin.h"
 #include "gamemap.h"
+#include "gameclk.h"
 #include "imagewin.h"
 #include "items.h"
 #include "npctime.h"
@@ -2066,7 +2067,7 @@ void Actor::set_flag
 	if (flag == Obj_flags::invisible)
 		{
 		need_timers()->start_invisibility();
-		gwin->set_palette();
+		gclock->set_palette();
 		}
 					// Update stats if open.
 	if (gwin->get_gump_man()->showing_gumps())
@@ -2113,7 +2114,7 @@ void Actor::clear_flag
 	else if (flag >= 32 && flag < 64)
 		flags2 &= ~(static_cast<uint32>(1) << (flag-32));
 	if (flag == Obj_flags::invisible)	// Restore normal palette.
-		gwin->set_palette();
+		gclock->set_palette();
 	else if (flag == Obj_flags::asleep)
 		{
 		if (schedule_type == Schedule::sleep)
@@ -3737,7 +3738,7 @@ void Npc_actor::update_schedule
 	if (i < 0)
 		{			// Not found?  Look at prev.?
 					// Always if noon of first day.
-		long hour = gwin->get_total_hours();
+		long hour = gclock->get_total_hours();
 		if (hour == 12 && !backwards)
 			backwards++;
 		while (backwards-- && i < 0)
@@ -3791,16 +3792,16 @@ void Npc_actor::activate
 					// Want to get BG actors from start
 					//   to their regular schedules:
 	int i;				// Past 6:00pm first day?
-	if (gwin->get_total_hours() >= 18 || 
+	if (gclock->get_total_hours() >= 18 || 
 	    Game::get_game_type() == SERPENT_ISLE ||
 					// Or no schedule change.
-	    (i = find_schedule_change(gwin->get_hour()/3)) < 0 ||
+	    (i = find_schedule_change(gclock->get_hour()/3)) < 0 ||
 					// Or schedule is already correct?
 	    schedules[i].get_type() == schedule_type)
 		return;
 	cout << "Setting '" << get_name() << "' to 1st schedule" << endl;
 					// Maybe a delay here?  Okay for now.
-	update_schedule(gwin->get_hour()/3);
+	update_schedule(gclock->get_hour()/3);
 	}
 
 /*

@@ -24,6 +24,7 @@
 
 #include "gamewin.h"
 #include "gamemap.h"
+#include "gameclk.h"
 #include "actors.h"
 #include "effects.h"
 #include "Zombie.h"
@@ -1095,7 +1096,7 @@ Lightning_effect::~Lightning_effect
 	)
 	{
 	if (flashing)			// Be sure palette is restored.
-		Game_window::get_instance()->set_palette();
+		Game_window::get_instance()->get_clock()->set_palette();
 	}
 
 /*
@@ -1113,7 +1114,7 @@ void Lightning_effect::handle_event
 	int delay = 100;		// Delay for next time.
 	if (flashing)			// Just turned white?  Restore.
 		{
-		gwin->set_palette();
+		gclock->set_palette();
 		flashing = false;
 		active = false;
 		if (curtime >= stop_time)

@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult.h"
 #include "exult_flx.h"
 #include "Text_button.h"
+#include "gameclk.h"
 #include <string>
 
 using std::string;
@@ -131,7 +132,7 @@ void Gamemenu_gump::video_options()
 	}
 	delete vid_opts;
 
-	gwin->set_palette();
+	gclock->set_palette();
 }
 
 void Gamemenu_gump::audio_options()

@@ -24,6 +24,7 @@
 
 #include "npctime.h"
 #include "gamewin.h"
+#include "gameclk.h"
 #include "actors.h"
 #include "items.h"
 #include "schedule.h"
@@ -276,7 +277,7 @@ uint32 Npc_timer::get_minute
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	return 60*gwin->get_total_hours() + gwin->get_minute();
+	return 60*gclock->get_total_hours() + gclock->get_minute();
 	}
 
 /*

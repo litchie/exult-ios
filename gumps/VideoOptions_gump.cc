@@ -34,6 +34,7 @@
 #include "exult.h"
 #include "exult_flx.h"
 #include "gamewin.h"
+#include "gameclk.h"
 #include "mouse.h"
 #include "Text_button.h"
 
@@ -187,7 +188,7 @@ void VideoOptions_gump::load_settings()
 	scaling = gwin->get_win()->get_scale()-1;
 	scaler = gwin->get_win()->get_scaler();
 	fullscreen = gwin->get_win()->is_fullscreen()?1:0;
-	gwin->set_palette();
+	gclock->set_palette();
 	
 }
 

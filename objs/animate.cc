@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "animate.h"
 #include "gamewin.h"
 #include "game.h"
+#include "gameclk.h"
 #include "Audio.h"
 #include "actors.h"			/* Only need this for Object_sfx. */
 #include "dir.h"
@@ -447,7 +448,7 @@ int Frame_animator::get_framenum()
 	switch (type)
 	{
 	case FA_SUNDIAL:
-		framenum = gwin->get_hour() % frames;  
+		framenum = gclock->get_hour() % frames;  
 		break;
 
 	case FA_ENERGY_FIELD:

@@ -27,6 +27,7 @@
 #include "actors.h"
 #include "Zombie.h"
 #include "gamewin.h"
+#include "gameclk.h"
 #include "gamemap.h"
 #include "actions.h"
 #include "dir.h"
@@ -98,7 +99,7 @@ int Schedule::try_street_maintenance
 	street_maintenance_time = curtime + 30000 + 
 				street_maintenance_failures*5000;
 	int *shapes;
-	int hour = gwin->get_hour();
+	int hour = gclock->get_hour();
 	bool bg = (Game::get_game_type() == BLACK_GATE);
 	if (hour >= 9 && hour < 18)
 		shapes = &day[0];
@@ -239,7 +240,7 @@ void Street_maintenance_schedule::now_what
 	cout << npc->get_name() << 
 			" done with street maintenance" << endl;
 				// Set back to old schedule.
-	int period = gwin->get_hour()/3;
+	int period = gclock->get_hour()/3;
 	npc->update_schedule(period, 7, 0);
 	}
 

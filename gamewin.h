@@ -27,7 +27,6 @@
 #include "lists.h"
 #include "rect.h"
 #include "tiles.h"
-#include "gameclk.h"
 #include "vgafile.h"
 
 #include <string>	// STL string
@@ -48,6 +47,8 @@ class Chunk_terrain;
 class Egg_object;
 class Font;
 class Game_object;
+class Game_clock;
+class Time_sensitive;
 class Gump;
 class Gump_button;
 class Ireg_game_object;
@@ -81,7 +82,7 @@ class Game_window
 		// Game component classes:
 	Dragging_info *dragging;	// Dragging info:
 	Effects_manager *effects;	// Manages special effects.
-	Game_clock clock;		// Keeps track of time.
+	Game_clock *clock;		// Keeps track of time.
 	Game_map *map;			// Holds all terrain.
 	Game_render *render;		// Helps with rendering.
 	Gump_manager *gump_man;		// Open containers on screen.
@@ -231,22 +232,7 @@ public:
 		{ return effects; }
 	inline Gump_manager *get_gump_man() { return gump_man; }
 	inline Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
-	/*
-	 *	Game time:
-	 */
-	int get_hour()			// Get current time.
-		{ return clock.get_hour(); }
-	int get_minute()
-		{ return clock.get_minute(); }
-	unsigned long get_total_hours()
-		{ return clock.get_total_hours(); }
-	void increment_clock(int num_minutes)
-		{ clock.increment(num_minutes); }
-	void fake_next_period()		// For debugging.
-		{ clock.fake_next_period(); }
-	Game_clock *get_clock () { return &clock; }
-	void set_palette()		// Set for time, flags, lighting.
-		{ clock.set_palette(); }
+	Game_clock *get_clock () { return clock; }
 	/*
 	 *	ExultStudio support:
 	 */

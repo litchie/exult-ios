@@ -61,6 +61,7 @@
 #include "game.h"
 #include "gamewin.h"
 #include "gamemap.h"
+#include "gameclk.h"
 #include "gamerend.h"
 #include "items.h"
 #include "jawbone.h"
@@ -142,7 +143,7 @@ void Background_noise::handle_event
 
 #ifndef COLOURLESS_REALLY_HATES_THE_BG_SFX
 
-	int bghour = gwin->get_hour();
+	int bghour = gwin->get_clock()->get_hour();
 	if(gwin->is_in_dungeon())
 		currentstate = 2;
 	else
@@ -230,7 +231,7 @@ void Background_noise::handle_event
 				sound = last_sound;
 			else
 			{
-				int hour = gwin->get_hour();
+				int hour = gwin->get_clock()->get_hour();
 				if (hour < 6 || hour > 20)
 					sound = bgnight[rand()%sizeof(bgnight)];
 				else
@@ -267,7 +268,7 @@ Game_window::Game_window
 	) : 
 	    win(0), map(new Game_map()),
 	    usecode(0), combat(false), armageddon(false),
-            tqueue(new Time_queue()), clock(tqueue), time_stopped(0),
+            tqueue(new Time_queue()), time_stopped(0),
 	    std_delay(c_std_delay),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(new Effects_manager(this)), 
@@ -289,7 +290,9 @@ Game_window::Game_window
 #endif
 	{
 	game_window = this;		// Set static ->.
+	clock = new Game_clock(tqueue);
 	shape_man = new Shape_manager();// Create the single instance.
+	Game_singletons::init(this);	// Everything but 'usecode' exists.
 
 	set_window_size(width, height, scale, scaler);
 	pal = new Palette();
@@ -371,6 +374,7 @@ Game_window::~Game_window
 	delete map;
 	delete usecode;
 	delete removed;
+	delete clock;
 	}
 
 /*
@@ -437,7 +441,7 @@ void Game_window::init_files(bool cycle)
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
 					// Force clock to start.
-	tqueue->add(timer, &clock, reinterpret_cast<long>(this));
+	tqueue->add(timer, clock, reinterpret_cast<long>(this));
 					// Go to starting chunk
 	scrolltx = game->get_start_tile_x();
 	scrollty = game->get_start_tile_y();
@@ -562,8 +566,8 @@ void Game_window::add_special_light
 	{
 	if (!special_light)		// Nothing in effect now?
 		{
-		special_light = clock.get_total_minutes();
-		clock.set_palette();
+		special_light = clock->get_total_minutes();
+		clock->set_palette();
 		}
 	special_light += minutes;	// Figure ending time.
 	}
@@ -1205,9 +1209,9 @@ void Game_window::write_gwin
 	gout.write2(get_scrolltx());
 	gout.write2(get_scrollty());
 					// Write clock.
-	gout.write2(clock.get_day());
-	gout.write2(clock.get_hour());
-	gout.write2(clock.get_minute());
+	gout.write2(clock->get_day());
+	gout.write2(clock->get_hour());
+	gout.write2(clock->get_minute());
 	gout.write4(special_light);	// Write spell expiration minute.
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
 	if (player) {
@@ -1248,11 +1252,12 @@ void Game_window::read_gwin
 	scrolltx = gin.read2();
 	scrollty = gin.read2();
 					// Read clock.
-	clock.set_day(gin.read2());
-	clock.set_hour(gin.read2());
-	clock.set_minute(gin.read2());
-	if (!clock.in_queue())		// Be sure clock is running.
-		tqueue->add(Game::get_ticks(), &clock, reinterpret_cast<long>(this));
+	clock->set_day(gin.read2());
+	clock->set_hour(gin.read2());
+	clock->set_minute(gin.read2());
+	if (!clock->in_queue())		// Be sure clock is running.
+		tqueue->add(Game::get_ticks(), clock, 
+					reinterpret_cast<long>(this));
 	if (!gin_stream.good())		// Next ones were added recently.
 		throw file_read_exception(GWINDAT);
 	special_light = gin.read4();
@@ -2541,7 +2546,7 @@ void Game_window::setup_game
 	Face_stats::load_config(config);
 
 	// Set palette for time-of-day.
-	clock.set_palette();
+	clock->set_palette();
 }
 
 

@@ -175,7 +175,7 @@ void CheatScreen::show_screen()
 
 	// Start the loop
 	NormalLoop();
-	gwin->set_palette();
+	clock->set_palette();
 }
 
 

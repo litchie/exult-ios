@@ -27,6 +27,7 @@
 #include "cheat.h"
 #include "exult.h"
 #include "gamewin.h"
+#include "gameclk.h"
 #include "gamemap.h"
 #include "ucmachine.h"
 #include "Configuration.h"
@@ -336,7 +337,7 @@ void Cheat::levelup_party (void) const {
 void Cheat::fake_time_period (void) const {
 	if (!enabled) return;
 
-	gwin->fake_next_period();
+	gwin->get_clock()->fake_next_period();
 	eman->center_text("Game clock incremented");
 }
 
