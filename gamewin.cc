@@ -357,6 +357,14 @@ Game_window::Game_window
 							Combat::difficulty, 0);
 	config->set("config/gameplay/combat/difficulty",
 						Combat::difficulty, true);
+	config->value("config/gameplay/combat/mode", str, "original");
+	if (str == "keypause")
+		Combat::mode = Combat::keypause;
+	else if (str == "round")
+		Combat::mode = Combat::round;
+	else
+		Combat::mode = Combat::original;
+	config->set("config/gameplay/combat/mode", str, true);
 	config->value("config/gameplay/combat/show_hits", str, "no");
 	Combat::show_hits = (str == "yes");
 	config->set("config/gameplay/combat/show_hits", str, true);

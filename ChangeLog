@@ -1,5 +1,6 @@
 2002-11-23  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* combat.cc,keys.cc,etc.:  Suspend/resume combat (space key).
 	* combat.h (public): Combat class with options.
 	* actors.cc:  Optionally show hits on screen.
 
