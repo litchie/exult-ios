@@ -8,11 +8,11 @@ private:
 	size_t	size_;
 	T *data_;
 public:
-	class range_error : public exception
+	class range_error : public std::exception
 		{
-		string	what_;
+		std::string	what_;
 		public:
-		 range_error (const string& what_arg): what_ (what_arg) { }
+		 range_error (const std::string& what_arg): what_ (what_arg) { }
 		 const char *what(void) { return what_.c_str(); }
 		};
 	autoarray() : size_(0), data_(0) 

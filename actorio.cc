@@ -30,6 +30,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "egg.h"
 
+using std::ios;
+using std::cout;
+using std::endl;
+using std::istream;
+using std::ostream;
+
 /*
  *	Read in actor from a given file.
  */

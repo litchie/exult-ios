@@ -1,3 +1,8 @@
+2000-11-22  Max Horn  <max@quendi.de>
+
+	* added a lot of C++ std namespace code
+	* moved mac port to use CodeWarrior Pro 6 
+
 2000-11-22  Tristan Tarrant <nadir@users.sourceforge.net>
 
 	* data/extras.shp, data/midi_conversion.shp, data/sfx_conversion.shp: 

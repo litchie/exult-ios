@@ -28,7 +28,7 @@ class TextScroller {
 private:
 	Font *font;
 	Shape *shapes;
-	vector<char *> *text;
+	std::vector<char *> *text;
 public:
 	TextScroller(const char *archive, int index, Font *fnt, Shape *shp);
 	~TextScroller();

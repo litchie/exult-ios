@@ -99,7 +99,7 @@ public:
 		{ 
 #if DEBUG
 			if (type == pointer_type || (type == int_type && (value.intval > 0x10000 || value.intval < -0x10000)))
-				cerr << "Probable attempt at getting int value of pointer!!" << endl; 
+				std::cerr << "Probable attempt at getting int value of pointer!!" << std::endl; 
 #endif
 			return ((type == int_type) ? value.intval : 0); 
 		}
@@ -112,7 +112,7 @@ public:
 		{
 					// Convert strings.
 		const char *str = get_str_value();
-		return str ? atoi(str) : get_int_value();
+		return str ? std::atoi(str) : get_int_value();
 		}
 					// Add array element. (No checking!)
 	void put_elem(int i, Usecode_value& val)
@@ -146,7 +146,7 @@ public:
 	Usecode_value& concat(Usecode_value& val2);
 					// Add value(s) to an array.
 	int add_values(int index, Usecode_value& val2);
-	void print(ostream& out);	// Print in ASCII.
+	void print(std::ostream& out);	// Print in ASCII.
 	};
 
 #endif
