@@ -797,7 +797,7 @@ Game_object * Paperdoll_gump::find_object
 	{
 		// if debugging show usecode container
 #ifdef SHOW_USECODE_CONTAINER
-		if (obj = check_object      (gwin, mx, my, info, Actor::ucont_spot,  0,      0 ))
+		if (obj = check_object      (gwin, mx, my, info, Actor::ucont_spot,  20,      20 ))
 			return obj;
 #endif
 

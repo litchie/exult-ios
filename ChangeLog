@@ -1,3 +1,6 @@
+2002-06-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Paperdoll_gump.cc: fixed bug when displaying usecode container
+
 2002-06-21  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* actors.cc (Npc_actor): Cleanup: Lots more dynamic_cast's are gone.
