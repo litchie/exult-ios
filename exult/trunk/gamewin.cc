@@ -1278,6 +1278,33 @@ void Game_window::fade_palette
 	}
 
 /*
+ *	Flash the current palette red.
+ */
+
+void Game_window::flash_palette_red
+	(
+	)
+	{
+#if 0		/* Cycle through palettes. +++*/
+	int savepal = palette;
+	for (int i = 0; i < 12; i++)
+		{
+		set_palette(i);
+		win->show();
+		SDL_Delay(2000);
+		}
+	set_palette(savepal);
+#else
+	int savepal = palette;
+	set_palette(8);			// Palette 8 is the red one.
+	win->show();
+	SDL_Delay(100);
+	set_palette(savepal);
+	painted = 1;
+#endif
+	}
+
+/*
  *	Read in a palette.
  */
 
