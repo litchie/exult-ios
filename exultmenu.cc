@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2000-2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -266,7 +266,8 @@ Exult_Game ExultMenu::run()
 		font->center_text(gwin->get_win()->get_ib8(),
 				  centerx, topy+70, "and restart Exult");
 		pal.apply();
-		while(!wait_delay(200));	
+		while(!wait_delay(200))
+			;	
 		std::exit(1);
 
 	}

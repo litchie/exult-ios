@@ -16,6 +16,7 @@ libaudio_la_SOURCES =	\
 	Mixer.h		\
 	SDL_mapping.cc	\
 	SDL_mapping.h	\
+	conv.cc		\
 	conv.h		\
 	pcb.cc		\
 	pcb.h		\
