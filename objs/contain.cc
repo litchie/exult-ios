@@ -554,7 +554,12 @@ void Container_game_object::activate
 		gump_man->add_gump(this, game->get_shape("gumps/jawbone"));
 		return;
 	}
-
+						// Try containers.dat.
+	int gump = get_info().get_container_gump();
+	if (gump >= 0) {
+		gump_man->add_gump(this, gump);
+		return;
+	}
 					// Try to run normal usecode fun.
 	ucmachine->call_usecode(shnum, this,
 				(Usecode_machine::Usecode_events) event);
