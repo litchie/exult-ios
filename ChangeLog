@@ -1,3 +1,6 @@
+2004-01-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs/egg.cc: never set hatched on the Serpent Staff egg (bug#879253)
+
 2004-01-19  Ryan Nunn  <colourles@users.sourceforge.net>
 	* actors.h : Added get_sexed_coloured_shape() for fixing paperdolls and 
 	  face stats always having white skin colour in serpent bond mode.
