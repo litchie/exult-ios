@@ -42,11 +42,11 @@ public:
  */
 class Spellbook_gump : public Spelltype_gump
 	{
-					// Reagants needed for each spell:
-	static unsigned short bg_reagants[9*8], si_reagants[9*8];
-	unsigned short *reagants;	// ->appropriate table.
+					// Reagents needed for each spell:
+	static unsigned short bg_reagents[9*8], si_reagents[9*8];
+	unsigned short *reagents;	// ->appropriate table.
 	short avail[9*8];		// For each spell, # which the
-					//   available reagants make possible.
+					//   available reagents make possible.
 	int page;			// Starting with 0 (= circle #).
 	Spellbook_object *book;		// Book this shows.
 	Game_object *book_owner;	// Top-owner of book.
