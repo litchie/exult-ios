@@ -1078,27 +1078,21 @@ void Sit_schedule::now_what
 
 class Sit_actor_action : public Frames_actor_action
 	{
-	Tile_coord chairloc;		// Actually where NPC sits.
+	Tile_coord sitloc;		// Actually where NPC sits.
 	char frames[2];
+	static short offsets[8];	// Offsets where NPC should sit.
 	char *init(Game_object *chairobj, Actor *actor)
 		{
-		chairloc = chairobj->get_abs_tile_coord();
 					// Frame 0 faces N, 1 E, etc.
 		int dir = 2*(chairobj->get_framenum()%4);
 		frames[0] = actor->get_dir_framenum(dir, Actor::to_sit_frame);
 		frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
 		return frames;
 		}
-public:
-	Sit_actor_action(Game_object *o, Actor *actor) : 
-			chairloc(o->get_abs_tile_coord()),
-			Frames_actor_action(init(o, actor), 2)
-		{  }
-	static bool is_occupied(Tile_coord chairloc, Actor *actor)
+	static bool is_occupied(Tile_coord sitloc, Actor *actor)
 		{
 		Game_object_vector occ;	// See if occupied.
-		if (Game_object::find_nearby(occ, chairloc, 
-							c_any_shapenum, 1, 8))
+		if (Game_object::find_nearby(occ, sitloc,c_any_shapenum, 0, 8))
 			for (Game_object_vector::const_iterator it = 
 					occ.begin(); it != occ.end(); ++it)
 				{
@@ -1112,9 +1106,30 @@ public:
 				}
 		return false;
 		}
+public:
+	Sit_actor_action(Game_object *o, Actor *actor) : 
+			Frames_actor_action(init(o, actor), 2)
+		{
+		sitloc = o->get_abs_tile_coord();
+					// Frame 0 faces N, 1 E, etc.
+		int nsew = o->get_framenum()%4;
+		sitloc.tx += offsets[2*nsew];
+		sitloc.ty += offsets[2*nsew + 1];
+		}
+	Tile_coord get_sitloc() const
+		{ return sitloc; }
+	static bool is_occupied(Game_object *chair, Actor *actor)
+		{
+		int dir = 2*(chair->get_framenum()%4);
+		return is_occupied(chair->get_abs_tile_coord() +
+			Tile_coord(offsets[dir], offsets[dir + 1], 0), actor);
+		}
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
 	};
+
+					// Offsets where NPC should sit:
+short Sit_actor_action::offsets[8] = {0,-1, 1,0, 0,1, -1,0};
 
 /*
  *	Show frame for sitting down.
@@ -1126,9 +1141,22 @@ int Sit_actor_action::handle_event
 	)
 	{
 	if (get_index() == 0 &&		// First time?
-	    is_occupied(chairloc, actor))
+	    is_occupied(sitloc, actor))
 		return 0;		// Abort.
 	return Frames_actor_action::handle_event(actor);
+	}
+
+/*
+ *	Is chair occupied, other than by 'actor'?
+ */
+
+bool Sit_schedule::is_occupied
+	(
+	Game_object *chairobj,
+	Actor *actor
+	)
+	{
+	return Sit_actor_action::is_occupied(chairobj, actor);
 	}
 
 /*
@@ -1152,8 +1180,7 @@ bool Sit_schedule::set_action
 					sizeof(chairs)/sizeof(chairs[0]));
 		for (Game_object_vector::const_iterator it = chairs.begin();
 						it != chairs.end(); ++it)
-			if (!Sit_actor_action::is_occupied(
-					(*it)->get_abs_tile_coord(), actor))
+			if (!Sit_actor_action::is_occupied((*it), actor))
 				{	// Found an unused one.
 				chairobj = *it;
 				break;
@@ -1161,25 +1188,11 @@ bool Sit_schedule::set_action
 		if (!chairobj)
 			return false;
 		}
-	else if (Sit_actor_action::is_occupied(chairobj->get_abs_tile_coord(),
-								actor))
+	else if (Sit_actor_action::is_occupied(chairobj, actor))
 		return false;		// Given chair is occupied.
-							
-	Tile_coord chairloc = chairobj->get_abs_tile_coord();
-	switch (chairobj->get_framenum()%4)
-		{			// Figure where to sit.
-	case 0:				// North.
-		chairloc.ty--; break;
-	case 1:				// East.
-		chairloc.tx++; break;
-	case 2:				// South.
-		chairloc.ty++; break;
-	case 3:				// West.
-		chairloc.tx--; break;
-		}
-	Actor_action *act = new Sit_actor_action(chairobj, actor);
+	Sit_actor_action *act = new Sit_actor_action(chairobj, actor);
 					// Walk there, then sit.
-	set_action_sequence(actor, chairloc, act, false, delay);
+	set_action_sequence(actor, act->get_sitloc(), act, false, delay);
 	return true;
 	}
 
