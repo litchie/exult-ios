@@ -64,7 +64,7 @@ static const int Mixer_Sample_Magic_Number=0x55443322;
 //---- AudioID ---------------------------------------------------------
 
 /*
- *	Set volume.
+ *	Set volume, direction.
  */
 void AudioID::set_volume
 	(
@@ -74,6 +74,15 @@ void AudioID::set_volume
 	if (pcb && pcb->get_seq() == seq)
 		pcb->set_volume(v);
 	}
+void AudioID::set_dir
+	(
+	int d				// 0-15 from North, clockwise.
+	)
+	{
+	if (pcb && pcb->get_seq() == seq)
+		pcb->set_dir(d);
+	}
+
 
 //---- Mixer ---------------------------------------------------------
 
@@ -133,6 +142,44 @@ void	compress_audio_sample(uint8 *buf,int len)
 #endif
 }
 
+/*
+ *	Modify sound data for the sound source's position relative to the
+ *	observer.
+ */
+void Mixer::modify_stereo16
+	(
+	sint16 *data,			// 2-channels, 16-bit.
+	int cnt,			// # samples.
+	int dir16			// 0-15, clockwise from North.
+	)
+	{
+					// These are factors * 1/128 for
+					//   left, right channels:
+	static int factors[32] = {
+					// North - East.
+		128,128,    110,128,    90,128,    70,128,
+					// East - South.
+		50,128,     70,128,     90,128,    110,128,
+					// South - West.
+		128,128,    128,110,    128,90,    128,70,
+					// West - North.
+		128,50,     128,70,     128,90,    128,110
+	};
+	int lfact = factors[dir16*2], rfact = factors[dir16*2 + 1];
+	cout << "Mixer::modify_stereo16:  lfact = " << lfact <<
+		", rfact = " << rfact << endl;
+	for (int i = 0; i < cnt; i++)
+		{
+		*data = (*data*lfact)/128;
+		data++;
+		*data = (*data*rfact)/128;
+		data++;
+		}
+	}		
+
+/*
+ *	Fill SDL_audio's request for sound.
+ */
 void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 {
 #ifdef MACOS
@@ -157,6 +204,7 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 		                // keep on the safe side we check anyway...
 	}
 	stream_lock();
+	int format = Audio::get_ptr()->actual.format;
 	int active_cnt=0;
 	for (int i = 0; i < MAX_AUDIO_STREAMS; i++)
 	{
@@ -185,7 +233,9 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 			buf->end_consumption();
 			continue;
 		}
-		compress_audio_sample(temp_buffer,len);
+		int dir = buf->get_dir();
+		if (dir != 0 && dir != 8 && format == AUDIO_S16 && len%4 == 0)
+			modify_stereo16((sint16 *) temp_buffer, len/4, dir);
 		SDL::MixAudio(stream, temp_buffer, len, buf->get_volume());
 		++active_cnt;
 	}
@@ -194,7 +244,7 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 	stream_unlock();
 }
 
-AudioID	Mixer::play(uint8 *sound_data,uint32 len, int volume)
+AudioID	Mixer::play(uint8 *sound_data,uint32 len, int volume, int dir)
 {
 	ProducerConsumerBuf *audiostream=Create_Audio_Stream(
 						Mixer_Sample_Magic_Number);
@@ -205,6 +255,7 @@ AudioID	Mixer::play(uint8 *sound_data,uint32 len, int volume)
 		}
 	SDL::LockAudio();
 	audiostream->set_volume(volume);
+	audiostream->set_dir(dir);
 	audiostream->produce(sound_data,len);
 	audiostream->end_production();
 	AudioID id(audiostream, audiostream->get_seq());

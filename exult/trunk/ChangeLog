@@ -1,3 +1,8 @@
+2001-03-15  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* SFX's:  Those from Usecode intrinsics now have volume, L-R
+	stereo position set depending on audio source's location.
+
 2001-03-13  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SFX's:  Wave file spec. moved to game section in .exult.cfg.
