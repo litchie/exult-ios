@@ -30,21 +30,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../autoconfig.h"
 #endif
 
+#include <Movies.h>
+#include <TextUtils.h>
+
 #include "Midi.h"
 
 
 class	Mac_QT_midi : virtual public MidiAbstract
 {
 public:
-  virtual void start_track(const char *,bool repeat);
-//virtual void start_track(midi_event *evntlist, int ppqn, bool repeat);
-  virtual void stop_track(void);
-  virtual bool is_playing(void);
-  virtual const char *copyright(void);
+	virtual void start_track(const char *,bool repeat);
+	virtual void stop_track(void);
+	virtual bool is_playing(void);
+	virtual const char *copyright(void);
 
-  Mac_QT_midi();
-  virtual ~Mac_QT_midi();
+	Mac_QT_midi();
+	virtual ~Mac_QT_midi();
 private:
+	bool	mRepeat;
 };
 
 #endif
