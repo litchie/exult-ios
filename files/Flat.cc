@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 #include <iostream>
+#include "exceptions.h"
 #include "utils.h"
 
 using std::string;
@@ -44,21 +45,19 @@ Flat::Flat(const string &n) : U7file(n)
 	// Making it safe
 	FILE *fp=U7open(filename.c_str(),"rb");
 	if(!fp)
-		throw 0;
+		throw file_not_found_error(filename);
 
 	fclose (fp);
 }
 
 
-int     Flat::retrieve(int objnum,char **c,size_t *len)
+void     Flat::retrieve(int objnum,char **c,size_t *len)
 { 
 	FILE	*fp;
 	fp=U7open(filename.c_str(),"rb");
 	if(!fp)
-		{
-		throw 0;
-		return 0;
-		}
+		throw file_not_found_error(filename);
+
 	fseek(fp,0,SEEK_END);
 	*len = ftell(fp);
 	fseek(fp,0,SEEK_SET);
@@ -66,11 +65,4 @@ int     Flat::retrieve(int objnum,char **c,size_t *len)
 	fread(buf,*len,1,fp);
 	*c = buf;
 	fclose(fp);
-	return 1;
 }
-
-int     Flat::retrieve(int objnum,const char *)
-{ return 0; }
-
-
-Flat::~Flat() {}

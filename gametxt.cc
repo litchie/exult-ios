@@ -401,8 +401,9 @@ static Shape_file *load_extra_font(const char *archive, int index, int skip)
 
 	char	*buffer;
 	size_t	len;
-	if (!s_in.retrieve (&buffer, len))
-		return 0;
+	
+	// Try to retrieve the data; this will throw an exception if it fails!
+	s_in.retrieve (&buffer, len);
 		
 	FILE	*tmpfile = fopen ("endfont.tmp", "wb");
 	

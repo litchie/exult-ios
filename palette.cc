@@ -38,13 +38,47 @@ void Palette::apply()
 /*
  *	Returns 0 if file not found.
  */
-int Palette::load(const char *fname, int index, const char *xfname, int xindex)
+void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 	{
 	U7object pal(fname, index);
 	size_t len;
 	char *buf;
-	if (!pal.retrieve(&buf, len))
-		return 0;
+	pal.retrieve(&buf, len);	// this may throw an exception
+	if(len==768) {	// Simple palette
+		if (xindex >= 0) {	// Get xform table.
+			U7object xform(xfname, xindex);
+			char *xbuf; size_t xlen;
+			try {
+				xform.retrieve(&xbuf, xlen);
+				for (int i = 0; i < 256; i++) {
+					int ix = xbuf[i];
+					pal1[3*i] = buf[3*ix];
+					pal1[3*i+1] = buf[3*ix+1];
+					pal1[3*i+2] = buf[3*ix+2];
+				}
+			}
+			catch( const std::exception & err ) {
+				xindex = -1;
+			}
+			delete [] xbuf;
+		}
+		if (xindex < 0)		// Set the first palette
+			memcpy(pal1,buf,768);
+		memset(pal2,0,768);	// The second one is black
+	} else {			// Double palette
+		for(int i=0; i<768; i++) {
+			pal1[i]=buf[i*2];
+			pal2[i]=buf[i*2+1];
+		}
+	}
+	delete [] buf;
+	}
+/*void Palette::load(const char *fname, int index, const char *xfname, int xindex)
+	{
+	U7object pal(fname, index);
+	size_t len;
+	char *buf;
+	pal.retrieve(&buf, len);	// this may throw an exception
 	if(len==768) {	// Simple palette
 		if (xindex >= 0)	// Get xform table.
 			{
@@ -72,8 +106,8 @@ int Palette::load(const char *fname, int index, const char *xfname, int xindex)
 		}
 	}
 	delete [] buf;
-	return 1;
 	}
+*/
 	
 void Palette::set_brightness(int bright)
 	{

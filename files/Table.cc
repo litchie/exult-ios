@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 #include <iostream>
+#include "exceptions.h"
 #include "utils.h"
 
 using std::string;
@@ -51,10 +52,7 @@ void	Table::IndexTableFile(void)
 	FILE	*fp;
 	fp=U7open(ret.filename.c_str(),"rb");
 	if(!fp)
-		{
-		throw 0;
-		return;
-		}
+		throw file_not_found_error(ret.filename);
 	fseek(fp,0,SEEK_END);
 	size_t file_size=ftell(fp);
 	fseek(fp,0,SEEK_SET);
@@ -69,7 +67,7 @@ void	Table::IndexTableFile(void)
 		f.offset = Read4(fp);
 //		fread(&f.offset,sizeof(uint32),1,fp);
 		if(f.size>file_size||f.offset>file_size)
-			throw 0;
+			throw wrong_file_type_error();
 #if 0
 		cout << "Item " << i << ": " << f.size << " @ " << f.offset << endl;
 #endif
@@ -81,14 +79,8 @@ void	Table::IndexTableFile(void)
 }
 
 
-int     Table::retrieve(int objnum,char **,size_t *len)
-{ return 0; }
-
-int     Table::retrieve(int objnum,const char *)
-{ return 0; }
-
-
-Table::~Table() {}
+void     Table::retrieve(int objnum,char **,size_t *len)
+{ throw exult_exception("Illegal call to Table::retrieve()"); }
 
 #if 0
 char	*Table::read_object(int objnum,uint32 &length)

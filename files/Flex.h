@@ -60,12 +60,9 @@ public:
 		return *this;
 		}
 		
-	virtual ~Flex();
-	
 	// char *read_object(int objnum,uint32 &length);
         virtual int     number_of_objects(const char *) { return object_list.size(); };
-        virtual int     retrieve(int objnum,char **,std::size_t *len); // To a memory block
-        virtual int     retrieve(int objnum,const char *);       // To a file
+        virtual void     retrieve(int objnum,char **,std::size_t *len); // To a memory block
 	virtual const char *get_archive_type() { return "FLEX"; };
 private:
 	Flex();	// No default constructor

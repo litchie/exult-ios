@@ -1,3 +1,11 @@
+2000-11-24  Max Horn  <max@quendi.de>
+	* objs.cc: added find_nearby_eggs() and find_nearby_actors()
+	* changed various locations to use these methods instead of find_nearby()
+	* files/*.cc: removed unused method retrieve(int objnum,const char *)
+	* files/*.cc: retrieve() does not return anything anymore but throws exceptions
+	* exceptions.h: collected all exception related stuff into one header file
+	* palette.cc: Palette::load() does throw an exception instead of returning an int
+
 2000-11-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode.cc: fix for Test of Love conv. bug. See mailing list.
 

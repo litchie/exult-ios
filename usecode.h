@@ -40,6 +40,7 @@ class Actor;
   class Usecode_value;
 #endif
 
+#include "exceptions.h"
 #include "tiles.h"
 #include "utils.h"
 #include "vec.h"	// Includes STL vector.

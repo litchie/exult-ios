@@ -465,8 +465,14 @@ bool	Audio::start_speech(int num,bool wait)
 	char	*buf=0;
 	size_t	len;
 	U7object	sample(U7SPEECH,num);
-	if(!sample.retrieve(&buf,len))
+	try
+	{
+		sample.retrieve(&buf,len);
+	}
+	catch( const std::exception & err )
+	{
 		return false;
+	}
 	play((Uint8*)buf,len,wait);
 	delete [] buf;
 	return true;
