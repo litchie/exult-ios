@@ -1275,6 +1275,33 @@ int Game_object::attack_object
 	}
 
 /*
+ *	Get all connected pieces of an object.
+ */
+
+static void Get_connected
+	(
+	Game_object *obj,
+	Game_object_vector& vec		// All returned here.
+	)
+	{
+	vec.append(obj);
+	Game_object_vector newones;
+					// (Delta = 2 ok for glass counters.)
+	obj->find_nearby(newones, obj->get_shapenum(), 2, 0, -359, -359);
+	bool found = false;
+	for (Game_object_vector::const_iterator it = newones.begin();
+						it != newones.end(); ++it)
+		{
+		Game_object *newobj = *it;
+		if (vec.find(newobj) == -1)
+			{		// Look recursively.
+			Get_connected(newobj, vec);
+			found = true;
+			}
+		}
+	}
+
+/*
  *	Being attacked.
  *
  *	Output:	0 if destroyed, else object itself.
@@ -1290,13 +1317,30 @@ Game_object *Game_object::attacked
 	Game_window *gwin = Game_window::get_game_window();
 	int wpoints = attack_object(gwin,
 					attacker, weapon_shape, ammo_shape);
-	if (wpoints < 8)
+	int shnum = get_shapenum();
+	if (shnum == 518)		// Glass countertop?
+		{
+		if (rand()%4 >= wpoints)// Easy to break.
+			return this;
+		Game_object_vector objs;
+		Get_connected(this, objs);
+		for (Game_object_vector::const_iterator it = objs.begin();
+						it != objs.end(); ++it)
+			{
+			Game_object *obj = *it;
+			gwin->add_dirty(obj);
+			obj->remove_this();
+			}
+		gwin->theft();		// +++Shouldn't just be warning!
+		return 0;
+		}
+					// Door?
+	if (shnum != 433 && shnum != 432 && shnum != 270 && shnum != 376)
+		return this;
+	if (wpoints < 4)		// Make it much harder.
 		return this;		// Fail.
 	if (wpoints < 16)
 		wpoints = wpoints/2;	// Unlikely.
-	int shnum = get_shapenum();	// Only do doors for now.
-	if (shnum != 433 && shnum != 432 && shnum != 270 && shnum != 376)
-		return this;
 					// Guessing:
 	if (rand()%90 < wpoints)
 		{
