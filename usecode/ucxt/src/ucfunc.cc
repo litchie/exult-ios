@@ -238,7 +238,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 		print_asm_opcode(tab_indent(3, cout), *this, funcmap, opcode_table_data, intrinsics, *(current->first));
 		#endif
 		
-		if(current->second==false);
+		if(current->second==false)
 		{
 			/* Include proper munging of opsneeded, it has special effects for numbers
 			   greater then 0x7F. Currently we just 'ignore' it. */
@@ -259,7 +259,8 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 						cout << "CALL EFFECT: " << opcode_table_data[current->first->_id].num_pop << '\t';
 						#endif
 						
-						num_args = 0x100 - opcode_table_data[current->first->_id].num_pop;
+						unsigned int offset = 0x100 - opcode_table_data[current->first->_id].num_pop - 1;
+						num_args = current->first->_params_parsed[offset];
 						
 						#ifdef DEBUG_PARSE2a
 						cout << num_args << endl;
@@ -319,6 +320,8 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 					opsfound+=opcode_table_data[current->first->_id].num_push;
 					vucc.push_back(current->first);
 					current->second=true;
+				} else {
+				  current->second=true;
 				}
 				// if we've found all the ops we were searching for, return them
 				if(opsfound>=opsneeded)
