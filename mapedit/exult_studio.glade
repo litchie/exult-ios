@@ -401,6 +401,17 @@
 		      <signal name="activate" handler="on_pick_for_combo1_activate"/>
 		    </widget>
 		  </child>
+
+		  <child>
+		    <widget class="GtkRadioMenuItem" id="select_chunks1">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Select chunks</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">True</property>
+		      <property name="group">move1</property>
+		      <signal name="activate" handler="on_select_chunks1_activate" last_modification_time="Tue, 01 Mar 2005 06:53:17 GMT"/>
+		    </widget>
+		  </child>
 		</widget>
 	      </child>
 	    </widget>
