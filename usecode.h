@@ -227,6 +227,9 @@ class Usecode_machine
 	void remove_from_party(Game_object *npc);
 	Usecode_value get_party();
 	void item_say(Usecode_value& objval, Usecode_value& strval);
+	Usecode_value find_nearby(Usecode_value& objval,
+		Usecode_value& shapeval, Usecode_value& qval,
+							Usecode_value& mval);
 	void exec_array(Usecode_value& objval, Usecode_value& arrayval);
 
 	/*

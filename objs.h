@@ -171,6 +171,8 @@ public:
 		{ return cy; }
 					// Move to new abs. location.
 	void move(int newtx, int newty, int newlift);
+					// Find nearby objects.
+	int find_nearby(Vector& vec, int shapenum, int quality, int mask);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	virtual int get_schedule()	// Return NPC schedule.
