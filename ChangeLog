@@ -1,3 +1,10 @@
+2002-10-10  Max Horn  <max@quendi.de>
+
+	* Info.plist.in: No .nib file used anymore
+	* configure.in: Removed some unnecessary flags on MacOS X
+	* audio/midi_drivers/mac_midi.cc: Use assert() instead of DebugStr()
+	* gumps/AudioOptions_gump.cc: Work around a compiler bug on MacOS X
+
 2002-10-10  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/execbox.cc (Exec_process): Split off separate class to
