@@ -29,6 +29,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <iosfwd>
 #endif
 
+#include <cassert>
+
 /*
  *	An element from 'equip.dat', describing a monster's equipment:
  */
