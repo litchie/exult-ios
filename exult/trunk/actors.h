@@ -46,8 +46,6 @@ public:
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
 	~Actor()
 		{ delete name; }
-	int get_npc_num()		// Get its ID.
-		{ return npc_num; }
 	int get_face_shapenum()		// Get "portrait" shape #.
 		{ return npc_num; }	// It's the NPC's #.
 	int get_usecode()
@@ -66,6 +64,8 @@ public:
 	virtual void set_flag(int flag);
 	virtual void clear_flag(int flag);
 	virtual int get_flag(int flag);
+	virtual int get_npc_num()	// Get its ID (1-num_npcs).
+		{ return npc_num; }
 	};
 
 /*
