@@ -267,6 +267,9 @@ public:
 	void say(int from, int to);	// Show random msg. from 'text.flx'.
 					// Render.
 	virtual void paint(Game_window *gwin);
+					// Can this be clicked on?
+	virtual int is_findable(Game_window *gwin)
+		{ return 1; }
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Set new NPC schedule.
