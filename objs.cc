@@ -53,6 +53,27 @@ char *Game_object::get_name
 	return item_names[get_shapenum()];
 	}
 
+/*
+ *	Can this be dragged?
+ */
+
+int Game_object::is_dragable
+	(
+	)
+	{
+	return (0);			// Default is 'no'.
+	}
+
+/*
+ *	Can this be dragged?
+ */
+
+int Ireg_game_object::is_dragable
+	(
+	)
+	{
+	return (1);			// Yes.
+	}
 
 /*
  *	Is a given tile within this egg's influence?
@@ -526,6 +547,17 @@ void Sprite::start
 		frames_seq = frames[(int) dir];
 		frame_index = -1;
 		}
+	}
+
+/*
+ *	Can this be dragged?
+ */
+
+int Sprite::is_dragable
+	(
+	)
+	{
+	return (0);			// No.
 	}
 
 /*

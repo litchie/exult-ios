@@ -161,6 +161,7 @@ public:
 		{  }
 	virtual int get_property(int prop)
 		{ return 0; }
+	virtual int is_dragable();	// Can this be dragged?
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag) { }
 	virtual void clear_flag(int flag) { }
@@ -168,16 +169,33 @@ public:
 	};
 
 /*
+ *	A moveable game object (from 'ireg' files):
+ */
+class Ireg_game_object : public Game_object
+	{
+public:
+					// Create from ireg. data.
+	Ireg_game_object(unsigned char l, unsigned char h, 
+				unsigned int shapex,
+				unsigned int shapey, unsigned int lft = 0)
+		: Game_object(l, h, shapex, shapey, lft)
+		{  }
+	Ireg_game_object()		// Create fake entry.
+		{  }
+	virtual int is_dragable();	// Can this be dragged?
+	};
+
+/*
  *	A container object:
  */
-class Container_game_object : public Game_object
+class Container_game_object : public Ireg_game_object
 	{
 	Slist objects;			// List of objects contained.
 public:
 	Container_game_object(unsigned char l, unsigned char h, 
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
-		: Game_object(l, h, shapex, shapey, lft)
+		: Ireg_game_object(l, h, shapex, shapey, lft)
 		{  }
 	Container_game_object() {  }
 	void add(Game_object *obj)
@@ -477,6 +495,7 @@ public:
 					// Start moving.
 	void start(Game_window *gwin,
 			unsigned long destx, unsigned long desty, int speed);
+	virtual int is_dragable();	// Can this be dragged?
 					// Figure next frame location.
 	virtual int next_frame(unsigned long time,
 		int& new_cx, int& new_cy, int& new_sx, int& new_sy,

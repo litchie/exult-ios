@@ -336,6 +336,7 @@ public:
 	int start_dragging(int x, int y);
 	void drag(int x, int y);	// During dragging.
 	void drop_dragged(int x, int y);// Done dragging.
+	int drop(int at_lift);
 	void write_gamedat(char *fname);// Explode a savegame into "gamedat".
 	};
 
