@@ -1,3 +1,9 @@
+2001-10-23  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* gumps/GameplayOptions_gump.*, gamewin.*: allow choice of text
+	background colour
+	* usecode/conversation.cc: show background behind Avatar's text too
+	* game.cc: resolved the horrible hacks to get fades at the right time
+
 2001-10-23  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: limit 'adding to actor container' warnings to party
 

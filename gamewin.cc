@@ -206,9 +206,7 @@ Game_window::Game_window
 	set_window_size(width, height, scale, scaler);
 	pal = new Palette();
 	string str;
-	config->value("config/gameplay/textbackground", str, "no");
-	if (str == "yes")
-		text_bg = true;
+	config->value("config/gameplay/textbackground", text_bg, -1);
 	config->value("config/gameplay/mouse3rd", str, "no");
 	if (str == "yes")
 		mouse3rd = true;
@@ -3284,9 +3282,9 @@ void Game_window::setup_game
  *	Text-drawing methods:
  */
 int Game_window::paint_text_box(int fontnum, const char *text, 
-		int x, int y, int w, int h, int vert_lead, int pbreak, bool shaded)
-	{ if(shaded)
-		win->fill_translucent8(0, w, h, x, y, xforms[2]);
+		int x, int y, int w, int h, int vert_lead, int pbreak, int shading)
+	{ if(shading>=0)
+		win->fill_translucent8(0, w, h, x, y, xforms[shading]);
 	  return fonts->paint_text_box(win->get_ib8(),
 			fontnum, text, x, y, w, h, vert_lead, pbreak); }
 int Game_window::paint_text(int fontnum, const char *text, int xoff, int yoff)

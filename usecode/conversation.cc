@@ -475,7 +475,8 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 					width, height);
 		conv_choices[i] = conv_choices[i].intersect(sbox);
 		avatar_face = avatar_face.add(conv_choices[i]);
-		gwin->paint_text(0, text, tbox.x + x, tbox.y + y);
+		gwin->paint_text_box(0, text, tbox.x + x, tbox.y + y,
+			width + space_width, height, 0, 0, gwin->get_text_bg());
 		x += width + space_width;
 		}
 	avatar_face.enlarge(6);		// Encloses entire area.
