@@ -1162,7 +1162,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		Usecode_value val = pop();
 		parms[i] = val;
 		}
-	if(intrinsic<=max_bundled_intrinsics)
+	if (intrinsic<=max_bundled_intrinsics)
 		{
 		UsecodeIntrinsicFn func=intrinsic_table[intrinsic];
 		return ((*this).*func)(event,intrinsic,num_parms,parms);
@@ -1195,19 +1195,15 @@ Usecode_value Usecode_machine::call_intrinsic
 		{
 		int shapenum = parms[0].get_int_value();
 					// Guessing:
-		Game_object *at = gwin->get_main_actor();
-#if 0
-		int tx, ty, tz;		// Get location.
-		at->get_abs_tile(tx, ty, tz);
-		Game_object *obj = new Frame_cycle_sprite(gwin,
-			shapenum, tx, ty, tz, 1);
-#endif
+		Game_object *at = caller_item;
+		if (!at)
+			at = gwin->get_main_actor();
 		Game_object *obj = new Game_object(shapenum, 0,
 				at->get_tx(), at->get_ty(), at->get_lift());
 		gwin->get_objects(at->get_cx(), at->get_cy())->add(obj);
 		gwin->show();
+		last_created = obj;
 		return Usecode_value((long) obj);
-		break;
 		}
 	case 0x25:			// Take itemref, rets. flag.
 		//++++++++++++++++++
@@ -1215,15 +1211,16 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value(1); //????
 		break;
 	case 0x26:			// Think it takes array from 0x18,
-					//   updates obj. to new pos., &
-					//   renders.  ??guessing??
+					//   updates last-created object.
+					//   ??guessing??
 		{
+		if (!last_created)
+			return Usecode_value(0);
 		Usecode_value& arr = parms[0];
 		int sz = arr.get_array_size();
 		Game_object *obj = 0;
-		if (sz == 4 && 
-		    (obj = get_item(arr.get_elem(3).get_int_value())) != 0)
-			obj->move(arr.get_elem(0).get_int_value(),
+		if (sz == 3)
+			last_created->move(arr.get_elem(0).get_int_value(),
 				  arr.get_elem(1).get_int_value(),
 				  arr.get_elem(2).get_int_value());
 		else
@@ -1462,7 +1459,7 @@ Usecode_machine::Usecode_machine
 	istream& file,
 	Game_window *gw
 	) : String(0), gwin(gw), call_depth(0), caller_item(0),
-	    stack(new Usecode_value[1024]), user_choice(0)
+	    last_created(0), stack(new Usecode_value[1024]), user_choice(0)
 	{
 	sp = stack;
 					// Clear global flags.
@@ -1532,7 +1529,8 @@ void Usecode_machine::run
 	if (debug >= 0)
 		printf("Running usecode %04x with event %d\n", fun->id, event);
 #endif
-	Usecode_value *save_sp = sp;	// Save TOS.
+	Usecode_value *save_sp = sp;	// Save TOS, last-created.
+	Game_object *save_lc = last_created;	// Guessing we should save it.
 	Answers save_answers;		// Save answers list.
 	save_answers = answers;
 	answers.clear();
@@ -1899,6 +1897,7 @@ void Usecode_machine::run
 	delete [] locals;
 					// Restore list of answers.
 	answers = save_answers;
+	last_created = save_lc;
 #if DEBUG
 	if (debug >= 1)
 		printf("RETurning from usecode %04x\n", fun->id);
