@@ -693,6 +693,10 @@ cout << "0x2d:  Deleting itemref\n";
 		case 0x58:		// ?? 1 parm.
 			i++;
 			break;
+		case 0x59:		// Parm. is dir. (0-7).  0=north?
+				// +++++++Walk in that dir.??
+			i++;
+			break;
 		default:
 			break;
 			}
@@ -856,6 +860,11 @@ Usecode_value Usecode_machine::call_intrinsic
 		arr.put_elem(3, vobj);
 		return arr;
 		}
+	case 0x1a:			// ?Direction from parm[0] -> parm[1].
+					// Rets. 0-7.  Is 0 north?
+		Unhandled(intrinsic, num_parms, parms);
+		//+++++++++++++++++++++
+		break;
 	case 0x1b:			// Takes -npc.  Returns object?
 		{
 		Game_object *obj = get_item(parms[0].get_int_value());
@@ -1030,6 +1039,12 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x6f:			// Animate object (w/ palette?)?
 //+++++++++++++++
 		Unhandled(intrinsic, num_parms, parms);
+		break;
+	case 0x87:			// ?Direction from parm[0] -> parm[1].
+					// Rets. 0-7.  Is 0 north?
+					// Same as 0x1a??
+		Unhandled(intrinsic, num_parms, parms);
+		//+++++++++++++++++++++
 		break;
 	case 0x88:			// Get npc flag(item, flag#).
 		{
