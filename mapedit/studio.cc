@@ -236,7 +236,7 @@ on_main_window_quit                    (GtkMenuItem     *menuitem,
 
 
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
-	names(0), glade_path(0),
+	names(0), glade_path(0), exiting(false),
 	vgafile(0), facefile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
 	static_path(0), image_editor(0), default_game(0), background_color(0),
@@ -345,10 +345,11 @@ ExultStudio::~ExultStudio()
 #ifdef WIN32
     OleUninitialize();
 #endif
-					// Finish up external edits.
-	Shape_chooser::clear_editing_files();
 					// Store main window size.
 	int w = app->allocation.width, h = app->allocation.height;
+	exiting = true;
+					// Finish up external edits.
+	Shape_chooser::clear_editing_files();
 	config->set("config/estudio/main/width", w, true);
 	config->set("config/estudio/main/height", h, true);
 	if(names) {
@@ -384,7 +385,6 @@ ExultStudio::~ExultStudio()
 	if (locwin)
 		delete locwin;
 	locwin = 0;
-//Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 #ifndef WIN32
 	if (server_input_tag >= 0)
@@ -416,6 +416,25 @@ bool ExultStudio::okay_to_quit
 	if (browser && !browser->closing(true))
 		return false;		// User cancelled.
 	return true;
+	}
+
+/*
+ *	Do we have focus?  Currently only checks main window and group
+ *	windows.
+ */
+
+bool ExultStudio::has_focus
+	(
+	)
+	{
+	if (GTK_WINDOW(app)->window_has_focus)
+		return true;		// Main window.
+					// Group windows:
+	vector<GtkWindow*>::const_iterator it;
+	for (it = group_windows.begin(); it != group_windows.end(); ++it)
+		if ((*it)->window_has_focus)
+			return true;
+	return false;
 	}
 
 /*
