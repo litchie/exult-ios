@@ -1029,6 +1029,36 @@ void Text_object::handle_event
 	}
 
 /*
+ *	Return the direction for a given slope.
+ */
+
+Direction Get_direction
+	(
+	int deltay,
+	int deltax
+	)
+	{
+	if (deltax == 0)
+		return deltay > 0 ? north : south;
+	int dydx = (1024*deltay)/deltax;// Figure 1024*tan.
+	if (dydx >= 0)
+		if (deltax >= 0)	// Top-right quadrant?
+			return dydx <= 424 ? east : dydx <= 2472 ? northeast
+								: north;
+		else			// Lower-left.
+			return dydx <= 424 ? west : dydx <= 2472 ? southwest
+								: south;
+	else
+		if (deltax >= 0)	// Lower-right.
+			return dydx >= -424 ? east : dydx >= -2472 ? southeast
+								: south;
+		else			// Top-left?
+			return dydx >= -424 ? west : dydx >= -2472 ? northwest
+								: north;
+	}
+
+#if 0
+/*
  *	Lookup arctangent in a table for degrees 0-85.
  */
 
@@ -1079,3 +1109,4 @@ unsigned Arctangent
 		else			// Lower-left.
 			return 180 + angle;
 	}
+#endif

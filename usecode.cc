@@ -673,7 +673,7 @@ Usecode_value Usecode_machine::find_direction
 	Usecode_value& to
 	)
 	{
-	unsigned angle;			// Gets angle in degrees.
+	unsigned angle;			// Gets angle 0-7 (east - southeast).
 	Game_object *o1 = get_item(from.get_int_value());
 	Game_object *o2 = get_item(to.get_int_value());
 	if (!o1 || !o2)
@@ -683,11 +683,9 @@ Usecode_value Usecode_machine::find_direction
 		int x1, y1, z1, x2, y2, z2;
 		o1->get_abs_tile(x1, y1, z1);
 		o2->get_abs_tile(x2, y2, z2);
-		angle = Arctangent(y2 - y1, x2 - x1);
-					// Round to nearest 45-degrees.
-		angle = (angle + 22)%360;
+		angle = (int) Get_direction(y2 - y1, x2 - x1);
 		}
-	return Usecode_value(angle/45);
+	return Usecode_value(angle);
 	}
 
 /*
@@ -806,7 +804,8 @@ void Usecode_machine::exec_array
 			break;
 		case 0x23:		// ??
 			break;
-		case 0x27:		// ?? 1 parm. Pure guess:
+		case 0x27:		// ?? 1 parm. Pure guess:  a delay to
+					//   allow other threads to run?
 			i++;
 			break;
 		case 0x2d:		// ?? Remove itemref?
