@@ -1,3 +1,7 @@
+2000-11-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* README.BeOS: added
+	* README.win32: added (temporarily unavailable) to cross-compiling instructions	
+
 2000-11-26  Max Horn  <max@quendi.de>
 	* files/utils.cc: fixed a bug in get_system_path (it sometimes "forgot" to call switch_slashes)
 
