@@ -1,3 +1,6 @@
+2001-05-09  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* keyactions.cc: applied Telemachos' patches for showing inventory
+
 2001-05-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* objs.cc: added a ton of special item names for SI
 	

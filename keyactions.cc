@@ -249,13 +249,17 @@ void ActionInventory(int *params)
 	} else {
 		inventory_page = params[0];
 		if (inventory_page < 0 ||
-				inventory_page >= gwin->get_usecode()->get_party_count())
-			inventory_page = 0;
+				inventory_page > gwin->get_usecode()->get_party_count())
+			return;
 	}
 	
 	Actor *actor = Get_party_member(inventory_page);
-	if (actor)
+	if (actor) {
+		if (inventory_page > 0) // If companion, force gump-mode
+			gwin->set_mode(Game_window::gump);
 		actor->activate(gwin->get_usecode());
+	}
+
 	if (gwin->get_mode() == Game_window::gump)
 		Mouse::mouse->set_shape(Mouse::hand);
 }
