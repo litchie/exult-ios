@@ -2420,10 +2420,9 @@ USECODE_INTRINSIC(sprite_effect)
 {
 	// Display animation from sprites.vga.
 	// show_sprite(sprite#, tx, ty, tz, ?, ?, ?);
-	int lift = parms[3].get_int_value();	// ???Guessing.
 	gwin->add_effect(new Sprites_effect(parms[0].get_int_value(),
-		parms[1].get_int_value() - lift/2,
-		parms[2].get_int_value() - lift/2));
+		Tile_coord(parms[1].get_int_value(), parms[2].get_int_value(),
+					parms[3].get_int_value())));
 	return(no_ret);
 }
 
@@ -2435,8 +2434,7 @@ USECODE_INTRINSIC(explode)
 		return Usecode_value(0);
 	Tile_coord pos = exp->get_abs_tile_coord();
 					// Sprite 1,4,5 look like explosions.
-	gwin->add_effect(new Explosion_effect(pos.tx - pos.tz/2,
-				pos.ty - pos.tz/2, exp));
+	gwin->add_effect(new Explosion_effect(pos, exp));
 	return Usecode_value(1);
 }
 

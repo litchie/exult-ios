@@ -325,7 +325,7 @@ public:
 	int figure_hit_points(Actor *attacker, int weapon_shape, 
 							int ammo_shape);
 					// Under attack.
-	virtual void attacked(Actor *attacker, int weapon_shape = 0,
+	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
 	virtual void die();		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
