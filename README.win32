@@ -1,5 +1,5 @@
 Exult instructions for Windows
---------------------------------------
+------------------------------------
 
 To play
 ---------
@@ -11,8 +11,12 @@ Run exult.exe
 Have fun!
 
 
+Notes
+------
+* As of version 0.26, the Windows port of Exult also has basic
+support for MIDI and speech!
 
-Exult generates the files 'stdout.txt' and 'stderr.txt'.
+* Exult generates the files 'stdout.txt' and 'stderr.txt'.
 These may give you some idea of what is going on
 under the hood. When Exult suddenly quits, sometimes
 these files can help.
