@@ -45,120 +45,132 @@ void Gump::initialize
 		
 	int checkx = 8, checky = 64;	// Default.
 	int shnum = get_shapenum();
-	if(shnum==game->get_shape("gumps/yesnobox"))
-	{
-		object_area = Rectangle(6, 6, 116, 28);
+
+	if (shapefile == GSF_GUMPS_VGA) {
+		if(shnum==game->get_shape("gumps/yesnobox"))
+		{
+			object_area = Rectangle(6, 6, 116, 28);
+		}
+		else if(shnum==game->get_shape("gumps/fileio"))
+		{
+			checkx = 8;
+			checky = 150;
+		}
+		else if(shnum==game->get_shape("gumps/statsdisplay"))
+		{
+			object_area = Rectangle(0, 0, 0, 0);
+			checkx = 6;
+			checky = 136;
+		}
+		else if(shnum==game->get_shape("gumps/spellbook"))
+		{
+			object_area = Rectangle(36, 28, 102, 66);
+			checkx = 7;
+			checky = 54;
+		}
+		else if(shnum==game->get_shape("gumps/box"))
+		{
+			object_area = Rectangle(46, 28, 74, 32);
+			checkx = 8;
+			checky = 56;
+		}
+		else if(shnum==game->get_shape("gumps/crate"))
+		{
+			object_area = Rectangle(50, 20, 80, 24);
+			checkx = 8;
+			checky = 64;
+		}
+		else if(shnum==game->get_shape("gumps/barrel"))
+		{
+			object_area = Rectangle(32, 32, 40, 40);
+			checkx = 12;
+			checky = 124;
+		}
+		else if(shnum==game->get_shape("gumps/bag"))
+		{
+			object_area = Rectangle(48, 20, 66, 44);
+			checkx = 8;
+			checky = 66;
+		}
+		else if(shnum==game->get_shape("gumps/backpack"))
+		{
+			object_area = Rectangle(36, 36, 85, 40);
+			checkx = 8;
+			checky = 62;
+		}
+		else if(shnum==game->get_shape("gumps/basket"))
+		{
+			object_area = Rectangle(42, 32, 70, 26);
+			checkx = 8;
+			checky = 56;
+		}
+		else if(shnum==game->get_shape("gumps/chest"))
+		{
+			object_area = Rectangle(40, 18, 60, 37);
+			checkx = 8;
+			checky = 46;
+		}
+		else if(shnum==game->get_shape("gumps/shipshold"))
+		{
+			object_area = Rectangle(38, 10, 82, 80);
+			checkx = 8;
+			checky = 92;
+		}
+		else if(shnum==game->get_shape("gumps/drawer"))
+		{
+			object_area = Rectangle(36, 12, 70, 26);
+			checkx = 8;
+			checky = 46;
+		}
+		else if(shnum==game->get_shape("gumps/tree"))
+		{
+			object_area = Rectangle(65, 28, 92, 57);
+			checkx = 8;
+			checky = 100;
+		}
+		else if(shnum==game->get_shape("gumps/slider"))
+		{
+			object_area = Rectangle(0, 0, 0, 0);
+			checkx = 6;
+			checky = 30;
+		}
+		else if(shnum==game->get_shape("gumps/woodsign"))
+		{
+			object_area = Rectangle(0, 4, 196, 92);
+		}
+		else if(shnum==game->get_shape("gumps/tombstone"))
+		{
+			object_area = Rectangle(0, 8, 200, 112);
+		}
+		else if(shnum==game->get_shape("gumps/goldsign"))
+		{
+			object_area = Rectangle(0, 4, 232, 96);
+		}
+		else if(shnum==game->get_shape("gumps/body"))
+		{
+			object_area = Rectangle(36, 46, 84, 40);
+			checkx = 8;
+			checky = 70;
+		}
+		else if ((shnum >= 57 && shnum <= 68 && Game::get_game_type() == BLACK_GATE))
+		{	// Character pictures:
+			// Want whole rectangle.
+			object_area = Rectangle(26, 0, 104, 132);
+			checkx = 6;
+			checky = 136;
+		}
+		else
+			object_area = Rectangle(52, 22, 60, 40);
 	}
-	else if(shnum==game->get_shape("gumps/fileio"))
-	{
-		checkx = 8;
-		checky = 150;
+	else if (shapefile == GSF_EXULT_FLX) {
+		switch (shnum) {
+			case 35: // game menu
+				object_area = Rectangle(0,0,0,0); //+++++ need to be adjusted
+				checkx = 8;
+				checky = 64;
+				break;
+		}
 	}
-	else if(shnum==game->get_shape("gumps/statsdisplay"))
-	{
-		object_area = Rectangle(0, 0, 0, 0);
-		checkx = 6;
-		checky = 136;
-	}
-	else if(shnum==game->get_shape("gumps/spellbook"))
-	{
-		object_area = Rectangle(36, 28, 102, 66);
-		checkx = 7;
-		checky = 54;
-	}
-	else if(shnum==game->get_shape("gumps/box"))
-	{
-		object_area = Rectangle(46, 28, 74, 32);
-		checkx = 8;
-		checky = 56;
-	}
-	else if(shnum==game->get_shape("gumps/crate"))
-	{
-		object_area = Rectangle(50, 20, 80, 24);
-		checkx = 8;
-		checky = 64;
-	}
-	else if(shnum==game->get_shape("gumps/barrel"))
-	{
-		object_area = Rectangle(32, 32, 40, 40);
-		checkx = 12;
-		checky = 124;
-	}
-	else if(shnum==game->get_shape("gumps/bag"))
-	{
-		object_area = Rectangle(48, 20, 66, 44);
-		checkx = 8;
-		checky = 66;
-	}
-	else if(shnum==game->get_shape("gumps/backpack"))
-	{
-		object_area = Rectangle(36, 36, 85, 40);
-		checkx = 8;
-		checky = 62;
-	}
-	else if(shnum==game->get_shape("gumps/basket"))
-	{
-		object_area = Rectangle(42, 32, 70, 26);
-		checkx = 8;
-		checky = 56;
-	}
-	else if(shnum==game->get_shape("gumps/chest"))
-	{
-		object_area = Rectangle(40, 18, 60, 37);
-		checkx = 8;
-		checky = 46;
-	}
-	else if(shnum==game->get_shape("gumps/shipshold"))
-	{
-		object_area = Rectangle(38, 10, 82, 80);
-		checkx = 8;
-		checky = 92;
-	}
-	else if(shnum==game->get_shape("gumps/drawer"))
-	{
-		object_area = Rectangle(36, 12, 70, 26);
-		checkx = 8;
-		checky = 46;
-	}
-	else if(shnum==game->get_shape("gumps/tree"))
-	{
-		object_area = Rectangle(65, 28, 92, 57);
-		checkx = 8;
-		checky = 100;
-	}
-	else if(shnum==game->get_shape("gumps/slider"))
-	{
-		object_area = Rectangle(0, 0, 0, 0);
-		checkx = 6;
-		checky = 30;
-	}
-	else if(shnum==game->get_shape("gumps/woodsign"))
-	{
-		object_area = Rectangle(0, 4, 196, 92);
-	}
-	else if(shnum==game->get_shape("gumps/tombstone"))
-	{
-		object_area = Rectangle(0, 8, 200, 112);
-	}
-	else if(shnum==game->get_shape("gumps/goldsign"))
-	{
-		object_area = Rectangle(0, 4, 232, 96);
-	}
-	else if(shnum==game->get_shape("gumps/body"))
-	{
-		object_area = Rectangle(36, 46, 84, 40);
-		checkx = 8;
-		checky = 70;
-	}
-	else if ((shnum >= 57 && shnum <= 68 && Game::get_game_type() == BLACK_GATE))
-	{		// Character pictures:
-		// Want whole rectangle.
-		object_area = Rectangle(26, 0, 104, 132);
-		checkx = 6;
-		checky = 136;
-	}
-	else
-		object_area = Rectangle(52, 22, 60, 40);
 
 	checkx += 16; checky -= 12;
 	check_button = new Checkmark_button(this, checkx, checky);
@@ -193,9 +205,10 @@ Gump::Gump
 	Container_game_object *cont,	// Container it represents.
 	int initx, int inity, 		// Coords. on screen.
 	int shnum,			// Shape #.
-	bool pdoll			// Use the shapes from paperdoll.flx
+	bool pdoll,			// Use the shapes from paperdoll.flx
+	Gumpshapefile shfile
 	) : ShapeID(shnum, 0), container(cont), x(initx), y(inity),
-	paperdoll_shape (pdoll)
+		paperdoll_shape (pdoll), shapefile(shfile)
 {
 	initialize();
 }
@@ -207,11 +220,17 @@ Gump::Gump
 Gump::Gump
 	(
 	Container_game_object *cont,	// Container it represents.
-	int shnum			// Shape #.
-	) : ShapeID(shnum, 0), container(cont), paperdoll_shape (false)
+	int shnum,			// Shape #.
+	Gumpshapefile shfile
+	) : ShapeID(shnum, 0), container(cont), paperdoll_shape (false),
+		shapefile(shfile)
 {
 	Game_window *gwin = Game_window::get_game_window();
-	Shape_frame *shape = gwin->get_gump_shape(shnum, 0);
+	Shape_frame *shape;
+	if (shapefile == GSF_GUMPS_VGA) 
+		shape = gwin->get_gump_shape(shnum, 0);
+	else if (shapefile == GSF_EXULT_FLX)
+		shape = gwin->get_exult_shape(shnum, 0);
 	x = (gwin->get_width() - shape->get_width())/2;
 	y = (gwin->get_height() - shape->get_height())/2;
 	initialize();
@@ -398,9 +417,14 @@ void Gump::paint_button
 	Gump_button *btn
 	)
 {
-	if (btn)
-		gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, 
-				btn->framenum + btn->pushed);
+	if (btn) {
+		if (btn->shapefile == GSF_GUMPS_VGA)
+			gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, 
+							 btn->framenum + btn->pushed);
+		else if (btn->shapefile == GSF_EXULT_FLX)
+			gwin->paint_exult_shape(x + btn->x, y + btn->y, btn->shapenum,
+									btn->framenum + btn->pushed);
+	}
 }
 
 /*
@@ -486,7 +510,10 @@ void Gump::paint
 	)
 {
 					// Paint the gump itself.
-	gwin->paint_gump(x, y, get_shapenum(), get_framenum(), is_paperdoll());
+	if (shapefile == GSF_GUMPS_VGA) 
+		gwin->paint_gump(x, y, get_shapenum(), get_framenum(), is_paperdoll());
+	else if (shapefile == GSF_EXULT_FLX)
+		gwin->paint_exult_shape(x, y, get_shapenum(), get_framenum());
 					// Paint red "checkmark".
 	paint_button(gwin, check_button);
 	if (!container)

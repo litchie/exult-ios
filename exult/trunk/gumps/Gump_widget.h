@@ -21,6 +21,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "exceptions.h"
 
+#ifndef _GUMPSHAPEFILE
+#define _GUMPSHAPEFILE
+enum Gumpshapefile { GSF_GUMPS_VGA, GSF_EXULT_FLX };
+#endif
+
 class Gump;
 class Game_window;
 
@@ -34,6 +39,7 @@ class Gump_widget
 protected:
 	Gump_widget() : parent(0) {  }
 	Gump *parent;		// Who this is in.
+	Gumpshapefile shapefile;
 	int shapenum;			// In "gumps.vga".
 	int framenum;			// Frame # (usually 0) when unpushed.
 	short x, y;			// Coords. relative to parent.
@@ -41,8 +47,10 @@ protected:
 public:
 	friend class Gump;
 	friend class Spellbook_gump;
-	Gump_widget(Gump *par, int shnum, int px, int py)
-		: parent(par), shapenum(shnum), framenum(0), x(px), y(py)
+	Gump_widget(Gump *par, int shnum, int px, int py,
+				Gumpshapefile shfile = GSF_GUMPS_VGA)
+		: parent(par), shapenum(shnum), framenum(0), x(px), y(py),
+		shapefile(shfile)
 		{  }
 					// Is a given point on the widget?
 	int on_widget(Game_window *gwin, int mx, int my);
