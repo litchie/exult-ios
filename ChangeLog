@@ -1,9 +1,13 @@
 2000-05-21  Willem Jan Palenstijn <palenstijn@wanandoo.nl>
-	* exult.cc, mouse.h: Wait_for_arrival() didn't restore on-screen state of the mouse
-
+	* exult.cc, mouse.h: Wait_for_arrival() didn't restore on-screen 
+	state of the mouse
+	* configure.in: --enable-warnings turns on ALL warnings, in addition
+	to everything --enable-debug does
+	* usecode.cc: added a guess to intrinsic 0x4F
+	
 2000-05-20  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* lots_of_files: changed most #ifndef WIN32 to #ifdef XWIN since that's what
-	they were supposed to mean
+	* lots_of_files: changed most #ifndef WIN32 to #ifdef XWIN since 
+	that's what they were supposed to mean
 	* gamedat.cc, Configuration.cc: some preliminary BEOS things
 
 2000-05-19  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
