@@ -1648,8 +1648,11 @@ int Usecode_machine::run
 					// But 1st takes precedence.
 			if (!set_ret_value)
 				ret_value = r;
-			else if (set_ret_value > 40)
-				{	// Fix infinite loop (0x944) bug.
+					// Looks like SI rets. here.
+			if (Game::get_game_type() == SERPENT_ISLE ||
+					// Fix infinite loop (0x944) bug.
+				 set_ret_value > 40)
+				{
 				sp = save_sp;	// Restore stack, force ret.
 				push(ret_value);
 				ip = endp;

@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <cstring>
 #endif
 #include "gamewin.h"
+#include "game.h"
 #include "actors.h"
 #include "ucmachine.h"
 #include "utils.h"
@@ -61,10 +62,13 @@ void Game_window::read_npcs
 	memset(npcs, 0, num_npcs*sizeof(npcs[0]));
 					// Create main actor.
 	npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
-	if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-		main_actor->clear_flag(Obj_flags::dont_render);
-	else
-		main_actor->set_flag(Obj_flags::dont_render);
+	if (Game::get_game_type() == BLACK_GATE)
+		{
+		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
+			main_actor->clear_flag(Obj_flags::dont_render);
+		else
+			main_actor->set_flag(Obj_flags::dont_render);
+		}
 	int i;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
