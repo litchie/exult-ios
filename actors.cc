@@ -284,7 +284,6 @@ int Main_actor::walk
 	if (next_frame(cx, cy, sx, sy, frame))
 		{
 		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
-		nlist->setup_cache();
 		int new_lift;		// Might climb/descend.
 					// Just assume height==3.
 		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift) ||
@@ -318,13 +317,76 @@ int Main_actor::walk
 		nlist->activate_eggs(sx, sy);
 		int inside;		// See if moved inside/outside.
 					// In a new chunk?
-		if (olist != nlist && gwin->check_main_actor_inside())
-			gwin->paint();
+		if (olist != nlist)
+			{
+			switched_chunks(olist, nlist);
+			if (gwin->check_main_actor_inside())
+				gwin->paint();
+			}
 		else
 			gwin->repaint_sprite(this, oldrect);
 		return (frame_time);	// Add back to queue for next time.
 		}
 	return (0);			// Done.
+	}
+
+/*
+ *	Setup cache after a change in chunks.
+ */
+
+void Main_actor::switched_chunks
+	(
+	Chunk_object_list *olist,	// Old chunk, or null.
+	Chunk_object_list *nlist	// New chunk.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int newcx = nlist->get_cx(), newcy = nlist->get_cy();
+	int xfrom, xto, yfrom, yto;	// Get range of chunks.
+	if (!olist)			// No old?  Use all 9.
+		{
+		xfrom = newcx > 0 ? newcx - 1 : newcx;
+		xto = newcx < num_chunks - 1 ? newcx + 1 : newcx;
+		yfrom = newcy > 0 ? newcy - 1 : newcy;
+		yto = newcy < num_chunks - 1 ? newcy + 1 : newcy;
+		}
+	else
+		{
+		int oldcx = olist->get_cx(), oldcy = olist->get_cy();
+		if (newcx == oldcx + 1)
+			{
+			xfrom = newcx;
+			xto = newcx < num_chunks - 1 ? newcx + 1 : newcx;
+			}
+		else if (newcx == oldcx - 1)
+			{
+			xfrom = newcx > 0 ? newcx - 1 : newcx;
+			xto = newcx;
+			}
+		else
+			{
+			xfrom = newcx > 0 ? newcx - 1 : newcx;
+			xto = newcx < num_chunks - 1 ? newcx + 1 : newcx;
+			}
+		if (newcy == oldcy + 1)
+			{
+			yfrom = newcy;
+			yto = newcy < num_chunks - 1 ? newcy + 1 : newcy;
+			}
+		else if (newcy == oldcy - 1)
+			{
+			yfrom = newcy > 0 ? newcy - 1 : newcy;
+			yto = newcy;
+			}
+		else
+			{
+			yfrom = newcy > 0 ? newcy - 1 : newcy;
+			yto = newcy < num_chunks - 1 ? newcy + 1 : newcy;
+			}
+		}
+	for (int y = yfrom; y <= yto; y++)
+		for (int x = xfrom; x <= xto; x++)
+			gwin->get_objects(x, y)->setup_cache();
 	}
 
 /*
@@ -464,6 +526,32 @@ void Talk_schedule::now_what
 	}
 
 /*
+ *	Create a loiter schedule.
+ */
+
+Loiter_schedule::Loiter_schedule
+	(
+	Npc_actor *n
+	) : Schedule(n), center(n->get_abs_tile_coord())
+	{
+	}
+
+/*
+ *	Schedule change for 'loiter':
+ */
+
+void Loiter_schedule::now_what
+	(
+	)
+	{
+	const int dist = 12;		// Distance in tiles to roam.
+	int newx = center.tx - dist + rand()%(2*dist);
+	int newy = center.ty - dist + rand()%(2*dist);
+					// Wait a bit.
+	npc->walk_to_tile(newx, newy, center.tz, 300, rand()%500);
+	}
+
+/*
  *	Set a schedule.
  */
 
@@ -491,7 +579,8 @@ Npc_actor::Npc_actor
 	int uc
 	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
 		schedule_type((int) Schedule::loiter), num_schedules(0), 
-		schedules(0), schedule(0), dormant(1), alignment(0)
+		schedules(0), schedule(0), dormant(1), alignment(0),
+		no_climbing(0)
 	{
 	}
 
@@ -562,11 +651,16 @@ void Npc_actor::set_schedule_type
 	case Schedule::vert_pace:
 		schedule = Pace_schedule::create_vert(this);
 		break;
-	case Schedule::patrol:
-		schedule = new Patrol_schedule(this);
-		break;
 	case Schedule::talk:
 		schedule = new Talk_schedule(this);
+		break;
+	case Schedule::loiter:
+	case Schedule::hound:		// For now.
+	case Schedule::graze:
+		schedule = new Loiter_schedule(this);
+		break;
+	case Schedule::patrol:
+		schedule = new Patrol_schedule(this);
 		break;
 		}
 	if (schedule)			// Try to start it.
@@ -644,11 +738,12 @@ int Npc_actor::walk
 		{
 					// Get ->new chunk.
 		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
-		nlist->setup_cache();
+		nlist->setup_cache();	// Setup cache if necessary.
 		int new_lift;		// Might climb/descend.
 					// Just assume height==3.
 		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift) ||
-		    at_destination())
+		    at_destination() || 
+		    (no_climbing && new_lift != get_lift()))
 			{
 			stop();
 			return (0);	// Done.
@@ -793,12 +888,15 @@ Npc_actor *Monster_info::create
 	monster->set_property(Actor::intelligence, intelligence);
 	monster->set_property(Actor::combat, combat);
 					// ++++Armor?
+	monster->set_no_climbing();	// For now, at least.
 					// Place in world.
 	Game_window *gwin = Game_window::get_game_window();
 	Chunk_object_list *olist = gwin->get_objects(chunkx, chunky);
 	monster->move(0, chunkx, chunky, olist, tilex, tiley, 0, lift);
 					// Put in chunk's NPC list.
 	monster->switched_chunks(0, olist);
+					// ++++++For now:
+	monster->set_schedule_type(Schedule::loiter);
 	return (monster);
 	}
 
