@@ -230,7 +230,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 					// Blocked by a door?
 	if (actor->get_abs_tile_coord().distance(tile) == 1 &&
 					// But not a party member.
-	    (actor != gwin->get_main_actor() && actor->get_party_id() < 0))
+	    (/* actor != gwin->get_main_actor() && */ actor->get_party_id() < 0))
 		{
 		Game_object *door = Game_object::find_blocking(tile);
 		if (door != 0 && door->is_closed_door())
@@ -266,8 +266,12 @@ int Path_walking_actor_action::open_door
 	Tile_coord cur = actor->get_abs_tile_coord();
 					// Get door's footprint in tiles.
 	Rectangle foot = door->get_footprint();
-					// Open it.
+					// Open it, but kludge quality to
+					//   avoid unwanted usecode.
+	int savequal = door->get_quality();
+	door->set_quality(0);
 	door->activate(gwin->get_usecode());
+	door->set_quality(savequal);
 	Tile_coord past;		// Tile on other side of door.
 	past.tz = cur.tz;
 	int dir;			// Get dir to face door afterwards.
