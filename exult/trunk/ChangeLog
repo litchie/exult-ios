@@ -1,3 +1,13 @@
+2001-12-21  Ryan Nunn  <triforce@merlin.net.au>
+	* combat.cc, drag.cc, conf/Configuration.* : Warnings and errors
+	* audio/Audio.cc, msvcstuff/msvc_kludges.h : Added a config file option
+	  for Windows "config/audio/force_waveout" that when set to "yes" will
+	  force SDL to use waveout rather than attepting to use DirectSound.
+	  Using this option may fix up problems some people have with sound in
+	  Exult under Windows. Also now allow Win32 to be build with 44kHz
+	  sound by defining FORCE_44KHZ when building. It should probably be
+	  made into a config option.
+
 2001-12-21  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* effects.cc (Weather_effect): Turn off rain in gump mode.

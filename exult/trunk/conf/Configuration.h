@@ -32,7 +32,7 @@ public:
 
 	bool	read_config_file(const char *input_filename)
 			{ return read_config_file(std::string(input_filename)); };
-	bool	read_config_file(const string &input_filename);
+	bool	read_config_file(const std::string &input_filename);
 	
 	bool	read_config_string(const std::string &);
 	void	value(const char *key,std::string &ret,const char *defaultvalue="") const;
