@@ -182,7 +182,7 @@ int Game_object::modify_quantity
 	int new_frame = newquant - 1;
 	if (new_frame > 7)		// Range is 0-7.
 		new_frame = 7;
-	if (shapenum != 842)		// ++++Kludge:  reagants.
+	if (shapenum != 842)		// ++++Kludge:  reagents.
 					// Guessing:  Works for ammo, arrows.
 		set_frame(num_frames == 32 ? 24 + new_frame : new_frame);
 	Container_game_object *owner = get_owner();
@@ -1098,7 +1098,7 @@ int Game_object::get_weight
 	int quant = get_quantity();
 	int wt = quant *
 		Game_window::get_game_window()->get_info(this).get_weight();
-	int shnum = get_shapenum();	// Special case:  reagants, coins.
+	int shnum = get_shapenum();	// Special case:  reagents, coins.
 	if (shnum == 842 || shnum == 644)
 		wt /= 10;
 	return wt;
@@ -1118,7 +1118,7 @@ int Game_object::drop
 	int shapenum = get_shapenum();	// It's possible if shapes match.
 	if (obj->get_shapenum() != shapenum ||
 	    !Has_quantity(shapenum) ||
-					// Reagants are a special case.
+					// Reagents are a special case.
 	    (shapenum == 842 && get_framenum() != obj->get_framenum()))
 		return (0);
 	int objq = obj->get_quantity();

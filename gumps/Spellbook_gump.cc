@@ -40,7 +40,7 @@ using std::snprintf;
 
 extern Cheat cheat;
 
-const int REAGANTS = 842;		// Shape #.
+const int REAGENTS = 842;		// Shape #.
 
 /*
  *	Defines in 'gumps.vga':
@@ -61,7 +61,7 @@ const int REAGANTS = 842;		// Shape #.
 #define CIRCLENUM (BG ? 0x545 : 0x552)
 
 /*
- *	Flags for required reagants.  Bits match shape #.
+ *	Flags for required reagents.  Bits match shape #.
  */
 const int bp = 1;			// Black pearl.
 const int bm = 2;			// Blood moss.
@@ -74,10 +74,10 @@ const int sa = 128;			// Sulphuras ash.
 const int bs = 256;			// Blood spawn.
 const int sc = 512;			// Serpent scales.
 const int wh = 1024;			// Worm's hart.
-const int NREAGANTS = 11;		// Total #.
+const int NREAGENTS = 11;		// Total #.
 					// Black Gate:
-unsigned short Spellbook_gump::bg_reagants[9*8] = {
-	0, 0, 0, 0, 0, 0, 0, 0,		// Linear spells require no reagants.
+unsigned short Spellbook_gump::bg_reagents[9*8] = {
+	0, 0, 0, 0, 0, 0, 0, 0,		// Linear spells require no reagents.
 					// Circle 1:
 	gr|gn, gr|gn|mr, gr|gn, ns|ss, gr|ss, sa|ss, sa, ns,
 					// Circle 2:
@@ -103,7 +103,7 @@ unsigned short Spellbook_gump::bg_reagants[9*8] = {
 				gr|gn|ss|sa, bm|gr|mr, bp|mr|ns, bm|gr|mr
 	};
 					// Serpent Isle:
-unsigned short Spellbook_gump::si_reagants[9*8] = {
+unsigned short Spellbook_gump::si_reagents[9*8] = {
 					// Circle 1:
 	gr|gn|mr, gr|gn, ns|ss, gr|ss, sa|ss, sa, ns, bp|bm|mr,
 					// Circle 2:
@@ -240,20 +240,20 @@ void Spellbook_gump::set_avail
 		avail[i] = 0;
 	if (book_owner == book)
 		return;			// Nobody owns it.
-	int reagant_counts[NREAGANTS];	// Count reagants.
+	int reagent_counts[NREAGENTS];	// Count reagents.
 	int r;
-	for (r = 0; r < NREAGANTS; r++)	// Count, by frame (frame==bit#).
-		reagant_counts[r] = book_owner->count_objects(
-						REAGANTS, c_any_qual, r);
+	for (r = 0; r < NREAGENTS; r++)	// Count, by frame (frame==bit#).
+		reagent_counts[r] = book_owner->count_objects(
+						REAGENTS, c_any_qual, r);
 	for (i = 0; i < 9*8; i++)	// Now figure what's available.
 	{
 		avail[i] = 10000;	// 'infinite'.
-		unsigned short flags = reagants[i];
+		unsigned short flags = reagents[i];
 					// Go through bits.
 		for (r = 0; flags; r++, flags = flags >> 1)
-					// Take min. of req. reagant counts.
-			if ((flags&1) && reagant_counts[r] < avail[i])
-				avail[i] = reagant_counts[r];
+					// Take min. of req. reagent counts.
+			if ((flags&1) && reagent_counts[r] < avail[i])
+				avail[i] = reagent_counts[r];
 	}
 }
 
@@ -270,9 +270,9 @@ Spellbook_gump::Spellbook_gump
 	const int lpagex = 38, rpagex = 142, lrpagey = 25;
 					// Get book's top owner.
 	book_owner = book->get_outermost();
-					// Point to reagant table.
-	reagants = Game::get_game_type() == SERPENT_ISLE ? si_reagants
-							: bg_reagants;
+					// Point to reagent table.
+	reagents = Game::get_game_type() == SERPENT_ISLE ? si_reagents
+							: bg_reagents;
 	set_avail();			// Figure spell counts.
 	Game_window *gwin = Game_window::get_game_window();
 	if (book->bookmark >= 0)	// Set to bookmarked page.
@@ -347,17 +347,17 @@ void Spellbook_gump::do_spell
 		}
 		gwin->get_main_actor()->set_property(Actor::mana, mana-circle);
 					// Figure what we used.
-		unsigned short flags = reagants[spell];
+		unsigned short flags = reagents[spell];
 
 		if (!cheat.in_wizard_mode())
-					// +++++Test for ring-of-reagants.
+					// +++++Test for ring-of-reagents.
 		{
 					// Go through bits.
 			for (int r = 0; flags; r++, flags = flags >> 1)
-					// Remove 1 of each required reagant.
+					// Remove 1 of each required reagent.
 				if (flags&1)
 					book_owner->remove_quantity(1, 
-						REAGANTS, c_any_qual, r);
+						REAGENTS, c_any_qual, r);
 		}
 		gwin->remove_gump(this);// Note:  We're deleted!!
 		gwin->paint();

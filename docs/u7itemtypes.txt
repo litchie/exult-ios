@@ -81,7 +81,7 @@ unsigned 16-bit : unused (always zero)
 
 >Yes, you're right, and I'll likely incorporate your suggestions/code in the
 >next release.  But note that there's another thing the current version is
->lacking:  Some items, like food and reagants, have a different name for 
+>lacking:  Some items, like food and reagents, have a different name for 
 >each
 >frame.  These strings are stored in the same 'text.flx' file starting at 
 >entry
