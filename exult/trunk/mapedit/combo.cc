@@ -1284,9 +1284,8 @@ Combo_chooser::Combo_chooser
 	gtk_box_pack_start(GTK_BOX(hbox1), sbar, TRUE, TRUE, 0);
 	gtk_widget_show(sbar);
 					// Add controls to bottom.
-					// +++++Maybe add FIND controls?
 	gtk_box_pack_start(GTK_BOX(vbox), 
-		create_controls(move_controls), FALSE, FALSE, 0);
+		create_controls(find_controls|move_controls), FALSE, FALSE, 0);
 	}
 
 /*
@@ -1581,6 +1580,44 @@ void Combo_chooser::move
 	flex_info->set_modified();
 	flex_info->swap(tnum);		// Update flex-file list.
 	render();
+	show();
+	}
+
+/*
+ *	Search for an entry.
+ */
+
+void Combo_chooser::search
+	(
+	char *srch,			// What to search for.
+	int dir				// 1 or -1.
+	)
+	{
+	int total = get_count();
+	if (!total)
+		return;			// Empty.
+	ExultStudio *studio = ExultStudio::get_instance();
+					// Start with selection, or top.
+	int start = selected >= 0 ? info[selected].num : 0;
+	int i;
+	start += dir;
+	int stop = dir == -1 ? -1 : total;
+	for (i = start; i != stop; i += dir)
+		{
+		int num = group ? (*group)[i] : i;
+		const char *nm = combos[i]->name.c_str();
+		if (nm && strstr(nm, srch))
+			break;		// Found it.
+		}
+	if (i == stop)
+		return;			// Not found.
+	while (i < index0)		// Above current view?
+		scroll(true);
+	while (i >= index0 + info_cnt)	// Below?
+		scroll(false);
+	int newsel = i - index0;	// New selection.
+	if (newsel >= 0 && newsel < info_cnt)
+		select(newsel);
 	show();
 	}
 
