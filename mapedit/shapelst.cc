@@ -336,7 +336,7 @@ void Shape_chooser::render_frames
 	delete [] info;			// Delete old info. list.
 	iwin->set_clip(0, 0, winw, winh);
 					// Provide more than enough room.
-	info = new Shape_entry[1024];
+	info = new Shape_entry[4048];	//++++++Pretty risky.  Use s vec!!!
 					// Clear window first.
 	iwin->fill8(255);		// Fill with background color.
 	info_cnt = 0;			// Count them.
