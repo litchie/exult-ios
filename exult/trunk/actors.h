@@ -125,12 +125,16 @@ public:
 	9	Facing N, hands raised.
 	10	Sitting down N.
 	11-13	Lying down N.
+	14	Hands raised, N.
+	15	Hands outstretched, N.
 	16	Standing S.
 	17,18	Walking S.
 	19,20	Walking SW.
 	21,22	Walking SE.
 	26	Sitting S.
 	27-29	Lying down S.
+	30	Hands raised, S.
+	31	Hands outstretched, S.
  */
 
 /*

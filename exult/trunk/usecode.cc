@@ -45,22 +45,73 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern	bool	usecode_trace;
 
 /*
- *	A class for executing usecode at a scheduled time:
+ *	Earthquakes.
  */
-class Scheduled_usecode : public Time_sensitive
+class Earthquake : public Time_sensitive
 	{
-	Usecode_value objval;		// The itemref.
-	Usecode_value arrval;		// Array of code to execute.
+	Game_window *gwin;
+	int len;			// From Usecode intrinsic.
+	int i;				// Current index.
 public:
-	Scheduled_usecode(Usecode_value& oval, Usecode_value& aval)
-		: objval(oval), arrval(aval)
-		{  }
+	Earthquake(Game_window *g, int l) : gwin(g), len(l), i(0)
+		{
+		}
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
 /*
- *	Execute an array of usecode.
+ *	Shake the screen.
+ */
+
+void Earthquake::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata			// ->usecode machine.
+	)
+	{
+	Image_window *win = gwin->get_win();
+	int w = win->get_width(), h = win->get_height();
+	int dx = rand()%9 - 4;
+	int dy = rand()%9 - 4;
+	win->copy(0, 0, w, h, dx, dy);
+	gwin->set_painted();
+	gwin->show();
+					// Shake back.
+	win->copy(0, 0, w, h, -dx, -dy);
+	if (++i < len)			// More to do?  Put back in queue.
+		gwin->get_tqueue()->add(curtime + 50, this, udata);
+	else
+		delete this;
+	}
+
+/*
+ *	A class for executing usecode at a scheduled time:
+ */
+class Scheduled_usecode : public Time_sensitive
+	{
+	Usecode_value objval;		// The 'itemref' object.
+	Game_object *obj;		// From objval.
+	Usecode_value arrval;		// Array of code to execute.
+	int cnt;			// Length of arrval.
+	int i;				// Current index.
+public:
+	Scheduled_usecode(Usecode_machine *usecode,
+				Usecode_value& oval, Usecode_value& aval)
+		: objval(oval), arrval(aval), i(0)
+		{
+		cnt = arrval.get_array_size();
+		obj = usecode->get_item(objval);
+					// Not an array?
+		if (!cnt && !arrval.is_array())
+			cnt = 1;	// Get_elem(0) works for non-arrays.
+		}
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
+ *	Execute an array of usecode, generally one instruction per tick.
  */
 
 void Scheduled_usecode::handle_event
@@ -71,7 +122,77 @@ void Scheduled_usecode::handle_event
 	{
 	Usecode_machine *usecode = (Usecode_machine *) udata;
 	Game_window *gwin = usecode->gwin;
-	usecode->exec_array(objval, arrval);
+	int delay = 200;			// Trying default delay.
+	int do_another = 1;			// Flag to keep going.
+	for ( ; i < cnt && do_another; i++)
+		{
+		do_another = 0;
+		Usecode_value& opval = arrval.get_elem(i);
+		int opcode = opval.get_int_value();
+		switch (opcode)
+			{
+		case 0x01:		// ??
+			break;
+		case 0x0b:		// ?? 2 parms, 1st one < 0.
+			i += 2;
+			break;
+		case 0x23:		// ??
+			break;
+		case 0x27:		// ?? 1 parm. Pure guess:  a delay to
+			{		//   allow other threads to run?
+			Usecode_value& delayval = arrval.get_elem(++i);
+					// ?? Guessing at time.
+			delay = 200*(delayval.get_int_value());
+			break;		
+			}
+		case 0x2d:		// ?? Remove itemref?
+			usecode->remove_item(obj);
+			break;
+		case 0x46:		// ?? 1 parm. This IS a frame.
+			{		// Set frame?  Pretty sure.
+			Usecode_value& fval = arrval.get_elem(++i);
+			usecode->set_item_frame(objval, fval);
+			break;
+			}
+		case 0x50:		// ??
+			break;
+		case 0x52:		// Say string.
+			{
+			Usecode_value& strval = arrval.get_elem(++i);
+			usecode->item_say(objval, strval);
+			break;
+			}
+		case 0x55:		// Call?
+			{
+			Usecode_value& val = arrval.get_elem(++i);
+			usecode->call_usecode(val.get_int_value(), obj, 
+					Usecode_machine::internal_exec);
+			break;
+			}
+		case 0x58:		// ?? 1 parm.
+			i++;
+			break;
+		case 0x59:		// Parm. is dir. (0-7).  0=north?
+				// +++++++Walk in that dir.??
+			i++;
+			break;
+		default:
+//+++ 0x61-0x6f? seem to indicate motion? frame? in a particular direction.
+			if (opcode >= 0x60 && opcode <= 0x6f)
+				{	// +++++++Experimenting:
+				Usecode_value v(opcode & 0xf);
+				usecode->set_item_frame(objval, v);
+				printf("Sched. opcode %02x\n", opcode);
+				}
+			break;
+			}
+		}
+	if (i < cnt)			// More to do?
+		{
+		gwin->get_tqueue()->add(curtime + delay, this, udata);
+		return;
+		}
+					// Don't get stuck in conv. mode.
 	if (gwin->get_mode() == Game_window::conversation)
 		{
 		gwin->set_mode(Game_window::normal);
@@ -194,6 +315,7 @@ Usecode_value& Usecode_value::concat
 	int size;			// Size of result.
 	if (type != array_type)		// Not an array?  Create one.
 		{
+				//++++Memory leak here, for sure:++++++
 		result = new Usecode_value(1, this);
 		size = 1;
 		}
@@ -215,6 +337,33 @@ Usecode_value& Usecode_value::concat
 			result->put_elem(size + i, val2.get_elem(i));
 		}
 	return (*result);
+	}
+
+/*
+ *	Given an array and an index, and a 2nd value, add the new value at that
+ *	index, or if the new value is an array itself, add its values.
+ */
+
+void Usecode_value::add_values
+	(
+	int index,
+	Usecode_value& val2
+	)
+	{
+	int size = get_array_size();
+	if (!val2.is_array())		// Simple case?
+		{
+		if (index >= size)
+			resize(index + 1);
+		put_elem(index, val2);
+		return;
+		}
+					// Add each element.
+	int size2 = val2.get_array_size();
+	if (index + size2 > size)
+		resize(index + size2);
+	for (int i = 0; i < size2; i++)
+		put_elem(index++, val2.get_elem(i));
 	}
 
 /*
@@ -987,84 +1136,6 @@ Usecode_value Usecode_machine::click_on_item
 	}
 
 /*
- *	Execute a list of instructions in an array.
- *	++++++++++Maybe each instruction should be added to the time queue,
- *	with 0x27 controlling the timing (i.e., adding delay for the next
- *	instruction pushed.++++++++++
- */
-
-void Usecode_machine::exec_array
-	(
-	Usecode_value& objval,
-	Usecode_value& arrayval		// Contains instructions.
-	)
-	{
-	Game_object *obj = get_item(objval);
-	if (!obj)
-		return;
-	int cnt = arrayval.get_array_size();
-					// Not an array?
-	if (!cnt && !arrayval.is_array())
-		cnt = 1;		// Get_elem(0) works for non-arrays.
-	for (int i = 0; i < cnt; i++)	// Go through instructions.
-		{
-					// Let's try to animate.
-		gwin->get_tqueue()->activate(SDL_GetTicks());
-		gwin->show();		// Blit to screen if necessary.
-		Usecode_value& opval = arrayval.get_elem(i);
-		int opcode = opval.get_int_value();
-		switch (opcode)
-			{
-		case 0x01:		// ??
-			break;
-		case 0x0b:		// ?? 2 parms, 1st one < 0.
-			i += 2;
-			break;
-		case 0x23:		// ??
-			break;
-		case 0x27:		// ?? 1 parm. Pure guess:  a delay to
-					//   allow other threads to run?
-			i++;
-			break;
-		case 0x2d:		// ?? Remove itemref?
-			remove_item(obj);
-			break;
-		case 0x46:		// ?? 1 parm. This IS a frame.
-			{		// Set frame?  Pretty sure.
-			Usecode_value& fval = arrayval.get_elem(++i);
-			set_item_frame(objval, fval);
-			break;
-			}
-		case 0x50:		// ??
-			break;
-		case 0x52:		// Say string.
-			{
-			Usecode_value& strval = arrayval.get_elem(++i);
-			item_say(objval, strval);
-			break;
-			}
-		case 0x55:		// Call?
-			{
-			Usecode_value& val = arrayval.get_elem(++i);
-			call_usecode(val.get_int_value(), obj, 
-						internal_exec);
-			break;
-			}
-		case 0x58:		// ?? 1 parm.
-			i++;
-			break;
-		case 0x59:		// Parm. is dir. (0-7).  0=north?
-				// +++++++Walk in that dir.??
-			i++;
-			break;
-//+++ 0x61-0x6f? seem to indicate motion in a particular direction.
-		default:
-			break;
-			}
-		}
-	}
-
-/*
  *	Report unhandled intrinsic.
  */
 
@@ -1131,7 +1202,8 @@ USECODE_INTRINSIC(get_random)
 
 USECODE_INTRINSIC(execute_usecode_array)
 	cout << "Executing intrinsic 1\n";
-	exec_array(parms[0], parms[1]);
+	gwin->get_tqueue()->add(SDL_GetTicks() + 100,
+		new Scheduled_usecode(this, parms[0], parms[1]), (long) this);
 	USECODE_RETURN(no_ret);
 }
 
@@ -1139,7 +1211,7 @@ USECODE_INTRINSIC(delayed_execute_usecode_array)
 	// Delay = .20 sec.?
 	int delay = parms[2].get_int_value();
 	gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
-		new Scheduled_usecode(parms[0], parms[1]),
+		new Scheduled_usecode(this, parms[0], parms[1]),
 							(long) this);
 	cout << "Executing intrinsic 2\n";
 	USECODE_RETURN(no_ret);
@@ -1157,11 +1229,13 @@ USECODE_INTRINSIC(remove_npc_face)
 
 USECODE_INTRINSIC(add_answer)
 	answers.add_answer(parms[0]);
+	user_choice = 0;	//++++Exp. 4/9/00
 	USECODE_RETURN(no_ret);
 }
 
 USECODE_INTRINSIC(remove_answer)
 	answers.remove_answer(parms[0]);
+	user_choice = 0;	//++++Exp. 4/9/00
 	USECODE_RETURN(no_ret);
 }
 
@@ -1595,6 +1669,14 @@ USECODE_INTRINSIC(display_map)
 	USECODE_RETURN(no_ret);
 }
 
+USECODE_INTRINSIC(earthquake)
+	int len = parms[0].get_int_value();
+	Earthquake *quake = new Earthquake(gwin, len);
+	gwin->get_tqueue()->add(SDL_GetTicks() + 10,
+		new Earthquake(gwin, len), (long) this);
+	USECODE_RETURN(no_ret);
+}
+
 USECODE_INTRINSIC(is_pc_female)
 	// Is player female?
 	Usecode_value u(0);
@@ -1814,7 +1896,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x57
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x58
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x59
+	USECODE_INTRINSIC_PTR(earthquake),	// 0x59
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5c
@@ -2214,9 +2296,11 @@ void Usecode_machine::run
 		case 0x04:		// Jump if done with function.
 			offset = (short) Read2(ip);
 			if (set_ret_value || !answers.answers.size())
+				{
 				ip += offset;
-			else		// ++++Experimenting 4/4/00:
+					// ++++Experimenting 4/9/00:
 				user_choice = 0;
+				}
 			break;
 		case 0x05:		// JNE.
 			{
@@ -2365,7 +2449,7 @@ void Usecode_machine::run
 			for (int i = 0; i < offset; i++)
 				{
 				Usecode_value val = pop();
-				arr.put_elem(i, val);
+				arr.add_values(i, val);
 				}
 			push(arr);
 			}

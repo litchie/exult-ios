@@ -127,6 +127,8 @@ public:
 	int find_elem(const Usecode_value& val);
 					// Concat. to end of this array.
 	Usecode_value& concat(Usecode_value& val2);
+					// Add value(s) to an array.
+	void add_values(int index, Usecode_value& val2);
 	void print(ostream& out);	// Print in ASCII.
 	};
 
@@ -247,7 +249,6 @@ public:
 		Usecode_value& shapeval, Usecode_value& qualval,
 			Usecode_value& frameval, Usecode_value& flagval);
 	Usecode_value click_on_item();
-	void exec_array(Usecode_value& objval, Usecode_value& arrayval);
 
 	/*
          *	Embedded intrinsics
@@ -311,6 +312,7 @@ public:
 	USECODE_INTRINSIC_DECL(get_lift);
 	USECODE_INTRINSIC_DECL(set_lift);
 	USECODE_INTRINSIC_DECL(display_map);
+	USECODE_INTRINSIC_DECL(earthquake);
 	USECODE_INTRINSIC_DECL(is_pc_female);
 	USECODE_INTRINSIC_DECL(run_endgame);
 	USECODE_INTRINSIC_DECL(get_array_size);
