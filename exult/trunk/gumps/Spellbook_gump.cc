@@ -269,6 +269,9 @@ void Spellbook_gump::do_spell
 		gwin->show();
 					// Don't need to check again.
 		save_book->do_spell(gwin->get_main_actor(), spell, true);
+					// Close all gumps so animations can
+					//   start.
+		gumpman->close_all_gumps();
 		}
 }
 

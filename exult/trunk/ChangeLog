@@ -1,3 +1,11 @@
+2002-08-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* effects.cc:  It's now okay to show rain/clouds when gumps are shown.
+	* tqueue.cc: Got to fix time when tqueue is paused (like when
+	gumps are open).
+	* gumps/Spellbook_gump.cc:  Close all gumps after casting spell.
+	* objs/objs.cc: Weapons with 0 HP's should never do damage.
+
 2002-08-26  Aurelien Marchand  <artaxerxes@users.sf.net>
 
 	* configure.in: Added -FMOPL and disabled debug in configure.in for the zaurus. 
