@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
+#if __GNUG__ >= 2
 #  pragma implementation
 #endif
 
@@ -29,10 +29,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 
-Configuration::Configuration() :filename("")
+Configuration::Configuration() :filename(""),is_file(false)
 {}
 
-Configuration::Configuration(const char *s) : filename("")
+Configuration::Configuration(const char *s) : filename(""),is_file(false)
 {
 	read_config_file(s);
 }
@@ -174,6 +174,15 @@ void	Configuration::set(const char *key,int value,bool write_out)
 
 extern	void    xmlparse(string &s,size_t &pos,XMLnode *x);
 
+bool	Configuration::read_config_string(const string &s)
+{
+	string	sbuf(s);
+        size_t  nn=1;
+        xmlparse(sbuf,nn,&xmltree);
+	is_file=false;
+	return true;
+}
+
 bool	Configuration::read_config_file(const char *n)
 {
         char    buf[4096];
@@ -198,13 +207,6 @@ bool	Configuration::read_config_file(const char *n)
         // For now, just read file from current directory
 	filename=n;
 #endif
-#ifdef BEOS
-	// should become .exult.cfg in homedir
-	
-	// For now, just read exult.cfg from current directory
-	filename=n;
-#endif
-
 	FILE	*fp=fopen(filename.c_str(),"r");
 	if(!fp)
 		return false;
@@ -214,10 +216,9 @@ bool	Configuration::read_config_file(const char *n)
                 sbuf+=buf;
                 }
 
-        size_t  nn=1;
-        xmlparse(sbuf,nn,&xmltree);
-
 	fclose(fp);
+	read_config_string(sbuf);
+	is_file=true;
 	return true;
 }
 
@@ -233,6 +234,8 @@ string	Configuration::dump(void)
 
 void	Configuration::write_back(void)
 {
+	if(!is_file)
+		return;	// Don't write back if not from a file
 	string	s=dump();
 	FILE *fp=fopen(filename.c_str(),"w");
 	if(!fp)

@@ -22,7 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _XMLEntity_h_
 
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
+#if __GNUG__ >= 2
 #  pragma interface
 #endif
 
@@ -36,6 +36,7 @@ class	XMLEntity
 public:
 	string	id;
 	string	content;
+	XMLEntity &operator =(const XMLEntity &x) { id=x.id; content=x.content; return *this; }
 	XMLEntity();
 	~XMLEntity();
 	};
