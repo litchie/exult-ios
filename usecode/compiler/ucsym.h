@@ -156,13 +156,18 @@ public:
  */
 class Uc_function_symbol : public Uc_symbol
 	{
+	static int last_num;		// Last 'usecode_num', so we can
+					//   assign automatically.
+public:
+					// Keep track of #'s used.
+	typedef std::map<int, Uc_symbol *> Sym_nums;
+private:
+	static Sym_nums nums_used;
 					// Note:  offset = Usecode fun. #.
 	std::vector<char *> parms;	// Parameters.
 	int usecode_num;		// Usecode function #.
 public:
-	Uc_function_symbol(char *nm, int num, std::vector<char *>& p)
-		: Uc_symbol(nm), parms(p), usecode_num(num)
-		{  }
+	Uc_function_symbol(char *nm, int num, std::vector<char *>& p);
 	const std::vector<char *>& get_parms()
 		{ return parms; }
 	int get_usecode_num()
