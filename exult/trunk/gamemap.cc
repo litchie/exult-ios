@@ -1564,8 +1564,10 @@ void Game_map::cache_out_schunk(int schunk)
 #endif
 
 	// Now remove the objects
-	for (Game_object_vector::const_iterator it=removes.begin(); it!=removes.end(); ++it)
+	for (Game_object_vector::const_iterator it=removes.begin(); it!=removes.end(); ++it) {
+		(*it)->delete_contents();
 		(*it)->remove_this();
+	}
 
 	// Now disable the actors
 	for (Actor_vector::const_iterator act=actors.begin(); act!=actors.end(); ++act) {

@@ -1,3 +1,8 @@
+2003-08-11  Ryan Nunn  <colourles@users.sourceforge.net>
+	* gamemap.cc : Fixing the item duplication problem. h4XoRz beware we'll
+	  be deleting all accounts of people exploiting this bug in the period
+	  till next release, or something... oh wait... Exult isn't a MMORPG.
+
 2003-08-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: 1.1beta2
 
