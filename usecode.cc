@@ -2461,7 +2461,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50     ShowWizardEye (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51     ResurrectNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52     AddSpellToBook (ucdump.c)
-	USECODE_INTRINSIC_PTR(sprite-effect),	// 0x53     ExecuteSprite (ucdump.c)
+	USECODE_INTRINSIC_PTR(sprite_effect),	// 0x53     ExecuteSprite (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54
 	USECODE_INTRINSIC_PTR(book_mode),// 0x55
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.
