@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <glib.h>
 #include <stdlib.h>
+#include <sys/stat.h>
+#include <unistd.h>
 #include "shapelst.h"
 #include "shapevga.h"
 #include "ibuf8.h"
@@ -51,6 +53,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 using std::strlen;
+using std::string;
+
+std::vector<Editing_file*> Shape_chooser::editing_files;
+
+/*
+ *	Here's a description of a file being edited by an external program
+ *	like Gimp or Photoshop.
+ */
+class Editing_file
+	{
+	string vga_basename;		// Name of image file this comes from.
+	string pathname;		// Full path to file.
+	time_t mtime;			// Last modification time.
+	int shapenum, framenum;		// Shape/frame.
+public:
+	friend class Shape_chooser;
+	Editing_file(const char *vganm, const char *pnm, time_t m, 
+							int sh, int fr) 
+		: vga_basename(vganm), pathname(pnm), 
+		  mtime(m), shapenum(sh), framenum(fr)
+		{  }
+	};		
 
 /*
  *	Callback for when a shape is dropped on our draw area.
@@ -730,21 +754,121 @@ void Shape_chooser::edit_shape
 		pal[3*i + 2] = palette->colors[i]&0xff;
 		}
 	const char *fname = filestr.c_str();
-					// Write out to the .png.
+	struct stat fs;			// Write out to the .png.
 	if (!Export_png8(fname, transp, w, h, w, xoff, yoff, img.get_bits(),
-					&pal[0], 256))
+					&pal[0], 256) ||
+	    stat(fname, &fs) != 0)
 		{
 		string msg("Error creating file:  ");
 		msg += fname;
 		studio->prompt(msg.c_str(), "Continue");
 		return;
 		}
+					// Store info. about file.
+	editing_files.push_back(new Editing_file(
+		file_info->get_basename(), fname, fs.st_mtime, shnum, frnum));
 	string cmd(studio->get_image_editor());
 	cmd += ' ';
 	cmd += fname;
 	cmd += '&';			// Background.  WIN32?????+++++++
 	system(cmd.c_str());
-	//+++++++FINISH  Got to store this info somewhere and monitor file.
+	}
+
+/*
+ *	Check the list of files being edited externally, and read in any that
+ *	have changed.
+ */
+
+void Shape_chooser::check_editing_files
+	(
+	)
+	{
+	for (std::vector<Editing_file*>::iterator it = editing_files.begin();
+				it != editing_files.end(); it++)
+		{
+		Editing_file *ed = *it;
+		struct stat fs;		// Check mod. time of file.
+		if (stat(ed->pathname.c_str(), &fs) != 0)
+			{		// Gone?
+			delete ed;
+			it = editing_files.erase(it);
+			continue;
+			}
+		if (fs.st_mtime <= ed->mtime)
+			continue;	// Still not changed.
+		ed->mtime = fs.st_mtime;
+		import_shape(ed);
+		}
+	}
+
+/*
+ *	Import a shape that was changed by an external program (i.e., Gimp).
+ */
+
+void Shape_chooser::import_shape
+	(
+	Editing_file *ed
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	Shape_file_info *finfo = studio->get_files()->create(
+						ed->vga_basename.c_str());
+	Vga_file *ifile = finfo->get_ifile();
+	if (!ifile)
+		return;			// Shouldn't happen.
+	Shape *shape = ifile->extract_shape(ed->shapenum);
+	if (!shape)
+		return;
+	int w, h, rowsize, xoff, yoff, palsize;
+	unsigned char *pixels, *palette;
+					// Import, with 255 = transp. index.
+	if (!Import_png8(ed->pathname.c_str(), 255, w, h, rowsize, xoff, yoff,
+						pixels, palette, palsize))
+		return;			// Just return if error, for now.
+	delete palette;
+					// Low shape in 'shapes.vga'?
+	bool flat = ed->shapenum < 0x96 && finfo == studio->get_vgafile();
+	int xleft, yabove;
+	if (flat)
+		{
+		xleft = yabove = 8;
+		if (w != 8 || h != 8 || rowsize != 8)
+			{
+			char *msg = g_strdup_printf(
+				"Shape %d must be 8x8", ed->shapenum);
+			studio->prompt(msg, "Continue");
+			g_free(msg);
+			delete pixels;
+			return;
+			}
+		}
+	else				// RLE. xoff,yoff are neg. from bottom.
+		{
+		xleft = w + xoff - 1;
+		yabove = h + yoff - 1;
+		}
+	shape->set_frame(new Shape_frame(pixels,
+			w, h, xleft, yabove, !flat), ed->framenum);
+	delete pixels;
+	//+++++++Mark finfo as modified.  Got to write it out somewhere.
+	}
+
+/*
+ *	Delete all the files being edited after doing a final check.
+ */
+
+void Shape_chooser::clear_editing_files
+	(
+	)
+	{
+	check_editing_files();		// Import any that changed.
+	while (!editing_files.empty())
+		{
+		Editing_file *ed = editing_files.back();
+		editing_files.pop_back();
+		unlink(ed->pathname.c_str());
+		delete ed;
+		}
 	}
 
 /*

@@ -45,7 +45,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <fcntl.h>
 
-#include "objbrowse.h"
+#include "shapelst.h"
 #include "paledit.h"
 #include "shapevga.h"
 #include "ibuf8.h"
@@ -327,6 +327,8 @@ ExultStudio::~ExultStudio()
 #ifdef WIN32
     OleUninitialize();
 #endif
+					// Finish up external edits.
+	Shape_chooser::clear_editing_files();
 					// Store main window size.
 	int w = app->allocation.width, h = app->allocation.height;
 	config->set("config/estudio/main/width", w, true);
@@ -567,6 +569,8 @@ GtkCTreeNode *Create_subtree( GtkCTree *ctree,
 
 void ExultStudio::set_game_path(const char *gamepath)
 {
+					// Finish up external edits.
+	Shape_chooser::clear_editing_files();
 					// Set top-level path.
 	add_system_path("<GAME>", gamepath);
 	if(static_path)
