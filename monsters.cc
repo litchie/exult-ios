@@ -396,8 +396,8 @@ Weapon_info *Monster_actor::get_weapon
 		winf = get_info().get_weapon_info();
 		if (winf)
 			points = winf->get_damage();
-		else			// Guessing:
-			points = inf ? inf->weapon : 0;
+		else if (inf)		// Guessing:
+			points = inf->weapon;
 		}
 	return winf;
 	}
