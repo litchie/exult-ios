@@ -141,23 +141,32 @@ public:
  */
 class Shape_info
 	{
-	unsigned char tfa[3];		// From "tfa.dat".
+	unsigned char tfa[3];		// From "tfa.dat".+++++Keep for
+					//   debugging, for now.
+					// 3D dimensions in tiles:
+	unsigned char xtiles, ytiles, ztiles;
 	unsigned char weight, volume;	// From "wgtvol.dat".
 	unsigned char shpdims[2];	// From "shpdims.dat".
+	void set_tfa_data()		// Set fields from tfa.
+		{
+		xtiles = 1 + (tfa[2]&7);
+		ytiles = 1 + ((tfa[2]>>3)&7);
+		ztiles = (tfa[0] >> 5);
+		}
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
-	Shape_info() : weight(0), volume(0)
+	Shape_info() : weight(0), volume(0), xtiles(0), ytiles(0), ztiles(0)
 		{ tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0; }
 	int get_weight()		// Get weight, volume.
 		{ return weight; }
 	int get_volume()
 		{ return volume; }
 	int get_3d_height()		// Height (in lifts?).
-		{ return (tfa[0] >> 5); }
+		{ return ztiles; }
 	int get_3d_xtiles()		// Dimension in tiles - X.
-		{ return 1 + (tfa[2]&7); }
+		{ return xtiles; }
 	int get_3d_ytiles()		// Dimension in tiles - Y.
-		{ return 1 + ((tfa[2]>>3)&7); }
+		{ return ytiles; }
 	unsigned char get_tfa(int i)	// For debugging:
 		{ return tfa[i]; }
 	int is_animated()
