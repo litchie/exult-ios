@@ -308,8 +308,17 @@ static int Check_mask
 		return 1;
 		}
 	if (mask == 16)			// Egg or barge or path.
-		return obj->is_egg() || obj->get_shapenum() == 0x3c1 ||
-			obj->get_shapenum() == 607;
+		{
+		if (obj->get_shapenum() == 0x3c1 || obj->get_shapenum() == 607)
+			return 1;
+		if (!obj->is_egg())
+			return 0;
+		if (Game::get_game_type() != SERPENT_ISLE)
+			return 1;
+					// SI-SS wine cask problem:
+		Egg_object *egg = (Egg_object *)obj;
+		return egg->get_type() != (int) Egg_object::teleport;
+		}
 	if (mask == 32)			// ??? Used in 'reveal' to find inv.
 					// objs, and to detect blocked gplank.
 		return 1;		// For now.+++++

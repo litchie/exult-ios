@@ -749,11 +749,25 @@ USECODE_INTRINSIC(display_runes)
 	if (!cnt)
 		cnt = 1;		// Try with 1 element.
 	Sign_gump *sign = new Sign_gump(parms[0].get_int_value(), cnt);
+	bool si = Game::get_game_type()== SERPENT_ISLE;
 	for (int i = 0; i < cnt; i++)
 		{			// Paint each line.
 		Usecode_value& lval = !i ? parms[1].get_elem0() 
 					: parms[1].get_elem(i);
-		sign->add_text(i, lval.get_str_value());
+		const char *str = lval.get_str_value();
+#if 0	/* ++++Not sure about this yet.  Compare with orig. */
+		if (si)			// SI:  Add 0x20 to each chr.
+			{
+			char *newstr = strdup(str);
+			for (char *ptr = newstr; *ptr; ptr++)
+				if (*ptr >= 'A' && *ptr <= 'Z')
+					*ptr += 0x20;
+			sign->add_text(i, newstr);
+			delete newstr;
+			}
+		else
+#endif
+			sign->add_text(i, str);
 		}
 	sign->paint(gwin);		// Paint it, and wait for click.
 	int x, y;
