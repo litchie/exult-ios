@@ -142,7 +142,8 @@ class Map_chunk : public Game_singletons
 	unsigned char *dungeon_levels;	// A 'dungeon' level value for each tile (4 bit).
 	Chunk_cache *cache;		// Data for chunks near player.
 	unsigned char roof;		// 1 if a roof present.
-	unsigned char light_sources;	// # light sources in chunk.
+					// # light sources in chunk.
+	unsigned char dungeon_lights, non_dungeon_lights;
 	unsigned char cx, cy;		// Absolute chunk coords. of this.
 	void add_dungeon_levels(Rectangle& tiles, unsigned int lift);
 	void add_dependencies(Game_object *newobj,
@@ -174,8 +175,10 @@ public:
 		{ return cx; }
 	int get_cy() const
 		{ return cy; }
-	int get_light_sources() const	// Get #lights.
-		{ return light_sources; }
+	int get_dungeon_lights() const	// Get #lights.
+		{ return dungeon_lights; }
+	int get_non_dungeon_lights() const
+		{ return non_dungeon_lights; }
 	ShapeID get_flat(int tilex, int tiley) const
 		{ return terrain ? terrain->get_flat(tilex, tiley)
 					: ShapeID(); }
