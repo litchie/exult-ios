@@ -331,7 +331,6 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(add_cont_items);
 	USECODE_INTRINSIC_DECL(remove_cont_items);
 					// Serpent Isle:
-	USECODE_INTRINSIC_DECL(sprite_effect2);
 	USECODE_INTRINSIC_DECL(si_path_run_usecode);
 	USECODE_INTRINSIC_DECL(remove_from_area);
 	USECODE_INTRINSIC_DECL(infravision);

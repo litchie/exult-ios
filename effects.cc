@@ -109,8 +109,8 @@ inline void Sprites_effect::add_dirty
 	int lp = pos.tz/2;
 
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
-		(pos.tx + xoff - lp - gwin->get_scrolltx())*c_tilesize,
-	    	(pos.ty + yoff - lp - 
+		xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
+	    	yoff + (pos.ty - lp - 
 			gwin->get_scrollty())*c_tilesize).enlarge(4)));
 	}
 
@@ -158,8 +158,8 @@ void Sprites_effect::paint
 		return;
 	int lp = pos.tz/2;		// Account for lift.
 	gwin->paint_sprite(
-		(pos.tx + xoff - lp - gwin->get_scrolltx())*c_tilesize,
-		(pos.ty + yoff - lp - gwin->get_scrollty())*c_tilesize, 
+		xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
+		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize, 
 						sprite_num, frame_num);
 	}
 
