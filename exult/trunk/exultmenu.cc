@@ -16,6 +16,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "alpha_kludges.h"
 #include "menulist.h"
 #include "exultmenu.h"
 #include "mouse.h"

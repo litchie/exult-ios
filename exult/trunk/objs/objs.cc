@@ -37,8 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ordinfo.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
+#  include <cstdio>
 #endif
-#include <cstdio>
 
 using std::cerr;
 using std::cout;

@@ -40,6 +40,12 @@
 #if defined(__DECCXX) && defined(__linux__)
 
 #define ALPHA_LINUX_CXX
+#undef HAVE_HASH_MAP
+#undef HAVE_HASH_SET
+#undef DONT_HAVE_HASH_MAP
+#undef DONT_HAVE_HASH_SET
+#define DONT_HAVE_HASH_SET
+#define DONT_HAVE_HASH_MAP
 
 namespace std {
 #include <sys/types.h>
