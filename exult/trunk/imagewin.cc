@@ -893,3 +893,27 @@ void Image_window::show
 	SDL_UpdateRect(surface, 0, 0, ibuf->width, ibuf->height);
 	}
 
+void Image_window::toggle_fullscreen() {
+        Uint32 flags;
+        int w, h, bpp;
+
+        w = surface->w;
+        h = surface->h;
+        bpp = surface->format->BitsPerPixel;
+        if ( surface->flags & SDL_FULLSCREEN ) {
+		cout << "Switching to windowed mode.\n";
+                flags = surface->flags & ~SDL_FULLSCREEN;
+        } else {
+		cout << "Switching to fullcsreen mode.\n";
+                flags = surface->flags | SDL_FULLSCREEN;
+        }
+        if ( SDL_VideoModeOK(w, h, bpp, flags) ) {
+                /* This changes the publicly visible surface */
+                surface = SDL_SetVideoMode(w, h, bpp, flags);
+                if ( surface == NULL ) {
+           	        /* Uh oh... */;
+                }
+		/* Redraw surface contents... */
+		// show();  // Why doesn't this work??
+        }
+}
