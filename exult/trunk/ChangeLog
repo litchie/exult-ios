@@ -1,8 +1,9 @@
+2001-11-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* vgafile.cc: 'fixed' Spark's palette-cycling pants
+	* Paperdoll_gump.cc: improved two-rings+staff display glitch
+
 2001-11-03  Max Horn  <max@quendi.de>
 	* Makefile.am: adapted to work with latest SDL CVS on OS X
-
-2001-11-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
-	* actors.cc: 'fixed' Spark's palette-cycling pants
 
 2001-11-03  Jeff Freedman  <jeff@amy.nerble.net>
 
