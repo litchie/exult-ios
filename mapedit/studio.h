@@ -140,7 +140,7 @@ public:
 	void set_browser(const char *name, Object_browser *obj);
 	bool has_focus();		// Any of our windows has focus?
 
-	void create_new_game(char *dir);
+	void create_new_game(const char *dir);
 	void new_game();
 	void choose_game_path();
 	Object_browser  *create_browser(const char *fname);
@@ -246,7 +246,7 @@ public:
 	void set_spin(char *name, int val, bool sensitive = true);
 	void set_spin(char *name, int val, int low, int high);
 	int get_num_entry(char *name);
-	char *get_text_entry(char *name);
+	const gchar *get_text_entry(char *name);
 	void set_entry(char *name, int val, bool hex = false,
 						bool sensitive = true);
 	void set_entry(char *name, const char *val, bool sensitive = true);

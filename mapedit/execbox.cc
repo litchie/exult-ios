@@ -250,7 +250,7 @@ bool Exec_process::check_child
 
 Exec_box::Exec_box
 	(
-	GtkText *b,
+	GtkTextView *b,
 	GtkStatusbar *s,
 	Exec_done_fun dfun,		// Called when child exits.
 	gpointer udata			// Passed to dfun.
@@ -310,9 +310,8 @@ void Exec_box::read_from_child
 	{
 	if (datalen > 0)
 		{
-		gtk_text_freeze(box);	// Looks better this way.
-		gtk_text_insert(box, NULL, NULL, NULL, data, datalen);
-		gtk_text_thaw(box);
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(box);
+		gtk_text_buffer_insert_at_cursor(buffer,data,datalen);
 		return;
 		}
 	if (exit_code == 0)		// Child is done, so check result.
@@ -332,9 +331,8 @@ void Exec_box::add_message
 	const char *txt
 	)
 	{
-	gtk_text_freeze(box);		// Looks better this way.
-	gtk_text_insert(box, NULL, NULL, NULL, txt, strlen(txt));
-	gtk_text_thaw(box);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(box);
+	gtk_text_buffer_insert_at_cursor(buffer,txt,strlen(txt));
 	}
 
 /*
@@ -349,8 +347,8 @@ bool Exec_box::exec
 	char *argv[]			// Args.  1st is filename, last is 0.
 	)
 	{
-	gtk_text_set_point(box, 0);	// Clear out old text.
-	gtk_text_forward_delete(box, gtk_text_get_length(box));
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(box);
+	gtk_text_buffer_set_text(buffer, "", 0);	// Clear out old text
 	if (!executor->exec(file, argv, Exec_callback, this))
 		return false;
 	return true;

@@ -39,7 +39,7 @@ class Shape_group : std::vector<int>		// Not public on purpose.
 	Shape_group_file *file;		// Where this comes from.
 public:
 	friend class Shape_group_file;
-	Shape_group(char *nm, Shape_group_file *f);
+	Shape_group(const char *nm, Shape_group_file *f);
 	~Shape_group() {  }
 	Shape_group_file *get_file()
 		{ return file; }

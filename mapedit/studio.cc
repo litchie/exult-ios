@@ -476,7 +476,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 		strcpy(path,".");
 	strcat(path, "/exult_studio.glade");
 	// Load the Glade interface
-	app_xml = glade_xml_new(path, NULL);
+	app_xml = glade_xml_new(path, NULL, NULL);
 	app = glade_xml_get_widget( app_xml, "main_window" );
 	glade_path = g_strdup(path);
 
@@ -704,7 +704,7 @@ inline bool Is_dir_marker
 
 void on_choose_new_game_dir
 	(
-	char *dir,
+	const char *dir,
 	gpointer udata			// ->studio.
 	)
 	{
@@ -712,7 +712,7 @@ void on_choose_new_game_dir
 	}
 void ExultStudio::create_new_game
 	(
-	char *dir			// Directory for new game.
+	const char *dir			// Directory for new game.
 	)
 	{
 					// Take basename as game name.
@@ -794,17 +794,15 @@ void ExultStudio::create_new_game
  *	Prompt for a 'new game' directory.
  */
 
-void ExultStudio::new_game
-	(
-	)
-	{
+void ExultStudio::new_game()
+{
 	if (!okay_to_close())		// Okay to close prev. game?
 		return;
 	GtkFileSelection *fsel = Create_file_selection(
 			"Choose new game directory",
-					on_choose_new_game_dir, this);
+			on_choose_new_game_dir, this);
 	gtk_widget_show(GTK_WIDGET(fsel));
-	}
+}
 
 /*
  *	Choose game directory.
@@ -1315,9 +1313,9 @@ void ExultStudio::show_unused_shapes
 	)
 	{
 	int nshapes = datalen*8;
-	GtkText *text = GTK_TEXT(glade_xml_get_widget(app_xml, "msg_text"));
-	gtk_text_set_point(text, 0);	// Clear out old text.
-	gtk_text_forward_delete(text, gtk_text_get_length(text));
+	GtkTextView *text = GTK_TEXT_VIEW(glade_xml_get_widget(app_xml, "msg_text"));
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	gtk_text_buffer_set_text(buffer, "", 0);	// Clear out old text
 	set_visible("msg_win", TRUE);	// Show message window.
 	int pos = 0;
 	GtkEditable *ed = GTK_EDITABLE(text);
@@ -1334,7 +1332,7 @@ void ExultStudio::show_unused_shapes
 			Insert_text(ed, msg, pos);
 			g_free(msg);
 			}
-	gtk_text_set_point(text, 0);	// Scroll back to top.
+	// FIXME: gtk_text_set_point(text, 0);	// Scroll back to top.
 	}
 
 
@@ -1572,7 +1570,7 @@ int ExultStudio::get_num_entry
 	GtkWidget *field = glade_xml_get_widget(app_xml, name);
 	if (!field)
 		return -1;
-	char *txt = gtk_entry_get_text(GTK_ENTRY(field));
+	const gchar *txt = gtk_entry_get_text(GTK_ENTRY(field));
 	if (!txt)
 		return -1;
 	while (*txt == ' ')
@@ -1589,7 +1587,7 @@ int ExultStudio::get_num_entry
  *	Output:	->text, or null if not found.
  */
 
-char *ExultStudio::get_text_entry
+const gchar *ExultStudio::get_text_entry
 	(
 	char *name
 	)
@@ -2013,7 +2011,7 @@ void ExultStudio::save_preferences
 	(
 	)
 	{
-	char *text = get_text_entry("prefs_image_editor");
+	const char *text = get_text_entry("prefs_image_editor");
 	g_free(image_editor);
 	image_editor = g_strdup(text);
 	config->set("config/estudio/image_editor", image_editor, true);

@@ -1,4 +1,10 @@
 2003-02-25  Tristan Tarrant <nadir@users.sourceforge.net>
+	* Exult Studio compiles and runs with GTK+ 2.0. It doesn't work quite
+	  yet. I've ported GtkText to GtkTextView, but I still need to port to
+	  GtkTreeView instead of the awful GtkCTree
+	* mapedit/*: "gtk+ 2.0"-ification
+
+2003-02-25  Tristan Tarrant <nadir@users.sourceforge.net>
 	* configure.ac: use pkg-config to search for GLIB 2.0/GTK+ 2.0/LIBGLADE 2.0
 	                search for a gimptool >= 1.3.12
 	* usecode/compiler/Makefile.am: use AM_YFLAGS instead of YFLAGS
