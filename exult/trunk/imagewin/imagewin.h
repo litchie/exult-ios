@@ -54,8 +54,9 @@ protected:
 	int scale;			// Only 1 or 2 for now.
 	int scaler;		// What scaler do we want to use
 	bool fullscreen;		// Rendering fullscreen.
-	SDL_Surface *surface;		// Represents window in memory.
-	SDL_Surface *scaled_surface;	// 2X surface if scaling, else 0.
+	SDL_Surface *surface;		// Represents window in memory. (has palette)
+	SDL_Surface *scaled_surface;	// 2X surface if scaling, else 0. (only used when scaling)
+	SDL_Surface *unscaled_surface;	// Unscaled surface (used for screenshots only)
 					// Method to blit scaled:
 	void (Image_window::*show_scaled)(int x, int y, int w, int h);
 	/*

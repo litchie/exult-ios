@@ -102,6 +102,8 @@ public:
 	virtual void close(Game_window *gwin);
 					// Use the paperdoll shapes?
 	bool is_paperdoll() const { return paperdoll_shape; }
+
+	virtual int get_shapefile() const { return shapefile; }
 };
 
 #endif

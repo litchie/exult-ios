@@ -26,6 +26,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_button.h"
 #include "Yesno_gump.h"
 #include "gamewin.h"
+#include "Newfile_gump.h"
+#include "File_gump.h"
+#include "mouse.h"
+#include "gump_utils.h"
 
 
 int Gamemenu_gump::rowy[6] = { 14, 28, 40, 52, 66, 78 };
@@ -90,6 +94,11 @@ void Gamemenu_gump::quit(bool return_to_menu)
 //+++++ implement actual functionality and option screens
 void Gamemenu_gump::loadsave()
 {
+	//File_gump *fileio = new File_gump();
+	Newfile_gump *fileio = new Newfile_gump();
+	Do_Modal_gump(fileio, Mouse::hand);
+	if (fileio->restored_game()) done = 1;
+	delete fileio;
 }
 
 void Gamemenu_gump::video_options()
@@ -115,18 +124,16 @@ void Gamemenu_gump::paint(Game_window* gwin)
 void Gamemenu_gump::mouse_down(int mx, int my)
 {
 	Game_window *gwin = Game_window::get_game_window();
-	pushed = 0;
+	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
-	Gump_button *btn = Gump::on_button(gwin, mx, my);
-	if (btn)
-		pushed = btn;
-	else				// Try buttons at bottom.
-		for (int i=0; i<6; i++)
-			if (buttons[i]->on_button(gwin, mx, my))
-			{
-				pushed = buttons[i];
-				break;
-			}
+	// Try buttons at bottom.
+	if (!pushed) for (int i=0; i<6; i++)
+		if (buttons[i]->on_button(gwin, mx, my))
+		{
+			pushed = buttons[i];
+			break;
+		}
+
 	if (pushed)			// On a button?
 	{
 		pushed->push(gwin);

@@ -107,6 +107,9 @@ void Image_window8::set_palette
 		colors2[i].b = colors[i*3+2]  = GammaBlue[Get_color8(rgbs[3*i + 2], maxval, brightness)];
 	}
 	SDL_SetColors(surface, colors2, 0, 256);
+
+	if (surface != unscaled_surface)
+		SDL_SetColors(unscaled_surface, colors2, 0, 256);
 }
 
 /*
@@ -140,6 +143,9 @@ void Image_window8::rotate_colors
 			colors2[i].b = colors[i*3+2];
 		}
 		SDL_SetColors(surface, colors2, 0, 256);
+
+		if (surface != unscaled_surface)
+			SDL_SetColors(unscaled_surface, colors2, 0, 256);
 	}
 }
 

@@ -169,6 +169,11 @@ void Gump::initialize
 				checkx = 8;
 				checky = 82;
 				break;
+			case 25: // Save Gump
+				object_area = Rectangle(0,0,320,200); //+++++ ???
+				checkx = -22;
+				checky = 190;
+				break;
 		}
 	}
 

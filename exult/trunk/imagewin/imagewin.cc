@@ -72,7 +72,7 @@ Image_window::Image_window
 	bool fs				// Fullscreen.
 	) : Image_buffer(w, h, Get_best_depth()),
 	    scale(1), scaler(point), fullscreen(fs),
-	    surface(0), scaled_surface(0), show_scaled(0)
+	    surface(0), scaled_surface(0), unscaled_surface(0), show_scaled(0)
 	{
 	create_surface(w, h);
 	}
@@ -105,13 +105,13 @@ void Image_window::create_surface
 	Uint32 flags = (fullscreen?SDL_FULLSCREEN:0) |
 					SDL_SWSURFACE |  SDL_HWPALETTE;
 	show_scaled = 0;
-	surface = scaled_surface = 0;
+	unscaled_surface = surface = scaled_surface = 0;
 
 	if (try_scaler(w, h, flags)) return;
 
 	if (!surface)			// No scaling, or failed?
 		{
-		surface = SDL_SetVideoMode(w, h, ibuf->depth, flags);
+		unscaled_surface = surface = SDL_SetVideoMode(w, h, ibuf->depth, flags);
 		scale = 1;
 		}
 	if (!surface)
@@ -131,14 +131,21 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 	// 2xSaI scaler
 	if (scale == 2 && scaler ==  SaI)
 	{
-		int hwdepth = Get_best_depth();
+		int hwdepth;
+		
+		if ( SDL_VideoModeOK(w, h, 32, flags))
+			hwdepth = 32;
+		else if ( SDL_VideoModeOK(w, h, 16, flags))
+			hwdepth = 16;
+		else
+			hwdepth = Get_best_depth();
 
 		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
 			cout << "Doubling from " << ibuf->depth << "bits to "
 				<< hwdepth << " not yet supported." << endl;
 		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
 						hwdepth, flags)) != 0 &&
-			 (surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
+			 (unscaled_surface = surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
 							8, 0, 0, 0, 0)) != 0)
 		{			// Get color mask info.
 			SDL_PixelFormat *fmt = scaled_surface->format;
@@ -164,14 +171,21 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 	}
 	else if (scale == 2 && scaler == bilinear)	// Bilinear scaler
 	{
-		int hwdepth = Get_best_depth();
+		int hwdepth;
+		
+		if ( SDL_VideoModeOK(w, h, 32, flags))
+			hwdepth = 32;
+		else if ( SDL_VideoModeOK(w, h, 16, flags))
+			hwdepth = 16;
+		else
+			hwdepth = Get_best_depth();
 
 		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
 			cout << "Doubling from " << ibuf->depth << "bits to "
 				<< hwdepth << " not yet supported." << endl;
 		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
 						hwdepth, flags)) != 0 &&
-			 (surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
+			 (unscaled_surface = surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
 							8, 0, 0, 0, 0)) != 0)
 		{			// Get color mask info.
 			SDL_PixelFormat *fmt = scaled_surface->format;
@@ -197,14 +211,21 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 	}
 	else if (scale == 2 && scaler == SuperEagle)
 	{
-		int hwdepth = Get_best_depth();
+		int hwdepth;
+		
+		if ( SDL_VideoModeOK(w, h, 32, flags))
+			hwdepth = 32;
+		else if ( SDL_VideoModeOK(w, h, 16, flags))
+			hwdepth = 16;
+		else
+			hwdepth = Get_best_depth();
 
 		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
 			cout << "Doubling from " << ibuf->depth << "bits to "
 				<< hwdepth << " not yet supported." << endl;
 		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
 						hwdepth, flags)) != 0 &&
-			 (surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
+			 (unscaled_surface = surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
 							8, 0, 0, 0, 0)) != 0)
 		{			// Get color mask info.
 			SDL_PixelFormat *fmt = scaled_surface->format;
@@ -231,7 +252,7 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 	else if (scale >= 2 && scaler == interlaced)
 	{
 		surface = SDL_SetVideoMode(w*scale, h*scale, ibuf->depth, flags);
-		scaled_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
+		unscaled_surface = scaled_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
 							8, 0, 0, 0, 0);
 		if (surface && scaled_surface)
 		{
@@ -252,7 +273,7 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 	else if (scale >= 2)
 	{
 		surface = SDL_SetVideoMode(w*scale, h*scale, ibuf->depth, flags);
-		scaled_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
+		unscaled_surface = scaled_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
 							8, 0, 0, 0, 0);
 		if (surface && scaled_surface)
 		{
@@ -374,16 +395,18 @@ void Image_window::toggle_fullscreen() {
         Uint32 flags;
         int w, h, bpp;
 
-        w = surface->w;
-        h = surface->h;
-        bpp = scaled_surface ? scaled_surface->format->BitsPerPixel
-			     : surface->format->BitsPerPixel;
+	SDL_Surface *surf = scaled_surface&&surface==unscaled_surface?scaled_surface:surface;
+
+        w = unscaled_surface->w;
+        h = unscaled_surface->h;
+        bpp = surf->format->BitsPerPixel;
+
         if ( fullscreen ) {
 		cout << "Switching to windowed mode."<<endl;
-                flags = surface->flags & ~SDL_FULLSCREEN;
+                flags = surf->flags & ~SDL_FULLSCREEN;
         } else {
 		cout << "Switching to fullcsreen mode."<<endl;
-                flags = surface->flags | SDL_FULLSCREEN;
+                flags = surf->flags | SDL_FULLSCREEN;
         }
 					// First see if it's allowed.
         if ( SDL_VideoModeOK(w, h, bpp, flags) )
@@ -397,11 +420,7 @@ void Image_window::toggle_fullscreen() {
 bool Image_window::screenshot(SDL_RWops *dst)
 {
 	if (!surface) return false;
-	if (scaled_surface) {
-		return SavePCX_RW(scaled_surface, dst, true);
-	} else {
-		return SavePCX_RW(surface, dst, true);
-	}
+	return SavePCX_RW(unscaled_surface, dst, true);
 }
 
 unsigned char* Image_window::mini_screenshot()

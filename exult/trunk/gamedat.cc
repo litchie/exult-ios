@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <cstdio>
 #  include <cstdlib>
 #  include <cstring>
+#  include <ctime>
 #endif
 
 #if (defined(XWIN) || defined(BEOS))
@@ -52,6 +53,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "Flex.h"
 #include "databuf.h"
+#include "Newfile_gump.h"
+#include "actors.h"
+#include "ucmachine.h"
 
 using std::cerr;
 using std::cout;
@@ -76,7 +80,7 @@ using std::strncpy;
 
 void Game_window::restore_gamedat
 	(
-	const char *fname			// Name of savegame file.
+	const char *fname		// Name of savegame file.
 	)
 	{
 	ifstream in;
@@ -93,8 +97,9 @@ void Game_window::restore_gamedat
 	U7remove (IDENTITY);
 	U7remove (GSCHEDULE);
 	U7remove ("<STATIC>/flags.flg");
+	U7remove (GSCRNSHOT);
+	U7remove (GSAVEINFO);
 
-	cout << "here" << endl;
 	cout.flush();
 
 	in.seekg(0x54);			// Get to where file count sits.
@@ -134,7 +139,6 @@ void Game_window::restore_gamedat
 		out.close();
 		}
 	delete [] finfo;
-	cout << "here" << endl;
 	cout.flush();
 	}
 
@@ -159,6 +163,7 @@ void Game_window::restore_gamedat
  *	List of 'gamedat' files to save (in addition to 'iregxx'):
  */
 static const char *savefiles[] = {
+	GSCRNSHOT,	GSAVEINFO,	// MUST BE FIRST!!
 	NPC_DAT,	MONSNPCS,
 	IDENTITY,	USEDAT,
 	FLAGINIT,	GWINDAT,
@@ -319,4 +324,185 @@ void Game_window::read_save_names
 			save_names[i] = newstrdup("");
 		}
 	}
+}
+
+
+void Game_window::write_saveinfo()
+{
+	ofstream out;
+	SaveGame_Details	details;
+	SaveGame_Party		party[8];
+
+	details.save_count = 0;
+
+	try
+	{
+		ifstream in;
+		U7open(in, GSAVEINFO);		// Open file; throws an exception 
+		in.read((char *) &details, sizeof (details));
+		in.close();
+	}
+	catch(...)
+	{
+	}
+
+	Usecode_machine *uc = get_usecode();
+
+	details.party_size = uc->get_party_count()+1;
+	details.save_count++;
+
+	details.game_day = clock.get_day();
+	details.game_hour = clock.get_hour();
+	details.game_minute = clock.get_minute();
+
+	time_t t = std::time(0);
+	struct tm *timeinfo = std::localtime (&t);	
+
+	details.real_day = timeinfo->tm_mday;
+	details.real_hour = timeinfo->tm_hour;
+	details.real_minute = timeinfo->tm_min;
+	details.real_month = timeinfo->tm_mon+1;
+	details.real_year = timeinfo->tm_year + 1900;
+
+	U7open(out, GSAVEINFO);		// Open file; throws an exception - Don't care
+	out.write((char *) &details, sizeof(details));
+
+	int	i;
+	for (i=0; i<8 && i<details.party_size ; i++)
+	{
+		Actor *npc;
+		if (i == 0)
+			npc = main_actor;
+		else
+			npc = (Npc_actor *) get_npc( uc->get_party_member(i-1));
+
+		strncpy (party[i].name, npc->get_npc_name().c_str(), 18);
+		party[i].shape = npc->get_shapenum();
+
+		party[i].dext = npc->get_property(Actor::dexterity);
+		party[i].str = npc->get_property(Actor::strength);
+		party[i].intel = npc->get_property(Actor::intelligence);
+		party[i].health = npc->get_property(Actor::health);
+		party[i].combat = npc->get_property(Actor::combat);
+		party[i].mana = npc->get_property(Actor::mana);
+		party[i].magic = npc->get_property(Actor::magic);
+		party[i].training = npc->get_property(Actor::training);
+		party[i].exp = npc->get_property(Actor::exp);
+		party[i].food = npc->get_property(Actor::food_level);
+		party[i].flags = npc->get_flags();
+		party[i].flags2 = npc->get_flags2();
+	}
+
+	out.write((char *) party, sizeof(SaveGame_Party)*details.party_size );
+	out.close();
+
+	// Save Shape
+	Shape_file *map = create_mini_screenshot();
+	U7open(out, GSCRNSHOT);		// Open file; throws an exception - Don't care
+	StreamDataSource ds(&out);
+	map->save(ds);
+	out.close();
+	delete map;
+}
+
+void Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_Details *&details, SaveGame_Party *& party)
+{
+	char fname[50];			// Set up name.
+	snprintf(fname, 50, SAVENAME, num, 
+		Game::get_game_type() == BLACK_GATE ? "bg" : "si");
+
+	ifstream in;
+	U7open(in, fname);		// Open file; throws an exception 
+					// in case of an error.
+
+	// Read Name
+	char buf[0x50];
+	memset(buf, 0, sizeof(buf));
+	in.read(buf, sizeof(buf) - 1);
+	name = new char [strlen (buf)+1];
+	strcpy (name, buf);
+
+	// Now get dir info
+	in.seekg(0x54);			// Get to where file count sits.
+	int numfiles = Read4(in);
+	in.seekg(0x80);			// Get to file info.
+					// Read pos., length of each file.
+	long *finfo = new long[2*numfiles];
+	int i;
+	for (i = 0; i < numfiles; i++)
+	{
+		finfo[2*i] = Read4(in);	// The position, then the length.
+		finfo[2*i + 1] = Read4(in);
+	}
+
+	// Always first two entires
+	for (i = 0; i < 2; i++)	// Now read each file.
+	{
+					// Get file length.
+		int len = finfo[2*i + 1] - 13;
+		if (len <= 0)
+			continue;
+		in.seekg(finfo[2*i]);	// Get to it.
+		char fname[50];		// Set up name.
+		strcpy(fname, GAMEDAT);
+		in.read(&fname[sizeof(GAMEDAT) - 1], 13);
+		int namelen = strlen(fname);
+					// Watch for names ending in '.'.
+		if (fname[namelen - 1] == '.')
+			fname[namelen - 1] = 0;
+
+		if (!strcmp (fname, GSCRNSHOT))
+		{
+			char *buf = new char[len];
+			in.read(buf, len);
+			BufferDataSource ds(buf, len);
+			map = new Shape_file(ds);
+			delete [] buf;
+		}
+		else if (!strcmp (fname, GSAVEINFO))
+		{
+			details = new SaveGame_Details;
+			in.read((char *) details, sizeof (SaveGame_Details));
+			party = new SaveGame_Party[details->party_size];
+			in.read((char *) party, sizeof (SaveGame_Party)*details->party_size);
+		}
+
+	}
+	in.close();
+
+	delete [] finfo;
+}
+
+void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, SaveGame_Party *& party)
+{
+	try
+	{
+		ifstream in;
+		U7open(in, GSAVEINFO);		// Open file; throws an exception 
+		details = new SaveGame_Details;
+		in.read((char *) details, sizeof (SaveGame_Details));
+		party = new SaveGame_Party[details->party_size];
+		in.read((char *) party, sizeof (SaveGame_Party)*details->party_size);
+		in.close();
+	}
+	catch(...)
+	{
+		details = NULL;
+		party = NULL;
+	}
+
+	try
+	{
+		ifstream in;
+		U7open(in, GSCRNSHOT);		// Open file; throws an exception 
+		StreamDataSource ds(&in);
+		map = new Shape_file(ds);
+		in.close();
+	}
+	catch(...)
+	{
+		map = NULL;
+	}
+
+
 }
