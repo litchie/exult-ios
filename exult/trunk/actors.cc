@@ -316,12 +316,19 @@ void Actor::follow
 			return;
 			}
 		}
-	if (!leader->is_moving())	// Leader stopped?
+	if (pos.distance(leaderpos) >= 8 && get_party_id() >= 0)
 		{			// A little stuck?
-		if (goaldist >= 8 && get_party_id() >= 0)
-//		if (pos.distance(leaderpos) >= 8 && get_party_id() >= 0)
-			walk_path_to_tile(goal, speed);
-//		return;			// Otherwise, take a rest.
+		static long lasttime = 0;
+		long curtime;
+					// Leader stopped?
+		if (!leader->is_moving() ||
+					// Or 3 seconds since last time?
+		    (curtime = SDL_GetTicks()) - lasttime > 3000)
+			{
+			walk_path_to_tile(goal, speed - speed/10);
+			lasttime = curtime;
+			return;
+			}
 		}
 	walk_to_tile(goal, speed, delay);
 	}
