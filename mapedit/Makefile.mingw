@@ -26,13 +26,14 @@ CXXFLAGS = -fnative-struct
 
 CXX=g++
 
-LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) -liberty
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) -liberty -mwindows
 EXEC=exult_studio.exe
+DLL=exult_studio.dll
 
 SERVER_OBJS=objserial.o servemsg.o server.o
 
 MAPEDIT_OBJS=chunklst.o dirbrowser.o eggedit.o exult_studio.o npcedit.o objbrowse.o objedit.o paledit.o  \
-	shapedraw.o shapeedit.o shapelst.o studio.o exultstudioico.o
+	shapedraw.o shapeedit.o shapelst.o studio.o studio_win32.o
 
 FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o Table.o U7file.o utils.o
 
@@ -42,16 +43,21 @@ SHAPES_OBJS=font.o fontvga.o items.o monstinf.o shapeinf.o shapevga.o u7drag.o v
 
 OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS)
 
-$(EXEC): $(OBJS)
-	$(CXX) -o $@ $(OBJS) $(LIBS)
-
 exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
 	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc exultstudioico.o
 
-clean:
-	rm -f $(OBJS) $(EXEC)
+$(DLL): $(OBJS)
+	$(CXX) -shared -o $@ $(OBJS) $(LIBS)
+	dlltool -l libexultstudio.a -d exult_studio.def -D $@
 
-install: $(EXEC)
+$(EXEC): exultstudioico.o exult_studio_win32.o
+	$(CXX) exultstudioico.o exult_studio_win32.o -o exult_studio.exe -L. -lexultstudio $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(EXEC) *.a *.o *.exe
+
+install: $(DLL) $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
+	strip $(DLL) -o  $(U7PATH)/$(DLL)
 	mkdir -p $(U7PATH)/data
 	cp exult_studio.glade $(U7PATH)/data/exult_studio.glade
