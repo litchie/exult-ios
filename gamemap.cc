@@ -143,7 +143,8 @@ void Game_map::init
 		U7open(*chunks, U7CHUNKS);
 	chunks->seekg(0, ios::end);	// Get to end so we can get length.
 					// 2 bytes/tile.
-	int num_chunk_terrains = chunks->tellg()/(c_tiles_per_chunk*2);
+	int num_chunk_terrains = chunks->tellg()/
+				(c_tiles_per_chunk*c_tiles_per_chunk*2);
 					// Resize list to hold all.
 	chunk_terrains.resize(num_chunk_terrains);
 	read_all_terrain = modified_terrain = false;
