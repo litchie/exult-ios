@@ -612,7 +612,7 @@ ExultStudio::~ExultStudio()
 	if (combowin)
 		delete combowin;
 	locwin = 0;
-	gtk_object_unref( GTK_OBJECT( app_xml ) );
+	g_object_unref( G_OBJECT( app_xml ) );
 #ifndef WIN32
 	if (server_input_tag >= 0)
 		gdk_input_remove(server_input_tag);
