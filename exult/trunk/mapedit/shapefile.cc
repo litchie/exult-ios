@@ -113,6 +113,24 @@ void Image_file_info::flush
 	}
 
 /*
+ *	Revert to what's on disk.
+ *
+ *	Output:	True (meaning we support 'revert').
+ */
+
+bool Image_file_info::revert
+	(
+	)
+	{
+	if (modified)
+		{
+		ifile->reset();
+		modified = false;
+		}
+	return true;
+	}
+
+/*
  *	Write a shape file.  (Note:  static method.)
  *	May print an error.
  */
@@ -384,6 +402,52 @@ void Flex_file_info::flush
 		}
 	if (!writer.close())
 		throw file_write_exception(filestr.c_str());
+	}
+
+/*
+ *	Revert to what's on disk.
+ *
+ *	Output:	True (meaning we support 'revert').
+ */
+
+bool Flex_file_info::revert
+	(
+	)
+	{
+	if (!modified)
+		return true;
+	modified = false;
+	int cnt = entries.size();
+	for (int i = 0; i < cnt; i++)
+		{
+		delete entries[i];
+		entries[i] = 0;
+		lengths[i] = 0;
+		}
+	if (flex)
+		{
+		cnt = flex->number_of_objects();
+		entries.resize(cnt);
+		lengths.resize(entries.size());
+		}
+	else				// Single palette.
+		{
+		std::ifstream in;
+		U7open(in, pathname.c_str());	// Shouldn't fail.
+		in.seekg(0, std::ios::end);	// Figure size.
+		int sz = in.tellg();
+		cnt = sz > 0 ? 1 : 0;
+		entries.resize(cnt);
+		lengths.resize(entries.size());
+		in.seekg(0);
+		if (cnt)
+			{
+			entries[0] = new char[sz];
+			in.read(entries[0], sz);
+			lengths[0] = sz;
+			}
+		}
+	return true;
 	}
 
 /*

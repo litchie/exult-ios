@@ -103,7 +103,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void vscroll(int newindex);	// Scroll.
 	void adjust_vscrollbar();	// Set new scroll amounts.
 	void adjust_hscrollbar(int newmax);
-	GtkWidget *create_popup();	// Popup menu.
+	virtual GtkWidget *create_popup();	// Popup menu.
 	GtkWidget *create_search_controls();
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
