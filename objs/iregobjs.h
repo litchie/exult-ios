@@ -25,11 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_IREGOBJS
 #define INCL_IREGOBJS	1
 
-#ifdef MACOS
-#  include "exult_types.h"
-#else
-#  include "../exult_types.h"
-#endif
+#include "exult_types.h"
 #include "objs.h"
 
 /*

@@ -38,6 +38,33 @@ using std::free;
 using std::realloc;
 using std::memset;
 
+enum
+{
+	// number of (32-bit) long words in a note request event
+	kNoteRequestEventLength = ((sizeof(NoteRequest)/sizeof(long)) + 2),
+
+	// number of (32-bit) long words in a marker event
+	kMarkerEventLength	= 1,
+
+	// number of (32-bit) long words in a general event, minus its data
+	kGeneralEventLength	= 2
+};
+
+#define	BUFFER_INCREMENT		5000
+
+#define REST_IF_NECESSARY()	do {\
+			int timeDiff = eventPos->time - lastEventTime;	\
+			if(timeDiff)	\
+			{	\
+				timeDiff = (int)(timeDiff*tick);	\
+				qtma_StuffRestEvent(*tunePos, timeDiff);	\
+				tunePos++;	\
+				lastEventTime = eventPos->time;	\
+			}	\
+		} while(0)
+
+
+static uint32 *BuildTuneSequence(midi_event *evntlist, int ppqn, int part_poly_max[32], int part_to_inst[32], int &numParts);
 static uint32 *BuildTuneHeader(int part_poly_max[32], int part_to_inst[32], int numParts);
 
 
@@ -72,64 +99,154 @@ Mac_QT_midi::~Mac_QT_midi(void)
 }
 
 
-#define REST_IF_NECESSARY()	do {\
-			int timeDiff = eventPos->time - lastEventTime;	\
-			if(timeDiff)	\
-			{	\
-				timeDiff = (int)(timeDiff*tick);	\
-				qtma_StuffRestEvent(*tunePos, timeDiff);	\
-				tunePos++;	\
-				lastEventTime = eventPos->time;	\
-			}	\
-		} while(0)
-
-
-
 void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 {
-#define	BUFFER_INCREMENT		5000
-
-	int			part_poly[32];
-	int			part_poly_max[32];
 	int			part_to_inst[32];
+	int			part_poly_max[32];
+	int			numParts = 0;
+
+	UInt32		queueFlags = 0;
+	ComponentResult tpError;
+
+	memset(part_poly_max,0,sizeof(part_poly_max));
+	memset(part_to_inst,-1,sizeof(part_to_inst));
+
+	// First thing we do - stop any already playing music
+	stop_track();
+	
+	// Build a tune sequence from the event list
+	mTuneSequence = BuildTuneSequence(evntlist, ppqn, part_poly_max, part_to_inst, numParts);
+	if(!mTuneSequence)
+		goto bail;
+
+	// Now build a tune header from the data we collect above, create
+	// all parts as needed and assign them the correct instrument.
+	mTuneHeader = BuildTuneHeader(part_poly_max, part_to_inst, numParts);
+	if(!mTuneHeader)
+		goto bail;
+
+	// Set up the queue flags
+	queueFlags = kTuneStartNow;
+	if(repeat)
+		queueFlags |= kTuneLoopUntil;
+
+	// Set the time scale (units per second), we want milliseconds
+	tpError = TuneSetTimeScale(mTunePlayer, 1000);
+	if (tpError != noErr)
+		DebugStr("\pMIDI error during TuneSetTimeScale");
+
+	// Set the header, to tell what instruments are used
+	tpError = TuneSetHeader(mTunePlayer, (UInt32 *)mTuneHeader);
+	if (tpError != noErr)
+		DebugStr("\pMIDI error during TuneSetHeader");
+	
+	// Have it allocate whatever resources are needed
+	tpError = TunePreroll(mTunePlayer);
+	if (tpError != noErr)
+		DebugStr("\pMIDI error during TunePreroll");
+
+	// We want to play at normal volume
+	tpError = TuneSetVolume(mTunePlayer, 0x00010000);
+	if (tpError != noErr)
+		DebugStr("\pMIDI error during TuneSetVolume");
+	
+	// Finally, start playing the full song
+	tpError = TuneQueue(mTunePlayer, (UInt32 *)mTuneSequence, 0x00010000, 0, 0xFFFFFFFF, queueFlags, NULL, 0);
+	if (tpError != noErr)
+		DebugStr("\pMIDI error during TuneQueue");
+
+
+#if defined(DEBUG) && 0
+	// Loop until music is finished
+	while(is_playing() && !Button())
+		;
+#endif
+	
+	// Free the event list
+	XMIDI::DeleteEventList (evntlist);
+
+	return;
+	
+bail:
+	// Free the event list
+	XMIDI::DeleteEventList (evntlist);
+
+	// This disposes of the allocated tune header/sequence
+	stop_track();
+}
+
+void	Mac_QT_midi::stop_track(void)
+{
+	if(0 == mTuneSequence)
+        return;
+
+// For some resons, using a non-zero stopflag doesn't stop the music at all:/
+//	TuneStop(mTunePlayer, kTuneStopFade | kTuneStopInstant | kTuneStopReleaseChannels);
+
+	// Stop music
+	TuneStop(mTunePlayer, 0);
+	
+	// Deallocate all instruments
+	TuneUnroll(mTunePlayer);
+	
+	// Finally, free the data storage
+	free(mTuneSequence);
+	mTuneSequence = 0;
+
+	if(mTuneHeader)
+	{
+		DisposePtr((Ptr)mTuneHeader);
+		mTuneHeader = 0;
+	}
+}
+
+bool	Mac_QT_midi::is_playing(void)
+{
+	TuneStatus	ts;
+
+	TuneGetStatus(mTunePlayer,&ts);
+	return ts.queueTime != 0;
+}
+
+const	char *Mac_QT_midi::copyright(void)
+{
+	return "Internal QuickTime MIDI player";
+}
+
+uint32 *BuildTuneSequence(midi_event *evntlist, int ppqn, int part_poly_max[32], int part_to_inst[32], int &numParts)
+{
+	int			part_poly[32];
 	int			channel_to_part[16];
 	
 	int			channel_pan[16];
 	int			channel_vol[16];
 	int			channel_pitch_bend[16];
 	
-	int			numParts = 0;
 	int			lastEventTime = 0;
 	int			tempo = 500000;
 	double		Ippqn = 1.0 / (1000*ppqn);
 	double		tick = tempo * Ippqn;
 	midi_event	*eventPos = evntlist;
 	uint32 		*tunePos, *endPos;
+	uint32		*tuneSequence;
 	size_t		tuneSize;
-	UInt32		queueFlags = 0;
 #ifdef DEBUG
 	int			numEventsHandled = 0;
 #endif
-	ComponentResult tpError;
 	
-	// First thing we do - stop any already playing music
-	stop_track();
-
 	// allocate space for the tune header
 	tuneSize = 5000;
-	mTuneSequence = (uint32 *)malloc(tuneSize * sizeof(uint32));
-	if (mTuneSequence == NULL)
-		goto bail;
+	tuneSequence = (uint32 *)malloc(tuneSize * sizeof(uint32));
+	if (tuneSequence == NULL)
+		return NULL;
 	
 	// Set starting position in our tune memory
-	tunePos = mTuneSequence;
-	endPos = mTuneSequence + tuneSize;
+	tunePos = tuneSequence;
+	endPos = tuneSequence + tuneSize;
 
 	// Initialise the arrays
 	memset(part_poly,0,sizeof(part_poly));
-	memset(part_poly_max,0,sizeof(part_poly_max));
 	
-	memset(part_to_inst,-1,sizeof(part_to_inst));
 	memset(channel_to_part,-1,sizeof(channel_to_part));
 	memset(channel_pan,-1,sizeof(channel_pan));
 	memset(channel_vol,-1,sizeof(channel_vol));
@@ -156,13 +273,13 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 		if((tunePos+16) > endPos)
 		{
 			// Resize our data storage.
-			uint32 		*oldTuneSequence = mTuneSequence;
+			uint32 		*oldTuneSequence = tuneSequence;
 
 			tuneSize += BUFFER_INCREMENT;
-			mTuneSequence = (uint32 *)realloc(mTuneSequence, tuneSize * sizeof(uint32));
-			if(oldTuneSequence != mTuneSequence)
-				tunePos += mTuneSequence - oldTuneSequence;
-			endPos = mTuneSequence + tuneSize;
+			tuneSequence = (uint32 *)realloc(tuneSequence, tuneSize * sizeof(uint32));
+			if(oldTuneSequence != tuneSequence)
+				tunePos += tuneSequence - oldTuneSequence;
+			endPos = tuneSequence + tuneSize;
 		}
 		
 #if defined(DEBUG) && 0
@@ -388,109 +505,9 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 	// Finally, place an end marker
 	*tunePos = kEndMarkerValue;
 	
-	// Now build a tune header from the data we collect above, create
-	// all parts as needed and assign them the correct instrument.
-	mTuneHeader = BuildTuneHeader(part_poly_max, part_to_inst, numParts);
-	if(!mTuneHeader)
-		goto bail;
-
-	// Set up the queue flags
-	// TODO - possibly set kTunePlayConcurrent, then we could queue SFX sounds...
-	// but then we might need additional code to check is_playing etc., and also what about
-	// the tune header? Maybe we could use a second TunePlayer instance?
-	queueFlags = kTuneStartNow;
-	if(repeat)
-		queueFlags |= kTuneLoopUntil;
-
-	// Set the time scale (units per second), we want milliseconds
-	tpError = TuneSetTimeScale(mTunePlayer, 1000);
-	if (tpError != noErr)
-		DebugStr("\pMIDI error during TuneSetTimeScale");
-
-	// Set the header, to tell what instruments are used
-	tpError = TuneSetHeader(mTunePlayer, (UInt32 *)mTuneHeader);
-	if (tpError != noErr)
-		DebugStr("\pMIDI error during TuneSetHeader");
-	
-	// Have it allocate whatever resources are needed
-	tpError = TunePreroll(mTunePlayer);
-	if (tpError != noErr)
-		DebugStr("\pMIDI error during TunePreroll");
-
-	// We want to play at normal volume
-	tpError = TuneSetVolume(mTunePlayer, 0x00010000);
-	if (tpError != noErr)
-		DebugStr("\pMIDI error during TuneSetVolume");
-	
-	// Finally, start playing the full song
-	tpError = TuneQueue(mTunePlayer, (UInt32 *)mTuneSequence, 0x00010000, 0, 0xFFFFFFFF, queueFlags, NULL, 0);
-	if (tpError != noErr)
-		DebugStr("\pMIDI error during TuneQueue");
-
-
-#if defined(DEBUG) && 0
-	// Loop until music is finished
-	while(is_playing() && !Button())
-		;
-#endif
-	
-	// Free the event list
-	XMIDI::DeleteEventList (evntlist);
-
-	return;
-	
-bail:
-	// Free the event list
-	XMIDI::DeleteEventList (evntlist);
-
-	// This disposes of the allocated tune header/sequence
-	stop_track();
+	return tuneSequence;
 }
 
-void	Mac_QT_midi::stop_track(void)
-{
-	if(0 == mTuneSequence)
-        return;
-
-// For some resons, using a non-zero stopflag doesn't stop the music at all:/
-//	TuneStop(mTunePlayer, kTuneStopFade | kTuneStopInstant | kTuneStopReleaseChannels);
-
-	// Stop music
-	TuneStop(mTunePlayer, 0);
-	
-	// Deallocate all instruments
-	TuneUnroll(mTunePlayer);
-	
-	// Finally, free the data storage
-	if(mTuneSequence)
-	{
-		free(mTuneSequence);
-		mTuneSequence = 0;
-	}
-	if(mTuneHeader)
-	{
-		DisposePtr((Ptr)mTuneHeader);
-		mTuneHeader = 0;
-	}
-}
-
-bool	Mac_QT_midi::is_playing(void)
-{
-	TuneStatus	ts;
-
-	TuneGetStatus(mTunePlayer,&ts);
-	return ts.queueTime != 0;
-}
-
-const	char *Mac_QT_midi::copyright(void)
-{
-	return "Internal QuickTime MIDI player";
-}
-
-
-#define kNoteRequestEventLength		((sizeof(NoteRequest)/sizeof(long)) + 2) 	// number of (32-bit) long words in a note request event
-#define kMarkerEventLength			(1) 										// number of (32-bit) long words in a marker event
-#define kGeneralEventLength			(2) 										// number of (32-bit) long words in a general event, minus its data
 
 uint32 *BuildTuneHeader(int part_poly_max[32], int part_to_inst[32], int numParts)
 {

@@ -362,7 +362,6 @@ void Game_window::write_saveinfo()
 
 	try
 	{
-		SaveGame_Details details;
 		ifstream in;
 		U7open(in, GSAVEINFO);		// Open file; throws an exception 
 
