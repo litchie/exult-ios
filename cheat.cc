@@ -547,7 +547,9 @@ void Cheat::cut(bool copy)
 					// Set pos. & add to list.
 		obj->set_shape_pos(t.tx%c_tiles_per_chunk,
 				   t.ty%c_tiles_per_chunk);
+#if 0	/* ++++++What's this for? */
 		obj->set_chunk(t.tx/c_tiles_per_chunk, t.ty/c_tiles_per_chunk);
+#endif
 		clipboard.push_back(obj);
 		}
 					// Sort.

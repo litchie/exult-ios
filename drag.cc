@@ -81,7 +81,7 @@ Dragging_info::Dragging_info
 		if (obj)
 			{		// Save location info.
 			gump->get_shape_location(obj, paintx, painty);
-			old_pos = Tile_coord(obj->get_cx(), obj->get_cy(), 0);
+			old_pos = Tile_coord(obj->get_tx(), obj->get_ty(), 0);
 			}
 		else if ((button = gump->on_button(x, y)) != 0)
 			{
@@ -336,7 +336,8 @@ void Dragging_info::put_back
 	{
 	if (gump)			// Put back remaining/orig. piece.
 		{			// And don't check for volume!
-		obj->set_chunk(old_pos.tx, old_pos.ty);	// Restore saved vals.
+					// Restore saved vals.
+		obj->set_shape_pos(old_pos.tx, old_pos.ty);
 		gump->add(obj, -2, -2, -2, -2, true);
 		}
 	else if (is_new)

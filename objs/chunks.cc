@@ -730,7 +730,7 @@ inline Map_chunk *Map_chunk::add_outside_dependencies
 /*
  *	Add a game object to a chunk's list.
  *
- *	Newobj's cx and cy fields are set to this chunk.
+ *	Newobj's chunk field is set to this chunk.
  */
 
 void Map_chunk::add
@@ -738,8 +738,7 @@ void Map_chunk::add
 	Game_object *newobj		// Object to add.
 	)
 	{
-	newobj->cx = get_cx();		// Set object's chunk.
-	newobj->cy = get_cy();
+	newobj->chunk = this;		// Set object's chunk.
 	Ordering_info ord(gwin, newobj);
 					// Put past flats.
 	if (first_nonflat)
@@ -828,8 +827,8 @@ void Map_chunk::remove_egg
 	}
 
 /*
- *	Remove a game object from this list.  The object's cx and cy fields
- *	are set to invalid #'s (255,255).
+ *	Remove a game object from this list.  The object's 'chunk' field
+ *	is set to NULL.
  */
 
 void Map_chunk::remove

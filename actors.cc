@@ -2582,7 +2582,7 @@ bool Actor::add
 	spots[index] = obj;		// Store in correct spot.
 	if (index == lhand && schedule)
 		schedule->set_weapon();	// Tell combat-schedule about it.
-	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
+	obj->set_shape_pos(0, 0);	// Clear coords. (set by gump).
 					// (Readied usecode now in drop().)
 	if (obj->get_info().is_light_source())
 		light_sources++;
@@ -2629,7 +2629,7 @@ int Actor::add_readied
 	spots[index] = obj;
 
 	// Clear coords. (set by gump).
-	obj->set_chunk(0, 0);
+	obj->set_shape_pos(0, 0);
 
 	// Must be a two-handed weapon.
 	if (type == FIS_2Hand && index == lhand) two_handed = true;
@@ -4092,7 +4092,9 @@ void Npc_actor::remove_this
 	Map_chunk *olist = gmap->get_chunk_safely(get_cx(), get_cy());
 	Actor::remove_this(1);	// Remove, but don't ever delete an NPC
 	Npc_actor::switched_chunks(olist, 0);
+#if 0	/* ++++I think not necessary (jsf - 1/30/04) */
 	cx = cy = 0xff;			// Set to invalid chunk coords.
+#endif
 	if (!nodel && npc_num > 0)	// Really going?
 		unused = true;		// Mark unused if a numbered NPC.
 	}

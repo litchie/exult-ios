@@ -154,6 +154,7 @@ class Map_chunk : public Game_singletons
 		int cy, Game_object *newobj, class Ordering_info& newinfo);
 public:
 	friend class Npc_actor;
+	friend class Game_object;
 	Map_chunk(Game_map *m, int chunkx, int chunky);
 	~Map_chunk();			// Delete everything in chunk.
 	Game_map *get_map() const
