@@ -95,6 +95,9 @@ dist: $(EXEC)
 	if not exist $(STUDIOPATH)\data md $(STUDIOPATH)\data
 	copy docs\exult_studio.html $(STUDIOPATH)
 	copy docs\exult_studio.txt $(STUDIOPATH)
+	if not exist $(STUDIOPATH)\images md $(STUDIOPATH)\images
+	copy docs\images\back.gif $(STUDIOPATH)\images
+	copy docs\images\exult_logo.gif $(STUDIOPATH)\images
 	copy mapedit\exult_studio.glade $(STUDIOPATH)\data
 	if not exist $(STUDIOPATH)\data\estudio md $(STUDIOPATH)\data\estudio
 	if not exist $(STUDIOPATH)\data\estudio\new md $(STUDIOPATH)\data\estudio\new
