@@ -280,64 +280,56 @@ void Follow_avatar_schedule::now_what
 	if (!av->is_moving() &&		// Avatar stopped.
 	    dist2lead <= 5)		// And we're already close enough.
 		return;
-	uint32 curtime = Game::get_ticks();
-	if (!is_blocked	||		// Not blocked?
-	    curtime < next_path_time)	// Or failed pathfinding recently?
+	uint32 curtime = SDL_GetTicks();// Want the REAL time here.
+	if (!is_blocked)		// Not blocked?
 		{
 		npc->follow(av);	// Then continue following.
 		return;
 		}
+	if (curtime < next_path_time)	// Failed pathfinding recently?
+		{			// Wait a bit.
+		npc->start(gwin->get_std_delay(), next_path_time - curtime);
+		return;
+		}
 					//+++++Maybe stand aside?
-	Actor_action *action = npc->get_action();
-	if (!action || !action->following_smart_path())
-		{			// A little stuck?
 #ifdef DEBUG
-		cout << npc->get_name() << " at distance " << dist2lead 
+	cout << npc->get_name() << " at distance " << dist2lead 
 				<< " trying to catch up." << endl;
 #endif
 					// Find a free spot within 3 tiles.
-		Map_chunk::Find_spot_where where = Map_chunk::anywhere;
+	Map_chunk::Find_spot_where where = Map_chunk::anywhere;
 					// And try to be inside/outside.
-		where = gwin->is_main_actor_inside() ?
+	where = gwin->is_main_actor_inside() ?
 					Map_chunk::inside : Map_chunk::outside;
-		Tile_coord goal = 
-			Map_chunk::find_spot(leaderpos, 3, npc, 0, where);
-		if (goal.tx == -1)	// No free spot?  Give up.
-			{
-			cout << "... but is blocked." << endl;
-			next_path_time = Game::get_ticks() + 1000;
-			return;
-			}
-		if (pos.distance(goal) <= 3)
-			return;		// Already close enough!
-					// Get his speed.
-		int speed = av->get_frame_time();
-		if (!speed)		// Avatar stopped?
-			speed = gwin->get_std_delay();
-					// Succeed if within 3 tiles of goal.
-		if (npc->walk_path_to_tile(goal, speed - speed/4, 0, 3, 1))
-			return;		// Success.
-		else
-			{
-			cout << "... but failed to find path." << endl;
-					// On screen (roughly)?
-			int ok;
-					// Get window rect. in tiles.
-			Rectangle wrect = gwin->get_win_tile_rect();
-			if (wrect.has_point(pos.tx - pos.tz/2,
-							pos.ty - pos.tz/2))
-					// Try walking off-screen.
-				ok = npc->walk_path_to_tile(
-					Tile_coord(-1, -1, -1),
-							speed - speed/4, 0);
-			else		// Off screen already?
-				ok = npc->approach_another(av);
-			if (!ok)	// Failed? Don't try again for a bit.
-				next_path_time = Game::get_ticks() + 1000;
-			return;
-			}
+	Tile_coord goal = Map_chunk::find_spot(leaderpos, 3, npc, 0, where);
+	if (goal.tx == -1)		// No free spot?  Give up.
+		{
+		cout << "... but is blocked." << endl;
+		next_path_time = SDL_GetTicks() + 1000;
+		return;
 		}
-//+++++++????
+	if (pos.distance(goal) <= 3)
+		return;			// Already close enough!
+					// Get his speed.
+	int speed = av->get_frame_time();
+	if (!speed)			// Avatar stopped?
+		speed = gwin->get_std_delay();
+					// Succeed if within 3 tiles of goal.
+	if (npc->walk_path_to_tile(goal, speed - speed/4, 0, 3, 1))
+		return;			// Success.
+	cout << "... but failed to find path." << endl;
+					// On screen (roughly)?
+	int ok;
+					// Get window rect. in tiles.
+	Rectangle wrect = gwin->get_win_tile_rect();
+	if (wrect.has_point(pos.tx - pos.tz/2, pos.ty - pos.tz/2))
+					// Try walking off-screen.
+		ok = npc->walk_path_to_tile(Tile_coord(-1, -1, -1),
+							speed - speed/4, 0);
+	else				// Off screen already?
+		ok = npc->approach_another(av);
+	if (!ok)			// Failed? Don't try again for a bit.
+		next_path_time = SDL_GetTicks() + 1000;
 	}
 
 /*
