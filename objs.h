@@ -186,13 +186,19 @@ public:
 		}
 	void clear_dependencies();	// Remove all dependencies.
 					// Find nearby objects.
-	int find_nearby(Vector& vec, int shapenum, int quality, int mask);
+	static int find_nearby(Vector& vec, Tile_coord pos,
+					int shapenum, int quality, int mask);
+	int find_nearby(Vector& vec, int shapenum, int quality, int mask)
+		{ return find_nearby(vec, get_abs_tile_coord(), shapenum,
+							quality, mask); }
 	Game_object *find_closest(int *shapenums, int num_shapes);
 					// Find nearby unblocked tile.
 	Tile_coord find_unblocked_tile(int dist, int height = 1);
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
+#if 0
 	Game_object *find_beneath();	// Find highest object beneath us.
+#endif
 	int is_closed_door() const;	// Checking for a closed door.
 	Game_object *get_outermost();	// Get top 'owner' of this object.
 	void say(char *text);		// Put text up by item.
