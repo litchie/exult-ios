@@ -220,19 +220,20 @@ gint Shape_chooser::mouse_press
 	}
 
 /*
- *	Someone wants the selected shape.
+ *	Someone wants the dragged shape.
  */
 
-void Shape_chooser::selection_get
+void Shape_chooser::drag_data_get
 	(
 	GtkWidget *widget,		// The view window.
+	GdkDragContext *context,
 	GtkSelectionData *seldata,	// Fill this in.
 	guint info,
 	guint time,
 	gpointer data			// ->Shape_chooser.
 	)
 	{
-	cout << "In SELECTION_GET" << endl;
+	cout << "In DRAG_DATA_GET" << endl;
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	if (chooser->selected < 0 || info != U7_TARGET_SHAPEID)
 		return;			// Not sure about this.
@@ -241,6 +242,12 @@ void Shape_chooser::selection_get
 	Shape_info& shinfo = chooser->info[chooser->selected];
 	int len = Store_u7_shapeid(buf, file, shinfo.shapenum, 
 							shinfo.framenum);
+	cout << "Setting selection data (" << shinfo.shapenum <<
+			'/' << shinfo.framenum << ')' << endl;
+					// Make us owner of xdndselection.
+	gtk_selection_owner_set(widget, gdk_atom_intern("XdndSelection", 0),
+								time);
+					// Set data.
 	gtk_selection_data_set(seldata,
 			gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0),
                                 				8, buf, len);
@@ -388,8 +395,8 @@ Shape_chooser::Shape_chooser
 				GTK_SIGNAL_FUNC(Drag_begin), this);
 	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
 				GTK_SIGNAL_FUNC(Mouse_drag_motion), this);
-	gtk_signal_connect (GTK_OBJECT(draw), "selection_get",
-				GTK_SIGNAL_FUNC(selection_get), this);
+	gtk_signal_connect (GTK_OBJECT(draw), "drag_data_get",
+				GTK_SIGNAL_FUNC(drag_data_get), this);
 	gtk_signal_connect (GTK_OBJECT(draw), "selection_clear_event",
 				GTK_SIGNAL_FUNC(selection_clear), this);
 	gtk_container_add (GTK_CONTAINER (frame), draw);
