@@ -1297,8 +1297,6 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 				int delay)	// -1 for random delay.
 {
 	Game_window *gwin = Game_window::get_game_window();
-//Causes bugs in SI.  Maybe not needed.	if (!gwin->get_chunk_safely(get_cx(), get_cy()))
-//		return;			// Not on the map.
 
 	stop();				// Stop moving.
 	if (schedule)			// End prev.
@@ -3291,10 +3289,12 @@ void Npc_actor::activate
 	Game_window *gwin = Game_window::get_game_window();
 					// Converse, etc.
 	Actor::activate(umachine, event);
+					// Want to get BG actors from start
+					//   to their regular schedules:
 	int i;				// Past 6:00pm first day?
 	if (gwin->get_total_hours() >= 18 || 
 	    Game::get_game_type() == SERPENT_ISLE ||
-					// Or party member/asleep?
+					// Or no schedule change.
 	    (i = find_schedule_change(gwin->get_hour()/3)) < 0 ||
 					// Or schedule is already correct?
 	    schedules[i].get_type() == schedule_type)

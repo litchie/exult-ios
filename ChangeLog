@@ -1,3 +1,8 @@
+2001-08-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: At start of BG, no longer refrain from
+	setting 6:00 am schedules.
+
 2001-08-25  Max Horn <max@quendi.de>
 	* fixed NEWS and some other files
 
