@@ -49,7 +49,6 @@ class Chunk_terrain;
 class Chunk_cache : public Game_singletons
 	{
 	Map_chunk *obj_list;
-	unsigned char setup_done;	// Already setup.
 	unsigned long blocked[256];	// For each tile, 2 bits for each lift
 					//   level for #objs blocking there.
 	Egg_vector egg_objects;		// ->eggs which influence this chunk.
@@ -59,7 +58,7 @@ class Chunk_cache : public Game_singletons
 					//   more of 
 					//   egg_objects[15-(num_eggs-1)].
 	friend class Map_chunk;
-	Chunk_cache();			// Create empty one.
+	Chunk_cache();	
 	~Chunk_cache();
 	int get_num_eggs()
 		{ return egg_objects.size(); }
@@ -180,17 +179,15 @@ public:
 					: ShapeID(); }
 	Image_buffer8 *get_rendered_flats()
 		{ return terrain ? terrain->get_rendered_flats() : 0; }
-					// Get/create cache.
+					// Get/create/setup cache.
 	Chunk_cache *need_cache()
 		{ 
-		return cache ? cache 
-				: (cache = new Chunk_cache()); 
+		if (!cache)
+			{ cache = new Chunk_cache(); cache->setup(this); }
+		return cache;
 		}
 	void setup_cache()
-		{ 
-		if (!cache || !cache->setup_done)
-			need_cache()->setup(this);
-		}
+		{ (void) need_cache(); }
 					// Set/unset blocked region.
 	void set_blocked(int startx, int starty, int endx, int endy,
 						int lift, int ztiles, bool set)
