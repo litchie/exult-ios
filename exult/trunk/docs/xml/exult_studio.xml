@@ -8,9 +8,9 @@
 				<ul>
 					<li><ref1 target="command_line"/> -d option no longer exists.</li>
 					<li><ref1 target="mode_menu"/> more information on Pick- and Combo-mode.</li>
+					<li><section_ref target="Main Working Window"/> added (working title only).</li>
 					<li><ref1 target="can_do_atm"/> shift-clicking adds currently selected shape in 
 						any mode.</li>
-					<li><section_ref target="Main Working Window"/> added (working title only).</li>
 					<li><ref1 target="combo_edit"/> when it gets saved combos.flx gets used.</li>
 				</ul>
 			</body>
@@ -365,7 +365,7 @@
 					selected file.
 				</para>
 				<para>
-					Shape files also have a special right-click-menu. See <ref1 target="shape_menu"/>.
+					Shape files also have a special right-click-menu. See <ref1 target="shape_edit"/>.
 				</para>
 			</body>
 		</sub>
@@ -380,11 +380,12 @@
 				<ul>
 					<li><strong>Locate</strong><br/>
 						shows places in the <Exult/> game where that chunk is used.</li>
-					<li><strong>Inset</strong><br/>
+					<li><strong>Insert</strong><br/>
 						<strong>New</strong><br/>
-						Creates a new chunk. More information will follow shortly.<br/>
+						Creates a new chunk. Drag the new chunk onto the game and edit it by dragging 
+						shapes on it.<br/>
 						<strong>Dupe</strong><br/>
-						Duplicates a chunk. More information will follow shortly.</li>
+						Duplicates a chunk. Drag the duplicate chunk onto the map to edit it.</li>
 					<li><strong>Move</strong><br/>
 						Moves a chunk in the chunk file. This does not effect the display on the map.</li>
 				</ul>	 
@@ -441,32 +442,6 @@
 					<li><strong>Find</strong><br/>						
 						Lets you search for a specified shape in the group.</li>	
 				</ul>	 
-			</body>
-		</sub>
-		<sub name="shape_menu">
-			<header>Right-Click on Shapes Menu</header>
-			<body>
-				<ul>
-					<li><strong>Info...</strong><br/>
-					Displays the information of an object. You can change a lot of stuff there and 
-					caution is adviced. The information is saved by 
-					<ref1 target="file_menu">'Save all' or 'Save:Shape Info'</ref1>.</li>
-					<li><strong>Add to group...</strong><br/>
-					If you set up groups you can add shapes to them with this.</li>
-					<li><strong>Edit</strong><br/>
-					Launches the image editor specified in <ref1 target="file_menu">Preferences</ref1> 
-					with the current frame as target. The image itself is saved in a subdir called 'itmp' in 
-					the file-format chosen in 'Preferences'.</li>
-					<li><strong>New Frame</strong><br/>
-					Should add a new frame to the shape.</li>
-					<li><strong>Export frame...</strong><br/>
-					Exports the current frame of a shape to a png file in a directory you specify.</li>
-					<li><strong>Import frame...</strong><br/>
-					Imports a png file in a directory you specify to the selected shape.</li>
-					<li><strong>New shape...</strong><br/>
-					Lets you add a new shape. You can choose the shape number, number of frames.<br/>
-					You can also add a new font - information on this coming soon (TM).</li>
-				</ul>
 			</body>
 		</sub>
 	</section>
@@ -538,6 +513,12 @@
 					get some options of how to edit the shapes.
 				</para>
 				<ul>
+					<li><strong>Info...</strong><br/>
+						Displays the information of an object. You can change a lot of stuff there and 
+						caution is adviced. The information is saved by 
+						<ref1 target="file_menu">'Save all' or 'Save:Shape Info'</ref1>.</li>
+					<li><strong>Add to group...</strong><br/>
+						If you set up groups you can add shapes to them with this.</li>
 					<li><strong>Edit...</strong>:<br/>
 						Brings up your image-editor on the chosen frame.  When you save 
 						in the image-editor, ES will read the changes back within 5 seconds.  This is 
@@ -561,7 +542,7 @@
 				</ul>
 				<para>
 					<em>Note:</em><strong>Edit...</strong> doesn't work on Windows system. It stores 
-					the sahpe as PNG file in GAMEDIR/itmp/ (e.g. blackgate/itmp). If you manually
+					the shape as PNG file in GAMEDIR/itmp/ (e.g. blackgate/itmp). If you manually
 					open the file with an image editor of your liking and then save it, ES doesn't 
 					read the changes back.
 				</para>
