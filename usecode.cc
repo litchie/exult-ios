@@ -2372,7 +2372,7 @@ USECODE_INTRINSIC(start_speech)
 
 USECODE_INTRINSIC(run_endgame)
 {
-	gwin->get_game()->end_game(parms[0].get_int_value() != 0);
+	Game::get_game()->end_game(parms[0].get_int_value() != 0);
 	return(no_ret);
 }
 

@@ -80,6 +80,7 @@ struct resolution {
 } res_list[] = { 
 	{ 320, 200, 1 },
 	{ 320, 240, 1 },
+	{ 320, 200, 2 },
 	{ 320, 240, 2 },
 	{ 512, 384, 1 },
 	{ 640, 480, 1 },
@@ -311,9 +312,9 @@ static void Init
 	config->value("config/gameplay/skip_splash", yn, "no");
 	if(yn == "no") {
 		gwin->set_mode(Game_window::splash);
-		gwin->get_game()->play_intro();
+		Game::get_game()->play_intro();
 	}
-	gwin->get_game()->show_menu();
+	Game::get_game()->show_menu();
 	gwin->set_mode(Game_window::normal);
 	SDL_SetEventFilter(Filter_intro_events);
 	gwin->setup_game();		// This will start the scene.
@@ -1097,7 +1098,7 @@ static void Handle_keystroke
 		if(!cheat)
 			break;
 		{
-			gwin->get_game()->end_game(true);
+			Game::get_game()->end_game(true);
 		}
 		break;
 	default:
