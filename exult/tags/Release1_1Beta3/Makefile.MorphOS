@@ -1,0 +1,34 @@
+# Exult makefile for use with MorphOS and AmigaOS
+# based on the Be makefile
+
+# Base of the exult source
+SRC=.
+
+### Modify these paths
+SDL_CFLAGS=-I/gg/os-include/sdl
+SDL_LIBS=-lsdl -ldebug
+
+CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"PROGDIR:data\" -DNDEBUG \
+	-DHAVE_ZIP_SUPPORT -DEX_TYPE_INT16=short -DEX_TYPE_INT32=int -I$(SRC)/files/zip \
+	-I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/data -I$(SRC)/tools \
+	-I$(SRC)/files -I$(SRC) -I$(SRC)/audio -I$(SRC)/conf \
+	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
+	-DHAVE_SNPRINTF $(SDL_CFLAGS)
+CXXFLAGS=-O2 -fsigned-char -Wall
+
+LFLAGS=-noixemul
+LIBS=$(SDL_LIBS) -lz
+
+EXEC=exult
+
+MIDI_DRV_OBJS=audio/midi_drivers/amiga_midi.o
+# unused: KMIDI.o Timidity_binary.o forked_player.o win_MCI.o
+
+include Makefile.common
+
+.cc.o:
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+
+clean:
+	rm -f $(OBJS) $(EXEC) data/exult.flx data/exult_bg.flx data/exult_si.flx expack expack.o
+

@@ -1,0 +1,138 @@
+Some item types (decimal)
+270 - horizontal door
+281 - key
+282 - book
+305 - The Black Gate
+376 - vertical door
+432
+433 - doors???
+522 - locked chest
+771 - Rudyom's Wand
+800 - unlocked chest
+961 - barge - Skara Brae ferry or ship
+981 - Prism
+
+What is itemref???? For NPCs, it is
+	-(NPC number)
+beyound any doubt
+
+All .extern's used are numbers of functions in usecode
+
+;	Hex opcodes used:
+;	02 - some loop? has 10 bytes as parameter, last 2 are a relative jump address
+;	04 - je (relative 2byte offset to the command next to je) - pop a value from the top of stack, jump if not false and not zero
+;	05 - jne (relative 2byte offset to the command next to jne) - pop a value from the top of stack, jump if false or zero
+;	06 - jmp (relative 2byte offset to the command next to jmp) - jump
+;	07 - Unknown, has 4 bytes as parameters
+;	09 - add - adds two values on the stack, popping them & pushing result
+;	0A - sub - decrements second value of the stack by first value, popping them & pushing result
+;	0B - div - divides second value of the stack by first value, popping them & pushing result
+;	0C - mul - multiplies two values on the stack, popping them & pushing result
+;	0D - mod - Pop two values, and push first mod second onto stack.
+;	0E - and - boolean AND on two values on stack, popping them & pushing result
+;	0F - or - boolean OR on two values on stack, popping them & pushing result
+;	10 - not - inverts a boolean value on top of stack
+;	12 - pop (2byte variable number) - pops a local variable from stack
+;	13 - push true - pushes a TRUE boolean value on the stack
+;	14 - push false - pushes a FALSE boolean value on the stack
+;	16 - cmpgt - pops 2 values from the stack, pushes boolean value - if second value greater than first
+;	17 - cmpl - pops 2 values from stack, pushes boolean value - if second value less than first
+;	18 - cmpge - pops 2 values from the stack, pushes boolean value - if second value is greater than or equal to first
+;	19 - cmple - pops 2 values from stack, pushes boolean value - if second value less than or equal to first
+;	1A - cmpne - pops 2 values from stack, pushes boolean value - if second value is not equal to first
+;	1C - addsi (2byte data segment offset) - adds a string from data segment to string's register current contents
+;	1D - pushs (2byte word) - pushes immediate 16bit string offset in data segment to stack
+;	1E - arrc (2byte word) - pops specified number of values from stack, builds an array from them & pops it on the stack
+;	1F - pushi (2byte word) - pushes immediate 16bit integer to stack
+;	21 - push (2byte variable number) - pushes a local variable on stack
+;	22 - cmpeq - compares 2 values on the stack, pops them & pushes result
+;	24 - call - (2byte global extern slot number) - calls a usecode function - function number is in externs array
+;	25 - ret - return from function
+;	26 - aidx (2byte variable number) - uses to top-of-stack value to index the array which is variable, pops index & pushes result
+;	2C - Unknown, no parameters
+;	2D - setr - Pops value and sets value as returnvalue
+;	2E - Start loop (2 is always next)
+;	2F - addsv (2byte variable number) - adds a string from local variable to string's register current contents
+;	30 - in - if (top-of-stack - 1) value is in top-of-stack array, pushes true, otherwise pushes false - after popping array & value
+;	31 - Unknown, has 4 bytes as parameter
+;	32 - rts - pushes returnvalue and returns from function
+;	33 - say - says the string register value as part of current talk, string register emptied
+;	38 - callis (2byte word, 1byte) - calls interpreter's intrinsic function with specified number of parameters. The return value remains on stack
+;	39 - calli (2byte word, 1byte) - calls interpreter's intrinsic function with specified number of parameters
+;	3E - push itemref - pushes identifier of the item for which the usecode function is called on the stack
+;	3F - abrt - Aborts function and all caller-functions, if any
+;	40 - Unknown, no parameters
+;	42 - pushf (2byte flag number) - pushes a global boolean flag with given number on the stack
+;	43 - popf (2byte flag number) - pops a global boolean flag with given number from the stack
+;	44 - pushw (1byte) - Gets byte, pushes word
+;	45 - Unknown, has 1 byte as parameter
+;	46 - Unknown, has 1 word (or 2 bytes) as parameter
+;	47 - calle - (2byte usecode function number) - calls a usecode function - function number is also in externs array
+;	48 - push eventid - pushes the cause of usecode call on the stack (double-click on item seems to be 1)
+;	4A - arra - pops the value from the stack and adds it to array on the top of stack after pop pops both values from the stack, builds an array from them & pushes it on the stack if neither of them are arrays
+;	4B - Unknown, no parameters
+
+;	Intrinsic functions
+(3)  SwitchTalkTo(itemref, frame) - switches conversation to other NPC using face frame
+(4)  HideNPC(itemref) - hides NPC face away from the conversation
+(5)  AddAnswer(str_or_array) - adds an answer or set of answers to the set of talk threads suggested
+(6)  RemoveAnswer(str_or_array) - removes an answer or set of answers from set of talk threads suggested
+(7)  SaveAnswers - Save current set of answers and clear working set
+(8)  RestoreAnswers - Restores current set of answers from saved set
+(a)  GetAnswer - Get answer from player
+(c)  AskNumber(min, max, step, default) - asks user a number by showing a slider with given parameters
+(d)  SetItemType(itemref, type) - changes a type of given item to the new value
+(10) Random2(lo, hi) - returns a random integer from lo to hi inclusively
+(11) GetItemType(itemref) - returns a "type" value of the item
+(12) GetItemFrame(itemref) - returns a "frame" value of the item
+(13) SetItemFrame(itemref, frame) - Set item to given frame.
+(14) GetItemQuality(itemref) - returns a "quality" value of the item
+(20) GetNPCProperty(itemref, property_id) - returns NPC's property value (9 is food level)
+(21) SetNPCProperty(itemref, property_id, value) - sets NPC's property value (9 is food level)
+(23) GetPartyMembers - Returns an array containing a list of NPC's in the party
+(27) GetPlayerName - Returns name of the player
+(2a) GetContainerItems(container_itemref, type, quality, ???) - returns an array 
+(2e) PlayMusic(itemref, songnum) - Play song.
+(2f) NPCInParty - Returns true if the given NPC is in the party
+(32) DisplaySign(signnum, text) - Display sign (the gump numbered signnum) and display the text given ("text" is an array of strings).
+(33) ItemSelectModal() - switches the engine to cross-cursor "use" mode. Returns an itemref of the item selected by user by single-click. Does not return till user will single-click on something.
+(38) GetTimeHour() - Return game time (hours, 0-23).
+(39) GetTimeMinute() - Return game time (minutes, 0-59).
+(40) ItemSay(itemref, str) - displays a string on the screen near the specified item
+(5a) IsPlayerFemale() - returns 0 if male, 1 if female
+(5d) StartEndGame() - starts the endgame
+(5e) ArraySize(a) - returns number of elements in the array
+(68) DetectMouse - returns 0 if no mouse is found, 1 if mouse is detected
+
+
+;	The usecode file contains of functions only.
+;	function header - 4 bytes.
+;   function number is 16-bit word (used for fixups with extern records in other functions)
+; 	function size is 16-bit word (not included the header).
+;	After the header, data segment size (16-bit word) follows
+;	Then data segment itself (zero-terminated strings)
+;	Then 16bit words - number of arguments
+;	Then 16bit word - number of local variables
+;	(local [0000] - [argc - 1] are arguments, [argc] - [argc + lc - 1] are locals)
+;	Then 16bit word - number of extern references
+;	Then array of extern references (function numbers, each is 16-bit word)
+;	Then bytecode itself
+
+The "linkdep1" file contains 4 bytes per usecode function.  The first
+two bytes are an index into the "linkdep2" file.  The next two bytes
+specify the "total code size" of this function.  That size is the
+size of the parent function plus the sizes of *all* possible called
+functions.
+
+The "linkdep2" file contains a list of 4-byte pointers to the "usecode" file.
+
+Most of this stuff figured out by Maxim, Email: maxim__s@mtu-net.ru
+
+Link-dependencies, some opcodes, and functions figured out by Keldon
+Jones (keldon@umr.edu)
+
+Some stuff figured out by Jarl Dragon (Jakob Schonberg)
+
+Some stuff figured out by Jeff Freedman
+
+Minor stuff and editing by Wody, Email: wody@wody.demon.nl

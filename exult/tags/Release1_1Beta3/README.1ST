@@ -1,0 +1,68 @@
+*** EXULT 1.0 - READ CAREFULLY ***
+
+After more than four years since the first release by Jeff in September
+1998, Exult has finally reached a level of maturity and playbility which
+we believe warrants its release as an 1.0 version.
+What does the Exult Team mean by 1.0 ? We mean that you can play both
+"Ultima VII: The Black Gate" and "Ultima VII part 2: Serpent Isle" together
+with their respective add-ons "Forge of Virtue" and "Silver Seed" from
+beginning to end, with no plot holes. This does not mean the experience 
+is perfect: we are not aiming for a precise replica of the originals
+(use a low-end 486 with DOS 5.0, a SoundBlaster and a Roland MT-32 for
+that). There are many things where Exult behaves differently (party
+formation, combat, stealing, etc.) but we don't think these detract from
+the fun and enjoyment of playing these great games. We've done our best
+to add improvements which we believe add to the game, and give it a more
+modern feel. Most of these can be disabled and enabled at will.
+
+During the Beta phase, no new features have been added to Exult and we worked 
+exclusively on stabilization and documentation. Now that we are satisfied 
+with stability on all platforms, we are releasing Exult 1.0. Exult development
+is currently branched in two: a stable branch, to which only bugfixes are 
+applied, and from which subsequent 1.0.x releases will be made, and a 
+development 1.1.x branch which focuses on new features and especially on 
+getting ExultStudio and the other tools working. The differences between the 
+two branches is listed further down this file in the Appendix.
+
+If you have used Exult before, you should really start new games for both 
+BG and SI as previous versions may have generated incorrect savegames. If 
+you experience problems with old savegames, you are on your own.
+
+Please read the documentation and the FAQ very carefully before
+reporting problems with Exult. 
+
+If you want to report bugs, use the bug tracker on our SourceForge project 
+page http://sourceforge.net/tracker/?atid=102335&group_id=2335&func=browse
+Provide a good description of the bug, a way to reproduce it, a savegame
+immediately before triggering the bug, and a description of your
+computer's configuration (OS, CPU, soundcard, videocard). Remember:
+Exult runs on many platforms, not just yours.
+As usual, we are available on the mailing list
+(mailto:exult-general@lists.sourceforge.net), on our forum
+(http://exult.sourceforge.net/forum/list.php?f=1) and on IRC (#exult on
+irc.openprojects.net) and we will try to help as much as we can.
+
+Have fun
+
+The Exult Team
+
+
+APPENDIX: Differences between Exult 1.0.x and Exult 1.1.x
+
+As 1.0.x is only for bug fixes new features have only been added to 1.1.x.
+These features are:
+- Exult Studio works only with 1.1.x now
+- Only the 1.1.x branch has been ported to the Zaurus
+- Keyboard movement
+- Digital music as better sounding alternative to MIDI music
+- FM Synth emulation, another alternative to MIDI music
+- Gumps now optionally pause the game
+- Combat with the Spellbook works now
+- Bookmarked Spell is saved and restored
+- Using "evil" spells can now get you into trouble with the guards
+- Feeding also uses drinks now
+- Avatar always uses the correct bed now
+- Experimental OpenGL hardware-accelerated support
+- More support for weapon/ammo powers
+- A "--nomenu" command-line arg, that gets you directly into the game
+- Partly fixes problem where two combatants rush towards each other but keep going after they meet

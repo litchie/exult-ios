@@ -1,0 +1,19 @@
+[Desktop Entry]
+Name=Exult
+Name[da]=Exult
+Name[de]=Exult
+Name[es]=Exult
+Name[et]=Exult
+Name[fi]=Exult
+Name[fr]=Exult
+Name[gl]=Exult
+Name[ko]=Exult
+Name[lt]=Exult
+Name[no]=Exult
+Name[pt]=Exult
+Name[sv]=Exult
+Comment=Exult Ultima 7 Engine
+Exec=exult
+Icon=exult.png
+Terminal=0
+Type=Application
