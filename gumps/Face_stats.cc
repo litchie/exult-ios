@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001 The Exult Team
+Copyright (C) 2001-2004 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -89,7 +89,7 @@ void Stat_bar::paint
 {
 	Gump_button::paint();
 
-	int width =  (val * 32) / (max_val);
+	int width =  (val * 32) / (max_val ? max_val : 1);
 
 	if (width > 0)
 	{
