@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include "fnames.h"
 #include "autoarray.h"
+#include "databuf.h"
 
 class Shape;
 class Image_buffer8;
@@ -49,14 +50,15 @@ class Shape_frame
 					// Create RLE data & store in frame.
 	void create_rle(unsigned char *pixels, int w, int h);
 					// Create from RLE entry.
-	void get_rle_shape(ifstream& shapes, long filepos, long len);
+	void get_rle_shape(DataSource& shapes, long filepos, long len);
+	
 public:
 	friend class Game_window;
 	friend class Shape;
 	Shape_frame() : data(0)
 		{  }
 					// Read in shape/frame.
-	unsigned char read(ifstream& shapes, unsigned long shapeoff,
+	unsigned char read(DataSource& shapes, unsigned long shapeoff,
 					unsigned long shapelen, int frnum);
 					// Paint.
 	void paint_rle(Image_buffer8 *win, int xoff, int yoff);
@@ -94,17 +96,18 @@ protected:
 	Shape_frame **frames;		// List of ->'s to frames.
 	unsigned char num_frames;	// # of frames.
 					// Create reflected frame.
-	Shape_frame *reflect(ifstream& shapes, int shnum, int frnum);
+	Shape_frame *reflect(DataSource& shapes, int shnum, int frnum);
 					// Read in shape/frame.
-	Shape_frame *read(ifstream& shapes, int shnum, int frnum);
+	Shape_frame *read(DataSource& shapes, int shnum, int frnum);
 					// Store shape that was read.
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
 public:
 	friend class Vga_file;
+	
 	Shape() : frames(0), num_frames(0)
 		{  }
 	virtual ~Shape();
-	Shape_frame *get(ifstream& shapes, int shnum, int frnum)
+	Shape_frame *get(DataSource& shapes, int shnum, int frnum)
 		{ 
 		return (frames && frnum < num_frames && frames[frnum]) ? 
 			frames[frnum] : read(shapes, shnum, frnum); 
@@ -132,7 +135,8 @@ public:
  */
 class Vga_file
 	{
-	ifstream file;			// For reading.
+	ifstream file;
+	StreamDataSource *shape_source;
 protected:
 	int num_shapes;			// Total # of shapes.
 	Shape *shapes;			// List of ->'s to shapes' lists
@@ -146,7 +150,7 @@ public:
 					// Get shape.
 	Shape_frame *get_shape(int shapenum, int framenum = 0)
 		{
-		Shape_frame *r=(shapes[shapenum].get(file, shapenum, framenum));
+		Shape_frame *r=(shapes[shapenum].get(*shape_source, shapenum, framenum));
 		if(!r)
 			{
 #if DEBUG
@@ -164,7 +168,7 @@ public:
 		return shapes[shapenum].num_frames;
 		}
 	};
-
+	
 /*
  *	Specific information about weapons from 'weapons.dat':
  */

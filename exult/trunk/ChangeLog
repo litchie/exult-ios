@@ -1,3 +1,9 @@
+2000-07-20 Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* files/databuf.h: implemented an abstract DataSource class and Buffer, Stream and 
+	File derivatives of it to enable reading data from any of these.
+	* vgafile.h, vgafile.cc: use new DataSource classes. More classes should do this.
+
 2000-07-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Flying carpet rotates correctly.

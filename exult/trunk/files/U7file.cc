@@ -32,8 +32,6 @@ U7file  *U7FileManager::get_file_object(const string &s)
 	U7file	*uf=0;
 	if(file_list.count(s))
 		{
-		// Found it in our cache. Return it
-		cerr << "File manager Cache hit" << endl;
 		return file_list[s];
 		}
 	// Not in our cache. Attempt to figure it out.
