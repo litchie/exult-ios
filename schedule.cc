@@ -27,6 +27,7 @@
 #include "actors.h"
 #include "Zombie.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "actions.h"
 #include "dir.h"
 #include "items.h"
@@ -1616,7 +1617,7 @@ void Lab_schedule::now_what
 			if (t.tx != -1 && t.tz == spot_on_table.tz)
 				{
 				int nframes = ShapeID(340, 0).get_num_frames();
-				Game_object *p = gwin->create_ireg_object(
+				Game_object *p = gmap->create_ireg_object(
 					ShapeID::get_info(340), 340,
 					rand()%nframes, 0, 0, 0);
 				p->move(t);

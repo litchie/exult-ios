@@ -1089,6 +1089,19 @@ Ireg_game_object *Game_map::create_ireg_object
 	}
 
 /*
+ *	Create non-container IREG objects.
+ */
+
+Ireg_game_object *Game_map::create_ireg_object
+	(
+	int shnum, int frnum		// Shape, frame.
+	)
+	{
+	return create_ireg_object(ShapeID::get_info(shnum), 
+						shnum, frnum, 0, 0, 0);
+	}
+
+/*
  *	Read in the objects in a superchunk.
  */
 

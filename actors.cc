@@ -1991,7 +1991,7 @@ bool Actor::reduce_health
 	if (delta >= 3 && (!minf || !minf->cant_bleed()) &&
 	    rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
 		{			// Create blood where actor stands.
-		Game_object *bobj = gwin->create_ireg_object(blood, 0);
+		Game_object *bobj = gmap->create_ireg_object(blood, 0);
 		bobj->set_flag(Obj_flags::is_temporary);
 		bobj->move(get_tile());
 		}
@@ -2807,7 +2807,7 @@ bool Actor::figure_hit_points
 							ammo_shape, 0, 1);
 			if (pos.tx == -1)
 				return false;
-			Game_object *aobj = gwin->create_ireg_object(
+			Game_object *aobj = gmap->create_ireg_object(
 								ammo_shape, 0);
 			if (attacker->get_flag(	Obj_flags::is_temporary))
 				aobj->set_flag(	Obj_flags::is_temporary);

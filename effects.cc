@@ -23,6 +23,7 @@
 #endif
 
 #include "gamewin.h"
+#include "gamemap.h"
 #include "actors.h"
 #include "effects.h"
 #include "Zombie.h"
@@ -629,7 +630,7 @@ void Projectile_effect::handle_event
 			break;
 			}
 		if (return_path)	// Returned a boomerang?
-			target->add(gwin->create_ireg_object(weapon, 0));
+			target->add(gmap->create_ireg_object(weapon, 0));
 		else
 			{		// Not teleported away ?
 			if (target && epos.distance(target->get_tile()) < 50)

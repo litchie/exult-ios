@@ -638,7 +638,7 @@ void Egg_object::activate
 				{
 				Shape_info& info = ShapeID::get_info(shnum);
 				Game_object *nobj =
-					gwin->create_ireg_object(info,
+					gmap->create_ireg_object(info,
 						shnum, frnum, get_tx(),
 						get_ty(), get_lift());
 				Map_chunk *chunk = 

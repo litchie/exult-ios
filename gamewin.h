@@ -405,12 +405,6 @@ public:
 	void get_shape_location(Tile_coord t, int& x, int& y);
 	void plasma(int w, int h, int x, int y, int startc, int endc);
 	/*
-	 *	Object creation:
-	 */
-	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
-			int frnum, int tilex, int tiley, int lift);
-	Ireg_game_object *create_ireg_object(int shnum, int frnum);
-	/*
 	 *	Save/restore/startup:
 	 */
 	void write();			// Write out to 'gamedat'.
