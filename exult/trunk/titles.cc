@@ -65,11 +65,11 @@ void Titles::play_intro()
 		}
 		pal.fade_in(30);
 		skip = wait_delay(2000);
+		play_midi(0);	// Start the birdsongs just before we fade
 		pal.fade_out(30);
 		if(skip)
 			return;
 		// Ultima VII logo w/Trees
-		play_midi(0);
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
 		gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
 		gwin->paint_text(0, txt_msg[3], centerx-gwin->get_text_width(0, txt_msg[3])/2, centery+50);
