@@ -1,12 +1,15 @@
 /*
  *	Global flags, assuming 1000- are free.
  */
-const int TALKED_DRCODE = 1000;
-const int ASKED_ABOUT_PYRO = 1001;
-const int ASKED_WHERE_PYRO = 1002;
-const int ASKED_KNOW_PYRO = 1003;
-const int LOST_FAQ = 1004;		// Talked to Dom about lost FAQ.
-const int WILL_FIND_FAQ = 1005;
+enum Isleflags
+	{
+	TALKED_DRCODE = 1000,
+	ASKED_ABOUT_PYRO,
+	ASKED_WHERE_PYRO,
+	ASKED_KNOW_PYRO,
+	LOST_FAQ,			// Talked to Dom about lost FAQ.
+	WILL_FIND_FAQ
+	};
 
 /*
  *	Item flags.  ++++These should be in an 'include' file.

@@ -54,6 +54,7 @@ static Uc_array_expression *Create_array(int, Uc_expression *,
 std::vector<Uc_function *> functions;	// THIS is what we produce.
 
 static Uc_function *function = 0;	// Current function being parsed.
+static int enum_val = -1;		// Keeps track of enum elements.
 
 %}
 
@@ -77,7 +78,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  *	Keywords:
  */
 %token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN BREAK GOTO CASE
-%token VAR INT CONST STRING
+%token VAR INT CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS
 
@@ -148,6 +149,7 @@ global_decl:
 			delete $1;
 		}
 	| const_int_decl
+	| enum_decl
 	;
 
 function:
@@ -227,6 +229,8 @@ declaration:
 		{ $$ = 0; }
 	| const_int_decl
 		{ $$ = 0; }
+	| enum_decl
+		{ $$ = 0; }
 	| function_decl
 		{
 		if (!function->add_function_symbol($1))
@@ -259,6 +263,27 @@ var_decl_list:
 		{ $$ = $1; }
 	;
 
+enum_decl:				/* Decls. the elems, not the enum. */
+	ENUM IDENTIFIER { enum_val = -1; } '{' enum_item_list '}' ';'
+	;
+
+enum_item_list:
+	enum_item_list ',' enum_item
+	| enum_item
+	;
+
+enum_item:
+	const_int
+	| IDENTIFIER
+		{			/* Increment last value.	*/
+		++enum_val;
+		if (function)
+			function->add_int_const_symbol($1, enum_val);
+		else			// Global.
+			Uc_function::add_global_int_const_symbol($1, enum_val);
+		}
+	;
+
 const_int_decl:
 	CONST INT const_int_decl_list ';'
 	;
@@ -273,11 +298,14 @@ const_int:
 		{
 		int val;		// Get constant.
 		if ($3->eval_const(val))
+			{
 			if (function)
 				function->add_int_const_symbol($1, val);
 			else		// Global.
 				Uc_function::add_global_int_const_symbol(
 								$1, val);
+			enum_val = val;	// In case we're in an enum.
+			}
 		}
 	;
 
