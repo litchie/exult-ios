@@ -161,7 +161,7 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 }
 
 
-void TextScroller::run(Game_window *gwin, Palette& pal)
+bool TextScroller::run(Game_window *gwin, Palette& pal)
 {
 	gwin->clear_screen();
 	gwin->show(1);
@@ -173,6 +173,7 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 	uint32 startline = 0;
 	unsigned int maxlines = text->size();
 	bool looping = true;
+	bool complete = false;
 	SDL_Event event;
 	uint32 next_time = SDL_GetTicks() + 200;
 	uint32 incr = 120;
@@ -191,6 +192,7 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 				starty = ypos;
 				if(startline>=maxlines) {
 					looping = false;
+					complete = true;
 					break;
 				}
 			}
@@ -223,10 +225,11 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 		next_time = SDL_GetTicks() + incr;
 		if(!looping)
 			pal.fade_out(c_fade_out_time);
-		starty --;
+		starty--;
 	}
 	gwin->clear_screen();
 	gwin->show(1);
+	return complete;
 }
 
 int TextScroller::get_count()
