@@ -1,6 +1,7 @@
 2001-08-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: avoid possible crash
 	* gamewin.*, palette.h: added a 'bool repaint' to 'apply palette' funcs
+	* schedule.cc: fixed crash in Sew_schedule
 
 2001-08-26  Jeff Freedman  <jeff@amy.nerble.net>
 
