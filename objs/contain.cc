@@ -366,7 +366,7 @@ int Container_game_object::remove_quantity
 		if (obj->get_shapenum() == shapenum &&
 		    (qual == c_any_qual || obj->get_quality() == qual) &&
 		    (framenum == c_any_framenum || 
-					obj->get_framenum() == framenum))
+				(obj->get_framenum()&31) == framenum))
 			delta = -obj->modify_quantity(-delta, &del);
 
 		if (!del)		// Still there?
@@ -399,7 +399,7 @@ Game_object *Container_game_object::find_item
 		{
 		if (obj->get_shapenum() == shapenum &&
 		    (framenum == c_any_framenum || 
-					obj->get_framenum() == framenum) &&
+				(obj->get_framenum()&31) == framenum) &&
 		    (qual == c_any_qual || obj->get_quality() == qual))
 			return (obj);
 
@@ -600,7 +600,8 @@ int Container_game_object::count_objects
 	while ((obj = next.get_next()) != 0)
 		{
 		if ((shapenum == c_any_shapenum || obj->get_shapenum() == shapenum) &&
-		    (framenum == c_any_framenum || obj->get_framenum() == framenum) &&
+					// Watch for reflection.
+		    (framenum == c_any_framenum || (obj->get_framenum()&31) == framenum) &&
 		    (qual == c_any_qual || obj->get_quality() == qual))
 			{		// Check quantity.
 			int quant = obj->get_quantity();
@@ -631,7 +632,8 @@ int Container_game_object::get_objects
 		{
 		if ((shapenum == c_any_shapenum || obj->get_shapenum() == shapenum) &&
 		    (qual == c_any_qual || obj->get_quality() == qual) &&
-		    (framenum == c_any_framenum || obj->get_framenum() == framenum))
+					// Watch for reflection.
+		    (framenum == c_any_framenum || (obj->get_framenum()&31) == framenum))
 			vec.push_back(obj);
 					// Search recursively.
 		obj->get_objects(vec, shapenum, qual, framenum);
