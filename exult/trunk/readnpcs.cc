@@ -121,7 +121,7 @@ void Game_window::read_schedules
 	int i;				// Read offsets with list of scheds.
 	for (i = 0; i < num_npcs; i++)
 		offsets[i] = Read2(sfile);
-	for (i = 0; i < num_npcs; i++)	// Do each NPC.
+	for (i = 0; i < num_npcs - 1; i++)	// Do each NPC, except Avatar.
 		{
 					// Avatar isn't included here.
 		Npc_actor *npc = (Npc_actor *) npcs[i + 1];
