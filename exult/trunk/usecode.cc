@@ -205,12 +205,9 @@ void Scheduled_usecode::handle_event
 		default:
 					// Frames with direction.
 			if (opcode >= 0x60 && opcode <= 0x7f)
-				{	// Looks okay, so far.
-					// Bit 5=S, Bit6=reflect. on diag.
-				static unsigned char rotate[8] =
-					{ 0, 0, 48, 48, 16, 16, 32, 32};
-				int dir = obj->get_usecode_dir();
-				Usecode_value v(rotate[dir] + (opcode & 0xf));
+				{
+				Usecode_value v(obj->get_dir_framenum(
+					obj->get_usecode_dir(), opcode));
 				usecode->set_item_frame(objval, v);
 				}
 			else

@@ -30,6 +30,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <Audio.h>
 
+					// Bit 5=S, Bit6=reflect. on diag.
+unsigned char Game_object::rotate[8] = { 0, 0, 48, 48, 16, 16, 32, 32};
+
+/*
+ *	Does a given shape come in quantity.
+ */
 static int Has_quantity
 	(
 	int shnum			// Shape number.
@@ -249,6 +255,40 @@ int Game_object::find_nearby
 			}
 					// Return # added.
 	return (vec.get_cnt() - vecsize);
+	}
+
+/*
+ *	Find the closest nearby object with a given shape.
+ *
+ *	Output:	->object, or 0 if none found.
+ */
+
+Game_object *Game_object::find_closest
+	(
+	int shapenum,			// Shape to look for.  -1=any,
+					//   -359=any NPC.
+	int quality			// +++Not used/understood.
+	)
+	{
+	Vector vec;			// Gets objects found.
+	int cnt = find_nearby(vec, shapenum, quality, 0);
+	if (!cnt)
+		return (0);
+	Game_object *closest = 0;	// Get closest.
+	int best_dist = 10000;		// In tiles.
+					// Get our location.
+	Tile_coord loc = get_abs_tile_coord();
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *obj = (Game_object *) vec.get(i);
+		int dist = obj->get_abs_tile_coord().distance(loc);
+		if (dist < best_dist)
+			{
+			closest = obj;
+			best_dist = dist;
+			}
+		}
+	return (closest);
 	}
 
 /*
