@@ -747,7 +747,8 @@ void Actor::activate
 					// In gump mode?  Or Avatar?
 	if (!npc_num)			// Avatar?
 		gwin->show_gump(this, ACTOR_FIRST_GUMP);// ++++58 if female.
-	else if (gwin->get_mode() == Game_window::gump &&
+					// Gump/combat mode?
+	else if ((gwin->get_mode() == Game_window::gump || gwin->in_combat())&&
 		 get_party_id() >= 0 &&
 		 npc_num >= 1 && npc_num <= 10)
 					// Show companions' pictures.
