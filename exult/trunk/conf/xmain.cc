@@ -21,33 +21,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cstdio>
-#include "XMLEntity.h"
+#include "Configuration.h"
 #include <string>
 
-extern	void	xmlparse(string &,size_t &,XMLnode *);
-extern	void	xmldump(string &,XMLnode *);
+Configuration	config;
 
 int	main(int argc,char **argv)
 {
-	char	buf[4096];
-	string	sbuf;
+	config.read_config_file("config.xml");
 
-	while(fgets(buf,sizeof(buf),stdin))
-		{
-		sbuf+=buf;
-		}
-
-	XMLnode	xmltree;
-	size_t	n=1;
-	xmlparse(sbuf,n,&xmltree);
-
-	sbuf="";
-	xmldump(sbuf,&xmltree);
-	cout << sbuf;
-
-	string ss2="config/audio/midi_device";
-	string	sss=xmltree.reference(ss2);
-	cout << "Returned from reference. Got '" << sss << "'" << endl;
+	int	n;
+	config.value("config/audio/midi_device",n);
+	cout << "Returned from reference. Got '" << n << "'" << endl;
 
 	return 0;
 }
