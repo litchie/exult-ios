@@ -11,7 +11,7 @@
 touch configure.in
 
 # Regenerate everything
-aclocal -I /usr/local/share/aclocal
+aclocal 		# -I /usr/local/share/aclocal
 libtoolize --force --copy
 autoheader
 automake --add-missing --gnu
