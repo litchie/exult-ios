@@ -87,6 +87,8 @@ public:
 		{ return on_widget(gwin, mx, my); }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin) = 0;
+					// Or double-clicked.
+	virtual void double_clicked(Game_window *gwin);
 	void push(Game_window *gwin);	// Redisplay as pushed.
 	void unpush(Game_window *gwin);
 	};

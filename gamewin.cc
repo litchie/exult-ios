@@ -2093,7 +2093,16 @@ void Game_window::double_clicked
 	Gump_object *gump = find_gump(x, y);
 	Game_object *obj;
 	if (gump)
+		{			// Find object in gump.
 		obj = gump->find_object(x, y);
+		if (!obj)		// Maybe it's a spell.
+			{
+		 	Gump_button *btn = gump->on_button(this, x, y);
+			if (btn)
+				btn->double_clicked(this);
+			return;
+			}
+		}
 	else				// Search rest of world.
 		{
 		obj = find_object(x, y);

@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "usecode.h"
 #include "items.h"
+#include "mouse.h"
 
 const int REAGANTS = 842;		// Shape #.
 
@@ -149,6 +150,7 @@ public:
 		}
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
+	virtual void double_clicked(Game_window *gwin);
 	};
 
 /*
@@ -160,15 +162,19 @@ void Spell_button::activate
 	Game_window *gwin
 	)
 	{
-	static unsigned long lasttime = 0L;
-	unsigned long curtime = SDL_GetTicks();
-	cout << "Spell_button::activate:  curtime = " << curtime << endl;
-					// Last click within .5 secs?
-	if (curtime - lasttime < 500)
-		((Spellbook_gump *) parent)->do_spell(spell);
-	else
-		((Spellbook_gump *) parent)->set_bookmark(spell);
-	lasttime = curtime;
+	((Spellbook_gump *) parent)->set_bookmark(spell);
+	}
+
+/*
+ *	Method for double-click.
+ */
+
+void Spell_button::double_clicked
+	(
+	Game_window *gwin
+	)
+	{
+	((Spellbook_gump *) parent)->do_spell(spell);
 	}
 
 /*
@@ -270,6 +276,15 @@ void Spellbook_gump::do_spell
 	if (spells[spell] && avail[spell])
 		{
 		Game_window *gwin = Game_window::get_game_window();
+		int circle = spell/8;	// Figure/subtract mana.
+		int mana = gwin->get_main_actor()->get_property(Actor::mana);
+		if (mana < circle)	// Not enough?
+			{
+			extern Mouse *mouse;
+			mouse->flash_shape(Mouse::redx);
+			return;
+			}
+		gwin->get_main_actor()->set_property(Actor::mana, mana-circle);
 					// Figure what we used.
 		unsigned char flags = reagants[spell];
 					// Go through bits.
