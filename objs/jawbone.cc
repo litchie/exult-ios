@@ -72,14 +72,14 @@ void Jawbone_object::find_teeth()
 	while ((obj = next.get_next()) != 0)
 	{
 		if (obj->get_shapenum() != 559) {
-			obj = obj->get_next();
+//			obj = obj->get_next();
 			continue; // not a serpent tooth... (shouldn't happen)
 		}
 
 		toothcount++;
 		teeth[obj->get_framenum()] = obj;
 
-		obj = obj->get_next();
+//		obj = obj->get_next();
 	}
 }
 
