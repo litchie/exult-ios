@@ -451,7 +451,7 @@ int exult_main(const char *runpath)
  */
 void get_game_paths(const string &gametitle)
 {
-	string data_directory, static_dir, gamedat_dir, savegame_dir,
+	std::string data_directory, static_dir, gamedat_dir, savegame_dir,
 		default_dir, system_path_tag(to_uppercase(gametitle)),
 		config_path("config/disk/game/" + gametitle + "/path");
 
@@ -477,7 +477,7 @@ void get_game_paths(const string &gametitle)
 	config_path = "config/disk/game/" + gametitle + "/gamedat_path";
 	default_dir = data_directory + "/gamedat";
 	config->value(config_path.c_str(), gamedat_dir, "");
-#if !defined(WIN32) && !defined(MACOS))
+#if (!defined(WIN32) && !defined(MACOS))
 	if (gamedat_dir == "" &&	// Not set?
 					// And default doesn't exist?
 	    !U7exists(default_dir.c_str()) && (home = getenv("HOME")) != 0)
