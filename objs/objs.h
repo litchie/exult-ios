@@ -162,6 +162,8 @@ public:
 					// Get it using current dir.
 	int get_dir_framenum(int frnum) const
 		{ return (frnum&0xf) + (get_framenum()&(16 | 32)); }
+					// Get direction (NPC) is facing.
+	int get_dir_facing() const;
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
 	void move(Tile_coord t)

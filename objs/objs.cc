@@ -240,6 +240,30 @@ int Game_object::modify_quantity
 	}
 
 /*
+ *	Based on frame #, get direction (N, S, E, W, 0-7), this (generally an
+ *	NPC) is facing.
+ */
+
+int Game_object::get_dir_facing
+	(
+	) const
+	{
+	int reflect = get_framenum()&(16 | 32);
+	switch (reflect)
+		{
+	case 0:
+		return (int) north;
+	case 48:
+		return (int) east;
+	case 16:
+		return (int) south;
+	case 32:
+	default:
+		return (int) west;
+		}
+	}
+
+/*
  *	Move to a new absolute location.  This should work even if the old
  *	location is invalid (cx=cy=255).
  */
