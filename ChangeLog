@@ -1,3 +1,8 @@
+2002-05-22  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/shapelst.cc: Convert_indexed_image will fix up an
+	imported .png file to match Exult's palette as closely as possible.
+
 2002-05-21  Max Horn  <max@quendi.de>
 
 	* autogen.sh: use --copy for automake

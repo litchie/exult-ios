@@ -766,6 +766,24 @@ time_t Shape_chooser::export_png
 	}
 
 /*
+ *	Convert a GDK color map to a 3*256 byte RGB palette.
+ */
+
+static void Get_rgb_palette
+	(
+	GdkRgbCmap *palette,
+	unsigned char *buf		// 768 bytes (3*256).
+	)
+	{
+	for (int i = 0; i < 256; i++)
+		{
+		buf[3*i] = (palette->colors[i]>>16)&0xff;
+		buf[3*i + 1] = (palette->colors[i]>>8)&0xff;
+		buf[3*i + 2] = palette->colors[i]&0xff;
+		}
+	}
+
+/*
  *	Export an image as a .png file.
  *
  *	Output:	Modification time of file written, or 0 if error.
@@ -779,12 +797,7 @@ time_t Shape_chooser::export_png
 	)
 	{
 	unsigned char pal[3*256];	// Set up palette.
-	for (int i = 0; i < 256; i++)
-		{
-		pal[3*i] = (palette->colors[i]>>16)&0xff;
-		pal[3*i + 1] = (palette->colors[i]>>8)&0xff;
-		pal[3*i + 2] = palette->colors[i]&0xff;
-		}
+	Get_rgb_palette(palette, pal);
 	int w = img.get_width(), h = img.get_height();
 	struct stat fs;			// Write out to the .png.
 					// (Rotate transp. pixel to 0 for the
@@ -1007,6 +1020,65 @@ gint Shape_chooser::check_editing_files
 	}
 
 /*
+ *	Find the closest color in a palette to a given one.
+ *
+ *	Output:	0-254, whichever has closest color.
+ */
+
+static int Find_closest_color
+	(
+	unsigned char *pal,		// 3*255 bytes.
+	int r, int g, int b		// Color to match.
+	)
+	{
+	int best_index = -1;
+	long best_distance = 0xfffffff;
+	for (int i = 0; i < 255; i++)
+		{			// Get deltas.
+		long dr = r - pal[3*i], dg = g - pal[3*i + 1], 
+							db = b - pal[3*i + 2];
+					// Figure distance-squared.
+		long dist = dr*dr + dg*dg + db*db;
+		if (dist < best_distance)
+			{		// Better than prev?
+			best_index = i;
+			best_distance = dist;
+			}
+		}
+	return best_index;
+	}
+
+/*
+ *	Convert an 8-bit image in one palette to another.
+ */
+
+static void Convert_indexed_image
+	(
+	unsigned char *pixels,		// Pixels.
+	int count,			// # pixels.
+	unsigned char *oldpal,		// Palette pixels currently uses.
+	int oldpalsize,			// Size of old palette.
+	unsigned char *newpal		// Palette (255 bytes) to convert to.
+	)
+	{
+	if (memcmp(oldpal, newpal, oldpalsize) == 0)
+		return;			// Old palette matches new.
+	int map[256];			// Set up old->new map.
+	int i;
+	for (i = 0; i < 256; i++)	// Set to 'unknown'.
+		map[i] = -1;
+					// Go through pixels.
+	for (i = 0; i < count; i++)
+		{
+		unsigned char pix = *pixels;
+		if (map[pix] == -1)	// New one?
+			map[pix] = Find_closest_color(newpal, oldpal[3*pix], 
+					oldpal[3*pix+1], oldpal[3*pix+2]);
+		*pixels++ = map[pix];
+		}
+	}
+
+/*
  *	Import a PNG file into a given shape,frame.
  */
 
@@ -1014,6 +1086,7 @@ static void Import_png
 	(
 	const char *fname,		// Filename.
 	Shape_file_info *finfo,		// What we're updating.
+	unsigned char *pal,		// 3*255 bytes game palette.
 	int shapenum, int framenum	// Shape, frame to update
 	)
 	{
@@ -1025,12 +1098,14 @@ static void Import_png
 	if (!shape)
 		return;
 	int w, h, rowsize, xoff, yoff, palsize;
-	unsigned char *pixels, *palette;
+	unsigned char *pixels, *oldpal;
 					// Import, with 255 = transp. index.
 	if (!Import_png8(fname, 255, w, h, rowsize, xoff, yoff,
-						pixels, palette, palsize))
+						pixels, oldpal, palsize))
 		return;			// Just return if error, for now.
-	delete palette;
+					// Convert to game palette.
+	Convert_indexed_image(pixels, h*rowsize, oldpal, palsize, pal);
+	delete oldpal;
 					// Low shape in 'shapes.vga'?
 	bool flat = shapenum < 0x96 && finfo == studio->get_vgafile();
 	int xleft, yabove;
@@ -1066,6 +1141,7 @@ static void Import_png_tiles
 	(
 	const char *fname,		// Filename.
 	Shape_file_info *finfo,		// What we're updating.
+	unsigned char *pal,		// 3*255 bytes game palette.
 	int shapenum,
 	int tiles,			// #tiles per row/col.
 	bool bycols			// Write tiles columns-first.
@@ -1090,15 +1166,17 @@ static void Import_png_tiles
 	else
 		{ needw = dim0_cnt*8; needh = dim1_cnt*8; }
 	int w, h, rowsize, xoff, yoff, palsize;
-	unsigned char *pixels, *palette;
+	unsigned char *pixels, *oldpal;
 					// Import, with 255 = transp. index.
 	if (!Import_png8(fname, 255, w, h, rowsize, xoff, yoff,
-						pixels, palette, palsize))
+						pixels, oldpal, palsize))
 		{
 		Alert("Error reading '%s'", fname);
 		return;
 		}
-	delete palette;
+					// Convert to game palette.
+	Convert_indexed_image(pixels, h*rowsize, oldpal, palsize, pal);
+	delete oldpal;
 	if (w < needw || h < needh)
 		{
 		Alert("File '%s' image is too small.  %dx%d required.",
@@ -1142,12 +1220,16 @@ void Shape_chooser::read_back_edited
 						ed->vga_basename.c_str());
 	if (!finfo)
 		return;
+	unsigned char pal[3*256];	// Convert to 0-255 RGB's.
+	unsigned char *palbuf = studio->get_palbuf();
+	for (int i = 0; i < 3*256; i++)
+		pal[i] = palbuf[i]*4;
 	if (!ed->tiles)
-		Import_png(ed->pathname.c_str(), finfo, 
-						ed->shapenum, ed->framenum);
+		Import_png(ed->pathname.c_str(), finfo, pal,
+				ed->shapenum, ed->framenum);
 	else
-		Import_png_tiles(ed->pathname.c_str(), finfo, ed->shapenum,
-						ed->tiles, ed->bycolumns);
+		Import_png_tiles(ed->pathname.c_str(), finfo, pal,
+				ed->shapenum, ed->tiles, ed->bycolumns);
 	}
 
 /*
@@ -1211,7 +1293,9 @@ void Shape_chooser::import_frame
 		return;			// Shouldn't happen.
 	int shnum = ed->info[ed->selected].shapenum,
 	    frnum = ed->info[ed->selected].framenum;
-	Import_png(fname, ed->file_info, shnum, frnum);
+	unsigned char pal[3*256];	// Get current palette.
+	Get_rgb_palette(ed->palette, pal);
+	Import_png(fname, ed->file_info, pal, shnum, frnum);
 	ed->render();
 	ed->show();
 	ExultStudio *studio = ExultStudio::get_instance();
