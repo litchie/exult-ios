@@ -2814,7 +2814,7 @@ void Npc_actor::paint
 					// DO NOT call now_what here!!!
 		uint32 curtime = SDL_GetTicks();
 		gwin->get_tqueue()->add(curtime, this, (long) gwin);
-		set_action(new Null_action());
+// Causes crashes.		set_action(new Null_action());
 		}
 	if (!nearby)			// Make sure we're in 'nearby' list.
 		gwin->add_nearby_npc(this);
@@ -2931,7 +2931,8 @@ int Npc_actor::step
 	movef(olist, nlist, tx, ty, frame, new_lift);
 					// Offscreen, but not in party?
 	if (!add_dirty(gwin, 1) && Npc_actor::get_party_id() < 0 &&
-	    get_schedule_type() != Schedule::talk)
+	    get_schedule_type() != Schedule::talk &&
+	    get_schedule_type() != Schedule::street_maintenance)
 		{			// No longer on screen.
 		stop();
 		dormant = true;

@@ -225,6 +225,8 @@ public:
 		{ return usecode; }
 	int get_frame_time() const	// Return frame time if moving.
 		{ return frame_time; }
+	void set_frame_time(int ftime)	// Set walking speed.
+		{ frame_time = ftime; }
 	bool is_moving() const
 		{ return frame_time != 0; }
 	bool is_dormant() const		// Inactive (i.e., off-screen)?
