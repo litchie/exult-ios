@@ -371,7 +371,10 @@ void Cheat::append_selected(Game_object *obj) {
  *	Toggle the selection of an object.
  */
 void Cheat::toggle_selected(Game_object *obj) {
-	gwin->add_dirty(obj);
+	if (!obj->get_owner())
+		gwin->add_dirty(obj);
+	else
+		gwin->set_all_dirty();
 					// In list?
 	for (std::vector<Game_object *>::iterator it = selected.begin();
 					it != selected.end(); ++it)
@@ -391,7 +394,13 @@ void Cheat::clear_selected() {
 		return;
 	for (std::vector<Game_object *>::iterator it = selected.begin();
 					it != selected.end(); ++it)
-		gwin->add_dirty(*it);
+		{
+		Game_object *obj = *it;
+		if (!obj->get_owner())
+			gwin->add_dirty(obj);
+		else
+			gwin->set_all_dirty();
+		}
 	selected.clear();
 }
 
@@ -403,7 +412,10 @@ void Cheat::delete_selected() {
 		{
 		Game_object *obj = selected.back();
 		selected.pop_back();
-		gwin->add_dirty(obj);
+		if (obj->get_owner())
+			gwin->add_dirty(obj);
+		else			// In a gump?
+			gwin->set_all_dirty();
 		obj->remove_this();
 		}
 }
@@ -420,11 +432,16 @@ void Cheat::move_selected(int dx, int dy, int dz) {
 	std::vector<Game_object *>::iterator it;
 	for (it = selected.begin(); it != selected.end(); ++it)
 		{
-					// Get location.
-		Tile_coord tile = (*it)->get_tile();
+		Game_object *obj = *it;
+		Game_object *owner = obj->get_outermost();
+					// Get location.  Use owner if inside.
+		Tile_coord tile = owner->get_tile();
 		tiles.push_back(tile);
-		gwin->add_dirty(*it);
-		(*it)->remove_this(true);
+		if (obj == owner)	// Not inside?
+			gwin->add_dirty(obj);
+		else			// In a gump.  Repaint all for now.
+			gwin->set_all_dirty();
+		obj->remove_this(true);
 		if (tile.tz < lowz)
 			lowz = tile.tz;
 		if (tile.tz > highz)

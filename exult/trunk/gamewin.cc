@@ -2026,11 +2026,18 @@ void Game_window::show_items
 	}
 	else				// Search rest of world.
 		obj = find_object(x, y);
-					// Selection mode?
-	if (cheat.in_map_editor() && cheat.get_edit_mode() == Cheat::select)
+					// Map-editing?
+	if (obj && cheat.in_map_editor())
 		{
-		if (obj && !obj->get_owner())
+					// Selection mode?  Toggle.
+		if (cheat.get_edit_mode() == Cheat::select)
 			cheat.toggle_selected(obj);
+		else
+			{		// In normal mode, sel. just this one.
+			cheat.clear_selected();
+			if (cheat.get_edit_mode() == Cheat::move)
+				cheat.append_selected(obj);
+			}
 		}
 	else				// All other cases:  unselect.
 		cheat.clear_selected();	
