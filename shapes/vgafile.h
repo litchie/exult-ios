@@ -92,6 +92,7 @@ public:
 		{ return yabove; }
 	int get_ybelow()
 		{ return ybelow; }
+	void set_offset(int new_xright, int new_ybelow);
 	int get_size()
 		{ return datalen; }
 	int is_empty()

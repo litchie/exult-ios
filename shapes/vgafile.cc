@@ -682,6 +682,23 @@ int Shape_frame::has_point
 	}
 
 /*
+ *	Set new offset, assuming dimensions are unchanged.
+ */
+
+void Shape_frame::set_offset
+	(
+	int new_xright, int new_ybelow
+	)
+	{
+	int w = get_width(), h = get_height();
+	xright = new_xright;
+	ybelow = new_ybelow;
+					// Update other dims.
+	xleft = w - xright - 1;
+	yabove = h - ybelow - 1;
+	}
+
+/*
  *	Create the reflection of a shape.
  */
 

@@ -831,7 +831,7 @@ void ExultStudio::open_shape_window
 	(
 	int shnum,			// Shape #.
 	int frnum,			// Frame #.
-	Vga_file *ifile,		// File it's in.
+	Shape_file_info *file_info,	// For image file shape is in.
 	char *shname,			// ->shape name, or null.
 	Shape_info *info		// Info. if in main object shapes.
 	)
@@ -841,14 +841,16 @@ void ExultStudio::open_shape_window
 	if (shape_draw)			// Ifile might have changed.
 		delete shape_draw;
 	shape_draw = 0;
+	Vga_file *ifile = file_info->get_ifile();
 	if (ifile && palbuf)
 		{
 		shape_draw = new Shape_draw(ifile, palbuf,
 			    glade_xml_get_widget(app_xml, "shinfo_draw"));
 //		shape_draw->enable_drop(Shape_shape_dropped, this);
 		}
-					// Init. shape address to info.
+					// Store ->'s.
 	gtk_object_set_user_data(GTK_OBJECT(shapewin), info);
+	gtk_object_set_data(GTK_OBJECT(shapewin), "file_info", file_info);
 					// Shape/frame.
 	set_entry("shinfo_shape", shnum, false, false);
 	set_entry("shinfo_frame", frnum);
@@ -881,6 +883,9 @@ void ExultStudio::save_shape_window
 	int frnum = get_num_entry("shinfo_frame");
 	Shape_info *info = (Shape_info *)
 			gtk_object_get_user_data(GTK_OBJECT(shapewin));
+	Shape_file_info *file_info = (Shape_file_info *)
+		gtk_object_get_data(GTK_OBJECT(shapewin), "file_info");
+	Vga_file *ifile = file_info->get_ifile();
 	if (info &&			// If 'shapes.vga', get name.
 	    shnum < 1024)		// But only for the first 1024.
 		{
@@ -899,8 +904,15 @@ void ExultStudio::save_shape_window
 			shape_names_modified = true;
 			}
 		}
-	//+++++++Save origin.
-	//++++Then add:  shape_info_modified = true;
+					// Update origin.
+	Shape_frame *shape = ifile->get_shape(shnum, frnum);
+	int xright = get_spin("shinfo_originx"),
+	    ybelow = get_spin("shinfo_originy");
+	if (xright != shape->get_xright() || ybelow != shape->get_ybelow())
+		{			// It changed.
+		file_info->set_modified();
+		shape->set_offset(xright, ybelow);
+		}
 	if (info)
 		save_shape_notebook(*info, shnum, frnum);
 	}
