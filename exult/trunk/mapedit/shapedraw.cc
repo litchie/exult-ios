@@ -144,7 +144,7 @@ Shape_draw::Shape_draw
 	GtkWidget *drw			// Drawing area to use.
 	) : ifile(i),
 	    iwin(0), palette(0), draw(drw), drawgc(0),
-	    drop_callback(0), drop_user_data(0)
+	    drop_callback(0), drop_user_data(0), dragging(false)
 	{
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
@@ -314,4 +314,31 @@ void Shape_draw::set_drag_icon
 					w - 2 - xright, h - 2 - ybelow);
 	gdk_pixmap_unref(pixmap);
 	gdk_bitmap_unref(mask);
+	}
+
+/*
+ *	Start dragging from here.
+ *
+ *	Note:	Sets 'dragging', which is only cleared by 'mouse_up()'.
+ */
+
+void Shape_draw::start_drag
+	(
+	char *target,			// Target (ie, U7_TARGET_SHAPEID_NAME).
+	int id,				// ID (ie, U7_TARGET_SHAPEID).
+	GdkEvent *event			// Event that started this.
+	)
+	{
+	if (dragging)
+		return;
+	dragging = true;
+	GtkTargetEntry tents[1];// Set up for dragging.
+	tents[0].target = target;
+	tents[0].flags = 0;
+	tents[0].info = id;
+	GtkTargetList *tlist = gtk_target_list_new(&tents[0], 1);
+					// ??+++ Do we need to free tlist?
+	gtk_drag_begin(draw, tlist,
+			(GdkDragAction) (GDK_ACTION_COPY | GDK_ACTION_MOVE),
+			1, event);
 	}

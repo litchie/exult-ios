@@ -176,6 +176,9 @@ public:
 #ifdef WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 		gpointer data);
+#else
+	static gint drag_motion(GtkWidget *widget, GdkEventMotion *event,
+		gpointer data);
 #endif
 					// Menu items:
 	static void on_shapes_popup_info_activate(
