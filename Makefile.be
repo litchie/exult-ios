@@ -62,7 +62,7 @@ EXULT_FLX_OBJECTS = \
 $(EXEC) : Makefile data/exult.flx $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
-tools/expack : tools/expack.o $(FILE_OBJS) utils.o
+tools/expack : tools/expack.o $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o tools/expack tools/expack.o $(FILE_OBJS) $(LIBS)
 
 data/exult.flx: tools/expack $(EXULT_FLX_OBJECTS)
