@@ -30,6 +30,11 @@ if test "$DIE" -eq 1; then
   exit 1
 fi
 
+aclocalincludes=""
+if test -d "/usr/local/share/aclocal"; then
+  aclocalincludes="-I /usr/local/share/aclocal"
+fi
+
 # Clean up the generated crud
 rm -f configure config.log config.guess config.sub config.cache
 rm -f libtool ltmain.sh missing mkinstalldirs install-sh
@@ -42,7 +47,7 @@ rm -f `find . -name 'Makefile'`
 touch configure.in
 
 # Regenerate everything
-aclocal 		# -I /usr/local/share/aclocal
+aclocal $aclocalincludes
 libtoolize --force --copy
 autoheader
 automake --add-missing --copy --gnu
