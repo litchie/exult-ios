@@ -581,18 +581,16 @@ void Game_window::read_ireg_objects
 			quality = entry[5];
 			Shape_info& info = shapes.get_info(shapeid);
 			if (info.is_animated())
+				{
+//+++++++Need Animated_ireg_object.  Let's see what these are.
+				cout << "Reading animated IREG object " <<
+					shapeid << '\n';
 				obj = new Animated_object(
 				   entry[2], entry[3], tilex, tiley, lift);
+				}
 			else
 				obj = new Ireg_game_object(
 				   entry[2], entry[3], tilex, tiley, lift);
-//+++++++++Testing.  Fixes crash after splash screen.
-#if 0
-			int num_frames = shapes.get_num_frames(shapeid);
-			if (obj->get_framenum() >= num_frames)
-				obj->set_frame(num_frames - 1);
-#endif
-//+++++++++++++++^^^^^^^^
 			}
 		else if (entlen == 12)	// Container?
 			{

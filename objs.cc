@@ -76,6 +76,23 @@ static int Has_quantity
 const int MAX_QUANTITY = 0x7f;		// Highest quantity possible.
 
 /*
+ *	Write the common IREG data for an entry.
+ */
+
+void Game_object::write_common_ireg
+	(
+	unsigned char *buf		// 4-byte buffer to be filled.
+	)
+	{
+					// Coords:
+	buf[0] = (get_cx() << 4) | get_tx();
+	buf[1] = (get_cy() << 4) | get_ty();
+	int shapenum = get_shapenum(), framenum = get_framenum();
+	buf[2] = shapenum&0xff;
+	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
+	}
+
+/*
  *	Get the quantity.
  */
 
@@ -505,6 +522,21 @@ int Ireg_game_object::is_dragable
 	}
 
 /*
+ *	Write out.
+ */
+
+void Ireg_game_object::write_ireg
+	(
+	ostream& out
+	)
+	{
+	unsigned char buf[7];		// 6-byte entry + length-byte.
+	buf[0] = 6;
+	write_common_ireg(&buf[1]);
+	out.write(buf, sizeof(buf));
+	}
+
+/*
  *	Create an animated object.
  */
 
@@ -739,6 +771,35 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			cout << "Egg not actioned" << endl;
                 }
 
+	}
+
+/*
+ *	Write out.
+ */
+
+void Egg_object::write_ireg
+	(
+	ostream& out
+	)
+	{
+	unsigned char buf[13];		// 13-byte entry + length-byte.
+	buf[0] = 12;
+	unsigned char *ptr = &buf[1];	// To avoid confusion about offsets.
+	write_common_ireg(ptr);		// Fill in bytes 1-4.
+	ptr += 4;
+	unsigned short tword = type&0xf;// Set up 'type' word.
+	tword |= ((criteria&7)<<4);
+	tword |= (((flags>>nocturnal)&1)<<7);
+	tword |= (((flags>>once)&1)<<8);
+	tword |= (((flags>>hatched)&1)<<9);
+	tword |= ((distance&0x1f)<<10);
+	tword |= (((flags>>auto_reset)&1)<<15);
+	Write2(ptr, tword);
+	*ptr++ = probability;
+	Write2(ptr, data1);
+	*ptr++ = (get_lift()&15)<<4;	// Low bits?++++++
+	Write2(ptr, data2);
+	out.write(buf, sizeof(buf));
 	}
 
 /*
@@ -1087,6 +1148,41 @@ int Container_game_object::get_objects
 	}
 
 /*
+ *	Write out container and its members.
+ */
+
+void Container_game_object::write_ireg
+	(
+	ostream& out
+	)
+	{
+	unsigned char buf[13];		// 13-byte entry + length-byte.
+	buf[0] = 12;
+	unsigned char *ptr = &buf[1];	// To avoid confusion about offsets.
+	write_common_ireg(ptr);		// Fill in bytes 1-4.
+	ptr += 4;
+					// Guessing: +++++
+	unsigned short tword = last_object ? last_object->get_shapenum() : 0;
+	Write2(ptr, tword);
+	*ptr++ = 0;			// Unknown.
+	*ptr++ = get_quality();
+	*ptr++ = 0;			// Quantity+++++
+	*ptr++ = (get_lift()&15)<<4;
+	*ptr++ = 0;			// Resistance+++++
+	*ptr++ = 0;			// Flags++++++
+	out.write(buf, sizeof(buf));
+	if (!last_object)		// Now write out what's inside.
+		return;
+	Game_object *obj = last_object;
+	do
+		{
+		obj = obj->get_next();
+		obj->write_ireg(out);
+		}
+	while (obj != last_object);
+	}
+
+/*
  *	Add an object.
  *
  *	Output:	0, meaning object should also be added to chunk.
@@ -1112,6 +1208,19 @@ void Barge_object::paint
 	{
 					// DON'T paint barge shape itself.
 					// The objects are in the chunk too.
+	}
+
+/*
+ *	Write out.
+ */
+
+void Barge_object::write_ireg
+	(
+	ostream& out
+	)
+	{
+//+++++++++NOT RIGHT.  Barge must be derived from Container!!!
+	Ireg_game_object::write_ireg(out);
 	}
 
 /*
