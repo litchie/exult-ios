@@ -1,3 +1,7 @@
+2001-10-21  Max Horn  <max@quendi.de>
+
+	* Removed all files from macosx/ except exult.icns - we don't need them anymore
+
 2001-10-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.cc (public): Better testing for occupied chair.
