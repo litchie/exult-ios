@@ -161,14 +161,17 @@ int Game_window::write_npcs
 				"' for writing"<<endl;
 		return (0);
 		}
-					// Start with count.
-	int cnt = Monster_actor::get_num_in_world();
-	if (cnt < 0)			// Watch for messed-up count.
-		cnt = 0;
-	Write2(nfile, cnt);
+	int cnt = 0;
+	Write2(nfile, 0);		// Write 0 as a place holder.
 	for (Monster_actor *mact = Monster_actor::get_first_in_world();
 					mact; mact = mact->get_next_in_world())
-		mact->write(nfile);	// (Dead ones don't get written.)
+		if (!mact->Actor::is_dead_npc())	// Alive?
+			{
+			mact->write(nfile);
+			cnt++;
+			}
+	nfile.seekp(0);			// Back to start.
+	Write2(nfile, cnt);		// Write actual count.
 	nfile.flush();
 	result = nfile.good();
 	nfile.close();
