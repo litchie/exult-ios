@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="14 August 2004(GMT">
+<faqs title="Exult" changed="04 October 2004(GMT">
 	<section title="Changes to the FAQ">
+		<sub name="04102004">
+			<header>- 04 October 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="why_gameplayfaq"/> walkthroughs, the source of evil.</li>
+				<li><ref1 target="tetrahedron"/> two issues come up from time to time.</li>
+				<li><ref1 target="pothos_mad_mage"/> needed to be added.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="14082004">
 			<header>- 14 August 2004</header>
 			<body>
@@ -872,6 +882,10 @@
 					some questions quite frequently as people think these are bugs with <Exult/>.
 				</para>
 				<para>
+					Most of the times the problem is that people don't play the game regulary but depend
+					overly on walkthroughs and don't read what NPCs in the game tell you to do.
+				</para>
+				<para>
 					<strong>Note that this section contains text that may spoil your game.
 					Caution is advised.</strong>
 				</para>
@@ -917,8 +931,25 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="tetrahedron">
+			<header>Multiple problems with the tetrahedron generator and prism (BG)?</header>
+			<body>
+				<para>
+					Some of our users have problems entering the generator and finding the prism afterwards.
+				</para>
+				<para>
+					To enter the tetrahedron generator you have to wear the ethereal ring (enchanted by Penumbra). 
+					It is important to <strong>wear</strong> the ring on a finger and not just hold it like a weapon.
+				</para>
+				<para>
+					After you defeated the enemy you have to doubleclick the prism to destroy the generator.
+					You will then find the black prism (without the yellow outline) to your feet. Look 
+					closely and take it with you.
+				</para>
+			</body>
+		</sub>
 		<sub name="demon_gem">
-			<header>Where did my gem of the Demon vanish to (BG-FoV)?</header>
+			<header>Where did my gem of the Demon vanish to (FoV)?</header>
 			<body>
 				<para>
 					For forging the black sword you need to bind the demon to the gem you got from
@@ -961,6 +992,18 @@
 					monks of the island tells you to ask him when the tide is right. Keep coming back to him
 					and when he tells you the tide is right walk to the northern shore of the island to find
 					fresh roots.
+				</para>
+			</body>
+		</sub>
+		<sub name="pothos_mad_mage">
+			<header>Why won't Pothos take the blood moss and talk about the mad mage (SI)?</header>
+			<body>
+				<para>
+					Pothos won't take the moss if he hasn't sent you to fetch it for him. If you want 
+					him to tell you about the mad mage and how to get to him you first have to talk with
+					Bucia (also in Moonshade) about Pothos. Then you can talk to Pothos about it and he will
+					sent you off to fetch him fresh blood moss. Read what he says because it is important to
+					get fresh blood moss.
 				</para>
 			</body>
 		</sub>
