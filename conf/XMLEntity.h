@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,8 +56,8 @@ public:
 	std::string dump(int depth = 0);
 	void dump(std::ostream &o, const std::string &indentstr, const unsigned int depth=0) const;
 	
-	void	xmlassign(std::string &key,std::string &value);
-	void	xmlparse(std::string &s,std::size_t &pos);
+	void	xmlassign(const std::string &key, const std::string &value);
+	void	xmlparse(const std::string &s,std::size_t &pos);
 
 	void	listkeys(const std::string &,std::vector<std::string> &, bool longformat=true) const;
 };
