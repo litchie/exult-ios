@@ -24,7 +24,6 @@ static void   run        (gchar   *name,
                           GParam **return_vals);
 static void   load_palette(gchar *filename);
 static void   choose_palette (void);
-static void   palok_callback          (GtkWidget *widget, gpointer   data);
 static gint32 load_image (gchar   *filename);
 static gint32 save_image (gchar  *filename,
 	    gint32  image_ID,
@@ -328,6 +327,7 @@ static void choose_palette()
 static gint32 load_image (gchar *filename)
 {
  	FILE *fp;
+	gint32 file_size;
 	gint32 shape_size;
 	gint32 hdr_size;
 	guchar *pixptr;
@@ -348,6 +348,7 @@ static gint32 load_image (gchar *filename)
 	guchar pix;
 	GDrawable *drawable;
 	GPixelRgn pixel_rgn;
+	GimpImageType image_type;
 	int i;
 	int j;
 
@@ -359,64 +360,89 @@ static gint32 load_image (gchar *filename)
 		g_message ("SHP: can't open \"%s\"\n", filename);
 		return -1;
 	}
-	printf("load_image(\"%s\");\n", filename);
-	shape_size = read4(fp);
-	hdr_size = read4(fp);
-	shape.num_frames = (hdr_size-4)/4;
-	shape.frames = (struct u7frame *)malloc(sizeof(struct u7frame)*shape.num_frames);
-	max_width = -1;
-	max_height = -1;
+	fseek(fp, 0, SEEK_END);
+	file_size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
 	
-	for(i=0; i<shape.num_frames; i++) {
-		frame = &shape.frames[i];
-		// Go to where frame offset is stored
-		fseek(fp, (i+1)*4, SEEK_SET);
-		frame_offset = read4(fp);
-		fseek(fp, frame_offset, SEEK_SET);
-		frame->rightX = read2(fp);
-		frame->leftX = read2(fp);
-		frame->leftY = read2(fp);
-		frame->rightY = read2(fp);
-		frame->width = frame->leftX+frame->rightX+1;
-		if(frame->width>max_width)
-			max_width = frame->width;
-		frame->height = frame->leftY+frame->rightY+1;
-		if(frame->height>max_height)
-			max_height = frame->height;
-		frame->pixels = (char *)malloc(frame->width*frame->height*2);
-		memset(frame->pixels, 0, frame->width*frame->height*2);
-		while((slice=read2(fp))!=0) {
-			slice_type = slice & 0x1;
-			slice_length = slice >> 1;
-			offsetX = read2(fp);
-			offsetY = read2(fp);
-			pixptr = frame->pixels+(offsetY*frame->width+offsetX)*2;
-			if(slice_type) {	// Compressed
-				while(slice_length>0) {
-					block = read1(fp);
-					block_type = block & 0x1;
-					block_length = block >> 1;
-					if(block_type) {
-						pix = read1(fp);
-						for(j=0;j<block_length;j++) {
-							*pixptr++ = pix;
-							*pixptr++ = 255;
-						}
-					} else {
-						for(j=0;j<block_length;j++) {
+	shape_size = read4(fp);
+	
+	if(file_size!=shape_size) {	/* 8x8 tile */
+		image_type = INDEXED_IMAGE;
+		shape.num_frames = file_size/64;
+		fseek(fp, 0, SEEK_SET);		/* Return to start of file */
+		printf("num_frames = %d\n", shape.num_frames);
+		shape.frames = (struct u7frame *)malloc(sizeof(struct u7frame)*shape.num_frames);
+		max_width = 8;
+		max_height = 8;
+		for(i=0; i<shape.num_frames; i++) {
+			frame = &shape.frames[i];
+			frame->width = 8;
+			frame->height = 8;
+			frame->leftX = 0;
+			frame->leftY = 0;
+			frame->pixels = (char *)malloc(64);
+			fread(frame->pixels, 1, 64, fp);
+		}
+	} else {
+		image_type = INDEXEDA_IMAGE;
+		hdr_size = read4(fp);
+		shape.num_frames = (hdr_size-4)/4;
+		max_width = -1;
+		max_height = -1;
+		printf("num_frames = %d\n", shape.num_frames);
+		shape.frames = (struct u7frame *)malloc(sizeof(struct u7frame)*shape.num_frames);
+	
+		for(i=0; i<shape.num_frames; i++) {
+			frame = &shape.frames[i];
+			// Go to where frame offset is stored
+			fseek(fp, (i+1)*4, SEEK_SET);
+			frame_offset = read4(fp);
+			fseek(fp, frame_offset, SEEK_SET);
+			frame->rightX = read2(fp);
+			frame->leftX = read2(fp);
+			frame->leftY = read2(fp);
+			frame->rightY = read2(fp);
+			frame->width = frame->leftX+frame->rightX+1;
+			if(frame->width>max_width)
+				max_width = frame->width;
+			frame->height = frame->leftY+frame->rightY+1;
+			if(frame->height>max_height)
+				max_height = frame->height;
+			frame->pixels = (char *)malloc(frame->width*frame->height*2);
+			memset(frame->pixels, 0, frame->width*frame->height*2);
+			while((slice=read2(fp))!=0) {
+				slice_type = slice & 0x1;
+				slice_length = slice >> 1;
+				offsetX = read2(fp);
+				offsetY = read2(fp);
+				pixptr = frame->pixels+(offsetY*frame->width+offsetX)*2;
+				if(slice_type) {	// Compressed
+					while(slice_length>0) {
+						block = read1(fp);
+						block_type = block & 0x1;
+						block_length = block >> 1;
+						if(block_type) {
 							pix = read1(fp);
-							*pixptr++ = pix;
-							*pixptr++ = 255;
+							for(j=0;j<block_length;j++) {
+								*pixptr++ = pix;
+								*pixptr++ = 255;
+							}
+						} else {
+							for(j=0;j<block_length;j++) {
+								pix = read1(fp);
+								*pixptr++ = pix;
+								*pixptr++ = 255;
+							}
 						}
+						slice_length -= block_length;
 					}
-					slice_length -= block_length;
-				}
-			} else {		// Uncompressed
-				// Just read the pixels
-				for(j=0;j<slice_length;j++) {
-					pix = read1(fp);
-					*pixptr++ = pix;
-					*pixptr++ = 255;
+				} else {		// Uncompressed
+					// Just read the pixels
+					for(j=0;j<slice_length;j++) {
+						pix = read1(fp);
+						*pixptr++ = pix;
+						*pixptr++ = 255;
+					}
 				}
 			}
 		}
@@ -425,11 +451,11 @@ static gint32 load_image (gchar *filename)
 	gimp_image_set_filename (image_ID, filename);
 	gimp_image_set_cmap (image_ID, gimp_cmap, 256);
 	for(i=0; i<shape.num_frames; i++) {
-		frame = &shape.frames[i];
 		framename = g_strdup_printf ("Frame %d", i);
+		frame = &shape.frames[i];
 		layer_ID = gimp_layer_new (image_ID, framename,
 			frame->width, frame->height,
-			INDEXEDA_IMAGE, 100, NORMAL_MODE);
+			image_type, 100, NORMAL_MODE);
 		g_free (framename);
 		gimp_image_add_layer (image_ID, layer_ID, 0);
 		gimp_layer_translate (layer_ID, (gint)frame->leftX, (gint)frame->leftY);
