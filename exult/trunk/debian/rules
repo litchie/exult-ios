@@ -28,7 +28,7 @@ binary-arch: checkroot build
 	-rm -rf debian/tmp
 	install -d debian/tmp
 	cd debian/tmp && install -d `cat ../dirs`
-	./configure --x-libraries=/usr/X11R6/lib
+	./configure --x-libraries=/usr/X11R6/lib --datadir=/usr/lib/games
 	make
 	cp exult debian/tmp/usr/games/exult
 	cp data/exult.flx debian/tmp/usr/lib/games/exult
