@@ -174,8 +174,8 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 
 	d = "config/disk/game/" + gametitle + "/savegame_path";
 	config->value(d.c_str(), savegame_dir, data_directory.c_str());
-	if (savegame_dir == data_directory)
-		config->set(d.c_str(), savegame_dir, true);
+//	if (savegame_dir == data_directory)
+//		config->set(d.c_str(), savegame_dir, true);
 	
 	add_system_path("<STATIC>", static_dir.c_str());
 	add_system_path("<GAMEDAT>", gamedat_dir.c_str());

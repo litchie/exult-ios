@@ -1,3 +1,12 @@
+2002-04-14  Ryan Nunn  <triforce@merlin.net.au>
+	* exult.cc : Fixed a path problem
+	* palette.cc : std namespace stuff
+	* game.cc : DON'T write the savegame config setting by default at the 
+	  moment. Though really the damage this may do, has already been done.
+	* files/utils.cc : Changed things so get_system_path() will attemp to
+	  convert long filenames in Windows to short filenames. This is an
+	  attempt to 'fix' the long filename issue.
+
 2002-04-13  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* exult.cc: Disable right-click-close-gump if dragging.
