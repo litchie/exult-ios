@@ -137,7 +137,8 @@ public:
 	static Frames_sequence *get_frames(int dir)
 		{ return frames[dir]; }
 					// Get attack frames.
-	int get_attack_frames(int dir, char *frames) const;
+	int get_attack_frames(int weapon, bool projectile,
+						int dir, char *frames) const;
 	enum Alignment {		// Describes alignment field.
 		neutral = 0,
 		friendly = 1,
