@@ -41,7 +41,7 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0 },						// 01
 	{ NULL, 0, 0 },						// 02
 	{ NULL, 0, 0 },						// 03
-	{ "je", 2, RELATIVE_JUMP },				// 04 JSF
+	{ "startconv", 2, RELATIVE_JUMP },	// 04
 	{ "jne", 2, RELATIVE_JUMP },				// 05
 	{ "jmp", 2, RELATIVE_JUMP },				// 06
 	{ "cmps", 4, IMMED_AND_RELATIVE_JUMP },			// 07 JSF
@@ -81,12 +81,12 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0 },						// 29
 	{ NULL, 0, 0 },						// 2a
 	{ NULL, 0, 0 },						// 2b
-	{ "db 2c\t???", 0, 0 },					// 2c
+	{ "ret2", 0, 0 },					// 2c
 	{ "setr", 0, 0 },					// 2d
 	{ "sloop", 11, RELATIVE_JUMP },				// 4e
 	{ "addsv", 2, VARREF },					// 2f
 	{ "in", 0, 0 },						// 30
-	{ NULL, 0, 0 },						// 31
+	{ "conv_something", 4, IMMED_AND_RELATIVE_JUMP },			// 31
 	{ "rts", 0, 0 },					// 32
 	{ "say", 0, 0 },					// 33
 	{ NULL, 0, 0 },						// 34
@@ -101,18 +101,18 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0 },						// 3d
 	{ "push\titemref", 0, 0 },				// 3e
 	{ "abrt", 0, 0 },					// 3f
-	{ "db 40\t???", 0, 0 },					// 40
+	{ "endconv", 0, 0 },					// 40
 	{ NULL, 0, 0 },						// 41
 	{ "pushf", 2, FLGREF },					// 42
 	{ "popf", 2, FLGREF },					// 43
 	{ "pushw", 1, BYTE },					// 44
 	{ NULL, 0, 0 },						// 45
-	{ "db 46\t???\n\t\t\tdw", 2, IMMED },			// 46
+	{ "setarrayelem", 2, IMMED },			// 46
 	{ "calle",2,IMMED },					// 47
 	{ "push\teventid", 0, 0 },				// 48
 	{ NULL, 0, 0 },						// 49
 	{ "arra", 0, 0 },					// 4a
-	{ "db 4b\t???", 0, 0 }					// 4b
+	{ "pop\teventid", 0, 0 }					// 4b
 };
 
 
