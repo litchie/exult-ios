@@ -497,6 +497,73 @@ int Main_actor::walk
 	}
 
 /*
+ *	Step onto an adjacent tile.
+ *	+++++++++++This should be used by walk.
+ *
+ *	Output:	Delay for next frame, or 0 to stop.
+ *		Dormant is set if off screen.
+ */
+
+int Main_actor::step
+	(
+	Tile_coord t,			// Tile to step onto.
+	int frame			// New frame #.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Get chunk.
+	int cx = t.tx/tiles_per_chunk, cy = t.ty/tiles_per_chunk;
+					// Get rel. tile coords.
+	int tx = t.tx%tiles_per_chunk, ty = t.ty%tiles_per_chunk;
+	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+	int new_lift;			// Might climb/descend.
+					// Just assume height==3.
+	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift))
+		{
+		stop();
+		return (0);
+		}
+					// Check for scrolling.
+	int chunkx = gwin->get_chunkx(), chunky = gwin->get_chunky();
+					// At left?
+	if (cx - chunkx <= 0 && tx < 6)
+		gwin->view_left();
+					// At right?
+	else if ((cx - chunkx)*16 + tx >= gwin->get_width()/8 - 4)
+		gwin->view_right();
+					// At top?
+	if (cy - chunky <= 0 && ty < 6)
+		gwin->view_up();
+					// At bottom?
+	else if ((cy - chunky)*16 + ty >= gwin->get_height()/8 - 4)
+		gwin->view_down();
+					// Get old rectangle.
+	Rectangle oldrect = gwin->get_shape_rect(this);
+					// Get old chunk.
+	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
+					// Move it.
+	move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
+					// Near an egg?
+	nlist->activate_eggs(tx, ty);
+	int inside;			// See if moved inside/outside.
+					// In a new chunk?
+	if (olist != nlist)
+		{
+		switched_chunks(olist, nlist);
+		if (gwin->check_main_actor_inside())
+			gwin->paint();
+		}
+	else
+		gwin->repaint_sprite(this, oldrect);
+	if (at_destination())
+		{
+		stop();
+		return (0);
+		}
+	return (frame_time);		// Add back to queue for next time.
+	}
+
+/*
  *	Setup cache after a change in chunks.
  */
 
