@@ -128,6 +128,7 @@ int Do_Modal_gump
 	// maybe make this selective? it's nice for menus, but annoying for sliders
 	//	gwin->end_gump_mode();
 
+	Game_window *gwin = Game_window::get_game_window();
 	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		Mouse::mouse->set_shape(shape);

@@ -76,7 +76,6 @@ typedef enum
 extern KeyBinder *keybinder;
 extern Configuration *config;
 
-extern Game_window *gwin;
 extern quitting_time_enum quitting_time;
 
 

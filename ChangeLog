@@ -1,3 +1,22 @@
+2001-08-12  Max Horn <max@quendi.de>
+	* audio/midi_drivers/mac_midi.*: fixed NOTE OFF matching; fixed
+	  stuffing of Extended Note Events; fixed tempo change; most importantly,
+	  fixed usage of REST events (those are *not* accumulated by QTMA hence we have
+	  to do it manually). 99% finished, need to tidy it up for release.
+	* files/utils.*: added to_uppercase() variant
+	* conf/Configuration.* added value() accesor for booleans; cleand up code a bit
+	* gumps/AudioOptions_gump.cc: fixed compiling with ENABLE_MIDISFX enabled
+	* gumps/Gump_manager.cc: added option that allows a double click to close a
+	  gump like in U8 (based on a patch by Paul Hebble)
+	* gumps/VideoOptions_gump.cc: fixed possible bad crash that could occur if user
+	  specified a custom screen resolution that we didn't anticipate
+	* usecode/useval.h: added missing #include <cassert>
+	* actors.h: namespace policy; renamed set_default_frames to init_default_frames
+	  and made it a static method, and hacked it to do 3-frame walk animations
+	* exult.h: doesn't export gwin anymore, use Game_window::get_game_window() instead
+	* exult.cc: make use of new Configuration::value method for booleans
+	* keyactions.cc: changed usage of gwin to Game_window::get_game_window()
+
 2001-08-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.cc: Use better pathfinder for Talk schedule.

@@ -225,19 +225,27 @@ void BG_Game::play_intro()
 	backup = backup2 = backup3 = 0;
 	cbackup = cbackup2 = cbackup3 = 0;
 
+/*
+TODO
+* add SFX 
+* allow to skip single parts of the animatio
+* red plasma upon new game / journey onward / load game
+*/
+
+
 	try
 	{
 		/********************************************************************
 		 Lord British Presents
 		********************************************************************/
 		
-		scene_lord_british();
+//		scene_lord_british();
 
 		/********************************************************************
 		 Ultima VII logo w/Trees
 		********************************************************************/
 
-		scene_butterfly();
+//		scene_butterfly();
 
 		/********************************************************************
 		 Enter guardian
@@ -520,7 +528,7 @@ void BG_Game::scene_butterfly()
 	pal.load("<STATIC>/intropal.dat",4);
 
 	// Keep it dark for some more time, playing the music 
-//	WAITDELAY(4000);
+	WAITDELAY(4000);
 
 	// Finally fade in
 	pal.fade_in(c_fade_in_time);
@@ -612,7 +620,6 @@ void BG_Game::scene_guardian()
 							gwin->get_height());
 		gwin->plasma(gwin->get_width(), gwin->get_height(), 0, 0, 16, 110);
 		win->get(plasma, 0, 0);
-
 
 		pal.load("<STATIC>/intropal.dat",2);
 		pal.set_color(1,0,0,0); //UGLY hack... set font background to black
