@@ -2067,7 +2067,7 @@ void Chunk_cache::set_egged
 	if (add)
 		{
 		if (eggnum < 0)		// No, so add it.
-			eggnum = egg_objects.append(egg);
+			eggnum = egg_objects.put(egg);
 		if (eggnum > 15)	// We only have 16 bits.
 			eggnum = 15;
 		short mask = (1<<eggnum);
@@ -2446,14 +2446,14 @@ void Chunk_object_list::add_dependencies
 			{
 			if (newobj->cx == obj->cx && newobj->cy == obj->cy)
 				{
-				newobj->dependencies.append(obj);
-				obj->dependors.append(newobj);
+				newobj->dependencies.put(obj);
+				obj->dependors.put(newobj);
 				}
 			}
 		else if (cmp == 1)	// Smaller than?
 			{
-			obj->dependencies.append(newobj);
-			newobj->dependors.append(obj);
+			obj->dependencies.put(newobj);
+			newobj->dependors.put(obj);
 			}
 		}
 	}
