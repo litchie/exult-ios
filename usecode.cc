@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 #include "mouse.h"
 #include <Audio.h>
+#include <iomanip>
 
 #define	TRACE_INTRINSIC_CALLS 1
 
@@ -873,9 +874,12 @@ static void Usecode_Trace
 					name, intrinsic, num_parms);
 	for (int i = 0; i < num_parms; i++)
 		{
+		cout << "0x" << setfill(0x30);
+		cout << setw(4) << hex;
 		parms[i].print(cout);
 		cout << ' ';
 		}
+	cout << dec;
 	cout << endl;
 #endif
 	}
@@ -887,14 +891,7 @@ static void Unhandled
 	Usecode_value parms[12]
 	)
 	{
-	printf("Unhandled intrinsic 0x%03x called with %d parms: ",
-					intrinsic, num_parms);
-	for (int i = 0; i < num_parms; i++)
-		{
-		parms[i].print(cout);
-		cout << ' ';
-		}
-	cout << endl;
+	Usecode_Trace("UNKNOWN",intrinsic,num_parms,parms);
 	}
 
 static Usecode_value	no_ret;
