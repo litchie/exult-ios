@@ -283,12 +283,26 @@ Weather_effect::Weather_effect
 	}
 
 /*
+ *	Paint raindrop.
+ */
+
+inline void Raindrop::paint
+	(
+	Image_window8 *iwin,		// Where to draw.	
+	Xform_palette xform		// Transform array.
+	)
+	{
+	oldpix = iwin->get_pixel8(x, y);	// Get pixel.
+	iwin->put_pixel8(xform[oldpix], x, y);
+	}
+
+/*
  *	Move raindrop.
  */
 
 inline void Raindrop::next
 	(
-	Image_window8 *iwin,		// Where to draw.
+	Image_window8 *iwin,		// Where to draw.	
 	Xform_palette xform,		// Transform array.
 	int w, int h			// Dims. of window.
 	)
@@ -319,8 +333,7 @@ inline void Raindrop::next
 		x += delta;
 		y += delta + yperx;
 		}
-	oldpix = iwin->get_pixel8(x, y);	// Get pixel.
-	iwin->put_pixel8(xform[oldpix], x, y);
+	paint(iwin, xform);		// Save old pixel & paint new.
 	}
 
 /*
@@ -350,6 +363,28 @@ void Rain_effect::handle_event
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
 		gwin->remove_effect(this);
+	}
+
+/*
+ *	Paint rain.
+ */
+
+void Rain_effect::paint
+	(
+	Game_window *gwin
+	)
+	{
+#if 0	/* +++++Not good.  Need to store rel. to scroll tiles. */
+	if (gwin->is_main_actor_inside())
+		return;			// Inside.
+					// Get transform table.
+	Xform_palette xform = gwin->get_xform(8);//++++Experiment.
+	Image_window8 *win = gwin->get_win();
+	const int num_drops = sizeof(drops)/sizeof(drops[0]);
+	for (int i = 0; i < num_drops; i++)
+		drops[i].paint(win, xform);
+	gwin->set_painted();
+#endif
 	}
 
 /*

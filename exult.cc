@@ -74,6 +74,7 @@ static void Init();
 static int Play();
 static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl);
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
+int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
 
 /*
  *	A handy breakpoint.
@@ -483,7 +484,7 @@ inline void Set_mouse_and_speed
 	int dy = ay - (mousey >> scale), dx = (mousex >> scale) - ax;
 	Direction dir = Get_direction(dy, dx);
 	int dist = dy*dy + dx*dx;
-	if (dist < 48*48)
+	if (dist < 40*40)
 		{
 		if(gwin->in_combat())
 			mouse->set_short_combat_arrow(dir);
@@ -491,7 +492,7 @@ inline void Set_mouse_and_speed
 			mouse->set_short_arrow(dir);
 		avatar_speed = slow_speed;
 		}
-	else if (dist < 180*180)
+	else if (dist < 90*90)
 		{
 		if(gwin->in_combat())
 			mouse->set_medium_combat_arrow(dir);
@@ -538,8 +539,11 @@ static void Handle_event
 					//  when right button pressed.
 		if (event.button.button == 3 && 
 		    gwin->get_mode() == Game_window::normal)
+			{		// Try removing old queue entry.
+			gwin->get_tqueue()->remove(gwin->get_main_actor());
 			gwin->start_actor(event.button.x >> scale, 
 				event.button.y >> scale, avatar_speed);
+			}
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 3)
@@ -881,8 +885,15 @@ static void Handle_keystroke
 			{
 			if (gwin->write())
 				cout << "Save to 'gamedat' successful"<<endl;
-			break;
 			}
+		else
+			{
+			File_gump_object *fileio = new File_gump_object();
+			Modal_gump(fileio, Mouse::hand);
+			delete fileio;
+			}
+		break;
+	case SDLK_v:
 					// Show next shape.
 		current_frame = 0;
 		vga_file = gwin->get_shape_file_data(current_file);

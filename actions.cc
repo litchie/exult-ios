@@ -94,16 +94,19 @@ int Path_walking_actor_action::handle_event
 	Tile_coord tile;
 	if (blocked)
 		{
-		int new_delay = actor->step(blocked_tile, blocked_frame);
-		if (new_delay)		// Successful?
-			{
+cout << "Actor " << actor->get_name() << " blocked.  Retrying." << endl;
+		if (actor->step(blocked_tile, blocked_frame))
+			{		// Successful?
 			blocked = 0;
-			return new_delay;
+			return speed;
 			}
 					// Wait up to 1.6 secs.
 		return (blocked++ > max_blocked ? 0 
 					: 100 + blocked*(rand()%500));
 		}
+	speed = actor->get_frame_time();// Get time between frames.
+	if (!speed)
+		return 0;		// Not moving.
 	if (!path->GetNextStep(tile))
 		return (0);
 	Tile_coord cur = actor->get_abs_tile_coord();
@@ -111,9 +114,11 @@ int Path_walking_actor_action::handle_event
 	Frames_sequence *frames = actor->get_frames(newdir);
 					// Get frame (updates frame_index).
 	int frame = frames->get_next(frame_index);
-	int new_delay = actor->step(tile, frame);
-	if (new_delay || !max_blocked)
-		return (new_delay);	// Successful.
+	if (actor->step(tile, frame))	// Successful.
+		return speed;
+	if (!max_blocked ||		// No retries allowed?
+	    actor->is_dormant())	// Or actor off-screen?
+		return 0;
 	blocked = 1;
 	blocked_tile = tile;
 	blocked_frame = frame;
