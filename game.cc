@@ -348,7 +348,7 @@ bool wait_delay(int ms)
 	}
 	for(int i=0; i<loops; i++) {
 		if(SDL_PollEvent(&event)) {
-			if((event.type==SDL_KEYDOWN)||(event.type==SDL_MOUSEBUTTONDOWN))
+			if((event.type==SDL_KEYDOWN)||(event.type==SDL_MOUSEBUTTONUP))
 				return true;
 		}
 		SDL_Delay(delay);
