@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Segment_file::Segment_file
 	(
 	std::string nm			// Path to file.
-	) : num_segments(0), filename(nm)
+	) : filename(nm), num_segments(0)
 {
 	U7open(file, filename.c_str());
 	file.seekg(0x54);		// Get # of segments.

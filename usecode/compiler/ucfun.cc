@@ -42,8 +42,8 @@ Uc_function::Uc_function
 	(
 	Uc_function_symbol *p
 	) : top(0), proto(p), cur_scope(&top), num_parms(0),
-		num_locals(0), statement(0),
-		text_data(0), text_data_size(0)
+	    num_locals(0), text_data(0), text_data_size(0),
+	    statement(0)
 	{
 	char *nm = (char *) proto->get_name();
 	add_global_function_symbol(proto);// Add prototype to globals.
@@ -221,12 +221,12 @@ void Uc_function::gen
  */
 #define	USECODE_INTRINSIC_PTR(NAME)	__STRING(UI_##NAME)
 
-char *bg_intrinsic_table[] =
+const char *bg_intrinsic_table[] =
 	{
 #include "../bgintrinsics.h"
 	};
 
-char *si_intrinsic_table[] = 
+const char *si_intrinsic_table[] = 
 	{
 #include "../siintrinsics.h"
 	};
@@ -241,7 +241,7 @@ void Uc_function::set_intrinsics
 	)
 	{
 	int cnt;
-	char **table;
+	const char **table;
 	if (ty == bg)
 		{
 		table = bg_intrinsic_table;

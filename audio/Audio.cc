@@ -572,7 +572,7 @@ bool	Audio::start_speech(int num,bool wait)
 		return false;
 	char	*buf=0;
 	size_t	len;
-	char	*filename;
+	const char	*filename;
 	
 	if (Game::get_game_type() == SERPENT_ISLE)
 		filename = SISPEECH;

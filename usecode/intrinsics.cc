@@ -1177,7 +1177,7 @@ USECODE_INTRINSIC(armageddon)
 		if (npc && i != 26 && i != 23 && npc->get_shapenum() != 506 &&
 		    !npc->is_dead_npc())
 			{
-			char *text[] = {"Aiiiieee!", "Noooo!", "#!?*#%!"};
+			const char *text[] = {"Aiiiieee!", "Noooo!", "#!?*#%!"};
 			const int numtext = sizeof(text)/sizeof(text[0]);
 			Tile_coord loc = npc->get_abs_tile_coord();
 			if (screen.has_point(loc.tx, loc.ty))
