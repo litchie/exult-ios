@@ -20,10 +20,6 @@
 #  include <config.h>
 #endif
 
-#if __GNUG__ >= 2
-#  pragma implementation
-#endif
-
 #ifndef ALPHA_LINUX_CXX
 #  include <cassert>
 #endif

@@ -47,7 +47,6 @@ using std::FILE;
 using std::ifstream;
 using std::ofstream;
 using std::size_t;
-using std::snprintf;
 using std::strrchr;
 using std::strncpy;
 using std::strncat;

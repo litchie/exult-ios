@@ -44,7 +44,6 @@ using std::endl;
 using std::rand;
 using std::strlen;
 using std::toupper;
-using std::snprintf;
 
 SI_Game::SI_Game()
 	{

@@ -75,7 +75,6 @@ using std::string;
 using std::strlen;
 using std::srand;
 using std::vector;
-using std::snprintf;
 
 /*
  *	Create a chunk.

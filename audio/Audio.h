@@ -19,10 +19,6 @@
 #ifndef AUDIO_H
 #define AUDIO_H
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma interface
-#endif
-
 #include <vector>
 #include <SDL.h>
 #include <SDL_audio.h>

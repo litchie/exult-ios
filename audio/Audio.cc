@@ -22,10 +22,6 @@
 
 #ifndef PENTAGRAM // Exult only at this stage. 
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma implementation
-#endif
-
 
 #include <SDL_audio.h>
 #include <SDL_timer.h>
