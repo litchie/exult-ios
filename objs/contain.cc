@@ -676,11 +676,8 @@ void Container_game_object::write_ireg
 	DataSource *out
 	)
 	{
-	unsigned char buf[13];		// 13-byte entry + length-byte.
-	buf[0] = 12;
-	uint8 *ptr = &buf[1];	// To avoid confusion about offsets.
-	write_common_ireg(ptr);		// Fill in bytes 1-4.
-	ptr += 4;
+	unsigned char buf[20];		// 12-byte entry.
+	uint8 *ptr = write_common_ireg(12, buf);
 	Game_object *first = objects.get_first(); // Guessing: +++++
 	unsigned short tword = first ? first->get_prev()->get_shapenum() 
 									: 0;
@@ -700,7 +697,7 @@ void Container_game_object::write_ireg
 					// Flags:  B0=invis. B3=okay_to_take.
 	*ptr++ = get_flag((Obj_flags::invisible) != 0) +
 		 ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
-	out->write((char*)buf, sizeof(buf));
+	out->write((char*)buf, ptr - buf);
 	write_contents(out);		// Write what's contained within.
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	

@@ -461,8 +461,13 @@ void Actor::write
 
 	int old_shape = get_shapenum();	// Backup shape because we might change it
 	set_shape( get_shape_real() );	// Change the shape out non polymorph one
-	
-	write_common_ireg(buf4);
+	// ++++++In future, got to handle shapenum > 1023.
+	int shapenum = get_shapenum(), framenum = get_framenum();
+	buf4[0] = ((get_cx()%16) << 4) | get_tx();
+	buf4[1] = ((get_cy()%16) << 4) | get_ty();
+	buf4[2] = shapenum&0xff;
+	buf4[3] = ((shapenum>>8)&3) | (framenum<<2);
+
 	nfile->write(reinterpret_cast<char*>(buf4), sizeof(buf4));
 
 	set_shape( old_shape );		// Revert the shape to what it was

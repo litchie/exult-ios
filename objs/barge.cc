@@ -785,11 +785,8 @@ void Barge_object::write_ireg
 	DataSource *out
 	)
 	{
-	unsigned char buf[13];		// 13-byte entry + length-byte.
-	buf[0] = 12;
-	unsigned char *ptr = &buf[1];	// To avoid confusion about offsets.
-	write_common_ireg(ptr);		// Fill in bytes 1-4.
-	ptr += 4;
+	unsigned char buf[20];		// 13-byte entry + length-byte.
+	unsigned char *ptr = write_common_ireg(12, buf);
 					// Write size.
 	*ptr++ = xtiles;
 	*ptr++ = ytiles;
@@ -801,7 +798,7 @@ void Barge_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = 0;			// Data2.
 	*ptr++ = 0;			// 
-	out->write((char*)buf, sizeof(buf));
+	out->write((char*)buf, ptr - buf);
 					// Write permanent objects.
 	for (int i = 0; i < perm_count; i++)
 		{

@@ -1,3 +1,7 @@
+2004-08-27    <jeff@mini.nerble.net>
+
+	* gamemap.cc, objs/*:  Save/restore ireg. objs. with shape # >= 1024.
+
 2004-08-14 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/docs.xml,faq.xml: updated documentation and FAQ
 	* docs/xml/html.xsl: got rid of another pointer to our ML

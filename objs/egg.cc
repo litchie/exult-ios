@@ -895,11 +895,8 @@ void Egg_object::write_ireg
 	DataSource *out
 	)
 	{
-	unsigned char buf[13];		// 13-byte entry + length-byte.
-	buf[0] = 12;
-	uint8 *ptr = &buf[1];	// To avoid confusion about offsets.
-	write_common_ireg(ptr);		// Fill in bytes 1-4.
-	ptr += 4;
+	unsigned char buf[20];		// 12-byte entry.
+	uint8 *ptr = write_common_ireg(12, buf);
 	unsigned short tword = type&0xf;// Set up 'type' word.
 	tword |= ((criteria&7)<<4);
 	tword |= (((flags>>nocturnal)&1)<<7);
@@ -912,7 +909,7 @@ void Egg_object::write_ireg
 	Write2(ptr, data1);
 	*ptr++ = (get_lift()&15)<<4;
 	Write2(ptr, data2);
-	out->write((char*)buf, sizeof(buf));
+	out->write((char*)buf, ptr - buf);
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
