@@ -584,7 +584,7 @@ int Main_actor::step
 			gwin->paint();	// Repaint all.
 		}
 	else if (old_lift != new_lift &&
-		 gwin->set_above_main_actor(nlist->is_roof(), new_lift))
+		 gwin->set_above_main_actor(new_lift))
 			gwin->paint();
 	return (frame_time);		// Add back to queue for next time.
 	}
