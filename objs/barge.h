@@ -34,12 +34,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Barge_object : public Container_game_object, public Time_sensitive
 	{
-	Game_object_vector objects;			// All objects in/on barge.
+	Game_object_vector objects;	// All objects in/on barge.
 	int perm_count;			// Counts permanent parts of barge,
 					//   which proceed those placed on it.
 	unsigned char xtiles, ytiles;	// Tiles covered (when vertical).
 	unsigned char dir;		// Direction: 0=N, 1=E, 2=S, 3=W.
-	unsigned char complete;		// Flag:  all members have been read.
+	bool complete;			// Flag:  all members have been read.
+	bool gathered;			// Items on barge have been gathered.
 	char boat;			// 1 if a boat, 0 if not; -1=untested.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   not moving.
@@ -48,7 +49,6 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	Game_object *get_object(int i)
 		{ return objects[i]; }
 	void swap_dims();
-	Rectangle get_tile_footprint();
 	void set_center();
 	int okay_to_rotate(Tile_coord pos);
 	void add_dirty(Game_window *gwin);
@@ -62,8 +62,10 @@ public:
 							shapex, shapey, lft),
 			perm_count(0),
 			xtiles(xt), ytiles(yt), dir(d),
-			complete(0), boat(-1), frame_time(0), path(0)
+			complete(false), gathered(false),
+			boat(-1), frame_time(0), path(0)
 		{  }
+	Rectangle get_tile_footprint();
 	bool is_moving()
 		{ return frame_time > 0; }
 	int get_xtiles()		// Dims. in tiles.
@@ -82,6 +84,8 @@ public:
 	void turn_around();
 	void stop()			// Stop moving.
 		{ frame_time = 0; }
+	void done()			// No longer being operated.
+		{ gathered = false; }	// Clear for next time.
 	int okay_to_land();		// See if clear to land.
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);

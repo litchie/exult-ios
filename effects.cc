@@ -103,7 +103,9 @@ void Sprites_effect::handle_event
 	long udata
 	)
 	{
-	const int delay = 50;		// Delay between frames.
+//	const int delay = 50;		
+	const int delay = c_std_delay;	// Delay between frames.  Needs to
+					//   match usecode animations.
 	Game_window *gwin = Game_window::get_game_window();
 	if (frame_num == frames)	// At end?
 		{			// Remove & delete this.

@@ -592,7 +592,7 @@ USECODE_INTRINSIC(update_last_created)
 		cout << " { Intrinsic 0x26:  "; arr.print(cout); cout << endl << "} ";
 		}
 #endif
-//	gwin->paint_dirty();	Problems in conversations.
+//	gwin->paint_dirty();	// Problems in conversations.
 //	gwin->show();		// ??
 	Usecode_value u(1);// ??
 	return(u);
@@ -1513,10 +1513,31 @@ USECODE_INTRINSIC(get_item_frame_rot)
 	return Usecode_value(obj ? obj->get_framenum() : 0);
 }
 
-USECODE_INTRINSIC(okay_to_fly)
+USECODE_INTRINSIC(on_barge)
 {
-	// Only used once, in usecode for magic-carpet.
-	return Usecode_value(1);
+	// Only used once for BG, in usecode for magic-carpet.
+	// For SI, used for turtle.
+	// on_barge()
+	Barge_object *barge = Get_barge(gwin->get_main_actor());
+	if (barge)
+		{			// See if party is on barge.
+		Rectangle foot = barge->get_tile_footprint();
+		Actor *party[9];
+		int cnt = gwin->get_party(party, 1);
+		for (int i = 0; i < cnt; i++)
+			{
+			Actor *act = party[i];
+			Tile_coord t = act->get_abs_tile_coord();
+			if (!foot.has_point(t.tx, t.ty))
+				return Usecode_value(0);
+			}
+					// Force 'gather()' for turtle.
+		if (Game::get_game_type() == SERPENT_ISLE)
+			barge->done();
+		return Usecode_value(1);
+		} 
+	return Usecode_value(0);
+//	return Usecode_value(1);
 }
 
 USECODE_INTRINSIC(get_container)

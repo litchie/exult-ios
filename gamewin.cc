@@ -397,6 +397,8 @@ void Game_window::set_moving_barge
 	{
 	if (b && b != moving_barge)
 		b->gather();		// Gather up all objects on it.
+	else if (!b && moving_barge)
+		moving_barge->done();	// No longer 'barging'.
 	moving_barge = b;
 	}
 

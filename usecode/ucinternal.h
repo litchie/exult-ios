@@ -275,7 +275,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(get_speech_track);
 	USECODE_INTRINSIC_DECL(flash_mouse);
 	USECODE_INTRINSIC_DECL(get_item_frame_rot);
-	USECODE_INTRINSIC_DECL(okay_to_fly);
+	USECODE_INTRINSIC_DECL(on_barge);
 	USECODE_INTRINSIC_DECL(get_container);
 	USECODE_INTRINSIC_DECL(remove_item);
 	USECODE_INTRINSIC_DECL(reduce_health);

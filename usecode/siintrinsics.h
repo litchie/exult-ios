@@ -171,7 +171,7 @@
 	USECODE_INTRINSIC_PTR(flash_mouse),			// 0x7f
 	USECODE_INTRINSIC_PTR(get_item_frame),			// 0x80 Guessing++++
 	USECODE_INTRINSIC_PTR(set_item_frame),			// 0x81 Guessing++++
-	USECODE_INTRINSIC_PTR(okay_to_fly),			// 0x82
+	USECODE_INTRINSIC_PTR(on_barge),			// 0x82 Guess
 	USECODE_INTRINSIC_PTR(get_container),			// 0x83
 
 
