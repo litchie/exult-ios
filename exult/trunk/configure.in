@@ -137,10 +137,7 @@ fi
 if test "$FREETYPE_DIR" != ""; then
 	AC_MSG_RESULT($FREETYPE_DIR)
 	AC_DEFINE(HAVE_FREETYPE)
-else
-	echo "No freetype == No text. No text == No game."
-	echo "Sorry..."
-	exit 1
+	FREETYPE_LIBS="-lfreetype"
 fi
 
 
