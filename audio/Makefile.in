@@ -60,10 +60,9 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
-AUDIO_INCLUDES = @AUDIO_INCLUDES@
-AUDIO_LIBRARY = @AUDIO_LIBRARY@
 CC = @CC@
 CPP = @CPP@
+CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 DEBUG_FLAGS = @DEBUG_FLAGS@
 DLLTOOL = @DLLTOOL@
@@ -87,25 +86,43 @@ RELNUM = @RELNUM@
 SDL_INCLUDES = @SDL_INCLUDES@
 SDL_LIBS = @SDL_LIBS@
 SYSLIBS = @SYSLIBS@
-TOP_LEVEL_SUBDIRS = @TOP_LEVEL_SUBDIRS@
 VERSION = @VERSION@
 WINDOWING_SYSTEM = @WINDOWING_SYSTEM@
+x_libraries = @x_libraries@
 
-AUTOMAKE_OPTIONS = foreign
-INCLUDES =  $(SDL_INCLUDES) $(KMID_INCLUDES) -I../conf -I.
-CXXFLAGS =  $(INCDIRS) -Wall  $(PEDANTIC) $(DEBUG_FLAGS) $(WINDOWING_SYSTEM)
+INCLUDES = -I.. $(SDL_INCLUDES) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -I../files -I../conf
 
 SUBDIRS = midi_drivers
 
-#LIBS +=  -L/usr/X11R6/lib/ -lc -lstdc++ -lgcc -lm -lXi -lXext -lX11 
+lib_LTLIBRARIES = libaudio.la
 
-OFILES = Mixer.o Midi.o Audio.o SDL_mapping.o
+libaudio_la_SOURCES =  	Audio.cc		Audio.h			Midi.cc			Midi.h			Mixer.cc		Mixer.h			SDL_mapping.cc		SDL_mapping.h
 
-SOURCES = Audio.cc Audio.h Midi.cc Midi.h 		Mixer.cc Mixer.h SDL_mapping.cc SDL_mapping.h 		common.h test.cc 		Flex.cc Flex.h IFF.cc IFF.h Table.cc Table.h
+
+EXTRA_DIST =  	README
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../autoconfig.h
 CONFIG_CLEAN_FILES = 
+LTLIBRARIES =  $(lib_LTLIBRARIES)
+
+
+DEFS = @DEFS@ -I. -I$(srcdir) -I..
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+libaudio_la_LDFLAGS = 
+libaudio_la_LIBADD = 
+libaudio_la_OBJECTS =  Audio.lo Midi.lo Mixer.lo SDL_mapping.lo
+CXXFLAGS = @CXXFLAGS@
+CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
+CXXLD = $(CXX)
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $@
+CFLAGS = @CFLAGS@
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 DIST_COMMON =  README Makefile.am Makefile.in
 
 
@@ -113,15 +130,85 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
+DEP_FILES =  .deps/Audio.P .deps/Midi.P .deps/Mixer.P \
+.deps/SDL_mapping.P
+SOURCES = $(libaudio_la_SOURCES)
+OBJECTS = $(libaudio_la_OBJECTS)
+
 all: all-redirect
 .SUFFIXES:
+.SUFFIXES: .S .c .cc .lo .o .s
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign audio/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --gnu audio/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
+
+mostlyclean-libLTLIBRARIES:
+
+clean-libLTLIBRARIES:
+	-test -z "$(lib_LTLIBRARIES)" || rm -f $(lib_LTLIBRARIES)
+
+distclean-libLTLIBRARIES:
+
+maintainer-clean-libLTLIBRARIES:
+
+install-libLTLIBRARIES: $(lib_LTLIBRARIES)
+	@$(NORMAL_INSTALL)
+	$(mkinstalldirs) $(DESTDIR)$(libdir)
+	@list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  if test -f $$p; then \
+	    echo "$(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p"; \
+	    $(LIBTOOL)  --mode=install $(INSTALL) $$p $(DESTDIR)$(libdir)/$$p; \
+	  else :; fi; \
+	done
+
+uninstall-libLTLIBRARIES:
+	@$(NORMAL_UNINSTALL)
+	list='$(lib_LTLIBRARIES)'; for p in $$list; do \
+	  $(LIBTOOL)  --mode=uninstall rm -f $(DESTDIR)$(libdir)/$$p; \
+	done
+
+.s.o:
+	$(COMPILE) -c $<
+
+.S.o:
+	$(COMPILE) -c $<
+
+mostlyclean-compile:
+	-rm -f *.o core *.core
+
+clean-compile:
+
+distclean-compile:
+	-rm -f *.tab.c
+
+maintainer-clean-compile:
+
+.s.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+.S.lo:
+	$(LIBTOOL) --mode=compile $(COMPILE) -c $<
+
+mostlyclean-libtool:
+	-rm -f *.lo
+
+clean-libtool:
+	-rm -rf .libs _libs
+
+distclean-libtool:
+
+maintainer-clean-libtool:
+
+libaudio.la: $(libaudio_la_OBJECTS) $(libaudio_la_DEPENDENCIES)
+	$(CXXLINK) -rpath $(libdir) $(libaudio_la_LDFLAGS) $(libaudio_la_OBJECTS) $(libaudio_la_LIBADD) $(LIBS)
+.cc.o:
+	$(CXXCOMPILE) -c $<
+.cc.lo:
+	$(LTCXXCOMPILE) -c $<
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -221,7 +308,7 @@ distdir: $(DISTFILES)
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign audio/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --gnu audio/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -242,6 +329,57 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
+
+DEPS_MAGIC := $(shell mkdir .deps > /dev/null 2>&1 || :)
+
+-include $(DEP_FILES)
+
+mostlyclean-depend:
+
+clean-depend:
+
+distclean-depend:
+	-rm -rf .deps
+
+maintainer-clean-depend:
+
+%.o: %.c
+	@echo '$(COMPILE) -c $<'; \
+	$(COMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.c
+	@echo '$(LTCOMPILE) -c $<'; \
+	$(LTCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
+
+%.o: %.cc
+	@echo '$(CXXCOMPILE) -c $<'; \
+	$(CXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-cp .deps/$(*F).pp .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm .deps/$(*F).pp
+
+%.lo: %.cc
+	@echo '$(LTCXXCOMPILE) -c $<'; \
+	$(LTCXXCOMPILE) -Wp,-MD,.deps/$(*F).pp -c $<
+	@-sed -e 's/^\([^:]*\)\.o[ 	]*:/\1.lo \1.o :/' \
+	  < .deps/$(*F).pp > .deps/$(*F).P; \
+	tr ' ' '\012' < .deps/$(*F).pp \
+	  | sed -e 's/^\\$$//' -e '/^$$/ d' -e '/:$$/ d' -e 's/$$/ :/' \
+	    >> .deps/$(*F).P; \
+	rm -f .deps/$(*F).pp
 info-am:
 info: info-recursive
 dvi-am:
@@ -250,7 +388,7 @@ check-am: all-am
 check: check-recursive
 installcheck-am:
 installcheck: installcheck-recursive
-install-exec-am:
+install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-recursive
 
 install-data-am:
@@ -259,14 +397,15 @@ install-data: install-data-recursive
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am:
+uninstall-am: uninstall-libLTLIBRARIES
 uninstall: uninstall-recursive
-all-am: Makefile all-local
+all-am: Makefile $(LTLIBRARIES)
 all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
+	$(mkinstalldirs)  $(DESTDIR)$(libdir)
 
 
 mostlyclean-generic:
@@ -278,83 +417,53 @@ distclean-generic:
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
 
 maintainer-clean-generic:
-mostlyclean-am:  mostlyclean-tags mostlyclean-generic
+mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
+		mostlyclean-libtool mostlyclean-tags mostlyclean-depend \
+		mostlyclean-generic
 
 mostlyclean: mostlyclean-recursive
 
-clean-am:  clean-tags clean-generic mostlyclean-am
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
+		clean-depend clean-generic mostlyclean-am
 
 clean: clean-recursive
 
-distclean-am:  distclean-tags distclean-generic clean-am
+distclean-am:  distclean-libLTLIBRARIES distclean-compile \
+		distclean-libtool distclean-tags distclean-depend \
+		distclean-generic clean-am
 	-rm -f libtool
 
 distclean: distclean-recursive
 
-maintainer-clean-am:  maintainer-clean-tags maintainer-clean-generic \
-		distclean-am
+maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
+		maintainer-clean-compile maintainer-clean-libtool \
+		maintainer-clean-tags maintainer-clean-depend \
+		maintainer-clean-generic distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
 maintainer-clean: maintainer-clean-recursive
 
-.PHONY: install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
+.PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
+clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
+uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
+distclean-compile clean-compile maintainer-clean-compile \
+mostlyclean-libtool distclean-libtool clean-libtool \
+maintainer-clean-libtool install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-local all-redirect all-am all installdirs-am \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+distclean-tags clean-tags maintainer-clean-tags distdir \
+mostlyclean-depend distclean-depend clean-depend \
+maintainer-clean-depend info-am info dvi-am dvi check check-am \
+installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs-am installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
-
-all-local:	libaudio.a 
-
-libaudio.a:	$(OFILES)
-	ar rs libaudio.a $(OFILES) midi_drivers/*.o
-
-u7audiotool:	libaudio.a u7audiotool.o 
-	g++ -o u7audiotool u7audiotool.o -L../conf -L. -laudio -lconf  $(KMID_LIBS) $(SDL_LIBS)  -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -L/usr/X11R6/lib
-
-clean:
-	rm -f libaudio.a core $(OFILES)
-
-tar:
-	rm -rf /tmp/audio
-	mkdir /tmp/audio
-	cp Audio.cc Audio.h Flex.cc Flex.h Midi.cc Midi.h Mixer.cc Mixer.h SDL_mapping.h Makefile /tmp/audio
-	cd /tmp && tar czvpf exult_audio_lib.tar.gz audio
-
-%.o : %.cc
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
-
-rebuild_master_dependencies:
-	makedepend -f Makefile.am -Y $(CXXFLAGS) -I. -I.. -I../conf -I../audio -I../pathfinder -I../flic - -- *.cc
-	cd midi_drivers && make rebuild_master_dependencies
-
-# DO NOT DELETE
-
-Audio.o: Audio.h ../autoconfig.h SDL_mapping.h Mixer.h Midi.h ../fnames.h
-Audio.o: ../files/U7file.h ../conf/Configuration.h ../conf/XMLEntity.h
-Flex.o: Flex.h ../autoconfig.h common.h
-IFF.o: IFF.h ../autoconfig.h common.h
-Midi.o: Midi.h SDL_mapping.h Mixer.h ../fnames.h ../files/U7file.h
-Midi.o: ../conf/Configuration.h ../conf/XMLEntity.h
-Midi.o: midi_drivers/Timidity_binary.h ../autoconfig.h Flex.h common.h
-Midi.o: Table.h midi_drivers/KMIDI.h midi_drivers/forked_player.h
-Midi.o: midi_drivers/win_MCI.h
-Mixer.o: Mixer.h SDL_mapping.h Audio.h ../autoconfig.h Midi.h
-SDL_mapping.o: SDL_mapping.h
-Table.o: Table.h common.h
-test.o: Audio.h ../autoconfig.h SDL_mapping.h Mixer.h Midi.h
-test.o: ../conf/Configuration.h ../conf/XMLEntity.h Table.h common.h
-u7audiotool.o: Audio.h ../autoconfig.h SDL_mapping.h Mixer.h Midi.h
-u7audiotool.o: ../conf/Configuration.h ../conf/XMLEntity.h Table.h common.h
-u7audiotool.o: ../fnames.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
