@@ -411,9 +411,10 @@ void Text_object::handle_event
 			width + 2*tilesize, height + 2*tilesize);
 					// Intersect with screen.
 	rect = gwin->clip_to_win(rect);
+	gwin->remove_text(this);	// Remove & delete this.
 	if (rect.w > 0 && rect.h > 0)	// Watch for negatives.
 		gwin->paint(rect.x, rect.y, rect.w, rect.h);
-	gwin->remove_text(this);	// Remove & delete this.
+
 	}
 
 #if 0

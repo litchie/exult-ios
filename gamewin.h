@@ -297,6 +297,7 @@ public:
 	void add_text(char *msg, int x, int y);
 					// Remove text item & delete it.
 	void remove_text(Text_object *txt);
+	void remove_all_text();
 					// Handle a double-click in window.
 	void double_clicked(Window xwin, int x, int y);
 					// Show a "face" on the screen.

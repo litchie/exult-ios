@@ -21,8 +21,8 @@ void Npc_proximity_handler::add
 	int additional_secs		// More secs. to wait.
 	)
 	{
-					// Wait between 5 & 15 secs.
-	int msecs = (rand() % 10000) + 5000;
+					// Wait between 3 & 18 secs.
+	int msecs = (rand() % 15000) + 3000;
 	timeval newtime = Add_usecs(curtime, msecs*1000);
 	newtime.tv_sec += additional_secs;
 	gwin->get_tqueue()->add(newtime, this, (long) npc);
@@ -51,5 +51,5 @@ void Npc_proximity_handler::handle_event
 		}
 	gwin->get_usecode()->call_usecode(npc->get_usecode(), npc,
 					Usecode_machine::npc_proximity);
-	add(curtime, npc, 5);		// Add back for next time.
+	add(curtime, npc, 3);		// Add back for next time.
 	}
