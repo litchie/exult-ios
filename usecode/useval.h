@@ -75,7 +75,8 @@ public:
 	Usecode_value(Game_object *ptr) : type(pointer_type), undefined(false)
 		{ value.ptr = ptr; }
 	~Usecode_value();
-	Usecode_value &operator=(const Usecode_value& v2);
+	Usecode_value& operator=(const Usecode_value& v2);
+	Usecode_value& operator=(const char *str);
 					// Copy ctor.
 	inline Usecode_value(const Usecode_value& v2)
 		: type(int_type)
@@ -129,6 +130,11 @@ public:
 //		assert(type == array_type);//+++++Testing.
 		return (type == array_type) ? value.array[i] : zval;
 		}
+	inline Usecode_value& operator[](int i)
+		{
+		assert(type == array_type);
+		return value.array[i];
+		}
 					// Get array elem. 0, or this.
 	inline Usecode_value& get_elem0()
 		{ return (type == array_type) ? value.array[0] : *this; }
@@ -157,6 +163,7 @@ public:
 	int find_elem(const Usecode_value& val);
 					// Concat. to end of this array.
 	Usecode_value& concat(Usecode_value& val2);
+	void append(int *vals, int cnt);// Append integer values.
 					// Add value(s) to an array.
 	int add_values(int index, Usecode_value& val2);
 	void print(std::ostream& out);	// Print in ASCII.
