@@ -62,8 +62,8 @@ const int c_any_framenum = -359;
 
 // Debug
 #if DEBUG
-#  define COUT(x)		cout << x << endl; cout.flush()
-#  define CERR(x)		cerr << x << endl; cerr.flush()
+#  define COUT(x)		std::cout << x << std::endl; std::cout.flush()
+#  define CERR(x)		std::cerr << x << std::endl; std::cerr.flush()
 #else
 #  define COUT(x)		
 #  define CERR(x)		

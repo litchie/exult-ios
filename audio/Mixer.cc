@@ -169,10 +169,6 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 	// * more!
 #endif
 
-#if 0 && !defined(MACOS)
-	cout << "fill_audio_func: " << len << endl;
-	// cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
-#endif
 	if( len > buffer_length ) {
 #if defined(DEBUG) && !defined(MACOS)
 		cerr << "Audio callback length too big! (" << len << ">" 
@@ -244,18 +240,6 @@ AudioID	Mixer::play(uint8 *sound_data,uint32 len, int volume, int dir,
 	return id;
 }
 
-#if 0
-void	Mixer::set_auxilliary_audio(int fh)
-{
-	auxilliary_audio=fh;
-#if DEBUG
-	cout << "Auxilliary audio stream: " << auxilliary_audio << endl;
-#endif
-	SDL::PauseAudio(0);
-	SDL::UnlockAudio();
-}
-#endif
-
 ProducerConsumerBuf	*Mixer::Create_Audio_Stream(uint32 type)
 {
 	ProducerConsumerBuf *buf = 0;
@@ -265,14 +249,11 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(uint32 type)
 	for (i = 0; i < MAX_AUDIO_STREAMS && streams[i]->is_active(); i++)
 		;
 	if (i < MAX_AUDIO_STREAMS)
-		{
+	{
 		buf = streams[i];
 		buf->init(type);
 		SDL::PauseAudio(0);	// Enable filling.
-#ifdef DEBUG
-		cerr << "Create_Audio_Stream:  " << i << endl;
-#endif
-		}
+	}
 	stream_unlock();
 	SDL::UnlockAudio();
 	return buf;
