@@ -1,3 +1,7 @@
+2000-12-23  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* imagewin/savepcx.cc, imagewin.cc/h: add .pcx saving functionality
+	* exult.cc: ctrl-alt-s takes a screenshot to exult%03i.pcx
+
 2000-12-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc (Actor): Make 'follow()' more sensitive to NPC's being

@@ -40,6 +40,8 @@ Boston, MA  02111-1307, USA.
 #  include "../exult_types.h"
 #endif
 
+bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst);
+
 using std::cout;
 using std::endl;
 using std::exit;
@@ -270,3 +272,12 @@ void Image_window::toggle_fullscreen() {
 		}
 }
 
+bool Image_window::screenshot(SDL_RWops *dst)
+{
+	if (!surface) return false;
+	if (scaled_surface) {
+		return SavePCX_RW(scaled_surface, dst, true);
+	} else {
+		return SavePCX_RW(surface, dst, true);
+	}
+}
