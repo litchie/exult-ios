@@ -82,7 +82,6 @@ int main
 		{
 		Uc_function *fun = *it;
 		fun->gen(out);		// Generate function.
-		delete fun;		// Done with it.
 		}
 	return Uc_location::get_num_errors();
 	}

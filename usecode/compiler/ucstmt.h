@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 class Uc_expression;
+class Uc_call_expression;
 class Uc_function;
 
 /*
@@ -142,6 +143,19 @@ class Uc_message_statement : public Uc_statement
 	Uc_expression *msg;
 public:
 	Uc_message_statement(Uc_expression *m) : msg(m) {  }
+					// Generate code.
+	virtual void gen(ostream& out, Uc_function *fun);
+	};
+
+/*
+ *	Call a function/intrinsic.
+ */
+class Uc_call_statement : public Uc_statement
+	{
+	Uc_call_expression *function_call;
+public:
+	Uc_call_statement(Uc_call_expression *f);
+	~Uc_call_statement();
 					// Generate code.
 	virtual void gen(ostream& out, Uc_function *fun);
 	};

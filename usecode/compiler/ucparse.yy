@@ -48,6 +48,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 	{
 	class Uc_var_symbol *var;
 	class Uc_expression *expr;
+	class Uc_call_expression *funcall;
 	class Uc_function_symbol *funsym;
 	class Uc_statement *stmt;
 	class vector<char *> *strvec;
@@ -88,15 +89,16 @@ static Uc_function *function = 0;	// Current function being parsed.
 /*
  *	Production types:
  */
-%type <expr> expression primary function_call
+%type <expr> expression primary
 %type <intval> opt_int
 %type <var> declared_var
 %type <funsym> function_proto
 %type <strvec> identifier_list opt_identifier_list
 %type <stmt> statement assignment_statement if_statement while_statement
-%type <stmt> statement_block return_statement
+%type <stmt> statement_block return_statement function_call_statement
 %type <block> statement_list
 %type <exprlist> opt_expression_list expression_list
+%type <funcall> function_call
 
 %%
 
@@ -159,7 +161,6 @@ statement:
 	| array_loop_statement
 		{ $$ = 0; /* ++++++++ */ }
 	| function_call_statement
-		{ $$ = 0; /* ++++++++ */ }
 	| return_statement
 	| statement_block
 	| SAY ';'
@@ -206,7 +207,7 @@ array_loop_statement:
 
 function_call_statement:
 	function_call ';'
-		{  }
+		{ $$ = new Uc_call_statement($1);  }
 	;
 
 return_statement:
@@ -282,6 +283,7 @@ primary:
 	| declared_var '[' expression ']'
 		{ $$ = new Uc_arrayelem_expression($1, $3); }
 	| function_call
+		{ $$ = $1; }
 	| UCTRUE
 		{ $$ = new Uc_bool_expression(true); }
 	| UCFALSE
@@ -306,7 +308,7 @@ function_call:
 			$$ = 0;
 			}
 		else
-			$$ = new Uc_call_expression(sym, $3);
+			$$ = new Uc_call_expression(sym, $3, function);
 		}
 	;
 

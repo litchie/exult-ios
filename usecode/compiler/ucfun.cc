@@ -28,19 +28,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucstmt.h"
 #include "utils.h"
 
-Uc_scope Uc_function::intrinsics(0);	// Stores intrinic symbols.
+Uc_scope Uc_function::globals(0);	// Stores intrinic symbols.
 
 /*
- *	Create function.
+ *	Create function, and add to global symbol table.
  */
 
 Uc_function::Uc_function
 	(
 	Uc_function_symbol *p
 	) : top(0), proto(p), cur_scope(&top), num_parms(0),
-		num_locals(0), num_links(0), statement(0),
+		num_locals(0), statement(0),
 		text_data(0), text_data_size(0)
 	{
+	char *nm = (char *) proto->get_name();
+	if (!globals.search(nm))		// Add prototype to globals.
+		globals.add(proto);
+	else
+		{
+		char buf[100];
+		sprintf(buf, "Name '%s' already defined", nm);
+		Uc_location::yyerror(buf);
+		}
 	const vector<char *>& parms = proto->get_parms();
 	for (vector<char *>::const_iterator it = parms.begin();
 				it != parms.end(); it++)
@@ -137,6 +146,26 @@ int Uc_function::add_string
 	}
 
 /*
+ *	Lookup/add a link to an external function.
+ *
+ *	Output:	Link offset.
+ */
+
+int Uc_function::link
+	(
+	Uc_function_symbol *fun
+	)
+	{
+	for (vector<Uc_function_symbol *>::const_iterator it = links.begin();
+						it != links.end(); it++)
+		if (*it == fun)		// Found it?  Return offset.
+			return (it - links.begin());
+	int offset = links.size();	// Going to add it.
+	links.push_back(fun);
+	return offset;
+	}
+
+/*
  *	Generate Usecode.
  */
 
@@ -151,6 +180,7 @@ void Uc_function::gen
 	if (statement)
 		statement->gen(code, this);
 	int codelen = code.pcount();	// Get its length.
+	int num_links = links.size();
 					// Total: text_data_size + data + 
 					//   #args + #locals + #links + links +
 					//   codelen.
@@ -160,7 +190,11 @@ void Uc_function::gen
 	out.write(text_data, text_data_size);
 	Write2(out, num_parms);		// Counts.
 	Write2(out, num_locals);
-	Write2(out, 0);			// ++++Num_links.
+	Write2(out, num_links);
+					// Write external links.
+	for (vector<Uc_function_symbol *>::const_iterator it = links.begin();
+						it != links.end(); it++)
+		Write2(out, (*it)->get_usecode_num());
 	char *ucstr = code.str();	// Finally, the code itself.
 	out.write(ucstr, codelen);
 	delete ucstr;
@@ -214,9 +248,9 @@ void Uc_function::set_intrinsics
 	for (int i = 0; i < cnt; i++)
 		{
 		char *nm = table[i];
-		if (!intrinsics.search(nm))
+		if (!globals.search(nm))
 					// ++++Later, get num parms.
-			intrinsics.add(new Uc_intrinsic_symbol(nm, i));
+			globals.add(new Uc_intrinsic_symbol(nm, i));
 		}
 	}
 
