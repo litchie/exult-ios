@@ -246,6 +246,9 @@ int exult_main(void)
 			{
 				// We've tried them all...
 				cerr << "Could not find 'exult.flx' anywhere." << endl;	
+				cerr << "Please make sure Exult is correctly installed," << endl;
+				cerr << "and the Exult data path is specified in the configuration file." << endl;
+				cerr << "(See the README file for more information)" << endl;
 				exit(-1);
 			}
 		}

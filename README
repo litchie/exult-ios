@@ -8,6 +8,7 @@ Windows, BeOS and MacOS.  It is released under the GNU General Public
 License, and source code is available.
 
 See the "NEWS" and "ChangeLog" files for the latest changes.
+Also, there are specific README files for several platforms. (README.platform)
 
 IMPORTANT: Make sure you have a valid configuration file (see below).
 Run "exult" on a clean installation of Ultima7; "exult" should either be
