@@ -1,0 +1,10 @@
+*~
+.libs
+*.o
+*.flx
+Makefile
+Makefile.in
+.deps
+exult_flx.h
+exult_bg_flx.h
+exult_si_flx.h

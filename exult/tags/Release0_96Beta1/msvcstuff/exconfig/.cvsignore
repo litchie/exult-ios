@@ -1,0 +1,17 @@
+*~
+.libs
+*.o
+*.flx
+Makefile
+Makefile.in
+.deps
+*.aps
+*.ncb
+*.opt
+*.dll
+*.exp
+*.pdb
+*.bsc
+Debug
+Release
+exconfig.lib

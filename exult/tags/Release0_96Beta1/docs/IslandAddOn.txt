@@ -1,0 +1,56 @@
+
+Music:
+Bear in mind that we have permission to use the MIDIs from 
+Age of the Dragon, so if we need additional music... (Nadir)
+
+characters ideas:
+-Jeff: a healer (Dr.Code) - to speak to him you have to shout 3xUSECODE
+-Colourless: an invisible man
+-Willem: a Paladin ("Arthuris")
+-Dancer: a dancing monk
+-Nadir: As Nadir, I could be an astronomer...
+-Kirben: rather be animal
+-Exultbot: ExultDOG ?
+-Drax: I know, i could be a jester that whenever you talk to babbles on about
+ BSD!
+-Dominik: another monk/scribe (Dominus)
+-some  artists (the artists who did the BG-paperdoll art)
+
+-An evil Bill Gates character
+-"invincible" Penguins?
+
+-All  the inhabitants could have some kind of real-life-portraits, like
+ Origin  did  in SI.
+
+
+
+The "SourceForge of Virtue" addon?
+
+Dominus:
+construct some kind of new island in BG (I´d say east or west of
+Trinsic) with a whole town dedicated to the contributers of Exult.
+Maybe a tame Dragon who is in a flame  war  with  another dragon 
+(hommage to the Ultima Dragons).
+Some kind of plot and as a reward for the quest there you get the keyring.
+
+
+Dancer:
+I can see it now...a whole new land founded on the three principles: 
+speed, thrift, design.
+
+How would these combine into virtues?
+
+S = commitment
+T = free software
+D = stability
+S+T = Component Orientation
+S+D = Object Orientation
+T+D = Umm.. the Silver Serpent (Python)
+S+T+D = ?? I dunno...Motorola, or the internet or somesuch, I guess.
+
+The opposite would be Microsoft, obviously.
+
+another item could be added:
+the special item called the "the secret decoder ring", you will only get it if you have Tseramed in your party once you get to sourceforge island.
+He will say something like:  "Avatar, I´ve been to this island before and stole that ring from the evil gods"
+Properties of that ring: perm read flag and/or  identify things like potions or weapon values
