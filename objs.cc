@@ -35,6 +35,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include <string.h>
 
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::rand;
+using std::ostream;
+using std::string;
+
 					// Offset to each neighbor, dir=0-7.
 short Tile_coord::neighbors[16] = {0,-1, 1,-1, 1,0, 1,1, 0,1,
 							-1,1, -1,0, -1,-1 };

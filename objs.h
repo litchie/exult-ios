@@ -253,7 +253,7 @@ public:
 					// Return NPC schedule.
 	virtual int get_schedule_type()	const
 		{ return 11; }		// Loiter.
-	virtual string get_name() const;
+	virtual std::string get_name() const;
 					// Create a copy.
 	virtual Game_object *clone() const
 		{ return new Game_object(*this); }
@@ -342,7 +342,7 @@ public:
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
 					// Write out to IREG file.
-	virtual void write_ireg(ostream& out)
+	virtual void write_ireg(std::ostream& out)
 		{  }
 	virtual void elements_read()	// Called when all member items read.
 		{  }
@@ -488,7 +488,7 @@ public:
 		return 0;
 		}
 					// Write out to IREG file.
-	virtual void write_ireg(ostream& out);
+	virtual void write_ireg(std::ostream& out);
 	int	lowlift;
 	int highshape;
 	virtual int get_high_shape() const { return highshape; };
@@ -515,7 +515,7 @@ public:
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Write out to IREG file.
-	virtual void write_ireg(ostream& out);
+	virtual void write_ireg(std::ostream& out);
 	};
 
 /*
@@ -584,9 +584,9 @@ public:
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
 					// Write out to IREG file.
-	virtual void write_ireg(ostream& out);
+	virtual void write_ireg(std::ostream& out);
 					// Write contents in IREG format.
-	void write_contents(ostream& out);
+	void write_contents(std::ostream& out);
 	};
 
 /*

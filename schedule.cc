@@ -35,6 +35,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "paths.h"
 #include "usecode.h"
 
+using std::cout;
+using std::endl;
+using std::rand;
+
 /*
  *	Set up an action to get an actor to a location (via pathfinding), and
  *	then execute another action when he gets there.

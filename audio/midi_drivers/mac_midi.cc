@@ -44,6 +44,7 @@ Mac_QT_midi::~Mac_QT_midi(void)
 
 bool	Mac_QT_midi::is_playing(void)
 {
+	return	true;
 }
 
 

@@ -23,6 +23,9 @@
 #include "databuf.h"
 #include "font.h"
 #include "txtscroll.h"
+#include <ctype.h>
+#include <string.h>
+
 
 BG_Game::BG_Game()
 	{

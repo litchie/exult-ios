@@ -24,13 +24,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <iostream>
-#ifdef MACOS
-  #include <hashset.h>
-#else
-  #include <hash_set>
-#endif
+#include <hash_set>
 #include "PathFinder.h"
 #include "../objs.h"
+
+#ifdef MACOS
+  using Metrowerks::hash_set;
+#endif
+using std::cout;
+using std::endl;
+using std::size_t;
 
 /*
  *	Iterate through neighbors of a tile (in 2 dimensions).

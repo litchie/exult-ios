@@ -31,6 +31,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "objiter.h"
 
+
+using std::ostream;
+
 /*
  *	Rotate a point 90 degrees to the right around a point.
  *

@@ -96,7 +96,7 @@ public:
 		{
 #if DEBUG
 		if (onscreen)
-			cerr << "Trying to move mouse while onscreen!" << endl;
+			std::cerr << "Trying to move mouse while onscreen!" << std::endl;
 #endif
 					// Shift to new position.
 		box.shift(x - mousex, y - mousey);

@@ -31,13 +31,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #else
   #include <hash_set>
 #endif
+
 /*
  *	Hash function for game objects:
  */
 class Hash_objs
 	{
 public:
-	size_t operator() (const Game_object *a) const
+	std::size_t operator() (const Game_object *a) const
 		{ return (long) a; }
 	};
 
@@ -57,10 +58,10 @@ public:
 /*
  *	A pool of removed game objects, waiting to be deleted:
  */
-class Deleted_objects : public hash_set<Game_object *, Hash_objs, Equal_objs>
+class Deleted_objects : public std::hash_set<Game_object *, Hash_objs, Equal_objs>
 	{
 public:
-	Deleted_objects() : hash_set<Game_object *, Hash_objs, Equal_objs> (1013)
+	Deleted_objects() : std::hash_set<Game_object *, Hash_objs, Equal_objs> (1013)
 		{  }
 	void flush();			// Delete them now.
 	~Deleted_objects()

@@ -1,5 +1,5 @@
 #include <new>
-#include <cstring>
+#include <string.h>
 #include <iostream>
 #include "SDL_mapping.h"
 
@@ -288,7 +288,7 @@ private:
 	inline 	void	lock(void)
 		{
 		if(SDL_mutexP(mutex)!=0)
-			cerr << "ProducerConsumerBuf::lock() failed" << endl;
+			std::cerr << "ProducerConsumerBuf::lock() failed" << std::endl;
 		}
 	inline 	void	unlock(void)
 		{
@@ -335,20 +335,20 @@ public:
 		{
 #if DEBUG
 		mycounter=++counter;
-		cerr << "Created PCB " << mycounter <<endl;
+		std::cerr << "Created PCB " << mycounter << std::endl;
 #endif
 		 }
 	~ProducerConsumerBuf()
 		{
 #if DEBUG
-		cerr << "::"<<mycounter<<" ProducerConsumerBuf going away" << endl;
+		std::cerr << "::"<<mycounter<<" ProducerConsumerBuf going away" << std::endl;
 #endif
 		SDL_DestroyMutex(mutex);
 		}
 	void	end_production(void)
 		{
 #if DEBUG
-		cerr << "::" << mycounter << " end_production" << endl;
+		std::cerr << "::" << mycounter << " end_production" << std::endl;
 #endif
 		lock();
 		producing=false;
@@ -360,7 +360,7 @@ public:
 	void	end_consumption(void)
 		{
 #if DEBUG
-		cerr << "::"<<mycounter<<" end_consumption" << endl;
+		std::cerr << "::"<<mycounter<<" end_consumption" << std::endl;
 #endif
 		lock();
 		consuming=false;

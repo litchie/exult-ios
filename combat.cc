@@ -34,6 +34,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 #include "ready.h"
 
+using std::cout;
+using std::endl;
+using std::rand;
+
 unsigned long Combat_schedule::battle_time = 0;
 
 /*
