@@ -10,17 +10,19 @@ AppSupportURL=http://exult.sourceforge.net/
 AppUpdatesURL=http://exult.sourceforge.net/
 DefaultDirName={code:GetExultInstDir|{pf}\Exult}
 DefaultGroupName={code:GetExultGroupDir|Exult}
-OutputBaseFilename=setup
+OutputBaseFilename=Exultwin32
 Compression=lzma
-SolidCompression=yes
+SolidCompression=true
+InternalCompressLevel=max
+OutputDir=.
 
 [Tasks]
 
 [Types]
-Name: "full"; Description: "Full installation"
-Name: "compact"; Description: "Compact installation"
-Name: "pathsonly"; Description: "Setup Paths Only"
-Name: "custom"; Description: "Custom installation"; Flags: iscustom
+Name: full; Description: Full installation
+Name: compact; Description: Compact installation
+Name: pathsonly; Description: Setup Paths Only
+Name: custom; Description: Custom installation; Flags: iscustom
 
 [Components]
 Name: Exult; Description: Install Exult; Types: full compact
@@ -30,55 +32,55 @@ Name: Paths; Description: Setup Game Paths; Types: full compact custom pathsonly
 Name: Icons; Description: Create Start Menu Icons; Types: full compact
 
 [Files]
-Source: "Exult\Exult.exe"; DestDir: "{app}"; Flags: ignoreversion; Components: Exult
+Source: Exult\Exult.exe; DestDir: {app}; Flags: ignoreversion; Components: Exult
 
-Source: "Exult\COPYING.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: GPL
+Source: Exult\COPYING.txt; DestDir: {app}; Flags: ignoreversion; Components: GPL
 
-Source: "Exult\SDL.dll"; DestDir: "{app}"; Components: Exult
-Source: "Exult\SDL_mixer.dll"; DestDir: "{app}"; Components: Exult
-Source: "Exult\README-SDL.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: Exult
-Source: "Exult\README-SDL_mixer.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: Exult
+Source: Exult\SDL.dll; DestDir: {app}; Components: Exult
+Source: Exult\SDL_mixer.dll; DestDir: {app}; Components: Exult
+Source: Exult\README-SDL.txt; DestDir: {app}; Flags: ignoreversion; Components: Exult
+Source: Exult\README-SDL_mixer.txt; DestDir: {app}; Flags: ignoreversion; Components: Exult
 
-Source: "Exult\AUTHORS.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: Docs
-Source: "Exult\bgdefaultkeys.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: Docs
-Source: "Exult\ChangeLog.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: Docs
-Source: "Exult\exult.cfg.example"; DestDir: "{app}"; Flags: ignoreversion; Components: Docs
-Source: "Exult\faq.html"; DestDir: "{app}"; Flags: ignoreversion; Components: Docs
-Source: "Exult\FAQ.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: Docs
-Source: "Exult\NEWS.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: Docs
-Source: "Exult\ReadMe.html"; DestDir: "{app}"; Flags: ignoreversion isreadme; Components: Docs
-Source: "Exult\README.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: Docs
-Source: "Exult\README.win32.txt"; DestDir: "{app}"; Flags: ignoreversion; Components: Docs
-Source: "Exult\sidefaultkeys.txt"; DestDir: "{app}\images"; Flags: ignoreversion; Components: Docs
-Source: "Exult\images\back.gif"; DestDir: "{app}\images"; Flags: ignoreversion nocompression; Components: Docs
-Source: "Exult\images\docs01.png"; DestDir: "{app}\images"; Flags: ignoreversion nocompression; Components: Docs
-Source: "Exult\images\docs02.png"; DestDir: "{app}\images"; Flags: ignoreversion nocompression; Components: Docs
-Source: "Exult\images\docs03.png"; DestDir: "{app}\images"; Flags: ignoreversion nocompression; Components: Docs
-Source: "Exult\images\docs04.png"; DestDir: "{app}\images"; Flags: ignoreversion nocompression; Components: Docs
-Source: "Exult\images\docs05.png"; DestDir: "{app}\images"; Flags: ignoreversion nocompression; Components: Docs
-Source: "Exult\images\docs06.png"; DestDir: "{app}\images"; Flags: ignoreversion nocompression; Components: Docs
-Source: "Exult\images\exult_logo.gif"; DestDir: "{app}\images"; Flags: ignoreversion nocompression; Components: Docs
+Source: Exult\AUTHORS.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
+Source: Exult\bgdefaultkeys.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
+Source: Exult\ChangeLog.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
+Source: Exult\exult.cfg.example; DestDir: {app}; Flags: ignoreversion; Components: Docs
+Source: Exult\faq.html; DestDir: {app}; Flags: ignoreversion; Components: Docs
+Source: Exult\FAQ.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
+Source: Exult\NEWS.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
+Source: Exult\ReadMe.html; DestDir: {app}; Flags: ignoreversion isreadme; Components: Docs
+Source: Exult\README.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
+Source: Exult\README.win32.txt; DestDir: {app}; Flags: ignoreversion; Components: Docs
+Source: Exult\sidefaultkeys.txt; DestDir: {app}\images; Flags: ignoreversion; Components: Docs
+Source: Exult\images\back.gif; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
+Source: Exult\images\docs01.png; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
+Source: Exult\images\docs02.png; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
+Source: Exult\images\docs03.png; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
+Source: Exult\images\docs04.png; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
+Source: Exult\images\docs05.png; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
+Source: Exult\images\docs06.png; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
+Source: Exult\images\exult_logo.gif; DestDir: {app}\images; Flags: ignoreversion nocompression; Components: Docs
 
-Source: "Exult\Data\exult.flx"; DestDir: "{app}\data"; Flags: ignoreversion; Components: Exult
-Source: "Exult\Data\exult_bg.flx"; DestDir: "{app}\data"; Flags: ignoreversion; Components: Exult
-Source: "Exult\Data\exult_si.flx"; DestDir: "{app}\data"; Flags: ignoreversion; Components: Exult
-Source: "Exult\Data\exultmsg.txt"; DestDir: "{app}\data"; Flags: ignoreversion; Components: Exult
+Source: Exult\Data\exult.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
+Source: Exult\Data\exult_bg.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
+Source: Exult\Data\exult_si.flx; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
+Source: Exult\Data\exultmsg.txt; DestDir: {app}\data; Flags: ignoreversion; Components: Exult
 
-Source: "exconfig.dll"; Flags: dontcopy
+Source: exconfig.dll; Flags: dontcopy
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\Exult"; Filename: "{app}\Exult.exe"; WorkingDir: "{app}"; Flags: createonlyiffileexists; Components: Icons
-Name: "{group}\Uninstall Exult"; Filename: "{uninstallexe}"; Components: Icons
-Name: "{group}\COPYING"; Filename: "{app}\COPYING.txt"; Flags: createonlyiffileexists; Components: Icons
-Name: "{group}\ChangeLog"; Filename: "{app}\ChangeLog.txt"; Flags: createonlyiffileexists; Components: Icons
-Name: "{group}\FAQ"; Filename: "{app}\FAQ.html"; Flags: createonlyiffileexists; Components: Icons
-Name: "{group}\Readme"; Filename: "{app}\ReadMe.html"; Flags: createonlyiffileexists; Components: Icons
-Name: "{group}\Readme Win32"; Filename: "{app}\README.win32.txt"; Flags: createonlyiffileexists; Components: Icons
-Name: "{group}\NEWS"; Filename: "{app}\NEWS.txt"; Flags: createonlyiffileexists; Components: Icons
+Name: {group}\Exult; Filename: {app}\Exult.exe; WorkingDir: {app}; Flags: createonlyiffileexists; Components: Icons
+Name: {group}\Uninstall Exult; Filename: {uninstallexe}; Components: Icons
+Name: {group}\COPYING; Filename: {app}\COPYING.txt; Flags: createonlyiffileexists; Components: Icons
+Name: {group}\ChangeLog; Filename: {app}\ChangeLog.txt; Flags: createonlyiffileexists; Components: Icons
+Name: {group}\FAQ; Filename: {app}\FAQ.html; Flags: createonlyiffileexists; Components: Icons
+Name: {group}\Readme; Filename: {app}\ReadMe.html; Flags: createonlyiffileexists; Components: Icons
+Name: {group}\Readme Win32; Filename: {app}\README.win32.txt; Flags: createonlyiffileexists; Components: Icons
+Name: {group}\NEWS; Filename: {app}\NEWS.txt; Flags: createonlyiffileexists; Components: Icons
 
 [Run]
-Filename: "{app}\Exult.exe"; Description: "{cm:LaunchProgram,Exult}"; WorkingDir: "{app}"; Flags: nowait postinstall skipifsilent skipifdoesntexist
+Filename: {app}\Exult.exe; Description: {cm:LaunchProgram,Exult}; WorkingDir: {app}; Flags: nowait postinstall skipifsilent skipifdoesntexist
 
 [Code]
 var
@@ -106,8 +108,8 @@ external 'VerifyBGDirectory@files:exconfig.dll stdcall';
 // Verify SI Dir
 function VerifySIDirectory(sPath: String) : Integer;
 external 'VerifySIDirectory@files:exconfig.dll stdcall';
-                           		
-	
+
+
 // Get the Previous Exult Installation Dir
 // This is done in a manner that is compatible with the old InstallShield setup
 function GetExultInstDir(sDefault: String): String;
@@ -140,7 +142,7 @@ var
 begin
     sDir := BGEdit.Text;
     if BrowseForFolder('Select the folder where Ultima VII: The Black Gate is installed.', sDir, False ) then begin
-    
+
       if VerifyBGDirectory ( sDir ) = 0 then begin
         if MsgBox ('Folder does not seem to contain a valid installation of Ultima VII: The Black Gate. Do you wish to continue?', mbConfirmation, MB_YESNO) = IDYES then begin
           BGEdit.Text := sDir;
@@ -179,7 +181,7 @@ begin
   BGText.Caption := 'Please enter the path where Ultima VII: The Black Gate is installed.';
   BGText.AutoSize := True;
   BGText.Parent := DataDirPage.Surface;
-  
+
   BGBrowseButton := TButton.Create(DataDirPage);
   BGBrowseButton.Top := BGText.Top + BGText.Height + ScaleY(8);
   BGBrowseButton.Left := DataDirPage.SurfaceWidth - ScaleX(75);
@@ -238,7 +240,7 @@ begin
       SIEdit.Text := sSIPath;
     end;
   end;
-    
+
 end;
 
 //
@@ -282,7 +284,7 @@ var
 begin
   if PageID = DataDirPage.ID then begin
     Result := (IsComponentSelected('Paths') = False);
-    
+
     if Result = True then begin
       if bSetPaths = False then begin
         setlength(sBGPath, 1024);
@@ -296,7 +298,7 @@ begin
       if ( CompareStr(BGEdit.Text,'') = 0) and (CompareStr(SIEdit.Text,'') = 0) then
         Result := False;
     end
-    
+
   end else if PageID = wpSelectProgramGroup then begin
     Result := (IsComponentSelected('Icons') = False);
   end else
