@@ -589,6 +589,7 @@ void Map_chunk::add_dependencies
 	while ((obj = next.get_next()) != 0)
 		{
 		//cout << "Here " << __LINE__ << " " << obj << endl;
+#define TESTNEWCMP
 #ifdef TESTNEWCMP	/* Just #define it to use the new one. */
 //++++Experimenting:
 		/* Compare returns -1 if lt, 0 if dont_care, 1 if gt. */
@@ -669,7 +670,7 @@ void Map_chunk::add
 #if 0
 		bool ext_left = (newobj->get_tx() - ord.xs) < -1 && cx > 0;
 		bool ext_above = (newobj->get_ty() - ord.ys) < -1 && cy > 0;
-#else	/* Let's try boundary. */
+#else	/* Let's try boundary. YES.  This helps with statues through roofs!*/
 		bool ext_left = (newobj->get_tx() - ord.xs) < 0 && cx > 0;
 		bool ext_above = (newobj->get_ty() - ord.ys) < 0 && cy > 0;
 #endif
@@ -749,7 +750,7 @@ void Map_chunk::remove
 #if 0
 	bool ext_left = (tx - info.get_3d_xtiles(frame)) < -1 && cx > 0;
 	bool ext_above = (ty - info.get_3d_ytiles(frame)) < -1 && cy > 0;
-#else	/* Let's try boundary. */
+#else	/* Let's try boundary. YES.  Helps with statues through roofs. */
 	bool ext_left = (tx - info.get_3d_xtiles(frame)) < 0 && cx > 0;
 	bool ext_above = (ty - info.get_3d_ytiles(frame)) < 0 && cy > 0;
 #endif

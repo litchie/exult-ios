@@ -1254,6 +1254,7 @@ int Game_object::drop
 	return (1);
 	}
 
+#define DEBUGLT
 #ifdef DEBUGLT
 static int rx1 = -1, ry1 = -1, rx2 = -1, ry2 = -1;
 
@@ -1395,7 +1396,6 @@ int Game_object::lt
 	return (-1);
 	}
 
-#if 1	/* ++++++Experimental */
 
 /*
  *	Compare ranges along a given dimension.
@@ -1465,7 +1465,7 @@ int Game_object::compare
 							xcmp, xover);
 	Compare_ranges(inf1.yfar, inf1.ynear, inf2.yfar, inf2.ynear,
 							ycmp, yover);
-	Compare_ranges(inf1.zbot, inf1.ztop, inf2.zbot, inf2.zbot,
+	Compare_ranges(inf1.zbot, inf1.ztop, inf2.zbot, inf2.ztop,
 							zcmp, zover);
 	if (xcmp >= 0 && ycmp >= 0 && zcmp >= 0)
 		return 1;		// GTE in all dimensions.
@@ -1481,9 +1481,19 @@ int Game_object::compare
 		else if (!zcmp)		// Z's equal?
 			return xcmp;
 		else			// See if X and Z dirs. agree.
-			return xcmp == zcmp ? xcmp : 0;
-//			return zcmp;	// Let Z take precedence.+++???  This
-					//   fixes roof/statue BG problems.
+			if (xcmp == zcmp)
+				return xcmp;
+#if 0 /* ++++The following messes up N. Trinsic gate when it's raised. */
+// Maybe we should use the 'occlude.dat' info here... 
+					// Experiment:  Fixes Trinsic mayor
+					//   statue-through-roof.
+		else if (inf1.ztop/5 < inf2.zbot/5)
+			return -1;	// A floor above/below.
+		else if (inf2.ztop/5 < inf1.zbot/5)
+			return 1;
+#endif
+		else
+			return 0;
 		}
 	else if (xover)			// X's overlap.
 		{
@@ -1502,14 +1512,19 @@ int Game_object::compare
 			return (zover || zcmp <= 0) ? -1 : 0;
 		}
 	else if (ycmp == 1)		// o1 Y after o2 Y?
-		return (zover || zcmp >= 0) ? 1 : 0;
-					// +++Exp:  Fixes Brit. museum
-					//   roof/statue.
-//		return (zover || zcmp >= 0) ? 1 : -1;
+		if (zover || zcmp >= 0)
+			return 1;
+#if 1
+					// Experiment:  Fixes Brit. museum
+					//   statue-through-roof.
+		else if (inf1.ztop/5 < inf2.zbot/5)
+			return -1;	// A floor above.
+		else
+#endif
+			return 0;
 	return 0;
 	}
 
-#endif
 
 /*
  *	Should this object be rendered before obj2?
