@@ -803,12 +803,23 @@ void Wait_for_arrival
 	)
 	{
 	long last_repaint = 0;		// For insuring animation repaints.
-#ifdef MOUSE
-	mouse->hide();			// Turn off mouse.
-#endif
 	while (actor->is_moving())
 		{
 		Delay();		// Wait a fraction of a second.
+#ifdef MOUSE
+		mouse->hide();		// Turn off mouse.
+#endif
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+			switch (event.type)
+				{
+			case SDL_MOUSEMOTION:
+#ifdef MOUSE
+				mouse->move(event.motion.x, event.motion.y);
+				gwin->set_painted();
+#endif
+				break;
+				}
 					// Get current time, & animate.
 		unsigned long ticks = SDL_GetTicks();
 		if (gwin->have_focus() && !dragging)
@@ -819,11 +830,9 @@ void Wait_for_arrival
 			gwin->paint_dirty();
 			last_repaint = ticks;
 			}
+		mouse->show();		// Re-display mouse.
 		gwin->show();		// Blit to screen if necessary.
 		}
-#ifdef MOUSE
-	mouse->show();			// Re-display mouse.
-#endif
 	}
 
 /*
