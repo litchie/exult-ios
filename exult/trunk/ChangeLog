@@ -1,3 +1,7 @@
+2001-08-31  Willem Jan Palenstijn  <wjpalenstijn@users.sourceforge.net>
+	* actors.*, intrinsics.cc: fixed Erethian dropping steaks, by not
+	having monsters created by create_new_object get equipment
+
 2001-08-31  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.cc (Sew_schedule): Fixed crash in Sew_schedule.

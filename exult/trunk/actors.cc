@@ -3697,7 +3697,8 @@ Monster_actor *Monster_actor::create
 	int lift,			// Lift.
 	int sched,			// Schedule type.
 	int align,			// Alignment.
-	bool temporary
+	bool temporary,
+	bool equipment
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -3738,26 +3739,30 @@ Monster_actor *Monster_actor::create
 					// Place in world.
 	Map_chunk *olist = gwin->get_chunk(chunkx, chunky);
 	monster->movef(0, olist, tilex, tiley, 0, lift);
+
+	if (equipment) {
 					// Get equipment.
-	int equip_offset = inf->equip_offset;
-	Equip_record *equip = inf->equip;
-	if (equip_offset && equip_offset - 1 < inf->equip_cnt)
+		int equip_offset = inf->equip_offset;
+		Equip_record *equip = inf->equip;
+		if (equip_offset && equip_offset - 1 < inf->equip_cnt)
 		{
-		Equip_record& rec = equip[equip_offset - 1];
-		for (size_t i = 0;
-			i < sizeof(equip->elements)/sizeof(equip->elements[0]);
-							i++)
+			Equip_record& rec = equip[equip_offset - 1];
+			for (size_t i = 0;
+				 i < sizeof(equip->elements)/sizeof(equip->elements[0]);
+				 i++)
 			{		// Give equipment.
-			Equip_element& elem = rec.elements[i];
-			if (!elem.shapenum || 1 + rand()%100 > 
-							elem.probability)
-				continue;// You lose.
-			int frnum = (elem.shapenum == 377) ? 
+				Equip_element& elem = rec.elements[i];
+				if (!elem.shapenum || 1 + rand()%100 > 
+						elem.probability)
+					continue;// You lose.
+				int frnum = (elem.shapenum == 377) ? 
 					Find_monster_food(shnum) : 0;
-			monster->create_quantity(elem.quantity, elem.shapenum, 
-						c_any_qual, frnum, temporary);
+				monster->create_quantity(elem.quantity, elem.shapenum, 
+										 c_any_qual, frnum, temporary);
 			}
 		}
+	}
+
 	if (sched < 0)			// Set sched. AFTER equipping.
 		sched = (int) Schedule::loiter;
 	monster->set_schedule_type(sched);
