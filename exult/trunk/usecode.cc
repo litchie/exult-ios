@@ -606,11 +606,25 @@ void Answers::remove_answer
 	Usecode_value& val		// String.
 	)
 	{
+#if 0
 	const char *str = val.get_str_value();
 	if (!str)
 		return;
 	_remove_answer(str);
+#else
+	const char *str;
+	if (val.is_array()) {
+		int size = val.get_array_size();
+		for (int i=0; i < size; i++) {
+			str = val.get_elem(i).get_str_value();
+			_remove_answer(str);
+		}
+	} else {
+		str = val.get_str_value();
+		_remove_answer(str);
 	}
+#endif
+}
 
 
 /*
