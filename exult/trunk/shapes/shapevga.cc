@@ -93,17 +93,22 @@ void Shapes_vga_file::read_info
 	for (int i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(weapon);
-		short unk0 = Read2(weapon);
+					// This is ammo family, or a neg. #.
 		short ammoshape = Read2(weapon);
-#if 0
+					// Shape to strike with, or projectile
+					//   shape if shoot/throw.
+		short strikeshape = Read2(weapon);
+#if 1
 		extern char **item_names;
-		cout << dec << "Weapon " << item_names[shapenum] << endl;
-		cout << "ammo = " << ammoshape << ", bytes1-2 = " << unk0
+		cout << dec << "Weapon " << item_names[shapenum]
+			<< '(' << shapenum << ')' << endl;
+		cout << "bytes1-2 = " << ammoshape << ", bytes2-3 = " 
+				<< strikeshape
 				<< endl;
 #endif
-					// +++++Wonder what ammo < 0 means.
-		if (ammoshape == shapenum || ammoshape < 0)
-			ammoshape = 0;
+					// +++++Wonder what strike < 0 means.
+		if (strikeshape == shapenum || strikeshape < 0)
+			strikeshape = 0;// Means no projectile thrown.
 		int damage = Read1(weapon);
 		unsigned short flags0 = Read1(weapon);
 		unsigned short range = Read1(weapon);	// High nibble.
@@ -111,7 +116,7 @@ void Shapes_vga_file::read_info
 		unsigned short special = Read1(weapon);
 		Read1(weapon);		// Skip (0).
 		short usecode = Read2(weapon);
-#if 0
+#if 1
 		cout << "Damage = " << damage << ", flags0 = " << hex
 			<< " 0x" << setw(2) << flags0 << ", range?? = " <<
 			hex << "0x" << range << hex << ", unk1 = " << setw(2)
@@ -122,17 +127,9 @@ void Shapes_vga_file::read_info
 #endif
 		weapon.seekg(6, ios::cur);	// Skip unknown.
 		info[shapenum].weapon = new Weapon_info(damage, special,
-							ammoshape, usecode);
+					ammoshape, strikeshape, usecode);
 		}
 	weapon.close();	
-					// Since we don't know the flag yet...
-	info[278].set_ammo_consumed();	// Musket.
-	info[474].set_ammo_consumed();	// Sling.
-	info[563].set_ammo_consumed();	// Blowgun.
-	info[597].set_ammo_consumed();	// Bow.
-	info[598].set_ammo_consumed();	// Crossbow.
-	info[606].set_ammo_consumed();	// Magic bow.	
-	info[647].set_ammo_consumed();	// Triple crossbow.
 	ifstream ammo;
 	U7open(ammo, AMMO);
 	cnt = Read1(ammo);

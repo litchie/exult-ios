@@ -283,7 +283,7 @@ static int Swap_weapons
 	Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
 		return 0;		// Not a weapon.
-	int ammo = winf->get_ammo();
+	int ammo = winf->get_ammo_consumed();
 	if (ammo)			// Check for readied ammo.
 		{
 		Game_object *aobj = npc->get_readied(Actor::ammo);
@@ -312,10 +312,10 @@ void Combat_schedule::start_strike
 	(
 	)
 	{
-	if (ammo_shape)			// Firing?
+	if (projectile_shape)		// Firing?
 		{
 		Game_object *aobj;
-		if (ammo_consumed &&
+		if (ammo_shape &&
 		    (!(aobj = npc->get_readied(Actor::ammo)) ||
 			!Ammo_info::is_in_family(aobj->get_shapenum(), 
 								ammo_shape)))
@@ -363,12 +363,13 @@ void Combat_schedule::set_weapon_info
 	{
 	int points;
 	Weapon_info *info = npc->get_weapon(points, weapon_shape);
-					// No ammo. required?
-	if (!info || !(ammo_shape = info->get_ammo()))
+	projectile_shape = info ? info->get_projectile() : 0;
+	ammo_shape = info ? info->get_ammo_consumed() : 0;
+					// Not shooting?
+	if (!projectile_shape)
 		max_reach = 1;		// For now.
 	else
 		max_reach = 20;		// Guessing.
-	ammo_consumed = (info != 0 && info->is_ammo_consumed());
 	}
 
 /*
@@ -419,7 +420,8 @@ inline Rectangle Get_tiles
 static int Use_ammo
 	(
 	Actor *npc,
-	int ammo			// Ammo family shape.
+	int ammo,			// Ammo family shape.
+	int proj			// Projectile shape.
 	)
 	{
 	Game_object *aobj = npc->get_readied(Actor::ammo);
@@ -433,7 +435,9 @@ static int Use_ammo
 	aobj->modify_quantity(-1);	// Reduce amount.
 	if (quant > 1)			// Still some left?  Put back.
 		npc->add_readied(aobj, Actor::ammo);
-	return actual_ammo;
+					// Use actual shape unless a different
+					//   projectile was specified.
+	return ammo == proj ? actual_ammo : proj;
 	}
 
 /*
@@ -489,11 +493,11 @@ void Combat_schedule::now_what
 		break;
 	case fire:			// Range weapon.
 		{
-		int ashape = !ammo_consumed ? ammo_shape
-					: Use_ammo(npc, ammo_shape);
+		int ashape = !ammo_shape ? projectile_shape
+				: Use_ammo(npc, ammo_shape, projectile_shape);
 		if (ashape > 0)
 			gwin->add_effect(new Projectile_effect(npc, opponent,
-						ashape, weapon_shape));
+				ashape, weapon_shape));
 		state = approach;
 		npc->start(200);	// Back into queue.
 		break;
