@@ -37,11 +37,8 @@ class Vector;
 #include <deque>	// STL container
 #include <string>	// STL string
 
-#define UTRACE(NAME) Usecode_Trace(NAME,intrinsic,num_parms,parms)
-#define	USECODE_RETURN(A) Usecode_TraceReturn(A); return (A)
-#define	USECODE_INTRINSIC(NAME)	Usecode_value	Usecode_machine::UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12]) { UTRACE(#NAME);
+#define	USECODE_INTRINSIC(NAME)	Usecode_value	Usecode_machine::UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 #define	USECODE_INTRINSIC_DECL(NAME)	Usecode_value	UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
-#define	USECODE_INTRINSIC_PTR(NAME)	&Usecode_machine::UI_ ## NAME
 
 /*
  *	A value that we store can be an integer, string, or array.
@@ -223,6 +220,8 @@ struct Usecode_machine
 	 *	Built-in usecode functions:
 	 */
 public:
+	typedef Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
+
 	void show_npc_face(Usecode_value& arg1, Usecode_value& arg2);
 	void remove_npc_face(Usecode_value& arg1);
 	void set_item_shape(Usecode_value& item_arg, Usecode_value& shape_arg);
@@ -259,6 +258,7 @@ public:
          *	Embedded intrinsics
 	 */
 
+	Usecode_value	Execute_Intrinsic(UsecodeIntrinsicFn func,const char *name,int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 	USECODE_INTRINSIC_DECL(NOP);
 	USECODE_INTRINSIC_DECL(UNKNOWN);
 	USECODE_INTRINSIC_DECL(get_random);
