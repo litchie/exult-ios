@@ -467,6 +467,17 @@ void U7remove
 	MultiByteToWideChar(CP_ACP, 0, n, -1, lpszT, nLen);
 	DeleteFile(lpszT);
 #else
+
+	bool exists;
+	struct stat sbuf;
+
+	int uppercasecount = 0;
+	do {
+		exists = (stat(name, &sbuf) == 0);
+		if (exists) {
+			std::remove(name.c_str());
+		}
+	} while (base_to_uppercase(name, ++uppercasecount));
 	std::remove(name.c_str());
 #endif
 }
