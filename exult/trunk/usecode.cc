@@ -470,7 +470,8 @@ Usecode_value& Usecode_value::operator=
 		value.str = v2.value.str ? strdup(v2.value.str) : 0;
 	else if (type == (int) array_type)
 		{
-		value.array = new Usecode_value[1+count_array(v2)];
+                int tempsize = 1+count_array(v2);
+		value.array = new Usecode_value[tempsize];
 		int i = 0;
 		do
 			value.array[i] = v2.value.array[i];
