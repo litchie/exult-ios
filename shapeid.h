@@ -156,11 +156,6 @@ class ShapeID : public Game_singletons
 	Shape_frame* cache_shape();
 
 public:
-					// Create from map data.
-	ShapeID(unsigned char l, unsigned char h) 
-		: shapenum(l + 256*(h&0x3)), framenum(h >> 2), has_trans(0),
-			shapefile(SF_SHAPES_VGA), shape(0)
-		{  }
 					// Read from buffer & incr. ptr.
 	ShapeID(unsigned char *& data)
 		: has_trans(0), shapefile(SF_SHAPES_VGA), shape(0)
