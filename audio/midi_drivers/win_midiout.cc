@@ -269,7 +269,7 @@ void Windows_MidiOut::thread_play ()
 		 	{
 		 		// Clean up
 				giveinfo();
-				midiOutReset (midi_port);
+				for (int i = 0; i < 16; i++) reset_channel (i); 
 				giveinfo();
 				XMIDI::DeleteEventList (evntlist);
 				giveinfo();
@@ -452,7 +452,7 @@ void Windows_MidiOut::thread_play ()
 	}
 	if (evntlist) XMIDI::DeleteEventList (evntlist);
 	if (s_evntlist) XMIDI::DeleteEventList (s_evntlist);
-	midiOutReset (midi_port);
+	for (int i = 0; i < 16; i++) reset_channel (i); 
 }
 
 void Windows_MidiOut::reset_channel (int i)

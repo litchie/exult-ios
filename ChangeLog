@@ -1,3 +1,9 @@
+2001-08-20  Ryan Nunn <triforce@merlin.net.au>
+	* actorio.cc : Save and restore all 64 flags.
+	* audio/midi_drivers/win_midiout.cc : Implimented fix for hung notes
+	  (bug #449990)
+	* shapes/shapevga.cc : fixed compiling error.
+
 2001-08-20  Max Horn <max@quendi.de>
 	* keys.cc: key handling during dont_move is now properly restricted;
 	  each key Action now has a flag determing if it can be used during dont_move
