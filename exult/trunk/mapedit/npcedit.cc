@@ -120,7 +120,7 @@ C_EXPORT gboolean on_npc_shape_focus_out_event
 	)
 	{
 	ExultStudio::get_instance()->show_npc_shape();
-	return TRUE;
+	return FALSE;
 	}
 
 /*
