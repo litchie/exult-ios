@@ -467,9 +467,10 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			Monster_info *inf = gwin->get_monster_info(shnum);
 			if (inf)
 				{
+				int sched = data1>>8;
 				Monster_actor *monster = inf->create(get_cx(),
 					get_cy(), get_tx(), get_ty(),
-								get_lift());
+							get_lift(), sched);
 				monster->set_alignment(data1&3);
 				monster->set_creator(this);
 				monster_created = monster;

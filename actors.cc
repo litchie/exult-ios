@@ -990,6 +990,7 @@ void Actor::set_schedule_type
 		case Schedule::sew:
 			break;		//+++++++
 		case Schedule::shy:
+			schedule = new Loiter_schedule(this);
 			break;		//+++++++
 		case Schedule::lab:
 			break;		//+++++++
@@ -2991,7 +2992,8 @@ Monster_actor *Monster_info::create
 	(
 	int chunkx, int chunky,		// Chunk to place it in.
 	int tilex, int tiley,		// Tile within chunk.
-	int lift			// Lift.
+	int lift,			// Lift.
+	int sched			// Schedule type.
 	)
 	{
 	Monster_actor *monster = new Monster_actor("", shapenum);
@@ -3035,6 +3037,7 @@ Monster_actor *Monster_info::create
 	Game_window *gwin = Game_window::get_game_window();
 	Chunk_object_list *olist = gwin->get_objects(chunkx, chunky);
 	monster->movef(0, olist, tilex, tiley, 0, lift);
+#if 0
 					// ++++++For now:
 	if (flags & ((1<<walk)|(1<<fly)|(1<<swim)|(1<<ethereal)))
 		{
@@ -3048,6 +3051,10 @@ Monster_actor *Monster_info::create
 		}
 	else				// For the wounded men in bed:
 		monster->set_schedule_type(Schedule::wait);
+#endif
+	if (sched < 0)
+		sched = (int) Schedule::loiter;
+	monster->set_schedule_type(sched);
 					// Get equipment.
 	if (!equip_offset || equip_offset - 1 >= equip_cnt)
 		return (monster);	// Out of range.
