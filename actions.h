@@ -59,10 +59,11 @@ class Path_walking_actor_action : public Actor_action
 	int original_dir;		// From src. to dest. (0-7).
 	int frame_index;		// Index within frame sequence.
 	unsigned char blocked;		// Blocked-tile retries.
+	unsigned char max_blocked;	// Try this many times.
 	unsigned char blocked_frame;	// Frame for blocked tile.
 	Tile_coord blocked_tile;	// Tile to retry.
 public:
-	Path_walking_actor_action(PathFinder *p);
+	Path_walking_actor_action(PathFinder *p, int maxblk = 3);
 	virtual ~Path_walking_actor_action();
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
@@ -86,6 +87,23 @@ public:
 	virtual int handle_event(Actor *actor);
 	};
 
+#if 0	/* +++Maybe not needed. */
+/*
+ *	Approach an enemy during combat.
+ */
+class Combat_path_actor_action : public Actor_action
+	{
+	PathFinder *path;		// Allocated pathfinder.
+	int frame_index;		// Index within frame sequence.
+public:
+	Combat_path_walking_actor_action(PathFinder *p);
+	virtual ~Combat_path_walking_actor_action();
+					// Handle time event.
+	virtual int handle_event(Actor *actor);
+					// Get destination, or ret. 0.
+	virtual int get_dest(Tile_coord& dest);
+	};
+#endif
 
 /*
  *	Go through a series of frames.
