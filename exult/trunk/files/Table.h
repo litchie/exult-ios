@@ -42,10 +42,11 @@ protected:
 public:
 	Table(const char *name);
 	Table(const string &name);
+	virtual ~Table();
 
         virtual int     number_of_objects(const char *) { return object_list.size(); };
-        virtual int     retrieve(const char *,int objnum,char *,size_t *len); // To a memory block
-        virtual int     retrieve(const char *,int objnum,const char *);       // To a file
+        virtual int     retrieve(int objnum,char **,size_t *len); // To a memory block
+        virtual int     retrieve(int objnum,const char *);       // To a file
 private:
 	void IndexTableFile(void);
 	Table();

@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Gametxt.cc - Text-drawing methods for Game_window.
  **
  **	Written: 3/19/2000 - JSF
@@ -33,11 +34,16 @@ Boston, MA  02111-1307, USA.
  *	1 = Large runes.
  *	2 = small black (as in zstats).
  *	3 = runes.
- *	4 = tiny black.
+ *	4 = tiny black, used in books.
  *	5 = little white.
  *	6 = runes.
  *	7 = normal red.
  */
+
+/*
+ *	Horizontal leads, by fontnum:
+ */
+static int hlead[10] = {0, 0, 0, 0, 1, 0, 0, 0, 0, 0};
 
 /*
  *	Pass space.
@@ -73,21 +79,26 @@ static char *Pass_word
  *		\n	New line.
  *		space	Word break.
  *		tab	Treated like a space for now.
+ *
+ *	Output:	If out of room, -offset of end of text painted.
+ *		Else height of text painted.
  */
 
-void Game_window::paint_text_box
+int Game_window::paint_text_box
 	(
 	int fontnum,			// Font # from fonts.vga (0-9).
 	char *text,
 	int x, int y,			// Top-left corner of box.
-	int w, int h			// Dimensions.
+	int w, int h,			// Dimensions.
+	int vert_lead			// Extra spacing between lines.
 	)
 	{
+	char *start = text;		// Remember the start.
 	win->set_clip(x, y, w, h);
 	int endx = x + w, endy = y + h;	// Figure where to stop.
 	int curx = x, cury = y;
-	int height = get_text_height(fontnum);
-	while (*text)			// Go through it.
+	int height = get_text_height(fontnum) + vert_lead;
+	while (*text)
 		{
 		char *wrd;		// ->start of word.
 		switch (*text)		// Special cases.
@@ -96,6 +107,8 @@ void Game_window::paint_text_box
 			curx = x;
 			cury += height;
 			text++;
+			if (cury + height > endy)
+				break;	// No more room.
 			continue;
 		case ' ':		// Space.
 		case '\t':
@@ -114,12 +127,19 @@ void Game_window::paint_text_box
 			{		// Word-wrap.
 			curx = x;
 			cury += height;
+			if (cury + height > endy)
+				break;	// No more room.
 			}
 					// Draw word.
 		curx += paint_text(fontnum, text, ewrd - text, curx, cury);
 		text = ewrd;		// Continue past the word.
 		}
 	win->clear_clip();
+	if (*text)			// Out of room?
+		return -(text - start);	// Return -offset of end.
+	else				// Else return height, counting last
+					//   partial line.
+		return (cury - y) + (curx != 0);
 	}
 
 /*
@@ -144,7 +164,7 @@ int Game_window::paint_text
 		if (!shape)
 			continue;
 		paint_rle_shape(*shape, x, yoff + shape->get_yabove());
-		x += shape->get_width();
+		x += shape->get_width() + hlead[fontnum];
 		}
 	return (x - xoff);
 	}
@@ -170,7 +190,7 @@ int Game_window::paint_text
 		if (!shape)
 			continue;
 		paint_rle_shape(*shape, x, yoff + shape->get_yabove());
-		x += shape->get_width();
+		x += shape->get_width() + hlead[fontnum];
 		}
 	return (x - xoff);
 	}
@@ -188,7 +208,8 @@ int Game_window::get_text_width
 	int width = 0;
 	short chr;
 	while ((chr = *text++) != 0)
-		width += fonts.get_shape(fontnum, chr)->get_width();
+		width += fonts.get_shape(fontnum, chr)->get_width() + 
+								hlead[fontnum];
 	return (width);
 	}
 
@@ -205,7 +226,8 @@ int Game_window::get_text_width
 	{
 	int width = 0;
 	while (textlen--)
-		width += fonts.get_shape(fontnum, *text++)->get_width();
+		width += fonts.get_shape(fontnum, *text++)->get_width() + 
+								hlead[fontnum];
 	return (width);
 	}
 

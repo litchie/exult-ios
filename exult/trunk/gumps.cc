@@ -134,18 +134,15 @@ void Slider_gump_button::activate
 	}
 
 /*
- *	Create a gump.
+ *	Initialize.
  */
 
-Gump_object::Gump_object
+void Gump_object::initialize
 	(
-	Container_game_object *cont,	// Container it represents.
-	int initx, int inity, 		// Coords. on screen.
-	int shnum			// Shape #.
-	) : container(cont), x(initx), y(inity), ShapeID(shnum, 0)
+	)
 	{
 	int checkx = 8, checky = 64;	// Default.
-
+	int shnum = get_shapenum();
 	switch (shnum)			// Different shapes.
 		{
 	case 1:				// Crate.
@@ -184,6 +181,15 @@ Gump_object::Gump_object
 		object_area = Rectangle(0, 0, 0, 0);
 		checkx = 6; checky = 30;
 		break;
+	case 49: 			// Wood signs.
+		object_area = Rectangle(0, 4, 196, 92);
+		break;
+	case 50:			// Tombstones.
+		object_area = Rectangle(0, 8, 200, 112);
+		break;
+	case 51:			// Gold signs.
+		object_area = Rectangle(0, 4, 232, 96);
+		break;
 	default:
 					// Character pictures:
 		if (shnum >= 57 && shnum <= 68)
@@ -196,6 +202,37 @@ Gump_object::Gump_object
 		}
 	checkx += 16; checky -= 12;
 	check_button = new Checkmark_gump_button(this, checkx, checky);
+	}
+
+/*
+ *	Create a gump.
+ */
+
+Gump_object::Gump_object
+	(
+	Container_game_object *cont,	// Container it represents.
+	int initx, int inity, 		// Coords. on screen.
+	int shnum			// Shape #.
+	) : container(cont), x(initx), y(inity), ShapeID(shnum, 0)
+	{
+	initialize();
+	}
+
+/*
+ *	Create, centered on screen.
+ */
+
+Gump_object::Gump_object
+	(
+	Container_game_object *cont,	// Container it represents.
+	int shnum			// Shape #.
+	) : container(cont), ShapeID(shnum, 0)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_frame *shape = gwin->get_gump_shape(shnum, 0);
+	x = (gwin->get_width() - shape->get_width())/2;
+	y = (gwin->get_height() - shape->get_height())/2;
+	initialize();
 	}
 
 /*
@@ -464,14 +501,19 @@ Actor_gump_object::Actor_gump_object
 	heart_button = new Heart_gump_button(this, heartx, hearty);
 	disk_button = new Disk_gump_button(this, diskx, disky);
 					// Set spot locations.
+					// +++++Should be static.
 	spots[(int) head].x = 114; spots[(int) head].y = 10;
-	spots[(int) back].x = 115; spots[(int) back].y = 24;
+	spots[(int) chest].x = 115; spots[(int) chest].y = 24;
+	spots[(int) belt].x = 115; spots[(int) belt].y = 37;
 	spots[(int) lhand].x = 115; spots[(int) lhand].y = 55;
-	spots[(int) rhand].x = 37; spots[(int) rhand].y = 56;
+	spots[(int) lfinger].x = 115; spots[(int) lfinger].y = 71;
 	spots[(int) legs].x = 114; spots[(int) legs].y = 85;
 	spots[(int) feet].x = 76; spots[(int) feet].y = 98;
-	spots[(int) lfinger].x = 116; spots[(int) lfinger].y = 70;
 	spots[(int) rfinger].x = 35; spots[(int) rfinger].y = 70;
+	spots[(int) rhand].x = 37; spots[(int) rhand].y = 56;
+	spots[(int) arms].x = 37; spots[(int) arms].y = 37;
+	spots[(int) neck].x = 37; spots[(int) neck].y = 24;
+	spots[(int) back].x = 37; spots[(int) back].y = 11;
 					// Store objs. in their spots.
 	Game_object *last_object = container->get_last_object();
 	if (!last_object)
@@ -656,9 +698,210 @@ void Stats_gump_object::paint
 						x + textx, y + texty[6]);
   	Paint_num(gwin, act->get_property(Actor::exp),
 						x + textx, y + texty[7]);
-	//++++Level?
+	Paint_num(gwin, act->get_level(), x + textx, y + texty[8]);
   	Paint_num(gwin, act->get_property(Actor::training),
 						x + textx, y + texty[9]);
+	}
+
+/*
+ *	Create a sign gump.
+ */
+
+Sign_gump::Sign_gump
+	(
+	int shapenum,
+	int nlines			// # of text lines.
+	) : num_lines(nlines), Gump_object(0, shapenum)
+	{
+	lines = new char *[num_lines];
+	for (int i = 0; i < num_lines; i++)
+		lines[i] = 0;
+	}
+
+/*
+ *	Delete sign.
+ */
+
+Sign_gump::~Sign_gump
+	(
+	)
+	{
+	for (int i = 0; i < num_lines; i++)
+		delete lines[i];
+	delete lines;
+	}
+
+/*
+ *	Add a line of text.
+ */
+
+void Sign_gump::add_text
+	(
+	int line,
+	const char *txt
+	)
+	{
+	if (line < 0 || line >= num_lines)
+		return;
+	delete lines[line];
+	lines[line] = txt ? strdup(txt) : 0;
+	}
+
+/*
+ *	Paint sign.
+ */
+
+void Sign_gump::paint
+	(
+	Game_window *gwin
+	)
+	{
+	const int font = 1;		// Runes.
+					// Get height of 1 line.
+	int lheight = gwin->get_text_height(font);
+					// Get space between lines.
+	int lspace = (object_area.h - num_lines*lheight)/(num_lines + 1);
+					// Paint the gump itself.
+	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+	int ypos = y + object_area.y;	// Where to paint next line.
+	for (int i = 0; i < num_lines; i++)
+		{
+		ypos += lspace;
+		if (!lines[i])
+			continue;
+		gwin->paint_text(font, lines[i],
+			x + object_area.x + 
+				(object_area.w - 
+				    gwin->get_text_width(font, lines[i]))/2,
+			ypos);
+		ypos += lheight;
+		}
+	gwin->set_painted();
+	}
+
+/*
+ *	Add to the text.
+ */
+
+void Text_gump::add_text
+	(
+	char *str
+	)
+	{
+	int slen = strlen(str);		// Length of new text.
+					// Allocate new space.
+	char *newtext = new char[textlen + slen + 1];
+	if (textlen)			// Copy over old.
+		strcpy(newtext, text);
+	strcpy(newtext + textlen, str);	// Append new.
+	delete text;
+	text = newtext;
+	textlen += slen;
+	}
+
+/*
+ *	Paint a page and find where its text ends.
+ *
+ *	Output:	Index past end of displayed page.
+ */
+
+int Text_gump::paint_page
+	(
+	Game_window *gwin,
+	Rectangle box,			// Display box rel. to gump.
+	int start			// Starting offset into text.
+	)
+	{
+	const int font = 4;		// Black.
+	const int vlead = 2;		// Extra inter-line spacing.
+	int ypos = 0;
+	int textheight = gwin->get_text_height(font) + vlead;
+	char *str = text + start;
+	while (*str && *str != '*' && ypos + textheight <= box.h)
+		{
+		if (*str == '~')	// End of paragraph?
+			{
+			ypos += textheight;
+			str++;
+			continue;
+			}
+					// Look for page break.
+		char *epage = strchr(str, '*');
+					// Look for line break.
+		char *eol = strchr(str, '~');
+		if (epage && (!eol || eol > epage))
+			eol = epage;
+		if (!eol)		// No end found?
+			eol = text + textlen;
+		char eolchr = *eol;	// Save char. at EOL.
+		*eol = 0;
+		int endoff = gwin->paint_text_box(font, str, x + box.x,
+				y + box.y + ypos, box.w, box.h - ypos, vlead);
+		*eol = eolchr;		// Restore char.
+		if (endoff > 0)		// All painted?
+			{		// Value returned is height.
+			str = eol;
+			ypos += endoff;
+			}
+		else			// Out of room.
+			{
+			str += -endoff;
+			break;
+			}
+		}
+	if (*str == '*')		// Saw end of page?
+		str++;
+	gwin->set_painted();		// Force blit.
+	return (str - text);		// Return offset past end.
+	}
+
+/*
+ *	Show next page(s) of book or scroll.
+ *
+ *	Output:	0 if already at end.
+ */
+
+int Text_gump::show_next_page
+	(
+	Game_window *gwin
+	)
+	{
+	if (curend >= textlen)
+		return (0);		// That's all, folks.
+	curtop = curend;		// Start next page or pair of pages.
+	paint(gwin);			// Paint.  This updates curend.
+	return (1);
+	}
+
+/*
+ *	Paint book.  Updates curend.
+ */
+
+void Book_gump::paint
+	(
+	Game_window *gwin
+	)
+	{
+					// Paint the gump itself.
+	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+					// Paint left page.
+	curend = paint_page(gwin, Rectangle(36, 10, 122, 130), curtop);
+					// Paint right page.
+	curend = paint_page(gwin, Rectangle(174, 10, 122, 130), curend);
+	}
+
+/*
+ *	Paint scroll.  Updates curend.
+ */
+
+void Scroll_gump::paint
+	(
+	Game_window *gwin
+	)
+	{
+					// Paint the gump itself.
+	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+	curend = paint_page(gwin, Rectangle(48, 30, 146, 118), curtop);
 	}
 
 /*
@@ -688,11 +931,10 @@ void Slider_gump_object::set_val
 
 Slider_gump_object::Slider_gump_object
 	(
-	int initx, int inity,		// Where to show it.
 	int mival, int mxval,		// Value range.
 	int step,			// Amt. to change by.
 	int defval			// Default value.
-	) : Modal_gump_object(0, initx, inity, SLIDER),
+	) : Modal_gump_object(0, SLIDER),
 	    val(defval), min_val(mival), max_val(mxval), step_val(step),
 	    dragging(0), prev_dragx(0)
 	{

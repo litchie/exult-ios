@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
-#include "Flex.h"
 #include "Mixer.h"
 #include "Midi.h"
 
@@ -41,11 +40,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Audio 
 {
+private:
+	static	Audio	*self;
 public:
     Audio();
     void	Init(void);
     void	Init(int _samplerate,int _channels);
     ~Audio();
+	static	Audio	*get_ptr(void);
 	Mixer	*mixer;
 
 	void	play(Uint8 *sound_data,Uint32 len,bool);
@@ -57,7 +59,6 @@ public:
 	void	clear(Uint8 *,int);
 	void	start_music(int num,int repetition);
 	void	start_speech(int num,bool wait=false);
-	void	start_speech(Flex *f,int num,bool wait=false);
 	void	set_external_signal(int);
 	void	terminate_external_signal(void);
 
@@ -71,7 +72,6 @@ private:
 	SDL_AudioSpec wanted,actual;
 	MyMidiPlayer	*midi;
 
-	Flex	speech_tracks;
 	void build_speech_vector(void);
 
 };

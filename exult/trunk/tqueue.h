@@ -8,6 +8,13 @@
 #ifndef INCL_TQUEUE
 #define INCL_TQUEUE	1
 
+
+#include <stack.h>
+#include <vector>
+#include <list>
+
+
+
 /*
  *	An interface for entries in the queue:
  */
@@ -17,16 +24,18 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata) = 0;
 	};
 
+class Time_queue;
+
 /*
  *	A queue entry:
  */
 class Queue_entry
 	{
-	Queue_entry *next, *prev;	// Next, prev. in queue.
-	unsigned long time;			// Time when this is due.
+	public:
+	// Queue_entry *next, *prev;	// Next, prev. in queue.
 	Time_sensitive *handler;	// Object to activate.
 	long udata;			// Data to pass to handler.
-	friend class Time_queue;
+	unsigned long time;			// Time when this is due.
 	void set(unsigned long t, Time_sensitive *h, long ud)
 		{
 		time = t;
@@ -35,18 +44,23 @@ class Queue_entry
 		}
 	};
 
+bool	operator <(const Queue_entry &q1,const Queue_entry &q2);
+
 /*
  *	Time-based queue.  The entries are kept sorted in increasing order
  *	by time.
  */
 class Time_queue
 	{
-	Queue_entry *head;		// Head of queue.  Head->prev = tail.
-	Queue_entry *free_entries;	// ->list of freed entries.
-					// Activate head + any others due.
+	typedef list<Queue_entry>	Temporal_sequence;
+	Temporal_sequence data;
+
+	// Activate head + any others due.
 	void activate0(unsigned long curtime);
+#if 0
 	void add_freed(Queue_entry *ent)
 		{
+		return;
 		ent->next = free_entries;
 		free_entries = ent;
 		}		
@@ -70,17 +84,21 @@ class Time_queue
 		ent->next->prev = ent->prev;
 		add_freed(ent);
 		}
+#endif
 public:
-	Time_queue() : head(0), free_entries(0)
+	// Time_queue() : head(0), free_entries(0)
+	Time_queue() 
 		{  }
 					// Add an entry.
 	void add(unsigned long t, Time_sensitive *obj, long ud);
 					// Remove object's entry.
 	int remove(Time_sensitive *obj);
+	int find(Time_sensitive *obj);	// Find an entry.
 					// Activate entries that are 'due'.
 	void activate(unsigned long curtime)
 		{
-		if (head && !(curtime < head->time))
+		// if (head && !(curtime < head->time))
+		if (data.size() && !(curtime < data.front().time))
 			activate0(curtime);
 		}
 	};

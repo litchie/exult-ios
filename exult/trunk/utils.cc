@@ -74,3 +74,19 @@ int U7open
 	return (1);
 	}
 
+/*
+ *	Take log2 of a number.
+ *
+ *	Output:	Log2 of n (0 if n==0).
+ */
+
+int Log2
+	(
+	unsigned int n
+	)
+	{
+	int result = 0;
+	for (n = n>>1; n; n = n>>1)
+		result++;
+	return result;
+	}

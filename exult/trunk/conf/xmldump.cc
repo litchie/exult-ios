@@ -23,10 +23,42 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMLEntity.h"
 #include <iostream>
 
-void	xmldump(string &s,XMLnode *x,int depth)
+static	string	encode_entity(string &s)
 {
+	string	ret("");
+
+	for(size_t i=0;i<s.length();i++)
+		{
+		switch(s[i])
+			{
+			case '<':
+				ret+="&lt;";
+				break;
+			case '>':
+				ret+="&gt;";
+				break;
+			case '&':
+				ret+="&amp;";
+				break;
+			default:
+				ret+=s[i];
+			}
+		}
+	return ret;
+}
+
+static	string	indent(int depth)
+{
+	string s("");
+
 	for(int i=0;i<depth;i++)
 		s+=' ';
+	return s;
+}
+
+void	xmldump(string &s,XMLnode *x,int depth)
+{
+	s+=indent(depth);
 	
 	s+="<";
 	s+=x->entity.id;
@@ -36,21 +68,22 @@ void	xmldump(string &s,XMLnode *x,int depth)
 		it!=x->nodelist.end();
 		++it)
 		{
-		for(int i=0;i<depth;i++)
-			s+=' ';
 		xmldump(s,it,depth+1);
 		}
-	for(int i=0;i<depth+1;i++)
-		s+=' ';
-	s+=x->entity.content;
+
+	if(x->entity.content.length())
+		{
+		s+=indent(depth);
+		s+=encode_entity(x->entity.content);
+		}
 	if(x->entity.id[0]=='?')
 		{
 		return;
 		}
-	s+="\n";
-	for(int i=0;i<=depth;i++)
-		s+=' ';
-	
+	if(x->entity.content.length())
+		s+="\n";
+
+	s+=indent(depth);
 	s+="</";
 	s+=x->entity.id;
 	s+=">\n";

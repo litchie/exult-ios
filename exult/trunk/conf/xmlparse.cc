@@ -25,6 +25,46 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMLEntity.h"
 #include <iostream>
 
+static	void	trim(string &s)
+{
+	// Clean off leading whitespace
+	while(s.length()&&s[0]<=32)
+		{
+		s=s.substr(1);
+		}
+	// Clean off trailing whitespace
+	while(s.length()&&s[s.length()-1]<=32)
+		{
+		s.erase(s.length()-1);
+		}
+}
+
+static	bool	grab_entity(string &s,size_t &pos,const char *ent)
+{
+	string	t(s.substr(pos));
+	if(t.find(ent)==0)
+		{
+		pos+=strlen(ent)+1;
+		return true;
+		}
+	return false;
+}
+
+static	string	entity_decode(string &s,size_t &pos)
+{
+	// This is ugly and slow
+	++pos;	// Advance past amp
+	if(grab_entity(s,pos,"amp"))
+		return string("&");
+	else
+	if(grab_entity(s,pos,"gt"))
+		return string(">");
+	else
+	if(grab_entity(s,pos,"lt"))
+		return string("<");
+	return string("&");
+}
+
 void	xmlparse(string &s,size_t &pos,XMLnode *x)
 {
 	bool	intag=true;
@@ -32,12 +72,6 @@ void	xmlparse(string &s,size_t &pos,XMLnode *x)
 		{
 		switch(s[pos])
 			{
-			case ' ':
-			case '\t':
-			case '\n':
-			case '\r':
-				++pos;
-				break;
 			case '<':
 				{
 				// New tag?
@@ -47,7 +81,8 @@ void	xmlparse(string &s,size_t &pos,XMLnode *x)
 					while(s[pos]!='>')
 						pos++;
 					pos++;
-//					cout << "End of entity '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
+					trim(x->entity.content);
+//					cout << "End of entity(1) '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
 					return;
 					}
 				XMLnode t;
@@ -60,22 +95,19 @@ void	xmlparse(string &s,size_t &pos,XMLnode *x)
 				// End of tag
 				++pos; intag=false; if(s[pos]<32) ++pos;
 				break;
+			case '&':
+				x->entity.content+=entity_decode(s,pos);
+				break;
 			default:
 				if(intag)
 					x->entity.id+=s[pos++];
 				else
 					{
-					if((s[pos]==' '||s[pos]=='\t'||s[pos]==0x0d||s[pos]==0x0a))
-	++pos;
-					else
 					x->entity.content+=s[pos++];
 					}
 			}
 		}
-	while(x->entity.content.length()>0&&x->entity.content[x->entity.content.length()-1]<32)
-		{
-		x->entity.content.erase(x->entity.content.length()-1);
-		}
-//					cout << "End of entity '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
+	trim(x->entity.content);
+//	cout << "End of entity(2) '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
 }
 

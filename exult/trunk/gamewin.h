@@ -73,13 +73,16 @@ private:
 	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	Vga_file fonts;			// "fonts.vga" file.
+	Vga_file sprites;		// "sprites.vga" file.
 	ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
-	Actor *main_actor;		// Main sprite to move around.
+	Main_actor *main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
 	int num_npcs;			// Number of NPC's.
 	Actor **npcs;			// List of NPC's + the Avatar.
+	int num_monsters;		// Number of monster types.
+	Monster_info *monster_info;	// Array from 'monsters.dat'.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
@@ -99,6 +102,7 @@ private:
 	int u7open(ifstream& in, char *fname, int dont_abort = 0);
 public:
 	int skip_lift;			// Skip objects with lift > 0.
+	int paint_eggs;
 	int debug;
 	Game_window(int width = 0, int height = 0);
 	~Game_window();
@@ -163,6 +167,8 @@ public:
 	Actor *get_npc(long npc_num)
 		{ return (npc_num > 0 && npc_num < num_npcs) ? npcs[npc_num] 
 									: 0; }
+					// Find monster info. for shape.
+	Monster_info *get_monster_info(int shapenum);
 	int get_num_npcs()
 		{ return num_npcs; }
 	int get_num_shapes()
@@ -173,6 +179,8 @@ public:
 		{ return gumps.get_num_shapes(); }
 	int get_num_fonts()
 		{ return fonts.get_num_shapes(); }
+	int get_num_sprites()
+		{ return sprites.get_num_shapes(); }
 	void set_mode(Game_mode md)
 		{ mode = md; }
 	Game_mode get_mode()
@@ -214,6 +222,8 @@ public:
 					// Get # frames in a shape.
 	int get_shape_num_frames(int shapenum)
 		{ return shapes.get_num_frames(shapenum); }
+	int get_sprite_num_frames(int shapenum)
+		{ return sprites.get_num_frames(shapenum); }
 					// Get screen area used by object.
 	Rectangle get_shape_rect(Game_object *obj)
 		{
@@ -285,6 +295,12 @@ public:
 		if (shape)
 			paint_shape(xoff, yoff, shape);
 		}
+	void paint_sprite(int xoff, int yoff, int shapenum, int framenum)
+		{
+		Shape_frame *shape = sprites.get_shape(shapenum, framenum);
+		if (shape)
+			paint_shape(xoff, yoff, shape);
+		}
 					// Read encoded show into window.
 	void paint_rle_shape(Shape_frame& shape, int xoff, int yoff);
 	void paint_rle_shape_translucent(Shape_frame& shape, 
@@ -326,6 +342,21 @@ public:
 		}
 	void add_dirty(Rectangle r)	// Add rectangle to dirty area.
 		{ dirty = dirty.w > 0 ? dirty.add(r) : r; }
+					// Add dirty rect. for obj.  Rets. 0
+					//   if not on screen.
+	int add_dirty(Game_object *obj)
+		{
+		Rectangle rect = get_shape_rect(obj);
+		rect.enlarge(5);
+		rect = clip_to_win(rect);
+		if (rect.w > 0 && rect.h > 0)
+			{
+			add_dirty(rect);
+			return 1;
+			}
+		else
+			return 0;
+		}
 					// Paint a bit of text.
 	void paint_text_object(Text_object *txt);
 					// Paint "flat" scenery in a chunk.
@@ -364,6 +395,8 @@ public:
 					// Show a "face" on the screen.
 	void show_face(int shape, int frame);
 	void remove_face(int shape);	// Remove "face" from screen.
+	int get_num_faces_on_screen()	// # of faces on screen.
+		{ return num_faces; }
 					// Show what NPC said.
 	void show_npc_message(char *msg);
 	int is_npc_text_pending();	// Need to prompt user?
@@ -394,8 +427,8 @@ public:
 	void drag(int x, int y);	// During dragging.
 	void drop_dragged(int x, int y, int moved);// Done dragging.
 					// Paint text using "fonts.vga".
-	void paint_text_box(int fontnum, char *text, int x, int y, int w, 
-								int h);
+	int paint_text_box(int fontnum, char *text, int x, int y, int w, 
+				int h, int vert_lead = 0);
 	int paint_text(int fontnum, const char *text, int xoff, int yoff);
 	int paint_text(int fontnum, const char *text, int textlen, 
 							int xoff, int yoff);

@@ -67,26 +67,25 @@ CPP = @CPP@
 CXX = @CXX@
 DEBUG_FLAGS = @DEBUG_FLAGS@
 DLLTOOL = @DLLTOOL@
-EXEEXT = @EXEEXT@
 EXE_TARGET = @EXE_TARGET@
 FREETYPE_DIR = @FREETYPE_DIR@
 HAVE_SDL_CONFIG = @HAVE_SDL_CONFIG@
 HAVE_TIMIDITY_BIN = @HAVE_TIMIDITY_BIN@
 KMID_INCLUDES = @KMID_INCLUDES@
 KMID_LIBS = @KMID_LIBS@
+LD = @LD@
 LIBTOOL = @LIBTOOL@
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
-OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PEDANTIC = @PEDANTIC@
 RANLIB = @RANLIB@
 RELNUM = @RELNUM@
 SDL_INCLUDES = @SDL_INCLUDES@
 SDL_LIBS = @SDL_LIBS@
-STRIP = @STRIP@
 SYSLIBS = @SYSLIBS@
 TOP_LEVEL_SUBDIRS = @TOP_LEVEL_SUBDIRS@
 VERSION = @VERSION@
@@ -100,9 +99,9 @@ SUBDIRS = midi_drivers
 
 #LIBS +=  -L/usr/X11R6/lib/ -lc -lstdc++ -lgcc -lm -lXi -lXext -lX11 
 
-OFILES = Mixer.o Midi.o Audio.o Flex.o Table.o IFF.o SDL_mapping.o
+OFILES = Mixer.o Midi.o Audio.o SDL_mapping.o
 
-SOURCES = Audio.cc Audio.h Flex.cc Flex.h IFF.cc IFF.h Midi.cc Midi.h 		Mixer.cc Mixer.h SDL_mapping.cc SDL_mapping.h Table.cc Table.h 		common.h test.cc
+SOURCES = Audio.cc Audio.h Midi.cc Midi.h 		Mixer.cc Mixer.h SDL_mapping.cc SDL_mapping.h 		common.h test.cc
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../autoconfig.h

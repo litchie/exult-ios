@@ -66,6 +66,16 @@ public:
 	Tile_coord() { }
 	int operator==(Tile_coord& t2)
 		{ return t2.tx == tx && t2.ty == ty && t2.tz == tz; }
+	int distance(Tile_coord t2)	// Distance to another tile?
+		{
+		int dy = t2.ty - ty;
+		int dx = t2.tx - tx;
+		if (dy < 0)		// Just take longer abs. value.
+			dy = -dy;
+		if (dx < 0)
+			dx = -dx;
+		return (dy > dx ? dy : dx);
+		}
 	};
 					// Add two coords.
 inline Tile_coord operator+(Tile_coord a, Tile_coord b)
@@ -211,6 +221,11 @@ public:
 		{ return cy; }
 					// Move to new abs. location.
 	void move(int newtx, int newty, int newlift);
+					// Move and change shape/frame.
+	void move(Chunk_object_list *old_chunk, int new_cx, int new_cy, 
+			Chunk_object_list *new_chunk, 
+			int new_sx, int new_sy, int new_frame, 
+			int new_lift = -1);
 	int get_dependency_count()	// Get objs. to paint first.
 		{ return dependencies.get_cnt(); }
 	Game_object *get_dependency(int i)
@@ -237,11 +252,16 @@ public:
 	virtual char *get_name();
 	virtual Game_object *clone()	// Create a copy.
 		{ return new Game_object(*this); }
-	virtual void remove();		// Remove/delete this object.
+					// Remove/delete this object.
+	virtual void remove(int nodel = 0);
 	virtual void set_property(int prop, int val)
 		{  }
 	virtual int get_property(int prop)
 		{ return 0; }
+	virtual int get_alignment()	// Get/set 'alignment'.
+		{ return 0; }
+	virtual void set_alignment(short)
+		{  }
 	virtual Container_game_object *get_owner()
 		{ return 0; }
 	virtual void set_owner(Container_game_object *o)
@@ -255,6 +275,10 @@ public:
 	virtual int get_flag(int flag) { return 0; }
 	virtual int get_npc_num()	// Get its ID (1-num_npcs).
 		{ return 0; }
+	virtual int get_party_id()	// Get/set index within party.
+		{ return -1; }
+	virtual void set_party_id(int i)
+		{  }
 	virtual int is_egg()		// An egg?
 		{ return 0; }
 					// Count contained objs.
@@ -307,7 +331,8 @@ public:
 		{  }
 	virtual Game_object *clone()	// Create a copy.
 		{ return new Ireg_game_object(*this); }
-	virtual void remove();		// Remove/delete this object.
+					// Remove/delete this object.
+	virtual void remove(int nodel = 0);
 	virtual Container_game_object *get_owner()
 		{ return owner; }
 	virtual void set_owner(Container_game_object *o)
@@ -328,9 +353,9 @@ public:
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
 		: Ireg_game_object(l, h, shapex, shapey, lft),
-		  last_object(0), volume_used(0)
+		  volume_used(0), last_object(0)
 		{  }
-	Container_game_object() : last_object(0), volume_used(0) {  }
+	Container_game_object() : volume_used(0), last_object(0) {  }
 	void remove(Game_object *obj);
 	Game_object *get_last_object()
 		{ return last_object; }
@@ -452,6 +477,8 @@ public:
 	int is_active()			// Can it be activated?
 		{ return !(flags & (1 << (int) hatched)); }
 	int within_distance(int abs_tx, int abs_ty);
+					// Render.
+	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	virtual int is_egg()		// An egg?
@@ -495,7 +522,7 @@ class Chunk_cache
 	void set_blocked_tile(int tx, int ty, int lift, int ztiles)
 		{
 		blocked[ty*tiles_per_chunk + tx] |= 
-						((1 << ztiles) - 1) << lift;
+						(((1 << ztiles) - 1) << lift);
 		}
 					// Clear blocked tile's bits.
 	void clear_blocked_tile(int tx, int ty, int lift, int ztiles)
@@ -504,7 +531,7 @@ class Chunk_cache
 					~(((1 << ztiles) - 1) << lift);
 		}
 					// Is a spot occupied?
-	int is_blocked(int lift, int tx, int ty, int& new_lift);
+	int is_blocked(int height, int lift, int tx, int ty, int& new_lift);
 					// Activate eggs nearby.
 	void activate_eggs(Chunk_object_list *chunk,
 				int tx, int ty, unsigned short eggbits);
@@ -571,8 +598,11 @@ public:
 		{ need_cache()->set_blocked(startx, starty, endx, endy,
 							lift, ztiles, set); }
 					// Is a spot occupied?
+	int is_blocked(int height, int lift, int tx, int ty, int& new_lift)
+		{ return cache->is_blocked(height, lift, tx, ty, new_lift); }
+					// Old entry:
 	int is_blocked(int lift, int tx, int ty, int& new_lift)
-		{ return cache->is_blocked(lift, tx, ty, new_lift); }
+		{ return cache->is_blocked(1, lift, tx, ty, new_lift); }
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles)
 		{ need_cache()->set_egged(egg, tiles); }
@@ -629,7 +659,6 @@ public:
  */
 class Sprite : public Container_game_object, public Time_sensitive
 	{
-	Chunk_object_list *chunk;	// The chunk list we're on.
 	int major_frame_incr;		// # of pixels to move
 					//   along major axis for each frame.
 	Frames_sequence *frames[8];	// A frame sequence for each dir.
@@ -653,8 +682,6 @@ protected:
 	int frame_time;			// Time between frames in msecs.
 public:
 	Sprite(int shapenum);
-	int in_world()			// Do we really exist?
-		{ return chunk != 0; }
 					// Set a frame seq. for a direction.
 	void set_frame_sequence(Direction dir, int cnt, unsigned char *seq)
 		{
@@ -667,35 +694,22 @@ public:
 		Frames_sequence *seq = frames[(int) dir];
 		return seq != 0 ? seq->get_resting() : -1;
 		}
-					// Move to new chunk, shape coords.
-	void move(int new_cx, int new_cy, Chunk_object_list *new_chunk, 
-			int new_sx, int new_sy, int new_frame, 
-			int new_lift = -1)
-		{
-		if (chunk)		// Remove from current chunk.
-			chunk->remove(this);
-		chunk = new_chunk;	// Add to new one.
-		set_shape_pos(new_sx, new_sy);
-		if (new_frame >= 0)
-			set_frame(new_frame);
-		if (new_lift >= 0)
-			set_lift(new_lift);
-		chunk->add(this);
-		}
-	int is_moving()
+	int get_frame_time()		// Return frame time if moving.
+		{ return is_walking() ? frame_time : 0; }
+	int is_walking()
 		{ return major_dir != 0; }
 	void stop();			// Stop motion.
 					// Start moving.
-	void start(unsigned long destx, unsigned long desty, int speed);
+	void start(unsigned long destx, unsigned long desty, int speed,
+								int delay = 0);
 	int at_destination()		// Reached/passed dest. in start()?
 		{ return major_distance <= 0; }
 	virtual int is_dragable();	// Can this be dragged?
 					// Figure next frame location.
-	int next_frame(unsigned long time,
-		int& new_cx, int& new_cy, int& new_tx, int& new_ty,
+	int next_frame(int& new_cx, int& new_cy, int& new_tx, int& new_ty,
 		int& new_frame);
 					// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, long udata) = 0;
 	};
 /*
  *	A rectangle:
@@ -769,5 +783,27 @@ public:
 					// At timeout, remove from screen.
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
+
+/*
+ *	Move an object, and possibly change its shape too.
+ */
+inline void Game_object::move
+	(
+	Chunk_object_list *old_chunk, 
+	int new_cx, int new_cy, 
+	Chunk_object_list *new_chunk, 
+	int new_sx, int new_sy, int new_frame, 
+	int new_lift
+	)
+	{
+	if (old_chunk)			// Remove from current chunk.
+		old_chunk->remove(this);
+	set_shape_pos(new_sx, new_sy);
+	if (new_frame >= 0)
+		set_frame(new_frame);
+	if (new_lift >= 0)
+		set_lift(new_lift);
+	new_chunk->add(this);
+	}
 
 #endif

@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 #include "mouse.h"
 #include "gumps.h"
+#include "args.h"
 
 Audio *audio;
 Configuration *config;
@@ -81,6 +82,29 @@ int main
 	char *argv[]
 	)
 	{
+	bool	needhelp=false;
+	string	gamename("default");
+        Args    parameters;
+
+	// Declare everything from the commandline that we're interested in.
+        parameters.declare("-h",&needhelp,true);
+        parameters.declare("--help",&needhelp,true);
+        parameters.declare("/?",&needhelp,true);
+        parameters.declare("/h",&needhelp,true);
+        parameters.declare("-game",&gamename,"default");
+
+	// Process the args
+        parameters.process(argc,argv);
+
+	if(needhelp)
+		{
+		cerr << "Usage: exult [--help|-h|/?|/h] [-game GAMENAME] " << endl <<
+			"--help\t\tShow this information" << endl <<
+			"-game GAMENAME\tSet the game data name to play" << endl <<
+			"\t(refer to the documentation)" << endl;
+		exit(1);
+		}
+
 	cout << "Exult V0." << RELNUM << 
 				".  Copyright (C) 2000 J. S. Freedman and Dancer Vesperman\n";
 	cout << "Low level graphics use the 'SDL' library.\n";
@@ -89,13 +113,46 @@ int main
 	config->read_config_file(USER_CONFIGURATION_FILE);
 	audio = new Audio;
 
-	string	data_directory, tracing;
-	config->value("config/disk/u7path",data_directory,".");
+	{
+	// Select the data directory
+	string	data_directory;
+	vector<string> vs=config->listkeys("config/disk/game",false);
+	if(vs.size()==0)
+		{
+#if DEBUG
+		cerr << "No game keys. Converting..." << endl;
+#endif
+		// Convert from the older format
+		config->value("config/disk/u7path",data_directory,".");
+		config->set("config/disk/game/blackgate/path",data_directory,true);
+		string	s("blackgate");
+		config->set("config/disk/game/blackgate/title",s,true);
+		vs.push_back(s);
+		}
+	if(gamename=="default")
+		{
+		// If the user didn't specify, start up the first game we can find.
+		gamename=vs[0];
+#if DEBUG
+		cerr << "Setting default game to " << gamename << endl;
+#endif
+		}
+	string d("config/disk/game/"),gametitle;
+	d+=gamename;
+	d+="/path";
+	config->value(d.c_str(),data_directory,".");
 	if(data_directory==".")
-		config->set("config/disk/u7path",data_directory,true);
+		config->set("config/disk/game/blackgate/path",data_directory,true);
 	cout << "chdir to " << data_directory << endl;
 	chdir(data_directory.c_str());
+	d="config/disk/game/";
+	d+=gamename;
+	d+="/title";
+	config->value(d.c_str(),data_directory,"(unnamed)");
+	cout << "Loading game: " << data_directory << endl;
+	}
 
+	string	tracing;
 	config->value("config/debug/trace/intrinsics",tracing,"no");
 	if(tracing=="yes")
 		usecode_trace=true;	// Enable tracing of intrinsics
@@ -491,10 +548,11 @@ static void Handle_keystroke
 	int shift
 	)
 	{
-	static int shape_cnt = 626, shape_frame = 0;
+	static int shape_cnt = 0x21e, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = -1, gump_frame = 0;
 	static int font_cnt = -1, font_frame = 0;
+	static int sprite_cnt = -1, sprite_frame = 0;
 	switch (sym)
 		{
 	case SDLK_PLUS:			// Brighten.
@@ -506,6 +564,28 @@ static void Handle_keystroke
 	case SDLK_b:
 		Breakpoint();
 		break;
+	case SDLK_h:
+		{
+		char buf[512];
+		sprintf(buf, "EXULT - Keyboard commands\n\n"
+			"Arrow keys - scroll map\n"
+			"Plus-Minus - Increment-decrement brightness\n"
+			"e - Toggle eggs visibility\n"
+			"fF - Show next-previous frame\n"
+			"g - Show next gump\n"
+			"l - Decrement lift\n"
+			"m - Change mouse shape\n"
+			"oO - Show next-previous sprite\n"
+			"p - Repaint screen\n"
+			"q - Exit\n"
+			"sS - Show next-previous shape\n"
+			"t - Fake time period change\n"
+		);
+			
+		gwin->paint_text_box(0, buf, 
+			15, 15, 300, 400);
+		break;
+		}
 	case SDLK_q:
 	case SDLK_ESCAPE:		// ESC key.
 		if (gwin->get_mode() == Game_window::gump)
@@ -539,6 +619,10 @@ static void Handle_keystroke
 	case SDLK_p:			// Rerender image.
 		gwin->paint();
 		break;
+	case SDLK_e:
+		gwin->paint_eggs = 1-gwin->paint_eggs;
+		gwin->paint();
+		break;
 	case SDLK_s:		// Show next shape.
 		if (!shift) {
 #if 1
@@ -570,8 +654,45 @@ static void Handle_keystroke
 		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
 		break;
 		}
+	case SDLK_o:
+	    if(shift) {
+		++sprite_frame;
+		if(sprite_frame==gwin->get_sprite_num_frames(sprite_cnt))
+		    sprite_frame = 0;
+	    } else {
+		sprite_frame = 0;
+		if (++sprite_cnt == gwin->get_num_sprites())
+		    sprite_cnt = 0;
+		/*if(sprite_cnt==22)
+		    ++sprite_cnt;*/
+		sprite_cnt=22;
+	    }
+	  cout << "Painting sprite " << sprite_cnt << "/" << gwin->get_num_sprites() << '\n';
+	  cout << "Frames = " << gwin->get_sprite_num_frames(sprite_cnt) << '\n';
+	  gwin->paint();
+	  gwin->paint_sprite(gwin->get_width()/2, gwin->get_height()/2,
+			   sprite_cnt, sprite_frame);
+	  break;       
+	case SDLK_g:
+	  gump_frame = 0;
+	  if (++gump_cnt == gwin->get_num_gumps())
+	    gump_cnt = 0;
+	  cout << "Painting gump " << gump_cnt << '\n';
+	  gwin->paint();
+	  gwin->paint_gump(gwin->get_width()/2, gwin->get_height()/2, 
+			   gump_cnt, gump_frame);
+	  break;
 	case SDLK_f:			// Show next frame.
-		cout << "Frame # " << ++shape_frame << '\n';
+		if(!shift) {
+			++shape_frame;
+			if(shape_frame >= gwin->get_shape_num_frames(shape_cnt))
+				shape_frame=0;
+		} else {
+			--shape_frame;
+			if(shape_frame<0)
+				shape_frame = gwin->get_shape_num_frames(shape_cnt)-1;
+		}
+		cout << "Frame # " << shape_frame << "/" << gwin->get_shape_num_frames(shape_cnt) << '\n';
 		gwin->paint();
 #if 1
 		gwin->paint_shape(200, 200, shape_cnt, shape_frame);

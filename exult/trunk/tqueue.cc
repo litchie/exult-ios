@@ -6,6 +6,7 @@
  **/
 
 #include "tqueue.h"
+#include <algorithm>
 
 /*
  *	Add an entry to the queue.
@@ -18,36 +19,31 @@ void Time_queue::add
 	long ud				// User data.
 	)
 	{
-	Queue_entry *newent;
-	if (free_entries)		// First try for a free entry.
+	Queue_entry	newent;
+	newent.set(t,obj,ud);
+	if(!data.size())
 		{
-		newent = free_entries;
-		free_entries = free_entries->next;
+		data.push_back(newent);
+		return;
 		}
-	else
-		newent = new Queue_entry();
-	newent->set(t, obj, ud);	// Store data.
-	if (!head)			// Empty queue?
-		head = newent->next = newent->prev = newent;
-	else
-		{			// Find where to insert it.
-		Queue_entry *prev = head->prev;
-		while (t < prev->time)
-					// Before head of chain?
-			if (prev == head)
-				{
-				head = newent;
-				prev = prev->prev;
-				break;
-				}
-			else
-				prev = prev->prev;
-		newent->next = prev->next;
-		newent->prev = prev;
-		prev->next->prev = newent;
-		prev->next = newent;
+	for(Temporal_sequence::iterator it=data.begin();
+		it!=data.end(); ++it)
+		{
+		if(newent<*it)
+			{
+			data.insert(it,newent);
+			return;
+			}
 		}
+	data.push_back(newent);
 	}
+
+bool    operator <(const Queue_entry &q1,const Queue_entry &q2)
+{
+        if(q1.time<q2.time)
+                return true;
+        return false;
+}
 
 /*
  *	Remove first entry containing a given object.
@@ -60,23 +56,40 @@ int Time_queue::remove
 	Time_sensitive *obj
 	)
 	{
-	if (!head)
-		return (0);		// Empty.
-	Queue_entry *ent = head;
-	do
+	if(data.size()==0)
+		return 0;
+	for(Temporal_sequence::iterator it=data.begin();
+		it!=data.end(); ++it)
 		{
-		if (ent->handler == obj)// Found it?
+		if(it->handler==obj)
 			{
-			if (ent == head)
-				remove_head();
-			else
-				remove_non_head(ent);
-			return (1);
+			data.erase(it);
+			return 1;
 			}
-		ent = ent->next;
 		}
-	while (ent != head);
 	return (0);			// Not found.
+	}
+
+/*
+ *	See if a given entry is in the queue.
+ *
+ *	Output:	1 if found, else 0.
+ */
+
+int Time_queue::find
+	(
+	Time_sensitive *obj
+	)
+	{
+	if(data.size()==0)
+		return 0;
+	for(Temporal_sequence::iterator it=data.begin();
+		it!=data.end(); ++it)
+		{
+		if(it->handler==obj)
+			return 1;
+		}
+	return 0;
 	}
 
 /*
@@ -89,13 +102,16 @@ void Time_queue::activate0
 	unsigned long curtime		// Current time.
 	)
 	{
+	if(data.size()==0)
+		return;
+	Queue_entry ent;
 	do
 		{
-		Queue_entry *ent = head;
-		Time_sensitive *obj = head->handler;
-		long udata = head->udata;
-		remove_head();		// Remove from chain.
+		ent=data.front();
+		Time_sensitive *obj = ent.handler;
+		long udata = ent.udata;
+		data.erase(data.begin());	// Remove from chain.
 		obj->handle_event(curtime, udata);
 		}
-	while (head && !(curtime < head->time));
+	while (data.size() && !(curtime < data.front().time));
 	}
