@@ -1024,6 +1024,13 @@ Ireg_game_object *Game_window::create_ireg_object
 			v->set_pos(usecode->virtue_stones[frnum]);
 		return v;
 		}
+	else if (shnum == 761)		// Spellbook.
+		{
+		static unsigned char circles[9] = {0};
+		return new Spellbook_object(
+				shnum, frnum, tilex, tiley, lift,
+				&circles[0], 0L);
+		}
 	else
 		return new Ireg_game_object(shnum, frnum, tilex, tiley, lift);
 	}
