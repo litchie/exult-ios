@@ -34,7 +34,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "chunks.h"
 #include "objiter.h"
-#include "SDL_timer.h"
 #include "game.h"
 
 using std::ostream;
@@ -425,7 +424,7 @@ void Barge_object::travel_to_tile
 		if (!ice_raft)		// Ice-raft doesn't rotate.
 			face_direction(ndir);
 		if (!in_queue())	// Not already in queue?
-			gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+			gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 		}
 	else
 		frame_time = 0;		// Not moving.

@@ -397,8 +397,8 @@ void BG_Game::scene_butterfly()
 		// Move the butterfly along its path
 		//
 		frame = 0;
-		Sint16 delay = BUTTERFLY_FRAME_DURATION;
-		Uint16 ticks = SDL_GetTicks();
+		Sint32 delay = BUTTERFLY_FRAME_DURATION;
+		Uint32 ticks = SDL_GetTicks();
 		for(i=0; i < butterfly_num_coords-1; ++i)
 		{
 			for(j=0; j < BUTTERFLY_SUB_FRAMES; ++j)

@@ -506,7 +506,7 @@ void Game_window::set_time_stopped
 		time_stopped = 0;
 	else
 		{
-		long new_expire = SDL_GetTicks() + delay;
+		long new_expire = Game::get_ticks() + delay;
 		if (new_expire > time_stopped)	// Set expiration time.
 			time_stopped = new_expire;
 		}
@@ -522,7 +522,7 @@ long Game_window::check_time_stopped
 	{
 	if (time_stopped == -1)
 		return 3000;
-	long delay = time_stopped - SDL_GetTicks();
+	long delay = time_stopped - Game::get_ticks();
 	if (delay > 0)
 		return delay;
 	time_stopped = 0;		// Done.
@@ -1050,7 +1050,14 @@ void Game_window::get_ifix_chunk_objects
 	Map_chunk *olist = get_chunk(cx, cy);
 	for (int i = 0; i < cnt; i++, ent += 4)
 		{
-		Ifix_game_object *obj = new Ifix_game_object(ent);
+		Ifix_game_object *obj;
+		int shnum = ent[2]+256*(ent[3]&3);
+		Shape_info& info = shapes.get_info(shnum);
+		if (info.is_animated())
+			obj = new Animated_ifix_object(ent);
+		else
+			obj = new Ifix_game_object(ent);
+
 		olist->add(obj);
 		}
 	delete[] entries;		// Done with buffer.
@@ -1616,7 +1623,7 @@ void Game_window::read_gwin
 	clock.set_minute(Read2(gin));
 	last_restore_hour = clock.get_total_hours();
 	if (!clock.in_queue())		// Be sure clock is running.
-		tqueue->add(SDL_GetTicks(), &clock, (long) this);
+		tqueue->add(Game::get_ticks(), &clock, (long) this);
 	if (!gin.good())		// Next ones were added recently.
 		throw file_read_exception(GWINDAT);
 	special_light = Read4(gin);
@@ -2523,7 +2530,7 @@ void Game_window::add_text
 	painted = 1;
 	add_effect(txt);
 					// Show for a couple seconds.
-	unsigned long curval = SDL_GetTicks();
+	unsigned long curval = Game::get_ticks();
 	tqueue->add(curval + 2000, txt, (long) this);
 	}
 
@@ -2768,7 +2775,7 @@ void Game_window::add_nearby_npc
 	if (!npc->is_nearby())
 		{
 		npc->set_nearby();
-		npc_prox->add(SDL_GetTicks(), npc);
+		npc_prox->add(Game::get_ticks(), npc);
 		}
 	}
 
@@ -2797,7 +2804,7 @@ void Game_window::add_nearby_npcs
 	{
 	stop_cx %= c_num_chunks;	// Watch out for end.
 	stop_cy %= c_num_chunks;
-	unsigned long curtime = SDL_GetTicks();
+	unsigned long curtime = Game::get_ticks();
 	for (int cy = from_cy; cy != stop_cy; cy = INCR_CHUNK(cy))
 		for (int cx = from_cx; cx != stop_cx; cx = INCR_CHUNK(cx))
 			for (Npc_actor *npc = get_chunk(cx, cy)->get_npcs();
@@ -2980,7 +2987,7 @@ void Game_window::get_focus
 	{
 	cout << "Game resumed" << endl;
 	focus = 1; 
-	tqueue->resume(SDL_GetTicks());
+	tqueue->resume(Game::get_ticks());
 	}
 void Game_window::lose_focus
 	(
@@ -2988,7 +2995,7 @@ void Game_window::lose_focus
 	{
 	cout << "Game paused" << endl;
 	focus = false; 
-	tqueue->pause(SDL_GetTicks());
+	tqueue->pause(Game::get_ticks());
 	}
 
 
