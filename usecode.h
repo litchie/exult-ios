@@ -310,8 +310,8 @@ public:
         USECODE_INTRINSIC_DECL(game_minute);
 	USECODE_INTRINSIC_DECL(get_npc_number);
 	USECODE_INTRINSIC_DECL(part_of_day);
-	USECODE_INTRINSIC_DECL(get_allignment);
-	USECODE_INTRINSIC_DECL(set_allignment);
+	USECODE_INTRINSIC_DECL(get_alignment);
+	USECODE_INTRINSIC_DECL(set_alignment);
 	USECODE_INTRINSIC_DECL(item_say);
 	USECODE_INTRINSIC_DECL(get_lift);
 	USECODE_INTRINSIC_DECL(set_lift);
