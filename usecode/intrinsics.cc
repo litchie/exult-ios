@@ -1705,6 +1705,7 @@ USECODE_INTRINSIC(clear_item_flag)
 		obj->clear_flag(flag);
 		if (flag == Obj_flags::dont_render)
 			{	// Show change in status.
+			show_pending_text();	// Fixes Lydia-tatoo.
 			gwin->paint();
 			gwin->show();
 			}

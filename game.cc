@@ -176,6 +176,7 @@ Game *Game::create_game(Exult_Game mygame)
 	  keybinder->LoadFromFile(keyfilename.c_str());
 
 	delete[] static_identity;
+	Audio::get_ptr()->Init_sfx();
 	return game;
 }
 

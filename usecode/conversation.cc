@@ -197,7 +197,11 @@ void Conversation::show_face(int shape, int frame, int slot)
 		if (shape == 28 && main_actor->get_flag(Obj_flags::petra))
 			shape = main_actor->get_face_shapenum();
 		if (shape == 0)		// In any case, get correct frame.
+			{
 			frame = SI_get_frame(main_actor);
+			if (main_actor->get_flag(Obj_flags::tattooed))
+				shape = 299;
+			}
 	}
 					// Get screen dims.
 	int screenw = gwin->get_width(), screenh = gwin->get_height();
@@ -388,7 +392,11 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 		frame = 0;
 	}
 	else if (SI)
+		{
 		frame = SI_get_frame(main_actor);
+		if (shape == 0 && main_actor->get_flag(Obj_flags::tattooed))
+			shape = 299;
+		}
 	else
 		frame = main_actor->get_type_flag(Actor::tf_sex);
 

@@ -388,6 +388,7 @@ void Usecode_machine::show_npc_face
 		{
 		gwin->end_gump_mode();
 		gwin->paint();
+		init_conversation();	// jsf-Added 4/20/01 for SI-Lydia.
 		}
 	conv->show_face(shape, frame, slot);
 //	user_choice = 0;		// Seems like a good idea.
@@ -595,7 +596,7 @@ void Usecode_machine::item_say
 			box = gump->get_shape_rect(obj);
 		else
 			box = gwin->get_shape_rect(obj->get_outermost());
-		gwin->add_text(str, box.x, box.y);
+		gwin->add_text(str, box.x, box.y, obj);
 		gwin->show();		// Not sure.+++++testing.
 		}
 	}
