@@ -282,13 +282,11 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 		xmldir = datastr.c_str();
 		}
 	string defgame;			// Default game name.
-	config->value("config/estudio/default_game", defgame, "");
-	if (defgame != "")
-		{
-		default_game = g_strdup(defgame.c_str());
-		if (!game && !gamedir)
-			game = default_game;
-		}
+	config->value("config/estudio/default_game", defgame, "blackgate");
+	default_game = g_strdup(defgame.c_str());
+	if (!game && !gamedir)
+		game = default_game;
+	config->set("config/estudio/default_game", defgame, true);
 	char path[256];			// Set up paths.
 	if(xmldir)
 		strcpy(path, xmldir);
@@ -333,9 +331,9 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 		set_game_path(gamedir);
 		}
 	string iedit;			// Get image-editor command.
-	config->value("config/estudio/image_editor", iedit, "");
-	if (iedit != "")
-		image_editor = g_strdup(iedit.c_str());
+	config->value("config/estudio/image_editor", iedit, "gimp-remote -n");
+	image_editor = g_strdup(iedit.c_str());
+	config->set("config/estudio/image_editor", iedit, true);
 #ifdef WIN32
     OleInitialize(NULL);
 #endif
