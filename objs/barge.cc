@@ -341,9 +341,9 @@ void Barge_object::add_dirty
 	Rectangle box(x - w, y - h, w, h);
 	box.enlarge(10);		// Make it a bit bigger.
 	if (dir%2)			// Horizontal?  Stretch.
-		{ box.x -= 15; box.w += 30; }
+		{ box.x -= 18; box.w += 36; }
 	else
-		{ box.y -= 15; box.h += 30; }
+		{ box.y -= 18; box.h += 36; }
 	box = gwin->clip_to_win(box);	// Intersect with screen.
 	gwin->add_dirty(box);
 	}
