@@ -407,9 +407,21 @@ if test x$enable_tools = xno; then
 	enable_gtk_interface=no
 	enable_gimp_plugin=no
 	enable_data=no
+	enable_compiler=no
 else
 	AM_CONDITIONAL(BUILD_TOOLS, true)
 	AC_MSG_RESULT(no)
+fi
+
+dnl Build compiler?
+AC_ARG_ENABLE(compiler, [ --disable-compiler             don't build the usecode compiler [default no]],,enable_compiler=yes)
+AC_MSG_CHECKING(whether to build the usecode compiler)
+if test x$enable_compiler = xno; then
+	AC_MSG_RESULT(no)
+	AM_CONDITIONAL(BUILD_COMPILER, false)
+else
+	AC_MSG_RESULT(yes)
+	AM_CONDITIONAL(BUILD_COMPILER, true)
 fi
 
 dnl Build data files?
