@@ -108,7 +108,7 @@ Chunk_terrain::Chunk_terrain
 	(
 	unsigned char *data		// Chunk data.
 	) : rendered_flats(0), num_clients(0), render_queue_next(0),
-	    render_queue_prev(0)
+	    render_queue_prev(0), modified(false)
 	{
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
@@ -120,14 +120,14 @@ Chunk_terrain::Chunk_terrain
 	}
 
 /*
- *	Copy another.
+ *	Copy another.  The 'modified' flag is set to true.
  */
 
 Chunk_terrain::Chunk_terrain
 	(
 	const Chunk_terrain& c2
 	) : rendered_flats(0), num_clients(0), render_queue_next(0),
-	    render_queue_prev(0)
+	    render_queue_prev(0), modified(true)
 	{
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
@@ -172,6 +172,21 @@ bool Chunk_terrain::operator<
 				return false;
 			}
 	return false;			// Equal if we got here.
+	}
+
+/*
+ *	Set tile's shape.
+ *	NOTE:  Set's 'modified' flag.
+ */
+
+void Chunk_terrain::set_flat
+	(
+	int tilex, int tiley,
+	ShapeID id
+	)
+	{
+	shapes[16*tiley + tilex] = id;
+	modified = true;
 	}
 
 /*
@@ -245,7 +260,6 @@ void Chunk_terrain::write_flats
 		for (int tx = 0; tx < c_tiles_per_chunk; tx++)
 			{
 			ShapeID id = get_flat(tx, ty);
-			//++++++++++Skip RLE's???
 			int shapenum = id.get_shapenum(), 
 			    framenum = id.get_framenum();
 			*chunk_data++ = shapenum&0xff;

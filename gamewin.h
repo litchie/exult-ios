@@ -462,7 +462,7 @@ public:
 	static char *get_schunk_file_name(char *prefix,
 						int schunk, char *fname);
 					// Write (static) map objects.
-	void write_map_objects(std::ostream& ochunks, int schunk);
+	void write_ifix_objects(int schunk);
 					// Get "ifix" objects for a superchunk.
 	void get_ifix_objects(int schunk);
 					// Get "ifix" objs. for given chunk.

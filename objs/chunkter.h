@@ -40,6 +40,7 @@ class Chunk_terrain
 					//   turned into Game_objects in the
 					//   chunks that point to us.
 	int num_clients;		// # of Chunk's that point to us.
+	bool modified;			// Changed (by map-editor).
 	Image_buffer8 *rendered_flats;	// Flats rendered for entire chunk.
 					// Most-recently used circular queue
 					//   for rendered_flats:
@@ -63,11 +64,15 @@ public:
 		{ num_clients++; }
 	void remove_client()
 		{ num_clients--; }
+	bool is_modified()
+		{ return modified; }
 					// Less-than c2 (for STL Map)?
 	bool operator<(const Chunk_terrain& c2) const;
 					// Get tile's shape ID.
 	ShapeID get_flat(int tilex, int tiley) const
 		{ return shapes[16*tiley + tilex]; }
+					// Set tile's shape.
+	void set_flat(int tilex, int tiley, ShapeID id);
 	Image_buffer8 *get_rendered_flats()
 		{
 		if (render_queue != this)// Not already first in queue?

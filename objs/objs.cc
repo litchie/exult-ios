@@ -1510,26 +1510,6 @@ Game_object *Game_object::attacked
 	}
 
 /*
- *	Write out a chunk object.
- */
-
-void Game_object::write_map
-	(
-	ostream& ifix,			// Where to write.
-	unsigned char *chunk_data	// Store chunk entries here.
-	)
-	{
-					// Get tile # within chunk.
-	int tnum = get_tx() + get_ty()*c_tiles_per_chunk;
-	ShapeID curshape(chunk_data[tnum*2], chunk_data[tnum*2 + 1]);
-	assert(curshape.is_invalid());	// Better not already be set.
-					// Store 2-bytes for shape, frame.
-	int shapenum = get_shapenum(), framenum = get_framenum();
-	chunk_data[tnum*2] = shapenum&0xff;
-	chunk_data[tnum*2 + 1] = ((shapenum>>8)&3) | (framenum<<2);
-	}
-
-/*
  *	Write the common IREG data for an entry.
  */
 
@@ -1550,10 +1530,9 @@ void Game_object::write_common_ireg
  *	Write out an IFIX object.
  */
 
-void Ifix_game_object::write_map
+void Ifix_game_object::write_ifix
 	(
-	ostream& ifix,			// Where to write.
-	unsigned char *chunk_data	// Store chunk entries here.
+	ostream& ifix			// Where to write.
 	)
 	{
 	unsigned char buf[4];
