@@ -30,7 +30,11 @@ class Object_browser {
 private:
 	GtkWidget *widget;
 protected:
-	int selected;			// Index of user-selected entry.
+	int selected;			// Index of user-selected entry,
+					//   counting from the top-left entry
+					//   currently rendered.
+	int index0;			// Index of top-leftmost in
+					//   displayed list.
 	GtkWidget *vscroll;		// Vertical scrollbar.
 	GtkWidget *hscroll;		// Horizontal scrollbar.
 	Shape_group *group;		// Non-null to use filter.
@@ -50,8 +54,8 @@ public:
 	GtkWidget *get_widget();
 	Shape_group *get_group()
 		{ return group; }
-	int get_selected()		// Return index of selected item.
-		{ return selected; }	// (-1 if none.)
+	int get_selected()		// Return index of sel'd item, or -1.
+		{ return selected < 0 ? -1 : index0 + selected; }
 	GtkWidget *get_find_text()	// Get 'find' text widget.
 		{ return find_text; }
 	virtual void load()		// Load from file data.
