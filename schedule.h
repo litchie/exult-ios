@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Schedule.h - Schedules for characters.
  **
  **	Written: 6/6/2000 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Gamedat.cc - Create gamedat files from a savegame.
  **
  **	Written: 2/4/00 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Actions.cc - Action controllers for actors.
  **
  **	Written: 4/20/2000 - JSF

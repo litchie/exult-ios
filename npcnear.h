@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Npcnear.h - At random times, run proximity usecode funs. on nearby
  **		NPC's.
  **

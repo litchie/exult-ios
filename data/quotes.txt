@@ -105,3 +105,9 @@
 \C"Using missing functionality to
 \C work-around a bug? Clever."
 \L - Amy
+
+\C"Hmm, 'stumbled' is an apt description 
+\Cof my development process in Exult.
+\CMaybe I should write a software-engineering
+\Cbook about it :-)"
+\L - Jeff

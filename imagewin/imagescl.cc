@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Imagescl.cc - Methods to blit with scaling.
  **
  **	Written: 6/16/2000 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Citerate.h - Chunk iterator.
  **
  **	Written: 7/13/2000 - JSF

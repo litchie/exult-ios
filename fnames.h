@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Fnames.h - Names of data files for Exult.
  **
  **	Written: 6/4/99 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Bodies.h - Associate bodies with 'live' shapes.
  **
  **	Written: 6/28/2000 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Shapeinf.cc: Info. about shapes read from various 'static' data files.
  **
  **	Written: 4/29/99 - JSF

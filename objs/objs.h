@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Objs.h - Game objects.
  **
  **	Written: 10/1/98 - JSF

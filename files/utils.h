@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Utils.h - Common utility routines.
  **
  **	Written: 10/1/98 - JSF

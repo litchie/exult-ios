@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Server.cc - Server functions for Exult (NOT ExultStudio).
  **
  **	Written: 5/2/2001 - JSF

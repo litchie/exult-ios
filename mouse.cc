@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Mouse.cc - Mouse pointers.
  **
  **	Written: 3/15/2000 - JSF

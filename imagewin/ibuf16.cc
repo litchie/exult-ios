@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Ibuf16.cc - 16-bit image buffer.
  **
  **	Written: 8/13/98 - JSF

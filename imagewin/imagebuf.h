@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Imagebuf.h - A buffer for blitting.
  **
  **	Written: 8/13/98 - JSF

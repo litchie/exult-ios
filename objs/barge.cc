@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Barge.cc - Ships, carts, flying-carpets.
  **
  **	Written: 7/13/2000 - JSF

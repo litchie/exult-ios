@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Path.cc - Pathfinding algorithms.
  **
  **	Written: 4/7/2000 - JSF

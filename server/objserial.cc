@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Objserial.cc - Object serialization.
  **
  **	Written: 5/25/2001 - JSF

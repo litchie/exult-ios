@@ -1,3 +1,7 @@
+2001-07-11  Max Horn <max@quendi.de>
+	* data/quotes.txt: new quote ;)
+	* various files: removed the emacs header that force the fundamental mode to be used
+	
 2001-07-11  Ryan Nunn <triforce@merlin.net.au>
 	* objs/chunks.cc : Added shapes 394 and 941 as mountain types for
 	  dungeon checking in Serpent Isle. Removed the per Superchuck dungeon

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Virstone.cc - Virtue stones.
  **
  **	Written: 10/27/2000 - JSF

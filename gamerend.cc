@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Gamerend.cc - Rendering methods.
  **
  **	Written: 7/22/98 - JSF

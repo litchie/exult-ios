@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Scale.h - Trying to scale with bilinear interpolation.
  **
  **	Written: 6/14/00 - JSF

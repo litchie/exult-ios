@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Spellbook.cc - Spellbook object.
  **
  **	Written: 10/1/98 - JSF

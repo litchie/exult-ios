@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Handle access to one of the xxx.vga files.
  **
  **	Written: 4/29/99 - JSF
