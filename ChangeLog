@@ -1,3 +1,11 @@
+2001-04-29  Christoph Reichenbach  <jameson@linuxgames.com>
+
+	* usecode/compiler/ucparse.yy: Included config.h
+
+	* usecode/compiler/ucfun.h: 
+	* usecode/compiler/ucmain.cc: 
+	* usecode/compiler/ucfun.h: Removed iosfwd include on Alpha/Linux/cxx
+
 2001-04-29  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Remove_from_area() intrinsic, Chunk_object_list::find_in_area(),
