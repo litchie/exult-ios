@@ -1,3 +1,8 @@
+2004-08-29    <jeff@mini.nerble.net>
+
+	* shapes/shapevga.cc (Shapes_vga_file): Resize 'info' list when a
+	new shape is added.
+
 2004-08-28    <jeff@mini.nerble.net>
 
 	* shapeid.cc (Shape_manager): Set up shape info. entries for the
