@@ -1,3 +1,6 @@
+2001-02-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* browser.cc, soundtest.cc: you can now take screenshots in the shape browser and sound tester
+
 2001-02-10  Christoph Reichenbach  <jameson@linuxgames.com>
 	* alpha_kludges.h: Added clog to the std:: namespace
 	* usecode/compiler/ucsym.cc: Explicitly specified String_compare in

@@ -25,6 +25,8 @@
 #include "browser.h"
 #include "font.h"
 #include "items.h"
+
+extern void make_screenshot(bool silent=false);
 	
 ShapeBrowser::ShapeBrowser()
 	{
@@ -190,9 +192,13 @@ void ShapeBrowser::browse_shapes()
 							num_xforms);
 					break;
 				// Shapes
-				case SDLK_s:
-					handle_key(shift, current_shape, num_shapes);
-					current_frame = 0;
+			        case SDLK_s:
+					if ((event.key.keysym.mod & KMOD_ALT) && (event.key.keysym.mod & KMOD_CTRL)) 
+						make_screenshot(true);
+					else {
+						handle_key(shift, current_shape, num_shapes);
+						current_frame = 0;
+					}
 					break;
 				case SDLK_UP:
 					handle_key(1, current_shape, num_shapes);
