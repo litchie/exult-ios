@@ -612,6 +612,7 @@ void XMIDI::ApplyFirstState(first_state &fs, int chan_mask)
 	}
 }
 
+#ifndef BEOS
 // Unsigned 64 Bit Int emulation. Only supports SOME operations
 struct uint64 {
 	uint32	low;		// Low is first so uint64 can be cast as uint32 to get low dword
@@ -824,6 +825,7 @@ struct uint64 {
 		else printf ("%X", low);
 	}
 };
+#endif
 
 //
 // AdjustTimings

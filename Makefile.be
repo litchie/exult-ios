@@ -15,8 +15,8 @@ CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
 	-DHAVE_ZIP_SUPPORT -I$(SRC)/files/zip \
 	-I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/data -I$(SRC)/tools \
 	-I$(SRC)/files -I$(SRC) -I$(SRC)/audio -I$(SRC)/conf \
-	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
-	-DHAVE_SNPRINTF $(SDL_CFLAGS)
+	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode
+	-I$(SRC)/headers -DHAVE_SNPRINTF $(SDL_CFLAGS)
 CXXFLAGS=-O2 -Wall
 
 LFLAGS=
