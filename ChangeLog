@@ -1,3 +1,10 @@
+2004-02-25  Ryan Nunn  <colourles@users.sourceforge.net>
+	* msvcstuff/*.* : Replacing MSVC 6.0 projects with MSVC.Net projects
+	* other files: Removing some MSVC hacks
+	* Since MSVC 6.0 is no longer going to be supported, and MSVC.Net is 
+	  more standards compliant, if you are writing standards compliant code
+	  you shouldn't step on my toes anymore.
+
 2004-02-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/custom_sword.shp: custom sword paperdoll art
 
