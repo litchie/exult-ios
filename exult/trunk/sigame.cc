@@ -814,7 +814,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 		
 		char npc_name[9];
 		char disp_name[10];
-		int max_len = 8;
+		int max_len = 16;
 		npc_name[0] = 0;
 		int sex = 0;
 		int selected = 0;
@@ -840,7 +840,15 @@ bool SI_Game::new_game(Vga_file &shapes)
 			if(event.type==SDL_KEYDOWN) {
 				switch(event.key.keysym.sym) {
 				case SDLK_SPACE:
-					if(selected==1)
+					if(selected==0)
+					{
+						int len = strlen(npc_name);
+						if(len<max_len) {
+							npc_name[len] = ' ';
+							npc_name[len+1] = 0;
+						}
+					}
+					else if(selected==1)
 						++sex;
 					if(sex>5)
 						sex = 0;
@@ -897,7 +905,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 			set_avname (npc_name);
 			set_avsex (1-(sex%2));
 			set_avskin (sex/2);
-			gwin->init_gamedat(true);
+			ok = gwin->init_gamedat(true);
 		}
 		win->fill8(0,gwin->get_width(),90,0,menuy);
 		return ok;
