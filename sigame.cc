@@ -127,13 +127,7 @@ void SI_Game::play_intro()
 		}
 		win->show();
 
-		for (i = 0; i < 300; i++)
-			if (wait_delay (10))
-			{
-				delete [] fli_b;
-				return;
-			}
-
+		SDL_Delay (3000);
 
 		for (j = 20; j; j--)
 		{
@@ -146,7 +140,6 @@ void SI_Game::play_intro()
 
 
 		delete [] fli_b;
-
 
 		if (wait_delay (0))
 			return;
@@ -774,6 +767,13 @@ void SI_Game::top_menu()
 	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	pal.load("static/mainshp.flx",26);
 	pal.fade_in(60);	
+}
+
+void SI_Game::show_journey_failed()
+{
+	pal.fade_out(50);
+	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	journey_failed_text();
 }
 	
 void SI_Game::end_game(bool success) 

@@ -310,6 +310,13 @@ void BG_Game::top_menu()
 	pal.load("static/intropal.dat",0);
 	pal.fade_in(60);	
 }
+
+void BG_Game::show_journey_failed()
+{
+	pal.fade_out(50);
+	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	journey_failed_text();
+}
 	
 void BG_Game::end_game(bool success) 
 	{
