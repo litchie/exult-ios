@@ -202,7 +202,7 @@ public:
 	int get_dir_framenum(int dir, int frnum)
 		{ return (frnum&0xf) + rotate[dir]; }
 					// Move to new abs. location.
-	void move(int newtx, int newty, int newlift);
+	virtual void move(int newtx, int newty, int newlift);
 					// Move and change shape/frame.
 	void move(Chunk_object_list *old_chunk, int new_cx, int new_cy, 
 			Chunk_object_list *new_chunk, 
