@@ -503,7 +503,10 @@ void Talk_schedule::now_what
 	case 0:				// Start by approaching Avatar.
 		{
 		if (npc->distance(gwin->get_main_actor()) > 50)
-			return;		// But not if too far away.
+			{		// Too far?  Try a little later.
+			npc->start(250, 5000);
+			return;
+			}
 					// Aim for within 5 tiles.
 		Fast_pathfinder_client cost(5);
 		Actor_action *pact = Path_walking_actor_action::create_path(
@@ -538,11 +541,21 @@ void Talk_schedule::now_what
 		return;
 		}
 	case 3:				// Talk.
+					// Got to be reachable.
+		if (!Fast_pathfinder_client::is_grabable(
+			npc->get_abs_tile_coord(),
+			gwin->get_main_actor()->get_abs_tile_coord()))
+			{
+			phase = 0;
+			npc->start(250, 1000);
+			return;
+			}
 		gwin->add_dirty(npc);	// But first face Avatar.
 		npc->set_frame(npc->get_dir_framenum(npc->get_direction(
 				gwin->get_main_actor()), Actor::standing));
 		gwin->add_dirty(npc);
 		phase++;
+		npc->stop();		// Stop moving.
 					// NOTE:  This could DESTROY us!
 		if (Game::get_game_type() == SERPENT_ISLE)
 			npc->activate(gwin->get_usecode(), 9);
