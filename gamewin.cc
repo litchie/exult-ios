@@ -2084,7 +2084,8 @@ void Game_window::init_faces
 	(
 	)
 	{
-	for (int i = 0; i < num_faces; i++)
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
+	for (int i = 0; i < max_faces; i++)
 		{
 		delete face_info[i];
 		face_info[i] = 0;
@@ -2105,11 +2106,6 @@ void Game_window::show_face
 	{
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 	mode = conversation;		// Make sure mode is set right.
-	if (num_faces == max_faces)
-		{
-		cout << "Can't show more than " << max_faces << " faces" << endl;
-		return;
-		}
 
 	if (shape == 28 && main_actor->get_flag(Actor::petra)) // Petra
 	{
@@ -2138,16 +2134,21 @@ void Game_window::show_face
 	Npc_face_info *info = 0;
 	Rectangle actbox;		// Gets box where face goes.
 					// See if already on screen.
-	for (int i = 0; i < num_faces; i++)
+	for (int i = 0; i < max_faces; i++)
 		if (face_info[i] && face_info[i]->shape == shape)
 			{
 			info = face_info[i];
 			last_face_shown = i;
 			break;
 			}
-//++++++Really should look for empty slot & use it.
 	if (!info)			// New one?
 		{
+		if (num_faces == max_faces)
+			{
+			cout << "Can't show more than " << max_faces << 
+							" faces" << endl;
+			return;
+			}
 					// Get last one shown.
 		Npc_face_info *prev = num_faces ? face_info[num_faces - 1] : 0;
 		info = new Npc_face_info(shape);
@@ -2196,11 +2197,12 @@ void Game_window::remove_face
 	int shape
 	)
 	{
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 	int i;				// See if already on screen.
-	for (i = 0; i < num_faces; i++)
+	for (i = 0; i < max_faces; i++)
 		if (face_info[i] && face_info[i]->shape == shape)
 			break;
-	if (i == num_faces)
+	if (i == max_faces)
 		return;			// Not found.
 	Npc_face_info *info = face_info[i];
 	paint(info->face_rect);
@@ -2252,7 +2254,8 @@ int Game_window::is_npc_text_pending
 	(
 	)
 	{
-	for (int i = 0; i < num_faces; i++)
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
+	for (int i = 0; i < max_faces; i++)
 		if (face_info[i] && face_info[i]->text_pending)
 			return (1);
 	return (0);
@@ -2266,7 +2269,8 @@ void Game_window::clear_text_pending
 	(
 	)
 	{
-	for (int i = 0; i < num_faces; i++)	// Clear 'pending' flags.
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
+	for (int i = 0; i < max_faces; i++)	// Clear 'pending' flags.
 		if (face_info[i])
 			face_info[i]->text_pending = 0;
 	}
@@ -2281,6 +2285,7 @@ void Game_window::show_avatar_choices
 	char **choices
 	)
 	{
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 	mode = conversation;
 					// Get screen rectangle.
 	Rectangle sbox = get_win_rect();
@@ -2316,8 +2321,12 @@ void Game_window::show_avatar_choices
 	}
 
 	Shape_frame *face = faces.get_shape(shape, frame);
+	int empty;			// Find face prev. to 1st empty slot.
+	for (empty = 0; empty < max_faces; empty++)
+		if (!face_info[empty])
+			break;
 					// Get last one shown.
-	Npc_face_info *prev = num_faces ? face_info[num_faces - 1] : 0;
+	Npc_face_info *prev = empty ? face_info[empty - 1] : 0;
 	int fx = prev ? prev->face_rect.x + prev->face_rect.w + 4 : 16;
 	int fy;
 	if (Game::get_game_type()==SERPENT_ISLE)
@@ -2342,7 +2351,8 @@ void Game_window::show_avatar_choices
 					// Set to where to draw sentences.
 	Rectangle tbox(mbox.x + mbox.w + 8, mbox.y + 4,
 				sbox.w - mbox.x - mbox.w - 16,
-				sbox.h - mbox.y - 16);
+//				sbox.h - mbox.y - 16);
+				5*height);// Try 5 lines.
 	tbox = tbox.intersect(sbox);
 	paint(tbox);			// Paint background.
 	delete [] conv_choices;		// Set up new list of choices.
@@ -2497,6 +2507,7 @@ void Game_window::end_gump_mode
 	(
 	)
 	{
+	int had_gumps = (open_gumps != 0);
 	while (open_gumps)		// Remove all gumps.
 		{
 		Gump_object *gmp = open_gumps;
@@ -2506,7 +2517,8 @@ void Game_window::end_gump_mode
 	mode = normal;
 	clock.set_palette();
 	npc_prox->wait(4);		// Delay "barking" for 4 secs.
-	paint();
+	if (had_gumps)
+		paint();
 	}
 
 /*
