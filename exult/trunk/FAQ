@@ -1,14 +1,12 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 04 March 2003(GMT)
+last changed: 04 May 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 04 March 2003
-0.2. - 03 November 2002
-0.3. - 24 October 2002
-0.4. - 11 September 2002
+0.1. - 04 May 2003
+0.2. - 04 March 2003
 
 1. Introduction
 1.1. Important Notice
@@ -65,10 +63,13 @@ The latest version of this document can be found at http://exult.sourceforge.net
 5.1. Why is there a gameplay FAQ?
 5.2. Why can't I cast mark/recall on the Virtue Runes (BG)?
 5.3. Why can't I get the sacrifice in Skara Brae to work (BG)?
-5.4. Where is the pikeman that lets you train in Monitor (SI)?
-5.5. How do I get the Mandrake Roots for Fedabiblio (SI)?
-5.6. Why can't I summon the Great Hierophant (SI)?
-5.7. An important note about the Serpent Staff (SI)
+5.4. Why can't I talk to the mayor of Skara Brae (BG)?
+5.5. Where did my gem of the Demon vanish to (BG-FoV)?
+5.6. Where is the pikeman that lets you train in Monitor (SI)?
+5.7. How do I get the Mandrake Roots for Fedabiblio (SI)?
+5.8. Why can't I summon the Great Hierophant (SI)?
+5.9. An important note about the Serpent Staff (SI)
+5.10. How to break the plot by doubleclicking some pillars (SI-SS)
 
 6. Questions and Answers
 6.1. How can I get answers concerning Ultima 7/Exult?
@@ -82,32 +83,22 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 04 March 2003
+0.1. - 04 May 2003
+* 2.7. Do Exult savegames work on all Operating Systems? don't use 1.1.x saves with 1.0.
+* 3.6. Why is the party formation different? Jeff changed the behaviour of it.
+* 5.4. Why can't I talk to the mayor of Skara Brae (BG)? added.
+* 5.5. Where did my gem of the Demon vanish to (BG-FoV)? added.
+* 5.10. How to break the plot by doubleclicking some pillars (SI-SS) added.
+
+
+
+0.2. - 04 March 2003
 * 1.1. Important Notice this faq is for 1.1.x and not for 1.0 anymore.
 * 1.6. But isn't Pentagram some kind of Exult for U8? here is the link to Pentagram and some more info.
 * 2.7. Do Exult savegames work on all Operating Systems? Savegames are platform independent.
 * 4.3. Broken by Design linked to Combat Options in the Menu.
 * 4.4. Known Issues changed a bit, added issue with Nvidia 40.x reference drivers.
 * 5. Gameplay FAQ Not everytime you are stuck in the game is it a bug. Maybe this section can help you.
-
-
-
-0.2. - 03 November 2002
-Version number of actual version of Exult is now 1.00!
-
-
-0.3. - 24 October 2002
-* 3.7. What should I do when Exult keeps crashing when I try to save? Don't save on scripted scenes.
-* 5.3. Why can't I get the sacrifice in Skara Brae to work (BG)? Some people still run into this problem.
-* 4.3. Broken by Design walking style revisited.
-
-
-
-0.4. - 11 September 2002
-* 1.13. On what platform does Exult run? changed location of Zaurus package.
-* 3.6. Why is the party formation different? rewrote that a bit.
-* 5.6. Why can't I summon the Great Hierophant (SI)? not an issue with Exult actually.
-* 4.4. Known Issues drawing order is messed up.
 
 
 
@@ -226,6 +217,7 @@ Save games that were made with the original Ultima 7 or U7Run don't work with Ex
 
 2.7. Do Exult savegames work on all Operating Systems?
 Exult savegames are compatible on all supported Operating Systems. For example a saved game of the Mac port of Exult works on Windows 98 as well.
+However it is not advisable to use savegames of games started with the 1.1.x snapshot of Exult with the 1.0 release.
 
 
 2.8. Where do I find Ultima 7 on the net to download?
@@ -264,7 +256,8 @@ Everyone volunteering to do it is welcome to.
 
 
 3.6. Why is the party formation different?
-In Exult the party (the Avatar and his companions) move quite differently than they do in the original. The problem is that this was controlled by the original executable. Changing the formation now is not as easy as it sounds as the party formation has effects on other game internals. Changing it to be more like the original may force us to replay the whole game to make sure we didn't introduce new bugs. Recently Jeff changed this a bit but it still is not the same as the original.
+In Exult the party (the Avatar and his companions) move quite differently than they do in the original. The problem is that this was controlled by the original executable. Changing the formation now is not as easy as it sounds as the party formation has effects on other game internals. Changing it to be more like the original may force us to replay the whole game to make sure we didn't introduce new bugs.
+Recently Jeff added an optional formation that behaves way more like in the original game. The default is still the "loose" Exult formation. See ReadMe.txt.
 
 Jeff:
 It's not a bug, it's a feature! I like it that way. Everyone is sensitive to different things, and I always though the formation-walking in the original U7 looked really stupid. Eventually, someone may add the original type of walking to Exult, probably as an option.
@@ -417,21 +410,34 @@ You never could do this in the original as well. You have to use the Virtue Ston
 "I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice." The solution to this is that Rowenna and Trent are standing too far apart. When you reunited the pair you initiated the conversation with Trent from too far away (this happens when you run at a higher resolution than the original one). Now you can either reload a game from before you reunited them or you have to hackmove Rowenna closer to Trent. After that the two will talk to you about sacrifice.
 
 
-5.4. Where is the pikeman that lets you train in Monitor (SI)?
+5.4. Why can't I talk to the mayor of Skara Brae (BG)?
+You might be talking to "The Other Forsythe"(TM). There's a ghost in the Skara Brae town hall that looks like Forsythe, but isn't. This was fixed in more recent versions of Exult but with games started with earlier versions this bug is still present. You need to start a new game of Exult to fix this.
+
+
+5.5. Where did my gem of the Demon vanish to (BG-FoV)?
+For forging the black sword you need to bind the demon to the gem you got from that invincible dragon you met in the test of courage. Some people mistake that little dark-blue gem with the glowing gem you received from Lord British. If you use the glowing gem on the isle of fire it just vanishes with a shattering sound.
+
+
+5.6. Where is the pikeman that lets you train in Monitor (SI)?
 The pikeman that lets you enter the list field in Monitor sometimes disappears due to a bug in the game (even the original). This bug occurs when you enter the banquet scene of Monitor. To avoid this bug, we recommend, that you approach the banquet hall from the right and/or double-click the entrance door to the hall when the party is standing very close to it.
 
 
-5.5. How do I get the Mandrake Roots for Fedabiblio (SI)?
+5.7. How do I get the Mandrake Roots for Fedabiblio (SI)?
 Fedabiblio in Moonshade sends you on a quest to find fresh Mandrake Roots. You get to Monk Island but can't find the any fresh roots. The problem is that fresh roots only appear depending on the tide. One of the nameless monks of the island tells you to ask him when the tide is right. Keep coming back to him and when he tells you the tide is right walk to the northern shore of the island to find fresh roots.
 
 
-5.6. Why can't I summon the Great Hierophant (SI)?
+5.8. Why can't I summon the Great Hierophant (SI)?
 If you follow some walkthrough you might find that your summoning of the Great Hierophant doesn't work. This is a problem with the walkthrough. You need to have a personal item of the Great Hierophant in your inventory, namely the Serpent Staff.
-If possible not just play following the walkthrough but go out and explore Serpent Isle. It's hard to imagine someone could miss the cave to the east of Monitor...
+If possible don't just play following the walkthrough, but go out and explore Serpent Isle. It's hard to imagine someone could miss the cave to the east of Monitor...
 
 
-5.7. An important note about the Serpent Staff (SI)
+5.9. An important note about the Serpent Staff (SI)
 The Serpent Staff in SI is a very important item. It doesn't seem like it but it is crucial to some major plot elements that you have the staff in your possession. Unfortunately the game also demands that you get the staff properly. For that I recommend to get it without cheating and to stand right next to it.
+
+
+5.10. How to break the plot by doubleclicking some pillars (SI-SS)
+In the dining hall of the fort in the add-on Silver Seed you can doubleclick the pillars. This teleports you to the test in the gargoyle city. If you haven't done this test yet this breaks that plot later on and if you already have it is still a nuissance. So better don't do it.
+Obviously a slight oversight of the add-on designers. Could be fixed by changing the usecode and the map slightly.
 
 
 

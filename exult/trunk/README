@@ -1,12 +1,13 @@
 Exult Documentation
-last changed: 04 March 2003(GMT)
+last changed: 04 May 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 04 March 2003
-0.2. - 24 October 2002
+0.1. - 04 May 2003
+0.2. - 04 March 2003
+0.3. - 24 October 2002
 
 1. Introduction
 1.1. Important Notice
@@ -60,7 +61,12 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 04 March 2003
+0.1. - 04 May 2003
+* 2.2. Settings in exult.cfg option for "original" party formation added.
+
+
+
+0.2. - 04 March 2003
 * 1.1. Important Notice this doc is for 1.1.x and not for 1.0 anymore.
 * 2.2. Settings in exult.cfg added more combat options and Scale2x.
 * 4.2. Scaler added Scale2x and information on it.
@@ -68,7 +74,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 24 October 2002
+0.3. - 24 October 2002
 * 2.2. Settings in exult.cfg settings in exult.cfg are the same on all OS.
 * 2.3. Path-Settings same as above.
 * 3.1. Music rewrote the FM synth emulation part a bit.
@@ -302,6 +308,12 @@ yes
 						to where you clicked.
 						
 </allow_double_right_move>
+<formation>
+no
+						**yes forces the party to walk in a formation similar to the
+						original game.
+						
+</formation>
 </gameplay>
 <audio>
 <enabled>
