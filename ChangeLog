@@ -1,3 +1,13 @@
+2002-01-01  Patrick Burke  <takhisisii@yahoo.com.au>
+	* tools/.cvsignore: Added cmanip to ignore list.
+	* usecode/ucxt/src/Makefile.am: Added -Wall and -W compile options.
+	* usecode/ucxt/data/opcodes.txt: Added additional flags for pretty
+	printing -fz output, and 'fake' opcodes for internal decompilation
+	use.
+	* usecode/ucxt/*: Modified source to support the additional flags;
+	Fixed all unnecessary warnings produced by -Wall and -W; Added
+	'decimal' output option support for the opcodes.txt file.
+
 2001-12-30  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamemap.cc,server.cc: Send terrain data to client.

@@ -10,6 +10,7 @@ Makefile
 wuc
 wud
 ucdump
+cmanip
 mklink
 rip
 ucc

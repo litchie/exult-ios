@@ -92,10 +92,14 @@ void map_type_size(const vector<string> &param_types, vector<pair<unsigned int, 
 class UCOpcodeData
 {
 	public:
-		UCOpcodeData() : opcode(0x00), num_bytes(0) {};
+		UCOpcodeData() : opcode(0x00), num_bytes(0), num_pop(0),
+		                 num_push(0), call_effect(0), flag_return(false),
+		                 flag_paren(false), flag_indent_inc(false),
+		                 flag_indent_dec(false), flag_indent_tmpinc(false),
+		                 flag_indent_tmpdec(false)
+		{};
 		UCOpcodeData(const vector<string> &v)
 		{
-			//#if 0 // debugging
 			if((v.size()==12)==false)
 			{
 				cerr << "Error in opcodes file:" << endl;
@@ -103,7 +107,7 @@ class UCOpcodeData
 					cerr << v[i] << '\t';
 				cerr << endl;
 			}
-			//#endif
+			
 			assert(v.size()==12);
 			opcode = strtol(v[1].c_str(), 0, 0);
 			name = v[2];
@@ -115,9 +119,13 @@ class UCOpcodeData
 			num_pop = strtol(v[8].c_str(), 0, 0);
 			num_push = strtol(v[9].c_str(), 0, 0);
 			call_effect = strtol(v[10].c_str(), 0, 0);
-			assert(v[11].size()>=2);
-			flag_return = (v[11][0]=='0') ? false : true;
-			flag_paren  = (v[11][1]=='0') ? false : true;
+			assert(v[11].size()>=6);
+			flag_return        = (v[11][0]=='0') ? false : true;
+			flag_paren         = (v[11][1]=='0') ? false : true;
+			flag_indent_inc    = (v[11][2]=='0') ? false : true;
+			flag_indent_dec    = (v[11][3]=='0') ? false : true;
+			flag_indent_tmpinc = (v[11][4]=='0') ? false : true;
+			flag_indent_tmpdec = (v[11][5]=='0') ? false : true;
 			map_type_size(param_types, param_sizes);
 		};
 		
@@ -136,6 +144,10 @@ class UCOpcodeData
 		unsigned int   call_effect;
 		bool           flag_return;
 		bool           flag_paren;
+		bool           flag_indent_inc;
+		bool           flag_indent_dec;
+		bool           flag_indent_tmpinc;
+		bool           flag_indent_tmpdec;
 };
 
 extern vector<UCOpcodeData> opcode_table_data;

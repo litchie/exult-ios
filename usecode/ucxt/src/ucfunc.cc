@@ -35,7 +35,7 @@ const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
 
 void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const map<unsigned int, string> &intrinsics, const UCc &op);
-string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output);
+string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output);
 
 /* Assumption the 'var's are in their 'zeroed' state on initialization,
    unless something else is assigned to them. */
@@ -61,7 +61,7 @@ inline ostream &tab_indent(const unsigned int indent, ostream &o)
 	return o;
 }
 
-void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, bool gnubraces)
+void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment)
 {
 	unsigned int indent=0;
 	
@@ -140,7 +140,7 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsig
 
 void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, const map<unsigned int, string> &intrinsics, unsigned int indent)
 {
-	tab_indent(indent, o) << demunge_ocstring(*this, funcmap, optab[op._id].ucs_nmo, optab[op._id].param_types, op._params_parsed, intrinsics, op, true) << ';' << endl;
+	tab_indent(indent, o) << demunge_ocstring(*this, funcmap, optab[op._id].ucs_nmo, op._params_parsed, intrinsics, op, true) << ';' << endl;
 	
 	#ifdef DEBUG_PRINT
 	for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end(); i++)
@@ -148,7 +148,7 @@ void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<
 		if((*i)->_popped.size())
 			output_ucs_opcode(o, funcmap, opcode_table_data, **i, intrinsics, indent+1);
 		else
-//			tab_indent(indent+1, o) << demunge_ocstring(*this, funcmap, optab[(*i)->_id].ucs_nmo, optab[(*i)->_id].param_types, op._params_parsed, **i) << endl;
+//			tab_indent(indent+1, o) << demunge_ocstring(*this, funcmap, optab[(*i)->_id].ucs_nmo, op._params_parsed, **i) << endl;
 			tab_indent(indent+1, o) << optab[(*i)->_id].ucs_nmo << endl;
 	}
 	#endif
@@ -1155,10 +1155,10 @@ void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vec
 	if(uc.rawops()) output_raw_opcodes(o, op);
 	else            o << '\t';
 
-	o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_nmo, optab[op._id].param_types, op._params_parsed, intrinsics, op, false);
+	o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_nmo, op._params_parsed, intrinsics, op, false);
 
 	if(uc.autocomment())
-		o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_comment, optab[op._id].param_types, op._params_parsed, intrinsics, op, false);
+		o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_comment, op._params_parsed, intrinsics, op, false);
 
 	o << endl;
 }
@@ -1207,7 +1207,7 @@ inline unsigned int charnum2uint(const char c)
 	return 0; // can't happen
 }
 
-string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output)
+string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output)
 {
 	strstream str;
 	str << setfill('0') << setbase(16);
@@ -1256,6 +1256,21 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					if(c=='b')      { i++; c = asmstr[i]; width=2; }
 					// if it's a "short" set width to 4, and get the next char
 					else if(c=='s') { i++; c = asmstr[i]; width=4; }
+					// if we want to output the 'decimal' value rather then the default hex
+					else if(c=='d')
+					{
+						i++; c = asmstr[i];
+						unsigned int t = charnum2uint(c);
+						
+						if(t!=0)
+						{
+							assert(params.size()>=t);
+							str << setbase(10) << params[t-1] << setbase(16);
+						}
+						else if(c=='%')
+							str << '%';
+						break;
+					}
 					// if it's the character representation of a text data string we want
 					else if(c=='t')
 					{
@@ -1336,7 +1351,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 						
 							for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end();)
 							{
-								str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*i)->_id].ucs_nmo, opcode_table_data[(*i)->_id].param_types, (*i)->_params_parsed, intrinsics, **i, ucs_output);
+								str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*i)->_id].ucs_nmo, (*i)->_params_parsed, intrinsics, **i, ucs_output);
 								if(++i!=op._popped.end())
 									str << ", ";
 							}
@@ -1349,7 +1364,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 							else
 							{
 								UCc &ucc(*op._popped[t-1]);
-								str << demunge_ocstring(ucf, funcmap, opcode_table_data[ucc._id].ucs_nmo, opcode_table_data[ucc._id].param_types, ucc._params_parsed, intrinsics, ucc, ucs_output);
+								str << demunge_ocstring(ucf, funcmap, opcode_table_data[ucc._id].ucs_nmo, ucc._params_parsed, intrinsics, ucc, ucs_output);
 							}
 						}
 						break;

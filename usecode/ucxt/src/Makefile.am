@@ -1,6 +1,6 @@
 INCLUDES = -I$(srcdir)/../include -I$(srcdir)/../../../conf -I$(srcdir)/../.. \
 	-I$(srcdir)/../../.. $(INCDIRS) $(DEBUG_FLAGS) $(CPPFLAGS) \
-	-DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
+	-DEXULT_DATADIR=\"$(EXULT_DATADIR)\" -Wall -W
 
 ucxt_SOURCES = \
 	opcodec_.cc \
