@@ -1,6 +1,7 @@
 2004-02-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mouse.cc: fixed dead actors causing movement slowdowns and/or crashes
 	* data/bg/musket.shp: musket paperdoll art (by servus)
+	* docs/art.txt: updated art table
 
 2004-02-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs/chunks.cc: fix crash after activating eggs and teleporting
