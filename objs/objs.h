@@ -207,9 +207,9 @@ public:
 	void say(const char *text);		// Put text up by item.
 	void say(int from, int to);	// Show random msg. from 'text.flx'.
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Make this class abstract.
-	virtual void paint_terrain(Game_window *gwin) = 0;
+	virtual void paint_terrain() = 0;
 					// Can this be clicked on?
 	virtual int is_findable(Game_window *gwin)
 		{ return 1; }
@@ -322,7 +322,7 @@ public:
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
 	virtual Terrain_game_object *as_terrain() { return this; }
-	virtual void paint_terrain(Game_window *gwin);
+	virtual void paint_terrain();
 	};
 
 /*
@@ -342,7 +342,7 @@ public:
 	virtual void move(int newtx, int newty, int newlift);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
-	virtual void paint_terrain(Game_window *gwin) {  }
+	virtual void paint_terrain() {  }
 	virtual void write_ifix(DataSource* ifix);
 	};
 

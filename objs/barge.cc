@@ -695,13 +695,12 @@ int Barge_object::drop
 
 void Barge_object::paint
 	(
-	Game_window *gwin
 	)
 	{
 					// DON'T paint barge shape itself.
 					// The objects are in the chunk too.
 	if(gwin->paint_eggs)
-		Container_game_object::paint(gwin);
+		Container_game_object::paint();
 	}
 
 /*

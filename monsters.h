@@ -55,7 +55,7 @@ public:
 	virtual int move_aside(Actor* for_actor, int dir)
 		{ return 0; }		// Monsters don't move aside.
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
 					// Remove/delete this object.

@@ -120,7 +120,7 @@ public:
 	       unsigned int tiley, unsigned int lft = 0);
 	virtual ~Animated_object();
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// +++++Needed on this one:
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
@@ -141,7 +141,7 @@ public:
 	       unsigned int tiley, unsigned int lft = 0);
 	virtual ~Animated_ireg_object();
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
 		{ return get_tile() + 
@@ -165,7 +165,7 @@ public:
 	       unsigned int tiley, unsigned int lft = 0);
 	virtual ~Animated_ifix_object();
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
 		{ return get_tile() + 

@@ -41,7 +41,7 @@ public:
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Can this be clicked on?
 	virtual int is_findable(Game_window *gwin);
 	};
@@ -127,7 +127,7 @@ public:
 	int is_solid_area() const
 		{ return solid_area; }
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 	virtual bool edit();		// Edit in ExultStudio.
@@ -174,7 +174,7 @@ public:
 				unsigned char ty);
 	virtual ~Animated_egg_object();
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Can this be clicked on?
 	virtual int is_findable(Game_window *gwin)
 		{ return Ireg_game_object::is_findable(gwin); }
@@ -228,7 +228,7 @@ public:
 	virtual void set_area();		// Set up active area.
 
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Can this be clicked on?
 	virtual int is_findable(Game_window *gwin)
 		{ return Ireg_game_object::is_findable(gwin); }

@@ -103,7 +103,7 @@ public:
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 					// Render.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame = -1);
 					// Write out to IREG file.
