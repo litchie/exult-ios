@@ -33,7 +33,7 @@ CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
 	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
 	$(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
-	
+
 CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DHAVE_SNPRINTF -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -DUSE_FMOPL_MIDI
 CXX=g++
 
@@ -63,6 +63,7 @@ install: $(EXEC)
 	cp data/exult.flx $(U7PATH)/data/exult.flx
 	cp data/exult_bg.flx $(U7PATH)/data/exult_bg.flx
 	cp data/exult_si.flx $(U7PATH)/data/exult_si.flx
+	cp data/exultmsg.txt $(U7PATH)/data/exultmsg.txt
 
 dist:   $(EXEC)
 	mkdir -p $(U7PATH)
@@ -72,6 +73,7 @@ dist:   $(EXEC)
 	cp data/exult.flx $(U7PATH)/Exult/Data
 	cp data/exult_bg.flx $(U7PATH)/Exult/Data
 	cp data/exult_si.flx $(U7PATH)/Exult/Data
+	cp data/exultmsg.txt $(U7PATH)/Exult/Data
 	cp AUTHORS $(U7PATH)/Exult/AUTHORS.txt
 	cp ChangeLog $(U7PATH)/Exult/ChangeLog.txt
 	cp COPYING $(U7PATH)/Exult/COPYING.txt
