@@ -322,10 +322,12 @@ void Scale_2xSaI
 
 			bP += 1;
 			dP += 2;
+			prev1_xoff = 1;
 		}//end of for ( finish= width etc..)
 
 		srcPtr += sline_pixels;
 		dstPtr += 2*dline_pixels;
+		prev1_yoff = 1;
 	};
 }
 
