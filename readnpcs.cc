@@ -66,8 +66,9 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		int iflag2 = Read2(nfile);
 					// Get name.
 		nfile.seekg(85, ios::cur);
-		char namebuf[16];
-		nfile.read(namebuf, sizeof(namebuf));
+		char namebuf[17];
+		nfile.read(namebuf, 16);
+		namebuf[16] = 0;	// Be sure it's 0-delimited.
 		int namelen = strlen(namebuf);
 					// Get abs. chunk. coords. of schunk.
 		int scy = 16*(schunk/12);
@@ -77,19 +78,26 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 					// Get shape #'s.
 		int shapex = locx & 0xf;
 		int shapey = locy & 0xf;
-					// Create NPC.
-		Npc_actor *npc = new Npc_actor(shape[0] + 256*(shape[1]&0x3),
-								i, usecode);
-		npc->move(scx + cx, scy + cy, get_objects(scx + cx, scy + cy),
+		Actor *actor;
+		if (i == 0)		// Main character?
+			actor = main_actor =
+				new Actor(namebuf, 
+				shape[0] + 256*(shape[1]&0x3), i, usecode);
+		else			// Create NPC.
+			actor = new Npc_actor(namebuf, 
+				shape[0] + 256*(shape[1]&0x3), i, usecode);
+		actor->move(scx + cx, scy + cy, 
+				get_objects(scx + cx, scy + cy),
 				shapex, shapey, (shape[1]>>2) & 0x1f, lift);
 #if 0
-cout << i << " Creating " << namebuf << ", shape = " << npc->get_shapenum() <<
-	", frame = " << npc->get_framenum() << '\n';
+cout << i << " Creating " << namebuf << ", shape = " << 
+	actor->get_shapenum() <<
+	", frame = " << actor->get_framenum() << '\n';
 cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 	<< lift << '\n';
 #endif
 		if (iflag1 && iflag2)	// Inventory?  Read (but ignore++++).
-			read_ireg_objects(nfile, scx, scy, npc);
+			read_ireg_objects(nfile, scx, scy, actor);
 		}
 	}
 

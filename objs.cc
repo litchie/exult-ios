@@ -47,6 +47,18 @@ int Game_object::get_usecode
 	}
 
 /*
+ *	Get name.
+ */
+
+char *Game_object::get_name
+	(
+	)
+	{
+	extern char *item_names[];
+	return item_names[get_shapenum()];
+	}
+
+/*
  *	Add a game object to a chunk's list.
  */
 

@@ -20,13 +20,11 @@ else
 STATIC =
 endif
 LFLAGS = -g
-LIBS = -L npc -L script -L /usr/X11R6/lib -L /usr/local/lib \
-	-lscr -lnpc -lX11 -lXext -lttf
+LIBS = -L /usr/X11R6/lib -L /usr/local/lib \
+	-lX11 -lXext -lttf
 endif
 
 all:
-	(cd npc; make libnpc.a)
-	(cd script; make libscr.a)
 	make exult
 
 exult: $(OBJECTS)

@@ -30,6 +30,7 @@ class Font_face;
 class Script_compiler;
 class Slist;
 class Usecode_machine;
+class Actor;
 
 /*
  *	The main game window:
@@ -62,7 +63,7 @@ private:
 	Vga_file faces;			// "faces.vga" file.
 	ifstream u7map;			// "u7map" file.
 	Script_compiler *script;	// Compiled NPC script.
-	Actor main_actor;		// Main sprite to move around.
+	Actor *main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];

@@ -137,6 +137,7 @@ public:
 				get_shape_pos_x() < obj2.get_shape_pos_x()))));
 		} 
 	virtual int get_usecode();	// Get usecode function to run.
+	virtual char *get_name();
 	};
 
 /*
