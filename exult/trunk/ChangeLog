@@ -8,6 +8,11 @@
 	* exult.cc: Setup virtual paths
 	* configure.in: Better debug flags
 
+2000-09-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc (Npc_actor): Set 1st-day schedule after you've talked
+	to the NPC.  Removed old logic from gameclk.cc.
+
 2000-09-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc (Npc_actor): Skip schedule actions if NPC is in a
