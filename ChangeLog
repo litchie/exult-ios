@@ -1,5 +1,12 @@
 2002-01-04  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* actors.h,actorio.cc (public): Properties changed from short to int.
+	* usecode/ucinternal.cc (remove_party_items):  If quantity==-359,
+	search entire party.
+
+	* objs/jawbone.h: Yow.  Passing unitialized instance variable to parent
+	class constructor.
+
 	* actors.cc: Limit max. magic, combat to 30 points.
 
 	* effects.cc (Projectile_effect): Applied user's patch to fix

@@ -547,8 +547,7 @@ void Actor::write
 	nfile.put((face_num >= 0 && face_num <= 255) ? face_num : 0);
 	Write2(nfile, 0);		// Skip 2
 
-	Write2(nfile, get_property(Actor::exp));
-	Write2(nfile, 0);		// Skip 2.
+	Write4(nfile, get_property(Actor::exp));
 	nfile.put(get_property(Actor::training));
 			// 0x40 unknown.
 

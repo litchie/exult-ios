@@ -1721,7 +1721,7 @@ void Actor::update_from_studio
 	std::string name;
 	short npc_num, ident;
 	int usecode;
-	short properties[12];
+	int properties[12];
 	short attack_mode, alignment;
 	unsigned long oflags;		// Object flags.
 	unsigned long siflags;		// Extra flags for SI.
@@ -1907,7 +1907,7 @@ void Actor::set_property
 	case exp:
 		{			// Experience?  Check for new level.
 		int old_level = get_level();
-		properties[static_cast<int>(exp)] = static_cast<short>(val);
+		properties[static_cast<int>(exp)] = val;
 		int delta = get_level() - old_level;
 		if (delta > 0)
 			properties[static_cast<int>(training)] += 3*delta;
@@ -1918,15 +1918,15 @@ void Actor::set_property
 			val = 36;
 		else if (val < 0)
 			val = 0;
-		properties[prop] = static_cast<short>(val);
+		properties[prop] = val;
 		break;
 	case combat:			// These two are limited to 30.
 	case magic:
-		properties[prop] = static_cast<short>(val > 30 ? 30 : val);
+		properties[prop] = val > 30 ? 30 : val;
 		break;
 	default:
 		if (prop >= 0 && prop < 12)
-			properties[prop] = static_cast<short>(val);
+			properties[prop] = val;
 		break;
 		}
 	Game_window *gwin = Game_window::get_game_window();
