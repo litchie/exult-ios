@@ -2607,7 +2607,7 @@ if test x$enable_debug = xyes; then
 #define DEBUG 1
 EOF
 
-  DEBUG_FLAGS="-g"
+  DEBUG_FLAGS="-O -g -Wunused -Wuninitialized -Woverloaded-virtual"
 else
   echo "$ac_t""no" 1>&6
 fi
