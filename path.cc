@@ -23,8 +23,18 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <queue>
 #include "objs.h"
 #include "gamewin.h"
+
+/*
+ *	Statics:
+ */
+int Neighbor_iterator::coords[2][8] = {
+	{-1, -1}, {0, -1}, {1, -1},
+	{0, -1},           {0, 1},
+	{1, -1},  {1, 0},  {1, 1}
+	};
 
 /*
  *	A node for our search:
@@ -32,18 +42,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Search_node
 	{
 	friend class Game_window;
+	friend class Compare;
 	Tile_coord tile;		// The coords (x, y, z) in tiles.
 	short cost_from_start;		// Actual cost from start.
 	short cost_to_goal;		// Estimated cost to goal.
+	short total_cost;		// Sum of the two above.
 	Search_node *parent;		// Prev. in path.
 	Search_node(Tile_coord& t, short scost, short gcost, Search_node *p)
 		: tile(t), cost_from_start(scost), cost_to_goal(gcost),
 		  parent(p)
-		{  }
+		{
+		total_cost = gcost + scost;
+		}
 	void update(short scost, short gcost, Search_node *p)
 		{
 		cost_from_start = scost;
 		cost_to_goal = gcost;
+		total_cost = gcost + scost;
 		parent = p;
 		}
 	};
@@ -76,6 +91,17 @@ public:
 	};
 
 /*
+ *	For sorting:
+ */
+class Compare
+	{
+public:
+					// The 'best' has the smallest cost.
+     	bool operator() (const Search_node *a, const Search_node *b) const
+     		{ return a->total_cost > b->total_cost; }
+	};
+
+/*
  *	First cut at using the A* pathfinding algorithm.
  *
  *	Output:	->(allocated) array of Tile_coords to follow, or 0 if failed.
@@ -87,23 +113,24 @@ Tile_coord *Game_window::find_path
 	Tile_coord goal			// Where to end up.
 	)
 	{
-	Vector open(0, 100), closed(0, 100);
-	int opencnt = 0;		// Actual entries in 'open'.
+	priority_queue<Search_node *, vector<Search_node *>, Compare> open;
+	Vector closed(0, 100);
 					// Create start node.
-	open.append(new Search_node(start, 0, Cost_to_goal(start, goal), 0));
-	opencnt++;
-	while (opencnt)			// Main loop of algorithm.
+	open.push(new Search_node(start, 0, Cost_to_goal(start, goal), 0));
+	while (!open.empty())		// Main loop of algorithm.
 		{
-		Search_node *node = (Search_node *) open.get(--opencnt);
+					// Get/remove lowest-cost node.
+		Search_node *node = open.top();
+		open.pop();
 		if (node->tile == goal)
 			{		// Success.
 			//++++++create path.
-			return;++++++
+			return 0;// ++++++
 			}
 					// Go through surrounding tiles.
-		Neighbor_iterator next(node->tile);
+		Neighbor_iterator get_next(node->tile);
 		Tile_coord ntile;
-		while (next(ntile))
+		while (get_next(ntile))
 			{		// Calc. cost from start.
 			int new_cost = node->cost_from_start + 
 							Cost(tile, ntile);
@@ -120,14 +147,16 @@ Tile_coord *Game_window::find_path
 				next = new Search_node(ntile, new_cost,
 						new_cost_to_goal, node);
 			else
++++++++++++++++Update pos. in queue!!!!!!!!!
 				next.update(new_cost, new_cost_to_goal, node);
 					// Remove from closed.
 			if (closed_index != -1)
 				closed.put(closed_index, 0);
 					// Not in open?  Push it.
 			if (open_index == -1)
-				open.put(opencnt++, next);
+				open.push(next);
 			}
+		closed.put(node);	// Done with this one for now.
 		}
 	return 0;			// Failed if here.
 	}
