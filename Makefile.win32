@@ -6,6 +6,7 @@ U7PATH=C:\\Ultima7
 #Only used for snapshots
 TOOLSPATH=C:\\U7Tools
 
+CC=gcc
 # Base of the exult source
 SRC=.
 
