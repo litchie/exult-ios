@@ -291,7 +291,10 @@ Actor::Actor
 			cout << "NPC has invalid chunk coord." << endl;
 			set_invalid();	// Or set to invalid chunk.
 			}
-	ready_best_weapon();		// Get best weapon in hand.
+	// Only do ready best weapon if we are in BG, this is the first time
+	// and we are the Avatar or Iolo
+	if (Game::get_game_type() == BLACK_GATE && Game::Game::get_avname() && (num == 0 || num == 1))
+		ready_best_weapon();
 			
 #ifdef DEBUG
 

@@ -209,6 +209,7 @@ void Actor::ready_best_weapon
 	)
 	{
 	int points;
+	// What about spell book????
 	if (Actor::get_weapon(points) != 0)
 		{
 		ready_ammo();
@@ -1277,7 +1278,12 @@ void Actor::set_flag
 	{
 //	cout << "Set flag for NPC " << get_npc_num() << " = " << flag << endl;
 
-	if (flag == Obj_flags::dont_render) return;
+	// Hack :)
+	if (flag == Obj_flags::dont_render && Game::get_game_type() == SERPENT_ISLE)
+	{
+		set_siflag(dont_move);
+		return;
+	}
 
 	if (flag >= 0 && flag < 32)
 		flags |= ((uint32) 1 << flag);
@@ -1345,6 +1351,11 @@ void Actor::clear_flag
 	)
 	{
 //	cout << "Clear flag for NPC " << get_npc_num() << " = " << flag << endl;
+	if (flag == Obj_flags::dont_render && Game::get_game_type() == SERPENT_ISLE)
+	{
+		clear_siflag(dont_move);
+		return;
+	}
 	if (flag >= 0 && flag < 32)
 		flags &= ~((uint32) 1 << flag);
 	else if (flag >= 32 && flag < 64)
