@@ -134,7 +134,7 @@ GL_texshape::~GL_texshape
 	}
 
 /*
- *	Paint it.  Assumes that GL_TEXTURE_2D is already enabled.
+ *	Paint it.
  */
 
 void GL_texshape::paint
@@ -143,6 +143,7 @@ void GL_texshape::paint
 					//   of screen.
 	)
 	{
+	glEnable(GL_TEXTURE_2D);	// Enable texture-mapping.
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glPushMatrix();
 	float x = static_cast<float>(px);
@@ -197,7 +198,6 @@ GL_manager::GL_manager
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	// ??
 	glEnable(GL_BLEND);		// !These two calls do the trick.
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_TEXTURE_2D);	// Enable texture-mapping.
 
 	// Just a note for Jeff, You are using Alpha Blending, but you should
 	// perhaps think about using Alpha Testing. 
@@ -259,23 +259,33 @@ static void Paint_image
 	int scale			// Scale factor.
 	)
 	{
-	float x = static_cast<float>(px);
-	float y = static_cast<float>(py);
-	x -= frame->get_xleft();
-	y += frame->get_ybelow();
+	px -= frame->get_xleft();	// Figure actual from hot-spot.
+	py += frame->get_ybelow();
 					// Game y-coord goes down from top.
-	y = -y;
+	py = -py;
 	int w = frame->get_width(), h = frame->get_height();
 					// Render frame.
 	Image_buffer8 buf8(w, h);
+	w = buf8.get_width(); h = buf8.get_height();
 	buf8.fill8(transp);		// Fill with transparent value.
 	frame->paint(&buf8, frame->get_xleft(), frame->get_yabove());
 					// Convert to rgba.
 	unsigned char *pixels = buf8.rgba(pal, transp);
-	glRasterPos2f(x, y);
+	if (px < 0)			// Doesn't paint if off screen.
+		{
+		glPixelStorei(GL_UNPACK_SKIP_PIXELS, -px);
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, w);
+		w += px;
+		px = 0;
+		}
+					//++++CHeck py too?
+//	float x = static_cast<float>(px);
+//	float y = static_cast<float>(py);
+	glRasterPos2f(px, py);
 	glPixelZoom(scale, scale);
-	glDrawPixels(buf8.get_width(), buf8.get_height(), 
-					GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 	delete pixels;
 	}
 

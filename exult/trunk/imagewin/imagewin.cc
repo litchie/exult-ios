@@ -604,26 +604,49 @@ void Image_window::set_title(const char *title)
 
 #ifdef HAVE_OPENGL
 /*
- *	Clear/set clip when in OpenGL.
-++++++++++I think these can go away - jsf.
+ *	Fill a rectangle with an 8-bit value.
  */
 
-void Image_window::opengl_clear_clip
+void Image_window::opengl_fill8
 	(
+	unsigned char pix,
+	int srcw, int srch,
+	int destx, int desty
 	)
 	{
-	glDisable(GL_SCISSOR_TEST);
+	SDL_Color *colors = surface->format->palette->colors;
+	SDL_Color& color = colors[pix];
+	glDisable(GL_TEXTURE_2D);	// Disable texture-mapping.
+	glPushMatrix();
+	int x = destx;			// Left edge.
+	int y = -(desty + srch);
+	glTranslatef(x, y, 0);
+	glBegin(GL_QUADS);
+		{
+		glColor3f(color.r/255.0, color.g/255.0, color.b/255.0);
+		glVertex3i(0, 0, 0);
+		glVertex3i(srcw, 0, 0);
+		glVertex3i(srcw, srch, 0);
+		glVertex3i(0, srch, 0);
+		}
+	glEnd();
+	glPopMatrix();
 	}
-void Image_window::opengl_set_clip
+
+/*
+ *	Apply a translucency table to a rectangle.
+ */
+
+void Image_window::opengl_fill_translucent8
 	(
-	int x, int y, 
-	int w, int h
+	unsigned char /* val */,	// Not used.
+	int srcw, int srch,
+	int destx, int desty,
+	Xform_palette xform		// Transform table.
 	)
 	{
-#if 0
-	glEnable(GL_SCISSOR_TEST);
-	glScissor(x*scale, (ibuf->height - y - h)*scale, w*scale, h*scale);
-#endif
+	//++++++++++Later.
 	}
+
 #endif
 

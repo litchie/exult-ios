@@ -1,3 +1,12 @@
+2002-07-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* imagewin/iwin8.h,etc:  fill8() works in OpenGL.
+
+2002-07-22  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* shapes/glshape.cc (GL_manager): Paint_image() used for images
+	larger than 256x256.  Also, units changed from tiles to 'pixels'.
+
 2002-07-22  Dominik Reichardt  <dominus@users.sourceforge.net>
 	* README.Qtopia : added instructions by Artaxerxes on how
 	  to compile Exult for the Zaurus PDA.
