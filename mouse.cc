@@ -221,7 +221,7 @@ void Mouse::flash_shape
 
 void Mouse::set_speed_cursor()
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Gump_manager *gump_man = gwin->get_gump_man();
    
 	int cursor = dontchange;

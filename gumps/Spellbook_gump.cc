@@ -243,7 +243,7 @@ static bool Has_ring
 	{
 	if (Game::get_game_type() == SERPENT_ISLE)
 		{
-		Actor *npc = dynamic_cast<Actor *>(npcobj);
+		Actor *npc = npcobj->as_actor();
 		if (!npc)
 			return false;
 		Game_object *obj = npc->get_readied(Actor::lfinger);
@@ -313,7 +313,7 @@ Spellbook_gump::Spellbook_gump
 	reagents = Game::get_game_type() == SERPENT_ISLE ? si_reagents
 							: bg_reagents;
 	set_avail();			// Figure spell counts.
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (book->bookmark >= 0)	// Set to bookmarked page.
 		page = Get_circle(book->bookmark);
 	leftpage = new Page_button(this, lpagex, lrpagey, 0);
@@ -372,7 +372,7 @@ void Spellbook_gump::do_spell
 {
 	if ((spells[spell] && avail[spell]) || cheat.in_wizard_mode())
 	{
-		Game_window *gwin = Game_window::get_game_window();
+		Game_window *gwin = Game_window::get_instance();
 		int circle = spell/8;	// Figure/subtract mana.
 		if (cheat.in_wizard_mode())
 			circle = 0;
@@ -418,7 +418,7 @@ void Spellbook_gump::change_page
 		page = 0;
 	else if (page > 8)
 		page = 8;
-	paint(Game_window::get_game_window());
+	paint(Game_window::get_instance());
 }
 
 /*
@@ -433,7 +433,7 @@ void Spellbook_gump::select_spell
 	if (spells[spell])
 	{
 		book->bookmark = spell;
-		paint(Game_window::get_game_window());
+		paint(Game_window::get_instance());
 	}
 }
 
@@ -554,7 +554,7 @@ Spellscroll_gump::Spellscroll_gump
 	{
 	set_object_area(Rectangle(30, 29, 50, 29), 8, 68);
 
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Get dims. of a spell.
 	Shape_frame *spshape = ShapeID(SCROLLSPELLS, 0, SF_GUMPS_VGA).get_shape();
 	spwidth = spshape->get_width();
@@ -588,7 +588,7 @@ void Spellscroll_gump::do_spell
 	int spellnum
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	scroll->remove_this();		// Scroll is gone.
 	scroll = 0;
 	close(gwin);			// We've just been deleted!

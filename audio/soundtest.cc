@@ -40,7 +40,7 @@ SoundTester::~SoundTester()
 void SoundTester::test_sound()
 {
 		
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Image_buffer8 *ibuf = gwin->get_win()->get_ib8();
 	Font *font = gwin->get_font(4);
 

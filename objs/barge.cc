@@ -268,7 +268,7 @@ void Barge_object::gather
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Game_map *gmap = gwin->get_map();
 	if (!gmap->get_chunk_safely(get_cx(), get_cy()))
 		return;			// Not set in world yet.
@@ -374,7 +374,7 @@ void Barge_object::finish_move
 		obj->move(positions[i]);
 		}
 	delete [] positions;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Check for scrolling.
 	gwin->scroll_if_needed(center);
 	}
@@ -421,7 +421,7 @@ void Barge_object::travel_to_tile
 	if (path->NewPath(get_tile(), dest, 0))
 		{
 		frame_time = speed;
-		Game_window *gwin = Game_window::get_game_window();
+		Game_window *gwin = Game_window::get_instance();
 					// Figure new direction.
 		Tile_coord cur = get_tile();
 		int dy = Tile_coord::delta(cur.ty, dest.ty),
@@ -444,7 +444,7 @@ void Barge_object::turn_right
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	add_dirty(gwin);		// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate90r(gwin, this, xtiles, ytiles, center);
@@ -479,7 +479,7 @@ void Barge_object::turn_left
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	add_dirty(gwin);		// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate90l(gwin, this, xtiles, ytiles, center);
@@ -514,7 +514,7 @@ void Barge_object::turn_around
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	add_dirty(gwin);		// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate180(gwin, this, xtiles, ytiles, center);
@@ -547,25 +547,6 @@ void Barge_object::done
 	)
 	{
 	gathered = false;		// Clear for next time.
-
-#if 0	/* ++++This didn't fix the flying-carpet bug. */
-	Game_window *gwin = Game_window::get_game_window();
-	int cnt = objects.size();	// Reactivate actors.
-	for (int i = 0; i < cnt; i++)
-		{
-		Game_object *obj = get_object(i);
-		Npc_actor *npc = dynamic_cast<Npc_actor *>(obj);
-					// Reactivate non-party NPC's scheds.
-		if (npc && !npc->is_in_party())
-			{
-			npc->update_schedule(gwin, gwin->get_hour()/3, 7);
-					// Nothing happened?  Monster?
-			if (!npc->in_queue() && npc->is_monster())
-				npc->set_schedule_type(
-						npc->get_schedule_type());
-			}
-		}
-#endif
 	}
 
 /*
@@ -578,7 +559,7 @@ int Barge_object::okay_to_land
 	{
 	Rectangle foot = get_tile_footprint();
 	int lift = get_lift();		// How high we are.
-	Game_map *gmap = Game_window::get_game_window()->get_map();
+	Game_map *gmap = Game_window::get_instance()->get_map();
 					// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
 	Rectangle tiles;
@@ -605,7 +586,7 @@ void Barge_object::handle_event
 	long udata			// Ignored.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (!path || !frame_time || gwin->get_moving_barge() != this)
 		return;			// We shouldn't be doing anything.
 	Tile_coord tile;		// Get spot & walk there.	
@@ -634,7 +615,7 @@ void Barge_object::move
 	if (!gathered)			// Happens in SI with turtle.
 		gather();
 					// Want to repaint old position.
-	add_dirty(Game_window::get_game_window());
+	add_dirty(Game_window::get_instance());
 					// Get current location.
 	Tile_coord old = get_tile();
 					// Move the barge itself.
@@ -771,7 +752,7 @@ int Barge_object::step
 						4, cur, t, move_type, 0))
 		return (0);		// Done.
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Near an egg?
 	Map_chunk *nlist = gwin->get_chunk(get_cx(), get_cy());
 	nlist->activate_eggs(gwin->get_main_actor(), t.tx, t.ty, t.tz, 
@@ -800,7 +781,7 @@ void Barge_object::write_ireg
 					// Flags (quality).  Taking B3 to in-
 					//   dicate barge mode.
 	*ptr++ = (dir<<1) | 
-		((Game_window::get_game_window()->get_moving_barge() == this)
+		((Game_window::get_instance()->get_moving_barge() == this)
 								<<3);
 	*ptr++ = 0;			// (Quantity).
 	*ptr++ = (get_lift()&15)<<4;

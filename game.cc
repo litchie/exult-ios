@@ -76,7 +76,7 @@ Game::Game() : menushapes()
 			throw e;
 	}
 	jive = false;
-	gwin = Game_window::get_game_window();
+	gwin = Game_window::get_instance();
 	win = gwin->get_win();
 	ibuf = win->get_ib8();
 	topx = (gwin->get_width()-320)/2;
@@ -460,10 +460,10 @@ int wait_delay(int ms, int startcol, int ncol)
 			}
 		}
 		if (ncol > 0) {
-			Game_window::get_game_window()->get_win()
+			Game_window::get_instance()->get_win()
 				->rotate_colors(startcol, ncol, 1);
 			if (ms > 250)
-			  Game_window::get_game_window()->get_win()->show();
+			  Game_window::get_instance()->get_win()->show();
 		}
 		unsigned long ticks2 = SDL_GetTicks();
 		if (ticks2 - ticks1 > delay)

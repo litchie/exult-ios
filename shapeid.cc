@@ -28,7 +28,7 @@ Shape_frame *ShapeID::cache_shape()
 {
 	if (framenum == -1) return 0;
 
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (has_trans != 2) has_trans = 0;
 
 	switch (shapefile) {
@@ -72,7 +72,7 @@ Shape_frame *ShapeID::cache_shape()
 
 int ShapeID::get_num_frames() const
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	switch (shapefile) {
 

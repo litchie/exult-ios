@@ -1099,7 +1099,7 @@ void BG_Game::end_game(bool success)
 	for (i = 1000 + next; next < i; next += 10)
 	{
 		// Speed related frame skipping detection
-		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
+		int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
 		while (SDL_GetTicks() < next)
 			;
 		if (!skip_frame)
@@ -1186,7 +1186,7 @@ void BG_Game::end_game(bool success)
 	for (i = 1000 + next; next < i; next += 10)
 	{
 		// Speed related frame skipping detection
-		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
+		int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
 		while (SDL_GetTicks() < next)
 			;
 		if (!skip_frame)
@@ -1249,7 +1249,7 @@ void BG_Game::end_game(bool success)
 	for (i = 1000 + next; next < i; next += 10)
 	{
 		// Speed related frame skipping detection
-		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
+		int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
 		while (SDL_GetTicks() < next)
 			;
 		if (!skip_frame)

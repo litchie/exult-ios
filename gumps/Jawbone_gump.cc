@@ -83,7 +83,7 @@ void Jawbone_gump::paint_tooth(Game_window* gwin, int index)
 
 Game_object *Jawbone_gump::find_object(int mx, int my)
 {
-	Game_window* gwin = Game_window::get_game_window();
+	Game_window* gwin = Game_window::get_instance();
 
 	jawbone->find_teeth();
 
@@ -112,7 +112,7 @@ Game_object *Jawbone_gump::find_object(int mx, int my)
 
 bool Jawbone_gump::on_tooth(int sx, int sy, int index)
 {
-	Game_window* gwin = Game_window::get_game_window();
+	Game_window* gwin = Game_window::get_instance();
 
 	ShapeID sid(game->get_shape("gumps/tooth"), index, SF_GUMPS_VGA);
 	Shape_frame *shape = sid.get_shape();

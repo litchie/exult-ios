@@ -205,7 +205,7 @@ void Gump_manager::add_gump
 	int shapenum			// Shape # in 'gumps.vga'.
 	)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Main_actor *main_actor = gwin->get_main_actor();
 	int paperdoll = 0;
 	
@@ -260,7 +260,7 @@ void Gump_manager::add_gump
 	}
 
 	Gump *new_gump = 0;
-	Actor *npc = dynamic_cast<Actor *>(obj);
+	Actor *npc = obj->as_actor();
 	if (npc && paperdoll == 2)
 		new_gump = new Paperdoll_gump(npc, x, y, npc->get_npc_num());
 	else if (npc && paperdoll)
@@ -302,7 +302,7 @@ void Gump_manager::close_all_gumps
 	bool pers
 	)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	bool removed = false;
 
 	Gump_list *prev = 0;
@@ -348,10 +348,10 @@ bool Gump_manager::double_clicked
 		obj = gump->find_object(x, y);
 		if (!obj)		// Maybe it's a spell.
 		{
-			Game_window *gwin = Game_window::get_game_window();
+			Game_window *gwin = Game_window::get_instance();
 		 	Gump_button *btn = gump->on_button(gwin, x, y);
 			if (btn) btn->double_clicked(gwin, x, y);
-			else if (Game_window::get_game_window()->get_double_click_closes_gumps())
+			else if (Game_window::get_instance()->get_double_click_closes_gumps())
 			{
 				gump->close(gwin);
 				gwin->paint();

@@ -59,7 +59,7 @@ void Text_button::init()
 	text_y = 2 + (height - 11)/2;
 
 	// We will get the text width
-	int text_width = Game_window::get_game_window()->get_font(TB_FONTNUM)->get_text_width(text.c_str());
+	int text_width = Game_window::get_instance()->get_font(TB_FONTNUM)->get_text_width(text.c_str());
 
 	if (width < text_width + 4) width = text_width + 4;
 

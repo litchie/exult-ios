@@ -87,7 +87,7 @@ void Ireg_game_object::remove_this
 	else				// In the outside world.
 		{
 		Map_chunk *chunk = 
-			Game_window::get_game_window()->get_chunk_safely(
+			Game_window::get_instance()->get_chunk_safely(
 								cx, cy);
 		if (chunk)
 			chunk->remove(this);
@@ -95,7 +95,7 @@ void Ireg_game_object::remove_this
 	if (!nodel)
 	{
 		cheat.clear_this_grabbed_actor((Actor*)this);	// Could be an actor
-		Game_window::get_game_window()->delete_object(this);
+		Game_window::get_instance()->delete_object(this);
 	}
 	}
 
@@ -107,7 +107,7 @@ int Ireg_game_object::is_dragable
 	(
 	) const
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// 0 weight means 'too heavy'.
 	return gwin->get_info(this).get_weight() > 0;
 	}
@@ -129,7 +129,7 @@ void Ireg_game_object::write_ireg
 					// Special case for 'quantity' items:
 	if (get_flag(Obj_flags::okay_to_take))
 		{
-		Shape_info& info = Game_window::get_game_window()->get_info(
+		Shape_info& info = Game_window::get_instance()->get_info(
 									this);
 		if (info.has_quantity())
 			buf[6] |= 0x80;

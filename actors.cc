@@ -233,7 +233,7 @@ void Actor::ready_best_weapon
 		ready_ammo();
 		return;			// Already have one.
 		}
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Game_object_vector vec(50);		// Get list of all possessions.
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
 	Game_object *best = 0;
@@ -296,7 +296,7 @@ void Actor::unready_weapon
 	Game_object *obj = spots[spot];
 	if (!obj)
 		return;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = gwin->get_info(obj);
 	if (!info.get_weapon_info())	// A weapon?
 		return;
@@ -361,7 +361,7 @@ int Actor::is_blocked
 	Tile_coord *f			// Step from here, or curpos if null.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = gwin->get_info(this);
 					// Get dim. in tiles.
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
@@ -764,7 +764,7 @@ void Actor::start
 	{
 	dormant = false;		// 14-jan-2001 - JSF.
 	frame_time = speed;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (!in_queue() || delay)	// Not already in queue?
 		{
 		if (delay)
@@ -785,7 +785,7 @@ void Actor::stop
 	if (action)
 		{
 		action->stop(this);
-		add_dirty(Game_window::get_game_window());
+		add_dirty(Game_window::get_instance());
 		}
 	frame_time = 0;
 	}
@@ -871,7 +871,7 @@ void Actor::follow
 					// Delay a bit IF not moving.
 			delay = (1 + leaderdist - goaldist)*100;
 		}
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (goaldist - leaderdist >= 5)
 		speed -= 20;		// Speed up if too far.
 					// Get window rect. in tiles.
@@ -928,7 +928,7 @@ int Actor::approach_another
 		return 0;
 					// Where are we now?
 	Tile_coord src = get_tile();
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (!gwin->get_win_tile_rect().has_point(src.tx - src.tz/2, 
 							src.ty - src.tz/2))
 					// Off-screen?
@@ -1066,7 +1066,7 @@ void Actor::get_prefered_slots
 	)
 {
 
-	Shape_info& info = Game_window::get_game_window()->get_info(obj);
+	Shape_info& info = Game_window::get_instance()->get_info(obj);
 
 	// Defaults
 	fistype = FIS_Other;
@@ -1273,7 +1273,7 @@ void Actor::restore_schedule
 	)
 	{
 					// Make sure it's in valid chunk.
-	Map_chunk *olist = Game_window::get_game_window()->
+	Map_chunk *olist = Game_window::get_instance()->
 				get_chunk_safely(get_cx(), get_cy());
 					// Activate schedule if not in party.
 	if (olist && party_id < 0)
@@ -1296,7 +1296,7 @@ void Actor::set_schedule_type
 	Schedule *newsched		// New sched., or 0 to create here.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	stop();				// Stop moving.
 	if (schedule)			// Finish up old if necessary.
 		schedule->ending(new_schedule_type);
@@ -1428,7 +1428,7 @@ void Actor::set_schedule_type
 void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 				int delay)	// -1 for random delay.
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	stop();				// Stop moving.
 	if (schedule)			// End prev.
@@ -1548,7 +1548,7 @@ int Actor::figure_weapon_pos
 	Game_object * weapon = spots[lhand];
 	if(weapon == 0)
 		return 0;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	// Get offsets for actor shape
 	int myframe = get_framenum();
 	gwin->get_info(this).get_weapon_offset(myframe & 0x1f, actor_x,
@@ -1604,7 +1604,7 @@ void Actor::activate
 	int event
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (edit())
 		return;
 	// We are serpent if we can use serpent isle paperdolls
@@ -1728,7 +1728,7 @@ void Actor::update_from_studio
 		return;
 		}
 	editing = 0;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (!npc)			// Create a new one?
 		{
 		int x, y;
@@ -1789,7 +1789,7 @@ void Actor::update_from_studio
 
 void Actor::show_inventory()
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Gump_manager *gump_man = gwin->get_gump_man();
 
 	int shapenum = inventory_shapenum();
@@ -1799,7 +1799,7 @@ void Actor::show_inventory()
 
 int Actor::inventory_shapenum()
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	// We are serpent if we can use serpent isle paperdolls
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
@@ -1915,7 +1915,7 @@ void Actor::set_property
 			properties[prop] = val;
 		break;
 		}
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (gwin->get_gump_man()->showing_gumps())
 		gwin->set_all_dirty();
 	}
@@ -1934,7 +1934,7 @@ void Clear_hit::handle_event(unsigned long curtime, long udata)
 	{ 
 	Actor *a = reinterpret_cast<Actor*>(udata);
 	a->hit = false;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	a->add_dirty(gwin);
 	delete this;
 	}
@@ -1953,7 +1953,7 @@ bool Actor::reduce_health
 	{
 	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
 		return false;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Monster_info *minf = gwin->get_info(this).get_monster_info();
 	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
 		return false;
@@ -2033,7 +2033,7 @@ void Actor::set_flag
 		flags |= ((uint32) 1 << flag);
 	else if (flag >= 32 && flag < 64)
 		flags2 |= ((uint32) 1 << (flag-32));
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Check sched. to avoid waking
 					//   Penumbra.
 	if (flag == Obj_flags::asleep && schedule_type != Schedule::sleep)
@@ -2107,7 +2107,7 @@ void Actor::clear_flag
 		flags &= ~(static_cast<uint32>(1) << flag);
 	else if (flag >= 32 && flag < 64)
 		flags2 &= ~(static_cast<uint32>(1) << (flag-32));
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (flag == Obj_flags::invisible)	// Restore normal palette.
 		gwin->set_palette();
 	else if (flag == Obj_flags::asleep)
@@ -2328,7 +2328,7 @@ void Actor::init_readied
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (spots[lfinger])
 		call_readied_usecode(gwin, lfinger, spots[lfinger],
 						Usecode_machine::readied);
@@ -2364,7 +2364,7 @@ void Actor::remove
 	Game_object *obj
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int index = Actor::find_readied(obj);	// Remove from spot.
 					// Note:  gwin->drop() also does this,
 					//   but it needs to be done before
@@ -2451,7 +2451,7 @@ bool Actor::add
 	if (index == lhand && schedule)
 		schedule->set_weapon();	// Tell combat-schedule about it.
 	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// (Readied usecode now in drop().)
 	if (gwin->get_info(obj).is_light_source())
 		light_sources++;
@@ -2506,7 +2506,7 @@ int Actor::add_readied
 	// Must be gloves
 	if (type == FIS_2Finger && index == lfinger) two_fingered = true;
 
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	// Usecode?  NOTE:  Done in gwin->drop() now.
 //	if (!dont_check)
@@ -2548,7 +2548,7 @@ void Actor::change_member_shape
 	int newshape
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (gwin->get_info(obj).is_light_source())
 		light_sources--;
 	Container_game_object::change_member_shape(obj, newshape);
@@ -2621,7 +2621,7 @@ int Actor::get_armor_points
 	static enum Spots aspots[] = {neck, torso, lfinger, rfinger, head,
 					rhand, legs, feet};
 	const int num_armor_spots = sizeof(aspots)/sizeof(aspots[0]);
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	for (int i = 0; i < num_armor_spots; i++)
 		{
 		Game_object *armor = spots[static_cast<int>(aspots[i])];
@@ -2643,7 +2643,7 @@ Weapon_info *Actor::get_weapon
 	{
 	points = 0;
 	Weapon_info *winf = 0;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Game_object *weapon = spots[static_cast<int>(lhand)];
 	if (weapon)
 		if ((winf = gwin->get_info(weapon).get_weapon_info()) != 0)
@@ -2734,7 +2734,7 @@ bool Actor::figure_hit_points
 	// godmode effects:
 	if (were_party && cheat.in_god_mode())
 		return false;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Monster_info *minf = gwin->get_info(this).get_monster_info();
 	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
 		return false;
@@ -2927,7 +2927,7 @@ Game_object *Actor::attacked
 	int ammo_shape			// Also may be 0.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (is_dead() ||		// Already dead?
 					// Or party member of dead Avatar?
 	    (party_id >= 0 && gwin->get_main_actor()->is_dead()))
@@ -2988,7 +2988,7 @@ void Actor::die
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Get location.
 	Tile_coord pos = get_tile();
 	set_action(0);
@@ -3090,7 +3090,7 @@ Monster_actor *Actor::clone
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = gwin->get_info(this);
 					// Base distance on greater dim.
 	int xs = info.get_3d_xtiles(), ys = info.get_3d_ytiles();
@@ -3155,7 +3155,7 @@ Actor *Actor::resurrect
 	Dead_body *body			// Must be this actor's body.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (body->get_owner() ||	// Must be on ground.
 	    npc_num <= 0 || gwin->get_body(npc_num) != body)
 		return (0);
@@ -3188,7 +3188,7 @@ void Main_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	if (action)			// Doing anything?
 		{			// Do what we should.
@@ -3215,7 +3215,7 @@ void Main_actor::get_followers
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Usecode_machine *uc = gwin->get_usecode();
 	int cnt = uc->get_party_count();
 	for (int i = 0; i < cnt; i++)
@@ -3253,7 +3253,7 @@ int Main_actor::step
 	int frame			// New frame #.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get rel. tile coords.
@@ -3317,7 +3317,7 @@ void Main_actor::switched_chunks
 	Map_chunk *nlist	// New chunk.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int newcx = nlist->get_cx(), newcy = nlist->get_cy();
 	int xfrom, xto, yfrom, yto;	// Get range of chunks.
 	if (!olist)			// No old?  Use all 9.
@@ -3381,7 +3381,7 @@ void Main_actor::move
 	int newlift
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Store old chunk list.
 	Map_chunk *olist = gwin->get_chunk_safely(
 						get_cx(), get_cy());
@@ -3405,7 +3405,7 @@ void Main_actor::die
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (gwin->in_combat())
 		gwin->toggle_combat();	// Hope this is safe....
 	Actor::set_flag(Obj_flags::dead);
@@ -3433,7 +3433,7 @@ void Actor::set_actor_shape()
 	ShapeFile the_file = SF_SHAPES_VGA;
 	int female = get_type_flag(tf_sex)?1:0;
 
-	if (Game::get_game_type() == SERPENT_ISLE || Game_window::get_game_window()->can_use_multiracial())
+	if (Game::get_game_type() == SERPENT_ISLE || Game_window::get_instance()->can_use_multiracial())
 	{
 		if (Game::get_game_type() == BLACK_GATE) the_file = SF_BG_SISHAPES_VGA;
 
@@ -3485,7 +3485,7 @@ void Actor::set_polymorph (int shape)
 	// Want to set to Avatar
 	if (shape == 721 || shape == 989)
 	{
-		Actor *avatar = Game_window::get_game_window()->get_main_actor();
+		Actor *avatar = Game_window::get_instance()->get_main_actor();
 		if (!avatar) return;
 
 		if (avatar->get_skin_color() == 0) // WH
@@ -3783,7 +3783,7 @@ bool Npc_actor::update_forced_schedule()
 {
 	if (force_update)
 	{
-		Game_window *gwin = Game_window::get_game_window();
+		Game_window *gwin = Game_window::get_instance();
 		update_schedule(gwin, gwin->get_hour()/3, 7);
 		force_update = false;
 		return true;
@@ -3826,7 +3826,7 @@ void Npc_actor::activate
 	{
 	if (is_dead())
 		return;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Converse, etc.
 	Actor::activate(umachine, event);
 	//++++++ This might no longer be needed.  Need to test.++++++ (jsf)
@@ -3868,7 +3868,7 @@ void Npc_actor::handle_event
 		}
 	else
 		{			// Do what we should.
-		Game_window *gwin = Game_window::get_game_window();
+		Game_window *gwin = Game_window::get_instance();
 		int delay = party_id < 0 ? gwin->is_time_stopped() : 0;
 		if (delay <= 0)		// Time not stopped?
 			delay = action->handle_event(this);
@@ -3905,7 +3905,7 @@ int Npc_actor::step
 					// Store old chunk.
 	Tile_coord oldtile = get_tile();
 	int old_cx = get_cx(), old_cy = get_cy();
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get rel. tile coords.
@@ -3970,7 +3970,7 @@ void Npc_actor::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	set_action(0);
 //	delete schedule;	// Problems in SI monster creation.
 //	schedule = 0;
@@ -4035,7 +4035,7 @@ void Npc_actor::move
 	int newlift
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Store old chunk list.
 	Map_chunk *olist = gwin->get_chunk_safely(get_cx(), get_cy());
 					// Move it.

@@ -383,6 +383,8 @@ public:
 		{ usecode_dir = d&7; }
 	virtual int get_usecode_dir() const
 		{ return usecode_dir; }
+	virtual Actor *as_actor()	// An actor?
+		{ return this; }
 	void init_readied();		// Call Usecode to init. readied objs.
 					// Remove an object.
 	virtual void remove(Game_object *obj);

@@ -91,7 +91,7 @@ inline void Chunk_terrain::paint_tile
 	int tilex, int tiley		// Tile within chunk.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Shape_frame *shape = get_shape(tilex, tiley);
 	if (shape && !shape->is_rle())		// Only do flat tiles.
 		rendered_flats->copy8(shape->get_data(), 
@@ -242,7 +242,7 @@ static int Figure_queue_size
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int w = gwin->get_width(), h = gwin->get_height();
 					// Figure # chunks, rounding up.
 	int cw = (w + c_chunksize - 1)/c_chunksize,
@@ -303,7 +303,7 @@ void Chunk_terrain::render_all
 	int cx, int cy			// Chunk rendering too.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Image_window8 *iwin = gwin->get_win();
 	int ctx = cx*c_tiles_per_chunk, cty = cy*c_tiles_per_chunk;
 	int scrolltx = gwin->get_scrolltx(), scrollty = gwin->get_scrollty();
