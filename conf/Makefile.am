@@ -1,5 +1,5 @@
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files $(SDL_CFLAGS) $(INCDIRS) \
-		 $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+		 $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) $(WARNINGS)
 
 if BUILD_TOOLS
 noinst_PROGRAMS = confregress

@@ -54,6 +54,8 @@ public:
 	void selectpairs(KeyTypeList &ktl, const std::string currkey);
 	
 	std::string dump(int depth = 0);
+	void dump(std::ostream &o, const std::string &indentstr, const unsigned int depth=0) const;
+	
 	void	xmlassign(std::string &key,std::string &value);
 	void	xmlparse(std::string &s,std::size_t &pos);
 

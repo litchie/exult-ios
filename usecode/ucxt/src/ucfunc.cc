@@ -457,12 +457,12 @@ void UCFunc::parse_ucs_pass3(vector<GotoSet> &gotoset, const map<unsigned int, s
 
 inline unsigned short read_ushort(ifstream &f)
 {
-  return ((unsigned short) ((unsigned int)f.get() + (((unsigned int)f.get()) << 8)));
+  return static_cast<unsigned short> (static_cast<unsigned int>(f.get()) + (static_cast<unsigned int>(f.get()) << 8));
 }
 
 inline unsigned char read_ubyte(ifstream &f)
 {
-  return (unsigned char)f.get();
+  return static_cast<unsigned char>(f.get());
 }
 
 void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd);
@@ -602,7 +602,7 @@ inline int calcreloffset(const UCc &op, unsigned int param)
 	         formula: 0xFFFF - (unsigned short)param + 1
 	                  ^^^^^^ max of unsighed short
 	*/
-	return op._offset + ((param>>15) ? (-1 * (0xFFFF - (unsigned short)param + 1)) : (int)param) + 1 + op._params.size();
+	return op._offset + ((param>>15) ? (-1 * (0xFFFF - static_cast<unsigned short>(param) + 1)) : static_cast<int>(param)) + 1 + op._params.size();
 }
 
 void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
@@ -619,16 +619,16 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 		assert(ssize!=0);
 
 		if(ssize==1)
-			ucop._params_parsed.push_back((unsigned short)((unsigned int)ucop._params[first++]));
+			ucop._params_parsed.push_back(static_cast<unsigned short>(static_cast<unsigned int>(ucop._params[first++])));
 		else if(ssize==2)
 			if(offset_munge)
 			{
-				unsigned int reloffset = calcreloffset(ucop, (unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
+				unsigned int reloffset = calcreloffset(ucop, static_cast<unsigned short> (static_cast<unsigned int>(ucop._params[first++]) + ((static_cast<unsigned int>(ucop._params[first++])) << 8)));
 				ucop._params_parsed.push_back(reloffset);
 				ucop._jump_offsets.push_back(reloffset);
 			}
 			else
-				ucop._params_parsed.push_back((unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
+				ucop._params_parsed.push_back(static_cast<unsigned short> (static_cast<unsigned int>(ucop._params[first++]) + ((static_cast<unsigned int>(ucop._params[first++])) << 8)));
 	}
 }
 
@@ -712,12 +712,12 @@ void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vec
 void output_raw_opcodes(ostream &o, const UCc &op)
 {
 	// chars in opcode
-	o << ' ' << std::setw(2) << (unsigned int)op._id;
+	o << ' ' << std::setw(2) << static_cast<unsigned int>(op._id);
 	if(op._params.size()) cout << ' ';
 
 	for(unsigned int i=0; i<op._params.size(); i++)
 	{
-		o << std::setw(2) << (unsigned int) op._params[i];
+		o << std::setw(2) << static_cast<unsigned int>(op._params[i]);
 		if(i!=op._params.size())
 			o << ' ';
 	}

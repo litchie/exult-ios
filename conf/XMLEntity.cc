@@ -30,6 +30,8 @@
 
 using std::string;
 using std::vector;
+using std::ostream;
+using std::endl;
 
 static	string	encode_entity(const string &s);
 static	string	close_tag(const string &s);
@@ -143,6 +145,50 @@ string	XMLnode::dump(int depth)
 	return s;
 }
 
+/* Output's a 'nicer' dump of the xmltree, one <tag> value </tag> per line
+	the indent characters are specified by indentstr */
+void XMLnode::dump(ostream &o, const string &indentstr, const unsigned int depth) const
+{
+	// indent
+	for(unsigned int i=0; i<depth; i++)
+		o << indentstr;
+	
+	// open tag
+	o << '<' << id << '>';
+	
+	// if this tag has a closing tag...
+	if(id[id.length()-1]!='/')
+	{
+		// if we've got some subnodes, terminate this line...
+		if(nodelist.size())
+		{
+			o << endl;
+		
+			// ... then walk through them outputting them all ...
+			for(vector<XMLnode *>::const_iterator it=nodelist.begin(); it!=nodelist.end(); ++it)
+				(*it)->dump(o, indentstr, depth+1);
+		}
+		// ... else, if we have content in this output it.
+		else if(content.length())
+			o << ' ' << encode_entity(content) << ' ';
+		
+		// not a clue... it's in XMLnode::dump() so there must be a reason...
+		if(id[0]=='?')
+			return;
+		
+		// append a closing tag if there is one.
+		if(!no_close)
+		{
+			// if we've got subnodes, we need to reindent
+			if(nodelist.size())
+			for(unsigned int i=0; i<depth; i++)
+				o << indentstr;
+			
+			o << "</" << close_tag(id) << '>';
+		}
+	}
+	o << endl;
+}
 
 // This function does not make sense here. It should be in XMLEntity
 void	XMLnode::xmlassign(string &key,string &value)
