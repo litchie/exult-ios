@@ -1,3 +1,7 @@
+2001-01-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Sprite effects no longer get split up (at SI start).
+
 2001-01-23  Tristan Tarrant <nadir@users.sourceforge.net>
 	* mapedit/exultstudio.cc: framework for running both standalone and
 	  as GIMP plugin (only former works at the moment).

@@ -71,6 +71,26 @@ Sprites_effect::Sprites_effect
 	}
 
 /*
+ *	Add a dirty rectangle for the current position and frame.
+ */
+
+inline void Sprites_effect::add_dirty
+	(
+	Game_window *gwin,
+	int frnum
+	)
+	{
+	if (pos.tx == -1 || frnum == -1)
+		return;			// Already at destination.
+	Shape_frame *shape = gwin->get_sprite_shape(sprite_num, frnum);
+	int lp = pos.tz/2;
+
+	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
+		(pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
+	    (pos.ty - lp - gwin->get_scrollty())*c_tilesize).enlarge(4)));
+	}
+
+/*
  *	Animation.
  */
 
@@ -85,11 +105,13 @@ void Sprites_effect::handle_event
 	if (frame_num == frames)	// At end?
 		{			// Remove & delete this.
 		gwin->remove_effect(this);
-		gwin->paint();
+		gwin->set_all_dirty();
 		return;
 		}
-	Sprites_effect::paint(gwin);	// Render.
+	add_dirty(gwin, frame_num - 1);	// Clear out old.
+//	Sprites_effect::paint(gwin);	// Render.
 	gwin->set_painted();
+	add_dirty(gwin, frame_num);	// Want to paint new frame.
 	frame_num++;			// Next frame.
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);

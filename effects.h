@@ -69,6 +69,7 @@ protected:
 	int frame_num;			// Current frame.
 	int frames;			// # frames.
 	Tile_coord pos;			// Position within world.
+	void add_dirty(Game_window *gwin, int frnum);
 public:
 	Sprites_effect(int num, Tile_coord p);
 					// For Time_sensitive:
