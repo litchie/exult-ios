@@ -17,7 +17,7 @@
 #ifndef PALETTE_H
 #define PALETTE_H
 
-#include "imagewin.h"
+#include "iwin8.h"
 
 class Palette
 	{

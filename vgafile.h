@@ -38,7 +38,6 @@ class DataSource;
 class StreamDataSource;
 class Shape;
 class Image_buffer8;
-class Image_window8;
 
 /*
  *	A shape from "shapes.vga":
@@ -67,8 +66,6 @@ public:
 					unsigned long shapelen, int frnum);
 					// Paint.
 	void paint_rle(Image_buffer8 *win, int xoff, int yoff);
-	void paint_rle(Image_window8 *win, int xoff, int yoff)
-		{ paint_rle(win->get_ib8(), xoff, yoff); }
 	void paint_rle_translucent(Image_buffer8 *win, int xoff, int yoff,
 					Xform_palette *xforms, int xfcnt);
 	void paint_rle_transformed(Image_buffer8 *win, int xoff, int yoff,

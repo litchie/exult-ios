@@ -1,10 +1,10 @@
-INCLUDES = -I. -Iconf -Ifiles -Iaudio -Ipathfinder \
+INCLUDES = -I. -Iimagewin -Iconf -Ifiles -Iaudio -Ipathfinder \
 	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
 	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\""$(datadir)/exult"\"
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
-SUBDIRS = audio pathfinder files conf flic tools data docs desktop
+SUBDIRS = audio pathfinder files conf flic tools data docs desktop imagewin
 
 bin_PROGRAMS = exult
 
@@ -56,9 +56,6 @@ exult_SOURCES =	\
 	gamewin.h	\
 	gumps.cc	\
 	gumps.h		\
-	imagescl.cc	\
-	imagewin.cc	\
-	imagewin.h	\
 	items.cc	\
 	items.h		\
 	lists.cc	\
@@ -81,8 +78,6 @@ exult_SOURCES =	\
 	readnpcs.cc	\
 	ready.h		\
 	rect.h		\
-	scale.cc	\
-	scale.h		\
 	schedule.cc	\
 	schedule.h	\
 	segfile.cc	\
@@ -113,6 +108,7 @@ exult_LDADD = 			\
 	flic/libflic.la		\
 	conf/libconf.la		\
 	files/libu7file.la	\
+	imagewin/libimagewin.la	\
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE)
 
 exult_DEPENDENCIES = $(ICON_FILE)
