@@ -74,6 +74,7 @@ void ExultMenu::setup()
 	scalemethod->add_choice("Bilinear");
 	scalemethod->add_choice("Interlaced");
 	scalemethod->add_choice("2xSaI");
+	scalemethod->add_choice("Super Eagle");
 	scalemethod->set_choice(gwin->get_win()->get_scaler());
 	menu.add_entry(scalemethod);
 	
@@ -172,8 +173,13 @@ void ExultMenu::setup()
 				case 2:
 					config->set("config/video/scale_method","interlaced",true);
 					break;
-				default:
+				case 3:
 					config->set("config/video/scale_method","2xSaI",true);
+					break;
+				case 4:
+					config->set("config/video/scale_method","SuperEagle",true);
+					break;
+				default:
 					break;
 				}
 			}

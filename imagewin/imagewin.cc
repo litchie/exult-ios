@@ -195,6 +195,39 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 			surface = scaled_surface = 0;
 		}
 	}
+	else if (scale == 2 && scaler == SuperEagle)
+	{
+		int hwdepth = Get_best_depth();
+
+		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
+			cout << "Doubling from " << ibuf->depth << "bits to "
+				<< hwdepth << " not yet supported." << endl;
+		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
+						hwdepth, flags)) != 0 &&
+			 (surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
+							8, 0, 0, 0, 0)) != 0)
+		{			// Get color mask info.
+			SDL_PixelFormat *fmt = scaled_surface->format;
+			uint32 r = fmt->Rmask, g=fmt->Gmask, b=fmt->Bmask;
+			if (hwdepth == 16)
+			{
+				show_scaled = (r == 0xf800 && g == 0x7e0 &&b == 0x1f) ? 
+					&Image_window::show_scaled8to565_SuperEagle
+				   : (r == 0x7c00 && g == 0x3e0 && b == 0x1f) ?
+					&Image_window::show_scaled8to555_SuperEagle
+				   : &Image_window::show_scaled8to16_SuperEagle;
+			}
+			else
+			    	show_scaled = &Image_window::show_scaled8to32_SuperEagle;
+		}
+		else
+		{
+			cout << "Couldn't create scaled surface" << endl;
+			delete surface;
+			delete scaled_surface;
+			surface = scaled_surface = 0;
+		}
+	}
 	else if (scale >= 2 && scaler == interlaced)
 	{
 		surface = SDL_SetVideoMode(w*scale, h*scale, ibuf->depth, flags);
