@@ -1,3 +1,7 @@
+2001-04-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* SI spellbook working now.  Still have to redo reagant use/check.
+
 2001-04-25  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Spell-scrolls implemented for SI.

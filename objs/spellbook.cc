@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "spellbook.h"
 #include "gamewin.h"
 #include "utils.h"
+#include "game.h"
 
 using std::memcpy;
 using std::ostream;
@@ -81,7 +82,7 @@ void Spellbook_object::activate
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->show_gump(this, 43);
+	gwin->show_gump(this, Game::get_game_type() == BLACK_GATE ? 43 : 38);
 	}
 
 /*
