@@ -1,3 +1,7 @@
+2002-02-21  Darke  <darkepaw@users.sourceforge.net>
+	* usecode/ucxt/Makefile.am: Fixed a problem with it not creating
+	the intrinsics data files.
+
 2002-02-20  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* shapes/vgafile.h (public): Public encode_rle() added.
