@@ -26,8 +26,12 @@ occasionally by Nick Lamb njl195@zepler.org.uk."
 It has been partly rewritten to use an SDL surface as input.
 */
 
+#include "../alpha_kludges.h"
 
-#include <cstdlib>
+#ifndef ALPHA_LINUX_CXX
+#  include <cstdlib>
+#endif
+
 #include "SDL_video.h"
 #include "SDL_endian.h"
 #include <iostream>
