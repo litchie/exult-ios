@@ -31,9 +31,11 @@ dnl -------------------------
 dnl Host system settings
 dnl -------------------------
 
+AC_EXEEXT
+
 SYSLIBS=""
 ICON_FILE=""
-EXE_TARGET="exult"
+EXE_TARGET="exult$EXEEXT"
 EXULT_DATADIR="$datadir/exult"
 
 dnl determine windowing system from 'host'
@@ -53,7 +55,6 @@ case "$host_os" in
 	mingw32* )
 		WINDOWING_SYSTEM="-DWIN32"
 		AC_MSG_RESULT(Win32 (mingw32))
-		EXE_TARGET="exult.exe"
 		SYSLIBS="-lwinmm -lstdc++"
 		ICON_FILE="win32/exultico.o"
 		enable_kmid="no"
@@ -63,7 +64,6 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DWIN32"
 		AC_DEFINE(CYGWIN)
 		AC_MSG_RESULT(Win32 (cygwin))
-		EXE_TARGET="exult.exe"
 		SYSLIBS="-lwinmm"
 		ICON_FILE="win32/exultico.o"
 		enable_kmid="no"
@@ -91,7 +91,7 @@ case "$host_os" in
 		AC_DEFINE(MACOSX)
 		AC_MSG_RESULT(Cocoa (MacOS X))
 		SYSLIBS="-lstdc++ -framework QuickTime"
-		CFLAGS="$CFLAGS -fpascal-strings"
+		CXXFLAGS="$CXXFLAGS -fpascal-strings"
 		EXULT_DATADIR="data"
 		;;
 	*)

@@ -122,10 +122,12 @@ EXTRA_DIST = 	\
 	README.Alpha \
 	README.BeOS \
 	README.MacOS \
+	README.MacOSX \
 	Makefile.win32 \
 	Makefile.be \
 	Makefile.cygwin \
 	alpha_kludges.h mingw_kludges.h \
+	Info.plist.in \
 	exult.spec \
 	win32/exult.ico \
 	win32/exultico.rc \
@@ -150,14 +152,18 @@ win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
 
 CLEANFILES = *~
 
-wrapper: ${EXE_TARGET}
-	mkdir -p ${PACKAGE}.app/Contents/MacOS
-	mkdir -p ${PACKAGE}.app/Contents/Resources
-	echo "APPL${SDL_APPLE_CREATOR}" > ${PACKAGE}.app/Contents/PkgInfo
-	cp Info.plist ${PACKAGE}.app/Contents/
-	cp -r SDLMain.nib ${PACKAGE}.app/Contents/Resources/
-	cp ${EXE_TARGET} ${PACKAGE}.app/Contents/MacOS/
-	cp macosx/exult.icns ${PACKAGE}.app/Contents/Resources/
+bundle_name = Exult.app
 
+Exult_app: ${EXE_TARGET}
+	mkdir -p $(bundle_name)/Contents/MacOS
+	mkdir -p $(bundle_name)/Contents/Resources
+	mkdir -p $(bundle_name)/Contents/Resources/SDLMain.nib
+	echo "APPL????" > $(bundle_name)/Contents/PkgInfo
+	$(INSTALL_DATA) Info.plist $(bundle_name)/Contents/
+	$(INSTALL_DATA) SDLMain.nib/*.nib $(bundle_name)/Contents/Resources/
+	$(INSTALL_PROGRAM) $< $(bundle_name)/Contents/MacOS/
+	$(INSTALL_DATA) macosx/exult.icns $(bundle_name)/Contents/Resources/
 
-
+install-exec-local: Exult_app
+	mkdir -p /Applications/
+	cp -r $< /Applications/

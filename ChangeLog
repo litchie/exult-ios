@@ -1,3 +1,10 @@
+2001-09-20  Max Horn  <max@quendi.de>
+	* audio/midi_drivers/mac_midi.cc: made compile with OS X 10.1
+	* files/listfiles.cc: unix implementation of U7ListFiles now properly
+	uses globfree, making it work properly on OS X
+	* Makefile.am: small change to bundle code
+	* configure.in: changed to use AC_EXEEXT
+
 2001-09-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/objs.cc: Set mask to find any obj. in find_closest(); fixes
