@@ -266,7 +266,7 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(okay_to_fly);
 	USECODE_INTRINSIC_DECL(get_container);
 	USECODE_INTRINSIC_DECL(remove_item);
-	USECODE_INTRINSIC_DECL(get_equipment_list);
+	USECODE_INTRINSIC_DECL(is_readied);
 	USECODE_INTRINSIC_DECL(restart_game);
 	USECODE_INTRINSIC_DECL(start_speech);
 	USECODE_INTRINSIC_DECL(run_endgame);
