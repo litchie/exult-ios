@@ -107,13 +107,13 @@ void Game_window::drop_dragged
 	{
 	if (!dragging)
 		return;
-	dragging = 0;
 	drag(x, y);			// Get object to mouse pos.
 	Game_object *found[100];	// Was it dropped on something?
 	int cnt = find_objects(x, y, found);
-	for (int i = cnt - 1; i >= 0; i++)
+	for (int i = cnt - 1; i >= 0; i--)
 		if (found[i]->drop(dragging))
 			{
+			dragging = 0;
 			paint();
 			return;
 			}
@@ -125,6 +125,7 @@ void Game_window::drop_dragged
 			break;
 	if (lift == max_lift)		// Couldn't drop?  Put it back.
 		get_objects(dragging_cx, dragging_cy)->add(dragging);
+	dragging = 0;
 	paint();
 	}
 
