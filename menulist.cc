@@ -149,7 +149,6 @@ bool MenuList::set_selected(int x, int y)
 			return false;
 		else
 			entry->set_selected(false);
-		selected = -1;
 	}
 	
 	for(int i=0; i<entries->size(); i++) {
