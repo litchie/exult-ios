@@ -332,12 +332,12 @@ inline void Write4
 	*out++ = (val>>24)&0xff;
 	}
 
-int U7open
+void U7open
 	(
 	std::ifstream& in,			// Input stream to open.
 	const char *fname			// May be converted to upper-case.
 	);
-int U7open
+void U7open
 	(
 	std::ofstream& out,			// Output stream to open.
 	const char *fname			// May be converted to upper-case.

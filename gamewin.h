@@ -135,8 +135,7 @@ private:
 					// Theft info:
 	int theft_warnings;		// # times warned in current chunk.
 	short theft_cx, theft_cy;	// Chunk where warnings occurred.
-					// Open a U7 file.
-	int u7open(std::ifstream& in, const char *fname, int dont_abort = 0);
+					// Open a U7 file, throw an exception if failed
 	void set_scroll_bounds();	// Set scroll-controller.
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
@@ -438,7 +437,7 @@ public:
 					// Get iregxx name.
 	static char *get_ireg_name(int schunk, char *fname);
 					// Write moveable objects to file.
-	int write_ireg_objects(int schunk);
+	void write_ireg_objects(int schunk);
 					// Get moveable objects.
 	void get_ireg_objects(int schunk);
 	void read_ireg_objects(std::istream& ireg, int scx, int scy,
@@ -450,10 +449,10 @@ public:
 	Egg_object *create_egg(unsigned char *entry, bool animated);
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
-	int write();			// Write out to 'gamedat'.
-	int read();			// Read in 'gamedat'.
-	int write_gwin();		// Write gamedat/gamewin.dat.
-	int read_gwin();		// Read gamedat/gamewin.dat.
+	void write();			// Write out to 'gamedat'.
+	void read();			// Read in 'gamedat'.
+	void write_gwin();		// Write gamedat/gamewin.dat.
+	void read_gwin();		// Read gamedat/gamewin.dat.
 	void init_actors();		// Place actors in the world.
 	void init_files();		// Load all files
 	void clear_dirty()		// Clear dirty rectangle.
@@ -589,7 +588,7 @@ public:
 		{ return focus; }
 	void setup_game();		// Prepare for game
 	void read_npcs();		// Read in npc's.
-	bool write_npcs();		// Write them back.
+	void write_npcs();		// Write them back.
 	void read_schedules();		// Read npc's schedules.
 					// Start dragging.
 	bool start_dragging(int x, int y);
@@ -616,8 +615,8 @@ public:
 	void restore_gamedat(const char *fname);// Explode a savegame into "gamedat".
 	void restore_gamedat(int num);
 					// Save "gamedat".
-	bool save_gamedat(const char *fname, const char *savename);
-	bool save_gamedat(int num, const char *savename);
+	void save_gamedat(const char *fname, const char *savename);
+	void save_gamedat(int num, const char *savename);
 	int find_roof(int cx, int cy);
 	
 private:

@@ -49,8 +49,6 @@ void	Flex::IndexFlexFile(void)
 {
 	FILE	*fp;
 	fp=U7open(filename.c_str(),"rb");
-	if(!fp)
-		throw file_not_found_error(filename);
 	fread(title,sizeof(title),1,fp);
 	magic1 = Read4(fp);
 	count = Read4(fp);
@@ -58,7 +56,7 @@ void	Flex::IndexFlexFile(void)
 	if(magic1!=0xffff1a00UL)
 		{
 		cerr << "Magic number is not a flex file" << endl;
-		throw wrong_file_type_error();	// Not a flex file
+		throw wrong_file_type_exception(filename,"Flex");	// Not a flex file
 		}
 	for(int i=0;i<9;i++)
 		padding[i] = Read4(fp);

@@ -175,33 +175,19 @@ void Game_window::init_files()
 		protect_pixel = pal->find_color(62, 62, 55);
 		usecode = new Usecode_machine(this);
 		faces.load(FACES_VGA);
-		if (!faces.is_good())
-			abort("Can't open 'faces.vga' file.");
 		gumps.load(GUMPS_VGA);
-		if (!gumps.is_good())
-			abort("Can't open 'gumps.vga' file.");
 		fonts.load(FONTS_VGA);
-		if (!fonts.is_good())
-			abort("Can't open 'fonts.vga' file.");
 		sprites.load(SPRITES_VGA);
-		if (!sprites.is_good())
-			abort("Can't open 'sprites.vga' file.");
 		mainshp.load(MAINSHP_FLX);
-		if (!mainshp.is_good())
-			abort("Can't open 'mainshp.vga' file.");
 		shapes.init();
-		if (!shapes.is_good())
-			abort("Can't open 'shapes.vga' file.");
 
-		u7open(chunks, U7CHUNKS);
-		u7open(u7map, U7MAP);
+		U7open(chunks, U7CHUNKS);
+		U7open(u7map, U7MAP);
 		ifstream textflx;	
-	  	u7open(textflx, TEXT_FLX);
+	  	U7open(textflx, TEXT_FLX);
 		Setup_item_names(textflx);	// Set up list of item names.
 					// Read in shape dimensions.
-		if (!shapes.read_info())
-			abort(
-			"Can't read shape data (tfa.dat, wgtvol.dat, shpdims.dat).");
+		shapes.read_info();
 		Segment_file xf(XFORMTBL);	// Read in translucency tables.
 		int len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
 		for (int i = 0; i < nxforms; i++)
@@ -358,29 +344,6 @@ void Game_window::resized
 		sprintf(msg, "%dx%dx%d", neww, newh, newsc);
 		center_text(msg);
 	}
-	}
-
-/*
- *	Open a file, trying the original name (lower case), and the upper
- *	case version of the name.  If it can't be opened either way, we
- *	abort with an error message.
- *
- *	Output: 0 if couldn't open and dont_abort == 1.
- */
-
-int Game_window::u7open
-	(
-	ifstream& in,			// Input stream to open.
-	const char *fname,			// May be converted to upper-case.
-	int dont_abort			// 1 to just return 0.
-	)
-	{
-	if (!U7open(in, fname))
-		if (dont_abort)
-			return (0);
-		else
-			abort("Can't open '%s'.", fname);
-	return (1);
 	}
 
 /*
@@ -637,7 +600,7 @@ void Game_window::get_ifix_objects
 	fname[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
 	fname[len + 2] = 0;
 	ifstream ifix;			// There it is.
-	u7open(ifix, fname);
+	U7open(ifix, fname);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.
@@ -712,19 +675,14 @@ char *Game_window::get_ireg_name
  *	Output:	0 if error, which is reported.
  */
 
-int Game_window::write_ireg_objects
+void Game_window::write_ireg_objects
 	(
 	int schunk			// Superchunk # (0-143).
 	)
 	{
 	char fname[128];		// Set up name.
 	ofstream ireg;			// There it is.
-	if (!U7open(ireg, get_ireg_name(schunk, fname)))
-		{			// +++++Better error???
-		cerr << "Exult:  Error opening '" << fname <<
-				"' for writing"<<endl;
-		return (0);
-		}
+	U7open(ireg, get_ireg_name(schunk, fname));
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.
@@ -742,9 +700,8 @@ int Game_window::write_ireg_objects
 			}
 	ireg.flush();
 	int result = ireg.good();
-	if (!result)			// ++++Better error system needed??
-		cerr << "Exult:  Error writing '" << fname << "'"<<endl;
-	return (result);
+	if (!result)
+		throw file_write_exception(fname);
 	}
 
 /*
@@ -759,8 +716,14 @@ void Game_window::get_ireg_objects
 	{
 	char fname[128];		// Set up name.
 	ifstream ireg;			// There it is.
-	if (!u7open(ireg, get_ireg_name(schunk, fname), 1))
+	try
+	{
+		U7open(ireg, get_ireg_name(schunk, fname));
+	}
+	catch(...)
+	{
 		return;			// Just don't show them.
+	}
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 	read_ireg_objects(ireg, scx, scy);
@@ -1078,7 +1041,7 @@ bool Game_window::init_gamedat(bool create)
 	else
 		{
 			ifstream identity_file;
-			u7open(identity_file, IDENTITY);
+			U7open(identity_file, IDENTITY);
 			char gamedat_identity[256];
 			identity_file.read(gamedat_identity, 256);
 			char *ptr = gamedat_identity;
@@ -1107,20 +1070,18 @@ bool Game_window::init_gamedat(bool create)
  *	Output:	0 if error, already reported.
  */
 
-int Game_window::write
+void Game_window::write
 	(
 	)
 	{
 					// Write each superchunk to Iregxx.
 	for (int schunk = 0; schunk < 12*12 - 1; schunk++)
 					// Only write what we've read.
-		if (schunk_read[schunk] && !write_ireg_objects(schunk))
-			return (0);
-	if (!write_npcs())		// Write out npc.dat.
-		return (0);
-	if (!usecode->write())		// Usecode.dat (party, global flags).
-		return (0);
-	return (write_gwin());		// Write our data.
+		if (schunk_read[schunk])
+			write_ireg_objects(schunk);
+	write_npcs();		// Write out npc.dat.
+	usecode->write();	// Usecode.dat (party, global flags).
+	write_gwin();		// Write our data.
 	}
 
 /*
@@ -1129,31 +1090,33 @@ int Game_window::write
  *	Output:	0 if error, already reported.
  */
 
-int Game_window::read
+void Game_window::read
 	(
 	)
 	{
 	clear_world();			// Wipe clean.
-	if (!read_gwin())		// Read our data.
-		return (0);
+	read_gwin();		// Read our data.
 					// DON'T do anything that might paint()
 					//   before calling read_npcs!!
 	read_npcs();			// Read in NPC's, monsters, and get
 					//   active gump.
 	end_gump_mode();		// Kill gumps, and paint new data.
 	
-	if (!usecode->read())		// Usecode.dat (party, global flags).
+	try
 	{
+		usecode->read();		// Usecode.dat (party, global flags).
 
 		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
 			main_actor->clear_flag(Actor::dont_render);
 		else
 			main_actor->set_flag(Actor::dont_render);
 	}
+	catch(...)
+	{
+	}
 	faded_out = 0;
 	clock.set_palette();		// Set palette for time-of-day.
 	set_all_dirty();		// Force entire repaint.
-	return (1);
 	}
 
 /*
@@ -1162,13 +1125,12 @@ int Game_window::read
  *	Output:	0 if error.
  */
 
-int Game_window::write_gwin
+void Game_window::write_gwin
 	(
 	)
 	{
 	ofstream gout;
-	if (!U7open(gout, GWINDAT))	// Gamewin.dat.
-		return (0);
+	U7open(gout, GWINDAT);	// Gamewin.dat.
 					// Start with scroll coords (in tiles).
 	Write2(gout, get_scrolltx());
 	Write2(gout, get_scrollty());
@@ -1178,7 +1140,8 @@ int Game_window::write_gwin
 	Write2(gout, clock.get_minute());
 	Write4(gout, special_light);	// Write spell expiration minute.
 	gout.flush();
-	return (gout.good());
+	if (!gout.good())
+		throw file_write_exception(GWINDAT);
 	}
 
 /*
@@ -1187,13 +1150,12 @@ int Game_window::write_gwin
  *	Output:	0 if error.
  */
 
-int Game_window::read_gwin
+void Game_window::read_gwin
 	(
 	)
 	{
 	ifstream gin;
-	if (!U7open(gin, GWINDAT))	// Gamewin.dat.
-		return (0);
+	U7open(gin, GWINDAT);	// Gamewin.dat.
 					// Start with scroll coords (in tiles).
 	scrolltx = Read2(gin);
 	scrollty = Read2(gin);
@@ -1204,11 +1166,11 @@ int Game_window::read_gwin
 	last_restore_hour = clock.get_total_hours();
 	if (!clock.in_queue())		// Be sure clock is running.
 		tqueue->add(SDL_GetTicks(), &clock, (long) this);
-	int okay = gin.good();		// Next ones were added recently.
+	if (!gin.good())		// Next ones were added recently.
+		throw file_read_exception(GWINDAT);
 	special_light = Read4(gin);
 	if (!gin.good())
 		special_light = 0;
-	return (okay);
 	}
 
 /*

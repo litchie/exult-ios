@@ -1945,9 +1945,9 @@ void File_gump_object::save
 		if (!Yesno_gump_object::ask(
 			"Okay to write over existing saved game?"))
 			return;
-	if (gwin->write() &&		// First flush to 'gamedat'.
-	    gwin->save_gamedat(num, focus->get_text()))
-		cout << "Saved game #" << num << " successfully."<<endl;
+	gwin->write();		// First flush to 'gamedat'.
+	gwin->save_gamedat(num, focus->get_text());
+	cout << "Saved game #" << num << " successfully." << endl;
 	}
 
 /*

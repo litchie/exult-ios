@@ -99,6 +99,7 @@ int current_res = 0;
 /*
  *	Local functions:
  */
+int exult_main(void);
 static void Init();
 static int Play();
 static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl, Uint16 unicode);
@@ -142,34 +143,59 @@ int main
 	int argc,
 	char *argv[]
 	)
-	{
+{
 	bool	needhelp=false;
 	string	gamename("default");
-        Args    parameters;
+	Args    parameters;
+	int		result;
 
 	// Declare everything from the commandline that we're interested in.
-        parameters.declare("-h",&needhelp,true);
-        parameters.declare("--help",&needhelp,true);
-        parameters.declare("/?",&needhelp,true);
-        parameters.declare("/h",&needhelp,true);
-        parameters.declare("-game",&gamename,"default");
+	parameters.declare("-h",&needhelp,true);
+	parameters.declare("--help",&needhelp,true);
+	parameters.declare("/?",&needhelp,true);
+	parameters.declare("/h",&needhelp,true);
+//	parameters.declare("-game",&gamename,"default");
 
 	// Process the args
-        parameters.process(argc,argv);
+	parameters.process(argc,argv);
 
 	if(needhelp)
-		{
+	{
 		cerr << "Usage: exult [--help|-h|/?|/h] [-game GAMENAME] " << endl <<
 			"--help\t\tShow this information" << endl <<
 			"-game GAMENAME\tSet the game data name to play" << endl <<
 			"\t(refer to the documentation)" << endl;
 		exit(1);
-		}
+	}
+	
+	try
+	{
+		result = exult_main();
+	}
+	catch( const exult_exception & e )
+	{
+		cerr << "An exception occured: " << e.what() << " (errno = " << e.get_errno() << endl;
+		if( e.get_errno() != 0)
+			perror("Error Description");
+	}
+	catch(...)
+	{
+	}
+	
+	return result;
+}
 
+
+/*
+ *	Main program.
+ */
+
+int exult_main(void)
+{
 	cout << "Exult V" << VERSION << "." << endl;
 
 	// Read in configuration file
-        config = new Configuration;
+	config = new Configuration;
 	config->read_config_file(USER_CONFIGURATION_FILE);
 
 	// Setup virtual directories
@@ -177,19 +203,19 @@ int main
 	cout << "Data path = " << data_path << endl;
 	add_system_path("<DATA>", data_path.c_str());
 	if (!U7exists("<DATA>/exult.flx"))
-		{
+	{
 		add_system_path("<DATA>", EXULT_DATADIR);
 		if (!U7exists("<DATA>/exult.flx"))
-			{
+		{
 			add_system_path("<DATA>", "data");
 			if(!U7exists("<DATA>/exult.flx"))
-				{
+			{
 				// We've tried them all...
 				cerr << "Could not find 'exult.flx' anywhere." << endl;	
 				exit(-1);
-				}
 			}
 		}
+	}
 	add_system_path("<STATIC>", "static");
 	add_system_path("<GAMEDAT>", "gamedat");
 	add_system_path("<SAVEGAME>", "savegame");
@@ -225,18 +251,19 @@ int main
 	initialise_usecode_debugger();
 #endif
 	cheat.init();
-	
+
 	Init();				// Create main window.
 
 	cheat.finish_init();
 
 	mouse = new Mouse(gwin);
 	mouse->set_shape(Mouse::hand);
-	
+
 	int result = Play();		// start game
 //	delete config;			// free configuration object
 	return result;
-	}
+}
+
 
 static int Filter_intro_events(const SDL_Event *event);
 static void Handle_events(unsigned char *stop);
@@ -342,20 +369,22 @@ static void Init
  */
 
 static int Play()
-	{
+{
 	do
-		{
+	{
 		quitting_time = 0;
 		Handle_events(&quitting_time);
-		}
-	while (quitting_time == 2 && gwin->read());	// Restart.
+		if( quitting_time == 2 )
+			gwin->read();	// Restart
+	}
+	while (quitting_time == 2);
 	delete gwin;
 	delete mouse;
 	delete Audio::get_ptr();	// Follow not this pointer, now, for
 					// that way lies madness.
 	delete config;
 	return (0);
-	}
+}
 
 /*
  *	Delay between animations.
@@ -1403,23 +1432,43 @@ void set_play_1st_scene (bool play)
 	config->set("config/gameplay/skip_intro", play?"no":"yes", true);
 }
 
-void toggle_fullscreen (void) {
+void toggle_fullscreen (void)
+{
 	gwin->get_win()->toggle_fullscreen();
 	gwin->paint();
 }
 
-void quick_restore (void) {
-	if (gwin->read())
-		gwin->center_text("Game restored");
+void quick_restore (void)
+{
+	try
+	{
+		gwin->read();
+	}
+	catch(...)
+	{
+		gwin->center_text("Restoring game failed!");
+		return;
+	}
+	gwin->center_text("Game restored");
 	gwin->paint();
 }
 
-void quick_save (void) {
-	if (gwin->write())
-		gwin->center_text("Game saved");
+void quick_save (void)
+{
+	try
+	{
+		gwin->write();
+	}
+	catch(...)
+	{
+		gwin->center_text("Saving game failed!");
+		return;
+	}
+	gwin->center_text("Game saved");
 }
 
-void toggle_combat (void) {
+void toggle_combat (void)
+{
 	gwin->toggle_combat();
 	gwin->paint();
 	int mx, my;			// Update mouse.
@@ -1427,7 +1476,8 @@ void toggle_combat (void) {
 	Set_mouse_and_speed(mx, my);
 }
 
-void target_mode (void) {
+void target_mode (void)
+{
 	int x, y;
 	if (!Get_click(x, y, Mouse::greenselect))
 		return;

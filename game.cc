@@ -71,7 +71,7 @@ Exult_Game Game::get_game_type()
 char *Game::get_game_identity(const char *savename)
 {
     ifstream in;
-    U7open(in, savename);		// Open file & abort if error.
+    U7open(in, savename);		// Open file; throws an exception in case of an error.
     in.seekg(0x54);			// Get to where file count sits.
     int numfiles = Read4(in);
     char *game_identity = 0;

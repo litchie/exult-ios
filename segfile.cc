@@ -34,8 +34,7 @@ Segment_file::Segment_file
 	const char *nm			// Path to file.
 	) : num_segments(0)
 	{
-	if (!U7open(file, nm))
-		return;
+	U7open(file, nm);
 	file.seekg(0x54);		// Get # of segments.
 	num_segments = Read4(file);
 	}
