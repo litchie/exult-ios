@@ -115,7 +115,7 @@ class Background_noise : public Time_sensitive
 	int last_sound;			// # of last sound played.
 	Game_window *gwin;
 	int laststate;			// Last state for SFX music tracks, 
-							// 1 outside, 2 dungeon
+							// 1 outside, 2 dungeon, 3 nighttime
 
 public:
 	Background_noise(Game_window *gw) : repeats(0), last_sound(-1),
@@ -141,10 +141,15 @@ void Background_noise::handle_event
 	int currentstate = 0;
 
 //#ifdef COLOURLESS_REALLY_HATES_THE_BG_SFX
+
+	int bghour = gwin->get_hour();
 	if(gwin->is_in_dungeon())
 		currentstate = 2;
 	else
-		currentstate = 1;
+		if (bghour < 6 || bghour > 20)
+			currentstate = 3;	//Night time
+		else
+			currentstate = 1;
 
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
 	if (player->music_conversion == XMIDI_CONVERT_OGG)
@@ -154,30 +159,50 @@ void Background_noise::handle_event
 
 		int curr_track = player->get_current_track();
 
+		if(curr_track == 7 && currentstate == 3)
+		{
+			//Play the cricket sounds at night 
+			delay = 3000 + rand()%5000;
+			Audio::get_ptr()->play_sound_effect(61, MIX_MAX_VOLUME - 30);
+		}
+
 		if((curr_track == -1 || laststate != currentstate ) && Audio::get_ptr()->is_music_enabled())
 		{
 			if(curr_track == -1 || (curr_track >=4 && curr_track <=8) || curr_track == 52)		//Not already playing music
 			{
 				int tracknum=255;
 
+				//Get the relevant track number. SI tracks are converted back to BG ones later on
 				if(gwin->is_in_dungeon())
 				{
 					//Start the SFX music track then
 					if(Game::get_game_type() == BLACK_GATE)
-						Audio::get_ptr()->start_music(52,1);
+						tracknum = 52;
 					else
-						Audio::get_ptr()->start_music(42,1);	//It converts back to SFX track later on
+						tracknum = 42;	
 					laststate = 2;
 				}
 				else				
 				{
-					//Start the SFX music track then
-					if(Game::get_game_type() == BLACK_GATE)
-						Audio::get_ptr()->start_music(6,1);
+					if (bghour < 6 || bghour > 20)
+					{
+						if(Game::get_game_type() == BLACK_GATE)					
+							tracknum = 7;
+						else
+							tracknum = 66;
+						laststate = 3;
+					}
 					else
-						Audio::get_ptr()->start_music(67,1);	//It converts back to SFX track later on
-					laststate = 1;
+					{
+						//Start the SFX music track then
+						if(Game::get_game_type() == BLACK_GATE)
+							tracknum = 6;
+						else
+							tracknum = 67;
+						laststate = 1;
+					}
 				}
+				Audio::get_ptr()->start_music(tracknum,1);
 			}
 		}
 	}
@@ -250,7 +275,7 @@ Game_window::Game_window
 	    teleported(false), in_dungeon(0), ice_dungeon(false), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
-            text_bg(false),
+            text_bg(false), 
 	    palette(-1), brightness(100), user_brightness(100), 
 	    faded_out(false), fades_enabled(true),
 	    special_light(0), last_restore_hour(6),
@@ -298,6 +323,8 @@ Game_window::Game_window
 							combat_difficulty, 0);
 	config->set("config/gameplay/combat/difficulty",
 						combat_difficulty, true);
+	config->value("config/audio/disablepause", str, "no");
+	config->set("config/audio/disablepause", str, true);
 	}
 
 void Game_window::set_window_size(int width, int height, int scale, int scaler)
@@ -2742,7 +2769,12 @@ void Game_window::lose_focus
 	)
 	{
 	cout << "Game paused" << endl;
-	Audio::get_ptr()->pause_audio();
+
+	string str;
+	config->value("config/audio/disablepause", str, "no");
+	if (str == "no")
+		Audio::get_ptr()->pause_audio();
+
 	focus = false; 
 	tqueue->pause(Game::get_ticks());
 	}

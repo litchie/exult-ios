@@ -73,9 +73,6 @@ public:
 			if(sfx >= 0)
 				{
 				Mix_HaltChannel(sfx);
-#ifdef DEBUG
-				cout << "AUDIO channel "<< sfx << " stopped" << endl;
-#endif
 				sfx = -1;
 				}
 		}
@@ -124,9 +121,6 @@ void Object_sfx::set_obj
 					// Start playing, and repeat.
 		sfx = Audio::get_ptr()->play_sound_effect(sfxnum, MIX_MAX_VOLUME, dir, -1);
 		Mix_Volume(sfx, volume);
-#ifdef DEBUG
-		cout << "AUDIO created repeating object " << sfxnum << ", channel " << sfx << endl;
-#endif
 		}
 	else				// Set new volume, position.
 		{
@@ -134,9 +128,6 @@ void Object_sfx::set_obj
 		if(!repeat)
 			{
 			Mix_HaltChannel(sfx);
-#ifdef DEBUG
-			cout << "AUDIO halted repeat channel "<< sfx << endl;
-#endif
 			sfx = -1;
 			}
 		else
