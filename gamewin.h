@@ -344,7 +344,7 @@ public:
 					// Start dragging.
 	int start_dragging(int x, int y);
 	void drag(int x, int y);	// During dragging.
-	void drop_dragged(int x, int y);// Done dragging.
+	void drop_dragged(int x, int y, int moved);// Done dragging.
 private:
 	void drop(int x, int y);
 	int drop_at_lift(int at_lift);
