@@ -1675,19 +1675,19 @@ USECODE_INTRINSIC(part_of_day)
 	USECODE_RETURN(u);
 }
 
-USECODE_INTRINSIC(get_allignment)
-	// Get npc's allignment.
+USECODE_INTRINSIC(get_alignment)
+	// Get npc's alignment.
 	Game_object *obj = get_item(parms[0]);
-	Usecode_value u(obj ? obj->get_allignment() : 0);
+	Usecode_value u(obj ? obj->get_alignment() : 0);
 	USECODE_RETURN(u);
 }
 
-USECODE_INTRINSIC(set_allignment)
-	// Set npc's allignment.
+USECODE_INTRINSIC(set_alignment)
+	// Set npc's alignment.
 	// 2,3==bad towards Ava. 0==good.
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
-		obj->set_allignment(parms[1].get_int_value());
+		obj->set_alignment(parms[1].get_int_value());
 	USECODE_RETURN(no_ret);
 }
 
@@ -1924,8 +1924,8 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(game_minute), // 0x39
 	USECODE_INTRINSIC_PTR(get_npc_number),	// 0x3a
 	USECODE_INTRINSIC_PTR(part_of_day),	// 0x3b
-	USECODE_INTRINSIC_PTR(get_allignment),	// 0x3c
-	USECODE_INTRINSIC_PTR(set_allignment),	// 0x3d
+	USECODE_INTRINSIC_PTR(get_alignment),	// 0x3c
+	USECODE_INTRINSIC_PTR(set_alignment),	// 0x3d
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f
 	USECODE_INTRINSIC_PTR(item_say),	// 0x40

@@ -677,7 +677,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				Npc_actor *monster = inf->create(get_cx(),
 					get_cy(), get_tx(), get_ty(),
 								get_lift());
-				monster->set_allignment(data1&3);
+				monster->set_alignment(data1&3);
 				gwin->add_dirty(monster);
 				}
 			break;
