@@ -220,24 +220,35 @@ void Game_object::clear_dependencies
 
 /*
  *	Check an object in find_nearby() against the mask.
+ *	+++++These don't seem to be acting like masks!!
  *
  *	Output:	1 if it passes.
  */
 static int Check_mask
 	(
+	Game_window *gwin,
 	Game_object *obj,
 	int mask
 	)
 	{
-	if (mask&8)			// Non-party NPCs.
+	if (mask == 4)			// Party members.
+		return (obj->get_party_id() >= 0 || 
+					obj == gwin->get_main_actor());
+	if (mask == 8)			// Non-party NPCs.
 		{
 		if (obj->is_monster())
 			return 1;
-		if (obj->get_npc_num() <= 0 || obj->get_party_id() >= 0)
+		if (obj->get_npc_num() <= 0 || obj->get_party_id() >= 0 ||
+		    obj == gwin->get_main_actor())
 			return 0;	// Not an NPC || is a party member.
 		return 1;
 		}
-	//++++++The rest.
+	if (mask == 16)
+		return obj->is_egg();
+	if (mask == 32)
+		return obj->is_monster();
+	if (!mask)			// Guessing a bit here.
+		return !obj->is_egg();	// Don't pass eggs if 0.
 	return 1;
 	}
 
@@ -251,14 +262,15 @@ int Game_object::find_nearby
 	(
 	Vector& vec,			// Objects appended to this.
 	Tile_coord pos,			// Look near this point.
-	int shapenum,			// Shape to look for.  -1=any,
-					//   -359=any NPC.
+	int shapenum,			// Shape to look for.  
+					//   -1=any (but always use mask?),
+					//   -359=any.
 	int delta,			// # tiles to look in each direction.
 	int mask,			// Guessing+++:
 					//   4 == party members only.
 					//   8 == non-party NPC's only.
-					//  16 == something with eggs???
-					//  32 == monsters? invisible?
+					//  16 == eggs.
+					//  32 == monsters? 
 	int qual,			// Quality, or -359 for any.
 	int framenum			// Frame #, or -359 for any.
 	)
@@ -292,13 +304,16 @@ int Game_object::find_nearby
 					if (obj->get_shapenum() != shapenum)
 						continue;
 					}
+#if 0
 				else if (shapenum == -359 &&
 							!obj->get_npc_num() &&
 						 obj != gwin->get_main_actor())
 					continue;
+#endif
 				if (qual != -359 && obj->get_quality() != qual)
 					continue;
-				if (mask && !Check_mask(obj, mask))
+				if ((mask || shapenum == -1) && 
+						!Check_mask(gwin, obj, mask))
 					continue;
 				if (framenum !=  -359 &&
 					obj->get_framenum() != framenum)
