@@ -23,6 +23,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMLEntity.h"
 #include <iostream>
 
+static	string	encode_entity(string &s)
+{
+	string	ret("");
+
+	for(size_t i=0;i<s.length();i++)
+		{
+		switch(s[i])
+			{
+			case '<':
+				ret+="&lt;";
+				break;
+			case '>':
+				ret+="&gt;";
+				break;
+			case '&':
+				ret+="&amp;";
+				break;
+			default:
+				ret+=s[i];
+			}
+		}
+	return ret;
+}
+
 void	xmldump(string &s,XMLnode *x,int depth)
 {
 	for(int i=0;i<depth;i++)
@@ -42,7 +66,7 @@ void	xmldump(string &s,XMLnode *x,int depth)
 		}
 	for(int i=0;i<depth+1;i++)
 		s+=' ';
-	s+=x->entity.content;
+	s+=encode_entity(x->entity.content);
 	if(x->entity.id[0]=='?')
 		{
 		return;
