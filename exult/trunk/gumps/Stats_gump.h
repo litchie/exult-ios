@@ -42,7 +42,7 @@ public:
 	~Stats_gump()
 		{  }
 					// Add object.
-	virtual int add(Game *obj, int mx = -1, int my = -1,
+	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 						int sx = -1, int sy = -1)
 		{ return 0; }		// Can't drop onto it.
 					// Paint it and its contents.

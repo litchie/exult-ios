@@ -1,3 +1,14 @@
+2001-02-22  Max Horn  <max@quendi.de>
+	* tons of fixes I already made days ago and forgot to commit :(
+	* files/utils.cc: added fix to U7open to prevent certain problems
+	  when reusing stream objects.
+	* gumps/Stats_gump.h: fixed Stats_gump::add which had the wrong
+	  signature. The first parameter was of type Game* instead of Game_object*
+	* keys.c: removed a static (caused compile error on ANSI complian C++ compilers <g>)
+	  and added using std::strlen
+	* bggame.cc: removed some warnings
+	
+
 2001-02-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keys.*: applied Grant's patch
 	* actors.h: fixed warning/bug
