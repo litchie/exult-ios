@@ -37,6 +37,111 @@ using	std::cout;
 using	std::endl;
 
 /*
+ *	Widgets in one row of the 'equipment' dialog:
+ */
+struct Equip_row_widgets
+	{
+	GtkWidget *draw, *shape, *name, *chance, *count;
+	};
+
+/*
+ *	Set up 'equipment' dialog's table, which has 10 identical rows.
+ */
+
+static void Setup_equip
+	(
+	GtkTable *table,		// Table to fill.
+	Equip_row_widgets rows[10]	// Filled in.
+	)
+	{
+	gtk_table_resize(table, 12, 17);
+	gtk_widget_show (GTK_WIDGET(table));
+					// Labels at top:
+	GtkWidget *label = gtk_label_new ("Shape");
+	gtk_widget_show (label);
+	gtk_table_attach (table, label, 0, 3, 0, 1,
+        	            (GtkAttachOptions) (0),
+                	    (GtkAttachOptions) (0), 0, 0);
+	label = gtk_label_new ("Chance (%)");
+	gtk_widget_show (label);
+	  gtk_table_attach (table, label, 4, 5, 0, 1,
+	                    (GtkAttachOptions) (0),
+        	            (GtkAttachOptions) (0), 0, 0);
+	label = gtk_label_new ("Count");
+	gtk_widget_show (label);
+	gtk_table_attach (table, label, 6, 7, 0, 1,
+        	            (GtkAttachOptions) (0),
+                	    (GtkAttachOptions) (0), 0, 0);
+					// Separators:
+	GtkWidget *vsep = gtk_vseparator_new ();
+	gtk_widget_show (vsep);
+	gtk_table_attach (table, vsep, 3, 4, 0, 12,
+        	            (GtkAttachOptions) (0),
+                	    (GtkAttachOptions) (GTK_FILL), 2, 0);
+	vsep = gtk_vseparator_new ();
+	gtk_widget_show (vsep);
+	gtk_table_attach (table, vsep, 5, 6, 0, 12,
+        	            (GtkAttachOptions) (0),
+                	    (GtkAttachOptions) (GTK_FILL), 2, 0);
+	GtkWidget *hsep = gtk_hseparator_new ();
+	gtk_widget_show (hsep);
+	gtk_table_attach (table, hsep, 0, 7, 1, 2,
+        	            (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
+                	    (GtkAttachOptions) (GTK_EXPAND | GTK_FILL), 0, 0);
+
+					// Create the rows.
+	for (int row = 0; row < 10; row++)
+		{
+					// Create frame, shape drawing area.
+		GtkWidget *frame = gtk_frame_new (NULL);
+		gtk_widget_show (frame);
+  		gtk_table_attach (table, frame, 0, 1, row + 2, row + 3,
+                	    (GtkAttachOptions) (GTK_FILL),
+	                    (GtkAttachOptions) (GTK_FILL), 3, 0);
+		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
+
+		GtkWidget *drawingarea = gtk_drawing_area_new ();
+		rows[row].draw = drawingarea;
+		gtk_widget_show (drawingarea);
+		gtk_container_add (GTK_CONTAINER(frame), drawingarea);
+		gtk_widget_set_usize (drawingarea, 20, 40);
+					// Shape #:
+  		GtkWidget *spin = gtk_spin_button_new (GTK_ADJUSTMENT(
+			gtk_adjustment_new (1, 0, 100, 1, 10, 10)), 1, 0);
+		rows[row].shape = spin;
+		gtk_widget_show(spin);
+		gtk_table_attach (table, spin, 1, 2, row + 2, row + 3,
+                		    (GtkAttachOptions) (GTK_FILL),
+		                    (GtkAttachOptions) (0), 0, 0);
+					// Name:
+		label = gtk_label_new("label1");
+		rows[row].name = label;
+		gtk_widget_show (label);
+		gtk_table_attach (table, label, 2, 3, row + 2, row + 3,
+                		(GtkAttachOptions) (0),
+				(GtkAttachOptions) (0), 0, 0);
+		gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+		gtk_misc_set_alignment (GTK_MISC (label), 6.70552e-08, 0.5);
+					// Chance:
+		spin = gtk_spin_button_new(GTK_ADJUSTMENT(
+			gtk_adjustment_new (1, 0, 100, 1, 10, 10)), 1, 0);
+		rows[row].chance = spin;
+		gtk_widget_show (spin);
+		gtk_table_attach (table, spin, 4, 5, row + 2, row + 3,
+                		    (GtkAttachOptions) (GTK_FILL),
+                		    (GtkAttachOptions) (0), 0, 0);
+					// Count:
+		spin = gtk_spin_button_new (GTK_ADJUSTMENT(
+			gtk_adjustment_new (1, 0, 100, 1, 10, 10)), 1, 0);
+		rows[row].count = spin;
+		gtk_widget_show(spin);
+		gtk_table_attach (table, spin, 6, 7, row + 2, row + 3,
+                	    (GtkAttachOptions) (GTK_FILL),
+	                    (GtkAttachOptions) (0), 0, 0);
+		}
+	}
+
+/*
  *	Shape window's Cancel button.
  */
 extern "C" void on_shinfo_cancel_clicked
@@ -90,7 +195,6 @@ void ExultStudio::init_shape_notebook
 	int frnum			// Frame #.
 	)
 	{
-//	static int classes[] = {0, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14};
 	static int classes[] = {0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 0, 
 							9, 10, 11, 12, 0};
 	const int numclasses = sizeof(classes)/sizeof(classes[0]);

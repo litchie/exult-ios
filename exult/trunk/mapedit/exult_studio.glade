@@ -9691,4 +9691,91 @@ Random
   </widget>
 </widget>
 
+<widget>
+  <class>GtkWindow</class>
+  <name>equip_window</name>
+  <visible>False</visible>
+  <title>Monster Equipment</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <name>vbox23</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow3</name>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_AUTOMATIC</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkViewport</class>
+	<name>viewport1</name>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox24</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHButtonBox</class>
+      <name>hbuttonbox6</name>
+      <layout_style>GTK_BUTTONBOX_SPREAD</layout_style>
+      <spacing>30</spacing>
+      <child_min_width>85</child_min_width>
+      <child_min_height>27</child_min_height>
+      <child_ipad_x>7</child_ipad_x>
+      <child_ipad_y>0</child_ipad_y>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>button32</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<label>Okay</label>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>button33</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<label>Apply</label>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>button34</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<label>Cancel</label>
+      </widget>
+    </widget>
+  </widget>
+</widget>
+
 </GTK-Interface>
