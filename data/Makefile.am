@@ -20,5 +20,5 @@ EXTRA_DIST = $(EXULT_FLX_OBJECTS)
 
 all-local: exult.flx
 
-exult.flx:
+exult.flx: $(EXULT_FLX_OBJECTS)
 	../tools/expack -c exult.flx $(EXULT_FLX_OBJECTS)
