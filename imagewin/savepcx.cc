@@ -148,9 +148,9 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
     colors = surface->format->palette->ncolors;
     cmap = (Uint8*)malloc(3*colors);
     for (i = 0; i < colors; i++) {
-      cmap[3*i] = surface->format->palette->colors[i].b;
+      cmap[3*i] = surface->format->palette->colors[i].r;
       cmap[3*i+1] = surface->format->palette->colors[i].g;
-      cmap[3*i+2] = surface->format->palette->colors[i].r;
+      cmap[3*i+2] = surface->format->palette->colors[i].b;
     }
     header.bpp = 8;
     header.bytesperline = htoqs (width);
