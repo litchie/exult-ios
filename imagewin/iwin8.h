@@ -31,11 +31,13 @@ Boston, MA  02111-1307, USA.
 #include "ibuf8.h"
 #include "SDL_types.h"
 
-//typedef struct SDL_Color SDL_Color;
+// No no no! the typedef way is the correct one, since SDL_Color is typedef "in reality", too
+// the other one will fail on standard conforming compilers
+typedef struct SDL_Color SDL_Color;
+//struct SDL_Color;
 
 template <class T> class GammaTable;
 
-struct SDL_Color;
 
 /*
  *	Here's an 8-bit color-depth window (faster than the generic).
