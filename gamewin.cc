@@ -3082,3 +3082,31 @@ bool Game_window::emulate_is_move_allowed(int tx, int ty)
 	return false;
 }
 
+//create mini-screenshot (96x60) for use in savegames
+Shape_file* Game_window::create_mini_screenshot()
+{
+	Shape_file* sh = 0;
+	Shape_frame* fr = 0;
+	unsigned char* img = 0;
+
+	set_all_dirty();
+	paint_map(0, 0, get_width(), get_height());
+
+	img = win->mini_screenshot();
+	
+	if (img) {
+		fr = new Shape_frame();
+		fr->xleft = 0;
+		fr->yabove = 0;
+		fr->xright = 95;
+		fr->ybelow = 59;
+		fr->create_rle(img, 96, 60);
+		fr->rle = 1;
+
+		sh = new Shape_file(fr);
+	}
+
+	set_all_dirty();
+	paint();
+	return sh;
+}

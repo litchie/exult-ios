@@ -1,5 +1,9 @@
 2001-04-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/*.shp, data/flx.in, Makefile.*: added lots of shapes for new savegame gump
+	* configure.in, Makefile.*: increased version to 0.93cvs
+	* mapedit/u7shp.c: set ingame palette as default palette
+	* gamewin.*, imagewin.*: added create_mini_screenshot to create a 96x60 screenshot
+	* vgafile.*: implemented Shape_file::save
 
 2001-04-14  Jeff Freedman  <jeff@amy.nerble.net>
 
