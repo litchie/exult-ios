@@ -129,7 +129,16 @@ public:
 					// Get shape.
 	Shape_frame *get_shape(int shapenum, int framenum = 0)
 		{
-		return (shapes[shapenum].get(file, shapenum, framenum));
+		Shape_frame *r=(shapes[shapenum].get(file, shapenum, framenum));
+		if(!r)
+			{
+#if DEBUG
+				cerr << "get_shape(" <<
+					shapenum << "," <<
+					framenum << ") -> NULL" << endl;
+#endif
+			}
+		return r;
 		}
 					// Get # frames for a shape.
 	int get_num_frames(int shapenum)

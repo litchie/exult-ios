@@ -232,7 +232,10 @@ public:
 		if(!s)
 			{
 			// This is probably fatal.
+#if DEBUG
 			cerr << "DEATH! get_shape() returned a NULL pointer: " << __FILE__ << ":" << __LINE__ << endl;
+			cerr << "Betcha it's a little doggie." << endl;
+#endif
 			return Rectangle(0,0,0,0);
 			}
 		int cx = obj->get_cx(), cy = obj->get_cy();
