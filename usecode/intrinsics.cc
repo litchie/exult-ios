@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "conversation.h"
 #include "rect.h"
 #include "actions.h"
+#include "keyring.h"
 
 using std::cerr;
 using std::cout;
@@ -2462,4 +2463,23 @@ USECODE_INTRINSIC(remove_from_area)
 		gwin->delete_object(obj);
 		}
 	return no_ret;
+}
+
+// parms[0] = quality of key to be added
+USECODE_INTRINSIC(add_to_keyring)
+{
+	getKeyring()->addkey(parms[0].get_int_value());
+
+	return no_ret;
+}
+
+// parms[0] = quality of key to check
+// returns true if key is on keyring
+
+USECODE_INTRINSIC(is_on_keyring)
+{
+	if (getKeyring()->checkkey(parms[0].get_int_value()))
+		return Usecode_value(true);
+	else
+		return Usecode_value(false);
 }

@@ -31,7 +31,8 @@ Ctrl-Alt-H	party_heal
 Alt-I		toggle_infravision
 I		inventory
 J		useitem			555	# Show Jawbone
-K		try_keys
+K		useitem			485	# Use keyring
+Alt-K		try_keys
 Ctrl-L		party_increase_level
 Alt-L		skiplift_decrement
 L		combat_stats

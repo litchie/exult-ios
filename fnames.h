@@ -74,6 +74,7 @@
 
 #define GSCRNSHOT	"<GAMEDAT>/scrnshot.shp"
 #define GSAVEINFO	"<GAMEDAT>/saveinfo.dat"
+#define KEYRINGDAT	"<GAMEDAT>/keyring.dat"
 
 #define NUM_FONTS	(20)
 
