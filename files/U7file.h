@@ -6,11 +6,16 @@
 #include <map>
 
 
+
 class	U7file
 	{
 protected:
 	std::string	filename;
 public:
+	// Exceptions to throw
+	class	file_error {};
+	class	exclusive {};
+
 	U7file() {};
 	U7file(const std::string &name) : filename(name) {};
 	U7file(const U7file &f) : filename(f.filename)
