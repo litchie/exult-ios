@@ -123,6 +123,10 @@ public:
 	static void scrolled(GtkAdjustment *adj, gpointer data);
 					// Handle spin-button for frames.
 	static void frame_changed(GtkAdjustment *adj, gpointer data);
+#ifdef WIN32
+	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
+		gpointer data);
+#endif
 	};
 
 #endif

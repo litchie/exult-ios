@@ -26,6 +26,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#ifdef WIN32
+#include "Windrag.h"
+#endif
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #ifdef XWIN
@@ -238,6 +242,51 @@ gint Shape_chooser::expose
  *	Handle a mouse button press event.
  */
 
+#ifdef WIN32
+
+static bool win32_button = false;
+
+gint Shape_chooser::win32_drag_motion
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventMotion *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	  if (win32_button)
+	  {
+		win32_button = false;
+
+		// prepare the dragged data
+		windragdata wdata;
+
+		// This call allows us to recycle the data transfer initialization code.
+		//  It's clumsy, but far easier to maintain.
+		drag_data_get(NULL, NULL, (GtkSelectionData *) &wdata,
+		  U7_TARGET_SHAPEID, 0, data);
+
+		POINT pnt;
+		GetCursorPos(&pnt);
+
+		LPDROPSOURCE idsrc = (LPDROPSOURCE) new Windropsource(0, 
+		  pnt.x, pnt.y);
+		LPDATAOBJECT idobj = (LPDATAOBJECT) new Winstudioobj(wdata);
+		DWORD dndout;
+
+		HRESULT res = DoDragDrop(idobj, idsrc, DROPEFFECT_COPY, &dndout);
+		if (FAILED(res)) {
+		  g_warning ("Oops! Something is wrong with OLE2 DnD..");
+		}
+
+		delete idsrc;
+		idobj->Release();	// Not sure if we really need this. However, it doesn't hurt either.
+	  }
+
+	return true;
+	};
+
+#endif
+
 gint Shape_chooser::mouse_press
 	(
 	GtkWidget *widget,		// The view window.
@@ -255,6 +304,14 @@ gint Shape_chooser::mouse_press
 //			if (i == old_selected)
 //				return TRUE;
 					// Indicate we can dra.
+#ifdef WIN32
+// Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
+// usually stucks outside the program window. I think it's because
+// the dragged shape only receives mouse motion events when the new mouse pointer
+// position is *still* inside the shape. So if you move the mouse too fast,
+// we are stuck.
+			 win32_button = true;
+#else
 			GtkTargetEntry tents[1];
 			tents[0].target = U7_TARGET_SHAPEID_NAME;
 			tents[0].flags = 0;
@@ -262,6 +319,8 @@ gint Shape_chooser::mouse_press
 			gtk_drag_source_set (chooser->draw, 
 				GDK_BUTTON1_MASK, tents, 1,
 			   (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE));
+#endif
+
 			chooser->selected = i;
 			chooser->render();
 			chooser->show();
@@ -326,6 +385,11 @@ void Shape_chooser::drag_data_get
 							shinfo.framenum);
 	cout << "Setting selection data (" << shinfo.shapenum <<
 			'/' << shinfo.framenum << ')' << endl;
+#ifdef WIN32
+	windragdata *wdata = (windragdata *)seldata;
+	wdata->data = buf;
+	wdata->id = info;
+#else
 					// Make us owner of xdndselection.
 	gtk_selection_owner_set(widget, gdk_atom_intern("XdndSelection", 0),
 								time);
@@ -333,6 +397,7 @@ void Shape_chooser::drag_data_get
 	gtk_selection_data_set(seldata,
 			gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0),
                                 				8, buf, len);
+#endif
 	}
 
 /*
@@ -673,6 +738,11 @@ Shape_chooser::Shape_chooser
 					// Mouse motion.
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
 				GTK_SIGNAL_FUNC(drag_begin), this);
+#ifdef WIN32
+// required to override GTK+ Drag and Drop
+	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
+				GTK_SIGNAL_FUNC(win32_drag_motion), this);
+#endif
 //	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
 //				GTK_SIGNAL_FUNC(Mouse_drag_motion), this);
 	gtk_signal_connect (GTK_OBJECT(draw), "drag_data_get",

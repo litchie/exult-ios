@@ -1,3 +1,9 @@
+2002-01-20  Ryan Nunn  <triforce@merlin.net.au>
+	* Makefile.cygwin, Makefile.win32, exult.cc, mapedit/Makefile.mingw,
+	  mapedit/chunklst.cc, mapedit/chunklst.*, mapedit/shapelst.*,
+	  mapedit/studio.cc, msvcstuff/Exult.dsp, msvcstuff/msvc_kludges.h :
+	  Drag and Drop in Windows.
+
 2002-01-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/shapeedit.cc: Show shapes in 'Equipment' window, and
