@@ -34,6 +34,10 @@ short Actor_gump_object::heartx = 122, Actor_gump_object::hearty = 114;
 short Stats_gump_object::textx = 123;
 short Stats_gump_object::texty[10] = {17, 26, 35, 46, 55, 67, 76, 86,
 							95, 104};
+short Slider_gump_object::leftbtnx = 20;
+short Slider_gump_object::rightbtnx = 40;
+short Slider_gump_object::btny = 5;
+int Slider_gump_object::val = 0;
 
 /*
  *	Is a given screen point on this button?
@@ -114,6 +118,18 @@ void Disk_gump_button::activate
 	}
 
 /*
+ *	Handle click on a slider's arrow.
+ */
+
+void Slider_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+	((Slider_gump_object *) parent)->clicked_arrow(this);
+	}
+
+/*
  *	Create a gump.
  */
 
@@ -159,6 +175,10 @@ Gump_object::Gump_object
 	case STATSDISPLAY:
 		object_area = Rectangle(0, 0, 0, 0);
 		checkx = 6; checky = 136;
+		break;
+	case SLIDER:
+		object_area = Rectangle(0, 0, 0, 0);
+		checkx = 6; checky = 6;
 		break;
 	default:
 					// Character pictures:
@@ -617,4 +637,80 @@ void Stats_gump_object::paint
 	//++++Level?
   	Paint_num(gwin, act->get_property(Actor::training),
 						x + textx, y + texty[9]);
+	}
+
+/*
+ *	Set slider value.
+ */
+
+void Slider_gump_object::set_val
+	(
+	int newval
+	)
+	{
+		//++++++++++
+	diamondx = 20;
+	}
+
+/*
+ *	Create a slider.
+ */
+
+Slider_gump_object::Slider_gump_object
+	(
+	int initx, int inity,		// Where to show it.
+	int mival, int mxval,		// Value range.
+	int step,			// Amt. to change by.
+	int defval			// Default value.
+	) : Gump_object(0, initx, inity, STATSDISPLAY),
+	    min_val(mival), max_val(mxval), step_val(step)
+	{
+	left_arrow = new Slider_gump_button(this, leftbtnx, btny, SLIDERLEFT);
+	right_arrow = new Slider_gump_button(this, rightbtnx, btny, 
+								SLIDERRIGHT);
+					// Init. to middle value.
+	set_val(defval);
+	}
+
+/*
+ *	An arrow on the slider was clicked.
+ */
+
+void Slider_gump_object::clicked_arrow
+	(
+	Slider_gump_button *arrow	// What was clicked.
+	)
+	{
+	int newval = val;
+	if (arrow == left_arrow)
+		{
+		newval -= step_val;
+		if (newval < min_val)
+			newval = min_val;
+		}
+	else if (arrow == right_arrow)
+		{
+		newval += step_val;
+		if (newval > max_val)
+			newval = max_val;
+		}
+	set_val(newval);
+	}
+
+/*
+ *	Paint on screen.
+ */
+
+void Slider_gump_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+					// Paint the gump itself.
+	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+					// Paint red "checkmark".
+	paint_button(gwin, check_button);
+					// Paint buttons.
+	paint_button(gwin, left_arrow);
+	paint_button(gwin, right_arrow);
 	}
