@@ -153,27 +153,6 @@ fi
 
 AC_SUBST(DEBUG_FLAGS)
 
-
-AC_MSG_CHECKING(for freetype)
-FREETYPE_DIR=""
-if test -f "/usr/include/freetype.h"; then
-	FREETYPE_DIR="/usr/include"
-fi
-if test -f "/usr/include/freetype/freetype.h"; then
-	FREETYPE_DIR="/usr/include/freetype"
-fi
-if test -f "/usr/local/include/freetype.h"; then
-	FREETYPE_DIR="/usr/local/include"
-fi
-
-if test "$FREETYPE_DIR" != ""; then
-	AC_MSG_RESULT($FREETYPE_DIR)
-	AC_DEFINE(HAVE_FREETYPE)
-	FREETYPE_LIBS="-lfreetype"
-fi
-
-
-
 AC_MSG_CHECKING(for a C++-Compiler)
 dnl if there is one, print out. if not, don't matter
 AC_MSG_RESULT($CXX)
@@ -196,7 +175,6 @@ AM_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 AC_SUBST(SDL_INCLUDES)
 AC_SUBST(SDL_LIBS)
-AC_SUBST(FREETYPE_DIR)
 AC_SUBST(WINDOWING_SYSTEM)
 AC_SUBST(RELNUM)
 AC_SUBST(KMID_INCLUDES)
