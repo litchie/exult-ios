@@ -5,37 +5,44 @@
 \CTHE CODING TEAM
 
 
-\CJeff S. Freedman <jeff@simutech.com>
+\CJeff S. Freedman
+\C<jsf@users.sourceforge.net>
 \CThe man who started it all: from map browser
 \Cto usecode interpreter, animation & combat.
 \CHe's the leader !
 
 
-\CDancer Vesperman <dancer@zeor.simegen.com>
+\CDancer Vesperman
+\C<dancer@users.sourceforge.net>
 \CMusic, sounds, XML configuration, usecode...
 \Cwhat more could you possibly ask for ?
 
 
-\CWillem Jan Palenstijn <palenstijn@wanadoo.nl>
+\CWillem Jan Palenstijn
+\C<palenstijn@wanadoo.nl>
 \CPorting to obscure OSs (Windows) and less
 \Cobscure ones (BeOS)
 
 
-\CTristan Tarrant <nadir@users.sourceforge.net>
+\CTristan Tarrant
+\C<nadir@users.sourceforge.net>
 \CIntro, ending, menus, autoconf/automake, 
 \CGIMP plugin, FLEX packing, CVS police
 
 
-\CMax Horn <max@quendi.de>
+\CMax Horn
+\C<max@quendi.de>
 \CPorting to MacOS, C++ standard lib conformance
 
 
-\CCoder Infidel <coder_infidel@hotmail.com>
+\CCoder Infidel
+\C<coder_infidel@hotmail.com>
 \CHunter of lost info in U7's data files,
 \Cweapon animations, bits of combat.
 
 
-\CRyan "Colourless" Nunn <triforce@merlin.net.au>
+\CRyan "Colourless" Nunn
+\C<triforce@merlin.net.au>
 \CXMIDI meister, endings, roof removalist,
 \CSI Intro, NPC flag IO, Avatar identity
 
@@ -46,6 +53,7 @@
 
 \COTHER CONTRIBUTORS
 
+\COlivier Marcoux !!!!!!
 
 \CGary Thompson
 
@@ -63,7 +71,6 @@
 
 \CWouter Dijkslag
 
-\COlivier Marcoux
 
 \CTHANKS
 
