@@ -1210,7 +1210,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x83
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
 	USECODE_INTRINSIC_PTR(is_not_blocked),	// 0x85
-	USECODE_INTRINSIC_PTR(play_sound_effect),	// 0x86  +++++A sound??  Animation??
+	USECODE_INTRINSIC_PTR(play_sound_effect),	// 0x86  
 	USECODE_INTRINSIC_PTR(direction_from),	// 0x87
 	USECODE_INTRINSIC_PTR(get_item_flag),	// 0x88
 	USECODE_INTRINSIC_PTR(set_item_flag),	// 0x89
@@ -1219,8 +1219,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(fade_palette),	// 0x8c 
 	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d
 	USECODE_INTRINSIC_PTR(in_combat),	// 0x8e
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8f +++++Play speech/music?? Only
-		//  called right before endgame.
+	USECODE_INTRINSIC_PTR(start_speech),	// 0x8f Same as 0x74?
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x90
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x92
