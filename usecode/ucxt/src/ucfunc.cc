@@ -23,27 +23,28 @@ UCFunc::~UCFunc()
 /* Prints module's data segment */
 void UCFunc::process_data_seg()
 {
-  long pos = ftell();
+  //long pos = ftell();
+	streampos pos = _file->tellg();
+	
+	unsigned short off = 0;
 
-  unsigned short off = 0;
+	/* Load all strings & their offsets */
+	while( off < _datasize )
+	{
+		assert(!eof());
 
-  /* Load all strings & their offsets */
-  while( off < _datasize )
-  {
-    assert(!eof());
+		char c;
+		string data;
 
-    char c;
-    string data;
+		while((c=get())!=0x00)
+			data+=c;
 
-    while((c=get())!=0x00)
-      data+=c;
+		_data.insert(pair<unsigned int, string>(off, data));
 
-    _data.insert(pair<unsigned int, string>(off, data));
+		off+=data.size()+1;
 
-    off+=data.size()+1;
-
-  }
-  fseek(pos, SEEK_SET);
+	}
+	fseekbeg(pos); //fseek(pos, SEEK_SET);
 }
 
 #include "opcodes.h"
@@ -57,8 +58,7 @@ unsigned short UCFunc::print_opcode(unsigned char* ptrc, unsigned short coffset,
                             unsigned char* pdataseg,
                             unsigned short* pextern,
                             unsigned short externsize,
-//                            unsigned char* opcode_buf,
-                            unsigned char* intrinsic_buf,
+                            vector<unsigned char> &intrinsic_buf,
                             int mute,
                             int count_all_opcodes,
                             int count_all_intrinsic,
@@ -99,8 +99,7 @@ unsigned short UCFunc::print_opcode(unsigned char* ptrc, unsigned short coffset,
   return nbytes;
 }
 
-void UCFunc::process_code_seg(//unsigned char* opcode_buf,
-                          unsigned char* intrinsic_buf,
+void UCFunc::process_code_seg(vector<unsigned char> &intrinsic_buf,
                           int mute,
                           int count_all_opcodes,
                           int count_all_intrinsic,
@@ -125,7 +124,7 @@ void UCFunc::process_code_seg(//unsigned char* opcode_buf,
   _code_offset = ftell();
 
   read_vbytes(p, size);
-  fseek(pos, SEEK_SET);
+  fseekbeg(pos);
   /* Print code segment header */
   if( size < 3 * SIZEOF_USHORT )
   {
@@ -175,8 +174,8 @@ void UCFunc::process_code_seg(//unsigned char* opcode_buf,
   free(pdata);
 }
 
-void UCFunc::process_old(FILE* file, long func, int* found,
-                          unsigned char* intrinsic_buf,
+void UCFunc::process_old(ifstream *file, long func, int* found,
+                          vector<unsigned char> &intrinsic_buf,
                           bool scan_mode,
                           unsigned long opcode,
                           unsigned long intrinsic,
@@ -214,7 +213,9 @@ void UCFunc::process_old(FILE* file, long func, int* found,
 //    if( opcode != -1 )
 //      memset(opcode_buf, 0, 256);
     if( intrinsic != -1 ) 
-      memset(intrinsic_buf, 0, 256);
+    	for(unsigned int i=0; i<intrinsic_buf.size(); i++)
+			intrinsic_buf[i]=0;
+			
     process_code_seg(intrinsic_buf,
               scan_mode || ( opcode != -1 ) || ( intrinsic != -1 ),
               ( opcode != -1 ), ( intrinsic != -1 ),
@@ -240,8 +241,8 @@ void UCFunc::process_old(FILE* file, long func, int* found,
 
   genflags();
   /* Seek back, then to next function */
-  fseek(bodyoff, SEEK_SET);
-  fseek(_funcsize, SEEK_CUR);
+  fseekbeg(bodyoff);
+  fseekcur(_funcsize);
 }
 
 /*void process_func(FILE* f, long func, int i, int* found,
@@ -319,24 +320,24 @@ void UCFunc::process_old(FILE* file, long func, int* found,
 
 unsigned short UCFunc::read_ushort()
 {
-  return ((unsigned short) ((unsigned int)getc(_file) + (((unsigned int)getc(_file)) << 8)));
+  return ((unsigned short) ((unsigned int)get() + (((unsigned int)get()) << 8)));
 }
 
 unsigned short UCFunc::read_ushort(const unsigned char *buff)
 {
 //  assert(((unsigned short) ((unsigned int)buff[0] + (((unsigned int)buff[1]) << 8)))
 //         ==(*(unsigned short *)buff));
-  return ((unsigned short) ((unsigned int)buff[0] + (((unsigned int)buff[1]) << 8)));//*(unsigned short *)buff;
+  return ((unsigned short) ((unsigned int)buff[0] + (((unsigned int)buff[1]) << 8)));
 }
 
 void UCFunc::read_vchars(char *buffer, const unsigned long nobytes)
 {
-  ::fread(buffer, 1, nobytes, _file);
+	_file->read(buffer, nobytes);
 }
 
 void UCFunc::read_vbytes(unsigned char *buffer, const unsigned long nobytes)
 {
-  ::fread(buffer, 1, nobytes, _file);
+	_file->read(buffer, nobytes);
 }
 
 void UCFunc::do_decompile()
