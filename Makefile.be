@@ -74,7 +74,8 @@ EXULT_FLX_OBJECTS = \
 	data/extras.shp \
 	data/midi_conversion.shp \
 	data/sfx_conversion.shp \
-	data/palette_fades.shp
+	data/palette_fades.shp \
+	data/default.key
 
 $(EXEC) : Makefile data/exult.flx $(OBJS) beos/exult.rsrc
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
@@ -83,8 +84,8 @@ $(EXEC) : Makefile data/exult.flx $(OBJS) beos/exult.rsrc
 tools/expack : tools/expack.o $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o tools/expack tools/expack.o $(FILE_OBJS) $(LIBS)
 
-data/exult.flx: tools/expack $(EXULT_FLX_OBJECTS)
-	tools/expack -c data/exult.flx $(EXULT_FLX_OBJECTS)
+data/exult.flx: tools/expack data/flx.in $(EXULT_FLX_OBJECTS)
+	tools/expack -i data/flx.in
 
 imagescl.o: imagewin/imagescl.cc scale.cc
 	$(CXX) $(CPPFLAGS) -O3 -c imagewin/imagescl.cc -o imagescl.o

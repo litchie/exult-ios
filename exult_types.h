@@ -19,10 +19,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef	_EXULT_TYPES_H_
 #define	_EXULT_TYPES_H_
 
+#ifdef BEOS
+// BeOS headers already define these types
+#include <be/support/SupportDefs.h>
+typedef int8 sint8;
+typedef int16 sint16;
+typedef int32 sint32;
+
+#else
+
 #ifndef EX_TYPE_INT8
 #  define EX_TYPE_INT8 char /* guaranteed by ISO */
 #endif
- 
+
 #ifndef EX_TYPE_INT16
 #  if (SIZEOF_SHORT == 2)
 #    define EX_TYPE_INT16 short
@@ -55,6 +64,8 @@ typedef	signed EX_TYPE_INT8		sint8;
 typedef	signed EX_TYPE_INT16	sint16;
 typedef	signed EX_TYPE_INT32	sint32;
 
+
+#endif //BeOS
 
 #endif
 

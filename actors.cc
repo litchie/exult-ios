@@ -299,7 +299,10 @@ void Actor::unready_weapon
  *
  *	Output:	0 if not on screen.
  */
-inline int Actor::add_dirty
+#ifndef BEOS
+inline 
+#endif
+int Actor::add_dirty
 	(
 	Game_window *gwin,
 	int figure_rect			// Recompute weapon rectangle.
