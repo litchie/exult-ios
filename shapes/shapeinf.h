@@ -203,7 +203,7 @@ public:
 		unusable = 0,		// Trees.
 		has_quality = 2,
 		has_quantity = 3,	// Can have more than 1:  coins, arrs.
-//		shutters = 4,		// Also mirrors.
+		has_hp = 4,         // Breakable items (if hp != 0, that is)
 //		wearable = 5,		// Includes wieldable weapons, food,
 					//   table, curtain??
 		container = 6,

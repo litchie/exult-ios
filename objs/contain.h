@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Container_game_object : public Ireg_game_object
 	{
 	int volume_used;		// Amount of volume occupied.
-	unsigned char resistance;	// Resistance to attack.
+	char resistance;	// Resistance to attack.
 protected:
 	Object_list objects;		// ->first object.
 	int get_max_volume() const	// Max. we'll hold.  (Guessing).
@@ -41,7 +41,7 @@ protected:
 public:
 	Container_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft,
-				unsigned char res = 0)
+				char res = 0)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
 		  volume_used(0), resistance(res), objects(0)
 		{  }
@@ -99,6 +99,9 @@ public:
 	virtual void write_ireg(std::ostream& out);
 					// Write contents in IREG format.
 	virtual void write_contents(std::ostream& out);
+
+	virtual int get_obj_hp() const { return resistance; }
+	virtual void set_obj_hp(int hp) { resistance = (char)hp; }
 	};
 
 #endif
