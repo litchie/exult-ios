@@ -592,6 +592,35 @@ void Monster_actor::write
 	}
 
 /*
+ *	Read in monster info. from 'monsters.dat'.
+ */
+
+void Monster_info::read
+	(
+	istream& in			// Read from here.
+	)
+	{
+	unsigned char buf[25];		// Entry length.
+	in.read((char *) buf, sizeof(buf));
+	unsigned char *ptr = buf;
+	shapenum = Read2(ptr);		// Bytes 0-1.
+	strength = (*ptr++ >> 2) & 63;	// Byte 2.
+	dexterity = (*ptr++ >> 2) & 63;	// Byte 3.
+	intelligence = (*ptr++ >> 2) & 63;	// Byte 4.
+	alignment = *ptr & 3;		// Byte 5.
+	combat = (*ptr++ >> 2) & 63;
+	splits = (*ptr & 1) != 0;	// Byte 6 (slimes).
+	cant_die = (*ptr & 2) != 0;
+	armor = (*ptr++ >> 4) & 31;
+	ptr++;				// Unknown.
+	reach = (*ptr >> 4) & 31;	// Byte 8 - weapon reach.
+	weapon = *ptr++ & 31;
+	flags = *ptr++;			// Byte 9.
+	ptr += 4;			// Unknown (more flags?).
+	equip_offset = *ptr++;		// Byte 13.
+	}
+
+/*
  *	Write Inventory
  */
 
