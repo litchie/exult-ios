@@ -783,9 +783,14 @@ void ActionSkinColour(int *params)
 //   { ActionNotebook, 0, "Show notebook", true, false, NONE, false },
 void ActionNotebook(int *params)
 {
-	Notebook_gump *notes = Notebook_gump::create();
 	Game_window *gwin = Game_window::get_instance();
-	gwin->get_gump_man()->add_gump(notes);
+	Gump_manager *gman = gwin->get_gump_man();
+	Notebook_gump *notes = Notebook_gump::get_instance();
+	if (notes)
+		gman->remove_gump(notes);	// Want to raise to top.
+	else
+		notes = Notebook_gump::create();
+	gman->add_gump(notes);
 	gwin->paint();
 }
 
