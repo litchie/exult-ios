@@ -164,8 +164,10 @@ Projectile_effect::Projectile_effect
 	(
 	Tile_coord s,			// Start here.
 	Tile_coord d,			// End here.
-	int shnum			// Projectile shape
-	) : attacker(0), target(0), shape_num(shnum), weapon(0), frame_num(0)
+	int shnum,			// Projectile shape
+	int weap			// Weapon (bow, gun, etc.) shape, or 0.
+	) : attacker(0), target(0), shape_num(shnum), weapon(weap), 
+		frame_num(0)
 	{
 	init(s, d);
 	}
@@ -178,8 +180,10 @@ Projectile_effect::Projectile_effect
 	(
 	Tile_coord s,			// Start here.
 	Game_object *to,		// End here, 'attack' it with shape.
-	int shnum			// Projectile shape
-	) : attacker(0), target(to), shape_num(shnum), weapon(0), frame_num(0)
+	int shnum,			// Projectile shape
+	int weap			// Weapon (bow, gun, etc.) shape, or 0.
+	) : attacker(0), target(to), shape_num(shnum), weapon(weap), 
+		frame_num(0)
 	{
 	init(s, to->get_abs_tile_coord());
 	}
@@ -226,6 +230,8 @@ inline Game_object *Find_target
 	Tile_coord pos
 	)
 	{
+	if (pos.tz%5 == 0)		// On floor?
+		pos.tz++;		// Look up 1 tile.
 	Tile_coord dest = pos;		// This gets modified.
 	if (!Chunk_object_list::is_blocked(pos, 1, MOVE_FLY, 0) &&
 	    dest == pos)
@@ -246,10 +252,9 @@ void Projectile_effect::handle_event
 	const int delay = 100;		// Delay between frames.
 	Game_window *gwin = Game_window::get_game_window();
 	add_dirty(gwin);		// Force repaint of old pos.
-					// +++++For trap, must detect
-// collisions.  (Maybe for all cases it should do that.) Add following:
-//			|| (!target && target->find_target(gwin, pos))
-	if (!path->GetNextStep(pos))	// Get next spot.
+	if (!path->GetNextStep(pos) ||	// Get next spot.
+					// If missile egg, detect target.
+			(!target && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
 		if (target)
 			target->attacked(attacker, weapon, shape_num);

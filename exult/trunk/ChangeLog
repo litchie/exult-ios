@@ -1,3 +1,7 @@
+2000-09-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* effects.cc (Projectile_effect): Missile eggs pretty-much done.
+
 2000-09-12  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* tools/u7shpload.c: Load 8x8 tiles (no save). Still crashes on some 

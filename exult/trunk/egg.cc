@@ -42,12 +42,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Missile_launcher : public Time_sensitive
 	{
 	Egg_object *egg;		// Egg this came from.
+	int weapon;			// Shape for weapon.
 	int shapenum;			// Shape for missile.
 	int dir;			// Direction (0-7).  (8==??).
 	int delay;			// Delay (msecs) between launches.
 public:
-	Missile_launcher(Egg_object *e, int shnum, int di, int del)
-		: egg(e), shapenum(shnum), dir(di), delay(del)
+	Missile_launcher(Egg_object *e, int weap, int shnum, int di, int del)
+		: egg(e), weapon(weap), shapenum(shnum), dir(di), delay(del)
 		{  }
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
@@ -76,7 +77,7 @@ void Missile_launcher::handle_event
 		Tile_coord dest = src;
 		dest.tx += 12*dx;
 		dest.ty += 12*dy;
-		proj = new Projectile_effect(src, dest, shapenum);
+		proj = new Projectile_effect(src, dest, shapenum, weapon);
 		}
 	else				// Target a party member.
 		{
@@ -89,7 +90,7 @@ void Missile_launcher::handle_event
 			if (Fast_pathfinder_client::is_straight_path(src,
 					party[i]->get_abs_tile_coord()))
 				proj = new Projectile_effect(
-						src, party[i], shapenum);
+					src, party[i], shapenum, weapon);
 		}
 	if (proj)
 		gwin->add_effect(proj);
@@ -317,7 +318,9 @@ int Egg_object::is_active
 					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
 	case external_criteria:		// For now, just guessing.
-		return obj == gwin->get_main_actor() && tz == get_lift() &&
+		return obj == gwin->get_main_actor() && 
+			(tz == get_lift() || 
+				(type == missile && tz/5 == get_lift()/5)) &&
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty);
 	case avatar_far:		// New tile is outside, old is inside.
@@ -467,22 +470,19 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		case missile:
 			{
 					// Get data.  Not sure about delay.
-			int shnum = data1, dir = data2&0xff, delay = data2>>8;
-			cout << "Missile egg:  " << item_names[shnum]
+			int weapon = data1, dir = data2&0xff, delay = data2>>8;
+			cout << "Missile egg:  " << item_names[weapon]
 				<< endl;
-			switch (shnum)	// Get a more reasonable shape.
-				{
-			case 3:		// Lightning.
-			case 11:	// Looks like lightning in original.
-				shnum = 807; break;
-			case 6:		// Arrow.
-				shnum = 722; break;
-			case 9:		// Fireball.
-				shnum = 856; break;
-				}
+			Shape_info& info = gwin->get_info(weapon);
+			Weapon_info *winf = info.get_weapon_info();
+			int ammo;
+			if (winf && winf->get_ammo())
+				ammo = winf->get_ammo();
+			else
+				ammo = 856;// Fireball.  Shouldn't get here.
 			if (!launcher)
-				launcher = new Missile_launcher(this, shnum,
-						dir, 1000*delay);
+				launcher = new Missile_launcher(this, weapon,
+						ammo, dir, 1000*delay);
 			if (!launcher->in_queue())
 				gwin->get_tqueue()->add(0L, launcher, 0);
 			break;
