@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucmachine.h"
 #include "Spellbook_gump.h"
 #include "spellbook.h"
+#include "game.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
@@ -44,12 +45,20 @@ const int REAGANTS = 842;		// Shape #.
 /*
  *	Defines in 'gumps.vga':
  */
-const int SPELLS = 33;			// First group of 9 spells.
-const int TURNINGPAGE = 41;		// Animation?? (4 frames).
-const int BOOKMARK = 42;		// Red ribbon, 5 frames.
-const int LEFTPAGE = 44;		// At top-left of left page.
-const int RIGHTPAGE = 45;		// At top-right of right page.
-const int SCROLLSPELLS = 66;		// First group of scroll spells (SI).
+#define BG (Game::get_game_type() == BLACK_GATE)
+#define SPELLBOOK (BG ? 43 : 38)
+#define SPELLS  (BG ? 33 : 28)		// First group of 9 spells.
+#define TURNINGPAGE  (BG ? 41 : 36)	// Animation?? (4 frames).
+#define BOOKMARK  (BG ? 42 : 37)	// Red ribbon, 5 frames.
+#define LEFTPAGE  (BG ? 44 : 39)	// At top-left of left page.
+#define RIGHTPAGE  (BG ? 45 : 40)	// At top-right of right page.
+#define SCROLLSPELLS  66		// First group of scroll spells (SI).
+
+/*
+ *	And in 'text.flx':
+ */
+#define CIRCLE (BG ? 0x545 : 0x551)
+#define CIRCLENUM (BG ? 0x545 : 0x552)
 
 /*
  *	Flags for required reagants.  Bits match shape #.
@@ -224,7 +233,7 @@ void Spellbook_gump::set_avail
 Spellbook_gump::Spellbook_gump
 	(
 	Spellbook_object *b
-	) : Spelltype_gump(43), page(0), book(b)
+	) : Spelltype_gump(SPELLBOOK), page(0), book(b)
 {
 					// Where to paint page marks:
 	const int lpagex = 38, rpagex = 142, lrpagey = 25;
@@ -241,6 +250,7 @@ Spellbook_gump::Spellbook_gump
 	spwidth = spshape->get_width();
 	spheight = spshape->get_height();
 	int vertspace = (object_area.h - 4*spheight)/4;
+	int spells0 = SPELLS;
 	for (int c = 0; c < 9; c++)	// Add each spell.
 	{
 		int spindex = c*8;
@@ -257,7 +267,7 @@ Spellbook_gump::Spellbook_gump
 					object_area.y + spshape->get_yabove() +
 						(spheight + vertspace)*(s%4),
 					spnum,
-					SPELLS + spnum%8, spnum/8);
+					spells0 + spnum%8, spnum/8);
 				}
 			else
 				spells[spindex + s] = 0;
@@ -433,10 +443,11 @@ void Spellbook_gump::paint
 						gwin->get_text_width(4, text),
 					y + spell->y + numy);
 		}
-	if (page > 0)			// Paint circle.
+	if (page > 0 ||			// Paint circle.
+	    Game::get_game_type() == SERPENT_ISLE)
 	{
-		char *circ = item_names[0x545];
-		char *cnum = item_names[0x545 + page];
+		char *circ = item_names[CIRCLE];
+		char *cnum = item_names[CIRCLENUM + page];
 		gwin->paint_text(4, cnum, x + 40 + 
 			(44 - gwin->get_text_width(4, cnum))/2, y + 20);
 		gwin->paint_text(4, circ, x + 92 +
