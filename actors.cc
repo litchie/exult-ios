@@ -514,10 +514,8 @@ void Actor::set_opponent
 	Game_object *obj
 	)
 	{
-#if 1	/* Got to try this.+++++++ */
-	if (schedule_type != Schedule::combat)
+	if (schedule_type != Schedule::combat || !schedule)
 		set_schedule_type(Schedule::combat);
-#endif
 	if (schedule)
 		schedule->set_opponent(obj);
 	start(100);			// Get going if not already.
