@@ -29,10 +29,10 @@
 
 // missing defines:
 #define PACKAGE "exult"
-#define VERSION "0.97cvs"
+#define VERSION "0.98 RC1"
 #define VER_MAJOR "0"
-#define VER_MINOR "97"
-#define VER_EXTRA "cvs"
+#define VER_MINOR "98"
+#define VER_EXTRA "RC1"
 
 
 /* Define if you have the <limits.h> header file.  */
