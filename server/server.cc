@@ -248,7 +248,6 @@ static void Handle_client_message
 		unsigned char data[Exult_server::maxlength];
 		unsigned char *ptr = &data[0];
 		Game_info_out(client_socket, Exult_server::version, 
-			gwin->get_num_npcs(),
 			cheat.get_edit_lift(),
 			gwin->skip_lift,
 			cheat.in_map_editor(),
@@ -423,6 +422,12 @@ static void Handle_client_message
 		break;
 	case Exult_server::paste:
 		cheat.paste();
+		break;
+	case Exult_server::npc_info:
+		Write2(ptr, gwin->get_num_npcs());
+		Write2(ptr, gwin->get_unused_npc());
+		Exult_server::Send_data(client_socket, Exult_server::npc_info,
+							data, ptr - data);
 		break;
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:
