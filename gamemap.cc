@@ -485,6 +485,7 @@ void Game_map::write_ifix_objects
 	int result = ifix_stream.good();
 	if (!result)
 		throw file_write_exception(fname);
+	schunk_modified[schunk] = false;
 	return;
 	}
 
@@ -1549,7 +1550,10 @@ void Game_map::cache_out_schunk(int schunk)
 	const int scy = 16*(schunk/12);
 	const int scx = 16*(schunk%12);
 	int cy, cx;
+	bool save_map_modified = map_modified;
 
+	if (schunk_modified[schunk])
+		return;			// NEVER cache out modified chunks.
 	// Our vectors
 	Game_object_vector removes;
 	Actor_vector actors;
@@ -1615,6 +1619,7 @@ void Game_map::cache_out_schunk(int schunk)
 
 		objects[scx + cx][scy + cy]->kill_cache();
 	}
-
-
+					// Removing objs. sets these flags.
+	schunk_modified[schunk] = false;
+	map_modified = save_map_modified;
 }
