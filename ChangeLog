@@ -1,3 +1,6 @@
+2000-12-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* various: renamed hack-mover to map-editor
+
 2000-12-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Usecode:  Intrinsic 0x92 discovered.  Also increased range of
