@@ -1,3 +1,6 @@
+2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc/usecode.cc: added config/debug/trace/usecode (yes/no) option
+
 2000-11-26  Dancer Vesperman <dancer@users.sourceforge.net>
 	* audio/Audio.h: Eliminate a warning by making the Audio constructor protected, rather than private.
 	* actors.cc: const police

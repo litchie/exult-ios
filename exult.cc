@@ -73,7 +73,8 @@ unsigned char quitting_time = 0;	// 1 = Time to quit, 2 = Restart.
 Mouse *mouse = 0;
 int scale = 0;				// 1 if scaling X2.
 
-bool	usecode_trace = false;		// Do we trace Usecode-intrinsics?
+bool intrinsic_trace = false;		// Do we trace Usecode-intrinsics?
+bool usecode_trace = false;		// Do we trace Usecode-instruction?
 
 #if USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
@@ -208,7 +209,13 @@ int main
 	string	tracing;
 	config->value("config/debug/trace/intrinsics",tracing,"no");
 	if(tracing=="yes")
-		usecode_trace=true;	// Enable tracing of intrinsics
+		intrinsic_trace=true;	// Enable tracing of intrinsics
+
+	string uctrace;
+	config->value("config/debug/trace/usecode", uctrace,"no");
+	if (uctrace=="yes")
+		usecode_trace=true;	// Enable tracing of UC-instructions
+		
 
 #if USECODE_DEBUGGER
 	string	u_debugging;
