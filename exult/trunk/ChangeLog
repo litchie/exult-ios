@@ -1,3 +1,14 @@
+2000-08-31  Tristan Tarrant  <nadir@users.sourceforge.net>
+
+	* files/databuf.h: Added write() method to DataSources
+	* tools/expack.cc: Implemented FLEX creation
+	* tools/Makefile.am: Removed 'txt2cc' from build
+	* data/*: Removed 'txt2cc' rubbish, and create 'exult.flx'. Updated
+	credits & quotes
+	* game.cc, bggame.cc, sigame.cc: Use credits, quotes & shapes from
+	'exult.flx'
+	* */*: Put some debugging messages between #if DEBUG/#endif
+
 2000-08-31  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Cleaning up Ireg constructors, working on 'fields'.

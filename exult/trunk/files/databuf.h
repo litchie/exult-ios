@@ -40,6 +40,7 @@ public:
 	virtual void write2high(unsigned int) =0;
 	virtual void write4(unsigned int) =0;
 	virtual void write4high(unsigned int) =0;
+	virtual void write(char *, int) =0;
 	
 	virtual void seek(unsigned int) =0;
 	virtual void skip(int) =0;
@@ -143,6 +144,11 @@ public:
 		out->put((char) ((val>>16)&0xff));
 		out->put((char) ((val>>8)&0xff));
 		out->put((char) (val&0xff));
+	};
+
+	virtual void write(char *b, int len)
+	{
+		out->write(b, len);
 	};
 	
 	virtual void seek(unsigned int pos) { in->seekg(pos); };
@@ -253,6 +259,12 @@ public:
 		fputc((char) ((val>>8)&0xff),f);
 		fputc((char) (val&0xff),f);
 	};
+
+	virtual void write(char *b, int len)
+	{
+		fwrite(b, 1, len, f);
+	};
+	
 	
 	virtual void seek(unsigned int pos) { fseek(f, pos, SEEK_SET); };
 	
@@ -367,6 +379,12 @@ public:
 		*buf_ptr++ = (val>>16)&0xff;
 		*buf_ptr++ = (val>>8) & 0xff;
 		*buf_ptr++ = val & 0xff;
+	};
+
+	virtual void write(char *b, int len)
+	{
+		memcpy(buf_ptr, b, len);
+		buf_ptr += len;
 	};
 	
 	virtual void seek(unsigned int pos) { buf_ptr = buf+pos; };

@@ -1,21 +1,16 @@
-credits.h: credits.txt
-	../tools/txt2cc credits.txt credits.h get_exult_credits
-
-quotes.h: quotes.txt
-	../tools/txt2cc quotes.txt quotes.h get_exult_quotes
-
-noinst_HEADERS = \
-	credits.h \
-	quotes.h
-
-BUILT_SOURCES = \
-	credits.h \
-	quotes.h
-
-CLEAN_FILES = \
-	credits.h \
-	quotes.h
-
-EXTRA_DIST = \
+# Never ever change the ordere here: Exult depends on it
+EXULT_FLX_OBJECTS = \
+	exult_quotes.shp \
+	exult_credits.shp \
+	quotes.txt \
 	credits.txt \
-	quotes.txt
+	exult_logo.shp \
+	exult0.pal
+
+CLEANFILES = \
+	exult.flx *~
+
+EXTRA_DIST = $(EXULT_FLX_OBJECTS)
+
+all-local:
+	../tools/expack -c exult.flx $(EXULT_FLX_OBJECTS)

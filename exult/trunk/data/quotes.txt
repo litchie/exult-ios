@@ -12,3 +12,11 @@
 
 \C"All this stuff is driving me to Java!"
 \L- Jeff
+
+\C"I haven't touched the original in a while
+\CExult is so much better"
+\L- Tristan
+
+\C"The few crashes just made it
+\Cfeel more authentic!"
+\L- Jeff

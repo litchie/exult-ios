@@ -92,13 +92,11 @@ void BG_Game::play_intro()
 		// Lord British presents...
 		pal.load("static/intropal.dat",3);
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
-		const char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
-				"Willem Jan Palenstijn, Tristan Tarrant,", 
-				"Max Horn, Luke Dunstan, Ryan Nunn, Derek Liauw Kie Fa",
+		const char *txt_msg[] = { "with help from",
+				"The Exult Team", 
 				"Driven by the Exult game engine V" VERSION };
-		for(int i=0; i<3; i++) {
-			gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
-		}
+		center_text(0, txt_msg[0], centerx, centery+50);
+		center_text(0, txt_msg[1], centerx, centery+65);
 		pal.fade_in(30);
 		skip = wait_delay(2000);
 		play_midi(0);	// Start the birdsongs just before we fade
@@ -108,7 +106,7 @@ void BG_Game::play_intro()
 		// Ultima VII logo w/Trees
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
 		gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
-		gwin->paint_text(0, txt_msg[3], centerx-gwin->get_text_width(0, txt_msg[3])/2, centery+50);
+		center_text(0, txt_msg[2], centerx, centery+50);
 		pal.load("static/intropal.dat",4);
 		pal.fade_in(30);
 		if(wait_delay(1500)) {
