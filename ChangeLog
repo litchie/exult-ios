@@ -1,3 +1,8 @@
+2002-01-24  Darke  <darkepaw@users.sourceforge.net>
+	* conf/Configuration.cc: istream::rdbuf() under win32 seems to be
+	slightly broken. It _should_ work now. Code is a mess, but I want to
+	get off this 'doze box. <grin>
+
 2002-01-23  Darke  <darkepaw@users.sourceforge.net>
 	* exult.cc: Fixed a compile error with people compiling using
 	--enable-usecode-debugger.
