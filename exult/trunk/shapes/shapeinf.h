@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Monster_info;
 
+#include <iosfwd>
+
 /*
  *	Specific information about weapons from 'weapons.dat':
  *	MAYBE:  Move this and ammo. to separate source file(s).
@@ -40,20 +42,16 @@ class Weapon_info
 					//   -2 = ?? wands?
 					//   -3 = throw weapon itself.
 	short projectile;		// Projectile shape, or 0.
+	bool m_explodes;		// Projectile explodes on impact.
 	short usecode;			// Usecode function, or 0.
-	unsigned char range1;		// 1st possible range (striking for
-					//   weapons with 2 uses; i.e.,
-					//   daggers.
-	unsigned char range2;		// Throwing range for i.e., daggers.
+	unsigned char uses;		// 0 = hand-hand, 1,2 = throwable,
+					//   3 = missile-firing.
+	unsigned char range;		// Distance weapon can be used.
 	short sfx, hitsfx;		// Sound when using/hit, or -1.
 public:
 	friend class Shape_info;
-	Weapon_info(char d, unsigned char r1, unsigned char r2,
-		unsigned char sp, short am, short pr, short uc, 
-						short sx, short hsx) 
-		: damage(d),  special_atts(sp), ammo(am), projectile(pr),
-	          usecode(uc), range1(r1), range2(r2), sfx(sx), hitsfx(hsx)
-		{  }
+	Weapon_info() {  }
+	int read(std::istream& mfile);	// Read in from file.
 	int get_damage()
 		{ return damage; }
 	unsigned char get_special_atts()// Test for special damage.
@@ -61,12 +59,11 @@ public:
 	int get_ammo_consumed()
 		{ return ammo > 0 ? ammo : 0; }
 	bool is_thrown()
-		{ return ammo == -3 && (range2&7) != 0; }
-	int get_striking_range()
-		{ return range1 < 3 ? range1 : 0; }
-	int get_projectile_range()
-		{ return range1 >= 3 ? (range1 + 3) 
-			: (is_thrown() ? ((range2&7) + 8 + 3) : 0); }
+		{ return uses == 1 || uses == 2; }
+	int get_striking_range()	// Guessing about div. by 2.
+		{ return uses < 3 ? range/2 : 0; }
+	int get_projectile_range()	// +++Guess for thrown weapons.
+		{ return uses == 3 ? range : is_thrown() ? 20 : 0; }
 	int get_projectile()
 		{ return projectile; }
 	int get_usecode()
