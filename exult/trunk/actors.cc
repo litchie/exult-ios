@@ -1450,10 +1450,23 @@ void Actor::activate
 //+++		editing = 0;
 		Tile_coord t = get_abs_tile_coord();
 		unsigned long addr = (unsigned long) this;
+		int num_schedules;	// Set up schedule-change list.
+		Schedule_change *changes;
+		get_schedules(changes, num_schedules);
+		Serial_schedule schedules[8];
+		for (int i = 0; i < num_schedules; i++)
+			{
+			schedules[i].time = changes[i].get_time();
+			schedules[i].type = changes[i].get_type();
+			Tile_coord p = changes[i].get_pos();
+			schedules[i].tx = p.tx;
+			schedules[i].ty = p.ty;
+			}
 		if (Npc_actor_out(client_socket, addr, t.tx, t.ty, t.tz,
 			get_shapenum(), get_framenum(), 
 			name, ident, usecode, properties, attack_mode,
-			alignment, flags, siflags, type_flags) != -1)
+			alignment, flags, siflags, type_flags,
+				num_schedules, schedules) != -1)
 			{
 			cout << "Sent npc data to ExultStudio" << endl;
 //++++Later			editing = this;
