@@ -156,11 +156,11 @@ Game_window::~Game_window
 	{
 	clear_world();			// Delete all objects, chunks.
 	for (int i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
-		delete save_names[i];
+		delete [] save_names[i];
 	int nxforms = sizeof(xforms)/sizeof(xforms[0]);
 	for (int i = 0; i < nxforms; i++)
-		delete xforms[nxforms - 1 - i];
-	delete invis_xform;
+		delete [] xforms[nxforms - 1 - i];
+	delete [] invis_xform;
 	if(monster_info)
 		delete [] monster_info;
 	delete tqueue;
