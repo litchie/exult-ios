@@ -69,6 +69,8 @@ Game_object *Game_object::editing = 0;
 					// Bit 5=S, Bit6=reflect. on diag.
 unsigned char Game_object::rotate[8] = { 0, 0, 48, 48, 16, 16, 32, 32};
 
+extern bool combat_trace;
+
 /*
  *	Get direction to another object.
  */
@@ -1273,14 +1275,18 @@ Game_object *Game_object::attacked
 
 
 	if (hp == 0) { // indestructible
-		cout << name << " attacks " << get_name() <<
-			". No effect." << endl;
+		if (combat_trace) {
+			cout << name << " attacks " << get_name()
+				 << ". No effect." << endl;
+		}
 		return this;
 	}
 
-	cout << name << " hits " << get_name() <<
-		" for " << wpoints << " hit points, leaving " <<
-		 hp - wpoints << " remaining" << endl;
+	if (combat_trace) {
+		cout << name << " hits " << get_name()
+			 << " for " << wpoints << " hit points, leaving "
+			 << hp - wpoints << " remaining" << endl;
+	}
 
 	if (wpoints >= hp) {
 		// object destroyed

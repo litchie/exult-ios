@@ -54,6 +54,8 @@ int Combat::difficulty = 0;
 Combat::Mode Combat::mode = Combat::original;
 bool Combat::show_hits = false;
 
+extern bool combat_trace;
+
 /*
  *	Is a given ammo shape in a given family.
  */
@@ -316,8 +318,10 @@ Game_object *Combat_schedule::find_foe
 	(
 	int mode			// Mode to use.
 	)
-	{
-	cout << "'" << npc->get_name() << "' is looking for a foe" << endl;
+{
+	if (combat_trace) {
+		cout << "'" << npc->get_name() << "' is looking for a foe" << endl;
+	}
 					// Remove any that died.
 	for (Actor_queue::const_iterator it = opponents.begin(); 
 						it != opponents.end(); )
@@ -492,8 +496,10 @@ void Combat_schedule::approach_foe
 		}
 	failures = 0;			// Clear count.  We succeeded.
 	start_battle();			// Music if first time.
-	cout << npc->get_name() << " is pursuing " << opponent->get_name() <<
-		endl;
+	if (combat_trace) {
+		cout << npc->get_name() << " is pursuing " << opponent->get_name()
+			 << endl;
+	}
 					// First time (or 256th), visible?
 	if (!yelled && gwin->add_dirty(npc))
 		{
@@ -639,7 +645,9 @@ void Combat_schedule::start_strike
 			start_battle();	// Play music if first time.
 		state = fire;		// Clear to go.
 		}
-	cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
+	if (combat_trace) {
+		cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
+	}
 	int dir = npc->get_direction(opponent);
 	signed char frames[12];		// Get frames to show.
 	int cnt = npc->get_attack_frames(weapon_shape, projectile_range > 0,
@@ -1000,8 +1008,10 @@ void Combat_schedule::now_what
 		break;
 		}
 	if (failures > 5 && npc != gwin->get_camera_actor())
-		{			// Too many failures.  Give up for now.
-		cout << npc->get_name() << " is giving up" << endl;
+	{			// Too many failures.  Give up for now.
+		if (combat_trace) {
+			cout << npc->get_name() << " is giving up" << endl;
+		}
 		if (npc->get_party_id() >= 0)
 			{		// Party member.
 			npc->walk_to_tile(
