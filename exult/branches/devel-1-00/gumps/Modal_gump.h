@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000 The Exult Team
+Copyright (C) 2000-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -55,8 +55,10 @@ public:
 	virtual void mousewheel_up() { }
 	virtual void mouse_drag(int mx, int my)
 		{  }
-	virtual void key_down(int chr)	// Character typed.
+	virtual void key_down(int chr) // Key pressed
 		{  }
+    virtual void text_input(int chr, int unicode)	// Character typed
+        {  }
 };
 
 #endif

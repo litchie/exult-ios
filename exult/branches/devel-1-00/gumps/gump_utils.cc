@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #endif
 
 #include "SDL_events.h"
+#include "SDL_keyboard.h"
 
 #include "exceptions.h"
 #include "exult.h"
@@ -85,8 +86,11 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 		if (event.button.button == 1)
 			gump->mouse_down(event.button.x / scale_factor, 
 						event.button.y / scale_factor);
-		else if (event.button.button == 2 && Game_window::get_game_window()->get_mouse3rd())
+		else if (event.button.button == 2 && Game_window::get_game_window()->get_mouse3rd()) 
+        {
 			gump->key_down(SDLK_RETURN);
+            gump->text_input(SDLK_RETURN, SDLK_RETURN);
+        }
 		else if (event.button.button == 3)
 			rightclick = true;
 		else if (event.button.button == 4) // mousewheel up
@@ -125,9 +129,8 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 					return 1;
 			}
 
-			int chr = event.key.keysym.sym;
-			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
-						? toupper(chr) : chr);
+			gump->key_down(event.key.keysym.sym);
+			gump->text_input(event.key.keysym.sym, event.key.keysym.unicode);
 			break;
 		}
 	}
@@ -147,6 +150,8 @@ int Do_Modal_gump
 	Mouse::Mouse_shapes shape	// Mouse shape to use.
 	)
 {
+    SDL_EnableUNICODE(1);
+
 	// maybe make this selective? it's nice for menus, but annoying for sliders
 	//	gwin->end_gump_mode();
 
@@ -190,6 +195,9 @@ int Do_Modal_gump
 	Mouse::mouse->set_shape(saveshape);
 					// Leave mouse off.
 	gwin->show(true);
+
+    SDL_EnableUNICODE(0);
+
 	return (!escaped);
 }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -627,10 +627,7 @@ void File_gump::mouse_up
  *	Handle character that was typed.
  */
 
-void File_gump::key_down
-	(
-	int chr
-	)
+void File_gump::text_input(int chr, int unicode)
 {
 	if (!focus)			// Text field?
 		return;
@@ -688,7 +685,12 @@ void File_gump::key_down
 		focus->set_cursor(focus->get_length());
 		return;
 	}
-	if (chr < ' ')
+
+    if ((unicode & 0xFF80) == 0 )
+        chr = unicode & 0x7F;
+    else
+        chr = 0;
+   	if (chr < ' ')
 		return;			// Ignore other special chars.
 	if (chr < 256 && isascii(chr))
 	{

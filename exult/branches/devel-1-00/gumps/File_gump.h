@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ public:
 					// Handle events:
 	virtual void mouse_down(int mx, int my);
 	virtual void mouse_up(int mx, int my);
-	virtual void key_down(int chr);	// Character typed.
+	virtual void text_input(int chr, int unicode); // Character typed.
 };
 
 #endif
