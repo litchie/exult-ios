@@ -1,14 +1,12 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 18 June 2002(GMT)
+last changed: 24 July 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 18 June 2002
-0.2. - 05 June 2002
-0.3. - 19 May 2002
-0.4. - 07 April 2002
+0.1. - 24 July 2002
+0.2. - 18 June 2002
 
 1. Introduction
 1.1. Why is it called Exult - what is the meaning of this name?
@@ -73,34 +71,16 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 18 June 2002
+0.1. - 24 July 2002
+* 1.12. On what platform does Exult run? the Amiga port has been integrated ages ago and we have a Zaurus port now.
+* 3.2. Why can't I move my party with the arrow keys? Nadir implemented arrow walking now.
+* 4.5. Known Compile Issues makefile.cygwin no longer exists.
+
+
+
+0.2. - 18 June 2002
 * 1.9. Why are there now two different snapshots? same as on our main page, also some explanation for the different FAQ/Docs.
 * 4.2. How do I submit a proper bug report? SourceForge requires registration for attaching files.
-
-
-
-0.2. - 05 June 2002
-* 1.11. What is the latest version of Exult? new version.
-* 3.2. Why can't I move my party with the arrow keys? added..
-* 3.14. Where is the pikeman that lets you train in Monitor (SI)? bug from the original is haunting us.
-
-
-
-0.3. - 19 May 2002
-* 3.4. So why can't I sail a ship in BG? this gets asked once in a while.
-* 3.6. Why is the party formation different? Jeff changed this a bit.
-* "Why does Exult freeze when I board Hawk's ship on SI?" was a bug and got fixed and therefore no longer in the FAQ.
-* 3.10. Why do I hear strange, noisy effects in Linux? Bug with OSS in Linux.
-* 3.12. Why does my monitor stay black when I try to run Exult? this also comes up sometimes.
-
-
-
-0.4. - 07 April 2002
-* Removed the FAQ part for Exult Studio and integrated it in the Exult Studio documentation.
-* 1.12. On what platform does Exult run? MacOS needs to be 8.5 or higher.
-* 3.18. I heard that Exult is meant to be a game engine. Can I make my own game with Exult? linked to the new Exult Studio documentation.
-* 4.4. Known Issues possible bug with spaces in path.
-* 4.5. Known Compile Issues makefile.cygwin uses Cygwin only as shell.
 
 
 
@@ -171,7 +151,8 @@ And if you are wondering about our strange version numbering, we can't help you 
 
 1.12. On what platform does Exult run?
 Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher), OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP).
-Recently we discovered that there is also a working port of Exult for MorphOS and AmigaOS. You can find that version at Ruediger Hanke's homepage http://www.muenster.de/~tomjoad/exult.html. We are currently working on integrating his changes into the main code and making those versions available on our homepage.
+Ruediger Hanke's ported Exult to MorphOS and AmigaOS. You can get this version at http://www.muenster.de/~tomjoad/exult.html.
+Recently Artaxerxes started working on a port for Zaurus, a Linux/ARM based PDA. You can already move around and hold conversations. Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://artaxerxes_2.tripod.com/exult_0.2_arm.ipk.
 
 
 
@@ -230,7 +211,7 @@ If you need help with the game itself, like walktrhoughs, hints, location of Npc
 
 
 3.2. Why can't I move my party with the arrow keys?
-We haven't implemented this yet so you can only move the party with the mouse. Nadir is aiming to implement it after the 1.0 release.
+Nadir implemented keyboard walking in the 1.1 (unstable) branch of our source. For details see ReadMe.txt.
 
 
 3.3. Do the carriages, ships and the magic carpet work?
@@ -379,7 +360,6 @@ Possible workaround for the above mentioned audio issues: We added a config file
 
 
 4.5. Known Compile Issues
-* makefile.cygwin uses cygwin only as shell. Mingw is used for compiling.
 * There is a bug/incompatibility with the flex bundled Linux distributions (RH7.0, for example) that breaks compilation. Upgrading to a more recent version of flex should fix it.
 * Ater compiling yourself remember to copy the exult*.flx files from the data dir in the source to the Exult data dir you chose in exult.cfg. This applies only if you don't use "make install"
 
