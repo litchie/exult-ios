@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objbrowse.h"
 #include "shapedraw.h"
 #include "rect.h"
+#include <vector>
 
 class Vga_file;
 class Image_buffer8;
@@ -66,7 +67,9 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	int framenum0;			// Default frame # to display.
 	Shape_entry *info;		// An entry for each shape drawn.
 	int info_cnt;			// # entries in info.
-	int num_per_row;		// Average # painted per line.
+	vector<short> row_indices;	// Index at start of each row.
+	int row0;			// Row # at top of window.
+	int nrows;			// Last #rows rendered.
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
@@ -76,6 +79,8 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void tell_server_shape();	// Tell Exult what shape is selected.
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
+	int next_row(int start);	// Down/up 1 row.
+	void goto_index(int index);	// Get desired index in view.
 	virtual int get_selected_id()
 		{ return selected < 0 ? -1 : info[selected].shapenum; }
 	void scroll(int newindex);	// Scroll.
