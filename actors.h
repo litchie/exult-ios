@@ -109,7 +109,6 @@ public:
 					// Walk to desired point.
 	void walk_to_point(unsigned long destx, unsigned long desty, 
 								int speed);
-	int find_spot(Game_object *obj);// Find object's spot.
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
 					// Render.
@@ -147,6 +146,7 @@ public:
 	virtual int add(Game_object *obj, int dont_check = 0);
 					// Add to NPC 'readied' spot.
 	virtual int add_readied(Game_object *obj, int index);
+	virtual int find_readied(Game_object *obj);
 	virtual Game_object *get_readied(int index)
 		{
 		return index >= 0 && index < sizeof(spots)/sizeof(spots[0]) ? 
