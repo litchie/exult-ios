@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="04 March 2003(GMT)">
+<readme title="Exult" changed="04 May 2003(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="04052003">
+			<header>- 04 May 2003</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> option for "original" party formation added.</li>				
+				</ul>
+			</body>
+		</sub>
 		<sub name="04032003">
 			<header>- 04 March 2003</header>
 			<body>
@@ -351,6 +359,12 @@
 						to where you clicked.
 						</comment></line>
 					<line>&lt;/allow_double_right_move&gt;</line>
+					<line>&lt;formation&gt;</line>
+					<line>no
+						<comment>**yes forces the party to walk in a formation similar to the
+						original game.
+						</comment></line>
+					<line>&lt;/formation&gt;</line>
 					<line>&lt;/gameplay&gt;</line>
 					<line>&lt;audio&gt;</line>
 					<line>&lt;enabled&gt;</line>

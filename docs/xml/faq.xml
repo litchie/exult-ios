@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="04 March 2003(GMT)">
+<faqs title="Exult" changed="04 May 2003(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="04052003">
+			<header>- 04 May 2003</header>
+			<body>
+				<ul>
+				<li><ref1 target="saves_compatibility"/> don't use 1.1.x saves with 1.0.</li>
+				<li><ref1 target="party_formation"/> Jeff changed the behaviour of it.</li>
+				<li><ref1 target="skarabrae_forsythe"/> added.</li>
+				<li><ref1 target="demon_gem"/> added.</li>
+				<li><ref1 target="pillars_fort"/> added.</li>				
+				</ul>
+			</body>
+		</sub>
 		<sub name="04032003">
 			<header>- 04 March 2003</header>
 			<body>
@@ -13,35 +25,6 @@
 				<li><ref1 target="known_issues"/> changed a bit, added issue with Nvidia 40.x reference drivers.</li>
 				<li><section_ref target="Gameplay FAQ"/> Not everytime you are stuck in the 
 					game is it a bug. Maybe this section can help you.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="03112002">
-			<header>- 03 November 2002</header>
-			<body>
-				<para>
-					Version number of actual version of <Exult/> is now 1.00!
-				</para>
-			</body>
-		</sub>
-		<sub name="24102002">
-			<header>- 24 October 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="save_crash"/> Don't save on scripted scenes.</li>
-				<li><ref1 target="skarabrae_sacrifice"/> Some people still run into this problem.</li>
-				<li><ref1 target="by_design"/> walking style revisited.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="11092002">
-			<header>- 11 September 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="what_platforms"/> changed location of Zaurus package.</li>
-				<li><ref1 target="party_formation"/> rewrote that a bit.</li>
-				<li><ref1 target="great_hierophant"/> not an issue with Exult actually.</li>
-				<li><ref1 target="known_issues"/> drawing order is messed up.</li>				
 				</ul>
 			</body>
 		</sub>
@@ -370,6 +353,10 @@
 					<Exult/> savegames are compatible on all supported Operating Systems. For example 
 					a saved game of the Mac port of <Exult/> works on Windows 98 as well. 
 				</para>
+				<para>
+					However it is not advisable to use savegames of games started with the 1.1.x
+					snapshot of <Exult/> with the 1.0 release. 
+				</para>
 			</body>
 		</sub>
 		<sub name="u7_download">
@@ -465,9 +452,14 @@
 					In <Exult/> the party (the Avatar and his companions) move quite differently than
 					they do in the original. The problem is that this was controlled by the original 
 					executable. Changing the formation now is not as easy as it sounds as the party
-					formation has effects on other game internals. Changing it to be more like the original
-					may force us to replay the whole game to make sure we didn't introduce new bugs.
-					Recently Jeff changed this a bit but it still is not the same as the original.
+					formation has effects on other game internals. Changing it to be more like the 
+					original may force us to replay the whole game to make sure we didn't introduce 
+					new bugs.
+				</para>
+				<para>
+					Recently Jeff added an optional formation that behaves way more like in the 
+					original game. The default is still the "loose" Exult formation.
+					See <extref doc="docs" target="exult_config"/>.
 				</para>
 				<cite name="Jeff">
 					It's not a bug, it's a feature! I like it that way.  Everyone is sensitive to
@@ -877,6 +869,30 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="skarabrae_forsythe">
+			<header>Why can't I talk to the mayor of Skara Brae (BG)?</header>
+			<body>
+				<para>
+					You might be talking to "The Other Forsythe"(TM). There's a ghost in the Skara Brae 
+					town hall that looks like Forsythe, but isn't.<br/>
+					This was fixed in more recent versions of <Exult/> but with games started with earlier
+					versions this bug is still present. You need to start a new game of <Exult/> to fix 
+					this.
+				</para>
+			</body>
+		</sub>
+		<sub name="demon_gem">
+			<header>Where did my gem of the Demon vanish to (BG-FoV)?</header>
+			<body>
+				<para>
+					For forging the black sword you need to bind the demon to the gem you got from
+					that invincible dragon you met in the test of courage. Some people mistake that
+					little dark-blue gem with the glowing gem you received from Lord British.<br/>
+					If you use the glowing gem on the isle of fire it just vanishes with a shattering
+					sound.
+				</para>
+			</body>
+		</sub>
 		<sub name="pikeman_disappears">
 			<header>Where is the pikeman that lets you train in Monitor (SI)?</header>
 			<body>
@@ -923,9 +939,25 @@
 			<body>
 				<para>
 					The Serpent Staff in SI is a very important item. It doesn't seem like it but 
-					it is crucial to some major plot elements that you have the staff in your possession.<br/>
-					Unfortunately the game also demands that you get the staff properly. For that I recommend
-					to get it without cheating and to stand right next to it. 
+					it is crucial to some major plot elements that you have the staff in your 
+					possession.<br/>
+					Unfortunately the game also demands that you get the staff properly. For that I 
+					recommend to get it without cheating and to stand right next to it. 
+				</para>
+			</body>
+		</sub>
+		<sub name="pillars_fort">
+			<header>How to break the plot by doubleclicking some pillars (SI-SS)</header>
+			<body>
+				<para>
+					In the dining hall of the fort in the add-on Silver Seed you can doubleclick the 
+					pillars. This teleports you to the test in the gargoyle city. If you haven't done 
+					this test yet this breaks that plot later on and if you already have it is still a 
+					nuissance. So better don't do it.
+				</para>
+				<para>
+					Obviously a slight oversight of the add-on designers. Could be fixed by changing the
+					usecode and the map slightly.
 				</para>
 			</body>
 		</sub>
