@@ -164,7 +164,7 @@ Game_window::Game_window
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
 	    win(0), usecode(0), combat(false),
-            tqueue(new Time_queue()), clock(tqueue),
+            tqueue(new Time_queue()), clock(tqueue), time_stopped(0),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0),
 	    render_seq(0), painted(false), focus(true), 
@@ -410,6 +410,35 @@ void Game_window::add_special_light
 		clock.set_palette();
 		}
 	special_light += minutes;	// Figure ending time.
+	}
+
+/*
+ *	Set 'stop time' value.
+ */
+
+void Game_window::set_time_stopped
+	(
+	long delay			// Delay in ticks (1/1000 secs.).
+	)
+	{
+	long new_expire = SDL_GetTicks() + delay;
+	if (new_expire > time_stopped)	// Set expiration time.
+		time_stopped = new_expire;
+	}
+
+/*
+ *	Return delay to expiration.
+ */
+
+long Game_window::check_time_stopped
+	(
+	)
+	{
+	long delay = time_stopped - SDL_GetTicks();
+	if (delay > 0)
+		return delay;
+	time_stopped = 0;		// Done.
+	return 0;
 	}
 
 /* 
@@ -1470,6 +1499,7 @@ void Game_window::read
 	{
 	}
 	faded_out = 0;
+	time_stopped = 0;
 	clock.set_palette();		// Set palette for time-of-day.
 	set_all_dirty();		// Force entire repaint.
 	}

@@ -1511,7 +1511,7 @@ void Actor::activate
 	else if (usecode == -1)
 		umachine->call_usecode(get_shapenum(), this,
 			(Usecode_machine::Usecode_events) event);
-	else
+	else if (party_id >= 0 || !gwin->is_time_stopped())
 		umachine->call_usecode(usecode, this, 
 			(Usecode_machine::Usecode_events) event);
 	
@@ -3074,9 +3074,12 @@ void Npc_actor::handle_event
 		}
 	else
 		{			// Do what we should.
-		int delay = action->handle_event(this);
+		Game_window *gwin = Game_window::get_game_window();
+		int delay = party_id < 0 ? gwin->is_time_stopped() : 0;
+		if (delay <= 0)		// Time not stopped?
+			delay = action->handle_event(this);
 		if (delay)		// Keep going with same action.
-			Game_window::get_game_window()->get_tqueue()->add(
+			gwin->get_tqueue()->add(
 					curtime + delay, this, udata);
 		else
 			{
