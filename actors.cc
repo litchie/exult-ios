@@ -1680,7 +1680,7 @@ void Actor::activate
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||
 		(sman->can_use_paperdolls() && sman->get_bg_paperdolls());
 	
-	bool show_party_inv = gwin->get_gump_man()->showing_gumps(true) || 
+	bool show_party_inv = gumpman->showing_gumps(true) || 
 							gwin->in_combat();
 	Schedule::Schedule_types sched = 
 				(Schedule::Schedule_types) get_schedule_type();
@@ -1857,7 +1857,7 @@ void Actor::update_from_studio
 
 void Actor::show_inventory()
 {
-	Gump_manager *gump_man = gwin->get_gump_man();
+	Gump_manager *gump_man = gumpman;
 
 	int shapenum = inventory_shapenum();
 	if (shapenum)
@@ -1982,7 +1982,7 @@ void Actor::set_property
 			properties[prop] = val;
 		break;
 		}
-	if (gwin->get_gump_man()->showing_gumps())
+	if (gumpman->showing_gumps())
 		gwin->set_all_dirty();
 	}
 
@@ -2126,7 +2126,7 @@ void Actor::set_flag
 		gclock->set_palette();
 		}
 					// Update stats if open.
-	if (gwin->get_gump_man()->showing_gumps())
+	if (gumpman->showing_gumps())
 		gwin->set_all_dirty();
 	set_actor_shape();
 	}
@@ -3449,7 +3449,7 @@ void Main_actor::die
 	if (gwin->in_combat())
 		gwin->toggle_combat();	// Hope this is safe....
 	Actor::set_flag(Obj_flags::dead);
-	gwin->get_gump_man()->close_all_gumps();	// Obviously.
+	gumpman->close_all_gumps();	// Obviously.
 					// Special function for dying:
 	if (Game::get_game_type() == BLACK_GATE)
 		ucmachine->call_usecode(0x60e, this, Usecode_machine::weapon);

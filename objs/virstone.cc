@@ -87,7 +87,7 @@ void Virtue_stone_object::write_ireg
 int Virtue_stone_object::get_ireg_size()
 {
 	// These shouldn't ever happen, but you never know
-	if (gwin->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+	if (gumpman->find_gump(this) || Usecode_script::find(this))
 		return -1;
 
 	return 13;

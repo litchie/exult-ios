@@ -83,7 +83,7 @@ void Spellbook_object::activate
 	int event
 	)
 	{
-	gwin->get_gump_man()->add_gump(this, Game::get_game_type() == BLACK_GATE ? 43 : 38);
+	gumpman->add_gump(this, Game::get_game_type() == BLACK_GATE ? 43 : 38);
 	}
 
 /*
@@ -115,7 +115,7 @@ void Spellbook_object::write_ireg
 int Spellbook_object::get_ireg_size()
 {
 	// These shouldn't ever happen, but you never know
-	if (gwin->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+	if (gumpman->find_gump(this) || Usecode_script::find(this))
 		return -1;
 
 	return 19;

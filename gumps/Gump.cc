@@ -370,7 +370,7 @@ void Gump::close
 	(
 	)
 {
-	gwin->get_gump_man()->close_gump(this);
+	gumpman->close_gump(this);
 }
 
 /*

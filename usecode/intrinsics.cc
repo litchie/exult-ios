@@ -196,7 +196,7 @@ USECODE_INTRINSIC(select_from_menu2)
 USECODE_INTRINSIC(input_numeric_value)
 {
 	// Ask for # (min, max, step, default).
-	Usecode_value ret(gwin->get_gump_man()->Prompt_for_number(
+	Usecode_value ret(gumpman->Prompt_for_number(
 		parms[0].get_int_value(), parms[1].get_int_value(),
 		parms[2].get_int_value(), parms[3].get_int_value()));
 	conv->clear_text_pending();	// Answered a question.
@@ -818,7 +818,7 @@ USECODE_INTRINSIC(click_on_item)
 		t = Tile_coord(gwin->get_scrolltx() + x/c_tilesize,
 				gwin->get_scrollty() + y/c_tilesize, 0);
 					// Look for obj. in open gump.
-		Gump *gump = gwin->get_gump_man()->find_gump(x, y);
+		Gump *gump = gumpman->find_gump(x, y);
 		if (gump)
 		{
 			obj = gump->find_object(x, y);
@@ -1552,7 +1552,7 @@ USECODE_INTRINSIC(recall_virtue_stone)
 	if (obj->get_info().get_shape_class() == Shape_info::virtue_stone)
 		{
 		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
-		gwin->get_gump_man()->close_all_gumps();
+		gumpman->close_all_gumps();
 					// Pick it up if necessary.
 		if (!obj->get_owner())
 			{		// Go through whole party.
@@ -1988,14 +1988,14 @@ USECODE_INTRINSIC(close_gumps)
 {
 	// Guessing+++++ close all gumps.
 	if (!gwin->is_dragging())	// NOT while dragging stuff.
-		gwin->get_gump_man()->close_all_gumps();
+		gumpman->close_all_gumps();
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(in_gump_mode)
 {
 								// No persistent
-	return Usecode_value(gwin->get_gump_man()->showing_gumps(true));
+	return Usecode_value(gumpman->showing_gumps(true));
 }
 
 USECODE_INTRINSIC(is_not_blocked)

@@ -66,7 +66,7 @@ void Heart_button::activate
 	(
 	)
 {
-	gwin->get_gump_man()->add_gump(parent->get_container(), game->get_shape("gumps/statsdisplay"));
+	gumpman->add_gump(parent->get_container(), game->get_shape("gumps/statsdisplay"));
 }
 
 /*
@@ -87,7 +87,7 @@ void Disk_button::activate
 	)
 {
 	Gamemenu_gump *menu = new Gamemenu_gump();
-	gwin->get_gump_man()->Do_Modal_gump(menu, Mouse::hand);
+	gumpman->Do_Modal_gump(menu, Mouse::hand);
 	delete menu;
 }
 
@@ -211,5 +211,5 @@ void Cstats_button::activate
 	)
 {
 	int cnt = ucmachine->get_party_count();
-	gwin->get_gump_man()->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
+	gumpman->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }
