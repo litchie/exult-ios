@@ -3861,7 +3861,7 @@ Manual
 
 	<widget>
 	  <class>GtkHBox</class>
-	  <name>hbox17</name>
+	  <name>sched_loc0</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
@@ -3963,7 +3963,7 @@ Manual
 
 	<widget>
 	  <class>GtkHBox</class>
-	  <name>hbox18</name>
+	  <name>sched_loc1</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
@@ -4065,7 +4065,7 @@ Manual
 
 	<widget>
 	  <class>GtkHBox</class>
-	  <name>hbox19</name>
+	  <name>sched_loc2</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
@@ -4167,7 +4167,7 @@ Manual
 
 	<widget>
 	  <class>GtkHBox</class>
-	  <name>hbox20</name>
+	  <name>sched_loc3</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
@@ -4269,7 +4269,7 @@ Manual
 
 	<widget>
 	  <class>GtkHBox</class>
-	  <name>hbox21</name>
+	  <name>sched_loc4</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
@@ -4371,7 +4371,7 @@ Manual
 
 	<widget>
 	  <class>GtkHBox</class>
-	  <name>hbox22</name>
+	  <name>sched_loc5</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
@@ -4473,7 +4473,7 @@ Manual
 
 	<widget>
 	  <class>GtkHBox</class>
-	  <name>hbox23</name>
+	  <name>sched_loc6</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
@@ -4575,7 +4575,7 @@ Manual
 
 	<widget>
 	  <class>GtkHBox</class>
-	  <name>hbox24</name>
+	  <name>sched_loc7</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
 	  <child>
