@@ -49,6 +49,7 @@ class Material
 	string texture_filename;	// For a texture, if non-empty.
 	unsigned char r, g, b;		// Color components, 0-255.
 public:
+	friend class Model3d;
 	Material() : r(0), g(0), b(0)  {  }
 	void set_name(const char *nm)
 		{ name = nm; }
@@ -83,15 +84,22 @@ public:
 	Object3d() : material(-1)
 		{  }
 	~Object3d();
-	void init_vertices(int cnt);	// Init. to given size.
+	void init_vertices(int cnt)	// Init. to given size.
+		{ vertices.resize(cnt); }
 	Vector3& get_vertex(int i)
 		{ return vertices[i]; }
-	void init_tex_vertices(int cnt);
+	void init_tex_vertices(int cnt)
+		{ tex_vertices.resize(cnt); }
 	Vector2& get_tex_vertex(int i)
 		{ return tex_vertices[i]; }
-	void init_faces(int cnt);
+	void init_faces(int cnt)
+		{ faces.resize(cnt); }
 	Face& get_face(int i)
 		{ return faces[i]; }
+	const char *get_name()
+		{ return name.c_str(); }
+	bool is_name_set() const
+		{ return !name.empty(); }
 	void set_name(const char *nm)
 		{ name = nm; }
 	void set_material(int mid)

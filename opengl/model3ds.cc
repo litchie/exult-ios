@@ -264,11 +264,14 @@ static int Read_material_chunk
 			}
 		case MATDIFFUSE:	// Color.
 			{
-			assert(len - read == 3);
+			assert(len - read >= 3);
 			unsigned char c[3];
 			in.read(c, 3);
 			read += 3;
 			mat->set_color(&c[0]);
+			// ++++++There are more bytes.  For now:
+			in.seekg(len - read, ios::cur);	//+++++++
+			read = len;	//++++++skip to end.
 			break;
 			}
 		case MATMAP:		// Parent of texture info.
@@ -312,9 +315,12 @@ static int Read_object_chunk
 	)
 	{
 	int top_read = CHUNK_HEADER_LENGTH;	// Already read header.
-	string name;			// Read name.
-	top_read += Get_string(in, name);
-	obj->set_name(name.c_str());
+	if (!obj->is_name_set())
+		{			// First time.
+		string name;		// Read name.
+		top_read += Get_string(in, name);
+		obj->set_name(name.c_str());
+		}
 	while (top_read < top_len)	// Go through subchunks.
 		{
 		int id, len;
@@ -403,7 +409,7 @@ static int Read_faces_chunk
 		Read2(in);		// Ignore visibility flag.
 		top_read += 4*2;	// Read 4 shorts.
 		}
-	assert (top_read == top_len);
+//	assert (top_read == top_len);
 	return top_read - CHUNK_HEADER_LENGTH;
 	}
 
@@ -421,10 +427,13 @@ static int Read_object_material_chunk
 	Object3d *obj			// New object to set up.
 	)
 	{
+	int top_read = CHUNK_HEADER_LENGTH;
 	string name;			// Read material name.
-	int read = Get_string(in, name);
+	top_read += Get_string(in, name);
 	obj->set_material(model->find_material(name.c_str()));
-	assert (read + CHUNK_HEADER_LENGTH == top_len);
-	return read;
+					// Skip the rest.
+	in.seekg(top_len - top_read, ios::cur);
+	top_read = top_len;
+	return top_read - CHUNK_HEADER_LENGTH;
 	}
 
