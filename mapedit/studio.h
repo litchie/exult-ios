@@ -59,6 +59,7 @@ private:
 	char			*default_game;
 	guint32			background_color;
 	static ExultStudio	*self;
+	bool			exiting;	// In destructor.
 	Shape_file_set		*files;		// All the shape files.
 	std::vector<GtkWindow*>	group_windows;	// All 'group' windows.
 	Shape_file_info		*curfile;	// Current browser file info.
@@ -123,8 +124,11 @@ public:
 		{ return browser; }
 	Shape_file_info *get_vgafile()	// 'shapes.vga'.
 		{ return vgafile; }
+	bool is_exiting() const
+		{ return exiting; }
 	Shape_group_file *get_cur_groups();
 	void set_browser(const char *name, Object_browser *obj);
+	bool has_focus();		// Any of our windows has focus?
 
 	void choose_game_path();
 	Object_browser  *create_browser(const char *fname);
