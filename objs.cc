@@ -151,7 +151,8 @@ int Game_object::modify_quantity
 					// Set appropriate shape.
 	int num_frames = gwin->get_shapes().get_num_frames(shapenum);
 	int new_frame = newquant - 1;
-	set_frame(new_frame < num_frames ? new_frame : num_frames - 1);
+	if (shapenum != 842)		// ++++Kludge:  reagants.
+		set_frame(new_frame < num_frames ? new_frame : num_frames - 1);
 	Shape_info& info = gwin->get_info(shapenum);
 	int objvol = info.get_volume();
 	Container_game_object *owner = get_owner();
