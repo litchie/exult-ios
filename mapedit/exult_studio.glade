@@ -10787,4 +10787,318 @@ Random
   </widget>
 </widget>
 
+<widget>
+  <class>GtkWindow</class>
+  <name>prefs_window</name>
+  <visible>False</visible>
+  <title>ExultStudio Preferences</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <name>vbox27</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkTable</class>
+      <name>table23</name>
+      <border_width>6</border_width>
+      <rows>3</rows>
+      <columns>2</columns>
+      <homogeneous>False</homogeneous>
+      <row_spacing>0</row_spacing>
+      <column_spacing>0</column_spacing>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame122</name>
+	<border_width>2</border_width>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+	<child>
+	  <left_attach>0</left_attach>
+	  <right_attach>1</right_attach>
+	  <top_attach>0</top_attach>
+	  <bottom_attach>1</bottom_attach>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <xexpand>True</xexpand>
+	  <yexpand>True</yexpand>
+	  <xshrink>False</xshrink>
+	  <yshrink>False</yshrink>
+	  <xfill>True</xfill>
+	  <yfill>True</yfill>
+	</child>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label74</name>
+	  <label>Image Editor Command:</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame123</name>
+	<border_width>2</border_width>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+	<child>
+	  <left_attach>0</left_attach>
+	  <right_attach>1</right_attach>
+	  <top_attach>1</top_attach>
+	  <bottom_attach>2</bottom_attach>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <xexpand>False</xexpand>
+	  <yexpand>True</yexpand>
+	  <xshrink>False</xshrink>
+	  <yshrink>False</yshrink>
+	  <xfill>True</xfill>
+	  <yfill>True</yfill>
+	</child>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label75</name>
+	  <label>Default Game Name:</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame125</name>
+	<border_width>2</border_width>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+	<child>
+	  <left_attach>1</left_attach>
+	  <right_attach>2</right_attach>
+	  <top_attach>1</top_attach>
+	  <bottom_attach>2</bottom_attach>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <xexpand>False</xexpand>
+	  <yexpand>False</yexpand>
+	  <xshrink>False</xshrink>
+	  <yshrink>False</yshrink>
+	  <xfill>True</xfill>
+	  <yfill>True</yfill>
+	</child>
+
+	<widget>
+	  <class>GtkEntry</class>
+	  <name>entry3</name>
+	  <can_focus>True</can_focus>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>0</text_max_length>
+	  <text>blackgate</text>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkAlignment</class>
+	<name>alignment1</name>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xscale>1</xscale>
+	<yscale>1</yscale>
+	<child>
+	  <left_attach>1</left_attach>
+	  <right_attach>2</right_attach>
+	  <top_attach>0</top_attach>
+	  <bottom_attach>1</bottom_attach>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <xexpand>False</xexpand>
+	  <yexpand>False</yexpand>
+	  <xshrink>False</xshrink>
+	  <yshrink>False</yshrink>
+	  <xfill>True</xfill>
+	  <yfill>False</yfill>
+	</child>
+
+	<widget>
+	  <class>GtkFrame</class>
+	  <name>frame124</name>
+	  <border_width>2</border_width>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	  <widget>
+	    <class>GtkEntry</class>
+	    <name>entry2</name>
+	    <can_focus>True</can_focus>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>0</text_max_length>
+	    <text>gimp-remote -n</text>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame126</name>
+	<border_width>2</border_width>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+	<child>
+	  <left_attach>0</left_attach>
+	  <right_attach>1</right_attach>
+	  <top_attach>2</top_attach>
+	  <bottom_attach>3</bottom_attach>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <xexpand>False</xexpand>
+	  <yexpand>True</yexpand>
+	  <xshrink>False</xshrink>
+	  <yshrink>False</yshrink>
+	  <xfill>True</xfill>
+	  <yfill>True</yfill>
+	</child>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label76</name>
+	  <label>Shape List Background:</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame127</name>
+	<border_width>2</border_width>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+	<child>
+	  <left_attach>1</left_attach>
+	  <right_attach>2</right_attach>
+	  <top_attach>2</top_attach>
+	  <bottom_attach>3</bottom_attach>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <xexpand>False</xexpand>
+	  <yexpand>False</yexpand>
+	  <xshrink>False</xshrink>
+	  <yshrink>False</yshrink>
+	  <xfill>True</xfill>
+	  <yfill>True</yfill>
+	</child>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox29</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>4</spacing>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>frame128</name>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_OUT</shadow_type>
+	    <child>
+	      <padding>2</padding>
+	      <expand>True</expand>
+	      <fill>False</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkDrawingArea</class>
+	      <name>prefs_background</name>
+	      <width>39</width>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>prefs_background_choose</name>
+	    <can_focus>True</can_focus>
+	    <label>...</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+	  </widget>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHButtonBox</class>
+      <name>hbuttonbox9</name>
+      <layout_style>GTK_BUTTONBOX_SPREAD</layout_style>
+      <spacing>30</spacing>
+      <child_min_width>85</child_min_width>
+      <child_min_height>27</child_min_height>
+      <child_ipad_x>7</child_ipad_x>
+      <child_ipad_y>0</child_ipad_y>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>prefs_okay</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<label>Okay</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>prefs_apply</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<label>Apply</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>prefs_cancel</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<label>Cancel</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+      </widget>
+    </widget>
+  </widget>
+</widget>
+
 </GTK-Interface>
