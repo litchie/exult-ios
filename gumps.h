@@ -42,6 +42,7 @@ class Slider_gump_button;
  *	Gump shape #'s used outside:
  */
 const int STATSDISPLAY = 47;
+const int SPELLBOOK = 43;		// The book itself.
 
 /*
  *	A gump widget, such as a button or text field:
@@ -51,11 +52,13 @@ class Gump_widget
 protected:
 	Gump_object *parent;		// Who this is in.
 	int shapenum;			// In "gumps.vga".
+	int framenum;			// Frame # (usually 0) when unpushed.
 	short x, y;			// Coords. relative to parent.
 public:
 	friend class Gump_object;
+	friend class Spellbook_gump;
 	Gump_widget(Gump_object *par, int shnum, int px, int py)
-		: parent(par), shapenum(shnum), x(px), y(py)
+		: parent(par), shapenum(shnum), framenum(0), x(px), y(py)
 		{  }
 					// Is a given point on the widget?
 	int on_widget(Game_window *gwin, int mx, int my);
@@ -132,7 +135,7 @@ public:
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.
-	void paint_button(Game_window *gwin, Gump_button *btn);
+	virtual void paint_button(Game_window *gwin, Gump_button *btn);
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 						int sx = -1, int sy = -1);

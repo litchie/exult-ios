@@ -1142,9 +1142,28 @@ Spellbook_object::Spellbook_object
 	unsigned int lft, 
 	unsigned char *c,		// Circle spell flags.
 	unsigned long f			// Flags (unknown).
-	) : Ireg_game_object(l, h, shapex, shapey, lft), flags(f)
+	) : Ireg_game_object(l, h, shapex, shapey, lft), flags(f), bookmark(-1)
 	{
 	memcpy(circles, c, sizeof(circles));
+	}
+
+/*
+ *	Add a spell.
+ *
+ *	Output:	0 if already have it, 1 if successful.
+ */
+
+int Spellbook_object::add_spell
+	(
+	int spell			// 0-71
+	)
+	{
+	int circle = spell/8;
+	int num = spell%8;		// # within circle.
+	if (circles[circle] & (1<<num))
+		return 0;		// Already have it.
+	circles[circle] |= (1<<num);
+	return 1;
 	}
 
 /*

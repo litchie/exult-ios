@@ -46,7 +46,6 @@ const int MUSICBTN = 29;
 const int SPEECHBTN = 30;
 const int SOUNDBTN = 31;
 const int BOOK = 32;
-const int SPELLBOOK = 43;
 const int DOVE = 46;
 const int SCROLL = 55;
 const int QUITBTN = 56;
@@ -585,6 +584,10 @@ void Gump_object::initialize
 	case YESNOBOX:
 		object_area = Rectangle(8, 8, 112, 24);
 					// No checkmark.
+		break;
+	case SPELLBOOK:
+		checkx = 8; checky = 66;
+		object_area = Rectangle(36, 46, 84, 40);	//++++++
 		break;
 	default:
 					// Character pictures:
