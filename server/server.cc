@@ -289,6 +289,22 @@ static void Handle_client_message
 							ptr - data);
 		break;
 		}
+	case Exult_server::terrain_editing_mode:
+		{
+		int onoff = Read2(ptr);
+		if ((onoff != 0) != (gwin->skip_lift == 0))
+			{		// skip_lift==0 <==> terrain-editing.
+			gwin->skip_lift = onoff ? 0 : 16;
+			gwin->set_all_dirty();
+			}
+		break;
+		}
+	case Exult_server::set_edit_shape:
+		{
+		int shnum = (short) Read2(ptr);
+		int frnum = (short) Read2(ptr);
+		cheat.set_edit_shape(shnum, frnum);
+		}
 		}
 	}
 

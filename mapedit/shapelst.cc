@@ -36,6 +36,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ibuf8.h"
 #include "Flex.h"
 #include "u7drag.h"
+#include "studio.h"
+#include "utils.h"
 
 using std::cout;
 using std::endl;
@@ -61,6 +63,28 @@ inline void Shape_chooser::show
 	}
 
 /*
+ *	Send selected shape/frame to Exult.
+ */
+
+void Shape_chooser::tell_server_shape
+	(
+	)
+	{
+	int shnum = -1, frnum = 0;
+	if (selected >= 0)
+		{
+		shnum = info[selected].shapenum;
+		frnum = info[selected].framenum;
+		}
+	unsigned char buf[Exult_server::maxlength];
+	unsigned char *ptr = &buf[0];
+	Write2(ptr, shnum);
+	Write2(ptr, frnum);
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->send_to_server(Exult_server::set_edit_shape, buf, ptr - buf);
+	}
+
+/*
  *	Select an entry.  This should be called after rendering
  *	the shape.
  */
@@ -71,6 +95,7 @@ void Shape_chooser::select
 	)
 	{
 	selected = new_sel;
+	tell_server_shape();		// Tell Exult.
 	int shapenum = info[selected].shapenum;
 					// Update spin-button value, range.
 	gtk_widget_set_sensitive(fspin, true);

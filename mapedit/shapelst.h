@@ -70,6 +70,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void show(int x, int y, int w, int h);
 	void show()
 		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
+	void tell_server_shape();	// Tell Exult what shape is selected.
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
 	void scroll(int newindex);	// Scroll.

@@ -58,6 +58,7 @@ Cheat::Cheat() {
 	map_editor = false;
 	tile_grid = false;
 	edit_lift = 0;
+	edit_shape = edit_frame = 0;
 	infravision = false;
 	pickpocket = false;
 	grab_actor = true;
@@ -185,6 +186,11 @@ void Cheat::set_edit_lift(int lift) {
 	if (!enabled) return;
 	edit_lift = lift;
 	gwin->set_all_dirty();
+}
+
+void Cheat::set_edit_shape(int sh, int fr) {
+	edit_shape = sh;
+	edit_frame = fr;
 }
 
 void Cheat::toggle_infravision (void) {
@@ -316,7 +322,7 @@ void Cheat::dec_skip_lift (void) const {
 		gwin->skip_lift = 11;
 	else
 		gwin->skip_lift--;
-	if (gwin->skip_lift <= 0)
+	if (gwin->skip_lift < 0)	// 0 means 'terrain-editing'.
 		gwin->skip_lift = 16;
 #ifdef DEBUG
 	cout << "Skip_lift = " << gwin->skip_lift << endl;

@@ -179,7 +179,6 @@ Game_window::Game_window
 	) : 
 	    win(0), map(new Game_map()),
 	    usecode(0), combat(false), armageddon(false),
-	    terrain_editing(false),
             tqueue(new Time_queue()), clock(tqueue), time_stopped(0),
 	    std_delay(c_std_delay),
 	    npc_prox(new Npc_proximity_handler(this)),
@@ -1855,7 +1854,14 @@ void Game_window::show_items
 	else if (obj)
 					// Show name.
 		add_text(obj->get_name().c_str(), obj);
-
+	else if (cheat.in_map_editor())	// Show flat.
+		{
+		ShapeID id = get_flat(x, y);
+		char str[12];
+		snprintf(str, 12, "Flat %d:%d", id.get_shapenum(), 
+						id.get_framenum());
+		add_text(str, x, y);
+		}
 	// If it's an actor and we want to grab the actor, grab it.
 	if (obj && cheat.grabbing_actor() && (obj->get_npc_num() || obj==main_actor))
 		cheat.set_grabbed_actor (static_cast<Actor *>(obj));
@@ -1900,13 +1906,7 @@ void Game_window::show_items
 		}
 	else				// Obj==0
 		{
-		int tx = (get_scrolltx() + x/c_tilesize)%c_num_tiles;
-		int ty = (get_scrollty() + y/c_tilesize)%c_num_tiles;
-		int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
-		tx = tx%c_tiles_per_chunk;
-		ty = ty%c_tiles_per_chunk;
-		Map_chunk *chunk = get_chunk(cx, cy);
-		ShapeID id = chunk->get_flat(tx, ty);
+		ShapeID id = get_flat(x, y);
 		shnum = id.get_shapenum();
 		cout << "Clicked on flat shape " << 
 			shnum << ':' << id.get_framenum() << endl;
@@ -1938,6 +1938,25 @@ void Game_window::show_items
 	if (info.is_solid())
 		cout << "Object is SOLID" << endl;
 #endif
+	}
+
+/*
+ *	Get the 'flat' that a screen point is in.
+ */
+
+ShapeID Game_window::get_flat
+	(
+	int x, int y			// Window point.
+	)
+	{
+	int tx = (get_scrolltx() + x/c_tilesize)%c_num_tiles;
+	int ty = (get_scrollty() + y/c_tilesize)%c_num_tiles;
+	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
+	tx = tx%c_tiles_per_chunk;
+	ty = ty%c_tiles_per_chunk;
+	Map_chunk *chunk = get_chunk(cx, cy);
+	ShapeID id = chunk->get_flat(tx, ty);
+	return id;
 	}
 
 /*
