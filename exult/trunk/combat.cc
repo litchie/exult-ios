@@ -59,11 +59,16 @@ void Combat_schedule::find_opponents
 	Game_window *gwin = Game_window::get_game_window();
 	if (npc->is_monster())		// Monster?  Return party.
 		{
-		vec.append(gwin->get_main_actor());
+		if (gwin->get_main_actor())
+			vec.append(gwin->get_main_actor());
 		Usecode_machine *uc = gwin->get_usecode();
 		int cnt = uc->get_party_count();
 		for (int i = 0; i < cnt; i++)
-			vec.append(gwin->get_npc(uc->get_party_member(i)));
+			{
+			Actor *npc = gwin->get_npc(uc->get_party_member(i));
+			if (npc)
+				vec.append(npc);
+			}
 		return;
 		}
 					// Get top-left chunk.
@@ -94,7 +99,7 @@ Actor *Combat_schedule::find_foe
 	int mode			// Mode to use.
 	)
 	{
-	Vector vec(20);
+	Vector vec(0, 20);
 	find_opponents(vec);		// Find all nearby.
 	int cnt = vec.get_cnt();
 	Actor *new_opponent = 0;
