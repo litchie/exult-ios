@@ -30,11 +30,22 @@ Included in the tools are: expack (archiver), ucxt (decompiler),
 ucc (compiler), splitshp (frame splitter), shp2pcx (shape converter),
 ipack (image archiver), textpack (text archiver)
 
+%package studio
+Summary: An editor for the Exult engine.
+Group: Amusements/Games
+
+%description studio
+Exult Studio: an editor for the Exult engine.
+
+# Also included is a plugin for the Gimp for the .shp image format.
+# (not yet...)
+
 %changelog
 
 * Tue Jul 22 2003  Willem Jan Palensitjn <wjpalenstijn@users.sourceforge.net>
 
 - updated for 1.1Beta1
+- added a 'studio' package
 
 * Wed Nov 06 2002  Willem Jan Palensitjn <wjpalenstijn@users.sourceforge.net>
 
@@ -90,10 +101,7 @@ if [ ! -f configure ]; then
   ./autogen.sh
 fi
 
-%configure \
-        --disable-gimp-plugin \
-        --disable-exult-studio-support \
-        --disable-exult-studio
+%configure --disable-gimp-plugin --enable-exult-studio --enable-exult-studio-support
 
 if [ "$SMP" != "" ]; then
   (make "MAKE=make -k -j $SMP"; exit 0)
@@ -142,3 +150,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/exult/u7siintrinsics.data
 %{_datadir}/exult/u7misc.data
 %{_datadir}/exult/u7opcodes.data
+
+%files studio
+%defattr(-, root, root)
+%{_bindir}/exult_studio
+%{_datadir}/exult/exult_studio.glade
+%{_datadir}/exult/estudio/new/combos.flx
+%{_datadir}/exult/estudio/new/faces.vga
+%{_datadir}/exult/estudio/new/gumps.vga
+%{_datadir}/exult/estudio/new/palettes.flx
+%{_datadir}/exult/estudio/new/shapes.vga
+%{_datadir}/exult/estudio/new/sprites.vga
+%{_datadir}/exult/estudio/new/text.flx
