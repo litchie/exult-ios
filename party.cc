@@ -290,7 +290,8 @@ void Party_manager::get_followers
 		{
 		Actor *npc = gwin->get_npc(party[i]);
 		if (!npc || npc->get_flag(Obj_flags::asleep) ||
-		    npc->get_flag(Obj_flags::paralyzed))
+		    npc->get_flag(Obj_flags::paralyzed) ||
+		    npc->is_dead())
 			continue;	// Not available.
 		if (npc->in_queue())	// Already walking?
 			continue;	// For now, let him continue...
