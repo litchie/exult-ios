@@ -150,6 +150,7 @@ Actor::Actor
 	set_property((int) Actor::intelligence, intel_val & 0x1F);
 	if ((intel_val >> 5) & 1) set_siflag (Actor::read);
 	if ((intel_val >> 6) & 1) set_siflag (Actor::tournament);
+//++++++++++Got to set 'killable' flag here.
 	if ((intel_val >> 7) & 1) set_siflag (Actor::polymorph);
 
 
@@ -392,6 +393,7 @@ void Actor::write
 	iout = get_property(Actor::intelligence);
 	if (get_siflag (Actor::read)) iout |= 1 << 5;
 	if (get_siflag (Actor::tournament)) iout |= 1 << 6;
+//++++++++++Got to set 'killable' flag here.
 	if (get_siflag (Actor::polymorph)) iout |= 1 << 7;
 	nfile.put(iout);
 

@@ -1463,7 +1463,22 @@ void Actor::reduce_health
 		if (rand()%2)
 			gwin->flash_palette_red();
 	if (Actor::is_dying())
-		die();
+		{
+		if (Game::get_game_type() == SERPENT_ISLE && usecode >= 0)
+			{
+			bool was_killable = get_flag(Obj_flags::si_killable);
+			gwin->get_usecode()->call_usecode(usecode, this,
+							Usecode_machine::died);
+					// No longer killable.  Time to die.
+			if (was_killable && !get_flag(Obj_flags::si_killable))
+				die();
+					// Else restore health.
+			else if (get_property((int) health) < 1)
+				set_property((int) health, 1);
+			}
+		else			// Black-gate, or monsters.
+			die();
+		}
 	else if (val < 0 && !get_flag(Obj_flags::asleep))
 		set_flag(Obj_flags::asleep);
 	}
@@ -2172,15 +2187,10 @@ void Actor::die
 	int shnum = get_shapenum();
 					// Special case:  Hook, Dracothraxus.
 	if (((shnum == 0x1fa || (shnum == 0x1f8 && Is_draco(this))) && 
-	    Game::get_game_type() == BLACK_GATE) ||
-	    (Game::get_game_type() == SERPENT_ISLE && usecode >= 0))
+	    Game::get_game_type() == BLACK_GATE))
 		{			// Exec. usecode before dying.
-		if (Game::get_game_type() == BLACK_GATE)
-			gwin->get_usecode()->call_usecode(shnum, this, 
+		gwin->get_usecode()->call_usecode(shnum, this, 
 					Usecode_machine::internal_exec);
-		else
-			gwin->get_usecode()->call_usecode(usecode, this,
-					Usecode_machine::died);
 					// Restore mode.
 		gwin->set_mode(Game_window::normal);
 		if (get_cx() == 255)	// Invalid now?
