@@ -18,7 +18,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 1.2. Is Exult free ?
 1.3. Does Origin support Exult?
 1.4. Will Exult support other Ultimas?
-1.5. What is the rumored then?
+1.5. What is the rumored Pentagram then?
 1.6. Will there be a multiplayer Exult?
 1.7. Where do I find Exult?
 1.8. What is a snapshot? Are these screenshots or what?
@@ -79,7 +79,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 0. Changes to the FAQ
 0.1. - 07 January 2002
-* 1.5. What is the rumored then? some information on the U8 shapes/map viewer.
+* 1.5. What is the rumored Pentagram then? some information on the U8 shapes/map viewer.
 * 1.7. Where do I find Exult? added link to AmigaOS/MorphOS port.
 * 1.11. On what platform does Exult run? updated with AmigaOS/MorphOS port.
 * 2.2. Does Exult work on all versions of the game? Spanish SI version.
@@ -173,8 +173,8 @@ On the other hand former Origin employees contacted the team and congratulated t
 Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any other Ultima nor do members of the team plan to develop something similar. The reasons for this are that no other Ultima is similar to Ultima 7 in the internal workings and also the team used to be quite sick of reverse engineering a game already.
 
 
-1.5. What is the rumored then?
-is a pet project by Willem. It is a basic shapes and map browser for now and Willem is also investing time to disassemble the Usecode of Ultima 8. It isn't meant to be something similar to Exult. It is rather a clever plan by Willem to stir up interest in other coders to carry his basic work further. Along with Willem some other members of the Exult team are putting some effort into the map viewer. Any developer is welcome to take a look and contact Willem.
+1.5. What is the rumored Pentagram then?
+Pentagram is a pet project by Willem. It is a basic shapes and map browser for now and Willem is also investing time to disassemble the Usecode of Ultima 8. It isn't meant to be something similar to Exult. It is rather a clever plan by Willem to stir up interest in other coders to carry his basic work further. Along with Willem some other members of the Exult team are putting some effort into the map viewer. Any developer is welcome to take a look and contact Willem.
 
 
 1.6. Will there be a multiplayer Exult?
@@ -322,8 +322,8 @@ To get an Ultima 7 that looks and behaves as close to the original as possible t
 
 
 3.10. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
-Work has begun on "" which is aimed to be an editor for all kinds of files that are used by Ultima 7. As of now there is already a Gimp plug-in to edit shapes.
-For much more information "" see 4. Exult Studio.
+Work has begun on "Exult Studio" which is aimed to be an editor for all kinds of files that are used by Ultima 7. As of now there is already a Gimp plug-in to edit shapes.
+For much more information "Exult Studio" see 4. Exult Studio.
 
 Jeff:
 As for the future, my main plan is to add editing capabilities, with the long-range goal of writing an original RPG.
@@ -334,7 +334,7 @@ As for the future, my main plan is to add editing capabilities, with the long-ra
 
 4. Exult Studio
 4.1. What is it?
-is a map-editor for Exult, allowing you to modify the map of a game and, eventually, to create a completely new landscape for a new game.
+Exult Studio is a map-editor for Exult, allowing you to modify the map of a game and, eventually, to create a completely new landscape for a new game.
 
 
 4.2. Who came up with the cool name?
@@ -348,24 +348,24 @@ Currently, you need to be running Exult on X (Linux, UNIX, etc.), with Exult set
 4.4. When will it be ported to other platforms?
 That depends on when someone volunteers to do the work :-) There are three issues:
 * GTK has to be ported to the platform. I think this is already true for Win32.
-* uses sockets to communicate with Exult. This also shouldn't be a problem for Win32.
+* Exult Studio uses sockets to communicate with Exult. This also shouldn't be a problem for Win32.
 * X drag-n-drop is used to put new objects on the landscape. The 'drop' part of this will have to be rewritten for Win32 Exult, OR, drag-n-drop could be an enhancement to SDL someday.
 * As an alternative to dragging objects, you can now select a shape, then insert it into the game window by left-clicking while holding the Shift key down.
 
 
 
 4.5. How do you run it?
-You can run all by itself, but it isn't useful that way, as it uses Exult as a server. What you really want to do is:
+You can run Exult Studio all by itself, but it isn't useful that way, as it uses Exult as a server. What you really want to do is:
 * Put 'exult_studio.glade' in the Exult 'data' directory.
 * Be sure 'exult_studio' is in your path.
 * Run Exult.
 * Press 'alt-ctrl-m' to go into 'map-editor' mode. If all is set up correctly, exult_studio will start up, and will have a list of files on the left side of its window.
 
 Starting up one or the other separately will reconnect them:
-* If Exult isn't running, start it up. Then, in , use the 'File' menu to choose the static directory (for the game you're playing).
-* If isn't running start it up with: exult_studio -x (path to dir containing exult_studio.glade) -d (path to game directory)
+* If Exult isn't running, start it up. Then, in Exult Studio, use the 'File' menu to choose the static directory (for the game you're playing).
+* If Exult Studio isn't running start it up with: exult_studio -x (path to dir containing exult_studio.glade) -d (path to game directory)
 
-You can also reconnect by selecting File-Connect in 's menus.
+You can also reconnect by selecting File-Connect in Exult Studio's menus.
 
 
 4.6. What can you do at the moment?
@@ -373,12 +373,12 @@ With the latest source you can
 * browse shapes in the main window.
 * drag a shape from the shape browser to Exult, and that object will be placed in the game.
 * edit an 'egg' by double-clicking on it. An edit box should appear.
-* create a new 'egg' using the pull-down menu in . In the Egg edit box, after you hit 'Apply', you'll be prompted to click in Exult where you want the egg to appear.
+* create a new 'egg' using the pull-down menu in Exult Studio. In the Egg edit box, after you hit 'Apply', you'll be prompted to click in Exult where you want the egg to appear.
 * If editing a 'monster' egg, you can set the monster by dragging the shape from the browser to the area that displays the monster.
 * edit an NPC by double-clicking on it, and also create a new NPC using the pull-down menu. Attributes, flags, and schedules can all be viewed and modified.
 * can edit other objects' position and quality by double-clicking on them.
 * browse the 'u7chunks' file, and drag them into Exult to change the terrain. In this browser, you can also create new terrains and modify their order.
-* edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit terrain" checkbox in . This is a special mode where dragging with the left mouse button 'paints' the currently-selected shape (generally one of the flat tiles near the top of the shapes browser). Note that a 'terrain' is generally used in multiple places in the map.
+* edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit terrain" checkbox in Exult Studio. This is a special mode where dragging with the left mouse button 'paints' the currently-selected shape (generally one of the flat tiles near the top of the shapes browser). Note that a 'terrain' is generally used in multiple places in the map.
 * save the map using ExultStudio's "File-Save map" pulldown. In order to avoid writing over files inadvertantly, the files that would normally go into the 'static' directory, will, instead, go into a 'patch' directory that you specify in your 'exult.cfg' file. Here's mine:
 
 <game>
@@ -407,8 +407,8 @@ The next things to be implemented are:
 
 
 4.8. What's with this client/server stuff?
-A map-editor needs to provide the ability to display the game, place objects on the map, and move objects around. That functionality is already in Exult, and it makes sense to reuse it. So we could have made Exult a part of . However, Exult is already a huge program, and is getting unwieldy to work on.
-With this architecture, can have all the messy code for displaying/editing dialog boxes, while Exult only needs a little bit of work to handle requests.
+A map-editor needs to provide the ability to display the game, place objects on the map, and move objects around. That functionality is already in Exult, and it makes sense to reuse it. So we could have made Exult a part of Exult Studio. However, Exult is already a huge program, and is getting unwieldy to work on.
+With this architecture, Exult Studio can have all the messy code for displaying/editing dialog boxes, while Exult only needs a little bit of work to handle requests.
 Also, I (Jeff) wanted to get a little experience programming with sockets:-)
 
 

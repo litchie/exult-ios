@@ -239,6 +239,13 @@
 	<xsl:text>Exult</xsl:text>
 </xsl:template>
 
+<xsl:template match="Studio">
+	<xsl:text>Exult Studio</xsl:text>
+</xsl:template>
+
+<xsl:template match="Pentagram">
+	<xsl:text>Pentagram</xsl:text>
+</xsl:template>
 
 <!--=======================-->
 <!-- Key Command Templates -->
