@@ -868,16 +868,19 @@ void Sleep_schedule::now_what
 	(
 	)
 	{
+	if (!bed && state == 0)		// Always find bed.
+		{			// Find closest EW or NS bed.
+		static int bedshapes[2] = {696, 1011};
+		bed = npc->find_closest(bedshapes, 2);
+		}
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) == Actor::sleep_frame)
 		return;			// Already sleeping.
 	Game_window *gwin = Game_window::get_game_window();
 	switch (state)
 		{
-	case 0:				// Find bed.
-		{			// Find closest EW or NS bed.
-		static int bedshapes[2] = {696, 1011};
-		bed = npc->find_closest(bedshapes, 2);
+	case 0:				// Find path to bed.
+		{
 		if (!bed)
 			{		// Just lie down at current spot.
 			gwin->add_dirty(npc);

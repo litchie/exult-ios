@@ -962,6 +962,8 @@ USECODE_INTRINSIC(remove_npc)
 	Game_object *npc = get_item(parms[0]);
 	if (npc)
 		{
+					// Don't want him/her coming back!
+		npc->set_schedule_type(Schedule::wait);
 		gwin->add_dirty(npc);
 		npc->remove_this(1);	// Remove, but don't delete.
 		}
