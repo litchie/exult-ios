@@ -114,27 +114,37 @@ void read_token(FILE *fi)
 int main(int argc,char *argv[])
 {
 	int i,opsize=sizeof(opcode_table)/sizeof(opcode_desc),
-		funsize=sizeof(func_table)/sizeof(char*),
 		pushsize=sizeof(push_table)/sizeof(opcode_desc),
 		compsize=sizeof(compiler_table)/sizeof(char*);
+	const char **func_table = bg_intrinsic_table;
+	int funsize = bg_intrinsic_size;
+	int findex = 1;			// Index in argv of 1st filename.
 	indata=codesize=datasize=0;
 	printf("Wody's Usecode Compiler v0.009\nCopyright (c) 1999 Wody "
 		"Dragon (a.k.a. Wouter Dijkslag)\n");
 	if (argc<3)
 	{
-		printf("syntax: %s infile outfile\n", argv[0]);
+		printf("syntax: %s [-s] infile outfile\n", argv[0]);
 		exit(0);
 	}
+					// Serpent Isle?
+	if (strcmp(argv[1], "-s") == 0)
+		{
+		findex++;
+		func_table = si_intrinsic_table;
+		funsize = si_intrinsic_size;
+		}
+
  lindex=0;
  for (pass=0;pass<2;pass++)
  {
   printf("Pass %d\n",pass+1);
-  if ((fi=fopen(argv[1],"r"))==NULL)
+  if ((fi=fopen(argv[findex],"r"))==NULL)
   {
    printf("Can't open infile for reading\n");
    exit(0);
   }
-  if ((fo=fopen(argv[2],"wb"))==NULL)
+  if ((fo=fopen(argv[findex + 1],"wb"))==NULL)
   {
    printf("Can't open outfile for writing\n");
    exit(0);

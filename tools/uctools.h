@@ -118,6 +118,26 @@ static opcode_desc opcode_table[] =
 
 
 // Embedded function table
+
+/*
+ *	Tables of usecode intrinsics:
+ */
+#define	USECODE_INTRINSIC_PTR(NAME)	#NAME
+
+const char *bg_intrinsic_table[] =
+	{
+#include "bgintrinsics.h"
+	};
+const int bg_intrinsic_size = sizeof(bg_intrinsic_table)/sizeof(char*);
+const char *si_intrinsic_table[] = 
+	{
+#include "siintrinsics.h"
+	};
+const int si_intrinsic_size = sizeof(si_intrinsic_table)/sizeof(char*);
+
+
+
+#if 0
 const char* func_table[] = 
 {
 	"get_random",						// 0
@@ -272,5 +292,6 @@ const char* func_table[] =
 	NULL,							// 95
 	NULL							// 96
 };
+#endif
 
 #endif
