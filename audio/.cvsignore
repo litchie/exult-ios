@@ -3,3 +3,6 @@ Makefile
 *.o
 *~
 *.a
+.deps
+*.lo
+*.la

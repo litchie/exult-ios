@@ -74,21 +74,15 @@ fi
 
 if test "$WINDOWING_SYSTEM" = "-DXWIN"; then
 	echo "Smells like X11"
-	TOP_LEVEL_SUBDIRS="audio conf pathfinder files flic"
-	AUDIO_LIBRARY="-Laudio -laudio"
-	AUDIO_INCLUDES="-Iaudio"
 	EXE_TARGET="exult"
-	SYSLIBS="-L /usr/X11R6/lib -L /usr/local/lib -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -Lconf -lconf -lpathfinder -Lfiles -lu7file -Lflic -lflic"
+	SYSLIBS=""
 else
 	echo "Umm. Doesn't seem to be X11."
 	echo "Let's assume it's Windows as an alternative."
 	WINDOWING_SYSTEM="-DWIN32"
-	TOP_LEVEL_SUBDIRS="audio conf pathfinder files flic"
-	AUDIO_LIBRARY="-Laudio -laudio -lwinmm"
-	AUDIO_INCLUDES="-Iaudio"
 	EXE_TARGET="exult.exe"
 	disable_kmid="yes"
-	SYSLIBS="-Lconf -lconf -lpathfinder -Lfiles -lu7file -Lflic -lflic"
+	SYSLIBS="-lwinmm"
 fi
 
 dnl Just for record-keeping
@@ -186,8 +180,7 @@ test -z "$CXX" && AC_MSG_ERROR([no acceptable C++-compiler found in \$PATH])
 AC_PROG_CXX_WORKS
 AC_PROG_CXX_GNU
 
-AM_ENABLE_SHARED
-AM_DISABLE_STATIC
+AM_DISABLE_SHARED
 AM_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 AC_SUBST(SDL_INCLUDES)
@@ -199,11 +192,9 @@ AC_SUBST(KMID_INCLUDES)
 AC_SUBST(KMID_LIBS)
 AC_SUBST(PEDANTIC)
 AC_SUBST(HAVE_TIMIDITY_BIN)
-AC_SUBST(TOP_LEVEL_SUBDIRS)
-AC_SUBST(AUDIO_LIBRARY)
-AC_SUBST(AUDIO_INCLUDES)
 AC_SUBST(EXE_TARGET)
 AC_SUBST(SYSLIBS)
+AC_SUBST(CPPFLAGS)
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
