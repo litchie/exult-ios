@@ -318,7 +318,11 @@ public:
 	USECODE_FUNCTION_DECL(remove_item);
 	USECODE_FUNCTION_DECL(get_equipment_list);
 	USECODE_FUNCTION_DECL(advance_time);
-
+	USECODE_FUNCTION_DECL(direction_from);
+	USECODE_FUNCTION_DECL(get_npc_flag);
+	USECODE_FUNCTION_DECL(set_npc_flag);
+	USECODE_FUNCTION_DECL(clear_npc_flag);
+	USECODE_FUNCTION_DECL(get_party_list2);
 
 
 

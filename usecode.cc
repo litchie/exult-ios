@@ -1439,7 +1439,62 @@ USECODE_FUNCTION(get_equipment_list)
 USECODE_FUNCTION(advance_time)
 	// Incr. clock by (parm[0]*.04min.).
 	gwin->increment_clock(parms[0].get_int_value()/25);
-	return no_ret;
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(direction_from)
+	// ?Direction from parm[0] -> parm[1].
+	// Rets. 0-7.  Is 0 north?
+	// Same as 0x1a??
+	//+++++++++++++++++++++
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(get_npc_flag)
+	// Get npc flag(item, flag#).
+	Game_object *obj = get_item(parms[0].get_int_value());
+	Usecode_value u(obj ? obj->get_flag(parms[1].get_int_value())	: 0);
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(set_npc_flag)
+	// Set npc flag(item, flag#).
+	Game_object *obj = get_item(parms[0].get_int_value());
+	int flag = parms[1].get_int_value();
+	if (obj)
+		{
+		obj->set_flag(flag);
+		if (flag == Actor::dont_render)
+			{	// Show change in status.
+			gwin->paint();
+			gwin->show();
+			}
+		}
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(clear_npc_flag)
+	// Clear npc flag(item, flag#).
+	Game_object *obj = get_item(parms[0].get_int_value());
+	int flag = parms[1].get_int_value();
+	if (obj)
+		{
+		obj->clear_flag(flag);
+		if (flag == Actor::dont_render)
+			{	// Show change in status.
+			gwin->paint();
+			gwin->show();
+			}
+		}
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(get_party_list2)
+	// Return party.  Same as 0x23
+	// Probably returns a list of everyone with (or without) some flag
+	// List of live chars? Dead chars?
+	Usecode_value u(get_party());
+	USECODE_RETURN(u);
 }
 
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
@@ -1581,13 +1636,13 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x84
 	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x85
 	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x86
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x87
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x88
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x89
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8a
+	USECODE_FUNCTION_PTR(direction_from),	// 0x87
+	USECODE_FUNCTION_PTR(get_npc_flag),	// 0x88
+	USECODE_FUNCTION_PTR(set_npc_flag),	// 0x89
+	USECODE_FUNCTION_PTR(clear_npc_flag),	// 0x8a
 	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8b
 	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8c
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8d
+	USECODE_FUNCTION_PTR(get_party_list2),	// 0x8d
 	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8e
 	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8f
 	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x90
@@ -1704,8 +1759,8 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xff
 	};
 
-int	max_bundled_intrinsics=0x86;	// Index of the last intrinsic in this table
 
+int	max_bundled_intrinsics=0xff;	// Index of the last intrinsic in this table
 /*
  *	Call an intrinsic function.
  */
@@ -1728,61 +1783,20 @@ Usecode_value Usecode_machine::call_intrinsic
 		UsecodeIntrinsicFn func=intrinsic_table[intrinsic];
 		return ((*this).*func)(event,intrinsic,num_parms,parms);
 		}
+#if 0
+	// Switch is no longer required
 	else
 	switch (intrinsic)
 		{
-	case 0x87:			// ?Direction from parm[0] -> parm[1].
-					// Rets. 0-7.  Is 0 north?
-					// Same as 0x1a??
-		Unhandled(intrinsic, num_parms, parms);
-		//+++++++++++++++++++++
-		break;
-	case 0x88:			// Get npc flag(item, flag#).
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		return Usecode_value(obj ? 
-			obj->get_flag(parms[1].get_int_value())	: 0);
-		}
-	case 0x89:			// Set npc flag(item, flag#).
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		int flag = parms[1].get_int_value();
-		if (obj)
-			{
-			obj->set_flag(flag);
-			if (flag == Actor::dont_render)
-				{	// Show change in status.
-				gwin->paint();
-				gwin->show();
-				}
-			}
-		break;
-		}
-	case 0x8a:		// Clear npc flag(item, flag#).
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		int flag = parms[1].get_int_value();
-		if (obj)
-			{
-			obj->clear_flag(flag);
-			if (flag == Actor::dont_render)
-				{	// Show change in status.
-				gwin->paint();
-				gwin->show();
-				}
-			}
-		break;
-		}
 //	case 0x8c:			// Cycles palettes dark-light.
 //					//   ++++Takes 3 parms.(12 or 36, 
 //						always 1?, 0/1?).
-	case 0x8d:			// Return party.  Same as 0x23?
-		return get_party();
 	default:
 		Unhandled(intrinsic, num_parms, parms);
 		break;
 		}
 	Usecode_value no_ret;				// Dummy return.
+#endif
 	USECODE_RETURN(no_ret);
 	}
 
