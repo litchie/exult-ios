@@ -27,7 +27,7 @@
 
       
 #define PACKAGE "exult"
-#define VERSION "0.26"
+#define VERSION "0.35"
 
 /* Was debugging selected from configure? */
 #define DEBUG 1
