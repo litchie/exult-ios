@@ -1,5 +1,7 @@
-2001-01-21  Jeff Freedman  <jeff@amy.nerble.net>
+2001-01-22  Tristan Tarrant <nadir@users.sourceforge.net>
+	* txtscroll.cc: pressing shift during scroll makes it faster
 
+2001-01-21  Jeff Freedman  <jeff@amy.nerble.net>
 	* In SI, treat SETR as a RTS as well.  Fixes infinite loop when
 	trying to buy from armourer.
 
@@ -7,7 +9,6 @@
 	* cheat.cc, intrinsics.cc: fixed SI map. (somewhat)
 	
 2001-01-20  Jeff Freedman  <jeff@amy.nerble.net>
-
 	* gamewin.cc: Bug fixes:  Theft, right-double-click, crash after
 	Alagnar is killed
 

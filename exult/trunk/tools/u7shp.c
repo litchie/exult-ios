@@ -1,7 +1,7 @@
 /* 
  * SHP loading file filter for The GIMP version 1.2
  *
- * (C) 2000 Tristan Tarrant
+ * (C) 2000-2001 Tristan Tarrant
  */
 
 #include <stdio.h>
