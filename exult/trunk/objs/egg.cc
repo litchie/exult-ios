@@ -1109,13 +1109,7 @@ void Mirror_object::activate(Usecode_machine *umachine, Game_object *obj, int mu
 
 	// Only if it changed update the shape
 	if (get_framenum()!=wanted_frame)
-	{
-		Game_window *gwin = Game_window::get_instance();
-
-		gwin->add_dirty(this);
-		set_frame(wanted_frame);
-		gwin->add_dirty(this);
-	}
+		change_frame(wanted_frame);
 }
 
 // Can it be activated?

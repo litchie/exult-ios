@@ -1,5 +1,6 @@
 2002-06-20  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
+	* objs.{cc,h},etc:  Added 'change_frame()' to set repaint area.
 	* gamewin.h (public): get_info(), etc. moved to ShapeID.
 	* gamewin.h:  Hit pixel, etc. replaced by an array.
 

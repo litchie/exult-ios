@@ -759,11 +759,9 @@ void Combat_schedule::now_what
 					opponent->get_footprint()))
 			{
 			int dir = npc->get_direction(opponent);
-			npc->add_dirty(gwin);
 			if (!strange)	// Avoid messing up slimes.
-				npc->set_frame(npc->get_dir_framenum(dir,
+				npc->change_frame(npc->get_dir_framenum(dir,
 							Actor::standing));
-			npc->add_dirty(gwin, 1);
 					// Glass sword?  Only 1 use.
 			if (weapon_shape == 604)
 				{
@@ -1017,12 +1015,9 @@ void Duel_schedule::now_what
 			&& practice_target->get_framenum() > 0 &&
 				practice_target->get_framenum()%3 == 0)
 			{
-			Game_window *gwin = Game_window::get_instance();
 			attacks = 0;	// Break off.
 					//++++++Should walk there.
-			gwin->add_dirty(practice_target);
-			practice_target->set_frame(0);
-			gwin->add_dirty(practice_target);
+			practice_target->change_frame(0);
 			}
 		}
 	else

@@ -349,6 +349,21 @@ int Actor::add_dirty
 	}
 
 /*
+ *	Change the frame and set to repaint areas.
+ */
+
+void Actor::change_frame
+	(
+	int frnum
+	)
+	{
+	Game_window *gwin = Game_window::get_instance();
+	add_dirty(gwin);		// Set to repaint old area.
+	set_frame(frnum);
+	add_dirty(gwin, 1);		// Set to repaint new.
+	}
+
+/*
  *	See if it's blocked when trying to move to a new tile.
  *
  *	Output: 1 if so, else 0.
@@ -2046,9 +2061,7 @@ void Actor::set_flag
 		if ((get_framenum()&0xf) != Actor::sleep_frame &&
 		    get_shapenum() > 0)	// (Might not be initialized yet.)
 			{		// Lie down.
-			gwin->add_dirty(this);
-			set_frame(Actor::sleep_frame + ((rand()%4)<<4));
-			gwin->add_dirty(this);
+			change_frame(Actor::sleep_frame + ((rand()%4)<<4));
 			set_action(0);	// Stop what you're doing.
 			}
 		}
@@ -2126,9 +2139,7 @@ void Actor::clear_flag
 				Actor::standing, 0);
 			if (pos.tx >= 0)
 				move(pos);
-			add_dirty(gwin);
-			set_frame(Actor::standing);
-			add_dirty(gwin);
+			change_frame(Actor::standing);
 			}
 		}
 	set_actor_shape();

@@ -719,10 +719,9 @@ void Talk_schedule::now_what
 			npc->start(250, 1000);
 			return;
 			}
-		gwin->add_dirty(npc);	// But first face Avatar.
-		npc->set_frame(npc->get_dir_framenum(npc->get_direction(
+					// But first face Avatar.
+		npc->change_frame(npc->get_dir_framenum(npc->get_direction(
 				gwin->get_main_actor()), Actor::standing));
-		gwin->add_dirty(npc);
 		phase++;
 		npc->start(250, 250);	// Wait another 1/4 sec.
 		break;
@@ -970,12 +969,8 @@ static void Stand_up
 	)
 	{
 	if ((npc->get_framenum()&0xf) != Actor::standing)
-		{			// Stand.
-		Game_window *gwin = Game_window::get_instance();
-		npc->add_dirty(gwin);
-		npc->set_frame(Actor::standing);
-		npc->add_dirty(gwin);
-		}
+					// Stand.
+		npc->change_frame(Actor::standing);
 	}
 
 /*
@@ -1017,17 +1012,15 @@ void Sleep_schedule::now_what
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) == Actor::sleep_frame)
 		return;			// Already sleeping.
-	Game_window *gwin = Game_window::get_instance();
+
 	switch (state)
 		{
 	case 0:				// Find path to bed.
 		{
 		if (!bed)
 			{		// Just lie down at current spot.
-			gwin->add_dirty(npc);
 			int dirbits = npc->get_framenum()&(0x30);
-			npc->set_frame(Actor::sleep_frame|dirbits);
-			gwin->add_dirty(npc);
+			npc->change_frame(Actor::sleep_frame|dirbits);
 			return;
 			}
 		state = 1;
@@ -1071,8 +1064,7 @@ void Sleep_schedule::now_what
 		if (bedframe >= spread0 && bedframe < spread1 && (bedframe%2))
 			{
 			bedframe++;
-			bed->set_frame(bedframe);
-			gwin->add_dirty(bed);
+			bed->change_frame(bedframe);
 			}
 		int bedspread = (bedframe >= spread0 && !(bedframe%2));
 					// Put NPC on top of bed.
@@ -1576,14 +1568,10 @@ void Lab_schedule::now_what
 	case use_cauldron:
 		{
 		int dir = npc->get_direction(cauldron);
-		gwin->add_dirty(cauldron);
 					// Set random frame (skip last frame).
-		cauldron->set_frame(rand()%(cauldron->get_num_frames() - 1));
-		gwin->add_dirty(cauldron);
-		npc->add_dirty(gwin);
-		npc->set_frame(
+		cauldron->change_frame(rand()%(cauldron->get_num_frames() -1));
+		npc->change_frame(
 			npc->get_dir_framenum(dir, Actor::to_sit_frame));
-		npc->add_dirty(gwin);
 		int r = rand()%5;
 		state = !r ? use_cauldron : (r <= 2 ? sit_down
 						: walk_to_table);
@@ -1602,20 +1590,17 @@ void Lab_schedule::now_what
 			break;
 					// Read a little while.
 		delay = 1000 + 1000*(rand()%5);
-		gwin->add_dirty(book);	// Open book.
+					// Open book.
 		int frnum = book->get_framenum();
-		book->set_frame(frnum - frnum%3);
-		gwin->add_dirty(book);
+		book->change_frame(frnum - frnum%3);
 		break;
 		}
 	case stand_up:
 		{
 		if (book && npc->distance(book) < 4)
 			{		// Close book.
-			gwin->add_dirty(book);
 			int frnum = book->get_framenum();
-			book->set_frame(frnum - frnum%3 + 1);
-			gwin->add_dirty(book);
+			book->change_frame(frnum - frnum%3 + 1);
 			}
 		state = start;
 		break;
@@ -1835,7 +1820,6 @@ int Waiter_schedule::find_serving_spot
 			return 1;
 			}
 		}
-	Game_window *gwin = Game_window::get_instance();
 	Tile_coord cpos = customer->get_tile();
 	
 	// Blame MSVC
@@ -1924,11 +1908,9 @@ void Waiter_schedule::now_what
 						"Specialty of the house!",
 						""
 						};
-				gwin->add_dirty(npc);
-				npc->set_frame(npc->get_dir_framenum(
+				npc->change_frame(npc->get_dir_framenum(
 					npc->get_direction(customer),
 							Actor::standing));
-				gwin->add_dirty(npc);
 				npc->remove(food);
 				food->set_invalid();
 				food->move(spot);
@@ -2160,10 +2142,8 @@ void Sew_schedule::now_what
 		sew_clothes_cnt++;
 		if (sew_clothes_cnt > 1 && sew_clothes_cnt < 5)
 			{
-			gwin->add_dirty(cloth);
 			int num_cloth_frames = ShapeID(851, 0).get_num_frames();
-			cloth->set_frame(rand()%num_cloth_frames);
-			gwin->add_dirty(cloth);
+			cloth->change_frame(rand()%num_cloth_frames);
 			}
 		else if (sew_clothes_cnt == 5)
 			{
@@ -2176,7 +2156,6 @@ void Sew_schedule::now_what
 			int nframes = ShapeID(shnum, 0).get_num_frames();
 			cloth->set_frame(rand()%nframes);
 			cloth->move(pos);
-			gwin->add_dirty(cloth);
 			state = get_clothes;
 			}
 		break;
@@ -2324,14 +2303,11 @@ void Bake_schedule::now_what()
 		}
 
 		int dir = npc->get_direction(flourbag);
-		npc->add_dirty(gwin);
-		npc->set_frame(npc->get_dir_framenum(dir,Actor::to_sit_frame));
-		npc->add_dirty(gwin);
+		npc->change_frame(
+			npc->get_dir_framenum(dir,Actor::to_sit_frame));
 
-		if (flourbag->get_framenum() != 0) {
-			flourbag->set_frame(0);
-			gwin->add_dirty(flourbag);
-		}
+		if (flourbag->get_framenum() != 0)
+			flourbag->change_frame(0);
 
 		delay = 750;
 		state = to_table;
@@ -2878,13 +2854,9 @@ void Forge_schedule::now_what
 		}
 
 		int dir = npc->get_direction(trough);
-		gwin->add_dirty(trough);
-		trough->set_frame(3);
-		gwin->add_dirty(trough);
-		npc->add_dirty(gwin);
-		npc->set_frame(
+		trough->change_frame(3);
+		npc->change_frame(
 			npc->get_dir_framenum(dir, Actor::to_sit_frame));
-		npc->add_dirty(gwin);
 
 		state = get_tongs2;
 		break;
@@ -2980,9 +2952,7 @@ void Forge_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 					// Remove any tools.
-
 	if (tongs) {
 		tongs->remove_this();
 		tongs = 0;
@@ -2995,18 +2965,12 @@ void Forge_schedule::ending
 	firepit = npc->find_closest(739);
 	bellows = npc->find_closest(431);
 
-	if (firepit && firepit->get_framenum() != 0) {
-		firepit->set_frame(0);
-		gwin->add_dirty(firepit);
-	}
-	if (bellows && bellows->get_framenum() != 0) {
-		bellows->set_frame(0);
-		gwin->add_dirty(bellows);
-	}
-	if (blank && blank->get_framenum() != 0) {
-		blank->set_frame(0);
-		gwin->add_dirty(blank);
-	}
+	if (firepit && firepit->get_framenum() != 0)
+		firepit->change_frame(0);
+	if (bellows && bellows->get_framenum() != 0)
+		bellows->change_frame(0);
+	if (blank && blank->get_framenum() != 0)
+		blank->change_frame(0);
 
 	}
 
