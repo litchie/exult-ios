@@ -627,9 +627,8 @@ void Shape_chooser::shape_dropped_here
 	if (ifile->get_u7drag_type() == file && group != 0)
 		{			// Add to group.
 		group->add(shape);
-		render();
-		adjust_scrollbar();
-		show();
+					// Update all windows for this group.
+		ExultStudio::get_instance()->update_group_windows(group);
 		}
 	}
 
@@ -805,7 +804,7 @@ Shape_chooser::Shape_chooser
 		Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
 		shapes_file(0), index0(0), framenum0(0),
 		info(0), info_cnt(0), num_per_row(0), 
-		selected(-1), sel_changed(0)
+		sel_changed(0)
 	{
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
