@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "objs.h"
+#include "objiter.h"
 #include "egg.h"
 #include "gamewin.h"
 #include "actors.h"
@@ -265,8 +266,9 @@ int Game_object::find_nearby
 		for (int cx = start_cx; cx <= end_cx; cx++)
 			{		// Go through objects.
 			Chunk_object_list *chunk = gwin->get_objects(cx, cy);
-			for (Game_object *obj = chunk->get_first(); obj;
-						obj = chunk->get_next(obj))
+			Object_iterator next(chunk);
+			Game_object *obj;
+			while ((obj = next.get_next()) != 0)
 				{	// Check shape.
 				if (shapenum >= 0)
 					{
@@ -366,8 +368,9 @@ Game_object *Game_object::find_blocking
 	Game_window *gwin = Game_window::get_game_window();
 	Chunk_object_list *chunk = gwin->get_objects(tile.tx/tiles_per_chunk,
 						     tile.ty/tiles_per_chunk);
-	for (Game_object *obj = chunk->get_first(); obj;
-						obj = chunk->get_next(obj))
+	Game_object *obj;
+	Object_iterator next(chunk);
+	while ((obj = next.get_next()) != 0)
 		{
 		int tx, ty, tz;		// Get object's coords.
 		obj->get_abs_tile(tx, ty, tz);
@@ -386,51 +389,6 @@ Game_object *Game_object::find_blocking
 		}
 	return (0);
 	}
-#if 0	/* ++++++Not used. */
-/*
- *	Find the highest object beneath this one's hot spot.  For now, we
- *	just look in the one chunk.
- *
- *	Output:	->object, or 0 if not found.
- */
-
-Game_object *Game_object::find_beneath
-	(
-	)
-	{
-	Game_object *found = 0;
-	int highest = -1;
-					// Get position to look at.
-	Tile_coord tile = get_abs_tile_coord();
-	Game_window *gwin = Game_window::get_game_window();
-	Chunk_object_list *chunk = gwin->get_objects(tile.tx/tiles_per_chunk,
-						     tile.ty/tiles_per_chunk);
-	for (Game_object *obj = chunk->get_first(); obj;
-						obj = chunk->get_next(obj))
-		{
-		if (obj == this)
-			continue;	// Obviously don't want this.
-		int tx, ty, tz;		// Get object's coords.
-		obj->get_abs_tile(tx, ty, tz);
-		if (tx < tile.tx || ty < tile.ty || tz > tile.tz)
-			continue;	// Out of range.
-		Shape_info& info = gwin->get_info(obj);
-		int ztiles = info.get_3d_height(); 
-					// Occupies desired tile?
-		if (tile.tx > tx - info.get_3d_xtiles() &&
-		    tile.ty > ty - info.get_3d_ytiles() &&
-					// Below given object?
-		    tile.tz >= tz + ztiles &&
-					// But higher than prev?
-		    tz + ztiles > highest)
-			{
-			found = obj;
-			highest = tz + ztiles;
-			}
-		}
-	return (found);
-	}
-#endif
 
 /*
  *	Is this a closed door?
@@ -1235,14 +1193,17 @@ Container_game_object::~Container_game_object
 	(
 	)
 	{
-	while (last_object)
+	if (objects)
 		{
-		Game_object *obj = last_object->get_next();
-		if (obj == last_object)
-			last_object = 0;// Last one.
-		else
-			last_object->set_next(obj->get_next());
-		delete obj;
+		Game_object *first = objects;
+		Game_object *obj;
+		do
+			{
+			obj = objects;
+			objects = obj->get_next();
+			delete obj;
+			}
+		while (obj != first);
 		}
 	}
 
@@ -1255,28 +1216,17 @@ void Container_game_object::remove
 	Game_object *obj
 	)
 	{
-	if (!last_object)
+	if (!objects)
 		return;
-	Game_object *prev = last_object;
-	do
+	volume_used -= obj->get_volume();
+	obj->set_owner(0);
+	if (obj == objects)		// Head of list?
 		{
-		if (prev->get_next() == obj)
-			{		// Found it.
-			volume_used -= obj->get_volume();
-			obj->set_owner(0);
-			if (prev == obj)
-				{	// Last one.
-				last_object = 0;
-				return;
-				}
-			prev->set_next(obj->get_next());
-			if (obj == last_object)
-				last_object = prev;
-			return;
-			}
-		prev = prev->get_next();
+		objects = obj->get_next();
+		if (obj == objects)	// Last in chain?
+			objects = 0;
 		}
-	while (prev != last_object);
+	obj->remove_from_chain();
 	}
 
 /*
@@ -1303,17 +1253,8 @@ int Container_game_object::add
 		volume_used += objvol;
 		}
 	obj->set_owner(this);		// Set us as the owner.
-	if (!last_object)		// First one.
-		{
-		last_object = obj;
-		obj->set_next(obj);
-		}
-	else
-		{
-		obj->set_next(last_object->get_next());
-		last_object->set_next(obj);
-		last_object = obj;
-		}
+					// Append to chain.
+	objects = obj->append_to_chain(objects);
 	return 1;
 	}
 
@@ -1355,12 +1296,12 @@ int Container_game_object::add_quantity
 	int maxvol = get_max_volume();	// 0 means anything (NPC's?).
 	int roomfor = maxvol ? (maxvol - volume_used)/objvol : 20000;
 	int todo = delta < roomfor ? delta : roomfor;
-	Game_object *obj = last_object;
-	if (last_object)
-		{
-		do			// First try existing items.
+	Game_object *obj;
+	if (objects)
+		{			// First try existing items.
+		Object_iterator next(objects);
+		while ((obj = next.get_next()) != 0)
 			{
-			obj = obj->get_next();
 			if (obj->get_shapenum() == shapenum &&
 		    	 (framenum == -359 || obj->get_framenum() == framenum))
 					// ++++++Quality???
@@ -1371,15 +1312,10 @@ int Container_game_object::add_quantity
 				delta -= used;
 				}
 			}
-		while (obj != last_object && todo);
-		obj = last_object;
-		do			// Now try recursively.
-			{
-			obj = obj->get_next();
+		next.reset();			// Now try recursively.
+		while ((obj = next.get_next()) != 0)
 			delta = obj->add_quantity(
 					delta, shapenum, qual, framenum, 1);
-			}
-		while (obj != last_object && delta);
 		}
 	if (!delta || dontcreate)	// All added?
 		return (delta);
@@ -1431,15 +1367,12 @@ int Container_game_object::create_quantity
 	if (!delta)			// All done?
 		return (0);
 					// Now try those below.
-	Game_object *obj = last_object;
-	if (!last_object)
+	Game_object *obj;
+	if (!objects)
 		return (delta);
-	do
-		{
-		obj = obj->get_next();
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
 		delta = obj->create_quantity(delta, shapenum, qual, framenum);
-		}
-	while (obj != last_object && delta);
 	return (delta);
 	}		
 
@@ -1458,22 +1391,22 @@ int Container_game_object::remove_quantity
 	int framenum			// Frame, or -359 for any.
 	)
 	{
-	if (!last_object)
+	if (!objects)
 		return delta;		// Empty.
-	Game_object *obj;
-	Game_object *next = last_object->get_next();
+	Game_object *obj = objects;
+	Game_object *next;
 	int done = 0;
 	while (!done && delta)
 		{
-		obj = next;		// Might be deleting obj.
-		next = obj->get_next();
-		done = (obj == last_object);
+		next = obj->get_next();	// Might be deleting obj.
 		if (obj->get_shapenum() == shapenum &&
 		    (framenum == -359 || obj->get_framenum() == framenum))
 					// ++++++Quality???
 			delta = -obj->modify_quantity(-delta);
 					// Do it recursively.
 		delta = obj->remove_quantity(delta, shapenum, qual, framenum);
+		obj = next;
+		done = (!obj || obj == objects);
 		}
 	return (delta);
 	}
@@ -1491,12 +1424,12 @@ Game_object *Container_game_object::remove_and_return
 	int framenum			// Frame, or -359 for any.
 	)
 	{
-	if (!last_object)
+	if (!objects)
 		return 0;		// Empty.
-	Game_object *obj = last_object;
-	do
+	Game_object *obj;
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
 		{
-		obj = obj->get_next();
 		if (obj->get_shapenum() == shapenum &&
 		    (framenum == -359 || obj->get_framenum() == framenum))
 					// ++++++Quality???
@@ -1510,7 +1443,6 @@ Game_object *Container_game_object::remove_and_return
 		if (found)
 			return (found);
 		}
-	while (obj != last_object);
 	return (0);
 	}
 
@@ -1602,12 +1534,10 @@ int Container_game_object::count_objects
 	)
 	{
 	int total = 0;
-	Game_object *obj = last_object;
-	if (!last_object)
-		return (0);
-	do
+	Game_object *obj;
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
 		{
-		obj = obj->get_next();
 		if ((shapenum == -359 || obj->get_shapenum() == shapenum) &&
 		    (framenum == -359 || obj->get_framenum() == framenum) &&
 		    (qual == -359 || obj->get_quality() == qual))
@@ -1618,7 +1548,6 @@ int Container_game_object::count_objects
 					// Count recursively.
 		total += obj->count_objects(shapenum, qual, framenum);
 		}
-	while (obj != last_object);
 	return (total);
 	}
 
@@ -1634,19 +1563,16 @@ int Container_game_object::get_objects
 	)
 	{
 	int vecsize = vec.get_cnt();
-	Game_object *obj = last_object;
-	if (!last_object)
-		return (0);
-	do
+	Game_object *obj;
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
 		{
-		obj = obj->get_next();
 		if ((shapenum == -359 || obj->get_shapenum() == shapenum) &&
 		    (framenum == -359 || obj->get_framenum() == framenum))
 			vec.append(obj);
 					// Search recursively.
 		obj->get_objects(vec, shapenum);
 		}
-	while (obj != last_object);
 	return (vec.get_cnt() - vecsize);
 	}
 
@@ -1665,7 +1591,8 @@ void Container_game_object::write_ireg
 	write_common_ireg(ptr);		// Fill in bytes 1-4.
 	ptr += 4;
 					// Guessing: +++++
-	unsigned short tword = last_object ? last_object->get_shapenum() : 0;
+	unsigned short tword = objects ? objects->get_prev()->get_shapenum() 
+									: 0;
 	Write2(ptr, tword);
 	*ptr++ = 0;			// Unknown.
 	*ptr++ = get_quality();
@@ -1688,15 +1615,12 @@ void Container_game_object::write_contents
 	ostream& out
 	)
 	{
-	if (last_object)		// Now write out what's inside.
+	if (objects)			// Now write out what's inside.
 		{
-		Game_object *obj = last_object;
-		do
-			{
-			obj = obj->get_next();
+		Game_object *obj;
+		Object_iterator next(objects);
+		while ((obj = next.get_next()) != 0)
 			obj->write_ireg(out);
-			}
-		while (obj != last_object);
 		out.put(0x01);		// A 01 terminates the list.
 		}
 	}
@@ -1894,9 +1818,9 @@ void Chunk_cache::setup
 	Chunk_object_list *chunk
 	)
 	{
-					// Set 'blocked' tiles.
-	for (Game_object *obj = chunk->get_first(); obj; 
-						obj = chunk->get_next(obj))
+	Game_object *obj;		// Set 'blocked' tiles.
+	Object_iterator next(chunk);
+	while ((obj = next.get_next()) != 0)
 		if (obj->is_egg())
 			update_egg(chunk, (Egg_object *) obj, 1);
 		else
@@ -2075,11 +1999,17 @@ Chunk_object_list::~Chunk_object_list
 	(
 	)
 	{
-	while (objects)			// Delete all (includes npc's).
+	if (objects)
 		{
-		Game_object *obj = objects;
-		objects = obj->next;
-		delete obj;
+		Game_object *first = objects;
+		Game_object *obj;
+		do
+			{
+			obj = objects;
+			objects = obj->get_next();
+			delete obj;
+			}
+		while (obj != first);
 		}
 	delete cache;
 	}
@@ -2097,30 +2027,11 @@ void Chunk_object_list::add
 	{
 	newobj->cx = get_cx();		// Set object's chunk.
 	newobj->cy = get_cy();
-	Game_object *obj;
-#if 1	/* ++++Let's try this. */
-	newobj->next = objects;		// Just put in front.
-	objects = newobj;
-#else	/* ++++Old way. */
-	Game_object *prev = 0;
-					// +++++Still necessary:???
-					// Just sort by lift.
-	for (obj = objects; obj && newobj->get_lift() > obj->get_lift(); 
-							obj = obj->next)
-		prev = obj;
-	if (!prev)			// Goes in front?
-		{
-		newobj->next = objects;
-		objects = newobj;
-		}
-	else
-		{
-		newobj->next = prev->next;
-		prev->next = newobj;
-		}
-#endif
-					// Figure dependencies.
-	for (obj = objects; obj; obj = obj->next)
+					// Just put in front.
+	objects = newobj->insert_in_chain(objects);
+	Game_object *obj;		// Figure dependencies.
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
 		{
 		int cmp = newobj->lt(*obj);
 		if (!cmp)		// Bigger than this object?
@@ -2188,18 +2099,17 @@ void Chunk_object_list::remove
 	if (info.is_light_source())	// Count light sources.
 		light_sources--;
 	Game_object *obj;
-	for (obj = objects; obj; obj = obj->next)
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
 		obj->remove_dependency(remove);
+
 	if (remove == objects)		// First one?
 		{
-		objects = remove->next;
-		return;
+		objects = remove->get_next();
+		if (objects == remove)	// Very last?
+			objects = 0;
 		}
-					// Find obj. in list.
-	for (obj = objects; obj && obj->next != remove; obj = obj->next)
-		;
-	if (obj)			// This is before it.
-		obj->next = remove->next;
+	remove->remove_from_chain();
 	}
 
 /*

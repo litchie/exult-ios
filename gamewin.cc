@@ -54,6 +54,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "paths.h"
 #include "Astar.h"
+#include "objiter.h"
+
 extern	Configuration *config;
 					// THE game window:
 Game_window *Game_window::game_window = 0;
@@ -664,8 +666,10 @@ int Game_window::write_ireg_objects
 			{
 			Chunk_object_list *chunk = get_objects(scx + cx,
 							       scy + cy);
-			for (Game_object *obj = chunk->get_first(); obj;
-						obj = chunk->get_next(obj))
+			Game_object *obj;
+					// Restore original order (sort of).
+			Object_iterator_backwards next(chunk);
+			while ((obj = next.get_next()) != 0)
 				obj->write_ireg(ireg);
 			Write2(ireg, 0);// End with 2 0's.
 			}
@@ -1157,9 +1161,11 @@ void Game_window::paint_chunk_objects
 	if (skip_above_actor < skip_lift)
 		skip_lift = skip_above_actor;
 					// +++++Clear flag.
-	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
+	Object_iterator next(olist);
+	while ((obj = next.get_next()) != 0)
 		obj->rendered = 0;
-	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
+	next.reset();
+	while ((obj = next.get_next()) != 0)
 		if (!obj->rendered)
 			paint_object(obj, at_lift, flat_only);
 	skip_lift = save_skip;
@@ -1621,32 +1627,6 @@ void Game_window::teleport_party
 	center_view(t);			// Bring pos. into view.
 	}
 
-#if 0
-/*
- *	Find a "roof" in the given chunk.
- *
- *	Output: 1 if found, else 0.
- */
-
-int Game_window::find_roof
-	(
-	int cx, int cy			// Absolute chunk coords.
-	)
-	{
-	Chunk_object_list *olist = objects[cx][cy];
-	if (!olist)
-		return (0);
-	return (olist->is_roof());
-#if 0
-	Game_object *obj;
-	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
-		if (obj->get_lift() >= 5)
-			return (1);	// Found one.
-	return (0);
-#endif
-	}
-#endif
-
 /*
  *	Find the highest gump that the mouse cursor is on.
  *
@@ -1760,8 +1740,8 @@ int Game_window::find_objects
 			Chunk_object_list *olist = objects[cx][cy];
 			if (!olist)
 				continue;
-			for (obj = olist->get_first(); obj; 
-						obj = olist->get_next(obj))
+			Object_iterator next(olist);
+			while ((obj = next.get_next()) != 0)
 				{
 				if (obj->get_lift() != lift)
 					continue;
