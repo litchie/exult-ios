@@ -1,3 +1,6 @@
+2002-02-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mapedit/PhotoshopShapePlugin.zip: fixed bug with photoshop 6.0
+
 2002-02-17  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* exult.cc: Allow dragging and closing gumps when selecting with
