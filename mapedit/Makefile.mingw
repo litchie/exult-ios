@@ -32,7 +32,7 @@ LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) -liberty -mwindows -lole32 -luuid
 EXEC=exult_studio.exe
 EXP_FILE=exult_studio.exp
 
-SERVER_OBJS=objserial.o servemsg.o server.o
+SERVER_OBJS=objserial.o servemsg.o servewin32.o
 
 MAPEDIT_OBJS=chunklst.o dirbrowser.o eggedit.o exult_studio.o npcedit.o \
 	objbrowse.o objedit.o paledit.o  shapedraw.o shapeedit.o shapelst.o \

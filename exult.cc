@@ -155,8 +155,8 @@ static void set_resolution (int new_res, bool save);
 #ifdef USE_EXULTSTUDIO
 static void Move_dragged_shape(int shape, int frame, int x, int y,
 							int prevx, int prevy);
-static void Drop_dragged_shape(int shape, int frame, int x, int y);
-static void Drop_dragged_chunk(int chunknum, int x, int y);
+static void Drop_dragged_shape(int shape, int frame, int x, int y, void *d);
+static void Drop_dragged_chunk(int chunknum, int x, int y, void *d);
 #endif
 static void BuildGameMap();
 static void Handle_events();
@@ -555,8 +555,9 @@ static void Init
 				Drop_dragged_shape, Drop_dragged_chunk);
 #else
 	SDL_GetWMInfo(&info);
+	Server_init();			// Initialize server (for map-editor).
 	hgwin = info.window;
-    OleInitialize(NULL);
+        OleInitialize(NULL);
 	windnd = new Windnd(hgwin, Drop_dragged_shape, Drop_dragged_chunk);
 	if (FAILED(RegisterDragDrop(hgwin, windnd))) {
 	     cout << "Something's wrong with OLE2 ..." << endl;
@@ -711,7 +712,7 @@ static void Handle_event
 				{
 				Drop_dragged_shape(cheat.get_edit_shape(),
 					cheat.get_edit_frame(),
-					event.button.x, event.button.y);
+					event.button.x, event.button.y, 0);
 				break;
 				}
 #endif
@@ -805,7 +806,7 @@ static void Handle_event
 				{
 				Drop_dragged_shape(cheat.get_edit_shape(),
 					cheat.get_edit_frame(),
-					event.button.x, event.button.y);
+					event.button.x, event.button.y, 0);
 				break;
 				}
 #endif
@@ -1449,7 +1450,8 @@ static void Move_dragged_shape
 static void Drop_dragged_shape
 	(
 	int shape, int frame,		// What to create.
-	int x, int y			// Mouse coords. within window.
+	int x, int y,			// Mouse coords. within window.
+	void *data			// Passed data, unused by exult
 	)
 	{
 	int scale = gwin->get_win()->get_scale();
@@ -1527,7 +1529,8 @@ static void Drop_dragged_shape
 static void Drop_dragged_chunk
 	(
 	int chunknum,			// Index in 'u7chunks'.
-	int x, int y			// Mouse coords. within window.
+	int x, int y,			// Mouse coords. within window.
+	void *data			// Passed data, unused by exult
 	)
 	{
 	int scale = gwin->get_win()->get_scale();

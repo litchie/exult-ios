@@ -197,6 +197,7 @@ void Shape_draw::enable_drop
 	)
 	{
 	gtk_widget_realize(draw);//???????
+#ifndef WIN32
 	drop_callback = callback;
 	drop_user_data = udata;
 	GtkTargetEntry tents[1];
@@ -208,4 +209,5 @@ void Shape_draw::enable_drop
 
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_data_received",
 				GTK_SIGNAL_FUNC(drag_data_received), this);
+#endif
 	}

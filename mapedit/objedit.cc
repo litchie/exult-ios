@@ -133,6 +133,17 @@ static void Obj_shape_dropped
 		((ExultStudio *) udata)->set_obj_shape(shape, frame);
 	}
 
+#ifdef WIN32
+
+static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data)
+{
+	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;
+
+	Obj_shape_dropped(U7_SHAPE_SHAPES, shape, frame, data);
+}
+
+#endif
+
 
 /*
  *	Open the object-editing window.
@@ -144,8 +155,10 @@ void ExultStudio::open_obj_window
 	int datalen
 	)
 	{
+	bool first_time = false;
 	if (!objwin)			// First time?
 		{
+		first_time = true;
 		objwin = glade_xml_get_widget( app_xml, "obj_window" );
 		if (vgafile && palbuf)
 			{
@@ -159,6 +172,10 @@ void ExultStudio::open_obj_window
 	if (!init_obj_window(data, datalen))
 		return;
 	gtk_widget_show(objwin);
+#ifdef WIN32
+	if (first_time || !objdnd)
+		Windnd::CreateStudioDropDest(objdnd, objhwnd, Drop_dragged_shape, NULL, NULL, (void*) this);
+#endif
 	}
 
 /*
@@ -169,8 +186,12 @@ void ExultStudio::close_obj_window
 	(
 	)
 	{
-	if (objwin)
+	if (objwin) {
 		gtk_widget_hide(objwin);
+#ifdef WIN32
+		Windnd::DestroyStudioDropDest(objdnd, objhwnd);
+#endif
+	}
 	}
 
 /*

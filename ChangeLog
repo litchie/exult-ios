@@ -1,3 +1,15 @@
+2002-01-21  Ryan Nunn  <triforce@merlin.net.au>
+	* exult.cc, windrag.*, xdrag.*, mapedit/Makefile.mingw,
+	  mapedit/chunklst.cc, mapedit/eggedit.cc, mapedit/npcedit.cc
+	  mapedit/objedit.cc, mapedit/shapedraw.cc: More Win32 Drag and Drop.
+
+	* Makefile.cygwin, Makefile.win32, mapedit/Makefile.mingw, 
+	  mapedit/studio.*, server/servemsg.* server/server.cc,
+	  server/servewin32.*, msvcstuff/Exult.dsp : Added commincations for
+	  WinNT, Win2K and WinXP Only! Win9x/Me ARE NOT SUPPORTED!
+
+	* server/objserial.cc : Working around a MSVC compiler bug
+
 2002-01-21  Darke  <darkepaw@users.sourceforge.net>
 	* usecode/ucxt/*: Lots of code cleanup, and preperation for adding
 	basic u8 disassembler functions.

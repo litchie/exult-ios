@@ -30,30 +30,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef USE_EXULTSTUDIO
 
 #include <unistd.h>
-#include <iostream.h>			/* For debugging msgs. */
+#include <iostream>			/* For debugging msgs. */
 #include "servemsg.h"
 #ifndef ALPHA_LINUX_CXX
   #include <cstring>
 #endif
 
+#ifdef WIN32
+#include "servewin32.h"
+#endif
+
+using std::cout;
+using std::cerr;
+using std::endl;
+
 namespace Exult_server
 {
-
-// Just a little hack.
-#ifdef WIN32
-inline int write(int file, const void *v, unsigned int len)
-{
-	return 0;
-}
-inline int read(int file, const void *v, unsigned int len)
-{
-	return 0;
-}
-inline int close(int file)
-{
-	return 0;
-}
-#endif
 
 /*
  *	Send data.
@@ -77,6 +69,7 @@ int Send_data
 	buf[4] = id;
 	std::memcpy(&buf[5], data, datalen);	// The data itself.
 	int len = datalen + hdrlength;
+
 	return (write(socket, buf, len) == len ? 0 : -1);
 	}
 
@@ -125,6 +118,7 @@ int Receive_data
 		return -1;
 		}
 	datalen = read(socket, data, dlen);	// Read data.
+
 	if (datalen < dlen)
 		{
 		cout << "Failed to read all " << dlen << " bytes" << endl;
@@ -135,6 +129,19 @@ int Receive_data
 
 
 
+bool wait_for_response(int socket, int ms)
+{
+#ifdef WIN32
+	int ticks = GetTickCount();
+	while(GetTickCount() < ticks+ms) {
+		if (peek_pipe() > 0) return true;
+		SleepEx(1, TRUE);
+	}
+	if (peek_pipe() > 0) return true;
+	return false;
+#endif
+	return true;
+}
 
 }
 

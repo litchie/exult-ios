@@ -70,6 +70,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunkter.h"
 #include "cheat.h"
 
+#ifdef WIN32
+#include "servewin32.h"
+#endif
+
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -168,6 +172,14 @@ void Server_init
 #endif
 		}
 	Set_highest_fd();
+#else
+
+	listen_socket = client_socket = -1;
+
+	std::string servename = get_system_path("<STATIC>/");
+
+	if (Exult_server::create_pipe(servename.c_str())) listen_socket = 1;
+
 #endif
 	}
 
@@ -179,8 +191,12 @@ void Server_close
 	(
 	)
 	{
-#ifndef WIN32
+#ifdef WIN32
+	Exult_server::close_pipe();
+	listen_socket = client_socket = -1;
+#else
 	// unlink socket file+++++++
+#endif
 	}
 
 /*
@@ -215,7 +231,7 @@ static void Handle_client_message
 		unsigned char data[16];
 		unsigned char *ptr = &data[0];
 		Write2(ptr, gwin->get_num_npcs());
-		Send_data(client_socket, Exult_server::num_npcs, data,
+		Exult_server::Send_data(client_socket, Exult_server::num_npcs, data,
 							ptr - data);
 		break;
 		}
@@ -260,7 +276,7 @@ static void Handle_client_message
 		Write2(ptr, cy);
 		ptr++;			// Skip 'up' flag.
 		*ptr++ = okay ? 1 : 0;
-		Send_data(client_socket, Exult_server::locate_terrain, data,
+		Exult_server::Send_data(client_socket, Exult_server::locate_terrain, data,
 							ptr - data);
 		break;
 		}
@@ -269,7 +285,7 @@ static void Handle_client_message
 		int tnum = Read2(ptr);
 		bool okay = gwin->get_map()->swap_terrains(tnum);
 		*ptr++ = okay ? 1 : 0;
-		Send_data(client_socket, Exult_server::swap_terrain, data,
+		Exult_server::Send_data(client_socket, Exult_server::swap_terrain, data,
 							ptr - data);
 		break;
 		}
@@ -279,7 +295,7 @@ static void Handle_client_message
 		bool dup = *ptr++ ? true : false;
 		bool okay = gwin->get_map()->insert_terrain(tnum, dup);
 		*ptr++ = okay ? 1 : 0;
-		Send_data(client_socket, Exult_server::insert_terrain, data,
+		Exult_server::Send_data(client_socket, Exult_server::insert_terrain, data,
 							ptr - data);
 		break;
 		}
@@ -290,7 +306,7 @@ static void Handle_client_message
 		Chunk_terrain *ter = gwin->get_map()->get_terrain(tnum);
 		ter->write_flats(ptr);	// Serialize it.
 		ptr += 512;		// I just happen to know the length...
-		Send_data(client_socket, Exult_server::send_terrain, data,
+		Exult_server::Send_data(client_socket, Exult_server::send_terrain, data,
 							ptr - data);
 		break;
 		}
@@ -318,7 +334,6 @@ static void Handle_client_message
 		cheat.set_edit_shape(shnum, frnum);
 		}
 		}
-#endif
 	}
 
 /*
@@ -366,7 +381,29 @@ void Server_delay
 				Set_highest_fd();
 			}
 		}
+#else
+	if (listen_socket == -1) return;
+
+	if (GetLastError() == ERROR_BROKEN_PIPE) {
+		std::cout << "Client disconneted." << endl;
+		Exult_server::disconnect_from_client();
+		Exult_server::setup_connect();
+		client_socket = -1;
+	}
+
+	SleepEx(20, TRUE);
+
+	if (client_socket == -1) {
+		if (!Exult_server::try_connect_to_client()) return;
+		else client_socket = 1;
+		std::cout << "Connected to client" << endl;
+	}
+
+	if (Exult_server::peek_pipe() > 0)
+		Handle_client_message(client_socket);
+		
 #endif
+
 	}
 
 #endif
