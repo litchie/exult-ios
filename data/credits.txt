@@ -5,7 +5,7 @@
 \CTHE CODING TEAM
 
 
-\CJeff S. Freedman
+\CJeff S. "DrCode" Freedman
 \C<jsf@users.sourceforge.net>
 \CThe man who started it all: from map browser
 \Cto usecode interpreter, animation & combat.
@@ -18,25 +18,25 @@
 \Cwhat more could you possibly ask for ?
 
 
-\CWillem Jan Palenstijn
+\CWillem Jan "Arthuris" Palenstijn
 \C<palenstijn@wanadoo.nl>
 \CPorting to obscure OSs (Windows) and less
 \Cobscure ones (BeOS), cheats, autoconf
 
 
-\CTristan Tarrant
+\CTristan "Nadir" Tarrant
 \C<nadir@users.sourceforge.net>
 \CIntro, ending, menus, autoconf/automake, 
 \CGIMP plugin, FLEX packing, CVS police
 
 
-\CMax Horn
+\CMax "Fingolfin" Horn
 \C<max@quendi.de>
 \CPorting to MacOS, error handling,
 \CC++ standard police, the webpage
 
 
-\CCoder Infidel
+\CLuke "Coder Infidel" Dunstan
 \C<coder_infidel@hotmail.com>
 \CHunter of lost info in U7's data files,
 \Cweapon animations, bits of combat.
@@ -46,6 +46,11 @@
 \C<triforce@merlin.net.au>
 \CXMIDI meister, endings, roof removalist,
 \CSI Intro, NPC flag IO, Avatar identity
+
+
+\CChristoph "Jameson" Reichenbach
+\C<jameson@linuxgames.com>
+\CPorting to Alpha
 
 
 \CDerek Liauw Kie Fa
@@ -95,6 +100,8 @@
 \CFor giving us permission to use his MIDI
 \Ctracks
 
+\CDominik "Dominus" Reichardt
+\CFor maintaining the Exult FAQ
 
 \Cand...
 
