@@ -162,6 +162,22 @@ int Get_usecode(int spell)
 	{ return 0x640 + spell; }
 
 /*
+ *	Perform a spell and close this gump.
+ */
+void Spelltype_gump::perform_spell
+	(
+	int spell
+	)
+	{
+	close();			// We've just been deleted!
+	gwin->paint();
+	gwin->show();
+	Actor *ava = gwin->get_main_actor();
+	ucmachine->call_usecode(Get_usecode(spell),
+					ava, Usecode_machine::double_click);
+	}
+
+/*
  *	A 'page-turner' button.
  */
 class Page_button : public Gump_button
@@ -392,10 +408,7 @@ void Spellbook_gump::do_spell
 					book_owner->remove_quantity(1, 
 						REAGENTS, c_any_qual, r);
 		}
-		gwin->get_gump_man()->close_gump(this);// Note:  We're deleted!!
-		gwin->paint();
-		ucmachine->call_usecode(Get_usecode(spell),
-			gwin->get_main_actor(), Usecode_machine::double_click);
+		perform_spell(spell);	// Deletes ourself!
 	}
 }
 
@@ -581,11 +594,7 @@ void Spellscroll_gump::do_spell
 	{
 	scroll->remove_this();		// Scroll is gone.
 	scroll = 0;
-	close();			// We've just been deleted!
-	gwin->paint();
-	gwin->show();
-	ucmachine->call_usecode(Get_usecode(spellnum),
-			gwin->get_main_actor(), Usecode_machine::double_click);
+	perform_spell(spellnum);	// Deletes ourself!
 	}
 
 /*

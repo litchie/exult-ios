@@ -28,6 +28,8 @@ class Spellbook_object;
  */
 class Spelltype_gump : public Gump
 	{
+protected:
+	void perform_spell(int spell);	// Close gump/perform spell.
 public:
 	Spelltype_gump(int shnum) : Gump(0, shnum) {  }
 	virtual ~Spelltype_gump() {  }
