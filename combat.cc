@@ -119,13 +119,16 @@ void Combat_schedule::find_opponents
 	}
 	Actor_queue nearby;			// Get all nearby NPC's.
 	gwin->get_nearby_npcs(nearby);
+					// See if we're a party member.
+	bool in_party = (npc == gwin->get_main_actor() ||
+					npc->get_party_id() >= 0);
 	for (Actor_queue::const_iterator it = nearby.begin(); 
 						it != nearby.end(); ++it)
 	{
 		Actor *actor = *it;
-		if (actor->get_alignment() >= Npc_actor::hostile &&
-		    !actor->is_dead() && 
-				!actor->get_flag(Obj_flags::invisible))
+		if (actor->is_dead() || actor->get_flag(Obj_flags::invisible))
+			continue;	// Dead or invisible.
+		if (actor->get_alignment() >= Npc_actor::hostile)
 		{
 			opponents.push(actor);
 					// And set hostile monsters.
@@ -133,6 +136,13 @@ void Combat_schedule::find_opponents
 			    actor->get_schedule_type() != Schedule::combat)
 				actor->set_schedule_type(Schedule::combat);
 		}
+		else if (in_party)
+			{		// Attacking party member?
+			Game_object *t = actor->get_target();
+			if (t && (t == gwin->get_main_actor() ||
+						t->get_party_id() >= 0))
+				opponents.push(actor);
+			}
 	}
 					// None found?  Use Avatar's.
 	if (opponents.empty() && npc->get_party_id() >= 0 &&
@@ -479,8 +489,12 @@ void Combat_schedule::start_strike
 		Tile_coord opos = opponent->get_tile();
 		if (opos.tx < pos.tx)	// Going left?
 			pos.tx = npctiles.x;
+		else			// Right?
+			opos.tx = opptiles.x;
 		if (opos.ty < pos.ty)	// Going north?
 			pos.ty = npctiles.y;
+		else			// South.
+			opos.ty = opptiles.y;
 		if (!Fast_pathfinder_client::is_straight_path(pos, opos))
 			{		// Blocked.  Find another spot.
 			pos.tx += rand()%7 - 3;
