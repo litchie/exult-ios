@@ -98,17 +98,17 @@ static bool MatchString( const char *str, const std::string& inPat )
 #if defined(WIN32)
 
 // Need this for _findfirst, _findnext, _findclose
-#include <io.h>
+#include <windows.h>
 
 int U7ListFiles(const std::string mask, FileList& files)
 {
 	string			path(get_system_path(mask));
-	struct _finddata_t	fileinfo;
-	long			handle;
+	WIN32_FIND_DATA	fileinfo;
+	HANDLE			handle;
 	char			*stripped_path;
-	int			i;
+	int				i;
 
-	handle = _findfirst (path.c_str(), &fileinfo);
+	handle = FindFirstFile (path.c_str(), &fileinfo);
 
 	// 
 	stripped_path = new char [path.length()+1];
@@ -122,20 +122,49 @@ int U7ListFiles(const std::string mask, FileList& files)
 		stripped_path[i+1] = 0;
 
 
+#ifdef DEBUG
+	std::cerr << "U7ListFiles: " << mask << " = " << path << std::endl;
+#endif
+
 	// Now search the files
-	if (handle != -1)
+	if (handle != INVALID_HANDLE_VALUE)
 	{
 		do
 		{
-			char *filename = (char *) malloc (strlen (fileinfo.name)+strlen(stripped_path)+1 );
+			char *filename = new char [strlen (fileinfo.cFileName)+strlen(stripped_path)+1];
 			strcpy (filename, stripped_path);
-			strcat (filename, fileinfo.name);
+			strcat (filename, fileinfo.cFileName);
 			files.push_back(filename);
-		} while (_findnext( handle, &fileinfo ) != -1);
+#ifdef DEBUG
+			std::cerr << filename << std::endl;
+#endif
+			delete [] filename;
+		} while (FindNextFile( handle, &fileinfo ));
 	}
 
+	if (GetLastError() != ERROR_NO_MORE_FILES) {
+		LPVOID lpMsgBuf;
+		FormatMessage( 
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+			FORMAT_MESSAGE_FROM_SYSTEM | 
+			FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL,
+			GetLastError(),
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+			(LPTSTR) &lpMsgBuf,
+			0,
+			NULL 
+		);
+		std::cerr << "Error while listing files: " << ((char *) lpMsgBuf) << std::endl;
+		LocalFree( lpMsgBuf );
+	}
+
+#ifdef DEBUG
+	std::cerr << files.size() << " filenames" << std::endl;
+#endif
+
 	delete [] stripped_path;
-	_findclose (handle);
+	FindClose (handle);
 	return 0;
 }
 
