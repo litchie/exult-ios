@@ -510,7 +510,7 @@ void XMIDI::DuplicateAndMerge (int num)
 	{
 		int	lowest = 1 << 30;
 		int	selected = -1;
-		int	num_na = end;
+		int	num_na = end-start;
 		
 		// Firstly we find the track with the lowest time
 		// for it's current event
