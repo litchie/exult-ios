@@ -107,7 +107,7 @@ void Mixer::cancel_raw(void)
 
 void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 {
-#if DEBUG
+#if 0
 	cout << "fill_audio_func: " << len << endl;
 	// cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
 #endif
@@ -142,7 +142,7 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 						break;
 					sofar+=ret;
 					}
-#if DEBUG
+#if 0
 				cerr << "(" << which <<"/"<<audio_streams.size()<< ")" << " Mixing auxilliary data " ;
 				cerr << sofar << " of " << (*it)->size() << endl;
 #endif
@@ -168,7 +168,7 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 	stream_unlock();
 	if(buffers.begin()->num_samples)
 		{
-#if DEBUG
+#if 0
 		cerr << "Mixing sample data" << endl;
 #endif
 		if((unsigned)len>buffers.front().length)
