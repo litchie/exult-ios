@@ -219,6 +219,8 @@ public:
 	 */
 	inline Game_map *get_map() const
 		{ return map; }
+	inline const Exult_vector<Game_map*>& get_maps() const
+		{ return maps; }
 	inline Usecode_machine *get_usecode() const
 		{ return usecode; }
 	inline Image_window8 *get_win() const
