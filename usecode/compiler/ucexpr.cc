@@ -1,5 +1,5 @@
 /**
- **	Ucloc.cc - Source location.
+ **	Ucexpr.cc - Expressions for Usecode compiler.
  **
  **	Written: 1/0/01 - JSF
  **/
@@ -23,35 +23,32 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <iostream.h>
-#include "ucloc.h"
-
-set<char *> Uc_location::source_names;
-char *Uc_location::cur_source = 0;
-int Uc_location::cur_line = 0;
-int Uc_location::num_errors = 0;
+#include "ucexpr.h"
 
 /*
- *	Print error for stored position.
+ *	Default assignment generation.
  */
 
-void Uc_location::error
+void Uc_expression::gen_assign
 	(
-	char *s
+	ostream& out
 	)
 	{
-	cout << source << ':' << line + 1 << ": " << s << endl;
-	num_errors++;
+	error("Can't assign to this expression");
 	}
 
 /*
- *	Print error for current parse location.
+ *	Generate code to evaluate expression and leave result on stack.
  */
 
-void Uc_location::yyerror
+void Uc_binary_expression::gen_value
 	(
-	char *s
+	ostream& out
 	)
 	{
-	cout << cur_source << ':' << cur_line + 1 << ": " << s << endl;
-	num_errors++;
+	left->gen_value(out);		// First the left.
+	right->gen_value(out);		// Then the right.
+	out << (char) opcode;
 	}
+
+

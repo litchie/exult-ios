@@ -35,6 +35,7 @@ class Uc_location
 	static set<char *> source_names;// All filenames.
 	static char *cur_source;	// Source filename.
 	static int cur_line;		// Line #.
+	static int num_errors;		// Total #.
 	char *source;
 	int line;
 public:
@@ -54,6 +55,8 @@ public:
 		{ return source; }
 	void error(char *s);		// Print error.
 	static void yyerror(char *s);	// Print error at cur. location.
+	static int get_num_errors()
+		{ return num_errors; }
 	};
 
 #endif
