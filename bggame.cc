@@ -1677,6 +1677,8 @@ bool BG_Game::new_game(Vga_file &shapes)
 		set_avskin(3-(sex/2));
 		set_avname (npc_name);
 		set_avsex (sex%2);
+		pal.fade_out(c_fade_out_time);
+		gwin->clear_screen(true);	
 		ok =gwin->init_gamedat(true);
 	}
 	win->fill8(0,gwin->get_width(),90,0,menuy);
