@@ -52,7 +52,6 @@ void	IFF::IndexIFFFile(void)
 	if(!fp)
 		{
 		throw 0;
-		return;
 		}
 	fread(ckid,4,1,fp);
 	if(memcmp(ckid,"FORM",4))

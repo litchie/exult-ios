@@ -242,7 +242,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 		try {	\
 			midi_device=new CLASS_NAME();	\
 			no_device=false;	\
-			cerr << midi_device->copyright() << endl;	\
+			cout << midi_device->copyright() << endl;	\
 		} catch(...) {	\
 			no_device=true;	\
 		}	\
