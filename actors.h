@@ -298,8 +298,7 @@ public:
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine, int event = 1, 
-				bool force_party_inv = false);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 	virtual std::string get_name() const;
@@ -396,6 +395,7 @@ public:
 	virtual void get_schedules(Schedule_change *&list, int &cnt)
 	{ list = NULL, cnt = 0; }
 
+	void show_inventory();
 	};
 
 /*

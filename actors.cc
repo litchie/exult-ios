@@ -1467,8 +1467,7 @@ int Actor::figure_weapon_pos
 void Actor::activate
 	(
 	Usecode_machine *umachine,
-	int event,
-	bool force_party_inv
+	int event
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -1476,30 +1475,13 @@ void Actor::activate
 	// We are serpent if we can use serpent isle paperdolls
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
 	
-	bool show_party_inv = gwin->showing_gumps() || gwin->in_combat() || 
-				force_party_inv;
+	bool show_party_inv = gwin->showing_gumps() || gwin->in_combat();
 
-	if (!npc_num && !serpent)	// Avatar No paperdolls
-		gwin->show_gump(this, ACTOR_FIRST_GUMP);
-	else if (!npc_num && serpent)	// Avatar Paperdolls
-		gwin->show_gump(this, 123);
-					// Gump/combat mode?
-	else if (show_party_inv && get_party_id() >= 0 &&
-		 npc_num >= 1 && npc_num <= 10 && !serpent)
-					// Show companions' pictures. (BG)
-			gwin->show_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
-	else if (show_party_inv && get_party_id() >= 0 && serpent)
-					// Show companions' pictures. (SI)
-			gwin->show_gump(this, 123);
-					// Pickpocket Cheat Female no paperdolls
-	else if (cheat.in_pickpocket() && !serpent && Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
-		gwin->show_gump(this, 66);
-					// Pickpocket Cheat Male no paperdolls
-	else if (cheat.in_pickpocket() && !serpent && !Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
-		gwin->show_gump(this, 65);
-					// Pickpocket Cheat paperdolls
-	else if (cheat.in_pickpocket() && serpent)
-		gwin->show_gump(this, 123);
+	if (!npc_num ||		// Avatar
+			(show_party_inv && get_party_id() >= 0 && // Party
+			(serpent || (npc_num >= 1 && npc_num <= 10))) ||
+			cheat.in_pickpocket())		// Pickpocket cheat
+		show_inventory();
 					// Asleep.
 	else if (get_schedule_type() == (int) Schedule::sleep ||
 		 get_flag(Obj_flags::asleep))
@@ -1518,6 +1500,36 @@ void Actor::activate
 			(Usecode_machine::Usecode_events) event);
 	
 	}
+
+void Actor::show_inventory()
+{
+	Game_window *gwin = Game_window::get_game_window();
+
+	// We are serpent if we can use serpent isle paperdolls
+	bool serpent = Game::get_game_type()==SERPENT_ISLE||(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
+	
+	if (!npc_num && !serpent)	// Avatar No paperdolls
+		gwin->show_gump(this, ACTOR_FIRST_GUMP);
+	else if (!npc_num && serpent)	// Avatar Paperdolls
+		gwin->show_gump(this, 123);
+					// Gump/combat mode?
+	else if (get_party_id() >= 0 &&
+		 npc_num >= 1 && npc_num <= 10 && !serpent)
+					// Show companions' pictures. (BG)
+			gwin->show_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
+	else if (get_party_id() >= 0 && serpent)
+					// Show companions' pictures. (SI)
+			gwin->show_gump(this, 123);
+					// Pickpocket Cheat Female no paperdolls
+	else if (!serpent && Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
+		gwin->show_gump(this, 66);
+					// Pickpocket Cheat Male no paperdolls
+	else if (!serpent && !Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
+		gwin->show_gump(this, 65);
+					// Pickpocket Cheat paperdolls
+	else if (serpent)
+		gwin->show_gump(this, 123);
+}
 
 /*
  *	Drop another onto this.
