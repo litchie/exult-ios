@@ -848,7 +848,7 @@ char *Game_window::get_schunk_file_name
 
 void Game_window::write_map_objects
 	(
-	ostream& ochunks,		// U7CHUNKS.
+	std::ostream& ochunks,		// U7CHUNKS.
 	int schunk			// Superchunk # (0-143).
 	)
 	{
@@ -891,7 +891,7 @@ void Game_window::write_map_objects
 					// Store IFIX data length.
 			Write4(tptr, ifix.tellp() - start);
 			}
-	ifix.seekp(0x80, ios::beg);	// Write table.
+	ifix.seekp(0x80, std::ios::beg);	// Write table.
 	ifix.write((char*) &table[0], sizeof(table));
 	ifix.flush();
 	ochunks.flush();

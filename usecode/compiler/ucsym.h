@@ -47,18 +47,18 @@ public:
 class Uc_symbol
 	{
 protected:
-	string name;			// This will be the key.
+	std::string name;			// This will be the key.
 public:
 	friend class Uc_scope;
 	Uc_symbol(char *nm) : name(nm)
 		{  }
 	const char *get_name() { return name.c_str(); }
 					// Gen. code to put result on stack.
-	virtual int gen_value(ostream& out);
+	virtual int gen_value(std::ostream& out);
 					// Gen. to assign from stack.
-	virtual int gen_assign(ostream& out);
+	virtual int gen_assign(std::ostream& out);
 					// Generate function/procedure call.
-	virtual int gen_call(ostream& out, Uc_function *fun, 
+	virtual int gen_call(std::ostream& out, Uc_function *fun, 
 			Uc_array_expression *parms, bool retvalue);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return -1; }
@@ -79,9 +79,9 @@ public:
 	int get_offset()
 		{ return offset; }
 					// Gen. code to put result on stack.
-	virtual int gen_value(ostream& out);
+	virtual int gen_value(std::ostream& out);
 					// Gen. to assign from stack.
-	virtual int gen_assign(ostream& out);
+	virtual int gen_assign(std::ostream& out);
 	};
 
 /*
@@ -95,7 +95,7 @@ public:
 	Uc_string_symbol(char *nm, int off) : Uc_symbol(nm), offset(off)
 		{  }
 					// Gen. code to put result on stack.
-	virtual int gen_value(ostream& out);
+	virtual int gen_value(std::ostream& out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return offset; }
 	};
@@ -116,7 +116,7 @@ public:
 	int get_num_parms()		// ++++Not valid yet.
 		{ return num_parms; }
 					// Generate function/procedure call.
-	virtual int gen_call(ostream& out, Uc_function *fun, 
+	virtual int gen_call(std::ostream& out, Uc_function *fun, 
 			Uc_array_expression *parms, bool retvalue);
 	};
 
@@ -126,20 +126,20 @@ public:
 class Uc_function_symbol : public Uc_symbol
 	{
 					// Note:  offset = Usecode fun. #.
-	vector<char *> parms;		// Parameters.
+		std::vector<char *> parms;		// Parameters.
 	int usecode_num;		// Usecode function #.
 public:
-	Uc_function_symbol(char *nm, int num, vector<char *>& p)
+	Uc_function_symbol(char *nm, int num, std::vector<char *>& p)
 		: Uc_symbol(nm), parms(p), usecode_num(num)
 		{  }
-	const vector<char *>& get_parms()
+	const std::vector<char *>& get_parms()
 		{ return parms; }
 	int get_usecode_num()
 		{ return usecode_num; }
 	int get_num_parms()
 		{ return parms.size(); }
 					// Generate function/procedure call.
-	virtual int gen_call(ostream& out, Uc_function *fun, 
+	virtual int gen_call(std::ostream& out, Uc_function *fun, 
 			Uc_array_expression *parms, bool retvalue);
 	};
 
@@ -150,9 +150,9 @@ class Uc_scope
 	{
 	Uc_scope *parent;		// ->parent.
 					// For finding syms. by name.
-	typedef map<char *, Uc_symbol *, String_compare> Sym_map;
+	typedef std::map<char *, Uc_symbol *, String_compare> Sym_map;
 	Sym_map symbols;
-	vector<Uc_scope *> scopes;	// Scopes within.
+	std::vector<Uc_scope *> scopes;	// Scopes within.
 public:
 	Uc_scope(Uc_scope *p) : parent(p)
 		{  }
