@@ -25,10 +25,10 @@
 class	Configuration
 {
 public:
-	Configuration() : xmltree("config"),filename(),is_file(false)
-		{ }
-	Configuration(const char *s) : xmltree("config"), filename(), is_file(false)
-		{ read_config_file(s); }
+	Configuration() : xmltree(new XMLnode("config")), filename(), is_file(false)
+		{}//{ xmltree = new XMLnode("config"); }
+	Configuration(const char *s) : xmltree(new XMLnode("config")), filename(), is_file(false)
+		{ /*xmltree = new XMLnode();*/ read_config_file(s); }
 
 	bool	read_config_file(const char *input_filename)
 			{ return read_config_file(std::string(input_filename)); };
@@ -51,10 +51,11 @@ public:
 
 	void	write_back(void);
 
-
+	void clear(void) { delete xmltree; xmltree = new XMLnode("config"); };
+	
 private:
 	void    set(std::string &key,std::string &value,bool write_to_file);
-	XMLnode xmltree;
+	XMLnode *xmltree;
 	std::string	filename;
 	bool	is_file;
 };

@@ -37,7 +37,8 @@ public:
 		{  }
 	XMLnode(const XMLnode &n) : id(n.id),content(n.content),nodelist(n.nodelist)
 		{  }
-
+	~XMLnode();
+	
 	XMLnode &operator=(const XMLnode &n) { id=n.id; content=n.content; nodelist=n.nodelist; return *this; }
 	const std::string &reference(const std::string &,bool &);
 	const XMLnode *subtree(const std::string &) const;

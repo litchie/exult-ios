@@ -85,8 +85,18 @@ void	test1(void)
 
 }
 
-int	main(void)
+void test2(void)
+{
+	config.read_config_file("exult.cfg");
+	cout << config.dump() << endl;
+}
+
+int	main(int argc, char *argv[])
 {
 	test1();
+	if(argc>1)
+		if(strcmp(argv[1], "--exult-cfg")==0)
+			test2();
+			
 	return 0;
 }
