@@ -1132,6 +1132,45 @@ void Animated_egg_object::activate
 	}
 
 /*
+ *	Create a spellbook from Ireg data.
+ */
+
+Spellbook_object::Spellbook_object
+	(
+	unsigned char l, unsigned char h, 
+	unsigned int shapex, unsigned int shapey, 
+	unsigned int lft, 
+	unsigned char *c,		// Circle spell flags.
+	unsigned long f			// Flags (unknown).
+	) : Ireg_game_object(l, h, shapex, shapey, lft), flags(f)
+	{
+	memcpy(circles, c, sizeof(circles));
+	}
+
+/*
+ *	Write out.
+ */
+
+void Spellbook_object::write_ireg
+	(
+	ostream& out
+	)
+	{
+	unsigned char buf[19];		// 18-byte entry + length-byte.
+	buf[0] = 18;
+	unsigned char *ptr = &buf[1];	// To avoid confusion about offsets.
+	write_common_ireg(ptr);		// Fill in bytes 1-4.
+	ptr += 4;
+	memcpy(ptr, &circles[0], 5);	// Store the way U7 does it.
+	ptr += 5;
+	*ptr++ = (get_lift()&15)<<4;	// Low bits?++++++
+	memcpy(ptr, &circles[5], 4);	// Rest of spell circles.
+	ptr += 4;
+	Write4(ptr, flags);
+	out.write((char*)buf, sizeof(buf));
+	}
+
+/*
  *	Delete all contents.
  */
 

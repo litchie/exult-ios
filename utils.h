@@ -94,6 +94,22 @@ inline unsigned long Read4
 	}
 
 /*
+ *	Read a 4-byte value from a buffer.
+ */
+
+inline unsigned long Read4
+	(
+	unsigned char *& in
+	)
+	{
+	unsigned char b0 = *in++;
+	unsigned char b1 = *in++;
+	unsigned char b2 = *in++;
+	unsigned char b3 = *in++;
+	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	}
+
+/*
  *	Write a 2-byte value, lsb first.
  */
 
