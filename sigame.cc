@@ -94,6 +94,7 @@ SI_Game::SI_Game()
 		add_resource("palettes/14", "<STATIC>/mainshp.flx", 26);
 		
 		fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 2);
+		fontManager.add_font("SIINTRO_FONT", "<STATIC>/intro.dat", 14, 0);
 	}
 
 SI_Game::~SI_Game()
@@ -120,9 +121,7 @@ void SI_Game::play_intro()
 		size_t	size;
 		int	i,j;
 		Font *font = fontManager.get_font("MENU_FONT");
-
-		if (!gwin->setup_siintro_fonts())
-			gwin->abort ("Unable to setup font from 'intro.dat' file.");
+		Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
 		bool speech = audio->is_speech_enabled();
 		
@@ -215,9 +214,9 @@ void SI_Game::play_intro()
 					fli1.play(win, i, i, next);
 
 			if (jive)
-				gwin->paint_text(SIINTRO_FONT1, db_cas, centerx-gwin->get_text_width(SIINTRO_FONT1, db_cas)/2, centery+50);
+				sifont->center_text(gwin, centerx, centery+50, db_cas);
 			else 
-				gwin->paint_text(SIINTRO_FONT1, lb_cas, centerx-gwin->get_text_width(SIINTRO_FONT1, lb_cas)/2, centery+50);
+				sifont->center_text(gwin, centerx, centery+50, lb_cas);
 
 			prev = num;
 			next += 75;
@@ -261,7 +260,7 @@ void SI_Game::play_intro()
 					fli1.play(win, i, i, next);
 
 			for(i=0; i<3; i++) {
-				gwin->paint_text(SIINTRO_FONT1, bg_fellow[i], centerx-gwin->get_text_width(SIINTRO_FONT1, bg_fellow[i])/2, centery+50+15*i);
+				sifont->center_text(gwin, centerx, centery+50+15*i, bg_fellow[i]);
 			}
 
 			prev = num;
@@ -340,9 +339,9 @@ void SI_Game::play_intro()
 			next = fli2.play(win, j, j, next);
 
 			if (jive)
-				gwin->paint_text(SIINTRO_FONT1, yo_homes, centerx+30, centery+87);
+				sifont->draw_text(gwin, centerx+30, centery+87, yo_homes);
 			else if (!speech)
-				gwin->paint_text(SIINTRO_FONT1, my_leige, centerx+30, centery+87);
+				sifont->draw_text(gwin, centerx+30, centery+87, my_leige);
 
 			win->show();
 			if (wait_delay (0))
@@ -373,8 +372,8 @@ void SI_Game::play_intro()
 
 			if (!speech || jive)
 			{
-				gwin->paint_text(SIINTRO_FONT1, all_we[0], centerx+150-gwin->get_text_width(SIINTRO_FONT1, all_we[0]), centery+74);
-				gwin->paint_text(SIINTRO_FONT1, all_we[1], centerx+160-gwin->get_text_width(SIINTRO_FONT1, all_we[1]), centery+87);
+				sifont->draw_text(gwin, centerx+150-sifont->get_text_width(all_we[0]), centery+74, all_we[0]);
+				sifont->draw_text(gwin, centerx+160-sifont->get_text_width(all_we[1]), centery+87, all_we[1]);
 			}
 
 			win->show();
@@ -398,8 +397,8 @@ void SI_Game::play_intro()
 
 		if (!speech || jive)
 		{
-			gwin->paint_text(SIINTRO_FONT1, and_a[0], centerx+150-gwin->get_text_width(SIINTRO_FONT1, and_a[0]), centery+74);
-			gwin->paint_text(SIINTRO_FONT1, and_a[1], centerx+150-gwin->get_text_width(SIINTRO_FONT1, and_a[1]), centery+87);
+			sifont->draw_text(gwin, centerx+150-sifont->get_text_width(and_a[0]), centery+74, and_a[0]);
+			sifont->draw_text(gwin, centerx+150-sifont->get_text_width(and_a[1]), centery+87, and_a[1]);
 		}
 
 		win->show();
@@ -445,11 +444,11 @@ void SI_Game::play_intro()
 			next = fli2.play(win, j, j, next);
 
 			if (jive)
-				gwin->paint_text(SIINTRO_FONT1, iree, topx+40, centery+74);
+				sifont->draw_text(gwin, topx+40, centery+74, iree);
 			else if (!speech)
 			{
-				gwin->paint_text(SIINTRO_FONT1, indeed[0], topx+40, centery+74);
-				gwin->paint_text(SIINTRO_FONT1, indeed[1], topx+40, centery+87);
+				sifont->draw_text(gwin, topx+40, centery+74, indeed[0]);
+				sifont->draw_text(gwin, topx+40, centery+87, indeed[1]);
 			}
 
 			win->show();
@@ -508,9 +507,9 @@ void SI_Game::play_intro()
 			next = fli3.play(win, j, j, next)+20;
 
 			if (jive)
-				gwin->paint_text(SIINTRO_FONT1, jump_back, topx+70, centery+60);
+				sifont->draw_text(gwin, topx+70, centery+60, jump_back);
 			else if (!speech)	
-				gwin->paint_text(SIINTRO_FONT1, stand_back, topx+70, centery+60);
+				sifont->draw_text(gwin, topx+70, centery+60, stand_back);
 
 			win->show();
 			if (wait_delay (0))
@@ -585,33 +584,33 @@ void SI_Game::play_intro()
 
 			if (j < 100 && jive)
 			{
-				gwin->paint_text(SIINTRO_FONT1, batlin2[0], centerx-gwin->get_text_width(SIINTRO_FONT1, batlin2[0])/2, centery+74);
-				gwin->paint_text(SIINTRO_FONT1, batlin2[1], centerx-gwin->get_text_width(SIINTRO_FONT1, batlin2[1])/2, centery+87);
+				sifont->center_text(gwin, centerx, centery+74, batlin2[0]);
+				sifont->center_text(gwin, centerx, centery+87, batlin2[1]);
 			}
 			else if (j < 200 && jive)
 			{
-				gwin->paint_text(SIINTRO_FONT1, you_must[0], centerx-gwin->get_text_width(SIINTRO_FONT1, you_must[0])/2, centery+74);
-				gwin->paint_text(SIINTRO_FONT1, you_must[1], centerx-gwin->get_text_width(SIINTRO_FONT1, you_must[1])/2, centery+87);
+				sifont->center_text(gwin, centerx, centery+74, you_must[0]);
+				sifont->center_text(gwin, centerx, centery+87, you_must[1]);
 			}
 			else if (j < 300 && jive)
 			{
-				gwin->paint_text(SIINTRO_FONT1, soon_i[0], centerx-gwin->get_text_width(SIINTRO_FONT1, soon_i[0])/2, centery+74);
-				gwin->paint_text(SIINTRO_FONT1, soon_i[1], centerx-gwin->get_text_width(SIINTRO_FONT1, soon_i[1])/2, centery+87);
+				sifont->center_text(gwin, centerx, centery+74, soon_i[0]);
+				sifont->center_text(gwin, centerx, centery+87, soon_i[1]);
 			}
 			else if (j < 100 && !speech)
 			{
-				gwin->paint_text(SIINTRO_FONT1, batlin[0], centerx-gwin->get_text_width(SIINTRO_FONT1, batlin[0])/2, centery+74);
-				gwin->paint_text(SIINTRO_FONT1, batlin[1], centerx-gwin->get_text_width(SIINTRO_FONT1, batlin[1])/2, centery+87);
+				sifont->center_text(gwin, centerx, centery+74, batlin[0]);
+				sifont->center_text(gwin, centerx, centery+87, batlin[1]);
 			}
 			else if (j < 200 && !speech)
 			{
-				gwin->paint_text(SIINTRO_FONT1, you_shall[0], centerx-gwin->get_text_width(SIINTRO_FONT1, you_shall[0])/2, centery+74);
-				gwin->paint_text(SIINTRO_FONT1, you_shall[1], centerx-gwin->get_text_width(SIINTRO_FONT1, you_shall[1])/2, centery+87);
+				sifont->center_text(gwin, centerx, centery+74, you_shall[0]);
+				sifont->center_text(gwin, centerx, centery+87, you_shall[1]);
 			}
 			else if (j < 300 && !speech)
 			{
-				gwin->paint_text(SIINTRO_FONT1, there_i[0], centerx-gwin->get_text_width(SIINTRO_FONT1, there_i[0])/2, centery+74);
-				gwin->paint_text(SIINTRO_FONT1, there_i[1], centerx-gwin->get_text_width(SIINTRO_FONT1, there_i[1])/2, centery+87);
+				sifont->center_text(gwin, centerx, centery+74, there_i[0]);
+				sifont->center_text(gwin, centerx, centery+87, there_i[1]);
 			}
 
 			win->show();
@@ -681,12 +680,12 @@ void SI_Game::play_intro()
 
 			if (j < 20 && (!speech || jive))
 			{
-				gwin->paint_text(SIINTRO_FONT1, tis_my[0], centerx-gwin->get_text_width(SIINTRO_FONT1, tis_my[0])/2, centery+74);
+				sifont->center_text(gwin, centerx, centery+74, tis_my[0]);
 			}
 			else if (j > 22 && (!speech || jive))
 			{
-				gwin->paint_text(SIINTRO_FONT1, tis_my[1], centerx-gwin->get_text_width(SIINTRO_FONT1, tis_my[1])/2, centery+74);
-				gwin->paint_text(SIINTRO_FONT1, tis_my[2], centerx-gwin->get_text_width(SIINTRO_FONT1, tis_my[2])/2, centery+87);
+				sifont->center_text(gwin, centerx, centery+74, tis_my[1]);
+				sifont->center_text(gwin, centerx, centery+87, tis_my[2]);
 			}
 
 			win->show();
@@ -734,7 +733,7 @@ void SI_Game::play_intro()
 			next = fli7.play(win, j, j, next)+30;
 
 			if (j > 55 && jive)
-				gwin->paint_text(SIINTRO_FONT1, zot, centerx-gwin->get_text_width(SIINTRO_FONT1, zot)/2, centery+74);
+				sifont->center_text(gwin, centerx, centery+74, zot);
 
 			win->show();
 			if (wait_delay (0))

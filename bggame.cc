@@ -119,6 +119,8 @@ BG_Game::BG_Game()
 		add_resource("xforms/19", "<STATIC>/xform.tbl", 19);
 		
 		fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 2);
+		fontManager.add_font("END2_FONT", "<STATIC>/endgame.dat", 4, 0);
+		fontManager.add_font("END3_FONT", "<STATIC>/endgame.dat", 5, 0);
 	}
 
 BG_Game::~BG_Game()
@@ -405,9 +407,6 @@ void BG_Game::end_game(bool success)
 		int 	topy = (gwin->get_height()-200)/2;
 		Font *font = fontManager.get_font("MENU_FONT");
 
-		if (!gwin->setup_endgame_fonts())
-			gwin->abort ("Unable to setup fonts from 'endgame.dat' file.");
-
 		if(!success) {
 			TextScroller text("<STATIC>/mainshp.flx", 0x15,
 					  font,0);
@@ -455,14 +454,14 @@ void BG_Game::end_game(bool success)
 		U7object speech2(ENDGAME, 8);
 		U7object speech3(ENDGAME, 9);
 
-/* There seems to be something wrong with the shapes. Needs investigating
+		/* There seems to be something wrong with the shapes. Needs investigating
 		U7object shapes(ENDGAME, 10);
 		shapes.retrieve("endgame.shp");
 		Shape_file sf("endgame.shp");
 		int x = get_width()/2-160;
 		int y = get_height()/2-100;
 		cout << "Shape in Endgame.dat has " << sf.get_num_frames() << endl;
-*/
+		*/
 
 		flic1.retrieve(&(fli_b[0]), flisize);
 		playfli fli1(fli_b[0]+8, flisize-8);
@@ -511,15 +510,17 @@ void BG_Game::end_game(bool success)
 
 		audio->play (buffer+8, size-8, false);
 		delete [] buffer;
+		Font *endfont2 = fontManager.get_font("END2_FONT");
+		Font *endfont3 = fontManager.get_font("END3_FONT");
 
 		const char 	*message = "No. You cannot do that! You must not!";
-		int	height = topy+200 - gwin->get_text_height(ENDGAME_FONT2) * 2;
-		int	width = (gwin->get_width() - gwin->get_text_width(ENDGAME_FONT2,message)) / 2;
+		int	height = topy+200 - endfont2->get_text_height()*2;
+		int	width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
 		for (i = 150; i < 204; i++)
 		{
 			next = fli1.play(win, i, i, next);
-			if (1) gwin->paint_text (ENDGAME_FONT2, message, width, height);
+			endfont2->draw_text(gwin, width, height, message);
 			
 			win->show();
 			if (wait_delay (10))
@@ -542,12 +543,12 @@ void BG_Game::end_game(bool success)
 		delete [] buffer;
 
 		message = "Damn you Avatar!  Damn you!";
-		width = (gwin->get_width() - gwin->get_text_width(ENDGAME_FONT2,message)) / 2;
+		width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
 		for (i = 0; i < 320; i++)
 		{
 			next = fli2.play(win, i, i, next);
-			if (1) gwin->paint_text (ENDGAME_FONT2, message, width, height);
+			endfont2->draw_text(gwin, width, height, message);
 			
 			win->show();
 			if (wait_delay (10))
@@ -671,16 +672,15 @@ void BG_Game::end_game(bool success)
 			"my NEXT target!."
 		};
 
-		starty = (gwin->get_height() - gwin->get_text_height(ENDGAME_FONT3)*8)/2;
+		starty = (gwin->get_height() - endfont3->get_text_height()*8)/2;
 
 		for (i = next+29000; i > next; )
 		{
 			for (j = 0; j < finfo.frames; j++)
 			{
 				next = fli3.play(win, j, j, next);
-				if (1)
-					for(m=0; m<6; m++)
-						gwin->paint_text(ENDGAME_FONT3, txt_screen0[m], centerx-gwin->get_text_width(ENDGAME_FONT3, txt_screen0[m])/2, starty+gwin->get_text_height(ENDGAME_FONT3)*m);
+				for(m=0; m<6; m++)
+					endfont3->center_text(gwin, centerx, starty+endfont3->get_text_height()*m, txt_screen0[m]);
 
 				win->show ();
 				if (wait_delay (10))

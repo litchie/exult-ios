@@ -76,6 +76,8 @@ int Font::load(const char *fname, int index, int hlead, int vlead)
 	size_t len;
 	U7object font_obj(fname, index);
 	font_obj.retrieve(&font_buf, len);
+	if(!strncmp(font_buf,"font",4))	// If it's an IFF archive...
+		font_buf += 8;		// Skip first 8 bytes
 	BufferDataSource *font_data = new BufferDataSource(font_buf, len);
 	font_shapes = new Shape_file(*font_data);
 	hor_lead = hlead;
@@ -133,10 +135,12 @@ FontManager::~FontManager()
 
 void FontManager::add_font(const char *name, const char *archive, int index, int hlead, int vlead)
 {
+#if DEBUG
 	if(fonts[name]!=0)
 		cerr << "font " << name << " already here" << endl;
 	else
 		cerr << "adding font " << name << endl;
+#endif
 	Font *font = new Font(archive, index, hlead, vlead);
 	
 	fonts[name] = font;
