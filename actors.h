@@ -86,6 +86,8 @@ protected:
 	unsigned char light_sources;	// # of light sources readied.
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 	unsigned flags:32;		// 32 flags used in 'usecode'.
+	unsigned siflags:32;	// 32 flags used in 'usecode'.
+	unsigned type_flags:16;	// 16 flags used in movement among other things
 	Actor_action *action;		// Controls current animation.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   actor not moving.
@@ -149,7 +151,7 @@ public:
 		asleep = 1,
 		charmed = 2,
 		cursed = 3,
-		dead = 7,		// Not sure...
+		paralyzed = 7,
 		poisoned = 8,
 		protection = 9,
 		on_moving_barge = 10,	// ??Guessing.
@@ -162,6 +164,30 @@ public:
 		confused = 25,		// ??Guessing.
 		in_motion = 26		// ??Guessing (cart, boat)??
 		};
+	// This is not even a guess, it's a place holder
+	enum Serpent_flags {		// Bit #'s of flags:
+		freeze = 0,
+		read = 1,
+		tournament = 2,
+		polymorph = 3,
+		petra = 4,
+		met = 5,
+		no_spell_casting = 6,
+		zombie = 7
+		};
+	enum type_flags {
+		tf_fly = 4,
+		tf_walk = 5,
+		tf_swim = 6,
+		tf_ethereal = 7,
+		tf_want_primary = 8,
+		tf_sex = 9,
+		tf_bleeding = 10,
+		tf_in_party = 12,
+		tf_in_action = 13,
+		tf_conjured = 14,
+		tf_summonned = 15
+	};
 	enum Item_properties {		// Trying to figure out properties.
 		strength = 0,		// This is also max. health.
 		dexterity = 1,
@@ -241,8 +267,17 @@ public:
 		{ return 1 + Log2(get_property(exp)/50); }
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag);
+	virtual void set_siflag(int flag);
+	void set_type_flag(int flag);
 	virtual void clear_flag(int flag);
+	virtual void clear_siflag(int flag);
+	void clear_type_flag(int flag);
 	virtual int get_flag(int flag) const;
+	virtual int get_siflag(int flag) const;
+	int get_type_flag(int flag) const;
+	void set_type_flags(unsigned short tflags);
+	unsigned short get_type_flags() const
+		{ return type_flags; }
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return npc_num; }
 					// Get/set index within party.
