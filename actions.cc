@@ -237,11 +237,14 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	speed = actor->get_frame_time();// Get time between frames.
 	if (!speed)
 		return 0;		// Not moving.
-	if (!path->GetNextStep(tile))
+	bool done;			// So we'll know if this is the last.
+	if (!path->GetNextStep(tile, done))
 		{
 		reached_end = true;	// Did it.
 		return (0);
 		}
+	if (done)			// In case we're deleted.
+		reached_end = true;
 	Tile_coord cur = actor->get_tile();
 	int newdir = static_cast<int>(Get_direction4(cur.ty - tile.ty, tile.tx - cur.tx));
 	actor->Actor::set_usecode_dir(newdir);
@@ -258,7 +261,12 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		return cur_speed;
 		}
 	else if (actor->step(tile, frame))	// Successful.
+		{
+		if (done)		// Was this the last step?
+			return (0);
 		return cur_speed;
+		}
+	reached_end = false;
 					// Blocked by a door?
 	if (actor->get_tile().distance(tile) == 1 &&
 	    !cheat.in_map_editor())	// And NOT map-editing?

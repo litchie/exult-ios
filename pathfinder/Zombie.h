@@ -48,7 +48,9 @@ public:
 					Pathfinder_client *client);
 
 	// Retrieve the coordinates of the next step on the path
-	virtual	int	GetNextStep(Tile_coord& n);
+	virtual	int	GetNextStep(Tile_coord& n, bool& done);
+	virtual int get_num_steps()	// # of steps left to take.
+		{ return major_distance/major_frame_incr; }
 	virtual ~Zombie();
 	};
 

@@ -1,3 +1,8 @@
+2002-09-29  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actions.cc,pathfinder/*:  Integrated changes from 1.1x to fix
+	start of Mtns. of Freedom bug.
+
 2002-09-11  Dominik Reichardt  <dominus@users.sourceforge.net>
 	* docs/xml/*.xml: updated and/or spellchecked
 	* docs/*.html: updated and/or spellchecked
