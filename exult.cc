@@ -182,16 +182,17 @@ static void get_game_paths(const string &gametitle);
 /*
  *	Statics:
  */
-static bool dragging = false;		// Object or gump being moved.
-static bool dragged = false;		// Flag for when obj. moved.
 static bool run_bg = false;		// skip menu and run bg
 static bool run_si = false;		// skip menu and run si
-
 static string arg_gamename = "default";	// cmdline arguments
 static string arg_configfile = "";
 static int arg_buildmap = -1;
 static bool arg_nomenu = false;
 static bool arg_edit_mode = false;	// Start up ExultStudio.
+
+static bool dragging = false;		// Object or gump being moved.
+static bool dragged = false;		// Flag for when obj. moved.
+static bool right_on_gump = false;	// Right clicked on gump?
 
 /*
  *	A handy breakpoint.
@@ -922,7 +923,7 @@ static void Handle_events
 			{
 			int x, y;// Check for 'stuck' Avatar.
 			int ms = SDL_GetMouseState(&x, &y);
-			if (SDL_BUTTON(3) & ms)
+			if ((SDL_BUTTON(3) & ms) && !right_on_gump)
 				gwin->start_actor(x/scale, y/scale, 
 					Mouse::mouse->avatar_speed);
 			else 
@@ -985,7 +986,6 @@ static void Handle_event
 
 	// We want this
 	Gump_manager *gump_man = gwin->get_gump_man();
-	static bool right_on_gump = false;
 	Gump *gump = 0;
 
 					// For detecting double-clicks.
@@ -1131,7 +1131,13 @@ static void Handle_event
 		if (!dragging)
 			Mouse::mouse->set_speed_cursor();
 		Mouse::mouse_update = true;	// Need to blit mouse.
-		right_on_gump = false;
+		if (right_on_gump &&
+			!(gump_man->can_right_click_close() &&
+			  gump_man->gump_mode() && 
+			  gump_man->find_gump(event.motion.x / scale,
+								  event.motion.y / scale, false))) {
+			right_on_gump = false;
+		}
 
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
@@ -1158,7 +1164,7 @@ static void Handle_event
 						event.motion.y / scale);
 			}
 					// Dragging with right?
-		else if ((event.motion.state & SDL_BUTTON(3)))
+		else if ((event.motion.state & SDL_BUTTON(3)) && !right_on_gump)
 			gwin->start_actor(event.motion.x / scale, 
 			event.motion.y / scale, Mouse::mouse->avatar_speed);
 #ifdef USE_EXULTSTUDIO			// Painting?
