@@ -81,6 +81,7 @@ int Weapon_info::read
 	damage = *ptr++;
 	unsigned short flags0 = *ptr++;
 	m_explodes = (flags0>>1)&1;
+	damage_type = (flags0>>4)&15;
 	range = *ptr++;
 	uses = (range>>1)&3;		// Throwable, etc.:
 	range = range>>3;
@@ -131,7 +132,8 @@ int Ammo_info::read
 	family_shape = Read2(ptr);
 	unsigned short type2 = Read2(ptr);	// ???
 	damage = *ptr++;
-	ptr += 3;			// 3 unknown.
+	ptr += 2;			// 2 unknown.
+	damage_type = (*ptr++>>4)&15;
 	powers = *ptr++;
 					// Last 2 unknown.
 	return shapenum;
