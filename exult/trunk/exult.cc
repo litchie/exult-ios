@@ -831,13 +831,12 @@ static void Handle_keystroke
 	case SDLK_w:			// Test weather.
 		if (ctrl)		// Duration is 4*number secs.
 			{
-			static int wcnt = 0, wmax = 2;
+			static int wcnt = 0, wmax = 1;
 			if (wcnt == 0)
-				gwin->get_tqueue()->add(SDL_GetTicks() + 10,
-						new Rain_effect(4), 0);
+				gwin->add_effect(new Storm_effect(6));
 			else if (wcnt == 1)
-				gwin->get_tqueue()->add(SDL_GetTicks() + 10,
-						new Lightning_effect(2), 0);
+				gwin->add_effect(
+						new Lightning_effect(2));
 			wcnt = (wcnt + 1)%wmax;
 			}
 		break;

@@ -48,7 +48,7 @@ public:
 	virtual ~Special_effect()
 		{  }
 					// Render.
-	virtual void paint(Game_window *gwin) = 0;
+	virtual void paint(Game_window *gwin);
 	};
 
 /*
@@ -117,12 +117,14 @@ public:
 /*
  *	Weather.
  */
-class Weather_effect : public Time_sensitive
+class Weather_effect : public Special_effect
 	{
 protected:
-	unsigned long stop_time;		// Time in 1/1000 secs. to stop.
+	unsigned long stop_time;	// Time in 1/1000 secs. to stop.
 public:
-	Weather_effect(int duration);
+	Weather_effect(int duration, int delay = 0);
+	virtual ~Weather_effect()
+		{  }
 	};
 
 /*
@@ -147,7 +149,8 @@ class Rain_effect : public Weather_effect
 	{
 	Raindrop drops[200];		// Drops moving down the screen.
 public:
-	Rain_effect(int duration) : Weather_effect(duration)
+	Rain_effect(int duration, int delay = 0) 
+		: Weather_effect(duration, delay)
 		{  }
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
@@ -160,11 +163,24 @@ class Lightning_effect : public Weather_effect
 	{
 	int save_brightness;		// Palette brightness.
 public:
-	Lightning_effect(int duration) : Weather_effect(duration),
-						save_brightness(-1)
+	Lightning_effect(int duration, int delay = 0) 
+		: Weather_effect(duration, delay), save_brightness(-1)
 		{  }
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
+ *	Storm.
+ */
+class Storm_effect : public Weather_effect
+	{
+	int start;			// 1 to start storm.
+public:
+	Storm_effect(int duration, int delay = 0);
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
+	virtual ~Storm_effect();
 	};
 
 /*
