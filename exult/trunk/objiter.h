@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Object_iterator
 	{
+protected:
 	Game_object *first;
 	Game_object *stop;
 	Game_object *cur;		// Next to return.
@@ -53,14 +54,48 @@ public:
 	};
 
 /*
+ *	Iterate through a chunk's nonflat objects.
+ */
+class Nonflat_object_iterator : public Object_iterator
+	{
+	Game_object *nonflats;
+public:
+	void reset()
+		{ cur = nonflats; stop = 0; }
+	Nonflat_object_iterator(Chunk_object_list *chunk)
+		: Object_iterator(chunk), nonflats(chunk->first_nonflat)
+		{ reset(); }
+	};
+
+/*
  *	Iterate through a chunk's flat objects.
  */
-class Flat_object_iterator : public Object_iterator
+class Flat_object_iterator
 	{
+	Game_object *first;
+	Game_object *stop;
+	Game_object *cur;		// Next to return.
+	Game_object *stop_at;
 public:
+	void reset()
+		{ cur = first; stop = 0; }
 	Flat_object_iterator(Chunk_object_list *chunk)
-			: Object_iterator(chunk->flat_objects)
-		{  }
+		{
+		first = chunk->objects == chunk->first_nonflat ? 0 :
+								chunk->objects;
+		stop_at = chunk->first_nonflat ? chunk->first_nonflat
+						: chunk->objects;
+		reset();
+		}
+	Game_object *get_next()
+		{
+		if (cur == stop)
+			return 0;
+		Game_object *ret = cur;
+		cur = cur->get_next();
+		stop = stop_at;
+		return ret;
+		}
 	};
 
 /*
