@@ -66,7 +66,7 @@ using std::strncmp;
 using std::vector;
 
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(FORCE_44KHZ)
 /* 44100 caused the freeze upon exit in Win! */
 #define SAMPLERATE	22050
 #else
@@ -198,7 +198,14 @@ void Audio::Init(int _samplerate,int _channels)
 	// Avoid closing SDL audio. This seems to trigger a segfault
 	if(SDL_open)
 		SDL::QuitSubSystem(SDL_INIT_AUDIO);
-	
+
+#ifdef WIN32
+	string s;
+	config->value("config/audio/force_waveout",s,"no");
+	if (s == "yes")
+		SDL_AudioInit("waveout");
+	else
+#endif
 	// Init the SDL audio system
 	SDL::InitSubSystem(SDL_INIT_AUDIO);
 

@@ -900,7 +900,7 @@ void Duel_schedule::find_opponents
 		practice_target = npc->find_closest(735);
 	else				// Fencing dummy:
 		practice_target = npc->find_closest(860);
-	if (practice_target && !rand()%4)
+	if (practice_target && !(rand()%4))
 		{
 		npc->set_target(practice_target);
 		return;			// Just use that.

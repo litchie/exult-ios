@@ -22,6 +22,7 @@
 
 #define ENABLE_MIDISFX
 #define COLOURLESS_REALLY_HATES_THE_BG_SFX
+#define FORCE_44KHZ
 
 // Don't need everything in the windows headers
 #define WIN32_LEAN_AND_MEAN
