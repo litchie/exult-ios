@@ -48,7 +48,7 @@ public:
 		{  }
 					// Set simple path to destination.
 	virtual Actor_action *walk_to_tile(Tile_coord src, 
-					Tile_coord dest, int move_flags);
+			Tile_coord dest, int move_flags, int dist = 0);
 					// Set action to walk to dest, then
 					//   exec. another action when there.
 	static Actor_action *create_action_sequence(Actor *actor, 
@@ -106,7 +106,7 @@ public:
 	virtual void stop(Actor *actor);// Stop moving.
 					// Set simple path to destination.
 	virtual Actor_action *walk_to_tile(Tile_coord src, 
-					Tile_coord dest, int move_flags);
+				Tile_coord dest, int move_flags, int dist = 0);
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest);
 					// Check for Astar.

@@ -105,7 +105,7 @@ int Schedule::try_street_maintenance
 	if (!winrect.has_point(npcpos.tx, npcpos.ty))
 		return 0;
 					// Get to within 1 tile.
-	Actor_pathfinder_dist_client cost(1);
+	Actor_pathfinder_client cost(npc, 1);
 	Game_object *found = 0;		// Find one we can get to.
 	Actor_action *pact;		// Gets ->action to walk there.
 	for (int i = 0; !found && i < sizeof(night)/sizeof(night[0]); i++)
@@ -569,7 +569,7 @@ void Talk_schedule::now_what
 			return;
 			}
 					// Aim for within 5 tiles.
-		Actor_pathfinder_dist_client cost(5);
+		Actor_pathfinder_client cost(npc, 5);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 			npc->get_abs_tile_coord(),
 			gwin->get_main_actor()->get_abs_tile_coord(), cost);
@@ -924,7 +924,7 @@ void Sleep_schedule::now_what
 		bloc.tx -= info.get_3d_xtiles(bed->get_framenum())/2;
 		bloc.ty -= info.get_3d_ytiles(bed->get_framenum())/2;
 					// Get within 3 tiles.
-		Actor_pathfinder_dist_client cost(3);
+		Actor_pathfinder_client cost(npc, 3);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 				npc->get_abs_tile_coord(), bloc, cost);
 		if (pact)
@@ -1337,7 +1337,7 @@ void Lab_schedule::now_what
 	Tile_coord npcpos = npc->get_abs_tile_coord();
 	int delay = 100;		// 1/10 sec. to next action.
 					// Often want to get within 1 tile.
-	Actor_pathfinder_dist_client cost(1);
+	Actor_pathfinder_client cost(npc, 1);
 	switch (state)
 		{
 	case start:
@@ -1431,7 +1431,7 @@ void Lab_schedule::now_what
 		Perimeter p(r);		// Find spot adjacent to table.
 		Tile_coord spot;	// Also get closest spot on table.
 		p.get(rand()%p.size(), spot, spot_on_table);
-		Actor_pathfinder_dist_client cost0(0);
+		Actor_pathfinder_client cost0(npc, 0);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 							npcpos, spot, cost0);
 		if (!pact)
@@ -1799,7 +1799,7 @@ void Sew_schedule::now_what
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord npcpos = npc->get_abs_tile_coord();
 					// Often want to get within 1 tile.
-	Actor_pathfinder_dist_client cost(1);
+	Actor_pathfinder_client cost(npc, 1);
 	switch (state)
 		{
 	case get_wool:
@@ -2082,7 +2082,7 @@ void Bake_schedule::now_what()
 {
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord npcpos = npc->get_abs_tile_coord();
-	Actor_pathfinder_dist_client cost(1);
+	Actor_pathfinder_client cost(npc, 1);
 	int delay = 100;
 
 	switch (state) {
@@ -2417,7 +2417,7 @@ void Forge_schedule::now_what
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord npcpos = npc->get_abs_tile_coord();
 					// Often want to get within 1 tile.
-	Actor_pathfinder_dist_client cost(1);
+	Actor_pathfinder_client cost(npc, 1);
 
 	switch (state) {
 	case put_sword_on_firepit:

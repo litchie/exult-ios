@@ -35,28 +35,17 @@ class Game_window;
  */
 class Actor_pathfinder_client : public Pathfinder_client
 	{
+	int dist;			// Distance for success.
 public:
-	Actor_pathfinder_client(int mf = 1 << 5)
+	Actor_pathfinder_client(int mf = 1 << 5, int d = 0) : dist(d)
 		{ set_move_flags(mf); }
+	Actor_pathfinder_client(Actor *npc, int d = 0);
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
 					// Figure cost for a single step.
 	virtual int get_step_cost(Tile_coord from, Tile_coord& to);
 					// Estimate cost between two points.
 	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
-	};
-
-/*
- *	Same as Actor_pathfinder_client, but allows success at given
- *	distance.
- */
-class Actor_pathfinder_dist_client : public Actor_pathfinder_client
-	{
-	int dist;			// Distance for success.
-public:
-	Actor_pathfinder_dist_client(int d = 0, int mf = 1 << 5) 
-		: Actor_pathfinder_client(mf), dist(d)
-		{  }
 					// Is tile at the goal?
 	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
 	};

@@ -29,6 +29,19 @@
 #include "actors.h"
 
 /*
+ *	Create for given NPC.
+ */
+
+Actor_pathfinder_client::Actor_pathfinder_client
+	(
+	Actor *npc, 
+	int d
+	) : dist(d)
+	{
+	set_move_flags(npc->get_type_flags());
+	}
+
+/*
  *	Figure when to give up.
  */
 
@@ -153,13 +166,14 @@ int Actor_pathfinder_client::estimate_cost
  *	Is tile at goal?
  */
 
-int Actor_pathfinder_dist_client::at_goal
+int Actor_pathfinder_client::at_goal
 	(
 	Tile_coord& tile,
 	Tile_coord& goal
 	)
 	{
-	return tile.distance(goal) <= dist;
+	return tile.distance(goal) <= dist &&
+		(goal.tz == -1 || tile.tz == goal.tz);
 	}
 
 /*
