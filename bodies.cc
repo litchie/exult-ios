@@ -48,11 +48,11 @@ short Body_lookup::table[] = {
 	716,	762,	2,	 // bird
 	495,	892,	18,	 // cat
 	498,	762,	2,	 // chicken
-	499,	762,	2,	 // corpser
+	499,	892,	21,	 // corpser
 	500,	778,	11,	 // cow
 	259,	762,	2,	 // fighter
 	154,	762,	22,	 // mage
-	247,	762,	24,	 // paladin
+	247,	762,	23,	 // paladin
 	401,	762,	25,	 // pirate
 	501,	762,	2,	 // cyclops
 	502,	778,	12,	 // deer
@@ -93,11 +93,11 @@ short Body_lookup::table[] = {
 	525,	762,	2,	 // sea serpent
 	970,	762,	14,	 // sheep
 	528,	762,	16,	 // skeleton
-	529,	762,	17,	 // slime
+	529,	762,	0,	 // slime (invisible).
 	530,	762,	18,	 // snake
 	865,	762,	19,	 // spider
 	753,	762,	20,	 // stone harpie
-	536,	778,	3,	 // tentacles
+	536,	762,	0,	 // tentacles (invisible).
 	806,	762,	23,	 // guard
 	533,	778,	4,	 // troll
 	534,	762,	2,	 // wisp
