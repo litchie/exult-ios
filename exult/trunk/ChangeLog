@@ -1,3 +1,6 @@
+2002-01-25  Darke  <darkepaw@users.sourceforge.net>
+	* mapedit/, usecode/compiler/: Namespaces.
+
 2002-01-24  Ryan Nunn  <triforce@merlin.net.au>
 	* server/servewin32.cc : Accidently force WinNT/2K/XP to use the Win9x
 	  comms.
