@@ -34,10 +34,10 @@ short Actor_gump_object::heartx = 122, Actor_gump_object::hearty = 114;
 short Stats_gump_object::textx = 123;
 short Stats_gump_object::texty[10] = {17, 26, 35, 46, 55, 67, 76, 86,
 							95, 104};
-short Slider_gump_object::leftbtnx = 20;
-short Slider_gump_object::rightbtnx = 40;
-short Slider_gump_object::btny = 5;
-int Slider_gump_object::val = 0;
+short Slider_gump_object::leftbtnx = 31;
+short Slider_gump_object::rightbtnx = 103;
+short Slider_gump_object::btny = 14;
+short Slider_gump_object::diamondy = 6;
 
 /*
  *	Is a given screen point on this button?
@@ -66,6 +66,7 @@ void Gump_button::push
 	{
 	pushed = 1;
 	parent->paint_button(gwin, this);
+	gwin->set_painted();
 	}
 
 /*
@@ -79,6 +80,7 @@ void Gump_button::unpush
 	{
 	pushed = 0;
 	parent->paint_button(gwin, this);
+	gwin->set_painted();
 	}
 
 /*
@@ -90,7 +92,7 @@ void Checkmark_gump_button::activate
 	Game_window *gwin
 	)
 	{
-	gwin->remove_gump(parent);	// (This kills ourself.)
+	parent->close(gwin);
 	}
 
 /*
@@ -178,7 +180,7 @@ Gump_object::Gump_object
 		break;
 	case SLIDER:
 		object_area = Rectangle(0, 0, 0, 0);
-		checkx = 6; checky = 6;
+		checkx = 6; checky = 30;
 		break;
 	default:
 					// Character pictures:
@@ -396,6 +398,18 @@ void Gump_object::paint
 						obj->get_framenum());
 		}
 	while (obj != last_object);
+	}
+
+/*
+ *	Close and delete.
+ */
+
+void Gump_object::close
+	(
+	Game_window *gwin
+	)
+	{
+	gwin->remove_gump(this);
 	}
 
 /*
@@ -648,8 +662,14 @@ void Slider_gump_object::set_val
 	int newval
 	)
 	{
-		//++++++++++
-	diamondx = 20;
+	val = newval;
+					// Min., max. positions of diamond.
+	static int xmin = 35, xmax = 91;
+	static int xdist = xmax - xmin + 1;
+	diamondx = xmin + ((val - min_val)*xdist)/(max_val - min_val);
+	Game_window *gwin = Game_window::get_game_window();
+	paint(gwin);
+	gwin->set_painted();
 	}
 
 /*
@@ -662,8 +682,8 @@ Slider_gump_object::Slider_gump_object
 	int mival, int mxval,		// Value range.
 	int step,			// Amt. to change by.
 	int defval			// Default value.
-	) : Gump_object(0, initx, inity, STATSDISPLAY),
-	    min_val(mival), max_val(mxval), step_val(step)
+	) : Modal_gump_object(0, initx, inity, SLIDER),
+	    val(defval), min_val(mival), max_val(mxval), step_val(step)
 	{
 	left_arrow = new Slider_gump_button(this, leftbtnx, btny, SLIDERLEFT);
 	right_arrow = new Slider_gump_button(this, rightbtnx, btny, 
@@ -706,6 +726,7 @@ void Slider_gump_object::paint
 	Game_window *gwin
 	)
 	{
+	const int textx = 128, texty = 7;
 					// Paint the gump itself.
 	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
 					// Paint red "checkmark".
@@ -713,4 +734,49 @@ void Slider_gump_object::paint
 					// Paint buttons.
 	paint_button(gwin, left_arrow);
 	paint_button(gwin, right_arrow);
+					// Paint slider diamond.
+	gwin->paint_gump(x + diamondx, y + diamondy, SLIDERDIAMOND, 0);
+					// Print value.
+  	Paint_num(gwin, val, x + textx, y + texty);
+	}
+
+/*
+ *	Handle mouse-down events.
+ */
+
+void Slider_gump_object::mouse_down
+	(
+	int mx, int my			// Position in window.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Gump_button *btn = Gump_object::on_button(gwin, mx, my);
+	if (btn)
+		pushed = btn;
+	else if (left_arrow->on_button(gwin, mx, my))
+		pushed = left_arrow;
+	else if (right_arrow->on_button(gwin, mx, my))
+		pushed = right_arrow;
+	else
+		pushed = 0;
+	if (pushed)
+		pushed->push(gwin);
+	}
+
+/*
+ *	Handle mouse-up events.
+ */
+
+void Slider_gump_object::mouse_up
+	(
+	int mx, int my			// Position in window.
+	)
+	{
+	if (!pushed)
+		return;
+	Game_window *gwin = Game_window::get_game_window();
+	pushed->unpush(gwin);
+	if (pushed->on_button(gwin, mx, my))
+		pushed->activate(gwin);
+	pushed = 0;
 	}

@@ -366,6 +366,7 @@ public:
 			return (0);
 		Game_object *prev_item = caller_item;
 		caller_item = obj;
+		answers.clear();
 		Usecode_value parm(0);	// They all seem to take 1 parm.
 		int ret = call_usecode_function(id, event, &parm);
 		caller_item = prev_item;

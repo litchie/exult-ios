@@ -1162,7 +1162,8 @@ void Game_window::show_items
 			<< '\n';
 		int tx, ty, tz;
 		obj->get_abs_tile(tx, ty, tz);
-		cout << "tx = " << tx << ", ty = " << ty << '\n';
+		cout << "tx = " << tx << ", ty = " << ty << ", quality = " <<
+			obj->get_quality() << '\n';
 		cout << "obj = " << (void *) obj << '\n';
 #if 0
 		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << '\n';
@@ -1434,6 +1435,18 @@ int Game_window::is_npc_text_pending
 	}
 
 /*
+ *	Clear text-pending flags.
+ */
+
+void Game_window::clear_text_pending
+	(
+	)
+	{
+	for (int i = 0; i < num_faces; i++)	// Clear 'pending' flags.
+		face_info[i]->text_pending = 0;
+	}
+
+/*
  *	Show the Avatar's conversation choices (and face).
  */
 
@@ -1485,8 +1498,7 @@ void Game_window::show_avatar_choices
 		}
 					// Terminate the list.
 	conv_choices[num_choices] = Rectangle(0, 0, 0, 0);
-	for (int i = 0; i < num_faces; i++)	// Clear 'pending' flags.
-		face_info[i]->text_pending = 0;
+	clear_text_pending();
 	painted = 1;
 	}
 
