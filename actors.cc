@@ -2885,8 +2885,9 @@ int Main_actor::step
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
-	Game_object *block;		// Just assume height==3.
-	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift, 
+	Game_object *block;
+	int ht = gwin->get_info(this).get_3d_height();
+	if (nlist->is_blocked(ht, old_lift, tx, ty, new_lift, 
 							get_type_flags()) &&
 	   (!(block = Game_object::find_blocking(t)) || block == this ||
 					// Try to get blocker to move aside.
@@ -3524,8 +3525,8 @@ int Npc_actor::step
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
-					// Just assume height==3.
-	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift, 
+	int ht = gwin->get_info(this).get_3d_height();
+	if (nlist->is_blocked(ht, get_lift(), tx, ty, new_lift, 
 							get_type_flags()))
 		{
 		if (schedule)		// Tell scheduler.

@@ -9,6 +9,8 @@
 	
 2001-09-29  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* usecode/siintrinsics.cc: Reduce_health added (x87).
+	* actors.cc: Use Avatar's real height.
 	* usecode/ucinternal.cc (Usecode_internal): Fixed ARRC bug in
 	cases where one or more values are empty arrays.
 
