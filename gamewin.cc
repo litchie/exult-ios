@@ -81,6 +81,7 @@
 #include "version.h"
 #include "drag.h"
 #include "glshape.h"
+#include "party.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -303,12 +304,14 @@ Game_window::Game_window
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
 	    win(0), map(new Game_map()), pal(0),
-	    usecode(0), combat(false), armageddon(false),
+	    usecode(0), combat(false), armageddon(false), 
+	    walk_in_formation(false),
             tqueue(new Time_queue()), time_stopped(0),
 	    std_delay(c_std_delay),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(new Effects_manager(this)), 
 	    gump_man(new Gump_manager), render(new Game_render),
+	    party_man(new Party_manager),
 	    painted(false), focus(true), 
 	    in_dungeon(0), ice_dungeon(false),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
@@ -375,8 +378,13 @@ Game_window::Game_window
 
 	config->value("config/gameplay/allow_double_right_move", str, "yes");
 	allow_double_right_move = str == "yes";
-	config->set("config/gameplay/allow_double_right_move", allow_double_right_move?"yes":"no", true);
-
+	config->set("config/gameplay/allow_double_right_move", 
+				allow_double_right_move?"yes":"no", true);
+					// New 'formation' walking?
+	config->value("config/gameplay/formation", str, "no");
+	walk_in_formation = (str == "yes");
+	config->set("config/gameplay/formation", walk_in_formation?"yes":"no",
+								true);
 	}
 
 /*
@@ -408,6 +416,7 @@ Game_window::~Game_window
 		delete [] save_names[i];
 	delete shape_man;
 	delete gump_man;
+	delete party_man;
 	delete background_noise;
 	delete tqueue;
 	delete win;
@@ -628,10 +637,10 @@ void Game_window::toggle_combat
 	combat = !combat;
 					// Change party member's schedules.
 	int newsched = combat ? Schedule::combat : Schedule::follow_avatar;
-	int cnt = usecode->get_party_count();
+	int cnt = party_man->get_count();
 	for (int i = 0; i < cnt; i++)
 		{
-		int party_member=usecode->get_party_member(i);
+		int party_member=party_man->get_member(i);
 		Actor *person=get_npc(party_member);
 		if (!person)
 			continue;
@@ -1604,7 +1613,10 @@ void Game_window::start_actor_alt
 	tx = (tx + c_num_tiles)%c_num_tiles;
 	ty = (ty + c_num_tiles)%c_num_tiles;
 	main_actor->walk_to_tile(tx, ty, lift, speed, 0);
-	main_actor->get_followers();
+	if (walk_in_formation && main_actor->get_action())
+		main_actor->get_action()->set_get_party(true);
+	else				// "Traditional" Exult walk:-)
+		main_actor->get_followers();
 	}
 
 /*
@@ -1701,8 +1713,9 @@ void Game_window::stop_actor
 		{
 		main_actor->stop();	// Stop and set resting state.
 //		paint();	// ++++++Necessary?
-		if (!gump_man->gump_mode() || gump_man->gumps_dont_pause_game())
-			main_actor->get_followers();
+		if (!gump_man->gump_mode() ||gump_man->gumps_dont_pause_game())
+//			if (!walk_in_formation)	// FOR NOW.
+				main_actor->get_followers();
 		}
 	}
 
@@ -1723,10 +1736,10 @@ void Game_window::teleport_party
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
 	set_all_dirty();
 
-	int cnt = usecode->get_party_count();
+	int cnt = party_man->get_count();
 	for (int i = 0; i < cnt; i++)
 		{
-		int party_member=usecode->get_party_member(i);
+		int party_member=party_man->get_member(i);
 		Actor *person = get_npc(party_member);
 		if (person && !person->is_dead() && 
 		    person->get_schedule_type() != Schedule::wait)
@@ -1766,10 +1779,10 @@ int Game_window::get_party
 	int n = 0;
 	if (avatar_too && main_actor)
 		list[n++] = main_actor;
-	int cnt = usecode->get_party_count();
+	int cnt = party_man->get_count();
 	for (int i = 0; i < cnt; i++)
 		{
-		int party_member = usecode->get_party_member(i);
+		int party_member = party_man->get_member(i);
 		Actor *person = get_npc(party_member);
 		if (person)
 			list[n++] = person;
@@ -2221,21 +2234,6 @@ void Game_window::double_clicked
 			combat = 0;
 			main_actor->set_target(obj);
 			toggle_combat();
-#if 0	/* Now done in Actor::reduce_health() +++++++++ */
-					// Being a bully?
-			bool bully = false;
-			if (npc)
-				{
-				int align = npc->get_alignment();
-				bully = npc->get_npc_num() > 0 &&
-					(align == Actor::friendly ||
-						align == Actor::neutral);
-				}
-			if (bully && obj->get_info().get_shape_class() ==
-							Shape_info::human &&
-			   Game::get_game_type() == BLACK_GATE)
-				attack_avatar(1 + rand()%3);
-#endif
 			return;
 			}
 		}
@@ -2356,24 +2354,20 @@ int Get_guard_shape
 	}
 
 /*
- *	Handle theft.
+ *	Find a witness to the Avatar's thievery.
+ *
+ *	Output:	->witness, or NULL.
+ *		closest_npc = closest one that's nearby.
  */
 
-void Game_window::theft
+Actor *Game_window::find_witness
 	(
+	Actor *& closest_npc		// Closest one returned.
 	)
 	{
-					// See if in a new location.
-	int cx = main_actor->get_cx(), cy = main_actor->get_cy();
-	if (cx != theft_cx || cy != theft_cy)
-		{
-		theft_cx = cx;
-		theft_cy = cy;
-		theft_warnings = 0;
-		}
 	Actor_vector npcs;			// See if someone is nearby.
 	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12);
-	Actor *closest_npc = 0;		// Look for closest NPC.
+	closest_npc = 0;		// Look for closest NPC.
 	int closest_dist = 5000;
 	Actor *witness = 0;		// And closest facing us.
 	int closest_witness_dist = 5000;
@@ -2405,6 +2399,27 @@ void Game_window::theft
 			closest_dist = dist;
 			}
 		}
+	return witness;
+	}
+
+/*
+ *	Handle theft.
+ */
+
+void Game_window::theft
+	(
+	)
+	{
+					// See if in a new location.
+	int cx = main_actor->get_cx(), cy = main_actor->get_cy();
+	if (cx != theft_cx || cy != theft_cy)
+		{
+		theft_cx = cx;
+		theft_cy = cy;
+		theft_warnings = 0;
+		}
+	Actor *closest_npc;
+	Actor *witness = find_witness(closest_npc);
 	if (!witness)
 		{
 		if (closest_npc && rand()%2)
@@ -2422,6 +2437,21 @@ void Game_window::theft
 		return;
 		}
 	gump_man->close_all_gumps();	// Get gumps off screen.
+	call_guards(witness);
+	}
+
+/*
+ *	Create a guard to arrest the Avatar.
+ */
+
+void Game_window::call_guards
+	(
+	Actor *witness			// ->witness, or 0 to find one.
+	)
+	{
+	Actor *closest;
+	if (!witness && !(witness = find_witness(closest)))
+		return;			// Nobody saw.
 	witness->say(first_call_guards, last_call_guards);
 					// Show guard running up.
 	int gshape = Get_guard_shape(main_actor->get_tile());

@@ -62,8 +62,6 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	int num_chunks;			// Total # of chunks.
 					// List of chunks we've read in.
 	std::vector<unsigned char *> chunklist;
-	int index0;			// Index (chunk) # of leftmost in
-					//   displayed list.
 	Chunk_info *info;		// An entry for each chunk drawn.
 	int info_cnt;			// # entries in info.
 	int locate_cx, locate_cy;	// Last chunk found by 'locate'.
@@ -101,8 +99,6 @@ public:
 		{ return selected >= 0; }
 	void set_selected_callback(void (*fun)())
 		{ sel_changed = fun; }
-	int get_selected()		// Get selected chunk, or return -1.
-		{ return selected >= 0 ? info[selected].num : -1; }
 	int get_count();		// Get # chunks we can display.
 					// Configure when created/resized.
 	static gint configure(GtkWidget *widget, GdkEventConfigure *event,

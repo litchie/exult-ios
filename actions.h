@@ -37,11 +37,15 @@ class Actor_action
 	{
 	static long seqcnt;		// Sequence # to check for deletion.
 protected:
+	bool get_party;			// At each step (of the Avatar), have
+					//   the party follow.
 	long seq;			// 'unique' sequence #.
 public:
-	Actor_action()
+	Actor_action() : get_party(false)
 		{ seq = ++seqcnt; }
 	virtual ~Actor_action() { }
+	void set_get_party(bool tf = true)
+		{ get_party = true; }
 	int handle_event_safely(Actor *actor, bool& deleted);
 					// Handle time event.
 	virtual int handle_event(Actor *actor) = 0;
@@ -85,7 +89,6 @@ protected:
 	PathFinder *path;		// Allocated pathfinder.
 private:
 	int original_dir;		// From src. to dest. (0-7).
-	int frame_index;		// Index within frame sequence.
 	int speed;			// Time between frames.
 	bool from_offscreen;		// Walking from offscreen.
 	Actor_action *subseq;		// For opening doors.

@@ -627,6 +627,24 @@ void Image_window::show_scaled_interlace
 }
 
 //
+// Scale2x (no blurring) by Andrea Mazzoleni.
+//
+void Image_window::show_scale2x_noblur
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+{
+	Scale2x_noblur ((unsigned char *)ibuf->get_bits(), x, y, w, h,
+				ibuf->line_width, ibuf->height,
+				(unsigned char *) surface->pixels, 
+				surface->pitch
+				);
+
+	SDL_UpdateRect(surface, scale*x, scale*y, scale*w, scale*h);
+}
+
+
+//
 // OpenGL 'scaler':
 //
 void Image_window::show_scaledOpenGL

@@ -9,36 +9,39 @@ Make sure you have the following things installed:
 	The Simple DirectMedia Library by Sam Lantinga of Loki Games.
 		http://www.libsdl.org
 
-- Timidity
-	If you want MIDI music. 
+- SDL_mixer
+	http://www.libsdl.org
+
+- Timidity patches
+	If you want MIDI music, SDL_mixer needs Timidity patches.
+	Your distribution might already provide these.
+
 		http://www.goice.co.jp/member/mo/timidity/
 	
 	Make sure you get the sound patches required by this (also 
 	known as GUS patches)
-		http://www.libsdl.org/projects/SDL_mixer/timidity/timidity.tar.gz
+	http://www.libsdl.org/projects/SDL_mixer/timidity/timidity.tar.gz
 
-- libkmid
-	If you have an FM soundcard
-		http://www.arrakis.es/~rlarrosa/libkmid.html
 
-If you're building from CVS you'll also need:
+If you're building from CVS you'll also need recent versions of:
 
 	automake
 	autoconf
 	libtool
 
-You can find these at any good GNU shop. Run the autogen.sh file to generate
-configure.
+Run the autogen.sh file to generate configure and other necessary scripts.
 
-Got everything ? Excellent. Now you can build your own binary of Exult.
+Got everything? Excellent. Now you can build your own binary of Exult.
 From the top directory type the following:
 
 	./configure
 	make
 
 If everything goes well, you should end up with an 'exult' binary.
-Just put that at the top of an existing installation of Ultima VII, and 
-run it. 
+See the documentation at http://exult.sourceforge.net/docs.php or 
+the included README file for information on how to create an exult
+config file to indicate where you have installed Ultima VII, and you're
+ready to run Exult.
 
 Please report any bugs on Exult's SourceForge bug-tracking system:
 
@@ -48,6 +51,11 @@ If you want to work on Exult, just contact us on the Exult developer's
 mailing list:
 
 	http://lists.sourceforge.net/mailman/listinfo/exult-general
+
+
+
+--------------------------------------------------
+
 
 Basic Installation
 ==================

@@ -96,6 +96,20 @@ public:
 	};
 
 /*
+ *	A static (persistent) variable.
+ */
+class Uc_static_var_symbol : public Uc_var_symbol
+	{
+public:
+	Uc_static_var_symbol(char *nm, int off) : Uc_var_symbol(nm, offset)
+		{  }
+					// Gen. code to put result on stack.
+	virtual int gen_value(vector<char>& out);
+					// Gen. to assign from stack.
+	virtual int gen_assign(vector<char>& out);
+	};
+
+/*
  *	A constant integer variable.
  */
 class Uc_const_int_symbol : public Uc_symbol
@@ -156,13 +170,18 @@ public:
  */
 class Uc_function_symbol : public Uc_symbol
 	{
+	static int last_num;		// Last 'usecode_num', so we can
+					//   assign automatically.
+public:
+					// Keep track of #'s used.
+	typedef std::map<int, Uc_symbol *> Sym_nums;
+private:
+	static Sym_nums nums_used;
 					// Note:  offset = Usecode fun. #.
 	std::vector<char *> parms;	// Parameters.
 	int usecode_num;		// Usecode function #.
 public:
-	Uc_function_symbol(char *nm, int num, std::vector<char *>& p)
-		: Uc_symbol(nm), parms(p), usecode_num(num)
-		{  }
+	Uc_function_symbol(char *nm, int num, std::vector<char *>& p);
 	const std::vector<char *>& get_parms()
 		{ return parms; }
 	int get_usecode_num()

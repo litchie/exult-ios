@@ -57,6 +57,20 @@ Shape_group::Shape_group
 	}
 
 /*
+ *	Remove i'th entry.
+ */
+
+void Shape_group::del
+	(
+	int i
+	)
+	{ 
+	assert(i >= 0 && i < size());
+	std::vector<int>::erase(begin() + i); 
+	file->modified = true;
+	}
+
+/*
  *	Swap two entries.
  */
 
@@ -68,6 +82,7 @@ void Shape_group::swap
 	int x0 = (*this)[i];
 	(*this)[i] = (*this)[i + 1];
 	(*this)[i + 1] = x0;
+	file->modified = true;
 	}
 
 /*
@@ -519,7 +534,7 @@ void ExultStudio::open_group_window
 	gtk_object_set_data(GTK_OBJECT(grpwin), "xml", xml);
 	gtk_object_set_data(GTK_OBJECT(grpwin), "browser", chooser);
 					// Set window title, name field.
-	string title("Exult Shape Group:  ");
+	string title("Exult Group:  ");
 	title += grp->get_name();
 	gtk_window_set_title(GTK_WINDOW(grpwin), title.c_str());
 	GtkWidget *field = glade_xml_get_widget(xml, "group_name");

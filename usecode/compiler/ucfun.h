@@ -45,11 +45,13 @@ class Uc_function
 					// Some intrinsic numbers:
 	static int add_answer, remove_answer, push_answers, pop_answers,
 		show_face, remove_face;
+	static int num_global_statics;
 	Uc_scope top;			// Top-level scope.
 	Uc_function_symbol *proto;	// Function declaration.
 	Uc_scope *cur_scope;		// Current scope.
 	int num_parms;			// # parameters.
 	int num_locals;			// Counts locals.
+	int num_statics;		// Counts local statics.
 					// Stack of loops (where 'break' can
 					//   be used.
 	vector<Uc_statement *> breakables;
@@ -109,6 +111,7 @@ public:
 					// Already declared?
 	static bool is_dup(Uc_scope *scope, char *nm);
 	Uc_var_symbol *add_symbol(char *nm);// Add var. to current scope.
+	void add_static(char *nm);	// Add static var. to current scope.
 	int add_function_symbol(Uc_function_symbol *fun)
 		{ return cur_scope->add_function_symbol(fun); }
 	static int add_global_function_symbol(Uc_function_symbol *fun)
@@ -118,6 +121,7 @@ public:
 					// Add int constant.
 	Uc_symbol *add_int_const_symbol(char *nm, int value);
 	static Uc_symbol *add_global_int_const_symbol(char *nm, int val);
+	static void add_global_static(char *nm);
 	int add_string(char *text);
 	int find_string_prefix(Uc_location& loc, const char *text);
 					// Start/end loop.

@@ -1,7 +1,80 @@
+2003-04-12  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* party.cc,gamewin.cc:  Experimental (and half-done) code to have
+	the party walk in formation.
+
+2003-04-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* party.h,party.cc,etc:  Moved party handler to new file/class,
+	which will possibly be used to implement 'formation' following later.
+
+2003-03-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/objnames.cc: Check that index is within valid list of names.
+
+2003-03-22  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* bgintrinsics.h,intrinsics.cc,gamewin.cc:  Implemented
+	'call_guards()' usecode intrinsic.
+
+2003-03-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamemap.cc: Quality 'okay-to-take' flag should override default,
+	so that food can be treated as 'stolen'.
+
+2003-03-18  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/egg.cc (Egg_object): Mark egg as 'hatched' even if it fails
+	the probability test.  (This is experimental.)
+
+2003-03-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* wuc.c: 256 bytes just isn't large enough for a static string buffer
+
+2003-03-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.cc: ignore fullscreen mode for --buildmap (in a hackish way)
+	* ucinternal.cc: fixed sleeping crash
+	* INSTALL: updated
+
+2003-03-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Various: Support for 'static' (persistent) usecode variables,
+	both local and global.
+	* usecode/compiler/ucparse.yy:  Can now use '.' instead of '->'.
+
+2003-03-06  Aurelien Marchand <artaxerxes@users.sourceforge.net>
+	* docs/usecode_bugs.txt: added a file for people interested in fixing some usecode bugs
+
+2003-03-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Spellbook_gump.cc: bookmark doesn't stop clicking on buttons
+
+2003-03-05  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/objbrowse.h (public): Get_selected() now returns correct
+	index when scrolled.  Fixed 'remove' bug in EStudio groups.
+
+2003-03-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.cc: fixed --buildmap
+	* */.cvsignore: added some misc files to .cvsignore
+	* sigame.cc, bggame.cc: use unicode translation for avatar name input
+
+2003-03-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* imagewin/scale.cc,etc.: Added Andrea Mazzoleni "Scale2X" scaler.
+
 2003-03-03  Tristan Tarrant <nadir@users.sourceforge.net>
 	* mapedit/studio.cc: implemented GtkTreeView stuff
 	* mapedit/exult_studio.glade: changes for above
-	
+
+2003-02-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamerend.cc (using): Draw modal gumps after text.
+
+	* combat.cc (Combat): Only play victory music when there are no
+	more enemies around.  Also, play one of two pieces.
+
+2003-02-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* conversation.cc: don't use BG multiracial hack if not in BG
+
 2003-02-25  Tristan Tarrant <nadir@users.sourceforge.net>
 	* Exult Studio compiles and runs with GTK+ 2.0. It doesn't work quite
 	  yet. I've ported GtkText to GtkTextView, but I still need to port to

@@ -48,9 +48,9 @@ new_island_egg0 0x740 ()
 		npc = party[UI_get_random(party_cnt)];
 	if (npc)
 		{
-		npc->say("Do I detect . . .~",
+		npc.say("Do I detect . . .~",
 			". . . the smell of Usecode?");
-		npc->hide();
+		npc.hide();
 		}
 	}
 
@@ -62,12 +62,12 @@ new_island_egg1 0x741 ()
 	{
 	if (!gflags[CHURCH_CARROTS])
 		{
-		AVATAR->say("Mmmm... They do make a tasty snack.");
+		AVATAR.say("Mmmm... They do make a tasty snack.");
 		return;
 		}
 	if (!UI_get_item_flag(AMY, IN_PARTY))
 		{
-		AVATAR->say("There's something hidden here, but I cannot",
+		AVATAR.say("There's something hidden here, but I cannot",
 				" find it.  If only Amy were here.");
 		return;
 		}
@@ -77,9 +77,9 @@ new_island_egg1 0x741 ()
 					// Place on top of egg.
 	UI_update_last_created(UI_get_object_position(item));
 	UI_remove_item(item);		// Done with this egg.
-	AMY->say("Look!  There appears to be a book here!");
-	AVATAR->say("Can it be...");
-	AMY->say("Yes!  It is!  The lost FAQ!");
+	AMY.say("Look!  There appears to be a book here!");
+	AVATAR.say("Can it be...");
+	AMY.say("Yes!  It is!  The lost FAQ!");
 	}
 
 /*
@@ -97,12 +97,12 @@ DrCode 0x564 ()
 	var answers;
 	if (gflags[TALKED_DRCODE])
 		{
-		item->say("I knew you would return!");
+		item.say("I knew you would return!");
 		answers = "How??";
 		}
 	else
 		{
-		item->say("Hello!  How may I help you?");
+		item.say("Hello!  How may I help you?");
 		gflags[TALKED_DRCODE] = true;
 		answers = ["Name", "Job"];
 		}
@@ -123,13 +123,13 @@ DrCode 0x564 ()
 		if (gflags[WILL_FIND_FAQ] &&
 		    UI_get_npc_object(AMY) in UI_get_party_list())
 			{
-			AMY->say("Say, Dr. Code...~",
+			AMY.say("Say, Dr. Code...~",
 			    "You certainly have a lot of papers and books ",
 						"strewn about");
-			item->say("Er, yes, I suppose I do.");
-			AMY->say("Are you sure the FAQ isn't somewhere ",
+			item.say("Er, yes, I suppose I do.");
+			AMY.say("Are you sure the FAQ isn't somewhere ",
 							"amongst them?");
-			AMY->hide();
+			AMY.hide();
 			say("Dr.Code looks away from Amy as he hides his ",
 					"shaking hands in his pockets.");
 			add("FAQ");
@@ -149,18 +149,18 @@ DrCode 0x564 ()
 		break;
 	case "FAQ" (remove):
 		say("I don't know what you are talking about!");
-		AMY->say("Are you sure?");
-		AMY->hide();
+		AMY.say("Are you sure?");
+		AMY.hide();
 		say("YES!  I can stand the guilt no more!");
 		say("But... I only meant to borrow it.  I, er, hoped that it ",
 			"would help me with my research into Usecode.");
 		say("Dominik was asleep, and I planned to return it before he",
 							" awoke");
-		AVATAR->say("May we have it back then?");
-		AVATAR->hide();
+		AVATAR.say("May we have it back then?");
+		AVATAR.hide();
 		say("I'm afraid to tell you...~ ...it's gone!");
 		}
-	item->hide();
+	item.hide();
 	}
 
 /*
@@ -188,7 +188,7 @@ Dominik 0x565 ()
 		}
 	if (event != 1)
 		return;
-	item->say("I'm very busy, so please be brisk!");
+	item.say("I'm very busy, so please be brisk!");
 	var answers;
 	if (gflags[ASKED_ABOUT_PYRO])
 		answers = ["Name", "Job", "Where is Pyro-X?"];
@@ -242,7 +242,7 @@ Dominik 0x565 ()
 		say("You wait while he looks on his desk.");
 		say("You wait a bit more while he hastily pulls out the drawers and peers in each.");
 		say("Finally, he turns back, looking markedly upset.");
-		say("It's gone!!  Where can it be?~",  
+		say("It's gone!!  Where can it be?~",
 							"He turns to you.");
 		say("Avatar!  It's vital that the FAQ be recovered.",
 				"  Our users will be lost without it!");
@@ -261,14 +261,14 @@ Dominik 0x565 ()
 		say("I KNEW you would reconsider.",
 				"  Thank you, Avatar!");
 	case "Found the FAQ" (remove):
-		AVATAR->say("Thanks to Amy's sharp eyes, we have found",
+		AVATAR.say("Thanks to Amy's sharp eyes, we have found",
 							" the missing FAQ.");
-		AVATAR->hide();
+		AVATAR.hide();
 		UI_remove_item(faq);
-		item->say("At last, I can rest, assured that our users' ",
+		item.say("At last, I can rest, assured that our users' ",
 				" questions shall be answered.");
 		Add_experience(20);
-		item->say("And, Avatar... I believe the presence of the FAQ",
+		item.say("And, Avatar... I believe the presence of the FAQ",
 			" may even have increased thy knowledge!");
 		UI_set_npc_prop(AVATAR, 2, 3);	// Gain 3 intel. pts.
 		gflags[RETURNED_FAQ] = true;
@@ -279,7 +279,7 @@ Dominik 0x565 ()
 	case "Who is Colourless?" (remove):
 		say("Read the FAQ!!!");
 		}
-	item->hide();
+	item.hide();
 	}
 /*
  *	'Willem' on island.
@@ -304,10 +304,10 @@ Willem 0x566 ()
 		}
 	if (event != 1)
 		return;
-	item->say("Hello Avatar!");
+	item.say("Hello Avatar!");
 		add("Name");
 		add("Job");
-		add("Bye");	
+		add("Bye");
 		converse
 		{
 		if (response == "Bye")
@@ -335,7 +335,7 @@ Willem 0x566 ()
 			UI_remove_answer("Tell me about Pagan");
 			}
 		}
-	item->hide();
+	item.hide();
 	}
 /*
  *	'Fingolfin' on island.
@@ -360,10 +360,10 @@ Fingolfin 0x567 ()
 		}
 	if (event != 1)
 		return;
-	item->say("Hello Avatar!");
+	item.say("Hello Avatar!");
 		add("Name");
 		add("Job");
-		add("Bye");	
+		add("Bye");
 		converse
 		{
 		if (response == "Bye")
@@ -384,7 +384,7 @@ Fingolfin 0x567 ()
 			UI_remove_answer("What is Pentagram?");
 			}
 		}
-	item->hide();
+	item.hide();
 	}
 /*
  *	'Amy' on island.
@@ -409,13 +409,13 @@ Amy 0x568 ()
 		}
 	if (event == 2)			// Looking in bushes by Nadir.
 		{
-		item->say("Avatar!");
-		AVATAR->say("Yes?  What hast thou found?");
-		item->say("There are some strange marks on the ground.");
-		item->say("Perhaps they were made by a rabbit.");
+		item.say("Avatar!");
+		AVATAR.say("Yes?  What hast thou found?");
+		item.say("There are some strange marks on the ground.");
+		item.say("Perhaps they were made by a rabbit.");
 		gflags[RABBIT_TRACKS] = true;
-		AVATAR->hide();
-		item->hide();
+		AVATAR.hide();
+		item.hide();
 		return;
 		}
 	if (event != 1)
@@ -424,10 +424,10 @@ Amy 0x568 ()
 		{			// First time.
 		say("You see a young lady with blonde hair.",
 			"  She looks a bit annoyed.");
-		item->say("And what are you after?");
+		item.say("And what are you after?");
 		}
 	else
-		item->say("Hello again Avatar!");
+		item.say("Hello again Avatar!");
 	var answers = "Name";
 	var party = UI_get_party_list();
 	if (item in party)
@@ -510,7 +510,7 @@ Amy 0x568 ()
 			break;
 			}
 		}
-	item->hide();
+	item.hide();
 	}
 
 /*
@@ -538,11 +538,11 @@ Colourless 0x569 ()
 		}
 	if (event != 1)
 		return;
-	item->say("You shouldn't be able to see me");
+	item.say("You shouldn't be able to see me");
 	if (gflags[ASKED_WHERE_PYRO])
 		{
 		add("Name");
-		add("Job");		
+		add("Job");
 		add("Do you know Pyro-X?");
 		}
 		else
@@ -550,7 +550,7 @@ Colourless 0x569 ()
 		add("Name");
 		add("Job");
 		}
-		add("Bye");	
+		add("Bye");
 		converse
 		{
 		if (response == "Bye")
@@ -585,7 +585,7 @@ Colourless 0x569 ()
 			UI_remove_answer("Do you know Pyro-X?");
 		}
 		}
-	item->hide();
+	item.hide();
 	}
 
 /*
@@ -613,13 +613,13 @@ Darke 0x56A ()
 		}
 	if (event != 1)
 		return;
-	item->say("Beware of my sharp teeth!");
+	item.say("Beware of my sharp teeth!");
 	add("Sharp teeth?");
 	add("Name");
 	add("Job");
 	if (gflags[WILL_FIND_FAQ])
 		add("FAQ");
-	add("Bye");	
+	add("Bye");
 		converse
 		{
 		if (response == "Bye")
@@ -631,7 +631,8 @@ Darke 0x56A ()
 			}
 		else if (response == "Job")
 			{
-			say("I make USECODE");
+			say("Annoying dragons, of course. And sometimes I make USECODE");
+			add("Dragons?");
 			add("Usecode?");
 			}
 		else if (response == "Sharp teeth?")
@@ -646,26 +647,26 @@ Darke 0x56A ()
 			if (gflags[CHURCH_CARROTS])
 				say("I've already told you about the ",
 					"carrots.");
-			else if (gflags[RABBIT_TRACKS] && 
+			else if (gflags[RABBIT_TRACKS] &&
 					UI_get_item_flag(AMY, IN_PARTY))
 				{
-				AMY->say("We're those your tracks",
+				AMY.say("We're those your tracks",
 					" over by the shrine?");
-				AMY->hide();
-				item->say("Perhaps....");
-				item->say("Am I in trouble?");
-				AVATAR->say("Not if you help us.");
-				item->say("I was looking for carrots, ",
+				AMY.hide();
+				item.say("Perhaps....");
+				item.say("Am I in trouble?");
+				AVATAR.say("Not if you help us.");
+				item.say("I was looking for carrots, ",
 					" but all I found was a discarded ",
 					"book among the bushes.");
-				item->say("It had lots of information, ",
+				item.say("It had lots of information, ",
 					" but nothing about where to find ",
 					"carrots.  So I didn't care ",
 					"much for it.");
-				AVATAR->say("Well, where is it now?");
-				item->say("Uh, er, I, er, uh...");
-				AVATAR->hide();
-				item->say("...I don't know!",
+				AVATAR.say("Well, where is it now?");
+				item.say("Uh, er, I, er, uh...");
+				AVATAR.hide();
+				item.say("...I don't know!",
 					"  But I did find some nice carrots ",
 					" behind that church.");
 				gflags[CHURCH_CARROTS] = true;
@@ -681,11 +682,80 @@ Darke 0x56A ()
 			{
 			say("He got mad because he looked at the evil Usecode!",
 			"  Don't believe what he says!");
-			UI_remove_answer("Dr.Code");
+			UI_remove_answer("Dr.Code?");
+			}
+		else if (response == "Dragons?")
+			{
+			say("You know, those big, scaly things with wings.",
+			" One dragon I tend to annoy in particular.");
+			UI_remove_answer("Dragons?");
+			add("Big?");
+			add("Annoy?");
+			}
+		else if (response == "Big?")
+			{
+			say("Large? Huge? Think that size. Although a number are quite a bit smaller for some reason.",
+			" Maybe a genetic defect.");
+			UI_remove_answer("Big?");
+			}
+		else if (response == "Annoy?")
+			{
+			say("Annoy? Well I generally harass with buckets of paint more then annoy, per se.",
+			" The silly thing thinks it's 'Colourless', but everyone knows it's just transparent.");
+			UI_remove_answer("Annoy?");
+			add("Colourless?");
+			}
+		else if (response == "Colourless?")
+			{
+			say("One of those dragon things. Rather puny in size in comparison to his racial cousins,",
+			" but generally non-threatening, although he does tend to threaten and bluster a lot.",
+			" Especially when I paint him in fluro colours.");
+			UI_remove_answer("Colourless?");
+			add("Threaten?");
+			}
+		else if (response == "Threaten?")
+			{
+			say("More of a bluster and intimidation really. Just general gripes like,",
+			" 'don't do that' and _continual_ complaints about my colour pallete choices",
+			" when I'm decorating him.",
+			" He's such an incredibly picky dragon.");
+			UI_remove_answer("Threaten?");
+			add("Decorating?");
+			}
+		else if (response == "Decorating?")
+			{
+			say("Nothing fancy, just adding a few dashes of colour to an otherwise drab",
+			" and dreary 'transparent'coloured dragon");
+			UI_remove_answer("Decorating?");
+			add("Drab?");
+			}
+		else if (response == "Drab?")
+			{
+			say("Well he's just a little dull and monotonous, no real differences in his",
+			" colour over his entire body.",
+			" I think giving him say, yellow wings, green paws, and a red muzzle would look rather cute.");
+			UI_remove_answer("Drab?");
+			add("Cute?");
+			}
+		else if (response == "Cute?")
+			{
+			say("Well... really it's more close to 'handsome' then 'cute'.",
+			" But since he lacks a nice coat of fur, he can't really be handsome,",
+			" so cute in a",
+			" pet-iguana-that's-rather-larger-then-",
+			"an-iguana-and-doesn't-eat-insects",
+			" kind of way, he's rather stuck at.");
+			UI_remove_answer("Cute?");
+			add("Fur?");
+			}
+		else if (response == "Fur?")
+			{
+			say("Unfortunately I must heed the call of sleep now. Goodnight.");
+			UI_remove_answer("Fur?");
 			break;
 			}
 		}
-	item->hide();
+	item.hide();
 	}
 /*
  *	'EsBee_Ex' on island.
@@ -714,17 +784,17 @@ EsBee_Ex 0x56B ()
 		return;
 	if (gflags[ASKED_KNOW_PYRO])
 		{
-		item->say("Ah, did you find my twin?");
+		item.say("Ah, did you find my twin?");
 		add("You are Pyro-X!");
 		}
 	else
 		{
- 		item->say("Hello, did you see my evil twin?!");
+ 		item.say("Hello, did you see my evil twin?!");
 		add("Evil twin?");
 		add("Name");
 		add("Job");
 		add("Bye");
-		}	
+		}
 		converse
 		{
 		if (response == "Bye")
@@ -746,12 +816,12 @@ EsBee_Ex 0x56B ()
 			}
 		else if (response == "Pyro-X")
 			{
-			say("I've never seen him before, ", 
+			say("I've never seen him before, ",
 			"but people blame him for all sorts of explosions ",
 			"and burnt houses. People say ",
 			"it's me but I say it is my evil twin.");
 			gflags[ASKED_ABOUT_PYRO] = true;
-			UI_remove_answer("Pyro-X");			
+			UI_remove_answer("Pyro-X");
 			}
 		else if (response == "You are Pyro-X!")
 			{
@@ -765,7 +835,7 @@ EsBee_Ex 0x56B ()
 			break;
 			}
 		}
-	item->hide();
+	item.hide();
 	}
 
 /*
@@ -796,7 +866,7 @@ Nadir 0x56C ()
 		return;
 	say("A guard paces beside a shrine.  He stands at attention as you ",
 						"approach.");
-	nadir->say("Hail, traveller!");
+	nadir.say("Hail, traveller!");
 	say("Hast thou come to study and meditate?");
 	var answers = ["Name", "Job", "Study?"];
 	if (gflags[WILL_FIND_FAQ])
@@ -817,21 +887,21 @@ Nadir 0x56C ()
 	case "Study?" (remove):
 		say("Gaze upon the mirror... ",
 			"The secrets of the universe dwell within!");
-		AVATAR->say("Thanks, but maybe later.");
-		nadir->say("Suit thyself.");
-		AVATAR->hide();
+		AVATAR.say("Thanks, but maybe later.");
+		nadir.say("Suit thyself.");
+		AVATAR.hide();
 	case "Source?" (remove):
 		say("The source controls our fates.");
 		if (gflags[TALKED_DRCODE])
 			{
-			AVATAR->say("But Dr.Code says Usecode does that.");
-			nadir->say("That is so.");
+			AVATAR.say("But Dr.Code says Usecode does that.");
+			nadir.say("That is so.");
 			say("...and yet it is not.");
 			say("...actually, it is but partly so.");
 			say("But Dr.Code isn't quite right in the head.");
 			say("He wanders around muttering, occasionally ",
 				"dropping documents amongst the bushes.");
-			AVATAR->hide();
+			AVATAR.hide();
 			if (UI_get_npc_object(AMY) in UI_get_party_list())
 				script AMY
 					{
@@ -845,12 +915,12 @@ Nadir 0x56C ()
 					}
 			}
 	case "FAQ" (remove):
-		AVATAR->say("Hast thou happened to have seen the FAQ?");
-		nadir->say("Others may deal with documentation, but I ",
+		AVATAR.say("Hast thou happened to have seen the FAQ?");
+		nadir.say("Others may deal with documentation, but I ",
 				"concern myself only with the source.");
-		AVATAR->hide();
+		AVATAR.hide();
 		}
-	nadir->hide();
+	nadir.hide();
 	}
 /*
  *	'Kirben' on island.
@@ -875,13 +945,13 @@ Kirben 0x56D ()
 		}
 	if (event != 1)
 		return;
-	if (!UI_get_item_flag(item, IF_MET))		
+	if (!UI_get_item_flag(item, IF_MET))
 		{			// First time.
 		say("You see a scribe with many different scrolls around him.");
-		item->say("Welcome to the Open Church of SourceForge Island!");
+		item.say("Welcome to the Open Church of SourceForge Island!");
 		}
 	else
-		item->say("Hello Avatar!");
+		item.say("Hello Avatar!");
 	var answers;
 	answers = ["Name", "Job"];
 	answers = [answers, "Bye"];
@@ -901,7 +971,7 @@ Kirben 0x56D ()
 				" Ask her for more information.");
 		case "Open Church?" (remove):
 			say("In the Open Church of Sourceforge Island everyone ",
-				"can preach his beliefs as long as he makes them freely available ", 
+				"can preach his beliefs as long as he makes them freely available ",
 				"to everyone. ");
 			say("Do you want to know more?");
 			if (Ask_yesno())
@@ -918,7 +988,7 @@ Kirben 0x56D ()
 			say("You can find the written beliefs of our people in the scrolls",
 				" in this church.");
 		}
-	item->hide();
+	item.hide();
 	}
 /*
  *	'BillyG' on island.
@@ -943,13 +1013,13 @@ BillyG 0x56E ()
 		}
 	if (event != 1)
 		return;
-	if (!UI_get_item_flag(item, IF_MET))		
+	if (!UI_get_item_flag(item, IF_MET))
 		{			// First time.
 		say("You see a pathetic man with huge round glasses in his face.");
-		item->say("Hello Avatar!");
+		item.say("Hello Avatar!");
 		}
-	else 
-		item->say("Hello again!");
+	else
+		item.say("Hello again!");
 		var answers;
 		answers = ["Name", "Job"];
 		answers = [answers, "Bye"];
@@ -973,10 +1043,10 @@ BillyG 0x56E ()
 		case "Open Church of fools?" (remove):
 			say("They stand in my way and try to resist me. ",
 				"They think they can order me around to wash their windows but",
-				" soon they will be mine."); 
+				" soon they will be mine.");
 		case "How?" (remove):
 			say("Pretty simple. I'm going to save my money and ",
 				" soon I'll have enough to buy every window on this island.");
 		}
-	item->hide();
+	item.hide();
 	}

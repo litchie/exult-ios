@@ -1,18 +1,17 @@
 Exult Documentation
-last changed: 24 October 2002(GMT)
+last changed: 04 March 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 24 October 2002
-0.2. - 11 September 2002
-0.3. - 24 July 2002
-0.4. - 18 June 2002
+0.1. - 04 March 2003
+0.2. - 24 October 2002
 
 1. Introduction
-1.1. What is Exult?
-1.2. Terms we use in regard to Exult and Ultima 7
+1.1. Important Notice
+1.2. What is Exult?
+1.3. Terms we use in regard to Exult and Ultima 7
 
 2. Configurations
 2.1. Installation
@@ -45,8 +44,9 @@ The latest version of this document can be found at http://exult.sourceforge.net
 6.3. Video Options
 6.4. Audio Options
 6.5. Gameplay Options
-6.6. Quit to Menu
-6.7. Quit
+6.6. Combat Options
+6.7. Quit to Menu
+6.8. Quit
 
 7. OS specific notes
 7.1. How to get the Zaurus port working
@@ -60,38 +60,18 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 24 October 2002
+0.1. - 04 March 2003
+* 1.1. Important Notice this doc is for 1.1.x and not for 1.0 anymore.
+* 2.2. Settings in exult.cfg added more combat options and Scale2x.
+* 4.2. Scaler added Scale2x and information on it.
+* 6.6. Combat Options Some explanations for the combat options.
+
+
+
+0.2. - 24 October 2002
 * 2.2. Settings in exult.cfg settings in exult.cfg are the same on all OS.
 * 2.3. Path-Settings same as above.
 * 3.1. Music rewrote the FM synth emulation part a bit.
-* 7.1. How to get the Zaurus port working quick guide where the necessary files can be found.
-
-
-
-0.2. - 11 September 2002
-* 2.2. Settings in exult.cfg added a couple of gameplay options and the FM synth emulation.
-* 3.1. Music added FM Synth.
-* 6.4. Audio Options added FMSynth to conversions.
-* 6.5. Gameplay Options also added a couple of options.
-
-
-
-0.3. - 24 July 2002
-* 2.2. Settings in exult.cfg Walk_after_teleport removed (it is always enabled now)
-* 2.4. Command line options added -c and --nomenu, fixed --buildmap.
-* 5.1. Movement Keyboard walking implemented.
-* 5.2. Keyboard commands walking keys added.
-* 5.3. Cheat keys scroll the world now with Alt-arrow keys.
-* 6.5. Gameplay Options Walk_after_teleport removed here as well
-
-
-
-0.4. - 18 June 2002
-* 2.2. Settings in exult.cfg added disablepause for digital music.
-* 3.1. Music You can play Music either through MIDI or Digital Music.
-* 3.4. Digital Music Digital Music now works and is documented.
-* 3.8. Linux and Audio timidity.cfg needs to be where the exult executable is.
-* 5.2. Keyboard commands 'Ctrl+c' is now used for "copy" and 'Insert' for create object.
 
 
 
@@ -99,13 +79,17 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 1. Introduction
-1.1. What is Exult?
+1.1. Important Notice
+This documentation is for the work-in-progress 1.1.x version of Exult. Documentation for the 1.0 version can be found where you installed the release.
+
+
+1.2. What is Exult?
 Ultima 7, an RPG from the early 1990's, still has a huge following. But, being a DOS game with a very nonstandard memory manager, it is difficult to run it on the latest computers. Exult is a project to create an Ultima 7 game engine that runs on modern operating systems, capable of using the data and graphics files that come with the game.
 Exult is being developed in C++ under Linux, MacOS and Windows using the SDL library to make porting to other platforms relatively easy. The current version supports much of the game's plot, allowing you to talk to NPCs, use items, solve quests, and even fight monsters. Music, speech, and the full introduction are also implemented. This, and further development, is only possible due to the work done by other fans who have decoded the various Ultima 7 data files, especially Gary Thompson, Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag.
 Exult aims to let those people who own Ultima 7 (copyright 1993) play the game on modern hardware, in as close to (or perhaps even surpassing) its original splendor as is possible. You need to own "Ultima 7: The Black Gate" "Ultima 7: Serpent Isle" and all the add-ons (not required to run but we require you to own them if you use them) in order to use Exult, and we encourage you to buy a legal copy.
 
 
-1.2. Terms we use in regard to Exult and Ultima 7
+1.3. Terms we use in regard to Exult and Ultima 7
 We are using many terms in this documentation, the FAQ and other documentation files that people may have difficulties to understand. Here we will try to give some explanations.
 * BG, SI, FoV or SS: we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle" as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.
 * eggs: these are trip-wires that cause monsters to spawn, execute scripts, play music, change weather, trigger traps, teleport when you get near them.
@@ -224,7 +208,7 @@ jmsisfx.flx
 <trace>
 <usecode>
 no
-						**options are yes/no/verbose. This is used to trace the 
+						**options are yes/no/verbose. This is used to trace the
 						executed Usecode (you shouldn't need this unless you are a programmer).
 						
 </usecode>
@@ -282,10 +266,23 @@ no
 <combat>
 <difficulty>
 0
-						**0 is default, negative values make combat easier, positive makes it 
+						**0 is default, negative values make combat easier, positive makes it
 						harder. It affects the chance of a hit, and the HP's lost if a hit occurs.
+						Ranges from -3 to 3 (easiest to hardest)
 						
 </difficulty>
+<mode>
+original
+						**original or keypause. On keypause the game pauses when you hit space
+						so you can make changes in combat.
+						
+</mode>
+<show_hits>
+no
+						**no is default. With yes you see the hitpoints of NPCs in brackets 
+						after their name.
+						
+</show_hits>
 </combat>
 <gumps_dont_pause_game>
 no
@@ -294,14 +291,14 @@ no
 </gumps_dont_pause_game>
 <step_tile_delta>
 8
-						**Controls how far the Avatar will move before Exult recalculates the 
-						Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other 
+						**Controls how far the Avatar will move before Exult recalculates the
+						Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other
 						problems.
 						
 </step_tile_delta>
 <allow_double_right_move>
 yes
-						**double right-click lets the Avatar walk automatically 
+						**double right-click lets the Avatar walk automatically
 						to where you clicked.
 						
 </allow_double_right_move>
@@ -309,7 +306,7 @@ yes
 <audio>
 <enabled>
 yes
-						**enable/disable all audio - this takes precedence over the 
+						**enable/disable all audio - this takes precedence over the
 						other audio settings (you can change this in game via
 						Esc - the setting is saved)
 						
@@ -317,13 +314,13 @@ yes
 <disablepause>
 no
 						**enable/disable the pausing of SFX and digital music when the
-						game pauses (e.g. not the focused window). MIDI music is currently not paused. 
+						game pauses (e.g. not the focused window). MIDI music is currently not paused.
 						
 </disablepause>
 <force_waveout>
 no
 						**yes forces Exult to use waveout instead of directsound. This may
-						fix problems some people have with Exult and sound in Windows 
+						fix problems some people have with Exult and sound in Windows
 						(it's a Windows-only option)
 						
 </enabled>
@@ -572,6 +569,7 @@ Within the game you can use the 'Alt +' and 'Alt -' to switch resolution..
 
 4.2. Scaler
 The scalers also work with higher resolutions than 320x200. To change the scaling method either use the Exult menu or change your exult.cfg - see 2.2..
+* Scale2x by Andrea Mazzoleni. This is a non-blurring scaler that looks good without soaking up a lot of CPU sycles. Get more information on this scaler at http://scale2x.sf.net.
 * SuperEagle by Derek Liauw. Only 2x.
 * Super2xSai by Derek Liauw. Only 2x.
 * 2xSaI by Derek Liauw. Only 2x.
@@ -765,12 +763,20 @@ Look at 3. Audio to see explanation on the settings.
 
 
 
-6.6. Quit to Menu
+6.6. Combat Options
+As many people think that the U7 combat engine is far too easy, too hard or just can't stand the real-time-combat Jeff put in some options to make combat more interesting.
+* Difficulty Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and the HP's lost if a hit occurs.
+* ShowHits With this enabled you can see the hitpoints of NPCs in brackets after their name when you left-click on them.
+* Mode choose between Original and SpacePauses. SpacePauses gives you a little more control of combat. When you hit space the game pauses and you can direct a party member by right-clicking, then clicking on a target to attack. Or change weapons, choose a favourite spell.
+
+
+
+6.7. Quit to Menu
 This is not implemented yet and just quits Exult. When it eventually works you will be back to the Exult menu where you choose which game you want to play. It is actually more difficult to implement than it sounds so don't expect it too soon.
 In snapshots after the Beta 1 release this option is no longer available.
 
 
-6.7. Quit
+6.8. Quit
 Exits Exult.
 
 

@@ -64,6 +64,7 @@
 #include "stackframe.h"
 #include "ucfunction.h"
 #include "effects.h"
+#include "party.h"
 
 #if (defined(USE_EXULTSTUDIO) && defined(USECODE_DEBUGGER))
 #include "server.h"
@@ -78,6 +79,8 @@ using std::endl;
 using std::istream;
 using std::ifstream;
 using std::ofstream;
+using std::istream;
+using std::ostream;
 using std::exit;
 using std::ios;
 using std::dec;
@@ -208,7 +211,8 @@ bool Usecode_internal::call_function(int funcid,
 			cout << ", ";
 		frame->locals[i].print(cout);
 	}
-	cout << ") with event " << eventid << endl;
+	cout << ") with event " << eventid 
+		 << ", depth " << frame->call_depth << endl;
 #endif
 
 	return true;
@@ -728,8 +732,6 @@ void Usecode_internal::remove_item
 	obj->remove_this();
 	}
 
-#define PARTY_MAX (sizeof(party)/sizeof(party[0]))
-
 /*
  *	Return an array containing the party, with the Avatar first.
  */
@@ -738,14 +740,15 @@ Usecode_value Usecode_internal::get_party
 	(
 	)
 	{
-	Usecode_value arr(1 + party_count, 0);
+	int cnt = partyman->get_count();
+	Usecode_value arr(1 + cnt, 0);
 					// Add avatar.
 	Usecode_value aval(gwin->get_main_actor());
 	arr.put_elem(0, aval);	
 	int num_added = 1;
-	for (int i = 0; i < party_count; i++)
+	for (int i = 0; i < cnt; i++)
 		{
-		Game_object *obj = gwin->get_npc(party[i]);
+		Game_object *obj = gwin->get_npc(partyman->get_member(i));
 		if (!obj)
 			continue;
 		Usecode_value val(obj);
@@ -967,7 +970,7 @@ Usecode_value Usecode_internal::find_nearest
 	int dist = distval.get_int_value();
 	int shnum = shapeval.get_int_value();
 					// Kludge for Test of Courage:
-	if (cur_function->id == 0x70a && shnum == 0x9a && dist == 0)
+	if (frame->function->id == 0x70a && shnum == 0x9a && dist == 0)
 		dist = 16;		// Mage may have wandered.
 	obj->find_nearby(vec, shnum, dist, 0);
 	Game_object *closest = 0;
@@ -1631,7 +1634,7 @@ Usecode_machine *Usecode_machine::create
 
 Usecode_internal::Usecode_internal
 	(
-	) : Usecode_machine(), cur_function(0),
+	) : Usecode_machine(),
 	    book(0), caller_item(0),
 	    path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),
@@ -1755,7 +1758,6 @@ void Clearbreak()
 
 int Usecode_internal::run()
 {
-	Stack_frame *frame;
 	bool aborted = false;
 	bool initializing_loop = false;
 
@@ -1769,7 +1771,6 @@ int Usecode_internal::run()
 
 		// set some variables for use in other member functions
 		caller_item = frame->caller_item;
-		cur_function = frame->function;
 
 		/*
 		 *	Main loop.
@@ -2375,12 +2376,14 @@ int Usecode_internal::run()
 				Usecode_value ival = call_intrinsic(frame->eventid,
 													offset, sval);
 				push(ival);
+				frame_changed = true;
 				break;
 			}
 			case 0x39:		// CALLI.
 				offset = Read2(frame->ip);
 				sval = *(frame->ip)++; // # of parameters.
 				call_intrinsic(frame->eventid, offset, sval);
+				frame_changed = true;
 				break;
 			case 0x3e:		// PUSH ITEMREF.
 				pushref(frame->caller_item);
@@ -2471,6 +2474,31 @@ int Usecode_internal::run()
 				int paramnames = Read2(frame->ip);
 				break;
 			}
+			case 0x50:		// PUSH static.
+				offset = Read2(frame->ip);
+				if (offset < 0) // Global static.
+					if (-offset < statics.size())
+						push(statics[-offset]);
+					else
+						pushi(0);
+				else if (offset <
+					    frame->function->statics.size())
+					push(frame->function->statics[offset]);
+				else
+					pushi(0);
+				break;
+			case 0x51:		// POP static.
+			{
+				offset = Read2(frame->ip);
+				// Get value.
+				Usecode_value val = pop();
+				if (offset < 0)
+					statics.put(-offset, val);
+				else
+					frame->function->statics.put(
+								offset, val);
+			}
+				break;
 			case 0xcd: // 32 bit debugging function init
 			{
 				int funcname = (sint32)Read4(frame->ip);
@@ -2540,149 +2568,6 @@ int Usecode_internal::call_usecode
 	}
 
 /*
- *	Add NPC to party.
- *
- *	Output:	false if no room or already a member.
- */
-
-bool Usecode_internal::add_to_party
-	(
-	Actor *npc			// (Should not be the Avatar.)
-	)
-	{
-	const int maxparty = sizeof(party)/sizeof(party[0]);
-	if (!npc || party_count == maxparty || npc->is_in_party())
-		return false;
-	remove_from_dead_party(npc);	// Just to be sure.
-	npc->set_party_id(party_count);
-	npc->set_flag (Obj_flags::in_party);
-					// We can take items.
-	npc->set_flag_recursively(Obj_flags::okay_to_take);
-	party[party_count++] = npc->get_npc_num();
-	return true;
-	}
-
-/*
- *	Remove party member.
- *
- *	Output:	false if not found.
- */
-
-bool Usecode_internal::remove_from_party
-	(
-	Actor *npc
-	)
-	{
-	if (!npc)
-		return false;
-	int id = npc->get_party_id();
-	if (id == -1)			// Not in party?
-		return false;
-	int npc_num = npc->get_npc_num();
-	if (party[id] != npc_num)
-		{
-		cout << "Party mismatch!!" << endl;
-		return false;
-		}
-					// Shift the rest down.
-	for (int i = id + 1; i < party_count; i++)
-		{
-		Actor *npc2 = gwin->get_npc(party[i]);
-		if (npc2)
-			npc2->set_party_id(i - 1);
-		party[i - 1] = party[i];
-		}
-	npc->clear_flag (Obj_flags::in_party);
-	party_count--;
-	party[party_count] = 0;
-	npc->set_party_id(-1);
-	return true;
-	}
-
-/*
- *	Find index of NPC in dead party list.
- *
- *	Output:	Index, or -1 if not found.
- */
-
-int Usecode_internal::in_dead_party
-	(
-	Actor *npc
-	)
-	{
-	int num = npc->get_npc_num();
-	for (int i = 0; i < dead_party_count; i++)
-		if (dead_party[i] == num)
-			return i;
-	return -1;
-	}
-
-/*
- *	Add NPC to dead party list.
- *
- *	Output:	false if no room or already a member.
- */
-
-bool Usecode_internal::add_to_dead_party
-	(
-	Actor *npc			// (Should not be the Avatar.)
-	)
-	{
-	const int maxparty = sizeof(dead_party)/sizeof(dead_party[0]);
-	if (!npc || dead_party_count == maxparty || in_dead_party(npc) >= 0)
-		return false;
-	dead_party[dead_party_count++] = npc->get_npc_num();
-	return true;
-	}
-
-/*
- *	Remove NPC from dead party list.
- *
- *	Output:	false if not found.
- */
-
-bool Usecode_internal::remove_from_dead_party
-	(
-	Actor *npc
-	)
-	{
-	if (!npc)
-		return false;
-	int id = in_dead_party(npc);	// Get index.
-	if (id == -1)			// Not in list?
-		return false;
-	int npc_num = npc->get_npc_num();
-					// Shift the rest down.
-	for (int i = id + 1; i < dead_party_count; i++)
-		dead_party[i - 1] = dead_party[i];
-	dead_party_count--;
-	dead_party[dead_party_count] = 0;
-	return true;
-	}
-
-/*
- *	Update party status of an NPC that has died or been resurrected.
- */
-
-void Usecode_internal::update_party_status
-	(
-	Actor *npc
-	)
-	{
-	if (npc->is_dead())		// Dead?
-		{
-					// Move party members to dead list.
-		if (remove_from_party(npc))
-			add_to_dead_party(npc);
-		}
-	else				// Alive.
-		{
-		if (remove_from_dead_party(npc))
-			add_to_party(npc);
-		}
-	}
-
-/*
  *	Start speech, or show text if speech isn't enabled.
  */
 
@@ -2695,6 +2580,24 @@ void Usecode_internal::do_speech
 	if (!Audio::get_ptr()->start_speech(num))
 					// No speech?  Call text function.
 		call_usecode(0x614, gwin->get_main_actor(), double_click);
+	}
+
+/*
+ *	Write out one usecode value.
+ */
+
+static void Write_useval
+	(
+	ostream& out,
+	Usecode_value& val
+	)
+	{
+	unsigned char buf[1024];
+	int len = val.save(buf, sizeof(buf));
+	if (len < 0)
+		throw file_exception("Static usecode value overflows buf");
+	else
+		out.write((char *) buf, len);
 	}
 
 /*
@@ -2717,10 +2620,10 @@ void Usecode_internal::write
 	out.write((char*)gflags, sizeof(gflags));
 	out.close();
 	U7open(out, USEDAT);
-	Write2(out, party_count);	// Write party.
+	Write2(out, partyman->get_count());	// Write party.
 	size_t i;	// Blame MSVC
-	for (i = 0; i < sizeof(party)/sizeof(party[0]); i++)
-		Write2(out, party[i]);
+	for (i = 0; i < EXULT_PARTY_MAX; i++)
+		Write2(out, partyman->get_member(i));
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		Write4(out, timers[t]);
@@ -2730,6 +2633,35 @@ void Usecode_internal::write
 	out.flush();
 	if( !out.good() )
 		throw file_write_exception(USEDAT);
+	out.close();
+	U7open(out, USEVARS);		// Static variables. 1st, globals.
+	Write4(out, statics.size());	// # globals.
+	Exult_vector<Usecode_value>::iterator it;
+	for (it = statics.begin(); it != statics.end(); ++it)
+		Write_useval(out, *it);
+					// Now do the local statics.
+	int num_slots = sizeof(funs)/sizeof(funs[0]);
+	for (int i = 0; i < num_slots; i++)
+		{
+		vector<Usecode_function*>& slot = funs[i];
+		for (vector<Usecode_function*>::iterator fit = slot.begin();
+						fit != slot.end(); ++fit)
+			{
+			Usecode_function *fun = *fit;
+			if (!fun || fun->statics.empty())
+				continue;
+			Write4(out, fun->id);
+			Write4(out, fun->statics.size());
+			for (it = fun->statics.begin();
+					it != fun->statics.end(); ++it)
+				Write_useval(out, *it);
+			}
+		}
+	Write4(out, 0xffffffffU);	// End with -1.
+	out.flush();
+	if( !out.good() )
+		throw file_write_exception(USEVARS);
+	out.close();
 	}
 
 /*
@@ -2760,18 +2692,28 @@ void Usecode_internal::read
 	}
 	try
 	{
+		U7open(in, USEVARS);
+		read_usevars(in);
+		in.close();
+	}
+	catch(exult_exception &e) {
+		;			// Okay if this doesn't exist.
+					// ++++Maybe we should clear them all.
+	}
+	try
+	{
 		U7open(in, USEDAT);
 	}
 	catch(exult_exception &e) {
-		party_count = 0;
-		link_party();		// Still need to do this.
+		partyman->set_count(0);
+		partyman->link_party();	// Still need to do this.
 		return;			// Not an error if no saved game yet.
 	}
-	party_count = Read2(in);	// Read party.
+	partyman->set_count(Read2(in));	// Read party.
 	size_t i;	// Blame MSVC
-	for (i = 0; i < sizeof(party)/sizeof(party[0]); i++)
-		party[i] = Read2(in);
-	link_party();
+	for (i = 0; i < EXULT_PARTY_MAX; i++)
+		partyman->set_member(i, Read2(in));
+	partyman->link_party();
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		timers[t] = Read4(in);
@@ -2786,55 +2728,46 @@ void Usecode_internal::read
 	}
 
 /*
- *	In case NPC's were read after usecode, set party members' id's, and
- *	move dead members into separate list.
+ *	Read in static variables from USEVARS.
  */
 
-void Usecode_internal::link_party
+void Usecode_internal::read_usevars
 	(
+	std::istream& in
 	)
 	{
-	// avatar is a party member too
-	gwin->get_main_actor()->set_flag(Obj_flags::in_party);
-					// You own your own stuff.
-	gwin->get_main_actor()->set_flag_recursively(Obj_flags::okay_to_take);
-	const int maxparty = sizeof(party)/sizeof(party[0]);
-	int tmp_party[maxparty];
-	int tmp_party_count = party_count;
+	in.seekg(0, ios::end);
+	int size = in.tellg();		// Get file size.
+	in.seekg(0);
+	if (!size)
+		return;
+	unsigned char *buf = new unsigned char[size];	// Get the whole thing.
+	in.read((char *) buf, size);
+	unsigned char *ptr = buf;
+	unsigned char *ebuf = buf + size;
+	int cnt = Read4(ptr);		// Global statics.
+	statics.resize(cnt);
 	int i;
-	for (i = 0; i < maxparty; i++)
-		tmp_party[i] = party[i];
-	party_count = dead_party_count = 0;
-					// Now process them.
-	for (i = 0; i < tmp_party_count; i++)
+	for (i = 0; i < cnt; i++)
+		statics[i].restore(ptr, ebuf - ptr);
+	unsigned long funid;
+	while (ptr < ebuf && (funid = Read4(ptr)) != 0xffffffffU)
 		{
-		Actor *npc = gwin->get_npc(party[i]);
-		int oldid;
-		if (!npc ||		// Shouldn't happen!
-					// But this has happened:
-		    ((oldid = npc->get_party_id()) >= 0 && 
-							oldid < party_count))
-			continue;	// Skip bad entry.
-		int npc_num = npc->get_npc_num();
-		if (npc->is_dead())	// Put dead in special list.
+		int cnt = Read4(ptr);
+		vector<Usecode_function*>& slot = funs[funid/0x100];
+		size_t index = funid%0x100;
+		Usecode_function *fun = index < slot.size() ? slot[index] : 0;
+		if (!fun)
 			{
-			npc->set_party_id(-1);
-			if (dead_party_count >= 
-				    sizeof(dead_party)/sizeof(dead_party[0]))
-				continue;
-			dead_party[dead_party_count++] = npc_num;
+			cerr << "Usecode " << funid << " not found" << endl;
 			continue;
 			}
-		npc->set_party_id(party_count);
-		party[party_count++] = npc_num;
-// ++++This messes up places where they should wait, and should be unnecessary.
-//		npc->set_schedule_type(Schedule::follow_avatar);
-					// We can use all his/her items.
-		npc->set_flag_recursively(Obj_flags::okay_to_take);
-		npc->set_flag (Obj_flags::in_party);
+		fun->statics.resize(cnt);
+		for (i = 0; i < cnt; i++)
+			fun->statics[i].restore(ptr, ebuf - ptr);
 		}
+	delete [] buf;
 	}
-
 
 #ifdef USECODE_DEBUGGER
 

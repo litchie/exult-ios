@@ -87,6 +87,7 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DWIN32"
 		AC_DEFINE(CYGWIN, 1, [Using Cygwin])
 		AC_MSG_RESULT(Win32 (cygwin))
+		CXXFLAGS="$CXXFLAGS -mno-cygwin"
 		SYSLIBS="-lwinmm"
 		ICON_FILE="win32/exultico.o"
 		enable_kmid="no"
@@ -313,7 +314,7 @@ AC_CHECK_LIB(SDL_mixer, Mix_QuickLoad_RAW,
 
 # Timidity MIDI driver
 AC_MSG_CHECKING(whether to enable timidity)
-AC_ARG_ENABLE(timidity, [  --enable-timidity       Use timidity [defult yes]],,enable_timidity=yes)
+AC_ARG_ENABLE(timidity, [  --enable-timidity       Use timidity [default yes]],,enable_timidity=yes)
 if test x$enable_timidity = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_CHECK_PROG(HAVE_TIMIDITY_BIN, timidity, found it, not found)
@@ -558,7 +559,7 @@ fi
 
 # Architecture dependent optimisations
 AC_MSG_CHECKING(if we should optimise for MMX)
-AC_ARG_ENABLE(timidity, [  --enable-mmx       Use MMX optimisations [defult no]],,enable_mmx=no)
+AC_ARG_ENABLE(timidity, [  --enable-mmx       Use MMX optimisations [default no]],,enable_mmx=no)
 if test x$enable_mmx = xyes; then
 	AC_MSG_RESULT(yes)
 	CXXFLAGS="$CXXFLAGS -mmmx"
@@ -568,7 +569,7 @@ fi
 
 # Architecture dependent optimisations
 AC_MSG_CHECKING(if we should optimise for 3DNOW)
-AC_ARG_ENABLE(timidity, [  --enable-3dnow       Use 3DNOW optimisations [defult no]],,enable_3dnow=no)
+AC_ARG_ENABLE(timidity, [  --enable-3dnow       Use 3DNOW optimisations [default no]],,enable_3dnow=no)
 if test x$enable_3dnow = xyes; then
 	AC_MSG_RESULT(yes)
 	CXXFLAGS="$CXXFLAGS -m3dnow"

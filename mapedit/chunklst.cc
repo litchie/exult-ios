@@ -762,7 +762,7 @@ Chunk_chooser::Chunk_chooser
 	int w, int h,			// Dimensions.
 	Shape_group *g			// Filter, or null.
 	) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
-		chunkfile(cfile), index0(0),
+		chunkfile(cfile), 
 		info(0), info_cnt(0), sel_changed(0),
 		locate_cx(-1), locate_cy(-1), drop_enabled(false)
 	{

@@ -61,6 +61,7 @@ const char *Image_window::ScalerNames[] =  {
 		"2xSaI",
 		"SuperEagle",
 		"Super2xSaI",
+		"Scale2X",
 		"OpenGL",
 		0
 };
@@ -428,11 +429,34 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 	else if (scale >= 2 && scaler == interlaced)
 	{
 		surface = SDL_SetVideoMode(w*scale, h*scale, ibuf->depth, flags);
-		unscaled_surface = scaled_surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
+		unscaled_surface = scaled_surface = 
+				SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
 							8, 0, 0, 0, 0);
 		if (surface && scaled_surface)
 		{
 			show_scaled = &Image_window::show_scaled_interlace;
+			ibuf->bits = (unsigned char *) scaled_surface->pixels;
+					// Update line size in words.
+			ibuf->line_width = scaled_surface->pitch/ibuf->pixel_size;
+			return true;
+		}
+		else
+		{
+			cout << "Couldn't create 8bit scaled surface" << endl;
+			if (surface) delete surface;
+			if (scaled_surface) delete scaled_surface;
+			surface = scaled_surface = 0;
+		}
+	}
+	else if (scale == 2 && scaler == Scale2x)
+	{
+		surface = SDL_SetVideoMode(w*scale, h*scale, ibuf->depth, flags);
+		unscaled_surface = scaled_surface = 
+				SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
+							8, 0, 0, 0, 0);
+		if (surface && scaled_surface)
+		{
+			show_scaled = &Image_window::show_scale2x_noblur;
 			ibuf->bits = (unsigned char *) scaled_surface->pixels;
 					// Update line size in words.
 			ibuf->line_width = scaled_surface->pitch/ibuf->pixel_size;

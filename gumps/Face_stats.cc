@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Face_button.h"
 #include "Paperdoll_gump.h"
 #include "actors.h"
-#include "ucmachine.h"
+#include "party.h"
 #include "exult_flx.h"
 #include "gamewin.h"
 #include "game.h"
@@ -346,10 +346,10 @@ bool Face_stats::has_changed()
 	if (resx != gwin->get_width() || resy != gwin->get_height())
 		return true;
 
-	if (party_size != ucmachine->get_party_count()) return true;
+	if (party_size != partyman->get_count()) return true;
 
 	for (int i = 0; i < party_size; i++)
-		if (npc_nums[i+1] != ucmachine->get_party_member(i)) 
+		if (npc_nums[i+1] != partyman->get_member(i)) 
 			return true;
 
 	return false;
@@ -385,13 +385,13 @@ void Face_stats::create_buttons()
 	x = 0;
 	y = resy;
 
-	party_size = ucmachine->get_party_count();
+	party_size = partyman->get_count();
 
 	int num_to_paint = 0;
 
 	// In BG only Npc's 0 to 10 have paperdolls/gumps
 	for (i = 0; i < party_size; i++) {
-		int num = ucmachine->get_party_member(i);
+		int num = partyman->get_member(i);
 		if (GAME_SI || (num >= 0 && num <=10)) ++num_to_paint;
 	}
 
@@ -409,7 +409,7 @@ void Face_stats::create_buttons()
 
 	for (i = 0; i < party_size; i++)
 	{
-		npc_nums[i+1] = ucmachine->get_party_member(i);
+		npc_nums[i+1] = partyman->get_member(i);
 		// In BG only Npc's 0 to 10 have paperdolls/gumps
 		if (GAME_SI || (npc_nums[i+1] >= 0 && npc_nums[i+1] <=10)) {
 			pos += width;

@@ -30,6 +30,7 @@
 #include "utils.h"
 #include "segfile.h"
 #include "u7drag.h"
+#include "U7file.h"
 
 using std::cerr;
 using std::cout;
@@ -49,7 +50,7 @@ Usecode_machine *Game_singletons::ucmachine = 0;
 Game_clock *Game_singletons::gclock = 0;
 Palette *Game_singletons::pal = 0;
 Gump_manager *Game_singletons::gumpman = 0;
-
+Party_manager *Game_singletons::partyman = 0;
 void Game_singletons::init
 	(
 	Game_window *g
@@ -63,6 +64,7 @@ void Game_singletons::init
 	gclock = g->get_clock();
 	pal = g->get_pal();
 	gumpman = g->get_gump_man();
+	partyman = g->get_party_man();
 	}
 
 /*
@@ -199,6 +201,7 @@ void Shape_manager::reload_shapes
 	int dragtype			// Type from u7drag.h.
 	)
 	{
+	U7FileManager::get_ptr()->reset();	// Cache no longer valid.
 	switch (dragtype)
 		{
 	case U7_SHAPE_SHAPES:

@@ -39,7 +39,7 @@
 #include "gamewin.h"
 #include "listfiles.h"
 #include "mouse.h"
-#include "ucmachine.h"
+#include "party.h"
 #include "Text_button.h"
 
 using std::atoi;
@@ -994,7 +994,7 @@ void Newfile_gump::LoadSaveGameDetails()
 	if (gd_details) cur_details->save_count = gd_details->save_count;
 	else cur_details->save_count = 0;
 
-	cur_details->party_size = ucmachine->get_party_count()+1;
+	cur_details->party_size = partyman->get_count()+1;
 	cur_details->game_day = gclock->get_total_hours() / 24;;
 	cur_details->game_hour = gclock->get_hour();
 	cur_details->game_minute = gclock->get_minute();
@@ -1017,7 +1017,7 @@ void Newfile_gump::LoadSaveGameDetails()
 		if (i == 0)
 			npc = gwin->get_main_actor();
 		else
-			npc = (Npc_actor *) gwin->get_npc( ucmachine->get_party_member(i-1));
+			npc = (Npc_actor *) gwin->get_npc(partyman->get_member(i-1));
 
 		strncpy (cur_party[i].name, npc->get_npc_name().c_str(), 18);
 		cur_party[i].shape = npc->get_shapenum();

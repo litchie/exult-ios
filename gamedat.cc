@@ -53,7 +53,7 @@
 #include "Newfile_gump.h"
 #include "Yesno_gump.h"
 #include "actors.h"
-#include "ucmachine.h"
+#include "party.h"
 #include "version.h"
 
 using std::cerr;
@@ -133,6 +133,7 @@ void Game_window::restore_gamedat
 	StreamDataSource in(&in_stream);
 
 	U7remove (USEDAT);
+	U7remove (USEVARS);
 	U7remove (U7NBUF_DAT);
 	U7remove (NPC_DAT);
 	U7remove (MONSNPCS);
@@ -219,7 +220,7 @@ static const char *bgsavefiles[] = {
 	IDENTITY,			// MUST BE #2
 	GEXULTVER,	GNEWGAMEVER,
 	NPC_DAT,	MONSNPCS,
-			USEDAT,
+	USEVARS,	USEDAT,
 	FLAGINIT,	GWINDAT,
 	GSCHEDULE
 	};
@@ -230,7 +231,7 @@ static const char *sisavefiles[] = {
 	IDENTITY,			// MUST BE #2
 	GEXULTVER,	GNEWGAMEVER,
 	NPC_DAT,	MONSNPCS,
-			USEDAT,
+	USEVARS,	USEDAT,
 	FLAGINIT,	GWINDAT,
 	GSCHEDULE,	KEYRINGDAT
 	};
@@ -427,8 +428,7 @@ void Game_window::write_saveinfo()
 	{
 	}
 
-	Usecode_machine *uc = get_usecode();
-	int party_size = uc->get_party_count()+1;
+	int party_size = party_man->get_count()+1;
 
 	time_t t = std::time(0);
 	struct tm *timeinfo = localtime (&t);	
@@ -467,7 +467,7 @@ void Game_window::write_saveinfo()
 		if (i == 0)
 			npc = main_actor;
 		else
-			npc = (Npc_actor *) get_npc( uc->get_party_member(i-1));
+			npc = (Npc_actor *)get_npc(party_man->get_member(i-1));
 
 		char name[18];
 		strncpy (name, npc->get_npc_name().c_str(), 18);
@@ -930,6 +930,7 @@ bool Game_window::restore_gamedat_zip
 									// use GAMEDAT define cause that's got a
 									// trailing slash
 	U7remove (USEDAT);
+	U7remove (USEVARS);
 	U7remove (U7NBUF_DAT);
 	U7remove (NPC_DAT);
 	U7remove (MONSNPCS);

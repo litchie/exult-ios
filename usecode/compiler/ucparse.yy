@@ -80,7 +80,7 @@ static int enum_val = -1;		// Keeps track of enum elements.
 %token IF ELSE RETURN WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
-%token ADD HIDE SCRIPT AFTER TICKS
+%token ADD HIDE SCRIPT AFTER TICKS STATIC_
 
 /*
  *	Script keywords:
@@ -150,6 +150,7 @@ global_decl:
 		}
 	| const_int_decl
 	| enum_decl
+	| static_decl
 	;
 
 function:
@@ -159,6 +160,7 @@ function:
 		{ 
 		function->set_statement($3);
 		functions.push_back(function);
+		function = 0;
 		}
 	;
 
@@ -237,6 +239,8 @@ declaration:
 			delete $1;
 		$$ = 0;
 		}
+	| static_decl
+		{ $$ = 0; }
 	;
 
 var_decl_list:
@@ -323,6 +327,25 @@ var_decl:
 		}
 	;
 
+static_decl:
+	STATIC_ VAR static_var_decl_list ';'
+	;
+
+static_var_decl_list:
+	static_var
+	| static_var_decl_list ',' static_var
+	;
+
+static_var:
+	IDENTIFIER
+		{
+		if (function)
+			function->add_static($1);
+		else
+			Uc_function::add_global_static($1);
+		}
+	;
+
 string_decl_list:
 	string_decl_list ',' string_decl
 	| string_decl
@@ -403,17 +426,18 @@ function_call_statement:
 
 special_method_call_statement:
 					/* Have 'primary' say something.*/
-	primary UCC_POINTS SAY '(' opt_expression_list ')' ';'
+	primary hierarchy_tok SAY '(' opt_expression_list ')' ';'
 		{
 		Uc_block_statement *stmts = new Uc_block_statement();
 					/* Set up 'show' call.		*/
 		stmts->add(new Uc_call_statement(
 			new Uc_call_expression(Uc_function::get_show_face(),
-				new Uc_array_expression($1), function)));
+			new Uc_array_expression($1, new Uc_int_expression(0)), 
+								function)));
 		stmts->add(new Uc_say_statement($5));
 		$$ = stmts;
 		}
-	| primary UCC_POINTS HIDE '(' ')' ';'
+	| primary hierarchy_tok HIDE '(' ')' ';'
 		{
 		$$ = new Uc_call_statement(
 			new Uc_call_expression(Uc_function::get_remove_face(),
@@ -727,11 +751,16 @@ function_call:
 	;
 
 method_call:
-	primary UCC_POINTS routine_call	/* Really a way to do CALLE.	*/
+	primary hierarchy_tok routine_call /* Really a way to do CALLE.	*/
 		{
 		$3->set_itemref($1);
 		$$ = $3;	
 		}
+	;
+
+hierarchy_tok:
+	UCC_POINTS
+	| '.'
 	;
 
 routine_call:

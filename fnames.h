@@ -70,6 +70,7 @@
 #define NPC_DAT		"<GAMEDAT>/npc.dat"
 #define MONSNPCS	"<GAMEDAT>/monsnpcs.dat"
 #define USEDAT		"<GAMEDAT>/usecode.dat"
+#define USEVARS		"<GAMEDAT>/usecode.var"
 #define FLAGINIT	"<GAMEDAT>/flaginit"
 #define GWINDAT		"<GAMEDAT>/gamewin.dat"
 #define GSCHEDULE	"<GAMEDAT>/schedule.dat"

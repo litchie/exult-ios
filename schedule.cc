@@ -278,7 +278,7 @@ void Follow_avatar_schedule::now_what
 	Tile_coord pos = npc->get_tile();
 	int dist2lead = leaderpos.distance(pos);
 	if (!av->is_moving() &&		// Avatar stopped.
-	    dist2lead <= 5)		// And we're already close enough.
+	    dist2lead <= 6)		// And we're already close enough.
 		return;
 	uint32 curtime = SDL_GetTicks();// Want the REAL time here.
 	if (!is_blocked)		// Not blocked?
@@ -303,16 +303,18 @@ void Follow_avatar_schedule::now_what
 		next_path_time = SDL_GetTicks() + 1000;
 		return;
 		}
-	if (pos.distance(goal) <= 3)
-		return;			// Already close enough!
-#ifdef DEBUG
-	cout << npc->get_name() << " at distance " << dist2lead 
-				<< " trying to catch up." << endl;
-#endif
 					// Get his speed.
 	int speed = av->get_frame_time();
 	if (!speed)			// Avatar stopped?
 		speed = gwin->get_std_delay();
+	if (pos.distance(goal) <= 3)
+		return;			// Already close enough!
+#if 0
+#ifdef DEBUG
+	cout << npc->get_name() << " at distance " << dist2lead 
+				<< " trying to catch up." << endl;
+#endif
+#endif
 					// Succeed if within 3 tiles of goal.
 	if (npc->walk_path_to_tile(goal, speed - speed/4, 0, 3, 1))
 		return;			// Success.
@@ -1225,7 +1227,8 @@ class Sit_actor_action : public Frames_actor_action, public Game_singletons
 			return false;	// We're standing there.
 					// See if spot is blocked.
 		Tile_coord pos = sitloc;// Careful, .tz gets updated.
-		if (Map_chunk::is_blocked(pos, 3, MOVE_WALK, 0))
+		if (Map_chunk::is_blocked(pos, 
+			    actor->get_info().get_3d_height(), MOVE_WALK, 0))
 			return true;
 #endif
 		return false;

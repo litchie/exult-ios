@@ -619,6 +619,9 @@ static void Init
 	sclr = Image_window::get_scaler_for_name(scaler);
 	if (sclr == Image_window::NoScaler) config->set("config/video/scale_method","2xSaI",true);
 
+	if (arg_buildmap >= 0)
+		BuildGameMap();
+
 	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));	
 	gwin = new Game_window(sw, sh, scaleval, sclr);
 	current_res = find_resolution(sw, sh, scaleval);
@@ -628,9 +631,6 @@ static void Init
 	config->value("config/video/disable_fades", disable_fades, false);
 	gwin->get_pal()->set_fades_enabled(!disable_fades);
 
-
-	if (arg_buildmap >= 0)
-		BuildGameMap();
 
 	SDL_SetEventFilter(0);
 	// Show the banner
@@ -1337,7 +1337,9 @@ int Get_click
 		paint->paint();
 	Mouse::mouse->show();
 	gwin->show(1);			// Want to see new mouse.
+	gwin->get_tqueue()->pause(Game::get_ticks());
 	int ret = Get_click(x, y, chr, drag_ok, paint);
+	gwin->get_tqueue()->resume(Game::get_ticks());
 	Mouse::mouse->set_shape(saveshape);
 	return (ret);
 	}
@@ -1669,13 +1671,21 @@ void BuildGameMap()
 			gametype = SERPENT_ISLE;
 			get_game_paths("serpentisle");
 		} else {
-			cerr << "You have to specify --bg or --si when using -buildmap" << endl;
+			cerr << "You have to specify --bg or --si when using --buildmap" << endl;
 			exit(1);
 		}
 
 		h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
 		Image_window8::set_gamma(1, 1, 1);
+
+		string	fullscreenstr;		// Check config. for fullscreen mode.
+		config->value("config/video/fullscreen",fullscreenstr,"no");
+		// set windowed mode
+		config->set("config/video/fullscreen","no",false);
 		gwin = new Game_window(w, h, sc, sclr);
+		// restore original fullscreen setting
+		config->set("config/video/fullscreen",fullscreenstr,true);
+		Audio::Init();
 		current_res = find_resolution(w, h, sc);
 		Game::create_game(gametype);
 		gwin->init_files(false); //init, but don't show plasma	
@@ -1691,6 +1701,7 @@ void BuildGameMap()
 				gwin->get_win()->screenshot(dst);
 			}
 		}
+		Audio::Destroy();
 		exit(0);
 	}
 }

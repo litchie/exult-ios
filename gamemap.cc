@@ -393,8 +393,9 @@ void Game_map::write_static
 	for (i = 0; i < cnt; i++)
 		if (chunk_terrains[i] && chunk_terrains[i]->is_modified())
 			break;
-	if (i < cnt)
+	if (i < cnt)			// Got to update.
 		{
+		get_all_terrain();	// IMPORTANT:  Get all in memory.
 		ofstream ochunks;	// Open file for chunks data.
 					// This truncates the file.
 		U7open(ochunks, PATCH_U7CHUNKS);
@@ -408,7 +409,11 @@ void Game_map::write_static
 				ter->set_modified(false);
 				}
 			else
+				{
 				memset(&data[0], 0, 512);
+				cerr << "NULL terrain.  U7chunks may be bad."
+								<< endl;
+				}
 			ochunks.write(reinterpret_cast<char*>(data), 512);
 			}
 		if (!ochunks.good())
@@ -937,8 +942,8 @@ void Game_map::read_ireg_objects
 					quality &= 0x7f;
 				}
 			else if (info.has_quality_flags())
-				{	// +++Shouldn't it = Get_quality_flags?
-				oflags |= Get_quality_flags(quality);
+				{	// Use those flags instead of deflt.
+				oflags = Get_quality_flags(quality);
 				quality = 0;
 				}
 			}

@@ -2169,7 +2169,7 @@ Shape_chooser::Shape_chooser
 	Shape_file_info *fi
 	) : Object_browser(g, fi),
 		Shape_draw(i, palbuf, gtk_drawing_area_new()),
-		shapes_file(0), index0(0), framenum0(0),
+		shapes_file(0), framenum0(0),
 		info(0), info_cnt(0), row0(0), nrows(0),
 		sel_changed(0), frames_mode(false), hoffset(0)
 	{

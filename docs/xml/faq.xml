@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="03 November 2002(GMT)">
+<faqs title="Exult" changed="04 March 2003(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="04032003">
+			<header>- 04 March 2003</header>
+			<body>
+				<ul>
+				<li><ref1 target="important"/> this faq is for 1.1.x and not for 1.0 anymore.</li>
+				<li><ref1 target="pentagram"/> here is the link to Pentagram and some more info.</li>
+				<li><ref1 target="saves_compatibility"/> Savegames are platform independent.</li>								
+				<li><ref1 target="by_design"/> linked to Combat Options in the Menu.</li>
+				<li><ref1 target="known_issues"/> changed a bit, added issue with Nvidia 40.x reference drivers.</li>
+				<li><section_ref target="Gameplay FAQ"/> Not everytime you are stuck in the 
+					game is it a bug. Maybe this section can help you.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="03112002">
 			<header>- 03 November 2002</header>
 			<body>
@@ -31,29 +45,18 @@
 				</ul>
 			</body>
 		</sub>
-		<sub name="24072002">
-			<header>- 24 July 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="what_platforms"/> the Amiga port has been integrated ages ago
-					and we have a Zaurus port now.</li>
-				<li><ref1 target="arrow_walking"/> Nadir implemented arrow walking now.</li>
-				<li><ref1 target="compile_issues"/> makefile.cygwin no longer exists.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="18062002">
-			<header>- 18 June 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="different_snapshot"/> same as on our main page, also some explanation 
-					for the different FAQ/Docs.</li>
-				<li><ref1 target="bug_report"/> SourceForge requires registration for attaching files.</li>
-				</ul>
-			</body>
-		</sub>
 	</section>
 	<section title="Introduction">
+		<sub name="important">
+			<header>Important Notice</header>
+			<body>
+				<para>
+					This FAQ is for the work-in-progress 1.1.x version of <Exult/>.
+					Frequently asked questions and answers for the 1.0 version can be found 
+					where you installed the release.
+				</para>
+			</body>
+		</sub>
 		<sub name="why_name_exult">
 			<header>Why is it called <Exult/> - what is the meaning of this name?</header>
 			<body>
@@ -134,6 +137,16 @@
 					of U8). It isn't meant to be something similar to <Exult/>. It is rather a clever plan
 					to stir up interest in other coders to carry this basic work further.<br/>
 					Any <strong>developer</strong> is welcome to take a look and contact us.
+				</para>
+				<para>
+					Seriously <Pentagram/> is slowly progressing and you can find snapshots of the code and 
+					Win32 binaries for it on the <Exult/> 
+					<extref target="http://exult.sourceforge.net/download.php">download page</extref>.
+				</para>
+				<para>
+					On the official <Pentagram/> homepage at <extref target="http://pentagram.sourceforge.net/"/>
+					you might find more information on this project in the future. For now you can find
+					some nice screenshots of the map viewer in action.
 				</para>
 			</body>
 		</sub>
@@ -263,7 +276,7 @@
 					IPK package at <extref target="http://exult.sourceforge.net/download.php"/>.
 				 </para>
 			</body>
-		</sub>
+		</sub>		
 	</section>
   	<section title="Exult and Ultima 7">
 		<sub name="u7_needed">
@@ -347,6 +360,15 @@
 					Save games that were made with the original Ultima 7 or U7Run don't work
 					with <Exult/>. You have to start a new game when you begin playing with <Exult/>.
 					Sorry!
+				</para>
+			</body>
+		</sub>
+		<sub name="saves_compatibility">
+			<header>Do <Exult/> savegames work on all Operating Systems?</header>
+			<body>
+				<para>
+					<Exult/> savegames are compatible on all supported Operating Systems. For example 
+					a saved game of the Mac port of <Exult/> works on Windows 98 as well. 
 				</para>
 			</body>
 		</sub>
@@ -527,60 +549,6 @@
 					full screen. If Exult now runs fine in a window you have to select a different 
 					resolution (also editable in exult.cfg) to run it full screen.<br/>
 					If it still doesn't run contact us.
-				</para>
-			</body>
-		</sub>
-		<sub name="virtue_stones">
-			<header>Why can't I cast mark/recall on the Virtue Runes?</header>
-			<body>
-				<para>
-					You never could do this in the original as well. You have to use the
-					<strong>Virtue Stones</strong> that you find in the same building as the runes.
-				</para>
-			</body>
-		</sub>
-		<sub name="skarabrae_sacrifice">
-			<header>Why can't I get the scrifice in Skara Brae to work?</header>
-			<body>
-				<para>
-					<em>SPOILER ALERT</em> 
-				</para>
-				<para>
-					"I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of 
-					souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice."<br/>
-					The solution to this is that Rowenna and Trent are standing too far apart. When you 
-					reunited the pair you initiated the conversation with Trent from too far away 
-					(this happens when you run at a higher resolution than the original one).<br/>
-					Now you can either reload a game from before you reunited them or you have to hackmove 
-					Rowenna closer to Trent. After that the two will talk to you about sacrifice.
-				</para>
-			</body>
-		</sub>
-		<sub name="pikeman_disappears">
-			<header>Where is the pikeman that lets you train in Monitor (SI)?</header>
-			<body>
-				<para>
-					The pikeman that lets you enter the list field in Monitor sometimes disappears due
-					to a bug in the game (even the original).<br/>
-					This bug occurs when you enter the banquet scene of Monitor. To avoid this bug, we 
-					recommend, that you approach the banquet hall from the right and/or double-click the
-					entrance door to the hall when the party is standing very close to it. 
-				</para>
-			</body>
-		</sub>
-		<sub name="great_hierophant">
-			<header>Why can't I summon the Great Hierophant (SI)?</header>
-			<body>
-				<para>
-					If you follow some walkthrough you might find that your summoning of the
-					Great Hierophant doesn't work. This is a problem with the walkthrough. You
-					need to have a personal item of the Great Hierophant in your inventory, namely
-					the Serpent Staff.
-				</para>
-				<para>
-					If possible not just play following the walkthrough but go out and explore 
-					Serpent Isle. It's hard to imagine someone could miss the cave to the east of 
-					Monitor...
 				</para>
 			</body>
 		</sub>
@@ -799,8 +767,8 @@
 						that tell us how combat worked in BG/SI, so Dr.Code put something
 						together. If you have any information you've worked out related to
 						this, please tell either the forum or the exult-general mailing list.<br/>
-						Recently Jeff added an option to change the combat difficulty in exult.cfg.
-						See the <extref doc="docs" target="exult_config"/>.</li>
+						Recently Jeff added options to change combat somewhat.
+						See the <extref doc="docs" target="combat_gump"/>.</li>
 					<li>Negative health and unconsciousness. Yes, it may look weird to have
 						people walking around with negative health, but that's the way it
 						currently works.</li>
@@ -815,9 +783,6 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
-					<li>Recent changes to the drawing method have screwed it up. This involves
-						the drawing order when opening/closing some doors and the save game gump 
-						still showing after a reload.</li>
 					<li>There might be a bug when you have any of the games installed in a 
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>
@@ -828,8 +793,7 @@
 					<li>If you run a resolution higher than the original (320x200) some NPCs
 						that are further away from the Avatar may seem to disappear and reappear when
 						you get away or closer to them.</li>
-					<li>With scalers enabled you might encounter slow downs of the game. The team is
-						working on this right now and it is already a lot faster.</li>
+					<li>With scalers enabled you might encounter slow downs of the game.</li>
 					<li>The speech in the intro is out of synch with the lips animation. But now it
 						matches the speed of the text.</li>
 					<li>There are reported problems with digital sound effects or speech when
@@ -839,6 +803,8 @@
 						We suggest you first upgrade your drivers to the newest ones. Get them at
 						<extref target="http://www.cmedia.com.tw/"/>. If that doesn't help, please contact
 						us.</li>
+					<li>Nvidia 40.x reference drivers have issues with all SDL based programs. Use either a 
+						later or earlier version of the Nvidia reference drivers.</li>
 				</ul>
 				<para>
 					Possible <strong>workaround</strong> for the above mentioned audio issues:<br/>
@@ -871,6 +837,96 @@
 				<ul>
 					<li>Stealing, killing innocent NPCs doesn't work yet correctly</li>
 				</ul>
+			</body>
+		</sub>
+	</section>
+	<section title="Gameplay FAQ">
+		<sub name="why_gameplayfaq">
+			<header>Why is there a gameplay FAQ?</header>
+			<body>
+				<para>
+					Although you can find many useful gameplay FAQs on the internet we do get asked
+					some questions quite frequently as people think these are bugs with <Exult/>.					
+				</para>
+				<para>
+					<strong>Note that this section contains text that may spoil your game. 
+					Caution is advised.</strong>					
+				</para>
+			</body>
+		</sub>
+		<sub name="virtue_stones">
+			<header>Why can't I cast mark/recall on the Virtue Runes (BG)?</header>
+			<body>
+				<para>
+					You never could do this in the original as well. You have to use the
+					<strong>Virtue Stones</strong> that you find in the same building as the runes.
+				</para>
+			</body>
+		</sub>
+		<sub name="skarabrae_sacrifice">
+			<header>Why can't I get the sacrifice in Skara Brae to work (BG)?</header>
+			<body>
+				<para>
+					"I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of 
+					souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice."<br/>
+					The solution to this is that Rowenna and Trent are standing too far apart. When you 
+					reunited the pair you initiated the conversation with Trent from too far away 
+					(this happens when you run at a higher resolution than the original one).<br/>
+					Now you can either reload a game from before you reunited them or you have to hackmove 
+					Rowenna closer to Trent. After that the two will talk to you about sacrifice.
+				</para>
+			</body>
+		</sub>
+		<sub name="pikeman_disappears">
+			<header>Where is the pikeman that lets you train in Monitor (SI)?</header>
+			<body>
+				<para>
+					The pikeman that lets you enter the list field in Monitor sometimes disappears due
+					to a bug in the game (even the original).<br/>
+					This bug occurs when you enter the banquet scene of Monitor. To avoid this bug, we 
+					recommend, that you approach the banquet hall from the right and/or double-click the
+					entrance door to the hall when the party is standing very close to it. 
+				</para>
+			</body>
+		</sub>
+		<sub name="fedabiblio_quest">
+			<header>How do I get the Mandrake Roots for Fedabiblio (SI)?</header>
+			<body>
+				<para>
+					Fedabiblio in Moonshade sends you on a quest to find fresh Mandrake Roots. You get
+					to Monk Island but can't find the any fresh roots.<br/>
+					The problem is that fresh roots only appear depending on the tide. One of the nameless
+					monks of the island tells you to ask him when the tide is right. Keep coming back to him
+					and when he tells you the tide is right walk to the northern shore of the island to find 
+					fresh roots. 
+				</para>
+			</body>
+		</sub>
+		<sub name="great_hierophant">
+			<header>Why can't I summon the Great Hierophant (SI)?</header>
+			<body>
+				<para>
+					If you follow some walkthrough you might find that your summoning of the
+					Great Hierophant doesn't work. This is a problem with the walkthrough. You
+					need to have a personal item of the Great Hierophant in your inventory, namely
+					the Serpent Staff.
+				</para>
+				<para>
+					If possible don't just play following the walkthrough, but go out and explore 
+					Serpent Isle. It's hard to imagine someone could miss the cave to the east of 
+					Monitor...
+				</para>
+			</body>
+		</sub>
+		<sub name="serpent_staff">
+			<header>An important note about the Serpent Staff (SI)</header>
+			<body>
+				<para>
+					The Serpent Staff in SI is a very important item. It doesn't seem like it but 
+					it is crucial to some major plot elements that you have the staff in your possession.<br/>
+					Unfortunately the game also demands that you get the staff properly. For that I recommend
+					to get it without cheating and to stand right next to it. 
+				</para>
 			</body>
 		</sub>
 	</section>

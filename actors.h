@@ -111,6 +111,7 @@ protected:
 	Actor_action *action;		// Controls current animation.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   actor not moving.
+	int step_index;			// Index into walking frames, 1 1st.
 	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
 	Rectangle weapon_rect;		// Screen area weapon was drawn in.
 	long rest_time;			// # msecs. of not doing anything.
@@ -138,6 +139,8 @@ public:
 					// Get frame seq. for given dir.
 	Frames_sequence *get_frames(int dir)
 		{ return frames[dir/2]; }
+	int& get_step_index()		// Get it (for updating).
+		{ return step_index; }
 					// Get attack frames.
 	int get_attack_frames(int weapon, bool projectile,
 						int dir, char *frames) const;

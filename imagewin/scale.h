@@ -104,6 +104,17 @@ void Scale_interlace
 	const int factor		// Scale factor
 );
 
+void Scale2x_noblur
+(
+	const unsigned char *src1,	// ->source pixels.
+	const int srcx, const int srcy,	// Start of rectangle within src.
+	const int srcw, const int srch,	// Dims. of rectangle.
+	const int sline_pixels,		// Pixels (words)/line for source.
+	const int sheight,		// Source height.
+	unsigned char *dest,		// ->dest pixels.
+	const int dline_pixels		// Pixels (words)/line for dest.
+);
+
 #include "scale.cc"		/* Seems to be needed. */
 
 #endif

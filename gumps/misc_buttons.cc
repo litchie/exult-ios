@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "misc_buttons.h"
 #include "Modal_gump.h"
 #include "mouse.h"
-#include "ucmachine.h"
+#include "party.h"
 #include "Gump_manager.h"
 
 /*
@@ -210,6 +210,6 @@ void Cstats_button::activate
 	(
 	)
 {
-	int cnt = ucmachine->get_party_count();
+	int cnt = partyman->get_count();
 	gumpman->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }

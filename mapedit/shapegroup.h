@@ -51,8 +51,7 @@ public:
 		{ return std::vector<int>::size(); }
 	int& operator[](int i)
 		{ return std::vector<int>::operator[](i); }
-	void del(int i)
-		{ std::vector<int>::erase(begin() + i); }
+	void del(int i);
 	void swap(int i);		// Swap entries i and i+1.
 	void add(int id);		// Add ID, checking for duplicate 1st.
 	};

@@ -14,7 +14,7 @@ using EStudio::Create_arrow_button;
 
 Object_browser::Object_browser(Shape_group *grp, Shape_file_info *fi) 
 	: group(grp), file_info(fi), popup(0),
-	selected(-1), vscroll(0), hscroll(0), find_text(0), 
+	selected(-1), vscroll(0), hscroll(0), find_text(0), index0(0),
 	loc_down(0), loc_up(0),
 	move_down(0), move_up(0), config_width(0), config_height(0)
 {
