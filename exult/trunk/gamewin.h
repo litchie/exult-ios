@@ -183,6 +183,9 @@ public:
 		{ clock.increment(num_minutes); }
 	void fake_next_period()		// For debugging.
 		{ clock.fake_next_period(); }
+	int is_chunk_read(int cx, int cy)
+		{ return schunk_read[12*(cy/chunks_per_schunk) +
+						cx/chunks_per_schunk]; }
 					// Get/create objs. list for a chunk.
 	Chunk_object_list *get_objects(int cx, int cy)
 		{
