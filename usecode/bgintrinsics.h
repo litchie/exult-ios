@@ -123,7 +123,7 @@
 	USECODE_INTRINSIC_PTR(restart_game),	// 0x73
 	USECODE_INTRINSIC_PTR(start_speech),	// 0x74
 	USECODE_INTRINSIC_PTR(run_endgame),	// 0x75 StartEndGame (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x76     FireCannon (ucdump.c)
+	USECODE_INTRINSIC_PTR(fire_cannon),	// 0x76     FireCannon (ucdump.c)
 	USECODE_INTRINSIC_PTR(nap_time),	// 0x77
 	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
 	USECODE_INTRINSIC_PTR(in_usecode),	// 0x79

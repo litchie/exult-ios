@@ -1361,6 +1361,36 @@ USECODE_INTRINSIC(run_endgame)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(fire_cannon)
+{
+	// fire_cannon(cannon, dir, ballshape, dist?, cannonshape, cannonshape)
+
+	Game_object *cannon = get_item(parms[0]);
+					// Get direction (0,2,4, or 6).
+	int dir = parms[1].get_int_value();
+	dir = dir/2;			// 0, 1, 2, 3.
+	int ball = parms[2].get_int_value();
+	int dist = parms[3].get_int_value();
+	int cshape = parms[4].get_int_value();
+	Tile_coord pos = cannon->get_abs_tile_coord();
+	short blastoff[8] = {-2, -5, 1, -2, -2, 1, -5, -2};
+	Tile_coord blastpos = pos + Tile_coord(
+				blastoff[2*dir], blastoff[2*dir + 1], 0);
+					// Sprite 5 is a small explosion.
+	gwin->add_effect(new Sprites_effect(5, blastpos));
+	Tile_coord dest = pos;
+	switch (dir)			// Figure where to aim.
+		{
+	case 0:	dest.ty -= dist; break;
+	case 1: dest.tx += dist; break;
+	case 2: dest.ty += dist; break;
+	case 3: dest.tx -= dist; break;
+		}
+					// Shoot cannonball.
+	gwin->add_effect(new Projectile_effect(blastpos, dest, ball, cshape));
+	return no_ret;
+}
+
 USECODE_INTRINSIC(nap_time)
 {
 	// nap_time(bed)

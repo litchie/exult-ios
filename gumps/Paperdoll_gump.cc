@@ -698,7 +698,7 @@ Game_object * Paperdoll_gump::check_object
 	Paperdoll_item *item = GetItemInfo (obj->get_shapenum(), obj->get_framenum(), itemtype);
 	if (!item)
 	{
-		if (spot != itemtype || checkspot != -1) return false;
+		if (spot != itemtype || checkspot != -1) return 0;
 		
 		if (!obj->get_cx() && !obj->get_cy()) set_to_spot(obj, spot);
 		
