@@ -582,21 +582,21 @@ void Stats_gump_object::paint
 	char buf[20];
 	const int font = 2;
   	sprintf(buf, "%d", act->get_property(Actor::strength));
-	gwin->paint_text(x + textx, y + texty[0], buf, font);
+	gwin->paint_text(font, buf, x + textx, y + texty[0]);
   	sprintf(buf, "%d", act->get_property(Actor::dexterity));
-	gwin->paint_text(x + textx, y + texty[1], buf, font);
+	gwin->paint_text(font, buf, x + textx, y + texty[1]);
   	sprintf(buf, "%d", act->get_property(Actor::intelligence));
-	gwin->paint_text(x + textx, y + texty[2], buf, font);
+	gwin->paint_text(font, buf, x + textx, y + texty[2]);
   	sprintf(buf, "%d", act->get_property(Actor::combat));
-	gwin->paint_text(x + textx, y + texty[3], buf, font);
+	gwin->paint_text(font, buf, x + textx, y + texty[3]);
   	sprintf(buf, "%d", act->get_property(Actor::magic));
-	gwin->paint_text(x + textx, y + texty[4], buf, font);
+	gwin->paint_text(font, buf, x + textx, y + texty[4]);
   	sprintf(buf, "%d", act->get_property(Actor::health));
-	gwin->paint_text(x + textx, y + texty[5], buf, font);
+	gwin->paint_text(font, buf, x + textx, y + texty[5]);
   	sprintf(buf, "%d", act->get_property(Actor::mana));
-	gwin->paint_text(x + textx, y + texty[6], buf, font);
+	gwin->paint_text(font, buf, x + textx, y + texty[6]);
 	//++++Experience?
 	//++++Level?
   	sprintf(buf, "%d", act->get_property(Actor::training));
-	gwin->paint_text(x + textx, y + texty[9], buf, font);
+	gwin->paint_text(font, buf, x + textx, y + texty[9]);
 	}

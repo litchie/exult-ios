@@ -64,6 +64,8 @@ public:
 		{ return xleft; }
 	int get_yabove()
 		{ return yabove; }
+	int get_ybelow()
+		{ return ybelow; }
 	~Shape_frame()
 		{ delete data; }
 	};

@@ -145,6 +145,7 @@ public:
 					// Open a (truetype) font file.
 	static Font_face *open_font(char *fname, int points);
 	static void close_font(Font_face *font);// Close font.
+#if 0
 					// Draw text in given rectangle.
 	void draw_text_box(Font_face *font, char *text,
 						int x, int y, int w, int h);
@@ -158,6 +159,7 @@ public:
 	static int get_text_width(Font_face *font, char *text, int textlen);
 					// Get height.
 	static int get_text_height(Font_face *font);
+#endif
 	};
 
 /*
@@ -376,6 +378,7 @@ public:
 					// Put rect. back.
 	void put(Image_buffer *src, int destx, int desty)
 		{ ibuf->put(src, destx, desty); }
+#if 0
 					// Open a (truetype) font file.
 	static Font_face *open_font(char *fname, int points)
 		{ return Image_buffer_base::open_font(fname, points); }
@@ -403,6 +406,7 @@ public:
 					// Get height.
 	static int get_text_height(Font_face *font)
 		{ return Image_buffer_base::get_text_height(font); }
+#endif
 	};
 
 /*
