@@ -515,6 +515,8 @@ public:
 					// Remove 'decayed' bodies.
 	static void decay(unsigned long hour);
 	virtual int get_live_npc_num();
+					// Remove/delete this object.
+	virtual void remove_this(int nodel = 0);
 	};
 
 /*
