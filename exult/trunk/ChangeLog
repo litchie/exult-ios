@@ -1,3 +1,7 @@
+2001-12-13  Patrick Burke <takhisisii@yahoo.com.au>
+	* usecode/ucxt/src/opcodes.cc: Included a 'fix' for undeclared __STRING
+	under solaris.
+
 2001-12-13  Tristan Tarrant <nadir@users.sourceforge.net>
 	* configure.in, Makefile.am, debian/Makefile.am: fixes for make dist
 	to include new debian stuff

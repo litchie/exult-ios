@@ -8,6 +8,14 @@
 #include <fstream>
 #include <stack>
 
+#ifndef __STRING
+	#if defined __STDC__ && __STDC__
+		#define __STRING(x) #x
+	#else
+		#define __STRING(x) "x"
+	#endif
+#endif
+
 vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
 
 map<unsigned int, string> bg_uc_intrinsics;
