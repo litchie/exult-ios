@@ -451,7 +451,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 		std::cout << main_actor->get_skin_color() << std::endl;
 #endif
 		// BG Multiracial Hack
-		if (main_actor->get_skin_color() >= 0 && main_actor->get_skin_color() <= 2)
+		if (main_actor->get_skin_color() >= 0 && main_actor->get_skin_color() <= 2 && GAME_BG)
 		{
 			shape = EXULT_BG_FLX_MR_FACES_SHP;
 			frame = SI_get_frame(main_actor);
