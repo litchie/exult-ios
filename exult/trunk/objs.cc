@@ -533,6 +533,8 @@ void Ireg_game_object::write_ireg
 	unsigned char buf[7];		// 6-byte entry + length-byte.
 	buf[0] = 6;
 	write_common_ireg(&buf[1]);
+	buf[5] = (get_lift()&15)<<4;
+	buf[6] = get_quality();
 	out.write(buf, sizeof(buf));
 	}
 
@@ -668,6 +670,8 @@ void Animated_object::write_ireg
 	unsigned char buf[7];		// 6-byte entry + length-byte.
 	buf[0] = 6;
 	write_common_ireg(&buf[1]);
+	buf[5] = (get_lift()&15)<<4;
+	buf[6] = get_quality();
 	out.write(buf, sizeof(buf));
 	}
 
