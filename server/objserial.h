@@ -60,6 +60,41 @@ extern int Egg_object_in
 	int& data1, int& data2
 	);
 
+int Npc_actor_out
+	(
+	int fd,				// Socket.
+	unsigned long addr,		// Address.
+	int tx, int ty, int tz,		// Absolute tile coords.
+	int shape, int frame,
+	std::string name,
+	short ident,
+	int usecode,
+	short properties[12],
+	short attack_mode,
+	short alignment,
+	unsigned long oflags,		// Object flags.
+	unsigned long siflags,		// Extra flags for SI.
+	unsigned long type_flags	// Movement flags.
+	//+++++++++Schedule changes.
+	);
+int Npc_actor_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	std::string& name,
+	short& ident,
+	int& usecode,
+	short properties[12],
+	short& attack_mode,
+	short& alignment,
+	unsigned long& oflags,		// Object flags.
+	unsigned long& siflags,		// Extra flags for SI.
+	unsigned long& type_flags	// Movement flags.
+	//+++++++++Schedule changes.
+	);
 #endif
 
 

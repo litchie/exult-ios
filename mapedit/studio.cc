@@ -575,6 +575,8 @@ void ExultStudio::read_from_server
 	cout << "ID = " << (int) id << endl;
 	if (id == Exult_server::egg)
 		open_egg_window(data, datalen);
+	if (id == Exult_server::npc)
+		open_npc_window(data, datalen);
 	else if (id == Exult_server::user_responded ||
 		 id == Exult_server::cancel)
 		{			// Send msg. to callback.

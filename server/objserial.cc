@@ -166,9 +166,9 @@ void Npc_actor_io
 	short properties[12],
 	short& attack_mode,
 	short& alignment,
-	long& oflags,			// Object flags.
-	long& siflags,			// Extra flags for SI.
-	long& type_flags		// Movement flags.
+	unsigned long& oflags,		// Object flags.
+	unsigned long& siflags,		// Extra flags for SI.
+	unsigned long& type_flags	// Movement flags.
 	//+++++++++Schedule changes.
 	)
 	{
@@ -240,6 +240,70 @@ int Egg_object_in
 	Egg_object_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
 		nocturnal, once, hatched, auto_reset, data1, data2);
+	return (ptr - data) == datalen;
+	}
+
+/*
+ *	Send out an npc object.
+ *
+ *	Output:	-1 if unsuccessful.  0 if okay.
+ */
+
+int Npc_actor_out
+	(
+	int fd,				// Socket.
+	unsigned long addr,		// Address.
+	int tx, int ty, int tz,		// Absolute tile coords.
+	int shape, int frame,
+	std::string name,
+	short ident,
+	int usecode,
+	short properties[12],
+	short attack_mode,
+	short alignment,
+	unsigned long oflags,		// Object flags.
+	unsigned long siflags,		// Extra flags for SI.
+	unsigned long type_flags	// Movement flags.
+	//+++++++++Schedule changes.
+	)
+	{
+	unsigned char buf[Exult_server::maxlength];
+	unsigned char *ptr = &buf[0];
+	Npc_actor_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame,
+		name, ident, usecode, properties, attack_mode, alignment,
+		oflags, siflags, type_flags);
+	return Exult_server::Send_data(fd, Exult_server::npc, buf, ptr - buf);
+	}
+
+/*
+ *	Decode an npc object.
+ *
+ *	Output:	0 if unsuccessful.
+ */
+
+int Npc_actor_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	std::string& name,
+	short& ident,
+	int& usecode,
+	short properties[12],
+	short& attack_mode,
+	short& alignment,
+	unsigned long& oflags,		// Object flags.
+	unsigned long& siflags,		// Extra flags for SI.
+	unsigned long& type_flags	// Movement flags.
+	//+++++++++Schedule changes.
+	)
+	{
+	unsigned char *ptr = data;
+	Npc_actor_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame,
+		name, ident, usecode, properties, attack_mode, alignment,
+		oflags, siflags, type_flags);
 	return (ptr - data) == datalen;
 	}
 
