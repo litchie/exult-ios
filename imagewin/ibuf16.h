@@ -59,6 +59,11 @@ public:
 		{
 		palette[num] = rgb(r, g, b);
 		}
+					// Set palette.
+	void set_palette(unsigned char *rgbs, int maxval, 
+						int brightness = 100);
+					// Rotate palette colors.
+	void rotate_colors(int first, int num, int upd);
 	/*
 	 *	16-bit color methods.
 	 */
@@ -88,12 +93,6 @@ public:
 	/*
 	 *	8-bit color methods:
 	 */
-					// Set palette.
-	virtual void set_palette(SDL_Surface *surface, 
-		unsigned char *rgbs, int maxval, int brightness = 100);
-					// Rotate palette colors.
-	virtual void rotate_colors(SDL_Surface *surface, int first, int num,
-								int upd);
 					// Fill with given (8-bit) value.
 	virtual void fill8(unsigned char val)
 		{ Image_buffer16::fill16(palette[val]); }

@@ -89,13 +89,6 @@ public:
 	bool is_fullscreen() { return fullscreen; }
 					// Create a compatible image buffer.
 	Image_buffer *create_buffer(int w, int h);
-					// Set palette.
-	void set_palette(unsigned char *rgbs, int maxval, 
-						int brightness = 100)
-		{ ibuf->set_palette(surface, rgbs, maxval, brightness); }
-					// Rotate palette colors.
-	virtual void rotate_colors(int first, int num, int upd)
-		{ ibuf->rotate_colors(surface, first, num, upd); }
 					// Resize event occurred.
 	void resized(unsigned int neww, unsigned int nehh, int newsc);
 	void show();			// Repaint entire window.
@@ -103,6 +96,13 @@ public:
 	void show(int x, int y, int w, int h);
 
 	void toggle_fullscreen();
+					// Set palette.
+	virtual void set_palette(unsigned char *rgbs, int maxval, 
+						int brightness = 100)
+		{  }
+					// Rotate palette colors.
+	virtual void rotate_colors(int first, int num, int upd)
+		{  }
 	/*
 	 *	16-bit color methods.
 	 */

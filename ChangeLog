@@ -4,6 +4,7 @@
 
 2000-11-26  Jeff Freedman <freedman@hevanet.com>
 	* Split up imagewin.{cc,h} and moved to imagwin directory.
+	* SDL palette methods moved to Image_window8 from Image_buffer8.
 
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
 	* Some people are having trouble including pthread_alloc. Include cstring as an alternative

@@ -28,66 +28,6 @@ Boston, MA  02111-1307, USA.
 #include <string>
 
 /*
- *	Convert rgb value.
- */
-
-inline unsigned short Get_color8
-	(
-	unsigned char val,
-	int maxval,
-	int brightness			// 100=normal.
-	)
-	{
-	unsigned long c = (((unsigned long) val)*brightness*255L)/
-							(100*(maxval + 1));
-	return (c <= 255L ? (unsigned short) c : 255);
-	}
-
-/*
- *	Set palette.
- */
-
-void Image_buffer8::set_palette
-	(
-	SDL_Surface *surface,		// Surface to set.
-	unsigned char *rgbs,		// 256 3-byte entries.
-	int maxval,			// Highest val. for each color.
-	int brightness			// Brightness control (100 = normal).
-	)
-	{
-					// Get the colors.
-	for (int i = 0; i < 256; i++)
-		{
-		colors[i].r = Get_color8(rgbs[3*i], maxval, brightness);
-		colors[i].g = Get_color8(rgbs[3*i + 1], maxval,
-							brightness);
-		colors[i].b = Get_color8(rgbs[3*i + 2], maxval,
-							brightness);
-		}
-	SDL_SetColors(surface, colors, 0, 256);
-	}
-
-/*
- *	Rotate a range of colors.
- */
-
-void Image_buffer8::rotate_colors
-	(
-	SDL_Surface *surface,		// Surface to set.
-	int first,			// Palette index of 1st.
-	int num,			// # in range.
-	int upd				// 1 to update hardware palette.
-	)
-	{
-	int cnt = num - 1;		// Shift downward.
-	SDL_Color c0 = colors[first+num-1];
-	memmove(colors+first+1,colors+first,sizeof(SDL_Color)*cnt);
-	colors[first ] = c0;	// Shift 1st to end.
-	if (upd)			// Take effect now?
-		SDL_SetColors(surface, colors, 0, 256);
-	}
-
-/*
  *	Copy an area of the image within itself.
  */
 
