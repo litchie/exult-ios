@@ -188,7 +188,7 @@ static long Savefile
  *	Output:	0 if error (reported).
  */
 
-int Game_window::save_gamedat
+bool Game_window::save_gamedat
 	(
 	const char *fname,			// File to create.
 	const char *savename			// User's savegame name.
@@ -199,7 +199,7 @@ int Game_window::save_gamedat
 		{			// +++++Better error???
 		cerr << "Exult:  Error opening '" << fname <<
 				"' for writing"<<endl;
-		return (0);
+		return (false);
 		}
 	char title[0x50];		// Use savename for title.
 	memset(title, 0, sizeof(title));
@@ -236,11 +236,11 @@ int Game_window::save_gamedat
 	out.write((char*)table, 2*count*4);
 	delete [] table;
 	out.flush();
-	int result = out.good();
+	bool result = out.good();
 	if (!result)			// ++++Better error system needed??
 		{
 		cerr << "Exult:  Error writing '" << fname << "'"<<endl;
-		return (0);
+		return (false);
 		}
 	out.close();
 	return (result);
@@ -249,10 +249,10 @@ int Game_window::save_gamedat
 /*
  *	Save to one of the numbered savegame files (and update save_names).
  *
- *	Output:	0 if error (reported).
+ *	Output:	false if error (reported).
  */
 
-int Game_window::save_gamedat
+bool Game_window::save_gamedat
 	(
 	int num,			// 0-9, currently.
 	const char *savename			// User's savegame name.
@@ -261,10 +261,10 @@ int Game_window::save_gamedat
 	char fname[50];			// Set up name.
 	sprintf(fname, SAVENAME, num);
 	if (!save_gamedat(fname, savename))
-		return (0);
+		return (false);
 	delete save_names[num];		// Update name.
 	save_names[num] = strdup(savename);
-	return (1);
+	return (true);
 	}
 
 /*
