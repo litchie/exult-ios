@@ -310,6 +310,8 @@ class Monster_info
 	unsigned char armor;
 public:
 	Monster_info() {  }
+	int get_shapenum()
+		{ return shapenum; }
 	void set(int sh, int str, int dex, int intel, int comb, int ar)
 		{
 		shapenum = sh;
