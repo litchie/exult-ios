@@ -1508,8 +1508,8 @@ static void Drop_dragged_chunk
 	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;
 	cout << "Set chunk (" << chunknum << ')' << endl;
 					// Need chunk-coordinates.
-	int tx = gwin->get_scrolltx() + x/c_tilesize,
-	    ty = gwin->get_scrollty() + y/c_tilesize;
+	int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles,
+	    ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
 	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
 	gwin->get_map()->set_chunk_terrain(cx, cy, chunknum);
 	gwin->paint();
