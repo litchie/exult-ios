@@ -2639,6 +2639,8 @@ void Game_window::add_nearby_npcs
 	int stop_cx, int stop_cy	// Go up to, but not including, these.
 	)
 	{
+#if 0	/* ++++++I think this isn't needed at all */
+	/* And if not, we don't have to maintain chunks' NPC lists. */
 	stop_cx %= c_num_chunks;	// Watch out for end.
 	stop_cy %= c_num_chunks;
 	unsigned long curtime = Game::get_ticks();
@@ -2653,6 +2655,7 @@ void Game_window::add_nearby_npcs
 					npc_prox->add(curtime, npc);
 					}
 				}
+#endif
 	}
 
 /*
