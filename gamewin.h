@@ -306,16 +306,6 @@ public:
 		return get_shape_rect(s,
 			(tx + 1 - get_scrolltx())*tilesize - 1 - lftpix,
 			(ty + 1 - get_scrollty())*tilesize - 1 - lftpix);
-#if 0
-		return Rectangle(
-			(tx + 1 - get_scrolltx())*tilesize - 1 -
-							s->xleft - lftpix,
-			(ty + 1 - get_scrollty())*tilesize - 1 - 
-							s->yabove - lftpix,
-			s->get_width(),
-			s->get_height()
-			);
-#endif
 		}
 	Shape_frame *get_gump_shape(int shapenum, int framenum)
 		{ return gumps.get_shape(shapenum, framenum); }

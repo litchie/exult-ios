@@ -753,6 +753,149 @@ static void Debug_lt
 #endif
 
 /*
+ *	Information about an object used during render-order comparison (lt()):
+ */
+class Ordering_info
+	{
+	Rectangle area;			// Area (pixels) rel. to screen.
+	Shape_info& info;		// Info. about shape.
+	int tx, ty, tz;			// Absolute tile coords.
+	int xs, ys, zs;			// Tile dimensions.
+	void init(Game_object *obj)
+		{
+		obj->get_abs_tile(tx, ty, tz);
+		int frnum = obj->get_framenum();
+		xs = info.get_3d_xtiles(frnum);
+		ys = info.get_3d_ytiles(frnum);
+		zs = info.get_3d_height();
+		}
+public:
+	friend Game_object, Chunk_object_list;
+					// Create from scratch.
+	Ordering_info(Game_window *gwin, Game_object *obj)
+		: area(gwin->get_shape_rect(obj)),
+		  info(gwin->get_shapes().get_info(obj->get_shapenum()))
+		{ init(obj); }
+	Ordering_info(Game_window *gwin, Game_object *obj, Rectangle& a)
+		: area(a),
+		  info(gwin->get_shapes().get_info(obj->get_shapenum()))
+		{ init(obj); }
+	};
+
+#if 0	/* This will be the new version: */
+/*
+ *	Should obj1 be rendered before obj2?
+ *
+ *	Output:	1 if so, 0 if not, -1 if cannot compare.
+ */
+int Game_object::lt
+	(
+	Ordering_info& inf1,		// Info. for object 1.
+	Game_object *obj2
+	) const
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// See if there's no overlap.
+	Rectangle r2 = gwin->get_shape_rect(&obj2);
+	if (!inf1.area.intersects(r2))
+		return (-1);		// No overlap on screen.
+	Ordering_info inf2(Game_window::get_game_window(), obj2, r2);
+#ifdef DEBUGLT
+	Debug_lt(inf1.tx, inf1.ty, inf2.tx, inf2.ty);
+#endif
+	int result = -1;		// Watch for conflicts.
+	if (inf1.tz != inf2.tz)		// Is one obj. on top of another?
+		{
+		if (inf1.tz + inf1.zs <= inf2.tz)
+			result = 1;	// It's above us.
+		else if (inf2.tz + inf2.zs <= inf1.tz)
+			result = 0;	// We're above.
+		}
+	if (inf1.ty != inf2.ty)		// Is one obj. in front of the other?
+		{
+		if (inf1.ty <= inf2.ty - inf2.ys)
+			{		// Obj2 is in front.
+			if (result == 0)// Conflict, so return 'neither'.
+				return -1;
+			result = 1;
+			}
+		else if (inf2.ty <= inf1.ty - inf1.ys)
+			{		// We're in front.
+			if (result == 1)
+				return -1;
+			result = 0;
+			}
+		}
+	if (inf1.tx != inf2.tx)		// Is one obj. to right of the other?
+		{
+		if (inf1.tx <= inf2.tx - inf2.xs)
+			{		// Obj2 is to right of us.
+			if (result == 0)
+				return -1;
+			result = 1;
+			}
+		if (inf2.tx <= inf1.tx - inf1.xs)
+			{		// We're to the right.
+			if (result == 1)
+				return -1;
+			result = 0;
+			}
+		}
+	if (result != -1)		// Consistent result?
+		return result;
+	if (!inf1.zs && inf1.tz <= inf2.tz)	// We're flat and below?
+		return (1);
+	if (!inf2.zs && inf2.tz <= inf1.tz)	// It's below us?
+		return (0);
+#if 0					// Below 2nd?
+	if (inf1.tz < inf2.tz && inf1.tz + inf1.zs <= inf2.tz + inf2.zs)
+		return (1);
+					// Above 2nd?
+	else if (inf2.tz < inf1.tz && inf2.tz + inf2.zs <= inf1.tz + inf1.zs)
+		return (0);
+#endif
+					// Handle intersecting objects.
+	if (inf1.tx == inf2.tx &&	// Watch for paintings on NS walls.
+	    inf1.xs == inf2.xs)
+		if (inf1.ys < inf2.ys)	// Take narrower 2nd.
+			return (0);
+		else if (inf2.ys > inf1.ys)
+			return (1);
+		else if (inf1.zs < inf2.zs)// The shorter one?
+			return (0);
+		else if (inf1.zs > inf2.zs)
+			return (1);
+					// If x's overlap, see if in front.
+	if ((inf1.tx > inf2.tx - inf2.xs && inf1.tx <= inf2.tx) ||
+	    (inf2.tx > inf1.tx - inf1.xs && inf2.tx <= inf1.tx))
+		{
+		if (inf1.ty < inf2.ty)
+			return (1);
+		else if (inf1.ty > inf2.ty)
+			return (0);
+		else if (inf1.zs < inf2.zs)// The shorter one?
+			return (0);
+		else if (inf1.zs > inf2.zs)
+			return (1);
+		else if (inf1.xs < inf2.xs)// Take the narrower one as greater.
+			return (0);
+		else if (inf1.xs > inf2.xs)
+			return (1);
+		}
+					// If y's overlap, see if to left.
+	if ((inf1.ty > inf2.ty - inf2.ys && inf1.ty <= inf2.ty) ||
+	    (inf2.ty > inf1.ty - inf1.ys && inf2.ty <= inf1.ty))
+		{
+		if (inf1.tx < inf2.tx)
+			return (1);
+		else if (inf1.tx > inf2.tx)
+			return (0);
+		}
+	return (-1);
+	}
+#else	/* Old version: */
+
+/*
  *	Should this object be rendered before obj2?
  *
  *	Output:	1 if so, 0 if not, -1 if cannot compare.
@@ -876,6 +1019,7 @@ int Game_object::lt
 		}
 	return (-1);
 	}
+#endif
 
 /*
  *	Get frame if rotated 1, 2, or 3 quadrants clockwise.  This is to
@@ -2150,6 +2294,36 @@ Chunk_object_list::~Chunk_object_list
 	}
 
 /*
+ *	Add rendering dependencies for a new object.
+ */
+
+void Chunk_object_list::add_dependencies
+	(
+#if 0	/* This will be the new way: */
+	Game_object *newobj,		// Object to add.
+	Ordering_info& newinfo		// Info. for new object's ordering.
+#else
+	Game_object *newobj		// Object to add.
+#endif
+	)
+	{
+	Game_object *obj;		// Figure dependencies.
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
+		{
+#if 0
+		int cmp = Game_object::lt(newinfo, obj);
+#else
+		int cmp = newobj->lt(*obj);
+#endif
+		if (!cmp)		// Bigger than this object?
+			newobj->dependencies.put(obj);
+		else if (cmp == 1)	// Smaller than?
+			obj->dependencies.put(newobj);
+		}
+	}
+
+/*
  *	Add a game object to a chunk's list.
  *
  *	Newobj's cx and cy fields are set to this chunk.
@@ -2164,16 +2338,13 @@ void Chunk_object_list::add
 	newobj->cy = get_cy();
 					// Just put in front.
 	objects = newobj->insert_in_chain(objects);
-	Game_object *obj;		// Figure dependencies.
-	Object_iterator next(objects);
-	while ((obj = next.get_next()) != 0)
-		{
-		int cmp = newobj->lt(*obj);
-		if (!cmp)		// Bigger than this object?
-			newobj->dependencies.put(obj);
-		else if (cmp == 1)	// Smaller than?
-			obj->dependencies.put(newobj);
-		}
+#if 0	/* This will be the new way: */
+	Game_window *gwin = Game_window::get_game_window();
+	Ordering_info ord(gwin, newobj);
+	add_dependencies(newobj, ord);	// Figure dependencies.
+#else
+	add_dependencies(newobj);	// Figure dependencies.
+#endif
 	if (cache)			// Add to cache.
 		cache->update_object(this, newobj, 1);
 	Shape_info& info = Game_window::get_game_window()->get_info(newobj);
