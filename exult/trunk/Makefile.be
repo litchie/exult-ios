@@ -21,7 +21,7 @@ EXEC=exult
 MAIN_OBJS=actions.o actorio.o actors.o args.o delobjs.o drag.o effects.o \
 	exult.o gameclk.o gamedat.o \
 	gametxt.o gamewin.o gumps.o imagewin.o items.o lists.o mouse.o \
-	npcnear.o objs.o readnpcs.o segfile.o spells.o tqueue.o usecode.o \ 
+	npcnear.o objs.o readnpcs.o segfile.o spells.o tqueue.o usecode.o \
 	utils.o vec.o vgafile.o
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
