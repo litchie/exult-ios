@@ -52,6 +52,26 @@ void	Configuration::value(const char *key,int &n,int defaultvalue)
 		n=atoi(s.c_str());
 }
 
+void	Configuration::set(string &key,string &value)
+{
+	string	k=key;
+	XMLnode *walk;
+
+	walk=&xmltree;
+
+	// Incomplete
+
+	// Break k up into '/' separated elements.
+	// start advancing walk, one element at a time, creating nodes
+	// as needed.
+	// At the end of that, walk is the target node, and we
+	// can set the value.
+
+	// We must also properly encode the value before writing it out.
+	// Must remember that.
+
+}
+
 
 extern	void    xmlparse(string &s,size_t &pos,XMLnode *x);
 
