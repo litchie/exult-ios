@@ -41,7 +41,7 @@ inline void Interp_vert
 	)
 	{
 	Dest_pixel pix0 = *from0++, pix1 = *from1++;
-	unsigned short r0, r1, g0, g1, b0, b1;
+	unsigned int r0, r1, g0, g1, b0, b1;
 	manip.split_dest(pix0, r0, g0, b0);
 	manip.split_dest(pix1, r1, g1, b1);
 	*to++ = manip.rgb((r0 + r1)/2, (g0 + g1)/2, (b0 + b1)/2);
