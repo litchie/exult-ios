@@ -383,15 +383,18 @@ void Usecode_machine::show_npc_face
 	Actor *npc = (Actor *) get_item(arg1);
 	if (!npc)
 		return;
+	if (Game::get_game_type() == BLACK_GATE && npc->get_npc_num() != -1) 
+		npc->set_flag (Obj_flags::met);
 	int shape = npc->get_face_shapenum();
 	int frame = arg2.get_int_value();
 	gwin->remove_text_effects();
-	if (gwin->get_mode() != Game_window::conversation)
+	if (gwin->get_mode() == Game_window::gump)
 		{
 		gwin->end_gump_mode();
-		gwin->paint();
+		gwin->set_all_dirty();
 		init_conversation();	// jsf-Added 4/20/01 for SI-Lydia.
 		}
+	gwin->paint_dirty();
 	conv->show_face(shape, frame, slot);
 //	user_choice = 0;		// Seems like a good idea.
 // Also seems to create a conversation bug in Test of Love :-(

@@ -457,14 +457,8 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			}
 		case usecode:
 			{		// Data2 is the usecode function.
-			Game_window::Game_mode savemode = gwin->get_mode();
 			umachine->call_usecode(data2, this,
 					Usecode_machine::egg_proximity);
-			if (gwin->get_mode() == Game_window::conversation)
-				{
-				gwin->set_mode(savemode);
-				gwin->set_all_dirty();
-				}
 			break;
 			}
 		case missile:

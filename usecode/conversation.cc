@@ -187,7 +187,6 @@ void Conversation::show_face(int shape, int frame, int slot)
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 
 	// Make sure mode is set right.
-      	gwin->set_mode(Game_window::conversation);
 					// Watch for wierdness (lightning).
 	if (gwin->get_brightness() >= 300)
 		gwin->set_palette(-1, 100);
@@ -290,7 +289,13 @@ void Conversation::remove_face(int shape)
 	face_info[i] = 0;
 	num_faces--;
 	if (last_face_shown == i)	// Just in case.
-		last_face_shown = num_faces - 1;
+		{
+		int j;
+		for (j = max_faces - 1; j >= 0; j--)
+			if (face_info[j])
+				break;
+		last_face_shown = j;
+		}
 }
 
 /*
@@ -301,13 +306,8 @@ void Conversation::remove_last_face
 	(
 	)
 	{
-#if 0	/* Causes crashes. */
 	if (last_face_shown >= 0 && face_info[last_face_shown])
 		remove_face(face_info[last_face_shown]->shape);
-#else	/* Maybe it's just slot 1 always. */
-	if (last_face_shown > 0 && face_info[last_face_shown])
-		remove_face(face_info[last_face_shown]->shape);
-#endif
 	}
 
 /*
@@ -374,7 +374,6 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
         bool SI = Game::get_game_type()==SERPENT_ISLE;
 	Main_actor *main_actor = gwin->get_main_actor();
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
-	gwin->set_mode(Game_window::conversation);
 					// Get screen rectangle.
 	Rectangle sbox = gwin->get_win_rect();
 	int x = 0, y = 0;		// Keep track of coords. in box.
