@@ -14,7 +14,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw32 automatically defines WIN32
-CPPFLAGS=-DVERSION=\\\"0.94cvs\\\" -DEXULT_DATADIR=\\\"data\\\" -g3 -DDEBUG \
+CPPFLAGS=-DVERSION=\\\"0.94cvs\\\" -DEXULT_DATADIR=\\\"data\\\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/gumps -I$(SRC)/objs \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
@@ -23,7 +23,7 @@ CPPFLAGS=-DVERSION=\\\"0.94cvs\\\" -DEXULT_DATADIR=\\\"data\\\" -g3 -DDEBUG \
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
 CXXFLAGS=-O2 -mwindows -Wno-long-long -include mingw_kludges.h
 
-LFLAGS=-g3 -mwindows
+LFLAGS=-mwindows
 LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
 
 EXEC=exult.exe
