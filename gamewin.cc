@@ -64,14 +64,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "jawbone.h"
 #include "delobjs.h"
 #include "Flex.h"
+#include "Gump.h"
+#include "Gump_manager.h"
 #include "ucsched.h"			/* Only used to flush objects. */
-
-#include "Actor_gump.h"
-#include "Paperdoll_gump.h"
-#include "Spellbook_gump.h"
-#include "Stats_gump.h"
-#include "CombatStats_gump.h"
-#include "Jawbone_gump.h"
 
 #include "cheat.h"
 
@@ -173,7 +168,7 @@ Game_window::Game_window
 	    win(0), usecode(0), combat(false),
             tqueue(new Time_queue()), clock(tqueue), time_stopped(0),
 	    npc_prox(new Npc_proximity_handler(this)),
-	    effects(0), open_gumps(0),
+	    effects(0), gump_man(new Gump_manager),
 	    render_seq(0), painted(false), focus(true), 
 	    teleported(false), in_dungeon(false), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
@@ -244,6 +239,7 @@ Game_window::~Game_window
 	delete [] invis_xform;
 	if(monster_info)
 		delete [] monster_info;
+	delete gump_man;
 	delete background_noise;
 	delete tqueue;
 	delete win;
@@ -784,36 +780,6 @@ Rectangle Game_window::get_shape_rect(const Game_object *obj)
 		ty*c_tilesize - 1 - lftpix);
 }
 
-/*
- *	Get screen area used by a gump.
- */
-
-Rectangle Game_window::get_gump_rect
-	(
-	Gump *gump
-	)
-{
-	Shape_frame *s;
-
-	switch (gump->get_shapefile()) {
-	case GSF_EXULT_FLX:
-		s = get_exult_shape(gump->get_shapenum(), gump->get_framenum());
-		break;
-	case GSF_GUMPS_VGA:
-		s = get_gump_shape (gump->get_shapenum(), gump->get_framenum(), gump->is_paperdoll());
-		break;
-	case GSF_PAPERDOL_VGA:
-		s = get_gump_shape (gump->get_shapenum(), gump->get_framenum(), true);
-		break;
-	default:
-		cerr << "Error! Wrong gumpshapefile!" << endl;
-		return Rectangle(0,0,0,0);
-	} 
-		
-	return Rectangle(gump->get_x() - s->xleft, 
-			gump->get_y() - s->yabove,
-					s->get_width(), s->get_height());
-}
 
 /*
  *	Get screen loc. of object.
@@ -1526,7 +1492,7 @@ void Game_window::read
 					// DON'T do anything that might paint()
 					//   before calling read_npcs!!
 	setup_game();			// Read NPC's, usecode.
-	end_gump_mode();		// Kill gumps.
+	gump_man->close_all_gumps(true);		// Kill gumps.
 	}
 
 /*
@@ -1813,7 +1779,7 @@ void Game_window::view_right
 							c_num_chunks;
 	scrolltx = INCR_TILE(scrolltx);
 	scroll_bounds.x = INCR_TILE(scroll_bounds.x);
-	if (open_gumps)		// Gump on screen?
+	if (gump_man->showing_gumps())		// Gump on screen?
 		{
 		paint();
 		return;
@@ -1843,7 +1809,7 @@ void Game_window::view_left
 					// Want to wrap.
 	scrolltx = DECR_TILE(scrolltx);
 	scroll_bounds.x = DECR_TILE(scroll_bounds.x);
-	if (open_gumps)			// Gump on screen?
+	if (gump_man->showing_gumps())			// Gump on screen?
 		{
 		paint();
 		return;
@@ -1873,7 +1839,7 @@ void Game_window::view_down
 							c_num_chunks;
 	scrollty = INCR_TILE(scrollty);
 	scroll_bounds.y = INCR_TILE(scroll_bounds.y);
-	if (open_gumps)			// Gump on screen?
+	if (gump_man->showing_gumps())			// Gump on screen?
 		{
 		paint();
 		return;
@@ -1901,7 +1867,7 @@ void Game_window::view_up
 					// Want to wrap.
 	scrollty = DECR_TILE(scrollty);
 	scroll_bounds.y = DECR_TILE(scroll_bounds.y);
-	if (open_gumps)		// Gump on screen?
+	if (gump_man->showing_gumps())		// Gump on screen?
 		{
 		paint();
 		return;
@@ -2229,60 +2195,6 @@ void Game_window::activate_item
 			}
 		}
 	}
-
-/*
- *	Find the highest gump that the mouse cursor is on.
- *
- *	Output:	->gump, or null if none.
- */
-
-Gump *Game_window::find_gump
-	(
-	int x, int y			// Pos. on screen.
-	)
-	{
-	Gump *gmp;
-	Gump *found = 0;		// We want last found in chain.
-	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
-		{
-		Rectangle box = get_gump_rect(gmp);
-		if (box.has_point(x, y))
-			{		// Check the shape itself.
-			Shape_frame *s;
-			if (gmp->get_shapefile() == GSF_EXULT_FLX)
-				s = get_exult_shape(gmp->get_shapenum(), gmp->get_framenum());
-			else
-				s = get_gump_shape (gmp->get_shapenum(),
-						gmp->get_framenum(),
-						gmp->is_paperdoll());
-
-			if (s->has_point(x - gmp->get_x(), y - gmp->get_y()))
-				found = gmp;
-			}
-		}
-	return (found);
-	}
-
-/*
- *	Find gump containing a given object.
- */
-
-Gump *Game_window::find_gump
-	(
-	Game_object *obj
-	)
-	{
-					// Get container object is in.
-	Game_object *owner = obj->get_owner();
-	if (!owner)
-		return (0);
-					// Look for container's gump.
-	for (Gump *gmp = open_gumps; gmp; gmp = gmp->get_next())
-		if (gmp->get_container() == owner)
-			return (gmp);
-	return (0);
-	}
-
 /*
  *	Find the top object that can be selected, dragged, or activated.
  *	The one returned is the 'highest'.
@@ -2393,10 +2305,14 @@ void Game_window::show_items
 	)
 	{
 					// Look for obj. in open gump.
-	Gump *gump = find_gump(x, y);
+	Gump *gump = gump_man->find_gump(x, y);
 	Game_object *obj;		// What we find.
 	if (gump)
+	{
 		obj = gump->find_object(x, y);
+		if (!obj) obj = gump->find_actor(x, y);
+		if (!obj) obj = gump->get_container();
+	}
 	else				// Search rest of world.
 		obj = find_object(x, y);
 
@@ -2465,6 +2381,14 @@ void Game_window::show_items
 		shnum = id.get_shapenum();
 		cout << "Clicked on flat shape " << 
 			shnum << ':' << id.get_framenum() << endl;
+
+#ifdef CHUNK_OBJ_DUMP
+		Object_iterator it(chunk->get_objects());
+		Game_object *each;
+		cout << "Chunk Contents: " << endl;
+		while ((each = it.get_next()) != 0)
+			cout << "    " << each->get_name() << ":" << each->get_shapenum() << ":" << each->get_framenum() << endl;
+#endif
 		if (id.is_invalid())
 			return;
 		}
@@ -2708,41 +2632,34 @@ void Game_window::double_clicked
 	if (!Scheduled_usecode::get_count())
 		removed->flush();	// Flush removed objects.
 					// Look for obj. in open gump.
-	Gump *gump = find_gump(x, y);
-	Game_object *obj;
-	if (gump)
-		{			// Find object in gump.
-		obj = gump->find_object(x, y);
-		if (!obj)		// Maybe it's a spell.
-			{
-		 	Gump_button *btn = gump->on_button(this, x, y);
-			if (btn)
-				btn->double_clicked(this);
-			return;
-			}
-		}
-	else				// Search rest of world.
-		{
+	Game_object *obj = 0;
+	bool gump = gump_man->double_clicked(x, y, obj);
+
+	// If gump manager didn't handle it, we search the world for an object
+	if (!gump)
+	{
 		obj = find_object(x, y);
-					// Check path, except if an NPC.
+
+		// Check path, except if an NPC.
 	    	if (obj && obj->get_npc_num() <= 0 && !obj->is_monster() &&
 			!Fast_pathfinder_client::is_grabable(
 					main_actor->get_abs_tile_coord(),
 					obj->get_abs_tile_coord()))
-			{
+		{
 			Mouse::mouse->flash_shape(Mouse::blocked);
 			return;
-			}
 		}
+	}
 	if (obj)
-		{
+	{
 		if (combat && !gump && obj != main_actor &&
 					// But don't attack party members.
 						obj->get_party_id() < 0 &&
 					// Or bodies.
 						!Is_body(obj->get_shapenum()))
-			{		// In combat mode.
-					// Want everyone to be in combat.
+		{			// In combat mode.
+
+			// Want everyone to be in combat.
 			combat = 0;
 			main_actor->set_target(obj);
 			toggle_combat();
@@ -2752,7 +2669,7 @@ void Game_window::double_clicked
 			   Game::get_game_type() == BLACK_GATE)
 				attack_avatar(1 + rand()%3);
 			return;
-			}
+		}
 		remove_text_effects();	// Remove text msgs. from screen.
 #ifdef DEBUG
 		cout << "Object name is " << obj->get_name() << endl;
@@ -2760,135 +2677,9 @@ void Game_window::double_clicked
 		usecode->init_conversation();
 		obj->activate(usecode);
 		npc_prox->wait(4);	// Delay "barking" for 4 secs.
-		}
 	}
+}
 
-
-/*
- *	Show a gump.
- */
-
-void Game_window::show_gump
-	(
-	Game_object *obj,		// Object gump represents.
-	int shapenum			// Shape # in 'gumps.vga'.
-	)
-	{
-	int paperdoll = 0;
-	
-	if (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP
-		&& Game::get_game_type() == BLACK_GATE)
-		paperdoll = 1;
-
-	// overide for paperdolls
-	if (shapenum == 123 && (Game::get_game_type() == SERPENT_ISLE ||
-		(can_use_paperdolls() && get_bg_paperdolls())))
-		paperdoll=2;
-	else if (paperdoll && obj == main_actor)
-		shapenum += main_actor->get_type_flag(Actor::tf_sex);
-		
-	static int cnt = 0;		// For staggering them.
-	Gump *gmp;			// See if already open.
-	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
-		if (gmp->get_owner() == obj &&
-		    gmp->get_shapenum() == shapenum)
-			break;
-	if (gmp)			// Found it?
-		{			// Move it to end.
-		if (gmp->get_next())
-			{
-			gmp->remove_from_chain(open_gumps);
-			gmp->append_to_chain(open_gumps);
-			}
-		paint();
-		return;
-		}
-	int x = (1 + cnt)*get_width()/10, 
-	    y = (1 + cnt)*get_height()/10;
-	
-    	Shape_frame *shape = paperdoll == 2 ? get_gump_shape(shapenum, 0, true) :
-					get_gump_shape(shapenum, 0, false);
-		
-	if (x + shape->get_xright() > get_width() ||
-	    y + shape->get_ybelow() > get_height())
-		{
-		cnt = 0;
-		x = get_width()/10;
-		y = get_width()/10;
-		}
-
-	Gump *new_gump = 0;
-	if (paperdoll == 2)
-		new_gump = new Paperdoll_gump((Container_game_object *) obj,
-						 x, y, obj->get_npc_num());
-	else if (paperdoll)
-		new_gump = new Actor_gump((Container_game_object *) obj,
-						 x, y, shapenum);
-	else if (shapenum == game->get_shape("gumps/statsdisplay"))
-		new_gump = new Stats_gump((Container_game_object *) obj, x, y);
-	else if (shapenum == game->get_shape("gumps/spellbook"))
-		new_gump = new Spellbook_gump((Spellbook_object *) obj);
-	else if (Game::get_game_type() == SERPENT_ISLE) {
-		if (shapenum == game->get_shape("gumps/spell_scroll"))
-			new_gump = new Spellscroll_gump(obj);
-		else if (shapenum >= game->get_shape("gumps/cstats/1")&&
-				shapenum <= game->get_shape("gumps/cstats/6"))
-			new_gump = new CombatStats_gump(x, y);
-		else if (shapenum == game->get_shape("gumps/jawbone"))
-			new_gump = new Jawbone_gump(
-					(Jawbone_object*) obj, x, y);
-	}
-
-	if (!new_gump)
-		new_gump = new Gump((Container_game_object *) obj, x, y, shapenum);
-
-					// Paint new one last.
-	new_gump->append_to_chain(open_gumps);
-	if (++cnt == 8)
-		cnt = 0;
-	clock.set_palette();		// Gumps get lighter palette.
-	int sfx = Audio::game_sfx(14);
-	Audio::get_ptr()->play_sound_effect(sfx);	// The weird noise.
-	paint();			// Show everything.
-	}
-
-/*
- *	End gump mode.
- */
-
-void Game_window::end_gump_mode
-	(
-	)
-	{
-	int had_gumps = (open_gumps != 0);
-	while (open_gumps)		// Remove all gumps.
-		{
-		Gump *gmp = open_gumps;
-		open_gumps = gmp->get_next();
-		delete gmp;
-		}
-	clock.set_palette();
-	npc_prox->wait(4);		// Delay "barking" for 4 secs.
-	if (had_gumps)
-		paint();
-	}
-
-/*
- *	Remove a gump.
- */
-
-void Game_window::remove_gump
-	(
-	Gump *gump
-	)
-	{
-	gump->remove_from_chain(open_gumps);
-	delete gump;
-	if (!open_gumps)		// Last one?  Out of gump mode.
-		{
-		clock.set_palette();
-		}
-	}
 
 /*
  *	Add an NPC to the 'nearby' list.

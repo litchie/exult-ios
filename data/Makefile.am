@@ -52,7 +52,8 @@ EXULT_FLX_OBJECTS = \
 	vid_right.shp		\
 	vid_resolution.shp	\
 	vid_scaler.shp		\
-	vid_scaling.shp
+	vid_scaling.shp		\
+	hp_bar.shp
 
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in			\
@@ -69,8 +70,12 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/bgfiredoom.shp		\
 	bg/fellowshipstaff.shp		\
 	bg/BGmap.shp			\
-	bg/defaultkeys.txt
-
+	bg/defaultkeys.txt		\
+	bg/dupre_face.shp		\
+	bg/fem_av_face.shp		\
+	bg/iolo_face.shp		\
+	bg/male_av_face.shp		\
+	bg/shamino_face.shp
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\

@@ -45,6 +45,7 @@ CFG=Exult_flx - Win32 Release
 # PROP Intermediate_Dir "Exult_flx___Win32_Release"
 # PROP Cmd_Line "buildflx.bat ..\data"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -65,6 +66,7 @@ CFG=Exult_flx - Win32 Release
 # PROP Intermediate_Dir "Exult_flx___Win32_Debug"
 # PROP Cmd_Line "buildflx.bat ..\data"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -85,6 +87,7 @@ CFG=Exult_flx - Win32 Release
 # PROP Intermediate_Dir "Exult_flx___Win32_Release_Install"
 # PROP Cmd_Line "buildflx_inst.bat ..\data . ..\data\exult.flx data"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -105,6 +108,7 @@ CFG=Exult_flx - Win32 Release
 # PROP Intermediate_Dir "Exult_flx___Win32_Debug_Install"
 # PROP Cmd_Line "buildflx_inst.bat ..\data . ..\data\exult.flx data"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -289,6 +293,10 @@ SOURCE=..\data\gam_video.shp
 SOURCE=..\data\gamemenu.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\hp_bar.shp
 # End Source File
 # Begin Source File
 

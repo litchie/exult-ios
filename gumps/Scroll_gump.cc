@@ -45,6 +45,6 @@ void Scroll_gump::paint
 	)
 {
 					// Paint the gump itself.
-	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+	gwin->paint_shape(x, y, *this);
 	curend = paint_page(gwin, Rectangle(48, 30, 146, 118), curtop);
 }

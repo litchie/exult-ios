@@ -35,12 +35,13 @@
 #include "Audio.h"
 #include "Gamemenu_gump.h"
 #include "Newfile_gump.h"
+#include "Face_stats.h"
+#include "Gump_manager.h"
 
 extern void increase_resolution();
 extern void decrease_resolution();
 extern void make_screenshot(bool silent = false);
 extern void change_gamma(bool down);
-extern void Set_mouse_and_speed(int mx, int my);
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 
 extern Game_window *gwin;
@@ -150,14 +151,14 @@ void ActionHelp(int *params)
 //  { ActionCloseGumps, 0, "Close gumps", false, false, NONE },
 void ActionCloseGumps(int *params)
 {
-	gwin->end_gump_mode();
+	gwin->get_gump_man()->close_all_gumps();
 }
 
 //  { ActionCloseOrMenu, "Game menu", true, false, NONE },
 void ActionCloseOrMenu(int* params)
 {
-	if (gwin->showing_gumps())
-		gwin->end_gump_mode();
+	if (gwin->get_gump_man()->showing_gumps(true))
+		gwin->get_gump_man()->close_all_gumps();
 	else
 		ActionMenuGump(0);
 }
@@ -214,9 +215,8 @@ void ActionUseItem(int *params)
 	if (params[1] == -1) params[1] = c_any_framenum;
 	if (params[2] == -1) params[2] = c_any_qual;
 	gwin->activate_item(params[0], params[1], params[2]);
-	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
-		Mouse::mouse->set_shape(Mouse::hand);
 
+	Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionCombat, 0, "Toggle combat", true, false, NONE },
@@ -224,9 +224,7 @@ void ActionCombat(int *params)
 {
 	gwin->toggle_combat();
 	gwin->paint();
-	int mx, my;			// Update mouse.
-	SDL_GetMouseState(&mx, &my);
-	Set_mouse_and_speed(mx, my);
+	Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionTarget, 0, "Target mode", true, false, NONE },
@@ -236,8 +234,7 @@ void ActionTarget(int *params)
 	if (!Get_click(x, y, Mouse::greenselect))
 		return;
 	gwin->double_clicked(x, y);
-	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
-		Mouse::mouse->set_shape(Mouse::hand);
+	Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionInventory, 1, "Show inventory", true, false, NONE },
@@ -247,7 +244,7 @@ void ActionInventory(int *params)
 	static int inventory_page = -1;
 	
 	if (params[0] == -1) {
-		if (!gwin->showing_gumps())
+		if (!gwin->get_gump_man()->showing_gumps())
 			inventory_page = -1;
 		if(inventory_page<gwin->get_usecode()->get_party_count())
 			++inventory_page;
@@ -265,8 +262,7 @@ void ActionInventory(int *params)
 		actor->show_inventory(); //force showing inv.
 	}
 
-	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
-		Mouse::mouse->set_shape(Mouse::hand);
+	Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionTryKeys, 0, "Try keys", true, false, NONE },
@@ -276,7 +272,7 @@ void ActionTryKeys(int *params)
 	if (!Get_click(x, y, Mouse::greenselect))
 		return;
 	// Look for obj. in open gump.
-	Gump *gump = gwin->find_gump(x, y);
+	Gump *gump = gwin->get_gump_man()->find_gump(x, y);
 	Game_object *obj;
 	if (gump)
 		obj = gump->find_object(x, y);
@@ -305,7 +301,7 @@ void ActionStats(int *params)
 	static int stats_page = -1;
 	
 	if (params[0] == -1) {
-		if (!gwin->showing_gumps())
+		if (!gwin->get_gump_man()->showing_gumps())
 			stats_page = -1;
 		if (stats_page < gwin->get_usecode()->get_party_count())
 			++stats_page;
@@ -319,18 +315,24 @@ void ActionStats(int *params)
 	}
 	
 	Actor *actor = Get_party_member(stats_page);
-	if (actor)
-		gwin->show_gump(actor, game->get_shape("gumps/statsdisplay"));
-	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
-		Mouse::mouse->set_shape(Mouse::hand);
+	if (actor) gwin->get_gump_man()->add_gump(actor, game->get_shape("gumps/statsdisplay"));
+
+	Mouse::mouse->set_speed_cursor();
 }
 
 //  { ActionCombatStats, 0, "Show Combat stats", true, false, SERPENT_ISLE }
 void ActionCombatStats(int* params)
 {
 	int cnt = gwin->get_usecode()->get_party_count();
-	gwin->show_gump(0, game->get_shape("gumps/cstats/1") + cnt);
+	gwin->get_gump_man()->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }
+
+//  { ActionFaceStats, 0, "Change Face Stats State", true, false, NONE }
+void ActionFaceStats(int* params)
+{
+	Face_stats::AdvanceState();
+}
+
 
 //  { ActionSIIntro, 0,  "Show SI intro", true, true, SERPENT_ISLE },
 void ActionSIIntro(int *params)
@@ -610,5 +612,4 @@ void ActionSoundTester(int *params)
 
 void ActionTest(int *params)
 {
-	std::cerr << "Test!" << std::endl;
 }

@@ -23,16 +23,41 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *	A shape ID contains a shape # and a frame # within the shape encoded
  *	as a 2-byte quantity.
  */
+
+class Shape_frame;
+
+enum ShapeFile {
+	SF_SHAPES_VGA,		// <STATIC>/shapes.vga
+	SF_GUMPS_VGA,		// <STATIC>/gumps.vga
+	SF_PAPERDOL_VGA,	// <STATIC>/paperdol.vga
+	SF_SPRITES_VGA,		// <STATIC>/sprites.vga
+	SF_FACES_VGA,		// <STATIC>/faces.vga
+	SF_EXULT_FLX,		// <DATA>/exult.flx
+	SF_GAME_FLX,		// <DATA>/bg_data.flx or <DATA>/si_data.flx
+	SF_BG_SIGUMP_FLX,	// BG only for Paperdolls
+	// Not yet
+	//SF_FONTS_VGA,		// <STATIC>/fonts.vga
+
+	SF_OTHER		// Other unknown FLX
+};
+
 class ShapeID
 	{
 	short shapenum;			// Shape #.
 	unsigned char framenum;		// Frame # within shape.
+	ShapeFile shapefile;
+	Shape_frame *shape;
+
+	Shape_frame* cache_shape();
+
 public:
 					// Create from map data.
 	ShapeID(unsigned char l, unsigned char h) 
-		: shapenum(l + 256*(h&0x3)), framenum(h >> 2)
+		: shapenum(l + 256*(h&0x3)), framenum(h >> 2),
+			shapefile(SF_SHAPES_VGA), shape(0)
 		{  }
-	ShapeID(unsigned char *& data)	// Read from buffer & incr. ptr.
+					// Read from buffer & incr. ptr.
+	ShapeID(unsigned char *& data) : shapefile(SF_SHAPES_VGA), shape(0)
 		{
 		unsigned char l = *data++;
 		unsigned char h = *data++;
@@ -40,28 +65,43 @@ public:
 		framenum = h >> 2;
 		}
 					// Create "end-of-list"/invalid entry.
-	ShapeID() : shapenum(-1)
+	ShapeID() : shapenum(-1), shapefile(SF_SHAPES_VGA), shape(0)
 		{  }
-	int is_invalid() const		// End-of-list or invalid?
+
+					// End-of-list or invalid?
+	int is_invalid() const
 		{ return shapenum == -1; }
 	int is_eol() const
 		{ return is_invalid(); }
+
 	inline int get_shapenum() const
 		{ return shapenum; }
-	int get_framenum() const
+	inline int get_framenum() const
 		{ return framenum; }
+	inline ShapeFile get_shapefile() const
+		{ return shapefile; }
+	inline Shape_frame *get_shape()
+		{ return (shape!=0)?shape:cache_shape(); }
 					// Set to given shape.
 	void set_shape(int shnum, int frnum)
 		{
 		shapenum = shnum;
 		framenum = frnum;
+		shape = 0;
 		}
-	ShapeID(int shnum, int frnum) : shapenum(shnum), framenum(frnum)
+	ShapeID(int shnum, int frnum, ShapeFile shfile = SF_SHAPES_VGA) :
+		shapenum(shnum), framenum(frnum), shapefile(shfile), shape(0)
 		{  }
+
 	void set_shape(int shnum)	// Set shape, but keep old frame #.
-		{ shapenum = shnum; }
+		{ shapenum = shnum; shape = 0; }
 	void set_frame(int frnum)	// Set to new frame.
-		{ framenum = frnum; }
+		{ framenum = frnum; shape = 0; }
+	void set_file(ShapeFile shfile)	// Set to new flex
+		{ shapefile = shfile; shape = 0; }
+
+
+	 
 	};
 
 #endif

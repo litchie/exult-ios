@@ -19,6 +19,5 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _GUMP_TYPES_H_
 #define _GUMP_TYPES_H_
 
-enum Gumpshapefile { GSF_GUMPS_VGA, GSF_EXULT_FLX, GSF_PAPERDOL_VGA };
 
 #endif

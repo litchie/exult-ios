@@ -37,20 +37,50 @@ int Gump_widget::on_widget
 {
 	mx -= parent->get_x() + x;	// Get point rel. to gump.
 	my -= parent->get_y() + y;
-	Shape_frame *cshape;
-	switch (shapefile) {
-	case GSF_GUMPS_VGA:
-		cshape = gwin->get_gump_shape(shapenum, 0);
-		break;
-	case GSF_EXULT_FLX:
-		cshape = gwin->get_exult_shape(shapenum, 0);
-		break;
-	case GSF_PAPERDOL_VGA:
-		cshape = gwin->get_gump_shape(shapenum, 0, true);
-		break;
-	default:
-		// shouldn't happen
-		return false;
+	Shape_frame *cshape = get_shape();
+	return (cshape!=0)?cshape->has_point(mx, my):false;
+}
+
+/*
+ *	Repaint checkmark, etc.
+ */
+
+void Gump_widget::paint
+	(
+	Game_window *gwin
+	)
+{
+	int px = 0;
+	int py = 0;
+
+	if (parent)
+	{
+		px = parent->get_x();
+		py = parent->get_y();
 	}
-	return (cshape->has_point(mx, my));
+
+	gwin->paint_shape(x+px, y+py, get_shape());
+}
+
+/*
+ *	Get screen area used by a gump.
+ */
+
+Rectangle Gump_widget::get_rect()
+{
+	int px = x;
+	int py = y;
+
+	if (parent)
+	{
+		px += parent->get_x();
+		py += parent->get_y();
+	}
+
+	Shape_frame *s = get_shape();
+
+	if (!s) return Rectangle(0,0,0,0);
+
+	return Rectangle(px - s->get_xleft(), 	py - s->get_yabove(),
+			s->get_width(), s->get_height());
 }

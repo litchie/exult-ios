@@ -103,7 +103,7 @@ void Load_save_button::activate
 	Game_window *gwin
 	)
 {
-	if (shapenum == game->get_shape("gumps/loadbtn"))
+	if (get_shapenum() == game->get_shape("gumps/loadbtn"))
 		((File_gump *) parent)->load();
 	else
 		((File_gump *) parent)->save();
@@ -145,13 +145,12 @@ class Gump_text : public Gump_widget
 	int length;			// Current # chars.
 	int textx, texty;		// Where to show text rel. to parent.
 	int cursor;			// Index of char. cursor is before.
-	int focus;			// Use frame 1 if focused, else 0.
 public:
 	Gump_text(Gump *par, int shnum, int px, int py, int maxsz,
 						int tx, int ty)
 		: Gump_widget(par, shnum, px, py), text(new char[maxsz + 1]),
 		  max_size(maxsz), length(0), textx(x + tx), texty(y + ty),
-		  cursor(0), focus(0)
+		  cursor(0)
 		{
 		text[0] = text[maxsz] = 0;
 		Shape_frame *shape = Game_window::get_game_window()->
@@ -199,12 +198,11 @@ void Gump_text::paint
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->paint_gump(parent->get_x() + x, 
-					parent->get_y() + y, shapenum, focus);
+	gwin->paint_shape(parent->get_x() + x, parent->get_y() + y, get_shape());
 					// Show text.
 	gwin->paint_text(2, text, parent->get_x() + textx,
 						parent->get_y() + texty);
-	if (focus)			// Focused?  Show cursor.
+	if (get_framenum())			// Focused?  Show cursor.
 		gwin->get_win()->fill8(0, 1, gwin->get_text_height(2),
 			parent->get_x() + textx +
 					gwin->get_text_width(2, text, cursor),
@@ -227,9 +225,9 @@ int Gump_text::mouse_clicked
 	if (!on_widget(gwin, mx, my))	// Not in our area?
 		return (0);
 	mx -= textx + parent->get_x();	// Get pt. rel. to text area.
-	if (!focus)			// Gaining focus?
+	if (!get_framenum())		// Gaining focus?
 		{
-		focus = 1;		// We have focus now.
+		set_frame(1);		// We have focus now.
 		cursor = 0;		// Put cursor at start.
 		}
 	else
@@ -256,7 +254,7 @@ void Gump_text::insert
 	int chr
 	)
 	{
-	if (!focus || length == max_size)
+	if (!get_framenum() || length == max_size)
 		return;			// Can't.
 	if (cursor < length)		// Open up space.
 		memmove(text + cursor + 1, text + cursor, length - cursor);
@@ -276,7 +274,7 @@ int Gump_text::delete_left
 	(
 	)
 	{
-	if (!focus || !cursor)		// Can't do it.
+	if (!get_framenum() || !cursor)		// Can't do it.
 		return (0);
 	if (cursor < length)		// Shift text left.
 		memmove(text + cursor - 1, text + cursor, length - cursor);
@@ -296,7 +294,7 @@ int Gump_text::delete_right
 	(
 	)
 	{
-	if (!focus || cursor == length)
+	if (!get_framenum() || cursor == length)
 		return (0);		// Past end of text.
 	cursor++;			// Move right.
 	return (delete_left());		// Delete what was passed.
@@ -310,7 +308,7 @@ void Gump_text::lose_focus
 	(
 	)
 	{
-	focus = 0;
+	set_frame(0);
 	paint();
 	}
 
@@ -323,6 +321,8 @@ File_gump::File_gump
 	) : Modal_gump(0, game->get_shape("gumps/fileio")),
 		pushed_text(0), focus(0), restored(0)
 {
+	set_object_area(Rectangle(0,0,0,0), 8, 150);
+
 	Game_window *gwin = Game_window::get_game_window();
 	size_t i;
 	int ty = texty;
@@ -526,7 +526,7 @@ void File_gump::paint
 			names[i]->paint();
 	for (i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		if (buttons[i])
-			paint_button(gwin, buttons[i]);
+			buttons[i]->paint(gwin);
 }
 
 /*
@@ -696,7 +696,7 @@ void File_gump::key_down
 		{
 			buttons[1] = new Load_save_button(this,
 					btn_cols[1], btn_rows[0], game->get_shape("gumps/savebtn"));
-			paint_button(gwin, buttons[1]);
+			buttons[1]->paint(gwin);
 		}
 		if (buttons[0])		// Can't load now.
 		{

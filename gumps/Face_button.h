@@ -22,20 +22,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_button.h"
 
 class Actor;
+class Game_window;
 
 /*
  *	A character's face, that will open inventory when clicked.
  */
 class Face_button : public Gump_button
 {
+protected:
 	Actor *actor;			// Who this represents.
 public:
 	Face_button(Gump *par, int px, int py, Actor *a);
-	virtual void double_clicked(Game_window *gwin);
+	virtual Actor *get_actor() { return actor; }
+	virtual void double_clicked(Game_window *gwin, int x, int y);
 	virtual void activate(Game_window *gwin) {}
 
 	virtual void push(Game_window *gwin) {}
 	virtual void unpush(Game_window *gwin) {}
+	virtual void update_widget(Game_window *gwin);
 };
 
 #endif

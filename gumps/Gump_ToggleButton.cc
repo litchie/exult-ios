@@ -26,9 +26,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Gump_ToggleButton::activate(Game_window *gwin)
 {
-	framenum += 2;
-	if (framenum >= 2*numselections) framenum = 0;
-	toggle(framenum/2);
-	parent->paint_button(gwin, (Gump_button*)this);
+	set_frame(get_framenum() + 2);
+	if (get_framenum() >= 2*numselections) set_frame(0);
+	toggle(get_framenum()/2);
+	paint(gwin);
 	gwin->set_painted();
 }

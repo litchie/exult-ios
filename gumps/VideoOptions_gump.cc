@@ -44,7 +44,7 @@ static const int colx[] = { 35, 50, 120, 127, 130 };
 class VideoOptions_button : public Gump_button {
 public:
 	VideoOptions_button(Gump *par, int px, int py, int shapenum)
-		: Gump_button(par, shapenum, px, py, GSF_EXULT_FLX)
+		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -52,7 +52,7 @@ public:
 
 void VideoOptions_button::activate(Game_window *gwin)
 {
-	switch (shapenum) {
+	switch (get_shapenum()) {
 	case EXULT_FLX_AUD_CANCEL_SHP:
 		((VideoOptions_gump*)parent)->cancel();
 		break;
@@ -122,8 +122,10 @@ void VideoOptions_gump::load_settings()
 	
 }
 
-VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SHP, GSF_EXULT_FLX)
+VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SHP, SF_EXULT_FLX)
 {
+	set_object_area(Rectangle(0,0,0,0), 8, 162);//++++++ ???
+
 	for (int i=0; i<10; i++) buttons[i] = 0;
 
 	load_settings();
@@ -196,7 +198,7 @@ void VideoOptions_gump::paint(Game_window* gwin)
 	Gump::paint(gwin);
 	for (int i=0; i<10; i++)
 		if (buttons[i])
-			paint_button(gwin, buttons[i]);
+			buttons[i]->paint(gwin);
 
 	gwin->paint_text(2, "Resolution:", x + colx[0], y + rowy[0] + 1);
 	gwin->paint_text(2, "Scaling:", x + colx[0], y + rowy[1] + 1);

@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "$(SDL_PATH)\include" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /TP /c
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0xc09 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -52,7 +52,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"..\SDL-1.2.0\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"$(SDL_PATH)\lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /G6 /MTd /W3 /Gm /GX /ZI /Od /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "_DEBUG" /D "DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /GZ /TP /c
+# ADD CPP /nologo /G6 /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "$(SDL_PATH)\include" /FI"msvc_kludges.h" /D "_DEBUG" /D "DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /GZ /TP /c
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
 # ADD RSC /l 0xc09 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -77,7 +77,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\SDL-1.2.0\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"$(SDL_PATH)\lib"
 # SUBTRACT LINK32 /incremental:no /map
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
@@ -95,7 +95,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G6 /MD /W3 /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
-# ADD CPP /nologo /G6 /MD /W3 /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "$(SDL_PATH)\include" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /TP /c
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0xc09 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -104,15 +104,16 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"..\SDL-1.2.0\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"$(SDL_PATH)\lib"
 # SUBTRACT LINK32 /pdb:none
-# Begin Custom Build - Installing $(InputName).exe
-InputPath=\UC\EXULT\Exult.exe
-InputName=Exult
+# Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
+TargetPath=\UC\exult\Exult.exe
+TargetName=Exult
+InputPath=\UC\exult\Exult.exe
 SOURCE="$(InputPath)"
 
-"$(EXULT_INSTALL_PATH)\$(InputName).exe" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy $(InputPath) $(EXULT_INSTALL_PATH)
+"$(EXULT_INSTALL_PATH)\$(TargetName).exe" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy $(TargetPath) $(EXULT_INSTALL_PATH)
 
 # End Custom Build
 
@@ -131,7 +132,7 @@ SOURCE="$(InputPath)"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G6 /MTd /W3 /Gm /GX /ZI /Od /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "_DEBUG" /D "DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /GZ /TP /c
-# ADD CPP /nologo /G6 /MTd /W3 /Gm /GX /ZI /Od /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "_DEBUG" /D "DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /GZ /TP /c
+# ADD CPP /nologo /G6 /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "$(SDL_PATH)\include" /FI"msvc_kludges.h" /D "_DEBUG" /D "DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /GZ /TP /c
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
 # ADD RSC /l 0xc09 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -140,15 +141,16 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /incremental:no /map
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\SDL-1.2.0\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"$(SDL_PATH)\lib"
 # SUBTRACT LINK32 /incremental:no /map
-# Begin Custom Build - Installing $(InputName).exe
-InputPath=\UC\EXULT\Exult.exe
-InputName=Exult
+# Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
+TargetPath=\UC\exult\Exult.exe
+TargetName=Exult
+InputPath=\UC\exult\Exult.exe
 SOURCE="$(InputPath)"
 
-"$(EXULT_INSTALL_PATH)\$(InputName).exe" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy $(InputPath) $(EXULT_INSTALL_PATH)
+"$(EXULT_INSTALL_PATH)\$(TargetName).exe" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy $(TargetPath) $(EXULT_INSTALL_PATH)
 
 # End Custom Build
 
@@ -563,6 +565,10 @@ SOURCE=..\segfile.cc
 # End Source File
 # Begin Source File
 
+SOURCE=..\shapeid.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\sigame.cc
 # End Source File
 # Begin Source File
@@ -651,6 +657,10 @@ SOURCE=..\gumps\Face_button.cc
 # End Source File
 # Begin Source File
 
+SOURCE=..\gumps\Face_stats.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\gumps\File_gump.cc
 # End Source File
 # Begin Source File
@@ -667,15 +677,15 @@ SOURCE=..\gumps\Gump_button.cc
 # End Source File
 # Begin Source File
 
+SOURCE=..\gumps\Gump_manager.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\gumps\Gump_ToggleButton.cc
 # End Source File
 # Begin Source File
 
 SOURCE=..\gumps\gump_utils.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\gumps\gump_utils.cc.old
 # End Source File
 # Begin Source File
 
@@ -728,6 +738,10 @@ SOURCE=..\gumps\Stats_gump.cc
 # Begin Source File
 
 SOURCE=..\gumps\Text_gump.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\gumps\VideoOptions_gump.cc
 # End Source File
 # Begin Source File
 
@@ -813,6 +827,10 @@ SOURCE=..\objs\barge.cc
 # Begin Source File
 
 SOURCE=..\objs\chunks.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\chunkter.cc
 # End Source File
 # Begin Source File
 
@@ -929,6 +947,10 @@ SOURCE=..\usecode\keyring.cc
 # Begin Source File
 
 SOURCE=..\usecode\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\ucinternal.cc
 # End Source File
 # Begin Source File
 
@@ -1276,6 +1298,10 @@ SOURCE=..\gumps\Face_button.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\gumps\Face_stats.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\gumps\File_gump.h
 # End Source File
 # Begin Source File
@@ -1289,6 +1315,10 @@ SOURCE=..\gumps\Gump.h
 # Begin Source File
 
 SOURCE=..\gumps\Gump_button.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gumps\Gump_manager.h
 # End Source File
 # Begin Source File
 
@@ -1352,6 +1382,10 @@ SOURCE=..\gumps\Text_gump.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\gumps\VideoOptions_gump.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\gumps\Yesno_gump.h
 # End Source File
 # End Group
@@ -1397,6 +1431,10 @@ SOURCE=..\objs\barge.h
 # Begin Source File
 
 SOURCE=..\objs\chunks.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\chunkter.h
 # End Source File
 # Begin Source File
 
@@ -1520,6 +1558,10 @@ SOURCE=..\usecode\siintrinsics.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\usecode\ucinternal.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\usecode\ucmachine.h
 # End Source File
 # Begin Source File
@@ -1531,13 +1573,25 @@ SOURCE=..\usecode\ucsched.h
 SOURCE=..\usecode\useval.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\data\exult_bg_flx.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\exult_flx.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\exult_si_flx.h
+# End Source File
 # End Group
 # Begin Group "Resource Files"
 
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=..\win32\exult.ico
+SOURCE=.\exult.ico
 # End Source File
 # Begin Source File
 
@@ -1568,6 +1622,66 @@ SOURCE=.\unistd.h
 # Begin Group "Text Files"
 
 # PROP Default_Filter ""
+# Begin Group "Docs"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\docs\art.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\bgitems.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\FLI.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\schedule.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\serpentsfx.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\siitems.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\u7combat.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\u7edit.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\u7eggs.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\u7itemtypes.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\u7monst.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\u7ready.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\u7tech.txt
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\weapons.txt
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\AUTHORS
@@ -1632,10 +1746,6 @@ SOURCE=..\README.win32
 
 SOURCE=..\TODO
 # End Source File
-# End Group
-# Begin Group "Exult.flx"
-
-# PROP Default_Filter ""
 # End Group
 # End Target
 # End Project

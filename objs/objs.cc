@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "ordinfo.h"
 #include "game.h"
+#include "Gump_manager.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #  include <cstdio>
@@ -109,7 +110,7 @@ static int Has_quantity
 	return info.get_shape_class() == Shape_info::has_quantity;
 	}
 
-const int MAX_QUANTITY = 0x7f;		// Highest quantity possible.
+const int MAX_QUANTITY = 100;		// Highest quantity possible.
 
 /*
  *	Get the quantity.
@@ -697,7 +698,7 @@ void Game_object::activate
 	if (usefun == 0x2cb && Game::get_game_type() == SERPENT_ISLE)
 		{
 		Game_window *gwin = Game_window::get_game_window();
-		gwin->show_gump(this, 65);
+		gwin->get_gump_man()->add_gump(this, 65);
 		return;
 		}
 					// !!!Special case:  books in BG.

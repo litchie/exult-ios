@@ -23,34 +23,43 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Face_button.h"
 #include "Paperdoll_gump.h"
 #include "actors.h"
+#include "gamewin.h"
 
 Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 	: Gump_button(par, 0, px, py), actor(a)
 {
-	Paperdoll_gump::Paperdoll_npc *npcinfo;
+	Paperdoll_gump::Paperdoll_npc *npcinfo =
+		Paperdoll_gump::GetCharacterInfo(a->get_shapenum());
 
-	npcinfo = Paperdoll_gump::GetCharacterInfo(a->get_shape_real());
+	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(a->get_shape_real());
 
-	shapenum = npcinfo->head_shape;
-	framenum = npcinfo->head_frame;
-
-	Paperdoll_gump::Paperdoll_file npcinfofile = npcinfo->file;
-
-	switch (npcinfofile) {
-	case Paperdoll_gump::paperdoll:
-		shapefile = GSF_PAPERDOL_VGA; break;
-	case Paperdoll_gump::exult_flx:
-		shapefile = GSF_EXULT_FLX; break;
-	case Paperdoll_gump::gameflx:
-		//+++++ NOT YET
-		break;
-	case Paperdoll_gump::shapes:
-		//+++++ NOT YET
-		break;
-	}
+	set_shape(npcinfo->head_shape);
+	set_frame(npcinfo->head_frame);
+	set_file(npcinfo->file);
 }
 
-void Face_button::double_clicked(Game_window *gwin)
+
+void Face_button::double_clicked(Game_window *gwin, int x, int y)
 {
 	actor->show_inventory();
+}
+
+void Face_button::update_widget(Game_window *gwin)
+{
+	Paperdoll_gump::Paperdoll_npc *npcinfo =
+		Paperdoll_gump::GetCharacterInfo(actor->get_shapenum());
+
+	if (!npcinfo) npcinfo = Paperdoll_gump::GetCharacterInfoSafe(actor->get_shape_real());
+
+	if (get_shapenum() != npcinfo->head_shape ||
+		get_framenum() != npcinfo->head_frame ||
+		get_shapefile() != npcinfo->file)
+	{
+		gwin->add_dirty(get_rect());
+		set_shape(npcinfo->head_shape);
+		set_frame(npcinfo->head_frame);
+		set_file(npcinfo->file);
+		gwin->add_dirty(get_rect());
+	}
+
 }

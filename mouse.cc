@@ -31,7 +31,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "gamewin.h"
 #include "fnames.h"
-
+#include "Gump.h"
+#include "Gump_manager.h"
+#include "barge.h"
+#include "actors.h"
 
 short Mouse::short_arrows[8] = {8, 9, 10, 11, 12, 13, 14, 15};
 short Mouse::med_arrows[8] = {16, 17, 18, 19, 20, 21, 22, 23};
@@ -50,21 +53,21 @@ bool Mouse::mouse_update = false;
 Mouse::Mouse
 	(
 	Game_window *gw			// Where to draw.
-	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0) 
+	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0),avatar_speed(slow_speed)
 {
 	SDL_GetMouseState(&mousex, &mousey);
 	mousex /= iwin->get_scale();
 	mousey /= iwin->get_scale();
 	pointers.load(POINTERS);
 	Init();
-	set_short_arrow(east);		// +++++For now.
+	set_shape(get_short_arrow(east));		// +++++For now.
 }
 	
 Mouse::Mouse
 	(
 	Game_window *gw,		// Where to draw.
 	DataSource &shapes
-	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0) 
+	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0),avatar_speed(slow_speed) 
 {
 	SDL_GetMouseState(&mousex, &mousey);
 	mousex /= iwin->get_scale();
@@ -184,3 +187,63 @@ void Mouse::flash_shape
 	gwin->set_painted();
 }
 
+
+/*
+ *	Set default cursor
+ */
+
+void Mouse::set_speed_cursor()
+{
+	Game_window *gwin = Game_window::get_game_window();
+
+	int cursor = dontchange;
+	int ax, ay;			// Get Avatar/barge screen location.
+
+	Barge_object *barge = gwin->get_moving_barge();
+	if (barge)
+	{			// Use center of barge.
+		gwin->get_shape_location(barge, ax, ay);
+		ax -= barge->get_xtiles()*(c_tilesize/2);
+		ay -= barge->get_ytiles()*(c_tilesize/2);
+	}
+	else				
+		gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
+
+	int dy = ay - mousey, dx = mousex - ax;
+	Direction dir = Get_direction(dy, dx);
+	int dist = dy*dy + dx*dx;
+	if (dist < 40*40)
+	{
+		if(gwin->in_combat())
+			cursor = get_short_combat_arrow(dir);
+		else
+			cursor = get_short_arrow(dir);
+		avatar_speed = slow_speed;
+	}
+	else if (dist < 75*75)
+	{
+		if(gwin->in_combat())
+			cursor = get_medium_combat_arrow(dir);
+		else
+			cursor = get_medium_arrow(dir);
+		avatar_speed = medium_speed;
+	}
+	else
+	{		// No long arrow in combat: use medium
+		if(gwin->in_combat())
+			cursor = get_medium_combat_arrow(dir);
+		else
+			cursor = get_long_arrow(dir);
+		avatar_speed = fast_speed;
+	}
+
+	Gump_manager *gump_man = gwin->get_gump_man();
+	Gump *gump = 0;
+
+	if (gump_man->showing_gumps())
+		if (gump = gump_man->find_gump(mousex, mousey))
+			if (!gump->no_handcursor())
+				cursor = hand;
+
+	set_shape(cursor);
+}

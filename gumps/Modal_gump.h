@@ -35,12 +35,12 @@ protected:
 
 public:
 	Modal_gump(Container_game_object *cont, int initx, int inity, 
-			   int shnum, Gumpshapefile shfile = GSF_GUMPS_VGA)
-		: Gump(cont, initx, inity, shnum, false, shfile), done(0), pushed(0)
+			   int shnum, ShapeFile shfile = SF_GUMPS_VGA)
+		: Gump(cont, initx, inity, shnum, shfile), done(0), pushed(0)
 		{  }
 					// Create centered.
 	Modal_gump(Container_game_object *cont, int shnum, 
-			   Gumpshapefile shfile = GSF_GUMPS_VGA)
+			   ShapeFile shfile = SF_GUMPS_VGA)
 		: Gump(cont, shnum, shfile), done(0), pushed(0)
 		{  }
 	int is_done()

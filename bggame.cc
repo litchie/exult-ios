@@ -1353,7 +1353,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 			default:
 				{
 					int c = event.key.keysym.sym;
-					if(selected==0 && c>=SDLK_0 && c<=SDLK_z)
+					if(selected==0 && c>=SDLK_SPACE && c<=SDLK_z)
 					{
 						int len = strlen(npc_name);
 						char chr = (event.key.keysym.mod & KMOD_SHIFT) ? toupper(c) : c;

@@ -35,7 +35,7 @@ using std::snprintf;
 #include "actors.h"
 #include "chunks.h"
 #include "objiter.h"
-#include "Gump.h"
+#include "Gump_manager.h"
 #include "effects.h"
 #include "cheat.h"
 
@@ -186,11 +186,15 @@ void Game_window::paint
 	{
 	if (!win->ready())
 		return;
+
+					// Update the gumps before painting (may change dirty area)
+	gump_man->update_gumps(this);
+
 	win->set_clip(x, y, w, h);	// Clip to this area.
 	int light_sources = paint_map(x, y, w, h);
+
 					// Draw gumps.
-	for (Gump *gmp = open_gumps; gmp; gmp = gmp->get_next())
-		gmp->paint(this);
+	gump_man->paint(this);
 					// Draw text, sprites.
 	for (Special_effect *txt = effects; txt; txt = txt->next)
 		txt->paint(this);
