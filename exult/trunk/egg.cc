@@ -36,6 +36,48 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "npctime.h"
 
 /*
+ *	Timer for a missile egg (type-6 egg).
+ */
+class Missile_launcher : public Time_sensitive
+	{
+	Egg_object *egg;		// Egg this came from.
+	int shapenum;			// Shape for missile.
+	int dir;			// Direction (0-7).  (8==??).
+	int delay;			// Delay (msecs) between launches.
+public:
+	Missile_launcher(Egg_object *e, int shnum, int di, int del)
+		: shapenum(shnum), dir(di), delay(del)
+		{  }
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
+ *	Launch a missile.
+ */
+
+void Missile_launcher::handle_event
+	(
+	unsigned long curtime,
+	long udata
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// +++++Halt if egg off screen.
+	Tile_coord src = egg->get_abs_tile_coord();
+					// ++++Handle dir==8.
+					// Get adjacent tile in direction.
+	Tile_coord adj = src.get_neighbor(dir%8);
+					// Make it go 8 tiles.
+	int dx = adj.tx - src.tx, dy = adj.ty - src.ty;
+	Tile_coord dest = src;
+	dest.tx += 8*dx;
+	dest.ty += 8*dy;
+	gwin->add_effect(new Projectile_effect(src, dest, shapenum));
+					// Add back to queue for next time.
+	gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
  *	Paint at given spot in world.
  */
 
@@ -381,6 +423,15 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				gwin->set_all_dirty();
 				}
 			break;
+			}
+		case missile:
+			{
+			int aindex = data1, dir = data2&0xff, freq = data2>>8;
+			Ammo_info *ammo = Ammo_info::get_ammo(aindex);
+			int shnum = ammo->get_shapenum();
+			cout << "Missile egg:  " << item_names[shnum]
+				<< endl;
+			break;		//++++++Create launcher.
 			}
 		case teleport:
 			{

@@ -180,6 +180,7 @@ public:
 	
 /*
  *	Specific information about weapons from 'weapons.dat':
+ *	MAYBE:  Move this and ammo. to separate source file(s).
  */
 class Weapon_info
 	{
@@ -199,6 +200,33 @@ public:
 		{ return ammo; }
 	int get_usecode()
 		{ return usecode; }
+	};
+
+/*
+ *	Info. from 'ammo.dat':
+ */
+class Ammo_info
+	{
+	static Ammo_info *ammo;		// All entries.
+	static int count;		// # of entries.
+	int shapenum;			// Ammo's shape.
+	int family_shape;		// I.e., burst-arrow's is 'arrow'.
+//	unsigned char id;		// ??
+//	unsigned char unknown[6];	// ??
+public:
+	friend class Shapes_vga_file;
+	Ammo_info() {  }
+	void set(int shnum, int family)
+		{
+		shapenum = shnum;
+		family_shape = family;
+		}
+	static Ammo_info *get_ammo(unsigned int i)
+		{ return i < count ? &ammo[i] : 0; }
+	int get_shapenum()
+		{ return shapenum; }
+	int get_family_shape()
+		{ return family_shape; }
 	};
 
 /*
@@ -245,8 +273,6 @@ public:
 		{ return armor; }
 	Weapon_info *get_weapon_info()
 		{ return weapon; }
-	int get_weapon_damage()
-		{ return weapon ? weapon->get_damage() : 0; }
 #if 0	/* ++++++++Old way. */
 	int get_3d_height()		// Height (in lifts?).
 		{ return ztiles; }
