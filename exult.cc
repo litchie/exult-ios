@@ -435,6 +435,9 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 		else if (event.button.button == 1)
 			{
 			unsigned long curtime = SDL_GetTicks();
+			if (dragging)
+				gwin->drop_dragged(event.button.x, 
+						event.button.y, dragged);
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500)
 				{
@@ -446,9 +449,6 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 				break;
 				}
 			last_b1_click = curtime;
-			if (dragging)
-				gwin->drop_dragged(event.button.x, 
-						event.button.y, dragged);
 			if (!dragged)
 					// Identify item(s) clicked on.
 				gwin->show_items(event.button.x, 
