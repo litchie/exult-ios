@@ -369,8 +369,9 @@ bool	Audio::start_music(int num,bool repetition, int bank)
 
 void	Audio::start_music(const char *fname,int num,bool repetition)
 {
-	if(midi)
+	if(music_enabled && midi != 0) {
 		midi->start_music(fname,num,repetition);
+	}
 }
 
 void	Audio::stop_music()
@@ -425,3 +426,12 @@ Audio	*Audio::get_ptr(void)
 {
 	return self;
 }
+
+void	Audio::play_sound_effect (int num)
+{
+	// Where sort of sfx are we using????
+	
+	if(midi != 0) midi->start_sound_effect(num);
+
+}
+
