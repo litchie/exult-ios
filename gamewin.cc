@@ -147,10 +147,10 @@ void Background_noise::handle_event
 		currentstate = 1;
 
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
-	if (player->music_conversion == XMIDI_CONVERT_MP3)
+	if (player->music_conversion == XMIDI_CONVERT_OGG)
 	{
 		delay = 1500;	//Quickly get back to this function check
-		//We've got MP3 so play the background SFX tracks
+		//We've got OGG so play the background SFX tracks
 
 		int curr_track = player->get_current_track();
 
@@ -184,16 +184,18 @@ void Background_noise::handle_event
 	else
 	{
 		
-		//Tests to see if track is playing the SFX tracks, possible when the game has been restored
-		//and the Audio option was changed from MP3 to something else
-		if(player->get_current_track() >=4 && player->get_current_track() <= 8)
+		//Tests to see if track is playing the SFX tracks, possible 
+		//when the game has been restored
+		//and the Audio option was changed from OGG to something else
+		if(player->get_current_track() >=4 && 
+		   player->get_current_track() <= 8)
 			player->stop_music();
 
 
-		//Not MP3 so play the SFX sounds manually
+		//Not OGG so play the SFX sounds manually
 					// Only if outside.
 		if (ava && !gwin->is_main_actor_inside()  &&
-						// +++++SI SFX's don't sound right.
+			// +++++SI SFX's don't sound right.
 			Game::get_game_type() == BLACK_GATE )
 		{
 			int sound;		// BG SFX #.

@@ -42,7 +42,7 @@ using std::endl;
 #if HAVE_TIMIDITY_BIN
 #include "Timidity_binary.h"
 
-static Mix_Music *mp3music;
+static Mix_Music *mixermusic;
 
 //
 // Woohoo. This is easy with SDL_mixer! :)
@@ -64,19 +64,19 @@ Timidity_binary::~Timidity_binary()
 void Timidity_binary::stop_track(void)
 {
 	Mix_HaltMusic();
-	if(mp3music)
+	if(mixermusic)
 	{
-		Mix_FreeMusic(mp3music);
-		mp3music = NULL;
+		Mix_FreeMusic(mixermusic);
+		mixermusic = NULL;
 	}
 }
 //Clean up last track played, freeing memory each time
 void Timidity_binary::music_complete_callback(void)
 {
-	if(mp3music)
+	if(mixermusic)
 	{
-		Mix_FreeMusic(mp3music);
-		mp3music = NULL;
+		Mix_FreeMusic(mixermusic);
+		mixermusic = NULL;
 	}
 }
 
@@ -95,8 +95,8 @@ void	Timidity_binary::start_track(XMIDIEventList *event_list,bool repeat)
 #endif
 	stop_track();
 
-	mp3music = Mix_LoadMUS(name);
-	Mix_PlayMusic(mp3music, repeat);
+	mixermusic = Mix_LoadMUS(name);
+	Mix_PlayMusic(mixermusic, repeat);
 	Mix_VolumeMusic(MIX_MAX_VOLUME - 50);	//Balance volume with other music types
 }
 

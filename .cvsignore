@@ -67,3 +67,5 @@ head2data.exe
 uclex.cc
 ucparse.cc
 ucparse.h
+zlib-1.1.3
+SDL

@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define XMIDI_CONVERT_MT32_TO_GM		1
 #define XMIDI_CONVERT_MT32_TO_GS		2
 #define XMIDI_CONVERT_MT32_TO_GS127		3
-#define XMIDI_CONVERT_MP3               4
+#define XMIDI_CONVERT_OGG               	4
 #define XMIDI_CONVERT_GS127_TO_GS		5
 
 // Midi Status Bytes
