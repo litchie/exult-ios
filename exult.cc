@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 
 Audio audio;
-Configuration	config;
+Configuration *config;
 
 #define MOUSE 1
 
@@ -85,15 +85,17 @@ int main
 				".  Copyright (C) 2000 J. S. Freedman and Dancer Vesperman\n";
 	cout << "Low level graphics use the 'SDL' library.\n";
 
-	config.read_config_file(USER_CONFIGURATION_FILE);
+        config = new Configuration;	// Create configuration object
+
+	config->read_config_file(USER_CONFIGURATION_FILE);
 	string	data_directory, tracing;
-	config.value("config/disk/u7path",data_directory,".");
+	config->value("config/disk/u7path",data_directory,".");
 	if(data_directory==".")
-		config.set("config/disk/u7path",data_directory,true);
+		config->set("config/disk/u7path",data_directory,true);
 	cout << "chdir to " << data_directory << endl;
 	chdir(data_directory.c_str());
 
-	config.value("config/debug/trace/intrinsics",tracing,"no");
+	config->value("config/debug/trace/intrinsics",tracing,"no");
 	if(tracing=="yes")
 		usecode_trace=true;	// Enable tracing of intrinsics
 
@@ -116,7 +118,10 @@ int main
 		cout << "Creating 'gamedat' files.\n";
 		gwin->write_gamedat(INITGAME);
 		}
-	return (Play());
+
+	int result = Play();		// start game
+	delete config;			// free configuration object
+	return result;
 	}
 
 static int Filter_intro_events(const SDL_Event *event);
@@ -183,12 +188,12 @@ static void Init
 	gwin = new Game_window(640, 480);
 #endif
 	string yn;			// Skip intro. scene?
-	config.value("config/gameplay/skip_intro", yn, "no");
+	config->value("config/gameplay/skip_intro", yn, "no");
 	if (yn == "yes")
 		gwin->get_usecode()->set_global_flag(
 			Usecode_machine::did_first_scene, 1);
 					// Have Trinsic password?
-	config.value("config/gameplay/have_trinsic_password", yn, "no");
+	config->value("config/gameplay/have_trinsic_password", yn, "no");
 	if (yn == "yes")
 		gwin->get_usecode()->set_global_flag(
 			Usecode_machine::have_trinsic_password, 1);
