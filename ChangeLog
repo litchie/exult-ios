@@ -1,3 +1,7 @@
+2000-11-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Don't dup. text when an item is clicked on.
+
 2000-11-23  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 
 	* paths.h: fixed pathfinding on BeOS.

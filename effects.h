@@ -53,7 +53,7 @@ public:
 	virtual void paint(Game_window *gwin);
 	virtual int is_weather()	// Need to distinguish weather.
 		{ return 0; }
-	virtual int is_text()
+	virtual int is_text(Game_object *it = 0)
 		{ return 0; }
 	};
 
@@ -127,20 +127,23 @@ public:
 class Text_effect : public Special_effect
 	{
 	char *msg;			// What to print.
+	Game_object *item;		// Item text is on.  May be null.
 	short tx, ty;			// Tile coords. within world of upper-
 					//   left corner.
 	short width, height;		// Dimensions of rectangle.
 public:
 	friend class Game_window;
-	Text_effect(const char *m, int t_x, int t_y, int w, int h);
+	Text_effect(const char *m, Game_object *it,
+					int t_x, int t_y, int w, int h);
 	virtual ~Text_effect()
 		{ delete msg; }
 					// At timeout, remove from screen.
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Render.
 	virtual void paint(Game_window *gwin);
-	virtual int is_text()
-		{ return 1; }
+					// Check for matching item if !null.
+	virtual int is_text(Game_object *it = 0)
+		{ return !it || it == item; }
 	};
 
 /*
