@@ -107,6 +107,8 @@ public:
 	friend class Monster_actor;
 	Monster_info() {  }
 	int read(std::istream& mfile);	// Read in from file.
+					// Write out.
+	void write(int shapenum, std::ostream& mfile);
 	static const Monster_info *get_default();
 					// Done by Game_window:
 	static void set_equip(Equip_record *eq, int cnt)
