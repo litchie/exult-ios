@@ -18,9 +18,10 @@
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
+#define SIZEOF_LONG 4
 #define DONT_HAVE_HASH_SET
 #define DONT_HAVE_HASH_MAP
-#define HAVE_OPENGL
+//#define HAVE_OPENGL
 //#define FUDGE_SAMPLE_RATES
 #define USE_FMOPL_MIDI
 
@@ -56,8 +57,8 @@
 #pragma warning (disable: 4355)	// 'this' : used in base member initializer list
 
 #ifndef ENABLE_EXTRA_WARNINGS
-#pragma warning (disable: 4101) // unreferenced local variable
-#pragma warning (disable: 4309) // truncation of constant value
+//#pragma warning (disable: 4101) // unreferenced local variable
+//#pragma warning (disable: 4309) // truncation of constant value
 #pragma warning (disable: 4305) // truncation from 'const int' to 'char'
 #pragma warning (disable: 4290) // C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
 #endif
@@ -132,16 +133,14 @@ using std::strtol;
 #endif
 #include <sys/stat.h>
 
-
 //
 // Hacks for MSVC 7
 //
 #elif (_MSC_VER == 1300)
 
-//#define _HAS_EXCEPTIONS 0
-
 #include <cctype>
 #define HAVE_SYS_STAT_H
+#define inline __forceinline
 
 #else
 
