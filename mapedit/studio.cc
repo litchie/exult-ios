@@ -78,7 +78,8 @@ enum ExultFileTypes {
 	ShapeArchive =1,
 	ChunkArchive,
 	PaletteFile,
-	FlexArchive
+	FlexArchive,
+	ComboArchive
 };
 
 C_EXPORT void on_filelist_tree_select_row       (GtkCTree        *ctree,
@@ -94,6 +95,10 @@ C_EXPORT void on_filelist_tree_select_row       (GtkCTree        *ctree,
 	switch(type) {
 	case ShapeArchive:
 		studio->set_browser("Shape Browser", 
+					studio->create_browser(text));
+		break;
+	case ComboArchive:
+		studio->set_browser("Combo Browser", 
 					studio->create_browser(text));
 		break;
 	case ChunkArchive:
@@ -940,6 +945,10 @@ void ExultStudio::setup_file_list
 						   ".shp",
 						   (gpointer)ShapeArchive,
 						   shapefiles );
+					// And always add combos.flx.
+	Create_tree_node(GTK_CTREE(file_list), "combos.flx", shapefiles, 0,
+						   (gpointer)ComboArchive );
+
 	GtkCTreeNode *chunkfiles = Create_subtree( GTK_CTREE( file_list ),
 						   0,
 						   "Map Files",

@@ -873,7 +873,24 @@ Combo_chooser::Combo_chooser
 		info(0), info_cnt(0), sel_changed(0)
 	{
 	int num_combos = cfile ? cfile->number_of_objects() : 0;
+					// We need 'shapes.vga'.
+	Shape_file_info *svga_info = 
+				ExultStudio::get_instance()->get_vgafile();
+	Shapes_vga_file *svga = svga_info ?
+			(Shapes_vga_file *) svga_info->get_ifile() : 0;
 	combos.resize(num_combos);	// Set size of list.
+	if (!svga)
+		num_combos = 0;
+					// Read them all in.
+	for (int i = 0; i < num_combos; i++)
+		{
+		size_t len;
+		char *buf = cfile->retrieve(i, len);
+		Combo *combo = new Combo(svga);
+		// ++++++++++Get data from buf.
+		combos[i] = combo;	// Store in list.
+		delete buf;
+		}
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	set_widget(vbox); // This is our "widget"
