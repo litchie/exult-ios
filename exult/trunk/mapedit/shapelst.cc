@@ -992,6 +992,39 @@ void Shape_chooser::import_frame
 	}
 
 /*
+ *	Add a frame.
+ */
+
+void Shape_chooser::new_frame
+	(
+	)
+	{
+	//+++++
+	}
+
+/*
+ *	Add a new shape.
+ */
+
+void Shape_chooser::new_shape
+	(
+	)
+	{
+	//+++++++++++++
+	}
+
+/*
+ *	Delete a frame, and the shape itself if this is its last.
+ */
+
+void Shape_chooser::del_frame
+	(
+	)
+	{
+	//+++
+	}
+
+/*
  *	Someone wants the dragged shape.
  */
 
@@ -1299,6 +1332,22 @@ static void on_shapes_popup_export
 							udata);
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
+static void on_shapes_popup_new_frame
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	((Shape_chooser *) udata)->new_frame();
+	}
+static void on_shapes_popup_new_shape
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	((Shape_chooser *) udata)->new_shape();
+	}
 
 /*
  *	Handle a shape dropped on our draw area.
@@ -1432,14 +1481,33 @@ GtkWidget *Shape_chooser::create_popup
 	gtk_signal_connect (GTK_OBJECT (mitem), "activate",
 		GTK_SIGNAL_FUNC(on_shapes_popup_info_activate), this);
 	add_group_submenu(popup);
-	if (selected >= 0 &&		// Add editing choices.
-	    ExultStudio::get_instance()->get_image_editor())
+	if (selected >= 0)		// Add editing choices.
 		{
-		mitem = gtk_menu_item_new_with_label("Edit...");
+		if (ExultStudio::get_instance()->get_image_editor())
+			{
+			mitem = gtk_menu_item_new_with_label("Edit...");
+			gtk_widget_show(mitem);
+			gtk_menu_append(GTK_MENU(popup), mitem);
+			gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+				GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate),
+								 this);
+			}
+					// Separator.
+		mitem = gtk_menu_item_new();
+		gtk_widget_show(mitem);
+		gtk_menu_append(GTK_MENU(popup), mitem);
+		gtk_widget_set_sensitive(mitem, FALSE);
+					// Add/del.
+		mitem = gtk_menu_item_new_with_label("New frame");
 		gtk_widget_show(mitem);
 		gtk_menu_append(GTK_MENU(popup), mitem);
 		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
-			GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate), this);
+			GTK_SIGNAL_FUNC(on_shapes_popup_new_frame), this);
+		mitem = gtk_menu_item_new_with_label("New shape");
+		gtk_widget_show(mitem);
+		gtk_menu_append(GTK_MENU(popup), mitem);
+		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+			GTK_SIGNAL_FUNC(on_shapes_popup_new_shape), this);
 					// Separator.
 		mitem = gtk_menu_item_new();
 		gtk_widget_show(mitem);
