@@ -51,6 +51,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 Game_window *gwin = 0;
 unsigned char quitting_time = 0;	// Time to quit.
+long starting_second = 0;		// Second in day when started.
 
 /*
  *	Local functions:
@@ -175,6 +176,7 @@ void Handle_events
 			Handle_event(display);
 					// Get current time.
 		gettimeofday(&timer, 0);
+		timer.tv_sec += starting_second;
 		gwin->animate(timer);
 		gwin->show();		// Blit to screen if necessary.
 		}
@@ -186,6 +188,9 @@ void Handle_events
 
 static int Play()
 	{
+	struct timeval timer;		// Get starting time.
+	gettimeofday(&timer, 0);
+	starting_second = timer.tv_sec;
 	Handle_events(&quitting_time);
 	delete gwin;
 	Display *display = Image_window::get_display();
@@ -406,6 +411,7 @@ static int Play()
 		prev_mouse = mouse;
 					// Get current time.
 		gettimeofday(&timer, 0);
+		time.tv_sec += starting_second;
 		gwin->animate(timer);
 		gwin->show();		// Update screen if necessary.
 		}
@@ -560,6 +566,9 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   //TO DO: Parse commandline
 
+  struct timeval timer;		// Get starting time.
+  gettimeofday(&timer, 0);
+  starting_second = timer.tv_sec;
   Init(); //init window class and create game window
 
   //init location (Trinsic)
@@ -715,6 +724,7 @@ LONG APIENTRY Handle_event (HWND hWnd, UINT Message, UINT wParam, LONG lParam) {
     case WM_TIMER: //timer event
 		  struct timeval TVAL;
 		  gettimeofday(&TVAL,0);
+		  TVAL.tv_secs += starting_second;
 		  gwin->animate(TVAL);
       gwin->show();
       break;

@@ -25,12 +25,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "imagewin.h"
 #include "actors.h"
 #include "vgafile.h"
+#include "gameclk.h"
 
 class Font_face;
 class Script_compiler;
 class Slist;
 class Usecode_machine;
 class Actor;
+class Time_queue;
 
 /*
  *	The main game window:
@@ -52,9 +54,8 @@ public:
 private:
 	Usecode_machine *usecode;	// Drives game plot.
 	Game_mode mode;			// Mode we'er in.
-	short hour, minute;		// Time (0-23, 0-59).
-	int day;			// Keep track of days played.
-	long lasttime;			// Last time our clock updated (secs.).
+	Time_queue *tqueue;		// Time-based queue.
+	Game_clock clock;		// Keeps track of time.
 	char *showing_item;		// Item we're showing the name of.
 	Rectangle showing_rect;		// Rectangle item text is shown in.
 	Rectangle npc_text_rect;	// Rectangle NPC statement is shown in.
@@ -108,9 +109,9 @@ public:
 	Image_window *get_win()
 		{ return win; }
 	int get_hour()			// Get current time.
-		{ return hour; }
+		{ return clock.get_hour(); }
 	int get_minute()
-		{ return minute; }
+		{ return clock.get_minute(); }
   Image_window *get_shapewin()
     { return shapewin; }
   Image_window *get_win(Window xwin) {

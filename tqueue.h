@@ -10,6 +10,16 @@
 #include <sys/time.h>
 
 /*
+ *	Compare times.
+ */
+inline int operator<(timeval &t1, timeval& t2)
+	{
+					// Check secs.
+	return (t1.tv_sec < t2.tv_sec) ||
+		(t1.tv_sec == t2.tv_sec && t1.tv_usec < t2.tv_usec);
+	}
+
+/*
  *	An interface for entries in the queue:
  */
 class Time_sensitive
@@ -44,12 +54,17 @@ class Time_queue
 	{
 	Queue_entry *head;		// Head of queue.  Head->prev = tail.
 	Queue_entry *free_entries;	// ->list of freed entries.
+	void activate0(timeval curtime);// Activate head + any others due.
 public:
 	Time_queue() : head(0), free_entries(0)
 		{  }
 					// Add an entry.
 	void add(timeval t, Time_sensitive *obj, long ud);
-	void activate(timeval curtime);	// Activate entries that are 'due'.
+	void activate(timeval curtime)	// Activate entries that are 'due'.
+		{
+		if (head && !(curtime < head->time))
+			activate0(curtime);
+		}
 	};
 
 #endif	/* INCL_TQUEUE */

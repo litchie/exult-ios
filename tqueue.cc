@@ -7,16 +7,6 @@
 #include "tqueue.h"
 
 /*
- *	Compare times.
- */
-inline int operator<(timeval &t1, timeval& t2)
-	{
-					// Check secs., but watch for new day.
-	return (t1.tv_sec < t2.tv_sec && t2.tv_sec - t1.tv_sec < 10*3600) ||
-		(t1.tv_sec == t2.tv_sec && t1.tv_usec < t2.tv_usec);
-	}
-
-/*
  *	Add an entry to the queue.
  */
 
@@ -56,4 +46,34 @@ void Time_queue::add
 		newent->prev = prev;
 		prev->next = newent;
 		}
+	}
+
+/*
+ *	Remove & activate entries that are due, starting with head (already
+ *	known to be due).
+ */
+
+void Time_queue::activate0
+	(
+	timeval curtime			// Current time.
+	)
+	{
+	do
+		{
+		Queue_entry *ent = head;
+		ent->handler->activate(curtime, ent->udata);
+					// Remove head of chain.
+		if (head == head->next)
+			head = 0;
+		else
+			{
+			head->prev->next = head->next;
+			head->next->prev = head->prev;
+			head = head->next;
+			}
+					// Add to free list.
+		ent->next = free_entries;
+		free_entries = ent;
+		}
+	while (head && !(curtime < head->time));
 	}
