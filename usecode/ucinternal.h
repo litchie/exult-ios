@@ -113,7 +113,6 @@ class Usecode_internal : public Usecode_machine
 	Game_object *get_item(Usecode_value& itemref);
 					// "Safe" cast to Actor and Npc_actor.
 	Actor *as_actor(Game_object *obj);
-	Npc_actor *as_npcactor(Game_object *obj);
 					// Get position.
 	Tile_coord get_position(Usecode_value& itemref);
 	/*

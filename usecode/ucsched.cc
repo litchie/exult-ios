@@ -579,7 +579,7 @@ void Usecode_script::step
 		Tile_coord tile = obj->get_tile().get_neighbor(dir);
 		obj->step(tile, frame);
 		}
-	else if ((barge = dynamic_cast<Barge_object *> (obj)) != 0)
+	else if ((barge = obj->as_barge()) != 0)
 		{
 		barge->face_direction(dir);
 		for (int i = 0; i < 4; i++)

@@ -37,7 +37,9 @@
 class Actor;
 class Map_chunk;
 class Container_game_object;
+class Terrain_game_object;
 class Egg_object;
+class Barge_object;
 class Game_window;
 class Npc_actor;
 class PathFinder;
@@ -265,8 +267,9 @@ public:
 	virtual int get_siflag(int flag) const { return 0; }
 	virtual int get_type_flag(int flag) const { return 0; }
 
-	virtual Actor *as_actor() 	// An actor?
-		{ return 0; }
+	virtual Actor *as_actor() { return 0; }
+	virtual Barge_object *as_barge() { return 0; }
+	virtual Terrain_game_object *as_terrain() { return 0; }
 	virtual int is_egg() const	// An egg?
 		{ return 0; }
 					// Count contained objs.
@@ -338,6 +341,7 @@ public:
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
+	virtual Terrain_game_object *as_terrain() { return this; }
 	virtual void paint_terrain(Game_window *gwin);
 	};
 

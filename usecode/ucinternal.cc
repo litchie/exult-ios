@@ -431,20 +431,6 @@ Actor *Usecode_internal::as_actor
 	}
 
 /*
- *	Check for an actor.
- */
-
-Npc_actor *Usecode_internal::as_npcactor
-	(
-	Game_object *obj
-	)
-	{
-	if (!obj)
-		return 0;
-	return (dynamic_cast<Npc_actor *> (obj));
-	}
-
-/*
  *	Get a position.
  */
 
@@ -932,7 +918,7 @@ Barge_object *Get_barge
 	)
 	{
 					// Check object itself.
-	Barge_object *barge = dynamic_cast<Barge_object *> (obj);
+	Barge_object *barge = obj->as_barge();
 	if (barge)
 		return barge;
 	Game_object_vector vec;		// Find it within 20 tiles (egglike).
@@ -945,7 +931,7 @@ Barge_object *Get_barge
 	for (Game_object_vector::const_iterator it = vec.begin();
 							it != vec.end(); it++)
 		{
-		barge = dynamic_cast<Barge_object *> (*it);
+		barge = (*it)->as_barge();
 		if (barge && barge->get_tile_footprint().has_point(
 							pos.tx, pos.ty))
 			{

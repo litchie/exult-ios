@@ -764,8 +764,7 @@ void Cheat::heal_party (void) const {
 		dead[i] = uc->get_dead_party_member(i);
 	for (i = 0; i < count; i++) {
 		int npc_num = dead[i];
-		Dead_body *body = dynamic_cast<Dead_body *> (
-						gwin->get_body(npc_num));
+		Dead_body *body = gwin->get_body(npc_num);
 		Actor *live_npc = gwin->get_npc(npc_num);
 		if (body && live_npc)
 			live_npc->resurrect(body);

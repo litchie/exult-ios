@@ -53,6 +53,7 @@ class Game_object;
 class Gump;
 class Gump_button;
 class Ireg_game_object;
+class Dead_body;
 class Main_actor;
 class Npc_actor;
 class Npc_face_info;
@@ -109,7 +110,7 @@ class Game_window
 	int skip_above_actor;		// Level above actor to skip rendering.
 	int num_npcs1;			// Number of type1 NPC's.
 	Actor_vector npcs;		// Array of NPC's + the Avatar.
-	Game_object_vector bodies;	// Corresponding Dead_body's.
+	Exult_vector<Dead_body*> bodies;// Corresponding Dead_body's.
 	Deleted_objects *removed;	// List of 'removed' objects.
 	int scrolltx, scrollty;		// Top-left tile of screen.
 	Actor *camera_actor;		// What to center view around.
@@ -284,9 +285,9 @@ public:
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < npcs.size()) ? 
 				npcs[npc_num] : 0; }
-	void set_body(int npc_num, Game_object *body)
+	void set_body(int npc_num, Dead_body *body)
 		{ bodies.put(npc_num, body); }
-	Game_object *get_body(int npc_num)
+	Dead_body *get_body(int npc_num)
 		{ return bodies[npc_num]; }
 	inline bool was_teleported()
 		{ return teleported; }

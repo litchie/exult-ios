@@ -1,3 +1,7 @@
+2002-06-21  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* actors.cc (Npc_actor): Cleanup: Lots more dynamic_cast's are gone.
+
 2002-06-21  Darke  <darke@users.sourceforge.net>
 	* shapeid.cc: Added using declarations. Committed for Kirben.
 
