@@ -2287,7 +2287,9 @@ void Main_actor::get_followers
 		int sched = npc->get_schedule_type();
 					// Skip if in combat or set to 'wait'.
 		if (sched != Schedule::combat &&
-		    sched != Schedule::wait)
+		    sched != Schedule::wait &&
+					// Loiter added for SI.
+		    sched != Schedule::loiter)
 			{
 			if (sched != Schedule::follow_avatar)
 				npc->set_schedule_type(
