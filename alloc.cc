@@ -4,7 +4,12 @@
 #include <cstdlib>
 #include <cstdio>
 #include <new>
+#if 0
+// Some people are having trouble with this
 #include <pthread_alloc>	// This allocator defines memset (we think)
+#else
+#include <cstring>
+#endif
 
 
 #ifdef WANT_ALTERNATE_ALLOCATOR
