@@ -391,6 +391,9 @@ static void Handle_client_message
 		gwin->set_all_dirty();
 		break;
 		}
+	case Exult_server::reload_shapes:
+		gwin->reload_shapes(Read2(ptr));
+		break;
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:
 		Handle_debug_message(&data[0], datalen);

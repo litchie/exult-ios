@@ -199,7 +199,7 @@ public:
 	int get_num_shapes() const
 	{ return num_shapes>num_shapes2?num_shapes:num_shapes2; }
 	int is_good() const
-		{ return (num_shapes != 0); }
+		{ return shapes != 0; }
 	bool is_flex() const
 		{ return flex; }
 					// Get shape.

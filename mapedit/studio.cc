@@ -1270,19 +1270,21 @@ void ExultStudio::create_shape_file
 	gpointer udata			// 1 if NOT a FLEX file.
 	)
 	{
-					// Check for THE shapes file.
-	const int shlen = sizeof("shapes.vga") - 1;
-	bool flat = strcasecmp(pathname + strlen(pathname) - shlen, 
-							"shapes.vga") == 0;
-	const int w = 8, h = 8;
-	unsigned char pixels[w*h];	// Create an 8x8 shape.
-	int xleft = flat ? 8 : w - 1;
-	int yabove = flat ? 8 : h - 1;
-	memset(&pixels[0], 1, w*h);	// Just use color #1.
-	Shape *shape = new Shape(new Shape_frame(&pixels[0],
-			w, h, xleft, yabove, !flat));
+	bool oneshape = (bool) udata;
+	Shape *shape = 0;
+	if (oneshape)			// Single-shape?
+		{			// Create one here.
+		const int w = 8, h = 8;
+		unsigned char pixels[w*h];	// Create an 8x8 shape.
+		memset(&pixels[0], 1, w*h);	// Just use color #1.
+		shape = new Shape(new Shape_frame(&pixels[0],
+				w, h, w - 1, h - 1, true));
+		}
 	try {				// Write file.
-		Image_file_info::write_file(pathname, &shape, 1, (bool) udata);
+		if (oneshape)
+			Image_file_info::write_file(pathname, &shape, 1, true);
+		else
+			Image_file_info::write_file(pathname, 0, 0, false);
 	}
 	catch (const exult_exception& e) {
 		EStudio::Alert(e.what());
