@@ -96,7 +96,8 @@ void Palette::set
 	bool repaint
 	)
 	{
-	if (palette == pal_num && brightness == new_brightness)
+	if ((palette == pal_num || pal_num == -1) &&
+		(brightness == new_brightness || new_brightness == -1))
 		return;			// Already set.
 	if (pal_num != -1)
 		palette = pal_num;	// Store #.
