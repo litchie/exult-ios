@@ -104,7 +104,6 @@ Shape_draw::Shape_draw
 		colors[i] = (palbuf[3*i]<<16)*4 + (palbuf[3*i+1]<<8)*4 + 
 							palbuf[3*i+2]*4;
 	palette = gdk_rgb_cmap_new(colors, 256);
-	num_shapes = ifile->get_num_shapes();
 	}
 
 /*

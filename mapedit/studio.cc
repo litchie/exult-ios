@@ -139,16 +139,14 @@ C_EXPORT void
 on_new_shapes_file_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-EStudio::Alert("Not implemented yet");
-//+++++	ExultStudio::get_instance()->+++++++++++=
+	ExultStudio::get_instance()->new_shape_file(false);
 }
 
 C_EXPORT void
 on_new_shape_file_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-EStudio::Alert("Not implemented yet");
-//+++++	ExultStudio::get_instance()->+++++++++++=
+	ExultStudio::get_instance()->new_shape_file(true);
 }
 
 C_EXPORT void
@@ -777,6 +775,18 @@ void ExultStudio::set_game_path(const char *gamepath)
 		for (int i = 0; i < num_shapes; i++)
 			names[i] = 0;
 	g_free(txtname);
+	setup_file_list();		// Set up file-list window.
+	connect_to_server();		// Connect to server with 'gamedat'.
+}
+
+/*
+ *	Set up the file list to the left of the main window.
+ */
+
+void ExultStudio::setup_file_list
+	(
+	)
+	{
 	GtkWidget *file_list = glade_xml_get_widget( app_xml, "file_list" );
 	
 	gtk_clist_clear( GTK_CLIST( file_list ) );
@@ -816,7 +826,6 @@ void ExultStudio::set_game_path(const char *gamepath)
 						   (gpointer)FlexArchive );
 #endif
 	gtk_clist_thaw( GTK_CLIST( file_list ) );
-	connect_to_server();		// Connect to server with 'gamedat'.
 }
 
 /*
@@ -1024,8 +1033,13 @@ void ExultStudio::new_shape_file
 		single ? "Write new .shp file" : "Write new .vga file",
 			(File_sel_okay_fun) create_shape_file,
 							(gpointer) single);
-	gtk_file_selection_complete(fsel, single ? "*.shp" : "*.vga");
-	//++++++Default directory ('patch')???
+//	This doesn't work very well in GTK 1.2.  Try again later.
+//	gtk_file_selection_complete(fsel, single ? "*.shp" : "*.vga");
+	if (is_system_path_defined("<PATCH>"))
+		{			// Default to 'patch'.
+		string patch = get_system_path("<PATCH>/");
+		gtk_file_selection_set_filename(fsel, patch.c_str());
+		}
 	gtk_widget_show(GTK_WIDGET(fsel));
 	}
 
@@ -1056,6 +1070,8 @@ void ExultStudio::create_shape_file
 	catch (const exult_exception& e) {
 		EStudio::Alert(e.what());
 	}
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->setup_file_list();	// Rescan list of shape files.
 	}
 
 /*
