@@ -277,7 +277,7 @@ bool KeyBinder::DoAction(ActionType a)
 	
        // Restrict key actions in dont_move mode
 	if (a.action->allow_during_dont_move
-        || !Game_window::get_game_window()->main_actor_dont_move()
+        || !Game_window::get_instance()->main_actor_dont_move()
 	|| cheat.in_map_editor())	// But not if map-editing.
     {
         a.action->func(a.params);
@@ -325,13 +325,13 @@ void KeyBinder::ShowHelp()
 	for (iter = keyhelp.begin(); iter != keyhelp.end(); iter++)
 		scroll->add_text(iter->c_str());
 	
-	scroll->paint(Game_window::get_game_window());
+	scroll->paint(Game_window::get_instance());
 	do
 	{
 		int x, y;
 		Get_click(x,y, Mouse::hand);
-	} while (scroll->show_next_page(Game_window::get_game_window()));
-	Game_window::get_game_window()->paint();
+	} while (scroll->show_next_page(Game_window::get_instance()));
+	Game_window::get_instance()->paint();
 	delete scroll;
 }
 
@@ -345,13 +345,13 @@ void KeyBinder::ShowCheatHelp()
 	for (iter = cheathelp.begin(); iter != cheathelp.end(); iter++)
 		scroll->add_text(iter->c_str());
 	
-	scroll->paint(Game_window::get_game_window());
+	scroll->paint(Game_window::get_instance());
 	do
 	{
 		int x, y;
 		Get_click(x,y, Mouse::hand);
-	} while (scroll->show_next_page(Game_window::get_game_window()));
-	Game_window::get_game_window()->paint();
+	} while (scroll->show_next_page(Game_window::get_instance()));
+	Game_window::get_instance()->paint();
 	delete scroll;
 }
 

@@ -80,7 +80,7 @@ void Missile_launcher::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Tile_coord src = egg->get_tile();
 					// Is egg off the screen?
 	if (!gwin->get_win_tile_rect().has_point(src.tx, src.ty))
@@ -176,7 +176,7 @@ Egg_object::Egg_object
 		set_quality(data1&0xff);
 #if 0	/* +++++The old way. */
 	if (type == path)		// Store paths.
-		Game_window::get_game_window()->add_path_egg(this);
+		Game_window::get_instance()->add_path_egg(this);
 #endif
 	}
 
@@ -226,7 +226,7 @@ Egg_object::~Egg_object
 	{
 	if (launcher)
 		{
-		Game_window::get_game_window()->get_tqueue()->remove(launcher);
+		Game_window::get_instance()->get_tqueue()->remove(launcher);
 		delete launcher;
 		}
 	}
@@ -244,7 +244,7 @@ void Egg_object::set_area
 		area = Rectangle(0, 0, 0, 0);
 		return;
 		}
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Tile_coord t = get_tile();	// Get absolute tile coords.
 	switch (criteria)		// Set up active area.
 		{
@@ -301,7 +301,7 @@ int Egg_object::is_active
 	if ((flags & (1 << (int) hatched)) &&
 			!(flags & (1 << (int) auto_reset)))
 		return (0);		// For now... Already hatched.
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (flags & (1 << (int) nocturnal))
 		{			// Nocturnal.
 		int hour = gwin->get_hour();
@@ -362,7 +362,7 @@ int Egg_object::is_active
 	case something_on:
 		return	 		// Guessing.  At SI end, deltaz == -1.
 			deltaz >= -1 && deltaz <= 3 &&
-			area.has_point(tx, ty) && !dynamic_cast<Actor *>(obj);
+			area.has_point(tx, ty) && !obj->as_actor();
 	case external_criteria:
 	default:
 		return 0;
@@ -469,7 +469,7 @@ void Egg_object::update_from_studio
 		return;
 		}
 	editing = 0;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (!egg)			// Create a new one?
 		{
 		int x, y;
@@ -570,7 +570,7 @@ void Egg_object::activate_teleport
 	Game_object *obj		// Object (actor) that came near it.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Tile_coord pos(-1, -1, -1);	// Get position to jump to.
 	int qual = get_quality();
 	if (qual == 255)
@@ -617,7 +617,7 @@ void Egg_object::activate
 		return;			// Out of luck.
 					// Flag it as done.
 	flags |= (1 << (int) hatched);
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	switch(type)
 		{
 		case jukebox:
@@ -806,7 +806,7 @@ void Egg_object::move
 	int newlift
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
 	Map_chunk *newchunk = gwin->get_chunk_safely(newcx, newcy);
@@ -828,7 +828,7 @@ void Egg_object::remove_this
          int nodel                       // 1 to not delete.
          )
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (get_owner())		// Watch for this.
 		get_owner()->remove(this);
 	else
@@ -842,7 +842,7 @@ void Egg_object::remove_this
 		}
 	if (launcher)			// Stop missiles.
 		{
-		Game_window::get_game_window()->get_tqueue()->remove(launcher);
+		Game_window::get_instance()->get_tqueue()->remove(launcher);
 		delete launcher;
 		launcher = 0;
 		}
@@ -1040,7 +1040,7 @@ void Field_object::activate
 	int /* must */			// If 1, skip dice roll.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Main_actor *av = gwin->get_main_actor();
 	if (!obj->get_flag(Obj_flags::in_party))
 		return;			// Not a party member.
@@ -1110,7 +1110,7 @@ void Mirror_object::activate(Usecode_machine *umachine, Game_object *obj, int mu
 	// Only if it changed update the shape
 	if (get_framenum()!=wanted_frame)
 	{
-		Game_window *gwin = Game_window::get_game_window();
+		Game_window *gwin = Game_window::get_instance();
 
 		gwin->add_dirty(this);
 		set_frame(wanted_frame);

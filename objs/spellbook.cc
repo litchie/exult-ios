@@ -83,7 +83,7 @@ void Spellbook_object::activate
 	int event
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	gwin->get_gump_man()->add_gump(this, Game::get_game_type() == BLACK_GATE ? 43 : 38);
 	}
 

@@ -133,7 +133,7 @@ void Usecode_script::start
 	long d			// Start after this many msecs.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 //++++ Messes up Moonshade Trial.
 //	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
 	gwin->get_tqueue()->add(d + SDL_GetTicks(), this,
@@ -604,7 +604,7 @@ int Usecode_script::save
 	)
 	{
 					// Get delay to when due.
-	long when = Game_window::get_game_window()->get_tqueue()->find_delay(
+	long when = Game_window::get_instance()->get_tqueue()->find_delay(
 							this, SDL_GetTicks());
 	if (when < 0)
 		return -1;

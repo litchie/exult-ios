@@ -90,7 +90,7 @@ void Object_sfx::set_obj
 	Game_object *o
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Tile_coord apos = gwin->get_main_actor()->get_tile();
 	Tile_coord opos = o->get_tile();
 	int active = 0;
@@ -242,7 +242,7 @@ Animator *Animator::create
 	bool ireg			// 1 if an IREG object.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int shnum = ob->get_shapenum();
 	int frames = ob->get_num_frames();
 	if (frames > 1)
@@ -260,7 +260,7 @@ Animator::~Animator
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	while (gwin->get_tqueue()->remove(this))
 		;
 	}
@@ -273,7 +273,7 @@ void Animator::start_animation
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Clean out old entry if there.
 	gwin->get_tqueue()->remove(this);
 	gwin->get_tqueue()->add(Game::get_ticks() + 20, this, (long) gwin);
@@ -308,7 +308,7 @@ Frame_animator::Frame_animator
  */
 void Frame_animator::Initialize()
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	first_frame = 0;
 	created = 0;
@@ -445,7 +445,7 @@ int Frame_animator::get_framenum()
 	if (last_shape != obj->get_shapenum() || last_frame != obj->get_framenum())
 		Initialize();
 
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	bool dirty_first = gwin->add_dirty(obj);
 
@@ -521,7 +521,7 @@ Field_frame_animator::Field_frame_animator
 	int rcy				// Frame to start recycling at.
 	) : Animator(o), recycle(rcy)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int shapenum = obj->get_shapenum();
 	frames = obj->get_num_frames();
 	}

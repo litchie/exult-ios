@@ -103,7 +103,7 @@ Combat_button::Combat_button(Gump *par, int px, int py)
 	: Gump_button(par, game->get_shape("gumps/combat"),
 		px, py)
 {
-	pushed = Game_window::get_game_window()->in_combat();
+	pushed = Game_window::get_instance()->in_combat();
 }
 
 /*

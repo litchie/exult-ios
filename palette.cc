@@ -38,7 +38,7 @@ using std::string;
 
 Palette::Palette()
 	{
-		win = Game_window::get_game_window()->get_win();
+		win = Game_window::get_instance()->get_win();
 		brightness = 100;
 		max_val = 63;
 	}
@@ -88,7 +88,7 @@ void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 #if 0	/* +++++TESTING */
 				xbuf = new unsigned char[256];
 				Game_window *gwin = 
-					Game_window::get_game_window();
+					Game_window::get_instance();
 				memcpy(xbuf, gwin->get_xform(11 - xindex - 1),
 									256);
 #else
@@ -174,7 +174,7 @@ void Palette::brighten(int percent)
 	
 void Palette::fade_in(int cycles)
 {
-	if (Game_window::get_game_window()->get_fades_enabled())
+	if (Game_window::get_instance()->get_fades_enabled())
 	{
 		unsigned char fade_pal[768];
 		unsigned int ticks = SDL_GetTicks() + 20;
@@ -185,7 +185,7 @@ void Palette::fade_in(int cycles)
 			win->set_palette(fade_pal, max_val, brightness);
 			// Frame skipping on slow systems
 			if (i == cycles || ticks >= SDL_GetTicks() ||
-						!Game_window::get_game_window()->get_frame_skipping())
+						!Game_window::get_instance()->get_frame_skipping())
 				win->show();
 			while (ticks >= SDL_GetTicks())
 				;
@@ -201,7 +201,7 @@ void Palette::fade_in(int cycles)
 
 void Palette::fade_out(int cycles)
 {
-	if (Game_window::get_game_window()->get_fades_enabled())
+	if (Game_window::get_instance()->get_fades_enabled())
 	{
 		unsigned char fade_pal[768];
 		unsigned int ticks = SDL_GetTicks() + 20;
@@ -212,7 +212,7 @@ void Palette::fade_out(int cycles)
 			win->set_palette(fade_pal, max_val, brightness);
 			// Frame skipping on slow systems
 			if (i == 0 || ticks >= SDL_GetTicks() ||
-						!Game_window::get_game_window()->get_frame_skipping())
+						!Game_window::get_instance()->get_frame_skipping())
 				win->show();
 			while (ticks >= SDL_GetTicks())
 				;

@@ -125,7 +125,7 @@ void Yesno_gump::mouse_down
 	int mx, int my			// Position in window.
 	)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Check buttons.
 	if (yes_button->on_button(gwin, mx, my))
 		pushed = yes_button;
@@ -148,7 +148,7 @@ void Yesno_gump::mouse_up
 	int mx, int my			// Position in window.
 	)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (pushed)			// Pushing a button?
 	{
 		pushed->unpush(gwin);

@@ -269,6 +269,8 @@ public:
 		{  }
 	virtual int get_usecode_dir() const
 		{ return 0; }
+	virtual Actor *as_actor() 	// An actor?
+		{ return 0; }
 	virtual int is_egg() const	// An egg?
 		{ return 0; }
 					// Count contained objs.

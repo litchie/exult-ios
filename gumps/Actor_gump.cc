@@ -94,7 +94,7 @@ Actor_gump::Actor_gump
 	) : Gump(cont, initx, inity, shnum)
 {
 	set_object_area(Rectangle(26, 0, 104, 132), 6, 136);
-	Actor *npc = dynamic_cast<Actor *>(cont);
+	Actor *npc = cont->as_actor();
 	heart_button = new Heart_button(this, heartx, hearty);
 	if (npc->get_npc_num() == 0)
 		disk_button = new Disk_button(this, diskx, disky);
@@ -221,7 +221,7 @@ void Actor_gump::set_to_spot
 	int index			// Spot index.
 	)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Get shape info.
 	Shape_frame *shape = obj->get_shape();
 	if (!shape)

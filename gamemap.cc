@@ -247,7 +247,7 @@ void Game_map::read_map_data
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	int scrolltx = gwin->get_scrolltx(), scrollty = gwin->get_scrollty();
 	int w = gwin->get_width(), h = gwin->get_height();
 					// Start one tile to left.
@@ -531,7 +531,7 @@ void Game_map::get_ifix_chunk_objects
 	int cx, int cy			// Absolute chunk #'s.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	ifix->seek(filepos);		// Get to actual shape.
 					// Get buffer to hold entries' indices.
 	unsigned char *entries = new unsigned char[4*cnt];
@@ -782,7 +782,7 @@ void Game_map::read_ireg_objects
 	int entlen;			// Gets entry length.
 	sint8 index_id = -1;
 	Game_object *last_obj = 0;	// Last one read in this call.
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 					// Go through entries.
 	while (((entlen = ireg->read1(), !ireg->eof())))
 		{
@@ -1094,7 +1094,7 @@ bool Game_map::locate_terrain
 			cx = chunkx;
 			cy = chunky;
 					// Center window over chunk found.
-			Game_window::get_game_window()->center_view(Tile_coord(
+			Game_window::get_instance()->center_view(Tile_coord(
 				cx*c_tiles_per_chunk + c_tiles_per_chunk/2,
 				cy*c_tiles_per_chunk + c_tiles_per_chunk/2, 
 									0));
@@ -1134,7 +1134,7 @@ bool Game_map::swap_terrains
 			else if (terrain_map[cx][cy] == tnum + 1)
 				terrain_map[cx][cy]--;
 			}
-	Game_window::get_game_window()->set_all_dirty();
+	Game_window::get_instance()->set_all_dirty();
 	return true;
 	}
 
@@ -1188,7 +1188,7 @@ bool Game_map::insert_terrain
 			if (terrain_map[cx][cy] > tnum)
 				terrain_map[cx][cy]++;
 			}
-	Game_window::get_game_window()->set_all_dirty();
+	Game_window::get_instance()->set_all_dirty();
 	return true;
 	}
 
@@ -1247,7 +1247,7 @@ void Game_map::find_unused_shapes
 	)
 	{
 	memset(found, 0, foundlen);
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	cout << "Reading all chunks";
 					// Read in EVERYTHING!
 	for (int sc = 0; sc < c_num_schunks*c_num_schunks; sc++)

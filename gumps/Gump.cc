@@ -55,7 +55,7 @@ Gump::Gump
 	ShapeFile shfile
 	) : ShapeID(shnum, 0, shfile), container(cont), check_button(0)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Shape_frame *shape = get_shape();
 	x = (gwin->get_width() - shape->get_width())/2;
 	y = (gwin->get_height() - shape->get_height())/2;
@@ -79,7 +79,7 @@ Gump::~Gump()
  */
 void Gump::set_pos()
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Shape_frame *shape = get_shape();
 	x = (gwin->get_width() - shape->get_width())/2;
 	y = (gwin->get_height() - shape->get_height())/2;
@@ -150,7 +150,7 @@ Game_object *Gump::find_object
 	Object_iterator next(container->get_objects());
 	Game_object *obj;
 	Shape_frame *s;
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	int ox, oy;
 
@@ -285,7 +285,7 @@ void Gump::remove
 	Rectangle box = object_area;	// Paint objects inside.
 	box.shift(x, y);		// Set box to screen location.
 
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	gwin->set_all_dirty();
 	gwin->paint_dirty();

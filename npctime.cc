@@ -275,7 +275,7 @@ uint32 Npc_timer::get_minute
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	return 60*gwin->get_total_hours() + gwin->get_minute();
 	}
 
@@ -289,7 +289,7 @@ Npc_timer::Npc_timer
 	int start_delay			// Time in msecs. before starting.
 	) : list(l)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	gwin->get_tqueue()->add(Game::get_ticks() + start_delay, this, 0L);
 	}
 
@@ -303,7 +303,7 @@ Npc_timer::~Npc_timer
 	{
 	if (in_queue())
 		{
-		Time_queue *tq = Game_window::get_game_window()->get_tqueue();
+		Time_queue *tq = Game_window::get_instance()->get_tqueue();
 		tq->remove(this);
 		}
 	}
@@ -329,7 +329,7 @@ void Npc_hunger_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 					// No longer a party member?
 	if (!npc->is_in_party() ||
@@ -390,7 +390,7 @@ void Npc_poison_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||	// Long enough?  Or cured?
 	    npc->get_flag(Obj_flags::poisoned) == 0 ||
@@ -421,7 +421,7 @@ void Npc_sleep_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||	// Long enough?  Or cured?
 	    npc->get_flag(Obj_flags::asleep) == 0)
@@ -476,7 +476,7 @@ void Npc_invisibility_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 	if (Wearing_ring(npc, 296))
 		{			// Wearing invisibility ring.
@@ -506,7 +506,7 @@ void Npc_protection_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 	if (Wearing_ring(npc, 297))
 		{			// Wearing protection ring.
@@ -536,7 +536,7 @@ void Npc_flag_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||	// Long enough?  Or cleared.
 	    npc->get_flag(flag) == 0)

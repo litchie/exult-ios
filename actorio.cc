@@ -294,7 +294,7 @@ void Actor::read
 	nfile->skip (2);	// V1 ????? (refer to U7tech.txt)
 	nfile->skip (2);	// V2 ????? (refer to U7tech.txt)
 
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 
 	// 16 Bit Shape Numbers, allows for shapes > 1023
 	shnum = nfile->read2();

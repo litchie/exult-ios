@@ -186,7 +186,7 @@ public:
 							int scaler = 0);
 	~Game_window();
 					// Get the one game window.
-	static Game_window *get_game_window()
+	static Game_window *get_instance()
 		{ return game_window; }
 	void clear_screen(bool update = false);
 		

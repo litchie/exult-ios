@@ -126,12 +126,12 @@ void Gamemenu_gump::video_options()
 	if (!vid_opts->want_restore_background()) {
 		// resolution could have changed, so recenter & repaint menu.
 		set_pos();
-		paint(Game_window::get_game_window());
+		paint(Game_window::get_instance());
 		restore_background = false;
 	}
 	delete vid_opts;
 
-	Game_window::get_game_window()->set_palette();
+	Game_window::get_instance()->set_palette();
 }
 
 void Gamemenu_gump::audio_options()
@@ -159,7 +159,7 @@ void Gamemenu_gump::paint(Game_window* gwin)
 
 void Gamemenu_gump::mouse_down(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
@@ -179,7 +179,7 @@ void Gamemenu_gump::mouse_down(int mx, int my)
 
 void Gamemenu_gump::mouse_up(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_game_window();
+	Game_window *gwin = Game_window::get_instance();
 	if (pushed)			// Pushing a button?
 	{
 		pushed->unpush(gwin);
