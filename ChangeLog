@@ -1,3 +1,7 @@
+2001-01-26  Tristan Tarrant <nadir@users.sourceforge.net>
+	mapedit/shapelst.*: show shapes on multiple rows.
+	mapedit/studio.*: fixes.
+
 2001-01-25  Tristan Tarrant <nadir@users.sourceforge.net>
 	mapedit/*: more work.
 
