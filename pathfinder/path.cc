@@ -337,6 +337,8 @@ public:
 		}
 	};
 
+static int tracing = 0;
+
 /*
  *	First cut at using the A* pathfinding algorithm.
  *
@@ -360,6 +362,10 @@ Tile_coord *Find_path
 	Search_node *node;		// Try 'best' node each iteration.
 	while ((node = nodes.pop()) != 0)
 		{
+		if (tracing)
+			cout << "Goal: (" << goal.tx << ", " << goal.ty <<
+			"), Node: (" << node->get_tile().tx << ", " <<
+			node->get_tile().ty << ")\n";
 		if (node->get_tile() == goal)
 					// Success.
 			return node->create_path();
@@ -379,7 +385,7 @@ Tile_coord *Find_path
 					// See if next tile already seen.
 			Search_node *next = nodes.find(ntile);
 					// Already there, and cheaper?
-			if (next && next->get_start_cost() < new_cost)
+			if (next && next->get_start_cost() <= new_cost)
 				continue;
 			int new_goal_cost = Cost_to_goal(ntile, goal);
 					// Skip nodes too far away.
