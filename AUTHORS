@@ -1,4 +1,21 @@
 Jeff S. Freedman <jeff@simutech.com>
+	The man who started it all: from map browser to usecode interpreter,
+	from animation to combat. He's the leader !
+
 Dancer Vesperman <dancer@zeor.simegen.com>
+	Music, sounds, XML configuration, Usecode hacking... what more could 
+	you possibly ask for ? :-)
+
 Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	Porting to obscure OSs (Windows) and less obscure ones (BeOS)
+
 Tristan Tarrant <tarrant_tristan@emc.com>
+	Intro, ending, autoconf/automake, makes sure that everyone follows
+	CVS conventions...
+
+Max Horn <max@quendi.de>
+	Porting to MacOS
+
+Coder Infidel <coder_infidel@hotmail.com>
+	Hunter of lost info in U7's data files, weapon animations, bits of
+	combat.
