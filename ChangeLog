@@ -1,3 +1,7 @@
+2003-12-01    <jeff@mini.nerble.net>
+
+	* gamemap.cc: Fixed map-editing bug involving cached-out superchunks.
+
 2003-11-30    <jeff@mini.nerble.net>
 
 	* mapedit/chunklst.cc, etc.: Added a 'delete' option for
