@@ -698,7 +698,7 @@ void Actor::walk_to_tile
 	{
 	if (!action)
 		action = new Path_walking_actor_action(new Zombie());
-	set_action(action->walk_to_tile(get_abs_tile_coord(), dest, get_type_flags()));
+	set_action(action->walk_to_tile(this, get_abs_tile_coord(), dest));
 	if (action)			// Successful at setting path?
 		start(speed, delay);
 	else
@@ -723,7 +723,7 @@ int Actor::walk_path_to_tile
 	)
 	{
 	set_action(new Path_walking_actor_action(new Astar()));
-	set_action(action->walk_to_tile(src, dest, get_type_flags(), dist));
+	set_action(action->walk_to_tile(this, src, dest, dist));
 	if (action)			// Successful at setting path?
 		{
 		start(speed, delay);
@@ -959,7 +959,7 @@ int Actor::approach_another
 					// Off-screen?
 		src = Tile_coord(-1, -1, 0);
 	Actor_action *action = new Path_walking_actor_action();
-	if (!action->walk_to_tile(src, dest, get_type_flags()))
+	if (!action->walk_to_tile(this, src, dest))
 		{
 		delete action;
 		return 0;

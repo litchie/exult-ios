@@ -72,9 +72,9 @@ int Actor_action::handle_event_safely
 
 Actor_action *Actor_action::walk_to_tile
 	(
+	Actor * /* npc */,
 	Tile_coord src,
 	Tile_coord dest,
-	int move_flags,
 	int /* dist */			// Ignored.
 	)
 	{
@@ -111,8 +111,7 @@ Actor_action *Actor_action::create_action_sequence
 	if (dest != actloc)		// Get to destination.
 		{
 		Actor_action *w = new Path_walking_actor_action(new Astar());
-		Actor_action *w2 = w->walk_to_tile(actloc, dest, 
-						actor->get_type_flags());
+		Actor_action *w2 = w->walk_to_tile(actor, actloc, dest);
 		if (w2 != w)
 			delete w;
 		if (!w2)		// Failed?  Teleport.
@@ -380,9 +379,9 @@ void Path_walking_actor_action::stop
 
 Actor_action *Path_walking_actor_action::walk_to_tile
 	(
+	Actor *npc,
 	Tile_coord src,			// tx=-1 or ty=-1 means don't care.
 	Tile_coord dest,		// Same here.
-	int move_flags,
 	int dist			// Distance to get to within dest.
 	)
 	{
@@ -397,13 +396,13 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 		{
 		if (dest.tx == dest.ty)	// Completely off-screen?
 			{
-			Offscreen_pathfinder_client cost(gwin, move_flags);
+			Offscreen_pathfinder_client cost(npc);
 			if (!path->NewPath(src, dest, &cost))
 				return (0);
 			}
 		else
 			{
-			Onecoord_pathfinder_client cost(move_flags);
+			Onecoord_pathfinder_client cost(npc);
 			if (!path->NewPath(src, dest, &cost))
 				return (0);
 			}
@@ -413,13 +412,13 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 		{			// Figure path in opposite dir.
 		if (src.tx == src.ty)	// Both -1?
 			{
-			Offscreen_pathfinder_client cost(gwin, move_flags);
+			Offscreen_pathfinder_client cost(npc);
 			if (!path->NewPath(dest, src, &cost))
 				return (0);
 			}
 		else
 			{
-			Onecoord_pathfinder_client cost(move_flags);
+			Onecoord_pathfinder_client cost(npc);
 			if (!path->NewPath(dest, src, &cost))
 				return (0);
 			}
@@ -430,7 +429,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 		}
 	else
 		{
-		Actor_pathfinder_client cost(move_flags, dist);
+		Actor_pathfinder_client cost(npc, dist);
 		if (!path->NewPath(src, dest, &cost))
 			return (0);
 		}
@@ -480,8 +479,7 @@ If_else_path_actor_action::If_else_path_actor_action
 		succeeded(false), failed(false), done(false),
 		success(s), failure(f)
 	{
-	if (!walk_to_tile(actor->get_abs_tile_coord(), dest, 
-						actor->get_type_flags()))
+	if (!walk_to_tile(actor, actor->get_abs_tile_coord(), dest))
 		{
 		done = failed = true;
 		}

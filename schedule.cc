@@ -741,7 +741,7 @@ void Dance_schedule::now_what
 		frames[i] = npc->get_dir_framenum((2*(dir + i))%8, 9);
 					// Create action to walk.
 	Actor_action *walk = new Path_walking_actor_action(new Zombie());
-	walk->walk_to_tile(cur, dest, npc->get_type_flags());
+	walk->walk_to_tile(npc, cur, dest);
 					// Walk, then spin.
 	npc->set_action(new Sequence_actor_action(walk,
 		new Frames_actor_action(frames, sizeof(frames), 100)));
