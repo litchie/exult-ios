@@ -1,6 +1,7 @@
 /**	-*-mode: Fundamental; tab-width: 8; -*-
  **
- **	Readnpcs.cc - Read in NPC's from u7nbuf.dat & schedule.dat.
+ **	Readnpcs.cc - Read in NPC's from npc.dat & schedule.dat.  Also writes
+ **		npc.dat back out.
  **
  **	Written: 5/13/99 - JSF
  **/
@@ -38,10 +39,9 @@ void Game_window::read_npcs
 	{
 	ifstream nfile;
 	u7open(nfile, NPC_DAT);
-	int cnt1 = Read2(nfile);		// Get counts.
+	num_npcs1 = Read2(nfile);		// Get counts.
 	int cnt2 = Read2(nfile);
-cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
-	num_npcs = cnt1 + cnt2;
+	num_npcs = num_npcs1 + cnt2;
 	npcs = new Actor *[num_npcs];
 	int i;
 	for (i = 0; i < num_npcs; i++)
@@ -61,7 +61,7 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 					// Lift is high 4 bits.
 		int lift = usefun >> 12;
 		usefun &= 0xfff;
-		if (i >= cnt1)		// Type2?
+		if (i >= num_npcs1)	// Type2?
 			usefun = -1;	// Let's try this.
 					// Guessing:  !!
 		int food_level = Read1(nfile);
@@ -167,6 +167,83 @@ cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 				monster[2], monster[3], monster[4]);
 		}
 	}
+
+/*
+ *	Write NPC (and monster) data back out.
+ *
+ *	Output:	0 if error, already reported.
+ */
+
+int Game_window::write_npcs
+	(
+	)
+	{
+	ofstream nfile;
+	if (!U7open(nfile, NPC_DAT))
+		{			// +++++Better error???
+		cerr << "Exult:  Error opening '" << NPC_DAT <<
+				"' for writing\n";
+		return (0);
+		}
+	Write2(nfile, num_npcs1);	// Start with counts.
+	Write2(nfile, num_npcs - num_npcs1);
+	int i;
+	for (i = 0; i < num_npcs; i++)
+		{
+		Actor *actor = npcs[i];
+		unsigned char buf4[4];	// Write coords., shape, frame.
+		actor->Game_object::write_common_ireg(buf4);
+		nfile.write(buf4, sizeof(buf4));
+#if 0
+//++++++++++++++++
+					// Get shape, frame #.
+		unsigned char shape[2];
+		nfile.read(shape, 2);
+		int iflag1 = Read2(nfile);// Inventory flag.
+					// Superchunk #.
+		int schunk = Read1(nfile);
+		Read1(nfile);		// Skip next byte.
+					// Get usecode function #.
+		int usefun = Read2(nfile);
+					// Lift is high 4 bits.
+		int lift = usefun >> 12;
+		usefun &= 0xfff;
+		if (i >= num_npcs1)	// Type2?
+			usefun = -1;	// Let's try this.
+					// Guessing:  !!
+		int food_level = Read1(nfile);
+		nfile.seekg(3, ios::cur);// Skip 3 bytes.
+					// Another inventory flag.
+		int iflag2 = Read2(nfile);
+					// Skip next 2.
+		nfile.seekg(2, ios::cur);
+					// Get char. atts.
+		int strength = Read1(nfile);
+		int dexterity = Read1(nfile);
+		int intelligence = Read1(nfile);
+		int combat = Read1(nfile);
+		int schedtype = Read1(nfile);
+		nfile.seekg(4, ios::cur); //??
+		int mana = Read1(nfile);// ??
+		nfile.seekg(4, ios::cur);
+		int exp = Read2(nfile);	// Could this be 4 bytes?
+		nfile.seekg(2, ios::cur);
+		int train = Read1(nfile);
+					// Get name.
+		nfile.seekg(0x40, ios::cur);
+		char namebuf[17];
+		nfile.read(namebuf, 16);
+		namebuf[16] = 0;	// Be sure it's 0-delimited.
+#endif
+		}
+	//++++++++++++Don't forget monsters.
+	nfile.flush();
+	int result = nfile.good();
+	if (!result)			// ++++Better error system needed??
+		cerr << "Exult:  Error writing '" << NPC_DAT << "'\n";
+	return (result);
+	}
+
 /*
  *	Read NPC schedules.
  */

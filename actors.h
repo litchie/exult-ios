@@ -193,6 +193,9 @@ public:
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame)
 		{ return 0; }
+					// Don't write out to IREG file.
+	virtual void write_ireg(ostream& out)
+		{  }
 	};
 
 /*
