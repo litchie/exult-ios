@@ -257,10 +257,20 @@ USECODE_INTRINSIC(set_item_quality)
 {
 	// Guessing it's 
 	//  set_quality(item, value).
+	int qual = parms[1].get_int_value();
+	if (qual == c_any_qual)		// Leave alone (happens in SI)?
+		return Usecode_value(1);
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
-		obj->set_quality((unsigned int) parms[1].get_int_value());
-	return(no_ret);
+		{
+					// Fail if it has quantity.
+		Shape_info& info = gwin->get_info(obj);
+		if (info.get_shape_class() == Shape_info::has_quantity &&
+		    Game::get_game_type() == SERPENT_ISLE)
+			return Usecode_value(0);
+		obj->set_quality((unsigned int) qual);
+		}
+	return Usecode_value(0);
 }
 
 USECODE_INTRINSIC(get_item_quantity)
@@ -1917,6 +1927,8 @@ static int Is_moving_barge_flag
 	else				// SI.
 		{
 		return fnum == (int) Obj_flags::si_on_moving_barge ||
+					// Ice raft needs this one:
+			fnum == (int) Obj_flags::on_moving_barge ||
 			fnum == (int) Obj_flags::in_motion;
 		}
 	}
