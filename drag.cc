@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "gumps.h"
 #include "mouse.h"
+#include "paths.h"
 
 extern Mouse *mouse;
 
@@ -105,6 +106,17 @@ void Game_window::drag
 				dragging = 0;
 				return;
 				}
+#if 0	/* +++++++Test first. */
+			if (!dragging->get_owner() &&
+			    !Fast_pathfinder_client::is_grabable(
+					main_actor->get_abs_tile_coord(),
+					dragging->get_abs_tile_coord()))
+				{
+				mouse->flash_shape(Mouse::blocked);
+				dragging = 0;
+				return;
+				}
+#endif
 			}
 					// Store original pos. on screen.
 		dragging_rect = dragging_gump ?
@@ -219,8 +231,11 @@ void Game_window::drop
 					// First see if it's a gump.
 		Gump_object *on_gump = find_gump(x, y);
 		if (on_gump)
-			dropped = on_gump->add(to_drop, x, y,
-					dragging_paintx, dragging_painty);
+			{
+			if (!(dropped = on_gump->add(to_drop, x, y,
+					dragging_paintx, dragging_painty)))
+				mouse->flash_shape(Mouse::wontfit);
+			}
 		else
 			{		// Was it dropped on something?
 			Game_object *found = find_object(x, y);
@@ -233,6 +248,8 @@ void Game_window::drop
 				for (int lift = outer->get_lift(); 
 					!dropped && lift < max_lift; lift++)
 					dropped = drop_at_lift(to_drop, lift);
+				if (!dropped)
+					mouse->flash_shape(Mouse::blocked);
 				}
 			}
 		}
@@ -272,7 +289,12 @@ int Game_window::drop_at_lift
 	Shape_info& info = shapes.get_info(to_drop->get_shapenum());
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
 	if (!Chunk_object_list::is_blocked(info.get_3d_height(), at_lift,
-		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, lift))
+		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, lift)) // &&
+#if 0	/* ++++++Test this. */
+					// Check for path to location.
+	    Fast_pathfinder_client::is_grabable(
+		main_actor->get_abs_tile_coord(), Tile_coord(tx, ty, lift)))
+#endif
 		{
 		to_drop->set_lift(lift);
 		to_drop->set_shape_pos(tx%tiles_per_chunk, 
