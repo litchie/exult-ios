@@ -86,7 +86,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  */
 					/* Script commands. */
 %token CONTINUE REPEAT NOP NOHALT WAIT REMOVE RISE DESCEND FRAME HATCH
-%token NEXT PREVIOUS CYCLE STEP MUSIC CALL SPEECH SFX FACE HIT HOURS
+%token NEXT PREVIOUS CYCLE STEP MUSIC CALL SPEECH SFX FACE HIT HOURS ACTOR
 %token NORTH SOUTH EAST WEST NE NW SE SW
 
 /*
@@ -420,6 +420,8 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::descend); }
 	| FRAME expression
 		{ $$ = Create_array(Ucscript::frame, $2); }
+	| ACTOR FRAME INT_LITERAL	/* 0-15. ++++Maybe have keywords. */
+		{ $$ = new Uc_int_expression(0x61 + ($3 & 15)); }
 	| HATCH				/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg); }
 	| NEXT FRAME			/* Next, but stop at last. */
@@ -452,18 +454,6 @@ script_command:
 		{ $$ = Create_array(Ucscript::face_dir, $2); }
 	| HIT expression		/* 2nd parm unknown. */
 		{ $$ = Create_array(Ucscript::hit, $2); }
-
-/*
-		default:
-					// Frames with dir.  U7-verified!
-			if (opcode >= 0x61 && opcode <= 0x70)
-				{	// But don't show empty frames.
-				int v = obj->get_dir_framenum(
-					obj->get_usecode_dir(), 
-					opcode - 0x61);
-				usecode->set_item_frame(obj, v, 1, 1);
-				}
-*/
 	| '{' script_command_list '}'
 		{ $$ = $2; }
 	;
