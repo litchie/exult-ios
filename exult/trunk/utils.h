@@ -44,6 +44,12 @@ class ofstream;
                  const char *what(void) { return what_.c_str(); }
                 };
 
+#define	UNREPLICATABLE_CLASS(NAME)	NAME(const NAME &) { throw replication_error( #NAME " cannot be replicated"); }; \
+					NAME &operator=(const NAME &) { throw replication_error( #NAME " cannot be replicated"); return *this; }
+
+#define	UNREPLICATABLE_CLASS_I(NAME,INIT)	NAME(const NAME &) : INIT { throw replication_error( #NAME " cannot be replicated"); }; \
+					NAME &operator=(const NAME &) { throw replication_error( #NAME " cannot be replicated"); return *this; }
+
 
 /*
  *	Read a 1-byte value.
