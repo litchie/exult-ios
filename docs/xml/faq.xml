@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="05 June 2002(GMT)">
+<faqs title="Exult" changed="18 June 2002(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="18062002">
+			<header>- 18 June 2002</header>
+			<body>
+				<ul>				
+				<li><ref1 target="different_snapshot"/> same as on our main page, also some explanation 
+					for the different FAQ/Docs.</li>
+				<li><ref1 target="studio_support"/> <Studio/> is no longer supported in RC2 and stable 
+					snapshots.</li>
+				<li><ref1 target="bug_report"/> SourceForge requires registration for attaching files.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="05062002">
 			<header>- 05 June 2002</header>
 			<body>
@@ -176,6 +188,32 @@
 					Also this FAQ mainly addresses the snapshots as people use them and ask question.
 					And all the new features and improvements are found in those!
 				</para>
+			</body>
+		</sub>
+		<sub name="different_snapshot">
+			<header>Why are there now two different snapshots?</header>
+			<body>
+			    <para>
+			    	If you checked our download page recently, you may have noticed that we have 
+			    	two sets of development snapshots now: a 1.0.x (stable) snapshot, and a 
+			    	1.1.x (unstable) snapshot.
+			    </para>
+			    <para>
+					The 1.0.x branch will become our 1.0 release soon, hopefully, and we will mainly 
+					be fixing any remaining bugs in this branch. We recommend using the 1.0.x 
+					snapshots for playing and testing Exult. 
+				</para>
+				<para>
+					The 1.1.x branch is meant mostly as a 'developer playground' at the moment. 
+					We are making some very destabilizing changes to this branch, like a rewritten 
+					usecode interpreter and new audio code. We do not recommend using the 1.1.x 
+					snapshots for normal playing.
+				</para>
+				<para>
+			    	This also means that the documentation and the FAQ needs to be different. You will
+			    	find the description of the 1.1.x branch features only in the snapshot and the source
+			    	and not on our homepage.
+			    </para>
 			</body>
 		</sub>
 		<sub name="compile_snapshot">
@@ -625,6 +663,19 @@
 				</cite>
 			</body>
 		</sub>
+		<sub name="studio_support">
+			<header>
+				Why is <Studio/> not working with the RC2 or newer snapshots of <Exult/>?
+			</header>
+			<body>
+				<para>
+					Please see <ref target="different_snapshot"/> for information on our two
+					different branches. <Studio/> will no longer be supported in the 1.0.x (stable)
+					branch. A lot of changes we will put into the unstable branch will directly
+					concern <Studio/>.
+				</para>
+			</body>
+		</sub>
 	</section>
   	<section title="Bugs, known issues and not yet implemented features">
 		<sub name="known_bugs">
@@ -672,8 +723,10 @@
 				<li><em>One</em> bug per subject please.</li>
 				</ol>
 				<para>
-					<strong>Note</strong> that SourceForge requires users to enable cookies to attach files.
-					If you use Internet Explorer 6.0 your Cookies Security needs to be at medium or below.
+					<strong>Note</strong> for attaching savegames SourceForge requires users to be 
+					registered. Therefor we strongly advice users to register with SF.<br/>
+					Any bug report that requires a savegame will most likely be 
+					<strong>tagged invalid</strong> if we don't receive a savegame after we requested it.
 				</para>
 				<para>
 					You can also use our
