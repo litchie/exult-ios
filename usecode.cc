@@ -126,6 +126,8 @@ public:
 			cnt = 1;	// Get_elem(0) works for non-arrays.
 		}
 					// Execute when due.
+	virtual ~Scheduled_usecode()
+		{  }
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
