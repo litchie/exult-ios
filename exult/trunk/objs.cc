@@ -806,9 +806,12 @@ int Game_object::get_weight
 	)
 	{
 	int quant = get_quantity();
-//	quant = 1 + (quant - 1)/8;	// Be liberal about multiples.
-	return (quant *
-		Game_window::get_game_window()->get_info(this).get_weight());
+	int wt = quant *
+		Game_window::get_game_window()->get_info(this).get_weight();
+	int shnum = get_shapenum();	// Special case:  reagants, coins.
+	if (shnum == 842 || shnum == 644)
+		wt /= 10;
+	return wt;
 	}
 
 /*
