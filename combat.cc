@@ -81,7 +81,7 @@ void Combat_schedule::find_opponents
 	    npc != gwin->get_main_actor())
 		{
 		Game_object *opp = gwin->get_main_actor()->get_opponent();
-		if (opp && opp != npc && (opp->get_npc_num() >= 0 ||
+		if (opp && opp != npc && (opp->get_npc_num() > 0 ||
 					opp->is_monster()))
 			opponents.append(opp);
 		}
@@ -469,7 +469,7 @@ void Duel_schedule::find_opponents
 	{
 	opponents.clear();
 	Vector vec;			// Find all nearby NPC's.
-	int cnt = npc->find_nearby(vec, -359, 24, 0);
+	int cnt = npc->find_nearby(vec, -359, 24, 8);
 	for (int i = 0; i < cnt; i++)
 		{
 		Actor *opp = (Actor *) vec.get(i);

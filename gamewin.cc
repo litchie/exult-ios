@@ -392,6 +392,7 @@ void Game_window::clear_world
 	Dead_body::delete_all();
 	main_actor = 0;
 	num_npcs = num_npcs1 = 0;
+	theft_cx = theft_cy = -1;
 	delete [] npcs;			// NPC's already deleted above.
 	moving_barge = 0;		// Get out of barge mode.
 	special_light = 0;		// Clear out light spells.
@@ -2641,6 +2642,8 @@ void Game_window::theft
 	for (int i = 0; i < cnt; i++)
 		{
 		Npc_actor *npc = (Npc_actor *) npcs.get(i);
+		if (npc->is_monster())
+			continue;
 		int dist = npc->distance(main_actor);
 		if (dist < best_dist && Fast_pathfinder_client::is_grabable(
 			npc->get_abs_tile_coord(),

@@ -1,3 +1,8 @@
+2000-10-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode.cc: Guards attack when you steel.
+	* Fixed crash when you enter LB's castle.
+
 2000-10-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs.cc: Compute/show weight carried (but don't check yet).
