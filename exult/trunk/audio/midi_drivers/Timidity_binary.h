@@ -46,17 +46,21 @@ class	Timidity_binary : virtual public MidiAbstract
 {
 public:
 	virtual void	start_track(const char *,bool repeat);
-//	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat);
+	virtual void	start_sfx(const char *);
 	virtual void	stop_track(void);
+	virtual void	stop_sfx(void);
 	virtual	bool	is_playing(void);
 	virtual const	char *copyright(void);
 	void	player(void);
+	void	sfxplayer(void);
 
 	Timidity_binary();
 	virtual ~Timidity_binary();
 private:
 	SDL_Thread	*my_thread;
+	SDL_Thread	*sfx_thread;
 	string	filename;
+	string	sfxname;
 	UNREPLICATABLE_CLASS(Timidity_binary);
 };
 #endif

@@ -52,6 +52,7 @@ public:
 	virtual void	start_sfx(midi_event *evntlist, int ppqn) { };
 	
 	virtual void	stop_track(void)=0;
+	virtual void	stop_sfx(void) { };
 	virtual	bool	is_playing(void)=0;
 	virtual	const	char *copyright(void)=0;
 
