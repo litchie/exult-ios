@@ -41,14 +41,25 @@ struct SDL_RWops;
 class Image_window
 	{
 public:
+	// Firstly just some public scaler stuff
+
+	// The scaler types. ScalerNames needs to match this
 	enum ScalerType {
 		point = 0,
-		bilinear = 1,
-		interlaced = 2,
-		SaI = 3,
-		SuperEagle = 4,
-		Super2xSaI = 5
+		interlaced = 1,
+		bilinear = 2,
+		BilinearPlus = 3,
+		SaI = 4,
+		SuperEagle = 5,
+		Super2xSaI = 6,
+
+		NoScaler = -1,
+		NumScalers = 7
 	};
+	static const char *ScalerNames[];
+	static ScalerType get_scaler_for_name(const std::string &name);
+	inline static const char *get_name_for_scaler(int num) { return ScalerNames[num]; }
+
 protected:
 	Image_buffer *ibuf;		// Where the data is actually stored.
 	int scale;			// Only 1 or 2 for now.
@@ -82,6 +93,10 @@ protected:
 	void show_scaled8to32_SuperEagle(int x, int y, int w, int h);	
 	void show_scaled_point(int x, int y, int w, int h);
 	void show_scaled_interlace(int x, int y, int w, int h);
+	void show_scaled8to16_BilinearPlus(int x, int y, int w, int h);
+	void show_scaled8to555_BilinearPlus(int x, int y, int w, int h);
+	void show_scaled8to565_BilinearPlus(int x, int y, int w, int h);
+	void show_scaled8to32_BilinearPlus(int x, int y, int w, int h);	
 	/*
 	 *	Image info.
 	 */

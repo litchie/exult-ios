@@ -483,12 +483,8 @@ static void Init
 	config->value("config/video/gamma/blue", gb, "1.0");
 
 	config->value("config/video/scale", scaleval, sc);
-	if (scaler == "bilinear") sclr = Image_window::bilinear;
-	else if (scaler == "interlaced") sclr = Image_window::interlaced;
-	else if (scaler == "point") sclr = Image_window::point;
-	else if (scaler == "SuperEagle") sclr = Image_window::SuperEagle;
-	else if (scaler == "Super2xSaI") sclr = Image_window::Super2xSaI;
-	else config->set("config/video/scale_method","2xSaI",true);
+	sclr = Image_window::get_scaler_for_name(scaler);
+	if (sclr == Image_window::NoScaler) config->set("config/video/scale_method","2xSaI",true);
 
 	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));	
 	gwin = new Game_window(sw, sh, scaleval, sclr);
@@ -1325,18 +1321,8 @@ void set_resolution (int new_res, bool save)
 			config->set("config/video/scale",val,true);
 
 			// Scaler
-			if (scaler == Image_window::bilinear)
-				config->set("config/video/scale_method","bilinear",true);
-			else if (scaler == Image_window::interlaced)
-				config->set("config/video/scale_method","interlaced",true);
-			else if (scaler == Image_window::SuperEagle)
-				config->set("config/video/scale_method","SuperEagle",true);
-			else if (scaler == Image_window::point)
-				config->set("config/video/scale_method","point",true);
-			else if (scaler == Image_window::Super2xSaI)
-				config->set("config/video/scale_method","Super2xSaI",true);
-			else
-				config->set("config/video/scale_method","2xSaI",true);
+			if (scaler > Image_window::NoScaler && scaler < Image_window::NumScalers)
+				config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),true);
 		}
 	}
 }
