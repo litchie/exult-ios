@@ -1,3 +1,6 @@
+2002-07-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* orangedress.shp, bluedress.shp: new paperdoll art by sbx
+
 2002-07-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/greentop.shp: new paperdoll art. Thanks sbx!
 	* usecode/ucxt/Makefile.am: fixed --disable-tools

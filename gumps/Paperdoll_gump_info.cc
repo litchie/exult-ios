@@ -883,10 +883,10 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	
 	// Green Top
 	{     249,  0,      Actor::torso,   OT_Shield,   true, SF_GAME_FLX,      EXULT_BG_FLX_GREENTOP_SHP,     0,      2,   4,  6 },
-	// Top **NEEDS ART**
-	{     249,  1,      Actor::torso,   OT_Shield,   true, SF_PAPERDOL_VGA,     -1,     0,      2,   4,  6 },
-	// Top **NEEDS ART**
-	{     249,  2,      Actor::torso,   OT_Shield,   true, SF_PAPERDOL_VGA,     -1,     0,      2,   4,  6 },
+	// Orange Dress
+	{     249,  1,      Actor::torso,   OT_Shield,   true, SF_GAME_FLX,      EXULT_BG_FLX_ORANGEDRESS_SHP,  0,      2,   4,  6 },
+	// Blue Dress
+	{     249,  2,      Actor::torso,   OT_Shield,   true, SF_GAME_FLX,      EXULT_BG_FLX_BLUEDRESS_SHP,    0,      2,   4,  6 },
 	// Leather
 	{     569, -1,      Actor::torso,   OT_Shield,   true, SF_PAPERDOL_VGA,     57,     0,      2,   4,  6 },
 	// Scale
