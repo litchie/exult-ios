@@ -299,16 +299,6 @@ static void Init
 #endif //WIN32
 
 	string yn;
-					// Skip intro. scene? Always if not BG
-	config->value("config/gameplay/skip_intro", yn, "no");
-	if ((yn == "yes") || (Game::get_game_type() != BLACK_GATE))
-		gwin->get_usecode()->set_global_flag(
-			Usecode_machine::did_first_scene, 1);
-					// Have Trinsic password?
-	config->value("config/gameplay/have_trinsic_password", yn, "no");
-	if (yn == "yes")
-		gwin->get_usecode()->set_global_flag(
-			Usecode_machine::have_trinsic_password, 1);
 					// Skip splash screen?
 	config->value("config/gameplay/skip_splash", yn, "no");
 	if(yn == "no") {

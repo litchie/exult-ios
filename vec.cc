@@ -90,7 +90,7 @@ int Vector::find
 	)
 	{
 	for (int i = 0; i < cnt; i++)
-		if (get(i) == v)
+		if (values[i] == v)
 			return (i);	// Found.
 	return (-1);
 	}
