@@ -53,7 +53,8 @@ Actor::Actor
 	istream& nfile,			// 'npc.dat', generally.
 	int num,			// NPC #, or -1.
 	int has_usecode			// 1 if a 'type1' NPC.
-	) : Container_game_object(), npc_num(num), party_id(-1), shape_save(-1),
+	) : Container_game_object(), npc_num(num), party_id(-1), 
+	    shape_save(-1), oppressor(-1),
 	    attack_mode(nearest), schedule(0), schedule_loc(0,0,0),
 	    next_schedule(255), dormant(1), alignment(0),
 	    two_handed(0),
@@ -207,7 +208,7 @@ Actor::Actor
 
 	nfile.seekg (2, ios::cur);	// Primary Attacker
 	nfile.seekg (2, ios::cur);	// Secondary Attacker
-	nfile.seekg (2, ios::cur);	// Opressor Attacker
+	oppressor = Read2(nfile);	// Oppressor NPC id.
 
 	nfile.seekg (4, ios::cur);	//I-Vr ??? (refer to U7tech.txt)
 
@@ -441,9 +442,9 @@ void Actor::write
 	nfile.put(get_property(Actor::training));
 			// 0x40 unknown.
 
-	Write2(nfile, 0);	// Skip 3*2
+	Write2(nfile, 0);	// Skip 2*2
 	Write2(nfile, 0);
-	Write2(nfile, 0);
+	Write2(nfile, oppressor);	// Oppressor.
 
 	Write4(nfile, 0);	// Skip 2*2
 	

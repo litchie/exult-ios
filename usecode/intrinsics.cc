@@ -1078,10 +1078,7 @@ USECODE_INTRINSIC(get_oppressor)
 {
 	// get_oppressor(npc) Returns 0-n, NPC # (0=avatar).
 	Actor *npc = as_actor(get_item(parms[0]));
-//+++++IMPLEMENT	if (npc)
-//		return npc->get_oppressor();
-	cout << " IMPLEMENT this!!" << endl;
-	return Usecode_value(0);
+	return Usecode_value(npc ? npc->get_oppressor() : 0);
 }
 
 USECODE_INTRINSIC(set_oppressor)
@@ -1089,8 +1086,11 @@ USECODE_INTRINSIC(set_oppressor)
 	// set_oppressor(npc, opp)
 	Actor *npc = as_actor(get_item(parms[0]));
 	Actor *opp = as_actor(get_item(parms[1]));
-//+++++IMPLEMENT	if (npc && opp)
-//		npc->set_oppressor(opponent);
+	if (npc && opp)
+//		if (opp == gwin->get_main_actor())
+//			npc->set_opperssor(0);
+//		else
+		npc->set_oppressor(opp->get_npc_num());
 	cout << " IMPLEMENT this!!" << endl;
 	return no_ret;
 }
