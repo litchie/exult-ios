@@ -250,14 +250,15 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		frame_index = frames->find_unrotated(actor->get_framenum());
 					// Get next (updates frame_index).
 	int frame = frames->get_next(frame_index);
+	int cur_speed = speed;		// Step() might delete us!
 	if (from_offscreen)		// Teleport to 1st spot.
 		{
 		from_offscreen = false;
 		actor->move(tile.tx, tile.ty, tile.tz);
-		return speed;
+		return cur_speed;
 		}
 	else if (actor->step(tile, frame))	// Successful.
-		return speed;
+		return cur_speed;
 					// Blocked by a door?
 	if (actor->get_tile().distance(tile) == 1 &&
 	    !cheat.in_map_editor())	// And NOT map-editing?
