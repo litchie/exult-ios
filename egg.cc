@@ -172,6 +172,7 @@ inline void Egg_object::init_field
 	probability = 100;
 	data1 = data2 = 0;
 	monster_created = 0;
+	launcher = 0;
 	area = Rectangle(0, 0, 0, 0);
 	criteria = avatar_footpad;
 	distance = 0;
