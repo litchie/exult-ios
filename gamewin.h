@@ -28,7 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gameclk.h"
 
 class Font_face;
-class Script_compiler;
 class Slist;
 class Usecode_machine;
 class Actor;
@@ -67,7 +66,6 @@ private:
 	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	ifstream u7map;			// "u7map" file.
-	Script_compiler *script;	// Compiled NPC script.
 	Actor *main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
 	int num_npcs;			// Number of NPC's.
@@ -154,8 +152,6 @@ public:
 		{ mode = md; }
 	Game_mode get_mode()
 		{ return mode; }
-	void set_script(Script_compiler *s)
-		{ script = s; }
 					// Resize event occurred.
 	void resized(Window xwin, unsigned int neww, unsigned int newh);
 	void show()

@@ -104,7 +104,7 @@ cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 	read_schedules();		// Now get their schedules.
 	}
 /*
- *	Read NPC schedules. ++++++++++++Finish, and check offsets.
+ *	Read NPC schedules.
  */
 
 void Game_window::read_schedules
