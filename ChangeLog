@@ -1,3 +1,6 @@
+2001-01-11  Dancer Vesperman <dancer@users.sourceforge.net>
+	* No more chipmunk VOC's for SI. Another false sample rate
+
 2001-01-10  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Weather intrinsics implemented, also 'Ambrosia' rain.

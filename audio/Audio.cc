@@ -200,8 +200,16 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 #endif
 				sample_rate=1000000/(256-(old_data[4+data_offset]&0xff));
 
-				if(sample_rate==9615)
-					sample_rate=7380;	// Assume 9615 is a lie.
+				if(!truthful_)
+					{
+					// BG and SI use different sample
+					// rates from the ones the VOC headers
+					// say they do. Why?
+					if(sample_rate==9615)
+						sample_rate=7380;	// Assume 9615 is a lie.
+					if(sample_rate==11111)
+						sample_rate=11025;	// Assume 11111 is a lie.
+					}
 #if DEBUG
 				cout << "Sample rate ("<< sample_rate<<") = _real_rate"<<endl;
 				cout << "compression type " << (old_data[5+data_offset]&0xff) << endl;
@@ -326,7 +334,7 @@ static	size_t calc_sample_buffer(uint16 _samplerate)
 	
 Audio *Audio::self=0;
 
-Audio::Audio() : speech_enabled(true), music_enabled(true),
+Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
 			effects_enabled(true), SDL_open(false),mixer(0),midi(0)
 {
 	self=this;
