@@ -317,10 +317,10 @@ void Actor::follow
 			return;
 			}
 		}
-//	if (!leader->is_moving())	// Leader stopped?
+	if (!leader->is_moving())	// Leader stopped?
 		{			// A little stuck?
-//		if (goaldist >= 8 && get_party_id() >= 0)
-		if (pos.distance(leaderpos) >= 8 && get_party_id() >= 0)
+		if (goaldist >= 8 && get_party_id() >= 0)
+//		if (pos.distance(leaderpos) >= 8 && get_party_id() >= 0)
 			walk_path_to_tile(goal, speed);
 //		return;			// Otherwise, take a rest.
 		}
@@ -386,6 +386,8 @@ void Actor::set_schedule_type
 	)
 	{
 	stop();				// Stop moving.
+	if (schedule)
+		schedule->ending();	// Finish up old if necessary.
 	schedule_type = new_schedule_type;
 	delete schedule;		// Done with the old.
 	schedule = 0;
