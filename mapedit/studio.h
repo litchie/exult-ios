@@ -50,8 +50,9 @@ public:
 	void delete_shape_browser();
 	Object_browser  *create_palette_browser(const char *fname);
 	void set_static_path(const char *path);
-	void open_egg_window();
+	void open_egg_window(unsigned char *data = 0, int datalen = 0);
 	void close_egg_window();
+	int init_egg_window(unsigned char *data, int datalen);
 	void run();
 	void read_from_server();
 	void connect_to_server();
