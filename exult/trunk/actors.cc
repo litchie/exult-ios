@@ -2642,47 +2642,51 @@ void Actor::die
 			return;
 		}
 	properties[(int) health] = -50;
-	int frnum;			// Lookup body shape/frame.
-	if (!Body_lookup::find(get_shapenum(), shnum, frnum))
+	Shape_info& info = gwin->get_info(get_shapenum());
+	Monster_info *minfo = info.get_monster_info();
+					// See if we need a body.
+	if (!minfo || !minfo->has_no_body())
 		{
-		shnum = 400;
-		frnum = 3;
-		}
+		int frnum;			// Lookup body shape/frame.
+		if (!Body_lookup::find(get_shapenum(), shnum, frnum))
+			{
+			shnum = 400;
+			frnum = 3;
+			}
 					// Put body here.
-	Dead_body *body = new Dead_body(shnum, frnum, 0, 0, 0, 
+		Dead_body *body = new Dead_body(shnum, frnum, 0, 0, 0, 
 					npc_num > 0 ? npc_num : -1);
-	if (npc_num > 0)
-		{
-		body->set_quality(1);	// Flag for dead body of NPC.
-		gwin->set_body(npc_num, body);
-		}
+		if (npc_num > 0)
+			{
+			body->set_quality(1);	// Flag for dead body of NPC.
+			gwin->set_body(npc_num, body);
+			}
 					// Tmp. monster => tmp. body.
-	if (get_flag(Obj_flags::is_temporary))
-		body->set_flag(Obj_flags::is_temporary);
-	body->move(pos);
+		if (get_flag(Obj_flags::is_temporary))
+			body->set_flag(Obj_flags::is_temporary);
+		body->move(pos);
 					// Okay to take its contents.
-	body->set_flag_recursively(Obj_flags::okay_to_take);
-	Game_object *item;		// Move all the items.
-	Game_object_vector tooheavy;		// Some shouldn't be moved.
-	while ((item = objects.get_first()) != 0)
-		{
-		remove(item);
-		if (item->is_dragable())
-			body->add(item, 1);// Always succeed at adding.
-		else
-			tooheavy.push_back(item);
-		}
+		body->set_flag_recursively(Obj_flags::okay_to_take);
+		Game_object *item;	// Move all the items.
+		Game_object_vector tooheavy;	// Some shouldn't be moved.
+		while ((item = objects.get_first()) != 0)
+			{
+			remove(item);
+			if (item->is_dragable())
+				body->add(item, 1);// Always succeed at adding.
+			else
+				tooheavy.push_back(item);
+			}
 					// Put the heavy ones back.
-	for (Game_object_vector::const_iterator it = tooheavy.begin(); 
+		for (Game_object_vector::const_iterator it = tooheavy.begin(); 
 						it != tooheavy.end(); ++it)
-		add(*it, 1);
-
+			add(*it, 1);
+		gwin->add_dirty(body);
+		}
 	add_dirty(gwin);		// Want to repaint area.
 	delete_contents();      // remove what's left of inventory
 	remove_this(1);			// Remove (but don't delete this).
 	set_invalid();
-
-	gwin->add_dirty(body);
 	}
 
 /*
