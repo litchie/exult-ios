@@ -206,7 +206,7 @@
 	USECODE_INTRINSIC_PTR(advance_time),			// 0x8e
 	USECODE_INTRINSIC_PTR(in_usecode),			// 0x8f
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x90
-	USECODE_INTRINSIC_PTR(sprite_effect2),			// 0x91
+	USECODE_INTRINSIC_PTR(npc_sprite_effect),		// 0x91
 	USECODE_INTRINSIC_PTR(attack_avatar),			// 0x92
 
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x93 ++++Stop_attacking_avatar()??
