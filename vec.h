@@ -40,6 +40,11 @@ public:
 		{ delete values; }
 	int get_cnt()
 		{ return cnt; }
+	void truncate(int newcnt)	// Reduce count.
+		{
+		if (newcnt < cnt)
+			cnt = newcnt;
+		}
 	void *get(int i)		// Get i'th entry.
 		{ return i >= 0 && i < cnt ? values[i] : 0; }
 	int put(int i, void *v)		// Set i'th entry.  Returns 0 if error.

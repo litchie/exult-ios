@@ -1725,6 +1725,93 @@ void Container_game_object::write_contents
 	}
 
 /*
+ *	Here's an iterator that takes a rectangle of tiles, and sequentially
+ *	returns the interesection of that rectangle with each chunk that it
+ *	touches.
+ */
+class Chunk_intersect_iterator
+	{
+	Rectangle tiles;		// Original rect.
+					// Chunk #'s covered:
+	int firstcx, lastcx, lastcy;
+	int curcx, curcy;		// Next chunk to return.
+public:
+	Chunk_intersect_iterator(Rectangle t) : tiles(t),
+		  firstcx(t.x/tiles_per_chunk),
+		  lastcx((t.x + t.w - 1)/tiles_per_chunk),
+		  lastcy((t.y + t.h - 1)/tiles_per_chunk),
+		  curcy(t.y/tiles_per_chunk)
+		{
+		curcx = firstcx;
+		if (t.x <= 0 || t.y <= 0)
+			{		// Empty to begin with.
+			curcx = lastcx + 1;
+			curcy = lastcy + 1;
+			}
+		}
+					// Intersect is ranged within chunk.
+	int get_next(Rectangle& intersect, int& cx, int& cy)
+		{
+		if (curcx > lastcx)	// End of row?
+			if (curcy > lastcy)
+				return (0);
+			else
+				{
+				curcy++;
+				curcx = firstcx;
+				}
+		Rectangle cr(curcx*tiles_per_chunk, curcy*tiles_per_chunk,
+				tiles_per_chunk, tiles_per_chunk);
+					// Intersect given rect. with chunk.
+		intersect = cr.intersect(tiles);
+					// Make it 0-based rel. to chunk.
+		intersect.shift(-cr.x, -cr.y);
+		cx = curcx;
+		cy = curcy;
+		curcx++;
+		return (1);
+		}
+	};
+
+/*
+ *	Gather up all objects that appear to be on this barge.
+ */
+
+void Barge_object::gather
+	(
+	)
+	{
+	objects.truncate(perm_count);	// Start fresh.
+					// Get footprint in tiles.
+	Tile_coord pos = get_abs_tile_coord();
+	Rectangle foot(pos.tx, pos.ty, xtiles, ytiles);
+	if (horizontal)
+		{
+		foot.w = ytiles;	// Flipped horizontal.
+		foot.h = xtiles;
+		}
+	Game_window *gwin = Game_window::get_game_window();
+					// Go through interesected chunks.
+	Chunk_intersect_iterator next_chunk(foot);
+	Rectangle tiles;
+	int cx, cy;
+	while (next_chunk.get_next(tiles, cx, cy))
+		{
+		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+		for (Game_object *obj = chunk->get_first(); obj;
+						obj = chunk->get_next(obj))
+			{		// Look at each object.
+			Tile_coord t = obj->get_abs_tile_coord();
+					// Above barge, within 5-tiles up?
+			if (foot.has_point(t.tx, t.ty) &&
+			    t.tz >= pos.tz && t.tz < pos.tz + 5 &&
+			    obj->get_owner() != this)
+				objects.append(obj);
+			}
+		}
+	}
+
+/*
  *	Move to a new absolute location.
  */
 
@@ -1778,11 +1865,12 @@ int Barge_object::add
 	int dont_check
 	)
 	{
-	int curcnt = objects.get_cnt();
 	objects.append(obj);		// Add to list.
-	obj->set_owner(this);
-	if (perm_count == curcnt)	// Looks like a permanent member?
+	if (!complete)			// Permanent member?
+		{
 		perm_count++;
+		obj->set_owner(this);
+		}
 	return (0);			// We want it added to the chunk.
 	}
 
@@ -1847,53 +1935,16 @@ void Barge_object::write_ireg
 	}
 
 /*
- *	Here's an iterator that takes a rectangle of tiles, and sequentially
- *	returns the interesection of that rectangle with each chunk that it
- *	touches.
+ *	This is called after all elements have been read in and added.
  */
-class Chunk_intersect_iterator
+
+void Barge_object::elements_read
+	(
+	)
 	{
-	Rectangle tiles;		// Original rect.
-					// Chunk #'s covered:
-	int firstcx, lastcx, lastcy;
-	int curcx, curcy;		// Next chunk to return.
-public:
-	Chunk_intersect_iterator(Rectangle t) : tiles(t),
-		  firstcx(t.x/tiles_per_chunk),
-		  lastcx((t.x + t.w - 1)/tiles_per_chunk),
-		  lastcy((t.y + t.h - 1)/tiles_per_chunk),
-		  curcy(t.y/tiles_per_chunk)
-		{
-		curcx = firstcx;
-		if (t.x <= 0 || t.y <= 0)
-			{		// Empty to begin with.
-			curcx = lastcx + 1;
-			curcy = lastcy + 1;
-			}
-		}
-					// Intersect is ranged within chunk.
-	int get_next(Rectangle& intersect, int& cx, int& cy)
-		{
-		if (curcx > lastcx)	// End of row?
-			if (curcy > lastcy)
-				return (0);
-			else
-				{
-				curcy++;
-				curcx = firstcx;
-				}
-		Rectangle cr(curcx*tiles_per_chunk, curcy*tiles_per_chunk,
-				tiles_per_chunk, tiles_per_chunk);
-					// Intersect given rect. with chunk.
-		intersect = cr.intersect(tiles);
-					// Make it 0-based rel. to chunk.
-		intersect.shift(-cr.x, -cr.y);
-		cx = curcx;
-		cy = curcy;
-		curcx++;
-		return (1);
-		}
-	};
+	perm_count = objects.get_cnt();
+	complete = 1;
+	}
 
 /*
  *	Create the cached data storage for a chunk.
@@ -1974,7 +2025,6 @@ void Chunk_cache::update_object
 			clear_blocked_tile(endx, endy, lift, ztiles);
 		return;
 		}
-#if 1	/* ++++New way. */
 	Tile_coord endpt = obj->get_abs_tile_coord();
 	Rectangle footprint(endpt.tx - xtiles + 1, endpt.ty - ytiles + 1, 
 							xtiles, ytiles);
@@ -1986,31 +2036,6 @@ void Chunk_cache::update_object
 		gwin->get_objects(cx, cy)->set_blocked(tiles.x, tiles.y, 
 			tiles.x + tiles.w - 1, tiles.y + tiles.h - 1, lift,
 								ztiles, add);
-
-#else	/* ++++++++Old way */
-					// Get chunk coords.
-	int cx = chunk->get_cx(), cy = chunk->get_cy();
-	int startx = endx - xtiles + 1, starty = endy - ytiles + 1;
-					// First this chunk.
-	int this_startx = startx < 0 ? 0 : startx;
-	int this_starty = starty < 0 ? 0 : starty;
-	set_blocked(this_startx, this_starty, endx, endy, lift, ztiles, add);
-	if (startx < 0 && cx > 0)	// Overlaps chunk to the left?
-		{
-		gwin->get_objects(cx - 1, cy)->set_blocked(
-				startx + tiles_per_chunk,
-				this_starty, 15, endy, lift, ztiles, add);
-					// Chunk to left and above?
-		if (starty < 0 && cy > 0)
-			gwin->get_objects(cx - 1, cy - 1)->set_blocked(
-					startx + tiles_per_chunk,
-					starty + tiles_per_chunk, 
-					15, 15, lift, ztiles, add);
-		}
-	if (starty < 0 && cy > 0)	// Chunk directly above?
-		gwin->get_objects(cx, cy - 1)->set_blocked(this_startx,
-			starty + tiles_per_chunk, endx, 15, lift, ztiles, add);
-#endif
 	}
 
 /*
