@@ -56,6 +56,20 @@ Shape_group::Shape_group
 	}
 
 /*
+ *	Swap two entries.
+ */
+
+void Shape_group::swap
+	(
+	int i				// Lower one.
+	)
+	{
+	int x0 = (*this)[i];
+	(*this)[i] = (*this)[i + 1];
+	(*this)[i + 1] = x0;
+	}
+
+/*
  *	Add a new entry if not already there.
  */
 
@@ -438,6 +452,52 @@ C_EXPORT gboolean on_group_window_delete_event
 	ExultStudio::get_instance()->close_group_window(widget);
 	return TRUE;
 	}
+C_EXPORT void
+on_group_up_clicked			(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	Object_browser *chooser = (Object_browser *)gtk_object_get_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))), 
+							"browser");
+	Shape_group *grp = chooser->get_group();
+	int i = chooser->get_selected();
+	if (grp && i > 0)		// Moving item up.
+		{
+		grp->swap(i - 1);
+		ExultStudio::get_instance()->update_group_windows(grp);
+		}
+}
+C_EXPORT void
+on_group_down_clicked			(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	Object_browser *chooser = (Object_browser *)gtk_object_get_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))), 
+							"browser");
+	Shape_group *grp = chooser->get_group();
+	int i = chooser->get_selected();
+	if (grp && i < grp->size() - 1)	// Moving down.
+		{
+		grp->swap(i);
+		ExultStudio::get_instance()->update_group_windows(grp);
+		}
+}
+C_EXPORT void
+on_group_shape_remove_clicked		(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	Object_browser *chooser = (Object_browser *)gtk_object_get_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))), 
+							"browser");
+	Shape_group *grp = chooser->get_group();
+	int i = chooser->get_selected();
+	if (grp && i >= 0)
+		{
+		grp->del(i);
+		ExultStudio::get_instance()->update_group_windows(grp);
+		}
+}
+
 
 /*
  *	Open a 'group' window for the currently selected group.
@@ -456,6 +516,7 @@ void ExultStudio::open_group_window
 	Shape_group_file *groups = curfile->get_groups();
 	Shape_group *grp = groups->get(row);
 	GladeXML *xml = glade_xml_new(glade_path, "group_window");
+	glade_xml_signal_autoconnect(xml);
 	GtkWidget *grpwin = glade_xml_get_widget(xml, "group_window");
 	Object_browser *chooser = curfile->create_browser(vgafile, names,
 							palbuf, grp);
@@ -551,3 +612,4 @@ void ExultStudio::update_group_windows
 			}
 		}
 	}
+
