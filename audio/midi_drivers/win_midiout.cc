@@ -57,7 +57,7 @@ static int		sfx_com;
 
 #define W32MO_SFX_COM_READY		0
 #define W32MO_SFX_COM_PLAY		1
-#define W32MO_SFX_COM_PLAYING		2
+#define W32MO_THREAD_COM_STOP		2
 
 static bool		in_use = 0;
 
@@ -346,7 +346,7 @@ static void thread_play ()
 			}	
 		
 		 	s_event = s_event->next;
-	 		if ((!s_event) || (thread_com == W32MO_THREAD_COM_EXIT))
+	 		if ((!s_event) || (thread_com == W32MO_THREAD_COM_EXIT) || (sfx_com != W32MO_SFX_COM_READY))
 		 	{
 				XMIDI::DeleteEventList (s_evntlist);
 				s_evntlist = NULL;
@@ -369,7 +369,7 @@ static void thread_play ()
 
 			s_ppqn = sfx_data->ppqn;
 			sfx_data = NULL;
-			sfx_com = W32MO_SFX_COM_PLAYING;
+			sfx_com = W32MO_SFX_COM_READY;
 			
 			s_event = s_evntlist;
 			s_tempo = 0x07A120;
@@ -442,8 +442,7 @@ void Windows_MidiOut::start_sfx(midi_event *evntlist, int ppqn)
 	if (!is_available)
 		return;
 	
-	// One sfx at a time at the moment, ok
-	if (sfx_com == W32MO_SFX_COM_PLAYING) return;
+	while (sfx_com != W32MO_SFX_COM_READY) SDL_Delay (1);
 
 	sdata.list = evntlist;
 	sdata.ppqn = ppqn;
