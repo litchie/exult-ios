@@ -26,8 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <string.h>
 #include "actors.h"
-#include "convers.h"
 #include "imagewin.h"
+#include "usecode.h"
 
 /*
  *	Create character.
@@ -71,17 +71,19 @@ void Actor::set_default_frames
 	}
 
 /*
- *	Get usecode function to run.
+ *	Run usecode when double-clicked.
  */
 
-int Actor::get_usecode
+void Actor::activate
 	(
+	Usecode_machine *umachine
 	)
 	{
-	if (usecode != -1)
-		return usecode;
+	if (usecode == -1)
+		Game_object::activate(umachine);
 	else
-		return Game_object::get_usecode();
+		umachine->call_usecode(usecode, this,
+					Usecode_machine::double_click);
 	}
 
 /*

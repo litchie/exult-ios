@@ -4,6 +4,9 @@
  **	Written: 8/12/99 - JSF
  **/
 
+#ifndef INCL_USECODE
+#define INCL_USECODE	1
+
 /*
 Copyright (C) 1999  Jeffrey S. Freedman
 
@@ -227,6 +230,7 @@ class Usecode_machine
 	 */
 					// Call instrinsic function.
 	Usecode_value call_intrinsic(int intrinsic, int num_parms);
+	void click_to_continue();	// Wait for user to click.
 	int get_user_choice();		// Get user's choice.
 					// Run the function.
 	void run(Usecode_function *fun, int event);
@@ -236,12 +240,17 @@ class Usecode_machine
 public:
 	Usecode_machine(istream& file, Game_window *gw);
 	~Usecode_machine();
+					// Possible events:
+	enum Usecode_events {
+		double_click = 1,
+		proximity = 3
+		};
 					// Call desired function.
-	int call_usecode(int id, Game_object *obj)
+	int call_usecode(int id, Game_object *obj, Usecode_events event)
 		{
 		caller_item = obj;
 		Usecode_value parm(0);	// They all seem to take 1 parm.
-		int ret = call_usecode_function(id, 1, &parm);
+		int ret = call_usecode_function(id, event, &parm);
 		caller_item = 0;
 		return ret;
 		}
@@ -249,3 +258,4 @@ public:
 	void chose_response(int response);
 	};
 
+#endif	/* INCL_USECODE */

@@ -60,7 +60,8 @@ public:
 		}
 	Actor *get_next()
 		{ return next; }
-	virtual int get_usecode();	// Get usecode function to run.
+					// Run usecode function.
+	virtual void activate(Usecode_machine *umachine);
 	virtual char *get_name();
 	virtual void set_property(int prop, int val)
 		{
