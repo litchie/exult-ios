@@ -1,3 +1,7 @@
+2002-03-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* usecode/useval.*: fixed stupid output bug
+	* usecode/useval.*: serialize arrays & pointers
+
 2002-03-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/vgafile.{cc,h}:  Vga_file class can now read single-shape
