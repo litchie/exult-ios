@@ -40,7 +40,7 @@
 #define ADLIBMUS	"static/adlibmus.dat"
 #define	XMIDI_MT	"static/xmidi.mt"
 #define U7SPEECH	"static/u7speech.spc"
-#define XFORM		"static/xform.tbl"
+#define XFORMTBL       	"static/xform.tbl"
 
 #else
 
@@ -69,7 +69,7 @@
 #define ADLIBMUS	"static\\adlibmus.dat"
 #define	XMIDI_MT	"static\\xmidi.mt"
 #define U7SPEECH	"static\\u7speech.spc"
-#define XFORM		"static\\xform.tbl"
+#define XFORMTBL       	"static\\xform.tbl"
 
 #endif
 
