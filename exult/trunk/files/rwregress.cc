@@ -4,8 +4,9 @@
 #endif
 
 #include <iostream>
-#include "utils.h"
 #include <strstream>
+#include <cassert>
+#include "utils.h"
 
 using std::cout;
 using std::endl;
