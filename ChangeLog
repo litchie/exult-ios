@@ -1,4 +1,7 @@
 2001-11-21 Ryan Nunn <triforce@merlin.net.au>
+	* README.win32: Typo
+
+2001-11-21 Ryan Nunn <triforce@merlin.net.au>
 	* Makefile.am: Added msvcstuff files to EXTRA_DIST
 	* README.win32: Added MSVC build instructions.
 	* msvcstuff/Zip.dsp: ZIP File support project for MSVC.
