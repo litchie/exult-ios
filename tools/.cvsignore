@@ -12,3 +12,7 @@ wud
 ucdump
 mklink
 rip
+ucc
+ucclex.c
+uccparse.c
+*.tab.c
