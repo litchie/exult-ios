@@ -543,8 +543,6 @@ public:
 	inline char *get_save_name(int i) const	// Get ->saved-game name.
 		{ return save_names[i]; }
 					// Paint "flat" scenery in a chunk.
-	void paint_tile(Chunk_object_list *olist, int tilex, int tiley,
-							int xoff, int yoff);
 	void paint_chunk_flats(int cx, int cy);
 	void paint_dungeon_chunk_flats(int cx, int cy);
 					// Paint objects in given chunk at
