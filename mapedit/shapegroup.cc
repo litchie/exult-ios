@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "exceptions.h"
 #include "studio.h"
-#include "shapelst.h"
+#include "objbrowse.h"
 #include "shapefile.h"
 
 using std::vector;
@@ -447,16 +447,8 @@ void ExultStudio::open_group_window
 	Shape_group *grp = groups->get(row);
 	GladeXML *xml = glade_xml_new(glade_path, "group_window");
 	GtkWidget *grpwin = glade_xml_get_widget(xml, "group_window");
-	Shape_chooser *chooser = new Shape_chooser(curfile->get_ifile(), 
-							palbuf, 400, 64, grp);
-//	if (strcasecmp(fname, "fonts.vga") == 0)
-//		chooser->set_framenum0('A');
-	if (curfile == vgafile)		// Main 'shapes.vga' file?
-		{
-		chooser->set_shape_names(names);
-		chooser->set_shapes_file(
-			(Shapes_vga_file *) vgafile->get_ifile());
-		}
+	Object_browser *chooser = curfile->create_browser(vgafile, names,
+							palbuf, grp);
 					// Set xml as data on window.
 	gtk_object_set_data(GTK_OBJECT(grpwin), "xml", xml);
 	gtk_object_set_data(GTK_OBJECT(grpwin), "browser", chooser);
@@ -544,7 +536,7 @@ void ExultStudio::update_group_windows
 			gtk_object_get_data(GTK_OBJECT(*it), "browser");
 		if (chooser->get_group() == grp)
 			{		// A match?
-			dynamic_cast<Shape_draw*>(chooser)->render();
+			chooser->render();
 			gboolean ret;
 			gtk_signal_emit_by_name(
 				GTK_OBJECT(chooser->get_widget()), 

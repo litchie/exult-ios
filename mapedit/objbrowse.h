@@ -38,6 +38,7 @@ public:
 	GtkWidget *get_widget();
 	Shape_group *get_group()
 		{ return group; }
+	virtual void render() = 0;
 	virtual bool server_response(int id, unsigned char *data, int datalen);
 	virtual void end_terrain_editing();
 };

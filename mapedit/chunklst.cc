@@ -117,7 +117,7 @@ void Chunk_chooser::render
 	info_cnt = 0;			// Count them.
 					// Clear window first.
 	iwin->fill8(0);			// ++++Which color?
-	int chunknum = chunknum0;
+	int chunknum = index0;
 					// 16x16 tiles, each 8x8 pixels.
 	const int chunkw = 128, chunkh = 128;
 	int y = border;
@@ -523,10 +523,10 @@ void Chunk_chooser::scroll
 	int newindex			// Abs. index of leftmost to show.
 	)
 	{
-	if (chunknum0 < newindex)	// Going forwards?
-		chunknum0 = newindex < num_chunks ? newindex : num_chunks;
-	else if (chunknum0 > newindex)	// Backwards?
-		chunknum0 = newindex >= 0 ? newindex : 0;
+	if (index0 < newindex)	// Going forwards?
+		index0 = newindex < num_chunks ? newindex : num_chunks;
+	else if (index0 > newindex)	// Backwards?
+		index0 = newindex >= 0 ? newindex : 0;
 	render();
 	show();
 	}
@@ -748,9 +748,10 @@ Chunk_chooser::Chunk_chooser
 	Vga_file *i,			// Where they're kept.
 	std::istream& cfile,		// Chunks file (512bytes/entry).
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
-	int w, int h			// Dimensions.
-	) : Shape_draw(i, palbuf, gtk_drawing_area_new()),
-		chunkfile(cfile), chunknum0(0),
+	int w, int h,			// Dimensions.
+	Shape_group *g			// Filter, or null.
+	) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
+		chunkfile(cfile), index0(0),
 		info(0), info_cnt(0), selected(-1), sel_changed(0),
 		locate_cx(-1), locate_cy(-1)
 	{

@@ -45,8 +45,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <fcntl.h>
 
-#include "shapelst.h"
-#include "chunklst.h"
+#include "objbrowse.h"
 #include "paledit.h"
 #include "shapevga.h"
 #include "ibuf8.h"
@@ -57,6 +56,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "u7drag.h"
 #include "shapegroup.h"
 #include "shapefile.h"
+#include "shapedraw.h"
 
 using std::cerr;
 using std::cout;
@@ -84,11 +84,11 @@ C_EXPORT void on_filelist_tree_select_row       (GtkCTree        *ctree,
 	switch(type) {
 	case ShapeArchive:
 		studio->set_browser("Shape Browser", 
-					studio->create_shape_browser(text));
+					studio->create_browser(text));
 		break;
 	case ChunkArchive:
 		studio->set_browser("Chunk Browser", 
-					studio->create_chunk_browser(text));
+					studio->create_browser(text));
 		break;
 	case PaletteFile:
 		studio->set_browser("Palette Browser", 
@@ -208,7 +208,7 @@ C_EXPORT void on_main_window_destroy_event
 
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
 	names(0), glade_path(0),
-	vgafile(0), facefile(0), chunkfile(0), eggwin(0), 
+	vgafile(0), facefile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
 	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), 
 	egg_ctx(0),
@@ -281,7 +281,6 @@ ExultStudio::~ExultStudio()
 		names = 0;
 	}
 	g_free(glade_path);
-	delete_chunk_browser();
 	delete files;
 	files = 0;
 	delete [] palbuf;
@@ -304,7 +303,6 @@ ExultStudio::~ExultStudio()
 	if (equipwin)
 		gtk_widget_destroy(equipwin);
 	equipwin = 0;
-	delete chunkfile;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 #ifndef WIN32
@@ -335,55 +333,16 @@ void ExultStudio::set_browser(const char *name, Object_browser *obj)
 	gtk_box_pack_start(GTK_BOX(browser_box), browser->get_widget(), TRUE, TRUE, 0);
 }
 
-Object_browser *ExultStudio::create_shape_browser(const char *fname)
+Object_browser *ExultStudio::create_browser(const char *fname)
 {
 	char *fullname = g_strdup_printf("%s%s", static_path, fname);
 	curfile = files->create(fname, fullname);
 	g_free(fullname);
 
-	Shape_chooser *chooser = new Shape_chooser(curfile->get_ifile(), 
-							palbuf, 400, 64);
-					// Fonts?  Show 'A' as the default.
-	if (strcasecmp(fname, "fonts.vga") == 0)
-		chooser->set_framenum0('A');
-	if (curfile == vgafile)		// Main 'shapes.vga' file?
-		{
-		chooser->set_shape_names(names);
-		chooser->set_shapes_file(
-			(Shapes_vga_file *) vgafile->get_ifile());
-		}	
+	Object_browser *chooser = curfile->create_browser(vgafile, names,
+								palbuf);
 	setup_groups(fname);		// Set up 'groups' page.
 	return chooser;
-}
-
-/*
- *	Create chunk browser (for 'u7chunks').
- */
-
-Object_browser *ExultStudio::create_chunk_browser(const char *fname)
-	{
-	delete_chunk_browser();
-					// Get file for this path.
-	char *fullname = g_strdup_printf("%s%s", static_path, fname);	
-	chunkfile = new std::ifstream(fullname, std::ios::in|std::ios::binary);
-	g_free(fullname);
-	if (!chunkfile->good()) {
-		cerr << "Error opening file '" << fname << "'.\n";
-		abort();
-	}
-//+++++ Add back when 'chunks' is put in the 'files' set.
-//+++++	setup_groups(fname);		// Set up 'groups' page.
-	return new Chunk_chooser(vgafile->get_ifile(), *chunkfile, palbuf, 
-								400, 64);
-}
-
-void ExultStudio::delete_chunk_browser()
-{
-	if(chunkfile) {
-		delete chunkfile;
-		chunkfile = 0;
-		set_visible("groups_frame", false);
-	}
 }
 
 Object_browser *ExultStudio::create_palette_browser(const char *fname)
