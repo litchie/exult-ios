@@ -40,6 +40,8 @@ private:
 	GtkWidget		*eggwin;// Egg window.
 	Shape_draw		*egg_monster_draw;
 	int			egg_ctx;
+	GtkWidget		*npcwin;
+	int			npc_ctx;
 	int			server_socket;
 	gint			server_input_tag;
 	unsigned char 		*palbuf;
@@ -64,6 +66,8 @@ public:
 	int save_egg_window();
 	void show_egg_monster(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_egg_monster(int shape, int frame);
+	void open_npc_window(unsigned char *data = 0, int datalen = 0);
+	void close_npc_window();
 	void run();
 	void read_from_server();
 	void connect_to_server();
