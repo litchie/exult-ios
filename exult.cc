@@ -219,6 +219,8 @@ static void Handle_event
 	SDL_Event& event
 	)
 	{
+	static int dragging = 0;	// Object or gump being moved.
+	static int dragged = 0;		// Flag for when obj. moved.
 					// For detecting double-clicks.
 	static unsigned long last_b1_click = 0;
 	unsigned int mask;
@@ -228,11 +230,21 @@ static void Handle_event
 		{
 	case SDL_MOUSEBUTTONDOWN:
 		gwin->end_intro();
-		if (gwin->get_mode() != Game_window::normal)
+		if (gwin->get_mode() != Game_window::normal &&
+		    gwin->get_mode() != Game_window::gump)
 			break;
+		if (event.button.button == 1)
+			{
+cout << "Mouse down at (" << event.button.x << ", " <<
+	event.button.y << ")\n";
+			dragging = gwin->start_dragging(event.button.x,
+							event.button.y);
+			dragged = 0;
+			}
 					// Move sprite toward mouse
 					//  when right button pressed.
-		if (event.button.button == 3)
+		if (event.button.button == 3 && 
+		    gwin->get_mode() == Game_window::normal)
 			gwin->start_actor(event.button.x, event.button.y);
 		break;
 	case SDL_MOUSEBUTTONUP:
@@ -253,14 +265,23 @@ static void Handle_event
 				break;
 				}
 			last_b1_click = curtime;
+			gwin->drop_dragged(event.button.x, event.button.y);
+			if (!dragged)
 					// Identify item(s) clicked on.
-			gwin->show_items(event.button.x, event.button.y);
+				gwin->show_items(event.button.x, 
+							event.button.y);
+			dragging = 0;
 			}
 		break;
 	case SDL_MOUSEMOTION:		// Moving with right button down.
-		if (gwin->get_mode() != Game_window::normal)
+		if (gwin->get_mode() != Game_window::normal &&
+		    gwin->get_mode() != Game_window::gump)
 			break;
-//		if (event.button.button == 3 && event.motion.state != 0)
+		if (event.motion.state & SDL_BUTTON(1))
+			{
+			gwin->drag(event.motion.x, event.motion.y);
+			dragged = 1;
+			}
 		if (event.motion.state & SDL_BUTTON(3))
 			gwin->start_actor(event.motion.x, event.motion.y);
 		break;
@@ -319,8 +340,11 @@ static void Handle_keystroke
 		Breakpoint();
 		break;
 	case SDLK_q:
-	case SDLK_ESCAPE:			// ESC key.
-		quitting_time = 1;
+	case SDLK_ESCAPE:		// ESC key.
+		if (gwin->get_mode() == Game_window::gump)
+			gwin->end_gump_mode();
+		else			// For now, quit.
+			quitting_time = 1;
 		break;
 	case SDLK_l:			// Decrement skip_lift.
 		if (gwin->skip_lift == 16)
@@ -350,8 +374,8 @@ static void Handle_keystroke
 			gump_cnt = 0;
 		cout << "Painting gump " << gump_cnt << '\n';
 		gwin->paint();
-		gwin->paint_gump(gwin->get_win(),
-			200, 200, gump_cnt, gump_frame);
+		gwin->paint_gump(gwin->get_width()/2, gwin->get_height()/2, 
+						gump_cnt, gump_frame);
 #endif
 		break;
 	case 'S':		// Show prev. shape.
@@ -428,6 +452,7 @@ int Get_click
 	return (0);			// Shouldn't get here.
 	}
 
+#if 0	/* +++++Going away. */
 static int Handle_gump_event(SDL_Event&);
 
 /*
@@ -476,6 +501,8 @@ static int Handle_gump_event
 	case SDL_MOUSEBUTTONDOWN:
 		if (event.button.button == 1)
 			{
+cout << "Mouse down at (" << event.button.x << ", " <<
+	event.button.y << ")\n";
 			dragging = gwin->start_dragging(event.button.x,
 							event.button.y);
 			dragged = 0;
@@ -512,6 +539,7 @@ static int Handle_gump_event
 		}
 	return (1);
 	}
+#endif
 
 #if 0
 // The old win32 code.
