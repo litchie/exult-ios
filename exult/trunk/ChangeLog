@@ -1,3 +1,7 @@
+2002-06-24  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actions.h,usecode/intrinsics.cc: as_usecode_path().
+
 2002-06-23  Ryan Nunn  <triforce@merlin.net.au>
 	* msvcstuff/find_nearby.h : Removed because it's now shared for all
 	* Makefile.am : Removed msvcstuff/find_nearby.h
