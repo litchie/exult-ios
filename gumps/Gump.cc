@@ -196,6 +196,12 @@ void Gump::initialize
 				object_area = Rectangle(0,0,0,0); //++++++ ???
 				checkx = 8;
 				checky = 162;
+				break;
+			case 48: // Video Options
+				object_area = Rectangle(0,0,0,0); //++++++ ???
+				checkx = 8;
+				checky = 162;
+				break;
 		}
 	} // else if (shapefile == GSF_PAPERDOL_VGA)
 

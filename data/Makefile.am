@@ -46,7 +46,13 @@ EXULT_FLX_OBJECTS = \
 	aud_enabled.shp 	\
 	aud_conversion.shp	\
 	aud_cancel.shp		\
-	aud_ok.shp
+	aud_ok.shp		\
+	videooptions.shp	\
+	vid_left.shp		\
+	vid_right.shp		\
+	vid_resolution.shp	\
+	vid_scaler.shp		\
+	vid_scaling.shp
 
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in			\
