@@ -492,8 +492,8 @@ void get_game_paths(const string &gametitle)
 		if (U7exists(home_game.c_str()))
 			{		// Use $HOME/.exult/gametitle/gamedat.
 			gamedat_dir = home_game + "/gamedat";
-//			config->set(config_path.c_str(), gamedat_dir.c_str(),
-//								true);
+			config->set(config_path.c_str(), gamedat_dir.c_str(),
+								true);
 			}
 		else
 			home_game = "";	// Failed.
@@ -515,7 +515,7 @@ void get_game_paths(const string &gametitle)
 		{			// Store saves under $HOME/....
 		config->value(config_path.c_str(), savegame_dir,
 						home_game.c_str());
-//		config->set(config_path.c_str(), savegame_dir.c_str(), true);
+		config->set(config_path.c_str(), savegame_dir.c_str(), true);
 		}
 	add_system_path("<" + system_path_tag + "_SAVEGAME>", savegame_dir);
 #if 0

@@ -339,7 +339,6 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	config->read_config_file(USER_CONFIGURATION_FILE);
 					// Get options.
 	const char *xmldir = 0;		// Default:  Look here for .glade.
-	const char *gamedir = 0;	// User has to choose 'static'.
 	const char *game = 0;		// Game to look up in .exult.cfg.
 	static char *optstring = "g:x:d:";
 	extern int optind, opterr, optopt;
@@ -355,9 +354,6 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 		case 'x':		// XML (.glade) directory.
 			xmldir = optarg;
 			break;
-		case 'd':		// Game directory.
-			gamedir = optarg;
-			break;
 			}
 
 	string dirstr, datastr;
@@ -369,7 +365,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	string defgame;			// Default game name.
 	config->value("config/estudio/default_game", defgame, "blackgate");
 	default_game = g_strdup(defgame.c_str());
-	if (!game && !gamedir)
+	if (!game)
 		game = default_game;
 	config->set("config/estudio/default_game", defgame, true);
 	char path[256];			// Set up paths.
@@ -409,11 +405,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 				"' path not found in config. file" << endl;
 			exit(1);
 			}
-		gamedir = dirstr.c_str();
-		}
-	if (gamedir)			// Game directory given?
-		{
-		set_game_path(gamedir);
+		set_game_path(dirstr.c_str());
 		}
 	string iedit;			// Get image-editor command.
 	config->value("config/estudio/image_editor", iedit, "gimp-remote -n");
@@ -642,7 +634,7 @@ void ExultStudio::create_new_game
 		EStudio::Alert("Can't find base game name in '%s'", dir);
 		return;
 		}
-	string game(ptr, eptr - ptr);
+	string gamestr(ptr, eptr - ptr);
 	string dirstr(dir);
 	string static_path = dirstr + "/static";
 	if (U7exists(static_path))
@@ -662,7 +654,7 @@ void ExultStudio::create_new_game
 	U7mkdir(patch_path.c_str(), 0755);
 					// Set .exult.cfg.
 	string d("config/disk/game/");
-	string gameconfig = d + game;
+	string gameconfig = d + gamestr;
 	d = gameconfig + "/path";
 	config->set(d.c_str(), dirstr, false);
 	d = gameconfig + "/patch";
@@ -849,7 +841,7 @@ void ExultStudio::set_game_path(const char *gamepath)
 	Shape_chooser::clear_editing_files();
 					// Set top-level path.
 	add_system_path("<GAME>", gamepath);
-	if(static_path)
+	if (static_path)
 		g_free(static_path);
 					// Set up path to static.
 	static_path = g_strdup_printf("%s/static/", gamepath);
@@ -1984,20 +1976,32 @@ bool ExultStudio::connect_to_server
 	server_socket = server_input_tag = -1;
 	struct sockaddr_un addr;
 	addr.sun_family = AF_UNIX;
-					// Set up path to gamedat.
-	strcpy(addr.sun_path, static_path);
-	char *pstatic = strrchr(addr.sun_path, '/');
-	if (pstatic && !pstatic[1])	// End of path?
-		{
-		pstatic[0] = 0;
-		pstatic = strrchr(addr.sun_path, '/');
+
+	char *home = getenv("HOME");
+	addr.sun_path[0] = 0;
+	if (home)			// Use $HOME/.exult/exultserver
+		{			//   if possible.
+		strcpy(addr.sun_path, home);
+		strcat(addr.sun_path, "/.exult/exultserver");
+		if (!U7exists(addr.sun_path))
+			addr.sun_path[0] = 0;
 		}
-	if (!pstatic)
+	if (!addr.sun_path[0])		// Default to game/gamedat.
 		{
-		cout << "Can't find gamedat for socket" << endl;
-		return false;
+	        strcpy(addr.sun_path, static_path);
+        	char *pstatic = strrchr(addr.sun_path, '/');
+	        if (pstatic && !pstatic[1])     // End of path?
+        	        {
+                	pstatic[0] = 0;
+	                pstatic = strrchr(addr.sun_path, '/');
+        	        }
+	        if (!pstatic)
+        	        {
+                	cout << "Can't find gamedat for socket" << endl;
+	                return false;
+        	        }
+	        strcpy(pstatic + 1, "gamedat/exultserver");
 		}
-	strcpy(pstatic + 1, "gamedat/exultserver");
 	server_socket = socket(PF_LOCAL, SOCK_STREAM, 0);
 	if (server_socket < 0)
 		{
