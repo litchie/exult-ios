@@ -19,6 +19,7 @@ void Time_queue::add
 	long ud				// User data.
 	)
 	{
+	obj->queue_cnt++;		// It's going in, no matter what.
 	Queue_entry	newent;
 	newent.set(t,obj,ud);
 	if(!data.size())
@@ -63,6 +64,7 @@ int Time_queue::remove
 		{
 		if(it->handler==obj)
 			{
+			obj->queue_cnt--;
 			data.erase(it);
 			return 1;
 			}
@@ -111,6 +113,7 @@ void Time_queue::activate0
 		Time_sensitive *obj = ent.handler;
 		long udata = ent.udata;
 		data.erase(data.begin());	// Remove from chain.
+		obj->queue_cnt--;
 		obj->handle_event(curtime, udata);
 		}
 	while (data.size() && !(curtime < data.front().time));

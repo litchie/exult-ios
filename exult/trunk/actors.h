@@ -114,6 +114,9 @@ public:
 					// Walk to desired point.
 	void walk_to_point(unsigned long destx, unsigned long desty, 
 								int speed);
+#ifdef NEWPATH
+	void stop();
+#endif
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
 					// Render.

@@ -20,7 +20,13 @@
  */
 class Time_sensitive
 	{
+	int queue_cnt;			// # of entries for this in queue.
 public:
+	friend class Time_queue;
+	Time_sensitive() : queue_cnt(0)
+		{  }
+	int in_queue()
+		{ return queue_cnt > 0; }
 	virtual void handle_event(unsigned long curtime, long udata) = 0;
 	};
 
