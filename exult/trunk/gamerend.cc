@@ -143,8 +143,9 @@ void Game_window::paint_terrain_only
 			int xoff = Figure_screen_offset(cx, scrolltx);
 			Map_chunk *chunk = get_chunk(cx, cy);
 			chunk->get_terrain()->render_all(cx, cy);
-			Paint_chunk_outline(this, hit_pixel,
-				map->get_terrain_num(cx, cy), xoff, yoff);
+			if (cheat.in_map_editor())
+				Paint_chunk_outline(this, hit_pixel,
+				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
 					// Paint tile grid if desired.
