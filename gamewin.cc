@@ -1063,7 +1063,7 @@ bool Game_window::init_gamedat(bool create)
 				;
 			*ptr = 0;
 			cout << "Gamedat identity " << gamedat_identity << endl;
-			char *static_identity = Game::get_game_identity(INITGAME);
+			char *static_identity = get_game_identity(INITGAME);
 			if(strcmp(static_identity, gamedat_identity))
 				{
 					delete [] static_identity;
