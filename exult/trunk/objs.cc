@@ -558,9 +558,8 @@ void Game_object::activate
 					// !!!Special case:  books in BG.
 	if (usefun == 0x282 && get_quality() >= 100)
 		usefun = 0x638;
-	if (umachine->call_usecode(usefun, this,
-			(Usecode_machine::Usecode_events) event) != -1)
-		return;			// It was found.
+	umachine->call_usecode(usefun, this,
+			(Usecode_machine::Usecode_events) event);
 #if 0	/* ++++I don't think this does any good. */
 	if (Game::get_game_type() != BLACK_GATE)
 		return;
@@ -1587,8 +1586,8 @@ int Container_game_object::remove_quantity
 		{
 		next = obj->get_next();	// Might be deleting obj.
 		if (obj->get_shapenum() == shapenum &&
+		    (qual == -359 || obj->get_quality() == qual) ||
 		    (framenum == -359 || obj->get_framenum() == framenum))
-					// ++++++Quality???
 			delta = -obj->modify_quantity(-delta);
 					// Still there?
 		if (next->get_prev() == obj)
