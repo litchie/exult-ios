@@ -33,7 +33,8 @@ Group: Amusements/Games
 
 %description tools
 Exult Tools: a set of utilities for playing with Exult/Ultima VII data files.
-Included in the tools are: expack
+Included in the tools are: expack (archiver), ucxt (decompiler), ucc (compiler),
+splitshp (frame splitter), shp2pcx (shape converter)
 
 %package gimp-plugin
 Summary: A GIMP plugin for loading/saving SHP files
@@ -121,6 +122,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %doc tools/expack.txt
 %{bindir}/expack
+%{bindir}/ucxt
+%{bindir}/ucc
+%{bindir}/splitshp
+%{bindir}/shp2pcx
+%{datadir}/exult/opcodes.txt
 
 %files gimp-plugin
 %defattr(-, root, root)

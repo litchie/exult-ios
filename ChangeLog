@@ -1,3 +1,13 @@
+2001-12-05  Tristan Tarrant <nadir@users.sourceforge.net>
+	* configure.in: added ucxt directories
+	* exult.spec.in: added ucc, ucxt, splitshp and shp2pcx to tools 
+	subpackage
+	* tools/Makefile.am: install splitshp and shp2pcx. Removed references 
+	to ucc
+	* tools/ucclex.l, tools/uccparse.y: removed
+	* usecode/ucxt/*: many changes to automake/autoconf logic. Made ucxt
+	installable and make it look for opcodes.txt in EXULT_DATADIR as well
+
 2001-12-05  Ryan Nunn <triforce@merlin.net.au>
 	* gamewin.cc, objs/egg.cc, objs/egg.h : Polishing Mirrors
 	* Actors.cc : NPC Actors can now kind of activate eggs (only when 
@@ -5436,6 +5446,3 @@
 	* autogen.sh: script which generates automake/autoconf stuff.
 	* configure.in: should not use acinclude.m4 as AC_INIT. Use exult.cc 
 	instead.
-	
-	
-
