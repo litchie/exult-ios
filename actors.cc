@@ -104,6 +104,26 @@ void Actor::ready_best_weapon
 		}
 	}
 
+/*
+ *	Move an object, and possibly change its shape too.
+ */
+inline void Actor::movef
+	(
+	Chunk_object_list *old_chunk, 
+	Chunk_object_list *new_chunk, 
+	int new_sx, int new_sy, int new_frame, 
+	int new_lift
+	)
+	{
+	if (old_chunk)			// Remove from current chunk.
+		old_chunk->remove(this);
+	set_shape_pos(new_sx, new_sy);
+	if (new_frame >= 0)
+		set_frame(new_frame);
+	if (new_lift >= 0)
+		set_lift(new_lift);
+	new_chunk->add(this);
+	}
 
 /*
  *	Create character.
@@ -1292,7 +1312,7 @@ int Main_actor::step
 	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
 	Tile_coord oldtile = get_abs_tile_coord();
 					// Move it.
-	Game_object::move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
+	Actor::movef(olist, nlist, tx, ty, frame, new_lift);
 	gwin->add_dirty(this);		// Set to update new.
 					// Near an egg?
 	nlist->activate_eggs(this, t.tx, t.ty, oldtile.tx, oldtile.ty);
@@ -1448,6 +1468,25 @@ void Npc_actor::set_schedules
 	}
 
 /*
+ *	Move and change frame.
+ */
+
+inline void Npc_actor::movef
+	(
+	Chunk_object_list *old_chunk,
+	Chunk_object_list *new_chunk, 
+	int new_sx, int new_sy,
+	int new_frame, 
+	int new_lift
+	)
+	{
+	Actor::movef(old_chunk, new_chunk,
+				new_sx, new_sy, new_frame, new_lift);
+	if (old_chunk != new_chunk)	// In new chunk?
+		switched_chunks(old_chunk, new_chunk);
+	}
+
+/*
  *	Update schedule at a 3-hour time change.
  */
 
@@ -1572,7 +1611,7 @@ int Npc_actor::step
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
 					// Move it.
-	move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
+	movef(olist, nlist, tx, ty, frame, new_lift);
 					// Offscreen, but not in party?
 	if (!gwin->add_dirty(this) && Npc_actor::get_party_id() < 0 &&
 	    get_schedule_type() != Schedule::talk)
@@ -1844,7 +1883,7 @@ int Monster_actor::step
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
 					// Move it.
-	move(olist, cx, cy, nlist, tx, ty, frame, -1);
+	movef(olist, nlist, tx, ty, frame, -1);
 	if (!gwin->add_dirty(this))
 		{			// No longer on screen.
 		stop();
@@ -1949,7 +1988,7 @@ Monster_actor *Monster_info::create
 					// Place in world.
 	Game_window *gwin = Game_window::get_game_window();
 	Chunk_object_list *olist = gwin->get_objects(chunkx, chunky);
-	monster->move(0, chunkx, chunky, olist, tilex, tiley, 0, lift);
+	monster->movef(0, olist, tilex, tiley, 0, lift);
 					// ++++++For now:
 	monster->set_schedule_type(Schedule::loiter);
 					// Get equipment.

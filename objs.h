@@ -171,11 +171,13 @@ public:
 	virtual void move(int newtx, int newty, int newlift);
 	void move(Tile_coord t)
 		{ move(t.tx, t.ty, t.tz); }
+#if 0
 					// Move and change shape/frame.
-	void move(Chunk_object_list *old_chunk, int new_cx, int new_cy, 
+	void move(Chunk_object_list *old_chunk,
 			Chunk_object_list *new_chunk, 
 			int new_sx, int new_sy, int new_frame, 
 			int new_lift = -1);
+#endif
 	int get_dependency_count()	// Get objs. to paint first.
 		{ return dependencies.get_cnt(); }
 	Game_object *get_dependency(int i)
@@ -699,14 +701,13 @@ public:
 		return frames[index];
 		}
 	};
-
+#if 0
 /*
  *	Move an object, and possibly change its shape too.
  */
 inline void Game_object::move
 	(
 	Chunk_object_list *old_chunk, 
-	int new_cx, int new_cy, 
 	Chunk_object_list *new_chunk, 
 	int new_sx, int new_sy, int new_frame, 
 	int new_lift
@@ -721,5 +722,5 @@ inline void Game_object::move
 		set_lift(new_lift);
 	new_chunk->add(this);
 	}
-
+#endif
 #endif
