@@ -46,7 +46,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 
 %union
 	{
-	class Uc_symbol *sym;
+	class Uc_var_symbol *var;
 	class Uc_expression *expr;
 	class Uc_function_symbol *funsym;
 	class Uc_statement *stmt;
@@ -90,7 +90,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  */
 %type <expr> expression primary function_call
 %type <intval> opt_int
-%type <sym> declared_var
+%type <var> declared_var
 %type <funsym> function_proto
 %type <strvec> identifier_list opt_identifier_list
 %type <stmt> statement assignment_statement if_statement while_statement
@@ -280,7 +280,7 @@ primary:
 	| declared_var
 		{ $$ = new Uc_var_expression($1); }
 	| declared_var '[' expression ']'
-		{ $$ = 0; /* ++++++ */ }
+		{ $$ = new Uc_arrayelem_expression($1, $3); }
 	| function_call
 	| '(' expression ')'
 		{ $$ = $2; }
@@ -310,7 +310,8 @@ identifier_list:
 declared_var:
 	IDENTIFIER
 		{
-		Uc_symbol *var = function->search_up($1);
+		Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>
+					(function->search_up($1));
 		if (!var)
 			{
 			char buf[150];

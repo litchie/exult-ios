@@ -11,6 +11,12 @@ adder 0x480 (a, b)
 	c = a + b;
 	d = [a, 1, b];		// Should pop as a, 1, b.
 // 	hello = a;		// Should cause an error.
+	UcMessage("Hello, the time is ");
+	UcMessage(11);
+	UcMessage(" o'clock");
 	UcSay;
+				// This is nonsense:
+	c = a[7];
+	a[13] = 46;
 	return c;
 	}
