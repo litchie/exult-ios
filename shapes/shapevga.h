@@ -44,7 +44,7 @@ public:
 	Shapes_vga_file() : info() {  }
 	void init();
 	virtual ~Shapes_vga_file();
-	void read_info();		// Read additional data files.
+	void read_info(bool bg);	// Read additional data files.
 	Shape_info& get_info(int shapenum)
 	{
 		// Shapes 1024 -> 1035 in SI are alternative player chars.

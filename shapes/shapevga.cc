@@ -27,7 +27,6 @@
 #include "shapevga.h"
 #include "monstinf.h"
 #include "utils.h"
-#include "game.h"
 
 using std::ifstream;
 using std::ios;
@@ -43,6 +42,7 @@ using std::ios;
 
 void Shapes_vga_file::read_info
 	(
+	bool bg				// True if BlackGate.
 	)
 	{
 	int i, cnt;
@@ -80,7 +80,7 @@ void Shapes_vga_file::read_info
 		info[i].set_tfa_data();
 		}
 
-	if (GAME_BG) {
+	if (bg) {
 		// set Spark to translucent. Otherwise his pant will palette-cycle
 		info[489].tfa[2] |= (1<<7);
 		info[489].set_tfa_data();
@@ -117,7 +117,7 @@ void Shapes_vga_file::read_info
 	for (i = 0; i < cnt; i++)
 		{
 		Weapon_info *winf = new Weapon_info();
-		unsigned short shapenum = winf->read(weapon);
+		unsigned short shapenum = winf->read(weapon, bg);
 		info[shapenum].weapon = winf;
 		}
 	weapon.close();	
