@@ -27,9 +27,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_OBJITER	1
 
 /*
+ *	Want to make all object iterators modification-safe.  For now, just
+ *	trying to detect modification during iteration.
+ */
+class Safe_object_iterator
+	{
+	Object_list& list;
+public:
+	Safe_object_iterator(Object_list& l) : list(l)
+		{ list.add_iterator(); }
+	~Safe_object_iterator()
+		{ list.remove_iterator(); }
+	};
+
+/*
  *	Iterate through list of objects.
  */
-class Object_iterator
+class Object_iterator : public Safe_object_iterator
 	{
 protected:
 	Game_object *first;
@@ -38,9 +52,12 @@ protected:
 public:
 	void reset()
 		{ cur = first; stop = 0; }
-	Object_iterator(Game_object *f) : first(f)
+	Object_iterator(Object_list& objects) 
+		: Safe_object_iterator(objects), first(objects.first)
 		{ reset(); }
-	Object_iterator(Chunk_object_list *chunk) : first(chunk->objects)
+	Object_iterator(Chunk_object_list *chunk) 
+		: Safe_object_iterator(chunk->objects),
+		  first(chunk->objects.first)
 		{ reset(); }
 	Game_object *get_next()
 		{
@@ -70,7 +87,7 @@ public:
 /*
  *	Iterate through a chunk's flat objects.
  */
-class Flat_object_iterator
+class Flat_object_iterator : public Safe_object_iterator
 	{
 	Game_object *first;
 	Game_object *stop;
@@ -80,11 +97,12 @@ public:
 	void reset()
 		{ cur = first; stop = 0; }
 	Flat_object_iterator(Chunk_object_list *chunk)
+		: Safe_object_iterator(chunk->objects)
 		{
-		first = chunk->objects == chunk->first_nonflat ? 0 :
-								chunk->objects;
+		first = chunk->objects.first == chunk->first_nonflat ? 0 :
+							chunk->objects.first;
 		stop_at = chunk->first_nonflat ? chunk->first_nonflat
-						: chunk->objects;
+						: chunk->objects.first;
 		reset();
 		}
 	Game_object *get_next()
@@ -101,7 +119,7 @@ public:
 /*
  *	Iterate backwards through list of objects.
  */
-class Object_iterator_backwards
+class Object_iterator_backwards : public Safe_object_iterator
 	{
 	Game_object *first;
 	Game_object *stop;
@@ -110,7 +128,8 @@ public:
 	void reset()
 		{ cur = first; stop = 0; }
 	Object_iterator_backwards(Chunk_object_list *chunk) 
-		: first(chunk->objects)
+		: Safe_object_iterator(chunk->objects),
+		  first(chunk->objects.first)
 		{ reset(); }
 	Game_object *get_next()
 		{
