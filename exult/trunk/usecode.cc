@@ -923,6 +923,7 @@ void Usecode_machine::run
 	int num_externs = Read2(ip);	// # of external refs. following.
 	unsigned char *externals = ip;	// Save -> to them.
 	ip += 2*num_externs;		// ->actual bytecode.
+	unsigned char said_string = 0;	// Flag set when NPC msg. shown.
 	int offset;			// Gets offset parm.
 	int sval;			// Get value from top-of-stack.
 	unsigned char *code = ip;	// Save for debugging.
@@ -1174,6 +1175,7 @@ void Usecode_machine::run
 			ip = endp;
 			break;
 		case 0x33:		// SAY.
+			said_string = 1;
 			say_string();
 			break;
 		case 0x38:		// CALLIS.
@@ -1194,7 +1196,8 @@ void Usecode_machine::run
 			break;
 		case 0x3f:		// Guessing some kind of return.
 					// Experimenting...
-			click_to_continue();	
+			if (said_string)
+				click_to_continue();	
 			ip = endp;
 			sp = save_sp;		// Restore stack.
 			break;

@@ -860,9 +860,16 @@ void Game_window::paint_text
 	Text_object *txt
 	)
 	{
-	win->draw_text(font12, txt->msg, 
+	char *msg = txt->msg;
+	if (*msg == '@')
+		msg++;
+	int len = strlen(msg);
+	if (msg[len - 1] == '@')
+		len--;
+	win->draw_text(font12, msg, len,
 			(txt->cx - chunkx)*chunksize + txt->sx*tilesize,
 		        (txt->cy - chunky)*chunksize + txt->sy*tilesize);
+	painted = 1;
 	}
 
 /*
@@ -1246,6 +1253,7 @@ void Game_window::show_items
 	for (int lift = 0; lift < 3; lift++)
 		cnt += find_objects(main_actor->get_lift() + lift, 
 							x, y, &found[cnt]);
+#if 0
 	for (int i = 0; i < cnt; i++)	// Go through them.
 		{
 		Game_object *obj = found[i];
@@ -1259,6 +1267,17 @@ void Game_window::show_items
 			add_text(item_name, tx, ty);
 			}
 		}
+#else
+					// Just do top item.
+	if (cnt)
+		{
+		Game_object *obj = found[cnt - 1];
+					// Show name.
+		char *item_name = obj->get_name();
+		if (item_name)
+			add_text(item_name, x, y);
+		}
+#endif
 	}
 
 /*
@@ -1277,7 +1296,7 @@ void Game_window::add_text
 				8 + win->get_text_width(font12, msg),
 				8 + win->get_text_height(font12));
 	paint_text(txt);		// Draw it.
-	txt->next = texts->next;	// Insert into chain.
+	txt->next = texts;		// Insert into chain.
 	txt->prev = 0;
 	if (txt->next)
 		txt->next->prev = txt;
@@ -1290,6 +1309,7 @@ void Game_window::add_text
 
 /*
  *	Remove a text item from the chain and delete it.
+ *	Note:  It better not still be in the time queue.
  */
 
 void Game_window::remove_text
@@ -1304,6 +1324,24 @@ void Game_window::remove_text
 	else				// Head of chain.
 		texts = txt->next;
 	delete txt;
+	}
+
+/*
+ *	Remove all text items.
+ */
+
+void Game_window::remove_all_text
+	(
+	)
+	{
+	if (!texts)
+		return;
+	while (texts)
+		{
+		tqueue->remove(texts);	// Remove from time queue if there.
+		remove_text(texts);
+		}
+	paint();			// Just paint whole screen.
 	}
 
 /*
@@ -1325,6 +1363,7 @@ void Game_window::double_clicked
 		cnt += find_objects(main_actor->get_lift() + lift, 
 							x, y, &found[cnt]);
 //	cout << cnt << " objects found.\n";
+	remove_all_text();		// Remove text msgs. from screen.
 	for (int i = 0; i < cnt; i++)	// Go through them.
 		{
 		Game_object *obj = found[i];
@@ -1391,6 +1430,7 @@ void Game_window::show_avatar_choices
 	char **choices
 	)
 	{
+	mode = conversation;
 					// Get screen rectangle.
 	Rectangle sbox = get_win_rect();
 	int x = 0, y = 0;		// Keep track of coords. in box.
@@ -1431,7 +1471,6 @@ void Game_window::show_avatar_choices
 		}
 					// Terminate the list.
 	conv_choices[num_choices] = Rectangle(0, 0, 0, 0);
-	mode = conversation;
 	}
 
 /*

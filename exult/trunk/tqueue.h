@@ -71,11 +71,38 @@ class Time_queue
 	Queue_entry *head;		// Head of queue.  Head->prev = tail.
 	Queue_entry *free_entries;	// ->list of freed entries.
 	void activate0(timeval curtime);// Activate head + any others due.
+	void add_freed(Queue_entry *ent)
+		{
+		ent->next = free_entries;
+		free_entries = ent;
+		}		
+	void remove_head()		// Remove head of chain.
+		{
+		Queue_entry *ent = head;
+		if (head == head->next)
+			head = 0;
+		else
+			{
+			head->prev->next = head->next;
+			head->next->prev = head->prev;
+			head = head->next;
+			}
+		add_freed(ent);		// Add to free list.
+		}
+					// Remove non-head.
+	void remove_non_head(Queue_entry *ent)
+		{
+		ent->prev->next = ent->next;
+		ent->next->prev = ent->prev;
+		add_freed(ent);
+		}
 public:
 	Time_queue() : head(0), free_entries(0)
 		{  }
 					// Add an entry.
 	void add(timeval t, Time_sensitive *obj, long ud);
+					// Remove object's entry.
+	void remove(Time_sensitive *obj);
 	void activate(timeval curtime)	// Activate entries that are 'due'.
 		{
 		if (head && !(curtime < head->time))
