@@ -226,6 +226,15 @@
 	</a>
 </xsl:template>
 
+<!-- Image Link Template -->
+<xsl:template match="img">
+	<xsl:copy>
+		<xsl:for-each select="@*|node()">
+	<xsl:copy/>
+	</xsl:for-each>
+	</xsl:copy>	
+</xsl:template>
+
 <!-- Misc Templates -->
 <xsl:template match="Exult">
 	<em>Exult</em>

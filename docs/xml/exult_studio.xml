@@ -1,43 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="24 July 2002(GMT)">
+<studiodoc title="Exult" changed="23 October 2002(GMT)">
 	<section title="Changes to the Documentation">
-		<sub name="24072002">
-			<header>24 July 2002</header>
+		<sub name="23102002">
+			<header>23 October 2002</header>
 			<body>
 				<ul>
-					<li><ref1 target="about_doc"/> You need a snapshot of the 1.1.x branch 
-						to work with <Studio/>.</li>
-					<li><ref1 target="installation"/> corrected link to <Studio/>.</li>
-					<li><ref1 target="file_menu"/> updated.</li>
-					<li><ref1 target="edit_menu"/> formerly known as Objects menu.</li>
-					<li><ref1 target="mode_menu"/> only three modes left.</li>
-					<li><ref1 target="shape_files"/> updated.</li>
-					<li><ref1 target="map_files"/> updated.</li>
-					<li><ref1 target="groups_files"/> updated.</li>
-					<li><ref1 target="shape_edit"/> updated.</li>
-					<li><ref1 target="win32_bugs"/> added.</li>				
-				</ul>
-			</body>
-		</sub>
-		<sub name="22052002">
-			<header>22 May 2002</header>
-			<body>
-				<ul>
-					<li><ref1 target="tools"/> Jeff started documenting ucc.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="19052002">
-			<header>19 May 2002</header>
-			<body>
-				<ul>
-					<li><ref1 target="about_doc"/> Some notes for the reader.</li>
-					<li><ref1 target="mode_menu"/> Select-mode is now implemented and added a note 
-						about dragging.</li>
-						<li><ref1 target="tool_bar"/> added "Hide lift" option.</li>
-					<li><ref1 target="shape_edit"/> "New Shape" also lets you add a font shape.</li>
-					<li><ref1 target="combo_edit"/> Combinations now do work fully.</li>
+					<li>Currently I'm trying to merge my docs with the great work by Jeffrey Hoeksma. So many
+						things changed that it's no use listing all the changes. And please take our many
+						spelling and grammar mistakes with humor!</li>
 				</ul>
 			</body>
 		</sub>
@@ -53,8 +24,10 @@
 					enabling users to create a new game. Tristan came up with the cool name!
 				</para>
 				<para>
-					Currently there are many steps required to create a new game but at the moment 
-					the main goal of Jeff is to make it as user-friendly as possible.
+					The main purpose of <Studio/> is the ability to create an entirely original 
+					game world without using the original Ultima 7 data files. Its semi-possible 
+					already but still requires a lot of work. Not the least of which is that an entire 
+					games worth of art needs to be created.
 				</para>
 				<para>
 					Editing a copyrighted game may or may not be allowed. Please exercise caution especially
@@ -67,14 +40,16 @@
 			<body>
 				<para>
 					<Studio/> is work in progress. How things work may change and new features are
-					added very frequently. Due to the lazy nature of the maintainer (Dominus) of this
-					documentation it might not always be up to date. As we do not have an official 
+					added very frequently. Due to that the maintainers (Jeffrey, Dominus) of this 
+					documentation may not have been able to update it. As we do not have an official
 					release yet this documentation refers to recent snapshots.
 				</para>
 				<para>
-				Note that you also need an up to date (aka recent snapshot) version of <Exult/> to
-				have <Studio/> working properly. The snapshot has to be from the 1.1.x (unstable)
-				branch as <Studio/> is no longer supported in the 1.0.x branch.
+					This guide is what we hope will be an ongoing effort to provide up to date and 
+					in-depth information on how to get the most out of <Studio/>. Accuracy is an 
+					essential part of this guide. If you find something that could be clearer or doesn't
+					seem worded properly please tell us, we will be happy to change this guide. Tips and 
+					tricks by other users will be appreciated as well and will of course be credited.
 				</para>
 			</body>
 		</sub>
@@ -82,8 +57,9 @@
 			<header>Terms we use in regard to Exult and Ultima 7</header>
 			<body>
 				<para>
-					Along with the terms explained in <extref doc="docs" target="terms"/> there are
-					some more terms that need to be explained for the usage of <Studio/>
+					Of course the terms explained in <extref doc="docs" target="terms"/> are
+					also used in this Documentation but we will list them along with the terms 
+					that additionally need to be explained for the usage of <Studio/>
 				</para>
 				<ul>
 					<li><strong>tile</strong>:<br/>
@@ -94,6 +70,37 @@
 						16x16 chunks</li>
 					<li><strong>world</strong>:<br/>
 						12x12 superchunks</li>
+					<li><strong>BG</strong>, <strong>SI</strong>, <strong>FoV</strong> 
+					or <strong>SS</strong>:<br/>
+						we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle"
+						as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.</li>
+					<li><strong>eggs</strong>:<br/>
+						these are trip-wires that cause monsters to spawn, execute scripts, play music, 
+						change weather, trigger traps, teleport when you get near them.</li>
+					<li><strong>flex files</strong>:<br/>
+						or flexes are used by the original to store the data files.
+						Also when you choose not use compressed save games (see save_compression_level in
+						<ref target="exult_config"/>) our save games are also "flexed".</li>
+					<li><strong>gumps</strong>:<br/>
+						the windows used in the game interface for containers, characters, menus, etc..</li>
+					<li><strong>paperdoll</strong>:<br/>
+						when pressing <key>i</key> you get the inventory display. It's the picture of your 
+						characters body (or the bodies of your party members) onto which you can drag all 
+						kinds of equipment. The way this is displayed in SI is what we call 
+						<strong>paperdoll</strong>. We integrated this for BG as well. 
+						(see <extref doc="faq" target="improvements"/>).</li>
+					<li><strong>shapes</strong>:<br/>
+						shape files are the format used for storage of all graphics elements (from UI buttons 
+						to terrain features) of the games Exult supports. Shapes may contain one or more 
+						frames (a frame is a single image).</li>
+					<li><strong>snapshot</strong>:<br/>
+						see <extref doc="faq" target="whatis_snapshot"/>.<br/>
+						Please note that our documentation usually refers to the latest snapshot.</li>
+					<li><strong>usecode</strong>:<br/>
+						that's the scripting language that drives all of U7 (conversations, objects...).</li>
+					<li><strong>Exult data directory</strong>:<br/>
+						that's the directory where Exult stores its data files (exult.flx, exult_bg.flx and 
+						exult_si.flx).</li>
 				</ul>
 			</body>
 		</sub>
@@ -105,7 +112,7 @@
 				<ul>
 					<li>You need <Exult/> and you need to install it properly 
 						(see <extref doc="docs" target="installation"/>). Also make sure that
-						you are using the latest snapshot of the 1.1.x branch of <Exult/>.</li>
+						you are using the <strong>latest snapshot of the 1.1.x branch</strong> of <Exult/>.</li>
 					<li>For U*ix platforms you need to build <Studio/> from the source avilable from our 
 						source snapshot at <extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 						You will also need the GTK+ library installed as well as
@@ -121,15 +128,15 @@
 			<body>
 				<para>
 					You can run <Studio/> all by itself, but it isn't useful that way,
-					as it uses <Exult/> as a server.  What you really want to do is:
+					as it uses <Exult/> as a server. What you really want to do is:
 				</para>
 				<ul>
    				<li>Put 'exult_studio.glade' in the <Exult/> 'data' directory.</li>
    				<li>Be sure 'exult_studio' is in your path. (on Win32
    					'exult_studio.exe' needs to be in the same directory as exult.exe)</li>
 				<li>On U*ix platforms you need to be running <Exult/> on X.</li>
-   				<li>Run <Exult/> in windowed mode (not fullscreen).</li>
-   				<li>Press 'alt-ctrl-m' to go into 'map-editor' mode.  If all is set
+   				<li>Run <Exult/> in <strong>windowed mode</strong> (not fullscreen).</li>
+   				<li>Press 'alt+ctrl+m' to go into 'map-editor' mode. If all is set
 					up correctly, exult_studio will start up, and will have a list of files
 					on the left side of its window (you need to have cheats enabled in <Exult/>,
 					see the <extref doc="docs" target="gameplay_gump"/>).</li>
@@ -138,7 +145,7 @@
 					Starting up one or the other separately will reconnect them:
 				</para>
 				<ul>
-    			<li>If <Exult/> isn't running, start it up.  Then, in <Studio/>,
+    			<li>If <Exult/> isn't running, start it up. Then, in <Studio/>,
 					use the 'File' menu to choose the static directory (for the game you're
 					playing).</li>
    				<li>If <Studio/> isn't running start it up with:
@@ -148,6 +155,95 @@
 				<para>
 					You can also reconnect by selecting File-Connect in <Studio/>'s
 					menus.
+				</para>
+			</body>
+		</sub>
+		<sub name="run_steps">
+			<header>Step-by-step instructions to run <Studio/></header>
+			<body>
+				<para>
+					The above instructions may still be too technical for everybody.					  
+					You have to make sure all these steps are taken care of before you're going to get 
+					very far with your world building.
+				</para>
+				<ol>
+				<li>While it is not explicitly needed it is usefull to have a working copy of either 
+					BG or SI properly installed onto your computer.</li>
+				<li>Next, you need to have the Exult 1.1x snapshot and the SDL mixer installed properly 
+					onto your computer and working correctly. If you are currently playing either BG or SI 
+					on your machine this is probably done right. To make sure you have the correct version,
+					ensure that it says 1.10 CVS during Exult's start-up screen.</li>
+				<li>You need to make sure the newest version of <Studio/> is installed properly onto your 
+					computer as well. <Studio/> should be installed in the same directory as the Exult 1.10x 
+					snapshot.</li>
+				<li>In order for <Studio/> to work properly, you need to have <Exult/> running in windowed mode. 
+					If you can see your desktop while playing, then you're doing it right.</li>
+				<li>Make sure you have Cheats enabled. This can be enabled int eh Gameplay options of the Game 
+					menu.</li>
+				<li>While running <Exult/> in windowed mode, hit <key>ctrl+alt+m</key> to enter map-editing mode. 
+					<Studio/> should open up if you did everything correctly. In map-editing mode the world is 
+					frozen, but you are still able to move your characters around in order to place objects.
+					You're now ready to start your world editing. You should be seeing something like this:<br/>
+					<img alt="game window with red grid" src="images/studio1.jpg"/></li>
+				</ol>
+			</body>
+		</sub>
+		<sub name="can_do_atm">
+			<header>What you can do at the moment</header>
+			<body>
+				<para>
+					With the latest source you can
+				</para>
+					<ul>
+						<li>browse shapes in the main window.</li>
+   						<li>drag a shape from the shape browser to <Exult/>, and that
+							object will be placed in the game.</li>
+   						<li>edit an 'egg' by double-clicking on it. An edit box
+							should appear.</li>
+   						<li>create a new 'egg' using the pull-down menu in <Studio/>.
+							In the Egg edit box, after you hit 'Apply', you'll be prompted to
+							click in <Exult/> where you want the egg to appear.</li>
+   						<li>if editing a 'monster' egg, you can set the monster by dragging
+							the shape from the browser to the area that displays the monster.</li>
+						<li>edit an NPC by double-clicking on it, and also create a new
+							NPC using the pull-down menu. Attributes, flags, and schedules can
+							all be viewed and modified.</li>
+						<li>can edit other objects' position and quality by double-clicking on them.</li>
+						<li>browse the 'u7chunks' file, and drag them into <Exult/> to change
+							the terrain. In this browser, you can also create new terrains and
+							modify their order.</li>
+						<li>edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit
+							terrain" checkbox in <Studio/>. This is a special mode where
+							dragging with the left mouse button 'paints' the currently-selected
+							shape (generally one of the flat tiles near the top of the shapes
+							browser). Note that a 'terrain' is generally used in multiple places
+							in the map and changing it in one place changes it in all the others as well.</li>
+						<li>save the map using <Studio/>'s "File-Save map" pulldown menu.
+							In order to avoid writing over files inadvertently, the files that
+							would normally go into the 'static' directory, will, instead, go into
+							a 'patch' directory that you specify in your 'exult.cfg' file. Here's
+							an example for editing BG:</li>
+					</ul>
+				<configdesc>
+					<line>&lt;game&gt;</line>
+					<line>&lt;blackgate&gt;</line>
+					<line>&lt;path&gt;</line>
+					<line>blackgate</line>
+					<line>&lt;/path&gt;</line>
+					<line>&lt;patch&gt;</line>
+					<line>blackgate/patch</line>
+					<line>&lt;/patch&gt;</line>
+					<line>&lt;title&gt;</line>
+					<line>blackgate</line>
+					<line>&lt;/title&gt;</line>
+					<line>.</line>
+					<line>&lt;/blackgate&gt;</line>
+				</configdesc>
+				<para>
+					<Exult/> will also read files from 'patch' if it exists on starting a new game.
+				</para>
+				<para>
+					In any mode, you can add the currently selected shape by shift-clicking..
 				</para>
 			</body>
 		</sub>
@@ -209,184 +305,24 @@
 					<li>-xDIRECTORY<br/>
 						tells exult_studio to look in DIRECTORY for its user-interface specification 
 						(exult_studio.glade).<br/>
+						You can enter the full path (e.g. "exult_studio -xc:\exult\data") to the glade file 
+						or you can use the relative path (e.g. exult_studio -x./data).<br/>
   						This option is only useful to developers who want to edit exult_studio.glade 
   						themselves.</li>
 				</ul>
 			</body>
 		</sub>
 	</section>
-	<section title="Menu Options">
-		<sub name="file_menu">
-			<header>File</header>
-			<body>
-				<ul>
-					<li><strong>New Game...</strong><br/>
-						This lets you begin the work on a new game. Jeff wrote an extensive description of
-						how to use this and how it works.<br/>
-						See 
-						<extref target="http://exult.sourceforge.net/newgame.txt">New Game manual</extref>.</li>
-					<li><strong>Open Game...</strong><br/>
-						Choose the Game directory of the game you want to edit.</li>
-					<li><strong>Save all</strong><key>Ctrl+S</key><br/>
-						Saves map, shape info and groups you edited (see below).</li>
-					<li><strong>New...</strong><br/>
-						<strong>Shapes file...</strong><br/>
-						Lets you choose the directory where you want to create a new vga file and requires 
-						you to enter a name for it (e.g. mygame.vga).<br/>
-						<strong>Single shape file...</strong><br/>
-						Lets you choose the directory where you want to create a new shape file and requires 
-						you to enter a name for it (e.g. mygame.shp).</li>
-					<li><strong>Save...</strong><br/>
-						<strong>Map</strong><br/>
-						Saves the map of the edited game.<br/>
-						<strong>Shape info</strong><br/>
-						When you right click a shape in a vga file you can change the info of the shape.
-						This saves this changed info.<br/>
-						<strong>Groups</strong><br/>
-						You can "bundle" shapes of vga files into groups to make world building easier. 
-						These groups get saved with this option.<br/>
-						<strong>Combos</strong><br/>
-						This saves the combination files.</li>						
-					<li><strong>Reload...</strong><br/>
-						<strong>Map</strong><key>Ctrl+R</key><br/>
-						Reloads the map. All changes made since the last save get discarded.<br/>
-						<strong>Usecode</strong><br/>
-						Very useful when you edit the usecode of a game or add new usecode to an 
-						existing game. Normally this would require a restart of Exult.</li>
-					<li><strong>Connect</strong><br/>
-						Connects <Exult/> and <Studio/> if one of them had to be restarted.</li>
-					<li><strong>Preferences</strong><br/>
-						<strong>Image Editor Command:</strong><br/>
-						This executes the chosen image editor when you want to edit a shape when you
-						right click it.<br/>
-						<strong>Image-Edit Filetype:</strong><br/>
-						Choose which filetype gets executed with the above chosen image editor.<br/>
-						<strong>Default Game Name:</strong><br/>
-						Choose the game <Studio/> opens by default. Use the name specified in exult.cfg.<br/>
-						<strong>Shape List Background:</strong><br/>
-						Sometimes the default black background may make certain shapes hard to see. Choose 
-						a different background color here.</li>
-					<li><strong>Exit</strong><key>Ctrl+Q</key><br/>
-						Exits <Studio/>.</li>
-				</ul>
-				<para>
-					Note that the default location for saving and creation of new files is the STATIC directory
-					of a game if there is no PATCH directory specified. See <ref1 target="can_do_atm"/>.
-				</para>
-			</body>
-		</sub>
-		<sub name="edit_menu">
-			<header>Edit</header>
-			<body>
-				<ul>
-					<li><strong>Cut  </strong><key>Ctrl-X</key><br/>
-					Removes the selected object(s) and puts it into memory.</li>
-					<li><strong>Copy  </strong><key>Ctrl-C</key><br/>
-					Copies the selected object(s) into memory.</li>
-					<li><strong>Paste  </strong><key>Ctrl-V</key><br/>
-					Shows the crosshair cursor and copies the object(s) from the memory into the game
-					where you left click the crosshair.</li>
-					<li><strong>Properties...</strong><br/>
-					Shows the properties of the selected object. If more than one object is selected
-					it shows the properties of the last selected object.<br/>
-					Only NPCs and eggs show different properties than if you select Basic properties.</li>
-					<li><strong>Basic properties...</strong><br/>
-					Shows the properties of the selected object. If more than one object is selected
-					it shows the properties of the last selected object.</li>
-					<li><strong>Create egg...</strong><br/>
-					Create or edit eggs with this.
-					See <ref1 target="egg_edit"/> for more information (not yet there).</li>
-					<li><strong>Create NPC...</strong><br/>
-					Create or edit NPCs with this.
-					See <ref1 target="npc_edit"/> for more information (not yet there).</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="mode_menu">
-			<header>Mode</header>
-			<body>
-				<para>
-				It describes how the mouse behaves inside Exult when map-editing.
-				</para>
-				<ul>
-					<li><strong>Move</strong><br/>
-					This is the normal mode where you can drag things with the mouse, or single-click 
-					to identify objects. In this mode you also select objects. A selected object is 
-					shown with a red outline. To select more than one object hold down <key>Ctrl</key> 
-					while selecting. Move the selection <key>Ctrl-arrow</key> (x,y coordinates) and 
-					<key>Ctrl-page</key> keys (z coordinates).</li>
-					<li><strong>Paint</strong><br/>
-					a single-left-click inserts the last-selected shape from 'shapes.vga', and dragging 
-					with the left-button inserts that shape in every tile (so you'd probably only want 
-					to do this with 8x8 flat shapes).  Also, in 'Paint' mode, the footprint at ground 
-					level is shown (though this may be changed in the future).<br/>
-					If you hold the alt key down, random frames from the currently-selected shape will 
-					be painted (handy for grassy areas).</li>
-					<li><strong>Pick for Combo</strong><br/>
-					Picks objects for a new combo file. Double-left-click to add objects to the combo, 
-					single-left-click to identify object. See <ref1 target="combo_edit"/></li>
-				</ul>
-				<para>
-					Note that you can only drag objects in the game window when you are in "Move" mode.
-				</para>
-			</body>
-		</sub>
-		<sub name="tools_menu">
-			<header>Tools</header>
-			<body>
-				<ul>
-					<li><strong>Locator...</strong><key>Ctrl+L</key><br/>
-					shows where the current game window is within the entire map, and lets you move 
-					the view by double-clicking a location or by dragging the little box</li>
-					<li><strong>New Combo..</strong><br/>
-					Creates a new Combo file. See <ref1 target="combo_edit"/>.</li>
-					<li><strong>Unused shapes...</strong><br/>
-					Finds shapes in shapes.vga that are not used in the game. Have patience when doing 
-					this and treat the results with caution.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="tool_bar">
-			<header>Tool bar</header>
-			<body>
-				<ul>
-					<li><strong>Play</strong><br/>
-					This is the same as pressing <key>Alt+Ctrl+M</key> in Exult. It exits the Map Edit Mode
-					and lets you play the game. By pressing it again you enter Map Edit Mode again.</li>
-					<li><strong>Grid</strong><br/>
-					Shows a grid in the game window for better control on placing objects.</li>
-					<li><strong>Edit lift:</strong><br/>
-					Changes the lift of a selected object in the game window. Lift means the distance of
-					an object from the ground.</li>
-					<li><strong>Hide lift:</strong><br/>
-					Hides objects that are above the chosen height.</li>
-					<li><strong>Edit terrain</strong><br/>
-					See <ref1 target="can_do_atm"/>. Note that a terrain is used in multiple instances of the 
-					map and changing it in one place changes it in all the others as well.</li>
-				</ul>
-			</body>
-		</sub>
-	</section>
-	<section title="Main Working Window">
-		<sub name="description">
+		<section title="Exult Studio basics">
+		<sub name="overview">
 			<header>Description</header>
 			<body>
 				<para>
 					Once <Studio/> runs correctly , a tree of game files is displayed to the left of 
-					the main window, while the currently selected file is viewed in detail to the right. 
+					the main window, while the currently selected file is viewed in detail to the right.<br/>
+					<img alt="Exult Studio default view" src="images/studio2.jpg"/><br/>
 					The types of files <Studio/> supports are described next.
 				</para>
-				<para>
-					<strong>Right-clicking on the detailed view of any file gives these options</strong> 
-					(along with other options specific to the file):
-				</para>
-				<ul>
-					<li><strong>File...</strong><br/>
-						<strong>Save</strong><br/>
-						Saves all the changes you made to it without saving any other file.<br/>
-						<strong>Revert</strong><br/>
-						Discards all changes..</li>
-				</ul>
 			</body>
 		</sub>
 		<sub name="shape_files">
@@ -412,6 +348,24 @@
 				<para>
 					Shape files also have a special right-click-menu. See <ref1 target="shape_edit"/>.
 				</para>
+				<para>
+					Typicall shape files are:
+				</para>
+				<ul>
+					<li><strong>Sprites.vga</strong><br/>
+						displays all the animations that can be used to overlay the screen.</li>
+					<li><strong>Shapes.vga</strong><br/>
+						displays the objects that can be placed onto the world.</li>
+					<li><strong>Fonts.vga</strong><br/>
+						displays all text graphics used throughout the game.</li>
+					<li><strong>Faces.vga</strong><br/>
+						contains all of the graphics for conversation pictures..</li>
+					<li><strong>Pointers.shp</strong><br/>
+						contains the graphics for the mouse cursor.</li>
+					<li><strong>Combos.flx</strong><br/>
+						where custom made combos will be stored.</li>
+				</ul>
+				
 			</body>
 		</sub>
 		<sub name="map_files">
@@ -426,7 +380,7 @@
 					<li><strong>Locate</strong><br/>
 						shows places in the <Exult/> game where that chunk is used.</li>
 					<li><strong>Move</strong><br/>
-						Moves a chunk in the chunk file. This does not effect the display on the map.</li>						
+						Moves a chunk in the chunk file. This does not effect the display on the map.</li>
 				</ul>
 				<para>
 					Right clicking on a chunk gives you another two options 
@@ -501,67 +455,209 @@
 				</ul>
 			</body>
 		</sub>
-	</section>
-	<section title="Editing a Game">
-		<sub name="can_do_atm">
-			<header>What you can do at the moment</header>
+		<sub name="detail_window">
+			<header>The detail window</header>
 			<body>
 				<para>
-					With the latest source you can
+					Below the detail windows you have the following options:
 				</para>
-					<ul>
-						<li>browse shapes in the main window.</li>
-   						<li>drag a shape from the shape browser to <Exult/>, and that
-							object will be placed in the game.</li>
-   						<li>edit an 'egg' by double-clicking on it.  An edit box
-							should appear.</li>
-   						<li>create a new 'egg' using the pull-down menu in <Studio/>.
-							In the Egg edit box, after you hit 'Apply', you'll be prompted to
-							click in <Exult/> where you want the egg to appear.</li>
-   						<li>If editing a 'monster' egg, you can set the monster by dragging
-							the shape from the browser to the area that displays the monster.</li>
-						<li>edit an NPC by double-clicking on it, and also create a new
-							NPC using the pull-down menu.  Attributes, flags, and schedules can
-							all be viewed and modified.</li>
-						<li>can edit other objects' position and quality by double-clicking on them.</li>
-						<li>browse the 'u7chunks' file, and drag them into <Exult/> to change
-							the terrain.  In this browser, you can also create new terrains and
-							modify their order.</li>
-						<li>edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit
-							terrain" checkbox in <Studio/>.  This is a special mode where
-							dragging with the left mouse button 'paints' the currently-selected
-							shape (generally one of the flat tiles near the top of the shapes
-							browser).  Note that a 'terrain' is generally used in multiple places
-							in the map and changing it in one place changes it in all the others as well.</li>
-						<li>save the map using <Studio/>'s "File-Save map" pulldown menu.
-							In order to avoid writing over files inadvertently, the files that
-							would normally go into the 'static' directory, will, instead, go into
-							a 'patch' directory that you specify in your 'exult.cfg' file.  Here's
-							an example for editing BG:</li>
-					</ul>
-				<configdesc>
-					<line>&lt;game&gt;</line>
-					<line>&lt;blackgate&gt;</line>
-					<line>&lt;path&gt;</line>
-					<line>blackgate</line>
-					<line>&lt;/path&gt;</line>
-					<line>&lt;patch&gt;</line>
-					<line>blackgate/patch</line>
-					<line>&lt;/patch&gt;</line>
-					<line>&lt;title&gt;</line>
-					<line>blackgate</line>
-					<line>&lt;/title&gt;</line>
-					<line>.</line>
-					<line>&lt;/blackgate&gt;</line>
-				</configdesc>
+				<ul>
+					<li><strong>Frame:</strong><br/>						
+						select the frame displayed.</li>
+					<li><strong>Frames</strong><br/>						
+						shows all the frames of a shape next to each others.</li>
+					<li><strong>Find</strong><br/>						
+						Lets you search for a specified shape in the group.</li>
+					<li><strong>Locate</strong><br/>						
+						Locates the selected shape inside the game. It locates only the shape not a 
+						specific frame.</li>
+				</ul>
 				<para>
-					<Exult/> will also read files from 'patch' if it exists on starting a new game.
+					<strong>Right-clicking on the detailed view of any file gives these options</strong> 
+					(along with other options specific to the file):
 				</para>
+				<ul>
+					<li><strong>File...</strong><br/>
+						<strong>Save</strong><br/>
+						Saves all the changes you made to it without saving any other file.<br/>
+						<strong>Revert</strong><br/>
+						Discards all changes..</li>
+				</ul>
+			</body>
+		</sub>
+	</section>
+	<section title="Exult Studio's menus">
+		<sub name="overview">
+			<header>An overview</header>
+			<body>
 				<para>
-					In any mode, you can add the currently selected shape by shift-clicking..
+					Before you get started with constructing your own little world its important to know 
+					a little bit about the structure of <Studio/> and the arrangement of menus. An 
+					overview of some of the <Studio/> menus follows.<br/>
 				</para>
 			</body>
 		</sub>
+		<sub name="file_menu">
+			<header>File</header>
+			<body>
+				<ul>
+					<li><strong>New Game...</strong><br/>
+						This lets you begin the work on a new game. Jeff wrote an extensive description of
+						how to use this and how it works.<br/>
+						See 
+						<extref target="http://exult.sourceforge.net/newgame.txt">New Game manual</extref>.</li>
+					<li><strong>Open Game...</strong><br/>
+						Choose the Game directory of the game you that you have been working on.</li>
+					<li><strong>Save all</strong><key>Ctrl+S</key><br/>
+						Saves map, shape info and groups you edited. Saves all the changes you've made to 
+						the world you have been working on. If you're happy with your changes do this 
+						before you quit or all work will be lost.</li>
+					<li><strong>New...</strong><br/>
+						<strong>Shapes file...</strong><br/>
+						Lets you choose the directory where you want to create a new vga file and requires 
+						you to enter a name for it (e.g. mygame.vga).<br/>
+						<strong>Single shape file...</strong><br/>
+						Lets you choose the directory where you want to create a new shape file and requires 
+						you to enter a name for it (e.g. mygame.shp).</li>
+					<li><strong>Save...</strong><br/>
+						<strong>Map</strong><br/>
+						Saves the map of the edited game.<br/>
+						<strong>Shape info</strong><br/>
+						When you right click a shape in a vga file you can change the info of the shape.
+						This saves this changed info.<br/>
+						<strong>Groups</strong><br/>
+						You can "bundle" shapes of vga files into groups to make world building easier. 
+						These groups get saved with this option.<br/>
+						<strong>Combos</strong><br/>
+						This saves the combination files.</li>						
+					<li><strong>Reload...</strong><br/>
+						<strong>Map</strong><key>Ctrl+R</key><br/>
+						Reloads the map. All changes made since the last save get discarded.<br/>
+						<strong>Usecode</strong><br/>
+						Very useful when you edit the usecode of a game or add new usecode to an 
+						existing game. Normally this would require a restart of Exult.</li>
+					<li><strong>Connect</strong><br/>
+						Connects <Exult/> and <Studio/> if one of them had to be restarted.</li>
+					<li><strong>Preferences</strong><br/>
+						<strong>Image Editor Command:</strong><br/>
+						This executes the chosen image editor when you want to edit a shape when you
+						right click it.<br/>
+						<strong>Image-Edit Filetype:</strong><br/>
+						Choose which filetype gets executed with the above chosen image editor.<br/>
+						<strong>Default Game Name:</strong><br/>
+						Choose the game <Studio/> opens by default. Use the name specified in exult.cfg.<br/>
+						<strong>Shape List Background:</strong><br/>
+						Sometimes the default black background may make certain shapes hard to see. Choose 
+						a different background color here.</li>
+					<li><strong>Exit</strong><key>Ctrl+Q</key><br/>
+						Exits <Studio/>.</li>
+				</ul>
+				<para>
+					Note that the default location for saving and creation of new files is the STATIC directory
+					of a game if there is no PATCH directory specified. See <ref1 target="can_do_atm"/>.
+				</para>
+			</body>
+		</sub>
+		<sub name="edit_menu">
+			<header>Edit</header>
+			<body>
+				<ul>
+					<li><strong>Cut  </strong><key>Ctrl+X</key><br/>
+					Removes the selected object(s) and puts it into memory.</li>
+					<li><strong>Copy  </strong><key>Ctrl+C</key><br/>
+					Copies the selected object(s) into memory.</li>
+					<li><strong>Paste  </strong><key>Ctrl+V</key><br/>
+					Shows the crosshair cursor and copies the object(s) from the memory into the game
+					where you left click the crosshair.</li>
+					<li><strong>Properties...</strong><br/>
+					Shows the properties of the selected object. If more than one object is selected
+					it shows the properties of the last selected object.<br/>
+					Only NPCs and eggs show different properties than if you select Basic properties.</li>
+					<li><strong>Basic properties...</strong><br/>
+					Shows the properties of the selected object. If more than one object is selected
+					it shows the properties of the last selected object.</li>
+					<li><strong>Create egg...</strong><br/>
+					Create or edit eggs with this.
+					See <section_ref target="Egg editing"/> for detailed information.</li>
+					<li><strong>Create NPC...</strong><br/>
+					Create or edit NPCs with this.
+					See <section_ref target="NPC editing"/> for more information (not yet there).</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="mode_menu">
+			<header>Mode</header>
+			<body>
+				<para>
+				It describes how the mouse behaves inside <Exult/> when map-editing.
+				</para>
+				<ul>
+					<li><strong>Move</strong><br/>
+					This is the normal mode where you can drag things with the mouse, or single-click 
+					to identify objects. In this mode you also select objects. A selected object is 
+					shown with a red outline. To select more than one object hold down <key>Ctrl</key> 
+					while selecting. Move the selection <key>Ctrl+arrow</key> (x,y coordinates) and 
+					<key>Ctrl+page</key> keys (z coordinates).</li>
+					<li><strong>Paint</strong><br/>
+					a single-left-click inserts the last-selected shape from 'shapes.vga', and dragging 
+					with the left-button inserts that shape in every tile (so you'd probably only want 
+					to do this with 8x8 flat shapes). Also, in 'Paint' mode, the footprint at ground 
+					level is shown (though this may be changed in the future).<br/>
+					If you hold the alt key down, random frames from the currently-selected shape will 
+					be painted (handy for grassy areas).</li>
+					<li><strong>Paint with chunks</strong><br/>
+					works the same as the normal Paint mode only with chunks. Left-clicking the mouse
+					paints the current chunk onto the map.<br/>
+					Take a look at <ref1 target="change_chunks"/>.</li>
+					<li><strong>Pick for Combo</strong><br/>
+					Picks objects for a new combo file. Double-left-click to add objects to the combo, 
+					single-left-click to identify object. See <ref1 target="combo_edit"/></li>
+				</ul>
+				<para>
+					Note that you can only drag objects in the game window when you are in "Move" mode.
+				</para>
+			</body>
+		</sub>
+		<sub name="tools_menu">
+			<header>Tools</header>
+			<body>
+				<ul>
+					<li><strong>Locator...</strong><key>Ctrl+L</key><br/>
+					shows where the current game window is within the entire map, and lets you move 
+					the view by double-clicking a location or by dragging the little box</li>
+					<li><strong>New Combo..</strong><br/>
+					Creates a new Combo file. See <ref1 target="combo_edit"/>.</li>
+					<li><strong>Unused shapes...</strong><br/>
+					searches the entire world being created to see if any of the shapes in shapes.vga 
+					are not in use. Have patience when doing this and treat the results with caution.</li>
+					<li><strong>Compile Usecode...</strong><br/>
+					Compiles the usecode script usecode.uc in the patch directory 
+					(see <ref target="usecode_edit"/>)</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="tool_bar">
+			<header>Tool bar</header>
+			<body>
+				<ul>
+					<li><strong>Play</strong><br/>
+					This is the same as pressing <key>Alt+Ctrl+M</key> in Exult. It exits the Map Edit Mode
+					and lets you play the game. By pressing it again you enter Map Edit Mode again.</li>
+					<li><strong>Grid</strong><br/>
+					Shows a grid of white lines in the game window for better control on placing objects.</li>
+					<li><strong>Edit lift:</strong><br/>
+					Changes the lift of a selected object in the game window. Lift means the distance of
+					an object from the ground.</li>
+					<li><strong>Hide lift:</strong><br/>
+					Hides objects that are above the chosen height.</li>
+					<li><strong>Edit terrain</strong><br/>
+					See <ref1 target="can_do_atm"/>. Note that a terrain is used in multiple instances of the 
+					map and changing it in one place changes it in all the others as well.</li>
+				</ul>
+			</body>
+		</sub>
+	</section>
+	<section title="Basic editors">		
 		<sub name="shape_edit">
 			<header>The shape editor</header>
 			<body>
@@ -577,17 +673,17 @@
 						caution is advised. The information is saved by 
 						<ref1 target="file_menu">'Save all' or 'Save:Shape Info'</ref1>.</li>
 					<li><strong>Edit...</strong>:<br/>
-						Brings up your image-editor on the chosen frame.  When you save 
-						in the image-editor, ES will read the changes back within 5 seconds.  This is 
+						Brings up your image-editor on the chosen frame. When you save 
+						in the image-editor, ES will read the changes back within 5 seconds. This is 
 						especially convenient if you have 'gimp-remote', as it will open a window for 
 						the frame in an already-running gimp.</li>
 					<li><strong>Edit tiled</strong>:<br/>
-						This is only for 'flat' (8x8) shapes.  It forms an image 
-						from all the frames and brings it up in the image-editor.  This is really 
-						handy for making lots of terrain frames like grass.  A dialog lets you choose 
+						This is only for 'flat' (8x8) shapes. It forms an image 
+						from all the frames and brings it up in the image-editor. This is really 
+						handy for making lots of terrain frames like grass. A dialog lets you choose 
 						the dimensions.</li>
 					<li><strong>New frame</strong>:<br/>
-						Creates a new frame after the currently-selected one.  The 'insert' key 
+						Creates a new frame after the currently-selected one. The 'insert' key 
 						also does this (and the 'del' key deletes a frame, though it's 
 						buggy if there's just one frame left).</li>
 					<li><strong>New shape</strong>:<br/>
@@ -595,7 +691,7 @@
 						initial # of frames.<br/>
 						You can also create a new font shape from TrueType or Type1 font files.
 						It's mainly a convenience for someone creating a whole new game, as their
-						only single-colored.  Maybe in the future we'll have some functions to
+						only single-colored. Maybe in the future we'll have some functions to
 						create two-colored fonts like the main one in U7, although it might take
 						hand-editing to make the letters look that nice.</li>
 					<li><strong>Import/Export frame</strong>:<br/>
@@ -607,38 +703,6 @@
 					the shape as PNG file in GAMEDIR/itmp/ (e.g. blackgate/itmp). If you manually
 					open the file with an image editor of your liking and then save it, ES doesn't 
 					read the changes back.
-				</para>
-				<para>
-					Below the display windows you have the following options:
-				</para>
-				<ul>
-					<li><strong>Frame:</strong><br/>						
-						select the frame displayed.</li>
-					<li><strong>Frames</strong><br/>						
-						shows all the frames of a shape next to each others.</li>
-					<li><strong>Find</strong><br/>						
-						Lets you search for a specified shape in the group.</li>
-					<li><strong>Locate</strong><br/>						
-						Locates the selected shape inside the game. It locates only the shape not a 
-						specific frame.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="egg_edit">
-			<header>Creating/editing Eggs</header>
-			<body>
-				<para>
-					sorry, not documented yet (very extensive work). But make sure you resize the egg-window 
-					to show all the possible eggs. To know what 'egg' means, see 
-					<extref doc="docs" target="terms"/>.
-				</para>
-			</body>
-		</sub>
-		<sub name="npc_edit">
-			<header>Creating/editing NPCs</header>
-			<body>
-				<para>
-					sorry, not documented yet (very extensive work).
 				</para>
 			</body>
 		</sub>
@@ -688,6 +752,498 @@
 			</body>
 		</sub>
 	</section>
+	<section title="Egg editing">
+		<sub name="eggs_explained">
+			<header>Explaining eggs</header>
+			<body>
+				<para>
+					An egg in its simplest form is an object that is placed in the world, but is 
+					invisible to a normal user. When the player meets the requirements of an egg, 
+					it causes the egg to become activated. Eggs can activate anything from monster 
+					spawns, to changes in the current music, to the activation of custom usecode. You 
+					may want to place the eggs in map-editing mode because eggs don't activate in this 
+					mode. Then switch off map-editing mode to test how your egg will work during game 
+					play.
+				</para>
+			</body>
+		</sub>
+		<sub name="eggs_type">
+			<header>The different types of eggs</header>
+			<body>
+				<para>
+					Currently <Studio/> supports the following types of eggs (more details follow):
+				</para>
+				<ul>
+					<li><strong>Monster</strong>(spawning)<br/>
+						allows for the creation of a creature when certain conditions are met, usually
+						when your character gets within a certain distance of the egg.
+						It also allows for the creation of simple objects like walls or furniture to 
+						appear when the Avatar gets near. This could make for some interesting effects.</li>
+					<li><strong>Jukebox</strong><br/>
+						sets the background music when the character enters a certain area.</li>
+					<li><strong>Sound Effect</strong>and <strong>Voice</strong><br/>
+						will play a selected sound or voice when the character meets the required values 
+						set in the egg creation menu.</li>
+					<li><strong>Usecode</strong><br/>
+						allows for the activation of custom usecode when an egg's requirements are met. 
+						The creation of custom usecode is discussed (though not in depth) at 
+						<ref target="usecode_edit"/>.</li>
+					<li><strong>Missile</strong><br/>
+						create interesting objects like flamethrower traps.</li>
+					<li><strong>Teleport</strong><br/>
+						transportthe avatar anywhere on the map when certain conditions are met.</li>
+					<li><strong>Weather</strong><br/>
+						temporarily set the in-game weather.</li>
+					<li><strong>Path</strong><br/>
+						set the destination of a teleport egg to a specific object.</li>
+					<li><strong>Button</strong><br/>
+						is used to activate eggs in the vicinity that are set to external</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="place_eggs">
+			<header>Add, remove and edit eggs</header>
+			<body>
+				<para>
+					The most convenient way to create an egg is to select <strong>Create new egg</strong>
+					from the edit menu. This will pop up the <strong>Exult Egg</strong> window. Here you 
+					can select the type of egg you wish to create and the properties you are going to 
+					give it. When you are happy with the egg press <strong>apply</strong> and then enter 
+					<Exult/> and place the egg wherever you like. To remove an egg, select it while in 
+					map-edit mode and press <key>ctrl+x</key> to cut the egg. ou can still paste it 
+					elsewhere if you like. To edit an egg, double click it in map editing mode. This 
+					will bring up the egg window where you will be able to change an existing egg's 
+					attributes.
+				</para>
+			</body>
+		</sub>
+		<sub name="eggs_properties">
+			<header>Properties of eggs</header>
+			<body>
+				<para>
+					Before you select the type of egg you want you can edit basic properties of eggs.
+					These are:
+				</para>
+				<ul>
+					<li><strong>Probability</strong><br/> 
+						of the egg being activated. By giving an egg a probability of 100 you can ensure 
+						that whenever the requirements necessary to make an egg activate are met, the egg 
+						will activate. With a probability of 0 nothing will ever happen when the egg's 
+						requirements are met. A probability anywhere between 0 and 100 will cause the 
+						activation of an egg to be a random event.</li>
+					<li><strong>Distance</strong><br/>
+						allows you to set how far a character needs to be from an egg in order to activate
+						it. Each distance unit is equal to one tile (8x8 pixel) of the map.</li>
+					<li><strong>Criteria</strong><br/>
+						is very important as it sets what needs to be done to activate the egg. The 
+						options are:<br/>
+						<strong>Cached in</strong> - An egg with this characteristic is activated when 
+						the chunk it is on is loaded into memory. This usually happens from several screens 
+						away.<br/>
+						<strong>Party near</strong> - causes an egg to be activated whenever the player 
+						controlled character or any of his party members wander within the area specified 
+						by the distance option.<br/>
+						<strong>Avatar near</strong> - exactly the same as party near except only registers 
+						where the main character is moved, ignoring actions by the party members.<br/>
+						<strong>Avatar far</strong> - Its like Avatar near except with a twist. This 
+						property allows you to walk into the area specified by the distance property but then 
+						as you leave the area the egg will be activated as you distance yourself from it. 
+						Can be great for sneak attacks from behind.<br/>
+						<strong>Avatar footpad</strong> - In this case the distance property is ignored and 
+						the Avatar has to physically step onto the egg.<br/>
+						<strong>Party footpad</strong> - This option is identical to the Avatar footpad option 
+						except if either the main character or one of his companions stumbles onto the egg it 
+						will be activated.<br/>
+						<strong>Something on</strong> - This egg is activated whenever an object is placed 
+						within the area specified by an egg.<br/>
+						<strong>External</strong> - Eggs set to the external characteristic will be activated 
+						by button eggs in the vicinity.
+						</li>
+					<li><strong>Flag</strong><br/>
+						final attribute you can give an egg to determine whether it will be activated or not. 
+						As a note you can mix and match flags, you can set an egg to nocturnal once only or 
+						nocturnal auto-reset.<br/>
+					 	<strong>Nocturnal</strong> - Any egg with this setting will only be activated during 
+					 	the nighttime. Great for setting the spawning of creatures of the night, or giving 
+					 	some nice night time music.<br/>
+						<strong>Hatched</strong> - This creates an egg that has already been activated. It 
+						is inactive and will not do anything.<br/>
+						<strong>Once-Only</strong> - Any egg with this flag applied will only hatch once and 
+						then disappear from the game world.<br/>
+						<strong>Auto-reset</strong> - Eggs with this flag attached will continue to activate 
+						every time the conditions set in the egg menu are met.</li>
+				</ul>				
+			</body>
+		</sub>
+		<sub name="place_monsters">
+			<header>Placing a monster spawning egg</header>
+			<body>				
+				<para>
+					The first thing you want to consider before placing monster spawn is some of the basic egg 
+					attributes. What probability do you want? What distance? Will it be a nocturnal creature?
+					Next you have to set the monster specific egg attributes. The first question is probably 
+					what type of monster you want to place. You can now switch to the main <Studio/> window, 
+					select shapes.vga and choose a shape. Drag and drop this on the "Exult Egg" window. Frame # 
+					isn't overly important when placing a monster, but for placing an object it can be very 
+					important. Enter these attributes into their respective form. You next have to set the 
+					monster's schedule. The various schedules that are important for a monster spawn are 
+					discussed next. You also have to set the spawned monster's alignment.<br/>
+					Any creature set to a neutral alignment will ignore the Avatar and friends, following their 
+					schedule until attacked. Any creature set to hostile will immediately attack the Avatar if 
+					you get too close. Using the friendly alignment naturally evil creatures such as ethereal 
+					monsters will still attack, but good or neutral characters such as stone golems will continue 
+					out their assigned schedule if given the friendly alignment.<br/>
+					As a final monster spawn option, you can set the number of creatures you want to appear using 
+					the count option. You can set anywhere from 1 to 31 monsters. When you're finished setting 
+					the egg how you want, simply press "Apply" and place the egg on the world map.<br/>
+					<img alt="Exult Egg window" src="images/studio3.jpg"/><br/>					
+				</para>
+			</body>
+		</sub>
+		<sub name="creature_schedules">
+			<header>Schedules of Creatures</header>
+			<body>				
+				<para>
+					When setting a monster spawn you will most like want to use one of the following schedules.
+				</para>
+				<ul>
+					<li><strong>Horiz. Pace</strong><br/>
+						Any creature given this schedule will pace back and forth in a horizontal manner. Great 
+						for guards and sentries</li>
+					<li><strong>Vert. Pace</strong><br/>
+						Same as the horizontal pace, except in a vertical direction.</li>
+					<li><strong>Hound</strong><br/>
+						Any creature given this schedule will slowly follow the main character wherever he goes.
+						Good for creatures that won't take no for an answer.</li>
+					<li><strong>Stand</strong><br/>
+						Creatures given this setting will stand in one place until given a better reason to move.</li>
+					<li><strong>Loiter</strong><br/>
+						Creatures given this setting will wander aimlessly. They will move in random directions 
+						a bit at a time.</li>
+					<li><strong>Wander</strong><br/>
+						Any creature given this setting will slowly move around a fairly large area.</li>
+					<li><strong>Wait</strong><br/>
+						Creatures given this setting will complacently stay in one place.</li>
+					<li><strong>Shy</strong><br/>
+						Creatures given this setting are afraid of the main character and will slowly wander away 
+						from the Avatar.</li>
+					<li><strong>Waiter</strong><br/>
+						Give a creature this schedule and watch him run back and forth around a crowded area like 
+						he has a purpose.</li>
+					<li><strong>Graze</strong><br/>
+						An awful lot like loiter except the character seems to stay a little more to one area.</li>
+					<li><strong>Duel</strong><br/>
+						Doesn't do a whole lot by itself, but put two neutral creatures with these settings 
+						beside each other and its rumble time. This also works by placing them near training 
+						dummies or archery targets. For an extra laugh place 10 spawns each set for 31 guards 
+						to appear in duelling mode.</li>
+					<li><strong>Patrol</strong><br/>
+						A creature given this setting will very slowly wander from place to place.<br/>
+						<img alt="Guards duel" src="images/studio4.jpg"/><br/></li>					
+				</ul>
+			</body>
+		</sub>
+		<sub name="audio_eggs">
+			<header>Jukebox, Sound Effects and Voice eggs</header>
+			<body>				
+				<para>
+					Using these eggs couldn't be more straightforward, select the sound effect, music score, 
+					or recorded digital voice you desire and then place them onto the map. When a character 
+					activates the egg they begin to play. You can set music and sound effects to play on a 
+					continuous loop for continuous effects such as water fountains or short pieces of 
+					background music that you don't want to quit until a new music egg is triggered.<br/>
+					In the game window you can test and find out the # of the audio by pressing 
+					<key>Alt+1</key>.
+				</para>
+			</body>
+		</sub>
+		<sub name="usecode_eggs">
+			<header>Usecode eggs</header>
+			<body>				
+				<para>
+					Usecode eggs have many different functions that will be discussed later. The important 
+					thing to remember about the usecode egg menu is that function number is where you insert 
+					the hex value of the usecode function that this egg is going to execute.
+				</para>
+			</body>
+		</sub>
+		<sub name="missile_eggs">
+			<header>Missile eggs</header>
+			<body>				
+				<para>
+					When you place a missile egg, the first thing you have to set is the egg's activation 
+					attributes. Do you want an egg to activate when the Avatar is near a certain spot, or should 
+					someone have to directly step on the trap?<br/>
+					To choose the type of missile you want to shoot from your trap, select shape number 1 for a 
+					fireball that doesn't do damage, 3 for a lightning bolt, and 6 to shoot arrows. Select shape 
+					9 for a fireball that actually does damage. You can also set the direction you want the trap 
+					to fire when it is activated, you can choose any of the 8 cardinal directions.<br/>
+					You can also use the delay timer to set how steady you want the stream of projectiles to be. 
+					1 makes a constant stream of projectiles, while a value of 10 makes for the occasional danger. 
+					Don't set the timer to 0 seconds, <Exult/> REALLY doesn't like this.<br/>
+					Using these options you can make some pretty dangerous obstacles for the Avatar to avoid.
+				</para>
+				<para>
+					<strong>Note:</strong> Shape numbers assume you are using either BG or SI data. When making 
+					a new game you can set weapons info of shapes yourself and choose which shape numbers are 
+					used by each weapon.<br/>
+					<img alt="missiles" src="images/studio5.jpg"/><br/>
+				</para>
+			</body>
+		</sub>
+		<sub name="teleport_eggs">
+			<header>Teleport eggs</header>
+			<body>				
+				<para>
+					The primary purpose of the teleport egg is to simply move a character from one place to another 
+					instantly without forcing them to walk there. Think of any dungeon teleporter that moves you 
+					from one place to another.<br/>
+					The teleport egg has two primary modes. The first mode possessed by the teleport egg is to 
+					choose the location that the party will be warped to by specifying a location on the over world 
+					map using x and y co-ordinates. If you place an egg on the map and a character meets the 
+					criteria specified by the egg they will be whisked away to the x and y coordinates set by the 
+					egg. This option can't be used to move your character onto roofs because there is no z option 
+					provided.<br/>
+					To switch to the other mode of teleporting, press the use coordinates button.
+					This directs the teleported towards a numbered path egg. By giving a path egg a unique number 
+					and then placing it on the map any teleporter set to this egg will transport the player there.
+					The advantage of teleporting using a path egg is you can teleport your character onto the second 
+					floor of a building if the path egg is placed up there.
+				</para>
+			</body>
+		</sub>
+		<sub name="weather_eggs">
+			<header>Weather eggs</header>
+			<body>				
+				<para>
+					There are two attributes of the weather egg that one needs to worry about.
+				</para>
+				<ul>
+					<li><strong>Weather</strong><br/>
+						The most important attribute as this sets the effect you can expect when an egg 
+						is activated.<br/>
+						<strong>Halt</strong> - Halts and current weather and set the world to a pleasant sunny 
+						default.<br/>
+						<strong>Storm</strong> - Lots of thunder and lightning and the world darkens.<br/>
+						<strong>Cloudy</strong> - Some rain, not a lot else going on<br/>
+						<strong>Magic storm</strong> - Lots of thunder and lightning and the world darkens. As 
+						well this type of storm eliminates the character's magic casting abilities while the 
+						storm is in affect.</li>
+					<li><strong>Duration</strong><br/>
+						sets the how long the chosen weather will last. The time is measured in game time and can
+						last up to 255 minutes.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="path_eggs">
+			<header>Path eggs</header>
+			<body>				
+				<para>
+					The path egg is useful for placing an individual teleport location by hand. Give the path egg 
+					a unique number and then direct a teleport egg towards it. If the person steps on a teleporter 
+					set to the same number as the path egg, they will be teleported there.<br/>
+					Note that it only works up to a distance of 256 tiles in each direction (in a square, not a 
+					circle). It also doesn't world-wrap, meaning  a teleport egg at the far east edge won't find 
+					a path egg at the far west edge.
+				</para>
+			</body>
+		</sub>
+		<sub name="button_eggs">
+			<header>Button eggs</header>
+			<body>				
+				<para>
+					The button egg has the interesting ability to activate all eggs in the immediate vicinity that 
+					are set to external. You can set the area around the egg that will be affected by increasing 
+					the distance setting, keeping in mind that each distance setting is equal to 1 tile (8x8 pixel).
+				</para>
+			</body>
+		</sub>
+	</section>
+	<section title="NPC editing">
+		<sub name="npc_edit">
+			<header>How to edit an NPC</header>
+			<body>
+				<para>
+					Sorry to disappoint but this section is not yet done...
+				</para>
+			</body>
+		</sub>
+	</section>
+	<section title="Basic map editing">
+		<sub name="learn_edit">
+			<header>Learning the basics of map editing</header>
+			<body>
+				<para>
+					The first thing one will probably want to do once they have <Studio/> running is to begin 
+					creating their own little world. The first step towards this is learning how to move objects 
+					and chunks, and placing items from <Studio/> into the game world. And the best way to 
+					learn is by using an existing game like BG or SI.
+				</para>
+			</body>
+		</sub>
+		<sub name="move_obj">
+			<header>Moving objects around</header>
+			<body>
+				<para>
+					Perhaps the simplest way of making your world truly unique is to start out by moving existing 
+					structures around. Move is the default option in <Studio/>, but to ensure you are in move 
+					mode select it from the mode menu. You know you are in map-editing mode when a red grid is 
+					highlighted across the world. You can select any object (notice the red highlighting of 
+					selected objects) with the mouse and move it around. This works using a simple drag and drop 
+					approach. Simply grab a tree with a right click and place it on the other side of your viewing 
+					area. The only thing you can't drag and drop are chucks, which are the large ground sections 
+					mapped by the red grid system. If you want to place one object on top of another, just drag it 
+					on top and release. If the object can be supported in that position it will stay there. For a 
+					brief guide on placing an object that won't have support, but will be floating see further down.
+					You can also change an object's x and y coordinates by selecting the object and pressing 
+					<key>ctrl+arrow keys</key>. An object's z coordinate can be changed by selecting the object and 
+					pressing <key>ctrl+page up</key> or <key>ctrl+page down</key>.
+				</para>
+			</body>
+		</sub>
+		<sub name="place_obj">
+			<header>How to place objects from Exult Studio</header>
+			<body>
+				<para>
+					This could not be simpler in <Studio/>. Simply select a shape from the shapes.vga menu and 
+					drag it into <Exult/>. In Windows I personally prefer to drag the item onto the taskbar, hovering 
+					over the <Exult/> window, wait for the window to switch and then place the item. You will get a 
+					green grid that will show you exactly where you can expect the object to show up. Once you 
+					found where you would like the object to appear, simply let go of the mouse and the object is 
+					placed. If you're unhappy where you placed the object, simply drag and drop it somewhere else.<br/>
+					<img alt="green grid" src="images/studio6.jpg"/>
+				</para>
+			</body>
+		</sub>
+		<sub name="control_obj">
+			<header>Mark, delete, copy, make multiple objects</header>
+			<body>
+				<para>
+					To mark multiple objects hold down <key>ctrl</key> and click on the objects you want to mark.
+					This is very useful when you want to handle a whole bunch of objects (like deleting, copying 
+					or multiplying objects).
+				</para>
+				<para>
+					If you placed an object onto the world map that you now feel should be removed, select the 
+					object with your mouse and press <key>ctrl+x</key> or select the cut option from the <Studio/> 
+					Menu.<br/> 
+					This will remove the object from the world and place it into memory (if you don't want to keep 
+					the object in memory simply press <key>del</key> when it is selected). If you want to the object 
+					somewhere else, press <key>ctrl+v</key> or select the paste option, this will create a set of 
+					crosshairs that you can use to place your new object. To create multiple copies of an object, 
+					select an object so it has a red outline and press <key>ctrl+c</key> or select the copy option. 
+					You can now paste another copy of the object on the world using paste.
+				</para>
+			</body>
+		</sub>
+		<sub name="float_obj">
+			<header>Making floating objects like bridges</header>
+			<body>
+				<para>
+					So you want to create an unsupported section of balcony, or you want to make it look like that 
+					Kilrathi ship you just placed is actually hovering above the ground. To do this set the 
+					object's z height by changing the value in the grid height menu. If you want your character to 
+					be able to walk underneath an object it must be set 4 grid heights above the surface which your 
+					character is walking on. If you want your character to be able to walk on an object, the top of 
+					the object must be no more then 1-grid height above the surface the character is currently on.<br/>
+					<img alt="crate bridge" src="images/studio7.jpg"/>
+				</para>
+			</body>
+		</sub>
+		<sub name="change_frame">
+			<header>How to change the frame of an object</header>
+			<body>
+				<para>
+					So you see an apple tree on the map, but you think you'd much rather have a palm tree. <Studio/> 
+					supports many different frames for each object. To change the frame of an object, select an 
+					object so it highlights red and select the "Basic Properties" option. The <Exult/> Object box 
+					should appear. This gives you the option to select a different frame for the object to see what 
+					other frames this particular object has. The <Exult/> Object option also allows you to manually set 
+					the height of an object that already exists on the map. Another way to select an objects frame, 
+					is to select the object from the shapes menu and then using the frames option in the lower right 
+					hand corner select just the frame you're looking for. Then you can then drag the object into your 
+					world normally.
+				</para>
+			</body>
+		</sub>
+		<sub name="change_chunks">
+			<header>How to change chunks (the big red outlined square)</header>
+			<body>
+				<para>
+					To change the large pieces of map that are sandwiched between the red lines of the map-editing 
+					grid you have to place a chunk, instead of a shape. The various chunks available in <Studio/> 
+					are located under the heading U7chunks. The chunks are many large pieces of preformed landscape 
+					that help give the world a more consistent feel. They also make the job of editing the world 
+					somewhat easier. To place a chunk simply place it the same way that you would a shape, but keep 
+					in mind that chunks can only be placed within the red squared formed by the map-editing grid.<br/>
+					<img alt="chunk placing" src="images/studio8.jpg"/>
+				</para>
+				<para>
+					There are a lot of interesting chunks already available in the chunks.vga file, but what if you 
+					want to make some minor changes to the design of a pre-made chunk? Maybe make the Britannia 
+					transport system a little more safe by painting a yellow line down the centre of each road chunk.
+					By selecting the Edit terrain option you can change a chunk by placing objects directly onto a 
+					chunk, doing this permanently changes the chunk you are editing so be careful. It may not look it, 
+					but if you then select the chunk you edited from the chunks.vga menu the chunk you place will 
+					have the changes you made. Also be careful because when you edit a chunk you change every chunk 
+					in the game that is the same as the chunk you're editing. To solve this problem go into the chunks 
+					menu and right click the chunk you want to edit and select new, then duplicate. You now have two 
+					identical chunks. You can then place your new chunk onto the world and edit it how you like 
+					without editing the other chunks. You can now place this duplicate chunk wherever you like and 
+					it will have the changes you made.
+				</para>
+			</body>
+		</sub>
+		<sub name="multi_obj">
+			<header>How to make a structures consisting of multiple objects</header>
+			<body>
+				<para>
+					Many structures present in <Exult/> consist of multiple objects. Examples of these are roofs, 
+					long sections of wall or fence. Constructing a roof can be a long and difficult process 
+					because it involves properly positioning multiple small objects and then manually setting 
+					each object's height. That's where the New Combos option located in the Tools menu comes in 
+					handy. Select the New Combos option and then enter the window where Exult is running. Your 
+					mouse will have become a cross hair. Double click on all the objects you plan on adding to 
+					your new object. In this example we're making a roof by double-clicking all sections of the 
+					roof.<br/>
+					<img alt="combo builder" src="images/studio9.jpg"/>
+				</para>
+				<para>
+					As you double-click each object, the selection appears in the combo window showing you exactly 
+					what you have selected. Now give the object a name and select Okay. The object will now be 
+					temporarily saved in the combos.flx menu. The object can now be placed on the map normally. If 
+					you make a combo you want to keep, make sure to save before quitting <Studio/>. You can 
+					continue editing your combos even after you originally finish them, by double right clicking 
+					them from the combo menu.
+				</para>
+			</body>
+		</sub>
+		<sub name="other_combo">
+			<header>More things you can do with Combos</header>
+			<body>
+				<para>
+					One problem with the <Studio/> combo option is that when the combo is created many of the 
+					items are not in the rendering order you would want them to appear in game. To fix this problem, 
+					you can select individual items in the combo-builder window and by changing their viewing order 
+					you can make sure that all items appear exactly how you want them. You can also use the x,y,z 
+					coordinates to move individual items in your combo around to make sure that your combo looks 
+					exactly how you want. If you added an object to your combo that you don't wish to keep, simply 
+					select the item from the combo menu and press remove.
+				</para>
+			</body>
+		</sub>
+		<sub name="paint_forest">
+			<header>Use the paint feature to quickly create a forest</header>
+			<body>
+				<para>
+					The best way to create multiple objects fast and conveniently is to use the paint option. If 
+					you want to make a forest of trees fast, select the tree from the shapes menu and then select 
+					the paint option from the mode menu. Select the <Exult/> window and you can now quickly place 
+					multiple objects with the green grid. 
+				</para>
+			</body>
+		</sub>
+	</section>
 	<section title="Miscellaneous">
 		<sub name="tools">
 			<header>Other tools that might be useful</header>
@@ -706,7 +1262,7 @@
 						See the 
 						<extref target="http://exult.sourceforge.net/expack.txt">manual</extref>.</li>
 					<li><strong>ipack</strong>:<br/>
-						a tool for creating and updating Exult and U7 image archives,  such as 'shapes.vga'. 
+						a tool for creating and updating <Exult/> and U7 image archives, such as 'shapes.vga'. 
 						See the 
 						<extref target="http://exult.sourceforge.net/ipack.txt">manual</extref>.</li>
 					<li><strong>shp2pcx</strong>:<br/>
@@ -749,7 +1305,7 @@
 				<ul>
    				<li>GTK has to be ported to the platform.</li>
    				<li><Studio/> uses sockets to communicate with <Exult/>.</li>
-   				<li>X drag-n-drop is used to put new objects on the landscape.  The
+   				<li>X drag-n-drop is used to put new objects on the landscape. The
 					'drop' part of this had to be rewritten for Win32 <Exult/>, OR,
 					drag-n-drop could be an enhancement to SDL someday.<br/>
 					As an alternative to dragging objects, you can now select a shape,
@@ -763,9 +1319,9 @@
 			<body>
 				<para>
 					A map-editor needs to provide the ability to display the game, place
-					objects on the map, and move objects around.  That functionality is already in
-					<Exult/>, and it makes sense to reuse it.  So we could have made <Exult/> a part of
-					<Studio/>.  However, <Exult/> is already a huge program, and is getting
+					objects on the map, and move objects around. That functionality is already in
+					<Exult/>, and it makes sense to reuse it. So we could have made <Exult/> a part of
+					<Studio/>. However, <Exult/> is already a huge program, and is getting
 					unwieldy to work on.
 				</para>
 				<para>
@@ -786,7 +1342,7 @@
 				<para>
 					This confused me too, and I originally planned on doing away with it.
 					But do a little arithmetic:  U7's world has 3072x3072 tiles; that's
-					over 9 million that need to be set.  My guess is that they came up
+					over 9 million that need to be set. My guess is that they came up
 					with the idea behind 'u7chunks' to save artists time and to give the
 					map a consistent look.
 				</para>
@@ -794,9 +1350,9 @@
 					The basic idea is that each 'chunk' of flat terrain, 16x16 tiles, is
 					stored in 'u7chunks', and is indexed by its position in this file (0,
 					1, 2, ...). The 'u7map' file specifies, for each 'chunk' in the U7
-					map, which of the terrains is to be used.  Since the entire map has
+					map, which of the terrains is to be used. Since the entire map has
 					192x192 chunks, or a total of 36,864, and since 'u7chunks' has 3072
-					entries, each terrain is shared an average of over 10 times.  When you
+					entries, each terrain is shared an average of over 10 times. When you
 					go into map-editing mode in Exult, the numbers displayed are the
 					indices from 'u7chunks'.
 				</para>
@@ -812,7 +1368,7 @@
 				</ol>
 				<para>
 					The challenge of writing a map-editor is keeping the above straight,
-					and reading/storing from/to the correct files.  It's sorta-kinda
+					and reading/storing from/to the correct files. It's sorta-kinda
 					working now :-)
 				</para>
 				<para>
