@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <fstream.h>
+#include "fnames.h"
 
 class Shape;
 
@@ -67,20 +68,12 @@ class Shape
 	{
 	Shape_frame **frames;		// List of ->'s to frames.
 	unsigned char num_frames;	// # of frames.
-	unsigned char dim;		// Each nibble is # of 8x8 shape boxes.
-	unsigned char obstacle;		// 1 if an obstacle.
 					// Read in shape/frame.
 	Shape_frame *read(ifstream& shapes, int shnum, int frnum);
 public:
 	friend class Vga_file;
-	Shape() : frames(0), dim(0), obstacle(0)
+	Shape() : frames(0)
 		{  }
-					// Get dim. (in 8x8 shape boxes).
-	void get_dim(int& w, int& h)
-		{
-		w = dim >> 4;
-		h = dim & 0xf;
-		}
 	Shape_frame *get(ifstream& shapes, int shnum, int frnum)
 		{ return (frames && frames[frnum]) ? frames[frnum] 
 					: read(shapes, shnum, frnum); }
@@ -92,17 +85,11 @@ public:
 class Vga_file
 	{
 	ifstream file;			// For reading.
+protected:
 	int num_shapes;			// Total # of shapes.
 	Shape *shapes;			// List of ->'s to shapes' lists
 public:
 	Vga_file(char *nm);
-					// Read in dimensions file.
-	int read_dims(char *nm, int first, int num);
-					// Get dim. (in 8x8 shape boxes).
-	void get_dim(int shapenum, int& w, int& h)
-		{ shapes[shapenum].get_dim(w, h); }
-	int is_obstacle(int shapenum)	// Can't walk through it?
-		{ return shapes[shapenum].obstacle != 0; }
 	int get_num_shapes()
 		{ return num_shapes; }
 	int is_good()
@@ -113,6 +100,52 @@ public:
 		return (shapes[shapenum].get(file, shapenum, framenum));
 		}
 	unsigned char *dims;	//+++++++++++++Debugging.
+	};
+
+/*
+ *	This class contains information only about shapes from "shapes.vga".
+ */
+class Shape_info
+	{
+	unsigned char tfa[3];		// From "tfa.dat".
+	unsigned char weight, volume;	// From "wgtvol.dat".
+	unsigned char shpdims[2];	// From "shpdims.dat".
+public:
+	friend class Shapes_vga_file;	// Class that reads in data.
+	Shape_info() : weight(0), volume(0)
+		{ tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0; }
+	int get_weight()		// Get weight, volume.
+		{ return weight; }
+	int get_volume()
+		{ return volume; }
+	int get_3d_height()		// Height (in lifts?).
+		{ return (tfa[0] >> 5); }
+	int get_3d_xtiles()		// Dimension in tiles - X.
+		{ return 1 + (tfa[2]&7); }
+	int get_3d_ytiles()		// Dimension in tiles - Y.
+		{ return 1 + ((tfa[2]<<3)&7); }
+	int is_light_source()
+		{ return (tfa[2] & (1<<6)) != 0; }
+	int is_transparent()		// ??
+		{ return (tfa[1] & (1<<7)) != 0; }
+	int is_xobstacle()		// Obstacle in x-dir.???
+		{ return (shpdims[1] & 1) != 0; }
+	int is_yobstacle()		// Obstacle in y-dir.???
+		{ return (shpdims[0] & 1) != 0; }
+	};
+
+/*
+ *	The "shapes.vga" file:
+ */
+class Shapes_vga_file : public Vga_file
+	{
+	Shape_info *info;		// Extra info. about each shape.
+public:
+	Shapes_vga_file() : Vga_file(SHAPES_VGA)
+		{ info = new Shape_info[num_shapes]; }
+	int read_info();		// Read additional data files.
+	Shape_info *get_info(int shapenum)
+		{ return shapenum < num_shapes ? &info[shapenum] : 0; }
 	};
 
 #endif
