@@ -43,6 +43,8 @@ private:
   bool god_mode;
   bool wizard_mode;
   bool map_editor;
+  bool tile_grid;
+  int  edit_lift;
   bool infravision;
   bool pickpocket;
   bool grab_actor;
@@ -58,6 +60,8 @@ public:
   bool in_god_mode (void) const { return god_mode; }
   bool in_wizard_mode (void) const { return wizard_mode; }
   bool in_map_editor(void) const { return map_editor; }
+  bool show_tile_grid(void) const { return map_editor && tile_grid; }
+  int  get_edit_lift(void) const { return edit_lift; }
   bool in_infravision (void) const { return infravision; }
   bool in_pickpocket (void) const {return pickpocket; }
   bool in_hack_mover (void) const { return (hack_mover || map_editor); }
@@ -67,6 +71,8 @@ public:
   void toggle_wizard (void);
   void set_wizard (bool wizard) { wizard_mode = wizard; }
   void toggle_map_editor (void);
+  void toggle_tile_grid (void);
+  void set_edit_lift(int lift);
   void set_map_editor (bool map) { map_editor = map; }
   void toggle_infravision (void);
   void set_infravision (bool infra) { infravision = infra; }

@@ -56,7 +56,9 @@ enum Msg_type
 	write_map = 6,			// Save map.
 	read_map = 7,			// Read map.
 	map_editing_mode = 8,		// 1 to turn it on, 0 for off.
-	reload_usecode = 9		// Reload patched usecode.
+	tile_grid = 9,			// 1 to show grid, 0 for off.
+	edit_lift = 10,			// Lift passed: 0-13.
+	reload_usecode = 11		// Reload patched usecode.
 	};
 
 // I/O routines:

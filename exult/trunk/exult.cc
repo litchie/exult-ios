@@ -1177,7 +1177,8 @@ static void Drop_dragged_shape
 		}
 	else				// Try to drop at increasing hts.
 		{
-		for (int lift = 0; lift <= 11; lift++)
+		int edit_lift = cheat.get_edit_lift();
+		for (int lift = edit_lift; lift <= 11; lift++)
 			if (gwin->drop_at_lift(newobj, x, y, lift))
 				{	// Success.
 				gwin->set_ifix_modified(newobj->get_cx(),
