@@ -363,6 +363,33 @@ Shape_file_set::~Shape_file_set
 	}
 
 /*
+ *	This routines tries to create files that don't yet exist.
+ *
+ *	Output:	true if successful.
+ */
+
+static bool Create_file
+	(
+	const char *basename,		// Base file name.
+	string& pathname		// Pathname is returned here.
+	)
+	{
+	int namelen = strlen(basename);
+	if (strcasecmp(".flx", basename + namelen - 4) == 0)
+		{			// We can create an empty flx.
+		ofstream out;
+		pathname = "<PATCH>/";	// Always write to 'patch'.
+		pathname += basename;
+		U7open(out, pathname.c_str());	// May throw exception.
+		Flex_writer writer(out, "Written by ExultStudio", 0);
+		if (!writer.close())
+			throw file_write_exception(pathname.c_str());
+		return true;
+		}
+	return false;			// Might add more later.
+	}
+
+/*
  *	Create a new 'Shape_file_info', or return existing one.
  *
  *	Output: ->file info, or 0 if error.
@@ -373,19 +400,18 @@ Shape_file_info *Shape_file_set::create
 	const char *basename		// Like 'shapes.vga'.
 	)
 	{
-	const char *fullname;
 	string fullstr("<PATCH>/");	// First look in 'patch'.
 	fullstr += basename;
-	if (U7exists(fullstr.c_str()))
-		fullname = fullstr.c_str();
-	else
+	if (!U7exists(fullstr.c_str()))
 		{
 		fullstr = "<STATIC>/";
 		fullstr += basename;
-		fullname = fullstr.c_str();
-		if (!U7exists(fullname))
+		if (!U7exists(fullstr.c_str()) && 
+					// Try to create it (in some cases).
+		    !Create_file(basename, fullstr))
 			return 0;
 		}
+	const char *fullname = fullstr.c_str();
 	for (vector<Shape_file_info *>::iterator it = files.begin(); 
 					it != files.end(); ++it)
 		if (strcasecmp((*it)->pathname.c_str(), fullname) == 0)

@@ -25,6 +25,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <string>
 #include <vector>
 #include "objbrowse.h"
 #include "shapedraw.h"
@@ -59,8 +60,10 @@ class Combo
 					//   use.
 	short starttx, startty;		// Offset represented by top-left.
 	short xtiles, ytiles, ztiles;	// Dimensions.
+	std::string name;		// Name given by user.
 public:
 	friend class Combo_editor;
+	friend class Combo_chooser;
 	Combo(Shapes_vga_file *svga);
 	Combo(const Combo& c2);		// Copy.
 	~Combo();
