@@ -35,6 +35,38 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vgafile.h"
 
 /*
+ *	Generate a shadow around a character.
+ */
+
+static void Gen_shadow
+	(
+	unsigned char *pixels,
+	int w, int h,			// Dimensions.
+	unsigned char fg,		// Foreground color index.
+	unsigned char shadow		// Shadow color index
+	)
+	{
+	int r, c;
+
+	for (r = 0; r < h; r++)
+		for (c = 0; c < w; c++)
+			{
+			if (pixels[r*w+c] != fg)
+				continue;
+			int rr, cc;	// Fill surrounding pixels;
+			for (rr = r - 1; rr <= r + 1; rr++)
+				{
+				if (rr < 0 || rr >= h)
+					continue;
+				for (cc = c - 1; cc <= c + 1; cc++)
+					if (cc >= 0 && cc < w &&
+							pixels[rr*w+cc] != fg)
+						pixels[rr*w+cc] = shadow;
+				}
+			}
+	}
+
+/*
  *	Fill a shape with each frame containing the glyph for its ASCII
  *	code.  The shape has 128 frames.
  *
@@ -48,7 +80,8 @@ bool Gen_font_shape
 	int nframes,			// # frames to generate, starting at 0.
 	int pixels_ht,			// Desired height in pixels.
 	unsigned char fg,		// Foreground color index.
-	unsigned char bg		// Background color index.
+	unsigned char bg,		// Background color index.
+	int shadow			// Shadow color, or -1
 	)
 	{
 	FT_Library library;		// Initialize.
@@ -76,28 +109,38 @@ bool Gen_font_shape
 			}
 		int w = glyph->bitmap.width, h = glyph->bitmap.rows;
 		int sw = w, sh = h;	// Shape width/height.
+		int offset = 0;		// Starting row, col.
 		if (!sw)		// 0 width (like for a space)?
 			sw = glyph->metrics.horiAdvance/64;	// Guessin...
 		if (!sh)
 			sh = glyph->metrics.vertAdvance/64;
+		if (shadow != -1)	// Make room for shadow.
+			{
+			sw += 2;
+			sh += 2;
+			offset = 1;
+			}
 					// Allocate our buffer.
 		int cnt = sw*sh;	// Total #pixels.
 		unsigned char *pixels = new unsigned char[cnt];
 		memset(pixels, bg, cnt);// Fill with background.
 					// I believe this is 1 bit/pixel:
 		unsigned char *src = glyph->bitmap.buffer;
-		unsigned char *dest = pixels;
+		unsigned char *dest = pixels + offset*sw;
 		for (int row = 0; row < h; row++)
 			{
 			for (int b = 0; b < w; b++)
 				if (src[b/8]&(0x80>>(b%8)))
-					dest[b] = fg;
-			dest += w;	// Advance to next row.
+					dest[offset + b] = fg;
+			dest += sw;	// Advance to next row.
 			src += glyph->bitmap.pitch;
 			}
+		if (shadow >= 0)
+			Gen_shadow(pixels, sw, sh, fg, (unsigned char) shadow);
 					// Not sure about dims here+++++
 		Shape_frame *frame = new Shape_frame(pixels,
-			sw, sh, glyph->bitmap_left, glyph->bitmap_top, true);
+			sw, sh, glyph->bitmap_left + offset, 
+				glyph->bitmap_top + offset, true);
 		delete pixels;
 		shape->set_frame(frame, chr);
 		}
