@@ -204,7 +204,7 @@ Animated_object::Animated_object
 	unsigned int shapey,
 	unsigned int lft
 	) : Ireg_game_object(l, h, shapex, shapey, lft), cycles(0),
-		cycle_num(0)
+		cycle_num(0), animating(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int delay = 100;		// Delay between frames.
@@ -259,7 +259,7 @@ void Animated_object::handle_event
 			animating = 0;
 		}
 	set_frame(framenum);		// Set new frame.
-	gwin->paint(rect);		// Paint.
+	gwin->add_dirty(rect);		// Paint.
 					// Add back to queue for next time.
 	if (animating)
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
