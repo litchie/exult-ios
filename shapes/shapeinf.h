@@ -219,7 +219,8 @@ class Shape_info
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : weight(0), volume(0),
-		ready_type(0), weapon_offsets(0), armor(0), weapon(0), ammo(0),
+		ready_type(255), weapon_offsets(0), 
+		armor(0), weapon(0), ammo(0),
 		monstinf(0), occludes_flag(false)
 		{
 		tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;

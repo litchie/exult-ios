@@ -576,7 +576,12 @@ void ExultStudio::write_shape_info
 	)
 	{
 	if (vgafile)
-		((Shapes_vga_file *) vgafile)->write_info(false);//++++BG?
+		{
+		Shapes_vga_file *svga = (Shapes_vga_file *) vgafile;
+					// Make sure data's been read in.
+		svga->read_info(false, true);//+++++BG?
+		svga->write_info(false);//++++BG?
+		}
 	}
 
 /*
