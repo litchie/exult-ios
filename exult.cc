@@ -285,6 +285,7 @@ static void Init
 	if(yn == "no") {
 		gwin->set_mode(Game_window::splash);
 		SDL_SetEventFilter(Filter_splash_events);
+		gwin->paint_splash();
 	} else {
 		gwin->set_mode(Game_window::normal);
 		SDL_SetEventFilter(Filter_intro_events);
