@@ -354,6 +354,8 @@ void Projectile_effect::handle_event
 		{			// Done? 
 		if (shape_num == 704)	// Powder keg?
 			gwin->add_effect(new Explosion_effect(epos, 0));
+		else if (shape_num == 639)
+			gwin->add_effect(new Death_vortex(target, epos));
 		else if (target)
 			target->attacked(attacker, weapon, shape_num);
 		pos.tx = -1;		// Signal we're done.
@@ -380,6 +382,107 @@ void Projectile_effect::paint
 	gwin->paint_shape((pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
 		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix, 
 		shape_num, frame_num);
+	}
+
+/*
+ *	Create a 'death vortex'.
+ */
+
+Death_vortex::Death_vortex
+	(
+	Game_object *trg,		// What to aim for.
+	Tile_coord tp			// Target pos, if trg==0.
+	) : frame_num(0), next_damage_time(0)
+	{
+	tpos = trg ? trg->get_abs_tile_coord() : tp;
+	pos = tpos;
+	target = dynamic_cast<Actor *> (trg);
+	Game_window *gwin = Game_window::get_game_window();
+	frames = gwin->get_sprite_num_frames(8);
+					// Go for 20 seconds.
+	stop_time = SDL_GetTicks() + 20*1000;
+					// Start immediately.
+	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+	}
+
+/*
+ *	Add a dirty rectangle for the current position and frame.
+ */
+
+inline Rectangle Death_vortex::get_rect
+	(
+	Game_window *gwin
+	)
+	{
+	Shape_frame *shape = gwin->get_sprite_shape(8, frame_num);
+	int liftpix = pos.tz*c_tilesize/2;
+	return (gwin->get_shape_rect(shape,
+		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
+		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix));
+	}
+
+/*
+ *	Animation.
+ */
+
+void Death_vortex::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata
+	)
+	{
+	const int delay = 100;		// Delay between frames.
+	Game_window *gwin = Game_window::get_game_window();
+	Rectangle rect = get_rect(gwin);
+	Rectangle dirty = rect;		// Repaint old area.
+	gwin->add_dirty(gwin->clip_to_win(dirty.enlarge(4)));
+	//+++++++++Follow target.
+
+	if (curtime > next_damage_time)	// Time to cause damage.
+		{			// Do it every second.
+		next_damage_time = curtime + 1000;
+					// Get center of area covered.
+		int liftpix = pos.tz*c_tilesize/2;
+		Tile_coord center(rect.x + rect.w/2 + liftpix, 
+				rect.y + rect.h/2 + liftpix, pos.tz);
+		Actor_vector npcs;	// Find NPC's there.
+		Game_object::find_nearby(npcs, center, -1, rect.w/2, 8);
+		for (Actor_vector::const_iterator it = npcs.begin();
+							it != npcs.end(); ++it)
+			{
+			Actor *npc = *it;
+			if (npc != gwin->get_main_actor() &&
+						npc->get_party_id() < 0)
+				continue;
+			npc->reduce_health(40);
+			}
+		}
+	frame_num = (frame_num + 1)%frames;
+	rect = get_rect(gwin);		// Paint new.
+	gwin->add_dirty(gwin->clip_to_win(rect.enlarge(4)));
+	if (curtime < stop_time)	// Keep going?
+		gwin->get_tqueue()->add(curtime + 100, this, udata);
+	else
+		{
+		gwin->set_all_dirty();
+		gwin->remove_effect(this);
+		}
+	}
+
+/*
+ *	Render.
+ */
+
+void Death_vortex::paint
+	(
+	Game_window *gwin
+	)
+	{
+	int liftpix = pos.tz*c_tilesize/2;
+	gwin->paint_sprite(
+		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
+		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix, 
+		8, frame_num);
 	}
 
 /*
