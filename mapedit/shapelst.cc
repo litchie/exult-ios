@@ -1033,7 +1033,8 @@ static int Find_closest_color
 	{
 	int best_index = -1;
 	long best_distance = 0xfffffff;
-	for (int i = 0; i < 255; i++)
+					// But don't search rotating colors.
+	for (int i = 0; i < 0xe0; i++)
 		{			// Get deltas.
 		long dr = r - pal[3*i], dg = g - pal[3*i + 1], 
 							db = b - pal[3*i + 2];
