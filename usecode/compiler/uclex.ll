@@ -131,6 +131,39 @@ static void Include
 	yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
 	}
 
+/*
+ *	Make a copy of a string, interpreting '\' codes.
+ *
+ *	Output:	->allocated string.
+ */
+
+char *Handle_string
+	(
+	const char *from			// Ends with a '"'.
+	)
+	{
+	char *to = new char[1 + strlen(from)];	// (Bigger than needed.)
+	char *str = to;
+
+	while (*from && *from != '\"')
+		{
+		if (*from != '\\')
+			{
+			*to++ = *from++;
+			continue;
+			}
+		switch (*++from)
+			{
+		case 'n':
+			*to++ = '\n'; break;
+		default:
+			*to++ = *from; break;
+			}
+		++from;
+		}
+	*to = 0;
+	return str;
+	}
 
 extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
 
@@ -216,13 +249,12 @@ se		return SE;
 			yylval.strval = strdup(yytext);
 			return IDENTIFIER;
 			}
-\"[^"]*\"		{
+\"([^"]|\\.)*\"		{
 					// Remove ending quote.
-			yylval.strval = strdup(yytext + 1);
-			yylval.strval[strlen(yylval.strval) - 1] = 0;
+			yylval.strval = Handle_string(yytext + 1);
 			return STRING_LITERAL;
 			}
-\"[^"]*\"\*		{
+\"([^"]|\\.)*\"\*		{
 					// Remove ending quote and asterisk.
 			yylval.strval = strdup(yytext + 1);
 			yylval.strval[strlen(yylval.strval) - 2] = 0;
