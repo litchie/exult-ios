@@ -1,3 +1,7 @@
+2001-12-03  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* Fix broken compiler compilation, by inserting some using std::vector statements.
+
 2001-12-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/compiler:  Rewrote most of it to work with conversations.
