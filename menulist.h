@@ -18,6 +18,7 @@
 #define MENU_LIST_H
 
 #include <vector>
+#include "SDL_events.h"
 
 class Game_window;
 class Shape_frame;

@@ -34,6 +34,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "palette.h"
 
+#include "SDL_timer.h"
+
 using std::ifstream;
 using std::memset;
 

@@ -13,6 +13,8 @@
 #include "items.h"
 #include "schedule.h"
 
+#include "SDL_timer.h"
+
 using std::rand;
 
 extern bool god_mode;

@@ -27,7 +27,7 @@ Boston, MA  02111-1307, USA.
 #ifndef INCL_IMAGEWIN
 #define INCL_IMAGEWIN	1
 
-#include "SDL.h"
+#include "SDL_video.h"
 #include "imagebuf.h"
 
 /*

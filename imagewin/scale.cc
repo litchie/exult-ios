@@ -7,7 +7,7 @@
 
 #include "../alpha_kludges.h"
 
-#include "SDL.h"
+#include "SDL_video.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #endif

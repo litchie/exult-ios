@@ -24,6 +24,8 @@
 #include "palette.h"
 #include "ibuf8.h"
 
+#include "SDL_timer.h"
+
 using std::memcpy;
 using std::memset;
 

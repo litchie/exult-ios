@@ -28,7 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../autoconfig.h"
 #endif
 
-#include <SDL.h>
+#include <SDL_audio.h>
+#include <SDL_timer.h>
 #include <SDL_thread.h>
 
 /*
@@ -38,9 +39,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 namespace	SDL	{
 
+#if 0
 	typedef	SDL_Surface	Surface;
 	typedef	SDL_Rect	Rect;
 	typedef	SDL_Event	Event;
+#endif
+
 	typedef SDL_Thread	Thread;
 
 extern	void (*Delay)(Uint32);

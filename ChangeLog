@@ -1,5 +1,6 @@
 2001-01-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* actors.cc, conversation.cc: fixed 'male avatar has female face' bug
+	* lots-of-files: removed superfluous SDL.h includes, replaced some SDL.h includes by SDL_video.h/SDL_audio.h/etc... (cutting compile time with almost 20% on my system!)
 
 2001-01-17  Jeff Freedman  <jeff@amy.nerble.net>
 

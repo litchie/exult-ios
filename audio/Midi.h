@@ -31,8 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "alpha_kludges.h"
 
 #include <vector>
-#include "SDL_mapping.h"
-#include <SDL_audio.h>
 #include "Mixer.h"
 #include "xmidi.h"
 

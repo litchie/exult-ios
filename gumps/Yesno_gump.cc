@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_button.h"
 #include "gump_utils.h"
 
+#include "SDL_events.h"
 
 /*
  *	Statics:

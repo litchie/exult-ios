@@ -27,6 +27,8 @@
 #include "font.h"
 #include "game.h"
 
+#include "SDL_timer.h"
+
 using std::atoi;
 using std::strchr;
 using std::string;
