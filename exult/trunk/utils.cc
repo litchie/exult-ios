@@ -49,15 +49,27 @@ static char *To_upper
 	}
 
 static char *Switch_slash(
-	char *name
+	char *name,
+	const char *old_name
 	)
 	{
 #ifdef WIN32
+		std::strcpy(name, old_name);
 		for(;*name!=0;name++)
 			{
 				if(*name=='/')
 					*name = '\\';
 			}
+#elif defined(MACOS)
+		name[0] = ':';
+		std::strcpy(name+1, old_name);
+		for(;*name!=0;name++)
+			{
+				if(*name=='/')
+					*name = ':';
+			}
+#else
+		std::strcpy(name, old_name);
 #endif
 		return name;
 	}
@@ -75,18 +87,15 @@ int U7open
 	const char *fname			// May be converted to upper-case.
 	)
 	{
-#ifndef XWIN
-  #ifdef MACOS
+#ifdef MACOS
 	std::ios_base::openmode mode = std::ios::in | std::ios::binary;
-  #else
-	int mode = ios::in | ios::binary;
-  #endif
-#else
+#elif defined(XWIN)
 	int mode = ios::in;
+#else
+	int mode = ios::in | ios::binary;
 #endif
 	char name[512];
-	std::strcpy(name, fname);
-	Switch_slash(name);
+	Switch_slash(name, fname);
 	in.open(name, mode);		// Try to open original name.
 	if (!in.good())			// No good?  Try upper-case.
 		{
@@ -112,20 +121,20 @@ int U7open
 	const char *fname			// May be converted to upper-case.
 	)
 	{
-#ifndef XWIN
-  #ifdef MACOS
+#ifdef MACOS
 	std::ios_base::openmode mode = std::ios::out | std::ios::trunc | std::ios::binary;
-  #else
-	int mode = ios::out | ios::trunc | ios::binary;
-  #endif
-#else
+#elif defined(XWIN)
 	int mode = ios::out | ios::trunc;
+#else
+	int mode = ios::out | ios::trunc | ios::binary;
 #endif
-	out.open(fname, mode);		// Try to open original name.
+	char name[512];
+	Switch_slash(name, fname);
+	out.open(name, mode);		// Try to open original name.
 	if (!out.good())		// No good?  Try upper-case.
 		{
 		char upper[512];
-		out.open(To_upper(std::strcpy(upper, fname)), mode);
+		out.open(To_upper(std::strcpy(upper, name)), mode);
 		if (!out.good())
 			return (0);
 		}
