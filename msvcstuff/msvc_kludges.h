@@ -106,6 +106,7 @@ namespace std {
 
 // These get put in std when they otherwise should be, or are required by other headers
 using std::memcmp;
+using std::memset;
 using std::mbstate_t;
 using std::size_t;
 using std::time_t;

@@ -37,11 +37,11 @@ CPPFLAGS=-DVERSION=\"0.97cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	$(SDL_CFLAGS) -DHAVE_SNPRINTF -DUSE_EXULTSTUDIO $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
-CXXFLAGS=-O2 -Wno-long-long -include mingw_kludges.h
+CXXFLAGS=-O2 -Wno-long-long -fvtable-thunks -include mingw_kludges.h
 CXX=g++
 
 LFLAGS=-mwindows
-LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid
 
 EXEC=Exult.exe
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
@@ -52,7 +52,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	gamerend.o gamewin.o keys.o keyactions.o \
 	menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
-	exultico.o cheat_screen.o shapeid.o version.o
+	exultico.o cheat_screen.o shapeid.o version.o windrag.o
 # unused: npctest.o
 
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
@@ -86,7 +86,7 @@ IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o
 
 SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o \
-	monstinf.o
+	monstinf.o u7drag.o
 
 OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 	contain.o egg.o iregobjs.o mappatch.o objs.o \
@@ -98,7 +98,6 @@ USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 SERVER_OBJS=objserial.o servemsg.o server.o
 
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS)
-
 
 EXULT_FLX = data/exult.flx data/exult_flx.h
 EXULT_FLX_OBJECTS = \
