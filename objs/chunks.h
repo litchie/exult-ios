@@ -216,6 +216,8 @@ public:
 						int from_tx, int from_ty)
 		{ need_cache()->activate_eggs(obj, 
 					this, tx, ty, tz, from_tx, from_ty);}
+	static int find_in_area(Game_object_vector& vec, Rectangle area,
+					int shapenum, int framenum);
 					// Use this when teleported in.
 	static void try_all_eggs(Game_object *obj, int tx, int ty, int tz,
 						int from_tx, int from_ty);
