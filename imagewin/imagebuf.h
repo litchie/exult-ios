@@ -87,6 +87,8 @@ public:
 		{ return width; }
 	unsigned int get_height()
 		{ return height; }
+	unsigned int get_line_width()
+		{ return line_width; }
 	void clear_clip()		// Reset clip to whole window.
 		{ clipx = clipy = 0; clipw = width; cliph = height; }
 					// Set clip.
