@@ -369,14 +369,22 @@ USECODE_INTRINSIC(get_npc_object)
 USECODE_INTRINSIC(get_schedule_type)
 {
 	// GetSchedule(npc).  Rets. schedtype.
-	Game_object *obj = get_item(parms[0]);
-	int sched = obj ? obj->get_schedule_type() : 0;
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (!npc)
+		return Usecode_value(0);
+	int sched = npc->get_schedule_type();
 	if (sched == Schedule::street_maintenance)
 		{
-		Actor *act = as_actor(obj);
-		if (act && act->get_schedule())
-			sched = act->get_schedule()->get_prev_type();
+		if (npc->get_schedule())
+			sched = npc->get_schedule()->get_prev_type();
 		}
+					// Path_run_usecode?  (This is to fix
+					//   a bug in the Fawn Trial.)
+					//+++++Should be a better way to check.
+	if (dynamic_cast<If_else_path_actor_action *>(npc->get_action()) &&
+	    Game::get_game_type() == SERPENT_ISLE)
+					// Give a 'fake' schedule.
+		sched = Schedule::walk_to_schedule;
 	Usecode_value u(sched);
 	return(u);
 }
