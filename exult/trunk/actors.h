@@ -680,12 +680,12 @@ public:
 					int weap, int flgs, int eqoff)
 		{
 		shapenum = sh;
-		strength = str;
-		dexterity = dex;
-		intelligence = intel;
-		combat = comb;
-		armor = ar;
-		weapon = weap;
+		strength = str & 63;	// Low 6 bits.
+		dexterity = dex & 63;
+		intelligence = intel & 63;
+		combat = comb & 63;
+		armor = ar & 15;	// Low 4 bits.
+		weapon = weap;		//+++++I don't think this is right.
 		flags = flgs;
 		equip_offset = eqoff;
 		}

@@ -433,6 +433,15 @@ void Usecode_script::handle_event
 			frame_index = 0;// Reset walking frame index.
 			break;
 			}
+		case hit:		// Hit(hps, ??).
+			{
+			Usecode_value hps = code->get_elem(++i);
+			Usecode_value unk = code->get_elem(++i);
+			Actor *act = usecode->as_actor(obj);
+			if (act)	// ++++Should apply to any object.
+				act->reduce_health(hps.get_int_value());
+			break;
+			}
 		default:
 					// Frames with dir.  U7-verified!
 			if (opcode >= 0x61 && opcode <= 0x70)

@@ -57,7 +57,8 @@ enum Ucscript_ops
 	usecode =	0x55,		// Call usecode.
 	speech =	0x56,		// Speech(track#).
 	sfx =		0x58,		// Sound_effect(#).
-	face_dir =	0x59		// Face_dir(dir), dir=0-7, 0=north.
+	face_dir =	0x59,		// Face_dir(dir), dir=0-7, 0=north.
+	hit =		0x78		// Hit(hps, ??).  Item attacked.
 	};
 }
 #endif
