@@ -84,7 +84,7 @@ Gump *Gump_manager::find_gump
 	(
 	Game_object *obj
 	)
-	{
+{
 					// Get container object is in.
 	Game_object *owner = obj->get_owner();
 	if (!owner)
@@ -94,8 +94,25 @@ Gump *Gump_manager::find_gump
 		if (gmp->gump->get_container() == owner)
 			return (gmp->gump);
 	return (0);
-	}
+}
 
+/*
+ *	Find gump with a given owner & shapenum.
+ */
+
+Gump *Gump_manager::find_gump
+	(
+	Game_object *owner,
+	int shapenum
+	)
+{
+	Gump_list *gmp;			// See if already open.
+	for (gmp = open_gumps; gmp; gmp = gmp->next)
+		if (gmp->gump->get_owner() == owner &&
+		    gmp->gump->get_shapenum() == shapenum)
+			return gmp->gump;
+	return (0);
+}
 
 /*
  *	Add a gump to the end of a chain.
