@@ -73,8 +73,8 @@ Type 'make -f makefile.mingw install' without quotes to compile and install Exul
 
 Type 'make -f makefile.mingw toolsinstall' without quotes to compile and install the Exult Tools for Windows
 
-Type 'make -f makefile.studio.mingw' without quotes to compile and install Exult Studio for Windows
-Copy over the required library files (*.dll) from the lib directory of MinGW to the installation directory of Exult Studio
+Type 'make -f makefile.studio.mingw install' without quotes to compile and install Exult Studio for Windows
+Copy over the required library files (*.dll) from the bin directory of MinGW to the installation directory of Exult Studio
 
 Once compile has finished and been installed exit MSYS
 
