@@ -54,7 +54,7 @@ int Game_window::start_dragging
 	dragging_gump = find_gump(x, y);
 	if (dragging_gump)
 		{
-		dragging = dragging_gump->find_object(this, x, y);
+		dragging = dragging_gump->find_object(x, y);
 		if (dragging)
 			dragging_gump->get_shape_location(dragging,
 					dragging_paintx, dragging_painty);
