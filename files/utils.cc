@@ -84,6 +84,11 @@ void add_system_path(const string& key, const string& value)
 	path_map[key] = value;
 }
 
+void clone_system_path(const string& new_key, const string& old_key)
+{
+	path_map[new_key] = path_map[old_key];
+}
+
 void clear_system_path(const string& key)
 {
 	std::map<string, string>::iterator iter = path_map.find(key);
@@ -236,6 +241,8 @@ static bool base_to_uppercase(string& str, int count)
 	}
 	if (X == str.rend())
 		todo--; // start of pathname counts as separator too
+
+std::cerr << "base_to_uppercase: " << str << std::endl;
 
 	// false if it didn't reach 'count' parts
 	return (todo <= 0);
