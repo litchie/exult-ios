@@ -784,8 +784,10 @@ time_t Shape_chooser::export_png
 		}
 	int w = img.get_width(), h = img.get_height();
 	struct stat fs;			// Write out to the .png.
+					// (Rotate transp. pixel to 0 for the
+					//   Gimp's sake.)
 	if (!Export_png8(fname, transp, w, h, w, xoff, yoff, img.get_bits(),
-					&pal[0], 256) ||
+					&pal[0], 256, true) ||
 	    stat(fname, &fs) != 0)
 		{
 		Alert("Error creating '%s'", fname);

@@ -548,7 +548,7 @@ bool ExultStudio::has_focus
 	}
 
 /*
- *	Set browser area.
+ *	Set browser area.  NOTE:  obj may be null.
  */
 void ExultStudio::set_browser(const char *name, Object_browser *obj)
 {
@@ -564,7 +564,9 @@ void ExultStudio::set_browser(const char *name, Object_browser *obj)
 	
 	GtkWidget *browser_box = glade_xml_get_widget( app_xml, "browser_box" );
 	gtk_widget_show( browser_box );
-	gtk_box_pack_start(GTK_BOX(browser_box), browser->get_widget(), TRUE, TRUE, 0);
+	if (browser)
+		gtk_box_pack_start(GTK_BOX(browser_box), 
+					browser->get_widget(), TRUE, TRUE, 0);
 }
 
 Object_browser *ExultStudio::create_browser(const char *fname)
@@ -902,6 +904,7 @@ void ExultStudio::set_game_path(const char *gamepath)
 		delete items;
 		}
 	setup_file_list();		// Set up file-list window.
+	set_browser("", 0);		// No browser.
 	connect_to_server();		// Connect to server with 'gamedat'.
 }
 
