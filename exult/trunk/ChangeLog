@@ -1,3 +1,8 @@
+2001-03-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* SFX's:  'SFX objects' sounds implemented (such as fountains,
+	surf, moongates).  Sounds added for gumps.
+
 2001-03-18  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* credits.txt: added Alex Botero-Lowry (openbsd work)
 
