@@ -5,7 +5,7 @@ AUTOMAKE_OPTIONS=foreign
 
 OBJECTS = script.o scrlex.o exec.o
 
-CXXFLAGS += -g
+CXXFLAGS += $(DEBUG_FLAGS)
 INCLUDES += -I.. -I../npc
 YACC = yacc
 YFLAGS = -v -d

@@ -63,6 +63,7 @@ AS = @AS@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
+DEBUG_FLAGS = @DEBUG_FLAGS@
 DLLTOOL = @DLLTOOL@
 EXEEXT = @EXEEXT@
 FREETYPE_DIR = @FREETYPE_DIR@
@@ -91,7 +92,7 @@ AUTOMAKE_OPTIONS = foreign
 
 OBJECTS = script.o scrlex.o exec.o
 
-CXXFLAGS =  -g
+CXXFLAGS =  $(DEBUG_FLAGS)
 INCLUDES =  -I.. -I../npc
 YACC = yacc
 YFLAGS = -v -d

@@ -63,6 +63,7 @@ AS = @AS@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
+DEBUG_FLAGS = @DEBUG_FLAGS@
 DLLTOOL = @DLLTOOL@
 EXEEXT = @EXEEXT@
 FREETYPE_DIR = @FREETYPE_DIR@
@@ -94,7 +95,7 @@ OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o 	vgafile.o
 SUFFIXES = .cc .h
 INCLUDES =  -I. -Iaudio -Iconf $(SDL_INCLUDES) -I$(FREETYPE_DIR) $(KMID_INCLUDES)
 LIBS =  $(SDL_LIBS) -Laudio -Lconf  $(KMID_LIBS) -lttf -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -laudio -lconf
-CXXFLAGS =  -DRELNUM=$(RELNUM) $(WINDOWING_SYSTEM)
+CXXFLAGS =  -DRELNUM=$(RELNUM) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS)
 LFLAGS =  -g -L /usr/X11R6/lib -L /usr/local/lib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
