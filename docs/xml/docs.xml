@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="07 April 2002(GMT)">
+<readme title="Exult" changed="15 April 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="15042002">
+			<header>- 15 April 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="whatis_exult"/> the Add-ons are NOT required for Exult to run.</li>
+				<li><ref1 target="exult_config"/> added Hebble's changes to set different paths.</li>
+				<li><ref1 target="path_config"/> example for Hebble's changes.</li>				
+				</ul>
+			</body>
+		</sub>
 		<sub name="07042002">
 			<header>- 07 April 2002</header>
 			<body>
@@ -74,7 +84,8 @@
 					<Exult/> aims to let those people who own Ultima 7 (copyright 1993)
 					play the game on modern hardware, in as close to (or perhaps even surpassing)
 					its original splendor as is possible. You need to <strong>own</strong>
-					"Ultima 7: The Black Gate" "Ultima 7: Serpent Isle" and all the add-ons in order 
+					"Ultima 7: The Black Gate" "Ultima 7: Serpent Isle" and all the add-ons (not 
+					required to run but we require you to own them if you use them) in order 
 					to use <Exult/>, and we encourage you to buy a legal copy.
 				</para>
 			</body>
@@ -112,7 +123,8 @@
 						to terrain features) of the games Exult supports. Shapes may contain one or more 
 						frames (a frame is a single image).</li>
 					<li><strong>snapshot</strong>:<br/>
-						see <extref doc="faq" target="whatis_snapshot"/>.</li>
+						see <extref doc="faq" target="whatis_snapshot"/>.<br/>
+						Please note that our documentation usually refers to the latest snapshot.</li>
 					<li><strong>usecode</strong>:<br/>
 						that's the scripting language that drives all of U7 (conversations, objects...).</li>
 					<li><strong>Exult data directory</strong>:<br/>
@@ -198,12 +210,28 @@
 					<line>&lt;/data_path&gt;</line>
 					<line>&lt;game&gt;</line>
 					<line>&lt;blackgate&gt;</line>
+					<line>&lt;title&gt;</line>
+					<line>blackgate</line>
+					<line>&lt;/title&gt;</line>					
 					<line>&lt;path&gt;</line>
 					<line>./blackgate</line>
 					<line>&lt;/path&gt;</line>
-					<line>&lt;title&gt;</line>
-					<line>blackgate</line>
-					<line>&lt;/title&gt;</line>
+					<line>&lt;save_path&gt;</line>
+					<line>./blackgate
+						<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.
+						Also see <ref target="path_config"/> for recommendations.
+						</comment></line>
+					<line>&lt;/save_path&gt;</line>
+					<line>&lt;static_path&gt;</line>
+					<line>./blackgate
+						<comment>**optional. See &lt;save_path&gt;.
+						</comment></line>
+					<line>&lt;/static_path&gt;</line>
+					<line>&lt;gamedat_path&gt;</line>
+					<line>./blackgate
+						<comment>**optional. See &lt;save_path&gt;.
+						</comment></line>
+					<line>&lt;/gamedat_path&gt;</line>					
 					<line>&lt;keys&gt;</line>
 					<line>(default)
 						<comment>**configure custom keybindings or leave the (default)
@@ -220,6 +248,22 @@
 					<line>&lt;path&gt;</line>
 					<line>./serpentisle</line>
 					<line>&lt;/path&gt;</line>
+					<line>&lt;save_path&gt;</line>
+					<line>./serpentisle
+						<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.
+						Also see <ref target="path_config"/> for recommendations.
+						</comment></line>
+					<line>&lt;/save_path&gt;</line>
+					<line>&lt;static_path&gt;</line>
+					<line>./serpentisle
+						<comment>**optional. See &lt;save_path&gt;.
+						</comment></line>
+					<line>&lt;/static_path&gt;</line>
+					<line>&lt;gamedat_path&gt;</line>
+					<line>./serpentisle
+						<comment>**optional. See &lt;save_path&gt;.
+						</comment></line>
+					<line>&lt;/gamedat_path&gt;</line>
 					<line>&lt;keys&gt;</line>
 					<line>(default)</line>
 					<line>&lt;/keys&gt;</line>
@@ -446,12 +490,12 @@
 					<line>&lt;/data_path&gt;</line>
 					<line>&lt;game&gt;</line>
 					<line>&lt;blackgate&gt;</line>
-					<line>&lt;path&gt;</line>
-					<line>./blackgate</line>
-					<line>&lt;/path&gt;</line>
 					<line>&lt;title&gt;</line>
 					<line>blackgate</line>
 					<line>&lt;/title&gt;</line>
+					<line>&lt;path&gt;</line>
+					<line>./blackgate</line>
+					<line>&lt;/path&gt;</line>
 					<line>&lt;/blackgate&gt;</line>
 					<line>&lt;serpentisle&gt;</line>
 					<line>&lt;path&gt;</line>
@@ -462,7 +506,38 @@
 					<line>&lt;/disk&gt;</line>
 				</configdesc>
 				<para>
-				    You can either use the relative (./blackgate) or absolute (c:\ultima\blackgate) path 
+					You can also specify where Exult reads and stores the game specifc data, like the files
+					in the Static and Gamedat directory and the savegames.<br/>
+					This is optional and not required but may be usefull (it only works in post-RC1 
+					snapshots).<br/>
+					My recommendations and example for BG (for SI use the same syntax) are:
+				</para>
+				<configdesc>
+					<line>&lt;disk&gt;</line>
+					<line>&lt;data_path&gt;</line>
+					<line>data</line>
+					<line>&lt;/data_path&gt;</line>
+					<line>&lt;game&gt;</line>
+					<line>&lt;blackgate&gt;</line>
+					<line>&lt;title&gt;</line>
+					<line>blackgate</line>
+					<line>&lt;/title&gt;</line>
+					<line>&lt;path&gt;</line>
+					<line>./blackgate</line>
+					<line>&lt;/path&gt;</line>
+					<line>&lt;save_path&gt;</line>
+					<line>./blackgate/savegames</line>
+					<line>&lt;/save_path&gt;</line>
+					<line>&lt;static_path&gt;</line>
+					<line>./blackgate</line>
+					<line>&lt;/static_path&gt;</line>
+					<line>&lt;gamedat_path&gt;</line>
+					<line>./blackgate</line>
+					<line>&lt;/gamedat_path&gt;</line>
+					<line>&lt;/blackgate&gt;</line>
+				</configdesc>
+				<para>
+				    You can either use the relative (e.g. ./blackgate) or absolute (e.g. c:\ultima\blackgate) path 
 				    to point to the correct directory.
 				</para>
 				<para>
