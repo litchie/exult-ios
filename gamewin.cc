@@ -2702,7 +2702,7 @@ void Game_window::double_clicked
 			{
 		 	Gump_button *btn = gump->on_button(this, x, y);
 			if (btn)
-				btn->double_clicked(this, x, y);
+				btn->double_clicked(this);
 			return;
 			}
 		}
