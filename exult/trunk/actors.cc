@@ -2803,7 +2803,7 @@ void Npc_actor::paint
 	Actor::paint(gwin);		// Draw on screen.
 	if (dormant && schedule)	// Resume schedule.
 		{
-		dormant = false;		// But clear out old entries first.??
+		dormant = false;	// But clear out old entries first.??
 		gwin->get_tqueue()->remove(this);
 					// Force schedule->now_what().
 					// DO NOT call now_what here!!!
@@ -2850,7 +2850,12 @@ void Npc_actor::handle_event
 	)
 	{
 	if (!action)			// Not doing anything?
-		dormant = true;
+		{
+		if (schedule)
+			schedule->now_what();
+		else
+			dormant = true;
+		}
 	else
 		{			// Do what we should.
 		int delay = action->handle_event(this);
