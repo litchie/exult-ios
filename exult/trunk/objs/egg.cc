@@ -712,20 +712,24 @@ void Field_object::field_effect
 		break;
 	case sleep_field:
 		if (rand()%2)
-			{
 			actor->set_flag(Obj_flags::asleep);
-//+++No longer needed...	actor->need_timers()->start_sleep();
-			}
 		break;
 	case fire_field:
-		if (rand()%2)
+					// Blue fire (serpent isle)?
+		if (get_shapenum() == 561)
 			{
-//			int health = actor->get_property(Actor::health);
-//			actor->set_property(Actor::health, health - 1);
+			actor->reduce_health(5 + rand()%4);
+			say(first_ouch, last_ouch);
+			}
+		else if (rand()%2)
+			{
 			actor->reduce_health(1);
 			if (rand()%2)
 				say(first_ouch, last_ouch);
 			}
+					// But no sleeping here.
+		actor->clear_flag(Obj_flags::asleep);
+		break;
 		}
 	}
 
