@@ -1,3 +1,9 @@
+2002-06-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Better body placement.
+	* schedule.cc: Desk:  Fixed bug with people not sleeping in beds
+	or sitting by desks.
+
 2002-06-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* combat.cc: When shooting, take don't be blocked by opponent's
