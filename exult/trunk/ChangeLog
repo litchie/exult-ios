@@ -1,3 +1,6 @@
+2002-12-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* keyactions.cc: fixed crash in alternate SI intro
+
 2002-12-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gumps/Spellbook_gump.cc (public): Bookmark always shows, and

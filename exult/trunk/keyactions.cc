@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001 The Exult Team
+ *  Copyright (C) 2001-2002 The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -398,7 +398,7 @@ void ActionSIIntro(int *params)
 	game->play_intro();
 	game->clear_jive();
 	gwin->clear_screen(true);
-	gwin->get_pal()->set_palette(0);
+	gwin->get_pal()->set(0);
 	gwin->paint();
 	gwin->get_pal()->fade(50, 1, 0);
 }
