@@ -1102,6 +1102,7 @@ static void Handle_event
 			if (dragging) {
 				click_handled = gwin->drop_dragged(x, y,
 								dragged);
+				Mouse::mouse->set_speed_cursor();
 			}
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500)
@@ -1127,7 +1128,8 @@ static void Handle_event
 		{
 		Mouse::mouse->move(event.motion.x / scale, 
 						event.motion.y / scale);
-		Mouse::mouse->set_speed_cursor();
+		if (!dragging)
+			Mouse::mouse->set_speed_cursor();
 		Mouse::mouse_update = true;	// Need to blit mouse.
 		right_on_gump = false;
 
