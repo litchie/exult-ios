@@ -496,15 +496,13 @@ l : SI: Show combat stats
 m : Show map
 p : Use lockpicks
 Alt-q : Exit game
-r : Brings up status bars. First three strokes change the location 
-									of the bar. The fourth disables it again.
+r : Brings up status bars. First three strokes change the location of the bar. The fourth disables it again.
 Ctrl-r : Quick restore
 Ctrl-Alt-s : Screenshot
 Ctrl-s : Quick save
 s : Show save/load box
 Esc : Show Game menu box and closes all open boxes
-t : Target, instead of double clicking, shows a cursor and 
-									pauses the game until you click on something
+t : Target, instead of double clicking, shows a cursor and pauses the game until you click on something
 v : About screen
 w : Use watch, shows the time if you got a watch
 Alt-x : Exit game
@@ -527,8 +525,7 @@ Cheat commands
 Alt-+/- : Switch resolution( you may have to use the keypad)
 Arrow keys : Scroll map
 Home : Recenter map
-F2 : Cheat screen similar to the originals'. Allows for some level of
-									NPC editing and other cheat options
+F2 : Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options
 F3 : Map teleport
 F10 : Show endgame
 F11 : SI: Play alternate intro
@@ -542,8 +539,7 @@ Ctrl-Alt-h : Resurrect, heal party, cure poison and still hunger
 Alt-i : Toggle infravision
 Ctrl-l : Level up party
 l : Decrement skiplift
-Alt-h : Hackmover (you can move all objects around and it 
-									disables weight check
+Alt-h : Hackmover (you can move all objects around and it disables weight check
 Ctrl-Alt-m : Toggle Map editor (useful for Exult Studio)
 Ctrl-m : Get 100 gold coins
 Alt-Shift-m : Play previous song
@@ -557,10 +553,8 @@ Alt-t : Teleport (to current cursor position)
 Alt-w : Toggle archwizard mode (all spells etc.)
 Alt-1 : Test music, sfx, speech
 Ctrl-Alt-g : Grab NPC for cheat screen
-Ctrl-Alt-p : Pick pocket cheat, when enabled double-clicking on a 
-									NPC displays the actors inventory
-Ctrl-n : NPC number, When enabled, clicking an a NPC will 
-									display their number instead of their name. Useful for the cheat screen.
+Ctrl-Alt-p : Pick pocket cheat, when enabled double-clicking on a NPC displays the actors inventory
+Ctrl-n : NPC number, When enabled, clicking an a NPC will display their number instead of their name. Useful for the cheat screen.
 
 
 

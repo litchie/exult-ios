@@ -730,15 +730,13 @@
 					<keydesc name="m">Show map</keydesc>
 					<keydesc name="p">Use lockpicks</keydesc>
 					<keydesc name="Alt-q">Exit game</keydesc>
-					<keydesc name="r">Brings up status bars. First three strokes change the location 
-									of the bar. The fourth disables it again.</keydesc>
+					<keydesc name="r">Brings up status bars. First three strokes change the location of the bar. The fourth disables it again.</keydesc>
 					<keydesc name="Ctrl-r">Quick restore</keydesc>
 					<keydesc name="Ctrl-Alt-s">Screenshot</keydesc>
 					<keydesc name="Ctrl-s">Quick save</keydesc>
 					<keydesc name="s">Show save/load box</keydesc>
 					<keydesc name="Esc">Show Game menu box and closes all open boxes</keydesc>
-					<keydesc name="t">Target, instead of double clicking, shows a cursor and 
-									pauses the game until you click on something</keydesc>
+					<keydesc name="t">Target, instead of double clicking, shows a cursor and pauses the game until you click on something</keydesc>
 					<keydesc name="v">About screen</keydesc>
 					<keydesc name="w">Use watch, shows the time if you got a watch</keydesc>
 					<keydesc name="Alt-x">Exit game</keydesc>
@@ -771,8 +769,7 @@
 					<keydesc name="Alt-+/-">Switch resolution( you may have to use the keypad)</keydesc>
 					<keydesc name="Arrow keys">Scroll map</keydesc>
 					<keydesc name="Home">Recenter map</keydesc>
-					<keydesc name="F2">Cheat screen similar to the originals'. Allows for some level of
-									NPC editing and other cheat options</keydesc>
+					<keydesc name="F2">Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options</keydesc>
 					<keydesc name="F3">Map teleport</keydesc>
 					<keydesc name="F10">Show endgame</keydesc>
 					<keydesc name="F11">SI: Play alternate intro</keydesc>
@@ -786,8 +783,7 @@
 					<keydesc name="Alt-i">Toggle infravision</keydesc>
 					<keydesc name="Ctrl-l">Level up party</keydesc>
 					<keydesc name="l">Decrement skiplift</keydesc>
-					<keydesc name="Alt-h">Hackmover (you can move all objects around and it 
-									disables weight check</keydesc>
+					<keydesc name="Alt-h">Hackmover (you can move all objects around and it disables weight check</keydesc>
 					<keydesc name="Ctrl-Alt-m">Toggle Map editor (useful for Exult Studio)</keydesc>
 					<keydesc name="Ctrl-m">Get 100 gold coins</keydesc>
 					<keydesc name="Alt-Shift-m">Play previous song</keydesc>
@@ -801,10 +797,8 @@
 					<keydesc name="Alt-w">Toggle archwizard mode (all spells etc.)</keydesc>
 					<keydesc name="Alt-1">Test music, sfx, speech</keydesc>
 					<keydesc name="Ctrl-Alt-g">Grab NPC for cheat screen</keydesc>
-					<keydesc name="Ctrl-Alt-p">Pick pocket cheat, when enabled double-clicking on a 
-									NPC displays the actors inventory</keydesc>
-					<keydesc name="Ctrl-n">NPC number, When enabled, clicking an a NPC will 
-									display their number instead of their name. Useful for the cheat screen.</keydesc>
+					<keydesc name="Ctrl-Alt-p">Pick pocket cheat, when enabled double-clicking on a NPC displays the actors inventory</keydesc>
+					<keydesc name="Ctrl-n">NPC number, When enabled, clicking an a NPC will display their number instead of their name. Useful for the cheat screen.</keydesc>
 				</keytable>
 			</body>
 		</sub>
