@@ -104,7 +104,7 @@ tools/expack.exe : tools/expack.o $(FILE_OBJS)
 
 data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
 	cd data
-	../tools/expack -i flx.in
+	../tools/expack.exe -i flx.in
 	cd ..
 
 exultico.o: win32/exultico.rc win32/exult.ico
