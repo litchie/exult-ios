@@ -1293,6 +1293,47 @@ int Chunk_cache::is_blocked
 	}
 
 /*
+ *	Is a given rectangle of tiles blocked at a given lift?
+ *
+ *	Output: 1 if so, else 0.
+ *		If 0 (tile is free), new_lift contains the new height that
+ *		   an actor will be at if he walks onto the tile.
+ */
+
+int Chunk_object_list::is_blocked
+	(
+	int height,			// Height (along lift) to check.
+	int lift,			// Starting lift.
+	int startx, int starty,		// Starting tile coords.
+	int xtiles, int ytiles,		// Width, height in tiles.
+	int& new_lift			// New lift returned.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int tx, ty;
+	new_lift = 0;
+	int stopy = starty + ytiles, stopx = startx + xtiles;
+	for (ty = starty; ty < stopy; ty++)
+		{			// Get y chunk, tile-in-chunk.
+		int cy = ty/tiles_per_chunk, rty = ty%tiles_per_chunk;
+		for (tx = startx; tx < stopx; tx++)
+			{
+			int this_lift;
+			Chunk_object_list *olist = gwin->get_objects(
+					tx/tiles_per_chunk, cy);
+			olist->setup_cache();
+			if (olist->is_blocked(height, lift, tx%tiles_per_chunk,
+							rty, this_lift))
+				return (1);
+					// Take highest one.
+			new_lift = this_lift > new_lift ?
+					this_lift : new_lift;
+			}
+		}
+	return (0);
+	}
+
+/*
  *	Activate nearby eggs.
  */
 
@@ -1710,6 +1751,42 @@ Direction Get_direction
 		else			// Top-left?
 			return dydx >= -424 ? west : dydx >= -2472 ? northwest
 								: north;
+	}
+
+/*
+ *	Figure cost going from one tile to an adjacent tile (for pathfinding).
+ *
+ *	Output:	Cost, or -1 if blocked.
+ *		The 'tz' field in tile may be modified.
+ */
+
+int Get_cost
+	(
+	int tx, int ty, int& tz		// The tile we're going to.  The 'tz'
+					//   field may be modified.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int cx = tx/tiles_per_chunk, cy = ty/tiles_per_chunk;
+	Chunk_object_list *olist = gwin->get_objects(cx, cy);
+	tx = tx%tiles_per_chunk;	// Get tile within chunk.
+	ty = ty%tiles_per_chunk;
+	olist->setup_cache();		// Make sure cache is valid.
+	int new_lift;			// Might climb/descend.
+					// For now, assume height=3.
+	if (olist->is_blocked(3, tz, tx, ty, new_lift))
+		{			//+++++++Check for door.
+					//+++++++Need method to get shape.
+		return -1;
+		}
+	int cost = 1;
+	if (new_lift != tz)
+		{
+		cost++;
+		tz = new_lift;
+		}
+					// Maybe check types of ground?
+	return (cost);
 	}
 
 #if 0

@@ -252,21 +252,36 @@ int Game_window::drop_at_lift
 	)
 	{
 					// Take lift into account, round.
-	int x = dragging_paintx + at_lift*4 + tilesize/2;
-	int y = dragging_painty + at_lift*4 + tilesize/2;
+	int x = dragging_paintx + at_lift*4 - 1; // + tilesize/2;
+	int y = dragging_painty + at_lift*4 - 1; // + tilesize/2;
+#if 1
+	int tx = chunkx*tiles_per_chunk + x/tilesize;
+	int ty = chunky*tiles_per_chunk + y/tilesize;
 	int cx = chunkx + x/chunksize;
 	int cy = chunky + y/chunksize;
-	int tx = (x/tilesize)%tiles_per_chunk - 1;
-	int ty = (y/tilesize)%tiles_per_chunk - 1;
 	Chunk_object_list *chunk = get_objects(cx, cy);
+#else
+	int tx = (x/tilesize)%tiles_per_chunk; // - 1;
+	int ty = (y/tilesize)%tiles_per_chunk; // - 1;
 	chunk->setup_cache();		// Be sure cache is set up.
+#endif
 	int lift;			// Can we put it here?
 	Shape_info& info = shapes.get_info(dragging->get_shapenum());
+	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
+#if 1
+	if (!Chunk_object_list::is_blocked(info.get_3d_height(), at_lift,
+		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, lift))
+			
+#else
 	if (!chunk->is_blocked(info.get_3d_height(),
-				dragging->get_lift(), tx, ty, lift))
+				at_lift, tx, ty, lift))
+#endif
 		{
 		dragging->set_lift(lift);
-		dragging->set_shape_pos(tx, ty);
+		dragging->set_shape_pos(tx%tiles_per_chunk, 
+							ty%tiles_per_chunk);
+cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
+							<< ")\n";
 		chunk->add(dragging);
 		return (1);
 		}
