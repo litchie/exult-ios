@@ -499,6 +499,8 @@ imagewin/Makefile
 shapes/Makefile
 usecode/Makefile
 usecode/compiler/Makefile
+usecode/ucxt/Makefile
+usecode/ucxt/src/Makefile
 mapedit/Makefile
 ])
 
