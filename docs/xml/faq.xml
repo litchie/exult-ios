@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="07 January 2002(GMT)">
+<faqs title="Exult" changed="10 January 2002(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="10012002">
+			<header>- 10 January 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="walkthroughs"/> updated changed links.</li>
+				<li><ref1 target="si_ext_intro"/> this gets asked from time to time.</li>
+				<li><ref1 target="need_to_run"/> libglade needed as well.</li>				
+				<li><ref1 target="how_to_run"/> You need to have cheats enabled.</li>
+				<li><ref1 target="bug_report"/> Added a screenshot of the upload checkbox.</li>				
+				</ul>
+			</body>
+		</sub>
 		<sub name="07012002">
 			<header>- 07 January 2002</header>
 			<body>
@@ -216,7 +228,7 @@
 					A BeOS binary snapshot can be found at 
 					<extref target="http://digilander.iol.it/burton666/exult-beos.zip"/>. Jack Burton provides
 					this weekly or whenever it compiles for him. Thanks!<br/>
-					There is also a version availlable for AmigaOS/MorphOS at
+					There is also a version available for AmigaOS/MorphOS at
 					<extref target="http://www.muenster.de/~tomjoad/exult.html"/>. Please see
 					<ref target="what_platforms"/> for some more information on this port. 
 				</para>
@@ -277,7 +289,7 @@
 					MorphOS and AmigaOS. You can find that version at Ruediger Hanke's homepage
 					<extref target="http://www.muenster.de/~tomjoad/exult.html"/>. We are currently
 					working on integrating his changes into the main code and making those versions
-					availlable on our homepage.
+					available on our homepage.
 				 </para>
 			</body>
 		</sub>
@@ -394,10 +406,12 @@
 				<ul>
 					<li><extref target="http://members.aol.com/UltimaWrld/ultima07.html"/><br/>
 						The Ultima 7 section of Excalibur's World of Ultima site.</li>
-					<li><extref target="http://homepages.ihug.co.nz/~paulryan/Ultima/Ultima7.htm"/><br/>
+					<li><extref target="http://www.ultimainfo.net/Codex/Ultima7.htm"/><br/>
 						Paulon Dragons selection of notes and information on Ultima 7.</li>
-					<li><extref target="http://homepages.ihug.co.nz/~paulryan/Ultima/FAQ2.htm#U7"/><br/>
+					<li><extref target="http://www.ultimainfo.net/Codex/FAQ2.htm#U7"/><br/>
 						The Ultima 7 section of Paulon Dragons Ultima games FAQ.</li>
+					<li><extref target="http://www.ultimainfo.net/FAQ/ultimafaqs.htm#11"/><br/>
+						The U7 section of the more detailed Ultima Gameplay FAQ.</li>
 				</ul>
 			</body>
 		</sub>
@@ -410,6 +424,27 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="si_ext_intro">
+			<header>Will you implement the extended intro for SI?</header>
+			<body>
+				<para>
+					The extended intro for Serpent Isle can be found at 
+					<extref target="http://www.io.com/~dloubet/"/>. At this moment we don't
+					even think about implementing this extended intro.<br/>
+					Why not?<br/>
+					It sure would be nice to use it. But you may have noticed some effects 
+					missing from the intro. You may have noticed that there is no sound. You may 
+					have noticed that there is neither speech nor subtitles.<br/>
+					All that would have to be addressed and add to that the longer running time and 
+					that you have to synchronize the music with it. Then what about the size of it? 
+					You would need to compress it and make sure all our supported platforms make use 
+					of it.
+				</para>
+				<para>
+					Everyone volunteering to do it is welcome to.
+				</para>
+			</body>
+		</sub>		
 		<sub name="party_formation">
 			<header>Why is the party formation different?</header>
 			<body>				
@@ -604,7 +639,8 @@
 				<para>
 					Currently, you need to be running <Exult/> on X (Linux, UNIX, etc.), with
 					<Exult/> set to run in a window (not fullscreen).  You also need the GTK+
-					library installed.
+					library installed as well as 
+					<extref target="http://developer.gnome.org/doc/API/libglade/libglade.html">libglade</extref>
 				</para>
 			</body>
 		</sub>
@@ -642,7 +678,7 @@
    				<li>Run <Exult/>.</li>
    				<li>Press 'alt-ctrl-m' to go into 'map-editor' mode.  If all is set
 					up correctly, exult_studio will start up, and will have a list of files
-					on the left side of its window.</li>
+					on the left side of its window (you need to have cheats enabled in <Exult/>.</li>
 				</ul>
 				<para>
 					Starting up one or the other separately will reconnect them:
@@ -819,7 +855,7 @@
 					<extref target="http://exult.sourceforge.net/download.php">snapshot</extref>.
 					If the bug still occurs make sure that no one else already reported the bug 
 					(in the bug tracker).</li>
-				<li>If you are not a Sourceforge member please include your e-mail address this is 
+				<li>If you are not a Sourceforge member please include your e-mail address. This is 
 					important so we can get back to you. If you are a Sourceforge member please log in 
 					before submitting a bug. If you are a member of Sourceforge you will also get notified
 					of follow ups on your bug automatically by E-mail.</li>
@@ -836,7 +872,10 @@
 					savegame dialog as well (to the right, above the party members). As some parts of the game 
 					may require you to complete other quests or stuff before you get to the bug you want to 
 					report it's much easier for the team to look at the problem (speeds the process up a bit 
-					as they are much more likely you take a look at the problem this way).</li>
+					as they are much more likely you take a look at the problem this way).<br/>
+					<strong>You need to check the box saying "Check to upload and Attach file".</strong>. 
+					See this screenshot for an example:
+					<extref target="http://exult.sourceforge.net/images/screenshots/sfbug.jpg"/></li>
 				<li><em>One</em> bug per subject please.</li>			
 				</ol>
 				<para>
