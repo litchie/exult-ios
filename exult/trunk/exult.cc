@@ -902,6 +902,8 @@ static void Handle_keystroke
 			case 'l':
 				if(!alt && !ctrl) {		// l : decrement skip_lift
 					cheat.dec_skip_lift();
+				} else if (!alt && ctrl) {	// Ctrl-l : level up party
+					cheat.levelup_party();
 				}
 				break;
 			case 'm':
@@ -1432,6 +1434,7 @@ void show_cheat_help (void)
 	scroll->add_text("alt-g - Toggle God Mode\n");
 	scroll->add_text("g - Change Avatar gender\n");
 	scroll->add_text("alt-i - Toggle infravision\n");
+	scroll->add_text("ctrl-l - Level up party\n");
 	scroll->add_text("ctrl-m - Get 100 gold coins\n");
 	scroll->add_text("ctrl-alt-m - Hack-Mover\n");
 	scroll->add_text("ctrl-t - Next time period\n");
