@@ -31,7 +31,8 @@ EXULT_FLX_OBJECTS = \
 	magic_boomerang.shp	\
 	gorget.shp		\
 	magicgorget.shp		\
-	cleaver.shp
+	cleaver.shp		\
+	faces.shp
 
 flexdir = $(datadir)/exult
 

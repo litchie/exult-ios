@@ -1,3 +1,8 @@
+2001-03-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/faces.shp: paperdoll art by Philip Gottschalk! Thanks!
+	* gumps/Paperdoll_gump_info.cc, data/flx.in, Makefile*: include art
+	* data/credits.txt: include Philip in credits
+
 2001-03-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SFX's:  Those from Usecode intrinsics now have volume, L-R

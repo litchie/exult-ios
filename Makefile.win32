@@ -101,6 +101,7 @@ EXULT_FLX_OBJECTS = \
 	data/gorget.shp \
 	data/magicgorget.shp \
 	data/cleaver.shp \
+	data/faces.shp \
 	data/flx.in 
 
 $(EXEC) : $(OBJS) data/exult.flx
