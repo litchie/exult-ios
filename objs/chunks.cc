@@ -1315,7 +1315,8 @@ void Map_chunk::add_dungeon_levels
 		for (int tx = tiles.x; tx < endx; tx++)
 		{
 			int tnum = (ty*c_tiles_per_chunk + tx)/2;
-
+			if (GAME_SI)	// SI has roofs at random levels!!
+				lift = 5;
 			if (tx % 2)
 			{
 				dungeon_levels[tnum] &= 0x0F;
