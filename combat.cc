@@ -532,10 +532,10 @@ void Combat_schedule::now_what
 			{
 			int dir = npc->get_direction(opponent);
 			opponent = opponent->attacked(npc);
-			gwin->add_dirty(npc);
+			npc->add_dirty(gwin);
 			npc->set_frame(npc->get_dir_framenum(dir,
 							Actor::standing));
-			gwin->add_dirty(npc);
+			npc->add_dirty(gwin, 1);
 					// Glass sword?  Only 1 use.
 			if (weapon_shape == 604)
 				{

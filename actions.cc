@@ -341,9 +341,11 @@ int Frames_actor_action::handle_event
 	if (frnum >= 0)
 		{
 		Game_window *gwin = Game_window::get_game_window();
-		gwin->add_dirty(actor);
+//		gwin->add_dirty(actor);
+		actor->add_dirty(gwin);	// Get weapon to redraw too.
 		actor->set_frame(frnum);
-		gwin->add_dirty(actor);
+		actor->add_dirty(gwin, 1);
+//		gwin->add_dirty(actor);
 		}
 	return (speed);
 	}
