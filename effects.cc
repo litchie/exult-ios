@@ -294,8 +294,14 @@ inline void Raindrop::paint
 	Xform_palette xform		// Transform array.
 	)
 	{
-	int x = (tx - scrolltx)/tilesize, y = (ty - scrollty)/tilesize;
-	oldpix = iwin->get_pixel8(x, y);	// Get pixel.
+	unsigned long ascrollx = scrolltx*(unsigned long)tilesize,
+		      ascrolly = scrollty*(unsigned long)tilesize;
+	int x = ax - ascrollx, y = ay - ascrolly;
+	if (x < 0 || y < 0 || 
+			x >= iwin->get_width() || y >= iwin->get_height())
+		return;
+	if (oldpix == 255)
+		oldpix = iwin->get_pixel8(x, y);	// Get pixel.
 	iwin->put_pixel8(xform[oldpix], x, y);
 	}
 
@@ -308,26 +314,30 @@ inline void Raindrop::next
 	Image_window8 *iwin,		// Where to draw.	
 	int scrolltx, int scrollty,	// Tile at top-left corner.
 	Xform_palette xform,		// Transform array.
-	int tw, int th			// Dims. of window in tiles.
+	int w, int h			// Dims. of window.
 	)
 	{
-	int x = (tx - scrolltx)/tilesize, y = (ty - scrollty)/tilesize;
-	if (x >= 0)			// Not the first time?  Restore pix.
+	unsigned long ascrollx = scrolltx*(unsigned long)tilesize,
+		      ascrolly = scrollty*(unsigned long)tilesize;
+	int x = ax - ascrollx, y = ay - ascrolly;
+					// Still on screen?  Restore pix.
+	if (x >= 0 && y >= 0 && x < w && y < h && oldpix != 255)
 		iwin->put_pixel8(oldpix, x, y);
+	oldpix = 255;
 					// Time to restart?
-	if (tx < 0 || tx >= tw - 1 || ty >= th - 1)
+	if (x < 0 || x >= w || y < 0 || y >= h)
 		{			
 		int r = rand();
 					// Have a few fall faster.
 		yperx = (r%4) ? 1 : 2;
-		tx = r%(tw - tw/8);
-		ty = r%(th - th/4);
+		ax = ascrollx + r%(w - w/8);
+		ay = ascrolly + r%(h - h/4);
 		}
 	else				// Next spot.
 		{
-		int delta = 1 + rand()%2;
-		tx += delta;
-		ty += delta + yperx;
+		int delta = 1 + rand()%4;
+		ax += delta;
+		ay += delta + yperx;
 		}
 					// Save old pixel & paint new.
 	paint(iwin, scrolltx, scrollty, xform);
@@ -347,8 +357,7 @@ void Rain_effect::handle_event
 	if (!gwin->is_main_actor_inside())
 		{			// Don't show rain inside buildings!
 		Image_window8 *win = gwin->get_win();
-		int tw = win->get_width()/tilesize, 
-		    th = win->get_height()/tilesize;
+		int w = win->get_width(), h = win->get_height();
 					// Get transform table.
 		Xform_palette xform = gwin->get_xform(8);//++++Experiment.
 		const int num_drops = sizeof(drops)/sizeof(drops[0]);
@@ -356,13 +365,16 @@ void Rain_effect::handle_event
 		    scrollty = gwin->get_scrollty();
 					// Move drops.
 		for (int i = 0; i < num_drops; i++)
-			drops[i].next(win, scrolltx, scrollty, xform, tw, th);
+			drops[i].next(win, scrolltx, scrollty, xform, w, h);
 		gwin->set_painted();
 		}
 	if (curtime < stop_time)	// Keep going?
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
+		{
+		gwin->set_all_dirty();
 		gwin->remove_effect(this);
+		}
 	}
 
 /*
@@ -374,17 +386,17 @@ void Rain_effect::paint
 	Game_window *gwin
 	)
 	{
-#if 0	/* +++++Not good.  Need to store rel. to scroll tiles. */
 	if (gwin->is_main_actor_inside())
 		return;			// Inside.
 					// Get transform table.
 	Xform_palette xform = gwin->get_xform(8);//++++Experiment.
+	int scrolltx = gwin->get_scrolltx(),
+	    scrollty = gwin->get_scrollty();
 	Image_window8 *win = gwin->get_win();
 	const int num_drops = sizeof(drops)/sizeof(drops[0]);
 	for (int i = 0; i < num_drops; i++)
-		drops[i].paint(win, xform);
+		drops[i].paint(win, scrolltx, scrollty, xform);
 	gwin->set_painted();
-#endif
 	}
 
 /*
