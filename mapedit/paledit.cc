@@ -521,6 +521,35 @@ on_importbtn_clicked                   (GtkButton       *button,
 	gtk_widget_show(GTK_WIDGET(fsel));
 }
 
+void
+on_insert_btn_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Palette_edit *ed = (Palette_edit *) user_data;
+//+++++++++
+}
+void
+on_remove_btn_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Palette_edit *ed = (Palette_edit *) user_data;
+//+++++++++
+}
+void
+on_up_btn_clicked                      (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Palette_edit *ed = (Palette_edit *) user_data;
+	ed->move_palette(true);
+}
+void
+on_down_btn_clicked                  (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Palette_edit *ed = (Palette_edit *) user_data;
+	ed->move_palette(false);
+}
+
 /*
  *	Create box with 'Palette #', 'Import', 'Move' controls.
  */
@@ -561,44 +590,42 @@ GtkWidget *Palette_edit::create_controls
 	gtk_widget_show (remove_btn);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), remove_btn);
 	GTK_WIDGET_SET_FLAGS (remove_btn, GTK_CAN_DEFAULT);
-#if 0
 	gtk_signal_connect (GTK_OBJECT (insert_btn), "clicked",
 			GTK_SIGNAL_FUNC (on_insert_btn_clicked),
 			this);
 	gtk_signal_connect (GTK_OBJECT (remove_btn), "clicked",
 			GTK_SIGNAL_FUNC (on_remove_btn_clicked),
 			this);
-#endif
 	/*
 	 *	The 'Move' controls.
 	 */
 	frame = gtk_frame_new ("Move");
 	gtk_widget_show(frame);
 	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
-	hbuttonbox = gtk_hbutton_box_new ();
-	gtk_widget_show (hbuttonbox);
-	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
-							GTK_BUTTONBOX_START);
-	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
-
-	down_btn = gtk_button_new_with_label ("Down");
+	GtkWidget *bbox = gtk_hbox_new(TRUE, 0);
+	gtk_widget_show(bbox);
+	gtk_container_add(GTK_CONTAINER (frame), bbox);
+	down_btn = gtk_button_new();
 	gtk_widget_show (down_btn);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), down_btn);
+	gtk_box_pack_start (GTK_BOX (bbox), down_btn, FALSE, FALSE, 0);
 	GTK_WIDGET_SET_FLAGS (down_btn, GTK_CAN_DEFAULT);
+	GtkWidget *arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	gtk_widget_show(arrow);
+	gtk_container_add(GTK_CONTAINER(down_btn), arrow);
 
-	up_btn = gtk_button_new_with_label ("Up");
+	up_btn = gtk_button_new();
 	gtk_widget_show (up_btn);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), up_btn);
+	gtk_box_pack_start (GTK_BOX (bbox), up_btn, FALSE, FALSE, 0);
 	GTK_WIDGET_SET_FLAGS (up_btn, GTK_CAN_DEFAULT);
-#if 0
+	arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_OUT);
+	gtk_widget_show(arrow);
+	gtk_container_add(GTK_CONTAINER(up_btn), arrow);
 	gtk_signal_connect (GTK_OBJECT (down_btn), "clicked",
 			GTK_SIGNAL_FUNC (on_down_btn_clicked),
 			this);
 	gtk_signal_connect (GTK_OBJECT (up_btn), "clicked",
 			GTK_SIGNAL_FUNC (on_up_btn_clicked),
 			this);
-#endif
 	/*
 	 *	The 'File' controls.
 	 */
@@ -639,9 +666,9 @@ void Palette_edit::enable_controls
 	)
 	{
 					// Can't delete last one.
-	gtk_widget_set_sensitive(remove_btn, selected >= 0 &&
+	gtk_widget_set_sensitive(remove_btn, cur_pal >= 0 &&
 					palettes.size() > 1);
-	if (selected == -1)		// No selection.
+	if (cur_pal == -1)		// No palette?
 		{
 		gtk_widget_set_sensitive(down_btn, false);
 		gtk_widget_set_sensitive(up_btn, false);
@@ -649,8 +676,8 @@ void Palette_edit::enable_controls
 	else
 		{
 		gtk_widget_set_sensitive(down_btn,
-					selected < palettes.size() - 1);
-		gtk_widget_set_sensitive(up_btn, selected > 0);
+					cur_pal < palettes.size() - 1);
+		gtk_widget_set_sensitive(up_btn, cur_pal > 0);
 		}
 	}
 
@@ -712,11 +739,11 @@ void Palette_edit::setup
 	palnum_adj = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 
 				palettes.size() - 1, 1,
 				2, 2));
-	GtkWidget *spin = gtk_spin_button_new(palnum_adj, 1, 0);
+	pspin = gtk_spin_button_new(palnum_adj, 1, 0);
 	gtk_signal_connect(GTK_OBJECT(palnum_adj), "value_changed",
 					GTK_SIGNAL_FUNC(palnum_changed), this);
-	gtk_box_pack_start(GTK_BOX(hbox1), spin, FALSE, FALSE, 0);
-	gtk_widget_show(spin);
+	gtk_box_pack_start(GTK_BOX(hbox1), pspin, FALSE, FALSE, 0);
+	gtk_widget_show(pspin);
 
 					// Add edit controls to bottom.
 	gtk_box_pack_start(GTK_BOX(vbox), create_controls(), FALSE, FALSE, 0);
@@ -909,6 +936,42 @@ void Palette_edit::save
 		msg += fname; msg += "'.";
 		ExultStudio::get_instance()->prompt(msg.c_str(), "Okay");
 		}
+	}
+
+/*
+ *	Move a palette within the list.
+ */
+
+void Palette_edit::move_palette
+	(
+	bool up
+	)
+	{
+	if (cur_pal < 0)
+		return;
+	GdkRgbCmap *tmp;
+	if (up)
+		{
+		if (cur_pal > 0)
+			{
+			tmp = palettes[cur_pal - 1];
+			palettes[cur_pal - 1] = palettes[cur_pal];
+			palettes[cur_pal] = tmp;
+			cur_pal--;
+			}
+		}
+	else
+		{
+		if (cur_pal < palettes.size() - 1)
+			{
+			tmp = palettes[cur_pal + 1];
+			palettes[cur_pal + 1] = palettes[cur_pal];
+			palettes[cur_pal] = tmp;
+			cur_pal++;
+			}
+		}
+	modified = true;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pspin), cur_pal);
 	}
 
 /*
