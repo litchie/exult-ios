@@ -220,6 +220,7 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 		ProducerConsumerBuf *buf = streams[i];
 		if (!buf->is_active())
 			continue;
+		++active_cnt;
 		int	ret=0;
 		size_t	sofar=0;
 		memset(temp_buffer,silence,len);
@@ -230,18 +231,15 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 				break;
 			sofar+=ret;
 		}
+		if (len - sofar && ret == -1)	// This one is done.
+			buf->end_consumption();
 #if 0 && !defined(MACOS)
 		cerr << "(" << active_cnt <<"/"<<audio_streams.size()<< ")" << 
 						" Mixing auxilliary data " ;
 		cerr << sofar << " of " << (*it)->size() << endl;
 #endif
-		if(len-sofar&&ret==-1)
-		{
-			// perror("consume");
-			// delete the entry
-			buf->end_consumption();
-			continue;
-		}
+		if (!sofar)
+			continue;	// Nothing read.
 #if !defined(MACOS)
 		// the following code is not working under MacOS - it results in garbled sound
 		// Propably an endianess problem?
@@ -250,7 +248,6 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 			modify_stereo16((sint16 *) temp_buffer, len/4, dir);
 #endif
 		SDL::MixAudio(stream, temp_buffer, len, buf->get_volume());
-		++active_cnt;
 	}
 	if (!active_cnt)		// Nothing found?
 		SDL::PauseAudio(1);	// Stop asking.
