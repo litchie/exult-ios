@@ -259,3 +259,38 @@ void Uc_message_statement::gen
 		}
 	}
 
+/*
+ *	Create.
+ */
+
+Uc_call_statement::Uc_call_statement
+	(
+	Uc_call_expression *f
+	) : function_call(f)
+	{
+	function_call->set_no_return();
+	}
+
+/*
+ *	Delete.
+ */
+
+Uc_call_statement::~Uc_call_statement
+	(
+	)
+	{
+	delete function_call;
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_call_statement::gen
+	(
+	ostream& out,
+	Uc_function *fun
+	)
+	{
+	function_call->gen_value(out);	// (We set 'no_return'.)
+	}

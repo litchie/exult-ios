@@ -22,10 +22,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <stdio.h>
 #include "ucsym.h"
 #include "opcodes.h"
 #include "utils.h"
 #include "ucexpr.h"
+#include "ucfun.h"
 
 /*
  *	Assign value on stack.
@@ -64,6 +66,7 @@ int Uc_symbol::gen_value
 int Uc_symbol::gen_call
 	(
 	ostream& out,
+	Uc_function *fun,
 	Uc_array_expression *parms,	// Parameter list.
 	bool retvalue			// True if a function.
 	)
@@ -128,6 +131,7 @@ int Uc_string_symbol::gen_value
 int Uc_intrinsic_symbol::gen_call
 	(
 	ostream& out,
+	Uc_function *fun,
 	Uc_array_expression *parms,	// Parameter list.
 	bool retvalue			// True if a function.
 	)
@@ -150,6 +154,45 @@ int Uc_intrinsic_symbol::gen_call
 	out.put((char) parmcnt);	// Parm. count is 1.
 	return 1;
 	}
+
+/*
+ *	Generate function call.
+ *
+ *	Output: 0 if can't do this.
+ */
+
+int Uc_function_symbol::gen_call
+	(
+	ostream& out,
+	Uc_function *fun,
+	Uc_array_expression *aparms,	// Actual parameter list.
+	bool /* retvalue */		// True if a function.
+	)
+	{
+	int parmcnt = 0;
+					// Want to push parm. values.
+	const vector<Uc_expression *>& exprs = aparms->get_exprs();
+					// Push forwards, so #0 pops last.
+	for (vector<Uc_expression *>::const_iterator it = exprs.begin(); 
+						it != exprs.end(); it++)
+		{
+		Uc_expression *expr = *it;
+		expr->gen_value(out);
+		parmcnt++;
+		}
+	if (parmcnt != parms.size())
+		{
+		char buf[100];
+		sprintf(buf,
+			"# parms. passed (%d) doesn't match '%s' count (%d)",
+			parmcnt, get_name(), parms.size());
+		}				
+	out.put((char) UC_CALL);	// Called function sets return.
+	int link = fun->link(this);	// Get offset in function's list.
+	Write2(out, link);
+	return 1;
+	}
+
 
 bool String_compare::operator()(char * const &x, char * const &y) const
 	{ return strcmp(x, y) < 0; }

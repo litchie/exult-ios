@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 
 class Uc_array_expression;
+class Uc_function;
 
 /*
  *	For comparing names:
@@ -57,8 +58,8 @@ public:
 					// Gen. to assign from stack.
 	virtual int gen_assign(ostream& out);
 					// Generate function/procedure call.
-	virtual int gen_call(ostream& out, Uc_array_expression *parms,
-							bool retvalue);
+	virtual int gen_call(ostream& out, Uc_function *fun, 
+			Uc_array_expression *parms, bool retvalue);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return -1; }
 	};
@@ -115,8 +116,8 @@ public:
 	int get_num_parms()		// ++++Not valid yet.
 		{ return num_parms; }
 					// Generate function/procedure call.
-	virtual int gen_call(ostream& out, Uc_array_expression *parms,
-							bool retvalue);
+	virtual int gen_call(ostream& out, Uc_function *fun, 
+			Uc_array_expression *parms, bool retvalue);
 	};
 
 /*
@@ -137,11 +138,9 @@ public:
 		{ return usecode_num; }
 	int get_num_parms()
 		{ return parms.size(); }
-#if 0	/* +++++Do this */
 					// Generate function/procedure call.
-	virtual int gen_call(ostream& out, Uc_array_expression *parms,
-							bool retvalue);
-#endif
+	virtual int gen_call(ostream& out, Uc_function *fun, 
+			Uc_array_expression *parms, bool retvalue);
 	};
 
 /*
