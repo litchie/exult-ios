@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE readme SYSTEM "readme.dtd">
-<readme title="Exult" changed="03 Septembre 2001(GMT)">
+<!DOCTYPE readme SYSTEM "docs.dtd">
+<readme title="Exult" changed="28 Octobre 2001(GMT)">
+	<section title="Changes to the Documentation">
+		<sub name="28102001">
+			<header>- 28 Octobre 2001</header>
+			<body>
+				<ul>
+				<li><ref2 target="Changes to the Documentation"/> introduced. Don't know why 
+					I didn't add this from the beginning.</li>
+				<li><ref1 target="exult_config"/> added more gameplay options.</li>
+				<li><ref1 target="movement"/> added comment on how to activate right mouse 
+					button on MacOS.</li>
+				<li><ref1 target="exult_keys"/> added <key>g</key> for Abacus.</li>
+				<li><ref2 target="Game Menu"/> added to help people on how to use it.</li>				
+				</ul>	
+			</body>
+		</sub>
+	</section>			
 	<section title="Introduction">
 		<sub name="whatis_exult">
 			<header>What is <Exult/>?</header>
@@ -56,7 +72,7 @@
 					<strong>Word of advice:</strong> Don't mix the files from BG and SI.
 				</para>
 				<para>
-					<strong>Important:</strong> Do not run <Exult/> on an origina Ultima7
+					<strong>Important:</strong> Do not run <Exult/> on an original Ultima7
 					game which you're actually in the middle of playing, as Exult's saved
 					files have a different format. There is no way to convert those 
 					original savegames and they will just crash <Exult/>.
@@ -137,8 +153,8 @@
 					<line>&lt;trace&gt;</line>
 					<line>&lt;usecode&gt;</line>
 					<line>no
-						<comment>**enable/disable usecode-tracing for debuging (you 
-						shouldn't need this one)</comment></line>
+						<comment>**options are yes/no/verbose. This is used to trace the 
+						executed Usecode (you shouldn't need this unless you are a programmer).</comment></line>
 					<line>&lt;/usecode&gt;</line>
 					<line>&lt;/trace&gt;</line>
 					<line>&lt;/debug&gt;</line>
@@ -161,6 +177,23 @@
 						<comment>**this skips the splash screen, the intro before you get to the
 						game menu, disabling it brings you straight to the game menu</comment></line>
 					<line>&lt;/skip_splash&gt;</line>
+					<line>&lt;facestats&gt;</line>
+					<line>0
+						<comment>activates the status faces and the position on the screen.
+						-1 disable,0 right, 1 middle, 2 right.</comment></line>
+					<line>&lt;/facestats&gt;</line>
+					<line>&lt;mouse3rd&gt;</line>
+					<line>no
+						<comment>yes enables using of the middle mouse button.</comment></line>
+					<line>&lt;/mouse3rd&gt;</line>
+					<line>&lt;fastmouse&gt;</line>
+					<line>no
+						<comment>yes enables faster cursor movement in fullscreen mode.</comment></line>
+					<line>&lt;/fastmouse&gt;</line>
+					<line>&lt;bg_paperdolls&gt;</line>
+					<line>no
+						<comment>yes enables SI style paperdolls in BG.</comment></line>
+					<line>&lt;/bg_paperdolls&gt;</line>
 					<line>&lt;/gameplay&gt;</line>
 					<line>&lt;audio&gt;</line>
 					<line>&lt;enabled&gt;</line>
@@ -514,6 +547,10 @@
 					<li>Double-click on doors, shutters with left button to open or
 						close them.</li>
 				</ul>
+				<para>
+					Note that on MacOS you have to hold down the <key>Cmd</key> key and the 
+					mouse button to have the functionality of a right mouse button.
+				</para> 
   			</body>
 		</sub>
 		<sub name="exult_keys">
@@ -542,6 +579,7 @@
 					<keydesc name="b">Use spellbook</keydesc>
 					<keydesc name="c">Combat mode</keydesc>
 					<keydesc name="f">Use food</keydesc>
+					<keydesc name="g">Use Abacus</keydesc>
 					<keydesc name="h">Show list of keyboard commands</keydesc>
 					<keydesc name="i">Show inventory</keydesc>
 					<keydesc name="j">SI: Show jawbone</keydesc>
@@ -603,7 +641,7 @@
 					<keydesc name="Ctrl-d">Delete object</keydesc>
 					<keydesc name="e">Toggle egg display</keydesc>
 					<keydesc name="Alt-g">Toggle God mode</keydesc>
-					<keydesc name="Ctrl-g">SI: Change avatar gender</keydesc>
+					<keydesc name="Ctrl-g">Change avatar gender</keydesc>
 					<keydesc name="Ctrl-Alt-h">Resurrect, heal party, cure poison and still hunger</keydesc>
 					<keydesc name="Alt-i">Toggle infravision</keydesc>
 					<keydesc name="Ctrl-l">Level up party</keydesc>
@@ -631,6 +669,129 @@
 			</body>
 		</sub>
   	</section>
+  	<section title="Game Menu">
+		<sub name="open_menu">
+			<header>Access to the Game menu</header>
+			<body>
+				<para>
+					You can access the Game menu either by pressing the disk icon in the Avatar's 
+					inventory screen or by pressing <key>Esc</key>.<br/>
+					You then have the following options.
+				</para>
+			</body>
+		</sub>
+		<sub name="savemenu">
+			<header>Load/Save Game</header>
+			<body>
+				<para>
+					This on is pretty straightforward. You can load and save a game, delete a game and 
+					view some information of a savegame on the right side (a screenshot and some stats).<br/>
+					Pressing <strong>Cancel</strong> exits the Load/Save options.
+				</para>
+			</body>
+		</sub>
+		<sub name="video_gump">
+			<header>Video Options</header>
+			<body>
+				<para>
+					In this option screen you are able to determine how <Exult/> displays the game.
+				</para>
+				<ul>
+					<li><strong>Resolution</strong><br/>
+						lets you choose between various resolutions. You can choose between 320x200,
+						320x240, 400x300, 512x384 and 640x480. If you want higher resolutions edit 
+						the exult.cfg file as outlined in <ref1 target="exult_config"/>.</li>
+					<li><strong>Scaling</strong><br/>
+						choose between 1x and 2x. What it does is explained in <ref1 target="scaler"/>.</li>
+					<li><strong>Scaler</strong><br/>
+						lets you choose your favourite scaling engine. Also look at <ref1 target="scaler"/>
+						for an explanation.</li>
+					<li><strong>Full Screen</strong><br/>
+						enable or disable running Exult in full screen.</li>
+					<li><strong>OK/Cancel</strong><br/>
+						Ok accepts your changes, Cancel discards your changes.</li>
+				</ul>					
+			</body>
+		</sub>
+		<sub name="audio_gump">
+			<header>Audio Options</header>
+			<body>
+				<para>
+					Look at <ref2 target="Audio"/> to see explanation on the seetings.
+				</para>
+				<ul>
+					<li><strong>Audio</strong><br/>
+						Enable or disable all Audio in <Exult/>.</li>
+					<li><strong>Music</strong><br/>
+						Enable or disable music.</li>
+					<li><strong>Conversion</strong><br/>
+						choose between None, GM, GS, GS127.</li>
+					<li><strong>Reverb</strong><br/>
+					 	alters the way the midi is played. Enable or disable to hear if you like it.</li>
+					<li><strong>Chorus</strong><br/>
+						the same as <strong>Reverb</strong></li>
+					<li><strong>SFX</strong><br/>
+						Enable or disable digital sound effects.</li>
+					<li><strong>Speech Options</strong><br/>
+						Enable or disable the speech in the games.</li>
+					<li><strong>OK/Cancel</strong><br/>
+						Ok accepts your changes, Cancel discards your changes.</li> 
+				</ul>
+			</body>
+		</sub>
+		<sub name="gameplay_gump">
+			<header>Gameplay Options</header>
+			<body>
+				<ul>
+					<li><strong>Status Bars</strong><br/>
+						You can either disable the status bars or choose its position on 
+						the bottom of the screen (left, middle, right).</li>
+					<li><strong>Fast Mouse</strong><br/>
+						makes the mouse cursor move faster in fullscreen modes. Enable or disable it.</li>
+					<li><strong>Use middle mouse button</strong><br/>
+						In the normal game, the middle mouse button activates the target-function 
+						(which could also be accomplished by pressing <key>t</key>). For modal gumps,
+						the middle mouse acts as 'return', the right button as 'escape', so you can now 
+						for example accept the default slider value by just pressing the middle button. 
+						the escape function is also available during most other actions like selecting 
+						a target or conversations. Enable or disable it.</li>
+					<li><strong>Doubleclick closes gumps</strong><br/>
+						not implemented into the Gameplay Options yet, but can be enabled or disabled by 
+						editing the exult.cfg - see <ref1 target="exult_config"/>.</li>
+					<li><strong>Paperdolls</strong><br/>
+						only availlable in <strong>Black Gate</strong>. Enables or disable Paperdolls 
+						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
+					<li><strong>Cheats</strong><br/>
+						Enables or disables all the cheats that we implemented in <Exult/>. 
+						See <ref1 target="exult_cheats"/> what those cheats are.</li>
+					<li><strong>Text Background</strong><br/>
+						shows a tinted background behind text in conversations to make it easier to read.
+						Either disable it or choose between the clours purple, orange, light gray, green, 
+						yellow,pale blue, dark green. red, bright white, dark grey and white.</li>
+					<li><strong>OK/Cancel</strong><br/>
+						Ok accepts your changes, Cancel discards your changes.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="quit_menu">
+			<header>Quit to Menu</header>
+			<body>
+				<para>
+					This is not implented yet and just quits <Exult/>. When it eventually works you will 
+					be back to the <Exult/> menu where you choose which game you want to play. It is 
+					actually more dificult to implement than it sounds so don't expect it too soon.
+				</para>
+			</body>
+		</sub>
+		<sub name="quit_game">
+			<header>Quit</header>
+			<body>
+				<para>
+					Exits <Exult/>.
+				</para>
+			</body>
+		</sub>								
+	</section>	  	
   	<section title="OS specific notes">		
 		<sub name="error_log">
 			<header>Error Log</header>

@@ -21,24 +21,29 @@
 
 
 
-<!-- Templates -->
-<xsl:template match="readme">
+<!-- Faq Templates -->
+<xsl:template match="faqs">
 	<xsl:value-of select="@title"/>
-	<xsl:text>Documentation&#xA;</xsl:text>
+	<xsl:text>F.A.Q. (frequently asked questions)&#xA;</xsl:text>
 	<xsl:text>last changed: </xsl:text>
 	<xsl:value-of select="@changed"/>
-	<xsl:text>&#xA;&#xA;</xsl:text>	
+	<xsl:text>&#xA;&#xA;</xsl:text>
+	<xsl:text>A html version can be found at http://exult.sourceforge.net/faq.php&#xA;</xsl:text>
+	<xsl:text>&#xA;&#xA;</xsl:text>
 
 	<!-- BEGIN TOC -->
 	<xsl:for-each select="section">
 		<xsl:number level="multiple" 
 					count="section" 
-					format="1. "/>
+					format="1. "
+					value="position() -1"/>
 		<xsl:value-of select="@title"/><xsl:text>&#xA;</xsl:text>
 		<xsl:for-each select="sub">
 			<xsl:number level="multiple" 
 						count="section|sub" 
-						format="1.1 "/>
+						format="1."
+						value="count(ancestor::section/preceding-sibling::section)"/>
+			<xsl:number format="1. "/>
 			<xsl:apply-templates select="header"/><xsl:text>&#xA;</xsl:text>
 		</xsl:for-each>
 		<xsl:text>&#xA;</xsl:text>
@@ -50,24 +55,59 @@
 	<!-- END CONTENT -->
 </xsl:template>
 
-<!-- Readme section Template -->
+<!-- Readme Templates -->
+<xsl:template match="readme">
+	<xsl:value-of select="@title"/>
+	<xsl:text>Documentation&#xA;</xsl:text>
+	<xsl:text>last changed: </xsl:text>
+	<xsl:value-of select="@changed"/>
+	<xsl:text>&#xA;&#xA;</xsl:text>	
+
+	<!-- BEGIN TOC -->
+	<xsl:for-each select="section">
+		<xsl:number level="multiple" 
+					count="section" 
+					format="1. "
+					value="position() -1"/>					
+		<xsl:value-of select="@title"/><xsl:text>&#xA;</xsl:text>
+		<xsl:for-each select="sub">
+			<xsl:number level="multiple" 
+						count="section|sub" 
+						format="1."
+						value="count(ancestor::section/preceding-sibling::section)"/>
+			<xsl:number format="1. "/>												
+			<xsl:apply-templates select="header"/><xsl:text>&#xA;</xsl:text>
+		</xsl:for-each>
+		<xsl:text>&#xA;</xsl:text>
+	</xsl:for-each>
+	<!-- END TOC -->
+
+	<!-- BEGIN CONTENT -->
+	<xsl:apply-templates select="section"/>
+	<!-- END CONTENT -->
+</xsl:template>
+
+<!-- section Template -->
 <xsl:template match="section">
 	<xsl:text>&#xA;</xsl:text>
 	<xsl:text>--------------------------------------------------------------------------------&#xA;</xsl:text>
 	<xsl:text>&#xA;</xsl:text>
-	<xsl:number format="1. "/>
+	<xsl:number format="1. "
+				value="position() -1"/>
 	<xsl:value-of select="@title"/>
 	<xsl:text>&#xA;</xsl:text>
 	<xsl:apply-templates select="sub"/>
 </xsl:template>
 
 
-<!-- Readme Entry Template -->
+<!-- Entry Template -->
 <xsl:template match="sub">
 	<xsl:variable name = "num_idx">
 		<xsl:number level="multiple"
 					count="section|sub"
-					format="1.1 "/>
+					format="1."
+					value="count(ancestor::section/preceding-sibling::section)"/>									
+		<xsl:number format="1. "/>
 	</xsl:variable> 
 	<xsl:value-of select="$num_idx"/><xsl:apply-templates select="header"/>
 	<xsl:text>&#xA;</xsl:text>
@@ -145,7 +185,7 @@
 <!--================-->
 
 <xsl:template match="para">
-	<!-- Same trick as in the question template -->
+	<!-- Same trick as in the header template -->
 	<xsl:variable name = "data">
 		<xsl:apply-templates/>
 	</xsl:variable> 
@@ -159,7 +199,7 @@
 		<xsl:text>&#xA;</xsl:text>
 	</xsl:if>
 	<xsl:value-of select="@name"/><xsl:text>:&#xA;</xsl:text>
-	<!-- Same trick as in the question template -->
+	<!-- Same trick as in the header template -->
 	<xsl:variable name = "data">
 		<xsl:apply-templates/>
 	</xsl:variable> 
