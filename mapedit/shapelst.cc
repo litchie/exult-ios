@@ -1035,6 +1035,69 @@ static void Import_png
 	}
 
 /*
+ *	Import a tiled PNG file into a given shape's frames.
+ */
+
+static void Import_png_tiles
+	(
+	const char *fname,		// Filename.
+	Shape_file_info *finfo,		// What we're updating.
+	int shapenum,
+	int tiles,			// If #0, write all frames as tiles,
+					//   this many in each row (col).
+	bool bycols			// Write tiles columns-first.
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	Vga_file *ifile = finfo->get_ifile();
+	if (!ifile)
+		return;			// Shouldn't happen.
+	Shape *shape = ifile->extract_shape(shapenum);
+	if (!shape)
+		return;
+	int nframes = shape->get_num_frames();
+	cout << "Reading " << fname << " tiled" 
+		<< (bycols ? ", by cols" : ", by rows") << " first" << endl;
+					// Figure #tiles in other dim.
+	int dim0_cnt = tiles;
+	int dim1_cnt = (nframes + dim0_cnt - 1)/dim0_cnt;
+	int needw, needh;		// Figure min. image dims.
+	if (bycols)
+		{ needh = dim0_cnt*8; needw = dim1_cnt*8; }
+	else
+		{ needw = dim0_cnt*8; needh = dim1_cnt*8; }
+	int w, h, rowsize, xoff, yoff, palsize;
+	unsigned char *pixels, *palette;
+					// Import, with 255 = transp. index.
+	if (!Import_png8(fname, 255, w, h, rowsize, xoff, yoff,
+						pixels, palette, palsize))
+		{
+		Alert("Error reading '%s'", fname);
+		return;
+		}
+	delete palette;
+	if (w < needw || h < needh)
+		{
+		Alert("File '%s' image is too small.  %dx%d required.",
+						fname, needw, needh);
+		return;
+		}
+	for (int frnum = 0; frnum < nframes; frnum++)
+		{
+		int x, y;
+		if (bycols)
+			{ y = frnum%dim0_cnt; x = frnum/dim0_cnt; }
+		else
+			{ x = frnum%dim0_cnt; y = frnum/dim0_cnt; }
+		unsigned char *src = pixels + w*8*y + 8*x;
+		shape->set_frame(new Shape_frame(src, 8, 8, 8, 8, false), 
+									frnum);
+		}
+	delete pixels;
+	finfo->set_modified();
+	}
+
+/*
  *	Read in a shape that was changed by an external program (i.e., Gimp).
  */
 
@@ -1050,7 +1113,8 @@ void Shape_chooser::read_back_edited
 		Import_png(ed->pathname.c_str(), finfo, 
 						ed->shapenum, ed->framenum);
 	else
-		;//++++++++++IMPORT TILED.
+		Import_png_tiles(ed->pathname.c_str(), finfo, ed->shapenum,
+						ed->tiles, ed->bycolumns);
 	}
 
 /*
