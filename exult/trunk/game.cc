@@ -85,7 +85,7 @@ char *Game::get_game_identity(const char *savename)
     char *game_identity = 0;
     in.seekg(0x80);			// Get to file info.
     // Read pos., length of each file.
-    long *finfo = new long[2*numfiles];
+    sint32 *finfo = new sint32[2*numfiles];
     int i;
     for (i = 0; i < numfiles; i++)
       {
