@@ -412,6 +412,7 @@ void Combat_schedule::start_strike
 		state = approach;
 		npc->set_target(0);	// Look for new opponent.
 		npc->start(200, 200);
+		return;
 		}
 	else
 		{

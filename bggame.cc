@@ -22,6 +22,7 @@
 
 #include "SDL_events.h"
 
+#include <typeinfo>
 #include "files/U7file.h"
 #include "files/utils.h"
 #include "flic/playfli.h"
