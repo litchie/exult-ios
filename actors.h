@@ -242,25 +242,19 @@ public:
 
 /*
  *	Actor frame descriptions:
-	0	Standing N.
-	1	Walk N.
-	2	Walk N.
-	3-4	Walk NW
-	5-6	Walk NE.
-	9	Facing N, hands raised.
-	10	Sitting down N.
-	11-13	Lying down N.
-	14	Hands raised, N.
-	15	Hands outstretched, N.
-
-These were contributed by a user:
-0-2: walking
-3-9: attacking
-10: sitting
-11: beginning to sit down
-12: kneeling
-13: sleeping
-14-15: casting spells
+	0	Standing
+	1	Walk
+	2	Walk
+	3	Beginning to attack
+	4-6	Attacking with one hand
+	7-9	Attacking with two hands
+	9	Also NPC shooting magic
+	10	Sitting down
+	11	Bending over (beginning to sit down)
+	12	Kneeling
+	11	Lying down
+	14	Casting spell (hands raised)
+	15	Casting spell (hands outstretched)
 
  */
 
