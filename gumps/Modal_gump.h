@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000 The Exult Team
+Copyright (C) 2000-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _MODAL_GUMP_H_
 
 #include "Gump.h"
+#include "SDL_events.h"
 
 /*
  *	A modal gump object represents a 'dialog' that grabs the mouse until
@@ -55,7 +56,7 @@ public:
 	virtual void mousewheel_up() { }
 	virtual void mouse_drag(int mx, int my)
 		{  }
-	virtual void key_down(int chr)	// Character typed.
+	virtual void key_down(int chr, SDL_Event& ev) // Character typed.
 		{  }
 };
 

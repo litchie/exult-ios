@@ -38,7 +38,9 @@
 #include "actors.h"
 #include "game.h"
 #include "Audio.h"
-
+#include "Yesno_gump.h"
+#include "gump_utils.h"
+#include "Slider_gump.h"
 
 Gump_manager::Gump_manager()
 	: open_gumps(0), non_persistent_count(0), right_click_close(true)
@@ -373,4 +375,189 @@ void Gump_manager::paint()
 {
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
 		gmp->gump->paint();
+}
+
+
+/*
+ *	Verify user wants to quit.
+ *
+ *	Output:	1 to quit.
+ */
+int Gump_manager::Okay_to_quit()
+{
+	if (Yesno_gump::ask("Do you really want to quit?"))
+		quitting_time = QUIT_TIME_YES;
+	return quitting_time;
+}
+
+
+int Gump_manager::Handle_Modal_gump_event
+	(
+	Modal_gump *gump,
+	SDL_Event& event
+	)
+{
+	//	Game_window *gwin = Game_window::get_instance();
+	int scale_factor = gwin->get_fastmouse() ? 1 
+				: gwin->get_win()->get_scale();
+	static bool rightclick;
+
+	switch (event.type)
+	{
+	case SDL_MOUSEBUTTONDOWN:
+#ifdef DEBUG
+cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->get_x())
+	 << ", " <<	((event.button.y / scale_factor) - gump->get_y()) << ")"<<endl;
+#endif
+		if (event.button.button == 1)
+			gump->mouse_down(event.button.x / scale_factor, 
+						event.button.y / scale_factor);
+		else if (event.button.button == 2 && gwin->get_mouse3rd())
+			gump->key_down(SDLK_RETURN, event);
+		else if (event.button.button == 3)
+			rightclick = true;
+		else if (event.button.button == 4) // mousewheel up
+			gump->mousewheel_up();
+		else if (event.button.button == 5) // mousewheel down
+			gump->mousewheel_down();
+		break;
+	case SDL_MOUSEBUTTONUP:
+		if (event.button.button == 1)
+			gump->mouse_up(event.button.x / scale_factor,
+						event.button.y / scale_factor);
+		else if (event.button.button == 3 && gwin->get_mouse3rd() && rightclick) {
+			rightclick = false;
+			if (gwin->get_gump_man()->can_right_click_close()) return 0;
+		}
+		break;
+	case SDL_MOUSEMOTION:
+		Mouse::mouse->move(event.motion.x / scale_factor, event.motion.y / scale_factor);
+		Mouse::mouse_update = true;
+					// Dragging with left button?
+		if (event.motion.state & SDL_BUTTON(1))
+			gump->mouse_drag(event.motion.x / scale_factor,
+						event.motion.y / scale_factor);
+		break;
+	case SDL_QUIT:
+		if (Okay_to_quit())
+			return (0);
+	case SDL_KEYDOWN:
+		{
+			if (event.key.keysym.sym == SDLK_ESCAPE)
+				return (0);
+			if ((event.key.keysym.sym == SDLK_s) &&
+				(event.key.keysym.mod & KMOD_ALT) &&
+				(event.key.keysym.mod & KMOD_CTRL)) {
+					make_screenshot(true);
+					return 1;
+			}
+
+			int chr = event.key.keysym.sym;
+			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
+						? toupper(chr) : chr, event);
+			break;
+		}
+	}
+	return (1);
+}
+
+/*
+ *	Handle a modal gump, like the range slider or the save box, until
+ *	the gump self-destructs.
+ *
+ *	Output:	0 if user hit ESC.
+ */
+
+int Gump_manager::Do_Modal_gump
+	(
+	Modal_gump *gump,	// What the user interacts with.
+	Mouse::Mouse_shapes shape	// Mouse shape to use.
+	)
+{
+	//	Game_window *gwin = Game_window::get_instance();
+
+	// maybe make this selective? it's nice for menus, but annoying for sliders
+	//	gwin->end_gump_mode();
+
+	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
+	if (shape != Mouse::dontchange)
+		Mouse::mouse->set_shape(shape);
+	gwin->show(true);
+	int escaped = 0;
+					// Get area to repaint when done.
+	Rectangle box = gump->get_rect();
+	box.enlarge(2);
+	box = gwin->clip_to_win(box);
+					// Create buffer to backup background.
+	Image_buffer *back = gwin->get_win()->create_buffer(box.w, box.h);
+	Mouse::mouse->hide();			// Turn off mouse.
+					// Save background.
+	gwin->get_win()->get(back, box.x, box.y);
+	gump->paint();			// Paint gump.
+	Mouse::mouse->show();
+	gwin->show();
+	do
+	{
+		Delay();		// Wait a fraction of a second.
+		Mouse::mouse->hide();		// Turn off mouse.
+		Mouse::mouse_update = false;
+		SDL_Event event;
+		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
+			escaped = !Handle_Modal_gump_event(gump, event);
+		Mouse::mouse->show();		// Re-display mouse.
+		if (!gwin->show() &&	// Blit to screen if necessary.
+		    Mouse::mouse_update)	// If not, did mouse change?
+			Mouse::mouse->blit_dirty();
+	}
+	while (!gump->is_done() && !escaped);
+	Mouse::mouse->hide();
+					// Restore background, if wanted.
+	if (gump->want_restore_background())
+		gwin->get_win()->put(back, box.x, box.y);
+	delete back;
+	Mouse::mouse->set_shape(saveshape);
+					// Leave mouse off.
+	gwin->show(true);
+	return (!escaped);
+}
+
+
+/*
+ *	Prompt for a numeric value using a slider.
+ *
+ *	Output:	Value, or 0 if user hit ESC.
+ */
+
+int Gump_manager::Prompt_for_number
+	(
+	int minval, int maxval,		// Range.
+	int step,
+	int defval			// Default to start with.
+	)
+{
+	Slider_gump *slider = new Slider_gump(minval, maxval,
+							step, defval);
+	int ok = Do_Modal_gump(slider, Mouse::hand);
+	int ret = !ok ? 0 : slider->get_val();
+	delete slider;
+	return (ret);
+}
+
+
+/*
+ *	Show a number.
+ */
+
+void Gump_manager::Paint_num
+	(
+	int num,
+	int x,				// Coord. of right edge of #.
+	int y				// Coord. of top of #.
+	)
+{
+	//	Shape_manager *sman = Shape_manager::get_instance();
+	const int font = 2;
+	char buf[20];
+  	snprintf(buf, 20, "%d", num);
+	sman->paint_text(font, buf, x - sman->get_text_width(font, buf), y);
 }

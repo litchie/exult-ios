@@ -1,7 +1,7 @@
 /*
  *  Gump_manager.h - Object that manages all available gumps
  *
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2001-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,14 +18,18 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef GUMP_INCLUDED
-#define GUMP_INCLUDED
+#ifndef GUMP_MANAGER_INCLUDED
+#define GUMP_MANAGER_INCLUDED
 
 #include "singles.h"
+#include "mouse.h"
+#include "SDL_events.h"
 
 class Gump;
 class Game_object;
 class Game_window;
+class Modal_gump;
+
 
 class  Gump_manager : public Game_singletons
 {
@@ -65,8 +69,18 @@ public:
 	inline bool can_right_click_close() { return right_click_close; }
 	inline void set_right_click_close(bool r) { right_click_close = r; }
 
+
+	int Okay_to_quit();
+	int Prompt_for_number(int minval, int maxval, int step, int def);
+	int Do_Modal_gump(Modal_gump *, Mouse::Mouse_shapes);
+	void Paint_num(int num, int x, int y);
+
+
 	Gump_manager();
 	~Gump_manager() { close_all_gumps(true); }
+
+ private:
+	int Handle_Modal_gump_event(Modal_gump *gump, SDL_Event& event);
 };
 
-#endif //CONTAINER_GUMP_INCLUDED
+#endif // GUMP_MANAGER_INCLUDED

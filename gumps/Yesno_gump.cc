@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000 The Exult Team
+Copyright (C) 2000-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "game.h"
 #include "Gump_button.h"
-#include "gump_utils.h"
+#include "Gump_manager.h"
 
 /*
  *	Statics:
@@ -158,10 +158,7 @@ void Yesno_gump::mouse_up
  *	Handle ASCII character typed.
  */
 
-void Yesno_gump::key_down
-	(
-	int chr
-	)
+void Yesno_gump::key_down(int chr, SDL_Event& ev)
 {
 	if (chr == 'y' || chr == 'Y' || chr == SDLK_RETURN)
 		set_answer(1);
@@ -182,7 +179,7 @@ int Yesno_gump::ask
 {
 	Yesno_gump *dlg = new Yesno_gump(txt);
 	int answer;
-	if (!Do_Modal_gump(dlg, Mouse::hand))
+	if (!gwin->get_gump_man()->Do_Modal_gump(dlg, Mouse::hand))
 		answer = 0;
 	else
 		answer = dlg->get_answer();

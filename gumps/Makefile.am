@@ -18,7 +18,6 @@ libgumps_la_SOURCES = \
 	Gump.h	\
 	Gump_button.cc	\
 	Gump_button.h	\
-	gump_utils.cc	\
 	gump_utils.h	\
 	Gump_widget.cc	\
 	Gump_widget.h	\
