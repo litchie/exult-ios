@@ -774,16 +774,16 @@ static void Handle_event
 			// Try removing old queue entry.
 			gwin->get_tqueue()->remove(gwin->get_main_actor());
 
-			if (gump_man->can_right_click_close() &&
+			if (!dragging &&	// Causes crash if dragging.
+				gump_man->can_right_click_close() &&
 					gump_man->gump_mode() && 
-					gump_man->find_gump(event.motion.x / scale, 
-										event.motion.y / scale,
-										false)) {
+					gump_man->find_gump(x, y, false)) {
 				gump = 0;
 				right_on_gump = true;
 			}
 			else 
-				gwin->start_actor(x, y, Mouse::mouse->avatar_speed);
+				gwin->start_actor(x, y, 
+						Mouse::mouse->avatar_speed);
 
 		}
 		if (event.button.button == 4 || event.button.button == 5) 
@@ -804,20 +804,19 @@ static void Handle_event
 		break;
 		}
 	case SDL_MOUSEBUTTONUP:
-        if (dont_move_mode)
-            break;
+		{
+	        if (dont_move_mode)
+        	    break;
+		int x = event.button.x/scale, y = event.button.y/scale;
 		if (event.button.button == 3)
 			{
 			uint32 curtime = SDL_GetTicks();
 					// Last click within .5 secs?
 			if (curtime - last_b3_click < 500)
-				gwin->start_actor_along_path(
-					event.button.x / scale, 
-					event.button.y / scale, Mouse::mouse->avatar_speed);
-			else if (right_on_gump && (gump = gump_man->find_gump(
-										event.motion.x / scale, 
-										event.motion.y / scale,
-										false))) {
+				gwin->start_actor_along_path(x, y,
+						Mouse::mouse->avatar_speed);
+			else if (right_on_gump && 
+				(gump = gump_man->find_gump(x, y, false))) {
 				Rectangle dirty = gump->get_dirty();
 				gwin->add_dirty(dirty);
 				gump_man->close_gump(gump);
@@ -833,27 +832,25 @@ static void Handle_event
 			uint32 curtime = SDL_GetTicks();
 			bool click_handled = false;
 			if (dragging) {
-				click_handled = gwin->drop_dragged(
-					event.button.x / scale, 
-					event.button.y / scale, dragged);
+				click_handled = gwin->drop_dragged(x, y,
+								dragged);
 			}
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500)
 				{
 				dragging = false;
-				gwin->double_clicked(event.button.x / scale, 
-						event.button.y / scale);
+				gwin->double_clicked(x, y);
 				Mouse::mouse->set_speed_cursor();
 				break;
 				}
 			last_b1_click = curtime;
 			if (!click_handled)
 					// Identify item(s) clicked on.
-				gwin->show_items(event.button.x / scale, 
-						event.button.y / scale);
+				gwin->show_items(x, y);
 			dragging = false;
 			}
 		break;
+		}
 	case SDL_MOUSEMOTION:
 		{
 		Mouse::mouse->move(event.motion.x / scale, 
