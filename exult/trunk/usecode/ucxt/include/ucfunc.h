@@ -188,11 +188,11 @@ class UCFunc
 		           _return_var(false) {};
 
 		// temp passing UCData, probably shouldn't need it.
-		void output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, bool gnubraces=false);
+		void output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment);
 		ostream &output_ucs_funcname(ostream &o, unsigned int funcid, unsigned int num_args, bool return_var);
 		void output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, const map<unsigned int, string> &intrinsics, unsigned int indent);
 		void output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, unsigned int indent);
-		void output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, const map<unsigned int, string> &intrinsics, unsigned int);
+		void output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, const map<unsigned int, string> &intrinsics, unsigned int indent);
 		
 		void parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool basic);
 		void parse_ucs_pass1(vector<UCNode *> &nodes);
@@ -218,9 +218,9 @@ class UCFunc
 		
 		streampos      _codeoffset; // the offset to the start of the code segment
 		
-		unsigned short _num_args;    // the number of arguments
-		unsigned short _num_locals;  // the number of local variables
-		unsigned short _num_externs; // the number of external function id's
+		unsigned int _num_args;    // the number of arguments
+		unsigned int _num_locals;  // the number of local variables
+		unsigned int _num_externs; // the number of external function id's
 		vector<unsigned short> _externs; // the external function id's
 		
 		vector<UCc> _opcodes;

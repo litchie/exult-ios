@@ -17,7 +17,7 @@
 	#endif
 #endif
 
-#define MAX_NO_OPCODES 256
+#define MAX_NO_OPCODES 512
 vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
 vector<pair<unsigned int, unsigned int> > opcode_jumps;
 
