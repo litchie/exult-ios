@@ -1,5 +1,10 @@
 2002-07-04  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* actors.cc,exult.cc,ucsched.cc:  Added 'rest_time', so Avatar
+	will return to a standing position when not doing anything else.
+	This fixes the spell-casting bug where you're stuck in the last
+	casting frame, but it may cause some new bugs...
+
 	* gamewin.cc,exult.cc:  Attempting to remove the
 	halt-after-teleport, which I think is no longer needed (and is
 	obviously wrong).

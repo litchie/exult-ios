@@ -111,6 +111,7 @@ protected:
 					//   actor not moving.
 	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
 	Rectangle weapon_rect;		// Screen area weapon was drawn in.
+	long rest_time;			// # msecs. of not doing anything.
 	void init();			// Clear stuff during construction.
 					// Move and change frame.
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
@@ -255,6 +256,14 @@ public:
 		{ return frame_time; }
 	void set_frame_time(int ftime)	// Set walking speed.
 		{ frame_time = ftime; }
+	void stand_at_rest();		// Stand (if not doing anyting else).
+	void clear_rest_time()
+		{ rest_time = 0; }
+	void resting(int msecs)		// Increment rest time.
+		{
+		if ((rest_time += msecs) > 2000) 
+			stand_at_rest();// Stand (under certain conditions).
+		}
 	bool is_moving() const
 		{ return frame_time != 0; }
 	bool is_dormant() const		// Inactive (i.e., off-screen)?
