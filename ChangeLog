@@ -1,3 +1,8 @@
+2001-10-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/intrinsics.cc,etc: set_telekenesis_fun(),
+	get_item_usability() added to fix telekenesis, fetch spells.
+
 2001-10-17  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* actorio.cc: Cast changeover

@@ -425,9 +425,15 @@ void Usecode_script::handle_event
 			Usecode_internal::Usecode_events ev = 
 					Usecode_internal::internal_exec;
 			if (obj && obj->is_egg() && 
-				((Egg_object *)obj)->get_type() ==
+					((Egg_object *)obj)->get_type() ==
 			    				Egg_object::usecode)
 				ev = Usecode_internal::egg_proximity;
+					// And for telekenesis spell fun:
+			else if (fun == usecode->telekenesis_fun)
+					{
+					ev = Usecode_internal::double_click;
+					usecode->telekenesis_fun = -1;
+					}
 			usecode->call_usecode(fun, obj, ev);
 			break;
 			}
