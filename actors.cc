@@ -2776,12 +2776,11 @@ bool Actor::figure_hit_points
 	if (!wpoints && !powers)
 		return false;		// No harm can be done.
 
-	int attacker_level = attacker ? attacker->get_level() : 4;
-	int prob = 40 + attacker_level +
-		Get_effective_prop(attacker, combat, 10) +
+	int prob = 55 +
+		2*Get_effective_prop(attacker, combat, 10) +
 		Get_effective_prop(attacker, dexterity, 10) -
-		Get_effective_prop(this, dexterity, 10) +
-			wpoints - armor;
+		2*Get_effective_prop(this, combat, 10) -
+		Get_effective_prop(this, dexterity, 10);
 	if (get_flag(Obj_flags::protection))// Defender is protected?
 		prob -= (40 + rand()%20);
 					// Attacked by Vesculio in SI?
@@ -2823,7 +2822,13 @@ bool Actor::figure_hit_points
 	int hp;
 	if (wpoints > 0)		// Some ('curse') do no damage.
 		{
-		hp = attacker_str + (rand()%attacker_level) + wpoints - armor;
+		if (wpoints == 127)	// Glass sword?
+			hp = wpoints;	// A killer.
+		else
+			hp = 1 + rand()%wpoints
+				+ (attacker_str > 1 ? 
+					(1 + rand()%(attacker_str/2)) : 0)
+				- (armor > 0 ? (1 + rand()%armor) : 0);
 		if (hp < 1)
 			hp = 1;
 		}
