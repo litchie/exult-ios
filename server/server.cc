@@ -218,6 +218,21 @@ static void Handle_client_message
 			cheat.toggle_map_editor();
 		break;
 		}
+	case Exult_server::tile_grid:
+		{
+		unsigned char *ptr = &data[0];
+		int onoff = Read2(ptr);
+		if ((onoff != 0) != cheat.show_tile_grid())
+			cheat.toggle_tile_grid();
+		break;
+		}
+	case Exult_server::edit_lift:
+		{
+		unsigned char *ptr = &data[0];
+		int lift = Read2(ptr);
+		cheat.set_edit_lift(lift);
+		break;
+		}
 	case Exult_server::reload_usecode:
 		gwin->reload_usecode();
 		break;

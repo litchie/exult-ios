@@ -48,6 +48,7 @@ const int c_any_framenum = -359;
 #define	MOVE_ALL_TERRAIN ((1<<5)|(1<<6))
 #define MOVE_ETHEREAL (1<<7)
 #define MOVE_ALL (MOVE_FLY|MOVE_WALK|MOVE_SWIM|MOVE_ETHEREAL)
+#define MOVE_MAPEDIT (1<<8)
 
 //	Wrapping:
 #define INCR_CHUNK(x) ((x + 1)%c_num_chunks)

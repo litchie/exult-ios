@@ -52,6 +52,8 @@ Cheat::Cheat() {
 	god_mode = false;
 	wizard_mode = false;
 	map_editor = false;
+	tile_grid = false;
+	edit_lift = 0;
 	infravision = false;
 	pickpocket = false;
 	grab_actor = true;
@@ -169,6 +171,18 @@ void Cheat::toggle_map_editor (void) {
 					// Stop time-stop.
 		gwin->set_time_stopped(0);
 		}
+}
+
+void Cheat::toggle_tile_grid (void) {
+	if (!enabled) return;
+	tile_grid = !tile_grid;
+	gwin->paint();
+}
+
+void Cheat::set_edit_lift(int lift) {
+	if (!enabled) return;
+	edit_lift = lift;
+	gwin->paint();
 }
 
 void Cheat::toggle_infravision (void) {
