@@ -42,6 +42,8 @@ class Shape_info;
 class Shapes_vga_file;
 class DataSource;
 
+#define IREG_EXTENDED	254		// For shape #'s > 1023.
+
 /*
  *	The game map:
  */

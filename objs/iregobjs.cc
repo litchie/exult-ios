@@ -120,26 +120,46 @@ int Ireg_game_object::is_dragable
 
 /*
  *	Write the common IREG data for an entry.
+ *	Note:  Length is incremented if this is an extended entry (shape# >
+ *		1023).
+ *	Output:	->past data written.
  */
 
-void Ireg_game_object::write_common_ireg
+unsigned char *Ireg_game_object::write_common_ireg
 	(
-	unsigned char *buf		// 4-byte buffer to be filled.
+	int norm_len,			// Normal length (if not extended).
+	unsigned char *buf		// Buffer to be filled.
 	)
 	{
+	unsigned char *endptr;
+	int shapenum = get_shapenum(), framenum = get_framenum();
+	if (shapenum >= 1024 || framenum >= 64)
+		{
+		*buf++ = IREG_EXTENDED;
+		norm_len++;
+		buf[3] = shapenum&0xff;
+		buf[4] = shapenum>>8;
+		buf[5] = framenum;
+		endptr = buf + 6;
+		}
+	else
+		{
+		buf[3] = shapenum&0xff;
+		buf[4] = ((shapenum>>8)&3) | (framenum<<2);
+		endptr = buf + 5;
+		}
+	buf[0] = norm_len;
 	if (owner)
 		{			// Coords within gump.
-		buf[0] = get_tx();
-		buf[1] = get_ty();
+		buf[1] = get_tx();
+		buf[2] = get_ty();
 		}
 	else				// Coords on map.
 		{
-		buf[0] = ((get_cxi()%16) << 4) | get_tx();
-		buf[1] = ((get_cyi()%16) << 4) | get_ty();
+		buf[1] = ((get_cxi()%16) << 4) | get_tx();
+		buf[2] = ((get_cyi()%16) << 4) | get_ty();
 		}
-	int shapenum = get_shapenum(), framenum = get_framenum();
-	buf[2] = shapenum&0xff;
-	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
+	return endptr;
 	}
 
 /*
@@ -151,23 +171,25 @@ void Ireg_game_object::write_ireg
 	DataSource *out
 	)
 	{
-	unsigned char buf[11];		// 10-byte entry + length-byte.
-	buf[0] = 10;
-	write_common_ireg(&buf[1]);
-	buf[5] = (get_lift()&15)<<4;
-	buf[6] = get_quality();
+	unsigned char buf[20];		// 10-byte entry;
+	uint8 *ptr = write_common_ireg(10, buf);
+	*ptr++ = (get_lift()&15)<<4;
+	*ptr = get_quality();
 	Shape_info& info = get_info();
 	if (info.has_quality_flags())
 		{			// Store 'quality_flags'.
-		buf[6] = get_flag((Obj_flags::invisible) != 0) +
+		*ptr = get_flag((Obj_flags::invisible) != 0) +
 		 	((get_flag(Obj_flags::okay_to_take) != 0) << 3);
 		}
 					// Special case for 'quantity' items:
 	else if (get_flag(Obj_flags::okay_to_take) && info.has_quantity())
-		buf[6] |= 0x80;
-
-	buf[7] = (get_flag(Obj_flags::is_temporary) != 0);
-	out->write((char*)buf, sizeof(buf));
+		*ptr |= 0x80;
+	++ptr;
+	*ptr++ = (get_flag(Obj_flags::is_temporary) != 0);
+	*ptr++ = 0;			// Filler, I guess.
+	*ptr++ = 0;
+	*ptr++ = 0;
+	out->write((char*)buf, ptr - buf);
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
