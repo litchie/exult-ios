@@ -79,7 +79,7 @@ struct Action {
   { ActionStats, "Show stats", true, false, NONE },
 
   { ActionSIIntro,  "Show SI intro", true, true, SERPENT_ISLE },
-  { ActionEndgame, "Show endgame", true, true, BLACK_GATE },
+  { ActionEndgame, "Show endgame", true, true, NONE },
   { ActionScrollLeft, "Scroll left", true, true, NONE },
   { ActionScrollRight, "Scroll right", true, true, NONE },
   { ActionScrollUp, "Scroll up", true, true, NONE },
