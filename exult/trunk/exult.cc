@@ -260,7 +260,8 @@ static void Handle_event
 	case SDL_MOUSEMOTION:		// Moving with right button down.
 		if (gwin->get_mode() != Game_window::normal)
 			break;
-		if (event.button.button == 3 && event.motion.state != 0)
+//		if (event.button.button == 3 && event.motion.state != 0)
+		if (event.motion.state & SDL_BUTTON(3))
 			gwin->start_actor(event.motion.x, event.motion.y);
 		break;
 	case SDL_ACTIVEEVENT:
@@ -490,7 +491,8 @@ static void Handle_gump_event
 			}
 		break;
 	case SDL_MOUSEMOTION:		// Moving with left button down.
-		if (event.button.button == 1 && event.motion.state != 0)
+//		if (event.button.button == 1 && event.motion.state != 0)
+		if (event.motion.state & SDL_BUTTON(1))
 			{
 			gwin->drag(event.button.x, event.button.y);
 			dragged = 1;
