@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,20 +28,20 @@ public:
 	Configuration()
 	             : xmltree(new XMLnode("config")), rootname("config"), filename(), is_file(false)
 		{ }
-	Configuration(const std::string &fname, const std::string &root)
+	Configuration(const std::string fname, const std::string root)
 	             : xmltree(new XMLnode(root)), rootname(root), filename(), is_file(false)
 		{ if(fname.size()) read_config_file(fname); }
 
 	~Configuration() { if(xmltree!=0) delete xmltree; };
 	
-	bool	read_config_file(const std::string &input_filename, const std::string &root=std::string());
-	bool	read_abs_config_file(const std::string &input_filename, const std::string &root=std::string());
+	bool	read_config_file(const std::string input_filename, const std::string root=std::string());
+	bool	read_abs_config_file(const std::string input_filename, const std::string root=std::string());
 	
 	bool	read_config_string(const std::string &);
 	
-	void	value(const std::string &key, std::string &ret, const char *defaultvalue="") const;
-	void	value(const std::string &key, bool &ret, bool defaultvalue=false) const;
-	void	value(const std::string &key, int &ret, int defaultvalue=0) const;
+	void	value(const std::string key, std::string &ret, const char *defaultvalue="") const;
+	void	value(const std::string key, bool &ret, bool defaultvalue=false) const;
+	void	value(const std::string key, int &ret, int defaultvalue=0) const;
 	
 	void	value(const char *key, std::string &ret, const char *defaultvalue="") const
 			{ value(std::string(key), ret, defaultvalue); };
@@ -50,28 +50,29 @@ public:
 	void	value(const char *key, int &ret, int defaultvalue=0) const
 			{ value(std::string(key), ret, defaultvalue); };
 	
-	void    set(const std::string &key, const std::string &value, bool write_to_file);
 	void    set(const char *key,const char *value,bool write_to_file);
 	void    set(const char *key,const std::string &value,bool write_to_file);
 	void    set(const char *key,int,bool write_to_file);
 
-	// Return a list of keys that are subsidiary to the supplied key
+	// Return a list of keys that are subsidiary to the supplied
+	// key
 	std::vector<std::string>	listkeys(const std::string &key,bool longformat=true);
 	std::vector<std::string>	listkeys(const char *key,bool longformat=true);
 
 	std::string	dump(void); // Assembles a readable representation
-	std::ostream &dump(std::ostream &o, const std::string &indentstr);
+	std::ostream &dump(std::ostream &o, std::string indentstr);
 
 	void	write_back(void);
 
-	void clear(const std::string &new_root=std::string());
+	void clear(std::string new_root=std::string());
 	
 	typedef XMLnode::KeyType     KeyType;
 	typedef XMLnode::KeyTypeList KeyTypeList;
 	
-	void getsubkeys(KeyTypeList &ktl, const std::string &basekey);
+	void getsubkeys(KeyTypeList &ktl, const std::string basekey);
 	
 private:
+	void    set(std::string &key,std::string &value,bool write_to_file);
 	XMLnode *xmltree;
 	std::string	rootname;
 	std::string	filename;

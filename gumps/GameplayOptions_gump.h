@@ -29,19 +29,18 @@ class GameplayOptions_gump : public Modal_gump
 	UNREPLICATABLE_CLASS_I(GameplayOptions_gump,Modal_gump(0,0,0,0));
 
  private:
-	Gump_button* buttons[14];
+	Gump_button* buttons[12];
 
 	int facestats;
 	int fastmouse;
 	int mouse3rd;
+	int walk_after_teleport;
 	int doubleclick;
 	int rightclick_close;
 	int cheats;
 	int paperdolls;
 	int text_bg;
 	int frames;
-	int	doubleright_move;
-	int	gumps_pause;
 
 	std::string* frametext;
 	int num_framerates;
@@ -51,8 +50,8 @@ class GameplayOptions_gump : public Modal_gump
 	~GameplayOptions_gump();
 
 					// Paint it and its contents.
-	virtual void paint();
-	virtual void close();
+	virtual void paint(Game_window *gwin);
+	virtual void close(Game_window *gwin);
 
  					// Handle events:
 	virtual void mouse_down(int mx, int my);

@@ -42,9 +42,12 @@ public:
  */
 class Spellbook_gump : public Spelltype_gump
 	{
-	int page;			// Starting with 0 (= circle #).
+					// Reagents needed for each spell:
+	static unsigned short bg_reagents[9*8], si_reagents[9*8];
+	unsigned short *reagents;	// ->appropriate table.
 	short avail[9*8];		// For each spell, # which the
 					//   available reagents make possible.
+	int page;			// Starting with 0 (= circle #).
 	Spellbook_object *book;		// Book this shows.
 	Game_object *book_owner;	// Top-owner of book.
 					// Page turners:
@@ -60,11 +63,11 @@ public:
 	virtual void select_spell(int spell);	// Set bookmark.
 	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?
-	virtual Gump_button *on_button(int mx, int my);
+	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.
-	virtual void paint_button(Gump_button *btn);
+	virtual void paint_button(Game_window *gwin, Gump_button *btn);
 					// Paint it and its contents.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 	};
 
 /*
@@ -83,11 +86,11 @@ public:
 		{  }
 	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?
-	virtual Gump_button *on_button(int mx, int my);
+	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.
-	virtual void paint_button(Gump_button *btn);
+	virtual void paint_button(Game_window *gwin, Gump_button *btn);
 					// Paint it and its contents.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 	};
 
 #endif

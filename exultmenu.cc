@@ -35,8 +35,6 @@
 #include "Configuration.h"
 #include "txtscroll.h"
 #include "data/exult_flx.h"
-#include "palette.h"
-#include "shapeid.h"
 
 static bool get_play_intro(void);
 static void set_play_intro(bool);
@@ -68,7 +66,6 @@ void ExultMenu::calc_win()
 
 void ExultMenu::setup()
 {
-	Palette *gpal = gwin->get_pal();
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	MenuList menu;
 
@@ -88,7 +85,7 @@ void ExultMenu::setup()
 			      centerx, menuypos, font);
 	palfades->add_choice("Off");
 	palfades->add_choice("On");
-	palfades->set_choice(gwin->get_pal()->get_fades_enabled()?1:0);
+	palfades->set_choice(gwin->get_fades_enabled()?1:0);
 	menu.add_entry(palfades);
 	menuypos+=11;
 
@@ -102,16 +99,11 @@ void ExultMenu::setup()
 	  midiconv = new MenuChoice(exult_flx.get_shape(EXULT_FLX_MIDI_CONVERSION_SHP,1),
 				  exult_flx.get_shape(EXULT_FLX_MIDI_CONVERSION_SHP,0),
 				  centerx, menuypos, font);
-
 	  midiconv->add_choice("None");
+
 	  midiconv->add_choice("GM");
 	  midiconv->add_choice("GS");
 	  midiconv->add_choice("GS127");
-	  midiconv->add_choice("DigitalMusic");
-#ifdef USE_FMOPL_MIDI
-	  midiconv->add_choice("FM Synth");
-#endif
-
 	  midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
 	  menu.add_entry(midiconv);
 	  menuypos+=11;
@@ -180,10 +172,10 @@ void ExultMenu::setup()
 	menu.set_selection(0);
 	gwin->clear_screen(true);
 	for(;;) {
-		gpal->apply();
+		pal.apply();
 		int entry = menu.handle_events(gwin,menu_mouse);
 		if(entry==ok_button) {
-			gpal->fade_out(c_fade_out_time);
+			pal.fade_out(c_fade_out_time);
 			gwin->clear_screen(true);
 			// Scaling Method
 			int scaler = scalemethod->get_choice();
@@ -198,10 +190,8 @@ void ExultMenu::setup()
 					config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),true);
 			}
 			// Palette fades
-			gpal->set_fades_enabled(
-						palfades->get_choice()==1);
-			config->set("config/video/disable_fades",
-				gpal->get_fades_enabled()?"no":"yes",true);
+			gwin->set_fades_enabled(palfades->get_choice()==1);
+			config->set("config/video/disable_fades",gwin->get_fades_enabled()?"no":"yes",true);
 
 			if (Audio::get_ptr()->get_midi()) {
 			  if (midiconv) {
@@ -229,7 +219,7 @@ void ExultMenu::setup()
 			calc_win();
 			return;
 		} else if (entry==cancel_button) {
-			gpal->fade_out(c_fade_out_time);
+			pal.fade_out(c_fade_out_time);
 			gwin->clear_screen(true);
 			return;
 		}
@@ -238,16 +228,13 @@ void ExultMenu::setup()
 
 Exult_Game ExultMenu::run()
 {
-	Palette *gpal = gwin->get_pal();
-
-	Shape_manager *sman = Shape_manager::get_instance();
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	// Check for the games in the designated directories.
 	bool bg_installed = BG_Game::is_installed();
 	bool si_installed = SI_Game::is_installed();
 
 	if(!bg_installed && !si_installed) {
-		gpal->load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
+		pal.load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
 		font->center_text(gwin->get_win()->get_ib8(),
 				  centerx, topy+20, "WARNING");
 		font->center_text(gwin->get_win()->get_ib8(),
@@ -258,7 +245,7 @@ Exult_Game ExultMenu::run()
 				  centerx, topy+60, "Please edit the configuration file");
 		font->center_text(gwin->get_win()->get_ib8(),
 				  centerx, topy+70, "and restart Exult");
-		gpal->apply();
+		pal.apply();
 		while(!wait_delay(200))
 			;	
 		throw quit_exception(1);
@@ -266,22 +253,14 @@ Exult_Game ExultMenu::run()
 	}
 	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", EXULT_FLX_MEDITOWN_MID);
 	XMIDI midfile(midi_data, XMIDI_CONVERT_NOCONVERSION);
-	
-	if(Audio::get_ptr()->audio_enabled)		//Must check this or it will crash as midi 
-											//may not be initialised
-	{
-		if(Audio::get_ptr()->get_midi()->get_music_conversion() == XMIDI_CONVERT_OGG)
-			Audio::get_ptr()->start_music(99,true);
-		else
-			Audio::get_ptr()->start_music(midfile.GetEventList(0), true);
-	}
+	Audio::get_ptr()->start_music(midfile.GetEventList(0), true);
 	
 	ExultDataSource mouse_data("<DATA>/exult.flx", EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
 	
-	sman->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0));
-	gpal->load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
-	gpal->fade_in(c_fade_in_time);
+	gwin->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0));
+	pal.load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
+	pal.fade_in(c_fade_in_time);
 	wait_delay(2000);
 	MenuList *menu = new MenuList();
 		
@@ -318,53 +297,53 @@ Exult_Game ExultMenu::run()
 	Exult_Game sel_game = NONE;
 	
 	do {
-		sman->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1));
+		gwin->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1));
 		font->draw_text(gwin->get_win()->get_ib8(), 
 					topx+320-font->get_text_width(VERSION), topy+190, VERSION);
 		if (sfx_bg_ypos >= 0)
-			sman->paint_shape(centerx-80,sfx_bg_ypos, exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("blackgate")?1:0));
+			gwin->paint_shape(centerx-80,sfx_bg_ypos, exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("blackgate")?1:0));
 		if (sfx_si_ypos >= 0)
-			sman->paint_shape(centerx-80,sfx_si_ypos,exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("serpentisle")?1:0));
+			gwin->paint_shape(centerx-80,sfx_si_ypos,exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("serpentisle")?1:0));
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch(choice<0?choice:menuentries[choice]) {
 		case 5:
 		case -1: // Exit
-			gpal->fade_out(c_fade_out_time);
+			pal.fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
 			throw quit_exception();
 		case 0: // Black Gate
-			gpal->fade_out(c_fade_out_time);
+			pal.fade_out(c_fade_out_time);
 			sel_game = BLACK_GATE;
 			break;
 		case 1: // Serpent Isle
-			gpal->fade_out(c_fade_out_time);
+			pal.fade_out(c_fade_out_time);
 			sel_game = SERPENT_ISLE;
 			break;
 		case 2: // Setup
-			gpal->fade_out(c_fade_out_time);
+			pal.fade_out(c_fade_out_time);
 			setup();
-			gpal->apply();
+			pal.apply();
 			break;
 		case 3: // Exult Credits
 			{
-				gpal->fade_out(c_fade_out_time);
+				pal.fade_out(c_fade_out_time);
 				TextScroller credits("<DATA>/exult.flx", EXULT_FLX_CREDITS_TXT, 
 						     fontManager.get_font("CREDITS_FONT"),
 						     exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
-				credits.run(gwin);
+				credits.run(gwin,pal);
 				gwin->clear_screen(true);
-				gpal->apply();
+				pal.apply();
 			}
 			break;
 		case 4: // Exult Quotes
 			{
-				gpal->fade_out(c_fade_out_time);
+				pal.fade_out(c_fade_out_time);
 				TextScroller quotes("<DATA>/exult.flx", EXULT_FLX_QUOTES_TXT, 
 						    fontManager.get_font("CREDITS_FONT"),
 			     			    exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
-				quotes.run(gwin);
+				quotes.run(gwin,pal);
 				gwin->clear_screen(true);
-				gpal->apply();
+				pal.apply();
 			}
 			break;
 		default:

@@ -23,7 +23,7 @@
 #include <iostream>
 
 #ifdef WIN32
-#ifndef WIN32_LEAN_AND_MEAN	
+#ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
@@ -81,12 +81,6 @@ void getVersionInfo(std::ostream& out)
 	if (!firstoption) out << ", "; 
 	firstoption = false;
 	out << "USE_EXULTSTUDIO";
-#endif
-
-#ifdef USECODE_DEBUGGER
-	if (!firstoption) out << ", "; 
-	firstoption = false;
-	out << "USECODE_DEBUGGER";
 #endif
 
 #ifdef WANT_ALTERNATE_ALLOCATOR

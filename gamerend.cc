@@ -34,8 +34,6 @@ using ::snprintf;
 #endif
 
 #include "gamewin.h"
-#include "gamerend.h"
-#include "gameclk.h"
 #include "gamemap.h"
 #include "actors.h"
 #include "chunks.h"
@@ -44,7 +42,6 @@ using ::snprintf;
 #include "Gump.h"
 #include "effects.h"
 #include "cheat.h"
-#include "drag.h"
 
 /*
  *	Paint just the map with given top-left-corner tile.
@@ -64,7 +61,7 @@ void Game_window::paint_map_at_tile
 	skip_lift = skip_above;
 	map->read_map_data();		// Gather in all objs., etc.
 	win->set_clip(x, y, w, h);
-	render->paint_map(0, 0, get_width(), get_height());
+	paint_map(0, 0, get_width(), get_height());
 	win->clear_clip();
 	scrolltx = savescrolltx;
 	scrollty = savescrollty;
@@ -106,7 +103,7 @@ inline void Paint_chunk_outline
 	gwin->get_win()->fill8(pixel, 1, c_chunksize, xoff, yoff);
 	char text[40];			// Show chunk #.
 	snprintf(text, sizeof(text), "(%d,%d)T%d", cx, cy, tnum);
-	Shape_manager::get_instance()->paint_text(2, text, xoff + 2, yoff + 2);
+	gwin->paint_text(2, text, xoff + 2, yoff + 2);
 	}
 
 /*
@@ -138,34 +135,30 @@ static void Paint_grid
  *	Just paint terrain.  This is for terrain_editing mode.
  */
 
-void Game_render::paint_terrain_only
+void Game_window::paint_terrain_only
 	(
 	int start_chunkx, int start_chunky,
 	int stop_chunkx, int stop_chunky
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Game_map *map = gwin->map;
-	Shape_manager *sman = Shape_manager::get_instance();
 	int cx, cy;			// Chunk #'s.
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
 		{
-		int yoff = Figure_screen_offset(cy, gwin->scrollty);
+		int yoff = Figure_screen_offset(cy, scrollty);
 		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
 			{
-			int xoff = Figure_screen_offset(cx, gwin->scrolltx);
-			Map_chunk *chunk = map->get_chunk(cx, cy);
+			int xoff = Figure_screen_offset(cx, scrolltx);
+			Map_chunk *chunk = get_chunk(cx, cy);
 			chunk->get_terrain()->render_all(cx, cy);
 			if (cheat.in_map_editor())
-				Paint_chunk_outline(gwin, 
-				    sman->get_special_pixel(HIT_PIXEL), cx, cy,
+				Paint_chunk_outline(this, hit_pixel, cx, cy,
 				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
 					// Paint tile grid if desired.
 	if (cheat.show_tile_grid())
-		Paint_grid(gwin, sman->get_xform(10));
+		Paint_grid(this, xforms[10]);
 	}
 
 /*
@@ -175,17 +168,13 @@ void Game_render::paint_terrain_only
  *	Output:	# light-sources found.
  */
 
-int Game_render::paint_map
+int Game_window::paint_map
 	(
 	int x, int y, int w, int h	// Rectangle to cover.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Game_map *map = gwin->map;
-	Shape_manager *sman = gwin->shape_man;
 	render_seq++;			// Increment sequence #.
-	gwin->painted = 1;
-	int scrolltx = gwin->scrolltx, scrollty = gwin->scrollty;
+	painted = 1;
 	int light_sources = 0;		// Count light sources found.
 					// Get chunks to start with, starting
 					//   1 tile left/above.
@@ -202,7 +191,7 @@ int Game_render::paint_map
 					// Wrap around the world:
 	stop_chunkx = (stop_chunkx + c_num_chunks)%c_num_chunks;
 	stop_chunky = (stop_chunky + c_num_chunks)%c_num_chunks;
-	if (!gwin->skip_lift)		// Special mode for editing?
+	if (skip_lift == 0)		// Special mode for editing?
 		{
 		paint_terrain_only(start_chunkx, start_chunky,
 						stop_chunkx, stop_chunky);
@@ -219,8 +208,7 @@ int Game_render::paint_map
 			paint_chunk_flats(cx, cy, xoff, yoff);
 
 			if (cheat.in_map_editor())
-				Paint_chunk_outline(gwin, 
-				    sman->get_special_pixel(HIT_PIXEL), cx, cy,
+				Paint_chunk_outline(this, hit_pixel, cx, cy,
 				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
@@ -245,10 +233,9 @@ int Game_render::paint_map
 		}
 
 	/// Dungeon Blackness (but disable in map editor mode)
-	if (gwin->in_dungeon >= gwin->skip_above_actor && 
-							!cheat.in_map_editor())
+	if (in_dungeon >= skip_above_actor && !cheat.in_map_editor())
 		paint_blackness (start_chunkx, start_chunky, stop_chunkx, 
-					stop_chunky, gwin->ice_dungeon?73:0);
+						stop_chunky, ice_dungeon?73:0);
 
 					// Outline selected objects.
 	const Game_object_vector& sel = cheat.get_selected();
@@ -257,17 +244,16 @@ int Game_render::paint_map
 		{
 		Game_object *obj = *it;
 		int x, y;
-		if (!obj->get_owner() && obj->get_lift() < gwin->skip_lift &&
-				obj->get_lift() < gwin->skip_above_actor)
+		if (!obj->get_owner() && obj->get_lift() < skip_lift &&
+					obj->get_lift() < skip_above_actor)
 			{
-			gwin->get_shape_location(obj, x, y);
-			obj->paint_outline(x, y, HIT_PIXEL);
+			get_shape_location(obj, x, y);
+			paint_hit_outline(x, y, obj->get_shape());
 			}
 		}
 					// Paint tile grid if desired.
 	if (cheat.in_map_editor() && cheat.show_tile_grid())
-		Paint_grid(gwin, sman->get_xform(10));
-
+		Paint_grid(this, xforms[10]);
 	return light_sources;
 	}
 
@@ -283,15 +269,14 @@ void Game_window::paint
 	if (!win->ready()) return;
 
 	win->set_clip(x, y, w, h);	// Clip to this area.
-	int light_sources = render->paint_map(x, y, w, h);
+	int light_sources = paint_map(x, y, w, h);
 
-	effects->paint();		// Draw sprites.
 					// Draw gumps unless in dont_move mode.
-	if (!main_actor_dont_move())
-        	gump_man->paint();
-	effects->paint_text();		// Draw text.
-	if (dragging)
-		dragging->paint();	// Paint what user is dragging.
+    if (!main_actor_dont_move())
+        gump_man->paint(this);
+					// Draw text, sprites.
+	for (Special_effect *txt = effects; txt; txt = txt->next)
+		txt->paint(this);
 	win->clear_clip();
 					// Complete repaint?
 	if (!x && !y && w == get_width() && h == get_height() && main_actor)
@@ -302,10 +287,10 @@ void Game_window::paint
 		for (int i = 0; !carried_light && i < cnt; i++)
 			carried_light = party[i]->has_light_source();
 					// Also check light spell.
-		if (special_light && clock->get_total_minutes() >special_light)
+		if (special_light && clock.get_total_minutes() > special_light)
 			special_light = 0;
 					// Set palette for lights.
-		clock->set_light_source(carried_light + (light_sources > 0));
+		clock.set_light_source(carried_light + (light_sources > 0));
 		}
 	}
 
@@ -323,34 +308,23 @@ void Game_window::paint()
  *	Paint the flat (non-rle) shapes in a chunk.
  */
 
-void Game_render::paint_chunk_flats
+void Game_window::paint_chunk_flats
 	(
 	int cx, int cy,			// Chunk coords (0 - 12*16).
 	int xoff, int yoff		// Pixel offset of top-of-screen.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Map_chunk *olist = gwin->map->get_chunk(cx, cy);
+	Map_chunk *olist = get_chunk(cx, cy);
 					// Paint flat tiles.
-#ifdef HAVE_OPENGL
-	if (GL_manager::get_instance())	// OpenGL rendering?
-		{
-		Chunk_terrain *terrain = olist->get_terrain();
-		if (terrain)
-			terrain->get_glflats()->paint(xoff, yoff);
-		}
-	else
-#endif
-		{
-		Image_buffer8 *cflats = olist->get_rendered_flats();
-		if (cflats)
-			gwin->win->copy8(cflats->get_bits(), 
-				c_chunksize, c_chunksize, xoff, yoff);
-		}
+	Image_buffer8 *cflats = olist->get_rendered_flats();
+	if (cflats)
+		win->copy8(cflats->get_bits(), c_chunksize, c_chunksize, 
+								xoff, yoff);
+
 	Flat_object_iterator next(olist);// Now do flat RLE objects.
 	Game_object *obj;
 	while ((obj = next.get_next()) != 0)
-		obj->paint();
+		obj->paint(this);
 	}
 
 /*
@@ -359,27 +333,26 @@ void Game_render::paint_chunk_flats
  *	Output:	# light sources found.
  */
 
-int Game_render::paint_chunk_objects
+int Game_window::paint_chunk_objects
 	(
 	int cx, int cy			// Chunk coords (0 - 12*16).
 	)
 	{
 	Game_object *obj;
-	Game_window *gwin = Game_window::get_instance();
-	Map_chunk *olist = gwin->map->get_chunk(cx, cy);
+	Map_chunk *olist = get_chunk(cx, cy);
 	int light_sources = 0;		// Also check for light sources.
 //	if (is_main_actor_inside() && olist->is_roof()) +++++Correct??
 		light_sources += olist->get_light_sources();
-	skip = gwin->skip_lift;
-	if (gwin->skip_above_actor < skip)
-		skip = gwin->skip_above_actor;
+	int save_skip = skip_lift;
+	if (skip_above_actor < skip_lift)
+		skip_lift = skip_above_actor;
 	Nonflat_object_iterator next(olist);
 
 	while ((obj = next.get_next()) != 0)
 		if (obj->render_seq != render_seq)
 			paint_object(obj);
 
-	skip = 31;			// Back to a safe #.
+	skip_lift = save_skip;
 	return light_sources;
 	}
 
@@ -387,13 +360,13 @@ int Game_render::paint_chunk_objects
  *	Render an object after first rendering any that it depends on.
  */
 
-void Game_render::paint_object
+void Game_window::paint_object
 	(
 	Game_object *obj
 	)
 	{
 	int lift = obj->get_lift();
-	if (lift >= skip)
+	if (lift >= skip_lift)
 		return;
 	obj->render_seq = render_seq;
 	int cnt = obj->get_dependency_count();
@@ -403,7 +376,7 @@ void Game_render::paint_object
 		if (dep && dep->render_seq != render_seq)
 			paint_object(dep);
 		}
-	obj->paint();			// Finally, paint this one.
+	obj->paint(this);		// Finally, paint this one.
 	}
 
 /*
@@ -414,7 +387,7 @@ void Game_window::paint_dirty()
 {
 	// Update the gumps before painting, unless in dont_move mode (may change dirty area)
     if (!main_actor_dont_move())
-        gump_man->update_gumps();
+        gump_man->update_gumps(this);
 
 	Rectangle box = clip_to_win(dirty);
 	if (box.w > 0 && box.h > 0)
@@ -437,12 +410,11 @@ void Game_window::paint_dirty()
  *	black them all out at the same time.
  */
 
-void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_chunkx, int stop_chunky, int index)
+void Game_window::paint_blackness(int start_chunkx, int start_chunky, int stop_chunkx, int stop_chunky, int index)
 {
-	Game_window *gwin = Game_window::get_instance();
 	// Calculate the offset due to the lift (4x the lift).
 	//const int off = skip_above_actor << 2;//in_dungeon << 2;
-	const int off = gwin->in_dungeon << 2;
+	const int off = in_dungeon << 2;
 
 	// For each chunk that might be renderable
 	for (int cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
@@ -450,13 +422,12 @@ void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 		for (int cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
 		{
 			// Coord of the left edge
-			const int xoff = 
-				Figure_screen_offset(cx, gwin->scrolltx) - off;
+			const int xoff = Figure_screen_offset(cx, scrolltx) - off;
 			// Coord of the top edge 
-			int y = Figure_screen_offset(cy, gwin->scrollty) - off;
+			int y = Figure_screen_offset(cy, scrollty) - off;
 
 			// Need the chunk cache (needs to be setup!)
-			Map_chunk *mc = gwin->map->get_chunk(cx, cy);
+			Map_chunk *mc = get_chunk(cx, cy);
 			mc->setup_cache();
 			Chunk_cache *chunk = mc->need_cache();
 
@@ -471,9 +442,7 @@ void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 				for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 				{
 					// If the tile is blocked by 'roof'
-					if (!chunk->is_blocked_fast(
-						tilex, tiley,
-						gwin->skip_above_actor))
+					if (!chunk->is_blocked_fast(tilex, tiley, skip_above_actor))
 					{
 						// Add to the width of the area
 						w += c_tilesize;
@@ -482,7 +451,7 @@ void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 					else if (w)
 					{
 						// Draw blackness
-						gwin->win->fill8(index, w, c_tilesize, x, y);	
+						win->fill8(index, w, c_tilesize, x, y);	
 
 						// Set the start of the area to the next tile
 						x += w + c_tilesize;
@@ -500,9 +469,7 @@ void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 				}
 
 				// If we have an area, paint it.
-				if (w) 
-					gwin->win->fill8(index, w, c_tilesize,
-									 x, y);
+				if (w) win->fill8(index, w, c_tilesize, x, y);
 
 				// Increment the y coord for the next line
 				y += c_tilesize;

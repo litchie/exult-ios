@@ -20,8 +20,6 @@
 #define _CONVERSATION_H
 
 #include "rect.h"
-#include "singles.h"
-#include "shapeid.h"
 #include <deque>
 #include <vector>
 #include <string>
@@ -30,12 +28,13 @@ class Npc_face_info;
 class Usecode_value;
 class Game_window;
 
-class Conversation : public Game_singletons, public Paintable{
+class Conversation {
  public:
   Conversation();
   ~Conversation();
 
  private:
+  Game_window *gwin;
 
   Npc_face_info *face_info[2];	// NPC's on-screen faces in convers.
   int num_faces;
@@ -61,8 +60,7 @@ class Conversation : public Game_singletons, public Paintable{
   void clear_avatar_choices();
   int conversation_choice(int x, int y);
   void set_slot(int i) { last_face_shown = i; }	// SI.
-  virtual void paint();			// Paint entire conversation.
-  void paint_faces(bool text = false);
+  void paint();				// Paint entire conversation.
 
   void add_answer(Usecode_value& val);
   void remove_answer(Usecode_value& val);

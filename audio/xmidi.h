@@ -31,9 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define XMIDI_CONVERT_MT32_TO_GM		1
 #define XMIDI_CONVERT_MT32_TO_GS		2
 #define XMIDI_CONVERT_MT32_TO_GS127		3
-#define XMIDI_CONVERT_OGG				4
-#define XMIDI_CONVERT_FMSYNTH			5
-#define XMIDI_CONVERT_GS127_TO_GS		6
+#define XMIDI_CONVERT_GS127_TO_GS		4
 
 // Midi Status Bytes
 #define MIDI_STATUS_NOTE_OFF	0x8
@@ -46,18 +44,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MIDI_STATUS_SYSEX		0xF
 
 // XMIDI Controllers
-#define XMIDI_CONTROLLER_CHAN_LOCK			0x6e	// Channel Lock
-#define XMIDI_CONTROLLER_CHAN_LOCK_PROT		0x6f	// Channel Lock Protect
-#define XMIDI_CONTROLLER_VOICE_PROT			0x70	// Voice Protect
-#define XMIDI_CONTROLLER_TIMBRE_PROT		0x71	// Timbre Protect
-#define XMIDI_CONTROLLER_BANK_CHANGE		0x72	// Bank Change
-#define XMIDI_CONTROLLER_IND_CTRL_PREFIX	0x73	// Indirect Controller Prefix
-#define XMIDI_CONTROLLER_FOR_LOOP			0x74	// For Loop
-#define XMIDI_CONTROLLER_NEXT_BREAK			0x75	// Next/Break
-#define XMIDI_CONTROLLER_CLEAR_BB_COUNT		0x76	// Clear Beat/Bar Count
-#define XMIDI_CONTROLLER_CALLBACK_TRIG		0x77	// Callback Trigger
-#define XMIDI_CONTROLLER_SEQ_BRANCH_INDEX	0x78	// Sequence Branch Index
-
+#define XMIDI_CONTROLLER_FOR_LOOP	116
+#define XMIDI_CONTROLLER_NEXT_BREAK	117
 
 // Maximum number of for loops we'll allow (used by win_midiout)
 #define XMIDI_MAX_FOR_LOOP_COUNT	128
@@ -86,13 +74,6 @@ class NoteStack {
 public:
 
 	NoteStack() : notes(0), polyphony(0), max_polyphony(0) { }
-
-	// Just clear it. Don't care about what's actually in it
-	void clear() {
-		notes=0;
-		polyphony=0;
-		max_polyphony=0;
-	}
 
 	// Pops the top of the stack if its off_time is <= time (6000th of second)
 	inline midi_event *PopTime(uint32 time) {

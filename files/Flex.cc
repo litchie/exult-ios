@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include "exceptions.h"
 #include "utils.h"
-#include "databuf.h"
 
 using std::cerr;
 using std::endl;
@@ -55,18 +54,15 @@ void	Flex::IndexFlexFile(void)
 {
 	FILE	*fp;
 	fp=U7open(filename.c_str(),"rb");
-	FileDataSource flex(fp);
-	flex.read(title, sizeof(title));
-	magic1 = flex.read4();
-	count = flex.read4();
-	magic2 = flex.read4();
-	if(magic1!=0xffff1a00UL) {
-		std::fclose (fp);
+	std::fread(title,sizeof(title),1,fp);
+	magic1 = Read4(fp);
+	count = Read4(fp);
+	magic2 = Read4(fp);
+	if(magic1!=0xffff1a00UL)
 		throw wrong_file_type_exception(filename,"FLEX");	// Not a flex file
-	}
 
 	for(int i=0;i<9;i++)
-		padding[i] = flex.read4();
+		padding[i] = Read4(fp);
 #if DEBUGFLEX
 	cout << "Title: " << title << endl;
 	cout << "Count: " << count << endl;
@@ -77,8 +73,8 @@ void	Flex::IndexFlexFile(void)
 	for(uint32 c=0;c<count;c++)
 	{
 		Flex::Reference f;
-		f.offset = flex.read4();
-		f.size = flex.read4();
+		f.offset = Read4(fp);
+		f.size = Read4(fp);
 #if DEBUGFLEX
 		cout << "Item " << c << ": " << f.size << " bytes @ " << f.offset << endl;
 #endif
@@ -111,7 +107,7 @@ char *	Flex::retrieve(uint32 objnum, size_t &len)
 
 void Flex::write_header
 	(
-	DataSource* out,			// File to write to.
+	std::ostream& out,			// File to write to.
 	const char *title,
 	int count			// # entries.
 	)
@@ -119,31 +115,32 @@ void Flex::write_header
 	char titlebuf[0x50];		// Use savename for title.
 	memset(titlebuf, 0, sizeof(titlebuf));
 	strncpy(titlebuf, title, sizeof(titlebuf) - 1);
-	out->write(titlebuf, sizeof(titlebuf));
-	out->write4(0xFFFF1A00);	// Magic number.
-	out->write4(count);
-	out->write4(0x000000CC);	// 2nd magic number.
-	long pos = out->getPos();		// Fill to data (past table at 0x80).
+	out.write(titlebuf, sizeof(titlebuf));
+	Write4(out, 0xFFFF1A00);	// Magic number.
+	Write4(out, count);
+	Write4(out, 0x000000CC);	// 2nd magic number.
+	long pos = out.tellp();		// Fill to data (past table at 0x80).
 	long fill = 0x80 + 8*count - pos;
 	while (fill--)
-		out->write1((char) 0);
+		out.put((char) 0);
 	}
 
 /*
  *	Verify if a file is a FLEX.  Note that this is a STATIC method.
  */
 
-bool Flex::is_flex(DataSource *in)
+bool Flex::is_flex(std::istream& in)
 {
-	long pos = in->getPos();		// Fill to data (past table at 0x80).
-	long len = in->getSize() - pos;	// Check length.
+	long pos = in.tellg();		// Fill to data (past table at 0x80).
+	in.seekg(0, ios::end);		// Check length.
+	long len = in.tellg() - pos;
 	uint32 magic = 0;
 	if (len >= 0x80)		// Has to be at least this long.
 		{
-		in->seek(0x50);
-		magic = in->read4();
+		in.seekg(0x50);
+		magic = Read4(in);
 		}
-	in->seek(pos);
+	in.seekg(pos);
 
 	// Is a flex
 	if(magic==0xffff1a00UL) return true;
@@ -157,9 +154,8 @@ bool Flex::is_flex(const char *fname)
 	bool is = false;
 	std::ifstream in;
 	U7open (in, fname);
-	StreamDataSource ds(&in);
 
-	if (in.good()) is = is_flex(&ds);
+	if (in.good()) is = is_flex(in);
 
 	in.close();
 	return is;
@@ -171,14 +167,13 @@ bool Flex::is_flex(const char *fname)
 
 Flex_writer::Flex_writer
 	(
-	std::ofstream& o,			// Where to write.
+	ofstream& o,			// Where to write.
 	const char *title,		// Flex title.
 	int cnt				// #entries we'll write.
 	) : out(&o), count(cnt), index(0)
 	{
 					// Write out header.
-	StreamDataSource ds(out);
-	Flex::write_header(&ds, title, count);
+	Flex::write_header(*out, title, count);
 					// Create table.
 	tptr = table = new uint8[2*count*4];
 	cur_start = out->tellp();	// Store start of 1st entry.

@@ -30,16 +30,14 @@
 #include "egg.h"
 #include "exult.h"
 #include "game.h"
-#include "gameclk.h"
 #include "gamewin.h"
 #include "gamemap.h"
 #include "items.h"
 #include "npctime.h"
 #include "paths.h"
 #include "ucmachine.h"
-#include "ucscriptop.h"
 #include "ucsched.h"
-#include "Gump_manager.h"
+#include "ucscriptop.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -58,7 +56,7 @@ Egg_object *Egg_object::editing = 0;
 /*
  *	Timer for a missile egg (type-6 egg).
  */
-class Missile_launcher : public Time_sensitive, public Game_singletons
+class Missile_launcher : public Time_sensitive
 	{
 	Egg_object *egg;		// Egg this came from.
 	int weapon;			// Shape for weapon.
@@ -82,6 +80,7 @@ void Missile_launcher::handle_event
 	long udata
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord src = egg->get_tile();
 					// Is egg off the screen?
 	if (!gwin->get_win_tile_rect().has_point(src.tx, src.ty))
@@ -111,7 +110,7 @@ void Missile_launcher::handle_event
 					src, party[i], shapenum, weapon);
 		}
 	if (proj)
-		eman->add_effect(proj);
+		gwin->add_effect(proj);
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
@@ -122,10 +121,11 @@ void Missile_launcher::handle_event
 
 void Egglike_game_object::paint
 	(
+	Game_window *gwin
 	)
 	{
 	if(gwin->paint_eggs)
-		Game_object::paint();
+		Game_object::paint(gwin);
 	}
 
 /*
@@ -134,9 +134,10 @@ void Egglike_game_object::paint
 
 int Egglike_game_object::is_findable
 	(
+	Game_window *gwin
 	)
 	{
-	return gwin->paint_eggs && Ireg_game_object::is_findable();
+	return gwin->paint_eggs && Ireg_game_object::is_findable(gwin);
 	}
 
 /*
@@ -159,6 +160,8 @@ Egg_object::Egg_object
 					// Teleport destination?
 	if (type == teleport && framenum == 6 && shapenum == 275)
 		type = path;		// (Mountains N. of Vesper).
+	else if (type == path && (shapenum == 776 || shapenum == 777))
+		type = teleport;	// Fix moongates we broke.
 	criteria = (itype & (7<<4)) >> 4;
 	distance = (itype >> 10) & 0x1f;
 	unsigned char noct = (itype >> 7) & 1;
@@ -225,7 +228,7 @@ Egg_object::~Egg_object
 	{
 	if (launcher)
 		{
-		gwin->get_tqueue()->remove(launcher);
+		Game_window::get_game_window()->get_tqueue()->remove(launcher);
 		delete launcher;
 		}
 	}
@@ -243,6 +246,7 @@ void Egg_object::set_area
 		area = Rectangle(0, 0, 0, 0);
 		return;
 		}
+	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord t = get_tile();	// Get absolute tile coords.
 	switch (criteria)		// Set up active area.
 		{
@@ -252,7 +256,7 @@ void Egg_object::set_area
 	case avatar_footpad:
 	case party_footpad:
 		{
-		Shape_info& info = get_info();
+		Shape_info& info = gwin->get_info(this);
 		int xtiles = info.get_3d_xtiles(), 
 		    ytiles = info.get_3d_ytiles();
 		area = Rectangle(t.tx - xtiles + 1, t.ty - ytiles + 1,
@@ -299,9 +303,10 @@ int Egg_object::is_active
 	if ((flags & (1 << (int) hatched)) &&
 			!(flags & (1 << (int) auto_reset)))
 		return (0);		// For now... Already hatched.
+	Game_window *gwin = Game_window::get_game_window();
 	if (flags & (1 << (int) nocturnal))
 		{			// Nocturnal.
-		int hour = gclock->get_hour();
+		int hour = gwin->get_hour();
 		if (!(hour >= 9 || hour <= 5))
 			return (0);	// It's not night.
 		}
@@ -323,13 +328,10 @@ int Egg_object::is_active
 					// Just activate when reentering.
 		return !area.has_point(from_tx, from_ty);
 		}
-	case avatar_near:
-		if (obj != gwin->get_main_actor())
-			return 0;
-		print_debug();
-		// fall through
-	case party_near:		// Avatar or party member.
-		if (!obj->get_flag(Obj_flags::in_party))
+	case party_near:
+	case avatar_near:		// New tile is in, old is out.
+		if (obj != gwin->get_main_actor() &&
+		    (cri != party_near || obj->get_party_id() < 0))
 			return 0;
 		if (type == teleport)	// Teleports:  Any tile, exact lift.
 			return absdeltaz == 0 && area.has_point(tx, ty);
@@ -338,7 +340,6 @@ int Egg_object::is_active
 			 (Game::get_game_type() == SERPENT_ISLE &&
 						type != missile) ||
 				(type == missile && tz/5 == get_lift()/5)) &&
-					// New tile is in, old is out.
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty)))
 			return 0;
@@ -357,11 +358,13 @@ int Egg_object::is_active
 						area.has_point(tx, ty);
 	case party_footpad:
 		return area.has_point(tx, ty) && deltaz == 0 &&
-					obj->get_flag(Obj_flags::in_party);
+			(obj->get_party_id() >= 0 || 
+						obj == gwin->get_main_actor());
 	case something_on:
-		return	 		// Guessing.  At SI end, deltaz == -1.
+		return obj != gwin->get_main_actor() && 
+					// Guessing.  At SI end, deltaz == -1.
 			deltaz >= -1 && deltaz <= 3 &&
-			area.has_point(tx, ty) && !obj->as_actor();
+			area.has_point(tx, ty) && obj->get_npc_num() <= 0;
 	case external_criteria:
 	default:
 		return 0;
@@ -374,9 +377,10 @@ int Egg_object::is_active
 
 void Egg_object::paint
 	(
+	Game_window *gwin
 	)
 	{
-	Egglike_game_object::paint();
+	Egglike_game_object::paint(gwin);
 					// Make sure launcher is active.
 	if (launcher && !launcher->in_queue())
 		gwin->get_tqueue()->add(0L, launcher, 0);
@@ -388,21 +392,8 @@ void Egg_object::paint
 
 void Egg_object::activate
 	(
+	Usecode_machine *umachine,
 	int /* event */
-	)
-	{
-	if (!edit())
-		activate(0, 0);
-	}
-
-/*
- *	Edit in ExultStudio.
- *
- *	Output:	True if map-editing & ES is present.
- */
-
-bool Egg_object::edit
-	(
 	)
 	{
 #ifdef USE_EXULTSTUDIO
@@ -424,12 +415,11 @@ bool Egg_object::edit
 			}
 		else
 			cout << "Error sending egg data to ExultStudio" <<endl;
-		return true;
+		return;
 		}
 #endif
-	return false;
+	activate(umachine, 0, 0);
 	}
-
 
 /*
  *	Message to update from ExultStudio.
@@ -466,6 +456,7 @@ void Egg_object::update_from_studio
 		return;
 		}
 	editing = 0;
+	Game_window *gwin = Game_window::get_game_window();
 	if (!egg)			// Create a new one?
 		{
 		int x, y;
@@ -508,13 +499,6 @@ void Egg_object::update_from_studio
 		case weather: frame = 4; break;
 		case teleport:frame = 5; break;
 		case path:    frame = 6; break;
-        case missile:
-            egg->set_shape(200); 
-            if ((data2 & 0xFF) < 8)
-                frame = 2 + ((data2 & 0xFF) / 2);
-            else
-                frame = 1;
-            break;
 		default:      frame = 7; break;
 			}
 	if (frame != -1)
@@ -532,7 +516,7 @@ void Egg_object::update_from_studio
 	if (type == usecode || type == teleport || type == path)
 		egg->set_quality(data1&0xff);
 	Map_chunk *chunk = 
-			gmap->get_chunk_safely(egg->get_cx(), egg->get_cy());
+			gwin->get_chunk_safely(egg->get_cx(), egg->get_cy());
 	chunk->remove_egg(egg);		// Got to add it back.
 	chunk->add_egg(egg);
 	cout << "Egg updated" << endl;
@@ -573,6 +557,7 @@ void Egg_object::activate_teleport
 	Game_object *obj		// Object (actor) that came near it.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord pos(-1, -1, -1);	// Get position to jump to.
 	int qual = get_quality();
 	if (qual == 255)
@@ -593,7 +578,8 @@ void Egg_object::activate_teleport
 		}
 	cout << "Should teleport to (" << pos.tx << ", " <<
 					pos.ty << ')' << endl;
-	if (pos.tx != -1 && obj && obj->get_flag(Obj_flags::in_party))
+	if (pos.tx != -1 && obj && (obj == gwin->get_main_actor() ||
+					obj->get_party_id() >= 0))
 					// Teleport everyone!!!
 		gwin->teleport_party(pos);
 					// Can keep doing it.
@@ -606,6 +592,7 @@ void Egg_object::activate_teleport
 
 void Egg_object::activate
 	(
+	Usecode_machine *umachine,
 	Game_object *obj,		// Object (actor) that came near it.
 	bool must			// If 1, skip dice roll & execute
 					//   usecode eggs immediately.
@@ -619,6 +606,7 @@ void Egg_object::activate
 		return;			// Out of luck.
 					// Flag it as done.
 	flags |= (1 << (int) hatched);
+	Game_window *gwin = Game_window::get_game_window();
 	switch(type)
 		{
 		case jukebox:
@@ -628,14 +616,14 @@ void Egg_object::activate
 			Audio::get_ptr()->start_music((data1)&0xff,(data1>>8)&0x01);
 			break;
 		case voice:
-			ucmachine->do_speech(data1&0xff);
+			umachine->do_speech(data1&0xff);
 			break;
 		case monster:		// Also creates other objects.
 			{
 			int shnum = data2&1023;
 			int frnum = data2>>10;
 			Monster_info *inf = 
-			      ShapeID::get_info(shnum).get_monster_info();
+			      gwin->get_info(shnum).get_monster_info();
 			if (inf)
 				{	// Armageddon spell cast?
 				if (gwin->armageddon)
@@ -651,13 +639,13 @@ void Egg_object::activate
 				}
 			else		// Create item.
 				{
-				Shape_info& info = ShapeID::get_info(shnum);
+				Shape_info& info = gwin->get_info(shnum);
 				Game_object *nobj =
-					gmap->create_ireg_object(info,
+					gwin->create_ireg_object(info,
 						shnum, frnum, get_tx(),
 						get_ty(), get_lift());
 				Map_chunk *chunk = 
-					gmap->get_chunk(get_cx(), get_cy());
+					gwin->get_chunk(get_cx(), get_cy());
 				if (nobj->is_egg())
 					chunk->add_egg((Egg_object *) nobj);
 				else
@@ -672,7 +660,7 @@ void Egg_object::activate
 		case usecode:
 			{		// Data2 is the usecode function.
 			if (must)	// From script?  Do immediately.
-				ucmachine->call_usecode(data2, this,
+				umachine->call_usecode(data2, this,
 					Usecode_machine::egg_proximity);
 			else		// Do on next animation frame.
 				{
@@ -693,7 +681,7 @@ void Egg_object::activate
 			int weapon = data1, dir = data2&0xff, delay = data2>>8;
 			cout << "Missile egg:  " << item_names[weapon]
 				<< endl;
-			Shape_info& info = ShapeID::get_info(weapon);
+			Shape_info& info = gwin->get_info(weapon);
 			Weapon_info *winf = info.get_weapon_info();
 			int proj;
 			if (winf && winf->get_projectile())
@@ -712,7 +700,7 @@ void Egg_object::activate
 			break;
 		case weather:
 			{
-			set_weather(data1&0xff, data1>>8, this);
+			set_weather(gwin, data1&0xff, data1>>8, this);
 			break;
 			}
 		case button:		// Set off all in given area.
@@ -727,7 +715,7 @@ void Egg_object::activate
 				if (egg != this &&
 				    egg->criteria == external_criteria && 
 				    !(egg->flags & (1 << (int) hatched))) // Experimental attempting to fix problem in Silver Seed
-					egg->activate(obj, 0);
+					egg->activate(umachine, obj, 0);
 				}
 			break;
 			}
@@ -763,6 +751,7 @@ void Egg_object::print_debug
 
 void Egg_object::set_weather
 	(
+	Game_window *gwin,
 	int weather,			// 0-6.
 	int len,			// In game minutes (I think).
 	Game_object *egg		// Egg this came from, or null.
@@ -770,24 +759,24 @@ void Egg_object::set_weather
 	{
 	if (!len)			// Means continuous.
 		len = 120;		// How about a couple game hours?
-	int cur = eman->get_weather();
+	int cur = gwin->get_weather();
 	cout << "Current weather is " << cur << "; setting " << weather
 							<< endl;
 	switch (weather)
 		{
 	case 0:		// Back to normal.
-		eman->remove_weather_effects();
+		gwin->remove_weather_effects();
 		break;
 	case 2:		// Storm.
 		if (cur != weather)
-			eman->add_effect(new Storm_effect(len, 0, egg));
+			gwin->add_effect(new Storm_effect(len, 0, egg));
 		break;
 	case 3:		// (On Ambrosia).
-		eman->remove_weather_effects();
-		eman->add_effect(new Sparkle_effect(len, 0, egg));
+		gwin->remove_weather_effects();
+		gwin->add_effect(new Sparkle_effect(len, 0, egg));
 		break;
 	case 6:		// Clouds.
-		eman->add_effect(new Clouds_effect(len, 0, egg));
+		gwin->add_effect(new Clouds_effect(len, 0, egg));
 		break;
 	default:
 		break;
@@ -806,9 +795,10 @@ void Egg_object::move
 	int newlift
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
-	Map_chunk *newchunk = gmap->get_chunk_safely(newcx, newcy);
+	Map_chunk *newchunk = gwin->get_chunk_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
 	remove_this(1);			// Remove from old.
@@ -827,11 +817,12 @@ void Egg_object::remove_this
          int nodel                       // 1 to not delete.
          )
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	if (get_owner())		// Watch for this.
 		get_owner()->remove(this);
 	else
 		{
-		Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
+		Map_chunk *chunk = gwin->get_chunk_safely(cx, cy);
 	 	if (chunk)
 			{
 			gwin->add_dirty(this);	// (Make's ::move() simpler.).
@@ -840,7 +831,7 @@ void Egg_object::remove_this
 		}
 	if (launcher)			// Stop missiles.
 		{
-		gwin->get_tqueue()->remove(launcher);
+		Game_window::get_game_window()->get_tqueue()->remove(launcher);
 		delete launcher;
 		launcher = 0;
 		}
@@ -854,7 +845,7 @@ void Egg_object::remove_this
 
 void Egg_object::write_ireg
 	(
-	DataSource *out
+	ostream& out
 	)
 	{
 	unsigned char buf[13];		// 13-byte entry + length-byte.
@@ -874,20 +865,10 @@ void Egg_object::write_ireg
 	Write2(ptr, data1);
 	*ptr++ = (get_lift()&15)<<4;
 	Write2(ptr, data2);
-	out->write((char*)buf, sizeof(buf));
+	out.write((char*)buf, sizeof(buf));
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
-
-// Get size of IREG. Returns -1 if can't write to buffer
-int Egg_object::get_ireg_size()
-{
-	// These shouldn't ever happen, but you never know
-	if (gumpman->find_gump(this) || Usecode_script::find(this))
-		return -1;
-
-	return 13;
-}
 
 /*
  *	Create from IREG data.
@@ -945,11 +926,12 @@ Animated_egg_object::~Animated_egg_object()
 
 void Animated_egg_object::paint
 	(
+	Game_window *gwin
 	)
 	{
 	if (animator)
 		animator->want_animation();	// Be sure animation is on.
-	Ireg_game_object::paint();	// Always paint these.
+	Ireg_game_object::paint(gwin);	// Always paint these.
 	}
 
 /*
@@ -958,10 +940,11 @@ void Animated_egg_object::paint
 
 void Animated_egg_object::activate
 	(
+	Usecode_machine *umachine,
 	int event
 	)
 	{
-	Egg_object::activate(event);
+	Egg_object::activate(umachine, event);
 	flags &= ~(1 << (int) hatched);	// Moongate:  reset always.
 	}
 
@@ -1030,14 +1013,16 @@ bool Field_object::field_effect
 
 void Field_object::activate
 	(
+	Usecode_machine *umachine,
 	int event
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 					// Field_frame_animator calls us with
 					//   event==0 to check for damage.
 	if (event != Usecode_machine::npc_proximity)
 		{
-		Ireg_game_object::activate(event);
+		Ireg_game_object::activate(umachine, event);
 		return;
 		}
 	Actor_queue npcs;		// Find all nearby NPC's.
@@ -1052,7 +1037,7 @@ void Field_object::activate
 		if (actor->is_dead() || Game_object::distance(actor) > 4)
 			continue;
 		if (actor->get_footprint().intersects(eggfoot))
-			Field_object::activate(actor);
+			Field_object::activate(umachine, actor);
 		}
 	}
 
@@ -1062,12 +1047,14 @@ void Field_object::activate
 
 void Field_object::activate
 	(
+	Usecode_machine *umachine,
 	Game_object *obj,		// Object (actor) that came near it.
 	bool /* must */			// If 1, skip dice roll.
 	)
 	{
-//++++++Maybe this test should be removed:
-	if (!obj->get_flag(Obj_flags::in_party))
+	Game_window *gwin = Game_window::get_game_window();
+	Main_actor *av = gwin->get_main_actor();
+	if (obj != av && obj->get_party_id() < 0)
 		return;			// Not a party member.
 	if (field_effect((Actor *) obj))// Apply field.
 		remove_this(0);		// Delete sleep/poison if applied.
@@ -1079,17 +1066,11 @@ void Field_object::activate
 
 void Field_object::write_ireg
 	(
-	DataSource *out
+	ostream& out
 	)
 	{
 	Ireg_game_object::write_ireg(out);
 	}
-
-// Get size of IREG. Returns -1 if can't write to buffer
-int Field_object::get_ireg_size()
-{
-	return Ireg_game_object::get_ireg_size();
-}
 
 
 /*
@@ -1103,12 +1084,13 @@ Mirror_object::Mirror_object(int shapenum, int framenum, unsigned int tilex,
 	solid_area = 1;
 }
 
-void Mirror_object::activate(int event)
+void Mirror_object::activate(Usecode_machine *umachine, int event)
 {
-	Ireg_game_object::activate(event);
+	Ireg_game_object::activate(umachine, event);
 }
 
-void Mirror_object::activate(Game_object *obj, bool must)
+void Mirror_object::activate(Usecode_machine *umachine, Game_object *obj, 
+							bool must)
 {
 	// These are broken, so dont touch
 	if ((get_framenum()%3) == 2)  return;
@@ -1140,7 +1122,13 @@ void Mirror_object::activate(Game_object *obj, bool must)
 
 	// Only if it changed update the shape
 	if (get_framenum()!=wanted_frame)
-		change_frame(wanted_frame);
+	{
+		Game_window *gwin = Game_window::get_game_window();
+
+		gwin->add_dirty(this);
+		set_frame(wanted_frame);
+		gwin->add_dirty(this);
+	}
 }
 
 // Can it be activated?
@@ -1168,23 +1156,18 @@ void Mirror_object::set_area()
 	else  area = Rectangle(t.tx-3 , t.ty-1, 6, 6);
 }
 
-void Mirror_object::paint()
+void Mirror_object::paint(Game_window *gwin)
 {
-	Ireg_game_object::paint();	// Always paint these.
+	Ireg_game_object::paint(gwin);	// Always paint these.
 }
 
 /*
  *	Write out.  These are stored as normal game objects.
  */
 
-void Mirror_object::write_ireg(DataSource *out)
+void Mirror_object::write_ireg(ostream& out)
 {
 	Ireg_game_object::write_ireg(out);
 }
 
-// Get size of IREG. Returns -1 if can't write to buffer
-int Mirror_object::get_ireg_size()
-{
-	// TODO!!!!!!!
-	return Ireg_game_object::get_ireg_size();
-}
+

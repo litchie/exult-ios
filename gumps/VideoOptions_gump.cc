@@ -26,6 +26,7 @@
 
 #include "SDL_events.h"
 
+#include "gump_utils.h"
 #include "Configuration.h"
 #include "Gump_button.h"
 #include "Gump_ToggleButton.h"
@@ -33,7 +34,6 @@
 #include "exult.h"
 #include "exult_flx.h"
 #include "gamewin.h"
-#include "gameclk.h"
 #include "mouse.h"
 #include "Text_button.h"
 
@@ -72,15 +72,15 @@ public:
 		: Text_button(par, text, px, py, 59, 11)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
-void VideoOptions_button::activate()
+void VideoOptions_button::activate(Game_window *gwin)
 {
 	if (text == canceltext) {
 		((VideoOptions_gump*)parent)->cancel();
 	} else if (text == oktext) {
-		((VideoOptions_gump*)parent)->close();
+		((VideoOptions_gump*)parent)->close(gwin);
 	}
 }
 
@@ -95,7 +95,7 @@ public:
 		((VideoOptions_gump*)parent)->toggle((Gump_button*)this, state);
 	}
 };
-void VideoOptions_gump::close()
+void VideoOptions_gump::close(Game_window* gwin)
 {
 	if (resolution != old_resolution) {
 		restore_background = false;
@@ -156,6 +156,7 @@ void VideoOptions_gump::build_buttons()
 
 void VideoOptions_gump::load_settings()
 {
+	Game_window *gwin = Game_window::get_game_window();
 	int w = gwin->get_width();
 	int h = gwin->get_height();
 
@@ -187,7 +188,7 @@ void VideoOptions_gump::load_settings()
 	scaling = gwin->get_win()->get_scale()-1;
 	scaler = gwin->get_win()->get_scaler();
 	fullscreen = gwin->get_win()->is_fullscreen()?1:0;
-	gclock->set_palette();
+	gwin->set_palette();
 	
 }
 
@@ -215,6 +216,7 @@ VideoOptions_gump::~VideoOptions_gump()
 
 void VideoOptions_gump::save_settings()
 {
+	Game_window *gwin = Game_window::get_game_window();
 	
 	int resx = resolutions[2*resolution];
 	int resy = resolutions[2*resolution+1];
@@ -235,46 +237,48 @@ void VideoOptions_gump::save_settings()
 	gwin->set_painted();
 }
 
-void VideoOptions_gump::paint()
+void VideoOptions_gump::paint(Game_window* gwin)
 {
-	Gump::paint();
+	Gump::paint(gwin);
 	for (int i=0; i<10; i++)
 		if (buttons[i])
-			buttons[i]->paint();
+			buttons[i]->paint(gwin);
 
-	sman->paint_text(2, "Resolution:", x + colx[0], y + rowy[0] + 1);
-	sman->paint_text(2, "Scaling:", x + colx[0], y + rowy[1] + 1);
-	sman->paint_text(2, "Scaler:", x + colx[0], y + rowy[2] + 1);
-	sman->paint_text(2, "Full Screen:", x + colx[0], y + rowy[3] + 1);
+	gwin->paint_text(2, "Resolution:", x + colx[0], y + rowy[0] + 1);
+	gwin->paint_text(2, "Scaling:", x + colx[0], y + rowy[1] + 1);
+	gwin->paint_text(2, "Scaler:", x + colx[0], y + rowy[2] + 1);
+	gwin->paint_text(2, "Full Screen:", x + colx[0], y + rowy[3] + 1);
 	gwin->set_painted();
 }
 
 void VideoOptions_gump::mouse_down(int mx, int my)
 {
-	pushed = Gump::on_button(mx, my);
+	Game_window *gwin = Game_window::get_game_window();
+	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
 	if (!pushed)
 		for (int i=0; i<10; i++)
-			if (buttons[i] && buttons[i]->on_button(mx, my)) {
+			if (buttons[i] && buttons[i]->on_button(gwin, mx, my)) {
 				pushed = buttons[i];
 				break;
 			}
 
 	if (pushed)			// On a button?
 	{
-		pushed->push();
+		pushed->push(gwin);
 		return;
 	}
 }
 
 void VideoOptions_gump::mouse_up(int mx, int my)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush();
-		if (pushed->on_button(mx, my))
-			((Gump_button*)pushed)->activate();
+		pushed->unpush(gwin);
+		if (pushed->on_button(gwin, mx, my))
+			((Gump_button*)pushed)->activate(gwin);
 		pushed = 0;
 	}
 }

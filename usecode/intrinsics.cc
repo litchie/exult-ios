@@ -36,8 +36,6 @@
 #include "exult.h"
 #include "game.h"
 #include "gamewin.h"
-#include "gamemap.h"
-#include "gameclk.h"
 #include "keyring.h"
 #include "mouse.h"
 #include "rect.h"
@@ -52,8 +50,6 @@
 #include "monstinf.h"
 #include "actions.h"
 #include "ucscriptop.h"
-#include "ucfunction.h"
-#include "palette.h"
 
 using std::cerr;
 using std::cout;
@@ -196,7 +192,9 @@ USECODE_INTRINSIC(select_from_menu2)
 USECODE_INTRINSIC(input_numeric_value)
 {
 	// Ask for # (min, max, step, default).
-	Usecode_value ret(gumpman->prompt_for_number(
+	extern int Prompt_for_number(int minval, int maxval, 
+							int step, int def);
+	Usecode_value ret(Prompt_for_number(
 		parms[0].get_int_value(), parms[1].get_int_value(),
 		parms[2].get_int_value(), parms[3].get_int_value()));
 	conv->clear_text_pending();	// Answered a question.
@@ -262,7 +260,7 @@ USECODE_INTRINSIC(get_item_quality)
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return Usecode_value(0);
-	Shape_info& info = obj->get_info();
+	Shape_info& info = gwin->get_info(obj);
 	return Usecode_value(info.has_quality() ? obj->get_quality() : 0);
 }
 
@@ -276,7 +274,7 @@ USECODE_INTRINSIC(set_item_quality)
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		{
-		Shape_info& info = obj->get_info();
+		Shape_info& info = gwin->get_info(obj);
 		if (info.has_quality())
 			{
 			obj->set_quality((unsigned int) qual);
@@ -303,7 +301,7 @@ USECODE_INTRINSIC(set_item_quantity)
 	Usecode_value ret(0);
 	Game_object *obj = get_item(parms[0]);
 	int newquant = parms[1].get_int_value();
-	if (obj && obj->get_info().has_quantity())
+	if (obj && gwin->get_info(obj).has_quantity())
 		{
 		ret = Usecode_value(1);
 					// If not in world, don't delete!
@@ -384,8 +382,8 @@ USECODE_INTRINSIC(get_schedule_type)
 					// Path_run_usecode?  (This is to fix
 					//   a bug in the Fawn Trial.)
 					//+++++Should be a better way to check.
-	if (Game::get_game_type() == SERPENT_ISLE &&
-	    npc->get_action() && npc->get_action()->as_usecode_path())
+	if (dynamic_cast<If_else_path_actor_action *>(npc->get_action()) &&
+	    Game::get_game_type() == SERPENT_ISLE)
 					// Give a 'fake' schedule.
 		sched = Schedule::walk_to_schedule;
 	Usecode_value u(sched);
@@ -397,13 +395,13 @@ USECODE_INTRINSIC(set_schedule_type)
 	// SetSchedule?(npc, schedtype).
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
-	Actor *npc = as_actor(get_item(parms[0]));
-	if (npc)
+	Game_object *obj = get_item(parms[0]);
+	if (obj)
 		{
 		int newsched = parms[1].get_int_value();
-		npc->set_schedule_type(newsched);
+		obj->set_schedule_type(newsched);
 					// Taking Avatar out of combat?
-		if (npc == gwin->get_main_actor() && gwin->in_combat() &&
+		if (obj == gwin->get_main_actor() && gwin->in_combat() &&
 		    newsched != Schedule::combat)
 					// End combat mode (for L.Field).
 			{
@@ -437,20 +435,20 @@ USECODE_INTRINSIC(get_npc_prop)
 {
 	// Get NPC prop (item, prop_id).
 	//   (9 is food level).
-	Actor *npc = as_actor(get_item(parms[0]));
-	Usecode_value u(npc ? 
-		npc->get_property(parms[1].get_int_value()) : 0);
+	Game_object *obj = get_item(parms[0]);
+	Usecode_value u(obj ? 
+		obj->get_property(parms[1].get_int_value()) : 0);
 	return(u);
 }
 
 USECODE_INTRINSIC(set_npc_prop)
 {
 	// Set NPC prop (item, prop_id, delta_value).
-	Actor *npc = as_actor(get_item(parms[0]));
-	if (npc)
+	Game_object *obj = get_item(parms[0]);
+	if (obj)
 		{			// NOTE: 3rd parm. is a delta!
 		int prop = parms[1].get_int_value();
-		npc->set_property(prop, npc->get_property(prop) +
+		obj->set_property(prop, obj->get_property(prop) +
 						parms[2].get_int_value());
 		return Usecode_value(1);// SI needs return.
 		}
@@ -478,7 +476,7 @@ USECODE_INTRINSIC(create_new_object)
 	int shapenum = parms[0].get_int_value();
 
 	Game_object *obj;		// Create to be written to Ireg.
-	Monster_info *inf = ShapeID::get_info(shapenum).get_monster_info();
+	Monster_info *inf = gwin->get_info(shapenum).get_monster_info();
 
 	if (inf)
 	{
@@ -504,7 +502,7 @@ USECODE_INTRINSIC(create_new_object)
 		}
 		else
 		{
-			obj = gmap->create_ireg_object(shapenum, 0);
+			obj = gwin->create_ireg_object(shapenum, 0);
 					// Be liberal about taking stuff.
 			obj->set_flag(Obj_flags::okay_to_take);
 			cout << " ireg object " << endl;
@@ -561,12 +559,12 @@ USECODE_INTRINSIC(update_last_created)
 			  sz == 3 ? arr.get_elem(2).get_int_value() : 0);
 #if 0
 //+++++++I don't remember why I put this in, but it screws up the mirror room
-// in SI when fake Avatars are created where the mirrors exist.
+//in SI when fake Avatars are created where the mirrors exist.
 //++++++++
 		Tile_coord pos = dest;
 					// Skip 'blocked' check if it looks
 					//   structural. (For SI maze).
-		Shape_info& info = obj->get_info();
+		Shape_info& info = gwin->get_info(obj);
 		if (info.get_3d_height() < 5 &&
 					// Weed out drawbridge, etc:
 		    info.get_3d_xtiles() + info.get_3d_ytiles() < 8 &&
@@ -713,7 +711,7 @@ USECODE_INTRINSIC(add_party_items)
 
 USECODE_INTRINSIC(play_music)
 {
-	// Play music(songnum, item).
+	// Play music(item, songnum).
 	// ??Show notes by item?
 #ifdef DEBUG
 	cout << "Music request in usecode" << endl;
@@ -731,7 +729,7 @@ USECODE_INTRINSIC(play_music)
 					// Show notes.
 		Game_object *obj = get_item(parms[1]);
 		if (obj)
-			gwin->get_effects()->add_effect(
+			gwin->add_effect(
 				new Sprites_effect(24, obj, 0, 0, -2, -2));
 		}
 	return(no_ret);
@@ -777,8 +775,18 @@ USECODE_INTRINSIC(find_nearby_avatar)
 USECODE_INTRINSIC(is_npc)
 {
 	// Is item an NPC?
-	Actor *npc = as_actor(get_item(parms[0]));
-	Usecode_value u(npc != 0);
+	Game_object *obj = get_item(parms[0]);
+					// ++++In future, check for monsters.
+	if(!obj)
+		{
+#ifdef DEBUG
+		cerr << "is_npc: get_item returned a NULL pointer" << endl;
+#endif
+		Usecode_value u((Game_object*) NULL);
+		return(u);
+		}
+	Usecode_value u(obj == gwin->get_main_actor() ||
+			obj->get_npc_num());// > 0);
 	return(u);
 }
 
@@ -810,8 +818,9 @@ USECODE_INTRINSIC(display_runes)
 #endif
 			sign->add_text(i, str);
 		}
-	int x, y;			// Paint it, and wait for click.
-	Get_click(x, y, Mouse::hand, 0, false, sign);
+	sign->paint(gwin);		// Paint it, and wait for click.
+	int x, y;
+	Get_click(x, y, Mouse::hand);
 	delete sign;
 	gwin->paint();
 	return(no_ret);
@@ -832,17 +841,8 @@ USECODE_INTRINSIC(click_on_item)
 
 					// Special case for weapon hit:
 	} else if (event == weapon && caller_item)
-	{
-        // if caller_item is the Avatar, return the Avatar's target
-        // instead. This makes combat spellcasting work
-
-        // if caller_item is not the Avatar return caller_item itself
-        // this is needed for hitting Draygan with sleep arrows (SI)
-		Actor *npc = as_actor(caller_item);
-		if (npc == gwin->get_main_actor() && npc->get_target())
-			obj = npc->get_target();
-		else
-			obj = caller_item;
+		{
+		obj = caller_item;
 		t = obj->get_tile();
 		}
 	else
@@ -854,7 +854,7 @@ USECODE_INTRINSIC(click_on_item)
 		t = Tile_coord(gwin->get_scrolltx() + x/c_tilesize,
 				gwin->get_scrollty() + y/c_tilesize, 0);
 					// Look for obj. in open gump.
-		Gump *gump = gumpman->find_gump(x, y);
+		Gump *gump = gwin->get_gump_man()->find_gump(x, y);
 		if (gump)
 		{
 			obj = gump->find_object(x, y);
@@ -913,14 +913,14 @@ USECODE_INTRINSIC(is_dead)
 USECODE_INTRINSIC(game_hour)
 {
 	// Return. game time hour (0-23).
-	Usecode_value u(gclock->get_hour());
+	Usecode_value u(gwin->get_hour());
 	return(u);
 }
 
 USECODE_INTRINSIC(game_minute)
 {
 	// Return minute (0-59).
-	Usecode_value u(gclock->get_minute());
+	Usecode_value u(gwin->get_minute());
 	return(u);
 }
 
@@ -928,29 +928,29 @@ USECODE_INTRINSIC(get_npc_number)
 {
 	// Returns NPC# of item. (-356 =
 	//   avatar).
-	Actor *npc = as_actor(get_item(parms[0]));
-	if (npc == gwin->get_main_actor())
+	Game_object *obj = get_item(parms[0]);
+	if (obj == gwin->get_main_actor())
 		{
 		Usecode_value u(-356);
 		return(u);
 		}
-	int num = npc ? npc->get_npc_num() : 0;
-	Usecode_value u(-num);
+	int npc = obj ? obj->get_npc_num() : 0;
+	Usecode_value u(-npc);
 	return(u);
 }
 
 USECODE_INTRINSIC(part_of_day)
 {
 	// Return 3-hour # (0-7, 0=midnight).
-	Usecode_value u(gclock->get_hour()/3);
+	Usecode_value u(gwin->get_hour()/3);
 	return(u);
 }
 
 USECODE_INTRINSIC(get_alignment)
 {
 	// Get npc's alignment.
-	Actor *npc = as_actor(get_item(parms[0]));
-	Usecode_value u(npc ? npc->get_alignment() : 0);
+	Game_object *obj = get_item(parms[0]);
+	Usecode_value u(obj ? obj->get_alignment() : 0);
 	return(u);
 }
 
@@ -1009,8 +1009,9 @@ USECODE_INTRINSIC(move_object)
 					// Close?  Add to 'nearby' list.
 		else if (ava->distance(act) < gwin->get_width()/c_tilesize)
 			{
-			Npc_actor *npc = act->as_npc();
-			if (npc) gwin->add_nearby_npc(npc);
+			Npc_actor *npc = dynamic_cast<Npc_actor *>(act);
+			if (npc)
+				gwin->add_nearby_npc(npc);
 			}
 		}
 	return(no_ret);
@@ -1056,7 +1057,7 @@ USECODE_INTRINSIC(clear_item_say)
 	// Clear str. near item (item).
 	Game_object *item = get_item(parms[0]);
 	if (item)
-		gwin->get_effects()->remove_text_effect(item);
+		gwin->remove_text_effect(item);
 	return(no_ret);
 }
 
@@ -1073,8 +1074,7 @@ USECODE_INTRINSIC(projectile_effect)
 	if (!attacker)
 		return Usecode_value(0);
 	int shnum = parms[2].get_int_value();
-	gwin->get_effects()->add_effect(
-				new Projectile_effect(attacker, to, shnum));
+	gwin->add_effect(new Projectile_effect(attacker, to, shnum));
 
 	return Usecode_value(0);	// Not sure what this should be.
 }
@@ -1107,13 +1107,13 @@ USECODE_INTRINSIC(set_lift)
 USECODE_INTRINSIC(get_weather)
 {
 	// Get_weather()
-	return Usecode_value(gwin->get_effects()->get_weather());
+	return Usecode_value(gwin->get_weather());
 }
 
 USECODE_INTRINSIC(set_weather)
 {
 	// Set_weather(i)
-	Egg_object::set_weather(parms[0].get_int_value());
+	Egg_object::set_weather(gwin, parms[0].get_int_value());
 	return no_ret;
 }
 
@@ -1138,7 +1138,7 @@ USECODE_INTRINSIC(summon)
 	// summon(shape, flag??).  Create monster of desired shape.
 
 	int shapenum = parms[0].get_int_value();
-	Monster_info *info = ShapeID::get_info(shapenum).get_monster_info();
+	Monster_info *info = gwin->get_info(shapenum).get_monster_info();
 	if (!info)
 		return Usecode_value(0);
 	Tile_coord start = gwin->get_main_actor()->get_tile();
@@ -1152,72 +1152,43 @@ USECODE_INTRINSIC(summon)
 	return Usecode_value(monst);
 }
 
-/*
- *	Class to paint a shape centered.
- */
-class Paint_centered : public Paintable, public Game_singletons
-	{
-protected:
-	ShapeID *sid;			// ->shape.
-	int x, y;			// Where to paint.
-public:
-	Paint_centered(ShapeID *si) : sid(si)
-		{
-		Shape_frame *s = sid->get_shape();
-					// Get coords. for centered view.
-		x = (gwin->get_width() - s->get_width())/2 + s->get_xleft();
-		y = (gwin->get_height() - s->get_height())/2 + s->get_yabove();
-		}
-	virtual void paint()
-		{
-		sid->paint_shape(x, y);
-		}
-	};
-/*
- *	Paint map.
- */
-class Paint_map : public Paint_centered
-	{
-	bool show_loc;
-public:
-	Paint_map(ShapeID *s, bool loc) : Paint_centered(s), show_loc(loc)
-		{  }
-	virtual void paint()
-		{
-		Paint_centered::paint();
-		if (show_loc)
-			{		// mark location
-			int xx, yy;
-			Tile_coord t = gwin->get_main_actor()->get_tile();
-			if (Game::get_game_type()==BLACK_GATE) {
-				xx = (int)(t.tx/16.05 + 5 + 0.5);
-				yy = (int)(t.ty/15.95 + 4 + 0.5);
-			} else if (Game::get_game_type()==SERPENT_ISLE) {
-				xx = (int)(t.tx/16.0 + 18 + 0.5);
-				yy = (int)(t.ty/16.0 + 9.4 + 0.5);
-			}
-			Shape_frame *s = sid->get_shape();
-			xx += x - s->get_xleft();
-			yy += y - s->get_yabove();
-			gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
-			gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
-			}
-		}
-	};
-
 USECODE_INTRINSIC(display_map)
 {
+	// Display map.
+	ShapeID msid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
+	Shape_frame *map = msid.get_shape();
+
+					// Get coords. for centered view.
+	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
+	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
+	gwin->paint_shape(x, y, msid);
 
 	//count all sextants in party
 	Usecode_value v_357(-357), v650(650), v_359(-359);
-	long sextants=count_objects(v_357, v650, v_359, v_359).get_int_value();
-	bool loc = !gwin->is_main_actor_inside() && (sextants > 0);
-	// Display map.
-	ShapeID msid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
-	Paint_map map(&msid, loc);
+	long sextants = count_objects(v_357, v650, v_359, v_359).get_int_value();
+	if ((!gwin->is_main_actor_inside()) && (sextants > 0)) {
+		// mark location
+		int xx, yy;
+		Tile_coord t = gwin->get_main_actor()->get_tile();
 
+		if (Game::get_game_type()==BLACK_GATE) {
+			xx = (int)(t.tx/16.05 + 5 + 0.5);
+			yy = (int)(t.ty/15.95 + 4 + 0.5);
+		} else if (Game::get_game_type()==SERPENT_ISLE) {
+			xx = (int)(t.tx/16.0 + 18 + 0.5);
+			yy = (int)(t.ty/16.0 + 9.4 + 0.5);
+		}
+
+		xx += x - map->get_xleft();
+		yy += y - map->get_yabove();
+
+		gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
+		gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
+	}
+
+	gwin->show(1);
 	int xx, yy;
-	Get_click(xx, yy, Mouse::hand, 0, false, &map);
+	Get_click(xx, yy, Mouse::hand);
 	gwin->paint();
 	return(no_ret);
 }
@@ -1241,9 +1212,15 @@ USECODE_INTRINSIC(si_display_map)
 	
 	// Display map.
 	ShapeID msid(shapenum, 0, SF_SPRITES_VGA);
-	Paint_centered map(&msid);
+	Shape_frame *map = msid.get_shape();
+				// Get coords. for centered view.
+	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
+	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
+	gwin->paint_shape(x, y, msid);
+
+	gwin->show(1);
 	int xx, yy;
-	Get_click(xx, yy, Mouse::hand, 0, false, &map);
+	Get_click(xx, yy, Mouse::hand);
 	gwin->paint();
 
 	return no_ret;
@@ -1255,7 +1232,7 @@ USECODE_INTRINSIC(kill_npc)
 	Game_object *item = get_item(parms[0]);
 	Actor *npc = as_actor(item);
 	if (npc)
-		npc->die(0);
+		npc->die();
 	return (no_ret);
 }
 
@@ -1373,15 +1350,12 @@ USECODE_INTRINSIC(display_area)
 			{ x = 0; w = gwin->get_width(); }
 		if (h > gwin->get_height())
 			{ y = 0; h = gwin->get_height(); }
-		int save_dungeon = gwin->is_in_dungeon();
-		gwin->set_in_dungeon(0);	// Disable dungeon.
 					// Paint game area.
 		gwin->paint_map_at_tile(x, y, w, h, tx - tw/2, ty - th/2, 4);
 					// Paint sprite #10 (black gate!)
 					//   over it, transparently.
-		sman->paint_shape(topx + sprite->get_xleft(),
+		gwin->paint_shape(topx + sprite->get_xleft(),
 				topy + sprite->get_yabove(), sprite, 1);
-		gwin->set_in_dungeon(save_dungeon);
 		gwin->show();
 					// Wait for click.
 		Get_click(x, y, Mouse::hand);
@@ -1425,9 +1399,9 @@ USECODE_INTRINSIC(add_spell)
 	// add_spell(spell# (0-71), ??, spoolbook).
 	// Returns 0 if book already has that spell.
 	Game_object *obj = get_item(parms[2]);
-	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
+	if (!obj)
 		return Usecode_value(0);
-	Spellbook_object *book = (Spellbook_object *) (obj);
+	Spellbook_object *book = dynamic_cast<Spellbook_object *> (obj);
 	if (!book)
 		{
 		cout << "Add_spell - Not a spellbook!" << endl;
@@ -1441,8 +1415,7 @@ USECODE_INTRINSIC(sprite_effect)
 	// Display animation from sprites.vga.
 	// show_sprite(sprite#, tx, ty, dx, dy, frame, length??);
 					// ++++++Pass frame, length+++++++
-	gwin->get_effects()->add_effect(
-		new Sprites_effect(parms[0].get_int_value(),
+	gwin->add_effect(new Sprites_effect(parms[0].get_int_value(),
 		Tile_coord(parms[1].get_int_value(), parms[2].get_int_value(),
 									0),
 			parms[3].get_int_value(), parms[4].get_int_value()));
@@ -1456,8 +1429,8 @@ USECODE_INTRINSIC(obj_sprite_effect)
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
 					// ++++++Pass frame, length+++++++
-		gwin->get_effects()->add_effect(
-			new Sprites_effect(parms[1].get_int_value(), obj,
+		gwin->add_effect(new Sprites_effect(parms[1].get_int_value(),
+			obj,
 			-parms[2].get_int_value(), -parms[3].get_int_value(),
 			parms[4].get_int_value(), parms[5].get_int_value()));
 	return(no_ret);
@@ -1472,7 +1445,7 @@ USECODE_INTRINSIC(explode)
 					// Use container if it's in one.
 	Tile_coord pos = exp->get_outermost()->get_tile();
 					// Sprite 1,4,5 look like explosions.
-	gwin->get_effects()->add_effect(new Explosion_effect(pos, exp));
+	gwin->add_effect(new Explosion_effect(pos, exp));
 	return Usecode_value(1);
 }
 
@@ -1557,7 +1530,7 @@ USECODE_INTRINSIC(armageddon)
 			Tile_coord loc = npc->get_tile();
 			if (screen.has_point(loc.tx, loc.ty))
 				npc->say(text[rand()%numtext]);
-			npc->die(0);
+			npc->die();
 			}
 		}
 	Actor_vector vec;		// Get any monsters nearby.
@@ -1566,8 +1539,8 @@ USECODE_INTRINSIC(armageddon)
 									++it)
 		{
 		Actor *act = *it;
-		if (act->is_monster())	// Assume only Avatar can cast this.
-			act->die(gwin->get_main_actor());
+		if (act->is_monster())
+			act->die();
 		}
 	gwin->armageddon = true;
 	return no_ret;
@@ -1585,7 +1558,7 @@ USECODE_INTRINSIC(halt_scheduled)
 USECODE_INTRINSIC(lightning)
 {
 					// 1 sec. is long enough for 1 flash.
-	gwin->get_effects()->add_effect(new Lightning_effect(1000));
+	gwin->add_effect(new Lightning_effect(1000));
 	return no_ret;
 }
 
@@ -1603,23 +1576,22 @@ USECODE_INTRINSIC(get_array_size)
 USECODE_INTRINSIC(mark_virtue_stone)
 {
 	Game_object *obj = get_item(parms[0]);
-	if (obj->get_info().get_shape_class() == Shape_info::virtue_stone)
-		{
-		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
+	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *> (obj);
+	if (vs)
 		vs->set_pos(obj->get_outermost()->get_tile());
-		}
 	return no_ret;
 }
 
 USECODE_INTRINSIC(recall_virtue_stone)
 {
 	Game_object *obj = get_item(parms[0]);
-	if (obj->get_info().get_shape_class() == Shape_info::virtue_stone)
+	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *> (obj);
+	if (vs)
 		{
-		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
-		gumpman->close_all_gumps();
+		gwin->get_gump_man()->close_all_gumps();
 					// Pick it up if necessary.
-		if (!obj->get_owner())
+		Game_object *owner = obj->get_outermost();
+		if (owner != gwin->get_main_actor() && !npc_in_party(owner))
 			{		// Go through whole party.
 			obj->remove_this(1);
 			Usecode_value party = get_party();
@@ -1664,7 +1636,7 @@ USECODE_INTRINSIC(get_timer)
 	if (tnum >= 0 && tnum < (int)(sizeof(timers)/sizeof(timers[0])))
 					// Return 0 if not set.
 		ret = timers[tnum] > 0 ?
-			(gclock->get_total_hours() - timers[tnum]) : 0;
+			(gwin->get_total_hours() - timers[tnum]) : 0;
 	else
 		{
 		cerr << "Attempt to use invalid timer " << tnum << endl;
@@ -1677,7 +1649,7 @@ USECODE_INTRINSIC(set_timer)
 {
 	int tnum = parms[0].get_int_value();
 	if (tnum >= 0 && tnum < (int)(sizeof(timers)/sizeof(timers[0])))
-		timers[tnum] = gclock->get_total_hours();
+		timers[tnum] = gwin->get_total_hours();
 	else
 		cerr << "Attempt to use invalid timer " << tnum << endl;
 	return(no_ret);
@@ -1914,7 +1886,7 @@ USECODE_INTRINSIC(is_water)
 		if (t.tz != 0 || gwin->find_object(x, y))
 			return Usecode_value(0);
 		ShapeID sid = gwin->get_flat(x, y);
-		Shape_info& info = sid.get_info();
+		Shape_info& info = gwin->get_info(sid.get_shapenum());
 		return Usecode_value(info.is_water());
 		}
 	return Usecode_value(0);
@@ -1950,7 +1922,7 @@ USECODE_INTRINSIC(fire_cannon)
 	Tile_coord blastpos = pos + Tile_coord(
 				blastoff[2*dir], blastoff[2*dir + 1], 0);
 					// Sprite 5 is a small explosion.
-	gwin->get_effects()->add_effect(new Sprites_effect(5, blastpos));
+	gwin->add_effect(new Sprites_effect(5, blastpos));
 	Tile_coord dest = pos;
 	switch (dir)			// Figure where to aim.
 		{
@@ -1960,8 +1932,7 @@ USECODE_INTRINSIC(fire_cannon)
 	case 3: dest.tx -= dist; break;
 		}
 					// Shoot cannonball.
-	gwin->get_effects()->add_effect(
-			new Projectile_effect(blastpos, dest, ball, cshape));
+	gwin->add_effect(new Projectile_effect(blastpos, dest, ball, cshape));
 	return no_ret;
 }
 
@@ -2005,9 +1976,6 @@ USECODE_INTRINSIC(nap_time)
 			return no_ret;
 			}
 		}
-	Schedule *sched = gwin->get_main_actor()->get_schedule();
-	if (sched)			// Tell (sleep) sched. to use bed.
-		sched->set_bed(bed);
 					// Give him a chance to get there (at
 					//   most 5 seconds.)
 	Wait_for_arrival(gwin->get_main_actor(), bed->get_tile(),
@@ -2019,7 +1987,7 @@ USECODE_INTRINSIC(nap_time)
 USECODE_INTRINSIC(advance_time)
 {
 	// Incr. clock by (parm[0]*.04min.).
-	gclock->increment(parms[0].get_int_value()/25);
+	gwin->increment_clock(parms[0].get_int_value()/25);
 	return(no_ret);
 }
 
@@ -2056,14 +2024,14 @@ USECODE_INTRINSIC(close_gumps)
 {
 	// Guessing+++++ close all gumps.
 	if (!gwin->is_dragging())	// NOT while dragging stuff.
-		gumpman->close_all_gumps();
+		gwin->get_gump_man()->close_all_gumps();
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(in_gump_mode)
 {
 								// No persistent
-	return Usecode_value(gumpman->showing_gumps(true));
+	return Usecode_value(gwin->get_gump_man()->showing_gumps(true));
 }
 
 USECODE_INTRINSIC(is_not_blocked)
@@ -2080,7 +2048,7 @@ USECODE_INTRINSIC(is_not_blocked)
 	int shapenum = parms[1].get_int_value();
 	int framenum = parms[2].get_int_value();
 					// Find out about given shape.
-	Shape_info& info = ShapeID::get_info(shapenum);
+	Shape_info& info = gwin->get_info(shapenum);
 	Rectangle footprint(
 		tile.tx - info.get_3d_xtiles(framenum) + 1,
 		tile.ty - info.get_3d_ytiles(framenum) + 1,
@@ -2153,7 +2121,7 @@ USECODE_INTRINSIC(get_item_flag)
 		}
 	else if (fnum == (int) Obj_flags::cant_die)
 		{
-		Monster_info *inf = obj->get_info().get_monster_info();
+		Monster_info *inf = gwin->get_info(obj).get_monster_info();
 		return Usecode_value(inf != 0 && inf->cant_die());
 		}
 					// +++++0x18 is used in testing for
@@ -2163,6 +2131,7 @@ USECODE_INTRINSIC(get_item_flag)
 	else if (fnum == (int) Obj_flags::in_dungeon)
 		return Usecode_value(obj == gwin->get_main_actor() &&
 					gwin->is_in_dungeon());
+
 	Usecode_value u(obj->get_flag(fnum) != 0);
 	return(u);
 }
@@ -2176,7 +2145,7 @@ USECODE_INTRINSIC(set_item_flag)
 		return no_ret;
 	switch (flag)
 		{
-	case Obj_flags::dont_move:
+	case Obj_flags::dont_render:
 		obj->set_flag(flag);
 					// Get out of combat mode.
 		if (obj == gwin->get_main_actor() && 
@@ -2214,7 +2183,7 @@ USECODE_INTRINSIC(clear_item_flag)
 	if (obj)
 		{
 		obj->clear_flag(flag);
-		if (flag == Obj_flags::dont_move)
+		if (flag == Obj_flags::dont_render)
 			{	// Show change in status.
 			show_pending_text();	// Fixes Lydia-tatoo.
 			gwin->set_all_dirty();
@@ -2240,8 +2209,8 @@ USECODE_INTRINSIC(set_path_failure)
 	if (path_npc && item)		// Set in path_run_usecode().
 		{
 		If_else_path_actor_action *action = 
-			path_npc->get_action() ?
-			path_npc->get_action()->as_usecode_path() : 0;
+			dynamic_cast<If_else_path_actor_action *>(
+						path_npc->get_action());
 		if (action)		// Set in in path action.
 			action->set_failure(
 				new Usecode_actor_action(fun, item, eventid));
@@ -2271,7 +2240,7 @@ USECODE_INTRINSIC(fade_palette)
 	int inout = parms[2].get_int_value();
 	if (inout == 0)
 		show_pending_text();	// Make sure prev. text was seen.
-	gwin->get_pal()->fade(cycles, inout);
+	gwin->fade_palette(cycles, inout);
 	return(no_ret);
 }
 
@@ -2282,6 +2251,27 @@ USECODE_INTRINSIC(get_party_list2)
 	// List of live chars? Dead chars?
 	Usecode_value u(get_party());
 	return(u);
+}
+
+//+++++++Remove this if things work okay.  It's just get_party_list().
+USECODE_INTRINSIC(get_party_ids)
+{
+	Usecode_value u(get_party());
+	return u;
+#if 0	/* ++++++Pretty sure this is wrong.  Just return party objs. */
+	// Return list of party ID's, including -356 for Avatar.
+	Usecode_value arr(1 + party_count, 0);
+					// Add avatar.
+	Usecode_value aval(-356);
+	arr.put_elem(0, aval);	
+	int num_added = 1;
+	for (int i = 0; i < party_count; i++)
+		{
+		Usecode_value val(party[i]);
+		arr.put_elem(num_added++, val);
+		}
+	return arr;
+#endif
 }
 
 USECODE_INTRINSIC(set_camera)
@@ -2550,7 +2540,7 @@ USECODE_INTRINSIC(set_new_schedules)
 	//			[x1,y1, x2, y2, ...] )
 	//
 
-	Actor *actor = as_actor(get_item(parms[0]));
+	Npc_actor *actor = as_npcactor(get_item(parms[0]));
 
 	// If no actor return
 	if (!actor) return no_ret;
@@ -2586,7 +2576,7 @@ USECODE_INTRINSIC(revert_schedule)
 	// Reverts the schedule of the npc to the saved state in
 	// <STATIC>/schedule.dat
 
-	Actor *actor = as_actor(get_item(parms[0]));
+	Npc_actor *actor = as_npcactor(get_item(parms[0]));
 	if (actor) gwin->revert_schedules(actor);
 
 	return no_ret;
@@ -2597,11 +2587,16 @@ USECODE_INTRINSIC(run_schedule)
 	// run_schedule(npc)
 	// I think this is actually reset activity to current
 	// scheduled activity - Colourless
-	Actor *actor = as_actor(get_item(parms[0]));
+	Npc_actor *actor = as_npcactor(get_item(parms[0]));
 	
 	if (actor)
 	{
-		actor->update_schedule(gclock->get_hour()/3, 7);
+#if 0	/* ++++Causes Iolo bug in Fire&Ice test. */
+		actor->set_force_update();
+
+		gwin->get_tqueue()->add(SDL_GetTicks() + 1, actor, 0);
+#endif
+		actor->update_schedule(gwin, gwin->get_hour()/3, 7);
 
 	}
 
@@ -2660,7 +2655,7 @@ USECODE_INTRINSIC(add_removed_npc)
 	int ey = rect.y + rect.h;	// x end
 
 	// The height of the Actor we are checking
-	int height = actor->get_info().get_3d_height();
+	int height = gwin->get_info(actor->get_shapenum()).get_3d_height();
 
 	int i = 0, nlift = 0;
 	int tx, ty;
@@ -2679,7 +2674,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cx = (sx+i)/c_tiles_per_chunk;
 		tx = (sx+i)%c_tiles_per_chunk;
 
-		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
+		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2701,7 +2696,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cy = (sy+i)/c_tiles_per_chunk;
 		ty = (sy+i)%c_tiles_per_chunk;
 
-		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
+		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2723,7 +2718,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cx = (ex-i)/c_tiles_per_chunk;
 		tx = (ex-i)%c_tiles_per_chunk;
 
-		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
+		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2745,7 +2740,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cy = (ey-i)/c_tiles_per_chunk;
 		ty = (ey-i)%c_tiles_per_chunk;
 
-		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
+		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2831,18 +2826,18 @@ USECODE_INTRINSIC(remove_from_area)
 USECODE_INTRINSIC(infravision)
 {
 	// infravision(npc, onoff)
-	Actor *npc = as_actor(get_item(parms[0]));
-	if (npc && npc->is_in_party())
+	Game_object *npc = get_item(parms[0]);
+	if (npc && (npc == gwin->get_main_actor() || npc->get_party_id() >= 0))
 		{
 		if (parms[1].get_int_value())
 			{		// On?
 			cheat.set_infravision(true);
-			gwin->get_pal()->set(0);
+			gwin->set_palette(0);
 			}
 		else
 			{
 			cheat.set_infravision(false);
-			gclock->set_palette();
+			gwin->set_palette();
 			}
 		}
 	return no_ret;

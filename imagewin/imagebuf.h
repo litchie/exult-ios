@@ -28,22 +28,7 @@ Boston, MA  02111-1307, USA.
 
 
 					// Table for translating palette vals.:
-//typedef unsigned char *Xform_palette;	// Should be 256-bytes.
-
-/*
- *	This class represents a single transparent color by providing a
- *	palette for its effect on all the other colors.
- */
-class Xform_palette
-	{
-public:
-	unsigned char colors[256];	// For transforming 8-bit colors.
-	unsigned char r,g,b,a;		// Actual colour and alpha.
-	void set_color(int cr, int cg, int cb, int ca)
-		{ r = cr; g = cg; b = cb; a = ca;  }
-	unsigned char operator[](int i) const
-		{ return colors[i]; }
-	};
+typedef unsigned char *Xform_palette;	// Should be 256-bytes.
 
 /*
  *	Here's a generic off-screen buffer.  It's up to the derived classes
@@ -159,10 +144,10 @@ public:
 		int last_translucent, Xform_palette *xforms) = 0;
 					// Apply translucency to a line.
 	virtual void fill_line_translucent8(unsigned char val,
-		int srcw, int destx, int desty, Xform_palette& xform) = 0;
+		int srcw, int destx, int desty, Xform_palette xform) = 0;
 					// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch, 
-			int destx, int desty, Xform_palette& xform) = 0;
+				int destx, int desty, Xform_palette xform) = 0;
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty) = 0;

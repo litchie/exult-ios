@@ -45,7 +45,7 @@ mklink_SOURCES = mklink.c
 
 rip_SOURCES = rip.c
 
-#ucdump_SOURCES = ucdump.c
+# ucdump_SOURCES = ucdump.c
 
 shp2pcx_SOURCES = shp2pcx.cc
 

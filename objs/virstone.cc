@@ -28,10 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "virstone.h"
 #include <iostream>
-#include "databuf.h"
-#include "gamewin.h"
-#include "ucsched.h"
-#include "Gump_manager.h"
 
 using std::ostream;
 
@@ -59,7 +55,7 @@ void Virtue_stone_object::set_pos
 
 void Virtue_stone_object::write_ireg
 	(
-	DataSource *out
+	ostream& out
 	)
 	{
 	unsigned char buf[13];		// 13-byte entry + length-byte.
@@ -79,16 +75,6 @@ void Virtue_stone_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;	// Stone's lift in entry[9].
 	*ptr++ = 0;			// Entry[10].  Unknown.
 	*ptr++ = 0;			// Entry[11].  Unknown.
-	out->write((char*)buf, sizeof(buf));
+	out.write((char*)buf, sizeof(buf));
 	}
 
-
-// Get size of IREG. Returns -1 if can't write to buffer
-int Virtue_stone_object::get_ireg_size()
-{
-	// These shouldn't ever happen, but you never know
-	if (gumpman->find_gump(this) || Usecode_script::find(this))
-		return -1;
-
-	return 13;
-}

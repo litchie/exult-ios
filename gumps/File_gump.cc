@@ -62,7 +62,7 @@ public:
 		: Gump_button(par, shapenum, px, py)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 /*
@@ -76,7 +76,7 @@ public:
 			game->get_shape("gumps/quitbtn"), px, py)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 /*
@@ -90,7 +90,7 @@ public:
 	  : Gump_button(par, shapenum, px, py)
 		{ pushed = enabled; }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 /*
@@ -99,6 +99,7 @@ public:
 
 void Load_save_button::activate
 	(
+	Game_window *gwin
 	)
 {
 	if (get_shapenum() == game->get_shape("gumps/loadbtn"))
@@ -113,6 +114,7 @@ void Load_save_button::activate
 
 void Quit_button::activate
 	(
+	Game_window *gwin
 	)
 {
 	((File_gump *) parent)->quit();
@@ -124,10 +126,11 @@ void Quit_button::activate
 
 void Sound_button::activate
 	(
+	Game_window *gwin
 	)
 {
 	pushed = ((File_gump *) parent)->toggle_option(this);
-	parent->paint();
+	parent->paint(gwin);
 }
 
 
@@ -176,9 +179,9 @@ public:
 				refresh();
 			}
 		}
-	void paint();			// Paint.
+	void paint(Game_window *gwin);			// Paint.
 					// Handle mouse click.
-	int mouse_clicked(int mx, int my);
+	int mouse_clicked(Game_window *gwin, int mx, int my);
 	void insert(int chr);		// Insert a character.
 	int delete_left();		// Delete char. to left of cursor.
 	int delete_right();		// Delete char. to right of cursor.
@@ -187,7 +190,7 @@ public:
 protected:
 	void refresh()
 		{
-			paint();
+			paint(Game_window::get_game_window());
 		}
 };
 
@@ -197,16 +200,18 @@ protected:
 
 void Gump_text::paint
 	(
+	Game_window *gwin
 	)
 	{
-	paint_shape(parent->get_x() + x, parent->get_y() + y);
+//	Game_window *gwin = Game_window::get_game_window();
+	gwin->paint_shape(parent->get_x() + x, parent->get_y() + y, get_shape());
 					// Show text.
-	sman->paint_text(2, text, parent->get_x() + textx,
+	gwin->paint_text(2, text, parent->get_x() + textx,
 						parent->get_y() + texty);
 	if (get_framenum())			// Focused?  Show cursor.
-		gwin->get_win()->fill8(0, 1, sman->get_text_height(2),
+		gwin->get_win()->fill8(0, 1, gwin->get_text_height(2),
 			parent->get_x() + textx +
-					sman->get_text_width(2, text, cursor),
+					gwin->get_text_width(2, text, cursor),
 				parent->get_y() + texty + 1);
 	gwin->set_painted();
 	}
@@ -219,10 +224,11 @@ void Gump_text::paint
 
 int Gump_text::mouse_clicked
 	(
+	Game_window *gwin,
 	int mx, int my			// Mouse position on screen.
 	)
 	{
-	if (!on_widget(mx, my))		// Not in our area?
+	if (!on_widget(gwin, mx, my))	// Not in our area?
 		return (0);
 	mx -= textx + parent->get_x();	// Get pt. rel. to text area.
 	if (!get_framenum())		// Gaining focus?
@@ -233,7 +239,7 @@ int Gump_text::mouse_clicked
 	else
 		{
 		for (cursor = 0; cursor <= length; cursor++)
-			if (sman->get_text_width(2, text, cursor) > mx)
+			if (gwin->get_text_width(2, text, cursor) > mx)
 				{
 				if (cursor > 0)
 					cursor--;
@@ -323,6 +329,7 @@ File_gump::File_gump
 {
 	set_object_area(Rectangle(0,0,0,0), 8, 150);
 
+	Game_window *gwin = Game_window::get_game_window();
 	size_t i;
 	int ty = texty;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++, ty += texth)
@@ -395,7 +402,8 @@ void File_gump::remove_focus
 	buttons[0] = 0;
 	delete buttons[1];
 	buttons[1] = 0;
-	paint();
+	Game_window *gwin = Game_window::get_game_window();
+	paint(gwin);
 	}
 
 /*
@@ -415,6 +423,7 @@ void File_gump::load
 	if (!Yesno_gump::ask(
 			"Okay to load over your current game?"))
 		return;
+	Game_window *gwin = Game_window::get_game_window();
 	gwin->restore_gamedat(num);	// Aborts if unsuccessful.
 	gwin->read();			// And read the files in.
 	done = 1;
@@ -435,6 +444,7 @@ void File_gump::save
 	int num = get_save_index(focus);// Which one is it?
 	if (num == -1)
 		return;			// Shouldn't ever happen.
+	Game_window *gwin = Game_window::get_game_window();
 	if (*gwin->get_save_name(num))	// Already a game in this slot?
 		if (!Yesno_gump::ask(
 			"Okay to write over existing saved game?"))
@@ -510,17 +520,18 @@ int File_gump::toggle_option
 
 void File_gump::paint
 	(
+	Game_window *gwin
 	)
 {
-	Gump::paint();			// Paint background
+	Gump::paint(gwin);	// Paint gump & objects.
 					// Paint text objects.
 	size_t i;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++)
 		if (names[i])
-			names[i]->paint();
+			names[i]->paint(gwin);
 	for (i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		if (buttons[i])
-			buttons[i]->paint();
+			buttons[i]->paint(gwin);
 }
 
 /*
@@ -532,27 +543,28 @@ void File_gump::mouse_down
 	int mx, int my			// Position in window.
 	)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	pushed = 0;
 	pushed_text = 0;
 					// First try checkmark.
-	Gump_button *btn = Gump::on_button(mx, my);
+	Gump_button *btn = Gump::on_button(gwin, mx, my);
 	if (btn)
 		pushed = btn;
 	else				// Try buttons at bottom.
 		for (size_t i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
-			if (buttons[i] && buttons[i]->on_button(mx, my))
+			if (buttons[i] && buttons[i]->on_button(gwin, mx, my))
 			{
 				pushed = buttons[i];
 				break;
 			}
 	if (pushed)			// On a button?
 	{
-		pushed->push();
+		pushed->push(gwin);
 		return;
 	}
 					// See if on text field.
 	for (size_t i = 0; i < sizeof(names)/sizeof(names[0]); i++)
-		if (names[i]->on_widget(mx, my))
+		if (names[i]->on_widget(gwin, mx, my))
 		{
 			pushed_text = names[i];
 			break;
@@ -568,20 +580,21 @@ void File_gump::mouse_up
 	int mx, int my			// Position in window.
 	)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush();
-		if (pushed->on_button(mx, my))
-			pushed->activate();
+		pushed->unpush(gwin);
+		if (pushed->on_button(gwin, mx, my))
+			pushed->activate(gwin);
 		pushed = 0;
 	}
 	if (!pushed_text)
 		return;
 					// Let text field handle it.
-	if (!pushed_text->mouse_clicked(mx, my) ||
+	if (!pushed_text->mouse_clicked(gwin, mx, my) ||
 	    pushed_text == focus)	// Same field already selected?
 	{
-		pushed_text->paint();
+		pushed_text->paint(gwin);
 		pushed_text = 0;
 		return;
 	}
@@ -607,7 +620,7 @@ void File_gump::mouse_up
 		delete buttons[1];
 		buttons[0] = buttons[1] = 0;
 	}
-	paint();			// Repaint.
+	paint(gwin);			// Repaint.
 	gwin->set_painted();
 }
 
@@ -619,16 +632,17 @@ void File_gump::text_input(int chr, int unicode)
 {
 	if (!focus)			// Text field?
 		return;
+	Game_window *gwin = Game_window::get_game_window();
 	switch (chr)
 		{
 	case SDLK_RETURN:		// If only 'Save', do it.
 		if (!buttons[0] && buttons[1])
 			{
-			buttons[1]->push();
+			buttons[1]->push(gwin);
 			gwin->show(1);
-			buttons[1]->unpush();
+			buttons[1]->unpush(gwin);
 			gwin->show(1);
-			buttons[1]->activate();
+			buttons[1]->activate(gwin);
 			}
 		break;
 	case SDLK_BACKSPACE:
@@ -642,7 +656,7 @@ void File_gump::text_input(int chr, int unicode)
 			delete buttons[0];
 			delete buttons[1];
 			buttons[0] = buttons[1] = 0;
-			paint();
+			paint(Game_window::get_game_window());
 		}
 		return;
 	case SDLK_DELETE:
@@ -656,7 +670,7 @@ void File_gump::text_input(int chr, int unicode)
 			delete buttons[0];
 			delete buttons[1];
 			buttons[0] = buttons[1] = 0;
-			paint();
+			paint(Game_window::get_game_window());
 		}
 		return;
 	case SDLK_LEFT:
@@ -673,12 +687,11 @@ void File_gump::text_input(int chr, int unicode)
 		return;
 	}
 
-	if ((unicode & 0xFF80) == 0 )
-		chr = unicode & 0x7F;
-	else
-		chr = 0;
-	
-	if (chr < ' ')
+    if ((unicode & 0xFF80) == 0 )
+        chr = unicode & 0x7F;
+    else
+        chr = 0;
+   	if (chr < ' ')
 		return;			// Ignore other special chars.
 	if (chr < 256 && isascii(chr))
 	{
@@ -690,13 +703,13 @@ void File_gump::text_input(int chr, int unicode)
 		{
 			buttons[1] = new Load_save_button(this,
 					btn_cols[1], btn_rows[0], game->get_shape("gumps/savebtn"));
-			buttons[1]->paint();
+			buttons[1]->paint(gwin);
 		}
 		if (buttons[0])		// Can't load now.
 		{
 			delete buttons[0];
 			buttons[0] = 0;
-			paint();
+			paint(gwin);
 		}
 		gwin->set_painted();
 	}

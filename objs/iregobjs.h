@@ -54,8 +54,8 @@ public:
 	void set_flags(uint32 f)	// For initialization.
 		{ flags = f; }
 					// Render.
-	virtual void paint();
-	virtual void paint_terrain() {  }
+	virtual void paint(Game_window *gwin);
+	virtual void paint_terrain(Game_window *gwin) {  }
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
 	void move(Tile_coord t)
@@ -95,9 +95,7 @@ public:
 	uint32 get_flags2() const { return flags2; }
 
 					// Write out to IREG file.
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. Returns -1 if can't write to buffer
-	virtual int get_ireg_size();
+	virtual void write_ireg(std::ostream& out);
 	int	lowlift;
 	int highshape;
 	virtual int get_high_shape() const { return highshape; };

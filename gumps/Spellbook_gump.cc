@@ -26,6 +26,7 @@
 #include "Gump_button.h"
 #include "items.h"
 #include "mouse.h"
+#include "ucmachine.h"
 #include "Spellbook_gump.h"
 #include "spellbook.h"
 #include "game.h"
@@ -35,32 +36,102 @@
 #  include <cstdio>
 #endif
 
-
+using std::strcpy;
+#ifdef __MWERKS__	// Bug in CodeWarrior 7: it incorrectly has snprintf in namespace std
+using std::snprintf;
+#endif
 
 const int REAGENTS = 842;		// Shape #.
+
+static inline int Get_circle(int spell);
+static inline int Get_usecode(int spell);
 
 /*
  *	Defines in 'gumps.vga':
  */
-#define SPELLBOOK (GAME_BG ? 43 : 38)
-#define SPELLS  (GAME_BG ? 33 : 28)		// First group of 9 spells.
-#define TURNINGPAGE  (GAME_BG ? 41 : 36)	// Animation?? (4 frames).
-#define BOOKMARK  (GAME_BG ? 42 : 37)	// Red ribbon, 5 frames.
-#define LEFTPAGE  (GAME_BG ? 44 : 39)	// At top-left of left page.
-#define RIGHTPAGE  (GAME_BG ? 45 : 40)	// At top-right of right page.
+#define BG (Game::get_game_type() == BLACK_GATE)
+#define SPELLBOOK (BG ? 43 : 38)
+#define SPELLS  (BG ? 33 : 28)		// First group of 9 spells.
+#define TURNINGPAGE  (BG ? 41 : 36)	// Animation?? (4 frames).
+#define BOOKMARK  (BG ? 42 : 37)	// Red ribbon, 5 frames.
+#define LEFTPAGE  (BG ? 44 : 39)	// At top-left of left page.
+#define RIGHTPAGE  (BG ? 45 : 40)	// At top-right of right page.
 #define SCROLLSPELLS  66		// First group of scroll spells (SI).
 
 /*
  *	And in 'text.flx':
  */
-#define CIRCLE (GAME_BG ? 0x545 : 0x551)
-#define CIRCLENUM (GAME_BG ? 0x545 : 0x552)
+#define CIRCLE (BG ? 0x545 : 0x551)
+#define CIRCLENUM (BG ? 0x545 : 0x552)
 
 /*
- *	Get circle, given a spell #.
+ *	Flags for required reagents.  Bits match shape #.
  */
-inline int Get_circle(int spell)
-	{ return spell/8; }
+const int bp = 1;			// Black pearl.
+const int bm = 2;			// Blood moss.
+const int ns = 4;			// Nightshade.
+const int mr = 8;			// Mandrake root.
+const int gr = 16;			// Garlic.
+const int gn = 32;			// Ginseng.
+const int ss = 64;			// Spider silk.
+const int sa = 128;			// Sulphuras ash.
+const int bs = 256;			// Blood spawn.
+const int sc = 512;			// Serpent scales.
+const int wh = 1024;			// Worm's hart.
+const int NREAGENTS = 11;		// Total #.
+					// Black Gate:
+unsigned short Spellbook_gump::bg_reagents[9*8] = {
+	0, 0, 0, 0, 0, 0, 0, 0,		// Linear spells require no reagents.
+					// Circle 1:
+	gr|gn|mr, gr|gn, ns|ss, gr|ss, sa|ss, sa, ns, gr|gn,
+					// Circle 2:
+	bm|sa, bp|mr, bp|sa, mr|sa, gr|gn|mr, gr|gn|sa, bp|bm|mr,
+							bm|ns|mr|sa|bp|ss,
+					// Circle 3:
+	gr|ns|sa, gr|gn|ss, ns|ss, ns|mr, ns|bm|bp, gr|gn|mr|sa,
+						bp|ns|ss, ns|mr|bm,
+					// Circle 4:
+	ss|mr, bp|sa|mr, mr|bp|bm, gr|mr|ns|sa, mr|bp|bm, bm|sa,
+						bm|mr|ns|ss|sa, bm|sa,
+					// Circle 5:
+	bp|ns|ss, mr|gr|bm, gr|bp|sa|ss, bm|bp|mr|sa, bp|ss|sa,
+						gr|gn|mr|ss, bm|ns, gn|ns|ss,
+					// Circle 6:
+	gr|mr|ns, sa|ss|bm|gn|ns|mr, bp|mr|ss|sa, sa|bp|bm, mr|ns|sa|bm,
+						ns|ss|bp, gn|ss|bp, bm|sa|mr,
+					// Circle 7:
+	mr|ss, bp|ns|sa, bm|bp|mr|ss|sa, bp|mr|ss|sa, bm|mr|ns|sa,
+					bp|ns|ss|mr, bp|gn|mr, gr|gn|mr|sa,
+					// Circle 8:
+	bp|bm|gr|gn|mr|ns|ss|sa, bm|mr|ns|sa, bp|bm|mr|ns, bm|gr|gn|mr|ns,
+				gr|gn|ss|sa, bm|gr|mr, bp|mr|ns, bm|gr|mr
+	};
+					// Serpent Isle:
+unsigned short Spellbook_gump::si_reagents[9*8] = {
+					// Circle 1:
+	gr|gn|mr, gr|gn, ns|ss, gr|ss, sa|ss, sa, ns, bp|bm|mr,
+					// Circle 2:
+	gr|gn, bm|sa, ns|sa, bp|sa|wh, mr|sa, gr|gn|ss, gr|gn|mr, gr|gn|sa,
+					// Circle 3:
+	gr|gn|wh,gr|ns|sa, bp|mr, bp|gr, gr|gn|mr|sa, ns|ss, bp|ns|ss, bp|mr|sa|sa,
+					// Circle 4:
+	bm|mr, gr|ss, mr|sa, sa|bm|gr|mr|ss|sc, gr|mr|ns|sa, bm|sa, bp|ss, bm|sa,
+					// Circle 5:
+	mr|ss, bp|gr|ss|sa, bm|bp|mr|sa, gr|gn|mr|ss, bm|ns, gn|ns|ss, sa|bm|mr|ns|ss, 
+					bp|gr|mr|sa,
+					// Circle 6:
+	bp|ns|ss, gr|mr|ns, gr|mr|ns, bp|wh|ss|sa, bp|wh|mr|ss|sa, 
+					bm|bp|wh|sa, bm|gn|sa, mr|sa|ss|sc,
+					// Circle 7:
+	bp|mr|ss|sa, bm|mr|ns|sa, gr|gn, bp|gn|mr, bm|ns|sa, gr|gn|mr|ss, 
+						bp|bm|mr|ss, bp|mr|sa,
+					// Circle 8:
+	wh|ss, bs|bp|ns|sa, bm|bp|mr|ss|sa, bm|bp|mr, bm|gr|ss|wh|sc, 
+				bm|bp|gr|ss|wh|sc, gr|mr|sa, bp|bs|mr|ns,
+					// Circle 9:
+	bm|mr|ns|sa, bm|bs|gr|gn|mr|ns, bp|bm|mr|ns, bm|bs|bp|ns|sa, 
+			bp|gr|mr|ss|sa, bm|gr|mr|ss, bm|gr|mr, ns|sa|wh|sc
+	};
 
 /*
  *	Get shape, frame for a given spell #.  There are 8 shapes, each
@@ -81,6 +152,18 @@ inline int Get_spell_gump_shape
 	}
 
 /*
+ *	Get circle, given a spell #.
+ */
+inline int Get_circle(int spell)
+	{ return spell/8; }
+
+/*
+ *	Get usecode function for a given spell:
+ */
+int Get_usecode(int spell)
+	{ return 0x640 + spell; }
+
+/*
  *	A 'page-turner' button.
  */
 class Page_button : public Gump_button
@@ -92,9 +175,10 @@ public:
 		  leftright(lr)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
-	virtual void push() {}
-	virtual void unpush() {}
+	virtual void activate(Game_window *gwin);
+
+	virtual void push(Game_window *gwin) {}
+	virtual void unpush(Game_window *gwin) {}
 	};
 
 /*
@@ -103,6 +187,7 @@ public:
 
 void Page_button::activate
 	(
+	Game_window *gwin
 	)
 	{
 	((Spellbook_gump *) parent)->change_page(leftright ? 1 : -1);
@@ -121,10 +206,10 @@ public:
 		set_frame(frnum);	// Frame # is circle.
 		}
 					// What to do when 'clicked':
-	virtual void activate();
-	virtual void double_clicked(int x, int y);
-	virtual void push() { }
-	virtual void unpush() { }
+	virtual void activate(Game_window *gwin);
+	virtual void double_clicked(Game_window *gwin, int x, int y);
+	virtual void push(Game_window *gwin) { }
+	virtual void unpush(Game_window *gwin) { }
 	};
 
 /*
@@ -133,6 +218,7 @@ public:
 
 void Spell_button::activate
 	(
+	Game_window *gwin
 	)
 	{
 	((Spelltype_gump *) parent)->select_spell(spell);
@@ -144,10 +230,37 @@ void Spell_button::activate
 
 void Spell_button::double_clicked
 	(
+	Game_window *gwin,
 	int x, int y
 	)
 	{
 	((Spelltype_gump *) parent)->do_spell(spell);
+	}
+
+/*
+ *	Test for Ring of Reagants.
+ */
+
+static bool Has_ring
+	(
+	Game_object *npcobj
+	)
+	{
+	if (Game::get_game_type() == SERPENT_ISLE)
+		{
+		Actor *npc = dynamic_cast<Actor *>(npcobj);
+		if (!npc)
+			return false;
+		Game_object *obj = npc->get_readied(Actor::lfinger);
+		if (obj && obj->get_shapenum() == 0x128 &&
+						obj->get_framenum() == 3)
+			return true;
+		obj = npc->get_readied(Actor::rfinger);
+		if (obj && obj->get_shapenum() == 0x128 &&
+						obj->get_framenum() == 3)
+			return true;
+		}
+	return false;
 	}
 
 /*
@@ -168,7 +281,7 @@ void Spellbook_gump::set_avail
 	for (r = 0; r < NREAGENTS; r++)	// Count, by frame (frame==bit#).
 		reagent_counts[r] = book_owner->count_objects(
 						REAGENTS, c_any_qual, r);
-	bool has_ring = book->has_ring(gwin->get_main_actor());
+	bool has_ring = Has_ring(book_owner);
 	for (i = 0; i < 9*8; i++)	// Now figure what's available.
 	{
 		if (has_ring)
@@ -177,7 +290,7 @@ void Spellbook_gump::set_avail
 			continue;
 			}
 		avail[i] = 10000;	// 'infinite'.
-		unsigned short flags = book->reagents[i];
+		unsigned short flags = reagents[i];
 					// Go through bits.
 		for (r = 0; flags; r++, flags = flags >> 1)
 					// Take min. of req. reagent counts.
@@ -201,7 +314,11 @@ Spellbook_gump::Spellbook_gump
 	const int lpagex = 38, rpagex = 142, lrpagey = 25;
 					// Get book's top owner.
 	book_owner = book->get_outermost();
+					// Point to reagent table.
+	reagents = Game::get_game_type() == SERPENT_ISLE ? si_reagents
+							: bg_reagents;
 	set_avail();			// Figure spell counts.
+	Game_window *gwin = Game_window::get_game_window();
 	if (book->bookmark >= 0)	// Set to bookmarked page.
 		page = Get_circle(book->bookmark);
 	leftpage = new Page_button(this, lpagex, lrpagey, 0);
@@ -258,20 +375,41 @@ void Spellbook_gump::do_spell
 	int spell
 	)
 {
-	if (!book->can_do_spell(gwin->get_main_actor(), spell))
-		Mouse::mouse->flash_shape(Mouse::redx);
-	else
+	if ((spells[spell] && avail[spell]) || cheat.in_wizard_mode())
+	{
+		Game_window *gwin = Game_window::get_game_window();
+		int circle = spell/8;	// Figure/subtract mana.
+		if (cheat.in_wizard_mode())
+			circle = 0;
+		int mana = gwin->get_main_actor()->get_property(Actor::mana);
+		int level = gwin->get_main_actor()->get_level();
+		if ((mana < circle) || (level < circle))
+			// Not enough mana or not yet at required level?
 		{
-		Spellbook_object *save_book = book;
-		close();		// We've just been deleted!
+			Mouse::mouse->flash_shape(Mouse::redx);
+			return;
+		}
+		gwin->get_main_actor()->set_property(Actor::mana, mana-circle);
+					// Figure what we used.
+		unsigned short flags = reagents[spell];
+
+		if (!cheat.in_wizard_mode() && !Has_ring(book_owner))
+		{
+					// Go through bits.
+			for (int r = 0; flags; r++, flags = flags >> 1)
+					// Remove 1 of each required reagent.
+				if (flags&1)
+					book_owner->remove_quantity(1, 
+						REAGENTS, c_any_qual, r);
+		}
+		gwin->get_gump_man()->close_gump(this);// Note:  We're deleted!!
 		gwin->paint();
-		gwin->show();
-					// Don't need to check again.
-		save_book->do_spell(gwin->get_main_actor(), spell, true);
+		gwin->get_usecode()->call_usecode(Get_usecode(spell),
+			gwin->get_main_actor(), Usecode_machine::double_click);
 					// Close all gumps so animations can
 					//   start.
-		gumpman->close_all_gumps();
-		}
+		gwin->get_gump_man()->close_all_gumps();
+	}
 }
 
 /*
@@ -288,7 +426,7 @@ void Spellbook_gump::change_page
 		page = 0;
 	else if (page > 8)
 		page = 8;
-	paint();
+	paint(Game_window::get_game_window());
 }
 
 /*
@@ -303,7 +441,7 @@ void Spellbook_gump::select_spell
 	if (spells[spell])
 	{
 		book->bookmark = spell;
-		paint();
+		paint(Game_window::get_game_window());
 	}
 }
 
@@ -323,21 +461,22 @@ Game_object *Spellbook_gump::get_owner()
 
 Gump_button *Spellbook_gump::on_button
 	(
+	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
 {
-	Gump_button *btn = Gump::on_button(mx, my);
+	Gump_button *btn = Gump::on_button(gwin, mx, my);
 	if (btn)
 		return btn;
-	else if (leftpage->on_button(mx, my))
+	else if (leftpage->on_button(gwin, mx, my))
 		return leftpage;
-	else if (rightpage->on_button(mx, my))
+	else if (rightpage->on_button(gwin, mx, my))
 		return rightpage;
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Check spells.
 	{
 		Gump_button *spell = spells[spindex + s];
-		if (spell && spell->on_button(mx, my))
+		if (spell && spell->on_button(gwin, mx, my))
 			return spell;
 	}
 	return 0;
@@ -349,10 +488,11 @@ Gump_button *Spellbook_gump::on_button
 
 void Spellbook_gump::paint_button
 	(
+	Game_window *gwin,
 	Gump_button *btn
 	)
 {
-	btn->paint();
+	btn->paint(gwin);
 }
 
 /*
@@ -361,39 +501,40 @@ void Spellbook_gump::paint_button
 
 void Spellbook_gump::paint
 	(
+	Game_window *gwin
 	)
 {
 	const int numx = 1, numy = -4;// Where to draw numbers on spells,
 					//   with numx being the right edge.
-	Gump::paint();			// Paint outside & checkmark.
+	Gump::paint(gwin);	// Paint outside & checkmark.
 	if (page > 0)			// Not the first?
-		paint_button(leftpage);
+		paint_button(gwin, leftpage);
 	if (page < 8)			// Not the last?
-		paint_button(rightpage);
+		paint_button(gwin, rightpage);
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Paint spells.
 		if (spells[spindex + s])
 		{
 			Gump_button *spell = spells[spindex + s];
-			paint_button(spell);
+			paint_button(gwin, spell);
 			int num = avail[spindex + s];
 			char text[6];
 			if (num > 0 && num < 1000)
 				{
 				snprintf(text, 6, "%d", num);
-				sman->paint_text(4, text,
+				gwin->paint_text(4, text,
 					x + spell->x + numx -
-						sman->get_text_width(4, text),
+						gwin->get_text_width(4, text),
 					y + spell->y + numy);
 				}
 			else if (num >= 1000)	// Fake an 'infinity'.
 				{
-				std::strcpy(text, "oo");
-				int px = x + spell->x + numx + 2 -
-						sman->get_text_width(4, text);
-				sman->paint_text(4, text + 1, px,
+				strcpy(text, "oo");
+				int px = x + spell->x + numx -
+						gwin->get_text_width(4, text) + 2;
+				gwin->paint_text(4, text + 1, px,
 					y + spell->y + numy);
-				sman->paint_text(4, text + 1, px + 3,
+				gwin->paint_text(4, text + 1, px + 3,
 					y + spell->y + numy);
 				}
 		}
@@ -402,10 +543,10 @@ void Spellbook_gump::paint
 	{
 		char *circ = item_names[CIRCLE];
 		char *cnum = item_names[CIRCLENUM + page];
-		sman->paint_text(4, cnum, x + 40 + 
-			(44 - sman->get_text_width(4, cnum))/2, y + 20);
-		sman->paint_text(4, circ, x + 92 +
-			(44 - sman->get_text_width(4, circ))/2, y + 20);
+		gwin->paint_text(4, cnum, x + 40 + 
+			(44 - gwin->get_text_width(4, cnum))/2, y + 20);
+		gwin->paint_text(4, circ, x + 92 +
+			(44 - gwin->get_text_width(4, circ))/2, y + 20);
 	}
 	if (book->bookmark >= 0 &&	// Bookmark?
 	    book->bookmark/8 == page)
@@ -417,7 +558,7 @@ void Spellbook_gump::paint
 		Shape_frame *bshape = bm.get_shape();
 		bx += bshape->get_xleft();
 		int by = object_area.y - 14 + bshape->get_yabove();
-		bm.paint_shape(x + bx, y + by);
+		gwin->paint_shape(x + bx, y + by, bm);
 	}
 	gwin->set_painted();
 }
@@ -433,6 +574,7 @@ Spellscroll_gump::Spellscroll_gump
 	{
 	set_object_area(Rectangle(30, 29, 50, 29), 8, 68);
 
+	Game_window *gwin = Game_window::get_game_window();
 					// Get dims. of a spell.
 	Shape_frame *spshape = ShapeID(SCROLLSPELLS, 0, SF_GUMPS_VGA).get_shape();
 	spwidth = spshape->get_width();
@@ -466,12 +608,14 @@ void Spellscroll_gump::do_spell
 	int spellnum
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	scroll->remove_this();		// Scroll is gone.
 	scroll = 0;
-	close();			// We've just been deleted!
+	close(gwin);			// We've just been deleted!
 	gwin->paint();
 	gwin->show();
-	Spellbook_object::execute_spell(gwin->get_main_actor(), spellnum);
+	gwin->get_usecode()->call_usecode(Get_usecode(spellnum),
+			gwin->get_main_actor(), Usecode_machine::double_click);
 	}
 
 /*
@@ -493,13 +637,14 @@ Game_object *Spellscroll_gump::get_owner
 
 Gump_button *Spellscroll_gump::on_button
 	(
+	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
 	{
-	Gump_button *btn = Gump::on_button(mx, my);
+	Gump_button *btn = Gump::on_button(gwin, mx, my);
 	if (btn)
 		return btn;
-	else if (spell && spell->on_button(mx, my))
+	else if (spell && spell->on_button(gwin, mx, my))
 		return spell;
 	return 0;
 	}
@@ -510,10 +655,11 @@ Gump_button *Spellscroll_gump::on_button
 
 void Spellscroll_gump::paint_button
 	(
+	Game_window *gwin,
 	Gump_button *btn
 	)
 	{
-	btn->paint();
+	btn->paint(gwin);
 	}
 
 /*
@@ -522,11 +668,12 @@ void Spellscroll_gump::paint_button
 
 void Spellscroll_gump::paint
 	(
+	Game_window *gwin
 	)
 	{
-	Gump::paint();			// Paint outside & checkmark.
+	Gump::paint(gwin);		// Paint outside & checkmark.
 	if (spell)
-		paint_button(spell);
+		paint_button(gwin, spell);
 	gwin->set_painted();
 	}
 

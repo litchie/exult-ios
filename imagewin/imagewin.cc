@@ -41,14 +41,9 @@ Boston, MA  02111-1307, USA.
 #include "SDL_video.h"
 #include "SDL_error.h"
 
-#ifdef HAVE_OPENGL
-#include <GL/gl.h>
-#endif
-
 bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst);
 
 using std::cout;
-using std::cerr;
 using std::endl;
 using std::exit;
 
@@ -61,7 +56,6 @@ const char *Image_window::ScalerNames[] =  {
 		"2xSaI",
 		"SuperEagle",
 		"Super2xSaI",
-		"OpenGL",
 		0
 };
 
@@ -137,12 +131,8 @@ void Image_window::create_surface
 	uses_palette = true;
 	show_scaled = 0;
 	unscaled_surface = surface = scaled_surface = 0;
-	
-#if defined(__zaurus__)
-	flags &= ~SDL_FULLSCREEN; // Zaurus would crash in fullscreen mode
-#else
-	if (try_scaler(w, h, flags)) return; // everyone else can test the try_scaler function
-#endif
+
+	if (try_scaler(w, h, flags)) return;
 
 	if (!surface)			// No scaling, or failed?
 		{
@@ -163,58 +153,8 @@ void Image_window::create_surface
 
 bool Image_window::try_scaler(int w, int h, uint32 flags)
 {
-	// OpenGL
-	if (scaler ==OpenGL)
-		{
-#ifdef HAVE_OPENGL
-					// Get info. about video.
-		const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
-		if (!vinfo)
-			{
-			cout << "SDL_GetVideoInfo() failed: " << SDL_GetError()
-							<< endl;
-			return false;
-			}
-					// Set up SDL video flags.
-		int video_flags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER |
-				SDL_HWPALETTE | SDL_RESIZABLE |
-				(flags&SDL_FULLSCREEN);
-					// Can surface be in video RAM?
-		if (vinfo->hw_available)
-			video_flags |= SDL_HWSURFACE;
-		else
-			video_flags |= SDL_SWSURFACE;
-		if (vinfo->blit_hw)	// Hardware blits?
-			video_flags |= SDL_HWACCEL;
-					// Want double-buffering.
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-					// Allocate surface.
-		int hwdepth = vinfo->vfmt->BitsPerPixel;
-					// +++++For now create 8-bit surface
-					//   to avoid crashing places we
-					//   haven't converted yet.
-		if ((scaled_surface = SDL_SetVideoMode(scale*w, scale*h, 
-						hwdepth, video_flags)) != 0 &&
-		    (unscaled_surface = surface = SDL_CreateRGBSurface(
-					SDL_SWSURFACE, w, h,
-						8, 0, 0, 0, 0)) != 0)
-			{
-			show_scaled = &Image_window::show_scaledOpenGL;
-			}
-		else
-			{
-			cerr << "Couldn't allocate surface: " << 
-					SDL_GetError() << endl;
-			delete surface;
-			delete scaled_surface;
-			surface = scaled_surface = 0;
-			}
-#else
-		cerr << "OpenGL not supported" << endl;
-#endif
-		}
 	// 2xSaI scaler
-	else if (scale == 2 && scaler ==  SaI)
+	if (scale == 2 && scaler ==  SaI)
 	{
 		int hwdepth;
 		
@@ -606,62 +546,4 @@ void Image_window::set_title(const char *title)
 	SDL_WM_SetCaption(title, 0);
 }
 
-#ifdef HAVE_OPENGL
-/*
- *	Fill a rectangle with an 8-bit value.
- */
-
-void Image_window::opengl_fill8
-	(
-	unsigned char pix,
-	int srcw, int srch,
-	int destx, int desty
-	)
-	{
-	SDL_Color *colors = surface->format->palette->colors;
-	SDL_Color& color = colors[pix];
-	glDisable(GL_TEXTURE_2D);	// Disable texture-mapping.
-	glPushMatrix();
-	int x = destx;			// Left edge.
-	int y = -(desty + srch);
-	glTranslatef(x, y, 0);
-	glBegin(GL_QUADS);
-		{
-		glColor3ub(color.r, color.g, color.b);
-		glVertex3i(0, 0, 0);
-		glVertex3i(srcw, 0, 0);
-		glVertex3i(srcw, srch, 0);
-		glVertex3i(0, srch, 0);
-		}
-	glEnd();
-	glPopMatrix();
-	}
-
-/*
- *	Apply a translucency table to a rectangle.
- */
-
-void Image_window::opengl_fill_translucent8
-	(
-	unsigned char /* val */,	// Not used.
-	int srcw, int srch,
-	int destx, int desty,
-	Xform_palette& xform		// Transform table.
-	)
-	{
-	glDisable(GL_TEXTURE_2D);	// Disable texture-mapping.
-	int x = destx;			// Left edge.
-	int y = -(desty + srch);
-	glBegin(GL_QUADS);
-		{
-		glColor4ub(xform.r, xform.g, xform.b, xform.a);
-		glVertex2i(x, y);
-		glVertex2i(x + srcw, y);
-		glVertex2i(x + srcw, y + srch);
-		glVertex2i(x, y + srch);
-		}
-	glEnd();
-	}
-
-#endif
 

@@ -13,8 +13,6 @@ libshapes_la_SOURCES = \
 	fontgen.h \
 	fontvga.cc \
 	fontvga.h \
-	glshape.cc \
-	glshape.h \
 	items.cc \
 	items.h \
 	monstinf.cc \
@@ -33,3 +31,5 @@ libshapes_la_SOURCES = \
 
 CLEANFILES = *~
 
+# Don't add local copy of png.h.
+# OMIT_DEPENDENCIES = png.h

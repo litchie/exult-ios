@@ -215,7 +215,7 @@ void Image_buffer8::copy8
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
 
-#if !(defined(__sparc__) || defined(__zaurus__))
+#ifndef __sparc__
 	uint32 *to = (uint32*) (bits + desty*line_width + destx);
 	uint32 *from = (uint32*) (src_pixels + srcy*src_width + srcx);
 	int to_next = line_width - srcw;// # pixels to next line.
@@ -316,7 +316,7 @@ void Image_buffer8::fill_line_translucent8
 	unsigned char val,		// Ignored for this method.
 	int srcw,
 	int destx, int desty,
-	Xform_palette& xform		// Transform table.
+	Xform_palette xform		// Transform table.
 	)
 	{
 	int srcx = 0;
@@ -341,7 +341,7 @@ void Image_buffer8::fill_translucent8
 	unsigned char /* val */,	// Not used.
 	int srcw, int srch,
 	int destx, int desty,
-	Xform_palette& xform		// Transform table.
+	Xform_palette xform		// Transform table.
 	)
 	{
 	int srcx = 0, srcy = 0;
@@ -392,6 +392,10 @@ void Image_buffer8::copy_transparent8
 		from += from_next;
 		}
 	}
+
+#ifdef _MSC_VER
+#pragma optimize("t", off)
+#endif
 
 // Slightly Optimized RLE Painter
 void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *inptr)
@@ -551,48 +555,8 @@ void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *inptr)
 	}
 }
 
-/*
- *	Convert this image to 32-bit RGBA and return the allocated buffer.
- */
+#ifdef _MSC_VER
+#pragma optimize("t", on)
+#endif
 
-unsigned char *Image_buffer8::rgba
-	(
-	unsigned char *pal,		// 3*256 bytes (rgbrgbrgb...).
-	unsigned char transp,		// Transparent value.
-	int first_translucent,		// Palette index of 1st trans. color.
-	int last_translucent,		// Index of last trans. color.
-	Xform_palette *xforms		// Transformers.  Need same # as
-					//   (last_translucent - 
-					//    first_translucent + 1).
-	)
-	{
-	int cnt = line_width*height;	// Allocate destination buffer.
-	uint32 *buf32 = new uint32[cnt];
-	uint32 *ptr32 = buf32;
-	unsigned char *pixels = bits;
-	for (int i = 0; i < cnt; i++)
-		{
-		unsigned char pix = *pixels++;
-		if (pix == transp)	// Transparent?  Store Alpha=0.
-			{
-			*ptr32++ = 0;
-			continue;
-			}
-		unsigned char r,g,b,a;	// Pieces of the color.
-		if (pix >= first_translucent && pix <= last_translucent)
-			{		// Get actual color & alpha from tbl.
-			Xform_palette& xf = xforms[pix - first_translucent];
-			r = xf.r; g = xf.g; b = xf.b; a = xf.a;
-			}
-		else
-			{
-			r = pal[3*pix]; g = pal[3*pix+1]; b = pal[3*pix + 2];
-			a = 255;
-			}
-		*ptr32++ = 	(static_cast<uint32>(r)<<0) +
-				(static_cast<uint32>(g) << 8) +
-				(static_cast<uint32>(b) << 16) +
-				(static_cast<uint32>(a) << 24);
-		}
-	return reinterpret_cast<unsigned char *>(buf32);
-	}
+

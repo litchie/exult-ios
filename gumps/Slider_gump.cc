@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000-2002 The Exult Team
+Copyright (C) 2000 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -25,9 +25,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "gamewin.h"
 #include "Gump_button.h"
+#include "gump_utils.h"
 #include "misc_buttons.h"
 #include "Slider_gump.h"
-#include "Gump_manager.h"
 
 
 using std::cout;
@@ -54,7 +54,7 @@ public:
 		: Gump_button(par, shapenum, px, py)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 /*
@@ -63,6 +63,7 @@ public:
 
 void Slider_button::activate
 	(
+	Game_window *gwin
 	)
 {
 	((Slider_gump *) parent)->clicked_arrow(this);
@@ -156,7 +157,8 @@ void Slider_gump::move_diamond(int dir)
 		newval = max_val;
 
 	set_val(newval);
-	paint();
+	Game_window *gwin = Game_window::get_game_window();
+	paint(gwin);
 	gwin->set_painted();
 }
 
@@ -167,20 +169,21 @@ void Slider_gump::move_diamond(int dir)
 
 void Slider_gump::paint
 	(
+	Game_window *gwin
 	)
 {
 	const int textx = 128, texty = 7;
 					// Paint the gump itself.
-	paint_shape(x, y);
+	gwin->paint_shape(x, y, *this);
 					// Paint red "checkmark".
-	check_button->paint();
+	check_button->paint(gwin);
 					// Paint buttons.
-	left_arrow->paint();
-	right_arrow->paint();
+	left_arrow->paint(gwin);
+	right_arrow->paint(gwin);
 					// Paint slider diamond.
-	diamond.paint_shape(x + diamondx, y + diamondy);
+	gwin->paint_shape(x + diamondx, y + diamondy, diamond);
 					// Print value.
-  	gumpman->paint_num(val, x + textx, y + texty);
+  	Paint_num(gwin, val, x + textx, y + texty);
 	gwin->set_painted();
 }
 
@@ -194,18 +197,19 @@ void Slider_gump::mouse_down
 	)
 {
 	dragging = 0;
-	Gump_button *btn = Gump::on_button(mx, my);
+	Game_window *gwin = Game_window::get_game_window();
+	Gump_button *btn = Gump::on_button(gwin, mx, my);
 	if (btn)
 		pushed = btn;
-	else if (left_arrow->on_button(mx, my))
+	else if (left_arrow->on_button(gwin, mx, my))
 		pushed = left_arrow;
-	else if (right_arrow->on_button(mx, my))
+	else if (right_arrow->on_button(gwin, mx, my))
 		pushed = right_arrow;
 	else
 		pushed = 0;
 	if (pushed)
 	{
-		pushed->push();
+		pushed->push(gwin);
 		return;
 	}
 					// See if on diamond.
@@ -229,7 +233,7 @@ void Slider_gump::mouse_down
 		int newval = min_val + delta;
 		if (newval != val)		// Set value.
 			val = newval;
-		paint();
+		paint(Game_window::get_game_window());
 	}
 }
 
@@ -242,18 +246,19 @@ void Slider_gump::mouse_up
 	int mx, int my			// Position in window.
 	)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	if (dragging)			// Done dragging?
 	{
 		set_val(val);		// Set diamond in correct pos.
-		paint();
+		paint(gwin);
 		gwin->set_painted();
 		dragging = 0;
 	}
 	if (!pushed)
 		return;
-	pushed->unpush();
-	if (pushed->on_button(mx, my))
-		pushed->activate();
+	pushed->unpush(gwin);
+	if (pushed->on_button(gwin, mx, my))
+		pushed->activate(gwin);
 	pushed = 0;
 }
 
@@ -281,14 +286,17 @@ void Slider_gump::mouse_drag
 	int newval = min_val + delta;
 	if (newval != val)		// Set value.
 		val = newval;
-	paint();
+	paint(Game_window::get_game_window());
 }
 
 /*
  *	Handle ASCII character typed.
  */
 
-void Slider_gump::key_down(int chr)
+void Slider_gump::key_down
+	(
+	int chr
+	)
 {
 	switch(chr) {
 	case SDLK_RETURN:

@@ -1,92 +1,22 @@
-Audio and MIDI information
---------------------------
+Here we have the basic audio engine.
 
-The mixer has recently been replaced by using SDL_mixer. This will allow easier 
-porting to other platforms and removes the need to maintain the complex mixer 
-code. The addition of the SDL_mixer was mainly done so that we could easily 
-support OGG/MP3 music, referred to as "Digital Music" in Exult.
+What we have so far is an effective audio mixer, and VOC decoder.
+Note that VOC decoding is partially customised to Exult, and
+the U7 data files. Samples are doubled and expanded to two channels,
+and some bytes are cut off each end to eliminate harsh clicking
+sounds.
 
-All Digital SFX and Digital music currently play at 22Khz. This sample rate
-is high enough for the SFX and digital music as they rarely go above 11Khz,
-plus SDL_mixer/SDL currently works better at 22khz than 44khz.
+The midi section is going to grow the most. Currently we support
+AWE-based cards. Or, to be more precise, we support any card
+that already produces listenable MIDI music through kmidi or
+'playmidi -e'.
 
-SDL_mixer has the ability to play MIDI music directly through MIDI ports 
-or by using Timidity. The MIDI support in Exult does not currently make use of 
-SDL_mixer but uses tailor made midi drivers in the midi_drivers directory. A 
-generic SDL_mixer interface is available in the midi_drivers directory called 
-mixer_midiout.
+The next stage is either:
 
-To make use of this mixer_midiout simply use the following in Midi.cc (in the
-relevant sections):
------------------------------------------
-#ifdef WIN32
-  #include "midi_drivers/mixer_midiout.h"
-#endif
------------------------------------------
-#ifdef WIN32
-  TRY_MIDI_DRIVER(Mixer_MidiOut)
-#endif
------------------------------------------
+a) Load the instrument patches onto AWE cards. I've been given
+   some information on that, which I will attribute as soon as
+   I've dug up the fellow's name :)
+b) Attempt the synthesis myself, probably by carving up timidity
+   or some similar tool and hacking on it until I've bent it to
+   my evil will.
 
-
-Sound Effects
--------------
-Sound effects were originally played through MIDI but now that the SFX
-digital sound packs (jmsfx & sqsfx) are available this has been disabled 
-and will not be developed in future. MIDI now only plays the music.
-Sound effects are loaded when required from the flx files, each time they
-are played, but the last 6, or so, played are cached in memory to save disk
-I/O and conversion processing.
-
-
-MIDI Music
-----------
-Exult music can be played through MIDI using either MIDI ports or
-Timidity. Conversion is usually applied to the MIDI music using the XMIDI
-code to convert from the Roland MT-32 voice assignments to General Midi
-(GM). It is still possible to play directly to a Roland MT-32 by selecting
-the "none" midi conversion setting.
-
-Timidity support works on Linux and should work on Windows. To use it in
-Linux the timidity.cfg file must be in the directory where the exult
-executable is run. This appears to be a quirk with SDL_mixer.
-
-Linux MIDI out currently uses playmidi or KMIDI.
-
-
-Digital Music
--------------
-Digital Music using OGG is now available in Exult. This uses the Digital
-Music pack recorded by Simon Quinn on the Roland MT-32, available on the
-Exult sourceforge site. This should work on any platform that supports
-SDL_mixer and will give the closest musical experience to the original
-Ultima VII games.
-
-Additionally, with the Digital Music support, a number of atmospheric 
-SFX tracks are played when no music is playing. The tracks played are 
-as follows:
-* Day time outside: wind, bird and frog track
-* Night time: wind track with randomly generated digital sfx crickets
-* Dungeon: dungeon music track (atmospheric SFX and music)
-Music tracks always take priority over these SFX tracks and being "music"
-tracks they will not play if the music has been switched off.
-
-These SFX "music" tracks are not available with the MIDI support as they 
-play Roland MT-32 specific voices that cannot be mapped to GM.
-
-NOTE: OGG was chosen over MP3 as SDL_mixer has better support for OGG and 
-has OGG supported compiled into the drivers by default, from v1.2.4. 
-
-
-Voice/VOC support
------------------
-The VOC decoding is partially customised to Exult and the U7 data files. 
-Samples are converted to 22Khz (or to match the audio output sample rate)
-and expanded to two channels, and some bytes are cut off each end to 
-eliminate harsh clicking.
-
-Sample rate conversion has been left in the VOC decoder as currently,
-v1.2.4 of SDL, does not have good sample rate conversion.
-
-The code currently uses a lot of memory as the whole VOC to be played is
-loaded and converted in RAM, potentially using many megabytes of memory.

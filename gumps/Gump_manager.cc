@@ -22,9 +22,6 @@
 #  include <config.h>
 #endif
 
-#include "SDL_events.h"
-#include "SDL_keyboard.h"
-
 #include "Configuration.h"
 #include "exult.h"
 #include "Gump.h"
@@ -41,25 +38,16 @@
 #include "actors.h"
 #include "game.h"
 #include "Audio.h"
-#include "Yesno_gump.h"
-#include "gump_utils.h"
-#include "Slider_gump.h"
 
-using std::cout;
-using std::endl;
 
 Gump_manager::Gump_manager()
-	: open_gumps(0), non_persistent_count(0), right_click_close(true), dont_pause_game(false)
+	: open_gumps(0), non_persistent_count(0), right_click_close(true)
 {
 	std::string str;
 	config->value("config/gameplay/right_click_closes_gumps", str, "yes");
 	if (str == "no")
 		right_click_close = false;
 	config->set("config/gameplay/right_click_closes_gumps", str, true);
-
-	config->value("config/gameplay/gumps_dont_pause_game", str, "no");
-	dont_pause_game = str == "yes";
-	config->set("config/gameplay/gumps_dont_pause_game", dont_pause_game?"yes":"no", true);
 }
 
 
@@ -158,10 +146,7 @@ void Gump_manager::add_gump(Gump *gump)
 		last->next = g;
 	}
 	if (!gump->is_persistent())	// Count 'gump mode' gumps.
-		{			// And pause the game, if we want it
 		non_persistent_count++;
-		if (!dont_pause_game) gwin->get_tqueue()->pause(Game::get_ticks());
-		}
 }
 
 /*
@@ -204,10 +189,7 @@ bool Gump_manager::remove_gump(Gump *gump)
 				return true;
 		}
 		if (!gump->is_persistent())	// Count 'gump mode' gumps.
-			{			// And resume queue if last.
 			non_persistent_count--;
-			if (!dont_pause_game) gwin->get_tqueue()->resume(Game::get_ticks());
-			}
 	}
 
 	return false;
@@ -223,6 +205,7 @@ void Gump_manager::add_gump
 	int shapenum			// Shape # in 'gumps.vga'.
 	)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	int paperdoll = 0;
 	
 	if (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP
@@ -231,7 +214,7 @@ void Gump_manager::add_gump
 
 	// overide for paperdolls
 	if (shapenum == 123 && (Game::get_game_type() == SERPENT_ISLE ||
-		(sman->can_use_paperdolls() && sman->get_bg_paperdolls())))
+		(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls())))
 		paperdoll=2;
 	
 	Gump *dragged = gwin->get_dragging_gump();
@@ -274,13 +257,12 @@ void Gump_manager::add_gump
 	}
 
 	Gump *new_gump = 0;
-	Actor *npc = 0;
-    if (obj)
-        npc = obj->as_actor();
-	if (npc && paperdoll == 2)
-		new_gump = new Paperdoll_gump(npc, x, y, npc->get_npc_num());
-	else if (npc && paperdoll) 
-		new_gump = new Actor_gump(npc, x, y, shapenum);
+	if (paperdoll == 2)
+		new_gump = new Paperdoll_gump((Container_game_object *) obj,
+						 x, y, obj->get_npc_num());
+	else if (paperdoll)
+		new_gump = new Actor_gump((Container_game_object *) obj,
+						 x, y, shapenum);
 	else if (shapenum == game->get_shape("gumps/statsdisplay"))
 		new_gump = new Stats_gump((Container_game_object *) obj, x, y);
 	else if (shapenum == game->get_shape("gumps/spellbook"))
@@ -318,6 +300,7 @@ void Gump_manager::close_all_gumps
 	bool pers
 	)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	bool removed = false;
 
 	Gump_list *prev = 0;
@@ -328,12 +311,9 @@ void Gump_manager::close_all_gumps
 		Gump_list *gump = next;
 		next = gump->next;
 
-		// Don't delete if persistant or modal.
-		if ((!gump->gump->is_persistent() || pers) &&
-		    !gump->gump->is_modal())
+		// Don't delete if persistant
+		if (!gump->gump->is_persistent() || pers)
 		{
-			if (!gump->gump->is_persistent())
-				gwin->get_tqueue()->resume(Game::get_ticks());
 			if (prev) prev->next = gump->next;
 			else open_gumps = gump->next;
 			delete gump->gump;
@@ -366,11 +346,12 @@ bool Gump_manager::double_clicked
 		obj = gump->find_object(x, y);
 		if (!obj)		// Maybe it's a spell.
 		{
-		 	Gump_button *btn = gump->on_button(x, y);
-			if (btn) btn->double_clicked(x, y);
-			else if (gwin->get_double_click_closes_gumps())
+			Game_window *gwin = Game_window::get_game_window();
+		 	Gump_button *btn = gump->on_button(gwin, x, y);
+			if (btn) btn->double_clicked(gwin, x, y);
+			else if (Game_window::get_game_window()->get_double_click_closes_gumps())
 			{
-				gump->close();
+				gump->close(gwin);
 				gwin->paint();
 			}
 		}
@@ -383,249 +364,17 @@ bool Gump_manager::double_clicked
 /*
  *	Update the gumps
  */
-void Gump_manager::update_gumps()
+void Gump_manager::update_gumps(Game_window *gwin)
 {
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
-		gmp->gump->update_gump();
+		gmp->gump->update_gump(gwin);
 }
 
 /*
  *	Paint the gumps
  */
-void Gump_manager::paint()
+void Gump_manager::paint(Game_window *gwin)
 {
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
-		gmp->gump->paint();
-}
-
-
-/*
- *	Verify user wants to quit.
- *
- *	Output:	1 to quit.
- */
-int Gump_manager::okay_to_quit()
-{
-	if (Yesno_gump::ask("Do you really want to quit?"))
-		quitting_time = QUIT_TIME_YES;
-	return quitting_time;
-}
-
-
-int Gump_manager::handle_modal_gump_event
-	(
-	Modal_gump *gump,
-	SDL_Event& event
-	)
-{
-	//	Game_window *gwin = Game_window::get_instance();
-	int scale_factor = gwin->get_fastmouse() ? 1 
-				: gwin->get_win()->get_scale();
-	static bool rightclick;
-
-	switch (event.type)
-	{
-	case SDL_MOUSEBUTTONDOWN:
-#ifdef DEBUG
-cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->get_x())
-	 << ", " <<	((event.button.y / scale_factor) - gump->get_y()) << ")"<<endl;
-#endif
-		if (event.button.button == 1)
-			gump->mouse_down(event.button.x / scale_factor, 
-						event.button.y / scale_factor);
-		else if (event.button.button == 2 && gwin->get_mouse3rd()) {
-			gump->key_down(SDLK_RETURN);
-			gump->text_input(SDLK_RETURN, SDLK_RETURN);
-		} else if (event.button.button == 3)
-			rightclick = true;
-		else if (event.button.button == 4) // mousewheel up
-			gump->mousewheel_up();
-		else if (event.button.button == 5) // mousewheel down
-			gump->mousewheel_down();
-		break;
-	case SDL_MOUSEBUTTONUP:
-		if (event.button.button == 1)
-			gump->mouse_up(event.button.x / scale_factor,
-						event.button.y / scale_factor);
-		else if (event.button.button == 3 && gwin->get_mouse3rd() && rightclick) {
-			rightclick = false;
-			if (gumpman->can_right_click_close()) return 0;
-		}
-		break;
-	case SDL_MOUSEMOTION:
-		Mouse::mouse->move(event.motion.x / scale_factor, event.motion.y / scale_factor);
-		Mouse::mouse_update = true;
-					// Dragging with left button?
-		if (event.motion.state & SDL_BUTTON(1))
-			gump->mouse_drag(event.motion.x / scale_factor,
-						event.motion.y / scale_factor);
-		break;
-	case SDL_QUIT:
-		if (okay_to_quit())
-			return (0);
-	case SDL_KEYDOWN:
-		{
-			if (event.key.keysym.sym == SDLK_ESCAPE)
-				return (0);
-			if ((event.key.keysym.sym == SDLK_s) &&
-				(event.key.keysym.mod & KMOD_ALT) &&
-				(event.key.keysym.mod & KMOD_CTRL)) {
-					make_screenshot(true);
-					return 1;
-			}
-
-			int chr = event.key.keysym.sym;
-#if 0
-			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
-						? toupper(chr) : chr, event);
-#else
-			gump->key_down(event.key.keysym.sym);
-			gump->text_input(event.key.keysym.sym, event.key.keysym.unicode);
-#endif
-
-			break;
-		}
-	}
-	return (1);
-}
-
-/*
- *	Handle a modal gump, like the range slider or the save box, until
- *	the gump self-destructs.
- *
- *	Output:	0 if user hit ESC.
- */
-
-int Gump_manager::do_modal_gump
-	(
-	Modal_gump *gump,	// What the user interacts with.
-	Mouse::Mouse_shapes shape	// Mouse shape to use.
-	)
-{
-	SDL_EnableUNICODE(1); // enable unicode translation for text input
-
-
-	//	Game_window *gwin = Game_window::get_instance();
-
-	// maybe make this selective? it's nice for menus, but annoying for sliders
-	//	gwin->end_gump_mode();
-
-	// Pause the game
-	gwin->get_tqueue()->pause(SDL_GetTicks());
-
-	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
-	if (shape != Mouse::dontchange)
-		Mouse::mouse->set_shape(shape);
-	gwin->show(true);
-	int escaped = 0;
-					// Get area to repaint when done.
-	Rectangle box = gump->get_rect();
-	box.enlarge(2);
-	box = gwin->clip_to_win(box);
-					// Create buffer to backup background.
-	Image_buffer *back = gwin->get_win()->create_buffer(box.w, box.h);
-	Mouse::mouse->hide();			// Turn off mouse.
-					// Save background.
-	gwin->get_win()->get(back, box.x, box.y);
-	gump->paint();			// Paint gump.
-	add_gump(gump);
-	Mouse::mouse->show();
-	gwin->show();
-	do
-	{
-		Delay();		// Wait a fraction of a second.
-		Mouse::mouse->hide();		// Turn off mouse.
-		Mouse::mouse_update = false;
-		SDL_Event event;
-		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
-			escaped = !handle_modal_gump_event(gump, event);
-		if (GL_manager::get_instance())
-			gwin->paint();	// OpenGL?  Paint each cycle.
-		Mouse::mouse->show();		// Re-display mouse.
-		if (!gwin->show() &&	// Blit to screen if necessary.
-		    Mouse::mouse_update)	// If not, did mouse change?
-			Mouse::mouse->blit_dirty();
-	}
-	while (!gump->is_done() && !escaped);
-	Mouse::mouse->hide();
-	remove_gump(gump);
-					// Restore background, if wanted.
-	if (gump->want_restore_background())
-		gwin->get_win()->put(back, box.x, box.y);
-	delete back;
-	Mouse::mouse->set_shape(saveshape);
-					// Leave mouse off.
-	gwin->show(true);
-
-	// Resume the game
-	gwin->get_tqueue()->resume(SDL_GetTicks());
-
-	SDL_EnableUNICODE(0);
-
-	return (!escaped);
-}
-
-
-/*
- *	Prompt for a numeric value using a slider.
- *
- *	Output:	Value, or 0 if user hit ESC.
- */
-
-int Gump_manager::prompt_for_number
-	(
-	int minval, int maxval,		// Range.
-	int step,
-	int defval			// Default to start with.
-	)
-{
-	Slider_gump *slider = new Slider_gump(minval, maxval,
-							step, defval);
-	int ok = do_modal_gump(slider, Mouse::hand);
-	int ret = !ok ? 0 : slider->get_val();
-	delete slider;
-	return (ret);
-}
-
-
-/*
- *	Show a number.
- */
-
-void Gump_manager::paint_num
-	(
-	int num,
-	int x,				// Coord. of right edge of #.
-	int y				// Coord. of top of #.
-	)
-{
-	//	Shape_manager *sman = Shape_manager::get_instance();
-	const int font = 2;
-	char buf[20];
-  	snprintf(buf, 20, "%d", num);
-	sman->paint_text(font, buf, x - sman->get_text_width(font, buf), y);
-}
-
-/*
- *	
- */
-void Gump_manager::set_gumps_dont_pause_game(bool p)
-{
-	// Don't do anything if they are the same
-	if (dont_pause_game == p) return;
-
-	dont_pause_game = p;
-
-	// If pausing enabled, we need to go through and pause each gump
-	if (!dont_pause_game) {
-		for (Gump_list *gump = open_gumps; gump; gump = gump->next)
-			if (!gump->gump->is_persistent()) 
-				gwin->get_tqueue()->pause(Game::get_ticks());
-	}
-	// Otherwise we need to go through and resume each gump :-)
-	else {
-		for (Gump_list *gump = open_gumps; gump; gump = gump->next)
-			if (!gump->gump->is_persistent()) 
-				gwin->get_tqueue()->resume(Game::get_ticks());
-	}
+		gmp->gump->paint(gwin);
 }

@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int Gump_widget::on_widget
 	(
+	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
 {
@@ -46,6 +47,7 @@ int Gump_widget::on_widget
 
 void Gump_widget::paint
 	(
+	Game_window *gwin
 	)
 {
 	int px = 0;
@@ -57,7 +59,7 @@ void Gump_widget::paint
 		py = parent->get_y();
 	}
 
-	paint_shape(x+px, y+py);
+	gwin->paint_shape(x+px, y+py, *this);
 }
 
 /*

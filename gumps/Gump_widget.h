@@ -47,13 +47,13 @@ public:
 		: ShapeID(shnum, 0, shfile), parent(par), x(px), y(py)
 		{  }
 					// Is a given point on the widget?
-	virtual int on_widget(int mx, int my);
+	virtual int on_widget(Game_window *gwin, int mx, int my);
 
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 
 	virtual Rectangle get_rect();
 					// update the widget, if required
-	virtual void update_widget() { }
+	virtual void update_widget(Game_window *gwin) { }
 
 	virtual bool is_draggable() { return true; }
 

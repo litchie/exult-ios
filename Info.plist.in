@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>@EXE_TARGET@</string>
 	<key>CFBundleGetInfoString</key>
-	<string>@VERSION@, Copyright 2000-2002 The Exult Team</string>
+	<string>@VERSION@, Copyright 2000-2001 The Exult Team</string>
 	<key>CFBundleIconFile</key>
 	<string>exult.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -20,9 +20,11 @@
 	<string>@VERSION@</string>
 	<key>CFBundleVersion</key>
 	<string>@VERSION@</string>
+	<key>NSMainNibFile</key>
+	<string>SDLMain.nib</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2000-2002 The Exult Team</string>
+	<string>Copyright 2000-2001 The Exult Team</string>
 </dict>
 </plist>

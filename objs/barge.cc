@@ -36,8 +36,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunks.h"
 #include "objiter.h"
 #include "game.h"
-#include "databuf.h"
-#include "ucsched.h"
 
 using std::ostream;
 
@@ -269,6 +267,8 @@ void Barge_object::gather
 	(
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 	if (!gmap->get_chunk_safely(get_cx(), get_cy()))
 		return;			// Not set in world yet.
 	ice_raft = false;		// We'll just detect it each time.
@@ -293,7 +293,7 @@ void Barge_object::gather
 			if (obj->is_egg()) // don't pick up eggs
 				continue;
 			Tile_coord t = obj->get_tile();
-			Shape_info& info = obj->get_info();
+			Shape_info& info = gwin->get_info(obj);
 					// Above barge, within 5-tiles up?
 			if (foot.has_point(t.tx, t.ty) &&
 			    t.tz + info.get_3d_height() > lift && 
@@ -324,7 +324,7 @@ void Barge_object::gather
 			boat = 0;
 		else
 			{
-			Shape_info& info = flat.get_info();
+			Shape_info& info = gwin->get_info(flat.get_shapenum());
 			boat = info.is_water();
 			}
 		}
@@ -337,6 +337,7 @@ void Barge_object::gather
 
 void Barge_object::add_dirty
 	(
+	Game_window *gwin
 	)
 	{
 	int x, y;			// Get lower-right corner.
@@ -372,6 +373,7 @@ void Barge_object::finish_move
 		obj->move(positions[i]);
 		}
 	delete [] positions;
+	Game_window *gwin = Game_window::get_game_window();
 					// Check for scrolling.
 	gwin->scroll_if_needed(center);
 	}
@@ -418,6 +420,7 @@ void Barge_object::travel_to_tile
 	if (path->NewPath(get_tile(), dest, 0))
 		{
 		frame_time = speed;
+		Game_window *gwin = Game_window::get_game_window();
 					// Figure new direction.
 		Tile_coord cur = get_tile();
 		int dy = Tile_coord::delta(cur.ty, dest.ty),
@@ -440,7 +443,8 @@ void Barge_object::turn_right
 	(
 	)
 	{
-	add_dirty();			// Want to repaint old position.
+	Game_window *gwin = Game_window::get_game_window();
+	add_dirty(gwin);		// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate90r(gwin, this, xtiles, ytiles, center);
 	if (!okay_to_rotate(rot))	// Check for blockage.
@@ -455,7 +459,7 @@ void Barge_object::turn_right
 		{
 		Game_object *obj = get_object(i);
 		int frame = obj->get_framenum();
-		Shape_info& info = obj->get_info();
+		Shape_info& info = gwin->get_info(obj);
 		positions[i] = Rotate90r(gwin, obj, info.get_3d_xtiles(frame),
 					info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);	// Remove object from world.
@@ -474,7 +478,8 @@ void Barge_object::turn_left
 	(
 	)
 	{
-	add_dirty();			// Want to repaint old position.
+	Game_window *gwin = Game_window::get_game_window();
+	add_dirty(gwin);		// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate90l(gwin, this, xtiles, ytiles, center);
 	if (!okay_to_rotate(rot))	// Check for blockage.
@@ -489,7 +494,7 @@ void Barge_object::turn_left
 		{
 		Game_object *obj = get_object(i);
 		int frame = obj->get_framenum();
-		Shape_info& info = obj->get_info();
+		Shape_info& info = gwin->get_info(obj);
 		positions[i] = Rotate90l(gwin, obj, info.get_3d_xtiles(frame),
 					info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);	// Remove object from world.
@@ -508,7 +513,8 @@ void Barge_object::turn_around
 	(
 	)
 	{
-	add_dirty();			// Want to repaint old position.
+	Game_window *gwin = Game_window::get_game_window();
+	add_dirty(gwin);		// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate180(gwin, this, xtiles, ytiles, center);
 	Container_game_object::move(rot.tx, rot.ty, rot.tz);
@@ -520,7 +526,7 @@ void Barge_object::turn_around
 		{
 		Game_object *obj = get_object(i);
 		int frame = obj->get_framenum();
-		Shape_info& info = obj->get_info();
+		Shape_info& info = gwin->get_info(obj);
 		positions[i] = Rotate180(gwin, obj, info.get_3d_xtiles(frame),
 					info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);	// Remove object from world.
@@ -540,25 +546,25 @@ void Barge_object::done
 	)
 	{
 	gathered = false;		// Clear for next time.
-	static int norecurse = 0;	// Don't recurse on the code below.
-	if (norecurse > 0)
-		return;
-	norecurse++;
-	if (boat == 1)			// Look for sails on boat.
-		{			// Pretend they were clicked on.
-		int cnt = objects.size();	// Look for open sail.
-		for (int i = 0; i < cnt; i++)
+
+#if 0	/* ++++This didn't fix the flying-carpet bug. */
+	Game_window *gwin = Game_window::get_game_window();
+	int cnt = objects.size();	// Reactivate actors.
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *obj = get_object(i);
+		Npc_actor *npc = dynamic_cast<Npc_actor *>(obj);
+					// Reactivate non-party NPC's scheds.
+		if (npc && npc->get_party_id() < 0)
 			{
-			Game_object *obj = objects[i];
-			if (obj->get_shapenum() == 251 &&
-			    (obj->get_framenum()&7) < 4)
-				{
-				obj->activate();
-				break;
-				}
+			npc->update_schedule(gwin, gwin->get_hour()/3, 7);
+					// Nothing happened?  Monster?
+			if (!npc->in_queue() && npc->is_monster())
+				npc->set_schedule_type(
+						npc->get_schedule_type());
 			}
 		}
-	norecurse--;
+#endif
 	}
 
 /*
@@ -571,6 +577,7 @@ int Barge_object::okay_to_land
 	{
 	Rectangle foot = get_tile_footprint();
 	int lift = get_lift();		// How high we are.
+	Game_map *gmap = Game_window::get_game_window()->get_map();
 					// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
 	Rectangle tiles;
@@ -597,6 +604,7 @@ void Barge_object::handle_event
 	long udata			// Ignored.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	if (!path || !frame_time || gwin->get_moving_barge() != this)
 		return;			// We shouldn't be doing anything.
 	Tile_coord tile;		// Get spot & walk there.	
@@ -625,7 +633,7 @@ void Barge_object::move
 	if (!gathered)			// Happens in SI with turtle.
 		gather();
 					// Want to repaint old position.
-	add_dirty();
+	add_dirty(Game_window::get_game_window());
 					// Get current location.
 	Tile_coord old = get_tile();
 					// Move the barge itself.
@@ -713,12 +721,13 @@ int Barge_object::drop
 
 void Barge_object::paint
 	(
+	Game_window *gwin
 	)
 	{
 					// DON'T paint barge shape itself.
 					// The objects are in the chunk too.
 	if(gwin->paint_eggs)
-		Container_game_object::paint();
+		Container_game_object::paint(gwin);
 	}
 
 /*
@@ -762,8 +771,9 @@ int Barge_object::step
 						4, cur, t, move_type, 0, 0))
 		return (0);		// Done.
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.
+	Game_window *gwin = Game_window::get_game_window();
 					// Near an egg?
-	Map_chunk *nlist = gmap->get_chunk(get_cx(), get_cy());
+	Map_chunk *nlist = gwin->get_chunk(get_cx(), get_cy());
 	nlist->activate_eggs(gwin->get_main_actor(), t.tx, t.ty, t.tz, 
 						cur.tx, cur.ty);
 	return (1);			// Add back to queue for next time.
@@ -775,7 +785,7 @@ int Barge_object::step
 
 void Barge_object::write_ireg
 	(
-	DataSource *out
+	ostream& out
 	)
 	{
 	unsigned char buf[13];		// 13-byte entry + length-byte.
@@ -789,46 +799,24 @@ void Barge_object::write_ireg
 	*ptr++ = 0;			// Unknown.
 					// Flags (quality).  Taking B3 to in-
 					//   dicate barge mode.
-	*ptr++ = (dir<<1) | ((gwin->get_moving_barge() == this)<<3);
+	*ptr++ = (dir<<1) | 
+		((Game_window::get_game_window()->get_moving_barge() == this)
+								<<3);
 	*ptr++ = 0;			// (Quantity).
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = 0;			// Data2.
 	*ptr++ = 0;			// 
-	out->write((char*)buf, sizeof(buf));
+	out.write((char*)buf, sizeof(buf));
 					// Write permanent objects.
 	for (int i = 0; i < perm_count; i++)
 		{
 		Game_object *obj = get_object(i);
 		obj->write_ireg(out);
 		}
-	out->write1(0x01);			// A 01 terminates the list.
+	out.put(0x01);			// A 01 terminates the list.
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
-
-// Get size of IREG. Returns -1 if can't write to buffer
-int Barge_object::get_ireg_size()
-{
-	// These shouldn't ever happen, but you never know
-	if (gwin->get_moving_barge() == this || Usecode_script::find(this))
-		return -1;
-
-	int total_size = 13;
-
-	for (int i = 0; i < perm_count; i++)
-	{
-		Game_object *obj = get_object(i);
-		int size = obj->get_ireg_size();
-
-		if (size < 0) return -1;
-
-		total_size += size;
-	}
-
-	total_size += 1;
-
-	return total_size;
-}
 
 /*
  *	This is called after all elements have been read in and added.

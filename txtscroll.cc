@@ -27,7 +27,6 @@
 #include "exult_types.h"
 #include "files/U7file.h"
 #include "gamewin.h"
-#include "shapeid.h"
 #include "txtscroll.h"
 #include "font.h"
 #include "game.h"
@@ -81,8 +80,6 @@ TextScroller::~TextScroller()
 
 int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int index)
 {
-	Shape_manager *sman = Shape_manager::get_instance();
-
 	//The texts used in the main menu contains backslashed sequences that
 	//indicates the output format of the lines:
 	// \Px   include picture number x (frame nr. of shape passed to constructor)
@@ -110,7 +107,7 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 			ptr +=3;
 			Shape_frame *frame = shapes->get_frame(pix);
 			if (frame) {
-			        sman->paint_shape(center-frame->get_width()/2,
+			        gwin->paint_shape(center-frame->get_width()/2,
 						  ypos, frame);
 				ypos += frame->get_height()+vspace;
 			}
@@ -164,7 +161,7 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 }
 
 
-bool TextScroller::run(Game_window *gwin)
+bool TextScroller::run(Game_window *gwin, Palette& pal)
 {
 	gwin->clear_screen();
 	gwin->show(1);
@@ -180,8 +177,7 @@ bool TextScroller::run(Game_window *gwin)
 	SDL_Event event;
 	uint32 next_time = SDL_GetTicks() + 200;
 	uint32 incr = 120;
-	//	pal.apply();
-	gwin->get_pal()->apply();
+	pal.apply();
 
 	while(looping) {
 		int ypos = starty;
@@ -228,7 +224,7 @@ bool TextScroller::run(Game_window *gwin)
 		} while (next_time > SDL_GetTicks());
 		next_time = SDL_GetTicks() + incr;
 		if(!looping)
-			gwin->get_pal()->fade_out(c_fade_out_time);
+			pal.fade_out(c_fade_out_time);
 		starty--;
 	}
 	gwin->clear_screen();

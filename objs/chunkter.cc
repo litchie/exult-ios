@@ -27,9 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include "chunkter.h"
 #include "gamewin.h"
-#ifdef INCL_OPENGL
-#include "glshape.h"
-#endif
 
 Chunk_terrain *Chunk_terrain::render_queue = 0;
 int Chunk_terrain::queue_size = 0;
@@ -94,6 +91,7 @@ inline void Chunk_terrain::paint_tile
 	int tilex, int tiley		// Tile within chunk.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	Shape_frame *shape = get_shape(tilex, tiley);
 	if (shape && !shape->is_rle())		// Only do flat tiles.
 		rendered_flats->copy8(shape->get_data(), 
@@ -109,8 +107,7 @@ Chunk_terrain::Chunk_terrain
 	(
 	unsigned char *data		// Chunk data.
 	) : undo_shapes(0),
-	    rendered_flats(0), glflats(0), 
-	    num_clients(0), render_queue_next(0),
+	    rendered_flats(0), num_clients(0), render_queue_next(0),
 	    render_queue_prev(0), modified(false)
 	{
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
@@ -130,8 +127,7 @@ Chunk_terrain::Chunk_terrain
 	(
 	const Chunk_terrain& c2
 	) : undo_shapes(0),
-	    rendered_flats(0), glflats(0),
-	    num_clients(0), render_queue_next(0),
+	    rendered_flats(0), num_clients(0), render_queue_next(0),
 	    render_queue_prev(0), modified(true)
 	{
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
@@ -149,9 +145,6 @@ Chunk_terrain::~Chunk_terrain
 	{
 	delete [] undo_shapes;
 	delete rendered_flats;
-#ifdef HAVE_OPENGL
-	delete glflats;
-#endif
 	remove_from_queue();
 	}
 
@@ -249,7 +242,7 @@ static int Figure_queue_size
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	int w = gwin->get_width(), h = gwin->get_height();
 					// Figure # chunks, rounding up.
 	int cw = (w + c_chunksize - 1)/c_chunksize,
@@ -285,13 +278,6 @@ Image_buffer8 *Chunk_terrain::render_flats
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			paint_tile(tilex, tiley);
-#ifdef HAVE_OPENGL
-	delete glflats;
-	glflats = 0;
-	GL_manager *glman = GL_manager::get_instance();
-	if (glman)			// Using OpenGL?
-		glflats = glman->create(rendered_flats);
-#endif
 	return rendered_flats;
 	}
 
@@ -305,10 +291,6 @@ void Chunk_terrain::free_rendered_flats
 	{
 	delete rendered_flats; 
 	rendered_flats = 0; 
-#ifdef HAVE_OPENGL
-	delete glflats;
-	glflats = 0;
-#endif
 	}
 
 /*
@@ -321,6 +303,7 @@ void Chunk_terrain::render_all
 	int cx, int cy			// Chunk rendering too.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	Image_window8 *iwin = gwin->get_win();
 	int ctx = cx*c_tiles_per_chunk, cty = cy*c_tiles_per_chunk;
 	int scrolltx = gwin->get_scrolltx(), scrollty = gwin->get_scrollty();
@@ -341,7 +324,7 @@ void Chunk_terrain::render_all
 				int x, y;
 				Tile_coord tile(ctx + tilex, cty + tiley, 0);
 				gwin->get_shape_location(tile, x, y);
-				sman->paint_shape(x, y, shape);
+				gwin->paint_shape(x, y, shape);
 				}
 			}
 	}

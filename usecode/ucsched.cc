@@ -28,7 +28,6 @@
 #include "game.h"
 #include "frameseq.h"
 #include "gamewin.h"
-#include "gameclk.h"
 #include "egg.h"
 #include "actors.h"
 #include "ucscriptop.h"
@@ -62,10 +61,17 @@ Usecode_script::Usecode_script
 	    no_halt(nhalt != 0), delay(del)
 	{
 	cnt = code->get_array_size();
+	count++;			// Keep track of total.
+	next = first;			// Put in chain.
+	prev = 0;
+	if (first)
+		first->prev = this;
+	first = this;
 	}
 
 /*
- *	Create.
+ *	Create and place in chain after halting others for the same object
+ *	(unless no_halt is set).
  */
 
 Usecode_script::Usecode_script
@@ -85,13 +91,21 @@ Usecode_script::Usecode_script
 			code = new Usecode_value(1, code);
 			cnt = 1;
 			}
+					//++++This should be done in start():
+		int opval0 = code->get_elem(0).get_int_value();
+		if (opval0 == 0x23)
+			no_halt = true;
 		}
-#if 0	/* ++++++++Moved to start(). */
 	if (!is_no_halt())		// If flag not set,
 					// Remove other entries that aren't
 					//   'no_halt'.
 		Usecode_script::terminate(obj);
-#endif
+	count++;			// Keep track of total.
+	next = first;			// Put in chain.
+	prev = 0;
+	if (first)
+		first->prev = this;
+	first = this;
 	}
 
 /*
@@ -111,8 +125,7 @@ Usecode_script::~Usecode_script()
 	}
 
 /*
- *	Enter into the time-queue and our own chain.  Terminate existing
- *	scripts for this object unless 'dont_halt' is set.
+ *	Enter into the time-queue.
  */
 
 void Usecode_script::start
@@ -120,23 +133,7 @@ void Usecode_script::start
 	long d			// Start after this many msecs.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	if (code->get_array_size())	// Check initial elem.
-		{
-		int opval0 = code->get_elem(0).get_int_value();
-		if (opval0 == 0x23)
-			no_halt = true;
-		}
-	if (!is_no_halt())		// If flag not set,
-					// Remove other entries that aren't
-					//   'no_halt'.
-		Usecode_script::terminate(obj);
-	count++;			// Keep track of total.
-	next = first;			// Put in chain.
-	prev = 0;
-	if (first)
-		first->prev = this;
-	first = this;
+	Game_window *gwin = Game_window::get_game_window();
 //++++ Messes up Moonshade Trial.
 //	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
 	gwin->get_tqueue()->add(d + SDL_GetTicks(), this,
@@ -270,7 +267,7 @@ inline void Usecode_script::activate_egg(Usecode_internal *usecode,
 					// Guess:  Only certain types:
 	if (type == Egg_object::monster || type == Egg_object::button ||
 	    type == Egg_object::missile)
-		((Egg_object *) e)->activate(
+		((Egg_object *) e)->activate(usecode,
 			usecode->gwin->get_main_actor(), true);
 }
 
@@ -404,7 +401,8 @@ void Usecode_script::handle_event
 			break;
 		case next_frame_max:	// Stop at last frame.
 			{
-			int nframes = obj->get_num_frames();
+			int nframes = gwin->get_shapes().get_num_frames(
+							obj->get_shapenum());
 			if (obj->get_framenum() < nframes - 1)
 				usecode->set_item_frame(obj,
 							1+obj->get_framenum());
@@ -412,7 +410,8 @@ void Usecode_script::handle_event
 			}
 		case next_frame:
 			{
-			int nframes = obj->get_num_frames();
+			int nframes = gwin->get_shapes().get_num_frames(
+							obj->get_shapenum());
 			usecode->set_item_frame(obj, 
 					(1 + obj->get_framenum())%nframes);
 			break;
@@ -424,7 +423,8 @@ void Usecode_script::handle_event
 			break;
 		case prev_frame:
 			{
-			int nframes = obj->get_num_frames();
+			int nframes = gwin->get_shapes().get_num_frames(
+							obj->get_shapenum());
 			int pframe = obj->get_framenum() - 1;
 			usecode->set_item_frame(obj, 
 						(pframe + nframes)%nframes);
@@ -505,9 +505,7 @@ void Usecode_script::handle_event
 			Usecode_value& val = code->get_elem(++i);
 					// It may be 0x3x.  Face dir?
 			int dir = val.get_int_value()&7;
-			Actor *npc = obj->as_actor();
-			if (npc)
-				npc->set_usecode_dir(dir);
+			obj->set_usecode_dir(dir);
 			usecode->set_item_frame(obj, obj->get_dir_framenum(
 				dir, obj->get_framenum()), 1, 1);
 			frame_index = 0;// Reset walking frame index.
@@ -526,10 +524,8 @@ void Usecode_script::handle_event
 					// Frames with dir.  U7-verified!
 			if (opcode >= 0x61 && opcode <= 0x70)
 				{	// But don't show empty frames.
-				Actor *npc = obj->as_actor();
-				npc->clear_rest_time();
 				int v = obj->get_dir_framenum(
-					npc ? npc->get_usecode_dir() : 0, 
+					obj->get_usecode_dir(), 
 					opcode - 0x61);
 				usecode->set_item_frame(obj, v, 1, 1);
 				}
@@ -584,7 +580,7 @@ void Usecode_script::step
 		Tile_coord tile = obj->get_tile().get_neighbor(dir);
 		obj->step(tile, frame);
 		}
-	else if ((barge = obj->as_barge()) != 0)
+	else if ((barge = dynamic_cast<Barge_object *> (obj)) != 0)
 		{
 		barge->face_direction(dir);
 		for (int i = 0; i < 4; i++)
@@ -609,7 +605,7 @@ int Usecode_script::save
 	)
 	{
 					// Get delay to when due.
-	long when = Game_window::get_instance()->get_tqueue()->find_delay(
+	long when = Game_window::get_game_window()->get_tqueue()->find_delay(
 							this, SDL_GetTicks());
 	if (when < 0)
 		return -1;

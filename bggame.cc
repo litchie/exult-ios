@@ -37,7 +37,6 @@
 #include "data/exult_bg_flx.h"
 #include "exult.h"
 #include "Configuration.h"
-#include "shapeid.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
@@ -271,7 +270,7 @@ void BG_Game::play_intro()
 	}
 	
 	// Fade out the palette...
-	pal->fade_out(c_fade_out_time);
+	pal.fade_out(c_fade_out_time);
 	
 	// ... and clean the screen.
 	gwin->clear_screen(true);
@@ -288,17 +287,17 @@ void BG_Game::scene_lord_british()
 			"The Exult Team"};
 
 	// Lord British presents...  (sh. 0x11)
-	pal->load("<STATIC>/intropal.dat",3);
-	sman->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
+	pal.load("<STATIC>/intropal.dat",3);
+	gwin->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
 	
 	// insert our own intro text
 	font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
 	font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
 
-	pal->fade_in(c_fade_in_time);
+	pal.fade_in(c_fade_in_time);
 	if(1 == wait_delay(2000))
 		throw UserBreakException();
-	pal->fade_out(c_fade_out_time);
+	pal.fade_out(c_fade_out_time);
 	gwin->clear_screen(true);
 }
 
@@ -310,7 +309,7 @@ void BG_Game::scene_lord_british()
 #define	BUTTERFLY(x,y,frame,delay)	do {	\
 		win->get(backup, topx + (x) - butterfly->get_xleft(),	\
 				topy + (y) - butterfly->get_yabove());	\
-		sman->paint_shape(topx + x, topy + y, shapes.get_shape(butterfly_shp, frame));	\
+		gwin->paint_shape(topx + x, topy + y, shapes.get_shape(butterfly_shp, frame));	\
 		win->show();	\
 		WAITDELAY(delay);	\
 		win->put(backup, topx + (x) - butterfly->get_xleft(),	\
@@ -370,7 +369,7 @@ void BG_Game::scene_butterfly()
 	
 	try
 	{
-		pal->load("<STATIC>/intropal.dat",4);
+		pal.load("<STATIC>/intropal.dat",4);
 
 		// Load the butterfly shape
 		butterfly = shapes.get_shape(butterfly_shp,0);
@@ -380,8 +379,8 @@ void BG_Game::scene_butterfly()
 		play_midi(bird_song_midi);
 
 		// trees with "Ultima VII" on top of 'em
-		sman->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
-		sman->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
+		gwin->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
+		gwin->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
 		
 		// again display our own text
 		font->center_text(ibuf, centerx, centery+50, txt_msg);
@@ -390,12 +389,12 @@ void BG_Game::scene_butterfly()
 		WAITDELAY(3500);
 
 		// Finally fade in
-		pal->fade_in(c_fade_in_time);
+		pal.fade_in(c_fade_in_time);
 		WAITDELAY(12500);
 
 		// clear 'Exult' text
-		sman->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
-		sman->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
+		gwin->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
+		gwin->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
 		win->show();
 
 		//
@@ -463,7 +462,7 @@ void BG_Game::scene_butterfly()
 }
 
 #define	FLASH_SHAPE(x,y,shape,frame, delay)	do {	\
-		sman->paint_shape(x,y,shapes.get_shape(shape,frame));	\
+		gwin->paint_shape(x,y,shapes.get_shape(shape,frame));	\
 		win->show();	\
 		WAITDELAYCYCLE(delay);	\
 		win->put(backup,(x)-s->get_xleft(),(y)-s->get_yabove());	\
@@ -495,13 +494,10 @@ void BG_Game::scene_guardian()
 		gwin->plasma(gwin->get_width(), gwin->get_height(), 0, 0, 16, 16+76);
 		win->get(plasma, 0, 0);
 
-		pal->load("<STATIC>/intropal.dat",2);
-		pal->set_color(1,0,0,0); //UGLY hack... set font background to black
-		pal->apply();
-
-		//play static SFX
-		Audio::get_ptr()->play_sound_effect(115, MIX_MAX_VOLUME, 0, 0);
-
+		pal.load("<STATIC>/intropal.dat",2);
+		pal.set_color(1,0,0,0); //UGLY hack... set font background to black
+		pal.apply();
+		//TODO: sound effects here!
 		//TODO: timing?
 		win->show();
 		WAITDELAYCYCLE(100);
@@ -586,7 +582,7 @@ void BG_Game::scene_guardian()
 		cbackup = win->create_buffer(s->get_width(), s->get_height());
 
 		win->get(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
-		sman->paint_shape(centerx,centery,s); // frame 0 is static background
+		gwin->paint_shape(centerx,centery,s); // frame 0 is static background
 		win->get(backup, centerx- s->get_xleft(), centery- s->get_yabove());
 		for(i=1; i<16; i++)
 		{
@@ -608,7 +604,7 @@ void BG_Game::scene_guardian()
 		backup = win->create_buffer(s->get_width(), s->get_height());
 		cbackup = win->create_buffer(s->get_width(), s->get_height());
 		win->get(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
-		sman->paint_shape(centerx,centery,s); // frame 0 is background
+		gwin->paint_shape(centerx,centery,s); // frame 0 is background
 		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
 		// eyes
 		s2 = shapes.get_shape(guardian_eyes_shp,0);
@@ -616,7 +612,7 @@ void BG_Game::scene_guardian()
 		cbackup2 = win->create_buffer(s2->get_width(), s2->get_height());
 		win->get(cbackup2, centerx - s2->get_xleft(),
 			 centery-EYES_DIST - s2->get_yabove());
-		sman->paint_shape(centerx,centery-EYES_DIST,s2); // frame 0 is background
+		gwin->paint_shape(centerx,centery-EYES_DIST,s2); // frame 0 is background
 		win->get(backup2, centerx - s2->get_xleft(),
 			 centery-EYES_DIST - s2->get_yabove());
 		// forehead
@@ -624,7 +620,7 @@ void BG_Game::scene_guardian()
 		cbackup3 = win->create_buffer(s3->get_width(), s3->get_height());
 		win->get(cbackup3, centerx - s3->get_xleft(),
 			 centery-FORHEAD_DIST - s3->get_yabove());
-	       	sman->paint_shape(centerx,centery-FORHEAD_DIST,s3); // forehead isn't animated
+	       	gwin->paint_shape(centerx,centery-FORHEAD_DIST,s3); // forehead isn't animated
 
 		// prepare Guardian speech
 		Font *font = fontManager.get_font("END3_FONT");
@@ -652,10 +648,10 @@ void BG_Game::scene_guardian()
 			{
 				// convoluted mess to get eye movement acceptable
 				int eye_frame = 1 + 3*((i/12) % 4) + ((i%50>47&&(i/12)%4!=3)?i%50-47:0);
-				sman->paint_shape(centerx,centery-EYES_DIST,
+				gwin->paint_shape(centerx,centery-EYES_DIST,
 						shapes.get_shape(guardian_eyes_shp, eye_frame));
 		
-				sman->paint_shape(centerx,centery,
+				gwin->paint_shape(centerx,centery,
 						  shapes.get_shape(guardian_mouth_shp,1 + i % 13));
 		
 				if (i == 0)
@@ -701,7 +697,7 @@ void BG_Game::scene_guardian()
 		backup = win->create_buffer(s->get_width(), s->get_height());
 		cbackup = win->create_buffer(s->get_width(), s->get_height());
 		win->get(cbackup, centerx- s->get_xleft(), centery- s->get_yabove());
-		sman->paint_shape(centerx,centery,s); // frame 0 is background
+		gwin->paint_shape(centerx,centery,s); // frame 0 is background
 		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
 		for(i=15; i>0; i--)
 		{
@@ -757,17 +753,17 @@ void BG_Game::scene_desk()
 		play_midi(home_song_midi);
 		
 		gwin->clear_screen();
-		pal->load("<STATIC>/intropal.dat",1);
-		pal->apply();
+		pal.load("<STATIC>/intropal.dat",1);
+		pal.apply();
 
 		// draw monitor (sh. 0x07, 0x08, 0x09, 0x0A: various parts of monitor)
-		sman->paint_shape(centerx, centery, shapes.get_shape(0x07,0));
-		sman->paint_shape(centerx, centery, shapes.get_shape(0x09,0));
-		sman->paint_shape(centerx, centery, shapes.get_shape(0x08,0));
-		sman->paint_shape(centerx, centery, shapes.get_shape(0x0A,0));
+		gwin->paint_shape(centerx, centery, shapes.get_shape(0x07,0));
+		gwin->paint_shape(centerx, centery, shapes.get_shape(0x09,0));
+		gwin->paint_shape(centerx, centery, shapes.get_shape(0x08,0));
+		gwin->paint_shape(centerx, centery, shapes.get_shape(0x0A,0));
 
 		// draw white dot in center of monitor (sh. 0x14)
-		sman->paint_shape(centerx+12, centery-22, shapes.get_shape(0x14,0));
+		gwin->paint_shape(centerx+12, centery-22, shapes.get_shape(0x14,0));
 
 		// draw arm hitting pc (sh. 0x0C)
 		s = shapes.get_shape(0x0C, 0);
@@ -775,7 +771,7 @@ void BG_Game::scene_desk()
 		for (i=0; i<9; i++) {
 			win->get(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
 				 centery+100 - s->get_yabove());
-			sman->paint_shape(centerx-96-30*abs(i%4-2), centery+100, s);
+			gwin->paint_shape(centerx-96-30*abs(i%4-2), centery+100, s);
 			win->show();
 			win->put(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
 				 centery+100 - s->get_yabove());
@@ -783,12 +779,12 @@ void BG_Game::scene_desk()
 		}
 
 		// screen comes back up (sh. 0x1D)
-		sman->paint_shape(centerx+12, centery-22, shapes.get_shape(0x1D,0));
+		gwin->paint_shape(centerx+12, centery-22, shapes.get_shape(0x1D,0));
 		win->show();
 		FORGET_OBJECT(backup);
 
 		// "Something is obviously amiss"
-		sman->paint_shape(centerx, centery+50, shapes.get_shape(0x15,0));
+		gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x15,0));
 		win->show();
 		WAITDELAY(4000);
 
@@ -796,17 +792,17 @@ void BG_Game::scene_desk()
 
 		// scroll right (sh. 0x06: map to the right of the monitor)
 		for(i=0;i<194;i+=4) {
-			sman->paint_shape(centerx-i,centery, shapes.get_shape(0x07,0));
-			sman->paint_shape(centerx-i,centery, shapes.get_shape(0x09,0));
-			sman->paint_shape(centerx-i,centery, shapes.get_shape(0x08,0));
-			sman->paint_shape(centerx-i,centery, shapes.get_shape(0x0A,0));
-			sman->paint_shape(centerx-i+12, centery-22, 
+			gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x07,0));
+			gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x09,0));
+			gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x08,0));
+			gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x0A,0));
+			gwin->paint_shape(centerx-i+12, centery-22, 
 					  shapes.get_shape(0x1D,0));
-			sman->paint_shape(topx+320-i,topy, shapes.get_shape(0x06,0));
+			gwin->paint_shape(topx+320-i,topy, shapes.get_shape(0x06,0));
 
 			if (i > 20 && i < 175) {
 				// "It has been a long time..."
-				sman->paint_shape(centerx, centery+50, 
+				gwin->paint_shape(centerx, centery+50, 
 						  shapes.get_shape(0x16,0));
 			}
 			win->show();
@@ -815,37 +811,37 @@ void BG_Game::scene_desk()
 
 		// scroll down (sh. 0x0B: mouse + orb of moons, below map)
 		for(i=0;i<=50;i+=2) {
-			sman->paint_shape(centerx-194, centery-i,
+			gwin->paint_shape(centerx-194, centery-i,
 					  shapes.get_shape(0x07,0));
-			sman->paint_shape(centerx-194, centery-i,
+			gwin->paint_shape(centerx-194, centery-i,
 					  shapes.get_shape(0x09,0));
-			sman->paint_shape(centerx-194, centery-i,
+			gwin->paint_shape(centerx-194, centery-i,
 					  shapes.get_shape(0x08,0));
-			sman->paint_shape(centerx-194, centery-i,
+			gwin->paint_shape(centerx-194, centery-i,
 					  shapes.get_shape(0x0A,0));
-			sman->paint_shape(centerx-194+12, centery-22-i,
+			gwin->paint_shape(centerx-194+12, centery-22-i,
 					  shapes.get_shape(0x1D,0));
-			sman->paint_shape(topx+319-194, topy-i,
+			gwin->paint_shape(topx+319-194, topy-i,
 					  shapes.get_shape(0x06,0));
-			sman->paint_shape(topx+319, topy+199-i,
+			gwin->paint_shape(topx+319, topy+199-i,
 					  shapes.get_shape(0x0B,0));
 			// "The mystical Orb beckons you"
-			sman->paint_shape(centerx, topy, shapes.get_shape(0x17,0));
+			gwin->paint_shape(centerx, topy, shapes.get_shape(0x17,0));
 
 			win->show();
 			WAITDELAYCYCLE2(50);
 		}
 		WAITDELAYCYCLE2(1000);
 
-		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x07,0));
-		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x09,0));
-		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x08,0));
-		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x0A,0));
-		sman->paint_shape(centerx-182, centery-72, shapes.get_shape(0x1D,0));
-		sman->paint_shape(topx+319-194, topy-50, shapes.get_shape(0x06,0));
-		sman->paint_shape(topx+319, topy+149, shapes.get_shape(0x0B,0));
+		gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x07,0));
+		gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x09,0));
+		gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x08,0));
+		gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x0A,0));
+		gwin->paint_shape(centerx-182, centery-72, shapes.get_shape(0x1D,0));
+		gwin->paint_shape(topx+319-194, topy-50, shapes.get_shape(0x06,0));
+		gwin->paint_shape(topx+319, topy+149, shapes.get_shape(0x0B,0));
 		// "It has opened gateways to Britannia in the past"
-		sman->paint_shape(centerx, topy, shapes.get_shape(0x18,0));
+		gwin->paint_shape(centerx, topy, shapes.get_shape(0x18,0));
 		win->show();
 
 		WAITDELAYCYCLE2(3000);
@@ -867,11 +863,11 @@ void BG_Game::scene_moongate()
 	int i;
 		
 	gwin->clear_screen();
-    pal->load("<STATIC>/intropal.dat",5);
-	pal->apply();
+	pal.load("<STATIC>/intropal.dat",5);
+	pal.apply();
 
 	// "Behind your house is the circle of stones"
-	sman->paint_shape(centerx, centery+50, shapes.get_shape(0x19,0));
+	gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x19,0));
 	win->show();
 
 	// TODO: fade in screen while text is onscreen
@@ -880,55 +876,51 @@ void BG_Game::scene_moongate()
 
 	// TODO: misaligned?
 	for(i=120;i>=-170;i-=6) {
-		sman->paint_shape(centerx+1,centery+1,
+		gwin->paint_shape(centerx+1,centery+1,
 				  shapes.get_shape(0x02,0));
-		sman->paint_shape(centerx+1,centery+1,
+		gwin->paint_shape(centerx+1,centery+1,
 				  shapes.get_shape(0x03,0));
-		sman->paint_shape(centerx+1,centery+1,
+		gwin->paint_shape(centerx+1,centery+1,
 				  shapes.get_shape(0x04,0));
-		sman->paint_shape(centerx+1,centery+1,
+		gwin->paint_shape(centerx+1,centery+1,
 				  shapes.get_shape(0x05,0));
 
-		sman->paint_shape(centerx+i,topy, shapes.get_shape(0x00,0));
-		sman->paint_shape(centerx-i,topy, shapes.get_shape(0x01,0));
+		gwin->paint_shape(centerx+i,topy, shapes.get_shape(0x00,0));
+		gwin->paint_shape(centerx-i,topy, shapes.get_shape(0x01,0));
 
 		// "Why is a moongate already there?"
-		sman->paint_shape(centerx,centery+50,shapes.get_shape(0x1A,0));
+		gwin->paint_shape(centerx,centery+50,shapes.get_shape(0x1A,0));
 		win->show();
 		WAITDELAYCYCLE3(50);
 	}
 
-	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x02,0));
-	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x03,0));
-	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x04,0));
-	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x05,0));
+	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x02,0));
+	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x03,0));
+	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x04,0));
+	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x05,0));
 
 	// "You have but one path to the answer"
-	sman->paint_shape(centerx, centery+50, shapes.get_shape(0x1C,0));
+	gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x1C,0));
 	win->show();
 
 	// TODO: zoom (run) into moongate
 
 	WAITDELAYCYCLE3(3000);
-
-	// Wait till the music finished playing
-	while(Audio::get_ptr()->is_track_playing(home_song_midi))
-		WAITDELAYCYCLE3(50);
 }
 
 void BG_Game::top_menu()
 {
 	play_midi(menu_midi, true);
 		
-	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-	pal->load("<STATIC>/intropal.dat",0);
-	pal->fade_in(60);	
+	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	pal.load("<STATIC>/intropal.dat",0);
+	pal.fade_in(60);	
 }
 
 void BG_Game::show_journey_failed()
 {
-	pal->fade_out(50);
-	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	pal.fade_out(50);
+	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	journey_failed_text();
 }
 	
@@ -944,26 +936,26 @@ void BG_Game::end_game(bool success)
 		TextScroller text(MAINSHP_FLX, 0x15,
 				  font,0);
 		gwin->clear_screen();
-		pal->load("<STATIC>/intropal.dat",0);
+		pal.load("<STATIC>/intropal.dat",0);
 		for(uint32 i=0; i<text.get_count(); i++) {
 			text.show_line(gwin, topx, topx+320, topy+20+i*12, i);
 		}
 		
-		pal->fade_in(c_fade_in_time);
+		pal.fade_in(c_fade_in_time);
 		wait_delay(10000);
-		pal->fade_out(c_fade_out_time);
+		pal.fade_out(c_fade_out_time);
 		
 		gwin->clear_screen();
 		font->center_text(ibuf, centerx, centery-10, "The end of Ultima VII");
-		pal->fade_in(c_fade_in_time);
+		pal.fade_in(c_fade_in_time);
 		wait_delay(4000);
-	    pal->fade_out(c_fade_out_time);
+		pal.fade_out(c_fade_out_time);
 		
 		gwin->clear_screen();
 		font->center_text(ibuf, centerx, centery-10, "The end of Britannia as you know it!");
-		pal->fade_in(c_fade_in_time);
+		pal.fade_in(c_fade_in_time);
 		wait_delay(4000);
-		pal->fade_out(c_fade_out_time);
+		pal.fade_out(c_fade_out_time);
 		gwin->clear_screen(true);
 		return;
 	}
@@ -1009,346 +1001,454 @@ void BG_Game::end_game(bool success)
 	fli1.play(win, 0, 0, 0);
 	
 	// Start endgame music.
-	Audio *audio = Audio::get_ptr();
-	int music_offset = 0;
-	if (audio) {
-		MyMidiPlayer *midi = audio->get_midi();
-		if (midi) {
-			midi->load_patches(true);
-			if (midi->is_fm_synth()) music_offset = 2;
+	Audio::get_ptr()->start_music(ENDSCORE_XMI,1,false);
+	
+	for (i = 0; i < 240; i++)
+	{
+		next = fli1.play(win, 0, 1, next);
+		if (wait_delay (0))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(buffer);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
 		}
-		audio->start_music(ENDSCORE_XMI,1+music_offset,false);
 	}
 	
-	// A little hack
-	bool do_break = false;
-	do {
-
-		for (i = 0; i < 240; i++)
+	for (i = 1; i < 150; i++)
+	{
+		next = fli1.play(win, i, i+1, next);
+		if (wait_delay (0))
 		{
-			next = fli1.play(win, 0, 1, next);
-			if (wait_delay (0)) { do_break = true; break; }
+			gwin->clear_screen(true);
+			FORGET_ARRAY(buffer);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
 		}
-		if (do_break) break;
-		
-		for (i = 1; i < 150; i++)
-		{
-			next = fli1.play(win, i, i+1, next);
-			if (wait_delay (0)) { do_break = true; break; }
-		}
-		if (do_break) break;
-
-		if (audio) audio->play (buffer+8, size-8, false);
-		FORGET_ARRAY(buffer);
-		Font *endfont2 = fontManager.get_font("END2_FONT");
-		Font *endfont3 = fontManager.get_font("END3_FONT");
-		Font *normal = fontManager.get_font("NORMAL_FONT");
-
-		const char 	*message = "No. You cannot do that! You must not!";
-		int	height = topy+200 - endfont2->get_text_height()*2;
-		int	width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
-
-		for (i = 150; i < 204; i++)
-		{
-			next = fli1.play(win, i, i, next);
-			endfont2->draw_text(ibuf, width, height, message);
-			
-			win->show();
-			if (wait_delay (0)) { do_break = true; break; }
-		}
-		if (do_break) break;
-
-		// Set new music
-		if (audio) audio->start_music(ENDSCORE_XMI,2+music_offset,false);
-
-		// Set speech
-		
-		buffer = (uint8 *) speech2.retrieve(size);
-		if (audio) audio->play (buffer+8, size-8, false);
-		FORGET_ARRAY(buffer);
-
-		message = "Damn you Avatar!  Damn you!";
-		width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
-
-		for (i = 0; i < 100; i++)
-		{
-			next = fli2.play(win, i, i, next);
-			endfont2->draw_text(ibuf, width, height, message);
-			
-			win->show();
-			if (wait_delay (0)) { do_break = true; break; }
-		}
-		if (do_break) break;
-
-		Palette *pal = fli2.get_palette();
-		next = SDL_GetTicks();
-		for (i = 1000 + next; next < i; next += 10)
-		{
-			// Speed related frame skipping detection
-			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
-			while (SDL_GetTicks() < next)
-				;
-			if (!skip_frame)
-			{
-				pal->set_brightness ((i - next) / 10);
-				pal->apply();
-			}
-			if (wait_delay (0)) { do_break = true; break; }
-		}
-		if (do_break) break;
-
-		// Text message 1
-
-		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-		// Paint text
-		message = "The Black Gate is destroyed.";
-		width = (gwin->get_width() - normal->get_text_width(message)) / 2;
-		height = (gwin->get_height() - normal->get_text_height()) / 2;
-		
-		normal->draw_text (ibuf, width, height, message);
-
-		// Fade in for 1 sec (50 cycles)
-		pal->fade (50, 1, 0);
-
-		// Display text for 3 seconds
-		for (i = 0; i < 30; i++) if (wait_delay (100)) { do_break = true; break; }
-		if (do_break) break;
-
-		// Fade out for 1 sec (50 cycles)
-		pal->fade (50, 0, 0);
-
-		
-		// Now the second text message
-
-
-		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-		// Paint text
-		message = "The Guardian has been stopped.";
-		width = (gwin->get_width() - normal->get_text_width(message)) / 2;
-
-		normal->draw_text (ibuf, width, height, message);
-
-		// Fade in for 1 sec (50 cycles)
-		pal->fade (50, 1, 0);
-
-		// Display text for approx 3 seonds
-		for (i = 0; i < 30; i++) if (wait_delay (100)) { do_break = true; break; }
-		if (do_break) break;
-
-		// Fade out for 1 sec (50 cycles)
-		pal->fade (50, 0, 0);
-
-		next = fli3.play(win, 0, 0, next);
-		pal = fli3.get_palette();
-		next = SDL_GetTicks();
-		for (i = 1000 + next; next < i; next += 10)
-		{
-			// Speed related frame skipping detection
-			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
-			while (SDL_GetTicks() < next)
-				;
-			if (!skip_frame)
-			{
-				pal->set_brightness (100 - (i-next) / 10);
-				pal->apply();
-			}
-			if (wait_delay (0)) { do_break = true; break; }
-		}
-		if (do_break) break;
-		
-		buffer = (uint8 *) speech3.retrieve(size);
-		if (audio) audio->play (buffer+8, size-8, false);
-		FORGET_ARRAY(buffer);
-
-		playfli::fliinfo finfo;
-		fli3.info (&finfo);
-		
-		int	m;
-		const char *txt_screen0[] = {
-			"Avatar! You think you have won>",
-			"Think again! You are unable to",
-			"leave britannia, whereas I am free",
-			"to enter other worlds",
-			"Perhaps your puny Earth shall be",
-			"my NEXT target!."
-		};
-
-		starty = (gwin->get_height() - endfont3->get_text_height()*8)/2;
-
-		next = SDL_GetTicks();
-		for (i = next+28000; i > next; )
-		{
-			for (j = 0; j < finfo.frames; j++)
-			{
-				next = fli3.play(win, j, j, next);
-				for(m=0; m<6; m++)
-					endfont3->center_text(ibuf, centerx, starty+endfont3->get_text_height()*m, txt_screen0[m]);
-
-				win->show ();
-				if (wait_delay (10)) { do_break = true; break; }
-			}
-		}
-		if (do_break) break;
-
-		
-		next = SDL_GetTicks();
-		for (i = 1000 + next; next < i; next += 10)
-		{
-			// Speed related frame skipping detection
-			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
-			while (SDL_GetTicks() < next)
-				;
-			if (!skip_frame)
-			{
-				pal->set_brightness ((i - next) / 10);
-				pal->apply();
-			}
-			if (wait_delay (0)) { do_break = true; break; }
-		}
-		if (do_break) break;
-
-		// Text Screen 1
-
-		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-
-		const char *txt_screen1[] = {
-			"In the months following the climactic",
-			"battle at The Black Gate, Britannia",
-			"is set upon the long road to recovery",
-			"from its various plights.",
-			" ",
-			"Upon your return to Britain,",
-			"Lord British decreed that",
-			"The Fellowship be outlawed",
-			"and all of the branches were",
-			"soon destroyed."
-		};
-
-		starty = (gwin->get_height() - normal->get_text_height()*10)/2;
-		
-		for(i=0; i<10; i++)
-			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen1[i])/2, starty+normal->get_text_height()*i, txt_screen1[i]);
-
-		// Fade in for 1 sec (50 cycles)
-		pal->fade (50, 1, 0);
-
-		// Display text for 20 seonds (only 10 at the moment)
-		for (i = 0; i < 100; i++) if (wait_delay (100)) { do_break = true; break; }
-		if (do_break) break;
-
-		// Fade out for 1 sec (50 cycles)
-		pal->fade (50, 0, 0);
-
-		if (wait_delay (10)) { do_break = true; break; }
-		if (do_break) break;
-
-		// Text Screen 2
-
-		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-		const char *txt_screen2[] = {
-			"The frustration you feel at having been",
-			"stranded in Britannia is somewhat",
-			"alleviated by the satisfaction that you",
-			"solved the gruesome murders committed",
-			"by The Fellowship and even avenged the",
-			"death of Spark's father."
-		};
-
-		starty = (gwin->get_height() - normal->get_text_height()*6)/2;
-		
-		for(i=0; i<6; i++)
-			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen2[i])/2, starty+normal->get_text_height()*i, txt_screen2[i]);
-
-
-		// Fade in for 1 sec (50 cycles)
-		pal->fade (50, 1, 0);
-
-		// Display text for 20 seonds (only 8 at the moment)
-		for (i = 0; i < 80; i++) if (wait_delay (100)) { do_break = true; break; }
-		if (do_break) break;
-
-		// Fade out for 1 sec (50 cycles)
-		pal->fade (50, 0, 0);
-
-		if (wait_delay (10)) break;
-
-		// Text Screen 3 
-
-		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-		const char *txt_screen3[] = {
-			"And although you are, at the moment,",
-			"helpless to do anything about",
-			"The Guardian's final threat,",
-			"another thought nags at you...",
-			"what became of Batlin, the fiend",
-			"who got away?"
-		};
-
-		starty = (gwin->get_height() - normal->get_text_height()*6)/2;
-		
-		for(i=0; i<6; i++)
-			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen3[i])/2, starty+normal->get_text_height()*i, txt_screen3[i]);
-
-		// Fade in for 1 sec (50 cycles)
-		pal->fade (50, 1, 0);
-
-		// Display text for 20 seonds (only 8 at the moment)
-		for (i = 0; i < 80; i++) if (wait_delay (100)) { do_break = true; break; }
-		if (do_break) break;
-
-		// Fade out for 1 sec (50 cycles)
-		pal->fade (50, 0, 0);
-
-		if (wait_delay (10)) break;
-
-		// Text Screen 4
-
-		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-		const char *txt_screen4[] = {
-			"That is another story...", 
-			"one that will take you",
-			"to a place called",
-			"The Serpent Isle..."
-		};
-
-		starty = (gwin->get_height() - normal->get_text_height()*4)/2;
-		
-		for(i=0; i<4; i++)
-			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen4[i])/2, starty+normal->get_text_height()*i, txt_screen4[i]);
-
-
-		// Fade in for 1 sec (50 cycles)
-		pal->fade (50, 1, 0);
-
-		// Display text for 10 seonds (only 5 at the moment)
-		for (i = 0; i < 50; i++) if (wait_delay (100)) { do_break = true; break; }
-		if (do_break) break;
-
-		// Fade out for 1 sec (50 cycles)
-		pal->fade (50, 0, 0);
 	}
-	while (0);
 
-	if (audio) {
-		audio->stop_music();
-		MyMidiPlayer *midi = audio->get_midi();
-		if (midi) midi->load_patches(false);
+	Audio::get_ptr()->play (buffer+8, size-8, false);
+	FORGET_ARRAY(buffer);
+	Font *endfont2 = fontManager.get_font("END2_FONT");
+	Font *endfont3 = fontManager.get_font("END3_FONT");
+	Font *normal = fontManager.get_font("NORMAL_FONT");
+
+	const char 	*message = "No. You cannot do that! You must not!";
+	int	height = topy+200 - endfont2->get_text_height()*2;
+	int	width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
+
+	for (i = 150; i < 204; i++)
+	{
+		next = fli1.play(win, i, i, next);
+		endfont2->draw_text(ibuf, width, height, message);
+		
+		win->show();
+		if (wait_delay (0))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
 	}
+
+	// Set new music
+	Audio::get_ptr()->start_music(ENDSCORE_XMI,2,false);
+	
+	// Set speech
+	
+	buffer = (uint8 *) speech2.retrieve(size);
+	Audio::get_ptr()->play (buffer+8, size-8, false);
+	FORGET_ARRAY(buffer);
+
+	message = "Damn you Avatar!  Damn you!";
+	width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
+
+	for (i = 0; i < 100; i++)
+	{
+		next = fli2.play(win, i, i, next);
+		endfont2->draw_text(ibuf, width, height, message);
+		
+		win->show();
+		if (wait_delay (0))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
+	}
+
+
+	Palette *pal = fli2.get_palette();
+	next = SDL_GetTicks();
+	for (i = 1000 + next; next < i; next += 10)
+	{
+		// Speed related frame skipping detection
+		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
+		while (SDL_GetTicks() < next)
+			;
+		if (!skip_frame)
+		{
+			pal->set_brightness ((i - next) / 10);
+			pal->apply();
+		}
+		if (wait_delay (0))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
+	}
+
+	// Text message 1
+
+	// Paint backgound black
+	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+	// Paint text
+	message = "The Black Gate is destroyed.";
+	width = (gwin->get_width() - normal->get_text_width(message)) / 2;
+	height = (gwin->get_height() - normal->get_text_height()) / 2;
+	
+	normal->draw_text (ibuf, width, height, message);
+
+	// Fade in for 1 sec (50 cycles)
+	gwin->fade_palette (50, 1, 0);
+
+	// Display text for 3 seconds
+	for (i = 0; i < 30; i++)
+	{
+		if (wait_delay (100))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
+	}
+
+	// Fade out for 1 sec (50 cycles)
+	gwin->fade_palette (50, 0, 0);
+
+	
+	// Now the second text message
+
+
+	// Paint backgound black
+	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+	// Paint text
+	message = "The Guardian has been stopped.";
+	width = (gwin->get_width() - normal->get_text_width(message)) / 2;
+
+	normal->draw_text (ibuf, width, height, message);
+
+	// Fade in for 1 sec (50 cycles)
+	gwin->fade_palette (50, 1, 0);
+
+	// Display text for approx 3 seonds
+	for (i = 0; i < 30; i++)
+	{
+		if (wait_delay (100))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
+	}
+
+	// Fade out for 1 sec (50 cycles)
+	gwin->fade_palette (50, 0, 0);
+
+	next = fli3.play(win, 0, 0, next);
+	pal = fli3.get_palette();
+	next = SDL_GetTicks();
+	for (i = 1000 + next; next < i; next += 10)
+	{
+		// Speed related frame skipping detection
+		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
+		while (SDL_GetTicks() < next)
+			;
+		if (!skip_frame)
+		{
+			pal->set_brightness (100 - (i-next) / 10);
+			pal->apply();
+		}
+		if (wait_delay (0))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
+	}
+	
+	buffer = (uint8 *) speech3.retrieve(size);
+	Audio::get_ptr()->play (buffer+8, size-8, false);
+	FORGET_ARRAY(buffer);
+
+	playfli::fliinfo finfo;
+	fli3.info (&finfo);
+	
+	int	m;
+	const char *txt_screen0[] = {
+		"Avatar! You think you have won>",
+		"Think again! You are unable to",
+		"leave britannia, whereas I am free",
+		"to enter other worlds",
+		"Perhaps your puny Earth shall be",
+		"my NEXT target!."
+	};
+
+	starty = (gwin->get_height() - endfont3->get_text_height()*8)/2;
+
+	next = SDL_GetTicks();
+	for (i = next+28000; i > next; )
+	{
+		for (j = 0; j < finfo.frames; j++)
+		{
+			next = fli3.play(win, j, j, next);
+			for(m=0; m<6; m++)
+				endfont3->center_text(ibuf, centerx, starty+endfont3->get_text_height()*m, txt_screen0[m]);
+
+			win->show ();
+			if (wait_delay (10))
+			{
+				gwin->clear_screen(true);
+				FORGET_ARRAY(fli_b[0]);
+				FORGET_ARRAY(fli_b[1]);
+				FORGET_ARRAY(fli_b[2]);
+				return;
+			}
+		}
+	}
+
+	
+	next = SDL_GetTicks();
+	for (i = 1000 + next; next < i; next += 10)
+	{
+		// Speed related frame skipping detection
+		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
+		while (SDL_GetTicks() < next)
+			;
+		if (!skip_frame)
+		{
+			pal->set_brightness ((i - next) / 10);
+			pal->apply();
+		}
+		if (wait_delay (0))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
+	}
+
+	// Text Screen 1
+
+	// Paint backgound black
+	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+
+	const char *txt_screen1[] = {
+		"In the months following the climactic",
+		"battle at The Black Gate, Britannia",
+		"is set upon the long road to recovery",
+		"from its various plights.",
+		" ",
+		"Upon your return to Britain,",
+		"Lord British decreed that",
+		"The Fellowship be outlawed",
+		"and all of the branches were",
+		"soon destroyed."
+	};
+
+	starty = (gwin->get_height() - normal->get_text_height()*10)/2;
+	
+	for(i=0; i<10; i++)
+		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen1[i])/2, starty+normal->get_text_height()*i, txt_screen1[i]);
+
+	// Fade in for 1 sec (50 cycles)
+	gwin->fade_palette (50, 1, 0);
+
+	// Display text for 20 seonds (only 10 at the moment)
+	for (i = 0; i < 100; i++)
+	{
+		if (wait_delay (100))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
+	}
+
+	// Fade out for 1 sec (50 cycles)
+	gwin->fade_palette (50, 0, 0);
+
+	if (wait_delay (10))
+	{
+		gwin->clear_screen(true);
+		FORGET_ARRAY(fli_b[0]);
+		FORGET_ARRAY(fli_b[1]);
+		FORGET_ARRAY(fli_b[2]);
+		return;
+	}
+
+	// Text Screen 2
+
+	// Paint backgound black
+	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+	const char *txt_screen2[] = {
+		"The frustration you feel at having been",
+		"stranded in Britannia is somewhat",
+		"alleviated by the satisfaction that you",
+		"solved the gruesome murders committed",
+		"by The Fellowship and even avenged the",
+		"death of Spark's father."
+	};
+
+	starty = (gwin->get_height() - normal->get_text_height()*6)/2;
+	
+	for(i=0; i<6; i++)
+		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen2[i])/2, starty+normal->get_text_height()*i, txt_screen2[i]);
+
+
+	// Fade in for 1 sec (50 cycles)
+	gwin->fade_palette (50, 1, 0);
+
+	// Display text for 20 seonds (only 8 at the moment)
+	for (i = 0; i < 80; i++)
+	{
+		if (wait_delay (100))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
+	}
+
+	// Fade out for 1 sec (50 cycles)
+	gwin->fade_palette (50, 0, 0);
+
+
+	if (wait_delay (10))
+	{
+		gwin->clear_screen(true);
+		FORGET_ARRAY(fli_b[0]);
+		FORGET_ARRAY(fli_b[1]);
+		FORGET_ARRAY(fli_b[2]);
+		return;
+	}
+
+
+	// Text Screen 3 
+
+	// Paint backgound black
+	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+	const char *txt_screen3[] = {
+		"And although you are, at the moment,",
+		"helpless to do anything about",
+		"The Guardian's final threat,",
+		"another thought nags at you...",
+		"what became of Batlin, the fiend",
+		"who got away?"
+	};
+
+	starty = (gwin->get_height() - normal->get_text_height()*6)/2;
+	
+	for(i=0; i<6; i++)
+		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen3[i])/2, starty+normal->get_text_height()*i, txt_screen3[i]);
+
+	// Fade in for 1 sec (50 cycles)
+	gwin->fade_palette (50, 1, 0);
+
+	// Display text for 20 seonds (only 8 at the moment)
+	for (i = 0; i < 80; i++)
+	{
+		if (wait_delay (100))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
+	}
+
+	// Fade out for 1 sec (50 cycles)
+	gwin->fade_palette (50, 0, 0);
+
+
+	if (wait_delay (10))
+	{
+		gwin->clear_screen(true);
+		FORGET_ARRAY(fli_b[0]);
+		FORGET_ARRAY(fli_b[1]);
+		FORGET_ARRAY(fli_b[2]);
+		return;
+	}
+
+
+	// Text Screen 4
+
+	// Paint backgound black
+	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+	const char *txt_screen4[] = {
+		"That is another story...", 
+		"one that will take you",
+		"to a place called",
+		"The Serpent Isle..."
+	};
+
+	starty = (gwin->get_height() - normal->get_text_height()*4)/2;
+	
+	for(i=0; i<4; i++)
+		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen4[i])/2, starty+normal->get_text_height()*i, txt_screen4[i]);
+
+
+	// Fade in for 1 sec (50 cycles)
+	gwin->fade_palette (50, 1, 0);
+
+	// Display text for 10 seonds (only 5 at the moment)
+	for (i = 0; i < 50; i++)
+	{
+		if (wait_delay (100))
+		{
+			gwin->clear_screen(true);
+			FORGET_ARRAY(fli_b[0]);
+			FORGET_ARRAY(fli_b[1]);
+			FORGET_ARRAY(fli_b[2]);
+			return;
+		}
+	}
+
+	// Fade out for 1 sec (50 cycles)
+	gwin->fade_palette (50, 0, 0);
+
 
 	gwin->clear_screen(true);
-	FORGET_ARRAY(buffer);
 	FORGET_ARRAY(fli_b[0]);
 	FORGET_ARRAY(fli_b[1]);
 	FORGET_ARRAY(fli_b[2]);
@@ -1361,9 +1461,9 @@ void BG_Game::show_quotes()
 			fontManager.get_font("MENU_FONT"),
 			menushapes.extract_shape(0x14)
 			);
-	gwin->get_pal()->load("<STATIC>/intropal.dat",6);
-	quotes.run(gwin);
-	gwin->get_pal()->load("<STATIC>/intropal.dat",0);
+	pal.load("<STATIC>/intropal.dat",6);
+	quotes.run(gwin,pal);
+	pal.load("<STATIC>/intropal.dat",0);
 }
 
 void BG_Game::show_credits()
@@ -1374,14 +1474,14 @@ void BG_Game::show_credits()
 			fontManager.get_font("MENU_FONT"),
 			menushapes.extract_shape(0x14)
 			);
-	gwin->get_pal()->load("<STATIC>/intropal.dat",6);
-	if(credits.run(gwin)) {	// Watched through the entire sequence?
+	pal.load("<STATIC>/intropal.dat",6);
+	if(credits.run(gwin,pal)) {	// Watched through the entire sequence?
 		std::ofstream quotesflg;
 		U7open(quotesflg, "<SAVEGAME>/quotes.flg");
 		quotesflg.close();
 	}
 		
-	gwin->get_pal()->load("<STATIC>/intropal.dat",0);
+	pal.load("<STATIC>/intropal.dat",0);
 }
 
 bool BG_Game::new_game(Vga_file &shapes)
@@ -1405,7 +1505,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 	int sex = 0;
 	int selected = 0;
 	int num_choices = 4;
-	gwin->get_pal()->load("<STATIC>/intropal.dat",6);
+	pal.load("<STATIC>/intropal.dat",6);
 	SDL_Event event;
 	bool editing = true;
 	bool redraw = true;
@@ -1415,39 +1515,39 @@ bool BG_Game::new_game(Vga_file &shapes)
 		if (redraw)
 		{
 			win->fill8(0,gwin->get_width(),90,0,menuy);
-			sman->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
+			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
 
 			Shape_frame *sex_shape = shapes.get_shape(0xA, selected==1?1:0);
-			sman->paint_shape(topx+10,menuy+25,sex_shape);
+			gwin->paint_shape(topx+10,menuy+25,sex_shape);
 			int sex_width = sex_shape->get_width()+10;
 			if (sex_width > 35) sex_width += 25; 
 			else sex_width = 60;
 
 			if (si_installed)
 			{
-				sman->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex%2));
+				gwin->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex%2));
 
 				if (sex >= 2)
 				{
-					sman->paint_shape(topx+250,menuy+10,faces_shape.get_frame(7-sex));
+					gwin->paint_shape(topx+250,menuy+10,faces_shape.get_frame(7-sex));
 				}
 				else
-					sman->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
+					gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
 			}
 			else
 			{
-				sman->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex));
-				sman->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
+				gwin->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex));
+				gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
 			}
 
-			sman->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
-			sman->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
+			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
+			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
 			if(selected==0)
 				snprintf(disp_name, max_name_len+2, "%s_", npc_name);
 			else
 				snprintf(disp_name, max_name_len+2, "%s", npc_name);
 			font->draw_text(ibuf, topx+60, menuy+10, disp_name);
-			gwin->get_pal()->apply();
+			pal.apply();
 			redraw = false;
 		}
 		SDL_WaitEvent(&event);
@@ -1580,7 +1680,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 		set_avskin(3-(sex/2));
 		set_avname (npc_name);
 		set_avsex (sex%2);
-		gwin->get_pal()->fade_out(c_fade_out_time);
+		pal.fade_out(c_fade_out_time);
 		gwin->clear_screen(true);	
 		ok =gwin->init_gamedat(true);
 	}

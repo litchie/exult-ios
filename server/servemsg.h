@@ -76,9 +76,6 @@ enum Msg_type
 	cut = 26,			// Cut/copy.
 	paste = 27,			// ... from clipboard.
 	select_status = 28,		// Flags:  selection, clipboard avail.
-	npc_info = 29,			// Get #NPC's, first unused.
-	edit_selected = 30,		// Edit selected object.
-	set_edit_chunknum = 31,		// Set chunk# to paint with.
 	usecode_debugging = 128
 	};
 

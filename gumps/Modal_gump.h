@@ -20,7 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _MODAL_GUMP_H_
 
 #include "Gump.h"
-#include "SDL_events.h"
 
 /*
  *	A modal gump object represents a 'dialog' that grabs the mouse until
@@ -58,9 +57,8 @@ public:
 		{  }
 	virtual void key_down(int chr) // Key pressed
 		{  }
-	virtual void text_input(int chr, int unicode) // Character typed (unicode)
-		{ }
-	virtual bool is_modal() const { return true; }
+    virtual void text_input(int chr, int unicode)	// Character typed
+        {  }
 };
 
 #endif

@@ -59,7 +59,6 @@ exult_SOURCES =	\
 	gamemap.cc	\
 	gamemap.h	\
 	gamerend.cc	\
-	gamerend.h	\
 	gamewin.cc	\
 	gamewin.h	\
 	hash_utils.h	\
@@ -93,7 +92,6 @@ exult_SOURCES =	\
 	shapeid.h	\
 	sigame.cc	\
 	sigame.h	\
-	singles.h	\
 	tiles.h		\
 	tqueue.cc	\
 	tqueue.h	\
@@ -112,18 +110,18 @@ EXULTLIBS = \
 	flic/libflic.la		\
 	conf/libconf.la		\
 	imagewin/libimagewin.la	\
-	server/libserver.la \
 	usecode/libusecode.la	\
 	shapes/libshapes.la \
 	objs/libobjs.la \
 	gumps/libgumps.la \
+	server/libserver.la \
 	files/libu7file.la \
 	files/zip/libminizip.la
 
 exult_LDADD = \
 	$(EXULTLIBS) \
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE) \
-	$(ZLIB_LIBS) $(OPENGL_LIBS)
+	$(ZLIB_LIBS)
 
 exult_DEPENDENCIES = $(ICON_FILE) $(EXULTLIBS)
 
@@ -141,9 +139,7 @@ EXTRA_DIST = 	\
 	README.MacOSX \
 	Makefile.win32 \
 	Makefile.be \
-	Makefile.common \
 	Makefile.studio.mingw \
-	Makefile.studio.win32 \
 	Makefile.MorphOS \
 	Info.plist.in \
 	exult.spec \
@@ -168,6 +164,7 @@ EXTRA_DIST = 	\
 	msvcstuff/Exult_flx.dsp \
 	msvcstuff/Exult_si_flx.dsp \
 	msvcstuff/Exult_Tools.dsp \
+	msvcstuff/find_nearby.h \
 	msvcstuff/Flexes.dsp \
 	msvcstuff/mklink.dsp \
 	msvcstuff/msvc_kludges.cc \

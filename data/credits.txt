@@ -46,7 +46,7 @@
 
 
 \CRyan "Colourless" Nunn
-\C<triforce@merlin.net.au>
+\C<colourles@users.sourceforge.net>
 \CXMIDI meister, endings, roof removalist,
 \CSI Intro, NPC flag IO, Avatar identity,
 \CBG Paperdolls, "Big Commits(tm)"
@@ -142,7 +142,7 @@
 \CFor making it easy to code together.
 
 \CJackchaos.com
-\CFor hosting the old Exult message board
+\CFor hosting the Exult message board
 
 \CTravis "Kirben" Howell
 \CFor making daily Windows binaries

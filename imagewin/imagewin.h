@@ -34,12 +34,6 @@ Boston, MA  02111-1307, USA.
 struct SDL_Surface;
 struct SDL_RWops;
 
-#ifdef HAVE_OPENGL
-#define IF_OPENGL(a,b) if (scaler == OpenGL) a; else b
-#else
-#define IF_OPENGL(a,b) b
-#endif
-
 /*
  *	Here's the top-level class to use for image buffers.  Image_window
  *	should be derived from it.
@@ -59,10 +53,9 @@ public:
 		SaI = 4,
 		SuperEagle = 5,
 		Super2xSaI = 6,
-		OpenGL = 7,
 
 		NoScaler = -1,
-		NumScalers = 8
+		NumScalers = 7
 	};
 	static const char *ScalerNames[];
 	static ScalerType get_scaler_for_name(const std::string &name);
@@ -105,7 +98,6 @@ protected:
 	void show_scaled8to555_BilinearPlus(int x, int y, int w, int h);
 	void show_scaled8to565_BilinearPlus(int x, int y, int w, int h);
 	void show_scaled8to32_BilinearPlus(int x, int y, int w, int h);	
-	void show_scaledOpenGL(int x, int y, int w, int h);
 	/*
 	 *	Image info.
 	 */
@@ -187,8 +179,7 @@ public:
 					// Fill rect. wth pixel.
 	void fill8(unsigned char val, int srcw, int srch,
 						int destx, int desty)
-		{ IF_OPENGL(opengl_fill8(val, srcw, srch, destx, desty),
-			ibuf->fill8(val, srcw, srch, destx, desty)); }
+		{ ibuf->fill8(val, srcw, srch, destx, desty); }
 					// Fill line with pixel.
 	void fill_line8(unsigned char val, int srcw,
 						int destx, int desty)
@@ -210,30 +201,19 @@ public:
 				first_translucent, last_translucent, xforms); }
 					// Apply translucency to a line.
 	void fill_line_translucent8(unsigned char val,
-			int srcw, int destx, int desty, Xform_palette& xform)
+			int srcw, int destx, int desty, Xform_palette xform)
 		{ ibuf->fill_line_translucent8(val, srcw, destx, desty,
 								xform); }
 					// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch, 
-				int destx, int desty, Xform_palette& xform)
-		{ IF_OPENGL(opengl_fill_translucent8(val, srcw, srch,
-			destx, desty, xform), ibuf->fill_translucent8(val, 
-					srcw, srch, destx, desty, xform)); }
+				int destx, int desty, Xform_palette xform)
+		{ ibuf->fill_translucent8(val, 
+					srcw, srch, destx, desty, xform); }
 					// Copy rect. with transp. color.
 	void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty)
 		{ ibuf->copy_transparent8(src_pixels, srcw, srch,
 							destx, desty); }
-	/*
-	 *	OpenGL:
-	 */
-#ifdef HAVE_OPENGL
-					// Fill rect. wth pixel.
-	void opengl_fill8(unsigned char val, int srcw, int srch,
-						int destx, int desty);
-	virtual void opengl_fill_translucent8(unsigned char val, 
-	    int srcw, int srch, int destx, int desty, Xform_palette& xform);
-#endif
 	/*
 	 *	Depth-independent methods:
 	 */

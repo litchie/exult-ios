@@ -28,7 +28,6 @@ class CheatScreen;
 class Actor;
 class Game_object;
 class Tile_coord;
-class Effects_manager;
 
 class Cheat
 {
@@ -40,13 +39,11 @@ class Cheat
   void finish_init (void);
   enum Map_editor_mode {
 	move = 0,			// Normal dragging.
-	paint = 1,			// Left-mouse dragging paints shapes.
-	paint_chunks = 2,		// Left-dragging paints whole chunks.
-	combo_pick = 3			// Left-click adds item to combo.
+	paint = 1,			// Left-mouse dragging paints.
+	combo_pick = 2			// Left-click adds item to combo.
   };
 private:
   Game_window *gwin;
-  Effects_manager *eman;
   ShapeBrowser *browser;
   SoundTester *tester;
   CheatScreen *cscreen;
@@ -58,7 +55,6 @@ private:
   Map_editor_mode edit_mode;
   int  edit_lift;
   int  edit_shape, edit_frame;		// What to 'paint' with.
-  int  edit_chunknum;			// For painting with chunks.
   Game_object_vector selected;		// Selected objects (map-editing).
   Game_object_vector clipboard;		// Cut/copy/paste objects.
   bool infravision;
@@ -82,7 +78,6 @@ public:
   int  get_edit_lift(void) const { return edit_lift; }
   int  get_edit_shape(void) const { return edit_shape; }
   int  get_edit_frame(void) const { return edit_frame; }
-  int  get_edit_chunknum(void) const { return edit_chunknum; }
   bool in_infravision (void) const { return infravision; }
   bool in_pickpocket (void) const {return pickpocket; }
   bool in_hack_mover (void) const { return (hack_mover || map_editor); }
@@ -96,7 +91,6 @@ public:
   void set_edit_mode(Map_editor_mode md) { edit_mode = md; }
   void set_edit_lift(int lift);
   void set_edit_shape(int sh, int fr);
-  void set_edit_chunknum(int chnum) { edit_chunknum = chnum; }
   void set_map_editor (bool map) { map_editor = map; }
   void toggle_infravision (void);
   void set_infravision (bool infra) { infravision = infra; }

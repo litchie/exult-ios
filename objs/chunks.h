@@ -46,7 +46,7 @@ class Chunk_terrain;
  *	Data cached for a chunk to speed up processing, but which doesn't need
  *	to be saved to disk:
  */
-class Chunk_cache : public Game_singletons
+class Chunk_cache
 	{
 	Map_chunk *obj_list;
 	unsigned char setup_done;	// Already setup.
@@ -123,7 +123,7 @@ public:
  *	Game objects are stored in a list for each chunk, sorted from top-to-
  *	bottom, left-to-right.
  */
-class Map_chunk : public Game_singletons
+class Map_chunk
 	{
 	Chunk_terrain *terrain;		// Flat landscape tiles.
 	Object_list objects;		// ->first in list of all objs.  'Flat'
@@ -134,6 +134,8 @@ class Map_chunk : public Game_singletons
 	unsigned char from_below, from_right, from_below_right;
 	unsigned char ice_dungeon;	// For SI, chunk split into 4 quadrants
 	unsigned char *dungeon_levels;	// A 'dungeon' level value for each tile (4 bit).
+	Npc_actor *npcs;		// List of NPC's in this chunk.
+					//   (Managed by Npc_actor class.)
 	Chunk_cache *cache;		// Data for chunks near player.
 	unsigned char roof;		// 1 if a roof present.
 	unsigned char light_sources;	// # light sources in chunk.
@@ -168,6 +170,8 @@ public:
 		{ return cx; }
 	int get_cy() const
 		{ return cy; }
+	Npc_actor *get_npcs()		// Get ->first npc in chunk.
+		{ return npcs; }
 	int get_light_sources() const	// Get #lights.
 		{ return light_sources; }
 	ShapeID get_flat(int tilex, int tiley) const
@@ -207,8 +211,7 @@ public:
 					int max_drop, int max_rise = -1);
 					// Check absolute tile.
 	static int is_blocked(Tile_coord& tile, int height = 1,
-		const int move_flags = MOVE_ALL_TERRAIN, 
-				int max_drop = 1, int max_rise = -1);
+		const int move_flags = MOVE_ALL_TERRAIN, int max_drop = 1);
 					// Check for > 1x1 object.
 	static int is_blocked(int xtiles, int ytiles, int ztiles,
 			Tile_coord from, Tile_coord& to, const int move_flags,
@@ -257,11 +260,6 @@ public:
 		return ice_dungeon == 0x0F;//0 != ((ice_dungeon >> ( (tx>>3) + 2*(ty>>3) ) )&1);
 		}
 
-					// Kill the items and the cache
-	void kill_cache();
-					// Get all objects and actors for use when writing memory cache.
-					// returns size require to save
-	int get_obj_actors(Game_object_vector &removes, Actor_vector &actors);
 
 	};
 

@@ -64,6 +64,8 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
 	GtkWidget *fspin;		// Spin button for frame #.
+	GtkWidget *shape_vscroll;	// Vertical scrollbar.
+	GtkWidget *shape_hscroll;	// Horizontal scrollbar.
 	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
 	int index0;			// Index of top-leftmost in
 					//   displayed list.
@@ -97,7 +99,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void goto_index(int index);	// Get desired index in view.
 	virtual int get_selected_id()
 		{ return selected < 0 ? -1 : info[selected].shapenum; }
-	void scroll_vertical(int newindex);	// Scroll.
+	void vscroll(int newindex);	// Scroll.
 	void adjust_vscrollbar();	// Set new scroll amounts.
 	void adjust_hscrollbar(int newmax);
 	virtual GtkWidget *create_popup();	// Popup menu.
@@ -129,7 +131,8 @@ public:
 		return (1);
 		}
 					// Configure when created/resized.
-	gint configure(GdkEventConfigure *event);
+	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
+							gpointer data);
 					// Blit to screen.
 	static gint expose(GtkWidget *widget, GdkEventExpose *event,
 							gpointer data);

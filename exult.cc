@@ -79,9 +79,6 @@
 #include "utils.h"
 #include "version.h"
 #include "u7drag.h"
-#include "drag.h"
-#include "palette.h"
-#include "glshape.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
@@ -155,7 +152,7 @@ static class Windnd *windnd = 0;
 static int exult_main(const char *);
 static void Init();
 static int Play();
-static int Get_click(int& x, int& y, char *chr, bool drag_ok, Paintable *p);
+static int Get_click(int& x, int& y, char *chr, bool drag_ok);
 static int find_resolution(int w, int h, int s);
 static void set_resolution (int new_res, bool save);
 #ifdef USE_EXULTSTUDIO
@@ -176,6 +173,7 @@ static void Handle_event(SDL_Event& event);
 /*
  *	Statics:
  */
+static bool show_mouse = true;		// display mouse in main loop?
 static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
 static bool run_bg = false;		// skip menu and run bg
@@ -184,7 +182,6 @@ static bool run_si = false;		// skip menu and run si
 static string arg_gamename = "default";	// cmdline arguments
 static string arg_configfile = "";
 static int arg_buildmap = -1;
-static 	bool arg_nomenu = false;
 
 /*
  *	A handy breakpoint.
@@ -196,6 +193,7 @@ static void Breakpoint
 	{
 	return;
 	}
+
 
 #if (defined(XWIN) && HAVE_SIGNAL_H && HAVE_SYS_WAIT_H)
 
@@ -236,6 +234,7 @@ int main
 #endif
 
 
+
 	bool	needhelp=false;
 	bool	showversion=false;
 	int		result;
@@ -248,7 +247,6 @@ int main
 	parameters.declare("/h",&needhelp,true);
 	parameters.declare("--bg",&run_bg,true);
 	parameters.declare("--si",&run_si,true);
-	parameters.declare("--nomenu", &arg_nomenu, true);
 	parameters.declare("-v",&showversion,true);
 	parameters.declare("--version",&showversion,true);
 	parameters.declare("--game",&arg_gamename,"default");
@@ -262,13 +260,12 @@ int main
 	if(needhelp)
 	{
 		cerr << "Usage: exult [--help|-h] [-v|--version] [-c configfile]"<<endl
-			 << "             [--bg|--si] [--buildmap 0|1|2] [--nocrc]" << endl
-			 << "--help\t\tShow this information" << endl
+			 << "[--bg|--si] [--buildmap 0|1|2] [--nocrc]" << endl 
+			 <<	"--help\t\tShow this information" << endl
 			 << "--version\tShow version info" << endl
 			 << " -c configfile\tSpecify alternate config file" << endl
 			 << "--bg\t\tSkip menu and run Black Gate" << endl
 			 << "--si\t\tSkip menu and run Serpent Isle" << endl
-			 << "--nomenu\tSkip BG/SI game menu" << endl
 			 << "--buildmap\tCreate a fullsize map of the game world in u7map??.pcx" << endl
 			 << "\t\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl
 			 << "\t\tonly valid when used together with --bg or --si" << endl
@@ -319,7 +316,7 @@ int exult_main(const char *runpath)
 {
 	string data_path;
 
-	// output version info
+	//cout << "Exult V" << VERSION << "." << endl;
 	getVersionInfo(cout);
 
 	// Read in configuration file
@@ -564,7 +561,7 @@ void get_game_paths(const string &gametitle)
 	string patch_directory;
 	config->value(config_path.c_str(), patch_directory, "");
 	if (patch_directory != "")
-		add_system_path("<" + system_path_tag + "_PATCH>", patch_directory.c_str());
+		add_system_path("<" + system_path_tag + "_PATCH>", patch_directory);
 }
 
 /*
@@ -625,7 +622,7 @@ static void Init
 
 	bool disable_fades;
 	config->value("config/video/disable_fades", disable_fades, false);
-	gwin->get_pal()->set_fades_enabled(!disable_fades);
+	gwin->set_fades_enabled(!disable_fades);
 
 
 	if (arg_buildmap >= 0)
@@ -674,15 +671,13 @@ static void Init
 			mygame = exult_menu.run();
 		}
 		Game::create_game(mygame, title);
-
-		Audio::get_ptr()->Init_sfx();
 		
 					// Skip splash screen?
 		bool skip_splash;
 		config->value("config/gameplay/skip_splash", skip_splash);
 		if(!skip_splash) 
 			game->play_intro();
-	} while(!game->show_menu(arg_nomenu));
+	} while(!game->show_menu());
 	gwin->init_files();
 	gwin->read_gwin();
 	gwin->setup_game();		// This will start the scene.
@@ -745,7 +740,7 @@ static int Play()
  *	Add a shape while map-editing.
  */
 
-static void Paint_with_shape
+static void Drop_in_map_editor
 	(
 	SDL_Event& event,
 	bool dragging			// Painting terrain.
@@ -780,31 +775,6 @@ static void Paint_with_shape
 	else
 		frnum = cheat.get_edit_frame();
 	Drop_dragged_shape(shnum, frnum, event.button.x, event.button.y, 0);
-	}
-
-/*
- *	Set a complete chunk while map-editing.
- */
-
-static void Paint_with_chunk
-	(
-	SDL_Event& event,
-	bool dragging			// Painting terrain.
-	)
-	{
-	static int lastcx = -1, lastcy = -1;
-	int scale = gwin->get_win()->get_scale();
-	int x = event.button.x/scale, y = event.button.y/scale;
-	int cx = (gwin->get_scrolltx() + x/c_tilesize)/c_tiles_per_chunk;
-	int cy = (gwin->get_scrollty() + y/c_tilesize)/c_tiles_per_chunk;
-	if (dragging)			// See if moving to a new chunk.
-		{
-		if (cx == lastcx && cy == lastcy)
-			return;
-		}
-	lastcx = cx; lastcy = cy;
-	int chnum = cheat.get_edit_chunknum();
-	Drop_dragged_chunk(chnum, event.button.x, event.button.y, 0);
 	}
 #endif
 
@@ -846,40 +816,32 @@ static void Handle_events
 					// Animate unless dormant.
 		if (gwin->have_focus() && !dragging)
 			gwin->get_tqueue()->activate(ticks);
-
-		// Moved this out of the animation loop, since we want movement to be
-		// more responsive
-		if (!gwin->is_moving())
-			{
-			int x, y;// Check for 'stuck' Avatar.
-			int ms = SDL_GetMouseState(&x, &y);
-			if (SDL_BUTTON(3) & ms)
-				gwin->start_actor(x/scale, y/scale, 
-					Mouse::mouse->avatar_speed);
-			else 
-				gwin->get_main_actor()->resting(50);
-			}
-
 					// Show animation every 1/20 sec.
 		if (ticks > last_repaint + 50 || gwin->was_painted())
 					// This avoids jumpy walking:
-			{		// OpenGL?  Repaint all each time.
-			if (GL_manager::get_instance())
-				gwin->paint();
-			else
-				gwin->paint_dirty();
+			{
+			gwin->paint_dirty();
 			while (ticks > last_repaint+50)last_repaint += 50;
 
+			int x, y;// Check for 'stuck' Avatar.
+			if (!gwin->is_moving() &&
+			    !((gwin->get_walk_after_teleport() && GAME_SI) ? false : gwin->was_teleported()))
+				{
+				int ms = SDL_GetMouseState(&x, &y);
+				if (SDL_BUTTON(3) & ms)
+					gwin->start_actor(x/scale, y/scale, 
+						Mouse::mouse->avatar_speed);
+				}
 			}
 
-		Mouse::mouse->show();	// Re-display mouse.
+		if (show_mouse)
+			Mouse::mouse->show();	// Re-display mouse.
 
 					// Rotate less often if scaling and 
 					//   not paletized.
 		int rot_speed = 100 << (gwin->get_win()->is_palettized() ||
 								scale==1?0:1);
-		if (ticks > last_rotate + rot_speed &&
-		    !GL_manager::get_instance())	//++++Disable in OGL.
+		if (ticks > last_rotate + rot_speed)
 			{		// (Blits in simulated 8-bit mode.)
 			gwin->get_win()->rotate_colors(0xf8, 4, 0);
 			gwin->get_win()->rotate_colors(0xf4, 4, 0);
@@ -937,13 +899,7 @@ static void Handle_event
 			    	    (cheat.get_edit_mode() == Cheat::paint ||
 					(SDL_GetModState() & KMOD_SHIFT)))
 					{
-					Paint_with_shape(event, false);
-					break;
-					}
-				else if (cheat.get_edit_chunknum() >= 0 &&
-				  cheat.get_edit_mode() == Cheat::paint_chunks)
-					{
-					Paint_with_chunk(event, false);
+					Drop_in_map_editor(event, false);
 					break;
 					}
 					// Don't drag if not in 'move' mode.
@@ -1005,7 +961,7 @@ static void Handle_event
 			{
 			uint32 curtime = SDL_GetTicks();
 					// Last click within .5 secs?
-			if (gwin->get_allow_double_right_move() && curtime - last_b3_click < 500)
+			if (curtime - last_b3_click < 500)
 				gwin->start_actor_along_path(x, y,
 						Mouse::mouse->avatar_speed);
 			else if (right_on_gump && 
@@ -1038,7 +994,6 @@ static void Handle_event
 				}
 			if (!dragging || !dragged)
 				last_b1_click = curtime;
-
 			if (!click_handled) {
 					// Identify item(s) clicked on.
 				gwin->show_items(x, y, 
@@ -1060,28 +1015,22 @@ static void Handle_event
 		if (event.motion.state & SDL_BUTTON(1))
 			{
 #ifdef USE_EXULTSTUDIO			// Painting?
-			if (cheat.in_map_editor())
-				{ 
-				if (cheat.get_edit_shape() >= 0 &&
-				    (cheat.get_edit_mode() == Cheat::paint ||
+			if (cheat.in_map_editor() && 
+			    cheat.get_edit_shape() >= 0 &&
+			    (cheat.get_edit_mode() == Cheat::paint ||
 					(SDL_GetModState() & KMOD_SHIFT)))
-					{
-					Paint_with_shape(event, true);
-					break;
-					}
-				else if (cheat.get_edit_chunknum() >= 0 &&
-				  cheat.get_edit_mode() == Cheat::paint_chunks)
-					{
-					Paint_with_chunk(event, true);
-					break;
-					}
+				{
+				Drop_in_map_editor(event, true);
+				break;
 				}
 #endif
 			dragged = gwin->drag(event.motion.x / scale, 
 						event.motion.y / scale);
 			}
 					// Dragging with right?
-		else if ((event.motion.state & SDL_BUTTON(3)))
+		else if ((event.motion.state & SDL_BUTTON(3)) &&
+					// But not right after teleport (if disabled).
+		    !((gwin->get_walk_after_teleport() && GAME_SI) ? false : gwin->was_teleported()))
 			gwin->start_actor(event.motion.x / scale, 
 			event.motion.y / scale, Mouse::mouse->avatar_speed);
 #ifdef USE_EXULTSTUDIO			// Painting?
@@ -1134,10 +1083,9 @@ static void Handle_event
 		break;
 #endif
 	case SDL_QUIT:
-		gwin->get_gump_man()->okay_to_quit();
+		Okay_to_quit();
 		break;
 	case SDL_KEYDOWN:		// Keystroke.
-	case SDL_KEYUP:
 		if (!dragging)		// ESC while dragging causes crashes.
 			keybinder->HandleEvent(event);
 		break;
@@ -1180,8 +1128,7 @@ static int Get_click
 	(
 	int& x, int& y,
 	char *chr,			// Char. returned if not null.
-	bool drag_ok,			// Okay to drag/close while here.
-	Paintable *paint		// Paint this each cycle if OpenGL.
+	bool drag_ok			// Okay to drag/close while here.
 	)
 	{
 	dragging = false;		// Init.
@@ -1190,8 +1137,6 @@ static int Get_click
 		SDL_Event event;
 		Delay();		// Wait a fraction of a second.
 
-		uint32 ticks = SDL_GetTicks();
-		Game::set_ticks(ticks);
 		Mouse::mouse->hide();		// Turn off mouse.
 		Mouse::mouse_update = false;
 
@@ -1219,10 +1164,10 @@ static int Get_click
 					{
 					x = event.button.x / scale;
 					y = event.button.y / scale;
-					bool drg = dragging, drged = dragged;
-					dragging = dragged = false;
+					bool drg = dragging;
+					dragging = false;
 					if (!drg ||
-					    !gwin->drop_dragged(x, y, drged))
+					    !gwin->drop_dragged(x, y, dragged))
 						{
 						if (chr) *chr = 0;
 						return (1);
@@ -1290,15 +1235,8 @@ static int Get_click
 						gwin->lose_focus();
 					}
 				}
-		if (GL_manager::get_instance())
-			{
-			gwin->paint();
-			if (paint)
-				paint->paint();
-			}
-		else if (dragging)
-			gwin->paint_dirty();
 		Mouse::mouse->show();		// Turn on mouse.
+
 		if (!gwin->show() &&	// Blit to screen if necessary.
 		    Mouse::mouse_update)
 			Mouse::mouse->blit_dirty();
@@ -1318,8 +1256,7 @@ int Get_click
 	int& x, int& y,			// Location returned (if not ESC).
 	Mouse::Mouse_shapes shape,	// Mouse shape to use.
 	char *chr,			// Char. returned if not null.
-	bool drag_ok,			// Okay to drag/close while here.
-	Paintable *paint		// Paint this over everything else.
+	bool drag_ok			// Okay to drag/close while here.
 	)
 	{
 	if (chr)
@@ -1327,11 +1264,9 @@ int Get_click
 	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		Mouse::mouse->set_shape(shape);
-	if (paint)
-		paint->paint();
 	Mouse::mouse->show();
 	gwin->show(1);			// Want to see new mouse.
-	int ret = Get_click(x, y, chr, drag_ok, paint);
+	int ret = Get_click(x, y, chr, drag_ok);
 	Mouse::mouse->set_shape(saveshape);
 	return (ret);
 	}
@@ -1493,8 +1428,8 @@ void Wizard_eye
 			int sw = spr->get_width(), sh = spr->get_height();
 			int topx = (w - sw)/2,
 			    topy = (h - sh)/2;
-			eye.paint_shape(topx + spr->get_xleft(),
-					topy + spr->get_yabove());
+			gwin->paint_shape(topx + spr->get_xleft(),
+					topy + spr->get_yabove(), eye);
 			if (topy > 0)	// Black-fill area around sprite.
 				{
 				gwin->get_win()->fill8(0, w, topy, 0, 0);
@@ -1583,7 +1518,6 @@ void make_screenshot (bool silent)
 	int i;
 	FILE *f;
 	bool namefound = false;
-	Effects_manager *eman = gwin->get_effects();
 
 	// look for the next available exult???.pcx file
 	for (i = 0; i < 1000 && !namefound; i++) {
@@ -1597,15 +1531,15 @@ void make_screenshot (bool silent)
 	}
 
 	if (!namefound) {
-		if (!silent) eman->center_text("Too many screenshots");
+		if (!silent) gwin->center_text("Too many screenshots");
 	} else {
 		SDL_RWops *dst = SDL_RWFromFile(fn, "wb");
 
 		if (gwin->get_win()->screenshot(dst)) {
 			cout << "Screenshot saved in " << fn << endl;
-			if (!silent) eman->center_text("Screenshot");
+			if (!silent) gwin->center_text("Screenshot");
 		} else {
-			if (!silent) eman->center_text("Screenshot failed");
+			if (!silent) gwin->center_text("Screenshot failed");
 		}
 	}	
 }
@@ -1617,7 +1551,7 @@ void change_gamma (bool down)
 	float delta = down?0.05:-0.05;
 	Image_window8::get_gamma(r, g, b);	
 	Image_window8::set_gamma(r+delta, g+delta, b+delta);	
-	gwin->get_pal()->set(-1, -1);
+	gwin->set_palette (-1, -1);
 
 	// Message
 #ifdef HAVE_SNPRINTF
@@ -1626,7 +1560,7 @@ void change_gamma (bool down)
 #else
 	strncpy (text, "Gamma Changed", 256);
 #endif
-	gwin->get_effects()->center_text(text);	
+	gwin->center_text(text);	
 
 	int igam = (int) ((r*10000)+0.5);
 	snprintf (text, 256, "%d.%04d", igam/10000, igam%10000);
@@ -1674,7 +1608,7 @@ void BuildGameMap()
 		Game::create_game(gametype);
 		gwin->init_files(false); //init, but don't show plasma	
 		gwin->get_map()->init();// +++++Got to clean this up.
-		gwin->get_pal()->set(0);
+		gwin->set_palette(0);
 		for (int x = 0; x < c_num_chunks / c_chunks_per_schunk; x++) {
 			for (int y = 0; y < c_num_chunks / c_chunks_per_schunk; y++) {
 				gwin->paint_map_at_tile(0,0,w,h,x * c_tiles_per_schunk, y * c_tiles_per_schunk, maplift);
@@ -1741,8 +1675,7 @@ static void Move_grid
 	tx -= xtiles - 1;		// Get top-left of footprint.
 	ty -= ytiles - 1;
 					// Let's try a green outline.
-	int pix = Shape_manager::get_instance()->get_special_pixel(
-								POISON_PIXEL);
+	int pix = gwin->get_poison_pixel();
 	Image_window8 *win = gwin->get_win();
 	win->set_clip(0, 0, win->get_width(), win->get_height());
 	for (int Y = 0; Y <= ytiles; Y++)
@@ -1774,7 +1707,7 @@ static void Move_dragged_shape
 		gwin->set_all_dirty();
 		return;
 		}
-	Shape_info& info = ShapeID::get_info(shape);
+	Shape_info& info = gwin->get_info(shape);
 					// Get footprint in tiles.
 	int xtiles = info.get_3d_xtiles(frame),
 	    ytiles = info.get_3d_ytiles(frame);
@@ -1817,7 +1750,7 @@ static Game_object *Create_object
 	bool& ireg			// Rets. TRUE if ireg (moveable).
 	)
 	{
-	Shape_info& info = ShapeID::get_info(shape);
+	Shape_info& info = gwin->get_info(shape);
 	int sclass = info.get_shape_class();
 					// Is it an ireg (changeable) obj?
 	ireg = (sclass != Shape_info::unusable &&
@@ -1856,7 +1789,7 @@ static void Drop_dragged_shape
 		int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles;
 		int ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
 		int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
-		Map_chunk *chunk = gwin->get_map()->get_chunk(cx, cy);
+		Map_chunk *chunk = gwin->get_chunk(cx, cy);
 		Chunk_terrain *ter = chunk->get_terrain();
 		tx %= c_tiles_per_chunk; ty %= c_tiles_per_chunk;
 		ShapeID curid = ter->get_flat(tx, ty);
@@ -1876,10 +1809,6 @@ static void Drop_dragged_shape
 								endl;
 	bool ireg;			// Create object.
 	Game_object *newobj = Create_object(shape, frame, ireg);
-	Dragging_info drag(newobj);
-	drag.drop(x, y, true);		// (Dels if it fails.)
-
-#if 0
 					// First see if it's a gump.
 	Gump *on_gump = ireg ? gwin->get_gump_man()->find_gump(x, y) : 0;
 	if (on_gump)
@@ -1902,7 +1831,6 @@ static void Drop_dragged_shape
 				}
 		delete newobj;	// Failed.
 		}
-#endif
 	}
 
 /*
@@ -1970,7 +1898,7 @@ void Drop_dragged_combo
 			{
 			int cx = ntx/c_tiles_per_chunk, 
 			    cy = nty/c_tiles_per_chunk;
-			Map_chunk *chunk = gwin->get_map()->get_chunk(cx, cy);
+			Map_chunk *chunk = gwin->get_chunk(cx, cy);
 			Chunk_terrain *ter = chunk->get_terrain();
 			ntx %= c_tiles_per_chunk; nty %= c_tiles_per_chunk;
 			ter->set_flat(ntx, nty, sid);

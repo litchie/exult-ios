@@ -19,18 +19,15 @@
 #ifndef SHAPEID_H
 #define SHAPEID_H	1
 
-#include "exult_constants.h"
-#include "shapevga.h"
-#include "singles.h"
+/*
+ *	A shape ID contains a shape # and a frame # within the shape encoded
+ *	as a 2-byte quantity.
+ */
 
 class Shape_frame;
-class Shape_info;
-class Fonts_vga_file;
-class Font;
-class Image_buffer8;
 
 enum ShapeFile {
-	SF_SHAPES_VGA = 0,	// <STATIC>/shapes.vga.  MUST be first.
+	SF_SHAPES_VGA = 0,	// <STATIC>/shapes.vga
 	SF_GUMPS_VGA,		// <STATIC>/gumps.vga
 	SF_PAPERDOL_VGA,	// <STATIC>/paperdol.vga
 	SF_SPRITES_VGA,		// <STATIC>/sprites.vga
@@ -42,109 +39,10 @@ enum ShapeFile {
 	// Not yet
 	//SF_FONTS_VGA,		// <STATIC>/fonts.vga
 
-	SF_OTHER,		// Other unknown FLX
-	SF_COUNT		// # of preceding entries.
+	SF_OTHER		// Other unknown FLX
 };
 
-					// Special pixels.
-enum Pixel_colors {POISON_PIXEL = 0, PROTECT_PIXEL, CURSED_PIXEL, HIT_PIXEL,
-			NPIXCOLORS};
-
-/*
- *	Manage the set of shape files.
- */
-class Shape_manager : public Game_singletons
-	{
-	static Shape_manager *instance;	// There shall be only one.
-	Shapes_vga_file shapes;		// Main 'shapes.vga' file.
-	Vga_file files[(int) SF_COUNT];	// The files we manage.
-	Fonts_vga_file *fonts;		// "fonts.vga" file.
-	Xform_palette xforms[11];	// Transforms translucent colors
-					//   0xf4 through 0xfe.
-	Xform_palette *invis_xform;	// For showing invisible NPC's.
-	unsigned char special_pixels[NPIXCOLORS];	// Special colors.
-	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
-					//   is found when playing BG
-	bool bg_paperdolls;		// True if paperdolls are wanted in BG
-	bool bg_multiracial_allowed;	// Set true if the SI shapes file 
-					//   is found when playing BG
-public:
-	friend class ShapeID;
-	Shape_manager();
-	~Shape_manager();
-	static Shape_manager *get_instance()
-		{ return instance; }
-	void load();			// Read in files.
-	void reload_shapes(int dragtype);	// Reload a shape file.
-	Vga_file& get_file(enum ShapeFile f)
-		{ return files[(int) f]; };
-	Shapes_vga_file& get_shapes()
-		{ return shapes; }
-	inline Xform_palette& get_xform(int i)
-		{ return xforms[i]; }
-	// BG Only
-	inline bool can_use_paperdolls() const
-	{ return bg_paperdolls_allowed; }
-
-	inline bool get_bg_paperdolls() const
-	{ return bg_paperdolls; }
-
-	inline void set_bg_paperdolls(bool p)
-	{ bg_paperdolls = p; }
-
-	inline bool can_use_multiracial() const
-	{ return bg_multiracial_allowed; }
-
-					// Paint shape in window.
-	void paint_shape(int xoff, int yoff, Shape_frame *shape,
-						int translucent = 0)
-		{
-		if (!shape || !shape->data)
-			CERR("NULL SHAPE!!!");
-		else if (!shape->rle)
-			shape->paint(xoff, yoff);
-		else if (!translucent)
-			shape->paint_rle(xoff, yoff);
-		else
-			shape->paint_rle_translucent(xoff, yoff, xforms, 
-					sizeof(xforms)/sizeof(xforms[0]));
-		}
-
-	inline void paint_invisible(int xoff, int yoff, Shape_frame *shape)
-		{
-		if (shape) shape->paint_rle_transformed(
-						xoff, yoff, *invis_xform);
-		}
-					// Paint outline around a shape.
-	inline void paint_outline(int xoff, int yoff, Shape_frame *shape, 
-							Pixel_colors pix)
-		{
-		if (shape) shape->paint_rle_outline(
-					xoff, yoff, special_pixels[(int) pix]);
-		}
-	unsigned char get_special_pixel(Pixel_colors pix)
-		{ return special_pixels[(int) pix]; }
-
-					// Paint text using "fonts.vga".
-	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
-		int h, int vert_lead = 0, int pbreak = 0, int shading = -1);
-	int paint_text(int fontnum, const char *text, int xoff, int yoff);
-	int paint_text(int fontnum, const char *text, int textlen, 
-							int xoff, int yoff);
-					// Get text width.
-	int get_text_width(int fontnum, const char *text);
-	int get_text_width(int fontnum, const char *text, int textlen);
-					// Get text height, baseline.
-	int get_text_height(int fontnum);
-	int get_text_baseline(int fontnum);
-	Font *get_font(int fontnum);
-	};
-
-/*
- *	A shape ID contains a shape # and a frame # within the shape encoded
- *	as a 2-byte quantity.
- */
-class ShapeID : public Game_singletons
+class ShapeID
 	{
 	short shapenum;			// Shape #.
 	char framenum;			// Frame # within shape.
@@ -211,30 +109,7 @@ public:
 	void set_file(ShapeFile shfile)	// Set to new flex
 		{ shapefile = shfile; shape = 0; }
 
-	void paint_shape(int xoff, int yoff, bool force_trans = false)
-		{
-		sman->paint_shape(xoff, yoff, get_shape(), 
-						has_trans || force_trans);
-		}
-	void paint_invisible(int xoff, int yoff)
-		{ sman->paint_invisible(xoff, yoff, get_shape()); }
-					// Paint outline around a shape.
-	inline void paint_outline(int xoff, int yoff, Pixel_colors pix)
-		{ sman->paint_outline(xoff, yoff, get_shape(), pix); }
 	int get_num_frames() const;
-	Shape_info& get_info() const	// Get info. about shape.
-		{ return Shape_manager::instance->shapes.get_info(shapenum); }
-	static Shape_info& get_info(int shnum)	// Get info. about shape.
-		{ return Shape_manager::instance->shapes.get_info(shnum); }
-	};
-
-/*
- *	An interface used in Get_click():
- */
-class Paintable
-	{
-public:
-	virtual void paint() = 0;
 	};
 
 #endif

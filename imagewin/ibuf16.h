@@ -118,11 +118,11 @@ public:
 		{ copy_line8(src_pixels, srcw, destx, desty); }
 					// Apply translucency to a line.
 	virtual void fill_line_translucent8(unsigned char val,
-			int srcw, int destx, int desty, Xform_palette& xform)
+			int srcw, int destx, int desty, Xform_palette xform)
 		{ fill_line8(val, srcw, destx, desty); }
 					// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch, 
-				int destx, int desty, Xform_palette& xform)
+				int destx, int desty, Xform_palette xform)
 		{ fill8(val, srcw, srcw, destx, desty); }
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,

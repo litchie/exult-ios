@@ -32,8 +32,6 @@
 #include "keyring.h"
 #include "utils.h"
 #include "Gump_manager.h"
-#include "databuf.h"
-#include "ucsched.h"
 
 using std::rand;
 using std::ostream;
@@ -98,7 +96,8 @@ bool Container_game_object::add
 
 	if (combine)			// Should we try to combine?
 		{
-		Shape_info& info = obj->get_info();
+		Game_window *gwin = Game_window::get_game_window();
+		Shape_info& info = gwin->get_info(obj->get_shapenum());
 		int quant = obj->get_quantity();
 					// Combine, but don't add.
 		int newquant = add_quantity(quant, obj->get_shapenum(),
@@ -160,7 +159,7 @@ static int Add2keyring
 	if (framenum >=21 && framenum <= 23)
 		return 0;		// Fire, ice, blackrock in SI.
 	Keyring *ring = 
-		Game_window::get_instance()->get_usecode()->getKeyring();
+		Game_window::get_game_window()->get_usecode()->getKeyring();
 					// Valid quality & not already there?
 	if (qual != c_any_qual && !ring->checkkey(qual))
 		{
@@ -184,8 +183,8 @@ static bool Get_combine_info
 	bool& quantity_frame		// Rets. true if frame depends on quan.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = ShapeID::get_info(shapenum);
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(shapenum);
 	quantity_frame = false;
 	if (!info.has_quantity())
 		return false;
@@ -304,13 +303,15 @@ int Container_game_object::create_quantity
 					// Usecode container?
 	if (get_shapenum() == 486 && Game::get_game_type() == SERPENT_ISLE)
 		return delta;
-	Shape_info& shp_info = ShapeID::get_info(shnum);
+	Shape_info& shp_info=Game_window::get_game_window()->get_info(
+								shnum);
 	if (!shp_info.has_quality())	// Not a quality object?
 		qual = c_any_qual;	// Then don't set it.
 	while (delta)			// Create them here first.
 		{
-		Game_object *newobj = gmap->create_ireg_object(
-						shp_info, shnum, frnum,0,0,0);
+		Game_object *newobj = Game_window::get_game_window()->
+			create_ireg_object(shp_info, shnum, frnum,0,0,0);
+
 		if (!add(newobj))
 			{
 			delete newobj;
@@ -417,13 +418,14 @@ Game_object *Container_game_object::find_item
 
 void Container_game_object::activate
 	(
+	Usecode_machine *umachine,
 	int event
 	)
 	{
 	if (edit())
 		return;			// Map-editing.
 	int shnum = get_shapenum();
-	Gump_manager *gump_man = gumpman;
+	Gump_manager *gump_man = Game_window::get_game_window()->get_gump_man();
 
 	if (Game::get_game_type() == BLACK_GATE)  switch(shnum)	// Watch for gumps.
 	{
@@ -504,7 +506,7 @@ void Container_game_object::activate
 		case 800:			// Chest.
 		if (get_quality() >= 251)	// Trapped?
 			{		// Run normal usecode fun.
-			ucmachine->call_usecode(shnum, this,
+			umachine->call_usecode(shnum, this,
 				(Usecode_machine::Usecode_events) event);
 			return;
 			}
@@ -547,7 +549,7 @@ void Container_game_object::activate
 	}
 
 					// Try to run normal usecode fun.
-	ucmachine->call_usecode(shnum, this,
+	umachine->call_usecode(shnum, this,
 				(Usecode_machine::Usecode_events) event);
 	}
 
@@ -662,7 +664,7 @@ void Container_game_object::set_flag_recursively
 
 void Container_game_object::write_ireg
 	(
-	DataSource *out
+	ostream& out
 	)
 	{
 	unsigned char buf[13];		// 13-byte entry + length-byte.
@@ -689,38 +691,11 @@ void Container_game_object::write_ireg
 					// Flags:  B0=invis. B3=okay_to_take.
 	*ptr++ = get_flag((Obj_flags::invisible) != 0) +
 		 ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
-	out->write((char*)buf, sizeof(buf));
+	out.write((char*)buf, sizeof(buf));
 	write_contents(out);		// Write what's contained within.
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
-
-// Get size of IREG. Returns -1 if can't write to buffer
-int Container_game_object::get_ireg_size()
-{
-	// These shouldn't ever happen, but you never know
-	if (gumpman->find_gump(this) || Usecode_script::find(this))
-		return -1;
-
-	int total_size = 13;
-
-	// Now what's inside.
-	if (!objects.is_empty())
-	{
-		Game_object *obj;
-		Object_iterator next(objects);
-		while ((obj = next.get_next()) != 0) {
-			int size = obj->get_ireg_size();
-
-			if (size < 0) return -1;
-
-			total_size += size;
-		}
-		total_size += 1;
-	}
-
-	return total_size;
-}
 
 /*
  *	Write contents (if there is any).
@@ -728,7 +703,7 @@ int Container_game_object::get_ireg_size()
 
 void Container_game_object::write_contents
 	(
-	DataSource *out
+	ostream& out
 	)
 	{
 	if (!objects.is_empty())	// Now write out what's inside.
@@ -737,7 +712,7 @@ void Container_game_object::write_contents
 		Object_iterator next(objects);
 		while ((obj = next.get_next()) != 0)
 			obj->write_ireg(out);
-		out->write1(0x01);		// A 01 terminates the list.
+		out.put(0x01);		// A 01 terminates the list.
 		}
 	}
 

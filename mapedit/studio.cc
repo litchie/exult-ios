@@ -49,7 +49,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapevga.h"
 #include "Flex.h"
 #include "studio.h"
-// #include "dirbrowser.h"
+#include "dirbrowser.h"
 #include "utils.h"
 #include "u7drag.h"
 #include "shapegroup.h"
@@ -61,22 +61,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exceptions.h"
 #include "logo.xpm"
 #include "fnames.h"
-#include "execbox.h"
 
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::string;
 using std::vector;
-using std::ofstream;
 
 ExultStudio *ExultStudio::self = 0;
 Configuration *config = 0;
 const std::string c_empty_string;	// Used by config. library.
 
 					// Mode menu items:
-static char *mode_names[4] = {"move1", "paint1", "paint_with_chunks1", 
-							"pick_for_combo1"};
+static char *mode_names[3] = {"move1", "paint1", "pick_for_combo1"};
 
 enum ExultFileTypes {
 	ShapeArchive =1,
@@ -189,13 +186,6 @@ on_reload_usecode_menu_activate        (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
-on_compile_usecode_menu_activate       (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	ExultStudio::get_instance()->compile();
-}
-
-C_EXPORT void
 on_save_groups1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -242,24 +232,6 @@ on_paste1_activate                       (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
-on_properties1_activate                (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	unsigned char o = 0;		// 0=npc/egg properties.
-	ExultStudio::get_instance()->send_to_server(
-				Exult_server::edit_selected, &o, 1);
-}
-
-C_EXPORT void
-on_basic_properties1_activate          (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	unsigned char o = 1;		// 1=basic object properties.
-	ExultStudio::get_instance()->send_to_server(
-				Exult_server::edit_selected, &o, 1);
-}
-
-C_EXPORT void
 on_move1_activate	               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -277,19 +249,11 @@ on_paint1_activate	               (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
-on_paint_with_chunks1_activate         (GtkMenuItem     *menuitem,
-                                        gpointer         user_data)
-{
-	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
-		ExultStudio::get_instance()->set_edit_mode(2);
-}
-
-C_EXPORT void
 on_pick_for_combo1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
-		ExultStudio::get_instance()->set_edit_mode(3);
+		ExultStudio::get_instance()->set_edit_mode(2);
 }
 
 C_EXPORT void
@@ -344,8 +308,7 @@ on_edit_terrain_button_toggled		(GtkToggleButton *button,
 				gtk_toggle_button_get_active(button));
 }
 
-void on_choose_directory               (gchar *dir,
-					gpointer	user_data)
+void on_choose_directory               (gchar *dir)
 {
 	ExultStudio::get_instance()->set_game_path(dir);
 }
@@ -427,7 +390,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
-	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0)
+	equipwin(0), locwin(0), combowin(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -578,11 +541,6 @@ ExultStudio::~ExultStudio()
 	if (equipwin)
 		gtk_widget_destroy(equipwin);
 	equipwin = 0;
-	if (compilewin)
-		gtk_widget_destroy(compilewin);
-	compilewin = 0;
-	delete compile_box;
-	compile_box = 0;
 	if (locwin)
 		delete locwin;
 	if (combowin)
@@ -662,16 +620,13 @@ bool ExultStudio::has_focus
  */
 void ExultStudio::set_browser(const char *name, Object_browser *obj)
 {
-	GtkWidget *browser_frame = glade_xml_get_widget(app_xml, 
-							"browser_frame" );
-	GtkWidget *browser_box = glade_xml_get_widget(app_xml, "browser_box" );
-//+++Now owned by Shape_file_info.	delete browser;
-	if (browser)
-		gtk_container_remove(GTK_CONTAINER(browser_box),
-							browser->get_widget());
+	delete browser;
 	browser = obj;
 	
+	GtkWidget *browser_frame = glade_xml_get_widget( app_xml, "browser_frame" );
 	gtk_frame_set_label( GTK_FRAME( browser_frame ), name );
+	
+	GtkWidget *browser_box = glade_xml_get_widget( app_xml, "browser_box" );
 	gtk_widget_show( browser_box );
 	if (browser)
 		gtk_box_pack_start(GTK_BOX(browser_box), 
@@ -683,7 +638,7 @@ Object_browser *ExultStudio::create_browser(const char *fname)
 	curfile = open_shape_file(fname);
 	if (!curfile)
 		return 0;
-	Object_browser *chooser = curfile->get_browser(vgafile, palbuf);
+	Object_browser *chooser = curfile->create_browser(vgafile, palbuf);
 	setup_groups();			// Set up 'groups' page.
 	return chooser;
 }
@@ -800,7 +755,7 @@ void ExultStudio::create_new_game
 		closedir(dirrd);
 		}
 	set_game_path(dir);		// Open as current game.
-	write_shape_info(true);		// Create initial .dat files.
+	write_shape_info();		// Create initial .dat files.
 	}
 
 /*
@@ -843,7 +798,6 @@ void ExultStudio::choose_game_path()
 			return;
 			}
 		}
-#if 0
 	GtkWidget *dirbrowser = xmms_create_dir_browser(
 					"Select game directory",
 					cwd, GTK_SELECTION_SINGLE,
@@ -852,13 +806,6 @@ void ExultStudio::choose_game_path()
 		GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dirbrowser);
         gtk_window_set_transient_for(GTK_WINDOW(dirbrowser), GTK_WINDOW(app));
 	gtk_widget_show (dirbrowser);
-#else
-	GtkFileSelection *fsel = Create_file_selection(
-					"Select game directory",
-			(File_sel_okay_fun) on_choose_directory, 0L);
-	gtk_file_selection_set_filename(fsel, cwd);
-	gtk_widget_show(GTK_WIDGET(fsel));
-#endif
 	delete [] cwd;	// Prevent leakage
 }
 
@@ -998,7 +945,6 @@ void ExultStudio::set_game_path(const char *gamepath)
 		delete names[i];
 	names.resize(0);
 	delete files;			// Close old shape files.
-	browser = 0;			// This was owned by 'files'.
 	files = new Shape_file_set();
 	vgafile = open_shape_file("shapes.vga");
 	facefile = open_shape_file("faces.vga");
@@ -1120,10 +1066,10 @@ bool ExultStudio::need_to_save
 		int len = Exult_server::Receive_data(server_socket, 
 						id, data, sizeof(data));
 		unsigned char *ptr = &data[0];
-		int vers, edlift, hdlift, edmode;
+		int vers, npcs, edlift, hdlift, edmode;
 		bool editing, grid, mod;
 		if (id == Exult_server::info &&
-		    Game_info_in(data, len, vers, edlift, hdlift, 
+		    Game_info_in(data, len, vers, npcs, edlift, hdlift, 
 						editing, grid, mod, edmode) &&
 		    mod == true)
 			return true;
@@ -1159,10 +1105,9 @@ void ExultStudio::read_map
 
 void ExultStudio::write_shape_info
 	(
-	bool force			// If set, always write.
 	)
 	{
-	if ((force || shape_info_modified) && vgafile)
+	if (shape_info_modified && vgafile)
 		{
 		Shapes_vga_file *svga = 
 				(Shapes_vga_file *) vgafile->get_ifile();
@@ -1171,7 +1116,7 @@ void ExultStudio::write_shape_info
 		svga->write_info(false);//++++BG?
 		}
 	shape_info_modified = false;
-	if (force || shape_names_modified)
+	if (shape_names_modified)
 		{
 		shape_names_modified = false;
 		int cnt = names.size();
@@ -2312,9 +2257,9 @@ void ExultStudio::info_received
 	int len
 	)
 	{
-	int vers, edlift, hdlift, edmode;
+	int vers, npcs, edlift, hdlift, edmode;
 	bool editing, grid, mod;
-	Game_info_in(data, len, vers, edlift, hdlift, 
+	Game_info_in(data, len, vers, npcs, edlift, hdlift, 
 					editing, grid, mod, edmode);
 	if (vers != Exult_server::version)
 		{			// Wrong version of Exult.
@@ -2359,7 +2304,5 @@ void ExultStudio::set_edit_menu
 	set_sensitive("cut1", sel);
 	set_sensitive("copy1", sel);
 	set_sensitive("paste1", clip);
-	set_sensitive("properties1", sel);
-	set_sensitive("basic_properties1", sel);
 	}
 

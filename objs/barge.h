@@ -53,7 +53,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	void swap_dims();
 	void set_center();
 	int okay_to_rotate(Tile_coord pos);
-	void add_dirty();
+	void add_dirty(Game_window *gwin);
 					// Finish up move/rotate operation.
 	void finish_move(Tile_coord *positions);
 public:
@@ -90,7 +90,6 @@ public:
 		{ frame_time = 0; first_step = true; }
 	void done();			// No longer being operated.
 	int okay_to_land();		// See if clear to land.
-	virtual Barge_object *as_barge() { return this; }
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Move to new abs. location.
@@ -103,13 +102,11 @@ public:
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame = -1);
 					// Write out to IREG file.
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. Returns -1 if can't write to buffer
-	virtual int get_ireg_size();
+	virtual void write_ireg(std::ostream& out);
 	virtual void elements_read();	// Called when all member items read.
 	};
 

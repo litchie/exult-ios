@@ -25,6 +25,7 @@
 
 #include "SDL_events.h"
 
+#include "gump_utils.h"
 #include "Gump_manager.h"
 #include "Configuration.h"
 #include "Gump_button.h"
@@ -44,7 +45,7 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 4, 17, 134, 30, 43, 56, 69, 82, 95, 108, 121, 147 };
+static const int rowy[] = { 5, 18, 31, 44, 57, 70, 83, 96, 109, 122, 146 };
 static const int colx[] = { 35, 50, 120, 195, 192 };
 
 static const char* oktext = "OK";
@@ -68,15 +69,15 @@ public:
 		: Text_button(par, text, px, py, 59, 11)
 		{ }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
-void GameplayOptions_button::activate()
+void GameplayOptions_button::activate(Game_window *gwin)
 {
 	if (text == canceltext) {
 		((GameplayOptions_gump*)parent)->cancel();
 	} else if (text == oktext) {
-		((GameplayOptions_gump*)parent)->close();
+		((GameplayOptions_gump*)parent)->close(gwin);
 	}
 }
 
@@ -106,7 +107,7 @@ public:
 	}
 };	
 
-void GameplayOptions_gump::close()
+void GameplayOptions_gump::close(Game_window* gwin)
 {
 	save_settings();
 	done = 1;
@@ -133,18 +134,12 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 		paperdolls = state;
 	else if (btn == buttons[6])
 		text_bg = state;
-#if 0	/* ++++No longer needed */
 	else if (btn == buttons[7])
 		walk_after_teleport = state;
-#endif
 	else if (btn == buttons[8])
 		frames = state;
 	else if (btn == buttons[11])
 		rightclick_close = state;
-	else if (btn == buttons[12])
-		doubleright_move = state;
-	else if (btn == buttons[13])
-		gumps_pause = state;
 }
 
 void GameplayOptions_gump::build_buttons()
@@ -198,11 +193,9 @@ void GameplayOptions_gump::build_buttons()
 	if (GAME_BG)
 		buttons[5] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59,
 											   paperdolls);
-#if 0	/* ++++++Option no longer needed. */
 	else if (GAME_SI)
 		buttons[7] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59, 
 											   walk_after_teleport);
-#endif
 	buttons[1] = new GameplayEnabledToggle(this, colx[3], rowy[3],
 										   59, fastmouse);
 	buttons[2] = new GameplayEnabledToggle(this, colx[3], rowy[4],
@@ -211,31 +204,27 @@ void GameplayOptions_gump::build_buttons()
 										   59, doubleclick);
 	buttons[11] = new GameplayEnabledToggle(this, colx[3], rowy[6],
 										   59, rightclick_close);
-	buttons[12] = new GameplayEnabledToggle(this, colx[3], rowy[7],
-										   59, doubleright_move);
-	buttons[13] = new GameplayEnabledToggle(this, colx[3], rowy[8],
-										   59, gumps_pause);
-	buttons[4] = new GameplayEnabledToggle(this, colx[3], rowy[9],
+	buttons[4] = new GameplayEnabledToggle(this, colx[3], rowy[7],
 										   59, cheats);
-	buttons[8] = new GameplayTextToggle(this, frametext, colx[3], rowy[10], 
+	buttons[8] = new GameplayTextToggle(this, frametext, colx[3], rowy[8], 
 										59, frames, num_framerates);
 }
 
 void GameplayOptions_gump::load_settings()
 {
+	Game_window *gwin = Game_window::get_game_window();
 	fastmouse = gwin->get_fastmouse();
 	mouse3rd = gwin->get_mouse3rd();
+	walk_after_teleport = gwin->get_walk_after_teleport();
 	cheats = cheat();
 	facestats = Face_stats::get_state() + 1;
 	doubleclick = 0;
 	paperdolls = false;
 	string pdolls;
-	paperdolls = sman->get_bg_paperdolls();
+	paperdolls = gwin->get_bg_paperdolls();
 	doubleclick = gwin->get_double_click_closes_gumps();
-	rightclick_close = gumpman->can_right_click_close();
-	doubleright_move = gwin->get_allow_double_right_move();
+	rightclick_close = gwin->get_gump_man()->can_right_click_close();
 	text_bg = gwin->get_text_bg()+1;
-	gumps_pause = !gumpman->gumps_dont_pause_game();
 	int realframes = 1000/gwin->get_std_delay();
 	int i;
 
@@ -271,10 +260,10 @@ GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYO
 	build_buttons();
 
 	// Ok
-	buttons[9] = new GameplayOptions_button(this, oktext, colx[0], rowy[11]);
+	buttons[9] = new GameplayOptions_button(this, oktext, colx[0], rowy[10]);
 	// Cancel
 	buttons[10] = new GameplayOptions_button(this, canceltext, 
-											 colx[4], rowy[11]);
+											 colx[4], rowy[10]);
 }
 
 GameplayOptions_gump::~GameplayOptions_gump()
@@ -286,6 +275,7 @@ GameplayOptions_gump::~GameplayOptions_gump()
 
 void GameplayOptions_gump::save_settings()
 {
+	Game_window *gwin = Game_window::get_game_window();
 	gwin->set_text_bg(text_bg-1);
 	config->set("config/gameplay/textbackground", text_bg-1, true);
 	int fps = framerates[frames];
@@ -295,79 +285,75 @@ void GameplayOptions_gump::save_settings()
 	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", true);
 	gwin->set_mouse3rd(mouse3rd!=false);
 	config->set("config/gameplay/mouse3rd", mouse3rd ? "yes" : "no", true);
+	gwin->set_walk_after_teleport(walk_after_teleport!=false);
+	config->set("config/gameplay/walk_after_teleport", 
+				walk_after_teleport ? "yes" : "no", true);
 	gwin->set_double_click_closes_gumps(doubleclick!=false);
 	config->set("config/gameplay/double_click_closes_gumps", 
 				doubleclick ? "yes" : "no", true);
-	gumpman->set_right_click_close(rightclick_close!=false);
+	gwin->get_gump_man()->set_right_click_close(rightclick_close!=false);
 	config->set("config/gameplay/right_click_closes_gumps", 
 				rightclick_close ? "yes" : "no" , true);
 	cheat.set_enabled(cheats!=false);
 	while (facestats != Face_stats::get_state() + 1)
 		Face_stats::AdvanceState();
 	Face_stats::save_config(config);
-	if (GAME_BG && sman->can_use_paperdolls())
-		sman->set_bg_paperdolls(paperdolls!=false);
+	if (GAME_BG && gwin->can_use_paperdolls())
+		gwin->set_bg_paperdolls(paperdolls!=false);
 	config->set("config/gameplay/bg_paperdolls", 
 				paperdolls ? "yes" : "no", true);
-	gwin->set_allow_double_right_move(doubleright_move != false);
-	config->set("config/gameplay/allow_double_right_move", doubleright_move?"yes":"no", true);
-	gumpman->set_gumps_dont_pause_game(!gumps_pause);
-	config->set("config/gameplay/gumps_dont_pause_game", gumps_pause?"no":"yes", true);
-
 }
 
-void GameplayOptions_gump::paint()
+void GameplayOptions_gump::paint(Game_window* gwin)
 {
-	Gump::paint();
+	Gump::paint(gwin);
 	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		if (buttons[i])
-			buttons[i]->paint();
+			buttons[i]->paint(gwin);
 
-	sman->paint_text(2, "Status Bars:", x + colx[0], y + rowy[0] + 1);
-	sman->paint_text(2, "Text Background:", x + colx[0], y + rowy[1] + 1);
+	gwin->paint_text(2, "Status Bars:", x + colx[0], y + rowy[0] + 1);
+	gwin->paint_text(2, "Text Background:", x + colx[0], y + rowy[1] + 1);
 	if (GAME_BG)
-		sman->paint_text(2, "Paperdolls:", x + colx[0], y + rowy[2] + 1);
-#if 0
+		gwin->paint_text(2, "Paperdolls:", x + colx[0], y + rowy[2] + 1);
 	else if (GAME_SI)
-		sman->paint_text(2, "Walk after Teleport:", x + colx[0], y + rowy[2] + 1);
-#endif
-	sman->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[3] + 1);
-	sman->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
-	sman->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
-	sman->paint_text(2, "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
-	sman->paint_text(2, "Double Right Pathfinds:", x + colx[0], y + rowy[7] + 1);
-	sman->paint_text(2, "Gumps pause game:", x + colx[0], y + rowy[8] + 1);
-	sman->paint_text(2, "Cheats:", x + colx[0], y + rowy[9] + 1);
-	sman->paint_text(2, "Speed:", x + colx[0], y + rowy[10] + 1);
+		gwin->paint_text(2, "Walk after Teleport:", x + colx[0], y + rowy[2] + 1);
+	gwin->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[3] + 1);
+	gwin->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
+	gwin->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
+	gwin->paint_text(2, "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
+	gwin->paint_text(2, "Cheats:", x + colx[0], y + rowy[7] + 1);
+	gwin->paint_text(2, "Speed:", x + colx[0], y + rowy[8] + 1);
 	gwin->set_painted();
 }
 
 void GameplayOptions_gump::mouse_down(int mx, int my)
 {
-	pushed = Gump::on_button(mx, my);
+	Game_window *gwin = Game_window::get_game_window();
+	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
 	if (!pushed)
 		for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
-			if (buttons[i] && buttons[i]->on_button(mx, my)) {
+			if (buttons[i] && buttons[i]->on_button(gwin, mx, my)) {
 				pushed = buttons[i];
 				break;
 			}
 
 	if (pushed)			// On a button?
 	{
-		pushed->push();
+		pushed->push(gwin);
 		return;
 	}
 }
 
 void GameplayOptions_gump::mouse_up(int mx, int my)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush();
-		if (pushed->on_button(mx, my))
-			((Gump_button*)pushed)->activate();
+		pushed->unpush(gwin);
+		if (pushed->on_button(gwin, mx, my))
+			((Gump_button*)pushed)->activate(gwin);
 		pushed = 0;
 	}
 }

@@ -27,8 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "common_types.h"
 #include "U7file.h"
 
-class DataSource;
-
 
 class Flex : public U7file
 {
@@ -66,9 +64,9 @@ public:
    virtual	char *	retrieve(uint32 objnum,std::size_t &len); // To a memory block
 	virtual const char *get_archive_type() { return "FLEX"; };
 					// Write header for a Flex file.
-	static void write_header(DataSource* out, const char *title, int count);
+	static void write_header(std::ostream& out, const char *title, int count);
 
-	static bool is_flex(DataSource *in);
+	static bool is_flex(std::istream& in);
 	static bool is_flex(const char *fname);
 private:
 	Flex();	// No default constructor
@@ -87,7 +85,7 @@ class Flex_writer
 	uint8 *table;			// Table of offsets & lengths.
 	uint8 *tptr;			// ->into table.
 public:
-	Flex_writer(std::ofstream &o, const char *title, int cnt);
+	Flex_writer(std::ofstream& o, const char *title, int cnt);
 	~Flex_writer();
 	void mark_section_done();	// Finished writing out a section.
 	bool close();			// All done.

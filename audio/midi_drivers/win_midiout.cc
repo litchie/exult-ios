@@ -197,16 +197,11 @@ DWORD Windows_MidiOut::thread_main()
 	giveinfo();
 	if (mmsys_err != MMSYSERR_NOERROR)
 	{
-		TCHAR buf[512];
+		char buf[512];
 
 		giveinfo();
 		mciGetErrorString(mmsys_err, buf, 512);
-
-#ifdef UNICODE
-		std::wcerr << TEXT("Unable to open device: ") << buf << endl;
-#else
 		cerr << "Unable to open device: " << buf << endl;
-#endif
 		giveinfo();
 		InterlockedExchange (&thread_com, W32MO_THREAD_COM_INIT_FAILED);
 		giveinfo();

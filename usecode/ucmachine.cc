@@ -24,13 +24,14 @@
 #endif
 
 #include "ucmachine.h"
-#include "keyring.h"
 #include "conversation.h"
+#include "keyring.h"
 
 
 Usecode_machine::Usecode_machine
 	(
-	) : keyring(0), conv(0), party_count(0),
+	Game_window *gw
+	) : gwin(gw), call_depth(0), keyring(0), conv(0), party_count(0),
 	    dead_party_count(0)
 	{
 					// Clear global flags.

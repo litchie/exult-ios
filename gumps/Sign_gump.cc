@@ -40,7 +40,7 @@ Sign_gump::Sign_gump
 	if (Game::get_game_type() == SERPENT_ISLE && shapenum==49)
 	{
 		// check for avatar read here
-		Main_actor *avatar = gwin->get_main_actor();
+		Main_actor *avatar = Game_window::get_game_window()->get_main_actor();
 		if (!avatar->get_flag(Obj_flags::read))
 			serpentine = true;
 
@@ -94,7 +94,7 @@ void Sign_gump::add_text
 		return;
 
 	// check for avatar read here
-	Main_actor *avatar = gwin->get_main_actor();
+	Main_actor *avatar = Game_window::get_game_window()->get_main_actor();
 
 	if (!serpentine && avatar->get_flag(Obj_flags::read))
 	{
@@ -148,6 +148,7 @@ void Sign_gump::add_text
 
 void Sign_gump::paint
 	(
+	Game_window *gwin
 	)
 {
 	int font = 1;			// Normal runes.
@@ -161,21 +162,21 @@ void Sign_gump::paint
 	else if (serpentine)
 		font = 8;
 					// Get height of 1 line.
-	int lheight = sman->get_text_height(font);
+	int lheight = gwin->get_text_height(font);
 					// Get space between lines.
 	int lspace = (object_area.h - num_lines*lheight)/(num_lines + 1);
 					// Paint the gump itself.
-	paint_shape(x, y);
+	gwin->paint_shape(x, y, *this);
 	int ypos = y + object_area.y;	// Where to paint next line.
 	for (int i = 0; i < num_lines; i++)
 	{
 		ypos += lspace;
 		if (lines[i].empty())
 			continue;
-		sman->paint_text(font, lines[i].c_str(),
+		gwin->paint_text(font, lines[i].c_str(),
 			x + object_area.x + 
 				(object_area.w - 
-			sman->get_text_width(font, lines[i].c_str()))/2,
+				    gwin->get_text_width(font, lines[i].c_str()))/2,
 			ypos);
 		ypos += lheight;
 	}

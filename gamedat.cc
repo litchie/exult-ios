@@ -43,7 +43,6 @@
 #include "exceptions.h"
 #include "fnames.h"
 #include "gamewin.h"
-#include "gameclk.h"
 #include "gamemap.h"
 #include "utils.h"
 #include "gump_utils.h"
@@ -107,7 +106,7 @@ void Game_window::restore_gamedat
 		return;
 #endif
 
-	ifstream in_stream;
+	ifstream in;
 
 #ifdef RED_PLASMA
 	// Display red plasma during load...
@@ -119,7 +118,7 @@ void Game_window::restore_gamedat
 									// trailing slash
 	try
 		{
-		U7open(in_stream, fname);	// Open file; throws an exception 
+		U7open(in, fname);	// Open file; throws an exception 
 		}
 	catch(const file_exception & f)
 		{
@@ -129,8 +128,6 @@ void Game_window::restore_gamedat
 							fname << "'" << endl;
 		return;
 		}
-
-	StreamDataSource in(&in_stream);
 
 	U7remove (USEDAT);
 	U7remove (U7NBUF_DAT);
@@ -149,16 +146,16 @@ void Game_window::restore_gamedat
 
 	cout.flush();
 
-	in.seek(0x54);			// Get to where file count sits.
-	int numfiles = in.read4();
-	in.seek(0x80);			// Get to file info.
+	in.seekg(0x54);			// Get to where file count sits.
+	int numfiles = Read4(in);
+	in.seekg(0x80);			// Get to file info.
 					// Read pos., length of each file.
 	long *finfo = new long[2*numfiles];
 	int i;
 	for (i = 0; i < numfiles; i++)
 		{
-		finfo[2*i] = in.read4();	// The position, then the length.
-		finfo[2*i + 1] = in.read4();
+		finfo[2*i] = Read4(in);	// The position, then the length.
+		finfo[2*i + 1] = Read4(in);
 		}
 	for (i = 0; i < numfiles; i++)	// Now read each file.
 		{
@@ -166,7 +163,7 @@ void Game_window::restore_gamedat
 		int len = finfo[2*i + 1] - 13;
 		if (len <= 0)
 			continue;
-		in.seek(finfo[2*i]);	// Get to it.
+		in.seekg(finfo[2*i]);	// Get to it.
 		char fname[50];		// Set up name.
 		strcpy(fname, GAMEDAT);
 		in.read(&fname[sizeof(GAMEDAT) - 1], 13);
@@ -249,17 +246,17 @@ static long Savefile
 	const char *fname			// Name of file to save.
 	)
 	{
-	ifstream in_stream;
+	ifstream in;
 	try {
-		U7open(in_stream, fname);
+		U7open(in, fname);
 	} catch (exult_exception& e) {
 		if (Game::is_editing())
 			return 0;	// Newly developed game.
 		throw e;
 	}
-	StreamDataSource in(&in_stream);
-	long len = in.getSize();
-	in.seek(0);
+	in.seekg(0, ios::end);		// Get to end so we can get length.
+	long len = in.tellg();
+	in.seekg(0, ios::beg);
 	char namebuf[13];		// First write 13-byte name.
 	memset(namebuf, 0, sizeof(namebuf));
 	const char *base = strchr(fname, '/');// Want the base name.
@@ -275,7 +272,7 @@ static long Savefile
 	in.read(buf, len);
 	out.write(buf, len);
 	delete [] buf;
-	if (!in_stream.good())
+	if (!in.good())
 		throw file_read_exception(fname);
 	return len + 13;		// Include filename.
 	}
@@ -407,7 +404,7 @@ void Game_window::read_save_names
 
 void Game_window::write_saveinfo()
 {
-	ofstream out_stream;
+	ofstream out;
 	int	i, j;
 
 	int save_count = 1;
@@ -417,9 +414,8 @@ void Game_window::write_saveinfo()
 		ifstream in;
 		U7open(in, GSAVEINFO);		// Open file; throws an exception 
 
-		StreamDataSource ds(&in);
-		ds.skip(10);	// Skip 10 bytes.
-		save_count += ds.read2();
+		in.seekg(10, ios::cur);	// Skip 10 bytes.
+		save_count += Read2(in);
 
 		in.close();
 	}
@@ -433,33 +429,32 @@ void Game_window::write_saveinfo()
 	time_t t = std::time(0);
 	struct tm *timeinfo = localtime (&t);	
 
-	U7open(out_stream, GSAVEINFO);		// Open file; throws an exception - Don't care
-	StreamDataSource out(&out_stream);
+	U7open(out, GSAVEINFO);		// Open file; throws an exception - Don't care
 
 	// This order must match struct SaveGame_Details
 
 	// Time that the game was saved
-	out.write1(timeinfo->tm_min);
-	out.write1(timeinfo->tm_hour);
-	out.write1(timeinfo->tm_mday);
-	out.write1(timeinfo->tm_mon+1);
-	out.write2(timeinfo->tm_year + 1900);
+	out.put(timeinfo->tm_min);
+	out.put(timeinfo->tm_hour);
+	out.put(timeinfo->tm_mday);
+	out.put(timeinfo->tm_mon+1);
+	Write2(out, timeinfo->tm_year + 1900);
 
 	// The Game Time that the save was done at
-	out.write1(clock->get_minute());
-	out.write1(clock->get_hour());
-	out.write2(clock->get_day());
+	out.put(clock.get_minute());
+	out.put(clock.get_hour());
+	Write2(out, clock.get_day());
 
-	out.write2(save_count);
-	out.write1(party_size);
+	Write2(out, save_count);
+	out.put(party_size);
 
-	out.write1(0);			// Unused
+	out.put(0);			// Unused
 
-	out.write1(timeinfo->tm_sec);	// 15
+	out.put(timeinfo->tm_sec);	// 15
 
 	// Packing for the rest of the structure
 	for (j = reinterpret_cast<long>(&(((SaveGame_Details *)0)->reserved0)); j < sizeof(SaveGame_Details); j++)
-		out.write1(0);
+		out.put(0);
 
 	for (i=0; i<party_size ; i++)
 	{
@@ -472,49 +467,50 @@ void Game_window::write_saveinfo()
 		char name[18];
 		strncpy (name, npc->get_npc_name().c_str(), 18);
 		out.write(name, 18);
-		out.write2(npc->get_shapenum());
+		Write2(out, npc->get_shapenum());
 
-		out.write4(npc->get_property(Actor::exp));
-		out.write4(npc->get_flags());
-		out.write4(npc->get_flags2());
+		Write4(out, npc->get_property(Actor::exp));
+		Write4(out, npc->get_flags());
+		Write4(out, npc->get_flags2());
 
-		out.write1(npc->get_property(Actor::food_level));
-		out.write1(npc->get_property(Actor::strength));
-		out.write1(npc->get_property(Actor::combat));
-		out.write1(npc->get_property(Actor::dexterity));
-		out.write1(npc->get_property(Actor::intelligence));
-		out.write1(npc->get_property(Actor::magic));
-		out.write1(npc->get_property(Actor::mana));
-		out.write1(npc->get_property(Actor::training));
+		out.put(npc->get_property(Actor::food_level));
+		out.put(npc->get_property(Actor::strength));
+		out.put(npc->get_property(Actor::combat));
+		out.put(npc->get_property(Actor::dexterity));
+		out.put(npc->get_property(Actor::intelligence));
+		out.put(npc->get_property(Actor::magic));
+		out.put(npc->get_property(Actor::mana));
+		out.put(npc->get_property(Actor::training));
 
-		out.write2(npc->get_property(Actor::health));
-		out.write2(npc->get_shapefile());
+		Write2(out, npc->get_property(Actor::health));
+		Write2(out, npc->get_shapefile());
 
 		// Packing for the rest of the structure
 		for (j = reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved1)); j < sizeof(SaveGame_Party); j++)
-			out.write1(0);
+			out.put(0);
 	}
 
-	out_stream.close();
+	out.close();
 
 	// Save Shape
 	Shape_file *map = create_mini_screenshot();
-	U7open(out_stream, GSCRNSHOT);		// Open file; throws an exception - Don't care
-	map->save(&out);
-	out_stream.close();
+	U7open(out, GSCRNSHOT);		// Open file; throws an exception - Don't care
+	StreamDataSource ds(&out);
+	map->save(&ds);
+	out.close();
 	delete map;
 
 	// Current Exult version
 
-	U7open(out_stream, GEXULTVER);
-	getVersionInfo(out_stream);
-	out_stream.close();
+	U7open(out, GEXULTVER);
+	getVersionInfo(out);
+	out.close();
 
 	// Exult version that started this game
 	if (!U7exists(GNEWGAMEVER)) {
-		U7open(out_stream, GNEWGAMEVER);
-		out_stream << "Unknown" << endl;
-		out_stream.close();
+		U7open(out, GNEWGAMEVER);
+		out << "Unknown" << endl;
+		out.close();
 	}
 }
 
@@ -589,9 +585,8 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 		return true;
 #endif
 
-	ifstream in_stream;
-	U7open(in_stream, fname);		// Open file; throws an exception 
-	StreamDataSource in(&in_stream);
+	ifstream in;
+	U7open(in, fname);		// Open file; throws an exception 
 					// in case of an error.
 	// Always try to Read Name
 	char buf[0x50];
@@ -601,19 +596,19 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 	strcpy (name, buf);
 
 	// Isn't a flex, can't actually read it
-	if (!Flex::is_flex(&in)) return false;
+	if (!Flex::is_flex(in)) return false;
 
 	// Now get dir info
-	in.seek(0x54);			// Get to where file count sits.
-	int numfiles = in.read4();
-	in.seek(0x80);			// Get to file info.
+	in.seekg(0x54);			// Get to where file count sits.
+	int numfiles = Read4(in);
+	in.seekg(0x80);			// Get to file info.
 					// Read pos., length of each file.
 	long *finfo = new long[2*numfiles];
 	int i;
 	for (i = 0; i < numfiles; i++)
 	{
-		finfo[2*i] = in.read4();	// The position, then the length.
-		finfo[2*i + 1] = in.read4();
+		finfo[2*i] = Read4(in);	// The position, then the length.
+		finfo[2*i + 1] = Read4(in);
 	}
 
 	// Always first two entires
@@ -623,7 +618,7 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 		int len = finfo[2*i + 1] - 13;
 		if (len <= 0)
 			continue;
-		in.seek(finfo[2*i]);	// Get to it.
+		in.seekg(finfo[2*i]);	// Get to it.
 		char fname[50];		// Set up name.
 		strcpy(fname, GAMEDAT);
 		in.read(&fname[sizeof(GAMEDAT) - 1], 13);
@@ -642,11 +637,18 @@ bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 		}
 		else if (!strcmp (fname, GSAVEINFO))
 		{
-			read_saveinfo (&in, details, party);
+#if 0
+			char *buf = new char[len];
+			in.read(buf, len);
+			BufferDataSource ds(buf, len);
+#else
+			StreamDataSource ds(&in);
+#endif
+			read_saveinfo (&ds, details, party);
 		}
 
 	}
-	in_stream.close();
+	in.close();
 
 	delete [] finfo;
 
@@ -700,26 +702,24 @@ char *Game_window::get_game_identity(const char *savename)
     if (game_identity)
 	return game_identity;
 #endif
-    ifstream in_stream;
+    ifstream in;
     try {
-        U7open(in_stream, savename);		// Open file.
+        U7open(in, savename);		// Open file.
     } catch (const exult_exception &e) {
 	if (Game::is_editing())		// Okay if creating a new game.
 		return newstrdup(Game::get_gametitle().c_str());
 	throw e;
     }
-	StreamDataSource in(&in_stream);
-
-    in.seek(0x54);			// Get to where file count sits.
-    int numfiles = in.read4();
-    in.seek(0x80);			// Get to file info.
+    in.seekg(0x54);			// Get to where file count sits.
+    int numfiles = Read4(in);
+    in.seekg(0x80);			// Get to file info.
     // Read pos., length of each file.
     sint32 *finfo = new sint32[2*numfiles];
     int i;
     for (i = 0; i < numfiles; i++)
       {
-	finfo[2*i] = in.read4();	// The position, then the length.
-	finfo[2*i + 1] = in.read4();
+	finfo[2*i] = Read4(in);	// The position, then the length.
+	finfo[2*i + 1] = Read4(in);
       }
     for (i = 0; i < numfiles; i++)	// Now read each file.
       {
@@ -727,7 +727,7 @@ char *Game_window::get_game_identity(const char *savename)
 	int len = finfo[2*i + 1] - 13;
 	if (len <= 0)
 	  continue;
-	in.seek(finfo[2*i]);	// Get to it.
+	in.seekg(finfo[2*i]);	// Get to it.
 	char fname[50];		// Set up name.
 	in.read(fname, 13);
 	if (!strcmp("identity",fname))

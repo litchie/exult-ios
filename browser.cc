@@ -28,7 +28,6 @@
 #include "exult.h"
 #include "font.h"
 #include "items.h"
-#include "shapeid.h"
 
 #ifndef HAVE_SNPRINTF
 extern int snprintf(char *, size_t, const char *, /*args*/ ...);
@@ -77,8 +76,7 @@ static void handle_key(int shift, int& value, int max, int amt = 1)
 void ShapeBrowser::browse_shapes()
 	{
 		
-		Game_window *gwin = Game_window::get_instance();
-		Shape_manager *sman = Shape_manager::get_instance();
+		Game_window *gwin = Game_window::get_game_window();
 		Image_buffer8 *ibuf = gwin->get_win()->get_ib8();
 		Font *font = fontManager.get_font("MENU_FONT");
 
@@ -147,7 +145,7 @@ void ShapeBrowser::browse_shapes()
 						font->paint_text_fixedwidth(ibuf, buf, 2, 22, 8);
 
 						Shape_info& info = 
-							ShapeID::get_info(current_shape);
+							Game_window::get_game_window()->get_info(current_shape);
 
 					        snprintf(buf,255,"class: %2i  ready_type: 0x%02x", info.get_shape_class(), info.get_ready_type());
 					        font->paint_text_fixedwidth(ibuf, buf, 2, 12, 8);
@@ -166,7 +164,7 @@ void ShapeBrowser::browse_shapes()
 						    gwin->get_height()/2 - frame->get_yabove()-1);
 
 						//draw shape
-					        sman->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
+					        gwin->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
 
 				        } else
 					        font->draw_text(ibuf, centerx-20, centery-5, "No Shape");

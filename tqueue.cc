@@ -24,7 +24,6 @@
 
 #include "tqueue.h"
 #include <algorithm>
-#include <SDL_timer.h>
 
 /*
  *	Be sure no copies are still in queue when deleted.
@@ -74,9 +73,6 @@ void Time_queue::add
 	{
 	obj->queue_cnt++;		// It's going in, no matter what.
 	Queue_entry	newent;
-	if (paused)			// Paused?
-					// Messy, but we need to fix time.
-		t -= SDL_GetTicks() - pause_time;
 	newent.set(t,obj,ud);
 	if(!data.size())
 		{
@@ -231,37 +227,6 @@ void Time_queue::activate0
 	}
 
 /*
- *	Remove & activate entries marked 'always'.  This is called when
- *	the queue is paused.
- */
-
-void Time_queue::activate_always
-	(
-	uint32 curtime		// Current time.
-	)
-	{
-	if(data.size()==0)
-		return;
-	Queue_entry ent;
-	for(Temporal_sequence::iterator it=data.begin();
-		it!=data.end() && !(curtime < (*it).time); )
-		{
-		Temporal_sequence::iterator next = it;
-		++next;			// Get ->next in case we erase.
-		ent = *it;
-		Time_sensitive *obj = ent.handler;
-		if (obj->always)
-			{
-			obj->queue_cnt--;
-			long udata = ent.udata;
-			data.erase(it);
-			obj->handle_event(curtime, udata);
-			}
-		it = next;
-		}
-	}
-
-/*
  *	Resume after a pause.
  */
 
@@ -270,7 +235,7 @@ void Time_queue::resume
 	uint32 curtime
 	)
 	{
-	if (!paused || --paused > 0)	// Only unpause when stack empty.
+	if (!pause_time)
 		return;			// Not paused.
 	int diff = curtime - pause_time;
 	pause_time = 0;

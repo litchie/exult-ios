@@ -77,10 +77,10 @@ public:
 		int last_translucent, Xform_palette *xforms);
 					// Apply translucency to a line.
 	virtual void fill_line_translucent8(unsigned char val,
-			int srcw, int destx, int desty, Xform_palette& xform);
+			int srcw, int destx, int desty, Xform_palette xform);
 					// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch, 
-				int destx, int desty, Xform_palette& xform);
+				int destx, int desty, Xform_palette xform);
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty);
@@ -95,10 +95,6 @@ public:
 		}
 
 	void paint_rle (int xoff, int yoff, unsigned char *in);
-					// Convert to 32-bit rgba.
-	unsigned char *rgba(unsigned char *pal, unsigned char transp, 
-		int first_translucent = 256,
-		int last_translucent = 256, Xform_palette *xforms = 0);
 	};
 
 #endif

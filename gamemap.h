@@ -39,7 +39,6 @@ class Ireg_game_object;
 class Egg_object;
 class Shape_info;
 class Shapes_vga_file;
-class DataSource;
 
 /*
  *	The game map:
@@ -57,15 +56,11 @@ class Game_map
 	Map_chunk *objects[c_num_chunks][c_num_chunks];
 	bool schunk_read[144]; 		// Flag for reading in each "ifix".
 	bool schunk_modified[144];	// Flag for modified "ifix".
-	char *schunk_cache[144];
-	int  schunk_cache_sizes[144];
 	std::ifstream *chunks;		// "u7chunks" file.
 	Map_patch_collection *map_patches;
 
 	Map_chunk *create_chunk(int cx, int cy);
 	Chunk_terrain *read_terrain(int chunk_num);
-
-	void cache_out_schunk(int schunk);
 public:
 	Game_map();
 	~Game_map();
@@ -130,21 +125,19 @@ public:
 					// Get "ifix" objects for a superchunk.
 	void get_ifix_objects(int schunk);
 					// Get "ifix" objs. for given chunk.
-	void get_ifix_chunk_objects(DataSource* ifix, long filepos, int cnt,
+	void get_ifix_chunk_objects(std::ifstream& ifix, long filepos, int cnt,
 							int cx, int cy);
 					// Write scheduled script for obj.
-	static void write_scheduled(DataSource* ireg, Game_object *obj,
+	static void write_scheduled(std::ostream& ireg, Game_object *obj,
 						bool write_mark = false);
 	void write_ireg();		// Write modified ireg files.
 					// Write moveable objects to file.
 	void write_ireg_objects(int schunk);
-					// Write moveable objects to datasource.
-	void write_ireg_objects(int schunk, DataSource *ireg);
 					// Get moveable objects.
 	void get_ireg_objects(int schunk);
 					// Read scheduled script(s) for obj.
-	void read_special_ireg(DataSource* ireg, Game_object *obj);
-	void read_ireg_objects(DataSource* ireg, int scx, int scy,
+	void read_special_ireg(std::istream& ireg, Game_object *obj);
+	void read_ireg_objects(std::istream& ireg, int scx, int scy,
 					Game_object *container = 0,
 			unsigned long flags = (1<<Obj_flags::okay_to_take));
 	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
@@ -164,8 +157,6 @@ public:
 					// Locate shape (for EStudio).
 	Game_object *locate_shape(int shapenum, bool upwards, 
 							Game_object *start);
-					// Do a cache out. (cx, cy) is the center
-	void cache_out(int cx, int cy);
 	};
 
 #endif

@@ -31,7 +31,7 @@ class Book_gump : public Text_gump
 public:
 	Book_gump(bool serp = false);
 					// Paint it and its contents.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 };
 
 #endif

@@ -2,7 +2,7 @@
  *	useval.cc - Values used in Usecode interpreter.
  *
  *  Copyright (C) 1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@
 #endif
 
 #include "useval.h"
+#include "gump_utils.h"
 #include "utils.h"
 
 using std::cout;
@@ -45,6 +46,9 @@ using std::setfill;
 using std::setw;
 using std::strcmp;
 using std::strlen;
+#ifdef __MWERKS__	// Bug in CodeWarrior 7: it incorrectly has snprintf in namespace std
+using std::snprintf;
+#endif
 
 
 

@@ -51,9 +51,9 @@ void Npc_proximity_handler::add
 	int additional_secs		// More secs. to wait.
 	)
 	{
-	int msecs;			// Hostile?  Wait 0-2 secs.
+	int msecs;			// Hostile?  Wait 0-4 secs.
 	if (npc->get_alignment() >= Npc_actor::hostile)
-		msecs = rand() % 2000;
+		msecs = rand() % 4000;
 	else				// Wait between 2 & 6 secs.
 		msecs = (rand() % 4000) + 2000;
 	unsigned long newtime = curtime + msecs;
@@ -86,7 +86,7 @@ bool Bg_dont_wake
 	{
 	int num;
 	return (Game::get_game_type() == BLACK_GATE &&
-		(npc->get_info().has_translucency() ||
+		(gwin->get_info(npc).has_translucency() ||
 					// Horace or Penumbra?
 		 (num = npc->Actor::get_npc_num()) == 141 || num == 150));
 	}
@@ -158,7 +158,7 @@ void Npc_proximity_handler::handle_event
 					//   a rabbit (SI start).
 		 (rand()%2 == 1 || npc->get_shapenum() == 811)  &&
 					// And not for party members.
-			!npc->is_in_party() &&
+			npc->get_party_id() < 0 &&
 					// And not for patrollers/monsters
 					//  in SI. !!Guessing.
 		 (Game::get_game_type() != SERPENT_ISLE ||

@@ -42,7 +42,7 @@ EXP_FILE=exult_studio.exp
 
 SERVER_OBJS=objserial.o servemsg.o servewin32.o
 
-MAPEDIT_OBJS=chunklst.o combo.o dirbrowser.o eggedit.o execbox.o exult_studio.o locator.o npcedit.o \
+MAPEDIT_OBJS=chunklst.o combo.o dirbrowser.o eggedit.o exult_studio.o locator.o npcedit.o \
 	objbrowse.o objedit.o paledit.o shapedraw.o shapefile.o shapegroup.o \
 	shapeedit.o shapelst.o studio.o args.o
 

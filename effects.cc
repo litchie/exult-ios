@@ -23,8 +23,6 @@
 #endif
 
 #include "gamewin.h"
-#include "gamemap.h"
-#include "gameclk.h"
 #include "actors.h"
 #include "effects.h"
 #include "Zombie.h"
@@ -47,269 +45,12 @@ int Cloud::randcnt = 0;
 int Lightning_effect::active = 0;
 
 /*
- *	Clean up.
- */
-
-Effects_manager::~Effects_manager()
-	{ 
-	remove_all_effects(false);
-	}
-
-/*
- *	Add text over a given item.
- */
-
-void Effects_manager::add_text
-	(
-	const char *msg,
-	Game_object *item		// Item text ID's, or null.
-	)
-	{
-	if (!msg)			// Happens with edited games.
-		return;
-					// Don't duplicate for item.
-	for (Text_effect *each = texts; each; each = each->next)
-		if (each->is_text(item))
-			return;		// Already have text on this.
-	Text_effect *txt = new Text_effect(msg, item);
-//	txt->paint(this);		// Draw it.
-//	painted = 1;
-	add_text_effect(txt);
-	}
-
-/*
- *	Add a text object at a given spot.
- */
-
-void Effects_manager::add_text
-	(
-	const char *msg,
-	int x, int y			// Pixel coord. on screen.
-	)
-	{
-	Text_effect *txt = new Text_effect(msg,
-		gwin->get_scrolltx() + x/c_tilesize, 
-		gwin->get_scrollty() + y/c_tilesize);
-	add_text_effect(txt);
-	}
-
-/*
- *	Add a text object in the center of the screen
- */
-
-void Effects_manager::center_text
-	(
-	const char *msg
-	)
-	{
-	remove_text_effects();
-	Shape_manager *sman = Shape_manager::get_instance();
-	add_text(msg, (gwin->get_width()-sman->get_text_width(0,msg))/2,
-			 gwin->get_height()/2);
-	}
-
-/*
- *	Add an effect at the start of the chain.
- */
-
-void Effects_manager::add_effect
-	(
-	Special_effect *effect
-	)
-	{
-	effect->next = effects;		// Insert into chain.
-	effect->prev = 0;
-	if (effect->next)
-		effect->next->prev = effect;
-	effects = effect;
-	}
-
-/*
- *	Add a text effect at the start of the chain.
- */
-
-void Effects_manager::add_text_effect
-	(
-	Text_effect *effect
-	)
-	{
-	effect->next = texts;		// Insert into chain.
-	effect->prev = 0;
-	if (effect->next)
-		effect->next->prev = effect;
-	texts = effect;
-	}
-
-/*
- *	Remove a given object's text effect.
- */
-
-void Effects_manager::remove_text_effect
-	(
-	Game_object *item		// Item text was added for.
-	)
-	{
-	for (Text_effect *each = texts; each; each = each->next)
-		if (each->is_text(item))
-			{		// Found it.
-			remove_text_effect(each);
-			gwin->paint();
-			return;
-			}
-	}
-
-/*
- *	Remove a sprite from the chain and delete it.
- */
-
-void Effects_manager::remove_effect
-	(
-	Special_effect *effect
-	)
-	{
-	if (effect->in_queue())
-		gwin->get_tqueue()->remove(effect);
-	if (effect->next)
-		effect->next->prev = effect->prev;
-	if (effect->prev)
-		effect->prev->next = effect->next;
-	else				// Head of chain.
-		effects = effect->next;
-	delete effect;
-	}
-
-/*
- *	Remove text from the chain and delete it.
- */
-
-void Effects_manager::remove_text_effect
-	(
-	Text_effect *txt
-	)
-	{
-	if (txt->in_queue())
-		gwin->get_tqueue()->remove(txt);
-	if (txt->next)
-		txt->next->prev = txt->prev;
-	if (txt->prev)
-		txt->prev->next = txt->next;
-	else				// Head of chain.
-		texts = txt->next;
-	delete txt;
-	}
-
-/*
- *	Remove all text items.
- */
-
-void Effects_manager::remove_all_effects
-	(
-	 bool repaint
-	)
-	{
-	if (!effects && !texts)
-		return;
-	while (effects)
-		remove_effect(effects);
-	while (texts)
-		remove_text_effect(texts);
-	if (repaint)
-		gwin->paint();		// Just paint whole screen.
-	}
-
-/*
- *	Remove text effects.
- */
-
-void Effects_manager::remove_text_effects
-	(
-	)
-	{
-	while (texts)
-		remove_text_effect(texts);
-	gwin->set_all_dirty();
-	}
-
-
-/*
- *	Remove weather effects.
- */
-
-void Effects_manager::remove_weather_effects
-	(
-	int dist			// Only remove those from eggs at
-					//   least this far away.
-	)
-	{
-	Actor *main_actor = gwin->get_main_actor();
-	Tile_coord apos = main_actor ? main_actor->get_tile()
-				: Tile_coord(-1, -1, -1);
-	Special_effect *each = effects;
-	while (each)
-		{
-		Special_effect *next = each->next;
-					// See if we're far enough away.
-		if (each->is_weather() && (!dist ||
-		    ((Weather_effect *) each)->out_of_range(apos, dist)))
-			remove_effect(each);
-		each = next;
-		}
-	gwin->set_all_dirty();
-	}
-
-/*
- *	Find last numbered weather effect added.
- */
-
-int Effects_manager::get_weather
-	(
-	)
-	{
-	Special_effect *each = effects;
-	while (each)
-		{
-		Special_effect *next = each->next;
-		if (each->is_weather())
-			{
-			Weather_effect *weather = (Weather_effect *) each;
-			if (weather->get_num() >= 0)
-				return weather->get_num();
-			}
-		each = next;
-		}
-	return 0;
-	}
-
-/*
- *	Paint them all.
- */
-
-void Effects_manager::paint
-	(
-	)
-	{
-	for (Special_effect *effect = effects; effect; effect = effect->next)
-		effect->paint();
-	}
-
-/*
- *	Paint all text.
- */
-
-void Effects_manager::paint_text
-	(
-	)
-	{
-	for (Text_effect *txt = texts; txt; txt = txt->next)
-		txt->paint();
-	}
-
-/*
  *	Some special effects may not need painting.
  */
 
 void Special_effect::paint
 	(
+	Game_window *
 	)
 	{
 	}
@@ -323,13 +64,13 @@ Sprites_effect::Sprites_effect
 	int num,			// Index.
 	Tile_coord p,			// Position within world.
 	int dx, int dy,			// Add to offset for each frame.
-	int delay			// Delay (msecs) before starting.
+	int delay               // Delay (msecs) before starting
 	) : sprite(num, 0, SF_SPRITES_VGA), item(0), pos(p), xoff(0), yoff(0),
 						deltax(dx), deltay(dy)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	frames = sprite.get_num_frames();
-					// Start.
+					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, 0L);
 	}
 
@@ -347,7 +88,7 @@ Sprites_effect::Sprites_effect
 					yoff(yf), deltax(dx), deltay(dy)
 	{
 	pos = item->get_tile();
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	frames = sprite.get_num_frames();
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
@@ -359,6 +100,7 @@ Sprites_effect::Sprites_effect
 
 inline void Sprites_effect::add_dirty
 	(
+	Game_window *gwin,
 	int frnum
 	)
 	{
@@ -384,22 +126,22 @@ void Sprites_effect::handle_event
 	)
 	{
 	int frame_num = sprite.get_framenum();
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	int delay = gwin->get_std_delay();// Delay between frames.  Needs to
 					//   match usecode animations.
 	if (frame_num == frames)	// At end?
 		{			// Remove & delete this.
-		eman->remove_effect(this);
+		gwin->remove_effect(this);
 		gwin->set_all_dirty();
 		return;
 		}
-	add_dirty(frame_num - 1);	// Clear out old.
+	add_dirty(gwin, frame_num - 1);	// Clear out old.
 	gwin->set_painted();
 	if (item)			// Following actor?
 		pos = item->get_tile();
 	xoff += deltax;			// Add deltas.
 	yoff += deltay;
-	add_dirty(frame_num);		// Want to paint new frame.
+	add_dirty(gwin, frame_num);	// Want to paint new frame.
 	frame_num++;			// Next frame.
 	sprite.set_frame(frame_num);
 					// Add back to queue for next time.
@@ -412,14 +154,16 @@ void Sprites_effect::handle_event
 
 void Sprites_effect::paint
 	(
+	Game_window *gwin
 	)
 	{
 	if (sprite.get_framenum() >= frames)
 		return;
 	int lp = pos.tz/2;		// Account for lift.
-	sprite.paint_shape(
+	gwin->paint_shape(
 		xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
-		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize);
+		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize, 
+						sprite);
 	}
 
 /*
@@ -430,7 +174,7 @@ Explosion_effect::Explosion_effect
 	(
 	Tile_coord p, 
 	Game_object *exp,
-	int delay			// Delay before starting (msecs).
+	int delay                 // Delay before starting (msecs).
 	) : Sprites_effect(1, p, 0, 0, delay), explode(exp)
 {
 	if (exp && exp->get_shapenum() == 704) { // powderkeg
@@ -444,25 +188,24 @@ void Explosion_effect::handle_event
 	unsigned long curtime,		// Current time of day.
 	long udata
 	)
-	{
+{
 	int frnum = sprite.get_framenum();
-	if (!frnum)			// Max. volume, with stereo position.
-		{
-		Tile_coord apos = gwin->get_main_actor()->get_tile();
+	if (!frnum) // Max. volume, with stereo position.
+	{
+		Tile_coord apos = Game_window::get_game_window()->get_main_actor()->get_tile();
 		int dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
-
-		Audio::get_ptr()->play_sound_effect(
-				Audio::game_sfx(9), SDL_MIX_MAXVOLUME, dir);
-		}
+		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(9),
+											SDL_MIX_MAXVOLUME, dir);
+	}
 	if (frnum == frames/4) {
 		// this was in ~Explosion_effect before
 		if (explode && !explode->is_pos_invalid())
 			{
-			Game_window::get_instance()->add_dirty(explode);
-			explode->remove_this();
-			explode = 0;
+				Game_window::get_game_window()->add_dirty(explode);
+				explode->remove_this();
+				explode = 0;
 			}
-		Game_object_vector vec;	// Find objects near explosion.
+		Game_object_vector vec;			// Find objects near explosion.
 		Game_object::find_nearby(vec, pos, c_any_shapenum, 5, 0);
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
@@ -496,24 +239,16 @@ void Projectile_effect::init
 	Tile_coord d			// Destination.
 	)
 	{
-	no_blocking = false;		// We'll check the ammo & weapon.
-	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = ShapeID::get_info(projectile_shape);
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(projectile_shape);
 	Weapon_info *winfo = info.get_weapon_info();
-	if (winfo)
-		{
-		if (winfo->get_projectile())	// Different sprite to show?
-			sprite.set_shape(winfo->get_projectile());
-		no_blocking = no_blocking || winfo->no_blocking();
-		}
-	Ammo_info *ainfo = info.get_ammo_info();
-	if (ainfo)
-		no_blocking = no_blocking || ainfo->no_blocking();
+	if (winfo && winfo->get_projectile())	// Different sprite to show?
+		sprite.set_shape(winfo->get_projectile());
 	frames = sprite.get_num_frames();
 	pos = s;			// Get starting position.
 	if (attacker)			// Try to set start better.
 		{
-		Shape_info& info = attacker->get_info();
+		Shape_info& info = gwin->get_info(attacker);
 					// Try for around the heat.
 		pos.tz += info.get_3d_height() - 1;
 		if (d.tx < pos.tx)	// Start on proper side.
@@ -611,6 +346,7 @@ Projectile_effect::~Projectile_effect
 
 inline void Projectile_effect::add_dirty
 	(
+	Game_window *gwin
 	)
 	{
 	if (pos.tx == -1 || sprite.get_framenum() == -1)
@@ -654,42 +390,42 @@ void Projectile_effect::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	int delay = gwin->get_std_delay()/2;
-	add_dirty();			// Force repaint of old pos.
+	add_dirty(gwin);		// Force repaint of old pos.
 	Tile_coord epos = pos;		// Save pos.
 	if (!path->GetNextStep(pos) ||	// Get next spot.
 					// If missile egg, detect target.
-	  (!target && !no_blocking && (target = Find_target(gwin, pos)) != 0))
+			(!target && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
-		int delay = 0;		// For explosions.
+		int explosiondelay = 0;
 		switch (projectile_shape)
 			{
 		case 287:		// Swordstrike.
-			eman->add_effect(new Sprites_effect(23, epos));
+			gwin->add_effect(new Sprites_effect(23, epos));
 			break;
 		case 554:		// Burst arrow.
-			eman->add_effect(new Sprites_effect(19, epos));
+			gwin->add_effect(new Sprites_effect(19, epos));
 			break;
 		case 565:		// Starburst.
-			eman->add_effect(new Sprites_effect(18, epos));
+			gwin->add_effect(new Sprites_effect(18, epos));
 			break;
 		case 639:		// Death Vortex.
-			eman->add_effect(new Death_vortex(target, epos));
+			gwin->add_effect(new Death_vortex(target, epos));
 			target = 0;	// Takes care of attack.
 			break;
 		case 82:		// Delayed explosion.
 		case 621:		//    "       "
-			delay = 3000;	// Wait 3 secs.  FALL THROUGH!
+			explosiondelay = 3000;	// Wait 3 secs.  FALL THROUGH!
 		case 78:		// Explosion.
 		case 702:		// Cannon.
 		case 704:		// Powder keg.
-			eman->add_effect(new Explosion_effect(epos, 0, delay));
+			gwin->add_effect(new Explosion_effect(epos, 0, explosiondelay));
 			target = 0;	// Takes care of attack.
 			break;
 			}
 		if (return_path)	// Returned a boomerang?
-			target->add(gmap->create_ireg_object(weapon, 0));
+			target->add(gwin->create_ireg_object(weapon, 0));
 		else
 			{		// Not teleported away ?
 			if (target && epos.distance(target->get_tile()) < 50)
@@ -700,19 +436,19 @@ void Projectile_effect::handle_event
 			    epos.distance(attacker->get_tile() ) < 50)
 				{ 	// not teleported away
 				Weapon_info *winf = 
-				   ShapeID::get_info(weapon).get_weapon_info();
+				    gwin->get_info(weapon).get_weapon_info();
 				if (winf && winf->returns())
-					eman->add_effect(new Projectile_effect(
+					gwin->add_effect(new Projectile_effect(
 						pos, attacker, weapon, weapon,
 									true));
 				}
 			}
-		add_dirty();
+		add_dirty(gwin);
 		pos.tx = -1;		// Signal we're done.
-		eman->remove_effect(this);
+		gwin->remove_effect(this);
 		return;
 		}
-	add_dirty();			// Paint new spot/frame.
+	add_dirty(gwin);		// Paint new spot/frame.
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
@@ -723,14 +459,15 @@ void Projectile_effect::handle_event
 
 void Projectile_effect::paint
 	(
+	Game_window *gwin
 	)
 	{
 	if (pos.tx == -1 || sprite.get_framenum() == -1)
 		return;			// Already at destination.
 	int liftpix = pos.tz*c_tilesize/2;
-	sprite.paint_shape(
-		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
-		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix);
+	gwin->paint_shape((pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
+		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix, 
+		sprite);
 	}
 
 /*
@@ -744,8 +481,8 @@ Death_vortex::Death_vortex
 	) : vortex(8, 0, SF_SPRITES_VGA), next_damage_time(0)
 	{
 	pos = trg ? trg->get_tile() : tp;
-	target = trg ? trg->as_actor() : 0;
-	Game_window *gwin = Game_window::get_instance();
+	target = dynamic_cast<Actor *> (trg);
+	Game_window *gwin = Game_window::get_game_window();
 	frames = vortex.get_num_frames();
 					// Go for 20 seconds.
 	stop_time = Game::get_ticks() + 20*1000;
@@ -761,6 +498,7 @@ Death_vortex::Death_vortex
 
 inline int Death_vortex::add_dirty
 	(
+	Game_window *gwin
 	)
 	{
 	Shape_frame *shape = vortex.get_shape();
@@ -781,8 +519,8 @@ void Death_vortex::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	int width = add_dirty();	// Repaint old area.
+	Game_window *gwin = Game_window::get_game_window();
+	int width = add_dirty(gwin);	// Repaint old area.
 	if (target && !target->is_dead())	// Follow target.
 		{
 		Tile_coord tpos = target->get_tile();
@@ -807,18 +545,19 @@ void Death_vortex::handle_event
 							it != npcs.end(); ++it)
 			{
 			Actor *npc = *it;
-			if (!npc->is_in_party())
+			if (npc != gwin->get_main_actor() &&
+						npc->get_party_id() < 0)
 				npc->reduce_health(40);
 			}
 		}
 	vortex.set_frame((vortex.get_framenum() + 1)%frames);
-	add_dirty();			// Paint new.
+	add_dirty(gwin);		// Paint new.
 	if (curtime < stop_time)	// Keep going?
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
 		{
 		gwin->set_all_dirty();
-		eman->remove_effect(this);
+		gwin->remove_effect(this);
 		}
 	}
 
@@ -828,12 +567,14 @@ void Death_vortex::handle_event
 
 void Death_vortex::paint
 	(
+	Game_window *gwin
 	)
 	{
 	int liftpix = pos.tz*c_tilesize/2;
-	vortex.paint_shape(
+	gwin->paint_shape(
 		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
-		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix);
+		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix, 
+		vortex);
 	}
 
 /*
@@ -845,11 +586,10 @@ static inline Tile_coord Figure_text_pos
 	Game_object *item
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Gump_manager *gumpman = gwin->get_gump_man();
+	Game_window *gwin = Game_window::get_game_window();
 	Rectangle box;
 					// See if it's in a gump.
-	Gump *gump = gumpman->find_gump(item);
+	Gump *gump = gwin->get_gump_man()->find_gump(item);
 	if (gump)
 		box = gump->get_shape_rect(item);
 	else
@@ -866,7 +606,7 @@ void Text_effect::add_dirty
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 					// Repaint slightly bigger rectangle.
 	Rectangle rect((pos.tx - gwin->get_scrolltx() - 1)*c_tilesize,
 		       (pos.ty - gwin->get_scrollty() - 1)*c_tilesize,
@@ -882,11 +622,9 @@ void Text_effect::init
 	(
 	)
 	{
-	set_always(true);		// Always execute in time queue, even
-					//   when paused.
-	Game_window *gwin = Game_window::get_instance();
-	width = 8 + sman->get_text_width(0, msg.c_str());
-	height = 8 + sman->get_text_height(0);
+	Game_window *gwin = Game_window::get_game_window();
+	width = 8 + gwin->get_text_width(0, msg.c_str());
+	height = 8 + gwin->get_text_height(0);
 	add_dirty();			// Force first paint.
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
@@ -933,11 +671,11 @@ void Text_effect::handle_event
 	long udata			// Ignored.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	if (++num_ticks == 10)		// About 1-2 seconds.
 		{			// All done.
 		add_dirty();
-		eman->remove_text_effect(this);
+		gwin->remove_effect(this);// Remove & delete this.
 		return;
 		}
 					// Back into queue.
@@ -960,11 +698,12 @@ void Text_effect::handle_event
 
 void Text_effect::paint
 	(
+	Game_window *gwin
 	)
 	{
 	const char *ptr = msg.c_str();
 	int len = strlen(ptr);
-	sman->paint_text(0, ptr, len, 
+	gwin->paint_text(0, ptr, len, 
 		(pos.tx - gwin->get_scrolltx())*c_tilesize,
 				(pos.ty - gwin->get_scrollty())*c_tilesize);
 	}
@@ -981,7 +720,7 @@ Weather_effect::Weather_effect
 	Game_object *egg		// Egg that started it, or null.
 	) : num(n)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	if (egg)
 		eggloc = egg->get_tile();
 	else
@@ -1014,7 +753,7 @@ inline void Raindrop::paint
 	(
 	Image_window8 *iwin,		// Where to draw.
 	int scrolltx, int scrollty,	// Tile at top-left corner.
-	Xform_palette& xform		// Transform array.
+	Xform_palette xform		// Transform array.
 	)
 	{
 	uint32 ascrollx = scrolltx*(uint32)c_tilesize,
@@ -1036,7 +775,7 @@ inline void Raindrop::next
 	(
 	Image_window8 *iwin,		// Where to draw.	
 	int scrolltx, int scrollty,	// Tile at top-left corner.
-	Xform_palette& xform,		// Transform array.
+	Xform_palette xform,		// Transform array.
 	int w, int h			// Dims. of window.
 	)
 	{
@@ -1075,7 +814,7 @@ inline void Raindrop::next_random
 	(
 	Image_window8 *iwin,		// Where to draw.	
 	int scrolltx, int scrollty,	// Tile at top-left corner.
-	Xform_palette& xform,		// Transform array.
+	Xform_palette xform,		// Transform array.
 	int w, int h			// Dims. of window.
 	)
 	{
@@ -1104,14 +843,14 @@ void Rain_effect::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	if (!gwin->is_main_actor_inside() &&
-	    !gumpman->showing_gumps(true))
+	    !gwin->get_gump_man()->showing_gumps(true))
 		{			// Don't show rain inside buildings!
 		Image_window8 *win = gwin->get_win();
 		int w = win->get_width(), h = win->get_height();
 					// Get transform table.
-		Xform_palette& xform = sman->get_xform(8);//++++Experiment.
+		Xform_palette xform = gwin->get_xform(8);//++++Experiment.
 		int scrolltx = gwin->get_scrolltx(),
 		    scrollty = gwin->get_scrollty();
 					// Move drops.
@@ -1124,7 +863,7 @@ void Rain_effect::handle_event
 	else
 		{
 		gwin->set_all_dirty();
-		eman->remove_effect(this);
+		gwin->remove_effect(this);
 		}
 	}
 
@@ -1134,12 +873,13 @@ void Rain_effect::handle_event
 
 void Rain_effect::paint
 	(
+	Game_window *gwin
 	)
 	{
-	if (gwin->is_main_actor_inside())
+	if (gwin->is_main_actor_inside() || gwin->get_gump_man()->showing_gumps(true))
 		return;			// Inside.
 					// Get transform table.
-	Xform_palette& xform = sman->get_xform(8);//++++Experiment.
+	Xform_palette xform = gwin->get_xform(8);//++++Experiment.
 	int scrolltx = gwin->get_scrolltx(),
 	    scrollty = gwin->get_scrollty();
 	Image_window8 *win = gwin->get_win();
@@ -1157,7 +897,7 @@ Lightning_effect::~Lightning_effect
 	)
 	{
 	if (flashing)			// Be sure palette is restored.
-		Game_window::get_instance()->get_clock()->set_palette();
+		Game_window::get_game_window()->set_palette();
 	}
 
 /*
@@ -1170,17 +910,17 @@ void Lightning_effect::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	int r = rand();			// Get a random #.
 	int delay = 100;		// Delay for next time.
 	if (flashing)			// Just turned white?  Restore.
 		{
-		gclock->set_palette();
+		gwin->set_palette();
 		flashing = false;
 		active = false;
 		if (curtime >= stop_time)
 			{		// Time to stop.
-			eman->remove_effect(this);
+			gwin->remove_effect(this);
 			return;
 			}
 		if (r%5 == 0)		// Occassionally flash again.
@@ -1194,7 +934,7 @@ void Lightning_effect::handle_event
 		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(62));
 		active = true;
 		flashing = true;
-		gwin->get_pal()->set(PALETTE_LIGHTNING);
+		gwin->set_palette(PALETTE_LIGHTNING);
 		delay = (1 + r%2)*25;
 		}
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
@@ -1211,12 +951,13 @@ Storm_effect::Storm_effect
 	Game_object *egg		// Egg that caused it, or null.
 	) : Weather_effect(duration, delay, 2, egg), start(1)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 					// Start raining soon.
 	int rain_delay = 20 + rand()%1000;
-	eman->add_effect(new Rain_effect(duration - 1, rain_delay));
+	gwin->add_effect(new Rain_effect(duration - 1, rain_delay));
 	int lightning_delay = rain_delay + rand()%500;
-	eman->add_effect(new Lightning_effect(duration - 1, lightning_delay));
+	gwin->add_effect(new Lightning_effect(
+					duration - 1, lightning_delay));
 	}
 
 /*
@@ -1228,7 +969,7 @@ void Storm_effect::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	if (start)
 		{
 		start = 0;
@@ -1238,7 +979,7 @@ void Storm_effect::handle_event
 		gwin->get_tqueue()->add(stop_time, this, udata);
 		}
 	else				// Must be time to stop.
-		eman->remove_effect(this);
+		gwin->remove_effect(this);
 	}
 
 /*
@@ -1249,7 +990,7 @@ Storm_effect::~Storm_effect
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 					// Restore palette.
 	gwin->get_clock()->set_storm(false);
 	}
@@ -1264,13 +1005,13 @@ void Sparkle_effect::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	if (!gwin->is_main_actor_inside())
 		{			// Don't show rain inside buildings!
 		Image_window8 *win = gwin->get_win();
 		int w = win->get_width(), h = win->get_height();
 					// Get transform table.
-		Xform_palette& xform = sman->get_xform(8);
+		Xform_palette xform = gwin->get_xform(8);
 		int scrolltx = gwin->get_scrolltx(),
 		    scrollty = gwin->get_scrollty();
 					// Move drops to random spots.
@@ -1284,7 +1025,7 @@ void Sparkle_effect::handle_event
 	else
 		{
 		gwin->set_all_dirty();
-		eman->remove_effect(this);
+		gwin->remove_effect(this);
 		}
 	}
 
@@ -1299,7 +1040,7 @@ Cloud::Cloud
 	short dx, short dy		// Deltas for movement.
 	) : cloud(CLOUD, 0, SF_SPRITES_VGA), wx(0), wy(0), deltax(dx), deltay(dy), count(-1)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 					// Get abs. values.
 	int adx = deltax > 0 ? deltax : -deltax;
 	int ady = deltay > 0 ? deltay : -deltay;
@@ -1399,12 +1140,12 @@ cout << "Cloud: start_time = " << start_time << endl;
 
 void Cloud::paint
 	(
+	Game_window *gwin
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	if (count > 0)			// Might not have been started.
-		cloud.paint_shape(wx - gwin->get_scrolltx()*c_tilesize, 
-			wy - gwin->get_scrollty()*c_tilesize);
+		gwin->paint_shape(wx - gwin->get_scrolltx()*c_tilesize, 
+			wy - gwin->get_scrollty()*c_tilesize, cloud);
 	}
 
 /*
@@ -1457,10 +1198,10 @@ void Clouds_effect::handle_event
 	)
 	{
 	const int delay = 100;
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	if (curtime >= stop_time)
 		{			// Time to stop.
-		eman->remove_effect(this);
+		gwin->remove_effect(this);
 		gwin->set_all_dirty();
 		return;
 		}
@@ -1476,11 +1217,12 @@ void Clouds_effect::handle_event
 
 void Clouds_effect::paint
 	(
+	Game_window *gwin
 	)
 	{
-	if (!gwin->is_main_actor_inside())
+	if (!gwin->is_main_actor_inside() && !gwin->get_gump_man()->showing_gumps(true))
 		for (int i = 0; i < num_clouds; i++)
-			clouds[i]->paint();
+			clouds[i]->paint(gwin);
 	}
 
 /*
@@ -1502,7 +1244,7 @@ void Earthquake::handle_event
   		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(60));
 	}
 
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	Image_window *win = gwin->get_win();
 	int w = win->get_width(), h = win->get_height();
 	int sx = 0, sy = 0;

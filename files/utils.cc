@@ -2,7 +2,7 @@
  *	utils.cc - Common utility routines.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #include <list>
 #ifdef MACOS
   #include <stat.h>
-#elif !defined(UNDER_CE)
+#else
   #include <sys/stat.h>
 #endif
 #include <unistd.h>
@@ -303,7 +303,7 @@ static void switch_slashes(
  *	Output: 0 if couldn't open.
  */
 
-bool U7open
+void U7open
 	(
 	std::ifstream& in,			// Input stream to open.
 	const char *fname,			// May be converted to upper-case.
@@ -333,13 +333,13 @@ bool U7open
 		{}
 		if (in.good() && !in.fail()) {
 			//std::cout << "got it!" << std::endl;
-			return true; // found it!
+			return; // found it!
 		}
 	} while (base_to_uppercase(name, ++uppercasecount));
 
 	// file not found.
-	throw (file_open_exception(get_system_path(fname)));
-	return false;
+	throw file_open_exception(get_system_path(fname));
+	return;
 }
 
 #ifdef ALPHA_LINUX_CXX
@@ -349,10 +349,10 @@ bool U7open
  *
  * See function above for a functional description
  */
-bool U7open(std::ifstream& in,
+void U7open(std::ifstream& in,
 	    const char *fname)
 {
-	return U7open(in, fname, false);
+	U7open(in, fname, false);
 }
 #endif
 
@@ -364,7 +364,7 @@ bool U7open(std::ifstream& in,
  *	Output: 0 if couldn't open.
  */
 
-bool U7open
+void U7open
 	(
 	std::ofstream& out,			// Output stream to open.
 	const char *fname,			// May be converted to upper-case.
@@ -390,13 +390,13 @@ bool U7open
 	do {
 		out.open(name.c_str(), mode);		// Try to open
 		if (out.good())
-			return true; // found it!
+			return; // found it!
 		out.clear();	// Forget ye not
 	} while (base_to_uppercase(name, ++uppercasecount));
 
 	// file not found.
-	throw (file_open_exception(get_system_path(fname)));
-	return false;
+	throw file_open_exception(get_system_path(fname));
+	return;
 }
 
 #ifdef ALPHA_LINUX_CXX
@@ -406,10 +406,10 @@ bool U7open
  *
  * See function above for a functional description
  */
-bool U7open(std::ofstream& out,
+void U7open(std::ofstream& out,
 	    const char *fname)
 {
-	return U7open(out, fname, false);
+	U7open(out, fname, false);
 }
 #endif
 
@@ -437,7 +437,7 @@ std::FILE* U7open
 	} while (base_to_uppercase(name, ++uppercasecount));
 
 	// file not found.
-	throw (file_open_exception(get_system_path(fname)));
+	throw file_open_exception(get_system_path(fname));
 	return 0;
 }
 
@@ -453,15 +453,7 @@ void U7remove
 {
 	string name = get_system_path(fname);
 
-#if defined(WIN32) && defined(UNICODE)
-	const char *n = name.c_str();
-	int nLen = std::strlen(n)+1;
-	LPTSTR lpszT = (LPTSTR) alloca(nLen*2);
-	MultiByteToWideChar(CP_ACP, 0, n, -1, lpszT, nLen);
-	DeleteFile(lpszT);
-#else
 	std::remove(name.c_str());
-#endif
 }
 
 /*
@@ -473,19 +465,11 @@ int U7exists
 	const char *fname		  // May be converted to upper-case.
 	)
 {
-	string name = get_system_path(fname);
-
-#ifdef UNDER_CE	// This is a bit of a hack for WinCE
-	const char *n = name.c_str();
-	int nLen = std::strlen(n)+1;
-	LPTSTR lpszT = (LPTSTR) alloca(nLen*2);
-	MultiByteToWideChar(CP_ACP, 0, n, -1, lpszT, nLen);
-	return GetFileAttributes(lpszT) != 0xFFFFFFFF;
-#else
-
 	bool	exists;
 	struct stat sbuf;
-
+	
+	string name = get_system_path(fname);
+	
 	int uppercasecount = 0;
 	do {
 		exists = (stat(name, &sbuf) == 0);
@@ -495,7 +479,6 @@ int U7exists
 
 	// file not found
 	return false;
-#endif
 }
 
 /*
@@ -515,26 +498,15 @@ int U7mkdir
 	if (pos != string::npos)
 	  name.resize(pos+1);
 #endif
-#if defined(WIN32) && defined(UNICODE)
-	const char *n = name.c_str();
-	int nLen = std::strlen(n)+1;
-	LPTSTR lpszT = (LPTSTR) alloca(nLen*2);
-	MultiByteToWideChar(CP_ACP, 0, n, -1, lpszT, nLen);
-	return CreateDirectory(lpszT, NULL);
-#elif defined(WIN32)
+#ifdef WIN32
 	return mkdir(name.c_str());
 #else
 	return mkdir(name.c_str(), mode); // Create dir. if not already there.
 #endif
 }
 
-// These are not supported in WinCE (PocketPC) for now
-#ifndef UNDER_CE
-
 /*
  *	Change the current directory
- *
- *  TODO: Make this work in WinCE - Colourless
  */
 
 int U7chdir
@@ -553,9 +525,8 @@ int U7chdir
 
 /*
  *	Copy a file.  May throw an exception.
- *
- *  TODO: Make this work in WinCE - Colourless
  */
+
 void U7copy
 	(
 	const char *src,
@@ -570,7 +541,7 @@ void U7copy
 	} catch (exult_exception& e) {
 		in.close();
 		out.close();
-		throw (e);
+		throw e;
 	}
 	const int bufsize = 0x8000;
 	unsigned char *buf = new unsigned char[0x8000];
@@ -590,13 +561,12 @@ void U7copy
 	in.close();
 	out.close();
 	if (!inok)
-		throw (file_read_exception((const char *)src));
+		throw file_read_exception(src);
 	if (!outok)
-		throw (file_write_exception((const char *)dest));
+		throw file_write_exception(dest);
 
 	return;
 	}
-#endif //UNDER_CE
 
 /*
  *	Take log2 of a number.
@@ -622,7 +592,7 @@ int Log2
 char *newstrdup(const char *s)
 {
 	if(!s)
-		throw (std::invalid_argument("NULL pointer passed to newstrdup"));
+		throw std::invalid_argument("NULL pointer passed to newstrdup");
 	char *ret=new char[std::strlen(s)+1];
 	std::strcpy(ret,s);
 	return ret;

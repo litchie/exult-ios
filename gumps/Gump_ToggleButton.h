@@ -37,7 +37,7 @@ class Gump_ToggleButton : public Gump_button
 		 set_frame(2 * selectionnum);
 	 }
 
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 
 	int getselection() const { return get_framenum()/2; }
 	virtual void toggle(int state) = 0;
@@ -67,7 +67,7 @@ class Gump_ToggleTextButton : public Text_button
 	{
 		delete [] selections; 
 	}
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 
 	int getselection() const { return get_framenum(); }
 	virtual void toggle(int state) = 0;

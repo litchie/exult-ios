@@ -1014,7 +1014,7 @@ void Combo_chooser::scroll
 	bool upwards
 	)
 	{
-	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(vscroll));
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(combo_scroll));
 	float delta = adj->step_increment;
 	if (upwards)
 		delta = -delta;
@@ -1264,15 +1264,15 @@ Combo_chooser::Combo_chooser
 	GtkObject *combo_adj = gtk_adjustment_new(0, 0, 
 				combos.size(), 1, 
 				4, 1.0);
-	vscroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(combo_adj));
+	combo_scroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(combo_adj));
 					// Update window when it stops.
-	gtk_range_set_update_policy(GTK_RANGE(vscroll),
+	gtk_range_set_update_policy(GTK_RANGE(combo_scroll),
 					GTK_UPDATE_DELAYED);
-	gtk_box_pack_start(GTK_BOX(hbox), vscroll, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), combo_scroll, FALSE, TRUE, 0);
 					// Set scrollbar handler.
 	gtk_signal_connect(GTK_OBJECT(combo_adj), "value_changed",
 					GTK_SIGNAL_FUNC(scrolled), this);
-	gtk_widget_show(vscroll);
+	gtk_widget_show(combo_scroll);
 					// At the bottom, status bar:
 	GtkWidget *hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0);
@@ -1328,7 +1328,7 @@ int Combo_chooser::add
 		combos[index] = newcombo;
 		}
 	GtkAdjustment *adj = 
-			gtk_range_get_adjustment(GTK_RANGE(vscroll));
+			gtk_range_get_adjustment(GTK_RANGE(combo_scroll));
 	adj->upper = combos.size();
 	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
 	render();
@@ -1363,7 +1363,7 @@ void Combo_chooser::remove
 	flex_info->set_modified();
 	flex_info->remove(tnum);	// Update flex-file list.
 	GtkAdjustment *adj = 		// Update scrollbar.
-			gtk_range_get_adjustment(GTK_RANGE(vscroll));
+			gtk_range_get_adjustment(GTK_RANGE(combo_scroll));
 	adj->upper = combos.size();
 	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
 	render();
@@ -1401,13 +1401,13 @@ void Combo_chooser::edit
 
 gint Combo_chooser::configure
 	(
-	GtkWidget *widget,		// The draw area.
+	GtkWidget *widget,		// The view window.
 	GdkEventConfigure *event,
 	gpointer data			// ->Combo_chooser
 	)
 	{
 	Combo_chooser *chooser = (Combo_chooser *) data;
-	chooser->Shape_draw::configure();
+	chooser->Shape_draw::configure(widget);
 	chooser->render();
 					// Set new scroll amounts.
 	int w = event->width, h = event->height;
@@ -1415,7 +1415,7 @@ gint Combo_chooser::configure
 	int num_rows = (h - border)/(128 + border);
 	int page_size = per_row*num_rows;
 	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(
-						chooser->vscroll));
+						chooser->combo_scroll));
 	adj->step_increment = per_row;
 	adj->page_increment = page_size;
 	adj->page_size = page_size;
@@ -1505,17 +1505,6 @@ gint Combo_chooser::mouse_press
 	{
 	gtk_widget_grab_focus(widget);	// Enables keystrokes.
 	Combo_chooser *chooser = (Combo_chooser *) data;
-
-    if (event->button == 4) {
-        chooser->scroll(true);
-        return(TRUE);
-    } else if (event->button == 5) {
-        chooser->scroll(false);
-        return(TRUE);
-    }
-
-
-
 	int old_selected = chooser->selected;
 					// Search through entries.
 	for (int i = 0; i < chooser->info_cnt; i++)

@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
  *	An animator:
  */
-class Animator : public Time_sensitive, public Game_singletons
+class Animator : public Time_sensitive
 	{
 protected:
 	Game_object *obj;		// Object we're controlling.
@@ -122,7 +122,7 @@ public:
 	       unsigned int tiley, unsigned int lft = 0);
 	virtual ~Animated_object();
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// +++++Needed on this one:
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
@@ -143,7 +143,7 @@ public:
 	       unsigned int tiley, unsigned int lft = 0);
 	virtual ~Animated_ireg_object();
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
 		{ return get_tile() + 
@@ -151,7 +151,8 @@ public:
 				   -animator->get_deltay(), 0); }
 
 				// Write out to IREG file.
-	virtual void write_ireg(DataSource* out);
+	virtual void write_ireg(std::ostream& out);
+
 	};
 
 /*
@@ -167,14 +168,14 @@ public:
 	       unsigned int tiley, unsigned int lft = 0);
 	virtual ~Animated_ifix_object();
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
 		{ return get_tile() + 
 			Tile_coord(-animator->get_deltax(), 
 				   -animator->get_deltay(), 0); }
 
-	virtual void write_ifix(DataSource* ifix);
+	virtual void write_ifix(std::ostream& ifix);
 
 	};
 #endif

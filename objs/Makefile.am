@@ -20,7 +20,6 @@ libobjs_la_SOURCES = \
 	contain.h \
 	egg.cc \
 	egg.h \
-	find_nearby.h \
 	flags.h \
 	iregobjs.cc \
 	iregobjs.h \
@@ -37,7 +36,6 @@ libobjs_la_SOURCES = \
 	virstone.cc \
 	virstone.h \
 	jawbone.cc \
-	jawbone.h \
-	objnames.cc
+	jawbone.h
 
 CLEANFILES = *~

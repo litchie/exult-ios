@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#if defined(HAVE_FREETYPE2) && !defined(__zaurus__)
+#ifdef HAVE_FREETYPE2
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -75,13 +75,8 @@ bool Gen_font_shape
 			continue;
 			}
 		int w = glyph->bitmap.width, h = glyph->bitmap.rows;
-		int sw = w, sh = h;	// Shape width/height.
-		if (!sw)		// 0 width (like for a space)?
-			sw = glyph->metrics.horiAdvance/64;	// Guessin...
-		if (!sh)
-			sh = glyph->metrics.vertAdvance/64;
 					// Allocate our buffer.
-		int cnt = sw*sh;	// Total #pixels.
+		int cnt = w*h;		// Total #pixels.
 		unsigned char *pixels = new unsigned char[cnt];
 		memset(pixels, bg, cnt);// Fill with background.
 					// I believe this is 1 bit/pixel:
@@ -97,7 +92,7 @@ bool Gen_font_shape
 			}
 					// Not sure about dims here+++++
 		Shape_frame *frame = new Shape_frame(pixels,
-			sw, sh, glyph->bitmap_left, glyph->bitmap_top, true);
+			w, h, glyph->bitmap_left, glyph->bitmap_top, true);
 		delete pixels;
 		shape->set_frame(frame, chr);
 		}

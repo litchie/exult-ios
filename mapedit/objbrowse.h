@@ -31,8 +31,6 @@ private:
 	GtkWidget *widget;
 protected:
 	int selected;			// Index of user-selected entry.
-	GtkWidget *vscroll;		// Vertical scrollbar.
-	GtkWidget *hscroll;		// Horizontal scrollbar.
 	Shape_group *group;		// Non-null to use filter.
 	GtkWidget *popup;		// Popup menu in draw area.
 	Shape_file_info *file_info;	// Our creator (or null).
@@ -40,7 +38,6 @@ protected:
 	GtkWidget *loc_down, *loc_up;	// 'Locate' buttons.
 					// 'Move' buttons:
 	GtkWidget *move_down, *move_up;
-	int config_width, config_height;// For storing prev. dims.
 
 	void set_widget(GtkWidget *w);
 public:

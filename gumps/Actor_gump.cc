@@ -30,6 +30,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 using std::size_t;
+#ifdef __MWERKS__	// Bug in CodeWarrior 7: it incorrectly has snprintf in namespace std
+using std::snprintf;
+#endif
 
 #define TWO_HANDED_BROWN_SHAPE	48
 #define TWO_HANDED_BROWN_FRAME	0
@@ -90,25 +93,26 @@ int Actor_gump::find_closest
 
 Actor_gump::Actor_gump
 	(
-	Container_game_object *cont,	// Container it represents.  MUST
-					//   be an Actor.
+	Container_game_object *cont,	// Container it represents.
 	int initx, int inity, 		// Coords. on screen.
 	int shnum			// Shape #.
 	) : Gump(cont, initx, inity, shnum)
 {
 	set_object_area(Rectangle(26, 0, 104, 132), 6, 136);
-	Actor *npc = cont->as_actor();
+
 	heart_button = new Heart_button(this, heartx, hearty);
-	if (npc->get_npc_num() == 0)
+	if (cont->get_npc_num() == 0)
 		disk_button = new Disk_button(this, diskx, disky);
 	else
 		disk_button = NULL;
-	if (npc->get_npc_num() == 0)
+	if (cont->get_npc_num() == 0)
 		combat_button = new Combat_button(this, combatx, combaty);
 	else
 		combat_button = NULL;
-	halo_button = new Halo_button(this, halox, haloy, npc);
-	cmode_button = new Combat_mode_button(this, cmodex, cmodey, npc);
+	halo_button = new Halo_button(this, halox, haloy,
+							(Actor *) cont);
+	cmode_button = new Combat_mode_button(this, cmodex, cmodey, 
+							(Actor *) cont);
 							
 	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 	{			// Set object coords.
@@ -141,21 +145,22 @@ Actor_gump::~Actor_gump
 
 Gump_button *Actor_gump::on_button
 	(
+	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
 {
-	Gump_button *btn = Gump::on_button(mx, my);
+	Gump_button *btn = Gump::on_button(gwin, mx, my);
 	if (btn)
 		return btn;
-	else if (heart_button && heart_button->on_button(mx, my))
+	else if (heart_button && heart_button->on_button(gwin, mx, my))
 		return heart_button;
-	else if (disk_button && disk_button->on_button(mx, my))
+	else if (disk_button && disk_button->on_button(gwin, mx, my))
 		return disk_button;
-	else if (combat_button && combat_button->on_button(mx, my))
+	else if (combat_button && combat_button->on_button(gwin, mx, my))
 		return combat_button;
-	else if (halo_button && halo_button->on_button(mx, my))
+	else if (halo_button && halo_button->on_button(gwin, mx, my))
 		return halo_button;
-	else if (cmode_button && cmode_button->on_button(mx, my))
+	else if (cmode_button && cmode_button->on_button(gwin, mx, my))
 		return cmode_button;
 	return 0;
 }
@@ -223,6 +228,7 @@ void Actor_gump::set_to_spot
 	int index			// Spot index.
 	)
 {
+	Game_window *gwin = Game_window::get_game_window();
 					// Get shape info.
 	Shape_frame *shape = obj->get_shape();
 	if (!shape)
@@ -253,6 +259,7 @@ void Actor_gump::set_to_spot
 
 void Actor_gump::paint
 	(
+	Game_window *gwin
 	)
 {
 					// Watch for any newly added objs.
@@ -262,39 +269,38 @@ void Actor_gump::paint
 		if (obj)//&& !obj->get_cx() && !obj->get_cy())
 			set_to_spot(obj, i);
 	}
-
-	Gump::paint();			// Paint gump & objects.
+	Gump::paint(gwin);	// Paint gump & objects.
 
 	// Paint over blue lines for 2 handed
-	Actor *actor = container->as_actor();
+	Actor *actor = dynamic_cast<Actor*>(container);
 	if (actor) {
 		if (actor->is_two_fingered()) {
 			int sx = x + 36,	// Note this is the right finger slot shifted slightly
 				sy = y + 70;
 			ShapeID sid(TWO_FINGER_BROWN_SHAPE, TWO_FINGER_BROWN_FRAME, SF_GUMPS_VGA);
-			sid.paint_shape (sx,sy);
+			gwin->paint_shape(sx,sy,sid);
 		}
 		if (actor->is_two_handed()) {
 			int sx = x + 36,	// Note this is the right hand slot shifted slightly
 				sy = y + 55;
 			ShapeID sid(TWO_HANDED_BROWN_SHAPE, TWO_HANDED_BROWN_FRAME, SF_GUMPS_VGA);
-			sid.paint_shape (sx,sy);
+			gwin->paint_shape(sx,sy,sid);
 		}
 	}
 					// Paint buttons.
-	if (heart_button) heart_button->paint();
-	if (disk_button) disk_button->paint();
-	if (combat_button) combat_button->paint();
-	if (halo_button) halo_button->paint();
-	if (cmode_button) cmode_button->paint();
+	if (heart_button) heart_button->paint(gwin);
+	if (disk_button) disk_button->paint(gwin);
+	if (combat_button) combat_button->paint(gwin);
+	if (halo_button) halo_button->paint(gwin);
+	if (cmode_button) cmode_button->paint(gwin);
 					// Show weight.
 	int max_weight = container->get_max_weight();
 	int weight = container->get_weight()/10;
 	char text[20];
 	snprintf(text, 20, "%d/%d", weight, max_weight);
-	int twidth = sman->get_text_width(2, text);
+	int twidth = gwin->get_text_width(2, text);
 	const int boxw = 102;
-	sman->paint_text(2, text, x + 28 + (boxw - twidth)/2, y + 120);
+	gwin->paint_text(2, text, x + 28 + (boxw - twidth)/2, y + 120);
 }
 
 Container_game_object * Actor_gump::find_actor(int mx, int my)

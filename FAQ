@@ -55,6 +55,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 3.18. Are there issues with the SI style paperdoll in BG?
 3.19. How do I disable all improvements?
 3.20. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.21. Why is Exult Studio not working with 1.0 release of Exult?
 
 4. Bugs, known issues and not yet implemented features
 4.1. Bugs
@@ -91,19 +92,18 @@ Version number of actual version of Exult is now 1.00!
 * 1.12. On what platform does Exult run? changed location of Zaurus package.
 * 3.6. Why is the party formation different? rewrote that a bit.
 * 3.16. Why can't I summon the Great Hierophant (SI)? not an issue with Exult actually.
-* 4.4. Known Issues drawing order is messed up.
 
 
 
 0.4. - 24 July 2002
 * 1.12. On what platform does Exult run? the Amiga port has been integrated ages ago and we have a Zaurus port now.
-* 3.2. Why can't I move my party with the arrow keys? Nadir implemented arrow walking now.
 * 4.5. Known Compile Issues makefile.cygwin no longer exists.
 
 
 
 0.5. - 18 June 2002
 * 1.9. Why are there now two different snapshots? same as on our main page, also some explanation for the different FAQ/Docs.
+* 3.21. Why is Exult Studio not working with 1.0 release of Exult?Exult Studio is no longer supported in RC2 and stable snapshots.
 * 4.2. How do I submit a proper bug report? SourceForge requires registration for attaching files.
 
 
@@ -234,7 +234,7 @@ If you need help with the game itself, like walkthroughs, hints, location of NPC
 
 
 3.2. Why can't I move my party with the arrow keys?
-Nadir implemented keyboard walking in the 1.1 (unstable) branch of our source. For details see ReadMe.txt.
+Nadir has implemented this in the 1.1.x branch of our code.
 
 
 3.3. Do the carriages, ships and the magic carpet work?
@@ -345,6 +345,10 @@ Jeff:
 As for the future, my main plan is to add editing capabilities, with the long-range goal of writing an original RPG.
 
 
+3.21. Why is Exult Studio not working with 1.0 release of Exult?
+Please see 1.9. for information on our two different branches. Exult Studio will no longer be supported in the 1.0.x (stable) branch. A lot of changes we will put into the unstable branch will directly concern Exult Studio.
+
+
 
 --------------------------------------------------------------------------------
 
@@ -380,7 +384,6 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 
 
 4.4. Known Issues
-* Recent changes to the drawing method have screwed it up. This involves the drawing order when opening/closing some doors and the save game gump still showing after a reload.
 * There might be a bug when you have any of the games installed in a path with spaces in it (see ReadMe.txt).
 * Stealing and killing innocent NPCs doesn't work yet like it does in the original
 * Movement is sometimes jerky or slow.

@@ -53,14 +53,14 @@ class Npc_face_info {
   Rectangle face_rect;		// Rectangle where face is shown.
   Rectangle text_rect;		// Rectangle NPC statement is shown in.
   int last_text_height;		// Height of last text painted.
-  string cur_text;		// Current text being shown.
   Npc_face_info(ShapeID &sid, int num) : shape(sid), face_num(num), text_pending(0)
   {  }
 };
 
 Conversation::Conversation() :
-  num_faces(0), last_face_shown(0), conv_choices(0), avatar_face(0,0,0,0)
+  num_faces(0), last_face_shown(0), conv_choices(0)
 {
+  gwin = Game_window::get_game_window();
 
   const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
   for (int i = 0; i < max_faces; i++)
@@ -194,9 +194,9 @@ void Conversation::show_face(int shape, int frame, int slot)
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 
 	// Make sure mode is set right.
-	Palette *pal = gwin->get_pal();	// Watch for wierdness (lightning).
-	if (pal->get_brightness() >= 300)
-		pal->set(-1, 100);
+					// Watch for wierdness (lightning).
+	if (gwin->get_brightness() >= 300)
+		gwin->set_palette(-1, 100);
 
 	if (SI)				// Serpent Isle?
 	{				// Petra?  ???+++Is this right?
@@ -253,7 +253,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 			delete face_info[slot];
 		face_info[slot] = info;
 					// Get text height.
-		int text_height = sman->get_text_height(0);
+		int text_height = gwin->get_text_height(0);
 					// Figure starting y-coord.
 					// Get character's portrait.
 		Shape_frame *face = shape >= 0 ? face_sid.get_shape() : 0;
@@ -290,7 +290,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 		info->last_text_height = info->text_rect.h;
 		}
 	gwin->get_win()->set_clip(0, 0, screenw, screenh);
-	paint_faces();			// Paint all faces.
+	paint();			// Paint all faces.
 	gwin->get_win()->clear_clip();
 	}
 
@@ -323,10 +323,8 @@ void Conversation::remove_slot_face
 	if (slot >= max_faces || !face_info[slot])
 		return;			// Invalid.
 	Npc_face_info *info = face_info[slot];
-					// These are needed in case conversa-
-					//   tion is done.
-	gwin->add_dirty(info->face_rect);
-	gwin->add_dirty(info->text_rect);
+	gwin->paint(info->face_rect);
+	gwin->paint(info->text_rect);
 	delete face_info[slot];
 	face_info[slot] = 0;
 	num_faces--;
@@ -341,6 +339,20 @@ void Conversation::remove_slot_face
 	}
 
 
+#if 0	/* ++++I think this can go away.
+/*
+ *	Remove the last face shown (SI).  (Or maybe it's just slot 1 always?)
+ */
+
+void Conversation::remove_last_face
+	(
+	)
+	{
+	if (last_face_shown >= 0 && face_info[last_face_shown])
+		remove_face(face_info[last_face_shown]->shape);
+	}
+#endif
+
 /*
  *	Show what the NPC had to say.
  */
@@ -350,29 +362,22 @@ void Conversation::show_npc_message(const char *msg)
 	if (last_face_shown == -1)
 		return;
 	Npc_face_info *info = face_info[last_face_shown];
-	info->cur_text = "";
 	Rectangle& box = info->text_rect;
-//	gwin->paint(box);		// Clear what was there before.
-//	paint_faces();
-	gwin->paint();
+	gwin->paint(box);		// Clear what was there before.
 	int height;			// Break at punctuation.
-	while ((height = sman->paint_text_box(0, msg, box.x,box.y,box.w,box.h, 
+	while ((height = gwin->paint_text_box(0, msg, box.x,box.y,box.w,box.h, 
 								-1, 1, gwin->get_text_bg())) < 0)
 		{			// More to do?
-		info->cur_text = string(msg, -height);
 		int x, y; char c;
-		gwin->paint();		// Paint scenery beneath.
-		Get_click(x, y, Mouse::hand, &c, false, this);
-//		gwin->paint(box);	// Clear area again.
-		gwin->paint();
+		Get_click(x, y, Mouse::hand, &c);
+		gwin->paint(box);	// Clear area again.
 		msg += -height;
 		}
 					// All fit?  Store height painted.
 	info->last_text_height = height;
-	info->cur_text = msg;
 	info->text_pending = 1;
 	gwin->set_painted();
-//	gwin->show();
+	gwin->show();
 }
 
 
@@ -413,8 +418,8 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 					// Get screen rectangle.
 	Rectangle sbox = gwin->get_win_rect();
 	int x = 0, y = 0;		// Keep track of coords. in box.
-	int height = sman->get_text_height(0);
-	int space_width = sman->get_text_width(0, " ");
+	int height = gwin->get_text_height(0);
+	int space_width = gwin->get_text_width(0, " ");
 
 
 					// Get main actor's portrait.
@@ -491,16 +496,16 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	Rectangle mbox(fx, fy, face->get_width(), face->get_height());
 	mbox = mbox.intersect(sbox);
 	avatar_face = mbox;		// Repaint entire width.
+					// Draw portrait.
+	gwin->paint_shape(mbox.x + face->get_xleft(), 
+			  mbox.y + face->get_yabove(), face);
 					// Set to where to draw sentences.
 	Rectangle tbox(mbox.x + mbox.w + 8, mbox.y + 4,
 				sbox.w - mbox.x - mbox.w - 16,
 //				sbox.h - mbox.y - 16);
 				5*height);// Try 5 lines.
 	tbox = tbox.intersect(sbox);
-//	gwin->paint(tbox);              // Paint background.
-					// Draw portrait.
-	sman->paint_shape(mbox.x + face->get_xleft(), 
-			  mbox.y + face->get_yabove(), face);
+	gwin->paint(tbox);              // Paint background.
 	delete [] conv_choices;		// Set up new list of choices.
 	conv_choices = new Rectangle[num_choices + 1];
 	for (int i = 0; i < num_choices; i++)
@@ -508,7 +513,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 		char text[256];
 		text[0] = 127;		// A circle.
 		strcpy(&text[1], choices[i]);
-		int width = sman->get_text_width(0, text);
+		int width = gwin->get_text_width(0, text);
 		if (x > 0 && x + width >= tbox.w)
 			{		// Start a new line.
 			x = 0;
@@ -519,7 +524,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 					width, height);
 		conv_choices[i] = conv_choices[i].intersect(sbox);
 		avatar_face = avatar_face.add(conv_choices[i]);
-		sman->paint_text_box(0, text, tbox.x + x, tbox.y + y,
+		gwin->paint_text_box(0, text, tbox.x + x, tbox.y + y,
 			width + space_width, height, 0, 0, gwin->get_text_bg());
 		x += width + space_width;
 		}
@@ -552,8 +557,7 @@ void Conversation::show_avatar_choices()
 
 void Conversation::clear_avatar_choices()
 {
-//	gwin->paint(avatar_face);	// Paint over face and answers.
-	avatar_face.w = 0;
+	gwin->paint(avatar_face);
 }
 
 
@@ -576,25 +580,12 @@ int Conversation::conversation_choice(int x, int y)
 }
 
 /*
- *	Repaint everything.
+ *	Repaint the faces.   Assumes clip has already been set to screen.
+ *	???Maybe we should paint text too.  We'd have to keep better track.
  */
 
 void Conversation::paint
 	(
-	)
-	{
-	if (avatar_face.w)		// Choices?
-		show_avatar_choices();
-	paint_faces(true);
-	}
-
-/*
- *	Repaint the faces.   Assumes clip has already been set to screen.
- */
-
-void Conversation::paint_faces
-	(
-	bool text			// Show text too.
 	)
 	{
 	if (!num_faces)
@@ -613,16 +604,9 @@ void Conversation::paint_faces
 			face_xleft = face->get_xleft();
 			face_yabove = face->get_yabove();
 					// Use translucency.
-			sman->paint_shape(
+			gwin->paint_shape(
 				finfo->face_rect.x + face_xleft,
 				finfo->face_rect.y + face_yabove, face, 1);
-			}
-		if (text)		// Show text too?
-			{
-			Rectangle& box = finfo->text_rect;
-			sman->paint_text_box(0, finfo->cur_text.c_str(), 
-				box.x,box.y,box.w,box.h, -1, 1, 
-							gwin->get_text_bg());
 			}
 		}
 	}
@@ -656,5 +640,4 @@ void Conversation::pop_answers()
 {
   answers=answer_stack.front();
   answer_stack.pop_front();
-  gwin->paint();			// Really just need to figure tbox.
 }

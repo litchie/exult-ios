@@ -41,9 +41,9 @@ public:
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Can this be clicked on?
-	virtual int is_findable();
+	virtual int is_findable(Game_window *gwin);
 	};
 
 /*
@@ -127,15 +127,15 @@ public:
 	int is_solid_area() const
 		{ return solid_area; }
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Run usecode function.
-	virtual void activate(int event = 1);
-	virtual bool edit();		// Edit in ExultStudio.
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
-	virtual void activate(Game_object *obj, bool must = false);
+	virtual void activate(Usecode_machine *umachine, Game_object *obj,
+							bool must = false);
 	void print_debug();
-	static void set_weather(int weather, int len = 15,
+	static void set_weather(Game_window *gwin, int weather, int len = 15,
 						Game_object *egg = 0);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
@@ -144,14 +144,10 @@ public:
 	virtual int is_egg() const	// An egg?
 		{ return 1; }
 					// Write out to IREG file.
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. Returns -1 if can't write to buffer
-	virtual int get_ireg_size();
+	virtual void write_ireg(std::ostream& out);
 
 	virtual void reset() 
 		{ flags &= ~(1 << hatched); }
-
-	virtual Egg_object *as_egg() { return this; }
 
 	};
 
@@ -174,12 +170,12 @@ public:
 				unsigned char ty);
 	virtual ~Animated_egg_object();
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Can this be clicked on?
-	virtual int is_findable()
-		{ return Ireg_game_object::is_findable(); }
+	virtual int is_findable(Game_window *gwin)
+		{ return Ireg_game_object::is_findable(gwin); }
 					// Run usecode function.
-	virtual void activate(int event = 1);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 	};
 
 /*
@@ -196,12 +192,11 @@ public:
 							lft, ty)
 		{  }
 					// Run usecode function.
-	virtual void activate(int event = 1);
-	virtual void activate(Game_object *obj, bool must = false);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual void activate(Usecode_machine *umachine, Game_object *obj,
+							bool must = false);
 					// Write out to IREG file.
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. Returns -1 if can't write to buffer
-	virtual int get_ireg_size();
+	virtual void write_ireg(std::ostream& out);
 	};
 
 /*
@@ -215,8 +210,10 @@ public:
 		unsigned int tiley, unsigned int lft);
 
 					// Run usecode function.
-	virtual void activate(int event = 1);
-	virtual void activate(Game_object *obj, bool must = false);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
+
+	virtual void activate(Usecode_machine *umachine, Game_object *obj,
+							bool must = false);
 
 					// Can it be activated?
 	virtual int is_active(Game_object *obj,
@@ -225,13 +222,11 @@ public:
 	virtual void set_area();		// Set up active area.
 
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Can this be clicked on?
-	virtual int is_findable()
-		{ return Ireg_game_object::is_findable(); }
+	virtual int is_findable(Game_window *gwin)
+		{ return Ireg_game_object::is_findable(gwin); }
 
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. Returns -1 if can't write to buffer
-	virtual int get_ireg_size();
+	virtual void write_ireg(std::ostream& out);
 };
 #endif

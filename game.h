@@ -26,7 +26,6 @@
 #include "exult_constants.h"
 #include "palette.h"
 #include "vgafile.h"
-#include "singles.h"
 
 class Game_window;
 class Image_window8;
@@ -49,7 +48,7 @@ enum Exult_Game {
 #define GAME_BG (Game::get_game_type() == BLACK_GATE)
 #define GAME_SI (Game::get_game_type() == SERPENT_ISLE)
 
-class Game : public Game_singletons {
+class Game {
 private:
 	static bool new_game_flag;
 	static Exult_Game game_type;
@@ -73,7 +72,7 @@ public:
 	Game_window *gwin;
 	Image_window8 *win;
 	Image_buffer8 *ibuf;
-	//	Palette pal;
+	Palette pal;
 
 	Game();
 	virtual ~Game();
@@ -116,7 +115,7 @@ public:
 	void add_resource(const char *name, const char *str, int num);
 	str_int_pair get_resource(const char *name);
 	
-	bool show_menu(bool skip = false);
+	bool show_menu();
 	void journey_failed_text();
 	void set_jive () {jive = true;}
 	void clear_jive () {jive = false;}

@@ -52,37 +52,39 @@ int Jawbone_gump::add(Game_object *obj, int mx, int my,	int sx, int sy,
 	return jawbone->add(obj, dont_check, combine);
 }
 
-void Jawbone_gump::paint()
+void Jawbone_gump::paint(Game_window *gwin)
 {
 	// Paint gump itself
-	paint_shape(x, y);
+	gwin->paint_shape(x, y, *this);
 
 	// Paint red "checkmark".
-	check_button->paint();
+	check_button->paint(gwin);
 
 	jawbone->find_teeth();
 
 	int i;	// Blame MSVC
 	for (i=0; i<9; i++)
 		if (jawbone->teeth[i])
-			paint_tooth(i);
+			paint_tooth(gwin, i);
 	for (i=17; i>8; i--)
 		if (jawbone->teeth[i])
-			paint_tooth(i);
+			paint_tooth(gwin, i);
 }
 
-void Jawbone_gump::paint_tooth(int index)
+void Jawbone_gump::paint_tooth(Game_window* gwin, int index)
 {
 	ShapeID shape(game->get_shape("gumps/tooth"), index, SF_GUMPS_VGA);
 
 	int objx = toothx[index];
 	int objy = toothy[index];
 
-	shape.paint_shape(x + objx, y + objy);
+	gwin->paint_shape(x + objx, y + objy, shape);
 }
 
 Game_object *Jawbone_gump::find_object(int mx, int my)
 {
+	Game_window* gwin = Game_window::get_game_window();
+
 	jawbone->find_teeth();
 
 	// get position relative to gump
@@ -110,6 +112,8 @@ Game_object *Jawbone_gump::find_object(int mx, int my)
 
 bool Jawbone_gump::on_tooth(int sx, int sy, int index)
 {
+	Game_window* gwin = Game_window::get_game_window();
+
 	ShapeID sid(game->get_shape("gumps/tooth"), index, SF_GUMPS_VGA);
 	Shape_frame *shape = sid.get_shape();
 

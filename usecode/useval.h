@@ -88,7 +88,7 @@ public:
 	void	push_back(int);
 	bool operator==(const Usecode_value& v2) const;
 	bool operator!=(const Usecode_value& v2) const { return !(*this == v2); }
-
+	
 	inline Val_type get_type() const
 		{ return type; }
 	int get_array_size() const		// Get size of array.

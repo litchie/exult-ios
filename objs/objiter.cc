@@ -31,12 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunks.h"
 
 /*
-#ifdef _MSC_VER
-#pragma optimize("t", off)
-#endif
-*/
-
-/*
  *	Create to start after/before a given object within a chunk.
  */
 
@@ -44,7 +38,8 @@ template<class D>
 D_Recursive_object_iterator<D>::D_Recursive_object_iterator
 	(
 	Game_object *start		// Start here.
-	) : elems(start->get_outermost()->get_chunk()->get_objects()), child(0)
+	) : elems(Game_window::get_game_window()->get_chunk(
+		start->get_outermost())->get_objects()), child(0)
 	{
 					// Get what obj. is in (or itself).
 	Game_object *owner = start->get_outermost();
@@ -82,7 +77,8 @@ template<class D> Game_object *D_Recursive_object_iterator<D>::get_next
 	if (!obj)
 		return 0;		// All done.
 					// Is it a container?
-	Container_game_object *c = obj->as_container();
+	Container_game_object *c = 
+			dynamic_cast<Container_game_object *> (obj);
 	if (c)				// Container?  Set to go through it.
 		child = new D_Recursive_object_iterator<D>(
 							c->get_objects());

@@ -44,7 +44,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define TB_BACKGROUND			140
 #define TB_RT_HIGHLIGHT			139
 
-Text_button::Text_button(Gump *p, const std::string &str, int x, int y, int w, int h)
+Text_button::Text_button(Gump *p, std::string str, int x, int y, int w, int h)
 	: Gump_button(p, 0, x, y, SF_OTHER), text(str), width(w), height(h)
 {
 	init();
@@ -59,8 +59,7 @@ void Text_button::init()
 	text_y = 2 + (height - 11)/2;
 
 	// We will get the text width
-	int text_width = sman->get_font(TB_FONTNUM)->get_text_width(
-								text.c_str());
+	int text_width = Game_window::get_game_window()->get_font(TB_FONTNUM)->get_text_width(text.c_str());
 
 	if (width < text_width + 4) width = text_width + 4;
 
@@ -68,7 +67,7 @@ void Text_button::init()
 	text_x = (width - text_width) >> 1;
 }
 
-void Text_button::paint()
+void Text_button::paint(Game_window *gwin)
 {
 	Image_window8 *iwin = gwin->get_win();
 
@@ -148,11 +147,10 @@ void Text_button::paint()
 	// Top Right Highligh on Background 
 	iwin->fill8(TB_RT_HIGHLIGHT, 1, 1, px+width+offset-3, py+offset+2);
 
-	sman->paint_text(TB_FONTNUM, text.c_str(), px+text_x+offset, 
-							py+text_y+offset);
+	gwin->paint_text(TB_FONTNUM, text.c_str(), px+text_x+offset, py+text_y+offset);
 }
 
-int Text_button::on_widget(int mx, int my)
+int Text_button::on_widget(Game_window *gwin, int mx, int my)
 {
 	int px = x;
 	int py = y;

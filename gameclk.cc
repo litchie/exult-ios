@@ -37,17 +37,17 @@ void Game_clock::set_time_palette
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	Actor *main_actor = gwin->get_main_actor();
 	int new_palette;
 	if (main_actor && main_actor->get_flag(Obj_flags::invisible))
 	{
-		gwin->get_pal()->set(PALETTE_INVISIBLE);
+		gwin->set_palette(PALETTE_INVISIBLE);
 		return;
 		}
 
 	if (cheat.in_infravision()) {
-		gwin->get_pal()->set(PALETTE_DAY);
+		gwin->set_palette(PALETTE_DAY);
 		return;
 	}
 
@@ -72,7 +72,7 @@ void Game_clock::set_time_palette
 					// Gump mode, or light spell?
 	if (gwin->is_special_light() && new_palette == PALETTE_NIGHT)
 		new_palette = PALETTE_DAWN;
-	gwin->get_pal()->set(new_palette);
+	gwin->set_palette(new_palette);
 	}
 
 /*
@@ -121,7 +121,7 @@ void Game_clock::check_hunger
 	(
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	Actor *party[9];		// Get party + Avatar.
 	int cnt = gwin->get_party(party, 1);
 	for (int i = 0; i < cnt; i++)
@@ -132,7 +132,7 @@ static void Check_freezing
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 					// Avatar's flag applies to party.
 	bool freeze = gwin->get_main_actor()->get_flag(Obj_flags::freeze)!=false;
 	Actor *party[9];		// Get party + Avatar.
@@ -152,7 +152,7 @@ void Game_clock::increment
 	int num_minutes			// # of minutes to increment.
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	int new_3hour, old_3hour, delta_3hour;
 	long new_min;
 	
@@ -234,7 +234,7 @@ void Game_clock::fake_next_period
 	hour = ((hour/3 + 1)*3);
 	day += hour/24;			// Update day.
 	hour %= 24;
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	set_time_palette();
 	check_hunger();
 	gwin->schedule_npcs(hour/3);

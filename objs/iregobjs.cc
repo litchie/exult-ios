@@ -31,9 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamemap.h"
 #include "chunks.h"
 #include "cheat.h"
-#include "databuf.h"
-#include "ucsched.h"
-#include "Gump_manager.h"
 
 using std::ostream;
 
@@ -43,14 +40,15 @@ using std::ostream;
 
 void Ireg_game_object::paint
 	(
+	Game_window *gwin
 	)
 	{
 	int x, y;
 	gwin->get_shape_location(this, x, y);
 	if (flags & (1L << Obj_flags::invisible))
-		paint_invisible(x, y);
+		gwin->paint_invisible(x, y, this->get_shape());
 	else
-		paint_shape(x, y);
+		gwin->paint_shape(x, y, *this);
 	}
 
 /*
@@ -87,14 +85,16 @@ void Ireg_game_object::remove_this
 		owner->remove(this);
 	else				// In the outside world.
 		{
-		Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
+		Map_chunk *chunk = 
+			Game_window::get_game_window()->get_chunk_safely(
+								cx, cy);
 		if (chunk)
 			chunk->remove(this);
 		}
 	if (!nodel)
 	{
 		cheat.clear_this_grabbed_actor((Actor*)this);	// Could be an actor
-		gwin->delete_object(this);
+		Game_window::get_game_window()->delete_object(this);
 	}
 	}
 
@@ -106,8 +106,9 @@ int Ireg_game_object::is_dragable
 	(
 	) const
 	{
+	Game_window *gwin = Game_window::get_game_window();
 					// 0 weight means 'too heavy'.
-	return get_info().get_weight() > 0;
+	return gwin->get_info(this).get_weight() > 0;
 	}
 
 /*
@@ -116,7 +117,7 @@ int Ireg_game_object::is_dragable
 
 void Ireg_game_object::write_ireg
 	(
-	DataSource *out
+	ostream& out
 	)
 	{
 	unsigned char buf[11];		// 10-byte entry + length-byte.
@@ -127,24 +128,15 @@ void Ireg_game_object::write_ireg
 					// Special case for 'quantity' items:
 	if (get_flag(Obj_flags::okay_to_take))
 		{
-		Shape_info& info = get_info();
+		Shape_info& info = Game_window::get_game_window()->get_info(
+									this);
 		if (info.has_quantity())
 			buf[6] |= 0x80;
 		else if (info.has_quality_flags())
 			buf[6] |= (1<<3);
 		}
 	buf[7] = (get_flag(Obj_flags::is_temporary) != 0);
-	out->write((char*)buf, sizeof(buf));
+	out.write((char*)buf, sizeof(buf));
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
-
-// Get size of IREG. Returns -1 if can't write to buffer
-int Ireg_game_object::get_ireg_size()
-{
-	// These shouldn't ever happen, but you never know
-	if (gumpman->find_gump(this) || Usecode_script::find(this))
-		return -1;
-
-	return 11;
-}

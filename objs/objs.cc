@@ -37,7 +37,6 @@
 #include "game.h"
 #include "Gump_manager.h"
 #include "effects.h"
-#include "databuf.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -61,6 +60,9 @@ using std::rand;
 using std::ostream;
 using std::strchr;
 using std::string;
+#ifdef __MWERKS__	// Bug in CodeWarrior 7: it incorrectly has snprintf in namespace std
+using std::snprintf;
+#endif
 
 					// Offset to each neighbor, dir=0-7.
 short Tile_coord::neighbors[16] = {0,-1, 1,-1, 1,0, 1,1, 0,1,
@@ -99,17 +101,6 @@ int Game_object::get_direction
 	}
 
 /*
- *	Get chunk this is in.
- */
-
-Map_chunk *Game_object::get_chunk
-	(
-	)
-	{
-	return gmap->get_chunk(cx, cy);
-	}
-
-/*
  *	Does a given shape come in quantity.
  */
 static int Has_quantity
@@ -117,13 +108,15 @@ static int Has_quantity
 	int shnum			// Shape number.
 	)
 	{
-	Shape_info& info = ShapeID::get_info(shnum);
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(shnum);
 	return info.has_quantity();
 	}
 
 static int Has_hitpoints(int shnum)
 {
-	Shape_info& info = ShapeID::get_info(shnum);
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(shnum);
 	return ((info.get_shape_class() == Shape_info::has_hp) ||
 			(info.get_shape_class() == Shape_info::container));
 
@@ -174,7 +167,7 @@ int Game_object::get_volume
 	(
 	) const
 	{
-	int vol = get_info().get_volume();
+	int vol = Game_window::get_game_window()->get_info(this).get_volume();
 	return vol;			// I think U7 ignores quantity!
 	}
 
@@ -222,8 +215,9 @@ int Game_object::modify_quantity
 	int oldvol = get_volume();	// Get old volume used.
 	quality = (char) newquant;	// Store new value.
 	int shapenum = get_shapenum();
+	Game_window *gwin = Game_window::get_game_window();
 					// Set appropriate shape.
-	int num_frames = get_num_frames();
+	int num_frames = gwin->get_shapes().get_num_frames(shapenum);
 	int new_frame = newquant - 1;
 	if (new_frame > 7)		// Range is 0-7.
 		new_frame = 7;
@@ -251,6 +245,8 @@ void Game_object::move
 	int newlift
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
 	Map_chunk *newchunk = gmap->get_chunk_safely(newcx, newcy);
@@ -270,20 +266,6 @@ void Game_object::move
 	}
 
 /*
- *	Change the frame and set to repaint areas.
- */
-
-void Game_object::change_frame
-	(
-	int frnum
-	)
-	{
-	gwin->add_dirty(this);		// Set to repaint old area.
-	set_frame(frnum);
-	gwin->add_dirty(this);		// Set to repaint new.
-	}
-
-/*
  *	Swap positions with another object (of the same footprint).
  *
  *	Output: 1 if successful, else 0.
@@ -294,8 +276,9 @@ int Game_object::swap_positions
 	Game_object *obj2
 	)
 	{
-	Shape_info& inf1 = get_info();
-	Shape_info& inf2 = obj2->get_info();
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& inf1 = gwin->get_info(this);
+	Shape_info& inf2 = gwin->get_info(obj2);
 	if (inf1.get_3d_xtiles() != inf2.get_3d_xtiles() ||
 	    inf1.get_3d_ytiles() != inf2.get_3d_ytiles())
 		return 0;		// Not the same size.
@@ -343,7 +326,7 @@ static int Check_mask
 	int mask
 	)
 	{
-	Shape_info& info = obj->get_info();
+	Shape_info& info = gwin->get_info(obj);
 	if ((mask&(4|8)) &&		// Both seem to be all NPC's.
 	    !info.is_npc())
 		return 0;
@@ -361,7 +344,8 @@ static int Check_mask
 			{
 			if (!(mask&0x40))	// Guess:  Inv. party member.
 				return 0;
-			if (!obj->get_flag(Obj_flags::in_party))
+			if (obj != gwin->get_main_actor() && 
+						obj->get_party_id() < 0)
 				return 0;
 			}
 	return 1;			// Passed all tests.
@@ -373,10 +357,107 @@ static int Check_mask
  *	Output:	# found, appended to vec.
  */
 
+
+#ifndef MSVC_FIND_NEARBY_KLUDGE
+
+template <class T>
+#ifdef ALPHA_LINUX_CXX
+int Game_object::find_nearby_static
+#else
+int Game_object::find_nearby
+#endif
+	(
+	Exult_vector<T*>& vec,	// Objects appended to this.
+	Tile_coord pos,			// Look near this point.
+	int shapenum,			// Shape to look for.  
+					//   -1=any (but always use mask?),
+					//   c_any_shapenum=any.
+	int delta,			// # tiles to look in each direction.
+	int mask,			// See Check_mask() above.
+	int qual,			// Quality, or c_any_qual for any.
+	int framenum			// Frame #, or c_any_framenum for any.
+	)
+	{
+	if (delta < 0)			// +++++Until we check all old callers.
+		delta = 24;
+	if (shapenum > 0 && mask == 4)	// Ignore mask=4 if shape given!
+		mask = 0;
+	int vecsize = vec.size();
+	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
+	Rectangle tiles(pos.tx - delta, pos.ty - delta, 1 + 2*delta, 1 + 
+								2*delta);
+					// Stay within world.
+	Rectangle world(0, 0, c_num_chunks*c_tiles_per_chunk, 
+					c_num_chunks*c_tiles_per_chunk);
+	tiles = tiles.intersect(world);
+					// Figure range of chunks.
+	int start_cx = tiles.x/c_tiles_per_chunk,
+	    end_cx = (tiles.x + tiles.w - 1)/c_tiles_per_chunk;
+	int start_cy = tiles.y/c_tiles_per_chunk,
+	    end_cy = (tiles.y + tiles.h - 1)/c_tiles_per_chunk;
+					// Go through all covered chunks.
+	for (int cy = start_cy; cy <= end_cy; cy++)
+		for (int cx = start_cx; cx <= end_cx; cx++)
+			{		// Go through objects.
+			Map_chunk *chunk = gmap->get_chunk(cx, cy);
+			Object_iterator next(chunk->get_objects());
+			Game_object *obj;
+			while ((obj = next.get_next()) != 0)
+				{	// Check shape.
+				if (shapenum >= 0)
+					{
+					if (obj->get_shapenum() != shapenum)
+						continue;
+					}
+				if (qual != c_any_qual && obj->get_quality() 
+								!= qual)
+					continue;
+				if (framenum !=  c_any_framenum &&
+					obj->get_framenum() != framenum)
+					continue;
+				if (!Check_mask(gwin, obj, mask))
+					continue;
+				Tile_coord t = obj->get_tile();
+				if (tiles.has_point(t.tx, t.ty)) {
+					T* castobj = dynamic_cast<T*>(obj);
+					if (castobj)
+						vec.push_back(castobj);
+				}
+				}
+			}
+					// Return # added.
+	return (vec.size() - vecsize);
+	}
+ 
+#ifdef ALPHA_LINUX_CXX
+#define DEFINE_FIND_NEARBY(decl_type, decl_conttype) \
+int Game_object::find_nearby(decl_type vec, Tile_coord pos, int shapenum, int delta, int mask, int qual, int framenum) \
+{  \
+  return find_nearby_static(vec, pos, shapenum, delta, mask, qual, framenum); \
+}
+
+DEFINE_FIND_NEARBY(Egg_vector&);
+DEFINE_FIND_NEARBY(Actor_vector&);
+DEFINE_FIND_NEARBY(Game_object_vector&);
+#endif //ALPHA_LINUX_CXX
+
+
+#else //MSVC_FIND_NEARBY_KLUDGE
+
 #define FN_VECTOR Egg_vector
 #define FN_OBJECT Egg_object
-#define FN_CAST ->as_egg()
 #include "find_nearby.h"
+
+#define FN_VECTOR Game_object_vector
+#define FN_OBJECT Game_object
+#include "find_nearby.h"
+
+#define FN_VECTOR Actor_vector
+#define FN_OBJECT Actor
+#include "find_nearby.h"
+
+#endif //MSVC_FIND_NEARBY_KLUDGE
 
 int Game_object::find_nearby_eggs
 	(
@@ -391,11 +472,6 @@ int Game_object::find_nearby_eggs
 					delta, 16, qual, frnum);
 	}
 
-#define FN_VECTOR Actor_vector
-#define FN_OBJECT Actor
-#define FN_CAST ->as_actor()
-#include "find_nearby.h"
-
 int Game_object::find_nearby_actors
 	(
 	Actor_vector& vec,
@@ -406,11 +482,6 @@ int Game_object::find_nearby_actors
 	return Game_object::find_nearby(vec, get_tile(), shapenum,
 						delta, 8, c_any_qual, c_any_framenum);
 	}
-
-#define FN_VECTOR Game_object_vector
-#define FN_OBJECT Game_object
-#define FN_CAST
-#include "find_nearby.h"
 
 int Game_object::find_nearby
 	(
@@ -519,7 +590,8 @@ Rectangle Game_object::get_footprint
 	(
 	)
 	{
-	Shape_info& info = get_info();
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(this);
 					// Get footprint.
 	int frame = get_framenum();
 	int xtiles = info.get_3d_xtiles(frame);
@@ -542,7 +614,8 @@ Game_object *Game_object::find_blocking
 	Tile_coord tile			// Tile to check.
 	)
 	{
-	Map_chunk *chunk = gmap->get_chunk(tile.tx/c_tiles_per_chunk,
+	Game_window *gwin = Game_window::get_game_window();
+	Map_chunk *chunk = gwin->get_chunk(tile.tx/c_tiles_per_chunk,
 						    tile.ty/c_tiles_per_chunk);
 	Game_object *obj;
 	Object_iterator next(chunk->get_objects());
@@ -552,7 +625,7 @@ Game_object *Game_object::find_blocking
 		Tile_coord t = obj->get_tile();
 		if (t.tx < tile.tx || t.ty < tile.ty || t.tz > tile.tz)
 			continue;	// Out of range.
-		Shape_info& info = obj->get_info();
+		Shape_info& info = gwin->get_info(obj);
 		int ztiles = info.get_3d_height(); 
 		if (!ztiles || !info.is_solid())
 			continue;	// Skip if not an obstacle.
@@ -574,7 +647,8 @@ int Game_object::is_closed_door
 	(
 	) const
 	{
-	Shape_info& info = get_info();
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(this);
 	if (!info.is_door())
 		return 0;
 					// Get door's footprint.
@@ -623,7 +697,8 @@ void Game_object::say
 	const char *text
 	)
 	{
-	eman->add_text(text, this);
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->add_text(text, this);
 	}
 
 /*
@@ -647,11 +722,12 @@ void Game_object::say
 
 void Game_object::paint
 	(
+	Game_window *gwin
 	)
 	{
 	int x, y;
 	gwin->get_shape_location(this, x, y);
-	paint_shape(x, y);
+	gwin->paint_shape(x, y, *this);
 	}
 
 /*
@@ -660,6 +736,7 @@ void Game_object::paint
 
 void Game_object::activate
 	(
+	Usecode_machine *umachine,
 	int event
 	)
 	{
@@ -669,7 +746,8 @@ void Game_object::activate
 					// Serpent Isle spell scrolls:
 	if (usefun == 0x2cb && Game::get_game_type() == SERPENT_ISLE)
 		{
-		gumpman->add_gump(this, 65);
+		Game_window *gwin = Game_window::get_game_window();
+		gwin->get_gump_man()->add_gump(this, 65);
 		return;
 		}
 					// !!!Special case:  books
@@ -681,7 +759,7 @@ void Game_object::activate
 	else if (usefun == 0x2c1 && get_quality() >= 213 &&
 			 Game::get_game_type() == SERPENT_ISLE )
 		usefun = 0x62a;
-	ucmachine->call_usecode(usefun, this,
+	umachine->call_usecode(usefun, this,
 			(Usecode_machine::Usecode_events) event);
 	}
 
@@ -745,6 +823,7 @@ void Game_object::update_from_studio
 		return;
 		}
 //	editing = 0;	// He may have chosen 'Apply', so still editing.
+	Game_window *gwin = Game_window::get_game_window();
 	gwin->add_dirty(obj);
 	obj->set_shape(shape, frame);
 	gwin->add_dirty(obj);
@@ -758,6 +837,742 @@ void Game_object::update_from_studio
 	}
 
 /*
+ *	For objects that can have a quantity, the name is in the format:
+ *		%1/%2/%3/%4
+ *	Where
+ *		%1 : singular prefix (e.g. "a")
+ *		%2 : main part of name
+ *		%3 : singular suffix
+ *		%4 : plural suffix (e.g. "s")
+ */
+
+/*
+ *	Extracts the first, second and third parts of the name string
+ */
+static void get_singular_name
+	(
+	const char *name,		// Raw name string from TEXT.FLX
+	string& output_name		// Output string
+	)
+	{
+	if(*name != '/')		// Output the first part
+		{
+		do
+			output_name += *name++;
+		while(*name != '/' && *name != '\0');
+		if(*name == '\0')	// should not happen
+			{
+			output_name = "?";
+			return;
+			}
+		// If there is a first part it is followed by a space
+		output_name += ' ';
+		}
+	name++;
+
+					// Output the second part
+	while(*name != '/' && *name != '\0')
+		output_name += *name++;
+	if(*name == '\0')		// should not happen
+		{
+		output_name = "?";
+		return;
+		}
+	name++;
+
+					// Output the third part
+	while(*name != '/' && *name != '\0')
+		output_name += *name++;
+	if(*name == '\0')		// should not happen
+		{
+		output_name = "?";
+		return;
+		}
+	name++;
+}
+
+/*
+ *	Extracts the second and fourth parts of the name string
+ */
+static void get_plural_name
+	(
+	const char *name,
+	int quantity,
+	string& output_name
+	)
+	{
+	char buf[20];
+
+	snprintf(buf, 20, "%d ", quantity);	// Output the quantity
+	output_name = buf;
+
+					// Skip the first part
+	while(*name != '/' && *name != '\0')
+		name++;
+	if(*name == '\0')		// should not happen
+		{
+		output_name = "?";
+		return;
+		}
+	name++;
+					// Output the second part
+	while(*name != '/' && *name != '\0')
+		output_name += *name++;
+	if(*name == '\0')		// should not happen
+		{
+		output_name = "?";
+		return;
+		}
+	name++;
+					// Skip the third part
+	while(*name != '/' && *name != '\0')
+		name++;
+	if(*name == '\0')		// should not happen
+		{
+		output_name = "?";
+		return;
+		}
+	name++;
+	while(*name != '\0')		// Output the last part
+		output_name += *name++;
+}
+
+/*
+ *	Returns the string to be displayed when the item is clicked on
+ */
+string Game_object::get_name
+	(
+	) const
+	{
+	const char *name = 0;
+	int quantity;
+	string display_name;
+	int shnum = get_shapenum();
+	int frnum = get_framenum();
+	int qual = get_quality();
+	if (Game::get_game_type() == BLACK_GATE) {
+		//TODO: yourself 
+		switch (shnum)			// Some special cases!
+		{
+		case 0x34a:			// Reagents
+			name = item_names[0x500 + frnum];
+			break;
+		case 0x3bb:			// Amulets
+			if (frnum < 3)
+				name = item_names[0x508 + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x179:			// Food items
+			name = item_names[0x50b + frnum];
+			break;
+		case 0x28a:			// Sextants
+			name = item_names[0x52c - frnum];
+			break;
+		case 0x2a3:			// Desk items
+			name = item_names[0x52d + frnum];
+			break;
+		case 0x390:         // "Blood"
+			if (frnum < 4)
+				name = item_names[0x390];
+			else
+				name = 0;
+			break;
+		default:
+			name = item_names[shnum];
+			break;
+		}
+
+
+	} else if (Game::get_game_type() == SERPENT_ISLE) {
+		//TODO: yourself, misc. checks/fixes
+
+		switch (shnum)			// More special cases!
+		{
+		case 0x097:         // wall
+			if (frnum == 17)
+				name = item_names[0x681];  // door
+			else
+				name = item_names[shnum];
+			break;
+		case 0x98:          // wall
+			if (frnum == 22)
+				name = item_names[0x681];  // door
+			else
+				name = item_names[shnum];
+			break;
+		case 0x0b2:			// Cloth maps
+			name = item_names[0x596 + frnum];
+			break;
+		case 0x0d1:			// Artifacts
+			name = item_names[0x5c0 + frnum];
+			break;
+		case 0xd2:          // chicken coop
+			if (frnum == 4)
+				name = item_names[0x680]; // platform
+			else
+				name = item_names[shnum];
+			break;
+		case 0x0e3:      // cloak
+			if (frnum <= 4)
+				name = item_names[0x5ff + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x0f3:      // coffin
+			if (frnum >= 7)
+				name = item_names[0x605]; // stone bier
+			else
+				name = item_names[shnum];
+			break;
+		case 0x0f4:			// Large skulls
+			if (frnum < 2)
+				name = item_names[0x5d8 + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x106:			// Blackrock Serpents
+			if (frnum < 4)
+				name = item_names[0x592 + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x11a:       // painting
+			if (frnum >= 6 && frnum <= 10)
+				name = item_names[0x60c]; // ruined painting
+			else
+				name = item_names[shnum];
+			break;
+		case 0x11d:      // brush
+			if (frnum == 6)
+				name = item_names[0x5fa];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x11e:      // drum
+			if (frnum == 1 || frnum == 2)
+				name = item_names[0x669]; // drumsticks
+			else
+				name = item_names[shnum];
+			break;
+		case 0x124:      // seat
+			if (frnum == 17 || frnum == 18 || frnum == 19 || frnum == 22)
+				name = item_names[0x5fc];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x128:			// Rings
+			name = item_names[0x5b8 + frnum];
+			break;
+		case 0x12c:         // cooking utensil
+			if (frnum <= 7)
+				name = item_names[0x636 + (frnum/2)];
+			else if (frnum >= 8 && frnum <= 23)
+				name = item_names[0x63a + (frnum%4)];
+			else if (frnum >= 24)
+				name = item_names[0x63e + (frnum%2)];
+			break;
+		case 0x12f:
+			if (frnum >= 10 && frnum <= 14)
+				name = item_names[0x60b];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x135:        // fallen tree
+			if (frnum == 2)
+				name = item_names[0x635]; // large skull
+			else
+				name = item_names[shnum];
+			break;
+		case 0x141:         // reeds
+			if (frnum == 11)
+				name = item_names[0x61c]; // crucifix
+			else
+				name = item_names[shnum];
+			break;
+		case 0x14a:         // serpent rune
+			if (frnum < 8)
+				name = item_names[0x607]; // stones
+			else
+				name = item_names[shnum];
+			break;
+		case 0x150:         // light source
+			name = item_names[0x646 + frnum];
+			break;
+		case 0x152:         // lit light source
+			{
+				string tmp = item_names[0x657]; // lit
+				tmp += item_names[0x646 + frnum];
+				return tmp;
+			}
+			break;
+		case 0x172:         // floor
+			if (frnum == 19)
+				name = item_names[0x60e]; // wall
+			else
+				name = item_names[shnum];
+			break;
+		case 0x179:			// Food items
+			name = item_names[0x510 + frnum];
+			break;
+		case 0x17a:         // fence
+			if (frnum == 3 || (frnum > 7 && frnum < 12))
+				name = item_names[0x60e]; // wall
+			else
+				name = item_names[shnum];
+			break;
+		case 0x17f:         // magic helm
+			if (frnum == 1)
+				name = item_names[0x614]; // helm of courage
+			else
+				name = item_names[shnum];
+			break;
+		case 0x194:         // food
+			name = item_names[0x640 + frnum];
+			break;
+		case 0x19f:         // garbage
+			if (frnum > 20 && frnum < 24)
+				name = item_names[0x60f]; // skull
+			else
+				name = item_names[shnum];
+			break;
+		case 0x1ba:         // fireplace
+			if (frnum == 2)
+				name = item_names[0x620]; // wooden post
+			else
+				name = item_names[shnum];
+			break;
+		case 0x1bd:			// Soul prisms
+			name = item_names[0x56b + frnum];
+			break;
+		case 0x1c2:			// Orbs
+			name = item_names[0x585 + frnum];
+			break;
+		case 0x1d3:			// Magic plants
+			name = item_names[0x581 + frnum/2];
+			break;
+		case 0x1db:         // wall of lights
+			if (frnum == 10)
+				name = item_names[0x683]; // wall
+			else
+				name = item_names[shnum];
+			break;
+		case 0x1df:         // claw + gwani amulet
+			name = item_names[0x5f8 + frnum/2];
+			break;
+		case 0x1e3:         // rug
+			if (frnum >= 2)
+				name = item_names[0x608]; // meditation mat
+			else
+				name = item_names[shnum];
+			break;
+		case 0x1f9:         // magic lens
+			if (frnum == 2)
+				name = item_names[0x615]; // lens of translating
+			else
+				name = item_names[shnum];
+			break;
+		case 0x201:         // floor
+			if (frnum == 5)
+				name = item_names[0x60d]; // bookshelf
+			else
+				name = item_names[shnum];
+			break;
+		case 0x206:         // glass counter top
+			if (frnum == 26)
+				name = item_names[0x682]; // table
+			else
+				name = item_names[shnum];
+			break;
+		case 0x207:         // Moon's Eye
+			if (frnum == 1)
+				name = item_names[0x616]; // crystal ball
+			else
+				name = item_names[shnum];
+			break;
+		case 0x21a:         // fence
+			if (frnum == 3 || (frnum > 7 && frnum < 12))
+				name = item_names[0x60e]; // wall
+			else
+				name = item_names[shnum];
+			break;
+		case 0x21e:			// Crested Helmets
+			name = item_names[0x5a3 + frnum];
+			break;
+		case 0x220:         // broken column
+			if (frnum == 14)
+				name = item_names[0x611]; // pillar of purity
+			else
+				name = item_names[shnum];
+			break;
+		case 0x241:			// Nests
+			if (frnum < 6)
+				name = item_names[0x5ab + frnum/3];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x24b:			// Boots
+			name = item_names[0x59c + frnum];
+			break;
+		case 0x268:        // Bottles
+			switch (frnum) {
+			case 1:
+				name = item_names[0x5f2]; // wine decanter
+				break;
+			case 9:
+				name = item_names[0x5f3]; // fawnish ale
+				break;
+			case 16:
+				name = item_names[0x5f4]; // ice wine
+				break;
+			case 17:
+				name = item_names[0x5f5]; // vintage wine
+				break;
+			case 18:
+				name = item_names[0x5f6]; // wineskin
+				break;
+		    case 20:
+				name = item_names[0x5f7]; // everlasting goblet
+				break;
+			default:
+				name = item_names[shnum];
+			}
+			break;
+		case 0x281:         // key
+			switch (frnum) {
+			case 21:
+				name = item_names[0x630]; // key of fire
+				break;
+			case 22:
+				name = item_names[0x631]; // key of ice
+				break;
+			case 23:
+				name = item_names[0x62f]; // blackrock key
+				break;
+			default:
+				name = item_names[shnum];
+			}
+			break;
+		case 0x288:         // sleeping powder
+			if (frnum >= 2)
+				name = item_names[0x65c - 2 + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x289:			// Artifacts
+			name = item_names[0x573 + frnum];
+			break;
+		case 0x28a:			// Sextants
+			name = item_names[0x531 - frnum];
+			break;
+		case 0x290:         // wine press
+			if (frnum == 1)
+				name = item_names[0x634]; // wine vat
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2a1:         // strange plant
+			if (frnum > 8)
+				name = item_names[0x62c]; // snowy plant
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2a3:			// Desk items
+			name = item_names[0x532 + frnum];
+			break;
+		case 0x2a5:         // stockings
+			if (frnum < 2)
+				name = item_names[0x62a + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2af:         // pillar
+			if (frnum == 11)
+				name = item_names[0x611]; // pillar of purity
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2b0:         // serpent carving
+			if (frnum > 1)
+				name = item_names[0x621 - 1 + (frnum/2)];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2b4:			// Lute
+			if (frnum == 2)
+				name = item_names[0x5be];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2b5:        // whistle
+			if (frnum == 4 || frnum == 5)
+				name = item_names[0x618]; // bone flute
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2b8:        // bed
+			if (frnum == 1)
+				name = item_names[0x5da]; // stone bier
+			else if (frnum == 2)
+				name = item_names[0x5db]; // cot
+			else if (frnum == 4)
+				name = item_names[0x5dc]; // pallet
+			else if (frnum == 5)
+				name = item_names[0x5dd]; // fur pallet
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2cd:        // plate
+			if (frnum == 9)
+				name = item_names[0x61a]; // platter of replenishment
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2ce:        // pedestal
+			if (frnum == 8)
+				name = item_names[0x619]; // blackrock obelisk
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2d7:        // Dream Crystal
+			if (frnum <= 1)
+				name = item_names[0x659]; // dream crystal
+			else if (frnum == 2)
+				name = item_names[0x65a]; // mirror rock
+			else if (frnum >= 3)
+				name = item_names[0x65b]; // icy column
+			break;
+		case 0x2d8:        // Force_Wall
+			// TODO: CHECK
+			if (frnum > 0)
+				name = item_names[0x683]; // wall
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2f4:        // caltrops
+			if (frnum == 2 || frnum == 3)
+				name = item_names[0x5fb]; // broken glass
+			else
+				name = item_names[shnum];
+			break;
+		case 0x313:        // lever
+			if (frnum == 8 || frnum == 9)
+				name = item_names[0x613]; // button
+			else
+				name = item_names[shnum];
+			break;
+		case 0x314:        // switch
+			if (frnum >= 6 && frnum <= 9)
+				name = item_names[0x613]; // button
+			else
+				name = item_names[shnum];
+			break;
+		case 0x31F:        // Body parts
+			name = item_names[0x5df + frnum];
+			break;
+		case 0x320:      // chest
+			if (frnum == 4 || frnum == 5)
+				name = item_names[0x5fd];
+			else if (frnum == 6 || frnum == 7)
+				name = item_names[0x5fe];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x32a:			// Bucket
+			if (frnum == 1 && qual >= 10 && qual <= 15)
+				name = item_names[0x55b + qual];
+			else if (frnum == 2 && qual == 9)
+				name = item_names[0x55b + qual];
+			else
+				name = item_names[0x55b + frnum];
+			break;
+		case 0x347:			// Hourglass
+			if (frnum == 1)
+				name = item_names[0x5bf];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x34a:			// Reagents
+			name = item_names[0x500 + frnum];
+			break;
+		case 0x35f:         // kitchen items
+			name = item_names[0x66b + frnum];
+			break;
+		case 0x365:         // wall
+			if (frnum == 11)
+				name = item_names[0x610]; // spirit wall
+			else
+				name = item_names[shnum];
+			break;
+		case 0x36c:         // sliding door
+			if (frnum >= 10 && frnum <= 14)
+				name = item_names[0x60b]; // iris door
+			else
+				name = item_names[shnum];
+			break;
+		case 0x377:			// More rings
+			name = item_names[0x5bc + frnum];
+			break;
+		case 0x37a:         // table
+			if (frnum == 6)
+				name = item_names[0x62e]; // torture table
+			else
+				name = item_names[shnum];
+			break;
+		case 0x390:         // blood
+			if (frnum == 24)
+				name = item_names[0x5de]; // acid
+			else if (frnum < 4)
+				name = item_names[0x390]; // blood
+			else
+				name = 0;
+			break;
+		case 0x392:         // urn
+			if (frnum <= 1) {
+				// when frame = 0,1, the quality is an NPC num
+				// the item name is then the name of that NPC + "'s ashes"
+				// (quality == 0,255: 'urn of ashes')
+				Actor* npc = Game_window::get_game_window()->get_npc(get_quality());
+				if (get_quality() > 0 && get_quality() < 255 && npc) {
+					string tmp = npc->get_npc_name();
+					if (tmp != "") {
+						tmp += item_names[0x65e]; // 's ashes
+						return tmp;
+					}
+				}
+				name = item_names[0x632]; // urn with ashes
+			} else if (frnum == 2)
+				name = item_names[0x633]; // pot of unguent
+			else
+				name = item_names[shnum];
+			break;
+		case 0x397:         // bookshelf
+			if (frnum == 6)
+				name = item_names[0x60a]; // slate mantle
+			else
+				name = item_names[shnum];
+			break;
+		case 0x39f:         // serpent slot
+			if (frnum >= 4 && frnum <= 7)
+				name = item_names[0x61e]; // slotted serpent
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3a7:         // sliding door
+			if (frnum == 2)
+				name = item_names[0x60b]; // iris door
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3a8:         // sliding door
+			if (frnum == 2)
+				name = item_names[0x60b]; // iris door
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3b0:         // pot
+			if (frnum == 5)
+				name = item_names[0x61b]; // cuspidor
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3bb:			// Amulets
+			name = item_names[0x5ae + frnum];
+			break;
+		case 0x3d1:         // fur pelt
+			if (frnum == 0 || frnum == 8)
+				name = item_names[0x61f]; // leopard rug
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3e5:         // spent light source
+			{
+				string tmp = item_names[0x658]; // spent
+				tmp += item_names[0x646 + frnum];
+				return tmp;
+			}
+			break;
+		case 0x3e6:         // statue
+			if (frnum <= 3)
+				name = item_names[0x628 + (frnum/2)];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3e7:         // plant
+			name = item_names[0x65f + frnum];
+			break;
+		case 0x3ea:         // table
+			if (frnum == 1)
+				name = item_names[0x62d]; // embalming table
+			else
+				name = item_names[shnum];
+			break;
+ 		case 0x3ec:			// Helmets
+			name = item_names[0x5a6 + frnum];
+			break;
+		case 0x3f3:			// Beds
+			if (frnum == 1)
+				name = item_names[0x5da]; // stone bier
+			else if (frnum == 2)
+				name = item_names[0x5db]; // cot
+			else if (frnum == 4)
+				name = item_names[0x5dc]; // pallet
+			else if (frnum == 5)
+				name = item_names[0x5dd]; // fur pallet
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3f8:         // floor
+			if (frnum == 20 || frnum == 21)
+				name = item_names[0x623]; // symbol of balance
+			else if (frnum == 22)
+				name = item_names[0x624]; // symbol of order
+			else if (frnum == 23)
+				name = item_names[0x625]; // symbol of chaos
+			else
+				name = item_names[shnum];
+			break;
+		default:
+			name = item_names[shnum];
+			break;
+		}
+
+	} else {
+		name = item_names[shnum];
+	}
+
+	if(name == 0) {
+		return "";
+//		return "?";
+	}
+
+	if (Has_quantity(shnum))
+		quantity = quality & 0x7f;
+	else
+		quantity = 1;
+
+	// If there are no slashes then it is simpler
+	if(strchr(name, '/') == 0)
+		{
+		if(quantity <= 1)
+			display_name = name;
+		else
+			{
+			char buf[50];
+
+			snprintf(buf, 50, "%d %s", quantity, name);
+			display_name = buf;
+			}
+		}
+	else if(quantity <= 1)		// quantity might be zero?
+		get_singular_name(name, display_name);
+	else
+		get_plural_name(name, quantity, display_name);
+	return display_name;
+	}
+
+
+/*
  *	Remove an object from the world.
  *	The object is deleted.
  */
@@ -767,11 +1582,13 @@ void Game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
+	Map_chunk *chunk = 
+			Game_window::get_game_window()->get_chunk_safely(
+								cx, cy);
 	if (chunk)
 		chunk->remove(this);
 	if (!nodel)
-		gwin->delete_object(this);
+		Game_window::get_game_window()->delete_object(this);
 	}
 
 /*
@@ -795,21 +1612,15 @@ int Game_object::get_weight
 	int quant			// Quantity.
 	)
 	{
-	int wt = quant * ShapeID::get_info(shnum).get_weight();
+	int wt = quant *
+		Game_window::get_game_window()->get_info(shnum).get_weight();
 					// Special case:  reagents, coins.
 	if (shnum == 842 || shnum == 644 || 
 	    (Game::get_game_type() == SERPENT_ISLE &&
 					// Monetari/guilders/filari:
 	     (shnum == 951 || shnum == 952 || shnum == 948)))
-	{
 		wt /= 10;
-		if (wt <= 0) wt = 1;
-	}
-
-	if (Has_quantity(shnum))
-		if (wt <= 0) wt = 1;
-
-	return wt;
+	return wt > 0 ? wt : 1;
 	}
 
 /* 
@@ -836,26 +1647,6 @@ int Game_object::get_max_weight
 					// Looking outwards for NPC.
 	Container_game_object *own = get_owner();
 	return own ? own->get_max_weight() : 0;
-	}
-
-/*
- *	Add an object to this one by combining.
- *
- *	Output:	1, meaning object is completely combined to this.  Obj. is
- *			deleted in this case.
- *		0 otherwise, although obj's quantity may be
- *			reduced if combine==true.
- */
-
-bool Game_object::add
-	(
-	Game_object *obj,
-	bool dont_check,		// 1 to skip volume/recursion check.
-	bool combine			// True to try to combine obj.  MAY
-					//   cause obj to be deleted.
-	)
-	{
-	return combine ? drop(obj)!=0 : false;
 	}
 
 /*
@@ -955,11 +1746,12 @@ int Game_object::compare
 	Game_object *obj2
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 					// See if there's no overlap.
 	Rectangle r2 = gwin->get_shape_rect(obj2);
 	if (!inf1.area.intersects(r2))
 		return (0);		// No overlap on screen.
-	Ordering_info inf2(gwin, obj2, r2);
+	Ordering_info inf2(Game_window::get_game_window(), obj2, r2);
 #ifdef DEBUGLT
 	Debug_lt(inf1.tx, inf1.ty, inf2.tx, inf2.ty);
 #endif
@@ -1056,6 +1848,7 @@ int Game_object::lt
 	Game_object& obj2
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	Ordering_info ord(gwin, this);
 	int cmp = compare(ord, &obj2);
 	return cmp == -1 ? 1 : cmp == 1 ? 0 : -1;
@@ -1072,9 +1865,10 @@ int Game_object::get_rotated_frame
 	int quads			// 1=90, 2=180, 3=270.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	int curframe = get_framenum();
 	int shapenum = get_shapenum();
-	Shape_info& info = get_info();
+	Shape_info& info = gwin->get_info(shapenum);
 	if (shapenum == 292)		// Seat is a special case.
 		{
 		int dir = curframe%4;	// Current dir (0-3).
@@ -1104,6 +1898,7 @@ int Game_object::get_rotated_frame
 
 int Game_object::attack_object
 	(
+	Game_window *gwin,
 	Actor *attacker,
 	int weapon_shape,		// Weapon shape, or 0 to use readied.
 	int ammo_shape
@@ -1112,14 +1907,14 @@ int Game_object::attack_object
 	int wpoints = 0;
 	Weapon_info *winf;
 	if (weapon_shape > 0)
-		winf = ShapeID::get_info(weapon_shape).get_weapon_info();
+		winf = gwin->get_info(weapon_shape).get_weapon_info();
 	else if (ammo_shape > 0)	// Not sure about all this...
-		winf = ShapeID::get_info(ammo_shape).get_weapon_info();
+		winf = gwin->get_info(ammo_shape).get_weapon_info();
 	else
 		winf = attacker->get_weapon(wpoints);
 	int usefun;			// Run usecode if present.
 	if (winf && (usefun = winf->get_usecode()) != 0)
-		ucmachine->call_usecode(usefun, this,
+		gwin->get_usecode()->call_usecode(usefun, this,
 					Usecode_machine::weapon);
 	if (!wpoints && winf)
 		wpoints = winf->get_damage();
@@ -1130,6 +1925,34 @@ int Game_object::attack_object
 			attacker->get_property((int) Actor::strength);
 	return wpoints;
 	}
+#if 0	/* ++++++++NOT USED */
+/*
+ *	Get all connected pieces of an object.
+ */
+
+static void Get_connected
+	(
+	Game_object *obj,
+	Game_object_vector& vec		// All returned here.
+	)
+	{
+	vec.append(obj);
+	Game_object_vector newones;
+					// (Delta = 2 ok for glass counters.)
+	obj->find_nearby(newones, obj->get_shapenum(), 2, 0, c_any_qual, c_any_framenum);
+	bool found = false;
+	for (Game_object_vector::const_iterator it = newones.begin();
+						it != newones.end(); ++it)
+		{
+		Game_object *newobj = *it;
+		if (vec.find(newobj) == -1)
+			{		// Look recursively.
+			Get_connected(newobj, vec);
+			found = true;
+			}
+		}
+	}
+#endif
 
 /*
  *	Being attacked.
@@ -1144,7 +1967,9 @@ Game_object *Game_object::attacked
 	int ammo_shape
 	)
 	{
-	int wpoints = attack_object(attacker, weapon_shape, ammo_shape);
+	Game_window *gwin = Game_window::get_game_window();
+	int wpoints = attack_object(gwin,
+					attacker, weapon_shape, ammo_shape);
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
 
@@ -1179,15 +2004,17 @@ Game_object *Game_object::attacked
 			// marked already detonating powderkegs with quality
 			if (get_quality()==0) {
 				Tile_coord pos = get_tile();
-				eman->add_effect(
-					new Explosion_effect(pos, this));
+				gwin->add_effect(new Explosion_effect(pos, 
+									this));
 			}
 		}
 					// Arrow hitting practice targt?
 		else if (shnum == 735 && ammo_shape == 722) {
 			int newframe = !frnum ? (3*(rand()%8) + 1)
 					: ((frnum%3) != 0 ? frnum + 1 : frnum);
-			change_frame(newframe);
+			gwin->add_dirty(this);
+			set_frame(newframe);
+			gwin->add_dirty(this);
 		}
 #if 0
 		else if (shnum == 522 && frnum < 2) { // locked normal chest
@@ -1215,8 +2042,9 @@ Game_object *Game_object::attacked
 
 	if (wpoints >= hp) {
 		// object destroyed
-		eman->remove_text_effect(this);
-		ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
+		gwin->remove_text_effect(this);	// Avoids crash.
+		gwin->get_usecode()->call_usecode(0x626, this,Usecode_machine::weapon);
+
 		return 0;
 	} else {
 		set_obj_hp(hp - wpoints);
@@ -1248,9 +2076,10 @@ void Game_object::write_common_ireg
 
 void Terrain_game_object::paint_terrain
 	(
+	Game_window *gwin
 	)
 	{
-	paint();
+	paint(gwin);
 	}
 
 /*
@@ -1270,7 +2099,8 @@ void Ifix_game_object::move
 	int cx = get_cx(), cy = get_cy();
 	if (cx >= 0 && cx < c_num_chunks &&
 	    cy >= 0 && cy < c_num_chunks)
-		gmap->set_ifix_modified(cx, cy);
+		Game_window::get_game_window()->get_map()->
+					set_ifix_modified(cx, cy);
 	}
 
 /*
@@ -1287,7 +2117,8 @@ void Ifix_game_object::remove_this
 	int cx = get_cx(), cy = get_cy();
 	if (cx >= 0 && cx < c_num_chunks &&
 	    cy >= 0 && cy < c_num_chunks)
-		gmap->set_ifix_modified(cx, cy);
+		Game_window::get_game_window()->get_map()->
+					set_ifix_modified(cx, cy);
 	Game_object::remove_this(nodel);
 	}
 
@@ -1297,7 +2128,7 @@ void Ifix_game_object::remove_this
 
 void Ifix_game_object::write_ifix
 	(
-	DataSource *ifix			// Where to write.
+	ostream& ifix			// Where to write.
 	)
 	{
 	unsigned char buf[4];
@@ -1306,7 +2137,7 @@ void Ifix_game_object::write_ifix
 	int shapenum = get_shapenum(), framenum = get_framenum();
 	buf[2] = shapenum&0xff;
 	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
-	ifix->write((char*)buf, sizeof(buf));
+	ifix.write((char*)buf, sizeof(buf));
 	}
 
 

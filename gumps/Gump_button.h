@@ -38,15 +38,15 @@ public:
 		: Gump_widget(par, shnum, px, py, shfile), pushed(0)
 		{  }
 					// Is a given point on the checkmark?
-	virtual int on_button(int mx, int my)
-		{ return on_widget(mx, my); }
+	virtual int on_button(Game_window *gwin, int mx, int my)
+		{ return on_widget(gwin, mx, my); }
 					// What to do when 'clicked':
-	virtual void activate() = 0;
+	virtual void activate(Game_window *gwin) = 0;
 					// Or double-clicked.
-	virtual void double_clicked(int x, int y);
-	virtual void push();	// Redisplay as pushed.
-	virtual void unpush();
-	virtual void paint();
+	virtual void double_clicked(Game_window *gwin, int x, int y);
+	virtual void push(Game_window *gwin);	// Redisplay as pushed.
+	virtual void unpush(Game_window *gwin);
+	virtual void paint(Game_window *gwin);
 };
 
 #endif

@@ -34,8 +34,6 @@
 #include "Flex.h"
 #include "exceptions.h"
 
-#include <cassert>
-
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -44,9 +42,6 @@ using std::ios;
 using std::memcpy;
 using std::memset;
 using std::ostream;
-
-GL_manager *Shape_frame::glman = 0;
-Image_buffer8 *Shape_frame::scrwin = 0;
 
 #if 1	/* For debugging. */
 #include <iomanip>
@@ -319,9 +314,6 @@ Shape_frame::Shape_frame
 	bool setrle			// Run-length-encode.
 	) : xleft(xoff), yabove(yoff), xright(w - xoff - 1),
 	    ybelow(h - yoff - 1), rle(setrle)
-#ifdef HAVE_OPENGL
-		, glshape(0)
-#endif
 	{
 	if (!rle)
 		{
@@ -430,8 +422,6 @@ void Shape_frame::paint_rle
 	int xoff, int yoff		// Where to show in iwin.
 	)
 	{
-	assert(rle);
-
 	int w = get_width(), h = get_height();
 	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
@@ -469,8 +459,6 @@ void Shape_frame::paint_rle_translucent
 	int xfcnt			// Number of xforms.
 	)
 	{
-	assert(rle);
-
 	int w = get_width(), h = get_height();
 	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, 
@@ -533,11 +521,9 @@ void Shape_frame::paint_rle_transformed
 	(
 	Image_buffer8 *win,		// Buffer to paint in.
 	int xoff, int yoff,		// Where to show in iwin.
-	Xform_palette& xform		// Use to transform pixels.
+	Xform_palette xform		// Use to transform pixels.
 	)
 	{
-	assert(rle);
-
 	int w = get_width(), h = get_height();
 	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, 
@@ -584,8 +570,6 @@ void Shape_frame::paint_rle_outline
 	unsigned char color		// Color to use.
 	)
 	{
-	assert(rle);
-
 	int w = get_width(), h = get_height();
 	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, 
@@ -685,59 +669,6 @@ int Shape_frame::has_point
 			}
 		}
 	return (0);			// Never found it.
-	}
-
-/*
- *	Set new offset, assuming dimensions are unchanged.
- */
-
-void Shape_frame::set_offset
-	(
-	int new_xright, int new_ybelow
-	)
-	{
-	if (!rle)
-		return;			// Can do it for 8x8 tiles.
-	int w = get_width(), h = get_height();
-	if (new_xright > w)		// Limit to left edge.
-		new_xright = w;
-	if (new_ybelow > h)
-		new_ybelow = h;
-	int deltax = new_xright - xright;	// Get changes.
-	int deltay = new_ybelow - ybelow;
-	xright = new_xright;
-	ybelow = new_ybelow;
-	xleft = w - xright - 1;		// Update other dims.
-	yabove = h - ybelow - 1;
-	uint8 *in = data;		// Got to update all scan lines!
-	int scanlen;
-	while ((scanlen = Read2(in)) != 0)
-		{
-					// Get length of scan line.
-		int encoded = scanlen&1;// Is it encoded?
-		scanlen = scanlen>>1;
-		short scanx = Read2(in);
-		in -= 2;
-		Write2(in, scanx + deltax);
-		short scany = Read2(in);
-		in -= 2;
-		Write2(in, scany + deltay);
-					// Just need to scan past EOL.
-		if (!encoded)		// Raw data?
-			in += scanlen;
-		else for (int b = 0; b < scanlen; )
-			{
-			unsigned char bcnt = *in++;
-					// Repeat next char. if odd.
-			int repeat = bcnt&1;
-			bcnt = bcnt>>1; // Get count.
-			if (repeat)
-				in++;	// Skip pixel to repeat.
-			else		// Skip that # of bytes.
-				in += bcnt;
-			b += bcnt;
-			}
-		}
 	}
 
 /*
@@ -1241,15 +1172,13 @@ void Vga_file::load
 	{
 		U7open(file, nm);
 		shape_source = new StreamDataSource(&file);
-		StreamDataSource ds(&file);
-		flex = Flex::is_flex(&ds);
+		flex = Flex::is_flex(file);
 	}
 	if (nm2 && U7exists(nm2))
 	{
 		U7open(file2, nm2);		// throws an error if it fails
 		shape_source2 = new StreamDataSource(&file2);
-		StreamDataSource ds(&file2);
-		flex = Flex::is_flex(&ds);
+		flex = Flex::is_flex(file2);
 	}
 	if (!shape_source && !shape_source2)
 		throw file_open_exception(get_system_path(nm));

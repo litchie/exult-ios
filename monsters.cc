@@ -29,7 +29,6 @@
 #include "schedule.h"
 #include "chunks.h"
 #include "Audio.h"
-#include "gamemap.h"
 
 using std::rand;
 
@@ -83,7 +82,7 @@ Monster_actor::Monster_actor
 	    next_monster(0), animator(0)
 	{
 					// Check for animated shape.
-	Shape_info& info = get_info();
+	Shape_info& info = Game_window::get_game_window()->get_info(this);
 	if (info.is_animated())
 		animator = Animator::create(this, 1);
 	}
@@ -165,8 +164,9 @@ Monster_actor *Monster_actor::create
 	bool equipment
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 					// Get 'monsters.dat' info.
-	const Monster_info *inf = ShapeID::get_info(shnum).get_monster_info();
+	const Monster_info *inf = gwin->get_info(shnum).get_monster_info();
 	if (!inf)
 		inf = Monster_info::get_default();
 	Monster_actor *monster = create(shnum);
@@ -250,12 +250,13 @@ void Monster_actor::delete_all
 
 void Monster_actor::paint
 	(
+	Game_window *gwin
 	)
 	{
 	// Animate first
 	if (animator)			// Be sure animation is on.
 		animator->want_animation();
-	Npc_actor::paint();		// Draw on screen.
+	Npc_actor::paint(gwin);		// Draw on screen.
 	}
 
 /*
@@ -271,6 +272,8 @@ int Monster_actor::step
 	int frame			// New frame #.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+	
 	// If move not allowed do I remove or change destination?
 	// I'll do nothing for now
 	if (!gwin->emulate_is_move_allowed(t.tx, t.ty))
@@ -282,7 +285,7 @@ int Monster_actor::step
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get ->new chunk.
-	Map_chunk *nlist = gmap->get_chunk(cx, cy);
+	Map_chunk *nlist = gwin->get_chunk(cx, cy);
 	nlist->setup_cache();		// Setup cache if necessary.
 					// Blocked?
 	if (is_blocked(t))
@@ -296,14 +299,14 @@ int Monster_actor::step
 		}
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
-	add_dirty();			// Set to repaint old area.
+	add_dirty(gwin);		// Set to repaint old area.
 					// Get old chunk.
-	Map_chunk *olist = gmap->get_chunk(old_cx, old_cy);
+	Map_chunk *olist = gwin->get_chunk(old_cx, old_cy);
 					// Move it.
 					// Get rel. tile coords.
 	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
 	movef(olist, nlist, tx, ty, frame, t.tz);
-	if (!add_dirty(1) &&
+	if (!add_dirty(gwin, 1) &&
 					// And > a screenful away?
 	    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize)
 		{			// No longer on screen.
@@ -373,7 +376,8 @@ int Monster_actor::get_armor_points
 	(
 	)
 	{
-	Monster_info *inf = get_info().get_monster_info();
+	Monster_info *inf =
+	    Game_window::get_game_window()->get_info(this).get_monster_info();
 					// Kind of guessing here.
 	return Actor::get_armor_points() + (inf ? inf->armor : 0);
 	}
@@ -388,19 +392,17 @@ Weapon_info *Monster_actor::get_weapon
 	int& shape
 	)
 	{
-	Monster_info *inf = get_info().get_monster_info();
+	Game_window *gwin = Game_window::get_game_window();
+	Monster_info *inf = gwin->get_info(this).get_monster_info();
 					// Kind of guessing here.
 	Weapon_info *winf = Actor::get_weapon(points, shape);
 	if (!winf)			// No readied weapon?
 		{			// Look up monster itself.
 		shape = 0;
-		winf = get_info().get_weapon_info();
+		winf = gwin->get_info(get_shapenum()).get_weapon_info();
 		if (winf)
-			{
-			shape = get_shapenum();
 			points = winf->get_damage();
-			}
-		else if (inf)		// Builtin (claws?):
+		else if (inf)		// Guessing:
 			points = inf->weapon;
 		}
 	return winf;
@@ -412,14 +414,10 @@ Weapon_info *Monster_actor::get_weapon
 
 void Monster_actor::die
 	(
-	Actor *attacker
 	)
 	{
-	Actor::die(attacker);
-					// Party defeated an evil monster?
-	if (attacker && attacker->is_in_party() &&
-	    get_alignment() != neutral && get_alignment() != friendly)
-		Audio::get_ptr()->start_music_combat ( CSVictory, 0);
+	Actor::die();
+	Audio::get_ptr()->start_music_combat ( CSVictory, 0);
 					// Got to delete this somewhere, but
 					//   doing it here crashes.
 	}
@@ -478,6 +476,7 @@ void Slime_actor::update_frames
 	{
 	Tile_coord neighbors[4];	// Gets surrounding spots for slimes.
 	int dir;			// Get direction of neighbor.
+	Game_window *gwin = Game_window::get_game_window();
 	Game_object_vector nearby;		// Get nearby slimes.
 	if (src.tx != -1)
 		if (dest.tx != -1)	// Assume within 2 tiles.
@@ -499,8 +498,10 @@ void Slime_actor::update_frames
 				int ndir = (dir+2)%4;
 					// Turn off bit (1<<ndir)*2, and set
 					//   bit 0 randomly.
-				slime->change_frame((slime->get_framenum()&
+				gwin->add_dirty(slime);
+				slime->set_frame((slime->get_framenum()&
 					~(((1<<ndir)*2)|1)) |(rand()%2));
+				gwin->add_dirty(slime);
 				}
 			}
 		}
@@ -517,13 +518,17 @@ void Slime_actor::update_frames
 				{	// In a neighboring spot?
 				frnum |= (1<<dir)*2;
 				int ndir = (dir+2)%4;
+				gwin->add_dirty(slime);
 					// Turn on bit (1<<ndir)*2, and set
 					//   bit 0 randomly.
-				slime->change_frame((slime->get_framenum()&~1)|
+				slime->set_frame((slime->get_framenum()&~1)|
 						((1<<ndir)*2)|(rand()%2));
+				gwin->add_dirty(slime);
 				}
 			}
-		change_frame(frnum|(rand()%2));
+		gwin->add_dirty(this);
+		set_frame(frnum|(rand()%2));
+		gwin->add_dirty(this);
 		}
 	}
 
@@ -550,8 +555,9 @@ int Slime_actor::step
 	if (newpos != oldpos && rand()%9 == 0 &&
 	    !find_nearby(blood, oldpos, 912, 1, 0))
 		{
+		Game_window *gwin = Game_window::get_game_window();
 					// Frames 4-11 are green.
-		Game_object *b = gmap->create_ireg_object(912, 4 + rand()%8);
+		Game_object *b = gwin->create_ireg_object(912, 4 + rand()%8);
 		b->set_flag(Obj_flags::is_temporary);
 		b->move(oldpos);
 		}

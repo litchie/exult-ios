@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,9 +32,18 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+
 #ifdef HAVE_SSTREAM
-#include <sstream>
+	#include <sstream>
+	using std::ostringstream;
+#else
+	#include <strstream>
+	using std::ends;
+	using std::ostrstream;
+	typedef ostrstream ostringstream;
+	// NOTE: strstreams need to be 'ends' terminated, whilst stringstreams don't.
 #endif
+
 
 using std::atoi;
 using std::cerr;
@@ -55,7 +64,7 @@ using std::isspace;
 	#define CTRACE(X)
 #endif
 
-void	Configuration::value(const string &key, string &ret,const char *defaultvalue) const
+void	Configuration::value(const string key,std::string &ret,const char *defaultvalue) const
 {
 	const XMLnode *sub=xmltree->subtree(key);
 	if(sub)
@@ -64,7 +73,7 @@ void	Configuration::value(const string &key, string &ret,const char *defaultvalu
 		ret = defaultvalue;
 }
 
-void	Configuration::value(const string &key,bool &ret,bool defaultvalue) const
+void	Configuration::value(const string key,bool &ret,bool defaultvalue) const
 {
 	const XMLnode *sub=xmltree->subtree(key);
 	if(sub)
@@ -73,7 +82,7 @@ void	Configuration::value(const string &key,bool &ret,bool defaultvalue) const
 		ret = defaultvalue;
 }
 
-void	Configuration::value(const string &key,int &ret,int defaultvalue) const
+void	Configuration::value(const string key,int &ret,int defaultvalue) const
 {
 	const XMLnode *sub=xmltree->subtree(key);
 	if(sub)
@@ -82,7 +91,7 @@ void	Configuration::value(const string &key,int &ret,int defaultvalue) const
 		ret = defaultvalue;
 }
 
-void	Configuration::set(const string &key, const string &value, bool write_out)
+void	Configuration::set(std::string &key,std::string &value,bool write_out)
 {
 	// Break k up into '/' separated elements.
 	// start advancing walk, one element at a time, creating nodes
@@ -98,21 +107,21 @@ void	Configuration::set(const string &key, const string &value, bool write_out)
 		write_back();
 }
 
-void	Configuration::set(const char *key, const char *value, bool write_out)
+void	Configuration::set(const char *key,const char *value,bool write_out)
 {
-	string	k(key), v(value);
-	set(k, v, write_out);
+	std::string	k(key),v(value);
+	set(k,v,write_out);
 }
 
-void	Configuration::set(const char *key, const string &value, bool write_out)
+void	Configuration::set(const char *key,const std::string &value,bool write_out)
 {
-	string	k(key);
-	set(k, value, write_out);
+	std::string	k(key),v(value);
+	set(k,v,write_out);
 }
 
-void	Configuration::set(const char *key, int value,bool write_out)
+void	Configuration::set(const char *key,int value,bool write_out)
 {
-	string	k(key),v;
+	std::string	k(key),v;
 	char	buf[32];
 
 	snprintf(buf,32,"%d",value);
@@ -121,10 +130,10 @@ void	Configuration::set(const char *key, int value,bool write_out)
 }
 
 
-bool	Configuration::read_config_string(const string &s)
+bool	Configuration::read_config_string(const std::string &s)
 {
-	string	sbuf(s);
-	size_t	nn=0;
+	std::string	sbuf(s);
+	std::size_t	nn=0;
 	while(isspace(s[nn])) ++nn;
 	
 	assert(s[nn]=='<');
@@ -135,11 +144,13 @@ bool	Configuration::read_config_string(const string &s)
 	return true;
 }
 
-bool	Configuration::read_config_file(const string &input_filename, const string &root)
+bool	Configuration::read_config_file(const string input_filename, const string root)
 {
-	string fname;
+	std::string fname;
 
 	CTRACE("Configuration::read_config_file");
+	
+	clear(root);
 	
 	fname=input_filename;
 	// Don't frob the filename if it starts with a dot and
@@ -163,7 +174,7 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 		else
 			fname=input_filename;
 #else
-		// Probably something to do with determining the username
+		// Probably something to do with deteriming the username
 		// and generating a filename in their personal setup area.
 
 		// For now, just read file from current directory
@@ -174,9 +185,8 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 	return read_abs_config_file(fname, root);
 }
 
-
 // read config from file, without pre-processing the filename
-bool Configuration::read_abs_config_file(const string &input_filename, const string &root)
+bool Configuration::read_abs_config_file(const string input_filename, const string root)
 {
 	filename = input_filename;
 
@@ -188,23 +198,23 @@ bool Configuration::read_abs_config_file(const string &input_filename, const str
 
 	std::ifstream ifile;
 	try {
-	   U7open(ifile, filename.c_str(), true);
+	        U7open(ifile, filename.c_str(), true);
 	}
 	catch(exult_exception &) {
-		// configuration file not found
-		return false;
+	        // configuration file not found
+	        return false;
 	}
 
 	if(ifile.fail())
 		return false;
 
-	string	sbuf, line;
+	std::string	sbuf, line;
 	// copies the entire contents of the input file into sbuf
-	getline(ifile, line);
+	std::getline(ifile, line);
 	while (ifile.good())
 	{
 	    sbuf += line + "\n";
-	    getline(ifile, line);
+	    std::getline(ifile, line);
 	}
 	
 	ifile.close();
@@ -218,12 +228,12 @@ bool Configuration::read_abs_config_file(const string &input_filename, const str
 }
 
 
-string	Configuration::dump(void)
+std::string	Configuration::dump(void)
 {
 	return xmltree->dump();
 }
 
-ostream &Configuration::dump(ostream &o, const string &indentstr)
+ostream &Configuration::dump(ostream &o, string indentstr)
 {
 	xmltree->dump(o, indentstr);
 	return o;
@@ -252,9 +262,9 @@ void Configuration::write_back(void)
 }
 
 
-std::vector<string>	Configuration::listkeys(const string &key, bool longformat)
+std::vector<std::string>	Configuration::listkeys(const std::string &key,bool longformat)
 {
-	std::vector<string>	vs;
+	std::vector<std::string>	vs;
 	const XMLnode *sub=xmltree->subtree(key);
 	if(sub)
 		sub->listkeys(key,vs,longformat);
@@ -262,13 +272,13 @@ std::vector<string>	Configuration::listkeys(const string &key, bool longformat)
 	return vs;
 }
 
-std::vector<string>	Configuration::listkeys(const char *key, bool longformat)
+std::vector<std::string>	Configuration::listkeys(const char *key,bool longformat)
 {
-	string s(key);
+	std::string s(key);
 	return listkeys(s,longformat);
 }
 
-void Configuration::clear(const string &new_root)
+void Configuration::clear(std::string new_root)
 {
 	CTRACE("Configuration::clear");
 	
@@ -282,7 +292,7 @@ void Configuration::clear(const string &new_root)
 	CTRACE("Configuration::clear - fin");
 }
 
-void Configuration::getsubkeys(KeyTypeList &ktl, const string &basekey)
+void Configuration::getsubkeys(KeyTypeList &ktl, const string basekey)
 {
 	xmltree->searchpairs(ktl, basekey, string(), 0);
 }

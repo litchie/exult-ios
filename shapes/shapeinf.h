@@ -55,18 +55,9 @@ public:
 		magic_damage = 2,
 		poison_damage = 3	// Not sure about rest.
 		};
-	enum Actor_frames		// Actor frames to show when using:
-		{
-		raise = 1,
-		reach = 2
-		};
 private:
 	unsigned char powers;		// Poison, sleep, charm. flags.
 	unsigned char damage_type;	// See Damage_type above.
-	unsigned char actor_frames;	// Frames for NPC when using (from
-					//   Actor_frames above).  Low 2 bits
-					//   are for 'strike', next 2 are for
-					//   shooting/throwing.
 	short ammo;			// Shape # of ammo. consumed, or
 					//   -1 = ?? (swords, also sling).
 					//   -2 = ?? wands?
@@ -74,7 +65,6 @@ private:
 	short projectile;		// Projectile shape, or 0.
 	bool m_explodes;		// Projectile explodes on impact.
 	bool m_returns;			// Boomerang, magic axe.
-	bool m_no_blocking;		// Can move through walls.
 	short usecode;			// Usecode function, or 0.
 	unsigned char uses;		// 0 = hand-hand, 1,2 = throwable,
 					//   3 = missile-firing.
@@ -96,10 +86,6 @@ public:
 		{ return powers; }
 	void set_powers(unsigned char p)
 		{ powers = p; }
-	unsigned char get_actor_frames(bool projectile) const
-		{ return !projectile ? (actor_frames&3) : (actor_frames>>2); }
-	void set_actor_frames(unsigned char f)
-		{ actor_frames = f; }
 	int get_ammo_consumed()
 		{ return ammo > 0 ? ammo : 0; }
 	void set_ammo(int a)			// Raw value, for map-editor.
@@ -112,10 +98,6 @@ public:
 		{ return m_returns; }
 	void set_returns(bool tf)
 		{ m_returns = tf; }
-	bool no_blocking() const
-		{ return m_no_blocking; }
-	void set_no_blocking(bool tf)
-		{ m_no_blocking = tf; }
 	unsigned char get_uses() const
 		{ return uses; }
 	void set_uses(unsigned char u)
@@ -154,7 +136,7 @@ class Ammo_info
 	unsigned char damage;		// Extra damage points.
 	unsigned char powers;		// Same as for weapons.
 	unsigned char damage_type;	// Same as for weapons.
-	bool m_no_blocking;		// Can move through walls.
+//	unsigned char unknown[6];	// ??
 public:
 	friend class Shapes_vga_file;
 	Ammo_info()
@@ -176,10 +158,6 @@ public:
 		{ return powers; }
 	void set_powers(unsigned char p)
 		{ powers = p; }
-	bool no_blocking() const
-		{ return m_no_blocking; }
-	void set_no_blocking(bool tf)
-		{ m_no_blocking = tf; }
 	};
 
 /*

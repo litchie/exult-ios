@@ -52,8 +52,6 @@ protected:
 	std::string name;			// Its name.
 	int usecode;			// # of usecode function.
 	bool usecode_assigned;		// Usecode # explicitly assigned.
-	bool unused;			// If npc_num > 0, this NPC is unused
-					//   in the game.
 	short npc_num;			// # in Game_window::npcs list, or -1.
 	short face_num;			// Which shape for conversations.
 	short party_id;			// Index in party, or -1.
@@ -85,7 +83,7 @@ protected:
 	static Frames_sequence *npc_frames[4];
 	Frames_sequence **frames;
 					// Draw weapon in hand
-	void paint_weapon();
+	void paint_weapon(Game_window *gwin);
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Tile_coord schedule_loc;	// Location (x,y) of Shedule
 	unsigned char next_schedule;	// Used so correct schedule type 
@@ -113,7 +111,6 @@ protected:
 					//   actor not moving.
 	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
 	Rectangle weapon_rect;		// Screen area weapon was drawn in.
-	long rest_time;			// # msecs. of not doing anything.
 	void init();			// Clear stuff during construction.
 					// Move and change frame.
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
@@ -129,8 +126,7 @@ public:
 	void ready_best_weapon();	// Find best weapon and ready it.
 	void unready_weapon(int spot);	// Try to sheath weapon.
 					// Force repaint of area taken.
-	int add_dirty(int figure_rect = 0);
-	void change_frame(int frnum);	// Change frame & set to repaint.
+	int add_dirty(Game_window *gwin, int figure_rect = 0);
 	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
 	void use_food();		// Decrement food level.
 					// Increment/decrement temperature.
@@ -139,8 +135,7 @@ public:
 	Frames_sequence *get_frames(int dir)
 		{ return frames[dir/2]; }
 					// Get attack frames.
-	int get_attack_frames(int weapon, bool projectile,
-						int dir, char *frames) const;
+	int get_attack_frames(int dir, char *frames) const;
 	enum Alignment {		// Describes alignment field.
 		neutral = 0,
 		friendly = 1,
@@ -205,9 +200,9 @@ public:
 	enum Serpent_flags {		// Bit #'s of flags:
 		// petra = 4,
 		// met = 5,
-		// no_spell_casting = 6,
+		no_spell_casting = 6,
 		naked = 8,
-		// dont_move = 9
+		dont_move = 9
 		};
 	enum type_flags {
 		tf_fly = 4,
@@ -237,21 +232,9 @@ public:
 	enum Frames {			// Frames 0-15.  16-31 are the same,
 					//   only S instead of N.
 		standing = 0,
-		step_right_frame = 1,
-		step_left_frame = 2,
-		ready_frame = 3,	// Ready to fight?
-		raise1_frame = 4,	// 1-handed strikes.
-		reach1_frame = 5,
-		strike1_frame = 6,
-		raise2_frame = 7,	// 2-handed strikes.
-		reach2_frame = 8,
-		strike2_frame = 9,
 		sit_frame = 10,
-		bow_frame = 11,
-		kneel_frame = 12,
-		sleep_frame = 13,
-		up_frame = 14,		// Both hands reach up.
-		out_frame = 15		// Both hands reach out.
+		to_sit_frame = 11,
+		sleep_frame = 13
 		};
 	enum FIS_Type {			// The types used in the call to fit_in_spot
 		FIS_Other	= 0,
@@ -270,22 +253,12 @@ public:
 		{ return frame_time; }
 	void set_frame_time(int ftime)	// Set walking speed.
 		{ frame_time = ftime; }
-	void stand_at_rest();		// Stand (if not doing anyting else).
-	void clear_rest_time()
-		{ rest_time = 0; }
-	void resting(int msecs)		// Increment rest time.
-		{
-		if ((rest_time += msecs) > 2000) 
-			stand_at_rest();// Stand (under certain conditions).
-		}
 	bool is_moving() const
 		{ return frame_time != 0; }
 	bool is_dormant() const		// Inactive (i.e., off-screen)?
 		{ return dormant; }
 	bool is_dead() const
 		{ return (flags&(1<<Obj_flags::dead)) != 0; }
-	bool is_in_party() const	// (Includes Avatar.)
-		{ return (flags&(1<<Obj_flags::in_party)) != 0; }
 	void set_dormant()
 		{ dormant = true; }
 	Actor_action *get_action()	// Return action.
@@ -331,30 +304,25 @@ public:
 	int get_prev_schedule_type();	// Get previous schedule.
 	void restore_schedule();	// Set schedule after reading in.
 					// Set new schedule.
-	void set_schedule_type(int new_schedule_type, 
+	virtual void set_schedule_type(int new_schedule_type, 
 						Schedule *newsched = 0);
 					// Change to new schedule at loc
 	virtual void set_schedule_and_loc(int new_schedule_type, 
 					Tile_coord dest, int delay = -1);
-	int get_schedule_type() const
+	virtual int get_schedule_type() const
 		{ return schedule_type; }
 					// Get/set 'alignment'.
-	int get_alignment() const
+	virtual int get_alignment() const
 		{ return alignment; }
-	void set_alignment(short a)
+	virtual void set_alignment(short a)
 		{ alignment = a; }
 					// Update chunks after NPC moved.
 	virtual void switched_chunks(Map_chunk *, Map_chunk *)
 		{  }
-					// Update schedule for new 3-hour time.
-	virtual void update_schedule(int hour3, 
-					int backwards = 0, int delay = -1)
-		{  }
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Run usecode function.
-	virtual void activate(int event = 1);
-	virtual bool edit();		// Edit in ExultStudio.
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
 					// Drop another onto this.
@@ -362,10 +330,10 @@ public:
 	virtual std::string get_name() const;
 	std::string get_npc_name() const;
 	void set_npc_name(const char *n);
-	void set_property(int prop, int val);
+	virtual void set_property(int prop, int val);
 					// Lose HP's and check for death.
 	bool reduce_health(int delta, Actor *attacker = 0);
-	int get_property(int prop) const
+	virtual int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
 	bool is_dying() const		// Dead when health below -1/3 str.
 		{ return properties[(int) health] < 
@@ -388,33 +356,27 @@ public:
 	virtual int get_type_flags() const
 		{ return type_flags; }
 //++++++Is_dead() test messes up training.
-//	unsigned char get_ident() { return is_dead() ? 0 : ident; }
-	unsigned char get_ident() { return ident; }
-	void set_ident(unsigned char id) { ident = id; }
+//	virtual unsigned char get_ident() { return is_dead() ? 0 : ident; }
+	virtual unsigned char get_ident() { return ident; }
+	virtual void set_ident(unsigned char id) { ident = id; }
 
 	int get_temperature() const	// Get/set measure of coldness.
 		{ return temperature; }
 	void set_temperature(int t);
 	int figure_warmth();		// Based on what's worn.
-	bool is_unused() const		// Free NPC?
-		{ return unused; }
-	void set_unused(bool tf)
-		{ unused = tf; }
 
-	int get_npc_num() const		// Get its ID (1-num_npcs).
+	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return npc_num; }
 					// Get/set index within party.
-	int get_party_id() const
+	virtual int get_party_id() const
 		{ return party_id; }
-	void set_party_id(int i)
+	virtual void set_party_id(int i)
 		{ party_id = i; }
 					// Set for Usecode animations.
-	void set_usecode_dir(int d)
+	virtual void set_usecode_dir(int d)
 		{ usecode_dir = d&7; }
-	int get_usecode_dir() const
+	virtual int get_usecode_dir() const
 		{ return usecode_dir; }
-	virtual Actor *as_actor()	// An actor?
-		{ return this; }
 	void init_readied();		// Call Usecode to init. readied objs.
 					// Remove an object.
 	virtual void remove(Game_object *obj);
@@ -430,7 +392,7 @@ public:
 			index < (int)(sizeof(spots)/sizeof(spots[0])) ? 
 				spots[index] : 0; 
 		}
-	virtual void call_readied_usecode(int index,
+	virtual void call_readied_usecode(Game_window *gwin, int index,
 					Game_object *obj, int eventid);
 	virtual int get_max_weight();	// Get max. weight allowed.
 					// Change member shape.
@@ -451,18 +413,17 @@ public:
 					// Under attack.
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
-	virtual void die(Actor *attacker);		// We're dead.
+	virtual void die();		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
 	Monster_actor *clone();		// Create another nearby to this.
 	void mend_hourly();		// Restore HP's hourly.
 					// Read from file.
-	void read(DataSource* nfile, int num, bool has_usecode,
-							bool& fix_unused);
+	void read(std::istream& nfile, int num, int has_usecode);
 					// Don't write out to IREG file.
-	virtual void write_ireg(DataSource* out) {  }
-	virtual int get_ireg_size() { return 0; }
-	void write(DataSource* nfile);// Write out (to 'npc.dat').
-	virtual void write_contents(DataSource* out);	// Write contents
+	virtual void write_ireg(std::ostream& out)
+		{  }
+	void write(std::ostream& nfile);// Write out (to 'npc.dat').
+	virtual void write_contents(std::ostream& out);	// Write contents
 	void set_actor_shape(); 	// Set shape based on sex, skin color
 	void set_polymorph(int shape);	// Set a polymorph shape
 	void set_polymorph_default();	// Set the default shape
@@ -483,8 +444,7 @@ public:
 
 	bool was_hit() { return hit; }
 
-	// Should be virtual???
-	void cache_out();
+	virtual bool update_forced_schedule() { return false; }
 	};
 
 /*
@@ -524,7 +484,7 @@ public:
 					Map_chunk *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
-	virtual void die(Actor *attacker);		// We're dead.
+	virtual void die();		// We're dead.
 	};
 
 /*
@@ -532,16 +492,21 @@ public:
  */
 class Npc_actor : public Actor
 	{
+	Npc_actor *next;		// Next in same chunk.
 	unsigned char nearby;		// Queued as a 'nearby' NPC.  This is
 					//   to avoid being added twice.
 protected:
 	unsigned char num_schedules;	// # entries below.
+	bool force_update;		// Force schedule update
 	Schedule_change *schedules;	// List of schedule changes.
 	int find_schedule_change(int hour3);
 public:
 	Npc_actor(const std::string &nm, int shapenum, int num = -1, 
 								int uc = -1);
 	~Npc_actor();
+					//   Usecode tells them to.
+	Npc_actor *get_next()
+		{ return next; }
 	void set_nearby()		// Set/clear/test 'nearby' flag.
 		{ nearby = true; }
 	void clear_nearby()
@@ -558,12 +523,14 @@ public:
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
 					// Update schedule for new 3-hour time.
-	virtual void update_schedule(int hour3, 
-					int backwards = 0, int delay = -1);
+	void update_schedule(Game_window *gwin, int hour3, int backwards = 0,
+							int delay = -1);
+	virtual bool update_forced_schedule();
+	void set_force_update() { force_update = true; }
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Run usecode function.
-	virtual void activate(int event = 1);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Step onto an (adjacent) tile.
@@ -575,8 +542,6 @@ public:
 					Map_chunk *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
-
-	virtual Npc_actor *as_npc() { return this; }
 	};
 
 /*

@@ -55,6 +55,7 @@ Gump::Gump
 	ShapeFile shfile
 	) : ShapeID(shnum, 0, shfile), container(cont), check_button(0)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	Shape_frame *shape = get_shape();
 	x = (gwin->get_width() - shape->get_width())/2;
 	y = (gwin->get_height() - shape->get_height())/2;
@@ -78,6 +79,7 @@ Gump::~Gump()
  */
 void Gump::set_pos()
 {
+	Game_window *gwin = Game_window::get_game_window();
 	Shape_frame *shape = get_shape();
 	x = (gwin->get_width() - shape->get_width())/2;
 	y = (gwin->get_height() - shape->get_height())/2;
@@ -148,6 +150,7 @@ Game_object *Gump::find_object
 	Object_iterator next(container->get_objects());
 	Game_object *obj;
 	Shape_frame *s;
+	Game_window *gwin = Game_window::get_game_window();
 
 	int ox, oy;
 
@@ -205,10 +208,11 @@ Game_object *Gump::get_owner()
 
 Gump_button *Gump::on_button
 	(
+	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
 {
-	return (check_button->on_button(mx, my) ?
+	return (check_button->on_button(gwin, mx, my) ?
 			check_button : 0);
 }
 
@@ -281,6 +285,7 @@ void Gump::remove
 	Rectangle box = object_area;	// Paint objects inside.
 	box.shift(x, y);		// Set box to screen location.
 
+	Game_window *gwin = Game_window::get_game_window();
 
 	gwin->set_all_dirty();
 	gwin->paint_dirty();
@@ -292,13 +297,14 @@ void Gump::remove
 
 void Gump::paint
 	(
+	Game_window *gwin
 	)
 {
 		// Paint the gump itself.
-	paint_shape(x, y);
+	gwin->paint_shape(x, y, *this);
 		
 		// Paint red "checkmark".
-	if (check_button) check_button->paint();
+	if (check_button) check_button->paint(gwin);
 
 	if (!container)
 		return;			// Empty.
@@ -344,7 +350,8 @@ void Gump::paint
 					cury = 2*(++loop);
 			}
 		}
-		obj->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy());
+		gwin->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy(), 
+				*obj);
 		obj = obj->get_next();
 	}
 					// Outline selections in this gump.
@@ -357,7 +364,7 @@ void Gump::paint
 			{
 			int x, y;
 			get_shape_location(obj, x, y);
-			obj->paint_outline(x, y, HIT_PIXEL);
+			gwin->paint_hit_outline(x, y, obj->get_shape());
 			}
 		}
 }
@@ -368,9 +375,10 @@ void Gump::paint
 
 void Gump::close
 	(
+	Game_window *gwin
 	)
 {
-	gumpman->close_gump(this);
+	gwin->get_gump_man()->close_gump(this);
 }
 
 /*

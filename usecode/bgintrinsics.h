@@ -168,7 +168,7 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91 ++++ reset_conv_face???
 	USECODE_INTRINSIC_PTR(center_view),	// 0x92
 	USECODE_INTRINSIC_PTR(get_dead_party),	// 0x93
-	USECODE_INTRINSIC_PTR(center_view),	// 0x94 Guessing: same as 0x92?
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x94    SetupOrrery (ucdump.c)
 	USECODE_INTRINSIC_PTR(telekenesis),	// 0x95
 	USECODE_INTRINSIC_PTR(a_or_an),	// 0x96
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x97

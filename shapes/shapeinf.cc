@@ -31,7 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "monstinf.h"
 
 #include "utils.h"
-#include <iomanip>	/* Debugging */
 
 /*
  *	Read in a weapon-info entry from 'weapons.dat'.
@@ -55,8 +54,11 @@ int Weapon_info::read
 	projectile = Read2(ptr);
 #if 0
 		extern char **item_names;
-		cout << dec << "Weapon " //  << item_names[shapenum]
+		cout << dec << "Weapon " << item_names[shapenum]
 			<< '(' << shapenum << ')' << endl;
+		cout << "ammoshape = " << ammoshape << ", projectile = " 
+				<< projectile
+				<< endl;
 #endif
 					// +++++Wonder what strike < 0 means.
 	if (projectile == shapenum || projectile < 0)
@@ -64,19 +66,13 @@ int Weapon_info::read
 	damage = *ptr++;
 	unsigned char flags0 = *ptr++;
 	m_explodes = (flags0>>1)&1;
-	m_no_blocking = (flags0>>2)&1;
 	damage_type = (flags0>>4)&15;
 	range = *ptr++;
 	uses = (range>>1)&3;		// Throwable, etc.:
 	range = range>>3;
 	unsigned char flags1 = *ptr++;
 	m_returns = (flags1&1);
-#if 0
-	unsigned char unk1 = *ptr++;	// Figured it out now... I think.
-	cout << "Unk1 = " << hex << "0x" << setfill('0') << setw(2) <<(int)unk1
-							<< endl;
-#endif
-	actor_frames = (*ptr++)&15;
+	unsigned char unk1 = *ptr++;
 	powers = *ptr++;
 	*ptr++;				// Skip (0).
 	usecode = Read2(ptr);
@@ -124,9 +120,7 @@ int Ammo_info::read
 	type2 = Read2(ptr);		// ???
 	damage = *ptr++;
 	ptr += 2;			// 2 unknown.
-	unsigned char flags0 = *ptr++;
-	m_no_blocking = (flags0>>3)&1;
-	damage_type = (flags0>>4)&15;
+	damage_type = (*ptr++>>4)&15;
 	powers = *ptr++;
 					// Last 2 unknown.
 	return shapenum;

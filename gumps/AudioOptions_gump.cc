@@ -32,12 +32,14 @@
 #include "exult.h"
 #include "exult_flx.h"
 #include "gamewin.h"
+#include "gump_utils.h"
 #include "mouse.h"
 #include "xmidi.h"
 #include "Enabled_button.h"
 
 using std::cerr;
 using std::endl;
+using std::string;
 
 static const int rowy[] = { 5,  
 			    19, 29, 41, 53, 65, 77,  
@@ -51,19 +53,19 @@ static const char* canceltext = "CANCEL";
 
 class AudioOptions_button : public Text_button {
 public:
-	AudioOptions_button(Gump *par, const std::string &text, int px, int py)
+	AudioOptions_button(Gump *par, string text, int px, int py)
 		: Text_button(par, text, px, py, 59, 11)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
-void AudioOptions_button::activate()
+void AudioOptions_button::activate(Game_window *gwin)
 {
 	if (text == canceltext) {
 		((AudioOptions_gump*)parent)->cancel();
 	} else if (text == oktext) {
-		((AudioOptions_gump*)parent)->close();
+		((AudioOptions_gump*)parent)->close(gwin);
 	}
 }
 
@@ -93,7 +95,7 @@ public:
 	}
 };	
 
-void AudioOptions_gump::close()
+void AudioOptions_gump::close(Game_window* gwin)
 {
 	save_settings();
 	done = 1;
@@ -116,7 +118,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		} else {
 			build_buttons();
 		}
-		paint();
+		paint(Game_window::get_game_window());
 	} else if (btn == buttons[1]) {	// midi on/off 
 		midi_enabled = state;
 		if (state == 0) {
@@ -127,7 +129,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		} else {
 			build_midi_buttons();
 		}
-		paint();
+		paint(Game_window::get_game_window());
 	} else if (btn == buttons[2]) { // midi conversion
 		midi_conversion = state;
 	} else if (btn == buttons[3]) { // midi reverb
@@ -144,7 +146,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		} else {
 			build_sfx_buttons();
 		}
-		paint();
+		paint(Game_window::get_game_window());
 #ifdef ENABLE_MIDISFX
 	} else if (btn == buttons[7]) { // sfx conversion
 		if (state == 1) {
@@ -178,31 +180,22 @@ void AudioOptions_gump::build_buttons()
 			build_sfx_buttons();
 
 		// speech on/off
-		buttons[8] = new AudioEnabledToggle(this,colx[2],rowy[11],
+		buttons[8] =new AudioEnabledToggle(this,colx[2],rowy[11],
 										   speech_enabled);
 	}
 }
 
 void AudioOptions_gump::build_midi_buttons()
 {
-#ifdef USE_FMOPL_MIDI
-	const int mct_array_size = 6;
-#else
-	const int mct_array_size = 5;
-#endif
-	std::string* midi_conversiontext = new std::string[mct_array_size];
-	midi_conversiontext[0] = std::string("None");
-	midi_conversiontext[1] = std::string("GM");
-	midi_conversiontext[2] = std::string("GS");
-	midi_conversiontext[3] = std::string("GS127");
-	midi_conversiontext[4] = std::string("Digital");
-#ifdef USE_FMOPL_MIDI
-	midi_conversiontext[5] = std::string("FMSynth");
-#endif
+	std::string* midi_conversiontext = new std::string[4];
+	midi_conversiontext[0] = "None";
+	midi_conversiontext[1] = "GM";
+	midi_conversiontext[2] = "GS";
+	midi_conversiontext[3] = "GS127";
 
 	// midi conversion
 	buttons[2] = new AudioTextToggle(this, midi_conversiontext, 
-									 colx[2], rowy[3], 59, midi_conversion, mct_array_size);
+									 colx[2], rowy[3], 59, midi_conversion, 4);
 	// reverb on/off
 	buttons[3] = new AudioEnabledToggle(this, colx[2], rowy[4], midi_reverb);
 	// chorus on/off
@@ -227,7 +220,7 @@ void AudioOptions_gump::build_sfx_buttons()
 
 void AudioOptions_gump::load_settings()
 {
-	std::string s;
+	string s;
 	audio_enabled = (Audio::get_ptr()->is_audio_enabled() ? 1 : 0);
 	midi_enabled = (Audio::get_ptr()->is_music_enabled() ? 1 : 0);
 	sfx_enabled = (Audio::get_ptr()->are_effects_enabled() ? 1 : 0);
@@ -249,12 +242,6 @@ void AudioOptions_gump::load_settings()
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GS127;
 		else if (s == "gs127drum")
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GS;
-		else if (s == "digital")
-			midi_conversion = XMIDI_CONVERT_OGG;
-#ifdef USE_FMOPL_MIDI
-		else if (s == "fmsynth")
-			midi_conversion = XMIDI_CONVERT_FMSYNTH;
-#endif
 		else
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GM;
 
@@ -335,14 +322,6 @@ void AudioOptions_gump::save_settings()
 		case XMIDI_CONVERT_MT32_TO_GS127:
 			config->set("config/audio/midi/convert","gs127",true);
 			break;
-		case XMIDI_CONVERT_OGG:
-			config->set("config/audio/midi/convert","digital",true);
-			break;
-#ifdef USE_FMOPL_MIDI
-		case XMIDI_CONVERT_FMSYNTH:
-			config->set("config/audio/midi/convert","fmsynth",true);
-			break;
-#endif
 		default:
 			config->set("config/audio/midi/convert","gm",true);
 			break;
@@ -361,62 +340,64 @@ void AudioOptions_gump::save_settings()
 	}
 }
 
-void AudioOptions_gump::paint()
+void AudioOptions_gump::paint(Game_window* gwin)
 {
-	Gump::paint();
+	Gump::paint(gwin);
 	for (int i=0; i<11; i++)
 		if (buttons[i])
-			buttons[i]->paint();
+			buttons[i]->paint(gwin);
 
-	sman->paint_text(2, "Audio:", x + colx[0], y + rowy[0] + 1);
+	gwin->paint_text(2, "Audio:", x + colx[0], y + rowy[0] + 1);
 	if (audio_enabled) {
-		sman->paint_text(2, "Music options:", x + colx[0], y + rowy[1] + 1);
-		sman->paint_text(2, "music", x + colx[1], y + rowy[2] + 1);
+		gwin->paint_text(2, "Music options:", x + colx[0], y + rowy[1] + 1);
+		gwin->paint_text(2, "music", x + colx[1], y + rowy[2] + 1);
 		if (midi_enabled) {
-			sman->paint_text(2, "conversion", x + colx[1], y + rowy[3] + 1);
-			sman->paint_text(2, "reverb", x + colx[1], y + rowy[4] + 1);
-			sman->paint_text(2, "chorus", x + colx[1], y + rowy[5] + 1);
-			sman->paint_text(2, "looping", x + colx[1], y + rowy[6] + 1);
+			gwin->paint_text(2, "conversion", x + colx[1], y + rowy[3] + 1);
+			gwin->paint_text(2, "reverb", x + colx[1], y + rowy[4] + 1);
+			gwin->paint_text(2, "chorus", x + colx[1], y + rowy[5] + 1);
+			gwin->paint_text(2, "looping", x + colx[1], y + rowy[6] + 1);
 		}
-		sman->paint_text(2, "SFX options:", x + colx[0], y + rowy[7] + 1);
-		sman->paint_text(2, "SFX", x + colx[1], y + rowy[8] + 1);
+		gwin->paint_text(2, "SFX options:", x + colx[0], y + rowy[7] + 1);
+		gwin->paint_text(2, "SFX", x + colx[1], y + rowy[8] + 1);
 #ifdef ENABLE_MIDISFX
 		if (sfx_enabled) {
-			sman->paint_text(2, "conversion", x + colx[1], y + rowy[9] + 1);
+			gwin->paint_text(2, "conversion", x + colx[1], y + rowy[9] + 1);
 		}
 #endif
-		sman->paint_text(2, "Speech options:", x + colx[0], y + rowy[10] + 1);
-		sman->paint_text(2, "speech", x + colx[1], y + rowy[11] + 1);
+		gwin->paint_text(2, "Speech options:", x + colx[0], y + rowy[10] + 1);
+		gwin->paint_text(2, "speech", x + colx[1], y + rowy[11] + 1);
 	}
 	gwin->set_painted();
 }
 
 void AudioOptions_gump::mouse_down(int mx, int my)
 {
-	pushed = Gump::on_button(mx, my);
+	Game_window *gwin = Game_window::get_game_window();
+	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
 	if (!pushed)
 		for (int i=0; i<11; i++)
-			if (buttons[i] && buttons[i]->on_button(mx, my)) {
+			if (buttons[i] && buttons[i]->on_button(gwin, mx, my)) {
 				pushed = buttons[i];
 				break;
 			}
 
 	if (pushed)			// On a button?
 	{
-		pushed->push();
+		pushed->push(gwin);
 		return;
 	}
 }
 
 void AudioOptions_gump::mouse_up(int mx, int my)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush();
-		if (pushed->on_button(mx, my))
-			((Gump_button*)pushed)->activate();
+		pushed->unpush(gwin);
+		if (pushed->on_button(gwin, mx, my))
+			((Gump_button*)pushed)->activate(gwin);
 		pushed = 0;
 	}
 }

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001-2002 The Exult Team
+Copyright (C) 2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,10 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "game.h"
 #include "gamewin.h"
+#include "gump_utils.h"
 #include "misc_buttons.h"
 #include "CombatStats_gump.h"
 #include "Paperdoll_gump.h"
-#include "Gump_manager.h"
 
 
 /*
@@ -45,6 +45,7 @@ CombatStats_gump::CombatStats_gump(int initx, int inity) :
 {
 	set_object_area(Rectangle(0,0,0,0), 7, 95);
 
+	Game_window *gwin = Game_window::get_game_window();
 
 	party_size = gwin->get_party(party, 1);
 
@@ -79,43 +80,41 @@ CombatStats_gump::~CombatStats_gump()
  *	Paint on screen.
  */
 
-void CombatStats_gump::paint()
+void CombatStats_gump::paint(Game_window *gwin)
 {
-	Gump_manager* gman = gumpman;
-
-	Gump::paint();
+	Gump::paint(gwin);
 
 	// stats for all party members
 	for (int i = 0; i < party_size; i++) {
-		face_btn[i]->paint();
+		face_btn[i]->paint(gwin);
 
-		gman->paint_num(party[i]->get_property(Actor::combat),
+		Paint_num(gwin, party[i]->get_property(Actor::combat),
 				  x + colx + i*coldx, y + rowy[1]);		
-		gman->paint_num(party[i]->get_property(Actor::health),
+		Paint_num(gwin, party[i]->get_property(Actor::health),
 				  x + colx + i*coldx, y + rowy[2]);
 
-		halo_btn[i]->paint();
-		cmb_btn[i]->paint();
+		halo_btn[i]->paint(gwin);
+		cmb_btn[i]->paint(gwin);
 	}
 
 	// magic stats only for Avatar
-  	gman->paint_num(party[0]->get_property(Actor::magic),
+  	Paint_num(gwin, party[0]->get_property(Actor::magic),
 						x + colx, y + rowy[5]);
-  	gman->paint_num(party[0]->get_property(Actor::mana),
+  	Paint_num(gwin, party[0]->get_property(Actor::mana),
 						x + colx, y + rowy[6]);	
 }
 
-Gump_button* CombatStats_gump::on_button(int mx, int my)
+Gump_button* CombatStats_gump::on_button(Game_window *gwin, int mx, int my)
 {
-	Gump_button *btn = Gump::on_button(mx, my);
+	Gump_button *btn = Gump::on_button(gwin, mx, my);
 	if (btn)
 		return btn;
 	for (int i = 0; i < party_size; i++) {
-		if (halo_btn[i]->on_button(mx, my))
+		if (halo_btn[i]->on_button(gwin, mx, my))
 			return halo_btn[i];
-		if (cmb_btn[i]->on_button(mx, my))
+		if (cmb_btn[i]->on_button(gwin, mx, my))
 			return cmb_btn[i];
-		if (face_btn[i]->on_button(mx, my))
+		if (face_btn[i]->on_button(gwin, mx, my))
 			return face_btn[i];
 	}
 	return 0;

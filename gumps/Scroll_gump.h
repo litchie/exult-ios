@@ -31,7 +31,7 @@ class Scroll_gump : public Text_gump
 public:
 	Scroll_gump(bool serp = false);
 					// Paint it and its contents.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 };
 
 #endif

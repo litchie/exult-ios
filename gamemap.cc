@@ -5,7 +5,7 @@
 /*
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -54,9 +54,7 @@
 #include "gamewin.h"	/* With some work, could get rid of this. */
 #include "bodies.h"
 #include "game.h"
-#include "effects.h"
 #include "objiter.cc"	/* Yes we #include the .cc here on purpose! Please don't "fix" this */
-#include "databuf.h"
 #include <fstream>
 
 using std::cerr;
@@ -209,9 +207,6 @@ void Game_map::init
 	memset(reinterpret_cast<char*>(schunk_read), 0, sizeof(schunk_read));
 	memset(reinterpret_cast<char*>(schunk_modified), 0, 
 						sizeof(schunk_modified));
-
-	memset(schunk_cache, 0, sizeof (schunk_cache));
-	memset(schunk_cache_sizes, -1, sizeof(schunk_cache_sizes));
 	}
 
 /*
@@ -230,8 +225,7 @@ void Game_map::clear
 			objects[x][y] = 0;
 			}
 	int cnt = chunk_terrains.size();
-	int i;
-	for (i = 0; i < cnt; i++)
+	for (int i = 0; i < cnt; i++)
 		delete chunk_terrains[i];
 	chunk_terrains.resize(0);
 	delete chunks;			// Close 'u7chunks'.
@@ -241,11 +235,6 @@ void Game_map::clear
 	memset(reinterpret_cast<char*>(schunk_read), 0, sizeof(schunk_read));
 	memset(reinterpret_cast<char*>(schunk_modified), 0, 
 						sizeof(schunk_modified));
-
-	for (i = 0; i < 144; i++) delete [] schunk_cache[i];
-	memset(schunk_cache, 0, sizeof (schunk_cache));
-	memset(schunk_cache_sizes, -1, sizeof(schunk_cache_sizes));
-
 	}
 
 /*
@@ -256,7 +245,7 @@ void Game_map::read_map_data
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	int scrolltx = gwin->get_scrolltx(), scrollty = gwin->get_scrollty();
 	int w = gwin->get_width(), h = gwin->get_height();
 					// Start one tile to left.
@@ -447,12 +436,11 @@ void Game_map::write_ifix_objects
 	)
 	{
 	char fname[128];		// Set up name.
-	ofstream ifix_stream;	// There it is.
-	U7open(ifix_stream, get_schunk_file_name(PATCH_U7IFIX, schunk, fname));
-	StreamDataSource ifix(&ifix_stream);
+	ofstream ifix;			// There it is.
+	U7open(ifix, get_schunk_file_name(PATCH_U7IFIX, schunk, fname));
 					// +++++Use game title.
 	const int count = c_chunks_per_schunk*c_chunks_per_schunk;
-	Flex::write_header(&ifix, "Exult",  count);
+	Flex::write_header(ifix, "Exult",  count);
 	uint8 table[2*count*4];
 	uint8 *tptr = &table[0];
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
@@ -462,7 +450,7 @@ void Game_map::write_ifix_objects
 		for (int cx = 0; cx < 16; cx++)
 			{
 					// Store file position in table.
-			long start = ifix.getPos();
+			long start = ifix.tellp();
 			Write4(tptr, start);
 			Map_chunk *chunk = get_chunk(scx + cx,
 							       scy + cy);
@@ -470,14 +458,14 @@ void Game_map::write_ifix_objects
 			Object_iterator_backwards next(chunk);
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)
-				obj->write_ifix(&ifix);
+				obj->write_ifix(ifix);
 					// Store IFIX data length.
-			Write4(tptr, ifix.getPos() - start);
+			Write4(tptr, ifix.tellp() - start);
 			}
-	ifix.seek(0x80);	// Write table.
+	ifix.seekp(0x80, std::ios::beg);	// Write table.
 	ifix.write(reinterpret_cast<char *>(&table[0]), sizeof(table));
-	ifix_stream.flush();
-	int result = ifix_stream.good();
+	ifix.flush();
+	int result = ifix.good();
 	if (!result)
 		throw file_write_exception(fname);
 	return;
@@ -493,14 +481,14 @@ void Game_map::get_ifix_objects
 	)
 	{
 	char fname[128];		// Set up name.
-	ifstream ifix_stream;	// There it is.
+	ifstream ifix;			// There it is.
 	if (is_system_path_defined("<PATCH>") &&
 					// First check for patch.
 	    U7exists(get_schunk_file_name(PATCH_U7IFIX, schunk, fname)))
-		U7open(ifix_stream, fname);
+		U7open(ifix, fname);
 	else try
 		{
-		U7open(ifix_stream, get_schunk_file_name(U7IFIX, schunk, fname));
+		U7open(ifix, get_schunk_file_name(U7IFIX, schunk, fname));
 		}
 		catch(const file_exception & f)
 		{
@@ -508,7 +496,6 @@ void Game_map::get_ifix_objects
 			throw f;
 		return;
 		}
-	StreamDataSource ifix(&ifix_stream);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.
@@ -517,13 +504,13 @@ void Game_map::get_ifix_objects
 			{
 					// Get to index entry for chunk.
 			int chunk_num = cy*16 + cx;
-			ifix.seek(0x80 + chunk_num*8);
+			ifix.seekg(0x80 + chunk_num*8);
 					// Get location, length.
-			long shapesoff = ifix.read4();
+			long shapesoff = Read4(ifix);
 			if (!shapesoff) // Nothing there?
 				continue;
-			unsigned long shapeslen = ifix.read4();
-			get_ifix_chunk_objects(&ifix, shapesoff, shapeslen/4,
+			unsigned long shapeslen = Read4(ifix);
+			get_ifix_chunk_objects(ifix, shapesoff, shapeslen/4,
 				scx + cx, scy + cy);
 			}
 	}
@@ -534,25 +521,25 @@ void Game_map::get_ifix_objects
 
 void Game_map::get_ifix_chunk_objects
 	(
-	DataSource* ifix,
+	ifstream& ifix,
 	long filepos,			// Where chunk's data lies.
 	int cnt,			// # entries (objects).
 	int cx, int cy			// Absolute chunk #'s.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	ifix->seek(filepos);		// Get to actual shape.
+	Game_window *gwin = Game_window::get_game_window();
+	ifix.seekg(filepos);		// Get to actual shape.
 					// Get buffer to hold entries' indices.
 	unsigned char *entries = new unsigned char[4*cnt];
 	unsigned char *ent = entries;	// Read them in.
-	ifix->read(reinterpret_cast<char*>(entries), 4*cnt);
+	ifix.read(reinterpret_cast<char*>(entries), 4*cnt);
 					// Get object list for chunk.
 	Map_chunk *olist = get_chunk(cx, cy);
 	for (int i = 0; i < cnt; i++, ent += 4)
 		{
 		Ifix_game_object *obj;
 		int shnum = ent[2]+256*(ent[3]&3);
-		Shape_info& info = ShapeID::get_info(shnum);
+		Shape_info& info = gwin->get_info(shnum);
 		if (info.is_animated())
 			obj = new Animated_ifix_object(ent);
 		else
@@ -577,7 +564,7 @@ void Game_map::get_ifix_chunk_objects
 
 void Game_map::write_scheduled
 	(
-	DataSource* ireg,
+	std::ostream& ireg,
 	Game_object *obj,
 	bool write_mark			// Write an IREG_ENDMARK if true.
 	)
@@ -591,16 +578,16 @@ void Game_map::write_scheduled
 			cerr << "Error saving Usecode script" << endl;
 		else if (len > 0)
 			{
-			ireg->write1(IREG_SPECIAL);
-			ireg->write1(IREG_UCSCRIPT);
-			ireg->write2(len);	// Store length.
-			ireg->write(reinterpret_cast<char*>(buf), len);
+			ireg.put(IREG_SPECIAL);
+			ireg.put(IREG_UCSCRIPT);
+			Write2(ireg, len);	// Store length.
+			ireg.write(reinterpret_cast<char*>(buf), len);
 			}
 		}
 	if (write_mark)
 		{
-		ireg->write1(IREG_SPECIAL);
-		ireg->write1(IREG_ENDMARK);
+		ireg.put(IREG_SPECIAL);
+		ireg.put(IREG_ENDMARK);
 		}
 	}
 
@@ -616,17 +603,8 @@ void Game_map::write_ireg
 					// Write each superchunk to Iregxx.
 	for (int schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
 					// Only write what we've read.
-		if (schunk_cache[schunk] && schunk_cache_sizes[schunk] >= 0) {
-			// It's loaded in a memory buffer
-			char fname[128];		// Set up name.
-			ofstream ireg_stream;
-			U7open(ireg_stream, get_schunk_file_name(U7IREG, schunk, fname));
-			ireg_stream.write(schunk_cache[schunk], schunk_cache_sizes[schunk]);
-		}
-		else if (schunk_read[schunk]) {
-			// It's active
+		if (schunk_read[schunk])
 			write_ireg_objects(schunk);
-		}
 	}
 
 /*
@@ -641,29 +619,8 @@ void Game_map::write_ireg_objects
 	)
 	{
 	char fname[128];		// Set up name.
-	ofstream ireg_stream;			// There it is.
-	U7open(ireg_stream, get_schunk_file_name(U7IREG, schunk, fname));
-	StreamDataSource ireg(&ireg_stream);
-	write_ireg_objects (schunk, &ireg);
-	ireg_stream.flush();
-	int result = ireg_stream.good();
-	if (!result) throw file_write_exception(fname);
-	return;
-	}
-
-
-/*
- *	Write out one of the "u7ireg" files.
- *
- *	Output:	0 if error, which is reported.
- */
-
-void Game_map::write_ireg_objects
-	(
-	int schunk,			// Superchunk # (0-143).
-	DataSource *ireg
-	)
-	{
+	ofstream ireg;			// There it is.
+	U7open(ireg, get_schunk_file_name(U7IREG, schunk, fname));
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.
@@ -677,8 +634,13 @@ void Game_map::write_ireg_objects
 			Object_iterator_backwards next(chunk);
 			while ((obj = next.get_next()) != 0)
 				obj->write_ireg(ireg);
-			ireg->write2(0);// End with 2 0's.
+			Write2(ireg, 0);// End with 2 0's.
 			}
+	ireg.flush();
+	int result = ireg.good();
+	if (!result)
+		throw file_write_exception(fname);
+	return;
 	}
 
 /*
@@ -692,27 +654,14 @@ void Game_map::get_ireg_objects
 	)
 	{
 	char fname[128];		// Set up name.
-	ifstream ireg_stream;			// There it is.
-	DataSource *ireg = 0;
-
-	if (schunk_cache[schunk] && schunk_cache_sizes[schunk] >= 0) {
-		// No items
-		if (schunk_cache_sizes[schunk] == 0) return;
-		ireg = new BufferDataSource (schunk_cache[schunk], schunk_cache_sizes[schunk]);
-#ifdef DEBUG
-		std::cout << "Reading " << get_schunk_file_name(U7IREG, schunk, fname) << " from memory" << std::endl;
-#endif
+	ifstream ireg;			// There it is.
+	try
+	{
+		U7open(ireg, get_schunk_file_name(U7IREG, schunk, fname));
 	}
-	else {
-		try
-		{
-			U7open(ireg_stream, get_schunk_file_name(U7IREG, schunk, fname));
-		}
-		catch(const file_exception & f)
-		{
-			return;			// Just don't show them.
-		}
-		ireg = new StreamDataSource (&ireg_stream);
+	catch(const file_exception & f)
+	{
+		return;			// Just don't show them.
 	}
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
@@ -725,13 +674,6 @@ void Game_map::get_ireg_objects
 					787, 0, 0, c_any_qual, 5))
 			vec[0]->move(2937, 2727, 2);
 		}
-	delete ireg;
-	if (schunk_cache[schunk]) {
-		delete [] schunk_cache[schunk];
-		schunk_cache[schunk] = 0;
-		schunk_cache_sizes[schunk] = -1;
-	}
-
 	}
 
 /*
@@ -740,14 +682,14 @@ void Game_map::get_ireg_objects
 
 void Read_special_ireg
 	(
-	DataSource *ireg,
+	istream& ireg,
 	Game_object *obj		// Last object read.
 	)
 	{
-	int type = ireg->read1();		// Get type.
-	int len = ireg->read2();		// Length of rest.
+	int type = Read1(ireg);		// Get type.
+	int len = Read2(ireg);		// Length of rest.
 	unsigned char *buf = new unsigned char[len];
-	ireg->read(reinterpret_cast<char*>(buf), len);
+	ireg.read(reinterpret_cast<char*>(buf), len);
 	if (type == IREG_UCSCRIPT)	// Usecode script?
 		{
 		Usecode_script *scr = Usecode_script::restore(obj, buf, len);
@@ -773,18 +715,18 @@ void Read_special_ireg
 
 void Game_map::read_special_ireg
 	(
-	DataSource *ireg,
+	istream& ireg,
 	Game_object *obj		// Last object read.
 	)
 	{
 	unsigned char entlen;
-	while ((entlen = ireg->peek()) == IREG_SPECIAL && !ireg->eof())
+	while ((entlen = ireg.peek()) == IREG_SPECIAL && !ireg.eof())
 		{
-		ireg->read1();		// Eat the IREG_SPECIAL.
-		unsigned char type = ireg->peek();
+		Read1(ireg);		// Eat the IREG_SPECIAL.
+		unsigned char type = ireg.peek();
 		if (type == IREG_ENDMARK)
 			{		// End of list.
-			ireg->read1();
+			Read1(ireg);
 			return;
 			}
 		Read_special_ireg(ireg, obj);
@@ -825,7 +767,7 @@ static Egg_object *Create_egg
 
 void Game_map::read_ireg_objects
 	(
-	DataSource *ireg,			// File to read from.
+	istream& ireg,			// File to read from.
 	int scx, int scy,		// Abs. chunk coords. of superchunk.
 	Game_object *container,		// Container, or null.
 	unsigned long flags		// Usecode item flags.
@@ -834,9 +776,9 @@ void Game_map::read_ireg_objects
 	int entlen;			// Gets entry length.
 	sint8 index_id = -1;
 	Game_object *last_obj = 0;	// Last one read in this call.
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 					// Go through entries.
-	while (((entlen = ireg->read1(), !ireg->eof())))
+	while (((entlen = Read1(ireg), ireg.good())))
 		{
 
 		// Skip 0's & ends of containers.
@@ -851,7 +793,7 @@ void Game_map::read_ireg_objects
 		// Detect the 2 byte index id
 		else if (entlen == 2)
 		{
-			index_id = (sint8) ireg->read2();
+			index_id = (sint8) Read2 (ireg);
 			continue;
 		}
 		else if (entlen == IREG_SPECIAL)
@@ -864,14 +806,14 @@ void Game_map::read_ireg_objects
 		if (entlen != 6 && entlen != 10 && entlen != 12 && 
 								entlen != 18)
 			{
-			long pos = ireg->getPos();
+			long pos = ireg.tellg();
 			cout << "Unknown entlen " << entlen << " at pos. " <<
 					pos << endl;
-			ireg->seek(pos + entlen);
+			ireg.seekg(pos + entlen);
 			continue;	// Only know these two types.
 			}
 		unsigned char entry[18];// Get entry.
-		ireg->read(reinterpret_cast<char*>(entry), entlen);
+		ireg.read(reinterpret_cast<char*>(entry), entlen);
 		int cx = entry[0] >> 4; // Get chunk indices within schunk.
 		int cy = entry[1] >> 4;
 					// Get coord. #'s where shape goes.
@@ -881,7 +823,7 @@ void Game_map::read_ireg_objects
 		int shnum = entry[2]+256*(entry[3]&3);
 		int frnum = entry[3] >> 2;
 
-		Shape_info& info = ShapeID::get_info(shnum);
+		Shape_info& info = gwin->get_info(shnum);
 		unsigned int lift, quality, type;
 		Ireg_game_object *obj;
 		int is_egg = 0;		// Fields are eggs.
@@ -967,20 +909,18 @@ void Game_map::read_ireg_objects
 				// Gwenno. Ugly hack to fix bug without having to start
 				// a new game. Remove someday... (added 20010820)
 				{
-				Dead_body *b = new Dead_body(400, 8, 
-						tilex, tiley, lift, 149);
-				obj = b;
-				gwin->set_body(149, b);
+				obj = new Dead_body(400, 8, tilex, tiley, 
+								lift, 149);
+				gwin->set_body(149, obj);
 				}
 			else if (quality == 1 && 
 					 (entry[8] >= 0x80 || 
 				  Game::get_game_type() == SERPENT_ISLE)) 
 				{		// NPC's body.
 				int npc_num = (entry[8] - 0x80) & 0xFF;
-				Dead_body *b = new Dead_body(shnum, frnum, 
-						tilex, tiley, lift, npc_num);
-				obj = b;
-				gwin->set_body(npc_num, b);
+				obj = new Dead_body(shnum, frnum, tilex, 
+						tiley, lift, npc_num);
+				gwin->set_body(npc_num, obj);
 				}
 			else if (Is_body(shnum)) {
 				obj = new Dead_body(
@@ -1006,11 +946,10 @@ void Game_map::read_ireg_objects
 			lift = entry[9] >> 4;
 			memcpy(&circles[5], &entry[10], 4);
 			uint8 *ptr = &entry[14];
-					// 3 unknowns, then bookmark.
-			unsigned char bmark = ptr[3];
+			unsigned long flags = Read4(ptr);
 			obj = new Spellbook_object(
 				shnum, frnum, tilex, tiley, lift,
-				&circles[0], bmark);
+				&circles[0], flags);
 			}
 		obj->set_quality(quality);
 		obj->set_flags(oflags);
@@ -1073,7 +1012,7 @@ Ireg_game_object *Game_map::create_ireg_object
 		static unsigned char circles[9] = {0};
 		return new Spellbook_object(
 				shnum, frnum, tilex, tiley, lift,
-				&circles[0], 0);
+				&circles[0], 0L);
 		}
 	else if (info.get_shape_class() == Shape_info::container)
 		{
@@ -1086,19 +1025,6 @@ Ireg_game_object *Game_map::create_ireg_object
 		}
 	else
 		return new Ireg_game_object(shnum, frnum, tilex, tiley, lift);
-	}
-
-/*
- *	Create non-container IREG objects.
- */
-
-Ireg_game_object *Game_map::create_ireg_object
-	(
-	int shnum, int frnum		// Shape, frame.
-	)
-	{
-	return create_ireg_object(ShapeID::get_info(shnum), 
-						shnum, frnum, 0, 0, 0);
 	}
 
 /*
@@ -1162,7 +1088,7 @@ bool Game_map::locate_terrain
 			cx = chunkx;
 			cy = chunky;
 					// Center window over chunk found.
-			Game_window::get_instance()->center_view(Tile_coord(
+			Game_window::get_game_window()->center_view(Tile_coord(
 				cx*c_tiles_per_chunk + c_tiles_per_chunk/2,
 				cy*c_tiles_per_chunk + c_tiles_per_chunk/2, 
 									0));
@@ -1202,7 +1128,7 @@ bool Game_map::swap_terrains
 			else if (terrain_map[cx][cy] == tnum + 1)
 				terrain_map[cx][cy]--;
 			}
-	Game_window::get_instance()->set_all_dirty();
+	Game_window::get_game_window()->set_all_dirty();
 	return true;
 	}
 
@@ -1256,7 +1182,7 @@ bool Game_map::insert_terrain
 			if (terrain_map[cx][cy] > tnum)
 				terrain_map[cx][cy]++;
 			}
-	Game_window::get_instance()->set_all_dirty();
+	Game_window::get_game_window()->set_all_dirty();
 	return true;
 	}
 
@@ -1315,8 +1241,7 @@ void Game_map::find_unused_shapes
 	)
 	{
 	memset(found, 0, foundlen);
-	Game_window *gwin = Game_window::get_instance();
-	Shape_manager *sman = Shape_manager::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	cout << "Reading all chunks";
 					// Read in EVERYTHING!
 	for (int sc = 0; sc < c_num_schunks*c_num_schunks; sc++)
@@ -1325,7 +1250,7 @@ void Game_map::find_unused_shapes
 		cout.flush();
 		char msg[80];
 		snprintf(msg, sizeof(msg), "Scanning superchunk %d", sc);
-		gwin->get_effects()->center_text(msg);
+		gwin->center_text(msg);
 		gwin->paint();
 		gwin->show();
 		if (!schunk_read[sc])
@@ -1333,9 +1258,8 @@ void Game_map::find_unused_shapes
 		}
 	cout << endl;
 	int maxbits = foundlen*8;	// Total #bits in 'found'.
-	int nshapes = sman->get_shapes().get_num_shapes();
-	if (maxbits > nshapes)
-		maxbits = nshapes;
+	if (maxbits > gwin->get_num_shapes())
+		maxbits = gwin->get_num_shapes();
 					// Go through chunks.
 	for (int cy = 0; cy < c_num_chunks; cy++)
 		for (int cx = 0; cx < c_num_chunks; cx++)
@@ -1353,7 +1277,7 @@ void Game_map::find_unused_shapes
 	int i;
 	for (i = 0; i < maxbits; i++)	// Add all possible monsters.
 		{
-		Shape_info& info = ShapeID::get_info(i);
+		Shape_info& info = gwin->get_info(i);
 		Monster_info *minf = info.get_monster_info();
 		if (minf)
 			found[i/8] |= (1<<(i%8));
@@ -1449,115 +1373,3 @@ Game_object *Game_map::locate_shape
 		}
 	return obj;
 	}
-
-/*
- *	Do a cache out. (x, y) is the center
- */
-
-void Game_map::cache_out(int cx, int cy)
-{
-#ifdef WANT_MAP_CACHE_OUT
-	int sx = cx / c_chunks_per_schunk;
-	int sy = cy / c_chunks_per_schunk;
-	bool chunk_flags[12][12];
-
-#ifdef DEBUG
-	std::cout << "Want to cache out around super chunk: " << (sy*12 + sx) << " = "  << sx << ", " << sy << std::endl;
-#endif
-
-	std::memset(chunk_flags, 0, sizeof(chunk_flags));
-
-	// We cache out all but the 9 directly around the pov
-
-	chunk_flags[(sy+11)%12][(sx+11)%12] = true;
-	chunk_flags[(sy+11)%12][sx] = true;
-	chunk_flags[(sy+11)%12][(sx+1)%12] = true;
-
-	chunk_flags[sy][(sx+11)%12] = true;
-	chunk_flags[sy][sx] = true;
-	chunk_flags[sy][(sx+1)%12] = true;
-
-	chunk_flags[(sy+1)%12][(sx+11)%12] = true;
-	chunk_flags[(sy+1)%12][sx] = true;
-	chunk_flags[(sy+1)%12][(sx+1)%12] = true;
-
-	for (sy = 0; sy < 12; sy++) for (sx = 0; sx < 12; sx++) {
-		if (chunk_flags[sy][sx]) continue;
-
-		int schunk = sy*12 + sx;
-		if (schunk_read[schunk] && !schunk_modified[schunk]) cache_out_schunk(schunk);
-	}
-#endif
-}
-
-void Game_map::cache_out_schunk(int schunk)
-{
-	// Get abs. chunk coords.
-	const int scy = 16*(schunk/12);
-	const int scx = 16*(schunk%12);
-	int cy, cx;
-
-	// Our vectors
-	Game_object_vector removes;
-	Actor_vector actors;
-
-	int buf_size = 0;
-
-#ifdef DEBUG
-	std::cout << "Killing superchunk: " << schunk << std::endl;
-#endif
-	schunk_read[schunk] = false;
-
-	// Go through chunks and get all the items
-	for (cy = 0; cy < 16; cy++) for (cx = 0; cx < 16; cx++) {
-
-		int size = objects[scx + cx][scy + cy]->get_obj_actors(removes, actors);
-
-		if (size < 0) {
-			std::cerr << "Failed attempting to kill superchunk" << std::endl;
-			return;
-		}
-
-		buf_size += size + 2;
-	}
-
-#ifdef DEBUG
-	std::cout << "Buffer size of " << buf_size << " bytes required to store super chunk" << std::endl;
-#endif
-
-	// Clear old (this shouldn't happen)
-	if (schunk_cache[schunk]) {
-		delete [] schunk_cache[schunk];
-		schunk_cache[schunk] = 0;
-		schunk_cache_sizes[schunk] = -1;
-	}
-
-	// Create new
-	schunk_cache[schunk] = new char[buf_size];
-	schunk_cache_sizes[schunk] = buf_size;
-
-	BufferDataSource ds(schunk_cache[schunk], schunk_cache_sizes[schunk]);
-
-	write_ireg_objects(schunk, &ds);
-
-#ifdef DEBUG
-	std::cout << "Wrote " << ds.getPos() << " bytes" << std::endl;
-#endif
-
-	// Now remove the objects
-	for (Game_object_vector::const_iterator it=removes.begin(); it!=removes.end(); ++it)
-		(*it)->remove_this();
-
-	// Now disable the actors
-	for (Actor_vector::const_iterator act=actors.begin(); act!=actors.end(); ++act) {
-		(*act)->cache_out();
-	}
-
-	// Go through chunks and finish up
-	for (cy = 0; cy < 16; cy++) for (cx = 0; cx < 16; cx++) {
-
-		objects[scx + cx][scy + cy]->kill_cache();
-	}
-
-
-}

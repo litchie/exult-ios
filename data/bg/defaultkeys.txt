@@ -5,39 +5,10 @@ Alt-KP- 	resolution_decrease
 KP+		brighter
 KP- 		darker
 Esc		close_or_menu
-
-right		walk_east
-left		walk_west
-up		walk_north
-down		walk_south
-KP7		walk_north_west
-KP8		walk_north
-KP9		walk_north_east
-KP4		walk_west
-KP5		center_screen
-KP6		walk_east
-KP1		walk_south_west
-KP2		walk_south
-KP3		walk_south_east
-
-Shift-right	walk_east	1
-Shift-left	walk_west	1
-Shift-up	walk_north	1
-Shift-down	walk_south	1
-
-Shift-KP7	walk_north_west	1
-Shift-KP8	walk_north	1
-Shift-KP9	walk_north_east	1
-Shift-KP4	walk_west	1
-Shift-KP6	walk_east	1
-Shift-KP1	walk_south_west	1
-Shift-KP2	walk_south	1
-Shift-KP3	walk_south_east	1
-
-Alt-right	scroll_right
-Alt-left	scroll_left
-Alt-up		scroll_up
-Alt-down	scroll_down
+right		scroll_right
+left		scroll_left
+up		scroll_up
+down		scroll_down
 home		center_screen
 
 Del		delete_selected
@@ -47,7 +18,6 @@ Ctrl-down	move_selected	 0  1  0
 Ctrl-up		move_selected	 0 -1  0
 Ctrl-pageup	move_selected	 0  0  1
 Ctrl-pagedown	move_selected	 0  0 -1
-Ctrl-C		copy
 Ctrl-x		cut
 Ctrl-v		paste
 
@@ -60,7 +30,7 @@ Alt-Enter	toggle_fullscreen
 Alt-1		sound_tester
 Ctrl-B		shape_browser
 B		useitem			761	# Show spellbook
-INSERT		create_item		-1	# Create last shape
+Ctrl-C		create_item		-1	# Create last shape
 C		toggle_combat
 Ctrl-D		delete_object
 E		toggle_eggs

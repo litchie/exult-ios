@@ -29,40 +29,32 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "animate.h"
 #include "gamewin.h"
 #include "game.h"
-#include "gameclk.h"
 #include "Audio.h"
 #include "actors.h"			/* Only need this for Object_sfx. */
 #include "dir.h"
 #include "Flex.h"
 #include <map>
-#include <string>
 
 using std::map;
 using std::ostream;
 using std::rand;
 
-using std::endl;
-using std::cout;
-
-
-
-
 /*
  *	A class for playing sound effects when certain objects are nearby.
  */
-class Object_sfx : public Game_singletons
+class Object_sfx
 	{
 	int sfxnum;			// Sound effect #.
-	int sfx;			// ID of sound effect being played.
+	AudioID sfx;			// ID of sound effect being played.
 	Game_object *obj;		// Object that caused the sound.
 	int distance;			// Distance in tiles from Avatar.
 	int dir;			// Direction (0-15) from Avatar.
 public:
 					// Create & start playing sound.
-	Object_sfx(int snum, Game_object *o) : sfxnum(snum), distance(0), sfx(-1)
+	Object_sfx(int snum, Game_object *o) : sfxnum(snum), distance(0)
 		{ set_obj(o); }
-//	bool is_active()		// Is sound still active?
-//		{ return sfx.is_active(); }
+	bool is_active()		// Is sound still active?
+		{ return sfx.is_active(); }
 	int get_sfxnum()
 		{ return sfxnum; }
 	int get_distance()
@@ -71,11 +63,7 @@ public:
 	void stop(Game_object *o)	// Stop if from given object.
 		{
 		if (o == obj)
-			if(sfx >= 0)
-				{
-				Mix_HaltChannel(sfx);
-				sfx = -1;
-				}
+			sfx.set_repeat(false);
 		}
 					// Get sfx to play for given shape.
 	static int get_shape_sfx(int shapenum);
@@ -91,11 +79,10 @@ void Object_sfx::set_obj
 	Game_object *o
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord apos = gwin->get_main_actor()->get_tile();
 	Tile_coord opos = o->get_tile();
-	int active = 0;
-	if(sfx != -1)
-	 	active = Mix_Playing(sfx);
+	bool active = sfx.is_active();
 	int new_distance = apos.distance(opos);
 	if (active && new_distance >= distance && o != obj)
 		return;			// Farther than current source.
@@ -103,39 +90,27 @@ void Object_sfx::set_obj
 	dir = 0;
 	bool repeat = true;
 	distance = new_distance;
-	int volume = MIX_MAX_VOLUME;	// Set volume based on distance.
+	int volume = SDL_MIX_MAXVOLUME;	// Set volume based on distance.
 	if (distance)
 		{			// 160/8 = 20 tiles. 20*20=400.
-		volume = (MIX_MAX_VOLUME*64)/(distance*distance);
+		volume = (SDL_MIX_MAXVOLUME*64)/(distance*distance);
 		if (!volume)		// Dead?
 			repeat = false;	// Time to kill it.
 		if (volume < 8)
 			volume = 8;
-		else if (volume > MIX_MAX_VOLUME)
-			volume = MIX_MAX_VOLUME;
+		else if (volume > SDL_MIX_MAXVOLUME)
+			volume = SDL_MIX_MAXVOLUME;
 		dir = Get_direction16(apos.ty - opos.ty, opos.tx - apos.tx);
 		}
-	if (sfx == -1)		// First time?
-		{	
-
+	if (!sfx.is_active())		// First time?
 					// Start playing, and repeat.
-		sfx = Audio::get_ptr()->play_sound_effect(sfxnum, MIX_MAX_VOLUME, dir, -1);
-		if(sfx >= 0)
-			Mix_Volume(sfx, volume);
-		}
+		sfx = Audio::get_ptr()->play_wave_sfx(sfxnum, volume,
+							dir, repeat);
 	else				// Set new volume, position.
 		{
-		//Just change the "location" of the sound
-		if(!repeat)
-			{
-			Mix_HaltChannel(sfx);
-			sfx = -1;
-			}
-		else
-			{
-			Mix_Volume(sfx, volume);
-			Mix_SetPosition(sfx, (dir * 22), 0);
-			}
+		sfx.set_volume(volume);
+		sfx.set_dir(dir);
+		sfx.set_repeat(repeat);
 		}
 	}
 
@@ -181,7 +156,7 @@ int Object_sfx::get_shape_sfx
 		table[777] = 77;
 
 		// Grandfather clock tick tock, only in the SQSFX files,
-		 if (Audio::get_ptr()->get_sfx_file() != 0)
+		if (Audio::get_ptr()->get_sfx_file() != 0)
 			{
 			std::string s = 
 				Audio::get_ptr()->get_sfx_file()->filename;
@@ -191,8 +166,8 @@ int Object_sfx::get_shape_sfx
 				table[252] = 116;	// Grandfather clock 
 				table[695] = 116;	// Grandfather clock 
 	 			}
-			}	
-				
+			}		
+
 		}
 	std::map<int, int>::iterator it = table.find(shapenum);
 	if (it == table.end())
@@ -225,9 +200,7 @@ void Object_sfx::play
 		}
 	Object_sfx *sfx = (*it).second;
 	if (stop)
-	{
 		sfx->stop(o);
-	}
 	else
 		sfx->set_obj(o);	// Modify/restart.
 	}
@@ -242,6 +215,7 @@ Animator *Animator::create
 	bool ireg			// 1 if an IREG object.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	int shnum = ob->get_shapenum();
 	int frames = ob->get_num_frames();
 	if (frames > 1)
@@ -259,6 +233,7 @@ Animator::~Animator
 	(
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	while (gwin->get_tqueue()->remove(this))
 		;
 	}
@@ -271,6 +246,7 @@ void Animator::start_animation
 	(
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 					// Clean out old entry if there.
 	gwin->get_tqueue()->remove(this);
 	gwin->get_tqueue()->add(Game::get_ticks() + 20, this, (long) gwin);
@@ -305,6 +281,8 @@ Frame_animator::Frame_animator
  */
 void Frame_animator::Initialize()
 {
+	Game_window *gwin = Game_window::get_game_window();
+
 	first_frame = 0;
 	created = 0;
 	delay = 100;
@@ -440,6 +418,8 @@ int Frame_animator::get_framenum()
 	if (last_shape != obj->get_shapenum() || last_frame != obj->get_framenum())
 		Initialize();
 
+	Game_window *gwin = Game_window::get_game_window();
+
 	bool dirty_first = gwin->add_dirty(obj);
 
 	if (last_shape != obj->get_shapenum() || last_frame != obj->get_framenum())
@@ -448,7 +428,7 @@ int Frame_animator::get_framenum()
 	switch (type)
 	{
 	case FA_SUNDIAL:
-		framenum = gclock->get_hour() % frames;  
+		framenum = gwin->get_hour() % frames;  
 		break;
 
 	case FA_ENERGY_FIELD:
@@ -514,6 +494,7 @@ Field_frame_animator::Field_frame_animator
 	int rcy				// Frame to start recycling at.
 	) : Animator(o), recycle(rcy), activated(true)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	int shapenum = obj->get_shapenum();
 	frames = obj->get_num_frames();
 	}
@@ -544,7 +525,7 @@ void Field_frame_animator::handle_event
 	if (animating)
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
 	if (activated && rand()%10 == 0)// Check for damage?
-		obj->activate(0);
+		obj->activate(gwin->get_usecode(), 0);
 	}
 
 /*
@@ -609,10 +590,11 @@ Animated_object::~Animated_object
 
 void Animated_object::paint
 	(
+	Game_window *gwin
 	)
 	{
 	animator->want_animation();	// Be sure animation is on.
-	Game_object::paint();
+	Game_object::paint(gwin);
 	}
 
 /*
@@ -647,17 +629,18 @@ Animated_ireg_object::~Animated_ireg_object
 
 void Animated_ireg_object::paint
 	(
+	Game_window *gwin
 	)
 	{
 	animator->want_animation();	// Be sure animation is on.
-	Ireg_game_object::paint();
+	Ireg_game_object::paint(gwin);
 	}
 
 /*
  *	Write out.
  */
 
-void Animated_ireg_object::write_ireg(DataSource *out)
+void Animated_ireg_object::write_ireg(ostream& out)
 {
 	int oldframe = get_framenum();
 	set_frame(animator->get_framenum());
@@ -706,17 +689,18 @@ Animated_ifix_object::~Animated_ifix_object
 
 void Animated_ifix_object::paint
 	(
+	Game_window *gwin
 	)
 	{
 	animator->want_animation();	// Be sure animation is on.
-	Ifix_game_object::paint();
+	Ifix_game_object::paint(gwin);
 	}
 
 /*
  *	Write out an IFIX object.
  */
 
-void Animated_ifix_object::write_ifix(DataSource *ifix)
+void Animated_ifix_object::write_ifix(ostream& ifix)
 
 {
 	int oldframe = get_framenum();

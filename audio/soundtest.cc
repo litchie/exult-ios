@@ -26,7 +26,7 @@
 #include "mouse.h"
 #include "exult.h"
 #include "font.h"
-#include "tqueue.h"
+
 
 SoundTester::SoundTester() : song(0), sfx(0), voice(0), active(0), repeat(true)
 	{
@@ -39,9 +39,9 @@ SoundTester::~SoundTester()
 void SoundTester::test_sound()
 {
 		
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	Image_buffer8 *ibuf = gwin->get_win()->get_ib8();
-	Font *font = Shape_manager::get_instance()->get_font(4);
+	Font *font = gwin->get_font(4);
 
 	Audio *audio = Audio::get_ptr();
 	Scroll_gump *scroll = NULL;
@@ -60,9 +60,7 @@ void SoundTester::test_sound()
 	int width = 6;
 	
 	Mouse::mouse->hide();
-
-	gwin->get_tqueue()->pause(SDL_GetTicks());
-
+	
 	do
 	{
 		if (redraw)
@@ -70,7 +68,7 @@ void SoundTester::test_sound()
 		     
 			scroll = new Scroll_gump();
 			scroll->add_text(" ~");
-			scroll->paint();
+			scroll->paint(gwin);
 
 			line = first_line;
 			font->paint_text_fixedwidth(ibuf, "Sound Tester", left, line, width);
@@ -217,8 +215,6 @@ void SoundTester::test_sound()
 			}
 		}
 	} while(looping);
-
-	gwin->get_tqueue()->resume(SDL_GetTicks());
 	
 	gwin->paint();
 	Mouse::mouse->show();

@@ -9,20 +9,16 @@ libmididrv_la_SOURCES =	\
 	Timidity_binary.h	\
 	forked_player.cc	\
 	forked_player.h		\
-	mixer_midiout.cc	\
-	mixer_midiout.h		\
+	win_MCI.cc		\
+	win_MCI.h		\
+	win_midiout.cc		\
+	win_midiout.h		\
 	be_midi.cc		\
 	be_midi.h		\
 	mac_midi.cc		\
 	mac_midi.h		\
 	amiga_midi.cc		\
-	amiga_midi.h		\
-	fmopl.cc		\
-	fmopl.h			\
-	fmopl_midi.cc		\
-	fmopl_midi.h		\
-	fmopldrv.cc		\
-	fmopldrv.h
+	amiga_midi.h
 
 EXTRA_DIST = 		\
 	README

@@ -24,8 +24,6 @@
 
 #include "combat.h"
 #include "gamewin.h"
-#include "gameclk.h"
-#include "gamemap.h"
 #include "actors.h"
 #include "paths.h"
 #include "Astar.h"
@@ -39,7 +37,6 @@
 #include "ucmachine.h"
 #include "game.h"
 #include "Gump_manager.h"
-#include "spellbook.h"
 
 using std::cout;
 using std::endl;
@@ -55,7 +52,8 @@ bool In_ammo_family(int shnum, int family)
 	{
 	if (shnum == family)
 		return true;
-	Ammo_info *ainf = ShapeID::get_info(shnum).get_ammo_info();
+	Ammo_info *ainf = 
+	    Game_window::get_game_window()->get_info(shnum).get_ammo_info();
 	return (ainf != 0 && ainf->get_family_shape() == family);
 	}
 
@@ -67,7 +65,7 @@ void Combat_schedule::start_battle
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 					// But only if Avatar is main char.
 	if (gwin->get_camera_actor() != gwin->get_main_actor())
 		return;
@@ -107,7 +105,7 @@ void Combat_schedule::find_opponents
 	)
 {
 	opponents.clear();
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	if (npc->get_alignment() >= Npc_actor::hostile)
 	{
 		Actor *party[9];
@@ -122,7 +120,8 @@ void Combat_schedule::find_opponents
 	Actor_queue nearby;			// Get all nearby NPC's.
 	gwin->get_nearby_npcs(nearby);
 					// See if we're a party member.
-	bool in_party = npc->is_in_party();
+	bool in_party = (npc == gwin->get_main_actor() ||
+					npc->get_party_id() >= 0);
 	for (Actor_queue::const_iterator it = nearby.begin(); 
 						it != nearby.end(); ++it)
 	{
@@ -140,18 +139,19 @@ void Combat_schedule::find_opponents
 		else if (in_party)
 			{		// Attacking party member?
 			Game_object *t = actor->get_target();
-			if (t && t->get_flag(Obj_flags::in_party))
+			if (t && (t == gwin->get_main_actor() ||
+						t->get_party_id() >= 0))
 				opponents.push(actor);
 			}
 	}
 					// None found?  Use Avatar's.
-	if (opponents.empty() && npc->is_in_party() &&
+	if (opponents.empty() && npc->get_party_id() >= 0 &&
 	    npc != gwin->get_main_actor())
 	{
 		Game_object *opp = gwin->get_main_actor()->get_target();
-		Actor *oppnpc = opp ? opp->as_actor() : 0;
-		if (oppnpc && oppnpc != npc)
-			opponents.push(oppnpc);
+		if (opp && opp != npc && (opp->get_npc_num() > 0 ||
+					opp->is_monster()))
+			opponents.push((Actor *)opp);
 	}
 }		
 
@@ -165,9 +165,9 @@ Actor *Combat_schedule::find_protected_attacker
 	(
 	)
 	{
-	if (!npc->is_in_party())	// Not in party?
+	if (npc->get_party_id() < 0)	// Not in party?
 		return 0;
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	Actor *party[9];		// Get entire party, including Avatar.
 	int cnt = gwin->get_party(party, 1);
 	Actor *prot_actor = 0;
@@ -229,6 +229,7 @@ Game_object *Combat_schedule::find_foe
 			return practice_target;
 		}
 	Actor *new_opponent = 0;
+//	Slist_iterator next(opponents);	// For going through list.
 	switch ((Actor::Attack_mode) mode)
 		{
 	case Actor::weakest:
@@ -288,8 +289,7 @@ Game_object *Combat_schedule::find_foe
 					// FALL THROUGH to 'random'.
 	case Actor::random:
 	default:			// Default to random.
-		if (!new_opponent && !opponents.empty())
-			new_opponent = opponents.front();
+		new_opponent = opponents.empty() ? 0 : opponents.front();
 		break;
 		}
 	if (new_opponent)
@@ -333,11 +333,10 @@ void Combat_schedule::approach_foe
 		}
 	npc->set_target(opponent);
 	Actor::Attack_mode mode = npc->get_attack_mode();
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 					// Time to run?
 	if (mode == Actor::flee || 
 	    (mode != Actor::beserk && 
-	        (npc->get_type_flags()&MOVE_ALL) != 0 &&
 		npc != gwin->get_main_actor() &&
 					npc->get_property(Actor::health) < 3))
 		{
@@ -400,8 +399,9 @@ void Combat_schedule::approach_foe
 				npc->say(first_to_battle, last_to_battle);
 			}
 		}
-					// Walk there, & check half-way.
-	npc->set_action(new Approach_actor_action(path, opponent));
+					// Walk there, but don't retry if
+					//   blocked.
+	npc->set_action(new Path_walking_actor_action(path, 0));
 					// Start walking.  Delay a bit if
 					//   opponent is off-screen.
 	npc->start(gwin->get_std_delay(), Off_screen(gwin, opponent) ? 
@@ -419,16 +419,17 @@ static int Swap_weapons
 	Actor *npc
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	Game_object *bobj = npc->get_readied(Actor::belt);
 	if (!bobj)
 		return 0;
-	Shape_info& info = bobj->get_info();
+	Shape_info& info = gwin->get_info(bobj);
 	Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
 		return 0;		// Not a weapon.
 	int ammo = winf->get_ammo_consumed();
 	if (ammo)			// Check for readied ammo.
-		{//+++++Needs improvement.  Ammo could be in pack.
+		{
 		Game_object *aobj = npc->get_readied(Actor::ammo);
 		if (!aobj || !In_ammo_family(aobj->get_shapenum(), ammo))
 			return 0;
@@ -477,22 +478,16 @@ void Combat_schedule::start_strike
 		approach_foe();		// Get a path.
 		return;
 		}
-	else				// See if we can fire spell/projectile.
+	else
 		{
 		Game_object *aobj;
-		bool weapon_dead = false;
-		if (spellbook)
-			weapon_dead = !spellbook->can_do_spell(npc);
-		else if (ammo_shape &&
+		if (ammo_shape &&
 		    (!(aobj = npc->get_readied(Actor::ammo)) ||
 			!In_ammo_family(aobj->get_shapenum(), ammo_shape)))
-			weapon_dead = true;
-		if (weapon_dead)
-			{		// Out of ammo/reagents.
+			{		// Out of ammo.
 			if (npc->get_schedule_type() != Schedule::duel)
-				{	// Look in pack for ammo.
-				if (spellbook || !npc->ready_ammo())
-					Swap_weapons(npc);
+				{
+				Swap_weapons(npc);
 				Combat_schedule::set_weapon();
 				}
 			state = approach;
@@ -510,8 +505,7 @@ void Combat_schedule::start_strike
 			pos.ty = npctiles.y;
 		else			// South.
 			opos.ty = opptiles.y;
-		if (!no_blocking &&
-		    !Fast_pathfinder_client::is_straight_path(pos, opos))
+		if (!Fast_pathfinder_client::is_straight_path(pos, opos))
 			{		// Blocked.  Find another spot.
 			pos.tx += rand()%7 - 3;
 			pos.ty += rand()%7 - 3;
@@ -524,23 +518,23 @@ void Combat_schedule::start_strike
 	cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
 	int dir = npc->get_direction(opponent);
 	char frames[12];		// Get frames to show.
-	int cnt = npc->get_attack_frames(weapon_shape, projectile_range > 0,
-							dir, frames);
+	int cnt = npc->get_attack_frames(dir, frames);
 	if (cnt)
 		npc->set_action(new Frames_actor_action(frames, cnt));
 	npc->start();			// Get back into time queue.
 	int sfx;			// Play sfx.
-	Game_window *gwin = Game_window::get_instance();
-	Weapon_info *winf = ShapeID::get_info(weapon_shape).get_weapon_info();
+	Game_window *gwin = Game_window::get_game_window();
+	Weapon_info *winf = gwin->get_info(weapon_shape).get_weapon_info();
 	if (winf && (sfx = winf->get_sfx()) >= 0 &&
 					// But only if Ava. involved.
 	    (npc == gwin->get_main_actor() || 
 				opponent == gwin->get_main_actor()))
 		Audio::get_ptr()->play_sound_effect(sfx);
 					// Have them attack back.
-	Actor *opp = opponent ? opponent->as_actor() : 0;
+	Actor *opp = dynamic_cast<Actor *> (opponent);
 					// But not if it's a party member.
-	if (opp && !opp->get_target() && !opp->is_in_party())
+	if (opp && !opp->get_target() && opp != gwin->get_main_actor() &&
+	    opp->get_party_id() < 0)
 		opp->set_target(npc, 
 				npc->get_schedule_type() != Schedule::duel);
 	}
@@ -553,7 +547,7 @@ void Combat_schedule::run_away
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	fleed++;
 					// Might be nice to run from opp...
 	int rx = rand();		// Get random position away from here.
@@ -573,36 +567,6 @@ void Combat_schedule::run_away
 	}
 
 /*
- *	See if a spellbook is readied with a spell
- *	available.
- *
- *	Output:	->spellbook if so, else 0.
- */
-
-Spellbook_object *Combat_schedule::readied_spellbook
-	(
-	)
-	{
-	Spellbook_object *book = 0;
-					// Check both hands.
-	Game_object *obj = npc->get_readied(Actor::lhand);
-	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook)
-		{
-		book = static_cast<Spellbook_object*> (obj);
-		if (book->can_do_spell(npc))
-			return book;
-		}
-	obj = npc->get_readied(Actor::rhand);
-	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook)
-		{
-		book = static_cast<Spellbook_object*> (obj);
-		if (book->can_do_spell(npc))
-			return book;
-		}
-	return 0;
-	}
-
-/*
  *	Set weapon 'max_range' and 'ammo'.  Ready a new weapon if needed.
  */
 
@@ -611,13 +575,12 @@ void Combat_schedule::set_weapon
 	)
 	{
 	int points;
-	spellbook = 0;
+	Game_window *gwin = Game_window::get_game_window();
 	Weapon_info *info = npc->get_weapon(points, weapon_shape);
-	if (!info &&			// No weapon?
-	    !(spellbook = readied_spellbook()) &&	// No spellbook?
-					// Not dragging?
-	    !gwin->is_dragging() &&
-					// And not dueling?
+	if (!info &&			// No weapon?  Look in inventory.
+					// But not if dragging.
+	    !gwin->get_gump_man()->gump_mode() &&
+					// And not if dueling.
 	    npc->get_schedule_type() != Schedule::duel &&
 	    state != wait_return)	// And not waiting for boomerang.
 		{
@@ -629,12 +592,7 @@ void Combat_schedule::set_weapon
 		projectile_shape = ammo_shape = 0;
 		projectile_range = 0;
 		strike_range = 1;	// Can always bite.
-		is_thrown = returns = no_blocking = false;
-		if (spellbook)		// Did we find a spellbook?
-			{
-			projectile_range = 10;	// Guessing.
-			no_blocking = true;
-			}
+		is_thrown = returns = false;
 		}
 	else
 		{
@@ -645,15 +603,6 @@ void Combat_schedule::set_weapon
 
 		returns = info->returns();
 		is_thrown = info->is_thrown();
-		no_blocking = info->no_blocking();
-		if (ammo_shape)
-			{
-			Ammo_info *ainfo = 
-				ShapeID::get_info(ammo_shape).get_ammo_info();
-			if (ainfo)
-				no_blocking = 
-					no_blocking || ainfo->no_blocking();
-			}
 		}
 	max_range = projectile_range > strike_range ? projectile_range
 					: strike_range;
@@ -675,7 +624,7 @@ inline int Need_new_opponent
 	Actor *act;
 					// Nonexistent or dead?
 	if (!opponent || 
-	    ((act = opponent->as_actor()) != 0 && act->is_dead()) ||
+	    ((act = dynamic_cast<Actor*>(opponent)) != 0 && act->is_dead()) ||
 					// Or invisible?
 	    opponent->get_flag(Obj_flags::invisible))
 		return 1;
@@ -713,6 +662,25 @@ static int Use_ammo
 	return ammo == proj ? actual_ammo : proj;
 	}
 
+#if 0
+/*
+ *	Does this weapon come back?
+ */
+
+static bool Boomerangs
+	(
+	int shapenum
+	)
+	{
+	if (shapenum == 552 ||		// Magic axe.
+	    shapenum == 555 ||		// Hawk.
+	    shapenum == 605 ||		// Boomerang.
+	    shapenum == 557)		// Juggernaut hammer.
+		return true;
+	else
+		return false;
+	}
+#endif
 
 /*
  *	Create.
@@ -725,16 +693,15 @@ Combat_schedule::Combat_schedule
 	prev_sched
 	) : Schedule(n), state(initial), prev_schedule(prev_sched),
 		weapon_shape(0),
-		ammo_shape(0), projectile_shape(0), spellbook(0),
+		ammo_shape(0), projectile_shape(0), 
 		strike_range(0), projectile_range(0), max_range(0),
-		practice_target(0), is_thrown(false), yelled(0),
-		no_blocking(false),
+		practice_target(0), is_thrown(false), yelled(0), 
 		started_battle(false), fleed(0), failures(0)
 	{
 	Combat_schedule::set_weapon();
 					// Cache some data.
-	Game_window *gwin = Game_window::get_instance();
-	Monster_info *minf = npc->get_info().get_monster_info();
+	Game_window *gwin = Game_window::get_game_window();
+	Monster_info *minf = gwin->get_info(npc).get_monster_info();
 	can_yell = !minf || !minf->cant_yell();
 	}
 
@@ -747,14 +714,12 @@ void Combat_schedule::now_what
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-#if 0	/* +++++Should no longer be needed. */
-	if (gumpman->gump_mode())
+	Game_window *gwin = Game_window::get_game_window();
+	if (gwin->get_gump_man()->gump_mode())
 		{			// No combat when gumps showing.
 		npc->start(200, 1000);	// Try again in a second.
 		return;
 		}
-#endif
 	if (state == initial)		// Do NOTHING in initial state so
 		{			//   usecode can, e.g., set opponent.
 					// Way far away (50 tiles)?
@@ -791,7 +756,7 @@ void Combat_schedule::now_what
 		}
 	Game_object *opponent = npc->get_target();
 					// Flag for slimes:
-	bool strange = npc->get_info().has_strange_movement() != false;
+	bool strange = gwin->get_info(npc).has_strange_movement() != false;
 	switch (state)			// Note:  state's action has finished.
 		{
 	case approach:
@@ -809,9 +774,11 @@ void Combat_schedule::now_what
 					opponent->get_footprint()))
 			{
 			int dir = npc->get_direction(opponent);
+			npc->add_dirty(gwin);
 			if (!strange)	// Avoid messing up slimes.
-				npc->change_frame(npc->get_dir_framenum(dir,
+				npc->set_frame(npc->get_dir_framenum(dir,
 							Actor::standing));
+			npc->add_dirty(gwin, 1);
 					// Glass sword?  Only 1 use.
 			if (weapon_shape == 604)
 				{
@@ -823,20 +790,18 @@ void Combat_schedule::now_what
 			Actor *safenpc = npc;
 			safenpc->set_target(opponent->attacked(npc));
 					// Strike but once at objects.
-			Game_object *newtarg = safenpc->get_target();
-			if (newtarg && !newtarg->as_actor())
+			if (!dynamic_cast<Actor*>(safenpc->get_target()))
 				safenpc->set_target(0);
 			return;		// We may no longer exist!
 			}
 		break;
 	case fire:			// Range weapon.
 		{
-		failures = 0;
 		state = approach;
 					// Save shape (it might change).
 		int ashape = ammo_shape, wshape = weapon_shape,
 		    pshape = projectile_shape;
-		int delay = (strange || spellbook) ? 6*gwin->get_std_delay() 
+		int delay = strange ? 6*gwin->get_std_delay() 
 				: gwin->get_std_delay();
 		if (is_thrown)		// Throwing the weapon?
 			{
@@ -850,24 +815,17 @@ void Combat_schedule::now_what
 			if (npc->remove_quantity(1, wshape,
 					c_any_qual, c_any_framenum) == 0)
 				{
-				npc->add_dirty();
+				npc->add_dirty(gwin);
 				ashape = wshape;
 				Combat_schedule::set_weapon();
 				}
-			}
-		else if (spellbook)
-			{		// Cast the spell.
-			ashape = 0;	// Just to be on the safe side...
-			if (!spellbook->do_spell(npc, true))
-				Combat_schedule::set_weapon();
 			}
 		else			// Ammo required?
 			ashape = ashape ? Use_ammo(npc, ashape, pshape)
 				: (pshape ? pshape : wshape);
 		if (ashape > 0)
-			gwin->get_effects()->add_effect(
-				new Projectile_effect(npc, opponent,
-							ashape, wshape));
+			gwin->add_effect(new Projectile_effect(npc, opponent,
+				ashape, wshape));
 		npc->start(gwin->get_std_delay(), delay);
 		break;
 		}
@@ -898,11 +856,12 @@ void Combat_schedule::now_what
 				prev_schedule != combat)
 					// Return to normal schedule.
 			{
-			npc->update_schedule(gclock->get_hour()/3, 7);
-#if 0	/* I think this isn't needed. */
+			Npc_actor *nact = dynamic_cast<Npc_actor*>(npc);
+			if (nact)
+				nact->update_schedule(gwin, 
+						gwin->get_hour()/3, 7);
 			else
 				npc->set_schedule_type(prev_schedule);
-#endif
 			}
 		}
 	}
@@ -930,7 +889,7 @@ void Combat_schedule::ending
 	int /* newtype */
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	if (gwin->get_main_actor() == npc && 
 					// Not if called from usecode.
 	    !gwin->get_usecode()->in_usecode())
@@ -981,7 +940,7 @@ void Ready_duel_weapon
 	int ashape			// Ammo shape, or -1.
 	)
 	{
-	Game_map *gmap = Game_window::get_instance()->get_map();
+	Game_window *gwin = Game_window::get_game_window();
 	Game_object *weap = npc->get_readied(Actor::lhand);
 	if (!weap || weap->get_shapenum() != wshape)
 		{			// Need a bow.
@@ -990,7 +949,7 @@ void Ready_duel_weapon
 		if (newweap)		// Have it?
 			newweap->remove_this(1);
 		else			// Create new one.
-			newweap = gmap->create_ireg_object(wshape, 0);
+			newweap = gwin->create_ireg_object(wshape, 0);
 		if (weap)		// Remove old item.
 			weap->remove_this(1);
 		npc->add(newweap, 1);	// Should go in correct spot.
@@ -1003,7 +962,7 @@ void Ready_duel_weapon
 	Game_object *aobj = npc->get_readied(Actor::ammo);
 	if (aobj)
 		aobj->remove_this();	// Toss current ammo.
-	Game_object *arrows = gmap->create_ireg_object(ashape, 0);
+	Game_object *arrows = gwin->create_ireg_object(ashape, 0);
 	int extra = rand()%3;		// Add 1 or 2.
 	if (extra)
 		arrows->modify_quantity(extra);
@@ -1072,9 +1031,12 @@ void Duel_schedule::now_what
 			&& practice_target->get_framenum() > 0 &&
 				practice_target->get_framenum()%3 == 0)
 			{
+			Game_window *gwin = Game_window::get_game_window();
 			attacks = 0;	// Break off.
 					//++++++Should walk there.
-			practice_target->change_frame(0);
+			gwin->add_dirty(practice_target);
+			practice_target->set_frame(0);
+			gwin->add_dirty(practice_target);
 			}
 		}
 	else

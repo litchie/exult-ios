@@ -1,7 +1,7 @@
 /*
  *  Gump_manager.h - Object that manages all available gumps
  *
- *  Copyright (C) 2001-2002  The Exult Team
+ *  Copyright (C) 2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,20 +18,14 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef GUMP_MANAGER_INCLUDED
-#define GUMP_MANAGER_INCLUDED
-
-#include "singles.h"
-#include "mouse.h"
-#include "SDL_events.h"
+#ifndef GUMP_INCLUDED
+#define GUMP_INCLUDED
 
 class Gump;
 class Game_object;
 class Game_window;
-class Modal_gump;
 
-
-class  Gump_manager : public Game_singletons
+class  Gump_manager
 {
 	struct Gump_list
 	{
@@ -45,7 +39,6 @@ class  Gump_manager : public Game_singletons
 	Gump_list	*open_gumps;
 	int		non_persistent_count;		// So we can test for 'gump mode' quickly.
 	bool	right_click_close;
-	bool	dont_pause_game;			// NEVER EVER SET THIS MANUALLY! YOU MUST CALL set_gumps_dont_pause_game
 public:
 	void add_gump(Gump *gump);			// Add a single gump to screen
 	void add_gump(Game_object *obj, int shapenum);	// Show a gump for object obj
@@ -62,27 +55,16 @@ public:
 	Gump *find_gump(Game_object *obj);		// Find gump that object is in
 	Gump *find_gump(Game_object *obj, int shapenum);	// Find gump for object obj
 
-	void update_gumps();
-	void paint();
+	void update_gumps(Game_window *gwin);
+	void paint(Game_window *gwin);
 
 	bool double_clicked(int x, int y, Game_object *&obj);
 
 	inline bool can_right_click_close() { return right_click_close; }
 	inline void set_right_click_close(bool r) { right_click_close = r; }
 
-	inline bool gumps_dont_pause_game() { return dont_pause_game; }
-	void set_gumps_dont_pause_game(bool p);
-
-	int okay_to_quit();
-	int prompt_for_number(int minval, int maxval, int step, int def);
-	int do_modal_gump(Modal_gump *, Mouse::Mouse_shapes);
-	void paint_num(int num, int x, int y);
-
 	Gump_manager();
 	~Gump_manager() { close_all_gumps(true); }
-
- private:
-	int handle_modal_gump_event(Modal_gump *gump, SDL_Event& event);
 };
 
-#endif // GUMP_MANAGER_INCLUDED
+#endif //CONTAINER_GUMP_INCLUDED

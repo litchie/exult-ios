@@ -35,8 +35,8 @@ class Gamemenu_gump : public Modal_gump
 	~Gamemenu_gump();
 
 					// Paint it and its contents.
-	virtual void paint();
-	virtual void close()
+	virtual void paint(Game_window *gwin);
+	virtual void close(Game_window *gwin)
 		{ done = 1; }
 					// Handle events:
 	virtual void mouse_down(int mx, int my);

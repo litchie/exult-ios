@@ -25,7 +25,6 @@
 #include "lists.h"
 
 class Actor;
-class Spellbook_object;
 
 /*
  *	Combat schedule:
@@ -52,13 +51,11 @@ protected:
 	int weapon_shape;		// Weapon's shape in shapes.vga.
 	int ammo_shape;			// If required, else 0.
 	int projectile_shape;		// For shooting, else 0.
-	Spellbook_object *spellbook;	// If readied.
 					// Ranges in tiles.  
 					//   0 means not applicable.
 	unsigned char strike_range, projectile_range, max_range;
 	bool is_thrown;			// Daggers, etc.
 	bool returns;			// Boomerang, magic axe.
-	bool no_blocking;		// Weapon/ammo goes through walls.
 	unsigned char yelled;		// Yell when first opponent targeted.
 	bool started_battle;		// 1st opponent targeted.
 	unsigned char fleed;		// Incremented when fleeing.
@@ -72,7 +69,6 @@ protected:
 	void approach_foe();		// Approach foe.
 	void start_strike();
 	void run_away();
-	Spellbook_object *readied_spellbook();
 public:
 	Combat_schedule(Actor *n, Schedule_types prev_sched);
 	virtual void now_what();	// Npc calls this when it's done

@@ -51,11 +51,11 @@ public:
 	int get_answer()
 		{ return answer; }
 					// Paint it and its contents.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Handle events:
 	virtual void mouse_down(int mx, int my);
 	virtual void mouse_up(int mx, int my);
-	virtual void key_down(int chr); // Character typed.
+	virtual void key_down(int chr);	// Character typed.
 	static int ask(const char *txt);	// Ask question, get answer.
 };
 

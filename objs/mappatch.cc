@@ -39,7 +39,7 @@ Game_object *Map_patch::find
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	Game_object_vector vec;		// Pass mask=0xb0 to get any object.
 	Game_object::find_nearby(vec, spec.loc, spec.shapenum, 0, 0xb0,
 					spec.quality, spec.framenum);

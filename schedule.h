@@ -24,7 +24,6 @@
 #include "tiles.h"
 #include "vec.h"
 #include "lists.h"
-#include "singles.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -39,7 +38,7 @@ class Actor_action;
 /*
  *	A Schedule controls the NPC it is assigned to.
  */
-class Schedule : public Game_singletons
+class Schedule
 	{
 protected:
 	Actor *npc;			// Who this controls.
@@ -89,9 +88,6 @@ public:
 	virtual void ending(int newtype)// Switching to another schedule.
 		{  }
 	virtual void set_weapon()	// Set weapon info.
-		{  }
-					// Set where to sleep.
-	virtual void set_bed(Game_object *b)
 		{  }
 					// Notify that schedule's obj. has
 					//   been moved.
@@ -190,12 +186,9 @@ class Patrol_schedule : public Schedule
 	int pathnum;			// # of next we're heading towards.
 	int dir;			// 1 or -1;
 	int failures;			// # of failures to find marker.
-	bool sitting;			// Sat down for one of the paths.
-	bool find_next;			// Search for next path object.
 public:
 	Patrol_schedule(Actor *n)
-		: Schedule(n), pathnum(-1), dir(1), failures(0),
-		  sitting(false), find_next(true)
+		: Schedule(n), pathnum(-1), dir(1), failures(0)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	};
@@ -299,9 +292,6 @@ public:
 	Sleep_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
-					// Set where to sleep.
-	virtual void set_bed(Game_object *b)
-		{ bed = b; state = 0; }
 	};
 
 /*

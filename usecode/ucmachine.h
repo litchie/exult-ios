@@ -34,16 +34,17 @@ class Game_object;
 class Actor;
 
 #include "exceptions.h"
-#include "singles.h"
 
 /*
  *	Here's our virtual machine for running usecode.  The actual internals
  *	are in Usecode_internal.
  */
-class Usecode_machine : public Game_singletons
+class Usecode_machine
 	{
 	UNREPLICATABLE_CLASS(Usecode_machine);
 protected:
+	Game_window *gwin;		// Game window.
+	int call_depth;			// How far deep we are.
 	unsigned char gflags[1024];	// Global flags.
 	Keyring* keyring;
 	int party[8];			// NPC #'s of party members.
@@ -55,8 +56,8 @@ protected:
 public:
 	friend class Usecode_script;
 					// Create Usecode_internal.
-	static Usecode_machine *create();
-	Usecode_machine();
+	static Usecode_machine *create(Game_window *gw);
+	Usecode_machine(Game_window *gw);
 	virtual ~Usecode_machine();
 					// Read in usecode functions.
 	virtual void read_usecode(std::istream& file) = 0;
@@ -96,7 +97,8 @@ public:
 	virtual void update_party_status(Actor *npc) = 0;
 					// Start speech, or show text.
 	virtual void do_speech(int num) = 0;
-	virtual int in_usecode() = 0;	// Currently in a usecode function?
+	int in_usecode()		// Currently in a usecode function?
+		{ return call_depth > 0; }
 	Keyring* getKeyring() const { return keyring; }
 					// Call desired function.
 	virtual int call_usecode(int id, Game_object *obj, 

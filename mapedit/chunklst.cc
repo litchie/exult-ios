@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Flex.h"
 #include "u7drag.h"
 #include "exult_constants.h"
+#include "shapeid.h"
 #include "studio.h"
 #include "utils.h"
 #include "shapegroup.h"
@@ -76,24 +77,6 @@ void Chunk_chooser::show
 	}
 
 /*
- *	Send selected chunk# to Exult.
- */
-
-void Chunk_chooser::tell_server
-	(
-	)
-	{
-	if (selected < 0)
-		return;
-	unsigned char buf[Exult_server::maxlength];
-	unsigned char *ptr = &buf[0];
-	Write2(ptr, info[selected].num);
-	ExultStudio *studio = ExultStudio::get_instance();
-	studio->send_to_server(Exult_server::set_edit_chunknum, 
-							buf, ptr - buf);
-	}
-
-/*
  *	Select an entry.  This should be called after rendering
  *	the chunk.
  */
@@ -106,7 +89,6 @@ void Chunk_chooser::select
 	if (new_sel < 0 || new_sel >= info_cnt)
 		return;			// Bad value.
 	selected = new_sel;
-	tell_server();			// Tell Exult.
 	enable_controls();
 	int chunknum = info[selected].num;
 					// Remove prev. selection msg.
@@ -250,7 +232,7 @@ void Chunk_chooser::set_chunk
 			chunklist.resize(new_num_chunks);
 		num_chunks = new_num_chunks;
 		GtkAdjustment *adj = 
-			gtk_range_get_adjustment(GTK_RANGE(vscroll));
+			gtk_range_get_adjustment(GTK_RANGE(chunk_scroll));
 		adj->upper = num_chunks;
 		gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
 		}
@@ -278,11 +260,9 @@ void Chunk_chooser::render_chunk
 		for (int tx = 0; tx < c_tiles_per_chunk; tx++,
 							x += c_tilesize)
 			{
-			unsigned char l = *data++;
-			unsigned char h = *data++;
-			int shapenum = l + 256*(h&0x3);
-			int framenum = h >> 2;
-			Shape_frame *s = ifile->get_shape(shapenum, framenum);
+			ShapeID id(data);
+			Shape_frame *s = ifile->get_shape(id.get_shapenum(),
+							id.get_framenum());
 			if (s)
 				s->paint(iwin, xoff + x - 1, yoff + y -1);
 			}
@@ -306,13 +286,13 @@ int Chunk_chooser::get_count
 
 gint Chunk_chooser::configure
 	(
-	GtkWidget *widget,		// The drawing area.
+	GtkWidget *widget,		// The view window.
 	GdkEventConfigure *event,
 	gpointer data			// ->Chunk_chooser
 	)
 	{
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
-	chooser->Shape_draw::configure();
+	chooser->Shape_draw::configure(widget);
 	chooser->render();
 					// Set new scroll amounts.
 	int w = event->width, h = event->height;
@@ -320,7 +300,7 @@ gint Chunk_chooser::configure
 	int num_rows = (h - border)/(128 + border);
 	int page_size = per_row*num_rows;
 	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(
-						chooser->vscroll));
+						chooser->chunk_scroll));
 	adj->step_increment = per_row;
 	adj->page_increment = page_size;
 	adj->page_size = page_size;
@@ -406,15 +386,6 @@ gint Chunk_chooser::mouse_press
 	)
 	{
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
-
-    if (event->button == 4) {
-        chooser->scroll(true);
-        return(TRUE);
-    } else if (event->button == 5) {
-        chooser->scroll(false);
-        return(TRUE);
-    }
-
 	int old_selected = chooser->selected;
 					// Search through entries.
 	for (int i = 0; i < chooser->info_cnt; i++)
@@ -648,7 +619,7 @@ void Chunk_chooser::scroll
 	bool upwards
 	)
 	{
-	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(vscroll));
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(chunk_scroll));
 	float delta = adj->step_increment;
 	if (upwards)
 		delta = -delta;
@@ -818,15 +789,15 @@ Chunk_chooser::Chunk_chooser
 	GtkObject *chunk_adj = gtk_adjustment_new(0, 0, 
 				num_chunks, 1, 
 				4, 1.0);
-	vscroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(chunk_adj));
+	chunk_scroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(chunk_adj));
 					// Update window when it stops.
-	gtk_range_set_update_policy(GTK_RANGE(vscroll),
+	gtk_range_set_update_policy(GTK_RANGE(chunk_scroll),
 					GTK_UPDATE_DELAYED);
-	gtk_box_pack_start(GTK_BOX(hbox), vscroll, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), chunk_scroll, FALSE, TRUE, 0);
 					// Set scrollbar handler.
 	gtk_signal_connect(GTK_OBJECT(chunk_adj), "value_changed",
 					GTK_SIGNAL_FUNC(scrolled), this);
-	gtk_widget_show(vscroll);
+	gtk_widget_show(chunk_scroll);
 					// At the bottom, status bar:
 	GtkWidget *hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0);

@@ -36,8 +36,6 @@ class DataSource
 public:
 	DataSource() {};
 	virtual ~DataSource() {};
-
-	virtual uint32 peek() =0;
 	
 	virtual uint32 read1() =0;
 	virtual uint16 read2() =0;
@@ -57,7 +55,6 @@ public:
 	virtual void skip(int) =0;
 	virtual unsigned int getSize() =0;
 	virtual unsigned int getPos() =0;
-	virtual bool eof() =0;
 };
 
 class StreamDataSource: public DataSource
@@ -66,17 +63,17 @@ private:
 	std::ifstream *in;
 	std::ofstream *out;
 public:
-	StreamDataSource(std::ifstream *data_stream) : in(data_stream), out(0)
+	StreamDataSource(std::ifstream *data_stream)
 	{
+		in = data_stream;
 	};
 	
-	StreamDataSource(std::ofstream *data_stream) : in(0), out(data_stream)
+	StreamDataSource(std::ofstream *data_stream)
 	{
+		out = data_stream;
 	};
 	
 	virtual ~StreamDataSource() {};
-
-	virtual uint32 peek()		{ return in->peek(); };
 	
 	virtual uint32 read1()      { return Read1(*in); };
 	
@@ -102,35 +99,21 @@ public:
 
 	virtual void write(char *b, int len) { out->write(b, len); };
 	
-	virtual void seek(unsigned int pos)
-	{
-		if (in) in->seekg(pos);
-		else out->seekp(pos);
-	};
+	virtual void seek(unsigned int pos) { in->seekg(pos); };
 	
 	virtual void skip(int pos) { in->seekg(pos, std::ios::cur); };
 	
 	virtual unsigned int getSize()
 	{
-		if (in) {
-			long pos = in->tellg();
-			in->seekg(0, std::ios::end);
-			long len = in->tellg();
-			in->seekg(pos);
-			return len;
-		}
-		else {
-			long pos = out->tellp();
-			out->seekp(0, std::ios::end);
-			long len = out->tellp();
-			out->seekp(pos);
-			return len;
-		}
+		long pos = in->tellg();
+		in->seekg(0, std::ios::end);
+		long len = in->tellg();
+		in->seekg(pos);
+		return len;
 	};
 	
-	virtual unsigned int getPos() { return in?in->tellg():out->tellp(); };
+	virtual unsigned int getPos() { return in->tellg(); };
 	
-	virtual bool eof() { return in->eof(); }
 };
 
 class FileDataSource: public DataSource
@@ -144,14 +127,6 @@ public:
 	};
 	
 	virtual ~FileDataSource() {};
-	
-	virtual uint32 peek()
-	{ 
-		unsigned char b0;
-		b0 = fgetc(f);
-		fseek(f, -1, SEEK_CUR);
-		return (b0);
-	};
 	
 	virtual uint32 read1() 
 	{ 
@@ -256,8 +231,6 @@ public:
 	{
 		return ftell(f);
 	};
-
-	virtual bool eof() { return feof(f) != 0; } 
 };
 
 class BufferDataSource: public DataSource
@@ -286,13 +259,6 @@ public:
 	};
 	
 	virtual ~BufferDataSource() {};
-	
-	virtual uint32 peek() 
-	{ 
-		unsigned char b0;
-		b0 = static_cast<unsigned char>(*buf_ptr);
-		return (b0);
-	};
 	
 	virtual uint32 read1() 
 	{ 
@@ -391,9 +357,6 @@ public:
 	virtual unsigned int getPos() { return (buf_ptr-buf); };
 	
 	unsigned char *getPtr() { return buf_ptr; };
-
-	virtual bool eof() { return (buf_ptr-buf) >= size; } 
-
 };
 
 class StackBufferDataSource : protected BufferDataSource

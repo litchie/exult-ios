@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@
 #include "gamewin.h"
 #include "mouse.h"
 #include "rect.h"
-#include "shapeid.h"
 
 // MenuEntry: a selectable menu entry (a button)
 MenuEntry::MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos)
@@ -54,8 +53,7 @@ void MenuEntry::paint(Game_window *gwin)
 		shape = frame_on;
 	else
 		shape = frame_off;
-	Shape_manager::get_instance()->paint_shape(
-					x-shape->get_width()/2, y, shape);
+	gwin->paint_shape(x-shape->get_width()/2, y, shape);
 	gwin->get_win()->show(x1,y1,x2-x1+1,y2-y1+1);	
 }
 
@@ -103,8 +101,7 @@ void MenuChoice::paint(Game_window *gwin)
 	else
 		shape = frame_off;
 
-	Shape_manager::get_instance()->paint_shape(
-					x-shape->get_width(), y, shape);
+	gwin->paint_shape(x-shape->get_width(), y, shape);
 	gwin->get_win()->show(x1,y1,x2-x1+1,y2-y1+1);
 	if(choice>=0) {
 		gwin->get_win()->fill8(0, max_choice_width, font->get_text_height(), x+32, y);
@@ -305,7 +302,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 				break;
 			}
 		} else if(event.type==SDL_QUIT) {
-                        return -1;
+			return -1;
 		}
 	} while(!exit_loop);
 	mouse->hide();

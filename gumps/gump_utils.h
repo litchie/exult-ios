@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,8 +16,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _GUMP_UTILS_H_
-#define _GUMP_UTILS_H_
+#ifndef _GUMPS_H_
+#define _GUMPS_H_
 
 #ifdef XWIN  /* Only needed in XWIN. */
 #include <sys/time.h>
@@ -28,10 +28,53 @@
 #endif
 
 #include <unistd.h>
+#include <cstring>
+#include "mouse.h"
+
+#ifdef _AIX
+#include <strings.h>
+#endif
 
 #ifndef XWIN
 #include "SDL_timer.h"
 #endif
+
+class Modal_gump;
+class Game_window;
+
+/*
+ *	Verify user wants to quit.
+ *
+ *	Output:	1 to quit.
+ */
+int Okay_to_quit();
+
+
+/*
+ *	Prompt for a numeric value using a slider.
+ *
+ *	Output:	Value, or 0 if user hit ESC.
+ */
+
+int Prompt_for_number(int minval, int maxval, int step, int def);
+
+
+/*
+ *	Handle a modal gump, like the range slider or the save box, until
+ *	the gump self-destructs.
+ *
+ *	Output:	0 if user hit ESC.
+ */
+
+int Do_Modal_gump(Modal_gump *, Mouse::Mouse_shapes);
+
+
+/*
+ *	Show a number.
+ */
+
+void Paint_num(Game_window *gwin, int num, int x, int y);
+
 
 /*
  *	Delay between animations.

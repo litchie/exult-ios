@@ -8,19 +8,7 @@
 				<ul>
 				<li><ref1 target="exult_config"/> settings in exult.cfg are the same on all OS.</li>
 				<li><ref1 target="path_config"/> same as above.</li>
-				<li><ref1 target="music"/> rewrote the FM synth emulation part a bit.</li>
 				<li><ref1 target="zaurus_install"/> quick guide where the necessary files can be found.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="11092002">
-			<header>- 11 September 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_config"/> added a couple of gameplay options and the FM synth emulation.</li>
-				<li><ref1 target="music"/> added FM Synth.</li>
-				<li><ref1 target="audio_gump"/> added FMSynth to conversions.</li>
-				<li><ref1 target="gameplay_gump"/> also added a couple of options.</li>
 				</ul>
 			</body>
 		</sub>
@@ -28,25 +16,16 @@
 			<header>- 24 July 2002</header>
 			<body>
 				<ul>
-				<li><ref1 target="exult_config"/> Walk_after_teleport removed (it is always enabled now)</li>
-				<li><ref1 target="command_line"/> added -c and --nomenu, fixed --buildmap.</li>
-				<li><ref1 target="movement"/> Keyboard walking implemented.</li>
-				<li><ref1 target="exult_keys"/> walking keys added.</li>
-				<li><ref1 target="exult_cheats"/> scroll the world now with Alt-arrow keys.</li>
-				<li><ref1 target="gameplay_gump"/> Walk_after_teleport removed here as well</li>
+				<li><ref1 target="command_line"/> added -c and fixed --buildmap.</li>		
 				</ul>
 			</body>
 		</sub>
-		<sub name="18062002">
-			<header>- 18 June 2002</header>
+		<sub name="05062002">
+			<header>- 05 June 2002</header>
 			<body>
 				<ul>
-				<li><ref1 target="exult_config"/> added disablepause for digital music.</li>
-				<li><ref1 target="music"/> You can play Music either through MIDI or Digital Music.</li>
-				<li><ref1 target="digital_music"/> Digital Music now works and is documented.</li>
-				<li><ref1 target="linux_alsa"/> timidity.cfg needs to be where the exult executable is.</li>
-				<li><ref1 target="exult_keys"/> <key>Ctrl+c</key> is now used for "copy" and 
-					<key>Insert</key> for create object.</li>		
+				<li><ref1 target="movement"/> no keyboard movement.</li>
+				<li><ref1 target="exult_keys"/> added cut/paste selection keys..</li>		
 				</ul>
 			</body>
 		</sub>
@@ -164,7 +143,7 @@
 					<Exult/> keeps a configuration file. You can specify where your Ultima 7
 					installation is, whether you want full screen graphics, or windowed, and
 					midi devices and midi settings. Some of these options can be set from the
-					<strong>Setup</strong> menu when you run <Exult/> or via the Game Options menu.
+					<strong>Setup</strong> menu when you run <Exult/> or via the Game menu.
 				</para>
 				<para>
 					If you do not already have a configuration file, <Exult/> will make one for you
@@ -220,12 +199,12 @@
 					<line>&lt;/savegame_path&gt;</line>
 					<line>&lt;static_path&gt;</line>
 					<line>./blackgate
-						<comment>**optional. See &lt;save_path&gt;.
+						<comment>**optional. See &lt;savegame_path&gt;.
 						</comment></line>
 					<line>&lt;/static_path&gt;</line>
 					<line>&lt;gamedat_path&gt;</line>
 					<line>./blackgate
-						<comment>**optional. See &lt;save_path&gt;.
+						<comment>**optional. See &lt;savegame_path&gt;.
 						</comment></line>
 					<line>&lt;/gamedat_path&gt;</line>					
 					<line>&lt;keys&gt;</line>
@@ -330,6 +309,11 @@
 						<comment>**yes enables SI style paperdolls in BG.
 						</comment></line>
 					<line>&lt;/bg_paperdolls&gt;</line>
+					<line>&lt;walk_after_teleport&gt;</line>
+					<line>no
+						<comment>**when set to no you stop after walking onto a teleporter.
+						</comment></line>
+					<line>&lt;/walk_after_teleport&gt;</line>
 					<line>&lt;combat&gt;</line>
 					<line>&lt;difficulty&gt;</line>
 					<line>0
@@ -337,25 +321,7 @@
 						harder. It affects the chance of a hit, and the HP's lost if a hit occurs.
 						</comment></line>
 					<line>&lt;/difficulty&gt;</line>
-					<line>&lt;/combat&gt;</line>
-					<line>&lt;gumps_dont_pause_game&gt;</line>
-					<line>no
-						<comment>**yes doesn't pause the game when gumps are shown.
-						</comment></line>
-					<line>&lt;/gumps_dont_pause_game&gt;</line>
-					<line>&lt;step_tile_delta&gt;</line>
-					<line>8
-						<comment>**Controls how far the Avatar will move before Exult recalculates the 
-						Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other 
-						problems.
-						</comment></line>
-					<line>&lt;/step_tile_delta&gt;</line>
-					<line>&lt;allow_double_right_move&gt;</line>
-					<line>yes
-						<comment>**double right-click lets the Avatar walk automatically 
-						to where you clicked.
-						</comment></line>
-					<line>&lt;/allow_double_right_move&gt;</line>
+					<line>&lt;/combat&gt;</line>						
 					<line>&lt;/gameplay&gt;</line>
 					<line>&lt;audio&gt;</line>
 					<line>&lt;enabled&gt;</line>
@@ -365,12 +331,6 @@
 						<key>Esc</key> - the setting is saved)
 						</comment></line>
 					<line>&lt;/enabled&gt;</line>
-					<line>&lt;disablepause&gt;</line>
-					<line>no
-						<comment>**enable/disable the pausing of SFX and digital music when the
-						game pauses (e.g. not the focused window). MIDI music is currently not paused. 
-						</comment></line>
-					<line>&lt;/disablepause&gt;</line>
 					<line>&lt;force_waveout&gt;</line>
 					<line>no
 						<comment>**yes forces Exult to use waveout instead of directsound. This may
@@ -413,11 +373,6 @@
    						<comment>**No disables music looping. See <ref target="audio_gump"/>
    						</comment></line>
    					<line>&lt;/looping&gt;</line>
-   					<line>&lt;dual_opl&gt;</line>
-   					<line>Yes
-   						<comment>**No disables 'dual' mode for stereo sound when &lt;convert&gt; is set to fmsynth.
-   						</comment></line>
-   					<line>&lt;/dual_opl&gt;</line>
 					<line>&lt;/midi&gt;</line>
 					<line>&lt;speech&gt;</line>
 					<line>&lt;enabled&gt;</line>
@@ -583,13 +538,11 @@
 					<li>-v or --version<br/>
 						Shows version information in stderr</li>
 					<li>-c configfile<br/>
-						Specify alternate config file (relative or absolute paths work)</li>
+						Specify alternate config file (relative or absolute paths work).</li>
 					<li>--bg<br/>
 						Starts the game with the Black Gate menu</li>
 					<li>--si<br/>
 						Starts the game with the Serpent Isle menu</li>
-					<li>--nomenu<br/>
-						Skips game menu.</li>
 					<li>--buildmap x<br/>
 						x = 0 shows all roofs, x = 2 pops them all.<br/>
 						You have to specify the game first (Example: exult --bg --buildmap 0).<br/>
@@ -615,50 +568,46 @@
 			<header>Music</header>
 			<body>
 				<para>
-					There are two ways that music is played in Exult. One is using MIDI, which plays the 
-					music through any GM MIDI device, Timidity can be used in Linux.  The other is 
-					Digital Music encoded into OGG (similar to MP3) which was recorded directly from a 
-					Roland MT-32.<br/>
-					The MIDI files are converted on-the-fly from the original Ultima 7 
-					MT-32 files to General Midi format so that they will be playable on modern General 
-					Midi and General Midi/GS supporting sound cards. 
+					Midi in <Exult/> is played by firstly loading a file and passing it to the XMIDI
+					class for instrument mapping conversion. This is so the MT32 mapped music files
+					from the original Ultima 7 and Serpent Isle will be playable on modern General
+					Midi and General Midi/GS supporting sound cards.
+					You can change the way the music sounds via the setup, the Game Options menu or the 
+					exult.cfg file.
 				</para>
 				<para>
-					The options for changing the Music format are in the opening Exult menu Setup screen 
-					or in the actual game's audio options. 
-					The following settings can be used (in order of music conversion quality):
+					<Exult/> gives users various option for converting Music and Midi Sound Effects.
+					Note, the options are case sensitive and all options must be lowercase.<br/>
+					Below is a description of all the modes:
 				</para>
 				<ul>
-      				<li><strong>Digital</strong><br/>
-        				Digital Music plays the OGG files which must be located in the Exult data/music 
-        				directory. This does not use MIDI but plays the music digitally through 
-        				any soundcard.</li>
-      				<li><strong>fmsynth</strong><br/>
-      					This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib). It has 
-      					a 'dual'mode for stereo sound. Use "config/audio/midi/dual_opl" set to "yes" or "no" 
-      					to enable/disable it. Default is "yes".<br/>
-      					<strong>You have to restart Exult if you change this in the game.</strong></li>
-      				<li><strong>none</strong><br/>
-        				This option will output the music with nothing changed. Because
-               			the mapping will be for MT32s you should only use this option if
-               			you have a MT32 compatible device or you have replaced the
-               			music.</li>
-      				<li><strong>gs127</strong><br/>
-     					This option is for midi devices that have a MT32 patch bank installed
-        				in Bank 127. Some GS implementation have this, some don't. Only use
-        				this if you know that you have a MT32 implementation on Bank 127.</li>
+					<li><strong>gm</strong><br/>
+						This will convert the MT32 patches to standard General Midi patches.
+     					Conversion is fairly accurate but some instruments may be different.</li>
      				<li><strong>gs</strong><br/>
      					This will convert the MT32 patches to their equivalent GS patches. This
      					will be a more accurate conversion that straight gm since more of the 
      					MT32 patches are in the GS set. However, not all midi devices will
      					support this mode.</li>
-					<li><strong>gm</strong><br/>
-						This will convert the MT32 patches to standard General Midi patches.
-     					Conversion is fairly accurate but some instruments may be different.</li>
+     				<li><strong>gs127</strong><br/>
+     					This option is for midi devices that have a MT32 patch bank installed
+        				in Bank 127. Some GS implementation have this, some don't. Only use
+        				this if you know that you have a MT32 implementation on Bank 127.</li>
+        			<li><strong>none</strong><br/>
+        				This option will output the music with nothing changed. Because
+               			the mapping will be for MT32s you should only use this option if
+               			you have a MT32 compatible device or you have replaced the
+               			music.</li>
 				</ul>
 				<para>
 					The order of music conversion quality is:
 				</para>
+				<ol>
+					<li><strong>none</strong> (shouldn't really be used, though)</li>
+					<li><strong>gs127</strong></li>
+					<li><strong>gs</strong></li>
+					<li><strong>gm</strong></li>
+				</ol>
 				<para>
 					<strong>NOTE:</strong> Currently the conversion to GS and GS127 is not finished and 
 					the notes are only mapped to General Midi.
@@ -721,30 +670,6 @@
 				</para>
 			</body>
 		</sub>
-	<sub name="digital_music">
-		<header>Digital Music</header>
-			<body>
-				<para>
-					<Exult/> needs the Digital Music pack to play Digital Music in the game. The music 
-					pack contains music for both Black Gate and Serpent Isle, encoded in high quality 
-					OGG format. Simon Quinn recorded the current Digital Music pack on an original 
-					Roland MT-32 and with this you will experience the music as it would be heard with 
-					the original game.<br/>
-					The Digital Music pack can be downloaded from 
-					<extref target="http://exult.sourceforge.net/download.php"/>, the files are called 
-					U7MusicOGG_1of2.zip and U7MusicOGG_2of2.zip.  Instructions of how to install these 
-					files are in the ZIP files themselves (they need to be extracted into the 
-					Exult/data/music directory).<br/>
-					Digital Music should work on any platform that supports digital sound and does not 
-					use any MIDI, so it is also a good option for platforms with no MIDI support.
-					Additionally, Digital Music supports a number of background atmospheric SFX tracks 
-					that are played when no music is playing. These consist of wind, bird etc effects 
-					outside and other sound effects when inside a dungeon. These SFX tracks are not 
-					available when using MIDI as they play Roland MT-32 specific voices that cannot 
-					be mapped to GM/GS. These SFX tracks do not play when the music is switched off.
-				</para>
-			</body>
-		</sub>
 	<sub name="wave_sfx">
 		<header>Digital Wave Sound Effects</header>
 			<body>
@@ -799,19 +724,14 @@
 			<body>
 				<para>
 					Press <key>Esc</key> to turn
-					on/off Music, Speech and SoundFX via the in-game menu or change the settings in 
-					exult.cfg - see <ref target="exult_config"/>.
+					on/off Music, Speech and SoundFX or change the settings in exult.cfg 
+					- see <ref target="exult_config"/>.
 				</para>
 			</body>
 		</sub>
 		<sub name="linux_alsa">
 			<header>Linux and Audio</header>
 			<body>
-				<para>
-					If you want to use the MIDI music option in Exult and use Timidity to play the 
-					MIDI, the timidity.cfg file must go into the same directory as the Exult executable, 
-					otherwise Timidity will not work. 
-				</para>
 				<para>
 					Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably
  					with the SoundBlaster Live.<br/>
@@ -896,9 +816,8 @@
 					mouse button to have the functionality of a right mouse button.
 				</para>
 				<para>
-					Nadir implemented keyboard walking in the 1.1 (unstable) branch of our source. 
-					The Avatar can be moved with the arrow keys (or the keypad keys for more precise
-					movement). When you move while holding shift the Avatar runs.
+					Currently we are not supporting moving the Avatar/party with the keyboard 
+					arrows but Nadir is planning to implement it after the 1.0 release.
 				</para>
   			</body>
 		</sub>
@@ -920,39 +839,12 @@
 				<para>
 					During the game press <key>h</key> to see a help
 					screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen
-					shows the correct key combination for MacOS). <key>KP</key> means keypad.
+					shows the correct key combination for MacOS).
 				</para>
 				<keytable title="Default keyboard commands">
-					<keydesc name="KP+/-">Change brightness</keydesc>
-					<keydesc name="Alt-KP+/-">Change resolution</keydesc>
+					<keydesc name="+/-">Change brightness (you may have to use the keypad)</keydesc>
 					<keydesc name="F4">Toggle full screen</keydesc>
-					<keydesc name="right">walk east</keydesc>
-					<keydesc name="left">walk west</keydesc>
-					<keydesc name="up">walk north</keydesc>
-					<keydesc name="down">walk south</keydesc>
-					<keydesc name="KP1">walk southwest</keydesc>
-					<keydesc name="KP2">walk south</keydesc>
-					<keydesc name="KP3">walk southeast</keydesc>
-					<keydesc name="KP4">walk west</keydesc>
-					<keydesc name="KP5">recenter map</keydesc>
-					<keydesc name="KP6">walk east</keydesc>
-					<keydesc name="KP7">walk northwest</keydesc>
-					<keydesc name="KP8">walk north</keydesc>
-					<keydesc name="KP9">walk northeast</keydesc>
-					<keydesc name="Shift-right">run east</keydesc>
-					<keydesc name="Shift-left">run west</keydesc>
-					<keydesc name="Shift-up">run north</keydesc>
-					<keydesc name="Shift-down">run south</keydesc>
-					<keydesc name="Shift-KP1">run southwest</keydesc>
-					<keydesc name="Shift-KP2">run south</keydesc>
-					<keydesc name="Shift-KP3">run southeast</keydesc>
-					<keydesc name="Shift-KP4">run west</keydesc>
-					<keydesc name="Shift-KP6">run east</keydesc>
-					<keydesc name="Shift-KP7">run northwest</keydesc>
-					<keydesc name="Shift-KP8">run north</keydesc>
-					<keydesc name="Shift-KP9">run northeast</keydesc>
 					<keydesc name="Ctrl-x">Cut selected object (when in Map Edit mode)</keydesc>
-					<keydesc name="Ctrl-c">Copy selected object (when in Map Edit mode)</keydesc>
 					<keydesc name="Ctrl-v">Paste selected object (when in Map Edit mode)</keydesc>
 					<keydesc name="b">Use spellbook</keydesc>
 					<keydesc name="c">Combat mode</keydesc>
@@ -1001,12 +893,12 @@
 			<body>
 				<para>
 					Press <key>ctrl-h</key> during the game to see a help screen with all 
-					the cheat keys. <key>KP</key> means keypad.
+					the cheat keys.
 				</para>
 				<keytable title="Cheat commands">
 					<keydesc name="Alt-+/-">Switch resolution( you may have to use the keypad)</keydesc>
-					<keydesc name="Alt-Arrow keys">Scroll map</keydesc>
-					<keydesc name="home">Recenter map</keydesc>
+					<keydesc name="Arrow keys">Scroll map</keydesc>
+					<keydesc name="Home">Recenter map</keydesc>
 					<keydesc name="Ctrl-Arrow keys">move selection (x,y coordinates)</keydesc>
 					<keydesc name="Ctrl-Page keys">move selection (z coordinates)</keydesc>
 					<keydesc name="F2">Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options</keydesc>
@@ -1014,7 +906,7 @@
 					<keydesc name="F10">Show endgame</keydesc>
 					<keydesc name="F11">SI: Play alternate intro</keydesc>
 					<keydesc name="Ctrl-b">Shape browser</keydesc>
-					<keydesc name="Insert">Create object (that is chosen in  the shape browser)</keydesc>
+					<keydesc name="Ctrl-c">Create object</keydesc>
 					<keydesc name="Ctrl-d">Delete object</keydesc>
 					<keydesc name="e">Toggle egg display</keydesc>
 					<keydesc name="Alt-g">Toggle God mode</keydesc>
@@ -1101,7 +993,7 @@
 					<li><strong>Music</strong><br/>
 						Enable or disable music.</li>
 					<li><strong>Conversion</strong><br/>
-						choose between Digital, FMSynth, None, GM, GS, GS127.</li>
+						choose between None, GM, GS, GS127.</li>
 					<li><strong>Reverb</strong><br/>
 					 	alters the way the midi is played. Enable or disable to hear if you like it.</li>
 					<li><strong>Chorus</strong><br/>
@@ -1128,6 +1020,12 @@
 						shows a tinted background behind text in conversations to make it easier to read.
 						Either disable it or choose between the colors purple, orange, light gray, green, 
 						yellow, pale blue, dark green, red, bright white, dark gray and white.</li>
+					<li><strong>Paperdolls</strong><br/>
+						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls 
+						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
+					<li><strong>Walk after teleport</strong><br/>
+						only available in <strong>Serpent Isle</strong>. The normal behavior is that 
+						you stop walking after you have been teleported. This enables walking on.</li>
 					<li><strong>Fast Mouse</strong><br/>
 						makes the mouse cursor move faster in full screen modes. Enable or disable it.</li>
 					<li><strong>Use middle mouse button</strong><br/>
@@ -1141,19 +1039,12 @@
 						pretty straightforward, right?</li>
 					<li><strong>Right click closes gumps</strong><br/>
 						the same but different.</li>
-					<li><strong>Double Right Pathfinds</strong><br/>
-						Double right-clicking on a spot makes the avatar walk to it.</li>
-					<li><strong>Gumps pause games</strong><br/>
-						In the original the game got paused when Gumps were shown. Enable/disable it.</li>
 					<li><strong>Cheats</strong><br/>
 						Enables or disables all the cheats that we implemented in <Exult/>. 
 						See <ref1 target="exult_cheats"/> what those cheats are.</li>
 					<li><strong>Speed</strong><br/>
 						if <Exult/> seems too fast lower this setting. If it seems to sluggish raising 
 						this setting may help.</li>
-					<li><strong>Paperdolls</strong><br/>
-						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls 
-						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
 					<li><strong>OK/Cancel</strong><br/>
 						Ok accepts your changes, Cancel discards your changes.</li>
 				</ul>

@@ -37,9 +37,7 @@
 class Actor;
 class Map_chunk;
 class Container_game_object;
-class Terrain_game_object;
 class Egg_object;
-class Barge_object;
 class Game_window;
 class Npc_actor;
 class PathFinder;
@@ -47,10 +45,10 @@ class Rectangle;
 class Schedule;
 class Usecode_machine;
 class Vga_file;
-class DataSource;
 
 template<class T>
 class T_Object_list;
+
 
 /*
  *	A game object is a shape from shapes.vga along with info. about its
@@ -76,7 +74,8 @@ protected:
 					//   is in a container, coords. within
 					//   gump's rectangle.
 					// Handle attack on an object.
-	int attack_object(Actor *attacker, int weapon_shape, int ammo_shape);
+	int attack_object(Game_window *gwin, Actor *attacker, int weapon_shape,
+							int ammo_shape);
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
@@ -122,7 +121,6 @@ public:
 					// Get direction to another object.
 	int get_direction(Game_object *o2) const;
 	int get_direction(Tile_coord t2) const;
-	Map_chunk *get_chunk();		// Get chunk this is in.
 	int get_quality() const
 		{ return quality; }
 	void set_quality(int q)
@@ -166,7 +164,6 @@ public:
 	virtual void move(int newtx, int newty, int newlift);
 	void move(Tile_coord t)
 		{ move(t.tx, t.ty, t.tz); }
-	void change_frame(int frnum);	// Change frame & set to repaint.
 					// Swap positions.
 	int swap_positions(Game_object *obj2);
 	int get_dependency_count()	// Get objs. to paint first.
@@ -176,6 +173,13 @@ public:
 	void clear_dependencies();	// Remove all dependencies.
 
 					// Find nearby objects.
+
+#ifdef ALPHA_LINUX_CXX
+	template<class T>
+	static int find_nearby_static(Exult_vector<T*>& vec, Tile_coord pos,
+			int shapenum, int delta, int mask, 
+			int qual = c_any_qual, int framenum = c_any_framenum);
+
 #define HDR_DECLARE_FIND_NEARBY(decl_type) \
 	static int find_nearby(decl_type vec, Tile_coord pos, \
 			int shapenum, int delta, int mask,  \
@@ -186,6 +190,25 @@ public:
 	HDR_DECLARE_FIND_NEARBY(Game_object_vector&);
 
 #undef HDR_DECLARE_FIND_NEARBY
+
+#elif defined(MSVC_FIND_NEARBY_KLUDGE)
+
+#define HDR_DECLARE_FIND_NEARBY(decl_type) \
+	static int find_nearby(decl_type vec, Tile_coord pos, \
+			int shapenum, int delta, int mask,  \
+			int qual = c_any_qual, int framenum = c_any_framenum)
+
+	HDR_DECLARE_FIND_NEARBY(Egg_vector&);
+	HDR_DECLARE_FIND_NEARBY(Actor_vector&);
+	HDR_DECLARE_FIND_NEARBY(Game_object_vector&);
+
+#undef HDR_DECLARE_FIND_NEARBY
+#else
+	template<class T>
+	static int find_nearby(Exult_vector<T*>& vec, Tile_coord pos,
+			int shapenum, int delta, int mask, 
+			int qual = c_any_qual, int framenum = c_any_framenum);
+#endif //ALPHA_LINUX_CXX
 
 	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta) 
 									const;
@@ -209,20 +232,36 @@ public:
 	void say(const char *text);		// Put text up by item.
 	void say(int from, int to);	// Show random msg. from 'text.flx'.
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Make this class abstract.
-	virtual void paint_terrain() = 0;
+	virtual void paint_terrain(Game_window *gwin) = 0;
 					// Can this be clicked on?
-	virtual int is_findable()
+	virtual int is_findable(Game_window *gwin)
 		{ return 1; }
 					// Run usecode function.
-	virtual void activate(int event = 1);
-	virtual bool edit();		// Edit in ExultStudio.
+	virtual void activate(Usecode_machine *umachine, int event = 1);
+	bool edit();			// Edit in ExultStudio.
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
+					// Set new NPC schedule.
+	virtual void set_schedule_type(int new_schedule_type,
+						Schedule *newsched = 0)
+		{  }
+					// Return NPC schedule.
+	virtual int get_schedule_type()	const
+		{ return 11; }		// Loiter.
 	virtual std::string get_name() const;
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
+	virtual void set_property(int prop, int val)
+		{  }
+	virtual int get_property(int prop) const
+		{ return 0; }
+					// Get/set 'alignment'.
+	virtual int get_alignment() const
+		{ return 0; }
+	virtual void set_alignment(short)
+		{  }
 	virtual Container_game_object *get_owner()
 		{ return 0; }
 	virtual void set_owner(Container_game_object *o)
@@ -243,12 +282,20 @@ public:
 	virtual int get_siflag(int flag) const { return 0; }
 	virtual int get_type_flag(int flag) const { return 0; }
 
-	virtual Actor *as_actor() { return 0; }
-	virtual Npc_actor *as_npc() { return 0; }
-	virtual Barge_object *as_barge() { return 0; }
-	virtual Terrain_game_object *as_terrain() { return 0; }
-	virtual Container_game_object *as_container() { return 0; }
-	virtual Egg_object *as_egg() { return 0; }
+	virtual unsigned char get_ident() { return 0; }
+	virtual void set_ident(unsigned char id) {  }
+
+	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
+		{ return 0; }
+	virtual int get_party_id() const// Get/set index within party.
+		{ return -1; }
+	virtual void set_party_id(int i)
+		{  }
+					// Set for Usecode animations.
+	virtual void set_usecode_dir(int d)
+		{  }
+	virtual int get_usecode_dir() const
+		{ return 0; }
 	virtual int is_egg() const	// An egg?
 		{ return 0; }
 					// Count contained objs.
@@ -261,7 +308,8 @@ public:
 		{ return 0; }
 					// Add an object.
 	virtual bool add(Game_object *obj, bool dont_check = false,
-							bool combine = false);
+							bool combine = false)
+		{ return false; }
 					// Add to NPC 'ready' spot.
 	virtual int add_readied(Game_object *obj, int index, int dont_check = 0, int force_pos = 0)
 		{ return add(obj, dont_check!=0); }
@@ -293,13 +341,10 @@ public:
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
 					// Write out to IREG file.
-	virtual void write_ireg(DataSource* out)
+	virtual void write_ireg(std::ostream& out)
 		{  }
-				// Get size of IREG. Returns -1 if can't write to buffer
-	virtual int get_ireg_size()
-		{ return 0; }
 					// Write out IFIX, CHUNKS.
-	virtual void write_ifix(DataSource* ifix)
+	virtual void write_ifix(std::ostream& ifix)
 		{  }
 	virtual void elements_read()	// Called when all member items read.
 		{  }
@@ -322,8 +367,7 @@ public:
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
-	virtual Terrain_game_object *as_terrain() { return this; }
-	virtual void paint_terrain();
+	virtual void paint_terrain(Game_window *gwin);
 	};
 
 /*
@@ -343,8 +387,8 @@ public:
 	virtual void move(int newtx, int newty, int newlift);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
-	virtual void paint_terrain() {  }
-	virtual void write_ifix(DataSource* ifix);
+	virtual void paint_terrain(Game_window *gwin) {  }
+	virtual void write_ifix(std::ostream& ifix);
 	};
 
 #endif

@@ -911,7 +911,13 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 	
 	if(ucs_output && opcode_table_data[op._id].flag_paren) str << ')';
 	
-	return str.str();
+	str << std::ends;
+	
+	string tstr(str.str());
+#ifndef HAVE_SSTREAM
+	str.freeze(false);
+#endif
+	return tstr;
 }
 
 void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)

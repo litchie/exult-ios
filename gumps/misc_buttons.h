@@ -31,7 +31,7 @@ class Checkmark_button : public Gump_button
 public:
 	Checkmark_button(Gump *par, int px, int py);
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 /*
@@ -42,7 +42,7 @@ class Heart_button : public Gump_button
 public:
 	Heart_button(Gump *par, int px, int py);
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 /*
@@ -53,7 +53,7 @@ class Disk_button : public Gump_button
 public:
 	Disk_button(Gump *par, int px, int py);
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 /*
@@ -64,8 +64,8 @@ class Combat_button : public Gump_button
 public:
 	Combat_button(Gump *par, int px, int py);
 					// What to do when 'clicked':
-	virtual void activate();
-	virtual void paint();
+	virtual void activate(Game_window *gwin);
+	virtual void paint(Game_window *gwin);
 };
 
 /*
@@ -77,7 +77,7 @@ class Halo_button : public Gump_button
 public:
 	Halo_button(Gump *par, int px, int py, Actor *a);
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 /*
@@ -89,7 +89,7 @@ class Combat_mode_button : public Gump_button
 public:
 	Combat_mode_button(Gump *par, int px, int py, Actor *a);
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 /*
@@ -101,7 +101,7 @@ public:
 	Cstats_button(Gump *par, int px, int py);
 
  	// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 #endif

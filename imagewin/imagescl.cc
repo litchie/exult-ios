@@ -625,14 +625,3 @@ void Image_window::show_scaled_interlace
 
 	SDL_UpdateRect(surface, scale*x, scale*y, scale*w, scale*h);
 }
-
-//
-// OpenGL 'scaler':
-//
-void Image_window::show_scaledOpenGL
-	(
-	int x, int y, int w, int h	// Area to show.
-	)
-{
-	SDL_GL_SwapBuffers();		// Blit.
-}

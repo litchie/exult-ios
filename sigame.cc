@@ -37,7 +37,6 @@
 #include "txtscroll.h"
 #include "exult_types.h"
 #include "mappatch.h"
-#include "shapeid.h"
 
 using std::cout;
 using std::endl;
@@ -239,13 +238,7 @@ void SI_Game::play_intro()
 		// Castle Outside
 
 		// Start Music
-		Audio *audio = Audio::get_ptr();
-		if (audio) {
-			const char *fn = "<STATIC>/r_sintro.xmi";
-			MyMidiPlayer *midi = audio->get_midi();
-			if (midi && midi->is_fm_synth()) fn = "<STATIC>/a_sintro.xmi";
-			audio->start_music (fn, 0, false);
-		}
+		Audio::get_ptr()->start_music ("<STATIC>/r_sintro.xmi", 0, false);
 
 		// Thunder, note we use the buffer again later so it's not freed here
 		if (speech)
@@ -619,7 +612,7 @@ void SI_Game::play_intro()
 				sf = gshape.get_frame(0);
 
 			if (sf)
-				sman->paint_shape (centerx-36, centery, sf);
+				gwin->paint_shape (centerx-36, centery, sf);
 
 			if (j < 100 && jive)
 			{
@@ -662,7 +655,7 @@ void SI_Game::play_intro()
 		{
 			next = fli4.play(win, 0, 0, next, j*5);
 			if (sf)
-				sman->paint_shape (centerx-36, centery, sf);
+				gwin->paint_shape (centerx-36, centery, sf);
 
 			win->show();
 			if (wait_delay (0))
@@ -827,15 +820,15 @@ void SI_Game::play_intro()
 void SI_Game::top_menu()
 {
 	play_midi(28, true);
-	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-	pal->load(MAINSHP_FLX,26);
-	pal->fade_in(60);	
+	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	pal.load(MAINSHP_FLX,26);
+	pal.fade_in(60);	
 }
 
 void SI_Game::show_journey_failed()
 {
-    pal->fade_out(50);
-	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	pal.fade_out(50);
+	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	journey_failed_text();
 }
 
@@ -1126,14 +1119,7 @@ Sound Index
 	Audio::get_ptr()->stop_music();
 
 	// Start the music
-	Audio *audio = Audio::get_ptr();
-	if (audio) {
-		const char *fn = "<STATIC>/r_send.xmi";
-		MyMidiPlayer *midi = audio->get_midi();
-		if (midi && midi->is_fm_synth()) fn = "<STATIC>/a_send.xmi";
-		audio->start_music (fn, 0, false);
-	}
-
+	Audio::get_ptr()->start_music ("<STATIC>/r_send.xmi", 0, false);
 
 	int start_time = SDL_GetTicks();
 
@@ -1233,7 +1219,7 @@ void SI_Game::show_quotes()
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)
 			    );
-		quotes.run(gwin);
+		quotes.run(gwin,pal);
 	}
 
 void SI_Game::show_credits()
@@ -1243,7 +1229,7 @@ void SI_Game::show_credits()
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)
 			    );
-		if(credits.run(gwin)) {	// Watched through the entire sequence?
+		if(credits.run(gwin,pal)) {	// Watched through the entire sequence?
 			std::ofstream quotesflg;
 			U7open(quotesflg, "<SAVEGAME>/quotes.flg");
 			quotesflg.close();
@@ -1274,19 +1260,19 @@ bool SI_Game::new_game(Vga_file &shapes)
 		if (redraw)
 		{
 			gwin->clear_screen();
-			sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-			sman->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
-			sman->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
+			gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
+			gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
 			Shape_frame *sh = faces_vga.get_shape(0,sex);
-			sman->paint_shape(topx+300,menuy+50,sh);
-			sman->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
-			sman->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
+			gwin->paint_shape(topx+300,menuy+50,sh);
+			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
+			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
 			if(selected==0)
 				snprintf(disp_name, max_len+2, "%s_", npc_name);
 			else
 				snprintf(disp_name, max_len+2, "%s", npc_name);
 			font->draw_text(ibuf, topx+60, menuy+10, disp_name);
-			pal->apply();
+			pal.apply();
 			redraw = false;
 		}
 		SDL_WaitEvent(&event);
@@ -1388,14 +1374,14 @@ bool SI_Game::new_game(Vga_file &shapes)
 	while(editing);
 
 	gwin->clear_screen();
-	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 
 	if(ok)
 	{
 		set_avname (npc_name);
 		set_avsex (1-(sex%2));
 		set_avskin (sex/2);
-		pal->fade_out(c_fade_out_time);
+		pal.fade_out(c_fade_out_time);
 		gwin->clear_screen(true);	
 		ok = gwin->init_gamedat(true);
 	}

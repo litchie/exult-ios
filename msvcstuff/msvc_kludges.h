@@ -14,16 +14,13 @@
 #define HAVE_SSTREAM 1
 
 // Fisrtly some things that need to be defined
-#define VERSION "1.1.0cvs"
+#define VERSION "1.00"
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
 #define DONT_HAVE_HASH_SET
 #define DONT_HAVE_HASH_MAP
-#define HAVE_OPENGL
-#define FUDGE_SAMPLE_RATES
-#define USE_FMOPL_MIDI
-#define WANT_MAP_CACHE_OUT
+#define MSVC_FIND_NEARBY_KLUDGE
 
 // Settings for debug builds
 #ifndef NDEBUG
@@ -38,9 +35,6 @@
 #endif
 
 #endif
-
-// Yeah, lets do unicode compiles
-#define UNICODE
 
 // Don't need everything in the windows headers
 #define WIN32_LEAN_AND_MEAN
@@ -79,7 +73,6 @@ namespace std {
 	#include <ctime>
 	#include <cmath>
 	#include <cstdarg>
-	#include <malloc.h>
 
 	// Kludge to make Exult think that size_t has been put into the
 	// std namespace
@@ -98,8 +91,10 @@ namespace std {
 	using ::printf;
 	
 	// Win32 doesn't have snprintf as such. It's got _snprintf, 
-	// but it's in stdio. I'll make my own using _vsnprintf 
-#if 1
+	// but it's in stdio. I'll make my own using _vsnprintf, or I can use asm
+#if 0
+	int __cdecl snprintf(char *out, size_t len, const char *format, ...);
+#elif 1
 	inline int snprintf(char *out, size_t len, const char *format, ...)
 	{
 		va_list	argptr;
@@ -132,8 +127,6 @@ using std::_dev_t;
 using std::_ino_t;
 using std::_off_t;
 using std::isspace;
-using std::_alloca;
-using std::wcslen;
 
 // Nope, stat isn't defined
 #ifdef _STAT_DEFINED
@@ -144,7 +137,7 @@ using std::wcslen;
 // When doing a DEBUG compile we will output to the console
 // However, SDL doesn't want us to do that
 #ifdef DEBUG
-//#define SDL_main main
+#define SDL_main main
 #endif
 
 // Some often used headers that could be included in out precompiled header
@@ -155,6 +148,7 @@ using std::wcslen;
 #include <iomanip>
 #include <set>
 #include <map>
+#include <string>
 #include <assert.h>
 #include <fcntl.h>
 #include <direct.h>
@@ -162,6 +156,21 @@ using std::wcslen;
 #include <windows.h>
 #include <mmsystem.h>
 #include <windef.h>
+
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::string;
+using std::ifstream;
+using std::ofstream;
+using std::strlen;
+using std::strcpy;
+using std::strncpy;
+using std::memcpy;
+using std::memcmp;
+using std::memset;
+using std::abs;
+using std::snprintf;
 
 // Why oh why!
 // MSVC thinks near and far are actually supposed to be used with pointers
@@ -268,6 +277,9 @@ using std::wcslen;
 #include "../audio/Audio.h"
 #include "../audio/conv.h"
 #include "../audio/Midi.h"
+#include "../audio/Mixer.h"
+#include "../audio/pcb.h"
+#include "../audio/SDL_mapping.h"
 #include "../audio/soundtest.h"
 #include "../audio/xmidi.h"
 #include "../gumps/Actor_gump.h"

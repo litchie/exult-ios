@@ -246,8 +246,8 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	if (done)			// In case we're deleted.
 		reached_end = true;
 	Tile_coord cur = actor->get_tile();
-	int newdir = static_cast<int>(Get_direction4(cur.ty - tile.ty, 
-							tile.tx - cur.tx));
+	int newdir = static_cast<int>(Get_direction4(cur.ty - tile.ty, tile.tx - cur.tx));
+	actor->Actor::set_usecode_dir(newdir);
 	Frames_sequence *frames = actor->get_frames(newdir);
 	if (!frame_index)		// First time?  Init.
 		frame_index = frames->find_unrotated(actor->get_framenum());
@@ -305,7 +305,7 @@ int Path_walking_actor_action::open_door
 	Game_object *door
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord cur = actor->get_tile();
 					// Get door's footprint in tiles.
 	Rectangle foot = door->get_footprint();
@@ -313,7 +313,7 @@ int Path_walking_actor_action::open_door
 					//   avoid unwanted usecode.
 	int savequal = door->get_quality();
 	door->set_quality(0);
-	door->activate();
+	door->activate(gwin->get_usecode());
 	door->set_quality(savequal);
 	Tile_coord past;		// Tile on other side of door.
 	past.tz = cur.tz;
@@ -374,11 +374,12 @@ void Path_walking_actor_action::stop
 	Actor *actor
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 					// Don't set slimes.
-	if (!actor->get_info().has_strange_movement())
+	if (!gwin->get_info(actor).has_strange_movement())
 		{			// ++++For now, just use original dir.
 		Frames_sequence *frames = actor->get_frames(original_dir);
-		actor->change_frame(frames->get_resting());
+		actor->set_frame(frames->get_resting());
 		}
 	}
 
@@ -396,7 +397,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	int dist			// Distance to get to within dest.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	blocked = 0;			// Clear 'blocked' count.
 	reached_end = false;		// Starting new path.
 	from_offscreen = false;
@@ -474,51 +475,6 @@ int Path_walking_actor_action::following_smart_path
 	)
 	{
 	return path != 0 && path->following_smart_path();
-	}
-
-/*
- *	Create action to follow a path towards another object.
- */
-
-Approach_actor_action::Approach_actor_action
-	(
-	PathFinder *p,			// Path to follow.
-	Game_object *d			// Destination object.
-	) : Path_walking_actor_action(p, 0),	// (Stop if blocked.)
-	    dest_obj(d), orig_dest_pos(d->get_tile()), cur_step(0)
-	{
-					// Get length of path.
-	int nsteps = path->get_num_steps();
-	if (nsteps >= 6)		// (May have to play with this).
-		check_step = nsteps/2;
-	else
-		check_step = 10000;
-	}
-
-/*
- *	Handle a time event.
- *
- *	Output:	0 if done with this action, else delay for next frame.
- */
-
-int Approach_actor_action::handle_event
-	(
-	Actor *actor
-	)
-	{
-	int delay = Path_walking_actor_action::handle_event(actor);
-	if (!delay)			// Done or blocked.
-		return 0;
-	if (++cur_step == check_step)	// Time to check.
-		{
-		if (dest_obj->get_tile().distance(orig_dest_pos) > 2)
-			return 0;	// Moved too much, so stop.
-					// Figure next check.
-		int nsteps = path->get_num_steps();
-		if (nsteps >= 6)
-			check_step += nsteps/2;
-		}
-	return delay;
 	}
 
 /*
@@ -641,7 +597,7 @@ int Move_actor_action::handle_event
 	if (dest.tx < 0 || actor->get_tile() == dest)
 		return (0);		// Done.
 	actor->move(dest);		// Zip right there.
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	if (actor == gwin->get_main_actor())
 					// Teleported Avatar?
 		gwin->center_view(dest);
@@ -660,7 +616,8 @@ int Activate_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	obj->activate();
+	Game_window *gwin = Game_window::get_game_window();
+	obj->activate(gwin->get_usecode());
 	return 0;			// That's all.
 	}
 
@@ -675,7 +632,7 @@ int Usecode_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	gwin->get_usecode()->call_usecode(fun, item, 
 			(Usecode_machine::Usecode_events) eventid);
 	gwin->set_all_dirty();		// Clean up screen.
@@ -715,11 +672,16 @@ int Frames_actor_action::handle_event
 	int frnum = frames[index++];	// Get frame.
 	if (frnum >= 0)
 		{
-		Game_window *gwin = Game_window::get_instance();
-		if (o)
-			o->change_frame(frnum);
-		else
-			actor->change_frame(frnum);
+		Game_window *gwin = Game_window::get_game_window();
+		if (o) {
+			gwin->add_dirty(o);
+			o->set_frame(frnum);
+			gwin->add_dirty(o);
+		} else {
+			actor->add_dirty(gwin);	// Get weapon to redraw too.
+			actor->set_frame(frnum);
+			actor->add_dirty(gwin, 1);
+		}
 		}
 	return (speed);
 	}
@@ -795,7 +757,7 @@ Object_animate_actor_action::Object_animate_actor_action
 	int spd				// Time between frames.
 	) : obj(o), cycles(cy), speed(spd)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	nframes = obj->get_num_frames();
 	}
 
@@ -822,7 +784,10 @@ int Object_animate_actor_action::handle_event
 	int frnum = (obj->get_framenum() + 1) % nframes;
 	if (!frnum)			// New cycle?
 		--cycles;
-	obj->change_frame(frnum);
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->add_dirty(obj);		// Paint over old.
+	obj->set_frame(frnum);
+	gwin->add_dirty(obj);
 	return (cycles ? speed : 0);
 	}
 
@@ -850,7 +815,7 @@ int Pickup_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	int frnum = -1;
 	switch (cnt)
 		{
@@ -860,7 +825,7 @@ int Pickup_actor_action::handle_event
 		cnt++;
 		break;
 	case 1:				// Bend down.
-		frnum = actor->get_dir_framenum(dir, Actor::bow_frame);
+		frnum = actor->get_dir_framenum(dir, Actor::to_sit_frame);
 		cnt++;
 		if (pickup)
 			{
@@ -883,7 +848,9 @@ int Pickup_actor_action::handle_event
 	default:
 		return 0;		// Done.
 		}
-	actor->change_frame(frnum);
+	actor->add_dirty(gwin);		// Get weapon to redraw too.
+	actor->set_frame(frnum);
+	actor->add_dirty(gwin, 1);
 	return speed;
 	}
 
@@ -910,12 +877,14 @@ int Face_pos_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	int dir = actor->get_direction(pos);
 	int frnum = actor->get_dir_framenum(dir, Actor::standing);
 	if (actor->get_framenum() == frnum)
 		return 0;		// There.
-	actor->change_frame(frnum);
+	actor->add_dirty(gwin);		// Get weapon to redraw too.
+	actor->set_frame(frnum);
+	actor->add_dirty(gwin, 1);
 	return speed;
 	}
 

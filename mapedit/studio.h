@@ -35,7 +35,6 @@ class Object_browser;
 class Shape_group;
 class Locator;
 class Combo_editor;
-class Exec_box;
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
@@ -90,9 +89,6 @@ private:
 	Locator			*locwin;
 					// Combo editor:
 	Combo_editor		*combowin;
-					// Compile window:
-	GtkWidget		*compilewin;
-	Exec_box		*compile_box;
 	// For Win32 DND
 #ifdef WIN32
 	HWND			egghwnd;
@@ -150,7 +146,7 @@ public:
 	bool need_to_save();		// Anything modified?
 	void write_map();
 	void read_map();
-	void write_shape_info(bool force = false);
+	void write_shape_info();
 	void reload_usecode();
 	void set_play(gboolean play);
 	void set_tile_grid(gboolean grid);
@@ -208,8 +204,7 @@ public:
 	void init_shape_notebook(Shape_info& info, GtkWidget *book, 
 							int shnum, int frnum);
 	void save_shape_notebook(Shape_info& info, int shnum, int frnum);
-	void open_shape_window(int shnum, int frnum, 
-			Shape_file_info *file_info,
+	void open_shape_window(int shnum, int frnum, Vga_file *ifile,
 					char *shname, Shape_info *info = 0);
 	void save_shape_window();
 	void close_shape_window();
@@ -218,10 +213,7 @@ public:
 	void open_locator_window();
 	void open_combo_window();	// Combo-object editor.
 	void save_combos();
-					// Compile.
-	void open_compile_window();
-	void compile(bool if_needed = false);
-	void halt_compile();
+
 	void run();
 	bool send_to_server(Exult_server::Msg_type id,
 				unsigned char *data = 0, int datalen = 0);

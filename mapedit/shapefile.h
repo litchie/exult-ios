@@ -46,13 +46,11 @@ protected:
 	std::string pathname;		// Full pathname.
 	Shape_group_file *groups;	// Groups within ifile.
 	bool modified;			// Ifile was modified.
-	Object_browser *browser;	// Widget for seeing this file.
 public:
 	friend class Shape_file_set;
 					// We will own files and groups.
 	Shape_file_info(const char *bnm, const char *pnm, Shape_group_file *g)
-		: basename(bnm), pathname(pnm), groups(g), modified(false),
-		  browser(0)
+		: basename(bnm), pathname(pnm), groups(g), modified(false)
 		{  }
 	virtual ~Shape_file_info();
 	const char *get_basename()
@@ -65,16 +63,12 @@ public:
 		{ modified = true; }
 	virtual Vga_file *get_ifile()
 		{ return 0; }
-					// Call this to create group browser.
-	virtual Object_browser *create_browser(Shape_file_info *vgafile,
-				unsigned char *palbuf, Shape_group *g)
-		{ return 0; }
-					// Call for main browser.
-	virtual Object_browser *get_browser(Shape_file_info *vgafile,
-				unsigned char *palbuf);
 	virtual std::ifstream *get_file()
 		{ return 0; }
 	virtual Flex *get_flex()
+		{ return 0; }
+	virtual Object_browser *create_browser(Shape_file_info *vgafile,
+				unsigned char *palbuf, Shape_group *g = 0)
 		{ return 0; }
 	virtual void flush()		// Write if modified.
 		{ modified = false; }
@@ -149,10 +143,10 @@ public:
 	void swap(int i);		// Swap entries i, i+1.
 	void remove(int i);		// Remove i'th entry.
 	virtual ~Flex_file_info();
-	virtual Object_browser *create_browser(Shape_file_info *vgafile,
-				unsigned char *palbuf, Shape_group *g = 0);
 	virtual Flex *get_flex()
 		{ return flex; }
+	virtual Object_browser *create_browser(Shape_file_info *vgafile,
+				unsigned char *palbuf, Shape_group *g = 0);
 	virtual void flush();		// Write if modified.
 	virtual bool revert();
 	};

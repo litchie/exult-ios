@@ -55,7 +55,7 @@ public:
 	virtual int move_aside(Actor* for_actor, int dir)
 		{ return 0; }		// Monsters don't move aside.
 					// Render.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
 					// Remove/delete this object.
@@ -70,8 +70,8 @@ public:
 	virtual Weapon_info *get_weapon(int& points, int& shape);
 	virtual int is_monster()
 		{ return 1; }
-	virtual void die(Actor *attacker);		// We're dead.
-	void write(DataSource* nfile);// Write out (to 'monsnpc.dat').
+	virtual void die();		// We're dead.
+	void write(std::ostream& nfile);// Write out (to 'monsnpc.dat').
 	};
 
 /*

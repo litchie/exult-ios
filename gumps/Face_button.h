@@ -34,12 +34,12 @@ protected:
 public:
 	Face_button(Gump *par, int px, int py, Actor *a);
 	virtual Actor *get_actor() { return actor; }
-	virtual void double_clicked(int x, int y);
-	virtual void activate() {}
+	virtual void double_clicked(Game_window *gwin, int x, int y);
+	virtual void activate(Game_window *gwin) {}
 
-	virtual void push() {}
-	virtual void unpush() {}
-	virtual void update_widget();
+	virtual void push(Game_window *gwin) {}
+	virtual void unpush(Game_window *gwin) {}
+	virtual void update_widget(Game_window *gwin);
 };
 
 #endif

@@ -68,7 +68,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunkter.h"
 #include "cheat.h"
 #include "objserial.h"
-#include "effects.h"
 
 #ifdef USECODE_DEBUGGER
 #include "debugserver.h"
@@ -232,7 +231,7 @@ static void Handle_client_message
 	if (datalen < 0)
 		return;
 	unsigned char *ptr = &data[0];
-	Game_window *gwin = Game_window::get_instance();
+	Game_window *gwin = Game_window::get_game_window();
 	switch (id)
 		{
 	case Exult_server::obj:
@@ -249,6 +248,7 @@ static void Handle_client_message
 		unsigned char data[Exult_server::maxlength];
 		unsigned char *ptr = &data[0];
 		Game_info_out(client_socket, Exult_server::version, 
+			gwin->get_num_npcs(),
 			cheat.get_edit_lift(),
 			gwin->skip_lift,
 			cheat.in_map_editor(),
@@ -345,7 +345,7 @@ static void Handle_client_message
 		else if (onoff == -1)
 			gwin->get_map()->abort_terrain_edits();
 		if (onoff >= -1 && onoff <= 1)
-			gwin->get_effects()->center_text(msgs[onoff + 1]);
+			gwin->center_text(msgs[onoff + 1]);
 		gwin->set_all_dirty();
 		break;
 		}
@@ -382,7 +382,7 @@ static void Handle_client_message
 	case Exult_server::set_edit_mode:
 		{
 		int md = Read2(ptr);
-		if (md >= 0 && md <= 3)
+		if (md >= 0 && md <= 2)
 			cheat.set_edit_mode((Cheat::Map_editor_mode) md);
 		break;
 		}
@@ -394,7 +394,7 @@ static void Handle_client_message
 		break;
 		}
 	case Exult_server::reload_shapes:
-		Shape_manager::get_instance()->reload_shapes(Read2(ptr));
+		gwin->reload_shapes(Read2(ptr));
 		break;
 	case Exult_server::unused_shapes:
 		{			// Send back shapes not used in game.
@@ -424,27 +424,6 @@ static void Handle_client_message
 	case Exult_server::paste:
 		cheat.paste();
 		break;
-	case Exult_server::npc_info:
-		Write2(ptr, gwin->get_num_npcs());
-		Write2(ptr, gwin->get_unused_npc());
-		Exult_server::Send_data(client_socket, Exult_server::npc_info,
-							data, ptr - data);
-		break;
-	case Exult_server::edit_selected:
-		{
-		unsigned char basic = *ptr;
-		const Game_object_vector& sel = cheat.get_selected();
-		if (!sel.empty())
-			if (basic)		// Basic obj. props?
-				sel.back()->Game_object::edit();
-			else
-				sel.back()->edit();
-		break;
-		}
-	case Exult_server::set_edit_chunknum:
-		cheat.set_edit_chunknum((short) Read2(ptr));
-		break;
-
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:
 		Handle_debug_message(&data[0], datalen);

@@ -66,7 +66,7 @@ public:
 		{ return -1; }
 	virtual Game_object *get_readied(int index) const
 		{ return 0; }
-	virtual void call_readied_usecode(int index,
+	virtual void call_readied_usecode(Game_window *gwin, int index,
 					Game_object *obj, int eventid)
 		{  }
 					// Add/remove quantities of objs.
@@ -79,7 +79,7 @@ public:
 								int framenum);
 	virtual Game_object *find_item(int shapenum, int qual, int framenum);
 					// Run usecode function.
-	virtual void activate(int event = 1);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 	virtual int get_weight();
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
@@ -91,11 +91,9 @@ public:
 					int qual, int framenum);
 	virtual void set_flag_recursively(int flag);
 					// Write out to IREG file.
-	virtual void write_ireg(DataSource* out);
-				// Get size of IREG. Returns -1 if can't write to buffer
-	virtual int get_ireg_size();
+	virtual void write_ireg(std::ostream& out);
 					// Write contents in IREG format.
-	virtual void write_contents(DataSource* out);
+	virtual void write_contents(std::ostream& out);
 
 	virtual int get_obj_hp() const { return resistance; }
 	virtual void set_obj_hp(int hp) { resistance = (char)hp; }
@@ -105,9 +103,6 @@ public:
 	virtual void delete_contents();
 	
 	virtual void remove_this(int nodel = 0);
-
-	virtual Container_game_object *as_container() { return this; }
-
 	};
 
 #endif

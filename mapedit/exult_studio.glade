@@ -418,36 +418,6 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
-	    <name>properties1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_properties1_activate</handler>
-	      <last_modification_time>Thu, 13 Jun 2002 00:59:01 GMT</last_modification_time>
-	    </signal>
-	    <label>Properties...</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>basic_properties1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_basic_properties1_activate</handler>
-	      <last_modification_time>Thu, 13 Jun 2002 00:59:01 GMT</last_modification_time>
-	    </signal>
-	    <label>Basic properties...</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>separator6</name>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
 	    <name>open_egg</name>
 	    <signal>
 	      <name>activate</name>
@@ -504,19 +474,6 @@
 	      <last_modification_time>Sat, 23 Mar 2002 04:07:28 GMT</last_modification_time>
 	    </signal>
 	    <label>Paint</label>
-	    <active>False</active>
-	    <always_show_toggle>True</always_show_toggle>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioMenuItem</class>
-	    <name>paint_with_chunks1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_paint_with_chunks1_activate</handler>
-	      <last_modification_time>Sat, 19 Oct 2002 02:36:23 GMT</last_modification_time>
-	    </signal>
-	    <label>Paint with chunks</label>
 	    <active>False</active>
 	    <always_show_toggle>True</always_show_toggle>
 	  </widget>
@@ -584,18 +541,6 @@
 	      <last_modification_time>Tue, 28 May 2002 03:32:38 GMT</last_modification_time>
 	    </signal>
 	    <label>Unused shapes...</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>compileusecode1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_compile_usecode_menu_activate</handler>
-	      <last_modification_time>Tue, 08 Oct 2002 18:53:48 GMT</last_modification_time>
-	    </signal>
-	    <label>Compile usecode...</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
@@ -1284,7 +1229,7 @@ External
 	      <class>GtkCheckButton</class>
 	      <name>nocturnal</name>
 	      <can_focus>True</can_focus>
-	      <label>Nocturnal</label>
+	      <label>Nocturnal	</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <child>
@@ -1426,7 +1371,7 @@ External
       <show_tabs>True</show_tabs>
       <show_border>True</show_border>
       <tab_pos>GTK_POS_TOP</tab_pos>
-      <scrollable>False</scrollable>
+      <scrollable>True</scrollable>
       <tab_hborder>2</tab_hborder>
       <tab_vborder>2</tab_vborder>
       <popup_enable>False</popup_enable>
@@ -1976,7 +1921,6 @@ Random
 	    <can_focus>True</can_focus>
 	    <items>North
 Northeast
-East
 Southeast
 South
 Southwest
@@ -3715,7 +3659,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>npc_flag_of_13</name>
+	  <name>npc_flag_si_06</name>
 	  <can_focus>True</can_focus>
 	  <label>No magic</label>
 	  <active>False</active>
@@ -4037,7 +3981,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>npc_flag_of_30</name>
+	  <name>npc_flag_si_07</name>
 	  <can_focus>True</can_focus>
 	  <label>Zombie</label>
 	  <active>False</active>
@@ -7924,7 +7868,7 @@ LR Hand
 	      <class>GtkCheckButton</class>
 	      <name>shinfo_occludes_check</name>
 	      <can_focus>True</can_focus>
-	      <label>Occludes</label>
+	      <label>Occludes	</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <child>
@@ -8522,7 +8466,7 @@ Poison
 	  <widget>
 	    <class>GtkTable</class>
 	    <name>table13</name>
-	    <rows>4</rows>
+	    <rows>2</rows>
 	    <columns>4</columns>
 	    <homogeneous>True</homogeneous>
 	    <row_spacing>0</row_spacing>
@@ -8710,124 +8654,6 @@ Poison
 		<xfill>True</xfill>
 		<yfill>False</yfill>
 	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkFrame</class>
-	      <name>frame139</name>
-	      <border_width>6</border_width>
-	      <label>Strike Frames</label>
-	      <label_xalign>0</label_xalign>
-	      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	      <child>
-		<left_attach>0</left_attach>
-		<right_attach>2</right_attach>
-		<top_attach>2</top_attach>
-		<bottom_attach>4</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>True</yfill>
-	      </child>
-
-	      <widget>
-		<class>GtkHBox</class>
-		<name>hbox36</name>
-		<border_width>2</border_width>
-		<homogeneous>False</homogeneous>
-		<spacing>0</spacing>
-
-		<widget>
-		  <class>GtkCheckButton</class>
-		  <name>shinfo_strike_raise</name>
-		  <can_focus>True</can_focus>
-		  <label>Raise</label>
-		  <active>False</active>
-		  <draw_indicator>True</draw_indicator>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkCheckButton</class>
-		  <name>shinfo_strike_reach</name>
-		  <can_focus>True</can_focus>
-		  <label>Reach</label>
-		  <active>False</active>
-		  <draw_indicator>True</draw_indicator>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-	      </widget>
-	    </widget>
-
-	    <widget>
-	      <class>GtkFrame</class>
-	      <name>frame140</name>
-	      <border_width>6</border_width>
-	      <label>Projectile Frames</label>
-	      <label_xalign>0</label_xalign>
-	      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	      <child>
-		<left_attach>2</left_attach>
-		<right_attach>4</right_attach>
-		<top_attach>2</top_attach>
-		<bottom_attach>4</bottom_attach>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<xexpand>False</xexpand>
-		<yexpand>False</yexpand>
-		<xshrink>False</xshrink>
-		<yshrink>False</yshrink>
-		<xfill>True</xfill>
-		<yfill>True</yfill>
-	      </child>
-
-	      <widget>
-		<class>GtkHBox</class>
-		<name>hbox37</name>
-		<border_width>2</border_width>
-		<homogeneous>False</homogeneous>
-		<spacing>0</spacing>
-
-		<widget>
-		  <class>GtkCheckButton</class>
-		  <name>shinfo_proj_raise</name>
-		  <can_focus>True</can_focus>
-		  <label>Raise</label>
-		  <active>False</active>
-		  <draw_indicator>True</draw_indicator>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-
-		<widget>
-		  <class>GtkCheckButton</class>
-		  <name>shinfo_proj_reach</name>
-		  <can_focus>True</can_focus>
-		  <label>Reach</label>
-		  <active>False</active>
-		  <draw_indicator>True</draw_indicator>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>False</fill>
-		  </child>
-		</widget>
-	      </widget>
 	    </widget>
 	  </widget>
 	</widget>
@@ -12746,202 +12572,6 @@ Random
 	<label>Done</label>
 	<relief>GTK_RELIEF_NORMAL</relief>
       </widget>
-    </widget>
-  </widget>
-</widget>
-
-<widget>
-  <class>GtkWindow</class>
-  <name>compile_win</name>
-  <visible>False</visible>
-  <signal>
-    <name>delete_event</name>
-    <handler>gtk_widget_hide</handler>
-    <last_modification_time>Thu, 03 Oct 2002 22:37:27 GMT</last_modification_time>
-  </signal>
-  <title>Exult:  Compiling</title>
-  <type>GTK_WINDOW_TOPLEVEL</type>
-  <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
-  <auto_shrink>False</auto_shrink>
-
-  <widget>
-    <class>GtkVBox</class>
-    <name>vbox34</name>
-    <homogeneous>False</homogeneous>
-    <spacing>0</spacing>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>frame142</name>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkHBox</class>
-	<name>hbox38</name>
-	<homogeneous>False</homogeneous>
-	<spacing>0</spacing>
-
-	<widget>
-	  <class>GtkFrame</class>
-	  <name>frame144</name>
-	  <border_width>2</border_width>
-	  <label_xalign>0</label_xalign>
-	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkHBox</class>
-	    <name>hbox40</name>
-	    <border_width>4</border_width>
-	    <homogeneous>True</homogeneous>
-	    <spacing>0</spacing>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>compile_btn</name>
-	      <border_width>2</border_width>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>on_compile_btn_clicked</handler>
-		<last_modification_time>Wed, 09 Oct 2002 09:44:16 GMT</last_modification_time>
-	      </signal>
-	      <label>Compile</label>
-	      <relief>GTK_RELIEF_NORMAL</relief>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkButton</class>
-	      <name>halt_compile_btn</name>
-	      <border_width>2</border_width>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>clicked</name>
-		<handler>on_halt_compile_btn_clicked</handler>
-		<last_modification_time>Wed, 09 Oct 2002 09:44:23 GMT</last_modification_time>
-	      </signal>
-	      <label>Halt</label>
-	      <relief>GTK_RELIEF_NORMAL</relief>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkFrame</class>
-	  <name>frame143</name>
-	  <border_width>2</border_width>
-	  <label_xalign>0</label_xalign>
-	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	  <child>
-	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
-	  </child>
-
-	  <widget>
-	    <class>GtkHBox</class>
-	    <name>hbox39</name>
-	    <border_width>4</border_width>
-	    <homogeneous>False</homogeneous>
-	    <spacing>0</spacing>
-
-	    <widget>
-	      <class>GtkLabel</class>
-	      <name>label85</name>
-	      <label>Source:  </label>
-	      <justify>GTK_JUSTIFY_CENTER</justify>
-	      <wrap>False</wrap>
-	      <xalign>0.5</xalign>
-	      <yalign>0.5</yalign>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <child>
-		<padding>0</padding>
-		<expand>False</expand>
-		<fill>False</fill>
-	      </child>
-	    </widget>
-
-	    <widget>
-	      <class>GtkEntry</class>
-	      <name>compile_source</name>
-	      <can_focus>True</can_focus>
-	      <editable>True</editable>
-	      <text_visible>True</text_visible>
-	      <text_max_length>0</text_max_length>
-	      <text>usecode.uc</text>
-	      <child>
-		<padding>0</padding>
-		<expand>True</expand>
-		<fill>True</fill>
-	      </child>
-	    </widget>
-	  </widget>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkFrame</class>
-      <name>frame141</name>
-      <label_xalign>0</label_xalign>
-      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-      <child>
-	<padding>0</padding>
-	<expand>True</expand>
-	<fill>True</fill>
-      </child>
-
-      <widget>
-	<class>GtkScrolledWindow</class>
-	<name>scrolledwindow7</name>
-	<hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
-	<vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
-	<hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
-	<vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-
-	<widget>
-	  <class>GtkText</class>
-	  <name>compile_msgs</name>
-	  <height>186</height>
-	  <can_focus>True</can_focus>
-	  <editable>False</editable>
-	  <text></text>
-	</widget>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkStatusbar</class>
-      <name>compile_status</name>
-      <child>
-	<padding>0</padding>
-	<expand>False</expand>
-	<fill>False</fill>
-      </child>
     </widget>
   </widget>
 </widget>

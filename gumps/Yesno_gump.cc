@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000-2002 The Exult Team
+Copyright (C) 2000 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "game.h"
 #include "Gump_button.h"
-#include "Gump_manager.h"
+#include "gump_utils.h"
 
 /*
  *	Statics:
@@ -53,7 +53,7 @@ public:
 		  isyes(yes)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
 
@@ -63,6 +63,7 @@ public:
 
 void Yesno_button::activate
 	(
+	Game_window *gwin
 	)
 {
 	((Yesno_gump *) parent)->set_answer(isyes);
@@ -101,16 +102,17 @@ Yesno_gump::~Yesno_gump
 
 void Yesno_gump::paint
 	(
+	Game_window *gwin
 	)
 {
 					// Paint the gump itself.
-	paint_shape(x, y);
+	gwin->paint_shape(x, y, *this);
 					// Paint buttons.
-	yes_button->paint();
-	no_button->paint();
+	yes_button->paint(gwin);
+	no_button->paint(gwin);
 					// Paint text.
-	sman->paint_text_box(2, text.c_str(), x + object_area.x, 
-			y + object_area.y, object_area.w, object_area.h, 2);
+	gwin->paint_text_box(2, text.c_str(), x + object_area.x, y + object_area.y,
+			object_area.w, object_area.h, 2);
 	gwin->set_painted();
 }
 
@@ -123,17 +125,18 @@ void Yesno_gump::mouse_down
 	int mx, int my			// Position in window.
 	)
 {
+	Game_window *gwin = Game_window::get_game_window();
 					// Check buttons.
-	if (yes_button->on_button(mx, my))
+	if (yes_button->on_button(gwin, mx, my))
 		pushed = yes_button;
-	else if (no_button->on_button(mx, my))
+	else if (no_button->on_button(gwin, mx, my))
 		pushed = no_button;
 	else
 	{
 		pushed = 0;
 		return;
 	}
-	pushed->push();		// Show it.
+	pushed->push(gwin);		// Show it.
 }
 
 /*
@@ -145,11 +148,12 @@ void Yesno_gump::mouse_up
 	int mx, int my			// Position in window.
 	)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush();
-		if (pushed->on_button(mx, my))
-			pushed->activate();
+		pushed->unpush(gwin);
+		if (pushed->on_button(gwin, mx, my))
+			pushed->activate(gwin);
 		pushed = 0;
 	}
 }
@@ -158,7 +162,10 @@ void Yesno_gump::mouse_up
  *	Handle ASCII character typed.
  */
 
-void Yesno_gump::key_down(int chr)
+void Yesno_gump::key_down
+	(
+	int chr
+	)
 {
 	if (chr == 'y' || chr == 'Y' || chr == SDLK_RETURN)
 		set_answer(1);
@@ -179,7 +186,7 @@ int Yesno_gump::ask
 {
 	Yesno_gump *dlg = new Yesno_gump(txt);
 	int answer;
-	if (!gumpman->do_modal_gump(dlg, Mouse::hand))
+	if (!Do_Modal_gump(dlg, Mouse::hand))
 		answer = 0;
 	else
 		answer = dlg->get_answer();

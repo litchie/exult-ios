@@ -13,12 +13,13 @@
 #ifdef MACOS
   #include <cassert>
 #endif
+#include "vgafile.h"
 #include "fontvga.h"
 #include "fnames.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
 #endif
-#include "utils.h"
+#include "ibuf8.h"
 
 using std::cout;
 using std::endl;
@@ -60,8 +61,7 @@ void Fonts_vga_file::init
 	)
 	{
 	int cnt = sizeof(fonts)/sizeof(fonts[0]);
-	const char *fname = U7exists(PATCH_FONTS) ? PATCH_FONTS : FONTS_VGA;
 	for (int i = 0; i < cnt; i++)
-		fonts[i].load(fname, i, hlead[i], 0);
+		fonts[i].load(FONTS_VGA, i, hlead[i], 0);
 	}
 

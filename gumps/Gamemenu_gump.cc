@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001-2002 The Exult Team
+Copyright (C) 2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -32,11 +32,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Newfile_gump.h"
 #include "File_gump.h"
 #include "mouse.h"
+#include "gump_utils.h"
 #include "exult.h"
 #include "exult_flx.h"
 #include "Text_button.h"
-#include "gameclk.h"
-#include "Gump_manager.h"
 #include <string>
 
 using std::string;
@@ -57,10 +56,10 @@ public:
 		: Text_button(par, text, px, py, 108, 11)
 	{  }
 					// What to do when 'clicked':
-	virtual void activate();
+	virtual void activate(Game_window *gwin);
 };
 
-void Gamemenu_button::activate()
+void Gamemenu_button::activate(Game_window *gwin)
 {
 	if (text == loadsavetext) {
 		((Gamemenu_gump*)parent)->loadsave();
@@ -109,11 +108,11 @@ void Gamemenu_gump::loadsave()
 {
 	//File_gump *fileio = new File_gump();
 	Newfile_gump *fileio = new Newfile_gump();
-	gumpman->do_modal_gump(fileio, Mouse::hand);
+	Do_Modal_gump(fileio, Mouse::hand);
 	if (fileio->restored_game())
 	{
 		done = true;
-		// Since we just loaded a new game, we don't want do_modal_gump to restore the background.
+		// Since we just loaded a new game, we don't want Do_Modal_gump to restore the background.
 		restore_background = false;
 	}
 	delete fileio;
@@ -122,68 +121,70 @@ void Gamemenu_gump::loadsave()
 void Gamemenu_gump::video_options()
 {
 	VideoOptions_gump *vid_opts = new VideoOptions_gump();
-	gumpman->do_modal_gump(vid_opts, Mouse::hand);
+	Do_Modal_gump(vid_opts, Mouse::hand);
 
 	if (!vid_opts->want_restore_background()) {
 		// resolution could have changed, so recenter & repaint menu.
 		set_pos();
-		paint();
+		paint(Game_window::get_game_window());
 		restore_background = false;
 	}
 	delete vid_opts;
 
-	gclock->set_palette();
+	Game_window::get_game_window()->set_palette();
 }
 
 void Gamemenu_gump::audio_options()
 {
 	AudioOptions_gump *aud_opts = new AudioOptions_gump();
-	gumpman->do_modal_gump(aud_opts, Mouse::hand);
+	Do_Modal_gump(aud_opts, Mouse::hand);
 	delete aud_opts;
 }
 
 void Gamemenu_gump::gameplay_options()
 {
 	GameplayOptions_gump *gp_opts = new GameplayOptions_gump();
-	gumpman->do_modal_gump(gp_opts, Mouse::hand);
+	Do_Modal_gump(gp_opts, Mouse::hand);
 	delete gp_opts;
 }
 
-void Gamemenu_gump::paint()
+void Gamemenu_gump::paint(Game_window* gwin)
 {
-	Gump::paint();
+	Gump::paint(gwin);
 	for (int i=0; i<6; i++)
 		if (buttons[i])
-			buttons[i]->paint();
+			buttons[i]->paint(gwin);
 	gwin->set_painted();
 }
 
 void Gamemenu_gump::mouse_down(int mx, int my)
 {
-	pushed = Gump::on_button(mx, my);
+	Game_window *gwin = Game_window::get_game_window();
+	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
 	if (!pushed)
 		for (int i=0; i<6; i++)
-			if (buttons[i] && buttons[i]->on_button(mx, my)) {
+			if (buttons[i] && buttons[i]->on_button(gwin, mx, my)) {
 				pushed = buttons[i];
 				break;
 			}
 
 	if (pushed)			// On a button?
 	{
-		pushed->push();
+		pushed->push(gwin);
 		return;
 	}
 }
 
 void Gamemenu_gump::mouse_up(int mx, int my)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush();
-		if (pushed->on_button(mx, my))
-			((Gamemenu_button*)pushed)->activate();
+		pushed->unpush(gwin);
+		if (pushed->on_button(gwin, mx, my))
+			((Gamemenu_button*)pushed)->activate(gwin);
 		pushed = 0;
 	}
 }

@@ -19,7 +19,7 @@
 				<li><ref1 target="by_design"/> walking style revisited.</li>
 				</ul>
 			</body>
-		</sub>
+		</sub>		
 		<sub name="11092002">
 			<header>- 11 September 2002</header>
 			<body>
@@ -27,7 +27,6 @@
 				<li><ref1 target="what_platforms"/> changed location of Zaurus package.</li>
 				<li><ref1 target="party_formation"/> rewrote that a bit.</li>
 				<li><ref1 target="great_hierophant"/> not an issue with Exult actually.</li>
-				<li><ref1 target="known_issues"/> drawing order is messed up.</li>				
 				</ul>
 			</body>
 		</sub>
@@ -37,7 +36,6 @@
 				<ul>
 				<li><ref1 target="what_platforms"/> the Amiga port has been integrated ages ago
 					and we have a Zaurus port now.</li>
-				<li><ref1 target="arrow_walking"/> Nadir implemented arrow walking now.</li>
 				<li><ref1 target="compile_issues"/> makefile.cygwin no longer exists.</li>
 				</ul>
 			</body>
@@ -45,9 +43,11 @@
 		<sub name="18062002">
 			<header>- 18 June 2002</header>
 			<body>
-				<ul>
+				<ul>				
 				<li><ref1 target="different_snapshot"/> same as on our main page, also some explanation 
 					for the different FAQ/Docs.</li>
+				<li><ref1 target="studio_support"/> <Studio/> is no longer supported in RC2 and stable 
+					snapshots.</li>
 				<li><ref1 target="bug_report"/> SourceForge requires registration for attaching files.</li>
 				</ul>
 			</body>
@@ -386,12 +386,11 @@
 				</ul>
 			</body>
 		</sub>
-		<sub name="arrow_walking">
+		<sub name="arrow_walkning">
 			<header>Why can't I move my party with the arrow keys?</header>
 			<body>
-				<para>
-					Nadir implemented keyboard walking in the 1.1 (unstable) branch of our source.
-					For details see <extref doc="docs" target="movement"/>.
+				<para> 
+					Nadir has implemented this in the 1.1.x branch of our code.
 				</para>
 			</body>
 		</sub>
@@ -680,7 +679,8 @@
 					like: S old_file_gump)</li>
 				<li>Edit the exult.cfg file to point to those custom keys.</li>
 				<li>Disable SI-style paperdolls for BG in exult.cfg (see the documentation for that).</li>
-				<li>Alternatively click on the disk icon and disable the paperdolls in the Gameplay Options.</li>
+				<li>Alternatively click on the disk icon and disable the paperdolls in the Gameplay
+					Options.</li>
 				<li>Edit the exult.cfg to use the resolution of 320x200, to run in full screen and
 					disable scalers.</li>
 				<li>The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot
@@ -705,6 +705,19 @@
 					As for the future, my main plan is to add editing capabilities,
 					with the long-range goal of writing an original RPG.
 				</cite>
+			</body>
+		</sub>
+		<sub name="studio_support">
+			<header>
+				Why is <Studio/> not working with 1.0 release of <Exult/>?
+			</header>
+			<body>
+				<para>
+					Please see <ref target="different_snapshot"/> for information on our two
+					different branches. <Studio/> will no longer be supported in the 1.0.x (stable)
+					branch. A lot of changes we will put into the unstable branch will directly
+					concern <Studio/>.
+				</para>
 			</body>
 		</sub>
 	</section>
@@ -815,9 +828,6 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
-					<li>Recent changes to the drawing method have screwed it up. This involves
-						the drawing order when opening/closing some doors and the save game gump 
-						still showing after a reload.</li>
 					<li>There might be a bug when you have any of the games installed in a 
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>

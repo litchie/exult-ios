@@ -33,7 +33,7 @@ class Gump_manager;
 /*
  *	A gump contains an image of an open container from "gumps.vga".
  */
-class Gump : public ShapeID, public Paintable
+class Gump : public ShapeID
 {
 	UNREPLICATABLE_CLASS(Gump);
 
@@ -81,23 +81,22 @@ public:
 	virtual Rectangle get_dirty();		// Get dirty rect. for gump+contents.
 	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?
-	virtual Gump_button *on_button(int mx, int my);
+	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 			int sx = -1, int sy = -1, bool dont_check = false,
 						bool combine = false);
 	virtual void remove(Game_object *obj);
 					// Paint it and its contents.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 					// Close (and delete).
-	virtual void close();
+	virtual void close(Game_window *gwin);
 					// update the gump, if required
-	virtual void update_gump () { }
+	virtual void update_gump (Game_window *gwin) { }
 					// Can be dragged with mouse
 	virtual bool is_draggable() const { return true; }
 					// Close on end_gump_mode
 	virtual bool is_persistent() const { return false; }
-	virtual bool is_modal() const { return false; }
 					// Show the hand cursor
 	virtual bool no_handcursor() const { return false; }
 

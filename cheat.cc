@@ -27,8 +27,6 @@
 #include "cheat.h"
 #include "exult.h"
 #include "gamewin.h"
-#include "gameclk.h"
-#include "gamemap.h"
 #include "ucmachine.h"
 #include "Configuration.h"
 #include "game.h"
@@ -39,8 +37,6 @@
 #include "cheat_screen.h"
 #include "Gump_manager.h"
 #include "Gump.h"
-#include "drag.h"
-#include "effects.h"
 
 #ifdef USE_EXULTSTUDIO  /* Only needed for exult studio. */
 #include "server.h"
@@ -72,7 +68,7 @@ Cheat::Cheat() {
 	tile_grid = false;
 	edit_mode = move;
 	edit_lift = 0;
-	edit_shape = edit_frame = edit_chunknum = 0;
+	edit_shape = edit_frame = 0;
 	infravision = false;
 	pickpocket = false;
 	grab_actor = true;
@@ -99,8 +95,7 @@ void Cheat::init (void) {
 }
 
 void Cheat::finish_init (void) {
-	gwin = Game_window::get_instance();
-	eman = gwin->get_effects();
+	gwin = Game_window::get_game_window();
 
 	browser = new ShapeBrowser();
 	tester = new SoundTester();
@@ -127,14 +122,14 @@ void Cheat::toggle_god (void) {
 	god_mode = !god_mode;
 	if (god_mode)
 		{
-			eman->center_text("God Mode Enabled");
+			gwin->center_text("God Mode Enabled");
 			Actor *party[9];		// Set attack mode to 'nearest'.
 			int cnt = gwin->get_party(party, 1);
 			for (int i = 0; i < cnt; i++)
 				party[i]->set_attack_mode(Actor::nearest);
 		}
 	else
-		eman->center_text("God Mode Disabled");
+		gwin->center_text("God Mode Disabled");
 }
 
 void Cheat::toggle_wizard (void) {
@@ -142,9 +137,9 @@ void Cheat::toggle_wizard (void) {
 
 	wizard_mode = !wizard_mode;
 	if (wizard_mode)
-		eman->center_text("Archwizard Mode Enabled");
+		gwin->center_text("Archwizard Mode Enabled");
 	else
-		eman->center_text("Archwizard Mode Disabled");
+		gwin->center_text("Archwizard Mode Disabled");
 }
 
 void Cheat::toggle_map_editor (void) {
@@ -153,7 +148,7 @@ void Cheat::toggle_map_editor (void) {
 	map_editor = !map_editor;
 	if (map_editor)
 		{
-			eman->center_text("Map Editor Mode Enabled");
+			gwin->center_text("Map Editor Mode Enabled");
 					// Stop time.
 			gwin->set_time_stopped(-1);
 #ifdef USE_EXULTSTUDIO			/* Launch ExultStudio! */
@@ -196,7 +191,7 @@ void Cheat::toggle_map_editor (void) {
 	else
 		{
 		clear_selected();	// Selection goes away.
-		eman->center_text("Map Editor Mode Disabled");
+		gwin->center_text("Map Editor Mode Disabled");
 					// Stop time-stop.
 		gwin->set_time_stopped(0);
 		}
@@ -224,10 +219,10 @@ void Cheat::toggle_infravision (void) {
 
 	infravision = !infravision;
 	if (infravision) {
-		eman->center_text("Infravision Enabled");
-		gwin->get_pal()->set(0);
+		gwin->center_text("Infravision Enabled");
+		gwin->set_palette(0);
 	} else
-		eman->center_text("Infravision Disabled");	
+		gwin->center_text("Infravision Disabled");	
 }
 
 void Cheat::toggle_pickpocket (void) {
@@ -235,10 +230,10 @@ void Cheat::toggle_pickpocket (void) {
 
 	pickpocket = !pickpocket;
 	if (pickpocket) {
-		eman->center_text("Pick Pocket Enabled");
-		gwin->get_pal()->set(0);
+		gwin->center_text("Pick Pocket Enabled");
+		gwin->set_palette(0);
 	} else
-		eman->center_text("Pick Pocket Disabled");	
+		gwin->center_text("Pick Pocket Disabled");	
 }
 
 void Cheat::toggle_hack_mover (void) {
@@ -246,9 +241,9 @@ void Cheat::toggle_hack_mover (void) {
 
 	hack_mover = !hack_mover;
 	if (hack_mover) {
-		eman->center_text("Hack mover Enabled");
+		gwin->center_text("Hack mover Enabled");
 	} else {
-		eman->center_text("Hack mover Disabled");
+		gwin->center_text("Hack mover Disabled");
 	}
 }
 
@@ -257,10 +252,10 @@ void Cheat::change_gender (void) const {
 
 	if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex)) {
 		gwin->get_main_actor()->clear_type_flag(Actor::tf_sex);
-		eman->center_text("Avatar is now male");
+		gwin->center_text("Avatar is now male");
 	} else {
 		gwin->get_main_actor()->set_type_flag(Actor::tf_sex);
-		eman->center_text("Avatar is now female");
+		gwin->center_text("Avatar is now female");
 	} 
 	gwin->set_all_dirty();
 }
@@ -270,9 +265,9 @@ void Cheat::toggle_eggs (void) const {
 
 	gwin->paint_eggs = !gwin->paint_eggs;
 	if(gwin->paint_eggs)
-		eman->center_text("Eggs display enabled");
+		gwin->center_text("Eggs display enabled");
 	else
-		eman->center_text("Eggs display disabled");
+		gwin->center_text("Eggs display disabled");
 	gwin->paint();
 }
 
@@ -297,7 +292,7 @@ void Cheat::toggle_naked (void) const {
 }
 
 void Cheat::change_skin (void) const {
-	if (!enabled || (Game::get_game_type() != SERPENT_ISLE && !Shape_manager::get_instance()->can_use_multiracial())) return;
+	if (!enabled || (Game::get_game_type() != SERPENT_ISLE && !gwin->can_use_multiracial())) return;
 
 	int color = gwin->get_main_actor()->get_skin_color();
   
@@ -328,17 +323,17 @@ void Cheat::levelup_party (void) const {
 	}  
 
 	if (leveledup) {
-		eman->center_text("Level up!");
+		gwin->center_text("Level up!");
 	} else {
-		eman->center_text("Maximum level reached");
+		gwin->center_text("Maximum level reached");
 	}
 }
 
 void Cheat::fake_time_period (void) const {
 	if (!enabled) return;
 
-	gwin->get_clock()->fake_next_period();
-	eman->center_text("Game clock incremented");
+	gwin->fake_next_period();
+	gwin->center_text("Game clock incremented");
 }
 
 void Cheat::dec_skip_lift (void) const {
@@ -539,8 +534,8 @@ void Cheat::cut(bool copy)
 		Tile_coord t = obj->get_outermost()->get_tile();
 		if (copy)
 					// TEST+++++REALLY want a 'clone()'.
-			obj = gwin->get_map()->create_ireg_object(
-				obj->get_shapenum(), obj->get_framenum());
+			obj = gwin->create_ireg_object(obj->get_shapenum(),
+							obj->get_framenum());
 		else			// Cut:  Remove but don't delete.
 			obj->remove_this(true);
 					// Set pos. & add to list.
@@ -568,15 +563,14 @@ static Game_object *Create_object
 	int shape, int frame		// What to create.
 	)
 	{
-	Shape_info& info = ShapeID::get_info(shape);
+	Shape_info& info = gwin->get_info(shape);
 	int sclass = info.get_shape_class();
 					// Is it an ireg (changeable) obj?
 	bool ireg = (sclass != Shape_info::unusable &&
 		sclass != Shape_info::building);
 	Game_object *newobj;
 	if (ireg)
-		newobj = gwin->get_map()->create_ireg_object(info, 
-						shape, frame, 0, 0, 0);
+		newobj = gwin->create_ireg_object(info, shape, frame, 0, 0, 0);
 	else
 		newobj = new Ifix_game_object(shape, frame, 0, 0, 0);
 	return newobj;
@@ -595,10 +589,8 @@ void Cheat::paste
 					// Use lowest/south/east for position.
 	Tile_coord hot = clipboard[0]->get_tile();
 	clear_selected();		// Remove old selected.
-#if 0
 					// First see if spot is in a gump.
 	Gump *on_gump = gwin->get_gump_man()->find_gump(mx, my);
-#endif
 	Game_object_vector::iterator it;
 	for (it = clipboard.begin(); it != clipboard.end(); ++it)
 		{
@@ -611,9 +603,6 @@ void Cheat::paste
 					// +++++Use clone().
 		obj = Create_object(gwin, obj->get_shapenum(),
 						obj->get_framenum());
-		Dragging_info drag(obj);
-		if (drag.drop(x, y, true))	// (Dels if it fails.)
-#if 0
 		bool ok = false;
 		if (on_gump)
 			ok = on_gump->add(obj, mx, my, x, y)!=0;
@@ -621,12 +610,9 @@ void Cheat::paste
 			for (int lift = edit_lift; !ok && lift <= 11; lift++)
 				ok = gwin->drop_at_lift(obj, x, y, lift);
 		if (ok)
-#endif
 			append_selected(obj);
-#if 0
 		else
 			delete obj;
-#endif
 		}
 	gwin->set_all_dirty();		// Just repaint all.
 	}
@@ -644,64 +630,50 @@ void Cheat::paste()
 		paste(x, y);
 	}
 
-const int border=2;			// For showing map.
-const int worldsize = c_tiles_per_chunk * c_num_chunks;
+void Cheat::map_teleport (void) const {
+	if (!enabled) return;
 
-/*
- *	Show 'cheat' map.
- */
-class Cheat_map : public Game_singletons, public Paintable
-	{
-public:
-	int x, y;			// Where it's painted.
-	int w, h;
 	Shape_frame *map;
+	// display map
 
-	virtual void paint()
-	{
 #if 0
-	ShapeID mapid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
+	map = ShapeID(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA).get_shape();
 #else
-	ShapeID mapid(game->get_shape("sprites/cheatmap"), 1, SF_GAME_FLX);
+	map = ShapeID(game->get_shape("sprites/cheatmap"), 1, SF_GAME_FLX).get_shape();
 #endif
-	map = mapid.get_shape();
 
 	// Get coords. for centered view.
-	w = map->get_width();
-	h = map->get_height();
-	x = (gwin->get_width() - w)/2 + map->get_xleft();
-	y = (gwin->get_height() - h)/2 + map->get_yabove();
-	mapid.paint_shape(x, y, 1);
+	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
+	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
+	gwin->paint_shape(x, y, map, 1);
   
 	// mark current location
 	int xx, yy;
 	Tile_coord t = gwin->get_main_actor()->get_tile();
   
+	const int worldsize = c_tiles_per_chunk * c_num_chunks;
+	int border=2;
 
-	xx = ((t.tx * (w - border*2)) / worldsize);
-	yy = ((t.ty * (h - border*2)) / worldsize);
+	xx = ((t.tx * (map->get_width() - border*2)) / worldsize);
+	yy = ((t.ty * (map->get_height() - border*2)) / worldsize);
+
 
 	xx += x - map->get_xleft() + border;
 	yy += y - map->get_yabove() + border;
 	gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
 	gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
-	}
-	};
-
-void Cheat::map_teleport (void) const {
-	if (!enabled) return;
-	Cheat_map map;
-	int xx, yy;
-	if (!Get_click(xx, yy, Mouse::greenselect, 0, false, &map)) {
+  
+	gwin->show(1);
+	if (!Get_click(xx, yy, Mouse::greenselect)) {
 		gwin->paint();
 		return;
 	}
 
-	xx -= map.x - map.map->get_xleft() + border;
-	yy -= map.y - map.map->get_yabove() + border;
-	Tile_coord t;
-	t.tx = static_cast<int>(((xx + 0.5)*worldsize) / (map.w - 2*border));
-	t.ty = static_cast<int>(((yy + 0.5)*worldsize) / (map.h - 2*border));
+	xx -= x - map->get_xleft() + border;
+	yy -= y - map->get_yabove() + border;
+
+	t.tx = static_cast<int>(((xx + 0.5)*worldsize) / (map->get_width() - 2*border));
+	t.ty = static_cast<int>(((yy + 0.5)*worldsize) / (map->get_height() - 2*border));
 
 	// World-wrapping.
 	t.tx = (t.tx + c_num_tiles)%c_num_tiles;
@@ -709,7 +681,7 @@ void Cheat::map_teleport (void) const {
 	cout << "Teleporting to " << t.tx << "," << t.ty << "!" << endl;
 	t.tz = 0;
 	gwin->teleport_party(t);
-	eman->center_text("Teleport!!!");
+	gwin->center_text("Teleport!!!");
 }
 
 void Cheat::cursor_teleport (void) const {
@@ -722,14 +694,14 @@ void Cheat::cursor_teleport (void) const {
 	Tile_coord t(gwin->get_scrolltx() + x/c_tilesize,
 				 gwin->get_scrollty() + y/c_tilesize, 0);
 	gwin->teleport_party(t);
-	eman->center_text("Teleport!!!");
+	gwin->center_text("Teleport!!!");
 }
 
 void Cheat::create_coins (void) const {
 	if (!enabled) return;
 
 	gwin->get_main_actor()->add_quantity(100, 644);
-	eman->center_text("Added 100 gold coins");
+	gwin->center_text("Added 100 gold coins");
 }
 
 void Cheat::create_last_shape (void) const {
@@ -738,12 +710,10 @@ void Cheat::create_last_shape (void) const {
 	int current_shape = 0;
 	int current_frame = 0;
 	if(browser->get_shape(current_shape, current_frame)) {
-		gwin->get_main_actor()->add(
-			gwin->get_map()->create_ireg_object(
-					current_shape, current_frame), 1);
-		eman->center_text("Object created");
+		gwin->get_main_actor()->add(gwin->create_ireg_object(current_shape, current_frame), 1);
+		gwin->center_text("Object created");
 	} else
-		eman->center_text("Can only create from 'shapes.vga'");
+		gwin->center_text("Can only create from 'shapes.vga'");
 }
 
 void Cheat::delete_object (void) {
@@ -765,7 +735,7 @@ void Cheat::delete_object (void) {
 	if (obj) {
 		clear_selected();	// Unselect all.
 		obj->remove_this();
-		eman->center_text("Object deleted");
+		gwin->center_text("Object deleted");
 		gwin->paint();
 	}
 }
@@ -785,7 +755,8 @@ void Cheat::heal_party (void) const {
 		dead[i] = uc->get_dead_party_member(i);
 	for (i = 0; i < count; i++) {
 		int npc_num = dead[i];
-		Dead_body *body = gwin->get_body(npc_num);
+		Dead_body *body = dynamic_cast<Dead_body *> (
+						gwin->get_body(npc_num));
 		Actor *live_npc = gwin->get_npc(npc_num);
 		if (body && live_npc)
 			live_npc->resurrect(body);
@@ -810,7 +781,7 @@ void Cheat::heal_party (void) const {
 	Main_actor* avatar = gwin->get_main_actor();
 	avatar->set_property(Actor::mana, avatar->get_property(Actor::magic));
  
-	eman->center_text("Party healed");
+	gwin->center_text("Party healed");
 	gwin->paint();
 }
 
@@ -819,7 +790,7 @@ void Cheat::shape_browser (void) const {
 
 	browser->browse_shapes();
 	gwin->paint();
-	gwin->get_pal()->set(-1,-1);
+	gwin->set_palette(-1,-1);
 }
 
 bool Cheat::get_browser_shape (int &shape, int &frame) const {
@@ -849,9 +820,9 @@ void Cheat::toggle_grab_actor (void) {
 
 	grab_actor = !grab_actor;
 	if (grab_actor)
-		eman->center_text("NPC Tool Actor Grabbing Enabled");
+		gwin->center_text("NPC Tool Actor Grabbing Enabled");
 	else
-		eman->center_text("NPC Tool Actor Grabbing Disabled");
+		gwin->center_text("NPC Tool Actor Grabbing Disabled");
 }
 
 void Cheat::set_grabbed_actor (Actor *actor) const {
@@ -871,7 +842,7 @@ void Cheat::toggle_number_npcs (void) {
 
 	npc_numbers = !npc_numbers;
 	if (npc_numbers)
-		eman->center_text("NPC Numbers Enabled");
+		gwin->center_text("NPC Numbers Enabled");
 	else
-		eman->center_text("NPC Numbers Disabled");
+		gwin->center_text("NPC Numbers Disabled");
 }

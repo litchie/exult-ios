@@ -8,8 +8,8 @@ AC_INIT(exult.cc)
 
 PACKAGE=exult
 VER_MAJOR=1
-VER_MINOR=1
-VER_EXTRA=.0cvs
+VER_MINOR=00
+VER_EXTRA=
 VERSION=$VER_MAJOR.$VER_MINOR$VER_EXTRA
 
 # check host/target systems
@@ -45,20 +45,9 @@ AC_MSG_CHECKING("windowing system")
 case "$host_os" in
 	linux*)
 		WINDOWING_SYSTEM="-DXWIN"
-		if test "$host_vendor" = "zaurus"; then
-			AC_MSG_RESULT(Qtopia (Sharp Zaurus))
-			CXXFLAGS="$CXXFLAGS -fsigned-char -DDISABLE_X11 -DQWS -D__zaurus__ -DUSE_FMOPL_MIDI"
-			enable_kmid="no"
-			enable_timidity="no"
-			enable_exult_studio_support="no"
-			enable_exult_studio="no"
-			enable_gimp_plugin="no"
-			enable_debug="no"
-		else
-			AC_MSG_RESULT(X11 (GNU/Linux))
-		fi
+		AC_MSG_RESULT(X11 (GNU/Linux))
 		;;
-	beos*)
+	beos)
 		WINDOWING_SYSTEM="-DBEOS"
 		AC_MSG_RESULT(BeOS)
 		SYSLIBS="-lbe -lmidi"
@@ -290,12 +279,6 @@ AM_PATH_SDL($SDL_VERSION,
 	AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
 
-AC_CHECK_LIB(SDL_mixer, Mix_QuickLoad_RAW,
-	SDL_LIBS="$SDL_LIBS -lSDL_mixer",
-	AC_MSG_ERROR([*** SDL_mixer version 1.2.4 or later not found!]),
-	$SDL_LIBS
-)
-
 
 # ---------------------------------------------------------------------
 # Optional components
@@ -343,7 +326,7 @@ fi
 
 # zipped savegame support
 
-AC_ARG_ENABLE(zip-support, [  --enable-zip-support    Enable zipped savegame support [default yes]],,enable_zip_support=yes)
+AC_ARG_ENABLE(zip-support, [ --enable-zip-support     Enable zipped savegame support [default yes]],,enable_zip_support=yes)
 
 if test x$enable_zip_support = xyes ; then
 	AC_CHECK_HEADER(zlib.h,,enable_zip_support=no)
@@ -365,22 +348,6 @@ if test x$enable_zip_support = xyes ; then
 else
 	AC_MSG_RESULT(no)
 fi
-
-
-# OpenGL rendering
-
-AC_ARG_ENABLE(opengl, [  --enable-opengl         Enable OpenGL rendering support [EXPERIMENTAL]],,enable_opengl=no)
-
-AC_MSG_CHECKING(for OpenGL rendering support)
-
-if test x$enable_opengl = xyes; then
-	AC_DEFINE(HAVE_OPENGL)
-	OPENGL_LIBS="-lGL"
-	AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-fi
-
 
 # ---------------------------------------------------------------------
 # support for Exult Studio
@@ -482,17 +449,6 @@ else
   AC_MSG_RESULT(no)
 fi
 
-# Usecode debugger
-AC_ARG_ENABLE(usecode-debugger, [  --enable-usecode-debugger       Support for usecode debugging [default no]],,enable_usecode_debugger=no)
-AC_MSG_CHECKING(whether to enable the usecode debugger)
-if test x$enable_usecode_debugger = xyes; then
-	AC_MSG_RESULT(yes)
-	AC_DEFINE(USECODE_DEBUGGER)
-else
-	AC_MSG_RESULT(no)
-fi
-
-
 # ---------------------------------------------------------------------
 # Warning level
 # ---------------------------------------------------------------------
@@ -519,7 +475,7 @@ if test x$enable_awful_warnings = xyes; then
 	fi
 fi
 
-AC_ARG_ENABLE(paranoid-warnings, [  --enable-paranoid-warnings      Enable paranoid warnings [default no]],,enable_paranoid_warnings=no)
+AC_ARG_ENABLE(paranoid-warnings, [  --enable-paranoid-warnings       Enable paranoid warnings [default no]],,enable_paranoid_warnings=no)
 if test x$enable_paranoid_warnings = xyes; then
 	WARNINGS="-Wall -W -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
 #	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
@@ -737,7 +693,6 @@ AC_SUBST(SYSLIBS)
 AC_SUBST(ICON_FILE)
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(ZLIB_LIBS)
-AC_SUBST(OPENGL_LIBS)
 AC_SUBST(WARNINGS)
 
 AC_OUTPUT([

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000-2002 The Exult Team
+Copyright (C) 2000 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gamemenu_gump.h"
 #include "game.h"
 #include "gamewin.h"
+#include "gump_utils.h"
 #include "misc_buttons.h"
 #include "Modal_gump.h"
 #include "mouse.h"
@@ -44,9 +45,10 @@ Checkmark_button::Checkmark_button(Gump *par, int px, int py)
 
 void Checkmark_button::activate
 	(
+	Game_window *gwin
 	)
 {
-	parent->close();
+	parent->close(gwin);
 }
 
 /*
@@ -64,9 +66,10 @@ Heart_button::Heart_button(Gump *par, int px, int py)
 
 void Heart_button::activate
 	(
+	Game_window *gwin
 	)
 {
-	gumpman->add_gump(parent->get_container(), game->get_shape("gumps/statsdisplay"));
+	gwin->get_gump_man()->add_gump(parent->get_container(), game->get_shape("gumps/statsdisplay"));
 }
 
 /*
@@ -84,10 +87,11 @@ Disk_button::Disk_button(Gump *par, int px, int py)
 
 void Disk_button::activate
 	(
+	Game_window *gwin
 	)
 {
 	Gamemenu_gump *menu = new Gamemenu_gump();
-	gumpman->do_modal_gump(menu, Mouse::hand);
+	Do_Modal_gump(menu, Mouse::hand);
 	delete menu;
 }
 
@@ -99,7 +103,7 @@ Combat_button::Combat_button(Gump *par, int px, int py)
 	: Gump_button(par, game->get_shape("gumps/combat"),
 		px, py)
 {
-	pushed = gwin->in_combat();
+	pushed = Game_window::get_game_window()->in_combat();
 }
 
 /*
@@ -108,11 +112,12 @@ Combat_button::Combat_button(Gump *par, int px, int py)
 
 void Combat_button::activate
 	(
+	Game_window *gwin
 	)
 {
 	gwin->toggle_combat();
 	pushed = gwin->in_combat();
-	parent->paint();
+	parent->paint(gwin);
 }
 
 /*
@@ -121,10 +126,11 @@ void Combat_button::activate
 
 void Combat_button::paint
 	(
+	Game_window *gwin
 	)
 	{
 	pushed = gwin->in_combat();
-	Gump_button::paint();
+	Gump_button::paint(gwin);
 	}
 
 /*
@@ -143,12 +149,13 @@ Halo_button::Halo_button(Gump *par, int px, int py, Actor *a)
 
 void Halo_button::activate
 	(
+	Game_window *gwin
 	)
 {
 					// Want to toggle it.
 	bool prot = !actor->is_combat_protected();
 	pushed = prot;
-	parent->paint();
+	parent->paint(gwin);
 	actor->set_combat_protected(prot);
 	if (!prot)			// Toggled off?
 		return;
@@ -180,6 +187,7 @@ Combat_mode_button::Combat_mode_button(Gump *par, int px, int py, Actor *a)
 
 void Combat_mode_button::activate
 	(
+	Game_window *gwin
 	)
 {
 					// Only Avatar gets last frame (manual)
@@ -187,7 +195,7 @@ void Combat_mode_button::activate
 	set_frame((get_framenum() + 1)%nframes);
 					// Flag that player set the mode.
 	actor->set_attack_mode((Actor::Attack_mode) get_framenum(), true);
-	paint();
+	paint(gwin);
 	gwin->set_painted();
 }
 
@@ -208,8 +216,9 @@ Cstats_button::Cstats_button(Gump *par, int px, int py)
 
 void Cstats_button::activate
 	(
+	Game_window *gwin
 	)
 {
-	int cnt = ucmachine->get_party_count();
-	gumpman->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
+	int cnt = gwin->get_usecode()->get_party_count();
+	gwin->get_gump_man()->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }

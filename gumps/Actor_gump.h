@@ -58,13 +58,13 @@ public:
 								int shnum);
 	~Actor_gump();
 					// Is a given point on a button?
-	virtual Gump_button *on_button(int mx, int my);
+	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 			int sx = -1, int sy = -1, bool dont_check = false,
 						bool combine = false);
 					// Paint it and its contents.
-	virtual void paint();
+	virtual void paint(Game_window *gwin);
 
 	virtual Container_game_object *find_actor(int mx, int my);
 };

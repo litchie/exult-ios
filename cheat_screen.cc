@@ -38,7 +38,6 @@
 #include "schedule.h"
 #include "ucmachine.h"
 #include "Configuration.h"
-#include "SDL.h"
 
 const char *CheatScreen::schedules[33] = {
 	"Combat",
@@ -93,7 +92,7 @@ const char *CheatScreen::flag_names[64] = {
 	"tremor",		// 0x0C
 	"cant_die",		// 0x0D
 	"dancing",		// 0x0E
-	"dont_move",		// 0x0F
+	"dont_render",		// 0x0F
 
 	0,			// 0x10
 	"si_on_moving_barge",	// 0x11
@@ -162,7 +161,7 @@ CheatScreen::~CheatScreen()
 void CheatScreen::show_screen()
 {
 		
-	gwin = Game_window::get_instance();
+	gwin = Game_window::get_game_window();
 	ibuf = gwin->get_win()->get_ib8();
 	font = fontManager.get_font("MENU_FONT");
 	clock = gwin->get_clock();
@@ -171,20 +170,12 @@ void CheatScreen::show_screen()
 	centerx = maxx/2;
 	centery = maxy/2;
 
-	// Pause the game
-	gwin->get_tqueue()->pause(SDL_GetTicks());
-
 	str_int_pair pal_tuple = game->get_resource("palettes/0");
 	pal.load(pal_tuple.str,pal_tuple.num);
 
 	// Start the loop
 	NormalLoop();
-
-	// Resume the game clock
-	gwin->get_tqueue()->resume(SDL_GetTicks());
-
-	// Reset the palette
-	clock->set_palette();
+	gwin->set_palette();
 }
 
 
@@ -519,8 +510,7 @@ void CheatScreen::NormalMenu ()
 	// Left Column
 
 	// Use
-	Shape_manager *sman = Shape_manager::get_instance();
-	if (Game::get_game_type() == SERPENT_ISLE || (sman->can_use_paperdolls() && sman->get_bg_paperdolls()))
+	if (Game::get_game_type() == SERPENT_ISLE || (gwin->can_use_paperdolls() && gwin->get_bg_paperdolls()))
 		snprintf (buf, 512, "[P]aperdolls..: Yes");
 	else
 		snprintf (buf, 512, "[P]aperdolls..:  No");		
@@ -576,7 +566,6 @@ void CheatScreen::NormalMenu ()
 void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 {
 	int npc = std::atoi(input);
-	Shape_manager *sman = Shape_manager::get_instance();
 
 	mode = CP_Command;
 
@@ -653,10 +642,10 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 		// Paperdolls
 		case 'p':
 			if (Game::get_game_type() == BLACK_GATE 
-				&& sman->can_use_paperdolls()) {
-				sman->set_bg_paperdolls (sman->get_bg_paperdolls()?false:true);
+				&& gwin->can_use_paperdolls()) {
+				gwin->set_bg_paperdolls (gwin->get_bg_paperdolls()?false:true);
 				config->set("config/gameplay/bg_paperdolls",
-							sman->get_bg_paperdolls() ? "yes" : "no", true);
+							gwin->get_bg_paperdolls() ? "yes" : "no", true);
 			}
 		break;
 
@@ -866,7 +855,7 @@ CheatScreen::Cheat_Prompt CheatScreen::GlobalFlagLoop (int num)
 		
 	for (i = 0; i < 17; i++) input[i] = 0;
 
-	Usecode_machine *usecode = Game_window::get_instance()->get_usecode();
+	Usecode_machine *usecode = Game_window::get_game_window()->get_usecode();
 
 	while (looping)
 	{
@@ -1056,7 +1045,7 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 	
 		// Paint the actors shape
 		Shape_frame *shape = actor->get_shape();
-		if (shape) actor->paint_shape (shape->get_xright()+240, shape->get_yabove());
+		if (shape) gwin->paint_shape (shape->get_xright()+240, shape->get_yabove(), *actor); 
 
 		// Now the info
 		snprintf (buf, 512, "NPC %i - %s", num, actor->get_npc_name().c_str());
@@ -1160,8 +1149,6 @@ void CheatScreen::NPCMenu (Actor *actor, int &num)
 void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor, int &num)
 {
 	int i = std::atoi(input);
-	int nshapes = 
-		Shape_manager::get_instance()->get_shapes().get_num_shapes();
 
 	mode = CP_Command;
 
@@ -1207,7 +1194,7 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		break;
 
 		case '\'':	// Teleport
-		Game_window::get_instance()->teleport_party(actor->get_tile());
+		Game_window::get_game_window()->teleport_party(actor->get_tile());
 		break;
 
 
@@ -1234,7 +1221,7 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 
 		if (i == -1) mode = CP_Canceled;
 		else if (i < 0) mode = CP_InvalidShape;
-		else if (i >= nshapes) mode = CP_InvalidShape;
+		else if (i >= gwin->get_num_shapes()) mode = CP_InvalidShape;
 		else if (input[0] && (input[0] != '-' || input[1]))
 		{
 			actor->set_shape(i);
@@ -1499,8 +1486,7 @@ void CheatScreen::FlagMenu (Actor *actor)
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-90, 8);
 
 		// NoCast
-		snprintf (buf, 512, "[U] NoCast.%c", actor->get_flag(
-					Obj_flags::no_spell_casting)?'Y':'N');
+		snprintf (buf, 512, "[U] NoCast.%c", actor->get_siflag(Actor::no_spell_casting)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-81, 8);
 
 		// ID
@@ -1514,7 +1500,7 @@ void CheatScreen::FlagMenu (Actor *actor)
 	font->paint_text_fixedwidth(ibuf, buf, 208, maxy-63, 8);
 
 	// Party
-	if (actor->is_in_party())
+	if (actor->get_party_id() != -1 || !actor->get_npc_num())
 	{
 		// Temp
 		snprintf (buf, 512, "[Y] Temp: %02i", 
@@ -1543,8 +1529,6 @@ void CheatScreen::FlagMenu (Actor *actor)
 void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor)
 {
 	int i = std::atoi(input);
-	int nshapes = 
-		Shape_manager::get_instance()->get_shapes().get_num_shapes();
 
 	mode = CP_Command;
 	switch (command)
@@ -1693,10 +1677,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 		
 		case 'u':	// No Cast
-		if (actor->get_flag(Obj_flags::no_spell_casting))
-			actor->clear_flag(Obj_flags::no_spell_casting);
+		if (actor->get_siflag(Actor::no_spell_casting))
+			actor->clear_siflag(Actor::no_spell_casting);
 		else
-			actor->set_flag(Obj_flags::no_spell_casting);
+			actor->set_siflag(Actor::no_spell_casting);
 		break;
 		
 		case 'z':	// Zombie
@@ -1750,7 +1734,7 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 
 		if (i == -1) mode = CP_Canceled;
 		else if (i < 0) mode = CP_InvalidShape;
-		else if (i >= nshapes) mode = CP_InvalidShape;
+		else if (i >= gwin->get_num_shapes()) mode = CP_InvalidShape;
 		else if (input[0] && (input[0] != '-' || input[1]))
 		{
 			actor->set_polymorph(i);
@@ -1823,7 +1807,7 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 
 		// Value
 		case 'y':	// Temp
-		if (!actor->is_in_party()) command = 0;
+		if (actor->get_party_id() == -1 && actor->get_npc_num()) command = 0;
 		else  mode = CP_NotAvail;
 		input[0] = command;
 		break;
@@ -2106,7 +2090,7 @@ void CheatScreen::BusinessActivate (char *input, int &command, Cheat_Prompt &mod
 
 
 		case 'r':	// Revert
-		Game_window::get_instance()->revert_schedules(actor);
+		Game_window::get_game_window()->revert_schedules(actor);
 		break;
 
 

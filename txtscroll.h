@@ -35,7 +35,7 @@ private:
 public:
 	TextScroller(const char *archive, int index, Font *fnt, Shape *shp);
 	~TextScroller();
-	bool run(Game_window *gwin);
+	bool run(Game_window *gwin, Palette& pal);
 	int show_line(Game_window *gwin, int left, int right, int y, int index);
 	int get_count();
 };
