@@ -117,6 +117,38 @@ inline void Write2
 	*out++ = (val>>8) & 0xff;
 	}
 
+/*
+ *	Write a 4-byte value, lsb first.
+ */
+
+inline void Write4
+	(
+	ostream& out,
+	int val
+	)
+	{
+	out.put((char) (val&0xff));
+	out.put((char) ((val>>8)&0xff));
+	out.put((char) ((val>>16)&0xff));
+	out.put((char) ((val>>24)&0xff));
+	}
+
+/*
+ *	Write a 4-byte value to a buffer, lsb first.
+ */
+
+inline void Write4
+	(
+	unsigned char *& out,		// Write here and update.
+	int val
+	)
+	{
+	*out++ = val & 0xff;
+	*out++ = (val>>8) & 0xff;
+	*out++ = (val>>16)&0xff;
+	*out++ = (val>>24)&0xff;
+	}
+
 int U7open
 	(
 	ifstream& in,			// Input stream to open.

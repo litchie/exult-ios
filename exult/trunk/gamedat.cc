@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Gamedat.cc - Create gamedat files from a savegame.
  **
  **	Written: 2/4/00 - JSF
@@ -37,7 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *	Output: Aborts if error.
  */
 
-void Game_window::write_gamedat
+void Game_window::restore_gamedat
 	(
 	char *savename			// Name of savegame file.
 	)
@@ -87,7 +88,113 @@ void Game_window::write_gamedat
 	delete [] finfo;
 	}
 
+/*
+ *	List of 'gamedat' files to save (in addition to 'iregxx'):
+ */
+static char *savefiles[] = {
+	NPC_DAT,	MONSNPCS,
+	IDENTITY
+	};
+static const int numsavefiles = sizeof(savefiles)/sizeof(savefiles[0]);
 
+/*
+ *	Save a single file into an IFF repository.
+ *
+ *	Output:	Length of data saved.
+ *		Errors reported.
+ */
+
+static long Savefile
+	(
+	ostream& out,			// Write here.
+	char *fname			// Name of file to save.
+	)
+	{
+	ifstream in;
+	if (!U7open(in, fname))
+		{
+		cerr << "Exult: Can't read '" << fname << "'\n";
+		return (0);
+		}
+	in.seekg(0, ios::end);		// Get to end so we can get length.
+	long len = in.tellg();
+	in.seekg(0, ios::beg);
+	char *buf = new char[len];	// Get it all at once.
+	in.read(buf, len);
+	out.write(buf, len);
+	delete buf;
+	if (in.good())
+		cerr << "Exult: Error reading '" << fname << "'\n";
+	return len;
+	}
+
+/*
+ *	Save 'gamedat' into a given file.
+ *
+ *	Output:	0 if error (reported).
+ */
+
+int Game_window::save_gamedat
+	(
+	char *fname,			// File to create.
+	char *savename			// User's savegame name.
+	)
+	{
+	ofstream out;
+	if (!U7open(out, fname))
+		{			// +++++Better error???
+		cerr << "Exult:  Error opening '" << fname <<
+				"' for writing\n";
+		return (0);
+		}
+	char title[0x50];		// Use savename for title.
+	memset(title, 0, sizeof(title));
+	strncpy(title, savename, sizeof(title) - 1);
+	out.write(title, sizeof(title));
+	Write4(out, 0xFFFF1A00);	// Magic number.
+					// Doing all IREG's + what's listed.
+	int count = 12*12 + numsavefiles;
+	Write4(out, count);
+	Write4(out, 0x000000CC);	// 2nd magic number.
+					// Create table.
+	unsigned char *table = new unsigned char[2*count*4];
+	unsigned char *tptr = table;
+	long pos = out.tellp();		// Fill to data (past table at 0x80).
+	long fill = 0x80 + 8*count - pos;
+	while (fill--)
+		out.put((char) 0);
+	int i;				// Start with listed files.
+	for (i = 0; i < numsavefiles; i++)
+		{
+		Write4(tptr, out.tellp());
+		long len = Savefile(out, savefiles[i]);
+		Write4(tptr, len);
+		}
+					// Now the Ireg's.
+	for (int schunk = 0; schunk < 12*12; schunk++, i++)
+		{
+		Write4(tptr, out.tellp());
+		char iname[80];
+		long len = Savefile(out, get_ireg_name(schunk, iname));
+		Write4(tptr, len);
+		}
+	out.seekp(0x80, ios::beg);	// Write table.
+	out.write(table, 2*count*4);
+	delete [] table;
+	out.flush();
+	int result = out.good();
+	if (!result)			// ++++Better error system needed??
+		{
+		cerr << "Exult:  Error writing '" << fname << "'\n";
+		return (0);
+		}
+	out.close();
+	return (result);
+	}
+
+/*
+ *	Get game identity.
+ */
 char *Game_window::get_game_identity
 		 (
 		  char *savename

@@ -98,7 +98,7 @@ Game_window::Game_window
 	    stat(NPC_DAT, &sbuf) != 0)
 		{
 		cout << "Creating 'gamedat' files.\n";
-		write_gamedat(INITGAME);
+		restore_gamedat(INITGAME);
 		}
 	else
 		{
@@ -117,7 +117,7 @@ Game_window::Game_window
 				{
 					cout << " ->BAD" << endl;
 					cout << "Creating 'gamedat' files.\n";
-					write_gamedat(INITGAME);
+					restore_gamedat(INITGAME);
 				}
 			else
 				{
@@ -539,7 +539,7 @@ void Game_window::get_ifix_chunk_objects
  *	Output:	->fname, where name is stored.
  */
 
-static char *Get_ireg_name
+char *Game_window::get_ireg_name
 	(
 	int schunk,			// Superchunk # (0-143).
 	char *fname			// Name is stored here.
@@ -567,7 +567,7 @@ int Game_window::write_ireg_objects
 	{
 	char fname[128];		// Set up name.
 	ofstream ireg;			// There it is.
-	if (!U7open(ireg, Get_ireg_name(schunk, fname)))
+	if (!U7open(ireg, get_ireg_name(schunk, fname)))
 		{			// +++++Better error???
 		cerr << "Exult:  Error opening '" << fname <<
 				"' for writing\n";
@@ -605,7 +605,7 @@ void Game_window::get_ireg_objects
 	{
 	char fname[128];		// Set up name.
 	ifstream ireg;			// There it is.
-	if (!u7open(ireg, Get_ireg_name(schunk, fname), 1))
+	if (!u7open(ireg, get_ireg_name(schunk, fname), 1))
 		return;			// Just don't show them.
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
