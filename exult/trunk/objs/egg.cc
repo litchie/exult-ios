@@ -22,7 +22,7 @@
 #endif
 
 #include "Audio.h"
-#include "actors.h"
+#include "monsters.h"
 #include "cheat.h"
 #include "chunks.h"
 #include "animate.h"

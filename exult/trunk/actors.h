@@ -114,8 +114,6 @@ protected:
 					// Move and change frame.
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
-					// Read from file.
-	Actor(std::istream& nfile, int num, int has_usecode);
 public:
 	friend class Clear_hit;
 	static void init_default_frames();	// Set usual frame sequence.
@@ -311,6 +309,9 @@ public:
 		{ return alignment; }
 	virtual void set_alignment(short a)
 		{ alignment = a; }
+					// Update chunks after NPC moved.
+	virtual void switched_chunks(Map_chunk *, Map_chunk *)
+		{  }
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
@@ -406,12 +407,14 @@ public:
 	virtual void die();		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
 	void mend_hourly();		// Restore HP's hourly.
+					// Read from file.
+	void read(std::istream& nfile, int num, int has_usecode);
 					// Don't write out to IREG file.
 	virtual void write_ireg(std::ostream& out)
 		{  }
-	void write(std::ostream& nfile);		// Write out (to 'npc.dat').
+	void write(std::ostream& nfile);// Write out (to 'npc.dat').
 	virtual void write_contents(std::ostream& out);	// Write contents
-	void set_actor_shape(); 	// Set shape based on sex and skin color
+	void set_actor_shape(); 	// Set shape based on sex, skin color
 	void set_polymorph(int shape);	// Set a polymorph shape
 	void set_polymorph_default();	// Set the default shape
 					// Get the polymorph shape
@@ -461,15 +464,13 @@ public:
 	Main_actor(const std::string &nm, int shapenum, int num = -1, int uc = -1)
 		: Actor(nm, shapenum, num, uc)
 		{  }
-					// Read from file.
-	Main_actor(std::istream& nfile, int num, int has_usecode);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 	void get_followers();		// Get party to follow.
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
 					// Update chunks after NPC moved.
-	void switched_chunks(Map_chunk *olist,
+	virtual void switched_chunks(Map_chunk *olist,
 					Map_chunk *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
@@ -492,8 +493,6 @@ protected:
 public:
 	Npc_actor(const std::string &nm, int shapenum, int num = -1, 
 								int uc = -1);
-					// Read from file.
-	Npc_actor(std::istream& nfile, int num, int has_usecode);
 	~Npc_actor();
 					//   Usecode tells them to.
 	Npc_actor *get_next()
@@ -529,7 +528,7 @@ public:
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 					// Update chunks after NPC moved.
-	void switched_chunks(Map_chunk *olist,
+	virtual void switched_chunks(Map_chunk *olist,
 					Map_chunk *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
@@ -554,56 +553,6 @@ public:
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0)
 		{ return this; }	// Not affected.
-	};
-
-/*
- *	Monsters get their own class because they have a bigger footprint
- *	than humans.
- */
-class Monster_actor : public Npc_actor
-	{
-	static Monster_actor *in_world;	// All monsters in the world.
-	static int in_world_cnt;	// # in list.
-					// Links for 'in_world' list.
-	Monster_actor *next_monster, *prev_monster;
-	Animator *animator;		// For wounded men.
-	void init();			// For constructors.
-public:
-	Monster_actor(const std::string &nm, int shapenum, int num = -1, 
-							int uc = -1);
-					// Read from file.
-	Monster_actor(std::istream& nfile, int num, int has_usecode);
-	virtual ~Monster_actor();
-					// Create an instance.
-	static Monster_actor *create(int shnum, int chunkx, int chunky, 
-		int tilex, int tiley, 
-		int lift, int sched = -1, int align = (int) Actor::neutral, 
-					bool tempoary = true, bool equipment = true);
-					// Methods to retrieve them all:
-	static Monster_actor *get_first_in_world()
-		{ return in_world; }
-	Monster_actor *get_next_in_world()
-		{ return next_monster; }
-	static int get_num_in_world()
-		{ return in_world_cnt; }
-	static void delete_all();	// Delete all monsters.
-	static void give_up()		// For file errors only!
-		{ in_world = 0; in_world_cnt = 0; }
-	virtual int move_aside(Actor* for_actor, int dir)
-		{ return 0; }		// Monsters don't move aside.
-					// Render.
-	virtual void paint(Game_window *gwin);
-					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame);
-					// Add an object.
-	virtual int add(Game_object *obj, int dont_check = 0);
-	virtual int get_armor_points();	// Get total armor value.
-					// Get total weapon value.
-	virtual Weapon_info *get_weapon(int& points, int& shape);
-	virtual int is_monster()
-		{ return 1; }
-	virtual void die();		// We're dead.
-	void write(std::ostream& nfile);// Write out (to 'monsnpc.dat').
 	};
 
 #endif
