@@ -945,3 +945,39 @@ void Image_window::toggle_fullscreen() {
 		// show();  // Why doesn't this work??
         }
 }
+
+#if 0
+
+/*
+ *	Repaint window.
+ */
+
+void Image_window8::show
+	(
+	)
+	{
+	if (!ready())
+		return;
+	if (surface_x2)		// Doubling?
+		{
+		switch (surface_x2->format->BytesPerPixel)
+			{
+		case 2:
+			{
+			Manip8to16 manip(surface_x2->format);
+			Scale2x<unsigned char, unsigned short, Manip8to16>
+				(ib8->get_bits(), ibuf->width, ibuf->height, 
+					(unsigned short *) surface_x2->pixels, 
+							manip);
+			break;
+			}
+		default:		// ???
+			break;
+			}
+		SDL_UpdateRect(surface_x2, 0, 0, 2*ibuf->width,
+							2*ibuf->height);
+		}
+	else
+		SDL_UpdateRect(surface, 0, 0, ibuf->width, ibuf->height);
+	}
+#endif

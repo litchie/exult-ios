@@ -28,8 +28,8 @@ class Manip8to16
 	SDL_Color *colors;		// Lookup table (palette).
 	SDL_PixelFormat *fmt;		// Format of dest. pixels.
 public:
-	Manip8to16(SDL_Color *cols, SDL_PixelFormat *f)
-		: colors(cols), fmt(f)
+	Manip8to16(SDL_PixelFormat *f)
+		: fmt(f), colors(f->palette->colors)
 		{  }
 	unsigned short rgb(unsigned short r, unsigned short g,
 							unsigned short b) const
