@@ -228,9 +228,9 @@ void Paint_num
 	int y				// Coord. of top of #.
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
+	Shape_manager *sman = Shape_manager::get_instance();
 	const int font = 2;
 	char buf[20];
   	snprintf(buf, 20, "%d", num);
-	gwin->paint_text(font, buf, x - gwin->get_text_width(font, buf), y);
+	sman->paint_text(font, buf, x - sman->get_text_width(font, buf), y);
 }

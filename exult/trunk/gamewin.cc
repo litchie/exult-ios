@@ -58,7 +58,6 @@
 #include "files/U7file.h"
 #include "flic/playfli.h"
 #include "fnames.h"
-#include "fontvga.h"
 #include "game.h"
 #include "gamewin.h"
 #include "gamemap.h"
@@ -275,7 +274,7 @@ Game_window::Game_window
 	    effects(new Effects_manager(this)), 
 	    gump_man(new Gump_manager), render(new Game_render),
 	    painted(false), focus(true), 
-	    teleported(false), in_dungeon(0), ice_dungeon(false), fonts(0),
+	    teleported(false), in_dungeon(0), ice_dungeon(false),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
             text_bg(false), 
@@ -377,7 +376,6 @@ Game_window::~Game_window
 	delete map;
 	delete usecode;
 	delete removed;
-	delete fonts;
 	}
 
 /*
@@ -445,12 +443,6 @@ void Game_window::init_files(bool cycle)
 
 	CYCLE_RED_PLASMA();
 	shape_man->load();		// All the .vga files!
-	CYCLE_RED_PLASMA();
-	if (!fonts)
-	{
-		fonts = new Fonts_vga_file();
-		fonts->init();
-	}
 	CYCLE_RED_PLASMA();
 
 	ifstream textflx;	
@@ -1241,11 +1233,12 @@ void Game_window::write
 	int centre_x  = width/2;
 	int height = get_height();
 	int centre_y = height/2;
-	int text_height = get_text_height(0);
-	int text_width = get_text_width(0, "Saving Game");
+	int text_height = shape_man->get_text_height(0);
+	int text_width = shape_man->get_text_width(0, "Saving Game");
 
 	win->fill_translucent8(0, width, height, 0, 0, xforms[2]);
-	paint_text(0, "Saving Game", centre_x-text_width/2, centre_y-text_height);
+	shape_man->paint_text(0, "Saving Game", centre_x-text_width/2, 
+							centre_y-text_height);
 	show(true);
 	map->write_ireg();		// Write ireg files.
 	write_npcs();			// Write out npc.dat.
@@ -2632,35 +2625,6 @@ void Game_window::setup_game
 	// Set palette for time-of-day.
 	clock.set_palette();
 }
-
-/*
- *	Text-drawing methods:
- */
-int Game_window::paint_text_box(int fontnum, const char *text, 
-		int x, int y, int w, int h, int vert_lead, int pbreak, int shading)
-	{ if(shading>=0)
-		win->fill_translucent8(0, w, h, x, y, xforms[shading]);
-	  return fonts->paint_text_box(win->get_ib8(),
-			fontnum, text, x, y, w, h, vert_lead, pbreak); }
-int Game_window::paint_text(int fontnum, const char *text, int xoff, int yoff)
-	{ return fonts->paint_text(win->get_ib8(), fontnum, text,
-							xoff, yoff); }
-int Game_window::paint_text(int fontnum, const char *text, int textlen, 
-							int xoff, int yoff)
-	{ return fonts->paint_text(win->get_ib8(), fontnum, text, textlen,
-							xoff, yoff); }
-	
-int Game_window::get_text_width(int fontnum, const char *text)
-	{ return fonts->get_text_width(fontnum, text); }
-int Game_window::get_text_width(int fontnum, const char *text, int textlen)
-	{ return fonts->get_text_width(fontnum, text, textlen); }
-int Game_window::get_text_height(int fontnum)
-	{ return fonts->get_text_height(fontnum); }
-int Game_window::get_text_baseline(int fontnum)
-	{ return fonts->get_text_baseline(fontnum); }
-
-Font *Game_window::get_font(int fontnum)
-	{ return fonts->get_font(fontnum); }
 
 
 

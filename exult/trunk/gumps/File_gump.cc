@@ -200,12 +200,12 @@ void Gump_text::paint
 	{
 	gwin->paint_shape(parent->get_x() + x, parent->get_y() + y, get_shape());
 					// Show text.
-	gwin->paint_text(2, text, parent->get_x() + textx,
+	sman->paint_text(2, text, parent->get_x() + textx,
 						parent->get_y() + texty);
 	if (get_framenum())			// Focused?  Show cursor.
-		gwin->get_win()->fill8(0, 1, gwin->get_text_height(2),
+		gwin->get_win()->fill8(0, 1, sman->get_text_height(2),
 			parent->get_x() + textx +
-					gwin->get_text_width(2, text, cursor),
+					sman->get_text_width(2, text, cursor),
 				parent->get_y() + texty + 1);
 	gwin->set_painted();
 	}
@@ -232,7 +232,7 @@ int Gump_text::mouse_clicked
 	else
 		{
 		for (cursor = 0; cursor <= length; cursor++)
-			if (gwin->get_text_width(2, text, cursor) > mx)
+			if (sman->get_text_width(2, text, cursor) > mx)
 				{
 				if (cursor > 0)
 					cursor--;

@@ -59,7 +59,8 @@ void Text_button::init()
 	text_y = 2 + (height - 11)/2;
 
 	// We will get the text width
-	int text_width = gwin->get_font(TB_FONTNUM)->get_text_width(text.c_str());
+	int text_width = sman->get_font(TB_FONTNUM)->get_text_width(
+								text.c_str());
 
 	if (width < text_width + 4) width = text_width + 4;
 
@@ -147,7 +148,8 @@ void Text_button::paint()
 	// Top Right Highligh on Background 
 	iwin->fill8(TB_RT_HIGHLIGHT, 1, 1, px+width+offset-3, py+offset+2);
 
-	gwin->paint_text(TB_FONTNUM, text.c_str(), px+text_x+offset, py+text_y+offset);
+	sman->paint_text(TB_FONTNUM, text.c_str(), px+text_x+offset, 
+							py+text_y+offset);
 }
 
 int Text_button::on_widget(int mx, int my)

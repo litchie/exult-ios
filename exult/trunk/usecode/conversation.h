@@ -20,6 +20,7 @@
 #define _CONVERSATION_H
 
 #include "rect.h"
+#include "singles.h"
 #include <deque>
 #include <vector>
 #include <string>
@@ -28,13 +29,12 @@ class Npc_face_info;
 class Usecode_value;
 class Game_window;
 
-class Conversation {
+class Conversation : public Game_singletons {
  public:
   Conversation();
   ~Conversation();
 
  private:
-  Game_window *gwin;
 
   Npc_face_info *face_info[2];	// NPC's on-screen faces in convers.
   int num_faces;

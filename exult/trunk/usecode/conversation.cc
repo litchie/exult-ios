@@ -60,7 +60,6 @@ class Npc_face_info {
 Conversation::Conversation() :
   num_faces(0), last_face_shown(0), conv_choices(0)
 {
-  gwin = Game_window::get_instance();
 
   const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
   for (int i = 0; i < max_faces; i++)
@@ -253,7 +252,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 			delete face_info[slot];
 		face_info[slot] = info;
 					// Get text height.
-		int text_height = gwin->get_text_height(0);
+		int text_height = sman->get_text_height(0);
 					// Figure starting y-coord.
 					// Get character's portrait.
 		Shape_frame *face = shape >= 0 ? face_sid.get_shape() : 0;
@@ -365,7 +364,7 @@ void Conversation::show_npc_message(const char *msg)
 	Rectangle& box = info->text_rect;
 	gwin->paint(box);		// Clear what was there before.
 	int height;			// Break at punctuation.
-	while ((height = gwin->paint_text_box(0, msg, box.x,box.y,box.w,box.h, 
+	while ((height = sman->paint_text_box(0, msg, box.x,box.y,box.w,box.h, 
 								-1, 1, gwin->get_text_bg())) < 0)
 		{			// More to do?
 		int x, y; char c;
@@ -418,8 +417,8 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 					// Get screen rectangle.
 	Rectangle sbox = gwin->get_win_rect();
 	int x = 0, y = 0;		// Keep track of coords. in box.
-	int height = gwin->get_text_height(0);
-	int space_width = gwin->get_text_width(0, " ");
+	int height = sman->get_text_height(0);
+	int space_width = sman->get_text_width(0, " ");
 
 
 					// Get main actor's portrait.
@@ -513,7 +512,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 		char text[256];
 		text[0] = 127;		// A circle.
 		strcpy(&text[1], choices[i]);
-		int width = gwin->get_text_width(0, text);
+		int width = sman->get_text_width(0, text);
 		if (x > 0 && x + width >= tbox.w)
 			{		// Start a new line.
 			x = 0;
@@ -524,7 +523,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 					width, height);
 		conv_choices[i] = conv_choices[i].intersect(sbox);
 		avatar_face = avatar_face.add(conv_choices[i]);
-		gwin->paint_text_box(0, text, tbox.x + x, tbox.y + y,
+		sman->paint_text_box(0, text, tbox.x + x, tbox.y + y,
 			width + space_width, height, 0, 0, gwin->get_text_bg());
 		x += width + space_width;
 		}

@@ -24,7 +24,8 @@
 
 class Shape_frame;
 class Shape_info;
-
+class Fonts_vga_file;
+class Font;
 
 enum ShapeFile {
 	SF_SHAPES_VGA = 0,	// <STATIC>/shapes.vga.  MUST be first.
@@ -51,6 +52,7 @@ class Shape_manager : public Game_singletons
 	static Shape_manager *instance;	// There shall be only one.
 	Shapes_vga_file shapes;		// Main 'shapes.vga' file.
 	Vga_file files[(int) SF_COUNT];	// The files we manage.
+	Fonts_vga_file *fonts;		// "fonts.vga" file.
 	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
 					//   is found when playing BG
 	bool bg_paperdolls;		// True if paperdolls are wanted in BG
@@ -79,6 +81,20 @@ public:
 
 	inline bool can_use_multiracial() const
 	{ return bg_multiracial_allowed; }
+
+					// Paint text using "fonts.vga".
+	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
+		int h, int vert_lead = 0, int pbreak = 0, int shading = -1);
+	int paint_text(int fontnum, const char *text, int xoff, int yoff);
+	int paint_text(int fontnum, const char *text, int textlen, 
+							int xoff, int yoff);
+					// Get text width.
+	int get_text_width(int fontnum, const char *text);
+	int get_text_width(int fontnum, const char *text, int textlen);
+					// Get text height, baseline.
+	int get_text_height(int fontnum);
+	int get_text_baseline(int fontnum);
+	Font *get_font(int fontnum);
 	};
 
 /*

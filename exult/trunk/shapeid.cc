@@ -23,6 +23,7 @@
 #include "gamewin.h"
 #include "shapeid.h"
 #include "vgafile.h"
+#include "fontvga.h"
 #include "fnames.h"
 #include "game.h"
 #include "Configuration.h"
@@ -60,7 +61,7 @@ void Game_singletons::init
 Shape_manager::Shape_manager
 	(
 	) : bg_paperdolls_allowed(false), bg_multiracial_allowed(false),
-	    bg_paperdolls(false)
+	    bg_paperdolls(false), fonts(0)
 	{
 	assert(instance == 0);
 	instance = this;
@@ -125,6 +126,11 @@ void Shape_manager::load
 	const char* gamedata = game->get_resource("files/gameflx").str;
 	std::cout << "Loading " << gamedata << "..." << std::endl;
 	files[SF_GAME_FLX].load(gamedata);
+	if (!fonts)
+		{
+		fonts = new Fonts_vga_file();
+		fonts->init();
+		}
 	}
 
 /*
@@ -132,9 +138,49 @@ void Shape_manager::load
  */
 Shape_manager::~Shape_manager()
 	{
+	delete fonts;
 	assert(this == instance);
 	instance = 0;
 	}
+
+/*
+ *	Text-drawing methods:
+ */
+int Shape_manager::paint_text_box(int fontnum, const char *text, 
+		int x, int y, int w, int h, int vert_lead, int pbreak, 
+								int shading)
+	{
+	if(shading>=0)
+		gwin->get_win()->fill_translucent8(
+				0, w, h, x, y, gwin->get_xform(shading));
+	return fonts->paint_text_box(gwin->get_win()->get_ib8(),
+			fontnum, text, x, y, w, h, vert_lead, pbreak); 
+	}
+int Shape_manager::paint_text(int fontnum, const char *text, 
+							int xoff, int yoff)
+	{
+	return fonts->paint_text(gwin->get_win()->get_ib8(), fontnum, text,
+							xoff, yoff); 
+	}
+int Shape_manager::paint_text(int fontnum, const char *text, int textlen, 
+							int xoff, int yoff)
+	{
+	return fonts->paint_text(gwin->get_win()->get_ib8(), fontnum, 
+						text, textlen, xoff, yoff);
+	}
+
+int Shape_manager::get_text_width(int fontnum, const char *text)
+	{ return fonts->get_text_width(fontnum, text); }
+int Shape_manager::get_text_width(int fontnum, const char *text, int textlen)
+	{ return fonts->get_text_width(fontnum, text, textlen); }
+int Shape_manager::get_text_height(int fontnum)
+	{ return fonts->get_text_height(fontnum); }
+int Shape_manager::get_text_baseline(int fontnum)
+	{ return fonts->get_text_baseline(fontnum); }
+
+Font *Shape_manager::get_font(int fontnum)
+	{ return fonts->get_font(fontnum); }
+
 
 /*
  *	Read in shape.

@@ -353,25 +353,25 @@ void AudioOptions_gump::paint()
 		if (buttons[i])
 			buttons[i]->paint();
 
-	gwin->paint_text(2, "Audio:", x + colx[0], y + rowy[0] + 1);
+	sman->paint_text(2, "Audio:", x + colx[0], y + rowy[0] + 1);
 	if (audio_enabled) {
-		gwin->paint_text(2, "Music options:", x + colx[0], y + rowy[1] + 1);
-		gwin->paint_text(2, "music", x + colx[1], y + rowy[2] + 1);
+		sman->paint_text(2, "Music options:", x + colx[0], y + rowy[1] + 1);
+		sman->paint_text(2, "music", x + colx[1], y + rowy[2] + 1);
 		if (midi_enabled) {
-			gwin->paint_text(2, "conversion", x + colx[1], y + rowy[3] + 1);
-			gwin->paint_text(2, "reverb", x + colx[1], y + rowy[4] + 1);
-			gwin->paint_text(2, "chorus", x + colx[1], y + rowy[5] + 1);
-			gwin->paint_text(2, "looping", x + colx[1], y + rowy[6] + 1);
+			sman->paint_text(2, "conversion", x + colx[1], y + rowy[3] + 1);
+			sman->paint_text(2, "reverb", x + colx[1], y + rowy[4] + 1);
+			sman->paint_text(2, "chorus", x + colx[1], y + rowy[5] + 1);
+			sman->paint_text(2, "looping", x + colx[1], y + rowy[6] + 1);
 		}
-		gwin->paint_text(2, "SFX options:", x + colx[0], y + rowy[7] + 1);
-		gwin->paint_text(2, "SFX", x + colx[1], y + rowy[8] + 1);
+		sman->paint_text(2, "SFX options:", x + colx[0], y + rowy[7] + 1);
+		sman->paint_text(2, "SFX", x + colx[1], y + rowy[8] + 1);
 #ifdef ENABLE_MIDISFX
 		if (sfx_enabled) {
-			gwin->paint_text(2, "conversion", x + colx[1], y + rowy[9] + 1);
+			sman->paint_text(2, "conversion", x + colx[1], y + rowy[9] + 1);
 		}
 #endif
-		gwin->paint_text(2, "Speech options:", x + colx[0], y + rowy[10] + 1);
-		gwin->paint_text(2, "speech", x + colx[1], y + rowy[11] + 1);
+		sman->paint_text(2, "Speech options:", x + colx[0], y + rowy[10] + 1);
+		sman->paint_text(2, "speech", x + colx[1], y + rowy[11] + 1);
 	}
 	gwin->set_painted();
 }
