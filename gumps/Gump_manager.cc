@@ -498,8 +498,9 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 
 int Gump_manager::do_modal_gump
 	(
-	Modal_gump *gump,	// What the user interacts with.
-	Mouse::Mouse_shapes shape	// Mouse shape to use.
+	Modal_gump *gump,		// What the user interacts with.
+	Mouse::Mouse_shapes shape,	// Mouse shape to use.
+	Paintable *paint		// Paint this over everything else.
 	)
 {
 	SDL_EnableUNICODE(1); // enable unicode translation for text input
@@ -516,19 +517,11 @@ int Gump_manager::do_modal_gump
 	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		Mouse::mouse->set_shape(shape);
-	gwin->show(true);
 	int escaped = 0;
-					// Get area to repaint when done.
-	Rectangle box = gump->get_rect();
-	box.enlarge(2);
-	box = gwin->clip_to_win(box);
-					// Create buffer to backup background.
-	Image_buffer *back = gwin->get_win()->create_buffer(box.w, box.h);
-	Mouse::mouse->hide();			// Turn off mouse.
-					// Save background.
-	gwin->get_win()->get(back, box.x, box.y);
-	gump->paint();			// Paint gump.
 	add_gump(gump);
+	gwin->paint();			// Show everything now.
+	if (paint)
+		paint->paint();
 	Mouse::mouse->show();
 	gwin->show();
 	do
@@ -540,7 +533,11 @@ int Gump_manager::do_modal_gump
 		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
 			escaped = !handle_modal_gump_event(gump, event);
 		if (GL_manager::get_instance())
+			{
 			gwin->paint();	// OpenGL?  Paint each cycle.
+			if (paint)
+				paint->paint();
+			}
 		Mouse::mouse->show();		// Re-display mouse.
 		if (!gwin->show() &&	// Blit to screen if necessary.
 		    Mouse::mouse_update)	// If not, did mouse change?
@@ -549,12 +546,9 @@ int Gump_manager::do_modal_gump
 	while (!gump->is_done() && !escaped);
 	Mouse::mouse->hide();
 	remove_gump(gump);
-					// Restore background, if wanted.
-	if (gump->want_restore_background())
-		gwin->get_win()->put(back, box.x, box.y);
-	delete back;
 	Mouse::mouse->set_shape(saveshape);
 					// Leave mouse off.
+	gwin->paint();
 	gwin->show(true);
 
 	// Resume the game
@@ -576,12 +570,13 @@ int Gump_manager::prompt_for_number
 	(
 	int minval, int maxval,		// Range.
 	int step,
-	int defval			// Default to start with.
+	int defval,			// Default to start with.
+	Paintable *paint		// Should be the conversation.
 	)
 {
 	Slider_gump *slider = new Slider_gump(minval, maxval,
 							step, defval);
-	int ok = do_modal_gump(slider, Mouse::hand);
+	int ok = do_modal_gump(slider, Mouse::hand, paint);
 	int ret = !ok ? 0 : slider->get_val();
 	delete slider;
 	return (ret);

@@ -97,16 +97,10 @@ public:
 };
 void VideoOptions_gump::close()
 {
-	if (resolution != old_resolution) {
-		restore_background = false;
-	}
-
 	save_settings();
 
 	// have to repaint everything in case resolution changed
-	if (!want_restore_background())
-		gwin->set_all_dirty();
-
+	gwin->set_all_dirty();
 	done = 1;
 }
 

@@ -29,7 +29,7 @@ class Gump;
 class Game_object;
 class Game_window;
 class Modal_gump;
-
+class Paintable;
 
 class  Gump_manager : public Game_singletons
 {
@@ -74,8 +74,10 @@ public:
 	void set_gumps_dont_pause_game(bool p);
 
 	int okay_to_quit();
-	int prompt_for_number(int minval, int maxval, int step, int def);
-	int do_modal_gump(Modal_gump *, Mouse::Mouse_shapes);
+	int prompt_for_number(int minval, int maxval, int step, int def,
+							Paintable *paint = 0);
+	int do_modal_gump(Modal_gump *, Mouse::Mouse_shapes, 
+							Paintable *paint = 0);
 	void paint_num(int num, int x, int y);
 
 	Gump_manager();
