@@ -21,6 +21,7 @@ EXULT_FLX_OBJECTS = \
 	play_1st_scene.shp	\
 	extras.shp		\
 	midi_conversion.shp	\
+	notebook.shp		\
 	sfx_conversion.shp	\
 	palette_fades.shp	\
 	scaling_method.shp	\
