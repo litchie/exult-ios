@@ -722,6 +722,7 @@ static void Handle_keystroke
 	int ctrl
 	)
 	{
+	SDLMod mods = SDL_GetModState();
 
 	switch (sym)
 		{
@@ -848,6 +849,13 @@ static void Handle_keystroke
 			gwin->paint();
 		}
 		break;
+#ifdef MACOS
+	case SDLK_q:
+		if (mods & KMOD_META) {		// Mac only: Alt-q/Cmd-Q : Quit
+			Okay_to_quit();
+		}
+		break;
+#endif
 	case SDLK_r:
 		if (ctrl && !alt) {		// Ctrl-r : Restore from 'gamedat'
 			quick_restore();
