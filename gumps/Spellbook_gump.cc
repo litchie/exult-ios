@@ -321,9 +321,11 @@ void Spellbook_gump::do_spell
 			for (int r = 0; flags; r++, flags = flags >> 1)
 					// Remove 1 of each required reagant.
 				if (flags&1)
-					book_owner->remove_quantity(1, REAGANTS, c_any_qual, r);
+					book_owner->remove_quantity(1, 
+						REAGANTS, c_any_qual, r);
 		}
-		gwin->end_gump_mode();
+		gwin->remove_gump(this);// Note:  We're deleted!!
+		gwin->paint();
 		gwin->get_usecode()->call_usecode(Get_usecode(spell),
 			gwin->get_main_actor(), Usecode_machine::double_click);
 	}
