@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "contain.h"
 #include "objiter.h"
 #include "Gump_manager.h"
+#include "cheat.h"
 
 /*
  *	Create a gump.
@@ -353,6 +354,19 @@ void Gump::paint
 				*obj);
 		obj = obj->get_next();
 	}
+					// Outline selections in this gump.
+	const Game_object_vector& sel = cheat.get_selected();
+	for (Game_object_vector::const_iterator it = sel.begin();
+						it != sel.end(); ++it)
+		{
+		Game_object *obj = *it;
+		if (container == obj->get_owner())
+			{
+			int x, y;
+			get_shape_location(obj, x, y);
+			gwin->paint_hit_outline(x, y, obj->get_shape());
+			}
+		}
 }
 
 /*
