@@ -162,11 +162,12 @@ public:
  */
 class Patrol_schedule : public Schedule
 	{
-	Game_object_vector paths;			// Each 'path' object.
+	Game_object_vector paths;	// Each 'path' object.
 	int pathnum;			// # of next we're heading towards.
+	int dir;			// 1 or -1;
 public:
 	Patrol_schedule(Actor *n)
-		: Schedule(n), pathnum(-1)
+		: Schedule(n), pathnum(-1), dir(1)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	};
