@@ -1958,16 +1958,6 @@ GtkWidget *Shape_chooser::create_popup
 		gtk_menu_append(GTK_MENU(popup), mitem);
 		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
 			GTK_SIGNAL_FUNC(on_shapes_popup_new_frame), this);
-		mitem = gtk_menu_item_new_with_label("New shape");
-		gtk_widget_show(mitem);
-		gtk_menu_append(GTK_MENU(popup), mitem);
-		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
-			GTK_SIGNAL_FUNC(on_shapes_popup_new_shape), this);
-					// Separator.
-		mitem = gtk_menu_item_new();
-		gtk_widget_show(mitem);
-		gtk_menu_append(GTK_MENU(popup), mitem);
-		gtk_widget_set_sensitive(mitem, FALSE);
 					// Export/import.
 		mitem = gtk_menu_item_new_with_label("Export frame...");
 		gtk_widget_show(mitem);
@@ -1979,6 +1969,19 @@ GtkWidget *Shape_chooser::create_popup
 		gtk_menu_append(GTK_MENU(popup), mitem);
 		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
 			GTK_SIGNAL_FUNC(on_shapes_popup_import), this);
+		}
+	if (ifile->is_flex())		// Multiple-shapes file (.vga)?
+		{
+					// Separator.
+		mitem = gtk_menu_item_new();
+		gtk_widget_show(mitem);
+		gtk_menu_append(GTK_MENU(popup), mitem);
+		gtk_widget_set_sensitive(mitem, FALSE);
+		mitem = gtk_menu_item_new_with_label("New shape");
+		gtk_widget_show(mitem);
+		gtk_menu_append(GTK_MENU(popup), mitem);
+		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+			GTK_SIGNAL_FUNC(on_shapes_popup_new_shape), this);
 		}
 	return popup;
 	}

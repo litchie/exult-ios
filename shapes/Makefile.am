@@ -1,5 +1,6 @@
 INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin \
-	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+	$(SDL_CFLAGS) $(FREETYPE2_INCLUDES) \
+	$(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libshapes.la
 
@@ -8,6 +9,8 @@ libshapes_la_SOURCES = \
 	bodies.h \
 	font.cc \
 	font.h \
+	fontgen.cc \
+	fontgen.h \
 	fontvga.cc \
 	fontvga.h \
 	items.cc \

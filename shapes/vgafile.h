@@ -140,6 +140,7 @@ public:
 	Shape_frame *get_frame(int framenum)
 		{ return 0 <= framenum && framenum < frames_size 
 						? frames[framenum] : 0L; }
+	void resize(int newsize);	// Modify #frames.
 					// Set frame.
 	void set_frame(Shape_frame *f, int framenum);
 					// Add/insert frame.
