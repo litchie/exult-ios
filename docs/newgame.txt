@@ -17,40 +17,23 @@ These instructions are for building a new game that I will refer to as
 
 1.  Directory and Configuration
 
-    First, create a new directory that will hold the files for your
-    game, and beneath that, a 'static' directory for data files that
-    you will commit to your new game, and a 'patch' directory which
-    will hold the data files you're working on.  Generally, Exult will
-    look first in 'patch', then in 'static', for its data files.  (NB,
-    this is still not implemented for ALL files yet.)
+    NEW:
+    Start up ExultStudio, and use the "File - New game..." menu entry.
+    Specify a directory (which may not yet exist) where you'd like
+    your new game's 'static' and 'patch' data to be stored.
+    Generally, Exult will look first in 'patch', then in 'static', for
+    its data files.  (NB, this is still not implemented for ALL files
+    yet.)  The directories will be created, and an appropriate section
+    added to your 'exult.cfg' file.
 
-    Then, add a section to your '.exult.cfg' file describing this
-    location.  In my testing, I've created the directory 'mygame'
-    beneath my home directory, and added the following to the 'game'
-    section of my configuration:
-
-   <mygame>
-    <path>
-    /home/jeff/exult/mygame
-    </path>
-    <patch>
-    /home/jeff/exult/mygame/patch
-    </patch>
-    <editing>
-    yes
-    </editing>
-    <waves>
-    /home/jeff/exult/sfx/jmsisfx.flx
-    </waves>
-   </mygame>
-
-Note the 'editing' section.  This tells Exult that it's okay if
-certain non-essential data files don't exist yet.  For example, the
-'mainshp.flx' file is needed for the opening menu, which you may not
-want to develop until your game is further along.  If it doesn't
-exist, and if 'editing' is set to 'yes', Exult will skip the menu
-display, and create a default new game if necessary, or continue the
-previously saved game if it exists.
+    If you look at the new section in 'exult.cfg', note the 'editing'
+    section.  This tells Exult that it's okay if certain non-essential
+    data files don't exist yet.  For example, the 'mainshp.flx' file
+    is needed for the opening menu, which you may not want to develop
+    until your game is further along.  If it doesn't exist, and if
+    'editing' is set to 'yes', Exult will skip the menu display, and
+    create a default new game if necessary, or continue the previously
+    saved game if it exists.
 
 2.  Artwork
 
@@ -72,6 +55,11 @@ previously saved game if it exists.
     Of course, doing the above is easier said than done.  It's
     possible that some of the above can be only partly done before
     proceeding to the next step.
+
+    NEW:
+    If you right-click on a shape in one of the .vga files, you'll get
+    a popup menu with choices for creating new shapes, or for bringing
+    up an image-editor (specified in Preferences) for editing a shape.
 
 3.  Shape Data
 
