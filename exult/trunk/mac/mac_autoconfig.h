@@ -43,7 +43,7 @@
 // missing defines:
 #define PACKAGE "exult"
 #define MAJOR	"0.94"
-#define	RELNUM	"cvs"
+#define	RELNUM	"alpha5"
 #define VERSION MAJOR RELNUM
 
 /* Do we appear to have a runnable copy of Timidity in our path? */
