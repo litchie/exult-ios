@@ -628,7 +628,7 @@ bool	Audio::start_speech(int num,bool wait)
 	{
 		return false;
 	}
-	play((uint8*)buf,len,wait);
+	play(reinterpret_cast<uint8*>(buf),len,wait);
 	delete [] buf;
 	return true;
 }
@@ -834,8 +834,8 @@ static	void resample(uint8 *sourcedata, uint8 **destdata,
 	// This is really Breshenham's line-drawing algorithm in
 	// a false nose, and clutching a crude smoothing loop.
 
-	float	ratio= ((float) wanted_rate)/((float) current_rate);
-	*destlen = (unsigned int) ((sourcelen*ratio)+1);
+	float	ratio= (static_cast<float>(wanted_rate))/(static_cast<float>(current_rate));
+	*destlen = static_cast<unsigned int> ((sourcelen*ratio)+1);
 	if(!*destlen||current_rate==wanted_rate)
 	{
 		// Least work

@@ -1,5 +1,12 @@
 2001-09-16  Dancer Vesperman  <dancer@users.sourceforge.net>
 
+	* audio/Audio.cc: Use C++ style casts.
+	* audio/Mixer.cc: Use C++ style casts.
+	* audio/pcb.h: Use C++ style casts.
+	* audio/xmidi.cc: Partial conversion to C++
+
+2001-09-16  Dancer Vesperman  <dancer@users.sourceforge.net>
+
 	* Actorio.cc: Use C++ style casts.
 	* mouse.h: Use C++ style casts.
 

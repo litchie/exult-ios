@@ -459,7 +459,7 @@ void XMIDI::CreateNewEvent (int time)
 {
 	if (!list)
 	{
-		list = current = (midi_event *) calloc (1, sizeof (midi_event)); //new midi_event;
+		list = current = static_cast<midi_event *>(calloc (1, sizeof (midi_event))); //new midi_event;
 		if (time > 0)
 			current->time = time;
 		return;
@@ -467,7 +467,7 @@ void XMIDI::CreateNewEvent (int time)
 
 	if (time < 0)
 	{
-		midi_event *event = (midi_event *) calloc (1, sizeof (midi_event)); //new midi_event;
+		midi_event *event = static_cast<midi_event *>(calloc (1, sizeof (midi_event))); //new midi_event;
 		event->next = list;
 		list = current = event;
 		return;
@@ -480,7 +480,7 @@ void XMIDI::CreateNewEvent (int time)
 	{
 		if (current->next->time > time)
 		{
-			midi_event *event = (midi_event *) calloc (1, sizeof (midi_event)); //new midi_event;
+			midi_event *event = static_cast<midi_event *>(calloc (1, sizeof (midi_event))); //new midi_event;
 			
 			event->next = current->next;
 			current->next = event;
@@ -492,7 +492,7 @@ void XMIDI::CreateNewEvent (int time)
 		current = current->next;
 	}
 
-	current->next = (midi_event *) calloc (1, sizeof (midi_event)); //new midi_event;
+	current->next = static_cast<midi_event *>(calloc (1, sizeof (midi_event))); //new midi_event;
 	current = current->next;
 	current->time = time;
 }
@@ -607,7 +607,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 	// Copy Patch Change Event
 	temp = patch;
-	patch = (midi_event *) calloc (1, sizeof (midi_event)); //new midi_event;
+	patch = static_cast<midi_event *>(calloc (1, sizeof (midi_event))); //new midi_event;
 	patch->time = temp->time;
 	patch->status = channel|(MIDI_STATUS_PROG_CHANGE << 4);
 	patch->data[0] = temp->data[0];
@@ -618,7 +618,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 		vol = NULL;
 
 	temp = vol;
-	vol = (midi_event *) calloc (1, sizeof (midi_event)); //new midi_event;
+	vol = static_cast<midi_event *>(calloc (1, sizeof (midi_event))); //new midi_event;
 	vol->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 	vol->data[0] = 7;
 
@@ -637,7 +637,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 	temp = bank;
 	
-	bank = (midi_event *) calloc (1, sizeof (midi_event)); //new midi_event;
+	bank = static_cast<midi_event *>(calloc (1, sizeof (midi_event))); //new midi_event;
 	bank->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 
 	if (!temp)
@@ -650,7 +650,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 		pan = NULL;
 
 	temp = pan;
-	pan = (midi_event *) calloc (1, sizeof (midi_event)); //new midi_event;
+	pan = static_cast<midi_event *>(calloc (1, sizeof (midi_event))); //new midi_event;
 	pan->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 	pan->data[0] = 10;
 
@@ -661,7 +661,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 	if (do_reverb)
 	{
-		reverb = (midi_event *) calloc (1, sizeof (midi_event)); //new midi_event;
+		reverb = static_cast<midi_event *>(calloc (1, sizeof (midi_event))); //new midi_event;
 		reverb->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 		reverb->data[0] = 91;
 		reverb->data[1] = reverb_value;
@@ -669,7 +669,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 	if (do_chorus)
 	{
-		chorus = (midi_event *) calloc (1, sizeof (midi_event)); //new midi_event;
+		chorus = static_cast<midi_event *>(calloc (1, sizeof (midi_event))); //new midi_event;
 		chorus->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 		chorus->data[0] = 93;
 		chorus->data[1] = chorus_value;
@@ -713,7 +713,7 @@ void XMIDI::DuplicateAndMerge (int num)
 		end += num;
 	}
 	
-	track = (midi_event **) malloc (sizeof (midi_event*)*info.tracks); //new midi_event *[info.tracks];
+	track = static_cast<midi_event **>(malloc (sizeof (midi_event*)*info.tracks)); //new midi_event *[info.tracks];
 	
 	for (i = 0; i < info.tracks; i++)
 		track[i] = events[i];
@@ -759,11 +759,11 @@ void XMIDI::DuplicateAndMerge (int num)
 		
 		if (current)
 		{
-			current->next = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
+			current->next = static_cast<midi_event *>(malloc (sizeof (midi_event))); //new midi_event;
 			current = current->next;
 		}
 		else
-			list = current = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
+			list = current = static_cast<midi_event *>(malloc (sizeof (midi_event))); //new midi_event;
 			
 		current->next = NULL;
 		
@@ -778,7 +778,7 @@ void XMIDI::DuplicateAndMerge (int num)
 		
 		if (current->len)
 		{
-			current->buffer = (unsigned char *) malloc(current->len);
+			current->buffer = static_cast<unsigned char *>(malloc(current->len));
 			memcpy (current->buffer, track[i]->buffer, current->len);
 		}
 		else
