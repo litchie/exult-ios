@@ -343,7 +343,14 @@ USECODE_INTRINSIC(get_schedule_type)
 {
 	// GetSchedule(npc).  Rets. schedtype.
 	Game_object *obj = get_item(parms[0]);
-	Usecode_value u(obj ? obj->get_schedule_type() : 0);
+	int sched = obj ? obj->get_schedule_type() : 0;
+	if (sched == Schedule::street_maintenance)
+		{
+		Actor *act = as_actor(obj);
+		if (act && act->get_schedule())
+			sched = act->get_schedule()->get_prev_type();
+		}
+	Usecode_value u(sched);
 	return(u);
 }
 
@@ -537,10 +544,20 @@ USECODE_INTRINSIC(update_last_created)
 	Usecode_value& arr = parms[0];
 	int sz = arr.get_array_size();
 	if (sz == 3)
-		last_created->move(arr.get_elem(0).get_int_value(),
+		{
+		Tile_coord dest(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
 			  arr.get_elem(2).get_int_value());
-				// Taking a guess here:
+					// Something there?
+		while (Chunk_object_list::is_blocked(dest))
+			{		// Try up to ceiling.
+			if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
+				return Usecode_value(0);
+			dest.tz++;
+			}
+		last_created->move(dest.tx, dest.ty, dest.tz);
+		}
+					// Taking a guess here:
 	else if (parms[0].get_int_value() == -358)
 		{
 		last_created->remove_this();

@@ -830,6 +830,8 @@ int Usecode_machine::remove_party_items
 	)
 	{
 	int quantity = quantval.need_int_value();
+	if (quantity == -359 && Game::get_game_type() == SERPENT_ISLE)
+		quantity = 1;		// Guessing.  Got to remove something.
 	Usecode_value all(-357);	// See if they exist.
 	Usecode_value avail = count_objects(all, shapeval, qualval, frameval);
 	if (avail.get_int_value() < quantity)

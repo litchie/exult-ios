@@ -52,7 +52,7 @@ public:
 	Schedule(Actor *n);
 	virtual ~Schedule()
 		{  }
-	int get_prev_type()
+	int get_prev_type() const
 		{ return prev_type; }
 	void set_blocked(Tile_coord b)
 		{ blocked = b; }

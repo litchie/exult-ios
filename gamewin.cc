@@ -2247,8 +2247,8 @@ void Game_window::show_items
 		Shape_info& info = shapes.get_info(shnum);
 		cout << "Object " << shnum << ':' << frnum <<
 					" has 3d tiles (x, y, z): " <<
-			info.get_3d_xtiles() << ", " <<
-			info.get_3d_ytiles() << ", " <<
+			info.get_3d_xtiles(frnum) << ", " <<
+			info.get_3d_ytiles(frnum) << ", " <<
 			info.get_3d_height() << ", sched = " <<
 			obj->get_schedule_type() << ", align = " <<
 			obj->get_alignment()
