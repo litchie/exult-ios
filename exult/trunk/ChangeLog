@@ -1,3 +1,7 @@
+2000-05-23  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Support for lighting (torches, lamps, etc)
+
 2000-05-23  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.win32: added
 	* Makefile.am: added Makefile.win32 to dist_targets

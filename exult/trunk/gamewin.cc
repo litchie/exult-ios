@@ -1458,9 +1458,10 @@ void Game_window::show_items
 			}
 //++++++++Testing
 #if 1
-		int shnum = obj->get_shapenum();
+		int shnum = obj->get_shapenum(), frnum = obj->get_framenum();
 		Shape_info& info = shapes.get_info(shnum);
-		cout << "Object " << shnum << " has 3d tiles (x, y, z): " <<
+		cout << "Object " << shnum << ':' << frnum <<
+					" has 3d tiles (x, y, z): " <<
 			info.get_3d_xtiles() << ", " <<
 			info.get_3d_ytiles() << ", " <<
 			info.get_3d_height() << ", sched = " <<
@@ -1498,8 +1499,9 @@ void Game_window::show_items
 		tx = tx%tiles_per_chunk;
 		ty = ty%tiles_per_chunk;
 		Chunk_object_list *chunk = get_objects(cx, cy);
+		ShapeID id = chunk->get_flat(tx, ty);
 		cout << "Clicked on flat shape " << 
-			chunk->get_flat(tx, ty).get_shapenum() << '\n';
+			id.get_shapenum() << ':' << id.get_framenum() << '\n';
 		}
 	}
 
