@@ -954,6 +954,100 @@ int Map_chunk::is_blocked
 	}
 
 /*
+ *	Get the list of tiles in a square perimeter around a given tile.
+ *
+ *	Output:	List (8*dist) of tiles, starting in Northwest corner and going
+ *		   clockwise.  List is on heap.
+ */
+
+static Tile_coord *Get_square
+	(
+	Tile_coord& pos,		// Center of square.
+	int dist			// Distance to perimeter (>0)
+	)
+	{
+	Tile_coord *square = new Tile_coord[8*dist];
+					// Upper left corner:
+	square[0] = Tile_coord(SUB_TILE(pos.tx, dist), SUB_TILE(pos.ty, dist),
+								pos.tz);
+	int i;				// Start with top row.
+	int len = 2*dist + 1;
+	int out = 1;
+	for (i = 1; i < len; i++, out++)
+		square[out] = Tile_coord(INCR_TILE(square[out - 1].tx),
+			square[out - 1].ty, pos.tz);
+					// Down right side.
+	for (i = 1; i < len; i++, out++)
+		square[out] = Tile_coord(square[out - 1].tx,
+			INCR_TILE(square[out - 1].ty), pos.tz);
+					// Bottom, going back to left.
+	for (i = 1; i < len; i++, out++)
+		square[out] = Tile_coord(DECR_TILE(square[out - 1].tx),
+			square[out - 1].ty, pos.tz);
+					// Left side, going up.
+	for (i = 1; i < len - 1; i++, out++)
+		square[out] = Tile_coord(square[out - 1].tx,
+			DECR_TILE(square[out - 1].ty), pos.tz);
+	return square;
+	}
+
+/*
+ *	Find a free area for an object of a given shape, looking outwards.
+ *
+ *	Output:	Tile if successful, else (-1, -1, -1).
+ */
+
+Tile_coord Map_chunk::find_spot
+	(
+	Tile_coord pos,			// Starting point.
+	int dist,			// Distance to look outwards.  (0 means
+					//   only check 'pos'.
+	int shapenum,			// Shape, frame to find spot for.
+	int framenum,
+	int max_drop,			// Allow to drop by this much.
+	int dir				// Preferred direction (0-7), or -1 if
+					//   don't care.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(shapenum);
+	int xs = info.get_3d_xtiles(framenum);
+	int ys = info.get_3d_ytiles(framenum);
+	int zs = info.get_3d_height();
+	const int mflags = MOVE_WALK;
+	int new_lift;
+					// Start with original position.
+	if (!Map_chunk::is_blocked(zs, pos.tz, pos.tx - xs + 1,
+		pos.ty - ys + 1, xs, ys, new_lift, mflags, max_drop))
+		return Tile_coord(pos.tx, pos.ty, new_lift);
+	if (dir < 0)
+		dir = 7;		// Start in NW as default.
+	dir = (dir + 1)%8;		// Make NW the 0 point.
+	for (int d = 1; d < dist; d++)	// Look outwards.
+		{
+		int square_cnt = 8*dist;// # tiles in square's perim.
+					// Get square (starting in NW).
+		Tile_coord *square = Get_square(pos, d);
+		int index = dir*dist;	// Get index of preferred spot.
+					// Get start of preferred range.
+		index = (index - dist/2 + square_cnt)%square_cnt;
+		for (int cnt = square_cnt; cnt; cnt--, index++)
+			{
+			Tile_coord& p = square[index%square_cnt];
+			if (!Map_chunk::is_blocked(zs, p.tz, p.tx - xs + 1,
+				p.ty - ys + 1, xs, ys, new_lift, mflags,
+								max_drop))
+				{
+				delete [] square;
+				return Tile_coord(p.tx, p.ty, new_lift);
+				}
+			}
+		delete [] square;
+		}
+	return Tile_coord(-1, -1, -1);
+	}
+
+/*
  *	Find all desired objects within a given rectangle.
  *
  *	Output:	# found, appended to vec.
