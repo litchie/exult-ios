@@ -5,7 +5,7 @@ INCLUDES = -I. -Iconf -Ifiles -Iaudio -Ipathfinder \
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
-SUBDIRS = audio conf pathfinder files flic
+SUBDIRS = audio conf pathfinder files flic tools
 
 bin_PROGRAMS = exult
 

@@ -293,4 +293,5 @@ audio/midi_drivers/Makefile \
 conf/Makefile \
 files/Makefile \
 pathfinder/Makefile \
-flic/Makefile )
+flic/Makefile \
+tools/Makefile )
