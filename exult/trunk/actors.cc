@@ -3025,7 +3025,6 @@ void Actor::die
 			shnum = 400;
 			frnum = 3;
 			}
-					// Put body here.
 		body = new Dead_body(shnum, frnum, 0, 0, 0, 
 					npc_num > 0 ? npc_num : -1);
 		if (npc_num > 0)
@@ -3036,9 +3035,17 @@ void Actor::die
 					// Tmp. monster => tmp. body.
 		if (get_flag(Obj_flags::is_temporary))
 			body->set_flag(Obj_flags::is_temporary);
-		body->move(pos);
 					// Okay to take its contents.
 		body->set_flag_recursively(Obj_flags::okay_to_take);
+					// Better be a spot for it.
+		pos = Map_chunk::find_spot(pos, 3, shnum, frnum, 4);
+		if (pos.tx != -1)
+			body->move(pos);
+		else
+			{
+			body->remove_this();
+			body = 0;
+			}
 		}
 	else
 		body = 0;
