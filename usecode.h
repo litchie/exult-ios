@@ -296,7 +296,7 @@ class Usecode_machine
 	const char *get_user_choice();	// Get user's choice.
 	int get_user_choice_num();
 					// Run the function.
-	void run(Usecode_function *fun, int event);
+	int run(Usecode_function *fun, int event);
 					// Call desired function.
 	int call_usecode_function(int id, int event = 0, 
 						Usecode_value *parm0 = 0);
