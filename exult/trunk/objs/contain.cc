@@ -501,7 +501,7 @@ int Container_game_object::count_objects
 
 int Container_game_object::get_objects
 	(
-	Game_object_vector& vec,			// Objects returned here.
+	Game_object_vector& vec,	// Objects returned here.
 	int shapenum,			// Shape#, or c_any_shapenum for any.
 	int qual,			// Quality, or c_any_qual for any.
 	int framenum			// Frame#, or c_any_framenum for any.
@@ -535,6 +535,8 @@ Game_object *Container_game_object::attacked
 	int ammo_shape
 	)
 	{
+	if (get_shapenum() == 507)	// Corpse?
+		return this;		// Leave it alone.
 	Game_window *gwin = Game_window::get_game_window();
 	int wpoints = attack_object(gwin, attacker, weapon_shape, ammo_shape);
 	if (wpoints < 4)
