@@ -22,8 +22,8 @@ void Npc_proximity_handler::add
 	int additional_secs		// More secs. to wait.
 	)
 	{
-					// Wait between 3 & 18 secs.
-	int msecs = (rand() % 15000) + 3000;
+					// Wait between 5 & 20 secs.
+	int msecs = (rand() % 15000) + 5000;
 	unsigned long newtime = curtime + msecs;
 	newtime += 1000*additional_secs;
 	gwin->get_tqueue()->add(newtime, this, (long) npc);
