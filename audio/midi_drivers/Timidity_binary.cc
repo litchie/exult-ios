@@ -67,7 +67,7 @@ void	Timidity_binary::player(void)
 
 	audiostream->id=Timidity_binary_magic;
 	string	s="timidity -Oru8S -id -T 175 -o- "+newfilename;
-	data=popen(s.c_str(),"r");
+	FILE *data=popen(s.c_str(),"r");
 	if(!data)
 		return;
 	char	buf[1024];
@@ -75,7 +75,6 @@ void	Timidity_binary::player(void)
 		{
 		if(!audiostream->consuming)
 			{
-			cerr << "Consumer gone away" << endl;
 			break;
 			}
 		size_t	x=fread(buf,1,sizeof(buf),data);
@@ -89,7 +88,7 @@ void	Timidity_binary::player(void)
 
 
 
-Timidity_binary::Timidity_binary() : my_thread(0),data(0),filename()
+Timidity_binary::Timidity_binary() : my_thread(0),filename()
 	{
 		// Figure out if the binary is where we expect it to be.
 		
