@@ -45,7 +45,10 @@ Sign_gump::Sign_gump
 	}
 	else if(shapenum==game->get_shape("gumps/goldsign"))
 	{
-		set_object_area(Rectangle(0, 4, 232, 96));
+		if (Game::get_game_type() == BLACK_GATE)
+			set_object_area(Rectangle(0, 4, 232, 96));
+		else			// SI
+			set_object_area(Rectangle(4, 4, 312, 96));
 	}
 	else if (shapenum==game->get_shape("gumps/scroll"))
 		set_object_area(Rectangle(48, 30, 146, 118));
