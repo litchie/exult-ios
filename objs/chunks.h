@@ -208,14 +208,14 @@ public:
 					// Check range.
 	static int is_blocked(int height, int lift, int startx, int starty,
 		int xtiles, int ytiles, int& new_lift, const int move_flags, 
-							int max_drop);
+					int max_drop, int max_rise = -1);
 					// Check absolute tile.
 	static int is_blocked(Tile_coord& tile, int height = 1,
 		const int move_flags = MOVE_ALL_TERRAIN, int max_drop = 1);
 					// Check for > 1x1 object.
 	static int is_blocked(int xtiles, int ytiles, int ztiles,
 			Tile_coord from, Tile_coord& to, const int move_flags,
-							int max_drop = 1);
+					int max_drop = 1, int max_rise = -1);
 	enum Find_spot_where		// For find_spot() below.
 		{
 		anywhere = 0,

@@ -766,8 +766,9 @@ int Barge_object::step
 			}
 		}
 	else move_type = MOVE_WALK;
+					// No rising/dropping.
        	if (Map_chunk::is_blocked(get_xtiles(), get_ytiles(), 
-						4, cur, t, move_type, 0))
+						4, cur, t, move_type, 0, 0))
 		return (0);		// Done.
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.
 	Game_window *gwin = Game_window::get_game_window();

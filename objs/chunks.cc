@@ -790,7 +790,9 @@ int Map_chunk::is_blocked
 	int xtiles, int ytiles,		// Width, height in tiles.
 	int& new_lift,			// New lift returned.
 	const int move_flags,
-	int max_drop			// Max. drop/rise allowed.
+	int max_drop,			// Max. drop/rise allowed.
+	int max_rise			// Max. rise, or -1 to use old beha-
+					//   viour (max_drop if FLY, else 1).
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -812,7 +814,7 @@ int Map_chunk::is_blocked
 			olist->setup_cache();
 			if (olist->is_blocked(height, lift, 
 				tx%c_tiles_per_chunk,
-				rty, this_lift, move_flags, max_drop))
+				rty, this_lift, move_flags, max_drop,max_rise))
 				return (1);
 					// Take highest one.
 			new_lift = this_lift > new_lift ?
@@ -865,7 +867,9 @@ int Map_chunk::is_blocked
 	Tile_coord from,		// Stepping from here.
 	Tile_coord& to,			// Stepping to here.  Tz updated.
 	const int move_flags,
-	int max_drop			// Max drop/rise allowed.
+	int max_drop,			// Max drop/rise allowed.
+	int max_rise			// Max. rise, or -1 to use old beha-
+					//   viour (max_drop if FLY, else 1).
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -926,7 +930,7 @@ int Map_chunk::is_blocked
 			olist->setup_cache();
 			int rtx = x%c_tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
-					new_lift, move_flags, max_drop))
+				new_lift, move_flags, max_drop, max_rise))
 				return 1;
 			if (new_lift != from.tz)
 				if (new_lift0 == -1)
@@ -946,7 +950,7 @@ int Map_chunk::is_blocked
 			olist->setup_cache();
 			int rty = y%c_tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
-					new_lift, move_flags, max_drop))
+				new_lift, move_flags, max_drop, max_rise))
 				return 1;
 			if (new_lift != from.tz)
 				if (new_lift0 == -1)
