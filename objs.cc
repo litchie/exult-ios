@@ -1151,7 +1151,6 @@ void Sprite::stop
 
 void Sprite::start
 	(
-	Game_window *gwin,		// Game window.
 	unsigned long destx,		// Move towards pt. within world.
 	unsigned long desty,
 	int speed			// # millisecs. between frames.
@@ -1159,6 +1158,7 @@ void Sprite::start
 	{
 	if (!in_world())
 		return;			// We can't start moving.
+	Game_window *gwin = Game_window::get_game_window();
 	frame_time = speed;
 	Direction dir;			// Gets compass direction.++++++Get
 					//  northeast, etc. too.

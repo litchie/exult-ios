@@ -52,6 +52,17 @@ const int chunksize = 16 * 8;		// A chunk has 16 8x8 shapes.
 const int num_chunks = 12*16;		// Total # of chunks in each dir.
 
 /*
+ *	A 3D tile coordinate:
+ */
+class Tile_coord
+	{
+public:
+	short tx, ty, tz;		// Coords. within world. tz=lift.
+	Tile_coord(int x, int y, int z) : tx(x), ty(y), tz(z)
+		{  }
+	};
+
+/*
  *	A shape ID contains a shape # and a frame # within the shape encoded
  *	as a 2-byte quantity.
  */
@@ -201,7 +212,10 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
-	virtual int get_schedule()	// Return NPC schedule.
+					// Set new NPC schedule.
+	virtual void set_schedule_type(int new_schedule_type)
+		{  }
+	virtual int get_schedule_type()	// Return NPC schedule.
 		{ return 11; }		// Loiter.
 	virtual char *get_name();
 	virtual void set_property(int prop, int val)
@@ -634,8 +648,7 @@ public:
 		{ return major_dir != 0; }
 	void stop();			// Stop motion.
 					// Start moving.
-	void start(Game_window *gwin,
-			unsigned long destx, unsigned long desty, int speed);
+	void start(unsigned long destx, unsigned long desty, int speed);
 	int at_destination()		// Reached/passed dest. in start()?
 		{ return major_distance <= 0; }
 	virtual int is_dragable();	// Can this be dragged?
