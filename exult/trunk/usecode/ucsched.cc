@@ -402,7 +402,7 @@ void Usecode_script::handle_event
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
 							obj->get_shapenum());
-			if (obj->get_framenum() < nframes)
+			if (obj->get_framenum() < nframes - 1)
 				usecode->set_item_frame(obj,
 							1+obj->get_framenum());
 			break;
