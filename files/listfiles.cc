@@ -305,9 +305,8 @@ int U7ListFiles(const std::string mask, FileList& files)
 				for (int i=0; i<globres.gl_pathc; i++)
 				{
 					files.push_back(globres.gl_pathv[i]);
-					free(globres.gl_pathv[i]);
 				}
-		        free(globres.gl_pathv);
+				globfree(&globres);
                 return 0;               
         case 3:   //no matches
                 return 0;
