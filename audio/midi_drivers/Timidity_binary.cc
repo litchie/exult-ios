@@ -28,7 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <csignal>
 #include "../../fnames.h"
 #include "../Audio.h"
-extern	Audio	*audio;
 
 #include "Configuration.h"
 extern	Configuration	*config;
@@ -137,7 +136,7 @@ void	Timidity_binary::stop_track(void)
 		close(s_infd);
 		close(s_outfd);
 		s_infd=s_outfd=-1;
-		audio->terminate_external_signal();
+		Audio::get_ptr()->terminate_external_signal();
 		kill(forked_job,SIGKILL);
 		}
 	forked_job=-1;
@@ -172,7 +171,7 @@ void	Timidity_binary::start_track(const char *name,int repeats)
 	cerr << "Starting to play " << name << endl;
 #endif
 	forked_job=sub_process(name);
-	audio->set_external_signal(s_infd);
+	Audio::get_ptr()->set_external_signal(s_infd);
 }
 
 const	char *Timidity_binary::copyright(void)

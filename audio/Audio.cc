@@ -52,20 +52,20 @@ Audio::~Audio()
 		midi=0;
 		}
 	SDL::CloseAudio();
+	self=0;
 }
 
 
 
 static 	void debug_speech(void)
 {
-	extern	Audio *audio;
 
 	
 	//audio.start_speech(31,false);
 	return;
 	for(int i=0;i<32;i++)
 		{
-		audio->start_speech(i,false);
+		Audio::get_ptr()->start_speech(i,false);
 		SDL::Delay(1000);
 		}
 }
@@ -262,8 +262,12 @@ void Audio::Init()
 	mixer=new Mixer(_buffering_unit,ringsize,actual.silence);
 }
 
+Audio *Audio::self=0;
+
 Audio::Audio() : midi(0)
-{}
+{
+	self=this;
+}
 
 void Audio::Init(int _samplerate,int _channels)	
 {
@@ -392,4 +396,9 @@ void	Audio::set_external_signal(int fh)
 void	Audio::terminate_external_signal(void)
 {
 	mixer->set_auxilliary_audio(-1);
+}
+
+Audio	*Audio::get_ptr(void)
+{
+	return self;
 }
