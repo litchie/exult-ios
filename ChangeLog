@@ -1,3 +1,6 @@
+2001-10-13  Patrick Burke  <takhisisii@yahoo.com.au>
+	* data/credits.txt data/quotes.txt: Fixed formatting and ## escape.
+
 2001-10-13  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/intrinsics.cc: Clone() intrinsic.
