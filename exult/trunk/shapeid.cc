@@ -109,7 +109,7 @@ void Shape_manager::load
 
 	if (Game::get_game_type()==SERPENT_ISLE)
 		{
-		files[SF_PAPERDOL_VGA].load(PAPERDOL);
+		files[SF_PAPERDOL_VGA].load(PAPERDOL, PATCH_PAPERDOL);
 		if (!files[SF_PAPERDOL_VGA].is_good())
 			gwin->abort("Can't open 'paperdol.vga' file.");
 		}
@@ -217,6 +217,9 @@ void Shape_manager::reload_shapes
 		break;
 	case U7_SHAPE_SPRITES:
 		files[SF_SPRITES_VGA].load(SPRITES_VGA, PATCH_SPRITES);
+		break;
+	case U7_SHAPE_PAPERDOL:
+		files[SF_PAPERDOL_VGA].load(PAPERDOL, PATCH_PAPERDOL);
 		break;
 	default:
 		cerr << "Type not supported:  " << dragtype << endl;

@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define U7_SHAPE_FONTS	2		/* fonts.vga			*/
 #define U7_SHAPE_FACES	3		/* faces.vga			*/
 #define U7_SHAPE_SPRITES 4		/* sprites.vga			*/
+#define U7_SHAPE_PAPERDOL 5		/* paperdol.vga			*/
 
 //	Store/get shapeid.
 int Store_u7_shapeid(unsigned char *data, int file, int shape, int frame);
