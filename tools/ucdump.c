@@ -2,6 +2,9 @@
  Ultima 7 usecode dump/disassembly utility
  Distributed under GPL
 
+ Note:
+	- the source code comments below are possibly SPOILERS. You have beed warned.
+
  Maintainer:
  	Maxim S. Shatskih aka Moscow Dragon (maxim__s@mtu-net.ru)
  
@@ -14,9 +17,11 @@
 	- added "unknown opcode & intrinsic counting" feature
  12-Oct-99
 	- the good deal of intrinsic functions is now known
+ 6-May-00
+	- the current version
  
- The source must be buildable on any Win32 compiler - patch fopen()'s "wb"
-	modes for UNIX. Help in porting on non-Win32 platforms is greatly appreciated.
+ The source must be buildable on any C compiler and runnable on any OS
+	(tested on Win32 and Linux).
  See source file comments for the description of usecode opcodes & intrinsic functions
 	(the latter one differs between BG & SI)
  
@@ -24,7 +29,8 @@
  - usecode functions 0x0-0x3ff are shape handlers - called on double-clicks & other
 	event with appropriate shapes
  - usecode functions 0x401-0x4ff are NPC handlers - called on double-clicks & other
-	event with appropriate NPCs - NPCID + 0x400 (401 for Iolo, 417 for LB etc).
+	event with appropriate NPCs - NPCID + 0x400 (0x401 for Iolo, 0x417 for LB in BG,
+	0x41f for Rotoluncia in SI etc).
  - usecode functions 0x500-0x5ff is for Wisps & guards (nonNPC characters able to talk)
 	(these ranges seems to be hardcoded)
  - stack machine used to execute bytecodes
@@ -49,12 +55,13 @@
  - array indices are 1-based as in VB
  - itemref is a unique ID of the given item. For NPCs, itemref is (-NPCID). For other items,
 	itemrefs seems to be non-persistent (not saved to savegame & re-invented on each
-	engine startup)??? indexes into engine's item lists
+	engine startup???) indexes into engine's item lists
  - there is a value called "referent" which identifies item & stored in U7IBUF
     Maybe Itemref is the same thing?
  - -356 is always an Itemref for Avatar. So, Avatar's NPC ID is possibly 356.
  - usecode execution starts from the event handler function. It is called by the engine
-	without arguments (double-click) in some cases. ItemRef & EventID are set before entering usecode.
+	without arguments (double-click) in some cases. ItemRef & EventID are set
+	before entering usecode.
  - the easiest case is double-click on some item. In this case, a usecode event handler
 	function called. Function ID usually matches the shape's Type number
 	or is (NPCID + 0x400) for NPCs.
@@ -65,10 +72,13 @@
 		(Penumbra's plaque)
 	- usecode Egg - also calls a function with EventID 3
 	- use item as a weapon (flammable oil) - EventID 4
+	- EventID 5 and 6 - placing the item somewhere in the NPC's inventory
+		(ring of invisibility)
 	- NPC being beaten to death (examples: Hook in BG, Dracothaxus in FoV,
 					Pomdirgun & Rotoluncia in SI) - 7 in SI???
 	- Avatar & NPC approaching to some distance??? - 9 in SI
- - hex coords to sextant coords - ( x - 933 ) / 10, ( y - 1134 ) / 10
+ - hex coords to sextant coords formula (same in BG and SI )
+	( x - 933 ) / 10, ( y - 1134 ) / 10
 */
 
 #include <stdio.h>
@@ -83,7 +93,7 @@
 /* Will print a part of data string as comment */
 #define	DATA_STRING				4
 /* Will add command offset before printing */
-#define	RELATIVE_JUMP			8
+#define	RELATIVE_JUMP				8
 /* Will print third byte as decimal after comma */
 #define CALL					16
 /* Will print in square brackets */
@@ -115,7 +125,7 @@ static opcode_desc opcode_table[] =
 		Jumps to <jump> if array ended
 		??? what are 1,2? Are they used?
 	*/
-	{ "next", 10, VARREF | RELATIVE_JUMP },					/* 02 */
+	{ "next", 10, VARREF | RELATIVE_JUMP },			/* 02 */
 	{ NULL, 0, 0 },						/* 03 */
 	/* Asks user to select one the talk answers
 		Jumps where specified if no answer available
@@ -158,7 +168,7 @@ static opcode_desc opcode_table[] =
 	{ "push\tfalse", 0, 0 },				/* 14 */
 	{ NULL, 0, 0 },						/* 15 */
 	/* Pops 2 values from the stack, pushes boolean value - 
-		TRUE if second value "?" then first 
+		TRUE if (top-of-stack-1) value "?" then top-of-stack
 		(where "?" can be greater, greater or equal etc...)
 	*/
 	{ "cmpgt", 0, 0 },					/* 16 */
@@ -166,7 +176,7 @@ static opcode_desc opcode_table[] =
 	{ "cmpge", 0, 0 },					/* 18 */
 	{ "cmple", 0, 0 },					/* 19 */
 	{ "cmpne", 0, 0 },					/* 1a */
-	{ NULL, 0, 0 },					/* 1b */
+	{ NULL, 0, 0 },						/* 1b */
 	/* Adds a string from data segment to string register current contents */
 	{ "addsi", 2, DATA_STRING },				/* 1c */
 	/* Pushes a string value given by 16bit string offset in data segment to stack */
@@ -185,7 +195,7 @@ static opcode_desc opcode_table[] =
 	{ "cmpeq", 0, 0 },					/* 22 */
 	{ NULL, 0, 0 },						/* 23 */
 	/* Calls a usecode function - function number is 0-based index to externs array */
-	{ "call", 2, VARREF | EXTCALL },					/* 24 */
+	{ "call", 2, VARREF | EXTCALL },			/* 24 */
 	/* Return from function without result returned on the stack */
 	{ "ret", 0, 0 },					/* 25 */
 	/* Uses the top-of-stack value to index (1-based) the array variable, 
@@ -203,7 +213,7 @@ static opcode_desc opcode_table[] =
 	{ "popr", 0, 0 },					/* 2d */
 	/* Opens a new For Each-style enumeration loop.
 		Always followed by "next" opcode??? */
-	{ "enum", 0, 0 },						/* 2e */
+	{ "enum", 0, 0 },					/* 2e */
 	/* Adds local variable's string value to string register current contents */
 	{ "addsv", 2, VARREF },					/* 2f */
 	/* If (top-of-stack - 1) value is in top-of-stack array, pushes true, 
@@ -213,7 +223,7 @@ static opcode_desc opcode_table[] =
 		Appears in BG only - in talk to Raymundo in the Theatre - trying to sing a song
 		I -am- the Avatar
 	*/
-	{ "???", 4, 0 },						/* 31 */
+	{ "???", 4, 0 },					/* 31 */
 	/* Return with a result returned on the stack */
 	{ "retr", 0, 0 },					/* 32 */
 	/* Displays the string register value (to current talk, sign, scroll or book),
@@ -239,7 +249,7 @@ static opcode_desc opcode_table[] =
 	/* Aborts the function & all usecode execution, returning to the engine */
 	{ "exit", 0, 0 },					/* 3f */
 	/* Removes all answers from the current talk */
-	{ "cla", 0, 0 },						/* 40 */
+	{ "cla", 0, 0 },					/* 40 */
 	{ NULL, 0, 0 },						/* 41 */
 	/* Pushes game flag's value (boolean) on the stack */
 	{ "pushf", 2, FLGREF },					/* 42 */
@@ -257,7 +267,7 @@ static opcode_desc opcode_table[] =
 		and the usecode) and functions (called by usecode only). "calle" is used to
 		call the event handler from the usecode, while "call" is used to call a function
 	*/
-	{ "calle", 2, EXTCALL },					/* 47 */
+	{ "calle", 2, EXTCALL },				/* 47 */
 	/* Pushes the cause of usecode event handler call on the stack */
 	/*	(double-click on item is be 1, NPC death seems to be 7 in SI and 2 in BG ) */
 	{ "push\teventid", 0, 0 },				/* 48 */
@@ -270,7 +280,7 @@ static opcode_desc opcode_table[] =
 		(double-click on item is be 1, NPC death seems to be 7 in SI and 2 in BG )
 		Used to call event handlers from the usecode
 	*/
-	{ "pop\teventid", 0, 0 },					/* 4b */
+	{ "pop\teventid", 0, 0 },				/* 4b */
 };
 
 /* Embedded function table for Black Gate */
@@ -280,28 +290,36 @@ static const char* bg_func_table[] =
 		Used to select a random party member for remarks
 	*/
 	"Random1",						/* 0 */
-	/* Takes itemref + array of several integers.
-		Executes a macro for this itemref
+	/* ExecuteMacro(itemref, array).
+		Executes a macro for this itemref.
+		Macro is an array of opcodes (bytes) and operands (words)
 		Macro opcodes:			
 			either 0x35 or 0x45 - deletes an item (fire caused by the flaming oil)
 			0x46 <integer> - sets item's frame number to integer (rotating crossbeam
-														while opening the portcullis gate)
+						while opening the portcullis gate)
 			0x52 <string> - the same as ItemSay() function
 			0x55 <usecode function number> - call a usecode event for the item
 			0x56 <integer> - Guardian's phrase with given number
 		All spells use this function - if current weather is 3 - 606 is called
 		instead of the second part of the spell engine (magic negation field at Ambrosia,
 			Armageddon is blocked after shouting 1st mantra & before shouting second).
+		Macro execution is asynchronous to the commands following ExecuteMacro -
+			??? macro opcodes are executed one per redraw frame counted???
+		Macro execution seems to be interruptable by opening inventory.
+		The initial red moongate uses this to grow in height and then call another
+		usecode function.
+		This initial sequence is fired from Iolo's usecode hanlder.
 	*/
-	NULL,							/* 1 */
-	/* Takes itemref + array of several integers + one more integer
+	"ExecuteMacro",						/* 1 */
+	/* ScheduleMacro(itemref, array, delay)
 		The same as above - but schedules a macro for execution later
+		Delay seems to be in frame counter units???
 		(use a serpent venom on somebody - first raises stats, then - after some time
 			- lower them)
 		Can also shout exclamations - "Call it... Heads... Its tails..."
 			- double-click on money.
 	*/
-	NULL,							/* 2 */
+	"ScheduleMacro",					/* 2 */
 	/* SwitchTalkTo(itemref, face_frame) - switches conversation to other NPC,
 		selecting one of possible face pictures
 		Shows the face in the bottom of the screen if the face on top was not hidden yet
@@ -324,7 +342,7 @@ static const char* bg_func_table[] =
 	/* EmptyTalk() - removes all talk answers
 		Looks like the same as "cla" opcode
 	*/
-	"EmptyTalk",							/* 9 */
+	"EmptyTalk",						/* 9 */
 	/* GetAnswer() - asks user to select one of the talk threads & returns it
 		Practically the same functionality as "ask" opcode
 	*/
@@ -332,7 +350,7 @@ static const char* bg_func_table[] =
 	/* GetAnswerIndex() - asks user to select one of the talk threads
 		& returns the 1-based index of it instead the text itself
 	*/
-	"GetAnswerIndex",						/* b */
+	"GetAnswerIndex",					/* b */
 	/* AskNumber(min, max, step, default) - asks user a number by showing a slider */
 	/*	with given parameters */
 	"AskNumber",						/* c */
@@ -342,10 +360,10 @@ static const char* bg_func_table[] =
 		items of such Type at the given distance from the given NPC.
 		Distance -1 means - screen borders
 	*/
-	"AreItemsNearNPC",						/* e */
+	"AreItemsNearNPC",					/* e */
 	/* PlaySoundEffect(sound_num) - plays a given effect soundtrack
 	*/
-	"PlaySoundEffect",							/* f */
+	"PlaySoundEffect",					/* f */
 	/* Random2(lo, hi) - returns a random integer from lo to hi inclusively */
 	"Random2",						/* 10 */
 	/* GetItemType(itemref) - returns a "type" value of the item */
@@ -360,10 +378,10 @@ static const char* bg_func_table[] =
 		(Penumbra's plaque)
 		Returns old quality???
 	*/
-	"SetItemQuality",				/* 15 */
+	"SetItemQuality",					/* 15 */
 	NULL,							/* 16 */
 	NULL,							/* 17 */
-	/* GetItemCoords(itemref) - parameter is itemref returned by
+	/* GetItemCoords(itemref) - parameter is itemref as returned by
 			ItemSelectModal(), returns array
 		The array is 2 item's coordinates - array[1], array[2]
 	*/
@@ -373,19 +391,19 @@ static const char* bg_func_table[] =
 	/* GetNPCID(itemref) - returns NPCID from Itemref - possibly does-nothing function???
 		Accepts values like -2 for Spark or -356 for Avatar on input
 	*/
-	"GetNPCID",					/* 1b */
+	"GetNPCID",						/* 1b */
 	/* GetNPCClass(NPCID) - returns a number specifying the NPC class -
 		fighter/sage/shopkeeper etc. Used in exclamations like "Oh my aching back!"
 		10 seems to be Noble (Finnegan & his aching back :-) )
-		Or maybe this is GetNPCActivity???
+		Or maybe I'm wrong and this is GetNPCActivity???
 	*/
-	"GetNPCClass",					/* 1c */
+	"GetNPCClass",						/* 1c */
 	/* SetNPCActivity(NPCID, activity) - sets an NPC activity
 		11 - Loiter (leave with "go home")
 		15 - Wait (leave with "wait here")
 		??? in cheat menu order?
 	*/
-	"SetNPCActivity",							/* 1d */
+	"SetNPCActivity",					/* 1d */
 	/* JoinNPC(itemref) - joins NPC to the party
 		This seems to only set Party flag on - the same effect as doing this in cheat mode
 		???in BG, unusual companions (joined by cheat) will not be shown in Inventory/Ztats
@@ -395,15 +413,15 @@ static const char* bg_func_table[] =
 			the game) - but headless :-)
 		Once more - it is kept somewhere...
 	*/
-	"JoinNPC",							/* 1e */
+	"JoinNPC",						/* 1e */
 	/* DismissNPC(itemref) - dismisses NPC from the party */
-	"DismissNPC",							/* 1f */
+	"DismissNPC",						/* 1f */
 	/* GetNPCStat(NPCID, property_id) -
 	 	returns NPC's statistic value (9 is food level, 0 is Strength, 3 is Hits, )
 		(1 & 4 seems to be Training & Combat???)
 		Vas Mani (Restoration) spell is a good example
 	*/
-	"GetNPCStat",					/* 20 */
+	"GetNPCStat",						/* 20 */
 	/* ChangeNPCStat(itemref, property_id, delta) - 
 	 	increments (or decrements for negative delta) NPC's statistic value.
 	*/
@@ -418,7 +436,9 @@ static const char* bg_func_table[] =
 	*/
 	"CreateItem",						/* 24 */
 	NULL,							/* 25 */
-	NULL,							/* 26 */
+	/* InsertNewItem(Coords) Parameter is an array of c
+	*/
+	"InsertNewItem",					/* 26 */
 	/* GetNPCName(npc_id_or_array) - returns an NPC name by NPC ID
 		Returns an array of names if array was specified
 	*/
@@ -436,6 +456,7 @@ static const char* bg_func_table[] =
 		Func28(-357, 761, -359, -359) - spellbook.
 		Func28(-357, 839, -359, 0) - Nicodemus's hourglass
 		(known as Hourglass Of Fate in SI).
+		Third parameter is quality
 	*/
 	NULL,							/* 29 */
 	/* GetContainerItems(container_itemref, type, quality, ???) - returns an array */
@@ -464,7 +485,7 @@ static const char* bg_func_table[] =
 	/* DisplaySign(gump#, array_of_strings) - displays a sign/plaque */
 	/* 	of given gump number & given text (array of strings or single string). */
 	"DisplaySign",					/* 32 */
-	/*  ItemSelectModal() - switches the engine to cross-cursor "use" mode.
+	/* ItemSelectModal() - switches the engine to cross-cursor "use" mode.
 	 	Returns an itemref of the item selected by user by single-click. 
 	 	Does not return till user will single-click on something.
 		The entity returned can be treated as array with coords at array[2], array[3]
@@ -472,14 +493,13 @@ static const char* bg_func_table[] =
 	"ItemSelectModal",					/* 33 */
 	/* Not used at all */
 	NULL,							/* 34 */
-	/*
-		ItemsNearItem(itemref, type, distance, ???) - returns an array of items
+	/* ItemsNearItem(itemref, type, distance, ???) - returns an array of items
 			of given Type which are closer then Distance to the item specified by Itemref
 			Parameter 4 is possibly frame number to compare???
 			Type of -1 means - all NPC??? (Fear spell)
 		(Powder keg & cannon ball near the cannon)
 	*/
-	"ItemsNearItem",							/* 35 */
+	"ItemsNearItem",					/* 35 */
 	/* Takes an NPCID as a single parameter, seems to return the amount of free
 		space in its inventory
 	*/
@@ -491,7 +511,7 @@ static const char* bg_func_table[] =
 	"GetTimeMinute",					/* 39 */
 	/* GetItemRef(NPCID) - returns Itemref from NPCID - possibly does-nothing function???
 	*/
-	"GetItemRef",					/* 3a */
+	"GetItemRef",						/* 3a */
 	NULL,							/* 3b */
 	/* GetNPCxxx(NPCID) - returns the same??? NPC mode as set in function 3d */
 	NULL,							/* 3c */
@@ -515,7 +535,7 @@ static const char* bg_func_table[] =
 				with non-enchanted hourglass - cause???)
 		What are these locations?
 	*/
-	"TeleportItem",							/* 3e */
+	"TeleportItem",						/* 3e */
 	/* VanishNPC(NPCID) - only parameter is NPCID, no return value
 		Called in eventid 2 for the plaque - never mind what - and NPC -23 (LB)
 			- plaque falling on LB's head
@@ -537,22 +557,23 @@ static const char* bg_func_table[] =
 	"ItemSay",						/* 40 */
 	NULL,							/* 41 */
 	/* GetItemZCoord(itemref) - returns Z coordinate of the item */
-	"GetItemZCoord",							/* 42 */
+	"GetItemZCoord",					/* 42 */
 	/* SetItemZCoord(itemref, coord) - sets a Z coordinate for the item */
-	"SetItemZCoord",							/* 43 */
+	"SetItemZCoord",					/* 43 */
 	/* GetWeather() - returns current weather - 0-3
 		3 seems to negate magic
 	*/
 	"GetWeather",						/* 44 */
 	/* SetWeather(weather) - sets new current weather - 0-3 */
 	"SetWeather",						/* 45 */
+	/* Sits down NPC??? */
 	NULL,							/* 46 */
 	/* SummonCreature(Type, boolean) - engine under Kal Bet Xen (Swarm), Kal Xen (???)
 		an Kal Vas Xen (Summon).
 		Summons a creature of given Type. Second parameter is true only for Kal Vas Xen
 		Return value???
 	*/
-	"SummonCreature",				/* 47 */
+	"SummonCreature",					/* 47 */
 	/* Shows a map of Britannia. Double-click on the map, Vas Wis (Peer) spell or reading
 		the Brommer's Britannia book
 	*/
@@ -574,7 +595,7 @@ static const char* bg_func_table[] =
 			(it is the same as Fear spell) - mode 7
 		LB attacking in an LB cheat room - mode 0
 	*/
-	"SetNPCAttackMode",				/* 4b */
+	"SetNPCAttackMode",					/* 4b */
 	/* SetTargetNPCToAttack(attacker_NPCID, target_NPCID) - sets target NPC to attack
 		??? how it is called in a cheat menu?
 		Usually called with Avatar as target NPC
@@ -588,23 +609,23 @@ static const char* bg_func_table[] =
 	NULL,							/* 4e */
 	/* ShowCrystalBall(coords_array) - shows a crystal ball view of a given world point
 	*/
-	"ShowCrystalBall",				/* 4f */
+	"ShowCrystalBall",					/* 4f */
 	/* ShowWizardEye(parm1, parm2) - shows a view for telescope or Wizard Eye spell
 		For telescope - ShowWizardEye(10000, 1000)
 		For Wizard Eye spell - ShowWizardEye(45, 200)
 	*/
-	"ShowWizardEye",				/* 50 */
+	"ShowWizardEye",					/* 50 */
 	/* ResurrectNPC(itemref) - resurrects an NPC. Itemref is a dead body's itemref
 		Returns false is cannot resurrect - LB in this case says "Alas..." and then
 			about burial.
-		???what is the cause of such LB's behaviour?
+		???what is the cause of such LB's behaviour? When ResurrectNPC returns false?
 	*/
-	"ResurrectNPC",					/* 51 */
+	"ResurrectNPC",						/* 51 */
 	/* AddSpellToBook(spellnum, 0, spellbook_itemref) - Adds a new spell to the spellbook
 		Returns false if there was already such spell in the book
 		Maybe calling with 1 (never called such in BG) will remove the spell from the book?
 	*/
-	"AddSpellToBook",				/* 52 */
+	"AddSpellToBook",					/* 52 */
 	/* ExecuteSprite(sprite, coordx, coordy, speedx, speedy, ???, ???)
 		- executes an explosion-like sprite
 		First parameter is sprite number in SPRITES.VGA
@@ -617,16 +638,16 @@ static const char* bg_func_table[] =
 	/* DisplayBook(itemref) - Displays book or scroll
 		Text will be displayed further by "say" opcode
 	*/
-	"DisplayBook",							/* 55 */
+	"DisplayBook",						/* 55 */
 	/* StopTime(???) - freezes all NPCs for some time. Parameter is duration???? 
 		Type 6be object (Egg???) calls this with its Quality as a parameter on eventid 3
 		Also called in Stop Time spell with the parameter 100
 	*/
-	"StopTime",							/* 56 */
+	"StopTime",						/* 56 */
 	/* CauseLight(duration) - Glimmer/Light/Great Light spell logic
 		duration is 110 for Glimmer, 500 for Light, 5000 for Great Light
 	*/
-	"CauseLight",							/* 57 */
+	"CauseLight",						/* 57 */
 	/* itemref as a parameter, returns some boolean... 
 		???NPC is on barge
 		At least true return from this blocks Mark spell - even mantra is not shouted
@@ -636,20 +657,20 @@ static const char* bg_func_table[] =
 		Parameter is 40 for Armageddon spell & variable for Tremor spell
 		Also called from func 85e (Forsythe jumping in the Well of Souls) - with parameter 15
 	*/
-	"CauseEarthquake",						/* 59 */
+	"CauseEarthquake",					/* 59 */
 	/* IsPlayerFemale() - returns 0 if male, 1 if female */
 	"IsPlayerFemale",					/* 5a */
 	/* CauseArmageddon() - all logic of Armageddon spell except
 		shouting mantras, weather change, earthquake, & setting the game flag which
 		affects Batlin's & LB's behaviour.
 		Walks through the all NPC list & makes all of the Dead with Hits < 0
-		Called also in LB's cheat room - "Busted, you thieving...."
+		Called also in LB's cheat room - "Busted, you thieving scoundrel bastard!"
 	*/
-	"CauseArmageddon",							/* 5b */
+	"CauseArmageddon",					/* 5b */
 	/* Sets NPC to some state - like VanishNPC() or KillNPC() */
 	"???",							/* 5c */
 	/* CauseBlackout() - darken the whole screen for some time */
-	"CauseBlackout",						/* 5d */
+	"CauseBlackout",					/* 5d */
 	/* ArraySize(a) - returns number of elements in the array */
 	"ArraySize",						/* 5e */
 	/* Something for Mark spell??? */
@@ -665,37 +686,112 @@ static const char* bg_func_table[] =
 	*/
 	NULL,							/* 61 */
 	/* IsUnderTheRoof() - returns true if the party is under the roof.
-		Sextant (twill) will not work under the roof.
+		Sextant will not work under the roof.
 		Also used in some place (???) where it causes a shout "Try it outside!"
 	*/
-	"IsUnderTheRoof",				/* 62 */
+	"IsUnderTheRoof",					/* 62 */
 	/* SetOrreryState(coords_array, status) - sets the state of the planets in Brion's orrery.
 		Coords are usually ordinary orrery coords - array of 2 integers. (59c, b4c)
 		status is a small integer which influences the state of the planets.
 	*/
-	"SetOrreryState",						/* 63 */
+	"SetOrreryState",					/* 63 */
 	/* Not used at all */
-	NULL						/* 64 */
-	/* Function 0x69 - GetSpeechTrack()
-		Returns a speech track number previously set by SetSpeech()
+	NULL,							/* 64 */
+	/* GetTimerElapsedHours(timer_number) - returns number of hours of game
+		time elapsed since the time set in the timer.
+		Timer valus are persistent beyound doubt - maybe GAMETIM(A) files?
+		Timer 0x0 - Kliftin at Jhelom making the flag of Honor
+		Timers 0x1 - Bennie in LB's house giving free meal
+		Timers 0x2-0x4 - Martina, Wench and Roberto at Buc. Den
+		Timer 0x5 - called from 0x6c3 code deletes all light sources/candles,
+			serpentine daggers, buckets, victims & bloods - Minoc murder scene.
+			A well-known game bug! Proximity usecode Egg 0x6c3 is just at
+			the center of the murder scene with firing distance of 16
+			(which is exactly the sawmill entrance)
+			The logic is: if flag 0x122 is not set, set it, and then set the timer
+			0x5.
+			Else - if the flag is already set and if 24 game hours elapsed
+			from timer 0x5 - delete all murder scene objects in the distance
+			15 aroung the Egg and the Egg iself.
+			So - entering the sawmill second time after more a day from the first
+			time entering it will delete the murder scene.
+			The bug is that sometimes it deletes just at the first time and
+			the player never sees it and cannot pick a dagger.
+		Timer 0x6 - the same with Alagner's body (victim).
+		Timer 0x8 - poisoning Balayna by Rankin.
+		Timer 0xa - Jaana healing.
+			Another well-known game bug! 
+			If you ask Jaana to heal when she is in the party, and if flag 0x29
+			is false, than the "period" is set to 5. Otherwise, the "period" is
+			set to the time elapsed since timer 0xa.
+			Then, if the period < 4, say "I am sorry..."
+			Otherwise, Jaana heals - this sets flag 0x29 and timer 0xa.
+			The bug is that Jaana heals only once per game - and than always
+				says "I am sorry..."
+		Cause of both bugs: game timers are broken beyound doubt. Seriously.
+			Something like GetTimerElapsedHours for 0xa always
+			returns 0 or at least value < 4 and GetTimerElapsedHours for 0x5
+			always returns >= 24
+			Too sad. No chances of fixing it using usecode patches.
+		Timer 0xb - the last thievery act by the Avatar. (where is it set???)
+		These are all used timers.
 	*/
-	/* Function 0x6f - DeleteItem(itemref)
-		Deletes an item
+	"GetTimerElapsedHours",					/* 65 */
+	/* SetTimer(timer_number) - sets the timer value to the current game time
 	*/
-	/* Function 0x75 - SetSpeech(speech_number)
-		Remembers a speech track number, returns false if speech effects are disabled
-		or no sound card
+	"SetTimer",						/* 66 */
+	/* Is Avatar wearing a fellowship medallion???? */
+	NULL,							/* 67 */
+	/* IsMousePresent() - returns true if mouse is present, false otherwise
 	*/
-	/* Function 0x75 - StartEndGame(boolean).
-		TRUE is successful endgame (wand against the gate),
-		FALSE is unsuccessful (passing through the gate) */
-	/* Function 0x76 - FireCannon(cannon_itemref, fire_direction, ball_type, ???,
-									cannon_type, cannon_type).
-		Fires a cannon in specified direction
+	"IsMousePresent",					/* 68 */
+	/* GetSpeechTrack() - returns a speech track number previously set by SetSpeech()
 	*/
-	/* Function 0x7e - PlaySpeech()
-		Plays a speech track set by SetSpeech()
+	"GetSpeechTrack",					/* 69 */
+	NULL,							/* 6a */
+	NULL,							/* 6b */
+	NULL,							/* 6c */
+	NULL,							/* 6d */
+	NULL,							/* 6e */
+	/* DeleteItem(itemref) - deletes an item
 	*/
+	"DeleteItem",						/* 6f */
+	/* Called only once after initial conversation of just-arrived Avatar
+		with Iolo
+	*/
+	NULL,							/* 70 */
+	NULL,							/* 71 */
+	NULL,							/* 72 */
+	NULL,							/* 73 */
+	NULL,							/* 74 */
+	/* StartEndGame(boolean) - TRUE is successful endgame (wand against the gate),
+		FALSE is unsuccessful (passing through the gate)
+	*/
+	"StartEndGame",						/* 75 */
+	/* FireCannon(cannon_itemref, fire_direction, ball_type, ???,
+						cannon_type, cannon_type)
+		- fires a cannon in specified direction
+	*/
+	"FireCannon",						/* 76 */
+	NULL,							/* 77 */
+	NULL,							/* 78 */
+	NULL,							/* 79 */
+	NULL,							/* 7a */
+	NULL,							/* 7b */
+	NULL,							/* 7c */
+	NULL,							/* 7d */
+	/* PlaySpeech() - plays a speech track set by SetSpeech()
+	*/
+	"PlaySpeech",						/* 7e */
+	NULL,							/* 7f */
+	NULL,							/* 80 */
+	NULL,							/* 81 */
+	NULL,							/* 82 */
+	NULL,							/* 83 */
+	NULL,							/* 84 */
+	NULL,							/* 85 */
+	NULL,							/* 86 */
+	NULL,							/* 87 */
 	/* Function 0x88 - GetNPCFlag(Itemref, flagno).
 		Flagno 1 is Slept
 		Flagno 8 is Poisoned 
@@ -706,16 +802,40 @@ static const char* bg_func_table[] =
 		and mouse controls barge itself (sitting on ship/carpet/cart). A reasonable one.
 		Needs checking.
 		*/
+	"GetNPCFlag",						/* 88 */
 	/* Function 0x89 - SetNPCFlag(itemref, flagno).
 		Flagno 1 is Slept
 		Flagno 8 is Poisoned
 		Sets flag to true
 		*/
+	"SetNPCFlag",						/* 89 */
 	/* Function 0x8a - ResetNPCFlag(itemref, flagno).
 		Flagno 1 is Slept
 		Flagno 8 is Poisoned
 		Sets flag to false
 		*/
+	"ResetNPCFlag",						/* 8a */
+	NULL,							/* 8b */
+	NULL,							/* 8c */
+	NULL,							/* 8d */
+	NULL,							/* 8e */
+	NULL,							/* 8f */
+	NULL,							/* 90 */
+	NULL,							/* 91 */
+	NULL,							/* 92 */
+	/* Itemref as parameter, returns an array of NPCs which are then passed to
+		ResurrectNPC()
+		called only once */
+	NULL,							/* 93 */
+	/* Called only for orrery viewer
+		Large orrery coords as parameters,
+		called only once and followed by ShowCrystalBall() at the orrery location
+	*/
+	"SetupOrrery",						/* 94 */
+	/* Some spells like An Flam */
+	NULL,							/* 95 */
+	/* Appears only in crazy talk after answering copy-protection incorrectly */
+	NULL							/* 96 */
 };
 
 /*
@@ -732,7 +852,8 @@ void process_data_seg(FILE* f, unsigned short ds)
 {
 	long pos;
 	unsigned short off = 0;
-	unsigned char* p;	unsigned char* pp;
+	unsigned char* p;
+	unsigned char* pp;
 	unsigned char* tempstr;
 	/* Allocate a temporary buffer */
 	tempstr = malloc(70 + 1);
@@ -746,9 +867,9 @@ void process_data_seg(FILE* f, unsigned short ds)
 		int len;
 		unsigned short localoff = 0;
 		/* Print all parts of the string - wrapping them around */
-		while( (len = ( strlen(pp) > 70 ) ? 70 : strlen(pp)) )
+		while( (len = ( strlen(pp) > 70 )) ? 70 : strlen(pp) )
 		{
-			/* TODO! Escape characters is ' is part of the string */
+			/* TODO! Escape characters if ' is part of the string */
 			memcpy(tempstr, pp, len);
 			tempstr[len] = '\0';
 			if( localoff )
@@ -760,7 +881,7 @@ void process_data_seg(FILE* f, unsigned short ds)
 		}
 		pp++;
 		off += localoff + 1;
-		printf("\tdb\t00\t%s\n", tempstr);
+		printf("\tdb\t00\n");
 	}
 	free(p);
 	free(tempstr);
@@ -772,14 +893,13 @@ void process_data_seg(FILE* f, unsigned short ds)
  Prints first characters of strings referenced
 */
 unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
-													unsigned char* pdataseg,
-													unsigned short* pextern,
-													unsigned short externsize,
-				  									unsigned char* opcode_buf,
-													unsigned char* intrinsic_buf,
-													int mute,
-													int count_all_opcodes,
-													int count_all_intrinsic)
+							unsigned char* pdataseg,
+							unsigned short* pextern,
+							unsigned short externsize,
+							unsigned char* opcode_buf,
+							unsigned char* intrinsic_buf,
+							int mute, int count_all_opcodes,
+							int count_all_intrinsic)
 {
 	unsigned short nbytes;
 	unsigned short i;
@@ -825,14 +945,14 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 	case IMMED:
 		/* Print immediate operand */
 		if( !mute )
-			printf("\t%04XH\t\t\t; %d\n",
-									*(unsigned short*)( ptrc + 1 ), *(short*)( ptrc + 1 ));
+			printf("\t%04XH\t\t\t; %d\n", *(unsigned short*)( ptrc + 1 ),
+								*(short*)( ptrc + 1 ));
 		break;
 	case IMMED_BYTE:
 		/* Print immediate operand */
 		if( !mute )
-			printf("\t%02XH\t\t\t; %d\n",
-									(unsigned short)(ptrc[1]), (unsigned short)(ptrc[1]));
+			printf("\t%02XH\t\t\t; %d\n", (unsigned short)(ptrc[1]),
+								(unsigned short)(ptrc[1]));
 		break;
 	case ( VARREF | RELATIVE_JUMP ):
 		/* NEXT command */
@@ -867,7 +987,7 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 		{
 			unsigned char* pstr;
 			int len;
-			// Print data string operand - first characters only */
+			/* Print data string operand - first characters only */
 			pstr = pdataseg + *(unsigned short*)( ptrc + 1 );
 			len = strlen(pstr);
 			if( len > 20 )
@@ -876,7 +996,7 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 			for( i = 0; i < len; i++ )
 				printf("%c", pstr[i]);
 			if( len < strlen(pstr) )
-				// String truncated */
+				/* String truncated */
 				printf("...");
 			printf("\n");
 		}
@@ -896,7 +1016,8 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 				/* Known function */
 				if( !mute )
 					printf("\t_%s@%d\t%s; %04X\n", func_table[func], ptrc[3],
-									( strlen(func_table[func]) > 12 ) ? "" : "\t", func);
+						( strlen(func_table[func]) > 12 ) ? "" : "\t",
+						func);
 				if( count_all_intrinsic )
 					intrinsic_buf[func]++;
 			}
@@ -905,7 +1026,7 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 				/* Unknown function */
 				if( func >= 256 )
 					/* TODO: error handling here */
-					printf("Unknown intrisinc function greater then 256! (%d)\n", func);
+					printf("Unknown intrisinc function greater then 256!\n");
 				intrinsic_buf[func]++;
 				if( !mute )
 					printf("\t%04X, %d\n", func, ptrc[3]);
@@ -923,7 +1044,8 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 				if( externpos < externsize )
 				{
 					if( !mute )
-						printf("\textern:[%04X]\t\t; %04XH\n", externpos, pextern[externpos]);
+						printf("\textern:[%04X]\t\t; %04XH\n",
+							externpos, pextern[externpos]);
 				}
 				else
 					printf("\tBad extern table!\n");
@@ -951,15 +1073,12 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 	return nbytes;
 }
 
-void process_code_seg(FILE* f, unsigned short ds, unsigned short s,
-				  									unsigned char* opcode_buf,
-													unsigned char* intrinsic_buf,
-													int mute,
-													int count_all_opcodes,
-													int count_all_intrinsic)
+void process_code_seg(FILE* f, unsigned short ds, unsigned short s, unsigned char* opcode_buf,
+							unsigned char* intrinsic_buf,
+							int mute, int count_all_opcodes,
+								int count_all_intrinsic)
 {
 	long pos;
-	unsigned short off = 0;
 	unsigned short size;
 	unsigned short externsize;
 	unsigned short i;
@@ -1019,9 +1138,9 @@ void process_code_seg(FILE* f, unsigned short ds, unsigned short s,
 	while( offset < size )
 	{
 		nbytes = print_opcode(pp, offset, pdata, pextern, externsize,
-															opcode_buf, intrinsic_buf, mute,
-															count_all_opcodes,
-															count_all_intrinsic);
+							opcode_buf, intrinsic_buf, mute,
+							count_all_opcodes,
+							count_all_intrinsic);
 		pp += nbytes;
 		offset += nbytes;
 	}
@@ -1029,12 +1148,11 @@ void process_code_seg(FILE* f, unsigned short ds, unsigned short s,
 	free(pdata);
 }
 
-void process_func(FILE* f, long func, int i, int* found,
-				  									unsigned char* opcode_buf,
-													unsigned char* intrinsic_buf,
-													int scan_mode,
-													unsigned long opcode,
-													unsigned long intrinsic)
+void process_func(FILE* f, long func, int i, int* found, unsigned char* opcode_buf,
+							unsigned char* intrinsic_buf,
+							int scan_mode,
+							unsigned long opcode,
+							unsigned long intrinsic)
 {
 	unsigned short s, ds, funcnum;	
 	long off, bodyoff;
@@ -1049,7 +1167,7 @@ void process_func(FILE* f, long func, int i, int* found,
 	if( ( ( func == -1 ) || scan_mode ) && ( opcode == -1 ) && ( intrinsic == -1 ) )
 		/* Only for general list & scan mode */
 		printf("\tFunction #%d (%04XH), offset = %08lx, size = %04x, data = %04x\n", i,
-																		funcnum, off, s, ds);
+								funcnum, off, s, ds);
 	if( ( funcnum == func ) || scan_mode || ( opcode != -1 ) || ( intrinsic != -1 ) )
 	{
 		/* Only for matching function or in one of the scan modes */
@@ -1068,8 +1186,8 @@ void process_func(FILE* f, long func, int i, int* found,
 		if( intrinsic != -1 ) 
 			memset(intrinsic_buf, 0, 256);
 		process_code_seg(f, ds, s, opcode_buf, intrinsic_buf,
-							scan_mode || ( opcode != -1 ) || ( intrinsic != -1 ),
-							( opcode != -1 ), ( intrinsic != -1 ));
+				scan_mode || ( opcode != -1 ) || ( intrinsic != -1 ),
+				( opcode != -1 ), ( intrinsic != -1 ));
 		if( ( ( opcode != -1 ) && opcode_buf[opcode] > 0 ) ||
 			( ( intrinsic != -1 ) && intrinsic_buf[intrinsic] > 0 ) )
 		{
@@ -1077,9 +1195,10 @@ void process_func(FILE* f, long func, int i, int* found,
 			*found = 1;
 			if( intrinsic != -1 )
 				printf("\tFound function (%04XH) - %d times\n", funcnum,
-																intrinsic_buf[intrinsic]);
+								intrinsic_buf[intrinsic]);
 			else
-				printf("\tFound function (%04XH) - %d times\n", funcnum, opcode_buf[opcode]);
+				printf("\tFound function (%04XH) - %d times\n", funcnum,
+									opcode_buf[opcode]);
 		}
 	}
 	/* Seek back, then to next function */
@@ -1101,7 +1220,7 @@ int main(int ac, char** av)
 	unsigned long opcode = -1;
 	unsigned long intrinsic = -1;
 	FILE* f;
-	printf("Ultima 7 usecode disassembler v0.6\n\n");
+	printf("Ultima 7 usecode disassembler v0.7\n\n");
 	/* Parse command line */
 	if( ac == 3 )
 	{
@@ -1181,7 +1300,12 @@ int main(int ac, char** av)
 		memset(intrinsic_buf, 0, 256);
 	}
 	/* Open a usecode file */
+#ifdef _WIN32
+	/* Microsoftism */
 	f = fopen("usecode", "rb");
+#else
+	f = fopen("usecode", "r");
+#endif
 	if( f == NULL )
 	{
 		/* Free the buffers */
@@ -1200,8 +1324,7 @@ int main(int ac, char** av)
 	while( ftell(f) < sz )
 	{		
 		process_func(f, func, i, &found, opcode_buf, intrinsic_buf, ( mode == 3 ),
-																			opcode,
-																			intrinsic);
+									opcode, intrinsic);
 		if( ( ( mode != 4 ) && ( mode !=5 ) ) || found )
 			i++;
 		if( ( mode == 4 ) || ( mode == 5 ) )
@@ -1210,7 +1333,7 @@ int main(int ac, char** av)
 	if( func == -1 )
 	{
 		if( ftell(f) != sz )
-			printf("Problem, tell = %d!\n", ftell(f));
+			printf("Problem, tell = %ld!\n", ftell(f));
 		printf("Functions: %d\n", i);
 	}
 	if( ( ( mode == 1 ) || ( mode == 4 ) ) && !found )
