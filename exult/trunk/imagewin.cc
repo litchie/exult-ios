@@ -105,8 +105,20 @@ void Image_buffer8::get
 					//   convoluted use of clip().)
 	if (!clip(destx, desty, srcw, srch, srcx, srcy))
 		return;
-	dest->copy8((unsigned char *) bits, 
-				srcx, srcy, srcw, srch, destx, desty);
+	Image_buffer_base *dbuf = dest->get_ibuf();
+	unsigned char *to = (unsigned char *) dbuf->bits + 
+				desty*dbuf->line_width + destx;
+	unsigned char *from = (unsigned char *) bits + srcy*line_width + srcx;
+					// Figure # pixels to next line.
+	int to_next = dbuf->line_width - srcw;
+	int from_next = line_width - srcw;
+	while (srch--)			// Do each line.
+		{
+		for (int cnt = srcw; cnt; cnt--)
+			*to++ = *from++;
+		to += to_next;
+		from += from_next;
+		}
 	}
 
 /*
@@ -120,7 +132,7 @@ void Image_buffer8::put
 	)
 	{
 	Image_buffer8::copy8((unsigned char *) src->get_ibuf()->bits,
-		0, 0, src->get_width(), src->get_height(), destx, desty);
+		src->get_width(), src->get_height(), destx, desty);
 	}
 
 /*
@@ -134,6 +146,7 @@ Image_buffer *Image_buffer::create_buffer
 	{
 	Image_buffer *newbuf = new Image_buffer(w, h, ibuf->depth);
 	newbuf->ibuf->bits = new char[w*h*ibuf->pixel_size];
+	return (newbuf);
 	}
 
 /*
@@ -204,11 +217,11 @@ void Image_buffer8::fill_line8
 void Image_buffer8::copy8
 	(
 	unsigned char *src_pixels,	// Source rectangle pixels.
-	int srcx, int srcy,		// Location of source.
 	int srcw, int srch,		// Dimensions of source.
 	int destx, int desty
 	)
 	{
+	int srcx = 0, srcy = 0;
 	int src_width = srcw;		// Save full source width.
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
@@ -363,11 +376,11 @@ void Image_buffer16::fill_line16
 void Image_buffer16::copy16
 	(
 	unsigned short *src_pixels,	// Source rectangle pixels.
-	int srcx, int srcy,		// Location of source.
 	int srcw, int srch,		// Dimensions of source.
 	int destx, int desty
 	)
 	{
+	int srcx = 0, srcy = 0;
 	int src_width = srcw;		// Save full source width.
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
@@ -436,7 +449,20 @@ void Image_buffer16::get
 					//   convoluted use of clip().)
 	if (!clip(destx, desty, srcw, srch, srcx, srcy))
 		return;
-	dest->copy16(get_pixels(), srcx, srcy, srcw, srch, destx, desty);
+	Image_buffer_base *dbuf = dest->get_ibuf();
+	unsigned short *to = (unsigned short *) dbuf->bits + 
+				desty*dbuf->line_width + destx;
+	unsigned short *from = get_pixels() + srcy*line_width + srcx;
+					// Figure # pixels to next line.
+	int to_next = dbuf->line_width - srcw;
+	int from_next = line_width - srcw;
+	while (srch--)			// Do each line.
+		{
+		for (int cnt = srcw; cnt; cnt--)
+			*to++ = *from++;
+		to += to_next;
+		from += from_next;
+		}
 	}
 
 /*
@@ -450,7 +476,7 @@ void Image_buffer16::put
 	)
 	{
 	Image_buffer16::copy16((unsigned short *) src->get_ibuf()->bits,
-		0, 0, src->get_width(), src->get_height(), destx, desty);
+		src->get_width(), src->get_height(), destx, desty);
 	}
 
 /*
@@ -497,11 +523,11 @@ void Image_buffer16::set_palette
 void Image_buffer16::copy8
 	(
 	unsigned char *src_pixels,	// Source rectangle pixels.
-	int srcx, int srcy,		// Location of source.
 	int srcw, int srch,		// Dimensions of source.
 	int destx, int desty
 	)
 	{
+	int srcx = 0, srcy = 0;
 	int src_width = srcw;		// Save full source width.
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))

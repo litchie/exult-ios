@@ -121,14 +121,18 @@ void Game_window::drag
 		else
 			get_objects(dragging->get_cx(), 
 				dragging->get_cy())->remove(dragging);
-		Rectangle rect = dragging_rect;
-		const int pad = 12;
-		rect.x -= pad;		// Make a little bigger.
-		rect.y -= pad;
-		rect.w += 2*pad;
-		rect.h += 2*pad;
-		rect = clip_to_win(rect);
+					// Make a little bigger.
+		int pad = dragging ? 8 : 12;
+		dragging_rect.x -= pad;		
+		dragging_rect.y -= pad;
+		dragging_rect.w += 2*pad;
+		dragging_rect.h += 2*pad;
+		Rectangle rect = clip_to_win(dragging_rect);
+#if 0
+		paint();
+#else
 		paint(rect);		// Paint over obj's. area.
+#endif
 					// Create buffer to backup background.
 		dragging_save = win->create_buffer(dragging_rect.w,
 							dragging_rect.h);
@@ -141,7 +145,7 @@ void Game_window::drag
 					// Shift to new position.
 	dragging_rect.shift(deltax, deltay);
 					// Save background.
-	win->get(dragging_save, dragging_rect.x, dragging_rect.h);
+	win->get(dragging_save, dragging_rect.x, dragging_rect.y);
 	dragging_paintx += deltax;
 	dragging_painty += deltay;
 	if (dragging)
@@ -152,6 +156,7 @@ void Game_window::drag
 		dragging_gump->set_pos(dragging_paintx, dragging_painty);
 		dragging_gump->paint(this);
 		}
+	painted = 1;
 	}
 
 /*
@@ -160,7 +165,8 @@ void Game_window::drag
 
 void Game_window::drop_dragged
 	(
-	int x, int y			// Mouse pos.
+	int x, int y,			// Mouse pos.
+	int moved			// 1 if mouse moved from starting pos.
 	)
 	{
 	if (closing_gump)
@@ -173,11 +179,19 @@ void Game_window::drop_dragged
 				mode = normal;
 			}
 		closing_gump = 0;
-		paint();
 		}
-	if (!dragging && !dragging_gump)
+	else if (!dragging)		// Only dragging a gump?
+		{
+		if (!dragging_gump)
+			return;
+		if (!moved)		// A click just raises it to the top.
+			dragging_gump->remove_from_chain(open_gumps);
+		dragging_gump->append_to_chain(open_gumps);
+		}
+	else if (!moved)		// For now, if not moved, leave it.
 		return;
-	drop(x, y);			// Drop it.
+	else
+		drop(x, y);		// Drop it.
 	dragging = 0;
 	dragging_gump = 0;
 	delete dragging_save;
@@ -194,12 +208,6 @@ void Game_window::drop
 	int x, int y			// Mouse position.
 	)
 	{
-	drag(x, y);			// Get object to mouse pos.
-	if (!dragging)			// Only dragging a gump?
-		{
-		dragging_gump->append_to_chain(open_gumps);
-		return;
-		}
 					// First see if it's a gump.
 	Gump_object *on_gump = find_gump(x, y);
 	if (on_gump)
