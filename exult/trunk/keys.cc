@@ -119,7 +119,8 @@ struct Action {
   { ActionNaked, "Toggle naked mode", true, true, SERPENT_ISLE },
   { ActionPetra, "Toggle Petra mode", true, true, SERPENT_ISLE },
   { ActionSkinColour, "Change skin colour", true, true, SERPENT_ISLE },
-  { ActionSoundTester, "Sound tester", false, true, NONE }
+  { ActionSoundTester, "Sound tester", false, true, NONE },
+  { ActionTest, "Test", false, false, NONE }
 };
 
 const struct {
@@ -235,6 +236,7 @@ const struct {
   {"TOGGLE_PETRA",          ACTION_TOGGLE_PETRA},         
   {"CHANGE_SKIN",           ACTION_CHANGE_SKIN},         
   {"SOUND_TESTER",          ACTION_SOUND_TESTER},
+  {"TEST",                  ACTION_TEST},
   {"", ACTION_NOTHING} //terminator
 };
 
