@@ -345,6 +345,7 @@ public:
 	USECODE_INTRINSIC_DECL(get_equipment_list);
 	USECODE_INTRINSIC_DECL(advance_time);
 	USECODE_INTRINSIC_DECL(run_usecode);
+	USECODE_INTRINSIC_DECL(close_gumps);
 	USECODE_INTRINSIC_DECL(is_not_blocked);
 	USECODE_INTRINSIC_DECL(direction_from);
 	USECODE_INTRINSIC_DECL(get_npc_flag);

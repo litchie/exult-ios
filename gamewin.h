@@ -329,8 +329,8 @@ public:
 	void paint_sprite(int xoff, int yoff, int shapenum, int framenum)
 		{
 		Shape_frame *shape = sprites.get_shape(shapenum, framenum);
-		if (shape)
-			paint_shape(xoff, yoff, shape);
+		if (shape)		// They have translucency.
+			paint_shape(xoff, yoff, shape, 1);
 		}
 					// Read encoded show into window.
 	void paint_rle_shape(Shape_frame& shape, int xoff, int yoff);
@@ -354,7 +354,7 @@ public:
 	void read_ireg_objects(istream& ireg, int scx, int scy,
 					Game_object *container = 0);
 					// Create special objects.
-	Egg_object *create_egg(unsigned char *entry);
+	Egg_object *create_egg(unsigned char *entry, int animated);
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
 	int write();			// Write out to 'gamedat'.

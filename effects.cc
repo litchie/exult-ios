@@ -52,7 +52,7 @@ void Sprites_effect::handle_event
 	long udata
 	)
 	{
-	const int delay = 100;		// Delay between frames.
+	const int delay = 50;		// Delay between frames.
 	Game_window *gwin = Game_window::get_game_window();
 	if (frame_num == frames)	// At end?
 		{			// Remove & delete this.
@@ -61,6 +61,7 @@ void Sprites_effect::handle_event
 		return;
 		}
 	Sprites_effect::paint(gwin);	// Render.
+	gwin->set_painted();
 	frame_num++;			// Next frame.
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);

@@ -525,6 +525,7 @@ public:
  */
 class Egg_object : public Game_object
 	{
+protected:
 	unsigned char type;		// One of the below types.
 	unsigned char probability;	// 1-100, chance of egg activating.
 	unsigned char criteria;		// Don't know this one.
@@ -550,6 +551,9 @@ public:
 		hatched = 2,
 		auto_reset = 3
 		};
+	enum Egg_criteria {
+		avatar_footpad = 4	// Avatar must step on it.
+		};
 					// Create from ireg. data.
 	Egg_object(unsigned char l, unsigned char h, unsigned int shapex,
 		unsigned int shapey, unsigned int lft, 
@@ -559,6 +563,8 @@ public:
 		{  }
 	int get_distance() const
 		{ return distance; }
+	int get_criteria() const
+		{ return criteria; }
 	int is_active() const		// Can it be activated?
 		{ return !(flags & (1 << (int) hatched)); }
 	int within_distance(int abs_tx, int abs_ty) const;
@@ -570,6 +576,30 @@ public:
 		{ return 1; }
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
+	};
+
+/*
+ *	An object that cycles through its frames, or wiggles if just one
+ *	frame.  The base class is for non-Ireg ones.
+ */
+class Animated_egg_object : public Egg_object
+	{
+	Animator *animator;		// Controls animation.
+public:
+					// Create from ireg. data.
+	Animated_egg_object(unsigned char l, unsigned char h, 
+		unsigned int shapex,
+		unsigned int shapey, unsigned int lft, 
+		unsigned short itype,
+		unsigned char prob, short d1, short d2)
+		: Egg_object(l, h, shapex, shapey, lft, itype, prob, d1, d2)
+		{ animator = new Frame_animator(this, 1); }
+	virtual ~Animated_egg_object()
+		{ delete animator; }
+					// Render.
+	virtual void paint(Game_window *gwin);
+					// Run usecode function.
+	virtual void activate(Usecode_machine *umachine);
 	};
 
 /*
