@@ -55,7 +55,10 @@ Mouse::Mouse
 	SDL_GetMouseState(&mousex, &mousey);
 	mousex /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
 	mousey /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
-	pointers.load(POINTERS);
+	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_POINTERS))
+		pointers.load(PATCH_POINTERS);
+	else
+		pointers.load(POINTERS);
 	Init();
 	set_shape(get_short_arrow(east));		// +++++For now.
 }
