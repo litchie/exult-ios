@@ -1,0 +1,22 @@
+exult-tools meta-documentation
+
+Updated 2001-12-12 by Michael Zinn <michael.z@acm.org>
+
+
+First, you'll want to checkout the docs that came with exult itself,
+in /usr/doc/exult; a lot of stuff for the tools is in amongst the main
+documentation.
+
+In this directory are some further documents relevant to particular
+tools:
+
+	expack.txt - documentation for expack. Go figure :)
+
+	Potentially useful for playing with exult_studio:
+
+		u7eggs.txt - rough description of what the various egg
+		             types do.
+
+		serpentsfx.txt - listing of the sound effect numbers
+		                 in SI. (again, for egg editting or
+		                 whatever)

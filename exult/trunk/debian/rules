@@ -1,10 +1,28 @@
 #!/usr/bin/make -f
-# Sample debian/rules that uses debhelper. 
+#
+# Debug builds:
+#   If the environment variable DEB_BUILD_OPTIONS contains the substring 
+#   debug , then the package is built with debugging info included.
+#
+#   To go with this, you'll probably want to leave the binaries unstripped;
+#   having the substring nostrip in DEB_BUILD_OPTIONS will achieve this.
+# 
+#   Alternatively, just uncomment the line below
+
+#export DEB_BUILD_OPTIONS=debug:nostrip:$DEB_BUILD_OPTIONS
+
+# For normal, everyday builds, you can leave DEB_BUILD_OPTIONS blank
+# or unset or whatever.
+#
+# NOTE, as of now (2001-12-12), the gimp plugin is not included in exult-tools,
+# as it requires a more recent version of gimp than is available in debian.
+#
+# Based on:
+# Sample debian rules that uses debhelper
 # GNU copyright 1997 by Joey Hess.
 #
-# Modified for exult and exult-tools by Michael Zinn
-# NB as of now (2001-12-01), the gimp plugin is *not* built and packaged,
-#    because there is no sufficiently current gimp package for Debian :-(
+# Modified for exult and exult-tools by 
+# Michael `Wumpus' Zinn <michael.z@acm.org>
 
 # Uncomment this to turn on verbose mode. 
 #export DH_VERBOSE=1
@@ -12,14 +30,19 @@
 # This is the debhelper compatability version to use.
 export DH_COMPAT=3
 
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+CONFIGURE_DEBUG = --enable-debug
+endif
+
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
 
 	# Generate configure and various other things
 	sh autogen.sh
+
 	# Run configure; at time of writing, libdir, sbindir, etc, are not used
-	./configure --prefix=/usr --bindir=/usr/games --datadir=/usr/share/games --enable-exult-studio
+	./configure $(CONFIGURE_DEBUG) --prefix=/usr --bindir=/usr/games --datadir=/usr/share/games --enable-exult-studio
 
 	# Back to template land...
 
@@ -58,7 +81,7 @@ install: build
 	# Install the package into debian/tmp; dh_movefiles then puts
 	# the files into debian/exult or debian/exult-tools as
 	# required.
-	$(MAKE) install prefix=$(CURDIR)/debian/tmp/usr bindir=$(CURDIR)/debian/tmp/usr/games datadir=$(CURDIR)/debian/tmp/usr/share/games
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
 	# Back to template land...
 

@@ -1,3 +1,12 @@
+exult (1:0.97cvs-1) unstable; urgency=low
+
+  * exult-tools updated for new tools, and included some extra
+    documentation, with corresponding update to README.Debian
+  * added stuff for building a debug package (the nostrip stuff comes
+    "for free" since dh_strip knows about it)
+
+ -- Michael Zinn <michael.z@acm.org>  Wed, 12 Dec 2001 20:02:21 +1100
+
 exult (1:0.96beta1-1) unstable; urgency=low
 
   * New upstream release
