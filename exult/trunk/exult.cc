@@ -43,6 +43,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL_syswm.h"
 #include "Audio.h"
 
+Audio audio;
+
 /*
  *	Globals:
  */
@@ -138,6 +140,7 @@ static void Init
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << '\n';
 		exit(-1);
 		}
+	audio.Init(9615*2,2);
 	SDL_SysWMinfo info;		// Get system info.
 	SDL_VERSION(&info.version);
 #ifdef XWIN
