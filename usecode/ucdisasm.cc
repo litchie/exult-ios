@@ -32,32 +32,10 @@ using std::strlen;
 using std::cout;
 
 #include "ucinternal.h"
-#include "uctools.h"
+#include "../tools/uctools.h"
 #include "utils.h"
 #include "useval.h"
 #include "game.h"
-#include "stackframe.h"
-
-int Usecode_internal::get_opcode_length(int opcode)
-{
-	if (opcode >=0 &&
-		opcode < (sizeof(opcode_table)/sizeof(opcode_table[0]))) {
-
-	    return opcode_table[opcode].nbytes + 1;
-	} else {
-		return 0;
-	}
-}
-
-void Usecode_internal::uc_trace_disasm(Stack_frame* frame)
-{
-	uc_trace_disasm(frame->locals,
-					frame->num_args + frame->num_vars,
-					frame->data,
-					frame->externs,
-					frame->code,
-					frame->ip);
-}
 
 void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 						 uint8* data, uint8* externals, uint8* code,
@@ -66,10 +44,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 	int func_ip = (int)(ip - code);
 	int opcode = *ip++;
 	uint8* param_ip = ip;
-	_opcode_desc* pdesc;
-
-	if (opcode >=0 && opcode < (sizeof(opcode_table)/sizeof(opcode_table[0])))
-		pdesc = &(opcode_table[opcode]);
+	_opcode_desc* pdesc = &(opcode_table[opcode]);
 	signed short immed;
 	unsigned short varref;
 	unsigned short func;
@@ -78,7 +53,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 
 	std::printf("      %04X: ", func_ip);
 
-	if (pdesc && pdesc->mnemonic) {
+	if (pdesc->mnemonic) {
 		std::printf("%s", pdesc->mnemonic);
 		if (strlen(pdesc->mnemonic) < 4)
 			std::printf("\t");
@@ -86,7 +61,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 		std::printf("<unknown>");
 	}
 
-	if (pdesc && pdesc->nbytes > 0) {
+	if (pdesc->nbytes > 0) {
 		switch( pdesc->type )
 			{
 			case BYTE:

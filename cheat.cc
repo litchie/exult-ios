@@ -37,7 +37,6 @@
 #include "cheat_screen.h"
 #include "Gump_manager.h"
 #include "Gump.h"
-#include "drag.h"
 
 #ifdef USE_EXULTSTUDIO  /* Only needed for exult studio. */
 #include "server.h"
@@ -590,10 +589,8 @@ void Cheat::paste
 					// Use lowest/south/east for position.
 	Tile_coord hot = clipboard[0]->get_tile();
 	clear_selected();		// Remove old selected.
-#if 0
 					// First see if spot is in a gump.
 	Gump *on_gump = gwin->get_gump_man()->find_gump(mx, my);
-#endif
 	Game_object_vector::iterator it;
 	for (it = clipboard.begin(); it != clipboard.end(); ++it)
 		{
@@ -606,9 +603,6 @@ void Cheat::paste
 					// +++++Use clone().
 		obj = Create_object(gwin, obj->get_shapenum(),
 						obj->get_framenum());
-		Dragging_info drag(obj);
-		if (drag.drop(x, y, true))	// (Dels if it fails.)
-#if 0
 		bool ok = false;
 		if (on_gump)
 			ok = on_gump->add(obj, mx, my, x, y)!=0;
@@ -616,12 +610,9 @@ void Cheat::paste
 			for (int lift = edit_lift; !ok && lift <= 11; lift++)
 				ok = gwin->drop_at_lift(obj, x, y, lift);
 		if (ok)
-#endif
 			append_selected(obj);
-#if 0
 		else
 			delete obj;
-#endif
 		}
 	gwin->set_all_dirty();		// Just repaint all.
 	}

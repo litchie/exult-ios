@@ -15,7 +15,7 @@ $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/s
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
-SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL -lSDL_mixer
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
@@ -63,10 +63,10 @@ PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o
 # unused: xmain.o
 
-MIDI_DRV_OBJS=mixer_midiout.o
-# unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o 
+MIDI_DRV_OBJS=win_midiout.o
+# unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o win_MCI.o
 
-AUDIO_OBJS=Audio.o conv.o Midi.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
+AUDIO_OBJS=Audio.o conv.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 
 FLIC_OBJS=playfli.o

@@ -1,11 +1,11 @@
 /*
  *	ucinternal.h - Interpreter for usecode.
  *
- *	Usecode_internal is the implementation, so this header should only
+ *	Usecode_internal is the impelementation, so this header should only
  *	be included within .cc's in the 'usecode' directory.
  *
  *
- *  Copyright (C) 2001-2002  The Exult Team
+ *  Copyright (C) 2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -37,8 +37,6 @@ class Npc_actor;
 class Usecode_value;
 class Text_gump;
 class Vector;
-class Stack_frame;
-class Usecode_function;
 
 #ifdef MACOS
 // With Metrowerks Codewarrior, we *have* to include useval.h, otherwise this will fail to compile:
@@ -52,11 +50,9 @@ class Usecode_function;
 #endif
 
 #include "ucmachine.h"
-#include "ucdebugging.h"
 #include "tiles.h"
 #include "vec.h"	// Includes STL vector.
 #include <string>	// STL string
-#include <deque>
 
 /*
  *	Recursively look for a barge that an object is a part of, or on.
@@ -72,6 +68,26 @@ Barge_object *Get_barge
 #define	USECODE_INTRINSIC_DECL(NAME)	Usecode_value UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 
 /*
+ *	A single function:
+ */
+class Usecode_function
+	{
+	int id;				// The function #.  (Appears to be the
+					//   game item # the function gets
+					//   called for.)
+	int len;			// Length.
+
+	bool extended; // is this an 'extented' function? (aka 32 bit function)
+	unsigned char *code;		// The code.
+	friend class Usecode_internal;
+					// Create from file.
+	Usecode_function(std::istream& file);
+	inline ~Usecode_function()
+		{ delete [] code; }
+	};
+
+
+/*
  *	Here's our virtual machine for running usecode.
  */
 class Usecode_internal : public Usecode_machine
@@ -79,14 +95,12 @@ class Usecode_internal : public Usecode_machine
 					// I'th entry contains funs for ID's
 					//    256*i + n.
 	Exult_vector<Usecode_function*> funs[16];
-
-	std::deque<Stack_frame*> call_stack; // the call stack
 	Usecode_function *cur_function;	// Current function being executed.
 	unsigned long timers[20];	// Each has time in hours when set.
 	int speech_track;		// Set/read by some intrinsics.
 	Text_gump *book;		// Book/scroll being displayed.
 	Game_object *caller_item;	// Item this is being called on.
-	Game_object_vector last_created;// Stack of last items created with 
+	Game_object_vector last_created;// Stack of last sitem created with 
 					//   intrins. x24.
 	Actor *path_npc;		// Last NPC in path_run_usecode().
 	const char *user_choice;	// String user clicked on.
@@ -363,57 +377,18 @@ class Usecode_internal : public Usecode_machine
 	void set_book(Text_gump *b);	// Set book/scroll to display.
 	const char *get_user_choice();	// Get user's choice.
 	int get_user_choice_num();
+					// Run the function.
+	int run(Usecode_function *fun, int event, int stack_elems);
+					// Call desired function.
+	int call_usecode_function(int id, int event, int stack_elems);
 	void link_party();		// Set party's id's.
 
 	Game_object *intercept_item;
 	Game_object *temp_to_be_deleted;
 
-	// execution functions
-	bool call_function(int funcid, int event, Game_object *caller = 0,
-					   bool entrypoint = false);
-	void previous_stack_frame();
-	void return_from_function(Usecode_value& retval);
-	void return_from_procedure();
-	void abort_function();
-	int run();
-
-	// debugging functions
-	void uc_trace_disasm(Stack_frame* frame);
 	void uc_trace_disasm(Usecode_value* locals, int num_locals,
 						 uint8* data, uint8* externals, uint8* code,
 						 uint8* ip);
-	static int get_opcode_length(int opcode);
-	void stack_trace(ostream& out);
-
-#ifdef USECODE_DEBUGGER
-
-	Breakpoints breakpoints;
-
-	bool on_breakpoint; // are we on a breakpoint?
-	int breakpoint_action; // stay on breakpoint/continue/abort?
-
-public:
-	bool is_on_breakpoint() const { return on_breakpoint; }
-	void set_breakpoint_action(int a) { breakpoint_action = a; }
-
-	void set_breakpoint();
-	int set_location_breakpoint(int funcid, int ip);
-	bool clear_breakpoint(int id) { return breakpoints.remove(id); }
-
-	void transmit_breakpoints(int fd) { breakpoints.transmit(fd); }
-
-	void dbg_stepover();
-	void dbg_finish();
-
-	int get_callstack_size() const;
-	Stack_frame* get_stackframe(int i);
-
-	int get_stack_size() const;
-	Usecode_value* peek_stack(int depth) const;
-	void poke_stack(int depth, Usecode_value& val);
-#endif
-
-private:
 
 					// Add/remove party member.
 	bool add_to_party(Actor *npc);

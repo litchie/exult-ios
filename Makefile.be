@@ -8,8 +8,8 @@ VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf
 VERSION=0.99.1RC2
 
 ### Modify these paths
-SDL_CFLAGS=-I/boot/develop/tools/gnupro/include/SDL
-SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL -lSDL_mixer
+SDL_CFLAGS=-I/boot/develop/tools/gnupro/include/SDL -I./headers
+SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
 	-DHAVE_ZIP_SUPPORT -I$(SRC)/files/zip \
@@ -38,7 +38,7 @@ CONF_OBJS=Configuration.o XMLEntity.o
 # unused: xmain.o
 MIDI_DRV_OBJS=be_midi.o
 # unused: KMIDI.o Timidity_binary.o forked_player.o win_MCI.o
-AUDIO_OBJS=Audio.o conv.o Midi.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
+AUDIO_OBJS=Audio.o conv.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 FLIC_OBJS=playfli.o
 FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o

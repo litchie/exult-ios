@@ -33,7 +33,7 @@
 #include <iomanip>
 
 #ifdef XWIN
-#include <csignal>
+#include <signal.h>
 #endif
 #include <algorithm>       // STL function things
 
@@ -60,16 +60,6 @@
 #include "actors.h"
 #include "egg.h"
 #include "actions.h"
-#include "stackframe.h"
-#include "ucfunction.h"
-
-
-#if (defined(USE_EXULTSTUDIO) && defined(USECODE_DEBUGGER))
-#include "server.h"
-#include "servemsg.h"
-#include "debugmsg.h"
-#include "debugserver.h"
-#endif
 
 using std::cerr;
 using std::cout;
@@ -97,12 +87,10 @@ using std::vector;
 
 // External globals..
 
-extern bool intrinsic_trace;
+extern bool intrinsic_trace,usecode_debugging;
 extern int usecode_trace;
 
-#if 0 && USECODE_DEBUGGER
-
-extern bool usecode_debugging;
+#if USECODE_DEBUGGER
 std::vector<int> intrinsic_breakpoints;
 
 void	initialise_usecode_debugger(void)
@@ -122,191 +110,30 @@ void	initialise_usecode_debugger(void)
 #endif
 
 
-void Usecode_internal::stack_trace(ostream& out)
-{
-	if (call_stack.empty())
-		return;
+/*
+ *	Read in a function.
+ */
 
-	std::deque<Stack_frame*>::iterator iter = call_stack.begin();
-
-	do {
-		out << *(*iter) << endl;
-		if ((*iter)->call_depth == 0)
-			break;
-		++iter;
-	} while (true);
-}
-
-bool Usecode_internal::call_function(int funcid,
-									 int eventid,
-									 Game_object *caller,
-									 bool entrypoint)
-{
-	// locate function
-	vector<Usecode_function*>& slot = funs[funcid/0x100];
-	size_t index = funcid%0x100;
-	Usecode_function *fun = index < slot.size() ? slot[index] : 0;
-	if (!fun)
+Usecode_function::Usecode_function
+	(
+	istream& file
+	)
 	{
-		cout << "Usecode " << funcid << " not found." << endl;
-		return false;
-	}
+	id = Read2(file);
 
-	int depth, oldstack, chain;
-
-	if (entrypoint)
-	{
-		depth = 0;
-		oldstack = 0;
-		chain = Stack_frame::getCallChainID();
-
+	// support for our extended usecode format. (32 bit lengths)
+	if (id == 0xFFFF) {
+		id = Read2(file);
+		len = Read4(file);
+		extended = true;
 	} else {
-		Stack_frame *parent = call_stack.front();
-
-		// find new depth
-		depth = parent->call_depth + 1;
-
-		// find number of elements available to pop from stack (as arguments)
-		oldstack = sp - parent->save_sp;
-
-		chain = parent->call_chain;
-		
-		if (caller == 0)
-			caller = parent->caller_item; // use parent's
+		len = Read2(file);
+		extended = false;
 	}
 
-	Stack_frame *frame = new Stack_frame(fun, eventid, caller, chain, depth);
-
-	while (frame->num_args > oldstack) // Not enough args pushed?
-	{
-		pushi(0); // add zeroes
-		oldstack++;
+	code = new unsigned char[len];	// Allocate buffer & read it in.
+	file.read((char*)code, len);
 	}
-
-	// Store args in first num_args locals
-	for (int i = 0; i < frame->num_args; i++)
-	{
-		Usecode_value val = pop();
-		frame->locals[frame->num_args - i - 1] = val;
-	}
-
-	// save stack pointer
-	frame->save_sp = sp;
-
-	// add new stack frame to top of stack
-	call_stack.push_front(frame);
-
-
-#ifdef DEBUG
-	cout << "Running usecode " << hex << setfill((char)0x30) 
-		 << setw(4) << funcid << dec << setfill(' ') <<
-		" (";
-	for (int i = 0; i < frame->num_args; i++)
-	{
-		if (i)
-			cout << ", ";
-		frame->locals[i].print(cout);
-	}
-	cout << ") with event " << eventid << endl;
-#endif
-
-	return true;
-}
-
-void Usecode_internal::previous_stack_frame()
-{
-	// remove current frame from stack
-	Stack_frame *frame = call_stack.front();
-	call_stack.pop_front();
-
-	// restore stack pointer
-	sp = frame->save_sp;
-
-	if (frame->call_depth == 0) {
-		// this was the function called from 'the outside'
-		// push a marker (NULL) for the interpreter onto the call stack,
-		// so it knows it has to return instead of continuing
-		// further up the call stack
-		call_stack.push_front(0);
-	}
-
-	delete frame;
-}
-
-void Usecode_internal::return_from_function(Usecode_value& retval)
-{
-#ifdef DEBUG
-	// store old function ID for debugging output
-	int oldfunction = call_stack.front()->function->id;
-#endif
-
-	// back up a stack frame
-	previous_stack_frame();
-
-	// push the return value
-	push(retval);
-
-
-#ifdef DEBUG
-	Stack_frame *parent_frame = call_stack.front();
-
-	cout << "Returning (";
-	retval.print(cout);
-	cout << ") from usecode " << hex << setw(4) << 
-			setfill((char)0x30) << oldfunction << dec << setfill(' ')
-		 << endl;
-
-
-	if (parent_frame) {
-		int newfunction = call_stack.front()->function->id;
-
-		cout << "...back into usecode " << hex << setw(4) << 
-			setfill((char)0x30) << newfunction << dec << setfill(' ') << endl;
-	}
-#endif
-}
-
-void Usecode_internal::return_from_procedure()
-{
-#ifdef DEBUG
-	// store old function ID for debugging output
-	int oldfunction = call_stack.front()->function->id;
-#endif
-
-	// back up a stack frame
-	previous_stack_frame();
-
-
-#ifdef DEBUG
-	Stack_frame *parent_frame = call_stack.front();
-
-	cout << "Returning from usecode " << hex << setw(4) << 
-			setfill((char)0x30) << oldfunction << dec << setfill(' ')
-		 << endl;
-
-	if (parent_frame) {
-		int newfunction = call_stack.front()->function->id;
-
-		cout << "...back into usecode " << hex << setw(4) << 
-			setfill((char)0x30) << newfunction << dec << setfill(' ') << endl;
-	}
-#endif
-}
-
-void Usecode_internal::abort_function()
-{
-#ifdef DEBUG
-	int functionid = call_stack.front()->function->id;
-
-	cout << "Aborting from usecode " << hex << setw(4)
-		 << setfill((char)0x30) << functionid << dec << setfill(' ')
-		 << endl;
-#endif
-
-	// clear the entire call stack up to the entry point
-	while (call_stack.front() != 0)
-		previous_stack_frame();
-}
 
 /*
  *	Append a string.
@@ -1464,7 +1291,7 @@ Usecode_value no_ret;
 Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func,const char *name,int event,int intrinsic,int num_parms,Usecode_value parms[12])
 {
 #ifdef XWIN
-#if 0 && USECODE_DEBUGGER
+#if USECODE_DEBUGGER
 	if(usecode_debugging)
 		{
 		// Examine the list of intrinsics for function breakpoints.
@@ -1662,7 +1489,7 @@ Usecode_internal::Usecode_internal
 	    path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),
 	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
-		temp_to_be_deleted(0), telekenesis_fun(-1), on_breakpoint(false)
+		temp_to_be_deleted(0), telekenesis_fun(-1)
 	{
 					// Clear timers.
 	memset((char *) &timers[0], 0, sizeof(timers));
@@ -1689,8 +1516,6 @@ Usecode_internal::Usecode_internal
 		read_usecode(file);
 		file.close();
 		}
-
-	//	set_breakpoint();
 	}
 
 /*
@@ -1748,214 +1573,155 @@ void Clearbreak()
 	{ ucbp_fun = ucbp_ip = -1; }
 #endif
 
-
-#define CERR_CURRENT_IP()\
-	cerr << " (at function = " << hex << setw(4) << setfill('0')\
-		 << frame->function->id << ", ip = " \
-		 << current_IP << dec << setfill(' ') << ")" << endl
-
-#define LOCAL_VAR_ERROR(x)\
-	cerr << "Local variable #" << (x) << " out of range!";\
-	CERR_CURRENT_IP()
-
-#define DATA_SEGMENT_ERROR()\
-	cerr << "Data pointer out of range!";\
-	CERR_CURRENT_IP()
-
-#define EXTERN_ERROR()\
-	cerr << "Extern offset out of range!";\
-	CERR_CURRENT_IP()
-
-#define FLAG_ERROR(x)\
-	cerr << "Global flag #" << (x) << " out of range!";\
-	CERR_CURRENT_IP()
-
 /*
- *  The main usecode interpreter
- * 
- *  Output:
+ *	Interpret a single usecode function.
+ *
+ *	Output:	0 if ABRT executed.
  */
 
-int Usecode_internal::run()
-{
-	Stack_frame *frame;
-	bool aborted = false;
-	bool initializing_loop = false;
-
-	while (frame = call_stack.front())
+int Usecode_internal::run
+	(
+	Usecode_function *fun,
+	int event,			// Event (??) that caused this call.
+	int stack_elems			// # elems. on stack at call.
+	)
 	{
-		int num_locals = frame->num_vars + frame->num_args;
-		int offset;
-		int sval;
-
-		bool frame_changed = false;
-
-		// set some variables for use in other member functions
-		caller_item = frame->caller_item;
-		cur_function = frame->function;
-
-		/*
-		 *	Main loop.
-		 */
-		while (!frame_changed)
-		{
-
-
-			if ((frame->ip >= frame->endp) ||
-				(frame->ip < frame->code))
-			{
-				cerr << "Usecode: jumped outside of code segment of "
-					 << "function " << hex << setw(4) << setfill('0')
-					 << frame->function->id << dec << setfill(' ')
-					 << " ! Aborting." << endl;
-
-				abort_function();
-				frame_changed = true;
-				continue;
-			}
-
-			int current_IP = frame->ip - frame->code;
-
-			int opcode = *(frame->ip);
-
-			if (frame->ip + get_opcode_length(opcode) > frame->endp) {
-				cerr << "Operands lie outside of code segment. ";
-				CERR_CURRENT_IP();
-				continue;
-			}
-
-
-#ifdef DEBUG
-			if (usecode_trace == 2) {
-				uc_trace_disasm(frame);
-			} 
-#endif
-
-#ifdef USECODE_DEBUGGER
-			// check breakpoints
-
-			int bp = breakpoints.check(frame);
-			if (bp != -1)
-			{
-				// we hit a breakpoint
-
-				// allow handling extra debugging messages
-				on_breakpoint = true;
-
-				cout << "On breakpoint" << endl;
-
-				// signal remote client that we hit a breakpoint
-				unsigned char c=(unsigned char)Exult_server::dbg_on_breakpoint;
-				if (client_socket >= 0)
-					Exult_server::Send_data(client_socket,
-											Exult_server::usecode_debugging,
-											&c, 1);
-
-#ifdef XWIN
-				raise(SIGUSR1); // to allow trapping it in gdb too
-#endif
-
-
+	call_depth++;
+	int abort = 0;			// Flag if ABRT executed.
 #if 0
-				// little console mode "debugger" (if you can call it that...)
-				bool done = false;
-				while (!done) {
-					char userinput;
-					cout << "s=step into, o=step over, f=finish, c=continue, "
-						 << "b=stacktrace: ";
-					cin >> userinput;
-
-					if (userinput == 's') {
-						breakpoints.add(new AnywhereBreakpoint());
-						cout << "Stepping into..." << endl;
-						done = true;
-					} else if (userinput == 'o') {
-						breakpoints.add(new StepoverBreakpoint(frame));
-						cout << "Stepping over..." << endl;
-						done = true;
-					} else if (userinput == 'f') {
-						breakpoints.add(new FinishBreakpoint(frame));
-						cout << "Finishing function..." << endl;
-						done = true;
-					} else if (userinput == 'c') {
-						done = true;
-					} else if (userinput == 'b') {
-						stack_trace(cout);
-					}
-				}
-#elif (defined(USE_EXULTSTUDIO))
-				breakpoint_action = -1;
-				while (breakpoint_action == -1) {
-					SDL_Delay(20);
-					Server_delay(Handle_client_debug_message);
-				}
+	unsigned char *catch_ip = 0;	// IP for catching an ABRT.
 #endif
+					// Save/set function.
+	Usecode_function *save_fun = cur_function;
+	cur_function = fun;
+	uint8 *ip = fun->code;	// Instruction pointer.
+					// Where it ends.
+	uint8 *endp = ip + fun->len;
 
+	int data_len;
+	if (!fun->extended)
+		data_len = Read2(ip);	// Get length of (text) data.
+	else
+		data_len = (sint32)(Read4(ip)); // 32 bit lengths
 
-				c = (unsigned char)Exult_server::dbg_continuing;
-				if (client_socket >= 0)
-					Exult_server::Send_data(client_socket,
-											Exult_server::usecode_debugging,
-											&c, 1);
-				// disable extra debugging messages again
-				on_breakpoint = false;
+	char *data = (char *) ip;	// Save ->text.
+	ip += data_len;			// Point past text.
+	int num_args = Read2(ip);	// # of args. this function takes.
+	while (num_args > stack_elems)	// Not enough args pushed?
+		{			// Push 0's.
+		pushi(0);
+		stack_elems++;
+		}
+					// Local variables follow args.
+	int num_locals = Read2(ip) + num_args;
+					// Allocate locals.
+	Usecode_value *locals = new Usecode_value[num_locals];
+					// Store args.
+	for (int i = 0; i < num_args; i++)
+		{
+		Usecode_value val = pop();
+		locals[num_args - i - 1] = val;
+		}
+#ifdef DEBUG
+	if (debug >= 0)
+		{
+		cout << "Running usecode " << hex << setfill((char)0x30) 
+			<< setw(4) << fun->id << dec << setfill(' ') <<
+			" (";
+		for (int i = 0; i < num_args; i++)
+			{
+			if (i)
+				cout << ", ";
+			locals[i].print(cout);
+			}
+		cout << ") with event " << event << endl;
+		}
+#endif
+	Usecode_value *save_sp = sp;	// NOW, save TOS, last-created.
+	int num_externs = Read2(ip);	// # of external refs. following.
+	unsigned char *externals = ip;	// Save -> to them.
+	ip += 2*num_externs;		// ->actual bytecode.
+	int offset;			// Gets offset parm.
+	int sval;			// Get value from top-of-stack.
+	unsigned char *code = ip;	// Save for debugging.
+	bool set_ret_value = false;		// return value set?
+	Usecode_value ret_value;	// Gets return value.
+	/*
+	 *	Main loop.
+	 */
+	while (ip < endp)
+		{
+		int opcode = *ip++;
+#ifdef DEBUG
+		if (usecode_trace)
+			{
+
+			int curip = ip - 1 - code;
+
+			if (usecode_trace == 2) {
+				uc_trace_disasm(locals, num_locals, (uint8*)data, 
+								(uint8*)externals, (uint8*)code, ip-1);
+			} else {
+				cout << "SP = " << sp - stack << ", IP = " << hex << curip
+					 << ", op = "<< opcode << dec << endl;
 			}
 
-#endif
-
-
-			frame->ip++;
-
-			switch (opcode)
-			{
-			case 0x04:  // start conversation
-			case 0x84: // (32 bit version)
-			{
-				if (opcode < 0x80)
-					offset = (short) Read2(frame->ip);
-				else
-					offset = (sint32) Read4(frame->ip);
+			if (ucbp_fun == fun->id && ucbp_ip == curip)
+				cout << "At breakpoint" << endl;
 				
-				found_answer = false;
-				if (!get_user_choice())  // Exit conv. if no choices.
-					frame->ip += offset; // (Emps and honey.)
-				break;
+			cout.flush();
 			}
-			case 0x05:		// JNE.
+#endif
+		switch (opcode)
 			{
-				offset = (short) Read2(frame->ip);
+		case 0x04:  // start conversation
+		case 0x84: // (32 bit version)
+			{
+			if (opcode < 0x80)
+				offset = (short) Read2(ip);
+			else
+				offset = (sint32) Read4(ip);
+
+			found_answer = false;
+			if (!get_user_choice())	// Exit conv. if no choices.
+				ip += offset;	// (Emp's and honey.)
+			break;
+			}
+		case 0x05:		// JNE.
+			{
+			offset = (short) Read2(ip);
+			Usecode_value val = pop();
+			if (val.is_false())
+				ip += offset;
+			break;
+			}
+		case 0x85:		// JNE32
+			{
+				offset = (sint32) Read4(ip);
 				Usecode_value val = pop();
 				if (val.is_false())
-					frame->ip += offset;
+					ip += offset;
 				break;
 			}
-			case 0x85:		// JNE32
+		case 0x06:		// JMP.
+			offset = (short) Read2(ip);
+			ip += offset;
+			break;
+		case 0x86:		// JMP32
+			offset = (sint32) Read4(ip);
+			ip += offset;
+			break;
+		case 0x07:		// CMPS.
+		case 0x87: // (32 bit version)
 			{
-				offset = (sint32) Read4(frame->ip);
-				Usecode_value val = pop();
-				if (val.is_false())
-					frame->ip += offset;
-				break;
-			}
-			case 0x06:		// JMP.
-				offset = (short) Read2(frame->ip);
-				frame->ip += offset;
-				break;
-			case 0x86:		// JMP32
-				offset = (sint32) Read4(frame->ip);
-				frame->ip += offset;
-				break;
-			case 0x07:		// CMPS.
-			case 0x87: // (32 bit version)
-			{
-				int cnt = Read2(frame->ip);	// # strings.
+				int cnt = Read2(ip);	// # strings.
 				if (opcode < 0x80)
-					offset = (short) Read2(frame->ip);
+					offset = (short) Read2(ip);
 				else
-					offset = (sint32) Read4(frame->ip);
-				
+					offset = (sint32) Read4(ip);
+
 				bool matched = false;
-				
+
 				// only try to match if we haven't found an answer yet
 				while (!matched && !found_answer && cnt-- > 0) {
 					Usecode_value s = pop();
@@ -1968,485 +1734,500 @@ int Usecode_internal::run()
 				while (cnt-- > 0)	// Pop rest of stack.
 					pop();
 				if (!matched)		// Jump if no match.
-					frame->ip += offset;
+					ip += offset;
 			}
 			break;
-			case 0x09:		// ADD.
+		case 0x09:		// ADD.
 			{
-				Usecode_value v2 = pop();
-				Usecode_value v1 = pop();
-				Usecode_value sum = v1 + v2;
-				push(sum);
-				break;
+			Usecode_value v2 = pop();
+			Usecode_value v1 = pop();
+			Usecode_value sum = v1 + v2;
+			push(sum);
+			break;
 			}
-			case 0x0a:		// SUB.
-				sval = popi();
-				pushi(popi() - sval);
-				break;
-			case 0x0b:		// DIV.
-				sval = popi();
-				pushi(popi()/sval);
-				break;
-			case 0x0c:		// MUL.
-				pushi(popi()*popi());
-				break;
-			case 0x0d:		// MOD.
-				sval = popi();
-				pushi(popi() % sval);
-				break;
-			case 0x0e:		// AND.
+		case 0x0a:		// SUB.
+			sval = popi();
+			pushi(popi() - sval);
+			break;
+		case 0x0b:		// DIV.
+			sval = popi();
+			pushi(popi()/sval);
+			break;
+		case 0x0c:		// MUL.
+			pushi(popi()*popi());
+			break;
+		case 0x0d:		// MOD.
+			sval = popi();
+			pushi(popi() % sval);
+			break;
+		case 0x0e:		// AND.
 			{
-				Usecode_value v1 = pop();
-				Usecode_value v2 = pop();
-				int result = v1.is_true() && v2.is_true();
-				pushi(result);
-				break;
+			Usecode_value v1 = pop();
+			Usecode_value v2 = pop();
+			int result = v1.is_true() && v2.is_true();
+			pushi(result);
+			break;
 			}
-			case 0x0f:		// OR.
+		case 0x0f:		// OR.
 			{
-				Usecode_value v1 = pop();
-				Usecode_value v2 = pop();
-				int result = v1.is_true() || v2.is_true();
-				pushi(result);
-				break;
+			Usecode_value v1 = pop();
+			Usecode_value v2 = pop();
+			int result = v1.is_true() || v2.is_true();
+			pushi(result);
+			break;
 			}
-			case 0x10:		// NOT.
-				pushi(!pop().is_true());
-				break;
-			case 0x12:		// POP into a variable.
+		case 0x10:		// NOT.
+			pushi(!pop().is_true());
+			break;
+		case 0x12:		// POP into a variable.
 			{
-				offset = Read2(frame->ip);
-				// Get value.
+			offset = Read2(ip);
+					// Get value.
+			Usecode_value val = pop();
+			if (offset < 0 || offset >= num_locals)
+				cerr << "Local #" << offset << 
+							" out of range" << endl;
+			else
+				locals[offset] = val;
+			}
+			break;
+		case 0x13:		// PUSH true.
+			pushi(1);
+			break;
+		case 0x14:		// PUSH false.
+			pushi(0);
+			break;
+		case 0x16:		// CMPGT.
+			sval = popi();
+			pushi(popi() > sval);	// Order?
+			break;
+		case 0x17:		// CMPL.
+			sval = popi();
+			pushi(popi() < sval);
+			break;
+		case 0x18:		// CMPGE.
+			sval = popi();
+			pushi(popi() >= sval);
+			break;
+		case 0x19:		// CMPLE.
+			sval = popi();
+			pushi(popi() <= sval);
+			break;
+		case 0x1a:		// CMPNE.
+			{
+			Usecode_value val1 = pop();
+			Usecode_value val2 = pop();
+			pushi(!(val1 == val2));
+			break;
+			}
+		case 0x1c:		// ADDSI.
+			offset = Read2(ip);
+			append_string(data + offset);
+			break;
+		case 0x9c:		// ADDSI32
+			offset = (sint32)Read4(ip);
+			append_string(data + offset);
+			break;
+		case 0x1d:		// PUSHS.
+			offset = Read2(ip);
+			pushs(data + offset);
+			break;
+		case 0x9d:		// PUSHS32
+			offset = (sint32)Read4(ip);
+			pushs(data + offset);
+			break;
+		case 0x1e:		// ARRC.
+			{		// Get # values to pop into array.
+			int num = Read2(ip);
+			int cnt = num;
+			Usecode_value arr(num, 0);
+			int to = 0;	// Store at this index.
+			while (cnt--)
+				{
 				Usecode_value val = pop();
-				if (offset < 0 || offset >= num_locals) {
-					LOCAL_VAR_ERROR(offset);
-				} else {
-					frame->locals[offset] = val;
+				to += arr.add_values(to, val);
 				}
+			if (to < num)// 1 or more vals empty arrays?
+				arr.resize(to);
+			push(arr);
 			}
 			break;
-			case 0x13:		// PUSH true.
-				pushi(1);
+		case 0x1f:		// PUSHI.
+			{		// Might be negative.
+			short ival = Read2(ip);
+			pushi(ival);
+			break;
+			}
+		case 0x9f:		// PUSHI32
+			{
+				int ival = (sint32)Read4(ip);
+				pushi(ival);
 				break;
-			case 0x14:		// PUSH false.
+			}
+		case 0x21:		// PUSH.
+			offset = Read2(ip);
+			push(locals[offset]);
+			break;
+		case 0x22:		// CMPEQ.
+			{
+			Usecode_value val1 = pop();
+			Usecode_value val2 = pop();
+			pushi(val1 == val2);
+			break;
+			}
+		case 0x24:		// CALL.
+			{
+			offset = Read2(ip);
+			int result = call_usecode_function(externals[2*offset] + 
+							256*externals[2*offset + 1], event,
+							sp - save_sp);
+#ifdef DEBUG
+			// This follows the "RETurning (retvalue) from usecode xxxx"
+			cout << "...back into usecode " << hex << setw(4) << 
+				setfill((char)0x30) << fun->id << dec << setfill(' ') << endl;
+#endif
+			if (!result) {	// Catch ABRT.
+				abort = 1;
+				sp = save_sp;
+				ip = endp;
+			}
+			}
+			break;
+		case 0x25:		// RET.
+					// Experimenting...
+			show_pending_text();
+			sp = save_sp;		// Restore stack.
+			ip = endp;	// End the loop.
+			break;
+		case 0x26:		// AIDX.
+			{
+			sval = popi();	// Get index into array.
+			sval--;		// It's 1 based.
+					// Get # of local to index.
+			offset = Read2(ip);
+			if (offset < 0 || offset >= num_locals)
+				{
+				cerr << "Local #" << offset << 
+							" out of range" << endl;
 				pushi(0);
 				break;
-			case 0x16:		// CMPGT.
-				sval = popi();
-				pushi(popi() > sval);	// Order?
-				break;
-			case 0x17:		// CMPL.
-				sval = popi();
-				pushi(popi() < sval);
-				break;
-			case 0x18:		// CMPGE.
-				sval = popi();
-				pushi(popi() >= sval);
-				break;
-			case 0x19:		// CMPLE.
-				sval = popi();
-				pushi(popi() <= sval);
-				break;
-			case 0x1a:		// CMPNE.
-			{
-				Usecode_value val1 = pop();
-				Usecode_value val2 = pop();
-				pushi(!(val1 == val2));
+				}
+			if (sval < 0) {
+				cerr << "Negative array index: " << sval << endl;
+				pushi(0);
 				break;
 			}
-			case 0x1c:		// ADDSI.
-				offset = Read2(frame->ip);
-				if (offset < 0 || frame->data + offset >= frame->externs-6) {
-					DATA_SEGMENT_ERROR();
-					break;
-				}
-				append_string((char*)(frame->data + offset));
-				break;
-			case 0x9c:		// ADDSI32
-				offset = (sint32)Read4(frame->ip);
-				if (offset < 0 || frame->data + offset >= frame->externs-6) {
-					DATA_SEGMENT_ERROR();
-					break;
-				}
-				append_string((char*)(frame->data + offset));
-				break;
-			case 0x1d:		// PUSHS.
-				offset = Read2(frame->ip);
-				if (offset < 0 || frame->data + offset >= frame->externs-6) {
-					DATA_SEGMENT_ERROR();
-					break;
-				}
-				pushs((char*)(frame->data + offset));
-				break;
-			case 0x9d:		// PUSHS32
-				offset = (sint32)Read4(frame->ip);
-				if (offset < 0 || frame->data + offset >= frame->externs-6) {
-					DATA_SEGMENT_ERROR();
-					break;
-				}
-				pushs((char*)(frame->data + offset));
-				break;
-			case 0x1e:		// ARRC.
-			{		// Get # values to pop into array.
-				int num = Read2(frame->ip);
-				int cnt = num;
-				Usecode_value arr(num, 0);
-				int to = 0;	// Store at this index.
-				while (cnt--)
-				{
-					Usecode_value val = pop();
-					to += arr.add_values(to, val);
-				}
-				if (to < num)// 1 or more vals empty arrays?
-					arr.resize(to);
-				push(arr);
+			Usecode_value& val = locals[offset];
+
+			if (val.is_array()) {
+				push(val.get_elem(sval));
+			} else if (sval == 0) {
+				push(val); // needed for SS keyring (among others, probably)
+			} else {
+				pushi(0);  // guessing... probably unnecessary
 			}
 			break;
-			case 0x1f:		// PUSHI.
-			{		// Might be negative.
-				short ival = Read2(frame->ip);
-				pushi(ival);
-				break;
 			}
-			case 0x9f:		// PUSHI32
+		case 0x2c:		// Another kind of return?
+					// Experimenting...
+			show_pending_text();
+			sp = save_sp;		// Restore stack.
+			ip = endp;	// End the loop.
+			break;
+		case 0x2d:		// Set return value (SETR).
 			{
-				int ival = (sint32)Read4(frame->ip);
-				pushi(ival);
-				break;
-			}
-			case 0x21:		// PUSH.
-				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= num_locals) {
-					LOCAL_VAR_ERROR(offset);
-					pushi(0);
-				}
-				else {
-					push(frame->locals[offset]);
-				}
-				break;
-			case 0x22:		// CMPEQ.
-			{
-				Usecode_value val1 = pop();
-				Usecode_value val2 = pop();
-				pushi(val1 == val2);
-				break;
-			}
-			case 0x24:		// CALL.
-			{
-				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= frame->num_externs) {
-					EXTERN_ERROR();
-					break;
-				}
-					
-				uint8 *tempptr = frame->externs + 2*offset;
-				int funcid = Read2(tempptr);
+			Usecode_value r = pop();
+					// But 1st takes precedence.
 
-				call_function(funcid, frame->eventid);
-				frame_changed = true;
-				break;
-			}
-			case 0x25:		// RET. (End of procedure reached)
-			case 0x2C:		// RET. (Return from procedure)
-				show_pending_text();
+			//			if (!set_ret_value)
 
-				return_from_procedure();
-				frame_changed = true;
-				break;
-			case 0x26:		// AIDX.
-			{
-				sval = popi();	// Get index into array.
-				sval--;		// It's 1 based.
-				// Get # of local to index.
-				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= num_locals) {
-					LOCAL_VAR_ERROR(offset);
-					pushi(0);
-					break;
-				}
-				if (sval < 0) {
-					cerr << "AIDX: Negative array index: " << sval << endl;
-					pushi(0);
-					break;
-				}
-				Usecode_value& val = frame->locals[offset];
-				
-				if (val.is_array()) {
-					push(val.get_elem(sval));
-				} else if (sval == 0) {
-					push(val); // needed for SS keyring (among others)
-				} else {
-					pushi(0);  // guessing... probably unnecessary
-				}
-				break;
-			}
-			case 0x2d:		// RET. (Return from function)
-			{
-				Usecode_value r = pop();
+			ret_value = r;
 
-				return_from_function(r);
-				frame_changed = true;
-				break;
+#if 0	/* ++++Looks like BG does too.  Need to for gangplank test. */
+					// Looks like SI rets. here.
+			if (Game::get_game_type() == SERPENT_ISLE ||
+					// Fix infinite loop (0x944) bug.
+				 set_ret_value > 40)
+#endif
+				{
+				sp = save_sp;	// Restore stack, force ret.
+				push(ret_value);
+				ip = endp;
+				}
+			set_ret_value = true;
+			break;
 			}
-			case 0x2e:		// INITLOOP (1st byte of loop)
-			case 0xae:		// (32 bit version)   
+		case 0x2e:		// Looks like a loop.
+		case 0xae:		// (32 bit version)   
 			{
-				int nextopcode = *(frame->ip);
+				int nextopcode = *ip++;
 				if ((opcode == 0x2e && nextopcode != 0x02) ||
-					(opcode == 0xae && nextopcode != 0x82)) {
-					cerr << "2nd byte in loop isn't a 0x02 (or 0x82)!"<<endl;
-					break;
-				} else {
-					initializing_loop = true;
-				}
-				break;
+					(opcode == 0xae && nextopcode != 0x82))
+					cout << "2nd byte in loop isn't a 2 (or 0x82)!"<<endl;
+					// FALL THROUGH.
 			}
-			case 0x02:	// LOOP (2nd byte of loop)
-			case 0x82:  // (32 bit version)
+		case 0x02:		// 2nd byte of loop.
+		case 0x82:  // (32 bit version)
 			{
-				// Counter (1-based).
-				int local1 = Read2(frame->ip);
-				// Total count.
-				int local2 = Read2(frame->ip);
-				// Current value of loop var.
-				int local3 = Read2(frame->ip);
-				// Array of values to loop over.
-				int local4 = Read2(frame->ip);
-				// Get offset to end of loop.
-				if (opcode < 0x80)
-					offset = (short) Read2(frame->ip);
-				else
-					offset = (sint32) Read4(frame->ip); // 32 bit offset
+					// Counter (1-based).
+			int local1 = Read2(ip);
+					// Total count.
+			int local2 = Read2(ip);
+					// Current value of loop var.
+			int local3 = Read2(ip);
+					// Array of values to loop over.
+			int local4 = Read2(ip);
+					// Get offset to end of loop.
 
-				if (local1 < 0 || local1 >= num_locals) {
-					LOCAL_VAR_ERROR(local1);
-					break;
-				}
-				if (local2 < 0 || local2 >= num_locals) {
-					LOCAL_VAR_ERROR(local1);
-					break;
-				}
-				if (local3 < 0 || local3 >= num_locals) {
-					LOCAL_VAR_ERROR(local1);
-					break;
-				}
-				if (local4 < 0 || local4 >= num_locals) {
-					LOCAL_VAR_ERROR(local1);
-					break;
-				}
-				
-				// Get array to loop over.
-				Usecode_value& arr = frame->locals[local4];
+			if (opcode < 0x80)
+				offset = (short) Read2(ip);
+			else
+				offset = (sint32) Read4(ip); // 32 bit offset
 
-				if (initializing_loop)
+					// Get array to loop over.
+			Usecode_value& arr = locals[local4];
+			if (opcode == 0x2e || opcode == 0xae)
 				{	// Initialize loop.
-					initializing_loop = false;
-					int cnt = arr.is_array() ?
-						arr.get_array_size() : 1;
-					frame->locals[local2] = Usecode_value(cnt);
-					frame->locals[local1] = Usecode_value(0);
+				int cnt = arr.is_array() ?
+					arr.get_array_size() : 1;
+				locals[local2] = Usecode_value(cnt);
+				locals[local1] = Usecode_value(0);
 				}
-				int next = frame->locals[local1].get_int_value();
-
-				// End of loop?
-				if (next >= frame->locals[local2].get_int_value()) {
-					frame->ip += offset;
-				} else		// Get next element.
+			int next = locals[local1].get_int_value();
+					// End of loop?
+			if (next >= locals[local2].get_int_value())
+				ip += offset;
+			else		// Get next element.
 				{
-					frame->locals[local3] = arr.is_array() ?
-						arr.get_elem(next) : arr;
-					frame->locals[local1] = Usecode_value(next + 1);
+				locals[local3] = arr.is_array() ?
+					arr.get_elem(next) : arr;
+				locals[local1] = Usecode_value(next + 1);
 				}
-				break;
+			break;
 			}
-			case 0x2f:		// ADDSV.
+		case 0x2f:		// ADDSV.
 			{
-				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= num_locals) {
-					LOCAL_VAR_ERROR(offset);
-					break;
-				}
-
-				const char *str = frame->locals[offset].get_str_value();
-				if (str)
-					append_string(str);
-				else		// Convert integer.
+			offset = Read2(ip);
+			const char *str = locals[offset].get_str_value();
+			if (str)
+				append_string(str);
+			else		// Convert integer.
 				{
-				// 25-09-2001 - Changed to >= 0 to fix money-counting in SI.
-				//				if (locals[offset].get_int_value() != 0) {
-					if (frame->locals[offset].get_int_value() >= 0) {
-						char buf[20];
-						snprintf(buf, 20, "%ld",
-								 frame->locals[offset].get_int_value());
-						append_string(buf);
-					}
+// 25-09-2001 - Changed to >= 0 to fix money-counting in SI.
+//				if (locals[offset].get_int_value() != 0) {
+				if (locals[offset].get_int_value() >= 0) {
+					char buf[20];
+					snprintf(buf, 20, "%ld",
+					locals[offset].get_int_value());
+					append_string(buf);
 				}
-				break;
+				}
+			break;
 			}
-			case 0x30:		// IN.  Is a val. in an array?
+		case 0x30:		// IN.  Is a val. in an array?
 			{
-				Usecode_value arr = pop();
-				// If an array, use 1st elem.
-				Usecode_value val = pop().get_elem0();
-				pushi(arr.find_elem(val) >= 0);
-				break;
+			Usecode_value arr = pop();
+					// If an array, use 1st elem.
+			Usecode_value val = pop().get_elem0();
+			pushi(arr.find_elem(val) >= 0);
+			break;
 			}
-			case 0x31:		// Unknown.
-			case 0xB1:		// (32 bit version)
+		case 0x31:		// Unknown.
+		case 0xB1:		// (32 bit version)
 			// this opcode only occurs in the 'audition' usecode function (BG)
 			// not sure what it's supposed to do, but this function results
 			// in the same behaviour as the original
-				frame->ip += 2;
-				if (opcode < 0x80)
-					offset = (short)Read2(frame->ip);
-				else
-					offset = (sint32)Read4(frame->ip);
-				
-				if (!found_answer)
-					found_answer = true;
-				else
-					frame->ip += offset;
-				break;
+			ip += 2;
+			if (opcode < 0x80)
+				offset = (short)Read2(ip);
+			else
+				offset = (sint32)Read4(ip);
 
-			case 0x32:		// RET. (End of function reached)
-			{
-				show_pending_text();
-
-				Usecode_value zero(0);
-				return_from_function(zero);
-				frame_changed = true;
-				break;
-			}
-			case 0x33:		// SAY.
-				say_string();
-				break;
-			case 0x38:		// CALLIS.
-			{
-				offset = Read2(frame->ip);
-				sval = *(frame->ip)++;  // # of parameters.
-				Usecode_value ival = call_intrinsic(frame->eventid,
-													offset, sval);
-				push(ival);
-				break;
-			}
-			case 0x39:		// CALLI.
-				offset = Read2(frame->ip);
-				sval = *(frame->ip)++; // # of parameters.
-				call_intrinsic(frame->eventid, offset, sval);
-				break;
-			case 0x3e:		// PUSH ITEMREF.
-				pushref(frame->caller_item);
-				break;
-			case 0x3f:		// ABRT.
-				show_pending_text();
-
-				abort_function();
-				frame_changed = true;
-				aborted = true;
-				break;
-			case 0x40:		// end conversation
+			if (!found_answer)
 				found_answer = true;
-				break;
-			case 0x42:		// PUSHF.
-				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= 1024) {
-					FLAG_ERROR(offset);
-					pushi(0);
-				}
-				pushi(gflags[offset]);
-				break;
-			case 0x43:		// POPF.
-				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= 1024) {
-					FLAG_ERROR(offset);
-				}
-				gflags[offset] = (unsigned char) popi();
-				// ++++KLUDGE for Monk Isle:
-				if (offset == 0x272 && Game::get_game_type() ==
-					SERPENT_ISLE)
-					gflags[offset] = 0;
-				break;
-			case 0x44:		// PUSHB.
-				pushi(*(frame->ip)++);
-				break;
-			case 0x46:		// Set array element.
-			{
-				// Get # of local array.
-				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= num_locals) {
-					LOCAL_VAR_ERROR(offset);
-					break;
-				}
+			else
+				ip += offset;
+			break;
 
-				Usecode_value& arr = frame->locals[offset];
-				short index = popi();
-				index--;	// It's 1-based.
-				Usecode_value val = pop();
-				int size = arr.get_array_size();
-				if (index >= 0 && 
-					(index < size || arr.resize(index + 1)))
-					arr.put_elem(index, val);
-				break;
-			}
-			case 0x47:		// CALLE.  Stack has caller_item.
+		case 0x32:		// RTS: Push return value & ret. 
+					//   from function.
+			sp = save_sp;	// Restore stack.
+			push(ret_value);
+			ip = endp;
+			break;
+		case 0x33:		// SAY.
+			say_string();
+			break;
+		case 0x38:		// CALLIS.
 			{
-				Usecode_value ival = pop();
-				Game_object *caller = get_item(ival);
-				push(ival); // put caller_item back on stack
-
-				offset = Read2(frame->ip);
-				call_function(offset, frame->eventid, caller);
-				frame_changed = true;
-				break;
+			offset = Read2(ip);
+			sval = *ip++;	// # of parameters.
+			Usecode_value ival = call_intrinsic(event,
+							offset, sval);
+			push(ival);
 			}
-			case 0x48:		// PUSH EVENTID.
-				pushi(frame->eventid);
-				break;
-			case 0x4a:		// ARRA.
+			break;
+		case 0x39:		// CALLI.
+			offset = Read2(ip);
+			sval = *ip++;	// # of parameters.
+			call_intrinsic(event, offset, sval);
+			break;
+		case 0x3e:		// PUSH ITEMREF.
+			pushref(caller_item);
+			break;
+		case 0x3f:		// ABRT - Really like a 'throw'.
+			show_pending_text();
+			ip = endp;
+			sp = save_sp;	// Restore stack.
+			abort = 1;
+			break;
+		case 0x40:		// end conversation
+			found_answer = true;
+			break;
+		case 0x42:		// PUSHF.
+			offset = Read2(ip);
+			pushi(gflags[offset]);
+			break;
+		case 0x43:		// POPF.
+			offset = Read2(ip);
+			gflags[offset] = (unsigned char) popi();
+					// ++++KLUDGE for Monk Isle:
+			if (offset == 0x272 && Game::get_game_type() ==
+							SERPENT_ISLE)
+				gflags[offset] = 0;
+			break;
+		case 0x44:		// PUSHB.
+			pushi(*ip++);
+			break;
+		case 0x45:		// Unknown.
+			ip++;
+			break;
+		case 0x46:		// Set array element.
 			{
-				Usecode_value val = pop();
-				Usecode_value arr = pop();
-				push(arr.concat(val));
-				break;
+					// Get # of local array.
+			offset = Read2(ip);
+			Usecode_value& arr = locals[offset];
+			short index = popi();
+			index--;	// It's 1-based.
+			Usecode_value val = pop();
+			int size = arr.get_array_size();
+			if (index >= 0 && 
+			    (index < size || arr.resize(index + 1)))
+				arr.put_elem(index, val);
+			break;
 			}
-			case 0x4b:		// POP EVENTID.
-				frame->eventid = popi();
-				break;
-			case 0x4c: // debugging opcode from spanish SI (line number)
+		case 0x47:		// CALLE.  Stack has caller_item.
 			{
-				frame->line_number = Read2(frame->ip);
-				break;
+			Game_object *prev_item = caller_item;
+			Usecode_value ival = pop();
+			caller_item = get_item(ival);
+			push(ival);
+			offset = Read2(ip);
+			if (!call_usecode_function(offset, event, 
+								sp - save_sp))
+				{	// Catch ABRT.
+				abort = 1;
+#if 0
+				if (catch_ip)
+					ip = catch_ip;
+				else	// No catch?  I think we should exit.
+#endif
+					{
+					sp = save_sp;
+					ip = endp;
+					}
+				}
+			caller_item = prev_item;
+			break;
 			}
-			case 0x4d: // debugging opcode from spanish SI (function init)
+		case 0x48:		// PUSH EVENTID.
+			pushi(event);
+			break;
+		case 0x4a:		// ARRA.
 			{
-				int funcname = Read2(frame->ip);
-				int paramnames = Read2(frame->ip);
-				break;
+			Usecode_value val = pop();
+			Usecode_value arr = pop();
+			push(arr.concat(val));
+			break;
 			}
-			case 0xcd: // 32 bit debugging function init
+		case 0x4b:		// POP EVENTID.
+			event = popi();
+			break;
+		case 0x4c: // debugging stuff from spanish SI (linenum)
 			{
-				int funcname = (sint32)Read4(frame->ip);
-				int paramnames = (sint32)Read4(frame->ip);
+				int linenum = Read2(ip);
 				break;
 			}
-			default:
-				cerr << "Opcode " << opcode << " not known. ";
-				CERR_CURRENT_IP();
+		case 0x4d: // debugging stuff from spanish SI (function init)
+			{
+				int funcname = Read2(ip);
+				int paramnames = Read2(ip);
 				break;
 			}
-		}		
+		case 0xcd: // 32 bit debugging function init
+			{
+				int funcname = (sint32)Read4(ip);
+				int paramnames = (sint32)Read4(ip);
+				break;
+			}
+		default:
+			cout << "Opcode " << opcode << " not known." << endl;
+			break;
+			}
+		}
+	delete [] locals;
+#ifdef DEBUG
+	if (debug >= 1)
+		{
+		cout << "RETurning ";
+		if (set_ret_value)
+			{
+			cout << "(";
+			ret_value.print(cout);
+			cout << ") ";
+			}
+		cout << "from usecode " << hex << setw(4) << 
+			setfill((char)0x30) << fun->id << dec << setfill(' ')
+			<< endl;
+		}
+#endif
+	cout.flush();
+	cur_function = save_fun;
+	call_depth--;
+	if (call_depth == 0 && temp_to_be_deleted) {
+		temp_to_be_deleted->remove_this(0);
+		temp_to_be_deleted = 0;
+	}
+	return (abort == 0);		// Return 0 if ABRT.
 	}
 
-	if (call_stack.front() == 0) {
-		// pop the NULL frame from the stack
-		call_stack.pop_front();
+/*
+ *	Call a usecode function.
+ *
+ *	Output:	0 if ABRT executed.
+ *		-1 if function not found.
+ *		1 if okay.
+ */
+
+int Usecode_internal::call_usecode_function
+	(
+	int id,
+	int event,			// Event (?) that caused this call.
+	int stack_elems			// # elems. on stack at call.
+	)
+	{
+					// Look up in table.
+	vector<Usecode_function*>& slot = funs[id/0x100];
+	size_t index = id%0x100;
+	Usecode_function *fun = index < slot.size() ? slot[index] : 0;
+	if (!fun)
+		{
+		cout << "Usecode " << id << " not found."<<endl;
+		return (-1);
+		}
+					// Do it.  Rets. 0 if aborted.
+	return run(fun, event, stack_elems);
 	}
-
-	if (aborted)
-		return 0;
-
-	return 1;
-}
 
 /*
  *	This is the main entry for outside callers.
@@ -2467,17 +2248,12 @@ int Usecode_internal::call_usecode
 	if (call_depth && event == npc_proximity && Game::get_game_type() ==
 								BLACK_GATE)
 		return (0);
-
+	Game_object *prev_item = caller_item;
+	caller_item = obj;
 	conv->clear_answers();
-
-	int ret;
-	if (call_function(id, event, obj, true))
-		ret = run();
-	else
-		ret = -1; // failed to call the function
-
+	int ret = call_usecode_function(id, event, 0);
 	set_book(0);
-
+	caller_item = prev_item;
 					// Left hanging (BG)?
 	if (conv->get_num_faces_on_screen() > 0)
 		{
@@ -2785,67 +2561,3 @@ void Usecode_internal::link_party
 	}
 
 
-
-int Usecode_internal::get_callstack_size() const
-{
-	return call_stack.size();
-}
-
-Stack_frame* Usecode_internal::get_stackframe(int i)
-{
-	if (i >= 0 && i < call_stack.size())
-		return call_stack[i];
-	else
-		return 0;
-}
-
-
-// return current size of the stack
-int Usecode_internal::get_stack_size() const
-{
-	return (int)(sp - stack);
-}
-
-// get an(y) element from the stack. (depth == 0 is top element)
-Usecode_value* Usecode_internal::peek_stack(int depth) const
-{
-	if (depth < 0 || depth >= get_stack_size())
-		return 0;
-
-	return (sp - depth - 1);
-}
-
-// modify an(y) element on the stack. (depth == 0 is top element)
-void Usecode_internal::poke_stack(int depth, Usecode_value& val)
-{
-	if (depth < 0 || (sp - depth) < stack)
-		return;
-
-	*(sp - depth) = val;
-}
-
-
-void Usecode_internal::set_breakpoint()
-{
-	breakpoints.add(new AnywhereBreakpoint());
-}
-
-void Usecode_internal::dbg_stepover()
-{
-	if (on_breakpoint)
-		breakpoints.add(new StepoverBreakpoint(call_stack.front()));
-}
-
-void Usecode_internal::dbg_finish()
-{
-	if (on_breakpoint)
-		breakpoints.add(new FinishBreakpoint(call_stack.front()));
-}
-
-int Usecode_internal::set_location_breakpoint(int funcid, int ip)
-{
-	Breakpoint *bp = new LocationBreakpoint(funcid, ip);
-	breakpoints.add(bp);
-
-	return bp->id;
-}

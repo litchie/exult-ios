@@ -115,7 +115,7 @@ int bgconv[] = {
 	31,			//Doorslam  
 	89,			//Portcullis
 	88,			//Drawbridge
-	134,			//Closed
+	80,			//Closed
 	100,			//SpinnWheel
 	79,			//Minning   ???
 	80,			//Minning   ???
@@ -133,7 +133,7 @@ int bgconv[] = {
 	66,			//IgniteSpel
 	21,			//CradleRock
 	5,			//Beeezzzzz 
-	74,			//Machines 
-	255,			//Static - not used in SI 
+	74,			//Machines  
+	255,			//Static - not used in SI
 	136			//Tick Tock
 };

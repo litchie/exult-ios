@@ -110,11 +110,11 @@ EXULTLIBS = \
 	flic/libflic.la		\
 	conf/libconf.la		\
 	imagewin/libimagewin.la	\
-	server/libserver.la \
 	usecode/libusecode.la	\
 	shapes/libshapes.la \
 	objs/libobjs.la \
 	gumps/libgumps.la \
+	server/libserver.la \
 	files/libu7file.la \
 	files/zip/libminizip.la
 

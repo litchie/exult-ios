@@ -1,7 +1,5 @@
 /*
- *	ucfunction.h - Usecode function
- *
- *  Copyright (C) 2002  The Exult Team
+ *  Copyright (C) 2000-2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,25 +16,19 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _UCFUNCTION_H
-#define _UCFUNCTION_H
-
-#include <iosfwd>
-
-class Usecode_function
-{
- public:
-	int id;				// The function #.  (Appears to be the
-					//   game item # the function gets
-					//   called for.)
-	int len;			// Length.
-
-	bool extended; // is this an 'extented' function? (aka 32 bit function)
-	unsigned char *code;		// The code.
-					// Create from file.
-	Usecode_function(std::istream& file);
-	inline ~Usecode_function()
-		{ delete [] code; }
-};
-
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
 #endif
+
+#ifndef PENTAGRAM // Exult only at this stage. 
+
+#include "pcb.h"
+
+uint32 ProducerConsumerBuf::sequence_cnt=0;
+
+// Stub
+#ifdef DEBUG
+int	ProducerConsumerBuf::counter=0;
+#endif
+
+#endif // PENTAGRAM
