@@ -705,7 +705,7 @@ void Field_object::field_effect
 		if (rand()%2)
 			{
 			actor->set_flag(Actor::asleep);
-			actor->need_timers()->start_sleep();
+//+++No longer needed...	actor->need_timers()->start_sleep();
 			}
 		break;
 	case fire_field:

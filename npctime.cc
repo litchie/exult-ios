@@ -9,6 +9,7 @@
 #include "gamewin.h"
 #include "actors.h"
 #include "items.h"
+#include "schedule.h"
 
 extern bool god_mode;
 
@@ -291,7 +292,7 @@ Npc_sleep_timer::~Npc_sleep_timer
 	}
 
 /*
- *	Time to penalize for sleep, or see if it's worn off.
+ *	Time to see if we should wake up.
  */
 
 void Npc_sleep_timer::handle_event
@@ -305,7 +306,18 @@ void Npc_sleep_timer::handle_event
 	if (curtime >= end_time ||	// Long enough?  Or cured?
 	    npc->get_flag(Actor::asleep) == 0)
 		{
-		npc->clear_flag(Actor::asleep);
+					// Avoid waking Penumbra.
+		if (npc->get_schedule_type() != Schedule::sleep)
+			{
+			npc->clear_flag(Actor::asleep);
+			int frnum = npc->get_framenum();
+			if ((frnum&0xf) == Actor::sleep_frame)
+				{	// Stand up.
+				gwin->add_dirty(npc);
+				npc->set_frame(Actor::standing | (frnum&0x30));
+				gwin->add_dirty(npc);
+				}
+			}
 		delete this;
 		return;
 		}

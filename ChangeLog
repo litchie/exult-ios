@@ -1,3 +1,7 @@
+2000-10-07  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Worked a 'sleep' flag.  Poppy field now works.
+
 2000-10-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Put in Artaxerxes' body shapes.

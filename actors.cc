@@ -940,9 +940,20 @@ void Actor::set_flag
 		flags |= ((unsigned long) 1 << flag);
 	else if (flag >= 32 && flag < 64)
 		flags2 |= ((unsigned long) 1 << (flag-32));
-		
-	if (flag == asleep)
-		set_schedule_type(Schedule::sleep);
+					// Check sched. to avoid waking
+					//   Penumbra.
+	if (flag == asleep && schedule_type != Schedule::sleep)
+		{			// Set timer to wake in a few secs.
+		need_timers()->start_sleep();
+		if ((get_framenum()&0xf) != Actor::sleep_frame)
+			{		// Lie down.
+			Game_window *gwin = Game_window::get_game_window();
+			gwin->add_dirty(this);
+			set_frame(Actor::sleep_frame + ((rand()%4)<<4));
+			gwin->add_dirty(this);
+			set_action(0);	// Stop what you're doing.
+			}
+		}
 	if (flag == poisoned)
 		need_timers()->start_poison();
 
@@ -986,9 +997,10 @@ void Actor::clear_flag
 	else if (flag >= 32 && flag < 64)
 		flags2 &= ~((unsigned long) 1 << (flag-32));
 
+#if 0
 	if (flag == asleep)
 		set_schedule_type(Schedule::stand);
-
+#endif
 	set_actor_shape();
 	}
 
@@ -1578,7 +1590,8 @@ void Main_actor::get_followers
 		{
 		Npc_actor *npc = (Npc_actor *) gwin->get_npc(
 						uc->get_party_member(i));
-		if (!npc)
+		if (!npc || npc->get_flag(Actor::asleep) ||
+		    npc->Actor::is_dead_npc())
 			continue;
 		int sched = npc->get_schedule_type();
 					// Skip if in combat or set to 'wait'.
