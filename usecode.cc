@@ -2358,17 +2358,50 @@ USECODE_INTRINSIC(remove_item)
 	return(no_ret);
 }
 
-USECODE_INTRINSIC(get_equipment_list)
+USECODE_INTRINSIC(is_readied)
 {
-	// Wearing? (npc, where, itemshape, 
-	//   frame (-359=any)).
-	// Where = (1=weapon hand, 
+	// is_readied(npc, where, itemshape, frame (-359=any)).
+	// Where:
+	//   1=weapon hand, 
 	//   2=other hand,
-	//   6=one finger?, 
-	//   7=other finger?,
-	//   9=head).
-	//+++++++++++++++++++++
-	return(no_ret);
+	//   6=one finger, 
+	//   7=other finger,
+	//   9=head
+	//  20=???
+
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (!npc)
+		return Usecode_value(0);
+	int where = parms[1].get_int_value();
+	int shnum = parms[2].get_int_value();
+	int frnum = parms[3].get_int_value();
+	int spot;			// Spot defined in Actor class.
+	switch(where)
+		{
+	case 1:
+		spot = Actor::lhand; break;
+	case 2:
+		spot = Actor::rhand; break;
+	case 6:
+		spot = Actor::lfinger; break;
+	case 7:
+		spot = Actor::rfinger; break;
+	case 9:
+		spot = Actor::head; break; 
+	default:
+		cerr << "Is_readied: spot #" << where <<
+						" not known yet" << endl;
+		spot = -1;
+		break;
+		}
+	if (spot >= 0)
+		{			// See if it's the right one.
+		Game_object *obj = npc->get_readied(spot);
+		if (obj && obj->get_shapenum() == shnum &&
+		    (frnum == -359 || obj->get_framenum() == frnum))
+			return Usecode_value(1);
+		}
+	return Usecode_value(0);
 }
 
 USECODE_INTRINSIC(restart_game)
@@ -2785,7 +2818,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(remove_item),	// 0x6f
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x70
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x71
-	USECODE_INTRINSIC_PTR(get_equipment_list),	// 0x72
+	USECODE_INTRINSIC_PTR(is_readied),	// 0x72
 	USECODE_INTRINSIC_PTR(restart_game),	// 0x73
 	USECODE_INTRINSIC_PTR(start_speech),	// 0x74
 	USECODE_INTRINSIC_PTR(run_endgame),	// 0x75 StartEndGame (ucdump.c)
