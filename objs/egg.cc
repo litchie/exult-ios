@@ -508,6 +508,13 @@ void Egg_object::update_from_studio
 		case weather: frame = 4; break;
 		case teleport:frame = 5; break;
 		case path:    frame = 6; break;
+        case missile:
+            egg->set_shape(200); 
+            if ((data2 & 0xFF) < 8)
+                frame = 2 + ((data2 & 0xFF) / 2);
+            else
+                frame = 1;
+            break;
 		default:      frame = 7; break;
 			}
 	if (frame != -1)
