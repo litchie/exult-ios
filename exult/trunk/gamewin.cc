@@ -2386,7 +2386,8 @@ void Game_window::show_gump
 	)
 	{
 	// overinde for avatar
-	if (obj->get_npc_num() == 0)
+// Messes up other gumps	if (obj->get_npc_num() == 0)  How about:
+	if (obj == main_actor)
 	{
 		if (main_actor->get_siflag(Actor::petra)) // Petra
 		{
