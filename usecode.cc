@@ -2171,10 +2171,10 @@ USECODE_INTRINSIC(mouse_exists)
 	return(u);
 }
 
-USECODE_INTRINSIC(guardian_speech)
+USECODE_INTRINSIC(get_speech_track)
 {
-	// Mystery.  Returns # from 1 to 0x1d.
-	return Usecode_value(1);	// Best message for when sleeping.
+	// Get speech track set by 0x74 or 0x8f.
+	return Usecode_value(speech_track);
 }
 
 USECODE_INTRINSIC(flash_mouse)
@@ -2214,6 +2214,14 @@ USECODE_INTRINSIC(get_equipment_list)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(start_speech)
+{
+	// Start_speech(num).  Also sets speech_track.
+	speech_track = parms[0].get_int_value();
+	if (speech_track >= 0)
+		audio->start_speech(speech_track);
+	return(Usecode_value(0));	// +++++For now, pretend it failed.
+}
 USECODE_INTRINSIC(nap_time)
 {
 	// nap_time(bed)
@@ -2526,7 +2534,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(set_timer),	// 0x66
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x67
 	USECODE_INTRINSIC_PTR(mouse_exists),	// 0x68
-	USECODE_INTRINSIC_PTR(guardian_speech), // 0x69 GetSpeech (ucdump.c)
+	USECODE_INTRINSIC_PTR(get_speech_track), // 0x69
 	USECODE_INTRINSIC_PTR(flash_mouse),	// 0x6a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6c +++??set_xxx(item, val).
@@ -2537,8 +2545,8 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x71
 	USECODE_INTRINSIC_PTR(get_equipment_list),	// 0x72
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x73
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x74
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x75     +++++ StartEndGame (ucdump.c)
+	USECODE_INTRINSIC_PTR(start_speech),	// 0x74
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x75   +++++ StartEndGame (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x76     FireCannon (ucdump.c)
 	USECODE_INTRINSIC_PTR(nap_time),	// 0x77
 	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
@@ -2564,7 +2572,8 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(fade_palette),	// 0x8c 
 	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8e  In_combat().
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8f
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8f +++++Play speech/music?? Only
+		//  called right before endgame.
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x90
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x92
@@ -2806,7 +2815,8 @@ Usecode_machine::Usecode_machine
 	(
 	istream& file,
 	Game_window *gw
-	) : gwin(gw), call_depth(0), cur_function(0), book(0), caller_item(0),
+	) : gwin(gw), call_depth(0), cur_function(0),
+	    speech_track(-1), book(0),  caller_item(0),
 	    last_created(0), removed(new Deleted_objects()), user_choice(0),
 	    String(0), stack(new Usecode_value[1024])
 	{
