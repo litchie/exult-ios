@@ -126,7 +126,7 @@ public:
 	int get_num_frames()
 		{ return num_frames; }
 	Shape_frame *get_frame(int framenum)
-		{ return framenum < frames_size ? frames[framenum] : 0; }
+		{ return 0 <= framenum && framenum < frames_size ? frames[framenum] : 0L; }
 	};
 
 /*

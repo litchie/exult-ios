@@ -143,10 +143,10 @@ void getVersionInfo(std::ostream& out)
 
 	// Metrowerks CodeWarrior
 #elif (defined(__MWERKS__))
-	out << "Metrowerks CodeWarrior, version: "
-	out << ((__MWERKS__&0xf000)>>24) << "."
-	out << ((__MWERKS__&0x0f00)>>16) << "."
-	out << __MWERKS__&0xff
+	out << "Metrowerks CodeWarrior, version: ";
+	out << ((__MWERKS__&0xf000)>>24) << ".";
+	out << ((__MWERKS__&0x0f00)>>16) << ".";
+	out << (__MWERKS__&0xff);
 #else
 	out << "Unknown";
 #endif
@@ -175,11 +175,11 @@ void getVersionInfo(std::ostream& out)
 	} catch(...) {
 		ver = "Linux";
 	}
-	out << ver << std::endl;
+	out << ver;
 #elif (defined(BEOS))
-	out << "BeOS" << std::endl;
+	out << "BeOS";
 #elif (defined(__sun__) || defined(__sun))
-	out << "Solaris" << std::endl;
+	out << "Solaris";
 #elif (defined(WIN32))
 	out << "Windows ";
 	{
@@ -213,14 +213,16 @@ void getVersionInfo(std::ostream& out)
 		else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 90)
 			out << "Me";
 
-		out << " Version " << info.dwMajorVersion << "." << info.dwMinorVersion << " Build " << LOWORD(info.dwBuildNumber&0xFFFF) << std::endl;
+		out << " Version " << info.dwMajorVersion << "." << info.dwMinorVersion << " Build " << LOWORD(info.dwBuildNumber&0xFFFF);
 	}
 #elif (defined(MACOSX))
-	out << "Mac OS X" << endl;
+	out << "Mac OS X";
 #elif (defined(MACOS))
-	out << "MacOS" << endl;
+	out << "MacOS";
 #else
-	out << "Unknown" << std::endl;
+	out << "Unknown";
 #endif
+
+	out << std::endl;
 
 }
