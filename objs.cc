@@ -217,17 +217,16 @@ int Game_object::lt
 	int x1, x2, y1, y2, z1, z2;	// Dims. in tiles.
 	get_abs_tile(atx1, aty1, atz1);
 	obj2.get_abs_tile(atx2, aty2, atz2);
-					// ++++Testing. Seems to work now.
+					// See if there's no overlap.
 	Rectangle r1 = gwin->get_shape_rect(this),
 		  r2 = gwin->get_shape_rect(&obj2);
-	Rectangle ri = r1.intersect(r2);
-	if (ri.w <= 0 || ri.h <= 0)
+	if (!r1.intersects(r2))
 		return (-1);		// No overlap on screen.
 	x1 = info1.get_3d_xtiles(), x2 = info2.get_3d_xtiles();
 	y1 = info1.get_3d_ytiles(), y2 = info2.get_3d_ytiles();
+	z1 = info1.get_3d_height(), z2 = info2.get_3d_height();
 	if (atz1 != atz2)		// Is one obj. on top of another?
 		{
-		z1 = info1.get_3d_height(), z2 = info2.get_3d_height();
 		if (atz1 + z1 <= atz2)
 			return (1);	// It's above us.
 		if (atz2 + z2 <= atz1)
@@ -247,15 +246,43 @@ int Game_object::lt
 		if (atx2 <= atx1 - x1)
 			return (0);	// We're to the right.
 		}
-//++++Not sure if these help:
+					// Handle intersecting objects.
 					// If x's overlap, see if in front.
-	if ((atx1 > atx2 - x2 && atx1 <= atx2) ||
-	    (atx2 > atx1 - x1 && atx2 <= atx1))
-		return (aty1 < aty2 ? 1 : aty1 > aty2 ? 0 : -1);
+	if ((x1 > y1) && ((atx1 > atx2 - x2 && atx1 <= atx2) ||
+	    (atx2 > atx1 - x1 && atx2 <= atx1)))
+		{
+		if (aty1 < aty2)
+			return (1);
+		else if (aty1 > aty2)
+			return (0);
+		else if (x1 < x2)	// Take the narrower one as greater.
+			return (0);
+		else if (x1 > x2)
+			return (1);
+		else if (z1 < z2)	// The narrower one?
+			return (0);
+		else if (z1 > z2)
+			return (1);
+		else
+			return (-1);
+		}
 					// If y's overlap, see if to left.
 	if ((aty1 > aty2 - y2 && aty1 <= aty2) ||
 	    (aty2 > aty1 - y1 && aty2 <= aty1))
-		return (atx1 < atx2 ? 1 : atx1 > atx2 ? 0 : -1);
+		{
+		if (atx1 < atx2)
+			return (1);
+		else if (atx1 > atx2)
+			return (0);
+		else if (y1 < y2)	// Take narrower 2nd.
+			return (0);
+		else if (y2 > y1)
+			return (1);
+		else if (z1 < z2)	// The narrower one?
+			return (0);
+		else if (z1 > z2)
+			return (1);
+		}
 	return (-1);
 	}
 

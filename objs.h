@@ -661,6 +661,11 @@ public:					// Let's make it all public.
 		r.h = (yend <= yend2 ? yend : yend2) - r.y;
 		return (r);
 		}
+	int intersects(Rectangle r2)	// Does it intersect another?
+		{
+		return (x >= r2.x + r2.w ? 0 : r2.x >= x + w ? 0 :
+			y >= r2.y + r2.h ? 0 : r2.y >= y + h ? 0 : 1);
+		}
 	void shift(int deltax, int deltay)
 		{
 		x += deltax;
