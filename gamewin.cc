@@ -176,7 +176,7 @@ Game_window::Game_window
 	(
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
-	    win(0), usecode(0), combat(false),
+	    win(0), usecode(0), combat(false), armageddon(false),
             tqueue(new Time_queue()), clock(tqueue), time_stopped(0),
 	    std_delay(c_std_delay),
 	    npc_prox(new Npc_proximity_handler(this)),
@@ -1773,6 +1773,7 @@ void Game_window::write_gwin
 		Write4s(gout, -1);
 		Write4s(gout, 0);
 	}
+	gout.put(armageddon ? 1 : 0);
 	gout.flush();
 	if (!gout.good())
 		throw file_write_exception(GWINDAT);
@@ -1811,6 +1812,7 @@ void Game_window::read_gwin
 	if (!gin.good())		// Next ones were added recently.
 		throw file_read_exception(GWINDAT);
 	special_light = Read4(gin);
+	armageddon = false;		// Old saves may not have this yet.
 	
 	if (!gin.good())
 	{
@@ -1820,7 +1822,6 @@ void Game_window::read_gwin
 
 	int track_num = Read4(gin);
 	int repeat = Read4(gin);
-
 	if (!gin.good())
 	{
 		Audio::get_ptr()->stop_music();
@@ -1828,6 +1829,9 @@ void Game_window::read_gwin
 	}
 
 	Audio::get_ptr()->start_music(track_num, repeat != false);
+	armageddon = Read1(gin) == 1 ? true : false;
+	if (!gin.good())
+		armageddon = false;
 
 	}
 

@@ -1496,6 +1496,16 @@ USECODE_INTRINSIC(armageddon)
 			npc->die();
 			}
 		}
+	Actor_vector vec;		// Get any monsters nearby.
+	gwin->get_main_actor()->find_nearby_actors(vec, c_any_shapenum, 40);
+	for (Actor_vector::const_iterator it = vec.begin(); it != vec.end();
+									++it)
+		{
+		Actor *act = *it;
+		if (act->is_monster())
+			act->die();
+		}
+	gwin->armageddon = true;
 	return no_ret;
 }
 

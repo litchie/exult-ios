@@ -186,6 +186,7 @@ class Game_window
 public:
 	int skip_lift;			// Skip objects with lift > 0.
 	bool paint_eggs;
+	bool armageddon;		// Spell was cast.
 	int debug;
 	Game_window(int width = 0, int height = 0, int scale = 1, 
 							int scaler = 0);
