@@ -62,6 +62,15 @@ static	string	indent(int depth)
 	return s;
 }
 
+static	string	close_tag(string s)
+{
+	if(s.find(" ")==string::npos)
+		return s;
+	
+	string ret=s.substr(0,s.find(" "));
+	return ret;
+}
+
 void	xmldump(string &s,XMLnode *x,int depth)
 {
 	s+=indent(depth);
@@ -92,7 +101,7 @@ void	xmldump(string &s,XMLnode *x,int depth)
 
 		s+=indent(depth);
 		s+="</";
-		s+=x->entity.id;
+		s+=close_tag(x->entity.id);
 		s+=">\n";
 		}
 }
