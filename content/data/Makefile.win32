@@ -1,4 +1,4 @@
-# Exult Island makefile for use in Windows with mingw 1.0 or later
+# Sourceforge Island makefile for use in Windows with mingw 1.0 or later
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
@@ -18,7 +18,7 @@ CPPFLAGS=-DVERSION=\"0.99cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler \
 	-DHAVE_SNPRINTF -DHAVE_PNG_H
 	
-CXXFLAGS=-O2 -Wno-long-long -fvtable-thunks -DHAVE_SNPRINTF -Dsnprintf=_snprintf
+CXXFLAGS=-O2 -Wno-long-long -fvtable-thunks -Dsnprintf=_snprintf
 CXX=g++
 
 LFLAGS=-mwindows

@@ -40,7 +40,7 @@ CPPFLAGS=-DVERSION=\"0.99cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
 	$(SDL_CFLAGS) -DHAVE_SNPRINTF -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
-CXXFLAGS=-O2 -Wno-long-long -fvtable-thunks -DHAVE_SNPRINTF -Dsnprintf=_snprintf
+CXXFLAGS=-O2 -Wno-long-long -fvtable-thunks -Dsnprintf=_snprintf
 CXX=g++
 
 LFLAGS=-mwindows
