@@ -357,7 +357,9 @@ int Chunk_cache::is_blocked
 	int tx, int ty,			// Square to test.
 	int& new_lift,			// New lift returned.
 	const int move_flags,
-	int max_drop			// Max. drop/rise allowed.
+	int max_drop,			// Max. drop/rise allowed.
+	int max_rise			// Max. rise, or -1 to use old beha-
+					//   viour (max_drop if FLY, else 1).
 	)
 {
 
@@ -371,7 +373,9 @@ int Chunk_cache::is_blocked
 					// Get bits.
 	unsigned short tflags = blocked[ty*c_tiles_per_chunk + tx];
 					// Figure max lift allowed.
-	int max_lift = lift + ((move_flags & MOVE_FLY) ? max_drop : 1);
+	if (max_rise == -1)
+		max_rise = (move_flags & MOVE_FLY) ? max_drop : 1;
+	int max_lift = lift + max_rise;
 	if (max_lift > 15)
 		max_lift = 15;		// As high as we can go.
 	for (new_lift = lift; new_lift <= max_lift; new_lift++)
@@ -768,7 +772,9 @@ int Map_chunk::is_blocked
 	int xtiles, int ytiles,		// Width, height in tiles.
 	int& new_lift,			// New lift returned.
 	const int move_flags,
-	int max_drop			// Max. drop/rise allowed.
+	int max_drop,			// Max. drop/rise allowed.
+	int max_rise			// Max. rise, or -1 to use old beha-
+					//   viour (max_drop if FLY, else 1).
 	)
 	{
 	Game_map *gmap = gwin->get_map();
@@ -789,7 +795,7 @@ int Map_chunk::is_blocked
 			olist->setup_cache();
 			if (olist->is_blocked(height, lift, 
 				tx%c_tiles_per_chunk,
-				rty, this_lift, move_flags, max_drop))
+				rty, this_lift, move_flags, max_drop,max_rise))
 				return (1);
 					// Take highest one.
 			new_lift = this_lift > new_lift ?
@@ -811,7 +817,9 @@ int Map_chunk::is_blocked
 	Tile_coord& tile,
 	int height,			// Height in tiles to check.
 	const int move_flags,
-	int max_drop			// Max. drop/rise allowed.
+	int max_drop,			// Max. drop/rise allowed.
+	int max_rise			// Max. rise, or -1 to use old beha-
+					//   viour (max_drop if FLY, else 1).
 	)
 	{
 					// Get chunk tile is in.
@@ -823,7 +831,8 @@ int Map_chunk::is_blocked
 	chunk->setup_cache();		// Be sure cache is present.
 	int new_lift;			// Check it within chunk.
 	if (chunk->is_blocked(height, tile.tz, tile.tx%c_tiles_per_chunk,
-		    tile.ty%c_tiles_per_chunk, new_lift, move_flags, max_drop))
+		    tile.ty%c_tiles_per_chunk, new_lift, move_flags, max_drop,
+								max_rise))
 		return (1);
 	tile.tz = new_lift;
 	return (0);
@@ -841,7 +850,9 @@ int Map_chunk::is_blocked
 	Tile_coord from,		// Stepping from here.
 	Tile_coord& to,			// Stepping to here.  Tz updated.
 	const int move_flags,
-	int max_drop			// Max drop/rise allowed.
+	int max_drop,			// Max drop/rise allowed.
+	int max_rise			// Max. rise, or -1 to use old beha-
+					//   viour (max_drop if FLY, else 1).
 	)
 	{
 	int vertx0, vertx1;		// Get x-coords. of vert. block
@@ -900,7 +911,7 @@ int Map_chunk::is_blocked
 			olist->setup_cache();
 			int rtx = x%c_tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
-					new_lift, move_flags, max_drop))
+				new_lift, move_flags, max_drop, max_rise))
 				return 1;
 			if (new_lift != from.tz)
 				if (new_lift0 == -1)
@@ -920,7 +931,7 @@ int Map_chunk::is_blocked
 			olist->setup_cache();
 			int rty = y%c_tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
-					new_lift, move_flags, max_drop))
+				new_lift, move_flags, max_drop, max_rise))
 				return 1;
 			if (new_lift != from.tz)
 				if (new_lift0 == -1)
