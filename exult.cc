@@ -153,9 +153,6 @@ int main
         config = new Configuration;
 	config->read_config_file(USER_CONFIGURATION_FILE);
 
-	// Initialize audio
-	audio = new Audio;
-	
 	// Setup virtual directories
 	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
 	cout << "Data path = " << data_path << endl;
@@ -168,44 +165,18 @@ int main
 	add_system_path("<STATIC>", "static");
 	add_system_path("<GAMEDAT>", "gamedat");
 	add_system_path("<SAVEGAME>", "savegame");
-	
-	// Choose the startup path
-	string data_directory;
+
+	// Convert from old format if needed
 	vector<string> vs=config->listkeys("config/disk/game",false);
-	if(vs.size()==0)
-		{
-#if DEBUG
-		cerr << "No game keys. Converting..." << endl;
-#endif
+	if(vs.size()==0) {
 		// Convert from the older format
+		string data_directory;
 		config->value("config/disk/u7path",data_directory,".");
 		config->set("config/disk/game/blackgate/path",data_directory,true);
 		string	s("blackgate");
 		config->set("config/disk/game/blackgate/title",s,true);
 		vs.push_back(s);
-		}
-	if(gamename=="default")
-		{
-		// If the user didn't specify, start up the first game we can find.
-		gamename=vs[0];
-#if DEBUG
-		cerr << "Setting default game to " << gamename << endl;
-#endif
-		}
-	string d("config/disk/game/"),gametitle;
-	d+=gamename;
-	d+="/path";
-	config->value(d.c_str(),data_directory,".");
-	if(data_directory==".")
-		config->set("config/disk/game/blackgate/path",data_directory,true);
-	cout << "chdir to " << data_directory << endl;
-	chdir(data_directory.c_str());
-	
-	d="config/disk/game/";
-	d+=gamename;
-	d+="/title";
-	config->value(d.c_str(),data_directory,"(unnamed)");
-	cout << "Loading game: " << data_directory << endl;
+	}
 
 	string	tracing;
 	config->value("config/debug/trace/intrinsics",tracing,"no");
@@ -264,8 +235,7 @@ static void Init
 	(
 	)
 	{
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|
-						SDL_INIT_AUDIO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_AUDIO) < 0)
 		{
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << endl;
 		exit(-1);
@@ -294,13 +264,8 @@ static void Init
 	config->value("config/video/height", sh, h);
 	config->value("config/video/scale", scaleval, sc);
 	gwin = new Game_window(sw, sh, scaleval);
-
-	if (Game::get_game_type() == BLACK_GATE)
-		audio->Init(9615*2,2);
-	else if (Game::get_game_type() == SERPENT_ISLE)
-		audio->Init(11111*2,2);
-	else
-		audio->Init(11025*2,2);
+	audio = new Audio;
+	audio->Init(22050,2);
 
 #ifdef WIN32
 	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
@@ -308,7 +273,16 @@ static void Init
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif //WIN32
 
-	Game::get_game()->banner();
+	// Show the banner
+	Exult_Game mygame = exult_menu(gwin);
+	Game::create_game(mygame);
+#if 0	
+	// Init has to be reimplemented so that new sample rates can be set
+	if (mygame == BLACK_GATE)
+		audio->Init(9615*2,2);
+	else if (mygame == SERPENT_ISLE)
+		audio->Init(11111*2,2);
+#endif
 	string yn;
 
 	gwin->init_files();
@@ -316,9 +290,9 @@ static void Init
 	config->value("config/gameplay/skip_splash", yn, "no");
 	if(yn == "no") {
 		gwin->set_mode(Game_window::splash);
-		Game::get_game()->play_intro();
+		game->play_intro();
 	}
-	Game::get_game()->show_menu();
+	game->show_menu();
 	gwin->set_mode(Game_window::normal);
 	SDL_SetEventFilter(Filter_intro_events);
 	browser = new ShapeBrowser();
@@ -989,7 +963,7 @@ static void Handle_keystroke
 				stats_page = 0;
 			Actor *actor = Get_party_member(stats_page);
 			if (actor)
-				gwin->show_gump(actor, Game::get_game()->get_shape("gumps/statsdisplay"));
+				gwin->show_gump(actor, game->get_shape("gumps/statsdisplay"));
 			if (gwin->get_mode() == Game_window::gump)
 				mouse->set_shape(Mouse::hand);
 		}
@@ -1041,7 +1015,7 @@ static void Handle_keystroke
 		break;
 	case SDLK_F10:
 		if (cheat() && !alt && !ctrl) {	// F10 : show endgame
-			Game::get_game()->end_game(shift==0);
+			game->end_game(shift==0);
 			gwin->set_palette(0);
 			gwin->paint();
 			gwin->fade_palette (50, 1, 0);
@@ -1049,9 +1023,9 @@ static void Handle_keystroke
 		break;
 	case SDLK_F11:				// F11 : show SI intro 
 		if (cheat() && !alt && !ctrl && Game::get_game_type() == SERPENT_ISLE) {
-			Game::get_game()->set_jive();
-			Game::get_game()->play_intro();
-			Game::get_game()->clear_jive();
+			game->set_jive();
+			game->play_intro();
+			game->clear_jive();
 			gwin->set_palette(0);
 			gwin->paint();
 			gwin->fade_palette (50, 1, 0);

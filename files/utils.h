@@ -31,19 +31,54 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #include <iostream>
   // it is not sufficient to #include <iosfwd> here because Read1() etc.
   // call methods of class istream
+  #include <stat.h>
+  #include <hashmap.h>
 #else
+  #include <sys/stat.h>
+  #include <hash_map>
   #include <iosfwd>
 #endif
 #include <exception>
 #include <string>
-        class replication_error : public std::exception
-                {
-                std::string  what_;
-                public:
-		 replication_error (const char *what_arg): what_ (what_arg) {  }
-                 replication_error (const std::string& what_arg): what_ (what_arg) {  }
-                 const char *what(void) { return what_.c_str(); }
-                };
+
+/*
+ *	Hash function for strings:
+ */
+struct hashstr
+{
+	long operator() (const char *str) const
+	{
+		static const unsigned long m = 4294967291u;
+		unsigned long result = 0;
+		for (; *str != '\0'; ++str)
+			result = ((result << 8) + *str) % m;
+		return long(result);
+	}
+};
+
+/*
+ *	For testing if two strings match:
+ */
+struct eqstr
+{
+	bool operator()(const char* s1, const char* s2) const {
+		return strcmp(s1, s2) == 0;
+	}
+};
+
+/*
+ * For classes which should not be replicatable
+ */
+
+
+class replication_error : public std::exception
+{
+	std::string  what_;
+public:
+	replication_error (const char *what_arg): what_ (what_arg) {  }	
+	replication_error (const std::string& what_arg): what_ (what_arg) {  }
+	const char *what(void) { return what_.c_str(); }
+};
 
 #define	UNREPLICATABLE_CLASS(NAME)	NAME(const NAME &) { throw replication_error( #NAME " cannot be replicated"); }; \
 					NAME &operator=(const NAME &) { throw replication_error( #NAME " cannot be replicated"); return *this; }

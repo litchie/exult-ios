@@ -25,12 +25,12 @@ ShapeBrowser::ShapeBrowser()
 		current_shape = 0;
 		num_frames = 0;
 		current_frame = 0;
-		num_files = Game::get_game()->get_resource("files/shapes/count").num;
+		num_files = game->get_resource("files/shapes/count").num;
 		current_file = 0;
 		shapes = 0;
-		num_palettes = Game::get_game()->get_resource("palettes/count").num;
+		num_palettes = game->get_resource("palettes/count").num;
 		current_palette = 0;
-		num_xforms = Game::get_game()->get_resource("xforms/count").num;
+		num_xforms = game->get_resource("xforms/count").num;
 		current_xform = -1;
 	}
 
@@ -67,7 +67,7 @@ void ShapeBrowser::browse_shapes()
 		char *fname;
 		
 		sprintf(buf,"files/shapes/%d",current_file);
-		fname = Game::get_game()->get_resource(buf).str;
+		fname = game->get_resource(buf).str;
 		if(!shapes)
 			shapes = new Vga_file(fname);
 		bool looping = true;
@@ -77,15 +77,15 @@ void ShapeBrowser::browse_shapes()
 		
 		do {
  		        if (redraw) {
-			        Game::get_game()->clear_screen();
+			        gwin->clear_screen();
 			        sprintf(buf,"palettes/%d",current_palette);
-				pal_tuple = Game::get_game()->get_resource(buf);
+				pal_tuple = game->get_resource(buf);
 				char xfrsc[256];
 				if (current_xform > 0)
 					{
 					sprintf(xfrsc, "xforms/%d", 
 							current_xform);
-					xform_tuple = Game::get_game()->
+					xform_tuple = game->
 						get_resource(xfrsc);
 					pal.load(pal_tuple.str, pal_tuple.num,
 						xform_tuple.str, 
@@ -148,7 +148,7 @@ void ShapeBrowser::browse_shapes()
 					current_frame = 0;
 					delete shapes;
 					sprintf(buf,"files/shapes/%d",current_file);
-					fname = Game::get_game()->get_resource(buf).str;
+					fname = game->get_resource(buf).str;
 					shapes = new Vga_file(fname);
 					break;
 				case SDLK_p:

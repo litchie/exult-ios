@@ -52,7 +52,15 @@ like:
     /home/user/mystuff/ultima/u7
     </path>
     <title>
-    blackgate
+    black_gate
+    </title>
+   </blackgate>
+   <serpentisle>
+    <path>
+    /home/user/mystuff/ultima/si
+    </path>
+    <title>
+    serpent_isle
     </title>
    </blackgate>
   </game>

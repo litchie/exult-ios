@@ -430,26 +430,9 @@ bool Game_window::setup_endgame_fonts ()
 	}
 
 	hlead[ENDGAME_FONT1] = 0;
-	hlead[ENDGAME_FONT2] = 0;	
+	hlead[ENDGAME_FONT2] = 0;
 	hlead[ENDGAME_FONT3] = 0;
 	hlead[ENDGAME_FONT4] = 0;
-	setup_done = true;
-	return true;
-}
-
-bool Game_window::setup_mainshp_fonts ()
-{
-	static bool setup_done = false;
-
-	if(setup_done)
-		return true;
-	
-	extra_fonts[MAINSHP_FONT1-EXTRA_FONTS] = load_extra_font("<STATIC>/mainshp.flx", 9, 0);
-	if (!extra_fonts[MAINSHP_FONT1-EXTRA_FONTS]->get_num_frames()) {
-			cerr << "Error loading mainshp font" << endl;
-	}
-
-	hlead[MAINSHP_FONT1] = 2;
 	setup_done = true;
 	return true;
 }
@@ -467,7 +450,7 @@ bool Game_window::setup_siintro_fonts ()
 			return false;
 	}
 
-	hlead[SIINTRO_FONT1] = 1;
+	hlead[SIINTRO_FONT1] = 0;
 	setup_done = true;
 	return true;
 }

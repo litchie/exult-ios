@@ -14,6 +14,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <unistd.h>
 #include "files/U7file.h"
 #include "flic/playfli.h"
 #include "gamewin.h"
@@ -22,6 +23,9 @@
 #include "game.h"
 #include "palette.h"
 #include "databuf.h"
+#include "font.h"
+#include "txtscroll.h"
+#include "menulist.h"
 
 Game *game = 0;
 extern Configuration *config;
@@ -46,10 +50,6 @@ Game::~Game()
 {
 }
 
-Game *Game::get_game()
-{
-	return game;
-}
 Exult_Game Game::get_game_type()
 {
 	return game_type;
@@ -97,10 +97,34 @@ char *Game::get_game_identity(const char *savename)
 }
 
 
-Game *Game::create_game(const char *static_path)
+Game *Game::create_game(Exult_Game mygame)
 {
-	add_system_path("<STATIC>", strdup(static_path));
+	// Choose the startup path
+	string data_directory;
+	string gametitle;
+	
+	switch(mygame) {
+	case BLACK_GATE:
+		gametitle = "blackgate";
+		break;
+	case SERPENT_ISLE:
+		gametitle = "serpentisle";
+		break;
+	default:
+		gametitle = "blackgate";
+		break;
+	}
+	
+	string d = "config/disk/game/"+gametitle+"/path";
+	config->value(d.c_str(),data_directory,".");
+	if(data_directory==".")
+		config->set(d.c_str(),data_directory,true);
+	cout << "chdir to " << data_directory << endl;
+	chdir(data_directory.c_str());
+	
+	add_system_path("<STATIC>", "static");
 	// Discover the game we are running (BG, SI, ...)
+	// We do this, because we don't really trust config :-)
 	char *static_identity = get_game_identity(INITGAME);
 
 	if((!strcmp(static_identity,"ULTIMA7"))||(!strcmp(static_identity,"FORGE")))
@@ -123,32 +147,6 @@ Game *Game::create_game(const char *static_path)
 	return game;
 }
 
-bool Game::wait_delay(int ms)
-{
-	SDL_Event event;
-	int delay;
-	int loops;
-	if(ms<=100) {
-		delay = ms;
-		loops = 1;
-	} else {
-		delay = 50;
-		loops = ms/delay;
-	}
-	for(int i=0; i<loops; i++) {
-		if(SDL_PollEvent(&event)) {
-			if((event.type==SDL_KEYDOWN)||(event.type==SDL_MOUSEBUTTONDOWN))
-				return true;
-		}
-		SDL_Delay(delay);
-	}
-	return false;
-}
-
-void Game::clear_screen()
-{
-	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-}
 
 void Game::play_flic(const char *archive, int index) 
 {
@@ -175,11 +173,6 @@ void Game::play_midi(int track,bool repeat)
 	else if (game_type == SERPENT_ISLE) audio->start_music(track,repeat,2);
 }
 
-void Game::refresh_screen ()
-{
-	clear_screen();
-}
-
 void Game::add_shape(const char *name, int shapenum) 
 {
 	shapes[name] = shapenum;
@@ -201,293 +194,83 @@ str_int_pair Game::get_resource(const char *name)
 	return resources[name];
 }
 
-int Game::show_text_line(int left, int right, int y, const char *s)
-{
-	//The texts used in the main menu contains backslashed sequences that
-	//indicates the output format of the lines:
-	// \Px   include picture number x (frame of MAINSHP.FLX shape 14h)
-	// \C    center line
-	// \L    left aligned to right center line
-	// \R	 right aligned to left center line
-	// |	 carriage return (stay on same line)
-	// #xxx	 display character with number xxx
-
-	char *txt = new char[strlen(s)+1];
-	char *ptr = (char *)s;
-	char *txtptr = txt;
-	int ypos = y;
-	int vspace = 2; // 2 extra pixels between lines
-	// Align text to the left by default
-	int align = -1;
-	int xpos = left;
-	int center = (right+left)/2;
-	bool add_line = true;
-	
-	while(*ptr) {
-		if(!strncmp(ptr,"\\P",2)) {
-			int pix = *(ptr+2)-'0';
-			ptr +=3;
-			Shape_frame *shape = menushapes.get_shape(0x14,pix);
-			gwin->paint_shape(center-shape->get_width()/2,
-					  ypos, shape);
-			ypos += shape->get_height()+vspace;
-		} else if(!strncmp(ptr,"\\C",2)) {
-			ptr += 2;
-			align = 0;
-		} else if(!strncmp(ptr,"\\L",2)) {
-			ptr += 2;
-			align = 1;
-		} else if(!strncmp(ptr,"\\R",2)) {
-			ptr += 2;
-			align = -1;
-		} else if(*ptr=='|' || *(ptr+1)==0) {
-			if(*(ptr+1)==0 && *ptr!='|')
-			{
-				*txtptr++ = *ptr;
-				add_line = false;
-			}
-			*txtptr = 0;
-			
-			if(align<0)
-				xpos = center-gwin->get_text_width(MAINSHP_FONT1, txt);
-			else if(align==0)
-				xpos = center-gwin->get_text_width(MAINSHP_FONT1, txt)/2;
-			else
-				xpos = center;
-			gwin->paint_text(MAINSHP_FONT1,txt,xpos,ypos);
-			if(*ptr!='|') ypos += gwin->get_text_height(MAINSHP_FONT1)+vspace;
-			txtptr = txt;	// Go to beginning of string
-			++ptr;
-		} else if(*ptr=='#') {
-			ptr++;
-			char numerical[4] = {0,0,0,0};
-			char *num = numerical;
-			while (*ptr >= '0' && *ptr <= '9')
-				*num++ = *ptr++;
-			*txtptr++ = atoi(numerical);
-		} else
-			*txtptr++ = *ptr++;
-	}
-	
-	delete [] txt;
-	if(add_line)
-		ypos += gwin->get_text_height(MAINSHP_FONT1);
-	return ypos;
-}
-
-vector<char *> *Game::load_text(const char *archive, int index)
-{
-	U7object txtobj(archive, index);
-	size_t len;
-		
-	char *txt, *ptr, *end;
-	txtobj.retrieve(&txt, len);
-	ptr = txt;
-	end = ptr+len;
-
-	vector<char *> *text = new vector<char *>();
-	while(ptr<end) {
-		char *start = ptr;
-		ptr = strchr(ptr, '\n');
-		if(ptr) {
-			if(*(ptr-1)=='\r') // It's CR/LF
-				*(ptr-1) = 0;
-			else
-				*ptr = 0;
-			text->push_back(strdup(start));
-			ptr += 1;
-		} else
-			break;
-	}
-	delete [] txt;
-	return text;
-}
-
-void Game::destroy_text(vector<char *> *text)
-{
-	for(uint32 i=0; i<text->size(); i++)
-		delete [] (*text)[i];
-	delete text;
-}
-
-int Game::center_text(int font, const char *s, int x, int y)
-{
-	gwin->paint_text(font, s, x-gwin->get_text_width(font, s)/2, y);
-	return y+gwin->get_text_height(font);
-}
-
-void Game::scroll_text(vector<char *> *text)
-{
-	int endy = topy+200;
-	uint32 starty = endy;
-	uint32 startline = 0;
-	unsigned int maxlines = text->size();
-	bool looping = true;
-	uint32 next_time = SDL_GetTicks() + 200;
-	while(looping) {
-		int ypos = starty;
-		uint32 curline = startline;
-		clear_screen();
-		do {
-			if(curline==maxlines)
-				break;
-			ypos = show_text_line(topx, topx+320, ypos, (*text)[curline++]);
-			if(ypos<topy) {		// If this line doesn't appear, don't show it next time
-				++startline;
-				starty = ypos;
-				if(startline>=maxlines) {
-					looping = false;
-					break;
-				}
-			}
-		} while (ypos<endy);
-		pal.apply();
-		while (next_time > SDL_GetTicks())
-			;
-		next_time += 120;
-		looping = looping && !wait_delay(0);
-		if(!looping)
-			pal.fade_out(30);
-		starty --;
-	}
-}
-
-void Game::banner()
-{
-	Vga_file exult_flx("<DATA>/exult.flx");
-	if (!gwin->setup_mainshp_fonts())
-		gwin->abort ("Unable to setup fonts from 'mainshp.flx' file.");
-	gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 0));
-	pal.load("<DATA>/exult.flx",5);
-	pal.fade_in(30);
-	wait_delay(2000);
-	pal.fade_out(30);
-	clear_screen();
-}
 
 void Game::show_menu()
-	{
-		Vga_file exult_flx("<DATA>/exult.flx");
-		int menuy = topy+110;
+{
+	int menuy = topy+120;
 
-		top_menu();
+	top_menu();
+	MenuList *menu = new MenuList();
 		
-		int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12, -1, -2 };
-		int num_choices = sizeof(menuchoices)/sizeof(int);
-		int selected = 2;
-		SDL_Event event;
-		char npc_name[16];
-		sprintf(npc_name, "Exult");
-		do {
-			bool exit_loop = false;
-			bool redraw = true;
-			do {
-			        if (redraw) {
-				        for(int i=0; i<num_choices; i++) {
-						Shape_frame *shape = 0;
-					        if(menuchoices[i]==-1) {
-						        shape = exult_flx.get_shape(1, i==selected);
-					        } else if(menuchoices[i]==-2) {
-						        shape = exult_flx.get_shape(0, i==selected);
-					        } else {
-						         shape = menushapes.get_shape(menuchoices[i],i==selected);
-						}
-						gwin->paint_shape(centerx-shape->get_width()/2,menuy+i*10,shape);
-					}
-					win->show();
-					redraw = false;
-				}
-				SDL_WaitEvent(&event);
-				if(event.type==SDL_KEYDOWN) {
-				        redraw = true;
-					switch(event.key.keysym.sym) {
-					case SDLK_x:
-						if(event.key.keysym.mod & KMOD_ALT) {
-							pal.fade_out(30);
-							exit(0);
-						}
-						break;
-					case SDLK_UP:
-						--selected;
-						if(selected<0)
-							selected = num_choices-1;
-						continue;
-					case SDLK_DOWN:
-						++selected;
-						if(selected==num_choices)
-							selected = 0;
-						continue;
-					case SDLK_RETURN:
-						exit_loop = true;
-						break;
-					default:
-					        redraw = false;
-						break;
-					}
-				}
-			} while(!exit_loop);
-			bool created = false;
-			switch(selected) {
-			case 0: // Intro
-				pal.fade_out(30);
-				play_intro();
+	int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12};
+	int num_choices = sizeof(menuchoices)/sizeof(int);
+		
+	for(int i=0; i<num_choices; i++) {
+		menu->add_entry(new MenuEntry(menushapes.get_shape(menuchoices[i],1),
+					      menushapes.get_shape(menuchoices[i],0),
+					      centerx, menuy+i*11));
+	}
+		
+	menu->set_selected(2);
+	char npc_name[16];
+	sprintf(npc_name, "Exult");
+	do {
+		bool created = false;
+		
+		switch(menu->handle_events(gwin)) {
+		case -1: // Exit
+			pal.fade_out(30);
+			exit(0);
+		case 0: // Intro
+			pal.fade_out(30);
+			play_intro();
+			top_menu();
+			break;
+		case 2: // Journey Onwards
+			created = gwin->init_gamedat(false);
+			if(!created) {
+				show_journey_failed();
 				top_menu();
-				break;
-			case 2: // Journey Onwards
-				created = gwin->init_gamedat(false);
-				if(!created)
-				{
-					show_journey_failed();
-					top_menu();
-					selected = 1;
-					break;
-				}
-				// else fall through
-			case 1: // New Game
-				if(!created) {
-					if(new_game(menushapes))
-						selected = 2;
-				} else
-					selected = 2; // This will start the game
-				break;
-			case 3: // Credits
-				pal.fade_out(30);
-				show_credits();
-				top_menu();
-				break;
-			case 4: // Quotes
-				pal.fade_out(30);
-				show_quotes();
-				top_menu();
-				break;
-			case 5: // End Game
-				pal.fade_out(30);
-				end_game(true);
-				top_menu();
-				break;
-			case 6: // Exult Credits
-				pal.fade_out(30);
-				show_exult_credits();
-				top_menu();
-				break;
-			case 7: // Exult Quotes
-				pal.fade_out(30);
-				show_exult_quotes();
-				top_menu();
-				break;
-			default:
+				menu->set_selected(1);
 				break;
 			}
-		} while(selected!=2);
-		pal.fade_out(30);
-		
-		clear_screen();
-		audio->stop_music();
-	}
+			// else fall through
+		case 1: // New Game
+			if(!created) {
+				if(new_game(menushapes))
+					menu->set_selected(2);
+			} else
+				menu->set_selected(2); // This will start the game
+			break;
+		case 3: // Credits
+			pal.fade_out(30);
+			show_credits();
+			top_menu();
+			break;
+		case 4: // Quotes
+			pal.fade_out(30);
+			show_quotes();
+			top_menu();
+			break;
+		case 5: // End Game
+			pal.fade_out(30);
+			end_game(true);
+			top_menu();
+			break;
+		default:
+			break;
+		}
+	} while(menu->get_selected()!=2);
+	pal.fade_out(30);
+	delete menu;
+	gwin->clear_screen();
+	audio->stop_music();
+}
 	
 void Game::journey_failed_text()
 {
-	center_text(MAINSHP_FONT1, "You must start a new game first.", centerx, centery+30);
+	Font *font = fontManager.get_font("MENU_FONT");
+	font->center_text(gwin, centerx, centery+30,  "You must start a new game first.");
 	pal.fade_in(50);
 	while (!wait_delay(10))
 		;
@@ -542,17 +325,109 @@ void Game::clear_avskin ()
 	av_skin = -1;
 }
 
-void Game::show_exult_credits()
-	{
-		vector<char *> *text = load_text("<DATA>/exult.flx", 0x03);
-		scroll_text(text);
-		destroy_text(text);
-	}
 
-void Game::show_exult_quotes()
-	{
-		vector<char *> *text = load_text("<DATA>/exult.flx", 0x02);
-		scroll_text(text);
-		destroy_text(text);
+bool wait_delay(int ms)
+{
+	SDL_Event event;
+	int delay;
+	int loops;
+	if(ms<=100) {
+		delay = ms;
+		loops = 1;
+	} else {
+		delay = 50;
+		loops = ms/delay;
 	}
+	for(int i=0; i<loops; i++) {
+		if(SDL_PollEvent(&event)) {
+			if((event.type==SDL_KEYDOWN)||(event.type==SDL_MOUSEBUTTONDOWN))
+				return true;
+		}
+		SDL_Delay(delay);
+	}
+	return false;
+}
 
+
+Exult_Game exult_menu(Game_window *gwin)
+{
+	Image_window8 *win = gwin->get_win();
+	int topx = (gwin->get_width()-320)/2;
+	int topy = (gwin->get_height()-200)/2;
+	int centerx = gwin->get_width()/2;
+	int centery = gwin->get_height()/2;
+	int menuy = topy+120;
+	Palette pal;
+	char *mid_buf;
+	size_t len;
+	fontManager.add_font("CREDITS_FONT", "<DATA>/exult.flx", 9, 1);
+	U7object banner_midi("<DATA>/exult.flx", 8);
+	banner_midi.retrieve(&mid_buf, len);
+	BufferDataSource *midi_data = new BufferDataSource(mid_buf, len);
+	XMIDI midfile(midi_data, false);
+	audio->start_music(&midfile, true);
+	Vga_file exult_flx("<DATA>/exult.flx");
+	
+	gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 0));
+	pal.load("<DATA>/exult.flx",5);
+	pal.fade_in(30);
+	wait_delay(2000);
+	MenuList *menu = new MenuList();
+		
+	int menuchoices[] = { 0x06, 0x07, 0x01, 0x00 };
+	int num_choices = sizeof(menuchoices)/sizeof(int);
+		
+	for(int i=0; i<num_choices; i++) {
+		menu->add_entry(new MenuEntry(exult_flx.get_shape(menuchoices[i],1),
+					      exult_flx.get_shape(menuchoices[i],0),
+					      centerx, menuy+i*11));
+	}
+	menu->set_selected(0);
+	Exult_Game sel_game = NONE;
+	do {
+		gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 1));
+		switch(menu->handle_events(gwin)) {
+		case -1: // Exit
+			pal.fade_out(30);
+			exit(0);
+		case 0: // Black Gate
+			pal.fade_out(30);
+			sel_game = BLACK_GATE;
+			break;
+		case 1: // Serpent Isle
+			pal.fade_out(30);
+			sel_game = SERPENT_ISLE;
+			break;
+		case 2: // Exult Credits
+			{
+				pal.fade_out(30);
+				TextScroller credits("<DATA>/exult.flx", 0x03, 
+						     fontManager.get_font("CREDITS_FONT"),
+						     0);
+				credits.run(gwin,pal);
+				gwin->clear_screen();
+				pal.apply();
+			}
+			break;
+		case 3: // Exult Quotes
+			{
+				pal.fade_out(30);
+				TextScroller quotes("<DATA>/exult.flx", 0x02, 
+						    fontManager.get_font("CREDITS_FONT"),
+			     			    0);
+				quotes.run(gwin,pal);
+				gwin->clear_screen();
+				pal.apply();
+			}
+			break;
+		default:
+			break;
+		}
+	} while(sel_game==NONE);
+	delete menu;
+	
+	gwin->clear_screen();
+	audio->stop_music();
+	
+	return sel_game;
+}

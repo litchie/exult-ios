@@ -49,6 +49,7 @@ class Actor;
 class Schedule;
 
 enum Exult_Game {
+	NONE,
 	BLACK_GATE,
 	SERPENT_ISLE
 };

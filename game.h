@@ -24,34 +24,10 @@
 #endif
 #include <string>
 #include <vector>
+#include "files/utils.h"
 
 class Game_window;
 class Image_window8;
-
-/*
- *	Hash function for strings:
- */
-struct hashstr
-{
-	long operator() (const char *str) const
-	{
-		static const unsigned long m = 4294967291u;
-		unsigned long result = 0;
-		for (; *str != '\0'; ++str)
-			result = ((result << 8) + *str) % m;
-		return long(result);
-	}
-};
-
-/*
- *	For testing if two strings match:
- */
-struct eqstr
-{
-	bool operator()(const char* s1, const char* s2) const {
-		return strcmp(s1, s2) == 0;
-	}
-};
 
 struct str_int_pair
 {
@@ -59,8 +35,7 @@ struct str_int_pair
 	int  num;
 };
 
-class Game
-	{
+class Game {
 private:
 	hash_map<const char*, int, hashstr, eqstr> shapes;
 	hash_map<const char*, str_int_pair, hashstr, eqstr> resources;
@@ -77,8 +52,7 @@ public:
 	virtual ~Game();
 
 	static char *get_game_identity(const char *savename);
-	static Game *create_game(const char *static_path);
-	static Game *get_game();
+	static Game *create_game(Exult_Game mygame);
 	static Exult_Game get_game_type();
 
 	static const char *get_avname ();
@@ -101,32 +75,22 @@ public:
 	virtual int  get_start_tile_y() =0;
 	virtual void show_journey_failed() = 0;
 
-	void banner();
-	void clear_screen();
-	void refresh_screen();
-	void show_exult_credits();
-	void show_exult_quotes();
 	void play_flic(const char *archive, int index);
 	void play_audio(const char *archive, int index);
 	void play_midi(int track, bool repeat = false);
-	bool wait_delay(int ms);
+	
 	void add_shape(const char *name, int shapenum);
 	int get_shape(const char *name);
 	void add_resource(const char *name, const char *str, int num);
 	str_int_pair get_resource(const char *name);
-	int show_text_line(int left, int right, int y, const char *s);
-	vector<char *> *load_text(const char *archive, int index);
-	void destroy_text(vector<char *> *text);
-	void scroll_text(vector<char *> *text);
-	int center_text(int font, const char *s, int x, int y);
+	
 	void show_menu();
 	void journey_failed_text();
 	void set_jive () {jive = true;}
 	void clear_jive () {jive = false;}
-	};
+};
 
-class BG_Game: public Game
-	{
+class BG_Game: public Game {
 public:
 	BG_Game();
 	~BG_Game();
@@ -142,10 +106,9 @@ public:
 	virtual int  get_start_tile_y()
 		{ return (136*tiles_per_chunk); }
 	virtual void show_journey_failed();
-	};
+};
 
-class SI_Game: public Game
-	{
+class SI_Game: public Game {
 public:
 	SI_Game();
 	~SI_Game();
@@ -161,6 +124,10 @@ public:
 	virtual int  get_start_tile_y()
 		{ return (155*tiles_per_chunk); }
 	virtual void show_journey_failed();
-	};
+};
+
+extern Game *game;
+extern bool wait_delay(int ms);
+extern Exult_Game exult_menu(Game_window *gwin);
 	
 #endif
