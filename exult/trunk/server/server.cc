@@ -338,6 +338,11 @@ static void Handle_client_message
 	case Exult_server::view_pos:
 		{
 		int tx = Read4(ptr);
+		if (tx == -1)		// This is a query?
+			{
+			gwin->send_location();
+			break;
+			}
 		int ty = Read4(ptr);
 		// +++Later int txs = Read4(ptr);
 		// int tys = Read4(ptr);

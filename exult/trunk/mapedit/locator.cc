@@ -215,7 +215,10 @@ void Locator::show
 	)
 	{
 	if (tf)
+		{
 		gtk_widget_show(win);
+		query_location();	// Get Exult's loc.
+		}
 	else
 		gtk_widget_hide(win);
 	}
@@ -277,6 +280,13 @@ void Locator::render
 		int rowht = (drawh - cur)/(c_num_schunks - i);
 		cur += rowht;
 		gdk_draw_line(draw->window, drawgc, 0, cur, draww, cur);
+		if (i == c_num_schunks/2 - 1)
+			{		// Make middle one 3 pixels.
+			gdk_draw_line(draw->window, drawgc, 0, cur - 1, 
+							draww, cur - 1);
+			gdk_draw_line(draw->window, drawgc, 0, cur + 1, 
+							draww, cur + 1);
+			}
 		}
 	cur = 0;			// Now the columns.
 	for (i = 0; i < c_num_schunks - 1; i++)
@@ -284,6 +294,13 @@ void Locator::render
 		int colwd = (draww - cur)/(c_num_schunks - i);
 		cur += colwd;
 		gdk_draw_line(draw->window, drawgc, cur, 0, cur, drawh);
+		if (i == c_num_schunks/2 - 1)
+			{		// Make middle one 3 pixels.
+			gdk_draw_line(draw->window, drawgc, cur - 1, 0, 
+							cur - 1, drawh);
+			gdk_draw_line(draw->window, drawgc, cur + 1, 0, 
+							cur + 1, drawh);
+			}
 		}
 #if 0
 					// Back to solid lines for loc. box.
@@ -393,6 +410,25 @@ void Locator::send_location
 	Write4(ptr, tys);
 	Write4(ptr, -1);		// Don't change.
 	cout << "Locator::send_location" << endl;
+	ExultStudio::get_instance()->send_to_server(Exult_server::view_pos,
+					&data[0], ptr - data);
+	}
+
+/*
+ *	Query Exult for its location.
+ */
+
+void Locator::query_location
+	(
+	)
+	{
+	unsigned char data[50];
+	unsigned char *ptr = &data[0];
+	Write4(ptr, -1);
+	Write4(ptr, -1);
+	Write4(ptr, -1);
+	Write4(ptr, -1);
+	Write4(ptr, -1);
 	ExultStudio::get_instance()->send_to_server(Exult_server::view_pos,
 					&data[0], ptr - data);
 	}
