@@ -2198,8 +2198,8 @@ void Chunk_cache::activate_eggs
 Chunk_object_list::Chunk_object_list
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
-	) : flat_objects(0),
-	    objects(0), npcs(0), cache(0), roof(0), light_sources(0),
+	) : objects(0), first_nonflat(0), 
+	    npcs(0), cache(0), roof(0), light_sources(0),
 	    cx(chunkx), cy(chunky)
 	{
 	}
@@ -2214,8 +2214,6 @@ Chunk_object_list::~Chunk_object_list
 	{
 	if (objects)
 		objects->delete_chain();
-	if (flat_objects)
-		flat_objects->delete_chain();
 	delete cache;
 	}
 
@@ -2230,7 +2228,7 @@ void Chunk_object_list::add_dependencies
 	)
 	{
 	Game_object *obj;		// Figure dependencies.
-	Object_iterator next(objects);
+	Nonflat_object_iterator next(this);
 	while ((obj = next.get_next()) != 0)
 		{
 		int cmp = Game_object::lt(newinfo, obj);
@@ -2264,24 +2262,36 @@ void Chunk_object_list::add
 	newobj->cx = get_cx();		// Set object's chunk.
 	newobj->cy = get_cy();
 	Game_window *gwin = Game_window::get_game_window();
-	Ordering_info ord(gwin, newobj);// Figure dependencies.
-	if (ord.xs == 1 && ord.ys == 1)	// Simplest case?
-		add_dependencies(newobj, ord);
-	else
+	Ordering_info ord(gwin, newobj);
+					// Flat?  Just insert at start.
+	if (!newobj->get_lift() && !ord.info.get_3d_height())
+		objects = newobj->insert_in_chain(objects);
+					// Deal with dependencies.
+	else 
 		{
-		Rectangle footprint(ord.tx - ord.xs + 1, ord.ty - ord.ys + 1, 
-							ord.xs, ord.ys);
+		if (ord.xs == 1 && ord.ys == 1)	// Simplest case?
+			add_dependencies(newobj, ord);
+		else
+			{
+			Rectangle footprint(ord.tx - ord.xs + 1, 
+					ord.ty - ord.ys + 1, ord.xs, ord.ys);
 					// Go through interesected chunks.
-		Chunk_intersect_iterator next_chunk(footprint);
-		Rectangle tiles;	// (Ignored).
-		int eachcx, eachcy;
-		while (next_chunk.get_next(tiles, eachcx, eachcy))
-			if (eachcx <= cx && eachcy <= cy)
-				gwin->get_objects(eachcx, eachcy)->
+			Chunk_intersect_iterator next_chunk(footprint);
+			Rectangle tiles;// (Ignored).
+			int eachcx, eachcy;
+			while (next_chunk.get_next(tiles, eachcx, eachcy))
+				if (eachcx <= cx && eachcy <= cy)
+					gwin->get_objects(eachcx, eachcy)->
 						add_dependencies(newobj, ord);
+			}
+					// Put past flats.
+		if (first_nonflat)
+			objects = newobj->insert_before(objects, 
+							first_nonflat);
+		else
+			objects = newobj->append_to_chain(objects);
+		first_nonflat = newobj;
 		}
-					// Just put in front.
-	objects = newobj->insert_in_chain(objects);
 			// +++++Maybe should skip test, do update_object(...).
 	if (cache)			// Add to cache.
 		cache->update_object(this, newobj, 1);
@@ -2294,6 +2304,7 @@ void Chunk_object_list::add
 		}
 	}
 
+#if 0
 /*
  *	Add a flat, fixed object.
  */
@@ -2306,9 +2317,9 @@ void Chunk_object_list::add_flat
 	newobj->cx = get_cx();		// Set object's chunk.
 	newobj->cy = get_cy();
 					// Just put in front.
-	flat_objects = newobj->insert_in_chain(flat_objects);
+	objects = newobj->insert_in_chain(objects);
 	}
-
+#endif
 /*
  *	Add an egg.
  */
@@ -2354,6 +2365,12 @@ void Chunk_object_list::remove
 	Shape_info& info = Game_window::get_game_window()->get_info(remove);
 	if (info.is_light_source())	// Count light sources.
 		light_sources--;
+	if (remove == first_nonflat)	// First nonflat?
+		{			// Update.
+		first_nonflat = remove->get_next();
+		if (first_nonflat == objects)
+			first_nonflat = 0;
+		}
 	if (remove == objects)		// First one?
 		{
 		objects = remove->get_next();

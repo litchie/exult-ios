@@ -202,6 +202,15 @@ public:
 			}
 		return this;
 		}
+					// Insert before given obj.
+	Game_object *insert_before(Game_object *first, Game_object *before)
+		{
+		next = before;
+		prev = before->prev;
+		before->prev->next = this;
+		before->prev = this;
+		return before == first ? this : first;
+		}
 					// Append, and return new first.
 	Game_object *append_to_chain(Game_object *first)
 		{ return insert_in_chain(first)->next; }
@@ -606,9 +615,9 @@ class Chunk_object_list
 	{
 	ShapeID flats[256];		// Flat (non-RLE) shapes.  The unused
 					//   are "invalid" entries.
-	Game_object *flat_objects;	// ->flat objs. from map at lift==0
-					//   (with no need to remove).
-	Game_object *objects;		// ->first in ordered list.
+	Game_object *objects;		// ->first in list of all objs.  'Flat'
+					//   obs. (lift=0,ht=0) stored 1st.
+	Game_object *first_nonflat;	// ->first nonflat in 'objects'.
 	Npc_actor *npcs;		// List of NPC's in this chunk.
 					//   (Managed by Npc_actor class.)
 	Chunk_cache *cache;		// Data for chunks near player.
@@ -621,10 +630,13 @@ public:
 	friend class Npc_actor;
 	friend class Object_iterator;
 	friend class Flat_object_iterator;
+	friend class Nonflat_object_iterator;
 	friend class Object_iterator_backwards;
 	Chunk_object_list(int chunkx, int chunky);
 	~Chunk_object_list();		// Delete everything in chunk.
+#if 0
 	void add_flat(Game_object *obj);// Add 'flat' object.
+#endif
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add/remove an egg.
 	void remove_egg(Egg_object *egg);
