@@ -1192,7 +1192,14 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 	case 0x2e:			// Play music(item, songnum).
 					// ??Show notes by item?
-		audio.start_music(parms[1].get_int_value()&0xff);
+#if DEBUG
+		cout << "Music request in usecode" << endl;
+		cout << "Parameter data follows" << endl;
+		cout << "0: " << ((parms[0].get_int_value()>>8)&0xff) << " " <<  ((parms[0].get_int_value())&0xff) << endl;
+		cout << "1: " << ((parms[1].get_int_value()>>8)&0xff) << " " <<  ((parms[1].get_int_value())&0xff) << endl;
+		(parms[1].get_int_value()&0xff);
+#endif
+		audio.start_music(parms[0].get_int_value()&0xff);
 		break;
 	case 0x2f:			// NPC in party? (item).
 		return (Usecode_value(npc_in_party(

@@ -34,6 +34,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "npcnear.h"
 #include "gumps.h"
+#include "Audio.h"
+extern	Audio	audio;
 
 					// THE game window:
 Game_window *Game_window::game_window = 0;
@@ -1659,6 +1661,9 @@ void Game_window::end_intro
 		// ++++++Test for 1st egg here?
 		paint();
 		mode = normal;
+		audio.start_speech(31,false);
+		SDL_Delay(500);
+		audio.start_music(35);
 #if 0	/* Too irritating at start of game. */
 					// Want to run proximity usecode on
 					//   the visible ones.
