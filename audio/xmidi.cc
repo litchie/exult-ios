@@ -590,10 +590,10 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	vol->len = 0;
 	vol->buffer = NULL;
 
-	if (temp)
-		vol->data[1] = temp->data[1];
-	else
+	if (!temp)
 		vol->data[1] = 64;
+	else
+		vol->data[1] = temp->data[1];
 
 
 	// Copy Bank
@@ -608,7 +608,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	bank->len = 0;
 	bank->buffer = NULL;
 
-	if (!bank)
+	if (!temp)
 		bank->data[1] = 0;
 	else
 		bank->data[1] = temp->data[1];

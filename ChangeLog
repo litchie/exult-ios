@@ -1,3 +1,9 @@
+2000-12-02  Ryan Nunn  <triforce@merlin.net.au>
+	* added audio/soundtest.cc
+	* exult.cc, cheat.cc, audio/soundtest.cc: Added Sound Tester (Ctrl-1)
+	* audio/xmidi.cc: Fixed Midi crash problem
+	* win_midiout.cc: Attempt to fix a modulation problem
+
 2000-12-01  Max Horn  <max@quendi.de>
 	* removed lists.cc from CVS and the makefile
 

@@ -135,8 +135,8 @@ void Windows_MidiOut::thread_play ()
 	double	tick = 1;
 	double	last_tick = 0;
 	double	last_time = 0;
-	double	aim;
-	double	diff;
+	double	aim = 0;
+	double	diff = 0;
 	
 	midi_event *evntlist = NULL;
 	midi_event *event = NULL;
@@ -148,8 +148,8 @@ void Windows_MidiOut::thread_play ()
 	double	s_tick = 1;
 	double	s_last_tick = 0;
 	double	s_last_time = 0;
-	double	s_aim;
-	double	s_diff;
+	double	s_aim = 0;
+	double	s_diff = 0;
 	
 	midi_event *s_evntlist = NULL;
 	midi_event *s_event = NULL;
@@ -190,7 +190,7 @@ void Windows_MidiOut::thread_play ()
 		 	{
 		 		if (!repeat || (thread_com != W32MO_THREAD_COM_READY))
 		 		{
-		 						// Clean up
+		 			// Clean up
 					midiOutReset (midi_port);
 					XMIDI::DeleteEventList (evntlist);
 					evntlist = NULL;
@@ -226,7 +226,11 @@ void Windows_MidiOut::thread_play ()
 			
 			// Reset pitch wheel
 			for (int i = 0; i < 16; i++)
-				midiOutShortMsg (midi_port, i | 0xE0 | (0x2000 << 2));
+			{
+				midiOutShortMsg (midi_port, (i | 0xE0) | (0x40 << 16));
+				midiOutShortMsg (midi_port, (i | 0xB0) | (1 << 8) | (0x40 << 16));
+				midiOutShortMsg (midi_port, (i | 0xB0) | (33 << 8));
+			}
 			
 			// Make sure that the data exists
 			while (!thread_data) SDL_Delay(1);
@@ -283,6 +287,14 @@ void Windows_MidiOut::thread_play ()
 		 	s_event = s_event->next;
 	 		if ((!s_event) || (thread_com == W32MO_THREAD_COM_EXIT) || (sfx_com != W32MO_THREAD_COM_READY))
 		 	{
+		 		// Play through
+		 		while (s_event)
+		 		{
+					if (s_event->status < 0xF0)
+						midiOutShortMsg (midi_port, s_event->status + (s_event->data[0] << 8) + (s_event->data[1] << 16));
+				 	s_event = s_event->next;
+		 		}
+
 				XMIDI::DeleteEventList (s_evntlist);
 				s_evntlist = NULL;
 				s_event = NULL;
