@@ -51,9 +51,9 @@ void Npc_proximity_handler::add
 	int additional_secs		// More secs. to wait.
 	)
 	{
-	int msecs;			// Hostile?  Wait 0-4 secs.
+	int msecs;			// Hostile?  Wait 0-2 secs.
 	if (npc->get_alignment() >= Npc_actor::hostile)
-		msecs = rand() % 4000;
+		msecs = rand() % 2000;
 	else				// Wait between 2 & 6 secs.
 		msecs = (rand() % 4000) + 2000;
 	unsigned long newtime = curtime + msecs;

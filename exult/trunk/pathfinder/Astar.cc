@@ -76,6 +76,16 @@ int Astar::set_backwards
 	}
 
 /*
+ *	Get # steps left.
+ */
+int Astar::get_num_steps
+	(
+	)
+	{
+	return (stop - next_index)*dir;
+	}
+
+/*
  *	Delete.
  */
 Astar::~Astar
