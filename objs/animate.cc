@@ -156,7 +156,11 @@ int Object_sfx::get_shape_sfx
 		table[777] = 77;
 		}
 	map<int, int>::iterator it = table.find(shapenum);
-	return it == table.end() ? -1 : (*it).second;
+	if (it == table.end())
+		return -1;
+	int sfx = (*it).second;
+	return Audio::game_sfx(sfx);
+	return sfx;
 	}
 
 /*
