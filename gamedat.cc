@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <stdio.h>
 #if !defined(XWIN)
 #include <dir.h>
 #endif
@@ -40,11 +41,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Game_window::restore_gamedat
 	(
-	char *savename			// Name of savegame file.
+	char *fname			// Name of savegame file.
 	)
 	{
 	ifstream in;
-	u7open(in, savename);		// Open file & abort if error.
+	u7open(in, fname);		// Open file & abort if error.
 #if defined(XWIN)
 	mkdir("gamedat", 0755);		// Create dir. if not already there.
 #else
@@ -86,6 +87,22 @@ void Game_window::restore_gamedat
 		out.close();
 		}
 	delete [] finfo;
+	}
+
+/*
+ *	Write out the gamedat directory from a saved game.
+ *
+ *	Output: Aborts if error.
+ */
+
+void Game_window::restore_gamedat
+	(
+	int num				// 0-9, currently.
+	)
+	{
+	char fname[50];			// Set up name.
+	sprintf(fname, SAVENAME, num);
+	restore_gamedat(fname);
 	}
 
 /*
@@ -191,6 +208,50 @@ int Game_window::save_gamedat
 		}
 	out.close();
 	return (result);
+	}
+
+/*
+ *	Save to one of the numbered savegame files (and update save_names).
+ *
+ *	Output:	0 if error (reported).
+ */
+
+int Game_window::save_gamedat
+	(
+	int num,			// 0-9, currently.
+	char *savename			// User's savegame name.
+	)
+	{
+	char fname[50];			// Set up name.
+	sprintf(fname, SAVENAME, num);
+	if (!save_gamedat(fname, savename))
+		return (0);
+	delete save_names[num];		// Update name.
+	save_names[num] = strdup(savename);
+	return (1);
+	}
+
+/*
+ *	Read in the saved game names.
+ */
+void Game_window::read_save_names
+	(
+	)
+	{
+	for (int i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
+		{
+		char fname[50];		// Set up name.
+		sprintf(fname, SAVENAME, i);
+		ifstream in(fname);
+		char buf[0x50];		// It's at start of file.
+		memset(buf, 0, sizeof(buf));
+		in.read(buf, sizeof(buf) - 1);
+		if (in.good())		// Okay if file not there.
+			save_names[i] = strdup(buf);
+		else
+			save_names[i] = strdup("");
+		in.close();
+		}
 	}
 
 /*
