@@ -2253,6 +2253,10 @@ Game_object *Actor::attacked
 			return this;	// Just play-fighting.
 		set_oppressor(attacker->get_npc_num());
 		}
+					// Watch for Skara Brae ghosts.
+	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
+	    Game_window::get_game_window()->get_info(this).has_translucency())
+		return this;
 	figure_hit_points(attacker, weapon_shape, ammo_shape);
 	if (attacker && is_dead())
 		{
