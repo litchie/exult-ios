@@ -278,8 +278,11 @@ void Sleep_schedule::now_what
 
 void Sleep_schedule::ending
 	(
+	int new_type			// New schedule.
 	)
 	{
+	if (new_type == (int) wait)	// Needed for Skara Brae.
+		return;			// ++++Does this leave NPC's stuck?++++
 					// Locate free spot.
 	for (int dist = 1; dist < 8 && floorloc.tx == -1; dist++)
 		floorloc = npc->find_unblocked_tile(dist, 4);
