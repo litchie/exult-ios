@@ -300,8 +300,9 @@ int Monster_pathfinder_client::get_step_cost
 					//   field may be modified.
 	)
 	{
+	int terrain;			// Gets 1=land, 2=sea, 3=both.++++Use
 	if (Chunk_object_list::is_blocked(axtiles, aytiles, aztiles,
-							from, to))
+							from, to, terrain))
 		return -1;
 	else
 		return 1;
