@@ -1,4 +1,8 @@
-2002-03-31  Darke <darkwpaw@users.sourceforge.net>
+2002-04-01  Darke <darkepaw@users.sourceforge.net>
+	* conf/Configuration.h: Removed memory leak.
+	* usecode/ucxt/*: Removed memory leak, cleaned code.
+
+2002-03-31  Darke <darkepaw@users.sourceforge.net>
 	* palette.cc, mapedit/objbrowse.cc, mapedit/studio.cc: namespace fixes
 	* usecode/ucxt/*: Added ext32 header support.
 

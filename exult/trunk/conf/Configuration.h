@@ -32,6 +32,8 @@ public:
 	             : xmltree(new XMLnode(root)), rootname(root), filename(), is_file(false)
 		{ if(fname.size()) read_config_file(fname); }
 
+	~Configuration() { delete xmltree; };
+	
 	bool	read_config_file(const std::string input_filename, const std::string root=std::string());
 	
 	bool	read_config_string(const std::string &);
