@@ -2,7 +2,7 @@
 	* bggame.cc, combat.cc, gamedat.cc: removed unused declarations
 	* files/utils.c: fixed stat() to simply do a call through (buf may legally be 0)
 	* files/zip.c, files/unzip.c: ANSIfied, removing K&R cruft
-	* mac/mac_autoconfig.h: updated
+	* mac/mac_autoconfig.h, mac/exult_version.rsrc.bin, mac/ExultMac.mcp.xml.sit: updated
 	* objs/iregobjs.h, objs/objs.h: removed unused clone() method
 
 2001-11-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
