@@ -1,3 +1,12 @@
+2001-05-11  Dancer Vesperman <dancer@users.sourceforge.net>
+	* server.cc: std::string, using std::cout/endl/cerr
+	* cheat.cc: std::string
+	* gumps/Newfile_gump.h: sign a couple types - see below
+	* gamedat.cc: WARNING: ifstream.get() doesn't really work with
+	unsigned char in all implementations. Nor is it designed to. None of
+	these values actually require unsignedness anyway. Cast to (char &)
+	* keys.cc: using std::cout
+
 2001-05-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keys.*: cleaned up
 

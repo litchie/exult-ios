@@ -29,27 +29,27 @@ class Image_buffer;
 struct SaveGame_Details
 {
 	// Time that the game was saved (needed????)
-	unsigned char	real_minute;	// 1
-	unsigned char	real_hour;	// 2
-	unsigned char	real_day;	// 3
-	unsigned char	real_month;	// 4
-	unsigned short	real_year;	// 6
+	char	real_minute;	// 1
+	char	real_hour;	// 2
+	char	real_day;	// 3
+	char	real_month;	// 4
+	short	real_year;	// 6
 
 	// The Game Time that the save was done at
-	unsigned char	game_minute;	// 7
-	unsigned char	game_hour;	// 8
-	unsigned short	game_day;	// 10
+	char	game_minute;	// 7
+	char	game_hour;	// 8
+	short	game_day;	// 10
 
-	unsigned short	save_count;	// 12
-	unsigned char	party_size;	// 13
+	short	save_count;	// 12
+	char	party_size;	// 13
 
-	unsigned char	unused;		// 14 Quite literally unused
+	char	unused;		// 14 Quite literally unused
 
-	unsigned char	real_second;	// 15
+	char	real_second;	// 15
 
 	//Incase we want to add more later
 	char		reserved0;	// 16
-	unsigned char	reserved1[48];	// 64
+	char	reserved1[48];	// 64
 };
 
 struct SaveGame_Party

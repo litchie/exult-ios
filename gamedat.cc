@@ -439,7 +439,6 @@ void Game_window::read_saveinfo(std::ifstream &in,
 	details = new SaveGame_Details;
 
 	// This order must match struct SaveGame_Details
-
 	// Time that the game was saved
 	in.get(details->real_minute);
 	in.get(details->real_hour);
@@ -473,14 +472,14 @@ void Game_window::read_saveinfo(std::ifstream &in,
 		party[i].flags = Read4(in);
 		party[i].flags2 = Read4(in);
 
-		in.get(party[i].food);
-		in.get(party[i].str);
-		in.get(party[i].combat);
-		in.get(party[i].dext);
-		in.get(party[i].intel);
-		in.get(party[i].magic);
-		in.get(party[i].mana);
-		in.get(party[i].training);
+		in.get((char &)party[i].food);
+		in.get((char &)party[i].str);
+		in.get((char &)party[i].combat);
+		in.get((char &)party[i].dext);
+		in.get((char &)party[i].intel);
+		in.get((char &)party[i].magic);
+		in.get((char &)party[i].mana);
+		in.get((char &)party[i].training);
 
 		party[i].health = Read2(in);
 
