@@ -2342,6 +2342,11 @@ int Actor::figure_hit_points
 	if (winf && (usefun = winf->get_usecode()) != 0)
 		gwin->get_usecode()->call_usecode(usefun, this,
 					Usecode_machine::weapon);
+					// Same for ammo.
+	if (ammo_shape == 0x238 && Game::get_game_type() == SERPENT_ISLE)
+					// KLUDGE:  putting Draygan to sleep.
+		gwin->get_usecode()->call_usecode(0x7e1, this,
+					Usecode_machine::weapon);
 	if (!wpoints && (!winf || !winf->get_special_atts()))
 		return 0;		// No harm can be done.
 
