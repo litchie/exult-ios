@@ -328,11 +328,16 @@ void Game_render::paint_chunk_flats
 	Game_window *gwin = Game_window::get_instance();
 	Map_chunk *olist = gwin->map->get_chunk(cx, cy);
 					// Paint flat tiles.
-	Image_buffer8 *cflats = olist->get_rendered_flats();
-	if (cflats)
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())	// OpenGL rendering?
+		olist->get_glflats()->paint(xoff, yoff);
+	else
+#endif
+		{
+		Image_buffer8 *cflats = olist->get_rendered_flats();
 		gwin->win->copy8(cflats->get_bits(), c_chunksize, c_chunksize, 
 								xoff, yoff);
-
+		}
 	Flat_object_iterator next(olist);// Now do flat RLE objects.
 	Game_object *obj;
 	while ((obj = next.get_next()) != 0)
