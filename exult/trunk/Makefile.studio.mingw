@@ -101,11 +101,7 @@ dist: $(EXEC)
 	cp mapedit/exult_studio.glade $(STUDIOPATH)/data
 	mkdir -p $(STUDIOPATH)/data/estudio
 	mkdir -p $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/combos.flx $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/faces.vga $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/gumps.vga $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/palettes.flx $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/shapes.vga $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/sprites.vga $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/text.flx $(STUDIOPATH)/data/estudio/new
+	cp data/estudio/new/*.flx $(STUDIOPATH)/data/estudio/new
+	cp data/estudio/new/*.vga $(STUDIOPATH)/data/estudio/new
+	cp data/estudio/new/*.shp $(STUDIOPATH)/data/estudio/new
 	u2d $(STUDIOPATH)/*.txt
