@@ -39,7 +39,8 @@ extern int Get_click
 	(
 	int& x, int& y,			// Location returned (if not ESC).
 	Mouse::Mouse_shapes shape,	// Mouse shape to use.
-	char *chr = 0			// Char. returned if not null.
+	char *chr = 0,			// Char. returned if not null.
+	bool drag_ok = false		// Can drag while here.
 	);
 
 /*

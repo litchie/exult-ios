@@ -3038,7 +3038,7 @@ void Actor::die
 					// Okay to take its contents.
 		body->set_flag_recursively(Obj_flags::okay_to_take);
 					// Better be a spot for it.
-		pos = Map_chunk::find_spot(pos, 3, shnum, frnum, 4);
+		pos = Map_chunk::find_spot(pos, 5, shnum, frnum, 2);
 		if (pos.tx != -1)
 			body->move(pos);
 		else

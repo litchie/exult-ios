@@ -148,7 +148,7 @@ static class Windnd *windnd = 0;
 static int exult_main(const char *);
 static void Init();
 static int Play();
-static int Get_click(int& x, int& y, char *chr);
+static int Get_click(int& x, int& y, char *chr, bool drag_ok);
 static int find_resolution(int w, int h, int s);
 static void set_resolution (int new_res, bool save);
 #ifdef USE_EXULTSTUDIO
@@ -899,9 +899,11 @@ static void Handle_event
 static int Get_click
 	(
 	int& x, int& y,
-	char *chr			// Char. returned if not null.
+	char *chr,			// Char. returned if not null.
+	bool drag_ok			// Okay to drag/close while here.
 	)
 	{
+	dragging = false;		// Init.
 	while (1)
 		{
 		SDL_Event event;
@@ -911,7 +913,8 @@ static int Get_click
 		Mouse::mouse_update = false;
 
 		// Mouse scale factor
-		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
+		int scale = gwin->get_fastmouse() ? 1 
+				: gwin->get_win()->get_scale();
 
 		static bool rightclick;
 		while (SDL_PollEvent(&event))
@@ -920,7 +923,7 @@ static int Get_click
 			case SDL_MOUSEBUTTONDOWN:
 				if (event.button.button == 3)
 					rightclick = true;
-				else if (event.button.button == 1)
+				else if (drag_ok && event.button.button == 1)
 					{
 					x = event.button.x / scale;
 					y = event.button.y / scale;
@@ -957,7 +960,8 @@ static int Get_click
 				    my = event.motion.y / scale;
 				Mouse::mouse->move(mx, my);
 				Mouse::mouse_update = true;
-				if (event.motion.state & SDL_BUTTON(1))
+				if (drag_ok &&
+				    (event.motion.state & SDL_BUTTON(1)))
 					dragged = gwin->drag(mx, my);
 				break;
 				}
@@ -1023,7 +1027,8 @@ int Get_click
 	(
 	int& x, int& y,			// Location returned (if not ESC).
 	Mouse::Mouse_shapes shape,	// Mouse shape to use.
-	char *chr			// Char. returned if not null.
+	char *chr,			// Char. returned if not null.
+	bool drag_ok			// Okay to drag/close while here.
 	)
 	{
 	if (chr)
@@ -1033,7 +1038,7 @@ int Get_click
 		Mouse::mouse->set_shape(shape);
 	Mouse::mouse->show();
 	gwin->show(1);			// Want to see new mouse.
-	int ret = Get_click(x, y, chr);
+	int ret = Get_click(x, y, chr, drag_ok);
 	Mouse::mouse->set_shape(saveshape);
 	return (ret);
 	}

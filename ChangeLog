@@ -1,3 +1,8 @@
+2002-02-20  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Fiddling with finding position for dead bodies.
+	* exult.cc: Get_click() has a 'drag_ok' parameter, defaulting to false.
+
 2002-02-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/PhotoshopShapePlugin.zip: fixed bug with photoshop 6.0
 
