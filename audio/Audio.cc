@@ -96,6 +96,9 @@ struct	Chunk
 
 static	size_t calc_sample_buffer(uint16 _samplerate);
 static	uint8 *chunks_to_block(vector<Chunk> &chunks);
+static	sint16 *resample_new(uint8 *sourcedata,
+						size_t sourcelen, size_t &destlen,
+						int current_rate, int wanted_rate);
 static	void resample(uint8 *sourcedata, uint8 **destdata,
 						size_t sourcelen, size_t *destlen,
 						int current_rate, int wanted_rate);
@@ -108,7 +111,72 @@ static void decode_ADPCM_4(uint8* inBuf,
 Audio *Audio::self = 0;
 int *Audio::bg2si_sfxs = 0;
 
-//-----SFX -------------------------------------------------------------
+//----- Utilities ----------------------------------------------------
+
+/*
+ * Class that performs cubic interpolation on integer data.
+ * It is expected that the data is equidistant, i.e. all have the same
+ * horizontal distance. This is obviously the case for sampled audio.
+ */
+class CubicInterpolator {
+protected:
+	int x0, x1, x2, x3;
+	int a, b, c, d;
+	
+public:
+	CubicInterpolator(int a0, int a1, int a2, int a3) : x0(a0), x1(a1), x2(a2), x3(a3)
+	{
+		updateCoefficients();
+	}
+	
+	CubicInterpolator(int a1, int a2, int a3) : x0(2*a1-a2), x1(a1), x2(a2), x3(a3)
+	{
+		// We use a simple linear interpolation for x0
+		updateCoefficients();
+	}
+	
+	inline void feedData()
+	{
+		x0 = x1;
+		x1 = x2;
+		x2 = x3;
+		x3 = 2*x2-x1;	// Simple linear interpolation
+		updateCoefficients();
+	}
+
+	inline void feedData(int xNew)
+	{
+		x0 = x1;
+		x1 = x2;
+		x2 = x3;
+		x3 = xNew;
+		updateCoefficients();
+	}
+	
+	/* t must be a 16.16 fixed point number between 0 and 1 */
+	inline int interpolate(uint32 fp_pos)
+	{
+		int result = 0;
+		int t = fp_pos >> 8;
+		result = (a*t + b) >> 8;
+		result = (result * t + c) >> 8;
+		result = (result * t + d) >> 8;
+		result = (result/3 + 1) >> 1;
+		
+		return result;
+	}
+		
+protected:
+	inline void updateCoefficients()
+	{
+		a = ((-x0*2)+(x1*5)-(x2*4)+x3);
+		b = ((x0+x2-(2*x1))*6) << 8;
+		c = ((-4*x0)+x1+(x2*4)-x3) << 8;
+		d = (x1*6) << 8;
+	}
+};
+
+//----- SFX ----------------------------------------------------------
 
 /*
  *	For caching sound effects:
@@ -437,39 +505,127 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 		else if (compression != 0) {
 			CERR("Can't handle VOC compression type"); 
 		}
+		
+		// Our input is 8 bit mono unsigned; but want to output 16 bit stereo signed.
+		// In addition, the rates don't match, we have to upsample.
+#if 1
+		// New code: Do it all in one step with cubic interpolation
+
+		sint16 *stereo_data;
+		stereo_data = resample_new(dec_data, dec_len, l, sample_rate, actual.freq);
+#else
+		// Old code: resample using pseudo-breshenham, then in a second step convert
+		// to 16 bit stereo.
 
 		// Resample to the current rate
 		uint8 *new_data;
 		size_t new_len;
-		resample(dec_data,&new_data,dec_len,&new_len,
-						sample_rate,actual.freq);
+		resample(dec_data, &new_data, dec_len, &new_len, sample_rate, actual.freq);
 		l = new_len;
-
-		// Delete temp buffer
-		if (compression == 1) {
-			delete [] dec_data;
-		}
 
 		COUT("Have " << l << " bytes of resampled data");
 
 
 		// And convert to 16 bit stereo
-		sint16 *stereo_data=new sint16[l*2];
-		for(size_t i=0,j=0;i<l;i++)
+		sint16 *stereo_data = new sint16[l*2];
+		for(size_t i = 0, j = 0; i < l; i++)
 		{
-			stereo_data[j++]=(new_data[i]-128)<<8;
-			stereo_data[j++]=(new_data[i]-128)<<8;
+			stereo_data[j++] = (new_data[i] - 128)<<8;
+			stereo_data[j++] = (new_data[i] - 128)<<8;
 		}
-		l *= 4; // because it's 16bit
+		l <<= 2; // because it's 16bit
+
 		delete [] new_data;
+#endif
+		// Delete temp buffer
+		if (compression == 1) {
+			delete [] dec_data;
+		}
+
 		chunks.push_back(Chunk(l,(uint8 *)stereo_data));
 
-		data_offset+=chunk_length;
+		data_offset += chunk_length;
 	}
 	COUT("Turn chunks to block");
 	visible_len = l;
 
 	return chunks_to_block(chunks);
+}
+
+static	sint16 *resample_new(uint8 *src,
+						size_t sourcelen, size_t &size,
+						int rate, int wanted_rate)
+{
+	int fp_pos = 0;
+	int fp_speed = (1 << 16) * rate / wanted_rate;
+	size = sourcelen;
+
+	// adjust the magnitudes of size and rate to prevent division error
+	while (size & 0xFFFF0000)
+		size >>= 1, rate = (rate >> 1) + 1;
+	
+	// Compute the output size (times 4 since it is 16 stereo)
+	size = (size * wanted_rate / rate) << 2;
+
+	sint16 *stereo_data = new sint16[size];
+	sint16 *data = stereo_data;
+	uint8 *src_end = src + sourcelen;
+
+	int result;
+	
+	// Compute the initial data feed for the interpolator. We don't simply
+	// shift by 8, but rather duplicate the byte, this way we cover the full
+	// range. Probably doesn't make a big difference, listening wise :-)
+	int a = *(src+0); a |= (a << 8);
+	int b = *(src+1); b |= (b << 8);
+	int c = *(src+2); c |= (c << 8);
+	
+	// We divide the data by 2, to prevent overshots. Imagine this sample pattern:
+	// 0, 65535, 65535, 0. Now you want to compute a value between the two 65535.
+	// Obviously, it will be *bigger* than 65535 (it can get to about 80,000).
+	// It is possibly to clamp it, but that leads to a distored wave form. Compare
+	// this to turning up the volume of your stereo to much, it will start to sound
+	// bad at a certain level (depending on the power of your stereo, your speakers 
+	// etc, this can be quite loud, though ;-). Hence we reduce the original range.
+	// A factor of roughly 1/1.2 = 0.8333 is sufficient. Since we want to avoid 
+	// floating point, we approximate that by 27/32
+	#define RANGE_REDUX(x)	(((x) * 27) >> 5)
+//	#define RANGE_REDUX(x)	((x) >> 1)
+//	#define RANGE_REDUX(x)	((x) / 1.2)
+
+	CubicInterpolator	interp(RANGE_REDUX(a), RANGE_REDUX(b), RANGE_REDUX(c));
+	
+	do {
+		do {
+			// Convert to signed data
+			result = interp.interpolate(fp_pos) - 32768;
+
+			// Enforce range in case of an "overshot". Shouldn't happen since we
+			// scale down already, but safe is safe.
+			if (result < -32768)
+				result = -32768;
+			else if (result > 32767)
+				result = 32767;
+	
+			*data++ = result;
+			*data++ = result;
+	
+			fp_pos += fp_speed;
+		} while (!(fp_pos & 0xFFFF0000));
+		src++;
+		fp_pos &= 0x0000FFFF;
+		
+
+		if (src+2 < src_end) {
+			c = *(src+2);
+			c |= (c << 8);
+			interp.feedData(RANGE_REDUX(c));
+		} else
+			interp.feedData();
+
+	} while (src < src_end);
+	
+	return stereo_data;
 }
 
 		
