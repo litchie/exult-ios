@@ -15,7 +15,7 @@ $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/s
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
-SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL -lSDL_mixer
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
@@ -33,14 +33,14 @@ EXTRA_OPTIONS=
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw automatically defines WIN32
-CPPFLAGS=-DVERSION=\"0.99.1RC2\" -DEXULT_DATADIR=\"data\" -DDEBUG \
+CPPFLAGS=-DVERSION=\"0.99.2cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
 	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
 	$(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
-CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DNEED_SNPRINTF_ONLY -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -finline-limit-1000
+CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DNEED_SNPRINTF_ONLY -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -finline-limit-1000
 CXX=g++
 
 LFLAGS=-mwindows
@@ -64,9 +64,9 @@ CONF_OBJS=Configuration.o XMLEntity.o
 # unused: xmain.o
 
 MIDI_DRV_OBJS=win_midiout.o
-# unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o 
+# unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o win_MCI.o
 
-AUDIO_OBJS=Audio.o conv.o Midi.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
+AUDIO_OBJS=Audio.o conv.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 
 FLIC_OBJS=playfli.o
@@ -95,7 +95,7 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 	contain.o egg.o iregobjs.o mappatch.o objs.o objiter.o \
 	spellbook.o virstone.o jawbone.o
 
-USECODE_OBJS=stackframe.o ucfunction.o ucinternal.o ucmachine.o ucsched.o intrinsics.o \
+USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 	useval.o conversation.o keyring.o ucdisasm.o
 
 SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
@@ -233,7 +233,7 @@ UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o ops.o
 ucxt.exe : $(UCXT_OBJS)
 	$(CXX) $(LFLAGS) -o ucxt.exe $(UCXT_OBJS) -mconsole
 
-UCC_OBJS=args.o ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o
+UCC_OBJS=ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o
 
 ucc.exe : $(UCC_OBJS)
 	$(CXX) $(LFLAGS) -o ucc.exe $(UCC_OBJS) -liberty -mconsole
@@ -292,10 +292,9 @@ dist:   $(EXEC)
 	cp data/si/defaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 	cp SDL/README-SDL.txt $(U7PATH)/Exult
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult
-	cp SDL/lib/SDL_mixer.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
 
-tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucc.exe ucdump.exe wuc.exe wud.exe ucxt.exe head2data.exe head2data.test
+tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
 toolsclean:
 	rm -f expack.o expack.exe $(FILE_OBJS)
@@ -324,11 +323,11 @@ toolsinstall: tools
 	strip shp2pcx.exe -o $(U7PATH)/tools/shp2pcx.exe
 	strip splitshp.exe -o $(U7PATH)/tools/splitshp.exe
 	strip textpack.exe -o $(U7PATH)/tools/textpack.exe
-	strip ucc.exe -o $(U7PATH)/tools/ucc.exe
 	strip ucdump.exe -o $(U7PATH)/tools/ucdump.exe
 	strip wuc.exe -o $(U7PATH)/tools/wuc.exe
 	strip wud.exe -o $(U7PATH)/tools/wud.exe
 	strip ucxt.exe -o $(U7PATH)/ucxt.exe
+	strip ucc.exe -o $(U7PATH)/tools/ucc.exe
 	mkdir -p $(U7PATH)/data
 	cp usecode/ucxt/data/events.data $(U7PATH)/data
 	cp usecode/ucxt/data/flags.data $(U7PATH)/data
@@ -348,11 +347,11 @@ toolsdist: tools
 	strip shp2pcx.exe -o $(TOOLSPATH)/tools/shp2pcx.exe
 	strip splitshp.exe -o $(TOOLSPATH)/tools/splitshp.exe
 	strip textpack.exe -o $(TOOLSPATH)/tools/textpack.exe
-	strip ucc.exe -o $(TOOLSPATH)/tools/ucc.exe
 	strip ucdump.exe -o $(TOOLSPATH)/tools/ucdump.exe
 	strip wuc.exe -o $(TOOLSPATH)/tools/wuc.exe
 	strip wud.exe -o $(TOOLSPATH)/tools/wud.exe
 	strip ucxt.exe -o $(TOOLSPATH)/ucxt.exe
+	strip ucc.exe -o $(TOOLSPATH)/tools/ucc.exe
 	mkdir -p $(TOOLSPATH)/data
 	cp usecode/ucxt/data/events.data $(TOOLSPATH)/data
 	cp usecode/ucxt/data/flags.data $(TOOLSPATH)/data

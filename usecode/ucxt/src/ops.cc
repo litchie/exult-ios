@@ -27,11 +27,16 @@
 #include <iomanip>
 #include <fstream>
 #include <stack>
-#ifdef HAVE_SSTREAM
-#include <sstream>
-using std::stringstream;
-#endif
 
+#ifdef HAVE_SSTREAM
+	#include <sstream>
+	using std::stringstream;
+#else
+	#include <strstream>
+	using std::strstream;
+	typedef strstream stringstream;
+	// NOTE: strstreams need to be 'ends' terminated, whilst strstreams don't.
+#endif
 
 /*** head2data
 #ifndef __STRING
