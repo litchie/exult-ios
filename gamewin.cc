@@ -1678,11 +1678,14 @@ void Game_window::end_splash
 		init_actors();		// Set up actors if not already done.
 		paint();
 					// Want to activate first egg.
+		main_actor->walk_to_tile(1075, 2214, 0);
+#if 0	/* ++++Didn't work. */
 		Chunk_object_list *olist = get_objects(
 				main_actor->get_cx(), main_actor->get_cy());
 		olist->setup_cache();
 		olist->activate_eggs(main_actor->get_tx(), 
 						main_actor->get_ty());
+#endif
 		audio.start_speech(31,false);
 		SDL_Delay(500);
 		audio.start_music(35,0);
