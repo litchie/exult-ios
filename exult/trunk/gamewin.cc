@@ -971,7 +971,7 @@ void Game_window::start_actor
 	if (mode != normal)
 		return;
 					// Move every 1/8 sec.
-	main_actor->start(this,
+	main_actor->start(
 		chunkx*chunksize + winx, chunky*chunksize + winy, 125);
 	}
 
@@ -1164,7 +1164,7 @@ void Game_window::show_items
 			info.get_3d_xtiles() << ", " <<
 			info.get_3d_ytiles() << ", " <<
 			info.get_3d_height() << ", sched = " <<
-			obj->get_schedule()
+			obj->get_schedule_type()
 			<< '\n';
 		int tx, ty, tz;
 		obj->get_abs_tile(tx, ty, tz);
