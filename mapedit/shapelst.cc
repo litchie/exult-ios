@@ -76,7 +76,7 @@ void Shape_chooser::select
 	gtk_adjustment_changed(frame_adj);
 	gtk_widget_set_sensitive(fspin, true);
 					// Remove prev. selection msg.
-	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	char buf[150];			// Show new selection.
 	g_snprintf(buf, sizeof(buf), "Shape %d (%d frames)",
 						shapenum, nframes);
@@ -106,7 +106,7 @@ void Shape_chooser::render
 		selframe = info[selected].framenum;
 		}
 					// Remove "selected" message.
-	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	delete [] info;			// Delete old info. list.
 	int shapenum = shapenum0;
 	int framenum = 0;
@@ -410,7 +410,6 @@ Shape_chooser::Shape_chooser
 	(
 	Vga_file *i,			// Where they're kept.
 	char **nms,			// Shape names, or null.
-	GtkWidget *box,			// Where to put this.
 	int w, int h			// Dimensions.
 	) : ifile(i), names(nms),
 		iwin(0), shapenum0(0), palette(0),
@@ -427,7 +426,7 @@ Shape_chooser::Shape_chooser
 	palette = gdk_rgb_cmap_new(colors, 256);
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), vbox, TRUE, TRUE, 0);
+	chooser = vbox; // This is our "widget"
 	gtk_widget_show(vbox);
 	num_shapes = ifile->get_num_shapes();
 					// A frame looks nice.

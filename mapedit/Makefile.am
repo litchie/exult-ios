@@ -7,8 +7,8 @@ else
 GIMP_PLUGINS=
 endif
 
-if GTK_INTERFACE
-GTK_APPS = shapetest paltest exultstudio
+if HAVE_GTK
+GTK_APPS = shapetest paltest
 GTK_LIBS = -lgtk -lgdk
 OUTPUT_LIBS = libmapedit.la
 else
@@ -17,13 +17,22 @@ GTK_LIBS =
 OUTPUT_LIBS =
 endif
 
+if HAVE_GLADE 
+GLADE_APPS = exult_studio
+else
+GLADE_APPS =
+endif
+
 shapetest_SOURCES = shapetest.cc
 
 paltest_SOURCES = paltest.cc
 
-exultstudio_SOURCES = exultstudio.cc
+exult_studio_SOURCES = \
+	studio.h \
+	studio.cc \
+	exult_studio.cc
 
-bin_PROGRAMS = $(GTK_APPS) $(GIMP_PLUGINS)
+bin_PROGRAMS = $(GTK_APPS) $(GIMP_PLUGINS) $(GLADE_APPS)
 
 shapetest_LDADD = \
 	./libmapedit.la			\
@@ -34,7 +43,7 @@ shapetest_LDADD = \
 
 paltest_LDADD = $(shapetest_LDADD)
 
-exultstudio_LDADD = $(shapetest_LDADD) $(GIMP_LIBS)
+exult_studio_LDADD = $(shapetest_LDADD) -lglade -lxml
 
 noinst_LTLIBRARIES = $(OUTPUT_LIBS)
 
