@@ -2518,7 +2518,7 @@ USECODE_INTRINSIC(set_timer)
 USECODE_INTRINSIC(wearing_fellowship)
 {
 	Game_object *obj = gwin->get_main_actor()->get_readied(Actor::neck);
-	if (obj && obj->get_shapenum() == 955)	//++++++++++++Framenum too!!!!!
+	if (obj && obj->get_shapenum() == 955 && obj->get_framenum() == 1)
 		return Usecode_value(1);
 	else
 		return Usecode_value(0);
@@ -2780,8 +2780,10 @@ USECODE_INTRINSIC(is_not_blocked)
 		info.get_3d_height(), tile.tz, 
 		tile.tx - info.get_3d_xtiles() + 1,
 		tile.ty - info.get_3d_ytiles() + 1,
-		info.get_3d_xtiles(), info.get_3d_ytiles(), new_lift, MOVE_ALL_TERRAIN);
-	return Usecode_value(!blocked && new_lift == tile.tz);
+		info.get_3d_xtiles(), info.get_3d_ytiles(), 
+		new_lift, MOVE_ALL_TERRAIN);
+// Problem with bedroll	return Usecode_value(!blocked && new_lift == tile.tz);
+	return Usecode_value(!blocked);
 }
 
 USECODE_INTRINSIC(direction_from)
