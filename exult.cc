@@ -189,7 +189,7 @@ static void Init
 	gwin = new Game_window(640, 480);
 #endif
 	string skip_intro;		// Skip intro. scene?
-	config.value("config/gameplay/skip_intro", skip_intro, "yes");
+	config.value("config/gameplay/skip_intro", skip_intro, "no");
 	if (skip_intro == "yes")
 		gwin->get_usecode()->set_global_flag(
 			Usecode_machine::did_first_scene, 1);
@@ -253,6 +253,11 @@ static int Filter_intro_events
 	)
 	{
 	gwin->end_splash();		// This will start the scene.
+	if (gwin->get_mode() == Game_window::conversation)
+		{
+		SDL_SetEventFilter(0);	// Intro. conversation started.
+		return 1;
+		}
 	if (gwin->get_usecode()->get_global_flag(
 					Usecode_machine::did_first_scene))
 		{
