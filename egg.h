@@ -30,6 +30,7 @@ class	Egg_object;
 class	Animated_egg_object;
 class	Animator;
 class   Monster_actor;
+class 	Missile_launcher;
 
 #include "objs.h"
 
@@ -67,6 +68,7 @@ protected:
 	Rectangle area;			// Active area.
 	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
 	Monster_actor *monster_created;	// ->monster created.
+	Missile_launcher *launcher;	// For missile eggs.
 	void init_field(unsigned char ty);
 public:
 	enum Egg_types {		// Types of eggs:

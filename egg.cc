@@ -46,7 +46,7 @@ class Missile_launcher : public Time_sensitive
 	int delay;			// Delay (msecs) between launches.
 public:
 	Missile_launcher(Egg_object *e, int shnum, int di, int del)
-		: shapenum(shnum), dir(di), delay(del)
+		: egg(e), shapenum(shnum), dir(di), delay(del)
 		{  }
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
@@ -116,7 +116,7 @@ Egg_object::Egg_object
 	short d1, short d2
 	) : Egglike_game_object(shapenum, framenum, tilex, tiley, lft),
 	    probability(prob), data1(d1), data2(d2),
-	    area(Rectangle(0, 0, 0, 0)), monster_created(0)
+	    area(Rectangle(0, 0, 0, 0)), monster_created(0), launcher(0)
 	{
 	type = itype&0xf;
 	criteria = (itype & (7<<4)) >> 4;
@@ -182,6 +182,11 @@ Egg_object::~Egg_object
 	{
 	if (monster_created)
 		monster_created->set_creator(0);
+	if (launcher)
+		{
+		Game_window::get_game_window()->get_tqueue()->remove(launcher);
+		delete launcher;
+		}
 	}
 
 /*
@@ -378,7 +383,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		case voice:
 			audio->start_speech((data1)&0xff);
 			break;
-		case monster:		// +++++Not just for monsters!
+		case monster:		// Also creates other objects.
 			{
 			int shnum = data2&1023;
 			int frnum = data2>>10;
@@ -426,12 +431,19 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			}
 		case missile:
 			{
-			int aindex = data1, dir = data2&0xff, freq = data2>>8;
+					// Get data.  Not sure about delay.
+			int aindex = data1, dir = data2&0xff, delay = data2>>8;
+			//+++++This is not right yet!!
 			Ammo_info *ammo = Ammo_info::get_ammo(aindex);
 			int shnum = ammo->get_shapenum();
 			cout << "Missile egg:  " << item_names[shnum]
 				<< endl;
-			break;		//++++++Create launcher.
+			if (!launcher)
+				launcher = new Missile_launcher(this, shnum,
+						dir, 1000*delay);
+			if (!launcher->in_queue())
+				gwin->get_tqueue()->add(0L, launcher, 0);
+			break;
 			}
 		case teleport:
 			{
