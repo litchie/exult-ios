@@ -142,7 +142,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 			    }
 			  // Set palette
 			  if(win)
-				win->set_palette(colors, 32, brightness);
+				win->set_palette(colors, 64, brightness);
 		      }
 		      break;
 		  case 12:
