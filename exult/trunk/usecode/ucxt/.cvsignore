@@ -12,3 +12,4 @@ del
 *.GDT
 *.GPR
 makefile
+ucxt
