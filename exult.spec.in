@@ -3,11 +3,7 @@
 #
 %define ver      @VERSION@
 %define rel      1
-%define prefix   @prefix@
 %define name	 @PACKAGE@
-%define bindir	 @bindir@
-%define datadir	 @datadir@
-%define gimpdir  @GIMP_PLUGIN_PREFIX@
 
 Summary: Ultima VII Engine
 Name: %name
@@ -16,13 +12,11 @@ Release: %rel
 Copyright: GPL
 Group: Amusements/Games
 Source: http://download.sourceforge.net/projects/exult/exult-%{ver}.tar.gz
-BuildRoot: /var/tmp/exult
+BuildRoot: %{_tmppath}/%{name}-root
 Obsoletes: exult
-Packager: Tristan Tarrant <nadir@users.sourceforge.net>
+Packager: Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 URL: http://exult.sourceforge.net
 Prereq: /sbin/install-info
-Prefix: %{prefix}
-Docdir: %{prefix}/doc
 
 %description
 Exult: an implementation of the Ultima VII engine for modern Operating Systems.
@@ -33,25 +27,16 @@ Group: Amusements/Games
 
 %description tools
 Exult Tools: a set of utilities for playing with Exult/Ultima VII data files.
-Included in the tools are: expack (archiver), ucxt (decompiler), ucc (compiler),
-splitshp (frame splitter), shp2pcx (shape converter)
-
-%package gimp-plugin
-Summary: A GIMP plugin for loading/saving SHP files
-Group: Applications/Graphics
-
-%description gimp-plugin
-Exult GIMP Plugin: a file plugin for the GIMP which allows loading and saving 
-of Ultima VII SHP files. 
-
-%package studio
-Summary: A GTK+-based environment for editing Exult worlds
-Group: Amusements/Games
-
-%description studio
-ExultStudio: a GTK+-based environment for editing Exult worlds
+Included in the tools are: expack (archiver), ucxt (decompiler),
+ucc (compiler), splitshp (frame splitter), shp2pcx (shape converter),
+ipack (image archiver), textpack (text archiver)
 
 %changelog
+
+* Fri Nov 01 2002  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+
+- updated .spec to work with RH80
+- removed studio and gimp plugin packages for 1.0 branch
 
 * Fri Jun 07 2002  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 
@@ -97,7 +82,11 @@ ExultStudio: a GTK+-based environment for editing Exult worlds
 if [ ! -f configure ]; then
   ./autogen.sh
 fi
-CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --bindir=%bindir --datadir=%datadir --sysconfdir=$RPM_BUILD_ROOT/etc --enable-gimp-plugin --enable-exult-studio-support --enable-tools --enable-exult-studio
+
+%configure \
+        --disable-gimp-plugin \
+        --disable-exult-studio-support \
+        --disable-exult-studio
 
 if [ "$SMP" != "" ]; then
   (make "MAKE=make -k -j $SMP"; exit 0)
@@ -108,7 +97,7 @@ fi
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make prefix=$RPM_BUILD_ROOT%{prefix} bindir=$RPM_BUILD_ROOT%{bindir} datadir=$RPM_BUILD_ROOT%{datadir} GIMP_PLUGIN_PREFIX=$RPM_BUILD_ROOT%{gimpdir} install
+%makeinstall
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -116,36 +105,26 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog NEWS README FAQ README.1ST
-%{bindir}/exult
-%{datadir}/exult/exult_bg.flx
-%{datadir}/exult/exult_si.flx
-%{datadir}/exult/exult.flx
+%{_bindir}/exult
+%{_datadir}/exult/exult_bg.flx
+%{_datadir}/exult/exult_si.flx
+%{_datadir}/exult/exult.flx
+%{_datadir}/exult/midisfx.flx
+%{_datadir}/pixmaps/exult.png
+%{_mandir}/man6/exult.6.gz
+
 
 %files tools
 %defattr(-, root, root)
 %doc tools/expack.txt
-%{bindir}/expack
-%{bindir}/ucxt
-%{bindir}/ucc
-%{bindir}/splitshp
-%{bindir}/shp2pcx
-%{datadir}/exult/u7bgintrinsics.data
-%{datadir}/exult/u7siintrinsics.data
-%{datadir}/exult/u7misc.data
-%{datadir}/exult/u7opcodes.data
-
-%files gimp-plugin
-%defattr(-, root, root)
-%{gimpdir}/u7shp
-
-%files studio
-%defattr(-, root, root)
-%{bindir}/exult_studio
-%{datadir}/exult/exult_studio.glade
-%{datadir}/exult/estudio/new/combos.flx
-%{datadir}/exult/estudio/new/faces.vga
-%{datadir}/exult/estudio/new/gumps.vga
-%{datadir}/exult/estudio/new/palettes.flx
-%{datadir}/exult/estudio/new/shapes.vga
-%{datadir}/exult/estudio/new/sprites.vga
-%{datadir}/exult/estudio/new/text.flx
+%{_bindir}/expack
+%{_bindir}/ipack
+%{_bindir}/textpack
+%{_bindir}/ucxt
+%{_bindir}/ucc
+%{_bindir}/splitshp
+%{_bindir}/shp2pcx
+%{_datadir}/exult/u7bgintrinsics.data
+%{_datadir}/exult/u7siintrinsics.data
+%{_datadir}/exult/u7misc.data
+%{_datadir}/exult/u7opcodes.data

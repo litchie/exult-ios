@@ -1,4 +1,8 @@
 2002-10-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.spec.in, desktop/Makefile.am, mapedit/Makefile.am:
+	updated for RH80, other minor packaging changes
+
+2002-10-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gumps/Face_stats.cc: fixed division by zero
 	* shapes/Makefile.am: new automakes don't support OMIT_DEPENDENCIES
 

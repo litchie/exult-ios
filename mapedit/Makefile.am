@@ -12,7 +12,8 @@ endif
 GTK_LIBS = @GTK_LIBS@
 
 if BUILD_STUDIO
-bin_PROGRAMS = exult_studio 
+bin_PROGRAMS = exult_studio
+mapedit_DATA = exult_studio.glade
 else
 bin_PROGRAMS =
 endif
@@ -63,8 +64,6 @@ exult_studio_LDADD = \
 exult_studio_CFLAGS = $(LIBGLADE_INCLUDES)
 
 mapeditdir = $(datadir)/exult
-
-mapedit_DATA = exult_studio.glade
 
 u7shp$(EXEEXT): u7shp.c
 	gimptool --build $<
