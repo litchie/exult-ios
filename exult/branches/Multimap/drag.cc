@@ -436,7 +436,8 @@ bool Dragging_info::drop_on_map
 		return false;
 		}
 					// Moved more than 2 tiles.
-	if (!gump && to_drop->get_tile().distance(old_pos) > 2)
+	if (!gump && !possible_theft &&
+				to_drop->get_tile().distance(old_pos) > 2)
 		possible_theft = true;
 	return true;
 	}
