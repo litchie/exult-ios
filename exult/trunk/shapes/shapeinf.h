@@ -55,9 +55,18 @@ public:
 		magic_damage = 2,
 		poison_damage = 3	// Not sure about rest.
 		};
+	enum Actor_frames		// Actor frames to show when using:
+		{
+		raise = 1,
+		reach = 2
+		};
 private:
 	unsigned char powers;		// Poison, sleep, charm. flags.
 	unsigned char damage_type;	// See Damage_type above.
+	unsigned char actor_frames;	// Frames for NPC when using (from
+					//   Actor_frames above).  Low 2 bits
+					//   are for 'strike', next 2 are for
+					//   shooting/throwing.
 	short ammo;			// Shape # of ammo. consumed, or
 					//   -1 = ?? (swords, also sling).
 					//   -2 = ?? wands?
@@ -86,6 +95,10 @@ public:
 		{ return powers; }
 	void set_powers(unsigned char p)
 		{ powers = p; }
+	unsigned char get_actor_frames(bool projectile) const
+		{ return !projectile ? (actor_frames&3) : (actor_frames>>2); }
+	void set_actor_frames(unsigned char f)
+		{ actor_frames = f; }
 	int get_ammo_consumed()
 		{ return ammo > 0 ? ammo : 0; }
 	void set_ammo(int a)			// Raw value, for map-editor.

@@ -70,11 +70,12 @@ int Weapon_info::read
 	range = range>>3;
 	unsigned char flags1 = *ptr++;
 	m_returns = (flags1&1);
-	unsigned char unk1 = *ptr++;
 #if 0
+	unsigned char unk1 = *ptr++;	// Figured it out now... I think.
 	cout << "Unk1 = " << hex << "0x" << setfill('0') << setw(2) <<(int)unk1
 							<< endl;
 #endif
+	actor_frames = (*ptr++)&15;
 	powers = *ptr++;
 	*ptr++;				// Skip (0).
 	usecode = Read2(ptr);
