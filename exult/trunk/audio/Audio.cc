@@ -745,8 +745,12 @@ void Audio::play_wave_sfx
 
 	if (!mixer)
 		return;
+	cerr << "Play_wave_sfx:  " << num;
+#if 0
         if (Game::get_game_type() == BLACK_GATE)
         	num = bgconv[num];
+	cerr << "; after bgconv:  " << num << endl;
+#endif
 	if (num < 0 || num >= sfx_file->number_of_objects())
 		{
 		cerr << "SFX " << num << " is out of range" << endl;
