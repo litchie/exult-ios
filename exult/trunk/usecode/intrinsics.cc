@@ -817,16 +817,16 @@ USECODE_INTRINSIC(click_on_item)
 
 					// Special case for weapon hit:
 	} else if (event == weapon && caller_item)
-		{
-#if 0
-        // This breaks hitting Draygan with sleep arrows (SI). -wjp
+	{
+        // if caller_item is the Avatar, return the Avatar's target
+        // instead. This makes combat spellcasting work
 
-			// First choice:  NPC's target.
+        // if caller_item is not the Avatar return caller_item itself
+        // this is needed for hitting Draygan with sleep arrows (SI)
 		Actor *npc = as_actor(caller_item);
-		if (npc && npc->get_target())
+		if (npc == gwin->get_main_actor() && npc->get_target())
 			obj = npc->get_target();
-		else			// Not sure about this:
-#endif
+		else
 			obj = caller_item;
 		t = obj->get_tile();
 		}
