@@ -1,3 +1,11 @@
+2002-01-03  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*: Removed obsolete -fs option and all relevant code.
+	-fs will now do the same thing as -fz. Makefile.am's were updated.
+	* Removed files under: usecode/ucxt/include/ gotoset.h; newopcode.h;
+	opcodec.h; opcodec_.h; opcodecn.h; printucc.h; stacki.h.
+	* Removed files under: usecode/ucxt/src/ opcodec_.cc; printucc.cc;
+	stacki.cc
+
 2002-01-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ucparse.yy, opcodes.txt: added 'append arrays' operator (&) to ucc
 	* gamemap.h: include fstream
