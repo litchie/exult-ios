@@ -198,6 +198,12 @@ void Game_window::paint_dungeon_chunk_flats
 	int xoff = (cx*tiles_per_chunk - get_scrolltx())*tilesize;
 	int yoff = (cy*tiles_per_chunk - get_scrollty())*tilesize;
 	Chunk_object_list *olist = get_objects(cx, cy);
+	if (!olist->has_dungeon())	// No dungeon in this chunk?
+		{
+		const int w = tilesize*tiles_per_chunk;
+		win->fill8(0, w, w, xoff, yoff);
+		return;
+		}
 					// Go through array of tiles.
 	for (int tiley = 0; tiley < tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < tiles_per_chunk; tilex++)

@@ -633,6 +633,7 @@ class Chunk_object_list
 	unsigned char roof;		// 1 if a roof present.
 	unsigned char light_sources;	// # light sources in chunk.
 	unsigned char cx, cy;		// Absolute chunk coords. of this.
+	void add_dungeon_bits(Rectangle& tiles);
 	void add_dependencies(Game_object *newobj,
 					class Ordering_info& newinfo);
 public:

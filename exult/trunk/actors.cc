@@ -1525,13 +1525,6 @@ int Main_actor::step
 		stop();
 		return (0);
 		}
-#if 0
-	if (water && new_lift == 0)
-		{
-		stop();
-		return (0);
-		}
-#endif
 	if (poison)
 		Actor::set_flag((int) Actor::poisoned);
 					// Check for scrolling.
@@ -1548,7 +1541,11 @@ int Main_actor::step
 		switched_chunks(olist, nlist);
 
 	if (gwin->set_above_main_actor (nlist->is_roof (tx, ty, new_lift)))
+		{
+		gwin->set_in_dungeon(nlist->has_dungeon() &&
+				nlist->in_dungeon(tx, ty));
 		gwin->set_all_dirty();
+		}
 					// Near an egg?  (Do this last, since
 					//   it may teleport.)
 	nlist->activate_eggs(this, t.tx, t.ty, new_lift, 
@@ -1635,7 +1632,11 @@ void Main_actor::move
 	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
 	if (nlist != olist)
 		switched_chunks(olist, nlist);
-	gwin->set_above_main_actor(nlist->is_roof(get_tx(), get_ty(), newlift));
+	int tx = get_tx(), ty = get_ty();
+	if (gwin->set_above_main_actor(nlist->is_roof(tx, ty, newlift)))
+		gwin->set_in_dungeon(nlist->has_dungeon() &&
+				nlist->in_dungeon(tx, ty));
+
 	}
 
 /*
