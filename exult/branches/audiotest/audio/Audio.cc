@@ -84,8 +84,8 @@ using std::max;
 /* 44100 caused the freeze upon exit in Win! */
 #define SAMPLERATE	22050
 #else
-//SDL_mixer doesn't like mixing different rates when using MP3/OGG
-//This should match the same as the SFX and MP3 Music which is 22khz
+//SDL_mixer doesn't like mixing different rates when using OGG
+//This should match the same as the SFX and OGG Music which is 22khz
 //#define SAMPLERATE	44100
 #define SAMPLERATE	22050
 #endif
