@@ -2,6 +2,7 @@
 	* mapedit/u7shp.c: corrected a palette entry
 	* data/*.shp, data/flx.in, Makefile.*: added lots of shapes for new game menu
 	* Gump.*, Gump_widget.*, Gump_button.h, Modal_gump.h: added support for shapes from exult.flx
+	* gumps/Gamemenu_gump.*, Makefile.*: added a game menu gump
 	
 2001-04-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/*.shp, data/flx.in, Makefile.*: added lots of shapes for new savegame gump

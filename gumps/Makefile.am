@@ -12,6 +12,8 @@ libgumps_la_SOURCES = \
 	Book_gump.h	\
 	File_gump.cc	\
 	File_gump.h	\
+	Gamemenu_gump.cc	\
+	Gamemenu_gump.h	\
 	Gump.cc	\
 	Gump.h	\
 	Gump_button.cc	\
