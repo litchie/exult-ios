@@ -1,3 +1,12 @@
+2002-01-23  Darke  <darkepaw@users.sourceforge.net>
+	* exult.cc: Fixed a compile error with people compiling using
+	--enable-usecode-debugger.
+	* conf/*: Fixed problem with reading spaces as '\n's. Problem was
+	std::istream >> std::string, breaks on spaces and '\n's, not just
+	'\n's.
+	* mapedit/shapegroup.*: Fixed namespace stuff.
+	* usecode/ucxt/*: Minor code cleanup.
+
 2002-01-21  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/studio.cc (ExultStudio): Open 'chunks' file in both

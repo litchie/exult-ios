@@ -33,7 +33,7 @@ class Shape_group_file;
 /*
  *	A group of shape/chunk #'s:
  */
-class Shape_group : vector<int>		// Not public on purpose.
+class Shape_group : std::vector<int>		// Not public on purpose.
 	{
 	std::string name;		// What this group is called.
 	Shape_group_file *file;		// Where this comes from.
@@ -56,7 +56,7 @@ public:
 class Shape_group_file
 	{
 	std::string name;		// Base filename.
-	vector<Shape_group *> groups;	// List of groups from the file.
+	std::vector<Shape_group *> groups;	// List of groups from the file.
 	bool modified;			// Changed since last save.
 public:
 	Shape_group_file(const char *nm);

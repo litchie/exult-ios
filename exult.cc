@@ -112,9 +112,8 @@ const std::string c_empty_string;
 
 #if USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
+extern void initialise_usecode_debugger(void);
 #endif
-
-
 
 struct resolution {
 	int x;

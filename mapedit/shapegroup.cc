@@ -35,6 +35,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exceptions.h"
 #include "studio.h"
 
+
+using std::vector;
+using std::ios;
+using std::string;
+
 /*
  *	Create an empty group.
  */
@@ -146,7 +151,7 @@ void Shape_group_file::write
 						it != grp->end(); it++)
 			Write2(ptr, *it);
 		assert(ptr - buf == len);
-		out.write(buf, len);	// Write out to file.
+		out.write(reinterpret_cast<char *>(buf), len);	// Write out to file.
 		delete buf;
 		}
 	out.seekp(0x80, ios::beg);	// Write table.
