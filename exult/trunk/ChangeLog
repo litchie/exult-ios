@@ -2,6 +2,9 @@
 
 	* actors.cc,chunks.cc:  Wrote find_spot(), a smarter finder of
 	free areas for things.  Still fiddling with it.
+	* actors.cc,paths.cc:  When a companion fails to find a path
+	towards the Avatar, he/she now tries to walk offscreen, then
+	return.  Helps avoid slowdowns.
 
 2001-09-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: fixed divisions by zero
