@@ -813,12 +813,17 @@ static void Handle_keystroke
 			"PgUp/PgDn - Show next-previous shape file\n"
 			"sS - Show next-previous shape\n"
 			"fF - Show next-previous frame\n"
+			"c - Combat mode\n"
 			"i - Show inventory\n"
 			"l - Decrement lift\n"
-			"m - Change mouse shape\n"
+			"m - Turn on/off music\n"
 			"p - Repaint screen\n"
-			"alt-x - Exit\n"
+			"z - Show stats\n"
+			"alt-x, F10, ESC - Exit\n"
+			"ctrl-m - Get 100 gold coins\n"
 			"ctrl-t - Fake time period change\n"
+			"ctrl-w - Test weather\n"
+			"F4 - Toggle fullscreen\n"
 		);
 			
 		gwin->paint_text_box(2, buf, 
@@ -832,26 +837,24 @@ static void Handle_keystroke
 		else			// For now, quit.
 			Okay_to_quit();
 		break;
-	case SDLK_m:			// Show next mouse cursor.
-		{
-		if (ctrl)		// CTRL-m:  get 100 gold coins!
-			{
+	case SDLK_m:
+		if (ctrl) {		// CTRL-m:  get 100 gold coins!
 			gwin->get_main_actor()->add_quantity(100, 644);
 			break;
-			}
-		static int mnum = 0;
-		if (shift && mnum > 0)
-			audio->start_music(--mnum, 0);
-		else
-			audio->start_music(mnum++, 0);
-		break;
+		} else {
+			static int mnum = 0;
+			if (shift && mnum > 0)
+				audio->start_music(--mnum, 0);
+			else
+				audio->start_music(mnum++, 0);
 		}
+		break;
 	case SDLK_l:			// Decrement skip_lift.
 		if (gwin->skip_lift == 16)
 			gwin->skip_lift = 11;
 		else
 			gwin->skip_lift--;
-		if (gwin->skip_lift == 0)
+		if (gwin->skip_lift <= 0)
 			gwin->skip_lift = 16;
 #if DEBUG
 		cout << "Skip_lift = " << gwin->skip_lift << endl;
@@ -861,7 +864,7 @@ static void Handle_keystroke
 		gwin->paint();
 		break;
 	case SDLK_e:
-		gwin->paint_eggs = 1-gwin->paint_eggs;
+		gwin->paint_eggs = !gwin->paint_eggs;
 		gwin->paint();
 		break;
 	case SDLK_f:		// Show next frame
@@ -1107,19 +1110,11 @@ void Wait_for_arrival
 				break;
 				}
 					// Get current time, & animate.
-#ifdef MACOS
-		unsigned long ticks = TickCount();
-#else
 		unsigned long ticks = SDL_GetTicks();
-#endif
 		if (gwin->have_focus() && !dragging)
 			gwin->get_tqueue()->activate(ticks);
 					// Show animation every 1/10 sec.
-#ifdef MACOS
-		if (ticks > last_repaint + 6)
-#else
 		if (ticks > last_repaint + 100)
-#endif
 			{
 			gwin->paint_dirty();
 			last_repaint = ticks;
