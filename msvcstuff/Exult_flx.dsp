@@ -164,30 +164,6 @@ SOURCE=..\data\quotes.txt
 # PROP Default_Filter "shp"
 # Begin Source File
 
-SOURCE=..\data\aud_cancel.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\aud_conversion.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\aud_enabled.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\aud_ok.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
 SOURCE=..\data\audiooptions.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
@@ -254,42 +230,6 @@ SOURCE=..\data\full_screen.shp
 # End Source File
 # Begin Source File
 
-SOURCE=..\data\gam_audio.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\gam_gameplay.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\gam_loadsave.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\gam_quit.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\gam_quitmenu.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\gam_video.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
 SOURCE=..\data\gamemenu.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
@@ -337,18 +277,6 @@ SOURCE=..\data\pointers.shp
 # End Source File
 # Begin Source File
 
-SOURCE=..\data\sav_cancel.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\sav_delete.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
 SOURCE=..\data\sav_down.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
@@ -356,18 +284,6 @@ SOURCE=..\data\sav_down.shp
 # Begin Source File
 
 SOURCE=..\data\sav_downdown.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\sav_load.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\sav_save.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
 # End Source File
@@ -422,26 +338,6 @@ SOURCE=..\data\setup.shp
 
 SOURCE=..\data\sfx_conversion.shp
 # PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\vid_left.shp
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\vid_resolution.shp
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\vid_right.shp
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\vid_scaling.shp
 # PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File

@@ -666,6 +666,10 @@ SOURCE=..\gumps\CombatStats_gump.cc
 # End Source File
 # Begin Source File
 
+SOURCE=..\gumps\Enabled_button.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\gumps\Face_button.cc
 # End Source File
 # Begin Source File
@@ -1359,6 +1363,10 @@ SOURCE=..\gumps\Book_gump.h
 # Begin Source File
 
 SOURCE=..\gumps\CombatStats_gump.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gumps\Enabled_button.h
 # End Source File
 # Begin Source File
 
