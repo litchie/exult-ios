@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL.h"
 #include "tqueue.h"
 #include "gumps.h"
+#include "effects.h"
 #include "mouse.h"
 #include <Audio.h>
 #include <iomanip>
@@ -2118,6 +2119,17 @@ USECODE_INTRINSIC(display_map)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(sprite_effect)
+{
+	// Display animation from sprites.vga.
+	// show_sprite(sprite#, tx, ty, tz, ?, ?, ?);
+	int lift = parms[3].get_int_value();	// ???Guessing.
+	gwin->add_effect(new Sprites_effect(parms[0].get_int_value(),
+		parms[1].get_int_value() - lift/2,
+		parms[2].get_int_value() - lift/2));
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(book_mode)
 {
 	// Display book or scroll.
@@ -2447,8 +2459,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x53++++Guessing it's
-//++++   show_sprite(sprite#, x, y, ?, ?, ?, ?);
+	USECODE_INTRINSIC_PTR(sprite_effect),	// 0x53
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54
 	USECODE_INTRINSIC_PTR(book_mode),// 0x55
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.

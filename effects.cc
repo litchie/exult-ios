@@ -34,7 +34,7 @@ Sprites_effect::Sprites_effect
 	(
 	int num,			// Index.
 	int px, int py			// Screen location.
-	) : sprite_num(num), x(px), y(py), frame_num(0)
+	) : sprite_num(num), tx(px), ty(py), frame_num(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_sprite_num_frames(num);
@@ -55,15 +55,28 @@ void Sprites_effect::handle_event
 	const int delay = 100;		// Delay between frames.
 	Game_window *gwin = Game_window::get_game_window();
 	if (frame_num == frames)	// At end?
-		{
-		delete this;
+		{			// Remove & delete this.
+		gwin->remove_effect(this);
 		gwin->paint();
 		return;
 		}
-	gwin->paint_sprite(x, y, sprite_num, frame_num);
+	Sprites_effect::paint(gwin);	// Render.
 	frame_num++;			// Next frame.
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
+ *	Render.
+ */
+
+void Sprites_effect::paint
+	(
+	Game_window *gwin
+	)
+	{
+	gwin->paint_sprite((tx - gwin->get_scrolltx())*tilesize,
+		(ty - gwin->get_scrollty())*tilesize, sprite_num, frame_num);
 	}
 
 /*
@@ -96,8 +109,27 @@ void Text_effect::handle_event
 			width + 2*tilesize, height + 2*tilesize);
 					// Intersect with screen.
 	rect = gwin->clip_to_win(rect);
-	gwin->remove_text(this);	// Remove & delete this.
+	gwin->remove_effect(this);	// Remove & delete this.
 	if (rect.w > 0 && rect.h > 0)	// Watch for negatives.
 		gwin->paint(rect.x, rect.y, rect.w, rect.h);
 
+	}
+
+/*
+ *	Render.
+ */
+
+void Text_effect::paint
+	(
+	Game_window *gwin
+	)
+	{
+	const char *ptr = msg;
+	if (*ptr == '@')
+		ptr++;
+	int len = strlen(ptr);
+	if (ptr[len - 1] == '@')
+		len--;
+	gwin->paint_text(0, ptr, len, (tx - gwin->get_scrolltx())*tilesize,
+				(ty - gwin->get_scrollty())*tilesize);
 	}
