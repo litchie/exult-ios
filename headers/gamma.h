@@ -31,9 +31,9 @@ using std::pow;
 template <class T> class GammaTable
 {
 private:
-	unsigned int	size;
+	unsigned	size;
 	float		sizef;
-	T		*table;
+	T			*table;
 	float		gamma;
 
 	// No
@@ -50,7 +50,7 @@ public:
 		if (g == gamma) return;	
 		gamma = g;
 
-		for (int i = 0; i < size; i++)
+		for (unsigned i = 0; i < size; i++)
 			table[i] = (T) (pow (i / sizef, 1 / gamma) * sizef);
 	}
 
