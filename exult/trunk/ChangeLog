@@ -1,3 +1,7 @@
+2000-06-12  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Conversations look more like the original U7 now.
+
 2000-06-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* exult.cc:  Set screen size in .exult.cfg.

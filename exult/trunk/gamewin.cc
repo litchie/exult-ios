@@ -1976,13 +1976,13 @@ void Game_window::show_face
 			starty += 2*text_height;
 			}
 		else
-			starty = 12;
+			starty = 8;
 		actbox = clip_to_win(Rectangle(8, starty,
 			face->get_width() + 4, face->get_height() + 4));
 		info->face_rect = actbox;
 					// This is where NPC text will go.
 		info->text_rect = clip_to_win(Rectangle(
-			actbox.x + actbox.w + 16, actbox.y + 8,
+			actbox.x + actbox.w + 12, actbox.y + 6,
 			get_width() - actbox.x - actbox.w - 32,
 							8*text_height));
 		info->last_text_height = info->text_rect.h;
@@ -2098,17 +2098,18 @@ void Game_window::show_avatar_choices
 		fy = sbox.h - face->get_height() - 3*height;
 	else
 		{
-		fy = prev->text_rect.y + prev->last_text_height + height;
+		fy = prev->text_rect.y + prev->last_text_height;
 		if (fy < prev->face_rect.x + prev->face_rect.h)
 			fy = prev->face_rect.x + prev->face_rect.h;
 		fy += height;
 		}
-	Rectangle mbox(fx, fy, face->get_width() + 4, face->get_height() + 4);
+	Rectangle mbox(fx, fy, face->get_width(), face->get_height());
+	mbox = mbox.intersect(sbox);
 #endif
+				
+	avatar_face = mbox;		// Repaint entire width.
 					// Draw portrait.
-	paint_shape(mbox.x + mbox.w - 2, 
-				mbox.y + mbox.h - face->ybelow - 2, 
-				face);
+	paint_shape(mbox.x + face->xleft, mbox.y + face->yabove, face);
 					// Set to where to draw sentences.
 	Rectangle tbox(mbox.x + mbox.w + 16, mbox.y + 8,
 				sbox.w - mbox.x - mbox.w - 32,
@@ -2128,9 +2129,11 @@ void Game_window::show_avatar_choices
 					// Store info.
 		conv_choices[i] = Rectangle(tbox.x + x, tbox.y + y,
 					width, height);
+		avatar_face = avatar_face.add(conv_choices[i]);
 		paint_text(0, text, tbox.x + x, tbox.y + y);
 		x += width + space_width;
 		}
+	avatar_face.enlarge(6);		// Encloses entire area.
 					// Terminate the list.
 	conv_choices[num_choices] = Rectangle(0, 0, 0, 0);
 	clear_text_pending();
@@ -2175,7 +2178,10 @@ int Game_window::conversation_choice
 			!conv_choices[i].has_point(x, y); i++)
 		;
 	if (conv_choices[i].w != 0)	// Found one?
+		{
+		paint(avatar_face);	// Repaint.
 		return (i);
+		}
 	else
 		return (-1);
 	}
