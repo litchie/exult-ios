@@ -1,4 +1,9 @@
 2001-12-05  Tristan Tarrant <nadir@users.sourceforge.net>
+	* mapedit/Makefile.am: define EXULT_DATADIR when compiling exult_studio
+	* mapedit/studio.cc: look for glade file in xmldir, EXULT_DATADIR and
+	current dir before giving up
+
+2001-12-05  Tristan Tarrant <nadir@users.sourceforge.net>
 	* configure.in: GIMP_PLUGIN_PREFIX needs a /plug-ins appended to it
 	* exult.spec.in: implement subpackages for exult-tools, exult-studio,
 	exult-gimp-plugin. Someone should provide deb equivalents
