@@ -329,7 +329,7 @@ int Egg_object::is_active
 					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
 		return obj == gwin->get_main_actor() && 
-			(deltaz == 0 || deltaz == 1 || 
+			(absdeltaz <= 1 || 
 					// Using trial&error here:
 			 (Game::get_game_type() == SERPENT_ISLE &&
 				(type != teleport || absdeltaz <= 3)) ||
