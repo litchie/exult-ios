@@ -441,8 +441,8 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 				COUT("Chunk length appears to be " << l);
 				sample_rate=1000000/(256-(old_data[4+data_offset]&0xff));
 #ifdef FUDGE_SAMPLE_RATES
-				if (sample_rate = 11111) sample_rate = 11025;
-				else if (sample_rate = 22222) sample_rate = 22050;
+				if (sample_rate == 11111) sample_rate = 11025;
+				else if (sample_rate == 22222) sample_rate = 22050;
 #endif
 				COUT("Original sample_rate is " << sample_rate << ", hw rate is " << actual.freq);
 				COUT("Sample rate ("<< sample_rate<<") = _real_rate");
@@ -572,9 +572,9 @@ static	sint16 *resample_new(uint8 *src,
 	// Compute the initial data feed for the interpolator. We don't simply
 	// shift by 8, but rather duplicate the byte, this way we cover the full
 	// range. Probably doesn't make a big difference, listening wise :-)
-	int a = *(src+0); a |= (a << 8);
-	int b = *(src+1); b |= (b << 8);
-	int c = *(src+2); c |= (c << 8);
+	int a = *(src+0); a = (a|(a << 8))-32768;
+	int b = *(src+1); b = (a|(b << 8))-32768;
+	int c = *(src+2); c = (a|(c << 8))-32768;
 	
 	// We divide the data by 2, to prevent overshots. Imagine this sample pattern:
 	// 0, 65535, 65535, 0. Now you want to compute a value between the two 65535.
@@ -594,7 +594,7 @@ static	sint16 *resample_new(uint8 *src,
 	do {
 		do {
 			// Convert to signed data
-			result = interp.interpolate(fp_pos) - 32768;
+			result = interp.interpolate(fp_pos);
 
 			// Enforce range in case of an "overshot". Shouldn't happen since we
 			// scale down already, but safe is safe.
@@ -614,7 +614,7 @@ static	sint16 *resample_new(uint8 *src,
 
 		if (src+2 < src_end) {
 			c = *(src+2);
-			c |= (c << 8);
+			c = (c|(c << 8))-32768;
 			interp.feedData(RANGE_REDUX(c));
 		} else
 			interp.feedData();
