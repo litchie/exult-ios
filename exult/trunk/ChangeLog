@@ -1,3 +1,7 @@
+2001-02-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/caddellite_helmet.shp: attempt at a caddellite helmet
+	* data/flx.in, Makefile.*: added caddellite_helmet.shp
+	
 2001-02-14  Ryan Nunn  <triforce@merlin.net.au>
 	* paperdoll_gump_info.cc: Hoe of Destruction no longer marked as
 	  needing art.

@@ -875,8 +875,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     541, 0,        Actor::head,     OT_Helm,   true, paperdoll,    30,     0 },
 	// Crested Helm
 	{     542, 0,        Actor::head,     OT_Helm,   true, paperdoll,    31,     0 },
-	// Caddelite **NEEDS ART**
-	{     638, 1,        Actor::head,     OT_Helm,   true, paperdoll,   162,     0 },
+	// Caddellite Helmet
+	{     638, 0,        Actor::head,     OT_Helm,   true, exult_flx,   26,     0 },
 	// Leather Helm
 	{    1004, 0,        Actor::head,     OT_Helm,   true, paperdoll,    59,     0 },
 
