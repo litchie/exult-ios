@@ -554,6 +554,7 @@ public:
 	int get_text_baseline(int fontnum);
 	bool setup_endgame_fonts();	// Read the fonts from "endgame.dat" file
 	bool setup_mainshp_fonts();
+	bool setup_siintro_fonts();
 	Shape_frame *font_get_shape (int fontnum, int framenum);
 private:
 	void drop(int x, int y);
