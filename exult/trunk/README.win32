@@ -71,9 +71,9 @@ ZLib: http://www.gzip.org/zlib/
 
 2) Set The environment variable EXULT_INSTALL_PATH to the directory where you
 want the Exult binaries to be copied to when doing an Install Build. This is
-optional and only required when doing an Install build.
+optional and is only required for when doing an Install build.
 
-3) Load the Exult Project Workspace "msvcstuff/Exult.dws" in MSVC 6.0
+3) Load the Exult Project Workspace "msvcstuff/Exult.dsw" in MSVC 6.0
 (File->Load Workspace)
 
 4) If required, enter the correct "Working Directory" in the "Debug tab" of the
