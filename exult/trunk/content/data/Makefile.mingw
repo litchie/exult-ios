@@ -1,4 +1,4 @@
-# Sourceforge Island makefile for use in Windows with mingw 1.0 or later and Cygwin shell
+# Sourceforge Island makefile for use in Windows with mingw using gcc 3.1 and msys shell
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
@@ -15,10 +15,9 @@ $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/s
 CPPFLAGS=-DVERSION=\"0.99cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I. -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/tools -I$(SRC) -I$(SRC)/conf -I$(SRC)/usecode \
-	-I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler \
-	-DHAVE_SNPRINTF -DHAVE_PNG_H
+	-I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -DHAVE_PNG_H
 	
-CXXFLAGS=-O2 -Wno-long-long -fvtable-thunks -Dsnprintf=_snprintf
+CXXFLAGS=-O2 -Wno-long-long
 CXX=g++
 
 LFLAGS=-mwindows

@@ -1,4 +1,4 @@
-# Exult Studio makefile for use in Windows with mingw 1.0 or later and Cygwin shell
+# Exult Studio makefile for use in Windows with mingw using GCC 3.1 and msys shell
 # The shell IS required! 
 
 # Where is Exult Studio will be installed. 
@@ -28,15 +28,15 @@ FREETYPE2_LIBS = `pkg-config --libs freetype2`
 INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
 	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/server -I$(SRC)/objs -I$(SRC)/conf $(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES)
 
-CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_SNPRINTF -DHAVE_PNG_H -DHAVE_FREETYPE2 $(INCLUDES)
+CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_PNG_H -DHAVE_FREETYPE2 $(INCLUDES)
 
-CXXFLAGS= -O2 -fnative-struct -fvtable-thunks -Dsnprintf=_snprintf
+CXXFLAGS= -O2 -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET
 CXX=g++
 
-CFLAGS=-fnative-struct -fvtable-thunks
+CFLAGS=
 CC=gcc
 
-LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -liberty -lole32 -lpng -luuid -lz -mwindows
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -lole32 -lpng -luuid -lz -mwindows
 EXEC=exult_studio.exe
 EXP_FILE=exult_studio.exp
 

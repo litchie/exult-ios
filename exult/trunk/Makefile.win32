@@ -1,4 +1,4 @@
-# Exult makefile for use in Windows with mingw 1.0 or later
+# Exult makefile for use in Windows with mingw using GCC 3.1
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
@@ -38,9 +38,9 @@ CPPFLAGS=-DVERSION=\"0.99.1RC2\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
 	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
-	$(SDL_CFLAGS) -DHAVE_SNPRINTF -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
+	$(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
-CXXFLAGS=-O2 -Wno-long-long -fvtable-thunks -Dsnprintf=_snprintf
+CXXFLAGS=-O2 -Wno-long-long -DNEED_SNPRINTF_ONLY -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET
 CXX=g++
 
 LFLAGS=-mwindows
@@ -71,7 +71,7 @@ AUDIO_OBJS=Audio.o conv.o Midi.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
 
 FLIC_OBJS=playfli.o
 
-FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o
+FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o snprintf.o
 
 # Zipfile support objs
 ZIP_OBJS=zip.o unzip.o
@@ -295,7 +295,7 @@ dist:   $(EXEC)
 	copy SDL\README-SDL.txt $(U7PATH)\Exult
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult
 
-tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
+tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe head2data.exe head2data.test
 
 toolsclean:
 	del expack.o expack.exe $(FILE_OBJS)
@@ -328,7 +328,6 @@ toolsinstall: tools
 	strip wuc.exe -o $(U7PATH)\tools\wuc.exe
 	strip wud.exe -o $(U7PATH)\tools\wud.exe
 	strip ucxt.exe -o $(U7PATH)\ucxt.exe
-	strip ucc.exe -o $(U7PATH)\tools\ucc.exe
 	if not exist $(U7PATH)\data md $(U7PATH)\data
 	copy usecode\ucxt\data\events.data $(U7PATH)\data
 	copy usecode\ucxt\data\flags.data $(U7PATH)\data
@@ -352,7 +351,6 @@ toolsdist: tools
 	strip wuc.exe -o $(TOOLSPATH)\tools\wuc.exe
 	strip wud.exe -o $(TOOLSPATH)\tools\wud.exe
 	strip ucxt.exe -o $(TOOLSPATH)\ucxt.exe
-	strip ucc.exe -o $(TOOLSPATH)\tools\ucc.exe
 	if not exist $(TOOLSPATH)\data md $(TOOLSPATH)\data
 	copy usecode\ucxt\data\events.data $(TOOLSPATH)\data
 	copy usecode\ucxt\data\flags.data $(TOOLSPATH)\data
