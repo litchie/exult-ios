@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump.h"
 
 class Spellbook_object;
+class Bookmark_button;
 
 /*
  *	Abstract base class for spellbook, spell-scrolls:
@@ -52,10 +53,12 @@ class Spellbook_gump : public Spelltype_gump
 	Game_object *book_owner;	// Top-owner of book.
 					// Page turners:
 	Gump_button *leftpage, *rightpage;
+	Bookmark_button *bookmark;
 	Gump_button *spells[9*8];	// ->spell 'buttons'.
 	int spwidth, spheight;		// Dimensions of a spell shape.
 	void set_avail();		// Set up counts.
 public:
+	friend class Bookmark_button;
 	Spellbook_gump(Spellbook_object *b);
 	~Spellbook_gump();
 	virtual void do_spell(int spell);	// Perform spell.

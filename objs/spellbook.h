@@ -40,6 +40,7 @@ class Spellbook_object : public Ireg_game_object
 	unsigned char circles[9];	// Spell-present flags for each circle.
 	int bookmark;			// Spell # that bookmark is on, or -1.
 public:
+	friend class Bookmark_button;
 	friend class Spellbook_gump;
 					// Create from ireg. data.
 	Spellbook_object(int shapenum, int framenum, unsigned int shapex,
