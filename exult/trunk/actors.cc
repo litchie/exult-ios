@@ -81,9 +81,9 @@ void Actor::walk_to_tile
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int liftpixels = tz*4;
-					// Do 8 frames/sec.
-	start(((unsigned long) tx)*tilesize - liftpixels,
-	      ((unsigned long) ty)*tilesize - liftpixels, 125);
+					// Do 4 frames/sec.
+	start(((unsigned long) tx + 1)*tilesize - liftpixels,
+	      ((unsigned long) ty + 1)*tilesize - liftpixels, 250);
 	}
 
 /*
@@ -264,6 +264,50 @@ void Pace_schedule::now_what
 	}
 
 /*
+ *	Schedule change for patroling:
+ */
+
+void Patrol_schedule::now_what
+	(
+	)
+	{
+	const int PATH_SHAPE = 607;
+	pathnum++;			// Find next path.
+					// Already know its location?
+	Game_object *path = (Game_object *) paths.get(pathnum);
+	if (!path)			// No, so look around.
+		{
+		Game_window *gwin = Game_window::get_game_window();
+		Vector nearby;
+		int cnt = npc->find_nearby(nearby, PATH_SHAPE, -359, -359);
+		for (int i = 0; i < cnt; i++)
+			{
+			Game_object *obj = (Game_object *) nearby.get(i);
+			int framenum = obj->get_framenum();
+					// Cache it.
+			paths.put(framenum, obj);
+			if (framenum == pathnum)
+				{	// Found it.
+				path = obj;
+				break;
+				}
+			}
+		if (!path)		// Go back to 0 if at end.
+			{
+			pathnum = 0;
+			path = (Game_object *) paths.get(0);
+			}
+		if (!path)
+			{
+			cout << "Couldn't find patrol path " << pathnum
+								<< '\n';
+			return;
+			}
+		}
+	npc->walk_to_tile(path->get_abs_tile_coord());
+	}
+
+/*
  *	Set a schedule.
  */
 
@@ -352,7 +396,7 @@ void Npc_actor::set_schedule_type
 	schedule_type = new_schedule_type;
 	delete schedule;		// Done with the old.
 	schedule = 0;
-#if 0
+#if 1
 	switch ((Schedule::Schedule_types) schedule_type)
 		{
 	case Schedule::horiz_pace:
@@ -361,6 +405,14 @@ void Npc_actor::set_schedule_type
 	case Schedule::vert_pace:
 		schedule = Pace_schedule::create_vert(this);
 		break;
+	case Schedule::patrol:
+		schedule = new Patrol_schedule(this);
+		break;
+		}
+	if (schedule)			// Try to start it.
+		{
+		dormant = 0;
+		schedule->now_what();
 		}
 #endif
 	}
@@ -375,11 +427,11 @@ void Npc_actor::paint
 	)
 	{
 	Actor::paint(gwin);		// Draw on screen.
-	if (dormant)			// Resume schedule.
+	if (dormant && schedule)	// Resume schedule.
 		{
-		dormant = 0;
-		if (schedule)		// Ask scheduler what to do.
-			schedule->now_what();
+		dormant = 0;		// But clear out old entries first.??
+		gwin->get_tqueue()->remove(this);
+		schedule->now_what();	// Ask scheduler what to do.
 		}
 	}
 
@@ -401,10 +453,11 @@ void Npc_actor::handle_event
 	int frame;
 	if (next_frame(curtime, cx, cy, sx, sy, frame))
 		{
-		Chunk_object_list *olist = gwin->get_objects(cx, cy);
-		olist->setup_cache();
+					// Get ->new chunk.
+		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+		nlist->setup_cache();
 		int new_lift;		// Might climb/descend.
-		if (olist->is_blocked(get_lift(), sx, sy, new_lift) ||
+		if (nlist->is_blocked(get_lift(), sx, sy, new_lift) ||
 		    at_destination())
 			{
 			stop();
@@ -412,9 +465,6 @@ void Npc_actor::handle_event
 				schedule->now_what();
 			return;
 			}
-					// Add back to queue for next time.
-		gwin->get_tqueue()->add(curtime + frame_time,
-							this, udata);
 					// Get old rectangle.
 		Rectangle rect = gwin->clip_to_win(gwin->get_shape_rect(this));
 		gwin->add_dirty(rect);	// Force repaint.
@@ -423,7 +473,8 @@ void Npc_actor::handle_event
 					// In new chunk?
 		if (cx != old_cx || cy != old_cy)
 			{
-			Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+			Chunk_object_list *olist = 
+				gwin->get_objects(old_cx, old_cy);
 			switched_chunks(olist, nlist);
 			}
 		rect = gwin->clip_to_win(gwin->get_shape_rect(this));
@@ -434,8 +485,14 @@ void Npc_actor::handle_event
 			dormant = 1;
 			}
 		else			// Force paint.
+			{		// Add back to queue for next time.
+			gwin->get_tqueue()->add(curtime + frame_time,
+							this, udata);
 			gwin->add_dirty(rect);
+			}
 		}
+	else
+		dormant = 1;		// Not moving.
 	}
 
 /*

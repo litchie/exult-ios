@@ -255,6 +255,7 @@ static void Handle_events
 #endif
 		if (rotate)
 			{		// (Blits in simulated 8-bit mode.)
+			gwin->get_win()->rotate_colors(0xf0, 4, 0);
 			gwin->get_win()->rotate_colors(0xe8, 8, 0);
 			gwin->get_win()->rotate_colors(0xe0, 8, 1);
 			}

@@ -158,6 +158,20 @@ public:
 	};
 
 /*
+ *	A schedule for patrolling along 'path' objects.
+ */
+class Patrol_schedule : public Schedule
+	{
+	Vector paths;			// Each 'path' object.
+	int pathnum;			// # of next we're heading towards.
+public:
+	Patrol_schedule(Npc_actor *n)
+		: Schedule(n), pathnum(-1)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	An NPC schedule change:
  */
 class Schedule_change
