@@ -1233,8 +1233,8 @@ int Sprite::next_frame
 		}
 	new_cx = curx/chunksize;	// Return new chunk pos.
 	new_cy = cury/chunksize;
-	new_sx = (curx%chunksize)/8;
-	new_sy = (cury%chunksize)/8;
+	new_sx = (curx%chunksize)/tilesize;
+	new_sy = (cury%chunksize)/tilesize;
 	if (frames_seq)			// Got a sequence of frames?
 		next_frame = frames_seq->get_next(frame_index);
 	else

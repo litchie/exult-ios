@@ -131,7 +131,7 @@ void Game_window::read_schedules
 		cout << "Schedule for " << npc->get_name() << ":\n";
 #endif
 					// Read schedules into this array.
-		Schedule *schedules = new Schedule[cnt];
+		Schedule_change *schedules = new Schedule_change[cnt];
 		for (int j = 0; j < cnt; j++)
 			{
 			unsigned char ent[4];

@@ -105,14 +105,14 @@ public:
 /*
  *	An NPC schedule:
  */
-class Schedule
+class Schedule_change
 	{
 	unsigned char time;		// Time*3hours when this takes effect.
 	unsigned char type;		// Types defined below.
 	unsigned char x, y;		// Location within superchunk.
 	unsigned char superchunk;	// 0-143.
 public:
-	Schedule() : time(0), type(0), x(0), y(0), superchunk(0)
+	Schedule_change() : time(0), type(0), x(0), y(0), superchunk(0)
 		{  }
 	void set(unsigned char *ent);	// Create from 5-byte entry.
 	int get_type()
@@ -157,7 +157,7 @@ class Npc_actor : public Actor
 					//   to avoid being added twice.
 	unsigned char schedule;		// Schedule type (Schedule_type).
 	unsigned char num_schedules;	// # entries below.
-	Schedule *schedules;		// List of schedules.
+	Schedule_change *schedules;	// List of schedule changes.
 public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
 	~Npc_actor();
@@ -170,7 +170,7 @@ public:
 	int is_nearby()
 		{ return nearby != 0; }
 					// Set schedule list.
-	void set_schedules(Schedule *list, int cnt)
+	void set_schedules(Schedule_change *list, int cnt)
 		{
 		delete [] schedules;
 		schedules = list;
