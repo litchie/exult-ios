@@ -1,5 +1,6 @@
 2000-12-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc, cheat.h/cc: added ctrl-alt-h = resurrect and heal party.
+	* various: changed lots of unsigned char* to uint*, added some std::toupper
 
 2000-12-03  Max Horn  <max@quendi.de>
 	* various files: added missing using std::

@@ -82,7 +82,7 @@ Shape_frame *Shape_frame::reflect
 	ibuf->fill8(255);		// Fill with 'transparent' pixel.
 					// Figure origin.
 	int xoff = reflected->xleft, yoff = reflected->yabove;
-	unsigned char *in = data; 	// Point to data, and draw.
+	uint8 *in = data; 	// Point to data, and draw.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0)
 		{
@@ -207,8 +207,8 @@ void Shape_frame::create_rle
 	)
 	{
 					// Create an oversized buffer.
-	unsigned char *buf = new unsigned char[w*h*2 + 16*h];
-	unsigned char *out = buf;
+	uint8 *buf = new uint8[w*h*2 + 16*h];
+	uint8 *out = buf;
 	int newx;			// Gets new x at end of a scan line.
 	for (int y = 0; y < h; y++)	// Go through rows.
 		for (int x = 0; (x = Skip_transparent(pixels, x, w)) < w; 
@@ -589,7 +589,7 @@ int Shape_frame::has_point
 	int x, int y			// Relative to origin of shape.
 	)
 	{
-	unsigned char *in = data; 	// Point to data.
+	uint8 *in = data; 	// Point to data.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0)
 		{

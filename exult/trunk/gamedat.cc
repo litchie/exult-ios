@@ -212,7 +212,7 @@ void Game_window::save_gamedat
 	Write4(out, 0x000000CC);	// 2nd magic number.
 					// Create table.
 	unsigned char *table = new unsigned char[2*count*4];
-	unsigned char *tptr = table;
+	uint8 *tptr = table;
 	long pos = out.tellp();		// Fill to data (past table at 0x80).
 	long fill = 0x80 + 8*count - pos;
 	while (fill--)

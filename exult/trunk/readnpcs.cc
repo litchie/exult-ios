@@ -100,7 +100,7 @@ void Game_window::read_npcs
 			int shape = Read2(mfile);
 			mfile.read((char*)monster, 23);// Get the rest.
 					// Point to flags.
-			unsigned char *ptr = &monster[7];
+			uint8 *ptr = &monster[7];
 			unsigned short flags = Read2(ptr);
 			ptr += 3;	// Get equip.dat offset.
 			unsigned int equip = *ptr;

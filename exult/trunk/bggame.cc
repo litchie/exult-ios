@@ -26,6 +26,7 @@
 #include <cctype>
 #include <cstring>
 
+using std::toupper;
 
 BG_Game::BG_Game()
 {
@@ -1039,7 +1040,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 					if(selected==0 && c>=SDLK_0 && c<=SDLK_z)
 					{
 						int len = std::strlen(npc_name);
-						char chr = (event.key.keysym.mod & KMOD_SHIFT) ? std::toupper(c) : c;
+						char chr = (event.key.keysym.mod & KMOD_SHIFT) ? toupper(c) : c;
 						if(len<max_len)
 						{
 							npc_name[len] = chr;
