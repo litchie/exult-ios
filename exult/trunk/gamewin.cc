@@ -2003,9 +2003,8 @@ void Game_window::show_items
 		Tile_coord t = obj->get_tile();
 		cout << "tx = " << t.tx << ", ty = " << t.ty << ", tz = " <<
 			t.tz << ", quality = " <<
-			obj->get_quality() << ", low lift = " <<
-			obj->get_low_lift() << ", high shape = " <<
-			obj->get_high_shape () << ", okay_to_take = " <<
+			obj->get_quality() << 
+			", okay_to_take = " <<
 			static_cast<int>(obj->get_flag(Obj_flags::okay_to_take)) <<
 			", flag0x1d = " << static_cast<int>(obj->get_flag(0x1d)) <<
 			", hp = " << obj->get_obj_hp()

@@ -850,8 +850,6 @@ void Game_map::read_ireg_objects
 			obj = create_ireg_object(info, shnum, frnum,
 							tilex, tiley, lift);
 			is_egg = obj->is_egg();
-			obj->set_low_lift (entry[4] & 0xF);
-			obj->set_high_shape (entry[3] >> 7);
 
 					// Wierd use of flag:
 			if (info.has_quantity())

@@ -55,6 +55,7 @@ public:
 		{ flags = f; }
 					// Render.
 	virtual void paint(Game_window *gwin);
+	virtual void paint_terrain(Game_window *gwin) {  }
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
 	void move(Tile_coord t)
