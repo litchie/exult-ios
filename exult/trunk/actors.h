@@ -346,6 +346,7 @@ public:
 		{ return alignment; }
 	void set_alignment(short a)
 		{ alignment = a; }
+	int get_effective_alignment() const;	// Include 'charmed' flag.
 					// Update chunks after NPC moved.
 	virtual void switched_chunks(Map_chunk *, Map_chunk *)
 		{  }
