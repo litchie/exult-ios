@@ -49,6 +49,8 @@ class Mouse
 					//   by direction (0-7, 0=east).
 	static short med_arrows[8];	// Medium arrows.
 	static short long_arrows[8];	// Frame #'s of long arrows.
+	static short short_combat_arrows[8];	// Short red arrows
+	static short med_combat_arrows[8];	// Medium red arrows
 	void set_shape0(int framenum);	// Set shape without checking first.
 public:
 	Mouse(Game_window *gw);
@@ -107,6 +109,12 @@ public:
 					// Set to long arrow.
 	void set_long_arrow(Direction dir)
 		{ set_shape(long_arrows[(int) dir]); }
+					// Set to short combat mode arrow.
+	void set_short_combat_arrow(Direction dir)
+		{ set_shape(short_combat_arrows[(int) dir]); }
+					// Set to medium combat mode arrow.
+	void set_medium_combat_arrow(Direction dir)
+		{ set_shape(med_combat_arrows[(int) dir]); }
 
 	unsigned char is_onscreen() { return onscreen; }
 	};
