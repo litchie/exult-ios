@@ -10,6 +10,9 @@
 
 using namespace Exult3d;
 
+
+unsigned char Material::def_color[3] = {128, 128, 128};
+
 /*
  *	Return the (non-unit) normal to this face, with right-handed 
  *	orientation.
@@ -125,23 +128,36 @@ void Model3d::compute_normals
 	}
 
 /*
- *	Take the average of all the vertices for a rough notion of 'center'.
+ *	Find a rough idea of the 'center' of a model.
  */
 
 Vector3 Model3d::find_center
 	(
 	) const
 	{
-	int total = 0;
-	Vector3 sum(0, 0, 0);
+	float lowx = 10000, lowy = 10000, lowz = 10000,
+		highx = -10000, highy = -10000, highz = -10000;
 	for (vector<Object3d *>::const_iterator it = objects.begin();
 				it != objects.end(); ++it)
 		{
 		Object3d *obj = *it;
 		int cnt = obj->vertices_size();
-		total += cnt;
 		for (int i = 0; i < cnt; i++)
-			sum = sum + obj->get_vertex(i);
+			{
+			Vector3 v = obj->get_vertex(i);
+			if (v.x < lowx)
+				lowx = v.x;
+			else if (v.x > highx)
+				highx = v.x;
+			if (v.y < lowy)
+				lowy = v.y;
+			else if (v.y > highy)
+				highy = v.y;
+			if (v.z < lowz)
+				lowz = v.z;
+			else if (v.z > highz)
+				highz = v.z;
+			}
 		}
-	return total ? sum/total : sum;
+	return Vector3((highx + lowx)/2, (highy + lowy)/2, (highz + lowz)/2);
 	}
