@@ -1856,6 +1856,21 @@ USECODE_INTRINSIC(set_polymorph)
 	return no_ret;
 }
 
+USECODE_INTRINSIC(teleport)
+{
+	// teleport(npc, 0??, schedule, pos(x, y)).
+	Actor *actor = as_actor(get_item(parms[0]));
+	if (actor && parms[3].get_array_size() >= 2)
+		{
+		int sched = parms[2].get_int_value();
+		int tx = parms[3].get_elem(0).get_int_value();
+		int ty = parms[3].get_elem(1).get_int_value();
+		actor->move(tx, ty, 0);
+		actor->set_schedule_type(sched);
+		}
+	return no_ret;
+}
+
 USECODE_INTRINSIC(prev_schedule)
 {
 	// prev_schedule(npc).  Pure guess!!!!
