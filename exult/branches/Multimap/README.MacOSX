@@ -1,0 +1,50 @@
+Exult instructions for MacOS
+----------------------------
+
+
+To play
+-------
+First you need to get Ultima 7. Either you own it already, or
+you buy it somewhere. Then you must install it on a DOS/Windows
+machine in order to get the data file. A good way is to use a
+PC emulator for this, e.g. Virtual PC, Real PC or SoftWindows.
+
+From the Ultima7 folder on your PC, copy the STATIC sub folder
+to the folder that contains the ExultMac application.
+
+Now run ExultMac, and have fun!
+
+
+More Information
+----------------
+More information can be found in the accompanying files README and FAQ.
+In addition, you might want to check out our homepage at
+http://exult.sourceforge.net
+
+
+How to compile on Mac OS X
+--------------------------
+
+Install these from Apple:
+December 2002 Mac OS X Developer Tools (or newer)
+Dec 2002 gcc Updater (gcc 3.3) (or newer)
+
+Activate gcc 3.3 (from Apple's updater):
+sudo gcc_select 3.3
+
+Install these packages with Fink:
+sdl
+sdl-mixer
+automake1.7
+libtool14
+
+Create these symbolic links:
+sudo ln -s /sw/lib/libsmpeg-0.4.0.dylib /sw/lib/libsmpeg.dylib
+sudo ln -s /sw/lib/libvorbisfile.3.dylib /sw/lib/libvorbisfile.dylib
+sudo ln -s /sw/lib/libvorbis.0.dylib /sw/lib/libvorbis.dylib
+sudo ln -s /sw/lib/libogg.0.dylib /sw/lib/libogg.dylib
+
+Compile Exult:
+./autogen.sh
+./configure
+make

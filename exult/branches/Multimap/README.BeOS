@@ -1,0 +1,46 @@
+Exult instructions for BeOS
+----------------------------
+
+
+To play
+-------
+First you need to get Ultima 7. Either you own it already, or
+you buy it somewhere. Then you must install it on a DOS/Windows
+machine to get the data files. 
+Alternatively, the 'Ultima Collection' already contains a
+pre-installed version of U7. (in the directory /ultima7)
+
+When you run Exult for the first time, it will generate a default
+~/config/settings/exult.cfg. (Quit from the main menu, since Exult 
+won't be able to find U7). You need point the paths in this file 
+to the ultima7 directory and the Exult data directory. The relevant 
+entries should read something like this:
+
+<config>
+ <disk>
+  <game>
+   <blackgate>
+    <path>
+    /path/to/ultima7/directory
+    </path>
+    <title>
+    blackgate
+    </title>
+   </blackgate>
+  </game>
+  <data_path>
+  /path/to/exult/data/directory
+ </disk>
+
+(rest of the config file)
+
+When the paths are set correctly, you can run Exult in BeOS.
+Have fun!
+
+Notes
+------
+* You can build exult from source yourself if you want.
+To do this, you obviously need the Exult source code. You'll
+also need the development SDL binaries or the SDL source.
+(available from www.libsdl.org)
+To build exult: copy Makefile.be to Makefile, and run 'make'.

@@ -1,0 +1,890 @@
+Exult Documentation
+last changed: 12 December 2003(GMT)
+
+The latest version of this document can be found at http://exult.sourceforge.net/docs.php
+
+
+0. Changes to the Documentation
+0.1. - 12 December 2003
+0.2. - 18 October 2003
+0.3. - 08 August 2003
+
+1. Introduction
+1.1. Exult Version
+1.2. What is Exult?
+1.3. Terms we use in regard to Exult and Ultima 7
+
+2. Configurations
+2.1. Installation
+2.2. Settings in exult.cfg
+2.3. Path-Settings
+2.4. Further directory customizations
+2.5. Command line options
+
+3. Audio
+3.1. Music
+3.2. Abilities and limitations of the music engine
+3.3. Windows MIDI Mapper
+3.4. Digital Music
+3.5. Digital Wave Sound Effects
+3.6. Speech
+3.7. Turn off Audio
+3.8. Linux and Audio
+
+4. Video
+4.1. Resolution
+4.2. Scaler
+
+5. Movement and Keys
+5.1. Movement
+5.2. Keyboard commands
+5.3. Cheat keys
+
+6. Game Menu
+6.1. Access to the Game menu
+6.2. Load/Save Game
+6.3. Video Options
+6.4. Audio Options
+6.5. Gameplay Options
+6.6. Combat Options
+6.7. Quit to Menu
+6.8. Quit
+
+7. OS specific notes
+7.1. How to get the Zaurus port working
+7.2. Error Log
+
+8. Zaurus Guide
+8.1. Author of this Guide
+8.2. Sharp Zaurus
+8.3. Zaurus SL5x00 and ROMs
+8.4. Exult and Zaurus
+8.5. Installing new packages
+8.6. Using the standard ROM
+8.7. Installing the non-required packages
+8.8. Using the latest ROM
+8.9. Solving the problems with the latest ROM
+8.10. Useful tidbits
+
+9. Credits and Contact
+9.1. Thanks
+9.2. Contacting us
+
+
+--------------------------------------------------------------------------------
+
+0. Changes to the Documentation
+0.1. - 12 December 2003
+* 2.2. Settings in exult.cfg fixed bad path settings and updated audio settings.
+* 2.3. Path-Settings moved stuff over to next point.
+* 2.4. Further directory customizations added to give some explanation for Static/Gamedat.
+* 3.1. Music updated with 'recent' audio changes.
+* 6.4. Audio Options updated with 'recent' audio changes.
+
+
+
+0.2. - 18 October 2003
+* 1.1. Exult Version note Exult version.
+
+
+
+0.3. - 08 August 2003
+* 8. Zaurus Guide added Artaxerxes' guide.
+* 9.1. Thanks added Artaxerxes for his guide.
+
+
+
+
+--------------------------------------------------------------------------------
+
+1. Introduction
+1.1. Exult Version
+This documentation is for the 1.1.9rc1 version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
+
+
+1.2. What is Exult?
+Ultima 7, an RPG from the early 1990's, still has a huge following. But, being a DOS game with a very nonstandard memory manager, it is difficult to run it on the latest computers. Exult is a project to create an Ultima 7 game engine that runs on modern operating systems, capable of using the data and graphics files that come with the game.
+Exult is being developed in C++ under Linux, MacOS and Windows using the SDL library to make porting to other platforms relatively easy. The current version supports much of the game's plot, allowing you to talk to NPCs, use items, solve quests, and even fight monsters. Music, speech, and the full introduction are also implemented. This, and further development, is only possible due to the work done by other fans who have decoded the various Ultima 7 data files, especially Gary Thompson, Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag.
+Exult aims to let those people who own Ultima 7 (copyright 1993) play the game on modern hardware, in as close to (or perhaps even surpassing) its original splendor as is possible. You need to own "Ultima 7: The Black Gate" "Ultima 7: Serpent Isle" and all the add-ons (not required to run but we require you to own them if you use them) in order to use Exult, and we encourage you to buy a legal copy.
+
+
+1.3. Terms we use in regard to Exult and Ultima 7
+We are using many terms in this documentation, the FAQ and other documentation files that people may have difficulties to understand. Here we will try to give some explanations.
+* BG, SI, FoV or SS: we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle" as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.
+* eggs: these are trip-wires that cause monsters to spawn, execute scripts, play music, change weather, trigger traps, teleport when you get near them.
+* flex files: or flexes are used by the original to store the data files. Also when you choose not use compressed save games (see save_compression_level in 2.2.) our save games are also "flexed".
+* gumps: the windows used in the game interface for containers, characters, menus, etc..
+* paperdoll: when pressing 'i' you get the inventory display. It's the picture of your characters body (or the bodies of your party members) onto which you can drag all kinds of equipment. The way this is displayed in SI is what we call paperdoll. We integrated this for BG as well. (see FAQ.txt).
+* shapes: shape files are the format used for storage of all graphics elements (from UI buttons to terrain features) of the games Exult supports. Shapes may contain one or more frames (a frame is a single image).
+* snapshot: see FAQ.txt. Please note that our documentation usually refers to the latest snapshot.
+* usecode: that's the scripting language that drives all of U7 (conversations, objects...).
+* Exult data directory: that's the directory where Exult stores its data files (exult.flx, exult_bg.flx and exult_si.flx).
+
+
+
+
+--------------------------------------------------------------------------------
+
+2. Configurations
+2.1. Installation
+* First you need to get Ultima 7. Either you own it already, or you buy it somewhere. Then you must install it on a DOS/Windows machine to get the data files. Alternatively you can use a PC emulator to install it. The Ultima Collection already contains a pre-installed version of U7 (in the directory /ultima7 on the CD).
+* From the Ultima7 folder on your PC, copy the STATIC sub folder to an appropriate folder - see 2.3. what those could be.
+* Now run exult (exult.exe in Windows) and quit it immediately.
+* Edit the configuration file with the correct paths for the game folders and sfx files - see 2.2.
+* Run exult and enjoy the game :-)
+
+Word of advice: Don't mix the files from BG and SI.
+Important: Do not run Exult on an original Ultima7 game which you're actually in the middle of playing, as Exult's saved files have a different format. There is no way to convert those original save games and they will just crash Exult.
+
+
+2.2. Settings in exult.cfg
+Exult keeps a configuration file. You can specify where your Ultima 7 installation is, whether you want full screen graphics, or windowed, and midi devices and midi settings. Some of these options can be set from the Setup menu when you run Exult or via the Game Options menu.
+If you do not already have a configuration file, Exult will make one for you filling in sensible defaults by itself. The location of this file varies slightly. On UNIX systems you can expect to find it in $HOME/.exult.cfg while other operating systems will probably locate it as 'exult.cfg' in the same directory as the Exult binary. However it is recommended that you edit this file by hand to achieve optimal results for your system.
+Note: the settings in exult.cfg are the same on all operating systems (except when explicitly stated below).
+The file uses a simple hierarchical XML-like syntax, which should be simple to understand and modify. Take care though. Handling of syntax errors in this file is not well tested.
+The default file looks like this (do not copy the **and following - these are my remarks).
+Note: yes means enabled, no means disabled
+<config>
+  <disk>
+    <save_compression_level>
+    1
+				**save games are now compressed as zip files. 0 disables compression,
+				1 enables it, 2 compresses even a bit better. Default is 1.
+    </save_compression_level>
+    <data_path>
+    data
+				**see 2.3. for pathsettings
+    </data_path>
+    <music_path>
+    data/music
+				**optional. Location of digital music. See also 3.4.
+    </music_path>
+    <game>
+      <blackgate>
+        <title>
+        blackgate
+        </title>
+        <path>
+        ./blackgate
+        </path>
+        <savegame_path>
+        ./blackgate
+				**optional. Default is the same as <path>, change to whatever you like.
+				Also see 2.4. before changing it.
+        </savegame_path>
+        <static_path>
+        ./blackgate/static
+				**optional. See 2.4. before changing it.
+        </static_path>
+        <gamedat_path>
+        ./blackgate/gamedat
+				**optional. See 2.4. before changing it.
+        </gamedat_path>
+        <keys>
+        (default)
+				**configure custom key bindings or leave the (default)
+				- see 5.2.
+        </keys>
+        <waves>
+        jmsfx.flx
+				**optional setting see 3.5. for configuration
+        </waves>
+      </blackgate>
+      <serpentisle>
+        <title>
+        serpentisle
+        </title>
+        <path>
+        ./serpentisle
+        </path>
+        <savegame_path>
+        ./serpentisle
+				**optional. Default is the same as <path>, change to whatever you like.
+				Also see 2.4. before changing it.
+        </savegame_path>
+        <static_path>
+        ./serpentisle/static
+				**optional. See 2.4. before changing it.
+        </static_path>
+        <gamedat_path>
+        ./serpentisle/gamedat
+				**optional. See 2.4. before changing it.
+        </gamedat_path>
+        <keys>
+        (default)
+				**configure custom key bindings or leave the (default)
+				- see 5.2.
+        </keys>
+        <waves>
+        jmsisfx.flx
+				**optional setting see 3.5. for configuration
+        </waves>
+      </serpentisle>
+    </game>
+  </disk>
+  <debug>
+    <trace>
+      <usecode>
+      no
+				**options are yes/no/verbose. This is used to trace the
+				executed Usecode. (You shouldn't need this unless you are a programmer.)
+      </usecode>
+      <intrinsics>
+      no
+				**options are yes/no. Used to trace intrinsics.
+				(You shouldn't need this unless you are a programmer.)
+      </intrinsics>
+      <combat>
+      no
+				**options are yes/no. If enabled, show combat messages.
+      </combat>
+    </trace>
+  </debug>
+  <gameplay>
+    <double_click_closes_gumps>
+    no
+    </double_click_closes_gumps>
+    <right_click_closes_gumps>
+    no
+    </right_click_closes_gumps>
+    <cheat>
+    yes
+				**enable/disable cheats
+    </cheat>
+    <skip_intro>
+    no
+				**this skips the in-game intro in BG; Iolo talks to Petre, the Avatar appears,
+				Iolo talks to you, the mayor talks to you and so on.
+    </skip_intro>
+    <skip_splash>
+    no
+				**this skips the splash screen, the intro before you get to the
+				game menu. Disabling it brings you straight to the game menu.
+    </skip_splash>
+    <facestats>
+    0
+				**activates the status faces and the position on the screen.
+				-1 disable,0 right, 1 middle, 2 right.
+    </facestats>
+    <mouse3rd>
+    no
+				**yes enables using of the middle mouse button.
+    </mouse3rd>
+    <fastmouse>
+    no
+				**yes enables faster cursor movement in full screen mode.
+    </fastmouse>
+    <bg_paperdolls>
+    no
+				**yes enables SI style paperdolls in BG.
+    </bg_paperdolls>
+    <combat>
+      <difficulty>
+      0
+				**0 is default, negative values make combat easier, positive makes it
+				harder. It affects the chance of a hit, and the HP's lost if a hit occurs.
+				Ranges from -3 to 3 (easiest to hardest).
+      </difficulty>
+      <mode>
+      original
+				**original or keypause. On keypause the game pauses when you hit space
+				so you can make changes in combat.
+      </mode>
+      <show_hits>
+      no
+				**no is default. With yes you see the hitpoints of NPCs
+				in brackets after their name.
+      </show_hits>
+    </combat>
+    <gumps_dont_pause_game>
+    no
+				**yes doesn't pause the game when gumps are shown.
+    </gumps_dont_pause_game>
+    <step_tile_delta>
+    8
+				**Controls how far the Avatar will move before Exult recalculates the
+				Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other
+				problems.
+    </step_tile_delta>
+    <allow_double_right_move>
+    yes
+				**double right-click lets the Avatar walk automatically
+				to where you clicked.
+    </allow_double_right_move>
+    <formation>
+    no
+				**yes forces the party to walk in a formation similar to the original game.
+    </formation>
+  </gameplay>
+  <audio>
+    <enabled>
+    yes
+				**enable/disable all audio - this takes precedence over the
+				other audio settings. (You can change this in game via
+				'Esc' - the setting is saved.)
+    </enabled>
+    <disablepause>
+    no
+				**enable/disable the pausing of SFX and digital music when the
+				game pauses (e.g. not the focused window). MIDI music is currently not paused.
+    </disablepause>
+    <force_waveout>
+    no
+				**yes forces Exult to use waveout instead of directsound. This may
+				fix problems some people have with Exult and sound in Windows.
+				(This is a Windows-only option.)
+    </force_waveout>
+    <effects>
+      <enabled>
+      yes
+				**enable/disable sound effects. (You can change this in game via
+				'Esc' - the setting is saved.)
+      </enabled>
+    </effects>
+    <driver>
+    normal
+				**choose your music driver between normal, digital, fmsynth.
+				See 3.1. for details.
+    </driver>
+    <midi>
+      <enabled>
+      yes
+				**enable/disable MIDI effects. (You can change this in game via
+				'Esc' - the setting is saved.)
+      </enabled>
+      <convert>
+      gm
+				**see 3.1.
+      </convert>
+      <volume_curve>
+      1.000000
+				**set volume (kind of at least, best don't change)
+      </volume_curve>
+      <win32_device>
+      -1
+				**choose the Windows MIDI Device. See 3.3.
+      </win32_device>
+      <looping>
+      yes
+				**No disables music looping. See 6.4.
+      </looping>
+      <dual_opl>
+      yes
+				**No disables 'dual' mode for stereo sound when <driver> is set to fmsynth.
+      </dual_opl>
+    </midi>
+    <speech>
+      <enabled>
+      yes
+				**enable/disable speech. (You can change this in game via
+				'Esc' - the setting is saved.)
+      </enabled>
+    </speech>
+  </audio>
+  <video>
+    <width>
+    320
+				**here you choose your resolution, it can be as big as your
+				monitor allows. 320x200 is the resolution of the original.
+    </width>
+    <height>
+    200
+    </height>
+    <scale>
+    2
+				**2 enables / 1 disables scaling, some scalers support higher values.
+				See 4.2..
+    </scale>
+    <fullscreen>
+    yes
+				**do you want to play full screen?
+    </fullscreen>
+    <disable_fades>
+    no
+				**"no" enables fading between different menu points
+    </disable_fades>
+    <scale_method>
+    SuperEagle
+				**choose different scalers here - see 4.2.
+    </scale_method>
+    <gamma>
+      <red>
+      1
+				**set gamma levels to adjust brightness, same as +/- in game
+      </red>
+      <green>
+      1
+      </green>
+      <blue>
+      1
+      </blue>
+    </gamma>
+    <fps>
+    10
+				**Speed setting. Might help when the game seems too slow or too fast.
+    </fps>
+  </video>
+</config>
+
+
+2.3. Path-Settings
+You have two choices on how to setup Exult.
+The first one is very easy, just extract all the files from the compiled snapshot archive to the directory where you have The Black Gate or Serpent Isle installed. Concerning the paths you don't have to configure anything.
+The other is a little more complicated but appeals to control freaks like me: Make a directory c:\ultima7 make two subfolders named "blackgate" and "serpentisle" (without the quotes of course) Extract or install the two Ultima 7 games into the appropriate folder ("The Black Gate" to c:\ultima7\blackgate and "Serpent Isle" to c:\ultima7\serpentisle) Extract the compiled Exult to c:\ultima7 Now you have to edit the exult.cfg file like this:
+<config>
+  <disk>
+    <data_path>
+    data
+    </data_path>
+    <game>
+      <blackgate>
+        <title>
+        blackgate
+        </title>
+        <path>
+        ./blackgate
+        </path>
+      </blackgate>
+      <serpentisle>
+        <title>
+        serpentisle
+        </title>
+        <path>
+        ./serpentisle
+        </path>
+      </serpentisle>
+    </game>
+  </disk>
+You can either use the relative (e.g. ./blackgate) or absolute (e.g. c:\ultima\blackgate) path to point to the correct directory.
+Note: Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\). Some people seem to have problems with that.
+Note: path settings in exult.cfg are the same on all operating systems. Of course you need to make adjustments on UNIX based systems when you enter the absolute path.
+
+
+2.4. Further directory customizations
+You can also specify whereExult reads and stores the game specific data, like the files in the Static and Gamedat directory and the save games. This is optional and not required but may be useful if you want to exercise absolute control. Some explanation what these dirs are for:
+* Savegames this is where Exult stores your savegames. Normally you find these in the dir set in <path>.
+* Static the most important dir. Here you have the data files from the original game. You should never touch these files.
+* Gamedat contains the (dynamic) data for the game you're currently playing. It's where the "journey onward" 'savegame' is stored.
+
+If you don't change the location of either the Static or Gamedat directories, Exult expects to find both directories in the path you specified in <path>. Don't ever point these two at the same directory.
+My recommendations and example for BG (for SI use the same syntax) are:
+<config>
+  <disk>
+    <data_path>
+    data
+    </data_path>
+    <game>
+      <blackgate>
+        <title>
+        blackgate
+        </title>
+        <path>
+        ./blackgate
+        </path>
+        <savegame_path>
+        ./blackgate
+        </savegame_path>
+        <static_path>
+        ./blackgate/static
+        </static_path>
+        <gamedat_path>
+        ./blackgate/gamedat 
+        </gamedat_path>
+      </blackgate>
+
+
+2.5. Command line options
+Exult offers some "hidden" command line options:
+* -h or --help Shows all the command line parameters in stderr (stderr.txt on Windows systems)
+* -v or --version Shows version information in stderr
+* -c configfile Specify alternate config file (relative or absolute paths work)
+* --bg Starts the game with the Black Gate menu
+* --si Starts the game with the Serpent Isle menu
+* --nomenu Skips game menu.
+* --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg --buildmap 0). Builds the map of the game specified. The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map.
+* --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data dir aren't the same it got compiled with. This parameter lets the game start nethertheless. Don't try this if you don't know what you are doing.
+* --game gamename Unused yet. Loads a game specified in exult.cfg when there are other games made with Exult Studio.
+
+
+
+
+--------------------------------------------------------------------------------
+
+3. Audio
+3.1. Music
+There are three ways that music is played in Exult. One is using MIDI, which plays the music through any GM MIDI device, Timidity can be used in Linux. Another way is Digital Music encoded into OGG (similar to MP3) which was recorded directly from a Roland MT-32. The third option is FMSynth which emulates Opl2/Adlib. The MIDI files are converted on-the-fly from the original Ultima 7 MT-32 files to General Midi format so that they will be playable on modern General Midi and General Midi/GS supporting sound cards.
+The options for changing the Music driver are in the opening Exult menu Setup screen or in the actual game's audio options. Currently only the in game options menu works correctly. You can choose between:
+* Normal This setting utilizes the MIDI driver of your system. See the MIDI conversion order below.
+* Digital Digital Music plays the OGG files which must be located in the Exult data/music directory. This does not use MIDI but plays the music digitally through any soundcard.
+* FMSynth This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib). It has a 'dual'mode for stereo sound. Use "config/audio/midi/dual_opl" set to "yes" or "no" to enable/disable it. Default is "yes". You don't have to restart Exult anymore if you change this in the game.
+
+The order of MIDI conversion quality is:
+* none This option will output the music with nothing changed. Because the mapping will be for MT32s you should only use this option if you have a MT32 compatible device or you have replaced the music.
+* gs127 This option is for midi devices that have a MT32 patch bank installed in Bank 127. Some GS implementation have this, some don't. Only use this if you know that you have a MT32 implementation on Bank 127.
+* gs This will convert the MT32 patches to their equivalent GS patches. This will be a more accurate conversion that straight gm since more of the MT32 patches are in the GS set. However, not all midi devices will support this mode.
+* gm This will convert the MT32 patches to standard General Midi patches. Conversion is fairly accurate but some instruments may be different.
+
+NOTE: Currently the conversion to GS and GS127 is not finished and the notes are only mapped to General Midi.
+
+
+3.2. Abilities and limitations of the music engine
+Due to the way the class was constructed input can be in either .mid, .rmi or the Miles Sound System .xmi format. There are no limitations to they types of .mid and .rmi supported. They can be Type 0, 1 and the rarely seen type 2. The loading routine is also fairly lenient of erroneous XMIDI files that do not have correct XMIDI headers.
+During the development of the XMIDI class it was found that certain .xmi files in Serpent Isle had the first patch changes after the first note. The converter will attempt to correct these errors. However it may cause problems with some midi files. Currently this can not be disabled and may change in the future.
+
+
+3.3. Windows MIDI Mapper
+You can now tell Exult which MIDI device it should use. Useful if you want Exult to use a different MIDI device than the default Windows device (like an MT-32).
+To do this start Exult, on the menu choose "Exit". Now open the file stdout.txt in the folder where exult.exe is located. You will see a listing of the midi devices. For example with an SB Live! in Win2k it will look like this:
+4 Midi Devices Detected Listing midi devices: -1: Microsoft MIDI-Mapper 0: A: SB Live! MIDI Synth 1: B: SB Live! MIDI Synth 2: SB Live! MIDI UART
+By default Exult uses the Microsoft MIDI-Mapper (which uses the device you choose in the Windows Multimedia Properties). To change the MIDI Device open exult.cfg and change
+<win32_device>
+-1
+</win32_device>
+with the device you want to use.
+
+
+3.4. Digital Music
+Exult needs the Digital Music pack to play Digital Music in the game. The music pack contains music for both Black Gate and Serpent Isle, encoded in high quality OGG format. Simon Quinn recorded the current Digital Music pack on an original Roland MT-32 and with this you will experience the music as it would be heard with the original game. The Digital Music pack can be downloaded from http://exult.sourceforge.net/download.php, the files are called U7MusicOGG_1of2.zip and U7MusicOGG_2of2.zip. Instructions of how to install these files are in the ZIP files themselves (they need to be extracted into the Exult/data/music directory). Digital Music should work on any platform that supports digital sound and does not use any MIDI, so it is also a good option for platforms with no MIDI support. Additionally, Digital Music supports a number of background atmospheric SFX tracks that are played when no music is playing. These consist of wind, bird etc effects outside and other sound effects when inside a dungeon. These SFX tracks are not available when using MIDI as they play Roland MT-32 specific voices that cannot be mapped to GM/GS. These SFX tracks do not play when the music is switched off.
+
+
+3.5. Digital Wave Sound Effects
+Exult needs the so called sfx packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI: In combat the sfx may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. Also Exult doesn't yet playback all the sfx that the original did.
+Note that configuring your soundfonts is not needed for digital wave sfx.
+We currently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on our download page at http://exult.sourceforge.net/download.php.
+Extract the zip files into your Exult data directory and write down the name of the pack in your exult.cfg file (see 2.2.). You don't need to set correct paths anymore if the pack is in the data directory. An example of how the relevant part of exult.cfg looks with these packs:
+<blackgate>
+  <waves>
+  jmsfx.flx
+  </waves>
+</blackgate>
+<serpentisle>
+  <waves>
+  jmsisfx.flx
+  </waves>
+</serpentisle>
+
+
+3.6. Speech
+Exult can play the Ultima VII's speech through SDL, and its own internal mixer. Configuration is managed through Exult's configuration file.
+
+
+3.7. Turn off Audio
+Press 'Esc' to turn on/off Music, Speech and SoundFX via the in-game menu or change the settings in exult.cfg - see 2.2..
+
+
+3.8. Linux and Audio
+If you want to use the MIDI music option in Exult and use Timidity to play the MIDI, the timidity.cfg file must go into the same directory as the Exult executable, otherwise Timidity will not work.
+Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably with the SoundBlaster Live. Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture) found at http://www.alsa-project.org. ALSA is going to replace OSS in the upcoming stable (2.6) Kernel anyway. We are sorry for this.
+
+
+
+--------------------------------------------------------------------------------
+
+4. Video
+4.1. Resolution
+By default Exult runs at 320x200 (which is the resolution the original Ultima VII used). Exult can use different scaling engines to double the size to 640x400 and increase the quality of the graphics.
+Using higher resolutions is considered cheating as you can see too much of the surrounding area. Since the game was designed to be played at a specific size, this can actually lead to plot-stopping problems; hence we will not fix any problem caused by your cheating! Don't say we didn't warn you :-) Actually being able to play in higher resolutions is one of the big advantages of Exult but as mentioned above it comes with a price.
+Within the game you can use the 'Alt +' and 'Alt -' to switch resolution..
+
+
+4.2. Scaler
+The scalers also work with higher resolutions than 320x200. To change the scaling method either use the Exult menu or change your exult.cfg - see 2.2..
+* Scale2x by Andrea Mazzoleni. This is a non-blurring scaler that looks good without soaking up a lot of CPU sycles. Get more information on this scaler at http://scale2x.sf.net.
+* SuperEagle by Derek Liauw. Only 2x.
+* Super2xSai by Derek Liauw. Only 2x.
+* 2xSaI by Derek Liauw. Only 2x.
+* BilinearPlus same as Bilinear and it may even be a bit faster..
+* Bilinear bilinear interpolation to smooth the result. Slower, but looks better. Only 2x.
+* Point simple but very fast scaler. Only duplicates pixels, no fancy interpolation. Can be used for arbitrary integer scales (2x, 3x, 4x...).
+* Interlaced identical to point except that it skips every other line to be even faster
+
+The scalers by Derek Liauw are slower but look much better. Try out yourself which one you like most.
+More information on the excellent scaling engines by Derek Liauw is available at http://elektron.its.tudelft.nl/~dalikifa/.
+
+
+
+--------------------------------------------------------------------------------
+
+5. Movement and Keys
+5.1. Movement
+* Hold right mouse button down to move Avatar.
+* Double-click with the right mouse button will make the Avatar find a path to the selected spot.
+* Click on objects with left button to identify them.
+* Double-click on characters to hold conversations.
+* Double-click on doors, shutters with left button to open or close them.
+
+Note that on MacOS you have to hold down the 'Cmd' key and the mouse button to have the functionality of a right mouse button.
+Nadir implemented keyboard walking in the 1.1 (unstable) branch of our source. The Avatar can be moved with the arrow keys (or the keypad keys for more precise movement). When you move while holding shift the Avatar runs.
+
+
+5.2. Keyboard commands
+Starting with V0.91 Alpha2 all key commands can be changed. However, there is a default setting which closely follows the original with the addition of some improvements.
+To change your key bindings first edit the file defaultkeys.txt in your Exult directory, change the bindings and save the file (e.g. as my_keys.txt). Now you have to change exult.cfg to use that file. You can even choose if you want to change your key bindings for BG or SI. See the keys settings at 2.2.. Change (default) to my_keys.txt.
+During the game press 'h' to see a help screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen shows the correct key combination for MacOS). 'KP' means keypad.
+
+Default keyboard commands
+KP+/- : Change brightness
+Alt-KP+/- : Change resolution
+F4 : Toggle full screen
+right : walk east
+left : walk west
+up : walk north
+down : walk south
+KP1 : walk southwest
+KP2 : walk south
+KP3 : walk southeast
+KP4 : walk west
+KP5 : recenter map
+KP6 : walk east
+KP7 : walk northwest
+KP8 : walk north
+KP9 : walk northeast
+Shift-right : run east
+Shift-left : run west
+Shift-up : run north
+Shift-down : run south
+Shift-KP1 : run southwest
+Shift-KP2 : run south
+Shift-KP3 : run southeast
+Shift-KP4 : run west
+Shift-KP6 : run east
+Shift-KP7 : run northwest
+Shift-KP8 : run north
+Shift-KP9 : run northeast
+Ctrl-x : Cut selected object (when in Map Edit mode)
+Ctrl-c : Copy selected object (when in Map Edit mode)
+Ctrl-v : Paste selected object (when in Map Edit mode)
+b : Use spellbook
+c : Combat mode
+f : Use food
+g : Use Abacus
+h : Show list of keyboard commands
+i : Show inventory
+j : SI: Show jawbone
+k : BG: Try all keys to unlock a lock
+k : SI: Use keyring
+Alt-k : SI: Try all keys to unlock a lock
+l : SI: Show combat stats
+m : Show map
+p : Use lockpicks
+Alt-q : Exit game
+r : Brings up status bars. First three strokes change the location of the bar. The fourth disables it again.
+Ctrl-r : Quick restore
+Ctrl-Alt-s : Screenshot
+Ctrl-s : Quick save
+s : Show save/load box
+Esc : Show Game menu box and closes all open boxes
+t : Target, instead of double clicking, shows a cursor and pauses the game until you click on something
+v : About screen
+w : Use watch, shows the time if you got a watch
+Alt-x : Exit game
+z : Show stats
+1 : Show inventory for Avatar
+2 : Show inventory for character 2
+3 : Show inventory for character 3
+4 : Show inventory for character 4
+5 : Show inventory for character 5
+6 : Show inventory for character 6
+7 : Show inventory for character 7
+8 : Show inventory for character 8
+In conversations you now have the ability not just click on the answer with the mouse but also to use the numeric keys. The response options aren't numbered visually but logically with the dots. Also press 'Esc' to select "bye" if possible.
+
+
+5.3. Cheat keys
+Press 'ctrl-h' during the game to see a help screen with all the cheat keys. 'KP' means keypad.
+
+Cheat commands
+Alt-+/- : Switch resolution( you may have to use the keypad)
+Alt-Arrow keys : Scroll map
+home : Recenter map
+Ctrl-Arrow keys : move selection (x,y coordinates)
+Ctrl-Page keys : move selection (z coordinates)
+F2 : Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options
+F3 : Map teleport
+F10 : Show endgame
+F11 : SI: Play alternate intro
+Ctrl-b : Shape browser
+Insert : Create object (that is chosen in  the shape browser)
+Ctrl-d : Delete object
+e : Toggle egg display
+Alt-g : Toggle God mode
+Ctrl-g : Change avatar gender
+Ctrl-Alt-h : Resurrect, heal party, cure poison and still hunger
+Alt-i : Toggle infravision
+Ctrl-l : Level up party
+l : Decrement skiplift
+Alt-h : Hackmover (you can move all objects around and it disables weight check
+Ctrl-Alt-m : Toggle Map editor (useful for Exult Studio)
+Ctrl-m : Get 100 gold coins
+Alt-Shift-m : Play previous song
+Alt-m : Play next song
+Alt-n : SI: Toggle naked flag
+Alt-p : SI: Toggle Petra mode
+Alt-s : SI: Change skin color
+Ctrl-Alt-t : Map teleport
+Ctrl-t : Advance to next time period
+Alt-t : Teleport (to current cursor position)
+Alt-w : Toggle archwizard mode (all spells etc.)
+Alt-1 : Test music, sfx, speech
+Ctrl-Alt-g : Grab NPC for cheat screen
+Ctrl-Alt-p : Pick pocket cheat, when enabled double-clicking on a NPC displays the actors inventory
+Ctrl-n : NPC number, When enabled, clicking an a NPC will display their number instead of their name. Useful for the cheat screen.
+
+
+
+--------------------------------------------------------------------------------
+
+6. Game Menu
+6.1. Access to the Game menu
+You can access the Game menu either by pressing the disk icon in the Avatar's inventory screen or by pressing 'Esc'. You then have the following options.
+
+
+6.2. Load/Save Game
+This on is pretty straightforward. You can load and save a game, delete a game and view some information of a save game on the right side (a screenshot and some stats). If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing 'Alt' while using the wheel scrolls by pages. Pressing Cancel exits the Load/Save options.
+
+
+6.3. Video Options
+In this option screen you are able to determine how Exult displays the game.
+* Resolution lets you choose between various resolutions. You can choose between 320x200, 320x240, 400x300, 512x384 and 640x480. If you want higher resolutions edit the exult.cfg file as outlined in 2.2. Settings in exult.cfg.
+* Scaling choose between 1x and 2x. What it does is explained in 4.2. Scaler.
+* Scaler lets you choose your favorite scaling engine. Also look at 4.2. Scaler for an explanation.
+* Full Screen enable or disable running Exult in full screen.
+* OK/Cancel Ok accepts your changes, Cancel discards your changes.
+
+
+
+6.4. Audio Options
+Look at 3. Audio to see explanation on the settings.
+* Audio Enable or disable all Audio in Exult.
+* Music Enable or disable music.
+* driver choose between Normal, Digital or FMSynth.
+* conversion choose between None, GM, GS, GS127.
+* effects alters the way the midi is played. Choose between Reverb, Chorus, Both (Reverb and Chorus) or disable it.
+* looping Disable restores the (broken) way the original handled the music looping flag.
+* SFX Enable or disable digital sound effects.
+* Speech Options Enable or disable the speech in the games.
+* OK/Cancel Ok accepts your changes, Cancel discards your changes.
+
+
+
+6.5. Gameplay Options
+* Status Bars You can either disable the status bars or choose its position on the bottom of the screen (left, middle, right).
+* Text Background shows a tinted background behind text in conversations to make it easier to read. Either disable it or choose between the colors purple, orange, light gray, green, yellow, pale blue, dark green, red, bright white, dark gray and white.
+* Fast Mouse makes the mouse cursor move faster in full screen modes. Enable or disable it.
+* Use middle mouse button In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't'). For modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations. Enable or disable it.
+* Doubleclick closes gumps pretty straightforward, right?
+* Right click closes gumps the same but different.
+* Double Right Pathfinds Double right-clicking on a spot makes the avatar walk to it.
+* Gumps pause games In the original the game got paused when Gumps were shown. Enable/disable it.
+* Cheats Enables or disables all the cheats that we implemented in Exult. See 5.3. Cheat keys what those cheats are.
+* Speed if Exult seems too fast lower this setting. If it seems to sluggish raising this setting may help.
+* Paperdolls only available in Black Gate. Enables or disable Paperdolls (inventory screen) in the style of Serpent Isle.
+* OK/Cancel Ok accepts your changes, Cancel discards your changes.
+
+
+
+6.6. Combat Options
+As many people think that the U7 combat engine is far too easy, too hard or just can't stand the real-time-combat Jeff put in some options to make combat more interesting.
+* Difficulty Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and the HP's lost if a hit occurs.
+* ShowHits With this enabled you can see the hitpoints of NPCs in brackets after their name when you left-click on them.
+* Mode choose between Original and SpacePauses. SpacePauses gives you a little more control of combat. When you hit space the game pauses and you can direct a party member by right-clicking, then clicking on a target to attack. Or change weapons, choose a favourite spell.
+
+
+
+6.7. Quit to Menu
+This is not implemented yet and just quits Exult. When it eventually works you will be back to the Exult menu where you choose which game you want to play. It is actually more difficult to implement than it sounds so don't expect it too soon.
+In snapshots after the Beta 1 release this option is no longer available.
+
+
+6.8. Quit
+Exits Exult.
+
+
+
+--------------------------------------------------------------------------------
+
+7. OS specific notes
+7.1. How to get the Zaurus port working
+Some people were confused where to put the Exult and U7 files and this is a quick guide. The long guide is in the next section.
+* BG and SI are expected to be installed in /mnt/cf/exult-data/bg and /mnt/cf/exult-data/si
+* Exult binary is in /opt/QtPalmtop/bin/
+* the shared files (like exult_bg.flx) go into /opt/QtPalmtop/share/exult/
+* exult.cfg is can be found as /home/root/.exult.cfg
+
+
+
+7.2. Error Log
+* MacOS/Win32: Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help.
+* UNIX/UNIX clones: the above mentioned logs are shown in the console from which Exult is started. ./exult >&log will send both stderr and stdout to the file named "log".
+
+
+
+
+--------------------------------------------------------------------------------
+
+8. Zaurus Guide
+8.1. Author of this Guide
+This file was written by Artaxerxes (Aurelien Marchand). I can be contacted at artaxerxes2 at iname dot com. Please ask if you want to send attachments no matter what their size.
+
+
+8.2. Sharp Zaurus
+Introduced in April 2002, this PDA is really a pico-computer (one degree of magnitude less than micro). It runs a version of Linux on the ARM processor. It is possible to use cross-compilers to create programs that will run on the Zaurus, even if compiling from a x86 machine. This is notably the case for the Zaurus port of Exult. More information about the Zaurus can be gleaned on http://www.myZaurus.com.
+
+
+8.3. Zaurus SL5x00 and ROMs
+Sharp occasionnally releases new versions of its ROM for Zaurus. Consider a new ROM like a new Linux distribution: new packages, new look, new kernel etc. It is possible to update the ROM thanks to information found on the Zaurus web site mentioned earlier. The current Exult package for the Zaurus is created for the stock SL-5500 ROM v2.12. It has been reported to work on the SL5000-D (the earlier and less capable version). However, it has been reported that the package will not run properly using the latest ROM (no matter what version of the Zaurus you use). More detailed information on how to fix this problem will be found further down this document.
+
+
+8.4. Exult and Zaurus
+Exult uses SDL for multimedia access to the computer (music and video in particular). In order to play Exult on your Zaurus, you need to install the SDL library as well as the SDL-mixer library. Do not use the stock versions found on http://www.libsdl.org. Rather, use thespecially prepared versions for Zaurus found on http://www.gnurou.org. These versions support more features and are the only tested ones.
+
+
+8.5. Installing new packages
+The first step to install a new package is to have the package downloaded and accessible from your Zaurus. I use a method I am comfortable with. If you have your own method and if it works, please keep using it! To copy packages on my Zaurus, I plug the cradle via USB to my Linux machine (Mandrake 8.2). I've changed the modules.usbmap file so that inserting the Zaurus on the cradle will automatically use the usbdnet module to access the Zaurus via USB-over-ethernet. Search the net to find out how. Once the connection is done, I upload the file via FTP to /mnt/cf/Documents/application/ipkg/. Then I start the add/remove package, select add new package and choose the file I just uploaded.
+
+
+8.6. Using the standard ROM
+If like me you still use the standard ROM, simply install the SDL, SDL-mixer and Exult packages. You will also have to transfer the U7 data files to the Zaurus. I chose to install the data files on my Compact Flash card (/mnt/cf/) on the /mnt/cf/exult-data/si/static directory. Simply copy the content of your U7's static/ dir to this dir and you'll be done. The previous example is for Serpent Isle ("si" as you can see in the file path). For Black Gate, you would put "bg" instead of "si". Only the static dir is relevant. You can copy everything if you want to but it will space for nothing.
+
+
+8.7. Installing the non-required packages
+Two additional packages exist and are not required. They hold the new musics for Exult and thus can be found on the Exult's download page. If you choose to install them as well, simply copy them to the Zaurus (see 5.1) and install them normally.
+
+
+8.8. Using the latest ROM
+As mentioned earlier, Exult won't run properly on the latest ROM (v3.10 as of 20030801). There are a few reason why. First, since I haven't installed this ROM, I cannot test it. Then, I know they have changed the default user to be "zaurus" instead of "root", which mess up the paths and the config file. Indeed, by default, Exult reads its config file on ~/.exult.cfg which gets expanded to /home/root/.exult.cfg on the default ROM but to /home/zaurus/.exult.cfg on the newest ROM. Since the package installs all user-related files to /home/root, Exult won't find them on the latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/ which contains the gamedat (current runing game) and the savegames. Finally, the files' owner is set to "root" so the user "zaurus" won't be able to alter files and directories.
+
+
+8.9. Solving the problems with the latest ROM
+In order to play, you'll have to change the location of the files installed by the package to /home/zaurus/ instead of /home/root/. I have not done this, but I expect you'd have to "su" to be able to change it. "su" is a command to become superuser (root). Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but you also want to edit the ~/.exult.cfg so that every occurence of /home/root/ is replaced with /home/zaurus. Please remember I have not done nor tested this, but here are the commands I suppose you'd have to type. First, open a terminal (install one if you don't have one).
+From the terminal, verify who you are by typing ($ is the prompt): $ cd ~/ $ whoami $ pwd
+The "whoami" command should return "zaurus". The "pwd" command should return "/home/zaurus/". Then copy the Exult files: $ cp /home/root/.exult* ~/ -rf
+And change ownership to yourself. You might have to become root to do so: $ su # chown zaurus:zaurus /home/zaurus/.exult* -R # chown zaurus:zaurus /opt/QtPalmtop/share/exult -R # chown zaurus:zaurus /opt/QtPalmtop/bin/exult* -R # chown zaurus:zaurus /opt/QtPalmtop/pics/exult.png -R # chown zaurus:zaurus /opt/QtPalmtop/apps/Games/exult.desktop -R # exit
+The # is the root's prompt. The "exit" command will stop the "su" command and make you return to the "zaurus" user. It is now time to edit the .exult.cfg. A fast way to do it: $ sed -e 's/root/zaurus/' >~/.exult.cfg ~/.exult.cfg_new $ mv ~/.exult.cfg_new ~/.exult.cfg
+Normally, you should be able to start and play the game normally. Let me know if I am missing anything.
+
+
+8.10. Useful tidbits
+The key mappings are found in the files /opt/QtPalmtop/share/exult/keys_bg.txt and /opt/QtPalmtop/share/exult/keys_si.txt
+The Application keys are mapped this way: 'Calendar' = 'F9' = inventory (like pressing 'I') 'Address Book' = 'F10' = target mode (like pressing 'T') 'Home' = 'F12' = combat mode (like pressing 'C') 'Menu Popup' = 'F11' = use all keys (like pressing 'K' or 'Alt-K') 'Email' = 'F13' = spellbook (like pressing 'B')
+Save often. I have not had a crash since I'm using the latest SDL packages but you never know.
+Report any problem to the Exult forum at http://exult.sf.net/forum/ or email me (see 8.1.).
+
+
+
+--------------------------------------------------------------------------------
+
+9. Credits and Contact
+9.1. Thanks
+* The paper by Gary Thompson on the structure of the U7 data files was crucial to the early development of Exult.
+* Work by Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag made the "usecode" interpreter possible.
+* Olivier Marcoux's technical document was also crucial in understanding some data files.
+* Thanks also go to the person who wrote u7items.txt and the contributor of the "avatar.ttf" font.
+* Aurelien Marchand (Artaxerxes) for his extensive guide for the Zaurus.
+
+
+
+9.2. Contacting us
+You can contact the Exult team and/or get more information from: http://exult.sourceforge.net/ or http://sourceforge.net/projects/exult/
+
+
