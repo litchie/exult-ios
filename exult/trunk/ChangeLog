@@ -1,3 +1,7 @@
+2002-05-25  Simon Quinn <email@simonquinn.co.uk>
+	* created "audiotest" branch to cvs for testing my new SDL_mixer/MP3 audio code.
+	  You'll also need the MP3 sound pack from the Sourceforge Exult site
+
 2002-05-24  Ryan Nunn  <triforce@merlin.net.au>
 	* effects.cc : Fixing weather problem with facestats.
 
