@@ -327,7 +327,7 @@ public:
 	void reduce_health(int delta, Actor *attacker = 0);
 	virtual int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
-	int is_dying() const		// Dead when health below -1/3 str.
+	bool is_dying() const		// Dead when health below -1/3 str.
 		{ return properties[(int) health] < 
 					-(properties[(int) strength]/3); }
 	int get_level() const		// Get experience level.
@@ -486,7 +486,7 @@ public:
 	void clear_nearby()
 		{ nearby = false; }
 	bool is_nearby() const
-		{ return nearby; }
+		{ return nearby!=0; }
 					// Set schedule list.
 	virtual void set_schedules(Schedule_change *list, int cnt);
 	virtual void set_schedule_time_type(int time, int type);

@@ -54,6 +54,7 @@ using std::strcpy;
 using std::strcat;
 using std::time_t;
 using std::tm;
+using std::snprintf;
 
 extern Configuration *config;
 
@@ -876,6 +877,8 @@ int Newfile_gump::AddCharacter(char c)
 
 void Newfile_gump::LoadSaveGameDetails()
 {
+	int		i;
+
 	Game_window *gwin = Game_window::get_game_window();
 
 	// Gamedat Details
@@ -912,7 +915,7 @@ void Newfile_gump::LoadSaveGameDetails()
 
 	// Current Party
 	cur_party = new SaveGame_Party[cur_details->party_size];
-	for (int i=0; i<cur_details->party_size ; i++)
+	for (i=0; i<cur_details->party_size ; i++)
 	{
 		Actor *npc;
 		if (i == 0)
@@ -943,7 +946,6 @@ void Newfile_gump::LoadSaveGameDetails()
 
 	// Now read save game details
 	char	mask[256];
-	int		i;
 
 	snprintf(mask, 256, SAVENAME2, Game::get_game_type() == BLACK_GATE ? "bg" : "si");
 #if 1

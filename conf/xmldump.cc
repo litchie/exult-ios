@@ -30,14 +30,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::string;
 using std::vector;
 
-using std::size_t;
+//using std::size_t;
 
 
 static	string	encode_entity(string &s)
 {
 	string	ret("");
 
-	for(size_t i=0;i<s.length();i++)
+	for(std::size_t i=0;i<s.length();i++)
 		{
 		switch(s[i])
 			{
@@ -84,7 +84,7 @@ void	xmldump(string &s,XMLnode *x,int depth)
 	s+=">\n";
 	if(x->entity.id[x->entity.id.length()-1]!='/')
 		{
-		for(vector<XMLnode*>::iterator it=x->nodelist.begin();
+		for(std::vector<XMLnode*>::iterator it=x->nodelist.begin();
 			it!=x->nodelist.end();
 			++it)
 			{

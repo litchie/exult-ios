@@ -45,7 +45,7 @@ using std::memcpy;
 using std::memset;
 
 #if 1	/* For debugging. */
-#include <iomanip.h>
+#include <iomanip>
 #include "items.h"
 #endif
 
@@ -873,13 +873,14 @@ void Shape_file::save(DataSource& shape_source)
 	int* offsets = new int[num_frames];
 	int size;
 	offsets[0] = 4 + num_frames * 4;
-	for (int i=1; i<num_frames; i++)
+	int i;	// Blame MSVC
+	for (i=1; i<num_frames; i++)
 		offsets[i] = offsets[i-1] + frames[i-1]->get_size() + 8;
 	size = offsets[num_frames-1] + frames[num_frames-1]->get_size() + 8;
 	shape_source.write4(size);
-	for (int i=0; i<num_frames; i++)
+	for (i=0; i<num_frames; i++)
 		shape_source.write4(offsets[i]);
-	for (int i=0; i<num_frames; i++) {
+	for (i=0; i<num_frames; i++) {
 		shape_source.write2(frames[i]->xright);
 		shape_source.write2(frames[i]->xleft);
 		shape_source.write2(frames[i]->yabove);

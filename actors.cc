@@ -175,9 +175,10 @@ void Actor::init
 	{
 	if (!frames[(int) north])
 		set_default_frames();
-	for (size_t i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
+	size_t i;
+	for (i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
 		properties[i] = 0;
-	for (size_t i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+	for (i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
 		spots[i] = 0;
 	}
 
@@ -816,7 +817,7 @@ int Actor::approach_another
  *	Get information about a tile that an actor is about to step onto.
  */
 
-#if !defined(BEOS) && !defined(ALPHA_LINUX_CXX)
+#if !defined(BEOS) && !defined(ALPHA_LINUX_CXX) && !defined(_MSC_VER)
 #if __GNUG__ < 3
 inline
 #endif
@@ -1784,7 +1785,8 @@ void Actor::reduce_health
 				    attacker->get_flag(Obj_flags::in_party))
 				gwin->get_usecode()->call_usecode(
 					usecode, this, Usecode_machine::died);
-					// Still 'tournament'?  Set hp = 1.
+
+				// Still 'tournament'?  Set hp = 1.
 			if (get_flag(Obj_flags::si_tournament) &&
 			    get_property((int) health) < 1)
 				set_property((int) health, 1);

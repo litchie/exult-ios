@@ -46,7 +46,7 @@ public:
 
 	inline void set_gamma (float g)
 	{
-		if (g < 0.001) g = 0.001;
+		if (g < 0.001f) g = 0.001f;
 		if (g == gamma) return;	
 		gamma = g;
 

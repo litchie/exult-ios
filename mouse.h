@@ -99,7 +99,7 @@ public:
 		{ return (Mouse_shapes) cur_framenum; }
 	void move(int x, int y)		// Move to new location (mouse motion).
 		{
-#if DEBUG
+#ifdef DEBUG
 		if (onscreen)
 			std::cerr << "Trying to move mouse while onscreen!" << std::endl;
 #endif

@@ -89,8 +89,8 @@ inline uint16 Read2
 	)
 	{
 	uint8 b0, b1;
-	fread(&b0,sizeof(uint8),1,in);
-	fread(&b1,sizeof(uint8),1,in);
+	std::fread(&b0,sizeof(uint8),1,in);
+	std::fread(&b1,sizeof(uint8),1,in);
 	return (b0 | (b1 << 8));
 	}
 #endif
@@ -135,8 +135,8 @@ inline uint16 Read2high
 	)
 	{
 	uint8 b0, b1;
-	fread(&b0,sizeof(uint8),1,in);
-	fread(&b1,sizeof(uint8),1,in);
+	std::fread(&b0,sizeof(uint8),1,in);
+	std::fread(&b1,sizeof(uint8),1,in);
 	return ((b0 << 8) | b1);
 	}
 #endif
@@ -185,10 +185,10 @@ inline uint32 Read4
 	)
 	{
 	uint8 b0, b1, b2, b3;
-	fread(&b0,sizeof(uint8),1,in);
-	fread(&b1,sizeof(uint8),1,in);
-	fread(&b2,sizeof(uint8),1,in);
-	fread(&b3,sizeof(uint8),1,in);
+	std::fread(&b0,sizeof(uint8),1,in);
+	std::fread(&b1,sizeof(uint8),1,in);
+	std::fread(&b2,sizeof(uint8),1,in);
+	std::fread(&b3,sizeof(uint8),1,in);
 	return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	}
 #endif
@@ -236,10 +236,10 @@ inline uint32 Read4high
 	)
 	{
 	uint8 b0, b1, b2, b3;
-	fread(&b0,sizeof(uint8),1,in);
-	fread(&b1,sizeof(uint8),1,in);
-	fread(&b2,sizeof(uint8),1,in);
-	fread(&b3,sizeof(uint8),1,in);
+	std::fread(&b0,sizeof(uint8),1,in);
+	std::fread(&b1,sizeof(uint8),1,in);
+	std::fread(&b2,sizeof(uint8),1,in);
+	std::fread(&b3,sizeof(uint8),1,in);
 	return ((b0<<24) | (b1<<16) | (b2<<8) | b3);
 	}
 #endif

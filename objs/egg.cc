@@ -518,7 +518,7 @@ void Egg_object::activate
 	int must			// If 1, skip dice roll.
 	)
 	{
-#if DEBUG
+#ifdef DEBUG
 	print_debug();
 #endif
 	int roll = must ? 0 : 1 + rand()%100;
@@ -530,7 +530,7 @@ void Egg_object::activate
 	switch(type)
 		{
 		case jukebox:
-#if DEBUG
+#ifdef DEBUG
 			cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0x01) << endl;
 #endif
 			Audio::get_ptr()->start_music((data1)&0xff,(data1>>8)&0x01);

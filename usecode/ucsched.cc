@@ -351,7 +351,7 @@ void Scheduled_usecode::handle_event
 			else
 				{
 			        cout << "Und sched. opcode " << hex << 
-			"0x" << setfill((char)0x30) << setw(2) << opcode << endl;
+					"0x" << setfill((char)0x30) << setw(2) << opcode << std::dec << endl;
 				do_another = 1; // Don't let it delay us.
 				}
 			break;
@@ -364,7 +364,9 @@ void Scheduled_usecode::handle_event
 		}
 	if (count == 1 &&		// Last one?  GUESSING:
 	    objpos.tx != -1)		// And valid pos.
+	{
 		usecode->activate_cached(objpos);
+	}
 	delete this;			// Hope this is safe.
 	}
 

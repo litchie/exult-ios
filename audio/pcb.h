@@ -335,7 +335,7 @@ private:
 		SDL_mutexV(mutex);
 		}
 public:
-#if DEBUG
+#ifdef DEBUG
 	static	int	counter;
 	int	mycounter;
 #endif
@@ -404,14 +404,14 @@ public:
 			repeat(false),
 			type(0), seq(0), volume(SDL_MIX_MAXVOLUME), dir(0)
 		{
-#if DEBUG
+#ifdef DEBUG
 		mycounter = counter++;
 		std::cerr << "Created PCB " << mycounter << std::endl;
 #endif
 		 }
 	~ProducerConsumerBuf()
 		{
-#if DEBUG
+#ifdef DEBUG
 		std::cerr << "::"<<mycounter<<" ProducerConsumerBuf going away" << std::endl;
 #endif
 		SDL_DestroyMutex(mutex);
@@ -422,7 +422,7 @@ public:
 		{ return seq; }
 	void	end_production(void)
 		{
-#if DEBUG
+#ifdef DEBUG
 		std::cerr << "::" << mycounter << " end_production" << std::endl;
 #endif
 		lock();
@@ -431,7 +431,7 @@ public:
 		}
 	void	end_consumption(void)
 		{
-#if DEBUG
+#ifdef DEBUG
 		std::cerr << "::"<<mycounter<<" end_consumption" << std::endl;
 #endif
 		lock();

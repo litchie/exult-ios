@@ -183,7 +183,7 @@ public:
 		}
 	static void split_dest(uint16 pix, unsigned int& r,
 					unsigned int& g, unsigned int& b)
-		{ return split_source(pix, r, g, b); }
+		{ split_source(pix, r, g, b); }
 	static uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b)
 		{ return ((r&0x1f)<<10) | ((g&0x1f)<<5) | (b&0x1f); }

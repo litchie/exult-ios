@@ -53,7 +53,7 @@ private:
 	union
 		{
 		long intval;
-		const char *str;
+		char *str;
 		Usecode_value *array;
 		Game_object *ptr;
 		} value;
@@ -99,7 +99,7 @@ public:
 		{ return (type == pointer_type); }
 	long get_int_value() const	// Get integer value.
 		{ 
-#if DEBUG
+#ifdef DEBUG
 		if (type == pointer_type || (type == int_type && (value.intval > 0x10000 || value.intval < -0x10000)))
 			std::cerr << "Probable attempt at getting int value of pointer!!" << std::endl; 
 #endif

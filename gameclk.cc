@@ -27,12 +27,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#include <iostream.h>			/* Debugging. */
+#include <iostream>			/* Debugging. */
 #include "gameclk.h"
 #include "gamewin.h"
 #include "actors.h"
 #include "cheat.h"
 #include "game.h"
+
+using std::cout;
+using std::endl;
 
 extern Cheat cheat;
 

@@ -665,7 +665,8 @@ void Scale_2xBilinear
 		swidth = sline_pixels - srcx - 1;
 		}
 					// Do each row, interpolating horiz.
-	for (int y = 0; y < srch; y++)
+	int y;
+	for (y = 0; y < srch; y++)
 		{
 		int count = swidth;
 		register Source_pixel *source_line = from;
@@ -701,7 +702,7 @@ void Scale_2xBilinear
 		bottom_edge = 1;
 		dheight = sheight - srcy - 1;
 		}
-	for (int y = 0; y < dheight; y++)
+	for (y = 0; y < dheight; y++)
 		{
 		to = from0 + dline_pixels;
 		from1 = to + dline_pixels;
@@ -760,7 +761,7 @@ void Scale_point
          int factor                      // Scale factor
 )
 {
-	int x, y, ss, off_x, off_y;
+	int x, y, off_x, off_y;
 	char data;
 	unsigned char *dest2, *source2;
 

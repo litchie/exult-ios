@@ -68,6 +68,11 @@ const unsigned short Windows_MidiOut::combined_value = (coarse_value << 8) | fin
 #define giveinfo()
 #endif
 
+using std::string;
+using std::cout;
+using std::cerr;
+using std::endl;
+
 Windows_MidiOut::Windows_MidiOut()
 {
 	giveinfo();
@@ -138,7 +143,7 @@ void Windows_MidiOut::init_device()
 	giveinfo();
 }
 
-DWORD Windows_MidiOut::thread_start(void *data)
+DWORD __stdcall Windows_MidiOut::thread_start(void *data)
 {
 	giveinfo();
 	Windows_MidiOut *ptr=static_cast<Windows_MidiOut *>(data);
@@ -574,7 +579,7 @@ void Windows_MidiOut::stop_sfx(void)
 bool Windows_MidiOut::is_playing(void)
 {
 	giveinfo();
-	return playing;
+	return playing!=0;
 }
 
 const char *Windows_MidiOut::copyright(void)

@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 using std::toupper;
+using std::snprintf;
 
 extern Game_window *gwin;	// from exult.cc - FIX ME!!!
 extern unsigned char quitting_time;	// from exult.cc - FIX ME!!!
@@ -70,7 +71,7 @@ static int Handle_gump_event
 	switch (event.type)
 	{
 	case SDL_MOUSEBUTTONDOWN:
-#if DEBUG
+#ifdef DEBUG
 cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
 	 << ", " <<	((event.button.y>>scale) - gump->get_y()) << ")"<<endl;
 #endif

@@ -100,7 +100,7 @@ void Conversation::add_answer(Usecode_value& val)
 
 void Conversation::remove_answer(const char *str)
 {
-	vector<string>::iterator it;
+	std::vector<string>::iterator it;
 
 	for(it=answers.begin();	it!=answers.end(); ++it)
 		if(*it==str)
@@ -484,15 +484,16 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 void Conversation::show_avatar_choices()
 {
 	char	**result;
+	size_t i;	// Blame MSVC
 
 	result=new char *[answers.size()];
-	for(size_t i=0;i<answers.size();i++)
+	for(i=0;i<answers.size();i++)
 		{
 		result[i]=new char[answers[i].size()+1];
 		strcpy(result[i],answers[i].c_str());
 		}
 	show_avatar_choices(answers.size(),result);
-	for(size_t i=0;i<answers.size();i++)
+	for(i=0;i<answers.size();i++)
 		{
 		delete [] result[i];
 		}
@@ -530,7 +531,7 @@ int Conversation::conversation_choice(int x, int y)
 int Conversation::locate_answer(const char *str)
 {
   int num;
-  vector<string>::iterator it;
+  std::vector<string>::iterator it;
   num = 0;
   for(it=answers.begin(); it!=answers.end(); ++it) {
     if(*it==str)

@@ -50,14 +50,15 @@ CombatStats_gump::CombatStats_gump(int initx, int inity) :
 	Gump::shapenum = game->get_shape("gumps/cstats/1") + party_size - 1;
 	ShapeID::set_shape(Gump::shapenum, 0);
 
-	for (int i = 0; i < party_size; i++) {
+	int i;	// Blame MSVC
+	for (i = 0; i < party_size; i++) {
 		halo_btn[i] = new Halo_button(this, colx + i*coldx, rowy[4], party[i]);
 		cmb_btn[i] = new Combat_mode_button(this, colx + i*coldx + 1, rowy[3],
 											party[i]);
 		face_btn[i] = new Face_button(this, colx + i*coldx - 13, rowy[0],
 									  party[i]);
 	}
-	for (int i = party_size; i < 9; i++) {
+	for (i = party_size; i < 9; i++) {
 		halo_btn[i] = 0;
 		cmb_btn[i] = 0;
 		face_btn[i] = 0;

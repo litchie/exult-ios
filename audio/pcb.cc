@@ -29,6 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 uint32 ProducerConsumerBuf::sequence_cnt=0;
 
 // Stub
-#if DEBUG
+#ifdef DEBUG
 int	ProducerConsumerBuf::counter=0;
 #endif
