@@ -195,18 +195,16 @@ With the latest source you can
 * save the map using Exult Studio's "File-Save map" pulldown menu. In order to avoid writing over files inadvertently, the files that would normally go into the 'static' directory, will, instead, go into a 'patch' directory that you specify in your 'exult.cfg' file. Here's an example for editing BG:
 
 <game>
-<blackgate>
-<path>
-blackgate
-</path>
-<patch>
-blackgate/patch
-</patch>
-<title>
-blackgate
-</title>
-.
-</blackgate>
+  <path>
+  ./blackgate
+  </path>
+  <patch>
+  ./blackgate/patch
+  </patch>
+  <title>
+  blackgate
+  </title>
+</game>
 Exult will also read files from 'patch' if it exists on starting a new game.
 In any mode, you can add the currently selected shape by shift-clicking..
 
@@ -214,38 +212,33 @@ In any mode, you can add the currently selected shape by shift-clicking..
 2.5. Settings in exult.cfg.
 You can change the settings of Exult Studio either with the preferences dialog or via exult.cfg. Those settings are:
 <config>
-<estudio>
-<main>
-<width>
-640
-						** width of the program window
-						
-</width>
-<height>
-400
-						** height of the program window
-						
-</height>
-</main>
-<default_game>
-gamename
-						** default game to edit (games must be specified in
-						<game> part of exult.cfg)
-						
-</default_game>
-<image_editor>
-gimp-remote -n
-						** command that calls the image editor. Only useful on U*ix
-						platforms for now.
-						
-</image_editor>
-<background_color>
-0
-						** background color for the shape-chooser. Use the preference
-						dialog of Exult Studio for this.
-						
-</background_color>
-</estudio>
+  <estudio>
+    <main>
+      <width>
+      640
+				** width of the program window
+      </width>
+      <height>
+      400
+				** height of the program window
+      </height>
+    </main>
+    <default_game>
+    gamename
+				** default game to edit (games must be specified in
+				<game> part of exult.cfg)
+    </default_game>
+    <image_editor>
+    gimp-remote -n
+				** command that calls the image editor. Only useful on Unix/Linux
+				platforms for now.
+    </image_editor>
+    <background_color>
+    0
+				** background color for the shape-chooser. Use the preference
+				dialog of Exult Studio for this.
+    </background_color>
+  </estudio>
 </config>
 
 
@@ -333,13 +326,13 @@ Before you get started with constructing your own little world its important to 
 4.2. File
 * New Game... This lets you begin the work on a new game. Jeff wrote an extensive description of how to use this and how it works. See New Game manual.
 * Open Game... Choose the Game directory of the game you that you have been working on.
-* Save all 'Ctrl+S' Saves map, shape info and groups you edited. Saves all the changes you've made to the world you have been working on. If you're happy with your changes do this before you quit or all work will be lost.
+* Save all'Ctrl+S' Saves map, shape info and groups you edited. Saves all the changes you've made to the world you have been working on. If you're happy with your changes do this before you quit or all work will be lost.
 * New... Shapes file... Lets you choose the directory where you want to create a new vga file and requires you to enter a name for it (e.g. mygame.vga). Single shape file... Lets you choose the directory where you want to create a new shape file and requires you to enter a name for it (e.g. mygame.shp).
 * Save... Map Saves the map of the edited game. Shape info When you right click a shape in a vga file you can change the info of the shape. This saves this changed info. Groups You can "bundle" shapes of vga files into groups to make world building easier. These groups get saved with this option. Combos This saves the combination files.
-* Reload... Map 'Ctrl+R' Reloads the map. All changes made since the last save get discarded. Usecode Very useful when you edit the usecode of a game or add new usecode to an existing game. Normally this would require a restart of Exult.
+* Reload... Map'Ctrl+R' Reloads the map. All changes made since the last save get discarded. Usecode Very useful when you edit the usecode of a game or add new usecode to an existing game. Normally this would require a restart of Exult.
 * Connect Connects Exult and Exult Studio if one of them had to be restarted.
 * Preferences Image Editor Command: This executes the chosen image editor when you want to edit a shape when you right click it. Image-Edit Filetype: Choose which filetype gets executed with the above chosen image editor. Default Game Name: Choose the game Exult Studio opens by default. Use the name specified in exult.cfg. Shape List Background: Sometimes the default black background may make certain shapes hard to see. Choose a different background color here.
-* Exit 'Ctrl+Q' Exits Exult Studio.
+* Exit'Ctrl+Q' Exits Exult Studio.
 
 Note that the default location for saving and creation of new files is the STATIC directory of a game if there is no PATCH directory specified. See 2.4. What you can do at the moment.
 
@@ -366,7 +359,7 @@ Note that you can only drag objects in the game window when you are in "Move" mo
 
 
 4.5. Tools
-* Locator... 'Ctrl+L' shows where the current game window is within the entire map, and lets you move the view by double-clicking a location or by dragging the little box
+* Locator...'Ctrl+L' shows where the current game window is within the entire map, and lets you move the view by double-clicking a location or by dragging the little box
 * New Combo.. Creates a new Combo file. See 5.2. Creating Combination files.
 * Unused shapes... searches the entire world being created to see if any of the shapes in shapes.vga are not in use. Have patience when doing this and treat the results with caution.
 * Compile Usecode... Compiles the usecode script usecode.uc in the patch directory (see 5.3.)
@@ -467,7 +460,7 @@ When setting a monster spawn you will most like want to use one of the following
 
 
 6.7. Jukebox, Sound Effects and Voice eggs
-Using these eggs couldn't be more straightforward, select the sound effect, music score, or recorded digital voice you desire and then place them onto the map. When a character activates the egg they begin to play. You can set music and sound effects to play on a continuous loop for continuous effects such as water fountains or short pieces of background music that you don't want to quit until a new music egg is triggered. In the game window you can test and find out the # of the audio by pressing 'Alt+1' .
+Using these eggs couldn't be more straightforward, select the sound effect, music score, or recorded digital voice you desire and then place them onto the map. When a character activates the egg they begin to play. You can set music and sound effects to play on a continuous loop for continuous effects such as water fountains or short pieces of background music that you don't want to quit until a new music egg is triggered. In the game window you can test and find out the # of the audio by pressing 'Alt+1'.
 
 
 6.8. Usecode eggs
@@ -515,7 +508,7 @@ The first thing one will probably want to do once they have Exult Studio running
 
 
 8.2. Moving objects around
-Perhaps the simplest way of making your world truly unique is to start out by moving existing structures around. Move is the default option in Exult Studio, but to ensure you are in move mode select it from the mode menu. You know you are in map-editing mode when a red grid is highlighted across the world. You can select any object (notice the red highlighting of selected objects) with the mouse and move it around. This works using a simple drag and drop approach. Simply grab a tree with a right click and place it on the other side of your viewing area. The only thing you can't drag and drop are chucks, which are the large ground sections mapped by the red grid system. If you want to place one object on top of another, just drag it on top and release. If the object can be supported in that position it will stay there. For a brief guide on placing an object that won't have support, but will be floating see further down. You can also change an object's x and y coordinates by selecting the object and pressing 'ctrl+arrow keys' . An object's z coordinate can be changed by selecting the object and pressing 'ctrl+page up' or 'ctrl+page down' .
+Perhaps the simplest way of making your world truly unique is to start out by moving existing structures around. Move is the default option in Exult Studio, but to ensure you are in move mode select it from the mode menu. You know you are in map-editing mode when a red grid is highlighted across the world. You can select any object (notice the red highlighting of selected objects) with the mouse and move it around. This works using a simple drag and drop approach. Simply grab a tree with a right click and place it on the other side of your viewing area. The only thing you can't drag and drop are chucks, which are the large ground sections mapped by the red grid system. If you want to place one object on top of another, just drag it on top and release. If the object can be supported in that position it will stay there. For a brief guide on placing an object that won't have support, but will be floating see further down. You can also change an object's x and y coordinates by selecting the object and pressing 'ctrl+arrow keys'. An object's z coordinate can be changed by selecting the object and pressing 'ctrl+page up' or 'ctrl+page down'.
 
 
 8.3. How to place objects from Exult Studio
