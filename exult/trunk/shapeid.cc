@@ -189,7 +189,7 @@ void Shape_manager::load
 			}
 		}
 
-	invis_xform = &xforms[nxforms - 1 - 2];   // ->entry 2.
+	invis_xform = &xforms[nxforms - 1 - 0];   // ->entry 0.
 	}
 
 /*
