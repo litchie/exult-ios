@@ -10,7 +10,7 @@ be ordered in a coherent format.
 	(inside the <config> tag)
 	 <ucxt>
 	  <root>
-	  (the path to ucxt goes here (eg: /home/pb/exult/usecode/ucxt))
+	  (the path to ucxt goes here (eg: /home/st/exult/usecode/ucxt/data))
 	  </root>
 	 <ucxt>
 

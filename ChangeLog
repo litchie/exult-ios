@@ -1,3 +1,7 @@
+2001-12-10  Patrick Burke  <takhisisii@yahoo.com.au
+	* usecode/ucxt/: Added intrinsic 'name' output under -fa rather then
+	  the original intrinsic number for the opcodes 'callis' and 'calli'.
+
 2001-12-08  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Get guard shapes for SI.
