@@ -84,7 +84,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 
 Chunk_object_list::Chunk_object_list
 	(
-	) : objects(0), roof(0), egg_objects(0), num_eggs(0)
+	) : objects(0), roof(0), egg_objects(0), num_eggs(0), npcs(0)
 	{
 	memset((char *) &eggs[0], 0xff, sizeof(eggs));
 	}

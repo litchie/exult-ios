@@ -34,7 +34,6 @@ class Image_window;
  */
 class Actor : public Sprite
 	{
-	Actor *next, *prev;		// Next, prev. in vicinity.
 	char *name;			// Its name.
 	int usecode;			// # of usecode function.
 	int npc_num;			// # in Game_window::npcs list, or -1.
@@ -49,18 +48,6 @@ public:
 		{ return npc_num; }
 	int get_face_shapenum()		// Get "portrait" shape #.
 		{ return npc_num; }	// It's the NPC's #.
-	void add_after_this(Actor *a)	// Add another actor after this.
-		{
-					// Remove from current chain.
-		a->next->prev = a->prev;
-		a->prev->next = a->next;
-		a->next = next;		// Add to this one.
-		a->prev = this;
-		next->prev = a;
-		next = a;
-		}
-	Actor *get_next()
-		{ return next; }
 	int get_usecode()
 		{ return usecode; }
 					// Run usecode function.
@@ -132,9 +119,25 @@ public:
  */
 class Npc_actor : public Actor
 	{
+	Npc_actor *next;		// Next in same chunk.
+	unsigned char nearby;		// Queued as a 'nearby' NPC.  This is
+					//   to avoid being added twice.
 public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
 	~Npc_actor();
+	Npc_actor *get_next()
+		{ return next; }
+	void set_nearby()		// Set/clear/test 'nearby' flag.
+		{ nearby = 1; }
+	void clear_nearby()
+		{ nearby = 0; }
+	int is_nearby()
+		{ return nearby != 0; }
+					// For Time_sensitive:
+	virtual void handle_event(timeval curtime, long udata);
+					// Update chunks after NPC moved.
+	void switched_chunks(Chunk_object_list *olist,
+					Chunk_object_list *nlist);
 	};
 #if 0
 /*
