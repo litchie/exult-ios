@@ -148,6 +148,9 @@ public:
 	static gint check_editing_files(gpointer data = 0);
 	static void import_shape(Editing_file *ed);
 	static void clear_editing_files();
+					// Import/export from file selector.
+	static void export_frame(char *fname, gpointer user_data);
+	static void import_frame(char *fname, gpointer user_data);
 					// Give dragged shape.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
 		GtkSelectionData *data, guint info, guint time, gpointer data);
