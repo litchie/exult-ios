@@ -14,6 +14,7 @@
 #if 0
 	#define DEBUG_PARSE
 	#define DEBUG_PARSE2
+	#define DEBUG_PARSE2a
 	#define DEBUG_READ
 	#define DEBUG_PRINT
 	#define DEBUG_READ_PAIR(X, Y) cout << '\t' << X << '\t' << Y << endl;
@@ -26,6 +27,7 @@
 #endif
 
 //#define DEBUG_PARSE2
+//#define DEBUG_PARSE2a
 //#define DEBUG_PRINT
 
 const string VARNAME = "uvar";
@@ -91,20 +93,11 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, unsigned int in
 		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); j++)
 		{
 			const UCc &ucc = *(j->first);
-			const UCOpcodeData &opcode = opcode_table_data[ucc._id];
 			
 			//if we've already done this
 			if(ucc._tagged!=true)
 			{
-				if(opcode.name=="NULL") // print the basic assembler for it
-				{
 					output_ucs_opcode(o, funcmap, opcode_table_data, ucc, indent);
-				}
-				else // print the proper decompiled usecode-script
-				{
-					// FIXME: Needs to point to the ucs versions in the future.
-					output_ucs_opcode(o, funcmap, opcode_table_data, ucc, indent);
-				}
 			}
 		}
 		if(i!=gotoset.begin()) --indent; //decrement it again to skip the label statement.
@@ -122,7 +115,8 @@ void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<
 		if((*i)->_popped.size())
 			output_ucs_opcode(o, funcmap, opcode_table_data, **i, indent+1);
 		else
-			tab_indent(indent+1, o) << demunge_ocstring(*this, funcmap, optab[(*i)->_id].ucs_nmo, optab[(*i)->_id].param_types, op._params_parsed, **i) << endl;
+//			tab_indent(indent+1, o) << demunge_ocstring(*this, funcmap, optab[(*i)->_id].ucs_nmo, optab[(*i)->_id].param_types, op._params_parsed, **i) << endl;
+			tab_indent(indent+1, o) << optab[(*i)->_id].ucs_nmo << endl;
 	}
 	#endif
 }
@@ -225,11 +219,11 @@ void UCFunc::parse_ucs_pass2a(vector<GotoSet> &gotoset, const FuncMap &funcmap)
 {
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
 	{
-		parse_ucs_pass2b((*i)().rbegin(), (*i)().rend(), (*i)(), 0, funcmap);
+		parse_ucs_pass2b((*i)().rbegin(), (*i)(), 0, funcmap);
 	}
 }
 
-vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> >::reverse_iterator end, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded, const FuncMap &funcmap)
+vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded, const FuncMap &funcmap)
 {
 	vector<UCc *> vucc;
 	unsigned int opsfound=0;
@@ -238,7 +232,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 	print_asm_opcode(tab_indent(4, cout), *this, funcmap, opcode_table_data, *(current->first));
 	#endif
 	
-	for(;current!=end; current++)
+	for(;vec.rend()!=current; current++)
 	{
 		#ifdef DEBUG_PARSE2
 		print_asm_opcode(tab_indent(3, cout), *this, funcmap, opcode_table_data, *(current->first));
@@ -248,39 +242,60 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 		   greater then 0x7F. Currently we just 'ignore' it. */
 		if((opcode_table_data[current->first->_id].num_pop!=0) || (opcode_table_data[current->first->_id].call_effect!=0))
 		{
-			if(opcode_table_data[current->first->_id].num_pop<0x7F)
+			//if(opcode_table_data[current->first->_id].num_pop<0x7F)
 			{
 				#ifdef DEBUG_PARSE2
 				print_asm_opcode(tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-"), *this, funcmap, opcode_table_data, *(current->first));
 				tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-") << opcode_table_data[current->first->_id].num_pop << endl;
 				#endif
 				
-				if(opcode_table_data[current->first->_id].call_effect!=0)
+				unsigned int num_args=0;
+				
+				if(opcode_table_data[current->first->_id].num_pop>0x7F)
 				{
-					#ifdef DEBUG_PARSE2
-					cout << "CALL EFFECT: " << current->first->_id << endl;
+					#ifdef DEBUG_PARSE2a
+					cout << "CALL EFFECT: " << opcode_table_data[current->first->_id].num_pop << '\t';
 					#endif
+					
+					num_args = 0x100 - opcode_table_data[current->first->_id].num_pop;
+					
+					#ifdef DEBUG_PARSE2a
+					cout << num_args << endl;
+					#endif
+				}
+				else if(opcode_table_data[current->first->_id].call_effect!=0)
+				{
 					assert(current->first->_params_parsed.size()>=1);
 					assert(_externs.size()>=current->first->_params_parsed[0]);
 					FuncMap::const_iterator fmp = funcmap.find(_externs[current->first->_params_parsed[0]]);
 					#ifdef DEBUG_PARSE2
-					cout << "CALL: " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
+					cout << "CALL:     " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
 					#endif
 					
-					/* save the 'current' value as the return value and increment it so it's
-					   pointing at the 'next' current value */
-					if(fmp->second.num_args>0)
-					{
-						vector<pair<UCc *, bool> >::reverse_iterator ret(current++);
-						ret->first->_popped = parse_ucs_pass2b(current, end, vec, fmp->second.num_args, funcmap);
-					}
+					num_args = fmp->second.num_args;
 				}
 				else
 				{
+					#ifdef DEBUG_PARSE2
+					cout << "Non-CALL: \t" << opcode_table_data[current->first->_id].num_pop << endl;
+					#endif
+					num_args = opcode_table_data[current->first->_id].num_pop;
+				}
+				
+				if(num_args>0)
+				{
 					/* save the 'current' value as the return value and increment it so it's
 					   pointing at the 'next' current value */
-					vector<pair<UCc *, bool> >::reverse_iterator ret(current++);
-					ret->first->_popped = parse_ucs_pass2b(current, end, vec, opcode_table_data[ret->first->_id].num_pop, funcmap);
+					vector<pair<UCc *, bool> >::reverse_iterator ret(current);
+					ret->first->_popped = parse_ucs_pass2b(++current, vec, num_args, funcmap);
+					--current;
+					
+					#ifdef DEBUG_PARSE2a
+					print_asm_opcode(tab_indent(3, cout << "OP"), *this, funcmap, opcode_table_data, *(ret->first));
+					
+					for(vector<UCc *>::iterator i=ret->first->_popped.begin(); i!=ret->first->_popped.end(); i++)
+						print_asm_opcode(tab_indent(4, cout << "PARAM"), *this, funcmap, opcode_table_data, **i);
+					#endif
 				}
 			}
 		}
@@ -299,9 +314,13 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 			}
 			// if we've found all the ops we were searching for, return them
 			if(opsfound>=opsneeded)
+			{
 				return vucc;
+			}
 		}
 	}
+	
+	if(vucc.size()>0) cout << "DID NOT FIND ALL OPCODE PARAMETERS." << endl;
 	return vucc;
 }
 
@@ -1246,10 +1265,6 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					// if it's external function name we want
 					else if(c=='f')
 					{
-								//assert(op._params_parsed.size()>=1);
-								//assert(ucf._externs.size()>=op._params_parsed[0]);
-								//FuncMap::const_iterator fmp = funcmap.find(ucf._externs[op._params_parsed[0]]);
-								//cout << "CALL: " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
 						i++; c = asmstr[i];
 						unsigned int t=0;
 						switch(c)
@@ -1267,6 +1282,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 								str << '%' << c;
 						}
 						assert(t!=0);
+						assert(op._params_parsed.size()>=1);
 						str << "Func" << setw(4) << ucf._externs[op._params_parsed[t-1]];
 						break;
 					}
@@ -1289,15 +1305,10 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 							case ',': // FIXME: this is the special 'call' case, it may be a good idea to make more general
 							{
 								special_call=true;
-								//assert(op._params_parsed.size()>=1);
-								//assert(ucf._externs.size()>=op._params_parsed[0]);
-								//FuncMap::const_iterator fmp = funcmap.find(ucf._externs[op._params_parsed[0]]);
-								//cout << "CALL: " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
 								
 								for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end();)
 								{
 									str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*i)->_id].ucs_nmo, opcode_table_data[(*i)->_id].param_types, (*i)->_params_parsed, **i);
-//									++i;
 									if(++i!=op._popped.end())
 										str << ", ";
 								}
