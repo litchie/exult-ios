@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "gamewin.h"
 #include "utils.h"
+#include "gumps.h"
 
 using std::cerr;
 using std::cout;
@@ -249,8 +250,8 @@ void Game_window::save_gamedat
 	char fname[50];			// Set up name.
 	sprintf(fname, SAVENAME, num);
 	save_gamedat(fname, savename);
-	free((void*) save_names[num]);		// Update name.
-	save_names[num] = strdup(savename);
+	delete [] save_names[num];	// Update name
+	save_names[num] = newstrdup(savename);
 	}
 
 /*
@@ -272,14 +273,14 @@ void Game_window::read_save_names
 			memset(buf, 0, sizeof(buf));
 			in.read(buf, sizeof(buf) - 1);
 			if (in.good())		// Okay if file not there.
-				save_names[i] = strdup(buf);
+				save_names[i] = newstrdup(buf);
 			else
-				save_names[i] = strdup("");
+				save_names[i] = newstrdup("");
 			in.close();
 		}
 		catch(...)
 		{
-			save_names[i] = strdup("");
+			save_names[i] = newstrdup("");
 		}
 	}
 }

@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <stdlib.h>
 #include "useval.h"
+#include "gumps.h"
 
 using std::cout;
 using std::endl;
@@ -64,7 +65,7 @@ Usecode_value::~Usecode_value()
 	if (type == array_type)
 		delete [] value.array;
 	else if (type == string_type)
-		free((void*)value.str);
+		delete [] value.str;
 }
 
 /*
@@ -81,14 +82,14 @@ Usecode_value& Usecode_value::operator=
 	if (type == array_type)
 		delete [] value.array;
 	else if (type == string_type)
-		free((void*)value.str);
+		delete [] value.str;
 	type = v2.type;			// Assign new values.
 	if (type == int_type)
 		value.intval = v2.value.intval;
 	else if (type == pointer_type)
 		value.ptr = v2.value.ptr;
 	else if (type == string_type)
-		value.str = v2.value.str ? strdup(v2.value.str) : 0;
+		value.str = v2.value.str ? newstrdup(v2.value.str) : 0;
 	else if (type == array_type)
 		{
                 int tempsize = 1+count_array(v2);
@@ -110,7 +111,7 @@ Usecode_value::Usecode_value
 	const char *s
 	) : type(string_type)
 	{
-	value.str = s ? strdup(s) : 0; 
+	value.str = s ? newstrdup(s) : 0; 
 	}
 
 /*
