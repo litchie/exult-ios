@@ -71,4 +71,5 @@ exult_LDADD = 			\
 
 EXTRA_DIST = 	\
 	README.win32 \
-	Makefile.win32
+	Makefile.win32 \
+	Makefile.be
