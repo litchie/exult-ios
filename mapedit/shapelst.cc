@@ -1086,7 +1086,11 @@ C_EXPORT void
 on_new_shape_okay_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {
-//+++++++++++++++++Finish.
+	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(button));
+	Shape_chooser *chooser = (Shape_chooser *)
+				gtk_object_get_user_data(GTK_OBJECT(win));
+	chooser->create_new_shape();
+	gtk_widget_hide(win);
 }
 
 
@@ -1102,8 +1106,60 @@ void Shape_chooser::new_shape
 	GladeXML *xml = studio->get_xml();
 	GtkWidget *win = glade_xml_get_widget(xml, "new_shape_window");
 	gtk_window_set_modal(GTK_WINDOW(win), true);
-	//++++++++Init. shape #, Max. # shapes/frames.
+	gtk_object_set_user_data(GTK_OBJECT(win), this);
+					// Get current selection.
+	int shnum = selected >= 0 ? info[selected].shapenum : 0,
+	    frnum = selected >= 0 ? info[selected].framenum : 0;
+	GtkWidget *spin = glade_xml_get_widget(xml, "new_shape_num");
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(spin));
+	adj->upper = 2047;		// Just a big number.
+	gtk_adjustment_changed(adj);
+	Vga_file *ifile = file_info->get_ifile();
+	int shstart;			// Find an unused shape.
+	for (shstart = shnum; shstart <= adj->upper; shstart++)
+		if (shstart >= ifile->get_num_shapes() ||
+		    !ifile->extract_shape(shstart))
+			break;		
+	if (shstart > adj->upper)
+		{
+		for (shstart = shnum - 1; shstart >= 0; shstart--)
+			if (!ifile->extract_shape(shstart))
+				break;
+		if (shstart < 0)
+			shstart = shnum;
+		}
+	gtk_adjustment_set_value(adj, shstart);
+	spin = glade_xml_get_widget(xml, "new_shape_nframes");
+	adj = gtk_range_get_adjustment(GTK_RANGE(spin));
+	bool flat = shnum < 0x96 && file_info == studio->get_vgafile();
+	if (flat)
+		adj->upper = 31;
+	else
+		adj->upper = 255;
+	gtk_adjustment_changed(adj);
 	gtk_widget_show(win);
+	}
+
+/*
+ *	Add a new shape after the user has clicked 'Okay' in the new-shape
+ *	dialog.
+ */
+
+void Shape_chooser::create_new_shape
+	(
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	int shnum = studio->get_spin("new_shape_num");
+	int nframes = studio->get_spin("new_shape_nframes");
+	if (nframes <= 0)
+		nframes = 1;
+	Vga_file *ifile = file_info->get_ifile();
+	if (shnum < ifile->get_num_shapes() && ifile->extract_shape(shnum))
+		{
+		//+++Replace existing?
+		}
+	//+++++Finish
 	}
 
 /*
