@@ -118,6 +118,7 @@ class Usecode_internal : public Usecode_machine
 	void set_item_shape(Usecode_value& item_arg, Usecode_value& shape_arg);
 	void set_item_frame(Game_object *item, int frame, int check_empty = 0,
 							int set_rotated = 0);
+	void add_dirty(Game_object *obj);
 	void remove_item(Game_object *obj);
 	Usecode_value get_party();
 	void item_say(Usecode_value& objval, Usecode_value& strval);
