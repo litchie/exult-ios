@@ -1,3 +1,7 @@
+2002-05-20  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Added Nadir to Island Patch, and checked in patch files to CVS.
+
 2002-05-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/combo.cc (Combo): Added a "Save combos" option.  Also

@@ -671,3 +671,66 @@ EsBee_Ex 0x56B ()
 	item->hide();
 	}
 
+/*
+ *	Nadir.
+ */
+Nadir 0x56C ()
+	{
+	var nadir = item;
+	if (event == 0)
+		{
+		if (UI_get_schedule_type(nadir) == 14)
+			{		// Sleeping.
+			UI_item_say(nadir, "Zzzz...");
+			return;
+			}
+		var n = UI_get_random(4);// 1-2.
+		if (n == 1)
+			UI_item_say(nadir, "...free software");
+		else if (n == 2)
+			UI_item_say(nadir, "...free beer");
+		else if (n == 3)
+			UI_item_say(nadir, "...autoconf");
+		else if (n == 4)
+			UI_item_say(nadir, "Follow the GPL!");
+		return;
+		}
+	if (event != 1)
+		return;
+	say("A guard paces beside a shrine.  He stands at attention as you ",
+						"approach.");
+	nadir->say("Hail, traveller!");
+	say("Hast thou come to study and meditate?");
+	converse([	"Name",		"Job",		"Study?",	"Bye"])
+		{
+	case "Bye":
+		break;
+	case "Name" (remove):
+		say("My name is Nadir.  Are you a follower of the source?");
+		add("Source?");
+	case "Job" (remove):
+		say("I guard the shrine of Free Software.  ",
+			"All who come, rich or poor, may gaze upon the ",
+			" source.");
+		add("Source?");
+	case "Study?" (remove):
+		say("Gaze upon the mirror... ",
+			"The secrets of the universe dwell within!");
+		AVATAR->say("Thanks, but maybe later.");
+		nadir->say("Suit thyself.");
+		AVATAR->hide();
+	case "Source?" (remove):
+		say("The source controls our fates.");
+		if (gflags[TALKED_DRCODE])
+			{
+			AVATAR->say("But Dr.Code says Usecode does that.");
+			nadir->say("That is so.");
+			say("...and yet it is not.");
+			say("...actually, it is but partly so.");
+			say("...but we must discuss this another time.");
+			AVATAR->hide();
+			}
+		}
+	nadir->hide();
+	}
+
