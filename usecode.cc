@@ -116,10 +116,11 @@ class Scheduled_usecode : public Time_sensitive
 	Usecode_value arrval;		// Array of code to execute.
 	int cnt;			// Length of arrval.
 	int i;				// Current index.
+	int frame_index;		// For taking steps.
 public:
 	Scheduled_usecode(Usecode_machine *usecode,
 				Usecode_value& oval, Usecode_value& aval)
-		: objval(oval), arrval(aval), i(0)
+		: objval(oval), arrval(aval), i(0), frame_index(0)
 		{
 		cnt = arrval.get_array_size();
 		obj = usecode->get_item(objval);
@@ -262,6 +263,7 @@ void Scheduled_usecode::handle_event
 			Usecode_value v(obj->get_dir_framenum(
 							dir, Actor::standing));
 			usecode->set_item_frame(objval, v);
+			frame_index = 0;// Reset walking frame index.
 			break;
 			}
 		default:
@@ -275,15 +277,26 @@ void Scheduled_usecode::handle_event
 					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode <= 0x38)
 				{	// Step in dir. opcode&7.????
-#if 0
-				static short offsets[16] = {
+#if 0	/* ++++++Uncomment when tested. */
+				static short offset[16] = {
 					-1,0, -1,1, 1,0, 1,-1, 0,-1,
 					-1,-1, -1,0, -1,1 };
-//++++++++++++
+				Actor *act = usecode->as_actor(obj);
+				if (!act)
+					break;
+				int dir = opcode&7;
+				Frames_sequence *frames = act->get_frames(dir);
+					// Get frame (updates frame_index).
+				int frame = frames->get_next(frame_index);
+				Tile_coord tile = act->get_abs_tile_coord() +
+				  	Tile_coord(offset[2*dir],
+							offset[2*dir + 1], 0);
+				act->step(tile, frame);
 #endif
 				}
 			else
-			        cout << "Unhandled sched. opcode " << hex << "0x" << setfill(0x30) << setw(2) << opcode << endl;
+			        cout << "Unhandled sched. opcode " << hex << 
+			"0x" << setfill(0x30) << setw(2) << opcode << endl;
 
 			break;
 			}
@@ -701,6 +714,21 @@ Game_object *Usecode_machine::get_item
 			return 0;	// Can't be an object.
 		}
 	return obj ? obj : (Game_object *) val;
+	}
+
+/*
+ *	Check for an actor.
+ */
+
+Actor *Usecode_machine::as_actor
+	(
+	Game_object *obj
+	)
+	{
+	if (!obj ||
+	    (obj->get_npc_num() < 0 && obj != gwin->get_main_actor()))
+		return (0);
+	return ((Actor *) obj);
 	}
 
 /*
@@ -2064,9 +2092,9 @@ USECODE_INTRINSIC(move_object)
 				continue;
 			obj->move(tile.tx, tile.ty, tile.tz);
 					// Fixes moongate bug:
-			if (obj == gwin->get_main_actor() ||
-			    obj->get_npc_num() > 0)
-				((Actor *) obj)->set_action(0);
+			Actor *act = as_actor(obj);
+			if (act)
+				act->set_action(0);
 			}
 		}
 	else
@@ -2075,9 +2103,9 @@ USECODE_INTRINSIC(move_object)
 		if (obj)
 			{
 			obj->move(tile.tx, tile.ty, tile.tz);
-			if (obj == gwin->get_main_actor() ||
-			    obj->get_npc_num() > 0)
-				((Actor *) obj)->set_action(0);
+			Actor *act = as_actor(obj);
+			if (act)
+				act->set_action(0);
 			}
 		}
 	gwin->center_view(tile);	// Make new loc. visible.
@@ -2119,10 +2147,9 @@ USECODE_INTRINSIC(sit_down)
 {
 	// Sit_down(npc, chair).
 	Game_object *nobj = get_item(parms[0]);
-	if (!nobj ||
-	    (nobj->get_npc_num() < 0 && nobj != gwin->get_main_actor()))
+	Actor *npc = as_actor(nobj);
+	if (!npc)
 		return (no_ret);	// Doesn't look like an NPC.
-	Actor *npc = (Actor *) nobj;
 	Game_object *chair = get_item(parms[1]);
 	if (!chair)
 		return(no_ret);
