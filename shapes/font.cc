@@ -487,7 +487,7 @@ Font::Font(): font_shapes(0), font_data(0), font_buf(0)
 {
 }
 
-Font::Font(const char *fname, int index, int hlead, int vlead): font_shapes(0), font_data(0), font_buf(0)
+Font::Font(const char *fname, int index, int hlead, int vlead): font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0)
 {
 	load(fname, index, hlead, vlead);
 }
@@ -498,8 +498,8 @@ Font::~Font()
 		delete font_shapes;
 	if(font_data)
 		delete font_data;
-	if(font_buf)
-		delete [] font_buf;
+	if(orig_font_buf)
+		delete [] orig_font_buf;
 }
 
 int Font::load(const char *fname, int index, int hlead, int vlead)
@@ -509,6 +509,7 @@ int Font::load(const char *fname, int index, int hlead, int vlead)
 	size_t len;
 	U7object font_obj(fname, index);
 	font_buf = font_obj.retrieve(len);
+	orig_font_buf = font_buf;
 	if(!strncmp(font_buf,"font",4))	// If it's an IFF archive...
 		font_buf += 8;		// Skip first 8 bytes
 	font_data = new BufferDataSource(font_buf, len);
@@ -552,4 +553,19 @@ void FontManager::remove_font(const char *name)
 Font *FontManager::get_font(const char *name)
 {
 	return fonts[name];
+}
+
+void FontManager::reset()
+{
+#ifndef DONT_HAVE_HASH_MAP
+	hash_map<const char*, Font*, hashstr, eqstr>::iterator i;
+#else
+	std::map<const char*, Font*, ltstr>::iterator i;
+#endif
+
+	for (i=fonts.begin(); i != fonts.end(); ++i) {
+		delete (*i).second;
+	}
+
+	fonts.clear();
 }
