@@ -370,15 +370,12 @@ int Game_object::find_nearby
 					if (obj->get_shapenum() != shapenum)
 						continue;
 					}
-#if 0
-				else if (shapenum == c_any_shapenum &&
-							!obj->get_npc_num() &&
-						 obj != gwin->get_main_actor())
+				if (qual != c_any_qual && obj->get_quality() 
+								!= qual)
 					continue;
-#endif
-				if (qual != c_any_qual && obj->get_quality() != qual)
-					continue;
-				if ((mask || shapenum == -1) && 
+				if ((mask || shapenum == -1 ||
+					// c_any_shape added 6/17/01 for SI.
+				    shapenum == c_any_shapenum) && 
 						!Check_mask(gwin, obj, mask))
 					continue;
 				if (framenum !=  c_any_framenum &&

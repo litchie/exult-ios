@@ -1,3 +1,8 @@
+2001-06-17  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs.cc: Use Check_mask() if shapenum=c_any_shapenum.  Can now
+	use Erstam's machine.
+
 2001-06-16  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode/compiler/Makefile.am: only clean uclex.cc/ucparse.cc on maintainer-clean (thanks to Robert Bihlmeyer)
 
