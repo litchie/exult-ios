@@ -561,10 +561,16 @@ void Animated_object::handle_event
 		}
 	if (frames > 1)		// Going through frames?
 		{
+/*
 					// Get next frame.
 		int framenum = get_framenum() + 1;
 		if (framenum >= frames)	// End of cycle?
 			framenum = 0;
+*/
+		
+					// Testing -WJP
+		int framenum = (curtime / 100) % frames;
+		
 		set_frame(framenum);	// Set new frame.
 		}
 	else
