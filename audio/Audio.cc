@@ -389,7 +389,10 @@ Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
 	config->value("config/audio/effects/enabled",s,"---");
 	effects_enabled = (s!="no");
 					// Collection of .wav's?
-	config->value("config/audio/effects/waves", s, "---");
+	string gametitle = Game::get_game_type() == BLACK_GATE ?
+		"blackgate" : "serpentisle";
+	string d = "config/disk/game/" + gametitle + "/waves";
+	config->value(d.c_str(), s, "---");
 	if (s != "---")
 		{
 		cerr << "Digital SFX's file specified: " << s << endl;
@@ -720,22 +723,27 @@ Audio	*Audio::get_ptr(void)
 	return self;
 }
 
-void	Audio::play_sound_effect (int num)
+/*
+ *	This returns a 'unique' ID, but only for .wav SFX's (for now).
+ */
+AudioID	Audio::play_sound_effect (int num)
 {
-	if (!audio_enabled || !effects_enabled) return;
+	if (!audio_enabled || !effects_enabled) return AudioID(0, 0);
 
 	// Where sort of sfx are we using????
 	if (sfx_file != 0)		// Digital .wav's?
-		play_wave_sfx(num);
+		return play_wave_sfx(num);
 	else if (midi != 0) 
+		{
 		midi->start_sound_effect(num);
-
+		return AudioID(0, 0);
+		}
 }
 
 /*
  *	Play a .wav format sound effect.
  */
-void Audio::play_wave_sfx
+AudioID Audio::play_wave_sfx
 	(
 	int num
 	)
@@ -744,7 +752,7 @@ void Audio::play_wave_sfx
 	const int max_cached = 12;	// Max. we'll cache.
 
 	if (!mixer)
-		return;
+		return AudioID(0, 0);
 	cerr << "Play_wave_sfx:  " << num;
 #if 0
         if (Game::get_game_type() == BLACK_GATE)
@@ -754,7 +762,7 @@ void Audio::play_wave_sfx
 	if (num < 0 || num >= sfx_file->number_of_objects())
 		{
 		cerr << "SFX " << num << " is out of range" << endl;
-		return;
+		return AudioID(0, 0);
 		}
 					// First see if we have it already.
 	SFX_cached *each = sfxs, *prev = 0;
@@ -773,8 +781,7 @@ void Audio::play_wave_sfx
 			each->next = sfxs;
 			sfxs = each;
 			}
-		mixer->play(each->buf, each->len);
-		return;
+		return mixer->play(each->buf, each->len);
 		}
 	if (cnt == max_cached)		// Hit our limit?  Remove last.
 		{
@@ -790,24 +797,23 @@ void Audio::play_wave_sfx
 	if (!SDL_LoadWAV_RW(rwsrc, 1, &src, &buf, &len))
 		{
 		cerr << "Couldn't play sfx '" << num << "'" << endl;
-		return;
+		return AudioID(0, 0);
 		}
 	SDL_AudioCVT cvt;		// Got to convert.
 	if (SDL_BuildAudioCVT(&cvt, src.format, src.channels, src.freq,
 			actual.format, actual.channels, actual.freq) < 0)
 		{
 		cerr << "Couldn't convert wave data" << endl;
-		return;
+		return AudioID(0, 0);
 		}
 	cvt.len = len;
 	cvt.buf = new uint8[len*cvt.len_mult];
 	memcpy(cvt.buf, buf, len);
 	SDL_FreeWAV(buf);
 	SDL_ConvertAudio(&cvt);
-	if(mixer)
-		mixer->play(cvt.buf,cvt.len_cvt);
 					// Cache at head of chain.
 	sfxs = new SFX_cached(num, cvt.buf, cvt.len_cvt, sfxs);
+	return mixer->play(cvt.buf,cvt.len_cvt);
 	}
 
 
