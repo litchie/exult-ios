@@ -74,14 +74,6 @@ private:
 	Actor **npcs;			// List of NPC's + the Avatar.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];
-					// Get/create objs. list for a chunk.
-	Chunk_object_list *get_objects(int cx, int cy)
-		{
-		Chunk_object_list *list = objects[cx][cy];
-		if (!list)
-			list = objects[cx][cy] = new Chunk_object_list;
-		return (list);
-		}
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
 	int chunkx, chunky;		// Chunk coord. of window within world.
 	int brightness;			// Palette brightness.
@@ -98,6 +90,12 @@ public:
 		{ return win->get_width(); }
 	int get_height()
 		{ return win->get_height(); }
+	int get_chunkx()		// Get window offsets.
+		{ return chunkx; }
+	int get_chunky()
+		{ return chunky; }
+	Usecode_machine *get_usecode()
+		{ return usecode; }
 	Rectangle get_win_rect()	// Get window's rectangle.
 		{ return Rectangle(0, 0, win->get_width(), win->get_height());}
 					// Clip rectangle to window's.
@@ -108,20 +106,40 @@ public:
 		}
 	Image_window *get_win()
 		{ return win; }
+	Time_queue *get_tqueue()
+		{ return tqueue; }
 	int get_hour()			// Get current time.
 		{ return clock.get_hour(); }
 	int get_minute()
 		{ return clock.get_minute(); }
-  Image_window *get_shapewin()
-    { return shapewin; }
-  Image_window *get_win(Window xwin) {
+					// Get/create objs. list for a chunk.
+	Chunk_object_list *get_objects(int cx, int cy)
+		{
+		Chunk_object_list *list = objects[cx][cy];
+		if (!list)
+			list = objects[cx][cy] = new Chunk_object_list;
+		return (list);
+		}
+	Image_window *get_shapewin()
+    		{ return shapewin; }
+  	Image_window *get_win(Window xwin) {
 		if (shapewin && xwin == shapewin->get_win())
 			return shapewin;
 		else
 			return win;
-  }
+  		}
 	Actor *get_main_actor()
 		{ return main_actor; }
+	int check_main_actor_inside()	// See if main actor moved in/out-side.
+		{
+		if (main_actor_inside != find_roof(main_actor->get_cx(),
+						main_actor->get_cy()))
+			{
+			main_actor_inside = !main_actor_inside;
+			return 1;
+			}
+		return 0;
+		}
 	Actor *get_npc(int npc_num)
 		{ return npc_num < num_npcs ? npcs[npc_num] : 0; }
 	int get_num_npcs()
@@ -262,9 +280,11 @@ public:
 	void view_left();		// Move view left by 1 chunk.
 	void view_down();		// Move view down.
 	void view_up();			// Move view up.
-					// Repaint actor after moving it.
-	void repaint_actor(Actor *actor, Rectangle& oldrect);
+					// Repaint sprite after moving it.
+	void repaint_sprite(Sprite *sprite, Rectangle& oldrect);
+#if 0
 	void animate(timeval& time);	// Do animation at given time.
+#endif
 					// Start moving actor.
 	void start_actor(int winx, int winy);
 	void stop_actor();		// Stop moving the actor.

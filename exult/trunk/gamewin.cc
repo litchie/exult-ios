@@ -989,17 +989,17 @@ void Game_window::view_up
 	}
 
 /*
- *	Repaint an actor after it has been moved.
+ *	Repaint a sprite after it has been moved.
  */
 
-void Game_window::repaint_actor
+void Game_window::repaint_sprite
 	(
-	Actor *actor,
+	Sprite *sprite,
 	Rectangle& oldrect		// Where it used to be.
 	)
 	{
 					// Get new rectangle.
-	Rectangle newrect = get_shape_rect(actor);
+	Rectangle newrect = get_shape_rect(sprite);
 					// Merge them.
 	Rectangle sum = oldrect.add(newrect);
 	sum.x -= 4;			// Make a little bigger.
@@ -1011,7 +1011,7 @@ void Game_window::repaint_actor
 	if (sum.w > 0 && sum.h > 0)	// Watch for negatives.
 		paint(sum.x, sum.y, sum.w, sum.h);
 	}
-
+#if 0	/* ++++++++Going away. */
 /*
  *	Animation.
  */
@@ -1067,7 +1067,7 @@ void Game_window::animate
 			repaint_all = 1;// Changed, so paint everything.
 			}
 		else
-			repaint_actor(main_actor, oldrect);
+			repaint_sprite(main_actor, oldrect);
 		}
 	else if (blocked)
 		main_actor->stop();	// Not sure about this.
@@ -1087,7 +1087,7 @@ void Game_window::animate
 							sx, sy, frame);
 					// Skip if repainting whole screen.
 			if (!repaint_all)
-				repaint_actor(actor, oldrect);
+				repaint_sprite(actor, oldrect);
 			}
 		else if (blocked)
 			actor->stop();	// Is this okay?
@@ -1095,6 +1095,7 @@ void Game_window::animate
 	if (repaint_all)
 		paint();		// Paint whole window now.
 	}
+#endif
 
 /*
  *	Start moving the actor.
@@ -1108,8 +1109,8 @@ void Game_window::start_actor
 	if (mode != normal)
 		return;
 					// Move every 1/8 sec.
-	main_actor->start(chunkx*chunksize + winx, chunky*chunksize + winy,
-						125000);
+	main_actor->start(this,
+		chunkx*chunksize + winx, chunky*chunksize + winy, 125000);
 	}
 
 /*

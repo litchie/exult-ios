@@ -11,7 +11,7 @@
  *	Animation.
  */
 
-void Game_clock::activate
+void Game_clock::handle_event
 	(
 	timeval curtime,		// Current time of day.
 	long udata			// Ignored.

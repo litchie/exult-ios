@@ -35,15 +35,15 @@ void Time_queue::add
 					// Before head of chain?
 			if (prev == head)
 				{
-				newent->next = head;
-				newent->prev = head->prev;
 				head = newent;
-				return;
+				prev = prev->prev;
+				break;
 				}
 			else
 				prev = prev->prev;
 		newent->next = prev->next;
 		newent->prev = prev;
+		prev->next->prev = newent;
 		prev->next = newent;
 		}
 	}
@@ -61,7 +61,7 @@ void Time_queue::activate0
 	do
 		{
 		Queue_entry *ent = head;
-		ent->handler->activate(curtime, ent->udata);
+		ent->handler->handle_event(curtime, ent->udata);
 					// Remove head of chain.
 		if (head == head->next)
 			head = 0;
