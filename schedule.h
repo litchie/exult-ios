@@ -319,6 +319,9 @@ class Sew_schedule : public Schedule
 	Game_object *chair;		// In front of spinning wheel.
 	Game_object *spindle;		// Spindle of thread.
 	Game_object *loom;
+	Game_object *cloth;
+	Game_object *work_table, *wares_table;
+	int sew_clothes_cnt;
  	enum {
 		get_wool,
 		sit_at_wheel,
@@ -326,11 +329,17 @@ class Sew_schedule : public Schedule
 		get_thread,
 		weave_cloth,
 		get_cloth,
-		sew_clothes
+		to_work_table,
+		set_to_sew,
+		sew_clothes,
+		get_clothes,
+		display_clothes,
+		done
 	} state;
 public:
 	Sew_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
+	virtual void ending(int newtype);// Switching to another schedule.
 	};
 
 /*

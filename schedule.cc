@@ -1171,7 +1171,8 @@ void Waiter_schedule::ending
 Sew_schedule::Sew_schedule
 	(
 	Actor *n
-	) : Schedule(n), state(get_wool), spindle(0)
+	) : Schedule(n), state(get_wool), spindle(0), cloth(0),
+	    sew_clothes_cnt(0)
 	{
 	int shnum = 653;
 	bale = npc->find_closest(&shnum, 1);
@@ -1181,6 +1182,10 @@ Sew_schedule::Sew_schedule
 	spinwheel = npc->find_closest(&shnum, 1);
 	shnum = 261;
 	loom = npc->find_closest(&shnum, 1);
+	shnum = 971;
+	work_table = npc->find_closest(&shnum, 1);
+	shnum = 890;
+	wares_table = npc->find_closest(&shnum, 1);
 	}
 
 /*
@@ -1197,6 +1202,13 @@ void Sew_schedule::now_what
 		{
 	case get_wool:
 		{
+		if (spindle)		// Clean up any remainders.
+			spindle->remove_this();
+		if (cloth)
+			cloth->remove_this();
+		npc->remove_quantity(2, 654, c_any_qual, c_any_framenum);
+		npc->remove_quantity(2, 851, c_any_qual, c_any_framenum);
+		cloth = spindle = 0;
 		if (!bale)		// Just skip this step.
 			{
 			state = sit_at_wheel;
@@ -1246,14 +1258,14 @@ void Sew_schedule::now_what
 		spindle = 0;
 		if (!loom)		// No loom found?
 			{
-			state = sew_clothes;
+			state = get_wool;
 			break;
 			}
 		Astar *path = new Astar();
 					// Get to within 1 tile.
 		Actor_pathfinder_dist_client cost(1);
 		Tile_coord lpos = loom->get_abs_tile_coord() +
-						Tile_coord(-1, 1, 0);
+						Tile_coord(-1, 0, 0);
 		if (path->NewPath(npcpos, lpos, &cost))
 			npc->set_action(new Sequence_actor_action(
 				new Path_walking_actor_action(path),
@@ -1262,7 +1274,155 @@ void Sew_schedule::now_what
 								4, 200)));
 		else
 			delete path;
+		state = get_cloth;
+		break;
+		}
+	case get_cloth:
+		{
+		Tile_coord t = loom->find_unblocked_tile(1);
+		if (t.tx != -1)		// Space to create it?
+			{
+			cloth = new Ireg_game_object(851, rand()%2, 0, 0);
+			cloth->move(t);
+			gwin->add_dirty(cloth);
+			npc->set_action(
+				new Pickup_actor_action(cloth, 250));
+			}
+		state = to_work_table;
+		break;
+		}
+	case to_work_table:
+		{
+		if (!work_table)
+			{
+			state = get_wool;
+			break;
+			}
+		Astar *path = new Astar();
+					// Get to within 1 tile.
+		Actor_pathfinder_dist_client cost(1);
+		Tile_coord tpos = work_table->get_abs_tile_coord() +
+						Tile_coord(1, -2, 0);
+					// Find where to put cloth.
+		Rectangle foot = work_table->get_footprint();
+		Shape_info& info = gwin->get_info(work_table);
+		Tile_coord cpos(foot.x + foot.w/2, foot.y + foot.h/2,
+			work_table->get_lift() + info.get_3d_height());
+		if (path->NewPath(npcpos, tpos, &cost))
+			npc->set_action(new Sequence_actor_action(
+				new Path_walking_actor_action(path),
+				new Face_object_actor_action(
+						work_table, 250),
+				new Pickup_actor_action(cloth, cpos, 250)));
+		else
+			delete path;
+		state = set_to_sew;
+		break;
+		}
+	case set_to_sew:
+		{
+		Game_object *shears = npc->get_readied(Actor::lhand);
+		if (shears && shears->get_shapenum() != 698)
+			{		// Something's not right.
+			shears->remove_this();
+			shears = 0;
+			}
+		if (!shears)
+			{		// Shears on table?
+			Game_object_vector vec;
+			if (npc->find_nearby(vec, 698, 3, 0))
+				{
+				shears = vec[0];
+				gwin->add_dirty(shears);
+				shears->remove_this(1);
+				}
+			else
+				shears = new Ireg_game_object(698, 0, 0, 0);
+			npc->add_readied(shears, Actor::lhand);
+			}
 		state = sew_clothes;
+		sew_clothes_cnt = 0;
+		break;
+		}
+	case sew_clothes:
+		{
+		int dir = npc->get_direction(cloth);
+		char frames[5];
+		int nframes = npc->get_attack_frames(dir, frames);
+		npc->set_action(new Frames_actor_action(frames, nframes));
+		sew_clothes_cnt++;
+		if (sew_clothes_cnt > 1 && sew_clothes_cnt < 5)
+			{
+			gwin->add_dirty(cloth);
+			int num_cloth_frames = gwin->get_shape_num_frames(851);
+			cloth->set_frame(rand()%num_cloth_frames);
+			gwin->add_dirty(cloth);
+			}
+		else if (sew_clothes_cnt == 5)
+			{
+			gwin->add_dirty(cloth);
+			Tile_coord pos = cloth->get_abs_tile_coord();
+			cloth->remove_this(1);
+					// Top or pants.
+			int shnum = rand()%2 ? 738 : 249;
+			cloth->set_shape(shnum);
+			int nframes = gwin->get_shape_num_frames(shnum);
+			cloth->set_frame(rand()%nframes);
+			cloth->move(pos);
+			gwin->add_dirty(cloth);
+			state = get_clothes;
+			}
+		break;
+		}
+	case get_clothes:
+		{
+		Game_object *shears = npc->get_readied(Actor::lhand);
+		Tile_coord pos = cloth->get_abs_tile_coord();
+		npc->set_action(new Sequence_actor_action(
+				new Pickup_actor_action(cloth, 250),
+				new Pickup_actor_action(shears, pos, 250)));
+		state = display_clothes;
+		break;
+		}
+	case display_clothes:
+		{
+		state = done;
+		if (!wares_table)
+			{
+			cloth->remove_this();
+			break;
+			}
+		Astar *path = new Astar();
+					// Get to within 1 tile.
+		Actor_pathfinder_dist_client cost(1);
+		Tile_coord tpos = wares_table->get_abs_tile_coord() +
+						Tile_coord(1, -2, 0);
+					// Find where to put cloth.
+		Rectangle foot = wares_table->get_footprint();
+		Shape_info& info = gwin->get_info(wares_table);
+		Tile_coord cpos(foot.x + rand()%foot.w, foot.y + rand()%foot.h,
+			wares_table->get_lift() + info.get_3d_height());
+		if (path->NewPath(npcpos, tpos, &cost))
+			npc->set_action(new Sequence_actor_action(
+				new Path_walking_actor_action(path),
+				new Pickup_actor_action(cloth, cpos, 250)));
+		else
+			delete path;
+		cloth = 0;			// Leave it be.
+		break;
+		}
+	case done:				// Just put down clothing.
+		{
+		state = get_wool;
+		Game_object_vector vec;		// Don't create too many.
+		int cnt = npc->find_nearby(vec, 738, 4, 0);
+		cnt += npc->find_nearby(vec, 249, 4, 0);
+		if (cnt > 5)
+			{
+			Game_object *obj = vec[rand()%cnt];
+			gwin->add_dirty(obj);
+			obj->remove_this();
+			}
 		break;
 		}
 	default:			// Back to start.
@@ -1272,6 +1432,27 @@ void Sew_schedule::now_what
 	npc->start(250, 100);		// Back in queue.
 	}
 
+/*
+ *	Sewing schedule is done.
+ */
+
+void Sew_schedule::ending
+	(
+	int new_type			// New schedule.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Remove shears.
+	Game_object *obj = npc->get_readied(Actor::lhand);
+	if (obj)
+		obj->remove_this();
+	if (cloth)			// Don't leave cloth lying around.
+		{
+		if (!cloth->get_owner())
+			gwin->add_dirty(cloth);
+		cloth->remove_this();
+		}
+	}
 
 /*
  *	Modify goal to walk off the screen.
