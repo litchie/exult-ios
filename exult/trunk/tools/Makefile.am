@@ -8,7 +8,7 @@ UCC=
 endif
 
 if BUILD_TOOLS
-noinst_PROGRAMS = expack wuc wud mklink rip ucdump $(UCC)
+noinst_PROGRAMS = expack wuc wud mklink rip ucdump shp2pcx $(UCC)
 endif
 
 expack_SOURCES = \
@@ -28,6 +28,8 @@ mklink_SOURCES = mklink.c
 rip_SOURCES = rip.c
 
 ucdump_SOURCES = ucdump.c
+
+shp2pcx_SOURCES = shp2pcx.cc
 
 ucc_SOURCES = \
 	ucclex.l \
