@@ -79,7 +79,7 @@ EXTRA_DIST=	\
 if GIMP_PLUGIN
 install-exec-local:
 	install -d $(DESTDIR)$(GIMP_PLUGIN_PREFIX)
-	install -c $(DESTDIR)$(GIMP_PLUGINS) $(GIMP_PLUGIN_PREFIX)
+	install -c $(GIMP_PLUGINS) $(DESTDIR)$(GIMP_PLUGIN_PREFIX)
 else
 install-exec-local:
 endif
