@@ -27,8 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#ifdef USE_EXULTSTUDIO
-
 #include <unistd.h>
 #include <iostream>			/* For debugging msgs. */
 #include "servemsg.h"
@@ -61,6 +59,7 @@ int Send_data
 	int datalen
 	)
 	{
+#ifdef USE_EXULTSTUDIO
 	unsigned char buf[maxlength + hdrlength];
 	buf[0] = magic&0xff;		// Store magic (low-byte first).
 	buf[1] = (magic>>8)&0xff;
@@ -71,6 +70,7 @@ int Send_data
 	int len = datalen + hdrlength;
 
 	return (write(socket, buf, len) == len ? 0 : -1);
+#endif  /* USE_EXULTSTUDIO */
 	}
 
 /*
@@ -87,6 +87,7 @@ int Receive_data
 	int datalen
 	)
 	{
+#ifdef USE_EXULTSTUDIO
 	unsigned char buf[hdrlength];
 	int len = read(socket, buf, 2);	// Get magic.
 	if (!len)			// Closed?
@@ -125,6 +126,7 @@ int Receive_data
 		return -1;
 		}
 	return datalen;
+#endif  /* USE_EXULTSTUDIO */
 	}
 
 
@@ -144,6 +146,4 @@ bool wait_for_response(int socket, int ms)
 }
 
 }
-
-#endif	/* USE_EXULTSTUDIO */
 
