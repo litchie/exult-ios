@@ -1,3 +1,8 @@
+2002-03-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/studio.cc,Makefile.am: Start using 'exult.cfg' to get paths,
+	  and to save/restore window size.
+
 2002-03-08  Ryan Nunn  <triforce@merlin.net.au>
 	* audio/xmidi.cc : A MSVCism
 
