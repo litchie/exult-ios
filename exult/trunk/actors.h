@@ -330,7 +330,7 @@ class Npc_actor : public Actor
 protected:
 	unsigned char num_schedules;	// # entries below.
 	Schedule_change *schedules;	// List of schedule changes.
-	short alignment;		// 'Feelings' towards Avatar.
+	short alignment;		// 'Feelings' towards Avatar. 0==good.
 public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
 					// Read from file.

@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effects.h"
 #include "Zombie.h"
 
+int Cloud::randcnt = 0;
+
 /*
  *	Some special effects may not need painting.
  */
@@ -483,7 +485,6 @@ inline void Cloud::next
 	int w, int h			// Dims. of window.
 	)
 	{
-	static int cnt = 0;
 	if (curtime < start_time)
 		return;			// Not yet.
 					// Get top-left world pos.
@@ -495,10 +496,10 @@ inline void Cloud::next
 	if (count <= 0)			// Time to restart?
 		{
 					// Set start time randomly.
-		start_time = curtime + 2000*cnt + rand()%2000;
+		start_time = curtime + 2000*randcnt + rand()%2000;
+		randcnt = (randcnt + 1)%4;
+		start_time = SDL_GetTicks() + 2000*randcnt + rand()%500;
 cout << "Cloud: start_time = " << start_time << endl;
-		cnt = (cnt + 1)%4;
-		start_time = SDL_GetTicks() + 2000*cnt + rand()%500;
 		count = max_count;
 		frame = rand()%gwin->get_sprite_num_frames(CLOUD);
 		int x, y;		// Get screen pos.
