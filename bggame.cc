@@ -47,13 +47,16 @@ using std::strlen;
 using std::toupper;
 using std::snprintf;
 
-
 enum
 {
 	ultima_text_shp = 0x0D,
 	butterfly_shp = 0x0E,
 	lord_british_shp = 0x11,
-	trees_shp = 0x12
+	trees_shp = 0x12,
+	
+	guardian_mouth_shp = 0x1E,
+	guardian_forehead_shp = 0x1F,
+	guardian_eyes_shp = 0x20
 };
 
 enum
@@ -436,11 +439,13 @@ void BG_Game::scene_lord_british()
 #define	BUTTERFLY_SUB_FRAMES	3
 
 #define	BUTTERFLY(x,y,frame,delay)	do { \
-		win->get(backup, (x) - butterfly->get_xleft(), (y) - butterfly->get_yabove());	\
-		gwin->paint_shape(x, y, shapes.get_shape(butterfly_shp, frame));	\
+		win->get(backup, topx + (x) - butterfly->get_xleft(),	\
+				topy + (y) - butterfly->get_yabove());	\
+		gwin->paint_shape(topx + x, topy + y, shapes.get_shape(butterfly_shp, frame));	\
 		win->show();	\
 		WAITDELAY(delay);	\
-		win->put(backup, (x) - butterfly->get_xleft(), (y) - butterfly->get_yabove());	\
+		win->put(backup, topx + (x) - butterfly->get_xleft(),	\
+				topy + (y) - butterfly->get_yabove());	\
 		} while(0)
 
 static int butterfly_x[] =
@@ -508,7 +513,7 @@ void BG_Game::scene_butterfly()
 
 	// Finally fade in
 	pal.fade_in(c_fade_in_time);
-	WAITDELAY(12500);
+//	WAITDELAY(12500);
 
 	// clear 'Exult' text
 	gwin->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
@@ -663,7 +668,6 @@ void BG_Game::scene_guardian()
 		FORGET_OBJECT(cbackup);
 
 		// Actual appearance
-		// sh. 0x1E = mouth, sh. 0x1F = forehead, sh. 0x20 = eyes
 
 		// prepare Guardian speech
 		Font *font = fontManager.get_font("END3_FONT");
@@ -679,14 +683,14 @@ void BG_Game::scene_guardian()
 		backup3 = win->create_buffer(gwin->get_width(),txt_height);
 		win->get(backup3, 0, txt_ypos);
 		// mouth
-		s = shapes.get_shape(0x1E,0);
+		s = shapes.get_shape(guardian_mouth_shp,0);
 		backup = win->create_buffer(s->get_width(), s->get_height());
 		cbackup = win->create_buffer(s->get_width(), s->get_height());
 		win->get(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
 		gwin->paint_shape(centerx,centery,s); // frame 0 is background
 		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
 		// eyes
-		s2 = shapes.get_shape(0x20,0);
+		s2 = shapes.get_shape(guardian_eyes_shp,0);
 		backup2 = win->create_buffer(s2->get_width(), s2->get_height());
 		cbackup2 = win->create_buffer(s2->get_width(), s2->get_height());
 		win->get(cbackup2, centerx - s2->get_xleft(),
@@ -695,7 +699,7 @@ void BG_Game::scene_guardian()
 		win->get(backup2, centerx - s2->get_xleft(),
 			 centery-12 - s2->get_yabove());
 		// forehead
-		s3 = shapes.get_shape(0x1F,0);
+		s3 = shapes.get_shape(guardian_forehead_shp,0);
 		cbackup3 = win->create_buffer(s3->get_width(), s3->get_height());
 		win->get(cbackup3, centerx - s3->get_xleft(),
 			 centery-49 - s3->get_yabove());
@@ -710,11 +714,11 @@ void BG_Game::scene_guardian()
 			i=0;
 			do {
 				// convoluted mess to get eye movement acceptable
-				gwin->paint_shape(centerx,centery-12, shapes.get_shape(0x20,
+				gwin->paint_shape(centerx,centery-12, shapes.get_shape(guardian_eyes_shp,
 					1 + 3*((i/12) % 4) + ((i%50>47&&(i/12)%4!=3)?i%50-47:0)));
 		
 				gwin->paint_shape(centerx,centery,
-						  shapes.get_shape(0x1E,1 + i % 13));
+						  shapes.get_shape(guardian_mouth_shp,1 + i % 13));
 		
 				if (i == 0) {
 					txt_ptr = next_txt;
