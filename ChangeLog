@@ -1,3 +1,7 @@
+2002-06-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Configuration.*, exult.cc: added -c option for alternate config files
+	  (quite useful if you have multiple data dirs or languages of BG/SI)
+
 2002-06-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* singles.h, shapeid.cc: added pal = gwin->get_pal() to singles
 	* *game.*, txtscroll.*: got rid of extra Palette objects

@@ -35,6 +35,7 @@ public:
 	~Configuration() { if(xmltree!=0) delete xmltree; };
 	
 	bool	read_config_file(const std::string input_filename, const std::string root=std::string());
+	bool	read_abs_config_file(const std::string input_filename, const std::string root=std::string());
 	
 	bool	read_config_string(const std::string &);
 	
