@@ -1631,6 +1631,22 @@ void Actor::reduce_health
 		}
 	if (Actor::is_dying())
 		{
+#if 1	/* ++++++This seems much better!! */
+		if (Game::get_game_type() == SERPENT_ISLE && usecode >= 0 &&
+					// SI 'tournament'?
+		    get_flag(Obj_flags::si_tournament))
+			{
+			gwin->get_usecode()->call_usecode(
+				usecode, this, Usecode_machine::died) != -1;
+					// Still 'tournament'?  Set hp = 1.
+			if (get_flag(Obj_flags::si_tournament) &&
+			    get_property((int) health) < 1)
+				set_property((int) health, 1);
+			}
+		else
+			die();
+
+#else
 		if (Game::get_game_type() == SERPENT_ISLE && usecode >= 0)
 			{
 			bool was_killable = get_flag(Obj_flags::si_killable);
@@ -1649,6 +1665,7 @@ void Actor::reduce_health
 			}
 		else			// Black-gate, or monsters.
 			die();
+#endif
 		}
 	else if (val < 0 && !get_flag(Obj_flags::asleep))
 		set_flag(Obj_flags::asleep);
@@ -3464,8 +3481,8 @@ Monster_actor::Monster_actor
 	    animator(0)
 	{
 	init();
-	if (Game::get_game_type() == SERPENT_ISLE)
-		set_flag(Obj_flags::si_killable);
+//	if (Game::get_game_type() == SERPENT_ISLE)
+//		set_flag(Obj_flags::si_killable);
 	}
 
 /*
