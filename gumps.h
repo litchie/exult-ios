@@ -204,16 +204,21 @@ class Actor_gump_object : public Gump_object
 	Heart_gump_button *heart_button;// For bringing up stats.
 	Disk_gump_button *disk_button;	// For bringing up 'save' box.
 //+++++++Move this info to Actor!!
-	Actor_gump_spot spots[8];	// Where things can go.
-	enum Spots {			// Index of each spot.
+	Actor_gump_spot spots[12];	// Where things can go.
+	enum Spots {			// Index of each spot, starting at
+					//   upper, rt., going clkwise.
 		head = 0,
-		back = 1,
-		lhand = 2,
-		rhand = 3,
-		legs = 4,
-		feet = 5,
-		lfinger = 6,
-		rfinger = 7
+		chest = 1,
+		belt = 2,
+		lhand = 3,
+		lfinger = 4,
+		legs = 5,
+		feet = 6,
+		rfinger = 7,
+		rhand = 8,
+		arms = 9,
+		neck = 10,
+		back = 11
 		};
 					// Find index of closest spot.
 	int find_closest(int mx, int my, int only_empty = 0);

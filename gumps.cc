@@ -501,14 +501,19 @@ Actor_gump_object::Actor_gump_object
 	heart_button = new Heart_gump_button(this, heartx, hearty);
 	disk_button = new Disk_gump_button(this, diskx, disky);
 					// Set spot locations.
+					// +++++Should be static.
 	spots[(int) head].x = 114; spots[(int) head].y = 10;
-	spots[(int) back].x = 115; spots[(int) back].y = 24;
+	spots[(int) chest].x = 115; spots[(int) chest].y = 24;
+	spots[(int) belt].x = 115; spots[(int) belt].y = 37;
 	spots[(int) lhand].x = 115; spots[(int) lhand].y = 55;
-	spots[(int) rhand].x = 37; spots[(int) rhand].y = 56;
+	spots[(int) lfinger].x = 115; spots[(int) lfinger].y = 71;
 	spots[(int) legs].x = 114; spots[(int) legs].y = 85;
 	spots[(int) feet].x = 76; spots[(int) feet].y = 98;
-	spots[(int) lfinger].x = 116; spots[(int) lfinger].y = 70;
 	spots[(int) rfinger].x = 35; spots[(int) rfinger].y = 70;
+	spots[(int) rhand].x = 37; spots[(int) rhand].y = 56;
+	spots[(int) arms].x = 37; spots[(int) arms].y = 37;
+	spots[(int) neck].x = 37; spots[(int) neck].y = 24;
+	spots[(int) back].x = 37; spots[(int) back].y = 11;
 					// Store objs. in their spots.
 	Game_object *last_object = container->get_last_object();
 	if (!last_object)

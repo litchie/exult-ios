@@ -80,6 +80,30 @@ int Time_queue::remove
 	}
 
 /*
+ *	See if a given entry is in the queue.
+ *
+ *	Output:	1 if found, else 0.
+ */
+
+int Time_queue::find
+	(
+	Time_sensitive *obj
+	)
+	{
+	if (!head)
+		return (0);		// Empty.
+	Queue_entry *ent = head;
+	do
+		{
+		if (ent->handler == obj)// Found it?
+			return (1);
+		ent = ent->next;
+		}
+	while (ent != head);
+	return (0);			// Not found.
+	}
+
+/*
  *	Remove & activate entries that are due, starting with head (already
  *	known to be due).
  */

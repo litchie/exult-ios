@@ -168,7 +168,8 @@ void Game_object::move
 	if (!newchunk)
 		return;			// Bad loc.
 					// Remove from old.
-	gwin->get_objects(cx, cy)->remove(this);
+	Chunk_object_list *oldchunk = gwin->get_objects(cx, cy);
+	oldchunk->remove(this);
 	set_lift(newlift);		// Set new values.
 	shape_pos = ((newtx%tiles_per_chunk) << 4) + newty%tiles_per_chunk;
 	newchunk->add(this);		// Updates cx, cy.
@@ -957,6 +958,8 @@ int Container_game_object::drop
 	Game_object *obj
 	)
 	{
+	if (!get_owner())		// Only accept if inside another.
+		return (0);
 	return (add(obj));		// We'll take it.
 	}
 
@@ -1488,6 +1491,22 @@ Sprite::Sprite
 	}
 
 /*
+ *	Move to a new absolute location.
+ */
+
+void Sprite::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Game_object::move(newtx, newty, newlift);
+	chunk = gwin->get_objects(get_cx(), get_cy());
+	}
+
+/*
  *	Stop moving.
  */
 
@@ -1512,8 +1531,6 @@ void Sprite::start
 	int delay			// Delay before starting.
 	)
 	{
-	if (!in_world())
-		return;			// We can't start moving.
 	Game_window *gwin = Game_window::get_game_window();
 	frame_time = speed;
 	Direction dir;			// Gets compass direction.++++++Get

@@ -1577,9 +1577,12 @@ USECODE_INTRINSIC(play_music)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_INTRINSIC(npc_in_party)
-	// NPC in party? (item).
-	Usecode_value u(npc_in_party(get_item(parms[0])));
+USECODE_INTRINSIC(npc_nearby)
+	// NPC nearby? (item).
+	Game_object *npc = get_item(parms[0]);
+	int near = (npc != 0 && npc->get_abs_tile_coord().distance(
+		gwin->get_main_actor()->get_abs_tile_coord()) < 12);
+	Usecode_value u(near);
 	USECODE_RETURN(u);
 }
 
@@ -1922,7 +1925,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(add_party_items), // 0x2c
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x2d UNUSED.
 	USECODE_INTRINSIC_PTR(play_music), // 0x2e
-	USECODE_INTRINSIC_PTR(npc_in_party), // 0x2f
+	USECODE_INTRINSIC_PTR(npc_nearby), // 0x2f
 	USECODE_INTRINSIC_PTR(find_nearby_avatar), // 0x30
 	USECODE_INTRINSIC_PTR(is_npc),  // 0x31
 	USECODE_INTRINSIC_PTR(display_runes), // 0x32
