@@ -707,7 +707,7 @@ Shape_frame *Shape::read
 		shapes = shapes1;
 		if (count1 != -1 && shapenum >= count1)
 		{
-			std::cerr << "Shape num out of range: shapenum" << std::endl;
+			std::cerr << "Shape num out of range: " << shapenum << std::endl;
 			return 0;
 		}
 
