@@ -388,15 +388,31 @@ static int Swap_weapons
 
 void Combat_schedule::start_strike
 	(
-	Rectangle& npcrect, 
-	Rectangle& opprect	// Npc, opponent rectangles.
 	)
 	{
 	Game_object *opponent = npc->get_target();
+	Rectangle npctiles = npc->get_footprint(),
+		  opptiles = opponent->get_footprint();
+	Rectangle stiles = npctiles,	// Get copy for weapon range.
+		  ptiles = npctiles;
+					// Get difference in lift.
+	int dz = npc->get_lift() - opponent->get_lift();
+	if (dz < 0)
+		dz = -dz;
 					// Close enough to strike?
-	if (strike_range && (!projectile_range ||
-		npcrect.enlarge(strike_range).intersects(opprect)))
+	if (strike_range && dz < 5 &&	// Same floor?
+		stiles.enlarge(strike_range).intersects(opptiles))
 		state = strike;
+	else if (dz >= 5 ||		// FOR NOW, since is_straight_path()
+					//   doesn't check z-coord.
+		 !projectile_range ||
+					// Enlarge to projectile range.
+		 !ptiles.enlarge(projectile_range).intersects(opptiles))
+		{
+		state = approach;
+		npc->set_target(0);	// Look for new opponent.
+		npc->start(200, 200);
+		}
 	else
 		{
 		Game_object *aobj;
@@ -408,16 +424,16 @@ void Combat_schedule::start_strike
 			Swap_weapons(npc);
 			set_weapon_info();
 			state = approach;
+			npc->set_target(0);
 			npc->start(200, 500);
 			return;
 			}
-		Rectangle foot = npc->get_footprint();
 		Tile_coord pos = npc->get_abs_tile_coord();
 		Tile_coord opos = opponent->get_abs_tile_coord();
 		if (opos.tx < pos.tx)	// Going left?
-			pos.tx = foot.x;
+			pos.tx = npctiles.x;
 		if (opos.ty < pos.ty)	// Going north?
-			pos.ty = foot.y;
+			pos.ty = npctiles.y;
 		if (!Fast_pathfinder_client::is_straight_path(pos, opos))
 			{		// Blocked.  Find another spot.
 			pos.tx += rand()%7 - 3;
@@ -546,23 +562,6 @@ inline int Need_new_opponent
 	}
 
 /*
- *	Get rectangle in tiles.
- */
-
-inline Rectangle Get_tiles
-	(
-	Game_object *obj
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-	Shape_info& info = gwin->get_info(obj);
-					// Get lower-right corner pos.
-	Tile_coord pos = obj->get_abs_tile_coord();
-	int w = info.get_3d_xtiles(), h = info.get_3d_ytiles();
-	return Rectangle(pos.tx - w + 1, pos.ty - h + 1, w, h);
-	}
-
-/*
  *	Use one unit of ammo.
  *
  *	Output:	Actual ammo shape.
@@ -655,24 +654,15 @@ void Combat_schedule::now_what
 		{
 	case approach:
 		if (opponent)
-			{
-			Rectangle npctiles = Get_tiles(npc),
-				  opptiles = Get_tiles(opponent);
-			Rectangle wtiles = npctiles;
-			if (wtiles.enlarge(max_range).intersects(opptiles))
-				{	// Close enough.  ++++Need to parry??
-					// Start strike animation.
-				start_strike(npctiles, opptiles);	
-				break;
-				}
-			}
-		approach_foe();
+			start_strike();
+		else
+			approach_foe();
 		break;
 	case strike:			// He hasn't moved away?
 		state = approach;
 		npc->start(200);	// Back into queue.
-		if (Get_tiles(npc).enlarge(strike_range).intersects(
-						Get_tiles(opponent)))
+		if (npc->get_footprint().enlarge(strike_range).intersects(
+					opponent->get_footprint()))
 			{
 			int dir = npc->get_direction(opponent);
 			npc->add_dirty(gwin);
@@ -801,25 +791,6 @@ void Combat_schedule::ending
 		}
 	}
 
-#if 0
-/*
- *	Set opponent.  (Gets called when you double-click on one.)
- */
-
-void Combat_schedule::set_opponent
-	(
-	Game_object *obj		// Could be a door, too.
-	)
-	{
-	opponent = obj;
-	state = approach;
-			
-	Actor *opp;			// A real battle?
-	if (npc->get_attack_mode() != Actor::flee &&
-	    (opp = dynamic_cast<Actor *>(obj)) != 0)
-		start_battle();			// Play music.
-	}
-#endif
 
 /*
  *	Create duel schedule.
