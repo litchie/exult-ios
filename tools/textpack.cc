@@ -49,7 +49,6 @@ using std::ofstream;
 using std::istream;
 using std::ostream;
 using std::size_t;
-using std::strdup;
 using std::strlen;
 using std::vector;
 
@@ -157,7 +156,7 @@ static void Read_text
 			}
 		if (index >= strings.size())
 			strings.resize(index + 1);
-		strings[index] = strdup(endptr + 1);
+		strings[index] = newstrdup(endptr + 1);
 		}
 	}
 

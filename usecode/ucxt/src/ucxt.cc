@@ -327,7 +327,6 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 	}
 }
 
-
 void usage()
 {
 	cout << "Ultima 7/8 usecode disassembler v0.6.3" << endl

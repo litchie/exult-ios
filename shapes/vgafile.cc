@@ -39,6 +39,7 @@ using std::ifstream;
 using std::ios;
 using std::memcpy;
 using std::memset;
+using std::ostream;
 
 #if 1	/* For debugging. */
 #include <iomanip>
@@ -817,7 +818,7 @@ void Shape::write
 			Write2(out, frame->yabove);
 			Write2(out, frame->ybelow);
 			}
-		out.write(frame->data, frame->datalen);	// The frame data.
+		out.write(reinterpret_cast<char *>(frame->data), frame->datalen);	// The frame data.
 		}
 	if (!flat)
 		{
