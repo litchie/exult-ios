@@ -23,7 +23,11 @@
 #include "ucdata.h"
 #include "ucfunc.h"
 #include <set>
+#ifdef HAVE_SSTREAM
+#include <sstream>
+#else
 #include <strstream>
+#endif
 #include <algorithm>
 #include <iomanip>
 #include "files/utils.h"
@@ -697,7 +701,11 @@ inline unsigned int charnum2uint(const char c)
 // FIXME: Remove the passed &params value. Get it from op._params_parsed
 string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output)
 {
+#ifdef HAVE_SSTREAM
+	std::stringstream str;
+#else
 	std::strstream str;
+#endif
 	str << std::setfill('0') << std::setbase(16);
 	str.setf(ios::uppercase);
 	size_t	len=asmstr.length();
