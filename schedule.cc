@@ -504,7 +504,7 @@ void Talk_schedule::now_what
 
 	// Switch to phase 3 if we are reasonable close
 	if (phase != 0 && phase != 4 &&
-	    npc->distance(gwin->get_main_actor()) < 7)
+	    npc->distance(gwin->get_main_actor()) < 8)
 		phase = 3;
 
 	switch (phase)
@@ -512,7 +512,8 @@ void Talk_schedule::now_what
 	case 0:				// Start by approaching Avatar.
 		{
 		if (npc->distance(gwin->get_main_actor()) > 50)
-			{		// Too far?  Try a little later.
+			{		// Too far?  
+					// Try a little later.
 			npc->start(250, 5000);
 			return;
 			}

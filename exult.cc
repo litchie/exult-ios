@@ -810,6 +810,10 @@ static int Get_click
 					if (chr) *chr = 0;
 					return (1);
 					}
+					// May have been moving before.
+				else if (event.button.button == 3)
+					// Just stop.  Don't get followers!
+					gwin->get_main_actor()->stop();
 				break;
 			case SDL_MOUSEMOTION:
 				Mouse::mouse->move(event.motion.x >> scale, 
