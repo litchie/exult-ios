@@ -788,6 +788,7 @@ void Actor::set_flag
 	int flag
 	)
 	{
+	cout << "Set flag for NPC " << get_npc_num() << " = =" << flag << endl;
 	if (flag >= 0 && flag < 32)
 		flags |= ((unsigned long) 1 << flag);
 	if (flag == asleep)
@@ -821,6 +822,7 @@ void Actor::clear_flag
 	int flag
 	)
 	{
+	cout << "Clear flag for NPC " << get_npc_num() << " = =" << flag << endl;
 	if (flag >= 0 && flag < 32)
 		flags &= ~((unsigned long) 1 << flag);
 	if (flag == asleep)
@@ -875,7 +877,6 @@ int Actor::get_type_flag
 	return (flag >= 0 && flag < 16) ? (type_flags & ((unsigned long) 1 << flag))
 			!= 0 : 0;
 	}
-
 /*
  *	SetFlags
  */
@@ -1521,6 +1522,35 @@ void Main_actor::die
 	gwin->get_usecode()->call_usecode(
 				0x60e, this, Usecode_machine::weapon);
 	}
+
+/*
+ *	Get the shapenum based on skin color and sex
+ */
+int Main_actor::get_shapenum() const
+{
+	if (get_siflag (Actor::petra))
+	{
+		return 658;
+	}
+	else if (get_skin_color() == 0) // WH
+	{
+		return 1028+get_type_flag(Actor::tf_sex);
+	}
+	else if (get_skin_color() == 1) // BN
+	{
+		return 1026+get_type_flag(Actor::tf_sex);
+	}
+	else if (get_skin_color() == 2) // BK
+	{
+		return 1024+get_type_flag(Actor::tf_sex);
+	}
+	else if (get_type_flag(Actor::tf_sex))
+	{
+		return 989;
+	}
+
+	return 721;//ShapeID::get_shapenum();
+}
 
 /*
  *	Create NPC.

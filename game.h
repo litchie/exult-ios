@@ -55,6 +55,16 @@ public:
 	static Game *create_game(const char *identity);
 	static Game *get_game();
 	static Exult_Game get_game_type();
+
+	static const char *get_avname ();
+	static int get_avsex ();
+	static int get_avskin ();
+	static void set_avname (char *name);
+	static void set_avsex (int sex);
+	static void set_avskin (int skin);
+	static void clear_avname ();
+	static void clear_avsex ();
+	static void clear_avskin ();
 	
 	virtual void play_intro() =0;
 	virtual void end_game(bool success) =0;
@@ -102,6 +112,7 @@ public:
 		{ return (136*tiles_per_chunk); }
 	virtual const char * get_extra_shape_file() 
 		{ return "static/endshape.flx"; }
+
 	};
 
 class SI_Game: public Game

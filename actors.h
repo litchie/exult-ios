@@ -87,7 +87,8 @@ protected:
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 	unsigned flags:32;		// 32 flags used in 'usecode'.
 	unsigned siflags:32;	// 32 flags used in 'usecode'.
-	unsigned type_flags:16;	// 16 flags used in movement among other things
+	unsigned type_flags:32;	// 32 flags used in movement among other things
+	int	skin_color;
 	Actor_action *action;		// Controls current animation.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   actor not moving.
@@ -277,7 +278,9 @@ public:
 	virtual int get_siflag(int flag) const;
 	int get_type_flag(int flag) const;
 	void set_type_flags(unsigned short tflags);
-	unsigned short get_type_flags() const
+	int get_skin_color () const { return skin_color; }
+	void set_skin_color (int color) { skin_color = color;}
+	virtual int get_type_flags() const
 		{ return type_flags; }
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return npc_num; }
@@ -391,6 +394,7 @@ public:
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
 	virtual void die();		// We're dead.
+	virtual int get_shapenum() const; 	// Get shape based on sex and color
 	};
 
 /*

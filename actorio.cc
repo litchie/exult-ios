@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string.h>
 #include "gamewin.h"
+#include "game.h"
 #include "actors.h"
 #include "utils.h"
 #include "egg.h"
@@ -94,7 +95,14 @@ Actor::Actor
 	int strength_val = Read1(nfile);
 
 	set_property((int) Actor::strength, strength_val);
-	// set_skin_color ((strength_val << 2) & 0x2);
+	if (num == 0 && (Game::get_game_type() != BLACK_GATE))
+	{
+		if (Game::get_avskin() >= 0 && Game::get_avskin() <= 2)
+			set_skin_color (Game::get_avskin());
+		else
+			set_skin_color ((strength_val << 2) & 0x3);
+	}
+	else set_skin_color (-1);
 	if ((strength_val << 7) & 1) set_siflag (Actor::freeze);
 	
 
@@ -125,7 +133,27 @@ Actor::Actor
 	// Else: ID# (0-4) ???, TempHigh (5-7) and Mat (0), No Spell Casting (1), Zombie (3), TempLow (5-7)
 	int magic_val = Read1(nfile);
 	int mana_val = Read1(nfile);
-	
+
+
+	if (num == 0)
+	{
+		set_property((int) Actor::magic, magic_val);
+		
+		// Need to make sure that mana is less than magic
+		if ((mana_val & 0x1F) < (magic_val & 0x1F))
+			set_property((int) Actor::mana, mana_val);
+		else
+			set_property((int) Actor::mana, magic_val);
+
+		set_siflag (Actor::met);
+	}
+	else
+	{
+		if ((mana_val << 0) & 1) set_siflag (Actor::met);
+		if ((mana_val << 1) & 1) set_siflag (Actor::no_spell_casting);
+		if ((mana_val << 2) & 1) set_siflag (Actor::zombie);
+	}
+
 
 //	set_temperature (((magic_val >> 2) & 0x38) + (mana_val >> 5));
 
@@ -148,6 +176,15 @@ Actor::Actor
 	// Type flags 2
 	int tflags = Read2 (nfile);
 	set_type_flags (tflags);
+	if (num == 0 && Game::get_avsex() == 0)
+	{
+		clear_type_flag (Actor::tf_sex);
+	}
+	else if (num == 0 && Game::get_avsex() == 1)
+	{
+		set_type_flag (Actor::tf_sex);
+	}
+	
 
 	nfile.seekg (5, ios::cur);	// Unknown
 
@@ -166,25 +203,15 @@ Actor::Actor
 
 	char namebuf[17];
 	nfile.read(namebuf, 16);
-	namebuf[16] = 0;		// Be sure it's 0-delimited.
-	name = namebuf;		// Store copy of it.
-
-	if (num == 0)
+	namebuf[17] = 0;		// Be sure it's 0-delimited.
+	if (num == 0 && Game::get_avname())
 	{
-		set_property((int) Actor::magic, magic_val);
-		
-		// Need to make sure that mana is less than magic
-		if ((mana_val & 0x1F) < (magic_val & 0x1F))
-			set_property((int) Actor::mana, mana_val);
-		else
-			set_property((int) Actor::mana, magic_val);
+		cout << Game::get_avname() << endl;
+		name = Game::get_avname();
 	}
 	else
-	{
-		if ((mana_val << 0) & 1) set_siflag (Actor::met);
-		if ((mana_val << 1) & 1) set_siflag (Actor::no_spell_casting);
-		if ((mana_val << 2) & 1) set_siflag (Actor::zombie);
-	}
+		name = namebuf;		// Store copy of it.
+
 
 	Game_window *gwin = Game_window::get_game_window();
 					// Get abs. chunk. coords. of schunk.
@@ -263,7 +290,7 @@ void Actor::write
 	
 					// Write char. attributes.
 	iout = get_property(Actor::strength);
-	// iout += get_skin_color () << 5;
+	if (Game::get_game_type() != BLACK_GATE) iout += (get_skin_color () & 3) << 5;
 	if (get_siflag (Actor::freeze)) iout |= 1 << 7;
 	nfile.put(iout);
 	
