@@ -1,8 +1,8 @@
 .\" -*- nroff -*-
-.TH exult 6 "November 19, 2000"
+.TH exult 6 "July 22, 2003"
 
 .SH NAME
-exult \- an engine for running Ultima usecode
+exult \- an engine for running Ultima VII
 
 .SH SYNOPSIS
 .B exult
@@ -10,22 +10,47 @@ exult \- an engine for running Ultima usecode
 .br
 
 .SH DESCRIPTION
-.B exult
-is an engine built for running Ultima usecode. It started it's life as a map-browser for Ultima VII and has evolved from there, thanks to the open source-model, and contributions of time and code from many people.
+.B Exult
+is an engine built for running Ultima VII. It started its life as a map-browser for Ultima VII and has evolved from there, thanks to the open source-model and contributions of time and code from many people.
 .PP
-You cannot use \fBexult\fP without the game-data files supplied by Origin, at present. A game-creator is planned, but has not yet been begun. In any case, Ultima VII is one of the best computer Role-Playing-Games made to-date at the time of this writing. Check your local computer dealer's bargain bin. Ultima VII (The Black Gate) can still be purchased for only a few dollars. Run out and buy it!
+You cannot use \fBExult\fP without game data files. At present, the only finished games are Origin's Ultima VII: The Black Gate and Ultima VII, Part 2: The Serpent Isle. In any case, both Ultima VII's are some of the best computer Role-Playing-Games made to date. Check your local computer dealer's bargain bin or an online auction site. Ultima VII can still be purchased for only a few dollars. Run out and buy it!
 .PP
+There is a world editor available to create your own games: Exult Studio. Check the \fBexult\fP homepage (URL below) for more information.
 
 
 .SH OPTIONS
+.TP
+--help
+Show the available command-line options
+.TP
+--version
+Display (detailed) \fBExult\fP version information
+.TP
+-c \fIconfigfile\fR
+Specify an alternate configuration file to load
+.TP
+--bg
+Skip the main \fBExult\fP menu and run Black Gate
+.TP
+--si
+Skip the main \fBExult\fP menu and run Serpent Isle
+.TP
+--nomenu
+Skip the game menu for BG/SI
+.TP
+--buildmap \fItype\fR
+Create a fullsize map of the current gameworld.
+If \fItype\fR = 0, paint all roofs. If \fItype\fR = 0,
+skip second-floor roofs. If \fItype\fR = 2, don't paint
+any roofs. You also need to specify --bg or --si.
+.TP
+--nocrc
+Skip the CRC check of the .flx datafiles. Only
+use this if you modified them yourself without recompiling
 .B exult
-does not possess any terribly useful command-line options at present. At least, not any worth documenting.
-.PP
-.IP --help
-This option shows what other command-line options are currently compiled in. Almost everything is controlled either by in-game menus or the configuration file however, so what options there are are usually only for the developers.
 
 .SH FILES
-See the README supplied with \fBexult\fP for information on this (hint: you NEED this configuration file to set up and run the game). [ TODO: Actually document the configuration file. ]
+See the README supplied with \fBexult\fP for information on this (Note: you NEED this configuration file to set up and run the game).
 
 .SH NOTES
 For more help and information with \fBexult\fP go to:
@@ -33,8 +58,7 @@ For more help and information with \fBexult\fP go to:
 .IP http://sourceforge.net/projects/exult/
 .PP
 Ultima itself remains the property of Origin Systems, Inc.
-Ultima VII (The Black Gate) is copyright 1993 by Origin Systems, Inc.
-The Exult Team is in no way affiliated with Origin Systems, Inc., Electronic Arts, and those companies probably neither know nor care about \fBexult\fP. Don't go bugging them if you have problems. Bug the Exult Team instead.
+Ultima VII (The Black Gate) is copyright Origin Systems, Inc. Ultima VII (The Serpent Isle) is copyright Origin Systems, Inc. The Exult Team is in no way affiliated with Origin Systems, Inc., Electronic Arts, and those companies probably neither know nor care about \fBExult\fP. Don't go bugging them if you have problems. Bug the Exult Team instead.
 
 .SH BUGS
 There are always bugs. Please report them at:
