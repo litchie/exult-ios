@@ -312,7 +312,8 @@ toolsinstall: tools
 	copy usecode\ucxt\data\u7misc.data $(U7PATH)\data\u7misc.data 
 
 toolsdist: tools
-	if not exist $(U7PATH)\tools md $(TOOLSPATH)\tools
+	if not exist $(TOOLSPATH) md $(TOOLSPATH)
+	if not exist $(TOOLSPATH)\tools md $(TOOLSPATH)\tools
 	strip expack.exe -o $(TOOLSPATH)\tools\expack.exe
 	strip mklink.exe -o $(TOOLSPATH)\tools\mklink.exe
 	strip rip.exe -o $(TOOLSPATH)\tools\rip.exe
@@ -323,7 +324,7 @@ toolsdist: tools
 	strip wud.exe -o $(TOOLSPATH)\tools\wud.exe
 	strip ucxt.exe -o $(TOOLSPATH)\ucxt.exe
 	strip ucc.exe -o $(TOOLSPATH)\tools\ucc.exe
-	if not exist $(U7PATH)\data md $(TOOLSPATH)\data
+	if not exist $(TOOLSPATH)\data md $(TOOLSPATH)\data
 	copy usecode\ucxt\data\events.data $(TOOLSPATH)\data\events.data
 	copy usecode\ucxt\data\flags.data $(TOOLSPATH)\data\flags.data
 	copy usecode\ucxt\data\opcodes.txt $(TOOLSPATH)\data\opcodes.txt
