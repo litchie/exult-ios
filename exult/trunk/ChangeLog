@@ -1,9 +1,17 @@
 2001-01-26  Tristan Tarrant <nadir@users.sourceforge.net>
-	mapedit/shapelst.*: show shapes on multiple rows.
-	mapedit/studio.*: fixes.
+	* mapedit/dirbrowser.*: added a nice directory browser widget stolen from XMMS
+	* mapedit/objbrowse.*: added framework for generic browsers
+	* mapedit/paledit.*: made it conform to Object_browser
+	* mapedit/shapelst.*: ditto
+	* mapedit/studio.cc: Use a tree instead of a list for the files, categorize the 
+	  files by type, use the directory browser to select the static path
+
+2001-01-26  Tristan Tarrant <nadir@users.sourceforge.net>
+	* mapedit/shapelst.*: show shapes on multiple rows.
+	* mapedit/studio.*: fixes.
 
 2001-01-25  Tristan Tarrant <nadir@users.sourceforge.net>
-	mapedit/*: more work.
+	* mapedit/*: more work.
 
 2001-01-25  Jeff Freedman  <jeff@amy.nerble.net>
 	* SI:  Fixed some usecode assignments (so Knight's test isn't so

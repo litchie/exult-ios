@@ -82,7 +82,8 @@ int main
 	for (int i = 0; i < 256; i++)
 		colors[i] = (buf[3*i]<<16)*4 + (buf[3*i+1]<<8)*4 + 
 							buf[3*i+2]*4;
-	paled = new Palette_edit(colors, vbox, 128, 128);
+	paled = new Palette_edit(colors, 128, 128);
+	gtk_box_pack_start(GTK_BOX(vbox), paled->get_widget(), TRUE, TRUE, 0);
 	gtk_widget_show(topwin);	// Show top window.
 	gtk_main();
 	return (0);

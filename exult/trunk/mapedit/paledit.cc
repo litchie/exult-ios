@@ -442,7 +442,6 @@ gint Palette_edit::drag_begin
 Palette_edit::Palette_edit
 	(
 	guint32 *colors,		// 256-entry RGB palette.
-	GtkWidget *box,			// Where to put this.
 	int w, int h			// Dimensions.
 	) : image(0), width(0), height(0),
 		palette(0), colorsel(0),
@@ -451,8 +450,8 @@ Palette_edit::Palette_edit
 	palette = gdk_rgb_cmap_new(colors, 256);
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(box), vbox, TRUE, TRUE, 0);
 	gtk_widget_show(vbox);
+	set_widget(vbox);
 					// A frame looks nice.
 	GtkWidget *frame = gtk_frame_new(NULL);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
@@ -501,6 +500,7 @@ Palette_edit::~Palette_edit
 	)
 	{
 	gdk_rgb_cmap_free(palette);
+	gtk_widget_destroy(get_widget());
 	delete image;
 	}
 

@@ -124,34 +124,40 @@ void Shape_chooser::render
 	int curr_y = 0;
 	int row_h = 0;
 	do {
-		while (shape && x + (sw = shape->get_width()) <= winw) {
-					// Get height, top y-coord.
-			int sh = shape->get_height();
-			if(sh>row_h)
-				row_h = sh;
-			//int sy = winh - sh - border;
-			int sy = curr_y+border;
-			shape->paint(iwin, x + shape->get_xleft(),
+		while (shapenum<num_shapes) {
+			if(shape) {
+					// Check if we've exceeded our max width
+				if (x + (sw = shape->get_width()) > winw)
+					break;
+						// Get height, top y-coord.
+				int sh = shape->get_height();
+				if(sh>row_h)
+					row_h = sh;
+				int sy = curr_y+border;
+				shape->paint(iwin, x + shape->get_xleft(),
 							sy + shape->get_yabove());
-			if (sh > winh) {
-				sy += sh - winh;
-				sh = winh;
-			}
+				if (sh > winh) {
+					sy += sh - winh;
+					sh = winh;
+				}
 						// Store info. about where drawn.
-			info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
-			if (shapenum == selshape)
-						// Found the selected shape.
-				new_selected = info_cnt;
+				info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
+				if (shapenum == selshape)
+							// Found the selected shape.
+					new_selected = info_cnt;
+			}
 			shapenum++;		// Next shape.
 			framenum = shapenum == selshape ? selframe : 0;
 			shape = shapenum >= num_shapes ? 0 
 					: ifile->get_shape(shapenum, framenum);
-			x += sw + border;
-			info_cnt++;
+			if(shape) {
+				x += sw + border;
+				info_cnt++;
+			}
 		}
 		curr_y += row_h + border;
 		x = 0;
-	} while(shape && (curr_y+72<winh));
+	} while(shapenum<num_shapes && (curr_y+72<winh));
 	if (new_selected == -1)
 		unselect(false);
 	else
@@ -433,15 +439,19 @@ Shape_chooser::Shape_chooser
 	palette = gdk_rgb_cmap_new(colors, 256);
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
-	chooser = vbox; // This is our "widget"
+	set_widget(vbox); // This is our "widget"
 	gtk_widget_show(vbox);
+	
+	GtkWidget *hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 	
 	num_shapes = ifile->get_num_shapes();
 					// A frame looks nice.
 	GtkWidget *frame = gtk_frame_new(NULL);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
-	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
 	draw = gtk_drawing_area_new();	// Create drawing area window.
 					// Indicate the events we want.
 	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
@@ -472,28 +482,28 @@ Shape_chooser::Shape_chooser
 	GtkObject *shape_adj = gtk_adjustment_new(0, 0, 
 				num_shapes, 1, 
 				4, 1.0);
-	GtkWidget *shape_scroll = gtk_hscrollbar_new(
+	GtkWidget *shape_scroll = gtk_vscrollbar_new(
 					GTK_ADJUSTMENT(shape_adj));
 					// Update window when it stops.
 	gtk_range_set_update_policy(GTK_RANGE(shape_scroll),
 					GTK_UPDATE_DELAYED);
-	gtk_box_pack_start(GTK_BOX(vbox), shape_scroll, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), shape_scroll, FALSE, TRUE, 0);
 					// Set scrollbar handler.
 	gtk_signal_connect(GTK_OBJECT(shape_adj), "value_changed",
 					GTK_SIGNAL_FUNC(scrolled), this);
 	gtk_widget_show(shape_scroll);
 					// At the bottom, status bar & frame:
-	GtkWidget *hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-	gtk_widget_show(hbox);
+	GtkWidget *hbox1 = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0);
+	gtk_widget_show(hbox1);
 					// At left, a status bar.
 	sbar = gtk_statusbar_new();
 	sbar_sel = gtk_statusbar_get_context_id(GTK_STATUSBAR(sbar),
 							"selection");
-	gtk_box_pack_start(GTK_BOX(hbox), sbar, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), sbar, TRUE, TRUE, 0);
 	gtk_widget_show(sbar);
 	GtkWidget *label = gtk_label_new("Frame:");
-	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 4);
 	gtk_widget_show(label);
 					// Finally, a spin button for frame#.
 	frame_adj = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 
@@ -503,7 +513,7 @@ Shape_chooser::Shape_chooser
 									1, 0);
 	gtk_signal_connect(GTK_OBJECT(frame_adj), "value_changed",
 					GTK_SIGNAL_FUNC(frame_changed), this);
-	gtk_box_pack_start(GTK_BOX(hbox), fspin, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), fspin, FALSE, FALSE, 0);
 	gtk_widget_show(fspin);
 	}
 
@@ -516,7 +526,7 @@ Shape_chooser::~Shape_chooser
 	)
 	{
 	gdk_rgb_cmap_free(palette);
-	gtk_widget_destroy(chooser);
+	gtk_widget_destroy(get_widget());
 	delete [] info;
 	delete iwin;
 	}
