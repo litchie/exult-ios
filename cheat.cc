@@ -102,8 +102,6 @@ void Cheat::init (void) {
 }
 
 void Cheat::finish_init (void) {
-	gwin = Game_window::get_instance();
-	eman = gwin->get_effects();
 
 	browser = new ShapeBrowser();
 	tester = new SoundTester();
@@ -301,7 +299,9 @@ void Cheat::toggle_naked (void) const {
 }
 
 void Cheat::change_skin (void) const {
-	if (!enabled || (Game::get_game_type() != SERPENT_ISLE && !Shape_manager::get_instance()->can_use_multiracial())) return;
+	if (!enabled || (Game::get_game_type() != SERPENT_ISLE && 
+	    !sman->can_use_multiracial())) 
+		return;
 
 	int color = gwin->get_main_actor()->get_skin_color();
   
