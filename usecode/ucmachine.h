@@ -130,7 +130,8 @@ private:
 	typedef Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(
 		int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
-	void show_npc_face(Usecode_value& arg1, Usecode_value& arg2);
+	void show_npc_face(Usecode_value& arg1, Usecode_value& arg2,
+							int slot = -1);
 	void remove_npc_face(Usecode_value& arg1);
 	void set_item_shape(Usecode_value& item_arg, Usecode_value& shape_arg);
 	void set_item_frame(Usecode_value& item_arg, Usecode_value& frame_arg);
@@ -303,7 +304,13 @@ private:
 	USECODE_INTRINSIC_DECL(get_npc_id);
 	USECODE_INTRINSIC_DECL(set_npc_id);
 	USECODE_INTRINSIC_DECL(add_cont_items);
+					// Serpent Isle:
 	USECODE_INTRINSIC_DECL(si_path_run_usecode);
+	USECODE_INTRINSIC_DECL(show_npc_face0);
+	USECODE_INTRINSIC_DECL(show_npc_face1);
+	USECODE_INTRINSIC_DECL(remove_last_face);
+	USECODE_INTRINSIC_DECL(set_conversation_slot);
+
 
 	/*
 	 *	Other private methods:

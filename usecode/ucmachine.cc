@@ -354,7 +354,8 @@ void Usecode_machine::stack_error
 void Usecode_machine::show_npc_face
 	(
 	Usecode_value& arg1,		// Shape (NPC #).
-	Usecode_value& arg2		// Frame.
+	Usecode_value& arg2,		// Frame.
+	int slot			// 0, 1, or -1 to find free spot.
 	)
 	{
 	show_pending_text();
@@ -364,10 +365,12 @@ void Usecode_machine::show_npc_face
 	int shape = npc->get_face_shapenum();
 	int frame = arg2.get_int_value();
 	gwin->remove_text_effects();
-	gwin->end_gump_mode();
-//	gwin->set_all_dirty();
-	gwin->paint();
-	conv->show_face(shape, frame);
+	if (gwin->get_mode() != Game_window::conversation)
+		{
+		gwin->end_gump_mode();
+		gwin->paint();
+		}
+	conv->show_face(shape, frame, slot);
 //	user_choice = 0;		// Seems like a good idea.
 // Also seems to create a conversation bug in Test of Love :-(
 

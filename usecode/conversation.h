@@ -50,14 +50,16 @@ class Conversation {
   inline int get_num_answers() const { return answers.size(); }
   inline int get_num_faces_on_screen() const { return num_faces; }
   void init_faces();
-  void show_face(int shape, int frame);
+  void show_face(int shape, int frame, int slot = -1);
   void remove_face(int shape);
+  void remove_last_face();	// SI.
   void show_npc_message(const char *msg);
   bool is_npc_text_pending();
   void clear_text_pending();
   void show_avatar_choices();
   void clear_avatar_choices();
   int conversation_choice(int x, int y);
+  void set_slot(int i) { last_face_shown = i; }	// SI.
 
   void add_answer(Usecode_value& val);
   void remove_answer(Usecode_value& val);
