@@ -1,3 +1,7 @@
+2001-08-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Makefile.*: added Text_button.cc
+	* Text_button.cc: added legal header, include config.h and Gump.h
+
 2001-08-18  Ryan Nunn <triforce@merlin.net.au>
 	* gumps\Text_button.*, gumps\Gump_ToggleButton.* : New Text_button and
 	  Gump_ToggleTextButton button classes.
