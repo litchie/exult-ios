@@ -83,7 +83,7 @@
 	USECODE_INTRINSIC_PTR(update_last_created),		// 0x2f - Known
 	USECODE_INTRINSIC_PTR(get_npc_name),			// 0x30
 	USECODE_INTRINSIC_PTR(count_objects),			// 0x31
-	USECODE_INTRINSIC_PTR(find_in_owner),			// 0x32
+	USECODE_INTRINSIC_PTR(find_object),			// 0x32
 	USECODE_INTRINSIC_PTR(get_cont_items),			// 0x33 - Appears correct
 	USECODE_INTRINSIC_PTR(remove_party_items),		// 0x34
 	USECODE_INTRINSIC_PTR(add_party_items),			// 0x35

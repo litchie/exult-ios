@@ -1,3 +1,8 @@
+2001-10-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/intrinsics.cc: Find_in_owner replaced by find_object.
+	Fixes switch-teleports beneath Sleeping Bull.
+
 2001-10-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Cacheout tmp. objects when camera changes back to Avatar.
