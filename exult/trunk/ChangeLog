@@ -1,3 +1,8 @@
+2000-05-24  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Finally got the 'sit' schedule to work.
+	* Fixed pathfinding problem with getting stuck behind open doors.
+
 2000-05-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode.cc: implemented intrinsic 0x09 (clear_answers)
 
