@@ -191,7 +191,7 @@ void Game_window::read_npcs
 			ptr += 3;	// Get equip.dat offset.
 			unsigned int equip = *ptr;
 			monster_info[i].set(shape, monster[0], monster[1],
-				monster[2], monster[3], monster[4],
+				monster[2], monster[3], monster[4], monster[5],
 				flags, equip);
 			}
 		mfile.close();
