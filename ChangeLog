@@ -1,4 +1,8 @@
 2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* audio/Audio.cc, audio/midi_drivers/Timidity_binary.cc:
+	  use 16 bit audio. Makes Timidity music much cleaner
+
+2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* mapedit/studio.cc: set current dir in directory browser
 
 2001-02-13  Ryan Nunn  <triforce@merlin.net.au>

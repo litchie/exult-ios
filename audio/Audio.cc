@@ -270,19 +270,19 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 		l=new_len;
 		cerr << "Have " << l << " bytes of resampled data" << endl;
 
-		// And convert to stereo
-		uint8 *stereo_data=new uint8[l*2];
+		// And convert to 16 bit stereo
+		sint16 *stereo_data=new sint16[l*2];
 		for(size_t i=0,j=0;i<l;i++)
 			{
-			stereo_data[j++]=new_data[i];
-			stereo_data[j++]=new_data[i];
+			stereo_data[j++]=(new_data[i]-128)<<8;
+			stereo_data[j++]=(new_data[i]-128)<<8;
 			}
-		l*=2;
+		l*=4; // because it's 16bit
 		delete [] new_data;
 #endif
 
 		Chunk	c;
-		c.data=stereo_data;
+		c.data=(uint8 *)stereo_data;
 		c.length=l;
 		chunks.push_back(c);
 		data_offset+=chunk_length;
@@ -374,7 +374,7 @@ void Audio::Init(int _samplerate,int _channels)
 
          /* Set the audio format */
          wanted.freq = _samplerate;
-         wanted.format = AUDIO_U8;
+         wanted.format = AUDIO_S16;
          wanted.channels = _channels;    /* 1 = mono, 2 = stereo */
          wanted.samples = _buffering_unit;  /* Good low-latency value for callback */
          wanted.callback = fill_audio;

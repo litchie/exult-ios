@@ -147,7 +147,7 @@ int	timidity_play(string filename, bool repeat, string &newfilename, pid_t &pid)
 		close(pdes[1]);
 		close(pdes[0]);
 		close(STDERR_FILENO);
-		execlp("timidity","timidity","-Oru8S",repstr.c_str(),"-s",nbuf,"-o-",newfilename.c_str(),0); 
+		execlp("timidity","timidity","-Or1slS",repstr.c_str(),"-s",nbuf,"-o-",newfilename.c_str(),0); 
 		_exit(127);
 		
 		default:
