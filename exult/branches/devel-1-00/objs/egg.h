@@ -157,6 +157,7 @@ public:
  */
 class Animated_egg_object : public Egg_object
 	{
+protected:
 	Animator *animator;		// Controls animation.
 public:
 	Animated_egg_object(int shapenum, int framenum,

@@ -987,13 +987,13 @@ bool Field_object::field_effect
 		if (get_shapenum() == 561)
 			{
 			actor->reduce_health(5 + rand()%4);
-			say(first_ouch, last_ouch);
+			actor->say(first_ouch, last_ouch);
 			}
 		else if (rand()%2)
 			{
 			actor->reduce_health(1);
 			if (rand()%2)
-				say(first_ouch, last_ouch);
+				actor->say(first_ouch, last_ouch);
 			}
 					// But no sleeping here.
 		actor->clear_flag(Obj_flags::asleep);
@@ -1003,7 +1003,7 @@ bool Field_object::field_effect
 		    (actor->get_flag(Obj_flags::might) ? 2 : 1) < rand()%40)
 			{
 			actor->reduce_health(2 + rand()%3);
-			say(first_ouch, last_ouch);
+			actor->say(first_ouch, last_ouch);
 			}
 		return false;
 		}
@@ -1025,7 +1025,10 @@ void Field_object::activate
 					// Field_frame_animator calls us with
 					//   event==0 to check for damage.
 	if (event != Usecode_machine::npc_proximity)
+		{
 		Ireg_game_object::activate(event);
+		return;
+		}
 	Actor_queue npcs;		// Find all nearby NPC's.
 	gwin->get_nearby_npcs(npcs);
 	Rectangle eggfoot = get_footprint();
