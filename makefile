@@ -6,14 +6,14 @@ OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o \
 				# X-windows.
 CXX = g++
 CXXFLAGS = -g
-CPPFLAGS = -DXWIN -I/usr/local/include/SDL -Inpc -Iscript
+CPPFLAGS = -DXWIN -D_REENTRANT -I/usr/local/include/SDL -Inpc -Iscript
 ifdef RELEASE
 STATIC = -static
 else
 STATIC =
 endif
-LFLAGS = -g -L /usr/X11R6/lib -L /usr/local/lib -v
-LIBS = -lttf -lSDL -lX11 -lXext -lpthread
+LFLAGS = -g -L /usr/X11R6/lib -L /usr/local/lib
+LIBS = -lttf -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread
 
 all:
 	make exult
