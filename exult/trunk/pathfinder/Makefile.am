@@ -1,4 +1,5 @@
-INCLUDES = -I.. -I../objs $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../objs $(SDL_INCLUDES) $(INCDIRS) \
+		$(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libpathfinder.la
 

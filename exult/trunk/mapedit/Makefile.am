@@ -1,4 +1,5 @@
-INCLUDES = -I.. -I../shapes -I../imagewin -I../files \
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../shapes -I$(srcdir)/../imagewin \
+	-I$(srcdir)/../files \
 	$(GTK_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 if GIMP_PLUGIN

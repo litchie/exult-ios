@@ -1,6 +1,9 @@
-INCLUDES = -I.. -I../files $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files $(SDL_INCLUDES) $(INCDIRS) \
+		 $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
+if BUILD_TOOLS
 noinst_PROGRAMS = confregress
+endif
 
 noinst_LTLIBRARIES = libconf.la
 
