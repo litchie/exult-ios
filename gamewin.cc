@@ -2004,9 +2004,9 @@ void Game_window::show_face
 		info->face_rect = actbox;
 					// This is where NPC text will go.
 		info->text_rect = clip_to_win(Rectangle(
-			actbox.x + actbox.w + 6, actbox.y,
-			get_width() - actbox.x - actbox.w - 18,
-							10*text_height));
+			actbox.x + actbox.w + 3, actbox.y,
+			get_width() - actbox.x - actbox.w - 6,
+							11*text_height));
 		info->last_text_height = info->text_rect.h;
 		}
 	else
@@ -2153,6 +2153,7 @@ void Game_window::show_avatar_choices
 		x += width + space_width;
 		}
 	avatar_face.enlarge(6);		// Encloses entire area.
+	avatar_face = avatar_face.intersect(sbox);
 					// Terminate the list.
 	conv_choices[num_choices] = Rectangle(0, 0, 0, 0);
 	clear_text_pending();
