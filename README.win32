@@ -41,6 +41,10 @@ Download the other required developer tools from:
 http://exult.sourceforge.net/snapshots/exult_dev_win32.zip
 Unzip this file into the MinGW directory.
 
+Download getopt header from:
+http://subversions.gnu.org/cgi-bin/viewcvs/*checkout*/gcc/gcc/include/getopt.h?rev=HEAD&content-type=text/x-chdr
+Move file to the include directory of MinGW 
+
 If you want to compile Exult Studio get the additional required developer tools from:
 http://exult.sourceforge.net/snapshots/exult_studio_dev_win32.zip
 Unzip this file into the MinGW directory.

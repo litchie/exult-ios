@@ -8,13 +8,6 @@ SRC=.
 SDL_CFLAGS=-I/gg/os-include/sdl
 SDL_LIBS=-lsdl -ldebug
 
-CXX      = c++
-RM      = rm -f
-MKDIR = mkdir -p
-ECHO  = echo -n
-CAT    = cat
-RM      = rm -f
-
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"PROGDIR:data\" -DNDEBUG \
 	-DHAVE_ZIP_SUPPORT -DEX_TYPE_INT16=short -DEX_TYPE_INT32=int -I$(SRC)/files/zip \
 	-I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/data -I$(SRC)/tools \
