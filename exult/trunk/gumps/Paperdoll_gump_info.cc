@@ -828,15 +828,15 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 
 	// CLOAKS
 	
-	// Cloak
-	{     285,  1, Actor::cloak_spot,   OT_Normal,  false, paperdoll,      8,    0,     -1 },
-	{     285,  1, Actor::special_spot, OT_Normal,   true, paperdoll,      8,    1,     -1 },
-	// Cloak
-	{     227,  3, Actor::cloak_spot,   OT_Normal,  false, paperdoll,    116,    0,     -1 },
-	{     227,  3, Actor::special_spot, OT_Normal,   true, paperdoll,    116,    1,     -1 },
 	// Cloak **NEEDS ART**
-	{     285,  3, Actor::cloak_spot,   OT_Normal,  false, paperdoll,    164,    0,     -1 },
-	{     285,  3, Actor::special_spot, OT_Normal,   true, paperdoll,    164,    1,     -1 },
+	{     285,  0, Actor::cloak_spot,   OT_Normal,  false, paperdoll,     28,    0,     -1 },
+	{     285,  0, Actor::special_spot, OT_Normal,   true, paperdoll,     28,    1,     -1 },
+	// Cloak **NEEDS ART**
+	{     285,  1, Actor::cloak_spot,   OT_Normal,  false, paperdoll,     28,    0,     -1 },
+	{     285,  1, Actor::special_spot, OT_Normal,   true, paperdoll,     28,    1,     -1 },
+	// Cloak
+	{     285,  2, Actor::cloak_spot,   OT_Normal,  false, paperdoll,      8,    0,     -1 },
+	{     285,  2, Actor::special_spot, OT_Normal,   true, paperdoll,      8,    1,     -1 },
 
 
 	// ARMOUR
