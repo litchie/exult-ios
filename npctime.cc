@@ -450,15 +450,18 @@ void Npc_sleep_timer::handle_event
 inline int Wearing_ring
 	(
 	Actor *actor,
-	int shnum			// Ring shape to look for.
+	int shnum,			// Ring shape to look for.
+	int frnum
 	)
 	{
 					// See if wearing ring.
 	Game_object *ring = actor->get_readied(Actor::lfinger);
-	if (ring && ring->get_shapenum() == shnum)
+	if (ring && ring->get_shapenum() == shnum &&
+	    ring->get_framenum() == frnum)
 		return 1;
 	ring = actor->get_readied(Actor::rfinger);
-	if (ring && ring->get_shapenum() == shnum)
+	if (ring && ring->get_shapenum() == shnum &&
+	    ring->get_framenum() == frnum)
 		return 1;
 	return 0;
 	}
@@ -474,7 +477,7 @@ void Npc_invisibility_timer::handle_event
 	)
 	{
 	Actor *npc = list->npc;
-	if (Wearing_ring(npc, 296))
+	if (Wearing_ring(npc, 296, 0))	// (Works for SI and BG.)
 		{			// Wearing invisibility ring.
 		delete this;		// Don't need timer.
 		return;
@@ -503,7 +506,7 @@ void Npc_protection_timer::handle_event
 	)
 	{
 	Actor *npc = list->npc;
-	if (Wearing_ring(npc, 297))
+	if (Wearing_ring(npc, 297, 0))	// ++++SI has an Amulet.
 		{			// Wearing protection ring.
 		delete this;		// Don't need timer.
 		return;

@@ -35,6 +35,7 @@
 #include "schedule.h"
 #include "objiter.h"
 #include "databuf.h"
+#include "npctime.h"
 
 using std::ios;
 using std::cout;
@@ -326,6 +327,8 @@ void Actor::read
 		// Flags
 		f = nfile->read4();
 		flags |= f;
+		if (get_flag(Obj_flags::invisible))	/* Force timer.	*/
+			need_timers()->start_invisibility();
 
 		// SIFlags
 		f = nfile->read2();
