@@ -38,6 +38,7 @@
 #include "schedule.h"
 #include "ucmachine.h"
 #include "Configuration.h"
+#include "SDL.h"
 
 const char *CheatScreen::schedules[33] = {
 	"Combat",

@@ -108,6 +108,9 @@ void ExultMenu::setup()
 	  midiconv->add_choice("GS");
 	  midiconv->add_choice("GS127");
 	  midiconv->add_choice("DigitalMusic");
+#ifdef USE_FMOPL_MIDI
+	  midiconv->add_choice("FM Synth");
+#endif
 
 	  midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
 	  menu.add_entry(midiconv);

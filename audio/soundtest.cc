@@ -26,6 +26,7 @@
 #include "mouse.h"
 #include "exult.h"
 #include "font.h"
+#include "tqueue.h"
 
 using std::snprintf;
 

@@ -65,8 +65,10 @@ U7file  *U7FileManager::get_file_object(const string &s)
 	TRY_FILE_TYPE(uf,Flat);
 
 	// Failed
-	if (!uf)
-		throw file_open_exception(s);
+	if (!uf) {
+		throw (file_open_exception((const string &) s));
+		return 0;
+	}
 
 	file_list[s]=uf;
 	return uf;
@@ -98,8 +100,10 @@ U7FileManager   *U7FileManager::self=0;
 
 U7FileManager::U7FileManager()
 {
-	if(self)
-		throw exclusive();
+	if(self) {
+		throw (exclusive());
+		std::exit(-1);
+	}
 	else
 		self=this;
 }
@@ -107,16 +111,18 @@ U7FileManager::U7FileManager()
 uint32	U7object::number_of_objects(void)
 {
 	U7file *uf=U7FileManager::get_ptr()->get_file_object(filename);
+	if (!uf) return 0;
 	return uf->number_of_objects();
 }
 
 char*	U7object::retrieve(size_t &len)
 {
 	U7file *uf=U7FileManager::get_ptr()->get_file_object(filename);
+	if (!uf) return 0;
 	return uf->retrieve(objnumber,len);
 }
 
-void	U7object::retrieve(const char *fname)
+bool	U7object::retrieve(const char *fname)
 {
 	FILE *fp=U7open(fname,"wb");
 
@@ -130,9 +136,14 @@ void	U7object::retrieve(const char *fname)
 	catch( const std::exception & err )
 	{
 		std::fclose(fp);
-		throw err;
+		throw (err);
+	}
+	if (!n) {
+		std::fclose(fp);
+		return false;
 	}
 	std::fwrite(n,l,1,fp);	// &&&& Should check return value
 	std::fclose(fp);
 	delete [] n;
+	return true;
 }

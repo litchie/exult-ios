@@ -39,6 +39,9 @@
 
 #endif
 
+// Yeah, lets do unicode compiles
+#define UNICODE
+
 // Don't need everything in the windows headers
 #define WIN32_LEAN_AND_MEAN
 
@@ -76,6 +79,7 @@ namespace std {
 	#include <ctime>
 	#include <cmath>
 	#include <cstdarg>
+	#include <malloc.h>
 
 	// Kludge to make Exult think that size_t has been put into the
 	// std namespace
@@ -128,6 +132,8 @@ using std::_dev_t;
 using std::_ino_t;
 using std::_off_t;
 using std::isspace;
+using std::_alloca;
+using std::wcslen;
 
 // Nope, stat isn't defined
 #ifdef _STAT_DEFINED
