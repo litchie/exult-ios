@@ -3,7 +3,7 @@ INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/../files -I$(srcdir)/../usecode -I
 
 if BUILD_TOOLS
 NOINSTTOOLS = wuc wud mklink rip ucdump cmanip
-EXTRATOOLS = splitshp shp2pcx
+EXTRATOOLS = splitshp shp2pcx textpack
 else
 EXTRATOOLS =
 NOINSTTOOLS =
@@ -38,6 +38,12 @@ shp2pcx_LDADD = $(SYSLIBS)
 splitshp_SOURCES = splitshp.cc
 
 splitshp_LDADD = $(SYSLIBS)
+
+textpack_SOURCES = textpack.cc
+
+textpack_LDADD = \
+	../files/libu7file.la \
+	$(SYSLIBS)
 
 cmanip_SOURCES = \
 	cmanip.cc 

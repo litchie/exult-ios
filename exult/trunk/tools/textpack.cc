@@ -94,7 +94,10 @@ static void Write_flex
 	for (vector<char *>::const_iterator it = strings.begin();
 					it != strings.end(); ++it)
 		{
-		out << (*it) ? (*it) : "";
+		const char *str = *it;
+		if (str)
+			out << str;
+		out.put((char) 0);	// 0-delimit.
 		writer.mark_section_done();
 		}
 	if (!writer.close())
@@ -114,7 +117,7 @@ static void Write_flex
 static void Read_text
 	(
 	istream& in,
-	vector<char *> strings		// Strings returned here.
+	vector<char *>& strings		// Strings returned here.
 	)
 	{
 	strings.resize(0);		// Initialize.
@@ -132,6 +135,8 @@ static void Read_text
 			cerr << "Line #" << linenum << " is too long" << endl;
 			exit(1);
 			}
+		if (!buf[0])
+			continue;	// Empty line.
 		char *ptr = &buf[0];
 		char *endptr;		// Get line# in decimal, hex, or oct.
 		long index = strtol(ptr, &endptr, 0);
@@ -165,7 +170,7 @@ static void Read_text
 static void Write_text
 	(
 	ostream& out,
-	vector<char *> strings		// Strings to write.
+	vector<char *>& strings		// Strings to write.
 	)
 	{
 	out << "# Written by Exult Textpack tool" << endl;
@@ -185,4 +190,81 @@ static void Write_text
 	out.flush();
 	}
 
+/*
+ *	Print usage and exit.
+ */
 
+static void Usage()
+	{
+	cerr << "Usage: textpack -[x|c] flexfile [textfile]" << endl <<
+		"    Missing [textfile] => stdin/stdout" << endl;
+	exit(1);
+	}
+
+/*
+ *	Create or extract from Flex files consisting of text entries.
+ */
+
+int main
+	(
+	int argc,
+	char **argv
+	)
+	{
+	if (argc < 3 || argv[1][0] != '-')
+		Usage();		// (Exits.)
+	char *flexname = argv[2];
+	vector<char *> strings;		// Text stored here.
+	switch (argv[1][1])		// Which function?
+		{
+	case 'c':			// Create Flex.
+		if (argc >= 4)		// Text filename given?
+			{
+			ifstream in;	// Open as text.
+			try {
+				U7open(in, argv[3], true);
+			} catch (exult_exception& e) {
+				cerr << e.what() << endl;
+				exit(1);
+			}
+			Read_text(in, strings);
+			}
+		else			// Default to stdin.
+			Read_text(cin, strings);
+		try {
+			Write_flex(flexname, "Flex created by Exult", strings);
+		} catch (exult_exception& e){
+			cerr << e.what() << endl;
+			exit(1);
+		}
+		break;
+	case 'x':			// Extract to text.
+		try {
+			Read_flex(flexname, strings);
+		} catch (exult_exception& e){
+			cerr << e.what() << endl;
+			exit(1);
+		}
+		if (argc >= 4)		// Text file given?
+			{
+			ofstream out;
+			try {
+				U7open(out, argv[3],  true);
+			} catch(exult_exception& e) {
+				cerr << e.what() << endl;
+				exit(1);
+			}
+			Write_text(out, strings);
+			}
+		else
+			Write_text(cout, strings);
+		break;
+	default:
+		Usage();
+		}
+					// Clean up allocated strings.
+	for (vector<char *>::iterator it = strings.begin(); 
+						it != strings.end(); ++it)
+		delete *it;
+	return 0;
+	}
