@@ -41,6 +41,12 @@ Get the SDL binaries & headers from:
 http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
 Unzip this file into the Exult directory. (it should add a SDL subdirectory)
 
+If you want to compile the Exult Tools get the bison, flex and libpng binaries & headers from:
+http://exult.sourceforge.net/snapshots/exult_bison_win32.zip
+http://exult.sourceforge.net/snapshots/exult_flex_win32.zip
+http://exult.sourceforge.net/snapshots/exult_libpng_win32.zip
+Unzip these files into the MinGW directory.
+
 Open Command Prompt or MS-DOS Prompt
 
 Type 'PATH=drive:\mingw\bin;%PATH%' where drive is the letter of the hard disk you installed mingw on to, without quotes to add mingw to the path
@@ -53,6 +59,8 @@ Open makefile.win32 from the Exult directory in a text editor and change C:\\Ult
 (ie C:\\Games\\Ultima7 )
 
 Type 'make -f makefile.win32 install' without quotes to compile and install Exult for Windows
+
+Type 'make -f makefile.win32 toolsinstall' without quotes to compile and install the Exult Tools for Windows
 
 Once compile has finished and been installed exit the Command Prompt or MS-DOS Prompt
 
