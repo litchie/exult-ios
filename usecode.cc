@@ -1376,7 +1376,8 @@ USECODE_INTRINSIC(add_answer)
 USECODE_INTRINSIC(remove_answer)
 {
 	answers.remove_answer(parms[0]);
-	user_choice = 0;
+// Commented out 'user_choice = 0' 8/3/00 for Tseramed conversation.
+//	user_choice = 0;
 	return(no_ret);
 }
 
