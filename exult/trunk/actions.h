@@ -51,8 +51,8 @@ public:
 					// Set action to walk to dest, then
 					//   exec. another action when there.
 	static Actor_action *create_action_sequence(Actor *actor, 
-			Tile_coord dest,
-			Actor_action *when_there, int from_off_screen = 0);
+			Tile_coord dest, Actor_action *when_there, 
+		bool from_off_screen = false, bool no_teleport = false);
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest)
 		{ return 0; }
