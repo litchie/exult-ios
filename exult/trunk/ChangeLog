@@ -1,3 +1,8 @@
+2002-07-27  Max Horn  <max@quendi.de>
+
+	* audio/Audio.cc: Replaced the pseudo-breshenham audio interpolation code
+	with 'proper' cubic interpolation code.
+
 2002-07-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* monstinf.*: armur? armour! ;-)
 
