@@ -82,6 +82,8 @@ public:
 		low = shapenum & 0xff;
 		high = ((shapenum >> 8) & 3) | (framenum << 2);
 		}
+	ShapeID(int shapenum, int framenum)
+		{ set_shape(shapenum, framenum); }
 	void set_shape(int shapenum)	// Set shape, but keep old frame #.
 		{
 		low = shapenum & 0xff;
@@ -182,6 +184,8 @@ public:
 		{ objects.append(obj); }
 	void remove(Game_object *obj)
 		{ objects.remove(obj); }
+					// Run usecode function.
+	virtual void activate(Usecode_machine *umachine);
 	};
 
 /*
@@ -541,6 +545,31 @@ public:
 		{  }
 					// At timeout, remove from screen.
 	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
+ *	A gump contains an image of an open container from "gumps.vga".
+ */
+class Gump_object : public ShapeID
+	{
+	Gump_object *next;		// ->next to draw.
+	Game_object *container;		// What this gump shows.
+	int x, y;			// Location on screen.
+	unsigned char shapenum;
+public:
+	Gump_object(Game_object *cont, int initx, int inity, int shnum)
+		: container(cont), x(initx), y(inity), ShapeID(shnum, 0)
+		{  }
+	int get_x()			// Get coords.
+		{ return x; }
+	int get_y()
+		{ return y; }
+					// Append to end of chain.
+	void append_to_chain(Gump_object *& chain);
+					// Remove from chain.
+	void remove_from_chain(Gump_object *& chain);
+	Gump_object *get_next()		// (Chain ends with ->next == 0.)
+		{ return next; }
 	};
 
 #endif
