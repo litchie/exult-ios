@@ -167,6 +167,7 @@ void Chunk_cache::setup
 				lift, ztiles);
 
 		}
+	setup_done = 1;
 	}
 
 /*
@@ -201,7 +202,7 @@ int Chunk_cache::is_blocked
 	int i;				// See if we're going down.
 	for (i = lift - 1; i >= 0 && !(tflags & (1<<lift)); i--)
 		;
-	new_lift = i;
+	new_lift = i + 1;
 	return (0);
 #endif
 	}
