@@ -1,3 +1,8 @@
+2000-12-03  Max Horn  <max@quendi.de>
+	* various files: added missing using std::
+	* xmlparse.cc: made handling of XML entities more efficient and support all 5 required XML entities
+	* Text_gump.cc: fixed delete -> delete []
+
 2000-12-03  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* objs/.cvsignore: added
 
@@ -9,7 +14,6 @@
 	* File_gump.cc: fixed initial state of sound buttons
 
 2000-12-01  Jeff Freedman  <jeff@amy.nerble.net>
-
 	* Create 'objs' subdirectory.
 	* Fixed bug with crystal ball on larger windows.
 	* Intrinsic 0x8f also seems to be start_speech().

@@ -24,6 +24,3 @@ Just at the moment, I'm not supporting:
 * modifiers inside tags (eg: <something mod1="blah" colour="blue"> )
   (and honestly, I'm not at all sure what we would do with them if we supported
    them anyway)
-
-* The only supported entity encodings are &amp; &gt; and &lt;
-

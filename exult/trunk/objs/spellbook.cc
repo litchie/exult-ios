@@ -27,6 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "utils.h"
 
+using std::memcpy;
+using std::ostream;
+
 /*
  *	Create a spellbook from Ireg data.
  */

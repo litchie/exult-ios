@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "chunks.h"
 
+using std::ostream;
+
 /*
  *	Move to a new absolute location.  This should work even if the old
  *	location is invalid (cx=cy=255).
