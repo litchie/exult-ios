@@ -371,10 +371,10 @@ Game_object *Game_object::find_closest
 	int best_dist = 10000;		// In tiles.
 					// Get our location.
 	Tile_coord loc = get_abs_tile_coord();
-	for (GOVector::const_iterator iter = vec.begin();
-						iter != vec.end(); ++iter)
+	for (GOVector::const_iterator it = vec.begin();
+						it != vec.end(); ++it)
 		{
-		Game_object *obj = *iter;
+		Game_object *obj = *it;
 		int dist = obj->get_abs_tile_coord().distance(loc);
 		if (dist < best_dist)
 			{
