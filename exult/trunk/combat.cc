@@ -208,8 +208,14 @@ void Combat_schedule::find_opponents
 	Game_window *gwin = Game_window::get_instance();
 	if (npc->get_alignment() >= Npc_actor::hostile)
 	{
-		Actor *party[9];
+		Actor *party[10];
 		int cnt = gwin->get_party(party, 1);
+		Actor *cact = gwin->get_camera_actor();
+					// Watch for companion on List Field.
+		if (cact && cact != gwin->get_main_actor() &&
+		    cact->get_alignment() == Npc_actor::friendly &&
+		    cact->get_flag(Obj_flags::si_tournament))
+			party[cnt++] = cact;
 		for (int i = 0; i < cnt; i++)
 					// But ignore invisible ones.
 			if (!party[i]->get_flag(Obj_flags::invisible) &&
@@ -678,7 +684,8 @@ void Combat_schedule::run_away
 	pos.tx += dirx*(8 + rx%8);
 	pos.ty += diry*(8 + ry%8);
 	npc->walk_to_tile(pos, gwin->get_std_delay(), 0);
-	if (fleed == 1 && rand()%3 && gwin->add_dirty(npc))
+	if (fleed == 1 && !npc->get_flag(Obj_flags::si_tournament) &&
+					rand()%3 && gwin->add_dirty(npc))
 		{
 		yelled++;
 		if (can_yell)
