@@ -122,4 +122,27 @@ public:
 	virtual void gen(ostream& out);
 	};
 
+/*
+ *	Print current message on screen (in conversation).
+ */
+class Uc_say_statement : public Uc_statement
+	{
+public:
+	Uc_say_statement() {  }
+					// Generate code.
+	virtual void gen(ostream& out);
+	};
+
+/*
+ *	Add string to current message (for conversations).
+ */
+class Uc_message_statement : public Uc_statement
+	{
+	Uc_expression *msg;
+public:
+	Uc_message_statement(Uc_expression *m) : msg(m) {  }
+					// Generate code.
+	virtual void gen(ostream& out);
+	};
+
 #endif

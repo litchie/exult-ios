@@ -62,6 +62,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  */
 %token IF ELSE RETURN WHILE FOR IN
 %token VAR STRING
+%token SAY MESSAGE EVENT FLAG ITEM
 
 /*
  *	Other tokens:
@@ -79,6 +80,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  *	Expression precedence rules:
  */
 %left AND OR
+%left EQUALS NEQUALS LTEQUALS GTEQUALS '<' '>' IN
 %left '-' '+'
 %left '*' '/' '%'
 %left NOT
@@ -160,6 +162,10 @@ statement:
 		{ $$ = 0; /* ++++++++ */ }
 	| return_statement
 	| statement_block
+	| SAY ';'
+		{ $$ = new Uc_say_statement(); }
+	| MESSAGE '(' expression ')' ';'
+		{ $$ = new Uc_message_statement($3); }
 	| ';'				/* Null statement */
 		{ $$ = 0; }
 	;
@@ -223,10 +229,24 @@ expression:
 		{ $$ = new Uc_binary_expression(UC_DIV, $1, $3); }
 	| expression '%' expression
 		{ $$ = new Uc_binary_expression(UC_MOD, $1, $3); }
+	| expression EQUALS expression
+		{ $$ = new Uc_binary_expression(UC_CMPEQ, $1, $3); }
+	| expression NEQUALS expression
+		{ $$ = new Uc_binary_expression(UC_CMPNE, $1, $3); }
+	| expression '<' expression
+		{ $$ = new Uc_binary_expression(UC_CMPL, $1, $3); }
+	| expression LTEQUALS expression
+		{ $$ = new Uc_binary_expression(UC_CMPLE, $1, $3); }
+	| expression '>' expression
+		{ $$ = new Uc_binary_expression(UC_CMPG, $1, $3); }
+	| expression GTEQUALS expression
+		{ $$ = new Uc_binary_expression(UC_CMPGE, $1, $3); }
 	| expression AND expression
 		{ $$ = new Uc_binary_expression(UC_AND, $1, $3); }
 	| expression OR expression
 		{ $$ = new Uc_binary_expression(UC_OR, $1, $3); }
+	| expression IN expression	/* Value in array. */
+		{ $$ = new Uc_binary_expression(UC_IN, $1, $3); }
 	| '-' primary
 		{ $$ = new Uc_binary_expression(UC_SUB,
 				new Uc_int_expression(0), $2); }

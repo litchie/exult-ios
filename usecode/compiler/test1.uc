@@ -11,5 +11,6 @@ adder 0x480 (a, b)
 	c = a + b;
 	d = [a, 1, b];		// Should pop as a, 1, b.
 // 	hello = a;		// Should cause an error.
+	UcSay;
 	return c;
 	}
