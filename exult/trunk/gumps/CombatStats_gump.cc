@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001 The Exult Team
+Copyright (C) 2001-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,10 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "game.h"
 #include "gamewin.h"
-#include "gump_utils.h"
 #include "misc_buttons.h"
 #include "CombatStats_gump.h"
 #include "Paperdoll_gump.h"
+#include "Gump_manager.h"
 
 
 /*
@@ -81,15 +81,17 @@ CombatStats_gump::~CombatStats_gump()
 
 void CombatStats_gump::paint()
 {
+	Gump_manager* gman = gwin->get_gump_man();
+
 	Gump::paint();
 
 	// stats for all party members
 	for (int i = 0; i < party_size; i++) {
 		face_btn[i]->paint();
 
-		Paint_num(party[i]->get_property(Actor::combat),
+		gman->Paint_num(party[i]->get_property(Actor::combat),
 				  x + colx + i*coldx, y + rowy[1]);		
-		Paint_num(party[i]->get_property(Actor::health),
+		gman->Paint_num(party[i]->get_property(Actor::health),
 				  x + colx + i*coldx, y + rowy[2]);
 
 		halo_btn[i]->paint();
@@ -97,9 +99,9 @@ void CombatStats_gump::paint()
 	}
 
 	// magic stats only for Avatar
-  	Paint_num(party[0]->get_property(Actor::magic),
+  	gman->Paint_num(party[0]->get_property(Actor::magic),
 						x + colx, y + rowy[5]);
-  	Paint_num(party[0]->get_property(Actor::mana),
+  	gman->Paint_num(party[0]->get_property(Actor::mana),
 						x + colx, y + rowy[6]);	
 }
 

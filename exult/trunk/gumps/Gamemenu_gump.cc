@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001 The Exult Team
+Copyright (C) 2001-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -32,11 +32,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Newfile_gump.h"
 #include "File_gump.h"
 #include "mouse.h"
-#include "gump_utils.h"
 #include "exult.h"
 #include "exult_flx.h"
 #include "Text_button.h"
 #include "gameclk.h"
+#include "Gump_manager.h"
 #include <string>
 
 using std::string;
@@ -109,7 +109,7 @@ void Gamemenu_gump::loadsave()
 {
 	//File_gump *fileio = new File_gump();
 	Newfile_gump *fileio = new Newfile_gump();
-	Do_Modal_gump(fileio, Mouse::hand);
+	gwin->get_gump_man()->Do_Modal_gump(fileio, Mouse::hand);
 	if (fileio->restored_game())
 	{
 		done = true;
@@ -122,7 +122,7 @@ void Gamemenu_gump::loadsave()
 void Gamemenu_gump::video_options()
 {
 	VideoOptions_gump *vid_opts = new VideoOptions_gump();
-	Do_Modal_gump(vid_opts, Mouse::hand);
+	gwin->get_gump_man()->Do_Modal_gump(vid_opts, Mouse::hand);
 
 	if (!vid_opts->want_restore_background()) {
 		// resolution could have changed, so recenter & repaint menu.
@@ -138,14 +138,14 @@ void Gamemenu_gump::video_options()
 void Gamemenu_gump::audio_options()
 {
 	AudioOptions_gump *aud_opts = new AudioOptions_gump();
-	Do_Modal_gump(aud_opts, Mouse::hand);
+	gwin->get_gump_man()->Do_Modal_gump(aud_opts, Mouse::hand);
 	delete aud_opts;
 }
 
 void Gamemenu_gump::gameplay_options()
 {
 	GameplayOptions_gump *gp_opts = new GameplayOptions_gump();
-	Do_Modal_gump(gp_opts, Mouse::hand);
+	gwin->get_gump_man()->Do_Modal_gump(gp_opts, Mouse::hand);
 	delete gp_opts;
 }
 

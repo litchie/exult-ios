@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2001-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -220,6 +220,8 @@ Newfile_gump::Newfile_gump
 	buttons[7] = new Newfile_button(this, btn_cols[4], btn_rows[4], EXULT_FLX_SAV_DOWNDOWN_SHP);
 
 	LoadSaveGameDetails();
+
+	SDL_EnableUNICODE(1); // enable unicode translation for text input
 }
 
 /*
@@ -236,6 +238,8 @@ Newfile_gump::~Newfile_gump
 		delete buttons[i];
 
 	FreeSaveGameDetails();
+
+	SDL_EnableUNICODE(0); // disable unicode translation again
 	
 	delete back;
 }
@@ -808,10 +812,7 @@ void Newfile_gump::mouse_drag
  *	Handle character that was typed.
  */
 
-void Newfile_gump::key_down
-	(
-	int chr
-	)
+void Newfile_gump::key_down(int chr, SDL_Event& event)
 {
 	bool update_details = false;
 	int repaint = false;
@@ -888,6 +889,15 @@ void Newfile_gump::key_down
 		break;
 
 	default:
+
+		if (event.type == SDL_KEYDOWN) {
+			int unicode = event.key.keysym.unicode;
+			if ((unicode & 0xFF80) == 0 )
+				chr = unicode & 0x7F;
+			else
+				chr = 0;
+		}
+
 		if (chr < ' ')
 			return;			// Ignore other special chars.
 

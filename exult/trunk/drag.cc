@@ -420,7 +420,6 @@ bool Dragging_info::drop
 	int x, int y			// Mouse position.
 	)
 	{
-	extern int Prompt_for_number(int, int, int, int);
 					// Get orig. loc. info.
 	int oldcx = old_pos.tx/c_tiles_per_chunk, 
 	    oldcy = old_pos.ty/c_tiles_per_chunk;
@@ -432,7 +431,8 @@ bool Dragging_info::drop
 	Gump *on_gump = gwin->get_gump_man()->find_gump(x, y);
 					// Don't prompt if within same gump.
 	if (quantity > 1 && (!on_gump || on_gump != gump))
-		quantity = Prompt_for_number(0, quantity, 1, quantity);
+		quantity = gwin->get_gump_man()->Prompt_for_number(0, quantity, 
+														   1, quantity);
 	if (quantity <= 0)
 		return false;
 	if (quantity < obj->get_quantity())

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000 The Exult Team
+Copyright (C) 2000-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -25,9 +25,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "gamewin.h"
 #include "Gump_button.h"
-#include "gump_utils.h"
 #include "misc_buttons.h"
 #include "Slider_gump.h"
+#include "Gump_manager.h"
 
 
 using std::cout;
@@ -180,7 +180,7 @@ void Slider_gump::paint
 					// Paint slider diamond.
 	diamond.paint_shape(x + diamondx, y + diamondy);
 					// Print value.
-  	Paint_num(val, x + textx, y + texty);
+  	gwin->get_gump_man()->Paint_num(val, x + textx, y + texty);
 	gwin->set_painted();
 }
 
@@ -288,10 +288,7 @@ void Slider_gump::mouse_drag
  *	Handle ASCII character typed.
  */
 
-void Slider_gump::key_down
-	(
-	int chr
-	)
+void Slider_gump::key_down(int chr, SDL_Event& ev)
 {
 	switch(chr) {
 	case SDLK_RETURN:
