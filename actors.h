@@ -61,6 +61,8 @@ public:
 		}
 	Actor *get_next()
 		{ return next; }
+	int get_usecode()
+		{ return usecode; }
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	virtual char *get_name();
