@@ -26,12 +26,9 @@
 #ifdef MACOS
 #include <QuickTimeMusic.h>
 #else
-// To work a round a conflict between exult's Palette class
-// and the Carbon headers, we put all into a namespace
-namespace QuickTime {
-#include <QuickTime/QuickTimeMusic.h>
-}
-using QuickTime::TunePlayer;
+// Work around a conflict between exult's Palette class
+// and the Carbon headers
+typedef struct ComponentInstanceRecord *       TunePlayer;
 #endif
 
 #include "Midi.h"
