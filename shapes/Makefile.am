@@ -14,6 +14,8 @@ libshapes_la_SOURCES = \
 	items.h \
 	monstinf.cc \
 	monstinf.h \
+	pngio.cc \
+	pngio.h \
 	shapeinf.cc \
 	shapeinf.h \
 	shapevga.cc \
