@@ -45,7 +45,7 @@ void MenuEntry::paint(Game_window *gwin)
 
 bool MenuEntry::handle_event(SDL_Event& event)
 {
-	return(event.key.keysym.sym == SDLK_RETURN ||
+	return((event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN) ||
 	       event.type == SDL_MOUSEBUTTONUP);
 }
 
@@ -96,19 +96,21 @@ bool MenuChoice::handle_event(SDL_Event& event)
 		choice++;
 		if(choice>=choices->size())
 			choice = 0;
-	} else switch(event.key.keysym.sym) {
-	case SDLK_LEFT:
-		choice--;
-		if(choice<0)
-			choice = choices->size()-1;
-		break;
-	case SDLK_RIGHT:
-		choice++;
-		if(choice>=choices->size())
-			choice = 0;
-		break;
-	default:
-		break;
+	} else if(event.type==SDL_KEYDOWN) {
+		switch(event.key.keysym.sym) {
+		case SDLK_LEFT:
+			choice--;
+			if(choice<0)
+				choice = choices->size()-1;
+			break;
+		case SDLK_RIGHT:
+			choice++;
+			if(choice>=choices->size())
+				choice = 0;
+			break;
+		default:
+			break;
+		}
 	}
 	return false;
 }
