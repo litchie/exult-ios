@@ -151,6 +151,19 @@ int Actor_pathfinder_client::estimate_cost
 	}
 
 /*
+ *	Is tile at goal?
+ */
+
+int Actor_pathfinder_dist_client::at_goal
+	(
+	Tile_coord& tile,
+	Tile_coord& goal
+	)
+	{
+	return tile.distance(goal) <= dist;
+	}
+
+/*
  *	Estimate cost from one point to another.
  */
 

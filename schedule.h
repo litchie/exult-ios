@@ -38,6 +38,7 @@ class Game_object;
 class Actor;
 class Rectangle;
 class Actor_action;
+class Astar;
 
 /*
  *	A Schedule controls the NPC it is assigned to.
@@ -74,13 +75,15 @@ public:
 		preach = 28,	patrol = 29,
 		desk_work = 30,	follow_avatar = 31,
 					// Our own:
-		walk_to_schedule = 32
+		walk_to_schedule = 32,
+		street_maintenance = 33
 		};
 					// Set actor to walk somewhere, then
 					//   do something.
 	static void set_action_sequence(Actor *actor, Tile_coord dest,
 			Actor_action *when_there, int from_off_screen = 0,
 							int delay = 0);
+	int try_street_maintenance();	// Handle street-lamps, shutters.
 	virtual void now_what() = 0;	// Npc calls this when it's done
 					//   with its last task.
 	virtual void im_dormant()	// Npc calls this when it goes from
@@ -92,6 +95,19 @@ public:
 		{  }
 	virtual Game_object *get_opponent()	// Get opponent.
 		{ return 0; }
+	};
+
+/*
+ *	Street maintenance (turn lamps on/off).
+ */
+class Street_maintenance_schedule : public Schedule
+	{
+	Game_object *obj;		// Lamp/shutters.
+	int shapenum;			// Save original shapenum.
+	Astar *path;			// Path to follow to get there.
+public:
+	Street_maintenance_schedule(Actor *n, Astar *p, Game_object *o);
+	virtual void now_what();
 	};
 
 /*
