@@ -67,6 +67,7 @@ class Gump_manager;
 struct SaveGame_Details;
 struct SaveGame_Party;
 class Map_patch_collection;
+class Dragging_info;
 
 /*
  *	The main game window:
@@ -141,15 +142,7 @@ class Game_window
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
 	long last_restore_hour;		// Hour in game of last restore.
-					// Dragging info:
-	Game_object *dragging;		// What's being dragged.
-	Gump *dragging_gump;
-	Gump_button *dragging_button;
-	int dragging_readied_index;	// If it was a 'readied' item.
-					// Last mouse, paint positions:
-	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
-	Rectangle dragging_rect;	// Rectangle to repaint.
-	Image_buffer *dragging_save;	// Image below dragged object.
+	Dragging_info *dragging;	// Dragging info:
 					// Theft info:
 	int theft_warnings;		// # times warned in current chunk.
 	short theft_cx, theft_cy;	// Chunk where warnings occurred.
@@ -704,9 +697,6 @@ public:
 	int get_text_height(int fontnum);
 	int get_text_baseline(int fontnum);
 	Font *get_font(int fontnum);
-protected:
-	void drop(int x, int y);
-public:
 	bool drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
 	bool init_gamedat(bool create); // Initialize gamedat directory
 					// Explode a savegame into "gamedat".
@@ -757,7 +747,7 @@ public:
 	unsigned char get_hit_pixel() { return hit_pixel; }
 
 	inline Gump_manager *get_gump_man() { return gump_man; }
-	inline Gump *get_dragging_gump() { return dragging_gump; }
+	Gump *get_dragging_gump();
 	inline Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
 
 protected:
