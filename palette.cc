@@ -94,3 +94,21 @@ void Palette::fade_out(int cycles)
 				SDL_Delay(20);
 		}
 	}
+
+//	Find index (0-255) of closesest color (r,g,b < 64).
+int Palette::find_color(int r, int g, int b) {
+	int best_index = -1;
+	long best_distance = 0xfffffff;
+	for (int i = 0; i < 256; i++) {
+					// Get deltas.
+		long dr = r - pal1[3*i], dg = g - pal1[3*i + 1], 
+							db = b - pal1[3*i + 2];
+					// Figure distance-squared.
+		long dist = dr*dr + dg*dg + db*db;
+		if (dist < best_distance) {	// Better than prev?
+			best_index = i;
+			best_distance = dist;
+		}
+	}
+	return best_index;
+}
