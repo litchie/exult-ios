@@ -1,3 +1,7 @@
+2002-01-04  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/FAQ.html and ReadMe.html updated
+	* docs/xml: updated faq.xml, docs.xml, html.xsl, php.xsl, docs.dtd
+
 2002-01-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* tools/expack.cc: properly report errors if opening a file failed
 	* Makefile.win32/cygwin: removed deleted ucxt files
@@ -2820,6 +2824,7 @@
 	* gamewin.cc: DON'T close all gumps when casting a spell.
 	* effects.cc (Death_vortex): Death Vortex spell implemented.
 
+
 2001-05-28  Dancer Vesperman <dancer@users.sourceforge.net>
 	* actors.cc: uninline static method called from external translation
 		units. (Otherwise we cannot link under some compilers. Duh)
@@ -3751,6 +3756,7 @@
 	* tools/expack.cc: Added .txt file detection to fix some bugs caused 
 	  by "stupid dos conventions".
 	* files/utils.cc: I removed the "bad code" ;)
+
 	* Makefile.*, data/defaultkeys.txt, data/flx.in, data/Makefile.am:
 	  Renamed "data/default.key" to "data/defaultkeys.txt"
 	* Makefile.cygwin: make install will now create data dir
@@ -5106,6 +5112,7 @@
 	learnt how a spec file actually works :-)
 	* data/Makefile.am: fiddle with rules to install exult.flx in the
 	correct place, and get rpm -tb working
+
 
 2000-09-09  Jeff Freedman  <jeff@amy.nerble.net>
 

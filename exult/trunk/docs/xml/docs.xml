@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="25 November 2001(GMT)">
+<readme title="Exult" changed="04 January 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="04012002">
+			<header>- 04 January 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> added &lt;force_wavout&gt; and 
+					&lt;looping&gt;.</li>
+				<li><ref1 target="command_line"/> Some parameters for whoever dares to use them.</li>
+				<li><ref1 target="audio_gump"/> looping added.</li>
+				<li><ref1 target="quit_menu"/> removed in snapshots.</li>				
+				</ul>
+			</body>
+		</sub>		
 		<sub name="25112001">
 			<header>- 25 November 2001</header>
 			<body>
@@ -249,6 +261,13 @@
 						<key>Esc</key> - the setting is saved)
 						</comment></line>
 					<line>&lt;/enabled&gt;</line>
+					<line>&lt;force_waveout&gt;</line>
+					<line>no
+						<comment>**yes forces Exult to use waveout instead of directsound. This may
+						fix problems some people have with Exult and sound in Windows 
+						(it's a Windows-only option)
+						</comment></line>
+					<line>&lt;/enabled&gt;</line>
 					<line>&lt;effects&gt;</line>
 					<line>&lt;enabled&gt;</line>
 					<line>yes
@@ -279,6 +298,11 @@
    						<comment>**choose the Windows MIDI Device. See <ref target="win32_device"/>
    						</comment></line>
    					<line>&lt;/win32_device&gt;</line>
+   					<line>&lt;looping&gt;</line>
+   					<line>Yes
+   						<comment>**No disables muisc looping. See <ref target="audio_gump"/>
+   						</comment></line>
+   					<line>&lt;/looping&gt;</line>
 					<line>&lt;/midi&gt;</line>
 					<line>&lt;speech&gt;</line>
 					<line>&lt;enabled&gt;</line>
@@ -390,6 +414,32 @@
 				    You can either use the relative (./blackgate) or absolute (c:\ultima\blackgate) path 
 				    to point to the correct directory.
 				</para>				
+			</body>
+		</sub>
+		<sub name="command_line">
+			<header>Command line options</header>
+			<body>
+				<para>
+					<Exult/> offers some "hidden" command line options:
+				</para>
+				<ul>
+					<li>-bg<br/>
+						Starts the game with the Black Gate menu</li>
+					<li>-si<br/>
+						Starts the game with the Serpent Isle menu</li>
+					<li>-nocrc<br/>
+						Recently we added a crc check that Exult doesn't start when the
+						exult*.flx files in the data dir aren't the same it got compiled with.
+						This parameter lets the game start nethertheless. Don't try this if you 
+						don't know what you are doing.</li>
+					<li>-buildmap x<br/>
+						x = 0 shows all roofs, x = 2 pops them all.<br/>
+						Builds a map of Black Gate.The map is <strong>huge</strong> and in the pcx 
+						format, you will need a lot of ram to even look at this map once it is build 
+						(and even that requires a lot of patience)</li>
+					<li>-game serpentisle -buildmap x<br/>
+						Does the same as above with the Serpent Isle map</li>
+				</ul>
 			</body>
 		</sub>
 	</section>
@@ -816,6 +866,8 @@
 					 	alters the way the midi is played. Enable or disable to hear if you like it.</li>
 					<li><strong>Chorus</strong><br/>
 						the same as <strong>Reverb</strong></li>
+					<li><strong>Looping</strong><br/>
+						Disable restores the (broken) way the original handeled the music looping flag.</li>	
 					<li><strong>SFX</strong><br/>
 						Enable or disable digital sound effects.</li>
 					<li><strong>Speech Options</strong><br/>
@@ -871,6 +923,9 @@
 					This is not implemented yet and just quits <Exult/>. When it eventually works you will 
 					be back to the <Exult/> menu where you choose which game you want to play. It is 
 					actually more difficult to implement than it sounds so don't expect it too soon.
+				</para>
+				<para>
+					In snapshots after the Beta 1 release this option is no longer availlable.
 				</para>
 			</body>
 		</sub>
