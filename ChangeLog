@@ -1,3 +1,6 @@
+2002-05-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mapedit/studio.cc: catch usecode debugging messages
+	
 2002-05-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucinternal.cc: After executing Usecode, tell barge to
