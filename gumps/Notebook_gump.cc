@@ -49,7 +49,8 @@ vector<Notebook_top> Notebook_gump::page_info;
 
 const int font = 4;			// Small black.
 const int vlead = 1;			// Extra inter-line spacing.
-const int pagey = 10;			// Top of page.
+const int pagey = 10;			// Top of text area of page.
+const int lpagex = 36, rpagex = 174;	// X-coord. of text area of page.
 
 class One_note
 {
@@ -184,11 +185,11 @@ inline Rectangle Get_text_area(bool right, bool startnote)
 	{
 	const int ninf = 12;		// Space for note info.
 	if (!startnote)
-		return right ? Rectangle(174, pagey, 122, 130)
-			     : Rectangle(36, pagey, 122, 130);
+		return right ? Rectangle(rpagex, pagey, 122, 130)
+			     : Rectangle(lpagex, pagey, 122, 130);
 	else
-		return right ? Rectangle(174, pagey+ninf, 122, 130-ninf)
-			     : Rectangle(36, pagey+ninf, 122, 130-ninf);
+		return right ? Rectangle(rpagex, pagey+ninf, 122, 130-ninf)
+			     : Rectangle(lpagex, pagey+ninf, 122, 130-ninf);
 	}
 
 /*
@@ -285,7 +286,7 @@ void Notebook_gump::add_new
 Notebook_gump::Notebook_gump
 	(
 	) : Gump(0, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curpage(0),
-	    curnote(0)
+	    curnote(0), updnx(0)
 	{
 	handles_kbd = true;
 	cursor.offset = 0;
@@ -407,7 +408,7 @@ void Notebook_gump::change_page
 			return;
 		curpage = nxt;
 		curnote = page_info[curpage].notenum;
-		cursor.offset = 0;
+		updnx = cursor.offset = 0;
 		}
 	else if (delta < 0)
 		{
@@ -415,7 +416,7 @@ void Notebook_gump::change_page
 			return;
 		curpage = topleft - 2;
 		curnote = page_info[curpage].notenum;
-		cursor.offset = 0;
+		updnx = cursor.offset = 0;
 		}
 	paint();
 }
@@ -454,6 +455,7 @@ Gump_button *Notebook_gump::on_button
 		curnote = page_info[curpage].notenum;
 		cursor.offset = offset + coff;
 		paint();
+		updnx = cursor.x - x - lpagex;
 		}
 	else
 		{
@@ -477,6 +479,7 @@ Gump_button *Notebook_gump::on_button
 			curnote = page_info[curpage].notenum;
 			cursor.offset = offset + coff;
 			paint();
+			updnx = cursor.x - x - rpagex;
 			}
 		}
 	return 0;
@@ -569,6 +572,66 @@ void Notebook_gump::next_page
 	}
 
 /*
+ *	Handle down/up arrows.
+ */
+
+void Notebook_gump::down_arrow
+	(
+	)
+	{
+	int ht = sman->get_text_height(font);
+	int offset = page_info[curpage].offset;
+	Rectangle box = Get_text_area(curpage%2, offset == 0);
+	box.shift(x, y);		// Window coords.
+	int mx = box.x + updnx, my = cursor.y + ht + ht/2;
+	if (my > box.y + box.h)		// Below bottom?
+		{
+		if (curpage >= page_info.size())
+			return;
+		next_page();
+		down_arrow();
+		return;
+		}
+	int notenum = page_info[curpage].notenum;
+	One_note *note = notes[notenum];
+	int coff = sman->find_cursor(font, note->text + offset, box.x,
+				box.y, box.w, box.h, mx, my, vlead);
+	if (coff >= 0)			// Found it?
+		{
+		cursor.offset = offset + coff;
+		paint();
+		}
+	}
+
+void Notebook_gump::up_arrow
+	(
+	)
+	{
+	int ht = sman->get_text_height(font);
+	int offset = page_info[curpage].offset;
+	Rectangle box = Get_text_area(curpage%2, offset == 0);
+	box.shift(x, y);		// Window coords.
+	int mx = box.x + updnx, my = cursor.y - ht/2;
+	if (my < box.y)			// Above top.
+		{
+		if (!curpage)
+			return;
+		prev_page();
+		up_arrow();
+		return;
+		}
+	int notenum = page_info[curpage].notenum;
+	One_note *note = notes[notenum];
+	int coff = sman->find_cursor(font, note->text + offset, box.x,
+				box.y, box.w, box.h, mx, my, vlead);
+	if (coff >= 0)			// Found it?
+		{
+		cursor.offset = offset + coff;
+		paint();
+		}
+	}
+
+/*
  *	Handle keystroke.
  */
 bool Notebook_gump::handle_kbd_event
@@ -631,7 +694,11 @@ bool Notebook_gump::handle_kbd_event
 			}
 		break;
 	case SDLK_UP:
+		up_arrow();
+		return true;			// Don't set updnx.
 	case SDLK_DOWN:
+		down_arrow();
+		return true;			// Don't set updnx.
 	case SDLK_HOME:
 	case SDLK_END:
 		// ++++++Finish.
@@ -666,8 +733,9 @@ bool Notebook_gump::handle_kbd_event
 			}
 		break;		
 	}
-	// ++++++Finish.
-	std::cout << "Notebook chr: " << chr << std::endl;
+	updnx = cursor.x - x - (curpage%2 ? rpagex : lpagex);
+	std::cout << "updnx = " << updnx << std::endl;
+//	std::cout << "Notebook chr: " << chr << std::endl;
 	return true;
 	}
 

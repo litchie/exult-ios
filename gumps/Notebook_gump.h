@@ -54,6 +54,7 @@ class Notebook_gump : public Gump
 	int curnote;			// Current note # being edited.
 	int curpage;			// Current page # (from 0).
 	Cursor_info cursor;		// Cursor loc. within current note.
+	int updnx;			// X-coord. for up/down arrows.
 					// Page turners:
 	Gump_button *leftpage, *rightpage;
 
@@ -69,6 +70,8 @@ class Notebook_gump : public Gump
 		}
 	void prev_page();
 	void next_page();
+	void up_arrow();
+	void down_arrow();
 public:
 	Notebook_gump();
 	~Notebook_gump();
