@@ -1422,7 +1422,7 @@ File_gump_object::File_gump_object
 	int i;
 	int ty = texty;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++, ty += texth)
-		names[i] = new Gump_text(this, FNTEXT, textx, ty, 36, 12, 2);
+		names[i] = new Gump_text(this, FNTEXT, textx, ty, 30, 12, 2);
 					// First row of buttons:
 	buttons[0] = buttons[1] = 0;	// No load/save until name chosen.
 	buttons[2] = new Quit_gump_button(this, btn_cols[2], btn_rows[0]);
