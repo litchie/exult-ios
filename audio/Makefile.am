@@ -9,6 +9,7 @@ INCLUDES +=	-I../conf
 CXXFLAGS += $(INCDIRS) -Wall 
 CXXFLAGS += $(PEDANTIC)
 CXXFLAGS += $(DEBUG_FLAGS)
+CXXFLAGS += $(WINDOWING_SYSTEM)
 
 #LIBS +=  -L/usr/X11R6/lib/ -lc -lstdc++ -lgcc -lm -lXi -lXext -lX11 
 

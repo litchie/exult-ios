@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 
 #include "SDL_mapping.h"
+#include "../fnames.h"
 
 #include "Configuration.h"
 extern	Configuration config;
@@ -376,6 +377,6 @@ void	Audio::start_speech(Flex *f,int num,bool wait)
 
 void	Audio::build_speech_vector(void)
 {
-	speech_tracks=AccessFlexFile("static/u7speech.spc");
+	speech_tracks=AccessFlexFile(U7SPEECH);
 }
 
