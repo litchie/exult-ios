@@ -203,7 +203,10 @@ Actor::Actor
 
 //	set_temperature (((magic_val >> 2) & 0x38) + (mana_val >> 5));
 
-	nfile.seekg(1	, ios::cur);	// Index2???? (refer to U7tech.txt)
+//	nfile.seekg(1	, ios::cur);	// Index2???? (refer to U7tech.txt)
+	face_num = Read1(nfile);
+	if (!face_num && npc_num > 0)	// Fix older savegames.
+		face_num = npc_num;
 	nfile.seekg(2	, ios::cur);	// Unknown
 
 	set_property((int) Actor::exp, Read4(nfile));
@@ -436,8 +439,8 @@ void Actor::write
 	nfile.put (magic_val);
 	nfile.put (mana_val);
 
-	nfile.put(0);		// Skip 3
-	Write2(nfile, 0);
+	nfile.put((face_num >= 0 && face_num <= 255) ? face_num : 0);
+	Write2(nfile, 0);		// Skip 2
 
 	Write2(nfile, get_property(Actor::exp));
 	Write2(nfile, 0);		// Skip 2.

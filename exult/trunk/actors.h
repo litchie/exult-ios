@@ -53,6 +53,7 @@ protected:
 	std::string name;			// Its name.
 	int usecode;			// # of usecode function.
 	short npc_num;			// # in Game_window::npcs list, or -1.
+	short face_num;			// Which shape for conversations.
 	short party_id;			// Index in party, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
 	short shape_save;		// Our old shape, or -1.
@@ -241,7 +242,7 @@ public:
 		};
 
 	int get_face_shapenum() const	// Get "portrait" shape #.
-		{ return npc_num; }	// It's the NPC's #.
+		{ return face_num; }	// It's the NPC's #.
 	int get_usecode() const
 		{ return usecode; }
 	Schedule *get_schedule() const
@@ -362,6 +363,7 @@ public:
 		{ usecode_dir = d&7; }
 	virtual int get_usecode_dir() const
 		{ return usecode_dir; }
+	void init_readied();		// Call Usecode to init. readied objs.
 					// Remove an object.
 	virtual void remove(Game_object *obj);
 					// Add an object.

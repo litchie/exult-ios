@@ -50,6 +50,7 @@
 #define SCHEDULE_DAT	"<STATIC>/schedule.dat"
 #define SHPDIMS_DAT	"<STATIC>/shpdims.dat"
 #define INITGAME	"<STATIC>/initgame.dat"
+#define PATCH_INITGAME	"<PATCH>/initgame.dat"
 #define USECODE		"<STATIC>/usecode"
 #define PATCH_USECODE	"<PATCH>/usecode"
 #define POINTERS	"<STATIC>/pointers.shp"
