@@ -246,6 +246,7 @@ int Container_game_object::remove_quantity
 	if (objects.is_empty())
 		return delta;		// Empty.
 	Game_object *obj = objects.get_first();
+	Game_object *first = obj;	// Save first.
 	Game_object *next;
 	int done = 0;
 	while (!done && delta)
@@ -261,7 +262,7 @@ int Container_game_object::remove_quantity
 			delta = obj->remove_quantity(delta, shapenum, 
 							qual, framenum);
 		obj = next;
-		done = (!obj || obj == objects.get_first());
+		done = (!obj || obj == first);
 		}
 	return (delta);
 	}
