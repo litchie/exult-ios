@@ -23,6 +23,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#ifndef GAMEWIN_H
+#define GAMEWIN_H
+
 #include "imagewin.h"
 #include "actors.h"
 #include "vgafile.h"
@@ -53,6 +56,8 @@ class Game_window
 public:
 	enum Game_mode {		// Can be in different modes.
 		splash,			// Splash screen.
+		menu,			// Menu screen
+		quotes,			// Quotes scroller
 		normal,			// Normal game-play.
 		conversation,		// Talking.
 		gump			// Showing open container(s).
@@ -519,7 +524,7 @@ public:
 		{ focus = 0; }
 	inline int have_focus() const
 		{ return focus; }
-	void end_splash();		// End splash screen.
+	void setup_game();		// Prepare for game
 	void read_npcs();		// Read in npc's.
 	int write_npcs();		// Write them back.
 	void read_schedules();		// Read npc's schedules.
@@ -558,3 +563,4 @@ public:
 	int find_roof(int cx, int cy);
 	};
 
+#endif

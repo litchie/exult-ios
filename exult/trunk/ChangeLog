@@ -1,3 +1,8 @@
+2000-06-25  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* Makefile.am, exult.cc: use VERSION instead of RELNUM
+	* exult.cc, gamewin.cc: move config stuff about splash to exult.cc
+
 2000-06-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gumps.cc (Stats_gump_object): Show name.
