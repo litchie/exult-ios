@@ -845,8 +845,9 @@ USECODE_INTRINSIC(set_alignment)
 	// Set npc's alignment.
 	// 2,3==bad towards Ava. 0==good.
 	Game_object *obj = get_item(parms[0]);
+	int val = parms[1].get_int_value();
 	if (obj)
-		obj->set_alignment(parms[1].get_int_value());
+		obj->set_alignment(val);
 	return(no_ret);
 }
 
@@ -1918,6 +1919,8 @@ USECODE_INTRINSIC(fade_palette)
 	// Fade(cycles?, ??(always 1), in_out (0=fade to black, 1=fade in)).
 	int cycles = parms[0].get_int_value();
 	int inout = parms[2].get_int_value();
+	if (inout == 0)
+		show_pending_text();	// Make sure prev. text was seen.
 	gwin->fade_palette(cycles, inout);
 	return(no_ret);
 }
