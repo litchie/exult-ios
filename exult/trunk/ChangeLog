@@ -1,3 +1,6 @@
+2001-09-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Configuration.cc, keyring.cc: added missing #include
+	
 2001-09-20  Ryan Nunn <triforce@merlin.net.au>
 	* audio/Midi.h : Fixed the crash when saving a game with midi disabled
 	* keyactions.cc, readnpcs.cc, conf/Configuration.cc,

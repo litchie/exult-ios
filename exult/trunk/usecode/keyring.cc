@@ -25,6 +25,7 @@
 #include "keyring.h"
 #include "utils.h"
 #include "fnames.h"
+#include "exceptions.h"
 
 using std::ifstream;
 using std::ofstream;
