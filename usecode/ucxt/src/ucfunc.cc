@@ -182,14 +182,22 @@ void UCFunc::parse_ucs_pass1a(vector<UCNode *> &nodes)
 	// collect jump references
 	for(unsigned int i=0; i<nodes.size(); i++)
 	{
-		/* TODO: Need to expand this so it handles anything that has goto targets
-		   in it, not just these two opcodes. */
 		if(nodes[i]->ucc!=0)
-			if((nodes[i]->ucc->_id==0x05) || (nodes[i]->ucc->_id==0x06))
+		{
+			unsigned int isjump=0;
+			for(vector<pair<unsigned int, unsigned int> >::iterator op=opcode_jumps.begin(); op!=opcode_jumps.end(); op++)
+				if(op->first==nodes[i]->ucc->_id)
+				{
+					isjump=op->second;
+					break;
+				}
+			
+			if(isjump!=0)
 			{
-				assert(nodes[i]->ucc->_params_parsed.size());
-				jumps.push_back(nodes[i]->ucc->_params_parsed[0]);
+				assert(nodes[i]->ucc->_params_parsed.size()>=isjump);
+				jumps.push_back(nodes[i]->ucc->_params_parsed[isjump-1]);
 			}
+		}
 	}
 
 	gotoset.push_back(GotoSet());
@@ -237,8 +245,6 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 		
 		if(current->second==false)
 		{
-			/* Include proper munging of opsneeded, it has special effects for numbers
-			   greater then 0x7F. Currently we just 'ignore' it. */
 			if((opcode_table_data[current->first->_id].num_pop!=0) || (opcode_table_data[current->first->_id].call_effect!=0))
 			{
 				//if(opcode_table_data[current->first->_id].num_pop<0x7F)

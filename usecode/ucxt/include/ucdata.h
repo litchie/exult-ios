@@ -42,6 +42,7 @@ class UCData
 		bool autocomment() const { return _autocomment; };
 		bool uselesscomment() const { return _uselesscomment; };
 		bool verbose()     const { return _verbose;     };
+		bool ucdebug()     const { return _ucdebug;     };
 		
  		unsigned int mode() const { return _mode; };
 		unsigned int game() const { return _game; };
@@ -72,6 +73,7 @@ class UCData
 		bool _autocomment;
 		bool _uselesscomment;
 		bool _verbose;
+		bool _ucdebug;
 		
 		unsigned int _mode;
 		unsigned int _game;
