@@ -1,13 +1,14 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 05 June 2002(GMT)
+last changed: 18 June 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 05 June 2002
-0.2. - 19 May 2002
-0.3. - 07 April 2002
+0.1. - 18 June 2002
+0.2. - 05 June 2002
+0.3. - 19 May 2002
+0.4. - 07 April 2002
 
 1. Introduction
 1.1. Why is it called Exult - what is the meaning of this name?
@@ -18,9 +19,10 @@ The latest version of this document can be found at http://exult.sourceforge.net
 1.6. Will there be a multiplayer Exult?
 1.7. Where do I find Exult?
 1.8. What is a snapshot? Are these screenshots or what?
-1.9. How do I compile a source code snapshot for my OS?
-1.10. What is the latest version of Exult?
-1.11. On what platform does Exult run?
+1.9. Why are there now two different snapshots?
+1.10. How do I compile a source code snapshot for my OS?
+1.11. What is the latest version of Exult?
+1.12. On what platform does Exult run?
 
 2. Exult and Ultima 7
 2.1. Do I need Ultima 7?
@@ -71,14 +73,20 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 05 June 2002
-* 1.10. What is the latest version of Exult? new version.
+0.1. - 18 June 2002
+* 1.9. Why are there now two different snapshots? same as on our main page, also some explanation for the different FAQ/Docs.
+* 4.2. How do I submit a proper bug report? SourceForge requires registration for attaching files.
+
+
+
+0.2. - 05 June 2002
+* 1.11. What is the latest version of Exult? new version.
 * 3.2. Why can't I move my party with the arrow keys? added..
 * 3.14. Where is the pikeman that lets you train in Monitor (SI)? bug from the original is haunting us.
 
 
 
-0.2. - 19 May 2002
+0.3. - 19 May 2002
 * 3.4. So why can't I sail a ship in BG? this gets asked once in a while.
 * 3.6. Why is the party formation different? Jeff changed this a bit.
 * "Why does Exult freeze when I board Hawk's ship on SI?" was a bug and got fixed and therefore no longer in the FAQ.
@@ -87,9 +95,9 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 07 April 2002
+0.4. - 07 April 2002
 * Removed the FAQ part for Exult Studio and integrated it in the Exult Studio documentation.
-* 1.11. On what platform does Exult run? MacOS needs to be 8.5 or higher.
+* 1.12. On what platform does Exult run? MacOS needs to be 8.5 or higher.
 * 3.18. I heard that Exult is meant to be a game engine. Can I make my own game with Exult? linked to the new Exult Studio documentation.
 * 4.4. Known Issues possible bug with spaces in path.
 * 4.5. Known Compile Issues makefile.cygwin uses Cygwin only as shell.
@@ -135,7 +143,7 @@ Note however that Exult is open source. If you want a multiplayer U7 no one hold
 
 
 1.7. Where do I find Exult?
-The latest official version is found on http://exult.sourceforge.net/ Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree can be found at http://exult.sourceforge.net/download.php. A BeOS binary snapshot can be found at http://digilander.iol.it/burton666/exult-beos.zip. Jack Burton provides this weekly or whenever it compiles for him. Thanks! There is also a version available for AmigaOS/MorphOS at http://www.muenster.de/~tomjoad/exult.html. Please see 1.11. for some more information on this port.
+The latest official version is found on http://exult.sourceforge.net/ Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree can be found at http://exult.sourceforge.net/download.php. A BeOS binary snapshot can be found at http://digilander.iol.it/burton666/exult-beos.zip. Jack Burton provides this weekly or whenever it compiles for him. Thanks! There is also a version available for AmigaOS/MorphOS at http://www.muenster.de/~tomjoad/exult.html. Please see 1.12. for some more information on this port.
 
 
 1.8. What is a snapshot? Are these screenshots or what?
@@ -144,17 +152,24 @@ The snapshot is the newest source code of the program. It is updated almost dail
 Also this FAQ mainly addresses the snapshots as people use them and ask question. And all the new features and improvements are found in those!
 
 
-1.9. How do I compile a source code snapshot for my OS?
+1.9. Why are there now two different snapshots?
+If you checked our download page recently, you may have noticed that we have two sets of development snapshots now: a 1.0.x (stable) snapshot, and a 1.1.x (unstable) snapshot.
+The 1.0.x branch will become our 1.0 release soon, hopefully, and we will mainly be fixing any remaining bugs in this branch. We recommend using the 1.0.x snapshots for playing and testing Exult.
+The 1.1.x branch is meant mostly as a 'developer playground' at the moment. We are making some very destabilizing changes to this branch, like a rewritten usecode interpreter and new audio code. We do not recommend using the 1.1.x snapshots for normal playing.
+This also means that the documentation and the FAQ needs to be different. You will find the description of the 1.1.x branch features only in the snapshot and the source and not on our homepage.
+
+
+1.10. How do I compile a source code snapshot for my OS?
 The source code snapshots contain a file called "README.OS" (like Readme.win32, Readme.MacOS) that explains everything.
 
 
-1.10. What is the latest version of Exult?
+1.11. What is the latest version of Exult?
 The current official release is V0.99.1 RC 2 (Release Candidate 2). See also 1.7. to learn where to get the latest version.
 To find out which version you are running, press 'v' while in game.
 And if you are wondering about our strange version numbering, we can't help you as we have no clue about it as well.
 
 
-1.11. On what platform does Exult run?
+1.12. On what platform does Exult run?
 Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher), OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP).
 Recently we discovered that there is also a working port of Exult for MorphOS and AmigaOS. You can find that version at Ruediger Hanke's homepage http://www.muenster.de/~tomjoad/exult.html. We are currently working on integrating his changes into the main code and making those versions available on our homepage.
 
@@ -333,7 +348,7 @@ To see a list of open bugs and bugreports go to http://sourceforge.net/bugs/?gro
 7. Please include a savegame (use common sense if it is really needed). You will find those in the game directories you put in the exult.cfg. They are called exult**bg.sav (** is a number) for BG and exult**si.sav for SI. You can look up the filename int the savegame dialog as well (to the right, above the party members). As some parts of the game may require you to complete other quests or stuff before you get to the bug you want to report it's much easier for the team to look at the problem (speeds the process up a bit as they are much more likely you take a look at the problem this way). You need to check the box saying "Check to upload and Attach file".. See this screenshot for an example: http://exult.sourceforge.net/images/sfbug.jpg
 8. One bug per subject please.
 
-Note that SourceForge requires users to enable cookies to attach files. If you use Internet Explorer 6.0 your Cookies Security needs to be at medium or below.
+Note for attaching savegames SourceForge requires users to be registered. Therefor we strongly advice users to register with SF. Any bug report that requires a savegame will most likely be tagged invalid if we don't receive a savegame after we requested it.
 You can also use our forum to report bugs. But if you do please follow the guidelines mentioned above (you can't include a savegame of course). Though be aware that bugs submitted to the bug tracker are more likely to get attention than bugs submitted to the forum.
 So if you want to have a bug fixed follow these steps!
 
