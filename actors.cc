@@ -3111,7 +3111,7 @@ void Npc_actor::remove_this
 	set_action(0);
 	delete schedule;
 	schedule = 0;
-	num_schedules = 0;
+// Messes up resurrection	num_schedules = 0;
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	gwin->remove_nearby_npc(this);	// Remove from nearby list.
 					// Store old chunk list.
@@ -3298,7 +3298,6 @@ void Dead_body::decay
 			continue;
 			}
 		gwin->add_dirty(obj);
-		obj->unlink();		// Remove from list.
 					// Schedule for deletion.
 		gwin->delete_object(obj);
 		}
@@ -3313,6 +3312,20 @@ int Dead_body::get_live_npc_num
 	)
 	{
 	return npc_num;
+	}
+
+/*
+ *	Remove an object from its container, or from the world.
+ *	The object is deleted.
+ */
+
+void Dead_body::remove_this
+	(
+	int nodel			// 1 to not delete.
+	)
+	{
+	unlink();			// Remove from 'decay' chain.
+	Container_game_object::remove_this(nodel);
 	}
 
 /*
