@@ -1899,11 +1899,8 @@ void Chunk_cache::set_egged
 	{
 					// Egg already there?
 	int eggnum = egg_objects.find(egg);
-	if (eggnum < 0)			// No.  Is there a free spot?
-		if ((eggnum = egg_objects.find(0)) >= 0)
-			egg_objects.put(eggnum, egg);
-		else			// No free spot.
-			eggnum = egg_objects.append(egg);
+	if (eggnum < 0)			// No, so add it.
+		eggnum = egg_objects.put(egg);
 	if (eggnum > 15)		// We only have 16 bits.
 		eggnum = 15;
 	short mask = (1<<eggnum);
@@ -1911,6 +1908,37 @@ void Chunk_cache::set_egged
 	for (int ty = tiles.y; ty < stopy; ty++)
 		for (int tx = tiles.x; tx < stopx; tx++)
 			eggs[ty*tiles_per_chunk + tx] |= mask;
+	}
+
+/*
+ *	Clear a rectangle of tiles within this chunk so they're no longer 
+ *	under the influence of a given egg.
+ */
+
+void Chunk_cache::unset_egged
+	(
+	Egg_object *egg,
+	Rectangle& tiles		// Range of tiles within chunk.
+	)
+	{
+					// Find egg.
+	int eggnum = egg_objects.find(egg);
+	if (eggnum < 0)
+		return;			// Not there.
+	egg_objects.put(eggnum, 0);	// Clear it out.
+	if (eggnum >= 15)		// We only have 16 bits.
+		{			// Last one at 15 or above?
+		int num_eggs = get_num_eggs();
+		for (int i = 15; i < num_eggs; i++)
+			if (egg_objects.get(i))
+				return;	// No, so leave bits alone.
+		eggnum = 15;
+		}
+	short mask = ~(1<<eggnum);
+	int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
+	for (int ty = tiles.y; ty < stopy; ty++)
+		for (int tx = tiles.x; tx < stopx; tx++)
+			eggs[ty*tiles_per_chunk + tx] &= mask;
 	}
 
 /*

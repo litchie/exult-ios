@@ -655,6 +655,8 @@ class Chunk_cache
 						Game_object *obj, int add);
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles);
+					// Clear area within egg's influence.
+	void unset_egged(Egg_object *egg, Rectangle& tiles);
 					// Add egg.
 	void add_egg(Chunk_object_list *chunk, Egg_object *egg);
 					// Set up with chunk's data.
@@ -756,6 +758,8 @@ public:
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles)
 		{ need_cache()->set_egged(egg, tiles); }
+	void unset_egged(Egg_object *egg, Rectangle& tiles)
+		{ need_cache()->unset_egged(egg, tiles); }
 	void activate_eggs(int tx, int ty)
 		{ need_cache()->activate_eggs(this, tx, ty); }
 	};
