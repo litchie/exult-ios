@@ -23,6 +23,7 @@
 #include "SDL_keyboard.h"
 
 #include "keys.h"
+#include "exult.h"
 #include "game.h"
 #include "cheat.h"
 #include "U7file.h"

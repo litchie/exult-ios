@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "File_gump.h"
 #include "mouse.h"
 #include "gump_utils.h"
+#include "exult.h"
 #include "exult_flx.h"
 
 static const int rowy[6] = { 14, 28, 40, 52, 66, 78 };
