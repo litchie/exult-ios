@@ -268,7 +268,6 @@ static void Init
 	SDL_SysWMinfo info;		// Get system info.
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
-					// Ignore clicks until splash done.
 
 #ifdef XWIN
         SDL_GetWMInfo(&info);
@@ -314,10 +313,8 @@ static void Init
 	gwin->init_files();
 					// Skip splash screen?
 	config->value("config/gameplay/skip_splash", yn, "no");
-	if(yn == "no") {
-		gwin->set_mode(Game_window::splash);
+	if(yn == "no") 
 		game->play_intro();
-	}
 	game->show_menu();
 	gwin->set_mode(Game_window::normal);
 	SDL_SetEventFilter(Filter_intro_events);
@@ -450,35 +447,26 @@ static void Handle_events
 					// Get current time.
 		unsigned long ticks = SDL_GetTicks();
 					// Animate unless dormant.
-		if(gwin->get_mode()!=Game_window::splash)
-			{
-			if (gwin->have_focus() && !dragging)
-				gwin->get_tqueue()->activate(ticks);
+		if (gwin->have_focus() && !dragging)
+			gwin->get_tqueue()->activate(ticks);
 					// Show animation every 1/20 sec.
-			if (ticks > last_repaint + 50 ||
+		if (ticks > last_repaint + 50 || gwin->was_painted())
 					// This avoids jumpy walking:
-			    gwin->was_painted())
+			{
+			gwin->paint_dirty();
+			last_repaint = ticks;
+			rotate = 1;
+			int x, y;// Check for 'stuck' Avatar.
+			if (!gwin->is_moving() &&
+			    !gwin->was_teleported())
 				{
-				gwin->paint_dirty();
-				last_repaint = ticks;
-				rotate = 1;
-				int x, y;// Check for 'stuck' Avatar.
-				if (!gwin->is_moving() &&
-				    !gwin->was_teleported())
-#if 0	/* Seems to work fine as above. */
-				if ((gwin->get_moving_barge() && 
-					!gwin->is_moving()) || 
-						!gwin->get_moving_barge())
-#endif
-					{
-					int ms = SDL_GetMouseState(&x, &y);
-					if ((SDL_BUTTON(3) & ms) &&
-					 gwin->get_usecode()->get_global_flag(
-					   Usecode_machine::did_first_scene))
-						gwin->start_actor(x >> scale, 
-								y >> scale, 
-								avatar_speed);
-					}
+				int ms = SDL_GetMouseState(&x, &y);
+				if ((SDL_BUTTON(3) & ms) &&
+				    gwin->get_usecode()->get_global_flag(
+				    Usecode_machine::did_first_scene))
+					gwin->start_actor(x >> scale, 
+							  y >> scale, 
+							  avatar_speed);
 				}
 			}
 
