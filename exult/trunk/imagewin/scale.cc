@@ -14,7 +14,6 @@
 #  include <cstring>
 #endif
 
-
 /** 
  ** 2xSaI scaling filter source code adapted for Exult
  ** August 29 2000, originally written in May 1999
@@ -78,9 +77,9 @@ inline int GetResult2(Source_pixel A, Source_pixel B, Source_pixel C, Source_pix
 }
 
 
+// 2xSaI scaler
 template <class Source_pixel, class Dest_pixel, class Manip_pixels>
-//void _2xSaI
-void Scale2x
+void Scale_2xSaI
 	(
 	Source_pixel *source,	// ->source pixels.
 	int srcx, int srcy,		// Start of rectangle within src.
@@ -359,88 +358,12 @@ inline void Interp_vert
 	}
 
 
-#if 0
 /*
  *	Scale X2 with bilinear interpolation.
  */
 template <class Source_pixel, class Dest_pixel, class Manip_pixels>
-void Scale2x
-(
-	Source_pixel *source,		// ->source pixels.
-	int sline_pixels,		// Pixels (words)/line for source.
-	int sheight,			// Source height.
-	Dest_pixel *dest,		// ->dest pixels.
-	int dline_pixels,		// Pixels (words)/line for dest.
-	const Manip_pixels& manip	// Manipulator methods.
-)
-{
-	Source_pixel *from = source;
-	Dest_pixel *to = dest;
-	int swidth = dline_pixels/2;	// Take min. of pixels/line.
-	if (swidth > sline_pixels)
-		swidth = sline_pixels;
-					// Do each row, interpolating horiz.
-	for (int y = 0; y < sheight; y++)
-		{
-		int count = swidth - 1;
-		register Source_pixel *source_line = from;
-		register Dest_pixel *dest_line = to;
-		register int n = ( count + 7 ) / 8;
-		switch( count % 8 )
-			{
-	             	case 0: do { Interp_horiz(from, to, manip);
-        	     	case 7:      Interp_horiz(from, to, manip);
-	             	case 6:      Interp_horiz(from, to, manip);
-        	     	case 5:      Interp_horiz(from, to, manip);
-	             	case 4:      Interp_horiz(from, to, manip);
-        	     	case 3:      Interp_horiz(from, to, manip);
-	             	case 2:      Interp_horiz(from, to, manip);
-        	     	case 1:      Interp_horiz(from, to, manip);
-                	       } while( --n > 0 );
-			}
-		manip.copy(*to++, *from);// End of row.
-		manip.copy(*to++, *from++);
-		from = source_line + sline_pixels;
-					// Skip odd rows.
-		to = dest_line + 2*dline_pixels;
-		}
-	Dest_pixel *from0 = dest;	// Interpolate vertically.
-	Dest_pixel *from1;
-	for (int y = 0; y < sheight - 1; y++)
-		{
-		to = from0 + dline_pixels;
-		from1 = to + dline_pixels;
-		Dest_pixel *source_line1 = from1;
-		int count = dline_pixels;
-		int n = ( count + 7 ) >>3;
-		switch( count % 8 )
-			{
-	             	case 0: do { Interp_vert(from0, from1, to, manip);
-        	     	case 7:      Interp_vert(from0, from1, to, manip);
-	             	case 6:      Interp_vert(from0, from1, to, manip);
-        	     	case 5:      Interp_vert(from0, from1, to, manip);
-	             	case 4:      Interp_vert(from0, from1, to, manip);
-        	     	case 3:      Interp_vert(from0, from1, to, manip);
-	             	case 2:      Interp_vert(from0, from1, to, manip);
-        	     	case 1:      Interp_vert(from0, from1, to, manip);
-                	       } while( --n > 0 );
-			}
-					// Doing every other line.
-		from0 = source_line1;
-		}
-					// Just copy last row.
-	memcpy(from0 + dline_pixels, from0, dline_pixels*sizeof(*from0));
-	}
-#endif
-
-
-#if 0
-/*
- *	Scale a rectangle X2 with bilinear interpolation.
- */
-template <class Source_pixel, class Dest_pixel, class Manip_pixels>
-void Scale2x
-(
+void Scale_2xBilinear
+	(
 	Source_pixel *source,		// ->source pixels.
 	int srcx, int srcy,		// Start of rectangle within src.
 	int srcw, int srch,		// Dims. of rectangle.
@@ -449,7 +372,7 @@ void Scale2x
 	Dest_pixel *dest,		// ->dest pixels.
 	int dline_pixels,		// Pixels (words)/line for dest.
 	const Manip_pixels& manip	// Manipulator methods.
-)
+	)
 {
 
 	Source_pixel *from = source + srcy*sline_pixels + srcx;
@@ -526,7 +449,7 @@ void Scale2x
 	if (bottom_edge)		// Just copy last row.
 		memcpy(from0 + dline_pixels, from0, 2*srcw*sizeof(*from0));
 	}
-#endif
+
 
 #if 0	/* Testing */
 void test()
@@ -544,4 +467,80 @@ void test()
 	}
 #endif
 
+//
+// Point Sampling Scaler
+//
+void Scale_point
+(
+	unsigned char *source,		// ->source pixels.
+	int srcx, int srcy,		// Start of rectangle within src.
+	int srcw, int srch,		// Dims. of rectangle.
+	int sline_pixels,		// Pixels (words)/line for source.
+	int sheight,			// Source height.
+	unsigned char *dest,		// ->dest pixels.
+	int dline_pixels,		// Pixels (words)/line for dest.
+	int factor			// Scale factor
+)
+{
+	int x, y, ss, ds;
 
+	srch+=srcy;
+	srcw+=srcx;
+
+	if (srch>sheight) srch = sheight;
+	if (srcw>sline_pixels) srcw = sline_pixels;
+
+	srch *= factor;
+	srcw *= factor;
+	srcx *= factor;
+	srcy *= factor;
+
+	for (y = srcy; y < srch; y++)
+	{
+		ss = (y/factor)*sline_pixels;
+		ds = y*dline_pixels;
+		
+		for (x = srcx; x < srcw; x++)
+			dest[ds+x]  = source[ss+(x/factor)];
+	}
+}
+
+//
+// Interlaced Point Sampling Scaler
+//
+void Scale_interlace
+(
+	unsigned char *source,		// ->source pixels.
+	int srcx, int srcy,		// Start of rectangle within src.
+	int srcw, int srch,		// Dims. of rectangle.
+	int sline_pixels,		// Pixels (words)/line for source.
+	int sheight,			// Source height.
+	unsigned char *dest,		// ->dest pixels.
+	int dline_pixels,		// Pixels (words)/line for dest.
+	int factor			// Scale factor
+)
+{
+	int x, y, ss, ds;
+
+	srch+=srcy;
+	srcw+=srcx;
+
+	if (srch>sheight) srch = sheight;
+	if (srcw>sline_pixels) srcw = sline_pixels;
+
+	srch *= factor;
+	srcw *= factor;
+	srcx *= factor;
+	srcy *= factor;
+
+	for (y = srcy; y < srch; y++)
+	{
+		if (y % 2) continue;
+
+		ss = (y/factor)*sline_pixels;
+		ds = y*dline_pixels;
+		
+		for (x = srcx; x < srcw; x++)
+			dest[ds+x]  = source[ss+(x/factor)];
+	}
+}

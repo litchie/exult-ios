@@ -65,6 +65,10 @@ void ActionTeleport(int* params);
 void ActionTime(int* params);
 void ActionWizard(int* params);
 void ActionHeal(int* params);
+void ActionCheatScreen(int* params);
+void ActionPickPocket(int *params);
+void ActionNPCNumbers(int *params);
+void ActionGrabActor(int *params);
 
 void ActionPlayMusic(int* params);
 void ActionNaked(int* params);

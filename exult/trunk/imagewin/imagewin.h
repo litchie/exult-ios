@@ -29,6 +29,7 @@ Boston, MA  02111-1307, USA.
 
 //#include "SDL_video.h"
 #include "imagebuf.h"
+#include "exult_types.h"
 
 struct SDL_Surface;
 struct SDL_RWops;
@@ -40,9 +41,17 @@ struct SDL_RWops;
 
 class Image_window
 	{
+public:
+	enum ScalerType {
+		point = 0,
+		bilinear = 1,
+		interlaced = 2,
+		SaI = 3,
+	};
 protected:
 	Image_buffer *ibuf;		// Where the data is actually stored.
 	int scale;			// Only 1 or 2 for now.
+	int scaler;		// What scaler do we want to use
 	bool fullscreen;		// Rendering fullscreen.
 	SDL_Surface *surface;		// Represents window in memory.
 	SDL_Surface *scaled_surface;	// 2X surface if scaling, else 0.
@@ -51,28 +60,35 @@ protected:
 	/*
 	 *	Scaled blits:
 	 */
-					// Scale 8-bits to 16-bits.
-	void show_scaled8to16(int x, int y, int w, int h);
-	void show_scaled8to555(int x, int y, int w, int h);
-	void show_scaled8to565(int x, int y, int w, int h);
-					// Scale 8-bits to 32-bits.
-	void show_scaled8to32(int x, int y, int w, int h);	
+	void show_scaled8to16_2xSaI(int x, int y, int w, int h);
+	void show_scaled8to555_2xSaI(int x, int y, int w, int h);
+	void show_scaled8to565_2xSaI(int x, int y, int w, int h);
+	void show_scaled8to32_2xSaI(int x, int y, int w, int h);	
+	void show_scaled8to16_bilinear(int x, int y, int w, int h);
+	void show_scaled8to555_bilinear(int x, int y, int w, int h);
+	void show_scaled8to565_bilinear(int x, int y, int w, int h);
+	void show_scaled8to32_bilinear(int x, int y, int w, int h);	
+	void show_scaled_point(int x, int y, int w, int h);
+	void show_scaled_interlace(int x, int y, int w, int h);
 	/*
 	 *	Image info.
 	 */
 					// Create new SDL surface.
 	void create_surface(unsigned int w, unsigned int h);
 	void free_surface();		// Free it.
+	bool try_scaler(int w, int h, uint32 flags);
 public:
 					// Create with given buffer.
-	Image_window(Image_buffer *ib, int scl = 1, bool fs = false)
-		: ibuf(ib), scale(scl), fullscreen(fs), 
+	Image_window(Image_buffer *ib, int scl = 1, bool fs = false, int sclr = point)
+		: ibuf(ib), scale(scl), scaler(sclr), fullscreen(fs), 
 		  surface(0), 
 		  scaled_surface(0), show_scaled(0)
 		{ create_surface(ibuf->width, ibuf->height); }
 	virtual ~Image_window();
 	int get_scale()			// Returns 1 or 2.
 		{ return scale; }
+	int get_scaler()		// Returns 1 or 2.
+		{ return scaler; }
 					// Is rect. visible within clip?
 	int is_visible(int x, int y, int w, int h)
 		{ return ibuf->is_visible(x, y, w, h); }
@@ -91,7 +107,7 @@ public:
 					// Create a compatible image buffer.
 	Image_buffer *create_buffer(int w, int h);
 					// Resize event occurred.
-	void resized(unsigned int neww, unsigned int nehh, int newsc);
+	void resized(unsigned int neww, unsigned int nehh, int newsc, int newscaler = point);
 	void show();			// Repaint entire window.
 					// Repaint rectangle.
 	void show(int x, int y, int w, int h);

@@ -157,7 +157,7 @@ Actor::Actor
 	set_property((int) Actor::combat, combat_val & 0x7F);
 	if ((combat_val << 7) & 1) set_flag (Obj_flags::petra);
 
-	set_polymorph_defualt();	// We now have enought info to set the polymorph shape
+	set_polymorph_default();	// We now have enought info to set the polymorph shape
 
 	schedule_type = Read1(nfile);
 	nfile.seekg(1, ios::cur);	// Default attack mode

@@ -42,6 +42,7 @@
 #define USEDAT		"<GAMEDAT>/usecode.dat"
 #define FLAGINIT	"<GAMEDAT>/flaginit"
 #define GWINDAT		"<GAMEDAT>/gamewin.dat"
+#define GSCHEDULE	"<GAMEDAT>/schedule.dat"
 #define SCHEDULE_DAT	"<STATIC>/schedule.dat"
 #define SHPDIMS_DAT	"<STATIC>/shpdims.dat"
 #define INITGAME	"<STATIC>/initgame.dat"

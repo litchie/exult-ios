@@ -34,7 +34,6 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	menulist.o mouse.o npcnear.o npctime.o palette.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
 	exultico.o cheat_screen.o
-# TBA:	cheat_screen.o
 # unused: npctest.o
 
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o

@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunks.h"
 #include "spellbook.h"
 #include "conversation.h"
+#include "rect.h"
 
 using std::cerr;
 using std::cout;
@@ -1905,32 +1906,199 @@ USECODE_INTRINSIC(set_polymorph)
 	return no_ret;
 }
 
-USECODE_INTRINSIC(teleport)
+USECODE_INTRINSIC(set_new_schedules)
 {
-	// teleport(npc, 0??, schedule, pos(x, y)).
-	Actor *actor = as_actor(get_item(parms[0]));
-	if (actor && parms[3].get_array_size() >= 2)
-		{
+	// set_new_schedules ( npc, time, activity, [x, y] )
+	//
+	// or
+	//
+	// set_new_schedules ( npc, [	time1, time2, ...],
+	//			[activity1, activity2, ...],
+	//			[x1,y1, x2, y2, ...] )
+	//
+
+	Npc_actor *actor = as_npcactor(get_item(parms[0]));
+
+	// If no actor return
+	if (!actor) return no_ret;
+
+	int count = parms[1].is_array()?parms[1].get_array_size():1;
+	Schedule_change *list = new Schedule_change[count];
+
+	if (!parms[1].is_array())
+	{
+		int time = parms[1].get_int_value();
 		int sched = parms[2].get_int_value();
 		int tx = parms[3].get_elem(0).get_int_value();
 		int ty = parms[3].get_elem(1).get_int_value();
-		actor->move(tx, ty, 0);
-		actor->set_schedule_type(sched);
-		}
-	return no_ret;
+		list[0].set(tx, ty, sched, time);
+	}
+	else for (int i = 0; i < count; i++)
+	{
+		int time = parms[1].get_elem(i).get_int_value();
+		int sched = parms[2].get_elem(i).get_int_value();
+		int tx = parms[3].get_elem(i*2).get_int_value();
+		int ty = parms[3].get_elem(i*2+1).get_int_value();
+		list[i].set(tx, ty, sched, time);
+	}
+
+	actor->set_schedules(list, count);
 }
 
-USECODE_INTRINSIC(prev_schedule)
+USECODE_INTRINSIC(run_schedule)
 {
-	// prev_schedule(npc).  Pure guess!!!!
-	// Npc is set to its previous schedule type.
-	Actor *actor = as_actor(get_item(parms[0]));
+	// run_schedule(npc)
+	// I think this is actually reset activity to current
+	// scheduled activity - Colourless
+	Npc_actor *actor = as_npcactor(get_item(parms[0]));
+	
 	if (actor)
-		{
-		int prev = actor->get_prev_schedule_type();
-		if (prev != -1 && prev != actor->get_schedule_type())
-			actor->set_schedule_type(prev);
-		}
+		actor->update_schedule(gwin, gwin->get_hour()/3, 7);
+
 	return no_ret;
 }
 
+
+USECODE_INTRINSIC(add_removed_npc)
+{
+	// move_offscreen(npc, x, y) - I think (seems good) I think
+	//
+	// returns false if not moved
+	// else, moves the object to the closest position off 
+
+	// Actor we want to move
+	Actor *actor = as_actor(get_item(parms[0]));
+
+	// Need to check superchunk
+	int cx = actor->get_cx();
+	int cy = actor->get_cx();
+	int scx = cx / c_chunks_per_schunk;
+	int scy = cy / c_chunks_per_schunk;
+	int scx2 = parms[1].get_int_value() / c_tiles_per_schunk;
+	int scy2 = parms[2].get_int_value() / c_tiles_per_schunk;
+
+	// Are the coords are good
+	if ( (cx == 0xff && scx2) || (cx != 0xff && scx != scx2) ||
+		(cy == 0xff && scy2) || (cy != 0xff && scy != scy2) ) 
+		return (Usecode_value(false));
+
+
+	// Ok they were good, now move it
+
+
+	// Get the tiles around the edge of the screen
+	Rectangle rect = gwin->get_win_tile_rect();
+
+	int sx = rect.x;		// Tile coord of x start
+	int ex = rect.x + rect.w;	// Tile coord of x end
+	int sy = rect.y;		// y start
+	int ey = rect.y + rect.h;	// x end
+
+	// The height of the Actor we are checking
+	int height = gwin->get_info(actor->get_shapenum()).get_3d_height();
+
+	int i = 0, nlift = 0;
+	int tx, ty;
+
+	// Avatars coords
+	Tile_coord av = gwin->get_main_actor()->get_abs_tile_coord();;
+
+	Tile_coord close;	// The tile coords of the closest tile
+	int dist = -1;		// The distance
+
+	cy = sy/c_tiles_per_chunk;
+	ty = sy%c_tiles_per_chunk;
+	cout << "1" << endl;
+	for (i = 0; i < rect.w; i++)
+	{
+		cx = (sx+i)/c_tiles_per_chunk;
+		tx = (sx+i)%c_tiles_per_chunk;
+
+		Chunk_object_list *clist = gwin->get_objects_safely(cx, cy);
+		clist->setup_cache();
+		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
+		{
+			Tile_coord cur(tx+cx*c_tiles_per_chunk, ty+cy*c_tiles_per_chunk, nlift);
+			if (cur.distance(av) < dist || dist == -1)
+			{
+				dist = cur.distance(av);
+				cout << "(" << cur.tx << ", " << cur.ty << ") " << dist << endl;
+				close = cur;
+			}
+		}
+	}
+
+	cx = ex/c_tiles_per_chunk;
+	tx = ex%c_tiles_per_chunk;
+	cout << "2" << endl;
+	for (i = 0; i < rect.h; i++)
+	{
+		cy = (sy+i)/c_tiles_per_chunk;
+		ty = (sy+i)%c_tiles_per_chunk;
+
+		Chunk_object_list *clist = gwin->get_objects_safely(cx, cy);
+		clist->setup_cache();
+		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
+		{
+			Tile_coord cur(tx+cx*c_tiles_per_chunk, ty+cy*c_tiles_per_chunk, nlift);
+			if (cur.distance(av) < dist || dist == -1)
+			{
+				dist = cur.distance(av);
+				cout << "(" << cur.tx << ", " << cur.ty << ") " << dist << endl;
+				close = cur;
+			}
+		}
+	}
+
+	cy = ey/c_tiles_per_chunk;
+	ty = ey%c_tiles_per_chunk;
+	cout << "3" << endl;
+	for (i = 0; i < rect.w; i++)
+	{
+		cx = (ex-i)/c_tiles_per_chunk;
+		tx = (ex-i)%c_tiles_per_chunk;
+
+		Chunk_object_list *clist = gwin->get_objects_safely(cx, cy);
+		clist->setup_cache();
+		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
+		{
+			Tile_coord cur(tx+cx*c_tiles_per_chunk, ty+cy*c_tiles_per_chunk, nlift);
+			if (cur.distance(av) < dist || dist == -1)
+			{
+				dist = cur.distance(av);
+				cout << "(" << cur.tx << ", " << cur.ty << ") " << dist << endl;
+				close = cur;
+			}
+		}
+	}
+
+	cx = sx/c_tiles_per_chunk;
+	tx = sx%c_tiles_per_chunk;
+	cout << "4" << endl;
+	for (i = 0; i < rect.h; i++)
+	{
+		cy = (ey-i)/c_tiles_per_chunk;
+		ty = (ey-i)%c_tiles_per_chunk;
+
+		Chunk_object_list *clist = gwin->get_objects_safely(cx, cy);
+		clist->setup_cache();
+		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
+		{
+			Tile_coord cur(tx+cx*c_tiles_per_chunk, ty+cy*c_tiles_per_chunk, nlift);
+			if (cur.distance(av) < dist || dist == -1)
+			{
+				dist = cur.distance(av);
+				cout << "(" << cur.tx << ", " << cur.ty << ") " << dist << endl;
+				close = cur;
+			}
+		}
+	}
+
+	if (dist != -1)
+	{
+		actor->move(close);
+		return (Usecode_value(true));
+	}
+
+	return (Usecode_value(false));
+}

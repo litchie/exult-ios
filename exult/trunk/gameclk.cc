@@ -158,8 +158,10 @@ void Game_clock::increment
 	int new_3hour = hour/3;		// New 3-hour period.
 	int delta_3hour = new_3hour - old_3hour;
 	if (delta_3hour != 0)		// In a new period?
-					// Update NPC schedules.
-		gwin->schedule_npcs(new_3hour, (delta_3hour - 1 + 8)%8);
+		{			// Update NPC schedules.
+		if (Game::get_game_type() == SERPENT_ISLE) delta_3hour = 8;
+		gwin->schedule_npcs(new_3hour, (delta_3hour +7)%8);
+		}
 	}
 
 /*
@@ -172,15 +174,15 @@ void Game_clock::handle_event
 	long udata			// ->game window.
 	)
 	{
-	static int first = 1;		// For starting SI schedules.
+	//static int first = 1;		// For starting SI schedules.
 	Game_window *gwin = (Game_window *) udata;
-	if (first)
-		{
-		first = 0;
-					// Start SI schedules immediately.
-		if (!day && hour == 6 && Game::get_game_type() == SERPENT_ISLE)
-			gwin->schedule_npcs(hour, 6);
-		}
+	//if (first)
+	//	{
+	//	first = 0;
+	//				// Start SI schedules immediately.
+	//	if (!day && hour == 6 && Game::get_game_type() == SERPENT_ISLE)
+	//		gwin->schedule_npcs(hour, 7);
+	//	}
 	int min_old = minute;
 	int hour_old = hour;
 	minute += time_rate;

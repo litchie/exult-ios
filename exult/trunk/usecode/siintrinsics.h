@@ -140,10 +140,10 @@
                          					// on FoV gem. (gift from LB) display area???
 								// ShowCrystalBall  (ucdump.c)
 
-	USECODE_INTRINSIC_PTR(resurrect),			// 0x65     ResurrectNPC (ucdump.c)
-	USECODE_INTRINSIC_PTR(add_spell),			// 0x66     AddSpellToBook (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x67     ShowWizardEye (ucdump.c)
-	USECODE_INTRINSIC_PTR(sprite_effect),			// 0x68 ExecuteSprite (ucdump.c)
+	USECODE_INTRINSIC_PTR(resurrect),			// 0x65 ResurrectNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(add_spell),			// 0x66 AddSpellToBook (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x67 Remove all spells????
+	USECODE_INTRINSIC_PTR(sprite_effect),			// 0x68	ExecuteSprite (ucdump.c)
 	USECODE_INTRINSIC_PTR(explode),				// 0x69 
 
 
@@ -250,8 +250,8 @@
 	USECODE_INTRINSIC_PTR(set_polymorph),			// 0xb3    Set Polymorph
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb4
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb5
-	USECODE_INTRINSIC_PTR(teleport),			// 0xb6
-	USECODE_INTRINSIC_PTR(prev_schedule),			// 0xb7 ???Guessing.
+	USECODE_INTRINSIC_PTR(set_new_schedules),		// 0xb6 Set New Schedules
+	USECODE_INTRINSIC_PTR(run_schedule),			// 0xb7 Run the scheduled activity
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb8
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb9
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xba SetTemperature???
@@ -259,7 +259,7 @@
 	USECODE_INTRINSIC_PTR(get_npc_id),			// 0xbc - Known
 	USECODE_INTRINSIC_PTR(set_npc_id),			// 0xbd - Known
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xbe
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xbf
+	USECODE_INTRINSIC_PTR(add_removed_npc),			// 0xbf - This looks like it may be used to detect if a npc is near a certain location
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xc0
 	USECODE_INTRINSIC_PTR(si_path_run_usecode),		// 0xc1
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xc2

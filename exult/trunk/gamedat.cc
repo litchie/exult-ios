@@ -87,7 +87,11 @@ void Game_window::restore_gamedat
 	U7remove (FLAGINIT);
 	U7remove (GWINDAT);
 	U7remove (IDENTITY);
+	U7remove (GSCHEDULE);
 	U7remove ("<STATIC>/flags.flg");
+
+	cout << "here" << endl;
+	cout.flush();
 
 	in.seekg(0x54);			// Get to where file count sits.
 	int numfiles = Read4(in);
@@ -126,6 +130,8 @@ void Game_window::restore_gamedat
 		out.close();
 		}
 	delete [] finfo;
+	cout << "here" << endl;
+	cout.flush();
 	}
 
 /*
@@ -150,7 +156,8 @@ void Game_window::restore_gamedat
 static const char *savefiles[] = {
 	NPC_DAT,	MONSNPCS,
 	IDENTITY,	USEDAT,
-	FLAGINIT,	GWINDAT
+	FLAGINIT,	GWINDAT,
+	GSCHEDULE
 	};
 static const int numsavefiles = sizeof(savefiles)/sizeof(savefiles[0]);
 

@@ -482,6 +482,42 @@ void ActionHeal(int *params)
   cheat.heal_party();
 }
 
+//  { ActionCheatScreen, 0, "Cheat Screen", true, true, NONE },
+void ActionCheatScreen(int *params)
+{
+  cheat.cheat_screen();
+}
+
+//  { ActionPickPocket, 1, "Toggle Pickpocket", true, true, NONE },
+// params[0] = -1 for toggle, 0 for off, 1 for on
+void ActionPickPocket(int *params)
+{
+  if (params[0] == -1)
+    cheat.toggle_pickpocket();
+  else
+    cheat.set_pickpocket(params[0] != 0);
+}
+
+//  { ActionPickPocket, 1, "Toggle Pickpocket", true, true, NONE },
+// params[0] = -1 for toggle, 0 for off, 1 for on
+void ActionNPCNumbers(int *params)
+{
+  if (params[0] == -1)
+    cheat.toggle_number_npcs();
+  else
+    cheat.set_number_npcs(params[0] != 0);
+}
+
+//  { ActionGrabActor, 1, "Grab Actor for Cheatscreen", true, true, NONE },
+// params[0] = -1 for toggle, 0 for off, 1 for on
+void ActionGrabActor(int *params)
+{
+  if (params[0] == -1)
+    cheat.toggle_grab_actor();
+  else
+    cheat.set_grab_actor(params[0] != 0);
+}
+
 //  { ActionPlayMusic, 1, "Play song", false, true, NONE },
 // params[0] = song nr., or -1 for next, -2 for previous
 void ActionPlayMusic(int *params)

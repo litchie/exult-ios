@@ -25,6 +25,8 @@ exult_SOURCES =	\
 	browser.h	\
 	cheat.cc	\
 	cheat.h		\
+	cheat_screen.cc	\
+	cheat_screen.h	\
 	combat.cc	\
 	combat.h	\
 	delobjs.cc	\
