@@ -17,13 +17,35 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <hash_map>
+#ifdef MACOS
+  #include <hashmap.h>
+#else
+  #include <hash_map>
+#endif
 #include <string>
 #include <vector>
 
 class Game_window;
 class Image_window8;
 
+/*
+ *	Hash function for strings:
+ */
+struct hashstr
+{
+	long operator() (const char *str) const
+	{
+		static const unsigned long m = 4294967291u;
+		unsigned long result = 0;
+		for (; *str != '\0'; ++str)
+			result = ((result << 8) + *str) % m;
+		return long(result);
+	}
+};
+
+/*
+ *	For testing if two strings match:
+ */
 struct eqstr
 {
 	bool operator()(const char* s1, const char* s2) const {
@@ -40,8 +62,8 @@ struct str_int_pair
 class Game
 	{
 private:
-	hash_map<const char*, int, hash<const char*>, eqstr> shapes;
-	hash_map<const char*, str_int_pair, hash<const char*>, eqstr> resources;
+	hash_map<const char*, int, hashstr, eqstr> shapes;
+	hash_map<const char*, str_int_pair, hashstr, eqstr> resources;
 protected:
 	int topx, topy, centerx, centery;
 	Vga_file menushapes;
