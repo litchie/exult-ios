@@ -33,8 +33,8 @@ class Opcode
       print_asm(o);
     };
     virtual void print(ostream &o) { print_asm(o); };
-    virtual void pass1(const vector<unsigned int> &externs) {};
-    virtual void pass2(const map<unsigned int, string, less<unsigned int> > &data) {};
+    virtual void pass1(const vector<unsigned int> &externs) { externs[0]; };
+    virtual void pass2(const map<unsigned int, string, less<unsigned int> > &data) { data.find(0); };
     friend ostream &operator<<(ostream &o, const Opcode &op);
 
     unsigned int offset() const { return _offset; };
