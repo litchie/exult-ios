@@ -44,11 +44,11 @@ void Game_window::read_npcs
 	num_npcs = num_npcs1 + cnt2;
 	npcs = new Actor *[num_npcs];
 	int i;
-#if 0	/* +++++New way. Activate when tested. */
+#if 1	/* +++++New way. Activate when tested. */
 					// Create main actor.
 	npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
-		npcs[1] = new Npc_actor(nfile, i, i < num_npcs1);
+		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
 	nfile.close();
 	if (u7open(nfile, MONSNPCS, 1))	// Monsters.
 		{			// (Won't exist the first time.)
@@ -169,7 +169,10 @@ cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 			read_ireg_objects(nfile, scx, scy, actor);
 		}
 #endif
+	main_actor_inside = 0;
+	check_main_actor_inside();	// See where starting out.
 	read_schedules();		// Now get their schedules.
+	usecode->link_party();		// Make sure party ID's are set.
 	if (!monster_info)		// Might be a 'restore'.
 		{
 		ifstream mfile;		// Now get monster info.
@@ -218,7 +221,6 @@ int Game_window::write_npcs
 		return (0);
 		}
 	nfile.close();
-#if 0	/* +++++Test before making active. */
 					// Now write out monsters in world.
 	if (!U7open(nfile, MONSNPCS))
 		{			// +++++Better error???
@@ -239,7 +241,6 @@ int Game_window::write_npcs
 		cerr << "Exult:  Error writing '" << MONSNPCS << "'\n";
 		return (0);
 		}
-#endif
 	return (result);
 	}
 

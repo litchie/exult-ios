@@ -399,6 +399,7 @@ public:
 		}
 	int write();			// Write out 'gamedat/usecode.dat'.
 	int read();			// Reat in 'gamedat/usecode.dat'.
+	void link_party();		// Set party's id's.
 	};
 
 #endif	/* INCL_USECODE */

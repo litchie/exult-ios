@@ -3045,10 +3045,12 @@ int Usecode_machine::write
 	)
 	{
 	ofstream out;
+	if (!U7open(out, FLAGINIT))	// Write global flags.
+		return (0);
+	out.write(gflags, sizeof(gflags));
+	out.close();
 	if (!U7open(out, USEDAT))
 		return (0);
-					// Write global flags.
-	out.write(gflags, sizeof(gflags));
 	Write2(out, party_count);	// Write party.
 	for (int i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		Write2(out, party[i]);
@@ -3067,20 +3069,31 @@ int Usecode_machine::read
 	)
 	{
 	ifstream in;
+	if (!U7open(in, FLAGINIT))	// Read global flags.
+		return (0);
+	in.read(gflags, sizeof(gflags));
+	in.close();
 	if (!U7open(in, USEDAT))
 		return (0);
-					// Read global flags.
-	in.read(gflags, sizeof(gflags));
 	party_count = Read2(in);	// Read party.
 	for (int i = 0; i < sizeof(party)/sizeof(party[0]); i++)
-		{
 		party[i] = Read2(in);
-		if (i < party_count)
-			{		// Set NPC.
-			Actor *npc = gwin->get_npc(party[i]);
-			if (npc)
-				npc->set_party_id(i);
-			}
-		}
+	link_party();
 	return in.good();
+	}
+
+/*
+ *	In case NPC's were read after usecode, set party members' id's.
+ */
+
+void Usecode_machine::link_party
+	(
+	)
+	{
+	for (int i = 0; i < party_count; i++)
+		{
+		Actor *npc = gwin->get_npc(party[i]);
+		if (npc)
+			npc->set_party_id(i);
+		}
 	}

@@ -49,7 +49,9 @@ Game_window *Game_window::game_window = 0;
 Game_window::Game_window
 	(
 	int width, int height		// Window dimensions.
-	) : chunkx(0), chunky(0), painted(0), focus(1),
+	) : 
+	    chunkx(64), chunky(136), 	// Start in Trinsic (BG).
+	    painted(0), focus(1),
 	    palette(-1), brightness(100), 
 	    skip_lift(16), debug(0), paint_eggs(1),
 	    tqueue(new Time_queue()), clock(tqueue),
