@@ -564,19 +564,19 @@ script_command:
 direction:
 	NORTH
 		{ $$ = 0; }
-	NE
+	| NE
 		{ $$ = 1; }
-	EAST
+	| EAST
 		{ $$ = 2; }
-	SE
+	| SE
 		{ $$ = 3; }
-	SOUTH
+	| SOUTH
 		{ $$ = 4; }
-	SW
+	| SW
 		{ $$ = 5; }
-	WEST
+	| WEST
 		{ $$ = 6; }
-	NW
+	| NW
 		{ $$ = 7; }
 	;
 
