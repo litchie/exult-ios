@@ -45,6 +45,8 @@ using std::memset;
 using std::size_t;
 using std::string;
 using std::strncpy;
+using std::ofstream;
+using std::ios;
 
 
 Flex::Flex(const string &n) : U7file(n)

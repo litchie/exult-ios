@@ -264,7 +264,7 @@ bool Game::show_menu()
 					// Brand-new game in development?
 	if (is_editing() && !U7exists(MAINSHP_FLX))
 		{
-		int first = !U7exists(IDENTITY);
+		bool first = !U7exists(IDENTITY);
 		if (first)
 			set_avname("Newbie");
 		if (!gwin->init_gamedat(first))

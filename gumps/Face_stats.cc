@@ -393,21 +393,37 @@ void Face_stats::create_buttons(Game_window *gwin)
 	Usecode_machine *uc = gwin->get_usecode();
 	party_size = uc->get_party_count();
 
+	int num_to_paint = 0;
+
+	// In BG only Npc's 0 to 10 have paperdolls/gumps
+	for (i = 0; i < party_size; i++) {
+		int num = uc->get_party_member(i);
+		if (GAME_SI || (num >= 0 && num <=10)) ++num_to_paint;
+	}
+
 	if (mode == 0) pos = 0;
-	else if (mode == 1) pos = (resx - (party_size+1)*PORTRAIT_WIDTH)/2;
+	else if (mode == 1) pos = (resx - (num_to_paint+1)*PORTRAIT_WIDTH)/2;
 	else if (mode == 2)
 	{
 		pos = resx - PORTRAIT_WIDTH;
 		width = - PORTRAIT_WIDTH;
 	}
 
+	std::memset (party, 0, sizeof(party));
+
 	party[0] = new Portrait_button(this, pos, 0, gwin->get_main_actor());
 
 	for (i = 0; i < party_size; i++)
 	{
-		pos += width;
 		npc_nums[i+1] = uc->get_party_member(i);
-		party[i+1] = new Portrait_button(this, pos, 0, gwin->get_npc(npc_nums[i+1]));
+		// In BG only Npc's 0 to 10 have paperdolls/gumps
+		if (GAME_SI || (npc_nums[i+1] >= 0 && npc_nums[i+1] <=10)) {
+			pos += width;
+			party[i+1] = new Portrait_button(this, pos, 0, gwin->get_npc(npc_nums[i+1]));
+		}
+		else {
+			party[i+1] = 0;
+		}
 	}
 
 	region.x = region.y = region.w = region.h = 0;
