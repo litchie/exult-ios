@@ -333,6 +333,10 @@ public:
 					// Create a copy.
 	virtual Game_object *clone() const
 		{ return new Ireg_game_object(*this); }
+					// Move to new abs. location.
+	virtual void move(int newtx, int newty, int newlift);
+	void move(Tile_coord t)
+		{ move(t.tx, t.ty, t.tz); }
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual Container_game_object *get_owner()
