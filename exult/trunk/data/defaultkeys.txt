@@ -61,3 +61,12 @@ Z		stats
 Ctrl-Alt-G	grab_actor
 Ctrl-Alt-P	pick_pocket
 Ctrl-N		npc_numbers
+
+1	inventory	0	# Show inventory for Avatar
+2	inventory	1	# Show inventory for character 2
+3	inventory	2	# Show inventory for character 3
+4	inventory	3	# Show inventory for character 4
+5	inventory	4	# Show inventory for character 5
+6	inventory	5	# Show inventory for character 6
+7	inventory	6	# Show inventory for character 7
+8	inventory	7	# Show inventory for character 8
