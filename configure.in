@@ -7,9 +7,9 @@ AC_INIT(exult.cc)
 # ---------------------------------------------------------------------
 
 PACKAGE=exult
-VER_MAJOR=0
-VER_MINOR=99
-VER_EXTRA=.2cvs
+VER_MAJOR=1
+VER_MINOR=00
+VER_EXTRA=
 VERSION=$VER_MAJOR.$VER_MINOR$VER_EXTRA
 
 # check host/target systems
