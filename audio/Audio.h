@@ -53,7 +53,7 @@ class Audio
 private:
 	static	Audio	*self;
         bool truthful_;
-	bool speech_enabled, music_enabled, effects_enabled;
+	bool audio_enabled, speech_enabled, music_enabled, effects_enabled;
 	bool SDL_open;
 	UNREPLICATABLE_CLASS(Audio);
 protected:

@@ -70,7 +70,13 @@ using std::vector;
 //---- Audio ---------------------------------------------------------
 
 Audio::~Audio()
-{
+{ 
+	if (!audio_enabled) {
+		self = 0;
+		SDL_open = false;
+		return;
+	}
+
 	stop_music();
 	SDL::QuitSubSystem(SDL_INIT_AUDIO); // SDL 1.1 lets us diddle with
 						// subsystems
@@ -296,6 +302,8 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 		
 void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 {
+	if (!audio_enabled) return;
+
 	string s;
 	config->value("config/audio/speech/enabled",s,"yes");
 	if(s=="no")
@@ -315,18 +323,21 @@ void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 
 void	Audio::cancel_raw(void)
 {
+	if (!audio_enabled) return;
 	if(mixer)
 		mixer->cancel_raw();
 }
 
 void	Audio::cancel_streams(void)
 {
+	if (!audio_enabled) return;
 	if(mixer)
 		mixer->cancel_streams();
 }
 
 void	Audio::mix(uint8 *sound_data,uint32 len)
 {
+	if (!audio_enabled) return;
 	if(mixer)
 		mixer->play(sound_data,len);
 }
@@ -347,16 +358,22 @@ Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
 {
 	self=this;
 	string s;
+	config->value("config/audio/enabled",s,"yes");
+	audio_enabled = (s!="no");
 	config->value("config/audio/speech/enabled",s,"yes");
 	speech_enabled = (s!="no");
 	config->value("config/audio/midi/enabled",s,"---");
 	music_enabled = (s!="no");
 	config->value("config/audio/effects/enabled",s,"---");
 	effects_enabled = (s!="no");
+
+	midi = 0; mixer = 0;
 }
 
 void Audio::Init(int _samplerate,int _channels)	
 {
+	if (!audio_enabled) return;
+
 	// Initialise the speech vectors
 	uint32 _buffering_unit=calc_sample_buffer(_samplerate);
 	build_speech_vector();
@@ -412,6 +429,8 @@ void Audio::Init(int _samplerate,int _channels)
 
 void	Audio::playfile(const char *fname,bool wait)
 {
+	if (!audio_enabled) return;
+
 	FILE	*fp;
 	
 	fp=U7open(fname,"r");
@@ -441,6 +460,8 @@ void	Audio::playfile(const char *fname,bool wait)
  */
 void	Audio::playwave(const char *fname, bool wait)
 {
+	if (!audio_enabled) return;
+
 	uint8 *buf;
 	uint32 len;
 	SDL_AudioSpec src;
@@ -479,6 +500,8 @@ bool	Audio::playing(void)
 
 bool	Audio::start_music(int num,bool repetition, int bank)
 {
+	if (!audio_enabled) return;
+
 	if(music_enabled && midi != 0) {
 		midi->start_music(num,repetition,bank);
 		return true;
@@ -488,6 +511,8 @@ bool	Audio::start_music(int num,bool repetition, int bank)
 
 void	Audio::start_music(const char *fname,int num,bool repetition)
 {
+	if (!audio_enabled) return;
+
 	if(music_enabled && midi != 0) {
 		midi->start_music(fname,num,repetition);
 	}
@@ -495,6 +520,8 @@ void	Audio::start_music(const char *fname,int num,bool repetition)
 
 void Audio::start_music(XMIDI *mid_file,bool repetition)
 {
+	if (!audio_enabled) return;
+
 	if(music_enabled && midi != 0) {
 		midi->start_track(mid_file,repetition);
 	}
@@ -502,6 +529,8 @@ void Audio::start_music(XMIDI *mid_file,bool repetition)
 
 bool	Audio::start_music_combat (Combat_song song, bool repetition, int bank)
 {
+	if (!audio_enabled) return;
+
 	int num = -1;
 	
 	if (Game::get_game_type()!=SERPENT_ISLE) switch (song)
@@ -578,6 +607,8 @@ bool	Audio::start_music_combat (Combat_song song, bool repetition, int bank)
 
 void	Audio::stop_music()
 {
+	if (!audio_enabled) return;
+
 	if(midi)
 		midi->stop_music();
 }
@@ -598,6 +629,8 @@ static void	load_buffer(char *buffer,const char *filename,size_t start,size_t le
 
 bool	Audio::start_speech(int num,bool wait)
 {
+	if (!audio_enabled) return;
+
 	if (!speech_enabled)
 		return false;
 	char	*buf=0;
@@ -650,6 +683,8 @@ Audio	*Audio::get_ptr(void)
 
 void	Audio::play_sound_effect (int num)
 {
+	if (!audio_enabled) return;
+
 	// Where sort of sfx are we using????
 	
 	if(effects_enabled && midi != 0) midi->start_sound_effect(num);
