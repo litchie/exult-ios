@@ -1325,14 +1325,15 @@ USECODE_INTRINSIC(get_cont_items)
 USECODE_INTRINSIC(remove_items)
 
 	// Remove items(quantity, item, 
-	//   -x?, -x?, T/F).  Often -359.???
+	//   ??quality?? (-359), frame(-359), T/F).
 	//+++++++++++
 	Usecode_value u(1);
 	USECODE_RETURN(u);	// ++++Pretend we did it.
 }
 
 USECODE_INTRINSIC(add_items)
-	// Add items(num, item, ??, ??, T/F).
+	// Add items(num, item, ??quality?? (-359), frame (or -359), T/F).
+	// Returns array of NPC's (->'s) who got the items.
 	//++++++++++
 	USECODE_RETURN(no_ret);
 }
@@ -2072,7 +2073,7 @@ void Usecode_machine::run
 			while (cnt--)
 				{
 				Usecode_value s = pop();
-				char *str = s.get_str_value();
+				const char *str = s.get_str_value();
 				if (str && strcmp(str, user_choice) == 0)
 					break;
 				}

@@ -32,6 +32,61 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern	Audio audio;
 
+static int Has_quantity
+	(
+	int shnum			// Shape number.
+	)
+	{
+	switch (shnum)
+		{
+	case 417:			// Magic bolts.
+	case 554:			// Various arrows.
+	case 556:
+	case 558:
+	case 560:
+	case 565:
+	case 568:
+	case 592:			// Spears, axes, daggers.
+	case 593:
+	case 594:
+	case 615:			// Knives.
+	case 623:			// Hammers.
+	case 627:			// Lockpicks.
+	case 636:			// Serp. dagger.
+	case 644:			// Gold.
+	case 645:
+	case 656:
+	case 722:			// Arrows.
+	case 723:
+	case 769:			// Smokebombs.
+	case 827:			// Bandages.
+	case 842:			// Reagants.
+	case 947:
+	case 948:
+		return 1;
+	default:
+		return 0;
+		}
+	}
+
+/*
+ *	Get the quantity.
+ */
+
+int Game_object::get_quantity
+	(
+	)
+	{
+	int shnum = get_shapenum();
+	if (Has_quantity(shnum))	// +++++Until we find a flag.
+		{
+		int qual = quality & 0x7f;
+		return qual ? qual : 1;
+		}
+	else
+		return 1;
+	}
+
 /*
  *	Move to a new absolute location.
  */
@@ -650,8 +705,8 @@ int Container_game_object::count_objects
 		obj = obj->get_next();
 		if (shapenum == -359 || obj->get_shapenum() == shapenum)
 			{		// Check quantity.
-			int quant = obj->get_quality()&0x7f;
-			total += quant ? quant : 1;
+			int quant = obj->get_quantity();
+			total += quant;
 			}
 					// Count recursively.
 		total += obj->count_objects(shapenum);

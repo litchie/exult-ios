@@ -179,6 +179,7 @@ public:
 		{ return quality; }
 	void set_quality(int q)
 		{ quality = q; }
+	int get_quantity();		// Like # of coins.
 					// Set shape coord. within chunk.
 	void set_shape_pos(unsigned int shapex, unsigned int shapey)
 		{ shape_pos = (shapex << 4) + shapey; }

@@ -1150,13 +1150,13 @@ void Game_window::show_items
 		char *item_name = obj->get_name();
 		if (item_name)
 			{
-			int qual = obj->get_quality();
-			if (!qual)	// Just one?
+			int quant = obj->get_quantity();
+			if (quant <= 1)	// Just one?
 				add_text(item_name, x, y);
 			else		// Show quantity.
 				{
 				char buf[50];
-				sprintf(buf, "%d %s", qual&0x7f, item_name);
+				sprintf(buf, "%d %s", quant, item_name);
 				add_text(buf, x, y);
 				}
 			}
