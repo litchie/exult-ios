@@ -57,9 +57,9 @@ void Titles::play_intro()
 		pal.load("static/intropal.dat",3);
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
 		char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
-							"Willem Jan Palenstijn, Tristan Tarrant,", 
-							"Max Horn, Coder Infidel",
-							"Driven by the Exult game engine V" VERSION };
+				"Willem Jan Palenstijn, Tristan Tarrant,", 
+				"Max Horn, Coder Infidel",
+				"Driven by the Exult game engine V" VERSION };
 		for(int i=0; i<3; i++) {
 			gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
 		}
@@ -150,14 +150,14 @@ void Titles::play_intro()
 		}
 		for(int i=0; i<16; i++) {
 			clear_screen();
-			gwin->paint_shape(centerx,centery,shapes.get_shape(0x23,i));
+			gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x23,i));
 			win->show();
 			if(wait_delay(70)) {
 				pal.fade_out(30);
 				return;	
 			}
 		}
-		gwin->paint_shape(centerx,centery-10,shapes.get_shape(0x20,1));
+		gwin->paint_shape(centerx,centery-30,shapes.get_shape(0x20,1));
 		win->show();
 		
 		U7object textobj(MAINSHP_FLX, 0x0D);
@@ -167,13 +167,15 @@ void Titles::play_intro()
 		txt_ptr = txt;
 		// Guardian speech
 		audio->playfile(INTROSND,false);
-		for(int i=0; i<400; i++) {
-			gwin->paint_shape(centerx,centery-10,shapes.get_shape(0x20,i % 10));
-			gwin->paint_shape(centerx,centery,shapes.get_shape(0x1E,i % 15));
+		int txt_ypos = gwin->get_height()-gwin->get_text_height(0);
+		for(int i=0; i<14*40; i++) {
+			gwin->paint_shape(centerx,centery-30,shapes.get_shape(0x20,i % 10));
+			gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x1E,i % 15));
 			if(i % 40 ==0) {
 				char *txt_end = strchr(txt_ptr, '\r');
 				*txt_end = 0;
-				//gwin->paint_text(0, txt_ptr, centerx-gwin->get_text_width(0, txt_ptr)/2, centery+50);
+				win->fill8(0,gwin->get_width(),txt_ypos,0,txt_ypos);
+				gwin->paint_text(0, txt_ptr, centerx-gwin->get_text_width(0, txt_ptr)/2, txt_ypos);
 				txt_ptr = txt_end+2;
 			}
 			win->show();
@@ -183,7 +185,15 @@ void Titles::play_intro()
 			}
 		}
 		delete [] txt;
-		clear_screen();
+		for(int i=15; i>=0; i--) {
+			clear_screen();
+			gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x23,i));
+			win->show();
+			if(wait_delay(70)) {
+				pal.fade_out(30);
+				return;	
+			}
+		}
 
 		// PC screen
 		play_midi(1);

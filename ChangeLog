@@ -1,5 +1,10 @@
 2000-07-13  Tristan Tarrant  <tarrant_tristan@emc.com>
 
+	* titles.cc: Text under Guardian's speech and Guardian sinking back
+	into screen after his performance :-)
+
+2000-07-13  Tristan Tarrant  <tarrant_tristan@emc.com>
+
 	* palette.cc, palette.h: New files which handle palette functions. 
 	Now it is possible to use palettes from different data files.
 	* exult.spec.in: simple spec file for creating RPM packages
