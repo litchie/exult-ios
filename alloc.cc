@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <new>
+#include <pthread_alloc>	// This allocator defines memset (we think)
 
 
 #ifdef WANT_ALTERNATE_ALLOCATOR
@@ -12,23 +13,26 @@
 #define INITIALISE_ALLOCATED_BLOCKS 0xf1
 #endif
 
-void	*operator new(size_t n)
+void *operator new (size_t) throw (std::bad_alloc);
+void *operator new[] (size_t) throw (std::bad_alloc);
+
+void	*operator new(size_t n) throw (std::bad_alloc)
 {
 	void	*r;
 	r=malloc(n);
 	if(!r)
-		throw bad_alloc();
+		throw std::bad_alloc();
 #ifdef INITIALISE_ALLOCATED_BLOCKS
 	memset(r,INITIALISE_ALLOCATED_BLOCKS,n);
 #endif
 	return r;
 }
 
-void	*operator new[](size_t n)
+void	*operator new[](size_t n) throw (std::bad_alloc)
 {
 	void	*r=malloc(n);
 	if(!r)
-		throw bad_alloc();
+		throw std::bad_alloc();
 #ifdef INITIALISE_ALLOCATED_BLOCKS
 	memset(r,INITIALISE_ALLOCATED_BLOCKS,n);
 #endif

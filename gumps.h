@@ -48,6 +48,8 @@ class Cstats_gump_button;
 class Yesno_gump_button;
 class Slider_gump_button;
 
+char *newstrdup(const char *s);
+
 /*
  *	A gump widget, such as a button or text field:
  */

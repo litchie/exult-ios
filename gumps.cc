@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <stdlib.h>
+#include <stdexcept>
 #include "gumps.h"
 #include "gamewin.h"
 #include "actors.h"
@@ -1449,7 +1450,7 @@ void Sign_gump::add_text
 	if (line < 0 || line >= num_lines)
 		return;
 	delete lines[line];
-	lines[line] = txt ? strdup(txt) : 0;
+	lines[line] = txt ? newstrdup(txt) : 0;
 	}
 
 /*
@@ -2205,7 +2206,7 @@ void File_gump_object::key_down
 Yesno_gump_object::Yesno_gump_object
 	(
 	const char *txt
-	) : Modal_gump_object(0, game->get_shape("gumps/yesnobox")), text(strdup(txt)), answer(-1)
+	) : Modal_gump_object(0, game->get_shape("gumps/yesnobox")), text(newstrdup(txt)), answer(-1)
 	{
 	yes_button = new Yesno_gump_button(this, yesx, yesnoy, 1);
 	no_button = new Yesno_gump_button(this, nox, yesnoy, 0);
@@ -2221,7 +2222,7 @@ Yesno_gump_object::~Yesno_gump_object
 	{
 	delete yes_button;
 	delete no_button;
-	free((void*)text);
+	delete [] text;
 	}
 
 /*
@@ -2539,3 +2540,11 @@ void Paperdoll_gump_object::paint
 	if (cstats_button) paint_button(gwin, cstats_button);
 	}
 
+char *newstrdup(const char *s)
+{
+	if(!s)
+		throw std::invalid_argument("NULL pointer passed to newstrdup");
+	char *ret=new char[strlen(s)+1];
+	strcpy(ret,s);
+	return ret;
+}

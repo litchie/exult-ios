@@ -1,3 +1,10 @@
+2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
+	* Create newstrdup() in gumps.cc as an interim solution. Goal is to encapsulate all char arrays into an efficient storage unit (coming soon. Be patient). For now we lose strdup to avoid the mixed memory models. newstrdup() will throw std::invalid_argument() if handed a NULL.
+	* Change all strdup()'s to newstrdup()
+	* Change free() for all strdup'ed() blocks to delete []
+	* alloc.cc: Something changed in exception specification. Add std::
+	* alloc.cc: pthread_alloc declares memset. Include it
+
 2000-11-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* README.BeOS: added
 	* README.win32: added (temporarily unavailable) to cross-compiling instructions	
