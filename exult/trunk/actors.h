@@ -267,6 +267,8 @@ public:
 					// Change member shape.
 	virtual void change_member_shape(Game_object *obj, int newshape);
 	virtual int move_aside(int dir);// Move out of the way.
+					// Get frame if rotated clockwise.
+	virtual int get_rotated_frame(int quads);
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame)
 		{ return 0; }
