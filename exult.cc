@@ -23,8 +23,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <stdlib.h>
-#include <ctype.h>
+#include <cstdlib>
+#include <cctype>
 
 // #ifdef HAVE_SYS_TIME_H
 #ifdef XWIN  /* Only needed in XWIN. */
@@ -60,6 +60,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::atexit;
+using std::exit;
+using std::toupper;
 using std::string;
 using std::vector;
 
@@ -72,7 +75,6 @@ Cheat cheat;
 Game_window *gwin = 0;
 static string data_path;
 unsigned char quitting_time = 0;	// 1 = Time to quit, 2 = Restart.
-Mouse *mouse = 0;
 int scale = 0;				// 1 if scaling X2.
 
 // FIX ME - altkeys should be in a new file, maybe events.cc or keyboard.cc or so
@@ -268,8 +270,8 @@ int exult_main(void)
 
 	cheat.finish_init();
 
-	mouse = new Mouse(gwin);
-	mouse->set_shape(Mouse::hand);
+	Mouse::mouse = new Mouse(gwin);
+	Mouse::mouse->set_shape(Mouse::hand);
 
 	int result = Play();		// start game
 //	delete config;			// free configuration object
@@ -374,7 +376,7 @@ static int Play()
 	}
 	while (quitting_time == 2);
 	delete gwin;
-	delete mouse;
+	delete Mouse::mouse;
 	delete Audio::get_ptr();	// Follow not this pointer, now, for
 					// that way lies madness.
 	delete config;
@@ -389,8 +391,6 @@ static int Play()
 static bool show_mouse = false;		// display mouse in main loop?
 static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
-// FIX ME - mouse_update should be in class Mouse
-static bool mouse_update = 0;		// Mouse moved/changed.
 const int slow_speed = 166, medium_speed = 100, fast_speed = 50;
 static int avatar_speed = slow_speed;	// Avatar speed (frame delay in
 					//    1/1000 secs.)
@@ -447,8 +447,8 @@ static void Handle_events
 		int rotate = 0;		// 1 to rotate colors.
 		Delay();		// Wait a fraction of a second.
 
-		mouse->hide();		// Turn off mouse.
-		mouse_update = false;
+		Mouse::mouse->hide();		// Turn off mouse.
+		Mouse::mouse_update = false;
 
 		SDL_Event event;
 		while (!*stop && SDL_PollEvent(&event))
@@ -480,7 +480,7 @@ static void Handle_events
 			}
 
 		if (show_mouse)
-			mouse->show();	// Re-display mouse.
+			Mouse::mouse->show();	// Re-display mouse.
 
 		if (rotate)
 			{		// (Blits in simulated 8-bit mode.)
@@ -489,8 +489,8 @@ static void Handle_events
 			gwin->get_win()->rotate_colors(0xe0, 8, 1);
 			}
 		if (!gwin->show() &&	// Blit to screen if necessary.
-		    mouse_update)	// If not, did mouse change?
-			mouse->blit_dirty();
+		    Mouse::mouse_update)	// If not, did mouse change?
+			Mouse::mouse->blit_dirty();
 		}
 	}
 
@@ -519,25 +519,25 @@ inline void Set_mouse_and_speed
 	if (dist < 40*40)
 		{
 		if(gwin->in_combat())
-			mouse->set_short_combat_arrow(dir);
+			Mouse::mouse->set_short_combat_arrow(dir);
 		else
-			mouse->set_short_arrow(dir);
+			Mouse::mouse->set_short_arrow(dir);
 		avatar_speed = slow_speed;
 		}
 	else if (dist < 75*75)
 		{
 		if(gwin->in_combat())
-			mouse->set_medium_combat_arrow(dir);
+			Mouse::mouse->set_medium_combat_arrow(dir);
 		else
-			mouse->set_medium_arrow(dir);
+			Mouse::mouse->set_medium_arrow(dir);
 		avatar_speed = medium_speed;
 		}
 	else
 		{		// No long arrow in combat: use medium
 		if(gwin->in_combat())
-			mouse->set_medium_combat_arrow(dir);
+			Mouse::mouse->set_medium_combat_arrow(dir);
 		else
-			mouse->set_long_arrow(dir);
+			Mouse::mouse->set_long_arrow(dir);
 		avatar_speed = fast_speed;
 		}
 	}
@@ -602,7 +602,7 @@ static void Handle_event
 				gwin->double_clicked(event.button.x >> scale, 
 						event.button.y >> scale);
 				if (gwin->get_mode() == Game_window::gump)
-					mouse->set_shape(Mouse::hand);
+					Mouse::mouse->set_shape(Mouse::hand);
 				break;
 				}
 			last_b1_click = curtime;
@@ -615,10 +615,10 @@ static void Handle_event
 		break;
 	case SDL_MOUSEMOTION:
 		{
-		mouse->move(event.motion.x >> scale, event.motion.y >> scale);
+		Mouse::mouse->move(event.motion.x >> scale, event.motion.y >> scale);
 		if (gwin->get_mode() == Game_window::normal)
 			Set_mouse_and_speed(event.motion.x, event.motion.y);
-		mouse_update = true;	// Need to blit mouse.
+		Mouse::mouse_update = true;	// Need to blit mouse.
 		if (gwin->get_mode() != Game_window::normal &&
 		    gwin->get_mode() != Game_window::gump)
 			break;
@@ -644,7 +644,7 @@ static void Handle_event
 				{
 				int x, y;
 				SDL_GetMouseState(&x, &y);
-				mouse->set_location(x >> scale, y >> scale);
+				Mouse::mouse->set_location(x >> scale, y >> scale);
 				}
 			gwin->set_painted();
 			}
@@ -1012,8 +1012,8 @@ static int Get_click
 		SDL_Event event;
 		Delay();		// Wait a fraction of a second.
 
-		mouse->hide();		// Turn off mouse.
-		mouse_update = false;
+		Mouse::mouse->hide();		// Turn off mouse.
+		Mouse::mouse_update = false;
 
 		while (SDL_PollEvent(&event))
 			switch (event.type)
@@ -1027,9 +1027,9 @@ static int Get_click
 					}
 				break;
 			case SDL_MOUSEMOTION:
-				mouse->move(event.motion.x >> scale, 
+				Mouse::mouse->move(event.motion.x >> scale, 
 						event.motion.y >> scale);
-				mouse_update = true;
+				Mouse::mouse_update = true;
 				break;
 			case SDL_KEYDOWN:
 				{
@@ -1061,11 +1061,11 @@ static int Get_click
 					}
 				break;
 				}
-		mouse->show();		// Turn on mouse.
+		Mouse::mouse->show();		// Turn on mouse.
 
 		if (!gwin->show() &&	// Blit to screen if necessary.
-		    mouse_update)
-			mouse->blit_dirty();
+		    Mouse::mouse_update)
+			Mouse::mouse->blit_dirty();
 		}
 	return (0);			// Shouldn't get here.
 	}
@@ -1086,13 +1086,13 @@ int Get_click
 	{
 	if (chr)
 		*chr = 0;		// Init.
-	Mouse::Mouse_shapes saveshape = mouse->get_shape();
+	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
-		mouse->set_shape(shape);
-	mouse->show();
+		Mouse::mouse->set_shape(shape);
+	Mouse::mouse->show();
 	gwin->show(1);			// Want to see new mouse.
 	int ret = Get_click(x, y, chr);
-	mouse->set_shape(saveshape);
+	Mouse::mouse->set_shape(saveshape);
 	return (ret);
 	}
 
@@ -1105,23 +1105,23 @@ void Wait_for_arrival
 	Actor *actor			// Whom to wait for.
 	)
 	{
-	unsigned char os = mouse->is_onscreen();
+	unsigned char os = Mouse::mouse->is_onscreen();
 	unsigned long last_repaint = 0;		// For insuring animation repaints.
 	while (actor->is_moving())
 		{
 		Delay();		// Wait a fraction of a second.
 
-		mouse->hide();		// Turn off mouse.
-		mouse_update = false;
+		Mouse::mouse->hide();		// Turn off mouse.
+		Mouse::mouse_update = false;
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 			switch (event.type)
 				{
 			case SDL_MOUSEMOTION:
-				mouse->move(event.motion.x >> scale,
+				Mouse::mouse->move(event.motion.x >> scale,
 						 event.motion.y >> scale);
-				mouse_update = true;
+				Mouse::mouse_update = true;
 				break;
 				}
 					// Get current time, & animate.
@@ -1135,14 +1135,14 @@ void Wait_for_arrival
 			last_repaint = ticks;
 			}
 
-		mouse->show();		// Re-display mouse.
+		Mouse::mouse->show();		// Re-display mouse.
 		if (!gwin->show() &&	// Blit to screen if necessary.
-		    mouse_update)	// If not, did mouse change?
-			mouse->blit_dirty();
+		    Mouse::mouse_update)	// If not, did mouse change?
+			Mouse::mouse->blit_dirty();
 		}
 
 	if (!os)
-		mouse->hide();
+		Mouse::mouse->hide();
 
 	}
 
@@ -1180,7 +1180,7 @@ static void Try_key
 			return;
 			}
 		}
-	mouse->flash_shape(Mouse::redx);	// Nothing matched.
+	Mouse::mouse->flash_shape(Mouse::redx);	// Nothing matched.
 	}
 	
 int get_resolution (void)
@@ -1311,7 +1311,7 @@ void target_mode (void)
 		return;
 	gwin->double_clicked(x, y);
 	if (gwin->get_mode() == Game_window::gump)
-		mouse->set_shape(Mouse::hand);
+		Mouse::mouse->set_shape(Mouse::hand);
 }
 
 void gump_next_inventory (void)
@@ -1328,7 +1328,7 @@ void gump_next_inventory (void)
 	if (actor)
 		actor->activate(gwin->get_usecode());
 	if (gwin->get_mode() == Game_window::gump)
-		mouse->set_shape(Mouse::hand);
+		Mouse::mouse->set_shape(Mouse::hand);
 }
 
 void gump_next_stats (void)
@@ -1345,7 +1345,7 @@ void gump_next_stats (void)
 	if (actor)
 		gwin->show_gump(actor, game->get_shape("gumps/statsdisplay"));
 	if (gwin->get_mode() == Game_window::gump)
-		mouse->set_shape(Mouse::hand);
+		Mouse::mouse->set_shape(Mouse::hand);
 }
 
 void gump_file (void)

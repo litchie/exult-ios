@@ -23,7 +23,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <string.h>
+#include <cstring>
 #include "gamewin.h"
 #include "game.h"
 #include "actors.h"
@@ -432,9 +432,11 @@ void Actor::write
 		nfile.put(0);
 
 	char namebuf[17];		// Write 16-byte name.
-	memset(namebuf, 0, 16);
-	if (name.empty()) strncpy(namebuf, Game_object::get_name().c_str(), 16);
-	else strncpy(namebuf, name.c_str(), 16);
+	std::memset(namebuf, 0, 16);
+	if (name.empty())
+		std::strncpy(namebuf, Game_object::get_name().c_str(), 16);
+	else
+		std::strncpy(namebuf, name.c_str(), 16);
 	nfile.write(namebuf, 16);
 	write_contents(nfile);		// Write what he holds.
 	namebuf[16] = 0;

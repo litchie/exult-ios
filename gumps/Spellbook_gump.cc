@@ -281,8 +281,7 @@ void Spellbook_gump::do_spell
 		if ((mana < circle) || (level < circle))
 			// Not enough mana or not yet at required level?
 		{
-			extern Mouse *mouse;
-			mouse->flash_shape(Mouse::redx);
+			Mouse::mouse->flash_shape(Mouse::redx);
 			return;
 		}
 		gwin->get_main_actor()->set_property(Actor::mana, mana-circle);

@@ -23,7 +23,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <string.h>
+#include <cstring>
 #include "utils.h"
 #include "rect.h"
 #include "ibuf8.h"
@@ -35,6 +35,8 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 using std::ios;
+using std::memcpy;
+using std::memset;
 
 #if 1	/* For debugging. */
 #include <iomanip.h>

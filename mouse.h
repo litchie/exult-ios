@@ -23,8 +23,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 	
-#ifndef INCL_MOUSE
-#define INCL_MOUSE 1
+#ifndef _MOUSE_H_
+#define _MOUSE_H_
 
 #include "rect.h"
 #include "dir.h"
@@ -35,7 +35,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *	Handle custom mouse pointers.
  */
 class Mouse
-	{
+{
+protected:
 	Shape_file pointers;		// Pointers from 'pointers.shp'.
 	Game_window *gwin;		// Where to draw.
 	Image_window8 *iwin;		// From gwin.
@@ -55,7 +56,11 @@ class Mouse
 	static short med_combat_arrows[8];	// Medium red arrows
 	void set_shape0(int framenum);	// Set shape without checking first.
 	void Init();
+
 public:
+	static bool mouse_update;
+	static Mouse* mouse;
+
 	Mouse(Game_window *gw);
 	Mouse(Game_window *gw, DataSource& shapes);
 	~Mouse();
@@ -127,6 +132,6 @@ public:
 		{ set_shape(med_combat_arrows[(int) dir]); }
 
 	unsigned char is_onscreen() { return onscreen; }
-	};
+};
 
-#endif	/* INCL_MOUSE */
+#endif

@@ -49,7 +49,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cerr;
 using std::endl;
 using std::list;
+using std::memcpy;
+using std::memset;
 using std::vector;
+
 static const int Mixer_Sample_Magic_Number=0x55443322;
 
 //---- Mixer ---------------------------------------------------------

@@ -1,5 +1,5 @@
 #include <new>
-#include <string.h>
+#include <cstring>
 #include <iostream>
 #include "SDL_mapping.h"
 
@@ -21,7 +21,7 @@ class ByteBuffer
 		// Sanity check. Do we already have at least that much?
 		if (numbytes <= cap)
 			{
-			memmove(data, (data + low), (high - low));
+			std::memmove(data, (data + low), (high - low));
 
 			high -= low;
 			low  =  0;
@@ -33,7 +33,7 @@ class ByteBuffer
 		char   *tmp = new char[numbytes];
 
 		// Copy the old store into it.
-		memcpy(tmp, (data + low), (high - low));
+		std::memcpy(tmp, (data + low), (high - low));
 
 		// Reset all our offsets
 		high -= low;
@@ -56,7 +56,7 @@ class ByteBuffer
 			low  = 0;              // Is this line redundant?
 			high = b.high - b.low;
 
-			memcpy(data, (b.data + b.low), high);
+			std::memcpy(data, (b.data + b.low), high);
 			}
 
 		} 
@@ -80,7 +80,7 @@ class ByteBuffer
 			low  = 0;             // Not redundant here, I think.
 			high = b.high - b.low;
 
-			memcpy(data, (b.data + b.low), high);
+			std::memcpy(data, (b.data + b.low), high);
 			}
 		else
 			{
@@ -139,7 +139,7 @@ class ByteBuffer
 				}
 			}
 
-		memcpy((data + high), buf, len);
+		std::memcpy((data + high), buf, len);
 
 		high += len;
 		}
@@ -154,7 +154,7 @@ class ByteBuffer
 			len = high - low;
 			}
 
-		memcpy(buf, (data + low), len);
+		std::memcpy(buf, (data + low), len);
 
 		low += len;
 

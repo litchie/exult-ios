@@ -65,9 +65,14 @@ using std::endl;
 using std::exit;
 using std::istream;
 using std::ifstream;
+using std::memcpy;
+using std::memset;
 using std::ofstream;
 using std::rand;
+using std::strcmp;
+using std::strcpy;
 using std::string;
+using std::strlen;
 using std::srand;
 using std::vector;
 
@@ -2083,7 +2088,6 @@ void Game_window::double_clicked
 	int x, int y			// Coords in window.
 	)
 	{
-	extern Mouse *mouse;
 					// Look for obj. in open gump.
 	Gump *gump = find_gump(x, y);
 	Game_object *obj;
@@ -2107,7 +2111,7 @@ void Game_window::double_clicked
 					main_actor->get_abs_tile_coord(),
 					obj->get_abs_tile_coord()))
 			{
-			mouse->flash_shape(Mouse::blocked);
+			Mouse::mouse->flash_shape(Mouse::blocked);
 			return;
 			}
 		}

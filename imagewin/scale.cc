@@ -6,7 +6,7 @@
  **/
 
 #include "SDL.h"
-#include <string.h>
+#include <cstring>
 
 
 /** 

@@ -6,7 +6,7 @@
  **	Written: 2/17/00 - JSF
  **/
 
-#include <stdlib.h>
+#include <cstdlib>
 #include "npcnear.h"
 #include "gamewin.h"
 #include "actors.h"
@@ -14,6 +14,8 @@
 #include "schedule.h"
 #include "items.h"
 #include "lists.h"
+
+using std::rand;
 
 /*
  *	Add an npc to the time queue.

@@ -34,6 +34,9 @@ short Mouse::long_arrows[8] = {24, 25, 26, 27, 28, 29, 30, 31};
 short Mouse::short_combat_arrows[8] = {32, 33, 34, 35, 36, 37, 38, 39};
 short Mouse::med_combat_arrows[8] = {40, 41, 42, 43, 44, 45, 46, 47};
 
+Mouse* Mouse::mouse = 0;
+bool Mouse::mouse_update = false;
+
 /*
  *	Create.
  */
@@ -42,35 +45,35 @@ Mouse::Mouse
 	(
 	Game_window *gw			// Where to draw.
 	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0) 
-	{
+{
 	SDL_GetMouseState(&mousex, &mousey);
 	mousex /= iwin->get_scale();
 	mousey /= iwin->get_scale();
 	pointers.load(POINTERS);
 	Init();
 	set_short_arrow(east);		// +++++For now.
-	}
+}
 	
 Mouse::Mouse
 	(
 	Game_window *gw,		// Where to draw.
 	DataSource &shapes
 	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0) 
-	{
+{
 	SDL_GetMouseState(&mousex, &mousey);
 	mousex /= iwin->get_scale();
 	mousey /= iwin->get_scale();
 	pointers.load(shapes);
 	Init();
 	set_shape0(0);
-	}
+}
 	
 void Mouse::Init()
-	{
+{
 	int cnt = pointers.get_num_frames();
 	int maxleft = 0, maxright = 0, maxabove = 0, maxbelow = 0;
 	for (int i = 0; i < cnt; i++)
-		{
+	{
 		Shape_frame *frame = pointers.get_frame(i);
 		int xleft = frame->get_xleft(), xright = frame->get_xright();
 		int yabove = frame->get_yabove(), ybelow = frame->get_ybelow();
@@ -82,7 +85,7 @@ void Mouse::Init()
 			maxabove = yabove;
 		if (ybelow > maxbelow)
 			maxbelow = ybelow;
-		}
+	}
 	int maxw = maxleft + maxright, maxh = maxabove + maxbelow;
 					// Create backup buffer.
 	backup = iwin->create_buffer(maxw, maxh);
@@ -90,7 +93,7 @@ void Mouse::Init()
 	box.h = maxh;
 	
 	onscreen = 0;                   // initially offscreen
-	}
+}
 
 /*
  *	Delete.
@@ -99,9 +102,9 @@ void Mouse::Init()
 Mouse::~Mouse
 	(
 	)
-	{
+{
 	delete backup;
-	}
+}
 
 /*
  *	Show the mouse.
@@ -110,16 +113,16 @@ Mouse::~Mouse
 void Mouse::show
 	(
 	)
-	{
+{
 	if (!onscreen)
-		{
+	{
 		onscreen = 1;
 					// Save background.
 		iwin->get(backup, box.x, box.y);
 					// Paint new location.
 		cur->paint_rle(iwin->get_ib8(), mousex, mousey);
-		}
 	}
+}
 
 /*
  *	Set to new shape.  Should be called after checking that frame #
@@ -130,14 +133,14 @@ void Mouse::set_shape0
 	(
 	int framenum
 	)
-	{
+{
 	cur_framenum = framenum;
 	cur = pointers.get_frame(framenum); 
 					// Set backup box to cover mouse.
 	box.x = mousex - cur->get_xleft();
 	box.y = mousey - cur->get_yabove();
 	dirty = dirty.add(box);		// Update dirty area.
-	}
+}
 
 /*
  *	Set to an arbitrary location.
@@ -147,12 +150,12 @@ void Mouse::set_location
 	(
 	int x, int y			// Mouse position.
 	)
-	{
+{
 	mousex = x;
 	mousey = y;
 	box.x = mousex - cur->get_xleft();
 	box.y = mousey - cur->get_yabove();
-	}
+}
 
 /*
  *	Flash a desired shape for about 1/2 second.
@@ -162,7 +165,7 @@ void Mouse::flash_shape
 	(
 	Mouse_shapes flash
 	)
-	{
+{
 	Mouse::Mouse_shapes saveshape = get_shape();
 	hide();
 	set_shape(flash);
@@ -173,5 +176,5 @@ void Mouse::flash_shape
 	gwin->paint();
 	set_shape(saveshape);
 	gwin->set_painted();
-	}
+}
 

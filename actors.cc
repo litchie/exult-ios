@@ -25,8 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>			/* Debugging. */
 #include <algorithm>		/* swap. */
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 #include "gamewin.h"
 #include "actors.h"
 #include "imagewin.h"
@@ -48,6 +48,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::rand;
 using std::string;
 using std::swap;
 

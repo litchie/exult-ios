@@ -24,12 +24,16 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 */
 
-#include <ctype.h>
+#include <cctype>
 #include "gamewin.h"
 #include "U7file.h"
 
 using std::cout;
 using std::endl;
+using std::isspace;
+using std::memcpy;
+using std::memset;
+using std::strcpy;
 using std::string;
 
 /*
