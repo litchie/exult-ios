@@ -1074,6 +1074,28 @@ void Actor::set_type_flags
 	}
 
 /*
+ *	Call usecode function for an object that's readied/unreadied.
+ */
+
+inline void Call_readied_usecode
+	(
+	Game_window *gwin,
+	Game_object *obj,
+	Usecode_machine::Usecode_events eventid
+	)
+	{
+	Shape_info& info = gwin->get_info(obj);
+	if (info.get_shape_class() != Shape_info::container)
+		{
+		Ready_type type = (Ready_type) info.get_ready_type();
+		if (type != other)
+			gwin->get_usecode()->call_usecode(obj->get_shapenum(),
+					obj, eventid);
+		}
+	}
+
+
+/*
  *	Remove an object.
  */
 
@@ -1082,12 +1104,13 @@ void Actor::remove
 	Game_object *obj
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+	Call_readied_usecode(gwin, obj, Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
 	int index = Actor::find_readied(obj);	// Remove from spot.
 	if (index >= 0)
 		{			// Update light-source count.
-		if (Game_window::get_game_window()->get_info(obj).
-							is_light_source())
+		if (gwin->get_info(obj).is_light_source())
 			light_sources--;
 		spots[index] = 0;
 		if (index == rhand || index == lhand)
@@ -1107,7 +1130,8 @@ void Actor::remove
 int Actor::add
 	(
 	Game_object *obj,
-	int dont_check			// 1 to skip volume check.
+	int dont_check			// 1 to skip volume check (AND also
+					//   to skip usecode call).
 	)
 	{
 	int index = find_best_spot(obj);// Where should it go?
@@ -1136,7 +1160,10 @@ int Actor::add
 		}
 	spots[index] = obj;		// Store in correct spot.
 	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
-	if (Game_window::get_game_window()->get_info(obj).is_light_source())
+	Game_window *gwin = Game_window::get_game_window();
+	if (!dont_check)		// Watch for initialization.
+		Call_readied_usecode(gwin, obj, Usecode_machine::readied);
+	if (gwin->get_info(obj).is_light_source())
 		light_sources++;
 	return (1);
 	}
@@ -1199,8 +1226,9 @@ int Actor::add_readied
 			two_handed = 1;	// Must be a two-handed weapon.
 		if (best_index == lrfinger)
 			two_fingered = 1;	// Must be gloves
-		if (Game_window::get_game_window()->get_info(obj).
-							is_light_source())
+		Game_window *gwin = Game_window::get_game_window();
+		Call_readied_usecode(gwin, obj, Usecode_machine::readied);
+		if (gwin->get_info(obj).is_light_source())
 			light_sources++;
 		return (1);
 		}

@@ -1,3 +1,7 @@
+2000-10-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Rings work now.
+
 2000-10-08  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Show invisible NPC's as shadows.
