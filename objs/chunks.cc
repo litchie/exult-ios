@@ -440,7 +440,12 @@ int Chunk_cache::is_blocked
 				return 1;
 		}
 		else if (ter & 4)	// Blocked
-			return (move_flags & MOVE_FLY) ? 0 : 1;
+		{
+			if (move_flags & MOVE_FLY)
+				return 0;
+			else
+				return 1;
+		}
 		else	// Other
 			return 0;
 	}
