@@ -171,7 +171,7 @@ void Actor::init
 	)
 	{
 	if (!frames[(int) north])
-		set_default_frames();
+		init_default_frames();
 	size_t i;
 	for (i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
 		properties[i] = 0;
@@ -505,16 +505,32 @@ int Actor::get_attack_frames
  *	Set default set of frames.
  */
 
-void Actor::set_default_frames
+void Actor::init_default_frames
 	(
 	)
 	{
 					// Set up actor's frame lists.
 					// These are rough guesses.
-	static unsigned char 	north_frames[3] = {0, 1, 2},
-				south_frames[3] = {16, 17, 18},
-				east_frames[3] = {48, 49, 50},
-				west_frames[3] = {32, 33, 34};
+#if 1
+	// Evil hack to allow "smooth" 3-frame walking
+	const int FRAME_NUM = 5;
+	uint8	north_frames[FRAME_NUM] = { 0,  1,  0,  2,  0},
+			south_frames[FRAME_NUM] = {16, 17, 16, 18, 16},
+			 east_frames[FRAME_NUM] = {48, 49, 48, 50, 48},
+			 west_frames[FRAME_NUM] = {32, 33, 32, 34, 32};
+	frames[(int) north] = new Frames_sequence(FRAME_NUM, north_frames);
+	frames[(int) northeast] = frames[(int) north];
+	frames[(int) south] = new Frames_sequence(FRAME_NUM, south_frames);
+	frames[(int) southwest] = frames[(int) south];
+	frames[(int) east] = new Frames_sequence(FRAME_NUM, east_frames);
+	frames[(int) southeast] = frames[(int) east];
+	frames[(int) west] = new Frames_sequence(FRAME_NUM, west_frames);
+	frames[(int) northwest] = frames[(int) west];
+#else
+	uint8	north_frames[3] = {0, 1, 2},
+			south_frames[3] = {16, 17, 18},
+			east_frames[3] = {48, 49, 50},
+			west_frames[3] = {32, 33, 34};
 	frames[(int) north] = new Frames_sequence(3, north_frames);
 	frames[(int) northeast] = frames[(int) north];
 	frames[(int) south] = new Frames_sequence(3, south_frames);
@@ -523,6 +539,7 @@ void Actor::set_default_frames
 	frames[(int) southeast] = frames[(int) east];
 	frames[(int) west] = new Frames_sequence(3, west_frames);
 	frames[(int) northwest] = frames[(int) west];
+#endif
 	}
 
 /*

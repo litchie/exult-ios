@@ -116,7 +116,7 @@ protected:
 	Actor(std::istream& nfile, int num, int has_usecode);
 public:
 	friend class Clear_hit;
-	void set_default_frames();	// Set usual frame sequence.
+	static void init_default_frames();	// Set usual frame sequence.
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
 	~Actor();
 	int ready_ammo();		// Find and ready appropriate ammo.
@@ -663,7 +663,7 @@ class Monster_info
 public:
 	friend class Monster_actor;
 	Monster_info() {  }
-	void read(istream& mfile);	// Read in from file.
+	void read(std::istream& mfile);	// Read in from file.
 					// Done by Game_window:
 	static void set_equip(Equip_record *eq, int cnt)
 		{

@@ -287,22 +287,16 @@ int exult_main(void)
 	serp_static += "/static";
 	add_system_path("<SERPENT_STATIC>", serp_static.c_str());
 
-	string	tracing;
-	config->value("config/debug/trace/intrinsics",tracing,"no");
-	if(tracing=="yes")
-		intrinsic_trace=true;	// Enable tracing of intrinsics
+	// Enable tracing of intrinsics?
+	config->value("config/debug/trace/intrinsics",intrinsic_trace);
 
-	string uctrace;
-	config->value("config/debug/trace/usecode", uctrace,"no");
-	if (uctrace=="yes")
-		usecode_trace=true;	// Enable tracing of UC-instructions
-		
+	// Enable tracing of UC-instructions?
+	config->value("config/debug/trace/usecode", usecode_trace);
+
 
 #if USECODE_DEBUGGER
-	string	u_debugging;
-	config->value("config/debug/debugger/enable",u_debugging,"no");
-	if(u_debugging=="yes")
-		usecode_debugging=true;	// Enable usecode debugger
+	// Enable usecode debugger
+	config->value("config/debug/debugger/enable",usecode_debugging);
 	initialise_usecode_debugger();
 #endif
 	cheat.init();
@@ -375,10 +369,9 @@ static void Init
 	current_res = find_resolution(sw, sh, scaleval);
 	Audio::Init();
 
-	string disable_fades;
-	config->value("config/video/disable_fades", disable_fades, "no");
-	if (disable_fades == "yes")
-		gwin->set_fades_enabled(false);
+	bool disable_fades;
+	config->value("config/video/disable_fades", disable_fades, false);
+	gwin->set_fades_enabled(!disable_fades);
 
 
 	if (arg_buildmap >= 0)
@@ -402,12 +395,12 @@ static void Init
 		mygame = exult_menu.run();
 		Game::create_game(mygame);
 
-		string yn;
 		
 					// Skip splash screen?
-		config->value("config/gameplay/skip_splash", yn, "no");
-		if(yn == "no") 
-		game->play_intro();
+		bool skip_splash;
+		config->value("config/gameplay/skip_splash", skip_splash);
+		if(!skip_splash) 
+			game->play_intro();
 	} while(!game->show_menu());
 	gwin->init_files();
 	gwin->setup_game();		// This will start the scene.
@@ -435,7 +428,9 @@ static int Play()
 		{
 			Mouse::mouse->hide();	// Turn off mouse.
 			gwin->read();	// Restart
-			gwin->setup_game();
+			/////gwin->setup_game();
+			//// setup_game is already being called from inside
+			//// of gwin->read(), so no need to call it here, I hope...
 		}
 	}
 	while (quitting_time == QUIT_TIME_RESTART);

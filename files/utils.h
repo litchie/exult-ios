@@ -353,5 +353,6 @@ void add_system_path(const std::string& key, const std::string& value);
 std::string get_system_path(const std::string &path);
 
 void to_uppercase(std::string &str);
+std::string to_uppercase(const std::string &str);
 
 #endif	/* _UTILS_H_ */

@@ -37,36 +37,31 @@ using std::FILE;
 using std::snprintf;
 using std::string;
 
-const std::string	&Configuration::value(const char *key,bool &exists)
-{
-	const XMLnode *sub=xmltree.subtree(string(key));
-	exists = (sub != NULL);
-	if(exists)
-		return sub->value();
-
-	return c_empty_string;
-}
-
-void	Configuration::value(const char *key,std::string &s,const char *defaultvalue) const
+void	Configuration::value(const char *key,std::string &ret,const char *defaultvalue) const
 {
 	const XMLnode *sub=xmltree.subtree(string(key));
 	if(sub)
-		s = sub->value();
+		ret = sub->value();
 	else
-		s = defaultvalue;
+		ret = defaultvalue;
 }
 
-void	Configuration::value(const char *key,int &n,int defaultvalue)
+void	Configuration::value(const char *key,bool &ret,bool defaultvalue) const
 {
-	n=0;
-	std::string	s;
-	bool	exists;
-
-	s=value(key,exists);
-	if(!exists)
-		n=defaultvalue;
+	const XMLnode *sub=xmltree.subtree(string(key));
+	if(sub)
+		ret = (to_uppercase(sub->value()) == "YES");
 	else
-		n=atoi(s.c_str());
+		ret = defaultvalue;
+}
+
+void	Configuration::value(const char *key,int &ret,int defaultvalue) const
+{
+	const XMLnode *sub=xmltree.subtree(string(key));
+	if(sub)
+		ret = atoi(sub->value().c_str());
+	else
+		ret = defaultvalue;
 }
 
 void	Configuration::set(std::string &key,std::string &value,bool write_out)
