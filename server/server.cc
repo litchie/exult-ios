@@ -1,6 +1,6 @@
 /**	-*-mode: Fundamental; tab-width: 8; -*-
  **
- **	Server.cc - Server functions.
+ **	Server.cc - Server functions for Exult (NOT ExultStudio).
  **
  **	Written: 5/2/2001 - JSF
  **/
@@ -57,6 +57,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 #include "config.h"
 #include "utils.h"
+#include "egg.h"
 
 using std::cout;
 using std::cerr;
@@ -182,7 +183,8 @@ static void Handle_client_message
 	int datalen = Exult_server::Receive_data(fd, id, data, sizeof(data));
 	if (!datalen)
 		return;
-	//+++++++++++Handle id/data.
+	if (id == Exult_server::egg)
+		Egg_object::update_from_studio(&data[0], datalen);
 	}
 
 /*
