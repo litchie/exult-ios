@@ -1,7 +1,7 @@
 /*
  *  Gump_manager.cc - Object that manages all available gumps
  *
- *  Copyright (C) 2001-2003  The Exult Team
+ *  Copyright (C) 2001-2004  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -505,8 +505,9 @@ int Gump_manager::do_modal_gump
 	Paintable *paint		// Paint this over everything else.
 	)
 {
+	if (!modal_gump_count)
+		SDL_EnableUNICODE(1); // enable unicode translation for text input
 	modal_gump_count++;
-	SDL_EnableUNICODE(1); // enable unicode translation for text input
 
 
 	//	Game_window *gwin = Game_window::get_instance();
@@ -557,9 +558,10 @@ int Gump_manager::do_modal_gump
 	// Resume the game
 	gwin->get_tqueue()->resume(SDL_GetTicks());
 
-	SDL_EnableUNICODE(0);
-
 	modal_gump_count--;
+
+	if (!modal_gump_count)
+		SDL_EnableUNICODE(0);
 
 	return (!escaped);
 }
