@@ -628,3 +628,34 @@ int Pickup_actor_action::handle_event
 	actor->add_dirty(gwin, 1);
 	return speed;
 	}
+
+/*
+ *	Action to turn towards an object.
+ */
+
+Face_object_actor_action::Face_object_actor_action(Game_object *o, int spd)
+	: obj(o), speed(spd),
+	  objpos(obj->get_abs_tile_coord())
+	{
+	}
+
+/*
+ *	Just turn to face an object.
+ */
+
+int Face_object_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int dir = actor->get_direction(objpos);
+	int frnum = actor->get_dir_framenum(dir, Actor::standing);
+	if (actor->get_framenum() == frnum)
+		return 0;		// There.
+	actor->add_dirty(gwin);		// Get weapon to redraw too.
+	actor->set_frame(frnum);
+	actor->add_dirty(gwin, 1);
+	return speed;
+	}
+

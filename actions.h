@@ -243,5 +243,21 @@ public:
 	};
 	
 
+/*
+ *	Action to turn towards an object.
+ */
+
+class Face_object_actor_action : public Actor_action
+	{
+	Game_object *obj;		// What to pick up/put down.
+	int speed;			// Time between frames.
+	Tile_coord objpos;		// Where to put it.
+public:
+					// To pick up an object:
+	Face_object_actor_action(Game_object *o, int spd);
+	virtual int handle_event(Actor *actor);
+	};
+	
+
 #endif	/* INCL_ACTIONS */
 

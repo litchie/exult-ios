@@ -317,11 +317,16 @@ class Sew_schedule : public Schedule
 	Game_object *bale;		// Bale of wool.
 	Game_object *spinwheel;
 	Game_object *chair;		// In front of spinning wheel.
+	Game_object *spindle;		// Spindle of thread.
+	Game_object *loom;
  	enum {
 		get_wool,
 		sit_at_wheel,
 		spin_wool,
-		get_cloth
+		get_thread,
+		weave_cloth,
+		get_cloth,
+		sew_clothes
 	} state;
 public:
 	Sew_schedule(Actor *n);
