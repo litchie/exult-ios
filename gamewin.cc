@@ -772,6 +772,9 @@ void Game_window::read_ireg_objects
 			if (info.is_animated())
 				obj = new Animated_object(
 				   entry[2], entry[3], tilex, tiley, lift, 1);
+			else if (shapeid == 607)
+				obj = new Egglike_game_object(
+				   entry[2], entry[3], tilex, tiley, lift);
 			else
 				obj = new Ireg_game_object(
 				   entry[2], entry[3], tilex, tiley, lift);
@@ -2040,7 +2043,7 @@ void Game_window::double_clicked
 			main_actor->set_opponent(obj);
 			return;
 			}
-		remove_all_effects();	// Remove text msgs. from screen.
+		remove_text_effects();	// Remove text msgs. from screen.
 		cout << "Object name is " << obj->get_name() << endl;
 		init_faces();		// Be sure face list is empty.
 		Game_mode savemode = mode;

@@ -220,6 +220,12 @@ void Game_window::drop
 	extern int Prompt_for_number(int, int, int, int);
 	int dropped = 0;		// 1 when dropped.
 	Game_object *to_drop = dragging;// If quantity, split it off.
+					// Save original footprint.
+	Rectangle old_foot(0, 0, 0, 0);
+	if (!dragging_gump)		// Get old footprint, top in world.
+		old_foot = dragging->get_footprint();
+	int old_top = dragging->get_lift() + 
+					get_info(dragging).get_3d_height();
 					// First see if it's a gump.
 	Gump_object *on_gump = find_gump(x, y);
 					// Check for quantity.
@@ -260,7 +266,11 @@ void Game_window::drop
 		}
 	if (dropped)			// Successful?
 		if (to_drop == dragging)// Whole thing?
+			{		// Watch for stuff on top of it.
+			if (old_foot.w > 0)
+				Chunk_object_list::gravity(old_foot, old_top);
 			return;		// All done.
+			}
 		else			// Subtract quantity moved.
 			dragging->modify_quantity(-dragging_quantity);
 	if (dragging_gump)		// Put back remaining/orig. piece.
