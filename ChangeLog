@@ -1,3 +1,9 @@
+2001-06-07  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* 'Tournament' flag is back; I was wrong about it being
+	'killable'.  Also Usecode(eventid==7) is only called when the
+	'tournament' flag is set.  Seems to work so far.
+
 2001-06-05  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* files/utils.cc: try converting all path-components to uppercase in turn when file not found. Report original filename on error.
 	* gamewin.cc: updated 'SI paperdoll files not found' error message
