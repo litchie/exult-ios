@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.16 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.17 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -541,7 +541,7 @@ AMMO.DAT:     ammunitions enumeration
   type      = int16 (shape type)
   family    = int16 (shape type of the base ammunition eg: lucky arrow->arrow)
   type2     = int16 (always same as type)
-  id        = byte (meaning?)
+  damage    = byte (extra damage)
   flags     = 6 bytes (meaning?)
 ARMOR.DAT:    armors enumeration
   armor     = type, defence, flags
