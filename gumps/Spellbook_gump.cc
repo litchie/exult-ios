@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,20 +47,19 @@ static inline int Get_usecode(int spell);
 /*
  *	Defines in 'gumps.vga':
  */
-#define BG (Game::get_game_type() == BLACK_GATE)
-#define SPELLBOOK (BG ? 43 : 38)
-#define SPELLS  (BG ? 33 : 28)		// First group of 9 spells.
-#define TURNINGPAGE  (BG ? 41 : 36)	// Animation?? (4 frames).
-#define BOOKMARK  (BG ? 42 : 37)	// Red ribbon, 5 frames.
-#define LEFTPAGE  (BG ? 44 : 39)	// At top-left of left page.
-#define RIGHTPAGE  (BG ? 45 : 40)	// At top-right of right page.
+#define SPELLBOOK (GAME_BG ? 43 : 38)
+#define SPELLS  (GAME_BG ? 33 : 28)		// First group of 9 spells.
+#define TURNINGPAGE  (GAME_BG ? 41 : 36)	// Animation?? (4 frames).
+#define BOOKMARK  (GAME_BG ? 42 : 37)	// Red ribbon, 5 frames.
+#define LEFTPAGE  (GAME_BG ? 44 : 39)	// At top-left of left page.
+#define RIGHTPAGE  (GAME_BG ? 45 : 40)	// At top-right of right page.
 #define SCROLLSPELLS  66		// First group of scroll spells (SI).
 
 /*
  *	And in 'text.flx':
  */
-#define CIRCLE (BG ? 0x545 : 0x551)
-#define CIRCLENUM (BG ? 0x545 : 0x552)
+#define CIRCLE (GAME_BG ? 0x545 : 0x551)
+#define CIRCLENUM (GAME_BG ? 0x545 : 0x552)
 
 /*
  *	Flags for required reagents.  Bits match shape #.
@@ -190,6 +189,8 @@ public:
 		{  }
 					// What to do when 'clicked':
 	virtual void activate();
+	virtual void push() {}
+	virtual void unpush() {}
 	};
 
 /*
@@ -323,8 +324,7 @@ Spellbook_gump::Spellbook_gump
 					// Get book's top owner.
 	book_owner = book->get_outermost();
 					// Point to reagent table.
-	reagents = Game::get_game_type() == SERPENT_ISLE ? si_reagents
-							: bg_reagents;
+	reagents = GAME_SI ? si_reagents : bg_reagents;
 	set_avail();			// Figure spell counts.
 	if (book->bookmark >= 0)	// Set to bookmarked page.
 		page = Get_circle(book->bookmark);
@@ -346,9 +346,9 @@ Spellbook_gump::Spellbook_gump
 				int spnum = spindex + s;
 				spells[spnum] = new Spell_button(this,
 					s < 4 ? object_area.x +
-						spshape->get_xleft()
+						spshape->get_xleft() + 1
 					: object_area.x + object_area.w - 
-						spshape->get_xright(),
+						spshape->get_xright() - 2,
 					object_area.y + spshape->get_yabove() +
 						(spheight + vertspace)*(s%4),
 					spnum,
@@ -527,7 +527,7 @@ void Spellbook_gump::paint
 			else if (num >= 1000)	// Fake an 'infinity'.
 				{
 				strcpy(text, "oo");
-				int px = x + spell->x + numx -
+				int px = x + spell->x + numx + 2 -
 						sman->get_text_width(4, text);
 				sman->paint_text(4, text + 1, px,
 					y + spell->y + numy);
