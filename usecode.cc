@@ -2315,6 +2315,14 @@ USECODE_INTRINSIC(set_timer)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(wearing_fellowship)
+{
+	Game_object *obj = gwin->get_main_actor()->get_readied(Actor::neck);
+	if (obj && obj->get_shapenum() == 955)	//++++++++++++Framenum too!!!!!
+		return Usecode_value(1);
+	else
+		return Usecode_value(0);
+}
 
 USECODE_INTRINSIC(mouse_exists)
 {
@@ -2807,7 +2815,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x64     UNUSED
 	USECODE_INTRINSIC_PTR(get_timer),	// 0x65
 	USECODE_INTRINSIC_PTR(set_timer),	// 0x66
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x67
+	USECODE_INTRINSIC_PTR(wearing_fellowship),	// 0x67
 	USECODE_INTRINSIC_PTR(mouse_exists),	// 0x68
 	USECODE_INTRINSIC_PTR(get_speech_track), // 0x69
 	USECODE_INTRINSIC_PTR(flash_mouse),	// 0x6a
