@@ -106,7 +106,6 @@ private:
 	Game_object *dragging;		// What's being dragged.
 	Gump_object *dragging_gump;
 	Gump_button *dragging_gump_button;
-	int dragging_quantity;		// Quantity to drag.
 					// Last mouse, paint positions:
 	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
 	Rectangle dragging_rect;	// Rectangle to repaint.
