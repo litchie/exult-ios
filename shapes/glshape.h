@@ -27,6 +27,7 @@
 
 class Shape_frame;
 class GL_texshape;
+class Image_buffer8;
 
 /*
  *	A 2D shape is rendered by painting a quad with the shape as a texture.
@@ -64,11 +65,11 @@ public:
 	static GL_manager *get_instance()
 		{ return instance; }
 	void set_palette(unsigned char *pal)
-		{ palette = pal; }
+		{ delete palette; palette = pal; }
 					// Create from src (but don't add to
 					//   chain).
-	GL_shape *create(Image_buffer8 *src)
-		{ return new GL_shape(src, palette); }
+	GL_texshape *create(Image_buffer8 *src)
+		{ return new GL_texshape(src, palette); }
 					// Window was resized.
 	void resized(int new_width, int new_height);
 					// Paint a shape & create GL_shape
