@@ -203,7 +203,7 @@ int Barge_object::okay_to_rotate
 	{
 	int lift = get_lift();
 					// Special case for carpet.
-	int move_type = (lift >= 11) ? MOVE_FLY : MOVE_ALL_TERRAIN;
+	int move_type = (lift >= 11) ? (MOVE_LEVITATE) : MOVE_ALL_TERRAIN;
 					// Get footprint in tiles.
 	Rectangle foot = get_tile_footprint();
 	int xts = get_xtiles(), yts = get_ytiles();
@@ -665,7 +665,7 @@ int Barge_object::step
 					// Blocked? (Assume ht.=4, for now.)
 	int move_type;
 	if (boat) move_type = MOVE_SWIM;
-	else if (cur.tz >= 11) move_type = MOVE_FLY;
+	else if (cur.tz >= 11) move_type = MOVE_LEVITATE;
 	else move_type = MOVE_WALK;
        	if (Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
 						4, cur, t, move_type, 0))
