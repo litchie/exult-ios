@@ -48,7 +48,7 @@ void create_static(Image_buffer8* ib, int w, int h, int x, int y,
   }
 }
 
-bool wait_delay_cycle(int ms)
+bool wait_delay_cycle(int ms, int startcol, int ncol)
 {
 	SDL_Event event;
 	int delay;
@@ -61,14 +61,21 @@ bool wait_delay_cycle(int ms)
 		loops = ms/delay;
 	}
 	for(int i=0; i<loops; i++) {
-
+		unsigned long ticks1 = SDL_GetTicks();
 	        // this may be a bit risky... How fast can events be generated?
 		while(SDL_PollEvent(&event)) {
 			if((event.type==SDL_KEYDOWN)||(event.type==SDL_MOUSEBUTTONUP))
 				return true;
 		}
-		SDL_Delay(delay);
-		Game_window::get_game_window()->get_win()->rotate_colors(16, 95, 1);
+		Game_window::get_game_window()->get_win()
+		  ->rotate_colors(startcol, ncol, 1);
+		if (ms > 250)
+			Game_window::get_game_window()->get_win()->show();
+		unsigned long ticks2 = SDL_GetTicks();
+		if (ticks2 - ticks1 > delay)
+			i+= (ticks2 - ticks1) / delay - 1;
+		else
+			SDL_Delay(delay - (ticks2 - ticks1));
 	}
 	return false;
 }
@@ -181,13 +188,24 @@ BG_Game::~BG_Game()
 			pal.fade_out(30); \
 			delete backup; delete backup2; delete backup3; \
 			delete cbackup; delete cbackup2; delete cbackup3; \
+			delete noise; delete plasma; \
 			return; \
 		     }
 
-#define WAITDELAYCYCLE(x) if (wait_delay(x)) { \
+#define WAITDELAYCYCLE(x) if (wait_delay_cycle((x), 16, 95)) { \
 			pal.fade_out(30); \
 			delete backup; delete backup2; delete backup3; \
 			delete cbackup; delete cbackup2; delete cbackup3; \
+			return; \
+		     }
+
+#define WAITDELAYCYCLE2(x) if (wait_delay_cycle((x), 250, 5)) { \
+			pal.fade_out(30); \
+			return; \
+		     }
+
+#define WAITDELAYCYCLE3(x) if (wait_delay_cycle((x), 240, 15)) { \
+			pal.fade_out(30); \
 			return; \
 		     }
 
@@ -294,15 +312,13 @@ void BG_Game::play_intro()
 	WAITDELAY(2000);
 	delete backup; backup = 0;
 
-	//TODO: show plasma first, then a bit of static
-        //TODO: is text font correct?
-	//TODO: guardian seems to shift a bit before and after speech
-	//TODO: reduce sudden facial movements in speech
-	//TODO: text backup area is too small??
 
 	// Enter guardian
-	play_midi(2);
 
+	//TODO: guardian seems to shift a bit before and after speech
+	//TODO: reduce sudden facial movements in speech
+
+	play_midi(2);
 
 	// create buffers containing a blue 'plasma' screen and noise
 	noise = win->create_buffer(gwin->get_width(),
@@ -322,7 +338,7 @@ void BG_Game::play_intro()
 	//TODO: sound effects here!
 	//TODO: timing?
 	win->show();
-	WAITDELAY(100);
+       	WAITDELAY(100);
 	win->put(noise,0,0); win->show();
 	//	WAITDELAY(25);
 	win->put(plasma,0,0); win->show();
@@ -336,7 +352,6 @@ void BG_Game::play_intro()
 	win->put(plasma,0,0); win->show();
 	delete plasma; plasma = 0;
 	delete noise; noise = 0;
-
 
 	// First 'popup'
 	s = shapes.get_shape(0x21, 0);
@@ -454,11 +469,10 @@ void BG_Game::play_intro()
 			next_txt = txt_end+2;
 		}
 
-//gwin->paint_text(7, txt_ptr, centerx-gwin->get_text_width(0, txt_ptr)/2, txt_ypos);
 		font->center_text(win->get_ib8(), centerx, txt_ypos, txt_ptr);
 
 		win->show();
-		if(wait_delay_cycle(50)) {
+		if(wait_delay_cycle(50, 16, 95)) {
 			pal.fade_out(30);
 			delete [] txt;
 			delete backup; delete backup2; delete backup3;
@@ -499,7 +513,7 @@ void BG_Game::play_intro()
 	for(int i=15; i>0; i--) {
 		gwin->paint_shape(centerx,centery,shapes.get_shape(0x23,i));
 		win->show();
-		if(wait_delay_cycle(70)) {
+		if(wait_delay_cycle(70, 16, 95)) {
 			pal.fade_out(30);
 			Audio::get_ptr()->cancel_streams();
 			delete backup; delete cbackup;
@@ -516,7 +530,6 @@ void BG_Game::play_intro()
 	WAITDELAYCYCLE(1000)
 
 	// PC screen
-
 	// TODO: transition (zoom out to PC) scene missing
 
 	play_midi(1);
@@ -557,6 +570,8 @@ void BG_Game::play_intro()
 	win->show();
 	WAITDELAY(4000);
 
+	// TODO: misaligned
+
 	// scroll right
 	for(int i=0;i<194;i+=4) {
 		gwin->paint_shape(centerx-i, centery, shapes.get_shape(0x07,0));
@@ -574,10 +589,8 @@ void BG_Game::play_intro()
 		WAITDELAY(30);
 	}
 
-	// TODO: colour cycle the Orb of the Moons somehow
-
 	// scroll down
-	for(int i=0;i<50;i++) {
+	for(int i=0;i<50;i+=2) {
 		gwin->paint_shape(centerx-194, centery-i, shapes.get_shape(0x07,0));
 		gwin->paint_shape(centerx-194, centery-i, shapes.get_shape(0x09,0));
 		gwin->paint_shape(centerx-194, centery-i, shapes.get_shape(0x08,0));
@@ -589,9 +602,9 @@ void BG_Game::play_intro()
 		gwin->paint_shape(centerx, topy, shapes.get_shape(0x17,0));
 
 		win->show();
-		WAITDELAY(50);
+		WAITDELAYCYCLE2(50);
 	}
-	WAITDELAY(1000);
+	WAITDELAYCYCLE2(1000);
 
 	gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x07,0));
 	gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x09,0));
@@ -605,7 +618,7 @@ void BG_Game::play_intro()
 
 	win->show();
 
-	WAITDELAY(3000);
+	WAITDELAYCYCLE2(3000);
 
 	gwin->clear_screen();
 
@@ -619,23 +632,23 @@ void BG_Game::play_intro()
 	win->show();
 
 	// TODO: fade in screen while text is onscreen
-	// TODO: colour-cycle moongate
 
 	WAITDELAY(3000);
 
+	// TODO: misaligned
 	for(int i=120;i>=-170;i-=6) {
 		gwin->paint_shape(centerx, centery, shapes.get_shape(0x02,0));
 		gwin->paint_shape(centerx, centery, shapes.get_shape(0x03,0));
 		gwin->paint_shape(centerx, centery, shapes.get_shape(0x04,0));
 		gwin->paint_shape(centerx, centery, shapes.get_shape(0x05,0));
 
-		gwin->paint_shape(centerx+i,topy+16, shapes.get_shape(0x00,0));
-		gwin->paint_shape(centerx-i,topy+16, shapes.get_shape(0x01,0));
+		gwin->paint_shape(centerx+i,topy, shapes.get_shape(0x00,0));
+		gwin->paint_shape(centerx-i,topy, shapes.get_shape(0x01,0));
 
 		// "Why is a moongate already there?"
 		gwin->paint_shape(centerx,centery+50,shapes.get_shape(0x1A,0));
 		win->show();
-		WAITDELAY(50)
+		WAITDELAYCYCLE3(50);
 	}
 
 	gwin->paint_shape(centerx, centery, shapes.get_shape(0x02,0));
@@ -647,7 +660,7 @@ void BG_Game::play_intro()
 	gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x1C,0));
 	win->show();
 	
-	WAITDELAY(3000);
+	WAITDELAYCYCLE3(3000);
 
 	// TODO: zoom into moongate
 
