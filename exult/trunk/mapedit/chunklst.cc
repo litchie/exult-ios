@@ -320,6 +320,9 @@ gint Chunk_chooser::configure
 	adj->page_increment = page_size;
 	adj->page_size = page_size;
 	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+	if (chooser->group)		// Filtering?
+		chooser->enable_drop();	// Can drop chunks here.
+
 	return (TRUE);
 	}
 
@@ -556,6 +559,60 @@ gint Chunk_chooser::drag_begin
 	gdk_bitmap_unref(mask);
 #endif
 	return TRUE;
+	}
+
+/*
+ *	Chunk was dropped here.
+ */
+
+void Chunk_chooser::drag_data_received
+	(
+	GtkWidget *widget,
+	GdkDragContext *context,
+	gint x,
+	gint y,
+	GtkSelectionData *seldata,
+	guint info,
+	guint time,
+	gpointer udata			// Should point to Shape_draw.
+	)
+	{
+	Chunk_chooser *chooser = (Chunk_chooser *) udata;
+	cout << "Chunk drag_data_received" << endl;
+	if (seldata->type == gdk_atom_intern(U7_TARGET_CHUNKID_NAME, 0) &&
+	    seldata->format == 8 && seldata->length > 0)
+		{
+		int cnum;
+		Get_u7_chunkid(seldata->data, cnum);
+		chooser->group->add(cnum);
+		chooser->render();
+//		chooser->adjust_scrollbar(); ++++++Probably need to do this.
+		}
+	}
+
+/*
+ *	Set to accept drops from drag-n-drop of a chunk.
+ */
+
+void Chunk_chooser::enable_drop
+	(
+	)
+	{
+	if (drop_enabled)		// More than once causes warning.
+		return;
+	drop_enabled = true;
+	gtk_widget_realize(draw);//???????
+#ifndef WIN32
+	GtkTargetEntry tents[1];
+	tents[0].target = U7_TARGET_CHUNKID_NAME;
+	tents[0].flags = 0;
+	tents[0].info = U7_TARGET_CHUNKID;
+	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_ALL, tents, 1,
+			(GdkDragAction) (GDK_ACTION_COPY | GDK_ACTION_MOVE));
+
+	gtk_signal_connect(GTK_OBJECT(draw), "drag_data_received",
+				GTK_SIGNAL_FUNC(drag_data_received), this);
+#endif
 	}
 
 /*
@@ -808,7 +865,7 @@ Chunk_chooser::Chunk_chooser
 	) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
 		chunkfile(cfile), index0(0),
 		info(0), info_cnt(0), selected(-1), sel_changed(0),
-		locate_cx(-1), locate_cy(-1)
+		locate_cx(-1), locate_cy(-1), drop_enabled(false)
 	{
 	chunkfile.seekg(0, std::ios::end);	// Figure total #chunks.
 	num_chunks = chunkfile.tellg()/(c_tiles_per_chunk*c_tiles_per_chunk*2);

@@ -1,3 +1,7 @@
+2002-01-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/chunklst.cc,etc:  'Groups' work for 'u7chunks' now.
+
 2002-01-28  Ryan Nunn  <triforce@merlin.net.au>
 	* sigame.cc : Reworking SI endgame. Now has correct timing and speech.
 	  Text message for when speech is disabled is yet to be included.
