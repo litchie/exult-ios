@@ -775,7 +775,7 @@ void ExultStudio::create_new_game
 		closedir(dirrd);
 		}
 	set_game_path(dir);		// Open as current game.
-	write_shape_info();		// Create initial .dat files.
+	write_shape_info(true);		// Create initial .dat files.
 	}
 
 /*
@@ -1133,9 +1133,10 @@ void ExultStudio::read_map
 
 void ExultStudio::write_shape_info
 	(
+	bool force			// If set, always write.
 	)
 	{
-	if (shape_info_modified && vgafile)
+	if ((force || shape_info_modified) && vgafile)
 		{
 		Shapes_vga_file *svga = 
 				(Shapes_vga_file *) vgafile->get_ifile();
@@ -1144,7 +1145,7 @@ void ExultStudio::write_shape_info
 		svga->write_info(false);//++++BG?
 		}
 	shape_info_modified = false;
-	if (shape_names_modified)
+	if (force || shape_names_modified)
 		{
 		shape_names_modified = false;
 		int cnt = names.size();
