@@ -1679,6 +1679,48 @@ void Container_game_object::write_contents
 	}
 
 /*
+ *	Move to a new absolute location.
+ */
+
+void Barge_object::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift
+	)
+	{
+					// Get current location.
+	Tile_coord old = get_abs_tile_coord();
+					// Move the barge itself.
+	Game_object::move(newtx, newty, newlift);
+					// Get deltas.
+	int dx = newtx - old.tx, dy = newty - old.ty, dz = newlift - old.tz;
+	int cnt = objects.get_cnt();	// Move each object.
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *obj = get_object(i);
+		int ox, oy, oz;
+		obj->get_abs_tile(ox, oy, oz);
+					// Move each object same distance.
+//+++++Way to simplistic.  May have to change orientation, animate frame.
+		obj->move(ox + dx, oy + dy, oz + dz);
+		}
+	}
+
+/*
+ *	Remove an object.
+ */
+
+void Barge_object::remove
+	(
+	Game_object *obj
+	)
+	{
+	//++++++++++++++
+	obj->set_owner(0);
+	}
+
+/*
  *	Add an object.
  *
  *	Output:	0, meaning object should also be added to chunk.
@@ -1690,7 +1732,26 @@ int Barge_object::add
 	int dont_check
 	)
 	{
-	return (0);			//+++++++Later, dude.
+	int curcnt = objects.get_cnt();
+	objects.append(obj);		// Add to list.
+	obj->set_owner(this);
+	if (perm_count == curcnt)	// Looks like a permanent member?
+		perm_count++;
+	return (0);			// We want it added to the chunk.
+	}
+
+/*
+ *	Drop another onto this.
+ *
+ *	Output:	0 to reject, 1 to accept.
+ */
+
+int Barge_object::drop
+	(
+	Game_object *obj
+	)
+	{
+	return 0;			//++++++Later.
 	}
 
 /*
@@ -1715,8 +1776,28 @@ void Barge_object::write_ireg
 	ostream& out
 	)
 	{
-//+++++++++NOT RIGHT.  Barge must be derived from Container!!!
-	Ireg_game_object::write_ireg(out);
+	unsigned char buf[13];		// 13-byte entry + length-byte.
+	buf[0] = 12;
+	unsigned char *ptr = &buf[1];	// To avoid confusion about offsets.
+	write_common_ireg(ptr);		// Fill in bytes 1-4.
+	ptr += 4;
+					// Write size.
+	*ptr++ = xtiles;
+	*ptr++ = ytiles;
+	*ptr++ = 0;			// Unknown.
+	*ptr++ = (horizontal<<1);	// Flags (quality).
+	*ptr++ = 0;			// (Quantity).
+	*ptr++ = (get_lift()&15)<<4;
+	*ptr++ = 0;			// Data2.
+	*ptr++ = 0;			// 
+	out.write((char*)buf, sizeof(buf));
+					// Write permanent objects.
+	for (int i = 0; i < perm_count; i++)
+		{
+		Game_object *obj = get_object(i);
+		obj->write_ireg(out);
+		}
+	out.put(0x01);			// A 01 terminates the list.
 	}
 
 /*
@@ -2151,9 +2232,7 @@ void Chunk_object_list::add
 		light_sources++;
 	if (newobj->get_lift() >= 5)	// Looks like a roof?
 		{
-#if 0 /* Not sure yet. */
-		Shape_info& info = Game_window::get_game_window()->
-			get_info(newobj);
+#if 1 /* Not sure yet. */
 		if (info.get_shape_class() == Shape_info::building)
 #endif
 			roof = 1;

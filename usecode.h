@@ -252,6 +252,7 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(add_spell);
 	USECODE_INTRINSIC_DECL(sprite_effect);
 	USECODE_INTRINSIC_DECL(book_mode);
+	USECODE_INTRINSIC_DECL(get_barge);
 	USECODE_INTRINSIC_DECL(earthquake);
 	USECODE_INTRINSIC_DECL(is_pc_female);
 	USECODE_INTRINSIC_DECL(halt_scheduled);

@@ -715,7 +715,9 @@ void Game_window::read_ireg_objects
 			quality = entry[7];
 			if (shapeid == 961)
 				obj = new Barge_object(
-				    entry[2], entry[3], tilex, tiley, lift);
+				    entry[2], entry[3], tilex, tiley, lift,
+					entry[4], entry[5],
+					(quality&(1<<1)) != 0);
 			else if (quality == 1 && entry[8] >= 0x80)
 				obj = new Dead_body(
 				    entry[2], entry[3], tilex, tiley, lift,
