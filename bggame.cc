@@ -42,6 +42,8 @@ BG_Game::BG_Game()
 		add_shape("gumps/yesnobox",69);
 		add_shape("gumps/yesbtn",70);
 		add_shape("gumps/nobtn",71);
+		add_shape("gumps/book",32);
+		add_shape("gumps/scroll",55);
 
 		add_resource("files/shapes/count", 0, 6);
 		add_resource("files/shapes/0", "static/shapes.vga", 0);

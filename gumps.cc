@@ -1484,7 +1484,7 @@ int Text_gump::show_next_page
 
 Book_gump::Book_gump
 	(
-	) : Text_gump(BOOK)
+	) : Text_gump(Game::get_game()->get_shape("gumps/book"))
 	{
 	}
 
@@ -1511,7 +1511,7 @@ void Book_gump::paint
 
 Scroll_gump::Scroll_gump
 	(
-	) : Text_gump(SCROLL)
+	) : Text_gump(Game::get_game()->get_shape("gumps/scroll"))
 	{  
 	}
 
