@@ -1,13 +1,13 @@
 Exult Documentation
-last changed: 22 May 2002(GMT)
+last changed: 05 June 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 22 May 2002
-0.2. - 19 May 2002
-0.3. - 15 April 2002
+0.1. - 05 June 2002
+0.2. - 22 May 2002
+0.3. - 19 May 2002
 
 1. Introduction
 1.1. What is Exult?
@@ -57,22 +57,21 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 22 May 2002
+0.1. - 05 June 2002
+* 5.1. Movement no keyboard movement.
+* 5.2. Keyboard commands added cut/paste selection keys..
+
+
+
+0.2. - 22 May 2002
 * 3.7. Linux and Audio after some discussion we rephrased this a bit.
 
 
 
-0.2. - 19 May 2002
+0.3. - 19 May 2002
 * 3.4. Digital Wave Sound Effects added selection move keys.
 * 3.7. Linux and Audio we advice using ALSA instead of OSS.
 * 5.3. Cheat keys added selection move keys.
-
-
-
-0.3. - 15 April 2002
-* 1.1. What is Exult? the Add-ons are NOT required for Exult to run.
-* 2.2. Settings in exult.cfg added Hebble's changes to set different paths.
-* 2.3. Path-Settings example for Hebble's changes.
 
 
 
@@ -547,6 +546,7 @@ More information on the excellent scaling engines by Derek Liauw is available at
 * Double-click on doors, shutters with left button to open or close them.
 
 Note that on MacOS you have to hold down the 'Cmd' key and the mouse button to have the functionality of a right mouse button.
+Currently we are not supporting moving the Avatar/party with the keyboard arrows but Nadir is planning to implement it after the 1.0 release.
 
 
 5.2. Keyboard commands
@@ -557,6 +557,8 @@ During the game press 'h' to see a help screen with all the keys (for MacOS chan
 Default keyboard commands
 +/- : Change brightness (you may have to use the keypad)
 F4 : Toggle fullscreen
+Ctrl-x : Cut selected object (when in Map Edit mode)
+Ctrl-v : Paste selected object (when in Map Edit mode)
 b : Use spellbook
 c : Combat mode
 f : Use food
