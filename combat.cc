@@ -324,6 +324,7 @@ void Combat_schedule::approach_foe
 					// Time to run?
 	if (mode == Actor::flee || 
 	    (mode != Actor::beserk && 
+	        (npc->get_type_flags()&MOVE_ALL) != 0 &&
 		npc != gwin->get_main_actor() &&
 					npc->get_property(Actor::health) < 3))
 		{
@@ -780,6 +781,7 @@ void Combat_schedule::now_what
 		break;
 	case fire:			// Range weapon.
 		{
+		failures = 0;
 		state = approach;
 					// Save shape (it might change).
 		int ashape = ammo_shape, wshape = weapon_shape,
