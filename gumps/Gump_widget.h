@@ -20,11 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _GUMP_WIDGET_H_
 
 #include "exceptions.h"
-
-#ifndef _GUMPSHAPEFILE
-#define _GUMPSHAPEFILE
-enum Gumpshapefile { GSF_GUMPS_VGA, GSF_EXULT_FLX };
-#endif
+#include "gump_types.h"
 
 class Gump;
 class Game_window;

@@ -325,6 +325,13 @@ void ActionStats(int *params)
 		Mouse::mouse->set_shape(Mouse::hand);
 }
 
+//  { ActionCombatStats, 0, "Show Combat stats", true, false, SERPENT_ISLE }
+void ActionCombatStats(int* params)
+{
+	int cnt = gwin->get_usecode()->get_party_count();
+	gwin->show_gump(0, game->get_shape("gumps/cstats/1") + cnt);
+}
+
 //  { ActionSIIntro, 0,  "Show SI intro", true, true, SERPENT_ISLE },
 void ActionSIIntro(int *params)
 {
