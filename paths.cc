@@ -30,6 +30,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 
 /*
+ *	Figure when to give up.
+ */
+
+int Actor_pathfinder_client::get_max_cost
+	(
+	int cost_to_goal		// From estimate_cost().
+	)
+	{
+	int max_cost = 3*cost_to_goal;
+	Game_window *gwin = Game_window::get_game_window();
+					// Do at least 2 screens width.
+	int min_max_cost = (gwin->get_width()/tilesize)*2*2;
+	return max_cost > min_max_cost ? max_cost : min_max_cost;
+	}
+
+/*
  *	Figure cost going from one tile to an adjacent tile (for pathfinding).
  *
  *	Output:	Cost, or -1 if blocked.

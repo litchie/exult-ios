@@ -137,7 +137,7 @@ void Patrol_schedule::now_what
 	if (!path)			// No, so look around.
 		{
 		Vector nearby;
-		int cnt = npc->find_nearby(nearby, PATH_SHAPE, -359, -359);
+		int cnt = npc->find_nearby(nearby, PATH_SHAPE, 26, 0);
 		for (int i = 0; i < cnt; i++)
 			{
 			Game_object *obj = (Game_object *) nearby.get(i);
@@ -416,6 +416,189 @@ void Sit_schedule::set_action
 					// Walk there, then sit.
 	set_action_sequence(actor, chairloc, act);
 	}
+
+/*
+ *	Create a 'waiter' schedule.
+ */
+
+Waiter_schedule::Waiter_schedule
+	(
+	Actor *n
+	) : Schedule(n), startpos(n->get_abs_tile_coord()), customer(0),
+		first(1)
+	{
+	}
+
+/*
+ *	Get a new customer & walk to a prep. table.
+ */
+
+void Waiter_schedule::get_customer
+	(
+	)
+	{
+	customer = (Actor *) customers.remove_first();
+	if (!customer)			// Got to search?
+		{
+		Vector vec;		// Look within 32 tiles;
+		int cnt = npc->find_nearby(vec, -359, 32, 0);
+		for (int i = 0; i < cnt; i++)
+			{		// Filter them.
+			Actor *npc = (Actor *) vec.get(i);
+			int sched = npc->get_schedule_type();
+			if (sched == Schedule::eat_at_inn)
+				customers.append(npc);
+			}
+		customer = (Actor *) customers.remove_first();
+		}
+	if (tables.get_cnt())		// Walk to a 'prep' table.
+		{
+		Game_object *table = (Game_object *)
+					tables.get(rand()%tables.get_cnt());
+		Tile_coord pos = table->find_unblocked_tile(1, 3);
+		if (pos.tx != -1 &&
+		    npc->walk_path_to_tile(pos, 200, rand()%2000))
+			return;
+		}
+	const int dist = 8;		// Bad luck?  Walk randomly.
+	int newx = startpos.tx - dist + rand()%(2*dist);
+	int newy = startpos.ty - dist + rand()%(2*dist);
+	npc->walk_to_tile(newx, newy, startpos.tz, 350, rand()%2000);
+	}
+
+/*
+ *	Find tables that don't have chairs around them.
+ */
+
+void Waiter_schedule::find_prep_table
+	(
+	int shapenum
+	)
+	{
+	Vector vec;
+	int cnt = npc->find_nearby(vec, shapenum, 32, 0);
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *table = (Game_object *) vec.get(i);
+		Vector chairs;		// No chairs by it?
+		if (!table->find_nearby(chairs, 873, 3, 0) &&
+		    !table->find_nearby(chairs, 292, 3, 0))
+			tables.append(table);
+		}
+	}
+
+/*
+ *	Find serving spot for a customer.
+ *
+ *	Output:	1 if found, with spot set.
+ */
+
+int Waiter_schedule::find_serving_spot
+	(
+	Tile_coord& spot
+	)
+	{
+	return 0;			//+++++++Later.
+	}
+
+/*
+ *	Schedule change for 'waiter':
+ */
+
+void Waiter_schedule::now_what
+	(
+	)
+	{
+	if (first)			// First time?
+		{
+		first = 0;		// Find tables without nearby chairs.
+		find_prep_table(971);
+		find_prep_table(633);
+		find_prep_table(847);
+		find_prep_table(1003);
+		find_prep_table(1018);
+		find_prep_table(890);
+		find_prep_table(964);
+		}
+		
+	if (!customer)			// Need a new customer?
+		{
+		get_customer();		// Find one, and walk to a prep. table.
+		return;
+		}
+	if (npc->distance(customer) < 3)// Close enough to customer?
+		{
+		Vector foods;
+		if (customer->find_nearby(foods, 377, 2, 0) > 0)
+			{
+			char *msgs[] = {"You look like you're doing fine.",
+					"Everything okay?",
+					"Ready for dessert?",
+					""
+					};
+			int n = rand()%(sizeof(msgs)/sizeof(msgs[0]));
+			npc->say(msgs[n]);
+			}
+		else			// Needs food.
+			{
+			Game_object *food = npc->get_readied(Actor::rhand);
+			Tile_coord spot;
+			if (food && food->get_shapenum() == 377 &&
+			    find_serving_spot(spot))
+				{
+				char *msgs[] = {"Enjoy!",
+						"Specialty of the house!",
+						""
+						};
+				npc->remove(food);
+				food->set_invalid();
+				food->move(spot);
+				int n = rand()%(sizeof(msgs)/sizeof(msgs[0]));
+				npc->say(msgs[n]);
+				}
+			}
+		customer = 0;		// Done with this one.
+		npc->start(250, rand()%3000);
+		return;
+		}
+					// Walk to customer with food.
+	if (!npc->get_readied(Actor::rhand))
+		{			// Acquire some food.
+		Game_window *gwin = Game_window::get_game_window();
+		int nfoods = gwin->get_shape_num_frames(377);
+		int frame = rand()%nfoods;
+		Game_object *food = new Ireg_game_object(377, frame, 0, 0, 0);
+		npc->add_readied(food, Actor::rhand);
+		}
+	for (int i = 1; i < 3; i++)
+		{
+		Tile_coord dest = customer->find_unblocked_tile(i, 3);
+		if (dest.tx != -1 && npc->walk_path_to_tile(dest, 250,
+								rand()%1000))
+			return;			// Walking there.
+		}
+	npc->start(200, rand()%4000);		// Failed so try again later.
+	}
+
+/*
+ *	Waiter schedule is done.
+ */
+
+void Waiter_schedule::ending
+	(
+	int new_type			// New schedule.
+	)
+	{
+					// Remove what he/she is carrying.
+	Game_object *obj = npc->get_readied(Actor::lhand);
+	if (obj)
+		obj->remove_this();
+	obj = npc->get_readied(Actor::rhand);
+	if (obj)
+		obj->remove_this();
+	}
+
+
 
 /*
  *	Open door that's blocking the NPC, and set action to walk past and
