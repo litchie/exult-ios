@@ -1078,6 +1078,26 @@ void Game_object::write_common_ireg
 	}
 
 /*
+ *	Move to a new absolute location.  This should work even if the old
+ *	location is invalid (cx=cy=255).
+ */
+
+void Ireg_game_object::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift
+	)
+	{
+	if (owner)			// Watch for this.
+		{
+		owner->remove(this);
+		set_invalid();		// So we can safely move it back.
+		}
+	Game_object::move(newtx, newty, newlift);
+	}
+
+/*
  *	Remove an object from its container, or from the world.
  *	The object is deleted.
  */
