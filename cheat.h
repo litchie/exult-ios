@@ -55,23 +55,23 @@ public:
   void toggle_hack_mover (void);
   void toggle_infravision (void);
 
-  void toggle_eggs (void);
-  void change_gender (void);
+  void toggle_eggs (void) const;
+  void change_gender (void) const;
 
-  void toggle_Petra (void);
-  void toggle_naked (void);
-  void change_skin (void);
+  void toggle_Petra (void) const;
+  void toggle_naked (void) const;
+  void change_skin (void) const;
 
-  void fake_time_period (void);
-  void dec_skip_lift (void);
+  void fake_time_period (void) const;
+  void dec_skip_lift (void) const;
 
-  void map_teleport (void);
-  void cursor_teleport (void);
+  void map_teleport (void) const;
+  void cursor_teleport (void) const;
 
-  void create_coins (void);
-  void create_last_shape (void);
-  void delete_object (void);
-  void shape_browser (void);
+  void create_coins (void) const;
+  void create_last_shape (void) const;
+  void delete_object (void) const;
+  void shape_browser (void) const;
 };
 
 #endif
