@@ -288,7 +288,6 @@ ExultStudio::~ExultStudio()
 	delete vgafile;
 	delete facefile;
 	delete chunkfile;
-	delete groups;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 #ifndef WIN32
@@ -381,6 +380,9 @@ void ExultStudio::delete_shape_browser()
 			delete [] names;
 			names = 0;
 		}
+		delete groups;
+		groups = 0;
+		set_visible("groups_frame", false);
 	}
 }
 
@@ -408,6 +410,9 @@ void ExultStudio::delete_chunk_browser()
 	if(chunkfile) {
 		delete chunkfile;
 		chunkfile = 0;
+		delete groups;
+		groups = 0;
+		set_visible("groups_frame", false);
 	}
 }
 
