@@ -873,6 +873,7 @@ void Wait_for_arrival
 	Actor *actor			// Whom to wait for.
 	)
 	{
+	unsigned char os = mouse->is_onscreen();
 	long last_repaint = 0;		// For insuring animation repaints.
 	while (actor->is_moving())
 		{
@@ -901,9 +902,15 @@ void Wait_for_arrival
 			gwin->paint_dirty();
 			last_repaint = ticks;
 			}
+#ifdef MOUSE
 		mouse->show();		// Re-display mouse.
+#endif
 		gwin->show();		// Blit to screen if necessary.
 		}
+
+	if (!os)
+		mouse->hide();
+
 	}
 
 /*
