@@ -60,7 +60,9 @@ class Shape_chooser
 	GdkRgbCmap *palette;		// For gdk_draw_indexed_image().
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
-	int shapenum0, framenum0;	// Shape, frame # of leftmost in
+	GtkWidget *fspin;		// Spin button for frame #.
+	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
+	int shapenum0;			// Shape, frame # of leftmost in
 					//   displayed list.
 	Shape_info *info;		// An entry for each shape drawn.
 	int info_cnt;			// # entries in info.
@@ -76,7 +78,8 @@ class Shape_chooser
 public:
 	Shape_chooser(Vga_file *i, char **nms, GtkWidget *box, int w, int h);
 	~Shape_chooser();
-	void unselect();		// Turn off selection.
+					// Turn off selection.
+	void unselect(bool need_render = true);
 	int is_selected()		// Is a shape selected?
 		{ return selected >= 0; }
 	void set_selected_callback(void (*fun)())
@@ -105,12 +108,12 @@ public:
 					// Someone else selected.
 	static gint selection_clear(GtkWidget *widget,
 				GdkEventSelection *event, gpointer data);
-//	static gint mouse_motion(GtkWidget *widget, GdkEventButton *event,
-//							gpointer data);
 	static gint drag_begin(GtkWidget *widget, GdkDragContext *context,
 							gpointer data);
 					// Handle scrollbar.
 	static void scrolled(GtkAdjustment *adj, gpointer data);
+					// Handle spin-button for frames.
+	static void frame_changed(GtkAdjustment *adj, gpointer data);
 	};
 
 #endif
