@@ -1,3 +1,10 @@
+2001-09-28  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* keys.cc: get my own casts right :)...oh, and others, too
+	* gamewin.cc: More cast conversion...many of which shouldn't be necessary. Hrm.
+	* readnpcs.cc: More cast conversion.
+	* schedule.cc: More cast conversion.
+
 2001-09-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucinternal.cc (Usecode_function):  'Last_created' is now
