@@ -144,15 +144,15 @@ class Raindrop
 	{
 	unsigned char oldpix;		// Pixel originally on screen.
 	unsigned char yperx;		// Move this many y-pixels for each x.
-	short tx, ty;			// Coords. where drawn in abs. tiles.
+	long ax, ay;			// Coords. where drawn in abs. pixels.
 public:
-	Raindrop() : oldpix(0), yperx(1), tx(-1), ty(-1)
+	Raindrop() : oldpix(0xff), yperx(1), ax(-1), ay(-1)
 		{  }
 	void paint(Image_window8 *iwin, int scrolltx, int scrollty,
 						unsigned char *xform);
 					// Move to next position.
 	void next(Image_window8 *iwin, int scrolltx, int scrollty,
-					unsigned char *xform, int tw, int th);
+					unsigned char *xform, int w, int h);
 	};	
 
 /*

@@ -786,7 +786,8 @@ int Usecode_machine::get_item_frame
 	)
 	{
 	Game_object *item = get_item(item_arg);
-	return (item == 0 ? 0 : item->get_framenum());
+					// Don't count rotated frames.
+	return (item == 0 ? 0 : item->get_framenum()&31);
 	}
 
 /*
