@@ -9,7 +9,7 @@
 #include <iostream>
 
 #include <glib.h>
-#include <gtk.h>
+#include <gtk/gtk.h>
 
 #include "windrag.h"
 #include "u7drag.h"
