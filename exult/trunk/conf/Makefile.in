@@ -85,8 +85,7 @@ VERSION = @VERSION@
 WINDOWING_SYSTEM = @WINDOWING_SYSTEM@
 
 AUTOMAKE_OPTIONS = foreign
-
-CXXFLAGS =  $(INCDIRS) -Wall 
+CXXFLAGS =  $(INCDIRS) -Wall  $(WINDOWING_SYSTEM)
 
 OFILES = xmlparse.o xmldump.o XMLEntity.o Configuration.o
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

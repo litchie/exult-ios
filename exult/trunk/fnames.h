@@ -7,6 +7,9 @@
 #ifndef INCL_FNAMES
 #define INCL_FNAMES	1
 
+// This will get prepended with different things at runtime
+// depending on the OS
+#define	USER_CONFIGURATION_FILE	"exult.cfg"
 
 #if (defined(XWIN) || defined(DOS))
 /*

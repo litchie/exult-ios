@@ -3,6 +3,8 @@ AUTOMAKE_OPTIONS=foreign
 all-local:	libconf.a 
 
 CXXFLAGS += $(INCDIRS) -Wall 
+CXXFLAGS += $(WINDOWING_SYSTEM)
+
 
 
 

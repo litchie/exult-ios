@@ -42,9 +42,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL.h"
 #include "SDL_syswm.h"
 #include "Audio.h"
+#include "Configuration.h"
 #include "mouse.h"
 
 Audio audio;
+Configuration	config;
 
 #define MOUSE 1
 
@@ -88,6 +90,15 @@ int main
 				".  Copyright (C) 2000 J. S. Freedman\n";
 	cout << "Text rendering done using the 'FreeType' font engine.\n";
 	cout << "Low level graphics use the 'SDL' library.\n";
+
+	config.read_config_file(USER_CONFIGURATION_FILE);
+	string	data_directory;
+	config.value("config/disk/u7path",data_directory,".");
+	if(data_directory==".")
+		config.set("config/disk/u7path",data_directory,true);
+	cout << "chdir to " << data_directory << endl;
+	chdir(data_directory.c_str());
+
 	Init();				// Create main window.
 #if 0	/* Make this an option. */
 	if (argc > 2)			// Specify chunkx, chunky on cmndline.

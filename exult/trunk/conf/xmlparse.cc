@@ -32,6 +32,12 @@ void	xmlparse(string &s,size_t &pos,XMLnode *x)
 		{
 		switch(s[pos])
 			{
+			case ' ':
+			case '\t':
+			case '\n':
+			case '\r':
+				++pos;
+				break;
 			case '<':
 				{
 				// New tag?
@@ -59,7 +65,7 @@ void	xmlparse(string &s,size_t &pos,XMLnode *x)
 					x->entity.id+=s[pos++];
 				else
 					{
-					if((s[pos]==' '||s[pos]=='\t'||s[pos]==0x0d||s[pos]==0x0a)&&(x->entity.content.length()==0))
+					if((s[pos]==' '||s[pos]=='\t'||s[pos]==0x0d||s[pos]==0x0a))
 	++pos;
 					else
 					x->entity.content+=s[pos++];

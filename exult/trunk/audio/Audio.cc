@@ -264,7 +264,7 @@ void Audio::Init(int _samplerate,int _channels)
 	// This conveniently and silently fails if you're
 	// not me, but saves me a heap of time when I'm testing.
 	// &&&& Take it out one day
-	chdir("/home/dancer/projects/exult/u7");
+	// chdir("/home/dancer/projects/exult/u7");
 	// Initialise the speech vectors
 	Uint32 _buffering_unit=calc_sample_buffer(_samplerate);
 	build_speech_vector();
