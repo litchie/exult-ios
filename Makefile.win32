@@ -59,8 +59,10 @@ EXULT_FLX_OBJECTS = \
 	data/full_screen.shp \
 	data/cheating.shp \
 	data/ok.shp \
-	data/cancel.shp\
-	data/pointers.shp
+	data/cancel.shp \
+	data/pointers.shp \
+	data/exit.shp \
+	data/play_1st_scene.shp
 
 $(EXEC) : $(OBJS) data/exult.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)

@@ -34,6 +34,8 @@ extern Configuration *config;
 extern Cheat cheat;
 extern bool get_play_intro(void);
 extern void set_play_intro(bool);
+extern bool get_play_1st_scene(void);
+extern void set_play_1st_scene(bool);
 static Exult_Game game_type = BLACK_GATE;
 
 static char av_name[17] = "";
@@ -393,10 +395,21 @@ void ExultMenu::setup()
 	else
 		playintro->set_choice(0);
 	menu.add_entry(playintro);
+	
+	MenuChoice *playscene = new MenuChoice(exult_flx.get_shape(0x12,1),
+			      exult_flx.get_shape(0x12,0),
+			      centerx, menuy+11, font);
+	playscene->add_choice("Off");
+	playscene->add_choice("On");
+	if(get_play_1st_scene())
+		playscene->set_choice(1);
+	else
+		playscene->set_choice(0);
+	menu.add_entry(playscene);
 
 	MenuChoice *fullscreen = new MenuChoice(exult_flx.get_shape(0x0C,1),
 			      exult_flx.get_shape(0x0C,0),
-			      centerx, menuy+11, font);
+			      centerx, menuy+22, font);
 	fullscreen->add_choice("Off");
 	fullscreen->add_choice("On");
 	if(gwin->get_win()->is_fullscreen())
@@ -407,7 +420,7 @@ void ExultMenu::setup()
 	
 	MenuChoice *cheating = new MenuChoice(exult_flx.get_shape(0x0D,1),
 				      exult_flx.get_shape(0x0D,0),
-				      centerx, menuy+22, font);
+				      centerx, menuy+33, font);
 	cheating->add_choice("Off");
 	cheating->add_choice("On");
 	if(cheat())
@@ -418,12 +431,12 @@ void ExultMenu::setup()
 	
 	MenuEntry *ok = new MenuEntry(exult_flx.get_shape(0x0E,1),
 		      exult_flx.get_shape(0x0E,0),
-		      centerx-64, menuy+44);
+		      centerx-64, menuy+55);
 	menu.add_entry(ok);
 	
 	MenuEntry *cancel = new MenuEntry(exult_flx.get_shape(0x0F,1),
 			 exult_flx.get_shape(0x0F,0),
-			 centerx+64, menuy+44);
+			 centerx+64, menuy+55);
 	menu.add_entry(cancel);
 	
 	menu.set_selected(0);
@@ -431,11 +444,13 @@ void ExultMenu::setup()
 	for(;;) {
 		pal.apply();
 		switch(menu.handle_events(gwin,menu_mouse)) {
-		case 3: // Ok
+		case 4: // Ok
 			pal.fade_out(30);
 			gwin->clear_screen();
 			// Play Intro
 			set_play_intro(playintro->get_choice()==1);
+			// Play 1st scene
+			set_play_1st_scene(playscene->get_choice()==1);
 			// Full screen
 			if(((fullscreen->get_choice()==0)&&(gwin->get_win()->is_fullscreen()))||
 			   ((fullscreen->get_choice()==1)&&(!gwin->get_win()->is_fullscreen())))
@@ -445,7 +460,7 @@ void ExultMenu::setup()
 			cheat.set_enabled(cheating->get_choice()==1);
 			calc_win();
 			return;
-		case 4: // Cancel
+		case 5: // Cancel
 			pal.fade_out(30);
 			gwin->clear_screen();
 			return;
@@ -470,7 +485,7 @@ Exult_Game ExultMenu::run()
 	wait_delay(2000);
 	MenuList *menu = new MenuList();
 		
-	int menuchoices[] = { 0x06, 0x07, 0x0A, 0x01, 0x00 };
+	int menuchoices[] = { 0x06, 0x07, 0x0A, 0x01, 0x00 , 0x11 };
 	int num_choices = sizeof(menuchoices)/sizeof(int);
 		
 	for(int i=0; i<num_choices; i++) {
@@ -483,6 +498,7 @@ Exult_Game ExultMenu::run()
 	do {
 		gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 1));
 		switch(menu->handle_events(gwin, menu_mouse)) {
+		case 5:
 		case -1: // Exit
 			pal.fade_out(30);
 			exit(0);
