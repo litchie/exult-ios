@@ -3937,7 +3937,9 @@ int Npc_actor::step
 			schedule->set_blocked(t);
 		stop();
 					// Offscreen, but not in party?
-		if (!gwin->add_dirty(this) && Npc_actor::get_party_id() < 0)
+		if (!gwin->add_dirty(this) && Npc_actor::get_party_id() < 0 &&
+					// And > a screenful away?
+		    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize)
 			dormant = true;	// Go dormant.
 		return (0);		// Done.
 		}

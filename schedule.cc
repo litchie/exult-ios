@@ -1006,10 +1006,10 @@ void Sleep_schedule::ending
 					// Not time to get up, Penumbra!
 	    new_type == static_cast<int>(sleep))
 		return;			// ++++Does this leave NPC's stuck?++++
-	if (bed &&			// Locate free spot.
-	    (npc->get_framenum()&0xf) == Actor::sleep_frame)
-
-		{
+	if (bed &&			// Still in bed?
+	    (npc->get_framenum()&0xf) == Actor::sleep_frame &&
+	    npc->distance(bed) < 8)
+		{			// Locate free spot.
 		if (floorloc.tx == -1)
 					// Want spot on floor.
 			floorloc = npc->get_tile();
