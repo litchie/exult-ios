@@ -887,7 +887,7 @@ static void Handle_keystroke
 		}
 		break;
 	case SDLK_v:
-		if(ctrl && !alt) {
+		if(!ctrl && !alt) {
 			show_about();
 		}
 		break;
@@ -1470,7 +1470,7 @@ void show_help (void) {
 	scroll->add_text("ctrl-s - Quick Save\n");
 	scroll->add_text("ctrl-r - Restore\n");
 	scroll->add_text("s - Show save box\n");
-	scroll->add_text("ctrl-v - About box\n");
+	scroll->add_text("v - About box\n");
 	scroll->add_text("w - Watch\n");
 	scroll->add_text("F4 - Toggle fullscreen\n");
 	scroll->add_text("ctrl-h - Cheat Commands\n");
