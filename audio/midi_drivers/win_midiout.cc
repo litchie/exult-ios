@@ -100,19 +100,7 @@ Windows_MidiOut::~Windows_MidiOut()
 void Windows_MidiOut::init_device()
 {
 	string s;
-	
-	config->value("config/audio/midi/reverb",s,"64");
-	reverb_value = atoi(s.c_str());
-	if (reverb_value > 127) reverb_value = 127;
-	else if (reverb_value < 0) reverb_value = 0;
-	config->set("config/audio/midi/reverb",reverb_value,true);
-	
-	config->value("config/audio/midi/chorus",s,"16");
-	chorus_value = atoi(s.c_str());
-	if (chorus_value > 127) reverb_value = 127;
-	else if (chorus_value < 0) reverb_value = 0;
-	config->set("config/audio/midi/chorus",chorus_value,true);
-	
+		
 	// Opened, lets open the thread
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_INIT);
 	
@@ -400,6 +388,7 @@ void Windows_MidiOut::reset_channel (int i)
 	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (123 << 8));
 
 	// Bank Select
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_PROG_CHANGE << 4) | (0 << 8));
 	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (0 << 8));
 	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (32 << 8));
 
@@ -420,10 +409,10 @@ void Windows_MidiOut::reset_channel (int i)
 	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (42 << 8) | (fine_value << 16));
 
 	// Effects (Reverb)
-	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (91 << 8) | (reverb_value << 16));
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (91 << 8));
 
 	// Chorus
-	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (93 << 8) | (chorus_value << 16));
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (93 << 8));
 }
 
 void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool repeat)

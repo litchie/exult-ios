@@ -294,50 +294,116 @@ void Container_game_object::activate
 	{
 	int shnum = get_shapenum();
 	Game_window *gwin = Game_window::get_game_window();
-	switch(shnum)			// Watch for gumps.
-		{
-	case 405:			// Ship's hold
+
+	if (Game::get_game_type() == BLACK_GATE)  switch(shnum)	// Watch for gumps.
+	{
+		case 405:			// Ship's hold
 		gwin->show_gump(this, game->get_shape("gumps/shipshold"));
 		return;
-	case 406:			// Nightstand.
-	case 407:			// Desk.
-	case 283:
-	case 203:
-	case 416:			// Chest of drawers.
-	case 679:
+
+		case 406:			// Nightstand.
+		case 407:			// Desk.
+		case 283:
+		case 203:
+		case 416:			// Chest of drawers.
+		case 679:
 		gwin->show_gump(this, game->get_shape("gumps/drawer"));
 		return;
-	case 400:			// Bodies.
-	case 414:
-	case 762:
-	case 778:
-	case 892:
-	case 507: 			// Bones
+
+		case 400:			// Bodies.
+		case 414:
+		case 762:
+		case 778:
+		case 892:
+		case 507: 			// Bones
 		gwin->show_gump(this, game->get_shape("gumps/body"));
 		return;
-	case 800:			// Chest.
-	case 486:
+
+		case 800:			// Chest.
 		gwin->show_gump(this, game->get_shape("gumps/chest"));	// ???Guessing.
 		return;
-	case 801:			// Backpack.
+
+		case 801:			// Backpack.
 		gwin->show_gump(this, game->get_shape("gumps/backpack"));
 		return;
-	case 799:			// Unsealed box
+
+		case 799:			// Unsealed box
 		gwin->show_gump(this, game->get_shape("gumps/box"));
 		return;
-	case 802:			// Bag.
+
+		case 802:			// Bag.
 		gwin->show_gump(this, game->get_shape("gumps/bag"));
 		return;
-	case 803:			// Basket.
+
+		case 803:			// Basket.
 		gwin->show_gump(this, game->get_shape("gumps/basket"));
 		return;
-	case 804:			// Crate.
+	
+		case 804:			// Crate.
 		gwin->show_gump(this, game->get_shape("gumps/crate"));
 		return;
-	case 819:			// Barrel.
+
+		case 819:			// Barrel.
 		gwin->show_gump(this, game->get_shape("gumps/barrel"));
 		return;
-		}
+	}
+	else if (Game::get_game_type() == SERPENT_ISLE) switch(shnum)	// Watch for gumps.
+	{
+		case 405:			// Ship's hold
+		gwin->show_gump(this, game->get_shape("gumps/shipshold"));
+		return;
+
+		case 406:			// Nightstand.
+		case 407:			// Desk.
+		case 283:
+		case 416:			// Chest of drawers.
+		case 679:
+		gwin->show_gump(this, game->get_shape("gumps/drawer"));
+		return;
+
+		case 400:			// Bodies.
+		case 414:
+		case 762:
+		case 778:
+		case 892:
+		case 507: 			// Bones
+		gwin->show_gump(this, game->get_shape("gumps/body"));
+		return;
+
+		case 800:			// Chest.
+		case 486:
+		gwin->show_gump(this, game->get_shape("gumps/chest"));	// ???Guessing.
+		return;
+
+		case 801:			// Backpack.
+		gwin->show_gump(this, game->get_shape("gumps/backpack"));
+		return;
+
+		case 799:			// Unsealed box
+		gwin->show_gump(this, game->get_shape("gumps/box"));
+		return;
+
+		case 802:			// Bag.
+		gwin->show_gump(this, game->get_shape("gumps/bag"));
+		return;
+
+		case 803:			// Basket.
+		gwin->show_gump(this, game->get_shape("gumps/basket"));
+		return;
+	
+		case 804:			// Crate.
+		gwin->show_gump(this, game->get_shape("gumps/crate"));
+		return;
+
+		case 819:			// Barrel.
+		gwin->show_gump(this, game->get_shape("gumps/barrel"));
+		return;
+
+		case 297:			// Hollow Tree
+		gwin->show_gump(this, game->get_shape("gumps/tree"));
+		return;
+	}
+
 					// Try to run normal usecode fun.
 	umachine->call_usecode(shnum, this,
 				(Usecode_machine::Usecode_events) event);

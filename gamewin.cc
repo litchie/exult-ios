@@ -2353,7 +2353,11 @@ void Game_window::show_gump
 	int shapenum			// Shape # in 'gumps.vga'.
 	)
 	{
-	int paperdoll = (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP);
+	int paperdoll = 0;
+	
+	if (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP
+		&& Game::get_game_type() == BLACK_GATE)
+		paperdoll = 1;
 
 	// overide for paperdolls
 	if (shapenum == 123 && (Game::get_game_type() == SERPENT_ISLE ||
@@ -2363,7 +2367,7 @@ void Game_window::show_gump
 		shapenum += main_actor->get_type_flag(Actor::tf_sex);
 		
 	static int cnt = 0;		// For staggering them.
-	Gump *gmp;		// See if already open.
+	Gump *gmp;			// See if already open.
 	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
 		if (gmp->get_owner() == obj &&
 		    gmp->get_shapenum() == shapenum)

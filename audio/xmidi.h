@@ -74,17 +74,19 @@ private:
 	midi_event			**events;
 	signed short		*timing;
 
-	midi_event			*list;
-	midi_event			*current;
+	midi_event		*list;
+	midi_event		*current;
 	
 	const static char	mt32asgm[128];
 	const static char	mt32asgs[256];
-	bool 				bank127[16];
-	int					convert_type;
-	bool				*fixed;
+	bool 			bank127[16];
+	int			convert_type;
+	bool			*fixed;
 	
-	int					chorus_value;
-	int					reverb_value;
+	bool			do_reverb;
+	bool			do_chorus;
+	int			chorus_value;
+	int			reverb_value;
 
 	// Gamma Table - Move to it's own class??
 	static GammaTable<unsigned char>	MidiGamma;
