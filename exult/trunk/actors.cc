@@ -690,11 +690,12 @@ int Main_actor::step
 		{
 		switched_chunks(olist, nlist);
 		if (gwin->set_above_main_actor(nlist->is_roof(), new_lift))
-			gwin->paint();	// Repaint all.
+					// Repaint all.
+			gwin->set_all_dirty();
 		}
 	else if (old_lift != new_lift &&
 		 gwin->set_above_main_actor(new_lift))
-			gwin->paint();
+			gwin->set_all_dirty();
 	return (frame_time);		// Add back to queue for next time.
 	}
 

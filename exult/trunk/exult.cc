@@ -209,7 +209,7 @@ inline void X_Delay
 	fd_set rfds;
 	struct timeval timer;
 	timer.tv_sec = 0;
-	timer.tv_usec = 10000;		// Try 1/100 second.
+	timer.tv_usec = 50000;		// Try 1/50 second.
 	FD_ZERO(&rfds);
 	FD_SET(xfd, &rfds);
 					// Wait for timeout or event.
@@ -396,12 +396,20 @@ static void Handle_events
 			{
 			if (gwin->have_focus() && !dragging)
 				gwin->get_tqueue()->activate(ticks);
-						// Show animation every 1/10 sec.
-			if (ticks > last_repaint + 100)
+					// Show animation every 1/20 sec.
+			if (ticks > last_repaint + 50)
 				{
 				gwin->paint_dirty();
 				last_repaint = ticks;
 				rotate = 1;
+				int x, y;// Check for 'stuck' Avatar.
+				if (!gwin->get_main_actor()->is_moving())
+					{
+					int ms = SDL_GetMouseState(&x, &y);
+					if (SDL_BUTTON(3) & ms)
+						gwin->start_actor(x, y, 
+								avatar_speed);
+					}
 				}
 			}
 #ifdef MOUSE
@@ -451,9 +459,11 @@ static void Handle_event
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 3)
 			{
+#if 0
 			if (gwin->get_mode() != Game_window::normal &&
 			    gwin->get_mode() != Game_window::gump)
 				break;
+#endif
 			gwin->stop_actor();
 			}
 		else if (event.button.button == 1)
