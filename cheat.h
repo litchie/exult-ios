@@ -82,6 +82,7 @@ public:
   int  get_edit_lift(void) const { return edit_lift; }
   int  get_edit_shape(void) const { return edit_shape; }
   int  get_edit_frame(void) const { return edit_frame; }
+  int  get_edit_chunknum(void) const { return edit_chunknum; }
   bool in_infravision (void) const { return infravision; }
   bool in_pickpocket (void) const {return pickpocket; }
   bool in_hack_mover (void) const { return (hack_mover || map_editor); }
