@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.10 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.11 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -470,8 +470,13 @@ WIHH.DAT:     wihh entries for the game shapes
   offset  = int16  (0 if no object associated with the shape)
   (the offsets are relative to the beginning of the file and point to objects:)
   object  = 32 int16's (meaning? one per shape frame?)
-WEAPONS.DAT:  weapons enumeration
+WEAPONS.DAT:  weapons enumeration (jsf)
   weapon    = 21 bytes (meaning?)
+  weapon    = type,damage,ammo
+  type	    = int16 (shape type)
+  damage    = int16 (negative, HP's subtracted?, or same type shape as ammo).
+  ammo	    = in16 (shape type) Same as type if ammo not required.
+
 AMMO.DAT:     ammunitions enumeration
   ammunition= type, family, type2, id, flags
   type      = int16 (shape type)
