@@ -40,7 +40,8 @@ Actor::Actor
 	int num,			// NPC #, or -1.
 	int has_usecode			// 1 if a 'type1' NPC.
 	) : Container_game_object(), npc_num(num), party_id(-1),
-	    attack_mode(nearest), schedule(0), dormant(1), two_handed(0),
+	    attack_mode(nearest), schedule(0), dormant(1), alignment(0),
+	    two_handed(0),
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
 	    light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), action(0), 
@@ -85,6 +86,7 @@ Actor::Actor
 
 	// Guess
 	if ((rflags >> 0xA) & 1) set_flag (Actor::on_moving_barge);
+	alignment = (rflags >> 3)&3;
 
 /*	Not used by exult
 	if ((rflags >> 0xB) & 1) set_flag (Actor::in_party);
@@ -228,9 +230,9 @@ Actor::Actor
 			namebuf[0] = 0;
 			break;
 		}
-		
 
 	namebuf[17] = 0;		// Be sure it's 0-delimited.
+//	cout << "Actor " << namebuf << " has alignment " << align << endl;
 	
 	if (num == 0 && Game::get_avname())
 	{
@@ -329,6 +331,8 @@ void Actor::write
 
 	// Guess
 	if (get_flag (Actor::on_moving_barge)) iout |= 1 << 0xA;
+					// Alignment is bits 3-4.
+	iout |= ((alignment&3) << 3);
 
 	Write2(nfile, iout);
 	
@@ -454,7 +458,7 @@ Npc_actor::Npc_actor
 	int has_usecode			// 1 if a 'type1' NPC.
 	) : Actor(nfile, num, has_usecode), nearby(0),
 		num_schedules(0), 
-		schedules(0), alignment(0)
+		schedules(0)
 	{
 	Chunk_object_list *olist = Game_window::get_game_window()->
 				get_objects_safely(get_cx(), get_cy());

@@ -46,7 +46,11 @@ void Combat_schedule::find_opponents
 	{
 	opponents.clear();
 	Game_window *gwin = Game_window::get_game_window();
+#if 0
 	if (npc->is_monster())		// Monster?  Return party.
+#else
+	if (npc->get_alignment() == Npc_actor::hostile)
+#endif
 		{
 		if (gwin->get_main_actor())
 			opponents.append(gwin->get_main_actor());
@@ -65,8 +69,13 @@ void Combat_schedule::find_opponents
 	Actor *actor;
 	Slist_iterator next(nearby);
 	while ((actor = (Actor *) next()) != 0)
+#if 0	/* Old way */
 		if (actor->is_monster() && !actor->is_dead_npc() &&
 		    actor->get_alignment() != Npc_actor::friendly)
+#else
+		if (actor->get_alignment() == Npc_actor::hostile &&
+		    !actor->is_dead_npc())
+#endif
 			{
 			opponents.append(actor);
 					// And set hostile monsters.

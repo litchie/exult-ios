@@ -80,6 +80,7 @@ protected:
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Schedule *schedule;		// Current schedule.
 	unsigned char dormant;		// I.e., off-screen.
+	short alignment;		// 'Feelings' towards Ava. See below.
 	Game_object *spots[12];		// Where things can go.  See 'Spots'
 					//   below for description.
 	unsigned char two_handed;	// Carrying a two-handed item.
@@ -116,6 +117,11 @@ public:
 		{ return frames[dir]; }
 					// Get attack frames.
 	int get_attack_frames(int dir, char *frames) const;
+	enum Alignment {		// Describes alignment field.
+		friendly = 0,
+		neutral = 1,
+		hostile = 2,
+		unknown_align = 3 };	// Bees have this, & don't attack until
 					// Spots where items are carried.
 	enum Spots {			// Index of each spot, starting at
 					//   upper, rt., going clkwise.
@@ -239,6 +245,11 @@ public:
 						Schedule *newsched = 0);
 	virtual int get_schedule_type() const
 		{ return schedule_type; }
+					// Get/set 'alignment'.
+	virtual int get_alignment() const
+		{ return alignment; }
+	virtual void set_alignment(short a)
+		{ alignment = a; }
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
@@ -378,17 +389,11 @@ class Npc_actor : public Actor
 protected:
 	unsigned char num_schedules;	// # entries below.
 	Schedule_change *schedules;	// List of schedule changes.
-	short alignment;		// 'Feelings' towards Ava. See below.
 public:
 	Npc_actor(const std::string &nm, int shapenum, int fshape = -1, int uc = -1);
 					// Read from file.
 	Npc_actor(istream& nfile, int num, int has_usecode);
 	~Npc_actor();
-	enum Alignment {		// Describes alignment field.
-		friendly = 0,
-		neutral = 1,
-		hostile = 2,
-		unknown_align = 3 };	// Bees have this, & don't attack until
 					//   Usecode tells them to.
 	Npc_actor *get_next()
 		{ return next; }
@@ -403,11 +408,6 @@ public:
 					// Move and change frame.
 	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
-					// Get/set 'alignment'.
-	virtual int get_alignment() const
-		{ return alignment; }
-	virtual void set_alignment(short a)
-		{ alignment = a; }
 					// Update schedule for new 3-hour time.
 	void update_schedule(Game_window *gwin, int hour3);
 					// Render.

@@ -156,6 +156,7 @@ Actor::Actor
 	) : Container_game_object(), name(nm),usecode(uc), 
 	    npc_num(num), party_id(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(1),
+	    alignment(0),
 	    two_handed(0), two_fingered(false), light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), action(0), 
 	    frame_time(0), next_path_time(0), timers(0)
@@ -1346,6 +1347,10 @@ void Actor::die
 		body->add(item, 1);	// Always succeed at adding.
 		}
 	gwin->add_dirty(body);
+					// Special case:  Hook's death?
+	if (get_shapenum() == 0x1fa && Game::get_game_type() == BLACK_GATE)
+		gwin->get_usecode()->call_usecode(
+				0x1fa, this, Usecode_machine::internal_exec);
 	}
 
 /*
@@ -1666,7 +1671,7 @@ Npc_actor::Npc_actor
 	int uc
 	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
 		num_schedules(0), 
-		schedules(0), alignment(0)
+		schedules(0)
 	{
 	}
 
@@ -2237,10 +2242,6 @@ void Monster_actor::die
 		creator->monster_gone();
 	creator = 0;
 	audio->start_music(VICTORY, 0);
-					// Special case:  Hook's death?
-	if (get_shapenum() == 0x1fa && Game::get_game_type() == BLACK_GATE)
-		Game_window::get_game_window()->get_usecode()->call_usecode(
-				0x1fa, this, Usecode_machine::internal_exec);
 					// Got to delete this somewhere, but
 					//   doing it here crashes.
 	}
