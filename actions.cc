@@ -60,8 +60,9 @@ Actor_action *Actor_action::walk_to_tile
 
 Path_walking_actor_action::Path_walking_actor_action
 	(
-	PathFinder *p			// Already set to path.
-	) : path(p), frame_index(0), blocked(0)
+	PathFinder *p,			// Already set to path.
+	int maxblk			// Max. retries when blocked.
+	) : path(p), frame_index(0), blocked(0), max_blocked(maxblk)
 	{
 	Tile_coord src = p->get_src(), dest = p->get_dest();
 	original_dir = (int) Get_direction4(
@@ -100,7 +101,8 @@ int Path_walking_actor_action::handle_event
 			return new_delay;
 			}
 					// Wait up to 1.6 secs.
-		return (blocked++ > 3 ? 0 : 100 + blocked*(rand()%500));
+		return (blocked++ > max_blocked ? 0 
+					: 100 + blocked*(rand()%500));
 		}
 	if (!path->GetNextStep(tile))
 		return (0);
@@ -110,7 +112,7 @@ int Path_walking_actor_action::handle_event
 					// Get frame (updates frame_index).
 	int frame = frames->get_next(frame_index);
 	int new_delay = actor->step(tile, frame);
-	if (new_delay)
+	if (new_delay || !max_blocked)
 		return (new_delay);	// Successful.
 	blocked = 1;
 	blocked_tile = tile;
@@ -191,21 +193,6 @@ int Path_walking_actor_action::get_dest
 	}
 
 /*
- *	Create sequence of frames.
- */
-
-Frames_actor_action::Frames_actor_action
-	(
-	char *f,			// Frames.  -1 means don't change.
-	int c,				// Count.
-	int spd				// Frame delay in 1/1000 secs.
-	) : cnt(c), index(0), speed(spd)
-	{
-	frames = new char[cnt];
-	memcpy(frames, f, cnt);
-	}
-
-/*
  *	Handle a time event.
  *
  *	Output:	0 if done with this action, else delay for next frame.
@@ -221,6 +208,21 @@ int Move_actor_action::handle_event
 	actor->move(dest);		// Zip right there.
 	dest.tx = -1;			// Set to stop.
 	return (100);			// Wait 1/10 sec.
+	}
+
+/*
+ *	Create sequence of frames.
+ */
+
+Frames_actor_action::Frames_actor_action
+	(
+	char *f,			// Frames.  -1 means don't change.
+	int c,				// Count.
+	int spd				// Frame delay in 1/1000 secs.
+	) : cnt(c), index(0), speed(spd)
+	{
+	frames = new char[cnt];
+	memcpy(frames, f, cnt);
 	}
 
 /*
