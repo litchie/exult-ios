@@ -109,9 +109,9 @@ int Import_png8
 		pal_size = 0;
 		palette = 0;
 		}
-	png_uint_32 pngxoff, pngyoff;	// Get offsets.
+	png_int_32 pngxoff, pngyoff;	// Get offsets.
 	int utype;
-	if (png_get_oFFs(png, info, (png_int_32 *)(&pngxoff), (png_int_32 *)(&pngyoff), &utype) &&
+	if (png_get_oFFs(png, info, &pngxoff, &pngyoff, &utype) &&
 	    utype == PNG_OFFSET_PIXEL)
 		{
 		xoff = pngxoff;
