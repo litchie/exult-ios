@@ -158,12 +158,46 @@ void BG_Game::play_intro()
 			pal.fade_out(30);
 			return;
 		}
-		for(int i=0; i<270; i++) {
+		// Wait for butterfly.
+		for(int i=0; i<120; i++) {
 			gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
 			gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
-			if(i>20) {
-				gwin->paint_shape(topx+i, centery-i/5, shapes.get_shape(0x0E, i%4));
+			win->show();
+			if(wait_delay(50)) {
+				pal.fade_out(30);
+				return;	
 			}
+		}
+		// Butterfly, fast entrance
+		// Aim is to be at topx+130,centery-130/5
+		// But to get there quickly
+		
+		for(int i=0; i<10; i++) {
+			gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
+			gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
+			gwin->paint_shape(topx+(i*3), centery-(i*3)/5, shapes.get_shape(0x0E, i%4));
+			win->show();
+			if(wait_delay(50)) {
+				pal.fade_out(30);
+				return;	
+			}
+		}
+		// And wait.....
+		for(int i=10; i<30; i++) {
+			gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
+			gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
+			gwin->paint_shape(topx+(50), centery-(50)/5, shapes.get_shape(0x0E, i%4));
+			win->show();
+			if(wait_delay(50)) {
+				pal.fade_out(30);
+				return;	
+			}
+		}
+		// Butterfly, final flight
+		for(int i=25; i<135; i++) {
+			gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
+			gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
+			gwin->paint_shape(topx+(i*2), centery-(i*2)/5, shapes.get_shape(0x0E, i%4));
 			win->show();
 			if(wait_delay(50)) {
 				pal.fade_out(30);
