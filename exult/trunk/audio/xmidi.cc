@@ -633,7 +633,10 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	vol->buffer = NULL;
 
 	if (!temp)
-		vol->data[1] = 64;
+	{
+		if (convert_type) vol->data[1] = VolumeCurve[64];
+		else vol->data[1] = 64;
+	}
 	else
 		vol->data[1] = temp->data[1];
 
@@ -886,6 +889,10 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 
 	// Volume modify the note on's, only if converting
 	if (convert_type && (current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
+		current->data[1] = VolumeCurve[current->data[1]];
+
+	// Volume modify the volume controller, only if converting
+	if (convert_type && (current->status >> 4) == MIDI_STATUS_CONTROLLER && current->data[0] == 7)
 		current->data[1] = VolumeCurve[current->data[1]];
 
 	if (size == 2)
