@@ -1,3 +1,7 @@
+2001-10-30  Max Horn  <max@quendi.de>
+	* added docs/xml: unified faq and readme
+	* docs/faq, docs/readme: removed
+
 2001-10-29  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/faq and docs/readme: unified xsl and dtd files, changed makefiles
 	  accordingly and updated exult_faq.xml/readme.xml
