@@ -60,9 +60,31 @@ void Special_effect::paint
 Sprites_effect::Sprites_effect
 	(
 	int num,			// Index.
-	Tile_coord p			// Position within world.
-	) : sprite_num(num), frame_num(0), pos(p)
+	Tile_coord p,			// Position within world.
+	int dx, int dy			// Add to offset for each frame.
+	) : sprite_num(num), frame_num(0), pos(p), actor(0), xoff(0), yoff(0),
+						deltax(dx), deltay(dy)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+	frames = gwin->get_sprite_num_frames(num);
+					// Start immediately.
+	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+	}
+
+/*
+ *	Create an animation on an actor.
+ */
+
+Sprites_effect::Sprites_effect
+	(
+	int num,			// Index.
+	Actor *a,			// Actor.
+	int xf, int yf,			// Offset from actor in pixels.
+	int dx, int dy			// Add to offset on each frame.
+	) : sprite_num(num), frame_num(0), actor(a), xoff(xf), 
+					yoff(yf), deltax(dx), deltay(dy)
+	{
+	pos = actor->get_abs_tile_coord();
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_sprite_num_frames(num);
 					// Start immediately.
@@ -85,8 +107,9 @@ inline void Sprites_effect::add_dirty
 	int lp = pos.tz/2;
 
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
-		(pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
-	    (pos.ty - lp - gwin->get_scrollty())*c_tilesize).enlarge(4)));
+		(pos.tx + xoff - lp - gwin->get_scrolltx())*c_tilesize,
+	    	(pos.ty + yoff - lp - 
+			gwin->get_scrollty())*c_tilesize).enlarge(4)));
 	}
 
 /*
@@ -110,8 +133,11 @@ void Sprites_effect::handle_event
 		return;
 		}
 	add_dirty(gwin, frame_num - 1);	// Clear out old.
-//	Sprites_effect::paint(gwin);	// Render.
 	gwin->set_painted();
+	if (actor)			// Following actor?
+		pos = actor->get_abs_tile_coord();
+	xoff += deltax;			// Add deltas.
+	yoff += deltay;
 	add_dirty(gwin, frame_num);	// Want to paint new frame.
 	frame_num++;			// Next frame.
 					// Add back to queue for next time.
@@ -130,8 +156,9 @@ void Sprites_effect::paint
 	if (frame_num >= frames)
 		return;
 	int lp = pos.tz/2;		// Account for lift.
-	gwin->paint_sprite((pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
-		(pos.ty - lp - gwin->get_scrollty())*c_tilesize, 
+	gwin->paint_sprite(
+		(pos.tx + xoff - lp - gwin->get_scrolltx())*c_tilesize,
+		(pos.ty + yoff - lp - gwin->get_scrollty())*c_tilesize, 
 						sprite_num, frame_num);
 	}
 
