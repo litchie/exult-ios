@@ -704,7 +704,7 @@ void Game_window::get_ireg_objects
  *	Recognize dead body shapes.  +++++++Hopefully, there's a better way.
  */
 
-static int Is_body
+int Is_body
 	(
 	int shapeid
 	)

@@ -595,8 +595,9 @@ Tile_coord Usecode_machine::get_position
 	)
 	{
 	Game_object *obj;		// An object?
-	if ((itemval.get_array_size() == 1 || !itemval.get_array_size()) && (obj = get_item(itemval)))
-			return obj->get_abs_tile_coord();
+	if ((itemval.get_array_size() == 1 || !itemval.get_array_size()) && 
+						(obj = get_item(itemval)))
+			return obj->get_outermost()->get_abs_tile_coord();
 	else if (itemval.get_array_size() == 3)
 					// An array of coords.?
 		return Tile_coord(itemval.get_elem(0).get_int_value(),
@@ -1692,15 +1693,20 @@ USECODE_INTRINSIC(create_new_object)
 	// Takes shape, rets. new obj?
 	// Show frames in seq.? (animate?)
 	int shapenum = parms[0].get_int_value();
+	extern int Is_body(int);// +++++Pretty kludgy.
 				// Guessing:
 	Game_object *at = caller_item;
 	if (!at)
 		at = gwin->get_main_actor();
+	at = at->get_outermost();	// In case it's inside something.
 	Shape_info& info = gwin->get_info(shapenum);
 	Game_object *obj;		// Create to be written to Ireg.
 	if (info.is_animated())
 		obj = new Animated_ireg_object(shapenum, 0,
 			  at->get_tx(), at->get_ty(), at->get_lift());
+	else if (Is_body(shapenum))
+		obj = new Dead_body(shapenum, 0, at->get_tx(), at->get_ty(),
+							at->get_lift(), -1);
 	else
 		obj = new Ireg_game_object(shapenum, 0,
 			  at->get_tx(), at->get_ty(), at->get_lift());
