@@ -38,8 +38,7 @@ class Deleted_objects;
 class Actor;
 class Usecode_machine;
 class Conversation;
-
-#include "useval.h"
+class Usecode_value;
 
 #include "exceptions.h"
 #include "tiles.h"

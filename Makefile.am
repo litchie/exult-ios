@@ -35,6 +35,10 @@ exult_SOURCES =	\
 	effects.cc	\
 	effects.h	\
 	exult.cc	\
+	exultmenu.cc	\
+	exultmenu.h	\
+	exult_types.h	\
+	exult_constants.h	\
 	fnames.h	\
 	frameseq.h	\
 	game.cc		\

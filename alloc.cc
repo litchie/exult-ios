@@ -1,7 +1,3 @@
-#if !AUTOCONFIGURED
-#  include "autoconfig.h"
-#endif
-
 #include "alpha_kludges.h"
 
 #ifndef ALPHA_LINUX_CXX
