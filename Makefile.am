@@ -100,9 +100,9 @@ exult_LDADD = 			\
 	flic/libflic.la		\
 	conf/libconf.la		\
 	files/libu7file.la	\
-	gumps/libgumps.la	\
 	imagewin/libimagewin.la	\
 	usecode/libusecode.la	\
+	gumps/libgumps.la \
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE)
 
 exult_DEPENDENCIES = $(ICON_FILE)
