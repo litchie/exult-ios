@@ -367,7 +367,7 @@ void Spellbook_gump::paint
 	Game_window *gwin
 	)
 	{
-	const int numx = -16, numy = -7;// Where to draw numbers on spells.
+	const int numx = -12, numy = -7;// Where to draw numbers on spells.
 	Gump_object::paint(gwin);	// Paint outside & checkmark.
 	if (page > 0)			// Not the first?
 		paint_button(gwin, leftpage);
