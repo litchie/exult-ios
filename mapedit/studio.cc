@@ -568,6 +568,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 		gtk_check_menu_item_set_active(
 				GTK_CHECK_MENU_ITEM(item), i == 0);
 		}
+	setup_maps_list();		// Init. 'maps' menu.
 }
 
 ExultStudio::~ExultStudio()

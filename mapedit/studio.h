@@ -230,6 +230,7 @@ public:
 	void run();
 					// Maps.
 	void new_map_dialog();
+	void setup_maps_list();
 
 	bool send_to_server(Exult_server::Msg_type id,
 				unsigned char *data = 0, int datalen = 0);
