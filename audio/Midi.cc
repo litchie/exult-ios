@@ -308,8 +308,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
   #include "midi_drivers/forked_player.h"
 #endif
 #ifdef WIN32
-//  #include "midi_drivers/win_MCI.h"
-  #include "midi_drivers/win_midiout.h"
+  #include "midi_drivers/mixer_midiout.h"
 #endif
 #ifdef BEOS
   #include "midi_drivers/be_midi.h"
@@ -459,8 +458,7 @@ bool MyMidiPlayer::init_device(void)
 	else
 	{
 #ifdef WIN32
-//	TRY_MIDI_DRIVER(Windows_MCI)
-	TRY_MIDI_DRIVER(Windows_MidiOut)
+	TRY_MIDI_DRIVER(Mixer_MidiOut)
 #endif
 #ifdef BEOS
 	TRY_MIDI_DRIVER(Be_midi)
