@@ -1,3 +1,13 @@
+2002-05-27  Dominik Reichardt <gigdr@tesionmail.de>
+	* content/data/: added this dir for our custom data, like *.png files
+	* Content/data/dominus00.png: added face for patch character. I'm asking
+	  all other members of the team to add their picture sometime.
+	* content/data/penguin00.png: Penguin statue for the church of Open Source
+	* content/data/faces, shapes: scripts for ipack to build the vga files for
+	  the patch dir
+	* makefile.win32, makefile.cygwin: added instruction on how to handle 
+	  content/data/*.* for the patch options.
+
 2002-05-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/vgafile.cc (Vga_file): Constructor takes optional patch name.
