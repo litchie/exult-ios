@@ -368,7 +368,7 @@ bool Dragging_info::drop
 	else
 		{			// Was it dropped on something?
 		int max_lift = cheat.in_hack_mover() ? 13 :
-					gwin->get_main_actor()->get_lift() + 4;
+					gwin->get_main_actor()->get_lift() + 5;
 		int lift;
 		Game_object *found = gwin->find_object(x, y);
 		bool dropped = false;	// 1 when dropped.
@@ -384,6 +384,13 @@ bool Dragging_info::drop
 								max_lift)
 				dropped = gwin->drop_at_lift(to_drop, 
 							paintx, painty, lift);
+			else
+				{	// Too high.
+				Mouse::mouse->flash_shape(Mouse::redx);
+				Audio::get_ptr()->play_sound_effect(
+							Audio::game_sfx(76));
+				return false;
+				}
 			}
 					// Find where to drop it.
 		for (lift = obj->get_outermost()->get_lift(); 
