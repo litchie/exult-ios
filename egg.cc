@@ -248,11 +248,8 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	((flags & (1<<(int)auto_reset)) != 0) << ", data1 = " << data1
 		<< ", data2 = " << data2 << '\n';
 #endif
-#if 0
 					// Guessing:  Cached_in always works??
-	int roll = criteria == cached_in ? 0 : 1 + rand()%100;
-#endif
-	int roll = must ? 0 : 1 + rand()%100;
+	int roll = (must || criteria == cached_in) ? 0 : 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
 	if ((flags & (1 << (int) auto_reset)) == 0)
