@@ -1,3 +1,10 @@
+2001-09-05  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/contain.cc (Container_game_object): Fixed add_quantity() so
+	it deals correctly with volume, quality.  (Still doesn't check
+	weight, though.)
+	* shapes/shapeinf.h:  has_quantity(), has_quality() added.
+
 2001-09-05  Tristan Tarrant <nadir@users.sourceforge.net>
 	* game.cc, bggame.cc, sigame.cc, usecode/intrinsics.cc, txtscroll.*:
 	do not show quotes entry until user has watched through entire credits
