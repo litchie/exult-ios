@@ -197,11 +197,14 @@ public:
  */
 class Lightning_effect : public Weather_effect
 	{
+	static int count;		// Just want one at a time.
 	int save_brightness;		// Palette brightness.
-public:
+	friend class Storm_effect;
 	Lightning_effect(int duration, int delay = 0) 
 		: Weather_effect(duration, delay), save_brightness(-1)
-		{  }
+		{ count++; }
+public:
+	~Lightning_effect();
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
 	};

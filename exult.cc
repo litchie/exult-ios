@@ -1060,18 +1060,8 @@ static void Handle_keystroke
 			mouse->set_shape(Mouse::hand);
 		break;
 		}
-	case SDLK_w:			// Test weather.
-		if (ctrl&&cheat)		// Duration is 4*number secs.
-			{
-			static int wcnt = 0, wmax = 1;
-			if (wcnt == 0)
-				gwin->add_effect(new Clouds_effect(15));
-			else if (wcnt == 1)
-				gwin->add_effect(
-						new Lightning_effect(2));
-			wcnt = (wcnt + 1)%wmax;
-			}
-		else if (alt && cheat) {  // toggle archwizard mode
+	case SDLK_w:
+		if (alt && cheat) {  // toggle archwizard mode
 			wizard_mode = !wizard_mode;
 			if (wizard_mode)
 				gwin->center_text("Archwizard Mode Enabled");
