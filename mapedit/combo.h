@@ -182,6 +182,7 @@ public:
 		{ sel_changed = fun; }
 	int get_selected()		// Get selected combo, or return -1.
 		{ return selected >= 0 ? info[selected].num : -1; }
+	int get_count();		// Get # to show.
 	int add(Combo *newcombo, int index);	// Add new combo.
 	void remove();			// Remove selected.
 	void edit();			// Edit selected.
