@@ -144,8 +144,14 @@ public:
 							gpointer data);
 					// Export current frame as a PNG.
 	time_t export_png(const char *fname);
+					// Export given image as a PNG.
+	time_t export_png(const char *fname, Image_buffer8& img,
+							int xoff, int yoff);
+					// Export frames tiled.
+	time_t export_tiled_png(const char *fname, int tiles, bool bycols);
 	void edit_shape_info();		// Edit selected shape's info.
-	void edit_shape();		// Edit selected shape-frame.
+					// Edit selected shape-frame.
+	void edit_shape(int tiles = 0, bool bycols = false);
 					// Deal with list of files being edited
 					//   by an external prog. (Gimp).
 	static gint check_editing_files(gpointer data = 0);
