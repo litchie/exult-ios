@@ -290,8 +290,11 @@ void Game_window::save_gamedat
 	snprintf(fname, 50, SAVENAME, num,
 		Game::get_game_type() == BLACK_GATE ? "bg" : "si");
 	save_gamedat(fname, savename);
-	delete [] save_names[num];	// Update name
-	save_names[num] = newstrdup(savename);
+	if (num >=0 && num < 10)
+	{
+		delete [] save_names[num];	// Update name
+		save_names[num] = newstrdup(savename);
+	}
 	}
 
 /*
