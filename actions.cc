@@ -119,8 +119,8 @@ Path_walking_actor_action::Path_walking_actor_action
 	(
 	PathFinder *p,			// Pathfinder, or 0 for Astar.
 	int maxblk			// Max. retries when blocked.
-	) : path(p), frame_index(0), from_offscreen(false), subseq(0),
-	    blocked(0), max_blocked(maxblk), reached_end(false)
+	) : reached_end(false), path(p), frame_index(0), from_offscreen(false),
+	    subseq(0), blocked(0), max_blocked(maxblk)
 	{
 	if (!path)
 		path = new Astar();
@@ -225,7 +225,6 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		}
 	else if (actor->step(tile, frame))	// Successful.
 		return speed;
-	Game_window *gwin = Game_window::get_game_window();
 					// Blocked by a door?
 	if (actor->get_abs_tile_coord().distance(tile) == 1)
 					// +++++Check for intelligence?
@@ -542,7 +541,6 @@ int Move_actor_action::handle_event
 	{
 	if (dest.tx < 0 || actor->get_abs_tile_coord() == dest)
 		return (0);		// Done.
-	Tile_coord oldpos = actor->get_abs_tile_coord();
 	actor->move(dest);		// Zip right there.
 	Game_window *gwin = Game_window::get_game_window();
 	if (actor == gwin->get_main_actor())

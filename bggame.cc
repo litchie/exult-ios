@@ -208,12 +208,6 @@ class UserSkipException : public UserBreakException
 
 void BG_Game::play_intro()
 {
-	Font *font = fontManager.get_font("END2_FONT");
-
-	const char *txt_msg[] = { "with help from",
-			"The Exult Team", 
-			"Driven by Exult"};
-
 	gwin->clear_screen(true);
 
 	Audio::get_ptr()->stop_music();

@@ -22,6 +22,7 @@
 
 #include "SDL_keyboard.h"
 
+#include "actors.h"
 #include "keys.h"
 #include "exult.h"
 #include "game.h"
@@ -251,6 +252,14 @@ bool KeyBinder::DoAction(ActionType a)
 	if (a.action->game != NONE && a.action->game != Game::get_game_type())
 		return true;
 	
+    Main_actor *main_actor = Game_window::get_game_window()->get_main_actor();
+	if (main_actor->get_siflag(Actor::dont_move) ||
+	    main_actor->get_flag(Obj_flags::dont_render))
+    {
+        // No key actions in dont_move mode, except to quit
+        if (a.action->func != ActionQuit)
+            return true;
+    }
 	a.action->func(a.params);
 	
 	return true;
@@ -269,7 +278,7 @@ bool KeyBinder::HandleEvent(SDL_Event &ev)
 		key.mod = (SDLMod)(key.mod | KMOD_SHIFT);
 	if (ev.key.keysym.mod & KMOD_CTRL)
 		key.mod = (SDLMod)(key.mod | KMOD_CTRL);
-#ifdef MACOS
+#if defined(MACOS) || defined(MACOSX)
 	// map Meta to Alt on MacOS
 	if (ev.key.keysym.mod & KMOD_META)
 		key.mod = (SDLMod)(key.mod | KMOD_ALT);
@@ -472,7 +481,7 @@ void KeyBinder::ParseLine(char *line)
 		desc = "";
 		if (k.mod & KMOD_CTRL)
 			desc += "Ctrl-";
-#ifdef MACOS
+#if defined(MACOS) || defined(MACOSX)
 		if (k.mod & KMOD_ALT)
 			desc += "Cmd-";
 #else
