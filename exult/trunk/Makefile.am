@@ -1,6 +1,6 @@
 INCLUDES = -I. -Iconf -Ifiles -Iaudio -Ipathfinder \
 	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
-	$(DEBUG_FLAGS) $(CPPFLAGS)
+	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\""$(datadir)/exult"\"
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
