@@ -1516,7 +1516,6 @@ bool Game_window::init_gamedat(bool create)
 					return false;
 				}
 			delete [] static_identity;
-			read_gwin();	// Read in 'gamewin.dat' to set clock,
 					//   scroll coords.
 		}
 	read_save_names();		// Read in saved-game names.	
@@ -1589,6 +1588,9 @@ void Game_window::write_gwin
 	Write2(gout, clock.get_hour());
 	Write2(gout, clock.get_minute());
 	Write4(gout, special_light);	// Write spell expiration minute.
+	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
+	Write4(gout, player->get_current_track());
+	Write4(gout, player->is_repeating());
 	gout.flush();
 	if (!gout.good())
 		throw file_write_exception(GWINDAT);
@@ -1627,8 +1629,24 @@ void Game_window::read_gwin
 	if (!gin.good())		// Next ones were added recently.
 		throw file_read_exception(GWINDAT);
 	special_light = Read4(gin);
+	
 	if (!gin.good())
+	{
 		special_light = 0;
+		return;
+	}
+
+	int track_num = Read4(gin);
+	int repeat = Read4(gin);
+
+	if (!gin.good())
+	{
+		Audio::get_ptr()->stop_music();
+		return;
+	}
+
+	Audio::get_ptr()->start_music(track_num, repeat != false);
+
 	}
 
 /*
