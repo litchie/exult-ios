@@ -47,6 +47,7 @@ private:
   bool pickpocket;
   bool grab_actor;
   bool npc_numbers;
+  bool hack_mover;
 
   bool enabled;
 
@@ -59,6 +60,7 @@ public:
   bool in_map_editor(void) const { return map_editor; }
   bool in_infravision (void) const { return infravision; }
   bool in_pickpocket (void) const {return pickpocket; }
+  bool in_hack_mover (void) const { return (hack_mover || map_editor); }
   
   void toggle_god (void);
   void set_god (bool god) { god_mode = god; }
@@ -70,6 +72,8 @@ public:
   void set_infravision (bool infra) { infravision = infra; }
   void toggle_pickpocket (void);
   void set_pickpocket (bool pick) { pickpocket = pick; }
+  void toggle_hack_mover (void);
+  void set_hack_mover (bool hm) { hack_mover = hm; }
 
   void toggle_eggs (void) const;
   void change_gender (void) const;

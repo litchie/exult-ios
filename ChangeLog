@@ -1,3 +1,7 @@
+2001-07-16  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc: palette-cycle 248-541 too
+	* various: re-added Hack-mover mode (Alt-H)
+
 2001-07-16  Ryan Nunn <triforce@merlin.net.au>
 	* usecode/intrinsics.cc: Modified si_path_run_usecode to fix the, to
 	  quote WJP, "most important part of SI" aka the Figidazzi sex scene.

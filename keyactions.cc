@@ -487,6 +487,16 @@ void ActionMapEditor(int *params)
 		cheat.set_map_editor(params[0] != 0);
 }
 
+// { ActionHackMover, "Toggle hack-mover mode", true, true, NONE },
+// params[0] = -1 for toggle, 0 for off, 1 for on
+void ActionHackMover(int *params)
+{
+	if (params[0] == -1)
+		cheat.toggle_hack_mover();
+	else
+		cheat.set_hack_mover(params[0] != 0);
+}
+
 //  { ActionMapTeleport, 0, "Map teleport", true, true, NONE },
 void ActionMapTeleport(int *params)
 {
