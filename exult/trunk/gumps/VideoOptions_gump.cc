@@ -168,7 +168,8 @@ void VideoOptions_gump::load_settings()
 	num_resolutions = num_default_res;
 	
 	resolution = -1;
-	for (int i = 0; i < num_default_res; i++) {
+	int i;
+	for (i = 0; i < num_default_res; i++) {
 		if (resolutions[2*i] == w && resolutions[2*i+1] == h) {
 			resolution = i;
 			break;
@@ -181,7 +182,7 @@ void VideoOptions_gump::load_settings()
 	}
 
 	restext = new std::string[num_resolutions];
-	for (int i = 0; i < num_resolutions; i++) {
+	for (i = 0; i < num_resolutions; i++) {
 		restext[i] = resolutionstring(resolutions[2*i], resolutions[2*i+1]);
 	}
 
