@@ -44,7 +44,7 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 5, 18, 31, 44, 57, 70, 83, 96, 109, 122, 146 };
+static const int rowy[] = { 4, 17, 134, 30, 43, 56, 69, 82, 95, 108, 121, 147 };
 static const int colx[] = { 35, 50, 120, 195, 192 };
 
 static const char* oktext = "OK";
@@ -141,6 +141,10 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 		frames = state;
 	else if (btn == buttons[11])
 		rightclick_close = state;
+	else if (btn == buttons[12])
+		doubleright_move = state;
+	else if (btn == buttons[13])
+		gumps_pause = state;
 }
 
 void GameplayOptions_gump::build_buttons()
@@ -207,9 +211,13 @@ void GameplayOptions_gump::build_buttons()
 										   59, doubleclick);
 	buttons[11] = new GameplayEnabledToggle(this, colx[3], rowy[6],
 										   59, rightclick_close);
-	buttons[4] = new GameplayEnabledToggle(this, colx[3], rowy[7],
+	buttons[12] = new GameplayEnabledToggle(this, colx[3], rowy[7],
+										   59, doubleright_move);
+	buttons[13] = new GameplayEnabledToggle(this, colx[3], rowy[8],
+										   59, gumps_pause);
+	buttons[4] = new GameplayEnabledToggle(this, colx[3], rowy[9],
 										   59, cheats);
-	buttons[8] = new GameplayTextToggle(this, frametext, colx[3], rowy[8], 
+	buttons[8] = new GameplayTextToggle(this, frametext, colx[3], rowy[10], 
 										59, frames, num_framerates);
 }
 
@@ -225,7 +233,9 @@ void GameplayOptions_gump::load_settings()
 	paperdolls = sman->get_bg_paperdolls();
 	doubleclick = gwin->get_double_click_closes_gumps();
 	rightclick_close = gumpman->can_right_click_close();
+	doubleright_move = gwin->get_allow_double_right_move();
 	text_bg = gwin->get_text_bg()+1;
+	gumps_pause = !gumpman->gumps_dont_pause_game();
 	int realframes = 1000/gwin->get_std_delay();
 	int i;
 
@@ -261,10 +271,10 @@ GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYO
 	build_buttons();
 
 	// Ok
-	buttons[9] = new GameplayOptions_button(this, oktext, colx[0], rowy[10]);
+	buttons[9] = new GameplayOptions_button(this, oktext, colx[0], rowy[11]);
 	// Cancel
 	buttons[10] = new GameplayOptions_button(this, canceltext, 
-											 colx[4], rowy[10]);
+											 colx[4], rowy[11]);
 }
 
 GameplayOptions_gump::~GameplayOptions_gump()
@@ -299,6 +309,11 @@ void GameplayOptions_gump::save_settings()
 		sman->set_bg_paperdolls(paperdolls!=false);
 	config->set("config/gameplay/bg_paperdolls", 
 				paperdolls ? "yes" : "no", true);
+	gwin->set_allow_double_right_move(doubleright_move != false);
+	config->set("config/gameplay/allow_double_right_move", doubleright_move?"yes":"no", true);
+	gumpman->set_gumps_dont_pause_game(!gumps_pause);
+	config->set("config/gameplay/gumps_dont_pause_game", gumps_pause?"no":"yes", true);
+
 }
 
 void GameplayOptions_gump::paint()
@@ -320,8 +335,10 @@ void GameplayOptions_gump::paint()
 	sman->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
 	sman->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
 	sman->paint_text(2, "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
-	sman->paint_text(2, "Cheats:", x + colx[0], y + rowy[7] + 1);
-	sman->paint_text(2, "Speed:", x + colx[0], y + rowy[8] + 1);
+	sman->paint_text(2, "Double Right Pathfinds:", x + colx[0], y + rowy[7] + 1);
+	sman->paint_text(2, "Gumps pause game:", x + colx[0], y + rowy[8] + 1);
+	sman->paint_text(2, "Cheats:", x + colx[0], y + rowy[9] + 1);
+	sman->paint_text(2, "Speed:", x + colx[0], y + rowy[10] + 1);
 	gwin->set_painted();
 }
 

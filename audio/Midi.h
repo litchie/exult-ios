@@ -46,6 +46,10 @@ public:
 	virtual	bool	is_playing(void)=0;
 	virtual	const	char *copyright(void)=0;
 
+	virtual void load_patches(bool force_xmidi) { }
+	virtual bool is_fm_synth() { return false; }
+	virtual bool use_gs127() { return false; }
+
 	MidiAbstract() {};
 	virtual	~MidiAbstract() {};
 };
@@ -78,6 +82,7 @@ public:
 	void	start_track(XMIDIEventList *eventlist, bool continuous=false);
 	void	start_sound_effect(int num);
 	void	stop_sound_effects();
+	void	load_patches(bool force_xmidi=false) { if (midi_device) midi_device->load_patches(force_xmidi); }
 
 	void	stop_music();
 	
@@ -93,6 +98,9 @@ public:
 	inline int	get_current_track() { return (midi_device!=0)&&midi_device->is_playing()?current_track:-1; }
 	inline int	is_repeating() { return repeating; }
 	int		music_conversion;		//was in private SQ
+
+	bool is_fm_synth() { return midi_device?midi_device->is_fm_synth():false; }
+
 	
 private:
 	static void music_complete_callback(void);

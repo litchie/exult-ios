@@ -1457,7 +1457,7 @@ Game_object *Game_map::locate_shape
 
 void Game_map::cache_out(int cx, int cy)
 {
-#if WANT_MAP_CACHE_OUT
+#ifdef WANT_MAP_CACHE_OUT
 	int sx = cx / c_chunks_per_schunk;
 	int sy = cy / c_chunks_per_schunk;
 	bool chunk_flags[12][12];

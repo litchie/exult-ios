@@ -616,7 +616,7 @@ void Combat_schedule::set_weapon
 	if (!info &&			// No weapon?
 	    !(spellbook = readied_spellbook()) &&	// No spellbook?
 					// Not dragging?
-	    !gumpman->gump_mode() &&
+	    !gwin->is_dragging() &&
 					// And not dueling?
 	    npc->get_schedule_type() != Schedule::duel &&
 	    state != wait_return)	// And not waiting for boomerang.

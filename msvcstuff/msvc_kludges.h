@@ -14,13 +14,16 @@
 #define HAVE_SSTREAM 1
 
 // Fisrtly some things that need to be defined
-#define VERSION "0.99.1RC2"
+#define VERSION "1.1.0cvs"
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
 #define DONT_HAVE_HASH_SET
 #define DONT_HAVE_HASH_MAP
 #define HAVE_OPENGL
+#define FUDGE_SAMPLE_RATES
+#define USE_FMOPL_MIDI
+#define WANT_MAP_CACHE_OUT
 
 // Settings for debug builds
 #ifndef NDEBUG
@@ -135,7 +138,7 @@ using std::isspace;
 // When doing a DEBUG compile we will output to the console
 // However, SDL doesn't want us to do that
 #ifdef DEBUG
-#define SDL_main main
+//#define SDL_main main
 #endif
 
 // Some often used headers that could be included in out precompiled header
@@ -259,9 +262,6 @@ using std::isspace;
 #include "../audio/Audio.h"
 #include "../audio/conv.h"
 #include "../audio/Midi.h"
-#include "../audio/Mixer.h"
-#include "../audio/pcb.h"
-#include "../audio/SDL_mapping.h"
 #include "../audio/soundtest.h"
 #include "../audio/xmidi.h"
 #include "../gumps/Actor_gump.h"

@@ -1010,454 +1010,346 @@ void BG_Game::end_game(bool success)
 	fli1.play(win, 0, 0, 0);
 	
 	// Start endgame music.
-	Audio::get_ptr()->start_music(ENDSCORE_XMI,1,false);
-	
-	for (i = 0; i < 240; i++)
-	{
-		next = fli1.play(win, 0, 1, next);
-		if (wait_delay (0))
-		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(buffer);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
+	Audio *audio = Audio::get_ptr();
+	int music_offset = 0;
+	if (audio) {
+		MyMidiPlayer *midi = audio->get_midi();
+		if (midi) {
+			midi->load_patches(true);
+			if (midi->is_fm_synth()) music_offset = 2;
 		}
+		audio->start_music(ENDSCORE_XMI,1+music_offset,false);
 	}
 	
-	for (i = 1; i < 150; i++)
-	{
-		next = fli1.play(win, i, i+1, next);
-		if (wait_delay (0))
+	// A little hack
+	bool do_break = false;
+	do {
+
+		for (i = 0; i < 240; i++)
 		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(buffer);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
+			next = fli1.play(win, 0, 1, next);
+			if (wait_delay (0)) { do_break = true; break; }
 		}
-	}
-
-	Audio::get_ptr()->play (buffer+8, size-8, false);
-	FORGET_ARRAY(buffer);
-	Font *endfont2 = fontManager.get_font("END2_FONT");
-	Font *endfont3 = fontManager.get_font("END3_FONT");
-	Font *normal = fontManager.get_font("NORMAL_FONT");
-
-	const char 	*message = "No. You cannot do that! You must not!";
-	int	height = topy+200 - endfont2->get_text_height()*2;
-	int	width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
-
-	for (i = 150; i < 204; i++)
-	{
-		next = fli1.play(win, i, i, next);
-		endfont2->draw_text(ibuf, width, height, message);
+		if (do_break) break;
 		
-		win->show();
-		if (wait_delay (0))
+		for (i = 1; i < 150; i++)
 		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
+			next = fli1.play(win, i, i+1, next);
+			if (wait_delay (0)) { do_break = true; break; }
 		}
-	}
+		if (do_break) break;
 
-	// Set new music
-	Audio::get_ptr()->start_music(ENDSCORE_XMI,2,false);
-	
-	// Set speech
-	
-	buffer = (uint8 *) speech2.retrieve(size);
-	Audio::get_ptr()->play (buffer+8, size-8, false);
-	FORGET_ARRAY(buffer);
+		if (audio) audio->play (buffer+8, size-8, false);
+		FORGET_ARRAY(buffer);
+		Font *endfont2 = fontManager.get_font("END2_FONT");
+		Font *endfont3 = fontManager.get_font("END3_FONT");
+		Font *normal = fontManager.get_font("NORMAL_FONT");
 
-	message = "Damn you Avatar!  Damn you!";
-	width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
+		const char 	*message = "No. You cannot do that! You must not!";
+		int	height = topy+200 - endfont2->get_text_height()*2;
+		int	width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
-	for (i = 0; i < 100; i++)
-	{
-		next = fli2.play(win, i, i, next);
-		endfont2->draw_text(ibuf, width, height, message);
+		for (i = 150; i < 204; i++)
+		{
+			next = fli1.play(win, i, i, next);
+			endfont2->draw_text(ibuf, width, height, message);
+			
+			win->show();
+			if (wait_delay (0)) { do_break = true; break; }
+		}
+		if (do_break) break;
+
+		// Set new music
+		if (audio) audio->start_music(ENDSCORE_XMI,2+music_offset,false);
+
+		// Set speech
 		
-		win->show();
-		if (wait_delay (0))
+		buffer = (uint8 *) speech2.retrieve(size);
+		if (audio) audio->play (buffer+8, size-8, false);
+		FORGET_ARRAY(buffer);
+
+		message = "Damn you Avatar!  Damn you!";
+		width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
+
+		for (i = 0; i < 100; i++)
 		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
+			next = fli2.play(win, i, i, next);
+			endfont2->draw_text(ibuf, width, height, message);
+			
+			win->show();
+			if (wait_delay (0)) { do_break = true; break; }
 		}
-	}
+		if (do_break) break;
 
-
-	Palette *pal = fli2.get_palette();
-	next = SDL_GetTicks();
-	for (i = 1000 + next; next < i; next += 10)
-	{
-		// Speed related frame skipping detection
-		int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
-		while (SDL_GetTicks() < next)
-			;
-		if (!skip_frame)
+		Palette *pal = fli2.get_palette();
+		next = SDL_GetTicks();
+		for (i = 1000 + next; next < i; next += 10)
 		{
-			pal->set_brightness ((i - next) / 10);
-			pal->apply();
-		}
-		if (wait_delay (0))
-		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
-		}
-	}
-
-	// Text message 1
-
-	// Paint backgound black
-	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-	// Paint text
-	message = "The Black Gate is destroyed.";
-	width = (gwin->get_width() - normal->get_text_width(message)) / 2;
-	height = (gwin->get_height() - normal->get_text_height()) / 2;
-	
-	normal->draw_text (ibuf, width, height, message);
-
-	// Fade in for 1 sec (50 cycles)
-	pal->fade (50, 1, 0);
-
-	// Display text for 3 seconds
-	for (i = 0; i < 30; i++)
-	{
-		if (wait_delay (100))
-		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
-		}
-	}
-
-	// Fade out for 1 sec (50 cycles)
-	pal->fade (50, 0, 0);
-
-	
-	// Now the second text message
-
-
-	// Paint backgound black
-	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-	// Paint text
-	message = "The Guardian has been stopped.";
-	width = (gwin->get_width() - normal->get_text_width(message)) / 2;
-
-	normal->draw_text (ibuf, width, height, message);
-
-	// Fade in for 1 sec (50 cycles)
-	pal->fade (50, 1, 0);
-
-	// Display text for approx 3 seonds
-	for (i = 0; i < 30; i++)
-	{
-		if (wait_delay (100))
-		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
-		}
-	}
-
-	// Fade out for 1 sec (50 cycles)
-	pal->fade (50, 0, 0);
-
-	next = fli3.play(win, 0, 0, next);
-	pal = fli3.get_palette();
-	next = SDL_GetTicks();
-	for (i = 1000 + next; next < i; next += 10)
-	{
-		// Speed related frame skipping detection
-		int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
-		while (SDL_GetTicks() < next)
-			;
-		if (!skip_frame)
-		{
-			pal->set_brightness (100 - (i-next) / 10);
-			pal->apply();
-		}
-		if (wait_delay (0))
-		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
-		}
-	}
-	
-	buffer = (uint8 *) speech3.retrieve(size);
-	Audio::get_ptr()->play (buffer+8, size-8, false);
-	FORGET_ARRAY(buffer);
-
-	playfli::fliinfo finfo;
-	fli3.info (&finfo);
-	
-	int	m;
-	const char *txt_screen0[] = {
-		"Avatar! You think you have won>",
-		"Think again! You are unable to",
-		"leave britannia, whereas I am free",
-		"to enter other worlds",
-		"Perhaps your puny Earth shall be",
-		"my NEXT target!."
-	};
-
-	starty = (gwin->get_height() - endfont3->get_text_height()*8)/2;
-
-	next = SDL_GetTicks();
-	for (i = next+28000; i > next; )
-	{
-		for (j = 0; j < finfo.frames; j++)
-		{
-			next = fli3.play(win, j, j, next);
-			for(m=0; m<6; m++)
-				endfont3->center_text(ibuf, centerx, starty+endfont3->get_text_height()*m, txt_screen0[m]);
-
-			win->show ();
-			if (wait_delay (10))
+			// Speed related frame skipping detection
+			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
+			while (SDL_GetTicks() < next)
+				;
+			if (!skip_frame)
 			{
-				gwin->clear_screen(true);
-				FORGET_ARRAY(fli_b[0]);
-				FORGET_ARRAY(fli_b[1]);
-				FORGET_ARRAY(fli_b[2]);
-				return;
+				pal->set_brightness ((i - next) / 10);
+				pal->apply();
+			}
+			if (wait_delay (0)) { do_break = true; break; }
+		}
+		if (do_break) break;
+
+		// Text message 1
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		// Paint text
+		message = "The Black Gate is destroyed.";
+		width = (gwin->get_width() - normal->get_text_width(message)) / 2;
+		height = (gwin->get_height() - normal->get_text_height()) / 2;
+		
+		normal->draw_text (ibuf, width, height, message);
+
+		// Fade in for 1 sec (50 cycles)
+		pal->fade (50, 1, 0);
+
+		// Display text for 3 seconds
+		for (i = 0; i < 30; i++) if (wait_delay (100)) { do_break = true; break; }
+		if (do_break) break;
+
+		// Fade out for 1 sec (50 cycles)
+		pal->fade (50, 0, 0);
+
+		
+		// Now the second text message
+
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		// Paint text
+		message = "The Guardian has been stopped.";
+		width = (gwin->get_width() - normal->get_text_width(message)) / 2;
+
+		normal->draw_text (ibuf, width, height, message);
+
+		// Fade in for 1 sec (50 cycles)
+		pal->fade (50, 1, 0);
+
+		// Display text for approx 3 seonds
+		for (i = 0; i < 30; i++) if (wait_delay (100)) { do_break = true; break; }
+		if (do_break) break;
+
+		// Fade out for 1 sec (50 cycles)
+		pal->fade (50, 0, 0);
+
+		next = fli3.play(win, 0, 0, next);
+		pal = fli3.get_palette();
+		next = SDL_GetTicks();
+		for (i = 1000 + next; next < i; next += 10)
+		{
+			// Speed related frame skipping detection
+			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
+			while (SDL_GetTicks() < next)
+				;
+			if (!skip_frame)
+			{
+				pal->set_brightness (100 - (i-next) / 10);
+				pal->apply();
+			}
+			if (wait_delay (0)) { do_break = true; break; }
+		}
+		if (do_break) break;
+		
+		buffer = (uint8 *) speech3.retrieve(size);
+		if (audio) audio->play (buffer+8, size-8, false);
+		FORGET_ARRAY(buffer);
+
+		playfli::fliinfo finfo;
+		fli3.info (&finfo);
+		
+		int	m;
+		const char *txt_screen0[] = {
+			"Avatar! You think you have won>",
+			"Think again! You are unable to",
+			"leave britannia, whereas I am free",
+			"to enter other worlds",
+			"Perhaps your puny Earth shall be",
+			"my NEXT target!."
+		};
+
+		starty = (gwin->get_height() - endfont3->get_text_height()*8)/2;
+
+		next = SDL_GetTicks();
+		for (i = next+28000; i > next; )
+		{
+			for (j = 0; j < finfo.frames; j++)
+			{
+				next = fli3.play(win, j, j, next);
+				for(m=0; m<6; m++)
+					endfont3->center_text(ibuf, centerx, starty+endfont3->get_text_height()*m, txt_screen0[m]);
+
+				win->show ();
+				if (wait_delay (10)) { do_break = true; break; }
 			}
 		}
-	}
+		if (do_break) break;
 
-	
-	next = SDL_GetTicks();
-	for (i = 1000 + next; next < i; next += 10)
-	{
-		// Speed related frame skipping detection
-		int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
-		while (SDL_GetTicks() < next)
-			;
-		if (!skip_frame)
+		
+		next = SDL_GetTicks();
+		for (i = 1000 + next; next < i; next += 10)
 		{
-			pal->set_brightness ((i - next) / 10);
-			pal->apply();
+			// Speed related frame skipping detection
+			int skip_frame = Game_window::get_instance()->get_frame_skipping() && SDL_GetTicks() >= next;
+			while (SDL_GetTicks() < next)
+				;
+			if (!skip_frame)
+			{
+				pal->set_brightness ((i - next) / 10);
+				pal->apply();
+			}
+			if (wait_delay (0)) { do_break = true; break; }
 		}
-		if (wait_delay (0))
-		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
-		}
+		if (do_break) break;
+
+		// Text Screen 1
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+
+		const char *txt_screen1[] = {
+			"In the months following the climactic",
+			"battle at The Black Gate, Britannia",
+			"is set upon the long road to recovery",
+			"from its various plights.",
+			" ",
+			"Upon your return to Britain,",
+			"Lord British decreed that",
+			"The Fellowship be outlawed",
+			"and all of the branches were",
+			"soon destroyed."
+		};
+
+		starty = (gwin->get_height() - normal->get_text_height()*10)/2;
+		
+		for(i=0; i<10; i++)
+			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen1[i])/2, starty+normal->get_text_height()*i, txt_screen1[i]);
+
+		// Fade in for 1 sec (50 cycles)
+		pal->fade (50, 1, 0);
+
+		// Display text for 20 seonds (only 10 at the moment)
+		for (i = 0; i < 100; i++) if (wait_delay (100)) { do_break = true; break; }
+		if (do_break) break;
+
+		// Fade out for 1 sec (50 cycles)
+		pal->fade (50, 0, 0);
+
+		if (wait_delay (10)) { do_break = true; break; }
+		if (do_break) break;
+
+		// Text Screen 2
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		const char *txt_screen2[] = {
+			"The frustration you feel at having been",
+			"stranded in Britannia is somewhat",
+			"alleviated by the satisfaction that you",
+			"solved the gruesome murders committed",
+			"by The Fellowship and even avenged the",
+			"death of Spark's father."
+		};
+
+		starty = (gwin->get_height() - normal->get_text_height()*6)/2;
+		
+		for(i=0; i<6; i++)
+			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen2[i])/2, starty+normal->get_text_height()*i, txt_screen2[i]);
+
+
+		// Fade in for 1 sec (50 cycles)
+		pal->fade (50, 1, 0);
+
+		// Display text for 20 seonds (only 8 at the moment)
+		for (i = 0; i < 80; i++) if (wait_delay (100)) { do_break = true; break; }
+		if (do_break) break;
+
+		// Fade out for 1 sec (50 cycles)
+		pal->fade (50, 0, 0);
+
+		if (wait_delay (10)) break;
+
+		// Text Screen 3 
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		const char *txt_screen3[] = {
+			"And although you are, at the moment,",
+			"helpless to do anything about",
+			"The Guardian's final threat,",
+			"another thought nags at you...",
+			"what became of Batlin, the fiend",
+			"who got away?"
+		};
+
+		starty = (gwin->get_height() - normal->get_text_height()*6)/2;
+		
+		for(i=0; i<6; i++)
+			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen3[i])/2, starty+normal->get_text_height()*i, txt_screen3[i]);
+
+		// Fade in for 1 sec (50 cycles)
+		pal->fade (50, 1, 0);
+
+		// Display text for 20 seonds (only 8 at the moment)
+		for (i = 0; i < 80; i++) if (wait_delay (100)) { do_break = true; break; }
+		if (do_break) break;
+
+		// Fade out for 1 sec (50 cycles)
+		pal->fade (50, 0, 0);
+
+		if (wait_delay (10)) break;
+
+		// Text Screen 4
+
+		// Paint backgound black
+		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
+
+		const char *txt_screen4[] = {
+			"That is another story...", 
+			"one that will take you",
+			"to a place called",
+			"The Serpent Isle..."
+		};
+
+		starty = (gwin->get_height() - normal->get_text_height()*4)/2;
+		
+		for(i=0; i<4; i++)
+			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen4[i])/2, starty+normal->get_text_height()*i, txt_screen4[i]);
+
+
+		// Fade in for 1 sec (50 cycles)
+		pal->fade (50, 1, 0);
+
+		// Display text for 10 seonds (only 5 at the moment)
+		for (i = 0; i < 50; i++) if (wait_delay (100)) { do_break = true; break; }
+		if (do_break) break;
+
+		// Fade out for 1 sec (50 cycles)
+		pal->fade (50, 0, 0);
 	}
+	while (0);
 
-	// Text Screen 1
-
-	// Paint backgound black
-	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-
-	const char *txt_screen1[] = {
-		"In the months following the climactic",
-		"battle at The Black Gate, Britannia",
-		"is set upon the long road to recovery",
-		"from its various plights.",
-		" ",
-		"Upon your return to Britain,",
-		"Lord British decreed that",
-		"The Fellowship be outlawed",
-		"and all of the branches were",
-		"soon destroyed."
-	};
-
-	starty = (gwin->get_height() - normal->get_text_height()*10)/2;
-	
-	for(i=0; i<10; i++)
-		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen1[i])/2, starty+normal->get_text_height()*i, txt_screen1[i]);
-
-	// Fade in for 1 sec (50 cycles)
-	pal->fade (50, 1, 0);
-
-	// Display text for 20 seonds (only 10 at the moment)
-	for (i = 0; i < 100; i++)
-	{
-		if (wait_delay (100))
-		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
-		}
+	if (audio) {
+		audio->stop_music();
+		MyMidiPlayer *midi = audio->get_midi();
+		if (midi) midi->load_patches(false);
 	}
-
-	// Fade out for 1 sec (50 cycles)
-	pal->fade (50, 0, 0);
-
-	if (wait_delay (10))
-	{
-		gwin->clear_screen(true);
-		FORGET_ARRAY(fli_b[0]);
-		FORGET_ARRAY(fli_b[1]);
-		FORGET_ARRAY(fli_b[2]);
-		return;
-	}
-
-	// Text Screen 2
-
-	// Paint backgound black
-	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-	const char *txt_screen2[] = {
-		"The frustration you feel at having been",
-		"stranded in Britannia is somewhat",
-		"alleviated by the satisfaction that you",
-		"solved the gruesome murders committed",
-		"by The Fellowship and even avenged the",
-		"death of Spark's father."
-	};
-
-	starty = (gwin->get_height() - normal->get_text_height()*6)/2;
-	
-	for(i=0; i<6; i++)
-		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen2[i])/2, starty+normal->get_text_height()*i, txt_screen2[i]);
-
-
-	// Fade in for 1 sec (50 cycles)
-	pal->fade (50, 1, 0);
-
-	// Display text for 20 seonds (only 8 at the moment)
-	for (i = 0; i < 80; i++)
-	{
-		if (wait_delay (100))
-		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
-		}
-	}
-
-	// Fade out for 1 sec (50 cycles)
-	pal->fade (50, 0, 0);
-
-
-	if (wait_delay (10))
-	{
-		gwin->clear_screen(true);
-		FORGET_ARRAY(fli_b[0]);
-		FORGET_ARRAY(fli_b[1]);
-		FORGET_ARRAY(fli_b[2]);
-		return;
-	}
-
-
-	// Text Screen 3 
-
-	// Paint backgound black
-	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-	const char *txt_screen3[] = {
-		"And although you are, at the moment,",
-		"helpless to do anything about",
-		"The Guardian's final threat,",
-		"another thought nags at you...",
-		"what became of Batlin, the fiend",
-		"who got away?"
-	};
-
-	starty = (gwin->get_height() - normal->get_text_height()*6)/2;
-	
-	for(i=0; i<6; i++)
-		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen3[i])/2, starty+normal->get_text_height()*i, txt_screen3[i]);
-
-	// Fade in for 1 sec (50 cycles)
-	pal->fade (50, 1, 0);
-
-	// Display text for 20 seonds (only 8 at the moment)
-	for (i = 0; i < 80; i++)
-	{
-		if (wait_delay (100))
-		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
-		}
-	}
-
-	// Fade out for 1 sec (50 cycles)
-	pal->fade (50, 0, 0);
-
-
-	if (wait_delay (10))
-	{
-		gwin->clear_screen(true);
-		FORGET_ARRAY(fli_b[0]);
-		FORGET_ARRAY(fli_b[1]);
-		FORGET_ARRAY(fli_b[2]);
-		return;
-	}
-
-
-	// Text Screen 4
-
-	// Paint backgound black
-	win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-	const char *txt_screen4[] = {
-		"That is another story...", 
-		"one that will take you",
-		"to a place called",
-		"The Serpent Isle..."
-	};
-
-	starty = (gwin->get_height() - normal->get_text_height()*4)/2;
-	
-	for(i=0; i<4; i++)
-		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen4[i])/2, starty+normal->get_text_height()*i, txt_screen4[i]);
-
-
-	// Fade in for 1 sec (50 cycles)
-	pal->fade (50, 1, 0);
-
-	// Display text for 10 seonds (only 5 at the moment)
-	for (i = 0; i < 50; i++)
-	{
-		if (wait_delay (100))
-		{
-			gwin->clear_screen(true);
-			FORGET_ARRAY(fli_b[0]);
-			FORGET_ARRAY(fli_b[1]);
-			FORGET_ARRAY(fli_b[2]);
-			return;
-		}
-	}
-
-	// Fade out for 1 sec (50 cycles)
-	pal->fade (50, 0, 0);
-
 
 	gwin->clear_screen(true);
+	FORGET_ARRAY(buffer);
 	FORGET_ARRAY(fli_b[0]);
 	FORGET_ARRAY(fli_b[1]);
 	FORGET_ARRAY(fli_b[2]);

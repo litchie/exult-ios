@@ -159,7 +159,7 @@ const struct Action {
 	{ "PARTY_HEAL", ActionHeal, 0, "Heal party", true, true, NONE, false },
 	{ "PARTY_INCREASE_LEVEL",
 	  ActionLevelup, 0, "Level-up party", true, true, NONE, false },
-	{ "CHEAT_SCREEN", ActionCheatScreen, 0, "Cheat Screen", true, true, NONE, false },
+	{ "CHEAT_SCREEN", ActionCheatScreen, 0, "Cheat Screen", true, true, NONE, true },
 	{ "PICK_POCKET",
 	  ActionPickPocket, 0, "Toggle Pick Pocket", true, true, NONE, false },
 	{ "NPC_NUMBERS",

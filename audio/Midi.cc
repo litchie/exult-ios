@@ -156,6 +156,14 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 		return;		//We don't want to continue with Midi conversions!!
 	}
 
+	// Bank 0 is mainmus, but it's for mt32. If our hardware is an fm synth,
+	// use the fmsynth music, which is bank 3
+	if (bank == 0 && midi_device->is_fm_synth()) bank = 3;
+	// Bank 1 is BG menu/intro. We need Bank 4
+	else if (bank == 1 && midi_device->is_fm_synth()) bank = 4;
+	// Bank 2 is SI menu/intro. We need to offset -1
+	else if (bank == 2 && midi_device->is_fm_synth()) num--;
+
 	U7object	track(midi_bank[bank].c_str(),num);
 
 	char		*buffer;
@@ -174,7 +182,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	// Read the data into the XMIDI class
 	mid_data = new BufferDataSource(buffer, size);
 
-	XMIDI		midfile(mid_data, music_conversion);
+	XMIDI		midfile(mid_data, midi_device->use_gs127()?XMIDI_CONVERT_MT32_TO_GS127:music_conversion);
 	
 	delete mid_data;
 	delete [] buffer;
@@ -252,7 +260,7 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	mid_file = U7open(fname, "rb");  //DARKE FIXME
 	mid_data = new FileDataSource(mid_file);
 
-	XMIDI		midfile(mid_data, music_conversion);
+	XMIDI		midfile(mid_data, midi_device->use_gs127()?XMIDI_CONVERT_MT32_TO_GS127:music_conversion);
 	
 	delete mid_data;
 	fclose(mid_file);
@@ -322,6 +330,9 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 #endif
 #if !defined(MACOS) && !defined(WIN32)
   #include "midi_drivers/forked_player.h"
+#endif
+#ifdef USE_FMOPL_MIDI
+  #include "midi_drivers/fmopl_midi.h"
 #endif
 #ifdef WIN32
   #include "midi_drivers/win_midiout.h"
@@ -473,6 +484,9 @@ bool MyMidiPlayer::init_device(void)
 	}
 	else
 	{
+#ifdef USE_FMOPL_MIDI
+	TRY_MIDI_DRIVER(FMOpl_Midi)
+#endif
 #ifdef WIN32
 	TRY_MIDI_DRIVER(Windows_MidiOut)
 #endif
@@ -529,6 +543,8 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),repeating(false),
 	add_midi_bank(MAINMUS);
 	add_midi_bank(INTROMUS);
 	add_midi_bank("<STATIC>/mainshp.flx");
+	add_midi_bank(MAINMUS_AD);
+	add_midi_bank(INTROMUS_AD);
 #endif
 	
 	init_device();

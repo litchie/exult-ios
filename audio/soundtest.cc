@@ -61,7 +61,9 @@ void SoundTester::test_sound()
 	int width = 6;
 	
 	Mouse::mouse->hide();
-	
+
+	gwin->get_tqueue()->pause(SDL_GetTicks());
+
 	do
 	{
 		if (redraw)
@@ -216,6 +218,8 @@ void SoundTester::test_sound()
 			}
 		}
 	} while(looping);
+
+	gwin->get_tqueue()->resume(SDL_GetTicks());
 	
 	gwin->paint();
 	Mouse::mouse->show();

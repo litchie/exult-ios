@@ -240,7 +240,13 @@ void SI_Game::play_intro()
 		// Castle Outside
 
 		// Start Music
-		Audio::get_ptr()->start_music ("<STATIC>/r_sintro.xmi", 0, false);
+		Audio *audio = Audio::get_ptr();
+		if (audio) {
+			const char *fn = "<STATIC>/r_sintro.xmi";
+			MyMidiPlayer *midi = audio->get_midi();
+			if (midi && midi->is_fm_synth()) fn = "<STATIC>/a_sintro.xmi";
+			audio->start_music (fn, 0, false);
+		}
 
 		// Thunder, note we use the buffer again later so it's not freed here
 		if (speech)
@@ -1121,7 +1127,14 @@ Sound Index
 	Audio::get_ptr()->stop_music();
 
 	// Start the music
-	Audio::get_ptr()->start_music ("<STATIC>/r_send.xmi", 0, false);
+	Audio *audio = Audio::get_ptr();
+	if (audio) {
+		const char *fn = "<STATIC>/r_send.xmi";
+		MyMidiPlayer *midi = audio->get_midi();
+		if (midi && midi->is_fm_synth()) fn = "<STATIC>/a_send.xmi";
+		audio->start_music (fn, 0, false);
+	}
+
 
 	int start_time = SDL_GetTicks();
 
