@@ -48,8 +48,8 @@ class Actor;
 #include <string>	// STL string
 
 
-#define	USECODE_INTRINSIC(NAME)	Usecode_value	Usecode_machine::UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
-#define	USECODE_INTRINSIC_DECL(NAME)	Usecode_value	UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
+#define	USECODE_INTRINSIC(NAME)	Usecode_value	Usecode_machine:: UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
+#define	USECODE_INTRINSIC_DECL(NAME)	Usecode_value UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 
 /*
  *	A single function:
