@@ -1,7 +1,7 @@
 INCLUDES = -I$(srcdir)/../../headers -I$(srcdir)/.. -I$(srcdir)/../../files -I$(srcdir)/../.. \
 	$(INCDIRS) $(DEBUG_FLAGS) $(CPPFLAGS)
 
-YFLAGS = -d				# Want ucparse.h.
+AM_YFLAGS = -d				# Want ucparse.h.
 
 ucc_SOURCES = ucparse.yy uclex.ll ucmain.cc \
 	opcodes.h	\
