@@ -989,7 +989,7 @@ void Game_window::start_actor
 	if (mode != normal)
 		return;
 					// Move every 1/8 sec.
-	main_actor->start(
+	main_actor->walk_to_point(
 		chunkx*chunksize + winx, chunky*chunksize + winy, 125);
 	}
 

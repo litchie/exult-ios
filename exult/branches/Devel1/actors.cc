@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "imagewin.h"
 #include "usecode.h"
+#include "actions.h"
 
 /*
  *	Create character.
@@ -40,12 +41,24 @@ Actor::Actor
 	int shapenum, 
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
-	) : Sprite(shapenum), npc_num(num), usecode(uc), flags(0)
+	) : Sprite(shapenum), npc_num(num), usecode(uc), flags(0), action(0)
 	{
 	set_default_frames();
 	name = nm == 0 ? 0 : strdup(nm);
 	for (int i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
 		properties[i] = 0;
+	}
+
+/*
+ *	Delete.
+ */
+
+Actor::~Actor
+	(
+	)
+	{
+	delete name;
+	delete action;
 	}
 
 /*
@@ -71,19 +84,52 @@ void Actor::set_default_frames
 	}
 
 /*
+ *	Set new action.
+ */
+
+void Actor::set_action
+	(
+	Actor_action *newact
+	)
+	{
+	delete action;
+					// Clear us from queue.
+	Game_window::get_game_window()->get_tqueue()->remove(this);
+	action = newact;
+	}
+
+/*
  *	Walk towards a given tile.
  */
 
 void Actor::walk_to_tile
 	(
-	int tx, int ty, int tz		// Tile.  (Tz is the lift.)
+	int tx, int ty, int tz,		// Tile.  (Tz is the lift.)
+	int speed,			// Time between frames (msecs).
+	int delay			// Delay before starting (msecs).
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int liftpixels = tz*4;
-					// Do 4 frames/sec.
+	set_action(new Walking_actor_action());
 	start(((unsigned long) tx + 1)*tilesize - liftpixels,
-	      ((unsigned long) ty + 1)*tilesize - liftpixels, 250);
+	      ((unsigned long) ty + 1)*tilesize - liftpixels, speed, delay);
+	}
+
+/*
+ *	Walk to destination point.
+ */
+
+void Actor::walk_to_point
+	(
+					// Point in world:
+	unsigned long destx, unsigned long desty,
+	int speed			// Delay between frames.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	set_action(new Walking_actor_action());
+	start(destx, desty, speed, 0);
 	}
 
 /*
@@ -177,7 +223,7 @@ int Actor::get_flag
 	}
 
 /*
- *	Animation.
+ *	Handle a time event (for animation).
  */
 
 void Main_actor::handle_event
@@ -186,7 +232,29 @@ void Main_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
-	Game_window *gwin = (Game_window *) udata;
+	if (action)			// Doing anything?
+		{			// Do what we should.
+		int delay = action->handle_event(this);
+		if (delay)		// Keep going with same action.
+			Game_window::get_game_window()->get_tqueue()->add(
+					curtime + delay, this, udata);
+		else
+			set_action(0);
+		}
+	}
+
+/*
+ *	Walk in current direction.
+ *
+ *	Output:	Delay for next frame, or 0 to stop.
+ *		Dormant is set if off screen.
+ */
+
+int Main_actor::walk
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
 	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
 	int frame;
 	if (next_frame(cx, cy, sx, sy, frame))
@@ -198,11 +266,8 @@ void Main_actor::handle_event
 		    at_destination())
 			{
 			stop();
-			return;
+			return (0);
 			}
-					// Add back to queue for next time.
-		gwin->get_tqueue()->add(curtime + frame_time,
-							this, udata);
 					// Check for scrolling.
 		int chunkx = gwin->get_chunkx(), chunky = gwin->get_chunky();
 					// At left?
@@ -232,7 +297,9 @@ void Main_actor::handle_event
 			gwin->paint();
 		else
 			gwin->repaint_sprite(this, oldrect);
+		return (frame_time);	// Add back to queue for next time.
 		}
+	return (0);			// Done.
 	}
 
 /*
@@ -274,7 +341,8 @@ void Pace_schedule::now_what
 	)
 	{
 	which = !which;			// Flip direction.
-	npc->walk_to_tile(which ? p1 : p0);
+					// Wait .75 sec. before moving.
+	npc->walk_to_tile(which ? p1 : p0, 250, 750);
 	}
 
 /*
@@ -319,11 +387,12 @@ void Patrol_schedule::now_what
 			Tile_coord pos = npc->get_abs_tile_coord();
 			Tile_coord delta = Tile_coord(rand()%3 - 1,
 					rand()%3 - 1, 0);
-			npc->walk_to_tile(pos + delta);
+			npc->walk_to_tile(pos + delta, 250, 500);
 			return;
 			}
 		}
-	npc->walk_to_tile(path->get_abs_tile_coord());
+					// Delay up to 2 secs.
+	npc->walk_to_tile(path->get_abs_tile_coord(), 250, rand()%2000);
 	}
 
 /*
@@ -454,7 +523,9 @@ void Npc_actor::paint
 		}
 	}
 
-#if 0	/*  +++++Working on this. */
+/*
+ *	Handle a time event (for animation).
+ */
 
 void Npc_actor::handle_event
 	(
@@ -466,14 +537,13 @@ void Npc_actor::handle_event
 		dormant = 1;
 	else
 		{			// Do what we should.
-		int delay = action->handle_event(curtime, this);
+		int delay = action->handle_event(this);
 		if (delay)		// Keep going with same action.
-			gwin->get_tqueue()->add(curtime + delay,
-							this, udata);
+			Game_window::get_game_window()->get_tqueue()->add(
+					curtime + delay, this, udata);
 		else
 			{
-			delete action;
-			action = 0;
+			set_action(0);
 			if (!dormant && schedule)
 				schedule->now_what();
 			}
@@ -528,60 +598,6 @@ int Npc_actor::walk
 		}
 	dormant = 1;			// Not moving.
 	return (0);
-	}
-#endif	
-
-/*
- *	Animation.  An NPC stops when it reaches the destination specified in
- *	start().
- */
-
-void Npc_actor::handle_event
-	(
-	unsigned long curtime,		// Current time of day.
-	long udata			// Ignored.
-	)
-	{
-					// Store old chunk.
-	int old_cx = get_cx(), old_cy = get_cy();
-	Game_window *gwin = (Game_window *) udata;
-	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
-	int frame;
-	if (next_frame(cx, cy, sx, sy, frame))
-		{
-					// Get ->new chunk.
-		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
-		nlist->setup_cache();
-		int new_lift;		// Might climb/descend.
-		if (nlist->is_blocked(get_lift(), sx, sy, new_lift) ||
-		    at_destination())
-			{
-			stop();
-			if (schedule)	// Ask scheduler what to do next.
-				schedule->now_what();
-			return;
-			}
-		gwin->add_dirty(this);	// Set to repaint old area.
-					// Move it.
-		move(cx, cy, nlist, sx, sy, frame, new_lift);
-					// In new chunk?
-		if (cx != old_cx || cy != old_cy)
-			{
-			Chunk_object_list *olist = 
-				gwin->get_objects(old_cx, old_cy);
-			switched_chunks(olist, nlist);
-			}
-		if (!gwin->add_dirty(this))
-			{		// No longer on screen.
-			stop();
-			dormant = 1;
-			}
-		else			// Add back to queue for next time.
-			gwin->get_tqueue()->add(curtime + frame_time,
-							this, udata);
-		}
-	else
-		dormant = 1;		// Not moving.
 	}
 
 /*
