@@ -152,8 +152,6 @@ class Combo_chooser: public Object_browser, public Shape_draw
 					//   displayed list.
 	Combo_info *info;		// An entry for each combo drawn.
 	int info_cnt;			// # entries in info.
-					// Various controls.
-	GtkWidget *move_combo_down, *move_combo_up;
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
@@ -169,7 +167,6 @@ class Combo_chooser: public Object_browser, public Shape_draw
 		{ return selected < 0 ? -1 : info[selected].num; }
 	void scroll(int newindex);	// Scroll.
 	void scroll(bool upwards);
-	GtkWidget *create_controls();
 	void enable_controls();		// Enable/disable controls after sel.
 					//   has changed.
 public:
@@ -208,7 +205,7 @@ public:
 							gpointer data);
 					// Handle scrollbar.
 	static void scrolled(GtkAdjustment *adj, gpointer data);
-	void move(bool upwards);	// Move current selected combo.
+	virtual void move(bool upwards);// Move current selected combo.
 #ifdef WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 		gpointer data);

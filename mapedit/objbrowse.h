@@ -34,6 +34,11 @@ protected:
 	Shape_group *group;		// Non-null to use filter.
 	GtkWidget *popup;		// Popup menu in draw area.
 	Shape_file_info *file_info;	// Our creator (or null).
+	GtkWidget *find_text;		// For searching.
+	GtkWidget *loc_down, *loc_up;	// 'Locate' buttons.
+					// 'Move' buttons:
+	GtkWidget *move_down, *move_up;
+
 	void set_widget(GtkWidget *w);
 public:
 	Object_browser(Shape_group *grp = 0, Shape_file_info *fi = 0);
@@ -44,6 +49,8 @@ public:
 		{ return group; }
 	int get_selected()		// Return index of selected item.
 		{ return selected; }	// (-1 if none.)
+	GtkWidget *get_find_text()	// Get 'find' text widget.
+		{ return find_text; }
 	virtual void load()		// Load from file data.
 		{  }
 	virtual void render() = 0;
@@ -63,6 +70,21 @@ public:
 	static void on_browser_file_save(GtkMenuItem *item, gpointer udata);
 	static void on_browser_file_revert(GtkMenuItem *item, gpointer udata);
 	virtual GtkWidget *create_popup();	// Popup menu.
+			
+	enum				// Create controls at bottom.
+		{			// OR together what you want.
+		find_controls = 1,
+		locate_controls = 2,
+		move_controls = 4
+		};
+	GtkWidget *create_controls(int controls);
+					// Virtuals for controls.
+	virtual void search(char *srch, int dir)
+		{  }
+	virtual void locate(bool upwards)// Locate terrain on game map.
+		{  }
+	virtual void move(bool upwards)	// Move current selected chunk.
+		{  }
 };
 
 					// File-selector utility:

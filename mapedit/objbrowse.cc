@@ -2,6 +2,7 @@
 #  include <config.h>
 #endif
 
+#include <gdk/gdkkeysyms.h>
 #include "objbrowse.h"
 #include "shapegroup.h"
 #include "shapefile.h"
@@ -9,10 +10,12 @@
 #include "exceptions.h"
 
 using EStudio::Add_menu_item;
+using EStudio::Create_arrow_button;
 
 Object_browser::Object_browser(Shape_group *grp, Shape_file_info *fi) 
 	: group(grp), file_info(fi), popup(0),
-	selected(-1)
+	selected(-1), find_text(0), loc_down(0), loc_up(0),
+	move_down(0), move_up(0)
 {
 	widget = 0;
 }
@@ -216,3 +219,159 @@ GtkWidget *Object_browser::create_popup
 		add_group_submenu(popup);
 	return popup;
 	}
+
+/*
+ *	Callbacks for controls:
+ */
+static void
+on_find_down				(GtkButton       *button,
+                                         gpointer         user_data)
+{
+	Object_browser *chooser = (Object_browser *) user_data;
+	chooser->search(gtk_entry_get_text(
+			GTK_ENTRY(chooser->get_find_text())), 1);
+}
+static void
+on_find_up				(GtkButton       *button,
+                                         gpointer         user_data)
+{
+	Object_browser *chooser = (Object_browser *) user_data;
+	chooser->search(gtk_entry_get_text(
+			GTK_ENTRY(chooser->get_find_text())), -1);
+}
+static gboolean
+on_find_key				(GtkEntry	*entry,
+					 GdkEventKey	*event,
+					 gpointer	 user_data)
+{
+	if (event->keyval == GDK_Return)
+		{
+		Object_browser *chooser = (Object_browser *) user_data;
+		chooser->search(gtk_entry_get_text(
+			GTK_ENTRY(chooser->get_find_text())), 1);
+		return TRUE;
+		}
+	return FALSE;			// Let parent handle it.
+}
+
+static void
+on_loc_down				(GtkButton       *button,
+                                         gpointer         user_data)
+{
+	Object_browser *chooser = (Object_browser *) user_data;
+	chooser->locate(false);
+}
+static void
+on_loc_up				(GtkButton       *button,
+                                         gpointer         user_data)
+{
+	Object_browser *chooser = (Object_browser *) user_data;
+	chooser->locate(true);
+}
+
+static void
+on_move_down				(GtkButton       *button,
+                                         gpointer         user_data)
+{
+	Object_browser *chooser = (Object_browser *) user_data;
+	chooser->move(false);
+}
+static void
+on_move_up				(GtkButton       *button,
+                                         gpointer         user_data)
+{
+	Object_browser *chooser = (Object_browser *) user_data;
+	chooser->move(true);
+}
+
+
+/*
+ *	Create box with various controls.
+ *
+ *	Note:	'this' is passed as user-data to all the signal handlers,
+ *		which call various virtual methods.
+ */
+
+GtkWidget *Object_browser::create_controls
+	(
+	int controls			// Browser_control flags.
+	)
+	{
+	GtkWidget *topframe = gtk_frame_new (NULL);
+	gtk_widget_show(topframe);
+
+					// Everything goes in here.
+	GtkWidget *tophbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (tophbox);
+	gtk_container_add (GTK_CONTAINER (topframe), tophbox);
+	/*
+	 *	The 'Find' controls.
+	 */
+	if (controls & (int) find_controls)
+		{
+		GtkWidget *frame = gtk_frame_new("Find");
+		gtk_widget_show(frame);
+		gtk_box_pack_start (GTK_BOX (tophbox), frame, FALSE, FALSE, 2);
+
+		GtkWidget *hbox2 = gtk_hbox_new (FALSE, 0);
+		gtk_widget_show (hbox2);
+		gtk_container_add (GTK_CONTAINER(frame), hbox2);
+
+		find_text = gtk_entry_new ();
+		gtk_widget_show (find_text);
+		gtk_box_pack_start(GTK_BOX(hbox2), find_text, FALSE, FALSE, 0);
+		gtk_widget_set_usize (find_text, 110, -2);
+
+		GtkWidget *find_down = Create_arrow_button(
+				GTK_ARROW_DOWN, 
+			GTK_SIGNAL_FUNC(on_find_down), this);
+		gtk_box_pack_start(GTK_BOX(hbox2), find_down, FALSE, FALSE, 0);
+
+		GtkWidget *find_up = Create_arrow_button(GTK_ARROW_UP,
+				GTK_SIGNAL_FUNC(on_find_up), this);
+		gtk_box_pack_start(GTK_BOX(hbox2), find_up, FALSE, FALSE, 0);
+		gtk_signal_connect (GTK_OBJECT(find_text), "key-press-event",
+		      	GTK_SIGNAL_FUNC(on_find_key), this);
+		}
+	/*
+	 *	The 'Locate' controls.
+	 */
+	if (controls & (int) locate_controls)
+		{
+		GtkWidget *frame = gtk_frame_new ("Locate");
+		gtk_widget_show(frame);
+		gtk_box_pack_start (GTK_BOX (tophbox), frame, FALSE, FALSE, 2);
+		GtkWidget *bbox = gtk_hbox_new(TRUE, 0);
+		gtk_widget_show (bbox);
+		gtk_container_add (GTK_CONTAINER (frame), bbox);
+
+		loc_down = Create_arrow_button(GTK_ARROW_DOWN,
+				GTK_SIGNAL_FUNC(on_loc_down), this);
+		gtk_box_pack_start(GTK_BOX (bbox), loc_down, FALSE, FALSE, 0);
+
+		loc_up = Create_arrow_button(GTK_ARROW_UP,
+	                    	GTK_SIGNAL_FUNC(on_loc_up), this);
+		gtk_box_pack_start(GTK_BOX (bbox), loc_up, FALSE, FALSE, 0);
+		}
+	/*
+	 *	The 'Move' controls.
+	 */
+	if (controls & (int) move_controls)
+		{
+		GtkWidget *frame = gtk_frame_new ("Move");
+		gtk_widget_show(frame);
+		gtk_box_pack_start(GTK_BOX (tophbox), frame, FALSE, FALSE, 2);
+		GtkWidget *bbox = gtk_hbox_new(TRUE, 0);
+		gtk_widget_show (bbox);
+		gtk_container_add (GTK_CONTAINER (frame), bbox);
+
+		move_down = Create_arrow_button(GTK_ARROW_DOWN,
+				GTK_SIGNAL_FUNC(on_move_down), this);
+		gtk_box_pack_start(GTK_BOX (bbox), move_down, FALSE, FALSE, 0);
+		move_up = Create_arrow_button(GTK_ARROW_UP,
+			GTK_SIGNAL_FUNC(on_move_up), this);
+		gtk_box_pack_start (GTK_BOX (bbox), move_up, FALSE, FALSE, 0);
+		}
+	return topframe;
+	}
+
