@@ -43,17 +43,20 @@ class  Gump_manager : public Game_singletons
 	};
 
 	Gump_list	*open_gumps;
-	int		non_persistent_count;		// So we can test for 'gump mode' quickly.
+	Gump		*kbd_focus;	// This gump gets kbd strokes.
+				// So we can test for 'gump mode' quickly:
+	int		non_persistent_count;
 	int modal_gump_count;
 	bool	right_click_close;
-	bool	dont_pause_game;			// NEVER EVER SET THIS MANUALLY! YOU MUST CALL set_gumps_dont_pause_game
+	bool	dont_pause_game;	// NEVER SET THIS MANUALLY! YOU MUST 
+					// CALL set_gumps_dont_pause_game.
 public:
-	void add_gump(Gump *gump);			// Add a single gump to screen
-	void add_gump(Game_object *obj, int shapenum);	// Show a gump for object obj
+	void add_gump(Gump *gump);		// Add a single gump to screen
+	void add_gump(Game_object *obj, int shapenum);	// Show gump for obj
 
-	bool remove_gump(Gump *gump);			// Detatch a gump from the list
-	bool close_gump(Gump *gump);			// Close a gump
-	void close_all_gumps(bool pers = false);	// Close all gumps
+	bool remove_gump(Gump *gump);		// Detatch a gump from the list
+	bool close_gump(Gump *gump);		// Close a gump
+	void close_all_gumps(bool pers = false);// Close all gumps
 
 	bool showing_gumps(bool no_pers = false) const;	// Are gumps showing?
 	bool gump_mode() const				// Fast check.
@@ -61,14 +64,16 @@ public:
 	bool modal_gump_mode() const // displaying a modal gump?
 		{ return modal_gump_count > 0; }
 
-	Gump *find_gump(int x, int y, bool pers = true);		// Find gump x,y is in
-	Gump *find_gump(Game_object *obj);		// Find gump that object is in
-	Gump *find_gump(Game_object *obj, int shapenum);	// Find gump for object obj
+	Gump *find_gump(int x, int y, bool pers = true);// Find gump x,y is in
+	Gump *find_gump(Game_object *obj);	// Find gump that object is in
+						// Find gump for object obj:
+	Gump *find_gump(Game_object *obj, int shapenum);
 
 	void update_gumps();
 	void paint();
 
 	bool double_clicked(int x, int y, Game_object *&obj);
+	bool handle_kbd_event(void *ev);
 
 	inline bool can_right_click_close() { return right_click_close; }
 	inline void set_right_click_close(bool r) { right_click_close = r; }

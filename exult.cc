@@ -1215,7 +1215,8 @@ static void Handle_event
 		break;
 	case SDL_KEYDOWN:		// Keystroke.
 	case SDL_KEYUP:
-		if (!dragging)		// ESC while dragging causes crashes.
+		if (!dragging &&	// ESC while dragging causes crashes.
+		    !gwin->get_gump_man()->handle_kbd_event(&event))
 			keybinder->HandleEvent(event);
 		break;
 #ifdef USE_EXULTSTUDIO

@@ -40,7 +40,8 @@ Gump::Gump
 	int initx, int inity, 		// Coords. on screen.
 	int shnum,			// Shape #.
 	ShapeFile shfile
-	) : ShapeID(shnum, 0, shfile), container(cont), x(initx), y(inity), check_button(0)
+	) : ShapeID(shnum, 0, shfile), container(cont), x(initx), y(inity), 
+		check_button(0), handles_kbd(false)
 {
 }
 
@@ -53,7 +54,8 @@ Gump::Gump
 	Container_game_object *cont,	// Container it represents.
 	int shnum,			// Shape #.
 	ShapeFile shfile
-	) : ShapeID(shnum, 0, shfile), container(cont), check_button(0)
+	) : ShapeID(shnum, 0, shfile), container(cont), check_button(0),
+		handles_kbd(false)
 {
 	Shape_frame *shape = get_shape();
 	x = (gwin->get_width() - shape->get_width())/2;
