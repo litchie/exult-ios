@@ -865,39 +865,11 @@ void Sleep_schedule::now_what
 	if ((frnum&0xf) == Actor::sleep_frame)
 		return;			// Already sleeping.
 					// Find closest EW or NS bed.
-	Game_object *bed1 = npc->find_closest(696);
-	Game_object *bed2 = npc->find_closest(1011);
-	Game_object *bed;
-	int dir;
-	if (!bed1)
-		{
-		if (!bed2)
-			return;		// None found!
-		bed = bed2;
-		dir = north;
-		}
-	else if (!bed2)
-		{
-		bed = bed1;
-		dir = west;
-		}
-	else				// 1 of both kinds?
-		{
-		int dist1 = npc->get_abs_tile_coord().distance(
-						bed1->get_abs_tile_coord());
-		int dist2 = npc->get_abs_tile_coord().distance(
-						bed2->get_abs_tile_coord());
-		if (dist1 < dist2)
-			{
-			bed = bed1;
-			dir = west;
-			}
-		else
-			{
-			bed = bed2;
-			dir = north;
-			}
-		}
+	static int bedshapes[2] = {696, 1011};
+	Game_object *bed = npc->find_closest(bedshapes, 2);
+	if (!bed)
+		return;
+	int dir = bed->get_shapenum() == 696 ? west : north;
 	npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
 					// Get bed info.
 	Shape_info& info = Game_window::get_game_window()->get_info(bed);
@@ -929,8 +901,11 @@ void Sit_schedule::now_what
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) == Actor::sit_frame)
 		return;			// Already sitting.
-	if (!chair)			// ++++++Find chair.
-		return;	//++++++++++
+	static int chairs[] = {873,292};// ++++Check 292.
+	if (!chair)			// Find chair if not given.
+		if (!(chair = npc->find_closest(chairs, 
+					sizeof(chairs)/sizeof(chairs[0]))))
+			return;
 	set_action(npc, chair);
 	}
 
@@ -944,8 +919,9 @@ void Sit_schedule::set_action
 	Game_object *chairobj
 	)
 	{
-					// Frame 0 faces S, 1 E, etc.
-	int dir = 2*((chairobj->get_framenum() + 4)%4);
+					// Frame 0 faces N, 1 E, etc.
+	int dir = 2*(chairobj->get_framenum()%4);
+					// +++++++Walk path to chair?
 	char frames[2];
 	frames[0] = actor->get_dir_framenum(dir, Actor::to_sit_frame);
 	frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
