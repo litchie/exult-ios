@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "faqs.dtd">
-<faqs title="Exult" changed="10 August 2001(GMT)">
+<faqs title="Exult" changed="03 Septembre 2001(GMT)">
 	<section title="Changes to the FAQ">
+		<faq name="03092001">
+			<question>- 03 Septembre 2001</question>
+			<answer>
+				<ul>
+				<li><ref1 target="latest_version"/> Version updated</li>
+				<li><ref1 target="other_improvements"/> Added "close on doubleclick".</li>
+				<li><ref1 target="known_issues"/> added note about stealing, killing NPCs</li>
+				<li><ref1 target="compile_issues"/> added this with information on compiling in 
+					Unix and the bug with the flex bundled with some Linux systems.</li>
+				</ul>	
+			</answer>
+		</faq>
 		<faq name="10082001">
 			<question>- 10 August 2001</question>
 			<answer>
 				<ul>
 				<li><ref1 target="origin_exult"/> noted praise from LB and Ken Demarest.</li>				
-				
-				<li><ref1 target="multiplayer"/> This gets asked quite often.</li>
+				<li><ref1 target="multiplayer"/> this gets asked quite often.</li>
 				<li><ref1 target="whatis_snapshot"/> added some more information.</li>
 				<li><ref1 target="compile_snapshot"/> made this gnereic for all the OS'.</li>
 				<li><ref1 target="what_platforms"/> added OSX.</li>
@@ -161,7 +172,7 @@
 			<question>What is the latest version of <Exult/>?</question>
 			<answer>
 				<para>
-					The current official release is V0.93 Alpha4. See also <ref target="whereis_exult"/>
+					The current official release is V0.94 Alpha5. See also <ref target="whereis_exult"/>
 					to learn where to get the latest version.
 				</para>
 				<para>
@@ -351,6 +362,10 @@
 		<faq name="other_improvements">
 			<question>Any other improvements/features?</question>
 			<answer>
+				<para>
+					You can now close gumps with a double click like it worked in Ultima8. See 
+					"Configurations" in the Documentation.
+				</para>
 				<para>
 					Since the Alpha 4 release a new game menu was added with improved Audio and Video 
 					Options boxes (the Gameplay Options don't work yet) and a very much improved 
@@ -597,6 +612,7 @@
 			<question>Known Issues</question>
 			<answer>
 				<ul>
+					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>
 					<li>Movement is sometimes jerky or slow.</li>
 					<li>We don't know what all the data in 'weapons.dat' and 'ammo.dat'
 						means, so hit points and damage don't work as well as in the original
@@ -621,12 +637,25 @@
 				</ul>
 			</answer>
 		</faq>
+		<faq name="compile_issues">
+			<question>Known Compile Issues</question>
+			<answer>
+				<ul>
+					<li>Max is working to make Exult compile on all Unix systems but currently it requires
+						SDL 1.2.3. When that works there will be compile instructions in the source.</li>
+					<li>There is a bug/incompatibility with the flex bundled Linux distributions 
+						(RH7.0, for example) that breaks compilation. Upgrading to a more recent version 
+						of flex should fix it.</li>
+				</ul>
+			</answer>
+		</faq>
 		<faq name="not_yet_implemented">
 			<question>Not yet implemented</question>
 			<answer>
-				<para>
-					A few magic spells don't work yet.
-				</para>
+				<ul>
+					<li>A few magic spells don't work yet.</li>
+					<li>stealing, killing innocent NPCs doesn't work yet</li>
+				</ul>				
 			</answer>
 		</faq>
 	</section>
