@@ -8,13 +8,13 @@ else
 GIMP_PLUGINS=
 endif
 
+GTK_LIBS = @GTK_LIBS@
+
 if HAVE_GTK
 GTK_APPS = shapetest paltest
-GTK_LIBS = @GTK_LIBS@
 OUTPUT_LIBS = libmapedit.la
 else
 GTK_APPS = 
-GTK_LIBS =
 OUTPUT_LIBS =
 endif
 
