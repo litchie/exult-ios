@@ -1,4 +1,7 @@
 2003-02-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* version.cc: output HAVE_OPENGL setting
+
+2003-02-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* forked_player.cc: don't go into infinite loop when player fails
 	* shapeid.*: minor cleanup
 	* objs/egg.cc: prevent egg from retriggering immediately
