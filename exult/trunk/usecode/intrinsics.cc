@@ -297,17 +297,20 @@ USECODE_INTRINSIC(get_item_quantity)
 
 USECODE_INTRINSIC(set_item_quantity)
 {
-	// Set_quantity (item, newcount).  Rets ???.
+	// Set_quantity (item, newcount).  Rets 1 iff item.has_quantity().
 	Usecode_value ret(0);
 	Game_object *obj = get_item(parms[0]);
-	if (obj)
+	int newquant = parms[1].get_int_value();
+	if (obj && gwin->get_info(obj).has_quantity())
 		{
+		ret = Usecode_value(1);
+					// If not in world, don't delete!
+		if (newquant == 0 && obj->get_cx() == 255)
+			return ret;
 		int oldquant = obj->get_quantity();
-		int delta = parms[1].get_int_value() - oldquant;
+		int delta = newquant - oldquant;
 					// Note:  This can delete the obj.
 		int newdelta = obj->modify_quantity(delta);
-					// Guess:  Return new quantity.
-		ret = Usecode_value(oldquant + newdelta);
 					// ++++Maybe repaint?
 		}
 	return(ret);
