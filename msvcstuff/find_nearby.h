@@ -75,8 +75,11 @@ int Game_object::find_nearby
 					continue;
 				Tile_coord t = obj->get_tile();
 					// +++++Check tz too?
-				if (tiles.has_point(t.tx, t.ty))
-					vec.push_back(static_cast<FN_OBJECT*>(obj));
+				if (tiles.has_point(t.tx, t.ty)) {
+					FN_OBJECT* castobj = dynamic_cast<FN_OBJECT*>(obj);
+					if (castobj)
+						vec.push_back(castobj);
+				}
 				}
 			}
 					// Return # added.
