@@ -133,7 +133,7 @@ public:
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
 	virtual void activate(Usecode_machine *umachine, Game_object *obj,
-							bool must = 0);
+							bool must = false);
 	void print_debug();
 	static void set_weather(Game_window *gwin, int weather, int len = 15,
 						Game_object *egg = 0);
