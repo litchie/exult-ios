@@ -17,6 +17,7 @@
  */
 
 
+#include "alpha_kludges.h"
 #include "SDL_keyboard.h"
 
 #include "keys.h"

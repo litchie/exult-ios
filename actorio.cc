@@ -293,7 +293,7 @@ Actor::Actor
 			}
 	// Only do ready best weapon if we are in BG, this is the first time
 	// and we are the Avatar or Iolo
-	if (Game::get_game_type() == BLACK_GATE && Game::Game::get_avname() && (num == 0 || num == 1))
+	if (Game::get_game_type() == BLACK_GATE && Game::get_avname() && (num == 0 || num == 1))
 		ready_best_weapon();
 			
 #ifdef DEBUG

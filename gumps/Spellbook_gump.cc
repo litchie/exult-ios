@@ -16,7 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include "../alpha_kludges.h"
+#include "alpha_kludges.h"
 
 #include "actors.h"
 #include "cheat.h"
@@ -27,7 +27,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucmachine.h"
 #include "Spellbook_gump.h"
 #include "spellbook.h"
-#include <cstdio>
+
+#ifndef ALPHA_LINUX_CXX
+#  include <cstdio>
+#endif
 
 using std::snprintf;
 
