@@ -43,7 +43,6 @@ exult_SOURCES =	\
 	drag.h		\
 	effects.cc	\
 	effects.h	\
-	exceptions.h	\
 	exult.cc	\
 	exult.h		\
 	exultmenu.cc	\
@@ -62,7 +61,6 @@ exult_SOURCES =	\
 	gamerend.cc	\
 	gamewin.cc	\
 	gamewin.h	\
-	gamma.h		\
 	hash_utils.h	\
 	keys.cc		\
 	keys.h		\
@@ -182,7 +180,9 @@ EXTRA_DIST = 	\
 	msvcstuff/exconfig/exconfig.rc \
 	msvcstuff/exconfig/resource.h \
 	msvcstuff/exconfig/StdAfx.cpp \
-	msvcstuff/exconfig/StdAfx.h
+	msvcstuff/exconfig/StdAfx.h \
+	headers/gamma.h		\
+	headers/exceptions.h
 
 win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
 	-mkdir win32
