@@ -47,7 +47,7 @@ uclex.cc:
 
 clean:
 	rm -f $(IPACK_OBJS) ipack.exe ipack.o $(UCC_OBJS) ucc.exe ucparse.cc ucparse.h uclex.cc
-	rm -f faces.vga shapes.vga
+	rm -f ../islefaq/usecode faces.vga shapes.vga
 
 patch: ucc.exe ipack.exe
 	mkdir -p $(U7PATH)/patch
