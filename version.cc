@@ -36,7 +36,16 @@
 
 void getVersionInfo(std::ostream& out)
 {
+	/*
+	 * 1. Exult version
+	 */
+	 
 	out << "Exult version " << VERSION << std::endl;
+
+	/*
+	 * 2. Build time
+	 */
+	 
 
 #if (defined(__TIME__) || defined(__DATE))
 	out << "Built at: ";
@@ -49,6 +58,10 @@ void getVersionInfo(std::ostream& out)
 	out << std::endl;
 #endif
 	
+	/*
+	 * 3. Various important build options in effect
+	 */
+	 
 	out << "Compile-time options: ";
 	bool firstoption = true;
 
@@ -102,29 +115,49 @@ void getVersionInfo(std::ostream& out)
 
 	out << std::endl;
 
+
+	/*
+	 * 4. Compiler used to create this binary
+	 */
+	 
 	out << "Compiler: ";
+	// GCC
 #if (defined(__GNUC__))
 	out << "gcc";
-#if defined(__VERSION__)
-	out << ", version: " << __VERSION__ << std::endl;
-#elif (defined(__GNUC_MINOR__))
+ #if defined(__VERSION__)
+	out << ", version: " << __VERSION__;
+ #elif (defined(__GNUC_MINOR__))
 	out << ", version " << __GNUC__ << "." << __GNUC_MINOR__;
-#if (defined(__GNUC_PATCHLEVEL__))
+  #if (defined(__GNUC_PATCHLEVEL__))
 	out << "." << __GNUC_PATCHLEVEL__;
-#endif
-	out << std::endl;
-#endif
+  #endif
+ #endif
 
+	// MSC
 #elif (defined(_MSC_FULL_VER))
 	out << "MSC, version: " << (_MSC_FULL_VER/1000000) << "."
 				<< ((_MSC_FULL_VER/10000)%100) << "."
-				<< (_MSC_FULL_VER%10000) << std::endl;
+				<< (_MSC_FULL_VER%10000);
 #elif (defined(_MSC_VER))
-	out << "MSC, version: " << (_MSC_VER/100) << "." << (_MSC_VER%100) << std::endl;
+	out << "MSC, version: " << (_MSC_VER/100) << "." << (_MSC_VER%100);
+
+	// Metrowerks CodeWarrior
+#elif (defined(__MWERKS__))
+	out << "Metrowerks CodeWarrior, version: "
+	out << ((__MWERKS__&0xf000)>>24) << "."
+	out << ((__MWERKS__&0x0f00)>>16) << "."
+	out << __MWERKS__&0xff
 #else
-	out << "Unknown" << std::endl;
+	out << "Unknown";
 #endif
 
+	out << std::endl;
+
+
+	/*
+	 * 5. Platform
+	 */
+	 
 	out << std::endl << "Platform: ";
 
 #if (defined(__linux__) || defined(__linux) || defined(linux))
@@ -142,7 +175,6 @@ void getVersionInfo(std::ostream& out)
 	} catch(...) {
 		ver = "Linux";
 	}
-
 	out << ver << std::endl;
 #elif (defined(BEOS))
 	out << "BeOS" << std::endl;
@@ -183,9 +215,13 @@ void getVersionInfo(std::ostream& out)
 
 		out << " Version " << info.dwMajorVersion << "." << info.dwMinorVersion << " Build " << LOWORD(info.dwBuildNumber&0xFFFF) << std::endl;
 	}
+	out << "Win32" << endl;
+#elif (defined(MACOSX))
+	out << "Mac OS X" << endl;
+#elif (defined(MACOS))
+	out << "MacOS" << endl;
 #else
 	out << "Unknown" << std::endl;
 #endif
- 
 
 }
