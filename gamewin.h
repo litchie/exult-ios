@@ -476,11 +476,6 @@ public:
 			paint(box);	// (Could create new dirty rects.)
 			}
 		}
-	void show_dirty()		// get imagewin to show 'dirty' rect.
-		{
-		if (dirty.w > 0)
-			win->show(dirty.x, dirty.y, dirty.w, dirty.h);
-		}
 	void set_all_dirty()		// Whole window.
 		{ dirty = Rectangle(0, 0, get_width(), get_height()); }
 	void add_dirty(Rectangle r)	// Add rectangle to dirty area.

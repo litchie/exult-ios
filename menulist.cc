@@ -40,10 +40,8 @@ void MenuEntry::paint(Game_window *gwin)
         if (!dirty) return;
 	dirty = false;
 
-	Rectangle d(x1,y1,x2-x1+1,y2-y1+1);
-	gwin->add_dirty(d);
-
-	//	cerr << "Dirty, repainting" << endl;
+//	Rectangle d(x1,y1,x2-x1+1,y2-y1+1);
+//	gwin->add_dirty(d);
 
 	Shape_frame *shape;
 	if(selected)
@@ -51,6 +49,7 @@ void MenuEntry::paint(Game_window *gwin)
 	else
 		shape = frame_off;
 	gwin->paint_shape(x-shape->get_width()/2, y, shape);
+	gwin->get_win()->show(x1,y1,x2-x1+1,y2-y1+1);	
 }
 
 bool MenuEntry::handle_event(SDL_Event& event)
@@ -91,8 +90,8 @@ void MenuChoice::paint(Game_window *gwin)
         if (!dirty) return;
 	dirty = false;
 
-	Rectangle d(x1,y1,x2-x1+1,y2-y1+1);
-	gwin->add_dirty(d);
+	//	Rectangle d(x1,y1,x2-x1+1,y2-y1+1);
+	//	gwin->add_dirty(d);
 
 	Shape_frame *shape;
 	if(selected)
@@ -101,9 +100,11 @@ void MenuChoice::paint(Game_window *gwin)
 		shape = frame_off;
 
 	gwin->paint_shape(x-shape->get_width(), y, shape);
+	gwin->get_win()->show(x1,y1,x2-x1+1,y2-y1+1);
 	if(choice>=0) {
-		gwin->get_win()->fill8(0, x+32+max_choice_width, y+font->get_text_height(), x+32, y);
+		gwin->get_win()->fill8(0, max_choice_width, font->get_text_height(), x+32, y);
 		font->draw_text(gwin, x+32, y, (*choices)[choice].c_str());
+		gwin->get_win()->show(x+32,y, x+32+max_choice_width, y+font->get_text_height());
 	}
 }
 
@@ -117,11 +118,13 @@ bool MenuChoice::handle_event(SDL_Event& event)
 		switch(event.key.keysym.sym) {
 		case SDLK_LEFT:
 			choice--;
+			dirty = true;
 			if(choice<0)
 				choice = choices->size()-1;
 			break;
 		case SDLK_RIGHT:
-			choice++;
+		        choice++;
+			dirty = true;
 			if(choice>=choices->size())
 				choice = 0;
 			break;
@@ -142,40 +145,44 @@ MenuList::~MenuList()
 	delete entries;
 }
 
-void MenuList::set_selected(int sel)
+void MenuList::set_selection(int sel)
 {
 	MenuObject *entry;
 	// deselect the previous entry
-	if(selected>=0) {
-		entry = (*entries)[selected];
+	if (selected) {
+		entry = (*entries)[selection];
 		entry->set_selected(false);
 	}
 	// select the new one
-	selected = sel;
-	entry = (*entries)[selected];
+	selected = true;
+	selection = sel;
+	entry = (*entries)[selection];
 	entry->set_selected(true);
 }
 
-bool MenuList::set_selected(int x, int y)
+void MenuList::set_selection(int x, int y)
 {
 	MenuObject *entry;
 	// Skip everything if it's the same
-	entry = (*entries)[selected];
-	if(entry->is_mouse_over(x, y))
-	        return false;
-	else
- 	        entry->set_selected(false);
-
+	if (selected) {
+	          entry = (*entries)[selection];
+	          if (entry->is_mouse_over(x, y))
+	                return;
+		  else
+  	                entry->set_selected(false);
+	}
 	
 	for(int i=0; i<entries->size(); i++) {
 		entry = (*entries)[i];
 		if(entry->is_mouse_over(x, y)) {
 			entry->set_selected(true);
-			selected = i;
-			return true;
+			selected = true;
+			selection = i;
+			return;
 		}
 	}
-	return false;
+
+	selected = false;
 }
 
 int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
@@ -184,26 +191,30 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 	bool exit_loop = false;
 	int scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 	SDL_Event event;
+
+	for(int i=0; i<count; i++)
+	  (*entries)[i]->dirty = true;
+
 	mouse->show();
 	gwin->show(1);
-	gwin->clear_dirty();
+//	gwin->clear_dirty();
 	do {
-			mouse->hide();
-			for(int i=0; i<count; i++) {
-				MenuObject *entry = (*entries)[i];
-				entry->paint(gwin);
-			}
-			gwin->show_dirty();
-		        mouse->show();
-		        mouse->blit_dirty();
-			//			gwin->clear_dirty();
+        	mouse->hide();
+		for(int i=0; i<count; i++) {
+			MenuObject *entry = (*entries)[i];
+			entry->paint(gwin);
+		}
+//		gwin->show_dirty();
+		mouse->show();
+		mouse->blit_dirty();
+//		gwin->clear_dirty();
 
 		SDL_WaitEvent(&event);
 		if(event.type==SDL_MOUSEMOTION) {
 			mouse->hide();
 			mouse->move(event.motion.x >> scale, 
 					event.motion.y >> scale);
-			set_selected(event.motion.x >> scale, 
+			set_selection(event.motion.x >> scale, 
 					event.motion.y >> scale); 
 			mouse->show();
 			mouse->blit_dirty();
@@ -213,13 +224,14 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 //				mouse->blit_dirty();
 //			}
 		} else if(event.type==SDL_MOUSEBUTTONUP) {
-		        MenuObject *entry = (*entries)[selected];
+		        MenuObject *entry = (*entries)[selection];
 			if (entry->is_mouse_over(
 					   event.button.x >> scale, 
 					   event.button.y >> scale)) {
 			        exit_loop = entry->handle_event(event);
 			}			
 		} else if(event.type==SDL_KEYDOWN) {
+		        set_selection(selection);
 		        mouse->hide();
 			switch(event.key.keysym.sym) {
 			case SDLK_x:
@@ -235,21 +247,21 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 				break;
 #endif
 			case SDLK_UP:
-				if(selected==0)
-					set_selected(count-1);
+				if(selection==0)
+					set_selection(count-1);
 				else
-					set_selected(selected-1);
+					set_selection(selection-1);
 				continue;
 			case SDLK_DOWN:
-				if(selected==(count-1))
-					set_selected(0);
+				if(selection==(count-1))
+					set_selection(0);
 				else
-					set_selected(selected+1);
+					set_selection(selection+1);
 				continue;
 			default:
 				{
-					if(selected>=0) {
-						MenuObject *entry = (*entries)[selected];
+					if(selected) {
+						MenuObject *entry = (*entries)[selection];
 						exit_loop = entry->handle_event(event);
 					}
 				}
@@ -260,6 +272,6 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 		}
 	} while(!exit_loop);
 	mouse->hide();
-	return selected;
+	return selection;
 }
 

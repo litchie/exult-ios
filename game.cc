@@ -226,7 +226,7 @@ void Game::show_menu()
 					      centerx, menuy+i*11));
 	}
 		
-	menu->set_selected(2);
+	menu->set_selection(2);
 	char npc_name[16];
 	sprintf(npc_name, "Exult");
 	do {
@@ -246,16 +246,16 @@ void Game::show_menu()
 			if(!created) {
 				show_journey_failed();
 				top_menu();
-				menu->set_selected(1);
+				menu->set_selection(1);
 				break;
 			}
 			// else fall through
 		case 1: // New Game
 			if(!created) {
 				if(new_game(menushapes))
-					menu->set_selected(2);
+					menu->set_selection(2);
 			} else
-				menu->set_selected(2); // This will start the game
+				menu->set_selection(2); // This will start the game
 			break;
 		case 3: // Credits
 			pal.fade_out(30);
@@ -275,7 +275,7 @@ void Game::show_menu()
 		default:
 			break;
 		}
-	} while(menu->get_selected()!=2);
+	} while(menu->get_selection()!=2);
 	pal.fade_out(30);
 	delete menu;
 	gwin->clear_screen();
@@ -464,7 +464,7 @@ void ExultMenu::setup()
 			 centerx+64, menuy+55);
 	menu.add_entry(cancel);
 	
-	menu.set_selected(0);
+	menu.set_selection(0);
 	gwin->clear_screen();
 	for(;;) {
 		pal.apply();
@@ -522,7 +522,7 @@ Exult_Game ExultMenu::run()
 					      exult_flx.get_shape(menuchoices[i],0),
 					      centerx, menuy+i*11+(i<2?0:11)));
 	}
-	menu->set_selected(0);
+	menu->set_selection(0);
 	Exult_Game sel_game = NONE;
 	do {
 		gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 1));
