@@ -186,7 +186,8 @@ void Spellbook_gump::set_avail
 	int reagant_counts[8];		// Count reagants.
 	int r;
 	for (r = 0; r < 8; r++)		// Count, by frame (frame==bit#).
-		reagant_counts[r] = book_owner->count_objects(REAGANTS, r);
+		reagant_counts[r] = book_owner->count_objects(
+							REAGANTS, -359, r);
 	for (i = 0; i < 9*8; i++)	// Now figure what's available.
 		{
 		avail[i] = 10000;	// 'infinite'.

@@ -192,6 +192,7 @@ public:
 	Tile_coord find_unblocked_tile(int dist, int height = 1);
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
+	Game_object *find_beneath();	// Find highest object beneath us.
 	int is_closed_door() const;	// Checking for a closed door.
 	Game_object *get_outermost();	// Get top 'owner' of this object.
 	void say(char *text);		// Put text up by item.
@@ -248,7 +249,8 @@ public:
 	virtual int is_egg() const	// An egg?
 		{ return 0; }
 					// Count contained objs.
-	virtual int count_objects(int shapenum, int framenum = -359)
+	virtual int count_objects(int shapenum, int qual = -359,
+							int framenum = -359)
 		{ return 0; }
 					// Get contained objs.
 	virtual int get_objects(Vector& vec, int shapenum, 
@@ -407,7 +409,8 @@ public:
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 					// Count contained objs.
-	virtual int count_objects(int shapenum, int framenum = -359);
+	virtual int count_objects(int shapenum, int qual = -359,
+							int framenum = -359);
 					// Get contained objs.
 	virtual int get_objects(Vector& vec, int shapenum, 
 							int framenum = -359);

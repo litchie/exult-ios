@@ -89,6 +89,7 @@ private:
 	ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
+	Barge_object *moving_barge;	// ->cart/ship that's moving, or 0.
 	Main_actor *main_actor;		// Main sprite to move around.
 	int skip_above_actor;		// Level above actor to skip rendering.
 	int num_npcs, num_npcs1;	// Numbers of NPC's, type1 NPC's.
@@ -99,13 +100,8 @@ private:
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
-		// +++++Want to replace these with scrolltx, scrollty:
-#if 0
-	int chunkx, chunky;		// Chunk coord. of window within world.
-#else	/* +++Now, it's tiles: */
 	int scrolltx, scrollty;
 	Rectangle scroll_bounds;	// Walking outside this scrolls.
-#endif
 	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
 	int user_brightness;		// User's setting for brightness.
@@ -189,6 +185,10 @@ public:
 		return (cx >= 0 && cx < num_chunks && 
 		        cy >= 0 && cy < num_chunks ? get_objects(cx, cy) : 0);
 		}
+	inline Barge_object *get_moving_barge() const
+		{ return moving_barge; }
+	inline void set_moving_barge(Barge_object *b)
+		{ moving_barge = b; }
 	inline Actor *get_main_actor() const
 		{ return main_actor; }
 	int set_above_main_actor(int inside, int lift)
@@ -473,12 +473,7 @@ public:
 	void view_down();		// Move view down.
 	void view_up();			// Move view up.
 					// Start moving actor.
-	void start_actor(int winx, int winy, int speed = 125)
-		{
-		main_actor->walk_to_point(get_scrolltx()*tilesize + winx, 
-				get_scrollty()*tilesize + winy, speed);
-		main_actor->get_followers();
-		}
+	void start_actor(int winx, int winy, int speed = 125);
 	void stop_actor();		// Stop main actor.
 					// Find gump (x, y) is in.
 	Gump_object *find_gump(int x, int y);

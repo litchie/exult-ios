@@ -890,6 +890,25 @@ Usecode_value Usecode_machine::get_party
 	}
 
 /*
+ *	Recursively look for a barge that an object is a part of, or on.
+ *
+ *	Output:	->barge if found, else 0.
+ */
+
+static Barge_object *Get_barge
+	(
+	Game_object *obj
+	)
+	{
+					// Check for piece of barge.
+	Game_object *owner = obj->get_owner();
+	if (owner)
+		return dynamic_cast<Barge_object *> (owner);
+	obj = obj->find_beneath();	// Maybe it's sitting on a barge.
+	return (obj ? Get_barge(obj) : 0);
+	}
+
+/*
  *	Put text near an item.
  */
 
@@ -1008,18 +1027,19 @@ Usecode_value Usecode_machine::count_objects
 	(
 	Usecode_value& objval,		// The container, or -357 for party.
 	Usecode_value& shapeval,	// Object shape to count (-359=any).
-	Usecode_value& qualval,		// Quality (ignored, for now).
+	Usecode_value& qualval,		// Quality (-359=any).
 	Usecode_value& frameval		// Frame (-359=any).
 	)
 	{
-	//++++++++++Got to pass qualit to count_objects()++++++++++
 	long oval = objval.get_int_value();
 	int shapenum = shapeval.get_int_value();
+	int qualnum = qualval.get_int_value();
 	int framenum = frameval.get_int_value();
 	if (oval != -357)
 		{
 		Game_object *obj = get_item(objval);
-		return (!obj ? 0 : obj->count_objects(shapenum, framenum));
+		return (!obj ? 0 : obj->count_objects(
+					shapenum, qualnum, framenum));
 		}
 					// Look through whole party.
 	Usecode_value party = get_party();
@@ -1029,7 +1049,8 @@ Usecode_value Usecode_machine::count_objects
 		{
 		Game_object *obj = get_item(party.get_elem(i));
 		if (obj)
-			total += obj->count_objects(shapenum, framenum);
+			total += obj->count_objects(shapenum, qualnum, 
+								framenum);
 		}
 	return (total);
 	}
@@ -2148,8 +2169,9 @@ USECODE_INTRINSIC(get_barge)
 	// get_barge(obj) - returns barge object is part of or lying on.
 
 	Game_object *obj = get_item(parms[0]);
-	Game_object *owner = obj ? obj->get_owner() : 0;
-	return Usecode_value((long) dynamic_cast<Barge_object *> (owner));
+	if (!obj)
+		return Usecode_value(0);
+	return Usecode_value((long) Get_barge(obj));
 }
 
 USECODE_INTRINSIC(earthquake)
