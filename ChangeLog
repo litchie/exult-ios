@@ -1,6 +1,7 @@
 2001-01-02  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* bggame.cc: cleaned up a bit, correctly aligned some shapes
-	* gamewin.cc: corrected some text rendering in conversations
+	* gamewin.cc: corrected some text rendering in conversations,
+	experimenting with plasma effect
 
 2001-01-02  Ryan Nunn <triforce@merlin.net.au>
 	* Makefile.cygwin: Should fixed crash on exit problem expirenced by Dominik on JackChaos
