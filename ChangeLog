@@ -1,3 +1,7 @@
+2003-06-24  Max Horn  <max@quendi.de>
+	* files/rwregress.cc, conf/xmain.cc, usecode/compiler/ucfun.cc,
+	  usecode/ucxt/include/ops.h: added #include <cassert> to please GCC 3.3
+
 2003-05-21  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* files/databuf.h, tools/cmanip.cc: added #include <cassert> to
 	  please GCC 3.3
