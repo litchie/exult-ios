@@ -2998,7 +2998,7 @@ void Actor::die
 	properties[static_cast<int>(health)] = -50;
 	Shape_info& info = gwin->get_info(get_shapenum());
 	Monster_info *minfo = info.get_monster_info();
-					// See if we need a body.
+	Dead_body *body;		// See if we need a body.
 	if (!minfo || !minfo->has_no_body())
 		{
 		int frnum;			// Lookup body shape/frame.
@@ -3008,7 +3008,7 @@ void Actor::die
 			frnum = 3;
 			}
 					// Put body here.
-		Dead_body *body = new Dead_body(shnum, frnum, 0, 0, 0, 
+		body = new Dead_body(shnum, frnum, 0, 0, 0, 
 					npc_num > 0 ? npc_num : -1);
 		if (npc_num > 0)
 			{
@@ -3021,22 +3021,39 @@ void Actor::die
 		body->move(pos);
 					// Okay to take its contents.
 		body->set_flag_recursively(Obj_flags::okay_to_take);
-		Game_object *item;	// Move all the items.
-		Game_object_vector tooheavy;	// Some shouldn't be moved.
-		while ((item = objects.get_first()) != 0)
+		}
+	else
+		body = 0;
+	Game_object *item;		// Move/remove all the items.
+	Game_object_vector tooheavy;	// Some shouldn't be moved.
+	while ((item = objects.get_first()) != 0)
+		{
+		remove(item);
+		item->set_invalid();
+		if (!item->is_dragable())
 			{
-			remove(item);
-			if (item->is_dragable())
-				body->add(item, 1);// Always succeed at adding.
-			else
+			tooheavy.push_back(item);
+			continue;
+			}
+		if (body)
+			body->add(item, 1);// Always succeed at adding.
+		else			// No body?  Drop on ground.
+			{
+			item->set_flag_recursively(Obj_flags::okay_to_take);
+			Tile_coord pos = Map_chunk::find_spot(get_tile(), 5,
+				item->get_shapenum(), item->get_framenum(), 1);
+			if (pos.tx != -1)
+				item->move(pos);
+			else		// No room anywhere.
 				tooheavy.push_back(item);
 			}
-					// Put the heavy ones back.
-		for (Game_object_vector::const_iterator it = tooheavy.begin(); 
-						it != tooheavy.end(); ++it)
-			add(*it, 1);
-		gwin->add_dirty(body);
 		}
+					// Put the heavy ones back.
+	for (Game_object_vector::const_iterator it = tooheavy.begin(); 
+						it != tooheavy.end(); ++it)
+		add(*it, 1);
+	if (body)
+		gwin->add_dirty(body);
 	add_dirty(gwin);		// Want to repaint area.
 	delete_contents();		// remove what's left of inventory
 					// Move party member to 'dead' list.
