@@ -4016,7 +4016,7 @@ void Npc_actor::remove_this
 	Actor::remove_this(1);	// Remove, but don't ever delete an NPC
 	Npc_actor::switched_chunks(olist, 0);
 	cx = cy = 0xff;			// Set to invalid chunk coords.
-	if (npc_num > 0)
+	if (!nodel && npc_num > 0)	// Really going?
 		unused = true;		// Mark unused if a numbered NPC.
 	}
 
