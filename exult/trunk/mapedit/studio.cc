@@ -653,6 +653,8 @@ bool ExultStudio::has_focus
  */
 void ExultStudio::set_browser(const char *name, Object_browser *obj)
 {
+	if (browser)
+		browser->save_pos();	// Save selection #, scroll pos.
 	delete browser;
 	browser = obj;
 	
@@ -662,8 +664,11 @@ void ExultStudio::set_browser(const char *name, Object_browser *obj)
 	GtkWidget *browser_box = glade_xml_get_widget( app_xml, "browser_box" );
 	gtk_widget_show( browser_box );
 	if (browser)
+		{
 		gtk_box_pack_start(GTK_BOX(browser_box), 
 					browser->get_widget(), TRUE, TRUE, 0);
+// ++++Not working yet.		browser->restore_pos();	// Restore vert. scroll, selection #.
+		}
 }
 
 Object_browser *ExultStudio::create_browser(const char *fname)

@@ -46,11 +46,14 @@ protected:
 	std::string pathname;		// Full pathname.
 	Shape_group_file *groups;	// Groups within ifile.
 	bool modified;			// Ifile was modified.
+	int save_selected, save_vscroll;// For restoring the next time this
+					//    is viewed.
 public:
 	friend class Shape_file_set;
 					// We will own files and groups.
 	Shape_file_info(const char *bnm, const char *pnm, Shape_group_file *g)
-		: basename(bnm), pathname(pnm), groups(g), modified(false)
+		: basename(bnm), pathname(pnm), groups(g), modified(false),
+		  save_selected(-1), save_vscroll(0)
 		{  }
 	virtual ~Shape_file_info();
 	const char *get_basename()
@@ -59,6 +62,11 @@ public:
 		{ return pathname.c_str(); }
 	Shape_group_file *get_groups()
 		{ return groups; }
+					// Save/get browser position.
+	void set_save_pos(int sel, int vs)
+		{ save_selected = sel; save_vscroll = vs; }
+	int get_save_pos(int& sel, int& vs)
+		{ sel = save_selected; vs = save_vscroll; }
 	void set_modified()
 		{ modified = true; }
 	virtual Vga_file *get_ifile()

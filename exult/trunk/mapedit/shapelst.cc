@@ -428,7 +428,7 @@ void Shape_chooser::scroll_to_frame
 				hoffset = xoff + sw + border - winw;
 			}
 		GtkAdjustment *adj = gtk_range_get_adjustment(
-						GTK_RANGE(shape_hscroll));
+						GTK_RANGE(hscroll));
 		gtk_adjustment_set_value(adj, hoffset);
 		}
 	}
@@ -533,13 +533,15 @@ void Shape_chooser::goto_index
 	if (!total)
 		return;			// Empty.
 	assert (index >= 0 && index < total);
+					// Get index past what's shown.
+	int last_index = index0 + (frames_mode ? nrows : info_cnt);
 	if (index < index0)		// Above current view?
 		{
 		do
 			index0 = row_indices[--row0];
 		while (index < index0);
 		}
-	else if (index >= index0 + (frames_mode ? nrows : info_cnt))
+	else if (index >= last_index && last_index > 0)
 		{			// Below current view.
 		do
 			{
@@ -563,7 +565,7 @@ void Shape_chooser::goto_index
 		}
 					// Get to right spot again!
 	GtkAdjustment *adj = gtk_range_get_adjustment(
-						GTK_RANGE(shape_vscroll));
+						GTK_RANGE(vscroll));
 	if (row0 >= adj->value)		// Beyond apparent end?
 		adjust_vscrollbar();	// Needs updating.
 	gtk_adjustment_set_value(adj, row0);
@@ -1729,7 +1731,7 @@ gint Shape_chooser::drag_begin
  *	Scroll to a new shape/frame.
  */
 
-void Shape_chooser::vscroll
+void Shape_chooser::scroll_vertical
 	(
 	int newindex			// Abs. index of row to show.
 	)
@@ -1765,7 +1767,7 @@ void Shape_chooser::adjust_vscrollbar
 	)
 	{	
 	GtkAdjustment *adj = gtk_range_get_adjustment(
-						GTK_RANGE(shape_vscroll));
+						GTK_RANGE(vscroll));
 	int known_rows = row_indices.size() - 1;
 	float num_per_row = known_rows > 0 ? 
 		((float) row_indices[known_rows])/known_rows : 1;
@@ -1787,7 +1789,7 @@ void Shape_chooser::adjust_hscrollbar
 	)
 	{	
 	GtkAdjustment *adj = gtk_range_get_adjustment(
-						GTK_RANGE(shape_hscroll));
+						GTK_RANGE(hscroll));
 	if (newmax > 0)
 		adj->upper = newmax;
 	adj->page_increment = draw->allocation.width;
@@ -1810,7 +1812,7 @@ void Shape_chooser::vscrolled		// For vertical scrollbar.
 	Shape_chooser *chooser = (Shape_chooser *) data;
 cout << "Scrolled to " << adj->value << '\n';
 	gint newindex = (gint) adj->value;
-	chooser->vscroll(newindex);
+	chooser->scroll_vertical(newindex);
 	}
 void Shape_chooser::hscrolled		// For horizontal scrollbar.
 	(
@@ -1864,9 +1866,9 @@ void Shape_chooser::all_frames_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	chooser->frames_mode = on;
 	if (on)				// Frame => show horiz. scrollbar.
-		gtk_widget_show(chooser->shape_hscroll);
+		gtk_widget_show(chooser->hscroll);
 	else
-		gtk_widget_hide(chooser->shape_hscroll);
+		gtk_widget_hide(chooser->hscroll);
 	chooser->row_indices.resize(1);	// Start over with row info.
 	chooser->row0 = 0;
 	chooser->info_cnt = 0;
@@ -2201,26 +2203,26 @@ Shape_chooser::Shape_chooser
 					// Want vert. scrollbar for the shapes.
 	GtkObject *shape_adj = gtk_adjustment_new(0, 0, 
 				get_count()/4, 1, 1, 1);
-	shape_vscroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(shape_adj));
+	vscroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(shape_adj));
 					// Update window when it stops.
-	gtk_range_set_update_policy(GTK_RANGE(shape_vscroll),
+	gtk_range_set_update_policy(GTK_RANGE(vscroll),
 					GTK_UPDATE_DELAYED);
-	gtk_box_pack_start(GTK_BOX(hbox), shape_vscroll, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vscroll, FALSE, TRUE, 0);
 					// Set scrollbar handler.
 	gtk_signal_connect(GTK_OBJECT(shape_adj), "value_changed",
 					GTK_SIGNAL_FUNC(vscrolled), this);
-	gtk_widget_show(shape_vscroll);
+	gtk_widget_show(vscroll);
 					// Horizontal scrollbar.
 	shape_adj = gtk_adjustment_new(0, 0, 1600, 8, 16, 16);
-	shape_hscroll = gtk_hscrollbar_new(GTK_ADJUSTMENT(shape_adj));
+	hscroll = gtk_hscrollbar_new(GTK_ADJUSTMENT(shape_adj));
 					// Update window when it stops.
-	gtk_range_set_update_policy(GTK_RANGE(shape_hscroll),
+	gtk_range_set_update_policy(GTK_RANGE(hscroll),
 					GTK_UPDATE_DELAYED);
-	gtk_box_pack_start(GTK_BOX(vbox), shape_hscroll, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hscroll, FALSE, TRUE, 0);
 					// Set scrollbar handler.
 	gtk_signal_connect(GTK_OBJECT(shape_adj), "value_changed",
 					GTK_SIGNAL_FUNC(hscrolled), this);
-//++++	gtk_widget_hide(shape_hscroll);	// Only shown in 'frames' mode.
+//++++	gtk_widget_hide(hscroll);	// Only shown in 'frames' mode.
 					// At the bottom, status bar & frame:
 	GtkWidget *hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0);

@@ -231,7 +231,7 @@ void Chunk_chooser::set_chunk
 			chunklist.resize(new_num_chunks);
 		num_chunks = new_num_chunks;
 		GtkAdjustment *adj = 
-			gtk_range_get_adjustment(GTK_RANGE(chunk_scroll));
+			gtk_range_get_adjustment(GTK_RANGE(vscroll));
 		adj->upper = num_chunks;
 		gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
 		}
@@ -301,7 +301,7 @@ gint Chunk_chooser::configure
 	int num_rows = (h - border)/(128 + border);
 	int page_size = per_row*num_rows;
 	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(
-						chooser->chunk_scroll));
+						chooser->vscroll));
 	adj->step_increment = per_row;
 	adj->page_increment = page_size;
 	adj->page_size = page_size;
@@ -620,7 +620,7 @@ void Chunk_chooser::scroll
 	bool upwards
 	)
 	{
-	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(chunk_scroll));
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(vscroll));
 	float delta = adj->step_increment;
 	if (upwards)
 		delta = -delta;
@@ -790,15 +790,15 @@ Chunk_chooser::Chunk_chooser
 	GtkObject *chunk_adj = gtk_adjustment_new(0, 0, 
 				num_chunks, 1, 
 				4, 1.0);
-	chunk_scroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(chunk_adj));
+	vscroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(chunk_adj));
 					// Update window when it stops.
-	gtk_range_set_update_policy(GTK_RANGE(chunk_scroll),
+	gtk_range_set_update_policy(GTK_RANGE(vscroll),
 					GTK_UPDATE_DELAYED);
-	gtk_box_pack_start(GTK_BOX(hbox), chunk_scroll, FALSE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), vscroll, FALSE, TRUE, 0);
 					// Set scrollbar handler.
 	gtk_signal_connect(GTK_OBJECT(chunk_adj), "value_changed",
 					GTK_SIGNAL_FUNC(scrolled), this);
-	gtk_widget_show(chunk_scroll);
+	gtk_widget_show(vscroll);
 					// At the bottom, status bar:
 	GtkWidget *hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0);
