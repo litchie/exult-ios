@@ -45,8 +45,8 @@ public:
 
 	// Return a list of keys that are subsidiary to the supplied
 	// key
-	vector<string>	list(string &key);
-	vector<string>	list(const char *key);
+	vector<string>	listkeys(string &key);
+	vector<string>	listkeys(const char *key);
 
 	string	dump(void); // Assembles a readable representation
 
