@@ -364,7 +364,7 @@ int exult_main(const char *runpath)
 	ignore_crc |= config_ignore_crc;
 
 	if (!ignore_crc && !crc_ok) {
-		cerr << "This usually means the file(s) mentioned above are"
+		cerr << "This usually means the file(s) mentioned above are "
 			 << "from a different version" << endl
 			 << "of Exult than this one. Please re-install Exult" << endl
 			 << endl
