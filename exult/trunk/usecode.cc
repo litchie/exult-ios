@@ -2140,8 +2140,7 @@ void Usecode_machine::run
 			{
 			offset = (short) Read2(ip);
 			Usecode_value val = pop();
-			if (val.get_int_value() == 0 &&
-			    val.get_array_size() == 0)
+			if (val.is_false())
 				ip += offset;
 			break;
 			}
@@ -2223,13 +2222,13 @@ void Usecode_machine::run
 			pushi(popi() % sval);
 			break;
 		case 0x0e:		// AND.
-			pushi(popi() & popi());
+			pushi(pop().is_true() & pop().is_true());
 			break;
 		case 0x0f:		// OR.
-			pushi(popi() | popi());
+			pushi(pop().is_true() | pop().is_true());
 			break;
 		case 0x10:		// NOT.
-			pushi(!popi());
+			pushi(!pop().is_true());
 			break;
 		case 0x12:		// POP into a variable.
 			{
