@@ -405,7 +405,7 @@ public:
 			type(0), seq(0), volume(SDL_MIX_MAXVOLUME), dir(0)
 		{
 #if DEBUG
-		mycounter=++counter;
+		mycounter = counter++;
 		std::cerr << "Created PCB " << mycounter << std::endl;
 #endif
 		 }

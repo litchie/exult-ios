@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Zombie.h"
 #include "dir.h"
 #include "chunks.h"
+#include "Audio.h"
 
 #include "SDL_timer.h"
 
@@ -623,6 +624,8 @@ void Lightning_effect::handle_event
 		}
 	else if (!gwin->is_in_dungeon() && !active)// Time to flash.
 		{
+					// Play thunder.
+		Audio::get_ptr()->play_sound_effect(62);
 		active = true;
 		save_brightness = gwin->get_brightness();
 		gwin->set_palette(-1, 400);
