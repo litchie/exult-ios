@@ -1,3 +1,6 @@
+2003-04-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* docs/usecode_bugs.txt: added some bugs from the forum
+
 2003-04-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* shapes/font.cc: use unsigned char to index font frames.
 
