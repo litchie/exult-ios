@@ -1,3 +1,8 @@
+2001-08-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/egg.cc: Schedule egg Usecode call instead of executing
+	immediately. Fixes Moonshade Trial bug.
+
 2001-08-09  Patrick Burke  <takhisisii@yahoo.com.au>
 	* conf/*.[cc|h]: added some "const"'s
 	* usecode/ucxt/Docs/usecode.txt: merged updates by wjp
