@@ -150,6 +150,7 @@ public:
 	void set_file(ShapeFile shfile)	// Set to new flex
 		{ shapefile = shfile; shape = 0; }
 
+	void paint_shape(int xoff, int yoff, bool force_trans = false);
 	int get_num_frames() const;
 	Shape_info& get_info() const	// Get info. about shape.
 		{ return Shape_manager::instance->shapes.get_info(shapenum); }

@@ -1,3 +1,9 @@
+2002-06-21  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* gamewin.h,shapeid.h, etc: ShapeID::paint_shape() replaces one of the
+	paint_shape()'s in Game_window, and gamewin.h no longer includes
+	shapeid.h. 
+
 2002-06-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Paperdoll_gump.cc: fixed bug when displaying usecode container
 	* objs.cc: zero-weight fix

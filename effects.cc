@@ -159,10 +159,9 @@ void Sprites_effect::paint
 	if (sprite.get_framenum() >= frames)
 		return;
 	int lp = pos.tz/2;		// Account for lift.
-	gwin->paint_shape(
+	sprite.paint_shape(
 		xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
-		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize, 
-						sprite);
+		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize);
 	}
 
 /*
@@ -460,9 +459,9 @@ void Projectile_effect::paint
 	if (pos.tx == -1 || sprite.get_framenum() == -1)
 		return;			// Already at destination.
 	int liftpix = pos.tz*c_tilesize/2;
-	gwin->paint_shape((pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
-		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix, 
-		sprite);
+	sprite.paint_shape(
+		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
+		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix);
 	}
 
 /*
@@ -565,10 +564,9 @@ void Death_vortex::paint
 	)
 	{
 	int liftpix = pos.tz*c_tilesize/2;
-	gwin->paint_shape(
+	vortex.paint_shape(
 		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
-		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix, 
-		vortex);
+		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix);
 	}
 
 /*
@@ -1138,8 +1136,8 @@ void Cloud::paint
 	)
 	{
 	if (count > 0)			// Might not have been started.
-		gwin->paint_shape(wx - gwin->get_scrolltx()*c_tilesize, 
-			wy - gwin->get_scrollty()*c_tilesize, cloud);
+		cloud.paint_shape(wx - gwin->get_scrolltx()*c_tilesize, 
+			wy - gwin->get_scrollty()*c_tilesize);
 	}
 
 /*

@@ -427,9 +427,8 @@ void Newfile_gump::PaintSaveName (int line)
 	if (selected == actual_game)
 	{
 		ShapeID icon (EXULT_FLX_SAV_SELECTED_SHP, 0, SF_EXULT_FLX);
-		gwin->paint_shape ( x+fieldx+iconx,
-					y+fieldy+icony+line*(fieldh+fieldgap),
-					icon);
+		icon.paint_shape ( x+fieldx+iconx,
+					y+fieldy+icony+line*(fieldh+fieldgap));
 	}
 
 }
@@ -466,7 +465,7 @@ void Newfile_gump::paint
 	int pos = ((scrollh-sliderh)*(list_position+2))/num_pos;
 
 	ShapeID slider_shape(EXULT_FLX_SAV_SLIDER_SHP, 0, SF_EXULT_FLX);
-	gwin->paint_shape(x+scrollx , y+scrolly+pos, slider_shape);
+	slider_shape.paint_shape(x+scrollx , y+scrolly+pos);
 
 	// Now paint the savegame details
 	if (screenshot) gwin->paint_shape(x + 222, y + 2, screenshot->get_frame(0));
@@ -489,13 +488,13 @@ void Newfile_gump::paint
 		for (i=0; i<4 && i<details->party_size; i++)
 		{
 			ShapeID shape(party[i].shape, 16, (ShapeFile) party[i].shape_file);
-			gwin->paint_shape(x + 249 + i*23, y + 169, shape);
+			shape.paint_shape(x + 249 + i*23, y + 169);
 		}
 
 		for (i=4; i<8 && i<details->party_size; i++)
 		{
 			ShapeID shape(party[i].shape, 16, (ShapeFile) party[i].shape_file);
-			gwin->paint_shape(x + 249 + (i-4)*23, y + 198, shape);
+			shape.paint_shape(x + 249 + (i-4)*23, y + 198);
 		}
 
 		char	info[320];

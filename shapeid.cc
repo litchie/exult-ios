@@ -144,6 +144,14 @@ Shape_frame *ShapeID::cache_shape()
 
 }
 
+void ShapeID::paint_shape(int xoff, int yoff, bool force_trans = false)
+{ 
+	Shape_frame *s = get_shape();
+	Game_window::get_instance()->paint_shape(
+				xoff, yoff, s, force_trans||has_trans);
+}
+
+
 int ShapeID::get_num_frames() const
 {
 	Shape_manager *sman = Shape_manager::get_instance();

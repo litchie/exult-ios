@@ -44,6 +44,7 @@
 #include "keys.h"
 #include "mouse.h"
 #include "palette.h"
+#include "shapeid.h"
 
 using std::cout;
 using std::endl;
