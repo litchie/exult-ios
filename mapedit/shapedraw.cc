@@ -65,6 +65,23 @@ void Shape_draw::draw_shape
 	}
 
 /*
+ *	Draw one shape at a particular place.
+ */
+
+void Shape_draw::draw_shape
+	(
+	int shapenum, int framenum,
+	int x, int y
+	)
+	{
+	if (shapenum < 0 || shapenum >= ifile->get_num_shapes())
+		return;
+	Shape_frame *shape = ifile->get_shape(shapenum, framenum);
+	if (shape)
+		draw_shape(shape, x, y);
+	}
+
+/*
  *	Draw a shape centered in the drawing area.
  */
 

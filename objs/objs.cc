@@ -347,38 +347,6 @@ static int Check_mask
 				return 0;
 			}
 	return 1;			// Passed all tests.
-
-#if 0	/* +++++Old code. */
-	{	
-	if (obj->is_monster())
-			return 1;
-					// Avatar?  FALSE for SI.  Unsure
-					//  about BG, so return TRUE.
-		if (obj == gwin->get_main_actor())
-			return Game::get_game_type() != SERPENT_ISLE;
-		if (obj->get_npc_num() <= 0)
-			return 0;	// Not an NPC & not the Avatar.
-		return 1;
-		}
-	if (mask == 16)			// Egg or barge or path.
-		{
-		if (obj->get_shapenum() == 0x3c1 || obj->get_shapenum() == 607)
-			return 1;
-		if (!obj->is_egg())
-			return 0;
-		if (Game::get_game_type() != SERPENT_ISLE)
-			return 1;
-					// SI-SS wine cask problem:
-		Egg_object *egg = (Egg_object *)obj;
-		return egg->get_type() != (int) Egg_object::teleport;
-		}
-	if (mask == 32)			// ??? Used in 'reveal' to find inv.
-					// objs, and to detect blocked gplank.
-		return 1;		// For now.+++++
-	if (!mask)			// Guessing a bit here.
-		return !obj->is_egg();	// Don't pass eggs if 0.
-	return 1;
-#endif
 }
 
 /*
@@ -612,38 +580,6 @@ Game_object *Game_object::find_closest
 	return (closest);
 	}
 
-#if 0	/* +++Going away. */
-
-/*
- *	Find a free tile within given distance.
- *
- *	Output:	Tile, or (-1, -1, -1) if failed.
- */
-
-Tile_coord Game_object::find_unblocked_tile
-	(
-	Tile_coord pos,			// Position to look from.
-	int dist,			// 1 means adjacent.
-	int height,			// Height to check for unblocked.
-	const int move_flags		// What sort of motion is allowed.
-	)
-	{
-					// Get box to go through.
-	Rectangle box(pos.tx - dist, pos.ty - dist, 2*dist + 1, 2*dist + 1);
-	Rectangle world(0, 0, c_num_tiles, c_num_tiles);
-	box = box.intersect(world);
-	int stopx = box.x + box.w, stopy = box.y + box.h;
-	for (int y = box.y; y < stopy; y++)
-		for (int x = box.x; x < stopx; x++)
-			{		// Check this spot.
-			Tile_coord spot(x, y, pos.tz);
-			if (!Map_chunk::is_blocked(spot, height, 
-								move_flags))
-				return spot;
-			}
-	return Tile_coord(-1, -1, -1);
-	}
-#endif
 /*
  *	Get footprint in absolute tiles.
  */
@@ -1378,133 +1314,6 @@ static void Debug_lt
 #endif
 
 /*
- *	Should obj1 be rendered before obj2?
- *
- *	+++++++++This should go away, replaced by compare().
- *
- *	Output:	1 if so, 0 if not, -1 if cannot compare.
- */
-int Game_object::lt
-	(
-	Ordering_info& inf1,		// Info. for object 1.
-	Game_object *obj2
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-					// See if there's no overlap.
-	Rectangle r2 = gwin->get_shape_rect(obj2);
-	if (!inf1.area.intersects(r2))
-		return (-1);		// No overlap on screen.
-	Ordering_info inf2(Game_window::get_game_window(), obj2, r2);
-#ifdef DEBUGLT
-	Debug_lt(inf1.tx, inf1.ty, inf2.tx, inf2.ty);
-#endif
-
-
-	int result = -1;		// Watch for conflicts.
-	if (inf1.tz != inf2.tz)		// Is one obj. on top of another?
-		{
-		if (inf1.tz + inf1.zs <= inf2.tz)
-			{		// It's above us.
-			if (inf1.zs >= 4)	// Like roof/statue?
-				return 1;
-			result = 1;
-			}
-		else if (inf2.tz + inf2.zs <= inf1.tz)
-			{		// We're above.
-			if (inf2.zs >= 4)	// Like roof/statue?
-				return 0;
-			result = 0;
-			}
-		}
-	if (inf1.ty != inf2.ty)		// Is one obj. in front of the other?
-		{
-		if (inf1.ty <= inf2.ty - inf2.ys)
-			{		// Obj2 is in front.
-			if (result == 0)// Conflict, so return 'neither'.
-				return -1;
-			result = 1;
-			}
-		else if (inf2.ty <= inf1.ty - inf1.ys)
-			{		// We're in front.
-			if (result == 1)
-				return -1;
-			result = 0;
-			}
-		}
-	if (inf1.tx != inf2.tx)		// Is one obj. to right of the other?
-		{
-		if (inf1.tx <= inf2.tx - inf2.xs)
-			{		// Obj2 is to right of us.
-			if (result == 0)
-				return -1;
-			result = 1;
-			}
-		if (inf2.tx <= inf1.tx - inf1.xs)
-			{		// We're to the right.
-			if (result == 1)
-				return -1;
-			result = 0;
-			}
-		}
-	if (result != -1)		// Consistent result?
-		return result;
-	if (!inf1.zs && inf1.tz <= inf2.tz)	// We're flat and below?
-		return (1);
-	if (!inf2.zs && inf2.tz <= inf1.tz)	// It's below us?
-		return (0);
-					// Handle intersecting objects.
-	if (inf1.tx == inf2.tx &&	// Watch for paintings on NS walls.
-//	    inf1.xs == inf2.xs)
-	    inf1.xs >= inf2.xs)		// Also pillar/button in SI.
-		if (inf1.ys < inf2.ys)	// Take narrower 2nd.
-			return (0);
-		else if (inf2.ys > inf1.ys)
-			return (1);
-		else if (inf1.zs < inf2.zs)// The shorter one?
-			return (0);
-		else if (inf1.zs > inf2.zs)
-			return (1);
-					// Item on table?
-	if (inf1.zs > 1 && inf2.tz == inf1.tz + inf1.zs - 1 &&
-	    inf2.tx - inf2.xs >= inf1.tx - inf1.xs && inf2.tx <= inf1.tx &&
-	    inf2.ty - inf2.ys >= inf1.ty - inf1.ys && inf2.ty <= inf1.ty)
-		return 1;
-	if (inf2.zs > 1 && inf1.tz == inf2.tz + inf2.zs - 1 &&
-	    inf1.tx - inf1.xs >= inf2.tx - inf2.xs && inf1.tx <= inf2.tx &&
-	    inf1.ty - inf1.ys >= inf2.ty - inf2.ys && inf1.ty <= inf2.ty)
-		return 0;
-					// If x's overlap, see if in front.
-	if ((inf1.tx > inf2.tx - inf2.xs && inf1.tx <= inf2.tx) ||
-	    (inf2.tx > inf1.tx - inf1.xs && inf2.tx <= inf1.tx))
-		{
-		if (inf1.ty < inf2.ty)
-			return (1);
-		else if (inf1.ty > inf2.ty)
-			return (0);
-		else if (inf1.zs < inf2.zs)// The shorter one?
-			return (0);
-		else if (inf1.zs > inf2.zs)
-			return (1);
-		else if (inf1.xs < inf2.xs)// Take the narrower one as greater.
-			return (0);
-		else if (inf1.xs > inf2.xs)
-			return (1);
-		}
-					// If y's overlap, see if to left.
-	if ((inf1.ty > inf2.ty - inf2.ys && inf1.ty <= inf2.ty) ||
-	    (inf2.ty > inf1.ty - inf1.ys && inf2.ty <= inf1.ty))
-		{
-		if (inf1.tx < inf2.tx)
-			return (1);
-		else if (inf1.tx > inf2.tx)
-			return (0);
-		}
-	return (-1);
-	}
-
-
-/*
  *	Compare ranges along a given dimension.
  */
 inline void Compare_ranges
@@ -1659,13 +1468,8 @@ int Game_object::lt
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Ordering_info ord(gwin, this);
-#define TESTNEWCMP
-#ifdef TESTNEWCMP	/* Just #define it to use the new one. */
 	int cmp = compare(ord, &obj2);
 	return cmp == -1 ? 1 : cmp == 1 ? 0 : -1;
-#else
-	return lt(ord, &obj2);
-#endif
 	}
 
 
