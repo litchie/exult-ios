@@ -581,6 +581,32 @@ static void get_game_paths(const string &gametitle)
 	add_system_path("<" + system_path_tag + "_PATCH>", patch_directory.c_str());
 }
 
+namespace ExultIcon {
+	#include "exulticon.h"
+}
+
+static void SetIcon()
+{
+	SDL_Surface* iconsurface = SDL_CreateRGBSurfaceFrom(ExultIcon::header_data,
+														ExultIcon::width,
+														ExultIcon::height,
+														8,
+														ExultIcon::width,
+														0, 0, 0, 0);
+	SDL_Color iconpal[256];
+	for (int i = 0; i < 256; ++i) {
+		iconpal[i].r = ExultIcon::header_data_cmap[i][0];
+		iconpal[i].g = ExultIcon::header_data_cmap[i][1];
+		iconpal[i].b = ExultIcon::header_data_cmap[i][2];
+	}
+	SDL_SetPalette(iconsurface, SDL_LOGPAL, iconpal, 0, 256);
+
+	SDL_SetColorKey(iconsurface, SDL_SRCCOLORKEY, 0);
+
+	SDL_WM_SetIcon(iconsurface, 0);
+}
+
+
 /*
  *	Initialize and create main window.
  */
@@ -610,6 +636,8 @@ static void Init
 						SDL_DEFAULT_REPEAT_INTERVAL);
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
+
+	SetIcon();
 
 	int w, h, sc, sclr;
 
