@@ -1282,7 +1282,7 @@ void Actor::paint_weapon
 		if (flags & (1L<<Obj_flags::invisible))
 			gwin->paint_invisible(xoff, yoff, shnum, weapon_frame);
 		else
-			gwin->paint_shape(xoff, yoff, wshape);
+			gwin->paint_shape(xoff, yoff, shnum, weapon_frame);
 		}
 	else
 		weapon_rect.w = 0;
@@ -2300,6 +2300,7 @@ Actor *Actor::resurrect
 	move(pos);			// Move back to life.
 					// Restore health to max.
 	properties[(int) health] = properties[(int) strength];
+	dead = false;
 	return (this);
 	}
 
@@ -2855,7 +2856,6 @@ void Npc_actor::update_schedule
 		//if (schedule_type == schedules[i].get_type())
 		//	return;		// Already in it.
 		}
-
 	set_schedule_and_loc (schedules[i].get_type(), schedules[i].get_pos());
 	}
 
@@ -2892,6 +2892,8 @@ void Npc_actor::activate
 	int event
 	)
 	{
+	if (is_dead())
+		return;
 	Game_window *gwin = Game_window::get_game_window();
 					// Converse, etc.
 	Actor::activate(umachine, event);
