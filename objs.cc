@@ -95,7 +95,9 @@ int Game_object::get_volume
 	(
 	)
 	{
-	return (get_quantity() *
+	int quant = get_quantity();
+	quant = 1 + (quant - 1)/8;	// Be liberal about multiples.
+	return (quant *
 		Game_window::get_game_window()->get_shapes().get_info(
 			get_shapenum()).get_volume());
 	}
@@ -665,6 +667,7 @@ int Container_game_object::add
 	int vol;			// Note:  NPC's have 0 volume.
 	if (!dont_check && (vol = get_volume()) > 0)
 		{
+		vol *= 4;		// Let's be more liberal.
 		int objvol = obj->get_volume();
 		if (objvol + volume_used > vol)
 			return (0);	// Doesn't fit.
