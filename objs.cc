@@ -75,7 +75,7 @@ int Game_object::find_nearby
 	Game_window *gwin = Game_window::get_game_window();
 	int atx, aty, atz;		// Get abs. tile coords.
 	get_abs_tile(atx, aty, atz);
-	const int delta = 4;		// Let's try 4 tiles each dir.
+	const int delta = 8;		// Let's try 8 tiles each dir.
 	Rectangle tiles(atx - delta, aty - delta, 2*delta, 2*delta);
 					// Stay within world.
 	Rectangle world(0, 0, num_chunks*tiles_per_chunk, 
@@ -104,8 +104,8 @@ int Game_object::find_nearby
 					continue;
 				int tx, ty, tz;
 				obj->get_abs_tile(tx, ty, tz);
-				if (tx >= atx && tx < atx + 4 &&
-						tiles.has_point(tx, ty))
+					// +++++Check tz too?
+				if (tiles.has_point(tx, ty))
 					vec.append(obj);
 				}
 			}
