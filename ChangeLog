@@ -1,3 +1,9 @@
+2001-08-24  Max Horn <max@quendi.de>
+	* various files: removed "../" from #include statments
+	* various files: updated copyright header
+	* audio/midi_drivers/mac_midi.cc: clean up; made it easier to port the code to SDL_mixer
+	* pathfinder/path.cc: added prototype for Find_path to get rid of compiler error
+
 2001-08-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/shapevga.cc: Only subtract 1 from weapon-strike SFX if in

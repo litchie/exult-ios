@@ -3245,10 +3245,10 @@ void Game_window::cycle_load_palette()
 	if (load_palette_timer == 0)
 		return;
 	uint32 ticks = SDL_GetTicks();
-	if(ticks > load_palette_timer+100)
+	if(ticks > load_palette_timer+75)
 	{
-		for(int i = 0; i < 4; ++i)
-			get_win()->rotate_colors(plasma_start_color, plasma_cycle_range, 1);
+//		for(int i = 0; i < 4; ++i)
+			get_win()->rotate_colors(plasma_start_color, plasma_cycle_range, 1, 3);
 		show(true);
 
 		// We query the timer here again, as the blit can take easily 50 ms and more
