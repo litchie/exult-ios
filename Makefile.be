@@ -123,6 +123,13 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/fellowshipstaff.shp \
 	data/bg/BGmap.shp \
 	data/bg/defaultkeys.txt \
+	data/bg/dupre_face.shp \
+	data/bg/fem_av_face.shp \
+	data/bg/iolo_face.shp \
+	data/bg/male_av_face.shp \
+	data/bg/shamino_face.shp \
+	data/bg/greaves.shp \
+	data/bg/spiked_shield.shp \
 	data/bg/flx.in
 
 EXULT_SI_FLX_OBJECTS = \
