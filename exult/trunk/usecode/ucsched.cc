@@ -139,6 +139,7 @@ void Usecode_script::start
 void Usecode_script::add(int v1)
 	{
 	code->append(&v1, 1);
+	cnt++;
 	}
 void Usecode_script::add(int v1, int v2)
 	{
@@ -146,6 +147,7 @@ void Usecode_script::add(int v1, int v2)
 	vals[0] = v1;
 	vals[1] = v2;
 	code->append(vals, 2);
+	cnt += 2;
 	}
 void Usecode_script::add(int v1, char *str)
 	{
@@ -153,10 +155,12 @@ void Usecode_script::add(int v1, char *str)
 	code->resize(sz + 2);
 	code[sz] = v1;
 	code[sz + 1] = str;
+	cnt += 2;
 	}
-void Usecode_script::add(int *vals, int cnt)
+void Usecode_script::add(int *vals, int c)
 	{
 	code->append(vals, cnt);
+	cnt += c;
 	}
 
 /*

@@ -35,6 +35,8 @@
 #include "npctime.h"
 #include "paths.h"
 #include "ucmachine.h"
+#include "ucsched.h"
+#include "ucscriptop.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -583,8 +585,15 @@ void Egg_object::activate
 			}
 		case usecode:
 			{		// Data2 is the usecode function.
-			umachine->call_usecode(data2, this,
+			if (must)	// From script?  Do immediately.
+				umachine->call_usecode(data2, this,
 					Usecode_machine::egg_proximity);
+			else		// Do on next animation frame.
+				{
+				Usecode_script *scr = new Usecode_script(this);
+				scr->add(Ucscript::usecode, data2);
+				scr->start(c_std_delay);
+				}
 			break;
 			}
 		case missile:
