@@ -1,5 +1,11 @@
 2001-10-08  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* effects.cc (Projectile_effect): Don't attack target if it's
+	moved too far away.
+	* usecode/ucsched.cc (Usecode_script): Handle 'music' opcode.
+	* actors.cc:  When clearing 'sleep' flag, find free spot to stand.
+	* exult.cc: Enable keyboard repeat.
+
 	* npcnear.cc: Awakened NPC's shouldn't run proximity Usecode, and
 	should go back to sleep after several seconds.
 	* gamewin.cc: Sleeping NPC's shouldn't detect theft.

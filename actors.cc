@@ -2107,7 +2107,13 @@ void Actor::clear_flag
 		if (schedule_type == Schedule::sleep)
 			set_schedule_type(Schedule::stand);
 		else if ((get_framenum()&0xf) == Actor::sleep_frame)
-			{
+			{		// Find spot to stand.
+			Tile_coord pos = get_abs_tile_coord();
+			pos.tz -= pos.tz%5;	// Want floor level.
+			pos = Map_chunk::find_spot(pos, 6, get_shapenum(),
+				Actor::standing, 0);
+			if (pos.tx != 0)
+				move(pos);
 			add_dirty(gwin);
 			set_frame(Actor::standing);
 			add_dirty(gwin);

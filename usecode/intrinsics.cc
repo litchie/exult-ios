@@ -250,7 +250,7 @@ USECODE_INTRINSIC(get_item_frame)
 
 USECODE_INTRINSIC(set_item_frame)
 {	// Set frame, but don't change rotated bit.
-
+//++++++++Seems like in BG, this should be the same as set_item_frame_rot()??
 	set_item_frame(get_item(parms[0]), parms[1].get_int_value());
 	return(no_ret);
 }
@@ -2717,7 +2717,7 @@ USECODE_INTRINSIC(infravision)
 {
 	// infravision(npc, onoff)
 	Game_object *npc = get_item(parms[0]);
-	if (npc == gwin->get_main_actor())
+	if (npc && (npc == gwin->get_main_actor() || npc->get_party_id() >= 0))
 		{
 		if (parms[1].get_int_value())
 			{		// On?

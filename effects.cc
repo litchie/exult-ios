@@ -382,7 +382,9 @@ void Projectile_effect::handle_event
 			gwin->add_effect(new Explosion_effect(epos, 0));
 		else if (shape_num == 639)
 			gwin->add_effect(new Death_vortex(target, epos));
-		else if (target)
+		else if (target && (!attacker || 
+					// Watch for teleporting away.
+					attacker->distance(target) < 50))
 			target->attacked(attacker, weapon, shape_num);
 		pos.tx = -1;		// Signal we're done.
 		gwin->remove_effect(this);
