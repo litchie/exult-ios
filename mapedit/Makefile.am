@@ -34,7 +34,7 @@ shapetest_LDADD = \
 
 paltest_LDADD = $(shapetest_LDADD)
 
-exultstudio_LDADD = $(shapetest_LDADD)
+exultstudio_LDADD = $(shapetest_LDADD) $(GIMP_LIBS)
 
 noinst_LTLIBRARIES = $(OUTPUT_LIBS)
 

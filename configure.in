@@ -455,6 +455,11 @@ if test x$enable_gimp_plugin = xyes; then
 				CPPFLAGS="$save_cppflags"
 				GIMP_PLUGIN_PREFIX=`gimptool --gimpplugindir`
 				AC_SUBST(GIMP_PLUGIN_PREFIX)
+				AC_DEFINE(HAVE_GIMP)
+				GIMP_INCLUDES=`gimptool --cflags`
+				GIMP_LIBS=`gimptool --libs`
+				AC_SUBST(GIMP_INCLUDES)
+				AC_SUBST(GIMP_LIBS)
 			else
 				AC_MSG_RESULT(found < 1.1.26 - disabling plugin)
 			fi

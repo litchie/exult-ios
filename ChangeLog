@@ -1,4 +1,9 @@
 2001-01-23  Tristan Tarrant <nadir@users.sourceforge.net>
+	* mapedit/exultstudio.cc: framework for running both standalone and
+	  as GIMP plugin (only former works at the moment).
+	* mapedit/Makefile.am: add GIMP libs if needed
+
+2001-01-23  Tristan Tarrant <nadir@users.sourceforge.net>
 	* tools/Makefile.am, tools/u7shp.c: removed GIMP plugin from here
 	* mapedit/Makefile.am, mapedit/u7shp.c: moved here
 	* mapedit/*: librarized properly
