@@ -1,5 +1,7 @@
-2000-06-10  Jeff Freedman  <jeff@amy.nerble.net>
+2000-06-11  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* exult.cc:  Set screen size in .exult.cfg.
+	* Weather eggs:  Clouds.
 	* Weather eggs:  Storm.
 
 2000-06-07  Jeff Freedman  <jeff@amy.nerble.net>

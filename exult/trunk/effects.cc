@@ -327,8 +327,6 @@ void Lightning_effect::handle_event
 	Game_window *gwin = Game_window::get_game_window();
 	int r = rand();			// Get a random #.
 	int delay = 100;		// Delay for next time.
-cout << "Lightning:  curtime = " << curtime << ", stop_time = " <<
-					stop_time << endl;
 	if (save_brightness > 0)	// Just turned white?  Restore.
 		{
 		gwin->set_palette(-1, save_brightness);
@@ -410,6 +408,202 @@ Storm_effect::~Storm_effect
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	gwin->restore_users_brightness();
+	}
+
+/*
+ *	Create a cloud.
+ */
+
+Cloud::Cloud
+	(
+	short dx, short dy		// Deltas for movement.
+	) : count(-1), deltax(dx), deltay(dy), wx(0), wy(0), frame(0)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Get abs. values.
+	int adx = deltax > 0 ? deltax : -deltax;
+	int ady = deltay > 0 ? deltay : -deltay;
+	if (adx < ady)
+		max_count = 2*gwin->get_height()/ady;
+	else
+		max_count = 2*gwin->get_width()/adx;
+	start_time = 0;
+	}
+
+const int CLOUD = 2;		// Shape #.
+
+/*
+ *	Set starting screen position according to direction.
+ */
+
+void Cloud::set_start_pos
+	(
+	Shape_frame *shape,
+	int w, int h,			// Dims. of window.
+	int& x, int& y			// Screen pos. returned.
+	)
+	{
+	if (!deltax)			// Special cases first.
+		{
+		x = rand()%w;
+		y = deltay > 0 ? -shape->get_ybelow() : 
+						h + shape->get_yabove();
+		return;
+		}
+	if (!deltay)
+		{
+		y = rand()%h;
+		x = deltax > 0 ? -shape->get_xright() : w + shape->get_xleft();
+		return;
+		}
+	int halfp = w + h;		// 1/2 perimeter.
+	int r = rand()%halfp;		// Start on one of two sides.
+	if (r > h)			// Start on top/bottom.
+		{
+		x = r - h;
+		y = deltay > 0 ? -shape->get_ybelow() : 
+						h + shape->get_yabove();
+		return;
+		}
+	y = r;				// On left or right side.
+	if (deltax > 0)			// Going right?
+		x = -shape->get_xright();
+	else				// Going left?
+		x = w + shape->get_xleft();
+	}
+
+/*
+ *	Move cloud
+ */
+
+inline void Cloud::next
+	(
+	Game_window *gwin,		// Game window.
+	unsigned long curtime,		// Current time of day.
+	int w, int h			// Dims. of window.
+	)
+	{
+	static int cnt = 0;
+	if (curtime < start_time)
+		return;			// Not yet.
+					// Get top-left world pos.
+	long scrollx = gwin->get_scrolltx()*tilesize;
+	long scrolly = gwin->get_scrollty()*tilesize;
+	Shape_frame *shape = gwin->get_sprite_shape(CLOUD, frame);
+	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(
+			shape, wx - scrollx, wy - scrolly).enlarge(4)));
+	if (count <= 0)			// Time to restart?
+		{
+					// Set start time randomly.
+		start_time = curtime + 2000*cnt + rand()%2000;
+cout << "Cloud: start_time = " << start_time << endl;
+		cnt = (cnt + 1)%4;
+		start_time = SDL_GetTicks() + 2000*cnt + rand()%500;
+		count = max_count;
+		frame = rand()%gwin->get_sprite_num_frames(CLOUD);
+		int x, y;		// Get screen pos.
+		set_start_pos(shape, w, h, x, y);
+		wx = x + scrollx;
+		wy = y + scrolly;
+		}
+	else
+		{
+		wx += deltax;
+		wy += deltay;
+		count--;
+		}
+	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(
+			shape, wx - scrollx, wy - scrolly).enlarge(4)));
+	}
+
+/*
+ *	Paint cloud.
+ */
+
+void Cloud::paint
+	(
+	Game_window *gwin
+	)
+	{
+	if (count > 0)			// Might not have been started.
+		gwin->paint_sprite(wx - gwin->get_scrolltx()*tilesize, 
+			wy - gwin->get_scrollty()*tilesize, CLOUD, frame);
+	}
+
+/*
+ *	Create a few clouds to float across the screen.
+ */
+
+Clouds_effect::Clouds_effect
+	(
+	int duration,			// In game minutes.
+	int delay			// In msecs.
+	) : Weather_effect(duration, delay)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	num_clouds = 2 + rand()%5;	// Pick #.
+	clouds = new Cloud *[num_clouds];
+					// Figure wind direction.
+	int dx = rand()%5 - 2;
+	int dy = rand()%5 - 2;
+	if (!dx && !dy)
+		{
+		dx = 1 + rand()%2;
+		dy = 1 - rand()%3;
+		}
+#if 0
+	if (dx != 0)			// Move a bit faster.
+		dx += dx > 0 ? 1 : -1;
+	if (dy != 0)
+		dy += dy > 0 ? 1 : -1;
+#endif
+	for (int i = 0; i < num_clouds; i++)
+		{			// Modify speed of some.
+		int deltax = dx, deltay = dy;
+		if (rand()%2 == 0)
+			{
+			deltax += deltax/2;
+			deltay += deltay/2;
+			}
+		clouds[i] = new Cloud(deltax, deltay);
+		}
+	}
+
+/*
+ *	Cloud drift.
+ */
+
+void Clouds_effect::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata
+	)
+	{
+	const int delay = 100;
+	Game_window *gwin = Game_window::get_game_window();
+	if (curtime >= stop_time)
+		{			// Time to stop.
+		gwin->remove_effect(this);
+		gwin->set_all_dirty();
+		return;
+		}
+	int w = gwin->get_width(), h = gwin->get_height();
+	for (int i = 0; i < num_clouds; i++)
+		clouds[i]->next(gwin, curtime, w, h);
+	gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
+ *	Render.
+ */
+
+void Clouds_effect::paint
+	(
+	Game_window *gwin
+	)
+	{
+	for (int i = 0; i < num_clouds; i++)
+		clouds[i]->paint(gwin);
 	}
 
 /*
