@@ -6,7 +6,7 @@
 			<header>- 18 October 2003</header>
 			<body>
 				<ul>
-				<li><section_ref target="exult_version"/> note Exult version.</li>
+				<li><ref1 target="exult_version"/> note Exult version.</li>
 				</ul>
 			</body>
 		</sub>
