@@ -2195,6 +2195,17 @@ USECODE_INTRINSIC(display_map)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(add_spell)
+{
+	// add_spell(spell# (0-71), ??, spoolbook).
+	// Returns 0 if book already has that spell.
+	Game_object *obj = get_item(parms[2]);
+	if (!obj)
+		return Usecode_value(0);
+	Spellbook_object *book = (Spellbook_object *) obj;
+	return Usecode_value(book->add_spell(parms[0].get_int_value()));
+}
+
 USECODE_INTRINSIC(sprite_effect)
 {
 	// Display animation from sprites.vga.
@@ -2574,8 +2585,8 @@ struct
                                 // ShowCrystalBall  (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50     ShowWizardEye (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51     ResurrectNPC (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52     AddSpellToBook (ucdump.c)
-	USECODE_INTRINSIC_PTR(sprite_effect),	// 0x53     ExecuteSprite (ucdump.c)
+	USECODE_INTRINSIC_PTR(add_spell),// 0x52     AddSpellToBook (ucdump.c)
+	USECODE_INTRINSIC_PTR(sprite_effect),// 0x53 ExecuteSprite (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54
 	USECODE_INTRINSIC_PTR(book_mode),// 0x55
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.

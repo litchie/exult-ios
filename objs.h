@@ -356,11 +356,14 @@ class Spellbook_object : public Ireg_game_object
 	{
 	unsigned char circles[9];	// Spell-present flags for each circle.
 	unsigned long flags;		// Unknown at present.
+	int bookmark;			// Spell # that bookmark is on, or -1.
 public:
+	friend class Spellbook_gump;
 					// Create from ireg. data.
 	Spellbook_object(unsigned char l, unsigned char h, unsigned int shapex,
 		unsigned int shapey, unsigned int lft, unsigned char *c,
 		unsigned long f);
+	int add_spell(int spell);	// Add a spell.
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
 	};
