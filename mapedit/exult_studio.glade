@@ -3748,8 +3748,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Apply</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-apply</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_egg_apply_btn_clicked"/>
 	    </widget>
@@ -3760,8 +3760,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Cancel</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_egg_cancel_btn_clicked"/>
 	    </widget>
@@ -7145,8 +7145,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Apply</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-apply</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_npc_apply_btn_clicked"/>
 	    </widget>
@@ -7157,8 +7157,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Cancel</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_npc_cancel_btn_clicked"/>
 	    </widget>
@@ -7211,10 +7211,10 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Cancel</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="response_id">0</property>
+	      <property name="response_id">-6</property>
 	      <signal name="clicked" handler="gtk_widget_hide" object="schedule_dialog" last_modification_time="Mon, 26 May 2003 23:34:26 GMT"/>
 	    </widget>
 	  </child>
@@ -8184,8 +8184,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Okay</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-ok</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_obj_okay_clicked"/>
 	    </widget>
@@ -8196,8 +8196,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Apply</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-apply</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_obj_apply_clicked"/>
 	    </widget>
@@ -8208,8 +8208,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Cancel</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_obj_cancel_clicked"/>
 	    </widget>
@@ -12541,8 +12541,8 @@ Coordinates</property>
 	      <property name="can_default">True</property>
 	      <property name="has_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Okay</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-ok</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_shinfo_okay_clicked"/>
 	    </widget>
@@ -12553,8 +12553,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Apply</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-apply</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_shinfo_apply_clicked"/>
 	    </widget>
@@ -12565,8 +12565,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Cancel</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_shinfo_cancel_clicked"/>
 	    </widget>
@@ -12714,8 +12714,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Okay</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-ok</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_equip_okay_clicked"/>
 	    </widget>
@@ -12726,8 +12726,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Apply</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-apply</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_equip_apply_clicked"/>
 	    </widget>
@@ -12738,8 +12738,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Cancel</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_equip_cancel_clicked"/>
 	    </widget>
@@ -12892,8 +12892,8 @@ Coordinates</property>
 		    <widget class="GtkButton" id="group_shape_remove">
 		      <property name="visible">True</property>
 		      <property name="can_focus">True</property>
-		      <property name="label" translatable="yes">Remove</property>
-		      <property name="use_underline">True</property>
+		      <property name="label">gtk-remove</property>
+		      <property name="use_stock">True</property>
 		      <property name="relief">GTK_RELIEF_NORMAL</property>
 		      <signal name="clicked" handler="on_group_shape_remove_clicked"/>
 		    </widget>
@@ -13029,10 +13029,10 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Yes</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-yes</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="response_id">0</property>
+	      <property name="response_id">-8</property>
 	      <signal name="clicked" handler="on_prompt3_yes_clicked" last_modification_time="Mon, 26 May 2003 23:20:50 GMT"/>
 	    </widget>
 	  </child>
@@ -13042,10 +13042,10 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">No</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-no</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="response_id">0</property>
+	      <property name="response_id">-9</property>
 	      <signal name="clicked" handler="on_prompt3_no_clicked" last_modification_time="Mon, 26 May 2003 23:21:18 GMT"/>
 	    </widget>
 	  </child>
@@ -13055,10 +13055,10 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Cancel</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
-	      <property name="response_id">0</property>
+	      <property name="response_id">-6</property>
 	      <signal name="clicked" handler="on_prompt3_cancel_clicked" last_modification_time="Mon, 26 May 2003 23:21:41 GMT"/>
 	    </widget>
 	  </child>
@@ -13261,8 +13261,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Close</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-close</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_loc_close_clicked"/>
 	    </widget>
@@ -13639,8 +13639,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Okay</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-ok</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_prefs_okay_clicked"/>
 	    </widget>
@@ -13651,8 +13651,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Apply</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-apply</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_prefs_apply_clicked"/>
 	    </widget>
@@ -13663,8 +13663,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Cancel</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_prefs_cancel_clicked"/>
 	    </widget>
@@ -14020,8 +14020,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Okay</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-ok</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_new_shape_okay_clicked"/>
 	    </widget>
@@ -14032,8 +14032,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Cancel</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="gtk_widget_hide" object="new_shape_window"/>
 	    </widget>
@@ -14237,8 +14237,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Okay</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-ok</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="on_export_tiles_okay_clicked"/>
 	    </widget>
@@ -14249,8 +14249,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">cancel</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-cancel</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="gtk_widget_hide" object="export_tiles_window"/>
 	    </widget>
@@ -14601,8 +14601,8 @@ Coordinates</property>
 		  <property name="visible">True</property>
 		  <property name="can_default">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">Okay</property>
-		  <property name="use_underline">True</property>
+		  <property name="label">gtk-ok</property>
+		  <property name="use_stock">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <signal name="clicked" handler="on_combo_ok_clicked"/>
 		</widget>
@@ -14613,8 +14613,8 @@ Coordinates</property>
 		  <property name="visible">True</property>
 		  <property name="can_default">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">Apply</property>
-		  <property name="use_underline">True</property>
+		  <property name="label">gtk-apply</property>
+		  <property name="use_stock">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <signal name="clicked" handler="on_combo_apply_clicked"/>
 		</widget>
@@ -14625,8 +14625,8 @@ Coordinates</property>
 		  <property name="visible">True</property>
 		  <property name="can_default">True</property>
 		  <property name="can_focus">True</property>
-		  <property name="label" translatable="yes">cancel</property>
-		  <property name="use_underline">True</property>
+		  <property name="label">gtk-cancel</property>
+		  <property name="use_stock">True</property>
 		  <property name="relief">GTK_RELIEF_NORMAL</property>
 		  <signal name="clicked" handler="gtk_widget_hide" object="combo_win"/>
 		</widget>
@@ -14703,8 +14703,8 @@ Coordinates</property>
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
-	      <property name="label" translatable="yes">Done</property>
-	      <property name="use_underline">True</property>
+	      <property name="label">gtk-close</property>
+	      <property name="use_stock">True</property>
 	      <property name="relief">GTK_RELIEF_NORMAL</property>
 	      <signal name="clicked" handler="gtk_widget_hide" object="msg_win"/>
 	    </widget>
