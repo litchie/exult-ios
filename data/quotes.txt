@@ -96,3 +96,8 @@
 \Ctry dying in SI. 
 \CIt's working much better now."
 \L - Jeff on Jackchaos
+
+\C"Say, maybe we could make some money
+\Cselling tours to Britannia"
+\L - Jeff,
+\L replying to spam
