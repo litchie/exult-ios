@@ -703,3 +703,19 @@ server/Makefile
 debian/Makefile
 ])
 
+dnl ****************
+dnl Configure Status
+dnl ****************
+
+echo
+echo Exult v$VERSION
+echo
+echo SDL ....................... : $SDL_CONFIG --version
+if test x$havegtk = xyes; then
+echo GTK+ ...................... : gtk-config --version
+fi
+echo Build tools................ : $tools
+echo Build ExultStudio.......... : $exult_studio
+
+echo
+echo "Now type 'make' to build Exult"

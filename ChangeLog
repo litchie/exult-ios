@@ -1,4 +1,7 @@
 2001-12-14  Tristan Tarrant <nadir@users.sourceforge.net>
+	* bggame.cc, sigame.cc: new game displays correctly in spanish
+
+2001-12-14  Tristan Tarrant <nadir@users.sourceforge.net>
 	* data/audiooptions.shp: made 10 pixels taller
 	* audio/Audio.*: allow user-configurable music looping
 	* gumps/AudioOptions_gump.*: UI for above

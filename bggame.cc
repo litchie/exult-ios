@@ -1523,7 +1523,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 
 			if (si_installed)
 			{
-				gwin->paint_shape(topx+50,menuy+25,shapes.get_shape(0xB,sex%2));
+				gwin->paint_shape(topx+60,menuy+25,shapes.get_shape(0xB,sex%2));
 
 				if (sex >= 2)
 				{
@@ -1534,7 +1534,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 			}
 			else
 			{
-				gwin->paint_shape(topx+50,menuy+25,shapes.get_shape(0xB,sex));
+				gwin->paint_shape(topx+60,menuy+25,shapes.get_shape(0xB,sex));
 				gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
 			}
 
@@ -1544,7 +1544,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 				snprintf(disp_name, max_name_len+2, "%s_", npc_name);
 			else
 				snprintf(disp_name, max_name_len+2, "%s", npc_name);
-			font->draw_text(ibuf, topx+50, menuy+10, disp_name);
+			font->draw_text(ibuf, topx+60, menuy+10, disp_name);
 			pal.apply();
 			redraw = false;
 		}
