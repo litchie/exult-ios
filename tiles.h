@@ -65,7 +65,15 @@ public:
 		int diff = t1 - t2;
 		return diff >= 0 ? (diff < c_num_tiles/2) :
 						diff < -c_num_tiles/2;
-		}		
+		}
+					// Ret. (to - from) with wrapping.
+	static int delta(int from, int to)
+		{
+		int diff = to - from;
+		return diff >= c_num_tiles/2 ? (diff - c_num_tiles) :
+			(diff <= -c_num_tiles/2 ? (diff + c_num_tiles) :
+								diff);
+		}
 	};
 					// Add two coords.
 inline Tile_coord operator+(Tile_coord a, Tile_coord b)

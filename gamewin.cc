@@ -646,22 +646,24 @@ bool Game_window::scroll_if_needed
 	bool scrolled = false;
 					// 1 lift = 1/2 tile.
 	int tx = t.tx - t.tz/2, ty = t.ty - t.tz/2;
-	if (tx <= scroll_bounds.x - 1)
+	if (Tile_coord::gte(DECR_TILE(scroll_bounds.x), tx))
 		{
 		view_left();
 		scrolled = true;
 		}
-	else if (tx >= scroll_bounds.x + scroll_bounds.w)
+	else if (Tile_coord::gte(tx, 
+			(scroll_bounds.x + scroll_bounds.w)%c_num_tiles))
 		{
 		view_right();
 		scrolled = true;
 		}
-	if (ty <= scroll_bounds.y - 1)
+	if (Tile_coord::gte(DECR_TILE(scroll_bounds.y), ty))
 		{
 		view_up();
 		scrolled = true;
 		}
-	else if (ty >= scroll_bounds.y + scroll_bounds.h)
+	else if (Tile_coord::gte(ty, 
+			(scroll_bounds.y + scroll_bounds.h)%c_num_tiles))
 		{
 		view_down();
 		scrolled = true;
