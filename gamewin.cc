@@ -27,7 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include <sys/stat.h>
+#if defined(MACOS)
+  #include <stat.h>
+#else
+  #include <sys/stat.h>
+#endif
 #include "gamewin.h"
 #include "items.h"
 #include "utils.h"
@@ -436,7 +440,7 @@ void Game_window::get_map_objects
 	{
 	u7map.seekg(schunk * 16*16*2);	// Get to desired chunk.
 	unsigned char buf[16*16*2];
-	u7map.read(buf, sizeof(buf));	// Read in the chunk #'s.
+	u7map.read((char*)buf, sizeof(buf));	// Read in the chunk #'s.
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 	unsigned char *mapdata = buf;
@@ -463,7 +467,7 @@ void Game_window::get_chunk_objects
 	{
 	chunks.seekg(chunk_num * 512);	// Get to desired chunk.
 	unsigned char buf[16*16*2];	// Read in 16x16 2-byte shape #'s.
-	chunks.read(buf, sizeof(buf));
+	chunks.read((char*)buf, sizeof(buf));
 	unsigned char *data = &buf[0];
 					// Get list we'll store into.
 	Chunk_object_list *olist = get_objects(cx, cy);
@@ -550,7 +554,7 @@ void Game_window::get_ifix_chunk_objects
 					// Get buffer to hold entries' indices.
 	unsigned char *entries = new unsigned char[4*cnt];
 	unsigned char *ent = entries;
-	ifix.read(entries, 4*cnt);	// Read them in.
+	ifix.read((char*)entries, 4*cnt);	// Read them in.
 					// Get object list for chunk.
 	Chunk_object_list *olist = get_objects(cx, cy);
 	for (int i = 0; i < cnt; i++, ent += 4)
@@ -670,7 +674,7 @@ void Game_window::read_ireg_objects
 			continue;	// Only know these two types.
 			}
 		unsigned char entry[18];// Get entry.
-		ireg.read(entry, entlen);
+		ireg.read((char*)entry, entlen);
 		int cx = entry[0] >> 4; // Get chunk indices within schunk.
 		int cy = entry[1] >> 4;
 					// Get coord. #'s where shape goes.
@@ -1132,7 +1136,7 @@ void Game_window::fade_palette
 	u7open(pal, PALETTES_FLX);
 	pal.seekg(256 + 3*256*palette);	// Get to desired palette.
 	unsigned char colors[3*256];	// Read it in.	
-	pal.read(colors, sizeof(colors));
+	pal.read((char*)colors, sizeof(colors));
 	int dir, start, stop;
 	if (inout > 0)			// Fading in?
 		{
@@ -1177,7 +1181,7 @@ void Game_window::set_palette
 	u7open(pal, PALETTES_FLX);
 	pal.seekg(256 + 3*256*pal_num); // Get to desired palette.
 	unsigned char colors[3*256];	// Read it in.	
-	pal.read(colors, sizeof(colors));
+	pal.read((char*)colors, sizeof(colors));
 					// They use 6 bits.
 	win->set_palette(colors, 63, brightness);
 	}
