@@ -1523,9 +1523,21 @@ USECODE_INTRINSIC(update_last_created)
 }
 
 USECODE_INTRINSIC(get_npc_name)
-	// Get NPC name.
-	// +++++Make this work on array of NPC's.
-	static char *unknown = "player";
+	// Get NPC name(s).  Works on arrays, too.
+	static char *unknown = "??name??";
+	int cnt = parms[0].get_array_size();
+	if (cnt)
+		{			// Do array.
+		Usecode_value arr(cnt, 0);
+		for (int i = 0; i < cnt; i++)
+			{
+			Game_object *obj = get_item(parms[0].get_elem(i));
+			char *nm = obj ? obj->get_name() : 0;
+			Usecode_value v(nm ? nm : unknown);
+			arr.put_elem(i, v);
+			}
+		USECODE_RETURN(arr);
+		}
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_name() : unknown);
 	USECODE_RETURN(u);
