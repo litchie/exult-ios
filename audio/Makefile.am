@@ -12,7 +12,9 @@ libaudio_la_SOURCES =	\
 	Mixer.cc	\
 	Mixer.h		\
 	SDL_mapping.cc	\
-	SDL_mapping.h
+	SDL_mapping.h	\
+	pcb.cc		\
+	pcb.h
 
 EXTRA_DIST = 		\
 	README
