@@ -188,10 +188,6 @@ extern "C" void on_main_window_destroy_event
 	gtk_main_quit();
 	}
 
-#ifdef WIN32
-#include <win32hack.cc>
-#endif
-
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	vgafile(0), facefile(0), chunkfile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
@@ -238,12 +234,8 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	app = glade_xml_get_widget( app_xml, "main_window" );
 
 	// More setting up...
-#ifdef WIN32
-#include <gladehack.cc>
-#else
 					// Connect signals automagically.
 	glade_xml_signal_autoconnect(app_xml);
-#endif
 	gtk_widget_show( app );
 	if (gamedir)			// Game directory given?
 		{
