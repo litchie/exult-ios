@@ -1,3 +1,10 @@
+2000-11-05  Ryan Nunn <triforce@merlin.net.au>
+	* audio/Midi.*: Changes so midi drivers other than Win_midiout can play SFX.
+	* audio/xmidi.*: New midi conversion types
+	* audio/Midi.cc: Music and SFX conversion options can be set in the config file
+	  "config/audio/midi/convert" accepts none, gm or gs. Default GM
+	  "config/audio/sfx/convert" accepts none or gs. Default GS
+
 2000-11-05  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* actors.cc, cheat.cc, drag.cc, exult.cc, gameclk.cc, spells.cc: 
 	moved cheats to new class

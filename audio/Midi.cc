@@ -64,7 +64,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	// Read the data into the XMIDI class
 	mid_data = new BufferDataSource(buffer, size);
 
-	XMIDI		midfile(mid_data, XMIDI_CONVERT_MT32_TO_GM);
+	XMIDI		midfile(mid_data, music_conversion);
 	
 	delete mid_data;
 	delete [] buffer;
@@ -119,7 +119,7 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	mid_file = U7open(fname, "rb");
 	mid_data = new FileDataSource(mid_file);
 
-	XMIDI		midfile(mid_data, XMIDI_CONVERT_MT32_TO_GM);
+	XMIDI		midfile(mid_data, music_conversion);
 	
 	delete mid_data;
 	fclose(mid_file);
@@ -248,7 +248,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 		}	\
 	}
 
-bool MyMidiPlayer::init_device()
+bool MyMidiPlayer::init_device(void)
 {
 	bool	no_device=true;
 
@@ -274,6 +274,30 @@ bool MyMidiPlayer::init_device()
 		//cout << "Audio says no midi. MIDI disabled" << endl;
 		no_device=false;
 		}
+
+
+	config->value("config/audio/midi/convert",s,"gm");
+
+	if (s == "gs")
+		music_conversion = XMIDI_CONVERT_MT32_TO_GS;
+	else if (s == "none")
+		music_conversion = XMIDI_CONVERT_NOCONVERSION;
+	else
+	{
+		music_conversion = XMIDI_CONVERT_MT32_TO_GM;
+		config->set("config/audio/midi/convert","gm",true);
+	}
+
+	config->value("config/audio/effects/convert",s,"gs");
+
+	if (s == "none")
+		effects_conversion = XMIDI_CONVERT_NOCONVERSION;
+	else
+	{
+		effects_conversion = XMIDI_CONVERT_GSMT_TO_GS;
+		config->set("config/audio/effects/convert","gs",true);
+	}
+
 
 #ifdef WIN32
 //	TRY_MIDI_DRIVER(Windows_MCI)
@@ -304,7 +328,9 @@ bool MyMidiPlayer::init_device()
 	return no_device;
 }
 
-MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
+MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0),
+				  music_conversion(XMIDI_CONVERT_MT32_TO_GM),
+				  effects_conversion(XMIDI_CONVERT_GSMT_TO_GS)
 {
 	add_midi_bank(MAINMUS);
 	add_midi_bank(INTROMUS);
@@ -354,7 +380,7 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	mid_data = new BufferDataSource(buffer, size);
 
 	// It's already GM, so dont convert
-	XMIDI		midfile(mid_data, XMIDI_CONVERT_GSMT_TO_GS);
+	XMIDI		midfile(mid_data, effects_conversion);
 	
 	delete mid_data;
 	delete [] buffer;
@@ -365,7 +391,7 @@ void    MyMidiPlayer::start_sound_effect(int num)
 		FILE *mid_file = U7open(MIDISFXFILE, "wb");
 		mid_data = new FileDataSource(mid_file);
 
-		int can_play = midfile.retrieve(num, mid_data);
+		int can_play = midfile.retrieve(0, mid_data);
 	
 		delete mid_data;
 		fclose(mid_file);
@@ -377,7 +403,7 @@ void    MyMidiPlayer::start_sound_effect(int num)
 		midi_event	*eventlist;
 		int		ppqn;
 	
-		if (midfile.retrieve(num, &eventlist, ppqn))
+		if (midfile.retrieve(0, &eventlist, ppqn))
 			midi_device->start_sfx(eventlist, ppqn);
 		}
 }

@@ -88,7 +88,10 @@ private:
 	int	current_track;
 	MidiAbstract	*midi_device;
 
-	bool	init_device();
+	bool	init_device(void);
+
+	int		music_conversion;
+	int		effects_conversion;
 };
 
 #endif
