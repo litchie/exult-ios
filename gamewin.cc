@@ -2398,6 +2398,8 @@ void Game_window::lose_focus
 	(
 	)
 	{
+	if (!focus)
+		return;			// Fixes SDL bug.
 	cout << "Game paused" << endl;
 
 	string str;
