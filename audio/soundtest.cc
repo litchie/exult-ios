@@ -24,12 +24,11 @@
 #include "soundtest.h"
 #include "Scroll_gump.h"
 #include "mouse.h"
+#include "exult.h"
 #include "font.h"
 
 using std::snprintf;
 
-extern void make_screenshot(bool silent=false);
- 
 SoundTester::SoundTester() : song(0), sfx(0), voice(0), active(0), repeat(true)
 	{
 	}

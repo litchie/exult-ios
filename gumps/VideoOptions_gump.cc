@@ -20,23 +20,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#include <iostream>
+
 #include "SDL_events.h"
 
-#include "VideoOptions_gump.h"
-#include "mouse.h"
 #include "gump_utils.h"
 #include "Configuration.h"
-#include <iostream>
 #include "Gump_button.h"
 #include "Gump_ToggleButton.h"
-#include "gamewin.h"
+#include "VideoOptions_gump.h"
+#include "exult.h"
 #include "exult_flx.h"
+#include "gamewin.h"
+#include "mouse.h"
 
 using std::cerr;
 using std::endl;
 using std::string;
-
-extern Configuration *config;
 
 static const int rowy[] = { 5, 20, 35, 50, 65, 80, 95, 146 };
 static const int colx[] = { 35, 50, 120, 127, 130 };

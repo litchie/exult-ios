@@ -20,12 +20,13 @@
 #  include <config.h>
 #endif
 
-#include "conversation.h"
-#include "useval.h"
-#include "gamewin.h"
 #include "actors.h"
-#include "mouse.h"
+#include "conversation.h"
+#include "exult.h"
 #include "game.h"
+#include "gamewin.h"
+#include "mouse.h"
+#include "useval.h"
 
 using std::cout;
 using std::endl;
@@ -347,8 +348,6 @@ void Conversation::remove_last_face
 
 void Conversation::show_npc_message(const char *msg)
 {
-	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, 
-								char *key = 0);
 	if (last_face_shown == -1)
 		return;
 	Npc_face_info *info = face_info[last_face_shown];

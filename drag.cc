@@ -37,8 +37,6 @@
 using std::cout;
 using std::endl;
 
-extern Cheat cheat;
-
 /*
  *	Begin a possible drag when the mouse button is depressed.  Also detect
  *	if the 'close' checkmark on a gump is being depressed.

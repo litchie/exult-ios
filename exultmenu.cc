@@ -22,6 +22,7 @@
 
 #include "menulist.h"
 #include "exultmenu.h"
+#include "exult.h"
 #include "mouse.h"
 #include "gamewin.h"
 #include "ibuf8.h"
@@ -33,12 +34,10 @@
 #include "txtscroll.h"
 #include "data/exult_flx.h"
 
-extern Configuration *config;
-extern Cheat cheat;
-extern bool get_play_intro(void);
-extern void set_play_intro(bool);
-extern bool get_play_1st_scene(void);
-extern void set_play_1st_scene(bool);
+static bool get_play_intro(void);
+static void set_play_intro(bool);
+static bool get_play_1st_scene(void);
+static void set_play_1st_scene(bool);
 
 ExultMenu::ExultMenu(Game_window *gw)
 {
@@ -369,4 +368,28 @@ Exult_Game ExultMenu::run()
 	delete menu_mouse;
 	delete midi_data;
 	return sel_game;
+}
+
+bool get_play_intro (void)
+{
+	std::string yn;
+	config->value("config/gameplay/skip_splash", yn, "no");
+	return(yn=="no");
+}
+
+void set_play_intro (bool play)
+{
+	config->set("config/gameplay/skip_splash", play?"no":"yes", true);
+}
+
+bool get_play_1st_scene (void)
+{
+	std::string yn;
+	config->value("config/gameplay/skip_intro", yn, "no");
+	return(yn=="no");
+}
+
+void set_play_1st_scene (bool play)
+{
+	config->set("config/gameplay/skip_intro", play?"no":"yes", true);
 }

@@ -20,12 +20,14 @@
 #  include <config.h>
 #endif
 
+#include "keyactions.h"
 #include "keys.h"
 #include "gump_utils.h"
 #include "gamewin.h"
 #include "mouse.h"
 #include "actors.h"
 #include "game.h"
+#include "exult.h"
 #include "exult_types.h"
 #include "exult_constants.h"
 #include "File_gump.h"
@@ -38,17 +40,6 @@
 #include "Face_stats.h"
 #include "Gump_manager.h"
 
-extern void increase_resolution();
-extern void decrease_resolution();
-extern void make_screenshot(bool silent = false);
-extern void change_gamma(bool down);
-extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
-extern int Put_click(int x, int y, int button = 1);
-
-extern Game_window *gwin;
-extern Game* game;
-extern Cheat cheat;
-extern KeyBinder* keybinder;
 
 /*
  *	Get the i'th party member, with the 0'th being the Avatar.
@@ -615,3 +606,4 @@ void ActionSoundTester(int *params)
 void ActionTest(int *params)
 {
 }
+

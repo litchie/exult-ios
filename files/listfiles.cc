@@ -145,10 +145,8 @@ int U7ListFiles(const std::string mask, FileList& files)
 #include <TextUtils.h>
 
 
-OSErr GetCatInfoNoName(short vRefNum,
-							   long dirID,
-							   std::string name,
-							   CInfoPBPtr pb)
+OSErr GetCatInfoNoName(short vRefNum, long dirID, std::string name, CInfoPBPtr pb);
+OSErr GetCatInfoNoName(short vRefNum, long dirID, std::string name, CInfoPBPtr pb)
 {
 	Str255 tempName;
 	OSErr err;
@@ -320,14 +318,3 @@ int U7ListFiles(const std::string mask, FileList& files)
 }
 
 #endif
-
-void U7FreeFileList(char **files, int count)
-{
-        if (files == 0) return;
-
-
-        for (int i=0; i<count; i++) {
-                free(files[i]);
-        }
-        free(files);
-}

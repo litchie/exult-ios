@@ -29,8 +29,6 @@
 #include "cheat.h"
 #include "game.h"
 
-extern Cheat cheat;
-
 /*
  *	Palette #'s in 'palettes.flx'.  Just need them here for now.
 	++++++Need to verify #'s.

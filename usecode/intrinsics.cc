@@ -20,29 +20,31 @@
 #  include <config.h>
 #endif
 
+#include "Audio.h"
+#include "Book_gump.h"
+#include "Gump.h"
+#include "Gump_manager.h"
+#include "Scroll_gump.h"
+#include "Sign_gump.h"
+#include "actions.h"
+#include "barge.h"
+#include "bodies.h"
+#include "cheat.h"
+#include "chunks.h"
+#include "conversation.h"
+#include "effects.h"
+#include "exult.h"
+#include "game.h"
+#include "gamewin.h"
+#include "keyring.h"
+#include "mouse.h"
+#include "rect.h"
+#include "schedule.h"
+#include "spellbook.h"
 #include "ucinternal.h"
 #include "ucsched.h"
 #include "useval.h"
-#include "gamewin.h"
-#include "game.h"
-#include "Audio.h"
-#include "schedule.h"
-#include "mouse.h"
-#include "Gump.h"
-#include "Book_gump.h"
-#include "Scroll_gump.h"
-#include "Sign_gump.h"
-#include "effects.h"
-#include "barge.h"
 #include "virstone.h"
-#include "chunks.h"
-#include "spellbook.h"
-#include "conversation.h"
-#include "rect.h"
-#include "actions.h"
-#include "keyring.h"
-#include "cheat.h"
-#include "Gump_manager.h"
 
 using std::cerr;
 using std::cout;
@@ -50,10 +52,7 @@ using std::endl;
 using std::rand;
 using std::strchr;
 
-int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
-extern void Wait_for_arrival(Actor *actor, Tile_coord dest, long maxticks = 0);
 Barge_object *Get_barge	(Game_object *obj);
-extern unsigned char quitting_time;
 extern Usecode_value no_ret;
 
 #define PARTY_MAX (sizeof(party)/sizeof(party[0]))
@@ -472,7 +471,6 @@ USECODE_INTRINSIC(create_new_object)
 	unsigned int cx;
 	unsigned int cy;
 	unsigned int lift;
-	extern int Is_body(int);// +++++Pretty kludgy.
 
 	if (num_parms == 2)
 	{
@@ -1529,7 +1527,7 @@ USECODE_INTRINSIC(flash_mouse)
 {
 	// flash_mouse(??No: mouse_shape).
 	Mouse::mouse->flash_shape(Mouse::redx);
-//			(Mouse::Mouse_shapes) parms[0].get_int_value());
+//			(Mouse_shapes) parms[0].get_int_value());
 	return (no_ret);
 }
 
@@ -1682,9 +1680,8 @@ USECODE_INTRINSIC(restart_game)
 {
 	// Think it's 'restart game'.  
 	// Happens if you die before leaving trinsic.
-	extern unsigned char quitting_time;
 	Audio::get_ptr()->stop_music();
-	quitting_time = 2;		// Quit & restart.
+	quitting_time = QUIT_TIME_RESTART;		// Quit & restart.
 	return(no_ret);
 }
 
@@ -1727,7 +1724,7 @@ USECODE_INTRINSIC(run_endgame)
 	// If successful play credits afterwards
 	if(parms[0].get_int_value() != 0)
 		game->show_credits();
-	quitting_time = 1;
+	quitting_time = QUIT_TIME_YES;
 	return(no_ret);
 }
 

@@ -32,8 +32,6 @@
 #include "utils.h"
 #include "keyactions.h"
 
-extern Cheat cheat;
-
 using std::pair;
 using std::atoi;
 using std::cerr;
@@ -46,9 +44,6 @@ using std::strchr;
 using std::string;
 using std::strlen;
 using std::vector;
-
-extern void to_uppercase(string &str);
-extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 
 typedef void(*ActionFunc)(int*);
 
