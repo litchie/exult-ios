@@ -361,6 +361,7 @@ public:
 					// Show what NPC said.
 	void show_npc_message(char *msg);
 	int is_npc_text_pending();	// Need to prompt user?
+	void clear_text_pending();	// Don't need to prompt.
 					// Show what Avatar can say.
 	void show_avatar_choices(int num_choices, char **choices);
 	void show_avatar_choices(vector<string> &choices);

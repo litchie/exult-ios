@@ -137,7 +137,7 @@ protected:
 public:
 	Gump_object(Container_game_object *cont, int initx, int inity, 
 								int shnum);
-	~Gump_object()
+	virtual ~Gump_object()
 		{ delete check_button; }
 	int get_x()			// Get coords.
 		{ return x; }
@@ -176,6 +176,8 @@ public:
 		{ container->remove(obj); }
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
+					// Close (and delete).
+	virtual void close(Game_window *gwin);
 	};
 
 /*
@@ -255,16 +257,38 @@ public:
 	};
 
 /*
+ *	A modal gump object represents a 'dialog' that grabs the mouse until
+ *	the user clicks okay.
+ */
+class Modal_gump_object : public Gump_object
+	{
+protected:
+	int done;			// 1 when user clicks checkmark.
+	Gump_button *pushed;		// Button currently being pushed.
+public:
+	Modal_gump_object(Container_game_object *cont, int initx, int inity, 
+								int shnum)
+		: Gump_object(cont, initx, inity, shnum), done(0), pushed(0)
+		{  }
+	int is_done()
+		{ return done; }
+					// Handle events:
+	virtual void mouse_down(int mx, int my) = 0;
+	virtual void mouse_up(int mx, int my) = 0;
+	};
+
+/*
  *	A slider for choosing a number.
  */
-class Slider_gump_object : public Gump_object
+class Slider_gump_object : public Modal_gump_object
 	{
 					// The arrows at each end:
 	Slider_gump_button *left_arrow, *right_arrow;
 	int diamondx;			// Rel. pos. where diamond is shown.
+	static short diamondy;
 	int min_val, max_val;		// Max., min. values to choose from.
 	int step_val;			// Amount to step by.
-	static int val;			// Current value.
+	int val;			// Current value.
 	void set_val(int newval);	// Set to new value.
 					// Coords:
 	static short leftbtnx, rightbtnx, btny;
@@ -276,12 +300,17 @@ public:
 		delete left_arrow;
 		delete right_arrow;
 		}
-	static int get_val()		// Get last value set.
+	int get_val()			// Get last value set.
 		{ return val; }
 					// An arrow was clicked on.
 	void clicked_arrow(Slider_gump_button *arrow);
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
+	virtual void close(Game_window *gwin)
+		{ done = 1; }
+					// Handle events:
+	virtual void mouse_down(int mx, int my);
+	virtual void mouse_up(int mx, int my);
 	};
 
 #endif	/* INCL_GUMPS */

@@ -44,6 +44,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 #include "Configuration.h"
 #include "mouse.h"
+#include "gumps.h"
 
 Audio audio;
 Configuration	config;
@@ -663,6 +664,96 @@ int Get_click
 	mouse->set_shape(saveshape);
 	return (ret);
 	}
+
+#if 1	/* ++++Working on this. */
+/*
+ *	Wait for a click.
+ *
+ *	Output:	0 if user hit ESC.
+ */
+static int Handle_gump_event
+	(
+	Modal_gump_object *gump,
+	SDL_Event& event
+	)
+	{
+	switch (event.type)
+		{
+	case SDL_MOUSEBUTTONDOWN:
+		if (event.button.button == 1)
+			gump->mouse_down(event.button.x, event.button.y);
+		break;
+	case SDL_MOUSEBUTTONUP:
+		if (event.button.button == 1)
+			gump->mouse_up(event.button.x, 	event.button.y);
+		break;
+	case SDL_MOUSEMOTION:
+#ifdef MOUSE
+		mouse->move(event.motion.x, event.motion.y);
+		gwin->set_painted();
+#endif
+#if 0
+					// Dragging with left button?
+		if (event.motion.state & SDL_BUTTON(1))
+			gump->mouse_drag(event.motion.x, event.motion.y);
+#endif
+		break;
+	case SDL_QUIT:
+		quitting_time = 1;
+		return (0);
+	case SDL_KEYDOWN:
+		if (event.key.keysym.sym == SDLK_ESCAPE)
+			return (0);
+		break;
+		}
+	return (1);
+	}
+
+/*
+ *	Handle a modal gump, like the range slider or the save box, until
+ *	the gump self-destructs.
+ *
+ *	Output:	0 if user hit ESC.
+ */
+
+int Modal_gump
+	(
+	Modal_gump_object *gump,	// What the user interacts with.
+	Mouse::Mouse_shapes shape	// Mouse shape to use.
+	)
+	{
+	Mouse::Mouse_shapes saveshape = mouse->get_shape();
+	if (shape != Mouse::dontchange)
+		mouse->set_shape(shape);
+	int escaped = 0;
+					// Get area to repaint when done.
+	Rectangle box = gwin->get_gump_rect(gump);
+	box.enlarge(6);
+	gump->paint(gwin);		// Paint gump.
+	gwin->show();
+	do
+		{
+		Delay();		// Wait a fraction of a second.
+#ifdef MOUSE
+		mouse->hide();		// Turn off mouse.
+#endif
+		SDL_Event event;
+		while (!escaped && SDL_PollEvent(&event))
+			escaped = !Handle_gump_event(gump, event);
+#ifdef MOUSE
+		mouse->show();		// Re-display mouse.
+#endif
+		gwin->show();		// Blit to screen if necessary.
+		}
+	while (!gump->is_done() && !escaped);
+	mouse->hide();
+	gwin->paint(box);		// Paint over gump.
+	mouse->set_shape(saveshape);
+	mouse->show();
+	return (!escaped);
+	}
+
+#endif
 
 #if 0
 // The old win32 code.
