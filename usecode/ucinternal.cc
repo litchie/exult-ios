@@ -2396,13 +2396,13 @@ void Usecode_internal::read
 	try
 	{
 		U7open(in, FLAGINIT);	// Read global flags.
+		in.read((char*)gflags, sizeof(gflags));
+		in.close();
+	} catch(exult_exception &e) {
+		if (!Game::is_editing())
+			throw e;
+		memset(&gflags[0], 0, sizeof(gflags));
 	}
-	catch(exult_exception &e) {
-		// +++++Eventually, remove this:
-		U7open(in, "<STATIC>/flaginit.dat");
-	}
-	in.read((char*)gflags, sizeof(gflags));
-	in.close();
 	try
 	{
 		U7open(in, USEDAT);
