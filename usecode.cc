@@ -637,7 +637,7 @@ Game_object *Usecode_machine::get_item
 	if (!val)
 		return (0);
 	Game_object *obj = 0;
-	if (val == -356)		// +++++Avatar.  Define in .h file.
+	if (val == -356)		// Avatar.
 		return gwin->get_main_actor();
 	if (val < 0)
 		obj = gwin->get_npc(-val);
@@ -794,7 +794,7 @@ void Usecode_machine::set_item_shape
 	if (item->get_owner())		// Inside something?
 		{
 		item->get_owner()->change_member_shape(item, shape);
-		if (light_changed)	//+++++Maybe we should repaint all.
+		if (light_changed)	// Maybe we should repaint all.
 			gwin->paint();	// Repaint finds all lights.
 		else
 			{
@@ -818,7 +818,7 @@ void Usecode_machine::set_item_shape
 		gwin->paint();		// Complete repaint refigures lights.
 	else
 		gwin->paint(rect);	// Not sure...
-	gwin->show();		// +++++++
+	gwin->show();			// Not sure if this is needed.
 	}
 
 /*
@@ -852,7 +852,6 @@ void Usecode_machine::set_item_frame
 		rect = gwin->clip_to_win(rect);
 		gwin->paint(rect);
 		}
-//+++++Testing
 	gwin->show();
 	}
 
@@ -1086,23 +1085,16 @@ Usecode_value Usecode_machine::find_direction
 	unsigned angle;			// Gets angle 0-7 (north - northwest)
 	Game_object *o1 = get_item(from);
 	Game_object *o2 = get_item(to);
-#if 1 /* +++++Try this */
 	if (!o1)
 		o1 = caller_item;
 	if (!o2)
 		o2 = caller_item;
-#else
-	if (!o1 || !o2)
-		angle = 0;
-	else
-#endif
-		{			// Figure angle from positions.
-		int x1, y1, z1, x2, y2, z2;
-		o1->get_abs_tile(x1, y1, z1);
-		o2->get_abs_tile(x2, y2, z2);
+					// Figure angle from positions.
+	int x1, y1, z1, x2, y2, z2;
+	o1->get_abs_tile(x1, y1, z1);
+	o2->get_abs_tile(x2, y2, z2);
 					// Treat as cartesian coords.
-		angle = (int) Get_direction(y1 - y2, x2 - x1);
-		}
+	angle = (int) Get_direction(y1 - y2, x2 - x1);
 	return Usecode_value(angle);
 	}
 
@@ -1259,7 +1251,6 @@ Usecode_value Usecode_machine::click_on_item
 	(
 	)
 	{
-	// cout << "CLICK on an item.\n";
 	int x, y;
 	if (!Get_click(x, y, Mouse::greenselect))
 		return Usecode_value(0);
@@ -2163,7 +2154,7 @@ USECODE_INTRINSIC(run_usecode)
 			return(u);
 		}
 	else
-		{	//++++++Not sure about this.
+		{
 		cout << "0x7d Location not a 3-int array\n";
 		return(u);	// Return 0.
 		}
@@ -2394,7 +2385,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x82
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x83
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x85+++++create((tx,ty,tz), sh, fr).
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x85+++++is_room?((tx,ty,tz), sh, fr).
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x86  +++++A sound??  Animation??
 	USECODE_INTRINSIC_PTR(direction_from),	// 0x87
 	USECODE_INTRINSIC_PTR(get_npc_flag),	// 0x88
