@@ -872,6 +872,88 @@ static void Unhandled
 	cout << '\n';
 	}
 
+static Usecode_value	no_ret;
+Usecode_value	UI_NOP( Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+{
+	return no_ret;
+}
+
+Usecode_value	UI_UNKNOWN(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+{
+	return no_ret;
+}
+
+Usecode_value	UI_get_random(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+{
+	int range = parms[0].get_int_value();
+	if (range == 0)
+		return Usecode_value(0);
+	return Usecode_value(1 + (rand() % range));
+}
+
+Usecode_value	UI_execute_usecode_array(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+{
+	cout << "Executing intrinsic 1\n";
+	umachine->exec_array(parms[0], parms[1]);
+	return no_ret;
+}
+
+Usecode_value	UI_delayed_execute_usecode_array(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+{			// Delay = .20 sec.?
+	int delay = parms[2].get_int_value();
+	umachine->gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
+		new Scheduled_usecode(parms[0], parms[1]),
+							(long) umachine);
+	cout << "Executing intrinsic 2\n";
+	return no_ret;
+}
+
+Usecode_value	UI_show_npc_face(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+{
+	umachine->show_npc_face(parms[0], parms[1]);
+	return no_ret;
+}
+
+Usecode_value	UI_remove_npc_face(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+{
+	umachine->remove_npc_face(parms[0]);
+	return no_ret;
+}
+
+Usecode_value	UI_add_answer(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+{
+	umachine->answers.add_answer(parms[0]);
+	return no_ret;
+}
+Usecode_value	UI_remove_answer(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+{
+	umachine->answers.remove_answer(parms[0]);
+	return no_ret;
+}
+
+Usecode_value	UI_save_answers(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+{
+	umachine->answer_stack[umachine->saved_answers] = new Answers;
+	*(umachine->answer_stack[umachine->saved_answers++]) = umachine->answers;
+	umachine->answers.num_answers = 0;
+	return no_ret;
+}
+
+struct	{
+	Usecode_value	(*func)(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12]);
+	} intrinsic_table[] =
+	{
+	UI_get_random,	// 0
+	UI_execute_usecode_array, // 1
+	UI_delayed_execute_usecode_array, // 2
+	UI_show_npc_face, // 3
+	UI_remove_npc_face, // 4
+	UI_add_answer, // 5
+	UI_remove_answer, // 6
+	};
+	
+int	max_bundled_intrinsics=4;
+
 /*
  *	Call an intrinsic function.
  */
@@ -889,40 +971,13 @@ Usecode_value Usecode_machine::call_intrinsic
 		Usecode_value val = pop();
 		parms[i] = val;
 		}
+	if(intrinsic<=max_bundled_intrinsics)
+		{
+		return intrinsic_table[intrinsic].func(this,event,intrinsic,parms);
+		}
+	else
 	switch (intrinsic)
 		{
-	case 0:				// Return random #.
-		{
-		int range = parms[0].get_int_value();
-		if (range == 0)
-			return Usecode_value(0);
-		return Usecode_value(1 + (rand() % range));
-		}
-	case 1:				// ??Exec (itemref, array).
-		cout << "Executing intrinsic 1\n";
-		exec_array(parms[0], parms[1]);
-		break;
-	case 2:				// ??Exec (itemref, array, delay?)
-		{			// Delay = .20 sec.?
-		int delay = parms[2].get_int_value();
-		gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
-			new Scheduled_usecode(parms[0], parms[1]),
-								(long) this);
-		cout << "Executing intrinsic 2\n";
-		break;
-		}
-	case 3:				// Show NPC face.
-		show_npc_face(parms[0], parms[1]);
-		break;
-	case 4:				// Remove NPC face.
-		remove_npc_face(parms[0]);
-		break;
-	case 5:				// Add possible 'answer'.
-		answers.add_answer(parms[0]);
-		break;
-	case 6:				// Remove answer.
-		answers.remove_answer(parms[0]);
-		break;
 	case 7:				// Save answers. (0)
 		answer_stack[saved_answers] = new Answers;
 		*(answer_stack[saved_answers++]) = answers;

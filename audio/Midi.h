@@ -69,6 +69,23 @@ public:
 };
 #endif
 
+#undef HAVE_TIMIDITY_BIN	// Disabled for now
+#if HAVE_TIMIDITY_BIN
+class	Timidity_binary : virtual public MidiAbstract
+{
+public:
+	virtual void	start_track(const char *,int repeats);
+	virtual void	stop_track(void);
+	virtual	bool	is_playing(void);
+	virtual const	char *copyright(void);
+
+	Timidity_binary();
+	virtual ~Timidity_binary();
+private:
+	pid_t	forked_job;
+};
+#endif
+
 
 class	forked_player	:	virtual public MidiAbstract
 {
