@@ -64,6 +64,7 @@ private:
 					//   -3 = throw weapon itself.
 	short projectile;		// Projectile shape, or 0.
 	bool m_explodes;		// Projectile explodes on impact.
+	bool m_returns;			// Boomerang, magic axe.
 	short usecode;			// Usecode function, or 0.
 	unsigned char uses;		// 0 = hand-hand, 1,2 = throwable,
 					//   3 = missile-firing.
@@ -81,8 +82,10 @@ public:
 		{ return powers; }
 	int get_ammo_consumed()
 		{ return ammo > 0 ? ammo : 0; }
-	bool is_thrown()
-		{ return uses == 1 || uses == 2; }
+	bool is_thrown() const
+		{ return uses == 1 || uses == 2 || m_returns; }
+	bool returns() const
+		{ return m_returns; }
 	int get_striking_range()	// Guessing about div. by 2.
 		{ return uses < 3 ? range/2 : 0; }
 	int get_projectile_range()	// +++Guess for thrown weapons.

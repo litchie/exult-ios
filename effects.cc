@@ -280,7 +280,8 @@ Projectile_effect::Projectile_effect
 	Game_object *to,		// End here, 'attack' it with shape.
 	int shnum,			// Projectile shape # in 'shapes.vga'.
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
-	) : attacker(att), target(to), projectile(shnum, 0), weapon(weap)
+	) : attacker(att), target(to), projectile(shnum, 0), weapon(weap),
+	    return_path(false)
 	{
 	init(attacker->get_tile(), to->get_tile());
 	}
@@ -295,7 +296,8 @@ Projectile_effect::Projectile_effect
 	Tile_coord d,			// End here.
 	int shnum,			// Projectile shape
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
-	) : attacker(0), target(0), projectile(shnum, 0), weapon(weap)
+	) : attacker(0), target(0), projectile(shnum, 0), weapon(weap),
+	    return_path(false)
 	{
 	init(s, d);
 	}
@@ -309,8 +311,10 @@ Projectile_effect::Projectile_effect
 	Tile_coord s,			// Start here.
 	Game_object *to,		// End here, 'attack' it with shape.
 	int shnum,			// Projectile shape
-	int weap			// Weapon (bow, gun, etc.) shape, or 0.
-	) : attacker(0), target(to), projectile(shnum, 0), weapon(weap)
+	int weap,			// Weapon (bow, gun, etc.) shape, or 0.
+	bool retpath			// Return of a boomerang.
+	) : attacker(0), target(to), projectile(shnum, 0), weapon(weap),
+	    return_path(retpath)
 	{
 	init(s, to->get_tile());
 	}
@@ -376,8 +380,8 @@ void Projectile_effect::handle_event
 	long udata
 	)
 	{
-	const int delay = 100;		// Delay between frames.
 	Game_window *gwin = Game_window::get_game_window();
+	int delay = gwin->get_std_delay()/2;
 	add_dirty(gwin);		// Force repaint of old pos.
 	Tile_coord epos = pos;		// Save pos.
 	if (!path->GetNextStep(pos) ||	// Get next spot.
@@ -407,10 +411,25 @@ void Projectile_effect::handle_event
 			target = 0;	// Takes care of attack.
 			break;
 			}
-		if (target && (!attacker || 
+		if (return_path)	// Returned a boomerang?
+			target->add(gwin->create_ireg_object(weapon, 0));
+		else if (target && (!attacker || 
 					// Watch for teleporting away.
 					attacker->distance(target) < 50))
-			target->attacked(attacker, weapon, projectile.get_shapenum());
+			{
+			target->attacked(attacker, weapon, 
+						projectile.get_shapenum());
+			if (attacker &&	// Check for boomerangs.
+			    weapon == projectile.get_shapenum())
+				{
+				Weapon_info *winf = 
+				    gwin->get_info(weapon).get_weapon_info();
+				if (winf && winf->returns())
+					gwin->add_effect(new Projectile_effect(
+						pos, attacker, weapon, weapon,
+									true));
+				}
+			}
 		add_dirty(gwin);
 		pos.tx = -1;		// Signal we're done.
 		gwin->remove_effect(this);
