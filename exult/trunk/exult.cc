@@ -129,7 +129,7 @@ static class Xdnd *xdnd = 0;
 /*
  *	Local functions:
  */
-static int exult_main(void);
+static int exult_main(const char *);
 static void Init();
 static int Play();
 static int Get_click(int& x, int& y, char *chr);
@@ -218,7 +218,7 @@ int main
 	
 	try
 	{
-		result = exult_main();
+		result = exult_main(argv[0]);
 	}
 	catch( const quit_exception & e )
     {
@@ -243,7 +243,7 @@ int main
  *	Main program.
  */
 
-int exult_main(void)
+int exult_main(const char *runpath)
 {
 	string data_path;
 
@@ -265,12 +265,23 @@ int exult_main(void)
 			add_system_path("<DATA>", "data");
 			if(!U7exists("<DATA>/exult.flx"))
 			{
-				// We've tried them all...
-				cerr << "Could not find 'exult.flx' anywhere." << endl;	
-				cerr << "Please make sure Exult is correctly installed," << endl;
-				cerr << "and the Exult data path is specified in the configuration file." << endl;
-				cerr << "(See the README file for more information)" << endl;
-				exit(-1);
+				char *sep = strrchr(runpath,'/');
+				int plen = sep-runpath;
+				char *dpath = new char[plen+10];
+				strncpy(dpath, runpath, plen+1);
+				dpath[plen+1] = 0;
+				strcat(dpath,"data");
+				cerr << "dpath = " << dpath << endl;
+				add_system_path("<DATA>",dpath);
+				if(!U7exists("<DATA>/exult.flx"))
+				{
+					// We've tried them all...
+					cerr << "Could not find 'exult.flx' anywhere." << endl;	
+					cerr << "Please make sure Exult is correctly installed," << endl;
+					cerr << "and the Exult data path is specified in the configuration file." << endl;
+					cerr << "(See the README file for more information)" << endl;
+					exit(-1);
+				}
 			}
 		}
 	}
