@@ -41,11 +41,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Audio 
 {
+private:
+	static	Audio	*self;
 public:
     Audio();
     void	Init(void);
     void	Init(int _samplerate,int _channels);
     ~Audio();
+	static	Audio	*get_ptr(void);
 	Mixer	*mixer;
 
 	void	play(Uint8 *sound_data,Uint32 len,bool);
