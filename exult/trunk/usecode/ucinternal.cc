@@ -1662,7 +1662,10 @@ Usecode_internal::Usecode_internal
 	    path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),
 	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
-		temp_to_be_deleted(0), telekenesis_fun(-1), on_breakpoint(false)
+		temp_to_be_deleted(0), telekenesis_fun(-1)
+#ifdef USECODE_DEBUGGER
+		, on_breakpoint(false)
+#endif
 	{
 					// Clear timers.
 	memset((char *) &timers[0], 0, sizeof(timers));
@@ -2785,6 +2788,7 @@ void Usecode_internal::link_party
 	}
 
 
+#ifdef USECODE_DEBUGGER
 
 int Usecode_internal::get_callstack_size() const
 {
@@ -2849,3 +2853,5 @@ int Usecode_internal::set_location_breakpoint(int funcid, int ip)
 
 	return bp->id;
 }
+
+#endif
