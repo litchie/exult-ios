@@ -1,3 +1,8 @@
+2003-05-05 Tristan Tarrant <nadir@users.sourceforge.net>
+	* exult.cc, audio/Midi.cc: add new configuration
+	  config/disk/music_path, where the user can specify a path to the
+	  OGG files
+
 2003-05-04 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/*.xml: updated
 	* docs/*.html, exult_studio.txt: updated
