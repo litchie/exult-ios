@@ -219,6 +219,19 @@ UCXT_OBJS=conf\Configuration.o conf\XMLEntity.o files\utils.o usecode\ucxt\src\u
 usecode/ucxt/src/ucxt.exe : $(UCXT_OBJS)
 	$(CXX) $(LFLAGS) -o usecode/ucxt/src/ucxt.exe $(UCXT_OBJS) -mconsole
 
+UCC_OBJS=ucparse.o uclex.o usecode\compiler\ucmain.o usecode\compiler\ucexpr.o usecode\compiler\ucfun.o usecode\compiler\ucloc.o usecode\compiler\ucstmt.o usecode\compiler\ucsym.o
+
+usecode/compiler/ucc.exe : $(UCC_OBJS)
+	$(CXX) $(LFLAGS) -o usecode/compiler/ucc.exe $(UCC_OBJS)
+
+compiler/ucparse.cc:  
+	bison -d usecode/compiler/ucparse.yy -o ucparse.c
+	mv ucparse.c ucparse.cc
+ 
+compiler/uclex.cc:  
+	flex usecode/compiler/uclex.ll 
+	mv lex.yy.c uclex.cc
+
 clean:
 	del $(OBJS) $(EXEC)
 	del tools\expack.exe tools\expack.o
@@ -257,7 +270,7 @@ dist:   $(EXEC)
 	copy SDL\README-SDL.txt $(U7PATH)\Exult\README-SDL.txt
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult\SDL.dll
 
-tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe usecode/ucxt/src/ucxt.exe
+tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe usecode/ucxt/src/ucxt.exe usecode/compiler/ucc.exe
 
 toolsclean:
 	del tools\mklink.o tools\mklink.exe 
@@ -268,6 +281,7 @@ toolsclean:
 	del tools\wuc.o tools\wuc.exe 
 	del tools\wud.o tools\wud.exe 
 	del $(UCXT_OBJS) usecode\ucxt\src\ucxt.exe
+	del $(UCC_OBJS) usecode\compiler\ucc.exe ucparse.cc ucparse.h uclex.cc
 
 toolsinstall: tools
 	if not exist $(U7PATH)\tools md $(U7PATH)\tools
@@ -280,10 +294,12 @@ toolsinstall: tools
 	strip tools/wuc.exe -o $(U7PATH)\tools\wuc.exe
 	strip tools/wud.exe -o $(U7PATH)\tools\wud.exe
 	strip usecode/ucxt/src/ucxt.exe -o $(U7PATH)\tools\ucxt.exe
+	strip usecode/compiler/ucc.exe -o $(U7PATH)\tools\ucc.exe
 	if not exist $(U7PATH)\tools\data md $(U7PATH)\tools\data
 	copy usecode\ucxt\data\events.data $(U7PATH)\tools\data\events.data
 	copy usecode\ucxt\data\flags.data $(U7PATH)\tools\data\flags.data
 	copy usecode\ucxt\data\opcodes.txt $(U7PATH)\tools\data\opcodes.txt
+	copy usecode\ucxt\data\u7misc.data $(U7PATH)\tools\data\u7misc.data 
 
 toolsdist: toolsinstall
 	copy tools\expack.txt $(U7PATH)\tools
