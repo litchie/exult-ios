@@ -36,6 +36,21 @@ const int LEFTPAGE = 44;		// At top-left of left page.
 const int RIGHTPAGE = 45;		// At top-right of right page.
 
 /*
+ *	Flags for required reagants: ++++++++Should match frame #'s.
+ */
+const int bp = 1;			// Black pearl.
+const int mr = 2;			// Mandrake root.
+const int sa = 4;			// Sulphuras ash.
+const int ss = 8;			// Spider silk.
+const int bm = 16;			// Blood moss.
+const int ga = 32;			// Garlic.
+const int gi = 64;			// Ginseng.
+const int ns = 128;			// Nightshade.
+unsigned char Spellbook_gump::reagants[9*8] = {
+	0, 0, 0, 0, 0, 0, 0, 0,		// Linear spells require no reagants.
+	0};  //++++++++++++++++++++++++++++++
+
+/*
  *	Get shape, frame for a given spell #.  There are 8 shapes, each
  *	containing 9 frames, where frame # = spell circle #.
  */
@@ -126,6 +141,39 @@ void Spell_button::activate
 	else
 		((Spellbook_gump *) parent)->set_bookmark(spell);
 	lasttime = curtime;
+	}
+
+/*
+ *	Figure the availability of the spells.
+ */
+
+void Spellbook_gump::set_avail
+	(
+	)
+	{
+	int i;				// Init.
+	for (i = 0; i < 9*8; i++)
+		avail[i] = 0;
+	Game_object *owner = book;	// Get book's top owner.
+	Game_object *above;
+	while ((above = owner->get_owner()) != 0)
+		owner = above;
+	if (owner == book)
+		return;			// Nobody owns it.
+	int reagant_counts[8];		// Count reagants.
+	int r;
+	for (r = 0; r < 8; r++)		// Count, by frame.++++++Verify.
+		reagant_counts[r] = owner->count_objects(842, r);
+	for (i = 0; i < 9*8; i++)	// Now figure what's available.
+		{
+		avail[i] = 10000;	// 'infinite'.
+		unsigned char flags = reagants[i];
+					// Go through bits.
+		for (r = 0; flags; r++, flags = flags >> 1)
+					// Take min. of req. reagant counts.
+			if ((flags&1) && reagant_counts[r] < avail[i])
+				avail[i] = reagant_counts[r];
+		}
 	}
 
 /*

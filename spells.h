@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Spellbook_gump : public Gump_object
 	{
+					// Reagants needed for each spell:
+	static unsigned char reagants[9*8];
 	short avail[9*8];		// For each spell, # which the
 					//   available reagants make possible.
 	int page;			// Starting with 0 (= circle #).
@@ -41,6 +43,7 @@ class Spellbook_gump : public Gump_object
 	Gump_button *leftpage, *rightpage;
 	Gump_button *spells[9*8];	// ->spell 'buttons'.
 	int spwidth, spheight;		// Dimensions of a spell shape.
+	void set_avail();		// Set up counts.
 public:
 	Spellbook_gump(Spellbook_object *b);
 	~Spellbook_gump();
