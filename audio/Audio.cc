@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000  Dancer A.L Vesperman
+Copyright (C) 2000-2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,13 +20,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
-#include "Audio.h"
-
+#include <SDL_audio.h>
+#include <SDL_timer.h>
 #include "SDL_mapping.h"
-#include "fnames.h"
-#include "U7file.h"
-#include "game.h"
+
+#include "Audio.h"
 #include "Configuration.h"
+#include "fnames.h"
+#include "game.h"
+#include "U7file.h"
+#include "utils.h"
 extern	Configuration *config;
 
 #ifndef ALPHA_LINUX_CXX
@@ -36,20 +39,15 @@ extern	Configuration *config;
 #  include <cstring>
 #  include <iostream>
 #endif
+#include <fcntl.h>
 #include <unistd.h>
 
-#define	TRAILING_VOC_SLOP 32
-#define	LEADING_VOC_SLOP 32
-
-#include <SDL_audio.h>
-#include <SDL_timer.h>
 #if defined(MACOS)
   #include <stat.h>
 #else
   #include <sys/stat.h>
   #include <sys/types.h>
 #endif
-#include <fcntl.h>
 
 using std::cerr;
 using std::cout;
@@ -60,6 +58,9 @@ using std::memset;
 using std::string;
 using std::strncmp;
 using std::vector;
+
+#define	TRAILING_VOC_SLOP 32
+#define	LEADING_VOC_SLOP 32
 
 
 //---- Audio ---------------------------------------------------------

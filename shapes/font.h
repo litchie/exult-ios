@@ -21,17 +21,7 @@
 #  include "../alpha_kludges.h"
 #endif
 
-#include "files/utils.h"	// included for hashstr/eqstr
-
-#ifdef MACOS
-  #include <hashmap.h>
-#else
-#  ifndef DONT_HAVE_HASH_MAP
-#    include <hash_map>
-#  else
-#    include <map>
-#  endif
-#endif
+#include "hash_utils.h"
 
 class Image_buffer8;
 class Shape_file;
@@ -87,7 +77,7 @@ class FontManager
 {
 private:
 #ifndef DONT_HAVE_HASH_MAP
-	std::hash_map<const char*, Font*, hashstr, eqstr> fonts;
+	hash_map<const char*, Font*, hashstr, eqstr> fonts;
 #else
 	std::map<const char*, Font*, ltstr> fonts;
 #endif

@@ -6,7 +6,7 @@
  **/
 
 /*
-Copyright (C) 2000  Jeffrey S. Freedman
+Copyright (C) 2000-2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,11 +22,14 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-
+ 
 #include "../alpha_kludges.h"
 
 #ifndef DONT_HAVE_HASH_SET
 #  include <hash_set>
+#  ifdef MACOS
+  using Metrowerks::hash_set;
+#  endif
 #else
 #  include <set>
 #endif /* !HAVE_HASH_SET */
@@ -37,9 +40,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_constants.h"
 #include "vec.h"
 
-#ifdef MACOS
-  using Metrowerks::hash_set;
-#endif
 using std::cout;
 using std::endl;
 using std::size_t;
@@ -228,6 +228,8 @@ public:
 		}
 	};
 
+#ifndef DONT_HAVE_HASH_SET
+
 /*
  *	Hash function for nodes:
  */
@@ -254,6 +256,8 @@ public:
 		}
 	};
 
+#else
+
 /*
  *	"Less than" relation for nodes
  */
@@ -271,6 +275,9 @@ public:
 			return apos < bpos;
 		}
 	};
+
+#endif
+
 
 /*
  *	The priority queue for the A* algorithm:

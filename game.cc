@@ -20,17 +20,18 @@
 #  include <cstdlib>
 #  include <unistd.h>
 #endif
-#include "files/U7file.h"
-#include "flic/playfli.h"
-#include "gamewin.h"
 #include "Audio.h"
 #include "Configuration.h"
-#include "game.h"
-#include "palette.h"
 #include "databuf.h"
+#include "files/U7file.h"
+#include "files/utils.h"
+#include "flic/playfli.h"
 #include "font.h"
+#include "game.h"
+#include "gamewin.h"
 #include "menulist.h"
 #include "mouse.h"
+#include "palette.h"
 
 using std::cout;
 using std::endl;

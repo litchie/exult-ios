@@ -6,7 +6,7 @@
  **/
 
 /*
-Copyright (C) 2000  Jeffrey S. Freedman
+Copyright (C) 2000-2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,15 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../alpha_kludges.h"
 
 #include "bodies.h"
-#ifndef DONT_HAVE_HASH_SET
-#  include <hash_set>
-#else
-#  include <set>
-#endif
+#include "hash_utils.h"
 
-#ifdef MACOS
-using Metrowerks::hash_set;
-#endif
 using std::size_t;
 
 /*
@@ -178,6 +171,8 @@ short Body_lookup::table[] = {
   1015, 414, 4	 			// x Stone Golem
 	};
 
+#ifndef DONT_HAVE_HASH_SET
+
 /*
  *	Hash function for triples in table:
  */
@@ -199,6 +194,8 @@ public:
      		{ return a[0] == b[0]; }
 	};
 
+#else
+
 /*
  *	For testing whether one shape is less than another
  */
@@ -208,6 +205,8 @@ public:
      	bool operator() (const short *a, const short *b) const
      		{ return a[0] < b[0]; }
 	};
+
+#endif
 
 /*
  *	Lookup a shape's body.
