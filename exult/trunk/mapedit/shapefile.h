@@ -134,6 +134,8 @@ public:
 	char *get(int i, size_t& len);	// Get i'th entry.
 					// Set i'th entry.
 	void set(int i, char *newentry, int entlen);
+	void swap(int i);		// Swap entries i, i+1.
+	void remove(int i);		// Remove i'th entry.
 	virtual ~Flex_file_info();
 	virtual Flex *get_flex()
 		{ return flex; }
