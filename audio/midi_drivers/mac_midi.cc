@@ -86,7 +86,8 @@ Mac_QT_midi::~Mac_QT_midi(void)
 {
 	if(mTunePlayer)
 	{
-		TuneStop(mTunePlayer, 0);
+		if(mTuneSequence)
+			TuneStop(mTunePlayer, 0);
 		CloseComponent(mTunePlayer);
 		mTunePlayer = 0;
 	}
