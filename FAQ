@@ -1,13 +1,14 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 23 May 2004(GMT
+last changed: 14 August 2004(GMT
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 23 May 2004
-0.2. - 27 January 2004
-0.3. - 12 December 2003
+0.1. - 14 August 2004
+0.2. - 23 May 2004
+0.3. - 27 January 2004
+0.4. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -23,6 +24,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 1.11. How do I compile a source code snapshot for my OS?
 1.12. What is the latest version of Exult?
 1.13. On what platform does Exult run?
+1.14. Will a port for Pocket PC be available anytime?
 
 2. Exult and Ultima 7
 2.1. Do I need Ultima 7?
@@ -67,12 +69,15 @@ The latest version of this document can be found at http://exult.sourceforge.net
 5.3. Why can't I get the sacrifice in Skara Brae to work (BG)?
 5.4. Why can't I talk to the mayor of Skara Brae (BG)?
 5.5. Where did my gem of the Demon vanish to (BG-FoV)?
-5.6. Where is the pikeman that lets you train in Monitor (SI)?
-5.7. How do I get the Mandrake Roots for Fedabiblio (SI)?
-5.8. Why can't I summon the Great Hierophant (SI)?
-5.9. Why won't Xenka speak about sacrifice (SI)
-5.10. An important note about the Serpent Staff (SI)
-5.11. How to break the plot by doubleclicking some pillars (SI-SS)
+5.6. Attacking the Stone of Castambre doesn't work (FoV)
+5.7. Where is the pikeman that lets you train in Monitor (SI)?
+5.8. How do I get the Mandrake Roots for Fedabiblio (SI)?
+5.9. Why can't I summon the Great Hierophant (SI)?
+5.10. Why won't Xenka speak about sacrifice (SI)?
+5.11. Where did XY disappear to (SI)?
+5.12. Why can't I find Karnax and the other monks (SI)?
+5.13. An important note about the Serpent Staff (SI)
+5.14. How to break the plot by doubleclicking some pillars (SI-SS)
 
 6. Questions and Answers
 6.1. How can I get answers concerning Ultima 7/Exult?
@@ -86,7 +91,17 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 23 May 2004
+0.1. - 14 August 2004
+* 1.3. Is Exult free ? contact us via the forum.
+* 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
+* 1.14. Will a port for Pocket PC be available anytime? time to have this answered.
+* 5.6. Attacking the Stone of Castambre doesn't work (FoV) Willem added this useful information.
+* 5.11. Where did XY disappear to (SI)? teleporting is dangerous.
+* 5.12. Why can't I find Karnax and the other monks (SI)? example for above.
+
+
+
+0.2. - 23 May 2004
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
@@ -94,15 +109,15 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 27 January 2004
+0.3. - 27 January 2004
 * 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
-* 5.9. Why won't Xenka speak about sacrifice (SI) added.
-* 5.10. An important note about the Serpent Staff (SI) Willem fixed this.
+* 5.10. Why won't Xenka speak about sacrifice (SI)? added.
+* 5.13. An important note about the Serpent Staff (SI) Willem fixed this.
 
 
 
-0.3. - 12 December 2003
+0.4. - 12 December 2003
 * 5.3. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 
@@ -125,7 +140,7 @@ I'd like to point out that "exult" is also an English verb that means "to rejoic
 
 
 1.3. Is Exult free ?
-Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exults components and publicly redistribute your work you are required to make the source freely available in turn. Obviously the Exult team would be very grateful if any modifications you make are contributed back to the main code, so that everyone can benefit from them. If you want to work on Exult just send an e-mail to the team. More information on the GNU GPL at http://www.gnu.org/copyleft/gpl.html.
+Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exults components and publicly redistribute your work you are required to make the source freely available in turn. Obviously the Exult team would be very grateful if any modifications you make are contributed back to the main code, so that everyone can benefit from them. If you want to work on Exult please contact us via our fourm. More information on the GNU GPL at http://www.gnu.org/copyleft/gpl.html.
 
 
 1.4. Do you accept donations?
@@ -145,7 +160,7 @@ Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any 
 1.7. But isn't Pentagram some kind of Exult for U8?
 Pentagram is a pet project by some members of the Exult team (currently mostly Willem, Colourless, Fingolfin and Darke). It is a map and shapes viewer and nothing more (although the team does indeed invest some time to disassemble the Usecode of U8). It isn't meant to be something similar to Exult. It is rather a clever plan to stir up interest in other coders to carry this basic work further. Any developer is welcome to take a look and contact us.
 Seriously Pentagram is slowly progressing and you can find snapshots of the code and Win32 binaries for it on the Pentagramsnapshots page.
-On the official Pentagram homepage at http://pentagram.sourceforge.net/ you might find more information on this project in the future. For now you can find some nice screenshots of the map viewer in action.
+On the official Pentagram homepage at http://pentagram.sourceforge.net/ you will find more information on this project.
 
 
 1.8. Will there be a multiplayer Exult?
@@ -179,6 +194,10 @@ To find out which version you are running, press 'v' while in game.
 Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher), OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP).
 Ruediger Hanke's ported Exult to MorphOS and AmigaOS. You can get this version at http://www.muenster.de/~tomjoad/exult.html.
 Recently Artaxerxes started working on a port for Zaurus, a Linux/ARM based PDA. It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://exult.sourceforge.net/download.php.
+
+
+1.14. Will a port for Pocket PC be available anytime?
+We are, actually Colourless is, looking into it. Porting to Pocket PC is not very easy, especially when you consider that Colourless doesn't have a Pocket PC. So please be patient and don't pester Colourless anymore about it. When it's ready for testing you will find an announcement on the homepage and the forum.
 
 
 
@@ -430,34 +449,46 @@ You might be talking to "The Other Forsythe"(TM). There's a ghost in the Skara B
 For forging the black sword you need to bind the demon to the gem you got from that invincible dragon you met in the test of courage. Some people mistake that little dark-blue gem with the glowing gem you received from Lord British. If you use the glowing gem on the isle of fire it just vanishes with a shattering sound.
 
 
-5.6. Where is the pikeman that lets you train in Monitor (SI)?
+5.6. Attacking the Stone of Castambre doesn't work (FoV)
+You need to use (double-click) the pick while it's in your hands instead of attacking with it. After that, select the tree with the resulting crosshairs.
+
+
+5.7. Where is the pikeman that lets you train in Monitor (SI)?
 The pikeman that lets you enter the list field in Monitor sometimes disappears due to a bug in the game (even the original). This bug occurs when you enter the banquet scene of Monitor. To avoid this bug, we recommend, that you approach the banquet hall from the right and/or double-click the entrance door to the hall when the party is standing very close to it.
 
 
-5.7. How do I get the Mandrake Roots for Fedabiblio (SI)?
+5.8. How do I get the Mandrake Roots for Fedabiblio (SI)?
 Fedabiblio in Moonshade sends you on a quest to find fresh Mandrake Roots. You get to Monk Island but can't find the any fresh roots. The problem is that fresh roots only appear depending on the tide. One of the nameless monks of the island tells you to ask him when the tide is right. Keep coming back to him and when he tells you the tide is right walk to the northern shore of the island to find fresh roots.
 
 
-5.8. Why can't I summon the Great Hierophant (SI)?
+5.9. Why can't I summon the Great Hierophant (SI)?
 If you follow some walkthrough you might find that your summoning of the Great Hierophant doesn't work. This is a problem with the walkthrough. You need to have a personal item of the Great Hierophant in your inventory, namely the Serpent Staff.
 If possible don't just play following the walkthrough, but go out and explore Serpent Isle. It's hard to imagine someone could miss the cave to the east of Monitor...
 
 
-5.9. Why won't Xenka speak about sacrifice (SI)
+5.10. Why won't Xenka speak about sacrifice (SI)?
 For Xenka to speak about sacrifice some parts of the game need to have been played correctly. The sacrifice conversation option will only turn up if:
 * you have returned the amulet to the Gwani AND
 * you have spoken with the Chaos Hierophant AND
-* you have picked up the Serpent Staff from its proper location (see 5.10.) AND
+* you have picked up the Serpent Staff from its proper location (see 5.13.) AND
 * you have not yet healed the Chaos Serpent
 
 
 
-5.10. An important note about the Serpent Staff (SI)
+5.11. Where did XY disappear to (SI)?
+SI is very plot driven, so to stop people from breaking the plot, certain NPCs stay in a unaccessible spot on the map until you meet them by following the plot, or disappear from the map until they are needed again. If you cheat by teleporting to them before the scripted meeting you are bound to break the plot and most likely forced to reload an earlier savegame or start the whole game again. So please take care when teleporting around the map.
+
+
+5.12. Why can't I find Karnax and the other monks (SI)?
+See the above question. You have to use the Dark Path to make the monks appear on Monk Island. If you just use the teleport cheat they won't show up.
+
+
+5.13. An important note about the Serpent Staff (SI)
 The Serpent Staff in SI is a very important item. It doesn't seem like it but it is crucial to some major plot elements that you have the staff in your possession. Unfortunately the game also demands that you get the staff properly. For that I recommend to get it without cheating and to stand right next to it.
 Just picking it up and not transfering it to the inventory at once, but instead putting it on the ground again could break later plot. Willem coded a workaround in Exult so the problem might disappear.
 
 
-5.11. How to break the plot by doubleclicking some pillars (SI-SS)
+5.14. How to break the plot by doubleclicking some pillars (SI-SS)
 In the dining hall of the fort in the add-on Silver Seed you can doubleclick the pillars. This teleports you to the test in the gargoyle city. If you haven't done this test yet this breaks that plot later on and if you already have it is still a nuisance. So better don't do it.
 Obviously a slight oversight of the add-on designers. Could be fixed by changing the usecode and the map slightly.
 

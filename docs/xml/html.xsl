@@ -77,7 +77,7 @@
 				</tr>
 				<tr>
 					<td align="center">
-						<address><font size="-1">Problems with Exult or this webpage? <a href="mailto:exult-general@lists.sourceforge.net">Contact us.</a></font></address>
+						<address><font size="-1">Problems with Exult or this webpage? <a href="http://exult.sourceforge.net/forum/post.php?f=1">Contact us.</a></font></address>
 					</td>
 				</tr>
 			</table>

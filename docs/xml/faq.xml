@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="23 May 2004(GMT">
+<faqs title="Exult" changed="14 August 2004(GMT">
 	<section title="Changes to the FAQ">
+		<sub name="14082004">
+			<header>- 14 August 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="is_exult_free"/> contact us via the forum.</li>
+				<li><ref1 target="pentagram"/> the homepage is actually informative now.</li>
+				<li><ref1 target="pocketpc_port"/> time to have this answered.</li>
+				<li><ref1 target="stone_of_castambre"/> Willem added this useful information.</li>
+				<li><ref1 target="si_npc_gone"/> teleporting is dangerous.</li>
+				<li><ref1 target="karnax_gone"/> example for above.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="23052004">
 			<header>- 23 May 2004</header>
 			<body>
@@ -73,9 +86,9 @@
 					redistribute your work you are required to make the source freely available
 					in turn. Obviously the <Exult/> team would be very grateful if any
 					modifications you make are contributed back to the main code, so that
-					everyone can benefit from them. If you want to work on <Exult/> just send an
-					e-mail to the
-					<extref target="mailto:exult-general@lists.sourceforge.net">team</extref>.<br/>
+					everyone can benefit from them. If you want to work on <Exult/> please contact 
+					us via our
+					<extref target="http://exult.sourceforge.net/forum/post.php?f=1">fourm</extref>.<br/>
  					More information on the GNU GPL at
  					<extref target="http://www.gnu.org/copyleft/gpl.html"/>.
 				</para>
@@ -146,8 +159,7 @@
 				</para>
 				<para>
 					On the official <Pentagram/> homepage at <extref target="http://pentagram.sourceforge.net/"/>
-					you might find more information on this project in the future. For now you can find
-					some nice screenshots of the map viewer in action.
+					you will find more information on this project.
 				</para>
 			</body>
 		</sub>
@@ -250,6 +262,17 @@
 					<extref target="http://exult.sourceforge.net/images/screenshots/zaurus/"/> and an
 					IPK package at <extref target="http://exult.sourceforge.net/download.php"/>.
 				 </para>
+			</body>
+		</sub>
+		<sub name="pocketpc_port">
+			<header>Will a port for Pocket PC be available anytime?</header>
+			<body>
+				<para>
+					We are, actually Colourless is, looking into it. Porting to Pocket PC is not very
+					easy, especially when you consider that Colourless doesn't have a Pocket PC. So 
+					please be patient and don't pester Colourless anymore about it. When it's ready 
+					for testing you will find an announcement on the homepage and the forum.
+				</para>
 			</body>
 		</sub>
 	</section>
@@ -906,6 +929,16 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="stone_of_castambre">
+			<header>Attacking the Stone of Castambre doesn't work (FoV)</header>
+			<body>
+				<para>
+					You need to <em>use</em> (double-click) the pick while it's in your hands
+					instead of attacking with it. After that, select the tree with the resulting
+					crosshairs.
+				</para>
+			</body>
+		</sub>
 		<sub name="pikeman_disappears">
 			<header>Where is the pikeman that lets you train in Monitor (SI)?</header>
 			<body>
@@ -948,7 +981,7 @@
 			</body>
 		</sub>
 		<sub name="xenka_sacrifice">
-			<header>Why won't Xenka speak about sacrifice (SI)</header>
+			<header>Why won't Xenka speak about sacrifice (SI)?</header>
 			<body>
 				<para>
 					For Xenka to speak about sacrifice some parts of the game need to have been played
@@ -961,6 +994,28 @@
 					(see <ref target="serpent_staff"/>) <strong>AND</strong></li>
 					<li>you have not yet healed the Chaos Serpent</li>
 				</ul>
+			</body>
+		</sub>
+		<sub name="si_npc_gone">
+			<header>Where did XY disappear to (SI)?</header>
+			<body>
+				<para>
+					SI is very plot driven, so to stop people from breaking the plot, certain NPCs
+					stay in a unaccessible spot on the map until you meet them by following the plot,
+					or disappear from the map until they are needed again. If you cheat by 
+					teleporting to them before the scripted meeting you are bound to break the plot 
+					and most likely forced to reload an earlier savegame or start the whole game again.<br/>
+					So please take care when teleporting around the map.
+				</para>
+			</body>
+		</sub>
+		<sub name="karnax_gone">
+			<header>Why can't I find Karnax and the other monks (SI)?</header>
+			<body>
+				<para>
+					See the above question. You have to use the Dark Path to make the monks appear 
+					on Monk Island. If you just use the teleport cheat they won't show up.
+				</para>
 			</body>
 		</sub>
 		<sub name="serpent_staff">
@@ -992,16 +1047,6 @@
 				<para>
 					Obviously a slight oversight of the add-on designers. Could be fixed by changing the
 					usecode and the map slightly.
-				</para>
-			</body>
-		</sub>
-		<sub name="stone_of_castambre">
-			<header>Attacking the Stone of Castambre doesn't work (FoV)</header>
-			<body>
-				<para>
-					You need to <em>use</em> (double-click) the pick while it's in your hands
-					instead of attacking with it. After that, select the tree with the resulting
-					crosshairs.
 				</para>
 			</body>
 		</sub>
