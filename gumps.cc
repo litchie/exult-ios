@@ -870,7 +870,7 @@ int Actor_gump_object::find_closest
 	mx -= x; my -= y;		// Get point rel. to us.
 	long closest_squared = 1000000;	// Best distance squared.
 	int closest = -1;		// Best index.
-	for (int i = 0; i < sizeof(coords)/(2*sizeof(coords[0])); i++)
+	for (size_t i = 0; i < sizeof(coords)/(2*sizeof(coords[0])); i++)
 		{
 		int dx = mx - spotx(i), dy = my - spoty(i);
 		long dsquared = dx*dx + dy*dy;
@@ -898,7 +898,7 @@ Actor_gump_object::Actor_gump_object
 	{
 	heart_button = new Heart_gump_button(this, heartx, hearty);
 	disk_button = new Disk_gump_button(this, diskx, disky);
-	for (int i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
+	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 		{			// Set object coords.
 		Game_object *obj = container->get_readied(i);
 		if (obj)
@@ -1012,7 +1012,7 @@ void Actor_gump_object::paint
 	)
 	{
 					// Watch for any newly added objs.
-	for (int i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
+	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 		{			// Set object coords.
 		Game_object *obj = container->get_readied(i);
 		if (obj && !obj->get_cx() && !obj->get_cy())
@@ -1509,7 +1509,7 @@ File_gump_object::File_gump_object
 	) : Modal_gump_object(0, FILEIO), pushed_text(0), focus(0), restored(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	int i;
+	size_t i;
 	int ty = texty;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++, ty += texth)
 		{
@@ -1537,7 +1537,7 @@ File_gump_object::~File_gump_object
 	(
 	)
 	{
-	int i;
+	size_t i;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++)
 		delete names[i];
 	for (i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
@@ -1555,7 +1555,7 @@ int File_gump_object::get_save_index
 	Gump_text *txt
 	)
 	{
-	for (int i = 0; i < sizeof(names)/sizeof(names[0]); i++)
+	for (size_t i = 0; i < sizeof(names)/sizeof(names[0]); i++)
 		if (names[i] == txt)
 			return (i);
 	return (-1);
@@ -1635,7 +1635,7 @@ void File_gump_object::paint
 	{
 	Gump_object::paint(gwin);	// Paint gump & objects.
 					// Paint text objects.
-	int i;
+	size_t i;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++)
 		if (names[i])
 			names[i]->paint();
@@ -1661,7 +1661,7 @@ void File_gump_object::mouse_down
 	if (btn)
 		pushed = btn;
 	else				// Try buttons at bottom.
-		for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
+		for (size_t i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 			if (buttons[i] && buttons[i]->on_button(gwin, mx, my))
 				{
 				pushed = buttons[i];
@@ -1673,7 +1673,7 @@ void File_gump_object::mouse_down
 		return;
 		}
 					// See if on text field.
-	for (int i = 0; i < sizeof(names)/sizeof(names[0]); i++)
+	for (size_t i = 0; i < sizeof(names)/sizeof(names[0]); i++)
 		if (names[i]->on_widget(gwin, mx, my))
 			{
 			pushed_text = names[i];
