@@ -1867,11 +1867,15 @@ GtkWidget *Add_menu_item
 	GtkWidget *menu,		// Menu to add to.
 	const char *label,		// What to put.  NULL for separator.
 	GtkSignalFunc func,		// Handle menu choice.
-	gpointer func_data		// Data passed to func().
+	gpointer func_data,		// Data passed to func().
+	GSList *group			// If a radio menu item is wanted.
 	)
 	{
-	GtkWidget *mitem = label ? gtk_menu_item_new_with_label(label) :
-				gtk_menu_item_new();
+	GtkWidget *mitem = group ? 
+		(label ? gtk_radio_menu_item_new_with_label(group, label)
+				: gtk_radio_menu_item_new(group))
+		: (label ? gtk_menu_item_new_with_label(label) :
+				gtk_menu_item_new());
 	gtk_widget_show(mitem);
 	gtk_menu_append(GTK_MENU(menu), mitem);
 	if (!label)			// Want separator?
