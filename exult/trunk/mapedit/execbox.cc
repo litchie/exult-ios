@@ -26,20 +26,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#include "execbox.h"
+#include <iostream>	/* Debugging only */
+#include <string>
+
+using std::cout;
+using std::endl;
+
 #ifndef WIN32
 
-#include "execbox.h"
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
-#include <iostream>	/* Debugging only */
-#include <string>
-
-using std::cout;
-using std::endl;
 
 /*
  *	Create.
