@@ -1,3 +1,6 @@
+2002-02-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Makefile.am: directory order again. tools depends on shapes&imagewin
+
 2002-02-21  Darke  <darkepaw@users.sourceforge.net>
 	* usecode/ucxt/Makefile.am: Fixed a problem with it not creating
 	the intrinsics data files.
