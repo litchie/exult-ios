@@ -1,22 +1,30 @@
-11/??/00:	v0.95 alpha 1
-		Note: Saved-games are still useable; but you won't see any 
+11/??/00:	v0.90 alpha 1
+		Note: Saved-games are still usable; but you won't see any 
 		hostile NPC's until you start a new game.
 
 		New scaling code contributed by Derek Liauw Kie Fa 
 		(2xSaI filter)
 
-		Exult logo & menu at startup
+		Exult logo & menu at startup & mouse support in menu
 
-		Menu works with mouse
+		Many more cheats (ArchWizard, Hack-mover, ...)
+	
+		Key ring for BG (same as original SI)
 
-		GIMP plugin is functional
+		Improved help
+	
+		About box
 
-		Better SI support
+		GIMP plugin is functional (load & save)
+
+		Better SI support (not playable yet)
 
 		Midi Sound Effects (Windows & Timidity only)
 
-		Tons and tons of fixes
+		Tons and tons of fixes (magic, schedules, weights, dungeons,
+		missile eggs, explosions, invisibility, protection, ...)
 
+		More quotes & credits :-)
 
 8/22/00:	v0.40
 		Note:  ALL save games from before this update are now broken.
