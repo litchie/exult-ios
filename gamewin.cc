@@ -1027,10 +1027,14 @@ int Game_window::find_objects
 	int start_cx = chunkx + (x + 4*lift)/chunksize;
 	int start_cy = chunky + (y + 4*lift)/chunksize;
 
-	// Prevent the selection of indoor items through roofs
-	// unless the player is inside, of course
-	if(!main_actor_inside&&find_roof(start_cx,start_cy))
-		return 0;
+#if 0
+        // Prevent the selection of indoor items through roofs
+        // unless the player is inside, of course
+        // ... Dang. This prevents doors and wall-mounted things
+        // (like plaques) from working. Otherwise it's good
+        if(!main_actor_inside&&find_roof(start_cx,start_cy))
+                return 0;
+#endif
 
 	Game_object *obj;
 	int cnt = 0;			// Count # found.
