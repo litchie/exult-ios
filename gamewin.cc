@@ -710,9 +710,16 @@ Rectangle Game_window::get_shape_rect(const Game_object *obj)
 	int tx, ty, tz;		// Get tile coords.
 	obj->get_abs_tile(tx, ty, tz);
 	int lftpix = 4*tz;
+	tx += 1 - get_scrolltx();
+	ty += 1 - get_scrollty();
+				// Watch for wrapping.
+	if (tx < -c_num_tiles/2)
+		tx += c_num_tiles;
+	if (ty < -c_num_tiles/2)
+		ty += c_num_tiles;
 	return get_shape_rect(s,
-		(tx + 1 - get_scrolltx())*c_tilesize - 1 - lftpix,
-		(ty + 1 - get_scrollty())*c_tilesize - 1 - lftpix);
+		tx*c_tilesize - 1 - lftpix,
+		ty*c_tilesize - 1 - lftpix);
 }
 
 /*
@@ -740,8 +747,15 @@ void Game_window::get_shape_location(Game_object *obj, int& x, int& y)
 	int tx, ty, tz;		// Get tile coords.
 	obj->get_abs_tile(tx, ty, tz);
 	int lft = 4*tz;
-	x = (tx + 1 - scrolltx)*c_tilesize - 1 - lft;
-	y = (ty + 1 - scrollty)*c_tilesize - 1 - lft;
+	tx += 1 - get_scrolltx();
+	ty += 1 - get_scrollty();
+				// Watch for wrapping.
+	if (tx < -c_num_tiles/2)
+		tx += c_num_tiles;
+	if (ty < -c_num_tiles/2)
+		ty += c_num_tiles;
+	x = tx*c_tilesize - 1 - lft;
+	y = ty*c_tilesize - 1 - lft;
 }
 
 /*
@@ -1648,13 +1662,12 @@ void Game_window::view_right
 	(
 	)
 	{
-	if (scrolltx + get_width()/c_tilesize >= c_num_chunks*c_tiles_per_chunk - 1)
-		return;
 	int w = get_width(), h = get_height();
 					// Get current rightmost chunk.
-	int old_rcx = (scrolltx + (w - 1)/c_tilesize)/c_tiles_per_chunk;
-	scrolltx++;			// Increment offset.
-	scroll_bounds.x++;
+	int old_rcx = ((scrolltx + (w - 1)/c_tilesize)/c_tiles_per_chunk)%
+							c_num_chunks;
+	scrolltx = INCR_TILE(scrolltx);
+	scroll_bounds.x = INCR_TILE(scroll_bounds.x);
 	if (mode == gump)		// Gump on screen?
 		{
 		paint();
@@ -1669,20 +1682,22 @@ void Game_window::view_right
 //	add_dirty(Rectangle(w - c_tilesize, 0, c_tilesize, h));
 	paint(w - c_tilesize, 0, c_tilesize, h);
 					// Find newly visible NPC's.
-	int new_rcx = (scrolltx + (w - 1)/c_tilesize)/c_tiles_per_chunk;
+	int new_rcx = ((scrolltx + (w - 1)/c_tilesize)/c_tiles_per_chunk)%
+							c_num_chunks;
 	if (new_rcx != old_rcx)
 		add_nearby_npcs(new_rcx, scrollty/c_tiles_per_chunk, 
-			new_rcx + 1, 
-		    (scrollty + (h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk);
+			INCR_CHUNK(new_rcx),
+	((scrollty + (h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
+							c_num_chunks);
 	}
 void Game_window::view_left
 	(
 	)
 	{
-	if (scrolltx <= 0)
-		return;
-	scrolltx--;
-	scroll_bounds.x--;
+	int old_lcx = (scrolltx/c_tiles_per_chunk)%c_num_chunks;
+					// Want to wrap.
+	scrolltx = DECR_TILE(scrolltx);
+	scroll_bounds.x = DECR_TILE(scroll_bounds.x);
 	if (mode == gump)		// Gump on screen?
 		{
 		paint();
@@ -1696,23 +1711,23 @@ void Game_window::view_left
 //	add_dirty(Rectangle(0, 0, c_tilesize, h));
 	paint(0, 0, c_tilesize, h);
 					// Find newly visible NPC's.
-	int new_lcx = scrolltx/c_tiles_per_chunk;
-	if (new_lcx != (scrolltx + 1)/c_tiles_per_chunk)
+	int new_lcx = (scrolltx/c_tiles_per_chunk)%c_num_chunks;
+	if (new_lcx != old_lcx)
 		add_nearby_npcs(new_lcx, scrollty/c_tiles_per_chunk, 
-			new_lcx + 1, 
-		    (scrollty + (h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk);
+			INCR_CHUNK(new_lcx), 
+	((scrollty + (h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
+							c_num_chunks);
 	}
 void Game_window::view_down
 	(
 	)
 	{
-	if (scrollty + get_height()/c_tilesize >= c_num_chunks*c_tiles_per_chunk - 1)
-		return;
 	int w = get_width(), h = get_height();
 					// Get current bottomost chunk.
-	int old_bcy = (scrollty + (h - 1)/c_tilesize)/c_tiles_per_chunk;
-	scrollty++;
-	scroll_bounds.y++;
+	int old_bcy = ((scrollty + (h - 1)/c_tilesize)/c_tiles_per_chunk)%
+							c_num_chunks;
+	scrollty = INCR_TILE(scrollty);
+	scroll_bounds.y = INCR_TILE(scroll_bounds.y);
 	if (mode == gump)		// Gump on screen?
 		{
 		paint();
@@ -1725,20 +1740,22 @@ void Game_window::view_down
 //	add_dirty(Rectangle(0, h - c_tilesize, w, c_tilesize));
 	paint(0, h - c_tilesize, w, c_tilesize);
 					// Find newly visible NPC's.
-	int new_bcy = (scrollty + (h - 1)/c_tilesize)/c_tiles_per_chunk;
+	int new_bcy = ((scrollty + (h - 1)/c_tilesize)/c_tiles_per_chunk)%
+							c_num_chunks;
 	if (new_bcy != old_bcy)
 	add_nearby_npcs(scrolltx/c_tiles_per_chunk, new_bcy, 
-		    (scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk,
-			new_bcy + 1);
+	    ((scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
+							c_num_chunks,
+			INCR_CHUNK(new_bcy));
 	}
 void Game_window::view_up
 	(
 	)
 	{
-	if (scrollty <= 0)
-		return;
-	scrollty--;
-	scroll_bounds.y--;
+	int old_tcy = (scrollty/c_tiles_per_chunk)%c_num_chunks;
+					// Want to wrap.
+	scrollty = DECR_TILE(scrollty);
+	scroll_bounds.y = DECR_TILE(scroll_bounds.y);
 	if (mode == gump)		// Gump on screen?
 		{
 		paint();
@@ -1752,11 +1769,12 @@ void Game_window::view_up
 //	add_dirty(Rectangle(0, 0, w, c_tilesize));
 	paint(0, 0, w, c_tilesize);
 					// Find newly visible NPC's.
-	int new_tcy = scrollty/c_tiles_per_chunk;
-	if (new_tcy != (scrollty + 1)/c_tiles_per_chunk)
+	int new_tcy = (scrollty/c_tiles_per_chunk)%c_num_chunks;
+	if (new_tcy != old_tcy)
 		add_nearby_npcs(scrolltx/c_tiles_per_chunk, new_tcy,
-		    (scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk,
-								new_tcy + 1);
+	    ((scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
+							c_num_chunks,
+							INCR_CHUNK(new_tcy));
 	}
 
 /*
@@ -2166,19 +2184,19 @@ int Game_window::find_objects
 	)
 	{
 					// Figure chunk #'s.
-	int start_cx = (get_scrolltx() + 
-				(x + 4*lift)/c_tilesize)/c_tiles_per_chunk;
-	int start_cy = (get_scrollty() + 
-				(y + 4*lift)/c_tilesize)/c_tiles_per_chunk;
+	int start_cx = ((get_scrolltx() + 
+		(x + 4*lift)/c_tilesize)/c_tiles_per_chunk)%c_num_chunks;
+	int start_cy = ((get_scrollty() + 
+		(y + 4*lift)/c_tilesize)/c_tiles_per_chunk)%c_num_chunks;
 	Game_object *obj;
 	int cnt = 0;			// Count # found.
 					// Check 1 chunk down & right too.
 	for (int ycnt = 0; ycnt < 2; ycnt++)
 		{
-		int cy = start_cy + ycnt;
+		int cy = (start_cy + ycnt)%c_num_chunks;
 		for (int xcnt = 0; xcnt < 2; xcnt++)
 			{
-			int cx = start_cx + xcnt;
+			int cx = (start_cx + xcnt)%c_num_chunks;
 			Chunk_object_list *olist = objects[cx][cy];
 			if (!olist)
 				continue;
@@ -2276,8 +2294,8 @@ void Game_window::show_items
 		}
 	else				// Obj==0
 		{
-		int tx = get_scrolltx() + x/c_tilesize;
-		int ty = get_scrollty() + y/c_tilesize;
+		int tx = (get_scrolltx() + x/c_tilesize)%c_num_tiles;
+		int ty = (get_scrollty() + y/c_tilesize)%c_num_tiles;
 		int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
 		tx = tx%c_tiles_per_chunk;
 		ty = ty%c_tiles_per_chunk;
@@ -2738,8 +2756,8 @@ void Game_window::add_nearby_npcs
 	)
 	{
 	unsigned long curtime = SDL_GetTicks();
-	for (int cy = from_cy; cy != stop_cy; cy++)
-		for (int cx = from_cx; cx != stop_cx; cx++)
+	for (int cy = from_cy; cy != stop_cy; cy = INCR_CHUNK(cy))
+		for (int cx = from_cx; cx != stop_cx; cx = INCR_CHUNK(cx))
 			for (Npc_actor *npc = get_objects(cx, cy)->get_npcs();
 						npc; npc = npc->get_next())
 				if (!npc->is_nearby())

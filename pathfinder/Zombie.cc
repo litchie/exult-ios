@@ -41,6 +41,10 @@ int Zombie::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *)
 		major_distance = 0;
 		return (0);
 		}		
+	if (deltax < -c_num_tiles/2)	// Wrapping round the world?
+		deltax += c_num_tiles;
+	if (deltay < -c_num_tiles/2)
+		deltay += c_num_tiles;
 	unsigned int abs_deltax, abs_deltay;
 	int x_dir, y_dir;
 	if (deltay >= 0)		// Figure directions.
@@ -104,6 +108,9 @@ int Zombie::GetNextStep(Tile_coord& n)
 					// Update coords. within world.
 	*major_coord += major_dir*major_frame_incr;
 	*minor_coord += minor_dir*minor_frame_incr;
+					// Watch for wrapping.
+	*major_coord = (*major_coord + c_num_tiles)%c_num_tiles;
+	*minor_coord = (*minor_coord + c_num_tiles)%c_num_tiles;
 	n = cur;			// Return new tile.
 					// ++++++For now, ignore tz.
 	return (1);
