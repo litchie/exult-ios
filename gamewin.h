@@ -82,6 +82,7 @@ private:
 					//   0xf4 through 0xfe.
 	Main_actor *main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
+	int skip_above_actor;		// Level above actor to skip rendering.
 	int num_npcs, num_npcs1;	// Numbers of NPC's, type1 NPC's.
 	Actor **npcs;			// List of NPC's + the Avatar.
 	int num_monsters;		// Number of monster types.
@@ -158,6 +159,12 @@ public:
 		{ return get_objects(obj->get_cx(), obj->get_cy()); }
 	Actor *get_main_actor()
 		{ return main_actor; }
+	int set_above_main_actor(int inside, int lift)
+		{			// Use ht=3, round up to nearest 5.
+		int new_skip = !inside ? 31 : ((lift + 3 + 4)/5)*5;
+		return (new_skip == skip_above_actor ? 0
+				: ((skip_above_actor = new_skip), 1));
+		}
 	int check_main_actor_inside()	// See if main actor moved in/out-side.
 		{
 		if (main_actor_inside != get_objects(main_actor->get_cx(),
