@@ -217,7 +217,7 @@ Monster_actor *Monster_actor::create
 	}
 
 	if (sched < 0)			// Set sched. AFTER equipping.
-		sched = (int) Schedule::loiter;
+		sched = static_cast<int>(Schedule::loiter);
 	monster->set_schedule_type(sched);
 	return (monster);
 	}

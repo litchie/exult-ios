@@ -377,8 +377,8 @@ void Cheat::map_teleport (void) const {
 	xx -= x - map->get_xleft() + border;
 	yy -= y - map->get_yabove() + border;
 
-	tx = (int)((xx + 0.5)*worldsize) / (map->get_width() - 2*border);
-	ty = (int)((yy + 0.5)*worldsize) / (map->get_height() - 2*border);
+	tx = static_cast<int>(((xx + 0.5)*worldsize) / (map->get_width() - 2*border));
+	ty = static_cast<int>(((yy + 0.5)*worldsize) / (map->get_height() - 2*border));
 
 	// World-wrapping.
 	tx = (tx + c_num_tiles)%c_num_tiles;

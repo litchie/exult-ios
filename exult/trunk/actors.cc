@@ -168,7 +168,7 @@ void Actor::init
 	(
 	)
 	{
-	if (!frames[(int) north])
+	if (!frames[static_cast<int>(north)])
 		init_default_frames();
 	size_t i;
 	for (i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
@@ -420,7 +420,7 @@ Actor::Actor
 	) : Container_game_object(), name(nm),usecode(uc), 
 	    npc_num(num), face_num(num), party_id(-1), shape_save(-1), 
 	    oppressor(-1), target(0), attack_mode(nearest),
-	    schedule_type((int) Schedule::loiter), schedule(0),
+	    schedule_type(static_cast<int>(Schedule::loiter)), schedule(0),
 	    dormant(true), hit(false), combat_protected(false), 
 	    user_set_attack(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
@@ -646,13 +646,13 @@ void Actor::init_default_frames
 			east_frames[3] = {48, 49, 50},
 			west_frames[3] = {32, 33, 34};
 	frames[static_cast<int> (north)] = new Frames_sequence(3, north_frames);
-	frames[static_cast<int> (northeast)] = frames[(int) north];
+	frames[static_cast<int> (northeast)] = frames[static_cast<int>(north)];
 	frames[static_cast<int> (south)] = new Frames_sequence(3, south_frames);
-	frames[static_cast<int> (southwest)] = frames[(int) south];
+	frames[static_cast<int> (southwest)] = frames[static_cast<int>(south)];
 	frames[static_cast<int> (east)] = new Frames_sequence(3, east_frames);
-	frames[static_cast<int> (southeast)] = frames[(int) east];
+	frames[static_cast<int> (southeast)] = frames[static_cast<int>(east)];
 	frames[static_cast<int> (west)] = new Frames_sequence(3, west_frames);
-	frames[static_cast<int> (northwest)] = frames[(int) west];
+	frames[static_cast<int> (northwest)] = frames[static_cast<int>(west)];
 #endif
 	}
 
@@ -2217,28 +2217,28 @@ int Actor::figure_warmth
 
 	int warmth = -75;		// Base value.
 	int frnum;
-	Game_object *worn = spots[(int) head];
+	Game_object *worn = spots[static_cast<int>(head)];
 	if (worn && worn->get_shapenum() == 1004 &&
 	    (frnum = worn->get_framenum()) < sizeof(hats)/sizeof(hats[0]))
 		warmth += hats[frnum];
 	if (worn && worn->get_shapenum() == 1013)
 		warmth += hats[1]; // Helm of Light behaves like fur hat
-	worn = spots[(int) cloak_spot];	// Cloak.
+	worn = spots[static_cast<int>(cloak_spot)];	// Cloak.
 	if (worn && worn->get_shapenum() == 227 &&
 	    (frnum = worn->get_framenum()) < sizeof(cloaks)/sizeof(cloaks[0]))
 		warmth += cloaks[frnum];
-	worn = spots[(int) feet];
+	worn = spots[static_cast<int>(feet)];
 	if (worn && worn->get_shapenum() == 587 &&
 	    (frnum = worn->get_framenum()) < sizeof(boots)/sizeof(boots[0]))
 		warmth += boots[frnum];
 					// Leather armor?
-	worn = spots[(int) torso];
+	worn = spots[static_cast<int>(torso)];
 	if (worn && worn->get_shapenum() == 569)
 		warmth += 20;
-	worn = spots[(int) hands2_spot];// Gloves?
+	worn = spots[static_cast<int>(hands2_spot)];// Gloves?
 	if (worn && worn->get_shapenum() == 579)
 		warmth += 7;
-	worn = spots[(int) legs];	// Legs?
+	worn = spots[static_cast<int>(legs)];	// Legs?
 	if (worn)
 		switch (worn->get_shapenum())
 			{
@@ -2690,8 +2690,8 @@ static int Get_effective_prop
 	{
 	if (!npc)
 		return defval;
-	int val = npc->get_property((int) prop);
-	switch ((int) prop)
+	int val = npc->get_property(static_cast<int>(prop));
+	switch (static_cast<int>(prop))
 		{
 	case Actor::dexterity:
 	case Actor::intelligence:
@@ -2804,8 +2804,8 @@ bool Actor::figure_hit_points
 			set_flag(Obj_flags::poisoned);
 		if (powers&Weapon_info::magebane)
 			{
-			int mana = properties[(int) Actor::mana];
-			set_property((int) Actor::mana, 
+			int mana = properties[static_cast<int>(Actor::mana)];
+			set_property(static_cast<int>(Actor::mana), 
 					mana > 1 ? rand()%(mana - 1) : 0);
 					// Vasculio the Vampire?
 			if (npc_num == 294 && GAME_SI)
@@ -2855,9 +2855,9 @@ bool Actor::figure_hit_points
 		" for " << hp << " hit points, leaving " <<
 		properties[static_cast<int>(health)] << " remaining" << endl;
 //	cout << "Attack damage was " << hp << " hit points, leaving " << 
-//		properties[(int) health] << " remaining" << endl;
+//		properties[static_cast<int>(health)] << " remaining" << endl;
 	if (!defeated && minf && minf->splits() && rand()%2 == 0 && 
-	    properties[(int) health] > 0)
+	    properties[static_cast<int>(health)] > 0)
 		clone();
 
 	return defeated;
@@ -2954,7 +2954,7 @@ void Actor::die
 		if (get_cx() == 255)	// Invalid now?
 			return;
 		}
-	properties[(int) health] = -50;
+	properties[static_cast<int>(health)] = -50;
 	Shape_info& info = gwin->get_info(get_shapenum());
 	Monster_info *minfo = info.get_monster_info();
 					// See if we need a body.

@@ -152,8 +152,8 @@ Path_walking_actor_action::Path_walking_actor_action
 	if (!path)
 		path = new Astar();
 	Tile_coord src = path->get_src(), dest = path->get_dest();
-	original_dir = (int) Get_direction4(
-				src.ty - dest.ty, dest.tx - src.tx);
+	original_dir = static_cast<int>(Get_direction4(
+				src.ty - dest.ty, dest.tx - src.tx));
 	}
 
 /*
@@ -242,7 +242,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		return (0);
 		}
 	Tile_coord cur = actor->get_abs_tile_coord();
-	int newdir = (int) Get_direction4(cur.ty - tile.ty, tile.tx - cur.tx);
+	int newdir = static_cast<int>(Get_direction4(cur.ty - tile.ty, tile.tx - cur.tx));
 	Frames_sequence *frames = actor->get_frames(newdir);
 	if (!frame_index)		// First time?  Init.
 		frame_index = frames->find_unrotated(actor->get_framenum());
