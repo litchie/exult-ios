@@ -3,6 +3,13 @@
 	tools/ipack.cc, tools/textpack.cc, usecode/ucxt/src/ucxt.cc: fixed
 	namespace issues, and casting.
 
+2002-03-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/*:  Implemented preferences dialog.
+	* shapes/vgafile.cc (Shape_frame): Datalen wasn't set right for
+	flats.
+	* mapedit/shapelst.cc,etc:  Re-import shapes that have been modified.
+
 2002-03-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* tools/uctools.h: added 32 bit opcodes
 	* usecode/*, tools/wud.c: support for 32 bit opcodes and headers
