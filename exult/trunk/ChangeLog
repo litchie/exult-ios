@@ -1,3 +1,7 @@
+2000-09-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs.cc: Explosions do damage.
+
 2000-09-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode.cc,effects.cc: Showing explosions.

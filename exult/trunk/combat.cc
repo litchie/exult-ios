@@ -81,7 +81,8 @@ void Combat_schedule::find_opponents
 	    npc != gwin->get_main_actor())
 		{
 		Game_object *opp = gwin->get_main_actor()->get_opponent();
-		if (opp && opp != npc)
+		if (opp && opp != npc && (opp->get_npc_num() >= 0 ||
+					opp->is_monster()))
 			opponents.append(opp);
 		}
 	}		
@@ -372,7 +373,7 @@ void Combat_schedule::now_what
 						Get_tiles(opponent)))
 			{
 			int dir = npc->get_direction(opponent);
-			opponent->attacked(npc);
+			opponent = opponent->attacked(npc);
 			gwin->add_dirty(npc);
 			npc->set_frame(npc->get_dir_framenum(dir,
 							Actor::standing));
