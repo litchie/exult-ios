@@ -50,6 +50,17 @@
 //#define DEBUG_PARSE2a
 //#define DEBUG_PRINT
 
+using std::ostream;
+using std::ifstream;
+using std::string;
+using std::vector;
+using std::map;
+using std::endl;
+using std::pair;
+using std::ios;
+using std::streampos;
+using std::cout;
+
 const string VARNAME = "var";
 const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
@@ -81,7 +92,7 @@ inline ostream &tab_indent(const unsigned int indent, ostream &o)
 	return o;
 }
 
-void UCFunc::output_list(ostream &o, unsigned int funcno, bool debug)
+void UCFunc::output_list(ostream &o, unsigned int funcno, const UCOptions &options)
 {
 	o << "#" << std::setbase(10) << std::setw(4) << funcno << std::setbase(16) << ": "
 	  << (return_var ? '&' : ' ')
@@ -91,13 +102,13 @@ void UCFunc::output_list(ostream &o, unsigned int funcno, bool debug)
 	  << std::setw(4) << _datasize  << "  "
 	  << std::setw(4) << codesize() << "  ";
 	
-	if(debug)
+	if(options.ucdebug)
 		o << _data.find(0)->second;
 	
 	o << endl;
 }
 
-void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment)
+void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCOptions &options)
 {
 	unsigned int indent=0;
 	
@@ -123,7 +134,7 @@ void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	
 	if(_num_locals>0) o << endl;
 	
-	output_ucs_data(o, funcmap, intrinsics, uselesscomment, indent);
+	output_ucs_data(o, funcmap, intrinsics, options, indent);
 	
 	tab_indent(--indent, o) << '}' << endl;
 }
@@ -166,7 +177,7 @@ ostream &UCFunc::output_ucs_funcname(ostream &o, const FuncMap &funcmap,
 	return o;
 }
 
-void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, unsigned int indent)
+void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCOptions &options, unsigned int indent)
 {
 	vector<unsigned int> labeltmp(1);
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
@@ -182,7 +193,7 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsig
 		{
 			const UCc &ucc = *(j->first);
 			
-			if(uselesscomment)
+			if(options.uselesscomment)
 				tab_indent(indent, o) << "// Offset: " << std::setw(4) << ucc._offset << endl;
 
 			output_ucs_opcode(o, funcmap, opcode_table_data, ucc, intrinsics, indent);
@@ -238,7 +249,7 @@ inline void gc_gotoset(vector<GotoSet> &gotoset)
 	}
 }
 
-void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool basic)
+void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCOptions &options)
 {
 	for(vector<UCc>::iterator i=_opcodes.begin(); i!=_opcodes.end(); i++)
 		node.nodelist.push_back(new UCNode(&(*i)));
@@ -247,7 +258,7 @@ void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &
 	parse_ucs_pass2(gotoset, funcmap, intrinsics);
 	gc_gotoset(gotoset);
 	
-	if(!basic)
+	if(!options.basic)
 	{
 		parse_ucs_pass3(gotoset, intrinsics);
 	}
@@ -319,8 +330,6 @@ void UCFunc::parse_ucs_pass2(vector<GotoSet> &gotoset, const FuncMap &funcmap, c
 		parse_ucs_pass2a((*i)().rbegin(), (*i)(), 0, funcmap, intrinsics);
 	}
 }
-
-extern UCData uc;
 
 vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics)
 {
@@ -467,131 +476,6 @@ inline unsigned char read_ubyte(ifstream &f)
   return static_cast<unsigned char>(f.get());
 }
 
-void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd);
-
-void readbin_UCFunc(ifstream &f, UCFunc &ucf)
-{
-
-	// offset to start of function
-	ucf._offset = f.tellg();
-	DEBUG_READ_PAIR("Offset: ", ucf._offset);
-
-	// Read Function Header
-	
-	ucf._funcid = read_ushort(f);
-	DEBUG_READ_PAIR("FuncID: ", ucf._funcid);
-	ucf._funcsize = read_ushort(f);	
-	DEBUG_READ_PAIR("FuncSize: ", ucf._funcsize);
-	
-	// save body offset in case we need it
-	ucf._bodyoffset = f.tellg();
-	
-	ucf._datasize = read_ushort(f);
-	
-	// process ze data segment!
-	{
-		streampos pos = f.tellg(); // paranoia
-	
-		unsigned short off = 0;
-		// Load all strings & their offsets
-		while( off < ucf._datasize )
-		{
-			assert(!f.eof());
-	
-			char c;
-			string data;
-	
-			while((c=f.get())!=0x00)
-				data+=c;
-	
-			ucf._data.insert(pair<unsigned int, string>(off, data));
-	
-			off+=data.size()+1;
-	
-		}
-		f.seekg(pos, ios::beg); // paranoia
-		f.seekg(ucf._datasize, ios::cur); // paranoia
-	}
-
-	#if 0	
-	if(ucf._funcid==_search_func)
-		for(map<unsigned int, string>::iterator i=ucf._data.begin(); i!=ucf._data.end(); i++)
-			cout << i->first << "\t" << i->second << endl;
-	#endif
-	
-	// process code segment
-	{
-		//streampos start_of_code_seg = f.tellg(); // what's this used for?
-		ucf._codeoffset = f.tellg();
-
-		// get the number of arguments to the function
-		ucf._num_args = read_ushort(f);
-
-		// get the number of local variables
-		ucf._num_locals = read_ushort(f);
-
-		// get the number of external function numbers
-		ucf._num_externs = read_ushort(f);
-		
-		// load the external function numbers
-		for(unsigned int i=0; i<ucf._num_externs; i++)
-			ucf._externs.push_back(read_ushort(f));
-		
-		// ok, now to load the usecode
-		unsigned int code_offset=0;
-
-		unsigned int code_size = ucf._funcsize - ucf._datasize - ((3+ucf._num_externs) * SIZEOF_USHORT);
-		
-		DEBUG_READ_PAIR("Code Size: ", code_size);
-
-		while(code_offset<(code_size-2)) //TODO: Why the -2?!? it doesn't work otherwise
-		{
-			UCc ucop;
-
-			ucop._offset = code_offset;
-
-			ucop._id = read_ubyte(f);
-			code_offset++;
-
-			const UCOpcodeData &otd = opcode_table_data[ucop._id];
-
-			//assert(((otd.asm_nmo.size()!=0) && (otd.ucs_nmo.size()!=0)));
-			for(unsigned int i=0; i<otd.num_bytes; i++)
-				ucop._params.push_back(read_ubyte(f));
-
-			// parse the parameters
-			ucc_parse_parambytes(ucop, otd);
-
-			code_offset+=otd.num_bytes;
-
-			/* if we're an opcode that sets a return value, we need to mark the
-				function as one that returns a value */
-			if(otd.flag_return==true)
-				ucf.return_var=true;
-			
-			/* if we're a function debugging opcode, set the debuging flag, and
-				assign the variable name string offset
-				TODO: Add this to opcodes.txt */
-			if((uc.game_bg() || uc.game_si()) && ucop._id==0x4D)
-			{
-				ucf.debugging_info=true;
-				assert(ucop._params_parsed.size()>=2);
-				ucf.debugging_offset = ucop._params_parsed[1];
-				ucf.funcname = ucf._data.find(0x0000)->second;
-			}
-			
-			ucf._opcodes.push_back(ucop);
-
-			#ifdef DEBUG_READ
-			cout << std::setw(4) << code_size << "\t" << std::setw(4) << code_offset << "\t" << std::setw(4) << (unsigned int)ucop._offset << "\t" << std::setw(2) << (unsigned int)ucop._id << "\t";
-			for(unsigned int i=0; i<ucop._params.size(); i++)
-				cout << std::setw(2) << (unsigned int)ucop._params[i] << ',';
-			cout << endl;
-			#endif
-		}
-	}
-}
-
 /* calculates the relative offset jump location, used in opcodes jmp && jne */
 inline int calcreloffset(const UCc &op, unsigned int param)
 {
@@ -636,7 +520,6 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 	}
 }
 
-
 void print_asm_data(UCFunc &ucf, ostream &o);
 void print_asm_opcodes(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const vector<UCOpcodeData> &optab);
 
@@ -644,7 +527,7 @@ void print_asm_opcodes(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const ma
    the output of the original ucdump... */
 void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCData &uc)
 {
-	if(uc.verbose()) cout << "Printing function..." << endl;
+	if(uc.options.verbose) cout << "Printing function..." << endl;
 
 	o << "Function at file offset " << std::setw(8) << ucf._offset << "H" << endl;
 	o << "\t.funcnumber  " << std::setw(4) << ucf._funcid << "H" << endl;
@@ -665,8 +548,6 @@ void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const map<unsign
 	for(unsigned int i=0; i<ucf._externs.size(); i++)
 		o << '\t' << "  .extern    " << std::setw(4) << ucf._externs[i] << "H" << endl;
 
-	//o << "-----" << endl;
-    //_opcodes[i]->print_asm(cout);
 	for(vector<UCc>::iterator op=ucf._opcodes.begin(); op!=ucf._opcodes.end(); op++)
 		print_asm_opcode(o, ucf, funcmap, opcode_table_data, intrinsics, *op);
 }
@@ -693,26 +574,6 @@ void print_asm_data(UCFunc &ucf, ostream &o)
 	}
 }
 
-void output_raw_opcodes(ostream &o, const UCc &op);
-
-extern UCData uc;
-
-void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const map<unsigned int, string> &intrinsics, const UCc &op)
-{
-	// offset
-	o << std::setw(4) << op._offset << ':';
-
-	if(uc.rawops()) output_raw_opcodes(o, op);
-	else            o << '\t';
-
-	o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_nmo, op._params_parsed, intrinsics, op, false);
-
-	if(uc.autocomment())
-		o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_comment, op._params_parsed, intrinsics, op, false);
-
-	o << endl;
-}
-
 void output_raw_opcodes(ostream &o, const UCc &op)
 {
 	// chars in opcode
@@ -737,6 +598,24 @@ void output_raw_opcodes(ostream &o, const UCc &op)
 		o << "\t";
 	else
 		o << "\t\t";
+}
+
+extern UCData uc;
+
+void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const map<unsigned int, string> &intrinsics, const UCc &op)
+{
+	// offset
+	o << std::setw(4) << op._offset << ':';
+
+	if(uc.options.rawops) output_raw_opcodes(o, op);
+	else            o << '\t';
+
+	o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_nmo, op._params_parsed, intrinsics, op, false);
+
+	if(uc.options.autocomment)
+		o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_comment, op._params_parsed, intrinsics, op, false);
+
+	o << endl;
 }
 
 inline unsigned int charnum2uint(const char c)
@@ -849,10 +728,6 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 							for(string::size_type i=0; i<s.size(); i++)
 								if((s[i]=='\"') || (s[i]=='\\'))
 								{
-									// Formerly:
-									// z= s.insert(z, 1, '\\');
-									// But as we all know, insert is void.
-									// What behaviour were we relying on?
 									s.insert(i, "\\");
 									++i;
 								}
@@ -967,5 +842,133 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 	
 	str << std::ends;
 	return str.str();
+}
+
+void readbin_U7UCFunc(ifstream &f, UCFunc &ucf)
+{
+
+	// offset to start of function
+	ucf._offset = f.tellg();
+	DEBUG_READ_PAIR("Offset: ", ucf._offset);
+
+	// Read Function Header
+	
+	ucf._funcid = read_ushort(f);
+	DEBUG_READ_PAIR("FuncID: ", ucf._funcid);
+	ucf._funcsize = read_ushort(f);	
+	DEBUG_READ_PAIR("FuncSize: ", ucf._funcsize);
+	
+	// save body offset in case we need it
+	ucf._bodyoffset = f.tellg();
+	
+	ucf._datasize = read_ushort(f);
+	
+	// process ze data segment!
+	{
+		streampos pos = f.tellg(); // paranoia
+	
+		unsigned short off = 0;
+		// Load all strings & their offsets
+		while( off < ucf._datasize )
+		{
+			assert(!f.eof());
+	
+			char c;
+			string data;
+	
+			while((c=f.get())!=0x00)
+				data+=c;
+	
+			ucf._data.insert(pair<unsigned int, string>(off, data));
+	
+			off+=data.size()+1;
+	
+		}
+		f.seekg(pos, ios::beg); // paranoia
+		f.seekg(ucf._datasize, ios::cur); // paranoia
+	}
+
+	#if 0	
+	if(ucf._funcid==_search_func)
+		for(map<unsigned int, string>::iterator i=ucf._data.begin(); i!=ucf._data.end(); i++)
+			cout << i->first << "\t" << i->second << endl;
+	#endif
+	
+	// process code segment
+	{
+		//streampos start_of_code_seg = f.tellg(); // what's this used for?
+		ucf._codeoffset = f.tellg();
+
+		// get the number of arguments to the function
+		ucf._num_args = read_ushort(f);
+
+		// get the number of local variables
+		ucf._num_locals = read_ushort(f);
+
+		// get the number of external function numbers
+		ucf._num_externs = read_ushort(f);
+		
+		// load the external function numbers
+		for(unsigned int i=0; i<ucf._num_externs; i++)
+			ucf._externs.push_back(read_ushort(f));
+		
+		// ok, now to load the usecode
+		unsigned int code_offset=0;
+
+		unsigned int code_size = ucf._funcsize - ucf._datasize - ((3+ucf._num_externs) * SIZEOF_USHORT);
+		
+		DEBUG_READ_PAIR("Code Size: ", code_size);
+
+		while(code_offset<(code_size-2)) //TODO: Why the -2?!? it doesn't work otherwise
+		{
+			UCc ucop;
+
+			ucop._offset = code_offset;
+
+			ucop._id = read_ubyte(f);
+			code_offset++;
+
+			const UCOpcodeData &otd = opcode_table_data[ucop._id];
+
+			//assert(((otd.asm_nmo.size()!=0) && (otd.ucs_nmo.size()!=0)));
+			for(unsigned int i=0; i<otd.num_bytes; i++)
+				ucop._params.push_back(read_ubyte(f));
+
+			// parse the parameters
+			ucc_parse_parambytes(ucop, otd);
+
+			code_offset+=otd.num_bytes;
+
+			/* if we're an opcode that sets a return value, we need to mark the
+				function as one that returns a value */
+			if(otd.flag_return==true)
+				ucf.return_var=true;
+			
+			/* if we're a function debugging opcode, set the debuging flag, and
+				assign the variable name string offset
+				TODO: Add this to opcodes.txt */
+			if((uc.options.game_bg() || uc.options.game_si()) && ucop._id==0x4D)
+			{
+				ucf.debugging_info=true;
+				assert(ucop._params_parsed.size()>=2);
+				ucf.debugging_offset = ucop._params_parsed[1];
+				ucf.funcname = ucf._data.find(0x0000)->second;
+			}
+			
+			ucf._opcodes.push_back(ucop);
+
+			#ifdef DEBUG_READ
+			cout << std::setw(4) << code_size << "\t" << std::setw(4) << code_offset << "\t" << std::setw(4) << (unsigned int)ucop._offset << "\t" << std::setw(2) << (unsigned int)ucop._id << "\t";
+			for(unsigned int i=0; i<ucop._params.size(); i++)
+				cout << std::setw(2) << (unsigned int)ucop._params[i] << ',';
+			cout << endl;
+			#endif
+		}
+	}
+}
+
+void readbin_U8UCFunc(ifstream &f, UCFunc &ucf)
+{
+
 }
 

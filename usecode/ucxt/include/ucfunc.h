@@ -26,34 +26,21 @@
 #include <fstream>
 #include "ucc.h"
 
-using std::vector;
-using std::string;
-using std::map;
-using std::pair;
-using std::ostream;
-using std::ifstream;
-using std::cout;
-using std::endl;
-using std::streampos;
-using std::ios;
-using std::cout;
-using std::cerr;
-
 class UCFuncSet
 {
 	public:
-		UCFuncSet(unsigned short new_funcid, unsigned short new_num_args, bool new_return_var, const string &new_funcname)
+		UCFuncSet(unsigned short new_funcid, unsigned short new_num_args, bool new_return_var, const std::string &new_funcname)
 		         : funcid(new_funcid), num_args(new_num_args), return_var(new_return_var), funcname(new_funcname) {};
 		~UCFuncSet() {};
 		
 		unsigned short funcid;      // the id of the function
 		unsigned short num_args;    // the number of arguments
 		bool           return_var;  // if true, the function returns a variable
-		string         funcname;    // the name of the function, if it has one
+		std::string    funcname;    // the name of the function, if it has one
 };
 
-typedef map<unsigned short, UCFuncSet> FuncMap;
-typedef pair<unsigned short, UCFuncSet> FuncMapPair;	
+typedef std::map<unsigned short, UCFuncSet> FuncMap;
+typedef std::pair<unsigned short, UCFuncSet> FuncMapPair;	
 
 //#define DEBUG_GOTOSET
 const unsigned int SIZEOF_USHORT = 2;
@@ -129,12 +116,12 @@ class UCNode
 {
 	public:
 		UCNode(UCc *newucc=0) : ucc(newucc) { };
-		UCNode(vector<UCNode *>::iterator beg, vector<UCNode *>::iterator end)
+		UCNode(std::vector<UCNode *>::iterator beg, std::vector<UCNode *>::iterator end)
 		      : ucc(new UCc()), nodelist(beg, end) { };
 		~UCNode() { };
 	
 		UCc *ucc;
-		vector<UCNode *> nodelist;
+		std::vector<UCNode *> nodelist;
 };
 
 #include "opcodes.h"
@@ -150,14 +137,14 @@ class GotoSet
 		};
 		GotoSet(UCc *ucc) : _offset(ucc->_offset) { add(ucc); };
 
-		vector<pair<UCc *, bool> > &operator()() { return _uccs; };
+		std::vector<std::pair<UCc *, bool> > &operator()() { return _uccs; };
 		
 		UCc &operator[](const unsigned int i) { return *(_uccs[i].first); };
 		unsigned int size() const { return _uccs.size(); };
 
 		void add(UCc *ucc, bool gc=false)
 		{
-			_uccs.push_back(pair<UCc *, bool>(ucc, gc));
+			_uccs.push_back(std::pair<UCc *, bool>(ucc, gc));
 		};
 
 		/* Just a quick function to remove all the Uccs in _uccs marked for
@@ -167,7 +154,7 @@ class GotoSet
 			for(GotoSet::iterator j=_uccs.begin(); j!=_uccs.end();)
 			{
 				#ifdef DEBUG_GOTOSET
-				cout << "OP: " << opcode_table_data[j->first->_id].ucs_nmo << '\t' << j->second;
+				std::cout << "OP: " << opcode_table_data[j->first->_id].ucs_nmo << '\t' << j->second;
 				#endif
 				if(j->second==true)
 				{
@@ -177,7 +164,7 @@ class GotoSet
 					if(j==_uccs.begin()) begin=true;
 					
 					#ifdef DEBUG_GOTOSET
-					cout << "\tremoved";
+					std::cout << "\tremoved";
 					#endif
 					
 					GotoSet::iterator rem(j);
@@ -189,24 +176,24 @@ class GotoSet
 					if(begin==true) j=_uccs.begin();
 					else            j++;
 					
-					if(j==_uccs.end()) cout << "POTENTIAL PROBLEM" << endl;
+					if(j==_uccs.end()) std::cout << "POTENTIAL PROBLEM" << std::endl;
 				}
 				else
 					j++;
 				
 				#ifdef DEBUG_GOTOSET
-				cout << endl;
+				std::cout << std::endl;
 				#endif
 			}
 		};
 		
 		unsigned int offset() const { return _offset; };
 
-		typedef vector<pair<UCc *, bool> >::iterator iterator;
+		typedef std::vector<std::pair<UCc *, bool> >::iterator iterator;
 		
 	private:
 		unsigned int _offset;
-		vector<pair<UCc *, bool> > _uccs;
+		std::vector<std::pair<UCc *, bool> > _uccs;
 };
 
 class UCOpcodeData;
@@ -218,63 +205,64 @@ class UCFunc
 		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0),
 		           return_var(false), debugging_info(false), debugging_offset(0) {};
 
-		void output_list(ostream &o, unsigned int funcno, bool debug);
+		void output_list(std::ostream &o, unsigned int funcno, const UCOptions &options);
 		
 		// temp passing UCData, probably shouldn't need it.
-		void output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment);
-		ostream &output_ucs_funcname(ostream &o, const FuncMap &funcmap,
+		void output_ucs(std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options);
+		std::ostream &output_ucs_funcname(std::ostream &o, const FuncMap &funcmap,
                                     unsigned int funcid,
                                     unsigned int numargs, bool return_var);
-		void output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, const map<unsigned int, string> &intrinsics, unsigned int indent);
-		void output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, unsigned int indent);
-		void output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, const map<unsigned int, string> &intrinsics, unsigned int indent);
+		void output_ucs_node(std::ostream &o, const FuncMap &funcmap, UCNode* ucn, const std::map<unsigned int, std::string> &intrinsics, unsigned int indent);
+		void output_ucs_data(std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options, unsigned int indent);
+		void output_ucs_opcode(std::ostream &o, const FuncMap &funcmap, const std::vector<UCOpcodeData> &optab, const UCc &op, const std::map<unsigned int, std::string> &intrinsics, unsigned int indent);
 		
-		void parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool basic);
-		void parse_ucs_pass1(vector<UCNode *> &nodes);
-		void parse_ucs_pass2(vector<GotoSet> &gotoset, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics);
-		vector<UCc *> parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_iterator current,
-		                               vector<pair<UCc *, bool> > &vec, unsigned int opsneeded,
-		                               const FuncMap &funcmap, const map<unsigned int, string> &intrinsics);
-		void parse_ucs_pass3(vector<GotoSet> &gotoset, const map<unsigned int, string> &intrinsics);
+		void parse_ucs(const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options);
+		void parse_ucs_pass1(std::vector<UCNode *> &nodes);
+		void parse_ucs_pass2(std::vector<GotoSet> &gotoset, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics);
+		std::vector<UCc *> parse_ucs_pass2a(std::vector<std::pair<UCc *, bool> >::reverse_iterator current,
+		                               std::vector<std::pair<UCc *, bool> > &vec, unsigned int opsneeded,
+		                               const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics);
+		void parse_ucs_pass3(std::vector<GotoSet> &gotoset, const std::map<unsigned int, std::string> &intrinsics);
 
 //	private:
 	
-		vector<GotoSet> gotoset;
+		std::vector<GotoSet> gotoset;
 		
-		streampos      _offset;      // offset to start of function
+		std::streampos _offset;      // offset to start of function
 		unsigned short _funcid;      // the id of the function
 		unsigned short _funcsize;    // the size of the function (bytes)
-		streampos      _bodyoffset;  // the file position after the header is read
+		std::streampos _bodyoffset;  // the file position after the header is read
 		
 		unsigned short _datasize;    // the size of the data block
 		
-		map<unsigned int, string, std::less<unsigned int> > _data;
+		std::map<unsigned int, std::string, std::less<unsigned int> > _data;
 			// contains the entire data segment in offset from start of segment, and string data pairs
 		
-		streampos      _codeoffset; // the offset to the start of the code segment
+		std::streampos _codeoffset; // the offset to the start of the code segment
 		
 		unsigned int _num_args;    // the number of arguments
 		unsigned int _num_locals;  // the number of local variables
 		unsigned int _num_externs; // the number of external function id's
-		vector<unsigned short> _externs; // the external function id's
+		std::vector<unsigned short> _externs; // the external function id's
 		
-		vector<UCc> _opcodes;
+		std::vector<UCc> _opcodes;
 		
 		bool           return_var; // does the function return a variable?
 		bool           debugging_info;
 		unsigned int   debugging_offset;
-		string         funcname;
+		std::string    funcname;
 		
 		unsigned short codesize() const { return _funcsize - _datasize; };
 		
 		// the following vars are for data compatibility with the original UCFunc
-		vector<FlagData *>   _flagcount;
+		std::vector<FlagData *>   _flagcount;
 		UCNode node;
 };
 
-void readbin_UCFunc(ifstream &f, UCFunc &ucf);
+void readbin_U7UCFunc(std::ifstream &f, UCFunc &ucf);
+void readbin_U8UCFunc(std::ifstream &f, UCFunc &ucf);
 class UCData;
-void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCData &uc);
+void print_asm(UCFunc &ucf, std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCData &uc);
 
 #endif
 
