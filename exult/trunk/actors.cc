@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Zombie.h"
 #include "Astar.h"
 #include "dir.h"
+#include "items.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 Equip_record *Monster_info::equip = 0;
@@ -831,7 +832,17 @@ int Actor::figure_hit_points
 			weapon - armor;
 	if (hp < 1)
 		hp = 1;
+	int oldhealth = properties[(int) health];
+	int maxhealth = properties[(int) strength];
 	properties[(int) health] -= hp;	// Subtract from health.
+	if (oldhealth >= maxhealth/2 && properties[(int) health] <
+					maxhealth/2 && rand()%3 != 0)
+		{			// A little oomph.
+		Game_window *gwin = Game_window::get_game_window();
+		Rectangle box = gwin->get_shape_rect(this);
+		int which = rand()%(last_ouch - first_ouch + 1);
+		gwin->add_text(item_names[first_ouch + which], box.x, box.y);
+		}
 	cout << "Attack damage was " << hp << " hit points, leaving " << 
 		properties[(int) health] << " remaining" << endl;
 	return hp;

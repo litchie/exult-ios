@@ -417,8 +417,11 @@ public:
 	void paint_dirty()		// Paint 'dirty' rectangle.
 		{
 		if (dirty.w > 0)
-			paint(dirty);
-		clear_dirty();
+			{
+			Rectangle box = dirty;
+			clear_dirty();
+			paint(box);	// (Could create new dirty rects.)
+			}
 		}
 	void set_all_dirty()		// Whole window.
 		{ dirty = Rectangle(0, 0, get_width(), get_height()); }
@@ -468,7 +471,8 @@ public:
 		{
 		main_actor->walk_to_point(get_scrolltx()*tilesize + winx, 
 				get_scrollty()*tilesize + winy, speed);
-		main_actor->get_followers();
+		if (!in_combat())
+			main_actor->get_followers();
 		}
 	void stop_actor();		// Stop main actor.
 					// Find gump (x, y) is in.
