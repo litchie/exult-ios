@@ -451,9 +451,9 @@ public:
 	void paint_chunk_flats(int cx, int cy);
 					// Paint objects in given chunk at
 					//   given lift.
-	void paint_chunk_objects(int at_lift, int cx, int cy, int flat_only);
+	int paint_chunk_objects(int cx, int cy);
 					// Paint an obj. after dependencies.
-	void paint_object(Game_object *obj, int at_lift, int flat_only);
+	void paint_object(Game_object *obj);
 					// Fade palette in/out.
 	void fade_palette(int cycles, int inout, int pal_num = -1);
 	void flash_palette_red();	// Flash red for a moment.
