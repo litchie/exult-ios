@@ -1,3 +1,6 @@
+2002-07-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* orangedress.shp, bluedress.shp: new paperdoll art by sbx
+
 2002-07-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actorio.cc,flags.h,actors.h:  Figured out that 'zombie' is
@@ -18,7 +21,6 @@
 2002-07-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Spellbook_gump.cc: fixed up offsets; fixed NULL shape error
 
->>>>>>> 1.1524.2.42
 2002-07-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/egg.cc (Egg_object): Fixed bug that was corrupting
