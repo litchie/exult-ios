@@ -46,7 +46,7 @@ public:
 	Tile_coord get_pos()
 		{ return pos; }
 					// Write out to IREG file.
-	virtual void write_ireg(std::ostream& out);
+	virtual void write_ireg(DataSource* out);
 	};
 
 #endif

@@ -95,7 +95,7 @@ public:
 	uint32 get_flags2() const { return flags2; }
 
 					// Write out to IREG file.
-	virtual void write_ireg(std::ostream& out);
+	virtual void write_ireg(DataSource* out);
 	int	lowlift;
 	int highshape;
 	virtual int get_high_shape() const { return highshape; };

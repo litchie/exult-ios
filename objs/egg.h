@@ -145,7 +145,7 @@ public:
 	virtual int is_egg() const	// An egg?
 		{ return 1; }
 					// Write out to IREG file.
-	virtual void write_ireg(std::ostream& out);
+	virtual void write_ireg(DataSource* out);
 
 	virtual void reset() 
 		{ flags &= ~(1 << hatched); }
@@ -196,7 +196,7 @@ public:
 	virtual void activate(Usecode_machine *umachine, Game_object *obj,
 							int must = 0);
 					// Write out to IREG file.
-	virtual void write_ireg(std::ostream& out);
+	virtual void write_ireg(DataSource* out);
 	};
 
 /*
@@ -227,6 +227,6 @@ public:
 	virtual int is_findable(Game_window *gwin)
 		{ return Ireg_game_object::is_findable(gwin); }
 
-	virtual void write_ireg(std::ostream& out);
+	virtual void write_ireg(DataSource* out);
 };
 #endif

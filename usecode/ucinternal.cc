@@ -184,7 +184,8 @@ bool Usecode_internal::call_function(int funcid,
 	}
 
 	// Store args in first num_args locals
-	for (int i = 0; i < frame->num_args; i++)
+	int i;
+	for (i = 0; i < frame->num_args; i++)
 	{
 		Usecode_value val = pop();
 		frame->locals[frame->num_args - i - 1] = val;
@@ -201,7 +202,7 @@ bool Usecode_internal::call_function(int funcid,
 	cout << "Running usecode " << hex << setfill((char)0x30) 
 		 << setw(4) << funcid << dec << setfill(' ') <<
 		" (";
-	for (int i = 0; i < frame->num_args; i++)
+	for (i = 0; i < frame->num_args; i++)
 	{
 		if (i)
 			cout << ", ";

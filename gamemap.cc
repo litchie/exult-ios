@@ -55,6 +55,7 @@
 #include "bodies.h"
 #include "game.h"
 #include "objiter.cc"	/* Yes we #include the .cc here on purpose! Please don't "fix" this */
+#include "databuf.h"
 #include <fstream>
 
 using std::cerr;
@@ -437,11 +438,12 @@ void Game_map::write_ifix_objects
 	)
 	{
 	char fname[128];		// Set up name.
-	ofstream ifix;			// There it is.
-	U7open(ifix, get_schunk_file_name(PATCH_U7IFIX, schunk, fname));
+	ofstream ifix_stream;	// There it is.
+	U7open(ifix_stream, get_schunk_file_name(PATCH_U7IFIX, schunk, fname));
+	StreamDataSource ifix(&ifix_stream);
 					// +++++Use game title.
 	const int count = c_chunks_per_schunk*c_chunks_per_schunk;
-	Flex::write_header(ifix, "Exult",  count);
+	Flex::write_header(&ifix, "Exult",  count);
 	uint8 table[2*count*4];
 	uint8 *tptr = &table[0];
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
@@ -451,7 +453,7 @@ void Game_map::write_ifix_objects
 		for (int cx = 0; cx < 16; cx++)
 			{
 					// Store file position in table.
-			long start = ifix.tellp();
+			long start = ifix.getPos();
 			Write4(tptr, start);
 			Map_chunk *chunk = get_chunk(scx + cx,
 							       scy + cy);
@@ -459,14 +461,14 @@ void Game_map::write_ifix_objects
 			Object_iterator_backwards next(chunk);
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)
-				obj->write_ifix(ifix);
+				obj->write_ifix(&ifix);
 					// Store IFIX data length.
-			Write4(tptr, ifix.tellp() - start);
+			Write4(tptr, ifix.getPos() - start);
 			}
-	ifix.seekp(0x80, std::ios::beg);	// Write table.
+	ifix.seek(0x80);	// Write table.
 	ifix.write(reinterpret_cast<char *>(&table[0]), sizeof(table));
-	ifix.flush();
-	int result = ifix.good();
+	ifix_stream.flush();
+	int result = ifix_stream.good();
 	if (!result)
 		throw file_write_exception(fname);
 	return;
@@ -482,14 +484,14 @@ void Game_map::get_ifix_objects
 	)
 	{
 	char fname[128];		// Set up name.
-	ifstream ifix;			// There it is.
+	ifstream ifix_stream;	// There it is.
 	if (is_system_path_defined("<PATCH>") &&
 					// First check for patch.
 	    U7exists(get_schunk_file_name(PATCH_U7IFIX, schunk, fname)))
-		U7open(ifix, fname);
+		U7open(ifix_stream, fname);
 	else try
 		{
-		U7open(ifix, get_schunk_file_name(U7IFIX, schunk, fname));
+		U7open(ifix_stream, get_schunk_file_name(U7IFIX, schunk, fname));
 		}
 		catch(const file_exception & f)
 		{
@@ -497,6 +499,7 @@ void Game_map::get_ifix_objects
 			throw f;
 		return;
 		}
+	StreamDataSource ifix(&ifix_stream);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.
@@ -505,13 +508,13 @@ void Game_map::get_ifix_objects
 			{
 					// Get to index entry for chunk.
 			int chunk_num = cy*16 + cx;
-			ifix.seekg(0x80 + chunk_num*8);
+			ifix.seek(0x80 + chunk_num*8);
 					// Get location, length.
-			long shapesoff = Read4(ifix);
+			long shapesoff = ifix.read4();
 			if (!shapesoff) // Nothing there?
 				continue;
-			unsigned long shapeslen = Read4(ifix);
-			get_ifix_chunk_objects(ifix, shapesoff, shapeslen/4,
+			unsigned long shapeslen = ifix.read4();
+			get_ifix_chunk_objects(&ifix, shapesoff, shapeslen/4,
 				scx + cx, scy + cy);
 			}
 	}
@@ -522,18 +525,18 @@ void Game_map::get_ifix_objects
 
 void Game_map::get_ifix_chunk_objects
 	(
-	ifstream& ifix,
+	DataSource* ifix,
 	long filepos,			// Where chunk's data lies.
 	int cnt,			// # entries (objects).
 	int cx, int cy			// Absolute chunk #'s.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	ifix.seekg(filepos);		// Get to actual shape.
+	ifix->seek(filepos);		// Get to actual shape.
 					// Get buffer to hold entries' indices.
 	unsigned char *entries = new unsigned char[4*cnt];
 	unsigned char *ent = entries;	// Read them in.
-	ifix.read(reinterpret_cast<char*>(entries), 4*cnt);
+	ifix->read(reinterpret_cast<char*>(entries), 4*cnt);
 					// Get object list for chunk.
 	Map_chunk *olist = get_chunk(cx, cy);
 	for (int i = 0; i < cnt; i++, ent += 4)
@@ -565,7 +568,7 @@ void Game_map::get_ifix_chunk_objects
 
 void Game_map::write_scheduled
 	(
-	std::ostream& ireg,
+	DataSource* ireg,
 	Game_object *obj,
 	bool write_mark			// Write an IREG_ENDMARK if true.
 	)
@@ -579,16 +582,16 @@ void Game_map::write_scheduled
 			cerr << "Error saving Usecode script" << endl;
 		else if (len > 0)
 			{
-			ireg.put(IREG_SPECIAL);
-			ireg.put(IREG_UCSCRIPT);
-			Write2(ireg, len);	// Store length.
-			ireg.write(reinterpret_cast<char*>(buf), len);
+			ireg->write1(IREG_SPECIAL);
+			ireg->write1(IREG_UCSCRIPT);
+			ireg->write2(len);	// Store length.
+			ireg->write(reinterpret_cast<char*>(buf), len);
 			}
 		}
 	if (write_mark)
 		{
-		ireg.put(IREG_SPECIAL);
-		ireg.put(IREG_ENDMARK);
+		ireg->write1(IREG_SPECIAL);
+		ireg->write1(IREG_ENDMARK);
 		}
 	}
 
@@ -620,8 +623,9 @@ void Game_map::write_ireg_objects
 	)
 	{
 	char fname[128];		// Set up name.
-	ofstream ireg;			// There it is.
-	U7open(ireg, get_schunk_file_name(U7IREG, schunk, fname));
+	ofstream ireg_stream;			// There it is.
+	U7open(ireg_stream, get_schunk_file_name(U7IREG, schunk, fname));
+	StreamDataSource ireg(&ireg_stream);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.
@@ -634,11 +638,11 @@ void Game_map::write_ireg_objects
 					// Restore original order (sort of).
 			Object_iterator_backwards next(chunk);
 			while ((obj = next.get_next()) != 0)
-				obj->write_ireg(ireg);
-			Write2(ireg, 0);// End with 2 0's.
+				obj->write_ireg(&ireg);
+			ireg.write2(0);// End with 2 0's.
 			}
-	ireg.flush();
-	int result = ireg.good();
+	ireg_stream.flush();
+	int result = ireg_stream.good();
 	if (!result)
 		throw file_write_exception(fname);
 	return;
@@ -655,18 +659,19 @@ void Game_map::get_ireg_objects
 	)
 	{
 	char fname[128];		// Set up name.
-	ifstream ireg;			// There it is.
+	ifstream ireg_stream;			// There it is.
 	try
 	{
-		U7open(ireg, get_schunk_file_name(U7IREG, schunk, fname));
+		U7open(ireg_stream, get_schunk_file_name(U7IREG, schunk, fname));
 	}
 	catch(const file_exception & f)
 	{
 		return;			// Just don't show them.
 	}
+	StreamDataSource ireg(&ireg_stream);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
-	read_ireg_objects(ireg, scx, scy);
+	read_ireg_objects(&ireg, scx, scy);
 					// A fixup:
 	if (schunk == 10*12 + 11 && Game::get_game_type() == SERPENT_ISLE)
 		{			// Lever in SilverSeed:
@@ -683,14 +688,14 @@ void Game_map::get_ireg_objects
 
 void Read_special_ireg
 	(
-	istream& ireg,
+	DataSource *ireg,
 	Game_object *obj		// Last object read.
 	)
 	{
-	int type = Read1(ireg);		// Get type.
-	int len = Read2(ireg);		// Length of rest.
+	int type = ireg->read1();		// Get type.
+	int len = ireg->read2();		// Length of rest.
 	unsigned char *buf = new unsigned char[len];
-	ireg.read(reinterpret_cast<char*>(buf), len);
+	ireg->read(reinterpret_cast<char*>(buf), len);
 	if (type == IREG_UCSCRIPT)	// Usecode script?
 		{
 		Usecode_script *scr = Usecode_script::restore(obj, buf, len);
@@ -716,18 +721,18 @@ void Read_special_ireg
 
 void Game_map::read_special_ireg
 	(
-	istream& ireg,
+	DataSource *ireg,
 	Game_object *obj		// Last object read.
 	)
 	{
 	unsigned char entlen;
-	while ((entlen = ireg.peek()) == IREG_SPECIAL && !ireg.eof())
+	while ((entlen = ireg->peek()) == IREG_SPECIAL && !ireg->eof())
 		{
-		Read1(ireg);		// Eat the IREG_SPECIAL.
-		unsigned char type = ireg.peek();
+		ireg->read1();		// Eat the IREG_SPECIAL.
+		unsigned char type = ireg->peek();
 		if (type == IREG_ENDMARK)
 			{		// End of list.
-			Read1(ireg);
+			ireg->read1();
 			return;
 			}
 		Read_special_ireg(ireg, obj);
@@ -768,7 +773,7 @@ static Egg_object *Create_egg
 
 void Game_map::read_ireg_objects
 	(
-	istream& ireg,			// File to read from.
+	DataSource *ireg,			// File to read from.
 	int scx, int scy,		// Abs. chunk coords. of superchunk.
 	Game_object *container,		// Container, or null.
 	unsigned long flags		// Usecode item flags.
@@ -779,7 +784,7 @@ void Game_map::read_ireg_objects
 	Game_object *last_obj = 0;	// Last one read in this call.
 	Game_window *gwin = Game_window::get_game_window();
 					// Go through entries.
-	while (((entlen = Read1(ireg), ireg.good())))
+	while (((entlen = ireg->read1(), !ireg->eof())))
 		{
 
 		// Skip 0's & ends of containers.
@@ -794,7 +799,7 @@ void Game_map::read_ireg_objects
 		// Detect the 2 byte index id
 		else if (entlen == 2)
 		{
-			index_id = (sint8) Read2 (ireg);
+			index_id = (sint8) ireg->read2();
 			continue;
 		}
 		else if (entlen == IREG_SPECIAL)
@@ -807,14 +812,14 @@ void Game_map::read_ireg_objects
 		if (entlen != 6 && entlen != 10 && entlen != 12 && 
 								entlen != 18)
 			{
-			long pos = ireg.tellg();
+			long pos = ireg->getPos();
 			cout << "Unknown entlen " << entlen << " at pos. " <<
 					pos << endl;
-			ireg.seekg(pos + entlen);
+			ireg->seek(pos + entlen);
 			continue;	// Only know these two types.
 			}
 		unsigned char entry[18];// Get entry.
-		ireg.read(reinterpret_cast<char*>(entry), entlen);
+		ireg->read(reinterpret_cast<char*>(entry), entlen);
 		int cx = entry[0] >> 4; // Get chunk indices within schunk.
 		int cy = entry[1] >> 4;
 					// Get coord. #'s where shape goes.

@@ -32,6 +32,7 @@
 #include "keyring.h"
 #include "utils.h"
 #include "Gump_manager.h"
+#include "databuf.h"
 
 using std::rand;
 using std::ostream;
@@ -661,7 +662,7 @@ void Container_game_object::set_flag_recursively
 
 void Container_game_object::write_ireg
 	(
-	ostream& out
+	DataSource *out
 	)
 	{
 	unsigned char buf[13];		// 13-byte entry + length-byte.
@@ -688,7 +689,7 @@ void Container_game_object::write_ireg
 					// Flags:  B0=invis. B3=okay_to_take.
 	*ptr++ = get_flag((Obj_flags::invisible) != 0) +
 		 ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
-	out.write((char*)buf, sizeof(buf));
+	out->write((char*)buf, sizeof(buf));
 	write_contents(out);		// Write what's contained within.
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
@@ -700,7 +701,7 @@ void Container_game_object::write_ireg
 
 void Container_game_object::write_contents
 	(
-	ostream& out
+	DataSource *out
 	)
 	{
 	if (!objects.is_empty())	// Now write out what's inside.
@@ -709,7 +710,7 @@ void Container_game_object::write_contents
 		Object_iterator next(objects);
 		while ((obj = next.get_next()) != 0)
 			obj->write_ireg(out);
-		out.put(0x01);		// A 01 terminates the list.
+		out->write1(0x01);		// A 01 terminates the list.
 		}
 	}
 
