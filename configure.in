@@ -8,7 +8,7 @@ dnl ----------------------
 
 PACKAGE=exult
 MAJOR=0
-RELNUM=93alpha4
+RELNUM=94cvs
 VERSION=$MAJOR.$RELNUM
 
 dnl check host/build systems. For now, only host is used
