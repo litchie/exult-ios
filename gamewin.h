@@ -169,6 +169,8 @@ public:
 					// Show abs. location of mouse.
 	void show_game_location(int x, int y);
 #endif
+	Shapes_vga_file& get_shapes()	// Get 'shapes.vga' file.
+		{ return shapes; }
 					// Get shape from shapes.vga.
 	Shape_frame *get_shape(int shapenum, int framenum)
 		{ return shapes.get_shape(shapenum, framenum); }

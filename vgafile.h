@@ -123,7 +123,7 @@ public:
 	int get_3d_xtiles()		// Dimension in tiles - X.
 		{ return 1 + (tfa[2]&7); }
 	int get_3d_ytiles()		// Dimension in tiles - Y.
-		{ return 1 + ((tfa[2]<<3)&7); }
+		{ return 1 + ((tfa[2]>>3)&7); }
 	int is_light_source()
 		{ return (tfa[2] & (1<<6)) != 0; }
 	int is_transparent()		// ??
@@ -140,12 +140,13 @@ public:
 class Shapes_vga_file : public Vga_file
 	{
 	Shape_info *info;		// Extra info. about each shape.
+	Shape_info zinfo;		// A fake one (all 0's).
 public:
 	Shapes_vga_file() : Vga_file(SHAPES_VGA)
 		{ info = new Shape_info[num_shapes]; }
 	int read_info();		// Read additional data files.
-	Shape_info *get_info(int shapenum)
-		{ return shapenum < num_shapes ? &info[shapenum] : 0; }
+	Shape_info& get_info(int shapenum)
+		{ return shapenum < num_shapes ? info[shapenum] : zinfo; }
 	};
 
 #endif
