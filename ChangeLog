@@ -1,6 +1,8 @@
 2001-05-30  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Added 'server' directory (only needed for XWIN).
+	* SI intrinsics: remove_last_face => remove_face0, remove_face1.
+	* readnpcs.cc:  Kludge to avoid unneeded automatons.
 
 2001-05-29  Ryan Nunn <triforce@merlin.net.au>
 	* audio/midi_drivers/win_midiout.cc : Fixed a spelling error

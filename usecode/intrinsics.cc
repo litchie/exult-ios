@@ -2064,10 +2064,17 @@ USECODE_INTRINSIC(show_npc_face1)
 	return no_ret;
 }
 
-USECODE_INTRINSIC(remove_last_face)
+USECODE_INTRINSIC(remove_npc_face0)
 {
 	show_pending_text();
-	conv->remove_last_face();
+	conv->remove_slot_face(0);
+	return no_ret;
+}
+
+USECODE_INTRINSIC(remove_npc_face1)
+{
+	show_pending_text();
+	conv->remove_slot_face(1);
 	return no_ret;
 }
 
