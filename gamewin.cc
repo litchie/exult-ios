@@ -2209,7 +2209,7 @@ void Game_window::delete_object
 	if (!obj->is_monster())		// Don't delete these!
 		removed->insert(obj);	// Add to pool instead.
 	}
-
+#if 0	/* ++++++Goes away. */
 /*
  *	A sign or plaque?
  */
@@ -2230,7 +2230,7 @@ static bool Is_sign
 		return false;
 		}
 	}
-
+#endif
 /*
  *	Handle a double-click.
  */
@@ -2286,7 +2286,7 @@ void Game_window::double_clicked
 		// Check path, except if an NPC, sign, or if editing.
 	    	if (obj && !obj->as_actor() &&
 			!cheat.in_hack_mover() &&
-			!Is_sign(obj->get_shapenum()) &&
+			//!Is_sign(obj->get_shapenum()) &&
 			!Fast_pathfinder_client::is_grabable(
 				main_actor->get_tile(),
 				obj->get_tile()))

@@ -181,15 +181,33 @@ bool Dragging_info::start
 	rect = gump ? (obj ? gump->get_shape_rect(obj) : gump->get_dirty())
 					: gwin->get_shape_rect(obj);
 	if (gump)			// Remove from actual position.
+		{
 		if (obj)
 			{
-			Container_game_object *owner = gump->get_cont_or_actor(x,y);
+			Container_game_object *owner = 
+						gump->get_cont_or_actor(x,y);
+					// Get the object
+			Game_object *owner_obj = 
+					gump->get_owner()->get_outermost(); 
+			Main_actor *main_actor = gwin->get_main_actor();
+			// Check the range
+			if (!cheat.in_hack_mover() &&
+			    !Fast_pathfinder_client::is_grabable(
+			    main_actor->get_tile(), owner_obj->get_tile())) 
+				{
+				obj = 0;
+				gump = 0;
+				okay = false;
+				Mouse::mouse->flash_shape(Mouse::outofrange);
+				return false;
+				}
 			if (owner)
 				readied_index = owner->find_readied(obj);
 			gump->remove(obj);
 			}
 		else
 			gumpman->remove_gump(gump);
+		}
 	else
 		obj->remove_this(true);	// This SHOULD work (jsf 21-12-01).
 					// Make a little bigger.
@@ -368,6 +386,15 @@ bool Dragging_info::drop_on_gump
 	Gump *on_gump			// Gump to drop it on.
 	)
 	{
+	Game_object *owner_obj = on_gump->get_owner()->get_outermost();
+	Main_actor *main_actor = gwin->get_main_actor(); 
+	// Check the range
+	if (!cheat.in_hack_mover() && !Fast_pathfinder_client::is_grabable(
+			main_actor->get_tile(), owner_obj->get_tile()))
+		{	  		// Object was not grabable
+		Mouse::mouse->flash_shape(Mouse::outofrange);
+		return false;
+		}
 	if (!Check_weight(gwin, to_drop, on_gump->get_cont_or_actor(x,y)))
 		return false;
 	if (on_gump != gump)		// Not moving within same gump?
