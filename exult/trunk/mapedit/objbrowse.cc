@@ -33,6 +33,10 @@ void Object_browser::end_terrain_editing()
 {
 }
 
+void Object_browser::set_background_color(guint32)
+{
+}
+
 bool Object_browser::closing(bool can_cancel)
 {
 	return true;			// Default:  Okay to close.

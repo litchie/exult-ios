@@ -111,6 +111,8 @@ public:
 		{ return app_xml; }
 	int get_server_socket() const
 		{ return server_socket; }
+	guint32 get_background_color() const
+		{ return background_color; }
 	char *get_shape_name(int shnum)
 		{ return names ? names[shnum] : 0; }
 	const char *get_image_editor()
@@ -193,6 +195,7 @@ public:
 	void read_from_server();
 	bool connect_to_server();
 					// Preferences.
+	static void background_color_okay(GtkWidget *dlg, gpointer data);
 	void open_preferences();
 	void save_preferences();
 					// GTK/Glade utils:

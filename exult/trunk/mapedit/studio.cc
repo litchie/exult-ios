@@ -1189,11 +1189,63 @@ on_prefs_okay_clicked			(GtkButton *button,
 	ExultStudio::get_instance()->save_preferences();
 	gtk_widget_hide(gtk_widget_get_toplevel(GTK_WIDGET(button)));
 }
+
+/*
+ *	'Okay' was hit in the color selector.
+ */
+
+void ExultStudio::background_color_okay
+	(
+	GtkWidget *dlg,
+	gpointer data
+	)
+	{
+	GtkColorSelectionDialog *colorsel = GTK_COLOR_SELECTION_DIALOG(dlg);
+	gdouble rgb[3];
+	gtk_color_selection_get_color(
+			GTK_COLOR_SELECTION(colorsel->colorsel), rgb);
+	unsigned char r = (unsigned char) (rgb[0]*256),
+		      g = (unsigned char) (rgb[1]*256),
+		      b = (unsigned char) (rgb[2]*256);
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->background_color = (r<<16) + (g<<8) + b;
+					// Show new color.
+	GtkWidget *backgrnd = glade_xml_get_widget(studio->app_xml, 
+							"prefs_background");
+	gtk_object_set_user_data(GTK_OBJECT(backgrnd), 
+					(gpointer) studio->background_color);
+	GdkRectangle area = {0, 0, backgrnd->allocation.width, 
+					backgrnd->allocation.height};
+	gtk_widget_draw(backgrnd, &area);
+	gtk_widget_destroy(dlg);
+	}
+
 C_EXPORT void
 on_prefs_background_choose_clicked	(GtkButton *button,
 					 gpointer   user_data)
 {
-//++++++++++++++++++++++++Color chooser.
+	GtkColorSelectionDialog *colorsel = GTK_COLOR_SELECTION_DIALOG(
+		gtk_color_selection_dialog_new("Background color"));
+	gtk_window_set_modal(GTK_WINDOW(colorsel), true);
+					// Set mouse click handler.
+	gtk_signal_connect_object(GTK_OBJECT(colorsel->ok_button), "clicked",
+		GTK_SIGNAL_FUNC(ExultStudio::background_color_okay), 
+						GTK_OBJECT(colorsel));
+	gtk_signal_connect_object(GTK_OBJECT(colorsel->cancel_button), 
+		"clicked", GTK_SIGNAL_FUNC(gtk_widget_destroy),
+						GTK_OBJECT(colorsel));
+					// Set delete handler.
+	gtk_signal_connect(GTK_OBJECT(colorsel), "delete_event",
+				GTK_SIGNAL_FUNC(gtk_false), 0L);
+					// Get color.
+	guint32 c = ExultStudio::get_instance()->get_background_color();
+	gdouble rgb[3];
+	rgb[0] = ((double) ((c>>16)&0xff))/256;
+	rgb[1] = ((double) ((c>>8)&0xff))/256;
+	rgb[2] = ((double) ((c>>0)&0xff))/256;
+	gtk_color_selection_set_color(GTK_COLOR_SELECTION(colorsel->colorsel),
+								rgb);
+	gtk_widget_show(GTK_WIDGET(colorsel));
 }
 					// Background color area exposed.
 C_EXPORT gboolean on_prefs_background_expose_event
@@ -1272,6 +1324,8 @@ void ExultStudio::save_preferences
 	palbuf[3*255] = (background_color>>18)&0x3f;
 	palbuf[3*255 + 1] = (background_color>>10)&0x3f;
 	palbuf[3*255 + 2] = (background_color>>2)&0x3f;
+	if (browser)			// Repaint browser.
+		browser->set_background_color(background_color);
 	}
 
 void ExultStudio::run()
