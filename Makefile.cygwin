@@ -14,7 +14,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw32 automatically defines WIN32
-CPPFLAGS=-DVERSION=\"0.92cvs\" -DEXULT_DATADIR=\"data\" -g3 -DDEBUG \
+CPPFLAGS=-DVERSION=\"0.92cvs\" -DEXULT_DATADIR=\"data\" -g3 -DDEBUG -DCYGWIN\
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf \
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
@@ -99,6 +99,9 @@ EXULT_FLX_OBJECTS = \
 	data/caddellite_helmet.shp \
 	data/magic_boomerang.shp \
 	data/great_dagger.shp \
+	data/gorget.shp \
+	data/magicgorget.shp \
+	data/cleaver.shp \
 	data/flx.in 
 
 $(EXEC) : $(OBJS) data/exult.flx

@@ -260,7 +260,14 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 		else if(event.key.keysym.sym >= '0' && event.key.keysym.sym <= 'z')
 		{
 			int curlen = std::strlen(input);
-			char chr = (event.key.keysym.mod & KMOD_SHIFT) ? std::toupper(event.key.keysym.sym) : event.key.keysym.sym;
+			char chr = event.key.keysym.sym;
+			if (event.key.keysym.mod & KMOD_SHIFT) {
+#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN))
+				if ((chr >= 'a') && (chr <= 'z')) chr -= 32;
+#else
+				chr = std::toupper(chr);
+#endif         
+			}
 			if(curlen<(len-1))
 			{
 				input[curlen] = chr;
