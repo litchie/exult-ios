@@ -7,8 +7,8 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/imagewin -I$(srcdir)/shapes \
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
-SUBDIRS = audio pathfinder files conf flic tools data gumps docs desktop \
-	shapes imagewin usecode objs server mapedit
+SUBDIRS =  files tools data conf flic audio pathfinder gumps docs 
+	desktop shapes imagewin usecode objs server mapedit
 
 bin_PROGRAMS = exult
 
