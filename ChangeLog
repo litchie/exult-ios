@@ -1,3 +1,20 @@
+2001-01-12  Ryan Nunn <triforce@merlin.net.au>
+	* Actors.* : When in SI Intercept dont_render item flag and change to
+	  dont_move SI flag.
+	* Actorsio.cc : In actor constructor only call ready_best_weapon for
+	  Avatar and Iolo when creating the game in Black Gate. Never gets called
+	  at any other time. 
+	* gamewin.cc : If dont_move SI flag is set, stop the Avatar and don't let
+	  them move.
+	* audio/midi_drivers/win_midiout.cc : Fixed bug with SFX playing. Fixed
+	  potential memory leaks. Fixed bug causing the game to become
+	  unresponsive when changing music and stopping music. Fixed bug causing
+	  the entire system to freeze IF a file was played that either contained
+	  no events or had every event at time 0.
+	* gumps/Paperdoll_gump.cc : Fixed crash when polymorphed.
+	* shapes/fontvga.cc : Changed hleads for fonts. NOTE: Other custom fonts
+	  may still need changing
+
 2001-01-11  Max Horn  <max@quendi.de>
 	* contains.cc: added #include "files/utils.h"
 

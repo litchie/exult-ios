@@ -47,7 +47,7 @@ using std::string;
  */
 //static int hlead[NUM_FONTS] = {-1, 0, 1, 0, 1, 0, 0, -1, 0, 0};
 // For scrolls (12/6/00):
-static int hlead[NUM_FONTS] = {-1, 0, 1, 0, 0, 0, 0, -1, 0, 0};
+static int hlead[NUM_FONTS] = {-2, -1, 0, -1, 0, -1, -1, -2, -1, -1};
 /*
  *	Initialize.
  */

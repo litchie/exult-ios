@@ -1191,13 +1191,10 @@ void Game_window::read
 	{
 		usecode->read();		// Usecode.dat (party, global flags).
 
-		if (Game::get_game_type() == BLACK_GATE)
-		{
-			if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-				main_actor->clear_flag(Obj_flags::dont_render);
-			else
-				main_actor->set_flag(Obj_flags::dont_render);
-		}
+		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
+			main_actor->clear_flag(Obj_flags::dont_render);
+		else
+			main_actor->set_flag(Obj_flags::dont_render);
 	}
 	catch(...)
 	{
@@ -1535,6 +1532,14 @@ void Game_window::start_actor_alt
 	
 	Tile_coord start = main_actor->get_abs_tile_coord();
 	int dir;
+	
+	// Check to see if we are allowed to move, if not, stop moving and return
+	if (main_actor->get_siflag(Actor::dont_move))
+	{
+		stop_actor();
+		return;
+	}
+
 	for (dir = 0; dir < 8; dir++)
 	{
 		Tile_coord dest = start.get_neighbor(dir);
@@ -2536,11 +2541,12 @@ void Game_window::setup_game
 	usecode->read();		// Read the usecode flags
 	string yn;			// Override from config. file.
 					// Skip intro. scene?
+	config->value("config/gameplay/skip_intro", yn, "no");
+	if ((yn == "yes"))
+		usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
+
 	if (Game::get_game_type() == BLACK_GATE)
 	{
-		config->value("config/gameplay/skip_intro", yn, "no");
-		if ((yn == "yes"))
-			usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
 					// Have Trinsic password?
 		config->value("config/gameplay/have_trinsic_password", yn, "no");
 		if (yn == "yes")
@@ -2551,10 +2557,6 @@ void Game_window::setup_game
 			main_actor->clear_flag(Obj_flags::dont_render);
 		else
 			main_actor->set_flag(Obj_flags::dont_render);
-	}
-	else
-	{
-		usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
 	}
 
 	clock.set_palette();		// Set palette for time-of-day.
