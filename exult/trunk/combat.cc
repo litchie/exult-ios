@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effects.h"
 #include "Audio.h"
 #include "ready.h"
+#include "game.h"
 
 using std::cout;
 using std::endl;
@@ -217,10 +218,11 @@ void Combat_schedule::approach_foe
 		}
 	Actor::Attack_mode mode = npc->get_attack_mode();
 	Tile_coord pos = npc->get_abs_tile_coord();
+	Game_window *gwin = Game_window::get_game_window();
 					// Time to run?
 	if (mode == Actor::flee || 
 	    (mode != Actor::beserk && 
-		npc != Game_window::get_game_window()->get_main_actor() &&
+		npc != gwin->get_main_actor() &&
 					npc->get_property(Actor::health) < 3))
 		{
 		if (npc->get_party_id() >= 0 && !fleed)
@@ -257,9 +259,20 @@ void Combat_schedule::approach_foe
 	failures = 0;			// Clear count.  We succeeded.
 	cout << npc->get_name() << " is pursuing " << opponent->get_name() <<
 		endl;
-	if (!yelled++ &&		// First time (or 256th)?
-	    !npc->is_monster())
-		npc->say(first_to_battle, last_to_battle);
+					// First time (or 256th), visible?
+	if (!yelled && gwin->add_dirty(npc))
+		{
+		yelled++;
+					// Goblin?
+		if (Game::get_game_type() == SERPENT_ISLE &&
+			 (npc->get_shapenum() == 0x1de ||
+			  npc->get_shapenum() == 0x2b3 ||
+			  npc->get_shapenum() == 0x2d5 ||
+			  npc->get_shapenum() == 0x2e8))
+			npc->say(0x4c9, 0x4d1);
+	    	else if (!npc->is_monster())
+			npc->say(first_to_battle, last_to_battle);
+		}
 					// Walk there, but don't retry if
 					//   blocked.
 	npc->set_action(new Path_walking_actor_action(path, 0));
