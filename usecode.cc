@@ -1102,7 +1102,7 @@ USECODE_FUNCTION(get_npc_object)
 USECODE_FUNCTION(get_schedule_type)
 	// GetSchedule(npc).  Rets. schedtype.
 	Game_object *obj = get_item(parms[0].get_int_value());
-	Usecode_value u(obj ? obj->get_schedule() : 0);
+	Usecode_value u(obj ? obj->get_schedule_type() : 0);
 	USECODE_RETURN(u);
 }
 
@@ -1110,8 +1110,9 @@ USECODE_FUNCTION(set_schedule_type)
 	// SetSchedule?(npc, schedtype).
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
-	Unhandled(intrinsic, num_parms, parms);
-	//+++++++++++++++++++++
+	Game_object *obj = get_item(parms[0].get_int_value());
+	if (obj)
+		obj->set_schedule_type(parms[1].get_int_value());
 	USECODE_RETURN(no_ret);
 }
 

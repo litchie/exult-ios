@@ -71,6 +71,22 @@ void Actor::set_default_frames
 	}
 
 /*
+ *	Walk towards a given tile.
+ */
+
+void Actor::walk_to_tile
+	(
+	int tx, int ty, int tz		// Tile.  (Tz is the lift.)
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int liftpixels = tz*4;
+					// Do 8 frames/sec.
+	start(((unsigned long) tx)*tilesize - liftpixels,
+	      ((unsigned long) ty)*tilesize - liftpixels, 125);
+	}
+
+/*
  *	Run usecode when double-clicked.
  */
 
@@ -206,6 +222,48 @@ void Main_actor::handle_event
 	}
 
 /*
+ *	Create a horizontal pace schedule.
+ */
+
+Pace_schedule *Pace_schedule::create_horiz
+	(
+	Npc_actor *n
+	)
+	{
+	int tx, ty, tz;			// Get his position.
+	n->get_abs_tile(tx, ty, tz);
+	return (new Pace_schedule(n, Tile_coord(tx - 4, ty, tz),
+					Tile_coord(tx + 4, ty, tz)));
+	}
+
+/*
+ *	Create a vertical pace schedule.
+ */
+
+Pace_schedule *Pace_schedule::create_vert
+	(
+	Npc_actor *n
+	)
+	{
+	int tx, ty, tz;			// Get his position.
+	n->get_abs_tile(tx, ty, tz);
+	return (new Pace_schedule(n, Tile_coord(tx, ty - 4, tz),
+					Tile_coord(tx, ty + 4, tz)));
+	}
+
+/*
+ *	Schedule change for pacing:
+ */
+
+void Pace_schedule::now_what
+	(
+	)
+	{
+	which = !which;			// Flip direction.
+	npc->walk_to_tile(which ? p1 : p0);
+	}
+
+/*
  *	Set a schedule.
  */
 
@@ -232,8 +290,8 @@ Npc_actor::Npc_actor
 	int fshape, 
 	int uc
 	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
-		schedule((int) Schedule_change::loiter), num_schedules(0), 
-		schedules(0)
+		schedule_type((int) Schedule::loiter), num_schedules(0), 
+		schedules(0), schedule(0), dormant(1)
 	{
 	}
 
@@ -245,6 +303,8 @@ Npc_actor::~Npc_actor
 	(
 	)
 	{
+	delete schedule;
+	delete [] schedules;
 	}
 
 /*
@@ -260,7 +320,6 @@ void Npc_actor::update_schedule
 	for (int i = 0; i < num_schedules; i++)
 		if (schedules[i].get_time() == hour3)
 			{		// Found entry.
-			schedule = schedules[i].get_type();
 					// Store old chunk list.
 			Chunk_object_list *olist = gwin->get_objects(
 							get_cx(), get_cy());
@@ -275,8 +334,53 @@ cout << "Npc " << get_name() << " has new schedule " << schedule << '\n';
 			move(new_cx, new_cy, nlist, tx, ty, -1);
 			if (nlist != olist)
 				switched_chunks(olist, nlist);
+			set_schedule_type(schedules[i].get_type());
 			return;
 			}
+	}
+
+/*
+ *	Set new schedule.
+ */
+
+void Npc_actor::set_schedule_type
+	(
+	int new_schedule_type
+	)
+	{
+	stop();				// Stop moving.
+	schedule_type = new_schedule_type;
+	delete schedule;		// Done with the old.
+	schedule = 0;
+#if 0
+	switch ((Schedule::Schedule_types) schedule_type)
+		{
+	case Schedule::horiz_pace:
+		schedule = Pace_schedule::create_horiz(this);
+		break;
+	case Schedule::vert_pace:
+		schedule = Pace_schedule::create_vert(this);
+		break;
+		}
+#endif
+	}
+
+/*
+ *	Render.
+ */
+
+void Npc_actor::paint
+	(
+	Game_window *gwin
+	)
+	{
+	Actor::paint(gwin);		// Draw on screen.
+	if (dormant)			// Resume schedule.
+		{
+		dormant = 0;
+		if (schedule)		// Ask scheduler what to do.
+			schedule->now_what();
+		}
 	}
 
 /*
@@ -303,7 +407,9 @@ void Npc_actor::handle_event
 		if (olist->is_blocked(get_lift(), sx, sy, new_lift) ||
 		    at_destination())
 			{
-			stop();		// ++++Notify scheduler here?
+			stop();
+			if (schedule)	// Ask scheduler what to do next.
+				schedule->now_what();
 			return;
 			}
 					// Add back to queue for next time.
@@ -323,7 +429,10 @@ void Npc_actor::handle_event
 		rect = gwin->clip_to_win(gwin->get_shape_rect(this));
 					// No longer on screen?
 		if (rect.w <= 0 || rect.h <= 0)
+			{
 			stop();
+			dormant = 1;
+			}
 		else			// Force paint.
 			gwin->add_dirty(rect);
 		}

@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Image_window;
 class Game_window;
-
+class Npc_actor;
 					// The range of actors' rect. gumps:
 const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
 
@@ -69,6 +69,10 @@ public:
 		{ return npc_num; }	// It's the NPC's #.
 	int get_usecode()
 		{ return usecode; }
+					// Walk to a desired spot.
+	void walk_to_tile(int tx, int ty, int tz);
+	void walk_to_tile(Tile_coord p)
+		{ walk_to_tile(p.tx, p.ty, p.tz); }
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	virtual char *get_name();
@@ -102,13 +106,64 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
+
 /*
- *	An NPC schedule:
+ *	A Schedule controls the NPC it is assigned to.
+ */
+class Schedule
+	{
+protected:
+	Npc_actor *npc;			// Who this controls.
+public:
+	Schedule(Npc_actor *n) : npc(n)
+		{  }
+	enum Schedule_types {
+		combat = 0,	horiz_pace = 1,
+		vert_pace = 2,	talk = 3,
+		dance = 4,	eat = 5,
+		farm = 6,	tend_shop = 7,
+		miner = 8,	hound = 9,
+		stand = 10,	loiter = 11,
+		wander = 12,	blacksmith = 13,
+		sleep = 14,	wait = 15,
+		sit = 16,	graze = 17,
+		bake = 18,	sew = 19,
+		shy = 20,	lab = 21,
+		thief = 22,	waiter = 23,
+		special = 24,	kid_games = 25,
+		eat_at_inn = 26,duel = 27,
+		preach = 28,	patrol = 29,
+		desk_work = 30,	follow_avatar = 31
+		};
+	virtual void now_what() = 0;	// Npc calls this when it's done
+					//   with its last task.
+	};
+
+/*
+ *	A schedule for pacing between two points:
+ */
+class Pace_schedule : public Schedule
+	{
+	Tile_coord p0;			// Point 0 tile coords.
+	Tile_coord p1;			// Point 1 tile coords.
+	char which;			// Which he's going to (0 or 1).
+public:
+	Pace_schedule(Npc_actor *n, Tile_coord pt0, Tile_coord pt1)
+		: Schedule(n), p0(pt0), p1(pt1), which(0)
+		{  }
+					// Create common schedules:
+	static Pace_schedule *create_horiz(Npc_actor *n);
+	static Pace_schedule *create_vert(Npc_actor *n);
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
+ *	An NPC schedule change:
  */
 class Schedule_change
 	{
 	unsigned char time;		// Time*3hours when this takes effect.
-	unsigned char type;		// Types defined below.
+	unsigned char type;		// Schedule_type value.
 	unsigned char x, y;		// Location within superchunk.
 	unsigned char superchunk;	// 0-143.
 public:
@@ -127,24 +182,6 @@ public:
 		tx = x%16;
 		ty = y%16;
 		}
-	enum Schedule_types {		// Here are the types:
-		combat = 0,	horiz_pace = 1,
-		vert_pace = 2,	talk = 3,
-		dance = 4,	eat = 5,
-		farm = 6,	tend_shop = 7,
-		miner = 8,	hound = 9,
-		stand = 10,	loiter = 11,
-		wander = 12,	blacksmith = 13,
-		sleep = 14,	wait = 15,
-		sit = 16,	graze = 17,
-		bake = 18,	sew = 19,
-		shy = 20,	lab = 21,
-		thief = 22,	waiter = 23,
-		special = 24,	kid_games = 25,
-		eat_at_inn = 26,duel = 27,
-		preach = 28,	patrol = 29,
-		desk_work = 30,	follow_avatar = 31
-		};
 	};
 
 /*
@@ -155,8 +192,10 @@ class Npc_actor : public Actor
 	Npc_actor *next;		// Next in same chunk.
 	unsigned char nearby;		// Queued as a 'nearby' NPC.  This is
 					//   to avoid being added twice.
-	unsigned char schedule;		// Schedule type (Schedule_type).
+	unsigned char dormant;		// I.e., off-screen.
+	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	unsigned char num_schedules;	// # entries below.
+	Schedule *schedule;		// Current schedule.
 	Schedule_change *schedules;	// List of schedule changes.
 public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
@@ -178,8 +217,12 @@ public:
 		}
 					// Update schedule for new 3-hour time.
 	void update_schedule(Game_window *gwin, int hour3);
-	virtual int get_schedule()
-		{ return schedule; }
+					// Set new schedule.
+	virtual void set_schedule_type(int new_schedule_type);
+	virtual int get_schedule_type()
+		{ return schedule_type; }
+					// Render.
+	virtual void paint(Game_window *gwin);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Update chunks after NPC moved.
