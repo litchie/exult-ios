@@ -479,7 +479,7 @@ void Game_window::read_ireg_objects
 			type = 0;
 			lift = entry[4] >> 4;
 			quality = entry[5];
-			obj = new Game_object(
+			obj = new Ireg_game_object(
 				entry[2], entry[3], shapex, shapey, lift);
 			}
 		else if (entlen == 12)	// Container?
