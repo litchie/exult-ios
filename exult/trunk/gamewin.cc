@@ -258,6 +258,29 @@ void Game_window::clear_world
 	}
 
 /*
+ *	Center view around a given tile.
+ */
+
+void Game_window::center_view
+	(
+	Tile_coord t
+	)
+	{
+	int cx = t.tx/tiles_per_chunk;	// For now, do it in chunks.
+	int cy = t.ty/tiles_per_chunk;
+	int cw = get_width()/chunksize;
+	int ch = get_height()/chunksize;
+	chunkx = cx - cw/2;
+	chunky = cy - ch/2;
+	if (chunkx < 0)
+		chunkx = 0;
+	if (chunky < 0)
+		chunky = 0;
+					// ++++++Check right edge too.
+	paint();
+	}
+
+/*
  *	Show the absolute game location, where each coordinate is of the
  *	8x8 tiles clicked on.
  */
