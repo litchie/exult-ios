@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Midi.h"
 
 
-#undef HAVE_TIMIDITY_BIN	// Disabled for now
+//#undef HAVE_TIMIDITY_BIN	// Disabled for now
 #if HAVE_TIMIDITY_BIN
 class	Timidity_binary : virtual public MidiAbstract
 {
