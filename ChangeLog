@@ -1,5 +1,9 @@
-2000-12-13  Jeff Freedman  <jeff@amy.nerble.net>
+2000-12-14  Tristan Tarrant <nadir@users.sourceforge.net>
+	* configure.in: Fill out GTK+ discovery stuff
+	* Makefile.am, mapedit/Makefile.am: automake stuff for above
+	* mapedit/.cvsignore: added shapetest
 
+2000-12-13  Jeff Freedman  <jeff@amy.nerble.net>
 	* Adding drag-and-drop support (but not working yet).
 
 2000-12-13  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
@@ -24,7 +28,6 @@
 	* Text_gump.h: fixed delete -> delete []
 
 2000-12-09  Tristan Tarrant <nadir@users.sourceforge.net>
-
 	* txtscroll.cc: support "double hash"
 	* data/quotes.txt: Fixed quotes a bit
 	* bggame.cc: stop speech if early exit
@@ -32,11 +35,9 @@
 	* NEWS: updated
 
 2000-12-09  Tristan Tarrant <nadir@users.sourceforge.net>
-
 	* */Makefile.am: add a CLEANFILES def to all files
 
 2000-12-07  Jeff Freedman  <jeff@amy.nerble.net>
-
 	* mapedit: VERY rudimentary start of a GTK shape browser.
 	* gamewin.cc: Stealing food is now a crime.
 	* objs.h, chunks.cc:  Fixed my recent breakage of is_blocked().
@@ -47,7 +48,6 @@
 	* Kill most of the stutter from audio stream window startup.
 
 2000-12-06  Jeff Freedman  <jeff@amy.nerble.net>
-
 	* Changes to barges and Chunk_object_list::is_blocked to handle
 	flying carpet better.
 	* Fiddled with scroll rendering.
@@ -56,7 +56,6 @@
 	* menulist.cc: handle SDL_QUIT event in menus
 	
 2000-12-06  Jeff Freedman  <jeff@amy.nerble.net>
-
 	* Restore mode after 'p' for 'lockpicking'.
 	* If flags/properties change while gumps are open, repaint.
 

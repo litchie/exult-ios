@@ -1,7 +1,13 @@
 INCLUDES = -I.. -I../shapes -I../imagewin -I../files \
-	$(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+	$(GTK_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
-bin_PROGRAMS = shapetest
+if GTK_INTERFACE
+GTK_APPS = shapetest
+else
+GTK_APPS = 
+endif
+
+bin_PROGRAMS = $(GTK_APPS)
 
 shapetest_SOURCES = shapelst.cc shapelst.h u7drag.cc u7drag.h
 
@@ -9,7 +15,7 @@ shapetest_LDADD = 			\
 	../files/libu7file.la	\
 	../imagewin/libimagewin.la	\
 	../shapes/libshapes.la \
-	-lgtk -lgdk -lglib $(SYSLIBS) $(x_libraries)
+	$(GTK_LIBS) $(SYSLIBS) $(x_libraries)
 
 noinst_LTLIBRARIES = libmapedit.la
 
@@ -18,7 +24,3 @@ libmapedit_la_SOURCES = \
 	shapelst.h \
 	u7drag.cc \
 	u7drag.h
-
-
-
-
