@@ -23,7 +23,7 @@ using std::size_t;
 using std::snprintf;
 using std::strlen;
 
-enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD };
+enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD, RESPONSE };
 
 void set_mode(Arch_mode &mode, Arch_mode new_mode)
 {
@@ -52,35 +52,12 @@ int mac_main(int argc, char **argv);
 
 int main()
 {
-	const	int mac_argc = 26;
+	const	int mac_argc = 3;
 	char	*mac_argv[mac_argc] =
 		{
 			"expack",
-			"-c",
-			"data/exult.flx",
-			"data/exult_quotes.shp",
-			"data/exult_credits.shp",
-			"data/quotes.txt",
-			"data/credits.txt",
-			"data/exult_logo.shp",
-			"data/exult0.pal",
-			"data/black_gate.shp",
-			"data/serpent_isle.shp",
-			"data/meditown.mid",
-			"data/font.shp",
-			"data/setup.shp",
-			"data/play_intro.shp",
-			"data/full_screen.shp",
-			"data/cheating.shp",
-			"data/ok.shp",
-			"data/cancel.shp",
-			"data/pointers.shp",
-			"data/exit.shp",
-			"data/play_1st_scene.shp",
-			"data/extras.shp",
-			"data/midi_conversion.shp",
-			"data/sfx_conversion.shp",
-			"data/palette_fades.shp"
+			"-i",
+			"flx.in"
 		};
 		
 	mac_main( mac_argc, mac_argv );
@@ -96,11 +73,40 @@ int main(int argc, char **argv)
 	char *fname = 0;
 	char ext[] = "u7o";
 	int index;
+	char **file_names;
+	int  file_count;
+	int  file_skip;
   
 	if(argc>2) {
 		fname = argv[2];
 		if((argv[1][0]=='-')&&(strlen(argv[1])==2)) {
 			switch(argv[1][1]) {
+			case 'i':
+				{
+				set_mode(mode,RESPONSE);
+				ifstream respfile;
+				U7open(respfile, fname);
+				char *temp = new char[1024];
+				file_count = file_skip = 0;
+				while(!respfile.eof()) {
+					respfile.getline(temp, 1024);
+					if(strlen(temp)>0)
+						++file_count;
+				}
+				--file_count; // Skip the first line
+				respfile.close();
+				U7open(respfile, fname);
+				fname = new char[1024];
+				// Now read the output file name
+				respfile.getline(fname, 1024);
+				file_names = new char *[file_count];
+				for(int i=0;i<file_count;i++) {
+					file_names[i] = new char[1024];
+					respfile.getline(file_names[i], 1024);
+				}
+				respfile.close();
+				}
+				break;
 			case 'l':
 				set_mode(mode,LIST);
 				break;
@@ -108,6 +114,9 @@ int main(int argc, char **argv)
 				set_mode(mode,EXTRACT);
 				break;
 			case 'c':
+				file_count = argc-3;
+				file_names = argv;
+				file_skip = 3;
 				set_mode(mode,CREATE);
 				break;
 			case 'a':
@@ -163,9 +172,10 @@ int main(int argc, char **argv)
 			}
 		}
 		break;
+	case RESPONSE:
 	case CREATE:
 		{
-			if(argc<4) {
+			if(file_count<1) {
 				cerr << "No files specified" << endl;
 				exit(1);
 			}
@@ -174,10 +184,9 @@ int main(int argc, char **argv)
 			U7open(flex, fname);
 			StreamDataSource fs(&flex);
 			
-			int count = argc-3;
-			int *sizes = new int[count];
-			for(int i=0; i<count; i++)
-				sizes[i] = get_file_size(argv[i+3]);
+			int *sizes = new int[file_count];
+			for(int i=0; i<file_count; i++)
+				sizes[i] = get_file_size(file_names[i+file_skip]);
 			
 			// The FLEX title
 			char title[0x50];
@@ -186,15 +195,15 @@ int main(int argc, char **argv)
 			// The FLEX magic
 			fs.write4(0xFFFF1A00);
 			// The archive size
-			fs.write4(count);
+			fs.write4(file_count);
 			// More FLEX magic :-)
 			fs.write4(0xCC);
 			// Some blank stuff ???
 			for(int i=0; i<9; i++)
 				fs.write4(0x0);
 			// The reference table
-			int data_start = 128+8*count;
-			for(int i=0; i<count; i++) {
+			int data_start = 128+8*file_count;
+			for(int i=0; i<file_count; i++) {
 				if(sizes[i]) {
 					fs.write4(data_start);
 					fs.write4(sizes[i]);
@@ -205,10 +214,10 @@ int main(int argc, char **argv)
 				}
 			}
 			// The files
-			for(int i=0; i<count; i++) {
+			for(int i=0; i<file_count; i++) {
 				if(sizes[i]) {
 					ifstream infile;
-					U7open(infile, argv[i+3]);
+					U7open(infile, file_names[i+file_skip]);
 					StreamDataSource ifs(&infile);
 					char *buf = new char[sizes[i]];
 					ifs.read(buf, sizes[i]);

@@ -36,7 +36,7 @@ flex_DATA = $(EXULT_FLX) midisfx.flx
 
 CLEANFILES = exult.flx *~
 
-EXTRA_DIST = $(EXULT_FLX_OBJECTS) midisfx.flx
+EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) midisfx.flx
 
 exult.flx: $(EXULT_FLX_OBJECTS)
-	../tools/expack -c exult.flx $(EXULT_FLX_OBJECTS)
+	../tools/expack -i flx.in
