@@ -350,7 +350,10 @@ int Fast_pathfinder_client::at_goal
 	Tile_coord& goal
 	)
 	{
-	return tile.distance(goal) <= dist;
+	if (tile.distance(goal) > dist)
+		return 0;		// Not close enough.
+	int dz = tile.tz - goal.tz;	// Want to be within 1 story.
+	return dz <= 5 && dz >= -5;
 	}
 
 /*

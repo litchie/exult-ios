@@ -441,6 +441,7 @@ Actor::~Actor
 	(
 	)
 	{
+	delete schedule;
 	delete action;
 	delete timers;
 	}
@@ -3381,7 +3382,6 @@ void Main_actor::move
 	if (gwin->set_above_main_actor(nlist->is_roof(tx, ty, newlift)))
 		gwin->set_in_dungeon(nlist->has_dungeon()?
 		nlist->is_dungeon(tx, ty):0);
-
 	}
 
 /*
@@ -3561,7 +3561,6 @@ Npc_actor::~Npc_actor
 	(
 	)
 	{
-	delete schedule;
 	delete [] schedules;
 	}
 
@@ -3958,8 +3957,8 @@ void Npc_actor::remove_this
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	set_action(0);
-	delete schedule;
-	schedule = 0;
+//	delete schedule;	// Problems in SI monster creation.
+//	schedule = 0;
 // Messes up resurrection	num_schedules = 0;
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	gwin->remove_nearby_npc(this);	// Remove from nearby list.
@@ -4026,7 +4025,11 @@ void Npc_actor::move
 	Actor::move(newtx, newty, newlift);
 	Map_chunk *nlist = gwin->get_chunk_safely(get_cx(), get_cy());
 	if (nlist != olist)
+		{
 		Npc_actor::switched_chunks(olist, nlist);
+		if (!olist)		// Moving back into world?
+			dormant = true;	// Cause activation if painted.
+		}
 	}
 
 /*
