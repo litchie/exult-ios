@@ -97,7 +97,12 @@ EXULT_SI_FLX =
 endif
 
 flex_DATA = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX) midisfx.flx
+
+if BUILD_STUDIO
 estudionew_DATA = $(ESTUDIO_NEW_FILES)
+else
+estudionew_DATA =
+endif
 
 CLEANFILES = exult.flx exult_bg.flx exult_si.flx *~
 
