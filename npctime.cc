@@ -36,7 +36,7 @@ extern bool god_mode;
 /*
  *	Base class for keeping track of things like poison, protection, hunger.
  */
-class Npc_timer : public Time_sensitive
+class Npc_timer : public Time_sensitive, public Game_singletons
 	{
 protected:
 	Npc_timer_list *list;		// Where NPC stores ->this.
@@ -289,7 +289,6 @@ Npc_timer::Npc_timer
 	int start_delay			// Time in msecs. before starting.
 	) : list(l)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	gwin->get_tqueue()->add(Game::get_ticks() + start_delay, this, 0L);
 	}
 
@@ -329,7 +328,6 @@ void Npc_hunger_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 					// No longer a party member?
 	if (!npc->is_in_party() ||
@@ -390,7 +388,6 @@ void Npc_poison_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||	// Long enough?  Or cured?
 	    npc->get_flag(Obj_flags::poisoned) == 0 ||
@@ -421,7 +418,6 @@ void Npc_sleep_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||	// Long enough?  Or cured?
 	    npc->get_flag(Obj_flags::asleep) == 0)
@@ -474,7 +470,6 @@ void Npc_invisibility_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 	if (Wearing_ring(npc, 296))
 		{			// Wearing invisibility ring.
@@ -504,7 +499,6 @@ void Npc_protection_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 	if (Wearing_ring(npc, 297))
 		{			// Wearing protection ring.
@@ -534,7 +528,6 @@ void Npc_flag_timer::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||	// Long enough?  Or cleared.
 	    npc->get_flag(flag) == 0)

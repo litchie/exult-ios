@@ -93,6 +93,7 @@ exult_SOURCES =	\
 	shapeid.h	\
 	sigame.cc	\
 	sigame.h	\
+	singles.h	\
 	tiles.h		\
 	tqueue.cc	\
 	tqueue.h	\

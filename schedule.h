@@ -24,6 +24,7 @@
 #include "tiles.h"
 #include "vec.h"
 #include "lists.h"
+#include "singles.h"
 
 #ifdef WIN32
 #define Rectangle RECTX
@@ -37,7 +38,7 @@ class Actor_action;
 /*
  *	A Schedule controls the NPC it is assigned to.
  */
-class Schedule
+class Schedule : public Game_singletons
 	{
 protected:
 	Actor *npc;			// Who this controls.

@@ -88,16 +88,14 @@ void Ireg_game_object::remove_this
 		owner->remove(this);
 	else				// In the outside world.
 		{
-		Map_chunk *chunk = 
-			Game_window::get_instance()->get_chunk_safely(
-								cx, cy);
+		Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
 		if (chunk)
 			chunk->remove(this);
 		}
 	if (!nodel)
 	{
 		cheat.clear_this_grabbed_actor((Actor*)this);	// Could be an actor
-		Game_window::get_instance()->delete_object(this);
+		gwin->delete_object(this);
 	}
 	}
 
@@ -146,7 +144,7 @@ void Ireg_game_object::write_ireg
 int Ireg_game_object::get_ireg_size()
 {
 	// These shouldn't ever happen, but you never know
-	if (Game_window::get_instance()->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+	if (gwin->get_gump_man()->find_gump(this) || Usecode_script::find(this))
 		return -1;
 
 	return 11;

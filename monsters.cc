@@ -29,6 +29,7 @@
 #include "schedule.h"
 #include "chunks.h"
 #include "Audio.h"
+#include "gamemap.h"
 
 using std::rand;
 
@@ -163,7 +164,6 @@ Monster_actor *Monster_actor::create
 	bool equipment
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 					// Get 'monsters.dat' info.
 	const Monster_info *inf = ShapeID::get_info(shnum).get_monster_info();
 	if (!inf)
@@ -271,8 +271,6 @@ int Monster_actor::step
 	int frame			// New frame #.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	
 	// If move not allowed do I remove or change destination?
 	// I'll do nothing for now
 	if (!gwin->emulate_is_move_allowed(t.tx, t.ty))
@@ -284,7 +282,7 @@ int Monster_actor::step
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get ->new chunk.
-	Map_chunk *nlist = gwin->get_chunk(cx, cy);
+	Map_chunk *nlist = gmap->get_chunk(cx, cy);
 	nlist->setup_cache();		// Setup cache if necessary.
 					// Blocked?
 	if (is_blocked(t))
@@ -300,7 +298,7 @@ int Monster_actor::step
 	gwin->scroll_if_needed(this, t);
 	add_dirty(gwin);		// Set to repaint old area.
 					// Get old chunk.
-	Map_chunk *olist = gwin->get_chunk(old_cx, old_cy);
+	Map_chunk *olist = gmap->get_chunk(old_cx, old_cy);
 					// Move it.
 					// Get rel. tile coords.
 	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
@@ -545,7 +543,6 @@ int Slime_actor::step
 	if (newpos != oldpos && rand()%9 == 0 &&
 	    !find_nearby(blood, oldpos, 912, 1, 0))
 		{
-		Game_window *gwin = Game_window::get_instance();
 					// Frames 4-11 are green.
 		Game_object *b = gwin->create_ireg_object(912, 4 + rand()%8);
 		b->set_flag(Obj_flags::is_temporary);

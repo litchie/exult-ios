@@ -46,7 +46,7 @@ class Chunk_terrain;
  *	Data cached for a chunk to speed up processing, but which doesn't need
  *	to be saved to disk:
  */
-class Chunk_cache
+class Chunk_cache : public Game_singletons
 	{
 	Map_chunk *obj_list;
 	unsigned char setup_done;	// Already setup.
@@ -123,7 +123,7 @@ public:
  *	Game objects are stored in a list for each chunk, sorted from top-to-
  *	bottom, left-to-right.
  */
-class Map_chunk
+class Map_chunk : public Game_singletons
 	{
 	Chunk_terrain *terrain;		// Flat landscape tiles.
 	Object_list objects;		// ->first in list of all objs.  'Flat'

@@ -32,7 +32,7 @@ class Image_buffer8;
 /*
  *	The flat landscape, 16x16 tiles:
  */
-class Chunk_terrain
+class Chunk_terrain : public Game_singletons
 	{
 	ShapeID shapes[256];		// Id's.  The flat (non-RLE's) are
 					//   rendered here, the others are

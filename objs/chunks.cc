@@ -103,8 +103,6 @@ void Chunk_cache::update_object
 	bool add				// 1 to add, 0 to remove.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Game_map *gmap = gwin->get_map();
 	Shape_info& info = obj->get_info();
 	int ztiles = info.get_3d_height(); 
 	if (!ztiles || !info.is_solid())
@@ -195,7 +193,6 @@ void Chunk_cache::update_egg
 	bool add				// 1 to add, 0 to remove.
 	)
 	{
-	Game_map *gmap = Game_window::get_instance()->get_map();
 					// Get footprint with abs. tiles.
 	Rectangle foot = egg->get_area();
 	if (!foot.w)
@@ -462,9 +459,6 @@ void Chunk_cache::activate_eggs
 	unsigned short eggbits		// Eggs[tile].
 	)
 	{
-					// Get ->usecode machine.
-	Usecode_machine *usecode = 
-				Game_window::get_instance()->get_usecode();
 	int i;				// Go through eggs.
 	for (i = 0; i < 8*(int)sizeof(eggbits) - 1 && eggbits; 
 						i++, eggbits = eggbits >> 1)
@@ -473,7 +467,7 @@ void Chunk_cache::activate_eggs
 		if ((eggbits&1) && i < egg_objects.size() &&
 		    (egg = egg_objects[i]) &&
 		    egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
-			egg->activate(usecode, obj);
+			egg->activate(ucmachine, obj);
 		}
 	if (eggbits)			// Check 15th bit.
 		{			// DON'T use an iterator here, since
@@ -487,7 +481,7 @@ void Chunk_cache::activate_eggs
 			Egg_object *egg = egg_objects[i];
 			if (egg && egg->is_active(obj,
 						tx, ty, tz, from_tx, from_ty))
-				egg->activate(usecode, obj);
+				egg->activate(ucmachine, obj);
 			}
 		}
 	}
@@ -528,7 +522,6 @@ void Map_chunk::set_terrain
 	Chunk_terrain *ter
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	if (terrain)
 		{
 		terrain->remove_client();
@@ -614,7 +607,6 @@ inline Map_chunk *Map_chunk::add_outside_dependencies
 	Ordering_info& newinfo		// Info. for new object's ordering.
 	)
 	{
-	Game_map *gmap = Game_window::get_instance()->get_map();
 	Map_chunk *chunk = gmap->get_chunk(cx, cy);
 	chunk->add_dependencies(newobj, newinfo);
 	return chunk;
@@ -633,7 +625,6 @@ void Map_chunk::add
 	{
 	newobj->cx = get_cx();		// Set object's chunk.
 	newobj->cy = get_cy();
-	Game_window *gwin = Game_window::get_instance();
 	Ordering_info ord(gwin, newobj);
 					// Put past flats.
 	if (first_nonflat)
@@ -731,7 +722,6 @@ void Map_chunk::remove
 	if (cache)			// Remove from cache.
 		cache->update_object(this, remove, 0);
 	remove->clear_dependencies();	// Remove all dependencies.
-	Game_window *gwin = Game_window::get_instance();
 	Game_map *gmap = gwin->get_map();
 	Shape_info& info = remove->get_info();
 					// See if it extends outside.
@@ -782,7 +772,6 @@ int Map_chunk::is_blocked
 	int max_drop			// Max. drop/rise allowed.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Game_map *gmap = gwin->get_map();
 	int tx, ty;
 	new_lift = 0;
@@ -827,7 +816,6 @@ int Map_chunk::is_blocked
 	)
 	{
 					// Get chunk tile is in.
-	Game_window *gwin = Game_window::get_instance();
 	Game_map *gmap = gwin->get_map();
 	Map_chunk *chunk = gmap->get_chunk_safely(
 			tile.tx/c_tiles_per_chunk, tile.ty/c_tiles_per_chunk);
@@ -857,8 +845,6 @@ int Map_chunk::is_blocked
 	int max_drop			// Max drop/rise allowed.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Game_map *gmap = gwin->get_map();
 	int vertx0, vertx1;		// Get x-coords. of vert. block
 					//   to right/left.
 	int horizx0, horizx1;		// Get x-coords of horiz. block
@@ -998,9 +984,9 @@ inline bool Check_spot
 	int tx, int ty, int tz
 	)
 	{
+	Game_map *gmap = Game_window::get_instance()->get_map();
 	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
-	Map_chunk *chunk = 
-		Game_window::get_instance()->get_chunk_safely(cx, cy);
+	Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
 	return (where == Map_chunk::inside) == 
 				(chunk->is_roof(tx % c_tiles_per_chunk, 
 					ty % c_tiles_per_chunk, tz) < 31);
@@ -1025,7 +1011,6 @@ Tile_coord Map_chunk::find_spot
 	Find_spot_where where		// Inside/outside.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = ShapeID::get_info(shapenum);
 	int xs = info.get_3d_xtiles(framenum);
 	int ys = info.get_3d_ytiles(framenum);
@@ -1111,7 +1096,6 @@ int Map_chunk::find_in_area
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;		// (Tiles within intersected chunk).
 	int eachcx, eachcy;
-	Game_window *gwin = Game_window::get_instance();
 	Game_map *gmap = gwin->get_map();
 	while (next_chunk.get_next(tiles, eachcx, eachcy))
 		{
@@ -1146,7 +1130,6 @@ void Map_chunk::try_all_eggs
 	if (norecurse)
 		return;
 	norecurse++;
-	Game_window *gwin = Game_window::get_instance();
 	Game_map *gmap = gwin->get_map();
 	Tile_coord pos = obj->get_tile();
 	const int dist = 32;		// See if this works okay.
@@ -1227,7 +1210,6 @@ void Map_chunk::setup_dungeon_levels
 	(
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
 	Game_map *gmap = gwin->get_map();
 
 	Object_iterator next(objects);
@@ -1283,8 +1265,6 @@ void Map_chunk::gravity
 	)
 	{
 	Game_object_vector dropped(20);	// Gets list of objs. that dropped.
-	Game_window *gwin = Game_window::get_instance();
-	Game_map *gmap = gwin->get_map();
 					// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;		// Rel. tiles.  Not used.

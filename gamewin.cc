@@ -300,6 +300,8 @@ Game_window::Game_window
 
 	set_window_size(width, height, scale, scaler);
 	pal = new Palette();
+	Game_singletons::init(this);	// Everything should exist here.
+
 	string str;
 	config->value("config/gameplay/textbackground", text_bg, -1);
 	config->value("config/gameplay/mouse3rd", str, "no");

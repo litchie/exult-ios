@@ -344,7 +344,7 @@ void Sprites_effect::handle_event
 					//   match usecode animations.
 	if (frame_num == frames)	// At end?
 		{			// Remove & delete this.
-		gwin->get_effects()->remove_effect(this);
+		eman->remove_effect(this);
 		gwin->set_all_dirty();
 		return;
 		}
@@ -604,7 +604,6 @@ void Projectile_effect::handle_event
 	int delay = gwin->get_std_delay()/2;
 	add_dirty(gwin);		// Force repaint of old pos.
 	Tile_coord epos = pos;		// Save pos.
-	Effects_manager *eman = gwin->get_effects();
 	if (!path->GetNextStep(pos) ||	// Get next spot.
 					// If missile egg, detect target.
 			(!target && (target = Find_target(gwin, pos)) != 0))
@@ -654,7 +653,7 @@ void Projectile_effect::handle_event
 			}
 		add_dirty(gwin);
 		pos.tx = -1;		// Signal we're done.
-		gwin->get_effects()->remove_effect(this);
+		eman->remove_effect(this);
 		return;
 		}
 	add_dirty(gwin);		// Paint new spot/frame.
@@ -765,7 +764,7 @@ void Death_vortex::handle_event
 	else
 		{
 		gwin->set_all_dirty();
-		gwin->get_effects()->remove_effect(this);
+		eman->remove_effect(this);
 		}
 	}
 
@@ -882,7 +881,7 @@ void Text_effect::handle_event
 	if (++num_ticks == 10)		// About 1-2 seconds.
 		{			// All done.
 		add_dirty();
-		gwin->get_effects()->remove_effect(this);
+		eman->remove_effect(this);
 		return;
 		}
 					// Back into queue.
@@ -1070,7 +1069,7 @@ void Rain_effect::handle_event
 	else
 		{
 		gwin->set_all_dirty();
-		gwin->get_effects()->remove_effect(this);
+		eman->remove_effect(this);
 		}
 	}
 
@@ -1127,7 +1126,7 @@ void Lightning_effect::handle_event
 		active = false;
 		if (curtime >= stop_time)
 			{		// Time to stop.
-			gwin->get_effects()->remove_effect(this);
+			eman->remove_effect(this);
 			return;
 			}
 		if (r%5 == 0)		// Occassionally flash again.
@@ -1161,7 +1160,6 @@ Storm_effect::Storm_effect
 	Game_window *gwin = Game_window::get_instance();
 					// Start raining soon.
 	int rain_delay = 20 + rand()%1000;
-	Effects_manager *eman = gwin->get_effects();
 	eman->add_effect(new Rain_effect(duration - 1, rain_delay));
 	int lightning_delay = rain_delay + rand()%500;
 	eman->add_effect(new Lightning_effect(duration - 1, lightning_delay));
@@ -1186,7 +1184,7 @@ void Storm_effect::handle_event
 		gwin->get_tqueue()->add(stop_time, this, udata);
 		}
 	else				// Must be time to stop.
-		gwin->get_effects()->remove_effect(this);
+		eman->remove_effect(this);
 	}
 
 /*
@@ -1232,7 +1230,7 @@ void Sparkle_effect::handle_event
 	else
 		{
 		gwin->set_all_dirty();
-		gwin->get_effects()->remove_effect(this);
+		eman->remove_effect(this);
 		}
 	}
 
@@ -1408,7 +1406,7 @@ void Clouds_effect::handle_event
 	Game_window *gwin = Game_window::get_instance();
 	if (curtime >= stop_time)
 		{			// Time to stop.
-		gwin->get_effects()->remove_effect(this);
+		eman->remove_effect(this);
 		gwin->set_all_dirty();
 		return;
 		}

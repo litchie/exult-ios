@@ -57,7 +57,7 @@ Egg_object *Egg_object::editing = 0;
 /*
  *	Timer for a missile egg (type-6 egg).
  */
-class Missile_launcher : public Time_sensitive
+class Missile_launcher : public Time_sensitive, public Game_singletons
 	{
 	Egg_object *egg;		// Egg this came from.
 	int weapon;			// Shape for weapon.
@@ -81,7 +81,6 @@ void Missile_launcher::handle_event
 	long udata
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Tile_coord src = egg->get_tile();
 					// Is egg off the screen?
 	if (!gwin->get_win_tile_rect().has_point(src.tx, src.ty))
@@ -111,7 +110,7 @@ void Missile_launcher::handle_event
 					src, party[i], shapenum, weapon);
 		}
 	if (proj)
-		gwin->get_effects()->add_effect(proj);
+		eman->add_effect(proj);
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
@@ -175,10 +174,6 @@ Egg_object::Egg_object
 			(htch << hatched) + (ar << auto_reset);
 	if (type == usecode || type == teleport || type == path)
 		set_quality(data1&0xff);
-#if 0	/* +++++The old way. */
-	if (type == path)		// Store paths.
-		Game_window::get_instance()->add_path_egg(this);
-#endif
 	}
 
 /*
@@ -227,7 +222,7 @@ Egg_object::~Egg_object
 	{
 	if (launcher)
 		{
-		Game_window::get_instance()->get_tqueue()->remove(launcher);
+		gwin->get_tqueue()->remove(launcher);
 		delete launcher;
 		}
 	}
@@ -245,7 +240,6 @@ void Egg_object::set_area
 		area = Rectangle(0, 0, 0, 0);
 		return;
 		}
-	Game_window *gwin = Game_window::get_instance();
 	Tile_coord t = get_tile();	// Get absolute tile coords.
 	switch (criteria)		// Set up active area.
 		{
@@ -302,7 +296,6 @@ int Egg_object::is_active
 	if ((flags & (1 << (int) hatched)) &&
 			!(flags & (1 << (int) auto_reset)))
 		return (0);		// For now... Already hatched.
-	Game_window *gwin = Game_window::get_instance();
 	if (flags & (1 << (int) nocturnal))
 		{			// Nocturnal.
 		int hour = gwin->get_hour();
@@ -470,7 +463,6 @@ void Egg_object::update_from_studio
 		return;
 		}
 	editing = 0;
-	Game_window *gwin = Game_window::get_instance();
 	if (!egg)			// Create a new one?
 		{
 		int x, y;
@@ -530,7 +522,7 @@ void Egg_object::update_from_studio
 	if (type == usecode || type == teleport || type == path)
 		egg->set_quality(data1&0xff);
 	Map_chunk *chunk = 
-			gwin->get_chunk_safely(egg->get_cx(), egg->get_cy());
+			gmap->get_chunk_safely(egg->get_cx(), egg->get_cy());
 	chunk->remove_egg(egg);		// Got to add it back.
 	chunk->add_egg(egg);
 	cout << "Egg updated" << endl;
@@ -571,7 +563,6 @@ void Egg_object::activate_teleport
 	Game_object *obj		// Object (actor) that came near it.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Tile_coord pos(-1, -1, -1);	// Get position to jump to.
 	int qual = get_quality();
 	if (qual == 255)
@@ -618,7 +609,6 @@ void Egg_object::activate
 		return;			// Out of luck.
 					// Flag it as done.
 	flags |= (1 << (int) hatched);
-	Game_window *gwin = Game_window::get_instance();
 	switch(type)
 		{
 		case jukebox:
@@ -657,7 +647,7 @@ void Egg_object::activate
 						shnum, frnum, get_tx(),
 						get_ty(), get_lift());
 				Map_chunk *chunk = 
-					gwin->get_chunk(get_cx(), get_cy());
+					gmap->get_chunk(get_cx(), get_cy());
 				if (nobj->is_egg())
 					chunk->add_egg((Egg_object *) nobj);
 				else
@@ -771,7 +761,6 @@ void Egg_object::set_weather
 	{
 	if (!len)			// Means continuous.
 		len = 120;		// How about a couple game hours?
-	Effects_manager *eman = gwin->get_effects();
 	int cur = eman->get_weather();
 	cout << "Current weather is " << cur << "; setting " << weather
 							<< endl;
@@ -808,10 +797,9 @@ void Egg_object::move
 	int newlift
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
-	Map_chunk *newchunk = gwin->get_chunk_safely(newcx, newcy);
+	Map_chunk *newchunk = gmap->get_chunk_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
 	remove_this(1);			// Remove from old.
@@ -830,12 +818,11 @@ void Egg_object::remove_this
          int nodel                       // 1 to not delete.
          )
 	{
-	Game_window *gwin = Game_window::get_instance();
 	if (get_owner())		// Watch for this.
 		get_owner()->remove(this);
 	else
 		{
-		Map_chunk *chunk = gwin->get_chunk_safely(cx, cy);
+		Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
 	 	if (chunk)
 			{
 			gwin->add_dirty(this);	// (Make's ::move() simpler.).
@@ -844,7 +831,7 @@ void Egg_object::remove_this
 		}
 	if (launcher)			// Stop missiles.
 		{
-		Game_window::get_instance()->get_tqueue()->remove(launcher);
+		gwin->get_tqueue()->remove(launcher);
 		delete launcher;
 		launcher = 0;
 		}
@@ -887,7 +874,7 @@ void Egg_object::write_ireg
 int Egg_object::get_ireg_size()
 {
 	// These shouldn't ever happen, but you never know
-	if (Game_window::get_instance()->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+	if (gwin->get_gump_man()->find_gump(this) || Usecode_script::find(this))
 		return -1;
 
 	return 13;
@@ -1052,7 +1039,6 @@ void Field_object::activate
 	int /* must */			// If 1, skip dice roll.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Main_actor *av = gwin->get_main_actor();
 	if (!obj->get_flag(Obj_flags::in_party))
 		return;			// Not a party member.
