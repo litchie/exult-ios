@@ -183,9 +183,9 @@ statement:
 	| function_call_statement
 	| return_statement
 	| statement_block
-	| SAY ';'
-		{ $$ = new Uc_say_statement(); }
-	| MESSAGE '(' expression ')' ';'
+	| SAY  '(' opt_expression_list ')' ';'
+		{ $$ = new Uc_say_statement($3); }
+	| MESSAGE '(' opt_expression_list ')' ';'
 		{ $$ = new Uc_message_statement($3); }
 	| ';'				/* Null statement */
 		{ $$ = 0; }
