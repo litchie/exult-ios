@@ -17,6 +17,7 @@ exult_SOURCES =	\
 	actors.h	\
 	args.cc		\
 	args.h		\
+	autoarray.h	\
 	delobjs.cc	\
 	delobjs.h	\
 	drag.cc		\
