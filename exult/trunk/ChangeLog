@@ -1,3 +1,6 @@
+2001-01-21  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* cheat.cc, intrinsics.cc: fixed SI map. (somewhat)
+	
 2001-01-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Bug fixes:  Theft, right-double-click, crash after

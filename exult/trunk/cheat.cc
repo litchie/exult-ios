@@ -249,12 +249,18 @@ void Cheat::map_teleport (void) const {
   int tx, ty, z, xx, yy;
   gwin->get_main_actor()->get_abs_tile(tx, ty, z);
   
-  //the 5 and 10 below are the map-borders, 3072 dimensions of the world
-  //the +1 _seems_ to improve location, maybe something to do with "/ 3072"?
-  xx = ((tx * (map->get_width() - 10)) / 3072) + (5 + x - map->get_xleft()) + 1;
-  yy = ((ty * (map->get_height() - 10)) / 3072) + (5 + y - map->get_yabove()) + 1;
+  // these may need some tweaking for SI
+  int border = (Game::get_game_type()==SERPENT_ISLE ? 12 : 5);
+  const int worldsize = c_tiles_per_chunk * c_num_chunks;
+  int correction = (Game::get_game_type()==SERPENT_ISLE ? 0 : 1);
+  int correctx = (Game::get_game_type()==SERPENT_ISLE ? 9 : 0);
+  int correcty = (Game::get_game_type()==SERPENT_ISLE ? 0 : 0);
+  int correctscale = (Game::get_game_type()==SERPENT_ISLE ? 10 : 0);
+
+  xx = ((tx * (map->get_width() - border*2 + correctscale)) / worldsize) + (border + x - map->get_xleft()) + correction + correctx;
+  yy = ((ty * (map->get_height() - border*2 + correctscale)) / worldsize) + (border + y - map->get_yabove()) + correction + correcty;
   gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
-  gwin->get_win()->fill8(255, 5, 1, xx - 2, yy); // ++++ is this the right yellow?
+  gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
   
   gwin->show(1);
   if (!Get_click(xx, yy, Mouse::greenselect)) {
@@ -262,9 +268,8 @@ void Cheat::map_teleport (void) const {
     return;
   }
   
-  //the 5 and 10 below are the map-borders, 3072 dimensions of the world
-  tx = ((xx - (5 + x - map->get_xleft()))*3072) / (map->get_width() - 10);
-  ty = ((yy - (5 + y - map->get_yabove()))*3072) / (map->get_height() - 10);
+  tx = ((xx - correctx - (border + x - map->get_xleft()))*worldsize) / (map->get_width() - 2*border + correctscale);
+  ty = ((yy - correcty - (border + y - map->get_yabove()))*worldsize) / (map->get_height() - 2*border + correctscale);
   cout << "Teleporting to " << tx << "," << ty << "!" << endl;
   Tile_coord t(tx,ty,0);
   gwin->teleport_party(t);
