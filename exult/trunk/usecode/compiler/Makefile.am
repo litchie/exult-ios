@@ -10,6 +10,8 @@ ucc_SOURCES = ucparse.yy uclex.ll ucmain.cc \
 	ucfun.h		\
 	ucloc.cc	\
 	ucloc.h		\
+	ucstmt.cc	\
+	ucstmt.h	\
 	ucsym.cc	\
 	ucsym.h
 
