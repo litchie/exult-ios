@@ -45,6 +45,19 @@ using std::rand;
 unsigned long Combat_schedule::battle_time = 0;
 
 /*
+ *	Is a given ammo shape in a given family.
+ */
+
+bool In_ammo_family(int shnum, int family)
+	{
+	if (shnum == family)
+		return true;
+	Ammo_info *ainf = 
+	    Game_window::get_game_window()->get_info(shnum).get_ammo_info();
+	return (ainf != 0 && ainf->get_family_shape() == family);
+	}
+
+/*
  *	Start music if battle has recently started.
  */
 
@@ -398,8 +411,7 @@ static int Swap_weapons
 	if (ammo)			// Check for readied ammo.
 		{
 		Game_object *aobj = npc->get_readied(Actor::ammo);
-		if (!aobj || !Ammo_info::is_in_family(aobj->get_shapenum(),
-								ammo))
+		if (!aobj || !In_ammo_family(aobj->get_shapenum(), ammo))
 			return 0;
 		}
 	if (info.get_ready_type() == two_handed_weapon &&
@@ -451,8 +463,7 @@ void Combat_schedule::start_strike
 		Game_object *aobj;
 		if (ammo_shape &&
 		    (!(aobj = npc->get_readied(Actor::ammo)) ||
-			!Ammo_info::is_in_family(aobj->get_shapenum(), 
-								ammo_shape)))
+			!In_ammo_family(aobj->get_shapenum(), ammo_shape)))
 			{		// Out of ammo.
 			if (npc->get_schedule_type() != Schedule::duel)
 				{
@@ -615,7 +626,7 @@ static int Use_ammo
 	if (!aobj)
 		return 0;
 	int actual_ammo = aobj->get_shapenum();
-	if (!Ammo_info::is_in_family(actual_ammo, ammo))
+	if (!In_ammo_family(actual_ammo, ammo))
 		return 0;
 	npc->remove(aobj);		// Remove all.
 	int quant = aobj->get_quantity();

@@ -111,8 +111,6 @@ public:
  */
 class Ammo_info
 	{
-	static class Ammo_table *table;	// For looking up by shape #.
-	int shapenum;			// Ammo's shape.
 	int family_shape;		// I.e., burst-arrow's is 'arrow'.
 	unsigned char damage;		// Extra damage points.
 	unsigned char powers;		// Same as for weapons.
@@ -120,11 +118,9 @@ class Ammo_info
 //	unsigned char unknown[6];	// ??
 public:
 	friend class Shapes_vga_file;
-	Ammo_info() : shapenum(0)
+	Ammo_info()
 		{  }
 	int read(std::istream& mfile);	// Read in from file.
-	int get_shapenum()
-		{ return shapenum; }
 	int get_family_shape()
 		{ return family_shape; }
 	int get_damage()
@@ -133,17 +129,23 @@ public:
 		{ return powers; }
 	int get_damage_type() const
 		{ return damage_type; }
-	static void create();		// Create table.
-	static void insert(int shnum, Ammo_info& ent);
-	static Ammo_info *find(int shnum);// Find given ammo's entry.
-					// Is given shape in desired family.
-	static int is_in_family(int shnum, int family)
-		{
-		Ammo_info *ainf;
-		return (shnum == family) ||
-			((ainf = find(shnum)) != 0 && 
-					ainf->family_shape == family);
-		}
+	};
+
+/*
+ *	Armor:
+ */
+class Armor_info
+	{
+	unsigned char prot;		// Protection value.
+	unsigned char immune;		// Weapon_info::damage_type bits.
+public:
+	friend class Shape_info;
+	Armor_info() {  }
+	int read(std::istream& mfile);	// Read in from file.
+	unsigned char get_prot() const
+		{ return prot; }
+	unsigned char get_immune() const
+		{ return immune; }
 	};
 
 /*
@@ -162,8 +164,9 @@ class Shape_info
 	bool occludes_flag;		// Flagged in 'occlude.dat'.  Roof.
 	unsigned char *weapon_offsets;	// From "wihh.dat": pixel offsets
 					//   for drawing weapon in hand
-	unsigned char armor;		// Armor, from armor.dat.
 	Weapon_info *weapon;		// From weapon.dat, if a weapon.
+	Ammo_info *ammo;		// From ammo.dat, if ammo.
+	Armor_info *armor;		// From armor.dat.
 	Monster_info *monstinf;		// From monster.dat.
 	void set_tfa_data()		// Set fields from tfa.
 		{
@@ -178,7 +181,7 @@ class Shape_info
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : weight(0), volume(0),
-		ready_type(0), weapon_offsets(0), armor(0), weapon(0),
+		ready_type(0), weapon_offsets(0), armor(0), weapon(0), ammo(0),
 		monstinf(0), occludes_flag(false)
 		{
 		tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
@@ -190,9 +193,13 @@ public:
 	int get_volume()
 		{ return volume; }
 	int get_armor()			// Get armor protection.
-		{ return armor; }
+		{ return armor ? armor->prot : 0; }
 	Weapon_info *get_weapon_info()
 		{ return weapon; }
+	Ammo_info *get_ammo_info()
+		{ return ammo; }
+	Armor_info *get_armor_info()
+		{ return armor; }
 	Monster_info *get_monster_info()
 		{ return monstinf; }
 					// Get tile dims., flipped for
