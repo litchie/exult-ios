@@ -2898,11 +2898,13 @@ bool Actor::figure_hit_points
 		{
 		if (wpoints == 127)	// Glass sword?
 			hp = wpoints;	// A killer.
-		else
-			hp = 1 + rand()%wpoints
-				+ (attacker_str > 1 ? 
-					(1 + rand()%(attacker_str/3)) : 0)
-				- (armor > 0 ? (1 + rand()%armor) : 0);
+		else {
+			hp = 1 + rand()%wpoints;
+            if (attacker_str > 2)
+                hp += 1 + rand()%(attacker_str/3);
+            if (armor > 0)
+                hp -= 1 + rand()%armor;
+        }
 		if (hp < 1)
 			hp = 1;
 		}
