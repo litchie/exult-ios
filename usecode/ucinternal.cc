@@ -2233,12 +2233,38 @@ int Usecode_internal::run()
 
 					int cnt = arr.is_array() ? arr.get_array_size() : 1;
 
-					// only support changes of size 1, for now
-					if (abs(cnt - frame->locals[local2].get_int_value()) > 1) {
-						std::cerr << "Error: internal usecode interpreter "
-								  << "error (loop array changed). Please "
-								  << "report this bug." << std::endl;
-						assert(abs(cnt - frame->locals[local2].get_int_value()) <= 1);
+					if (cnt != frame->locals[local2].get_int_value()) {
+					
+						// update new total count
+						frame->locals[local2] = Usecode_value(cnt);
+						
+						if (abs(cnt-frame->locals[local2].get_int_value())==1)
+						{
+							// small change... we can fix this
+							Usecode_value& curval = arr.is_array() ?
+								arr.get_elem(next - 1) : arr;
+							
+							if (curval != frame->locals[local3]) {
+								if (cnt>frame->locals[local2].get_int_value()){
+									//array got bigger, it seems
+									//addition occured before the current value
+									next++;
+								} else {
+									//array got smaller
+									//deletion occured before the current value
+									next--;
+								}
+							} else {
+								//addition/deletion was after the current value
+								//so don't need to update 'next'
+							}
+						}
+						else
+						{
+								// big change... 
+								// just update total count to make sure
+								// we don't crash
+						}
 					}
 
 					if (cnt != frame->locals[local2].get_int_value()) {
