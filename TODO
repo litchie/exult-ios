@@ -1,27 +1,26 @@
-Rewrite Event Loop
-==================
+This is a list of possible projects.
 
-We need one and only one event loop (maybe defined in an event class), with
-methods for adding callbacks, etc.
-Look at GTK+'s event loop code and mimic that.
+- Clean up debug/output messages and send them to the appropriate stream 
+  (stdout, stderr). Remove useless messages.
 
-What happens in the Exult event loop ?
+- Implement "Return to Menu" in BG and SI's menus and in the in-game menu
+  to go back to the Exult menu
 
-	Handle mouse motion
-	Handle mouse clicks
-	Handle keypresses
-	Handle configure events
-	Rotate palettes
-	
-Garbage Collection
-==================
+- Implement Video Options menu with the following options: resolution, scaling
+  engine, fullscreen, RGB gamma correction sliders
 
-We need to tag all shapes with a timestamp when they are displayed. Then we 
-can have a task which is executed at regular intervals which invalidates
-shapes which haven't been accessed in a while. Other more intelligent
-mechanisms are welcome, though.
+- Implement Gameplay Options with the following options: cheats, SI paperdolls
 
-Development Environment
-=======================
+- Implement a Journal which logs all conversations
 
-Yeah, yeah...
+- Change the rendering mechanism to paint the mouse pointer after the scaling,
+  so that underlying graphics don't get corrupted
+
+- Synchronize the BG intro
+
+- Get the Guardian's labial expression in both BG and SI's intros correct
+
+- Implement a text tool for the GIMP plugin that loads "fonts.vga", allows the
+  user to select a font, type some text and paste the result in the current
+  frame.
+
