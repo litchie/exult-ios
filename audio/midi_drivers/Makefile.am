@@ -15,10 +15,10 @@ CXXFLAGS += $(WINDOWING_SYSTEM)
 #LIBS +=  -L/usr/X11R6/lib/ -lc -lstdc++ -lgcc -lm -lXi -lXext -lX11 
 
 
-OFILES=	forked_player.o KMIDI.o Timidity_binary.o
+OFILES=	forked_player.o KMIDI.o Timidity_binary.o win_MCI.o
 
-SOURCES = KMIDI.cc Timidity_binary.cc forked_player.cc KMIDI.h \
-		Timidity_binary.h forked_player.h 
+SOURCES = KMIDI.cc Timidity_binary.cc forked_player.cc win_MCI.cc \
+          KMIDI.h Timidity_binary.h forked_player.h win_MCI.h
 
 midi-drivers:	$(OFILES)
 
@@ -32,3 +32,4 @@ clean:
 forked_player.o: forked_player.h ../Midi.h
 KMIDI.o: KMIDI.h ../Midi.h
 Timidity_binary.o: Timidity_binary.h ../Midi.h
+win_MCI.o: win_MCI.h ../Midi.h
