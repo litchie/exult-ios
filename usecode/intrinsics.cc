@@ -507,8 +507,10 @@ USECODE_INTRINSIC(create_new_object)
 	if (inf)
 	{
 					// (Wait sched. added for FOV.)
+		// don't add equipment (Erethian's transform sequence)
 		Monster_actor *monster = Monster_actor::create(shapenum,
-			cx, cy, tx, ty, lift, Schedule::wait);
+			cx, cy, tx, ty, lift, Schedule::wait, (int) Actor::neutral,
+													   true, false);
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
