@@ -312,7 +312,8 @@ void Game_window::drop
 			}
 		else
 			{		// Was it dropped on something?
-			int max_lift = main_actor->get_lift() + 4;
+			int max_lift = cheat.in_map_editor() ? 13 :
+						main_actor->get_lift() + 4;
 			int lift;
 			Game_object *found = find_object(x, y);
 			bool heavy = 0;
