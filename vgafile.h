@@ -30,8 +30,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include "fnames.h"
 #include "autoarray.h"
-#include "databuf.h"
+// #include "databuf.h"
 
+class DataSource;
+class StreamDataSource;
 class Shape;
 class Image_buffer8;
 
@@ -136,7 +138,7 @@ public:
 class Vga_file
 	{
 	ifstream file;
-	StreamDataSource *shape_source;
+	DataSource *shape_source;
 protected:
 	int num_shapes;			// Total # of shapes.
 	Shape *shapes;			// List of ->'s to shapes' lists
