@@ -513,7 +513,7 @@ class Chunk_cache
 	void set_blocked_tile(int tx, int ty, int lift, int ztiles)
 		{
 		blocked[ty*tiles_per_chunk + tx] |= 
-						((1 << ztiles) - 1) << lift;
+						(((1 << ztiles) - 1) << lift);
 		}
 					// Clear blocked tile's bits.
 	void clear_blocked_tile(int tx, int ty, int lift, int ztiles)

@@ -1196,7 +1196,8 @@ void Game_window::show_items
 			<< '\n';
 		int tx, ty, tz;
 		obj->get_abs_tile(tx, ty, tz);
-		cout << "tx = " << tx << ", ty = " << ty << ", quality = " <<
+		cout << "tx = " << tx << ", ty = " << ty << ", tz = " <<
+			tz << ", quality = " <<
 			obj->get_quality() << '\n';
 		cout << "Volume = " << info.get_volume() << '\n';
 		cout << "obj = " << (void *) obj << '\n';
