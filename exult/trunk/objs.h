@@ -370,6 +370,8 @@ class Container_game_object : public Ireg_game_object
 	int volume_used;		// Amount of volume occupied.
 protected:
 	Game_object *last_object;	// ->last obj., which pts. to first.
+	int get_max_volume() const	// Max. we'll hold. (0 == infinite).
+		{ return 4*get_volume(); }
 public:
 	Container_game_object(unsigned char l, unsigned char h, 
 				unsigned int shapex,
@@ -393,7 +395,7 @@ public:
 		{ volume_used += delta; }
 					// Room for this object?
 	int has_room(Game_object *obj) const
-		{ return obj->get_volume() + volume_used <= get_volume(); }
+		{ return obj->get_volume() + volume_used <= get_max_volume(); }
 					// Remove an object.
 	virtual void remove(Game_object *obj);
 					// Add an object.
