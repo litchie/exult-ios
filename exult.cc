@@ -159,6 +159,7 @@ static void Init
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << '\n';
 		exit(-1);
 		}
+	atexit(SDL_Quit);
 	audio.Init(9615*2,2);
 	SDL_SysWMinfo info;		// Get system info.
 	SDL_VERSION(&info.version);
