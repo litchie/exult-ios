@@ -1,3 +1,8 @@
+2004-02-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Makefile.am: add empty install-exec-local target if not on Mac OS X
+	* configure.ac: add extra X11 include directory on freebsd
+	* Makefile.am: distribute autogen.sh
+
 2004-02-03 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/exult_studio.xml: converted JPGs to PNGs
 	* docs/exult_studio.html: converted JPGs to PNGs

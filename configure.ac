@@ -99,6 +99,11 @@ case "$host_os" in
 		AC_MSG_RESULT(X11 (OpenBSD))
 		SYSLIBS="-L/usr/X11R6/lib -lX11 -lXext -lXxf86vm -lXxf86dga"
 		;;
+	freebsd* )
+		WINDOWING_SYSTEM="-DXWIN"
+		AC_MSG_RESULT(X11 (FreeBSD))
+		CXXFLAGS="$CXXFLAGS -I/usr/X11R6/include"
+		;;
 	solaris* )
 		WINDOWING_SYSTEM="-DXWIN"
 		AC_MSG_RESULT(X11 (Solaris))
