@@ -665,7 +665,8 @@ USECODE_INTRINSIC(find_nearby_avatar)
 {
 	// Find objs. with given shape near Avatar?
 	Usecode_value av(gwin->get_main_actor());
-	Usecode_value dist(64), mask(0);
+					// Try bigger # for Test of Love tree.
+	Usecode_value dist(/* 64 */ 192), mask(0);
 	Usecode_value u(find_nearby(av, parms[0], dist, mask));
 	return(u);
 }
@@ -1641,6 +1642,18 @@ USECODE_INTRINSIC(in_combat)
 {
 	// Are we in combat mode?
 	return Usecode_value(gwin->in_combat());
+}
+
+USECODE_INTRINSIC(center_view)
+{
+	// Center view around given item.
+	Game_object *obj = get_item(parms[0]);
+	if (obj)
+		{
+		Tile_coord t = obj->get_abs_tile_coord();
+		gwin->center_view(t);
+		}
+	return no_ret;
 }
 
 USECODE_INTRINSIC(get_dead_party)

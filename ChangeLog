@@ -1,3 +1,8 @@
+2000-12-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Usecode:  Intrinsic 0x92 discovered.  Also increased range of
+	find_nearby_avatar(), so beware of problems.
+
 2000-12-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Edit colors in palette editor.
