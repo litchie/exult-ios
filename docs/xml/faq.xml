@@ -995,6 +995,16 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="stone_of_castambre">
+			<header>Attacking the Stone of Castambre doesn't work (FoV)</header>
+			<body>
+				<para>
+					You need to <em>use</em> (double-click) the pick while it's in your hands
+					instead of attacking with it. After that, select the tree with the resulting
+					crosshairs.
+				</para>
+			</body>
+		</sub>
 	</section>
 	<section title="Questions and Answers">
 		<sub name="howto_get_answers">
