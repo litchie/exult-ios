@@ -649,7 +649,10 @@ int Container_game_object::count_objects
 		{
 		obj = obj->get_next();
 		if (shapenum == -359 || obj->get_shapenum() == shapenum)
-			total++;
+			{		// Check quantity.
+			int quant = obj->get_quality()&0x7f;
+			total += quant ? quant : 1;
+			}
 					// Count recursively.
 		total += obj->count_objects(shapenum);
 		}
@@ -1341,6 +1344,21 @@ void Sprite::handle_event
 					// Repaint.
 		gwin->repaint_sprite(this, oldrect);
 		}
+	}
+
+/*
+ *	Create a text object.
+ */
+
+Text_object::Text_object
+	(
+	const char *m, 			// A copy is made.
+	int c_x, int c_y, 
+	int s_x, int s_y, 
+	int w, int h
+	) : msg(strdup(m)), cx(c_x), cy(c_y), sx(s_x), sy(s_y),
+		  width(w), height(h)
+	{
 	}
 
 /*
