@@ -42,6 +42,8 @@ extern Game_window *gwin;	// from exult.cc - FIX ME!!!
 extern unsigned char quitting_time;	// from exult.cc - FIX ME!!!
 extern int scale;	// from exult.cc - FIX ME!!!
 
+void make_screenshot(bool silent = false);
+
 /*
  *	Verify user wants to quit.
  *
@@ -96,6 +98,13 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
 		{
 			if (event.key.keysym.sym == SDLK_ESCAPE)
 				return (0);
+			if ((event.key.keysym.sym == SDLK_s) &&
+				(event.key.keysym.mod & KMOD_ALT) &&
+				(event.key.keysym.mod & KMOD_CTRL)) {
+					make_screenshot(true);
+					return 1;
+			}
+
 			int chr = event.key.keysym.sym;
 			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
 						? toupper(chr) : chr);
