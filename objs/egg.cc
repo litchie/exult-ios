@@ -426,11 +426,16 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				{
 				int sched = data1>>8;
 				int align = data1&3;
-				Monster_actor *monster = inf->create(get_cx(),
-					get_cy(), get_tx(), get_ty(),
-					get_lift(), sched, align);
-				gwin->add_dirty(monster);
-				gwin->add_nearby_npc(monster);
+				int cnt = (data1&0xff)>>2;
+				while (cnt--)
+					{
+					Monster_actor *monster = 
+						inf->create(get_cx(),
+						get_cy(), get_tx(), get_ty(),
+						get_lift(), sched, align);
+					gwin->add_dirty(monster);
+					gwin->add_nearby_npc(monster);
+					}
 				}
 			else		// Create item.
 				{
