@@ -33,23 +33,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::ifstream;
 
-//char *item_names[1024];			// Names of U7 items.
 char **item_names;			// Names of U7 items.
 int num_item_names;
 
-#if 0
-/*
- *	A few shapes have names for each frame.
- */
-class Frame_names
-	{
-	int shapenum;			// The shape.
-	char **names;			// ->name for each frame.
-public:
-	Frame_names(int shnum) : shapenum(shnum), names(0)
-		{  }
-	void 
-#endif
 
 /*
  *	Set up names of items.
