@@ -151,6 +151,7 @@ void Palette::fade_in(int cycles)
 			}
 		} else {
 		        win->set_palette(pal1, 63);
+			win->show();
 		}
 	}
 
@@ -170,6 +171,7 @@ void Palette::fade_out(int cycles)
 			}
 		} else {
 		        win->set_palette(pal1, 63);
+			win->show();
 		}
 	}
 
