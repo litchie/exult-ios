@@ -392,6 +392,7 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 				COUT("Chunk length appears to be " << l);
 				chunk_length = l+4;
 				break;
+			case 5:
 			case 3:
 				COUT("Silence");
 				chunk_length=0;

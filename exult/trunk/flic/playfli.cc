@@ -276,6 +276,14 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	return ticks;
 }
 
+void playfli::put_buffer(Image_window *win)
+{
+	int xoffset=(win->get_width()-fli_width)/2;
+	int yoffset=(win->get_height()-fli_height)/2;
+
+	if(win && fli_buf) win->put (fli_buf, xoffset, yoffset);
+}
+
 playfli::~playfli()
 {
 	if (fli_buf) delete fli_buf;
