@@ -29,10 +29,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 
-Configuration::Configuration() :filename(""),is_file(false)
+Configuration::Configuration() : xmltree(),filename(""),is_file(false)
 {}
 
-Configuration::Configuration(const char *s) : filename(""),is_file(false)
+Configuration::Configuration(const char *s) : xmltree(),filename(""),is_file(false)
 {
 	read_config_file(s);
 }

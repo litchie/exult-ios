@@ -30,8 +30,11 @@ XMLEntity::XMLEntity() : id(""),content("") {}
 XMLEntity::~XMLEntity() {}
 
 
-XMLnode::XMLnode() {}
-XMLnode::~XMLnode() {}
+XMLnode::XMLnode() : entity(),nodelist()
+{  }
+
+XMLnode::~XMLnode()
+{  }
 
 
 string	&XMLnode::reference(string &h,bool &exists)
