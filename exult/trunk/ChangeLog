@@ -1,3 +1,6 @@
+2001-06-02  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Makefile.cygwin: Travis' changes (splitshp, midisfx.flx)
+
 2001-05-31  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* cheat.cc (Cheat): For a quick workaround to the 'flee' bug,
