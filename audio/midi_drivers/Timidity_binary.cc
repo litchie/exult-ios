@@ -35,6 +35,7 @@ extern	Configuration	*config;
 
 
 const	Uint32	Timidity_binary_magic=0x345300;
+const	Uint32	Timidity_binary_magic_sfx=0x345301;
 
 // #undef HAVE_TIMIDITY_BIN	// Damn. Can't do this while SDL has the audio device.
 // New strategy - Tell timidity to output to stdout. Capture that via a pipe, and
@@ -57,11 +58,19 @@ static	int	sub_process(void *p)
 	return 0;
 }
 
+static	int	sfx_process(void *p)
+{
+	Timidity_binary *ptr=static_cast<Timidity_binary *>(p);
+	ptr->sfxplayer();
+	return 0;
+}
+
 void	Timidity_binary::player(void)
 {
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
 	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
-	string	newfilename=tmpnam(0);
+	char newfn[L_tmpnam];
+	string	newfilename=tmpnam(newfn);
 	rename(filename.c_str(),newfilename.c_str());
 	// This could be across filesystems, you naughty boy.
 
@@ -86,7 +95,35 @@ void	Timidity_binary::player(void)
 	audiostream=0;
 }
 
+void	Timidity_binary::sfxplayer(void)
+{
+	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic_sfx);
+	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
+	char newfn[L_tmpnam];
+	string	newfilename=tmpnam(newfn);
+	rename(sfxname.c_str(),newfilename.c_str());
+	// This could be across filesystems, you naughty boy.
 
+	audiostream->id=Timidity_binary_magic_sfx;
+	string	s="timidity -Oru8S -id -T 175 -o- "+newfilename;
+	FILE *data=popen(s.c_str(),"r");
+	if(!data)
+		return;
+	char	buf[1024];
+	while(!feof(data))
+		{
+		if(!audiostream->consuming)
+			{
+			break;
+			}
+		size_t	x=fread(buf,1,sizeof(buf),data);
+		audiostream->produce(buf,x);
+		}
+	pclose(data);
+	unlink(newfilename.c_str());
+	audiostream->end_production();
+	audiostream=0;
+}
 
 Timidity_binary::Timidity_binary() : my_thread(0),filename()
 	{
@@ -98,11 +135,17 @@ Timidity_binary::~Timidity_binary()
 	{
 	// Stop any current player
 	stop_track();
+	stop_sfx();
 	}
 
 void	Timidity_binary::stop_track(void)
 	{
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
+	}
+
+void	Timidity_binary::stop_sfx(void)
+	{
+	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic_sfx);
 	}
 
 bool	Timidity_binary::is_playing(void)
@@ -119,7 +162,7 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 #endif
                 {
 #if DEBUG
-	cerr << "Stopping any running track" << endl;
+	cerr << "Stopping any running sfx" << endl;
 #endif
 		stop_track();
                 }
@@ -128,6 +171,25 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 #endif
 	filename=name;
 	my_thread=SDL_CreateThread(sub_process,this);
+}
+
+
+void	Timidity_binary::start_sfx(const char *name)
+{
+#if DEBUG
+	cerr << "Starting sound effect with Timidity_binary" << endl;
+#endif
+                {
+#if DEBUG
+	cerr << "Stopping any running track" << endl;
+#endif
+		stop_sfx();
+                }
+#if DEBUG
+	cerr << "Starting to play " << name << endl;
+#endif
+	sfxname=name;
+	sfx_thread=SDL_CreateThread(sfx_process,this);
 }
 
 const	char *Timidity_binary::copyright(void)

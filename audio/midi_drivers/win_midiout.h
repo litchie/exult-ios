@@ -44,14 +44,65 @@ public:
 	virtual void start_track(midi_event *evntlist, int ppqn, bool repeat);
 	virtual void start_sfx(midi_event *evntlist, int ppqn);
 	virtual void stop_track(void);
+	virtual void stop_sfx(void);
 	virtual bool is_playing(void);
 	virtual const char *copyright(void);
 
 	Windows_MidiOut();
 	virtual ~Windows_MidiOut();
 
-// Statics for thread
 private:
+	UNREPLICATABLE_CLASS(Windows_MidiOut);
+
+	struct mid_data {
+		midi_event	*list;
+		int 		ppqn;
+		bool		repeat;
+	};
+
+	HMIDIOUT	midi_port;
+	
+	HANDLE	 	*thread_handle;
+	DWORD		thread_id;
+
+	// Thread communicatoins
+	LONG		is_available;
+	LONG		playing;
+	LONG		s_playing;
+	LONG		thread_com;
+	LONG		sfx_com;
+
+	mid_data *thread_data;
+	mid_data *sfx_data;
+
+	mid_data data;
+	mid_data sdata;
+
+	// Methods
+	static DWORD thread_start(void *data);
+	void init_device();
+	DWORD thread_main();
+	void thread_play ();
+
+	// Microsecond Clock
+	Uint32 start;
+	Uint32 sfx_start;
+
+	inline void wmoInitClock ()
+	{ start = SDL_GetTicks(); }
+
+	inline double wmoGetTime ()
+	{ return (SDL_GetTicks() - start) * 1000.0; }
+
+	inline void wmoInitSFXClock ()
+	{ sfx_start = SDL_GetTicks(); }
+
+	inline double wmoGetSFXTime ()
+	{ return (SDL_GetTicks() - sfx_start) * 1000.0; }
+
+	inline void wmoDelay (const double mcs_delay)
+	{ if (mcs_delay >= 0) SDL_Delay ((int) (mcs_delay / 1000.0)); }
+
 };
 
 #endif

@@ -33,21 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL.h"
 #include "win_midiout.h"
 
-static HMIDIOUT		midi_port;
-	
-static void		init_device();
-	
-static DWORD		thread_main(void *data);
-static void		thread_play();
-static HANDLE	 	*thread_handle;
-static DWORD		thread_id;
-
-// Thread communicatoins
-static LONG		is_available;
-static LONG		playing;
-static LONG		thread_com;
-static LONG		sfx_com;
-
 #define W32MO_THREAD_COM_READY		0
 #define W32MO_THREAD_COM_PLAY		1
 #define W32MO_THREAD_COM_STOP		2
@@ -55,38 +40,16 @@ static LONG		sfx_com;
 #define W32MO_THREAD_COM_INIT_FAILED	4
 #define W32MO_THREAD_COM_EXIT		-1
 
-#define W32MO_SFX_COM_READY		0
-#define W32MO_SFX_COM_PLAY		1
-#define W32MO_THREAD_COM_STOP		2
-
-static bool		in_use = 0;
-
-struct mid_data {
-	midi_event	*list;
-	int 		ppqn;
-	bool		repeat;
-};
-
-static mid_data *thread_data;
-static mid_data *sfx_data;
-
-
 Windows_MidiOut::Windows_MidiOut()
 {
-	if (in_use)
-	{
-		throw (0);
-		return;
-	}
-	in_use = true;
 	InterlockedExchange (&playing, false);
+	InterlockedExchange (&s_playing, false);
 	InterlockedExchange (&is_available, false);
 	init_device();
 }
 
 Windows_MidiOut::~Windows_MidiOut()
 {
-	in_use = false;
 	if (!is_available) return;
 
 	while (thread_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
@@ -114,23 +77,29 @@ Windows_MidiOut::~Windows_MidiOut()
 	InterlockedExchange (&is_available, false);
 }
 
-static void init_device()
+void Windows_MidiOut::init_device()
 {
 	// Opened, lets open the thread
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_INIT);
 	
-	thread_handle = (HANDLE*) CreateThread (NULL, 0, thread_main, NULL, 0, &thread_id);
+	thread_handle = (HANDLE*) CreateThread (NULL, 0, thread_start, this, 0, &thread_id);
 	
 	while (thread_com == W32MO_THREAD_COM_INIT) SDL_Delay (1);
 	
 	if (thread_com == W32MO_THREAD_COM_INIT_FAILED) cerr << "Failier to initialize midi playing thread" << endl;
 }
 
-static DWORD thread_main(void *data)
+DWORD Windows_MidiOut::thread_start(void *data)
 {
-	playing = false;
-	thread_data = NULL;
+	Windows_MidiOut *ptr=static_cast<Windows_MidiOut *>(data);
+	return ptr->thread_main();
+}
 
+DWORD Windows_MidiOut::thread_main()
+{
+	thread_data = NULL;
+	InterlockedExchange (&playing, false);
+	InterlockedExchange (&s_playing, false);
 
 	UINT mmsys_err = midiOutOpen (&midi_port, MIDI_MAPPER, 0, 0, 0);
 
@@ -148,7 +117,7 @@ static DWORD thread_main(void *data)
 	SetThreadPriority (thread_handle, THREAD_PRIORITY_HIGHEST);
 	
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
-	InterlockedExchange (&sfx_com, W32MO_SFX_COM_READY);
+	InterlockedExchange (&sfx_com, W32MO_THREAD_COM_READY);
 
 	thread_play();
 
@@ -157,42 +126,7 @@ static DWORD thread_main(void *data)
 	return 0;
 }
 
-
-// Inits the microsecond clock
-static Uint32 start;
-inline void wmoInitClock ()
-{
-	start = SDL_GetTicks();
-}
-
-// Gets time in microseconds since
-inline double wmoGetTime ()
-{
-	return (SDL_GetTicks() - start) * 1000.0;
-}
-
-// Delays for a certain amount of microseconds
-inline void wmoDelay (const double mcs_delay)
-{
-	if (mcs_delay < 0) return;
-	SDL_Delay ((int) (mcs_delay / 1000.0));
-}
-
-
-// Inits the sfx microsecond clock
-static Uint32 sfx_start;
-inline void wmoInitSFXClock ()
-{
-	sfx_start = SDL_GetTicks();
-}
-
-// Gets time in microseconds since
-inline double wmoGetSFXTime ()
-{
-	return (SDL_GetTicks() - sfx_start) * 1000.0;
-}
-
-static void thread_play ()
+void Windows_MidiOut::thread_play ()
 {
 	int	ppqn = 1;
 	int	repeat = false;
@@ -219,8 +153,6 @@ static void thread_play ()
 	
 	midi_event *s_evntlist = NULL;
 	midi_event *s_event = NULL;
-
-	bool	s_playing = false;
 
 	// Play while there isn't a message waiting
 	while (1)
@@ -349,20 +281,20 @@ static void thread_play ()
 			}	
 		
 		 	s_event = s_event->next;
-	 		if ((!s_event) || (thread_com == W32MO_THREAD_COM_EXIT) || (sfx_com != W32MO_SFX_COM_READY))
+	 		if ((!s_event) || (thread_com == W32MO_THREAD_COM_EXIT) || (sfx_com != W32MO_THREAD_COM_READY))
 		 	{
 				XMIDI::DeleteEventList (s_evntlist);
 				s_evntlist = NULL;
 				s_event = NULL;
-				s_playing = false;
-				InterlockedExchange (&sfx_com, W32MO_SFX_COM_READY);
+				InterlockedExchange (&s_playing, false);
+				InterlockedExchange (&sfx_com, W32MO_THREAD_COM_READY);
 		 	}
 		}
 
 
 		// Got issued a sound effect play command
 		// set up the sound effect playing routine
-		if (sfx_com == W32MO_SFX_COM_PLAY)
+		if (sfx_com == W32MO_THREAD_COM_PLAY)
 		{
 			cout << "Play sfx command" << endl;
 			// Make sure that the data exists
@@ -372,7 +304,7 @@ static void thread_play ()
 
 			s_ppqn = sfx_data->ppqn;
 			InterlockedExchange ((LONG*) &sfx_data, (LONG) NULL);
-			InterlockedExchange (&sfx_com, W32MO_SFX_COM_READY);
+			InterlockedExchange (&sfx_com, W32MO_THREAD_COM_READY);
 			
 			s_event = s_evntlist;
 			s_tempo = 0x07A120;
@@ -385,7 +317,7 @@ static void thread_play ()
 			
 			wmoInitSFXClock ();
 
-			s_playing = true;
+			InterlockedExchange (&s_playing, true);
 		}
 
 
@@ -412,8 +344,6 @@ static void thread_play ()
 	midiOutReset (midi_port);
 }
 
-static mid_data data;
-
 void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool repeat)
 {
 	if (!is_available)
@@ -432,25 +362,21 @@ void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool re
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_PLAY);
 }
 
-static mid_data sdata;
-
 void Windows_MidiOut::start_sfx(midi_event *evntlist, int ppqn)
 {
-	cout << "got sfx" << endl;
-
 	if (!is_available)
 		init_device();
 
 	if (!is_available)
 		return;
 	
-	while (sfx_com != W32MO_SFX_COM_READY) SDL_Delay (1);
+	while (sfx_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
 
 	sdata.list = evntlist;
 	sdata.ppqn = ppqn;
 	
 	InterlockedExchange ((LONG*) &sfx_data, (LONG) &sdata);
-	InterlockedExchange (&sfx_com, W32MO_SFX_COM_PLAY);
+	InterlockedExchange (&sfx_com, W32MO_THREAD_COM_PLAY);
 }
 
 
@@ -463,6 +389,17 @@ void Windows_MidiOut::stop_track(void)
 
 	while (thread_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_STOP);
+}
+
+void Windows_MidiOut::stop_sfx(void)
+{
+	if (!is_available)
+		return;
+
+	if (!s_playing) return;
+
+	while (sfx_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
+	InterlockedExchange (&sfx_com, W32MO_THREAD_COM_STOP);
 }
 
 bool Windows_MidiOut::is_playing(void)
