@@ -97,7 +97,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 %type <strvec> identifier_list opt_identifier_list
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
-%type <stmt> array_loop_statement
+%type <stmt> array_loop_statement var_decl var_decl_list declaration
 %type <block> statement_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list
@@ -166,7 +166,6 @@ statement_list:
 
 statement:
 	declaration
-		{ $$ = 0; }
 	| assignment_statement
 	| if_statement
 	| while_statement
@@ -183,20 +182,65 @@ statement:
 	;
 
 declaration:
-	VAR identifier_list ';'
-		{
-		for (vector<char*>::const_iterator it = $2->begin();
-					it != $2->end(); it++)
-			function->add_symbol(*it);
-		}
-	| STRING IDENTIFIER '=' STRING_LITERAL ';'
-		{
-		function->add_string_symbol($2, $4);
-		}
+	VAR var_decl_list ';'
+		{ $$ = $2; }
+	| STRING string_decl_list ';'
+		{ $$ = 0; }
 	| function_decl
 		{
 		if (!function->add_function_symbol($1))
 			delete $1;
+		$$ = 0;
+		}
+	;
+
+var_decl_list:
+	var_decl_list ',' var_decl
+		{
+		if (!$3)
+			$$ = $1;
+		else if (!$1)
+			$$ = $3;
+		else			/* Both nonzero.  Need a list. */
+			{
+			Uc_block_statement *b = 
+				dynamic_cast<Uc_block_statement *>($1);
+			if (!b)
+				{
+				b = new Uc_block_statement();
+				b->add($1);
+				}
+			b->add($3);
+			$$ = b;
+			}
+		}
+	| var_decl
+		{ $$ = $1; }
+	;
+
+var_decl:
+	IDENTIFIER
+		{ 
+		function->add_symbol($1); 
+		$$ = 0;
+		}
+	| IDENTIFIER '=' expression
+		{
+		Uc_var_symbol *var = function->add_symbol($1);
+		$$ = new Uc_assignment_statement(
+				new Uc_var_expression(var), $3);
+		}
+	;
+
+string_decl_list:
+	string_decl_list ',' string_decl
+	| string_decl
+	;
+
+string_decl:
+	IDENTIFIER '=' STRING_LITERAL 
+		{
+		function->add_string_symbol($1, $3);
 		}
 	;
 
