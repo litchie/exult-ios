@@ -1165,6 +1165,7 @@ void Game_window::fade_palette
 		  pal->fade_in(cycles);
 	  else
 		  pal->fade_out(cycles);
+	  faded_out = !inout;		// Be sure to set flag.
 	}
 
 /*

@@ -36,6 +36,7 @@ class Actor;
  */
 class Combat_schedule : public Schedule
 	{
+	static unsigned long battle_time;// Time when battle started.
 	enum Phase			// We'll be a finite-state-machine.
 		{
 		initial = 0,		// Just constructed.
@@ -54,6 +55,8 @@ class Combat_schedule : public Schedule
 	int max_reach;			// Max. weapon reach in tiles.
 	int ammo_shape;			// If required, else 0.
 	unsigned char yelled;		// Yell when first opponent targeted.
+	unsigned char started_battle;	// 1st opponent targeted.
+	unsigned char fleed;		// Set 1st time fleeing.
 	int failures;			// # failures to find opponent.
 	void find_opponents();
 	Actor *find_foe(int mode);	// Find a new opponent.
@@ -65,7 +68,8 @@ public:
 	Combat_schedule(Actor *n, Schedule_types prev_sched) 
 		: Schedule(n), state(initial), prev_schedule(prev_sched),
 			opponent(0), weapon_shape(0),
-			max_reach(1), ammo_shape(0), yelled(0), failures(0)
+			max_reach(1), ammo_shape(0), yelled(0), 
+			started_battle(0), fleed(0), failures(0)
 		{ set_weapon_info(); }
 	virtual void now_what();	// Npc calls this when it's done
 	virtual void im_dormant();	// Npc calls this when it goes dormant.

@@ -2313,7 +2313,11 @@ int Chunk_object_list::is_blocked
  */
 int Chunk_object_list::is_roof(int tx, int ty, int lift)
 {
+#if 1		/* Might be lying on bed at lift==2. */
 	int height = get_lowest_blocked (lift+4, tx, ty);
+#else		/* But this is even worse! */
+	int height = get_lowest_blocked (lift+2, tx, ty);
+#endif
 	if (height == -1) return 31;
 	return height;
 }
