@@ -781,7 +781,8 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 		
 		bank127[status&0xF] = false;
 		
-		if (convert_type == XMIDI_CONVERT_MT32_TO_GM || convert_type == XMIDI_CONVERT_MT32_TO_GS)
+		if (convert_type == XMIDI_CONVERT_MT32_TO_GM || convert_type == XMIDI_CONVERT_MT32_TO_GS
+			|| convert_type == XMIDI_CONVERT_MT32_TO_GS127)
 			return 2;
 
 		CreateNewEvent (time);
@@ -789,20 +790,20 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 		current->data[0] = 0;
 		current->data[1] = data;
 
-		if (convert_type == XMIDI_CONVERT_GSMT_TO_GS && data == 127)
+		if (convert_type == XMIDI_CONVERT_GS127_TO_GS && data == 127)
 			bank127[status&0xF] = true;
 
 		return 2;
 	}
 
 	// Handling for patch change mt32 conversion, probably should go elsewhere
-	if ((status >> 4) == 0xC && convert_type != XMIDI_CONVERT_NOCONVERSION)
+	if ((status >> 4) == 0xC && (status&0xF) != 9 && convert_type != XMIDI_CONVERT_NOCONVERSION)
 	{
 		if (convert_type == XMIDI_CONVERT_MT32_TO_GM)
 		{
 			data = mt32asgm[data];
 		}
-		else if ((convert_type == XMIDI_CONVERT_GSMT_TO_GS && bank127[status&0xF]) ||
+		else if ((convert_type == XMIDI_CONVERT_GS127_TO_GS && bank127[status&0xF]) ||
 				convert_type == XMIDI_CONVERT_MT32_TO_GS)
 		{
 			CreateNewEvent (time);
@@ -812,6 +813,20 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 
 			data = mt32asgs[data*2];
 		}
+		else if (convert_type == XMIDI_CONVERT_MT32_TO_GS127)
+		{
+			CreateNewEvent (time);
+			current->status = 0xB0 | (status >> 4);
+			current->data[0] = 0;
+			current->data[1] = 127;
+		}
+	}	// Drum track handling 
+	else if ((status >> 4) == 0xC && (status&0xF) == 9 && convert_type == XMIDI_CONVERT_MT32_TO_GS127)
+	{
+		CreateNewEvent (time);
+		current->status = 0xB9;
+		current->data[0] = 0;
+		current->data[1] = 127;			
 	}
 
 	CreateNewEvent (time);
@@ -878,7 +893,16 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 	int		play_size = 2;
 	
 	if (is_xmi) play_size = 3;
-	
+
+	// Set Drum track to correct setting if required
+	if (convert_type == XMIDI_CONVERT_MT32_TO_GS127)
+	{
+		CreateNewEvent (0);
+		current->status = 0xB9;
+		current->data[0] = 0;
+		current->data[1] = 127;			
+	}
+
 	while (!end && source->getPos() < source->getSize())
 	{
 
