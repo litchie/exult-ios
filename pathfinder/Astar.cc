@@ -23,7 +23,7 @@ int     Astar::NewPath(Tile_coord &source,Tile_coord &dest,int (*tileclassifier)
 
 	// Push the path into our stack
 	int	i=0;
-	while(!(t[i]==goal))
+	while(t[i]&&!(t[i]==goal))
 		{
 		calculated_path.push_back(t[i]);
 		++i;
