@@ -1,3 +1,10 @@
+2001-09-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* intrinsics.cc:  Treat 'last_created' as a 1-element stack.
+	* mouse.cc (Mouse): Avatar's speed depends on gwin->std_delay.
+	* objs.cc:  Check_mask() rewritten.
+	* ucinternal.cc:  Sort list returned by find_nearby().
+
 2001-09-13  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.h,etc: Added get_std_delay() for standard frame delay.
