@@ -3103,6 +3103,11 @@ Usecode_machine::~Usecode_machine
 
 #if DEBUG
 int debug = 0;				// 2 for more stuff.
+static int ucbp_fun = -1, ucbp_ip = -1;	// Breakpoint.
+void Setbreak(int fun, int ip)
+	{ ucbp_fun = fun; ucbp_ip = ip; }
+void Clearbreak()
+	{ ucbp_fun = ucbp_ip = -1; }
 #endif
 
 /*
@@ -3161,8 +3166,13 @@ int Usecode_machine::run
 		int opcode = *ip++;
 #if DEBUG
 		if (debug >= 2)
+			{
+			int curip = ip - 1 - code;
 			printf("SP = %d, IP = %04x, op = %02x\n", sp - stack,
-						ip - 1 - code, opcode);
+						curip, opcode);
+			if (ucbp_fun == fun->id && ucbp_ip == curip)
+				cout << "At breakpoint" << endl;
+			}
 #endif
 		switch (opcode)
 			{
