@@ -1836,7 +1836,9 @@ int Actor::inventory_shapenum()
 	Shape_manager *sman = Shape_manager::get_instance();
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||(sman->can_use_paperdolls() && sman->get_bg_paperdolls());
 	
-	if (!npc_num && !serpent)	// Avatar No paperdolls
+	if (!npc_num && !serpent && get_type_flag(tf_sex))	// Avatar No paperdolls (female)
+		return (ACTOR_FIRST_GUMP+1);
+	else if (!npc_num && !serpent)	// Avatar No paperdolls
 		return (ACTOR_FIRST_GUMP);
 	else if (!npc_num && serpent)	// Avatar Paperdolls
 		return (123);
@@ -2472,8 +2474,10 @@ bool Actor::add
 
 	if (type == FIS_2Hand)		// Two-handed?
 		two_handed = true;
-	if (type == FIS_2Finger)	// Gloves?
+	if (type == FIS_2Finger) {	// Gloves?
 		index = lfinger;
+		two_fingered = true;
+	}
 
 	spots[index] = obj;		// Store in correct spot.
 	if (index == lhand && schedule)
