@@ -258,6 +258,7 @@ public:
 	Game_object *get_opponent();	// Get opponent.
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
+	int get_prev_schedule_type();	// Get previous schedule.
 					// Set new schedule.
 	virtual void set_schedule_type(int new_schedule_type, 
 						Schedule *newsched = 0);

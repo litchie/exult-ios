@@ -31,13 +31,14 @@ int Astar::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *client)
 	dest = d;
 	path.clear();		// Clear out old path, if there.
 	Tile_coord *t = Find_path(s, d, client, pathlen);
+	bool success = (t != 0);
 	for(int i=0;i<pathlen;i++)
 		path.push_back(t[i]);
 	delete [] t;	// Discard temporary storage
 	next_index = 0;
 	dir = 1;
 	stop = pathlen;
-	return (pathlen != 0);
+	return (success);
 }
 
 /*

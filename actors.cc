@@ -1013,6 +1013,19 @@ int Actor::find_best_spot
 }
 
 /*
+ *	Get previous schedule type.
+ *
+ *	Output:	Prev. schedule #, or -1 if not known.
+ */
+
+int Actor::get_prev_schedule_type
+	(
+	)
+	{
+	return schedule ? schedule->get_prev_type() : -1;
+	}
+
+/*
  *	Set new schedule by type.
  */
 
@@ -1030,11 +1043,10 @@ void Actor::set_schedule_type
 					// Save old for a moment.
 	Schedule::Schedule_types old_schedule = (Schedule::Schedule_types)
 								schedule_type;
-	schedule_type = new_schedule_type;
 	delete schedule;		// Done with the old.
 	schedule = newsched;
 	if (!schedule)
-		switch ((Schedule::Schedule_types) schedule_type)
+		switch ((Schedule::Schedule_types) new_schedule_type)
 			{
 		case Schedule::combat:
 			schedule = new Combat_schedule(this, old_schedule);
@@ -1120,6 +1132,8 @@ void Actor::set_schedule_type
 		default:
 			break;
 			}
+					// Set AFTER creating new schedule.
+	schedule_type = new_schedule_type;
 	if (!gwin->is_chunk_read(get_cx(), get_cy()))
 		dormant = true;		// Chunk hasn't been read in yet.
 	else if (schedule)		// Try to start it.

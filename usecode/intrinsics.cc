@@ -1846,3 +1846,17 @@ USECODE_INTRINSIC(set_polymorph)
 	return no_ret;
 }
 
+USECODE_INTRINSIC(prev_schedule)
+{
+	// prev_schedule(npc).  Pure guess!!!!
+	// Npc is set to its previous schedule type.
+	Actor *actor = as_actor(get_item(parms[0]));
+	if (actor)
+		{
+		int prev = actor->get_prev_schedule_type();
+		if (prev != -1 && prev != actor->get_schedule_type())
+			actor->set_schedule_type(prev);
+		}
+	return no_ret;
+}
+

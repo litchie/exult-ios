@@ -312,6 +312,7 @@ private:
 	USECODE_INTRINSIC_DECL(si_path_run_usecode);
 	USECODE_INTRINSIC_DECL(error_message);
 	USECODE_INTRINSIC_DECL(set_polymorph);
+	USECODE_INTRINSIC_DECL(prev_schedule);
 	USECODE_INTRINSIC_DECL(show_npc_face0);
 	USECODE_INTRINSIC_DECL(show_npc_face1);
 	USECODE_INTRINSIC_DECL(remove_last_face);
