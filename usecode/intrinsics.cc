@@ -549,12 +549,14 @@ USECODE_INTRINSIC(update_last_created)
 		Tile_coord dest(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
 			  arr.get_elem(2).get_int_value());
-					// Something there?
-		while (Chunk_object_list::is_blocked(dest))
+		Tile_coord pos = dest;	// Something there?
+		while (Chunk_object_list::is_blocked(pos) &&
+			Game_object::find_blocking(dest) != last_created)
 			{		// Try up to ceiling.
 			if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
 				return Usecode_value(0);
 			dest.tz++;
+			pos.tz = dest.tz;
 			}
 		last_created->move(dest.tx, dest.ty, dest.tz);
 		}

@@ -223,7 +223,7 @@ void Scheduled_usecode::handle_event
 		case 0x39:		// Rise?  (For flying carpet.
 			{
 			Tile_coord t = obj->get_abs_tile_coord();
-			if (t.tz < 11)
+			if (t.tz < 10)
 				t.tz++;
 			obj->move(t);
 			break;
