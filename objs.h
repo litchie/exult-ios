@@ -113,6 +113,7 @@ class Game_object : public ShapeID
 	Game_object *next;		// ->next in chunk list or container.
 	Vector dependencies;		// Objects which must be painted before
 					//   this can be rendered.
+	static unsigned char rotate[8];	// For getting rotated frame #.
 public:	//++++++Testing.  Maybe replace with a seq. number.
 	unsigned char rendered;		// 1 when rendered.
 protected:
@@ -197,6 +198,9 @@ public:
 		{ return cx; }
 	int get_cy()
 		{ return cy; }
+					// Get frame for desired direction.
+	int get_dir_framenum(int dir, int frnum)
+		{ return (frnum&0xf) + rotate[dir]; }
 					// Move to new abs. location.
 	void move(int newtx, int newty, int newlift);
 					// Move and change shape/frame.
@@ -218,6 +222,7 @@ public:
 	void clear_dependencies();	// Remove all dependencies.
 					// Find nearby objects.
 	int find_nearby(Vector& vec, int shapenum, int quality, int mask);
+	Game_object *find_closest(int shapenum, int quality = -359);
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
 					// Render.

@@ -813,6 +813,70 @@ void Loiter_schedule::now_what
 	}
 
 /*
+ *	Create a sleep schedule.
+ */
+
+Sleep_schedule::Sleep_schedule
+	(
+	Npc_actor *n
+	) : Schedule(n)
+	{
+	}
+
+/*
+ *	Schedule change for 'sleep':
+ */
+
+void Sleep_schedule::now_what
+	(
+	)
+	{
+	int frnum = npc->get_framenum();
+	if ((frnum&0xf) == Actor::sleep_frame)
+		return;			// Already sleeping.
+					// Find closest EW or NS bed.
+	Game_object *bed1 = npc->find_closest(696);
+	Game_object *bed2 = npc->find_closest(1011);
+	Game_object *bed;
+	int dir;
+	if (!bed1)
+		{
+		if (!bed2)
+			return;		// None found!
+		bed = bed2;
+		dir = north;
+		}
+	else if (!bed2)
+		{
+		bed = bed1;
+		dir = west;
+		}
+	else				// 1 of both kinds?
+		{
+		int dist1 = npc->get_abs_tile_coord().distance(
+						bed1->get_abs_tile_coord());
+		int dist2 = npc->get_abs_tile_coord().distance(
+						bed2->get_abs_tile_coord());
+		if (dist1 < dist2)
+			{
+			bed = bed1;
+			dir = west;
+			}
+		else
+			{
+			bed = bed2;
+			dir = north;
+			}
+		}
+	npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
+					// Get bed info.
+	Shape_info& info = Game_window::get_game_window()->get_info(bed);
+	Tile_coord bedloc = bed->get_abs_tile_coord();
+					// Put NPC on top of bed.
+	npc->move(bedloc.tx, bedloc.ty, bedloc.tz + info.get_3d_height() + 1);
+	}
+
+/*
  *	Open door that's blocking the NPC, after checking that it's closed.
  */
 
@@ -1073,8 +1137,14 @@ void Npc_actor::set_schedule_type
 	case Schedule::graze:
 		schedule = new Loiter_schedule(this);
 		break;
+	case Schedule::sleep:
+		schedule = new Sleep_schedule(this);
+		break;
 	case Schedule::patrol:
 		schedule = new Patrol_schedule(this);
+		break;
+	case Schedule::wait:		// Do nothing.
+	default:
 		break;
 		}
 	if (schedule)			// Try to start it.
