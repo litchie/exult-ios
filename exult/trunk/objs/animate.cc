@@ -758,12 +758,12 @@ void Animated_ifix_object::paint
  *	Write out an IFIX object.
  */
 
-void Animated_ifix_object::write_ifix(DataSource *ifix)
+void Animated_ifix_object::write_ifix(DataSource *ifix, bool v2)
 
 {
 	int oldframe = get_framenum();
 	set_frame(animator->get_framenum());
-	Ifix_game_object::write_ifix(ifix);
+	Ifix_game_object::write_ifix(ifix, v2);
 	set_frame(oldframe);
 }
 
