@@ -470,6 +470,15 @@ void ActionDeleteSelected(int *params)
 	cheat.delete_selected();
 }
 
+//  { ActionMoveSelected, 3, "Move selected", true, true, NONE },
+// params[0] = deltax (tiles)
+// params[1] = deltay
+// params[2] = deltaz
+void ActionMoveSelected(int *params)
+{
+	cheat.move_selected(params[0], params[1], params[2]);
+}
+
 //  { ActionToggleEggs, 0, "Toggle egg display", true, true, NONE },
 void ActionToggleEggs(int *params)
 {
