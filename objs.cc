@@ -120,6 +120,32 @@ void Chunk_object_list::add
 	}
 
 /*
+ *	Add a game object to a chunk's list.
+ */
+
+void Chunk_object_list::add_egg
+	(
+	Egg_object *egg			// Object to add.
+	)
+	{
+					// Get x,y of shape within chunk.
+	int x = egg->get_shape_pos_x(), y = egg->get_shape_pos_y();
+	unsigned char& spot = eggs[y*16 + x];
+	if (spot != 0xff)		// One already there?
+		return;
+	int new_cnt = num_eggs + 1;	// Create new list.
+	Egg_object **newlist = new Egg_object*[new_cnt];
+	for (int i = 0; i < num_eggs; i++)
+		newlist[i] = egg_objects[i];
+	spot = num_eggs;		// Store offset in list.
+	newlist[num_eggs++] = egg;	// Store new egg at end.
+	delete [] egg_objects;
+	egg_objects = newlist;
+					// ++++Testing:
+	add(egg);			// So we can see it.
+	}
+
+/*
  *	Remove a game object from this list.
  */
 

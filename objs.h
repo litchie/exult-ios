@@ -200,7 +200,8 @@ public:
 		};
 					// Create from ireg. data.
 	Egg_object(unsigned char l, unsigned char h, unsigned int shapex,
-		unsigned int shapey, unsigned int lft, short itype,
+		unsigned int shapey, unsigned int lft, 
+		unsigned short itype,
 		unsigned char prob, short d1, short d2)
 		: Game_object(l, h, shapex, shapey, lft),
 			probability(prob), data1(d1), data2(d2)
@@ -236,7 +237,13 @@ class Chunk_object_list
 public:
 	Chunk_object_list();
 	void add(Game_object *obj);	// Add an object.
+	void add_egg(Egg_object *egg);	// Add an egg.
 	void remove(Game_object *obj);	// Remove an object.
+	Egg_object *find_egg(int sx, int sy) //+++++Redo to use distance+++++
+		{
+		unsigned char index = eggs[sy*16 + sx];
+		return (index < num_eggs ? egg_objects[index] : 0);
+		}
 	void set(Game_object *objs)	// Set to (already sorted) list.
 		{
 		objects = objs;
