@@ -30,7 +30,7 @@
 #include "flic/playfli.h"
 #include "gamewin.h"
 #include "Audio.h"
-#include "game.h"
+#include "sigame.h"
 #include "palette.h"
 #include "databuf.h"
 #include "font.h"
@@ -153,23 +153,27 @@ static int get_frame (void)
 }
 
 void SI_Game::play_intro()
+{
+	int	next = 0;
+	size_t	flisize;
+	char	*fli_b;
+	uint8	*buffer;
+	size_t	size;
+	size_t	shapesize;
+	char *	shape_buf = 0;
+	int		i,j;
+	Font *font = fontManager.get_font("MENU_FONT");
+	Font *sifont = fontManager.get_font("SIINTRO_FONT");
+
+	bool speech = Audio::get_ptr()->is_speech_enabled();
+
+	gwin->clear_screen(true);
+	
+	Audio::get_ptr()->stop_music();
+
+	// Lord British presents...
+	try
 	{
-		int	next = 0;
-		size_t	flisize;
-		char	*fli_b;
-		uint8	*buffer;
-		size_t	size;
-		int	i,j;
-		Font *font = fontManager.get_font("MENU_FONT");
-		Font *sifont = fontManager.get_font("SIINTRO_FONT");
-
-		bool speech = Audio::get_ptr()->is_speech_enabled();
-
-		gwin->clear_screen(true);
-		
-		Audio::get_ptr()->stop_music();
-
-		// Lord British presents...
 		U7object lbflic("<STATIC>/intro.dat", 0);
 		fli_b = lbflic.retrieve(flisize);
 		playfli fli0(fli_b+8, flisize-8);
@@ -205,7 +209,7 @@ void SI_Game::play_intro()
 		}
 
 
-		delete [] fli_b;
+		FORGET_ARRAY(fli_b);
 
 		if (wait_delay (0))
 			return;
@@ -242,10 +246,7 @@ void SI_Game::play_intro()
 			next += 75;
 			win->show();
 			if (wait_delay (1))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 
 		}
 
@@ -268,10 +269,7 @@ void SI_Game::play_intro()
 			next += 75;
 			win->show();
 			if (wait_delay (1))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 
 		}
 
@@ -286,10 +284,7 @@ void SI_Game::play_intro()
 			next += 75;
 			win->show();
 			if (wait_delay (1))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 
 		}
 
@@ -313,10 +308,7 @@ void SI_Game::play_intro()
 			next += 75;
 			win->show();
 			if (wait_delay (1))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 
 		}
 
@@ -325,13 +317,10 @@ void SI_Game::play_intro()
 			next = fli1.play(win, 0, 0, next, j*5);
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 
 		}
-		delete [] fli_b;
+		FORGET_ARRAY(fli_b);
 
 		if (wait_delay (0))
 			return;
@@ -348,10 +337,7 @@ void SI_Game::play_intro()
 			next = fli2.play(win, 0, 0, next, j*5);
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
 		// Guard walks in
@@ -360,10 +346,7 @@ void SI_Game::play_intro()
 			next = fli2.play(win, j, j, next);
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
 		// Guard walks in
@@ -375,7 +358,7 @@ void SI_Game::play_intro()
 			U7object voc_my_leige("<STATIC>/intro.dat", 16);
 			buffer = (uint8 *) voc_my_leige.retrieve (size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
-			delete [] buffer;
+			FORGET_ARRAY(buffer);
 		}
 
 
@@ -390,10 +373,7 @@ void SI_Game::play_intro()
 
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
 		next = fli2.play(win, j, j, next);
@@ -407,7 +387,7 @@ void SI_Game::play_intro()
 			U7object voc_all_we("<STATIC>/intro.dat", 17);
 			buffer = (uint8 *) voc_all_we.retrieve (size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
-			delete [] buffer;
+			FORGET_ARRAY(buffer);
 		}
 
 		for (; j < 73; j++)
@@ -422,17 +402,11 @@ void SI_Game::play_intro()
 
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 		for (i = 0; i < 220; i++)
 			if (wait_delay (10))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 
 		const char *and_a[2] = { "and a map showing the way to",
 					"a place called the Serpent Isle" };
@@ -450,10 +424,7 @@ void SI_Game::play_intro()
 		
 		for (i = 0; i < 290; i++)
 			if (wait_delay (10))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 
 
 		fli2.play(win, j, j);
@@ -461,10 +432,7 @@ void SI_Game::play_intro()
 
 		for (i = 0; i < 50; i++)
 			if (wait_delay (10))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 
 		const char *indeed[2] = { "Indeed.",
 					"Put it on the table." };
@@ -476,7 +444,7 @@ void SI_Game::play_intro()
 			U7object voc_indeed("<STATIC>/intro.dat", 18);
 			buffer = (uint8 *) voc_indeed.retrieve(size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
-			delete [] buffer;
+			FORGET_ARRAY(buffer);
 		}
 
 		next = fli2.play(win, j, j);
@@ -496,20 +464,14 @@ void SI_Game::play_intro()
 
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
 		for (i = 0; i < 200; i++)
 			if (wait_delay (10))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 
-		delete [] fli_b;
+		FORGET_ARRAY(fli_b);
 
 		// Scroll opens
 		U7object flic3("<STATIC>/intro.dat", 3);
@@ -525,10 +487,7 @@ void SI_Game::play_intro()
 			next = fli3.play(win, j, j, next)+20;
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
 
@@ -541,7 +500,7 @@ void SI_Game::play_intro()
 			U7object voc_stand_back("<STATIC>/intro.dat", 19);
 			buffer = (uint8 *) voc_stand_back.retrieve(size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
-			delete [] buffer;
+			FORGET_ARRAY(buffer);
 		}
 
 		for (; j < 61; j++)
@@ -555,13 +514,10 @@ void SI_Game::play_intro()
 
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
-		delete [] fli_b;
+		FORGET_ARRAY(fli_b);
 
 
 		// Big G speaks
@@ -571,8 +527,6 @@ void SI_Game::play_intro()
 		fli4.info();
 
 		U7object shapes("<STATIC>/intro.dat", 30);
-		size_t	shapesize;
-		char *	shape_buf;
 		shape_buf = shapes.retrieve(shapesize);
 		BufferDataSource gshape_ds(shape_buf+8, shapesize-8);
 		Shape_frame *sf;
@@ -586,7 +540,7 @@ void SI_Game::play_intro()
 			U7object voc_big_g("<STATIC>/intro.dat", 20);
 			buffer = (uint8 *) voc_big_g.retrieve ( size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
-			delete [] buffer;
+			FORGET_ARRAY(buffer);
 		}
 
 		next = 0;
@@ -656,11 +610,7 @@ void SI_Game::play_intro()
 
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				delete [] shape_buf;
-				return;
-			}
+				throw UserBreakException();
 		}
 		sf = gshape.get_frame(0);
 
@@ -672,15 +622,11 @@ void SI_Game::play_intro()
 
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] shape_buf;
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
-		delete [] shape_buf;
-		delete [] fli_b;
+		FORGET_ARRAY(shape_buf);
+		FORGET_ARRAY(fli_b);
 		
 		// Tis LBs's Worst fear
 		U7object flic5("<STATIC>/intro.dat", 5);
@@ -694,10 +640,7 @@ void SI_Game::play_intro()
 
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
 
@@ -711,7 +654,7 @@ void SI_Game::play_intro()
 			U7object voc_tis_my("<STATIC>/intro.dat", 21);
 			buffer = (uint8 *) voc_tis_my.retrieve(size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
-			delete [] buffer;
+			FORGET_ARRAY(buffer);
 		}
 
 		for (j=0; j < 61; j++)
@@ -730,13 +673,10 @@ void SI_Game::play_intro()
 
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
-		delete [] fli_b;
+		FORGET_ARRAY(fli_b);
 
 
 		// Boat 1
@@ -751,13 +691,10 @@ void SI_Game::play_intro()
 
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
-		delete [] fli_b;
+		FORGET_ARRAY(fli_b);
 
 
 		// Boat 2
@@ -777,13 +714,10 @@ void SI_Game::play_intro()
 
 			win->show();
 			if (wait_delay (0))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 		}
 
-		delete [] fli_b;
+		FORGET_ARRAY(fli_b);
 
 
 		// Ultima VII Part 2
@@ -806,10 +740,7 @@ void SI_Game::play_intro()
 
 		for (i = 0; i < 300; i++)
 			if (wait_delay (10))
-			{
-				delete [] fli_b;
-				return;
-			}
+				throw UserBreakException();
 
 
 		for (j = 20; j; j--)
@@ -818,11 +749,15 @@ void SI_Game::play_intro()
 			font->center_text(ibuf, centerx, centery+75, txt_msg[2]);
 			win->show();
 		}
-
-
-		delete [] fli_b;
-
+		
+		FORGET_ARRAY(fli_b);
 	}
+	catch(const UserBreakException &x)
+	{
+		FORGET_ARRAY(shape_buf);
+		FORGET_ARRAY(fli_b);
+	}
+}
 
 void SI_Game::top_menu()
 {
@@ -851,7 +786,7 @@ void SI_Game::end_game(bool success)
 			fli_b = flic.retrieve(flisize);
 			playfli fli1(fli_b+8, flisize-8);
 			fli1.play(win);
-			delete [] fli_b;
+			FORGET_ARRAY(fli_b);
 		}
 	}
 

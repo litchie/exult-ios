@@ -89,4 +89,11 @@ public:
 };
 
 
+/*
+ *  Exception that gets fired when the user aborts something
+ */
+class UserBreakException
+{
+};
+
 #endif
