@@ -7,18 +7,20 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+
 class	Args
 	{
 	struct Opts
 		{
-		string	option;
+		std::string	option;
 		bool	*bval;
-		string  *sval;
+		std::string  *sval;
 		int	*ival;
 		unsigned long *uval;
 
 		bool	dbval;
-		string	dsval;
+		std::string	dsval;
 		int	dival;
 		unsigned long duval;
 		enum { no_type=0,type_bool,type_string,type_int,type_unsigned } valuetype;

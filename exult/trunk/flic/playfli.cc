@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <string.h>
+#include <iostream.h>
 #include "playfli.h"
 #include "utils.h"
 
@@ -95,7 +96,7 @@ void playfli::play(Image_window *win)
 
 				if (change == 0)
 				    change = 256;
-				fli_stream.read(&colors[current*3], change*3);
+				fli_stream.read((char*)&colors[current*3], change*3);
 			    }
 			  // Set palette
 			  if(win)
@@ -124,7 +125,7 @@ void playfli::play(Image_window *win)
 					    pixpos -= size_count;
 					    
 				        } else {
-					    fli_stream.read(pixbuf, size_count);
+					    fli_stream.read((char*)pixbuf, size_count);
 					    win->copy8(pixbuf,size_count,1,pixpos, skip_lines+line+yoffset);
 					    pixpos += size_count;
 					}
@@ -149,7 +150,7 @@ void playfli::play(Image_window *win)
 					memset(&pixbuf[pixpos], data, size_count);
 					pixpos += size_count;
 				    } else {
-					fli_stream.read(&pixbuf[pixpos],
+					fli_stream.read((char*)&pixbuf[pixpos],
 							-size_count);
 					pixpos -= size_count;
 				    }

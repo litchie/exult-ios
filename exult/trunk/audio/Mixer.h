@@ -51,6 +51,9 @@ public:
 		size_t	length;
 		MixBuffer(size_t size,Uint8 silence) : buffer(new Uint8[size]),num_samples(0),length(0) { memset(buffer,silence,size); };
 		MixBuffer(const MixBuffer &m) : buffer(m.buffer),num_samples(m.num_samples),length(m.length) {  };
+#ifdef MACOS
+		MixBuffer() : buffer(NULL),num_samples(0),length(0) {};
+#endif
 		};
 	size_t	buffer_length;
 	list<MixBuffer>	buffers;

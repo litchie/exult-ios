@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <stdio.h>			/* Debugging.			*/
-#include <fstream.h>
+#include <fstream>
 #include <string.h>
 #include <stdlib.h>
 #include "utils.h"
@@ -38,7 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 #include "effects.h"
 #include "mouse.h"
-#include <Audio.h>
+#include "Audio.h"
 #include <iomanip>
 #ifdef XWIN
 #include <signal.h>
@@ -542,7 +542,7 @@ Usecode_function::Usecode_function
 	id = Read2(file);
 	len = Read2(file);
 	code = new unsigned char[len];	// Allocate buffer & read it in.
-	file.read(code, len);
+	file.read((char*)code, len);
 	}
 
 /*
@@ -3399,7 +3399,7 @@ int Usecode_machine::write
 	ofstream out;
 	if (!U7open(out, FLAGINIT))	// Write global flags.
 		return (0);
-	out.write(gflags, sizeof(gflags));
+	out.write((char*)gflags, sizeof(gflags));
 	out.close();
 	if (!U7open(out, USEDAT))
 		return (0);
@@ -3423,7 +3423,7 @@ int Usecode_machine::read
 	ifstream in;
 	if (!U7open(in, FLAGINIT))	// Read global flags.
 		return (0);
-	in.read(gflags, sizeof(gflags));
+	in.read((char*)gflags, sizeof(gflags));
 	in.close();
 	if (!U7open(in, USEDAT))
 		return (0);
