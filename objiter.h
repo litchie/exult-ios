@@ -55,10 +55,12 @@ public:
 	Object_iterator(Object_list& objects) 
 		: Safe_object_iterator(objects), first(objects.first)
 		{ reset(); }
+#if defined(INCL_CHUNKS)
 	Object_iterator(Chunk_object_list *chunk) 
 		: Safe_object_iterator(chunk->objects),
 		  first(chunk->objects.first)
 		{ reset(); }
+#endif
 	Game_object *get_next()
 		{
 		if (cur == stop)
@@ -70,6 +72,7 @@ public:
 		}
 	};
 
+#if defined(INCL_CHUNKS)
 /*
  *	Iterate through a chunk's nonflat objects.
  */
@@ -140,5 +143,6 @@ public:
 		return cur;
 		}
 	};
+#endif
 
 #endif

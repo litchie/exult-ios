@@ -136,7 +136,9 @@ private:
 					// Theft info:
 	int theft_warnings;		// # times warned in current chunk.
 	short theft_cx, theft_cy;	// Chunk where warnings occurred.
-					// Open a U7 file, throw an exception if failed
+					// Open a U7 file, throw an
+					//    exception if failed
+	Chunk_object_list *create_chunk(int cx, int cy);
 	void set_scroll_bounds();	// Set scroll-controller.
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
@@ -206,7 +208,7 @@ public:
 		{
 		Chunk_object_list *list = objects[cx][cy];
 		if (!list)
-			list = objects[cx][cy] = new Chunk_object_list(cx, cy);
+			list = create_chunk(cx, cy);
 		return (list);
 		}
 	Chunk_object_list *get_objects(Game_object *obj)

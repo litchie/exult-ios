@@ -28,6 +28,8 @@ exult_SOURCES =	\
 	browser.h	\
 	cheat.cc	\
 	cheat.h		\
+	chunks.cc	\
+	chunks.h	\
 	citerate.h	\
 	combat.cc	\
 	combat.h	\
@@ -64,6 +66,7 @@ exult_SOURCES =	\
 	objiter.h	\
 	objs.cc		\
 	objs.h		\
+	ordinfo.h	\
 	palette.cc	\
 	palette.h	\
 	paths.cc	\

@@ -51,6 +51,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actions.h"
 #include "paths.h"
 #include "Astar.h"
+#include "chunks.h"
 #include "objiter.h"
 #include "mouse.h"
 #include "fontvga.h"
@@ -363,6 +364,18 @@ void Game_window::resized
 		sprintf(msg, "%dx%dx%d", neww, newh, newsc);
 		center_text(msg);
 	}
+	}
+
+/*
+ *	Create a chunk.
+ */
+
+Chunk_object_list *Game_window::create_chunk
+	(
+	int cx, int cy
+	)
+	{
+	return (objects[cx][cy] = new Chunk_object_list(cx, cy));
 	}
 
 /*
