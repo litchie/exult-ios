@@ -284,6 +284,7 @@ class Sit_schedule : public Schedule
 	{
 	Game_object *chair;		// What to sit in.
 	bool sat;			// True if we already sat down.
+	bool did_barge_usecode;		// So we only call it once.
 public:
 	Sit_schedule(Actor *n, Game_object *ch = 0);
 	virtual void now_what();	// Now what should NPC do?

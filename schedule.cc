@@ -1045,7 +1045,7 @@ Sit_schedule::Sit_schedule
 	(
 	Actor *n,
 	Game_object *ch			// Chair, or null to find one.
-	) : Schedule(n), chair(ch), sat(false)
+	) : Schedule(n), chair(ch), sat(false), did_barge_usecode(false)
 	{
 	}
 
@@ -1064,6 +1064,9 @@ void Sit_schedule::now_what
 					// Seat on barge?
 		if (!chair || chair->get_shapenum() != 292)
 			return;
+		if (did_barge_usecode)
+			return;		// But NOT more than once for party.
+		did_barge_usecode = true;
 		Game_window *gwin = Game_window::get_game_window();
 		if (gwin->get_moving_barge())
 			return;		// Already moving.
@@ -1084,6 +1087,7 @@ void Sit_schedule::now_what
 			{
 			usefun = 0x61c;
 			}
+		did_barge_usecode = true;
 					// Special usecode for barge pieces:
 		gwin->get_usecode()->call_usecode(usefun, barge,
 					Usecode_machine::double_click);
