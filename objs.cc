@@ -98,16 +98,13 @@ int Egg_object::within_distance
 	int abs_tx, int abs_ty		// Tile coords. within entire world.
 	)
 	{
-	//+++++++++++++++++
-#if 0	/* When we have data set up: +++++++++ */
-	int deltax = abs_tx - abs_tilex;
+	int egg_tx = ((int) cx)*tiles_per_chunk + get_tx();
+	int egg_ty = ((int) cy)*tiles_per_chunk + get_ty();
+	int deltax = abs_tx - egg_tx;
 	if (deltax >= distance || -deltax >= distance)
 		return (0);
-	int deltay = abs_ty - abs_tiley;
+	int deltay = abs_ty - egg_ty;
 	return (deltay < distance && -deltay < distance);
-#else
-	return (0);
-#endif
 	}
 
 /*
@@ -231,7 +228,9 @@ void Egg_object::activate
 	{
 //+++++++++Check probability, etc.  (But not distance.)
 cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
-		", distance = " << (int) distance << '\n';
+		", distance = " << (int) distance << ", once = " <<
+	((flags & (1<<(int)once) != 0)) << ", areset = " <<
+	((flags & (1<<(int)auto_reset) != 0)) << '\n';
 	if (type == (int) usecode)	// Data2 is the usecode function.
 		umachine->call_usecode(data2, this,
 					Usecode_machine::egg_proximity);
@@ -243,7 +242,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 
 Chunk_cache::Chunk_cache
 	(
-	) : setup_done(0), num_eggs(0), egg_objects(0)
+	) : setup_done(0), egg_objects(0, 4)
 	{
 	memset((char *) &blocked[0], 0, sizeof(blocked));
 	memset((char *) &eggs[0], 0, sizeof(eggs));
@@ -343,6 +342,74 @@ void Chunk_cache::update_object
 	}
 
 /*
+ *	Set a rectangle of tiles within this chunk to be under the influence
+ *	of a given egg.
+ */
+
+void Chunk_cache::set_egged
+	(
+	Egg_object *egg,
+	Rectangle& tiles		// Range of tiles within chunk.
+	)
+	{
+					// Egg already there?
+	int eggnum = egg_objects.find(egg);
+	if (eggnum < 0)
+		eggnum = egg_objects.append(egg);
+	if (eggnum > 15)		// We only have 16 bits.
+		eggnum = 15;
+	short mask = (1<<eggnum);
+	int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
+	for (int ty = tiles.y; ty < stopy; ty++)
+		for (int tx = tiles.x; tx < stopx; tx++)
+			eggs[ty*tiles_per_chunk + tx] |= mask;
+	}
+
+/*
+ *	Add an egg to the cache.
+ */
+
+void Chunk_cache::add_egg
+	(
+	Chunk_object_list *chunk,
+	Egg_object *egg
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Get absolute tile coords.
+	int tx = chunk->get_cx()*tiles_per_chunk + egg->get_tx(), 
+	    ty = chunk->get_cy()*tiles_per_chunk + egg->get_ty();
+	int dist = egg->get_distance();
+					// Set up rect. with abs. tile range.
+	Rectangle tiles(tx - dist, ty - dist, 2*dist + 1, 2*dist + 1);
+					// Don't go outside the world.
+	Rectangle world(0, 0, num_chunks*tiles_per_chunk,
+						num_chunks*tiles_per_chunk);
+	tiles = tiles.intersect(world);
+					// Figure range of chunks.
+	int start_cx = tiles.x/tiles_per_chunk,
+	    end_cx = (tiles.x + tiles.w - 1)/tiles_per_chunk;
+	int start_cy = tiles.y/tiles_per_chunk,
+	    end_cy = (tiles.y + tiles.h - 1)/tiles_per_chunk;
+					// Go through all covered chunks.
+	for (int cy = start_cy; cy <= end_cy; cy++)
+		for (int cx = start_cx; cx <= end_cx; cx++)
+			{
+			Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+					// Figure intersection with egg's.
+			Rectangle crect(cx*tiles_per_chunk, cy*tiles_per_chunk,
+					tiles_per_chunk, tiles_per_chunk);
+			crect = crect.intersect(tiles);
+			if (crect.w > 0 && crect.h > 0)
+				{
+				crect.shift(-cx*tiles_per_chunk, 
+							-cy*tiles_per_chunk);
+				chunk->set_egged(egg, crect);
+				}
+			}
+	}
+
+/*
  *	Create the cached data for a chunk.
  */
 
@@ -351,11 +418,13 @@ void Chunk_cache::setup
 	Chunk_object_list *chunk
 	)
 	{
-	Shapes_vga_file& shapes = Game_window::get_game_window()->get_shapes();
 					// Set 'blocked' tiles.
 	for (Game_object *obj = chunk->get_first(); obj; 
 						obj = chunk->get_next(obj))
-		update_object(chunk, obj, 1);
+		if (obj->is_egg())
+			add_egg(chunk, (Egg_object *) obj);
+		else
+			update_object(chunk, obj, 1);
 	setup_done = 1;
 	}
 
@@ -415,7 +484,7 @@ void Chunk_cache::activate_eggs
 						i++, eggbits = eggbits >> 1)
 		{
 		Egg_object *egg;
-		if (!(eggbits&1) || !(egg = egg_objects[i]))
+		if (!(eggbits&1) || !(egg = (Egg_object *) egg_objects.get(i)))
 			continue;	// This one's not set.
 		egg->activate(usecode);
 		}
@@ -424,9 +493,10 @@ void Chunk_cache::activate_eggs
 					// Figure absolute tile coords.
 		int atx = chunk->get_cx()*tiles_per_chunk + tx;
 		int aty = chunk->get_cy()*tiles_per_chunk + ty;
+		int num_eggs = get_num_eggs();
 		for ( ; i < num_eggs; i++)
 			{
-			Egg_object *egg = egg_objects[i];
+			Egg_object *egg = (Egg_object *) egg_objects.get(i);
 			if (egg && egg->within_distance(atx, aty))
 				egg->activate(usecode);
 			}

@@ -59,6 +59,7 @@ public:
 		put(i, v);
 		return (i);
 		}
+	int find(void *v);		// Find an entry.
 	};
 
 #endif
