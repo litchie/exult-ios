@@ -29,7 +29,9 @@
 #endif
 #include <iostream>
 #include <fstream>
+#ifdef HAVE_SSTREAM
 #include <sstream>
+#endif
 #include "utils.h"
 
 
@@ -159,6 +161,7 @@ bool	Configuration::read_config_file(const string &input_filename)
 	if(ifile.fail())
 		return false;
 
+#ifdef HAVE_SSTREAM
 	std::ostringstream sbuf;
 
 	// copies the entire contents of the input file into sbuf
@@ -166,6 +169,19 @@ bool	Configuration::read_config_file(const string &input_filename)
 
 	ifile.close();
 	read_config_string(sbuf.str());
+#else
+	std::string	sbuf, line;
+	
+	// copies the entire contents of the input file into sbuf
+        ifile >> line;
+	while (ifile.good())
+	{
+	    sbuf += line + "\n";
+	    ifile >> line;
+	}
+	ifile.close();
+	read_config_string(sbuf);
+#endif
 	is_file=true;
 	return true;
 }
