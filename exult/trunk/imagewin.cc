@@ -821,7 +821,7 @@ Image_window::Image_window
 	unsigned int w,			// Desired width, height.
 	unsigned int h
 	) : Image_buffer(w, h, Get_best_depth()),
-	    surface(0), scaled_surface(0), scale(1), show_scaled(0)
+	    scale(1), surface(0), scaled_surface(0), show_scaled(0)
 	{
 	create_surface(w, h);
 	}
@@ -871,8 +871,9 @@ void Image_window::create_surface
 						hwdepth, flags)) != 0 &&
 			 (surface = SDL_CreateRGBSurface(flags, w, h,
 							8, 0, 0, 0, 0)) != 0)
-			show_scaled = hwdepth == 16 ? &show_scaled8to16
-						    : &show_scaled8to32;
+			show_scaled = hwdepth == 16 ? 
+				&Image_window::show_scaled8to16
+			      : &Image_window::show_scaled8to32;
 		else
 			{
 			cout << "Couldn't create scaled surface" << endl;

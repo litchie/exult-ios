@@ -497,8 +497,8 @@ public:
 	Image_window(unsigned int w, unsigned int h);
 					// Create with given depth.
 	Image_window(unsigned int w, unsigned int h, int dpth, int scl = 1)
-		: Image_buffer(w, h, dpth), surface(0), scaled_surface(0),
-		  scale(scl), show_scaled(0)
+		: Image_buffer(w, h, dpth), scale(scl), surface(0), 
+		  scaled_surface(0), show_scaled(0)
 		{ create_surface(w, h); }
 	virtual ~Image_window();
 					// Is rect. visible within clip?
