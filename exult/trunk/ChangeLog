@@ -1,3 +1,8 @@
+2002-11-08  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/egg.cc (Egg_object): Implement sound-effect eggs.
+	* mapedit/eggeddit.cc:  SFX eggs.
+
 2002-11-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/execbox.*: don't compile this for win32
 
