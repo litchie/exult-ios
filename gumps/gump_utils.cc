@@ -118,7 +118,8 @@ int Do_Modal_gump
 	Mouse::Mouse_shapes shape	// Mouse shape to use.
 	)
 {
-	gwin->end_gump_mode();
+	// maybe make this selective? it's nice for menus, but annoying for sliders
+	//	gwin->end_gump_mode();
 
 	Game_window::Game_mode save_mode = gwin->get_mode();
 	gwin->set_mode(Game_window::gump);
