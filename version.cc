@@ -83,6 +83,12 @@ void getVersionInfo(std::ostream& out)
 	out << "USE_EXULTSTUDIO";
 #endif
 
+#ifdef USECODE_DEBUGGER
+	if (!firstoption) out << ", "; 
+	firstoption = false;
+	out << "USECODE_DEBUGGER";
+#endif
+
 #ifdef WANT_ALTERNATE_ALLOCATOR
 	if (!firstoption) out << ", "; 
 	firstoption = false;
