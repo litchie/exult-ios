@@ -455,7 +455,8 @@ void Combat_schedule::start_strike
 	int dir = npc->get_direction(opponent);
 	char frames[12];		// Get frames to show.
 	int cnt = npc->get_attack_frames(dir, frames);
-	npc->set_action(new Frames_actor_action(frames, cnt));
+	if (cnt)
+		npc->set_action(new Frames_actor_action(frames, cnt));
 	npc->start();			// Get back into time queue.
 	int sfx;			// Play sfx.
 	Game_window *gwin = Game_window::get_game_window();
@@ -697,6 +698,8 @@ void Combat_schedule::now_what
 		state = approach;
 		}
 	Game_object *opponent = npc->get_target();
+					// Flag for slimes:
+	bool strange = gwin->get_info(npc).has_strange_movement();
 	switch (state)			// Note:  state's action has finished.
 		{
 	case approach:
@@ -707,14 +710,15 @@ void Combat_schedule::now_what
 		break;
 	case strike:			// He hasn't moved away?
 		state = approach;
-		npc->start(200);	// Back into queue.
+					// Back into queue.++++Guessing delay.
+		npc->start(gwin->get_std_delay(), strange 
+			? gwin->get_std_delay() : 4*gwin->get_std_delay());
 		if (npc->get_footprint().enlarge(strike_range).intersects(
 					opponent->get_footprint()))
 			{
 			int dir = npc->get_direction(opponent);
 			npc->add_dirty(gwin);
-//+++++++Got to handle slimes specially.
-			if (npc->get_shapenum() != 529)
+			if (!strange)	// Avoid messing up slimes.
 				npc->set_frame(npc->get_dir_framenum(dir,
 							Actor::standing));
 			npc->add_dirty(gwin, 1);

@@ -361,9 +361,13 @@ void Path_walking_actor_action::stop
 	Actor *actor
 	)
 	{
-					// ++++For now, just use original dir.
-	Frames_sequence *frames = actor->get_frames(original_dir);
-	actor->set_frame(frames->get_resting());
+	Game_window *gwin = Game_window::get_game_window();
+					// Don't set slimes.
+	if (!gwin->get_info(actor).has_strange_movement())
+		{			// ++++For now, just use original dir.
+		Frames_sequence *frames = actor->get_frames(original_dir);
+		actor->set_frame(frames->get_resting());
+		}
 	}
 
 /*

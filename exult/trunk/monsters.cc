@@ -503,10 +503,21 @@ int Slime_actor::step
 	)
 	{
 					// Save old pos.
-	Tile_coord pos = get_abs_tile_coord();
+	Tile_coord oldpos = get_abs_tile_coord();
 	int ret = Monster_actor::step(t, -1);
 					// Update surrounding frames (& this).
-	update_frames(pos, get_abs_tile_coord());
+	Tile_coord newpos = get_abs_tile_coord();
+	update_frames(oldpos, newpos);
+	Game_object_vector blood;	// Place blood in old spot.
+	if (newpos != oldpos && rand()%9 == 0 &&
+	    !find_nearby(blood, oldpos, 912, 1, 0))
+		{
+		Game_window *gwin = Game_window::get_game_window();
+					// Frames 4-11 are green.
+		Game_object *b = gwin->create_ireg_object(912, 4 + rand()%8);
+		b->set_flag(Obj_flags::is_temporary);
+		b->move(oldpos);
+		}
 	return ret;
 	}
 

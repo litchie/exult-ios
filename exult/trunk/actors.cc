@@ -587,9 +587,8 @@ int Actor::get_attack_frames
 		which = sea_serpent_attack_frames;
 		cnt = sizeof(sea_serpent_attack_frames);
 		break;
-	case 529:			// Slimes. ++++++Testing.
-		*frames = get_framenum();
-		return 1;		// ++++++Testing.
+	case 529:			// Slimes.
+		return 0;		// None, I believe.
 	case 706:			// Scorpion.
 		which = scorpion_attack_frames;
 		cnt = sizeof(scorpion_attack_frames);
