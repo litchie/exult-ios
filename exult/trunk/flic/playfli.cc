@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::ifstream;
 using std::memset;
+using std::size_t;
 
 playfli::playfli(const char *fli_name)
 {

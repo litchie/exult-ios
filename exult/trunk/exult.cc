@@ -6,7 +6,8 @@
  **/
 
 /*
-Copyright (C) 1998  Jeffrey S. Freedman
+Copyright (C) 1998-1999 Jeffrey S. Freedman
+Copyright (C) 2000-2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -171,6 +172,20 @@ int main
 	char *argv[]
 	)
 {
+#ifdef MACOS
+// some testing
+	// home
+	// home/dir/
+	// ./home./dir//./test
+	// ../quark/../.././quark
+
+	cout << "./home./dir//./test" << "  -->  " << get_system_path("./home./dir//./test") << endl;
+	cout << "home" << "  -->  " << get_system_path("home") << endl;
+	cout << "home/dir/" << "  -->  " << get_system_path("home/dir/") << endl;
+	cout << "./home../baz/test/.." << "  -->  " << get_system_path("./home../baz/test/..") << endl;
+	cout << "../quark/../.././quark" << "  -->  " << get_system_path("../quark/../.././quark") << endl;
+#endif
+
 	bool	needhelp=false;
 	string	gamename("default");
 	Args    parameters;
@@ -349,7 +364,7 @@ static void Init
 		for (int y = 0; y < c_num_chunks / c_chunks_per_schunk; y++) {
 			gwin->paint_map_at_tile(0,0,w,h,x * c_tiles_per_schunk, y * c_tiles_per_schunk, 15);
 			char fn[15];
-			sprintf(fn, "u7map%x%x.pcx", x, y);
+			snprintf(fn, 15, "u7map%x%x.pcx", x, y);
 			SDL_RWops *dst = SDL_RWFromFile(fn, "wb");
 			cerr << x << "," << y << ": ";
 			gwin->get_win()->screenshot(dst);
@@ -1318,11 +1333,11 @@ void set_resolution (int new_res, bool save)
 		scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 		if(save) {
 			char val[20];
-			sprintf(val, "%d", res_list[current_res].x);
+			snprintf(val, 20, "%d", res_list[current_res].x);
 			config->set("config/video/width",val,true);
-			sprintf(val, "%d", res_list[current_res].y);
+			snprintf(val, 20, "%d", res_list[current_res].y);
 			config->set("config/video/height",val,true);
-			sprintf(val, "%d", res_list[current_res].scale);
+			snprintf(val, 20, "%d", res_list[current_res].scale);
 			config->set("config/video/scale",val,true);
 		}
 	}
@@ -1484,7 +1499,7 @@ void make_screenshot (bool silent)
 
 	// look for the next available exult???.pcx file
 	for (i = 0; i < 1000 && !namefound; i++) {
-		sprintf(fn, "exult%03i.pcx", i);
+		snprintf(fn, 15, "exult%03i.pcx", i);
 		f = fopen(fn, "rb");
 		if (f) {
 			fclose(f);
@@ -1617,7 +1632,7 @@ void change_gamma (bool down)
 
 	// Message
 	Image_window8::get_gamma(r, g, b);	
-	sprintf (text, "Gamma Set to R: %01.2f G: %01.2f B: %01.2f", r, g, b);
+	snprintf (text, 256, "Gamma Set to R: %01.2f G: %01.2f B: %01.2f", r, g, b);
 	gwin->center_text(text);	
 }
 

@@ -29,6 +29,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "spellbook.h"
 #include <cstdio>
 
+using std::snprintf;
+
+
 extern Cheat cheat;
 
 const int REAGANTS = 842;		// Shape #.
@@ -413,7 +416,7 @@ void Spellbook_gump::paint
 			paint_button(gwin, spell);
 			int num = avail[spindex + s];
 			char text[6];
-			sprintf(text, "%d", num);
+			snprintf(text, 6, "%d", num);
 			if (num > 0 && num < 1000)
 				gwin->paint_text(4, text,
 					x + spell->x + numx -

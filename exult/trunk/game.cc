@@ -232,7 +232,7 @@ void Game::show_menu()
 		
 	menu->set_selection(2);
 	char npc_name[16];
-	sprintf(npc_name, "Exult");
+	snprintf(npc_name, 16, "Exult");
 	do {
 		bool created = false;
 		

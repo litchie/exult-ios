@@ -127,7 +127,10 @@ static void switch_slashes(
 	// with the empty string. convert all / to :
 	string::size_type	begIdx, endIdx;;
 	string	component;
-	string	new_name(":");
+	string	new_name;
+	
+	if( name.at(0) != '/' )
+		new_name = ":";
 	
 	begIdx = name.find_first_not_of('/');
 	while( begIdx != string::npos )
@@ -311,11 +314,9 @@ int U7chdir
 	)
 {
 #ifdef MACOS
-	char	name[256] = "";
-	if( dirname[0] != ':' )
-		std::strcpy(name, ":");
-	std::strncat(name, dirname, 254 );
-	return chdir(name);
+	string name(dirname);
+	switch_slashes(name);
+	return chdir(name.c_str());
 #else
 	return chdir(dirname);
 #endif

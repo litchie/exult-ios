@@ -36,7 +36,7 @@ using std::cerr;
 using std::endl;
 using std::memcmp;
 using std::memcpy;
-using std::sprintf;
+using std::snprintf;
 using std::string;
 
 #include "gamma.h"
@@ -1251,7 +1251,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 	
 	config->value("config/audio/midi/gamma",s,"1");
 	MidiGamma.set_gamma (atof(s.c_str()));
-	sprintf (buf, "%f", MidiGamma.get_gamma ());
+	snprintf (buf, 32, "%f", MidiGamma.get_gamma ());
 	config->set("config/audio/midi/gamma",buf,true);
 	
 
