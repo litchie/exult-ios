@@ -104,7 +104,7 @@ void Shape_manager::read_shape_info
 		for (int i = 1024; i <= 1035; ++i)
 			{
 			Shape_info& info = shapes.get_info(i);
-			info.copy_shallow((i%2) ? female : male);
+			info.copy((i%2) ? female : male);
 			}
 		}
 	}
