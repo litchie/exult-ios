@@ -99,7 +99,7 @@ void Game_clock::check_hunger
 	}
 
 /*
- *	Update palette according to weather we're in a dungeon.
+ *	Update palette according to whether we're in a dungeon.
  */
 
 void Game_clock::set_in_dungeon

@@ -40,11 +40,12 @@ class Egg_object : public Game_object
 protected:
 	unsigned char type;		// One of the below types.
 	unsigned char probability;	// 1-100, chance of egg activating.
-	unsigned char criteria;		// Don't know this one.
+	unsigned char criteria;		// How it's activated.  See below.
 	unsigned char distance;		// Distance for activation (0-31).
 	unsigned char flags;		// Formed from below flags.
 	unsigned short data1, data2;	// More data, depending on type.
 	Rectangle area;			// Active area.
+	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
 public:
 	enum Egg_types {		// Types of eggs:
 		monster = 1,
@@ -85,10 +86,13 @@ public:
 		{ return distance; }
 	int get_criteria() const
 		{ return criteria; }
+	void monster_died();		// Monster this created just died.
 					// Can it be activated?
 	int is_active(int tx, int ty, int from_tx, int from_ty);
 	Rectangle get_area() const	// Get active area.
 		{ return area; }
+	int is_solid_area() const
+		{ return solid_area; }
 #if 0	/* ++++Going away. Is_active() does the test. */
 	int within_distance(int abs_tx, int abs_ty) const;
 #endif

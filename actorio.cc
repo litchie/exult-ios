@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include "gamewin.h"
 #include "utils.h"
+#include "egg.h"
 
 /*
  *	Read in actor from a given file.
@@ -215,4 +216,20 @@ Monster_actor::Monster_actor
 	in_world_cnt++;
 	}
 
+/*
+ *	Write out to given file.
+ */
 
+void Monster_actor::write
+	(
+	ostream& nfile			// Generally 'npc.dat'.
+	)
+	{
+	if (Actor::is_dead_npc())	// Not alive?
+		return;
+					// Created from eggs which get re-
+					//   hatched when read in?
+	if (creator && creator->get_criteria() == Egg_object::cached_in)
+		return;
+	Actor::write(nfile);		// Now write.
+	}

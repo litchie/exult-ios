@@ -52,7 +52,9 @@ Egg_object::Egg_object
 	distance = (itype >> 10) & 0x1f;
 	unsigned char noct = (itype >> 7) & 1;
 	unsigned char do_once = (itype >> 8) & 1;
-	unsigned char htch = (itype >> 9) & 1;
+					// Cached_in eggs can be rehatched.
+	unsigned char htch = criteria == cached_in ? 0 : ((itype >> 9) & 1);
+	solid_area = criteria == cached_in ? 1 : 0;
 	unsigned char ar = (itype >> 15) & 1;
 	flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
@@ -104,6 +106,19 @@ void Egg_object::set_area
 	}
 
 /*
+ *	This is called by the monster that this egg created.
+ */
+
+void Egg_object::monster_died
+	(
+	)
+	{
+					// In future, may want to set a time
+					//   before 'hatched' is cleared.
+	flags &= ~((1 << (int) hatched));
+	}
+
+/*
  *	Is the egg active when stepping onto a given spot?
  */
 
@@ -115,7 +130,12 @@ int Egg_object::is_active
 	{
 	if (flags & (1 << (int) hatched))
 		return (0);		// For now... Already hatched.
-	switch (get_criteria())
+	Egg_criteria cri = (Egg_criteria) get_criteria();
+					// Watch for cached_in eggs which have
+					//   been reset.
+	if (cri == cached_in && !solid_area)
+		cri = avatar_near;
+	switch (cri)
 		{
 	case cached_in:			// Anywhere in square.
 	case avatar_footpad:
@@ -312,6 +332,13 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
                 }
 	if (flags & (1 << (int) once))
 		remove_this();		// All done, so go away.
+	else if (criteria == cached_in && solid_area)
+		{			// Replace solid area with outline.
+		Chunk_object_list *chk = gwin->get_objects(get_cx(), get_cy());
+		chk->remove_egg(this);	// Remove from chunk.
+		solid_area = 0;		// Clear flag.
+		chk->add_egg(this);	// Add back.
+		}
 	}
 
 /*
