@@ -437,7 +437,9 @@ static gint32 load_image (gchar *filename)
 		image_type = GIMP_INDEXED_IMAGE;
 		shape.num_frames = file_size/64;
 		fseek(fp, 0, SEEK_SET);		/* Return to start of file */
+#ifdef DEBUG
 		printf("num_frames = %d\n", shape.num_frames);
+#endif
 		shape.frames = g_new(struct u7frame, shape.num_frames);
 		max_leftX = 0; max_leftY = 0; max_rightX = 7; max_rightY = 7;
 		/*		max_width = 8;
@@ -457,7 +459,9 @@ static gint32 load_image (gchar *filename)
 		shape.num_frames = (hdr_size-4)/4;
 		/*		max_width = -1;
 				max_height = -1;*/
+#ifdef DEBUG
 		printf("num_frames = %d\n", shape.num_frames);
+#endif
 		shape.frames = g_new(struct u7frame, shape.num_frames);
 	
 		for(i=0; i<shape.num_frames; i++) {
@@ -572,9 +576,13 @@ static gint32 load_image (gchar *filename)
 	g_free(shape.frames);
 
 	gimp_image_add_hguide(image_ID, max_leftY);
+#ifdef DEBUG
 	printf("Added hguide=%d\n", max_leftY);
+#endif
 	gimp_image_add_vguide(image_ID, max_leftX);
+#ifdef DEBUG
 	printf("Added vguide=%d\n", max_leftX);
+#endif
 	
 	return image_ID;
 }
@@ -585,8 +593,10 @@ static int find_runs(short *runs, unsigned char *pixptr, int x,	int w)
     while (x < w && pixptr[1] != 0) {	// Stop at first transparent pixel.
 	int run = 0;		// Look for repeat.
 	while (x < w - 1 && pixptr[0] == pixptr[2] && pixptr[3]!=0) {
+#ifdef DEBUG
 	    if(pixptr[3]==0)
-		printf("Warning: found pixel pair, but second is transparent\n");
+			printf("Warning: found pixel pair, but second is transparent\n");
+#endif
 	    x++;
 	    pixptr+=2;
 	    run++;
@@ -668,19 +678,25 @@ static gint32 save_image (gchar  *filename,
 	hoty = -1;
 	while(guide_ID>0) {
 		int orientation;
+#ifdef DEBUG
 		printf("Found guide %d:", guide_ID);
+#endif
 		orientation = gimp_image_get_guide_orientation(image_ID, guide_ID);
 		switch(orientation) {
 		case GIMP_HORIZONTAL:
 			if(hoty<0) {
 				hoty = gimp_image_get_guide_position(image_ID, guide_ID);
+#ifdef DEBUG
 				printf(", horizontal=%d\n", hoty);
+#endif
 			}
 			break;
 		case GIMP_VERTICAL:
 			if(hotx<0) {
 				hotx = gimp_image_get_guide_position(image_ID, guide_ID);
+#ifdef DEBUG
 				printf(", vertical=%d\n", hotx);
+#endif
 			}
 			break;
 		default:

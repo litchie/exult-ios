@@ -1,3 +1,7 @@
+2001-06-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* mapedit/u7shp.c: disabled debugging messages
+	* data/bg/amulets.shp, Paperdoll_gump_info.cc: added FoV amulets
+
 2001-06-22  Ryan Nunn <triforce@merlin.net.au>
 	* actors.cc: Fixing a variety of bugs to do the add_readied code. 
 	* gumps/Paperdoll_gump.cc: Fixed problem with items being hidden in BG
