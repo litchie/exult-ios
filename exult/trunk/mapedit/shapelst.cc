@@ -707,6 +707,8 @@ void Shape_chooser::edit_shape
 				file_info->get_basename(), shnum, frnum);
 	filestr += ext;
 	g_free(ext);
+					// Lookup <GAME>.
+	filestr = get_system_path(filestr);
 	cout << "Writing image '" << filestr.c_str() << "'" << endl;
 	Shape_frame *frame = ifile->get_shape(shnum, frnum);
 	int w = frame->get_width(), h = frame->get_height();
@@ -740,6 +742,7 @@ void Shape_chooser::edit_shape
 	string cmd(studio->get_image_editor());
 	cmd += ' ';
 	cmd += fname;
+	cmd += '&';			// Background.  WIN32?????+++++++
 	system(cmd.c_str());
 	//+++++++FINISH  Got to store this info somewhere and monitor file.
 	}
@@ -1016,7 +1019,7 @@ void Shape_chooser::on_shapes_popup_info_activate
 	gpointer udata
 	)
 	{
-	((Shape_chooser *) udata)->edit_shape();
+	((Shape_chooser *) udata)->edit_shape_info();
 	}
 
 void Shape_chooser::on_shapes_popup_edit_activate
@@ -1025,7 +1028,7 @@ void Shape_chooser::on_shapes_popup_edit_activate
 	gpointer udata
 	)
 	{
-	((Shape_chooser *) udata)->edit_shape_info();
+	((Shape_chooser *) udata)->edit_shape();
 	}
 
 /*
@@ -1156,6 +1159,7 @@ GtkWidget *Shape_chooser::create_popup
 		{
 		mitem = gtk_menu_item_new_with_label("Edit...");
 		gtk_widget_show(mitem);
+		gtk_menu_append(GTK_MENU(popup), mitem);
 		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
 			GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate), this);
 		}
