@@ -781,7 +781,8 @@ USECODE_INTRINSIC(give_last_created)
 	if (cont && last_created)
 		{			// Remove, but don't delete, last.
 		last_created->remove_this(1);
-		ret = cont->add(last_created);
+					// Don't check.  Causes failures.
+		ret = cont->add(last_created, 1);
 		}
 	Usecode_value u(ret);
 	return(u);
