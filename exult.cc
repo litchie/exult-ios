@@ -257,10 +257,13 @@ static void Init
 #else
 	gwin = new Game_window(640, 480);
 
+#ifdef WIN32
 	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
 	//(for MIDI repeats)
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
-#endif
+#endif //WIN32
+#endif //not XWIN
+
 	string yn;			// Skip intro. scene?
 	config->value("config/gameplay/skip_intro", yn, "no");
 	if (yn == "yes")
