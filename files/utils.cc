@@ -46,7 +46,7 @@
 #include <exception>
 #include "exceptions.h"
 #include "utils.h"
-
+#include "fnames.h"
 
 using std::cerr;
 using std::string;
@@ -645,3 +645,57 @@ char *newstrdup(const char *s)
 	std::strcpy(ret,s);
 	return ret;
 }
+
+/*
+ *	Build a file name with the map directory before it; ie,
+ *		Get_mapped_name("<GAMEDAT>/ireg, 3, to) will store
+ *			"<GAMEDAT>/map03/ireg".
+ */
+
+char *Get_mapped_name
+	(
+	char *from,
+	int num,
+	char *to
+	)
+	{
+	if (num == 0)
+		strcpy(to, from);	// Default map.
+	else
+		{
+		char *sep = strrchr(from, '/');
+		assert(sep != 0);
+		int len = sep - from;
+		memcpy(to, from, len);	// Copy dir.
+		strcpy(to + len, MULTIMAP_DIR);
+		len = strlen(to);
+		to[len] = '0' + num/16;
+		int lb = num%16;
+		to[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
+		strcpy(to + len + 2, sep);
+		}
+	return to;
+	}
+
+/*
+ *	Find next existing map, starting with a given number.
+ *
+ *	Output:	# found, or -1.
+ */
+
+int Find_next_map
+	(
+	int start,			// Start here.
+	int maxtry			// Max. # to try.
+	)
+	{
+	char fname[128];
+
+	for (int i = start; maxtry; --maxtry, ++i)
+		{
+		if (U7exists(Get_mapped_name(U7MAP, i, fname)) ||
+		    U7exists(Get_mapped_name(PATCH_U7MAP, i, fname)))
+			return i;
+		}
+	return -1;
+	}

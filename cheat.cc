@@ -728,6 +728,25 @@ void Cheat::cursor_teleport (void) const {
 	eman->center_text("Teleport!!!");
 }
 
+void Cheat::next_map_teleport() const
+	{
+	int curmap = gwin->get_map()->get_num();
+	int newmap = Find_next_map(curmap + 1, 4);	// Look forwards by 4.
+	if (newmap == -1)		// Not found?
+		{			// Look from 0.
+		newmap = Find_next_map(0, curmap);
+		if (newmap == -1)
+			{
+			eman->center_text("Map not found");
+			return;
+			}
+		}
+	gwin->teleport_party(gwin->get_main_actor()->get_tile(), true, newmap);
+	std::string msg = "To map #";
+	msg += newmap;
+	eman->center_text(msg.c_str());
+	}
+
 void Cheat::create_coins (void) const {
 	if (!enabled) return;
 
