@@ -383,13 +383,13 @@ public:
 					// Don't write out to IREG file.
 	virtual void write_ireg(std::ostream& out)
 		{  }
-	void write(std::ostream& nfile);		// Write out (to 'npc.dat').
-	void set_actor_shape(); 			// Set shape based on sex and skin color
-	void set_polymorph(int shape);			// Set a polymorph shape
-	void set_polymorph_default();			// Set the default shape
-	int get_polymorph () { return shape_save; }	// Get the polymorph shape
-	inline int get_shape_real()			// Get the non polymorph shape
-	{ return shape_save!=-1?shape_save:get_shapenum(); }
+	void write(std::ostream& nfile);// Write out (to 'npc.dat').
+	void set_actor_shape(); 	// Set shape based on sex and skin color
+	void set_polymorph(int shape);	// Set a polymorph shape
+	void set_polymorph_default();	// Set the default shape
+					// Get the polymorph shape
+	int get_polymorph () { return shape_save; }
+	int get_shape_real();		// Get the non polymorph shape
 
 	// Set schedule list.
 	virtual void set_schedules(Schedule_change *list, int cnt) { }
