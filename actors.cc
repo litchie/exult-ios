@@ -84,6 +84,45 @@ void Actor::init
 	}
 
 /*
+ *	Ready ammo for weapon being carried.
+ *
+ *	Output:	1 if successful, else 0.
+ */
+
+int Actor::ready_ammo
+	(
+	)
+	{
+	int points;
+	Weapon_info *winf = Actor::get_weapon(points);
+	int ammo;
+	if (!winf || (ammo = winf->get_ammo()) == 0)
+		return 0;		// No weapon, or ammo not needed.
+					// See if already have ammo.
+	Game_object *aobj = get_readied(Actor::ammo);
+	if (aobj && Ammo_info::is_in_family(aobj->get_shapenum(), ammo))
+		return 1;		// Already readied.
+	Vector vec(0, 50);		// Get list of all possessions.
+	int cnt = get_objects(vec, -359, -359, -359);
+	Game_object *found = 0;
+	for (int i = 0; i < cnt && !found; i++)
+		{
+		Game_object *obj = (Game_object *) vec.get(i);
+		if (Ammo_info::is_in_family(obj->get_shapenum(), ammo))
+			found = obj;
+		}
+	if (!found)
+		return 0;
+	if (aobj)			// Something there already?
+		aobj->remove_this(1);	// Remove it.
+	found->remove_this(1);
+	add(found, 1);			// Should go to the right place.
+	if (aobj)			// Put back old ammo.
+		add(aobj, 1);
+	return 1;
+	}
+
+/*
  *	If no weapon readied, look through all possessions for the best one.
  */
 
@@ -93,7 +132,10 @@ void Actor::ready_best_weapon
 	{
 	int points;
 	if (Actor::get_weapon(points) != 0)
-		return;			// Already have one (or hands full).
+		{
+		ready_ammo();
+		return;			// Already have one.
+		}
 	Game_window *gwin = Game_window::get_game_window();
 	Vector vec(0, 50);		// Get list of all possessions.
 	int cnt = get_objects(vec, -359, -359, -359);
@@ -109,10 +151,7 @@ void Actor::ready_best_weapon
 			continue;	// Not a weapon.
 					// +++Might be a class to check.
 		int damage = winf->get_damage();
-		int ammo = winf->get_ammo();
-		if (damage > best_damage &&
-					// Check for ammo.
-		    (!ammo || find_item(ammo, -359, -359)))
+		if (damage > best_damage)
 			{
 			wtype = (Ready_type) info.get_ready_type();
 			best = obj;
@@ -141,6 +180,7 @@ void Actor::ready_best_weapon
 		add(remove1, 1);
 	if (remove2)
 		add(remove2, 1);
+	ready_ammo();			// Get appropriate ammo.
 	}
 
 /*

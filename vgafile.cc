@@ -35,8 +35,38 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #endif
 
-Ammo_info *Ammo_info::ammo = 0;
-int Ammo_info::count = 0;
+Ammo_table *Ammo_info::table = 0;
+
+#include <hash_map>
+
+/*
+ *	For looking up ammo entries:
+ */
+class Ammo_table
+	{
+	hash_map<int, Ammo_info> map;
+public:
+	Ammo_table() : map(53) {  }
+	void insert(int shnum, Ammo_info& ent)
+		{ map[shnum] = ent; }
+	Ammo_info *find(int shnum)	// Look up given shape.
+		{
+		hash_map<int, Ammo_info>::iterator it = map.find(shnum);
+		return it == map.end() ? 0 : &((*it).second);
+		}
+	};
+
+/*
+ *	Look up ammo's entry.
+ */
+
+Ammo_info *Ammo_info::find
+	(
+	int shnum			// Shape #.
+	)
+	{
+	return Ammo_info::table->find(shnum);
+	}
 
 /*
  *	+++++Debugging
@@ -988,17 +1018,16 @@ int Shapes_vga_file::read_info
 	if (!U7open(ammo, AMMO))
 		return (0);
 	cnt = Read1(ammo);
-	Ammo_info::count = cnt;		// Create list of all ammo.
-	Ammo_info::ammo = new Ammo_info[cnt];
+	Ammo_info::table = new Ammo_table;
 	for (int i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(ammo);
 		unsigned short family = Read2(ammo);
 		unsigned short type2 = Read2(ammo);	// ???
-		unsigned char id = Read1(ammo);
+		unsigned char damage = Read1(ammo);
 		ammo.seekg(6, ios::cur);	// Skip unknown.
-		Ammo_info::ammo[i].set(shapenum, family);
-					// ++++Store in Shape_info,maybe??
+		Ammo_info ent(shapenum, family, damage);
+		Ammo_info::table->insert(shapenum, ent);
 		}
 	ammo.close();
 

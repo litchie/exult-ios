@@ -1,3 +1,8 @@
+2000-11-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* vgafile.cc, combat.cc:  Look up ammo family.
+	* actors.cc: Ready ammo. automatically.
+
 2000-11-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gumps.cc: stopped bags from disappearing when put into another bag.
 
