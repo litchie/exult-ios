@@ -1,6 +1,7 @@
 2002-07-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* glshape.h: dummy GL_manager class
 	* exult.cc, gamewin.cc, mouse.h: include glshape.h
+	* configure.in, Makefile.am: --enable-opengl
 
 2002-07-22  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* mouse.h: #ifdef HAVE_OPENGL was missing around call to GL stuff
