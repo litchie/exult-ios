@@ -232,6 +232,11 @@ uclex.cc:
 	flex usecode/compiler/uclex.ll 
 	mv lex.yy.c uclex.cc
 
+CONFREGRESS_OBJS=conf/Configuration.o conf/XMLEntity.o conf/xmain.o files/utils.o
+
+conf/confregress.exe  : $(CONFREGRESS_OBJS)
+	$(CXX) $(LFLAGS) -o conf/confregress.exe $(CONFREGRESS_OBJS)
+
 # This should work with the Cygwin rm
 clean:
 	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
