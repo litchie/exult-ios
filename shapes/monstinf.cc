@@ -68,7 +68,7 @@ int Monster_info::read
 	m_cant_die = (*ptr & 2) != 0;
 	armor = (*ptr++ >> 4) & 15;
 	ptr++;				// Unknown.
-	reach = *ptr && 15;		// Byte 8 - weapon reach.
+	reach = *ptr & 15;		// Byte 8 - weapon reach.
 	weapon = (*ptr++ >> 4) & 15;
 	flags = *ptr++;			// Byte 9.
 	vulnerable = *ptr++;
