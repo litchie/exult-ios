@@ -1,3 +1,11 @@
+2002-09-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucsched.cc (Usecode_script): Moved the 'no_halt' test to
+	start().
+	* schedule.cc:  Patrol schedule:  Look for path after executing
+	Usecode, and keep going after sitting.  This fixes Freedom bug
+	where the automaton doesn't talk to you upon arrival.
+
 2002-09-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Taking a guess to fix the 'savegump repaint' bug.
