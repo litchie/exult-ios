@@ -1180,8 +1180,8 @@
 	<spacing>0</spacing>
 	<child>
 	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
+	  <expand>True</expand>
+	  <fill>True</fill>
 	</child>
 
 	<widget>
@@ -1254,8 +1254,8 @@ External
 	<spacing>0</spacing>
 	<child>
 	  <padding>0</padding>
-	  <expand>False</expand>
-	  <fill>False</fill>
+	  <expand>True</expand>
+	  <fill>True</fill>
 	</child>
 
 	<widget>
@@ -1426,7 +1426,7 @@ External
       <show_tabs>True</show_tabs>
       <show_border>True</show_border>
       <tab_pos>GTK_POS_TOP</tab_pos>
-      <scrollable>False</scrollable>
+      <scrollable>True</scrollable>
       <tab_hborder>2</tab_hborder>
       <tab_vborder>2</tab_vborder>
       <popup_enable>False</popup_enable>

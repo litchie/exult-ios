@@ -287,7 +287,9 @@ int ExultStudio::init_egg_window
 		set_toggle("juke_cont", (data1>>8)&0x01);
 		break;
 	case 3:				// Sound effect:
-		break;			// +++++++Later!
+		set_spin("sfx_number", data1&0xff);
+		set_toggle("sfx_cont", (data1>>8)&0x01);
+		break;
 	case 4:				// Voice:
 		set_spin("speech_number", data1&0xff);
 		break;
@@ -406,7 +408,9 @@ int ExultStudio::save_egg_window
 			(get_toggle("juke_cont")<<8);
 		break;
 	case 3:				// Sound effect:
-		break;			// +++++++Later!
+		data1 = (get_spin("sfx_number")&0xff) +
+			(get_toggle("sfx_cont")<<8);
+		break;
 	case 4:				// Voice:
 		data1 = get_spin("speech_number")&0xff;
 		break;
