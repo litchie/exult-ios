@@ -578,8 +578,13 @@ int Sequence_actor_action::handle_event
 	{
 	if (!actions[index])		// Done?
 		return (0);
+	int old_sched_type = actor->get_schedule_type();
+	Actor_action *old_action = actor->get_action();
 					// Do current action.
 	int delay = actions[index]->handle_event(actor);
+	if (actor->get_action() != old_action ||
+	    actor->get_schedule_type() != old_sched_type)
+		return 0;		// We've been deleted!
 	if (!delay)
 		{
 		index++;		// That one's done now.
