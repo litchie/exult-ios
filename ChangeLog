@@ -1,3 +1,7 @@
+2001-02-14  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* configure.in, Makefile.win32, Makefile.cygwin: bump up version to
+	  0.92cvs to avoid confusion
+
 2001-02-13  Ryan Nunn  <triforce@merlin.net.au>
 	* gamewin.*, paperdoll_gump*.*: Support for paperdoll shapes in other
 	  files. Only <DATA>/exult.flx at the moment.
