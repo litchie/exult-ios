@@ -26,6 +26,7 @@ libobjs_la_SOURCES = \
 	mappatch.cc \
 	mappatch.h \
 	objiter.h \
+	objiter.cc \
 	objlist.h \
 	objs.cc \
 	objs.h \
