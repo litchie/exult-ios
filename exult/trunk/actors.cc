@@ -595,6 +595,7 @@ void Actor::set_schedule_type
 	Schedule *newsched		// New sched., or 0 to create here.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	stop();				// Stop moving.
 	if (schedule)			// Finish up old if necessary.
 		schedule->ending(new_schedule_type);
@@ -632,12 +633,22 @@ void Actor::set_schedule_type
 			schedule = new Sleep_schedule(this);
 			break;
 		case Schedule::eat:		// For now.
-		case Schedule::eat_at_inn:	// For now.
 		case Schedule::sit:
 			schedule = new Sit_schedule(this);
 			break;
+		case Schedule::thief:		// Just face north, for now.
+			gwin->add_dirty(this);
+			set_frame(get_dir_framenum(0, Actor::standing));
+			gwin->add_dirty(this);
+			break;
 		case Schedule::waiter:
 			schedule = new Waiter_schedule(this);
+			break;
+		case Schedule::eat_at_inn:
+			schedule = new Eat_at_inn_schedule(this);
+			break;
+		case Schedule::preach:
+			schedule = new Preach_schedule(this);
 			break;
 		case Schedule::patrol:
 			schedule = new Patrol_schedule(this);
@@ -649,7 +660,6 @@ void Actor::set_schedule_type
 		default:
 			break;
 			}
-	Game_window *gwin = Game_window::get_game_window();
 	if (!gwin->is_chunk_read(get_cx(), get_cy()))
 		dormant = 1;		// Chunk hasn't been read in yet.
 	else if (schedule)		// Try to start it.

@@ -110,6 +110,28 @@ public:
 	};
 
 /*
+ *	A schedule for eating at an inn.
+ */
+class Eat_at_inn_schedule : public Schedule
+	{
+public:
+	Eat_at_inn_schedule(Actor *n) : Schedule(n)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
+ *	A schedule for preaching.
+ */
+class Preach_schedule : public Schedule
+	{
+public:
+	Preach_schedule(Actor *n) : Schedule(n)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	A schedule for patrolling along 'path' objects.
  */
 class Patrol_schedule : public Schedule
@@ -121,7 +143,6 @@ public:
 		: Schedule(n), pathnum(-1)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
-	virtual ~Patrol_schedule();
 	};
 
 /*
