@@ -127,3 +127,24 @@ void Mouse::set_location
 	box.y = mousey - cur->get_yabove();
 	}
 
+/*
+ *	Flash a desired shape for about 1/2 second.
+ */
+
+void Mouse::flash_shape
+	(
+	Mouse_shapes flash
+	)
+	{
+	Mouse::Mouse_shapes saveshape = get_shape();
+	hide();
+	set_shape(flash);
+	show();
+	gwin->show(1);
+	SDL_Delay(600);
+	hide();
+	gwin->paint();
+	set_shape(saveshape);
+	gwin->set_painted();
+	}
+
