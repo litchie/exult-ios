@@ -7,6 +7,10 @@ OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o \
 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o \
 	tqueue.o gameclk.o mouse.o items.o lists.o vec.o
 
+HFILES = acconfig.h actors.h autoconfig.h fnames.h gameclk.h gamewin.h gumps.h \
+	imagewin.h imagwin.h items.h lists.h mouse.h npcnear.h objs.h segfile.h \
+	text.h tqueue.h usecode.h utils.h vec.h vgafile.h
+
 SUFFIXES=.cc .h
 
 INCLUDES += -I.
@@ -70,3 +74,6 @@ clean:
 
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
+
+# Cheapass dependencies
+$(OBJECTS) : $(HFILES)
