@@ -11,17 +11,18 @@ LIBGLADE_INCLUDES = `libglade-config --cflags`
 # If this doesn't work, insert output of 'libglade-config --libs' manually
 LIBGLADE_LIBS = `libglade-config --libs`
 
-INCLUDES = -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
+INCLUDES = -DCYGWIN -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
 	-I$(SRC)/files $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
 
-CPPFLAGS = -mno-cygwin -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 $(INCLUDES)
+CPPFLAGS = -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 $(INCLUDES)
 
-CXXFLAGS = -mno-cygwin -O2 -include mingw_kludges
+CXXFLAGS = -O2
 
 CXX=g++
 
-LFLAGS=-mno-cygwin -mwindows
-LIBS=-lmingw32 $(GTK_LIBS) $(LIBGLADE_LIBS)
+LFLAGS=
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS)
+EXEC=exult_studio.exe
 
 MAPEDIT_OBJS=dirbrowser.o studio.o exult_studio.o objbrowse.o shapelst.o \
 	paledit.o
@@ -34,5 +35,12 @@ SHAPES_OBJS=font.o fontvga.o items.o shapeinf.o shapevga.o u7drag.o vgafile.o
 
 OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS)
 
-exult_studio.exe: $(OBJS)
+$(EXEC): $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(EXEC)
+
+install: $(EXEC)
+	strip $(EXEC) -o  c:/studio/$(EXEC)
+	cp exult_studio.glade c:/studio
