@@ -83,7 +83,6 @@ Audio::~Audio()
 	if(mixer)
 		{
 		cancel_streams();
-		cancel_raw();
 		}
 	if(mixer)
 		{
@@ -109,7 +108,7 @@ static	void resample(uint8 *sourcedata,uint8 **destdata,size_t sourcelen,size_t 
 	// a false nose, and clutching a crude smoothing loop.
 
 	float	f=wanted_rate/current_rate;
-	*destlen=(sourcelen*f)+1;
+	*destlen = (unsigned int) ((sourcelen*f)+1);
 	if(!*destlen||current_rate==wanted_rate)
 		{
 		// Least work
@@ -122,7 +121,7 @@ static	void resample(uint8 *sourcedata,uint8 **destdata,size_t sourcelen,size_t 
 	size_t last=0;
 	for(size_t i=0;i<sourcelen;i++)
 		{
-		size_t pos=i*f;
+		size_t pos = (size_t) (i*f);
 		assert(pos<=*destlen);
 		(*destdata)[pos]=sourcedata[i];
 		// Interpolate if need be
@@ -321,13 +320,6 @@ void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 		delete [] sound_data;
 }
 
-void	Audio::cancel_raw(void)
-{
-	if (!audio_enabled) return;
-	if(mixer)
-		mixer->cancel_raw();
-}
-
 void	Audio::cancel_streams(void)
 {
 	if (!audio_enabled) return;
@@ -421,7 +413,7 @@ void Audio::Init(int _samplerate,int _channels)
 	cout << "Audio system assembled. Audio buffer at "<<_buffering_unit<<endl;
 #endif
 	midi=new MyMidiPlayer();
-	mixer=new Mixer(_buffering_unit,_channels,actual.silence);
+	mixer=new Mixer(this, _buffering_unit,_channels,actual.silence);
 #if DEBUG
 	cout << "Audio initialisation OK" << endl;
 #endif
@@ -500,7 +492,7 @@ bool	Audio::playing(void)
 
 bool	Audio::start_music(int num,bool repetition, int bank)
 {
-	if (!audio_enabled) return;
+	if (!audio_enabled) return false;
 
 	if(music_enabled && midi != 0) {
 		midi->start_music(num,repetition,bank);
@@ -529,7 +521,7 @@ void Audio::start_music(XMIDI *mid_file,bool repetition)
 
 bool	Audio::start_music_combat (Combat_song song, bool repetition, int bank)
 {
-	if (!audio_enabled) return;
+	if (!audio_enabled) return false;
 
 	int num = -1;
 	
@@ -629,7 +621,7 @@ static void	load_buffer(char *buffer,const char *filename,size_t start,size_t le
 
 bool	Audio::start_speech(int num,bool wait)
 {
-	if (!audio_enabled) return;
+	if (!audio_enabled) return false;
 
 	if (!speech_enabled)
 		return false;

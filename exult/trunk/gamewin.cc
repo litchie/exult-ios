@@ -2677,7 +2677,7 @@ void Game_window::setup_game
 	clock.set_palette();		// Set palette for time-of-day.
 	set_all_dirty();		// Force entire repaint.
 
-	Audio::get_ptr()->cancel_raw();
+//	Audio::get_ptr()->cancel_raw();
 	Audio::get_ptr()->cancel_streams();
 				// Want to activate first egg.
 	Chunk_object_list *olist = get_objects(
