@@ -1670,7 +1670,8 @@ void Actor::activate
 	
 	bool show_party_inv = gwin->get_gump_man()->showing_gumps(true) || 
 							gwin->in_combat();
-	Schedule::Schedule_types sched = (Schedule::Schedule_types) get_schedule_type();
+	Schedule::Schedule_types sched = 
+				(Schedule::Schedule_types) get_schedule_type();
 	if (!npc_num ||		// Avatar
 			(show_party_inv && get_party_id() >= 0 && // Party
 			(serpent || (npc_num >= 1 && npc_num <= 10))) ||
@@ -1682,7 +1683,8 @@ void Actor::activate
 		(get_framenum()&0xf) == Actor::sleep_frame) ||
 		 get_flag(Obj_flags::asleep))
 		return;
-	else if (sched == Schedule::combat && party_id < 0)
+	else if (sched == Schedule::combat && party_id < 0 &&
+		 alignment != Actor::friendly && alignment != Actor::neutral)
 		return;			// Too busy fighting.
 					// Usecode
 					// Failed copy-protection?
@@ -3793,6 +3795,7 @@ void Npc_actor::activate
 	Game_window *gwin = Game_window::get_game_window();
 					// Converse, etc.
 	Actor::activate(umachine, event);
+	//++++++ This might no longer be needed.  Need to test.++++++ (jsf)
 					// Want to get BG actors from start
 					//   to their regular schedules:
 	int i;				// Past 6:00pm first day?

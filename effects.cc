@@ -237,7 +237,11 @@ void Projectile_effect::init
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	frames = projectile.get_num_frames();
+	Shape_info& info = gwin->get_info(projectile_shape);
+	Weapon_info *winfo = info.get_weapon_info();
+	if (winfo && winfo->get_projectile())	// Different sprite to show?
+		sprite.set_shape(winfo->get_projectile());
+	frames = sprite.get_num_frames();
 	pos = s;			// Get starting position.
 	if (attacker)			// Try to set start better.
 		{
@@ -259,12 +263,12 @@ void Projectile_effect::init
 	if (frames >= 24)		// Use frames 8-23, for direction
 		{			//   going clockwise from North.
 		int dir = Get_dir16(s, d);
-		projectile.set_frame(8 + dir);
+		sprite.set_frame(8 + dir);
 		}
-	else if (frames == 1 && projectile.get_shapenum() != 704)
-		projectile.set_frame(0);	// (Don't show powder keg!)
+	else if (frames == 1 && sprite.get_shapenum() != 704)
+		sprite.set_frame(0);	// (Don't show powder keg!)
 	else
-		projectile.set_frame(-1);	// We just won't show it.
+		sprite.set_frame(-1);	// We just won't show it.
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	}
@@ -280,7 +284,8 @@ Projectile_effect::Projectile_effect
 	Game_object *to,		// End here, 'attack' it with shape.
 	int shnum,			// Projectile shape # in 'shapes.vga'.
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
-	) : attacker(att), target(to), projectile(shnum, 0), weapon(weap),
+	) : attacker(att), target(to), projectile_shape(shnum),
+	    sprite(shnum, 0), weapon(weap),
 	    return_path(false)
 	{
 	init(attacker->get_tile(), to->get_tile());
@@ -296,7 +301,8 @@ Projectile_effect::Projectile_effect
 	Tile_coord d,			// End here.
 	int shnum,			// Projectile shape
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
-	) : attacker(0), target(0), projectile(shnum, 0), weapon(weap),
+	) : attacker(0), target(0), projectile_shape(shnum),
+	    sprite(shnum, 0), weapon(weap),
 	    return_path(false)
 	{
 	init(s, d);
@@ -313,7 +319,8 @@ Projectile_effect::Projectile_effect
 	int shnum,			// Projectile shape
 	int weap,			// Weapon (bow, gun, etc.) shape, or 0.
 	bool retpath			// Return of a boomerang.
-	) : attacker(0), target(to), projectile(shnum, 0), weapon(weap),
+	) : attacker(0), target(to), projectile_shape(shnum),
+	    sprite(shnum, 0), weapon(weap),
 	    return_path(retpath)
 	{
 	init(s, to->get_tile());
@@ -339,9 +346,9 @@ inline void Projectile_effect::add_dirty
 	Game_window *gwin
 	)
 	{
-	if (pos.tx == -1 || projectile.get_framenum() == -1)
+	if (pos.tx == -1 || sprite.get_framenum() == -1)
 		return;			// Already at destination.
-	Shape_frame *shape = projectile.get_shape();
+	Shape_frame *shape = sprite.get_shape();
 					// Force repaint of prev. position.
 	int liftpix = pos.tz*c_tilesize/2;
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
@@ -388,7 +395,7 @@ void Projectile_effect::handle_event
 					// If missile egg, detect target.
 			(!target && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
-		switch (projectile.get_shapenum())
+		switch (projectile_shape)
 			{
 		case 287:		// Swordstrike.
 			gwin->add_effect(new Sprites_effect(23, epos));
@@ -405,6 +412,7 @@ void Projectile_effect::handle_event
 			break;
 		case 78:		// Explosion.
 		case 82:		// Delayed explosion.
+		case 621:		//    "       "
 		case 702:		// Cannon.
 		case 704:		// Powder keg.
 			gwin->add_effect(new Explosion_effect(epos, 0));
@@ -417,10 +425,9 @@ void Projectile_effect::handle_event
 					// Watch for teleporting away.
 					attacker->distance(target) < 50))
 			{
-			target->attacked(attacker, weapon, 
-						projectile.get_shapenum());
+			target->attacked(attacker, weapon, projectile_shape);
 			if (attacker &&	// Check for boomerangs.
-			    weapon == projectile.get_shapenum())
+			    weapon == projectile_shape)
 				{
 				Weapon_info *winf = 
 				    gwin->get_info(weapon).get_weapon_info();
@@ -449,12 +456,12 @@ void Projectile_effect::paint
 	Game_window *gwin
 	)
 	{
-	if (pos.tx == -1 || projectile.get_framenum() == -1)
+	if (pos.tx == -1 || sprite.get_framenum() == -1)
 		return;			// Already at destination.
 	int liftpix = pos.tz*c_tilesize/2;
 	gwin->paint_shape((pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
 		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix, 
-		projectile);
+		sprite);
 	}
 
 /*
