@@ -201,6 +201,20 @@ void Game_window::abort
 	exit(-1);
 	}
 
+/*
+ *	Set/unset barge mode.
+ */
+
+void Game_window::set_moving_barge
+	(
+	Barge_object *b
+	)
+	{
+	if (b && b != moving_barge)
+		b->gather();		// Gather up all objects on it.
+	moving_barge = b;
+	}
+
 /* 
  *	Get monster info for a given shape.
  */
@@ -301,8 +315,8 @@ void Game_window::set_scroll_bounds
 	(
 	)
 	{
-					// Let's try 6x6 tiles.
-	scroll_bounds.w = scroll_bounds.h = 6;
+					// Let's try 4x4 tiles.
+	scroll_bounds.w = scroll_bounds.h = 4;
 	scroll_bounds.x = scrolltx + 
 			(get_width()/tilesize - scroll_bounds.w)/2;
 	scroll_bounds.y = scrollty + 
@@ -1565,9 +1579,14 @@ void Game_window::stop_actor
 	(
 	)
 	{
-	main_actor->stop();		// Stop and set resting state.
-	paint();	// ++++++Necessary?
-	main_actor->get_followers();
+	if (moving_barge)
+		cout << "Stoping barge" << endl;
+	else
+		{
+		main_actor->stop();	// Stop and set resting state.
+		paint();	// ++++++Necessary?
+		main_actor->get_followers();
+		}
 	}
 
 #if 0
