@@ -27,10 +27,10 @@
 #  include <iostream>
 #  include <cmath>
 #endif
+#include "exult.h"
 #include "utils.h"
 #include "xmidi.h"
 #include "Configuration.h"
-extern	Configuration	*config;
 
 using std::atof;
 using std::atoi;
