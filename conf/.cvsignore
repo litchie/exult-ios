@@ -8,3 +8,4 @@ Makefile
 .deps
 .libs
 testxml
+confregress
