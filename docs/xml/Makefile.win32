@@ -1,4 +1,4 @@
-CLASSPATH = xerces.jar;xalan.jar
+CLASSPATH = xml-apis.jar;xercesImpl.jar;xalan.jar
 JAVA = java
 INPUT = readme.xml faq.xml
 CLASS = org.apache.xalan.xslt.Process
@@ -20,7 +20,7 @@ all: html text php
 
 # remove all generated files
 clean:
-	-rm -f *.html *.txt *.dat
+	del *.html *.txt *.dat
 
 html: $(HTML_OBJS)
 text: $(TEXT_OBJS)

@@ -1,6 +1,13 @@
-To build the FAQ you need Xalan (http://xml.apache.org/xalan-j/) and on that page see what else you need. Then you need to add xalan.jar and xerces.jar (from the Xalan package) to the system classpath.
-Running "java org.apache.xalan.xslt.Process -IN exult_faq.xml -XSL faq_html.xsl -OUT faq.html" will build the file then.
+To transform the Docs/FAQ you need Xalan (http://xml.apache.org/xalan-j/) and on that page see what else you need (Java Development Kit or Java Runtime). 
+You need xalan.jar, xercesImpl.jar and xml-apis.jar from the Xalan Package.
+Copy these files to the same directory that contains the xml and xsl files of the Exult Documentation/FAQ.
+Then use the makefiles provided in the directory.
 
 To properly use the php files (docs.dat, faq.dat) you have to to strip the <?xml 
 version="1.0"?> stuff, and also remove the <test xmlns="test.dtd"> 
-... </test> stuff surrounding everything else
+... </test> stuff surrounding everything else.
+
+Notes for Win32 users:
+There seems to be some problem with the Java Runtime 1.4.0. Please use 1.3.x.
+You also need to run
+make -f makefile.win32 to transform the files.
