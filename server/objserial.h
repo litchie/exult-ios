@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 #include "utils.h"
+#include "servemsg.h"
 
 class Serial_out
 	{
@@ -73,6 +74,7 @@ public:
 extern int Object_out
 	(
 	int fd,				// Socket.
+	Exult_server::Msg_type id,	// Message id.
 	unsigned long addr,		// Address.
 	int tx, int ty, int tz,		// Absolute tile coords.
 	int shape, int frame,

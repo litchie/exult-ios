@@ -777,7 +777,8 @@ bool Game_object::edit
 		Tile_coord t = get_tile();
 		unsigned long addr = (unsigned long) this;
 		std::string name = get_name();
-		if (Object_out(client_socket, addr, t.tx, t.ty, t.tz,
+		if (Object_out(client_socket, Exult_server::obj, 
+			addr, t.tx, t.ty, t.tz,
 			get_shapenum(), get_framenum(), get_quality(),
 								name) != -1)
 			{

@@ -101,7 +101,13 @@ void Shape_draw::draw_shape_outline
 			shape->paint_rle_outline(iwin, x + shape->get_xleft(), 
 					y + shape->get_yabove(), color);
 		else
-			; //+++++++++FLAT
+			{
+			int w = shape->get_width(), h = shape->get_height();
+			iwin->fill_line8(color, w, x, y);
+			iwin->fill_line8(color, w, x, y + h - 1);
+			iwin->fill8(color, 1, h, x, y);
+			iwin->fill8(color, 1, h, x + w - 1, y);
+			}
 		}
 	}
 

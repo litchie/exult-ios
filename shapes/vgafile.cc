@@ -633,7 +633,12 @@ int Shape_frame::has_point
 	int x, int y			// Relative to origin of shape.
 	)
 	{
-	uint8 *in = data; 	// Point to data.
+	if (!rle)			// 8x8 flat?
+		{
+		return x >= -xleft && x < xright &&
+		       y >= -yabove && y < ybelow;
+		}
+	uint8 *in = data; 		// Point to data.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0)
 		{

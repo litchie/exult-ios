@@ -32,9 +32,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapevga.h"
 #include "shapefile.h"
 #include "ibuf8.h"
+#include "objserial.h"
 
 /*
- *	Open combo window.
+ *	Open combo window (if not already open).
  */
 
 C_EXPORT void on_new_combo1_activate
@@ -50,6 +51,8 @@ void ExultStudio::open_combo_window
 	(
 	)
 	{
+	if (combowin && combowin->is_visible())
+		return;			// Already open.
 	if (!vgafile)
 		{
 		EStudio::Alert("'shapes.vga' file isn't present");
@@ -152,9 +155,11 @@ Combo::Combo
 	(
 	Shapes_vga_file *svga
 	) : shapes_file(svga),
-	    starttx(0), startty(0), xtiles(0), ytiles(0), ztiles(0), 
-	    hot_index(-1)
+	    starttx(c_num_tiles), startty(c_num_tiles), xtiles(0), ytiles(0), 
+	    ztiles(0), hot_index(-1)
 	{
+					// Read info. the first time.
+	shapes_file->read_info(false, true);//+++++BG?
 	}
 
 /*
@@ -180,6 +185,7 @@ void Combo::add
 	int shnum, int frnum		// Shape.
 	)
 	{
+//++++++++Make sure it's not too far away from existing objects.
 	Combo_member *memb = new Combo_member(tx, ty, tz, shnum, frnum);
 	members.push_back(memb);
 					// Figure visible top-left tile.
@@ -187,8 +193,8 @@ void Combo::add
 	int xtiles = info.get_3d_xtiles(frnum),
 	    ytiles = info.get_3d_ytiles(frnum),
 	    ztiles = info.get_3d_height();
-	int vtx = tx - xtiles + 1 - (tz + ztiles)/2, 
-	    vty = ty - ytiles + 1 - (tz + ztiles)/2;
+	int vtx = tx - xtiles - (tz + ztiles)/2, 
+	    vty = ty - ytiles - (tz + ztiles)/2;
 	if (vtx < starttx)		// Adjust our starting point.
 		starttx = vtx;
 	if (vty < startty)
@@ -301,9 +307,11 @@ Combo_editor::Combo_editor
 		    GDK_BUTTON1_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
 		first = false;
 		}
+#if 0
 			//++++++++++Testing:
 	combo->add(5, 5, 0, 162, 0);
 	combo->add(7, 7, 0, 161, 0);
+#endif
 	set_controls();
 	}
 
@@ -458,4 +466,27 @@ void Combo_editor::set_position
 	render();
 	}
 
+/*
+ *	Add an object/shape picked from Exult.
+ */
+
+void Combo_editor::add
+	(
+	unsigned char *data,		// Serialized object.
+	int datalen
+	)
+	{
+	unsigned long addr;
+	int tx, ty, tz;
+	int shape, frame, quality;
+	std::string name;
+	if (!Object_in(data, datalen, addr, tx, ty, tz, shape, frame,
+		quality, name))
+		{
+		cout << "Error decoding object" << endl;
+		return;
+		}
+	combo->add(tx, ty, tz, shape, frame);
+	render();
+	}
 

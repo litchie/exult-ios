@@ -82,6 +82,7 @@
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
 #include "servemsg.h"
+#include "objserial.h"
 #endif
 
 using std::cerr;
@@ -2341,21 +2342,39 @@ void Game_window::double_clicked
 
 	// If gump manager didn't handle it, we search the world for an object
 	if (!gump)
-	{
+		{
 		obj = find_object(x, y);
+#ifdef USE_EXULTSTUDIO
 
+		if (cheat.in_map_editor() && cheat.get_edit_mode() == 
+				Cheat::combo_pick && client_socket >= 0)
+			{		// Add obj/tile to combo in EStudio.
+			ShapeID id = obj ? *obj : get_flat(x, y);
+			Tile_coord t = obj ? obj->get_tile() :
+			    Tile_coord((scrolltx + x/c_tilesize)%c_num_tiles,
+			     	       (scrollty + y/c_tilesize)%c_num_tiles, 
+									0);
+			std::string name = item_names[id.get_shapenum()];
+			if (Object_out(client_socket, Exult_server::combo_pick,
+					0, t.tx, t.ty, t.tz, id.get_shapenum(),
+					 id.get_framenum(), 0, name) == -1)
+				cout << "Error sending shape to ExultStudio" 
+								<< endl;
+			return;
+			}
+#endif
 		// Check path, except if an NPC, sign, or if editing.
 	    	if (obj && obj->get_npc_num() <= 0 && !obj->is_monster() &&
 			!cheat.in_map_editor() &&
 			!Is_sign(obj->get_shapenum()) &&
 			!Fast_pathfinder_client::is_grabable(
-					main_actor->get_tile(),
-					obj->get_tile()))
-		{
+				main_actor->get_tile(),
+				obj->get_tile()))
+			{
 			Mouse::mouse->flash_shape(Mouse::blocked);
 			return;
+			}
 		}
-	}
 	if (obj)
 	{
 		if (combat && !gump && obj != main_actor &&
