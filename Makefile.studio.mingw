@@ -58,8 +58,11 @@ $(EXP_FILE): $(OBJS)
 exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
 	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc $@
 
-clean:
+allclean:
 	rm -f $(OBJS) $(EXP_FILE) $(EXEC)
+
+clean:
+	del $(OBJS) $(EXP_FILE) $(EXEC)
 
 install: $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
