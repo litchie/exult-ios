@@ -25,7 +25,9 @@ Boston, MA  02111-1307, USA.
 */
 
 #include "ibuf16.h"
-#include <string.h>
+#include <cstring>
+
+using std::memmove;
 
 /*
  *	Create a default palette for 8-bit graphics on a 16-bit display.

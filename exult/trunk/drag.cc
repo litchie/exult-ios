@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cheat.h"
 
 extern Cheat cheat;
-extern Mouse *mouse;
 
 /*
  *	Begin a possible drag when the mouse button is depressed.  Also detect
@@ -111,7 +110,7 @@ bool Game_window::drag
 			{		// Don't want to move walls.
 			if (!cheat.in_hack_mover() && !dragging->is_dragable())	
 				{
-				mouse->flash_shape(Mouse::tooheavy);
+				Mouse::mouse->flash_shape(Mouse::tooheavy);
 				dragging = 0;
 				return (false);
 				}
@@ -122,7 +121,7 @@ bool Game_window::drag
 					main_actor->get_abs_tile_coord(),
 					dragging->get_abs_tile_coord()))
 					{
-					mouse->flash_shape(Mouse::blocked);
+					Mouse::mouse->flash_shape(Mouse::blocked);
 					dragging = 0;
 					return (false);
 					}
@@ -247,7 +246,7 @@ static bool Check_weight
 	int wt = owner->get_weight() + to_drop->get_weight();
 	if (wt/10 > 2*owner->get_property(Actor::strength))
 		{
-		mouse->flash_shape(Mouse::tooheavy);
+		Mouse::mouse->flash_shape(Mouse::tooheavy);
 		return false;
 		}
 	return true;
@@ -299,7 +298,7 @@ void Game_window::drop
 						on_gump->get_container()) &&
 			    !(dropped = on_gump->add(to_drop, x, y,
 					dragging_paintx, dragging_painty)))
-				mouse->flash_shape(Mouse::wontfit);
+				Mouse::mouse->flash_shape(Mouse::wontfit);
 			}
 		else
 			{		// Was it dropped on something?
@@ -324,7 +323,7 @@ void Game_window::drop
 					!dropped && lift <= max_lift; lift++)
 					dropped = drop_at_lift(to_drop, lift);
 				if (!dropped)
-					mouse->flash_shape(Mouse::blocked);
+					Mouse::mouse->flash_shape(Mouse::blocked);
 				}
 			}
 		}

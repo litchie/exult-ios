@@ -1,4 +1,10 @@
 2000-11-29  Max Horn  <max@quendi.de>
+	* lots-o-files: changed #include <something.h> to the C++ version: include <csomething>
+	* exult.cc: removed Mouse *mouse and bool mouse_enabled
+	* Mouse.h/cc: added static Mouse *Mouse::mouse and bool Mouse::mouse_enabled
+	* various files: adapted to new class members of Mouse
+
+2000-11-29  Max Horn  <max@quendi.de>
 	* Makefile.be/win32/cygwin: fixed to properly support new dirs gumps/, shapes/, usecode/
 	* shapes/shapevga.cc: added some using std:: to make it compile on MacOS
 

@@ -2,8 +2,8 @@
 #include <unistd.h>
 #include <iostream>
 #include <fstream>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include "utils.h"
 #include "databuf.h"
 

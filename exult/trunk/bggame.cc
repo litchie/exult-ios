@@ -23,8 +23,8 @@
 #include "databuf.h"
 #include "font.h"
 #include "txtscroll.h"
-#include <ctype.h>
-#include <string.h>
+#include <cctype>
+#include <cstring>
 
 
 BG_Game::BG_Game()
@@ -289,7 +289,7 @@ void BG_Game::play_intro()
 		gwin->paint_shape(centerx,centery-30,shapes.get_shape(0x20,i % 10));
 		gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x1E,i % 15));
 		if(i % 40 ==0) {
-			char *txt_end = strchr(txt_ptr, '\r');
+			char *txt_end = std::strchr(txt_ptr, '\r');
 			*txt_end = 0;
 			win->fill8(0,gwin->get_width(),txt_ypos,0,txt_ypos);
 			gwin->paint_text(0, txt_ptr, centerx-gwin->get_text_width(0, txt_ptr)/2, txt_ypos);
@@ -972,7 +972,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 			case SDLK_SPACE:
 				if(selected==0)
 				{
-					int len = strlen(npc_name);
+					int len = std::strlen(npc_name);
 					if(len<max_len)
 					{
 						npc_name[len] = ' ';
@@ -1029,8 +1029,8 @@ bool BG_Game::new_game(Vga_file &shapes)
 			case SDLK_BACKSPACE:
 				if(selected==0)
 				{
-					if(strlen(npc_name)>0)
-						npc_name[strlen(npc_name)-1] = 0;
+					if(std::strlen(npc_name)>0)
+						npc_name[std::strlen(npc_name)-1] = 0;
 				}
 				break;
 			default:
@@ -1038,8 +1038,8 @@ bool BG_Game::new_game(Vga_file &shapes)
 					int c = event.key.keysym.sym;
 					if(selected==0 && c>=SDLK_0 && c<=SDLK_z)
 					{
-						int len = strlen(npc_name);
-						char chr = (event.key.keysym.mod & KMOD_SHIFT) ? toupper(c) : c;
+						int len = std::strlen(npc_name);
+						char chr = (event.key.keysym.mod & KMOD_SHIFT) ? std::toupper(c) : c;
 						if(len<max_len)
 						{
 							npc_name[len] = chr;

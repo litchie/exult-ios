@@ -14,7 +14,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <ctype.h>
+#include <cctype>
 #include "files/U7file.h"
 #include "flic/playfli.h"
 #include "gamewin.h"
@@ -29,6 +29,8 @@
 using std::cout;
 using std::endl;
 using std::rand;
+using std::strlen;
+using std::toupper;
 
 SI_Game::SI_Game()
 	{

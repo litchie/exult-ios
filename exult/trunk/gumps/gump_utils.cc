@@ -37,12 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 
-// FIX ME - mouse_update should be in class Mouse
-static bool mouse_update = 0;		// Mouse moved/changed.
-
 extern Game_window *gwin;	// from exult.cc - FIX ME!!!
 extern unsigned char quitting_time;	// from exult.cc - FIX ME!!!
-extern Mouse *mouse;	// from exult.cc - FIX ME!!!
 extern int scale;	// from exult.cc - FIX ME!!!
 extern unsigned int altkeys;	// from exult.cc - FIX ME!!!
 
@@ -87,8 +83,8 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
 						event.button.y >> scale);
 		break;
 	case SDL_MOUSEMOTION:
-		mouse->move(event.motion.x >> scale, event.motion.y >> scale);
-		mouse_update = true;
+		Mouse::mouse->move(event.motion.x >> scale, event.motion.y >> scale);
+		Mouse::mouse_update = true;
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
 			gump->mouse_drag(event.motion.x >> scale,
@@ -136,10 +132,10 @@ int Do_Modal_gump
 	Modal_gump *gump,	// What the user interacts with.
 	Mouse::Mouse_shapes shape	// Mouse shape to use.
 	)
-	{
-	Mouse::Mouse_shapes saveshape = mouse->get_shape();
+{
+	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
-		mouse->set_shape(shape);
+		Mouse::mouse->set_shape(shape);
 	gwin->show(1);
 	int escaped = 0;
 					// Get area to repaint when done.
@@ -148,35 +144,35 @@ int Do_Modal_gump
 	box = gwin->clip_to_win(box);
 					// Create buffer to backup background.
 	Image_buffer *back = gwin->get_win()->create_buffer(box.w, box.h);
-	mouse->hide();			// Turn off mouse.
+	Mouse::mouse->hide();			// Turn off mouse.
 					// Save background.
 	gwin->get_win()->get(back, box.x, box.y);
 	gump->paint(gwin);		// Paint gump.
-	mouse->show();
+	Mouse::mouse->show();
 	gwin->show();
 	do
-		{
+	{
 		Delay();		// Wait a fraction of a second.
-		mouse->hide();		// Turn off mouse.
-		mouse_update = false;
+		Mouse::mouse->hide();		// Turn off mouse.
+		Mouse::mouse_update = false;
 		SDL_Event event;
 		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
 			escaped = !Handle_gump_event(gump, event);
-		mouse->show();		// Re-display mouse.
+		Mouse::mouse->show();		// Re-display mouse.
 		if (!gwin->show() &&	// Blit to screen if necessary.
-		    mouse_update)	// If not, did mouse change?
-			mouse->blit_dirty();
-		}
+		    Mouse::mouse_update)	// If not, did mouse change?
+			Mouse::mouse->blit_dirty();
+	}
 	while (!gump->is_done() && !escaped);
-	mouse->hide();
+	Mouse::mouse->hide();
 					// Restore background.
 	gwin->get_win()->put(back, box.x, box.y);
 	delete back;
-	mouse->set_shape(saveshape);
+	Mouse::mouse->set_shape(saveshape);
 					// Leave mouse off.
 	gwin->show(1);
 	return (!escaped);
-	}
+}
 
 /*
  *	Prompt for a numeric value using a slider.
@@ -190,14 +186,14 @@ int Prompt_for_number
 	int step,
 	int defval			// Default to start with.
 	)
-	{
+{
 	Slider_gump *slider = new Slider_gump(minval, maxval,
 							step, defval);
 	int ok = Do_Modal_gump(slider, Mouse::hand);
 	int ret = !ok ? 0 : slider->get_val();
 	delete slider;
 	return (ret);
-	}
+}
 
 
 /*

@@ -33,13 +33,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "citerate.h"
 #include "game.h"
-#include <string.h>
+#include <cstring>
 
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::memcpy;
+using std::memset;
 using std::rand;
 using std::ostream;
+using std::strchr;
 using std::string;
 
 					// Offset to each neighbor, dir=0-7.

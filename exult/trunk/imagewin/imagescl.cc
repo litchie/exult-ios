@@ -26,7 +26,7 @@ Boston, MA  02111-1307, USA.
 
 #include "imagewin.h"
 #include "scale.h"
-#include <string.h>
+#include <cstring>
 
 /*
  *	Manipulate from 8-bit to 16-bit pixels.

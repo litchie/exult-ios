@@ -17,8 +17,8 @@
 #ifndef DATA_H
 #define DATA_H
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
 #ifdef MACOS
   #include <cassert>
 #endif
@@ -176,9 +176,9 @@ public:
 class FileDataSource: public DataSource
 {
 private:
-	FILE *f;
+	std::FILE *f;
 public:
-	FileDataSource(FILE *fp)
+	FileDataSource(std::FILE *fp)
 	{
 		f = fp;
 	};
@@ -294,7 +294,7 @@ class BufferDataSource: public DataSource
 {
 protected:
 	unsigned char *buf, *buf_ptr;
-	size_t size;
+	std::size_t size;
 public:
 	BufferDataSource(char *data, unsigned int len)
 	{
@@ -350,7 +350,7 @@ public:
 	};
 	
 	void read(char *b, int len) {
-		memcpy(b, buf_ptr, len);
+		std::memcpy(b, buf_ptr, len);
 		buf_ptr += len;
 	};
 	
@@ -390,7 +390,7 @@ public:
 
 	virtual void write(char *b, int len)
 	{
-		memcpy(buf_ptr, b, len);
+		std::memcpy(buf_ptr, b, len);
 		buf_ptr += len;
 	};
 	

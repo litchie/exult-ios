@@ -16,7 +16,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <string.h>
+#include <cstring>
 
 #include "Audio.h"
 #include "Configuration.h"
@@ -29,7 +29,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::cout;
 using std::endl;
+using std::memmove;
 using std::string;
+using std::strlen;
+using std::strncpy;
 
 extern Configuration *config;
 
