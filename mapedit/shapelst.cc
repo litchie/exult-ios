@@ -336,9 +336,9 @@ void Shape_chooser::render_frames
 		int shapenum = group ? (*group)[index] : index;
 					// Get all frames.
 		Shape *shape = ifile->extract_shape(shapenum);
-		if (!shape)
+		int nframes = shape ? shape->get_num_frames() : 0;
+		if (!nframes)
 			continue;
-		int nframes = shape->get_num_frames();
 		int row_h = Get_max_height(shape);
 		int x = -hoffset;
 		int sw, sh;
@@ -564,10 +564,13 @@ gint Shape_chooser::configure
 	chooser->info_cnt = 0;
 	int i0 = chooser->index0;	// Get back to where we were.
 	chooser->index0 = 0;
-	chooser->goto_index(i0);
-	chooser->index0 = chooser->row_indices[chooser->row0];
-	chooser->adjust_hscrollbar(-1);
 	chooser->render();		// This also adjusts scrollbar.
+	chooser->goto_index(i0);	// Now goto where we were.
+	chooser->adjust_hscrollbar(-1);
+					// Get to right spot again!
+	GtkAdjustment *adj = gtk_range_get_adjustment(
+					GTK_RANGE(chooser->shape_vscroll));
+	gtk_adjustment_set_value(adj, chooser->row0);
 					// Set handler for shape dropped here,
 					//   BUT not more than once.
 	if (chooser->drop_callback != Shape_dropped_here)
