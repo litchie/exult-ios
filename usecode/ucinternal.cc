@@ -541,8 +541,8 @@ void Usecode_internal::remove_item
 	{
 	if (!obj)
 		return;
-	if (obj == last_created)
-		last_created = 0;
+	if (!last_created.empty() && obj == last_created.back())
+		last_created.pop_back();
 	if (obj->get_owner())		// Inside a container?
 		{			// Paint gump if open.
 		Gump *gump = gwin->get_gump_man()->find_gump(obj);
@@ -1418,7 +1418,7 @@ Usecode_internal::Usecode_internal
 	Game_window *gw
 	) : Usecode_machine(gw), cur_function(0),
 	    book(0), caller_item(0),
-	    last_created(0), path_npc(0), user_choice(0), 
+	    path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),
 	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
 		temp_to_be_deleted(0)
