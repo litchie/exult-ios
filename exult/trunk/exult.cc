@@ -920,8 +920,7 @@ int Get_click
 	if (shape != Mouse::dontchange)
 		mouse->set_shape(shape);
 	mouse->show();
-	gwin->set_painted();		// Want to see new mouse.
-	gwin->show();
+	gwin->show(1);			// Want to see new mouse.
 	int ret = Get_click(x, y);
 	mouse->set_shape(saveshape);
 	return (ret);
@@ -1054,6 +1053,7 @@ int Modal_gump
 	Mouse::Mouse_shapes saveshape = mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		mouse->set_shape(shape);
+	gwin->show(1);
 	int escaped = 0;
 					// Get area to repaint when done.
 	Rectangle box = gwin->get_gump_rect(gump);
@@ -1067,6 +1067,7 @@ int Modal_gump
 					// Save background.
 	gwin->get_win()->get(back, box.x, box.y);
 	gump->paint(gwin);		// Paint gump.
+	mouse->show();
 	gwin->show();
 	do
 		{
@@ -1089,8 +1090,7 @@ int Modal_gump
 	delete back;
 	mouse->set_shape(saveshape);
 					// Leave mouse off.
-	gwin->set_painted();
-	gwin->show();
+	gwin->show(1);
 	return (!escaped);
 	}
 
