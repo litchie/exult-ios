@@ -63,7 +63,7 @@ public:
 		mana = 5,
 		magic = 6,		// Max. mana.
 		training = 7,		// Training points.
-		quests = 8,		// ??Always gets passed a constant.??
+		exp = 8,		// Experience.
 		food_level = 9
 		};
 	int get_face_shapenum()		// Get "portrait" shape #.
