@@ -36,10 +36,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef XWIN
 #include <gdk/gdkx.h>
 #endif
-#include <unistd.h>
 #include <glib.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include "shapelst.h"
 #include "shapevga.h"
 #include "ibuf8.h"
