@@ -208,7 +208,7 @@ void CheatScreen::SharedPrompt (char *input, const Cheat_Prompt &mode)
 		break;
 
 		case CP_Activity:
-		font->paint_text_fixedwidth(ibuf, "Enter Activity Number 0-31. (-1 to cancel.)", 0, maxy-9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Activity 0-31. (-1 to cancel.)", 0, maxy-9, 8);
 		break;
 
 		case CP_XCoord:
@@ -227,7 +227,7 @@ void CheatScreen::SharedPrompt (char *input, const Cheat_Prompt &mode)
 
 
 		case CP_Name:
-		font->paint_text_fixedwidth(ibuf, "Enter a new Name or press enter to cancel.", 0, maxy-9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter a new Name...", 0, maxy-9, 8);
 		break;
 
 	}
@@ -1582,16 +1582,16 @@ void CheatScreen::BusinessDisplay (Actor *actor)
 	font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
 
 	std::snprintf (buf, 512, "Loc (%04i, %04i, %02i)", x, y, z);
-	font->paint_text_fixedwidth(ibuf, buf, 0, 9, 8);
+	font->paint_text_fixedwidth(ibuf, buf, 0, 8, 8);
 
 	std::snprintf (buf, 512, "Current Activity:  %2i - %s", actor->get_schedule_type(), schedules[actor->get_schedule_type()]);
-	font->paint_text_fixedwidth(ibuf, buf, 0, 18, 8);
+	font->paint_text_fixedwidth(ibuf, buf, 0, 16, 8);
 	
 
 	// Avatar can't have schedules
 	if (actor->get_npc_num())
 	{
-		font->paint_text_fixedwidth(ibuf, "Schedules:", 0, 36, 8);
+		font->paint_text_fixedwidth(ibuf, "Schedules:", 0, 28, 8);
 
 		Schedule_change	*scheds;
 		int num;
@@ -1613,19 +1613,19 @@ void CheatScreen::BusinessDisplay (Actor *actor)
 			y[time] = tile.ty;
 		}
 
-		font->paint_text_fixedwidth(ibuf, "12 AM:", 0, 45, 8);
-		font->paint_text_fixedwidth(ibuf, " 3 AM:", 0, 54, 8);
-		font->paint_text_fixedwidth(ibuf, " 6 AM:", 0, 63, 8);
-		font->paint_text_fixedwidth(ibuf, " 9 AM:", 0, 72, 8);
-		font->paint_text_fixedwidth(ibuf, "12 PM:", 0, 81, 8);
-		font->paint_text_fixedwidth(ibuf, " 3 PM:", 0, 90, 8);
-		font->paint_text_fixedwidth(ibuf, " 6 PM:", 0, 99, 8);
-		font->paint_text_fixedwidth(ibuf, " 9 PM:", 0, 108, 8);
+		font->paint_text_fixedwidth(ibuf, "12 AM:", 0, 36, 8);
+		font->paint_text_fixedwidth(ibuf, " 3 AM:", 0, 44, 8);
+		font->paint_text_fixedwidth(ibuf, " 6 AM:", 0, 52, 8);
+		font->paint_text_fixedwidth(ibuf, " 9 AM:", 0, 60, 8);
+		font->paint_text_fixedwidth(ibuf, "12 PM:", 0, 68, 8);
+		font->paint_text_fixedwidth(ibuf, " 3 PM:", 0, 76, 8);
+		font->paint_text_fixedwidth(ibuf, " 6 PM:", 0, 84, 8);
+		font->paint_text_fixedwidth(ibuf, " 9 PM:", 0, 92, 8);
 	
 		for (i = 0; i < 8; i++) if (types[i] != -1)
 		{
 			std::snprintf (buf, 512, "%2i (%4i,%4i) - %s", types[i], x[i], y[i], schedules[types[i]]);
-			font->paint_text_fixedwidth(ibuf, buf, 56, 45+i*9, 8);
+			font->paint_text_fixedwidth(ibuf, buf, 56, 36+i*8, 8);
 		}
 	}
 }
@@ -1636,18 +1636,18 @@ void CheatScreen::BusinessMenu (Actor *actor)
 
 	if (actor->get_npc_num())
 	{
-		font->paint_text_fixedwidth(ibuf, "12 AM: [A] Set  [I] Location  [1] Clear", 0, maxy-117, 8);
-		font->paint_text_fixedwidth(ibuf, " 3 AM: [B] Set  [J] Location  [2] Clear", 0, maxy-108, 8);
-		font->paint_text_fixedwidth(ibuf, " 6 AM: [C] Set  [K] Location  [3] Clear", 0, maxy-99, 8);
-		font->paint_text_fixedwidth(ibuf, " 9 AM: [D] Set  [L] Location  [4] Clear", 0, maxy-90, 8);
-		font->paint_text_fixedwidth(ibuf, "12 PM: [E] Set  [M] Location  [5] Clear", 0, maxy-81, 8);
-		font->paint_text_fixedwidth(ibuf, " 3 PM: [F] Set  [N] Location  [6] Clear", 0, maxy-72, 8);
-		font->paint_text_fixedwidth(ibuf, " 6 PM: [G] Set  [O] Location  [7] Clear", 0, maxy-63, 8);
-		font->paint_text_fixedwidth(ibuf, " 9 PM: [H] Set  [P] Location  [8] Clear", 0, maxy-54, 8);
+		font->paint_text_fixedwidth(ibuf, "12 AM: [A] Set  [I] Location  [1] Clear", 0, maxy-96, 8);
+		font->paint_text_fixedwidth(ibuf, " 3 AM: [B] Set  [J] Location  [2] Clear", 0, maxy-88, 8);
+		font->paint_text_fixedwidth(ibuf, " 6 AM: [C] Set  [K] Location  [3] Clear", 0, maxy-80, 8);
+		font->paint_text_fixedwidth(ibuf, " 9 AM: [D] Set  [L] Location  [4] Clear", 0, maxy-72, 8);
+		font->paint_text_fixedwidth(ibuf, "12 PM: [E] Set  [M] Location  [5] Clear", 0, maxy-64, 8);
+		font->paint_text_fixedwidth(ibuf, " 3 PM: [F] Set  [N] Location  [6] Clear", 0, maxy-56, 8);
+		font->paint_text_fixedwidth(ibuf, " 6 PM: [G] Set  [O] Location  [7] Clear", 0, maxy-48, 8);
+		font->paint_text_fixedwidth(ibuf, " 9 PM: [H] Set  [P] Location  [8] Clear", 0, maxy-40, 8);
 	}
 
 	// Exit
-        font->paint_text_fixedwidth(ibuf, "[S]et Current Activity [X]it", 0, maxy-36, 8);
+        font->paint_text_fixedwidth(ibuf, "[S]et Current Activity [X]it", 0, maxy-30, 8);
 }
 
 void CheatScreen::BusinessActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor, int &time, int &prev)
