@@ -1,5 +1,9 @@
 2001-10-13  Dancer Vesperman  <dancer@users.sourceforge.net>
 
+	* shapes/shapeinf.cc: Fix compile error. istream is in std::
+
+2001-10-13  Dancer Vesperman  <dancer@users.sourceforge.net>
+
 	* actors.cc: NPC_Actor::movef cannot be inline, since it is not in a header and it is referenced from another translation unit.
 
 2001-10-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
