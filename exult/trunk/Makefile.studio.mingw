@@ -6,7 +6,7 @@ U7PATH=C:/Ultima7
 # Only used for snapshots
 STUDIOPATH=C:/Studio
 
-SRC=..
+SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs
 
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-1.3-win32-production` manually
