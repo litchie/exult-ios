@@ -16,14 +16,14 @@ adder1 0x481 (a, b)
 	c = a + b;
 	d = [a, 1, b];		// Should pop as a, 1, b.
 // 	hello = a;		// Should cause an error.
-	UcMessage("Hello, the time is ");
-	UcMessage(11);
-	UcMessage(" o'clock");
-	UcSay;
+	message("Hello, the time is ");
+	message(11);
+	message(" o'clock");
+	say();
 	if (UcResponse == "Name")
 		{
-		UcMessage("My name is DrCode.");
-		UcSay;
+		message("My name is DrCode.");
+		say();
 		}
 	else if (UcResponse == "Bye")
 		return;
@@ -36,8 +36,8 @@ adder1 0x481 (a, b)
 	c = UI_get_party_list();
 	for (actor in c with i to max)
 		{
-		UcMessage("Hello, ");
-		UcMessage(UI_get_npc_name(actor));
+		message("Hello, ");
+		message(UI_get_npc_name(actor));
 		}
 	var dd = a + 5, f, e = 2*d;
 	return adder(a, 3);
