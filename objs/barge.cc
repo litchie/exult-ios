@@ -534,6 +534,36 @@ void Barge_object::turn_around
 	}
 
 /*
+ *	Ending 'barge mode'.
+ */
+
+void Barge_object::done
+	(
+	)
+	{
+	gathered = false;		// Clear for next time.
+
+#if 0	/* ++++This didn't fix the flying-carpet bug. */
+	Game_window *gwin = Game_window::get_game_window();
+	int cnt = objects.size();	// Reactivate actors.
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *obj = get_object(i);
+		Npc_actor *npc = dynamic_cast<Npc_actor *>(obj);
+					// Reactivate non-party NPC's scheds.
+		if (npc && npc->get_party_id() < 0)
+			{
+			npc->update_schedule(gwin, gwin->get_hour()/3, 7);
+					// Nothing happened?  Monster?
+			if (!npc->in_queue() && npc->is_monster())
+				npc->set_schedule_type(
+						npc->get_schedule_type());
+			}
+		}
+#endif
+	}
+
+/*
  *	Is it okay to land?
  */
 
