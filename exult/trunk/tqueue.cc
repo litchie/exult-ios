@@ -174,6 +174,34 @@ int Time_queue::find
 	}
 
 /*
+ *	Find when an entry is due.
+ *
+ *	Output:	delay in msecs. when due, or -1 if not in queue.
+ */
+
+long Time_queue::find_delay
+	(
+	Time_sensitive *obj,
+	uint32 curtime
+	)
+	{
+	if(data.size()==0)
+		return -1;
+	for(Temporal_sequence::iterator it=data.begin();
+		it!=data.end(); ++it)
+		{
+		if(it->handler==obj)
+			{
+			if (pause_time)	// Watch for case when paused.
+				curtime = pause_time;
+			long delay = it->time - curtime;
+			return delay >= 0 ? delay : 0;
+			}
+		}
+	return -1;
+	}
+
+/*
  *	Remove & activate entries that are due, starting with head (already
  *	known to be due).
  */

@@ -803,6 +803,8 @@ void Barge_object::write_ireg
 		obj->write_ireg(out);
 		}
 	out.put(0x01);			// A 01 terminates the list.
+					// Write scheduled usecode.
+	Game_window::write_scheduled(out, this);	
 	}
 
 /*

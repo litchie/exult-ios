@@ -106,5 +106,7 @@ void Spellbook_object::write_ireg
 	ptr += 4;
 	Write4(ptr, flags);
 	out.write((char*)buf, sizeof(buf));
+					// Write scheduled usecode.
+	Game_window::write_scheduled(out, this);	
 	}
 

@@ -336,8 +336,16 @@ Actor::Actor
 					// Get abs. chunk. coords. of schunk.
 	int scy = 16*(schunk/12);
 	int scx = 16*(schunk%12);
-	if (iflag1 && iflag2)		// Inventory?  Read.
+					// We're going to use these bits.
+					// iflag1:0 == has_contents.
+					// iflag1:1 == sched. usecode follows,
+					//   possibly empty.
+	bool has_contents = fix_first ? (iflag1 && iflag2) : (iflag1&1);
+	if (has_contents)		// Inventory?  Read.
 		gwin->read_ireg_objects(nfile, scx, scy, this);
+	if (!fix_first &&		// Read in scheduled usecode.
+	    (iflag1&2))
+		gwin->read_special_ireg(nfile, this);
 	int cx = locx >> 4;		// Get chunk indices within schunk.
 	int cy = locy >> 4;
 					// Get tile #'s.
@@ -403,7 +411,12 @@ void Actor::write
 	set_shape( old_shape );		// Revert the shape to what it was
 
 					// Inventory flag.
-	Write2(nfile, !objects.is_empty() ? 1 : 0);
+					// Bit0 = has_contents (our use).
+					// Bit1 = our savegame, with sched.
+					//   usecode script following this.
+	int iflag1 = objects.is_empty() ? 0 : 1;
+	iflag1 |= 2;			// We're always doing write_scheduled()
+	Write2(nfile, iflag1);
 			// Superchunk #.
 	nfile.put((get_cy()/16)*12 + get_cx()/16);
 	nfile.put(0);			// Unknown.
@@ -415,8 +428,9 @@ void Actor::write
 	nfile.put(get_property(Actor::health));
 	nfile.put(0);			// Unknown 3 bytes.
 	Write2(nfile, 0);
-					// ??Another inventory flag.
-	Write2(nfile, !objects.is_empty() ? 1 : 0);
+					// ??Another inventory flag.  We're
+					//    keeping it for ourselves now.
+	Write2(nfile, 0);
 
 
 	//Write first set of flags
@@ -563,6 +577,8 @@ void Actor::write
 	nfile.write(namebuf, 16);
 	write_contents(nfile);		// Write what he holds.
 	namebuf[16] = 0;
+					// Write scheduled usecode.
+	Game_window::write_scheduled(nfile, this, true);
 	}
 
 /*
