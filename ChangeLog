@@ -1,4 +1,7 @@
 2001-01-25  Tristan Tarrant <nadir@users.sourceforge.net>
+	mapedit/*: more work.
+
+2001-01-25  Tristan Tarrant <nadir@users.sourceforge.net>
 	* configure.in: check for libglade
 	* mapedit/*: general hacking resulting in a libglade'ified ExultStudio.
 	  Caveat: it is very picky about where it looks for stuff. 
