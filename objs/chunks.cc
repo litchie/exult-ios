@@ -524,11 +524,15 @@ void Chunk_cache::activate_eggs
 			egg->activate(usecode, obj);
 		}
 	if (eggbits)			// Check 15th bit.
-		{
-		for (Egg_vector::const_iterator it = egg_objects.begin() + i;
-					it != egg_objects.end(); ++it)
+		{			// DON'T use an iterator here, since
+					//   the list can change as eggs are
+					//   activated, causing a CRASH!
+		int sz = egg_objects.size();
+		for (  ; i < sz; i++)
+//		for (Egg_vector::const_iterator it = egg_objects.begin() + i;
+//					it != egg_objects.end(); ++it)
 			{
-			Egg_object *egg = *it;
+			Egg_object *egg = egg_objects[i];
 			if (egg && egg->is_active(obj,
 						tx, ty, tz, from_tx, from_ty))
 				egg->activate(usecode, obj);
