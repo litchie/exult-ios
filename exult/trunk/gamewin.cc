@@ -1452,7 +1452,7 @@ void Game_window::init_actors
 	// Update gamedat if there was a change
 	if (changed)
 		{
-		if (Game::get_game_type() == SERPENT_ISLE) schedule_npcs(2,7);
+		schedule_npcs(2,7);
 		write_npcs();
 		}
 
