@@ -538,18 +538,20 @@ void ExultStudio::set_static_path(const char *path)
 						   "u7chunks",
 						   (gpointer)ChunkArchive );
 	GtkCTreeNode *palettefiles = Create_subtree( GTK_CTREE( file_list ),
-						   shapefiles,
+						   0,
 						   "Palette Files",
 						   ".pal",
 						   (gpointer)PaletteFile );
 					// Always include main palettes file.
 	Create_tree_node(GTK_CTREE(file_list), "palettes.flx", palettefiles, 0,
 						   (gpointer)PaletteFile );
+#if 0	/* Skip this until we can do something with these files. */
 	GtkCTreeNode *flexfiles = Create_subtree( GTK_CTREE( file_list ),
 						   palettefiles,
 						   "FLEX Files",
 						   ".flx",
 						   (gpointer)FlexArchive );
+#endif
 	gtk_clist_thaw( GTK_CLIST( file_list ) );
 	connect_to_server();		// Connect to server with 'gamedat'.
 }
@@ -999,7 +1001,7 @@ int ExultStudio::prompt
 	(
 	const char *msg,		// Question to ask.
 	const char *choice0,		// 1st choice.
-	const char *choice1,		// 2nd choice
+	const char *choice1,		// 2nd choice, or NULL.
 	const char *choice2		// 3rd choice, or NULL.
 	)
 	{
@@ -1008,7 +1010,13 @@ int ExultStudio::prompt
 		GTK_LABEL(glade_xml_get_widget(app_xml, "prompt3_label")),
 								msg);
 	set_button("prompt3_yes", choice0);
-	set_button("prompt3_no", choice1);
+	if (choice1)
+		{
+		set_button("prompt3_no", choice1);
+		set_visible("prompt3_no", true);
+		}
+	else
+		set_visible("prompt3_no", false);
 	if (choice2)			// 3rd choice?  Show btn if so.
 		{
 		set_button("prompt3_cancel", choice2);

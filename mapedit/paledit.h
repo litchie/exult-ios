@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "objbrowse.h"
 #include "rect.h"
+#include <vector>
 
 class Flex;
 class U7object;
@@ -38,12 +39,12 @@ class U7object;
 class Palette_edit: public Object_browser
 	{
 	char *file;			// Full filename.
-	int count;			// # palettes in file.
 	guchar *image;			// Holds data to render.
 	int width, height;		// Dimensions of image.
 	GtkWidget *draw;		// GTK draw area to display them in.
 	GdkGC *drawgc;			// For drawing in 'draw'.
-	GdkRgbCmap *palette;		// The palette to display.
+	vector<GdkRgbCmap*> palettes;	// The palettes to display.
+	int cur_pal;			// Index of current palette.
 	GtkColorSelectionDialog *colorsel;// Open color selector.
 	GtkWidget *sbar;		// Status bar.
 	GtkAdjustment *palnum_adj;	// Spin btn. for palette #.
@@ -89,6 +90,8 @@ public:
 	static gint drag_begin(GtkWidget *widget, GdkDragContext *context,
 							gpointer data);
 	static void palnum_changed(GtkAdjustment *adj, gpointer data);
+	static void export_palette(GtkButton *btn, gpointer user_data);
+	static void import_palette(GtkButton *btn, gpointer user_data);
 	};
 
 #endif

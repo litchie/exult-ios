@@ -196,8 +196,8 @@ public:
 	void set_button(char *name, const char *text);
 	void set_visible(char *name, bool vis);
 	void set_sensitive(char *name, bool vis);
-	int prompt(const char *msg, const char *choice0, const char *choice1,
-						const char *choice2 = 0);
+	int prompt(const char *msg, const char *choice0, 
+			const char *choice1 = 0,const char *choice2 = 0);
 };
 
 #endif
