@@ -34,7 +34,6 @@ class Game_window;
 class Game_object;
 class Text_gump;
 class Vector;
-class Deleted_objects;
 class Actor;
 class Npc_actor;
 class Usecode_machine;
@@ -101,7 +100,6 @@ private:
 	Text_gump *book;		// Book/scroll being displayed.
 	Game_object *caller_item;	// Item this is being called on.
 	Game_object *last_created;	// Last item created with intrins. x24.
-	Deleted_objects *removed;	// List of 'removed' objects.
 	const char *user_choice;	// String user clicked on.
 	char *String;			// The single string register.
 	void append_string(const char *txt);	// Append to string.

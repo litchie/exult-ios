@@ -26,16 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef DELOBJS_H
 #define DELOBJS_H	1
 
-#ifdef DONT_HAVE_HASH_SET
-#  include <set>
-#else
-#  include <hash_set>
-#  ifdef MACOS
-	using Metrowerks::hash_set;
-#  endif
-#endif
-
-#ifdef DONT_HAVE_HASH_SET
+#include <set>
 
 /*
  *	"Less than" relation for objects
@@ -49,48 +40,14 @@ public:
 		}
 	};
 
-#else
-
-/*
- *	Hash function for game objects:
- */
-class Hash_objs
-	{
-public:
-	std::size_t operator() (const Game_object *a) const
-		{ return (long) a; }
-	};
-
-/*
- *	For testing if two game objects match:
- */
-class Equal_objs
-	{
-public:
-     bool operator() (const Game_object *a, const Game_object *b) const
-     	{
-			return a == b;
-		}
-	};
-
-#endif
-
 
 /*
  *	A pool of removed game objects, waiting to be deleted:
  */
-#ifndef DONT_HAVE_HASH_SET
-class Deleted_objects : public hash_set<Game_object *, Hash_objs, Equal_objs>
-#else
 class Deleted_objects : public std::set<Game_object *, Less_objs>
-#endif
 	{
 public:
-#ifndef DONT_HAVE_HASH_SET
-	Deleted_objects() : hash_set<Game_object *, Hash_objs, Equal_objs> (1013)
-#else
 	Deleted_objects() : std::set<Game_object *, Less_objs> ()
-#endif
 		{  }
 
 	void flush();			// Delete them now.

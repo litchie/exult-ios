@@ -1,3 +1,8 @@
+2001-04-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Put deleted monsters in a table for later actual deletion.
+	Appears to fix the teleport bug.
+
 2001-04-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Lots of changes to Patrol schedule.  It always uses pathfinding
