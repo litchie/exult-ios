@@ -23,8 +23,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 
 #include "SDL_mapping.h"
-#include <SDL_audio.h>
-#include <SDL_error.h>
+
+#include "Configuration.h"
+extern	Configuration config;
 
 #include <cstdio>
 #include <unistd.h>
@@ -202,6 +203,10 @@ Uint8 *Audio::convert_VOC(Uint8 *old_data,unsigned int &visible_len)
 		
 void	Audio::play(Uint8 *sound_data,Uint32 len,bool wait)
 {
+	string s;
+	config.value("config/audio/speech/enabled",s,"yes");
+	if(s=="no")
+		return;
 	bool	own_audio_data=false;
 	if(!strncmp((const char *)sound_data,"Creative Voice File",19))
 		{
