@@ -123,6 +123,9 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 				(short)coffset + nbytes);
 // debugging printf("nbytes=%d, coffset=%d\n", nbytes, coffset);
 		break;
+	case SLOOP:  /* WJP */
+		printf("\t[%04X], %04X\n", *(unsigned short*)( ptrc + nbytes - 4 ),
+			   *(short*)( ptrc + nbytes - 2) + (short)coffset + nbytes);
 	case IMMED_AND_RELATIVE_JUMP:	/* JSF */
 		printf("\t%04XH, %04X\n", *(unsigned short*)( ptrc + 1 ),
 				*(short*)( ptrc + 3 ) + (short)coffset + 5);

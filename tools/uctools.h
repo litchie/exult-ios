@@ -22,6 +22,8 @@
 #define PUSH					128
 // Just a byte
 #define BYTE					256
+// variable + relative jump (for the 'sloop')
+#define SLOOP		512
 
 // Opcode descriptor
 typedef struct _opcode_desc
@@ -39,7 +41,7 @@ static opcode_desc opcode_table[] =
 {
 	{ NULL, 0, 0 },						// 00
 	{ NULL, 0, 0 },						// 01
-	{ NULL, 0, 0 },						// 02
+	{ "sloop_iter", 10, SLOOP },		// 02
 	{ NULL, 0, 0 },						// 03
 	{ "startconv", 2, RELATIVE_JUMP },	// 04
 	{ "jne", 2, RELATIVE_JUMP },				// 05
@@ -83,8 +85,8 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0 },						// 2b
 	{ "ret2", 0, 0 },					// 2c
 	{ "setr", 0, 0 },					// 2d
-	{ "sloop", 11, RELATIVE_JUMP },				// 4e
-	{ "addsv", 2, VARREF },					// 2f
+	{ "sloop", 11, SLOOP },				// 4e
+	{ "addsv", 2, VARREF },				// 2f
 	{ "in", 0, 0 },						// 30
 	{ "conv_something", 4, IMMED_AND_RELATIVE_JUMP },			// 31
 	{ "rts", 0, 0 },					// 32
