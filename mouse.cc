@@ -233,18 +233,20 @@ void Mouse::set_speed_cursor()
     {
         cursor = hand;
     }
-#if 0	/* Can no longer move in gump mode. */
-    else if (gump_man->showing_gumps())
-    {
-    	Gump *gump = gump_man->find_gump(mousex, mousey);
+			/* Can again, optionally move in gump mode. */
+	if (gump_man->gump_mode()) {
+		if (gump_man->gumps_dont_pause_game())
+		{
+    		Gump *gump = gump_man->find_gump(mousex, mousey);
         
-        if (gump && !gump->no_handcursor())
-            cursor = hand;
-    }
-#else
-    else if (gump_man->gump_mode())	// A fast check.
-	cursor = hand;
-#endif
+			if (gump && !gump->no_handcursor())
+				cursor = hand;
+		}
+		else cursor = hand;
+	}
+
+	if (gwin->get_dragging_gump()) cursor = hand;
+
     else if (cheat.in_map_editor()) 
     {
 	switch (cheat.get_edit_mode())

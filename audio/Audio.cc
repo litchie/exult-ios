@@ -78,11 +78,6 @@ using std::min;
 using std::max;
 #endif
 
-//SDL_mixer doesn't like mixing different rates when using OGG
-//This should match the same as the SFX and OGG Music which is 22khz
-#define SAMPLERATE	22050
-
-
 #define	TRAILING_VOC_SLOP 32
 #define	LEADING_VOC_SLOP 32
 
@@ -448,6 +443,10 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 				l |= (old_data[1+data_offset]&0xff);
 				COUT("Chunk length appears to be " << l);
 				sample_rate=1000000/(256-(old_data[4+data_offset]&0xff));
+#ifdef FUDGE_SAMPLE_RATES
+				if (sample_rate = 11111) sample_rate = 11025;
+				else if (sample_rate = 22222) sample_rate = 22050;
+#endif
 				COUT("Original sample_rate is " << sample_rate << ", hw rate is " << actual.freq);
 				COUT("Sample rate ("<< sample_rate<<") = _real_rate");
 				compression = old_data[5+data_offset]&0xff;

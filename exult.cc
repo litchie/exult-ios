@@ -822,6 +822,20 @@ static void Handle_events
 					// Animate unless dormant.
 		if (gwin->have_focus() && !dragging)
 			gwin->get_tqueue()->activate(ticks);
+
+		// Moved this out of the animation loop, since we want movement to be
+		// more responsive
+		if (!gwin->is_moving())
+			{
+			int x, y;// Check for 'stuck' Avatar.
+			int ms = SDL_GetMouseState(&x, &y);
+			if (SDL_BUTTON(3) & ms)
+				gwin->start_actor(x/scale, y/scale, 
+					Mouse::mouse->avatar_speed);
+			else 
+				gwin->get_main_actor()->resting(50);
+			}
+
 					// Show animation every 1/20 sec.
 		if (ticks > last_repaint + 50 || gwin->was_painted())
 					// This avoids jumpy walking:
@@ -832,16 +846,6 @@ static void Handle_events
 				gwin->paint_dirty();
 			while (ticks > last_repaint+50)last_repaint += 50;
 
-			int x, y;// Check for 'stuck' Avatar.
-			if (!gwin->is_moving())
-				{
-				int ms = SDL_GetMouseState(&x, &y);
-				if (SDL_BUTTON(3) & ms)
-					gwin->start_actor(x/scale, y/scale, 
-						Mouse::mouse->avatar_speed);
-				else 
-					gwin->get_main_actor()->resting(50);
-				}
 			}
 
 		Mouse::mouse->show();	// Re-display mouse.
@@ -971,7 +975,7 @@ static void Handle_event
 			{
 			uint32 curtime = SDL_GetTicks();
 					// Last click within .5 secs?
-			if (curtime - last_b3_click < 500)
+			if (gwin->get_allow_double_right_move() && curtime - last_b3_click < 500)
 				gwin->start_actor_along_path(x, y,
 						Mouse::mouse->avatar_speed);
 			else if (right_on_gump && 

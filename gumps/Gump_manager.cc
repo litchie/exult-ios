@@ -49,13 +49,17 @@ using std::cout;
 using std::endl;
 
 Gump_manager::Gump_manager()
-	: open_gumps(0), non_persistent_count(0), right_click_close(true)
+	: open_gumps(0), non_persistent_count(0), right_click_close(true), dont_pause_game(false)
 {
 	std::string str;
 	config->value("config/gameplay/right_click_closes_gumps", str, "yes");
 	if (str == "no")
 		right_click_close = false;
 	config->set("config/gameplay/right_click_closes_gumps", str, true);
+
+	config->value("config/gameplay/gumps_dont_pause_game", str, "no");
+	dont_pause_game = str == "yes";
+	config->set("config/gameplay/gumps_dont_pause_game", dont_pause_game?"yes":"no", true);
 }
 
 
@@ -154,9 +158,9 @@ void Gump_manager::add_gump(Gump *gump)
 		last->next = g;
 	}
 	if (!gump->is_persistent())	// Count 'gump mode' gumps.
-		{			// And pause the game.
+		{			// And pause the game, if we want it
 		non_persistent_count++;
-		gwin->get_tqueue()->pause(Game::get_ticks());
+		if (!dont_pause_game) gwin->get_tqueue()->pause(Game::get_ticks());
 		}
 }
 
@@ -202,7 +206,7 @@ bool Gump_manager::remove_gump(Gump *gump)
 		if (!gump->is_persistent())	// Count 'gump mode' gumps.
 			{			// And resume queue if last.
 			non_persistent_count--;
-			gwin->get_tqueue()->resume(Game::get_ticks());
+			if (!dont_pause_game) gwin->get_tqueue()->resume(Game::get_ticks());
 			}
 	}
 
@@ -506,6 +510,9 @@ int Gump_manager::do_modal_gump
 	// maybe make this selective? it's nice for menus, but annoying for sliders
 	//	gwin->end_gump_mode();
 
+	// Pause the game
+	gwin->get_tqueue()->pause(SDL_GetTicks());
+
 	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		Mouse::mouse->set_shape(shape);
@@ -549,6 +556,9 @@ int Gump_manager::do_modal_gump
 	Mouse::mouse->set_shape(saveshape);
 					// Leave mouse off.
 	gwin->show(true);
+
+	// Resume the game
+	gwin->get_tqueue()->resume(SDL_GetTicks());
 
 	SDL_EnableUNICODE(0);
 
@@ -594,4 +604,28 @@ void Gump_manager::paint_num
 	char buf[20];
   	std::snprintf(buf, 20, "%d", num);
 	sman->paint_text(font, buf, x - sman->get_text_width(font, buf), y);
+}
+
+/*
+ *	
+ */
+void Gump_manager::set_gumps_dont_pause_game(bool p)
+{
+	// Don't do anything if they are the same
+	if (dont_pause_game == p) return;
+
+	dont_pause_game = p;
+
+	// If pausing enabled, we need to go through and pause each gump
+	if (!dont_pause_game) {
+		for (Gump_list *gump = open_gumps; gump; gump = gump->next)
+			if (!gump->gump->is_persistent()) 
+				gwin->get_tqueue()->pause(Game::get_ticks());
+	}
+	// Otherwise we need to go through and resume each gump :-)
+	else {
+		for (Gump_list *gump = open_gumps; gump; gump = gump->next)
+			if (!gump->gump->is_persistent()) 
+				gwin->get_tqueue()->resume(Game::get_ticks());
+	}
 }

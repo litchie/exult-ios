@@ -45,6 +45,7 @@ class  Gump_manager : public Game_singletons
 	Gump_list	*open_gumps;
 	int		non_persistent_count;		// So we can test for 'gump mode' quickly.
 	bool	right_click_close;
+	bool	dont_pause_game;			// NEVER EVER SET THIS MANUALLY! YOU MUST CALL set_gumps_dont_pause_game
 public:
 	void add_gump(Gump *gump);			// Add a single gump to screen
 	void add_gump(Game_object *obj, int shapenum);	// Show a gump for object obj
@@ -69,6 +70,8 @@ public:
 	inline bool can_right_click_close() { return right_click_close; }
 	inline void set_right_click_close(bool r) { right_click_close = r; }
 
+	inline bool gumps_dont_pause_game() { return dont_pause_game; }
+	void set_gumps_dont_pause_game(bool p);
 
 	int okay_to_quit();
 	int prompt_for_number(int minval, int maxval, int step, int def);
