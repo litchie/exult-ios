@@ -1559,11 +1559,14 @@ void BuildGameMap()
 			case 1: maplift = 10; break;
 			case 2: maplift = 5; break;
 		}
-		if (run_bg)
+
+		if (run_bg) {
 			gametype = BLACK_GATE;
-		else if (run_si)
+			get_game_paths("blackgate");
+		} else if (run_si) {
 			gametype = SERPENT_ISLE;
-		else {
+			get_game_paths("serpentisle");
+		} else {
 			cerr << "You have to specify --bg or --si when using -buildmap" << endl;
 			exit(1);
 		}

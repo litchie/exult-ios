@@ -1,3 +1,6 @@
+2002-07-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.cc: fixed --buildmap
+
 2002-07-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* autogen.sh: fixed problem when automake was compiled with aclocal
 	data directory /usr/local/share/aclocal
