@@ -111,3 +111,7 @@
 \CMaybe I should write a software-engineering
 \Cbook about it :-)"
 \L - Jeff
+
+\C"There are two types of people. 
+\CExult Developers and everyone else"
+\L - Colourless
