@@ -464,15 +464,15 @@ converse_options:
 	;
 
 script_statement:			/* Yes, this could be an intrinsic. */
-	SCRIPT item script_command opt_script_delay ';'
+	SCRIPT item opt_script_delay script_command 
 		{
 		Uc_array_expression *parms = new Uc_array_expression();
 		parms->add($2);		// Itemref.
-		parms->add($3);		// Script.
-		if ($4)			// Delay?
-			parms->add($4);
+		parms->add($4);		// Script.
+		if ($3)			// Delay?
+			parms->add($3);
 					// Get the script intrinsic.
-		Uc_symbol *sym = Uc_function::get_intrinsic($4 ? 2 : 1);
+		Uc_symbol *sym = Uc_function::get_intrinsic($3 ? 2 : 1);
 		Uc_call_expression *fcall = 
 				new Uc_call_expression(sym, parms, function);
 		$$ = new Uc_call_statement(fcall);
@@ -796,7 +796,7 @@ declared_var_value:
 		if (!$$)
 			{
 			char buf[150];
-			sprintf("Can't use '%s' here", $1->get_name());
+			sprintf(buf, "Can't use '%s' here", $1->get_name());
 			yyerror(buf);
 			$$ = new Uc_int_expression(0);
 			}
