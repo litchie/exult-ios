@@ -28,28 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #include "u7drag.h"
-
-/*
- *	Read/write 2-byte quantities, low-byte first.
- */
-inline void Write2
-	(
-	unsigned char *& out,	// Write here and update.
-	unsigned short val
-	)
-	{
-	*out++ = val & 0xff;
-	*out++ = (val>>8) & 0xff;
-	}
-inline unsigned short Read2
-	(
-	unsigned char *& in
-	)
-	{
-	unsigned short val = *in++;
-	return val + ((*in++)<<8);
-	}
-
+#include "utils.h"
 
 /*
  *	Store in char array.

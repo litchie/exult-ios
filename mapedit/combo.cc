@@ -993,8 +993,7 @@ cout << "Buflen = " << buflen << endl;
 	assert(len <= buflen);
 #ifdef WIN32
 	windragdata *wdata = (windragdata *)seldata;
-	wdata->data = buf;
-	wdata->id = info;
+	wdata->assign(info, len, buf);
 #else
 					// Make us owner of xdndselection.
 	gtk_selection_owner_set(widget, gdk_atom_intern("XdndSelection", 0),
@@ -1488,7 +1487,7 @@ gint Combo_chooser::expose
  */
 static bool win32_button = false;
 
-gint Shape_chooser::win32_drag_motion
+gint Combo_chooser::win32_drag_motion
 	(
 	GtkWidget *widget,		// The view window.
 	GdkEventMotion *event,

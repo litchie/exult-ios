@@ -21,17 +21,9 @@
 #ifndef INCL_XDRAG
 #define INCL_XDRAG
 
-const int max_types = 15;
+#include "u7drag.h"
 
-typedef void (*Move_shape_handler_fun)(int shape, int frame, int x, int y,
-					int prevx, int prevy, bool show);
-typedef void (*Move_combo_handler_fun)(int xtiles, int ytiles, int tiles_right,
-	int tiles_below, int x, int y, int prevx, int prevy, bool show);
-typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y,
-							void *data);
-typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y, void *data);
-typedef void (*Drop_combo_handler_fun)(int cnt, struct U7_combo_data *combo, 
-					int x, int y, void *data);
+const int max_types = 15;
 
 /*
  *	This supports the 'drop' side of Xdnd:

@@ -1,3 +1,12 @@
+2002-05-09  Ryan Nunn  <triforce@merlin.net.au>
+	* files/Table.cc : Namespace
+	* exult.cc, windrag.*, xdrag.h, shapes/u7drag.*, mapedit/*.* :
+	  Modifications to Win32 DnD. Combo's now work. Also shape and combo
+	  foot prints are now shown when dragging.
+	* msvcstuff/msvc_kludges.h : Overdue version update
+	* msvcstuff/Exult.dsp : Some changes for a special debug build to help
+	  find the spaces in path problem.
+
 2002-05-08  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/combo.cc,exult.cc,xdrag.cc: Combos starting to work.

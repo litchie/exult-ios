@@ -38,21 +38,27 @@ void Windnd::DestroyStudioDropDest(Windnd *& windnd, HWND &hWnd)
 
 // IDropTarget implementation
 
-Windnd::Windnd(HWND hgwnd,	Drop_shape_handler_fun shapefun,
-	       Drop_chunk_handler_fun cfun
-	       )
-	       :gamewin(hgwnd), shape_handler(shapefun), chunk_handler(cfun),
-			face_handler(0), udata(0)
+Windnd::Windnd(HWND hgwnd, Move_shape_handler_fun movefun,
+			Move_combo_handler_fun movecmbfun,
+			Drop_shape_handler_fun shapefun,
+			Drop_chunk_handler_fun cfun, Drop_combo_handler_fun combfun
+			) : gamewin(hgwnd), udata(0), move_shape_handler(movefun),
+				move_combo_handler(movecmbfun), shape_handler(shapefun),
+				chunk_handler(cfun), face_handler(0), combo_handler(combfun),
+				drag_id(-1)
 {
+	std::memset (&data, 0, sizeof(data));
 	m_cRef = 1;
 };
 
 Windnd::Windnd(HWND hgwnd,	Drop_shape_handler_fun shapefun,
 	       Drop_chunk_handler_fun cfun, Drop_shape_handler_fun ffun, void *d
 	       )
-	       :gamewin(hgwnd), shape_handler(shapefun), chunk_handler(cfun),
-			face_handler(ffun), udata(d)
+	       :gamewin(hgwnd), udata(d), move_shape_handler(0), move_combo_handler(0),
+		    shape_handler(shapefun), chunk_handler(cfun),
+			face_handler(ffun), combo_handler(0), drag_id(-1)
 {
+	std::memset (&data, 0, sizeof(data));
 	m_cRef = 1;
 };
 
@@ -98,6 +104,44 @@ Windnd::DragEnter(IDataObject * pDataObject,
 	} else {
 		*pdwEffect = DROPEFFECT_COPY;
 	};
+
+	std::memset (&data, 0, sizeof(data));
+
+	FORMATETC fetc;
+	fetc.cfFormat = CF_EXULT;
+	fetc.ptd = NULL;
+	fetc.dwAspect = DVASPECT_CONTENT;
+	fetc.lindex = -1;
+	fetc.tymed = TYMED_HGLOBAL;
+
+	STGMEDIUM med;
+	pDataObject->GetData(&fetc, &med);
+	windragdata wdd((unsigned char *)GlobalLock(med.hGlobal));
+	GlobalUnlock(med.hGlobal);
+	ReleaseStgMedium(&med);
+
+	drag_id=wdd.get_id();
+	switch (drag_id) {
+
+	case U7_TARGET_SHAPEID:
+		Get_u7_shapeid(wdd.get_data(), data.shape.file, data.shape.shape, data.shape.frame);
+		break;
+
+	case U7_TARGET_CHUNKID:
+		Get_u7_chunkid(wdd.get_data(), data.chunk.chunknum);
+		break;
+
+	case U7_TARGET_COMBOID:
+		Get_u7_comboid(wdd.get_data(), data.combo.xtiles, data.combo.ytiles, data.combo.right, data.combo.below, data.combo.cnt, data.combo.combo);
+		break;
+
+	default:
+		break;
+	}
+
+	prevx = -1;
+	prevy = -1;
+
 	return S_OK;
 };
 
@@ -108,12 +152,54 @@ Windnd::DragOver(DWORD grfKeyState,
 {
 	*pdwEffect = DROPEFFECT_COPY;
 	// Todo 
+
+	POINT pnt = { pt.x, pt.y};
+	ScreenToClient(gamewin, &pnt);
+
+	switch (drag_id) {
+
+	case U7_TARGET_SHAPEID:
+		if (data.shape.file == U7_SHAPE_SHAPES) {
+			if (move_shape_handler) move_shape_handler(data.shape.shape, data.shape.frame,
+				pnt.x, pnt.y, prevx, prevy, true);
+		}
+		break;
+
+	case U7_TARGET_COMBOID:
+		if (data.combo.cnt > 0) {
+			if (move_combo_handler) move_combo_handler(data.combo.xtiles, data.combo.ytiles,
+				data.combo.right, data.combo.below, pnt.x, pnt.y, prevx, prevy, true);
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	prevx = pnt.x;
+	prevy = pnt.y;
+
 	return S_OK;
 };
 
 STDMETHODIMP
 Windnd::DragLeave(void)
 {
+	move_shape_handler(-1, -1, 0, 0, prevx, prevy, true);
+
+	switch (drag_id) {
+	case U7_TARGET_SHAPEID:
+		break;
+	case U7_TARGET_COMBOID:
+		delete data.combo.combo;
+		break;
+
+	default:
+		break;
+	}
+	std::memset (&data, 0, sizeof(data));
+	drag_id = -1;
+
 	return S_OK;
 };
 
@@ -124,7 +210,7 @@ Windnd::Drop(IDataObject * pDataObject,
 	     DWORD * pdwEffect)
 {
 	*pdwEffect = DROPEFFECT_COPY;
-	windragdata data;
+	;
 	
 	// retrieve the dragged data
 	FORMATETC fetc;
@@ -136,10 +222,36 @@ Windnd::Drop(IDataObject * pDataObject,
 	STGMEDIUM med;
 	
 	pDataObject->GetData(&fetc, &med);
-	data = *(windragdata *)GlobalLock(med.hGlobal);
-	do_handle_drop(&data);
+	windragdata wdd((unsigned char *)GlobalLock(med.hGlobal));
 	GlobalUnlock(med.hGlobal);
 	ReleaseStgMedium(&med);
+
+	POINT pnt = { pt.x, pt.y};
+	ScreenToClient(gamewin, &pnt);
+
+	int id = wdd.get_id();
+	
+	if (id == U7_TARGET_SHAPEID) {
+		int file,shape,frame;
+		Get_u7_shapeid(wdd.get_data(), file, shape, frame);
+		if (file == U7_SHAPE_SHAPES) {
+			if (shape_handler) (*shape_handler)(shape, frame, pnt.x, pnt.y, udata);
+		}
+		else if (file == U7_SHAPE_FACES) {
+			if (face_handler) (*face_handler)(shape, frame, pnt.x, pnt.y, udata);
+		}
+	} else if (id == U7_TARGET_CHUNKID) {
+		int chunknum;
+		Get_u7_chunkid(wdd.get_data(), chunknum);
+		if (chunk_handler) (*chunk_handler)(chunknum, pnt.x, pnt.y, udata);
+	} else if (id == U7_TARGET_COMBOID) {
+		int xtiles, ytiles;
+		int right, below, cnt;
+		U7_combo_data *combo;
+		Get_u7_comboid(wdd.get_data(), xtiles, ytiles, right, below, cnt, combo);
+		if (combo_handler) combo_handler(cnt, combo, pnt.x, pnt.y, udata);
+		delete combo;
+	}
 	
 	return S_OK;
 };
@@ -158,32 +270,6 @@ bool Windnd::is_valid(IDataObject * pDataObject)
 	} else {
 		return true;
 	}
-};
-
-// WIN32 equivalent to "Xdnd::select_msg"
-void Windnd::do_handle_drop(windragdata *data)
-{
-	// get mouse position in game window client area
-	LPPOINT pnt = new POINT;
-	GetCursorPos(pnt);
-	ScreenToClient(gamewin, pnt);
-	
-	if (data->id == U7_TARGET_SHAPEID) {
-		int file,shape,frame;
-		Get_u7_shapeid(data->data, file, shape, frame);
-		if (file == U7_SHAPE_SHAPES) {
-			if (shape_handler) (*shape_handler)(shape, frame, pnt->x, pnt->y, udata);
-		}
-		else if (file == U7_SHAPE_FACES) {
-			if (face_handler) (*face_handler)(shape, frame, pnt->x, pnt->y, udata);
-		}
-	} else if (data->id == U7_TARGET_CHUNKID) {
-		int chunknum;
-		Get_u7_chunkid(data->data, chunknum);
-		if (chunk_handler) (*chunk_handler)(chunknum, pnt->x, pnt->y, udata);
-	}
-	
-	delete pnt;
 };
 
 // IDropSource implementation
@@ -334,7 +420,7 @@ Winstudioobj::GetData(
 	std::cout << "In GetData"<< std::endl;
 	
 	HGLOBAL hText;
-	windragdata *ldata;
+	unsigned char *ldata;
 	
 	pmedium->tymed = 0;
 	pmedium->pUnkForRelease = NULL;
@@ -346,13 +432,13 @@ Winstudioobj::GetData(
 		pFormatetc->dwAspect == DVASPECT_CONTENT &&
 		pFormatetc->tymed == TYMED_HGLOBAL)
 	{
-		hText = GlobalAlloc(GMEM_SHARE | GMEM_ZEROINIT, sizeof(data));
+		hText = GlobalAlloc(GMEM_SHARE | GMEM_ZEROINIT, 8 + data.get_size());
 		if (!hText)
 			return E_OUTOFMEMORY;
 		
 		// This provides us with a pointer to the allocated memory
-		ldata = (windragdata *)GlobalLock(hText);
-		*ldata = data;
+		ldata = (unsigned char *)GlobalLock(hText);
+		data.serialize(ldata);
 		GlobalUnlock(hText);
 		
 		pmedium->tymed = TYMED_HGLOBAL;
