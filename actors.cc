@@ -306,7 +306,10 @@ void Actor::unready_weapon
  *	Output:	0 if not on screen.
  */
 #if !(defined(BEOS) || defined(ALPHA_LINUX_CXX))
+#if __GNUG__ > 2
+#else
 inline 
+#endif
 #endif
 int Actor::add_dirty
 	(
@@ -765,7 +768,9 @@ void Actor::follow
  */
 
 #if !defined(BEOS) && !defined(ALPHA_LINUX_CXX)
+#if __GNUG__ > 2
 inline
+#endif
 #endif
 void Actor::get_tile_info
 	(

@@ -60,18 +60,18 @@ public:
 		while (obj != first);
 		}
 					// Report iterator problem.
-	void report_problem()
+	void report_problem() const
 		{
 			std::cerr << "Danger! Danger! Object list modified while being iterated." << std::endl;
 			std::cerr.flush();
 		}
-	int is_empty()
+	int is_empty() const
 		{ return first == 0; }
 	void add_iterator()
 		{ iter_count++; }
 	void remove_iterator()
 		{ iter_count--; }
-	T get_first()
+	T get_first() const
 		{ return first; }
 					// Insert at head of chain.
 	void insert(T nobj)
