@@ -165,19 +165,15 @@ int Usecode_value::operator==
 	{
 	if (&v2 == this)
 		return (1);		// Same object.
-#if 0
-	if (v2.type != type)
-		return (0);		// Wrong type.
-#endif
-	if (type == int_type)
-		return v2.type == int_type ?
+	if (type == int_type)		// Might be ptr==0.
+		return (v2.type == int_type || v2.type == pointer_type) ?
 					(value.intval == v2.value.intval)
 					// Okay if 0==empty array.
 			: v2.type == array_type &&
 					!value.intval && !v2.get_array_size();
-	else if (type == pointer_type)
-		return (v2.type == pointer_type) && (value.ptr == v2.value.ptr);
-			
+	else if (type == pointer_type)	// Might be ptr==0.
+		return (v2.type == pointer_type || v2.type == int_type) && 
+						(value.ptr == v2.value.ptr);
 	else if (type == array_type)
 		{
 		if (v2.type == int_type)
