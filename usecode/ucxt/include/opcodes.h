@@ -113,19 +113,29 @@ class UCOpcodeData
 		UCOpcodeData() : opcode(0x00), num_bytes(0) {};
 		UCOpcodeData(const vector<string> &v)
 		{
-			assert(v.size()==7);
+			#if 0 // debugging
+			if((v.size()==8)==false)
+			{
+				for(unsigned int i=0; i<v.size(); i++)
+					cout << v[i] << '\t';
+				cout << endl;
+			}
+			#endif
+			assert(v.size()==8);
 			opcode = strtol(v[1].c_str(), 0, 0);
 			name = v[2];
 			asm_nmo = v[3];
-			ucs_nmo = v[4];
-			num_bytes = strtol(v[5].c_str(), 0, 0);
-			param_types = qnd_ocsplit(v[6]);
+			asm_comment = v[4];
+			ucs_nmo = v[5];
+			num_bytes = strtol(v[6].c_str(), 0, 0);
+			param_types = qnd_ocsplit(v[7]);
 			
 		};
 		
 		unsigned int   opcode;
 		string         name;
 		string         asm_nmo;
+		string         asm_comment;
 		string         ucs_nmo;
 		unsigned int   num_bytes;
 		vector<string> param_types;
