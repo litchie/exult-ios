@@ -1,3 +1,8 @@
+2002-07-08  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* shapes/vgafile.h (public): Added set_offset();
+	* mapedit/shapeedit.cc:  Update shape origin.
+
 2002-07-08  Willem Jan Palenstijn <wjpalenstijn@users.souceforge.net>
 	* Newfile_gump.cc: use SDL's unicode translation for text input
 	* lots: moved gump_utils.cc into Gump_manager class

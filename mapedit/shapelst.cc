@@ -890,7 +890,7 @@ void Shape_chooser::edit_shape_info
 		info = &shapes_file->get_info(shnum);
 		name = studio->get_shape_name(shnum);
 		}
-	studio->open_shape_window(shnum, frnum, ifile, name, info);
+	studio->open_shape_window(shnum, frnum, file_info, name, info);
 	}
 
 /*
