@@ -35,6 +35,7 @@
 #include "cheat.h"
 #include "combat_opts.h"
 #include "ucmachine.h"
+#include "party.h"
 #include "Audio.h"
 #include "Gamemenu_gump.h"
 #include "Newfile_gump.h"
@@ -54,7 +55,7 @@ static Actor *Get_party_member
 {
 	int npc_num = 0;	 	// Default to Avatar
 	if (num > 0)
-		npc_num = Game_window::get_instance()->get_usecode()->get_party_member(num - 1);
+		npc_num = Game_window::get_instance()->get_party_man()->get_member(num - 1);
 	return Game_window::get_instance()->get_npc(npc_num);
 }
 
@@ -267,7 +268,7 @@ void ActionInventory(int *params)
 	
 	if (params[0] == -1) {
 		Gump_manager *gump_man = gwin->get_gump_man();
-		int party_count = gwin->get_usecode()->get_party_count();
+		int party_count = gwin->get_party_man()->get_count();
 		int shapenum;
 		
 		for(int i=0;i<=party_count;++i)
@@ -289,7 +290,7 @@ void ActionInventory(int *params)
 	} else {
 		inventory_page = params[0];
 		if (inventory_page < 0 ||
-				inventory_page > gwin->get_usecode()->get_party_count())
+				inventory_page > gwin->get_party_man()->get_count())
 			return;
 	}
 	
@@ -343,7 +344,7 @@ void ActionStats(int *params)
 	
 	if (params[0] == -1) {
 		Gump_manager *gump_man = gwin->get_gump_man();
-		int party_count = gwin->get_usecode()->get_party_count();
+		int party_count = gwin->get_party_man()->get_count();
 		int shapenum = game->get_shape("gumps/statsdisplay");
 
 		for(int i=0;i<=party_count;++i)
@@ -364,7 +365,7 @@ void ActionStats(int *params)
 	} else {
 		stats_page = params[0];
 		if (stats_page < 0 ||
-				stats_page >= gwin->get_usecode()->get_party_count())
+			stats_page >= gwin->get_party_man()->get_count())
 			stats_page = 0;
 	}
 	
@@ -378,7 +379,7 @@ void ActionStats(int *params)
 void ActionCombatStats(int* params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	int cnt = gwin->get_usecode()->get_party_count();
+	int cnt = gwin->get_party_man()->get_count();
 	gwin->get_gump_man()->add_gump(gwin->get_main_actor(), game->get_shape("gumps/cstats/1") + cnt);
 }
 

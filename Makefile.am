@@ -81,6 +81,8 @@ exult_SOURCES =	\
 	npctime.h	\
 	palette.cc	\
 	palette.h	\
+	party.cc	\
+	party.h		\
 	paths.cc	\
 	paths.h		\
 	readnpcs.cc	\

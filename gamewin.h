@@ -68,6 +68,7 @@ class Map_patch_collection;
 class Dragging_info;
 class Game_map;
 class Shape_manager;
+class Party_manager;
 class ShapeID;
 class Shape_info;
 class Game_render;
@@ -86,6 +87,7 @@ class Game_window
 	Game_map *map;			// Holds all terrain.
 	Game_render *render;		// Helps with rendering.
 	Gump_manager *gump_man;		// Open containers on screen.
+	Party_manager *party_man;	// Keeps party list.
 	Image_window8 *win;		// Window to display into.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
 	Palette *pal;
@@ -226,6 +228,7 @@ public:
 	Effects_manager *get_effects()
 		{ return effects; }
 	inline Gump_manager *get_gump_man() { return gump_man; }
+	inline Party_manager *get_party_man() { return party_man; }
 	inline Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
 	Game_clock *get_clock () { return clock; }
 	/*
