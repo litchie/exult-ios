@@ -180,15 +180,18 @@ int Game_window::drag
 	}
 
 /*
- *	Mouse was released, so drop object.
+ *	Mouse was released, so drop object. 
+ *      Return true iff the dropping mouseclick has been handled. (by buttonpress, drag)
  */
 
-void Game_window::drop_dragged
+bool Game_window::drop_dragged
 	(
 	int x, int y,			// Mouse pos.
 	int moved			// 1 if mouse moved from starting pos.
 	)
 	{
+	bool handled = moved;
+
 	if (dragging_gump_button)
 		{
 		dragging_gump_button->unpush(this);
@@ -196,17 +199,18 @@ void Game_window::drop_dragged
 					// Clicked on button.
 			dragging_gump_button->activate(this);
 		dragging_gump_button = 0;
+		handled = true;
 		}
 	else if (!dragging)		// Only dragging a gump?
 		{
 		if (!dragging_gump)
-			return;
+			return handled;
 		if (!moved)		// A click just raises it to the top.
 			dragging_gump->remove_from_chain(open_gumps);
 		dragging_gump->append_to_chain(open_gumps);
 		}
 	else if (!moved)		// For now, if not moved, leave it.
-		return;
+		return handled;
 	else
 		drop(x, y);		// Drop it.
 	dragging = 0;
@@ -214,6 +218,8 @@ void Game_window::drop_dragged
 	delete dragging_save;
 	dragging_save = 0;
 	paint();
+
+	return handled;
 	}
 
 /*

@@ -581,9 +581,11 @@ static void Handle_event
 		else if (event.button.button == 1)
 			{
 			unsigned long curtime = SDL_GetTicks();
-			if (dragging)
-				gwin->drop_dragged(event.button.x >> scale, 
+			bool click_handled = false;
+			if (dragging) {
+				click_handled = gwin->drop_dragged(event.button.x >> scale, 
 					event.button.y >> scale, dragged);
+			}
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500)
 				{
@@ -595,7 +597,7 @@ static void Handle_event
 				break;
 				}
 			last_b1_click = curtime;
-			if (!dragged)
+			if (!click_handled)
 					// Identify item(s) clicked on.
 				gwin->show_items(event.button.x >> scale, 
 						event.button.y >> scale);
