@@ -6,6 +6,9 @@
 * but instead at
 *  http://ftp.se.kde.org/pub/vendor/microsoft/Softlib/MSLFILES/
 */
+
+#if defined(WIN32) && defined(USE_EXULTSTUDIO)
+
 #include <iostream>
 
 #include "windrag.h"
@@ -560,3 +563,5 @@ Winstudioobj::EnumDAdvise(
 {
 	return OLE_E_ADVISENOTSUPPORTED;
 };
+
+#endif

@@ -32,6 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunks.h"
 #include "cheat.h"
 #include "databuf.h"
+#include "ucsched.h"
+#include "Gump_manager.h"
 
 using std::ostream;
 
@@ -139,3 +141,13 @@ void Ireg_game_object::write_ireg
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
+
+// Get size of IREG. Returns -1 if can't write to buffer
+int Ireg_game_object::get_ireg_size()
+{
+	// These shouldn't ever happen, but you never know
+	if (Game_window::get_instance()->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+		return -1;
+
+	return 11;
+}

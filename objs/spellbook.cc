@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "Gump_manager.h"
 #include "databuf.h"
+#include "ucsched.h"
 
 using std::memcpy;
 using std::ostream;
@@ -112,3 +113,12 @@ void Spellbook_object::write_ireg
 	Game_map::write_scheduled(out, this);	
 	}
 
+// Get size of IREG. Returns -1 if can't write to buffer
+int Spellbook_object::get_ireg_size()
+{
+	// These shouldn't ever happen, but you never know
+	if (Game_window::get_instance()->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+		return -1;
+
+	return 19;
+}

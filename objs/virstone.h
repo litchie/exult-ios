@@ -47,6 +47,8 @@ public:
 		{ return pos; }
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
+				// Get size of IREG. Returns -1 if can't write to buffer
+	virtual int get_ireg_size();
 	};
 
 #endif

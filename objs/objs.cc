@@ -459,14 +459,17 @@ DEFINE_FIND_NEARBY(Game_object_vector&);
 
 #define FN_VECTOR Egg_vector
 #define FN_OBJECT Egg_object
+#define FN_CAST ->as_egg()
 #include "find_nearby.h"
 
 #define FN_VECTOR Game_object_vector
 #define FN_OBJECT Game_object
+#define FN_CAST
 #include "find_nearby.h"
 
 #define FN_VECTOR Actor_vector
 #define FN_OBJECT Actor
+#define FN_CAST ->as_actor()
 #include "find_nearby.h"
 
 #endif //MSVC_FIND_NEARBY_KLUDGE

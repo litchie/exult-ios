@@ -146,9 +146,13 @@ public:
 		{ return 1; }
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
+				// Get size of IREG. Returns -1 if can't write to buffer
+	virtual int get_ireg_size();
 
 	virtual void reset() 
 		{ flags &= ~(1 << hatched); }
+
+	virtual Egg_object *as_egg() { return this; }
 
 	};
 
@@ -197,6 +201,8 @@ public:
 							int must = 0);
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
+				// Get size of IREG. Returns -1 if can't write to buffer
+	virtual int get_ireg_size();
 	};
 
 /*
@@ -228,5 +234,7 @@ public:
 		{ return Ireg_game_object::is_findable(gwin); }
 
 	virtual void write_ireg(DataSource* out);
+				// Get size of IREG. Returns -1 if can't write to buffer
+	virtual int get_ireg_size();
 };
 #endif

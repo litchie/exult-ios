@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 #include "game.h"
 #include "databuf.h"
+#include "ucsched.h"
 
 using std::ostream;
 
@@ -798,6 +799,30 @@ void Barge_object::write_ireg
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
+
+// Get size of IREG. Returns -1 if can't write to buffer
+int Barge_object::get_ireg_size()
+{
+	// These shouldn't ever happen, but you never know
+	if (Game_window::get_instance()->get_moving_barge() == this || Usecode_script::find(this))
+		return -1;
+
+	int total_size = 13;
+
+	for (int i = 0; i < perm_count; i++)
+	{
+		Game_object *obj = get_object(i);
+		int size = obj->get_ireg_size();
+
+		if (size < 0) return -1;
+
+		total_size += size;
+	}
+
+	total_size += 1;
+
+	return total_size;
+}
 
 /*
  *	This is called after all elements have been read in and added.

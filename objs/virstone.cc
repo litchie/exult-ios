@@ -29,6 +29,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "virstone.h"
 #include <iostream>
 #include "databuf.h"
+#include "gamewin.h"
+#include "ucsched.h"
+#include "Gump_manager.h"
 
 using std::ostream;
 
@@ -79,3 +82,13 @@ void Virtue_stone_object::write_ireg
 	out->write((char*)buf, sizeof(buf));
 	}
 
+
+// Get size of IREG. Returns -1 if can't write to buffer
+int Virtue_stone_object::get_ireg_size()
+{
+	// These shouldn't ever happen, but you never know
+	if (Game_window::get_instance()->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+		return -1;
+
+	return 13;
+}

@@ -92,6 +92,8 @@ public:
 	virtual void set_flag_recursively(int flag);
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
+				// Get size of IREG. Returns -1 if can't write to buffer
+	virtual int get_ireg_size();
 					// Write contents in IREG format.
 	virtual void write_contents(DataSource* out);
 
@@ -103,6 +105,9 @@ public:
 	virtual void delete_contents();
 	
 	virtual void remove_this(int nodel = 0);
+
+	virtual Container_game_object *as_container() { return this; }
+
 	};
 
 #endif
