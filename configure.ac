@@ -674,14 +674,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-# GNOME desktop files
-AC_PATH_PROG(GNOMECONFIG, gnome-config)
-if test -n "$GNOMECONFIG"; then
-	AM_CONDITIONAL(GNOME_INSTALLED, true)
-else
-	AM_CONDITIONAL(GNOME_INSTALLED, false)
-fi
-
 # GIMP plugin
 AM_CONDITIONAL(GIMP_PLUGIN, false)
 AC_ARG_ENABLE(gimp-plugin,   [  --enable-gimp-plugin    Build the GIMP plugin [default no]],,enable_gimp_plugin=no)
