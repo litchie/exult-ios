@@ -46,6 +46,8 @@ U7file  *U7FileManager::get_file_object(const string &s)
 	if (!uf)
 		std::cerr << "Unable to find/open U7file " << s << endl;
 
+	if(!uf)
+		throw U7file::file_error();
 	return uf;
 }
 
@@ -66,7 +68,7 @@ U7FileManager   *U7FileManager::self=0;
 U7FileManager::U7FileManager()
 {
 	if(self)
-		throw 0;
+		throw U7file::exclusive();
 	else
 		self=this;
 }
@@ -87,7 +89,10 @@ int	U7object::retrieve(char **buf,size_t &len)
 {
 	U7file *uf=U7FileManager::get_ptr()->get_file_object(filename);
 	if(!uf)
+		{
+		throw U7file::file_error();
 		return 0;
+		}
 	return uf->retrieve(objnumber,buf,&len);
 }
 
@@ -95,7 +100,10 @@ int	U7object::retrieve(const char *fname)
 {
 	FILE	*fp=U7open(fname,"wb");
 	if(!fp)
+		{
+		throw U7file::file_error();
 		return 0;
+		}
 
 	char	*n;
 	size_t	l;
