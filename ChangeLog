@@ -1,3 +1,6 @@
+2001-03-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Makefile.be: added exult_bg.flx to dependencies
+
 2001-03-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SI - Crystal-ball space scene starting to work, except sometimes
