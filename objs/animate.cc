@@ -128,6 +128,48 @@ void Frame_animator::handle_event
 	}
 
 /*
+ *	Create a field frame animator.
+ */
+
+Field_frame_animator::Field_frame_animator
+	(
+	Game_object *o,
+	int rcy				// Frame to start recycling at.
+	) : Animator(o), recycle(rcy)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int shapenum = obj->get_shapenum();
+	frames = gwin->get_shape_num_frames(shapenum);
+	}
+
+/*
+ *	Animation.
+ */
+
+void Field_frame_animator::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata			// Game window.
+	)
+	{
+	int delay = 100;		// Delay between frames.
+	Game_window *gwin = (Game_window *) udata;
+	if (!gwin->add_dirty(obj))
+		{			// No longer on screen.
+		animating = 0;
+		return;
+		}
+	int framenum = obj->get_framenum() + 1;
+	if (framenum == frames)
+		framenum = recycle;	// Restart cycle here.
+	obj->set_frame(framenum);
+	gwin->add_dirty(obj);
+					// Add back to queue for next time.
+	if (animating)
+		gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
  *	Animation.
  */
 
