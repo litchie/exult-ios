@@ -19,7 +19,7 @@ class Game_clock : public Time_sensitive
 	int day;			// Keep track of days played.
 public:
 	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0)
-		{  }
+		{ }
 	int get_hour()
 		{ return hour; }
 	int get_minute()
