@@ -249,7 +249,11 @@ void Barge_object::add_dirty
 	gwin->get_shape_location(this, x, y);
 	int w = xtiles*tilesize, h = ytiles*tilesize;
 	Rectangle box(x - w, y - h, w, h);
-	box.enlarge(15);		// Make it a bit bigger.
+	box.enlarge(10);		// Make it a bit bigger.
+	if (dir%2)			// Horizontal?  Stretch.
+		{ box.x -= 10; box.w += 20; }
+	else
+		{ box.y -= 10; box.h += 20; }
 	box = gwin->clip_to_win(box);	// Intersect with screen.
 	gwin->add_dirty(box);
 	}

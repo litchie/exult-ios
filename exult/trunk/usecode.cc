@@ -1816,7 +1816,11 @@ USECODE_INTRINSIC(play_music)
 	cout << "0: " << ((parms[0].get_int_value()>>8)&0xff) << " " <<  ((parms[0].get_int_value())&0xff) << endl;
 	cout << "1: " << ((parms[1].get_int_value()>>8)&0x01) << " " <<  ((parms[1].get_int_value())&0x01) << endl;
 #endif
-	audio->start_music(parms[0].get_int_value()&0xff,(parms[0].get_int_value()>>8)&0x01);
+	int track = parms[0].get_int_value()&0xff;
+	if (track == 0xff)		// I think this is right:
+		audio->cancel();	// Stop playing.
+	else
+		audio->start_music(track, (parms[0].get_int_value()>>8)&0x01);
 	return(no_ret);
 }
 

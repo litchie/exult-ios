@@ -242,6 +242,8 @@ public:
 	void resized(unsigned int neww, unsigned int newh);
 	inline void set_painted()		// Force blit.
 		{ painted = 1; }
+	inline int was_painted()
+		{ return painted; }
 	int show()			// Returns 1 if blit occurred.
 		{
 		if (painted)
