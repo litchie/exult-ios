@@ -640,6 +640,5 @@ Shape_info::~Shape_info()
 
 Shapes_vga_file::~Shapes_vga_file()
 	{
-	delete [] info;
 	}
 
