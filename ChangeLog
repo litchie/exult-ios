@@ -1,4 +1,8 @@
 2002-06-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/Makefile.am: add estudio/new files to dist/data
+	* exult.spec.in: add estudio/new files to studio rpm
+
+2002-06-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* */Makefile.am: cleaning up distro stuff
 	* exult.spec.in: fixed
 	* usecode/ucxt/head2data.cc: removed utils.cc dependency
