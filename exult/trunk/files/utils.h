@@ -337,6 +337,9 @@ int U7exists(
 	const char *fname
 	);
 
+inline int U7exists(std::string fname) { return U7exists(fname.c_str()); }
+
+
 int U7mkdir(
 	const char *dirname,
 	int mode
