@@ -1421,3 +1421,23 @@ void Game_window::add_nearby_npcs
 					npc_prox->add(curtime, npc);
 					}
 	}
+
+/*
+ *	End intro.
+ */
+
+void Game_window::end_intro
+	(
+	)
+	{
+	if (mode == intro)
+		{
+		mode = normal;
+		paint();
+					// Start with Iolo.
+#if 0	/*+++++++Doesn't work yet. */
+		usecode->call_usecode(0x401, npcs[1], 
+					Usecode_machine::game_start);
+#endif
+		}
+	}

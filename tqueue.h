@@ -29,13 +29,9 @@ inline timeval Add_usecs
 	)
 	{
 	timeval result;
-	result.tv_sec = t.tv_sec;
 	result.tv_usec = t.tv_usec + usecs;
-	if (result.tv_usec >= 1000000)
-		{
-		result.tv_usec -= 1000000;
-		result.tv_sec++;
-		}
+	result.tv_sec = t.tv_sec + result.tv_usec/1000000;
+	result.tv_usec %= 1000000;
 	return result;
 	}
 

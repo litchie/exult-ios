@@ -144,6 +144,8 @@ public:
 		} 
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
+	virtual int get_schedule()	// Return NPC schedule.
+		{ return 11; }		// Loiter.
 	virtual char *get_name();
 	virtual void set_property(int prop, int val)
 		{  }
