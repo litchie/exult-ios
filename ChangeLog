@@ -1,6 +1,14 @@
 2001-08-06  Max Horn <max@quendi.de>
+	* gumps/Gump_manager.cc/.h: added find_gump based on owner/shapenum
+	* actors.cc/.h: added inventory_shapenum()
+	* keyactions.cc: ActionStats/ActionInventory now work like they always should have
+
+2001-08-06  Max Horn <max@quendi.de>
 	* Stats_gump.cc fixed bug where you could drag items from the gump
 	* actors.cc: fixed pick pocketing bug (pick pocket could be triggered by usecode events)
+	* conf/XMLEntity.cc: small fix to correct what I broke before (<configconfigconfigconfig>)
+	* actorio.cc, gumps/Spellbook_gump.cc: removed annoying unneeded output
+	* audio/pcb.h, gamewin.h, usecode/intrinsics.cc: cleaned up debug message output
 
 2001-08-06  Jeff Freedman  <jeff@amy.nerble.net>
 
