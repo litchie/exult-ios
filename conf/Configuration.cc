@@ -240,6 +240,7 @@ vector<string>	Configuration::listkeys(string &key)
 		it!=sub->nodelist.end(); ++it)
 		{
 		string	s=key;
+		s+="/";
 		s+=it->entity.id;
 		vs.push_back(s);
 		}
