@@ -710,12 +710,12 @@ dnl ****************
 echo
 echo Exult v$VERSION
 echo
-echo SDL ....................... : $SDL_CONFIG --version
+echo SDL ....................... : `$SDL_CONFIG --version`
 if test x$havegtk = xyes; then
-echo GTK+ ...................... : gtk-config --version
+echo GTK+ ...................... : `gtk-config --version`
 fi
-echo Build tools................ : $tools
-echo Build ExultStudio.......... : $exult_studio
+echo Build tools................ : $enable_tools
+echo Build ExultStudio.......... : $enable_exult_studio
 
 echo
 echo "Now type 'make' to build Exult"
