@@ -31,7 +31,7 @@ binary-arch: checkroot build
 	./configure --x-libraries=/usr/X11R6/lib
 	make
 	cp exult debian/tmp/usr/games/exult
-	cp data/exult.flx debian/tmp/usr/games/exult
+	cp data/exult.flx debian/tmp/usr/lib/games/exult
 # Must have debmake installed for this to work. Otherwise please copy
 # /usr/bin/debstd into the debian directory and change debstd to debian/debstd
 	debstd 

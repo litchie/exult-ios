@@ -6,7 +6,7 @@ Standards-Version: 2.3.0.1
 
 Package: exult
 Architecture: i386
-Depends: libsdl1.1
+Depends: libsdl1.1, ${shlibs:Depends}
 Suggests: timidity
 Description: Exult is an open source engine for playing Ultima VII on a variety
  of operating systems and environments.
