@@ -244,6 +244,7 @@ void Game_window::clear_world
 			delete objects[x][y];
 			objects[x][y] = 0;
 			}
+	Monster_actor::delete_all();	// To be safe, del. any still around.
 	main_actor = 0;
 	num_npcs = num_npcs1 = 0;
 	delete [] npcs;			// NPC's already deleted above.
