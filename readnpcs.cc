@@ -44,7 +44,6 @@ void Game_window::read_npcs
 	num_npcs = num_npcs1 + cnt2;
 	npcs = new Actor *[num_npcs];
 	int i;
-#if 1	/* +++++New way. Activate when tested. */
 					// Create main actor.
 	npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
@@ -59,7 +58,7 @@ void Game_window::read_npcs
 			}
 		}
 
-#else	/* +++++Old way. */
+#if 0	/* +++++Old way. */
 	for (i = 0; i < num_npcs; i++)
 		{
 					// Get chunk/tile coords.
@@ -157,15 +156,7 @@ void Game_window::read_npcs
 		actor->set_property((int) Actor::exp, exp);
 		actor->set_property((int) Actor::training, train);
 		actor->set_property((int) Actor::food_level, food_level);
-#if 0
-cout << i << " Creating " << namebuf << ", shape = " << 
-	actor->get_shapenum() <<
-	", frame = " << actor->get_framenum() << ", usecode = " <<
-				usefun << '\n';
-cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
-	<< lift << '\n';
-#endif
-		if (iflag1 && iflag2)	// Inventory?  Read (but ignore++++).
+		if (iflag1 && iflag2)	// Inventory?  Read.
 			read_ireg_objects(nfile, scx, scy, actor);
 		}
 #endif
@@ -185,9 +176,34 @@ cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 			{
 			int shape = Read2(mfile);
 			mfile.read(monster, 23);// Get the rest.
+					// Point to flags.
+			unsigned char *ptr = &monster[7];
+			unsigned short flags = Read2(ptr);
+			ptr += 3;	// Get equip.dat offset.
+			unsigned int equip = *ptr;
 			monster_info[i].set(shape, monster[0], monster[1],
-				monster[2], monster[3], monster[4]);
+				monster[2], monster[3], monster[4],
+				flags, equip);
 			}
+		mfile.close();
+		u7open(mfile, EQUIP);	// Get 'equip.dat'.
+		int num_recs = Read1(mfile);
+		Equip_record *equip = new Equip_record[num_recs];
+		for (i = 0; i < num_recs; i++)
+			{
+			Equip_record& rec = equip[i];
+					// 10 elements/record.
+			for (int elem = 0; elem < 10; elem++)
+				{
+				int shnum = Read2(mfile);
+				unsigned prob = Read1(mfile);
+				unsigned quant = Read1(mfile);
+				Read2(mfile);
+				rec.set(elem, shnum, prob, quant);
+				}
+			}
+					// Monster_info owns this.
+		Monster_info::set_equip(equip, num_recs);
 		}
 	}
 
