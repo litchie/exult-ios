@@ -327,7 +327,7 @@ void Shape_chooser::render_frames
 					// Provide more than enough room.
 	info = new Shape_entry[1024];
 					// Clear window first.
-	iwin->fill8(0);			// ++++Which color?
+	iwin->fill8(255);		// Fill with background color.
 	info_cnt = 0;			// Count them.
 	int curr_y = 0;
 	int row = row0;			// Row #.
@@ -819,7 +819,7 @@ void Shape_chooser::edit_shape
 	string cmd(studio->get_image_editor());
 	cmd += ' ';
 	cmd += fname;
-	cmd += " &";			// Background.  WIN32?????+++++++
+	cmd += " &";			// Background. 
 #ifndef WIN32
 	int ret = system(cmd.c_str());
 	if (ret == 127 || ret == -1)
@@ -1154,12 +1154,39 @@ void Shape_chooser::create_new_shape
 	int nframes = studio->get_spin("new_shape_nframes");
 	if (nframes <= 0)
 		nframes = 1;
+	else if (nframes > 256)
+		nframes = 256;
 	Vga_file *ifile = file_info->get_ifile();
 	if (shnum < ifile->get_num_shapes() && ifile->extract_shape(shnum))
 		{
-		//+++Replace existing?
+		if (Prompt("Replace existing shape?", "Yes", "No") != 0)
+			return;
 		}
-	//+++++Finish
+	Shape *shape = ifile->new_shape(shnum);
+	if (!shape)
+		{
+		Alert("Can't create shape %d", shnum);
+		return;
+		}
+					// Create frames.
+	bool flat = shnum < 0x96 && file_info == studio->get_vgafile();
+	int w = 8, h = 8;
+	int xleft = flat ? 8 : w - 1;
+	int yabove = flat ? 8 : h - 1;
+	Image_buffer8 img(w, h);
+	img.fill8(1);			// Just use color #1.
+	img.fill8(2, w - 2, h - 2, 1, 1);
+	for (int i = 0; i < nframes; i++)
+		shape->add_frame(new Shape_frame(img.get_bits(),
+			w, h, xleft, yabove, !flat), i);
+	file_info->set_modified();
+	Object_browser *browser = studio->get_browser();
+	if (browser)
+		{			// Repaint main window.
+		browser->render();
+		browser->show();
+		}
+	studio->update_group_windows(0);
 	}
 
 /*
