@@ -1,3 +1,8 @@
+2001-08-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/egg.cc: Put back Egg_object::remove_this.  It's needed.
+	* combat.cc:  Try to avoid striking someone on a different level.
+
 2001-08-12  Max Horn <max@quendi.de>
 	* audio/midi_drivers/mac_midi.*: fixed NOTE OFF matching; fixed
 	  stuffing of Extended Note Events; fixed tempo change; most importantly,

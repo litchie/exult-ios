@@ -334,7 +334,7 @@ int Egg_object::is_active
 			(absdeltaz <= 1 || 
 					// Using trial&error here:
 			 (Game::get_game_type() == SERPENT_ISLE &&
-				(type != teleport || absdeltaz <= 3)) ||
+				(type != teleport || absdeltaz <= 4)) ||
 				(type == missile && tz/5 == get_lift()/5)) &&
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty);
@@ -735,6 +735,24 @@ void Egg_object::set_weather
 		break;
 		}
 	}
+
+/*
+ *	This is needed since it calls remove_egg().
+ */
+
+void Egg_object::remove_this
+         (
+         int nodel                       // 1 to not delete.
+         )
+         {
+         Map_chunk *chunk =
+			 Game_window::get_game_window()->get_chunk_safely(
+								 cx, cy);
+	 if (chunk)
+		 chunk->remove_egg(this);
+	 if (!nodel)
+		 Game_window::get_game_window()->delete_object(this);
+	 }
 
 /*
  *	Write out.
