@@ -294,6 +294,7 @@ protected:
 public:
 	BufferDataSource(char *data, unsigned int len)
 	{
+		assert(data!=0);
 		buf = buf_ptr = (unsigned char*)data;
 		size = len;
 	};
