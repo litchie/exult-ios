@@ -494,7 +494,7 @@ public:
 	 *	Chunk-caching:
 	 */
 	// Old Style Caching Emulation. Called if player has changed chunks
-	void emulate_cache(int oldx, int oldy, int newx, int newy);
+	void emulate_cache(Map_chunk *olist, Map_chunk *nlist);
 	// Is a specific move by a monster or item allowed
 	bool emulate_is_move_allowed(int tx, int ty);
 	// Swapping a superchunk to disk emulation

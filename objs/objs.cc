@@ -91,6 +91,15 @@ Tile_coord Game_object::get_tile
 	(
 	) const
 	{
+	if (!chunk)
+		{
+#if DEBUG
+		cout << "Asking tile for obj. " << get_shapenum()
+				<< " not on map" << endl;
+#endif
+		return Tile_coord(255*c_tiles_per_chunk, 255*c_tiles_per_chunk,
+								0);
+		}
 	return Tile_coord(chunk->cx*c_tiles_per_chunk + tx,
 				chunk->cy*c_tiles_per_chunk + ty, lift);
 	}
