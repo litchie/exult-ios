@@ -2861,3 +2861,10 @@ USECODE_INTRINSIC(get_item_usability)
 		return Usecode_value(1);// Only 1 I'm pretty sure of.
 }
 
+USECODE_INTRINSIC(get_skin_colour)
+{
+	// Gets skin colour of avatar. 0 (wh), 1 (br) or 2 (bl)
+	Main_actor *av = gwin->get_main_actor();
+	return Usecode_value(av->get_skin_color());
+}
+
