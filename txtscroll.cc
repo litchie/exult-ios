@@ -132,6 +132,10 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 			++ptr;
 		} else if(*ptr=='#') {
 			ptr++;
+			if(*ptr=='#') {	// Double hash
+				*txtptr++ = *ptr++;
+				continue;
+			}
 			char numerical[4] = {0,0,0,0};
 			char *num = numerical;
 			while (*ptr >= '0' && *ptr <= '9')

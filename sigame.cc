@@ -101,7 +101,7 @@ SI_Game::SI_Game()
 		add_resource("palettes/13", "<STATIC>/mainshp.flx", 1);
 		add_resource("palettes/14", "<STATIC>/mainshp.flx", 26);
 		
-		fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 2);
+		fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 1);
 		fontManager.add_font("SIINTRO_FONT", "<STATIC>/intro.dat", 14, 0);
 	}
 
