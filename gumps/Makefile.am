@@ -1,4 +1,4 @@
-INCLUDES = -I.. -I../files -I../imagewin -I../audio $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+INCLUDES = -I.. -I../files -I../imagewin -I../audio -I../conf $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libgumps.la
 
