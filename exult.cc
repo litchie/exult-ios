@@ -5,23 +5,23 @@
  **/
 
 /*
-Copyright (C) 1998-1999 Jeffrey S. Freedman
-Copyright (C) 2000-2001 The Exult Team
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *  Copyright (C) 1998-1999  Jeffrey S. Freedman
+ *  Copyright (C) 2000-2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -375,7 +375,7 @@ static void Init
 	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));	
 	gwin = new Game_window(sw, sh, scaleval, sclr);
 	current_res = find_resolution(sw, sh, scaleval);
-	Audio::get_ptr();
+	Audio::Init();
 
 	string disable_fades;
 	config->value("config/video/disable_fades", disable_fades, "no");
@@ -443,12 +443,10 @@ static int Play()
 	while (quitting_time == 2);
 	delete gwin;
 	delete Mouse::mouse;
-cerr << "About to delete Audio" << endl;
-cerr.flush();
+
 	delete Audio::get_ptr();	// Follow not this pointer, now, for
 					// that way lies madness.
-cerr << "Deleted Audio" << endl;
-cerr.flush();
+
 	delete config;
 	return (0);
 }

@@ -1,3 +1,14 @@
+2001-08-03  Max Horn <max@quendi.de>
+	* configure.in: slight change for Darwin/Mac OS X
+	* audio/conv.cc added, conv.h cleaned up
+	* audio/Audio.cc/.h: cleaned up code, fixed speech output on big endian systems
+	* audio/Mixer.cc: code clean up
+	* audio/pcb.h: disabled a call to "cerr" in the MacOS version, as it could be hit during
+	  the audio call back, leading to a deep crash
+	* usecode/useval.c: namespace clean up
+	* Makefiles: added conv.cc
+	* many many files: added/updated/unified legal header
+
 2001-07-03  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/faq/ and docs/readme/ : added makefile.win32 as Unix uses ':' 
 	  as seperator and Win32 uses ';'. Changed makefile to output *.dat 

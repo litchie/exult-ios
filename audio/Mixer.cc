@@ -114,77 +114,46 @@ Mixer::~Mixer()
 }
 
 
- /* The audio function callback takes the following parameters:
-     stream:  A pointer to the audio buffer to be filled
-     len:     The length (in bytes) of the audio buffer
- */
- 
-void fill_audio(void *udata, uint8 *stream, int len)
-{
-	Mixer *m = Audio::get_ptr()->mixer;
-	if( m )
-		m->fill_audio_func(udata,stream,len);
-}
-
-void	compress_audio_sample(uint8 *buf,int len)
-{
-#if 0
-	uint8	*dbuf=new uint8[len*2];
-	uint8	*source=buf;
-	uint8	*dest=dbuf;
-	while(len>0)
-		{
-		// Left channel
-		*dest=(*source+*(source+2))/2;
-		++dest;
-		++source;
-		// Right channel
-		*dest=(*source+*(source+2))/2;
-		++dest;
-		source+=3;
-		len-=2;
-		}
-	memcpy(buf,dbuf,len);
-	delete [] dbuf;
-#endif
-}
-
 /*
  *	Modify sound data for the sound source's position relative to the
  *	observer.
  */
+				// These are factors * 1/128 for
+				//   left, right channels:
+static int factors[32] = {
+				// North - East.
+	128,128,    110,128,    90,128,    70,128,
+				// East - South.
+	50,128,     70,128,     90,128,    110,128,
+				// South - West.
+	128,128,    128,110,    128,90,    128,70,
+				// West - North.
+	128,50,     128,70,     128,90,    128,110
+};
+
 void Mixer::modify_stereo16
 	(
 	sint16 *data,			// 2-channels, 16-bit.
 	int cnt,			// # samples.
 	int dir16			// 0-15, clockwise from North.
 	)
-	{
-					// These are factors * 1/128 for
-					//   left, right channels:
-	static int factors[32] = {
-					// North - East.
-		128,128,    110,128,    90,128,    70,128,
-					// East - South.
-		50,128,     70,128,     90,128,    110,128,
-					// South - West.
-		128,128,    128,110,    128,90,    128,70,
-					// West - North.
-		128,50,     128,70,     128,90,    128,110
-	};
-	int lfact = factors[dir16*2], rfact = factors[dir16*2 + 1];
+{
+	int lfact = factors[(dir16%16)*2];
+	int rfact = factors[(dir16%16)*2 + 1];
 #if 0 && defined(DEBUG) && !defined(MACOS)
 	cout << "Mixer::modify_stereo16:  lfact = " << lfact <<
 		", rfact = " << rfact << endl;
 #endif
+
+
 	for (int i = 0; i < cnt; i++)
-		{
+	{
 		*data = (*data*lfact)/128;
 		data++;
 		*data = (*data*rfact)/128;
 		data++;
-		}
-	}		
+	}
+}		
 
 /*
  *	Fill SDL_audio's request for sound.
@@ -240,13 +209,13 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 #endif
 		if (!sofar)
 			continue;	// Nothing read.
-#if !defined(MACOS)
+
 		// the following code is not working under MacOS - it results in garbled sound
 		// Propably an endianess problem?
 		int dir = buf->get_dir();
-		if (dir != 0 && dir != 8 && format == AUDIO_S16 && len%4 == 0)
+		if (dir != 0 && dir != 8 && format == AUDIO_S16SYS && len%4 == 0)
 			modify_stereo16((sint16 *) temp_buffer, len/4, dir);
-#endif
+
 		SDL::MixAudio(stream, temp_buffer, len, buf->get_volume());
 	}
 	if (!active_cnt)		// Nothing found?

@@ -1,20 +1,20 @@
 /*
-Copyright (C) 2000-2001 The Exult Team
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *  Copyright (C) 2000-2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL_mapping.h"
 
 #include "Audio.h"
+#include "conv.h"
 #include "Configuration.h"
 #include "fnames.h"
 #include "game.h"
@@ -36,7 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 extern	Configuration *config;
 
-#ifndef ALPHA_LINUX_CXX
+#if !defined(ALPHA_LINUX_CXX)
 #  include <csignal>
 #  include <cstdio>
 #  include <cstdlib>
@@ -47,11 +48,12 @@ extern	Configuration *config;
 #include <unistd.h>
 
 #if defined(MACOS)
-  #include <stat.h>
+#  include <stat.h>
 #else
-  #include <sys/stat.h>
-  #include <sys/types.h>
+#  include <sys/stat.h>
+#  include <sys/types.h>
 #endif
+
 
 using std::cerr;
 using std::cout;
@@ -63,10 +65,37 @@ using std::string;
 using std::strncmp;
 using std::vector;
 
+
+#ifdef WIN32
+/* 44100 caused the freeze upon exit in Win! */
+#define SAMPLERATE	22050
+#else
+#define SAMPLERATE	44100
+#endif
+
+
 #define	TRAILING_VOC_SLOP 32
 #define	LEADING_VOC_SLOP 32
 
-extern int bgconv[];
+
+struct	Chunk
+{
+	size_t	length;
+	uint8	*data;
+	Chunk(size_t l, uint8 *d) : length(l),data(d) {}
+};
+
+
+static	size_t calc_sample_buffer(uint16 _samplerate);
+static	uint8 *chunks_to_block(vector<Chunk> &chunks);
+static	void resample(uint8 *sourcedata, uint8 **destdata,
+						size_t sourcelen, size_t *destlen,
+						int current_rate, int wanted_rate);
+
+
+Audio *Audio::self = 0;
+int *Audio::bg2si_sfxs = 0;
+
 
 //-----SFX -------------------------------------------------------------
 
@@ -91,299 +120,36 @@ public:
 
 //---- Audio ---------------------------------------------------------
 
-Audio::~Audio()
-{ 
-	if (!initialized) {
-		self = 0;
-		SDL_open = false;
-		return;
-	}
-
-#ifdef DEBUG
-cerr << "~Audio:  about to stop_music()" << endl; cerr.flush();
-#endif
-	stop_music();
-#ifdef DEBUG
-cerr << "~Audio:  about to quit subsystem" << endl; cerr.flush();
-#endif
-	SDL::QuitSubSystem(SDL_INIT_AUDIO); // SDL 1.1 lets us diddle with
-						// subsystems
-#ifdef DEBUG
-cerr << "~Audio:  closed audio" << endl; cerr.flush();
-#endif
-	if(mixer)
-		{
-#ifdef DEBUG
-cerr << "~Audio:  about to cancel_streams()" << endl; cerr.flush();
-#endif
-		cancel_streams();
-		delete mixer;
-#ifdef DEBUG
-cerr << "~Audio:  deleted mixer" << endl; cerr.flush();
-#endif
-		mixer=0;
-		}
-	if(midi)
-		{
-		delete midi;
-		midi=0;
-		}
-	while (sfxs)			// Cached sound effects.
-		{
-		SFX_cached *todel = sfxs;
-		sfxs = todel->next;
-		delete todel;
-		}
-	delete sfx_file;
-#ifdef DEBUG
-cerr << "~Audio:  deleted midi" << endl; cerr.flush();
-#endif
-	// Avoid closing SDL audio. This seems to trigger a segfault
-	// SDL::CloseAudio();
-	SDL_open=false;
-	self=0;
-}
-
-
-static	void resample(uint8 *sourcedata,uint8 **destdata,size_t sourcelen,size_t *destlen,int current_rate,int wanted_rate)
+void Audio::Init(void)
 {
-	// I have no idea what I'm doing here - Dancer
-	// This is really Breshenham's line-drawing algorithm in
-	// a false nose, and clutching a crude smoothing loop.
-
-	float	ratio= ((float) wanted_rate)/((float) current_rate);
-	*destlen = (unsigned int) ((sourcelen*ratio)+1);
-	if(!*destlen||current_rate==wanted_rate)
-		{
-		// Least work
-		*destlen=sourcelen;
-		*destdata=new uint8[sourcelen];
-		memcpy(*destdata,sourcedata,sourcelen);
-		return;
-		}
-	*destdata=new uint8[*destlen];
-	size_t last=0;
-	for(size_t i=0;i<sourcelen;i++)
-		{
-		size_t pos = (size_t) (i*ratio);
-		assert(pos<=*destlen);
-		(*destdata)[pos]=sourcedata[i];
-		// Interpolate if need be
-		if(last!=pos&&last!=pos-1)
-			for(size_t j=last+1;j<=pos-1;j++)
-				{
-				unsigned int x=(unsigned char)sourcedata[i];
-				unsigned int y=(unsigned char)sourcedata[i-1];
-				x=(x+y)/2;
-				(*destdata)[j]=(uint8) x;
-				}
-		last=pos;
-		}
-	cerr << "End resampling. Resampled " << sourcelen << " bytes to " << *destlen << " bytes" << endl;
-}
-
-void	Audio::mix_audio(void)
-{
-}
-
-void	Audio::clear(uint8 *buf,int len)
-{
-	memset(buf,actual.silence,len);
-}
-
-extern void fill_audio(void *udata, uint8 *stream, int len);
-
-struct	Chunk
+	// Crate the Audio singleton object
+	if (!self)
 	{
-	size_t	length;
-	uint8	*data;
-	Chunk() : length(0),data(0) {}
-	};
-
-static	uint8 *chunks_to_block(vector<Chunk> &chunks)
-{
-	uint8 *unified_block;
-	size_t	aggregate_length=0;
-	size_t	working_offset=0;
-	
-	for(std::vector<Chunk>::iterator it=chunks.begin();
-		it!=chunks.end(); ++it)
-		{
-		aggregate_length+=it->length;
-		}
-	unified_block=new uint8[aggregate_length];
-	{
-		for(std::vector<Chunk>::iterator it=chunks.begin();
-			it!=chunks.end(); ++it)
-			{
-			memcpy(unified_block+working_offset,it->data,it->length);
-			working_offset+=it->length;
-			delete [] it->data; it->data=0; it->length=0;
-			}
+		self = new Audio();
+		self->Init(SAMPLERATE,2);
 	}
-	
-	return unified_block;
 }
 
-uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
+
+Audio	*Audio::get_ptr(void)
 {
-	vector<Chunk> chunks;
-	size_t	data_offset=0x1a;
-	bool	last_chunk=false;
-	uint16	sample_rate;
-	size_t  l=0;
-	size_t	chunk_length;
-	
+	// The following assert here might be too harsh, maybe we should leave
+	// it to the caller to handle non-inited audio-system?
+	assert(self != NULL);
 
-			
-
-	while(!last_chunk)
-		{
-		switch(old_data[data_offset]&0xff)
-			{
-			case 0:
-#ifdef DEBUG
-				cout << "Terminator" << endl;
-#endif
-				last_chunk=true;
-				continue;
-			case 1:
-#ifdef DEBUG
-				cout << "Sound data" << endl;
-#endif
-				l=(old_data[3+data_offset]&0xff)<<16;
-				l|=(old_data[2+data_offset]&0xff)<<8;
-				l|=(old_data[1+data_offset]&0xff);
-#ifdef DEBUG
-				cout << "Chunk length appears to be " << l << endl;
-#endif
-				sample_rate=1000000/(256-(old_data[4+data_offset]&0xff));
-				cerr << "Original sample_rate is " <<
-					sample_rate << ", hw rate is "
-						<< actual.freq << endl;
-#if 0	/* +++No longer needed, as resample() is fixed. */
-				if(!truthful_)
-					{
-					// BG and SI use different sample
-					// rates from the ones the VOC headers
-					// say they do. Why?
-					if(sample_rate==9615)
-						sample_rate=7380;	// Assume 9615 is a lie.
-					if(sample_rate==11111)
-						sample_rate=11025;	// Assume 11111 is a lie.
-					}
-#endif
-#ifdef DEBUG
-				cout << "Sample rate ("<< sample_rate<<") = _real_rate"<<endl;
-				cout << "compression type " << (old_data[5+data_offset]&0xff) << endl;
-				cout << "Channels " << (old_data[6+data_offset]&0xff) << endl;
-#endif
-				chunk_length=l+4;
-				break;
-			case 2:
-#ifdef DEBUG
-				cout << "Sound continues" << endl;
-#endif
-				l=(old_data[3+data_offset]&0xff)<<16;
-				l|=(old_data[2+data_offset]&0xff)<<8;
-				l|=(old_data[1+data_offset]&0xff);
-				cout << "Chunk length appears to be " << l << endl;
-				chunk_length=l+4;
-				break;
-			case 3:
-#ifdef DEBUG
-				cout << "Silence" << endl;
-#endif
-				chunk_length=0;
-				break;
-			default:
-				cout << "Unknown VOC chunk " << (*(old_data+data_offset)&0xff) << endl;
-				exit(1);
-			}
-
-		if(chunk_length==0)
-			break;
-		// Resample to the current rate
-		uint8 *new_data;
-		size_t new_len;
-		l-=(TRAILING_VOC_SLOP+LEADING_VOC_SLOP);
-		resample(old_data+LEADING_VOC_SLOP,&new_data,l,&new_len,
-						sample_rate,actual.freq);
-		l=new_len;
-		cerr << "Have " << l << " bytes of resampled data" << endl;
-
-		// And convert to 16 bit stereo
-		sint16 *stereo_data=new sint16[l*2];
-		for(size_t i=0,j=0;i<l;i++)
-			{
-			stereo_data[j++]=(new_data[i]-128)<<8;
-			stereo_data[j++]=(new_data[i]-128)<<8;
-			}
-		l*=4; // because it's 16bit
-		delete [] new_data;
-
-		Chunk	c;
-		c.data=(uint8 *)stereo_data;
-		c.length=l;
-		chunks.push_back(c);
-		data_offset+=chunk_length;
-		}
-	cerr << "Turn chunks to block" << endl;
-	uint8 *single_buffer=chunks_to_block(chunks);
-	visible_len=l;
-	return single_buffer;
+	return self;
 }
 
-		
-void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
-{
-	if (!audio_enabled || !speech_enabled) return;
 
-	bool	own_audio_data=false;
-	if(!strncmp((const char *)sound_data,"Creative Voice File",19))
-		{
-		sound_data=convert_VOC(sound_data,len);
-		own_audio_data=true;
-		}
-
-	if(mixer)
-		mixer->play(sound_data,len);
-	if(own_audio_data)
-		delete [] sound_data;
-}
-
-void	Audio::cancel_streams(void)
-{
-	if (!audio_enabled) return;
-	if(mixer)
-		mixer->cancel_streams();
-}
-
-void	Audio::mix(uint8 *sound_data,uint32 len)
-{
-	if (!audio_enabled) return;
-	if(mixer)
-		mixer->play(sound_data,len);
-}
-
-static	size_t calc_sample_buffer(uint16 _samplerate)
-{
-	uint32 _buffering_unit=1;
-	while(_buffering_unit<_samplerate/10U)
-		_buffering_unit<<=1;
-	// _buffering_unit=128;
-	return _buffering_unit;
-}
-	
-Audio *Audio::self=0;
-int *Audio::bg2si_sfxs = 0;
-
-Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
+Audio::Audio() :
+	truthful_(false),speech_enabled(true), music_enabled(true),
 	effects_enabled(true), SDL_open(false),mixer(0),midi(0), sfxs(0),
 	sfx_file(0), initialized(false)
 {
-	self=this;
+	assert(self == NULL);
+
 	string s;
+
 	config->value("config/audio/enabled",s,"yes");
 	audio_enabled = (s!="no");
 	config->set("config/audio/enabled", audio_enabled?"yes":"no",true);
@@ -395,7 +161,8 @@ Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
 	config->value("config/audio/effects/enabled",s,"---");
 	effects_enabled = (s!="no");
 
-	midi = 0; mixer = 0;
+	midi = 0;
+	mixer = 0;
 }
 
 void Audio::Init(int _samplerate,int _channels)	
@@ -405,39 +172,38 @@ void Audio::Init(int _samplerate,int _channels)
 	// Initialise the speech vectors
 	uint32 _buffering_unit=calc_sample_buffer(_samplerate);
 	build_speech_vector();
-	if(midi)
-		{
-		delete midi;
-		midi=0;
-		}
-	if(mixer)
-		{
-		delete mixer;
-		mixer=0;
-		}
-         
 
-         /* Set the audio format */
-         wanted.freq = _samplerate;
-         wanted.format = AUDIO_S16;
-         wanted.channels = _channels;    /* 1 = mono, 2 = stereo */
-         wanted.samples = _buffering_unit;  /* Good low-latency value for callback */
-         wanted.callback = fill_audio;
-         wanted.userdata = NULL;
+	delete midi;
+	midi=0;
+
+	delete mixer;
+	mixer=0;
+
+
+	/* Set the audio format */
+	wanted.freq = _samplerate;
+	wanted.format = AUDIO_S16SYS;
+	wanted.channels = _channels;		/* 1 = mono, 2 = stereo */
+	wanted.samples = _buffering_unit;	/* Good low-latency value for callback */
+	wanted.callback = Audio::fill_audio;
+	wanted.userdata = NULL;
 
 	// Avoid closing SDL audio. This seems to trigger a segfault
 	if(SDL_open)
 		SDL::QuitSubSystem(SDL_INIT_AUDIO);
-
+	
+	// Init the SDL audio system
 	SDL::InitSubSystem(SDL_INIT_AUDIO);
-         /* Open the audio device, forcing the desired format */
-         if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
-                 fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
-         }
-	SDL_PauseAudio(1);		// Disable playing.
+
+    /* Open the audio device, forcing the desired format */
+	if ( SDL::OpenAudio(&wanted, &actual) < 0 )
+		cerr << "Couldn't open audio: " << SDL_GetError() << endl;
+
+	// Disable playing initially.
+	SDL_PauseAudio(1);
 
 #if 0
-         cout << "We think SDL will call-back for " << actual.samples <<" bytes at a time." << endl;
+	cout << "We think SDL will call-back for " << actual.samples <<" bytes at a time." << endl;
 #endif
 
 	wanted=actual;
@@ -461,11 +227,12 @@ void Audio::Init(int _samplerate,int _channels)
 }
 
 void	Audio::Init_sfx()
-	{
+{
 	if (sfx_file)
 		return;			// Already done.
+
 	if (Game::get_game_type() == SERPENT_ISLE)
-		bg2si_sfxs = &bgconv[0];
+		bg2si_sfxs = bgconv;
 	else
 		bg2si_sfxs = 0;
 					// Collection of .wav's?
@@ -475,37 +242,252 @@ void	Audio::Init_sfx()
 	string d = "config/disk/game/" + gametitle + "/waves";
 	config->value(d.c_str(), s, "---");
 	if (s != "---")
-		{
+	{
 		cerr << "Digital SFX's file specified: " << s << endl;
 		if (!U7exists(s.c_str()))
 			cerr << "... but file not found" << endl;
 		else
 			sfx_file = new Flex(s);
-		}
 	}
+}
+
+Audio::~Audio()
+{ 
+	if (!initialized)
+	{
+		self = 0;
+		SDL_open = false;
+		return;
+	}
+
+#ifdef DEBUG
+	cerr << "~Audio:  about to stop_music()" << endl; cerr.flush();
+#endif
+	stop_music();
+#ifdef DEBUG
+	cerr << "~Audio:  about to quit subsystem" << endl; cerr.flush();
+#endif
+	SDL::QuitSubSystem(SDL_INIT_AUDIO); // SDL 1.1 lets us diddle with
+						// subsystems
+#ifdef DEBUG
+	cerr << "~Audio:  closed audio" << endl; cerr.flush();
+#endif
+
+	if(mixer)
+	{
+#ifdef DEBUG
+	cerr << "~Audio:  about to cancel_streams()" << endl; cerr.flush();
+#endif
+		cancel_streams();
+		delete mixer;
+		mixer = 0;
+#ifdef DEBUG
+	cerr << "~Audio:  deleted mixer" << endl; cerr.flush();
+#endif
+	}
+	if(midi)
+	{
+		delete midi;
+		midi = 0;
+	}
+	while (sfxs)			// Cached sound effects.
+	{
+		SFX_cached *todel = sfxs;
+		sfxs = todel->next;
+		delete todel;
+	}
+	delete sfx_file;
+#ifdef DEBUG
+cerr << "~Audio:  deleted midi" << endl; cerr.flush();
+#endif
+	// Avoid closing SDL audio. This seems to trigger a segfault
+	// SDL::CloseAudio();
+	SDL_open = false;
+	self = 0;
+}
+
+
+/* The audio function callback takes the following parameters:
+     stream:  A pointer to the audio buffer to be filled
+     len:     The length (in bytes) of the audio buffer
+ */
+ 
+void Audio::fill_audio(void *udata, uint8 *stream, int len)
+{
+	if( self && self->mixer )
+		self->mixer->fill_audio_func(udata,stream,len);
+}
+
+
+void	Audio::mix_audio(void)
+{
+}
+
+void	Audio::clear(uint8 *buf,int len)
+{
+	memset(buf,actual.silence,len);
+}
+
+uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
+{
+	vector<Chunk> chunks;
+	size_t	data_offset=0x1a;
+	bool	last_chunk=false;
+	uint16	sample_rate;
+	size_t  l = 0;
+	size_t	chunk_length;
+
+	while(!last_chunk)
+	{
+		switch(old_data[data_offset]&0xff)
+		{
+			case 0:
+#ifdef DEBUG
+				cout << "Terminator" << endl;
+#endif
+				last_chunk = true;
+				continue;
+			case 1:
+#ifdef DEBUG
+				cout << "Sound data" << endl;
+#endif
+				l = (old_data[3+data_offset]&0xff)<<16;
+				l |= (old_data[2+data_offset]&0xff)<<8;
+				l |= (old_data[1+data_offset]&0xff);
+#ifdef DEBUG
+				cout << "Chunk length appears to be " << l << endl;
+#endif
+				sample_rate=1000000/(256-(old_data[4+data_offset]&0xff));
+				cerr << "Original sample_rate is " <<
+					sample_rate << ", hw rate is "
+						<< actual.freq << endl;
+#ifdef DEBUG
+				cout << "Sample rate ("<< sample_rate<<") = _real_rate"<< endl;
+				cout << "compression type " << (old_data[5+data_offset]&0xff) << endl;
+				cout << "Channels " << (old_data[6+data_offset]&0xff) << endl;
+#endif
+				chunk_length=l+4;
+				break;
+			case 2:
+#ifdef DEBUG
+				cout << "Sound continues" << endl;
+#endif
+				l=(old_data[3+data_offset]&0xff)<<16;
+				l|=(old_data[2+data_offset]&0xff)<<8;
+				l|=(old_data[1+data_offset]&0xff);
+#ifdef DEBUG
+				cout << "Chunk length appears to be " << l << endl;
+#endif
+				chunk_length = l+4;
+				break;
+			case 3:
+#ifdef DEBUG
+				cout << "Silence" << endl;
+#endif
+				chunk_length=0;
+				break;
+			default:
+				cout << "Unknown VOC chunk " << (*(old_data+data_offset)&0xff) << endl;
+				exit(1);
+		}
+
+		if(chunk_length==0)
+			break;
+		// Resample to the current rate
+		uint8 *new_data;
+		size_t new_len;
+		l -= (TRAILING_VOC_SLOP+LEADING_VOC_SLOP);
+		resample(old_data+LEADING_VOC_SLOP,&new_data,l,&new_len,
+						sample_rate,actual.freq);
+		l = new_len;
+#ifdef DEBUG
+		cout << "Have " << l << " bytes of resampled data" << endl;
+#endif
+
+		// And convert to 16 bit stereo
+		sint16 *stereo_data=new sint16[l*2];
+		for(size_t i=0,j=0;i<l;i++)
+		{
+#if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+			stereo_data[j++]=(new_data[i]-128);
+			stereo_data[j++]=(new_data[i]-128);
+#else
+			stereo_data[j++]=(new_data[i]-128)<<8;
+			stereo_data[j++]=(new_data[i]-128)<<8;
+#endif
+		}
+		l *= 4; // because it's 16bit
+		delete [] new_data;
+
+		chunks.push_back(Chunk(l,(uint8 *)stereo_data));
+		data_offset+=chunk_length;
+	}
+#ifdef DEBUG
+	cout << "Turn chunks to block" << endl;
+#endif
+	visible_len = l;
+
+	return chunks_to_block(chunks);
+}
+
+		
+void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
+{
+	if (!audio_enabled || !speech_enabled) return;
+
+	bool	own_audio_data=false;
+	if(!strncmp((const char *)sound_data,"Creative Voice File",19))
+	{
+		sound_data=convert_VOC(sound_data,len);
+		own_audio_data=true;
+	}
+
+	if(mixer)
+		mixer->play(sound_data,len);
+	if(own_audio_data)
+		delete [] sound_data;
+}
+
+void	Audio::cancel_streams(void)
+{
+	if (!audio_enabled) return;
+	if(mixer)
+		mixer->cancel_streams();
+}
+
+void	Audio::mix(uint8 *sound_data,uint32 len)
+{
+	if (!audio_enabled) return;
+	if(mixer)
+		mixer->play(sound_data,len);
+}
+	
 
 void	Audio::playfile(const char *fname,bool wait)
 {
-	if (!audio_enabled) return;
+	if (!audio_enabled)
+		return;
 
 	FILE	*fp;
+	size_t	len;
+	uint8	*buf;
 	
-	fp=U7open(fname,"r");
+	fp = U7open(fname,"r");
 	if(!fp)
-		{
+	{
 		perror(fname);
 		return;
-		}
+	}
 	fseek(fp,0L,SEEK_END);
-	size_t	len=ftell(fp);
+	len=ftell(fp);
 	fseek(fp,0L,SEEK_SET);
 	if(len<=0)
-		{
+	{
 		perror("seek");
 		fclose(fp);
 		return;
-		}
-	uint8 *buf=new uint8[len];
+	}
+	buf=new uint8[len];
 	fread(buf,len,1,fp);
 	fclose(fp);
 	play(buf,len,wait);
@@ -669,20 +651,6 @@ void	Audio::stop_music()
 	if(midi)
 		midi->stop_music();
 }
-#if 0	// Unused
-static void	load_buffer(char *buffer,const char *filename,size_t start,size_t len)
-{
-	FILE	*fp=U7open(filename,"rb");
-	if(!fp)
-		{
-		memset(buffer,0,len);
-		return;
-		}
-	fseek(fp,start,SEEK_SET);
-	fread(buffer,len,1,fp);
-	fclose(fp);
-}
-#endif
 
 bool	Audio::start_speech(int num,bool wait)
 {
@@ -728,21 +696,6 @@ void	Audio::terminate_external_signal(void)
 	// mixer->set_auxilliary_audio(-1);
 }
 
-Audio	*Audio::get_ptr(void)
-{
-	if(!self)
-		{
-		new Audio();
-#if !defined(WIN32)	/* !!!! 44100 caused the freeze upon exit in Win! */
-		self->Init(44100,2);
-#else
-		self->Init(22050,2);
-#endif
-		}
-
-	return self;
-}
-
 /*
  *	This returns a 'unique' ID, but only for .wav SFX's (for now).
  */
@@ -785,34 +738,34 @@ AudioID Audio::play_wave_sfx
 	cerr << "; after bgconv:  " << num << endl;
 #endif
 	if (num < 0 || num >= sfx_file->number_of_objects())
-		{
+	{
 		cerr << "SFX " << num << " is out of range" << endl;
 		return AudioID(0, 0);
-		}
+	}
 					// First see if we have it already.
 	SFX_cached *each = sfxs, *prev = 0;
 	int cnt = 0;
 	while (each && each->num != num && each->next)
-		{
+	{
 		cnt++;
 		prev = each;
 		each = each->next;
-		}
+	}
 	if (each && each->num == num)	// Found it?
-		{			// Move to head of chain.
+	{			// Move to head of chain.
 		if (prev)
-			{
+		{
 			prev->next = each->next;
 			each->next = sfxs;
 			sfxs = each;
-			}
-		return mixer->play(each->buf, each->len, volume, dir, repeat);
 		}
+		return mixer->play(each->buf, each->len, volume, dir, repeat);
+	}
 	if (cnt == max_cached)		// Hit our limit?  Remove last.
-		{
+	{
 		prev->next = 0;
 		delete each;
-		}
+	}
 	size_t wavlen;			// Read .wav file.
 	char *wavbuf = sfx_file->retrieve(num, wavlen);
 	SDL_RWops *rwsrc = SDL_RWFromMem(wavbuf, wavlen);
@@ -820,17 +773,17 @@ AudioID Audio::play_wave_sfx
 	Uint32 len;
 	SDL_AudioSpec src;		// Load .wav data (& free rwsrc).
 	if (!SDL_LoadWAV_RW(rwsrc, 1, &src, &buf, &len))
-		{
+	{
 		cerr << "Couldn't play sfx '" << num << "'" << endl;
 		return AudioID(0, 0);
-		}
+	}
 	SDL_AudioCVT cvt;		// Got to convert.
 	if (SDL_BuildAudioCVT(&cvt, src.format, src.channels, src.freq,
 			actual.format, actual.channels, actual.freq) < 0)
-		{
+	{
 		cerr << "Couldn't convert wave data" << endl;
 		return AudioID(0, 0);
-		}
+	}
 	cvt.len = len;
 	cvt.buf = new uint8[len*cvt.len_mult];
 	memcpy(cvt.buf, buf, len);
@@ -845,10 +798,8 @@ AudioID Audio::play_wave_sfx
  *	Halt sound effects.
  */
 
-void Audio::stop_sound_effects
-	(
-	)
-	{
+void Audio::stop_sound_effects()
+{
 	if (sfx_file != 0)		// .Wav's?
 		mixer->Destroy_Audio_Stream(Mixer_Sample_Magic_Number);
 #ifdef ENABLE_MIDISFX
@@ -857,27 +808,111 @@ void Audio::stop_sound_effects
 #endif
 	}
 
+
 void Audio::set_audio_enabled(bool ena)
 {
-	if (ena && audio_enabled && initialized) {
+	if (ena && audio_enabled && initialized)
+	{
 
-	} else if (!ena && audio_enabled && initialized) {
+	}
+	else if (!ena && audio_enabled && initialized)
+	{
 		stop_sound_effects();
 		stop_music();
 		audio_enabled = false;
-	} else if (ena && !audio_enabled && initialized) {
+	}
+	else if (ena && !audio_enabled && initialized)
+	{
 		audio_enabled = true;
-	} else if (!ena && !audio_enabled && initialized) {
-
-	} else if (ena && !audio_enabled && !initialized) {
-		audio_enabled = true;
-
-#if !defined(WIN32)	/* !!!! 44100 caused the freeze upon exit in Win! */
-		Init(44100,2);
-#else
-		Init(22050,2);
-#endif
-	} else if (!ena && !audio_enabled && !initialized) {
+	}
+	else if (!ena && !audio_enabled && initialized)
+	{
 
 	}
+	else if (ena && !audio_enabled && !initialized)
+	{
+		audio_enabled = true;
+
+		Init(SAMPLERATE,2);
+	}
+	else if (!ena && !audio_enabled && !initialized)
+	{
+
+	}
+}
+
+
+static	size_t calc_sample_buffer(uint16 _samplerate)
+{
+	uint32 _buffering_unit=1;
+	while(_buffering_unit<_samplerate/10U)
+		_buffering_unit<<=1;
+	// _buffering_unit=128;
+	return _buffering_unit;
+}
+
+
+static	uint8 *chunks_to_block(vector<Chunk> &chunks)
+{
+	uint8 *unified_block;
+	size_t	aggregate_length=0;
+	size_t	working_offset=0;
+	
+	for(std::vector<Chunk>::iterator it=chunks.begin();
+		it!=chunks.end(); ++it)
+		{
+		aggregate_length+=it->length;
+		}
+	unified_block=new uint8[aggregate_length];
+	{
+		for(std::vector<Chunk>::iterator it=chunks.begin();
+			it!=chunks.end(); ++it)
+			{
+			memcpy(unified_block+working_offset,it->data,it->length);
+			working_offset+=it->length;
+			delete [] it->data; it->data=0; it->length=0;
+			}
+	}
+	
+	return unified_block;
+}
+
+
+static	void resample(uint8 *sourcedata, uint8 **destdata,
+						size_t sourcelen, size_t *destlen,
+						int current_rate, int wanted_rate)
+{
+	// I have no idea what I'm doing here - Dancer
+	// This is really Breshenham's line-drawing algorithm in
+	// a false nose, and clutching a crude smoothing loop.
+
+	float	ratio= ((float) wanted_rate)/((float) current_rate);
+	*destlen = (unsigned int) ((sourcelen*ratio)+1);
+	if(!*destlen||current_rate==wanted_rate)
+	{
+		// Least work
+		*destlen=sourcelen;
+		*destdata=new uint8[sourcelen];
+		memcpy(*destdata,sourcedata,sourcelen);
+		return;
+	}
+	*destdata=new uint8[*destlen];
+	size_t last=0;
+	for(size_t i=0;i<sourcelen;i++)
+		{
+		size_t pos = (size_t) (i*ratio);
+		assert(pos<=*destlen);
+		(*destdata)[pos]=sourcedata[i];
+		// Interpolate if need be
+		if(last!=pos&&last!=pos-1)
+			for(size_t j=last+1;j<=pos-1;j++)
+				{
+				unsigned int x=(unsigned char)sourcedata[i];
+				unsigned int y=(unsigned char)sourcedata[i-1];
+				x=(x+y)/2;
+				(*destdata)[j]=(uint8) x;
+				}
+		last=pos;
+		}
+	cerr << "End resampling. Resampled " << sourcelen << " bytes to " << *destlen << " bytes" << endl;
 }
