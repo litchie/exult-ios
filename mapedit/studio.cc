@@ -823,7 +823,7 @@ GtkCTreeNode *Create_subtree( GtkCTree *ctree,
 				       parent, 
 				       FALSE );
 	int extlen = strlen(ext);
-	string spath("<STATIC>/"), ppath("<PATCH>/");
+	string spath("<STATIC>"), ppath("<PATCH>");
 	spath = get_system_path(spath);
 	ppath = get_system_path(ppath);
 	DIR *dir = opendir(ppath.c_str());// Get names from 'patch' first.
@@ -872,7 +872,7 @@ void ExultStudio::set_game_path(const char *gamepath)
 	if (static_path)
 		g_free(static_path);
 					// Set up path to static.
-	static_path = g_strdup_printf("%s/static/", gamepath);
+	static_path = g_strdup_printf("%s/static", gamepath);
 	add_system_path("<STATIC>", static_path);
 	char *patch_path = g_strdup_printf("%s/patch", gamepath);
 	add_system_path("<PATCH>", patch_path);
@@ -2229,7 +2229,7 @@ void ExultStudio::info_received
 		gdk_input_remove(server_input_tag);
 #else
 		Exult_server::disconnect_from_server();
-		gdk_timeout_remove(server_input_tag);
+		gtk_timeout_remove(server_input_tag);
 #endif
 		server_socket = server_input_tag = -1;
 		return;
