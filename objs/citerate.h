@@ -55,7 +55,7 @@ public:
 	int get_next(Rectangle& intersect, int& cx, int& cy)
 		{
 		if (curcx > lastcx)	// End of row?
-			if (curcy > lastcy)
+			if (curcy >= lastcy)
 				return (0);
 			else
 				{

@@ -1,3 +1,8 @@
+2001-04-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Fixed boundary problem in Chunk_iterator.  Amulet to Silver Seed
+	works now (but a bit too slowly).
+
 2001-04-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.be, beos/exult.rsrc: bumped up version to 0.92alpha3
 	* NEWS: inserted date, added new paperdoll art
