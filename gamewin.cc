@@ -1234,7 +1234,7 @@ void Game_window::set_palette
 		brightness = new_brightness;
 	if (faded_out)
 		return;			// In the black.
-	pal->load(PALETTES_FLX, pal_num);
+	pal->load(PALETTES_FLX, palette);
 	pal->set_brightness(brightness);
 	pal->apply();
 	}
