@@ -768,8 +768,8 @@ void Game_window::paint_chunk_objects
 		above_actor = 32;
 	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
 		{
-		int shapex = obj->get_shape_pos_x();
-		int shapey = obj->get_shape_pos_y();
+		int tilex = obj->get_tx();
+		int tiley = obj->get_ty();
 		int lift = obj->get_lift();
 		if (lift > at_lift)	// They're sorted by lift first.
 			break;
@@ -782,8 +782,8 @@ void Game_window::paint_chunk_objects
 		int shapenum = obj->get_shapenum();
 		int framenum = obj->get_framenum();
 					// Draw shape.
-		paint_shape(win, xoff + (1 + shapex)*tilesize - 4*lift, 
-				yoff + (1 + shapey)*tilesize - 4*lift,
+		paint_shape(win, xoff + (1 + tilex)*tilesize - 4*lift, 
+				yoff + (1 + tiley)*tilesize - 4*lift,
 					shapenum, framenum);
 		}
 	}

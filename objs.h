@@ -124,16 +124,19 @@ public:
 		{  }
 	Game_object() : ShapeID()	// Create fake entry.
 		{  }
-	int get_shape_pos_x()		// Really the tiles.
+	int get_tx()			// Get tile (0-15) within chunk.
 		{ return (shape_pos >> 4) & 0xf; }
-	int get_tx()
-		{ return (shape_pos >> 4) & 0xf; }
-	int get_shape_pos_y()
-		{ return shape_pos & 0xf; }
 	int get_ty()
 		{ return shape_pos & 0xf; }
 	int get_lift()
 		{ return lift; }
+					// Get location in abs. tiles.
+	void get_abs_tile(int& atx, int& aty, int& atz)
+		{
+		atz = get_lift();
+		atx = cx*tiles_per_chunk + get_tx();
+		aty = cy*tiles_per_chunk + get_ty();
+		}
 	int get_quality()
 		{ return quality; }
 	void set_quality(int q)
@@ -149,17 +152,19 @@ public:
 		{ next = obj; }
 	int lt(Game_object& obj2)	// Is this less than another in pos.?
 		{
-		int y = get_shape_pos_y(), y2 = obj2.get_shape_pos_y();
+		int y = get_ty(), y2 = obj2.get_ty();
 		int l = lift, l2 = obj2.lift;
 		return (l < l2 || (l == l2 &&
 			(y < y2 || (y == y2 && 
-				get_shape_pos_x() < obj2.get_shape_pos_x()))));
+				get_tx() < obj2.get_tx()))));
 		} 
 					// Return chunk coords.
 	int get_cx()
 		{ return cx; }
 	int get_cy()
 		{ return cy; }
+					// Move to new abs. location.
+	void move(int newtx, int newty, int newlift);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	virtual int get_schedule()	// Return NPC schedule.
@@ -490,9 +495,9 @@ public:
 	int in_world()			// Do we really exist?
 		{ return chunk != 0; }
 	int get_worldx()		// Get x-coord. within world.
-		{ return cx*chunksize + get_shape_pos_x()*8; }
+		{ return cx*chunksize + get_tx()*8; }
 	int get_worldy()		// Get y-coord. within world.
-		{ return cy*chunksize + get_shape_pos_y()*8; }
+		{ return cy*chunksize + get_ty()*8; }
 					// Set a frame seq. for a direction.
 	void set_frame_sequence(Direction dir, int cnt, unsigned char *seq)
 		{

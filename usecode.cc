@@ -771,13 +771,20 @@ Usecode_value Usecode_machine::call_intrinsic
 		//+++++++++++++
 		Unhandled(intrinsic, num_parms, parms);
 		break;
-	case 0x18:			// Takes itemref.  Rets. some kind
-					//   of array.
+	case 0x18:			// Takes itemref.  ?Think it rets.
+					//  hotspot coords: (x, y, z, obj).
 		{
-		Usecode_value arr(2, 0);
-		Usecode_value z(0);
-		arr.put_elem(0, z);
-		arr.put_elem(0, z);
+		int tx, ty, tz;		// Get tile coords.
+		Game_object *obj = get_item(parms[0].get_int_value());
+		if (obj)
+			obj->get_abs_tile(tx, ty, tz);
+		else
+			tx = ty = tz = 0;
+		Usecode_value vx(tx), vy(ty), vz(tz), vobj((long) obj);
+		Usecode_value arr(4, &vx);
+		arr.put_elem(1, vy);
+		arr.put_elem(2, vz);
+		arr.put_elem(3, vobj);
 		return arr;
 		}
 	case 0x1b:			// Takes -npc.  Returns object?
@@ -822,6 +829,25 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value((long) gwin->get_main_actor());
 	case 0x23:			// Return array with party members.
 		return (get_party());
+	case 0x26:			// Think it takes array from 0x18,
+					//   updates obj. to new pos., &
+					//   renders.  ??guessing??
+		{
+		Usecode_value& arr = parms[0];
+		int sz = arr.get_array_size();
+		Game_object *obj = 0;
+		if (sz == 4 && 
+		    (obj = get_item(arr.get_elem(3).get_int_value())) != 0)
+			obj->move(arr.get_elem(0).get_int_value(),
+				  arr.get_elem(1).get_int_value(),
+				  arr.get_elem(2).get_int_value());
+		else
+			{ cout << "Intrinsic 0x26:  "; arr.print(cout);
+				cout << '\n'; }
+		gwin->paint();
+		gwin->show();		// ??
+		return Usecode_value(1);// ??
+		}
 	case 0x27:			// Get player name.
 		{
 		static char *unknown = "player";
@@ -863,6 +889,11 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x33:			// Doesn't ret. until user single-
 					//   clicks on an item.  Rets. item.
 		//+++++++++++Show crosshair cursor.
+		Unhandled(intrinsic, num_parms, parms);
+		break;
+	case 0x35:			// Think it rets. objs. near parm0.
+					// (item, type? (-359=any?), m, n)??
+		//++++++++++
 		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x38:			// Return. game time hour (0-23).

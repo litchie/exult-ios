@@ -29,6 +29,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 
 /*
+ *	Move to a new absolute location.
+ */
+
+void Game_object::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Figure new chunk.
+	int newcx = newtx/tiles_per_chunk, newcy = newty/tiles_per_chunk;
+	Chunk_object_list *newchunk = gwin->get_objects(newcx, newcy);
+	if (!newchunk)
+		return;			// Bad loc.
+					// Remove from old.
+	gwin->get_objects(cx, cy)->remove(this);
+	set_lift(newlift);		// Set new values.
+	shape_pos = ((newtx%tiles_per_chunk) << 4) + newty%tiles_per_chunk;
+	newchunk->add(this);		// Updates cx, cy.
+	}
+
+/*
  *	Run usecode when double-clicked.
  */
 
@@ -305,8 +329,8 @@ void Chunk_cache::update_object
 					// Get chunk coords.
 	int cx = chunk->get_cx(), cy = chunk->get_cy();
 					// Get lower-right corner of obj.
-	int endx = obj->get_shape_pos_x();
-	int endy = obj->get_shape_pos_y();
+	int endx = obj->get_tx();
+	int endy = obj->get_ty();
 					// Get footprint dimensions.
 	int xtiles = info.get_3d_xtiles();
 	int ytiles = info.get_3d_ytiles();
@@ -530,7 +554,7 @@ void Chunk_object_list::add
 	newobj->cx = get_cx();		// Set object's chunk.
 	newobj->cy = get_cy();
 					// Get x,y of shape within chunk.
-	int x = newobj->get_shape_pos_x(), y = newobj->get_shape_pos_y();
+	int x = newobj->get_tx(), y = newobj->get_ty();
 	int num_entries = 0;		// Need to count as we sort.
 	Game_object *obj;
 	Game_object *prev = 0;
@@ -562,7 +586,7 @@ void Chunk_object_list::add_egg
 	)
 	{
 					// Get x,y of shape within chunk.
-	int x = egg->get_shape_pos_x(), y = egg->get_shape_pos_y();
+	int x = egg->get_tx(), y = egg->get_ty();
 	unsigned char& spot = eggs[y*16 + x];
 	if (spot != 0xff)		// One already there?
 		return;
