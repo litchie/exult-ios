@@ -819,6 +819,19 @@ static Egg_object *Create_egg
 	}
 
 /*
+ *	Containers and items classed as 'quality_flags' have a byte of flags.
+ *	This routine returns them converted into Object_flags.
+ */
+inline unsigned long Get_quality_flags
+	(
+	unsigned char qualbyte		// Quality byte containing flags.
+	)
+	{
+	return 	((qualbyte&1) << Obj_flags::invisible) |
+		(((qualbyte>>3)&1) << Obj_flags::okay_to_take);
+	}
+
+/*
  *	Read a list of ireg objects.  They are either placed in the desired
  *	game chunk, or added to their container.
  */
@@ -924,8 +937,10 @@ void Game_map::read_ireg_objects
 					quality &= 0x7f;
 				}
 			else if (info.has_quality_flags())
-				if (quality&(1<<3))
-					oflags |= (1<<Obj_flags::okay_to_take);
+				{	// +++Shouldn't it = Get_quality_flags?
+				oflags |= Get_quality_flags(quality);
+				quality = 0;
+				}
 			}
 		else if (entlen == 12)	// Container?
 			{
@@ -933,8 +948,7 @@ void Game_map::read_ireg_objects
 			lift = entry[9] >> 4;
 			quality = entry[7];
 			oflags =	// Override flags (I think).
-			    ((entry[11]&1) << Obj_flags::invisible) |
-			    (((entry[11]>>3)&1) << Obj_flags::okay_to_take);
+				Get_quality_flags(entry[11]);
 			if (shnum == 330)// Virtue stone?
 				{
 				Virtue_stone_object *v = 
