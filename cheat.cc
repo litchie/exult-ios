@@ -65,9 +65,6 @@ void Cheat::init (void) {
   enabled = true;
   if (cheating == "no")
     enabled = false;
-
-  if (enabled)
-    cout << "Cheats enabled." << endl;
 }
 
 void Cheat::finish_init (void) {
@@ -75,6 +72,9 @@ void Cheat::finish_init (void) {
 
   browser = new ShapeBrowser();
   tester = new SoundTester();
+
+  if (enabled)
+    cout << "Cheats enabled." << endl;
 }
 
 
@@ -227,6 +227,17 @@ void Cheat::dec_skip_lift (void) const {
     gwin->skip_lift--;
   if (gwin->skip_lift <= 0)
     gwin->skip_lift = 16;
+#if DEBUG
+  cout << "Skip_lift = " << gwin->skip_lift << endl;
+#endif
+  gwin->paint();
+}
+
+void Cheat::set_skip_lift (int skip) const {
+  if (!enabled) return;
+
+  if ((skip >= 1 && skip <= 11) || skip == 16)
+    gwin->skip_lift = skip;
 #if DEBUG
   cout << "Skip_lift = " << gwin->skip_lift << endl;
 #endif
