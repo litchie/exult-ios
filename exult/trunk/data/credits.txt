@@ -19,8 +19,8 @@
 \Cwhat more could you possibly ask for ?
 
 
-\CWillem Jan "Arthuris Dragon" Palenstijn
-\C<palenstijn@wanadoo.nl>
+\CWillem Jan Palenstijn
+\C<wjpalenstijn@users.sourceforge.net>
 \CPorting to obscure OSs (Windows) and less
 \Cobscure ones (BeOS), cheats, autoconf, 
 \Cexultbot and lots more !
