@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "game.h"
 #include "egg.h"
+#include "virstone.h"
 #include "animate.h"
 #include "items.h"
 #include "utils.h"
@@ -839,9 +840,13 @@ void Game_window::read_ireg_objects
 			    ((entry[11]&1) << Game_object::invisible) |
 			    (((entry[11]>>3)&1) << Game_object::okay_to_take);
 			if (shnum == 330)// Virtue stone?
-				{	// Locs. stored in Usecode for now.
-				obj = new Ireg_game_object(shnum, frnum, tilex,
+				{
+				Virtue_stone_object *v = 
+				   new Virtue_stone_object(shnum, frnum, tilex,
 						tiley, lift);
+				v->set_pos(entry[4], entry[5], entry[6],
+								entry[7]);
+				obj = v;
 				type = 0;
 				}
 			else if (shnum == 961)
@@ -930,6 +935,14 @@ Ireg_game_object *Game_window::create_ireg_object
 	if (shnum == 607)		// Path.
 		return new Egglike_game_object(
 					shnum, frnum, tilex, tiley, lift);
+	else if (shnum == 330)		// +++++For fixing pre-alpha savegames.
+		{			// +++++Should go away during Alpha.
+		Virtue_stone_object *v = new Virtue_stone_object(shnum, frnum,
+						tilex, tiley, lift);
+		if (frnum >= 0 && frnum < 8)
+			v->set_pos(usecode->virtue_stones[frnum]);
+		return v;
+		}
 	else
 		return new Ireg_game_object(shnum, frnum, tilex, tiley, lift);
 	}

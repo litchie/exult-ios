@@ -95,7 +95,9 @@ exult_SOURCES =	\
 	vec.cc		\
 	vec.h		\
 	vgafile.cc	\
-	vgafile.h
+	vgafile.h	\
+	virstone.cc	\
+	virstone.h
 
 exult_LDADD = 			\
 	pathfinder/libpathfinder.la		\

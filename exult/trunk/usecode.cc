@@ -46,6 +46,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "barge.h"
 #include "egg.h"
+#include "virstone.h"
 #include <iomanip>
 #ifdef XWIN
 #include <signal.h>
@@ -2524,20 +2525,17 @@ USECODE_INTRINSIC(get_array_size)
 USECODE_INTRINSIC(mark_virtue_stone)
 {
 	Game_object *obj = get_item(parms[0]);
-	int frnum;
-	if (obj && obj->get_shapenum() == 330 &&
-	    (frnum = obj->get_framenum()) < 8)
-		virtue_stones[frnum] = 
-				obj->get_outermost()->get_abs_tile_coord();
+	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *> (obj);
+	if (vs)
+		vs->set_pos(obj->get_outermost()->get_abs_tile_coord());
 	return no_ret;
 }
 
 USECODE_INTRINSIC(recall_virtue_stone)
 {
 	Game_object *obj = get_item(parms[0]);
-	int frnum;
-	if (obj && obj->get_shapenum() == 330 &&
-	    (frnum = obj->get_framenum()) < 8)
+	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *> (obj);
+	if (vs)
 		{
 					// Pick it up if necessary.
 		Game_object *owner = obj->get_outermost();
@@ -2556,7 +2554,7 @@ USECODE_INTRINSIC(recall_virtue_stone)
 			if (i == cnt)	// Failed?  Force it on Avatar.
 				gwin->get_main_actor()->add(obj, 1);
 			}
-		Tile_coord t = virtue_stones[frnum];
+		Tile_coord t = vs->get_pos();
 		if (t.tx > 0 || t.ty > 0)
 			gwin->teleport_party(t);
 		}
@@ -4490,6 +4488,7 @@ int Usecode_machine::write
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		Write4(out, timers[t]);
+					// +++++No longer needed.
 	for (size_t i = 0; i < 8; i++)	// Virtue stones.
 		{
 		Write2(out, virtue_stones[i].tx);
@@ -4526,7 +4525,8 @@ int Usecode_machine::read
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		timers[t] = Read4(in);
-	int result = in.good();		// ++++Just added timers.
+	int result = in.good();
+					// +++++No longer needed:
 	for (size_t i = 0; i < 8; i++)	// Virtue stones.
 		{
 		virtue_stones[i].tx = Read2(in);
