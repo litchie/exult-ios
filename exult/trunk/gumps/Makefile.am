@@ -60,6 +60,8 @@ libgumps_la_SOURCES = \
 	Gump_manager.h	\
 	Gump_manager.cc	\
 	Face_stats.h	\
-	Face_stats.cc
+	Face_stats.cc	\
+	Text_button.h	\
+	Text_button.cc
 
 CLEANFILES = *~
