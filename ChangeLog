@@ -1,5 +1,8 @@
 2003-10-30    <jeff@mini.nerble.net>
 
+	* gameclk.cc,actors.cc:  Check hunger every hour, instead of every
+	3 hours.
+
 	* objs/citerate.h,barge.cc: Fixed world-wrapping bug.
 
 2003-10-26    <jeff@mini.nerble.net>

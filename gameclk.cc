@@ -210,9 +210,9 @@ void Game_clock::handle_event
 		}
 		set_time_palette();
 		gwin->mend_npcs();	// Restore HP's each hour.
+		check_hunger();		// Use food, and print complaints.
 		if (hour%3 == 0)	// New 3-hour period?
 		{
-			check_hunger();	// Use food, and print complaints.
 					// Update NPC schedules.
 			gwin->schedule_npcs(hour/3);
 		}
