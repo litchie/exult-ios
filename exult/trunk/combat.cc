@@ -72,6 +72,7 @@ void Combat_schedule::find_opponents
 			}
 		return;
 		}
+	//+++++Switch to using gwin->get_nearby_npcs(opponents);
 					// Get top-left chunk.
 	int startcx = npc->get_cx() - 1, startcy = npc->get_cy() - 1;
 	if (startcx < 0)
