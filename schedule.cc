@@ -62,7 +62,8 @@ void Schedule::set_action_sequence
 	Actor *actor,			// Whom to activate.
 	Tile_coord dest,		// Where to walk to.
 	Actor_action *when_there,	// What to do when he gets there.
-	int from_off_screen		// Have actor walk from off-screen.
+	int from_off_screen,		// Have actor walk from off-screen.
+	int delay			// Msecs. to delay.
 	)
 	{
 	Actor_action *act = when_there;
@@ -84,7 +85,7 @@ void Schedule::set_action_sequence
 		act = new Sequence_actor_action(w2, tel, act);
 		}
 	actor->set_action(act);
-	actor->start();			// Get into time queue.
+	actor->start(250, delay);	// Get into time queue.
 	}
 
 /*
@@ -672,7 +673,7 @@ Sit_schedule::Sit_schedule
 	(
 	Actor *n,
 	Game_object *ch			// Chair, or null to find one.
-	) : Schedule(n), chair(ch)
+	) : Schedule(n), chair(ch), sat(false)
 	{
 	}
 
@@ -720,7 +721,9 @@ void Sit_schedule::now_what
 		if (!(chair = npc->find_closest(chairs, 
 					sizeof(chairs)/sizeof(chairs[0]))))
 			return;
-	set_action(npc, chair);
+					// Wait a while if we got up.
+	set_action(npc, chair, sat ? (4000 + rand()%3000) : 0);
+	sat = true;
 	}
 
 /*
@@ -730,7 +733,8 @@ void Sit_schedule::now_what
 void Sit_schedule::set_action
 	(
 	Actor *actor,
-	Game_object *chairobj
+	Game_object *chairobj,
+	int delay			// Msecs. to delay.
 	)
 	{
 	Tile_coord chairloc = chairobj->get_abs_tile_coord();
@@ -752,7 +756,7 @@ void Sit_schedule::set_action
 	frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
 	Actor_action *act = new Frames_actor_action(frames, sizeof(frames));
 					// Walk there, then sit.
-	set_action_sequence(actor, chairloc, act);
+	set_action_sequence(actor, chairloc, act, 0, delay);
 	}
 
 /*

@@ -444,10 +444,8 @@ Game_object *Container_game_object::attacked
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int wpoints = attack_object(gwin, attacker, weapon_shape, ammo_shape);
-	if (wpoints < 8)
+	if (wpoints < 4)
 		return this;		// Fail.
-	if (wpoints < 16)
-		wpoints = wpoints/2;	// Unlikely.
 					// Guessing:
 	if (rand()%90 >= wpoints)
 		return this;		// Failed.

@@ -144,6 +144,34 @@ void Conversation::init_faces()
 	last_face_shown = -1;
 }
 
+/*
+ *	Get face frame in Serpent Isle.
+ */
+
+static int SI_get_frame
+	(
+	Actor *main_actor
+	)
+	{
+	int frame;
+	if (main_actor->get_skin_color() == 0) // WH
+	{
+		frame = 1 - main_actor->get_type_flag(Actor::tf_sex);
+	}
+	else if (main_actor->get_skin_color() == 1) // BN
+	{
+		frame = 3 - main_actor->get_type_flag(Actor::tf_sex);
+	}
+	else if (main_actor->get_skin_color() == 2) // BK
+	{
+		frame = 5 - main_actor->get_type_flag(Actor::tf_sex);
+	}
+	else // None
+	{
+		frame = main_actor->get_type_flag(Actor::tf_sex);
+	}
+	return frame;
+	}
 
 
 /*
@@ -162,25 +190,12 @@ void Conversation::show_face(int shape, int frame, int slot)
 	if (gwin->get_brightness() >= 300)
 		gwin->set_palette(-1, 100);
 
-	// Petra?
-	if (SI && shape == 28 && main_actor->get_flag(Obj_flags::petra)) {
-		shape = main_actor->get_face_shapenum();
-		if (main_actor->get_skin_color() == 0) // WH
-		{
-			frame = 1 - main_actor->get_type_flag(Actor::tf_sex);
-		}
-		else if (main_actor->get_skin_color() == 1) // BN
-		{
-			frame = 3 - main_actor->get_type_flag(Actor::tf_sex);
-		}
-		else if (main_actor->get_skin_color() == 2) // BK
-		{
-			frame = 5 - main_actor->get_type_flag(Actor::tf_sex);
-		}
-		else // None
-		{
-			frame = main_actor->get_type_flag(Actor::tf_sex);
-		}
+	if (SI)				// Serpent Isle?
+	{				// Petra?  ???+++Is this right?
+		if (shape == 28 && main_actor->get_flag(Obj_flags::petra))
+			shape = main_actor->get_face_shapenum();
+		if (shape == 0)		// In any case, get correct frame.
+			frame = SI_get_frame(main_actor);
 	}
 					// Get screen dims.
 	int screenw = gwin->get_width(), screenh = gwin->get_height();
@@ -370,22 +385,8 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 		shape = 28;
 		frame = 0;
 	}
-	else if (SI && main_actor->get_skin_color() == 0) // WH
-	{
-		frame = 1 - main_actor->get_type_flag(Actor::tf_sex);
-	}
-	else if (SI && main_actor->get_skin_color() == 1) // BN
-	{
-		frame = 3 - main_actor->get_type_flag(Actor::tf_sex);
-	}
-	else if (SI && main_actor->get_skin_color() == 2) // BK
-	{
-		frame = 5 - main_actor->get_type_flag(Actor::tf_sex);
-	}
-	else // None
-	{
-		frame = main_actor->get_type_flag(Actor::tf_sex);
-	}
+	else if (SI)
+		frame = SI_get_frame(main_actor);
 
 	Shape_frame *face = gwin->get_face(shape, frame);
 	int empty;			// Find face prev. to 1st empty slot.
