@@ -2944,7 +2944,7 @@ Game_object *Actor::attacked
 		return this;
 	bool defeated = figure_hit_points(attacker, weapon_shape, ammo_shape);
 	if (attacker && defeated)
-		{
+		{	// ++++++++This should be in reduce_health()+++++++
 					// Experience gained = strength???
 		int expval = get_property(static_cast<int>(strength)) +
 				get_property(static_cast<int>(combat))/4 +

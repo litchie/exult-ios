@@ -1,3 +1,7 @@
+2001-12-24  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/intrinsics.cc: Implemented apply_damage() intrinsic.
+
 2001-12-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* paths.cc (Offscreen_pathfinder_client), actions.cc: Added 'best'
