@@ -74,6 +74,7 @@ int Uc_symbol::gen_call
 	(
 	vector<char>& out,
 	Uc_function *fun,
+	Uc_expression *itemref,		// Non-NULL for CALLE.
 	Uc_array_expression *parms,	// Parameter list.
 	bool retvalue			// True if a function.
 	)
@@ -199,11 +200,14 @@ int Uc_intrinsic_symbol::gen_call
 	(
 	vector<char>& out,
 	Uc_function *fun,
+	Uc_expression *itemref,		// Non-NULL for CALLE.
 	Uc_array_expression *parms,	// Parameter list.
 	bool retvalue			// True if a function.
 	)
 	{
 	int parmcnt = 0;
+	if (itemref)			// Makes no sense for intrinsice.
+		Uc_location::yyerror("Can't use ITEM for intrinsic");
 					// Want to push parm. values.
 	const std::vector<Uc_expression *>& exprs = parms->get_exprs();
 					// Push backwards, so #0 pops first.
@@ -232,6 +236,7 @@ int Uc_function_symbol::gen_call
 	(
 	vector<char>& out,
 	Uc_function *fun,
+	Uc_expression *itemref,		// Non-NULL for CALLE.
 	Uc_array_expression *aparms,	// Actual parameter list.
 	bool /* retvalue */		// True if a function.
 	)
@@ -254,9 +259,19 @@ int Uc_function_symbol::gen_call
 			"# parms. passed (%d) doesn't match '%s' count (%d)",
 			parmcnt, get_name(), parms.size());
 		}				
-	out.push_back((char) UC_CALL);	// Called function sets return.
-	int link = fun->link(this);	// Get offset in function's list.
-	Write2(out, link);
+	if (itemref)			// Doing CALLE?  Push item onto stack.
+		{
+		itemref->gen_value(out);
+		out.push_back((char) UC_CALLE);
+		Write2(out, usecode_num);	// Use fun# directly.
+		}
+	else				// Normal CALL.
+		{			// Called function sets return.
+		out.push_back((char) UC_CALL);
+					// Get offset in function's list.
+		int link = fun->link(this);
+		Write2(out, link);
+		}
 	return 1;
 	}
 

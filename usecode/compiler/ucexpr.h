@@ -256,17 +256,19 @@ public:
 class Uc_call_expression : public Uc_expression
 	{
 	Uc_symbol *sym;			// Function or intrinsic.
+	Uc_expression *itemref;		// Non-null for CALLE.
 	Uc_array_expression *parms;
 	Uc_function *function;		// May need function this is in.
 	bool return_value;		// True for a function (to return
 					//   its value).
 public:
 	Uc_call_expression(Uc_symbol *s, Uc_array_expression *prms,
-						Uc_function *fun)
-		: sym(s), parms(prms), function(fun), return_value(true)
+			Uc_function *fun, Uc_expression *item = 0)
+		: sym(s), itemref(item), parms(prms), 
+		  function(fun), return_value(true)
 		{  }
 	~Uc_call_expression()
-		{ delete parms; }
+		{ delete parms; delete itemref; }
 	void set_no_return()
 		{ return_value = false; }
 					// Gen. code to put result on stack.

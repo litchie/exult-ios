@@ -65,7 +65,8 @@ public:
 	virtual int gen_assign(vector<char>& out);
 					// Generate function/procedure call.
 	virtual int gen_call(vector<char>& out, Uc_function *fun, 
-			Uc_array_expression *parms, bool retvalue);
+		Uc_expression *item, Uc_array_expression *parms, 
+							bool retvalue);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return -1; }
 					// Return var/int expression.
@@ -144,7 +145,8 @@ public:
 		{ return num_parms; }
 					// Generate function/procedure call.
 	virtual int gen_call(vector<char>& out, Uc_function *fun, 
-			Uc_array_expression *parms, bool retvalue);
+		Uc_expression *item, Uc_array_expression *parms, 
+							bool retvalue);
 	};
 
 /*
@@ -153,7 +155,7 @@ public:
 class Uc_function_symbol : public Uc_symbol
 	{
 					// Note:  offset = Usecode fun. #.
-		std::vector<char *> parms;		// Parameters.
+	std::vector<char *> parms;	// Parameters.
 	int usecode_num;		// Usecode function #.
 public:
 	Uc_function_symbol(char *nm, int num, std::vector<char *>& p)
@@ -167,7 +169,8 @@ public:
 		{ return parms.size(); }
 					// Generate function/procedure call.
 	virtual int gen_call(vector<char>& out, Uc_function *fun, 
-			Uc_array_expression *parms, bool retvalue);
+		Uc_expression *item, Uc_array_expression *parms, 
+							bool retvalue);
 	};
 
 /*
