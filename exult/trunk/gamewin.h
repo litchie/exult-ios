@@ -41,10 +41,6 @@ class Npc_face_info;
 class Game_window
 	{
 	Image_window *win;		// Window to display into.
-	Image_window *shapewin;		// Debug win. for showing shapes.
-	Game_object shapewin_objs[20];	// List of shapes to show.
-	int shapewin_cur;		// Index of current shape being shown
-					//   in shapewin.
 	Font_face *font12;		// 12-point "avatar.ttf" font.
 public:
 	enum Game_mode {		// Can be in different modes.
@@ -86,7 +82,6 @@ public:
 	int debug;
 	Game_window(int width = 0, int height = 0);
 	~Game_window();
-	void open_shape_window();	// Open window to show shapes.
 	void abort(char *msg, ...);	// Fatal error.
 	int get_width()
 		{ return win->get_width(); }
@@ -122,14 +117,6 @@ public:
 			list = objects[cx][cy] = new Chunk_object_list;
 		return (list);
 		}
-	Image_window *get_shapewin()
-    		{ return shapewin; }
-  	Image_window *get_win(Window xwin) {
-		if (shapewin && xwin == shapewin->get_win())
-			return shapewin;
-		else
-			return win;
-  		}
 	Actor *get_main_actor()
 		{ return main_actor; }
 	int check_main_actor_inside()	// See if main actor moved in/out-side.
@@ -158,7 +145,7 @@ public:
 	Game_mode get_mode()
 		{ return mode; }
 					// Resize event occurred.
-	void resized(Window xwin, unsigned int neww, unsigned int newh);
+	void resized(unsigned int neww, unsigned int newh);
 	void show()
 		{
 		if (painted)
@@ -167,12 +154,9 @@ public:
 			painted = 0;
 			}
 		}
-	void show(Window xwin)
+	void show(int)
 		{
-		if (shapewin && xwin == shapewin->get_win())
-			shapewin->show();
-		else
-			win->show();
+		win->show();
 		}
 	void set_chunk_offsets(int cx, int cy)
 		{
@@ -184,10 +168,6 @@ public:
 #if 1
 					// Show abs. location of mouse.
 	void show_game_location(int x, int y);
-					// Show shape(s) clicked on.
-	void debug_shape(Window xwin, int x, int y);	// DEBUGGING.
-	void find_debug_shapes(int lift, int x, int y);
-	void shapewin_paint(int num);
 #endif
 					// Get shape from shapes.vga.
 	Shape_frame *get_shape(int shapenum, int framenum)
@@ -303,7 +283,7 @@ public:
 	void remove_text(Text_object *txt);
 	void remove_all_text();
 					// Handle a double-click in window.
-	void double_clicked(Window xwin, int x, int y);
+	void double_clicked(int x, int y);
 	void init_faces();		// Clear out face list.
 					// Show a "face" on the screen.
 	void show_face(int shape, int frame);
@@ -319,16 +299,10 @@ public:
 	void add_nearby_npcs(int from_cx, int from_cy,
 						int stop_cx, int stop_cy);
 	void schedule_npcs(int hour3);	// Update NPCs' schedules.
-	void get_focus(Window xwin)	// Get/lose focus.
-		{
-		if (xwin == win->get_win())
-			focus = 1;
-		}
-	void lose_focus(Window xwin)
-		{
-		if (xwin == win->get_win())
-			focus = 0;
-		}
+	void get_focus()		// Get/lose focus.
+		{ focus = 1; }
+	void lose_focus()
+		{ focus = 0; }
 	int have_focus()
 		{ return focus; }
 	void end_intro();		// End splash screen.

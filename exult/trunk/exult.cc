@@ -45,6 +45,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gamewin.h"
 #include "fnames.h"
+#include "SDL.h"
+#include "SDL_syswm.h"
 
 /*
  *	Globals:
@@ -57,7 +59,8 @@ unsigned char quitting_time = 0;	// Time to quit.
  */
 static void Init();
 static int Play();
-static void Handle_keystroke(int chr);
+static void Handle_keystroke(SDLKey ch, int shift);
+
 
 /*
  *	A handy breakpoint.
@@ -105,13 +108,8 @@ int main
 
 #ifdef XWIN
 
-#include <X11/Xutil.h>
-#define XK_MISCELLANY
-#define XK_LATIN1
-#include <X11/keysymdef.h>
-
-Atom wm_delete_window, wm_protocols;
-static void Handle_event(Display *);
+static void Handle_event();
+static Display *display = 0;
 
 /*
  *	Initialize and create main window.
@@ -120,30 +118,20 @@ static void Init
 	(
 	)
 	{
-					// Open display.
-	Display *display = XOpenDisplay(NULL);
-	if (!display)
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		{
-		cerr << "Can't open display.\n";
+		cerr << "Unable to initialize SDL: " << SDL_GetError() << '\n';
 		exit(-1);
 		}
-	Image_window::set_display(display);
-					// Get screen info.
+	SDL_SysWMinfo info;		// Get system info.
+	SDL_VERSION(&info.version);
+	SDL_GetWMInfo(&info);
+	display = info.info.x11.display;
 	int screen_num = DefaultScreen(display);
 	unsigned int display_width = DisplayWidth(display, screen_num);
 	unsigned int display_height = DisplayHeight(display, screen_num);
 					// Make window 1/2 size of screen.
 	gwin = new Game_window(display_width/2, display_height/2);
-					// Indicate events we want.
-	gwin->get_win()->select_input(ExposureMask | KeyPressMask |
-		PointerMotionHintMask |
-		ButtonPressMask | ButtonReleaseMask | Button3MotionMask | 
-		FocusChangeMask | StructureNotifyMask);
-					// Want to know if win. is closed.
-	wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", False);
-	XSetWMProtocols(display, gwin->get_win()->get_win(),
-							&wm_delete_window, 1);
-	wm_protocols = XInternAtom(display, "WM_PROTOCOLS", False);
 	}
 
 /*
@@ -155,7 +143,6 @@ void Handle_events
 	unsigned char *stop
 	)
 	{
-	Display *display = Image_window::get_display();
 					// Get connection number.
 	int xfd = ConnectionNumber(display);
 	/*
@@ -172,7 +159,7 @@ void Handle_events
 					// Wait for timeout or event.
 		select(xfd + 1, &rfds, 0, 0, &timer);
 		while (!*stop && XPending(display) > 0)
-			Handle_event(display);
+			Handle_event();
 					// Get current time.
 		gettimeofday(&timer, 0);
 					// Animate unless modal or dormant.
@@ -182,6 +169,7 @@ void Handle_events
 		gwin->show();		// Blit to screen if necessary.
 		}
 	}
+#endif	/* XWIN */
 
 /*
  *	Play game.
@@ -191,260 +179,102 @@ static int Play()
 	{
 	Handle_events(&quitting_time);
 	delete gwin;
-	Display *display = Image_window::get_display();
-	XCloseDisplay(display);		// All done.
 	return (0);
 	}
 
 /*
- *	Handle an event.
+ *	Handle an event.  This should work for all platforms.
  */
 
 static void Handle_event
 	(
-	Display *display
 	)
 	{
-	static Time last_b1_click = 0;	// For detecting double-clicks.
-	XEvent event;
+					// For detecting double-clicks.
+	static unsigned long last_b1_click = 0;
+	SDL_Event event;
 	Window root, win;		// Get window ID's.
 	int rootx, rooty, winx, winy;	// Get positions.
 	unsigned int mask;
 	char keybuf[10];
-	KeySym keysym;
-	XComposeStatus compose;
-	XNextEvent(display, &event);
+	if (!SDL_WaitEvent(&event))	// Get event.
+		return;			// Some kind of error.
 	switch (event.type)
 		{
-	case ButtonPress:
+	case SDL_MOUSEBUTTONDOWN:
 		gwin->end_intro();
 		if (gwin->get_mode() != Game_window::normal)
 			break;
 					// Move sprite toward mouse
 					//  when right button pressed.
-		if (event.xbutton.button == 3)
-			gwin->start_actor(event.xbutton.x, event.xbutton.y);
-#if 1
-		else if (event.xbutton.button == 2)
-			if (event.xbutton.state & ShiftMask)
-					// Show abs. game loc. (for scripts).
-				gwin->show_game_location(
-					event.xbutton.x, event.xbutton.y);
-			else
-				gwin->debug_shape(event.xbutton.window,
-					event.xbutton.x, event.xbutton.y);
-#endif
+		if (event.button.button == 3)
+			gwin->start_actor(event.button.x, event.button.y);
 		break;
-	case ButtonRelease:
-		if (event.xbutton.button == 3)
+	case SDL_MOUSEBUTTONUP:
+		if (event.button.button == 3)
 			{
 			if (gwin->get_mode() != Game_window::normal)
 				break;
 			gwin->stop_actor();
 			}
-		else if (event.xbutton.button == 1)
+		else if (event.button.button == 1)
 			{
 			if (gwin->get_mode() == Game_window::conversation)
 				{	// In a conversation.
 				gwin->conversation_choice(
-					event.xbutton.x, event.xbutton.y);
+					event.button.x, event.button.y);
 				break;
 				}
+			timeval curtime;
+			gettimeofday(&curtime, 0);
+			unsigned long msecs = curtime.tv_sec*1000 +
+				curtime.tv_usec/1000;
 					// Last click within .5 secs?
-			if (event.xbutton.time - last_b1_click < 500)
+			if (msecs - last_b1_click < 500)
 				{
-				gwin->double_clicked(event.xbutton.window,
-					event.xbutton.x, event.xbutton.y);
+				gwin->double_clicked(event.button.x, 
+							event.button.y);
 				break;
 				}
-			last_b1_click = event.xbutton.time;
+			last_b1_click = msecs;
 					// Identify item(s) clicked on.
-			gwin->show_items(event.xbutton.x, event.xbutton.y);
+			gwin->show_items(event.button.x, event.button.y);
 			}
 		break;
-	case MotionNotify:		// Moving with right button down.
+	case SDL_MOUSEMOTION:		// Moving with right button down.
 		if (gwin->get_mode() != Game_window::normal)
 			break;
-		while (XCheckMaskEvent(display, Button3MotionMask, &event))
-			;
-		if (XQueryPointer(display, event.xmotion.window, &root,
-				&win, &rootx, &rooty, &winx, &winy, &mask))
-			gwin->start_actor(winx, winy);
+		if (event.motion.state != 0)
+			gwin->start_actor(event.motion.x, event.motion.y);
 		break;
-	case Expose:			// Just repaint on last expose.
-		if (event.xexpose.count == 0)
-			gwin->show(event.xexpose.window);
+	case SDL_ACTIVEEVENT:
+		if (event.active.state & SDL_APPINPUTFOCUS)
+			{
+			if (event.active.gain)
+				gwin->get_focus();
+			else
+				gwin->lose_focus();
+			}
+		if (event.active.state & SDL_APPACTIVE)
+					// Became active.
+			if (event.active.gain)
+				gwin->init_actors();
 		break;
-	case FocusIn:
-		gwin->get_focus(event.xexpose.window);
-		break;
-	case FocusOut:
-		gwin->lose_focus(event.xexpose.window);
-		break;
+#if 0
 	case ConfigureNotify:		// Resize.
 		gwin->resized(event.xconfigure.window,
 			event.xconfigure.width, event.xconfigure.height);
 		break;
-	case ClientMessage:
-		cout << "ClientMessage\n";
-		if (event.xclient.format == 32 &&
-			event.xclient.message_type == wm_protocols &&
-			event.xclient.data.l[0] == (long) wm_delete_window)
-				quitting_time = 1;
-		break;
-	case DestroyNotify:
-		cout << "DestroyNotify\n";
-		break;
-	case MapNotify:
-		gwin->init_actors();	// Place actors in world.
-		cout << "MapNotify\n";
-		break;
-	case UnmapNotify:
-		cout << "UnmapNotify\n";
-		break;
-	case KeyPress:			// Keystroke.
-		XLookupString((XKeyEvent *) &event, 
-			keybuf, sizeof(keybuf), &keysym, &compose);
-		Handle_keystroke(keysym);
-		break;
-		}
-	}
-
-#endif	/* XWIN */
-
-#ifdef DOS
-
-#include <pc.h>
-#include <keys.h>
-
-/*
- *	Define X-names of keys:
- */
-#define XK_plus		K_Plus
-#define XK_minus	K_Dash
-#define XK_b		'b'
-#define XK_f		'f'
-#define XK_F		'F'
-#define XK_g		'g'
-#define XK_G		'G'
-#define XK_q		'q'
-#define XK_l		'l'
-#define XK_p		'p'
-#define XK_s		's'
-#define XK_S		'S'
-#define XK_Right	K_Right
-#define XK_Left		K_Left
-#define XK_Down		K_Down
-#define XK_Up		K_Up
-#define XK_Escape	K_Escape
-
-/*
- *	Initialize and create main window.
- */
-static void Init
-	(
-	)
-	{
-	Image_window::set_display();	// Put screen in 320x200 mode.
-	if (!Image_window::init_mouse())
-		{
-		Image_window::restore_display();
-		cerr << "Can't initialize mouse.\n";
-		exit(1);
-		}
-//	Image_window::set_mouse(20, 20);
-	Image_window::show_mouse(1);
-	gwin = new Game_window(320, 200);
-	}
-
-/*
- *	Play game.
- */
-
-static int Play()
-	{
-	gwin->paint();			// Get backgrounds loaded.
-	gwin->init_actors();		// Place actors in world.
-	gwin->paint();
-	gwin->show();
-	/*
-	 *	Main event loop.
-	 */
-	while (!quitting_time)
-		{
-					// Point actor is moving towards:
-		static int actor_x = -1, actor_y = -1;
-					// Prev. mouse button:
-		static int prev_mouse = 0;
-		struct timeval timer;
-		if (kbhit())
-			Handle_keystroke(getkey());
-		int mouse = Image_window::get_mouse_buttons();
-		if (mouse == 1)		// +++++Want to test for mouse-up.
-			{
-			if (prev_mouse != 1)
-				{
-				gwin->end_intro();
-				int x, y;
-				Image_window::get_mouse(x, y);
-					// Identify item(s) clicked on.
-				gwin->show_items(x, y);
-				}
-			}
-		else if (mouse == 2)	// Move main actor.
-			{
-			gwin->end_intro();
-			int x, y;
-			Image_window::get_mouse(x, y);
-			if (x != actor_x || y != actor_y)
-				{
-				actor_x = x; actor_y = y;
-				gwin->start_actor(x, y);
-				}
-			}
-		else if (mouse == 0)	// Buttons up.
-			{
-			if (actor_x != -1)
-				{	// Stop actor.
-				actor_x = -1;
-				gwin->stop_actor();
-				}
-			}
-		prev_mouse = mouse;
-					// Get current time.
-		gettimeofday(&timer, 0);
-		gwin->get_tqueue()->activate(timer);
-#if 0
-		gwin->animate(timer);
 #endif
-		gwin->show();		// Update screen if necessary.
+	case SDL_QUIT:
+		quitting_time = 1;
+		break;
+	case SDL_KEYDOWN:			// Keystroke.
+		Handle_keystroke(event.key.keysym.sym,
+			event.key.keysym.mod & KMOD_SHIFT);
+		break;
 		}
-	delete gwin;
-	Image_window::restore_display();// Restore screen.
-	return (0);
 	}
-
-#endif	/* DOS	*/
-
-#ifdef __WIN32
-
-#define XK_plus		0x6B
-#define XK_minus	0x6D
-#define XK_b		'b'
-#define XK_f		'f'
-#define XK_F		'F'
-#define XK_q		'q'
-#define XK_l		'l'
-#define XK_p		'p'
-#define XK_s		's'
-#define XK_S		'S'
-#define XK_Right	0x27
-#define XK_Left		0x25
-#define XK_Down		0x28
-#define XK_Up		  0x26
-#define XK_Escape	0x1B
-
-#endif
 
 
 /*
@@ -453,29 +283,30 @@ static int Play()
 
 static void Handle_keystroke
 	(
-	int ch
+	SDLKey sym,
+	int shift
 	)
 	{
 	static int shape_cnt = 0x310, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = 4, gump_frame = 0;
 	gwin->end_intro();
-	switch (ch)
+	switch (sym)
 		{
-	case XK_plus:			// Brighten.
+	case SDLK_PLUS:			// Brighten.
 		gwin->brighten(20);
 		break;
-	case XK_minus:			// Darken.
-	gwin->brighten(-20);
+	case SDLK_MINUS:		// Darken.
+		gwin->brighten(-20);
 		break;
-	case XK_b:
+	case SDLK_b:
 		Breakpoint();
 		break;
-	case XK_q:
-	case XK_Escape:			// ESC key.
+	case SDLK_q:
+	case SDLK_ESCAPE:			// ESC key.
 		quitting_time = 1;
 		break;
-	case XK_l:			// Decrement skip_lift.
+	case SDLK_l:			// Decrement skip_lift.
 		if (gwin->skip_lift == 16)
 			gwin->skip_lift = 11;
 		else
@@ -484,10 +315,10 @@ static void Handle_keystroke
 			gwin->skip_lift = 16;
 		cout << "Skip_lift = " << gwin->skip_lift << '\n';
 					// FALL THROUGH.
-	case XK_p:			// Rerender image.
+	case SDLK_p:			// Rerender image.
 		gwin->paint();
 		break;
-	case XK_s:		// Show next shape.
+	case SDLK_s:		// Show next shape.
 #if 0
 		shape_frame = 0;
 		if (++shape_cnt == gwin->get_num_shapes())
@@ -507,7 +338,7 @@ static void Handle_keystroke
 			200, 200, gump_cnt, gump_frame);
 #endif
 		break;
-	case XK_S:		// Show prev. shape.
+	case 'S':		// Show prev. shape.
 		shape_frame = 0;
 		if (--shape_cnt < 0)
 			shape_cnt = gwin->get_num_shapes() - 1;
@@ -516,7 +347,7 @@ static void Handle_keystroke
 		gwin->paint_shape(gwin->get_win(),
 			200, 200, shape_cnt, shape_frame);
 		break;
-	case XK_f:			// Show next frame.
+	case SDLK_f:			// Show next frame.
 		cout << "Frame # " << ++shape_frame << '\n';
 		gwin->paint();
 #if 1
@@ -527,20 +358,21 @@ static void Handle_keystroke
 			200, 200, face_cnt, face_frame);
 #endif
 		break;
-	case XK_Right:
+	case SDLK_RIGHT:
 		gwin->view_right();
 		break;
-	case XK_Left:
+	case SDLK_LEFT:
 		gwin->view_left();
 		break;
-	case XK_Down:
+	case SDLK_DOWN:
 		gwin->view_down();
 		break;
-	case XK_Up:
+	case SDLK_UP:
 		gwin->view_up();
 		break;
 		}
 	}
+
 
 #ifdef __WIN32
 
