@@ -131,7 +131,10 @@ Path_walking_actor_action::~Path_walking_actor_action
 	(
 	)
 	{
-	delete path; 
+	delete path;
+	delete subseq;
+	subseq = 0;			// (Debugging).
+	original_dir = -1;
 	}
 
 /*
@@ -176,6 +179,8 @@ int Path_walking_actor_action::handle_event
 		if (delay)
 			return delay;	// Still going.
 		set_subseq(0);
+					// He was stopped, so restore speed.
+		actor->set_frame_time(speed);
 		return speed;		// Come back in a moment.
 		}
 	Tile_coord tile;
