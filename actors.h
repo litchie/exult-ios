@@ -159,8 +159,8 @@ public:
 		cloak_spot = 15,	// SI
 		hands2_spot = 16,	// SI (gloves, gauntlets)
 		ucont_spot = 17,	// SI Usecode Container
-		lrhand = 100,		// Special:  uses lhand & rhand.
-		lrfinger = 101,		// Special:  uses lfinger & rfinger
+		lrhand = 100,		// Special:  uses lhand & rhand. - Used anymore?
+		lrfinger = 101,		// Special:  uses lfinger & rfinger - Used anymore?
 		special_spot = 102	// Special:  SI non placeable
 		};
 	int free_hand() const		// Get index of a free hand, or -1.
@@ -233,6 +233,13 @@ public:
 		to_sit_frame = 11,
 		sleep_frame = 13
 		};
+	enum FIS_Type {			// The types used in the call to fit_in_spot
+		FIS_Other	= 0,
+		FIS_2Hand	= 1,
+		FIS_2Finger	= 2,
+		FIS_Spell	= 3
+		};
+
 	int get_face_shapenum() const	// Get "portrait" shape #.
 		{ return npc_num; }	// It's the NPC's #.
 	int get_usecode() const
@@ -282,6 +289,10 @@ public:
 	void set_target(Game_object *obj, bool start_combat = false);
 	Game_object *get_target()	// Get who/what we're attacking.
 		{ return target; }
+					// Works out if an object fits in a spot
+	bool fits_in_spot (Game_object *obj, int spot, FIS_Type type = FIS_Other);
+					// The prefered slot for an object
+	void get_prefered_slots (Game_object *obj, int &prefered, int &alternate, FIS_Type &fistype);
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
 	int get_prev_schedule_type();	// Get previous schedule.
