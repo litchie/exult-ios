@@ -209,7 +209,7 @@ int Barge_object::okay_to_rotate
 	{
 	int lift = get_lift();
 					// Special case for carpet.
-	int move_type = (lift >= 11) ? (MOVE_LEVITATE) : MOVE_ALL_TERRAIN;
+	int move_type = (lift >= 10) ? (MOVE_LEVITATE) : MOVE_ALL_TERRAIN;
 					// Get footprint in tiles.
 	Rectangle foot = get_tile_footprint();
 	int xts = get_xtiles(), yts = get_ytiles();
@@ -591,7 +591,9 @@ void Barge_object::move
 		Game_object *obj = get_object(i);
 		int ox, oy, oz;
 		obj->get_abs_tile(ox, oy, oz);
-		positions[i] = Tile_coord(ox + dx, oy + dy, oz + dz);
+					// Watch for world-wrapping.
+		positions[i] = Tile_coord((ox + dx + c_num_tiles)%c_num_tiles,
+				(oy + dy + c_num_tiles)%c_num_tiles, oz + dz);
 		obj->remove_this(1);	// Remove object from world.
 		obj->set_invalid();	// So it gets added back right.
 					// Animate a few shapes.
@@ -681,7 +683,7 @@ int Barge_object::step
 	Tile_coord cur = get_abs_tile_coord();
 					// Blocked? (Assume ht.=4, for now.)
 	int move_type;
-	if (cur.tz >= 11)
+	if (cur.tz >= 10)
 		{			// Definitely a carpet.
 		move_type = MOVE_LEVITATE;
 		boat = 0;
