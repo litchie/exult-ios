@@ -53,6 +53,21 @@ public:
 		{ return next; }
 	Container_game_object *get_container()
 		{ return container; }
+	void add(Game_object *obj)
+		{ container->add(obj); }
+	void remove(Game_object *obj)
+		{ container->remove(obj); }
+					// Get screen rect. of obj. in here.
+	Rectangle get_shape_rect(Game_object *obj);
+					// Get screen loc. of object.
+	void get_shape_location(Game_object *obj, int& ox, int& oy)
+		{
+		ox = x + object_area.x + obj->cx,
+		oy = y + object_area.y + obj->cy;
+		}
+					// Find objs. containing mouse point.
+	int find_objects(Game_window *gwin, int mx, int my,
+						Game_object **list);
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};
