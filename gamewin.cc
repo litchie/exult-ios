@@ -1126,20 +1126,17 @@ void Game_window::paint
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy < stop_chunky; cy++)
 		for (cx = start_chunkx; cx < stop_chunkx; cx++)
-			{
 			paint_chunk_flats(cx, cy);
-			paint_chunk_objects(0, cx, cy, 1);
-			}
-					// Draw the chunks' objects.
-	for (cy = start_chunky; cy < stop_chunky; cy++)
-		for (cx = start_chunkx; cx < stop_chunkx; cx++)
-			{
-			paint_chunk_objects(-1, cx, cy, 0);
-					// Also check for light sources.
-			Chunk_object_list *chunk = get_objects(cx, cy);
-//			if (is_main_actor_inside() && chunk->is_roof())
-				light_sources += chunk->get_light_sources();
-			}
+					// Draw the chunks' objects
+					//   diagonally NE.
+	for (cy = 0; cy < stop_chunky; cy++)
+		for (int dx = 0, dy = cy;
+				dx < stop_chunkx && dy >= 0; dx++, dy--)
+			light_sources += paint_chunk_objects(dx, dy);
+	for (cx = 1; cx < stop_chunkx; cx++)
+		for (int dx = cx, dy = stop_chunky - 1; 
+				dx < stop_chunkx && dy >= 0; dx++, dy--)
+			light_sources += paint_chunk_objects(dx, dy);
 
 					// Draw gumps.
 	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
@@ -1194,32 +1191,30 @@ void Game_window::paint_chunk_flats
 
 /*
  *	Paint a chunk's objects, left-to-right, top-to-bottom.
+ *
+ *	Output:	# light sources found.
  */
 
-void Game_window::paint_chunk_objects
+int Game_window::paint_chunk_objects
 	(
-	int at_lift,			// Only paint this lift.  -1=all.
-	int cx, int cy,			// Chunk coords (0 - 12*16).
-	int flat_only			// Only paint 0-height objects if 1,
-					//   >0 height if 0.
+	int cx, int cy			// Chunk coords (0 - 12*16).
 	)
 	{
 	Game_object *obj;
 	Chunk_object_list *olist = get_objects(cx, cy);
+	int light_sources = 0;		// Also check for light sources.
+//	if (is_main_actor_inside() && olist->is_roof())
+		light_sources += olist->get_light_sources();
 	int save_skip = skip_lift;
 	if (skip_above_actor < skip_lift)
 		skip_lift = skip_above_actor;
 					// +++++Clear flag.
 	Object_iterator next(olist);
-#if 0
-	while ((obj = next.get_next()) != 0)
-		obj->rendered = 0;
-	next.reset();
-#endif
 	while ((obj = next.get_next()) != 0)
 		if (obj->render_seq != render_seq)
-			paint_object(obj, at_lift, flat_only);
+			paint_object(obj);
 	skip_lift = save_skip;
+	return light_sources;
 	}
 
 /*
@@ -1228,20 +1223,11 @@ void Game_window::paint_chunk_objects
 
 void Game_window::paint_object
 	(
-	Game_object *obj,
-	int at_lift,			// Only paint this lift.  -1=all.
-	int flat_only			// Only paint 0-height objects if 1,
-					//   >0 height if 0.
+	Game_object *obj
 	)
 	{
 	int lift = obj->get_lift();
-	if (at_lift >= 0 && at_lift != lift)
-		return;
 	if (lift >= skip_lift)
-		return;
-					// Check height.
-	Shape_info& info = shapes.get_info(obj->get_shapenum());
-	if ((info.get_3d_height() == 0) != flat_only)
 		return;
 	obj->render_seq = render_seq;
 	int cnt = obj->get_dependency_count();
@@ -1249,7 +1235,7 @@ void Game_window::paint_object
 		{
 		Game_object *dep = obj->get_dependency(i);
 		if (dep && dep->render_seq != render_seq)
-			paint_object(dep, at_lift, flat_only);
+			paint_object(dep);
 		}
 	obj->paint(this);		// Finally, paint this one.
 	}
