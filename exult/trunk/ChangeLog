@@ -1,4 +1,7 @@
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
+	* Some people are having trouble including pthread_alloc. Include cstring as an alternative
+
+2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
 	* Never call the mixer object through it's pointer without verifying the validity of that pointer. Should fix occasional segfault at shutdown
 
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
