@@ -47,7 +47,7 @@ using std::hash_map;
 #  if (defined(__GNUC__) && (__GNUC__ == 3) && ( __GNUC_MINOR__ > 0))
 using __gnu_cxx::hash_set;
 #  else
-using std::hash_map;
+using std::hash_set;
 #  endif
 #else
 #  include <hash_set>
