@@ -832,6 +832,11 @@ static void Handle_keystroke
 		break;
 	case SDLK_m:			// Show next mouse cursor.
 		{
+		if (ctrl)		// CTRL-m:  get 100 gold coins!
+			{
+			gwin->get_main_actor()->add_quantity(100, 644);
+			break;
+			}
 		static int mnum = 0;
 		if (shift && mnum > 0)
 			audio->start_music(--mnum, 0);

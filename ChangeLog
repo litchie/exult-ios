@@ -1,3 +1,9 @@
+2000-07-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* effects.cc (Weather_effect): Improved rain effect.
+
+	* Barges working slightly better.
+
 2000-07-14  Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* gamewin.cc: Don't show eggs by default. Should do the same for
