@@ -2487,3 +2487,26 @@ USECODE_INTRINSIC(is_on_keyring)
 	else
 		return Usecode_value(false);
 }
+
+USECODE_INTRINSIC(save_pos)
+{
+	// save_pos(item).
+	Game_object *item = get_item(parms[0]);
+	if (item)
+		saved_pos = item->get_abs_tile_coord();
+	return no_ret;
+}
+
+USECODE_INTRINSIC(teleport_to_saved_pos)
+{
+	// teleport_to_saved_pos(actor).  Only supported for Avatar for now.
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc == gwin->get_main_actor())
+		{			// Bad value?
+		if (saved_pos.tx < 0 || saved_pos.tx >= c_num_tiles)
+					// Fix old games.  Send to Monitor.
+			saved_pos = Tile_coord(719, 2608, 1);
+		gwin->teleport_party(saved_pos);
+		}
+	return no_ret;
+}
