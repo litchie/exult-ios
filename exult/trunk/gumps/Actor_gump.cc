@@ -170,13 +170,15 @@ int Actor_gump::add
 	Game_object *obj,
 	int mx, int my,			// Screen location of mouse.
 	int sx, int sy,			// Screen location of obj's hotspot.
-	bool dont_check			// Skip volume check.
+	bool dont_check,		// Skip volume check.
+	bool combine			// True to try to combine obj.  MAY
+					//   cause obj to be deleted.
 	)
 #if 1
 {
 	Game_object *cont = find_object(mx, my);
 	
-	if (cont && cont->add(obj))
+	if (cont && cont->add(obj, false, combine))
 		return (1);
 	
 	int index = find_closest(mx, my, 1);
@@ -184,7 +186,7 @@ int Actor_gump::add
 	if (index != -1 && container->add_readied(obj, index))
 		return (1);
 
-	if (container->add(obj, dont_check))
+	if (container->add(obj, dont_check, combine))
 		return (1);
 
 	return (0);

@@ -344,7 +344,8 @@ bool Dragging_info::drop
 		{
 		if (!Check_weight(gwin, to_drop, on_gump->get_cont_or_actor(x,y)))
 			return false;
-		if (!on_gump->add(to_drop, x, y, paintx, painty))
+					// Add, and allow to combine.
+		if (!on_gump->add(to_drop, x, y, paintx, painty, false, true))
 			{
 			Mouse::mouse->flash_shape(Mouse::wontfit);
 			return false;

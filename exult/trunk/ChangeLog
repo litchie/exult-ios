@@ -1,5 +1,13 @@
 2002-05-13  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* actors.cc: In rewriting with the 'combine' flag, I also changed
+	all uses of drop() with add(), since drop() can potentially delete
+	the object being added.
+
+	* objs/contain.cc,etc:  ::add() takes a new parameter, 'combine',
+	which means it should try to combine quantity items.  Also,
+	replaced 'int' flags with 'bool'.
+
 	* animat.cc,etc:  Simon Quinn's SFX patches applied.
 
 	* schedule.cc:  Added Follow_avatar_schedule, and moved some of

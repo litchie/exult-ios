@@ -352,16 +352,19 @@ void Monster_actor::move
  *		0 if not enough space.
  */
 
-int Monster_actor::add
+bool Monster_actor::add
 	(
 	Game_object *obj,
-	int dont_check			// 1 to skip volume check.
+	bool dont_check,		// 1 to skip volume check.
+	bool combine			// True to try to combine obj.  MAY
+					//   cause obj to be deleted.
 	)
 	{
-	if (Npc_actor::add(obj, 1))	// Try to add to 'readied' spot.
-		return (1);		// Successful.
+					// Try to add to 'readied' spot.
+	if (Npc_actor::add(obj, true, combine))
+		return (true);		// Successful.
 					// Just add anything.
-	return Container_game_object::add(obj, 1);
+	return Container_game_object::add(obj, true, combine);
 	}
 
 /*

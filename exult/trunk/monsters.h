@@ -63,7 +63,8 @@ public:
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
 					// Add an object.
-	virtual int add(Game_object *obj, int dont_check = 0);
+	virtual bool add(Game_object *obj, bool dont_check = false,
+							bool combine = false);
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
 	virtual Weapon_info *get_weapon(int& points, int& shape);

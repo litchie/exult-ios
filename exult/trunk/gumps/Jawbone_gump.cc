@@ -46,10 +46,10 @@ Jawbone_gump::Jawbone_gump
 
 
 int Jawbone_gump::add(Game_object *obj, int mx, int my,	int sx, int sy,
-					  bool dont_check)
+					  bool dont_check, bool combine)
 {
 	// Jawbone_object handles all the checks required
-	return jawbone->add(obj, dont_check);
+	return jawbone->add(obj, dont_check, combine);
 }
 
 void Jawbone_gump::paint(Game_window *gwin)
