@@ -891,6 +891,45 @@ int Chunk_object_list::is_blocked
 	}
 
 /*
+ *	Find all desired objects within a given rectangle.
+ *
+ *	Output:	# found, appended to vec.
+ */
+
+int Chunk_object_list::find_in_area
+	(
+	Game_object_vector& vec,	// Returned here.
+	Rectangle area,			// Area to search.
+	int shapenum,
+	int framenum
+	)
+	{
+	int savesize = vec.size();
+					// Go through interesected chunks.
+	Chunk_intersect_iterator next_chunk(area);
+	Rectangle tiles;		// (Tiles within intersected chunk).
+	int eachcx, eachcy;
+	Game_window *gwin = Game_window::get_game_window();
+	while (next_chunk.get_next(tiles, eachcx, eachcy))
+		{
+		Chunk_object_list *chunk = gwin->get_objects_safely(
+							eachcx, eachcy);
+		if (!chunk)
+			continue;
+		Object_iterator next(chunk->objects);
+		Game_object *each;
+		while ((each = next.get_next()) != 0)
+			if (each->get_shapenum() == shapenum &&
+			    each->get_framenum() == framenum &&
+			    tiles.has_point(each->get_tx(), each->get_ty()))
+				vec.append(each);
+		}
+	return vec.size() - savesize;
+	}
+
+
+
+/*
  *	Test all nearby eggs when you've teleported in.
  */
 

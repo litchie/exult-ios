@@ -1,3 +1,8 @@
+2001-04-29  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Remove_from_area() intrinsic, Chunk_object_list::find_in_area(),
+	for fixing maze in Silver Seed.
+
 2001-04-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SI spellbook working now.  Still have to redo reagant use/check.
