@@ -1,5 +1,6 @@
 2000-05-25  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
 	* objs.cc: treat bones as containers
+	* usecode.cc: make remove_answer accept arrays too
 
 2000-05-25  Coder Infidel  <coder_infidel@hotmail.com>
 
