@@ -237,3 +237,69 @@ int Fast_pathfinder_client::is_grabable
 	Astar path;
 	return path.NewPath(from, to, &client);
 	}
+
+/*
+ *	Create client for combat pathfinding.
+ */
+
+Combat_pathfinder_client::Combat_pathfinder_client
+	(
+	Actor *attacker,
+	int reach,			// Weapon reach in tiles.
+	Game_object *opponent
+	) : Fast_pathfinder_client(reach), destbox(0, 0, 0, 0)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info1 = gwin->get_info(attacker);
+	axtiles = info1.get_3d_xtiles();
+	aytiles = info1.get_3d_ytiles();
+	aztiles = info1.get_3d_height();
+	if (!opponent)
+		return;			// Means this isn't usable.
+	Shape_info& info2 = gwin->get_info(opponent);
+	Tile_coord opos = opponent->get_abs_tile_coord();
+	int oxtiles = info2.get_3d_xtiles(), oytiles = info2.get_3d_ytiles();
+	destbox = Rectangle(opos.tx - oxtiles + 1, opos.ty - oytiles + 1,
+							oxtiles, oytiles);
+	destbox.enlarge(reach);		// This is how close we need to get.
+	}
+
+
+/*
+ *	Is tile at goal?
+ */
+
+int Combat_pathfinder_client::at_goal
+	(
+	Tile_coord& tile,
+	Tile_coord& goal
+	)
+	{
+	Rectangle abox(tile.tx - axtiles + 1, tile.ty - aytiles + 1,
+						axtiles, aytiles);
+	return abox.intersects(destbox);
+	}
+
+/*
+ *	Figure cost going from one tile to an adjacent tile (for pathfinding).
+ *
+ *	Output:	Cost, or -1 if blocked.
+ *		The 'tz' field in tile may be modified.
+ */
+
+int Monster_pathfinder_client::get_step_cost
+	(
+	Tile_coord from,
+	Tile_coord& to			// The tile we're going to.  The 'tz'
+					//   field may be modified.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (Chunk_object_list::is_blocked(axtiles, aytiles, aztiles,
+							from, to))
+		return -1;
+	else
+		return 1;
+	}
+
+
