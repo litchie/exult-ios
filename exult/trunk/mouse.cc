@@ -27,8 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "fnames.h"
 
-short Mouse::short_arrows[8] = {0, 1, 2, 3, 4, 5, 6, 7};	//++++Guessing.
-short Mouse::long_arrows[8] = {8, 9, 10, 11, 12, 13, 14, 15};
+short Mouse::short_arrows[8] = {10, 9, 8, 15, 14, 13, 12, 11};
+short Mouse::med_arrows[8] = {18, 17, 16, 23, 22, 21, 20, 19};
+short Mouse::long_arrows[8] = {26, 25, 24, 31, 30, 29, 28, 27};
 
 /*
  *	Create.
@@ -57,6 +58,17 @@ Mouse::Mouse
 	box.w = maxw;
 	box.h = maxh;
 	set_short_arrow(east);		// +++++For now.
+	}
+
+/*
+ *	Delete.
+ */
+
+Mouse::~Mouse
+	(
+	)
+	{
+	delete backup;
 	}
 
 /*

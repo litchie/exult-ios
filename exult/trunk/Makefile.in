@@ -88,7 +88,7 @@ AUTOMAKE_OPTIONS = foreign
 
 SUBDIRS = audio conf npc script
 
-OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o 	tqueue.o gameclk.o imagetxt.o text.o items.o lists.o vec.o
+OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o 	tqueue.o gameclk.o mouse.o imagetxt.o text.o items.o lists.o vec.o
 
 
 SUFFIXES = .cc .h
