@@ -32,6 +32,7 @@
 #include "ucmachine.h"
 #include "frameseq.h"
 #include "ucmachine.h"
+#include "cheat.h"
 
 using std::cout;
 using std::endl;
@@ -257,7 +258,8 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	else if (actor->step(tile, frame))	// Successful.
 		return speed;
 					// Blocked by a door?
-	if (actor->get_tile().distance(tile) == 1)
+	if (actor->get_tile().distance(tile) == 1 &&
+	    !cheat.in_map_editor())	// And NOT map-editing?
 					// +++++Check for intelligence?
 		{
 		Game_object *door = Game_object::find_blocking(tile);

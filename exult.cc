@@ -972,8 +972,9 @@ static void Handle_event
 			{
 #ifdef USE_EXULTSTUDIO			// Painting?
 			if (cheat.in_map_editor() && 
-			    cheat.get_edit_mode() == Cheat::paint &&
-			    cheat.get_edit_shape() >= 0)
+			    cheat.get_edit_shape() >= 0 &&
+			    (cheat.get_edit_mode() == Cheat::paint ||
+					(SDL_GetModState() & KMOD_SHIFT)))
 				{
 				Drop_in_map_editor(event, true);
 				break;
@@ -990,8 +991,9 @@ static void Handle_event
 			event.motion.y / scale, Mouse::mouse->avatar_speed);
 #ifdef USE_EXULTSTUDIO			// Painting?
 		else if (cheat.in_map_editor() && 
-			 cheat.get_edit_mode() == Cheat::paint &&
-			 cheat.get_edit_shape() >= 0)
+			 cheat.get_edit_shape() >= 0 &&
+			 (cheat.get_edit_mode() == Cheat::paint ||
+					(SDL_GetModState() & KMOD_SHIFT)))
 			{
 			static int prevx = -1, prevy = -1;
 			Move_dragged_shape(cheat.get_edit_shape(),

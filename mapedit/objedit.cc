@@ -37,6 +37,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::cout;
 using std::endl;
+
+/*
+ *	Object window's Okay button.
+ */
+C_EXPORT void on_obj_okay_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->save_obj_window();
+	ExultStudio::get_instance()->close_obj_window();
+	}
+
 /*
  *	Object window's Apply button.
  */
@@ -270,7 +284,6 @@ int ExultStudio::save_obj_window
 		return 0;
 		}
 	cout << "Sent object data to server" << endl;
-	close_obj_window();
 	return 1;
 	}
 
@@ -310,6 +323,8 @@ void ExultStudio::set_obj_shape
 	{
 	set_spin("obj_shape", shape);
 	set_spin("obj_frame", frame);
+	const char *nm = get_shape_name(shape);
+	set_entry("obj_name", nm ? nm : "", false);
 	show_obj_shape();
 	}
 

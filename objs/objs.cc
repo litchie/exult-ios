@@ -883,7 +883,7 @@ void Game_object::update_from_studio
 		cout << "Obj from ExultStudio is not being edited" << endl;
 		return;
 		}
-	editing = 0;
+//	editing = 0;	// He may have chosen 'Apply', so still editing.
 	Game_window *gwin = Game_window::get_game_window();
 	gwin->add_dirty(obj);
 	obj->set_shape(shape, frame);
