@@ -29,6 +29,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "SDL_events.h"
 
+using std::ofstream;
+using std::ostream;
+using std::endl;
+
 vector<One_note *> Notebook_gump::notes;
 bool Notebook_gump::initialized = false;	// Set when read in.
 Notebook_gump *Notebook_gump::instance = 0;
@@ -47,23 +51,24 @@ const int pagey = 10;			// Top of page.
 class One_note
 {
 	int day, hour, minute;		// Game time when note was written.
-	int lat, lng;			// Latitute, longitude where written.
+	int tx, ty;			// Tile coord. where written.
 	char *text;			// Text, 0-delimited.
 	int textlen;			// Length, not counting ending NULL.
 	int textmax;			// Max. space.
 	bool is_new;			// Newly created at cur. time/place.
 public:
 	friend class Notebook_gump;
-	One_note() : day(0), hour(0), minute(0), lat(0), lng(0), 
+	One_note() : day(0), hour(0), minute(0), tx(0), ty(0), 
 					text(0), textlen(0), textmax(0)
 		{  }
-	void set(int d, int h, int m, int la, int ln, char *txt = 0);
-	One_note(int d, int h, int m, int la, int ln, char *txt = 0) : text(0)
-		{ set(d, h, m, la, ln, txt); }
+	void set(int d, int h, int m, int x, int y, char *txt = 0);
+	One_note(int d, int h, int m, int x, int y, char *txt = 0) : text(0)
+		{ set(d, h, m, x, y, txt); }
 	~One_note()
 		{ delete [] text; }
 	void insert(int chr, int offset);	// Insert text.
 	bool del(int offset);			// Delete text.
+	void write(ostream& out);		// Write out as XML.
 };
 
 /*
@@ -73,15 +78,15 @@ public:
 void One_note::set
 	(
 	int d, int h, int m,
-	int la, int ln, 
+	int x, int y, 
 	char *txt
 	)
 	{
 	day = d;
 	hour = h;
 	minute = m;
-	lat = la;
-	lng = ln;
+	tx = x;
+	ty = y;
 	delete text;
 	text = txt;
 	if (text)
@@ -144,6 +149,25 @@ bool One_note::del
 	memmove(text + offset, text + offset + 1, textlen - offset);
 	--textlen;
 	return true;
+	}
+
+/*
+ *	Write out as XML.
+ */
+
+void One_note::write
+	(
+	ostream& out
+	)
+	{
+	out << "<note>" << endl;
+	out << "<time> " << day << ':' << hour << ':' << minute <<
+		" </time>" << endl;
+	out << "<place> " << tx << ':' << ty << " </place>" << endl;
+	out << "<text>" << endl;
+	out.write(text, textlen);
+	out << endl << "</text>" << endl;
+	out << "</note>" << endl;
 	}
 
 /*
@@ -219,10 +243,12 @@ void Notebook_gump::add_new
 	{
 	Game_clock *clk = gwin->get_clock();
 	Tile_coord t = gwin->get_main_actor()->get_tile();
+#if 0
 	int lat = (t.tx - 0x3a5)/10,	// +++++(May have these switched.)
 	    lng = (t.ty - 0x46e)/10;
+#endif
 	One_note *note = new One_note(clk->get_day(), clk->get_hour(),
-			clk->get_minute(), lat, lng);
+			clk->get_minute(), t.tx, t.ty);
 	note->is_new = true;
 	notes.push_back(note);
 	}
@@ -548,4 +574,25 @@ bool Notebook_gump::handle_kbd_event
 	// ++++++Finish.
 	std::cout << "Notebook chr: " << chr << std::endl;
 	return true;
+	}
+
+/*
+ *	Write it out.
+ */
+
+void Notebook_gump::write
+	(
+	)
+	{
+	ofstream out;
+
+	if (!initialized)
+		return;
+	U7open(out, NOTEBOOKXML);
+	out << "<notebook>" << endl;
+	for (vector<One_note*>::iterator it = notes.begin();
+					it != notes.end(); ++it)
+		(*it)->write(out);
+	out << "</notebook>" << endl;
+	out.close();
 	}

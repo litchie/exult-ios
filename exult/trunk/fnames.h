@@ -126,6 +126,7 @@
 #define GEXULTVER	"<GAMEDAT>/exult.ver"
 #define GNEWGAMEVER	"<GAMEDAT>/newgame.ver"
 #define KEYRINGDAT	"<GAMEDAT>/keyring.dat"
+#define NOTEBOOKXML	"<GAMEDAT>/notebook.xml"
 
 #define TEXTMSGS	"<STATIC>/textmsg.txt"
 #define PATCH_TEXTMSGS	"<PATCH>/textmsg.txt"
