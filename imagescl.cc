@@ -80,6 +80,11 @@ public:
 	unsigned short rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{ return ((r>>3)<<10)|((g>>3)<<5)|(b>>3); }
+	void copy(unsigned short& dest, unsigned char src) const
+		{
+		SDL_Color& color = colors[src];
+		dest = rgb(color.r, color.g, color.b);
+		}
 	void split_dest(unsigned short pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
@@ -100,6 +105,11 @@ public:
 	unsigned short rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{ return ((r>>3)<<11)|((g>>2)<<5)|(b>>3); }
+	void copy(unsigned short& dest, unsigned char src) const
+		{
+		SDL_Color& color = colors[src];
+		dest = rgb(color.r, color.g, color.b);
+		}
 	void split_dest(unsigned short pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
