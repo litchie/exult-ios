@@ -553,6 +553,7 @@ void Conversation::show_avatar_choices()
 void Conversation::clear_avatar_choices()
 {
 //	gwin->paint(avatar_face);	// Paint over face and answers.
+	gwin->add_dirty(avatar_face);
 	avatar_face.w = 0;
 }
 
