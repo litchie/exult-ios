@@ -60,6 +60,65 @@ using std::rand;
 using std::string;
 using std::swap;
 
+// Party positions
+// Direction, Party num, xy (tile) from leader
+//
+// Please Don't Touch - Colourless
+//
+const short Actor::party_pos[4][10][2] = {
+		// North Facing
+	{
+		{ -2, 2 },
+		{ 2, 2 },
+		{ 0, 4 },
+		{ -4, 4 },
+		{ 4, 4 },
+		{ -2, 6 },
+		{ 2, 6 },
+		{ 0, 8 },
+		{ -4, 8 },
+		{ 4, 8 }
+	},
+		// East Facing,
+	{
+		{ -2, -2 },
+		{ -2, 2 },
+		{ -4, 0 },
+		{ -4, -4 },
+		{ -4, 4 },
+		{ -6, -2 },
+		{ -6, 2 },
+		{ -8, 0 },
+		{ -8, -4 },
+		{ -8, 4 }
+	},
+		// South Facing
+	{
+		{ -2, -2 },
+		{ 2, -2 },
+		{ 0, -4 },
+		{ -4, -4 },
+		{ 4, -4 },
+		{ -2, -6 },
+		{ 2, -6 },
+		{ 0, -8 },
+		{ -4, -8 },
+		{ 4, -8 }
+	},
+		// West Facing
+	{
+		{ 2, -2 },
+		{ 2, 2 },
+		{ 4, 0 },
+		{ 4, -4 },
+		{ 4, 4 },
+		{ 6, -2 },
+		{ 6, 2 },
+		{ 8, 0 },
+		{ 8, -4 },
+		{ 8, 4 }
+	}
+};
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 const char Actor::attack_frames1[4] = {3, 4, 5, 6};
@@ -686,51 +745,152 @@ int Actor::find_best_spot
 	(
 	Game_object *obj
 	)
-	{
+{
+
 	Shape_info& info = 
 		Game_window::get_game_window()->get_info(obj);
-	if (info.get_shape_class() == Shape_info::container)
-		return !spots[back] ? back : free_hand();
-	Ready_type type = (Ready_type) info.get_ready_type();
-	switch (type)
+
+	if (Game::get_game_type() != SERPENT_ISLE)
+	{
+		if (info.get_shape_class() == Shape_info::container)
+			return !spots[back] ? back : free_hand();
+
+		Ready_type type = (Ready_type) info.get_ready_type();
+		
+		switch (type)
 		{
-	case spell:
-	case other_spell:
-	case one_handed_weapon:			// Also includes shields.
-	case tongs:
-		{
-		int spot = free_hand();
-		if (spot == -1 && !spots[belt])
-			spot = belt;
-		return spot;
-		}
-	case neck_armor: // This is Head in SI
-		return !spots[neck] ? neck : free_hand();
-	case torso_armor:
-		return !spots[torso] ? torso : free_hand();
-	case ring:
-		return (free_finger() != -1 ? free_finger() : free_hand());
-	case ammunition:		// ++++++++Check U7.
-		return !spots[ammo] ? ammo : free_hand();
-	case head_armor: // Ears in SI
-		return !spots[head] ? head : free_hand();
-	case leg_armor:
-		return !spots[legs] ? legs : free_hand();
-	case foot_armor:
-		return !spots[feet] ? feet : free_hand();
-	case two_handed_weapon:
-		return (!spots[lhand] && !spots[rhand]) ? lrhand :
-			(Game::get_game_type() == SERPENT_ISLE && !spots[back2]) ? back2 : -1;
-	case gloves:
-		// Gloves occupy both finger spots
-		return (!spots[lfinger] && !spots[rfinger]) ? lrfinger 
-							: free_hand();
-					// What about Bedroll in SI
-	case other:
-	default:
-		return free_hand();
+			case spell:
+			case other_spell:
+			case one_handed_weapon:			// Also includes shields.
+			case tongs:
+			{
+				int spot = free_hand();
+				if (spot == -1 && !spots[belt])
+					spot = belt;
+				return spot;
+			}
+			case neck_armor:
+			return !spots[neck] ? neck : free_hand();
+				
+			case torso_armor:
+			return !spots[torso] ? torso : free_hand();
+				
+			case ring:
+			return (free_finger() != -1 ? free_finger() : free_hand());
+				
+			case ammunition:		// ++++++++Check U7.
+			return !spots[ammo] ? ammo : free_hand();
+			
+			case head_armor:
+			return !spots[head] ? head : free_hand();
+				
+			case leg_armor:
+			return !spots[legs] ? legs : free_hand();
+				
+			case foot_armor:
+			return !spots[feet] ? feet : free_hand();
+				
+			case two_handed_weapon:
+			return (!spots[lhand] && !spots[rhand]) ? lrhand : -1;
+
+			// Gloves occupy both finger spots
+			case gloves:
+			return (!spots[lfinger] && !spots[rfinger]) ? lrfinger : free_hand();
+			case other:
+			return free_hand();
+
+			default:
+			#ifdef DEBUG
+			cerr << "NPC " << get_npc_num() << ":  Unknown ready type: " << type << "  Name: " << item_names[obj->get_shapenum()] << endl;
+			cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
+			cerr << endl;
+			#endif //DEBUG
+			return free_hand();
 		}
 	}
+	else	// Serpent Isle Types
+	{
+		Ready_type_SI type = (Ready_type_SI) info.get_ready_type();
+		
+		switch (type)
+		{
+			case spell_si:
+			case other_spell_si:
+			case one_handed_si:			//
+			{					// FIXME
+				int spot = free_hand();		//
+				if (spot == -1 && !spots[belt])	// Only certain things are
+					spot = belt;		// Allowed to be put in your
+				return spot;			// belt. How do i differentiate?
+			}					//
+			
+			case cloak_si:
+			return !spots[cloak_spot] ? cloak_spot : free_hand();
+			
+			case amulet_si:
+			return !spots[neck] ? neck : free_hand();
+
+			case helm_si:
+			return !spots[head] ? head : free_hand();
+
+			case gloves_si:
+			return !spots[hands2_spot] ? hands2_spot : free_hand();
+
+			case usecode_container_si:
+			return !spots[ucont_spot] ? ucont_spot : -1;	// don't put in hands
+			
+			case ring_si:
+			return (free_finger() != -1 ? free_finger() : free_hand());
+
+			case earrings_si:
+			return !spots[ears_spot] ? ears_spot : -free_hand();
+
+			case ammo_si:		// ++++++++Check SI.
+			return !spots[ammo] ? ammo : free_hand();
+			
+			case belt_si:
+			return !spots[belt] ? belt : free_hand();
+			
+			case armour_si:
+			return !spots[torso] ? torso : free_hand();
+			
+			case boots_si:
+			return !spots[feet] ? feet : free_hand();
+			
+			case leggings_si:
+			return !spots[legs] ? legs : free_hand();
+			
+			case backpack_si:
+			return !spots[back] ? back : free_hand();
+			
+			case two_handed_si:
+			return (!spots[lhand] && !spots[rhand]) ? lrhand :
+					!spots[back2h_spot] ? back2h_spot : -1;
+
+
+			// What about Bedroll in SI
+			case other:
+			
+			if (obj->get_shapenum() == 802 && !spots[belt])	// Bag
+				return belt;
+			else if (obj->get_shapenum() == 583 && !spots[back2h_spot])	// Bed roll
+				return back2h_spot;
+			else if (obj->get_shapenum() == 583 && !spots[back])	// Bed roll
+				return back;
+		
+			return free_hand();
+
+
+			default:
+			#ifdef DEBUG
+			cerr << "NPC " << get_npc_num() << ":  Unknown ready type: " << type << "  Name: " << item_names[obj->get_shapenum()] << endl;
+			cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
+			cerr << endl;
+			#endif //DEBUG
+			return free_hand();
+		}
+	}
+}
 
 /*
  *	Set new schedule by type.
@@ -1304,9 +1464,21 @@ int Actor::add
 	)
 	{
 	int index = find_best_spot(obj);// Where should it go?
+#ifdef DEBUG
+	if (Game::get_game_type() == SERPENT_ISLE)
+	{
+		cerr << "NPC " << get_npc_num() << "  Name: " << item_names[obj->get_shapenum()] << endl;
+		cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
+		cerr << "Index: " << index << endl;
+		cerr << endl;
+	}
+#endif //DEBUG
+		
 	if (index < 0)			// No free spot?  Look for a bag.
 		{
 		if (spots[back] && spots[back]->drop(obj))
+			return (1);
+		if (spots[belt] && spots[belt]->drop(obj))
 			return (1);
 		if (spots[lhand] && spots[lhand]->drop(obj))
 			return (1);
@@ -1374,6 +1546,15 @@ int Actor::add_readied
 	int index			// Spot #.
 	)
 	{
+#ifdef DEBUG
+	if (Game::get_game_type() == SERPENT_ISLE)
+	{
+		cerr << "NPC " << get_npc_num() << "  Name: " << item_names[obj->get_shapenum()] << endl;
+		cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
+		cerr << endl;
+	}
+#endif //DEBUG
+
 	if (index < 0 || index >= (int)(sizeof(spots)/sizeof(spots[0])))
 		return (0);		// Out of range.
 	if (spots[index])		// Already something there?

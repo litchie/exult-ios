@@ -51,6 +51,7 @@
 #define INTROMUS	"<STATIC>/intrordm.dat"
 #define	XMIDI_MT	"<STATIC>/xmidi.mt"
 #define U7SPEECH	"<STATIC>/u7speech.spc"
+#define SISPEECH	"<STATIC>/sispeech.spc"
 #define XFORMTBL       	"<STATIC>/xform.tbl"
 #define MONSTERS	"<STATIC>/monsters.dat"
 #define EQUIP		"<STATIC>/equip.dat"

@@ -279,6 +279,7 @@ Actor::Actor
 			set_invalid();	// Or set to invalid chunk.
 			}
 	ready_best_weapon();		// Get best weapon in hand.
+			
 #ifdef DEBUG
 
 	cout << get_npc_num() << " Creating ";

@@ -47,5 +47,27 @@ enum Ready_type {
 	gloves = 0xa8
 	};
 
+// Serpent Isle Ready types
+enum Ready_type_SI {
+	other_si = 0x00,			// Anything else.
+	spell_si = 0x01,			// 1-handed spell.
+	one_handed_si = 0x08,
+	cloak_si = 0x10,
+	amulet_si = 0x18,
+	helm_si = 0x20,
+	gloves_si = 0x28,
+	usecode_container_si = 0x30,
+	ring_si = 0x40,
+	earrings_si = 0x48,
+	ammo_si = 0x50,
+	belt_si = 0x58,
+	armour_si = 0x60,
+	boots_si = 0x68,
+	leggings_si = 0x70,
+	backpack_si = 0x78,			// Diaper as well?????
+	two_handed_si = 0xa0,
+	other_spell_si = 0xa1,		// #676,
+	};
+	
 #endif	/* INCL_READY	*/
 

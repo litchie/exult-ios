@@ -47,11 +47,14 @@ Cheat::Cheat() {
   infravision = false;
 
   browser = NULL;
+  tester = NULL;
 }
 
 Cheat::~Cheat() {
   if (browser)
     delete browser;
+  if (tester)
+    delete tester;
 }
 
 void Cheat::init (void) {
@@ -70,6 +73,7 @@ void Cheat::finish_init (void) {
   gwin = Game_window::get_game_window();
 
   browser = new ShapeBrowser();
+  tester = new SoundTester();
 }
 
 
@@ -358,9 +362,7 @@ void Cheat::shape_browser (void) const {
 void Cheat::sound_tester (void) const {
   if (!enabled) return;
 
-  SoundTester tester;
-
-  tester.test_sound();
+  tester->test_sound();
   gwin->paint();
 }
 
