@@ -2683,6 +2683,9 @@ void Game_window::show_gump
 					(Container_game_object *) obj, x, y)
 			: shapenum == game->get_shape("gumps/spellbook") ?
 				new Spellbook_gump((Spellbook_object *) obj)
+					// +++++Put this in config.
+			: shapenum == 65 && Game::get_game_type() ==
+				SERPENT_ISLE ? new Spellscroll_gump(obj)
 			: new Gump((Container_game_object *) obj, 
 							x, y, shapenum);
 					// Paint new one last.

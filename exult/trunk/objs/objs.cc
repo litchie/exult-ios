@@ -665,6 +665,13 @@ void Game_object::activate
 	)
 	{
 	int usefun = get_shapenum();
+					// Serpent Isle spell scrolls:
+	if (usefun == 0x2cb && Game::get_game_type() == SERPENT_ISLE)
+		{
+		Game_window *gwin = Game_window::get_game_window();
+		gwin->show_gump(this, 65);
+		return;
+		}
 					// !!!Special case:  books in BG.
 	if (usefun == 0x282 && get_quality() >= 100)
 		usefun = Game::get_game_type() == BLACK_GATE ? 0x638 : 0x63b;

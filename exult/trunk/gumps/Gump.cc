@@ -152,6 +152,12 @@ void Gump::initialize
 			checkx = 8;
 			checky = 70;
 		}
+		else if (shnum == 65 && Game::get_game_type() == SERPENT_ISLE)
+		{
+			object_area = Rectangle(30, 29, 50, 29);
+			checkx = 8;
+			checky = 68;
+		}
 		else if ((shnum >= 57 && shnum <= 68 && Game::get_game_type() == BLACK_GATE))
 		{	// Character pictures:
 			// Want whole rectangle.

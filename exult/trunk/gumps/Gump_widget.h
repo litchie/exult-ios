@@ -47,6 +47,7 @@ protected:
 public:
 	friend class Gump;
 	friend class Spellbook_gump;
+	friend class Spellscroll_gump;
 	Gump_widget(Gump *par, int shnum, int px, int py,
 				Gumpshapefile shfile = GSF_GUMPS_VGA)
 		: parent(par), shapenum(shnum), framenum(0), x(px), y(py),
