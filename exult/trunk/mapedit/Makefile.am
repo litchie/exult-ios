@@ -53,6 +53,10 @@ paltest_LDADD = $(shapetest_LDADD)
 
 exult_studio_LDADD = $(shapetest_LDADD) $(LIBGLADE_LIBS)
 
+mapeditdir = $(datadir)/exult
+
+mapedit_DATA = exult_studio.glade
+
 noinst_LTLIBRARIES = $(OUTPUT_LIBS)
 
 libmapedit_la_SOURCES = \
