@@ -20,15 +20,13 @@
 
 unsigned int uc_indentlvl=0;
 
-string ucc_calli_tostr(const UCc &ucc, const char** func_table);
+string ucc_calli_tostr(const UCc &ucc);
 
 bool print_uccs(ostream &o, const vector<UCc> &uccs, const unsigned int &uc_funcid,
                 const vector<unsigned short> &uc_externs,
-                const char** func_table,
                 const map<unsigned int, string> &uc_data);
 void print_ucc(ostream &o, const UCc &ucc, const unsigned int &uc_funcid,
                const vector<unsigned short> &uc_externs,
-               const char** func_table,
                const map<unsigned int, string> &uc_data, bool &return_val);
 void indent(ostream &o);
 unsigned int calc_reljump_offset(const UCc &ucc);
@@ -40,8 +38,7 @@ stack<StackI> stackp;
 void output_ucfunc(const unsigned int uc_funcid,
                    const map<unsigned int, string, less<unsigned int> > &uc_data,
                    const unsigned int &uc_argc, const unsigned int &uc_localc,
-                   const vector<unsigned short> &uc_externs, const vector<UCc> &uc_codes,
-                   const char** func_table)
+                   const vector<unsigned short> &uc_externs, const vector<UCc> &uc_codes)
   { //PATRICK
     strstream ss_externs;
 
@@ -88,7 +85,7 @@ void output_ucfunc(const unsigned int uc_funcid,
     strstream ss_func_body;
     ss_func_body << setbase(16) << setfill('0');
 
-    bool func_returns_val = print_uccs(ss_func_body, uc_codes, uc_funcid, uc_externs, func_table, uc_data);
+    bool func_returns_val = print_uccs(ss_func_body, uc_codes, uc_funcid, uc_externs, uc_data);
     ss_func_body << ends;
 
     cout << ss_externs.str();
@@ -115,7 +112,6 @@ void output_ucfunc(const unsigned int uc_funcid,
 
 bool print_uccs(ostream &o, const vector<UCc> &uccs, const unsigned int &uc_funcid,
                 const vector<unsigned short> &uc_externs,
-                const char** func_table,
                 const map<unsigned int, string> &uc_data)
 {
   vector<GotoSet_old> uccs_gotoset;
@@ -152,7 +148,7 @@ bool print_uccs(ostream &o, const vector<UCc> &uccs, const unsigned int &uc_func
         {
           indent(o);
           o << "// unknown function = ";
-          print_ucc(o, ucc, uc_funcid, uc_externs, func_table, uc_data, return_val);
+          print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
           o << endl;
         }
         else
@@ -160,23 +156,23 @@ bool print_uccs(ostream &o, const vector<UCc> &uccs, const unsigned int &uc_func
           if(opcode.effect & EFF_PUSH)
             stackp.push(ucc);
           else if(opcode.effect & EFF_POP)
-            print_ucc(o, ucc, uc_funcid, uc_externs, func_table, uc_data, return_val);
+            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
           else if(opcode.effect & EFF_CMP)
-            print_ucc(o, ucc, uc_funcid, uc_externs, func_table, uc_data, return_val);
+            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
           else if(opcode.effect & EFF_RELATIVE_JUMP)
-            print_ucc(o, ucc, uc_funcid, uc_externs, func_table, uc_data, return_val);
+            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
           else if(opcode.effect & EFF_BIMATH)
-            print_ucc(o, ucc, uc_funcid, uc_externs, func_table, uc_data, return_val);
+            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
           else if(opcode.effect & EFF_UNIMATH)
-            print_ucc(o, ucc, uc_funcid, uc_externs, func_table, uc_data, return_val);
+            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
           else if(opcode.effect & EFF_SINGLELINE)
-            print_ucc(o, ucc, uc_funcid, uc_externs, func_table, uc_data, return_val);
+            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
           else if(opcode.effect & EFF_STUPIDEFF)
-            print_ucc(o, ucc, uc_funcid, uc_externs, func_table, uc_data, return_val);
+            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
           else
           {
             indent(o);
-            print_ucc(o, ucc, uc_funcid, uc_externs, func_table, uc_data, return_val);
+            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
             o << endl;
           }
         }
@@ -204,7 +200,7 @@ bool print_uccs(ostream &o, const vector<UCc> &uccs, const unsigned int &uc_func
 }
 
 void print_ucc(ostream &o, const UCc &ucc, const unsigned int &uc_funcid,
-               const vector<unsigned short> &uc_externs, const char** func_table,
+               const vector<unsigned short> &uc_externs,
                const map<unsigned int, string> &uc_data, bool &return_val)
 {
   switch(ucc._id)
@@ -346,14 +342,14 @@ void print_ucc(ostream &o, const UCc &ucc, const unsigned int &uc_funcid,
     // calls
     case UCC_CALLIS:
       {
-        stackp.push(StackI(UCc(UCC_FUNC, ucc_calli_tostr(ucc, func_table))));
+        stackp.push(StackI(UCc(UCC_FUNC, ucc_calli_tostr(ucc))));
       }
       break;
 
     case UCC_CALLI:
       {
         indent(o);
-        StackI si(UCc(UCC_FUNC, ucc_calli_tostr(ucc, func_table)));
+        StackI si(UCc(UCC_FUNC, ucc_calli_tostr(ucc)));
         o << si.str() << ";" << endl;
       }
       break;
@@ -472,7 +468,9 @@ unsigned int calc_reljump_offset(const UCc &ucc)
         + ucc._params[0] + (ucc._params[1] << 8);
 }
 
-string ucc_calli_tostr(const UCc &ucc, const char** func_table)
+extern UCData uc;
+
+string ucc_calli_tostr(const UCc &ucc)
 {
   strstream ss;
   assert(ucc._params.size()>=3);
@@ -481,10 +479,20 @@ string ucc_calli_tostr(const UCc &ucc, const char** func_table)
   unsigned int func_no = (((unsigned int)ucc._params[1])<<8) + ucc._params[0];
 
   // if there is no "real" func name we make one up
-  if((func_no>(sizeof(bg_func_table)/sizeof(char *))) || func_table[func_no]==NULL)
+	// WARNING: uber-assert in progress
+	assert((uc.game()==GAME_BG) ? (func_no<bg_uc_intrinsics.size()) :
+	       ((uc.game()==GAME_SI) ? (func_no<si_uc_intrinsics.size()) : false));
+
+	string name;
+  if(uc.game()==GAME_BG)
+	  name = bg_uc_intrinsics.find(func_no)->second;
+  if(uc.game()==GAME_SI)
+	  name = si_uc_intrinsics.find(func_no)->second;
+	
+	if(name=="UNKNOWN") // if it's unknown we dump out a fake name
     ss << "IFunc" << setw(4) << func_no;
-  else
-    ss << func_table[func_no];
+  else                // else we dump out the real one
+    ss << name;
 
   ss << "(";
 

@@ -26,12 +26,12 @@ class UCData
 		
 		void parse_params(const unsigned int argc, char **argv);
 		void open_usecode(const string &filename);
-		void load_funcs(const char **func_table);
-		void list_funcs(const char **func_table);
+		void load_funcs();
+		void list_funcs();
 		
-		void disassamble(const char **func_table);
-		void disassamble_all(const char **func_table);
-		void dump_flags(const char **func_table);
+		void disassamble();
+		void disassamble_all();
+		void dump_flags();
 		
  		void mode(const unsigned int mode) { _mode=mode; };
 		string output_redirect() const { return _output_redirect; };
