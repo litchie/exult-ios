@@ -119,7 +119,7 @@ int main
 		exit(1);
 		}
 
-	cout << "Exult V0." << RELNUM << "." << endl <<
+	cout << "Exult V" << VERSION << "." << endl <<
 	    "Copyright (C) 2000 J. S. Freedman, Dancer Vesperman, " << endl <<
 	    "                   Willem Jan Palenstijn, Tristan Tarrant"<< endl;
 	cout << "Low level graphics use the 'SDL' library."<< endl;
@@ -238,7 +238,7 @@ static void Init
 	SDL_SysWMinfo info;		// Get system info.
 	SDL_VERSION(&info.version);
 					// Ignore clicks until splash done.
-	SDL_SetEventFilter(Filter_splash_events);
+	
 	int w, h;
 #ifdef XWIN
 	SDL_GetWMInfo(&info);
@@ -269,7 +269,18 @@ static void Init
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif //WIN32
 
-	string yn;			// Skip intro. scene?
+	string yn;
+					// Skip splash screen?
+	config->value("config/gameplay/skip_splash", yn, "no");
+	if(yn == "no") {
+		gwin->set_mode(Game_window::splash);
+		SDL_SetEventFilter(Filter_splash_events);
+	} else {
+		gwin->set_mode(Game_window::normal);
+		SDL_SetEventFilter(Filter_intro_events);
+		gwin->setup_game();		// This will start the scene.
+	}
+					// Skip intro. scene?
 	config->value("config/gameplay/skip_intro", yn, "no");
 	if (yn == "yes")
 		gwin->get_usecode()->set_global_flag(
@@ -327,6 +338,7 @@ static int Filter_splash_events
 	case SDL_KEYDOWN:
 					// Now handle intro. scene.
 		SDL_SetEventFilter(Filter_intro_events);
+		gwin->setup_game();		// This will start the scene.
 		return 0;
 		}
 	return (1);
@@ -340,7 +352,7 @@ static int Filter_intro_events
 	const SDL_Event *event
 	)
 	{
-	gwin->end_splash();		// This will start the scene.
+	
 	if (gwin->get_mode() == Game_window::conversation)
 		{
 		SDL_SetEventFilter(0);	// Intro. conversation started.

@@ -1,7 +1,6 @@
 INCLUDES = -I. -Iconf -Ifiles -Iaudio -Ipathfinder \
 	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
-	$(DEBUG_FLAGS) $(CPPFLAGS) \
-	-DRELNUM=$(RELNUM)
+	$(DEBUG_FLAGS) $(CPPFLAGS)
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 

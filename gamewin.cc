@@ -942,14 +942,48 @@ void Game_window::paint_splash
 		paint_shape(x+120,y+140,menushapes.get_shape(0x6,0));
 		show(1);
 		SDL_Delay(1500);
-		
-		win->fill8(0,get_width(),get_height(),0,0);
-	// The main man :)
-	if(get_usecode()->get_global_flag(Usecode_machine::did_first_scene)==0)
-		{
+
+		// The main man :)
+		if(get_usecode()->get_global_flag(Usecode_machine::did_first_scene)==0)	{
+		set_palette("static/intropal.dat",2,0);
+		// First
+		for(int i=9; i>0; i--) {
+			win->fill8(0,get_width(),get_height(),0,0);
+			paint_shape(x,y,shapes.get_shape(0x21,i));
+			win->show();
+			SDL_Delay(50);
+		}
+		for(int i=1; i<10; i++) {
+			win->fill8(0,get_width(),get_height(),0,0);
+			paint_shape(x,y,shapes.get_shape(0x21,i));
+			win->show();
+			SDL_Delay(50);
+		}
+		// Second 
+		for(int i=0; i<10; i++) {
+			win->fill8(0,get_width(),get_height(),0,0);
+			paint_shape(x,y,shapes.get_shape(0x22,i));
+			win->show();
+			SDL_Delay(50);
+		}
+		for(int i=9; i>=0; i--) {
+			win->fill8(0,get_width(),get_height(),0,0);
+			paint_shape(x,y,shapes.get_shape(0x22,i));
+			win->show();
+			SDL_Delay(50);
+		}
+		for(int i=0; i<16; i++) {
+			win->fill8(0,get_width(),get_height(),0,0);
+			paint_shape(x,y,shapes.get_shape(0x23,i));
+			win->show();
+			SDL_Delay(50);
+		}
+		paint_shape(x,y,shapes.get_shape(0x20,1));
+		win->show();
 		// Guardian speech
 		audio->playfile(INTROSND,false);
 		}
+		win->fill8(0,get_width(),get_height(),0,0);
 	}
 
 /*
@@ -965,15 +999,10 @@ void Game_window::paint
 		return;
 	win->set_clip(x, y, w, h);	// Clip to this area.
 	
-	if (mode == splash)
-		{
-		extern Configuration * config;
-		string	skip_splash;
-		config->value("config/gameplay/skip_splash", skip_splash, "no");
-		if(skip_splash == "no")
-			paint_splash();
+	if (mode == splash) {
+		paint_splash();
 		return;
-		}
+	}
 	int light_sources = 0;		// Count light sources found.
 	int scrolltx = get_scrolltx(), scrollty = get_scrollty();
 					// Get chunks to start with, starting
@@ -2263,32 +2292,29 @@ void Game_window::get_focus
 	}
 
 /*
- *	Get out of splash screen.
+ *	Prepare for game
  */
 
-void Game_window::end_splash
+void Game_window::setup_game
 	(
 	)
 	{
 	
-	if (mode == splash)
-		{
-		mode = normal;
-		set_palette(0);
-		brighten(20);
+	mode = normal;
+	set_palette(0);
+	brighten(20);
 		
-		init_actors();		// Set up actors if not already done.
-					// This also sets up initial 
-					//   schedules and positions.
-		paint();
-		audio->cancel();
-					// Want to activate first egg.
-		Chunk_object_list *olist = get_objects(
-				main_actor->get_cx(), main_actor->get_cy());
-		olist->setup_cache();
-		Tile_coord t = main_actor->get_abs_tile_coord();
-		olist->activate_eggs(main_actor, t.tx, t.ty, -1, -1);
-		}
+	init_actors();		// Set up actors if not already done.
+				// This also sets up initial 
+				//   schedules and positions.
+	paint();
+	audio->cancel();
+				// Want to activate first egg.
+	Chunk_object_list *olist = get_objects(
+			main_actor->get_cx(), main_actor->get_cy());
+	olist->setup_cache();
+	Tile_coord t = main_actor->get_abs_tile_coord();
+	olist->activate_eggs(main_actor, t.tx, t.ty, -1, -1);
 	}
 
 const char *Game_window::get_shape_file_name
