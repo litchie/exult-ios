@@ -40,9 +40,8 @@ UINT MCI_Command(LPCTSTR lpszCommand, LPTSTR lpszReturnString,
   DWORD code = mciSendString(lpszCommand, lpszReturnString, cchReturn, hWndCallBack);
   if (code) {
     char buf[128];
-    UINT l;
 
-    mciGetErrorString(code, buf, l);
+    mciGetErrorString(code, buf, 127);
     cerr << "On MCI command: " << lpszCommand << ":" << endl;
     cerr << "MCI error code " << code << ": ";
     fprintf(stderr, "%s\n", buf);
