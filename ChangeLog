@@ -1,3 +1,11 @@
+2001-12-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/barge.cc (Barge_object): Start motion with 1 tile for
+	better control.
+	* usecode/ucinternal.cc (public): Get_barge() checks to see that
+	obj. is within the barge's footprint.  Also finds highest
+	qualifying barge beneath obj.
+
 2001-12-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: don't allow Npc_actor::remove_this to delete the NPC
 	* contain.cc, objs.cc: catch possible (but unlikely) divisions by zero

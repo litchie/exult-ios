@@ -738,7 +738,8 @@ Usecode_value Usecode_internal::find_nearby
 
 /*
  *	Look for a barge that an object is a part of, or on, using the same
- *	sort (right-left, front-back) as ::find_nearby().
+ *	sort (right-left, front-back) as ::find_nearby().  If there are more
+ *	than one beneath 'obj', the highest is returned.
  *
  *	Output:	->barge if found, else 0.
  */
@@ -748,14 +749,34 @@ Barge_object *Get_barge
 	Game_object *obj
 	)
 	{
+					// Check object itself.
+	Barge_object *barge = dynamic_cast<Barge_object *> (obj);
+	if (barge)
+		return barge;
 	Game_object_vector vec;		// Find it within 20 tiles (egglike).
 	obj->find_nearby(vec, 961, 20, 0x10);
 	if (vec.size() > 1)		// Sort right-left, near-far.
 		std::sort(vec.begin(), vec.end(), Object_reverse_sorter());
-	if (!vec.empty())
-		return dynamic_cast<Barge_object *> (vec.front());
-	else
-		return 0;
+					// Object must be inside it.
+	Tile_coord pos = obj->get_tile();
+	Barge_object *best = 0;
+	for (Game_object_vector::const_iterator it = vec.begin();
+							it != vec.end(); it++)
+		{
+		barge = dynamic_cast<Barge_object *> (*it);
+		if (barge && barge->get_tile_footprint().has_point(
+							pos.tx, pos.ty))
+			{
+			int lift = barge->get_lift();
+			if (!best || 	// First qualifying?
+					// First beneath obj.?
+			    (best->get_lift() > pos.tz && lift <= pos.tz) ||
+					// Highest beneath?
+			    (lift <= pos.tz && lift > best->get_lift()))
+				best = barge;
+			}
+		}
+	return best;
 	}
 
 /*
