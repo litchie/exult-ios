@@ -1000,7 +1000,7 @@ Usecode_value Usecode_internal::remove_cont_items
 	return Usecode_value(0);
 	}
 
-#if 1	/* ++++Old way */
+#if 0	/* ++++Old way */
 /*
  *	Find an unblocked tile within a distance of 3 from a given point.
  *
@@ -1067,8 +1067,9 @@ int Usecode_internal::path_run_usecode
 		dest.tz = 0;
 	if (find_free)
 		{
-#if 0	/* ++++Doesn't work yet with SI lightning platform */
-		Tile_coord d = Map_chunk::find_spot(dest, 3, npc, 1);
+#if 1	/* Now works with SI lightning platform */
+					// Allow rise of 3 (for SI lightning).
+		Tile_coord d = Map_chunk::find_spot(dest, 3, npc, 3);
 		if (d.tx == -1)		// No?  Try at source level.
 			d = Map_chunk::find_spot(
 				Tile_coord(dest.tx, dest.ty, src.tz), 3, npc,
