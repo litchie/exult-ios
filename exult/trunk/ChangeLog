@@ -1,3 +1,6 @@
+2003-03-06  Aurelien Marchand <artaxerxes@users.sourceforge.net>
+	* docs/usecode_bugs.txt: added a file for people interested in fixing some usecode bugs
+
 2003-03-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Spellbook_gump.cc: bookmark doesn't stop clicking on buttons
 
