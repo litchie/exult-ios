@@ -561,5 +561,5 @@ void ActionSoundTester(int *params)
 
 void ActionTest(int *params)
 {
-	cerr << "Test!" << endl;
+	std::cerr << "Test!" << std::endl;
 }
