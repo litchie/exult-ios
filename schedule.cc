@@ -1859,7 +1859,6 @@ void Forge_schedule::now_what
 	switch (state) {
 	case put_sword_on_firepit:
 	{
-		cerr << "put_sword_on_firepit" << endl;
 		if (!blank) {
 			blank = npc->find_closest(668);
 			//TODO: go and get it...
@@ -1896,7 +1895,6 @@ void Forge_schedule::now_what
 	}
 	case use_bellows:
 	{
-		cerr << "use_bellows" << endl;
 		bellows = npc->find_closest(431);
 		firepit = npc->find_closest(739);
 		if (!bellows || !firepit || !blank) {
@@ -1958,8 +1956,6 @@ void Forge_schedule::now_what
 	}
 	case get_tongs:
 	{
-		cerr << "get_tongs" << endl;
-
 #if 0
 		if (!tongs) {
 			tongs = npc->find_closest(994);
@@ -1978,7 +1974,6 @@ void Forge_schedule::now_what
 	}
 	case sword_on_anvil:
 	{
-		cerr << "sword_on_anvil" << endl;
 		anvil = npc->find_closest(991);
 		firepit = npc->find_closest(739);
 		if (!anvil || !firepit || !blank) {
@@ -2015,8 +2010,6 @@ void Forge_schedule::now_what
 	}
 	case get_hammer:
 	{
-		cerr << "get_hammer" << endl;
-
 #if 0
 		if (!hammer) {
 			hammer = npc->find_closest(623);
@@ -2040,7 +2033,6 @@ void Forge_schedule::now_what
 	}
 	case use_hammer:
 	{
-		cerr << "use_hammer" << endl;
 		anvil = npc->find_closest(991);
 		firepit = npc->find_closest(739);
 		if (!anvil || !firepit || !blank) {
@@ -2072,8 +2064,6 @@ void Forge_schedule::now_what
 	}
 	case walk_to_trough:
 	{
-		cerr << "walk_to_trough" << endl;
-
 		npc->add_dirty(gwin);
 		if (hammer) {
 			hammer->remove_this();
@@ -2104,8 +2094,6 @@ void Forge_schedule::now_what
 	}
 	case fill_trough:
 	{
-		cerr << "fill_trough" << endl;
-
 		trough = npc->find_closest(719);
 		if (!trough) {
 			// uh-oh... try again in a few seconds
@@ -2128,8 +2116,6 @@ void Forge_schedule::now_what
 	}
 	case get_tongs2:
 	{
-		cerr << "get_tongs2" << endl;
-
 #if 0
 		if (!tongs) {
 			tongs = npc->find_closest(994);
@@ -2148,8 +2134,6 @@ void Forge_schedule::now_what
 	}
 	case use_trough:
 	{
-		cerr << "use_trough" << endl;
-
 		trough = npc->find_closest(719);
 		anvil = npc->find_closest(991);
 		if (!trough || !anvil || !blank) {
@@ -2197,8 +2181,6 @@ void Forge_schedule::now_what
 	}
 	case done:
 	{
-		cerr << "done" << endl;
-
 		npc->add_dirty(gwin);
 		if (tongs) {
 			tongs->remove_this();
