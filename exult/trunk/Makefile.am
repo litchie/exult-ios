@@ -116,6 +116,8 @@ EXTRA_DIST = 	\
 	README.Alpha \
 	Makefile.win32 \
 	Makefile.be \
+	Makefile.cygwin \
+	alpha_kludges.h mingw_kludges.h \
 	exult.spec
 
 win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
