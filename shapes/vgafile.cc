@@ -414,6 +414,22 @@ void Shape_frame::paint_rle
 	}
 
 /*
+ *	Paint either type of shape.
+ */
+
+void Shape_frame::paint
+	(
+	Image_buffer8 *win,		// Buffer to paint in.
+	int xoff, int yoff		// Where to show in iwin.
+	)
+	{
+	if (rle)
+		paint_rle(win, xoff, yoff);
+	else
+		win->copy8(data, 8, 8, xoff - 8, yoff - 8);
+	}
+
+/*
  *	Show a Run-Length_Encoded shape with translucency.
  */
 
