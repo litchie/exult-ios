@@ -12,6 +12,10 @@
 // depending on the OS
 #define	USER_CONFIGURATION_FILE	"exult.cfg"
 
+#ifdef MACOS
+#define EXULT_DATADIR	"data"
+#endif
+
 /*
  *	Here are the files we use:
  */
