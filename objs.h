@@ -192,6 +192,8 @@ public:
 	static Game_object *find_blocking(Tile_coord tile);
 	int is_closed_door() const;	// Checking for a closed door.
 	Game_object *get_outermost();	// Get top 'owner' of this object.
+	void say(char *text);		// Put text up by item.
+	void say(int from, int to);	// Show random msg. from 'text.flx'.
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
