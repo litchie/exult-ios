@@ -46,7 +46,7 @@ char *get_system_path(const char *path)
 	// If there is no separator, return the path as is
 	if(!slash)
 		{
-		char *ret=new char[strlen(path+1)];
+		char *ret=new char[strlen(path)+1];
 		strcpy(ret,path);
 		return ret;
 		}
@@ -59,7 +59,7 @@ char *get_system_path(const char *path)
 	// If the prefix path is not recognised, return the path as is
 	if(!new_prefix)
 		{
-		char *ret=new char[strlen(path+1)];
+		char *ret=new char[strlen(path)+1];
 		strcpy(ret,path);
 		return ret;
 		}
