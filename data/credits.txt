@@ -46,7 +46,7 @@
 
 
 \CRyan "Colourless" Nunn
-\C<triforce@merlin.net.au>
+\C<colourles@users.sourceforge.net>
 \CXMIDI meister, endings, roof removalist,
 \CSI Intro, NPC flag IO, Avatar identity,
 \CBG Paperdolls, "Big Commits(tm)"

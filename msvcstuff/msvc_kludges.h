@@ -14,7 +14,7 @@
 #define HAVE_SSTREAM 1
 
 // Fisrtly some things that need to be defined
-#define VERSION "0.99.1RC2"
+#define VERSION "1.00"
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
@@ -91,8 +91,10 @@ namespace std {
 	using ::printf;
 	
 	// Win32 doesn't have snprintf as such. It's got _snprintf, 
-	// but it's in stdio. I'll make my own using _vsnprintf 
-#if 1
+	// but it's in stdio. I'll make my own using _vsnprintf, or I can use asm
+#if 0
+	int __cdecl snprintf(char *out, size_t len, const char *format, ...);
+#elif 1
 	inline int snprintf(char *out, size_t len, const char *format, ...)
 	{
 		va_list	argptr;
@@ -146,6 +148,7 @@ using std::isspace;
 #include <iomanip>
 #include <set>
 #include <map>
+#include <string>
 #include <assert.h>
 #include <fcntl.h>
 #include <direct.h>
@@ -153,6 +156,21 @@ using std::isspace;
 #include <windows.h>
 #include <mmsystem.h>
 #include <windef.h>
+
+using std::cout;
+using std::cerr;
+using std::endl;
+using std::string;
+using std::ifstream;
+using std::ofstream;
+using std::strlen;
+using std::strcpy;
+using std::strncpy;
+using std::memcpy;
+using std::memcmp;
+using std::memset;
+using std::abs;
+using std::snprintf;
 
 // Why oh why!
 // MSVC thinks near and far are actually supposed to be used with pointers
