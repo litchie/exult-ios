@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Astar.h"
 #include "paths.h"
 #include "dir.h"
-#include "usecode.h"
+#include "ucmachine.h"
 
 /*
  *	Set to walk from one point to another the dumb way.
