@@ -96,7 +96,9 @@ ESTUDIO_NEW_FILES = \
 	estudio/new/palettes.flx \
 	estudio/new/shapes.vga \
 	estudio/new/sprites.vga \
-	estudio/new/text.flx
+	estudio/new/text.flx \
+	estudio/new/fonts.vga \
+	estudio/new/pointers.shp
 
 flexdir = $(datadir)/exult
 estudionewdir = $(datadir)/exult/estudio/new
