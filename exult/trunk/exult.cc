@@ -830,7 +830,7 @@ static void Handle_keystroke
 			stats_page = 0;
 		Actor *actor = Get_party_member(stats_page);
 		if (actor)
-			gwin->show_gump(actor, STATSDISPLAY);
+			gwin->show_gump(actor, Game::get_game()->get_shape("gumps/statsdisplay"));
 		if (gwin->get_mode() == Game_window::gump)
 			mouse->set_shape(Mouse::hand);
 		break;

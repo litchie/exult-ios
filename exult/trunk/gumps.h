@@ -47,12 +47,6 @@ class Yesno_gump_button;
 class Slider_gump_button;
 
 /*
- *	Gump shape #'s used outside:
- */
-const int STATSDISPLAY = 47;
-const int SPELLBOOK = 43;		// The book itself.
-
-/*
  *	A gump widget, such as a button or text field:
  */
 class Gump_widget

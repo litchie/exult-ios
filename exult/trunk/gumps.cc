@@ -4,7 +4,6 @@
  **
  **	Written: 3/4/2000 - JSF
  **/
-
 /*
 Copyright (C) 2000  Jeffrey S. Freedman
 
@@ -27,35 +26,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "actors.h"
 #include "mouse.h"
+#include "game.h"
 
 /*
  *	Some gump shape numbers:
  */
-const int CHECKMARK = 2;		// Shape # in gumps.vga for checkmark.
-const int FILEIO = 3;			// Main load/save box.
-const int FNTEXT = 4;			// Filename text field.
-const int LOADBTN = 5;
-const int SAVEBTN = 6;
 const int HALO = 7;
 const int COMBATMODE = 12;
 const int SLIDER = 14;
 const int SLIDERDIAMOND = 15;
 const int SLIDERRIGHT = 16;
 const int SLIDERLEFT = 17;
-const int DISK = 24;			// Diskette shape #.
-const int HEART = 25;			// Stats button shape #.
-const int STATATTS = 28;		// Little symbols on stats display:
 	const int ASLEEP = 0, POISONED = 1, CHARMED = 2, HUNGRY = 3,
 		  PROTECTED = 4, CURSED = 5, PARALYZED = 6;
-const int MUSICBTN = 29;
-const int SPEECHBTN = 30;
-const int SOUNDBTN = 31;
 const int BOOK = 32;
-const int COMBAT = 46;			// Frame 0=dove, 1=swords.
 const int SCROLL = 55;
-const int QUITBTN = 56;
-const int YESNOBOX = 69;
-const int YESBTN = 70, NOBTN = 71;
 
 /*
  *	Statics:
@@ -155,7 +140,7 @@ class Checkmark_gump_button : public Gump_button
 	{
 public:
 	Checkmark_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, CHECKMARK, px, py)
+		: Gump_button(par, Game::get_game()->get_shape("gumps/check"), px, py)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -168,7 +153,7 @@ class Heart_gump_button : public Gump_button
 	{
 public:
 	Heart_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, HEART, px, py)
+		: Gump_button(par, Game::get_game()->get_shape("gumps/heart"), px, py)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -181,7 +166,7 @@ class Disk_gump_button : public Gump_button
 	{
 public:
 	Disk_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, DISK, px, py)
+		: Gump_button(par, Game::get_game()->get_shape("gumps/disk"), px, py)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -194,7 +179,7 @@ class Combat_gump_button : public Gump_button
 	{
 public:
 	Combat_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, COMBAT, px, py)
+		: Gump_button(par, Game::get_game()->get_shape("gumps/combat"), px, py)
 		{
 		pushed = Game_window::get_game_window()->in_combat();
 		}
@@ -239,7 +224,7 @@ class Yesno_gump_button : public Gump_button
 	int isyes;			// 1 for 'yes', 0 for 'no'.
 public:
 	Yesno_gump_button(Gump_object *par, int px, int py, int yes)
-		: Gump_button(par, yes ? YESBTN : NOBTN, px, py), isyes(yes)
+		: Gump_button(par, yes ? Game::get_game()->get_shape("gumps/yesbtn") :  Game::get_game()->get_shape("gumps/nobtn"), px, py), isyes(yes)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -278,7 +263,7 @@ class Quit_gump_button : public Gump_button
 	{
 public:
 	Quit_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, QUITBTN, px, py)
+		: Gump_button(par, Game::get_game()->get_shape("gumps/quitbtn"), px, py)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -484,7 +469,7 @@ void Heart_gump_button::activate
 	Game_window *gwin
 	)
 	{
-	gwin->show_gump(parent->get_container(), STATSDISPLAY);
+	gwin->show_gump(parent->get_container(), Game::get_game()->get_shape("gumps/statsdisplay"));
 	}
 
 /*
@@ -576,7 +561,7 @@ void Load_save_gump_button::activate
 	Game_window *gwin
 	)
 	{
-	if (shapenum == LOADBTN)
+	if (shapenum == Game::get_game()->get_shape("gumps/loadbtn"))
 		((File_gump_object *) parent)->load();
 	else
 		((File_gump_object *) parent)->save();
@@ -616,6 +601,17 @@ void Gump_object::initialize
 	{
 	int checkx = 8, checky = 64;	// Default.
 	int shnum = get_shapenum();
+	if(shnum==Game::get_game()->get_shape("gumps/yesnobox")) {
+		object_area = Rectangle(8, 8, 112, 24);
+	} else if(shnum==Game::get_game()->get_shape("gumps/fileio")) {
+		checkx = 8, checky = 150;
+	} else if(shnum==Game::get_game()->get_shape("gumps/statsdisplay")) {
+		object_area = Rectangle(0, 0, 0, 0);
+    	        checkx = 6; checky = 136;
+        } else if(shnum==Game::get_game()->get_shape("gumps/spellbook")) {
+		checkx = 7; checky = 54;
+                object_area = Rectangle(36, 28, 102, 66);
+        } else
 	switch (shnum)			// Different shapes.
 		{
 	case 0:				// Unsealed box
@@ -625,9 +621,6 @@ void Gump_object::initialize
 	case 1:				// Crate.
 		object_area = Rectangle(50, 20, 80, 24);
 		checkx = 8; checky = 64;
-		break;
-	case FILEIO:			// Load/save.
-		checkx = 8, checky = 150;
 		break;
 	case 8:				// Barrel.
 		object_area = Rectangle(32, 32, 40, 40);
@@ -653,10 +646,6 @@ void Gump_object::initialize
 		object_area = Rectangle(38, 12, 70, 26);
 		checkx = 8; checky = 46;
 		break;
-	case STATSDISPLAY:
-		object_area = Rectangle(0, 0, 0, 0);
-		checkx = 6; checky = 136;
-		break;
 	case SLIDER:
 		object_area = Rectangle(0, 0, 0, 0);
 		checkx = 6; checky = 30;
@@ -673,14 +662,6 @@ void Gump_object::initialize
 	case 53:			// Bodies.
 		object_area = Rectangle(36, 46, 84, 40);
 		checkx = 8; checky = 70;
-		break;
-	case YESNOBOX:
-		object_area = Rectangle(8, 8, 112, 24);
-					// No checkmark.
-		break;
-	case SPELLBOOK:
-		checkx = 7; checky = 54;
-		object_area = Rectangle(36, 28, 102, 66);
 		break;
 	default:
 					// Character pictures:
@@ -1207,7 +1188,7 @@ Stats_gump_object::Stats_gump_object
 	(
 	Container_game_object *cont, 
 	int initx, int inity
-	) : Gump_object(cont, initx, inity, STATSDISPLAY)
+	) : Gump_object(cont, initx, inity, Game::get_game()->get_shape("gumps/statsdisplay"))
 	{
 	}
 
@@ -1242,7 +1223,7 @@ static int Show_atts
 	int framenum
 	)
 	{
-	Shape_frame *s = gwin->get_gump_shape(STATATTS, framenum);
+	Shape_frame *s = gwin->get_gump_shape(Game::get_game()->get_shape("gumps/statatts"), framenum);
 	gwin->paint_shape(x + s->get_xleft(),
 				 y + s->get_ybelow(), s, 1);
 	return s->get_width() + 2;
@@ -1725,14 +1706,14 @@ void Slider_gump_object::mouse_drag
 
 File_gump_object::File_gump_object
 	(
-	) : Modal_gump_object(0, FILEIO), pushed_text(0), focus(0), restored(0)
+	) : Modal_gump_object(0, Game::get_game()->get_shape("gumps/fileio")), pushed_text(0), focus(0), restored(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	size_t i;
 	int ty = texty;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++, ty += texth)
 		{
-		names[i] = new Gump_text(this, FNTEXT, textx, ty, 30, 12, 2);
+		names[i] = new Gump_text(this, Game::get_game()->get_shape("gumps/fntext"), textx, ty, 30, 12, 2);
 		names[i]->set_text(gwin->get_save_name(i));
 		}
 					// First row of buttons:
@@ -1740,11 +1721,11 @@ File_gump_object::File_gump_object
 	buttons[2] = new Quit_gump_button(this, btn_cols[2], btn_rows[0]);
 					// 2nd row.
 	buttons[3] = new Sound_gump_button(this, btn_cols[0], btn_rows[1], 
-					MUSICBTN);
+					Game::get_game()->get_shape("gumps/musicbtn"));
 	buttons[4] = new Sound_gump_button(this, btn_cols[1], btn_rows[1],
-					SPEECHBTN);
+					Game::get_game()->get_shape("gumps/speechbtn"));
 	buttons[5] = new Sound_gump_button(this, btn_cols[2], btn_rows[1],
-					SOUNDBTN);
+					Game::get_game()->get_shape("gumps/soundbtn"));
 					// +++++Init. the above.
 	}
 
@@ -1938,10 +1919,10 @@ void File_gump_object::mouse_up
 		{
 		if (!buttons[0])
 			buttons[0] = new Load_save_gump_button(this,
-					btn_cols[0], btn_rows[0], LOADBTN);
+					btn_cols[0], btn_rows[0], Game::get_game()->get_shape("gumps/loadbtn"));
 		if (!buttons[1])
 			buttons[1] = new Load_save_gump_button(this,
-					btn_cols[1], btn_rows[0], SAVEBTN);
+					btn_cols[1], btn_rows[0], Game::get_game()->get_shape("gumps/savebtn"));
 		}
 	else if (!focus->get_length())
 		{			// No name yet.
@@ -2019,7 +2000,7 @@ void File_gump_object::key_down
 		if (!old_length && focus->get_length() && !buttons[1])
 			{
 			buttons[1] = new Load_save_gump_button(this,
-					btn_cols[1], btn_rows[0], SAVEBTN);
+					btn_cols[1], btn_rows[0], Game::get_game()->get_shape("gumps/savebtn"));
 			paint_button(gwin, buttons[1]);
 			}
 		if (buttons[0])		// Can't load now.
@@ -2039,7 +2020,7 @@ void File_gump_object::key_down
 Yesno_gump_object::Yesno_gump_object
 	(
 	const char *txt
-	) : Modal_gump_object(0, YESNOBOX), text(strdup(txt)), answer(-1)
+	) : Modal_gump_object(0, Game::get_game()->get_shape("gumps/yesnobox")), text(strdup(txt)), answer(-1)
 	{
 	yes_button = new Yesno_gump_button(this, yesx, yesnoy, 1);
 	no_button = new Yesno_gump_button(this, nox, yesnoy, 0);

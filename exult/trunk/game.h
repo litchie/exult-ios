@@ -17,11 +17,22 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <hash_map>
+
 class Game_window;
 class Image_window8;
 
+struct eqstr
+{
+	bool operator()(const char* s1, const char* s2) const {
+		return strcmp(s1, s2) == 0;
+	}
+};
+
 class Game
 	{
+private:
+	hash_map<const char*, int, hash<const char*>, eqstr> shapes;
 public:
 	Game_window *gwin;
 	Image_window8 *win;
@@ -29,7 +40,8 @@ public:
 	Game();
 	virtual ~Game();
 	
-	static Game *get_game(const char *identity);
+	static Game *create_game(const char *identity);
+	static Game *get_game();
 	
 	virtual void play_intro() =0;
 	virtual void end_game(bool success) =0;
@@ -45,6 +57,8 @@ public:
 	void play_audio(const char *archive, int index);
 	void play_midi(int track);
 	bool wait_delay(int ms);
+	void add_shape(const char *name, int shapenum);
+	int get_shape(const char *name);
 	};
 
 class BG_Game: public Game
@@ -76,9 +90,9 @@ public:
 	virtual void show_quotes();
 	virtual void show_credits();
 	virtual int  get_start_tile_x()
-		{ return (64*tiles_per_chunk); }
+		{ return (25*tiles_per_chunk); }
 	virtual int  get_start_tile_y()
-		{ return (136*tiles_per_chunk); }
+		{ return (155*tiles_per_chunk); }
 	};
-
+	
 #endif
