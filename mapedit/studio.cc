@@ -25,6 +25,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <gdk/gdkx.h>
 #include <glib.h>
 #include <unistd.h>
+
+#include <stdio.h>			/* These are for sockets. */
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <fcntl.h>
+
 #include "shapelst.h"
 #include "paledit.h"
 #include "vgafile.h"
@@ -132,7 +138,7 @@ extern "C" gboolean on_egg_window_delete_event
 	}
 
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
-	eggwin(0)
+	eggwin(0), server_socket(-1)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -173,6 +179,8 @@ ExultStudio::~ExultStudio()
 	eggwin = 0;
 	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
+	if (server_socket >= 0)
+		close(server_socket);
 	self = 0;
 }
 
@@ -340,6 +348,7 @@ void ExultStudio::set_static_path(const char *path)
 						   ".flx",
 						   (gpointer)FlexArchive );
 	gtk_clist_thaw( GTK_CLIST( file_list ) );
+	connect_to_server();		// Connect to server with 'gamedat'.
 }
 
 /*
@@ -366,3 +375,56 @@ void ExultStudio::run()
 {
 	gtk_main();
 }
+
+/*
+ *	Try to connect to the Exult game.
+ */
+void ExultStudio::connect_to_server
+	(
+	)
+	{
+	if (!static_path)
+		return;			// No place to go.
+	if (server_socket >= 0)		// Close existing socket.
+		close(server_socket);
+	server_socket = -1;
+	struct sockaddr_un addr;
+	addr.sun_family = AF_UNIX;
+					// Set up path to gamedat.
+	strcpy(addr.sun_path, static_path);
+	char *pstatic = strrchr(addr.sun_path, '/');
+	if (pstatic && !pstatic[1])	// End of path?
+		{
+		pstatic[0] = 0;
+		pstatic = strrchr(addr.sun_path, '/');
+		}
+	if (!pstatic)
+		{
+		cout << "Can't find gamedat for socket" << endl;
+		return;
+		}
+	strcpy(pstatic + 1, "gamedat/exultserver");
+	server_socket = socket(PF_LOCAL, SOCK_STREAM, 0);
+	if (server_socket < 0)
+		{
+		perror("Failed to open map-editor socket");
+		return;
+		}
+					// Set to be non-blocking.
+//	fcntl(server_socket, F_SETFL, 
+//				fcntl(server_socket, F_GETFL) | O_NONBLOCK);
+	cout << "Trying to connect to server at '" << addr.sun_path << "'"
+							<< endl;
+	if (connect(server_socket, (struct sockaddr *) &addr, 
+		      sizeof(addr.sun_family) + strlen(addr.sun_path)) == -1)
+		{
+		perror("Socket connect");
+		close(server_socket);
+		server_socket = -1;
+		}
+	else
+		cout << "Connected to server" << endl;
+	}
+
+
+

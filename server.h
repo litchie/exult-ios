@@ -31,8 +31,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 #ifdef XWIN
 
-extern void Server_init();
-extern void Server_delay();
+/*
+ *	An entry sent between client and server will have the following format:
+ *
+Bytes	Description
+0	Magic.
+1-2	Length of the data, low-byte first.
+3	Message type.  Defined below.
+4-	Data.
+ */
+
+namespace Exult_server
+{
+const unsigned char magic = 0xf3;
+const int maxlength = 256;
+enum Msg_type
+	{
+	say = 0				// For testing.  Data is text.
+	};
+}
 
 #endif	/* XWIN */
 
