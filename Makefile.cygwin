@@ -11,7 +11,7 @@ VPATH=$(SRC):$(SRC)/files:$(SRC)/files/zip:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
-SDL_LIBS=-L$(SRC)/sdl/lib -lSDL -lSDLmain
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
