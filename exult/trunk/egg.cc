@@ -153,6 +153,12 @@ int Egg_object::is_active
 	if (flags & (1 << (int) hatched))
 		return (0);		// For now... Already hatched.
 	Game_window *gwin = Game_window::get_game_window();
+	if (flags & (1 << (int) nocturnal))
+		{			// Nocturnal.
+		int hour = gwin->get_hour();
+		if (!(hour >= 9 || hour <= 5))
+			return (0);	// It's not night.
+		}
 	Egg_criteria cri = (Egg_criteria) get_criteria();
 					// Watch for cached_in eggs which have
 					//   been reset.
