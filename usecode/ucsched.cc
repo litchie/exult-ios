@@ -411,11 +411,12 @@ void Usecode_script::handle_event
 			break;
 			}
 		case music:		// Unknown.
-		        cout << "Und sched. opcode " << hex << 
-				"0x" << setfill((char)0x30) << setw(2) 
-						<< opcode << std::dec << endl;
-			++i;		// Takes 1 parameter!
+			{
+			Usecode_value& val = code->get_elem(++i);
+			Audio::get_ptr()->start_music(val.get_int_value(),
+									false);
 			break;
+			}
 		case Ucscript::usecode:	// Call?
 			{
 			Usecode_value& val = code->get_elem(++i);
@@ -448,8 +449,8 @@ void Usecode_script::handle_event
 		case sfx:		// Play sound effect!
 			{
 			Usecode_value& val = code->get_elem(++i);
-			Audio::get_ptr()->play_sound_effect(val.get_int_value());
-					// Or play sound effect??
+			Audio::get_ptr()->play_sound_effect(
+							val.get_int_value());
 			break;
 			}
 		case face_dir:		// Parm. is dir. (0-7).  0=north.

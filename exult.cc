@@ -352,6 +352,9 @@ static void Init
 					// Want drag-and-drop events.
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
+					// KBD repeat should be nice.
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 
+						SDL_DEFAULT_REPEAT_INTERVAL);
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
 
