@@ -1,4 +1,8 @@
 2002-01-20  Ryan Nunn  <triforce@merlin.net.au>
+	* data/credits.txt : Added Mark Siewert to credits for Win32 Exult
+	  studio.
+
+2002-01-20  Ryan Nunn  <triforce@merlin.net.au>
 	* Makefile.cygwin, Makefile.win32, exult.cc, mapedit/Makefile.mingw,
 	  mapedit/chunklst.cc, mapedit/chunklst.*, mapedit/shapelst.*,
 	  mapedit/studio.cc, msvcstuff/Exult.dsp, msvcstuff/msvc_kludges.h :

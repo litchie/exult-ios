@@ -84,6 +84,11 @@
 \Cmiddle mouse button support
 
 
+\CMark Siewert
+\C<Mark.Siewert@t-online.de>
+\CExult Studio for Windows
+
+
 \COTHER CONTRIBUTORS
 
 \COlivier Marcoux
