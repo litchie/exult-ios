@@ -402,7 +402,7 @@ Game_object *Game_object::get_outermost
  *	Show text by the object on the screen.
  */
 
-inline void Game_object::say
+void Game_object::say
 	(
 	char *text
 	)
