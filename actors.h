@@ -40,8 +40,23 @@ class Actor : public Sprite
 	int usecode;			// # of usecode function.
 	int npc_num;			// # in Game_window::npcs list, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
+	enum Item_properties {		// Trying to figure them out:
+		strength = 0,		// Or is max_health 0????
+		dexterity = 1,
+		intelligence = 2,
+		health = 3,
+		combat = 4,
+		mana = 5,
+		magic = 6,		// Max. mana.
+		experience = 7,		// Training points.
+		quests = 8,		// ??Always gets passed a constant.??
+		food_level = 9
+		};
 protected:
 	unsigned long flags;		// 32 flags used in 'usecode'.
+	enum Item_flags {		// Bit #'s of flags:
+		poisoned = 8
+		};
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
