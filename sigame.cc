@@ -42,6 +42,31 @@ SI_Game::SI_Game()
 		add_shape("gumps/yesnobox",51);
 		add_shape("gumps/yesbtn",52);
 		add_shape("gumps/nobtn",53);
+
+		add_resource("files/shapes/count", 0, 6);
+		add_resource("files/shapes/0", "static/shapes.vga", 0);
+		add_resource("files/shapes/1", "static/faces.vga", 0);
+		add_resource("files/shapes/2", "static/gumps.vga", 0);
+		add_resource("files/shapes/3", "static/sprites.vga", 0);
+		add_resource("files/shapes/4", "static/mainshp.flx", 0);
+		add_resource("files/shapes/5", "static/paperdol.vga", 0);
+
+		add_resource("palettes/count", 0, 14);
+		add_resource("palettes/0", "static/palettes.flx", 0);
+		add_resource("palettes/1", "static/palettes.flx", 1);
+		add_resource("palettes/2", "static/palettes.flx", 2);
+		add_resource("palettes/3", "static/palettes.flx", 3);
+		add_resource("palettes/4", "static/palettes.flx", 4);
+		add_resource("palettes/5", "static/palettes.flx", 5);
+		add_resource("palettes/6", "static/palettes.flx", 6);
+		add_resource("palettes/7", "static/palettes.flx", 7);
+		add_resource("palettes/8", "static/palettes.flx", 8);
+		add_resource("palettes/9", "static/palettes.flx", 9);
+		add_resource("palettes/10", "static/palettes.flx", 10);
+		add_resource("palettes/11", "static/palettes.flx", 11);
+		add_resource("palettes/12", "static/palettes.flx", 12);
+		add_resource("palettes/13", "static/mainshp.flx", 1);
+		add_resource("palettes/14", "static/mainshp.flx", 26);
 	}
 
 SI_Game::~SI_Game()

@@ -1,14 +1,27 @@
-2000-08-03  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-08-04  Tristan Tarrant  <nadir@users.sourceforge.net>
+
+	* game.h, bggame.cc, sigame.cc: add some resources, namely palettes 
+	and shape files. Removed the silly get_extra_shape_file()
+	* exult.cc, browser.*, gamewin.*: implement a better shape browser.
+	Better help screen
+	* data/credits.txt: Text for Exult credits
+	* tools/txt2cc: Tool which generates a C++ function which returns
+	a vector containing all lines in the source text. Used to compile the
+	credits and quotes into Exult.
+	* game.cc: implement Exult quotes & credits. Return to menu at the
+	end of scrolling.
+
+2000-08-03  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* bggame.cc: Failed endgame
 	* usecode.cc: Show credits after successful endgame. Quit after 
 	endgame.
 
-2000-08-03  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-08-03  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* bggame.cc, sigame.cc, game.cc: Credits & Quotes
 
-2000-08-03  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-08-03  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* bggame.cc, sigame.cc: Implement main menu (SI's is incomplete)
 	* gamewin.cc: move creation of 'gamedat' to separate function to 
@@ -18,20 +31,20 @@
 
 	* Dead bodies decay after several game-clock hours.
 
-2000-08-01  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-08-01  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* game.h, gamewin.cc: if in BG we show ENDSHAPE.FLX, if in SI we show 
 	PAPERDOL.VGA
 	* exult.cc: Default resolution is 320x200 with 2x filter. This is to 
 	be as close as possible to the original.
 
-2000-08-01  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-08-01  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* gamewin.*, exult.cc, usecode.cc: decided to not store the Game 
 	object inside gamewin, but use the static get_game of the Game 
 	class instead. "There can be only one" (TM)
 
-2000-08-01  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-08-01  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* game.*, bggame.cc, sigame.cc: implemented shape lists. SI now has
 	placeholder intro/endgame sequences (it plays the proper FLIcs, but
@@ -40,7 +53,7 @@
 	gumps now work properly under BG and SI. Paperdolling will be
 	hard...
 
-2000-07-31  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-07-31  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* game.*, bggame.cc, sigame.cc: separated game-dependent stuff into
 	separate files with an abstract Game class.
@@ -49,7 +62,7 @@
 	* files/Flat.*: added a new filetype, which is for simple files 
 	(e.g. The palettes in Serpent Isle)
 
-2000-07-31  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-07-31  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* exult.cc, gamewin.*, imagewin.*: support resolution switching
 	with ALT-PLUS and ALT-MINUS. Also show messages when certain 'cheat'
@@ -67,12 +80,12 @@
 
 	* Fixed nasty stack bug in Usecode.  Penumbra/blackrock now works.
 
-2000-07-28 Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-07-28 Tristan Tarrant  <nadir@users.sourceforge.net>
 	
 	* gamewin.cc, gametxt.cc, titles.cc: move initialization of endgame
 	fonts to endgame.
 
-2000-07-28 Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-07-28 Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* exult.cc: Implement "Home" key which recenters view on Avatar.
 	Useful if you've been scrolling around with the arrow keys.
@@ -83,7 +96,7 @@
 	* Support 'something_on' eggs.
 	* Added ctrl-c cheat to create items.
 
-2000-07-27 Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-07-27 Tristan Tarrant  <nadir@users.sourceforge.net>
 	
 	* titles.cc: use Infidel's real name, correct some spelling mistakes, 
 	put the "Damn you..." in the correct position even in unscaled 640x480.
@@ -101,7 +114,7 @@
 	* Teleports work now.
 	* Fixed bug where monsters walked through walls.
 
-2000-07-20 Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-07-20 Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* files/databuf.h: implemented an abstract DataSource class and Buffer, 
 	Stream and File derivatives of it to enable reading data from any of 
@@ -113,7 +126,7 @@
 
 	* Flying carpet rotates correctly.
 
-2000-07-17  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-07-17  Tristan Tarrant  <nadir@users.sourceforge.net>
 	
 	* *: Moved utils.* here where it should have been all along.
 	Rearranged everything else to take this into account.
@@ -127,17 +140,17 @@
 
 	* Barges working slightly better.
 
-2000-07-14  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-07-14  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* gamewin.cc: Don't show eggs by default. Should do the same for
 	paths.
 
-2000-07-13  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-07-13  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* titles.cc: Text under Guardian's speech and Guardian sinking back
 	into screen after his performance :-)
 
-2000-07-13  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-07-13  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* palette.cc, palette.h: New files which handle palette functions. 
 	Now it is possible to use palettes from different data files.
@@ -170,7 +183,7 @@
 
 	* Death and resurrection.
 
-2000-06-25  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-06-25  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* Makefile.am, exult.cc: use VERSION instead of RELNUM
 	* exult.cc, gamewin.cc: move config stuff about splash to exult.cc
@@ -314,7 +327,7 @@
 2000-05-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode.cc: implemented intrinsic 0x09 (clear_answers)
 
-2000-05-24  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-05-24  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* usecode.cc: call endgame
 	* exult.cc: press F10 to see the endgame sequence
@@ -327,7 +340,7 @@
 	* Makefile.win32: added
 	* Makefile.am: added Makefile.win32 to dist_targets
 
-2000-05-22  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-05-22  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* */Makefile.am, configure.in, etc...: Rehauled build mechanism,
 	no need to regenerate dependencies by hand, gcc dynamically does
@@ -358,7 +371,7 @@
 2000-05-19  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc, Audio.h, win_MCI.h, win_MCI.cc: Windows MIDI repeating support
 
-2000-05-19  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-05-19  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* gamewin.cc: Blank screen after intro...
 
@@ -380,7 +393,7 @@
 	* usecode.cc: defined __STRING if not yet defined (e.g. in mingw32)
 	* configure.in: added flic library to windows section
 	
-2000-05-16  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-05-16  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* gamewin.cc: Load correct palettes for intro. Implement palette fade 
 	out/in
@@ -392,7 +405,7 @@
 	* Midi.cc: fix to windows playing MIDI only once
 	* fnames.h: included MIDITMPFILE
 
-2000-05-11  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-05-11  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* utils.cc: Implemented Switch_slash which takes care of using
 	backslashes instead of slashes in Windows filenames...
@@ -404,7 +417,7 @@
 	* imagewin.cc, exult.cc: pressing Enter will toggle fullscreen
 	I don't get why SDL won't detect ALT though...
 
-2000-05-08  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-05-08  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* flic.*: Implement flic-playing library
 	* gamewin.cc: stuff for flics.
@@ -421,7 +434,7 @@
 2000-05-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* objs.cc: attempt at synching animations 
 
-2000-05-03  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-05-03  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* gamewin.cc: Show game title in splash screen
 
@@ -434,7 +447,7 @@
 
 	* Use data from 'ready.dat' to place objects on Actor.
 
-2000-05-02  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-05-02  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* gamewin.cc (Game_window): Free string used to determine game
 	identity.
@@ -456,7 +469,7 @@
 	* Show signs, books, and scrolls.
 	* Create monsters, and have them loiter.
 
-2000-04-28  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-04-28  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* Testing of CVS commit mails...
 	* gamedat.cc, gamewin.h: implement get_game_identity
@@ -466,7 +479,7 @@
 	* configure.in: if I don't have kmid build without it anyway, don't
 	tell me to run configure with --disable-kmid
 
-2000-04-26  Tristan Tarrant  <tarrant_tristan@emc.com>
+2000-04-26  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* exult.cc: Implement 'h' key to show a simple help page
 	* .cvsignore: added cvsignore files everywhere

@@ -21,6 +21,8 @@
 #include "game.h"
 #include "palette.h"
 #include "databuf.h"
+#include "data/credits.h"
+#include "data/quotes.h"
 
 Game *game = 0;
 static Exult_Game game_type = BLACK_GATE;
@@ -144,7 +146,6 @@ str_int_pair Game::get_resource(const char *name)
 
 int Game::show_text_line(int left, int right, int y, const char *s)
 {
-	// FIXME:
 	//The texts used in the main menu contains backslashed sequences that
 	//indicates the output format of the lines:
 	// \Px   include picture number x (frame of MAINSHP.FLX shape 14h)
@@ -222,11 +223,14 @@ vector<char *> *Game::load_text(const char *archive, int index)
 	vector<char *> *text = new vector<char *>();
 	while(ptr<end) {
 		char *start = ptr;
-		ptr = strchr(ptr, '\r');
+		ptr = strchr(ptr, '\n');
 		if(ptr) {
-			*ptr = 0;
+			if(*(ptr-1)=='\r') // It's CR/LF
+				*(ptr-1) = 0;
+			else
+				*ptr = 0;
 			text->push_back(strdup(start));
-			ptr += 2;
+			ptr += 1;
 		} else
 			break;
 	}
@@ -265,14 +269,14 @@ void Game::scroll_text(vector<char *> *text)
 			if(ypos<topy) {		// If this line doesn't appear, don't show it next time
 				++startline;
 				starty = ypos;
-				if(startline>maxlines) {
+				if(startline>=maxlines) {
 					looping = false;
 					break;
 				}
 			}
 		} while (ypos<endy);
 		pal.apply();
-		looping = !wait_delay(70);
+		looping = looping && !wait_delay(70);
 		if(!looping)
 			pal.fade_out(30);
 		starty -= 2;
@@ -285,24 +289,31 @@ void Game::show_menu()
 
 		top_menu();
 		
-		int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12 };
+		int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12, -1, -2 };
 		int num_choices = sizeof(menuchoices)/sizeof(int);
 		int selected = 2;
 		SDL_Event event;
 		char npc_name[16];
-		sprintf(npc_name, "God");
+		sprintf(npc_name, "Exult");
 		do {
 			bool exit_loop = false;
 			do {
-				for(int i=0; i<6; i++) {
-					Shape_frame *shape = menushapes.get_shape(menuchoices[i],i==selected);
-					gwin->paint_shape(centerx-shape->get_width()/2,menuy+i*10,shape);
+				for(int i=0; i<num_choices; i++) {
+					if(menuchoices[i]==-1) {
+						center_text(MAINSHP_FONT1, "EXULT CREDITS", centerx, menuy+i*10);
+					} else if(menuchoices[i]==-2) {
+						center_text(MAINSHP_FONT1, "EXULT QUOTES", centerx, menuy+i*10);
+					} else {
+						Shape_frame *shape = menushapes.get_shape(menuchoices[i],i==selected);
+						gwin->paint_shape(centerx-shape->get_width()/2,menuy+i*10,shape);
+					}
 				}		
 				win->show();
 				SDL_WaitEvent(&event);
 				if(event.type==SDL_KEYDOWN) {
 					switch(event.key.keysym.sym) {
 					case SDLK_ESCAPE:
+						pal.fade_out(30);
 						exit(0);
 						break;
 					case SDLK_UP:
@@ -355,6 +366,16 @@ void Game::show_menu()
 			case 5: // End Game
 				pal.fade_out(30);
 				end_game(true);
+				top_menu();
+				break;
+			case 6: // Exult Credits
+				pal.fade_out(30);
+				show_exult_credits();
+				top_menu();
+				break;
+			case 7: // Exult Quotes
+				pal.fade_out(30);
+				show_exult_quotes();
 				top_menu();
 				break;
 			default:
@@ -415,4 +436,20 @@ void Game::clear_avskin ()
 {
 	av_skin = -1;
 }
+
+void Game::show_exult_credits()
+	{
+		
+		vector<char *> *text = get_exult_credits();
+		scroll_text(text);
+		delete text; // Different way, because text is static
+	}
+
+void Game::show_exult_quotes()
+	{
+		
+		vector<char *> *text = get_exult_quotes();
+		scroll_text(text);
+		delete text; // Different way, because text is static
+	}
 

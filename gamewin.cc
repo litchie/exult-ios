@@ -76,7 +76,6 @@ Game_window::Game_window
 	    conv_choices(0), render_seq(0), painted(0), focus(1), shapes(),
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
 	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
-	    xtrashapes(0), 
 	    moving_barge(0), main_actor(0), skip_above_actor(31), npcs(0),
 	    monster_info(0), 
 	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
@@ -107,7 +106,6 @@ Game_window::Game_window
 	if (!sprites.is_good())
 		abort("Can't open 'sprites.vga' file.");
 	
-	xtrashapes = new Vga_file(game->get_extra_shape_file());
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);
 	ifstream textflx;	
@@ -173,7 +171,6 @@ Game_window::~Game_window
 	(
 	)
 	{
-	delete xtrashapes;
 	clear_world();			// Delete all objects, chunks.
 	delete win;
 	delete dragging_save;
@@ -2595,57 +2592,3 @@ void Game_window::setup_game
 	Tile_coord t = main_actor->get_abs_tile_coord();
 	olist->activate_eggs(main_actor, t.tx, t.ty, -1, -1);
 	}
-
-const char *Game_window::get_shape_file_name
-	(
-	int n
-	)
-	{		// FIXME: should be dynamic
-	switch(n) {
-	case 0:
-		return SHAPES_VGA;
-	case 1:
-		return FACES_VGA;
-	case 2:
-		return GUMPS_VGA;
-	case 3:
-		return SPRITES_VGA;
-	case 4:
-		return MAINSHP_FLX;
-	case 5:
-		return Game::get_game()->get_extra_shape_file();
-	default:
-		return 0;
-	}
-	}
-
-int Game_window::get_shape_file_count
-	(
-	)
-	{
-	return 6;	// FIXME: should be dynamic
-	}
-
-Vga_file *Game_window::get_shape_file_data
-	(
-	int n
-	)
-	{
-	switch(n) {	// FIXME: should be dynamic
-	case 0:
-		return &shapes;
-	case 1:
-		return &faces;
-	case 2:
-		return &gumps;
-	case 3:
-		return &sprites;
-	case 4:
-		return &mainshp;
-	case 5:
-		return xtrashapes;
-	default:
-		return 0;
-	}
-	}
-

@@ -74,10 +74,11 @@ public:
 	virtual bool new_game(Vga_file &shapes) =0;
 	virtual int  get_start_tile_x() =0;
 	virtual int  get_start_tile_y() =0;
-	virtual const char * get_extra_shape_file() =0;
 	
 	void clear_screen();
 	void refresh_screen();
+	void show_exult_credits();
+	void show_exult_quotes();
 	void play_flic(const char *archive, int index);
 	void play_audio(const char *archive, int index);
 	void play_midi(int track);
@@ -110,9 +111,6 @@ public:
 		{ return (64*tiles_per_chunk); }
 	virtual int  get_start_tile_y()
 		{ return (136*tiles_per_chunk); }
-	virtual const char * get_extra_shape_file() 
-		{ return "static/endshape.flx"; }
-
 	};
 
 class SI_Game: public Game
@@ -131,8 +129,6 @@ public:
 		{ return (25*tiles_per_chunk); }
 	virtual int  get_start_tile_y()
 		{ return (155*tiles_per_chunk); }
-	virtual const char * get_extra_shape_file() 
-		{ return "static/paperdol.vga"; }
 	};
 	
 #endif

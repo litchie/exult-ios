@@ -55,7 +55,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effects.h"
 #include "args.h"
 #include "game.h"
-
+#include "browser.h"
 
 Audio *audio;
 Configuration *config;
@@ -66,6 +66,7 @@ Configuration *config;
 Game_window *gwin = 0;
 unsigned char quitting_time = 0;	// Time to quit.
 Mouse *mouse = 0;
+ShapeBrowser *browser;
 int scale = 0;				// 1 if scaling X2.
 bool    cheat=true;			// Enable cheating keys
 bool	usecode_trace=false;		// Do we trace Usecode-intrinsics?
@@ -311,6 +312,7 @@ static void Init
 	Game::get_game()->show_menu();
 	gwin->set_mode(Game_window::normal);
 	SDL_SetEventFilter(Filter_intro_events);
+	browser = new ShapeBrowser();
 	gwin->setup_game();		// This will start the scene.
 	}
 
@@ -321,6 +323,7 @@ static void Init
 static int Play()
 	{
 	Handle_events(&quitting_time);
+	delete browser;
 	delete gwin;
 	delete mouse;
 	delete audio;
@@ -699,41 +702,6 @@ static void Handle_event
 	}
 
 /*
- *	Display a shape with info
- *
- */
-static void shape_showcase(
-	int current_file, 
-	int current_shape,
-	int current_frame
-	)
-	{
-	char buf[256];
-	gwin->paint();
-	// First of all draw the shape
-	Vga_file *shape_file = gwin->get_shape_file_data(current_file);
-	
-	if (shape_file->get_num_frames(current_shape))
-	{
-		Shape_frame *frame = shape_file->get_shape(
-							current_shape, current_frame);
-		if (frame)			// Paint with translucency.
-			gwin->paint_shape(
-				gwin->get_width()/2, gwin->get_height()/2, frame, 1);
-	}
-	
-	// Then show some info about it
-	sprintf(buf, "Shape file: \"%s\"", gwin->get_shape_file_name(current_file));
-	gwin->paint_text_box(2, buf, 
-		50, 50,  gwin->get_width(), gwin->get_height());
-	sprintf(buf, "Shape %d/%d - Frame %d/%d", 
-		current_shape, shape_file->get_num_shapes()-1,
-		current_frame, shape_file->get_num_frames(current_shape)-1);
-	gwin->paint_text_box(2, buf, 
-		50, 170,  gwin->get_width(), gwin->get_height());
-	}
-
-/*
  *	Get the i'th party member, with the 0'th being the Avatar.
  */
 
@@ -760,9 +728,6 @@ static void Handle_keystroke
 	int ctrl
 	)
 	{
-	static int current_shape = 0, current_frame = 0, current_file = 0;
-	Vga_file *vga_file;
-	
 	static int inventory_page = -1, stats_page = -1;
 	int stepping = 1;
 	
@@ -802,7 +767,12 @@ static void Handle_keystroke
 			gwin->brighten(-20);
 		break;
 	case SDLK_b:
-		Breakpoint();
+		if(cheat&&ctrl) {
+			browser->browse_shapes();
+			gwin->paint();
+			gwin->set_palette(-1,-1);
+		} else	
+			Breakpoint();
 		break;
 	case SDLK_i:
 		{
@@ -839,9 +809,14 @@ static void Handle_keystroke
 		{
 		if (ctrl)		// Create last shape viewed.
 			{
-			gwin->get_main_actor()->add(
-				new Ireg_game_object(current_shape,
+			int current_shape = 0;
+			int current_frame = 0;
+			if(browser->get_shape(current_shape, current_frame))
+				gwin->get_main_actor()->add(
+					new Ireg_game_object(current_shape,
 					current_frame, 0, 0), 1);
+			else
+				gwin->center_text("Can only create from 'shapes.vga'");
 			break;
 			}
 		gwin->toggle_combat();	// Go into combat mode
@@ -870,30 +845,34 @@ static void Handle_keystroke
 		}
 	case SDLK_h:
 		{
-		char buf[512];
-		sprintf(buf, "EXULT - Keyboard commands\n\n"
-			"Arrow keys - scroll map\n"
-			"Plus-Minus - Increment-decrement brightness\n"
-			"e - Toggle eggs visibility\n"
-			"PgUp/PgDn - Show next-previous shape file\n"
-			"vV - Show next-previous shape\n"
-			"fF - Show next-previous frame\n"
-			"c - Combat mode\n"
-			"i - Show inventory\n"
-			"l - Decrement lift\n"
-			"m - Turn on/off music\n"
-			"p - Repaint screen\n"
-			"z - Show stats\n"
-			"alt-x, F10, ESC - Exit\n"
-			"ctrl-m - Get 100 gold coins\n"
-			"ctrl-t - Fake time period change\n"
-			"ctrl-w - Test weather\n"
-			"F4 - Toggle fullscreen\n"
+		char buf[1024];
+		sprintf(buf, "Keyboard commands\n"
+			"  +/- - Higher/Lower brightness\n"
+			"  c - Combat mode\n"
+			"  i - Show inventory\n"
+			"  m - Turn on/off music\n"
+			"  p - Repaint screen\n"
+			"  ctrl-s - Quick Save\n"
+			"  ctrl-r - Quick Restore\n"
+			"  s - Show save box\n"
+			"  z - Show stats\n"
+			"  F4 - Toggle fullscreen\n"
+			"  alt-x, F10, ESC - Exit\n\n"
+			"Cheat commands\n"
+			"  Arrow keys - scroll map\n"
+			"  alt-+/- - Switch resolution\n"
+			"  ctrl-b - Shape Browser\n"
+			"  g - Change Avatar gender\n"
+			"  ctrl-m - Get 100 gold coins\n"
+			"  alt-p  - Toggle Petra mode (SI)\n"
+			"  ctrl-t - Fake time period change\n"
+			"  alt-t  - Teleport\n"
+			"  ctrl-w - Test weather\n"
 		);
 			
-		gwin->paint_text_box(2, buf, 
-			15, 15, 300, 400);
-		gwin->paint();
+		gwin->paint_text_box(MAINSHP_FONT1, buf, 
+			5, 5, 300, 400);
+		gwin->get_win()->show();
 		break;
 		}
 	case SDLK_ESCAPE:		// ESC key.
@@ -953,21 +932,6 @@ static void Handle_keystroke
 			gwin->center_text("Eggs display disabled");
 		gwin->paint();
 		break;
-	case SDLK_f:		// Show next frame
-		if(!cheat)
-			break;
-		vga_file = gwin->get_shape_file_data(current_file);
-		if (!shift) {
-			current_frame += stepping;
-			if(current_frame>=vga_file->get_num_frames(current_shape))
-				current_frame = 0;
-		} else {
-			current_frame -= stepping;
-			if(current_frame<0)
-				current_frame = vga_file->get_num_frames(current_shape);
-		}
-		shape_showcase(current_file, current_shape, current_frame);
-		break;
 	case SDLK_g:		// Change Avatars gender
 		if(!cheat)
 			break;
@@ -1008,23 +972,6 @@ static void Handle_keystroke
 			Modal_gump(fileio, Mouse::hand);
 			delete fileio;
 			}
-		break;
-	case SDLK_v:
-		if(!cheat)
-			break;
-					// Show next shape.
-		current_frame = 0;
-		vga_file = gwin->get_shape_file_data(current_file);
-		if (!shift) {
-			current_shape += alt ? 20 : 1;
-			if(current_shape>=vga_file->get_num_shapes())
-				current_shape = 0;
-		} else {
-			current_shape -= alt ? 20 : 1;
-			if(current_shape<0)
-				current_shape = vga_file->get_num_shapes()-1;
-		}
-		shape_showcase(current_file, current_shape, current_frame);
 		break;
 	case SDLK_t:			// 'Target' mode.
 		{
@@ -1068,26 +1015,6 @@ static void Handle_keystroke
 	case SDLK_x:			// Alt-x means quit.
 		if (alt)
 			Okay_to_quit();
-		break;
-	case SDLK_PAGEUP:
-		if(!cheat)
-			break;
-		current_shape=0;
-		current_frame=0;
-		--current_file;
-		if(current_file<0)
-			current_file = gwin->get_shape_file_count()-1;
-		shape_showcase(current_file, current_shape, current_frame);
-		break;
-	case SDLK_PAGEDOWN:
-		if(!cheat)
-			break;
-		current_shape=0;
-		current_frame=0;
-		++current_file;
-		if(current_file==gwin->get_shape_file_count())
-			current_file = 0;
-		shape_showcase(current_file, current_shape, current_frame);
 		break;
 	case SDLK_RIGHT:
 		if(!cheat)
