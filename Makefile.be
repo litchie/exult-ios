@@ -3,7 +3,7 @@
 
 # Base of the exult source
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin
+VPATH=$(SRC):$(SRC)/files:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode
 VERSION=0.90alpha1
 
 ### Modify these paths
@@ -26,8 +26,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
 	game.o gameclk.o gamedat.o gamerend.o gametxt.o gamewin.o \
 	gumps.o items.o lists.o menulist.o mouse.o \
 	npcnear.o npctime.o objs.o palette.o paths.o readnpcs.o schedule.o \
-	segfile.o sigame.o spells.o tqueue.o txtscroll.o usecode.o \
-    useval.o vgafile.o virstone.o
+	segfile.o sigame.o spells.o tqueue.o txtscroll.o vgafile.o virstone.o
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
@@ -40,7 +39,8 @@ FLIC_OBJS=playfli.o
 FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o
 # unused: test.o
-OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(IMAGEWIN_OBJS)
+USECODE_OBJS=ucmachine.o ucsched.o intrinsics.o useval.o
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
 
 EXULT_FLX_OBJECTS = \
 	data/exult_quotes.shp \
