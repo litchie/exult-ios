@@ -63,7 +63,7 @@ $(EXEC) : Makefile data/exult.flx $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
 tools/expack : tools/expack.o $(FILE_OBJS) utils.o
-	$(CXX) $(LFLAGS) -o tools/expack tools/expack.o utils.o $(FILE_OBJS) $(LIBS)
+	$(CXX) $(LFLAGS) -o tools/expack tools/expack.o $(FILE_OBJS) $(LIBS)
 
 data/exult.flx: tools/expack $(EXULT_FLX_OBJECTS)
 	tools/expack -c data/exult.flx $(EXULT_FLX_OBJECTS)
