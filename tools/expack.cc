@@ -99,6 +99,15 @@ int main()
 		};
 		
 	mac_main( mac_argc, mac_argv );
+
+	char	*mac_argv2[mac_argc] =
+		{
+			"expack",
+			"-i",
+			"bg/flx.in"
+		};
+		
+	mac_main( mac_argc, mac_argv2 );
 }
 
 

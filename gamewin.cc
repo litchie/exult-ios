@@ -638,33 +638,33 @@ void Game_window::set_camera_actor
  *	Output:	1 if scrolled (screen updated).
  */
 
-int Game_window::scroll_if_needed
+bool Game_window::scroll_if_needed
 	(
 	Tile_coord t
 	)
 	{
-	int scrolled = 0;
+	bool scrolled = false;
 					// 1 lift = 1/2 tile.
 	int tx = t.tx - t.tz/2, ty = t.ty - t.tz/2;
 	if (tx <= scroll_bounds.x - 1)
 		{
 		view_left();
-		scrolled = 1;
+		scrolled = true;
 		}
 	else if (tx >= scroll_bounds.x + scroll_bounds.w)
 		{
 		view_right();
-		scrolled = 1;
+		scrolled = true;
 		}
 	if (ty <= scroll_bounds.y - 1)
 		{
 		view_up();
-		scrolled = 1;
+		scrolled = true;
 		}
 	else if (ty >= scroll_bounds.y + scroll_bounds.h)
 		{
 		view_down();
-		scrolled = 1;
+		scrolled = true;
 		}
 	return (scrolled);
 	}

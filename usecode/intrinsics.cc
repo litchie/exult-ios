@@ -44,6 +44,7 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::rand;
+using std::strchr;
 
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 Barge_object *Get_barge	(Game_object *obj);
