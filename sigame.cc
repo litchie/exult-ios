@@ -1,18 +1,20 @@
 /*
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
+Copyright (C) 2000-2001 The Exult Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
 
 #include "alpha_kludges.h"
 
@@ -841,117 +843,149 @@ void SI_Game::show_credits()
 	}
 
 bool SI_Game::new_game(Vga_file &shapes)
+{
+	int menuy = topy+110;
+	Font *font = fontManager.get_font("MENU_FONT");
+	
+	char npc_name[17];
+	char disp_name[18];
+	int max_len = 16;
+	npc_name[0] = 0;
+	int sex = 0;
+	int selected = 0;
+	int num_choices = 4;
+	//pal.load("<STATIC>/intropal.dat",6);
+	SDL_Event event;
+	bool editing = true;
+	bool redraw = true;
+	bool ok = true;
+	do
 	{
-		int menuy = topy+110;
-		Font *font = fontManager.get_font("MENU_FONT");
-		
-		char npc_name[9];
-		char disp_name[10];
-		int max_len = 16;
-		npc_name[0] = 0;
-		int sex = 0;
-		int selected = 0;
-		int num_choices = 4;
-		//pal.load("<STATIC>/intropal.dat",6);
-		SDL_Event event;
-		bool editing = true;
-		bool redraw = true;
-		bool ok = true;
-		do {
-     		        if (redraw) {
-				gwin->clear_screen();
-				gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-				gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
-				gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
-				gwin->paint_face(topx+300,menuy+50,0,sex);
-				gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
-				gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
+		if (redraw)
+		{
+			gwin->clear_screen();
+			gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
+			gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
+			gwin->paint_face(topx+300,menuy+50,0,sex);
+			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
+			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
+			if(selected==0)
+				sprintf(disp_name, "%s_", npc_name);
+			else
+				sprintf(disp_name, "%s", npc_name);
+			font->draw_text(ibuf, topx+50, menuy+10, disp_name);
+			pal.apply();
+			redraw = false;
+		}
+		SDL_WaitEvent(&event);
+		if(event.type==SDL_KEYDOWN)
+		{
+			redraw = true;
+			switch(event.key.keysym.sym)
+			{
+			case SDLK_SPACE:
 				if(selected==0)
-				        sprintf(disp_name, "%s_", npc_name);
-				else
-				        sprintf(disp_name, "%s", npc_name);
-				font->draw_text(ibuf, topx+50, menuy+10, disp_name );
-				pal.apply();
-				redraw = false;
-			}
-			SDL_WaitEvent(&event);
-			if(event.type==SDL_KEYDOWN) {
- 			        redraw = true;
-				switch(event.key.keysym.sym) {
-				case SDLK_SPACE:
-					if(selected==0)
+				{
+					int len = strlen(npc_name);
+					if(len<max_len)
 					{
-						int len = strlen(npc_name);
-						if(len<max_len) {
-							npc_name[len] = ' ';
-							npc_name[len+1] = 0;
-						}
+						npc_name[len] = ' ';
+						npc_name[len+1] = 0;
 					}
-					else if(selected==1)
-						++sex;
+				}
+				else if(selected==1)
+				{
+					++sex;
 					if(sex>5)
 						sex = 0;
-					break;
-				case SDLK_ESCAPE:
+				}
+				break;
+			case SDLK_LEFT:
+				if(selected==1)
+				{
+					--sex;
+					if(sex<0)
+						sex = 5;
+				}
+				break;
+			case SDLK_RIGHT:
+				if(selected==1)
+				{
+					++sex;
+					if(sex>5)
+						sex = 0;
+				}
+				break;
+			case SDLK_ESCAPE:
+				editing = false;
+				ok = false;
+				break;
+			case SDLK_DOWN:
+				++selected;
+				if(selected==num_choices)
+					selected = 0;
+				break;
+			case SDLK_UP:
+				--selected;
+				if(selected<0)
+					selected = num_choices-1;
+				break;
+			case SDLK_RETURN:
+				if(selected<2) 
+					++selected;
+				else if(selected==2)
+				{
+					editing=false;
+					ok = true;
+				}
+				else
+				{
 					editing = false;
 					ok = false;
-					break;
-				case SDLK_DOWN:
-					++selected;
-					if(selected==num_choices)
-						selected = 0;
-					break;
-				case SDLK_UP:
-					--selected;
-					if(selected<0)
-						selected = num_choices-1;
-					break;
-				case SDLK_RETURN:
-					if(selected<2) 
-						++selected;
-					else if(selected==2) {
-						editing=false;
-						ok = true;
-					} else {
-						editing = false;
-						ok = false;
-					}
-					break;
-				case SDLK_BACKSPACE:
-					if(selected==0) {
-						if(strlen(npc_name)>0)
-							npc_name[strlen(npc_name)-1] = 0;
-					}
-					break;
-				default:
-					{
+				}
+				break;
+			case SDLK_BACKSPACE:
+				if(selected==0)
+				{
+					if(strlen(npc_name)>0)
+						npc_name[strlen(npc_name)-1] = 0;
+				}
+				break;
+			default:
+				{
 					int c = event.key.keysym.sym;
-					if(selected==0 && c>=SDLK_0 && c<=SDLK_z) {
+					if(selected==0 && c>=SDLK_0 && c<=SDLK_z)
+					{
 						int len = strlen(npc_name);
 						char chr = (event.key.keysym.mod & KMOD_SHIFT) ? toupper(c) : c;
-						if(len<max_len) {
+						if(len<max_len)
+						{
 							npc_name[len] = chr;
 							npc_name[len+1] = 0;
 						}
-					} else {
-					        redraw = false;
 					}
+					else
+					{
+						redraw = false;
 					}
-					break;
 				}
+				break;
 			}
-		} while(editing);
-
-		gwin->clear_screen();
-		gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-
-		if(ok)
-		{
-			set_avname (npc_name);
-			set_avsex (1-(sex%2));
-			set_avskin (sex/2);
-			ok = gwin->init_gamedat(true);
 		}
-
-		return ok;
 	}
+	while(editing);
+
+	gwin->clear_screen();
+	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+
+	if(ok)
+	{
+		set_avname (npc_name);
+		set_avsex (1-(sex%2));
+		set_avskin (sex/2);
+		ok = gwin->init_gamedat(true);
+	}
+
+	return ok;
+}

@@ -6,7 +6,7 @@
  **/
 
 /*
-Copyright (C) 1998  Jeffrey S. Freedman
+Copyright (C) 2000-2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -886,5 +886,6 @@ void Vga_file::load
 
 Vga_file::~Vga_file()
 	{
-	delete [] shapes;
+	if( shapes )
+		delete [] shapes;
 	}
