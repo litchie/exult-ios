@@ -1,4 +1,4 @@
-CLASSPATH = xerces.jar:xalan.jar
+CLASSPATH = xerces.jar;xalan.jar
 JAVA = java
 INPUT = readme.xml
 CLASS = org.apache.xalan.xslt.Process
