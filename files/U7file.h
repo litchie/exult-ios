@@ -12,6 +12,9 @@ protected:
 public:
 	U7file() {};
 	U7file(const char *name) : filename(name) {};
+	U7file(const U7file &f) : filename(f.filename)
+		{  }
+	U7file &operator=(const U7file &u) { filename=u.filename; return *this; }
 	virtual	int	number_of_objects(const char *)=0;
 	virtual	int	retrieve(int objnum,char **,size_t *len)=0; // To a memory block
 	virtual	int	retrieve(int objnum,const char *)=0;	// To a file
@@ -22,7 +25,14 @@ class	U7FileManager
 	{
 	static	U7FileManager	*self;
 protected:
-	map<const string,U7file *> file_list;
+	struct ltstr
+	{
+	  bool operator()(const string &s1, const string &s2) const
+	  {
+	    return s1<s2;
+	  }
+	};
+	map<const string,U7file *,ltstr> file_list;
 public:
 	U7FileManager();
 	~U7FileManager();
