@@ -126,6 +126,7 @@ void Npc_proximity_handler::handle_event
 					// Trick:  Stand, but stay in
 					//   sleep_schedule.
 		npc->get_schedule()->ending(Schedule::stand);
+#if 0	/* ++++++I think this was a mistake. (jsf - Nov. 2, 03) */
 					// Hostile monster?
 		if (npc->get_alignment() == Npc_actor::hostile &&
 		    npc != gwin->get_camera_actor() && npc->is_monster())
@@ -134,6 +135,7 @@ void Npc_proximity_handler::handle_event
 			npc->set_schedule_type(Schedule::combat);
 			}
 		else
+#endif
 			{
 			npc->say(first_awakened, last_awakened);
 					// In 10 seconds, go back to sleep.
@@ -150,7 +152,9 @@ void Npc_proximity_handler::handle_event
 					// Test of Courage:
 		sched != Schedule::wait)
 		{
+#if 0	/* ++++++I think this was a mistake. (jsf - Nov. 2, 03) */
 		npc->set_schedule_type(Schedule::combat);
+#endif
 		}
 			
 	else if (!(curtime < wait_until) && !cheat.in_map_editor() && 
