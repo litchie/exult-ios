@@ -490,7 +490,6 @@ void Game_window::init_files(bool cycle)
 	shape_man->load();		// All the .vga files!
 	CYCLE_RED_PLASMA();
 
-	//Setup_text(); //-DK-
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
 					// Force clock to start.
