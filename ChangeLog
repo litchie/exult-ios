@@ -1,3 +1,6 @@
+2002-01-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* tools/expack.cc: properly report errors if opening a file failed
+
 2002-01-03  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Removed obsolete -fs option and all relevant code.
 	-fs will now do the same thing as -fz. Makefile.am's were updated.

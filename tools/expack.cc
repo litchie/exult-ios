@@ -35,6 +35,7 @@
 #include "utils.h"
 #include "databuf.h"
 #include "crc.h"
+#include "exceptions.h"
 
 using std::atoi;
 using std::cerr;
@@ -142,11 +143,14 @@ long get_file_size(const char *fname)
 	if (text)
 		mode = "r";
 
-	FILE *fp = U7open (fname, mode);
-	if (!fp) {
-		cerr << "Could not open file " << fname << endl;
+	FILE *fp;
+	try {
+		fp = U7open (fname, mode);
+	} catch (const file_open_exception& e) {
+		cerr << e.what() << endl;
 		exit(1);
 	}
+
 	long len = 0;
 	if (!text)
 	{
@@ -227,7 +231,12 @@ int main(int argc, char **argv)
 						path_prefix[0] = 0;
 
 					set_mode(mode,RESPONSE);
-					U7open(respfile, fname, true);
+					try {
+						U7open(respfile, fname, true);
+					} catch (const file_open_exception& e) {
+						cerr << e.what() << endl;
+						exit(1);
+					}
 					
 					// Read the output file name
 					respfile.getline(temp, 1024);
@@ -331,13 +340,25 @@ int main(int argc, char **argv)
 			}
 				
 			ofstream flex;
-			U7open(flex, fname);
+			try {
+				U7open(flex, fname);
+			} catch (const file_open_exception& e) {
+				cerr << e.what() << endl;
+				exit(1);
+			}
 			StreamDataSource fs(&flex);
 
 			char hline[1024];
 			ofstream header;
-			U7open(header, hname, true);
-			
+
+		
+			try {
+				U7open(header, hname, true);
+			} catch (const file_open_exception& e) {
+				cerr << e.what() << endl;
+				exit(1);
+			}
+
 			std::vector<int>	file_sizes;
 			for(std::vector<string>::const_iterator X = file_names.begin(); X != file_names.end(); ++X)
 				file_sizes.push_back(get_file_size(X->c_str()));
@@ -381,7 +402,12 @@ int main(int argc, char **argv)
 				for(int i=0; i<file_names.size(); i++) {
 					if(file_sizes[i]) {
 						ifstream infile;
-						U7open(infile, file_names[i].c_str(), is_text_file(file_names[i].c_str()));
+						try {
+							U7open(infile, file_names[i].c_str(), is_text_file(file_names[i].c_str()));
+						} catch (const file_open_exception& e) {
+							cerr << e.what() << endl;
+							exit(1);
+						}
 						StreamDataSource ifs(&infile);
 						char *buf = new char[file_sizes[i]];
 						ifs.read(buf, file_sizes[i]);
@@ -410,7 +436,9 @@ int main(int argc, char **argv)
 		}
 		break;
 	default:
-		cout << "Usage:\n " << argv[0] << " -[l|x|c] file [index]" << endl;
+		cout << "Usage:" << endl
+			 << argv[0] << " -[l|x|c] file [index]" << endl
+			 << argv[0] << " -i indexfile" << endl;
 		break;
 	}
 	return 0;
