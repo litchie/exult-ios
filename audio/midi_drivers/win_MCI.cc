@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef WIN32
 
 #include "win_MCI.h"
+#include "SDL_syswm.h"
 
 #include <windows.h>
 #include <winbase.h>
@@ -72,7 +73,16 @@ void	Windows_MCI::start_track(const char *name,bool repeat)
 {
   int ret;
   char buf[512];
+  HWND hWnd = 0;
+  SDL_SysWMinfo info;		// Get system info.
+  
+  if (repeat) {
+    SDL_VERSION(&info.version);
+    SDL_GetWMInfo(&info);
 
+    hWnd = info.window;
+    printf("Detected window handle %x\n", hWnd); //debugging
+  }
   //#if DEBUG
   cerr << "Starting midi sequence with Windows_MCI" << endl;
 
@@ -90,7 +100,9 @@ void	Windows_MCI::start_track(const char *name,bool repeat)
   device_open = true;
 
   //start playing
-  ret = mciSendString("play u7midi", 0, 0, 0);
+  sprintf(buf, "play u7midi"); //  repeat?"notify":"");
+  //  cerr << buf << endl;
+  ret = mciSendString(buf, 0, 0, hWnd);
 }
 
 const	char *Windows_MCI::copyright(void)
