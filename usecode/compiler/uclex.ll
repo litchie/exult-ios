@@ -29,6 +29,39 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucloc.h"
 
 /*
+ *	Want a stack of files for implementing '#include'.
+ */
+vector<Uc_location *> locstack;
+vector<YY_BUFFER_STATE> bufstack;
+
+/*
+ *	Parse out a name in quotes.
+ *
+ *	Output:	->name, with a null replacing the ending quote.
+ *		0 if not found.
+ */
+
+static char *Find_name
+	(
+	char *name,
+	char *& ename			// ->null at end of name returned.
+	)
+	{
+	while (*name && *name != '"')	// Find start of filename.
+		name++;
+	if (!*name)
+		return 0;
+	name++;				// Point to name.
+	ename = name;			// Find end.
+	while (*ename && *ename != '"')
+		ename++;
+	if (!*ename)
+		return 0;
+	*ename = 0;
+	return name;
+	}
+
+/*
  *	Set location from a preprocessor string.
  */
 
@@ -39,27 +72,58 @@ static void Set_location
 	{
 	char *name;
 	int line = strtol(text, &name, 10);
-	while (*name && *name != '"')	// Find start of filename.
-		name++;
-	if (!*name)
+	char *ename;
+	name = Find_name(name, ename);
+	if (!name)
 		return;
-	name++;				// Point to name.
-	char *ename = name;		// Find end.
-	while (*ename && *ename != '"')
-		ename++;
-	if (!*ename)
-		return;
-	*ename = 0;
 //cout << "Setting location at line " << line - 1 << endl;
 					// We're 0-based.
 	Uc_location::set_cur(name, line - 1);
 	*name = '"';			// Restore text.
 	}
 
+/*
+ *	Include another source.
+ */
+
+static void Include
+	(
+	char *yytext			// ->text containing name.
+	)
+	{
+	char msg[180];
+	if (bufstack.size() > 20)
+		{
+		Uc_location::yyerror("#includes are nested too deeply");
+		exit(1);
+		}
+	char *ename;
+	char *name = Find_name(yytext, ename);
+	if (!name)
+		{
+		Uc_location::yyerror("No file in #include");
+		return;
+		}
+	locstack.push_back(new Uc_location());
+	bufstack.push_back(YY_CURRENT_BUFFER);
+	yyin = fopen(name, "r");
+	if (!yyin)
+		{
+		sprintf(msg, "Can't open '%s'", name);
+		Uc_location::yyerror(msg);
+		exit(1);
+		}
+					// Set location to new file.
+	Uc_location::set_cur(name, 0);
+	yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
+	}
+
+
 extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
 
 %}
 
+%x comment
 
 %%
 
@@ -111,13 +175,36 @@ UcItem		return ITEM;
 
 "# "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 2); }
 "#line "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 6); }
+"#include"[ \t]+.*\n		{ Include(yytext + 8); }
 
 \#.*			/* Ignore other cpp directives. */
 
 [ \t]+						/* Ignore spaces. */
 "//".*						/* Comments. */
+"/*"			BEGIN(comment);
+<comment>[^*\n]*				/* All but '*'. */
+<comment>"*"+[^*/\n]*				/* *'s not followed by '/'. */
+<comment>\n		{ Uc_location::increment_cur_line(); }
+<comment>"*/"		BEGIN(INITIAL);
+<comment><<EOF>>	{ Uc_location::yyerror("Comment not terminated");
+			yyterminate(); }
 \n			{ Uc_location::increment_cur_line(); }
 .			return *yytext;		/* Being lazy. */
+<<EOF>>			{
+			if (locstack.empty())
+				yyterminate();
+			else		// Restore buffer and location.
+				{
+				Uc_location *loc = locstack.back();
+				locstack.pop_back();
+				const char *nm = loc->get_source();
+				loc->set_cur(nm, loc->get_line());
+				delete loc;
+				yy_delete_buffer(YY_CURRENT_BUFFER);
+				yy_switch_to_buffer(bufstack.back());
+				bufstack.pop_back();
+				}
+			}
 
 
 %%
