@@ -527,6 +527,11 @@ void Game_window::read_ireg_objects
 			else
 				obj = new Ireg_game_object(
 				   entry[2], entry[3], tilex, tiley, lift);
+//+++++++++Testing
+			int num_frames = shapes.get_num_frames(shapeid);
+			if (obj->get_framenum() >= num_frames)
+				obj->set_frame(num_frames - 1);
+//+++++++++++++++^^^^^^^^
 			}
 		else if (entlen == 12)	// Container?
 			{
@@ -1174,6 +1179,7 @@ void Game_window::show_items
 		obj->get_abs_tile(tx, ty, tz);
 		cout << "tx = " << tx << ", ty = " << ty << ", quality = " <<
 			obj->get_quality() << '\n';
+		cout << "Volume = " << info.get_volume() << '\n';
 		cout << "obj = " << (void *) obj << '\n';
 #if 0
 		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << '\n';
@@ -1407,7 +1413,7 @@ void Game_window::remove_face
 	face_info[i] = 0;
 	num_faces--;
 	if (last_face_shown == i)	// Just in case.
-		last_face_shown == num_faces - 1;
+		last_face_shown = num_faces - 1;
 	}
 
 /*

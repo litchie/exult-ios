@@ -285,7 +285,7 @@ public:
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
 						owner(0)
 		{  }
-	Ireg_game_object()		// Create fake entry.
+	Ireg_game_object() : owner(0)	// Create fake entry.
 		{  }
 	virtual void remove();		// Remove/delete this object.
 	virtual void set_owner(Container_game_object *o)
