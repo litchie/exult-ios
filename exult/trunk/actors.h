@@ -175,8 +175,8 @@ public:
 		}
 	virtual int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
-	virtual int is_dead_npc() const	// Dead when health goes to 0.
-		{ return properties[(int) health] <= 0; }
+	virtual int is_dead_npc() const	// Dead when health goes below 0.
+		{ return properties[(int) health] < 0; }
 	int get_level() const		// Get experience level.
 		{ return 1 + Log2(get_property(exp)/50); }
 					// Set/clear/get actor flag.
@@ -356,11 +356,13 @@ class Monster_actor : public Npc_actor
 	static int in_world_cnt;	// # in list.
 					// Links for 'in_world' list.
 	Monster_actor *next_monster, *prev_monster;
+	Egg_object *creator;		// Egg that create it, or 0.
 					// Are new tiles blocked?
 	int is_blocked(int destx, int desty);
 public:
 	Monster_actor(char *nm, int shapenum, int fshape = -1, int uc = -1)
-		: Npc_actor(nm, shapenum, fshape, uc), prev_monster(0)
+		: Npc_actor(nm, shapenum, fshape, uc), prev_monster(0),
+		  creator(0)
 		{
 		if (in_world)
 			in_world->prev_monster = this;
@@ -376,6 +378,8 @@ public:
 		{ return in_world; }
 	Monster_actor *get_next_in_world()
 		{ return next_monster; }
+	void set_creator(Egg_object *egg)
+		{ creator = egg; }
 	static int get_num_in_world()
 		{ return in_world_cnt; }
 	static void delete_all();	// Delete all monsters.
@@ -468,7 +472,7 @@ public:
 		equip_offset = eqoff;
 		}
 					// Create an instance.
-	Npc_actor *create(int chunkx, int chunky, int tilex, int tiley, 
+	Monster_actor *create(int chunkx, int chunky, int tilex, int tiley, 
 								int lift);
 	};
 
