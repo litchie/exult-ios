@@ -60,6 +60,7 @@
 #define INTROSND	"static/introsnd.dat"
 #define ARMOR		"static/armor.dat"
 #define WEAPONS		"static/weapons.dat"
+#define PAPERDOL	"static/paperdol.vga"
 
 #define ENDGAME_FONT1	32
 #define ENDGAME_FONT2	33

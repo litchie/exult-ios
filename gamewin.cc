@@ -66,7 +66,7 @@ Game_window *Game_window::game_window = 0;
 
 Game_window::Game_window
 	(
-	int width, int height		// Window dimensions.
+	int width, int height, int scale		// Window dimensions.
 	) : 
 	    usecode(new Usecode_machine(this)),mode(splash), combat(0),
             tqueue(new Time_queue()), clock(tqueue), win(0),
@@ -75,7 +75,7 @@ Game_window::Game_window
 	    conv_choices(0), render_seq(0), painted(0), focus(1), shapes(),
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
 	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
-	    endshape(ENDSHAPE_FLX), 
+	    xtrashapes(0), 
 	    moving_barge(0), main_actor(0), skip_above_actor(31), npcs(0),
 	    monster_info(0), 
 	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
@@ -84,7 +84,7 @@ Game_window::Game_window
 	{
 	game_window = this;		// Set static ->.
 	
-	set_window_size(width, height);
+	set_window_size(width, height, scale);
 
 	// Discover the game we are running (BG, SI, ...)
 	char *static_identity = get_game_identity(INITGAME);
@@ -105,6 +105,7 @@ Game_window::Game_window
 	if (!sprites.is_good())
 		abort("Can't open 'sprites.vga' file.");
 	
+	xtrashapes = new Vga_file(game->get_extra_shape_file());
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);
 	ifstream textflx;	
@@ -139,15 +140,9 @@ Game_window::Game_window
 			cout << "Gamedat identity " << gamedat_identity << endl;
 			if(strcmp(static_identity, gamedat_identity))
 				{
-					cout << " ->BAD" << endl;
 					cout << "Creating 'gamedat' files."<<endl;
 					restore_gamedat(INITGAME);
 				}
-			else
-				{
-					cout << " ->GOOD" << endl;
-				}
-			
 			read_gwin();	// Read in 'gamewin.dat' to set clock,
 					//   scroll coords.
 		}
@@ -172,7 +167,7 @@ Game_window::Game_window
 	
 	}
 
-void Game_window::set_window_size(int width, int height)
+void Game_window::set_window_size(int width, int height, int scale)
 {
 	if(win) {
 		delete win;
@@ -184,9 +179,6 @@ void Game_window::set_window_size(int width, int height)
 	if(fullscreenstr=="yes")
 		fullscreen=true;
 	config->set("config/video/fullscreen",fullscreenstr,true);
-	int scale;			// Let 'config' override scale.
-	config->value("config/video/scale", scale, 1);
-					// Create 8-bit depth window.
 	win = new Image_window8(width, height, scale, fullscreen);
 	win->set_title("Exult Ultima7 Engine");
 	pal = new Palette();
@@ -205,6 +197,7 @@ Game_window::~Game_window
 	(
 	)
 	{
+	delete xtrashapes;
 	clear_world();			// Delete all objects, chunks.
 	delete win;
 	delete dragging_save;
@@ -2483,7 +2476,7 @@ const char *Game_window::get_shape_file_name
 	case 4:
 		return MAINSHP_FLX;
 	case 5:
-		return ENDSHAPE_FLX;
+		return Game::get_game()->get_extra_shape_file();
 	default:
 		return 0;
 	}
@@ -2513,7 +2506,7 @@ Vga_file *Game_window::get_shape_file_data
 	case 4:
 		return &mainshp;
 	case 5:
-		return &endshape;
+		return xtrashapes;
 	default:
 		return 0;
 	}
