@@ -35,6 +35,7 @@ binary-arch: checkroot build
 	make
 	cp exult debian/tmp/usr/games/exult
 	cp data/*.flx debian/tmp/usr/lib/games/exult
+	cp docs/exult.6 debian/exult.6
 	# Documentation
 	gzip -c README > debian/tmp/usr/doc/exult/README.gz
 	gzip -c AUTHORS > debian/tmp/usr/doc/exult/AUTHORS.gz
