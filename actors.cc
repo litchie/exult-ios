@@ -163,6 +163,9 @@ void Actor::ready_best_weapon
 	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
+		if (obj->get_shapenum() == 595)
+			continue;	// Don't pick the torch. (Don't under-
+					//   stand weapons.dat well, yet!)
 		Shape_info& info = gwin->get_info(obj);
 		Weapon_info *winf = info.get_weapon_info();
 		if (!winf)
