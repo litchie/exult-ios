@@ -244,6 +244,25 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 	      Game_window::get_game_window()->get_win_tile_rect().enlarge(3)),
 	    best(b)
 	{
+	if (best.tx != -1)		// Scale (roughly) to edge of screen.
+		{
+		Rectangle scr = 
+			Game_window::get_game_window()->get_win_tile_rect();
+					// Get center.
+		int cx = scr.x + scr.w/2, cy = scr.y + scr.h/2;
+		if (best.tx > cx + scr.w)
+					// Too far to right of screen.
+			best.tx = scr.x + scr.w + 1;
+		else if (best.tx < cx - scr.w)
+			best.tx = scr.x - 1;
+		if (best.ty > cy + scr.h)
+			best.ty = scr.y + scr.h + 1;
+		else if (best.ty < cy - scr.h)
+			best.ty = scr.y - 1;
+					// Give up if it doesn't look right.
+		if (best.distance(Tile_coord(cx, cy, 0)) > scr.w)
+			best.tx = best.ty = -1;
+		}
 	}
 
 /*

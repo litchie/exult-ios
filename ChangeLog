@@ -1,4 +1,6 @@
 2002-01-07  Jeff Freedman  <jeff@amy.nerble.net>
+	* paths.cc: Fixed Offscreen pathfinder bug (that I caused) when
+	'best' was far away.
 
 	* objs/egg.cc: Rewrote method for finding path eggs when
 	teleporting.
