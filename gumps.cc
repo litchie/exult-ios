@@ -46,7 +46,7 @@ const int MUSICBTN = 29;
 const int SPEECHBTN = 30;
 const int SOUNDBTN = 31;
 const int BOOK = 32;
-const int DOVE = 46;
+const int COMBAT = 46;			// Frame 0=dove, 1=swords.
 const int SCROLL = 55;
 const int QUITBTN = 56;
 const int YESNOBOX = 69;
@@ -55,8 +55,9 @@ const int YESBTN = 70, NOBTN = 71;
 /*
  *	Statics:
  */
-short Actor_gump_object::diskx = 122, Actor_gump_object::disky = 132;
-short Actor_gump_object::heartx = 122, Actor_gump_object::hearty = 114;
+short Actor_gump_object::diskx = 122, Actor_gump_object::disky = 114;
+short Actor_gump_object::heartx = 122, Actor_gump_object::hearty = 132;
+short Actor_gump_object::combatx = 50, Actor_gump_object::combaty = 133;
 short Actor_gump_object::coords[24] = {
 	114, 10,	/* head */	115, 24,	/* back */
 	115, 37,	/* belt */	115, 55,	/* lhand */
@@ -175,6 +176,21 @@ public:
 	Disk_gump_button(Gump_object *par, int px, int py)
 		: Gump_button(par, DISK, px, py)
 		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	The combat toggle button.
+ */
+class Combat_gump_button : public Gump_button
+	{
+public:
+	Combat_gump_button(Gump_object *par, int px, int py)
+		: Gump_button(par, COMBAT, px, py)
+		{
+		pushed = Game_window::get_game_window()->in_combat();
+		}
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
 	};
@@ -448,6 +464,20 @@ void Disk_gump_button::activate
 	File_gump_object *fileio = new File_gump_object();
 	Modal_gump(fileio, Mouse::hand);
 	delete fileio;
+	}
+
+/*
+ *	Handle click on a combat toggle button.
+ */
+
+void Combat_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+	gwin->toggle_combat();
+	pushed = gwin->in_combat();
+	parent->paint(gwin);
 	}
 
 /*
@@ -923,6 +953,7 @@ Actor_gump_object::Actor_gump_object
 	{
 	heart_button = new Heart_gump_button(this, heartx, hearty);
 	disk_button = new Disk_gump_button(this, diskx, disky);
+	combat_button = new Combat_gump_button(this, combatx, combaty);
 	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 		{			// Set object coords.
 		Game_object *obj = container->get_readied(i);
@@ -941,6 +972,7 @@ Actor_gump_object::~Actor_gump_object
 	{
 	delete heart_button;
 	delete disk_button;
+	delete combat_button;
 	}
 
 /*
@@ -962,6 +994,8 @@ Gump_button *Actor_gump_object::on_button
 		return heart_button;
 	else if (disk_button->on_button(gwin, mx, my))
 		return disk_button;
+	else if (combat_button->on_button(gwin, mx, my))
+		return combat_button;
 	return 0;
 	}
 
@@ -1047,6 +1081,7 @@ void Actor_gump_object::paint
 					// Paint buttons.
 	paint_button(gwin, heart_button);
 	paint_button(gwin, disk_button);
+	paint_button(gwin, combat_button);
 	}
 
 /*
