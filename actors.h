@@ -417,6 +417,7 @@ public:
 	{ list = NULL, cnt = 0; }
 
 	void show_inventory();
+	int inventory_shapenum();
 
 	bool was_hit() { return hit; }
 	};

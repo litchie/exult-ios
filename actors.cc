@@ -1609,31 +1609,43 @@ void Actor::show_inventory()
 	Game_window *gwin = Game_window::get_game_window();
 	Gump_manager *gump_man = gwin->get_gump_man();
 
+	int shapenum = inventory_shapenum();
+	if (shapenum)
+		gump_man->add_gump(this, shapenum);
+}
+
+int Actor::inventory_shapenum()
+{
+	Game_window *gwin = Game_window::get_game_window();
+
 	// We are serpent if we can use serpent isle paperdolls
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
 	
 	if (!npc_num && !serpent)	// Avatar No paperdolls
-		gump_man->add_gump(this, ACTOR_FIRST_GUMP);
+		return (ACTOR_FIRST_GUMP);
 	else if (!npc_num && serpent)	// Avatar Paperdolls
-		gump_man->add_gump(this, 123);
+		return (123);
 					// Gump/combat mode?
+					// Show companions' pictures. (BG)
 	else if (get_party_id() >= 0 &&
 		 npc_num >= 1 && npc_num <= 10 && !serpent)
-					// Show companions' pictures. (BG)
-			gump_man->add_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
+			return (ACTOR_FIRST_GUMP + 1 + npc_num);
+	// Show companions' pictures. (SI)
 	else if (get_party_id() >= 0 && serpent)
-					// Show companions' pictures. (SI)
-			gump_man->add_gump(this, 123);
-					// Pickpocket Cheat Female no paperdolls
+		return (123);
+	// Pickpocket Cheat Female no paperdolls
 	else if (!serpent && Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
-		gump_man->add_gump(this, 66);
-					// Pickpocket Cheat Male no paperdolls
+		return (66);
+	// Pickpocket Cheat Male no paperdolls
 	else if (!serpent && !Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
-		gump_man->add_gump(this, 65);
-					// Pickpocket Cheat paperdolls
+		return (65);
+	// Pickpocket Cheat paperdolls
 	else if (serpent)
-		gump_man->add_gump(this, 123);
+		return (123);
+	
+	return 0;
 }
+
 
 /*
  *	Drop another onto this.
