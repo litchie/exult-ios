@@ -164,7 +164,7 @@ typedef T_Object_iterator_backwards<Game_object *, Map_chunk *> Object_iterator_
 template<class D> class D_Recursive_object_iterator
 	{
 					// Child we're going through, or 0.
-	D_Recursive_object_iterator<class D> *child;
+	D_Recursive_object_iterator<D> *child;
 	D elems;			// Goes through our elements.
 public:
 	D_Recursive_object_iterator(Object_list& objs)
