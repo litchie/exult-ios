@@ -1336,7 +1336,7 @@ void Game_window::set_palette
 		return;			// In the black.
 	ifstream pal;
 	u7open(pal, PALETTES_FLX);
-	pal.seekg(256 + 3*256*pal_num); // Get to desired palette.
+	pal.seekg(256 + 3*256*palette); // Get to desired palette.
 	unsigned char colors[3*256];	// Read it in.	
 	pal.read((char*)colors, sizeof(colors));
 					// They use 6 bits.

@@ -246,11 +246,14 @@ inline void Raindrop::next
 	if (x >= 0)			// Not the first time?  Restore pix.
 		iwin->put_pixel8(oldpix, x, y);
 					// Time to restart?
-	if (x < 0 || x == w - 1 || y == h - 3)
+	if (x < 0 || x >= w - 8 || y >= h - 10)
 		{			
 		int r = rand();
 					// Have a few fall faster.
 		yperx = (r%4) ? 1 : 2;
+		x = r%(w - w/8);
+		y = r%(h - h/4);
+#if 0
 		int vert = (7*h)/8;	// Top of vert. area.
 		int horiz = (7*w)/8;	// Left part of horiz. area.
 		int start = r%(vert + horiz);
@@ -258,11 +261,13 @@ inline void Raindrop::next
 			{ x = 0; y = h - start; }
 		else
 			{ x = start - vert; y = 0; };
+#endif
 		}
 	else				// Next spot.
 		{
-		x++;
-		y += yperx;
+		int delta = 1 + rand()%5;
+		x += delta;
+		y += delta + yperx;
 		}
 	oldpix = iwin->get_pixel8(x, y);	// Get pixel.
 	iwin->put_pixel8(xform[oldpix], x, y);
@@ -282,7 +287,7 @@ void Rain_effect::handle_event
 	Image_window8 *win = gwin->get_win();
 	int w = win->get_width(), h = win->get_height();
 					// Get transform table.
-	Xform_palette xform = gwin->get_xform(10);	//++++Experiment.
+	Xform_palette xform = gwin->get_xform(8);	//++++Experiment.
 	const int num_drops = sizeof(drops)/sizeof(drops[0]);
 					// Move drops.
 	for (int i = 0; i < num_drops; i++)
@@ -305,26 +310,30 @@ void Lightning_effect::handle_event
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->set_painted();
 	int r = rand();			// Get a random #.
 	int delay = 100;		// Delay for next time.
+cout << "Lightning:  curtime = " << curtime << ", stop_time = " <<
+					stop_time << endl;
 	if (save_brightness > 0)	// Just turned white?  Restore.
 		{
 		gwin->set_palette(-1, save_brightness);
+		save_brightness = -1;
+		gwin->show(1);
 		if (curtime >= stop_time)
 			{		// Time to stop.
 			delete this;
 			return;
 			}
-		if (r%4 == 0)		// Occassionally flash again.
-			delay = (1 + r%3)*100;
+		if (r%5 < 2)		// Occassionally flash again.
+			delay = (1 + r%7)*40;
 		else			// Otherwise, wait several secs.
-			delay = (5000 + r%4);
+			delay = (4000 + r%4);
 		}
 	else				// Time to flash.
 		{
 		save_brightness = gwin->get_brightness();
-		gwin->set_palette(-1, 200);
+		gwin->set_palette(-1, 400);
+		gwin->show(1);
 		delay = (1 + r%3)*50;
 		}
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
