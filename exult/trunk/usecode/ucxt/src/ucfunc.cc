@@ -1188,13 +1188,31 @@ void output_raw_opcodes(ostream &o, const UCc &op)
 	unsigned int numsep = op._params.size();
 	//cout << endl << numsep << endl;
 	if(numsep>6)
-		o << endl << "\t\t\t\t";
+		o << endl << "\t\t\t";
 	else if (numsep>5)
-		o << "\t";
+		o << " ";
 	else if (numsep>2)
-		o << "\t\t";
+		o << "\t";
 	else
-		o << "\t\t\t";
+		o << "\t\t";
+}
+
+inline unsigned int charnum2uint(const char c)
+{
+	switch(c)
+	{
+		case '1': return 1;
+		case '2': return 2;
+		case '3': return 3;
+		case '4': return 4;
+		case '5': return 5;
+		case '6': return 6;
+		case '7': return 7;
+		case '8': return 8;
+		case '9': return 9;
+		default:  return 0;
+	}
+	return 0; // can't happen
 }
 
 string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op)
@@ -1245,21 +1263,9 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					else if(c=='t')
 					{
 						i++; c = asmstr[i];
-						unsigned int t=0;
-						switch(c)
-						{
-							case '1': assert(params.size()>=1); t=1; break;
-							case '2': assert(params.size()>=2); t=2; break;
-							case '3': assert(params.size()>=3); t=3; break;
-							case '4': assert(params.size()>=4); t=4; break;
-							case '5': assert(params.size()>=5); t=5; break;
-							case '6': assert(params.size()>=6); t=6; break;
-							case '7': assert(params.size()>=7); t=7; break;
-							case '8': assert(params.size()>=8); t=8; break;
-							case '9': assert(params.size()>=9); t=9; break;
-							default:   // we'll silently drop errors... it's the only "clean" way
-								str << '%' << c;
-						}
+						unsigned int t = charnum2uint(c);
+						
+						assert(params.size()>=t);
 						assert(t!=0);
 						string s = ucf._data.find(params[t-1])->second;
 						if(s.size()>17) s = s.substr(0, 17) + string("...");
@@ -1270,24 +1276,11 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					else if(c=='i')
 					{
 						i++; c = asmstr[i];
-						unsigned int t=0;
-						switch(c)
-						{
-							case '1': assert(params.size()>=1); t=1; break;
-							case '2': assert(params.size()>=2); t=2; break;
-							case '3': assert(params.size()>=3); t=3; break;
-							case '4': assert(params.size()>=4); t=4; break;
-							case '5': assert(params.size()>=5); t=5; break;
-							case '6': assert(params.size()>=6); t=6; break;
-							case '7': assert(params.size()>=7); t=7; break;
-							case '8': assert(params.size()>=8); t=8; break;
-							case '9': assert(params.size()>=9); t=9; break;
-							default:   // we'll silently drop errors... it's the only "clean" way
-								str << '%' << c;
-						}
+						unsigned int t = charnum2uint(c);
+						
+						assert(params.size()>=t);
 						assert(t!=0);
 						string s = intrinsics.find(params[t-1])->second;
-						//if(s.size()>17) s = s.substr(0, 17) + string("...");
 						str << s;
 						break;
 					}
@@ -1295,21 +1288,9 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					else if(c=='f')
 					{
 						i++; c = asmstr[i];
-						unsigned int t=0;
-						switch(c)
-						{
-							case '1': assert(ucf._externs.size()>=1); t=1; break;
-							case '2': assert(ucf._externs.size()>=2); t=2; break;
-							case '3': assert(ucf._externs.size()>=3); t=3; break;
-							case '4': assert(ucf._externs.size()>=4); t=4; break;
-							case '5': assert(ucf._externs.size()>=5); t=5; break;
-							case '6': assert(ucf._externs.size()>=6); t=6; break;
-							case '7': assert(ucf._externs.size()>=7); t=7; break;
-							case '8': assert(ucf._externs.size()>=8); t=8; break;
-							case '9': assert(ucf._externs.size()>=9); t=9; break;
-							default:   // we'll silently drop errors... it's the only "clean" way
-								str << '%' << c;
-						}
+						unsigned int t = charnum2uint(c);
+						
+						assert(ucf._externs.size()>=t);
 						assert(t!=0);
 						assert(op._params_parsed.size()>=1);
 						str << "Func" << setw(4) << ucf._externs[op._params_parsed[t-1]];
@@ -1319,32 +1300,19 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					else if(c=='p')
 					{
 						i++; c = asmstr[i];
-						unsigned int t=0;
-						switch(c)
+						unsigned int t = charnum2uint(c);
+						
+						// FIXME: this is the special 'call' case, it may be a good idea to make more general
+						if((t==0) && (c==','))
 						{
-							case '1': t=1; break;
-							case '2': t=2; break;
-							case '3': t=3; break;
-							case '4': t=4; break;
-							case '5': t=5; break;
-							case '6': t=6; break;
-							case '7': t=7; break;
-							case '8': t=8; break;
-							case '9': t=9; break;
-							case ',': // FIXME: this is the special 'call' case, it may be a good idea to make more general
+							special_call=true;
+						
+							for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end();)
 							{
-								special_call=true;
-								
-								for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end();)
-								{
-									str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*i)->_id].ucs_nmo, opcode_table_data[(*i)->_id].param_types, (*i)->_params_parsed, intrinsics, **i);
-									if(++i!=op._popped.end())
-										str << ", ";
-								}
+								str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*i)->_id].ucs_nmo, opcode_table_data[(*i)->_id].param_types, (*i)->_params_parsed, intrinsics, **i);
+								if(++i!=op._popped.end())
+									str << ", ";
 							}
-							break;
-							default:   // we'll silently drop errors... it's the only "clean" way
-								str << '%' << c;
 						}
 						
 						if(t!=0)
@@ -1364,21 +1332,14 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					
 					if(special_call!=true)
 					{
-						switch(c)
+						unsigned int t = charnum2uint(c);
+						if(t!=0)
 						{
-							case '%': str << '%'; break;
-							case '1': assert(params.size()>=1); str << setw(width) << params[0]; break;
-							case '2': assert(params.size()>=2); str << setw(width) << params[1]; break;
-							case '3': assert(params.size()>=3); str << setw(width) << params[2]; break;
-							case '4': assert(params.size()>=4); str << setw(width) << params[3]; break;
-							case '5': assert(params.size()>=5); str << setw(width) << params[4]; break;
-							case '6': assert(params.size()>=6); str << setw(width) << params[5]; break;
-							case '7': assert(params.size()>=7); str << setw(width) << params[6]; break;
-							case '8': assert(params.size()>=8); str << setw(width) << params[7]; break;
-							case '9': assert(params.size()>=9); str << setw(width) << params[8]; break;
-							default:   // we'll silently drop errors... it's the only "clean" way
-								str << '%' << c;
+							assert(params.size()>=t);
+							str << setw(width) << params[t-1];
 						}
+						else if(c=='%')
+							str << '%';
 					}
 				}
 				break;
