@@ -68,7 +68,7 @@ exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
 	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc $@
 
 u7shp.exe : u7shp.o
-	$(CXX) -o u7shp.exe u7shp.o $(GTK_LIBS) -lgimp -lgimpui -mwindows
+	$(CXX) -o u7shp.exe u7shp.o $(GTK_LIBS) -lgimp-2.0 -lgimpui-2.0 -mwindows
 
 allclean: clean
 
