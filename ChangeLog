@@ -1,3 +1,7 @@
+2002-10-31  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* configure.in:  Version 1.00.
+
 2002-10-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* shapes/font.cc: fixed hang in french BG
 
