@@ -1,3 +1,6 @@
+2000-11-26  Max Horn  <max@quendi.de>
+	* files/utils.cc: fixed a bug in get_system_path (it sometimes "forgot" to call switch_slashes)
+
 2000-11-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* beos/exult.rsrc: BeOS resource file
 	* Makefile.be: include resource file in binary
