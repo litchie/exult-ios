@@ -1302,11 +1302,12 @@ void Game_window::double_clicked
 		{
 cout << "Object name is " << obj->get_name() << '\n';
 		init_faces();		// Be sure face list is empty.
+		Game_mode savemode = mode;
 		obj->activate(usecode);
 		npc_prox->wait(4);	// Delay "barking" for 4 secs.
 		if (mode == conversation)
 			{
-			mode = normal;
+			mode = savemode;
 			paint();
 			}
 		}
