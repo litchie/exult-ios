@@ -297,13 +297,13 @@ int ExultStudio::init_egg_window
 
 static void Egg_response
 	(
-	int id,
+	Exult_server::Msg_type id,
 	unsigned char *data,
-	int datalen
+	int datalen,
+	void * /* client */
 	)
 	{
-	Exult_server::Msg_type mid = (Exult_server::Msg_type) id;
-	if (mid == Exult_server::user_responded)
+	if (id == Exult_server::user_responded)
 		ExultStudio::get_instance()->close_egg_window();
 	//+++++cancel??
 	}
