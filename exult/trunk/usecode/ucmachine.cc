@@ -388,7 +388,7 @@ void Usecode_machine::show_npc_face
 	int shape = npc->get_face_shapenum();
 	int frame = arg2.get_int_value();
 	gwin->remove_text_effects();
-	if (gwin->get_mode() == Game_window::gump)
+	if (gwin->showing_gumps())
 		{
 		gwin->end_gump_mode();
 		gwin->set_all_dirty();

@@ -63,14 +63,8 @@ class Game_window
 	static Game_window *game_window;// There's just one.
 	Image_window8 *win;		// Window to display into.
 	Palette *pal;
-public:
-	enum Game_mode {		// Can be in different modes.
-		normal,			// Normal game-play.
-		gump			// Showing open container(s).
-		};
 private:
 	Usecode_machine *usecode;	// Drives game plot.
-	Game_mode mode;			// Mode we're in.
 	bool combat;			// true if in combat.
 	Time_queue *tqueue;		// Time-based queue.
 	Game_clock clock;		// Keeps track of time.
@@ -275,10 +269,8 @@ public:
 		{ return gumps.get_num_shapes(); }
 	int get_num_sprites()
 		{ return sprites.get_num_shapes(); }
-	inline void set_mode(Game_mode md)
-		{ mode = md; }
-	inline Game_mode get_mode() const
-		{ return mode; }
+	inline bool showing_gumps() const
+		{ return open_gumps != 0; }
 	inline int in_combat()		// In combat mode?
 		{ return combat; }
 	void toggle_combat();

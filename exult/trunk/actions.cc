@@ -481,7 +481,6 @@ int Usecode_actor_action::handle_event
 	gwin->get_usecode()->call_usecode(fun, item, 
 			(Usecode_machine::Usecode_events) eventid);
 	gwin->set_all_dirty();		// Clean up screen.
-	gwin->set_mode(Game_window::normal);
 	return 0;			// That's all.
 	}
 
