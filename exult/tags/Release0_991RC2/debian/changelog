@@ -1,0 +1,85 @@
+exult (1:0.98rc1-1) unstable; urgency=low
+
+  * Release candidate 1
+
+ -- Tristan Tarrant <nadir@users.sf.net>  Wed, 13 Mar 2002 10:32:11 +0100
+
+exult (1:0.97cvs-1) unstable; urgency=low
+
+  * exult-tools updated for new tools, and included some extra
+    documentation, with corresponding update to README.Debian
+  * added stuff for building a debug package (the nostrip stuff comes
+    "for free" since dh_strip knows about it)
+
+ -- Michael Zinn <michael.z@acm.org>  Wed, 12 Dec 2001 20:02:21 +1100
+
+exult (1:0.96beta1-1) unstable; urgency=low
+
+  * New upstream release
+  * Corrected version numbering of Debian package
+  * Overhaul of debian/* (incidentally closes a bug filed against exult)
+  * Split into multiple packages - exult and exult-tools
+  * Moved to contrib/games (until such time as there are `free' games
+    built on this engine, which isn't likely to be anytime soon ;-p)
+
+ -- Michael Zinn <michael.z@acm.org>  Sat,  1 Dec 2001 15:53:46 +1100
+
+exult (0.99-cvs-1) unstable; urgency=low
+
+  * Irregular synchronisation with source-tree
+
+ -- Dancer <dancer@blackrock.internal.simegen.com>  Fri, 23 Feb 2001 12:01:25 +1100
+
+exult (0.90-alpha1-8) unstable; urgency=low
+
+  * Incorporate the gnome desktop files
+  * Irregular synchronisation with source-tree
+
+ -- Dancer <dancer@blackrock.internal.simegen.com>  Fri, 23 Feb 2001 12:01:25 +1100
+
+exult (0.90-alpha1-7) unstable; urgency=low
+
+  * Irregular synchronisation with source-tree
+
+ -- Dancer Vesperman <dancer@users.sourceforge.net>  Tue, 21 Nov 2000 08:39:28 +1100
+
+exult (0.90-alpha1-6) unstable; urgency=low
+
+  * Irregular synchronisation with source-tree
+
+ -- Dancer Vesperman <dancer@users.sourceforge.net>  Fri, 17 Nov 2000 18:35:44 +1100
+
+exult (0.90-alpha1-5) unstable; urgency=low
+
+  * Irregular CVS snapshot
+
+ -- Dancer Vesperman <dancer@users.sourceforge.net>  Tue, 14 Nov 2000 14:14:56 +1100
+
+exult (0.90-alpha1-4) unstable; urgency=low
+
+  * Irregular CVS snapshot. Some egg bugs fixed.
+
+ -- Dancer Vesperman <dancer@users.sourceforge.net>  Mon, 13 Nov 2000 10:27:03 +1100
+
+exult (0.90-alpha1-3) unstable; urgency=low
+
+  * Added some documentation to the package.
+  * Daily snapshot of code-tree
+
+ -- Dancer Vesperman <dancer@users.sourceforge.net>  Sat, 11 Nov 2000 11:29:59 +1100
+
+exult (0.90-alpha1-2) unstable; urgency=low
+
+  * Changed Suggests: timidity to Recommends: timidity
+
+ -- Dancer Vesperman <dancer@users.sourceforge.net>  Fri, 10 Nov 2000 13:42:37 +1100
+
+exult (0.90-alpha1-1) unstable; urgency=low
+
+  * Initial Alpha Release.
+
+ -- Dancer Vesperman <dancer@users.sourceforge.net>  Fri, 03 Nov 2000 18:11:55 +1000
+
+Local variables:
+mode: debian-changelog
+End:

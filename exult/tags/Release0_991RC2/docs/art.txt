@@ -1,0 +1,61 @@
+Custom art for Exult BG paperdolls
+-----------------------------------
+
+NPCs:
+
+Name			shape		Artist
+
+Jaana			490		Philip Gottschalk
+Sentri			462		Philip
+Julia			454		Philip
+Katrina			452		Philip
+Tseramed		460		Philip
+Spark			489		Philip
+
+Non-partymember NPCs?
+
+
+
+Items:
+
+Name			shape/frame	Artist		Notes
+
+Silver sextant		650/0		-		(hanging from belt)
+Gold sextant		650/1		-		(hanging from belt)
+Leather Collar		582		-
+Gorget			586		Adam Delman
+Magic gorget		843		Adam
+Ankh Amulet		955/0		Oblivious
+Heart Amulet		955/2		Adam
+FoV amulets		955/7-10	Willem Jan
+Grey cloak		285/0		-
+Green cloak		285/1		-
+Brown (fur?) cloak	285/2		Adam
+Green top		249/0		-
+Brown/orange dress	249/1		-
+Blue dress		249/2		-
+Dark-brown hood		444/0		-
+Light-brown hood	444/1		-
+Caddellite helmet	638/0		Willem Jan
+Greaves			353		Oblivious
+Brown pants		738/0,1		-
+Green pants		738/2,4		-
+Brownish pants		738/3,5		-
+Shoes			585		-
+Spiked Shield		578		Oblivious
+Magic boomerang		550		Willem Jan
+Fire sword		551		-		(wrong clr. fire in SI)
+Hawk			555		-
+Great dagger		561		Willem Jan
+Star bursts		565		-
+Main gauche		591		-		(left & right hand)
+Cleaver			614		Adam
+Knives			615		-
+Custom sword		635		-		(using Dragon Slayer)
+Hoe of destruction	548		Tristan
+Firedoom staff		553		Adam
+Death Scythe		562		-
+Fellowship staff	885		Willem Jan
+Tripple crossbow	647		-
+Musket			278		-
+Musket ammo		581		-

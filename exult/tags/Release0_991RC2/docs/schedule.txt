@@ -1,0 +1,68 @@
+Subject       : Ultima 7 & 7.5 Schedule Structure
+Author        : Byun DongHo (cpascal@soback.kornet.nm.kr)
+Last Modified : Jul 13, 1996
+
+  I'm sorry I'm not good at writing in English.
+I hope you to understand the followings.
+
+  The schedule file is "STATIC\SCHEDULE.DAT".  I am going to introduce
+you about the structure of this file.
+
+  ===[ Think as Header ]===
+
+  Offset  Length    Description
+  ------  --------  ---------------------------------------------------
+     00H        4    256 in Ultima 7 & 7.5.   NPC num.
+                     (Next header item size(byte) is affected by this.)
+     04H    NUM*2    Same as the SUM of each NPC's schedule amount.
+                     (Because NUM is 256 in Ultima 7 & 7.5,
+                      the size is 512 bytes in Ultima 7 & 7.5. )
+
+  ===[ Think as Body ]===
+
+   Each schedule size(byte) is 4 byte.
+
+   XX XX XX XX
+   |  |  |  +------ SuperChunk Number
+   |  |  +--------- Y coordinate in the SuperChunk.
+   |  +------------ X coordinate in the SuperChunk.
+   +--------------- Schedule number & Match time.
+
+   You can see the real X, Y location in cheat mode.
+      SuperChunk Number = (Real-Y / 256) * 12 + (Real-X / 256)
+                      X = (Real-X % 256)
+                      Y = (Real-Y % 256)
+      *. '%' is the same keyword as in C.
+   You can get them(SuperChunk Number, X, Y) easily by hex.
+
+   The followings are about Schedule number & Match time byte.
+     7  6  5  4  3  2  1  0 Bit
+   +--+--+--+--+--+--+--+--+
+   |  |  |  |  |  |  |  |  |
+   +--+--+--+--+--+--+--+--+
+    [============] [======]
+     Schedule num   Match time
+      ( 5 bit )     ( 3 bit )
+
+     Match time: 000= 0 AM,    100= 0 PM
+                 001= 3 AM,    101= 3 PM
+                 010= 6 AM,    110= 6 PM
+                 011= 9 AM,    111= 9 PM
+     Schedule num:
+        0= Combat       9= Hound        18= Bake       27= Duel
+        1= Hor. Pace   10= Stand        19= Sew        28= Preach
+        2= Ver. Pace   11= Loiter       20= Shy        29= Patrol
+        3= Talk        12= Wander       21= Lab        30= Desk Work
+        4= Dance       13= Blacksmith   22= Thief      31= Follow Avt
+        5= Eat         14= Sleep        23= Waiter
+        6= Farm        15= Wait         24= Special
+        7= Tend Shop   16= Major Sit    25= Kid Games
+        8= Miner       17= Graze        26= Eat at Inn
+
+   Avatar has no schedule.  And each NPC must have 1 schedule at least.
+ Surely 8 is max amount for one NPC.
+
+  If you are not able to understand above, run Ultima 7 or 7.5 at cheat mode
+ and check the NPC schedule.
+
+-- End.

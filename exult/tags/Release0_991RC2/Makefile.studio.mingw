@@ -1,0 +1,107 @@
+# Exult Studio makefile for use in Windows with mingw 1.0 or later and Cygwin shell
+# The shell IS required! 
+
+# Where is Exult Studio will be installed. 
+U7PATH=C:\\Ultima7
+# Only used for snapshots
+STUDIOPATH=C:/Studio
+TOOLSPATH=C:/GimpPlugin
+
+SRC=.
+VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
+
+# If this doesn't work, insert output of `pkg-config --cflags gtk+-1.3-win32-production` manually
+GTK_INCLUDES = `pkg-config --cflags gtk+-1.3-win32-production`
+# If this doesn't work, insert output of `pkg-config --libs gtk+-1.3-win32-production` manually
+GTK_LIBS = `pkg-config --libs gtk+-1.3-win32-production`
+
+# If this doesn't work, insert output of 'pkg-config --cflags libglade-0.17' manually
+LIBGLADE_INCLUDES = `pkg-config --cflags libglade-0.17`
+# If this doesn't work, insert output of 'pkg-config --libs libglade-0.17' manually
+LIBGLADE_LIBS = `pkg-config --libs libglade-0.17`
+
+# If this doesn't work, insert output of 'pkg-config --cflags freetype2' manually
+FREETYPE2_INCLUDES = `pkg-config --cflags freetype2`
+# If this doesn't work, insert output of 'pkg-config --libs freetype2' manually
+FREETYPE2_LIBS = `pkg-config --libs freetype2`
+
+INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
+	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/server -I$(SRC)/objs -I$(SRC)/conf $(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES)
+
+CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_SNPRINTF -DHAVE_PNG_H -DHAVE_FREETYPE2 $(INCLUDES)
+
+CXXFLAGS= -O2 -fnative-struct -fvtable-thunks -Dsnprintf=_snprintf
+CXX=g++
+
+CFLAGS=-fnative-struct -fvtable-thunks
+CC=gcc
+
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -liberty -lole32 -lpng -luuid -lz -mwindows
+EXEC=exult_studio.exe
+EXP_FILE=exult_studio.exp
+
+SERVER_OBJS=objserial.o servemsg.o servewin32.o
+
+MAPEDIT_OBJS=chunklst.o combo.o dirbrowser.o eggedit.o exult_studio.o locator.o npcedit.o \
+	objbrowse.o objedit.o paledit.o shapedraw.o shapefile.o shapegroup.o \
+	shapeedit.o shapelst.o studio.o args.o
+
+FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o Table.o U7file.o utils.o
+
+IMAGEWIN_OBJS=ibuf8.o imagebuf.o
+
+SHAPES_OBJS=font.o fontgen.o fontvga.o items.o pngio.o monstinf.o shapeinf.o shapevga.o shapewrite.o u7drag.o vgafile.o
+
+CONF_OBJS=Configuration.o XMLEntity.o
+
+MISC_OBJS=exultstudioico.o windrag.o
+
+OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS) $(CONF_OBJS) $(MISC_OBJS)
+
+$(EXEC): $(OBJS) $(EXP_FILE)
+	$(CXX) $(EXP_FILE) -o $@ $(OBJS) $(LIBS)
+
+$(EXP_FILE): $(OBJS)
+	dlltool --output-exp $@ $(OBJS) -D $(EXEC)
+
+exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
+	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc $@
+
+u7shp.exe : u7shp.o
+	$(CXX) -o u7shp.exe u7shp.o $(GTK_LIBS) -lgimp -lgimpui -mwindows
+
+allclean:
+	rm -f $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
+
+clean:
+	del $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
+
+install: $(EXEC)
+	strip $(EXEC) -o $(U7PATH)\\$(EXEC)
+	if not exist $(U7PATH)\data md $(U7PATH)\data
+	copy mapedit\exult_studio.glade $(U7PATH)\data
+
+tools: u7shp.exe
+
+toolsdist: tools
+	mkdir -p $(TOOLSPATH)
+	strip u7shp.exe -o $(TOOLSPATH)/u7shp.exe
+	cp mapedit/gimpwin32.txt $(TOOLSPATH)
+	u2d $(TOOLSPATH)/*.txt
+
+dist: $(EXEC)
+	mkdir -p $(STUDIOPATH)
+	strip $(EXEC) -o  $(STUDIOPATH)/$(EXEC)
+	mkdir -p $(STUDIOPATH)/data
+	cp docs/exult_studio.txt $(STUDIOPATH)
+	cp mapedit/exult_studio.glade $(STUDIOPATH)/data
+	mkdir -p $(STUDIOPATH)/data/estudio
+	mkdir -p $(STUDIOPATH)/data/estudio/new
+	cp data/estudio/new/combos.flx $(STUDIOPATH)/data/estudio/new
+	cp data/estudio/new/faces.vga $(STUDIOPATH)/data/estudio/new
+	cp data/estudio/new/gumps.vga $(STUDIOPATH)/data/estudio/new
+	cp data/estudio/new/palettes.flx $(STUDIOPATH)/data/estudio/new
+	cp data/estudio/new/shapes.vga $(STUDIOPATH)/data/estudio/new
+	cp data/estudio/new/sprites.vga $(STUDIOPATH)/data/estudio/new
+	cp data/estudio/new/text.flx $(STUDIOPATH)/data/estudio/new
+	u2d $(STUDIOPATH)/*.txt
