@@ -67,7 +67,7 @@ public:
 		{ return groups; }
 	void set_modified()
 		{ modified = true; }
-	Object_browser *create_browser(Shape_file_info *vgafile, char **names,
+	Object_browser *create_browser(Shape_file_info *vgafile,
 				unsigned char *palbuf, Shape_group *g = 0);
 	void flush();			// Write if modified.
 	static void write_file(const char *pathname, Shape **shapes,

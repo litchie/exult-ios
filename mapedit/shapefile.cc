@@ -62,7 +62,6 @@ Shape_file_info::~Shape_file_info
 Object_browser *Shape_file_info::create_browser
 	(
 	Shape_file_info *vgafile,	// THE 'shapes.vga' file.
-	char **names,			// Names for shapes.vga entries.
 	unsigned char *palbuf,		// Palette for displaying.
 	Shape_group *g			// Group, or 0.
 	)
@@ -77,7 +76,6 @@ Object_browser *Shape_file_info::create_browser
 		chooser->set_framenum0('A');
 	if (this == vgafile)		// Main 'shapes.vga' file?
 		{
-		chooser->set_shape_names(names);
 		chooser->set_shapes_file(
 			(Shapes_vga_file *) vgafile->get_ifile());
 		}
