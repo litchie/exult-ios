@@ -210,6 +210,7 @@ int main(int argc,char *argv[])
    else
    for (i=0;i<opsize;i++)
    {
+	if (!opcode_table[i].mnemonic) continue;
     if (!strcasecmp(opcode_table[i].mnemonic,token))
     {
      if (opcode_table[i].nbytes==0 && opcode_table[i].type==0)
