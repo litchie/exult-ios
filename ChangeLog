@@ -4,6 +4,9 @@
 	handling for the CALL opcode.
 	* usecode/ucxt/opcodes.txt: Fixed output of cmps and arrc opcodes under
 	-fz
+	* usecode/ucxt/*: Added a 'full text' output string in addition to the
+	original short/comment text output. Added escaping for characters
+	('\\' and '\"') in the 'full text' output strings.
 
 2001-12-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* usecode/ucxt/src/ucfunc.cc: fixed intrinsic bug, re-used opcode bug 
