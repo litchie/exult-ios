@@ -256,7 +256,7 @@ bool Game::show_menu()
 				if((i!=4 && i!=5) || (i==4 && U7exists("<SAVEGAME>/quotes.flg")) || (i==5 && U7exists("<SAVEGAME>/endgame.flg"))) {
 					menu->add_entry(new MenuEntry(menushapes.get_shape(menuchoices[i],1),
 						      menushapes.get_shape(menuchoices[i],0),
-						      centerx, menuy+i*11));
+						      centerx, menuy+entries*11));
 					menuentries[entries++]=i;
 				}
 			}
