@@ -80,6 +80,7 @@ public:
 					// Is a given point on a button?
 	virtual Gump_button *on_button(int mx, int my);
 	virtual void paint();		// Paint it and its contents.
+	virtual bool handle_kbd_event(void *ev);
 };
 
 #endif
