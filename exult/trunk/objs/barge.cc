@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunks.h"
 #include "objiter.h"
 #include "SDL_timer.h"
+#include "game.h"
 
 using std::ostream;
 
@@ -685,7 +686,14 @@ int Barge_object::step
 		move_type = MOVE_LEVITATE;
 		boat = 0;
 		}
-	else if (boat) move_type = MOVE_SWIM;
+	else if (boat) 
+		{
+		move_type = MOVE_SWIM;
+					// Hawk's boat gets grounded in SI.
+					// +++++Any other boats in SI????
+		if (Game::get_game_type() == SERPENT_ISLE)
+			move_type |= MOVE_WALK;
+		}
 	else move_type = MOVE_WALK;
        	if (Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
 						4, cur, t, move_type, 0))

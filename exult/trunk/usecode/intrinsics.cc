@@ -1732,6 +1732,27 @@ USECODE_INTRINSIC(direction_from)
 	return(u);
 }
 
+/*
+ *	Test for a 'moving barge' flag.
+ */
+
+static int Is_moving_barge_flag
+	(
+	int fnum
+	)
+	{
+	if (Game::get_game_type() == BLACK_GATE)
+		{
+		return fnum == (int) Obj_flags::on_moving_barge ||
+			fnum == (int) Obj_flags::in_motion;
+		}
+	else				// SI.
+		{
+		return fnum == (int) Obj_flags::si_on_moving_barge ||
+			fnum == (int) Obj_flags::in_motion;
+		}
+	}
+
 USECODE_INTRINSIC(get_item_flag)
 {
 	// Get npc flag(item, flag#).
@@ -1740,8 +1761,7 @@ USECODE_INTRINSIC(get_item_flag)
 		return Usecode_value(0);
 	int fnum = parms[1].get_int_value();
 					// Special cases:
-	if (fnum == (int) Obj_flags::on_moving_barge ||
-	    fnum == (int) Obj_flags::in_motion)
+	if (Is_moving_barge_flag(fnum))
 		{			// Test for moving barge.
 		Barge_object *barge;
 		if (!gwin->get_moving_barge() || !(barge = Get_barge(obj)))
@@ -1773,12 +1793,9 @@ USECODE_INTRINSIC(set_item_flag)
 		obj->set_flag(flag);
 		if (flag == Obj_flags::dont_render)
 			{	// Show change in status.
-//			gwin->paint();
-//			gwin->show();  Mar 24, 01:  Changed to:
 			gwin->set_all_dirty();
 			}
-		else if (flag == (int) Obj_flags::on_moving_barge ||
-					flag == (int) Obj_flags::in_motion)
+		else if (Is_moving_barge_flag(flag))
 			{	// Set barge in motion.
 			Barge_object *barge = Get_barge(obj);
 			if (barge)
@@ -1799,12 +1816,9 @@ USECODE_INTRINSIC(clear_item_flag)
 		if (flag == Obj_flags::dont_render)
 			{	// Show change in status.
 			show_pending_text();	// Fixes Lydia-tatoo.
-//			gwin->paint();  Think it messes up conversations.
-//			gwin->show();
 			gwin->set_all_dirty();
 			}
-		else if (flag == (int) Obj_flags::on_moving_barge ||
-					flag == (int) Obj_flags::in_motion)
+		else if (Is_moving_barge_flag(flag))
 			{	// Stop barge object is on or part of.
 			Barge_object *barge = Get_barge(obj);
 			if (barge && barge == gwin->get_moving_barge())
