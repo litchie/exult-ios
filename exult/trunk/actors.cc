@@ -1548,16 +1548,17 @@ void Actor::paint
 
 		paint_weapon();
 		if (hit)		// Want a momentary red outline.
-			paint_outline(xoff, yoff, HIT_PIXEL);
+			ShapeID::paint_outline(xoff, yoff, HIT_PIXEL);
 		else if (flags & ((1L<<Obj_flags::protection) | 
 		    (1L << Obj_flags::poisoned) | (1 << Obj_flags::cursed)))
 			{
 			if (flags & (1L << Obj_flags::poisoned))
-				paint_outline(xoff, yoff, POISON_PIXEL);
+				ShapeID::paint_outline(xoff,yoff,POISON_PIXEL);
 			else if (flags & (1L << Obj_flags::cursed))
-				paint_outline(xoff, yoff, CURSED_PIXEL);
+				ShapeID::paint_outline(xoff,yoff,CURSED_PIXEL);
 			else
-				paint_outline(xoff, yoff, PROTECT_PIXEL);
+				ShapeID::paint_outline(xoff, yoff,
+								PROTECT_PIXEL);
 			}
 		}
 	}

@@ -552,7 +552,7 @@ void Paperdoll_gump::paint_object
 		obj->paint_shape(ox, oy);
 		if (cheat.is_selected(obj))
 					// Outline selected obj.
-			obj->paint_outline(ox, oy, HIT_PIXEL);
+			obj->ShapeID::paint_outline(ox, oy, HIT_PIXEL);
 
 		return;
 	}

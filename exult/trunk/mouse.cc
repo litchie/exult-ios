@@ -32,6 +32,7 @@
 #include "barge.h"
 #include "actors.h"
 #include "cheat.h"
+#include "combat_opts.h"
 #include "schedule.h" /* To get Schedule::combat */
 
 using std::max;
@@ -233,11 +234,9 @@ void Mouse::set_speed_cursor()
 
     // Check if we are in dont_move mode, in this case display the hand cursor
 	if (gwin->main_actor_dont_move())
-    {
-        cursor = hand;
-    }
+	        cursor = hand;
 			/* Can again, optionally move in gump mode. */
-	if (gump_man->gump_mode()) {
+	else if (gump_man->gump_mode()) {
 		if (gump_man->gumps_dont_pause_game())
 		{
     		Gump *gump = gump_man->find_gump(mousex, mousey);
@@ -248,7 +247,7 @@ void Mouse::set_speed_cursor()
 		else cursor = hand;
 	}
 
-	if (gwin->get_dragging_gump()) cursor = hand;
+	else if (gwin->get_dragging_gump()) cursor = hand;
 
     else if (cheat.in_map_editor()) 
     {
@@ -270,6 +269,8 @@ void Mouse::set_speed_cursor()
 	    cursor = greenselect; break;
 	}
     }
+    else if (Combat::is_paused())
+	cursor = short_combat_arrows[0];	// Short N red arrow.
     if (cursor == dontchange)
     {
         Barge_object *barge = gwin->get_moving_barge();

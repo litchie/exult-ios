@@ -737,6 +737,7 @@ void Game_window::clear_world
 	(
 	)
 	{
+	Combat::resume();
 	tqueue->clear();		// Remove all entries.
 	clear_dirty();
 	removed->flush();		// Delete.
@@ -2020,7 +2021,8 @@ void Game_window::show_items
 	}
 
 /*
- *	Handle right click when combat is paused.
+ *	Handle right click when combat is paused.  The user can right-click
+ *	on a party member, then on an enemy to attack.
  */
 
 void Game_window::paused_combat_select
@@ -2028,7 +2030,51 @@ void Game_window::paused_combat_select
 	int x, int y			// Coords in window.
 	)
 	{
-	//++++++++++FINISH
+	Gump *gump = gump_man->find_gump(x, y);
+	if (gump)
+		return;			// Ignore if clicked on gump.
+	Game_object *obj = find_object(x, y);
+	Actor *npc = obj ? obj->as_actor() : 0;
+	if (!npc || !npc->is_in_party() ||
+	    npc->get_flag(Obj_flags::asleep) || npc->is_dead() ||
+	    npc->get_flag(Obj_flags::paralyzed))
+		return;			// Want an active party member.
+	npc->paint_outline(PROTECT_PIXEL);
+	show(true);			// Flash white outline.
+	SDL_Delay(100);
+	npc->add_dirty();
+	paint_dirty();
+	show();
+					// Pick a spot.
+	if (!Get_click(x, y, Mouse::greenselect, 0, true))
+		return;
+	obj = find_object(x, y);	// Find it.
+	if (!obj)			// Nothing?  Walk there.
+		{			// Needs work if lift > 0.
+		int lift = npc->get_lift();
+		int liftpixels = 4*lift;
+		Tile_coord dest(scrolltx + (x + liftpixels)/c_tilesize,
+	    		scrollty + (y + liftpixels)/c_tilesize, lift);
+					// Aim within 1 tile.
+		if (!npc->walk_path_to_tile(dest, std_delay, 0, 1))
+			Mouse::mouse->flash_shape(Mouse::blocked);
+					// ++++++Nothing happens!!  Later....
+		return;
+		}
+	Actor *target = obj->as_actor();
+					// Don't attack party or body.
+	if ((target && target->is_in_party()) || Is_body(obj->get_shapenum()))
+		{
+		Mouse::mouse->flash_shape(Mouse::redx);
+		return;
+		}
+	npc->set_target(obj, true);
+	obj->paint_outline(HIT_PIXEL);	// Flash red outline.
+	show(true);
+	SDL_Delay(100);
+	add_dirty(obj);
+	paint_dirty();
+	show();
 	}
 
 /*
