@@ -242,7 +242,7 @@ void BG_Game::play_intro()
 
 	const char *txt_msg[] = { "with help from",
 			"The Exult Team", 
-			"Driven by the Exult game engine V" VERSION };
+			"Driven by Exult"};
 
 	Audio::get_ptr()->stop_music();
 
