@@ -98,10 +98,10 @@ public:
 	long get_int_value() const	// Get integer value.
 		{ 
 #if DEBUG
-			if (type == pointer_type || (type == int_type && (value.intval > 0x10000 || value.intval < -0x10000)))
-				std::cerr << "Probable attempt at getting int value of pointer!!" << std::endl; 
+		if (type == pointer_type || (type == int_type && (value.intval > 0x10000 || value.intval < -0x10000)))
+			std::cerr << "Probable attempt at getting int value of pointer!!" << std::endl; 
 #endif
-			return ((type == int_type) ? value.intval : 0); 
+		return ((type == int_type) ? value.intval : 0);
 		}
 	Game_object* get_ptr_value() const	// Get pointer value.
 		{ return ((type == pointer_type) ? value.ptr : 0); }
@@ -112,7 +112,12 @@ public:
 		{
 					// Convert strings.
 		const char *str = get_str_value();
-		return str ? std::atoi(str) : get_int_value();
+		return str ? std::atoi(str) 
+			: ((type == array_type && get_array_size())
+			? value.array[0].need_int_value() 
+					// Pointer = ref.
+			: (type == pointer_type ? (value.intval&0x7ffffff)
+					: get_int_value()));
 		}
 					// Add array element. (No checking!)
 	void put_elem(int i, Usecode_value& val)
