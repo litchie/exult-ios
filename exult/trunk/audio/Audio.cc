@@ -436,6 +436,35 @@ void	Audio::playfile(const char *fname,bool wait)
 	delete [] buf;
 }
 
+/*
+ *	Play a wave file.
+ */
+void	Audio::playwave(const char *fname, bool wait)
+{
+	uint8 *buf;
+	uint32 len;
+	SDL_AudioSpec src;
+	if (!SDL_LoadWAV(fname, &src, &buf, &len))
+		{
+		cerr << "Couldn't play file '" << fname << "'" << endl;
+		return;
+		}
+	SDL_AudioCVT cvt;		// Got to convert.
+	if (SDL_BuildAudioCVT(&cvt, src.format, src.channels, src.freq,
+			actual.format, actual.channels, actual.freq) < 0)
+		{
+		cerr << "Couldn't convert wave data" << endl;
+		return;
+		}
+	cvt.len = len;
+	cvt.buf = new uint8[len*cvt.len_mult];
+	memcpy(cvt.buf, buf, len);
+	SDL_FreeWAV(buf);
+	SDL_ConvertAudio(&cvt);
+	if(mixer)
+		mixer->play(cvt.buf,cvt.len_cvt);
+	delete[] cvt.buf;
+}
 
 void	Audio::mixfile(const char *fname)
 {
