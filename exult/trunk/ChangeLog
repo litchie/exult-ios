@@ -1,3 +1,6 @@
+2001-08-28  Ryan Nunn <triforce@merlin.net.au>
+	* audio/midi_drivers/win_midiout.cc : Fixed new hanging note problem
+
 2001-08-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: avoid possible crash
 	* gamewin.*, palette.h: added a 'bool repaint' to 'apply palette' funcs
