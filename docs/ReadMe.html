@@ -48,19 +48,19 @@
 						we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle"
 						as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.</li>
 					<li><strong>eggs</strong>:<br />
-						these are trip-wires that cause monsters to spawn,execute scripts,play music, 
+						these are trip-wires that cause monsters to spawn, execute scripts, play music, 
 						change weather, trigger traps, teleport when you get near them.</li>
 					<li><strong>flex files</strong>:<br />
 						or flexes are used by the original to store the data files.
-						Also when you choose not use compressed savegames (see save_compression_level in
-						<a href="#exult_config">2.2.</a>) our savegames are also "flexed".</li>
+						Also when you choose not use compressed save games (see save_compression_level in
+						<a href="#exult_config">2.2.</a>) our save games are also "flexed".</li>
 					<li><strong>gumps</strong>:<br />
 						the windows used in the game interface for containers, characters, menus, etc..</li>
 					<li><strong>paperdoll</strong>:<br />
 						when pressing 
 	'<font color="maroon">i</font>'
  you get the inventory display. It's the picture of your 
-						characters body (or the bodies of your party memebrs) onto which you can drag all 
+						characters body (or the bodies of your party members) onto which you can drag all 
 						kinds of equipment. The way this is displayed in SI is what we call 
 						<strong>paperdoll</strong>. We integrated this for BG as well. 
 						(see <a href="&#10;				faq.html#&#10;			improvements">FAQ</a>).</li>
@@ -101,12 +101,12 @@
 					<strong>Important:</strong> Do not run <em>Exult</em> on an original Ultima7
 					game which you're actually in the middle of playing, as Exult's saved
 					files have a different format. There is no way to convert those 
-					original savegames and they will just crash <em>Exult</em>.
+					original save games and they will just crash <em>Exult</em>.
 				</p>
 			</td></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="exult_config">2.2. Settings in exult.cfg</a></strong></td></tr><tr><td>
 				<p>
 					<em>Exult</em> keeps a configuration file. You can specify where your Ultima 7
-					installation is, whether you want fullscreen graphics, or windowed, and
+					installation is, whether you want full screen graphics, or windowed, and
 					midi devices and midi settings. Some of these options can be set from the
 					<strong>Setup</strong> menu when you run <em>Exult</em> or via the Game menu.
 				</p>
@@ -131,29 +131,29 @@
 					Note: yes means enabled, no means disabled
 				</p>
 				<table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;config&gt;</td></tr><tr><td colspan="2">&lt;disk&gt;</td></tr><tr><td colspan="2">&lt;save_compression_level&gt;</td></tr><tr><td width="150">1
-						</td><td rowspan="2">**Savegames are now compressed as zip files. 0 disables compression,
+						</td><td rowspan="2">**save games are now compressed as zip files. 0 disables compression,
 						1 enables it, 2 compresses even a bit better. Default is 1.
 						</td></tr><tr><td colspan="2">&lt;/save_compression_level&gt;</td></tr><tr><td colspan="2">&lt;data_path&gt;</td></tr><tr><td width="150">data
 						</td><td rowspan="2">**see <a href="#path_config">2.3.</a> for pathsettings
-						</td></tr><tr><td colspan="2">&lt;/data_path&gt;</td></tr><tr><td colspan="2">&lt;game&gt;</td></tr><tr><td colspan="2">&lt;blackgate&gt;</td></tr><tr><td colspan="2">&lt;title&gt;</td></tr><tr><td colspan="2">blackgate</td></tr><tr><td colspan="2">&lt;/title&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;save_path&gt;</td></tr><tr><td width="150">./blackgate
+						</td></tr><tr><td colspan="2">&lt;/data_path&gt;</td></tr><tr><td colspan="2">&lt;game&gt;</td></tr><tr><td colspan="2">&lt;blackgate&gt;</td></tr><tr><td colspan="2">&lt;title&gt;</td></tr><tr><td colspan="2">blackgate</td></tr><tr><td colspan="2">&lt;/title&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;savegame_path&gt;</td></tr><tr><td width="150">./blackgate
 						</td><td rowspan="2">**optional. Default is the same as &lt;path&gt;, change to whatever you like.
 						Also see <a href="#path_config">2.3.</a> for recommendations.
-						</td></tr><tr><td colspan="2">&lt;/save_path&gt;</td></tr><tr><td colspan="2">&lt;static_path&gt;</td></tr><tr><td width="150">./blackgate
-						</td><td rowspan="2">**optional. See &lt;save_path&gt;.
+						</td></tr><tr><td colspan="2">&lt;/savegame_path&gt;</td></tr><tr><td colspan="2">&lt;static_path&gt;</td></tr><tr><td width="150">./blackgate
+						</td><td rowspan="2">**optional. See &lt;savegame_path&gt;.
 						</td></tr><tr><td colspan="2">&lt;/static_path&gt;</td></tr><tr><td colspan="2">&lt;gamedat_path&gt;</td></tr><tr><td width="150">./blackgate
-						</td><td rowspan="2">**optional. See &lt;save_path&gt;.
+						</td><td rowspan="2">**optional. See &lt;savegame_path&gt;.
 						</td></tr><tr><td colspan="2">&lt;/gamedat_path&gt;</td></tr><tr><td colspan="2">&lt;keys&gt;</td></tr><tr><td width="150">(default)
-						</td><td rowspan="2">**configure custom keybindings or leave the (default)
+						</td><td rowspan="2">**configure custom key bindings or leave the (default)
 						- see <a href="#exult_keys">5.2.</a>
 						</td></tr><tr><td colspan="2">&lt;/keys&gt;</td></tr><tr><td colspan="2">&lt;waves&gt;</td></tr><tr><td width="150">jmsfx.flx
 						</td><td rowspan="2">**optional setting see <a href="#wave_sfx">3.4.</a> for configuration
-						</td></tr><tr><td colspan="2">&lt;/waves&gt;</td></tr><tr><td colspan="2">&lt;/blackgate&gt;</td></tr><tr><td colspan="2">&lt;serpentisle&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./serpentisle</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;save_path&gt;</td></tr><tr><td width="150">./serpentisle
+						</td></tr><tr><td colspan="2">&lt;/waves&gt;</td></tr><tr><td colspan="2">&lt;/blackgate&gt;</td></tr><tr><td colspan="2">&lt;serpentisle&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./serpentisle</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;savegame_path&gt;</td></tr><tr><td width="150">./serpentisle
 						</td><td rowspan="2">**optional. Default is the same as &lt;path&gt;, change to whatever you like.
 						Also see <a href="#path_config">2.3.</a> for recommendations.
-						</td></tr><tr><td colspan="2">&lt;/save_path&gt;</td></tr><tr><td colspan="2">&lt;static_path&gt;</td></tr><tr><td width="150">./serpentisle
-						</td><td rowspan="2">**optional. See &lt;save_path&gt;.
+						</td></tr><tr><td colspan="2">&lt;/savegame_path&gt;</td></tr><tr><td colspan="2">&lt;static_path&gt;</td></tr><tr><td width="150">./serpentisle
+						</td><td rowspan="2">**optional. See &lt;savegame_path&gt;.
 						</td></tr><tr><td colspan="2">&lt;/static_path&gt;</td></tr><tr><td colspan="2">&lt;gamedat_path&gt;</td></tr><tr><td width="150">./serpentisle
-						</td><td rowspan="2">**optional. See &lt;save_path&gt;.
+						</td><td rowspan="2">**optional. See &lt;savegame_path&gt;.
 						</td></tr><tr><td colspan="2">&lt;/gamedat_path&gt;</td></tr><tr><td colspan="2">&lt;keys&gt;</td></tr><tr><td colspan="2">(default)</td></tr><tr><td colspan="2">&lt;/keys&gt;</td></tr><tr><td colspan="2">&lt;waves&gt;</td></tr><tr><td width="150">jmsisfx.flx
 						</td><td rowspan="2">**optional setting see <a href="#wave_sfx">3.4.</a> for configuration
 						</td></tr><tr><td colspan="2">&lt;/waves&gt;</td></tr><tr><td colspan="2">&lt;/serpentisle&gt;</td></tr><tr><td colspan="2">&lt;/game&gt;</td></tr><tr><td colspan="2">&lt;/disk&gt;</td></tr><tr><td colspan="2">&lt;debug&gt;</td></tr><tr><td colspan="2">&lt;trace&gt;</td></tr><tr><td colspan="2">&lt;usecode&gt;</td></tr><tr><td width="150">no
@@ -177,7 +177,7 @@
 						</td></tr><tr><td colspan="2">&lt;/facestats&gt;</td></tr><tr><td colspan="2">&lt;mouse3rd&gt;</td></tr><tr><td width="150">no
 						</td><td rowspan="2">**yes enables using of the middle mouse button.
 						</td></tr><tr><td colspan="2">&lt;/mouse3rd&gt;</td></tr><tr><td colspan="2">&lt;fastmouse&gt;</td></tr><tr><td width="150">no
-						</td><td rowspan="2">**yes enables faster cursor movement in fullscreen mode.
+						</td><td rowspan="2">**yes enables faster cursor movement in full screen mode.
 						</td></tr><tr><td colspan="2">&lt;/fastmouse&gt;</td></tr><tr><td colspan="2">&lt;bg_paperdolls&gt;</td></tr><tr><td width="150">no
 						</td><td rowspan="2">**yes enables SI style paperdolls in BG.
 						</td></tr><tr><td colspan="2">&lt;/bg_paperdolls&gt;</td></tr><tr><td colspan="2">&lt;walk_after_teleport&gt;</td></tr><tr><td width="150">no
@@ -212,7 +212,7 @@
    						</td></tr><tr><td colspan="2">&lt;/volume_curve&gt;</td></tr><tr><td colspan="2">&lt;win32_device&gt;</td></tr><tr><td width="150">-1
    						</td><td rowspan="2">**choose the Windows MIDI Device. See <a href="#win32_device">3.3.</a>
    						</td></tr><tr><td colspan="2">&lt;/win32_device&gt;</td></tr><tr><td colspan="2">&lt;looping&gt;</td></tr><tr><td width="150">Yes
-   						</td><td rowspan="2">**No disables muisc looping. See <a href="#audio_gump">6.4.</a>
+   						</td><td rowspan="2">**No disables music looping. See <a href="#audio_gump">6.4.</a>
    						</td></tr><tr><td colspan="2">&lt;/looping&gt;</td></tr><tr><td colspan="2">&lt;/midi&gt;</td></tr><tr><td colspan="2">&lt;speech&gt;</td></tr><tr><td colspan="2">&lt;enabled&gt;</td></tr><tr><td width="150">yes
 						</td><td rowspan="2">**enable/disable speech (you can change this in game via
 						
@@ -225,7 +225,7 @@
 						</td><td rowspan="2">**2 enables / 1 disables scaling, some scalers support higher values.
 						See <a href="#scaler">4.2.</a>.
 						</td></tr><tr><td colspan="2">&lt;/scale&gt;</td></tr><tr><td colspan="2">&lt;fullscreen&gt;</td></tr><tr><td width="150">yes
-						</td><td rowspan="2">**do you want to play fullscreen?
+						</td><td rowspan="2">**do you want to play full screen?
 						</td></tr><tr><td colspan="2">&lt;/fullscreen&gt;</td></tr><tr><td colspan="2">&lt;disable_fades&gt;</td></tr><tr><td width="150">no
 						</td><td rowspan="2">**"no" enables fading between different menu points
 						</td></tr><tr><td colspan="2">&lt;/disable_fades&gt;</td></tr><tr><td colspan="2">&lt;scale_method&gt;</td></tr><tr><td width="150">SuperEagle
@@ -256,13 +256,13 @@
 				</p>
 				<table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;disk&gt;</td></tr><tr><td colspan="2">&lt;data_path&gt;</td></tr><tr><td colspan="2">data</td></tr><tr><td colspan="2">&lt;/data_path&gt;</td></tr><tr><td colspan="2">&lt;game&gt;</td></tr><tr><td colspan="2">&lt;blackgate&gt;</td></tr><tr><td colspan="2">&lt;title&gt;</td></tr><tr><td colspan="2">blackgate</td></tr><tr><td colspan="2">&lt;/title&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;/blackgate&gt;</td></tr><tr><td colspan="2">&lt;serpentisle&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./serpentisle</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;/serpentisle&gt;</td></tr><tr><td colspan="2">&lt;/game&gt;</td></tr><tr><td colspan="2">&lt;/disk&gt;</td></tr></table>
 				<p>
-					You can also specify where Exult reads and stores the game specifc data, like the files
-					in the Static and Gamedat directory and the savegames.<br />
-					This is optional and not required but may be usefull (it only works in post-RC1 
+					You can also specify where Exult reads and stores the game specific data, like the files
+					in the Static and Gamedat directory and the save games.<br />
+					This is optional and not required but may be useful (it only works in post-RC1 
 					snapshots).<br />
 					My recommendations and example for BG (for SI use the same syntax) are:
 				</p>
-				<table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;disk&gt;</td></tr><tr><td colspan="2">&lt;data_path&gt;</td></tr><tr><td colspan="2">data</td></tr><tr><td colspan="2">&lt;/data_path&gt;</td></tr><tr><td colspan="2">&lt;game&gt;</td></tr><tr><td colspan="2">&lt;blackgate&gt;</td></tr><tr><td colspan="2">&lt;title&gt;</td></tr><tr><td colspan="2">blackgate</td></tr><tr><td colspan="2">&lt;/title&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;save_path&gt;</td></tr><tr><td colspan="2">./blackgate/savegames</td></tr><tr><td colspan="2">&lt;/save_path&gt;</td></tr><tr><td colspan="2">&lt;static_path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/static_path&gt;</td></tr><tr><td colspan="2">&lt;gamedat_path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/gamedat_path&gt;</td></tr><tr><td colspan="2">&lt;/blackgate&gt;</td></tr></table>
+				<table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;disk&gt;</td></tr><tr><td colspan="2">&lt;data_path&gt;</td></tr><tr><td colspan="2">data</td></tr><tr><td colspan="2">&lt;/data_path&gt;</td></tr><tr><td colspan="2">&lt;game&gt;</td></tr><tr><td colspan="2">&lt;blackgate&gt;</td></tr><tr><td colspan="2">&lt;title&gt;</td></tr><tr><td colspan="2">blackgate</td></tr><tr><td colspan="2">&lt;/title&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;savegame_path&gt;</td></tr><tr><td colspan="2">./blackgate/savegames</td></tr><tr><td colspan="2">&lt;/savegame_path&gt;</td></tr><tr><td colspan="2">&lt;static_path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/static_path&gt;</td></tr><tr><td colspan="2">&lt;gamedat_path&gt;</td></tr><tr><td colspan="2">./blackgate</td></tr><tr><td colspan="2">&lt;/gamedat_path&gt;</td></tr><tr><td colspan="2">&lt;/blackgate&gt;</td></tr></table>
 				<p>
 				    You can either use the relative (e.g. ./blackgate) or absolute (e.g. c:\ultima\blackgate) path 
 				    to point to the correct directory.
@@ -289,7 +289,7 @@
 					<li>--buildmap x<br />
 						x = 0 shows all roofs, x = 2 pops them all.<br />
 						You have to specify the game first (Example: exult --bg --buildmap 0).<br />
-						Builds the map of the game specified.The map is <strong>huge</strong> and in pcx 
+						Builds the map of the game specified. The map is <strong>huge</strong> and in pcx 
 						format, you will need a lot of ram to even look at this map once it is build 
 						(and even that requires a lot of patience)<br />
 						<em>Exult</em> is required to be run in windowed mode and you get the best map if you 
@@ -309,13 +309,12 @@
 					class for instrument mapping conversion. This is so the MT32 mapped music files
 					from the original Ultima 7 and Serpent Isle will be playable on modern General
 					Midi and General Midi/GS supporting sound cards.
-					You can change the way the music sounds via the setup or ingame menu or the 
+					You can change the way the music sounds via the setup, the Game Options menu or the 
 					exult.cfg file.
 				</p>
 				<p>
 					<em>Exult</em> gives users various option for converting Music and Midi Sound Effects.
-					Currently the only way to set the options is via manually editing the config
-					file. Note, the options are case sensitive and all options must be lowercase.<br />
+					Note, the options are case sensitive and all options must be lowercase.<br />
 					Below is a description of all the modes:
 				</p>
 				<ul>
@@ -401,13 +400,13 @@
 					and SI varies a bit and otherwise will sound odd. However there is a little 
 					issue with sfx playback in SI: In combat the sfx may be a little wrong as we 
 					still haven't figured out all the data in the 'weapons.dat'.<br />
-					Also <em>Exult</em> doesn't yet playback all the sfx that the orignal did.
+					Also <em>Exult</em> doesn't yet playback all the sfx that the original did.
 				</p>
 				<p>
 					Note that configuring your soundfonts is not needed for digital wave sfx.
 				</p>
 				<p> 
-					 We curently have two soundpacks for each game. Joseph Morris recorded the original
+					 We currently have two soundpacks for each game. Joseph Morris recorded the original
 					 SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on
 					 our download page at 
 					<a href="http://exult.sourceforge.net/download.php">http://exult.sourceforge.net/download.php</a>.	
@@ -435,7 +434,7 @@
 			</td></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="linux_alsa">3.7. Linux and Audio</a></strong></td></tr><tr><td>
 				<p>
 					Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably
- 					with the Soundblaster Live.<br />
+ 					with the SoundBlaster Live.<br />
 					Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture)
 					found at <a href="http://www.alsa-project.org">http://www.alsa-project.org</a>. ALSA is going to replace 
 					OSS in the upcoming stable (2.6) Kernel anyway.<br />
@@ -530,7 +529,7 @@
 					screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen
 					shows the correct key combination for MacOS).
 				</p>
-				<table width="80%" cellspacing="2" cellpadding="0" border="0"><tr><th align="left" colspan="3">Default keyboard commands</th></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">+/-</font></td><td width="10">&nbsp;</td><td>Change brightness (you may have to use the keypad)</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">F4</font></td><td width="10">&nbsp;</td><td>Toggle fullscreen</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Ctrl-x</font></td><td width="10">&nbsp;</td><td>Cut selected object (when in Map Edit mode)</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Ctrl-v</font></td><td width="10">&nbsp;</td><td>Paste selected object (when in Map Edit mode)</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">b</font></td><td width="10">&nbsp;</td><td>Use spellbook</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">c</font></td><td width="10">&nbsp;</td><td>Combat mode</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">f</font></td><td width="10">&nbsp;</td><td>Use food</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">g</font></td><td width="10">&nbsp;</td><td>Use Abacus</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">h</font></td><td width="10">&nbsp;</td><td>Show list of keyboard commands</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">i</font></td><td width="10">&nbsp;</td><td>Show inventory</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">j</font></td><td width="10">&nbsp;</td><td>SI: Show jawbone</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">k</font></td><td width="10">&nbsp;</td><td>BG: Try all keys to unlock a lock</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">k</font></td><td width="10">&nbsp;</td><td>SI: Use keyring</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Alt-k</font></td><td width="10">&nbsp;</td><td>SI: Try all keys to unlock a lock</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">l</font></td><td width="10">&nbsp;</td><td>SI: Show combat stats</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">m</font></td><td width="10">&nbsp;</td><td>Show map</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">p</font></td><td width="10">&nbsp;</td><td>Use lockpicks</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Alt-q</font></td><td width="10">&nbsp;</td><td>Exit game</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">r</font></td><td width="10">&nbsp;</td><td>Brings up status bars. First three strokes change the location of the bar. The fourth disables it again.</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Ctrl-r</font></td><td width="10">&nbsp;</td><td>Quick restore</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Ctrl-Alt-s</font></td><td width="10">&nbsp;</td><td>Screenshot</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Ctrl-s</font></td><td width="10">&nbsp;</td><td>Quick save</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">s</font></td><td width="10">&nbsp;</td><td>Show save/load box</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Esc</font></td><td width="10">&nbsp;</td><td>Show Game menu box and closes all open boxes</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">t</font></td><td width="10">&nbsp;</td><td>Target, instead of double clicking, shows a cursor and pauses the game until you click on something</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">v</font></td><td width="10">&nbsp;</td><td>About screen</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">w</font></td><td width="10">&nbsp;</td><td>Use watch, shows the time if you got a watch</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Alt-x</font></td><td width="10">&nbsp;</td><td>Exit game</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">z</font></td><td width="10">&nbsp;</td><td>Show stats</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">1</font></td><td width="10">&nbsp;</td><td>Show inventory for Avatar</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">2</font></td><td width="10">&nbsp;</td><td>Show inventory for character 2</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">3</font></td><td width="10">&nbsp;</td><td>Show inventory for character 3</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">4</font></td><td width="10">&nbsp;</td><td>Show inventory for character 4</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">5</font></td><td width="10">&nbsp;</td><td>Show inventory for character 5</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">6</font></td><td width="10">&nbsp;</td><td>Show inventory for character 6</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">7</font></td><td width="10">&nbsp;</td><td>Show inventory for character 7</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">8</font></td><td width="10">&nbsp;</td><td>Show inventory for character 8</td></tr></table>
+				<table width="80%" cellspacing="2" cellpadding="0" border="0"><tr><th align="left" colspan="3">Default keyboard commands</th></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">+/-</font></td><td width="10">&nbsp;</td><td>Change brightness (you may have to use the keypad)</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">F4</font></td><td width="10">&nbsp;</td><td>Toggle full screen</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Ctrl-x</font></td><td width="10">&nbsp;</td><td>Cut selected object (when in Map Edit mode)</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Ctrl-v</font></td><td width="10">&nbsp;</td><td>Paste selected object (when in Map Edit mode)</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">b</font></td><td width="10">&nbsp;</td><td>Use spellbook</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">c</font></td><td width="10">&nbsp;</td><td>Combat mode</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">f</font></td><td width="10">&nbsp;</td><td>Use food</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">g</font></td><td width="10">&nbsp;</td><td>Use Abacus</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">h</font></td><td width="10">&nbsp;</td><td>Show list of keyboard commands</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">i</font></td><td width="10">&nbsp;</td><td>Show inventory</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">j</font></td><td width="10">&nbsp;</td><td>SI: Show jawbone</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">k</font></td><td width="10">&nbsp;</td><td>BG: Try all keys to unlock a lock</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">k</font></td><td width="10">&nbsp;</td><td>SI: Use keyring</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Alt-k</font></td><td width="10">&nbsp;</td><td>SI: Try all keys to unlock a lock</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">l</font></td><td width="10">&nbsp;</td><td>SI: Show combat stats</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">m</font></td><td width="10">&nbsp;</td><td>Show map</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">p</font></td><td width="10">&nbsp;</td><td>Use lockpicks</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Alt-q</font></td><td width="10">&nbsp;</td><td>Exit game</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">r</font></td><td width="10">&nbsp;</td><td>Brings up status bars. First three strokes change the location of the bar. The fourth disables it again.</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Ctrl-r</font></td><td width="10">&nbsp;</td><td>Quick restore</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Ctrl-Alt-s</font></td><td width="10">&nbsp;</td><td>Screenshot</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Ctrl-s</font></td><td width="10">&nbsp;</td><td>Quick save</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">s</font></td><td width="10">&nbsp;</td><td>Show save/load box</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Esc</font></td><td width="10">&nbsp;</td><td>Show Game menu box and closes all open boxes</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">t</font></td><td width="10">&nbsp;</td><td>Target, instead of double clicking, shows a cursor and pauses the game until you click on something</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">v</font></td><td width="10">&nbsp;</td><td>About screen</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">w</font></td><td width="10">&nbsp;</td><td>Use watch, shows the time if you got a watch</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">Alt-x</font></td><td width="10">&nbsp;</td><td>Exit game</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">z</font></td><td width="10">&nbsp;</td><td>Show stats</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">1</font></td><td width="10">&nbsp;</td><td>Show inventory for Avatar</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">2</font></td><td width="10">&nbsp;</td><td>Show inventory for character 2</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">3</font></td><td width="10">&nbsp;</td><td>Show inventory for character 3</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">4</font></td><td width="10">&nbsp;</td><td>Show inventory for character 4</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">5</font></td><td width="10">&nbsp;</td><td>Show inventory for character 5</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">6</font></td><td width="10">&nbsp;</td><td>Show inventory for character 6</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">7</font></td><td width="10">&nbsp;</td><td>Show inventory for character 7</td></tr><tr><td valign="top" nowrap="nowrap"><font color="maroon">8</font></td><td width="10">&nbsp;</td><td>Show inventory for character 8</td></tr></table>
 				<p>
 					In conversations you now have the ability not just click on the answer
 					with the mouse but also to use the numeric keys. The response options
@@ -558,8 +557,8 @@
 			</td></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="savemenu">6.2. Load/Save Game</a></strong></td></tr><tr><td>
 				<p>
 					This on is pretty straightforward. You can load and save a game, delete a game and 
-					view some information of a savegame on the right side (a screenshot and some stats).<br />
-					If you have a wheelmouse you can scroll one line up/down by using the wheel. Pressing 
+					view some information of a save game on the right side (a screenshot and some stats).<br />
+					If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing 
 					
 	'<font color="maroon">Alt</font>'
  while using the wheel scrolls by pages.<br />
@@ -600,7 +599,7 @@
 					<li><strong>Chorus</strong><br />
 						the same as <strong>Reverb</strong></li>
 					<li><strong>Looping</strong><br />
-						Disable restores the (broken) way the original handeled the music looping flag.</li>	
+						Disable restores the (broken) way the original handled the music looping flag.</li>	
 					<li><strong>SFX</strong><br />
 						Enable or disable digital sound effects.</li>
 					<li><strong>Speech Options</strong><br />
@@ -615,8 +614,8 @@
 						the bottom of the screen (left, middle, right).</li>
 					<li><strong>Text Background</strong><br />
 						shows a tinted background behind text in conversations to make it easier to read.
-						Either disable it or choose between the colours purple, orange, light gray, green, 
-						yellow,pale blue, dark green, red, bright white, dark gray and white.</li>
+						Either disable it or choose between the colors purple, orange, light gray, green, 
+						yellow, pale blue, dark green, red, bright white, dark gray and white.</li>
 					<li><strong>Paperdolls</strong><br />
 						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls 
 						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
@@ -624,7 +623,7 @@
 						only available in <strong>Serpent Isle</strong>. The normal behavior is that 
 						you stop walking after you have been teleported. This enables walking on.</li>
 					<li><strong>Fast Mouse</strong><br />
-						makes the mouse cursor move faster in fullscreen modes. Enable or disable it.</li>
+						makes the mouse cursor move faster in full screen modes. Enable or disable it.</li>
 					<li><strong>Use middle mouse button</strong><br />
 						In the normal game, the middle mouse button activates the target-function 
 						(which could also be accomplished by pressing 
@@ -654,7 +653,7 @@
 					actually more difficult to implement than it sounds so don't expect it too soon.
 				</p>
 				<p>
-					In snapshots after the Beta 1 release this option is no longer availlable.
+					In snapshots after the Beta 1 release this option is no longer available.
 				</p>
 			</td></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="quit_game">6.7. Quit</a></strong></td></tr><tr><td>
 				<p>

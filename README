@@ -80,10 +80,10 @@ Exult aims to let those people who own Ultima 7 (copyright 1993) play the game o
 1.2. Terms we use in regard to Exult and Ultima 7
 We are using many terms in this documentation, the FAQ and other documentation files that people may have difficulties to understand. Here we will try to give some explanations.
 * BG, SI, FoV or SS: we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle" as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.
-* eggs: these are trip-wires that cause monsters to spawn,execute scripts,play music, change weather, trigger traps, teleport when you get near them.
-* flex files: or flexes are used by the original to store the data files. Also when you choose not use compressed savegames (see save_compression_level in 2.2.) our savegames are also "flexed".
+* eggs: these are trip-wires that cause monsters to spawn, execute scripts, play music, change weather, trigger traps, teleport when you get near them.
+* flex files: or flexes are used by the original to store the data files. Also when you choose not use compressed save games (see save_compression_level in 2.2.) our save games are also "flexed".
 * gumps: the windows used in the game interface for containers, characters, menus, etc..
-* paperdoll: when pressing 'i' you get the inventory display. It's the picture of your characters body (or the bodies of your party memebrs) onto which you can drag all kinds of equipment. The way this is displayed in SI is what we call paperdoll. We integrated this for BG as well. (see FAQ.txt).
+* paperdoll: when pressing 'i' you get the inventory display. It's the picture of your characters body (or the bodies of your party members) onto which you can drag all kinds of equipment. The way this is displayed in SI is what we call paperdoll. We integrated this for BG as well. (see FAQ.txt).
 * shapes: shape files are the format used for storage of all graphics elements (from UI buttons to terrain features) of the games Exult supports. Shapes may contain one or more frames (a frame is a single image).
 * snapshot: see FAQ.txt. Please note that our documentation usually refers to the latest snapshot.
 * usecode: that's the scripting language that drives all of U7 (conversations, objects...).
@@ -103,11 +103,11 @@ We are using many terms in this documentation, the FAQ and other documentation f
 * Run exult and enjoy the game :-)
 
 Word of advice: Don't mix the files from BG and SI.
-Important: Do not run Exult on an original Ultima7 game which you're actually in the middle of playing, as Exult's saved files have a different format. There is no way to convert those original savegames and they will just crash Exult.
+Important: Do not run Exult on an original Ultima7 game which you're actually in the middle of playing, as Exult's saved files have a different format. There is no way to convert those original save games and they will just crash Exult.
 
 
 2.2. Settings in exult.cfg
-Exult keeps a configuration file. You can specify where your Ultima 7 installation is, whether you want fullscreen graphics, or windowed, and midi devices and midi settings. Some of these options can be set from the Setup menu when you run Exult or via the Game menu.
+Exult keeps a configuration file. You can specify where your Ultima 7 installation is, whether you want full screen graphics, or windowed, and midi devices and midi settings. Some of these options can be set from the Setup menu when you run Exult or via the Game menu.
 If you do not already have a configuration file, Exult will make one for you filling in sensible defaults by itself. The location of this file varies slightly. On UNIX systems you can expect to find it in $HOME/.exult.cfg while other operating systems will probably locate it as 'exult.cfg' in the same directory as the Exult binary. However it is recommended that you edit this file by hand to achieve optimal results for your system.
 The file uses a simple hierarchical XML-like syntax, which should be simple to understand and modify. Take care though. Handling of syntax errors in this file is not well tested.
 Okay, the default file looks like this (do not copy the **and following - these are my remarks).
@@ -116,7 +116,7 @@ Note: yes means enabled, no means disabled
 <disk>
 <save_compression_level>
 1
-						**Savegames are now compressed as zip files. 0 disables compression,
+						**save games are now compressed as zip files. 0 disables compression,
 						1 enables it, 2 compresses even a bit better. Default is 1.
 						
 </save_compression_level>
@@ -133,25 +133,25 @@ blackgate
 <path>
 ./blackgate
 </path>
-<save_path>
+<savegame_path>
 ./blackgate
 						**optional. Default is the same as <path>, change to whatever you like.
 						Also see  for recommendations.
 						
-</save_path>
+</savegame_path>
 <static_path>
 ./blackgate
-						**optional. See <save_path>.
+						**optional. See <savegame_path>.
 						
 </static_path>
 <gamedat_path>
 ./blackgate
-						**optional. See <save_path>.
+						**optional. See <savegame_path>.
 						
 </gamedat_path>
 <keys>
 (default)
-						**configure custom keybindings or leave the (default)
+						**configure custom key bindings or leave the (default)
 						- see 
 </keys>
 <waves>
@@ -164,20 +164,20 @@ jmsfx.flx
 <path>
 ./serpentisle
 </path>
-<save_path>
+<savegame_path>
 ./serpentisle
 						**optional. Default is the same as <path>, change to whatever you like.
 						Also see  for recommendations.
 						
-</save_path>
+</savegame_path>
 <static_path>
 ./serpentisle
-						**optional. See <save_path>.
+						**optional. See <savegame_path>.
 						
 </static_path>
 <gamedat_path>
 ./serpentisle
-						**optional. See <save_path>.
+						**optional. See <savegame_path>.
 						
 </gamedat_path>
 <keys>
@@ -242,7 +242,7 @@ no
 </mouse3rd>
 <fastmouse>
 no
-						**yes enables faster cursor movement in fullscreen mode.
+						**yes enables faster cursor movement in full screen mode.
 						
 </fastmouse>
 <bg_paperdolls>
@@ -309,7 +309,7 @@ gm
 </win32_device>
 <looping>
 Yes
-   						**No disables muisc looping. See 
+   						**No disables music looping. See 
 </looping>
 </midi>
 <speech>
@@ -339,7 +339,7 @@ yes
 </scale>
 <fullscreen>
 yes
-						**do you want to play fullscreen?
+						**do you want to play full screen?
 						
 </fullscreen>
 <disable_fades>
@@ -397,7 +397,7 @@ blackgate
 </serpentisle>
 </game>
 </disk>
-You can also specify where Exult reads and stores the game specifc data, like the files in the Static and Gamedat directory and the savegames. This is optional and not required but may be usefull (it only works in post-RC1 snapshots). My recommendations and example for BG (for SI use the same syntax) are:
+You can also specify where Exult reads and stores the game specific data, like the files in the Static and Gamedat directory and the save games. This is optional and not required but may be useful (it only works in post-RC1 snapshots). My recommendations and example for BG (for SI use the same syntax) are:
 <disk>
 <data_path>
 data
@@ -410,9 +410,9 @@ blackgate
 <path>
 ./blackgate
 </path>
-<save_path>
+<savegame_path>
 ./blackgate/savegames
-</save_path>
+</savegame_path>
 <static_path>
 ./blackgate
 </static_path>
@@ -431,7 +431,7 @@ Exult offers some "hidden" command line options:
 * -c configfile Specify alternate config file (relative or absolute paths work).
 * --bg Starts the game with the Black Gate menu
 * --si Starts the game with the Serpent Isle menu
-* --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg --buildmap 0). Builds the map of the game specified.The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map.
+* --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg --buildmap 0). Builds the map of the game specified. The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map.
 * --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data dir aren't the same it got compiled with. This parameter lets the game start nethertheless. Don't try this if you don't know what you are doing.
 * --game gamename Unused yet. Loads a game specified in exult.cfg when there are other games made with Exult Studio.
 
@@ -442,8 +442,8 @@ Exult offers some "hidden" command line options:
 
 3. Audio
 3.1. Music
-Midi in Exult is played by firstly loading a file and passing it to the XMIDI class for instrument mapping conversion. This is so the MT32 mapped music files from the original Ultima 7 and Serpent Isle will be playable on modern General Midi and General Midi/GS supporting sound cards. You can change the way the music sounds via the setup or ingame menu or the exult.cfg file.
-Exult gives users various option for converting Music and Midi Sound Effects. Currently the only way to set the options is via manually editing the config file. Note, the options are case sensitive and all options must be lowercase. Below is a description of all the modes:
+Midi in Exult is played by firstly loading a file and passing it to the XMIDI class for instrument mapping conversion. This is so the MT32 mapped music files from the original Ultima 7 and Serpent Isle will be playable on modern General Midi and General Midi/GS supporting sound cards. You can change the way the music sounds via the setup, the Game Options menu or the exult.cfg file.
+Exult gives users various option for converting Music and Midi Sound Effects. Note, the options are case sensitive and all options must be lowercase. Below is a description of all the modes:
 * gm This will convert the MT32 patches to standard General Midi patches. Conversion is fairly accurate but some instruments may be different.
 * gs This will convert the MT32 patches to their equivalent GS patches. This will be a more accurate conversion that straight gm since more of the MT32 patches are in the GS set. However, not all midi devices will support this mode.
 * gs127 This option is for midi devices that have a MT32 patch bank installed in Bank 127. Some GS implementation have this, some don't. Only use this if you know that you have a MT32 implementation on Bank 127.
@@ -475,9 +475,9 @@ with the device you want to use.
 
 
 3.4. Digital Wave Sound Effects
-Exult needs the so called sfx packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI: In combat the sfx may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. Also Exult doesn't yet playback all the sfx that the orignal did.
+Exult needs the so called sfx packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI: In combat the sfx may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. Also Exult doesn't yet playback all the sfx that the original did.
 Note that configuring your soundfonts is not needed for digital wave sfx.
-We curently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on our download page at http://exult.sourceforge.net/download.php.
+We currently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on our download page at http://exult.sourceforge.net/download.php.
 Extract the zip files into your Exult data directory and write down the name of the pack in your exult.cfg file (see 2.2.). You don't need to set correct paths anymore if the pack is in the data directory. An example of how the relevant part of exult.cfg looks with these packs:
 <blackgate>
 <waves>
@@ -500,7 +500,7 @@ Press 'Esc' to turn on/off Music, Speech and SoundFX or change the settings in e
 
 
 3.7. Linux and Audio
-Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably with the Soundblaster Live. Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture) found at http://www.alsa-project.org. ALSA is going to replace OSS in the upcoming stable (2.6) Kernel anyway. We are sorry for this.
+Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably with the SoundBlaster Live. Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture) found at http://www.alsa-project.org. ALSA is going to replace OSS in the upcoming stable (2.6) Kernel anyway. We are sorry for this.
 
 
 
@@ -549,7 +549,7 @@ During the game press 'h' to see a help screen with all the keys (for MacOS chan
 
 Default keyboard commands
 +/- : Change brightness (you may have to use the keypad)
-F4 : Toggle fullscreen
+F4 : Toggle full screen
 Ctrl-x : Cut selected object (when in Map Edit mode)
 Ctrl-v : Paste selected object (when in Map Edit mode)
 b : Use spellbook
@@ -638,7 +638,7 @@ You can access the Game menu either by pressing the disk icon in the Avatar's in
 
 
 6.2. Load/Save Game
-This on is pretty straightforward. You can load and save a game, delete a game and view some information of a savegame on the right side (a screenshot and some stats). If you have a wheelmouse you can scroll one line up/down by using the wheel. Pressing 'Alt' while using the wheel scrolls by pages. Pressing Cancel exits the Load/Save options.
+This on is pretty straightforward. You can load and save a game, delete a game and view some information of a save game on the right side (a screenshot and some stats). If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing 'Alt' while using the wheel scrolls by pages. Pressing Cancel exits the Load/Save options.
 
 
 6.3. Video Options
@@ -658,7 +658,7 @@ Look at 3. Audio to see explanation on the settings.
 * Conversion choose between None, GM, GS, GS127.
 * Reverb alters the way the midi is played. Enable or disable to hear if you like it.
 * Chorus the same as Reverb
-* Looping Disable restores the (broken) way the original handeled the music looping flag.
+* Looping Disable restores the (broken) way the original handled the music looping flag.
 * SFX Enable or disable digital sound effects.
 * Speech Options Enable or disable the speech in the games.
 * OK/Cancel Ok accepts your changes, Cancel discards your changes.
@@ -667,10 +667,10 @@ Look at 3. Audio to see explanation on the settings.
 
 6.5. Gameplay Options
 * Status Bars You can either disable the status bars or choose its position on the bottom of the screen (left, middle, right).
-* Text Background shows a tinted background behind text in conversations to make it easier to read. Either disable it or choose between the colours purple, orange, light gray, green, yellow,pale blue, dark green, red, bright white, dark gray and white.
+* Text Background shows a tinted background behind text in conversations to make it easier to read. Either disable it or choose between the colors purple, orange, light gray, green, yellow, pale blue, dark green, red, bright white, dark gray and white.
 * Paperdolls only available in Black Gate. Enables or disable Paperdolls (inventory screen) in the style of Serpent Isle.
 * Walk after teleport only available in Serpent Isle. The normal behavior is that you stop walking after you have been teleported. This enables walking on.
-* Fast Mouse makes the mouse cursor move faster in fullscreen modes. Enable or disable it.
+* Fast Mouse makes the mouse cursor move faster in full screen modes. Enable or disable it.
 * Use middle mouse button In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't' ). For modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations. Enable or disable it.
 * Doubleclick closes gumps pretty straightforward, right?
 * Right click closes gumps the same but different.
@@ -682,7 +682,7 @@ Look at 3. Audio to see explanation on the settings.
 
 6.6. Quit to Menu
 This is not implemented yet and just quits Exult. When it eventually works you will be back to the Exult menu where you choose which game you want to play. It is actually more difficult to implement than it sounds so don't expect it too soon.
-In snapshots after the Beta 1 release this option is no longer availlable.
+In snapshots after the Beta 1 release this option is no longer available.
 
 
 6.7. Quit
