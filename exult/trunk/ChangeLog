@@ -1,3 +1,6 @@
+2001-06-27  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* gumps/Paperdoll_gump_info.cc: fixed disappearing bedrolls
+
 2001-06-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* audio/SDL_mapping.*: 'const' in MixAudio only if SDL >= 1.2.1
 
