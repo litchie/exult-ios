@@ -358,9 +358,14 @@ AC_MSG_RESULT($WARNING_LEVEL)
 
 dnl Ignore long-long warnings (for SDL header files...)
 AC_ARG_ENABLE(long-long-warnings, [  --enable-long-long-warnings   Enable long long warnings- needed for Compaq's cxx with GNU ld],
-	,,DEBUG_FLAGS="$DEBUG_FLAGS -Wno-long-long")
-
-
+	,,enable_long_long_warnings=no)
+AC_MSG_CHECKING(if we should disable long-long warnings)
+if test x$enable_long_long_warnings = xyes; then
+	AC_MSG_RESULT(no)
+else
+	AC_MSG_RESULT(yes)
+	DEBUG_FLAGS="$DEBUG_FLAGS -Wno-long-long"
+fi
 
 dnl Heavy namespaces. Most installations probably can't take this option
 AC_ARG_ENABLE(std-namespace, [  --enable-std-namespace		Tell the compiler to honour the std namespace. May not work for you. [default no]],,enable_std_namespace=no)

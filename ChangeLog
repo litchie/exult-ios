@@ -1,3 +1,6 @@
+2000-12-19  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* configure.in: fixed --disable-long-long-warnings
+
 2000-12-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* conf/Configuration.cc: moved BeOS config file to ~/config/settings/
 
