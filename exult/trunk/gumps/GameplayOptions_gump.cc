@@ -116,6 +116,8 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 		text_bg = state;
 	else if (btn == buttons[7])
 		walk_after_teleport = state;
+	else if (btn == buttons[8])
+		frames = state;
 }
 
 void GameplayOptions_gump::build_buttons()
@@ -130,6 +132,7 @@ void GameplayOptions_gump::build_buttons()
 	buttons[2] = new GameplayToggle(this, colx[3], rowy[4], EXULT_FLX_AUD_ENABLED_SHP, mouse3rd, 2);
 	buttons[3] = new GameplayToggle(this, colx[3], rowy[5], EXULT_FLX_AUD_ENABLED_SHP, doubleclick, 2);
 	buttons[4] = new GameplayToggle(this, colx[3], rowy[7], EXULT_FLX_AUD_ENABLED_SHP, cheats, 2);
+	buttons[8] = new GameplayTextToggle(this, framenums, colx[3], rowy[8], 59, frames, 5);
 }
 
 void GameplayOptions_gump::load_settings()
@@ -146,13 +149,19 @@ void GameplayOptions_gump::load_settings()
 	paperdolls = gwin->get_bg_paperdolls();
 	doubleclick = gwin->get_double_click_closes_gumps();
 	text_bg = gwin->get_text_bg()+1;
+	frames = 1000/gwin->get_std_delay();
+	if (frames < 2)
+		frames = 2;
+	if (frames > 10)
+		frames = 10;
+	frames = frames/2 - 1;		// 2,4,6,8,10 are the choices.
 }
 
 GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX)
 {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 162);//++++++ ???
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		buttons[i] = 0;
 	stats = new std::string[4];
 	stats[0] = "Disabled";
@@ -173,19 +182,26 @@ GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYO
 	textbgcolor[10] = "Dark gray";
 	textbgcolor[11] = "White";
 
+	framenums = new std::string[5];
+	framenums[0] = "2 fps";
+	framenums[1] = "4 fps";
+	framenums[2] = "6 fps";
+	framenums[3] = "8 fps";
+	framenums[4] = "10 fps";
+
 	load_settings();
 	
 	build_buttons();
 
 	// Ok
-	buttons[8] = new GameplayOptions_button(this, colx[0], rowy[10], EXULT_FLX_AUD_OK_SHP);
+	buttons[9] = new GameplayOptions_button(this, colx[0], rowy[10], EXULT_FLX_AUD_OK_SHP);
 	// Cancel
-	buttons[9] = new GameplayOptions_button(this, colx[4], rowy[10], EXULT_FLX_AUD_CANCEL_SHP);
+	buttons[10] = new GameplayOptions_button(this, colx[4], rowy[10], EXULT_FLX_AUD_CANCEL_SHP);
 }
 
 GameplayOptions_gump::~GameplayOptions_gump()
 {
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		if (buttons[i])
 			delete buttons[i];
 
@@ -201,6 +217,9 @@ void GameplayOptions_gump::save_settings()
 	Game_window *gwin = Game_window::get_game_window();
 	gwin->set_text_bg(text_bg-1);
 	config->set("config/gameplay/textbackground", text_bg-1, true);
+	int fps = 2*(frames + 1);
+	gwin->set_std_delay(1000/fps);
+	config->set("config/video/fps", fps, true);
 	gwin->set_fastmouse(fastmouse);
 	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", true);
 	gwin->set_mouse3rd(mouse3rd);
@@ -221,7 +240,7 @@ void GameplayOptions_gump::save_settings()
 void GameplayOptions_gump::paint(Game_window* gwin)
 {
 	Gump::paint(gwin);
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		if (buttons[i])
 			buttons[i]->paint(gwin);
 
@@ -235,6 +254,7 @@ void GameplayOptions_gump::paint(Game_window* gwin)
 	gwin->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
 	gwin->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
 	gwin->paint_text(2, "Cheats:", x + colx[0], y + rowy[7] + 1);
+	gwin->paint_text(2, "Speed:", x + colx[0], y + rowy[8] + 1);
 	gwin->set_painted();
 }
 
@@ -245,7 +265,7 @@ void GameplayOptions_gump::mouse_down(int mx, int my)
 					// First try checkmark.
 	// Try buttons at bottom.
 	if (!pushed)
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 			if (buttons[i] && buttons[i]->on_button(gwin, mx, my)) {
 				pushed = buttons[i];
 				break;
