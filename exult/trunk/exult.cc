@@ -347,7 +347,10 @@ static int Filter_intro_events
  */
 static int dragging = 0;		// Object or gump being moved.
 static int dragged = 0;			// Flag for when obj. moved.
-static int run_avatar = 0;		// 1 if shift key held down.
+					// 1/6, 1/10, 1/20 frame rates.
+const int slow_speed = 166, medium_speed = 100, fast_speed = 50;
+static int avatar_speed = slow_speed;	// Avatar speed (frame delay in
+					//    1/1000 secs.)
 
 /*
  *	Handle events until a flag is set.
@@ -428,11 +431,8 @@ static void Handle_event
 					//  when right button pressed.
 		if (event.button.button == 3 && 
 		    gwin->get_mode() == Game_window::normal)
-			{
-			run_avatar = ((SDL_GetModState() & KMOD_SHIFT) != 0);
-			gwin->start_actor(event.button.x, event.button.y,
-								run_avatar);
-			}
+			gwin->start_actor(event.button.x, event.button.y, 
+								avatar_speed);
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 3)
@@ -478,11 +478,20 @@ static void Handle_event
 			Direction dir = Get_direction(dy, dx);
 			int dist = dy*dy + dx*dx;
 			if (dist < 48*48)
+				{
 				mouse->set_short_arrow(dir);
+				avatar_speed = slow_speed;
+				}
 			else if (dist < 180*180)
+				{
 				mouse->set_medium_arrow(dir);
+				avatar_speed = medium_speed;
+				}
 			else
+				{
 				mouse->set_long_arrow(dir);
+				avatar_speed = fast_speed;
+				}
 			}
 		gwin->set_painted();	// We'll need to blit.
 #endif
@@ -498,7 +507,7 @@ static void Handle_event
 					// Dragging with right?
 		if (event.motion.state & SDL_BUTTON(3))
 			gwin->start_actor(event.motion.x, event.motion.y,
-								run_avatar);
+								avatar_speed);
 		break;
 		}
 	case SDL_ACTIVEEVENT:

@@ -281,8 +281,8 @@ public:
 	USECODE_INTRINSIC_DECL(set_item_frame);
 	USECODE_INTRINSIC_DECL(get_item_quality);
 	USECODE_INTRINSIC_DECL(set_item_quality);
-        USECODE_INTRINSIC_DECL(count_npc_inventory);
-        USECODE_INTRINSIC_DECL(set_npc_inventory_count);
+        USECODE_INTRINSIC_DECL(get_item_quantity);
+        USECODE_INTRINSIC_DECL(set_item_quantity);
         USECODE_INTRINSIC_DECL(get_object_position);
 	USECODE_INTRINSIC_DECL(get_distance);
         USECODE_INTRINSIC_DECL(find_direction);

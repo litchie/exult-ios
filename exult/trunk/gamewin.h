@@ -408,11 +408,10 @@ public:
 	void view_down();		// Move view down.
 	void view_up();			// Move view up.
 					// Start moving actor.
-	void start_actor(int winx, int winy, int speedup)
+	void start_actor(int winx, int winy, int speed = 125)
 		{
-					// 1/8 sec/frame.
 		main_actor->walk_to_point(chunkx*chunksize + winx, 
-				chunky*chunksize + winy, 125>>speedup);
+				chunky*chunksize + winy, speed);
 		}
 	void stop_actor();		// Stop main actor.
 					// Find gump (x, y) is in.
