@@ -1,5 +1,7 @@
 2001-07-25  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* npcnear.cc: Don't execute 'nearby' usecode for NPC's in the
+	'wait' schedule.  Fixes Fawn Trial infinite-loop bug.
 	* actors.cc,intrinsics.cc: SI/SS goodies should work now (although I
 	haven't tested the Blink Ring or Reagants Ring).
 
