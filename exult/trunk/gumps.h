@@ -26,10 +26,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_GUMPS
 #define INCL_GUMPS
 
-#include "objs.h"
+#include "rect.h"
+#include "shapeid.h"
 #include "utils.h"
 
 class Actor;
+class Game_object;
+class Container_game_object;
+class Game_window;
 class Gump_object;
 class Gump_button;
 class Gump_text;
@@ -133,15 +137,10 @@ public:
 					// Get screen rect. of obj. in here.
 	Rectangle get_shape_rect(Game_object *obj);
 					// Get screen loc. of object.
-	void get_shape_location(Game_object *obj, int& ox, int& oy)
-		{
-		ox = x + object_area.x + obj->cx,
-		oy = y + object_area.y + obj->cy;
-		}
+	void get_shape_location(Game_object *obj, int& ox, int& oy);
 					// Find obj. containing mouse point.
 	Game_object *find_object(int mx, int my);
-	virtual Game_object *get_owner()// Get object this belongs to.
-		{ return container; }
+	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.
@@ -149,8 +148,7 @@ public:
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 						int sx = -1, int sy = -1);
-	virtual void remove(Game_object *obj)
-		{ container->remove(obj); }
+	virtual void remove(Game_object *obj);
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 					// Close (and delete).

@@ -5,7 +5,7 @@ INCLUDES = -I. -Iconf -Ifiles -Iaudio -Ipathfinder \
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
-SUBDIRS = audio conf pathfinder files flic tools
+SUBDIRS = audio conf pathfinder files flic # tools
 
 bin_PROGRAMS = exult
 
@@ -21,6 +21,8 @@ exult_SOURCES =	\
 	autoarray.h	\
 	delobjs.cc	\
 	delobjs.h	\
+	dir.cc		\
+	dir.h		\
 	drag.cc		\
 	effects.cc	\
 	effects.h	\
@@ -53,12 +55,14 @@ exult_SOURCES =	\
 	paths.h		\
 	readnpcs.cc	\
 	ready.h		\
+	rect.h		\
 	scale.cc	\
 	scale.h		\
 	schedule.cc	\
 	schedule.h	\
 	segfile.cc	\
 	segfile.h	\
+	shapeid.h	\
 	spells.cc	\
 	spells.h	\
 	tiles.h		\

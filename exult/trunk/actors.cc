@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "schedule.h"
 #include "Zombie.h"
 #include "Astar.h"
+#include "dir.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 Equip_record *Monster_info::equip = 0;
@@ -67,7 +68,8 @@ Actor::Actor
 	int shapenum, 
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
-	) : Container_game_object(), name(nm==0?0:strdup(nm)),usecode(uc), npc_num(num), party_id(-1),
+	) : Container_game_object(), name(nm==0?0:strdup(nm)),usecode(uc), 
+	    npc_num(num), party_id(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(1),
 	    two_handed(0), two_fingered(false), light_sources(0),
 	    usecode_dir(0), flags(0), action(0), frame_time(0)

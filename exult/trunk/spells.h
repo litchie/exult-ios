@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gumps.h"
 
+class Spellbook_object;
+
 /*
  *	Open spellbook.  The spells are drawn in the object area.
  */
@@ -51,8 +53,7 @@ public:
 	void do_spell(int spell);	// Perform spell.
 	void change_page(int delta);	// Page forward/backward.
 	void set_bookmark(int spell);	// Set bookmark.
-	virtual Game_object *get_owner()// Get object this belongs to.
-		{ return book; }
+	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.

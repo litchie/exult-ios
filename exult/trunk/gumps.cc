@@ -735,6 +735,20 @@ Rectangle Gump_object::get_shape_rect
 	}
 
 /*
+ *	Get screen location of object within.
+ */
+
+void Gump_object::get_shape_location
+	(
+	Game_object *obj, 
+	int& ox, int& oy
+	)
+	{
+	ox = x + object_area.x + obj->cx,
+	oy = y + object_area.y + obj->cy;
+	}
+
+/*
  *	Find object a screen point is on.
  *
  *	Output:	Object found, or null.
@@ -763,6 +777,15 @@ Game_object *Gump_object::find_object
 	while (obj != last_object);
 					// ++++++Return top item.
 	return (cnt ? list[cnt - 1] : 0);
+	}
+
+/*
+ *	Get object this belongs to.
+ */
+
+Game_object *Gump_object::get_owner()
+	{ 
+	return container; 
 	}
 
 /*
@@ -838,6 +861,18 @@ int Gump_object::add
 		obj->cy = sy;
 		}
 	return (1);
+	}
+
+/*
+ *	Remove object.
+ */
+
+void Gump_object::remove
+	(
+	Game_object *obj
+	)
+	{
+	container->remove(obj); 
 	}
 
 /*
