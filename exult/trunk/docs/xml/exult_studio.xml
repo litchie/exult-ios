@@ -252,19 +252,17 @@
 							an example for editing BG:</li>
 					</ul>
 				<configdesc>
-					<line>&lt;game&gt;</line>
-					<line>&lt;blackgate&gt;</line>
-					<line>&lt;path&gt;</line>
-					<line>blackgate</line>
-					<line>&lt;/path&gt;</line>
-					<line>&lt;patch&gt;</line>
-					<line>blackgate/patch</line>
-					<line>&lt;/patch&gt;</line>
-					<line>&lt;title&gt;</line>
-					<line>blackgate</line>
-					<line>&lt;/title&gt;</line>
-					<line>.</line>
-					<line>&lt;/blackgate&gt;</line>
+					<configtag name="game">
+						<configtag name="path">
+						./blackgate
+						</configtag>
+						<configtag name="patch">
+						./blackgate/patch
+						</configtag>
+						<configtag name="title">
+						blackgate
+						</configtag>
+					</configtag>
 				</configdesc>
 				<para>
 					<Exult/> will also read files from 'patch' if it exists on starting a new game.
@@ -282,40 +280,35 @@
 					via exult.cfg. Those settings are:
 				</para>
 				<configdesc>
-					<line>&lt;config&gt;</line>
-					<line>&lt;estudio&gt;</line>
-					<line>&lt;main&gt;</line>
-					<line>&lt;width&gt;</line>
-					<line>640
-						<comment>** width of the program window
-						</comment></line>
-					<line>&lt;/width&gt;</line>
-					<line>&lt;height&gt;</line>
-					<line>400
-						<comment>** height of the program window
-						</comment></line>
-					<line>&lt;/height&gt;</line>
-					<line>&lt;/main&gt;</line>
-					<line>&lt;default_game&gt;</line>
-					<line>gamename
-						<comment>** default game to edit (games must be specified in
-						&lt;game&gt; part of exult.cfg)
-						</comment></line>
-					<line>&lt;/default_game&gt;</line>
-					<line>&lt;image_editor&gt;</line>
-					<line>gimp-remote -n
-						<comment>** command that calls the image editor. Only useful on U*ix
-						platforms for now.
-						</comment></line>
-					<line>&lt;/image_editor&gt;</line>
-					<line>&lt;background_color&gt;</line>
-					<line>0
-						<comment>** background color for the shape-chooser. Use the preference
-						dialog of Exult Studio for this.
-						</comment></line>
-					<line>&lt;/background_color&gt;</line>
-					<line>&lt;/estudio&gt;</line>
-					<line>&lt;/config&gt;</line>
+					<configtag name="config">
+						<configtag name="estudio">
+							<configtag name="main">
+								<configtag name="width">
+								640
+								<comment>** width of the program window</comment>
+								</configtag>
+								<configtag name="height">
+								400
+								<comment>** height of the program window</comment>
+								</configtag>
+							</configtag>
+							<configtag name="default_game">
+							gamename
+							<comment>** default game to edit (games must be specified in</comment>
+							<comment>&lt;game&gt; part of exult.cfg)</comment>
+							</configtag>
+							<configtag name="image_editor">
+							gimp-remote -n
+							<comment>** command that calls the image editor. Only useful on Unix/Linux</comment>
+							<comment>platforms for now.</comment>
+							</configtag>
+							<configtag name="background_color">
+							0
+							<comment>** background color for the shape-chooser. Use the preference</comment>
+							<comment>dialog of Exult Studio for this.</comment>
+							</configtag>
+						</configtag>
+					</configtag>
 				</configdesc>
 			</body>
 		</sub>

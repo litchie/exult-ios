@@ -213,7 +213,13 @@
 							a 'patch' directory that you specify in your 'exult.cfg' file. Here's
 							an example for editing BG:</li>
 					</ul>
-				<table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;game&gt;</td></tr><tr><td colspan="2">&lt;blackgate&gt;</td></tr><tr><td colspan="2">&lt;path&gt;</td></tr><tr><td colspan="2">blackgate</td></tr><tr><td colspan="2">&lt;/path&gt;</td></tr><tr><td colspan="2">&lt;patch&gt;</td></tr><tr><td colspan="2">blackgate/patch</td></tr><tr><td colspan="2">&lt;/patch&gt;</td></tr><tr><td colspan="2">&lt;title&gt;</td></tr><tr><td colspan="2">blackgate</td></tr><tr><td colspan="2">&lt;/title&gt;</td></tr><tr><td colspan="2">.</td></tr><tr><td colspan="2">&lt;/blackgate&gt;</td></tr></table>
+				<table cellspacing="0" cellpadding="0" border="0"><tr><td style="text-indent:0pt">&lt;game&gt;</td></tr><tr><td style="text-indent:20pt">&lt;path&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:20pt">
+						./blackgate
+						</td></tr><tr><td style="text-indent:20pt">&lt;/path&gt;</td></tr><tr><td style="text-indent:20pt">&lt;patch&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:20pt">
+						./blackgate/patch
+						</td></tr><tr><td style="text-indent:20pt">&lt;/patch&gt;</td></tr><tr><td style="text-indent:20pt">&lt;title&gt;</td><td rowspan="3" /></tr><tr><td style="text-indent:20pt">
+						blackgate
+						</td></tr><tr><td style="text-indent:20pt">&lt;/title&gt;</td></tr><tr><td style="text-indent:0pt">&lt;/game&gt;</td></tr></table>
 				<p>
 					<em>Exult</em> will also read files from 'patch' if it exists on starting a new game.
 				</p>
@@ -225,20 +231,17 @@
 					You can change the settings of <em>Exult Studio</em> either with the preferences dialog or
 					via exult.cfg. Those settings are:
 				</p>
-				<table cellspacing="0" cellpadding="0" border="0"><tr><td colspan="2">&lt;config&gt;</td></tr><tr><td colspan="2">&lt;estudio&gt;</td></tr><tr><td colspan="2">&lt;main&gt;</td></tr><tr><td colspan="2">&lt;width&gt;</td></tr><tr><td width="150">640
-						</td><td rowspan="2">** width of the program window
-						</td></tr><tr><td colspan="2">&lt;/width&gt;</td></tr><tr><td colspan="2">&lt;height&gt;</td></tr><tr><td width="150">400
-						</td><td rowspan="2">** height of the program window
-						</td></tr><tr><td colspan="2">&lt;/height&gt;</td></tr><tr><td colspan="2">&lt;/main&gt;</td></tr><tr><td colspan="2">&lt;default_game&gt;</td></tr><tr><td width="150">gamename
-						</td><td rowspan="2">** default game to edit (games must be specified in
-						&lt;game&gt; part of exult.cfg)
-						</td></tr><tr><td colspan="2">&lt;/default_game&gt;</td></tr><tr><td colspan="2">&lt;image_editor&gt;</td></tr><tr><td width="150">gimp-remote -n
-						</td><td rowspan="2">** command that calls the image editor. Only useful on U*ix
-						platforms for now.
-						</td></tr><tr><td colspan="2">&lt;/image_editor&gt;</td></tr><tr><td colspan="2">&lt;background_color&gt;</td></tr><tr><td width="150">0
-						</td><td rowspan="2">** background color for the shape-chooser. Use the preference
-						dialog of Exult Studio for this.
-						</td></tr><tr><td colspan="2">&lt;/background_color&gt;</td></tr><tr><td colspan="2">&lt;/estudio&gt;</td></tr><tr><td colspan="2">&lt;/config&gt;</td></tr></table>
+				<table cellspacing="0" cellpadding="0" border="0"><tr><td style="text-indent:0pt">&lt;config&gt;</td></tr><tr><td style="text-indent:20pt">&lt;estudio&gt;</td></tr><tr><td style="text-indent:40pt">&lt;main&gt;</td></tr><tr><td style="text-indent:60pt">&lt;width&gt;</td><td rowspan="3">** width of the program window</td></tr><tr><td style="text-indent:60pt">
+								640
+								</td></tr><tr><td style="text-indent:60pt">&lt;/width&gt;</td></tr><tr><td style="text-indent:60pt">&lt;height&gt;</td><td rowspan="3">** height of the program window</td></tr><tr><td style="text-indent:60pt">
+								400
+								</td></tr><tr><td style="text-indent:60pt">&lt;/height&gt;</td></tr><tr><td style="text-indent:40pt">&lt;/main&gt;</td></tr><tr><td style="text-indent:40pt">&lt;default_game&gt;</td><td rowspan="3">** default game to edit (games must be specified in&lt;game&gt; part of exult.cfg)</td></tr><tr><td style="text-indent:40pt">
+							gamename
+							</td></tr><tr><td style="text-indent:40pt">&lt;/default_game&gt;</td></tr><tr><td style="text-indent:40pt">&lt;image_editor&gt;</td><td rowspan="3">** command that calls the image editor. Only useful on Unix/Linuxplatforms for now.</td></tr><tr><td style="text-indent:40pt">
+							gimp-remote -n
+							</td></tr><tr><td style="text-indent:40pt">&lt;/image_editor&gt;</td></tr><tr><td style="text-indent:40pt">&lt;background_color&gt;</td><td rowspan="3">** background color for the shape-chooser. Use the preferencedialog of Exult Studio for this.</td></tr><tr><td style="text-indent:40pt">
+							0
+							</td></tr><tr><td style="text-indent:40pt">&lt;/background_color&gt;</td></tr><tr><td style="text-indent:20pt">&lt;/estudio&gt;</td></tr><tr><td style="text-indent:0pt">&lt;/config&gt;</td></tr></table>
 			</td></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="command_line">2.6. Command line options</a></strong></td></tr><tr><td>
 				<p>
 					<em>Exult Studio</em> offers some "hidden" command line options:
