@@ -25,10 +25,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 #include "schedule.h"
 #include "mouse.h"
-#include "gumps.h"
+#include "Gump.h"
+#include "Book_gump.h"
+#include "Scroll_gump.h"
+#include "Sign_gump.h"
 #include "effects.h"
 #include "barge.h"
 #include "virstone.h"
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::rand;
 
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 Barge_object *Get_barge	(Game_object *obj);

@@ -41,7 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "gamewin.h"
 #include "utils.h"
-#include "gumps.h"
+#include "gump_utils.h"
 
 using std::cerr;
 using std::cout;

@@ -26,10 +26,13 @@
 #else
   #include "files/utils.h"
 #endif
+#include "imagebuf.h"
+#include "objs.h"
+#include "palette.h"
+#include "vgafile.h"
 
 class Game_window;
 class Image_window8;
-class Palette;
 class Mouse;
 
 struct str_int_pair

@@ -26,6 +26,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include <iomanip>
 
+using std::cout;
+using std::endl;
+using std::hex;
+using std::setfill;
+using std::setw;
+
 int Scheduled_usecode::count = 0;
 Scheduled_usecode *Scheduled_usecode::first = 0;
 
