@@ -7,7 +7,7 @@
 /*
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -79,6 +79,8 @@
 #include "mappatch.h"
 #include "version.h"
 #include "drag.h"
+#include "glshape.h"
+
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
 #include "servemsg.h"

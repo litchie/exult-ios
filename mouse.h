@@ -1,7 +1,7 @@
 /*
  *	mouse.h - Mouse pointers.
  *
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include "dir.h"
 #include "iwin8.h"
 #include "vgafile.h"
+#include "glshape.h"
 
 /*
  *	Handle custom mouse pointers.
@@ -106,9 +107,7 @@ public:
 	void move(int x, int y);	// Move to new location (mouse motion).
 	void blit_dirty()		// Blit dirty area.
 		{ 			// But not in OpenGL.
-#ifdef HAVE_OPENGL
 		if (!GL_manager::get_instance())
-#endif
 			iwin->show(dirty.x - 1, dirty.y - 1, dirty.w + 2, 
 							dirty.h + 2); 
 		}
