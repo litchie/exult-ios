@@ -53,6 +53,7 @@ protected:
 	Game_object *spots[12];		// Where things can go.  See 'Spots'
 					//   below for description.
 	unsigned char two_handed;	// Carrying a two-handed item.
+	bool two_fingered;		// Carrying gauntlets (both fingers)
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 	unsigned long flags;		// 32 flags used in 'usecode'.
 	Actor_action *action;		// Controls current animation.
@@ -72,7 +73,7 @@ public:
 	enum Spots {			// Index of each spot, starting at
 					//   upper, rt., going clkwise.
 		head = 0,
-		torso = 1,
+		back = 1,
 		belt = 2,
 		lhand = 3,
 		lfinger = 4,
@@ -80,15 +81,22 @@ public:
 		feet = 6,
 		rfinger = 7,
 		rhand = 8,
-		arms = 9,
+		torso = 9,
 		neck = 10,
-		back = 11,
-		lrhand = 100		// Special:  uses lhand & rhand.
+		ammo = 11,
+		lrhand = 100,		// Special:  uses lhand & rhand.
+		lrfinger = 101		// Special:  uses lfinger & rfinger
 		};
 	int free_hand()			// Get index of a free hand, or -1.
 		{ 
 		return two_handed ? -1 :
-			(!spots[rhand] ? rhand : (!spots[lhand] ? lhand : -1));
+			(!spots[lhand] ? lhand : (!spots[rhand] ? rhand : -1));
+		}
+	int free_finger()		// Get index of a free finger, or -1.
+		{ 
+		return two_fingered ? -1 :
+			(!spots[lfinger] ? lfinger
+			 	: (!spots[rfinger] ? rfinger : -1));
 		}
 	enum Item_flags {		// Bit #'s of flags:
 		poisoned = 8,
