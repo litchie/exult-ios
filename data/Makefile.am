@@ -36,7 +36,8 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/faces.shp			\
 	bg/faces2.shp			\
 	bg/amulets.shp			\
-	bg/bgfiredoom.shp
+	bg/bgfiredoom.shp		\
+	bg/fellowshipstaff.shp
 
 
 flexdir = $(datadir)/exult

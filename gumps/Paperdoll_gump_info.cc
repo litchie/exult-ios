@@ -1138,8 +1138,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     707, -1,      Actor::lhand,   OT_Double,  false, paperdoll,   139,     0 },
 	{     707, -1,Actor::back2h_spot,   OT_Double,  false, paperdoll,   139,     1 },
 	// Fallowship Staff **NEEDS ART**
-	{     885, -1,      Actor::lhand,    OT_Staff,  false, paperdoll,    -1,     0 },
-	{     885, -1,Actor::back2h_spot,    OT_Staff,  false, paperdoll,    -1,     1 },
+	{     885, -1,      Actor::lhand,    OT_Staff,  false, exultbg_flx,  11,     0 },
+	{     885, -1,Actor::back2h_spot,    OT_Staff,  false, exultbg_flx,  11,     1 },
 
 
 	// CROSSBOWS & BOLTS

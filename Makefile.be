@@ -91,6 +91,7 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/faces2.shp \
 	data/bg/amulets.shp \
 	data/bg/bgfiredoom.shp \
+	data/bg/fellowshipstaff.shp \
 	data/bg/flx.in
 
 
