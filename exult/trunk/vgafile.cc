@@ -732,7 +732,7 @@ int Shapes_vga_file::read_info
 	for (int i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(weapon);
-		short unknown = Read2(weapon);
+		/* short unknown = */ Read2(weapon);
 		unsigned short ammoshape = Read2(weapon);
 		if (ammoshape == shapenum)
 			ammoshape = 0;
