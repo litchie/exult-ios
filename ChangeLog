@@ -1,3 +1,11 @@
+2001-05-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* In Linux:  Link exult_studio.glade into the Exult data
+	directory, and be sure data_path is set in .exult.cfg.  Then,
+	hitting ctrl-alt-m (map-editor mode) will run Exult Studio
+	(assuming it's in your PATH), already set up for the game you're
+	playing. 
+
 2001-05-09  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keyactions.cc: applied Telemachos' patches for showing inventory
 
