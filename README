@@ -140,7 +140,7 @@ Exult keeps a configuration file. You can specify where your Ultima 7 installati
 If you do not already have a configuration file, Exult will make one for you filling in sensible defaults by itself. The location of this file varies slightly. On UNIX systems you can expect to find it in $HOME/.exult.cfg while other operating systems will probably locate it as 'exult.cfg' in the same directory as the Exult binary. However it is recommended that you edit this file by hand to achieve optimal results for your system.
 Note: the settings in exult.cfg are the same on all operating systems (except when explicitly stated below).
 The file uses a simple hierarchical XML-like syntax, which should be simple to understand and modify. Take care though. Handling of syntax errors in this file is not well tested.
-Okay, the default file looks like this (do not copy the **and following - these are my remarks).
+The default file looks like this (do not copy the **and following - these are my remarks).
 Note: yes means enabled, no means disabled
 <config>
 <disk>
@@ -863,7 +863,7 @@ In order to play, you'll have to change the location of the files installed by t
 From the terminal, verify who you are by typing ($ is the prompt): $ cd ~/ $ whoami $ pwd
 The "whoami" command should return "zaurus". The "pwd" command should return "/home/zaurus/". Then copy the exult files: $ cp /home/root/.exult* ~/ -rf
 And change ownership to yourself. You might have to become root to do so: $ su # chown zaurus:zaurus /home/zaurus/.exult* -R # chown zaurus:zaurus /opt/QtPalmtop/share/exult -R # chown zaurus:zaurus /opt/QtPalmtop/bin/exult* -R # chown zaurus:zaurus /opt/QtPalmtop/pics/exult.png -R # chown zaurus:zaurus /opt/QtPalmtop/apps/Games/exult.desktop -R # exit
-The # is the root's prompt. The "exit" command will stop the "su" command and make you return to the "zaurus" user. It is now time to edit the .exult.cfg. A fast way to do it: $ sed -e 's/root/zaurus/' ~/.exult.cfg ~/.exult.cfg_new $ mv ~/.exult.cfg_new ~/.exult.cfg
+The # is the root's prompt. The "exit" command will stop the "su" command and make you return to the "zaurus" user. It is now time to edit the .exult.cfg. A fast way to do it: $ sed -e 's/root/zaurus/' >~/.exult.cfg ~/.exult.cfg_new $ mv ~/.exult.cfg_new ~/.exult.cfg
 Normally, you should be able to start and play the game normally. Let me know if I am missing anything.
 
 

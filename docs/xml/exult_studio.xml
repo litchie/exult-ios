@@ -135,12 +135,12 @@
 						(see <extref doc="docs" target="installation"/>). Also make sure that
 						you are using the <strong>latest snapshot of the 1.1.x branch</strong> of <Exult/>.<br/>
 						<Studio/> only works with the latest snapshot, not the latest release.</li>
-					<li>For U*ix platforms you need to build <Studio/> from the source avilable from our
+					<li>For U*ix platforms you need to build <Studio/> from the source available from our
 						source snapshot at <extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 						You will also need the GTK+ library installed as well as
 				<extref target="http://developer.gnome.org/doc/API/libglade/libglade.html">libglade</extref>.<br/></li>
 					<li>For Win32 platforms (Win9x,ME,2k,XP) you need to download
-						<extref target="http://exult.sourceforge.net/snapshots/2.0/ExultStudio.exe"/>
+						<extref target="http://exult.sourceforge.net/snapshots/ExultStudio.exe"/>
 						and install it in the same directory where you installed <Exult/>.</li>
 				</ul>
 			</body>
@@ -190,7 +190,7 @@
 					very far with your world building.
 				</para>
 				<ol>
-				<li>While it is not explicitly needed it is usefull to have a working copy of either
+				<li>While it is not explicitly needed it is useful to have a working copy of either
 					BG or SI properly installed onto your computer.</li>
 				<li>Next, you need to have the Exult 1.1x snapshot and the SDL mixer installed properly
 					onto your computer and working correctly. If you are currently playing either BG or SI
@@ -203,7 +203,7 @@
 					games. See <ref1 target="can_do_atm"/> on how to change exult.cfg accordingly.</li>
 				<li>In order for <Studio/> to work properly, you need to have <Exult/> running in windowed mode.
 					If you can see your desktop while playing, then you're doing it right.</li>
-				<li>Make sure you have Cheats enabled. This can be enabled int eh Gameplay options of the Game
+				<li>Make sure you have Cheats enabled. This can be enabled in the Gameplay options of the Game
 					menu.</li>
 				<li>While running <Exult/> in windowed mode, hit <key>ctrl+alt+m</key> to enter map-editing mode.
 					<Studio/> should open up if you did everything correctly. In map-editing mode the world is
@@ -380,7 +380,7 @@
 					Shape files also have a special right-click-menu. See <ref1 target="shape_edit"/>.
 				</para>
 				<para>
-					Typicall shape files are:
+					Typical shape files are:
 				</para>
 				<ul>
 					<li><strong>Sprites.vga</strong><br/>
@@ -812,7 +812,7 @@
 						appear when the Avatar gets near. This could make for some interesting effects.</li>
 					<li><strong>Jukebox</strong><br/>
 						sets the background music when the character enters a certain area.</li>
-					<li><strong>Sound Effect</strong>and <strong>Voice</strong><br/>
+					<li><strong>Sound Effect</strong> and <strong>Voice</strong><br/>
 						will play a selected sound or voice when the character meets the required values
 						set in the egg creation menu.</li>
 					<li><strong>Usecode</strong><br/>
@@ -822,7 +822,7 @@
 					<li><strong>Missile</strong><br/>
 						create interesting objects like flamethrower traps.</li>
 					<li><strong>Teleport</strong><br/>
-						transportthe avatar anywhere on the map when certain conditions are met.</li>
+						transport the avatar anywhere on the map when certain conditions are met.</li>
 					<li><strong>Weather</strong><br/>
 						temporarily set the in-game weather.</li>
 					<li><strong>Path</strong><br/>
@@ -841,7 +841,7 @@
 					can select the type of egg you wish to create and the properties you are going to
 					give it. When you are happy with the egg press <strong>apply</strong> and then enter
 					<Exult/> and place the egg wherever you like. To remove an egg, select it while in
-					map-edit mode and press <key>ctrl+x</key> to cut the egg. ou can still paste it
+					map-edit mode and press <key>ctrl+x</key> to cut the egg. You can still paste it
 					elsewhere if you like. To edit an egg, double click it in map editing mode. This
 					will bring up the egg window where you will be able to change an existing egg's
 					attributes.
@@ -967,7 +967,7 @@
 						Doesn't do a whole lot by itself, but put two neutral creatures with these settings
 						beside each other and its rumble time. This also works by placing them near training
 						dummies or archery targets. For an extra laugh place 10 spawns each set for 31 guards
-						to appear in duelling mode.</li>
+						to appear in dueling mode.</li>
 					<li><strong>Patrol</strong><br/>
 						A creature given this setting will very slowly wander from place to place.<br/>
 						<img alt="Guards duel" src="images/studio4.jpg"/><br/></li>
