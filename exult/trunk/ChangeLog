@@ -3,6 +3,8 @@
 	removed the Put_click hack. Replaced it by 'intercept_click_on_item',
 	which sets an item that the next click_on_item will return
 
+	* tools/Makefile.am: always build expack, even with --disable-tools
+
 2001-08-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/egg.cc: Schedule egg Usecode call instead of executing

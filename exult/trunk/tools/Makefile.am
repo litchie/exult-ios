@@ -8,8 +8,12 @@ UCC=
 endif
 
 if BUILD_TOOLS
-noinst_PROGRAMS = expack wuc wud mklink rip ucdump shp2pcx splitshp $(UCC)
+EXTRATOOLS = wuc wud mklink rip ucdump shp2pcx splitshp $(UCC)
+else
+EXTRATOOLS =
 endif
+
+noinst_PROGRAMS = expack $(EXTRATOOLS)
 
 expack_SOURCES = \
 	expack.cc
