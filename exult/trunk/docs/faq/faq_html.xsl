@@ -34,7 +34,7 @@
 								<td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
 							</tr>
 							<tr>
-								<td align="center"><font size="+1"><a href="index.shtml">Home</a> | <a href="download.shtml">Download</a> | <a href="faq.shtml">FAQ</a> | <a href="screenshots.shtml">Screen Shots</a> | <a href="dev.shtml">Development</a> | <a href="about.shtml">About Us</a> | <a href="history.shtml">History</a> | <a href="links.shtml">Links</a></font></td>
+								<td align="center"><font size="+1"><a href="index.shtml">Home</a> | <a href="download.shtml">Download</a> | <a href="faq.shtml">FAQ</a> | <a href="screenshots.shtml">Screen Shots</a> | <a href="dev.shtml">Development</a> | <a href="forum/index.php">Discussion</a> | <a href="about.shtml">About Us</a> | <a href="history.shtml">History</a> | <a href="links.shtml">Links</a></font></td>
 							</tr>
 							<tr>
 								<td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
