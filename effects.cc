@@ -129,6 +129,25 @@ Projectile_effect::~Projectile_effect
 	}
 
 /*
+ *	Add a dirty rectangle for the current position and frame.
+ */
+
+inline void Projectile_effect::add_dirty
+	(
+	Game_window *gwin
+	)
+	{
+	if (pos.tx == -1)
+		return;			// Already at destination.
+	Shape_frame *shape = gwin->get_sprite_shape(shape_num, frame_num);
+					// Force repaint of prev. position.
+	int liftpix = pos.tz*tilesize/2;
+	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
+			(pos.tx - gwin->get_scrolltx())*tilesize - liftpix,
+	    (pos.ty - gwin->get_scrollty())*tilesize - liftpix).enlarge(4)));
+	}
+
+/*
  *	Animation.
  */
 
@@ -140,8 +159,7 @@ void Projectile_effect::handle_event
 	{
 	const int delay = 100;		// Delay between frames.
 	Game_window *gwin = Game_window::get_game_window();
-	if (frame_num == frames)	// Last frame?
-		frame_num = 0;
+	add_dirty(gwin);		// Force repaint of old pos.
 	if (!path->GetNextStep(pos))	// Get next spot.
 		{			// Done? 
 		pos.tx = -1;		// Signal we're done.
@@ -150,13 +168,9 @@ void Projectile_effect::handle_event
 		gwin->paint();
 		return;
 		}
-#if 1
-	gwin->paint();		// ++++Experiment.
-#else	/* +++++Doesn't clean up prev. */
-	Projectile_effect::paint(gwin);	// Render.
-	gwin->set_painted();
-#endif
-	frame_num++;			// Next frame.
+					// Next frame.
+	frame_num = (frame_num + 1)%frames;
+	add_dirty(gwin);		// Paint new spot/frame.
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}

@@ -85,6 +85,8 @@ class Projectile_effect : public Special_effect
 	int frames;			// # frames.
 	PathFinder *path;		// Determines path.
 	Tile_coord pos;			// Current position.
+					// Add dirty rectangle.
+	void add_dirty(Game_window *gwin);
 public:
 	Projectile_effect(Game_object *from, Game_object *to, int ufun, 
 								int shnum);
