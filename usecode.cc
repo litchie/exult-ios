@@ -1595,6 +1595,14 @@ USECODE_INTRINSIC(is_npc)
 	// Is item an NPC?
 	Game_object *obj = get_item(parms[0]);
 					// ++++In future, check for monsters.
+	if(!obj)
+		{
+#if DEBUG
+		cerr << "is_npc: get_item returned a NULL pointer" << endl;
+#endif
+		Usecode_value u(0);
+		USECODE_RETURN(u);
+		}
 	Usecode_value u(obj == gwin->get_main_actor() ||
 			obj->get_npc_num() > 0);
 	USECODE_RETURN(u);
