@@ -90,6 +90,7 @@ public:
 		{ frame_time = 0; first_step = true; }
 	void done();			// No longer being operated.
 	int okay_to_land();		// See if clear to land.
+	virtual Barge_object *as_barge() { return this; }
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Move to new abs. location.

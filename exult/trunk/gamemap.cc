@@ -915,18 +915,20 @@ void Game_map::read_ireg_objects
 				// Gwenno. Ugly hack to fix bug without having to start
 				// a new game. Remove someday... (added 20010820)
 				{
-				obj = new Dead_body(400, 8, tilex, tiley, 
-								lift, 149);
-				gwin->set_body(149, obj);
+				Dead_body *b = new Dead_body(400, 8, 
+						tilex, tiley, lift, 149);
+				obj = b;
+				gwin->set_body(149, b);
 				}
 			else if (quality == 1 && 
 					 (entry[8] >= 0x80 || 
 				  Game::get_game_type() == SERPENT_ISLE)) 
 				{		// NPC's body.
 				int npc_num = (entry[8] - 0x80) & 0xFF;
-				obj = new Dead_body(shnum, frnum, tilex, 
-						tiley, lift, npc_num);
-				gwin->set_body(npc_num, obj);
+				Dead_body *b = new Dead_body(shnum, frnum, 
+						tilex, tiley, lift, npc_num);
+				obj = b;
+				gwin->set_body(npc_num, b);
 				}
 			else if (Is_body(shnum)) {
 				obj = new Dead_body(

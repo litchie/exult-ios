@@ -241,9 +241,7 @@ void Street_maintenance_schedule::now_what
 				// Set back to old schedule.
 	Game_window *gwin = Game_window::get_instance();
 	int period = gwin->get_hour()/3;
-	Npc_actor *nnpc = dynamic_cast<Npc_actor *> (npc);
-	if (nnpc)
-		nnpc->update_schedule(gwin, period, 7, 0);
+	npc->update_schedule(gwin, period, 7, 0);
 	}
 
 /*

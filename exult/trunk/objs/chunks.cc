@@ -538,7 +538,7 @@ void Map_chunk::set_terrain
 		Game_object *each;
 		while ((each = it.get_next()) != 0)
 					// Kind of nasty, I know:
-			if (dynamic_cast<Terrain_game_object *>(each))
+			if (each->as_terrain())
 				removes.push_back(each);
 		}
 		for (Game_object_vector::const_iterator it=removes.begin(); 
