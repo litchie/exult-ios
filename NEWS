@@ -1,4 +1,4 @@
-??/??/??	v??.??
+02/08/01	v0.91 alpha 2
 
 		Dynamic keybindings. Use config/disk/game/(gametitle)/keys
 		to specify a keybinding-file. See data/default.key for an
@@ -21,6 +21,8 @@
 		Improved, easier to use shape browser
 
 		Serpent Isle paperdolls
+
+		Improved weapons support
 
 		Support for the French version of BG (Frederic Wagner)
 	

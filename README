@@ -3,8 +3,8 @@
 
 WHAT IS IT ?
 ------------
-EXULT lets you, to some extent, play Ultima 7 natively under Linux,
-Windows, and possibly other platforms.  It is released under the GNU 
+EXULT lets you play Ultima 7 - The Black Gate natively under Linux,
+Windows, and possibly BeOS and the Mac.  It is released under the GNU 
 General Public License, and source code is available.
 
 See the "NEWS" and "ChangeLog" files for the latest changes.
@@ -14,8 +14,9 @@ Run "exult" on a clean installation of Ultima7; "exult" should either be
 installed in a directory where you see the "static" subdirectory or the 
 configuration file should point to the static directory.  "Exult" will
 create the "gamedat" directory and files the first time you run it.  And al-
-though I've tried to be safe about this, I don't recommend trying it on a
-game which you're actually in the middle of playing.
+though I've tried to be safe about this, do not run it on an origina Ultima7
+game which you're actually in the middle of playing, as Exult's saved files
+have a different format.
 
 CONFIGURATION
 -------------
@@ -164,8 +165,8 @@ Running:	Hold right mouse button down to move Avatar.
 		Double-click on characters to hold conversations.
 		Double-click on doors, shutters with left button to open or
 			close them.
-		Arrow keys scroll around the "universe".
-		'q' quits.
+		Arrow keys scroll around the "universe" when in 'cheat' mode.
+		'h' brings up a 'help' scroll.
 		'p' repaints the screen.
 		'i' brings up inventory.
 		'l' cycles through the "lift factors", causing roofs to
