@@ -308,8 +308,8 @@ class Npc_actor : public Actor
 	Npc_actor *next;		// Next in same chunk.
 	unsigned char nearby;		// Queued as a 'nearby' NPC.  This is
 					//   to avoid being added twice.
+protected:
 	unsigned char dormant;		// I.e., off-screen.
-	unsigned char no_climbing;	// For horses, etc.
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	unsigned char num_schedules;	// # entries below.
 	Schedule *schedule;		// Current schedule.
@@ -326,8 +326,6 @@ public:
 		{ nearby = 0; }
 	int is_nearby()
 		{ return nearby != 0; }
-	void set_no_climbing()
-		{ no_climbing = 1; }
 					// Set schedule list.
 	void set_schedules(Schedule_change *list, int cnt)
 		{
@@ -354,6 +352,21 @@ public:
 					// Update chunks after NPC moved.
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);
+	};
+
+/*
+ *	Monsters get their own class because they have a bigger footprint
+ *	than humans.
+ */
+class Monster_actor : public Npc_actor
+	{
+					// Are new tiles blocked?
+	int is_blocked(int destx, int desty);
+public:
+	Monster_actor(char *nm, int shapenum, int fshape = -1, int uc = -1)
+		: Npc_actor(nm, shapenum, fshape, uc)
+		{  }
+	virtual int walk();		// Walk towards a direction.
 	};
 
 /*
