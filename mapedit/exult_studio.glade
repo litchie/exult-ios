@@ -11439,6 +11439,60 @@ Random
     </widget>
 
     <widget>
+      <class>GtkFrame</class>
+      <name>frame133</name>
+      <label_xalign>0</label_xalign>
+      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkHBox</class>
+	<name>hbox30</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+
+	<widget>
+	  <class>GtkCheckButton</class>
+	  <name>new_shape_font</name>
+	  <border_width>4</border_width>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>on_new_shape_font_toggled</handler>
+	    <last_modification_time>Wed, 10 Apr 2002 02:19:40 GMT</last_modification_time>
+	  </signal>
+	  <label>From font:</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	  <child>
+	    <padding>4</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+	</widget>
+
+	<widget>
+	  <class>GtkEntry</class>
+	  <name>new_shape_font_name</name>
+	  <can_focus>True</can_focus>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>0</text_max_length>
+	  <text></text>
+	  <child>
+	    <padding>2</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
       <class>GtkHButtonBox</class>
       <name>hbuttonbox10</name>
       <layout_style>GTK_BUTTONBOX_SPREAD</layout_style>

@@ -50,6 +50,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapegroup.h"
 #include "shapefile.h"
 #include "pngio.h"
+#include "fontgen.h"
 
 using std::cout;
 using std::endl;
@@ -1369,17 +1370,34 @@ void Shape_chooser::create_new_shape
 		}
 					// Create frames.
 	bool flat = shnum < 0x96 && file_info == studio->get_vgafile();
-	int w = 8, h = 8;
-	int xleft = flat ? 8 : w - 1;
-	int yabove = flat ? 8 : h - 1;
-	Image_buffer8 img(w, h);
-	img.fill8(1);			// Just use color #1.
-	img.fill8(2, w - 2, h - 2, 1, 1);
+	bool use_font = false;
+#ifdef HAVE_FREETYPE2
+					// Want to create from a font?
+	use_font = studio->get_toggle("new_shape_font");
+	const char *fontname = studio->get_text_entry("new_shape_font_name");
+	use_font = use_font && (fontname != 0) && *fontname != 0;
+	if (use_font)
+		{
+		if (!Gen_font_shape(shape, fontname,
+					// +++++height, fg, bg:
+						12, 1, 0))
+			Alert("Error loading font file '%s'", fontname);
+		}
+#endif
+	if (!use_font)
+		{
+		int w = 8, h = 8;
+		int xleft = flat ? 8 : w - 1;
+		int yabove = flat ? 8 : h - 1;
+		Image_buffer8 img(w, h);
+		img.fill8(1);		// Just use color #1.
+		img.fill8(2, w - 2, h - 2, 1, 1);
 					// Include some transparency.
-	img.fill8(255, w/2, h/2, w/4, h/4);
-	for (int i = 0; i < nframes; i++)
-		shape->add_frame(new Shape_frame(img.get_bits(),
-			w, h, xleft, yabove, !flat), i);
+		img.fill8(255, w/2, h/2, w/4, h/4);
+		for (int i = 0; i < nframes; i++)
+			shape->add_frame(new Shape_frame(img.get_bits(),
+				w, h, xleft, yabove, !flat), i);
+		}
 	file_info->set_modified();
 	Object_browser *browser = studio->get_browser();
 	if (browser)

@@ -707,7 +707,7 @@ void Shape::enlarge
 	}
 
 /*
- *	Resize list.
+ *	Resize list.  This is for outside clients, and it sets num_frames.
  */
 
 void Shape::resize
@@ -732,6 +732,7 @@ void Shape::resize
 		delete [] frames;
 		frames = newframes;
 		}
+	num_frames = newsize;
 	}
 
 /*
@@ -929,6 +930,7 @@ void Shape::reset()
 		for(int i = 0; i < frames_size; i++)
 			delete frames[i];
 		delete [] frames;
+		frames = 0;
 		}
 	else if (frames_size)
 		cerr << "Shape::~Shape(): 'frames' is null, while frames_size="
