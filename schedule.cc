@@ -443,7 +443,7 @@ void Patrol_schedule::now_what
 			{		// Schedule so we don't get deleted.
 			Usecode_script *scr = new Usecode_script(npc);
 			(*scr) << Ucscript::usecode2 << npc->get_usecode() <<
-					(int) Usecode_machine::npc_proximity;
+					static_cast<int>(Usecode_machine::npc_proximity);
 			scr->start();	// Start next tick.
 #if 0
 			Actor *safenpc = npc;
@@ -725,7 +725,7 @@ void Dance_schedule::now_what
 	dest.tx += -dist + rand()%(2*dist);
 	dest.ty += -dist + rand()%(2*dist);
 	Tile_coord cur = npc->get_abs_tile_coord();
-	int dir = (int) Get_direction4(cur.ty - dest.ty, dest.tx - cur.tx);
+	int dir = static_cast<int>(Get_direction4(cur.ty - dest.ty, dest.tx - cur.tx));
 	char frames[4];
 	for (int i = 0; i < 4; i++)
 					// Spin with 'hands outstretched'.
@@ -968,8 +968,8 @@ void Sleep_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
-	if (new_type == (int) wait ||	// Needed for Skara Brae.
-	    new_type == (int) sleep)	// Not time to get up, Penumbra!
+	if (new_type == static_cast<int>(wait) ||	// Needed for Skara Brae.
+	    new_type == static_cast<int>(sleep))	// Not time to get up, Penumbra!
 		return;			// ++++Does this leave NPC's stuck?++++
 	if (bed &&			// Locate free spot.
 	    (npc->get_framenum()&0xf) == Actor::sleep_frame)
@@ -980,7 +980,7 @@ void Sleep_schedule::ending
 			Tile_coord pos = npc->get_abs_tile_coord();
 			pos.tz -= pos.tz%5;
 			floorloc = Map_chunk::find_spot(pos, 6,
-				npc->get_shapenum(), (int) Actor::standing, 0);
+				npc->get_shapenum(), static_cast<int>(Actor::standing), 0);
 			}
 					// Make bed.
 		int frnum = bed->get_framenum();

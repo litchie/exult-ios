@@ -337,7 +337,7 @@ void Game_window::init_files(bool cycle)
 	for (int schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
 	{			// Read in the chunk #'s.
 		unsigned char buf[16*16*2];
-		u7map.read((char*)buf, sizeof(buf));
+		u7map.read(reinterpret_cast<char *>(buf), sizeof(buf));
 		int scy = 16*(schunk/12);// Get abs. chunk coords.
 		int scx = 16*(schunk%12);
 		uint8 *mapdata = buf;
@@ -367,9 +367,11 @@ void Game_window::init_files(bool cycle)
 	tqueue->add(timer, &clock, (long) this);
 
 					// Clear object lists, flags.
-	memset((char *) objects, 0, sizeof(objects));
-	memset((char *) schunk_read, 0, sizeof(schunk_read));
-	memset((char *) schunk_modified, 0, sizeof(schunk_modified));
+	// No casting _should_ be necessary at this point.
+	// Who needs this?
+	memset(reinterpret_cast<char*>(objects), 0, sizeof(objects));
+	memset(reinterpret_cast<char*>(schunk_read), 0, sizeof(schunk_read));
+	memset(reinterpret_cast<char*>(schunk_modified), 0, sizeof(schunk_modified));
 
 		// Go to starting chunk
 	scrolltx = game->get_start_tile_x();
@@ -677,8 +679,10 @@ void Game_window::clear_world
 	moving_barge = 0;		// Get out of barge mode.
 	special_light = 0;		// Clear out light spells.
 					// Clear 'read' flags.
-	memset((char *) schunk_read, 0, sizeof(schunk_read));
-	memset((char *) schunk_modified, 0, sizeof(schunk_modified));
+	// No casting _should_ be necessary at this point.
+	// Who needs this?
+	memset(reinterpret_cast<char*>(schunk_read), 0, sizeof(schunk_read));
+	memset(reinterpret_cast<char*>(schunk_modified), 0, sizeof(schunk_modified));
 	}
 
 /*
@@ -907,7 +911,7 @@ void Game_window::get_chunk_objects
 		{			// Read in 16x16 2-byte shape #'s.
 		chunks.seekg(chunk_num * 512);
 		unsigned char buf[16*16*2];	
-		chunks.read((char*)buf, sizeof(buf));
+		chunks.read(reinterpret_cast<char*>(buf), sizeof(buf));
 		ter = new Chunk_terrain(&buf[0]);
 		chunk_terrains.put(chunk_num, ter);
 		}
@@ -989,7 +993,7 @@ void Game_window::write_ifix_objects
 			Write4(tptr, ifix.tellp() - start);
 			}
 	ifix.seekp(0x80, std::ios::beg);	// Write table.
-	ifix.write((char*) &table[0], sizeof(table));
+	ifix.write(reinterpret_cast<char *>(&table[0]), sizeof(table));
 	ifix.flush();
 	int result = ifix.good();
 	if (!result)
@@ -1048,7 +1052,7 @@ void Game_window::get_ifix_chunk_objects
 					// Get buffer to hold entries' indices.
 	unsigned char *entries = new unsigned char[4*cnt];
 	unsigned char *ent = entries;
-	ifix.read((char*)entries, 4*cnt);	// Read them in.
+	ifix.read(reinterpret_cast<char*>(entries), 4*cnt);	// Read them in.
 					// Get object list for chunk.
 	Map_chunk *olist = get_chunk(cx, cy);
 	for (int i = 0; i < cnt; i++, ent += 4)
@@ -1097,7 +1101,7 @@ void Game_window::write_scheduled
 			ireg.put(IREG_SPECIAL);
 			ireg.put(IREG_UCSCRIPT);
 			Write2(ireg, len);	// Store length.
-			ireg.write((char *) buf, len);
+			ireg.write(reinterpret_cast<char*>(buf), len);
 			}
 		}
 	if (write_mark)
@@ -1188,7 +1192,7 @@ void Read_special_ireg
 	int type = Read1(ireg);		// Get type.
 	int len = Read2(ireg);		// Length of rest.
 	unsigned char *buf = new unsigned char[len];
-	ireg.read((char *)buf, len);
+	ireg.read(reinterpret_cast<char*>(buf), len);
 	if (type == IREG_UCSCRIPT)	// Usecode script?
 		{
 		Usecode_script *scr = Usecode_script::restore(obj, buf, len);
@@ -1284,7 +1288,7 @@ void Game_window::read_ireg_objects
 			continue;	// Only know these two types.
 			}
 		unsigned char entry[18];// Get entry.
-		ireg.read((char*)entry, entlen);
+		ireg.read(reinterpret_cast<char*>(entry), entlen);
 		int cx = entry[0] >> 4; // Get chunk indices within schunk.
 		int cy = entry[1] >> 4;
 					// Get coord. #'s where shape goes.
@@ -1791,7 +1795,7 @@ void Game_window::write_map
 			ochunks.seekp(i*512);
 			unsigned char data[512];
 			ter->write_flats(data);
-			ochunks.write((char*)data, 512);
+			ochunks.write(reinterpret_cast<char*>(data), 512);
 			}
 		}
 	if (!ochunks.good())
@@ -1810,7 +1814,7 @@ void Game_window::write_map
 		for (int cy = 0; cy < 16; cy++)
 			for (int cx = 0; cx < 16; cx++)
 				Write2(mapdata, terrain_map[scx+cx][scy+cy]);
-		u7map.write((char*)buf, sizeof(buf));
+		u7map.write(reinterpret_cast<char*>(buf), sizeof(buf));
 		}
 	if (!u7map.good())
 		throw file_write_exception(U7MAP);
@@ -3283,7 +3287,9 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 					//   far away.
 	int nearby[5][5];		// Chunks within 3.
 	// Set to 0
-	memset(nearby, 0, sizeof(nearby));
+	// No casting _should_ be necessary at this point.
+	// Who needs this?
+	memset(reinterpret_cast<char*>(nearby), 0, sizeof(nearby));
 					// Figure old range.
 	int old_minx = c_num_chunks + oldx - 2, 
 	    old_maxx = c_num_chunks + oldx + 2;

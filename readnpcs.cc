@@ -197,7 +197,7 @@ void Game_window::read_schedules
 		for (int j = 0; j < cnt; j++)
 			{
 			unsigned char ent[4];
-			sfile.read((char*)ent, 4);
+			sfile.read(reinterpret_cast<char*>(ent), 4);
 			schedules[j].set(ent);
 			}
 					// Store in NPC.
@@ -248,7 +248,7 @@ void Game_window::write_schedules ()
 		{
 			unsigned char ent[4];
 			schedules[j].get(ent);
-			sfile.write((char*)ent, 4);
+			sfile.write(reinterpret_cast<char*>(ent), 4);
 		}
 	}
 }
@@ -280,7 +280,7 @@ void Game_window::revert_schedules(Actor *npc)
 	for (i = 0; i < cnt; i++)
 	{
 		unsigned char ent[4];
-		sfile.read((char*)ent, 4);
+		sfile.read(reinterpret_cast<char*>(ent), 4);
 		schedules[i].set(ent);
 	}
 	// Store in NPC.
