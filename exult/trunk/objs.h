@@ -539,8 +539,8 @@ public:
 	Container_game_object() : volume_used(0), resistance(0),
 		objects(0) {  }
 	virtual ~Container_game_object();
-	Game_object *get_first_object()	// Get first inside.
-		{ return objects.get_first(); }
+	Object_list& get_objects()
+		{ return objects; }
 					// For when an obj's quantity changes:
 	void modify_volume_used(int delta)
 		{ volume_used += delta; }

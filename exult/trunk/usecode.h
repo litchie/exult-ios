@@ -141,11 +141,8 @@ private:
 	void remove_npc_face(Usecode_value& arg1);
 	void set_item_shape(Usecode_value& item_arg, Usecode_value& shape_arg);
 	void set_item_frame(Usecode_value& item_arg, Usecode_value& frame_arg);
-	int get_item_shape(Usecode_value& item_arg);
 	void remove_item(Game_object *obj);
 	int npc_in_party(Game_object *npc);
-	void add_to_party(Game_object *npc);
-	void remove_from_party(Game_object *npc);
 	Usecode_value get_party();
 	void item_say(Usecode_value& objval, Usecode_value& strval);
 	Usecode_value find_nearby(Usecode_value& objval,
