@@ -14,7 +14,7 @@
 #define HAVE_SSTREAM 1
 
 // Firstly some things that need to be defined
-#define VERSION "1.1beta3"
+#define VERSION "1.1.3cvs"
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
@@ -23,6 +23,10 @@
 #define HAVE_OPENGL
 #define FUDGE_SAMPLE_RATES
 #define USE_FMOPL_MIDI
+
+#ifndef WIN32
+#error WTF!
+#endif
 
 // No GDI
 #define NOGDI
@@ -55,7 +59,13 @@
 #pragma warning (disable: 4101) // unreferenced local variable
 #pragma warning (disable: 4309) // truncation of constant value
 #pragma warning (disable: 4305) // truncation from 'const int' to 'char'
+#pragma warning (disable: 4290) // C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
 #endif
+
+//
+// Hacks for MSVC 6
+//
+#if (_MSC_VER == 1200)
 
 // Define size_t, but don't define tm, we'll define that later
 #define _TM_DEFINED
@@ -98,36 +108,7 @@ namespace std {
 	using ::fwrite;
 	using ::remove;
 	using ::printf;
-	
-	// Win32 doesn't have snprintf as such. It's got _snprintf, 
-	// but it's in stdio. I'll make my own using _vsnprintf 
-#if 0
-	inline int snprintf(char *out, size_t len, const char *format, ...)
-	{
-		va_list	argptr;
-		va_start (argptr, format);
-		int ret = ::_vsnprintf (out, len, format, argptr);
-		va_end (argptr);
-		return ret;
-	}
-#elif 0
-	__declspec(naked) static int __cdecl snprintf(char *out, size_t len, const char *format, ...)
-	{
-		using ::_snprintf;
-		__asm jmp _snprintf;
-	}
-#else
-
-#define snprintf _snprintf
-	using ::snprintf;
-
-#endif
-
 }
-
-// We've got snprintf
-#define HAVE_SNPRINTF
-//using std::snprintf;
 
 // These get put in std when they otherwise should be, or are required by other headers
 using std::memcmp;
@@ -151,6 +132,27 @@ using std::strtol;
 #endif
 #include <sys/stat.h>
 
+
+//
+// Hacks for MSVC 7
+//
+#elif (_MSC_VER == 1300)
+
+//#define _HAS_EXCEPTIONS 0
+
+#include <cctype>
+#define HAVE_SYS_STAT_H
+
+#else
+
+#error Unknown Version of MSVC being used. Edit "msvc_include.h" and add your version
+
+#endif
+
+// We've got snprintf
+#define HAVE_SNPRINTF
+#define snprintf _snprintf
+
 // When doing a DEBUG compile we will output to the console
 // However, SDL doesn't want us to do that
 #ifdef DEBUG
@@ -169,7 +171,6 @@ using std::strtol;
 #include <assert.h>
 #include <fcntl.h>
 #include <direct.h>
-
 #include <windows.h>
 #include <mmsystem.h>
 #include <windef.h>

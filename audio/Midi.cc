@@ -27,12 +27,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <unistd.h>
 
-#ifndef PENTAGRAM
 #include "fnames.h"
 #include "exult.h"
 #include "game.h"
 #include "Audio.h"
-#endif
 
 #include "../files/U7file.h"
 #include "../files/utils.h"
@@ -73,7 +71,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	current_track = num;
 	repeating = repeat;
 
-	if (music_conversion == XMIDI_CONVERT_OGG)
+	if (output_driver_type == MIDI_DRIVER_OGG)
 	{
 	    char filename[255] ;
 		string s;
@@ -177,7 +175,16 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	// Read the data into the XMIDI class
 	mid_data = new BufferDataSource(buffer, size);
 
-	XMIDI		midfile(mid_data, midi_device->use_gs127()?XMIDI_CONVERT_MT32_TO_GS127:music_conversion);
+	// Play with the conversion type for the FMSynth or MT32EMU drivers
+	int conv = music_conversion;
+
+	if (midi_device->use_gs127())
+	//if (midi_device->is_fmsynth())
+		conv = XMIDI_CONVERT_MT32_TO_GS127;
+	//else if (midi_device->is_mt32())
+		//conv = XMIDI_CONVERT_NOCONVERSION;
+
+	XMIDI		midfile(mid_data, conv);
 	
 	delete mid_data;
 	delete [] buffer;
@@ -209,7 +216,7 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	}
 
 	//Only called from the endgame sequences  
-	if (music_conversion == XMIDI_CONVERT_OGG)
+	if (output_driver_type == MIDI_DRIVER_OGG)
 	{
 	    char filename[255] ;
 
@@ -255,7 +262,16 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	mid_file = U7open(fname, "rb");  //DARKE FIXME
 	mid_data = new FileDataSource(mid_file);
 
-	XMIDI		midfile(mid_data, midi_device->use_gs127()?XMIDI_CONVERT_MT32_TO_GS127:music_conversion);
+	// Play with the conversion type for the FMSynth or MT32EMU drivers
+	int conv = music_conversion;
+
+	if (midi_device->use_gs127())
+	//if (midi_device->is_fmsynth())
+		conv = XMIDI_CONVERT_MT32_TO_GS127;
+	//else if (midi_device->is_mt32())
+		//conv = XMIDI_CONVERT_NOCONVERSION;
+
+	XMIDI		midfile(mid_data, conv);
 	
 	delete mid_data;
 	fclose(mid_file);
@@ -342,7 +358,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 	#include "midi_drivers/amiga_midi.h"
 #endif
 
-#define	TRY_MIDI_DRIVER(CLASS_NAME)	\
+#define	TRY_MIDI_DRIVER(CLASS_NAME)	do { \
 	if(no_device) {	\
 		try {	\
 			midi_device=new CLASS_NAME();	\
@@ -351,7 +367,8 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 		} catch(...) {	\
 			no_device=true;	\
 		}	\
-	}
+	}	\
+} while(0)
 	
 void MyMidiPlayer::set_music_conversion(int conv)
 {
@@ -367,14 +384,6 @@ void MyMidiPlayer::set_music_conversion(int conv)
 	case XMIDI_CONVERT_MT32_TO_GS127:
 		config->set("config/audio/midi/convert","gs127",true);
 		break;
-	case XMIDI_CONVERT_OGG:
-		config->set("config/audio/midi/convert","digital",true);
-		break;
-#ifdef USE_FMOPL_MIDI
-	case XMIDI_CONVERT_FMSYNTH:
-		config->set("config/audio/midi/convert","fmsynth",true);
-		break;
-#endif
 	default:
 		config->set("config/audio/midi/convert","gm",true);
 		break;
@@ -395,37 +404,68 @@ void MyMidiPlayer::set_effects_conversion(int conv)
 	}
 }
 
+void MyMidiPlayer::set_output_driver_type(int type)
+{
+	// Don't kill the device if we don't need to
+	if (type != output_driver_type) {
+		stop_music();
+		delete midi_device;
+		midi_device = 0;
+		initialized = false;
+	}
+
+	output_driver_type = type;
+
+	switch(output_driver_type) {
+	case MIDI_DRIVER_OGG:
+		config->set("config/audio/midi/driver","digital",true);
+		break;
+#ifdef USE_FMOPL_MIDI
+	case MIDI_DRIVER_FMSYNTH:
+		config->set("config/audio/midi/driver","fmsynth",true);
+		break;
+#endif
+#ifdef USE_MT32EMU_MIDI
+	case MIDI_DRIVER_MT32EMU:
+		config->set("config/audio/midi/driver","mt32emu",true);
+		break;
+#endif
+	default:
+		config->set("config/audio/midi/driver","normal",true);
+		break;
+	};
+}
+
+
 bool MyMidiPlayer::init_device(void)
 {
+	// already initialized? Do this first
+	if (initialized) return (midi_device != 0);
+
 	bool	no_device=true;
 
 	// instrument_patches=AccessTableFile(XMIDI_MT);
 	string	s;
 
-#ifndef PENTAGRAM
 	bool sfx = Audio::get_ptr()->are_effects_enabled();
-#else
-	config->value("config/audio/effects/enabled",s,"no");
-	bool sfx = s!="yes";
-#endif
 
 	if (!sfx) s = "no";
 	else s = "yes";
 
 	config->set("config/audio/effects/enabled",s,true);
 
-#ifndef PENTAGRAM
 	bool music = Audio::get_ptr()->is_music_enabled();
-#else
-	config->value("config/audio/midi/enabled",s,"yes");
-	bool music = s!="no";
-#endif
 
 	if (!music) s = "no";
 	else s = "yes";
 
+	// Global Midi Enable/Disable
 	config->set("config/audio/midi/enabled",s,true);
 
+	// String for default value for driver type
+	std::string driver_default = "normal";
+
+	// Music conversion
 	config->value("config/audio/midi/convert",s,"gm");
 
 	if (s == "gs")
@@ -434,12 +474,6 @@ bool MyMidiPlayer::init_device(void)
 		music_conversion = XMIDI_CONVERT_NOCONVERSION;
 	else if (s == "gs127")
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS127;
-	else if (s == "digital")
-		music_conversion = XMIDI_CONVERT_OGG;
-#ifdef USE_FMOPL_MIDI
-	else if (s == "fmsynth")
-		music_conversion = XMIDI_CONVERT_FMSYNTH;
-#endif
 	else if (s == "gs127drum")
 	{
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS;
@@ -449,8 +483,10 @@ bool MyMidiPlayer::init_device(void)
 	{
 		music_conversion = XMIDI_CONVERT_MT32_TO_GM;
 		config->set("config/audio/midi/convert","gm",true);
+		driver_default = s;
 	}
 
+	// Effects conversion
 	config->value("config/audio/effects/convert",s,"gs");
 
 	if (s == "none")
@@ -463,9 +499,32 @@ bool MyMidiPlayer::init_device(void)
 		config->set("config/audio/effects/convert","gs",true);
 	}
 
-	// already initialized?
-	if (initialized)
-		return (midi_device != 0);
+	// Midi driver type.
+	config->value("config/audio/midi/driver",s,driver_default.c_str());
+
+	if (s == "digital")
+	{
+		output_driver_type = MIDI_DRIVER_OGG;
+		config->set("config/audio/effects/driver","digital",true);
+	}
+#ifdef USE_FMOPL_MIDI
+	else if (s == "fmsynth")
+	{
+		output_driver_type = MIDI_DRIVER_FMSYNTH;
+		config->set("config/audio/effects/driver","fmsynth",true);
+	}
+#endif
+#ifdef USE_MT32EMU_MIDI
+	else if (s == "mt32emu")
+	{
+		output_driver_type = MIDI_DRIVER_MT32EMU;
+	}
+#endif
+	else
+	{
+		output_driver_type = MIDI_DRIVER_NORMAL;
+		config->set("config/audio/effects/driver","normal",true);
+	}
 
 	// no need for a MIDI device (for now)
 	if (!sfx && !music)
@@ -475,51 +534,40 @@ bool MyMidiPlayer::init_device(void)
 	}
 
 
-	//OGG is initialised differently to the other MIDI devices, due to it
-	//not actually being a midi device. Just set the midi_device to something
-	//to stop the other code breaking, much is dependant on this class existing
-	if (music_conversion == XMIDI_CONVERT_OGG)
-	{
-		midi_device=new OGG_MIDI();
-		no_device=false;       
-		oggmusic = NULL;
-		Mix_HookMusicFinished(music_complete_callback);
-		Mix_VolumeMusic(MIX_MAX_VOLUME);
-	}
-	else
-	{
+	// OGG is handled differently to the other MIDI devices, due to it
+	// not actually being a midi device. There are hacks all over the place 
+	// for it. The OGG_MIDI driver does do some 'stuff', such as init
+	if (output_driver_type == MIDI_DRIVER_OGG)
+		TRY_MIDI_DRIVER(OGG_MIDI);
 #ifdef USE_FMOPL_MIDI
-	if (music_conversion == XMIDI_CONVERT_FMSYNTH) {
-		TRY_MIDI_DRIVER(FMOpl_Midi)
-	}
+	else if (output_driver_type == MIDI_DRIVER_FMSYNTH)
+		TRY_MIDI_DRIVER(FMOpl_Midi);
 #endif
-	if (!midi_device && music_conversion == XMIDI_CONVERT_FMSYNTH) 
-		music_conversion = XMIDI_CONVERT_MT32_TO_GM;
+
 #ifdef WIN32
-	TRY_MIDI_DRIVER(Windows_MidiOut)
+	TRY_MIDI_DRIVER(Windows_MidiOut);
 #endif
 #ifdef BEOS
-	TRY_MIDI_DRIVER(Be_midi)
+	TRY_MIDI_DRIVER(Be_midi);
 #endif
 #if defined(HAVE_TIMIDITY_BIN) && (defined(XWIN) || defined(WIN32))
-	TRY_MIDI_DRIVER(Timidity_binary)
+	TRY_MIDI_DRIVER(Timidity_binary);
 #endif
 #if HAVE_LIBKMIDI
-	TRY_MIDI_DRIVER(KMIDI)
+	TRY_MIDI_DRIVER(KMIDI);
 #endif
 #if (defined(XWIN) && !defined(OPENBSD) && !defined(__zaurus__))
-	TRY_MIDI_DRIVER(forked_player)
+	TRY_MIDI_DRIVER(forked_player);
 #endif
 #if defined(MACOS) || defined(MACOSX)
-	TRY_MIDI_DRIVER(Mac_QT_midi)
+	TRY_MIDI_DRIVER(Mac_QT_midi);
 #endif
 #if defined(__MORPHOS__) || defined(AMIGA)
-  TRY_MIDI_DRIVER(AmigaMIDI)
+	TRY_MIDI_DRIVER(AmigaMIDI);
 #endif
 #ifdef USE_FMOPL_MIDI
-	TRY_MIDI_DRIVER(FMOpl_Midi)
+	TRY_MIDI_DRIVER(FMOpl_Midi);
 #endif
-	}
 
 	initialized = true;
 
@@ -529,34 +577,24 @@ bool MyMidiPlayer::init_device(void)
 		cerr << "Unable to create a MIDI device. No music will be played." << endl;
 		return false;
 	}
+
+	load_patches(false);
 		
 	return true;
-}
-
-
-//Clean up last track played, freeing memory each time
-void MyMidiPlayer::music_complete_callback(void)
-{
-	if(oggmusic)
-	{
-		Mix_FreeMusic(oggmusic);
-		oggmusic = NULL;
-	}
 }
 
 
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),repeating(false),
 				  midi_device(0), initialized(false),
 				  music_conversion(XMIDI_CONVERT_MT32_TO_GM),
-				  effects_conversion(XMIDI_CONVERT_GS127_TO_GS)
+				  effects_conversion(XMIDI_CONVERT_GS127_TO_GS),
+				  output_driver_type(MIDI_DRIVER_NORMAL)
 {
-#ifndef PENTAGRAM
 	add_midi_bank(MAINMUS);
 	add_midi_bank(INTROMUS);
 	add_midi_bank("<STATIC>/mainshp.flx");
 	add_midi_bank(MAINMUS_AD);
 	add_midi_bank(INTROMUS_AD);
-#endif
 	
 	init_device();
 }
@@ -571,16 +609,15 @@ MyMidiPlayer::~MyMidiPlayer()
 
 void    MyMidiPlayer::start_sound_effect(int num)
 {
-  #ifdef DEBUG
-        cout << "Audio subsystem request: sound effect # " << num << endl;
-  #endif
-        int real_num = num;
+#ifdef DEBUG
+	cout << "Audio subsystem request: sound effect # " << num << endl;
+#endif
 
-#ifndef PENTAGRAM
-        if (Game::get_game_type() == BLACK_GATE)
-        	real_num = bgconv[num];
-#endif        
-        cout << "Real num " << real_num << endl;
+	int real_num = num;
+
+	if (Game::get_game_type() == BLACK_GATE) real_num = bgconv[num];
+
+	cout << "Real num " << real_num << endl;
 
 	U7object	track("<DATA>/midisfx.flx",real_num);
 
@@ -621,6 +658,32 @@ void    MyMidiPlayer::stop_sound_effects()
 		midi_device->stop_sfx();
 }
 
+OGG_MIDI::OGG_MIDI()
+{
+	oggmusic = NULL;
+	Mix_HookMusicFinished(music_complete_callback);
+	Mix_VolumeMusic(MIX_MAX_VOLUME);
+}
+
+OGG_MIDI::~OGG_MIDI()
+{
+	Mix_HaltMusic();
+	if(oggmusic)
+	{
+		Mix_FreeMusic(oggmusic);
+		oggmusic = NULL;
+	}
+}
+
+//Clean up last track played, freeing memory each time
+void OGG_MIDI::music_complete_callback(void)
+{
+	if(oggmusic)
+	{
+		Mix_FreeMusic(oggmusic);
+		oggmusic = NULL;
+	}
+}
 
 void OGG_MIDI::start_track(XMIDIEventList *, bool repeat)
 {
@@ -636,14 +699,6 @@ void OGG_MIDI::stop_track(void)
 	}
 }
 
-void OGG_MIDI::start_sfx(XMIDIEventList *)
-{
-}
-
-void OGG_MIDI::stop_sfx(void)
-{
-}
-
 bool OGG_MIDI::is_playing(void)
 {
 	return Mix_PlayingMusic()!=0;
@@ -651,7 +706,7 @@ bool OGG_MIDI::is_playing(void)
 
 const char * OGG_MIDI::copyright(void)
 {
-  return "Internal OGG NULL device";
+	return "Internal OGG NULL device";
 }
 
 
