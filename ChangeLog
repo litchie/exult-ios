@@ -1,3 +1,7 @@
+2001-02-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* schedule.cc (Sew_schedule): Started implementing this.
+
 2001-02-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.cc: 'Street maintenance' - turn lights off/on,

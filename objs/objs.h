@@ -141,6 +141,7 @@ public:
 					o2->get_abs_tile_coord()); }
 					// Get direction to another object.
 	int get_direction(Game_object *o2) const;
+	int get_direction(Tile_coord t2) const;
 	int get_quality() const
 		{ return quality; }
 	void set_quality(int q)

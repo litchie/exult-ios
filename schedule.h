@@ -310,6 +310,25 @@ public:
 	};
 
 /*
+ *	Sew/weave schedule.
+ */
+class Sew_schedule : public Schedule
+	{
+	Game_object *bale;		// Bale of wool.
+	Game_object *spinwheel;
+	Game_object *chair;		// In front of spinning wheel.
+ 	enum {
+		get_wool,
+		sit_at_wheel,
+		spin_wool,
+		get_cloth
+	} state;
+public:
+	Sew_schedule(Actor *n);
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	Walk to the destination for a new schedule.
  */
 class Walk_to_schedule : public Schedule

@@ -593,6 +593,12 @@ void Combat_schedule::now_what
 		else if (npc->get_alignment() == Npc_actor::friendly &&
 						prev_schedule != combat)
 			npc->set_schedule_type(prev_schedule);
+		else if (!gwin->get_win_rect().intersects(
+						gwin->get_shape_rect(npc)))
+			{		// Off screen?  Stop trying.
+			gwin->get_tqueue()->remove(npc);
+			npc->set_dormant();
+			}
 		}
 	}
 
