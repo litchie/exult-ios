@@ -60,6 +60,14 @@ public:
 		return (i);
 		}
 	int find(void *v);		// Find an entry.
+	int put(void *v)		// Put in a free spot & return it.
+		{
+		int i = find(0);
+		if (i < 0)
+			i = cnt;
+		put(i, v);
+		return (i);
+		}
 	};
 
 #endif
