@@ -49,7 +49,24 @@ void Npc_proximity_handler::handle_event
 		npc->clear_nearby();
 		return;
 		}
-	gwin->get_usecode()->call_usecode(npc->get_usecode(), npc,
+	if (!(curtime < wait_until))
+		gwin->get_usecode()->call_usecode(npc->get_usecode(), npc,
 					Usecode_machine::npc_proximity);
 	add(curtime, npc, 3);		// Add back for next time.
 	}
+
+/*
+ *	Set a time to wait for before running any usecodes.  This is to
+ *	skip all the text events that would happen at the end of a conver-
+ *	sation.
+ */
+
+void Npc_proximity_handler::wait
+	(
+	int secs			// # of seconds.
+	)
+	{
+	gettimeofday(&wait_until, 0);
+	wait_until.tv_sec += secs;
+	}
+
