@@ -130,10 +130,10 @@
 
 	USECODE_INTRINSIC_PTR(summon),				// 0x5c     SummonCreature (ucdump.c)
 	USECODE_INTRINSIC_PTR(display_map),			// 0x5d
-	USECODE_INTRINSIC_PTR(kill_npc),			// 0x5e
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x5e NOT kil_npc
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x5f
-	USECODE_INTRINSIC_PTR(set_attack_mode),			// 0x60
-	USECODE_INTRINSIC_PTR(set_opponent),			// 0x61
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x60 UNUSED
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x61 UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x62     CloneNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x63 UNUSED
 	USECODE_INTRINSIC_PTR(display_area),			// 0x64 ++++called when you dbl-click
