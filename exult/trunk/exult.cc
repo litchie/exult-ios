@@ -73,6 +73,21 @@ bool	usecode_trace=false;		// Do we trace Usecode-intrinsics?
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
 #endif
 
+struct resolution {
+	int x;
+	int y;
+	int scale;
+} res_list[] = { 
+	{ 320, 200, 1 },
+	{ 320, 240, 1 },
+	{ 320, 240, 2 },
+	{ 512, 384, 1 },
+	{ 640, 480, 1 },
+	{ 800, 600, 1 }
+};
+int num_res = sizeof(res_list)/sizeof(struct resolution);
+int current_res = 0;
+
 /*
  *	Local functions:
  */
@@ -767,11 +782,25 @@ static void Handle_keystroke
 		break;
 	case SDLK_PLUS:			// Brighten.
 	case SDLK_KP_PLUS:
-		gwin->brighten(20);
+		if(cheat&&alt) {
+			current_res++;
+			if(current_res>=num_res)
+				current_res = 0;
+			gwin->resized(res_list[current_res].x,res_list[current_res].y,
+					res_list[current_res].scale);
+		} else
+			gwin->brighten(20);
 		break;
 	case SDLK_MINUS:		// Darken.
 	case SDLK_KP_MINUS:
-		gwin->brighten(-20);
+		if(cheat&&alt) {
+			current_res--;
+			if(current_res<0)
+				current_res = num_res-1;
+			gwin->resized(res_list[current_res].x,res_list[current_res].y,
+					res_list[current_res].scale);
+		} else
+			gwin->brighten(-20);
 		break;
 	case SDLK_b:
 		Breakpoint();
@@ -878,6 +907,7 @@ static void Handle_keystroke
 	case SDLK_m:
 		if (ctrl&&cheat) {	// CTRL-m:  get 100 gold coins!
 			gwin->get_main_actor()->add_quantity(100, 644);
+			gwin->center_text("Added 100 gold coins");
 			break;
 		} else {
 			static int mnum = 0;
@@ -907,6 +937,10 @@ static void Handle_keystroke
 		if(!cheat)
 			break;
 		gwin->paint_eggs = !gwin->paint_eggs;
+		if(gwin->paint_eggs)
+			gwin->center_text("Eggs display enabled");
+		else
+			gwin->center_text("Eggs display disabled");
 		gwin->paint();
 		break;
 	case SDLK_f:		// Show next frame
@@ -928,7 +962,7 @@ static void Handle_keystroke
 		if (ctrl)		// Restore from 'gamedat'.
 			{
 			if (gwin->read())
-				cout << "Restore from 'gamedat' successful"<<endl;
+				gwin->center_text("Game restored");
 			gwin->paint();
 			break;
 			}
@@ -937,7 +971,7 @@ static void Handle_keystroke
 		if (ctrl)		// Save to 'gamedat'.
 			{
 			if (gwin->write())
-				cout << "Save to 'gamedat' successful"<<endl;
+				gwin->center_text("Game saved");
 			}
 		else
 			{
@@ -968,6 +1002,7 @@ static void Handle_keystroke
 		if (ctrl&&cheat)		// 'T':  Fake next time change.
 			{
 			gwin->fake_next_period();
+			gwin->center_text("Game clock incremented");
 			break;
 			}
 		int x, y;
@@ -979,6 +1014,7 @@ static void Handle_keystroke
 			Tile_coord t(gwin->get_scrolltx() + x/tilesize,
 				gwin->get_scrollty() + y/tilesize, 0);
 			gwin->teleport_party(t);
+			gwin->center_text("Teleport!!!");
 			break;
 			}
 		if (!Get_click(x, y, Mouse::greenselect))

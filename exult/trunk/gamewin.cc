@@ -69,7 +69,7 @@ Game_window::Game_window
 	int width, int height		// Window dimensions.
 	) : 
 	    usecode(new Usecode_machine(this)),mode(splash), combat(0),
-            tqueue(new Time_queue()), clock(tqueue),
+            tqueue(new Time_queue()), clock(tqueue), win(0),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
 	    conv_choices(0), render_seq(0), painted(0), focus(1), shapes(),
@@ -146,19 +146,8 @@ Game_window::Game_window
 					//   scroll coords.
 		}
 	read_save_names();		// Read in saved-game names.
-	string	fullscreenstr;		// Check config. for fullscreen mode.
-	bool	fullscreen=false;
-	config->value("config/video/fullscreen",fullscreenstr,"no");
-	if(fullscreenstr=="yes")
-		fullscreen=true;
-	config->set("config/video/fullscreen",fullscreenstr,true);
-	int scale;			// Let 'config' override scale.
-	config->value("config/video/scale", scale, 1);
-					// Create 8-bit depth window.
-	win = new Image_window8(width, height, scale, fullscreen);
-					// Set title.
-	win->set_title("Exult Ultima7 Engine");
-	pal = new Palette();
+
+	set_window_size(width, height);
 
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
@@ -173,11 +162,33 @@ Game_window::Game_window
 	memset((char *) objects, 0, sizeof(objects));
 #endif
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
+	
+	}
+
+void Game_window::set_window_size(int width, int height)
+{
+	if(win) {
+		delete win;
+		delete pal;	
+	}
+	string	fullscreenstr;		// Check config. for fullscreen mode.
+	bool	fullscreen=false;
+	config->value("config/video/fullscreen",fullscreenstr,"no");
+	if(fullscreenstr=="yes")
+		fullscreen=true;
+	config->set("config/video/fullscreen",fullscreenstr,true);
+	int scale;			// Let 'config' override scale.
+	config->value("config/video/scale", scale, 1);
+					// Create 8-bit depth window.
+	win = new Image_window8(width, height, scale, fullscreen);
+	win->set_title("Exult Ultima7 Engine");
+	pal = new Palette();
 	clock.set_palette();		// Set palette for correct time.
 	pal->brighten(20);		// Brighten 20%.
 					// Get a bright green.
 	poison_pixel = pal->find_color(4, 63, 4);
-	}
+}
+
 
 /*
  *	Deleting game window.
@@ -190,6 +201,7 @@ Game_window::~Game_window
 	clear_world();			// Delete all objects, chunks.
 	delete win;
 	delete dragging_save;
+	delete pal;
 	delete [] conv_choices;
 	delete usecode;
 	}
@@ -301,11 +313,16 @@ void Game_window::toggle_combat
 void Game_window::resized
 	(
 	unsigned int neww, 
-	unsigned int newh
+	unsigned int newh,
+	unsigned int newsc
 	)
 	{			
-	win->resized(neww, newh);
+	win->resized(neww, newh, newsc);
+	center_view(get_main_actor()->get_abs_tile_coord());
 	paint();
+	char msg[80];
+	sprintf(msg, "%dx%dx%d", neww, newh, newsc);
+	center_text(msg);
 	}
 
 /*
@@ -1806,6 +1823,20 @@ void Game_window::add_text
 	}
 
 /*
+ *	Add a text object in the center of the screen
+ */
+
+void Game_window::center_text
+	(
+	const char *msg
+	)
+	{
+		remove_text_effects();
+		add_text(msg, (get_width()-get_text_width(0,msg))/2,
+			 get_height()/2);
+	}
+
+/*
  *	Add an effect.
  */
 
@@ -1857,6 +1888,29 @@ void Game_window::remove_all_effects
 		}
 	paint();			// Just paint whole screen.
 	}
+
+/*
+ *	Remove text effects.
+ */
+
+void Game_window::remove_text_effects
+	(
+	)
+	{
+	Special_effect *each = effects;
+	while (each)
+		{
+		Special_effect *next = each->next;
+		if (each->is_text())
+			{
+			tqueue->remove(each);
+			remove_effect(each);
+			}
+		each = next;
+		}
+	set_all_dirty();
+	}
+
 
 /*
  *	Remove weather effects.

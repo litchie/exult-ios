@@ -1,3 +1,10 @@
+2000-07-31  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* exult.cc, gamewin.*, imagewin.*: support resolution switching
+	with ALT-PLUS and ALT-MINUS. Also show messages when certain 'cheat'
+	keys are pressed.
+	* Makefile.am: make sure DEBUG_FLAGS is used at link.
+
 2000-07-30  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* combat.cc: Monsters attack automatically; midi's played.

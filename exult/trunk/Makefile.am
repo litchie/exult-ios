@@ -2,7 +2,7 @@ INCLUDES = -I. -Iconf -Ifiles -Iaudio -Ipathfinder \
 	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
 	$(DEBUG_FLAGS) $(CPPFLAGS)
 
-CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
 SUBDIRS = audio conf pathfinder files flic tools
 
