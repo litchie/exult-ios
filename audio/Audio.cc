@@ -235,6 +235,11 @@ bool	Audio::can_sfx(const std::string &game) const
 	if (s != "---" && U7exists(s.c_str()))
 		return true;
 
+	// Also just check in the actual data dir
+	d = "<DATA>/" + s;
+	if (U7exists(s.c_str()))
+		return true;
+
 #ifdef ENABLE_MIDISFX
 	if (U7exists("<DATA>/midisfx.flx"))
 		return true;
@@ -259,9 +264,18 @@ void	Audio::Init_sfx()
 	if (s != "---")
 	{
 		if (!U7exists(s.c_str()))
-			cerr << "Digital SFX's file specified: " << s << "... but file not found" << endl;
+		{
+			d = "<DATA>/" + s;
+			if (!U7exists(d.c_str()))
+			{
+				cerr << "Digital SFX's file specified: " << s << "... but file not found" << endl;
+				return;
+			}
+		}
 		else
-			sfx_file = new Flex(s);
+			d = s;
+
+		sfx_file = new Flex(d);
 	}
 }
 
