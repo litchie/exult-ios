@@ -32,6 +32,7 @@ class Game_window;
 class Game_object;
 class Text_gump;
 class Vector;
+class Deleted_objects;
 
 #include "tiles.h"
 #include <vector>	// STL container
@@ -180,6 +181,7 @@ class Usecode_machine
 	Text_gump *book;		// Book/scroll being displayed.
 	Game_object *caller_item;	// Item this is being called on.
 	Game_object *last_created;	// Last item created with intrins. x24.
+	Deleted_objects *removed;	// List of 'removed' objects.
 	const char *user_choice;	// String user clicked on.
 	char *String;			// The single string register.
 	void append_string(const char *txt);	// Append to string.
@@ -223,7 +225,8 @@ class Usecode_machine
 	 *	Built-in usecode functions:
 	 */
 public:
-	typedef Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
+	typedef Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(
+		int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
 	void show_npc_face(Usecode_value& arg1, Usecode_value& arg2);
 	void remove_npc_face(Usecode_value& arg1);

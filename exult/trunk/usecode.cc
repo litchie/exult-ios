@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "gamewin.h"
 #include "objs.h"
+#include "delobjs.h"
 #include "vec.h"
 #include "SDL.h"
 #include "tqueue.h"
@@ -38,7 +39,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include <Audio.h>
 #include <iomanip>
-
 
 // External globals..
 
@@ -109,6 +109,7 @@ void Earthquake::handle_event
  */
 class Scheduled_usecode : public Time_sensitive
 	{
+	static int count;		// Total # of these around.
 	Usecode_value objval;		// The 'itemref' object.
 	Game_object *obj;		// From objval.
 	Usecode_value arrval;		// Array of code to execute.
@@ -124,12 +125,17 @@ public:
 					// Not an array?
 		if (!cnt && !arrval.is_array())
 			cnt = 1;	// Get_elem(0) works for non-arrays.
+		count++;		// Keep track of total.
 		}
 					// Execute when due.
 	virtual ~Scheduled_usecode()
-		{  }
+		{ count--; }
+	static int get_count()
+		{ return count; }
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
+
+int Scheduled_usecode::count = 0;
 
 /*
  *	Execute an array of usecode, generally one instruction per tick.
@@ -954,7 +960,9 @@ void Usecode_machine::remove_item
 		return;
 	if (obj == last_created)
 		last_created = 0;
-	obj->remove_this();		// Remove from world or container.
+	obj->remove_this(1);		// Remove from world or container, but
+					//   don't delete.
+	removed->insert(obj);		// Add to pool instead.
 	gwin->paint();
 	}
 
@@ -2439,7 +2447,8 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x53
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x53++++Guessing it's
+//++++   show_sprite(sprite#, x, y, ?, ?, ?, ?);
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54
 	USECODE_INTRINSIC_PTR(book_mode),// 0x55
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.
@@ -2733,6 +2742,7 @@ Usecode_machine::Usecode_machine
 	Game_window *gw
 	) : gwin(gw), call_depth(0), book(0), caller_item(0),
 	    last_created(0), user_choice(0), String(0),
+	    removed(new Deleted_objects()),
 	    stack(new Usecode_value[1024])
 	{
 	sp = stack;
@@ -2769,6 +2779,7 @@ Usecode_machine::~Usecode_machine
 	{
 	delete [] stack;
 	delete String;
+	delete removed;
 	int num_slots = funs->get_cnt();
 	for (int i = 0; i < num_slots; i++)
 		{
@@ -3238,6 +3249,9 @@ int Usecode_machine::call_usecode_function
 	Usecode_value *parm0		// If non-zero, pass this parm.
 	)
 	{
+					// Nothing going on?
+	if (!call_depth && !Scheduled_usecode::get_count())
+		removed->flush();	// Flush removed objects.
 					// Look up in table.
 	Vector *slot = (Vector *) funs->get(id/0x100);
 	Usecode_function *fun = slot ? (Usecode_function *) slot->get(id%0x100)
