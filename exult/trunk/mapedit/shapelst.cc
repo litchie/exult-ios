@@ -48,11 +48,7 @@ inline void Shape_chooser::show
 	int x, int y, int w, int h	// Area to blit.
 	)
 	{
-	int stride = iwin->get_line_width();
-	gdk_draw_indexed_image(draw->window, drawgc, x, y, w, h,
-			GDK_RGB_DITHER_NORMAL,
-			iwin->get_bits() + y*stride + x, 
-			stride, palette);
+	Shape_draw::show(draw->window, x, y, w, h);
 	if (selected >= 0)		// Show selected.
 		{
 		Rectangle b = info[selected].box;
@@ -432,8 +428,8 @@ Shape_chooser::Shape_chooser
 	Vga_file *i,			// Where they're kept.
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h			// Dimensions.
-	) : ifile(i),
-		iwin(0), shapenum0(0), palette(0), names(0),
+	) : Shape_draw(i, palbuf, gtk_drawing_area_new()),
+		shapenum0(0),
 		info(0), info_cnt(0), selected(-1), sel_changed(0)
 	{
 	guint32 colors[256];
@@ -450,16 +446,15 @@ Shape_chooser::Shape_chooser
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 	
-	num_shapes = ifile->get_num_shapes();
 					// A frame looks nice.
 	GtkWidget *frame = gtk_frame_new(NULL);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
-	draw = gtk_drawing_area_new();	// Create drawing area window.
+					// NOTE:  draw is in Shape_draw.
 					// Indicate the events we want.
 	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
-		| /* GDK_POINTER_MOTION_MASK | */ GDK_POINTER_MOTION_HINT_MASK |
+		| GDK_POINTER_MOTION_HINT_MASK |
 		GDK_BUTTON1_MOTION_MASK);
 					// Set "configure" handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "configure_event",
@@ -529,17 +524,10 @@ Shape_chooser::~Shape_chooser
 	(
 	)
 	{
-	gdk_rgb_cmap_free(palette);
 	gtk_widget_destroy(get_widget());
 	delete [] info;
-	delete iwin;
 	}
 	
-void Shape_chooser::set_shape_names(char **nms)
-{
-	names = nms;
-}
-
 /*
  *	Unselect.
  */
