@@ -206,7 +206,9 @@ void Scheduled_usecode::handle_event
 					// ?? Guessing at time.
 //			delay = 200*(delayval.get_int_value()); 9/17/00:
 // NOTE: Changing this can have a major impact!
-			delay = 400*(delayval.get_int_value());
+//			delay = 400*(delayval.get_int_value());
+// Changed Apr. 16, 2001 to:
+			delay = 250*(delayval.get_int_value());
 			break;		
 			}
 #if 0
