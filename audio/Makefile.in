@@ -67,12 +67,12 @@ CXX = @CXX@
 DEBUG_FLAGS = @DEBUG_FLAGS@
 DLLTOOL = @DLLTOOL@
 EXE_TARGET = @EXE_TARGET@
-FREETYPE_DIR = @FREETYPE_DIR@
 HAVE_SDL_CONFIG = @HAVE_SDL_CONFIG@
 HAVE_TIMIDITY_BIN = @HAVE_TIMIDITY_BIN@
 KMID_INCLUDES = @KMID_INCLUDES@
 KMID_LIBS = @KMID_LIBS@
 LD = @LD@
+LEX = @LEX@
 LIBTOOL = @LIBTOOL@
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LN_S = @LN_S@
@@ -88,15 +88,16 @@ SDL_LIBS = @SDL_LIBS@
 SYSLIBS = @SYSLIBS@
 VERSION = @VERSION@
 WINDOWING_SYSTEM = @WINDOWING_SYSTEM@
+YACC = @YACC@
 x_libraries = @x_libraries@
 
-INCLUDES = -I.. $(SDL_INCLUDES) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -I../files -I../conf
+INCLUDES = -I.. -I../files $(SDL_INCLUDES) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -I../files -I../conf
 
 SUBDIRS = midi_drivers
 
 lib_LTLIBRARIES = libaudio.la
 
-libaudio_la_SOURCES =  	Audio.cc		Audio.h			Midi.cc			Midi.h			Mixer.cc		Mixer.h			SDL_mapping.cc		SDL_mapping.h
+libaudio_la_SOURCES =  	Audio.cc		Audio.h			Midi.cc			Midi.h			Mixer.cc		Mixer.h			SDL_mapping.cc		SDL_mapping.h		pcb.cc			pcb.h
 
 
 EXTRA_DIST =  	README
@@ -112,7 +113,7 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libaudio_la_LDFLAGS = 
 libaudio_la_LIBADD = 
-libaudio_la_OBJECTS =  Audio.lo Midi.lo Mixer.lo SDL_mapping.lo
+libaudio_la_OBJECTS =  Audio.lo Midi.lo Mixer.lo SDL_mapping.lo pcb.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -131,7 +132,7 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/Audio.P .deps/Midi.P .deps/Mixer.P \
-.deps/SDL_mapping.P
+.deps/SDL_mapping.P .deps/pcb.P
 SOURCES = $(libaudio_la_SOURCES)
 OBJECTS = $(libaudio_la_OBJECTS)
 
