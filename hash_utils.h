@@ -44,7 +44,11 @@ using std::hash_map;
 #else
 #if HAVE_EXT_HASH_SET
 #  include <ext/hash_set>
+#  if (defined(__GNUC__) && (__GNUC__ == 3) && ( __GNUC_MINOR__ > 0))
 using __gnu_cxx::hash_set;
+#  else
+using std::hash_map;
+#  endif
 #else
 #  include <hash_set>
 #endif
