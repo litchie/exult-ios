@@ -540,6 +540,7 @@ USECODE_INTRINSIC(set_last_created)
 	modified_map = true;
 	if (obj)
 		{
+		add_dirty(obj);		// Set to repaint area.
 		last_created.push_back(obj);
 		obj->remove_this(1);	// Remove, but don't delete.
 		}
