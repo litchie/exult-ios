@@ -60,7 +60,7 @@ public:
 	void reset()
 		{ cur = first; stop = 0; }
 	T_Object_iterator(T_Object_list<T>& objects) 
-		: T_Safe_object_iterator(objects), first(objects.get_first())
+		: T_Safe_object_iterator<T>(objects), first(objects.get_first())
 		{ reset(); }
 	T get_next()
 		{
