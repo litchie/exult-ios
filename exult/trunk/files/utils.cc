@@ -470,6 +470,49 @@ int U7chdir
 }
 
 /*
+ *	Copy a file.  May throw an exception.
+ */
+
+void U7copy
+	(
+	const char *src,
+	const char *dest
+	)
+	{
+	std::ifstream in;
+	std::ofstream out;
+	try {
+		U7open(in, src);
+		U7open(out, dest);
+	} catch (exult_exception& e) {
+		in.close();
+		out.close();
+		throw e;
+	}
+	const int bufsize = 0x8000;
+	unsigned char *buf = new unsigned char[0x8000];
+	in.seekg(0, ios::end);		// Get filesize.
+	int filesize = in.tellg();
+	in.seekg(0, ios::beg);
+	while (filesize > 0)		// Copy.
+		{
+		int toread = bufsize < filesize ? bufsize : filesize;
+		in.read(buf, toread);
+		out.write(buf, toread);
+		filesize -= toread;
+		}
+	out.flush();
+	delete [] buf;
+	bool inok = in.good(), outok = out.good();
+	in.close();
+	out.close();
+	if (!inok)
+		throw file_read_exception(src);
+	if (!outok)
+		throw file_write_exception(dest);
+	}
+
+/*
  *	Take log2 of a number.
  *
  *	Output:	Log2 of n (0 if n==0).
