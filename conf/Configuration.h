@@ -41,6 +41,7 @@ public:
 	void	value(const char *key,int &ret,int defaultvalue=0);
 private:
 	string	&value(const char *key,bool &exists);
+	void    set(string &key,string &value);
 	XMLnode xmltree;
 	string	filename;
 };
