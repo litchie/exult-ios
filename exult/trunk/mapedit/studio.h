@@ -115,6 +115,8 @@ public:
 		{ return image_editor; }
 	Shape_file_set *get_files()
 		{ return files; }
+	Object_browser *get_browser()
+		{ return browser; }
 	Shape_file_info *get_vgafile()	// 'shapes.vga'.
 		{ return vgafile; }
 	Shape_group_file *get_cur_groups();

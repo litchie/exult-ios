@@ -810,7 +810,13 @@ gint Shape_chooser::check_editing_files
 		{
 		ExultStudio *studio = ExultStudio::get_instance();
 		studio->get_files()->flush();
-		//+++++++++Update windows???
+		Object_browser *browser = studio->get_browser();
+		if (browser)
+			{		// Repaint main window.
+			browser->render();
+			browser->show();
+			}
+		//+++++++++Update group windows???
 		}
 	return 1;			// Continue timeouts.
 	}
