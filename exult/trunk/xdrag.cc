@@ -172,7 +172,7 @@ void Xdnd::client_msg
 			XConvertSelection(display, xdnd_selection, 
 				drag_types[i], xdnd_selection, xwmwin, time);
 		else if (file == U7_SHAPE_SHAPES)
-			(*move_handler)(shape, frame, x, y, lastx, lasty);
+			(*move_handler)(shape, frame, x,y, lastx, lasty, true);
 		lastx = x;
 		lasty = y;
 		}

@@ -153,7 +153,7 @@ static int find_resolution(int w, int h, int s);
 static void set_resolution (int new_res, bool save);
 #ifdef USE_EXULTSTUDIO
 static void Move_dragged_shape(int shape, int frame, int x, int y,
-							int prevx, int prevy);
+				int prevx, int prevy, bool show);
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *d);
 static void Drop_dragged_chunk(int chunknum, int x, int y, void *d);
 #endif
@@ -883,6 +883,19 @@ static void Handle_event
 		    !((gwin->get_walk_after_teleport() && GAME_SI) ? false : gwin->was_teleported()))
 			gwin->start_actor(event.motion.x / scale, 
 			event.motion.y / scale, Mouse::mouse->avatar_speed);
+#ifdef USE_EXULTSTUDIO			// Painting?
+		else if (cheat.in_map_editor() && 
+			 cheat.get_edit_mode() == Cheat::paint &&
+			 cheat.get_edit_shape() >= 0)
+			{
+			static int prevx = -1, prevy = -1;
+			Move_dragged_shape(cheat.get_edit_shape(),
+				cheat.get_edit_frame(), 
+				event.motion.x, event.motion.y, 
+						prevx, prevy, false);
+			prevx = event.motion.x; prevy = event.motion.y;
+			}
+#endif
 		break;
 		}
 	case SDL_ACTIVEEVENT:
@@ -1460,7 +1473,8 @@ static void Move_dragged_shape
 	(
 	int shape, int frame,		// What to create.
 	int x, int y,			// Mouse coords. within window.
-	int prevx, int prevy		// Prev. coords, or -1.
+	int prevx, int prevy,		// Prev. coords, or -1.
+	bool show			// Blit window.
 	)
 	{
 	int scale = gwin->get_win()->get_scale();
@@ -1515,7 +1529,8 @@ static void Move_dragged_shape
 				(tx + X)*c_tilesize, ty*c_tilesize);
 	win->clear_clip();
 	gwin->set_painted();
-	gwin->show();
+	if (show)
+		gwin->show();
 	}
 
 /*
