@@ -1,3 +1,8 @@
+2001-08-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/intrinsics.cc: Barge flag for SI fixed.
+	* intrinsics.cc:  Watch for set_quality(-359).
+
 2001-08-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* bggame.cc: fixed palette-change-flash in BG intro
 	* sigame.cc: same for SI

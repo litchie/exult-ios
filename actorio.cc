@@ -101,7 +101,8 @@ Actor::Actor
 	if ((rflags >> 0xE) & 1) set_flag (Obj_flags::protection);
 
 	// Guess
-	if ((rflags >> 0xA) & 1) set_flag (Obj_flags::on_moving_barge);
+	if (((rflags >> 0xA) & 1))
+		set_flag (Obj_flags::on_moving_barge);
 	alignment = (rflags >> 3)&3;
 
 	// Unknown, using for is_temporary

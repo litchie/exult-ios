@@ -2026,10 +2026,6 @@ void Game_window::start_actor
 	    main_actor->Actor::get_flag(Obj_flags::dont_render))
 		{
 //		stop_actor();  Causes problems in animations.
-					// Are we stuck with no way out?
-		if (teleported && !usecode->in_usecode() && 
-				Scheduled_usecode::get_count() <= 0)
-			main_actor->clear_flag(Obj_flags::dont_render);
 		return;
 		}
 
