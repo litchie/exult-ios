@@ -92,9 +92,9 @@ const short Newfile_gump::sliderw = 7;		// Width of Slider
 const short Newfile_gump::sliderh = 7;		// Height of Slider
 
 const short Newfile_gump::infox = 224;
-const short Newfile_gump::infoy = 68;
+const short Newfile_gump::infoy = 67;
 const short Newfile_gump::infow = 92;
-const short Newfile_gump::infoh = 69;
+const short Newfile_gump::infoh = 79;
 const char Newfile_gump::infostring[] =	"Avatar: %s\n"
 					"Exp: %i  Hp: %i\n"
 					"Str: %i  Dxt: %i\n"
@@ -175,7 +175,7 @@ Newfile_gump::Newfile_gump
 		restored(0), games(0), num_games(0), first_free(0),
 		cur_shot(0), cur_details(0), cur_party(0),
 		gd_shot(0), gd_details(0), gd_party(0),
-		screenshot(0), details(0), party(0),
+		screenshot(0), details(0), party(0), is_readable(false), filename(0),
 		list_position(-2), selected(-3), cursor(0), slide_start(-1)
 
 {
@@ -322,6 +322,8 @@ void Newfile_gump::delete_file()
 		return;
 
 	U7remove (games[selected].filename);
+	filename = 0;
+	is_readable = false;
 
 	cout << "Deleted Save game #" << selected << " (" << games[selected].filename << ") successfully." << endl;
 
@@ -475,7 +477,7 @@ void Newfile_gump::paint
 			gwin->paint_shape(x + 249 + (i-4)*23, y + 198, shape);
 		}
 
-		char	info[256];
+		char	info[320];
 
 		char	*suffix = "th";
 
@@ -486,7 +488,7 @@ void Newfile_gump::paint
 		else if ((details->real_day%10) == 3 && details->real_day != 13)
 			suffix = "rd";
 
-		snprintf (info, 256, infostring, party[0].name,
+		snprintf (info, 320, infostring, party[0].name,
 			party[0].exp, party[0].health,
 			party[0].str, party[0].dext,
 			party[0].intel, party[0].training,
@@ -495,16 +497,59 @@ void Newfile_gump::paint
 			details->real_day, suffix, months[details->real_month-1], details->real_year,
 			details->real_hour, details->real_minute);
 
+		if (filename)
+		{
+			std::strncat (info, "\nFile: ", 320);
+
+			int offset = strlen(filename);
+			
+			while (offset--)
+			{
+				if (filename[offset] == '/' || filename[offset] == '\\')
+				{
+					offset++;
+					break;
+				}
+			}
+			std::strncat (info, filename+offset, 320);
+
+		}
+
 		gwin->paint_text_box (4, info, x+infox, y+infoy, infow, infoh);
+
 	}
-	else if (!is_readable)
+	else
 	{
-		gwin->paint_text (2, "Unreadable", x+infox+(infow-gwin->get_text_width(2, "Unreadable"))/2, y+infoy+(infoh-18)/2);
-		gwin->paint_text (2, "Savegame", x+infox+(infow-gwin->get_text_width(2, "Savegame"))/2, y+infoy+(infoh)/2);
-	}
-	else 
-	{
-		gwin->paint_text (4, "No Info", x+infox+(infow-gwin->get_text_width(4, "No Info"))/2, y+infoy+(infoh-gwin->get_text_height(4))/2);
+		if (filename)
+		{
+			char	info[64] = {0};
+
+			std::strncat (info, "File: ", 64);
+
+			int offset = strlen(filename);
+			
+			while (offset--)
+			{
+				if (filename[offset] == '/' || filename[offset] == '\\')
+				{
+					offset++;
+					break;
+				}
+			}
+			std::strncat (info, filename+offset, 64);
+			gwin->paint_text_box (4, info, x+infox, y+infoy, infow, infoh);
+
+		}
+
+		if (!is_readable)
+		{
+			gwin->paint_text (2, "Unreadable", x+infox+(infow-gwin->get_text_width(2, "Unreadable"))/2, y+infoy+(infoh-18)/2);
+			gwin->paint_text (2, "Savegame", x+infox+(infow-gwin->get_text_width(2, "Savegame"))/2, y+infoy+(infoh)/2);
+		}
+		else 
+		{
+			gwin->paint_text (4, "No Info", x+infox+(infow-gwin->get_text_width(4, "No Info"))/2, y+infoy+(infoh-gwin->get_text_height(4))/2);
+		}
 	}
 	gwin->set_painted();
 }
@@ -611,6 +656,7 @@ void Newfile_gump::mouse_down
 		newname[0] = 0;
 		cursor = 0;
 		is_readable = true;
+		filename = 0;
 	}
 	else if (selected == -1)
 	{
@@ -621,6 +667,7 @@ void Newfile_gump::mouse_down
 		strcpy (newname, "Quick Save");
 		cursor = -1; // No cursor
 		is_readable = true;
+		filename = 0;
 	}
 	else
 	{
@@ -630,6 +677,7 @@ void Newfile_gump::mouse_down
 		strcpy (newname, games[selected].savename);
 		cursor = strlen (newname);
 		is_readable = want_load = games[selected].readable;
+		filename = games[selected].filename;
 	}
 
 	if (!buttons[0] && want_load) buttons[0] = new Newfile_button(this,
