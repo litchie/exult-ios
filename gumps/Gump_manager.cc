@@ -154,7 +154,10 @@ void Gump_manager::add_gump(Gump *gump)
 		last->next = g;
 	}
 	if (!gump->is_persistent())	// Count 'gump mode' gumps.
+		{			// And pause the game.
 		non_persistent_count++;
+		gwin->get_tqueue()->pause(Game::get_ticks());
+		}
 }
 
 /*
@@ -197,7 +200,10 @@ bool Gump_manager::remove_gump(Gump *gump)
 				return true;
 		}
 		if (!gump->is_persistent())	// Count 'gump mode' gumps.
+			{			// And resume queue if last.
 			non_persistent_count--;
+			gwin->get_tqueue()->resume(Game::get_ticks());
+			}
 	}
 
 	return false;
@@ -320,6 +326,8 @@ void Gump_manager::close_all_gumps
 		if ((!gump->gump->is_persistent() || pers) &&
 		    !gump->gump->is_modal())
 		{
+			if (!gump->gump->is_persistent())
+				gwin->get_tqueue()->resume(Game::get_ticks());
 			if (prev) prev->next = gump->next;
 			else open_gumps = gump->next;
 			delete gump->gump;

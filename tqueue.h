@@ -35,13 +35,17 @@
 class Time_sensitive
 	{
 	int queue_cnt;			// # of entries for this in queue.
+	bool always;			// Always do this, even if paused.
 public:
 	friend class Time_queue;
-	Time_sensitive() : queue_cnt(0)
+	Time_sensitive() : queue_cnt(0), always(false)
 		{  }
 	virtual ~Time_sensitive();
 	int in_queue()
 		{ return queue_cnt > 0; }
+	void set_always(bool tf)	// Should be called before placing in
+					//   queue.
+		{ always = tf; }
 	virtual void handle_event(unsigned long curtime, long udata) = 0;
 	};
 
@@ -76,13 +80,15 @@ class Time_queue
 	typedef std::list<Queue_entry>	Temporal_sequence;
 	Temporal_sequence data;
 	uint32 pause_time;		// Time when paused.
+	int paused;			// Count of calls to 'pause()'.
 
 	// Activate head + any others due.
 	void activate0(uint32 curtime);
+	void activate_always(uint32 curtime);
 public:
 	friend class Time_queue_iterator;
 	// Time_queue() : head(0), free_entries(0)
-	Time_queue() : pause_time(0)
+	Time_queue() : pause_time(0), paused(0)
 		{  }
 	void clear();			// Remove all entries.
 					// Add an entry.
@@ -97,12 +103,14 @@ public:
 	inline void activate(uint32 curtime)
 		{
 		// if (head && !(curtime < head->time))
-		if (data.size() && !(curtime < data.front().time))
+		if (paused)
+			activate_always(curtime);
+		else if (data.size() && !(curtime < data.front().time))
 			activate0(curtime);
 		}
 	void pause(uint32 curtime)	// Game paused.
 		{
-		if (!pause_time)
+		if (!paused++)
 			pause_time = curtime;
 		}
 	void resume(uint32 curtime);

@@ -715,11 +715,13 @@ void Combat_schedule::now_what
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
+#if 0	/* +++++Should no longer be needed. */
 	if (gumpman->gump_mode())
 		{			// No combat when gumps showing.
 		npc->start(200, 1000);	// Try again in a second.
 		return;
 		}
+#endif
 	if (state == initial)		// Do NOTHING in initial state so
 		{			//   usecode can, e.g., set opponent.
 					// Way far away (50 tiles)?
