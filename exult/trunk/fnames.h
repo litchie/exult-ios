@@ -37,6 +37,9 @@
 #define INITGAME	"static/initgame.dat"
 #define USECODE		"static/usecode"
 #define POINTERS	"static/pointers.shp"
+#define ADLIBMUS	"static/adlibmus.dat"
+#define	XMIDI_MT	"static/xmidi.mt"
+#define U7SPEECH	"static/u7speech.spc"
 
 #else
 
@@ -62,6 +65,9 @@
 #define INITGAME	"static\\initgame.dat"
 #define USECODE		"static\\usecode"
 #define POINTERS	"static\\pointers.shp"
+#define ADLIBMUS	"static\\adlibmus.dat"
+#define	XMIDI_MT	"static\\xmidi.mt"
+#define U7SPEECH	"static\\u7speech.spc"
 
 #endif
 
