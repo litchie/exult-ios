@@ -2113,7 +2113,7 @@ USECODE_INTRINSIC(set_item_flag)
 		return no_ret;
 	switch (flag)
 		{
-	case Obj_flags::dont_render:
+	case Obj_flags::dont_move:
 		obj->set_flag(flag);
 					// Get out of combat mode.
 		if (obj == gwin->get_main_actor() && 
@@ -2151,7 +2151,7 @@ USECODE_INTRINSIC(clear_item_flag)
 	if (obj)
 		{
 		obj->clear_flag(flag);
-		if (flag == Obj_flags::dont_render)
+		if (flag == Obj_flags::dont_move)
 			{	// Show change in status.
 			show_pending_text();	// Fixes Lydia-tatoo.
 			gwin->set_all_dirty();

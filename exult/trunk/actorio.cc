@@ -240,7 +240,7 @@ void Actor::read
 	{
 		set_ident(magic_val&0x1F);
 		if ((mana_val >> 0) & 1) set_flag (Obj_flags::met);
-		if ((mana_val >> 1) & 1) set_siflag (Actor::no_spell_casting);
+		if ((mana_val >> 1) & 1) set_flag(Obj_flags::no_spell_casting);
 		if ((mana_val >> 2) & 1) set_flag (Obj_flags::si_zombie);
 	}
 
@@ -547,7 +547,7 @@ void Actor::write
 	{
 		magic_val = get_ident() & 0x1F;
 		if (get_flag (Obj_flags::met)) mana_val |= 1;
-		if (get_siflag (Actor::no_spell_casting)) mana_val |= 1 << 1;
+		if (get_flag (Obj_flags::no_spell_casting)) mana_val |= 1 << 1;
 		if (get_flag (Obj_flags::si_zombie)) mana_val |= 1 << 2;
 	}
 

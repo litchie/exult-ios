@@ -205,9 +205,9 @@ public:
 	enum Serpent_flags {		// Bit #'s of flags:
 		// petra = 4,
 		// met = 5,
-		no_spell_casting = 6,
+		// no_spell_casting = 6,
 		naked = 8,
-		dont_move = 9
+		// dont_move = 9
 		};
 	enum type_flags {
 		tf_fly = 4,

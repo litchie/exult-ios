@@ -23,26 +23,29 @@
 #ifndef GLSHAPE_H
 #define GLSHAPE_H	1
 
+/* ++++++TESTING. */
+#define HAVE_OPENGL	1
 #ifdef HAVE_OPENGL
 
 #include <GL/gl.h>
 
 class Shape_frame;
+class GL_texshape;
 
 /*
  *	A 2D shape is rendered by painting a quad with the shape as a texture.
  */
-class Gl_texshape
+class GL_texshape
 	{
 	Shape_frame *frame;		// Source for this.
 	GLuint texture;			// Texture ID.
 	GLuint texsize;			// Width/ht of texture (power of 2).
 					// Least-recently used chain:
-	Gl_texshape *lru_next *lru_prev;
+	GL_texshape *lru_next, *lru_prev;
 public:
 	friend class GL_manager;
-	Gl_texshape(Shape_frame *f);
-	~Gl_texshape();
+	GL_texshape(Shape_frame *f, unsigned char *pal);
+	~GL_texshape();
 	void paint(int px, int py);	// Render at given position.
 	};
 
@@ -51,11 +54,14 @@ public:
  */
 class GL_manager
 	{
-	Gl_texshape *shapes;		// Shapes in LRU chain.
+	GL_texshape *shapes;		// Shapes in LRU chain.
 	int num_shapes;
+	unsigned char *palette;		// 3*256 bytes (rgb).
 public:
 	GL_manager();
 	~GL_manager();
+	void set_palette(unsigned char *pal)
+		{ palette = pal; }
 					// Window was resized.
 	void resized(int new_width, int new_height);
 					// Paint a shape.

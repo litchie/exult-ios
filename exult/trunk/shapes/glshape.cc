@@ -20,6 +20,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#define HAVE_OPENGL 1	/* +++++++TESTING */
 #ifdef HAVE_OPENGL
 
 #include "glshape.h"
@@ -32,12 +37,14 @@
  *	Create for a given frame.
  */
 
-Gl_texshape::GL_texshape
+GL_texshape::GL_texshape
 	(
-	Shape_frame *f
+	Shape_frame *f,
+	unsigned char *pal		// 3*256 bytes (rgb).
 	) : frame(f), lru_next(0), lru_prev(0)
 	{
-	int w = frame->get_width, h = frame->get_height;
+	assert(pal != 0);
+	int w = frame->get_width(), h = frame->get_height();
 					// Figure texture size as 2^n, rounding
 					//   up.
 	int logw = Log2(2*w - 1), logh = Log2(2*h - 1);
@@ -50,7 +57,7 @@ Gl_texshape::GL_texshape
 	frame->paint(&buf8, texsize - frame->get_xright() - 1,
 					texsize - frame->get_ybelow() - 1);
 					// Convert to rgba.
-	uint32 *pixels = buf8.rgba(palette+++++, transp);
+	unsigned char *pixels = buf8.rgba(pal, transp);
 	glGenTextures(1, &texture);	// Generate (empty) texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texsize, texsize, 0, GL_RGBA,
@@ -93,7 +100,7 @@ void GL_texshape::paint
 	float x = static_cast<float>(px + frame->get_xright() - texsize);
 					// Game y-coord goes down from top.
 	float y = -static_cast<float>(py + frame->get_ybelow() - texsize);
-	float w = h = texsize;
+	float w = texsize, h = texsize;
 	glTranslatef(x, y, 0);
 					// Choose texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -114,7 +121,7 @@ void GL_texshape::paint
 
 GL_manager::GL_manager
 	(
-	) : shapes(0), num_shapes(0)
+	) : shapes(0), num_shapes(0), palette(0)
 	{
 	glShadeModel(GL_SMOOTH);	// Smooth shading.
 	glClearColor(1, 1, 1, 0);	// Background is white.
@@ -136,7 +143,7 @@ GL_manager::~GL_manager
 	{
 	while (shapes)
 		{
-		GL_texshape *next = shape->lru_next;
+		GL_texshape *next = shapes->lru_next;
 		delete shapes;
 		shapes = next;
 		}
@@ -164,7 +171,7 @@ void GL_manager::resized
  *	Paint a shape.
  */
 
-void GL_manager::paint_shape
+void GL_manager::paint
 	(
 	Shape_frame *frame,
 	int px, int py			// 'Pixel' position from top-left.
@@ -173,7 +180,7 @@ void GL_manager::paint_shape
 	GL_texshape *tex = frame->glshape;
 	if (!tex)			// Need to create texture?
 		{
-		frame->glshape = tex = new GL_texshape(frame);
+		frame->glshape = tex = new GL_texshape(frame, palette);
 		num_shapes++;
 		//++++++When 'too many', we'll free LRU here.
 		}

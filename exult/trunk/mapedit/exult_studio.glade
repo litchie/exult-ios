@@ -3689,7 +3689,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>npc_flag_si_06</name>
+	  <name>npc_flag_of_13</name>
 	  <can_focus>True</can_focus>
 	  <label>No magic</label>
 	  <active>False</active>
@@ -4011,7 +4011,7 @@ Manual
 
 	<widget>
 	  <class>GtkCheckButton</class>
-	  <name>npc_flag_si_07</name>
+	  <name>npc_flag_of_30</name>
 	  <can_focus>True</can_focus>
 	  <label>Zombie</label>
 	  <active>False</active>
