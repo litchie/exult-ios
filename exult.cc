@@ -179,11 +179,6 @@ int main
 
 	Init();				// Create main window.
 	
-#if 0	/* Make this an option. */
-	if (argc > 2)			// Specify chunkx, chunky on cmndline.
-		gwin->set_chunk_offsets(atoi(argv[1]), atoi(argv[2]));
-	else				// Else start in Trinsic.
-#endif
 	mouse = new Mouse(gwin);
 	mouse->set_shape(Mouse::hand);
 #ifdef MOUSE

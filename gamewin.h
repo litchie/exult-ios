@@ -91,7 +91,12 @@ private:
 	Chunk_object_list *objects[num_chunks][num_chunks];
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
 		// +++++Want to replace these with scrolltx, scrollty:
+#if 0
 	int chunkx, chunky;		// Chunk coord. of window within world.
+#else	/* +++Now, it's tiles: */
+	int scrolltx, scrollty;
+	Rectangle scroll_bounds;	// Walking outside this scrolls.
+#endif
 	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
 	unsigned char faded_out;	// 1 if faded palette to black.
@@ -107,6 +112,7 @@ private:
 	Image_buffer *dragging_save;	// Image below dragged object.
 					// Open a U7 file.
 	int u7open(ifstream& in, const char *fname, int dont_abort = 0);
+	void set_scroll_bounds();	// Set scroll-controller.
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
 	void read_map_data();		// Read in 'ifix', 'ireg', etc.
@@ -125,9 +131,9 @@ public:
 	int get_height()
 		{ return win->get_height(); }
 	inline int get_scrolltx() const		// Get window offsets in tiles.
-		{ return chunkx*tiles_per_chunk; }
+		{ return scrolltx; }
 	inline int get_scrollty() const
-		{ return chunky*tiles_per_chunk; }
+		{ return scrollty; }
 	inline Usecode_machine *get_usecode() const
 		{ return usecode; }
 	inline Rectangle get_win_rect() const	// Get window's rectangle.
@@ -224,14 +230,9 @@ public:
 		win->show();
 		painted = 0;
 		}
-	void set_chunk_offsets(int cx, int cy)
-		{
-		if (cx >= 0 && cx < num_chunks)
-			chunkx = cx;
-		if (cy >= 0 && cy < num_chunks)
-			chunky = cy;
-		}
 	void center_view(Tile_coord t);	// Center view around t.
+					// Scroll if necessary.
+	int scroll_if_needed(Tile_coord t);
 #if 1
 					// Show abs. location of mouse.
 	void show_game_location(int x, int y);

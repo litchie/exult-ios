@@ -676,19 +676,7 @@ int Main_actor::step
 		return (0);
 		}
 					// Check for scrolling.
-	int scrolltx = gwin->get_scrolltx(), scrollty = gwin->get_scrollty();
-					// At left?
-	if (t.tx - scrolltx < 6)
-		gwin->view_left();
-					// At right?
-	else if (t.tx - scrolltx >= gwin->get_width()/tilesize - 4)
-		gwin->view_right();
-					// At top?
-	if (t.ty - scrollty < 6)
-		gwin->view_up();
-					// At bottom?
-	else if (t.ty - scrollty >= gwin->get_height()/tilesize - 4)
-		gwin->view_down();
+	int scrolled = gwin->scroll_if_needed(t);
 	gwin->add_dirty(this);		/// Set to update old location.
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());

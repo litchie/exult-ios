@@ -264,10 +264,10 @@ int Game_window::drop_at_lift
 	int x = dragging_paintx + at_lift*4 - 1; // + tilesize/2;
 	int y = dragging_painty + at_lift*4 - 1; // + tilesize/2;
 #if 1
-	int tx = chunkx*tiles_per_chunk + x/tilesize;
-	int ty = chunky*tiles_per_chunk + y/tilesize;
-	int cx = chunkx + x/chunksize;
-	int cy = chunky + y/chunksize;
+	int tx = scrolltx + x/tilesize;
+	int ty = scrollty + y/tilesize;
+	int cx = (scrolltx + x/tilesize)/tiles_per_chunk;
+	int cy = (scrollty + y/tilesize)/tiles_per_chunk;
 	Chunk_object_list *chunk = get_objects(cx, cy);
 #else
 	int tx = (x/tilesize)%tiles_per_chunk; // - 1;
