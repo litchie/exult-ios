@@ -304,11 +304,13 @@ int Game_window::drop_at_lift
 #endif
 		{
 		to_drop->set_lift(lift);
-		to_drop->set_shape_pos(tx%tiles_per_chunk, 
-							ty%tiles_per_chunk);
+		int rtx = tx%tiles_per_chunk, rty = ty%tiles_per_chunk;
+		to_drop->set_shape_pos(rtx, rty);
 cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
 							<< ")"<<endl;
 		chunk->add(to_drop);
+					// On an egg?
+		chunk->activate_eggs(to_drop, rtx, rty, rtx, rty);
 		return (1);
 		}
 	return (0);

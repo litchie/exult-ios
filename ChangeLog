@@ -1,3 +1,8 @@
+2000-07-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Support 'something_on' eggs.
+	* Added ctrl-c cheat to create items.
+
 2000-07-27 Tristan Tarrant  <tarrant_tristan@emc.com>
 	
 	* titles.cc: use Infidel's real name, correct some spelling mistakes, 
