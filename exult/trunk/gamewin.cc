@@ -2013,7 +2013,8 @@ int Game_window::find_objects
 
 void Game_window::show_items
 	(
-	int x, int y			// Coords. in window.
+	int x, int y,			// Coords. in window.
+	bool ctrl			// Control key is pressed.
 	)
 	{
 					// Look for obj. in open gump.
@@ -2029,8 +2030,8 @@ void Game_window::show_items
 					// Map-editing?
 	if (obj && cheat.in_map_editor())
 		{
-					// Selection mode?  Toggle.
-		if (cheat.get_edit_mode() == Cheat::select)
+			
+		if (ctrl)		// Control?  Toggle.
 			cheat.toggle_selected(obj);
 		else
 			{		// In normal mode, sel. just this one.

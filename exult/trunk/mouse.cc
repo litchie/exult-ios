@@ -252,10 +252,12 @@ void Mouse::set_speed_cursor()
 	    cursor = hand; break;
 	case Cheat::paint:
 	    cursor = short_combat_arrows[4]; break;	// Short S red arrow.
+#if 0
 	case Cheat::select:
 	    cursor = short_arrows[7]; break;		// Short NW green.
 	case Cheat::hide:
 	    cursor = redx; break;
+#endif
 	case Cheat::combo_pick:
 	    cursor = greenselect; break;
 	}

@@ -967,7 +967,8 @@ static void Handle_event
 			last_b1_click = curtime;
 			if (!click_handled)
 					// Identify item(s) clicked on.
-				gwin->show_items(x, y);
+				gwin->show_items(x, y, 
+					(SDL_GetModState() & KMOD_CTRL) != 0);
 			dragging = false;
 			}
 		break;

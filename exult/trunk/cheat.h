@@ -39,9 +39,7 @@ class Cheat
   enum Map_editor_mode {
 	move = 0,			// Normal dragging.
 	paint = 1,			// Left-mouse dragging paints.
-	select = 2,			// Left-mouse selects.  UNUSED.
-	hide = 3,			// Left-mouse hides.  UNUSED.
-	combo_pick = 4			// Left-click adds item to combo.
+	combo_pick = 2			// Left-click adds item to combo.
   };
 private:
   Game_window *gwin;

@@ -433,50 +433,6 @@
 	    <active>False</active>
 	    <always_show_toggle>True</always_show_toggle>
 	  </widget>
-
-	  <widget>
-	    <class>GtkRadioMenuItem</class>
-	    <name>select1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_select1_activate</handler>
-	      <last_modification_time>Sat, 23 Mar 2002 04:07:28 GMT</last_modification_time>
-	    </signal>
-	    <label>Select</label>
-	    <active>False</active>
-	    <always_show_toggle>True</always_show_toggle>
-	  </widget>
-
-	  <widget>
-	    <class>GtkRadioMenuItem</class>
-	    <name>hide1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_hide1_activate</handler>
-	      <last_modification_time>Sat, 23 Mar 2002 07:19:12 GMT</last_modification_time>
-	    </signal>
-	    <label>Hide</label>
-	    <active>False</active>
-	    <always_show_toggle>True</always_show_toggle>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>separator5</name>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>unhide1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_unhide1_activate</handler>
-	      <last_modification_time>Sat, 23 Mar 2002 07:19:12 GMT</last_modification_time>
-	    </signal>
-	    <label>Unhide</label>
-	    <right_justify>False</right_justify>
-	  </widget>
 	</widget>
       </widget>
 
@@ -3990,15 +3946,14 @@ Manual
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label38</name>
-	  <label></label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
+	  <class>GtkCheckButton</class>
+	  <name>checkbutton101</name>
+	  <visible>False</visible>
+	  <sensitive>False</sensitive>
+	  <can_focus>True</can_focus>
+	  <label>checkbutton101</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
 	  <child>
 	    <left_attach>2</left_attach>
 	    <right_attach>3</right_attach>
@@ -4006,7 +3961,7 @@ Manual
 	    <bottom_attach>5</bottom_attach>
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
-	    <xexpand>True</xexpand>
+	    <xexpand>False</xexpand>
 	    <yexpand>False</yexpand>
 	    <xshrink>False</xshrink>
 	    <yshrink>False</yshrink>
