@@ -290,43 +290,51 @@ void Uc_return_statement::gen
  *	Generate code.
  */
 
-void Uc_say_statement::gen
-	(
-	std::ostream& out,
-	Uc_function * /* fun */
-	)
-	{
-	out.put((char) UC_SAY);
-	}
-
-/*
- *	Generate code.
- */
-
 void Uc_message_statement::gen
 	(
 	std::ostream& out,
 	Uc_function *fun
 	)
 	{
-	if (!msg)
+	if (!msgs)
 		return;
+	const std::vector<Uc_expression*>& exprs = msgs->get_exprs();
+	for (std::vector<Uc_expression*>::const_iterator it = exprs.begin();
+					it != exprs.end(); ++it)
+		{
+		Uc_expression *msg = *it;
 					// A known string?
-	int offset = msg->get_string_offset();
-	if (offset >= 0)
-		{
-		out.put((char) UC_ADDSI);
-		Write2(out, offset);
-		}
-	else
-		{
-		Uc_var_symbol *var = msg->need_var(out, fun);
-		if (var)		// Shouldn't fail.
+		int offset = msg->get_string_offset();
+		if (offset >= 0)
 			{
-			out.put((char) UC_ADDSV);
-			Write2(out, var->get_offset());
+			out.put((char) UC_ADDSI);
+			Write2(out, offset);
+			}
+		else
+			{
+			Uc_var_symbol *var = msg->need_var(out, fun);
+			if (var)	// Shouldn't fail.
+				{
+				out.put((char) UC_ADDSV);
+				Write2(out, var->get_offset());
+				}
 			}
 		}
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_say_statement::gen
+	(
+	std::ostream& out,
+	Uc_function *fun
+	)
+	{
+					// Add the messages.
+	Uc_message_statement::gen(out, fun);
+	out.put((char) UC_SAY);		// Show on screen.
 	}
 
 /*
