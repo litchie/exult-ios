@@ -313,7 +313,7 @@ Game_window::Game_window
 	    in_dungeon(0), ice_dungeon(false),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
-            text_bg(false), 
+            text_bg(false), step_tile_delta(8), allow_double_right_move(true),
 	    special_light(0),
 	    dragging(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
@@ -359,6 +359,15 @@ Game_window::Game_window
 						combat_difficulty, true);
 	config->value("config/audio/disablepause", str, "no");
 	config->set("config/audio/disablepause", str, true);
+
+	config->value("config/gameplay/step_tile_delta", step_tile_delta, 8);
+	if (step_tile_delta < 1) step_tile_delta = 1;
+	config->set("config/gameplay/step_tile_delta", step_tile_delta, true);
+
+	config->value("config/gameplay/allow_double_right_move", str, "yes");
+	allow_double_right_move = str == "yes";
+	config->set("config/gameplay/allow_double_right_move", allow_double_right_move?"yes":"no", true);
+
 	}
 
 /*
@@ -539,7 +548,7 @@ bool Game_window::is_moving
 
 bool Game_window::main_actor_dont_move()
     { 
-    return main_actor->get_flag(Obj_flags::dont_move);
+    return main_actor->get_flag(Obj_flags::dont_move) != 0;
     }
 
 /*
@@ -827,7 +836,7 @@ void Game_window::set_scrolls
 	scroll_bounds.x = scrolltx + 
 			(get_width()/c_tilesize - scroll_bounds.w)/2;
 	scroll_bounds.y = scrollty + 
-			(get_height()/c_tilesize - scroll_bounds.h)/2;
+			((get_height()-40)/c_tilesize - scroll_bounds.h)/2;
 
 	Barge_object *old_active_barge = moving_barge;
 	map->read_map_data();		// This pulls in objects.
@@ -861,7 +870,7 @@ void Game_window::set_scrolls
 	)
 	{
 					// Figure in tiles.
-	int tw = get_width()/c_tilesize, th = get_height()/c_tilesize;
+	int tw = get_width()/c_tilesize, th = (get_height()-40)/c_tilesize;
 	set_scrolls(DECR_TILE(cent.tx, tw/2), DECR_TILE(cent.ty, th/2));
 	}
 
@@ -1524,7 +1533,7 @@ void Game_window::start_actor_alt
 			}
 	}
 
-	const int delta = 8*c_tilesize;// Bigger # here avoids jerkiness,
+	const int delta = step_tile_delta*c_tilesize;// Bigger # here avoids jerkiness,
 					//   but causes probs. with followers.
 	switch (dir)
 		{
@@ -1597,7 +1606,7 @@ void Game_window::start_actor
 	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
 	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
-	if (main_actor_dont_move() || gump_man->gump_mode())
+	if (main_actor_dont_move() || (gump_man->gump_mode() && !gump_man->gumps_dont_pause_game()))
 		return;
 //	teleported = 0;
 	if (moving_barge)
@@ -1676,7 +1685,7 @@ void Game_window::stop_actor
 		{
 		main_actor->stop();	// Stop and set resting state.
 		paint();	// ++++++Necessary?
-		if (!gump_man->gump_mode())
+		if (!gump_man->gump_mode() || gump_man->gumps_dont_pause_game())
 			main_actor->get_followers();
 		}
 	}
@@ -1831,7 +1840,7 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 				continue;
 			if (!best || best->lt(*obj) == 1 || trans)
 				{
-				bool ftrans = obj->get_info().is_transparent();
+				bool ftrans = obj->get_info().is_transparent() != 0;
 				if (!ftrans || trans)
 					{
 					best = obj;
@@ -2112,7 +2121,7 @@ void Game_window::double_clicked
 	if (!obj)
 		return;			// Nothing found.
 	if (combat && !gump &&		// In combat?
-	    !gump_man->gump_mode())
+	    (!gump_man->gump_mode() || gump_man->gumps_dont_pause_game()))
 		{
 		Actor *npc = obj->as_actor();
 					// But don't attack party members.

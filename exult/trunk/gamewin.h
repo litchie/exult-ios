@@ -125,6 +125,9 @@ class Game_window
 	bool fastmouse;
 	bool double_click_closes_gumps;
 	int text_bg;			// draw a dark background behind text
+	int	step_tile_delta;	// multiplier for the delta in start_actor_alt
+	bool allow_double_right_move;	// If moving with right click is allowed
+
 		// Private methods:
 	void set_scrolls(Tile_coord cent);
 	void clear_world();		// Clear out world's contents.
@@ -448,6 +451,10 @@ public:
 	void start_actor(int winx, int winy, int speed = 125);
 	void start_actor_along_path(int winx, int winy, int speed = 125);
 	void stop_actor();		// Stop main actor.
+	inline void set_step_tile_delta(int size) { step_tile_delta = size; }
+	inline int get_step_tile_delta() { return step_tile_delta; };
+	inline void set_allow_double_right_move(bool a) { allow_double_right_move = a; }
+	inline bool get_allow_double_right_move() { return allow_double_right_move; }
 	void teleport_party(Tile_coord t, bool skip_eggs = false);
 	void activate_item(int shnum, int frnum=c_any_framenum,
 			   int qual=c_any_qual); // Activate item in party.

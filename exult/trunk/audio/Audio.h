@@ -29,6 +29,10 @@
 #include "Midi.h"
 #include "exceptions.h"
 
+//SDL_mixer doesn't like mixing different rates when using OGG
+//This should match the same as the SFX and OGG Music which is 22khz
+#define SAMPLERATE	22050
+
 class SFX_cached;
 class Flex;
 
@@ -126,6 +130,8 @@ public:
 	bool	is_track_playing(int num) { 
 			return midi && midi->is_track_playing(num);
 	}
+
+	int		get_sample_rate() { return actual.freq; }
 
 	MyMidiPlayer *get_midi() {return midi;}
 

@@ -170,11 +170,19 @@ void CheatScreen::show_screen()
 	centerx = maxx/2;
 	centery = maxy/2;
 
+	// Pause the game
+	gwin->get_tqueue()->pause(SDL_GetTicks());
+
 	str_int_pair pal_tuple = game->get_resource("palettes/0");
 	pal.load(pal_tuple.str,pal_tuple.num);
 
 	// Start the loop
 	NormalLoop();
+
+	// Resume the game clock
+	gwin->get_tqueue()->resume(SDL_GetTicks());
+
+	// Reset the palette
 	clock->set_palette();
 }
 

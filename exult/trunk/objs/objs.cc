@@ -856,7 +856,7 @@ bool Game_object::add
 					//   cause obj to be deleted.
 	)
 	{
-	return combine ? drop(obj) : false;
+	return combine ? drop(obj)!=0 : false;
 	}
 
 /*

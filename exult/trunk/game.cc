@@ -167,6 +167,14 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		std::cout << "Patch   : none" << std::endl;
 	std::cout << std::endl;
 
+	// This should probably go elsewhere
+	Audio *audio = Audio::get_ptr();
+
+	if (audio) {
+		MyMidiPlayer *midi = audio->get_midi();
+		if (midi) midi->load_patches();
+	}
+
 	return game;
 }
 
