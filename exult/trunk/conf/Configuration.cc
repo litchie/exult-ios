@@ -51,6 +51,11 @@ using std::snprintf;
 using std::string;
 using std::ostream;
 
+// isspace could be a macro
+#ifndef isspace
+using std::isspace;
+#endif
+
 void	Configuration::value(const string key,std::string &ret,const char *defaultvalue) const
 {
 	const XMLnode *sub=xmltree->subtree(key);
@@ -121,7 +126,7 @@ bool	Configuration::read_config_string(const std::string &s)
 {
 	std::string	sbuf(s);
 	std::size_t	nn=0;
-	while(std::isspace(s[nn])) ++nn;
+	while(isspace(s[nn])) ++nn;
 	
 	assert(s[nn]=='<');
 	++nn;
