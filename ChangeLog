@@ -2,6 +2,7 @@
 	* */Makefile.am, configure.in, acconfig.h: updated for the minizip lib
 	* files/zip/(un)?zip.c: include config.h
 	* configure.in: re-aligned ./configure --help options
+	* configure.in: check for zlib headers instead of library
 	
 2001-11-09  Ryan Nunn  <triforce@merlin.net.au>
 	* gumps/Newfile_gump.* : Added "File" field to Save game info display.
