@@ -1304,6 +1304,30 @@ C_EXPORT void on_new_shape_font_toggled
 				gtk_object_get_user_data(GTK_OBJECT(win));
 	chooser->from_font_toggled(on);
 	}
+C_EXPORT gboolean on_new_shape_font_color_draw_expose_event
+	(
+	GtkWidget *widget,		// The draw area.
+	GdkEventExpose *event,
+	gpointer data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	int index = studio->get_spin("new_shape_font_color");
+	Shape_chooser *ed = (Shape_chooser *) 
+				gtk_object_get_user_data(GTK_OBJECT(widget));
+	guint32 color = ed->get_color(index);
+	GdkGC *gc = (GdkGC *) 
+			gtk_object_get_data(GTK_OBJECT(widget), "color_gc");
+	if (!gc)
+		{
+		gc = gdk_gc_new(widget->window);
+		gtk_object_set_data(GTK_OBJECT(widget), "color_gc", gc);
+		}
+	gdk_rgb_gc_set_foreground(gc, color);
+	gdk_draw_rectangle(widget->window, gc, TRUE, event->area.x, 
+			event->area.y, event->area.width, event->area.height);
+	return (TRUE);
+	}
 
 /*
  *	Font file was selected.
@@ -1333,6 +1357,8 @@ void Shape_chooser::from_font_toggled
 	studio->set_sensitive("new_shape_font_name", on);
 	if (!on)
 		return;
+	studio->set_sensitive("new_shape_font_color", true);
+	studio->set_sensitive("new_shape_font_height", true);
 	GtkFileSelection *fsel = Create_file_selection(
 				"Choose font file", font_file_chosen, 0L);
 	gtk_widget_show(GTK_WIDGET(fsel));
@@ -1382,7 +1408,25 @@ void Shape_chooser::new_shape
 	else
 		adj->upper = 255;
 	gtk_adjustment_changed(adj);
+	spin = glade_xml_get_widget(xml, "new_shape_font_height");
+	studio->set_sensitive("new_shape_font_height", false);
+	adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(spin));
+	adj->lower = 4;
+	adj->upper = 64;
+	gtk_adjustment_changed(adj);
+	spin = glade_xml_get_widget(xml, "new_shape_font_color");
+	studio->set_sensitive("new_shape_font_color", false);
+	adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(spin));
+	adj->lower = 0;
+	adj->upper = 255;
+	gtk_adjustment_changed(adj);
+					// Unset 'From font:'.
+	studio->set_toggle("new_shape_font", false);
 	gtk_widget_show(win);
+					// Store our pointer in color drawer.
+	GtkWidget *draw = glade_xml_get_widget(xml, 
+						"new_shape_font_color_draw");
+	gtk_object_set_user_data(GTK_OBJECT(draw), this);
 	}
 
 /*
@@ -1423,9 +1467,11 @@ void Shape_chooser::create_new_shape
 	use_font = use_font && (fontname != 0) && *fontname != 0;
 	if (use_font)
 		{
+		int ht = studio->get_spin("new_shape_font_height");
+		int fg = studio->get_spin("new_shape_font_color");
 		if (!Gen_font_shape(shape, fontname, nframes,
-					// +++++height, fg, bg:
-						12, 1, 0))
+					// Use transparent color for bgnd.
+						ht, fg, 255))
 			Alert("Error loading font file '%s'", fontname);
 		}
 #endif

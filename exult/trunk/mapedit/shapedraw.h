@@ -57,6 +57,8 @@ public:
 		{ show(draw->window, x, y, w, h); }
 	void show()
 		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
+	guint32 get_color(int i)
+		{ return palette->colors[i]; }
 	void draw_shape(Shape_frame *shape, int x, int y);
 	void draw_shape_centered(int shapenum, int framenum);
 	virtual void render();		// Update what gets shown.
