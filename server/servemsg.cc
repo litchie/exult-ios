@@ -26,10 +26,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef XWIN
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <unistd.h>
 #include <iostream.h>			/* For debugging msgs. */
 #include "servemsg.h"
-#include <cstring>
+#ifndef ALPHA_LINUX_CXX
+  #include <cstring>
+#endif
 
 namespace Exult_server
 {

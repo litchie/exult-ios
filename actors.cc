@@ -2276,9 +2276,12 @@ int Actor::figure_hit_points
 			say(0x4d2, 0x4da);
 		else
 			say(first_ouch, last_ouch);
-	reduce_health(hp);
-	cout << (attacker ? attacker->get_name() : "<trap>") << 
-		" hits " << get_name() <<
+
+	string name = "<trap>";
+	if (attacker)
+		name = attacker->get_name();
+
+	cout << name << " hits " << get_name() <<
 		" for " << hp << " hit points, leaving " <<
 		properties[(int) health] << " remaining" << endl;
 //	cout << "Attack damage was " << hp << " hit points, leaving " << 
