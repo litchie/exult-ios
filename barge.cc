@@ -51,12 +51,7 @@ void Barge_object::gather
 	objects.truncate(perm_count);	// Start fresh.
 					// Get footprint in tiles.
 	Tile_coord pos = get_abs_tile_coord();
-	Rectangle foot(pos.tx, pos.ty, xtiles, ytiles);
-	if (horizontal)
-		{
-		foot.w = ytiles;	// Flipped horizontal.
-		foot.h = xtiles;
-		}
+	Rectangle foot(pos.tx, pos.ty, get_xtiles(), get_ytiles());
 	Game_window *gwin = Game_window::get_game_window();
 					// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
@@ -266,7 +261,8 @@ void Barge_object::write_ireg
 	*ptr++ = xtiles;
 	*ptr++ = ytiles;
 	*ptr++ = 0;			// Unknown.
-	*ptr++ = (horizontal<<1);	// Flags (quality).
+					// Flags (quality):
+	*ptr++ = (dir<<1);
 	*ptr++ = 0;			// (Quantity).
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = 0;			// Data2.
