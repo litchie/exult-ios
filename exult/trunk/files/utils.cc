@@ -2,7 +2,7 @@
  *	utils.cc - Common utility routines.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2004  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -83,6 +83,8 @@ void add_system_path(const string& key, const string& value)
 {
 	if (!value.empty()) {
 		path_map[key] = value;
+	} else {
+		clear_system_path(key);
 	}
 }
 
@@ -90,6 +92,8 @@ void clone_system_path(const string& new_key, const string& old_key)
 {
 	if (is_system_path_defined(old_key)) {
 		path_map[new_key] = path_map[old_key];
+	} else {
+		clear_system_path(new_key);
 	}
 }
 

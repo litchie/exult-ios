@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2003  The Exult Team
+ *  Copyright (C) 2000-2004  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -120,28 +120,28 @@ void Shape_manager::load
 		try
 			{
 			files[SF_PAPERDOL_VGA].load(
-					"<SERPENT_STATIC>/paperdol.vga");
+					"<SERPENTISLE_STATIC>/paperdol.vga");
 			files[SF_BG_SIGUMP_FLX].load(
-					"<SERPENT_STATIC>/gumps.vga");
+					"<SERPENTISLE_STATIC>/gumps.vga");
 			files[SF_BG_SISHAPES_VGA].load(
-					"<SERPENT_STATIC>/shapes.vga");
+					"<SERPENTISLE_STATIC>/shapes.vga");
 
 			if (files[SF_PAPERDOL_VGA].is_good() && 
 			    files[SF_BG_SIGUMP_FLX].is_good() && 
 			    files[SF_BG_SISHAPES_VGA].is_good())
 				{
-				std::cout << "Found Serpent Isle 'paperdol.vga', 'gumps.vga' and 'shapes.vga'." << std::endl << "Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' ENABLED." << std::endl;
+					std::cout << "Support for SI Paperdolls and Multiracial Avatars in BG is ENABLED." << std::endl;
 				bg_paperdolls_allowed = true;
 				bg_multiracial_allowed = true;
 				}
 			else
-				std::cout << "Found Serpent Isle 'paperdol.vga', 'gumps.vga' and 'shapes.vga' but one or more as bad." << std::endl << "Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' DISABLED." << std::endl;
+				std::cout << "Bad SI 'paperdol.vga', 'gumps.vga' or 'shapes.vga'." << std::endl
+						  << "Support for SI Paperdolls and Multiracial Avatars in BG is DISABLED." << std::endl;
 			}
 		catch (const exult_exception &e)	
 			{
-			std::cerr << "Exception attempting to load Serpent Isle 'paperdol.vga', 'gumps.vga' or 'shapes.vga'"<< std::endl <<
-				"Do you have Serpent Isle and is the correct path set in the config for Serpent Isle?" << std::endl <<
-				"Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' DISABLED." << std::endl;
+				std::cerr << "Couldn't open SI 'paperdol.vga', 'gumps.vga' or 'shapes.vga'." << std::endl
+						  << "Support for SI Paperdolls and Multiracial Avatars in BG is DISABLED." << std::endl;
 			}
 
 		}
