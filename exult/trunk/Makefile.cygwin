@@ -38,7 +38,7 @@ CPPFLAGS=-DVERSION=\"0.97cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
 	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
-	$(SDL_CFLAGS) -DHAVE_SNPRINTF -DUSE_EXULTSTUDIO $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
+	$(SDL_CFLAGS) -DHAVE_SNPRINTF -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
 CXXFLAGS=-O2 -Wno-long-long -fvtable-thunks -include mingw_kludges.h
@@ -197,6 +197,11 @@ $(EXULT_SI_FLX): expack.exe $(EXULT_SI_FLX_OBJECTS)
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres --include-dir win32 win32/exultico.rc exultico.o
 
+IPACK_OBJS=ipack.o U7file.o Flex.o IFF.o Table.o Flat.o utils.o imagebuf.o ibuf8.o ibuf16.o vgafile.o pngio.o
+
+ipack.exe : $(IPACK_OBJS)
+	$(CXX) $(LFLAGS) -o ipack.exe $(IPACK_OBJS) -lpng -mconsole
+
 mklink.exe : mklink.o
 	$(CXX) $(LFLAGS) -o mklink.exe mklink.o -mconsole
 
@@ -288,9 +293,11 @@ dist:   $(EXEC)
 	u2d $(U7PATH)/Exult/AUTHORS.txt $(U7PATH)/Exult/ChangeLog.txt $(U7PATH)/Exult/COPYING.txt $(U7PATH)/Exult/FAQ.txt $(U7PATH)/Exult/NEWS.txt $(U7PATH)/Exult/README.txt $(U7PATH)/Exult/README.1ST.txt $(U7PATH)/Exult/README.win32.txt
 	u2d $(U7PATH)/Exult/bgdefaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 
-tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
+tools:  expack.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
 toolsclean:
+	rm -f expack.o expack.exe $(FILE_OBJS)
+	rm -f ipack.o ipack.exe $(IPACK_OBJS)
 	rm -f mklink.o mklink.exe
 	rm -f rip.o rip.exe
 	rm -f shp2pcx.o shp2pcx.exe
@@ -307,6 +314,7 @@ toolsclean:
 toolsinstall: tools
 	mkdir -p $(U7PATH)/tools
 	strip expack.exe -o $(U7PATH)/tools/expack.exe
+	strip ipack.exe -o $(U7PATH)/tools/ipack.exe
 	strip mklink.exe -o $(U7PATH)/tools/mklink.exe
 	strip rip.exe -o $(U7PATH)/tools/rip.exe
 	strip shp2pcx.exe -o $(U7PATH)/tools/shp2pcx.exe
@@ -329,6 +337,7 @@ toolsdist: tools
 	mkdir -p $(TOOLSPATH)
 	mkdir -p $(TOOLSPATH)/tools
 	strip expack.exe -o $(TOOLSPATH)/tools/expack.exe
+	strip ipack.exe -o $(TOOLSPATH)/tools/ipack.exe
 	strip mklink.exe -o $(TOOLSPATH)/tools/mklink.exe
 	strip rip.exe -o $(TOOLSPATH)/tools/rip.exe
 	strip shp2pcx.exe -o $(TOOLSPATH)/tools/shp2pcx.exe
