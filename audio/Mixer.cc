@@ -99,7 +99,7 @@ void	compress_audio_sample(Uint8 *buf,int len)
 	delete [] dbuf;
 }
 
-void Mixer::cancel(void)
+void Mixer::cancel_raw(void)
 {
 	while(buffers.begin()->num_samples)
 		advance();
@@ -289,3 +289,17 @@ bool	Mixer::is_playing(Uint32 id)
 	stream_unlock();
 	return false;
 }
+
+void Mixer::cancel_streams(void)
+{
+	stream_lock();
+	for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
+		it!=audio_streams.end();++it)
+			{
+			ProducerConsumerBuf *p=*it;
+			p->end_consumption();
+			}
+	audio_streams.clear();
+	stream_unlock();
+}
+

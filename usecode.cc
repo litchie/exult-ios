@@ -1819,7 +1819,7 @@ USECODE_INTRINSIC(play_music)
 #endif
 	int track = parms[0].get_int_value()&0xff;
 	if (track == 0xff)		// I think this is right:
-		audio->cancel();	// Stop playing.
+		audio->cancel_streams();	// Stop playing.
 	else
 		audio->start_music(track, (parms[0].get_int_value()>>8)&0x01);
 	return(no_ret);
