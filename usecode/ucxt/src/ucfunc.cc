@@ -28,7 +28,7 @@
 #include <iomanip>
 #include "files/utils.h"
 
-#include "opcodes.h"
+#include "ops.h"
 
 #if 0
 	#define DEBUG_INDENT

@@ -27,7 +27,7 @@
 #include <cstdlib>
 #include <vector>
 #include "ucdata.h"
-#include "opcodes.h"
+#include "ops.h"
 #include "files/utils.h"
 
 using std::cout;
