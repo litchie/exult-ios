@@ -1,0 +1,220 @@
+VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SRC)/files:$(SRC)/files/zip:$(SRC)/flic: \
+$(SRC)/gumps:$(SRC)/imagewin:$(SRC)/objs:$(SRC)/pathfinder:$(SRC)/shapes:$(SRC)/server:$(SRC)/tools: \
+$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src
+
+VERSION=1.1.9rc1
+
+MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
+	args.o bggame.o browser.o cheat.o  \
+	combat.o delobjs.o devgame.o \
+	 dir.o drag.o effects.o exult.o exultmenu.o \
+	game.o gameclk.o gamedat.o gamemap.o \
+	gamerend.o gamewin.o keys.o keyactions.o \
+	menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
+	party.o \
+	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
+	exultico.o cheat_screen.o shapeid.o version.o windrag.o
+# unused: npctest.o
+
+PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
+
+CONF_OBJS=Configuration.o XMLEntity.o
+# unused: xmain.o
+
+AUDIO_OBJS=Audio.o conv.o Midi.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
+# unused: test.o u7audiotool.o
+
+FLIC_OBJS=playfli.o
+
+FILE_OBJS+=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o \
+	msgfile.o
+
+# Zipfile support objs
+ZIP_OBJS=zip.o unzip.o
+
+GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
+	Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
+	Paperdoll_gump_info.o Scroll_gump.o Sign_gump.o  Slider_gump.o \
+	Spellbook_gump.o Stats_gump.o Text_gump.o  Yesno_gump.o \
+	Gamemenu_gump.o Newfile_gump.o Gump_ToggleButton.o \
+	AudioOptions_gump.o Face_button.o CombatStats_gump.o \
+	Jawbone_gump.o VideoOptions_gump.o Face_stats.o Gump_manager.o \
+	Text_button.o GameplayOptions_gump.o CombatOptions_gump.o \
+	 Enabled_button.o
+
+IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
+	savepcx.o
+
+SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o \
+	monstinf.o u7drag.o
+
+OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
+	contain.o egg.o iregobjs.o mappatch.o objs.o objiter.o \
+	spellbook.o virstone.o jawbone.o objnames.o
+
+USECODE_OBJS=stackframe.o ucfunction.o ucinternal.o ucmachine.o ucsched.o intrinsics.o \
+	useval.o conversation.o keyring.o ucdisasm.o
+
+OBJS+=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS)
+
+EXULT_FLX = data/exult.flx data/exult_flx.h
+EXULT_FLX_OBJECTS = \
+	data/exult_quotes.shp \
+	data/exult_credits.shp \
+	data/quotes.txt \
+	data/credits.txt \
+	data/exult_logo.shp \
+	data/exult0.pal \
+	data/black_gate.shp \
+	data/serpent_isle.shp \
+	data/meditown.mid \
+	data/font.shp \
+	data/setup.shp \
+	data/play_intro.shp \
+	data/full_screen.shp \
+	data/cheating.shp \
+	data/ok.shp \
+	data/cancel.shp \
+	data/pointers.shp \
+	data/exit.shp \
+	data/play_1st_scene.shp \
+	data/extras.shp \
+	data/midi_conversion.shp \
+	data/sfx_conversion.shp \
+	data/palette_fades.shp \
+	data/scaling_method.shp \
+	data/savegump.shp \
+	data/sav_downdown.shp \
+	data/sav_down.shp \
+	data/sav_up.shp \
+	data/sav_upup.shp \
+	data/sav_slider.shp \
+	data/sav_selected.shp \
+	data/gameplayoptions.shp \
+	data/gamemenu.shp \
+	data/audiooptions.shp \
+	data/videooptions.shp \
+	data/hp_bar.shp \
+	data/sfx_icon.shp \
+	data/flx.in
+
+EXULT_BG_FLX = data/exult_bg.flx data/exult_bg_flx.h
+EXULT_BG_FLX_OBJECTS = \
+	data/bg/hoe_of_destruction.shp \
+	data/bg/caddellite_helmet.shp \
+	data/bg/great_dagger.shp \
+	data/bg/magic_boomerang.shp \
+	data/bg/gorget.shp \
+	data/bg/magicgorget.shp \
+	data/bg/cleaver.shp \
+	data/bg/faces.shp \
+	data/bg/faces2.shp \
+	data/bg/amulets.shp \
+	data/bg/bgfiredoom.shp \
+	data/bg/fellowshipstaff.shp \
+	data/bg/BGmap.shp \
+	data/bg/defaultkeys.txt \
+	data/bg/dupre_face.shp \
+	data/bg/fem_av_face.shp \
+	data/bg/iolo_face.shp \
+	data/bg/male_av_face.shp \
+	data/bg/shamino_face.shp \
+	data/bg/greaves.shp \
+	data/bg/spiked_shield.shp \
+	data/bg/mr_faces.shp \
+	data/bg/mr_intro.shp \
+	data/bg/firesword.shp \
+	data/bg/greencloak.shp \
+	data/bg/greycloak.shp \
+	data/bg/ring_of_protection.shp \
+	data/bg/greentop.shp \
+	data/bg/orangedress.shp \
+	data/bg/bluedress.shp \
+	data/bg/flx.in
+
+
+EXULT_SI_FLX = data/exult_si.flx data/exult_si_flx.h 
+EXULT_SI_FLX_OBJECTS = \
+	data/si/SImap.shp \
+	data/si/defaultkeys.txt \
+	data/si/flx.in
+
+FLEXES = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+
+$(EXEC) : $(FLEXES) $(OBJS) 
+	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
+
+expack$(EXEEXT) : expack.o $(FILE_OBJS) 
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+$(EXULT_FLX): expack$(EXEEXT) $(EXULT_FLX_OBJECTS)
+	expack$(EXEEXT) -i data/flx.in
+
+$(EXULT_BG_FLX): expack$(EXEEXT) $(EXULT_BG_FLX_OBJECTS)
+	expack$(EXEEXT) -i data/bg/flx.in
+
+$(EXULT_SI_FLX): expack$(EXEEXT) $(EXULT_SI_FLX_OBJECTS)
+	expack$(EXEEXT) -i data/si/flx.in
+
+cmanip$(EXEEXT) : cmanip.o $(CONF_OBJS) $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+IPACK_OBJS=ipack.o U7file.o Flex.o IFF.o Table.o Flat.o utils.o imagebuf.o ibuf8.o ibuf16.o vgafile.o pngio.o
+
+ipack$(EXEEXT) : $(IPACK_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $+ -lpng -lz
+
+mklink$(EXEEXT) : mklink.o
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+rip$(EXEEXT) : rip.o
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+shp2pcx$(EXEEXT) : shp2pcx.o
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+splitshp$(EXEEXT) : splitshp.o
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+textpack$(EXEEXT) : textpack.o $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+u7voice2syx$(EXEEXT) : u7voice2syx.o $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+wud$(EXEEXT) : wud.o uctools.h bgintrinsics.h siintrinsics.h 
+	$(CXX) $(LFLAGS) -o $(@) wud.o
+
+wuc$(EXEEXT) : wuc.o
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+UCC_OBJS=ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o
+
+ucc$(EXEEXT) : $(UCC_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $+ -liberty
+
+ucparse.cc:  
+	bison -d usecode/compiler/ucparse.yy -o ucparse.c
+	mv ucparse.c ucparse.cc
+ 
+uclex.cc:  
+	flex usecode/compiler/uclex.ll 
+	mv lex.yy.c uclex.cc
+
+UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o ops.o
+
+ucxt$(EXEEXT) : $(UCXT_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+CONFREGRESS_OBJS=$(CONF_OBJS) xmain.o utils.o
+
+confregress$(EXEEXT)  : $(CONFREGRESS_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+head2data$(EXEEXT) : head2data.o $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $+
+
+head2data.test: 
+	head2data data/u7bgintrinsics.data data/u7siintrinsics.data
+
+all: $(EXEC)

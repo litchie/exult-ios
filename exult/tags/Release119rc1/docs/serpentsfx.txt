@@ -1,0 +1,139 @@
+This information has been extected from the XMI files in mt32sfx.dat and the
+xmidi.mt files that came with Serpent Isle. It should be used as a guide to the
+numbering of the Serpent Isle SFX.
+
+0 trolldrum  Rotating  
+1 Forge     
+2 gumpster  
+3 Trapsuck1 
+4 Shofar    
+5 Explos #2 
+6 Stoneclose
+7 Surf's up 
+8 Whoooosh  
+9 Blunt     
+10 Furl      
+11 Hit       
+12 Missile   
+13 Ghosts    
+14 Pulleys   
+15 Pumps     
+16 Bell Ding 
+17 Closed     gumpster  
+18 Closed    
+19 Hissssssss
+20 Strike!!! 
+21 Machines  
+22 Heal      
+23 Cremation 
+24 Conveyor  
+25 Spark     
+26 Entity Hum
+27 dice2      Transfer  
+28 Bell Dong 
+29 BearTrap  
+30 Log Saw   
+31 Doorslam   Stream    
+32 Doorslam  
+33 Fountain  
+34 Drawbridge Shadoobie 
+35 Drawbridge
+36 Beeezzzzz 
+37 Creeeeaack
+38 SpinnWheel
+39 Whirlpool 
+40 Explos #3 
+41 Whip pta  
+42 Fire 1    
+43 Moongate  
+44 Gumps!!!!!
+45 Fire 2    
+46 Fire 3    
+47 Bellows   
+48 New Spell 
+49 Douce     
+50 Surf's up 
+51 CatsMeow  
+52 Unfurl    
+53 SerpGate  
+54 Entity Hum
+55 Moongate B
+56 Treadle   
+57 Fizzle    
+58 Spores    
+59 Shutter   
+60 Big Bell  
+61 Rotating  
+62 Wind Spell
+63 DeepCrackl
+64 Drink     
+65 Yo yo LA  
+66 CradleRock
+67 Wizard    
+68 Lever     
+69 Wind      
+70 Portcullis
+71 Spell     
+72 Mill Stone
+73 Stalags   
+74 Snow Wind 
+75 Poison    
+76 Seaguls   
+77 Trans     
+78 Key       
+79 Minning   
+80 Blade     
+81 Stonestone
+82 MPgain    
+83 Success   
+84 MPdrain   
+85 Nothing
+86 Ignite    
+87 Frying    
+88 Portcullis Drawbridge
+89 Portcullis
+90 PoisonSpel
+91 IgniteSpel
+92 Explos #1 
+93 Loom      
+94 Gavel     
+95 Splash    
+96 Blocked !!
+97 Whoooosh  
+98 Footstep L
+99 W. Anchor 
+100 Minning   
+101 Entity Hum
+102 Laser Bolt
+103 MagicWeap 
+104 Gavel     
+105 Spell      dice1     
+106 Spell     
+107 Crickets  
+108 Failure   
+109 Waterfall 
+110 Swamp 2   
+111 Swamp 3   
+112 Swamp 4   
+113 Swamp 5   
+114 Waterwheel
+115 Shreik    
+116 Fireball   Thunder   
+117 Chime     
+118 Chime     
+119 Shipbell  
+120 Trapsuck2  Monkage   
+121 Clock tick
+122 Goblindrum
+123 Fr Horn 3 
+124 Eat       
+125 Graze     
+126 D. Anchor 
+127 Whip ptb   Thunder   
+128 Spell     
+129 Wind       Baneage   
+130 General   
+131 Protect   
+132 Eruption  
+133 Swamp 1   
+134 tstep L   

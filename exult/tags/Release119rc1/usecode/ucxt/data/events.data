@@ -1,0 +1,6 @@
+# value:Mnemonic:Description
+0	NPCProximity	""
+1	DoubleClick	""
+2	InternalExec	"Internal call via intr. 1 or 2."
+3	EggProximity	""
+4	Weapon		"From weapons.dat"

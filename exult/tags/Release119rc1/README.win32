@@ -1,0 +1,129 @@
+Exult instructions for Windows
+------------------------------------
+
+
+To play
+---------
+Copy exult.exe into your Ultima 7 directory.
+If you are currently playing a game of Ultima 7, be sure 
+ to remove the gamedat directory. (don't forget to back
+ it up first...)
+Run exult.exe
+Have fun!
+
+
+Notes
+------
+* Exult generates the files 'stdout.txt' and 'stderr.txt'.
+These may give you some idea of what is going on
+under the hood. When Exult suddenly quits, sometimes
+these files can help.
+
+* If you're interested in building Exult for windows yourself, 
+there are two sections below describing how.
+
+
+To build in Windows using MinGW
+-----------------------------------
+(Thanks to Travis Howell)
+
+Download and install MinGW from:
+http://prdownloads.sourceforge.net/mingw/MinGW-3.1.0-1.exe
+
+Download and install MSYS from:
+http://prdownloads.sourceforge.net/mingw/MSYS-1.0.9.exe
+
+Download the SDL binaries & headers from:
+http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
+Unzip this file into the main directory of Exult source code. (it should add a SDL subdirectory)
+
+Download the other required developer tools from:
+http://exult.sourceforge.net/snapshots/exult_dev_win32.zip
+Unzip this file into the MinGW directory.
+
+If you want to compile Exult Studio get the additional required developer tools from:
+http://exult.sourceforge.net/snapshots/exult_studio_dev_win32.zip
+Unzip this file into the MinGW directory.
+
+Start MSYS
+
+Change to the directory where you unpacked the Exult source code.
+(ie cd C:/exult )
+
+Open makefile.mingw from the Exult directory in a text editor and change C:/Ultima7 to the directory you want Exult to be installed to.
+(ie C:/Games/Ultima7 )
+
+If you are compiling Exult Studio, open makefile.studio.mingw from the Exult directory in a text editor and change C:/Ultima7 to the directory you want Exult Studio to be installed to. 
+(It must be the same directory that Exult is installed into to!)
+(ie C:/Games/Ultima7 )
+
+Type 'make -f makefile.mingw install' without quotes to compile and install Exult for Windows
+
+Type 'make -f makefile.mingw toolsinstall' without quotes to compile and install the Exult Tools for Windows
+
+Type 'make -f makefile.studio.mingw install' without quotes to compile and install Exult Studio for Windows
+Copy over the required library files (*.dll) from the bin directory of MinGW to the installation directory of Exult Studio
+
+Once compile has finished and been installed exit MSYS
+
+Run Exult.exe and enjoy the game :-)
+
+
+To build in Windows using MSVC 6.0
+----------------------------------
+
+1) Download SDL and ZLib for Win32/MSVC6. Add their Include and Library
+directories to MSVC's Search Directories (Tools->Options->Directories).
+
+SDL: http://www.libsdl.org/
+ZLib: http://www.gzip.org/zlib/
+
+2) Set The environment variable EXULT_INSTALL_PATH to the directory where you
+want the Exult binaries to be copied to when doing an Install Build. This is
+optional and is only required for when doing an Install build.
+
+3) Load the Exult Project Workspace "msvcstuff/Exult.dsw" in MSVC 6.0
+(File->Load Workspace)
+
+4) If required, enter the correct "Working Directory" in the "Debug tab" of the
+Exult project settings for all Configurations.
+
+5) Select and Build Exult using one of the 4 Configuration (Win32 Debug,
+Win32 Release, Win32 Debug Install or Win32 Release Install).
+
+6) Have Fun!
+
+
+To cross-build from Linux
+---------------------------
+(Note: this hasn't been tested recently, and may or may not work)
+
+Exult is originally a Linux project, using a platform
+independent API called SDL. (Simple DirectMedia Layer)
+
+Because of this, the Windows version has been built in
+Linux, using the cross-compiler Mingw32.
+
+Please note it is not necessary to build Exult yourself,
+since the Windows executable is already included.
+
+1) get and install Mingw32 and SDL.
+
+SDL: http://www.libsdl.org/index.php
+
+Mingw32: http://www.libsdl.org/extras/win32/cross/README.txt
+
+Installation instructions can be found on the same pages.
+(make sure to get the DirectX headers, and build SDL for the cross compiler)
+
+2) build exult:
+
+configure --host=i386-linux --target=i386-mingw32 --enable-win32
+make
+
+3) copy exult.exe to your U7 directory, and run it from windows
+If you are currently playing a game of Ultima 7, be sure
+to make a backup of the gamedat directory.
+ 
+4) Have fun :-)
+

@@ -1,0 +1,88 @@
+To: exult-general@lists.sourceforge.net
+From: "Coder Infidel" <coder_infidel@hotmail.com>
+Sender: exult-general-admin@lists.sourceforge.net
+Status: R 
+X-Status: N
+
+> > I noticed that several flags are used for egg activation. This is what I
+> > have found so far:
+>
+>All right!  This is a lot more information than was in u7tech; how did you
+>figure this stuff out?
+>
+>As before, I'll check this into the 'docs' directory.
+>
+>-- Jeff
+
+Most of the file formats I have figured out by looking at and modifying the 
+files, then running the game to see what happens. Of course "looking" 
+doesn't mean just with a hex editor; I write simple programs that print out 
+files in a table format. On the other hand, egg fields were not too 
+difficult because (as I think I have mentioned) Serpent Isle has a cheat 
+where you can press F9 and click on an egg to see all its info. If you press 
+F9 in the Black Gate you can click on any item but it won't show the 
+egg-specific data.
+
+I have also discovered the format of the EQUIP.DAT file, which tells the 
+game which items are given to monsters when they are created by eggs. As is 
+common with Ultima 7, the first byte is a count of how many records in the 
+file, with each record being 60 bytes. A record is simply an array of 10 
+elements of 6 bytes each, with each element describing a type of item:
+
+16 bit integer: item shape
+byte: probability that this item will be created
+byte: the quantity of this item
+16 bit integer: unused (always zero)
+
+So a monster can be given up to 10 types of items, with unused elements 
+having a shape number of zero (other fields are zero too). Note that the 
+quantity can apply to items which do not normally have a quantity, e.g. 
+gems. Now you must be wondering how these records correspond to each type of 
+monster...
+
+You already know the purpose of MONSTER.DAT and that there are 25 bytes per 
+records. There is still a lot in this file to decipher, but here is what I 
+know:
+
+(You already know about these fields)
+int16: monster shape
+byte: strength (multiplied by 4?)
+byte: dexterity (multiplied by 4?)
+byte: intelligence (multiplied by 4?)
+byte: combat_skill (multiplied by 4?)
+byte: armour (I am doubtful about this one)
+byte: unknown (always in the range [0,7])  jsf - Guessing weapon.
+byte: unknown (probably flags)
+int16: ability flags
+  bit 0: can fly
+  bit 1: can swim
+  bit 2: can walk
+  bit 3: ethereal (can walk through walls)
+  bit 4: unknown
+  bit 5: unknown (only "gazer" and "Hook" have this set)
+  bit 6: unused?
+  bit 7: the monster can only be damaged by magical weapons
+  bit 8: unknown (only "bat" has this set)
+  bit 9: the monster moves very slowly (e.g. slime, corpser, etc)
+  bit 10: unknown (only "skeleton" has this set)
+  bits 11-15: unused?
+3 bytes: unknown
+byte: *** the index of the record in EQUIP.DAT
+int16: unused (always zero)
+int16: unknown
+6 bytes: unused
+
+From this you can see how to give items to newly spawned monsters (though 
+this wouldn't really be useful until combat is implemented).
+
+- Infidel
+
+________________________________________________________________________
+Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com
+
+
+_______________________________________________
+Exult-general mailing list
+Exult-general@lists.sourceforge.net
+http://lists.sourceforge.net/mailman/listinfo/exult-general
+

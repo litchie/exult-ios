@@ -1,0 +1,18 @@
+# These messages are used in the Exult engine, and follow the
+# game-specific ones.
+2800:Remets cette chaise à sa place !
+2801:Voleur !!
+2802:Sale rascal !!
+2803:C'est pas drôle !
+2804:Qui a déplacé ma chaise ??
+2805:On dirait que tu vas bien.
+2806:Tout va bien ?
+2807:Un dessert ?
+2808:Bon appétit !
+2809:Spécialité de la maison !
+2810:Avatar ! Retiens-toi !
+2811:Tu vois bien que le lit est occupé !
+2812:La personne dans ce lit n'a pas l'air de vouloir de compagnie.
+2813:Tu ne me perdras pas si facilement !
+2814:Ah, te voila !
+2815:Trouvé !
