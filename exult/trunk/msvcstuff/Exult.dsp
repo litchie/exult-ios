@@ -1969,5 +1969,41 @@ SOURCE=..\README.MacOS
 SOURCE=..\README.win32
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\combat_opts.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\convmusic.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\headers\exceptions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\find_nearby.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gamerend.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\singles.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\stackframe.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\ucdebugging.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\ucfunction.h
+# End Source File
 # End Target
 # End Project
