@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //MacOS-specific code
 #ifdef MACOS
 
+#include <string>
+
 #include "mac_midi.h"
 
 
@@ -37,7 +39,7 @@ void Mac_QT_midi::stop_track(void)
 
 Mac_QT_midi::~Mac_QT_midi(void)
 {
-  stop_track();
+	stop_track();
 }
 
 bool	Mac_QT_midi::is_playing(void)
@@ -45,13 +47,14 @@ bool	Mac_QT_midi::is_playing(void)
 }
 
 
-void Mac_QT_midi::start_track(const char *name,bool repeat)
+void Mac_QT_midi::start_track(const char *name, bool repeat)
 {
+	mRepeat = repeat;
 }
 
 const	char *Mac_QT_midi::copyright(void)
 {
-  return "Internal QuickTime MIDI player";
+	return "Internal QuickTime MIDI player";
 }
 
 
