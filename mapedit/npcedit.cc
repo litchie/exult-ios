@@ -208,6 +208,14 @@ int ExultStudio::init_npc_window
 		}
 					// Store address with window.
 	gtk_object_set_user_data(GTK_OBJECT(npcwin), (gpointer) addr);
+					// Store name, ident.
+	set_entry("npc_name_entry", name.c_str());
+	set_entry("npc_ident_entry", ident);
+					// Shape/frame.
+	set_entry("npc_shape", shape);
+	set_entry("npc_frame", frame);
+
+					// Set flag buttons.
 	GtkTable *ftable = GTK_TABLE(
 			glade_xml_get_widget(app_xml, "npc_flags_table"));
 					// Set flag checkboxes.
@@ -219,8 +227,24 @@ int ExultStudio::init_npc_window
 		assert (cbox != 0);
 		const char *name = glade_get_widget_name(GTK_WIDGET(cbox));
 					// Names: npc_flag_xx_nn, where
-					//   xx = si, ob, tf.
+					//   xx = si, of, tf.
 		cout << "Flag: " << name << endl;//++++TESTING.
+					// ++++Maybe make this a subroutine?
+		if (strncmp(name, "npc_flag_", 9) != 0)
+			continue;
+		long bits = 0;		// Which flag.
+		if (strncmp(name + 9, "si", 2) == 0)
+			bits = siflags;
+		else if (strncmp(name + 9, "of", 2) == 0)
+			bits = oflags;
+		else if (strncmp(name + 9, "tf", 2) == 0)
+			bits = type_flags;
+		else
+			continue;
+		int fnum = atoi(name + 9 + 3);
+		if (fnum >= 0 && fnum < 32)
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cbox), 
+					(bits&(1<<fnum)) != 0);
 		}
 //++++++++++++
 	return 1;
