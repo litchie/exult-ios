@@ -1,6 +1,8 @@
 # Exult makefile for use in Windows with mingw32
 # It may require a little tweaking. (paths)
 
+# Where is Ultima 7 installed
+U7PATH=C:/Ultima7
 
 # Base of the exult source (I'm building in a subdir called 'debug')
 SRC=.
@@ -18,7 +20,9 @@ CPPFLAGS=-DVERSION=\"0.90alpha1\" -DEXULT_DATADIR=\"data\" -g3 -DDEBUG -DAUTOCON
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
 	$(SDL_INCLUDES)
 
-CXXFLAGS=-mwindows -O2 -finline-functions -funroll-loops -funroll-all-loops -fstrict-aliasing
+#Umm, no, I'm disabling these optimizations because they seem to be causing crashes
+#CXXFLAGS=-mwindows -O2 -finline-functions -funroll-loops -funroll-all-loops -fstrict-aliasing
+CXXFLAGS=-mwindows -O2
 CXX=g++
 
 LFLAGS=-g3 -mwindows
@@ -97,9 +101,9 @@ clean:
 	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx
 
 install: $(EXEC)
-	strip $(EXEC) -o c:/ultima7/$(EXEC)
-	cp data/exult.flx c:/ultima7/data/exult.flx
-	cp data/midisfx.flx c:/ultima7/data/midisfx.flx
+	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
+	cp data/exult.flx  $(U7PATH)/data/exult.flx
+	cp data/midisfx.flx  $(U7PATH)/data/midisfx.flx
 
 run:
 	start $(EXEC)

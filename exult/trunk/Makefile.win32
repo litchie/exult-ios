@@ -1,6 +1,8 @@
 # Exult makefile for use in Windows with mingw32
 # It may require a little tweaking. (paths)
 
+# Where is Ultima 7 installed
+U7PATH=C:\\Ultima7
 
 # Base of the exult source (I'm building in a subdir called 'debug')
 SRC=.
@@ -96,10 +98,10 @@ clean:
 	del $(OBJS) tools\expack.exe expack\txt2cc.o $(EXEC) data\exult.flx
 
 install: $(EXEC)
-	strip $(EXEC) -o c:/ultima7/$(EXEC)
-	if not exist c:\ultima7\data md c:\ultima7\data
-	copy data\exult.flx c:\ultima7\data
-	copy data\midisfx.flx c:\ultima7\data
+	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
+	if not exist $(U7PATH)\data md  $(U7PATH)\data
+	copy data\exult.flx  $(U7PATH)\data
+	copy data\midisfx.flx  $(U7PATH)\data
 
 run:
 	start $(EXEC)
