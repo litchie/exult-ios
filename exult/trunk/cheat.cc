@@ -65,6 +65,7 @@ Cheat::Cheat() {
 	wizard_mode = false;
 	map_editor = false;
 	tile_grid = false;
+	edit_mode = move;
 	edit_lift = 0;
 	edit_shape = edit_frame = 0;
 	infravision = false;

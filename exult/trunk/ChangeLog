@@ -1,3 +1,11 @@
+2002-03-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* cheat.h,server.h,mouse.cc,objserial.cc:  Edit mode set from
+	ExultStudio, with mouse changed depending on mode (which doesn't
+	do anything yet).
+	* exult_studio.glade:  'Mode' menu added (but modes not
+	implemented yet.)
+
 2002-03-22  Ryan Nunn  <triforce@merlin.net.au>
 	* usecode/ucinternal.cc : Added break in opcode 0xCD.
 

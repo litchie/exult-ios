@@ -50,7 +50,6 @@ enum Msg_type
 	npc = 3,			// Editing an NPC.
 	user_responded = 4,		// User performed requested action.
 	cancel = 5,			// Cancel operation.
-//	num_npcs = 6,			// Get/return # of NPC's.
 	info = 6,			// Game info. request/response.  See
 					//   Game_info_xxx in objserial.h.
 	write_map = 7,			// Save map.
@@ -65,8 +64,9 @@ enum Msg_type
 	send_terrain = 16,		// Send 512-byte terrain to client.
 	terrain_editing_mode = 17,	// 1 to turn on, 0 for off, -1 to undo.
 	set_edit_shape = 18,		// Set shape/frame to 'paint' with.
-	view_pos = 19			// Tile loc., size, scale of what's
+	view_pos = 19,			// Tile loc., size, scale of what's
 					//   shown in gamewin.  Sent both ways.
+	set_edit_mode = 20		// Move(0), paint(1), select(2).
 	};
 
 // I/O routines:

@@ -1532,6 +1532,7 @@ static void Drop_dragged_shape
 	int scale = gwin->get_win()->get_scale();
 	if (!cheat.in_map_editor())	// Get into editing mode.
 		cheat.toggle_map_editor();
+	gwin->get_map()->set_map_modified();
 	x /= scale;			// Watch for scaled window.
 	y /= scale;
 	ShapeID sid(shape, frame);
@@ -1585,7 +1586,6 @@ static void Drop_dragged_shape
 		for (int lift = edit_lift; lift <= 11; lift++)
 			if (gwin->drop_at_lift(newobj, x, y, lift))
 				{	// Success.
-				gwin->get_map()->set_map_modified();
 				if (!ireg)
 					gwin->get_map()->set_ifix_modified(
 					   newobj->get_cx(), newobj->get_cy());

@@ -31,6 +31,7 @@
 #include "Gump_manager.h"
 #include "barge.h"
 #include "actors.h"
+#include "cheat.h"
 
 short Mouse::short_arrows[8] = {8, 9, 10, 11, 12, 13, 14, 15};
 short Mouse::med_arrows[8] = {16, 17, 18, 19, 20, 21, 22, 23};
@@ -239,9 +240,23 @@ void Mouse::set_speed_cursor()
 #else
     else if (gump_man->gump_mode())	// A fast check.
 	cursor = hand;
-#endif    
-    else if (gwin->skip_lift == 0)	// Terrain-editing.
-	cursor = hand;
+#endif
+    else if (cheat.in_map_editor()) 
+    {
+    	if (gwin->skip_lift == 0)	// Terrain-editing.++++May change.
+		cursor = short_combat_arrows[4];	// Short S red arrow.
+	else switch (cheat.get_edit_mode())
+	{
+	case Cheat::move:
+	    cursor = hand; break;
+	case Cheat::paint:
+	    cursor = short_combat_arrows[4]; break;
+	case Cheat::select:
+	    cursor = short_arrows[7]; break;		// Short NW green.
+	case Cheat::hide:
+	    cursor = redx; break;
+	}
+    }
     if (cursor == dontchange)
     {
         Barge_object *barge = gwin->get_moving_barge();

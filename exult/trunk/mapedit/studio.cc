@@ -172,6 +172,42 @@ on_preferences_activate                (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
+on_move1_activate	               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+					// NOTE:  modes are defined in cheat.h.
+	ExultStudio::get_instance()->set_edit_mode(0);
+}
+
+C_EXPORT void
+on_paint1_activate	               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->set_edit_mode(1);
+}
+
+C_EXPORT void
+on_select1_activate	               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->set_edit_mode(2);
+}
+
+C_EXPORT void
+on_hide1_activate	               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->set_edit_mode(3);
+}
+
+C_EXPORT void
+on_unhide1_activate	               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+//+++++++++++++++
+}
+
+C_EXPORT void
 on_play_button_clicked			(GtkToggleButton *button,
 					 gpointer	  user_data)
 {
@@ -908,6 +944,18 @@ void ExultStudio::set_edit_terrain
 	send_to_server(Exult_server::terrain_editing_mode, data, ptr - data);
 	if (browser && !terrain)
 		browser->end_terrain_editing();
+	}
+
+void ExultStudio::set_edit_mode
+	(
+	int md				// 0-3.
+	)
+	{
+	unsigned char data[Exult_server::maxlength];
+	unsigned char *ptr = &data[0];
+	Write2(ptr, md);
+					//   haven't got an interface yet.
+	send_to_server(Exult_server::set_edit_mode, data, ptr - data);
 	}
 
 /*
