@@ -64,6 +64,7 @@ static int Handle_gump_event
 	)
 {
 	int scale_factor = Game_window::get_game_window()->get_fastmouse() ? 1 : Game_window::get_game_window()->get_win()->get_scale();
+	static bool rightclick;
 
 	switch (event.type)
 	{
@@ -75,19 +76,23 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 		if (event.button.button == 1)
 			gump->mouse_down(event.button.x / scale_factor, 
 						event.button.y / scale_factor);
+		else if (event.button.button == 2 && Game_window::get_game_window()->get_mouse3rd())
+			gump->key_down(SDLK_RETURN);
+		else if (event.button.button == 3)
+			rightclick = true;
 		else if (event.button.button == 4) // mousewheel up
 			gump->mousewheel_up();
 		else if (event.button.button == 5) // mousewheel down
 			gump->mousewheel_down();
-		else if (event.button.button == 2 && Game_window::get_game_window()->get_mouse3rd())
-			gump->key_down(SDLK_RETURN);
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 1)
 			gump->mouse_up(event.button.x / scale_factor,
 						event.button.y / scale_factor);
-		else if (event.button.button == 3 && Game_window::get_game_window()->get_mouse3rd())
+		else if (event.button.button == 3 && Game_window::get_game_window()->get_mouse3rd() && rightclick) {
+			rightclick = false;
 			return 0;
+		}
 		break;
 	case SDL_MOUSEMOTION:
 		Mouse::mouse->move(event.motion.x / scale_factor, event.motion.y / scale_factor);

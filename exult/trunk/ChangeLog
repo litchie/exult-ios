@@ -1,3 +1,6 @@
+2001-11-11  Christian Ohm  <chr.ohm@gmx.net>
+	* exult.cc, gumps/gump_utils.cc: test if third mouse button was
+	  pressed before release (fix for bug #480495)
 
 2001-11-11  Patrick Burke <takhisisii@yahoo.com.au>
 	* usecode/ucxt/* : general debugging, code cleanup and commenting.
