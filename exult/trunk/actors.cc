@@ -194,7 +194,8 @@ void Main_actor::handle_event
 		Chunk_object_list *olist = gwin->get_objects(cx, cy);
 		olist->setup_cache();
 		int new_lift;		// Might climb/descend.
-		if (olist->is_blocked(get_lift(), sx, sy, new_lift))
+		if (olist->is_blocked(get_lift(), sx, sy, new_lift) ||
+		    at_destination())
 			{
 			stop();
 			return;
