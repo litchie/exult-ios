@@ -228,6 +228,8 @@ public:
 	Usecode_value find_nearby(Usecode_value& objval,
 		Usecode_value& shapeval, Usecode_value& qval,
 							Usecode_value& mval);
+	Usecode_value find_nearest(Usecode_value& objval,
+			Usecode_value& shapeval, Usecode_value& unknown);
 	Usecode_value find_direction(Usecode_value& from, Usecode_value& to);
 	Usecode_value count_objects(Usecode_value& objval,
 		Usecode_value& shapeval, Usecode_value& qualval,
@@ -263,6 +265,7 @@ public:
 	USECODE_INTRINSIC_DECL(select_from_menu2);
 	USECODE_INTRINSIC_DECL(input_numeric_value);
 	USECODE_INTRINSIC_DECL(set_item_shape);
+	USECODE_INTRINSIC_DECL(find_nearest);
 	USECODE_INTRINSIC_DECL(die_roll);
 	USECODE_INTRINSIC_DECL(get_item_shape);
 	USECODE_INTRINSIC_DECL(get_item_frame);
@@ -292,6 +295,8 @@ public:
         USECODE_INTRINSIC_DECL(add_party_items);
         USECODE_INTRINSIC_DECL(play_music);
         USECODE_INTRINSIC_DECL(npc_in_party);
+        USECODE_INTRINSIC_DECL(find_nearby_avatar);
+        USECODE_INTRINSIC_DECL(is_npc);
         USECODE_INTRINSIC_DECL(display_runes);
         USECODE_INTRINSIC_DECL(click_on_item);
         USECODE_INTRINSIC_DECL(find_nearby);
