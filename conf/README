@@ -12,3 +12,9 @@ being a doddle to handle programmatically
 This lends itself very nicely to configuration files, and that's _exactly_
 what we're doing here.
 
+
+** Warning **
+Just at the moment, I'm not supporting:
+
+* XML empty tags (I did, but I'm not right now)
+* Spaces,tabs,carriage returns, line-feeds inside entities (just because)
