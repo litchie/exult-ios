@@ -33,7 +33,6 @@
 #include "gameclk.h"
 #include "gamewin.h"
 #include "gamemap.h"
-#include "items.h"
 #include "npctime.h"
 #include "paths.h"
 #include "ucmachine.h"
@@ -707,7 +706,6 @@ breaks anything!  */
 		{
 					// Get data.  Not sure about delay.
 		int weapon = data1, dir = data2&0xff, delay = data2>>8;
-		cout << "Missile egg:  " << item_names[weapon] << endl;
 		Shape_info& info = ShapeID::get_info(weapon);
 		Weapon_info *winf = info.get_weapon_info();
 		int proj;
@@ -1025,13 +1023,10 @@ bool Field_object::field_effect
 		if (get_shapenum() == 561)
 			{
 			actor->reduce_health(5 + rand()%4);
-			actor->say(first_ouch, last_ouch);
 			}
 		else if (rand()%2)
 			{
 			actor->reduce_health(1);
-			if (rand()%2)
-				actor->say(first_ouch, last_ouch);
 			}
 					// But no sleeping here.
 		actor->clear_flag(Obj_flags::asleep);
@@ -1041,7 +1036,6 @@ bool Field_object::field_effect
 		    (actor->get_flag(Obj_flags::might) ? 2 : 1) < rand()%40)
 			{
 			actor->reduce_health(2 + rand()%3);
-			actor->say(first_ouch, last_ouch);
 			}
 		return false;
 		}
@@ -1085,7 +1079,7 @@ void Field_object::activate
 	}
 
 /*
- *	Avatar stepped on it.
+ *	Someone stepped on it.
  */
 
 void Field_object::activate
@@ -1094,9 +1088,6 @@ void Field_object::activate
 	bool /* must */			// If 1, skip dice roll.
 	)
 	{
-//++++++Maybe this test should be removed:
-	if (!obj->get_flag(Obj_flags::in_party))
-		return;			// Not a party member.
 	if (field_effect((Actor *) obj))// Apply field.
 		remove_this(0);		// Delete sleep/poison if applied.
 	}
