@@ -45,7 +45,7 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 	npcs = new Actor *[num_npcs];
 	for (int i = 0; i < num_npcs; i++)
 		{
-					// Not sure about these.
+					// Get chunk/tile coords.
 		unsigned locx = Read1(nfile);
 		unsigned locy = Read1(nfile);
 					// Get shape, frame #.
@@ -65,8 +65,21 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		nfile.seekg(4, ios::cur);// Skip 4 bytes.
 					// Another inventory flag.
 		int iflag2 = Read2(nfile);
+					// Skip next 2.
+		nfile.seekg(2, ios::cur);
+					// Get char. atts.
+		int strength = Read1(nfile);
+		int dexterity = Read1(nfile);
+		int intelligence = Read1(nfile);
+		int combat = Read1(nfile);
+		nfile.seekg(5, ios::cur); //??
+		int mana = Read1(nfile);// ??
+		nfile.seekg(4, ios::cur);
+		int exp = Read2(nfile);	// Could this be 4 bytes?
+		nfile.seekg(2, ios::cur);
+		int train = Read1(nfile);
 					// Get name.
-		nfile.seekg(85, ios::cur);
+		nfile.seekg(0x40, ios::cur);
 		char namebuf[17];
 		nfile.read(namebuf, 16);
 		namebuf[16] = 0;	// Be sure it's 0-delimited.
@@ -103,6 +116,17 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 					// Put in chunk's NPC list.
 		if (npc_actor)
 			npc_actor->switched_chunks(0, olist);
+					// Set attributes.
+	actor->set_property((int) Actor::strength, strength);
+	actor->set_property((int) Actor::dexterity, dexterity);
+	actor->set_property((int) Actor::intelligence, intelligence);
+					// Hits = strength, I think.
+	actor->set_property((int) Actor::health, strength);
+	actor->set_property((int) Actor::combat, combat);
+	actor->set_property((int) Actor::mana, mana);
+	actor->set_property((int) Actor::magic, mana);
+	actor->set_property((int) Actor::exp, exp);
+	actor->set_property((int) Actor::training, train);
 #if 0
 cout << i << " Creating " << namebuf << ", shape = " << 
 	actor->get_shapenum() <<
