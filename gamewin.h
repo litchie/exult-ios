@@ -33,6 +33,7 @@ class Usecode_machine;
 class Actor;
 class Time_queue;
 class Npc_proximity_handler;
+class Npc_face_info;
 
 /*
  *	The main game window:
@@ -58,7 +59,8 @@ private:
 	Game_clock clock;		// Keeps track of time.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
 	Text_object *texts;		// Text snippets shown on screen.
-	Rectangle npc_text_rect;	// Rectangle NPC statement is shown in.
+	Npc_face_info *face_info[3];	// NPC's on-screen faces in convers.
+	int num_faces;			// # of faces.
 	Rectangle *conv_choices;	// Choices during a conversation.
 	unsigned char painted;		// 1 if we updated image buffer.
 	unsigned char focus;		// Do we have focus?
@@ -300,8 +302,10 @@ public:
 	void remove_all_text();
 					// Handle a double-click in window.
 	void double_clicked(Window xwin, int x, int y);
+	void init_faces();		// Clear out face list.
 					// Show a "face" on the screen.
 	void show_face(int shape, int frame);
+	void remove_face(int shape);	// Remove "face" from screen.
 					// Show what NPC said.
 	void show_npc_message(char *msg);
 					// Show what Avatar can say.

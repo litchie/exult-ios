@@ -373,8 +373,10 @@ void Usecode_machine::remove_npc_face
 	Usecode_value& arg1		// Shape (NPC #).
 	)
 	{
-	int shape = -arg1.get_int_value();
 	//++++++++
+	click_to_continue();
+	int shape = -arg1.get_int_value();
+	gwin->remove_face(shape);
 	cout << "Remove face " << shape << '\n';
 	}
 
