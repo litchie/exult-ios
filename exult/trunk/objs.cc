@@ -178,13 +178,14 @@ void Game_object::move
 	Game_window *gwin = Game_window::get_game_window();
 					// Figure new chunk.
 	int newcx = newtx/tiles_per_chunk, newcy = newty/tiles_per_chunk;
-	Chunk_object_list *newchunk = gwin->get_objects(newcx, newcy);
+	Chunk_object_list *newchunk = gwin->get_objects_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
 	gwin->add_dirty(this);		// Want to repaint old area.
 					// Remove from old.
-	Chunk_object_list *oldchunk = gwin->get_objects(cx, cy);
-	oldchunk->remove(this);
+	Chunk_object_list *oldchunk = gwin->get_objects_safely(cx, cy);
+	if (oldchunk)
+		oldchunk->remove(this);
 	set_lift(newlift);		// Set new values.
 	shape_pos = ((newtx%tiles_per_chunk) << 4) + newty%tiles_per_chunk;
 	newchunk->add(this);		// Updates cx, cy.
@@ -1826,13 +1827,20 @@ void Chunk_cache::update_egg
 					// Get footprint with abs. tiles.
 	Rectangle foot = egg->get_area();
 #if 1
+	Rectangle crect;		// Gets tiles within each chunk.
+	int cx, cy;
+	if (egg->get_criteria() == Egg_object::cached_in)
+		{			// Do solid rectangle.
+		Chunk_intersect_iterator all(foot);
+		while (all.get_next(crect, cx, cy))
+			gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
+		return;
+		}
 					// Just do the perimeter.
 	Rectangle top(foot.x, foot.y, foot.w, 1);
 	Rectangle bottom(foot.x, foot.y + foot.h - 1, foot.w, 1);
 	Rectangle left(foot.x, foot.y + 1, 1, foot.h - 2);
 	Rectangle right(foot.x + foot.w - 1, foot.y + 1, 1, foot.h - 2);
-	Rectangle crect;		// Gets tiles within each chunk.
-	int cx, cy;
 					// Go through intersected chunks.
 	Chunk_intersect_iterator tops(top);
 	while (tops.get_next(crect, cx, cy))
@@ -2064,6 +2072,7 @@ void Chunk_object_list::add_egg
 	)
 	{
 	add(egg);			// Add it normally.
+	egg->set_area();
 	if (cache)			// Add to cache.
 		cache->update_egg(this, egg, 1);
 	}
