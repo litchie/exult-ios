@@ -888,6 +888,50 @@ void Sit_schedule::set_action
 	}
 
 /*
+ *	Desk work.
+ */
+
+Desk_schedule::Desk_schedule
+	(
+	Actor *n
+	) : Schedule(n), chair(0)
+	{
+	static int desks[2] = {283, 407};
+	static int chairs[2] = {873,292};
+	Game_object *desk = npc->find_closest(desks, 2);
+	if (desk)
+		chair = desk->find_closest(chairs, 2);
+	}
+
+/*
+ *	Schedule change for 'desk work':
+ */
+
+void Desk_schedule::now_what
+	(
+	)
+	{
+	if (!chair)
+		return;			// Failed.
+	int frnum = npc->get_framenum();
+	if ((frnum&0xf) != Actor::sit_frame)
+		{
+		Sit_schedule::set_action(npc, chair, 0);
+		npc->start(250, 0);
+		}
+	else				// Stand up a second.
+		{
+		char frames[3];
+		frames[0] = npc->get_dir_framenum(Actor::standing);
+		frames[1] = npc->get_dir_framenum(Actor::to_sit_frame);
+		frames[2] = npc->get_dir_framenum(Actor::sit_frame);
+		npc->set_action(new Frames_actor_action(frames,
+					sizeof(frames)/sizeof(frames[0])));
+		npc->start(250, 10000 + rand()%5000);
+		}
+	}
+
+/*
  *	Schedule change for 'shy':
  */
 
