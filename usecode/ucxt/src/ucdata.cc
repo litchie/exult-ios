@@ -317,7 +317,7 @@ void UCData::load_funcs()
 	
 	for(vector<UCFunc *>::iterator i=_funcs.begin(); i!=_funcs.end(); i++)
 	{
-		_funcmap.insert(FuncMapPair((*i)->_funcid, UCFuncSet((*i)->_funcid, (*i)->_num_args)));
+		_funcmap.insert(FuncMapPair((*i)->_funcid, UCFuncSet((*i)->_funcid, (*i)->_num_args, (*i)->_return_var)));
 	}
 /*	for(map<unsigned short, UCFuncSet>::iterator i=_funcmap.begin(); i!=_funcmap.end(); i++)
 		cout << i->first << "\t" << i->second.num_args << endl;*/

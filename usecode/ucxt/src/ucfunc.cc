@@ -271,6 +271,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 						assert(current->first->_params_parsed.size()>=1);
 						assert(_externs.size()>=current->first->_params_parsed[0]);
 						FuncMap::const_iterator fmp = funcmap.find(_externs[current->first->_params_parsed[0]]);
+						assert(fmp!=funcmap.end());
 						#ifdef DEBUG_PARSE2
 						cout << "CALL:     " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
 						#endif
@@ -308,7 +309,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 					}
 				}
 			}
-			if(opsneeded!=0)
+			if((opsneeded!=0) && (current->second==false))
 			{
 				// if it's a 'push' opcode and we need items to return that we've popped off the stack...
 				if(opcode_table_data[current->first->_id].num_push!=0)
@@ -320,9 +321,27 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 					opsfound+=opcode_table_data[current->first->_id].num_push;
 					vucc.push_back(current->first);
 					current->second=true;
-				} else {
-				  current->second=true;
 				}
+				// if it's a call to a function that returns a variable...
+				else if(opcode_table_data[current->first->_id].call_effect!=0)
+				{
+					FuncMap::const_iterator fmp = funcmap.find(_externs[current->first->_params_parsed[0]]);
+					assert(fmp!=funcmap.end());
+					
+					if(fmp->second.return_var)
+					{
+						#ifdef DEBUG_PARSE2
+						print_asm_opcode(tab_indent(4, cout << "C-"), *this, funcmap, opcode_table_data, intrinsics, *(current->first));
+						#endif
+					
+						opsfound+=1;
+						vucc.push_back(current->first);
+						current->second=true;
+					}
+				}
+				else
+					current->second=true;
+					
 				// if we've found all the ops we were searching for, return them
 				if(opsfound>=opsneeded)
 				{
@@ -1037,6 +1056,11 @@ void readbin_UCFunc(ifstream &f, UCFunc &ucf)
 
 			code_offset+=otd.num_bytes;
 
+			/* if we're an opcode that sets a return value, we need to mark the
+				function as one that returns a value */
+			if(otd.flag_return==true)
+				ucf._return_var=true;
+			
 			ucf._opcodes.push_back(ucop);
 
 			#ifdef DEBUG_READ

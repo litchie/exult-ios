@@ -22,8 +22,6 @@
 #define EFF_STUPIDEFF     0x8000
 
 
-
-
 #define UCC_CMPGT 0x16
 #define UCC_CMPLT 0x17
 #define UCC_CMPGE 0x18
@@ -97,15 +95,16 @@ class UCOpcodeData
 		UCOpcodeData() : opcode(0x00), num_bytes(0) {};
 		UCOpcodeData(const vector<string> &v)
 		{
-			#if 0 // debugging
-			if((v.size()==11)==false)
+			//#if 0 // debugging
+			if((v.size()==12)==false)
 			{
+				cerr << "Error in opcodes file:" << endl;
 				for(unsigned int i=0; i<v.size(); i++)
-					cout << v[i] << '\t';
-				cout << endl;
+					cerr << v[i] << '\t';
+				cerr << endl;
 			}
-			#endif
-			assert(v.size()==11);
+			//#endif
+			assert(v.size()==12);
 			opcode = strtol(v[1].c_str(), 0, 0);
 			name = v[2];
 			asm_nmo = v[3];
@@ -116,6 +115,8 @@ class UCOpcodeData
 			num_pop = strtol(v[8].c_str(), 0, 0);
 			num_push = strtol(v[9].c_str(), 0, 0);
 			call_effect = strtol(v[10].c_str(), 0, 0);
+			assert(v[11].size()>=1);
+			flag_return = (v[11][0]=='0') ? false : true;
 			map_type_size(param_types, param_sizes);
 		};
 		
@@ -132,6 +133,8 @@ class UCOpcodeData
 		unsigned int   num_pop;
 		unsigned int   num_push;
 		unsigned int   call_effect;
+		bool           flag_return;
+		
 };
 
 extern vector<UCOpcodeData> opcode_table_data;
