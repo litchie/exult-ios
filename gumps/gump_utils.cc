@@ -39,7 +39,15 @@
 using std::cout;
 using std::endl;
 using std::toupper;
-using std::snprintf;
+
+#ifndef HAVE_SNPRINTF
+extern int snprintf(char *, size_t, const char *, /*args*/ ...);
+namespace std {
+using ::snprintf;
+}
+#else
+using ::snprintf;
+#endif
 
 /*
  *	Verify user wants to quit.
