@@ -1,3 +1,6 @@
+2004-02-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/bg/custom_sword.shp: custom sword paperdoll art
+
 2004-02-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: paint NPCs translucently to prevent palette-cycling
 	* shapes/shapevga.cc: removed Spark-translucency hack

@@ -45,11 +45,11 @@ Magic boomerang		550		Willem Jan
 Fire sword		551		Oblivious
 Hawk			555		Willem Jan
 Great dagger		561		Willem Jan
-Star bursts		565		Willem Jan	(belt-only)
+Star bursts		565		Willem Jan	(still need in-hand)
 Main gauche		591		-		(left & right hand)
 Cleaver			614		Adam
 Knives			615		Willem Jan
-Custom sword		635		-		(using Dragon Slayer)
+Custom sword		635		Willem Jan
 Hoe of destruction	548		Tristan
 Firedoom staff		553		Adam
 Death Scythe		562		Willem Jan
