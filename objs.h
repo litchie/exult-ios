@@ -193,6 +193,12 @@ public:
 		{ return 0; }
 	virtual int is_egg()		// An egg?
 		{ return 0; }
+					// Count contained objs.
+	virtual int count_objects(int shapenum)
+		{ return 0; }
+					// Get contained objs.
+	virtual int get_objects(Vector& vec, int shapenum)
+		{ return 0; }
 	};
 
 /*
@@ -236,6 +242,10 @@ public:
 	virtual void activate(Usecode_machine *umachine);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
+					// Count contained objs.
+	virtual int count_objects(int shapenum);
+					// Get contained objs.
+	virtual int get_objects(Vector& vec, int shapenum);
 	};
 
 /*
@@ -443,6 +453,12 @@ enum Axis
 	xaxis = 0,
 	yaxis = 1
 	};
+
+extern unsigned Arctangent			// Find angle (0-359).
+	(
+	int deltay,
+	int deltax
+	);
 
 /*
  *	A sequence of frames.  Frame 0 is the resting state.
