@@ -372,18 +372,19 @@ void Audio::Init(int _samplerate,int _channels)
          if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
                  fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
          }
-#if DEBUG
+
+#if 0
          cout << "We think SDL will call-back for " << actual.samples <<" bytes at a time." << endl;
 #endif
 
 	wanted=actual;
-	_buffering_unit=actual.samples/_channels;
-#if DEBUG
+	_buffering_unit=actual.size;
+#if 0
          cout << "Each buffer in the mixing ring is " << _buffering_unit <<" bytes." << endl;
 #endif
 	SDL_open=true;
 #if DEBUG
-	cout << "Audio system assembled. Ring buffers at "<<_buffering_unit<<endl;
+	cout << "Audio system assembled. Audio buffer at "<<_buffering_unit<<endl;
 #endif
 	midi=new MyMidiPlayer();
 	mixer=new Mixer(_buffering_unit,_channels,actual.silence);

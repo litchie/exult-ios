@@ -1,3 +1,6 @@
+2001-01-09  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* audio/audio.cc, audio/Mixer.cc: experimental audio-buffer fix
+
 2000-01-08  Max Horn  <max@quendi.de>
 	* I had broken the game by replacing tiles_per_schunk with c_fade_out_time
 	  (instead of c_tiles_per_schunk). Fixed. Sorry again.
