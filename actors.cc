@@ -836,11 +836,6 @@ int Actor::approach_another
  *	Get information about a tile that an actor is about to step onto.
  */
 
-#if !defined(BEOS) && !defined(ALPHA_LINUX_CXX) && !defined(_MSC_VER)
-#if __GNUG__ < 3
-inline
-#endif
-#endif
 void Actor::get_tile_info
 	(
 	Actor *actor,			// May be 0 if not known.

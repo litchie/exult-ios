@@ -176,10 +176,6 @@ inline void Barge_object::swap_dims
  *	Get footprint in tiles.
  */
 
-// Can't inline like this in MSVC
-#if (!(defined(_MSC_VER) || defined(BEOS)))
-inline
-#endif
 Rectangle Barge_object::get_tile_footprint
 	(
 	)

@@ -258,7 +258,6 @@ uint32 *BuildTuneSequence(midi_event *evntlist, int ppqn, int part_poly_max[32],
 	 * At the same time, calculate the max. polyphony for each part,
 	 * and also the part->instrument mapping.
 	 */
-	COUT("NEW MIDI SONG, ppqn = " << ppqn << ", repat = " << repeat);
 	while(eventPos)
 	{
 		int status = (eventPos->status&0xF0)>>4;
