@@ -57,6 +57,20 @@ Shape_group::Shape_group
 	}
 
 /*
+ *	Remove i'th entry.
+ */
+
+void Shape_group::del
+	(
+	int i
+	)
+	{ 
+	assert(i >= 0 && i < size());
+	std::vector<int>::erase(begin() + i); 
+	file->modified = true;
+	}
+
+/*
  *	Swap two entries.
  */
 
@@ -68,6 +82,7 @@ void Shape_group::swap
 	int x0 = (*this)[i];
 	(*this)[i] = (*this)[i + 1];
 	(*this)[i + 1] = x0;
+	file->modified = true;
 	}
 
 /*
