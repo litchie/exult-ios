@@ -405,11 +405,12 @@ void Scheduled_usecode::handle_event
 			break;
 			}
 		default:
-					// Frames with direction.
-			if (opcode >= 0x60 && opcode <= 0x7f)
+					// Frames with dir.  U7-verified!
+			if (opcode >= 0x61 && opcode <= 0x70)
 				{
 				Usecode_value v(obj->get_dir_framenum(
-					obj->get_usecode_dir(), opcode));
+					obj->get_usecode_dir(), 
+					opcode - 0x61));
 				usecode->set_item_frame(objval, v);
 				}
 					// ++++Guessing:
@@ -879,6 +880,7 @@ void Usecode_machine::set_item_shape
 
 /*
  *	Set an item's frame.
+ *	+++++Modified to just set_dirty on Nov22,2000
  */
 
 void Usecode_machine::set_item_frame
@@ -902,29 +904,18 @@ void Usecode_machine::set_item_frame
 		{
 		Gump_object *gump = gwin->find_gump(item);
 		if (gump)
+			{
+			item->set_frame(frame);
 			gump->paint(gwin);
+			}
 		}
 	else
 		{			// Figure area to repaint.
-		Rectangle rect = gwin->get_shape_rect(item);
-		rect.enlarge(8);
-		rect = gwin->clip_to_win(rect);
-		gwin->paint(rect);
+		gwin->add_dirty(item);
+		item->set_frame(frame);
+		gwin->add_dirty(item);
 		}
-	gwin->show();
-	}
-
-/*
- *	Get an item's shape.
- */
-
-int Usecode_machine::get_item_shape
-	(
-	Usecode_value& item_arg
-	)
-	{
-	Game_object *item = get_item(item_arg);
-	return (item == 0 ? 0 : item->get_shapenum());
+//	gwin->show();
 	}
 
 /*
@@ -959,55 +950,6 @@ int Usecode_machine::npc_in_party
 	)
 	{
 	return (npc && npc->get_party_id() >= 0);
-	}
-
-/*
- *	Add an NPC to the party.
- */
-
-void Usecode_machine::add_to_party
-	(
-	Game_object *npc
-	)
-	{
-	if (!npc || party_count == PARTY_MAX || npc_in_party(npc))
-		return;			// Can't add.
-	npc->set_party_id(party_count);
-	party[party_count++] = npc->get_npc_num();
-	npc->set_schedule_type(Schedule::follow_avatar);
-// cout << "NPC " << npc->get_npc_num() << " added to party." << endl;
-	}
-
-/*
- *	Remove an NPC from the party.
- */
-
-void Usecode_machine::remove_from_party
-	(
-	Game_object *npc
-	)
-	{
-	if (!npc)
-		return;
-	int id = npc->get_party_id();
-	if (id == -1)			// Not in party?
-		return;
-	if (party[id] != npc->get_npc_num())
-		{
-		cout << "Party mismatch!!" << endl;
-		return;
-		}
-					// Shift the rest down.
-	for (int i = id + 1; i < party_count; i++)
-		{
-		Actor *npc2 = gwin->get_npc(party[i]);
-		if (npc2)
-			npc2->set_party_id(i - 1);
-		party[i - 1] = party[i];
-		}
-	party_count--;
-	party[party_count] = 0;
-	npc->set_party_id(-1);
 	}
 
 /*
@@ -1644,8 +1586,8 @@ USECODE_INTRINSIC(die_roll)
 
 USECODE_INTRINSIC(get_item_shape)
 {
-	Usecode_value u(get_item_shape(parms[0]));
-	return(u);
+	Game_object *item = get_item(parms[0]);
+	return Usecode_value(item == 0 ? 0 : item->get_shapenum());
 }
 
 USECODE_INTRINSIC(get_item_frame)
@@ -1782,15 +1724,42 @@ USECODE_INTRINSIC(set_schedule_type)
 USECODE_INTRINSIC(add_to_party)
 {
 	// NPC joins party.
-	add_to_party(get_item(parms[0]));
-	return(no_ret);
+	Game_object *npc = get_item(parms[0]);
+	if (!npc || party_count == PARTY_MAX || npc_in_party(npc))
+		return no_ret;		// Can't add.
+	npc->set_party_id(party_count);
+	party[party_count++] = npc->get_npc_num();
+	npc->set_schedule_type(Schedule::follow_avatar);
+// cout << "NPC " << npc->get_npc_num() << " added to party." << endl;
+	return no_ret;
 }
 
 USECODE_INTRINSIC(remove_from_party)
 {
 	// NPC leaves party.
-	remove_from_party(get_item(parms[0]));
-	return(no_ret);
+	Game_object *npc = get_item(parms[0]);
+	if (!npc)
+		return no_ret;
+	int id = npc->get_party_id();
+	if (id == -1)			// Not in party?
+		return no_ret;
+	if (party[id] != npc->get_npc_num())
+		{
+		cout << "Party mismatch!!" << endl;
+		return no_ret;
+		}
+					// Shift the rest down.
+	for (int i = id + 1; i < party_count; i++)
+		{
+		Actor *npc2 = gwin->get_npc(party[i]);
+		if (npc2)
+			npc2->set_party_id(i - 1);
+		party[i - 1] = party[i];
+		}
+	party_count--;
+	party[party_count] = 0;
+	npc->set_party_id(-1);
+	return no_ret;
 }
 
 USECODE_INTRINSIC(get_npc_prop)
@@ -2675,9 +2644,9 @@ USECODE_INTRINSIC(get_container)
 
 USECODE_INTRINSIC(remove_item)
 {
-	// ?Think it's 'delete object'.
+	// Think it's 'delete object'.
 	remove_item(get_item(parms[0]));
-	return(no_ret);
+	return no_ret;
 }
 
 USECODE_INTRINSIC(is_readied)

@@ -313,7 +313,7 @@ void Actor::write
 	Game_object::write_common_ireg(buf4);
 	nfile.write((char*)buf4, sizeof(buf4));
 					// Inventory flag.
-	Write2(nfile, get_first_object() ? 1 : 0);
+	Write2(nfile, !objects.is_empty() ? 1 : 0);
 			// Superchunk #.
 	nfile.put((get_cy()/16)*12 + get_cx()/16);
 	nfile.put(0);			// Unknown.
@@ -326,7 +326,7 @@ void Actor::write
 	nfile.put(0);			// Unknown 3 bytes.
 	Write2(nfile, 0);
 					// ??Another inventory flag.
-	Write2(nfile, get_first_object() ? 1 : 0);
+	Write2(nfile, !objects.is_empty() ? 1 : 0);
 
 
 	//Write first set of flags

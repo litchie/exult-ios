@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "Audio.h"
 #include "Configuration.h"
+#include "objiter.h"
 
 using std::cout;
 using std::endl;
@@ -893,20 +894,39 @@ Game_object *Gump_object::find_object
 	Game_object *list[100];
 	if (!container)
 		return (0);
-	Game_object *objects = container->get_first_object();
-	if (!objects)
-		return (0);
-	Game_object *obj = objects;
-	do
+	Object_iterator next(container->get_objects());
+	Game_object *obj;
+	while ((obj = next.get_next()) != 0)
 		{
 		Rectangle box = get_shape_rect(obj);
 		if (box.has_point(mx, my))
 			list[cnt++] = obj;
 		obj = obj->get_next();
 		}
-	while (obj != objects);
 					// ++++++Return top item.
 	return (cnt ? list[cnt - 1] : 0);
+	}
+
+/*
+ *	Get the entire screen rectangle covered by this gump and its contents.
+ */
+
+Rectangle Gump_object::get_dirty
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Rectangle rect = gwin->get_gump_rect(this);
+	if (!container)
+		return rect;
+	Object_iterator next(container->get_objects());
+	Game_object *obj;
+	while ((obj = next.get_next()) != 0)
+		{
+		Rectangle orect = get_shape_rect(obj);
+		rect = rect.add(orect);
+		}
+	return rect;
 	}
 
 /*
@@ -1027,16 +1047,17 @@ void Gump_object::paint
 	paint_button(gwin, check_button);
 	if (!container)
 		return;			// Empty.
-	Game_object *objects = container->get_first_object();
-	if (!objects)
+	Object_list& objects = container->get_objects();
+	if (objects.is_empty())
 		return;			// Empty.
 	Rectangle box = object_area;	// Paint objects inside.
 	box.shift(x, y);		// Set box to screen location.
 	int cury = 0, curx = 0;
 	int endy = box.h, endx = box.w;
 	int loop = 0;			// # of times covering container.
-	Game_object *obj = objects;
-	do				// First try is really rough.+++++
+	Game_object *obj;
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
 		{
 		Shape_frame *shape = gwin->get_shape(*obj);
 		int objx = obj->get_cx() - shape->get_xleft() + 
@@ -1069,7 +1090,6 @@ void Gump_object::paint
 				obj->get_shapenum(), obj->get_framenum());
 		obj = obj->get_next();
 		}
-	while (obj != objects);
 	}
 
 /*

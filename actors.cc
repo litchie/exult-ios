@@ -1709,7 +1709,7 @@ void Actor::die
 	body->set_flag(okay_to_take);	// Okay to take its contents.
 	Game_object *item;		// Move all the items.
 	GOVector tooheavy;		// Some shouldn't be moved.
-	while ((item = get_first_object()) != 0)
+	while ((item = objects.get_first()) != 0)
 		{
 		remove(item);
 		if (item->is_dragable())
@@ -1738,7 +1738,7 @@ Actor *Actor::resurrect
 	if (body->get_owner())		// Must be on ground.
 		return (0);
 	Game_object *item;		// Get back all the items.
-	while ((item = body->get_first_object()) != 0)
+	while ((item = body->get_objects().get_first()) != 0)
 		{
 		body->remove(item);
 		add(item, 1);		// Always succeed at adding.
