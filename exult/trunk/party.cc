@@ -290,7 +290,7 @@ void Party_manager::get_followers
 		if (!npc || npc->get_flag(Obj_flags::asleep) ||
 		    npc->get_flag(Obj_flags::paralyzed))
 			continue;	// Not available.
-		if (npc->is_moving())	// Already walking?
+		if (npc->in_queue())	// Already walking?
 			continue;	// For now, let him continue...
 		valid[validcnt++] = npc;
 		}
