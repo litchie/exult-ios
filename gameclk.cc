@@ -51,7 +51,8 @@ void Game_clock::set_time_palette
 		return;
 	}
 
-	if (gwin->is_in_dungeon() || hour < 5)
+	dungeon = gwin->is_in_dungeon();
+	if (dungeon || hour < 5)
 		new_palette = PALETTE_NIGHT;
 	else if (hour < 6)
 		new_palette = PALETTE_DAWN;

@@ -37,7 +37,8 @@ class Game_clock : public Time_sensitive
 	Time_queue *tqueue;		// The time queue.
 	short hour, minute;		// Time (0-23, 0-59).
 	int day;			// Keep track of days played.
-	int light_source_level;		// Light source level.
+	int light_source_level;		// Last set light source level.
+	unsigned int dungeon;		// Last set 'in_dungeon' value.
 	int storm;			// >0 if storm in progress.
 	unsigned short time_rate;
 	void set_time_palette();
@@ -45,7 +46,8 @@ class Game_clock : public Time_sensitive
 	void check_hunger();
 public:
 	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0),
-			light_source_level(0), storm(0), time_rate(1)
+			light_source_level(0), dungeon(255),
+			storm(0), time_rate(1)
 		{ }
 	int get_hour()
 		{ return hour; }
@@ -66,9 +68,9 @@ public:
 	void set_palette();		// Set palette for current hour.
 					// Set light source.  MUST be fast,
 					//   since it's called during paint().
-	void set_light_source(int lev = 1)
+	void set_light_source(int lev, int dun)
 		{
-		if (lev != light_source_level)
+		if (lev != light_source_level || dun != dungeon)
 			set_light_source_level(lev);
 		}
 	void set_storm(bool onoff);	// Start/end storm.

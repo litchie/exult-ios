@@ -316,7 +316,8 @@ void Game_window::paint
 		if (special_light && clock->get_total_minutes() >special_light)
 			special_light = 0;
 					// Set palette for lights.
-		clock->set_light_source(carried_light + (light_sources > 0));
+		clock->set_light_source(carried_light + (light_sources > 0),
+								in_dungeon);
 		}
 	}
 
