@@ -212,7 +212,7 @@ class UCFunc
 		std::ostream &output_ucs_funcname(std::ostream &o, const FuncMap &funcmap,
                                     unsigned int funcid,
                                     unsigned int numargs, bool return_var);
-		void output_ucs_node(std::ostream &o, const FuncMap &funcmap, UCNode* ucn, const std::map<unsigned int, std::string> &intrinsics, unsigned int indent);
+		void output_ucs_node(std::ostream &o, const FuncMap &funcmap, UCNode* ucn, const std::map<unsigned int, std::string> &intrinsics, unsigned int indent, const UCOptions &options);
 		void output_ucs_data(std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options, unsigned int indent);
 		void output_ucs_opcode(std::ostream &o, const FuncMap &funcmap, const std::vector<UCOpcodeData> &optab, const UCc &op, const std::map<unsigned int, std::string> &intrinsics, unsigned int indent);
 		
@@ -259,10 +259,10 @@ class UCFunc
 		UCNode node;
 };
 
-void readbin_U7UCFunc(std::ifstream &f, UCFunc &ucf);
+void readbin_U7UCFunc(std::ifstream &f, UCFunc &ucf, const UCOptions &options);
 void readbin_U8UCFunc(std::ifstream &f, UCFunc &ucf);
 class UCData;
-void print_asm(UCFunc &ucf, std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCData &uc);
+void print_asm(UCFunc &ucf, std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options);
 
 #endif
 

@@ -38,6 +38,7 @@
 	// NOTE: strstreams need to be 'ends' terminated, whilst strstreams don't.
 #endif
 
+/*** head2data
 #ifndef __STRING
 	#if defined __STDC__ && __STDC__
 		#define __STRING(x) #x
@@ -45,6 +46,7 @@
 		#define __STRING(x) "x"
 	#endif
 #endif
+*/
 
 using std::vector;
 using std::ifstream;
@@ -63,37 +65,39 @@ using std::map;
 vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
 vector<pair<unsigned int, unsigned int> > opcode_jumps;
 
-map<unsigned int, string> bg_uc_intrinsics;
-map<unsigned int, string> si_uc_intrinsics;
+map<unsigned int, string> uc_intrinsics;
+//map<unsigned int, string> si_uc_intrinsics;
 
 vector<string> str2vec(const string &s);
 
 map<string, pair<unsigned int, bool> > type_size_map;
 
-/* constructs the static usecode tables from other include files in the /exult hierachy,
-   static by compilation.
-*/
-void init_static_usecodetables()
+void ucxtInit::init(const Configuration &config, const UCOptions &options)
 {
-	#define	USECODE_INTRINSIC_PTR(NAME)	std::string(__STRING(NAME))
-	std::string bgut[] = 
-	{
-	#include "bgintrinsics.h"
-	};
-	std::string siut[] =
-	{
-	#include "siintrinsics.h"
-	};
-	#undef USECODE_INTRINSIC_PTR
+	datadir = get_datadir(config, options);
 	
-	for(unsigned int i=0; i<0x100; i++)
-		bg_uc_intrinsics.insert(std::pair<unsigned int, std::string>(bg_uc_intrinsics.size(), bgut[i]));
+	misc_data = "u7misc.data";
+	misc_root = "misc";
 	
-	for(unsigned int i=0; i<0x100; i++)
-		si_uc_intrinsics.insert(std::pair<unsigned int, std::string>(si_uc_intrinsics.size(), siut[i]));
+	opcodes_data = "u7opcodes.data";
+	opcodes_root = "opcodes";
+	
+	bg_intrinsics_data = "u7bgintrinsics.data";
+	bg_intrinsics_root = "intrinsics";
+	
+	si_intrinsics_data = "u7siintrinsics.data";
+	si_intrinsics_root = "intrinsics";
+	
+	misc();
+	opcodes();
+	
+	if(options.game_bg())
+		intrinsics(bg_intrinsics_data, bg_intrinsics_root);
+	else if(options.game_si())
+		intrinsics(si_intrinsics_data, si_intrinsics_root);
 }
 
-string get_datadir(const Configuration &config, const UCOptions &options)
+string ucxtInit::get_datadir(const Configuration &config, const UCOptions &options)
 {
 	string datadir;
 	
@@ -110,15 +114,15 @@ string get_datadir(const Configuration &config, const UCOptions &options)
 	return datadir;
 }
 
-void init_misc(const string &datadir)
+void ucxtInit::misc()
 {
-	Configuration miscdata(datadir + "u7misc.data", "misc");
+	Configuration miscdata(datadir + misc_data, misc_root);
 
 	Configuration::KeyTypeList om;
-	miscdata.getsubkeys(om, "misc/offset_munge");
+	miscdata.getsubkeys(om, misc_root + "/offset_munge");
 	
 	Configuration::KeyTypeList st;
-	miscdata.getsubkeys(st, "misc/size_type");
+	miscdata.getsubkeys(st, misc_root + "/size_type");
 	
 	// For each size type (small/long/byte/etc.)
 	for(typeof(st.begin()) k=st.begin(); k!=st.end(); ++k)
@@ -140,17 +144,13 @@ void init_misc(const string &datadir)
 		type_size_map.insert(pair<string, pair<unsigned int, bool> >(k->first, tsm_tmp));
 	}
 }
+
 /* constructs the usecode tables from datafiles in the /ucxt hierachy */
-void init_usecodetables(const Configuration &config, const UCOptions &options)
+void ucxtInit::opcodes()
 {
-	const string datadir(get_datadir(config, options));
+	Configuration opdata(datadir + opcodes_data, opcodes_root);
 	
-	// parse the u7misc.data file...
-	init_misc(datadir);
-	
-	Configuration opdata(datadir + "u7opcodes.data", "opcodes");
-	
-	vector<string> keys = opdata.listkeys("opcodes");
+	vector<string> keys = opdata.listkeys(opcodes_root);
 		
 	#if 1
 	for(vector<string>::iterator key=keys.begin(); key!=keys.end(); ++key)
@@ -216,6 +216,18 @@ void init_usecodetables(const Configuration &config, const UCOptions &options)
 	for(std::vector<std::pair<unsigned int, unsigned int> >::iterator i=opcode_jumps.begin(); i!=opcode_jumps.end(); i++)
 		std::cout << setw(4) << i->first << '\t' << setw(4) << i->second << std::endl;
 	#endif
+}
+
+void ucxtInit::intrinsics(const string &intrinsic_data, const string &intrinsic_root)
+{
+	Configuration intdata(datadir + intrinsic_data, intrinsic_root);
+	
+	Configuration::KeyTypeList ktl;
+		
+	intdata.getsubkeys(ktl, intrinsic_root);
+	
+	for(Configuration::KeyTypeList::iterator k=ktl.begin(); k!=ktl.end(); k++)
+		uc_intrinsics.insert(pair<unsigned int, string>(strtol(k->first.c_str(), 0, 0), k->second));
 }
 
 /* To be depricated when I get the complex std::vector<std::string> splitter online */
