@@ -1059,7 +1059,7 @@ void Hound_schedule::now_what
 	int dist = npcpos.distance(avpos);
 	if (dist > 20 || dist < 3)	// Too far, or close enough?
 		{			// Check again in a few seconds.
-		npc->start(gwin->get_std_delay(), 500 + rand()%2000);
+		npc->start(gwin->get_std_delay(), 500 + rand()%1000);
 		return;
 		}
 	int newdist = 1 + rand()%2;	// Aim for about 3 tiles from Avatar.
