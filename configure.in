@@ -181,7 +181,7 @@ AC_HEADER_TIME
 AC_STRUCT_TM
 
 AC_MSG_CHECKING(for getaddrinfo())
-AC_TRY_LINK([
+AC_TRY_COMPILE([
 #if HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -189,11 +189,12 @@ AC_TRY_LINK([
 #include <sys/socket.h>
 #endif
 #if HAVE_NETDB_H
-#include <sys/netdb.h>
+#include <netdb.h>
 #endif
 ],
 [
-	getaddrinfo(0,0,0,0);
+	struct addrinfo a;
+	//getaddrinfo(0, 0, 0, 0);
 ],
   ac_cv_func_getaddrinfo=yes,
   ac_cv_func_getaddrinfo=no)
