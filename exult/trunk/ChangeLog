@@ -1,5 +1,6 @@
 2001-06-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* contain.cc: fixed spellbook-creation bug
+	* Makefile.am: fixed build order (server before mapedit)
 
 2001-06-17  Ryan Nunn <triforce@merlin.net.au>
 	* cheat_screen.cc : Added global flag modifier. Enabled NPC Experience,
