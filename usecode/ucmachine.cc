@@ -1237,6 +1237,7 @@ Usecode_machine::Usecode_machine
 	ifstream file;                // Read in usecode.
         U7open(file, USECODE);
 	_init_(file);
+	file.close();
 	}
 
 void Usecode_machine::_init_
@@ -1252,33 +1253,33 @@ void Usecode_machine::_init_
 					// Clear party list.
 	memset((char *) &party[0], 0, sizeof(party));
 	party_count = 0;
+	conv = new Conversation;
+	read_usecode(file);
+	}
 
-	// This shouldn't be here!!!!!!!!!!
-	// read();				// Read saved data (might be absent).
-	
+/*
+ *	Read in usecode functions.  These may override previously read
+ *	functions.
+ */
+
+void Usecode_machine::read_usecode
+	(
+	istream &file
+	)
+	{
 	file.seekg(0, ios::end);
 	int size = file.tellg();	// Get file size.
 	file.seekg(0);
-#if 0
-					// A slot for funs. n/256.
-	funs = new vector<Usecode_function*>[16];
-#endif
 					// Read in all the functions.
 	while (file.tellg() < size)
 		{
 		Usecode_function *fun = new Usecode_function(file);
-#if 0
-					// Get slot.
-		Vector *slot = (Vector *) funs->get(fun->id/0x100);
-		if (!slot)
-			funs->put(fun->id/0x100, (slot = new Vector(10)));
-					// Store in slot.
-		slot->put(fun->id%0x100, fun);
-#endif
-		funs[fun->id/0x100].put(fun->id%0x100, fun);
+		Exult_vector<Usecode_function *> & vec = funs[fun->id/0x100];
+		int i = fun->id%0x100;
+		if (i < vec.size())
+			delete vec[i];
+		vec.put(i, fun);
 		}
-
-	conv = new Conversation;
 	}
 
 /*
