@@ -1706,12 +1706,14 @@ cout << "Clicked at tile (" << get_scrolltx() + x/tilesize << ", " <<
 	Game_object *found[100];
 	int cnt = 0;
 	int actor_lift = main_actor->get_lift();
-	int start = actor_lift > 0 ? -1 : 0;
+//	int start = actor_lift > 0 ? -1 : 0;
+					// Start on floor below actor.
+	int start = actor_lift - actor_lift%5;
 	int not_above = skip_lift;
 	if (skip_above_actor < not_above)
 		not_above = skip_above_actor;
 					// See what was clicked on.
-	for (int lift = start + actor_lift; lift < not_above; lift++)
+	for (int lift = start; lift < not_above; lift++)
 		cnt += find_objects(lift, x, y, &found[cnt]);
 	if (!cnt)
 		return (0);		// Nothing found.

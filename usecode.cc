@@ -4378,7 +4378,9 @@ int Usecode_machine::run
 /*
  *	Call a usecode function.
  *
- *	Output:	0 if not found or if ABRT executed.
+ *	Output:	0 if ABRT executed.
+ *		-1 if function not found.
+ *		1 if okay.
  */
 
 int Usecode_machine::call_usecode_function
@@ -4398,7 +4400,7 @@ int Usecode_machine::call_usecode_function
 	if (!fun)
 		{
 		cout << "Usecode " << id << " not found."<<endl;
-		return (0);
+		return (-1);
 		}
 	if (parm0)
 		push(*parm0);
@@ -4407,6 +4409,10 @@ int Usecode_machine::call_usecode_function
 
 /*
  *	This is the main entry for outside callers.
+ *
+ *	Output:	-1 if not found.
+ *		0 if can't execute now or if aborted.
+ *		1 otherwise.
  */
 
 int Usecode_machine::call_usecode
