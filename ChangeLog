@@ -1,3 +1,7 @@
+2000-08-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Fixed 'cube' puzzle, by adding 'framenum' parm. to find_nearby().
+
 2000-08-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode.cc: Mark/recall spells supported.

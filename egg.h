@@ -119,7 +119,7 @@ public:
 	int within_distance(int abs_tx, int abs_ty) const;
 #endif
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 	void activate(Usecode_machine *umachine, Game_object *obj,
 							int must = 0);
 					// Remove/delete this object.
