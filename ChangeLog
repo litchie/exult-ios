@@ -1,3 +1,6 @@
+2000-11-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* quotes.txt: new quote
+
 2000-12-01  Ryan Nunn  <triforce@merlin.net.au>
 	* Added MidiInfo.txt: Contains some information about midi. Unfinished.
 	* Makefile.win32: Was broken, now works. Also removed -g added -O2
