@@ -1,3 +1,7 @@
+2001-08-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* uctools.h: brought up-to-date to the rest of exult
+	* ucinternal.*: risky usecode changes to (hopefully) fix conversations.
+
 2001-08-07  Tristan Tarrant <nadir@users.sourceforge.net>
 	* server/objserial.h: add an #include <string>
 	* imagewin/scale.cc: copyright of 2xSaI is GPL
