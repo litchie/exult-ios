@@ -219,6 +219,31 @@ void Game_object::clear_dependencies
 	}
 
 /*
+ *	Check an object in find_nearby() against the mask.
+ *
+ *	Output:	1 if it passes.
+ */
+static int Check_mask
+	(
+	Game_object *obj,
+	int mask
+	)
+	{
+	if (mask&8)			// Non-party NPCs.
+		{
+#if 0	/* ++++Later */
+		if (obj->is_monster())
+			return 1;
+		if (obj->get_npc_num() <= 0 || obj->get_party_id() >= 0)
+			return 0;	// Not an NPC || is a party member.
+#endif
+		return 1;
+		}
+	//++++++The rest.
+	return 1;
+	}
+
+/*
  *	Find objects near a given position.
  *
  *	Output:	# found, appended to vec.
@@ -231,7 +256,11 @@ int Game_object::find_nearby
 	int shapenum,			// Shape to look for.  -1=any,
 					//   -359=any NPC.
 	int delta,			// # tiles to look in each direction.
-	int mask,			// Not used yet++++
+	int mask,			// Guessing+++:
+					//   4 == party members only.
+					//   8 == non-party NPC's only.
+					//  16 == something with eggs???
+					//  32 == monsters? invisible?
 	int qual,			// Quality, or -359 for any.
 	int framenum			// Frame #, or -359 for any.
 	)
@@ -270,6 +299,8 @@ int Game_object::find_nearby
 						 obj != gwin->get_main_actor())
 					continue;
 				if (qual != -359 && obj->get_quality() != qual)
+					continue;
+				if (mask && !Check_mask(obj, mask))
 					continue;
 				if (framenum !=  -359 &&
 					obj->get_framenum() != framenum)

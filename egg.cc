@@ -559,8 +559,12 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		}
 	if (flags & (1 << (int) once))
 		remove_this();		// All done, so go away.
-	else if (criteria == cached_in && solid_area && 
-		(type != usecode || Game::get_game_type() == SERPENT_ISLE))
+/*++++ NOTE:  Commenting out the 'usecode' messes up test-of-love.  We might
+need to reactivate cached_in eggs when coming back from Usecode.  Might have
+fixed this problem now...9/16/2000
+*/
+	else if (criteria == cached_in  && solid_area /*  && 
+		(type != usecode || Game::get_game_type() == SERPENT_ISLE) */ )
 		{			// Replace solid area with outline.
 		Chunk_object_list *chk = gwin->get_objects(get_cx(), get_cy());
 		chk->remove_egg(this);	// Remove from chunk.
