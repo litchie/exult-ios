@@ -1,3 +1,7 @@
+2000-10-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* exult.cc: Try_key handles the 'k' key.
+
 2000-10-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs.cc: >Trying< to fix dungeon rendering bug in Courage Test.
