@@ -1,5 +1,8 @@
 2002-04-27  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* shapes/vgafile.cc (Shape_frame): Highlight bottom of object when
+	showing an outline.
+
 	* server/server.cc: If !WIN32 and if $HOME/.exult exists, store
 	the socket file there.
 	* mapedit/studio.cc:  Look in $HOME/.exult for socket file.  Also,

@@ -34,6 +34,7 @@ class Shape_draw;
 class Object_browser;
 class Shape_group;
 class Locator;
+class Combo_editor;
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
@@ -86,6 +87,8 @@ private:
 	GtkWidget		*equipwin;
 					// Map locator:
 	Locator			*locwin;
+					// Combo editor:
+	Combo_editor		*combowin;
 	// For Win32 DND
 #ifdef WIN32
 	HWND			egghwnd;
@@ -203,6 +206,7 @@ public:
 	void show_shinfo_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 					// Map locator.
 	void open_locator_window();
+	void open_combo_window();	// Combo-object editor.
 	void run();
 	bool send_to_server(Exult_server::Msg_type id,
 				unsigned char *data = 0, int datalen = 0);

@@ -82,6 +82,30 @@ void Shape_draw::draw_shape
 	}
 
 /*
+ *	Draw one shape's outline at a particular place.
+ */
+
+void Shape_draw::draw_shape_outline
+	(
+	int shapenum, int framenum,
+	int x, int y,
+	unsigned char color		// Color index for outline.
+	)
+	{
+	if (shapenum < 0 || shapenum >= ifile->get_num_shapes())
+		return;
+	Shape_frame *shape = ifile->get_shape(shapenum, framenum);
+	if (shape)
+		{
+		if (shape->is_rle())
+			shape->paint_rle_outline(iwin, x + shape->get_xleft(), 
+					y + shape->get_yabove(), color);
+		else
+			; //+++++++++FLAT
+		}
+	}
+
+/*
  *	Draw a shape centered in the drawing area.
  */
 

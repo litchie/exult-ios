@@ -576,6 +576,7 @@ void Shape_frame::paint_rle_outline
 						yoff - yabove, w, h))
 			return;
 	int firsty = -10000;		// Finds first line.
+	int lasty;
 	uint8 * in = data;
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0)
@@ -588,14 +589,18 @@ void Shape_frame::paint_rle_outline
 		int x = xoff + scanx;
 		int y = yoff + scany;
 		if (firsty == -10000)
+			{
 			firsty = y;
+			lasty = y + h - 1;
+			}
 					// Put pixel at both ends.
 		win->put_pixel8(color, x, y);
 		win->put_pixel8(color, x + scanlen - 1, y);
 
 		if (!encoded)		// Raw data?
 			{
-			if (y == firsty)// First line?
+			if (y == firsty ||	// First line?
+			    y == lasty)		// Last line?
 				win->fill_line8(color, scanlen, x, y);
 			in += scanlen;
 			continue;
@@ -610,7 +615,8 @@ void Shape_frame::paint_rle_outline
 				in++;
 			else		// Skip that # of bytes.
 				in += bcnt;
-			if (y == firsty)// First line?
+			if (y == firsty || 	// First line?
+			    y == lasty)		// Last line?
 				win->fill_line8(color, bcnt, x + b, y);
 			b += bcnt;
 			}
