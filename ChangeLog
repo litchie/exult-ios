@@ -1,3 +1,8 @@
+2002-06-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* conf/Configuration.cc: Not everyone has sstream!
+	* usecode/ucxt/src/ucfunc.cc: Same here.
+
 2002-06-08  Max Horn  <max@quendi.de>
 	* configure.in: fixed check for SDL_mixer
 	* gamemap.cc: #include objiter.cc instead of objiter.h to get template
