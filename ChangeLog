@@ -1,3 +1,14 @@
+2000-11-27  Max Horn  <max@quendi.de>
+	* files/*.cc: changed retrieve() to return a char* instead of taking a char**
+	* various files: changed Uint? to uint? (so we are less dependant on SDL)
+	* imagewin/imagebuf.h: fixed ~Image_buffer to use delete [] instead of delete
+	* actions.cc: fixed ~Sequence_actor_action to use delete [] instead of delete
+	* gumps.cc: fixed ~Gump_text to use delete [] instead of delete
+	* bggame.cc: added tab key to work like arrow down in the new game screen; space works like return
+	* files/common_types.h: removed
+	* exult_types.h: added as replacment for common_types.h
+	* various files: changed Uint? to uint? (so we are less dependant on SDL)
+
 2000-11-27  Tristan Tarrant <nadir@users.sourceforge.net>
 	* tools/u7shpload.c: applied patch from Mark Winterrowd which
 	  fixes bugs with loading shapes with negative offsets.

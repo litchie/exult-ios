@@ -166,7 +166,7 @@ void Game::play_flic(const char *archive, int index)
 	char *fli_buf;
 	size_t len;
 	U7object flic(archive, index);
-	flic.retrieve(&fli_buf, len);
+	fli_buf = flic.retrieve(len);
 	playfli fli(fli_buf);
 	fli.play(win);
 	delete [] fli_buf;

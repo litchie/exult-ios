@@ -22,6 +22,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "exceptions.h"
 #include "segfile.h"
 #include "utils.h"
 
@@ -31,41 +32,44 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Segment_file::Segment_file
 	(
-	const char *nm			// Path to file.
-	) : num_segments(0)
-	{
-	U7open(file, nm);
+	std::string nm			// Path to file.
+	) : num_segments(0), filename(nm)
+{
+	U7open(file, filename.c_str());
 	file.seekg(0x54);		// Get # of segments.
 	num_segments = Read4(file);
-	}
+	if( !file.good() )
+		throw file_read_exception(filename);
+}
 
 /*
  *	Read in a given segment.
  *
- *	Output:	1 if okay, with data containing what was read, len = length.
- *		0 if error.
- *	Note:	'data' is allocated, so it should be freed by the caller.
+ *	returns the data in a new allocated buffer so it should be freed by the caller.
  */
 
-int Segment_file::read_segment
+char*	Segment_file::retrieve
 	(
-	int index,			// Number desired.
-	char *&data, 			// ->data returned.
-	int& len
+	uint32 index,			// Number desired.
+	std::size_t& len
 	)
-	{
-	data = 0;
-	len = 0;
+{
+	char *buffer;
 	if (index >= num_segments)
-		return (0);		// Past end.
+		throw exult_exception("objnum too large in read_object()");
+
 	file.seekg(0x80 + 8*index);	// Get to info.
 	long offset = Read4(file);	// Get offset, length.
 	len = Read4(file);
 	if (!len)
-		return (0);
+		throw file_read_exception(filename);
+
 	file.seekg(offset);		// Get to data.
-	data = new char[len];		// Allocate buffer.
-	file.read(data, len);		// Read it.
-	return (1);
-	}
+	buffer = new char[len];		// Allocate buffer.
+	file.read(buffer, len);		// Read it.
+	if( !file.good() )
+		throw file_read_exception(filename);
+
+	return buffer;
+}
 

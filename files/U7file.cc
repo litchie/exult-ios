@@ -1,10 +1,29 @@
+/*
+Copyright (C) 2000  Dancer A.L Vesperman
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+#include <cstdio>
+#include <iostream>
+
 #include "U7file.h"
 #include "Flex.h"
 #include "IFF.h"
 #include "Table.h"
 #include "Flat.h"
-#include <cstdio>
-#include <iostream>
 #include "exceptions.h"
 #include "utils.h"
 
@@ -30,9 +49,9 @@ U7file  *U7FileManager::get_file_object(const string &s)
 {
 	U7file	*uf=0;
 	if(file_list.count(s))
-		{
+	{
 		return file_list[s];
-		}
+	}
 	// Not in our cache. Attempt to figure it out.
 	
 	TRY_FILE_TYPE(uf,IFF);
@@ -65,35 +84,16 @@ U7FileManager   *U7FileManager::self=0;
 U7FileManager::U7FileManager()
 {
 	if(self)
-		throw U7file::exclusive();
+		throw exclusive();
 	else
 		self=this;
 }
 
 
-U7file::~U7file()
-{}
-
-
-
-U7object::U7object(const char *f,int o)	:	filename(f),objnumber(o) {}
-//U7object::U7object(const U7object &u)	:	filename(u.filename),objnumber(u.objnumber) {}
-
-U7object::~U7object()	{}
-
-
-void	U7object::retrieve(char **buf,size_t &len)
+char*	U7object::retrieve(size_t &len)
 {
 	U7file *uf=U7FileManager::get_ptr()->get_file_object(filename);
-#if 0
-	// This code here can not possible be reached since get_file_object *NEVER* returns NULL
-	if(!uf)
-		{
-		throw U7file::file_error();
-		return 0;
-		}
-#endif
-	uf->retrieve(objnumber,buf,&len);
+	return uf->retrieve(objnumber,len);
 }
 
 void	U7object::retrieve(const char *fname)
@@ -105,7 +105,7 @@ void	U7object::retrieve(const char *fname)
 
 	try
 	{
-		retrieve(&n,l);
+		n = retrieve(l);
 	}
 	catch( const std::exception & err )
 	{

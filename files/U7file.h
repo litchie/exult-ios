@@ -1,37 +1,54 @@
+/*
+Copyright (C) 2000  Dancer A.L Vesperman
 
-#ifndef	U7FILE_H
-#define	U7FILE_H
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
 
-#include <exception>
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+
+#ifndef	_U7FILE_H_
+#define	_U7FILE_H_
+
 #include <map>
 #include <string>
+
+#include "exult_types.h"
 
 
 
 class	U7file
-	{
+{
 protected:
 	std::string	filename;
+
 public:
-
-	class	exclusive {};
-
-	U7file() {};
-	U7file(const std::string &name) : filename(name) {};
-	U7file(const U7file &f) : filename(f.filename)
-		{  }
+	U7file() {}
+	U7file(const std::string &name) : filename(name) {}
+	U7file(const U7file &f) : filename(f.filename) {}
 	U7file &operator=(const U7file &u) { filename=u.filename; return *this; }
-	virtual	int	number_of_objects(const char *)=0;
-	virtual	void	retrieve(int objnum,char **,std::size_t *len)=0; // To a memory block
+	virtual	~U7file() {}
 
+	virtual	uint32	number_of_objects(void)=0;
+	virtual	char *	retrieve(uint32 objnum,std::size_t &len)=0;
 	virtual const char *get_archive_type()=0;
-	virtual	~U7file();
-	};
+};
 
 class	U7FileManager
-	{
-	static	U7FileManager	*self;
+{
 protected:
+	class	exclusive {};
+#if 0
 	struct ltstr
 	{
 	  bool operator()(const std::string &s1, const std::string &s2) const
@@ -40,25 +57,33 @@ protected:
 	  }
 	};
 	std::map<const std::string,U7file *,ltstr> file_list;
+#endif
+	std::map<const std::string,U7file *> file_list;
+
+
+	static	U7FileManager	*self;
+
 public:
 	U7FileManager();
 	~U7FileManager();
 
 	U7file	*get_file_object(const std::string &s);
 	static U7FileManager *get_ptr(void);
-	};
+};
 
 class	U7object
-	{
+{
 protected:
 	std::string	filename;
 	int	objnumber;
-public:
-	virtual	void retrieve(char **,std::size_t &len);	// Retrieve to a memory block
-	virtual void retrieve(const char *);		// Retrieve to a filename
 
-	U7object(const char *file,int objnum);
-	virtual	~U7object();
-	};
+public:
+	U7object(const std::string &file,int objnum) : filename(file),objnumber(objnum) {}
+	virtual	~U7object() {}
+
+	virtual	char *	retrieve(std::size_t &len);
+	void			retrieve(const char *fname);
+					// FIX ME - this is only used in Game::play_audio and should be removed
+};
 
 #endif

@@ -122,7 +122,7 @@ public:
 		texty -= shape->get_yabove();
 		}
 	~Gump_text()
-		{ delete text; }
+		{ delete [] text; }
 	int get_length()
 		{ return length; }
 	char *get_text()

@@ -411,7 +411,7 @@ public:
 		BufferDataSource(0,0)
 	{
 		U7object obj(fname, index);
-		obj.retrieve((char **)&buf, size);
+		buf = (unsigned char*)obj.retrieve(size);
 		buf_ptr = buf;
 	};
 	

@@ -66,7 +66,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	
 	try
 	{
-		track.retrieve(&buffer, size);
+		buffer = track.retrieve(size);
 	}
 	catch( const std::exception & err )
 	{
@@ -423,7 +423,7 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	
 	try
 	{
-		track.retrieve(&buffer, size);
+		buffer = track.retrieve(size);
 	}
 	catch( const std::exception & err )
 	{

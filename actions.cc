@@ -374,7 +374,7 @@ Sequence_actor_action::~Sequence_actor_action
 	{
 	for (int i = 0; actions[i]; i++)
 		delete actions[i];
-	delete actions;
+	delete [] actions;
 	}
 
 /*

@@ -16,32 +16,29 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef	FLAT_H
-#define	FLAT_H
+#ifndef	_FLAT_H_
+#define	_FLAT_H_
 
 #if !AUTOCONFIGURED
 #include "../autoconfig.h"
 #endif
 
-#include <vector>
 #include <string>
 #include "U7file.h"
-#include "common_types.h"
+#include "exult_types.h"
 
 
 class	Flat : public	virtual	U7file
-	{
+{
 public:
 	Flat(const std::string &name);
-	Flat(const Flat &t) {  }
-	Flat &operator=(const Flat &t)
-		{
-			return *this;
-		}
+	Flat(const Flat &t) {}
 
-        virtual int     number_of_objects(const char *) { return 1; };
-        virtual void     retrieve(int objnum,char **,std::size_t *len); // To a memory block
+	virtual uint32	number_of_objects(void) { return 1; };
+	virtual char *	retrieve(uint32 objnum, std::size_t &len); // To a memory block
 	virtual const char *get_archive_type() { return "FLAT"; };
+
+private:
 	Flat();
-	};
+};
 #endif

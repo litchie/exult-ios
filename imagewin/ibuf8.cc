@@ -56,7 +56,7 @@ void Image_buffer8::copy
 					// Go through lines.
 	while (srch--)
 		{
-		memmove((char *) to, (char *) from, srcw);
+		std::memmove((char *) to, (char *) from, srcw);
 		to += ynext;
 		from += ynext;
 		}
@@ -165,7 +165,7 @@ void Image_buffer8::fill_line8
 		return;
 	unsigned char *pixels = (unsigned char *) bits + 
 						desty*line_width + destx;
-	memset(pixels, pix, srcw);
+	std::memset(pixels, pix, srcw);
 	}
 
 /*
@@ -214,7 +214,7 @@ void Image_buffer8::copy_line8
 		return;
 	unsigned char *to = bits + desty*line_width + destx;
 	unsigned char *from = src_pixels + srcx;
-	memcpy(to, from, srcw);
+	std::memcpy(to, from, srcw);
 	}
 
 /*
