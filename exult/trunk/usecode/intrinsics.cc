@@ -1767,34 +1767,41 @@ USECODE_INTRINSIC(is_not_blocked)
 	Usecode_value& pval = parms[0];
 	if (pval.get_array_size() < 3)
 		return fail;
-	Tile_coord lcpos(-1, -1, -1);	// Don't let last_created block.
-	if (last_created && !last_created->get_owner() &&
-	    gwin->get_info(last_created).is_solid())
-		{
-		lcpos = last_created->get_abs_tile_coord();
-		last_created->remove_this(1);
-		last_created->set_invalid();
-		}
 	Tile_coord tile(pval.get_elem(0).get_int_value(),
 			pval.get_elem(1).get_int_value(),
 			pval.get_elem(2).get_int_value());
 	int shapenum = parms[1].get_int_value();
-#if 0	/* Unused for now. */
 	int framenum = parms[2].get_int_value();
-#endif
 					// Find out about given shape.
 	Shape_info& info = gwin->get_info(shapenum);
+	Rectangle footprint(
+		tile.tx - info.get_3d_xtiles(framenum) + 1,
+		tile.ty - info.get_3d_ytiles(framenum) + 1,
+		info.get_3d_xtiles(framenum), info.get_3d_ytiles(framenum));
 	int new_lift;
 	int blocked = Chunk_object_list::is_blocked(
 		info.get_3d_height(), tile.tz, 
-		tile.tx - info.get_3d_xtiles() + 1,
-		tile.ty - info.get_3d_ytiles() + 1,
-		info.get_3d_xtiles(), info.get_3d_ytiles(), 
+		footprint.x, footprint.y, footprint.w, footprint.h,
+		new_lift, MOVE_ALL_TERRAIN);
+					// Okay?
+	if (!blocked && new_lift == tile.tz)
+		return Usecode_value(1);
+					// Don't let last_created block.
+	if (!last_created || last_created->get_owner() ||
+	    !gwin->get_info(last_created).is_solid() ||
+	    !last_created->get_footprint().intersects(footprint))
+		return Usecode_value(0);
+	Tile_coord lcpos = last_created->get_abs_tile_coord();
+	last_created->remove_this(1);
+	last_created->set_invalid();
+	blocked = Chunk_object_list::is_blocked(
+		info.get_3d_height(), tile.tz, 
+		footprint.x, footprint.y, footprint.w, footprint.h,
 		new_lift, MOVE_ALL_TERRAIN);
 //Don't know why this is causing trouble in Forge with mage at end:
 	blocked = (blocked || new_lift != tile.tz);
-	if (lcpos.tx != -1)		// Put back last_created.
-		last_created->move(lcpos);
+
+	last_created->move(lcpos);	// Put back last_created.
 	return Usecode_value(!blocked);
 }
 
