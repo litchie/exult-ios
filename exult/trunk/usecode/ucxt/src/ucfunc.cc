@@ -119,7 +119,7 @@ bool UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	
 	if(_externs.size()) tab_indent(indent, o) << "// externs" << endl;
 	// output the 'externs'
-	for(vector<unsigned short>::iterator e=_externs.begin(); e!=_externs.end(); e++)
+	for(vector<unsigned int>::iterator e=_externs.begin(); e!=_externs.end(); e++)
 	{
 		FuncMap::const_iterator fmp = funcmap.find(*e);
 		output_ucs_funcname(tab_indent(indent, o) << "extern ", funcmap, *e, fmp->second.num_args, fmp->second.return_var) << ';' << endl;
@@ -488,7 +488,7 @@ bool UCFunc::output_tt(std::ostream &o)
 }
 
 /* calculates the relative offset jump location, used in opcodes jmp && jne */
-inline int calcreloffset(const UCc &op, unsigned int param)
+inline int calc16reloffset(const UCc &op, unsigned int param)
 {
 	/* forumla:
 	   real offset = offset of start of current opcode
@@ -500,6 +500,21 @@ inline int calcreloffset(const UCc &op, unsigned int param)
 	                  ^^^^^^ max of unsighed short
 	*/
 	return op._offset + ((param>>15) ? (-1 * (0xFFFF - static_cast<unsigned short>(param) + 1)) : static_cast<int>(param)) + 1 + op._params.size();
+}
+
+/* calculates the relative offset jump location, used in opcodes jmp && jne */
+inline int calc32reloffset(const UCc &op, unsigned int param) //FIXME: Test this!
+{
+	/* forumla:
+	   real offset = offset of start of current opcode
+	               + int of parameter (since you can jump backwards)
+	               + 1 (size of "opcode")
+	               + size of "opcode" parameter data
+	   NOTE: since param is unsigned, a twos-complimant is required:
+	         formula: 0xFFFFFFFF - (unsigned int)param + 1
+	                  ^^^^^^ max of unsighed int
+	*/
+	return op._offset + ((param>>31) ? (-1 * (0xFFFFFFFF - static_cast<unsigned int>(param) + 1)) : static_cast<int>(param)) + 1 + op._params.size();
 }
 
 void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
@@ -518,16 +533,43 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 		assert(ssize!=0);
 
 		if(ssize==1)
-			ucop._params_parsed.push_back(static_cast<unsigned short>(static_cast<unsigned int>(ucop._params[first++])));
+			ucop._params_parsed.push_back(static_cast<unsigned int>(ucop._params[first++]));
 		else if(ssize==2)
 			if(offset_munge)
 			{
-				unsigned int reloffset = calcreloffset(ucop, static_cast<unsigned short> (static_cast<unsigned int>(ucop._params[first++]) + ((static_cast<unsigned int>(ucop._params[first++])) << 8)));
+				unsigned int calcvar = static_cast<unsigned int>(ucop._params[first++]);
+				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 8);
+ 				unsigned int reloffset = calc16reloffset(ucop, calcvar);
 				ucop._params_parsed.push_back(reloffset);
 				ucop._jump_offsets.push_back(reloffset);
 			}
 			else
-				ucop._params_parsed.push_back(static_cast<unsigned short> (static_cast<unsigned int>(ucop._params[first++]) + ((static_cast<unsigned int>(ucop._params[first++])) << 8)));
+			{
+				unsigned int calcvar = static_cast<unsigned int>(ucop._params[first++]);
+				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 8);
+				ucop._params_parsed.push_back(calcvar);
+			}
+		else if(ssize==4)
+			if(offset_munge)
+			{
+				unsigned int calcvar = static_cast<unsigned int>(ucop._params[first++]);
+				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 8);
+				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 16);
+				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 24);
+ 				unsigned int reloffset = calc32reloffset(ucop, calcvar);
+				ucop._params_parsed.push_back(reloffset);
+				ucop._jump_offsets.push_back(reloffset);
+			}
+			else
+			{
+				unsigned int calcvar = static_cast<unsigned int>(ucop._params[first++]);
+				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 8);
+				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 16);
+				calcvar += ((static_cast<unsigned int>(ucop._params[first++])) << 24);
+				ucop._params_parsed.push_back(calcvar);
+			}
+		else
+			assert(false); // just paranoia.
 	}
 }
 
@@ -539,8 +581,9 @@ bool UCFunc::output_asm(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	
 	o << "Function at file offset " << std::setw(8) << _offset << "H" << endl;
 	o << "\t.funcnumber  " << std::setw(4) << _funcid << "H" << endl;
-	o << "\t.msize       " << std::setw(4) << _funcsize << "H" << endl;
-	o << "\t.dsize       " << std::setw(4) << _datasize << "H" << endl;
+	if(ext32) o << "\t.ext32" << endl;
+	o << "\t.msize       " << ((ext32) ? setw(8) : setw(4)) << _funcsize << "H" << endl;
+	o << "\t.dsize       " << ((ext32) ? setw(8) : setw(4)) << _datasize << "H" << endl;
 	
 	if(debugging_info)
 		o << "\t  .dbgoffset " << std::setw(4) << debugging_offset << "H" << endl;
@@ -696,6 +739,10 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					if(c=='b')      { i++; c = asmstr[i]; width=2; }
 					// if it's a "short" set width to 4, and get the next char
 					else if(c=='s') { i++; c = asmstr[i]; width=4; }
+					// if it's a "int" set width to 8, and get the next char
+					else if(c=='n') { i++; c = asmstr[i]; width=8; }
+					// if it's a "long" set width to 16, and get the next char
+					else if(c=='l') { i++; c = asmstr[i]; width=16; }
 					// if we want to output the 'decimal' value rather then the default hex
 					else if(c=='d')
 					{
@@ -857,27 +904,57 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 
 void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)
 {
+//	#define DEBUG_READ_PAIR(X, Y) cout << '\t' << X << '\t' << Y << endl;
 	// offset to start of function
 	ucf._offset = f.tellg();
-	DEBUG_READ_PAIR("Offset: ", ucf._offset);
+	DEBUG_READ_PAIR("  Offset: ", ucf._offset);
 
 	// Read Function Header
-	
 	ucf._funcid = Read2(f);
-	DEBUG_READ_PAIR("FuncID: ", ucf._funcid);
-	ucf._funcsize = Read2(f);
-	DEBUG_READ_PAIR("FuncSize: ", ucf._funcsize);
 	
-	// save body offset in case we need it
-	ucf._bodyoffset = f.tellg();
+	if(options.very_verbose)
+		cout << "\tReading Function: " << setw(4) << ucf._funcid << endl;
 	
-	ucf._datasize = Read2(f);
+	DEBUG_READ_PAIR("  FuncID: ", ucf._funcid);
+	
+	if(ucf._funcid!=0xFFFF)
+	{
+		
+		// This is the original usecode function header
+		ucf._funcsize = Read2(f);
+		DEBUG_READ_PAIR("  FuncSize: ", ucf._funcsize);
+		
+		// save body offset in case we need it
+		ucf._bodyoffset = f.tellg();
+		
+		ucf._datasize = Read2(f);
+		DEBUG_READ_PAIR("  DataSize: ", ucf._datasize);
+	}
+	else
+	{
+		// This is the ext32 extended usecode function header
+		ucf.ext32=true;
+		ucf._funcid = Read2(f);
+		
+		if(options.very_verbose)
+			cout << "\tReading Function: " << setw(4) << ucf._funcid << endl;
+		
+		DEBUG_READ_PAIR("  extFuncID: ", ucf._funcid);
+		ucf._funcsize = Read4(f);
+		DEBUG_READ_PAIR("  extFuncSize: ", ucf._funcsize);
+		
+		// save body offset in case we need it
+		ucf._bodyoffset = f.tellg();
+		
+		ucf._datasize = Read4(f);
+		DEBUG_READ_PAIR("  extDataSize: ", ucf._datasize);
+	}
 	
 	// process ze data segment!
 	{
 		streampos pos = f.tellg(); // paranoia
 	
-		unsigned short off = 0;
+		unsigned int off = 0;
 		// Load all strings & their offsets
 		while( off < ucf._datasize )
 		{
@@ -919,12 +996,18 @@ void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)
 		// ok, now to load the usecode
 		unsigned int code_offset=0;
 
-		unsigned int code_size = ucf._funcsize - ucf._datasize - ((3+ucf._num_externs) * SIZEOF_USHORT);
+		/* Here the '3+' comes from the sizeof(_datasize) + sizeof(_num_args)
+			+ sizeof(_num_locals) + sizeof(_num_externs)
+			which are stored in the file as 16bit shorts, with the exception of
+			an ext32 function header, where the _datasize is a 32bit structure */
+		unsigned int code_size = ucf._funcsize - ucf._datasize - ((4+ucf._num_externs) * SIZEOF_USHORT);
+		if(ucf.ext32==true) code_size-=2;
 		
 		DEBUG_READ_PAIR("Code Size: ", code_size);
 
-		while(code_offset<(code_size-2)) //TODO: Why the -2?!? it doesn't work otherwise
+		while(code_offset<code_size)
 		{
+			assert(!f.eof());
 			UCc ucop;
 			
 			ucop._offset = code_offset;
@@ -934,6 +1017,12 @@ void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)
 
 			const UCOpcodeData &otd = opcode_table_data[ucop._id];
 
+			if(otd.opcode==0x00)
+			{
+				cout << ucop._id << ' ' << code_offset << endl;
+				assert(otd.opcode!=0x00);
+			}
+			
 			//assert(((otd.asm_nmo.size()!=0) && (otd.ucs_nmo.size()!=0)));
 			for(unsigned int i=0; i<otd.num_bytes; i++)
 				ucop._params.push_back(Read1(f));

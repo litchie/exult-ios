@@ -55,26 +55,28 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 	/* Parse command line */
 	for(unsigned int i=1; i<argc; i++)
 	{
-		if     (strcmp(argv[i], "-si" )==0) options._game = UCOptions::GAME_SI;
-		else if(strcmp(argv[i], "-bg" )==0) options._game = UCOptions::GAME_BG;
-		else if(strcmp(argv[i], "-u8" )==0) options._game = UCOptions::GAME_U8;
+		if     (strcmp(argv[i], "-si"   )==0) options._game = UCOptions::GAME_SI;
+		else if(strcmp(argv[i], "-bg"   )==0) options._game = UCOptions::GAME_BG;
+		else if(strcmp(argv[i], "-u8"   )==0) options._game = UCOptions::GAME_U8;
 
-		else if(strcmp(argv[i], "-a"  )==0) options.mode_all=true;
+		else if(strcmp(argv[i], "-a"    )==0) options.mode_all=true;
 
-		else if(strcmp(argv[i], "-nc" )==0) options.noconf  = true;
-		else if(strcmp(argv[i], "-ro" )==0) options.rawops  = true;
-		else if(strcmp(argv[i], "-ac" )==0) options.autocomment = true;
-		else if(strcmp(argv[i], "-uc" )==0) options.uselesscomment = true;
-		else if(strcmp(argv[i], "-v"  )==0) options.verbose = true;
-		else if(strcmp(argv[i], "-dbg")==0) options.ucdebug = true;
-		else if(strcmp(argv[i], "-b"  )==0) options.basic = true;
+		else if(strcmp(argv[i], "-nc"   )==0) options.noconf  = true;
+		else if(strcmp(argv[i], "-ro"   )==0) options.rawops  = true;
+		else if(strcmp(argv[i], "-ac"   )==0) options.autocomment = true;
+		else if(strcmp(argv[i], "-uc"   )==0) options.uselesscomment = true;
+		else if(strcmp(argv[i], "-v"    )==0) options.verbose = true;
+		else if(strcmp(argv[i], "-vv"   )==0) { options.verbose = options.very_verbose = true; }
+		else if(strcmp(argv[i], "-dbg"  )==0) options.ucdebug = true;
+		else if(strcmp(argv[i], "-ext32")==0) options.force_ext32 = true;
+		else if(strcmp(argv[i], "-b"    )==0) options.basic = true;
 
-		else if(strcmp(argv[i], "-fl" )==0) options.output_list = true;
-		else if(strcmp(argv[i], "-fa" )==0) options.output_asm  = true;
-		else if(strcmp(argv[i], "-fz" )==0) options.output_ucs  = true;
-		else if(strcmp(argv[i], "-fs" )==0) options.output_ucs  = true;
-		else if(strcmp(argv[i], "-ff" )==0) options.output_flag = true;
-		else if(strcmp(argv[i], "-ftt")==0) options.output_trans_table = true;
+		else if(strcmp(argv[i], "-fl"   )==0) options.output_list = true;
+		else if(strcmp(argv[i], "-fa"   )==0) options.output_asm  = true;
+		else if(strcmp(argv[i], "-fz"   )==0) options.output_ucs  = true;
+		else if(strcmp(argv[i], "-fs"   )==0) options.output_ucs  = true;
+		else if(strcmp(argv[i], "-ff"   )==0) options.output_flag = true;
+		else if(strcmp(argv[i], "-ftt"  )==0) options.output_trans_table = true;
 
 		else if(strcmp(argv[i], "--extern-header" )==0) options.output_extern_header = true;
 		
@@ -294,6 +296,10 @@ void UCData::load_funcs()
 		else
 			exit(-1); // can't happen
 		
+		/* if we're forcing ext32 on output, this is where we do so.
+			if we try doing it before reading it, it'll get corrupted. */
+		if(options.force_ext32) ucfunc->ext32=true;
+		
 		_funcs.push_back(ucfunc);
 		{
 			_file.get();
@@ -317,7 +323,7 @@ void UCData::load_funcs()
 	{
 		_funcmap.insert(FuncMapPair((*i)->_funcid, UCFuncSet((*i)->_funcid, (*i)->_num_args, (*i)->return_var, (*i)->funcname)));
 	}
-/*	for(map<unsigned short, UCFuncSet>::iterator i=_funcmap.begin(); i!=_funcmap.end(); i++)
+/*	for(map<unsigned int, UCFuncSet>::iterator i=_funcmap.begin(); i!=_funcmap.end(); i++)
 		cout << i->first << "\t" << i->second.num_args << endl;*/
 }
 

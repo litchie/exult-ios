@@ -139,7 +139,7 @@ GtkFileSelection *Create_file_selection
 	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_file_selection_new(
 								title));
 	gtk_window_set_modal(GTK_WINDOW(fsel), true);
-	gtk_object_set_user_data(GTK_OBJECT(fsel), ok_handler);
+	gtk_object_set_user_data(GTK_OBJECT(fsel), (void *)ok_handler);
 	gtk_signal_connect(GTK_OBJECT(fsel->ok_button), "clicked",
 			GTK_SIGNAL_FUNC(File_selector_ok), user_data);
 					// Destroy when done.

@@ -29,18 +29,18 @@
 class UCFuncSet
 {
 	public:
-		UCFuncSet(unsigned short new_funcid, unsigned short new_num_args, bool new_return_var, const std::string &new_funcname)
+		UCFuncSet(unsigned int new_funcid, unsigned int new_num_args, bool new_return_var, const std::string &new_funcname)
 		         : funcid(new_funcid), num_args(new_num_args), return_var(new_return_var), funcname(new_funcname) {};
 		~UCFuncSet() {};
 		
-		unsigned short funcid;      // the id of the function
-		unsigned short num_args;    // the number of arguments
-		bool           return_var;  // if true, the function returns a variable
-		std::string    funcname;    // the name of the function, if it has one
+		unsigned int funcid;      // the id of the function
+		unsigned int num_args;    // the number of arguments
+		bool         return_var;  // if true, the function returns a variable
+		std::string  funcname;    // the name of the function, if it has one
 };
 
-typedef std::map<unsigned short, UCFuncSet> FuncMap;
-typedef std::pair<unsigned short, UCFuncSet> FuncMapPair;	
+typedef std::map<unsigned int, UCFuncSet> FuncMap;
+typedef std::pair<unsigned int, UCFuncSet> FuncMapPair;	
 
 //#define DEBUG_GOTOSET
 const unsigned int SIZEOF_USHORT = 2;
@@ -52,20 +52,20 @@ class FlagData
     /* SETFLAG=UCC_POPF, GETFLAG=UCC_PUSHF */
     enum { POP=false, PUSH=true};
 
-    FlagData(const long func, const unsigned short offset,
-             const unsigned short flag, const bool access)
+    FlagData(const long func, const unsigned int offset,
+             const unsigned int flag, const bool access)
             : _func(func), _offset(offset), _flag(flag), _access(access) {};
 
-    long func() const { return _func; };
-    unsigned short offset() const { return _offset; };
-    unsigned short flag() const { return _flag; };
-    bool access() const { return _access; };
+    long         func() const { return _func; };
+    unsigned int offset() const { return _offset; };
+    unsigned int flag() const { return _flag; };
+    bool         access() const { return _access; };
 
   private:
-    long           _func;
-    unsigned short _offset;
-    unsigned short _flag;
-    bool           _access;
+    long         _func;
+    unsigned int _offset;
+    unsigned int _flag;
+    bool         _access;
 };
 
 class SortFlagDataLessFlag
@@ -203,7 +203,7 @@ class UCFunc
 	public:
 		UCFunc() : _offset(0), _funcid(0), _funcsize(0), _bodyoffset(0), _datasize(0),
 		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0),
-		           return_var(false), debugging_info(false), debugging_offset(0) {};
+		           return_var(false), debugging_info(false), debugging_offset(0), ext32(false) {};
 
 		bool output_list(std::ostream &o, unsigned int funcno, const UCOptions &options);
 		
@@ -234,21 +234,21 @@ class UCFunc
 		std::vector<GotoSet> gotoset;
 		
 		std::streampos _offset;      // offset to start of function
-		unsigned short _funcid;      // the id of the function
-		unsigned short _funcsize;    // the size of the function (bytes)
+		unsigned int   _funcid;      // the id of the function
+		unsigned int   _funcsize;    // the size of the function (bytes)
 		std::streampos _bodyoffset;  // the file position after the header is read
 		
-		unsigned short _datasize;    // the size of the data block
+		unsigned int   _datasize;    // the size of the data block
 		
 		std::map<unsigned int, std::string, std::less<unsigned int> > _data;
 			// contains the entire data segment in offset from start of segment, and string data pairs
 		
 		std::streampos _codeoffset; // the offset to the start of the code segment
 		
-		unsigned int _num_args;    // the number of arguments
-		unsigned int _num_locals;  // the number of local variables
-		unsigned int _num_externs; // the number of external function id's
-		std::vector<unsigned short> _externs; // the external function id's
+		unsigned int   _num_args;    // the number of arguments
+		unsigned int   _num_locals;  // the number of local variables
+		unsigned int   _num_externs; // the number of external function id's
+		std::vector<unsigned int> _externs; // the external function id's
 		
 		std::vector<UCc> _opcodes;
 		
@@ -257,7 +257,9 @@ class UCFunc
 		unsigned int   debugging_offset;
 		std::string    funcname;
 		
-		unsigned short codesize() const { return _funcsize - _datasize; };
+		bool           ext32; // is this function an extended function?
+		
+		unsigned int codesize() const { return _funcsize - _datasize; };
 		
 		// the following vars are for data compatibility with the original UCFunc
 		std::vector<FlagData *>   _flagcount;

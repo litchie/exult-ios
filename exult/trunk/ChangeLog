@@ -1,3 +1,7 @@
+2002-03-31  Darke <darkwpaw@users.sourceforge.net>
+	* palette.cc, mapedit/objbrowse.cc, mapedit/studio.cc: namespace fixes
+	* usecode/ucxt/*: Added ext32 header support.
+
 2002-03-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* usecode/useval.*: fixed stupid output bug
 	* usecode/useval.*: serialize arrays & pointers

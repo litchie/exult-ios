@@ -53,11 +53,13 @@ class UCOptions
 		UCOptions() : output_extern_header(false), noconf(false),
 		              rawops(false), autocomment(false),
 		              uselesscomment(false), verbose(false),
+		              very_verbose(false),
 		              ucdebug(false), basic(false),
 		              output_list(false), output_asm(false),
 		              output_ucs(false), output_flag(false),
 		              output_trans_table(false),
 		              mode_all(false), mode_dis(false),
+		              force_ext32(false),
 		              _game(GAME_BG)
 		{};
 		
@@ -72,6 +74,7 @@ class UCOptions
 		bool autocomment;
 		bool uselesscomment;
 		bool verbose;
+		bool very_verbose;
 		bool ucdebug;
 		bool basic;
 		
@@ -83,6 +86,8 @@ class UCOptions
 		
 		bool mode_all;
 		bool mode_dis;
+		
+		bool force_ext32; // force ext32 function format output for all functions
 		
 	//private:
 		unsigned int _game;
