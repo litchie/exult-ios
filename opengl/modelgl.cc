@@ -81,7 +81,7 @@ void Object3d::render
 	(
 	)
 	{
-	if (material->texture_loaded)	// Texture?
+	if (material && material->texture_loaded)	// Texture?
 		{
 		glEnable(GL_TEXTURE_2D);
 					// Bind texture.
@@ -102,18 +102,21 @@ void Object3d::render
 					// Set normal for vertex.
 			glNormal3f(normals[vindex].x, normals[vindex].y,
 							normals[vindex].z);
-			if (material->texture_loaded &&
-			    vindex < tex_vertices.size())
+			if (material)
+				{
+				if (material->texture_loaded &&
+				    vindex < tex_vertices.size())
 					// Set texture coord.
-				glTexCoord2f(tex_vertices[vindex].x,
+					glTexCoord2f(tex_vertices[vindex].x,
 						tex_vertices[vindex].y);
-			else
+				else
 					// Set color.
-				glColor3ub(material->r, material->g,
+					glColor3ub(material->r, material->g,
 								material->b);
+				}
 					// Finally, the vertex:
-			glVertex3f(vertices[vindex].x, vertices[vindex].y, 
-							vertices[vindex].z);
+			Vector3& vert = vertices[vindex];
+			glVertex3f(vert.x, vert.y, vert.z);
 			}
 		}
 	glEnd();

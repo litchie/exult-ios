@@ -29,6 +29,7 @@ using namespace Exult3d;
 
 //>------ sub defines of MATERIAL
 #define MATNAME       0xA000		// Material name
+#define MATAMBIENT    0xA010		// Ambient color of material.
 #define MATDIFFUSE    0xA020		// Color of object/material.
 #define MATMAP        0xA200		// Header for a new material
 #define MATMAPFILE    0xA300		// Texture filename.
@@ -226,6 +227,7 @@ static int Read_chunk
 			break;
 			}
 		default:		// Don't care.
+			cerr << "3ds id 0x" << hex << id << " skipped" << endl;
 			in.seekg(len - read, ios::cur);
 			read = len;
 			break;
@@ -261,10 +263,13 @@ static int Read_material_chunk
 			{
 			string name;
 			read += Get_string(in, name);
-			assert(read == len);
 			mat->set_name(name.c_str());
+			// ++++++There are more bytes.  For now:
+			in.seekg(len - read, ios::cur);	//+++++++
+			read = len;	//++++++skip to end.
 			break;
 			}
+		case MATAMBIENT:	//+++++++Unsure.  Fall through.
 		case MATDIFFUSE:	// Color.
 			{
 			assert(len - read >= 3);
@@ -294,6 +299,7 @@ static int Read_material_chunk
 			break;
 			}
 		default:		// Don't care.
+			cerr << "3ds id 0x" << hex << id << " skipped" << endl;
 			in.seekg(len - read, ios::cur);
 			read = len;
 			break;
@@ -352,6 +358,7 @@ static int Read_object_chunk
 			read += Read_texture_vertices_chunk(in, len, obj);
 			break;
 		default:		// Don't care.
+			cerr << "3ds id 0x" << hex << id << " skipped" << endl;
 			in.seekg(len - read, ios::cur);
 			read = len;
 			break;

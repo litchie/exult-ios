@@ -125,7 +125,8 @@ void Render
 			}
 		}
 	glEnd();
-	glTranslatef(0, -12, 0);
+	Vector3 center = model.find_center();
+	glTranslatef(-center.x, -center.y + 16, -center.z);
 	glRotatef(45, 1, 0, 0);
 	glScalef(.5, .5, .5);
 	model.render();			// Show model.
