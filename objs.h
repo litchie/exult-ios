@@ -204,6 +204,8 @@ public:
 		{ return (frnum&0xf) + rotate[dir]; }
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
+	void move(Tile_coord t)
+		{ move(t.tx, t.ty, t.tz); }
 					// Move and change shape/frame.
 	void move(Chunk_object_list *old_chunk, int new_cx, int new_cy, 
 			Chunk_object_list *new_chunk, 
@@ -589,14 +591,15 @@ class Chunk_cache
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift);
 					// Activate eggs nearby.
-	void activate_eggs(Chunk_object_list *chunk, int tx, int ty, 
+	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
+			int tx, int ty, 
 			int from_tx, int from_ty, unsigned short eggbits);
-	void activate_eggs(Chunk_object_list *chunk, int tx, int ty,
-						int from_tx, int from_ty)
+	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
+				int tx, int ty, int from_tx, int from_ty)
 		{
 		unsigned short eggbits = eggs[ty*tiles_per_chunk + tx];
 		if (eggbits)
-			activate_eggs(chunk, tx, ty, 
+			activate_eggs(obj, chunk, tx, ty, 
 						from_tx, from_ty,  eggbits);
 		}
 	};
@@ -674,8 +677,10 @@ public:
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles, int add)
 		{ need_cache()->set_egged(egg, tiles, add); }
-	void activate_eggs(int tx, int ty, int from_tx, int from_ty)
-		{ need_cache()->activate_eggs(this, tx, ty, from_tx, from_ty);}
+	void activate_eggs(Game_object *obj, int tx, int ty, 
+						int from_tx, int from_ty)
+		{ need_cache()->activate_eggs(obj, 
+					this, tx, ty, from_tx, from_ty);}
 	};
 
 /*

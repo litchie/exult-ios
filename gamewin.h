@@ -41,6 +41,7 @@ class Actor;
 class Time_queue;
 class Npc_proximity_handler;
 class Npc_face_info;
+class Egg_object;
 
 /*
  *	The main game window:
@@ -87,6 +88,7 @@ private:
 	Actor **npcs;			// List of NPC's + the Avatar.
 	int num_monsters;		// Number of monster types.
 	Monster_info *monster_info;	// Array from 'monsters.dat'.
+	vector<Egg_object *> path_eggs;	// Path eggs, indexed by 'quality'.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
@@ -197,6 +199,9 @@ public:
 									: 0; }
 					// Find monster info. for shape.
 	Monster_info *get_monster_info(int shapenum);
+	Egg_object *get_path_egg(int q)	// Get path egg by quality.
+		{ return path_eggs[q]; }
+	void add_path_egg(Egg_object *egg);
 	int get_num_npcs()
 		{ return num_npcs; }
 	int get_num_shapes()
