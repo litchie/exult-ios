@@ -26,6 +26,11 @@ Requires: SDL >= 1.1.7
 Exult: an implementation of the Ultima VII engine for modern Operating Systems.
 
 %changelog
+* Fri Feb 9 2000  Tristan Tarrant <nadir@users.sourceforge.net>
+
+- Disable GIMP plugin by default.
+- Include FAQ
+
 * Tue Nov 7 2000  Tristan Tarrant <nadir@users.sourceforge.net>
 
 - A few fixes
@@ -46,7 +51,7 @@ Exult: an implementation of the Ultima VII engine for modern Operating Systems.
 if [ ! -f configure ]; then
   ./autogen.sh
 fi
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --sysconfdir=$RPM_BUILD_ROOT/etc
+CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --sysconfdir=$RPM_BUILD_ROOT/etc --disable-gimp-plugin
 
 if [ "$SMP" != "" ]; then
   (make "MAKE=make -k -j $SMP"; exit 0)
@@ -64,7 +69,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root)
-%doc AUTHORS COPYING ChangeLog NEWS README
+%doc AUTHORS COPYING ChangeLog NEWS README FAQ
 %{prefix}/bin/*
 %{prefix}/share/exult/exult.flx
 %{prefix}/share/exult/midisfx.flx
