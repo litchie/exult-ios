@@ -56,7 +56,7 @@ using std::string;
 using std::strcpy;
 
 
-static Mix_Music *mp3music;
+static Mix_Music *oggmusic;
 
 
 void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
@@ -78,15 +78,15 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	current_track = num;
 	repeating = repeat;
 
-	if (music_conversion == XMIDI_CONVERT_MP3)
+	if (music_conversion == XMIDI_CONVERT_OGG)
 	{
 	    char filename[255] ;
 
 		//Free previous music, may not have been properly stopped
-		if(mp3music)
+		if(oggmusic)
 		{
-			Mix_FreeMusic(mp3music);
-			mp3music = NULL;
+			Mix_FreeMusic(oggmusic);
+			oggmusic = NULL;
 		}
 
 
@@ -133,12 +133,12 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 
 		if(repeat)
 			repeat = 2;		//Convert repeats to repeat 2 times only
-	    mp3music = Mix_LoadMUS(filename);
-	    Mix_PlayMusic(mp3music, repeat);
+	    oggmusic = Mix_LoadMUS(filename);
+	    Mix_PlayMusic(oggmusic, repeat);
 		Mix_VolumeMusic(MIX_MAX_VOLUME);
 
 #ifdef DEBUG
-       	cout << "Audio MP3: Music track " << filename << endl;
+       	cout << "Audio OGG: Music track " << filename << endl;
 #endif
 
 		return;		//We don't want to continue with Midi conversions!!
@@ -194,15 +194,15 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	}
 
 	//Only called from the endgame sequences  
-	if (music_conversion == XMIDI_CONVERT_MP3)
+	if (music_conversion == XMIDI_CONVERT_OGG)
 	{
 	    char filename[255] ;
 
 		//Free previous music, may not have been properly stopped
-		if(mp3music)
+		if(oggmusic)
 		{
-			Mix_FreeMusic(mp3music);
-			mp3music = NULL;
+			Mix_FreeMusic(oggmusic);
+			oggmusic = NULL;
 		}
 
 		string s = fname;
@@ -223,8 +223,8 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 		s2 = get_system_path("<DATA>/mp3/" + s2);
 		strcpy(filename, s2.c_str());
 
-	    mp3music = Mix_LoadMUS(filename);
-	    Mix_PlayMusic(mp3music, repeat);
+	    oggmusic = Mix_LoadMUS(filename);
+	    Mix_PlayMusic(oggmusic, repeat);
 		Mix_VolumeMusic(MIX_MAX_VOLUME);
 
 		return;		//We don't want to continue with Midi conversions!!
@@ -345,8 +345,8 @@ void MyMidiPlayer::set_music_conversion(int conv)
 	case XMIDI_CONVERT_MT32_TO_GS127:
 		config->set("config/audio/midi/convert","gs127",true);
 		break;
-	case XMIDI_CONVERT_MP3:
-		config->set("config/audio/midi/convert","mp3",true);
+	case XMIDI_CONVERT_OGG:
+		config->set("config/audio/midi/convert","digital",true);
 		break;
 	default:
 		config->set("config/audio/midi/convert","gm",true);
@@ -407,8 +407,8 @@ bool MyMidiPlayer::init_device(void)
 		music_conversion = XMIDI_CONVERT_NOCONVERSION;
 	else if (s == "gs127")
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS127;
-	else if (s == "mp3")
-		music_conversion = XMIDI_CONVERT_MP3;
+	else if (s == "digital")
+		music_conversion = XMIDI_CONVERT_OGG;
 	else if (s == "gs127drum")
 	{
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS;
@@ -444,14 +444,14 @@ bool MyMidiPlayer::init_device(void)
 	}
 
 
-	//MP3 is initialised differently to the other MIDI devices, due to it
+	//OGG is initialised differently to the other MIDI devices, due to it
 	//not actually being a midi device. Just set the midi_device to something
 	//to stop the other code breaking, much is dependant on this class existing
-	if (music_conversion == XMIDI_CONVERT_MP3)
+	if (music_conversion == XMIDI_CONVERT_OGG)
 	{
-		midi_device=new MP3_MIDI();
+		midi_device=new OGG_MIDI();
 		no_device=false;       
-		mp3music = NULL;
+		oggmusic = NULL;
 		Mix_HookMusicFinished(music_complete_callback);
 		Mix_VolumeMusic(MIX_MAX_VOLUME);
 	}
@@ -496,10 +496,10 @@ bool MyMidiPlayer::init_device(void)
 //Clean up last track played, freeing memory each time
 void MyMidiPlayer::music_complete_callback(void)
 {
-	if(mp3music)
+	if(oggmusic)
 	{
-		Mix_FreeMusic(mp3music);
-		mp3music = NULL;
+		Mix_FreeMusic(oggmusic);
+		oggmusic = NULL;
 	}
 }
 
@@ -579,36 +579,36 @@ void    MyMidiPlayer::stop_sound_effects()
 }
 
 
-void MP3_MIDI::start_track(XMIDIEventList *, bool repeat)
+void OGG_MIDI::start_track(XMIDIEventList *, bool repeat)
 {
 }
 
-void MP3_MIDI::stop_track(void)
+void OGG_MIDI::stop_track(void)
 {
 	Mix_HaltMusic();
-	if(mp3music)
+	if(oggmusic)
 	{
-		Mix_FreeMusic(mp3music);
-		mp3music = NULL;
+		Mix_FreeMusic(oggmusic);
+		oggmusic = NULL;
 	}
 }
 
-void MP3_MIDI::start_sfx(XMIDIEventList *)
+void OGG_MIDI::start_sfx(XMIDIEventList *)
 {
 }
 
-void MP3_MIDI::stop_sfx(void)
+void OGG_MIDI::stop_sfx(void)
 {
 }
 
-bool MP3_MIDI::is_playing(void)
+bool OGG_MIDI::is_playing(void)
 {
 	return Mix_PlayingMusic();
 }
 
-const char * MP3_MIDI::copyright(void)
+const char * OGG_MIDI::copyright(void)
 {
-  return "Internal mp3 NULL device";
+  return "Internal OGG NULL device";
 }
 
 

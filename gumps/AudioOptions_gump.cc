@@ -192,7 +192,7 @@ void AudioOptions_gump::build_midi_buttons()
 	midi_conversiontext[1] = "GM";
 	midi_conversiontext[2] = "GS";
 	midi_conversiontext[3] = "GS127";
-	midi_conversiontext[4] = "MP3";
+	midi_conversiontext[4] = "Digital";
 
 	// midi conversion
 	buttons[2] = new AudioTextToggle(this, midi_conversiontext, 
@@ -243,8 +243,8 @@ void AudioOptions_gump::load_settings()
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GS127;
 		else if (s == "gs127drum")
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GS;
-		else if (s == "mp3")
-			midi_conversion = XMIDI_CONVERT_MP3;
+		else if (s == "digital")
+			midi_conversion = XMIDI_CONVERT_OGG;
 		else
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GM;
 
@@ -325,8 +325,8 @@ void AudioOptions_gump::save_settings()
 		case XMIDI_CONVERT_MT32_TO_GS127:
 			config->set("config/audio/midi/convert","gs127",true);
 			break;
-		case XMIDI_CONVERT_MP3:
-			config->set("config/audio/midi/convert","mp3",true);
+		case XMIDI_CONVERT_OGG:
+			config->set("config/audio/midi/convert","digital",true);
 			break;
 		default:
 			config->set("config/audio/midi/convert","gm",true);

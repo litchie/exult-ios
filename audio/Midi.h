@@ -50,8 +50,8 @@ public:
 	virtual	~MidiAbstract() {};
 };
 
-//Pseudo device, used purely to create the MP3_MIDI class with something
-class	MP3_MIDI : virtual public MidiAbstract
+//Pseudo device, used purely to create the OGG_MIDI class with something
+class	OGG_MIDI : virtual public MidiAbstract
 {
 public:
 	virtual void	start_track(XMIDIEventList *, bool repeat);

@@ -104,7 +104,7 @@ void ExultMenu::setup()
 	  midiconv->add_choice("GM");
 	  midiconv->add_choice("GS");
 	  midiconv->add_choice("GS127");
-	  midiconv->add_choice("MP3");
+	  midiconv->add_choice("DigitalMusic");
 
 	  midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
 	  menu.add_entry(midiconv);
@@ -256,7 +256,7 @@ Exult_Game ExultMenu::run()
 	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", EXULT_FLX_MEDITOWN_MID);
 	XMIDI midfile(midi_data, XMIDI_CONVERT_NOCONVERSION);
 	
-	if(Audio::get_ptr()->get_midi()->get_music_conversion() != XMIDI_CONVERT_MP3)
+	if(Audio::get_ptr()->get_midi()->get_music_conversion() != XMIDI_CONVERT_OGG)
 		Audio::get_ptr()->start_music(midfile.GetEventList(0), true);
 	
 	ExultDataSource mouse_data("<DATA>/exult.flx", EXULT_FLX_POINTERS_SHP);

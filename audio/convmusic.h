@@ -15,10 +15,9 @@
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-//using std::string;
-// Converts the SI MP3 track requests to the BG MP3 track numbers
 
-//string bgconvmusic[71] = {
+// Converts the SI OGG track requests to the BG OGG track numbers
+
 char bgconvmusic[][5] = {
 "09bg", 	// 0
 "10bg", 	// 1
