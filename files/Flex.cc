@@ -112,6 +112,14 @@ char *	Flex::retrieve(uint32 objnum, size_t &len)
 	return buffer;
 }
 
+uint32 	Flex::get_entry_info(uint32 objnum, size_t &len)
+{
+	if (objnum >= object_list.size())
+		throw exult_exception("objnum too large in Flex::retrieve()");
+	len = object_list[objnum].size;
+	return object_list[objnum].offset;
+}
+
 /*
  *	Write out a FLEX header.  Note that this is a STATIC method.
  */

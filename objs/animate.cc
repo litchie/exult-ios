@@ -92,6 +92,8 @@ void Object_sfx::set_obj
 	Game_object *o
 	)
 	{
+	if (o->is_pos_invalid())
+		return;			// Not on map.
 	Tile_coord apos = gwin->get_main_actor()->get_tile();
 	Tile_coord opos = o->get_tile();
 	int active = 0;
