@@ -588,6 +588,10 @@ int Font::find_cursor
 		int width = get_text_width(text, ewrd - text);
 		if (curx + width - hor_lead > endx)
 			{		// Word-wrap.
+					// Past end of this line?
+			if (cy >= cury && cy < cury + height &&
+			    cx >= curx && cx < x + w)
+				return text - start - 1;
 			curx = x;
 			cur_line++;
 			cury += height;
