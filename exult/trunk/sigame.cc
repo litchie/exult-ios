@@ -984,6 +984,8 @@ bool SI_Game::new_game(Vga_file &shapes)
 		set_avname (npc_name);
 		set_avsex (1-(sex%2));
 		set_avskin (sex/2);
+		pal.fade_out(c_fade_out_time);
+		gwin->clear_screen(true);	
 		ok = gwin->init_gamedat(true);
 	}
 
