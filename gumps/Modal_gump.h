@@ -60,6 +60,7 @@ public:
 		{  }
 	virtual void text_input(int chr, int unicode) // Character typed (unicode)
 		{ }
+	virtual bool is_modal() const { return true; }
 };
 
 #endif

@@ -97,6 +97,7 @@ public:
 	virtual bool is_draggable() const { return true; }
 					// Close on end_gump_mode
 	virtual bool is_persistent() const { return false; }
+	virtual bool is_modal() const { return false; }
 					// Show the hand cursor
 	virtual bool no_handcursor() const { return false; }
 
