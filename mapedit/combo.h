@@ -161,6 +161,7 @@ class Combo_chooser: public Object_browser, public Shape_draw
 		{ Combo_chooser::show(0, 0, 
 			draw->allocation.width, draw->allocation.height);}
 	void select(int new_sel);	// Show new selection.
+	virtual void load();		// Load from file data.
 	virtual void render();		// Draw list.
 	virtual void set_background_color(guint32 c)
 		{ Shape_draw::set_background_color(c); }
