@@ -305,7 +305,10 @@ public:
 					// Update NPCs' schedules.
 	void schedule_npcs(int hour3, int backwards = 0, bool repaint = true);
 	void mend_npcs();		// Restore HP's each hour.
+					// Find witness to Avatar's 'crime'.
+	Actor *find_witness(Actor *& closest_npc);
 	void theft();			// Handle thievery.
+	void call_guards(Actor *witness = 0);
 	void attack_avatar(int num_guards = 0);
 	/*
 	 *	Rendering:

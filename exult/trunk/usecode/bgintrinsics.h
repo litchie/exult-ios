@@ -142,7 +142,7 @@
 	USECODE_INTRINSIC_PTR(nap_time),	// 0x77
 	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
 	USECODE_INTRINSIC_PTR(in_usecode),	// 0x79
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a call_guards? (to hound?).
+	USECODE_INTRINSIC_PTR(call_guards),	// 0x7a
 	USECODE_INTRINSIC_PTR(obj_sprite_effect),// 0x7b
 	USECODE_INTRINSIC_PTR(attack_avatar),	// 0x7c
 	USECODE_INTRINSIC_PTR(path_run_usecode),	// 0x7d
