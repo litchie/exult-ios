@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopldrv.cc,v 1.2 2002/08/09 12:10:21 colourles Exp $
+ * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopldrv.cc,v 1.3 2003/06/24 16:34:58 wjpalenstijn Exp $
  */
 
 /*
@@ -31,6 +31,7 @@
 
 #ifdef USE_FMOPL_MIDI
 
+#include <cmath>
 #include "common_types.h"
 #ifndef PENTAGRAM
 #include "game.h"
