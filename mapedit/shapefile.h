@@ -41,39 +41,105 @@ class Flex;
  */
 class Shape_file_info
 	{
+protected:
 	std::string basename;		// Base filename.
 	std::string pathname;		// Full pathname.
-	Vga_file *ifile;		// Contains the images.
-	std::ifstream *file;		// For 'chunks'; ifile is NULL.
-	Flex *flex;			// For 'combos.flx'.
 	Shape_group_file *groups;	// Groups within ifile.
 	bool modified;			// Ifile was modified.
 public:
 	friend class Shape_file_set;
-					// We will own ifile and groups.
-	Shape_file_info(const char *bnm, const char *pnm, Vga_file *i, 
-			std::ifstream *f, Flex *fl, Shape_group_file *g)
-		: basename(bnm), pathname(pnm), ifile(i), file(f), 
-		  flex(fl), groups(g), modified(false)
+					// We will own files and groups.
+	Shape_file_info(const char *bnm, const char *pnm, Shape_group_file *g)
+		: basename(bnm), pathname(pnm), groups(g), modified(false)
 		{  }
-	~Shape_file_info();
+	virtual ~Shape_file_info();
 	const char *get_basename()
 		{ return basename.c_str(); }
 	const char *get_pathname()
 		{ return pathname.c_str(); }
-	Vga_file *get_ifile()
-		{ return ifile; }
-	std::ifstream *get_file()
-		{ return file; }
 	Shape_group_file *get_groups()
 		{ return groups; }
 	void set_modified()
 		{ modified = true; }
-	Object_browser *create_browser(Shape_file_info *vgafile,
+	virtual Vga_file *get_ifile()
+		{ return 0; }
+	virtual std::ifstream *get_file()
+		{ return 0; }
+	virtual Flex *get_flex()
+		{ return 0; }
+	virtual Object_browser *create_browser(Shape_file_info *vgafile,
+				unsigned char *palbuf, Shape_group *g = 0)
+		{ return 0; }
+	virtual void flush()		// Write if modified.
+		{ modified = false; }
+	};
+
+/*
+ *	Image file:
+ */
+class Image_file_info : public Shape_file_info
+	{
+	Vga_file *ifile;		// Contains the images.
+public:
+					// We will own ifile.
+	Image_file_info(const char *bnm, const char *pnm, Vga_file *i, 
+							Shape_group_file *g)
+		: Shape_file_info(bnm, pnm, g), ifile(i)
+		{  }
+	virtual ~Image_file_info();
+	virtual Vga_file *get_ifile()
+		{ return ifile; }
+	virtual Object_browser *create_browser(Shape_file_info *vgafile,
 				unsigned char *palbuf, Shape_group *g = 0);
-	void flush();			// Write if modified.
+	virtual void flush();		// Write if modified.
 	static void write_file(const char *pathname, Shape **shapes,
 						int nshapes, bool single);
+	};
+
+/*
+ *	Chunks file:
+ */
+class Chunks_file_info : public Shape_file_info
+	{
+	std::ifstream *file;		// For 'chunks'; ifile is NULL.
+public:
+					// We will own file.
+	Chunks_file_info(const char *bnm, const char *pnm,
+			std::ifstream *f, Shape_group_file *g)
+		: Shape_file_info(bnm, pnm, g), file(f)
+		{  }
+	virtual ~Chunks_file_info();
+	virtual std::ifstream *get_file()
+		{ return file; }
+	virtual Object_browser *create_browser(Shape_file_info *vgafile,
+				unsigned char *palbuf, Shape_group *g = 0);
+	virtual void flush();		// Write if modified.
+	};
+
+/*
+ *	Flex file (used for combos):
+ */
+class Flex_file_info : public Shape_file_info
+	{
+
+	Flex *flex;			// For 'combos.flx'.
+	vector<char *> entries;		// Entries are stored here.
+	vector<int> lengths;		// Lengths here.
+public:
+					// We will own flex.
+	Flex_file_info(const char *bnm, const char *pnm,
+						Flex *fl, Shape_group_file *g);
+	int size()			// Get # flex entries.
+		{ return entries.size(); }
+	char *get(int i, size_t& len);	// Get i'th entry.
+					// Set i'th entry.
+	void set(int i, char *newentry, int entlen);
+	virtual ~Flex_file_info();
+	virtual Flex *get_flex()
+		{ return flex; }
+	virtual Object_browser *create_browser(Shape_file_info *vgafile,
+				unsigned char *palbuf, Shape_group *g = 0);
+	virtual void flush();		// Write if modified.
 	};
 
 /*

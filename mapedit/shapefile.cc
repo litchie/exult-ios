@@ -51,32 +51,35 @@ Shape_file_info::~Shape_file_info
 	(
 	)
 	{
-	delete ifile;
-	delete file;
 	delete groups;
+	}
+
+/*
+ *	Cleanup.
+ */
+
+Image_file_info::~Image_file_info
+	(
+	)
+	{
+	delete ifile;
 	}
 
 /*
  *	Create a browser for our data.
  */
 
-Object_browser *Shape_file_info::create_browser
+Object_browser *Image_file_info::create_browser
 	(
 	Shape_file_info *vgafile,	// THE 'shapes.vga' file.
 	unsigned char *palbuf,		// Palette for displaying.
 	Shape_group *g			// Group, or 0.
 	)
 	{
-	if (file)			// Must be 'u7chunks' (for now).
-		return new Chunk_chooser(vgafile->get_ifile(), *file, palbuf, 
-								400, 64, g);
-	else if (flex)
-		return new Combo_chooser(vgafile->get_ifile(), flex, palbuf,
-								400, 64, g);
 	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64, 
 								g, this);
-	int len = pathname.length();	// Fonts?  Show 'A' as the default.
-	if (len >= 9 && strcasecmp(pathname.c_str() - 9, "fonts.vga") == 0)
+					// Fonts?  Show 'A' as the default.
+	if (strcasecmp(basename.c_str(), "fonts.vga") == 0)
 		chooser->set_framenum0('A');
 	if (this == vgafile)		// Main 'shapes.vga' file?
 		{
@@ -90,11 +93,11 @@ Object_browser *Shape_file_info::create_browser
  *	Write out if modified.  May throw exception.
  */
 
-void Shape_file_info::flush
+void Image_file_info::flush
 	(
 	)
 	{
-	if (!modified || !ifile)
+	if (!modified)
 		return;
 	modified = false;
 	int nshapes = ifile->get_num_shapes();
@@ -114,7 +117,7 @@ void Shape_file_info::flush
  *	May print an error.
  */
 
-void Shape_file_info::write_file
+void Image_file_info::write_file
 	(
 	const char *pathname,		// Full path.
 	Shape **shapes,			// List of shapes to write.
@@ -142,6 +145,156 @@ void Shape_file_info::write_file
 		}
 	if (!writer.close())
 		throw file_write_exception(pathname);
+	}
+
+/*
+ *	Cleanup.
+ */
+
+Chunks_file_info::~Chunks_file_info
+	(
+	)
+	{
+	delete file;
+	}
+
+/*
+ *	Create a browser for our data.
+ */
+
+Object_browser *Chunks_file_info::create_browser
+	(
+	Shape_file_info *vgafile,	// THE 'shapes.vga' file.
+	unsigned char *palbuf,		// Palette for displaying.
+	Shape_group *g			// Group, or 0.
+	)
+	{
+					// Must be 'u7chunks' (for now).
+	return new Chunk_chooser(vgafile->get_ifile(), *file, palbuf, 
+								400, 64, g);
+	}
+
+/*
+ *	Write out if modified.  May throw exception.
+ */
+
+void Chunks_file_info::flush
+	(
+	)
+	{
+	if (!modified)
+		return;
+	modified = false;
+	cerr << "Chunks should be stored by Exult" << endl;
+	}
+
+/*
+ *	Write out if modified.  May throw exception.
+ */
+
+void Flex_file_info::flush
+	(
+	)
+	{
+	if (!modified)
+		return;
+	modified = false;
+	//+++++++++Finish.
+	}
+
+/*
+ *	Init.
+ */
+
+Flex_file_info::Flex_file_info
+	(
+	const char *bnm,		// Basename,
+	const char *pnm,		// Full pathname,
+	Flex *fl,			// Flex file (we'll own it).
+	Shape_group_file *g		// Group file (or 0).
+	) : Shape_file_info(bnm, pnm, g), flex(fl)
+	{
+	entries.resize(flex->number_of_objects());
+	lengths.resize(entries.size());
+	}
+
+/*
+ *	Cleanup.
+ */
+
+Flex_file_info::~Flex_file_info
+	(
+	)
+	{
+	delete flex;
+	int cnt = entries.size();
+	for (int i = 0; i < cnt; i++)
+		delete entries[i];
+	}
+
+/*
+ *	Get i'th entry.
+ */
+
+char *Flex_file_info::get
+	(
+	int i,
+	size_t& len
+	)
+	{
+	if (i >= 0 && i < entries.size())
+		{
+		if (!entries[i])	// Read it if necessary.
+			{
+			entries[i] = flex->retrieve(i, len);
+			lengths[i] = len;
+			}
+		len = lengths[i];
+		return entries[i];
+		}
+	else
+		return 0;
+	}
+
+/*
+ *	Set i'th entry.
+ */
+
+void Flex_file_info::set
+	(
+	int i,
+	char *newentry,			// Allocated data that we'll own.
+	int entlen			// Length.
+	)
+	{
+	if (i < 0 || i > entries.size())
+		return;
+	if (i == entries.size())	// Appending?
+		{
+		entries.push_back(newentry);
+		lengths.push_back(entlen);
+		}
+	else
+		{
+		delete entries[i];
+		entries[i] = newentry;
+		lengths[i] = entlen;
+		}
+	}
+
+/*
+ *	Create a browser for our data.
+ */
+
+Object_browser *Flex_file_info::create_browser
+	(
+	Shape_file_info *vgafile,	// THE 'shapes.vga' file.
+	unsigned char *palbuf,		// Palette for displaying.
+	Shape_group *g			// Group, or 0.
+	)
+	{
+	return new Combo_chooser(vgafile->get_ifile(), this, palbuf,
+								400, 64, g);
 	}
 
 /*
@@ -219,8 +372,15 @@ Shape_file_info *Shape_file_set::create
 		cerr << "Error opening image file '" << basename << "'.\n";
 		abort();
 		}
-	Shape_file_info *fi = new Shape_file_info(basename, fullname, 
-					ifile, file, flex, groups);
+	Shape_file_info *fi;
+	if (ifile)
+		fi = new Image_file_info(basename, fullname, ifile, groups);
+	else if (file)
+		fi = new Chunks_file_info(basename, fullname, file, groups);
+	else if (flex)
+		fi = new Flex_file_info(basename, fullname, flex, groups);
+	else
+		return 0;
 	files.push_back(fi);
 	return fi;
 	}

@@ -1245,7 +1245,7 @@ void ExultStudio::create_shape_file
 	Shape *shape = new Shape(new Shape_frame(&pixels[0],
 			w, h, xleft, yabove, !flat));
 	try {				// Write file.
-		Shape_file_info::write_file(pathname, &shape, 1, (bool) udata);
+		Image_file_info::write_file(pathname, &shape, 1, (bool) udata);
 	}
 	catch (const exult_exception& e) {
 		EStudio::Alert(e.what());
