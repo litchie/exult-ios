@@ -531,11 +531,12 @@ void Combat_schedule::now_what
 		approach_foe();
 		break;
 	case strike:			// He hasn't moved away?
+		state = approach;
+		npc->start(200);	// Back into queue.
 		if (Get_tiles(npc).enlarge(strike_range).intersects(
 						Get_tiles(opponent)))
 			{
 			int dir = npc->get_direction(opponent);
-			opponent = opponent->attacked(npc);
 			npc->add_dirty(gwin);
 			npc->set_frame(npc->get_dir_framenum(dir,
 							Actor::standing));
@@ -547,9 +548,10 @@ void Combat_schedule::now_what
 						c_any_qual, c_any_framenum);
 				set_weapon_info();
 				}
+					// This may delete us!
+			opponent = opponent->attacked(npc);
+			return;		// We may no longer exist!
 			}
-		state = approach;
-		npc->start(200);	// Back into queue.
 		break;
 	case fire:			// Range weapon.
 		{
