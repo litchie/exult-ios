@@ -397,6 +397,8 @@ public:
 		caller_item = prev_item;
 		return ret;
 		}
+	int write();			// Write out 'gamedat/usecode.dat'.
+	int read();			// Reat in 'gamedat/usecode.dat'.
 	};
 
 #endif	/* INCL_USECODE */

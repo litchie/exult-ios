@@ -124,6 +124,8 @@ Game_window::Game_window
 					cout << " ->GOOD" << endl;
 				}
 			delete[] static_identity;
+			read_gwin();	// Read in 'gamewin.dat' to set clock,
+					//   scroll coords.
 		}
 					// Create window.
 	win = new Image_window(width, height); //<- error in timer
@@ -774,8 +776,73 @@ int Game_window::write
 			return (0);
 	if (!write_npcs())		// Write out npc.dat.
 		return (0);
-	// +++++Write party, monsters?? mapcoords.dat? +++++Write global flags to???
-	return (1);
+	if (!usecode->write())		// Usecode.dat (party, global flags).
+		return (0);
+	return (write_gwin());		// Write our data.
+	}
+
+/*
+ *	Restore game by reading in 'gamedat'.
+ *
+ *	Output:	0 if error, already reported.
+ */
+
+int Game_window::read
+	(
+	)
+	{
+	clear_world();			// Wipe clean.
+	read_npcs();			// Read in NPC's, monsters.
+	if (!usecode->read())		// Usecode.dat (party, global flags).
+		return (0);
+	return (read_gwin());		// Read our data.
+	}
+
+/*
+ *	Write data for the game.
+ *
+ *	Output:	0 if error.
+ */
+
+int Game_window::write_gwin
+	(
+	)
+	{
+	ofstream gout;
+	if (!U7open(gout, GWINDAT))	// Gamewin.dat.
+		return (0);
+					// Start with scroll coords (in tiles).
+	Write2(gout, chunkx*tiles_per_chunk);
+	Write2(gout, chunky*tiles_per_chunk);
+					// Write clock.
+	Write2(gout, clock.get_day());
+	Write2(gout, clock.get_hour());
+	Write2(gout, clock.get_minute());
+	gout.flush();
+	return (gout.good());
+	}
+
+/*
+ *	Read data for the game.
+ *
+ *	Output:	0 if error.
+ */
+
+int Game_window::read_gwin
+	(
+	)
+	{
+	ifstream gin;
+	if (!U7open(gin, GWINDAT))	// Gamewin.dat.
+		return (0);
+					// Start with scroll coords (in tiles).
+	chunkx = Read2(gin)/tiles_per_chunk;
+	chunky = Read2(gin)/tiles_per_chunk;
+					// Read clock.
+	clock.set_day(Read2(gin));
+	clock.set_hour(Read2(gin));
+	clock.set_minute(Read2(gin));
+	return (gin.good());
 	}
 
 /*
