@@ -22,6 +22,7 @@
 #  include <config.h>
 #endif
 
+#include "SDL_timer.h"
 #include "schedule.h"
 #include "actors.h"
 #include "Zombie.h"

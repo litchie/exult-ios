@@ -1,3 +1,6 @@
+2002-05-17  Tristan Tarrant  <nadir@users.sf.net>
+	* schedule.cc: #include "SDL_timer.h" to appease gcc
+
 2002-05-16  Ryan Nunn  <triforce@merlin.net.au>
 	* files/listfiles.cc, files/utils.cc : Fixing up Win32 U7ListFiles().
 
