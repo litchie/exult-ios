@@ -157,6 +157,8 @@ public:
 		}
 	virtual int get_property(int prop)
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
+	virtual int is_dead_npc()	// Dead when health goes to 0.
+		{ return properties[(int) health] <= 0; }
 	int get_level()			// Get experience level.
 		{ return 1 + Log2(get_property(exp)/50); }
 					// Set/clear/get actor flag.
