@@ -269,9 +269,6 @@ public:
 	virtual int move_aside(int dir);// Move out of the way.
 					// Get frame if rotated clockwise.
 	virtual int get_rotated_frame(int quads);
-					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame)
-		{ return 0; }
 #if 0	/* ++++++ Trying to init. 1st-day schedules in gameclk.cc. */
 	struct	{
 		int cx;

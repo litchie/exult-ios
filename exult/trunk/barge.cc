@@ -223,9 +223,14 @@ void Barge_object::gather
 		}
 	if (boat == -1)			// Test for boat the first time.
 		{
-					// Test landscape under hot-spot.
-		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
-		ShapeID flat = chunk->get_flat(get_tx(), get_ty());
+					// Test landscape under center.
+		Tile_coord c = get_abs_tile_coord();
+		c.tx -= xtiles/2;
+		c.ty -= ytiles/2;
+		Chunk_object_list *chunk = gwin->get_objects(
+				c.tx/tiles_per_chunk, c.ty/tiles_per_chunk);
+		ShapeID flat = chunk->get_flat(c.tx%tiles_per_chunk,
+						c.ty%tiles_per_chunk);
 		if (flat.is_invalid())
 			boat = 0;
 		else
@@ -606,7 +611,8 @@ void Barge_object::paint
 
 int Barge_object::step
 	(
-	Tile_coord t			// Tile to step onto.
+	Tile_coord t,			// Tile to step onto.
+	int				// Frame (ignored).
 	)
 	{
 	Tile_coord cur = get_abs_tile_coord();
