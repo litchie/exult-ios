@@ -128,7 +128,9 @@ dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(limits.h sys/time.h unistd.h)
+AC_LANG_CPLUSPLUS
 AC_CHECK_HEADERS(hash_map hash_set)
+AC_LANG_C
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
