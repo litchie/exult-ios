@@ -223,9 +223,7 @@
 	USECODE_INTRINSIC_PTR(clear_item_flag),			// 0xA5 - Known
 	
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xa6
-//+++++ A7 looks like run_usecode(), but it messes up Lydia-tatoo in SI.
-//	USECODE_INTRINSIC_PTR(run_usecode),			// 0xa7 
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xa7 
+	USECODE_INTRINSIC_PTR(run_usecode),			// 0xa7 
 	USECODE_INTRINSIC_PTR(fade_palette),			// 0xa8
 	// This one is used just for sleeping:
 	USECODE_INTRINSIC_PTR(fade_palette),			// 0xa9
