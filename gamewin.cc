@@ -79,7 +79,6 @@
 #include "mappatch.h"
 #include "version.h"
 #include "drag.h"
-#include "u7drag.h"
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
 #include "servemsg.h"
@@ -474,42 +473,6 @@ void Game_window::init_files(bool cycle)
 		fps = 5;
 	std_delay = 1000/fps;		// Convert to msecs. between frames.
 }
-
-/*
- *	Reload one of the shape files (msg. from ExultStudio).
- */
-
-void Game_window::reload_shapes
-	(
-	int dragtype			// Type from u7drag.h.
-	)
-	{
-#if 0	/* +++++++Got to rewrite in Shape_manager */
-	switch (dragtype)
-		{
-	case U7_SHAPE_SHAPES:
-		shapes.init();		// Reread .vga file.
-		shapes.read_info(GAME_BG);	//+++++Needs work.
-					// ++++Reread text?
-		break;
-	case U7_SHAPE_GUMPS:
-		gumps.load(GUMPS_VGA);		//++++++Patch?
-		break;
-	case U7_SHAPE_FONTS:
-		fonts->init();			//++++++Patch?
-		break;
-	case U7_SHAPE_FACES:
-		faces.load(FACES_VGA, PATCH_FACES);
-		break;
-	case U7_SHAPE_SPRITES:
-		sprites.load(SPRITES_VGA);	//++++++Patch?
-		break;
-	default:
-		cerr << "Type not supported:  " << dragtype << endl;
-		break;
-		}
-#endif
-	}
 
 /*
  *	Get map patch list.
