@@ -224,7 +224,7 @@ AC_MSG_CHECKING(whether to enable debug)
 if test x$enable_debug = xyes; then
   AC_MSG_RESULT(yes)
   AC_DEFINE(DEBUG)
-  DEBUG_FLAGS="-O -g"
+  DEBUG_FLAGS="-g"
 else
   AC_MSG_RESULT(no)
 fi

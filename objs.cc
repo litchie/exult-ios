@@ -759,6 +759,110 @@ void Ireg_game_object::write_ireg
 	}
 
 /*
+ *	When we delete, better remove from queue.
+ */
+
+Animator::~Animator
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	while (gwin->get_tqueue()->remove(this))
+		;
+	}
+
+/*
+ *	Start animation.
+ */
+
+void Animator::start_animation
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Clean out old entry if there.
+	gwin->get_tqueue()->remove(this);
+	gwin->get_tqueue()->add(SDL_GetTicks() + 100, this, (long) gwin);
+	animating = 1;
+	}
+
+/*
+ *	Create a frame animator.
+ */
+
+Frame_animator::Frame_animator
+	(
+	Game_object *o,
+	int ir
+	) : Animator(o), ireg(ir)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int shapenum = obj->get_shapenum();
+	frames = gwin->get_shape_num_frames(shapenum);
+	}
+
+/*
+ *	Animation.
+ */
+
+void Frame_animator::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata			// Game window.
+	)
+	{
+	int delay = 100;		// Delay between frames.
+	Game_window *gwin = (Game_window *) udata;
+	if (!gwin->add_dirty(obj))
+		{			// No longer on screen.
+		animating = 0;
+		return;
+		}
+	int framenum;
+	if (ireg)			// +++Another experiment -JSF
+		framenum = obj->get_framenum() + 1;
+	else				// Want fixed shapes synchronized.
+					// Testing -WJP
+		framenum = (curtime / 100);
+	obj->set_frame(framenum % frames);
+	gwin->add_dirty(obj);
+					// Add back to queue for next time.
+	if (animating)
+		gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
+ *	Animation.
+ */
+
+void Wiggle_animator::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata			// Game window.
+	)
+	{
+	int delay = 100;		// Delay between frames.
+	Game_window *gwin = (Game_window *) udata;
+	if (!gwin->add_dirty(obj))
+		{			// No longer on screen.
+		animating = 0;
+		return;
+		}
+	int tx, ty, tz;			// Get current position.
+	obj->get_abs_tile(tx, ty, tz);
+	int newdx = rand()%3;
+	int newdy = rand()%3;
+	tx += -deltax + newdx;
+	ty += -deltay + newdy;
+	deltax = newdx;
+	deltay = newdy;
+	obj->Game_object::move(tx, ty, tz);
+					// Add back to queue for next time.
+	if (animating)
+		gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
  *	Create an animated object.
  */
 
@@ -769,12 +873,15 @@ Animated_object::Animated_object
 	unsigned int shapey,
 	unsigned int lft,
 	unsigned char ir		// 1 if from/to Ireg file.
-	) : Game_object(l, h, shapex, shapey, lft),
-		animating(0), deltax(0), deltay(0), ireg(ir)
+	) : Game_object(l, h, shapex, shapey, lft), ireg(ir)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int shapenum = get_shapenum();
-	frames = gwin->get_shape_num_frames(shapenum);
+	int frames = gwin->get_shape_num_frames(shapenum);
+	if (frames > 1)
+		animator = new Frame_animator(this, ir);
+	else
+		animator = new Wiggle_animator(this);
 	}
 
 /*
@@ -788,11 +895,14 @@ Animated_object::Animated_object
 	unsigned int tilex, unsigned int tiley, 
 	unsigned int lft,
 	unsigned char ir		// 1 if from/to Ireg file.
-	) : Game_object(shapenum, framenum, tilex, tiley, lft),
-		animating(0), deltax(0), deltay(0), ireg(ir)
+	) : Game_object(shapenum, framenum, tilex, tiley, lft), ireg(ir)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	frames = gwin->get_shape_num_frames(shapenum);
+	int frames = gwin->get_shape_num_frames(shapenum);
+	if (frames > 1)
+		animator = new Frame_animator(this, ir);
+	else
+		animator = new Wiggle_animator(this);
 	}
 
 /*
@@ -803,9 +913,7 @@ Animated_object::~Animated_object
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
-	while (gwin->get_tqueue()->remove(this))
-		;
+	delete animator;
 	}
 
 /*
@@ -818,64 +926,7 @@ void Animated_object::paint
 	)
 	{
 	Game_object::paint(gwin);
-	if (!animating)			// Turn on animation.
-		{			// Clean out old entry if there.
-		gwin->get_tqueue()->remove(this);
-		gwin->get_tqueue()->add(SDL_GetTicks() + 100, 
-							this, (long) gwin);
-		animating = 1;
-		}
-	}
-
-/*
- *	Animation.
- */
-
-void Animated_object::handle_event
-	(
-	unsigned long curtime,		// Current time of day.
-	long udata			// Game window.
-	)
-	{
-	int delay = 100;		// Delay between frames.
-	Game_window *gwin = (Game_window *) udata;
-					// Get area we're taking.
-	Rectangle rect = gwin->get_shape_rect(this);
-	rect.enlarge(5);
-	rect = gwin->clip_to_win(rect);
-	if (rect.w <= 0 || rect.h <= 0)	// No longer on screen?
-		{
-		animating = 0;
-		return;
-		}
-	if (frames > 1)			// Going through frames?
-		{		
-		int framenum;
-#if 1
-		if (ireg)		// +++Another experiment -JSF
-			framenum = get_framenum() + 1;
-		else			// Want fixed shapes synchronized.
-#endif
-					// Testing -WJP
-			framenum = (curtime / 100);
-		set_frame(framenum % frames);
-		}
-	else
-		{
-		int tx, ty, tz;		// Get current position.
-		get_abs_tile(tx, ty, tz);
-		int newdx = rand()%3;
-		int newdy = rand()%3;
-		tx += -deltax + newdx;
-		ty += -deltay + newdy;
-		deltax = newdx;
-		deltay = newdy;
-		Game_object::move(tx, ty, tz);
-		}
-	gwin->add_dirty(rect);		// Paint.
-					// Add back to queue for next time.
-	if (animating)
-		gwin->get_tqueue()->add(curtime + delay, this, udata);
+	animator->want_animation();	// Be sure animation is on.
 	}
 
 /*
