@@ -21,11 +21,17 @@
 #ifndef _MIDI_driver_macos_midi_h_
 #define _MIDI_driver_macos_midi_h_
 
-#ifdef MACOS
+#if defined(MACOS) || defined(MACOSX)
 
-//#include <Movies.h>
-//#include <TextUtils.h>
+#ifdef MACOS
 #include <QuickTimeMusic.h>
+#else
+// To work a round a conflict between exult's Palette class
+// and the Carbon headers, we put all into a namespace
+namespace QuickTime {
+#include <QuickTime/QuickTimeMusic.h>
+}
+#endif
 
 #include "Midi.h"
 #include "exceptions.h"
@@ -49,7 +55,7 @@ public:
 private:
 	UNREPLICATABLE_CLASS(Mac_QT_midi);
 	
-	TunePlayer	mTunePlayer;
+	QuickTime::TunePlayer	mTunePlayer;
 	uint32		*mTuneSequence;
 	uint32		*mTuneHeader;
 };
