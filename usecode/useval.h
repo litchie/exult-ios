@@ -125,11 +125,15 @@ public:
 					// Add array element. (No checking!)
 	void put_elem(int i, Usecode_value& val)
 		{ value.array[i] = val; }
-					// Get an array element, or *this.
+					// Get an array element.
 	inline Usecode_value& get_elem(int i) const
 		{
-		return (type == array_type) ? value.array[i] : (Usecode_value &)*this;
+		static Usecode_value zval(0);
+		return (type == array_type) ? value.array[i] : zval;
 		}
+					// Get array elem. 0, or this.
+	inline Usecode_value& get_elem0()
+		{ return (type == array_type) ? value.array[0] : *this; }
 	inline bool is_false() const	// Represents a FALSE value?
 		{
 		switch(type)
