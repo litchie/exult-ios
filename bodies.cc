@@ -68,9 +68,9 @@ short Body_lookup::table[] = {
 	510,	892,	27,	 // fox
 	883,	762,	1,	 // wingless Gargoyle
 	511,	762,	2,	 // gazer
-	337,	762,	2,	 // ghost
-	299,	762,	2,	 // ghost
-	317,	762,	15,	 // ghost
+	337,	762,	0,	 // ghost	(invisible).
+	299,	762,	0,	 // ghost
+	317,	762,	0,	 // ghost
 	1015,	414,	4,	 // Golem
 	513,	762,	4,	 // gremlin
 	946,	762,	23,	 // guard
