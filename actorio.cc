@@ -571,7 +571,7 @@ Monster_actor::Monster_actor
 	istream& nfile,			// 'monster.dat', generally.
 	int num,			// MONSTER #.
 	int has_usecode			// 1 if a 'type1' MONSTER.
-	) : Npc_actor(nfile, num, has_usecode), prev_monster(0), info(0),
+	) : prev_monster(0), Npc_actor(nfile, num, has_usecode), info(0),
 	    animator(0)
 	{
 	init();
