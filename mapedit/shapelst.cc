@@ -272,6 +272,29 @@ static int Get_max_height
 	}
 
 /*
+ *	Get the x-offset in pixels where a frame will be drawn.
+ *
+ *	Output:	Offset from left edge of (virtual) drawing area.
+ */
+
+static int Get_x_offset
+	(
+	Shape *shape,
+	int framenum
+	)
+	{
+	if (!shape)
+		return 0;
+	int nframes = shape->get_num_frames();
+	if (framenum >= nframes)
+		framenum = nframes - 1;
+	int xoff = 0;
+	for (int i = 0; i < framenum; i++)
+		xoff += shape->get_frame(i)->get_width() + border;
+	return xoff;
+	}
+
+/*
  *	Render one shape per row, showing its frames from left to right.
  */
 
@@ -279,18 +302,30 @@ void Shape_chooser::render_frames
 	(
 	)
 	{
+					// Get drawing area dimensions.
+	gint winw = draw->allocation.width, winh = draw->allocation.height;
 					// Look for selected frame.
 	int selshape = -1, selframe = -1, new_selected = -1;
 	if (selected >= 0)		// Save selection info.
 		{
 		selshape = info[selected].shapenum;
 		selframe = info[selected].framenum;
+		Shape *shape = ifile->extract_shape(selshape);
+		int xoff = Get_x_offset(shape, selframe);
+		if (xoff < hoffset)	// Left of visual area?
+			hoffset = xoff > border ? xoff - border : 0;
+		else
+			{
+			int sw = shape->get_frame(selframe)->get_width();
+			if (xoff + sw + border - hoffset > winw)
+				hoffset = xoff + sw + border - winw;
+			}
 		}
+	else
+		hoffset = 0;		// +++++Until we have a horiz. sbar.
 					// Remove "selected" message.
 	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	delete [] info;			// Delete old info. list.
-					// Get drawing area dimensions.
-	gint winw = draw->allocation.width, winh = draw->allocation.height;
 	iwin->set_clip(0, 0, winw, winh);
 					// Provide more than enough room.
 	info = new Shape_entry[1024];
@@ -311,14 +346,18 @@ void Shape_chooser::render_frames
 			continue;
 		int nframes = shape->get_num_frames();
 		int row_h = Get_max_height(shape);
-		int x = 0;
-		for (int framenum = 0; framenum < nframes; framenum++)
+		int x = -hoffset;
+		int sw, sh;
+		for (int framenum = 0; framenum < nframes; framenum++,
+						x += sw + border)
 			{
 			if (x >= winw)	// Past right edge?
 				break;
 			Shape_frame *frame = shape->get_frame(framenum);
-			int sh = frame->get_height(),
-			    sw = frame->get_width();
+			sh = frame->get_height();
+			sw = frame->get_width();
+			if (x < 0 && x + sw < sw/2)
+				continue;// Skip to left of hoffset.
 			int sy = curr_y+border;	// Get top y-coord.
 			frame->paint(iwin, x + frame->get_xleft(),
 						sy + frame->get_yabove());
@@ -332,7 +371,6 @@ void Shape_chooser::render_frames
 			if (shapenum == selshape && framenum == selframe)
 						// Found the selected shape.
 				new_selected = info_cnt;
-			x += sw + border;
 			info_cnt++;
 			}
 					// Next line.
@@ -1091,7 +1129,7 @@ Shape_chooser::Shape_chooser
 		Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
 		shapes_file(0), index0(0), framenum0(0),
 		info(0), info_cnt(0), row0(0), nrows(0),
-		sel_changed(0), frames_mode(false)
+		sel_changed(0), frames_mode(false), hoffset(0)
 	{
 	row_indices.reserve(40);
 	row_indices.push_back(0);	// First row is 0.
