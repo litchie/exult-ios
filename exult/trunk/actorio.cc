@@ -176,7 +176,8 @@ Actor::Actor
 	int tflags = Read2 (nfile);
 
 	// First time round, all the flags are garbage
-	if (Game::get_avname())
+	int first_time = (Game::get_avname() != 0);
+	if (first_time)
 		set_type_flags (1 << Actor::tf_walk);
 	else
 		set_type_flags (tflags);
@@ -202,10 +203,12 @@ Actor::Actor
 
 	nfile.seekg (29, ios::cur);
 
-	set_property((int) Actor::food_level, Read1(nfile));
-
+					// Get (signed) food level.
+	int food_read = (int) (char) Read1(nfile);
+	if (first_time)
+		food_read = 18;
+	set_property((int) Actor::food_level, food_read);
 	nfile.seekg(7, ios::cur);
-
 
 	char namebuf[17];
 	nfile.read(namebuf, 16);
