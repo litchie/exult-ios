@@ -150,7 +150,8 @@ bool Dragging_info::start
 		return (false);		// Wait for greater motion.
 	if (obj)
 		{			// Don't want to move walls.
-		if (!cheat.in_hack_mover() && !obj->is_dragable())
+		if (!cheat.in_hack_mover() && !obj->is_dragable() &&
+					      !obj->get_owner())
 			{
 			Mouse::mouse->flash_shape(Mouse::tooheavy);
 			obj = 0;
