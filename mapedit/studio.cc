@@ -620,6 +620,7 @@ static GtkCTreeNode *Create_tree_node
 
 /*
  *	Add a subtree to a clist using files from the patch or static dirs.
+ *	OR, add files to an existing subtree.
  *
  *	Output:	Parent of subtree.
  */
@@ -627,14 +628,16 @@ GtkCTreeNode *Create_subtree( GtkCTree *ctree,
 			      GtkCTreeNode *previous,
 			      const char *name,
 			      const char *ext,  // Or whole filename.
-			      gpointer data
+			      gpointer data,
+			      GtkCTreeNode *parent = 0
 			    )
 {
 	struct dirent *entry;
-	GtkCTreeNode *parent, *sibling = 0;
+	GtkCTreeNode *sibling = 0;
 	char *text[1];
 	text[0] = (char *) name;
-	parent = gtk_ctree_insert_node( ctree,
+	if (!parent)
+		parent = gtk_ctree_insert_node( ctree,
 					0,
 					previous,
 					text,
@@ -763,6 +766,13 @@ void ExultStudio::set_game_path(const char *gamepath)
 						   "Shape Files",
 						   ".vga",
 						   (gpointer)ShapeArchive );
+					// Put .shps in same subtree.
+				   Create_subtree( GTK_CTREE( file_list ),
+						   0,
+						   "Shape Files",
+						   ".shp",
+						   (gpointer)ShapeArchive,
+						   shapefiles );
 	GtkCTreeNode *chunkfiles = Create_subtree( GTK_CTREE( file_list ),
 						   0,
 						   "Map Files",
