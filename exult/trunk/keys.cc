@@ -157,6 +157,12 @@ const struct Action {
 	  ActionNPCNumbers, "Toggle NPC Numbers", true, true, NONE, false },
 	{ "GRAB_ACTOR",
 	  ActionGrabActor, "Grab NPC for Cheat Screen", true, true, NONE, false },
+	{ "CUT",
+	  ActionCut, "Cut Selected Objects", true, false, NONE, true},
+	{ "COPY",
+	  ActionCopy, "Copy Selected Objects", true, false, NONE, true},
+	{ "PASTE",
+	  ActionPaste, "Paste Selected Objects", true, false, NONE, true},
 	
 	{ "PLAY_MUSIC", ActionPlayMusic, "Play song", false, true, NONE, false },
 	{ "TOGGLE_NAKED",

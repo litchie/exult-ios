@@ -208,6 +208,31 @@ on_preferences_activate                (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
+on_cut1_activate                       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	unsigned char z = 0;
+	ExultStudio::get_instance()->send_to_server(Exult_server::cut,
+							&z, 1);
+}
+
+C_EXPORT void
+on_copy1_activate                      (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	unsigned char o = 1;
+	ExultStudio::get_instance()->send_to_server(Exult_server::cut,
+							&o, 1);
+}
+
+C_EXPORT void
+on_paste1_activate                       (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->send_to_server(Exult_server::paste);
+}
+
+C_EXPORT void
 on_move1_activate	               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -2117,6 +2142,9 @@ void ExultStudio::read_from_server
 	case Exult_server::unused_shapes:
 		show_unused_shapes(data, datalen);
 		break;
+	case Exult_server::select_status:
+		set_edit_menu(data[0] != 0, data[1] != 0);
+		break;
 	case Exult_server::usecode_debugging:
 		std::cerr << "Warning: got a usecode debugging message! (ignored)"
 				  << std::endl;
@@ -2204,6 +2232,7 @@ bool ExultStudio::connect_to_server
 #endif
 	cout << "Connected to server" << endl;
 	send_to_server(Exult_server::info);	// Request version, etc.
+	set_edit_menu(false, false);	// For now, init. edit menu.
 	return true;
 	}
 /*
@@ -2249,5 +2278,19 @@ void ExultStudio::info_received
 		}
 	}
 
+/*
+ *	Set edit menu entries depending on whether there's a selection or
+ *	clipboard available.
+ */
 
+void ExultStudio::set_edit_menu
+	(
+	bool sel,			// Selection available.
+	bool clip			// Clipboard isn't empty.
+	)
+	{
+	set_sensitive("cut1", sel);
+	set_sensitive("copy1", sel);
+	set_sensitive("paste1", clip);
+	}
 

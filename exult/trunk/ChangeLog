@@ -1,3 +1,7 @@
+2002-06-05  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* cheat.cc (public): Cut/copy/paste added to Exult & EStudio.
+
 2002-06-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: applied patches by Robert Bihlmeyer
 	* data/credits.txt: added Robert Bihlmeyer

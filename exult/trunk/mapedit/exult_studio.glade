@@ -351,13 +351,70 @@
 
       <widget>
 	<class>GtkMenuItem</class>
-	<name>objects1</name>
-	<label>_Objects</label>
+	<name>edit1</name>
+	<label>_Edit</label>
 	<right_justify>False</right_justify>
 
 	<widget>
 	  <class>GtkMenu</class>
-	  <name>objects1_menu</name>
+	  <name>edit1_menu</name>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>cut1</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_X</key>
+	      <signal>activate</signal>
+	    </accelerator>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_cut1_activate</handler>
+	      <last_modification_time>Wed, 05 Jun 2002 17:35:33 GMT</last_modification_time>
+	    </signal>
+	    <label>_Cut</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>copy1</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_C</key>
+	      <signal>activate</signal>
+	    </accelerator>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_copy1_activate</handler>
+	      <last_modification_time>Wed, 05 Jun 2002 17:36:08 GMT</last_modification_time>
+	    </signal>
+	    <label>C_opy</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>paste1</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_V</key>
+	      <signal>activate</signal>
+	    </accelerator>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_paste1_activate</handler>
+	      <last_modification_time>Wed, 05 Jun 2002 17:36:08 GMT</last_modification_time>
+	    </signal>
+	    <label>_Paste</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>separator5</name>
+	    <right_justify>False</right_justify>
+	  </widget>
 
 	  <widget>
 	    <class>GtkMenuItem</class>
@@ -367,7 +424,7 @@
 	      <handler>on_open_egg_activate</handler>
 	      <last_modification_time>Wed, 02 May 2001 16:38:31 GMT</last_modification_time>
 	    </signal>
-	    <label>_Egg...</label>
+	    <label>Create _egg...</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 
@@ -379,7 +436,7 @@
 	      <handler>on_open_npc_activate</handler>
 	      <last_modification_time>Sat, 09 Jun 2001 18:14:01 GMT</last_modification_time>
 	    </signal>
-	    <label>_NPC...</label>
+	    <label>Create _NPC...</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>

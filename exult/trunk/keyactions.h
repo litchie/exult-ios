@@ -78,6 +78,10 @@ void ActionPickPocket(int *params);
 void ActionNPCNumbers(int *params);
 void ActionGrabActor(int *params);
 
+void ActionCut(int *params);
+void ActionCopy(int *params);
+void ActionPaste(int *params);
+
 void ActionPlayMusic(int* params);
 void ActionNaked(int* params);
 void ActionPetra(int* params);
