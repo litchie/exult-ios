@@ -280,7 +280,7 @@ void Audio::Init()
 Audio *Audio::self=0;
 
 Audio::Audio() : speech_enabled(true), music_enabled(true),
-			effects_enabled(false), midi(0)
+			effects_enabled(true), midi(0)
 {
 	self=this;
 	string s;
@@ -288,6 +288,8 @@ Audio::Audio() : speech_enabled(true), music_enabled(true),
 	speech_enabled = (s!="no");
 	config->value("config/audio/midi/enabled",s,"---");
 	music_enabled = (s!="no");
+	config->value("config/audio/effects/enabled",s,"---");
+	effects_enabled = (s!="no");
 }
 
 void Audio::Init(int _samplerate,int _channels)	
@@ -438,7 +440,7 @@ void	Audio::play_sound_effect (int num)
 {
 	// Where sort of sfx are we using????
 	
-	if(midi != 0) midi->start_sound_effect(num);
+	if(effects_enabled && midi != 0) midi->start_sound_effect(num);
 
 }
 

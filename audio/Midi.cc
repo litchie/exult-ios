@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "game.h"
 #include "conv.h"
+#include "audio.h"
 
 #include "Configuration.h"
 extern	Configuration	*config;
@@ -45,7 +46,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
   #endif
 	U7object	track(midi_bank[bank].c_str(),num);
 
-	if (!midi_device)
+	if (!midi_device && !init_device())
 	        return;
 
 //Not needed anymore
@@ -99,7 +100,7 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
         cout << "Audio subsystem request: Music track # " << num << " in file "<< fname << endl;
   #endif
 
-	if (!midi_device || !fname)
+	if ((!midi_device && !init_device()) || !fname)
 	        return;
 
 // Not Needed anymore
@@ -149,7 +150,7 @@ void    MyMidiPlayer::start_track(XMIDI *midfile, bool repeat)
   #if DEBUG
         cout << "Audio subsystem request: Custom Music track" << endl;
   #endif
-	if (!midi_device)
+	if (!midi_device && !init_device())
 	        return;
 
 	// Now get the data out of the XMIDI class and play it
@@ -177,7 +178,7 @@ void    MyMidiPlayer::start_track(XMIDI *midfile, bool repeat)
 
 void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
 {
-	if(!midi_device)
+	if(!midi_device && !init_device())
 		return;
 	if(current_track==num&&midi_device->is_playing())
 		return;	// Already playing it
@@ -187,7 +188,7 @@ void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
 
 void	MyMidiPlayer::start_music(const char *fname,int num,bool repeat)
 {
-	if(!midi_device || !fname)
+	if((!midi_device && !init_device()) || !fname)
 		return;
 	current_track=-1;
 	start_track(fname,num,repeat);
@@ -195,7 +196,7 @@ void	MyMidiPlayer::start_music(const char *fname,int num,bool repeat)
 
 void	MyMidiPlayer::stop_music()
 {
-	if(!midi_device)
+	if(!midi_device && !init_device())
 		return;
 	
 	midi_device->stop_track();
@@ -241,28 +242,36 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 		}	\
 	}
 
-MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
+bool MyMidiPlayer::init_device()
 {
 	bool	no_device=true;
 
-	add_midi_bank(MAINMUS);
-	add_midi_bank(INTROMUS);
-	add_midi_bank("<STATIC>/mainshp.flx");
-
 	// instrument_patches=AccessTableFile(XMIDI_MT);
 	string	s;
-	config->value("config/audio/midi/enabled",s,"---");
-	if(s=="---")
+
+	bool sfx = false;
+
+#ifdef WIN32
+	sfx = audio->are_effects_enabled();
+
+	if (!sfx) s = "no";
+	else s = "yes";
+
+	config->set("config/audio/effects/enabled",s,true);
+#endif
+
+	bool music = audio->is_music_enabled();
+
+	if (!music) s = "no";
+	else s = "yes";
+
+	config->set("config/audio/midi/enabled",s,true);
+
+	if(!sfx && !music)
 		{
-		cout << "Config does not specify MIDI. Assuming yes" << endl;
-		s="yes";
-		}
-	if(s=="no")
-		{
-		cout << "Config says no midi. MIDI disabled" << endl;
+		//cout << "Audio says no midi. MIDI disabled" << endl;
 		no_device=false;
 		}
-	config->set("config/audio/midi/enabled",s,true);
 
 #ifdef WIN32
 //	TRY_MIDI_DRIVER(Windows_MCI)
@@ -289,6 +298,17 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 		midi_device=0;
 		cerr << "Unable to create a music device. No music will be played" << endl;
 		}
+		
+	return no_device;
+}
+
+MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
+{
+	add_midi_bank(MAINMUS);
+	add_midi_bank(INTROMUS);
+	add_midi_bank("<STATIC>/mainshp.flx");
+	
+	init_device();
 }
 
 MyMidiPlayer::~MyMidiPlayer()
@@ -310,9 +330,9 @@ void    MyMidiPlayer::start_sound_effect(int num)
         
         cout << "Real num " << real_num << endl;
 
-	U7object	track("sfx.dat",real_num);
+	U7object	track("<DATA>/midisfx.flx",real_num);
 
-	if (!midi_device)
+	if (!midi_device && !init_device())
 	        return;
 
 //Not needed anymore
