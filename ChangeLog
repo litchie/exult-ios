@@ -1,3 +1,8 @@
+2005-03-27    <jeff@mini.nerble.net>
+
+	* cheat.cc (Cheat): Ctrl-arrow keys will move entire chunks when
+	in "Select chunks" mode.
+
 2005-03-12    <jeff@mini.nerble.net>
 
 	* data/exultmsg.txt: Applied "international support" patch from

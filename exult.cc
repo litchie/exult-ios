@@ -912,9 +912,14 @@ static void Select_chunks
 	lastcx = cx; lastcy = cy;
 	Map_chunk *chunk = gwin->get_map()->get_chunk(cx, cy);
 	if (toggle)
-		chunk->set_selected(!chunk->is_selected());
+		{
+		if (!chunk->is_selected())
+			cheat.add_chunksel(chunk);
+		else
+			chunk->set_selected(false);
+		}
 	else
-		chunk->set_selected(true);
+		cheat.add_chunksel(chunk);
 	gwin->set_all_dirty();
 	}
 
