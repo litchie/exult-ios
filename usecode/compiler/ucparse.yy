@@ -381,7 +381,18 @@ converse_statement:
 
 script_statement:			/* Yes, this could be an intrinsic. */
 	SCRIPT item script_command opt_script_delay ';'
-		{ $$ = 0; /* ++++++++++++ */ }
+		{
+		Uc_array_expression *parms = new Uc_array_expression();
+		parms->add($2);		// Itemref.
+		parms->add($3);		// Script.
+		if ($4)			// Delay?
+			parms->add($4);
+					// Get the script intrinsic.
+		Uc_symbol *sym = Uc_function::get_intrinsic($4 ? 2 : 1);
+		Uc_call_expression *fcall = 
+				new Uc_call_expression(sym, parms, function);
+		$$ = new Uc_call_statement(fcall);
+		}
 	;
 
 item:					/* Any object, NPC.	*/
@@ -435,7 +446,6 @@ script_command:
 	| SAY expression
 		{ $$ = Create_array(Ucscript::say, $2); }
 	| STEP expression		/* Step in given direction (0-7). */
-	/*++++++++  Might be a 2nd parm, diff in lift! */
 		{ $$ = Create_array(Ucscript::step, $2); }
 	| STEP direction
 		{ $$ = new Uc_int_expression(Ucscript::step_n + $2); }
