@@ -261,12 +261,15 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500)
 				{
+				dragging = 0;
 				gwin->double_clicked(event.button.x, 
 							event.button.y);
 				break;
 				}
 			last_b1_click = curtime;
-			gwin->drop_dragged(event.button.x, event.button.y);
+			if (dragged)
+				gwin->drop_dragged(event.button.x, 
+							event.button.y);
 			if (!dragged)
 					// Identify item(s) clicked on.
 				gwin->show_items(event.button.x, 

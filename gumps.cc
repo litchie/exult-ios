@@ -74,7 +74,7 @@ Gump_object::Gump_object
 		if (shnum >= 57 && shnum <= 68)
 			{
 			object_area = Rectangle(0, 0, 0, 0);
-			checkx = 0; checky = 127;
+			checkx = 6; checky = 136;
 			}
 		else
 			object_area = Rectangle(52, 22, 60, 40);
