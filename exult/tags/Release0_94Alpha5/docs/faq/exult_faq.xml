@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE faqs SYSTEM "faqs.dtd">
+<faqs title="Exult" changed="10 August 2001(GMT)">
+	<section title="Changes to the FAQ">
+		<faq name="10082001">
+			<question>- 10 August 2001</question>
+			<answer>
+				<ul>
+				<li><ref1 target="origin_exult"/> noted praise from LB and Ken Demarest.</li>				
+				
+				<li><ref1 target="multiplayer"/> This gets asked quite often.</li>
+				<li><ref1 target="whatis_snapshot"/> added some more information.</li>
+				<li><ref1 target="compile_snapshot"/> made this gnereic for all the OS'.</li>
+				<li><ref1 target="what_platforms"/> added OSX.</li>
+				<li><ref1 target="addon_support"/> reported both as bug-free.</li>
+				<li><ref1 target="other_improvements"/> added the status bars.</li>				
+				<li><ref1 target="bug_report"/> not that anyone reads the FAQ anyway. But it should get
+					 all the alpha testers on the right track.</li>
+				</ul>	
+			</answer>
+		</faq>
+		<faq name="19072001">
+			<question>- 19 July 2001</question>
+			<answer>
+				<ul>
+				<li>With the updated Documentation parts of the FAQ are no longer 
+					necessary and thus left out. So see the <extref target="docs.php">Documentation</extref>
+					for all your configuration problems</li>
+				</ul>	
+			</answer>
+		</faq>
+	</section>
+	<section title="Introduction">
+		<faq name="why_name_exult">
+			<question>Why is it called <Exult/> - what is the meaning of this name?</question>
+			<answer>
+				<cite name="Jeff wrote on the Boards">
+					I originally wrote it [Exult] solely for X-windows, so that's where
+					the 'X' comes from. The "ult", of course, comes from Ultima. It
+					was only about 6 months ago [02/29/2000] that I replaced the X code with SDL,
+					which is multiplatform. Then Arthuris ported it to Win32 (and to
+					BeOS). He had also ported the earlier version, but it was much harder
+					to maintain that way.
+				</cite>
+				<cite name="Ibrahim Holtzmann">
+					I'd like to point out that "exult" is also an English verb that
+					means "to rejoice, to exhibit great happiness".
+				</cite>
+			</answer>
+		</faq>
+		<faq name="is_exult_free">
+			<question>Is <Exult/> free ?</question>
+			<answer>
+				<para>
+					<Exult/> is more than free: it's Free (notice the caps). <Exult/> is released
+					under the GNU GPL (General Public License). This means that the source code
+					for <Exult/> is freely available and you can do whatever you want with it.
+					However, if you make modifications to any of <Exult/>'s components and publicly
+					redistribute your work you are required to make the source freely available
+					in turn. Obviously the <Exult/> team would be very grateful if any
+					modifications you make are contributed back to the main code, so that
+					everyone can benefit from them. If you want to work on <Exult/> just send an
+					e-mail to the 
+					<extref target="mailto:exult-general@lists.sourceforge.net">team</extref>.<br/>
+ 					More information on the GNU GPL at 
+ 					<extref target="http://www.gnu.org/copyleft/gpl.html"/>.
+				</para>
+			</answer>
+		</faq>
+		<faq name="origin_exult">
+			<question>Does Origin support <Exult/>?</question>
+			<answer>
+				<para>
+					First of all, Origin has been owned by EA for a long time now and from recent 
+					developements it seems that Origin only exists now to maintain Ultima Online. 
+					Furthermore, Origin and/or people that worked for Origin claim that the source 
+					code for Ultima 7 (BG/SI) has been lost for some time.
+					So there is no chance for the <Exult/> team to have a look at the actual code.
+				</para>
+				<para>
+					Also the team tried to contact some people from Origin earlier but got no positive
+					or negative response on the <Exult/> project. So far it seems that both Origin and 
+					EA have decided to ignore <Exult/>.
+				</para>
+				<para>
+					On the other hand former Origin employees contacted the team and congratulated the 
+					team on their effort. Most noticeable are Lord British himself and Ken Demarest 
+					(Programming Manager of Ultima 7)(hint:spell his name backwards).
+				</para>
+			</answer>
+		</faq>
+		<faq name="other_ultimas">
+			<question>Will <Exult/> support other Ultimas?</question>
+			<answer>
+				<para>
+					<Exult/> supports only Ultima 7 (BG/SI and the add-ons). It will never support
+					any other Ultima nor do members of the team plan to develop something similar.
+					The reasons for this are that no other Ultima is similar to Ultima 7 in the 
+					internal workings and also the team is quite sick of reverse engineering a game
+					allready. 
+				</para>
+			</answer>
+		</faq>
+		<faq name="multiplayer">
+			<question>Will there be a multiplayer <Exult/>?</question>
+			<answer>
+				<para>
+					No.
+				</para>
+				<cite name="Jeff on the Forum">
+					The question is 'why?'. I continue working on <Exult/>, in large part, because 
+					nobody makes games like Ultima7 anymore. While I think a multi-player game 
+					would be technically interesting, I don't see the need. There are <em>lots</em> 
+					of them already, and many experienced people working on new ones.
+				</cite>
+				<para>
+					Note however that <Exult/> is open source. If you want a multiplayer U7 no one
+					holds you back to code it in. 
+				</para>
+			</answer>
+		</faq>
+		<faq name="whereis_exult">
+			<question>Where do I find <Exult/>?</question>
+			<answer>
+				<para>
+					The latest official version is found on <extref target="http://exult.sourceforge.net/"/><br/>
+					Daily snapshots of the Win32 binary and of the CVS source tree can be found at
+					<extref target="http://exult.sourceforge.net/download.php"/>
+				</para>
+			</answer>
+		</faq>
+		<faq name="whatis_snapshot">
+			<question>What is a snapshot? Are these screenshots or what?</question>
+			<answer>
+			    <para>
+			    	Bugs and not yet implemented features in <Exult/> get fixed almost daily in the code.
+			    	A release is very time consuming that's why there are so few.
+			    </para>	
+			    <para>
+					The snapshot is the newest source code of the program. It is updated almost
+					daily, sometimes twice a day. There is information on how to build your
+					own binary in the source but there is also the newest pre-compiled Windows binary.
+					If you there is no new one this means that either there were no changes to the code
+					or the source failed to compile.
+				</para>
+				<para>
+					Also this FAQ mainly addresses the snapshots as people use them and ask question.
+				</para>
+			</answer>
+		</faq>
+		<faq name="compile_snapshot">
+			<question>How do I compile a source code snapshot for my OS?</question>
+			<answer>
+				<para>
+					The source code snapshots contain a file called "README.OS" (like Readme.win32, 
+					Readme.MacOS) that explains everything.
+				</para>
+			</answer>
+		</faq>
+		<faq name="latest_version">
+			<question>What is the latest version of <Exult/>?</question>
+			<answer>
+				<para>
+					The current official release is V0.93 Alpha4. See also <ref target="whereis_exult"/>
+					to learn where to get the latest version.
+				</para>
+				<para>
+					To find out which version you are running, press <key>v</key> while in game.
+				</para>
+			</answer>
+		</faq>
+		<faq name="what_platforms">
+			<question>On what platform does <Exult/> run?</question>
+			<answer>
+				<para>
+					<Exult/> should be able to be compiled (with minor modifications) on
+					any platform that SDL supports. Right now the source can be compiled
+					in Linux/i386, Linux/Alpha, MacOS, OSX, OpenBSD, FreeBSD, Solaris, BeOS and 
+					Win32 (Windows 9x/ME/NT/2000).
+				</para>
+			</answer>
+		</faq>
+	</section>
+  	<section title="Exult and Ultima 7">
+		<faq name="u7_needed">
+			<question>Do I need Ultima 7?</question>
+			<answer>
+				<para>
+					Yes. <Exult/> won't work without the original files.
+				</para>
+			</answer>
+		</faq>
+		<faq name="u7_versions">
+			<question>Does <Exult/> work on all versions of the game?</question>
+			<answer>
+				<para>
+					It seems to run most of the available versions of the game. The most common
+					ones nowadays with the included Add-Ons (Forge of Virtue and Silver Seed) 
+					runs for sure.
+				</para>
+				<para>
+					However there are reported problems with the localized versions of the
+					game (French, German and Spanish). Conversation threads don't seem to skip to the
+					next line in the proper places and therefore are unreadable in some cases. SI
+					was only published in English so no localization problems with that one.
+				</para>
+				<para>
+					V0.91 Alpha2 adds fixes for the french version, which should work now.
+					No work has been done for the german version, due to lack of testers. If
+					you have the German or Spanish version, and want it to run, contact us.
+				</para>
+			</answer>
+		</faq>
+		<faq name="si_support">
+			<question>How about Serpent Isle?</question>
+			<answer>
+				<para>
+					The team is working on it. It is not yet fully playable but you can walk around,
+					talk to people, finish a lot of quests... Plotwise you will
+					get quite far but you certainly won't be able to play through it yet.
+				</para>
+				<para>
+					Old quotes on this topic from the time when SI wasn't playable at all in <Exult/>.
+				</para>
+				<cite name="Colourless">
+					I can't say much about the what will happen except that a completely
+					working Serpent Isle will be an annoying task to complete. It is
+					close to BG in some ways, but very different in others. 
+				</cite>
+				<cite name="Jeff">
+					My feelings about SI are the same as Colourless, who has done all
+					the work so far on it. I'd much prefer to add enhancements to BG
+					(which would apply to SI as well), and perhaps write a new RPG.
+					Now, if EA would provide us with information about SI's internals,
+					that would change things. And also, since Exult is open-source,
+					it would be fine if anyone wants to volunteer to work on SI.
+				</cite>
+			</answer>
+		</faq>
+		<faq name="addon_support">
+			<question>Do the Add-Ons work?</question>
+			<answer>
+				<para>
+					"Forge of Virtue" (Add-On to Black Gate) and the "The Silver Seed" 
+					(Add-On to Serpent Isle) are bug-free now.
+				</para>
+			</answer>
+		</faq>
+		<faq name="play_through_u7">
+			<question>Can you play through U7 yet?</question>
+			<answer>
+				<para>
+					You can play through the Black Gate/Forge of Virtue without cheating and
+					plotholes.<br/>
+					SI is partially playable since V0.91 Alpha2.
+				</para>
+			</answer>
+		</faq>
+		<faq name="old_savegames">
+			<question>Do savegames from the original work in <Exult/>?</question>
+			<answer>
+				<para>
+					Savegames that were made with the original Ultima 7 or U7Run don't work
+					with <Exult/>. You have to start a new game when you begin playing with <Exult/>.
+					Sorry! 
+				</para>
+			</answer>
+		</faq>
+		<faq name="u7_download">
+			<question>Where do I find Ultima 7 on the net to download?</question>
+			<answer>
+				<para>
+					<em>Don't!</em> You may be able to find it on the net but it would be
+					pirating the game and the <Exult/> team doesn't support pirates. Look for
+					the Ultima Collection in stores or on Ebay (<extref target="http://www.ebay.com"/>).
+				</para>
+				<para>
+					<em>Don't</em> ask the team for copies.
+				</para>
+			</answer>
+		</faq>
+	</section>
+ 	<section title="Miscellaneous">
+		<faq name="cheat_rooms_work">
+			<question>Do the various cheat rooms work?</question>
+			<answer>
+				<para>
+					Yes.
+				</para>
+			</answer>
+		</faq>
+		<faq name="where_cheat_rooms">
+			<question>Where Do I find them</question>
+			<answer>
+				<para>
+					Just keep on looking for them :-)
+				</para>
+			</answer>
+		</faq>
+		<faq name="transports_work">
+			<question>Do the carriages, ships and the magic carpet work?</question>
+			<answer>
+				<para>
+					Yes. The sail of ships look odd sometimes but otherwise these means of
+					transportations work quite well.
+				</para>
+			</answer>
+		</faq>
+		<faq name="party_formation">
+			<question>Why is the party formation different?</question>
+			<answer>				
+				<para>
+					In <Exult/> the party (the Avatar and his companions) move quite differently than
+					they do in the original. This is actually not a bug but a disliking of the old
+					style.
+				</para>
+				<cite name="Jeff">
+					It's not a bug, it's a feature! I like it that way.  Everyone is sensitive to 
+					different things, and I always though the formation-walking in the original 
+					U7 looked really stupid. Eventually, someone may add the original type of walking 
+					to Exult, probably as an option.
+				</cite>
+			</answer>
+		</faq>
+		<faq name="bg_improvements">
+			<question>
+				Serpent Isle had many more improvements over Black Gate (keyring,
+				better paperdoll...). Will these be implemented?
+			</question>
+			<answer>
+				<para>
+					Right now the main goal is to get the Black Gate 100% working. After
+					that it could be that some more things will be improved as far as it
+					is possible to implement these.
+				</para>
+				<para>
+					The keyring is not in Black Gate but there is the <key>k</key> key
+					which tries all the keys in the inventory to open a lock.
+				</para>
+				<para>
+					Recently Ryan added paperdoll support in Black Gate. Though it is
+					still buggy (some items disappear to Neverneverland) it is beautiful
+					to look at. Very impressive. For this you need to have Serpent Isle
+					installed on your hard drive and you must set the path to it in exult.cfg
+					(see the <extref target="docs.php">Documentation</extref>). If an item 
+					seems to have disappeared press <key>F2</key> to activate the cheat menu 
+					and disable Paperdolls. Now you should find that missing item in your inventory. 
+				</para>
+			</answer>
+		</faq>
+		<faq name="other_improvements">
+			<question>Any other improvements/features?</question>
+			<answer>
+				<para>
+					Since the Alpha 4 release a new game menu was added with improved Audio and Video 
+					Options boxes (the Gameplay Options don't work yet) and a very much improved 
+					(<strong>awesome</strong>)savegame box. This allows you much more savegames than 
+					the original (you should run out of disc space before you run out of savegame slots), 
+					shows a screenshot of the location you saved at, the members of your party, your stats,
+					game time and the date you actually saved. The game menu is opened via <key>Esc</key> 
+					and the save game box is opened either via the game menu or the <key>s</key> key.
+				</para>
+				<para>
+					Post Alpha 4 the team added status bars to the game. Press <key>r</key> while playing 
+					to see it.
+				</para>
+				<para>
+					In <Exult/>, you can still move your party even if there is a box/body/stats
+					open/on. In the original, the world was kind of frozen. Now it is only
+					frozen if you hit the <key>t</key> or <key>s</key> key.
+				</para>
+			</answer>
+		</faq>
+		<faq name="disable_improvements">
+			<question>
+				How do I disable all improvements?
+			</question>
+			<answer>
+				<para>
+					To get an Ultima 7 that looks and behaves as close to the original as possible there
+					are several things to do (though I wonder why you'd want to do that):
+				</para>
+				<ul>
+				<li>make custom keybindings files (see <extref target="docs.php">Documentation</extref>) 
+					in which you disable all the keys that were not in the original for Black Gate and 
+					Serpents Isle.<br/> 
+					Since the Alpha 4 release you have to assign <key>s</key> to old_file_gump
+					to enable the old savegame menu (the line in your custom keybindings file should look 
+					like: S old_file_gump)</li>
+				<li>Edit the exult.cfg file to point to those custom keys.</li>
+				<li>Don't set the path to the Serpent Isle files (see <extref target="docs.php">Documentation</extref>)
+					 and put SI and a second copy of <Exult/> in a seperate directory (note: you can no longer 
+					launch both BG and SI from the same exult.exe). This disables SI paperdolls in BG.</li>
+				<li>Alternatively you can leave the cheat menu binding in the keybindings file (<key>F2</key>) 
+					and disable "Paperdolls" each time you run <Exult/>.</li>
+				<li>Edit the exult.cfg to use the resolution of 320x200, to run in full screen and 
+					disable scalers.</li>
+				<li>The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot 
+					be altered. Sorry!</li> 
+				</ul>
+			</answer>
+		</faq>
+		<faq name="exult_engine">
+			<question>
+				I heard that <Exult/> is meant to be a game engine. Can I make my own game with <Exult/>?
+			</question>
+			<answer>
+				<para>
+					Work has begun on "<Studio/>" which is aimed to be an editor for
+					all kinds of files that are used by Ultima 7. As of now there is already
+					a <extref target="http://www.gimp.org/">Gimp</extref> plug-in to edit shapes.
+				</para>
+				<para>
+					For much more information "<Studio/>" see <ref2 target="Exult Studio"/>.
+				</para>
+				<cite name="Jeff">
+					As for the future, my main plan is to add editing capabilities,
+					with the long-range goal of writing an original RPG.
+				</cite>
+			</answer>
+		</faq>
+	</section>
+	<section title="Exult Studio">
+		<faq name="what_is_studio">
+			<question>What is it?</question>
+			<answer>
+				<para>
+					<Studio/> is a map-editor for <Exult/>, allowing you to modify the map of a 
+					game and, eventually, to create a completely new landscape for a new game.
+				</para>
+			</answer>
+		</faq>
+		<faq name="cool_name">
+			<question>Who came up with the cool name?</question>
+			<answer>
+				<para>
+					Tristan
+				</para>
+			</answer>
+		</faq>
+		<faq name="need_to_run">
+			<question>What do you need to run it?</question>
+			<answer>
+				<para>
+					Currently, you need to be running <Exult/> on X (Linux, Unix, etc.), with
+					<Exult/> set to run in a window (not fullscreen).  You also need the GTK+
+					library installed.
+				</para>
+			</answer>
+		</faq>
+		<faq name="port_platforms">
+			<question>When will it be ported to other platforms?</question>
+			<answer>
+				<para>
+					That depends on when someone volunteers to do the work :-) There are
+					three issues:
+				</para>
+				<ul>
+   				<li>GTK has to be ported to the platform. I think this is already
+					true for Win32.</li>
+   				<li><Studio/> uses sockets to communicate with <Exult/>.  This also 
+					shouldn't be a problem for Win32.</li>
+   				<li>X drag-n-drop is used to put new objects on the landscape.  The
+					'drop' part of this will have to be rewritten for Win32 <Exult/>, OR,
+					drag-n-drop could be an enhancement to SDL someday.</li>
+				</ul>
+			</answer>
+		</faq>
+		<faq name="how_to_run">
+			<question>How do you run it?</question>
+			<answer>
+				<para>
+					You can run <Studio/> all by itself, but it isn't useful that way,
+					as it uses <Exult/> as a server.  What you really want to do is:
+				</para>
+				<ul>
+   				<li>Put 'exult_studio.glade' in the <Exult/> 'data' directory.</li>
+   				<li>Be sure 'exult_studio' is in your path.</li>
+   				<li>Run <Exult/>.</li>
+   				<li>Press 'alt-ctrl-m' to go into 'map-editor' mode.  If all is set
+					up correctly, exult_studio will start up, and will have a list of files
+					on the left side of its window.</li>
+				</ul>
+				<para>
+					You can also start up one or the other separately, and they'll
+					reconnect:
+				</para>
+				<ul>
+    			<li>If <Exult/> isn't running, start it up.  Then, in <Studio/>,
+					use the 'File' menu to choose the static directory (for the game you're
+					playing).</li>
+   				<li>If <Studio/> isn't running start it up with:
+        			exult_studio -x (path to dir containing exult_studio.glade) -d 
+        			(path to game directory)</li>
+				</ul>
+			</answer>
+		</faq>
+		<faq name="what_can_do_at_moment">
+			<question>What can you do at the moment?</question>
+			<answer>
+				<ul>
+				<li>You can browse shapes in the main window.</li>
+   				<li>You can drag a shape from the shape browser to <Exult/>, and that
+					object will be placed in the game.  (Note:  Not all such objects 
+					are saved with the game yet; saving things like buildings will be 
+					implemented soon.)</li>
+   				<li>You can edit an 'egg' by double-clicking on it.  An edit box
+					should appear.</li>
+   				<li>You can create a new 'egg' using the pull-down menu in <Studio/>.  
+					In the Egg edit box, after you hit 'Apply', you'll be prompted to
+					click in <Exult/> where you want the egg to appear.</li>
+   				<li>If editing a 'monster' egg, you can set the monster by dragging
+					the shape from the browser to the area that displays the monster.</li>
+				</ul>
+			</answer>
+		</faq>
+		<faq name="what_next">
+			<question>What's next?</question>
+			<answer>
+				<para>
+					The next things to be implemented are:
+				</para>
+				<ul>
+    			<li>An NPC editor, similar to the one for Eggs (but with lots more
+					stuff to set).</li>
+   				<li>A simple object editor, that lets you modify an object's
+					'quality', 'quantity' and flags.</li>
+   				<li>A 'save-map' function in <Exult/> to save the whole map (not just
+					the moveable objects that 'save-game' stores).</li>
+				</ul>
+			</answer>
+		</faq>
+		<faq name="client_server_stuff">
+			<question>What's with this client/server stuff?</question>
+			<answer>
+				<para>
+					A map-editor needs to provide the ability to display the game, place
+					objects on the map, and move objects around.  That functionality is already in
+					<Exult/>, and it makes sense to reuse it.  So we could have made <Exult/> a part of
+					<Studio/>.  However, <Exult/> is already a huge program, and is getting
+					unwieldy to work on.
+				</para>
+				<para>  
+					With this architecture, <Studio/> can have all the messy code for 
+					displaying/editing dialog boxes, while <Exult/> only needs a little bit
+					of work to handle requests.
+				</para>
+				<para>
+					Also, I (Jeff) wanted to get a little experience programming with
+					sockets:-)
+				</para>
+			</answer>
+		</faq>
+	</section>
+  	<section title="Bugs, known issues and not yet implemented features">
+		<faq name="known_bugs">
+			<question>Bugs</question>
+			<answer>
+				<para>
+					To see a list of open bugs and bugreports go to
+					<extref target="http://sourceforge.net/bugs/?group_id=2335"/>
+				</para>
+			</answer>
+		</faq>
+		<faq name="bug_report">
+			<question>How do I submit a proper bug report?</question>
+			<answer>
+				<ol>
+				<li>Read the <extref target="http://exult.sourceforge.net/docs.php">Documentation</extref>
+					and this FAQ to see if that is not allready covered and you have all set up correctly.</li>
+				<li>Before you report a bug to the 
+					<extref target="http://sourceforge.net/bugs/?group_id=2335">bug tracker</extref> 
+					please try the latest <extref target="http://exult.sourceforge.net/download.php">snapshot</extref>.
+					If the bug still occurs make sure that no one else allready reported the bug.</li>
+				<li>If you are not a sourceforge member please include your e-mail address this is 
+					important so we can get back to you. If you are a sourceforge member please log in 
+					before submitting a bug.</li>
+				<li>Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae 
+					don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more 
+					sense. Sadly the space for the topics is limited. Explain the topic in "Detailed 
+					Description".</li>
+				<li>State which Operating System you use (Windows 9X, Linux, ...).</li>
+				<li>Please include a savegame (use common sense if it is really needed). You will find 
+					those in the game directories you put in the exult.cfg. They are called exult**bg.sav 
+					(** is a number) for BG and exult**si.sav for SI. Zip it (important as Sourceforge 
+					seems to have a size limit). As some parts of the game may require you to complete 
+					other quests or stuff before you get to the bug you want to report it's much easier 
+					for the team to look at the problem (speeds the process up a bit as they are much more 
+					likely you take a look at the problem this way).</li>
+				</ol>
+				<para>
+					So if you want to have a bug fixed follow these steps!
+				</para>	
+			</answer>
+		</faq>
+		<faq name="known_issues">
+			<question>Known Issues</question>
+			<answer>
+				<ul>
+					<li>Movement is sometimes jerky or slow.</li>
+					<li>We don't know what all the data in 'weapons.dat' and 'ammo.dat'
+						means, so hit points and damage don't work as well as in the original
+						game.</li>
+					<li>Sound effects in SI are sometimes odd with the wave pack as some 
+						sounds were coded in <Exult/> to correspond to the sfx number in BG. This 
+						is a bug and will be addressed in due time.</li>
+					<li>In Fellowship meetings some NPCs appear not to attend these though
+						they should and sometimes even speak there. This is due to a bug in <Exult/> 
+						which makes NPCs sit on already taken seats and only the top most NPC can 
+						be seen. Moving the top most via Hackmover makes the others visible.</li>
+					<li>If you run a resolution higher than the original (320x200) some NPCs
+						that are further away from the Avatar may seem to disappear and reappear when
+						you get away or closer to them.</li>
+					<li>With scalers enabled you might encounter slow downs of the game. The team is
+						working on this right now and it is already a lot faster.</li>
+					<li>The speech in the intro is out of synch with the lips animations. But now it 
+						matches the speed of the text.</li>
+					<li>There are reported problems with digital sound effects or speech when 
+						using Vortex series sound cards (like the Diamond MX 300) under Win9x/ME. <Exult/>
+						is triggering a bug in the drivers. No workaround for now.</li>
+				</ul>
+			</answer>
+		</faq>
+		<faq name="not_yet_implemented">
+			<question>Not yet implemented</question>
+			<answer>
+				<para>
+					A few magic spells don't work yet.
+				</para>
+			</answer>
+		</faq>
+	</section>
+	<section title="Questions and Answers">
+		<faq name="howto_get_answers">
+			<question>
+				How can I get answers concerning Ultima 7/<Exult/>?
+			</question>
+			<answer>
+				<para>
+					The best way to get answers to questions is to go to the Online discussion forum at:<br/>
+					<extref target="http://exult.sourceforge.net/forum/"/>
+				</para>
+				<para>
+					To get answers concerning Ultima 7 in general go to the Ultima newsgroup:<br/>
+					<extref target="news://rec.games.computer.ultima.series"/>
+				</para>
+				<para>
+					Or go to the Ultima Dragons homepage <extref target="http://www.udic.org"/> and find your
+					way from there (this is an online Ultima fanclub)
+				</para>
+				<para>
+					Some <Exult/> developers like to hang out on IRC on irc.openprojects.net, channel #exult.
+				</para>
+			</answer>
+		</faq>
+		<faq name="contact">
+			<question>How do I contact the author of this FAQ?</question>
+			<answer>
+				<para>
+					This FAQ is maintained by Dominus Dragon of the 
+					<extref target="http://www.udic.org">UDIC</extref>
+					aka <extref target="mailto:gigdr@tesionmail.de">Dominik Reichardt</extref>.
+					Feel free to contact me with improvements or complaints regarding
+					the FAQ. I recently became part of the <Exult/> Team though I only
+					write the FAQ and don't code at all.
+				</para>
+			</answer>
+		</faq>
+	</section>
+	<section title="Links and Thanks">
+		<faq name="main_links">
+			<question>Important Links</question>
+			<answer>
+				<para>
+					<Exult/> homepage at <extref target="http://exult.sourceforge.net/"/><br/>
+					Daily code snapshot at <extref target="http://exult.sourceforge.net/download.php"/><br/>
+					Message board at <extref target="http://exult.sourceforge.net/forum/"/><br/>
+					Bugreports to <extref target="http://sourceforge.net/bugs/?group_id=2335"/>
+				</para>
+			</answer>
+		</faq>
+		<faq name="thanks">
+			<question>Thanks</question>
+			<answer>
+				<para>
+					Of course big thanks go to the <Exult/> Team for breathing life back into
+					this jewel of a game.
+				</para>
+				<para>
+					Max Horn deserves my gratitude for making the FAQ easier to maintain via XML/XSL.
+				</para>
+				<para>
+					Thanks to all those I stole comments from without quoting them, those
+					that sent me improvements and don't get quoted and so on. If you helped
+					me in some way feel my gratitude without being mentioned.
+				</para>
+				<para>
+					Thanks go to <strong>Matt0</strong> who really got me thinking about doing 
+					this FAQ (though he just did it to tease me).
+				</para>
+			</answer>
+		</faq>
+	</section>
+</faqs>
