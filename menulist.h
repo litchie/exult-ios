@@ -78,7 +78,7 @@ private:
 	int selection;
 	bool selected;
 public:
-	MenuList(): selected(false), selection(1) { entries = new std::vector<MenuObject*>(); }
+	MenuList(): selected(false), selection(0) { entries = new std::vector<MenuObject*>(); }
 	~MenuList();
 	void add_entry(MenuObject *entry) { entries->push_back(entry); }
 	void paint(Game_window *gwin);
