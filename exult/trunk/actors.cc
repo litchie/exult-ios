@@ -2121,6 +2121,52 @@ void Actor::set_temperature
 	}
 
 /*
+ *	Figure warmth based on what's worn.  In trying to mimic the original
+ *	SI, the base value is -75.
+ */
+
+int Actor::figure_warmth
+	(
+	)
+	{
+	static short hats[5] = {10, 35, -8, 20, 35};
+	static short cloaks[5] = {30, 70, 70, 70, 70};
+	static short boots[7] = {85, 65, 50, 90, 85, 75, 80};
+
+	int warmth = -75;		// Base value.
+	int frnum;
+	Game_object *worn = spots[(int) head];
+	if (worn && worn->get_shapenum() == 1004 &&
+	    (frnum = worn->get_framenum()) < sizeof(hats)/sizeof(hats[0]))
+		warmth += hats[frnum];
+	worn = spots[(int) cloak_spot];	// Cloak.
+	if (worn && worn->get_shapenum() == 227 &&
+	    (frnum = worn->get_framenum()) < sizeof(cloaks)/sizeof(cloaks[0]))
+		warmth += cloaks[frnum];
+	worn = spots[(int) feet];
+	if (worn && worn->get_shapenum() == 587 &&
+	    (frnum = worn->get_framenum()) < sizeof(boots)/sizeof(boots[0]))
+		warmth += boots[frnum];
+					// Leather armor?
+	worn = spots[(int) torso];
+	if (worn && worn->get_shapenum() == 569)
+		warmth += 20;
+	worn = spots[(int) hands2_spot];// Gloves?
+	if (worn && worn->get_shapenum() == 579)
+		warmth += 7;
+	worn = spots[(int) legs];	// Legs?
+	if (worn)
+		switch (worn->get_shapenum())
+			{
+		case 686:		// Magic leggings.
+			warmth += 5; break;
+		case 574:		// Leather.
+			warmth += 10; break;
+			}
+	return warmth;
+	}
+
+/*
  *	Get maximum weight in stones that can be held.
  *
  *	Output:	Max. allowed, or 0 if no limit (i.e., not carried by an NPC).

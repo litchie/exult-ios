@@ -86,11 +86,20 @@ void Stats_gump::paint
 {
 					// Area to print name in.
 	const int namex = 30, namey = 6, namew = 95;
+	Actor *act = get_actor();	// Check for freezing (SI).
+	if (gwin->get_main_actor()->get_flag(Obj_flags::freeze))
+		{
+		int temp = act->get_temperature();
+		int framenum = temp/10;	// Want it 1-5.
+		if (framenum <= 0)
+			framenum = 1;
+		set_frame(framenum);
+		}
 					// Paint the gump itself.
 	gwin->paint_shape(x, y, *this);
 					// Paint red "checkmark".
 	check_button->paint(gwin);
-	Actor *act = get_actor();	// Show statistics.
+					// Show statistics.
 	std::string nm = act->get_name();
 	gwin->paint_text(2, nm.c_str(), x + namex +
 		(namew - gwin->get_text_width(2, nm.c_str()))/2, y + namey);

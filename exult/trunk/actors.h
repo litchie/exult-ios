@@ -353,6 +353,7 @@ public:
 	int get_temperature() const	// Get/set measure of coldness.
 		{ return temperature; }
 	void set_temperature(int t);
+	int figure_warmth();		// Based on what's worn.
 
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return npc_num; }
