@@ -2614,7 +2614,8 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 		{
 #ifdef DEBUG
 		Tile_coord t = (*it)->get_tile();
-		cout << "Culling object: " << (*it)->get_name() << "@" << 
+		cout << "Culling object: " << (*it)->get_name() <<
+			'(' << (void *)(*it) << ")@" << 
 			t.tx << "," << t.ty << "," << t.tz <<endl;
 #endif
 		(*it)->delete_contents();  // first delete item's contents
