@@ -379,6 +379,12 @@ class Usecode_internal : public Usecode_machine
 						 uint8* data, uint8* externals, uint8* code,
 						 uint8* ip);
 
+					// Add/remove party member.
+	bool add_to_party(Actor *npc);
+	bool remove_from_party(Actor *npc);
+	int in_dead_party(Actor *npc);
+	bool add_to_dead_party(Actor *npc);
+	bool remove_from_dead_party(Actor *npc);
 public:
 	friend class Usecode_script;
 	Usecode_internal(Game_window *gw);
@@ -388,10 +394,12 @@ public:
 					// Call desired function.
 	virtual int call_usecode(int id, Game_object *obj, 
 							Usecode_events event);
+	virtual void update_party_status(Actor *npc);
 	virtual void write();		// Write out 'gamedat/usecode.dat'.
 	virtual void read();		// Reat in 'gamedat/usecode.dat'.
 
-	virtual void intercept_click_on_item(Game_object *obj) { intercept_item = obj; }
+	virtual void intercept_click_on_item(Game_object *obj) 
+		{ intercept_item = obj; }
 
 };
 

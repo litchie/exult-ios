@@ -31,12 +31,14 @@
 Usecode_machine::Usecode_machine
 	(
 	Game_window *gw
-	) : gwin(gw), call_depth(0), keyring(0), conv(0), party_count(0)
+	) : gwin(gw), call_depth(0), keyring(0), conv(0), party_count(0),
+	    dead_party_count(0)
 	{
 					// Clear global flags.
 	std::memset(gflags, 0, sizeof(gflags));
 					// Clear party list.
 	std::memset((char *) &party[0], 0, sizeof(party));
+	std::memset((char *) &dead_party[0], 0, sizeof(dead_party));
 	conv = new Conversation;
 	keyring = new Keyring;
 	}

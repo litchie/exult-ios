@@ -26,6 +26,7 @@
 #include "cheat.h"
 #include "exult.h"
 #include "gamewin.h"
+#include "ucmachine.h"
 #include "Configuration.h"
 #include "game.h"
 #include "actors.h"
@@ -447,17 +448,22 @@ void Cheat::heal_party (void) const {
 	if (!enabled) return;
 
 	int	i;	// for MSVC
-
-	// resurrect dead party members
-	Dead_body *bodies[9];
-	int count = Dead_body::find_dead_companions(bodies);
+	Usecode_machine *uc = gwin->get_usecode();
+				// NOTE:  dead_party_count decrs. as we
+				//   resurrect.
+	int count = uc->get_dead_party_count();
+	int dead[16];			// Save in separate list.
+	if (count > 16)
+		count = 16;
+	for (i = 0; i < count; i++)
+		dead[i] = uc->get_dead_party_member(i);
 	for (i = 0; i < count; i++) {
-		int npc_num = bodies[i]->get_live_npc_num();
-		if (npc_num < 0)
-			continue;
+		int npc_num = dead[i];
+		Dead_body *body = dynamic_cast<Dead_body *> (
+						gwin->get_body(npc_num));
 		Actor *live_npc = gwin->get_npc(npc_num);
-		if (live_npc)
-			live_npc->resurrect(bodies[i]);;
+		if (body && live_npc)
+			live_npc->resurrect(body);
 	}
 
 	// heal everyone
