@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "studio.h"
 #include "combo.h"
 #include "exult_constants.h"
+#include "exceptions.h"
 #include "shapevga.h"
 #include "shapefile.h"
 #include "ibuf8.h"
@@ -73,6 +74,24 @@ void ExultStudio::open_combo_window
 					// Set edit-mode to pick.
 	GtkWidget *mitem = glade_xml_get_widget(app_xml, "pick_for_combo1");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mitem), TRUE);
+	}
+
+/*
+ *	Save combos.
+ */
+
+void ExultStudio::save_combos
+	(
+	)
+	{
+					// Get file info.
+	Shape_file_info *combos = files->create("combos.flx");
+	try {
+		if (combos)
+			combos->flush();
+	} catch (const exult_exception& e) {
+		EStudio::Alert(e.what());
+	}
 	}
 
 /*
@@ -194,6 +213,26 @@ int hot_spot_compare
 		return 1;
 	else
 		return c0.tx >= c1.tx ? 0 : 1;
+	}
+
+/*
+ *	Get footprint of given member.
+ */
+
+Rectangle Combo::get_member_footprint
+	(
+	int i				// i'th member.
+	)
+	{
+	Combo_member *m = members[i];
+					// Get tile dims.
+	Shape_info& info = shapes_file->get_info(m->shapenum);
+	int xtiles = info.get_3d_xtiles(m->framenum),
+	    ytiles = info.get_3d_ytiles(m->framenum);
+					// Get tile footprint.
+	Rectangle box(m->tx - xtiles + 1, m->ty - ytiles + 1, 
+							xtiles, ytiles);
+	return box;
 	}
 
 /*
@@ -323,13 +362,8 @@ void Combo::remove
 						it != members.end(); ++it)
 		{
 		Combo_member *m = *it;
-					// Get tile dims.
-		Shape_info& info = shapes_file->get_info(m->shapenum);
-		int xtiles = info.get_3d_xtiles(m->framenum),
-		    ytiles = info.get_3d_ytiles(m->framenum);
-					// Get tile footprint.
-		Rectangle box(m->tx - xtiles + 1, m->ty - ytiles + 1, 
-							xtiles, ytiles);
+		int index = it - members.begin();
+		Rectangle box = get_member_footprint(index);
 		if (hot_index == -1)	// First?
 			{
 			hot_index = 0;
@@ -338,7 +372,7 @@ void Combo::remove
 		else
 			{
 			if (hot_spot_compare(*m, *members[hot_index]) == 0)
-				hot_index = (it - members.begin());
+				hot_index = index;
 			tilefoot = tilefoot.add(box);
 			}
 		}
@@ -478,7 +512,14 @@ unsigned char *Combo::read
 		{
 		short tx, ty, tz, shapenum, framenum;
 		in << tx << ty << tz << shapenum << framenum;
-		add(tx, ty, tz, shapenum, framenum);
+		Combo_member *memb = new Combo_member(tx, ty, tz, 
+						shapenum, framenum);
+		members.push_back(memb);
+		Rectangle box = get_member_footprint(i);
+		if (i == 0)		// Figure footprint.
+			tilefoot = box;
+		else
+			tilefoot = tilefoot.add(box);
 		}
 	return ptr;
 	}
