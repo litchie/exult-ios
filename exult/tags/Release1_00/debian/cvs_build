@@ -1,0 +1,66 @@
+#!/bin/sh -e
+
+# Script to make a package from your current source tree, with appropriate
+# version number (and changelog etc) for a CVS build.
+#
+# Arguments: These get passed straight through to debuild; you probably want
+#            something like
+#
+#            debian/cvs_build -rfakeroot -us -uc
+#
+# (it builds an `experimental' package; I suppose you can sign it and upload
+#  the source if you really want to).
+
+if [ ! -f ChangeLog -o ! -d debian ]; then
+	echo "This should be run from the root of your exult source tree,"
+	echo "like so:"
+	echo
+	echo "debian/cvs_build"
+	exit 1
+fi
+
+# Generate the sub version string, which will be the date of the last (top)
+# change recorded in the ChangeLog, followed by two digits for the total 
+# number of ChangeLog entries for this date (so that, hopefully, the exact
+# source could be retrieved, if desired... of course this relies on the
+# ChangeLog being appropriately updated all the time :P). If there are more
+# than 99 ChangeLog entries for the current day (!!), 99 is used.
+
+count_date=`grep '^[0-9]' ChangeLog | awk '{ print $1 }' | uniq -c | head -1 | tr -d '-'`
+count=`echo $count_date | awk '{ print $1 }'`
+date=`echo $count_date | awk '{ print $2 }'`
+
+if [ $count -ge 100 ]; then
+	echo "WARNING more than 100 different log entries on this day, sub-day version number set to 99."
+	$count=99
+fi
+
+sub_ver=`printf "%d%02d" $date $count`
+
+# TODO Obtain the current upstream version "automatically"
+exult_ver="0.97cvs"
+
+full_ver="1:$exult_ver-$sub_ver"
+
+# Put an entry in the debian/changelog
+# TODO Should probably note the person who built this, rather than 
+#  `the exult team'; possibly control should be update as well...
+
+mv debian/changelog debian/changelog.tmp
+
+echo "\
+exult ($full_ver) experimental; urgency=low
+
+  * automatically generated entry for cvs build
+
+ -- The Exult Team <exult-general@lists.sourceforge.net>  `date -R`
+" > debian/changelog
+
+cat debian/changelog.tmp >> debian/changelog
+
+debuild $*
+
+# Replace the old changelog (to keep CVS happy and also so they don't
+# accumulate; only real releases get the privilege of accumulating :P)
+
+mv debian/changelog.tmp debian/changelog

@@ -1,0 +1,24 @@
+
+
+<config>
+	<!-- Just a comment -->
+	<audio>
+		<!-- Just another comment -->
+		<enabled> yes </>
+		<speech>
+			<enabled> yes </enabled>
+			<device> /dev/dsp </device>
+		</speech>
+		<midi>
+			<enabled> yes </enabled>
+			<device> 5 </device>
+		</midi>
+	</audio>
+	<disk>
+		<!-- Yet a third comment -->
+		<u7path>/home/dancer/projects/u7/</u7path>
+		<u7path_with_spaces> d:\ultima series\ultima vii - the serpent isle </u7path_with_spaces>
+	</disk>
+	<newform option="something">newstuff</newform>
+	<debugging/>
+</config>

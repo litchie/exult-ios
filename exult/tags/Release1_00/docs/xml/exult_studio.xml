@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE studiodoc SYSTEM "docs.dtd">
+<studiodoc title="Exult" changed="28 October 2002(GMT)">
+	<section title="Changes to the Documentation">
+		<sub name="28102002">
+			<header>28 October 2002</header>
+			<body>
+				<ul>
+					<li><ref1 target="not_devel_branch"/> added and deleted all other sections.</li>
+				</ul>
+			</body>
+		</sub>
+	</section>			
+	<section title="Introduction">
+		<sub name="not_devel_branch">
+			<header><Studio/> is no longer supported on this branch of <Exult/>!</header>
+			<body>
+				<para>
+					Please read <extref doc="faq" target="different_snapshot"/>!
+				</para>
+			</body>
+		</sub>		
+	</section>	
+</studiodoc>

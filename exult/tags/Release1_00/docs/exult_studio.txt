@@ -1,0 +1,29 @@
+Exult Studio Documentation
+last changed: 28 October 2002(GMT)
+
+The latest version of this document can be found at http://exult.sourceforge.net/studio.php
+
+
+0. Changes to the Documentation
+0.1. 28 October 2002
+
+1. Introduction
+1.1. Exult Studio is no longer supported on this branch of Exult!
+
+
+--------------------------------------------------------------------------------
+
+0. Changes to the Documentation
+0.1. 28 October 2002
+* 1.1. Exult Studio is no longer supported on this branch of Exult! added and deleted all other sections.
+
+
+
+
+--------------------------------------------------------------------------------
+
+1. Introduction
+1.1. Exult Studio is no longer supported on this branch of Exult!
+Please read FAQ.txt!
+
+

@@ -1,0 +1,70 @@
+Splitshp
+========
+ 
+  
+NAME
+====
+
+splitshp - Split Shape into frames or combine frames into Shapes 
+  
+
+SYNOPSIS
+========
+
+splitshp SHAPE FRAME... 
+splitshp SHAPE 
+  
+
+DESCRIPTION
+===========
+
+Shape files are used for storage of all visible elements (from UI buttons to 
+terrain features) of the games Exult supports. Shapes contain one or more 
+frames. splitshp can be used to combine frames into one file, or split a Shape 
+file into its component frames. 
+The mode of operation is determined by looking at the number of commandline 
+arguments. Exactly one argument means splitting, more than one argument signals 
+a combining operation. 
+  
+
+Combining
+=========
+
+Each FRAME names a Shape file typically consisting of only one frame (i.e. 
+subsequent frames are ignored). All these frames are concatenated and written to 
+the Shape file SHAPE. 
+  
+
+Splitting
+=========
+
+SHAPE will be read and split into its component frames. Each of those will be 
+written to its own Shape file. The names of these files are determined by 
+splitting the name of SHAPE before the last dot --- anything before this dot is 
+the STEM, anything else (including the dot) is the PREFIX, which may be empty in 
+case there is no dot in the name. The output files are then named STEM_nnSUFFIX 
+with nn replaced by the frame number. 
+  
+
+EXAMPLES
+========
+
+  splitshp button.shp button-up.shp button-down.shp 
+  Packs the (first) two frames from button-up.shp and button-down.shp into the 
+  Shape file button.shp
+ 
+  splitshp grizzly 
+  Unpacks the frames contained in the Shape file grizzly into the (single-frame) 
+  Shape files grizzly_00, grizzly_01, grizzly_02, etc. 
+
+  splitshp boar.new.shp 
+  Unpacks the frames contained in the Shape file boar.new.shp into the 
+  (single-frame) Shape files boar.new_00.shp, boar.new_01.shp, boar.new_02.shp, 
+  etc. 
+  
+
+AUTHOR
+======
+
+This manpage was written by Robert Bihlmeyer. It may be freely redistributed and 
+modified under the terms of the GNU General Public License version 2 or higher. 

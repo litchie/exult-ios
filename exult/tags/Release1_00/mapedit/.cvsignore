@@ -1,0 +1,13 @@
+Makefile.in
+Makefile
+*.o
+*~
+*.a
+*.la
+*.lo
+.deps
+.libs
+shapetest
+paltest
+u7shp
+exult_studio

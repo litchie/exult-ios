@@ -1,0 +1,284 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "All"=.\All.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Exult
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Exult_Tools
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Flexes
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Exult"=.\Exult.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Exult_FLX
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Exult_bg_flx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Exult_si_flx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Zip
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Exult_Tools"=".\Exult_Tools.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name expack
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mklink
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name rip
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name shp2pcx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name splitshp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ucdump
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name wud
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name wuc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Exult_bg_flx"=.\Exult_bg_flx.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name expack
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Exult_flx"=.\Exult_flx.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name expack
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Exult_si_flx"=.\Exult_si_flx.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name expack
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Flexes"=.\Flexes.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Exult_bg_flx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Exult_flx
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Exult_si_flx
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Zip"=.\Zip.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "exconfig"=.\exconfig\exconfig.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "expack"=.\expack.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mklink"=.\mklink.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "rip"=.\rip.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "shp2pcx"=.\shp2pcx.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "splitshp"=.\splitshp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ucdump"=.\ucdump.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "wuc"=.\wuc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "wud"=.\wud.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

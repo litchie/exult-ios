@@ -1,0 +1,130 @@
+#
+# Note that this is NOT a relocatable package
+#
+%define ver      @VERSION@
+%define rel      1
+%define name	 @PACKAGE@
+
+Summary: Ultima VII Engine
+Name: %name
+Version: %ver
+Release: %rel
+Copyright: GPL
+Group: Amusements/Games
+Source: http://download.sourceforge.net/projects/exult/exult-%{ver}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-root
+Obsoletes: exult
+Packager: Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+URL: http://exult.sourceforge.net
+Prereq: /sbin/install-info
+
+%description
+Exult: an implementation of the Ultima VII engine for modern Operating Systems.
+
+%package tools
+Summary: Tools and utilities for playing with Exult/Ultima VII data files
+Group: Amusements/Games
+
+%description tools
+Exult Tools: a set of utilities for playing with Exult/Ultima VII data files.
+Included in the tools are: expack (archiver), ucxt (decompiler),
+ucc (compiler), splitshp (frame splitter), shp2pcx (shape converter),
+ipack (image archiver), textpack (text archiver)
+
+%changelog
+
+* Fri Nov 01 2002  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+
+- updated .spec to work with RH80
+- removed studio and gimp plugin packages for 1.0 branch
+
+* Fri Jun 07 2002  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+
+- updated ucxt data files
+
+* Wed Dec 05 2001  Tristan Tarrant <nadir@users.sourceforge.net>
+
+- subpackages are here !!!
+
+* Thu Nov 29 2001  Tristan Tarrant <nadir@users.sourceforge.net>
+
+- allow setting of bindir and datadir
+- build exult only (will be fixed with the addition of subpackages)
+- added README.1ST
+- optimizer flags should be set for CXXFLAGS too
+
+* Mon Jun 25 2001  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+
+- added exult_bg.flx, exult_si.flx
+- removed explicit SDL req. (proper SDL version is added automatically)
+
+* Tue Nov 7 2000  Tristan Tarrant <nadir@users.sourceforge.net>
+
+- A few fixes
+
+* Sat Sep 9 2000  Tristan Tarrant <nadir@users.sourceforge.net>
+
+- Install exult.flx in the right place
+
+* Tue Jul 11 2000  Tristan Tarrant <nadir@users.sourceforge.net>
+
+- Created the .spec file
+
+* Fri Feb 9 2000  Tristan Tarrant <nadir@users.sourceforge.net>
+
+- Disable GIMP plugin by default.
+- Include FAQ
+%prep
+%setup
+
+%build
+# Needed for snapshot releases.
+if [ ! -f configure ]; then
+  ./autogen.sh
+fi
+
+%configure \
+        --disable-gimp-plugin \
+        --disable-exult-studio-support \
+        --disable-exult-studio
+
+if [ "$SMP" != "" ]; then
+  (make "MAKE=make -k -j $SMP"; exit 0)
+  make
+else
+  make
+fi
+
+%install
+rm -rf $RPM_BUILD_ROOT
+%makeinstall
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS COPYING ChangeLog NEWS README FAQ README.1ST
+%{_bindir}/exult
+%{_datadir}/exult/exult_bg.flx
+%{_datadir}/exult/exult_si.flx
+%{_datadir}/exult/exult.flx
+%{_datadir}/exult/midisfx.flx
+%{_datadir}/pixmaps/exult.png
+%{_mandir}/man6/exult.6.gz
+
+
+%files tools
+%defattr(-, root, root)
+%doc tools/expack.txt
+%{_bindir}/expack
+%{_bindir}/ipack
+%{_bindir}/textpack
+%{_bindir}/ucxt
+%{_bindir}/ucc
+%{_bindir}/splitshp
+%{_bindir}/shp2pcx
+%{_datadir}/exult/u7bgintrinsics.data
+%{_datadir}/exult/u7siintrinsics.data
+%{_datadir}/exult/u7misc.data
+%{_datadir}/exult/u7opcodes.data
