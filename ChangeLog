@@ -1,3 +1,7 @@
+2001-04-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Alpha3 tagged!
+
 2001-04-10  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Fixed boundary problem in Chunk_iterator.  Amulet to Silver Seed
