@@ -233,6 +233,22 @@ void Shapes_vga_file::read_info
 		}
 					// Monster_info owns this.
 	Monster_info::set_equip(equip, num_recs);
+	mfile.close();
+	ifstream(occ);			// Read flags from occlude.dat.
+	U7open(occ, OCCLUDE);
+	unsigned char occbits[128];	// 1024 bit flags.
+	occ.read(&occbits[0], sizeof(occbits));
+	for (i = 0; i < sizeof(occbits); i++)
+		{
+		unsigned char bits = occbits[i];
+		int shnum = i*8;	// Check each bit.
+		for (int b = 0; bits; b++, bits = bits>>1)
+			if (bits&1)
+				{
+				info[shnum + b].occludes_flag = true;
+//				cout << "Occludes: " << shnum + b << endl;
+				}
+		}
 	}
 
 
