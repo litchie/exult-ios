@@ -339,7 +339,7 @@ void Actor::follow
 	if (goaldist <= leaderdist)	// Closer than leader?
 		{			// Delay a bit.
 		delay = (1 + leaderdist - goaldist)*100;
-		speed += 10;		// And slow a bit.
+//		speed += 10;		// And slow a bit.
 		}
 	else if (goaldist - leaderdist > 5)
 		speed -= 20;		// Speed up if too far.
@@ -943,7 +943,11 @@ void Main_actor::handle_event
 			gwin->get_tqueue()->add(
 					curtime + delay, this, udata);
 		else
+			{
 			set_action(0);
+			if (schedule)
+				schedule->now_what();
+			}
 		}
 #if 0
 					// Not doing an animation?

@@ -51,16 +51,16 @@ class Actor : public Container_game_object, public Time_sensitive
 	short properties[12];		// Properties set/used in 'usecode'.
 public:
 	enum Attack_mode {		// Setting from gump.+++++Save/restore.
-		manual = 0,
+		nearest = 0,
 		weakest = 1,		// Attack weakest.
 		strongest = 2,
-		defend = 3,
-		nearest = 4,
-		beserk = 5,		// Always attack, never retreat.
-		flee = 6,
-		random = 7,		// Choose target at random.
-		flank = 8,		// Attempt to attack from side.
-		protect = 9		// Protect NPC with halo.
+		beserk = 3,		// Always attack, never retreat.
+		protect = 4,		// Protect NPC with halo.
+		defend = 5,
+		flank = 6,		// Attempt to attack from side.
+		flee = 7,
+		random = 8,		// Choose target at random.
+		manual = 9
 		};
 private:
 	Attack_mode attack_mode;

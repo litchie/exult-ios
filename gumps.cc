@@ -36,6 +36,7 @@ const int FNTEXT = 4;			// Filename text field.
 const int LOADBTN = 5;
 const int SAVEBTN = 6;
 const int HALO = 7;
+const int COMBATMODE = 12;
 const int SLIDER = 14;
 const int SLIDERDIAMOND = 15;
 const int SLIDERRIGHT = 16;
@@ -55,9 +56,11 @@ const int YESBTN = 70, NOBTN = 71;
 /*
  *	Statics:
  */
-short Actor_gump_object::diskx = 122, Actor_gump_object::disky = 114;
-short Actor_gump_object::heartx = 122, Actor_gump_object::hearty = 132;
-short Actor_gump_object::combatx = 50, Actor_gump_object::combaty = 133;
+short Actor_gump_object::diskx = 124, Actor_gump_object::disky = 115;
+short Actor_gump_object::heartx = 124, Actor_gump_object::hearty = 132;
+short Actor_gump_object::combatx = 52, Actor_gump_object::combaty = 103;
+short Actor_gump_object::halox = 47, Actor_gump_object::haloy = 110;
+short Actor_gump_object::cmodex = 48, Actor_gump_object::cmodey = 132;
 short Actor_gump_object::coords[24] = {
 	114, 10,	/* head */	115, 24,	/* back */
 	115, 37,	/* belt */	115, 55,	/* lhand */
@@ -190,6 +193,35 @@ public:
 		: Gump_button(par, COMBAT, px, py)
 		{
 		pushed = Game_window::get_game_window()->in_combat();
+		}
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	The halo button.
+ */
+class Halo_gump_button : public Gump_button
+	{
+public:
+	Halo_gump_button(Gump_object *par, int px, int py)
+		: Gump_button(par, HALO, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	Combat mode.  Has 10 frames corresponding to Actor::Attack_mode.
+ */
+class Combat_mode_gump_button : public Gump_button
+	{
+	Actor *actor;			// Who this represents.
+public:
+	Combat_mode_gump_button(Gump_object *par, int px, int py, Actor *a)
+		: Gump_button(par, COMBATMODE, px, py), actor(a)
+		{
+		framenum = (int) actor->get_attack_mode();
 		}
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -478,6 +510,33 @@ void Combat_gump_button::activate
 	gwin->toggle_combat();
 	pushed = gwin->in_combat();
 	parent->paint(gwin);
+	}
+
+/*
+ *	Handle click on a halo toggle button.
+ */
+
+void Halo_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+					// ++++++Later.
+	}
+
+/*
+ *	Handle click on a combat toggle button.
+ */
+
+void Combat_mode_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+	framenum = (framenum + 1)%10;
+	actor->set_attack_mode((Actor::Attack_mode) framenum);
+	parent->paint_button(gwin, this);
+	gwin->set_painted();
 	}
 
 /*
@@ -814,7 +873,8 @@ void Gump_object::paint_button
 	Gump_button *btn
 	)
 	{
-	gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, btn->pushed);
+	gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, 
+					btn->framenum + btn->pushed);
 	}
 
 /*
@@ -989,6 +1049,9 @@ Actor_gump_object::Actor_gump_object
 	heart_button = new Heart_gump_button(this, heartx, hearty);
 	disk_button = new Disk_gump_button(this, diskx, disky);
 	combat_button = new Combat_gump_button(this, combatx, combaty);
+	halo_button = new Halo_gump_button(this, halox, haloy);
+	cmode_button = new Combat_mode_gump_button(this, cmodex, cmodey,
+							(Actor *) cont);
 	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 		{			// Set object coords.
 		Game_object *obj = container->get_readied(i);
@@ -1008,6 +1071,8 @@ Actor_gump_object::~Actor_gump_object
 	delete heart_button;
 	delete disk_button;
 	delete combat_button;
+	delete halo_button;
+	delete cmode_button;
 	}
 
 /*
@@ -1031,6 +1096,10 @@ Gump_button *Actor_gump_object::on_button
 		return disk_button;
 	else if (combat_button->on_button(gwin, mx, my))
 		return combat_button;
+	else if (halo_button->on_button(gwin, mx, my))
+		return halo_button;
+	else if (cmode_button->on_button(gwin, mx, my))
+		return cmode_button;
 	return 0;
 	}
 
@@ -1117,6 +1186,8 @@ void Actor_gump_object::paint
 	paint_button(gwin, heart_button);
 	paint_button(gwin, disk_button);
 	paint_button(gwin, combat_button);
+	paint_button(gwin, halo_button);
+	paint_button(gwin, cmode_button);
 	}
 
 /*
