@@ -1129,13 +1129,13 @@ void Game_window::paint
 			paint_chunk_flats(cx, cy);
 					// Draw the chunks' objects
 					//   diagonally NE.
-	for (cy = 0; cy < stop_chunky; cy++)
-		for (int dx = 0, dy = cy;
-				dx < stop_chunkx && dy >= 0; dx++, dy--)
+	for (cy = start_chunky; cy < stop_chunky; cy++)
+		for (int dx = start_chunkx, dy = cy;
+			dx < stop_chunkx && dy >= start_chunky; dx++, dy--)
 			light_sources += paint_chunk_objects(dx, dy);
-	for (cx = 1; cx < stop_chunkx; cx++)
+	for (cx = start_chunkx + 1; cx < stop_chunkx; cx++)
 		for (int dx = cx, dy = stop_chunky - 1; 
-				dx < stop_chunkx && dy >= 0; dx++, dy--)
+			dx < stop_chunkx && dy >= start_chunky; dx++, dy--)
 			light_sources += paint_chunk_objects(dx, dy);
 
 					// Draw gumps.

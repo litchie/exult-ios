@@ -787,9 +787,17 @@ int Game_object::lt
 	if (inf1.tz != inf2.tz)		// Is one obj. on top of another?
 		{
 		if (inf1.tz + inf1.zs <= inf2.tz)
-			result = 1;	// It's above us.
+			{		// It's above us.
+			if (inf1.zs >= 4)	// Like roof/statue?
+				return 1;
+			result = 1;
+			}
 		else if (inf2.tz + inf2.zs <= inf1.tz)
-			result = 0;	// We're above.
+			{		// We're above.
+			if (inf2.zs >= 4)	// Like roof/statue?
+				return 0;
+			result = 0;
+			}
 		}
 	if (inf1.ty != inf2.ty)		// Is one obj. in front of the other?
 		{
