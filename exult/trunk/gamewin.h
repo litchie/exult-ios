@@ -78,6 +78,12 @@ private:
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
 	int chunkx, chunky;		// Chunk coord. of window within world.
 	int brightness;			// Palette brightness.
+					// Dragging info:
+	Game_object *dragging;		// What's being dragged.
+	int dragging_cx, dragging_cy;	// Object's original chunk coords.
+					// Last mouse, paint positions:
+	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
+	Rectangle dragging_rect;	// Rectangle to repaint.
 					// Open a U7 file.
 	int u7open(ifstream& in, char *fname, int dont_abort = 0);
 public:
@@ -202,7 +208,17 @@ public:
 			s->get_height()
 			);
 		}
-
+					// Get location of object's origin
+					//   for painting it.
+	void get_shape_location(Game_object *obj, int& x, int& y)
+		{
+		x = (obj->get_cx() - chunkx)*chunksize +
+				obj->get_shape_pos_x()*tilesize
+						- 4*obj->get_lift();
+		y = (obj->get_cy() - chunky)*chunksize +
+				obj->get_shape_pos_y()*tilesize
+						- 4*obj->get_lift();
+		}
 					// Paint shape in window.
 	void paint_shape(Image_window *iwin, int xoff, int yoff, 
 							Shape_frame *shape);
@@ -281,6 +297,7 @@ public:
 	void stop_actor();		// Stop moving the actor.
 	int find_roof(int cx, int cy);	// Find a "roof" in given chunk.
 					// Find objects that (x,y) is in.
+	int find_objects(int x, int y, Game_object **list);
 	int find_objects(int lift, int x, int y, Game_object **list);
 	void show_items(int x, int y);	// Show names of items clicked on.
 					// Add text item.
@@ -315,6 +332,10 @@ public:
 	void end_intro();		// End splash screen.
 	void read_npcs();		// Read in npc's & schedules.
 	void read_schedules();
+					// Start dragging.
+	int start_dragging(int x, int y);
+	void drag(int x, int y);	// During dragging.
+	void drop_dragged(int x, int y);// Done dragging.
 	void write_gamedat(char *fname);// Explode a savegame into "gamedat".
 	};
 

@@ -1,5 +1,5 @@
 
-OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o \
+OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o \
 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o \
 	tqueue.o gameclk.o imagetxt.o text.o items.o lists.o
 
@@ -63,6 +63,7 @@ text.o:		text.h
 imagetxt.o:	text.h imagewin.h
 vgafile.o:	vgafile.h utils.h objs.h
 readnpcs.o:	objs.h gamewin.h
+drag.o:		objs.h gamewin.h
 
 #shmtest: shmtest.c
 #	gcc -g -o $@ $< -L /usr/X11R6/lib -lX11 -lXext

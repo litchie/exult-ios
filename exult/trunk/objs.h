@@ -522,7 +522,11 @@ public:					// Let's make it all public.
 		r.h = (yend <= yend2 ? yend : yend2) - r.y;
 		return (r);
 		}
-		
+	void shift(int deltax, int deltay)
+		{
+		x += deltax;
+		y += deltay;
+		}		
 	};
 
 /*
