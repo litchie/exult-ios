@@ -72,7 +72,8 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		int dexterity = Read1(nfile);
 		int intelligence = Read1(nfile);
 		int combat = Read1(nfile);
-		nfile.seekg(5, ios::cur); //??
+		int schedtype = Read1(nfile);
+		nfile.seekg(4, ios::cur); //??
 		int mana = Read1(nfile);// ??
 		nfile.seekg(4, ios::cur);
 		int exp = Read2(nfile);	// Could this be 4 bytes?
@@ -115,7 +116,12 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 				shapex, shapey, (shape[1]>>2) & 0x1f, lift);
 					// Put in chunk's NPC list.
 		if (npc_actor)
+			{
 			npc_actor->switched_chunks(0, olist);
+#if 0	/* ++++Got to test this: */
+			npc_actor->set_schedule_type(schedtype);
+#endif
+			}
 					// Set attributes.
 	actor->set_property((int) Actor::strength, strength);
 	actor->set_property((int) Actor::dexterity, dexterity);
