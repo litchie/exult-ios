@@ -1,0 +1,124 @@
+\CEXULT ACKNOWLEDGEMENTS
+
+
+
+\CTHE CODING TEAM
+
+
+\CJeff S. "DrCode" Freedman
+\C<jsf@users.sourceforge.net>
+\CThe man who started it all: from map browser
+\Cto usecode interpreter, animation & combat.
+\CHe's the leader !
+
+
+\CDancer Vesperman
+\C<dancer@users.sourceforge.net>
+\CMusic, sounds, XML configuration, usecode...
+\Cwhat more could you possibly ask for ?
+
+
+\CWillem Jan "Arthuris Dragon" Palenstijn
+\C<palenstijn@wanadoo.nl>
+\CPorting to obscure OSs (Windows) and less
+\Cobscure ones (BeOS), cheats, autoconf
+
+
+\CTristan "Nadir" Tarrant
+\C<nadir@users.sourceforge.net>
+\CIntro, ending, menus, autoconf/automake, 
+\CGIMP plugin, FLEX packing, CVS police
+
+
+\CMax "Fingolfin" Horn
+\C<max@quendi.de>
+\CPorting to MacOS, error handling,
+\CC++ standard police, the webpage
+
+
+\CLuke "Coder Infidel" Dunstan
+\C<coder_infidel@hotmail.com>
+\CHunter of lost info in U7's data files,
+\Cweapon animations, bits of combat.
+
+
+\CRyan "Colourless" Nunn
+\C<triforce@merlin.net.au>
+\CXMIDI meister, endings, roof removalist,
+\CSI Intro, NPC flag IO, Avatar identity
+
+
+\CChristoph "Jameson" Reichenbach
+\C<jameson@linuxgames.com>
+\CPorting to Alpha
+
+
+\CDerek Liauw Kie Fa
+\C2xSaI Scaling code
+
+
+\COTHER CONTRIBUTORS
+
+\COlivier Marcoux !!!!!!
+
+\CGary Thompson
+
+\CMatthias Ho
+
+\CMichael A. Cornelius
+
+\CTroy Forrest
+
+\CByun DongHo
+
+\CMaxim Shatskih
+
+\CJakob Shonberg
+
+\CWouter Dijkslag
+
+\CMark Winterrowd
+
+\CAlex Botero-Lowry
+
+\CAurelien Marchand
+
+
+\CARTISTS
+
+\CAdam Delman
+
+\CPhilip Gottschalk
+
+
+\CTHANKS
+
+
+\P0
+\CSourceForge & VA Linux
+\CFor making it easy to code together.
+
+\CJackchaos.com
+\CFor hosting the Exult message board
+
+\CTravis Howell
+\CFor making daily Windows binaries
+
+\CSam Lantinga
+\CAuthor of SDL, for making porting easier
+
+\CMatt Kimmich
+\CFor giving us permission to use his MIDI
+\Ctracks
+
+\CDominik "Dominus" Reichardt
+\CFor maintaining the Exult FAQ
+
+\Cand...
+
+
+\CORIGIN Systems Inc,
+\CRichard Garriot,
+\CWarren Spector
+\Cand the Ultima VII & Serpent Isle teams for
+\Cmaking these great games in the first place

@@ -1,0 +1,42 @@
+To: exult-general@lists.sourceforge.net
+From: "Coder Infidel" <coder_infidel@hotmail.com>
+Sender: exult-general-admin@lists.sourceforge.net
+Status: R 
+X-Status: N
+
+>Okay, I do have a dim memory of knocking enemies unconscious, but not 
+>killing
+>them.  Perhaps they go unconscious at 0 (or 1 or 2) HP's, and die when HP 
+>goes
+>negative?
+
+Yes they do go unconscious at zero, but their health may need to be less 
+than -1 for them to die, particularly for powerful monsters. That is why I 
+suggested that the monster's strength may have something to do with it. To 
+test this, I used a dagger to knock a dragon out and see how low its health 
+could go, and it seemed to die approximately when its health got down to 
+-12. Since the dragon had 36 strength, it seems that the negative amount may 
+be one third of the strength.
+
+>No problem.  In the code, I'll recognize a dead 'Monster_actor' when it's
+>double-clicked on, and bring up the dead-body-gump.  Perhaps monsters get 
+>the
+>lying-down frame (seemed to be the case when I killed a horse last night), 
+>but
+>human NPC's get one of the body shapes?
+
+Monsters certainly get the lying-down frame when they are unconscious, but 
+the body after they are killed is an entirely different shape. You can tell 
+the difference because the dead body has blood on it (or other differences). 
+For example a horse is shape 727 but the body is shape 778, frame 1 (shape 
+778 frames are bodies for 13 types of monsters).
+
+________________________________________________________________________
+Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com
+
+
+_______________________________________________
+Exult-general mailing list
+Exult-general@lists.sourceforge.net
+http://lists.sourceforge.net/mailman/listinfo/exult-general
+

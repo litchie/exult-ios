@@ -1,0 +1,55 @@
+To: exult-general@lists.sourceforge.net
+From: "Coder Infidel" <coder_infidel@hotmail.com>
+Sender: exult-general-admin@lists.sourceforge.net
+Status: R 
+X-Status: N
+
+>Can't speak for the Midi code, but I'm probably not handling the eggs
+>correctly.  Do you know which flag controls this?  The egg flags I've got 
+>in
+>objs.h don't appear correct, at least not for all eggs in general.  At the
+>moment, I never rehatch an egg.  Obviously, for monsters, and music, they
+>should become active again, though.
+
+I noticed that several flags are used for egg activation. This is what I 
+have found so far:
+
+- If an egg has the "once ever" flag it should be deleted after being 
+activated
+- Eggs having the "nocturnal" flag should only be activated at night (fairly 
+obvious)
+- If either "auto reset" or "hatched" is set, then the egg can be activated 
+normally
+- If neither are set, the egg is disabled. Some eggs start off this way but 
+I think they later get "hatched" by usecode.
+- Not all flags are used by all types of egg: e.g. "once ever" has no effect 
+for music eggs
+
+The possible values of "criteria" are:
+"Cached in" - activated when the IREG file is loaded?
+"Party near" - activated when a party member walks within the specified 
+distance?
+"Avatar near" - activated when the Avatar walks within the specified 
+distance
+"Avatar far" - activated when the Avatar walks _outside_ the specified 
+distance
+"Avatar footpad" - like "Avatar near" with distance zero: activated when 
+Avatar actually steps on the egg
+"Party footpad" - activated when a party member walks on the egg?
+"Something on" - when an item is placed on the ground within the specified 
+distance
+"External" - ?
+
+> One small correction about the "something on" criteria: this is activated 
+> whenever an object near the egg is moved by the player, including when an 
+> object is dropped or picked up.
+>
+________________________________________________________________________
+Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com
+
+
+_______________________________________________
+Exult-general mailing list
+Exult-general@lists.sourceforge.net
+http://lists.sourceforge.net/mailman/listinfo/exult-general
+

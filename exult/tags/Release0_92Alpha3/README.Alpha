@@ -1,0 +1,111 @@
+Exult on Alpha/Linux
+--------------------
+
+
+Running Exult on Alpha/Linux has no special restrictions, but compiling
+it does, since the current (2.95.2) g++ is known to be broken on this
+platform. This document discusses how Exult can be built on the Alpha
+anyway.
+
+
+1. Problem description
+----------------------
+GCC's g++ frontend on Alpha/Linux is, simply put, broken. This is very visible
+when using code optimization, but even without optimization, incorrect virtual
+function tables are being generated. This doesn't happen everywhere, but it
+affects Exult; therefore, compiling Exult can't be done with g++ at the moment.
+
+Compaq has provided us with an alternative, though: DEC's cxx compiler, ported
+to Alpha/Linux. This compiler is non-free, but available without charge from
+their website. Unfortunately, most Linux system headers appear to be set up for
+g++, which does some magical internal name mangling. This doesn't conform to
+the standard, but, more importantly, it breaks cxx, unless names are mangled
+manually.
+
+cxx has two other problems: It does not appear to like static methods that use
+templates, and its object files don't work with many versions of ld
+(specifically, it requires ld to accept --style=compaq. All modern ld versions
+from the GNU binutils claim that they do, but most of them are lying).
+
+Finally, ladebug appears to be either too slow or- in some way (multithreading)-
+incompatible with Exult or one of the libraries (SDL?) used by it.
+
+Sections 3 and 4 will discuss how these problems can be worked around.
+
+As far as I know, all other issues are general 64 bit cleanness issues.
+
+
+2. Updates and binaries
+-----------------------
+
+Up-to-date information about Exult on Alpha/Linux and pre-compiled binaries
+can be found at
+
+http://www.darmstadt.gmd.de/~jameson/exult/
+
+
+3. Preparing for the compilation
+--------------------------------
+
+First, I'd like to point out that it may take a while until your system meets
+all preconditions required for compiling Exult. If you just want to play the
+game, it might be easier to use a pre-compiled binary from the URL mentioned
+in section 2.
+
+All right, if you're still reading this, you appear to be seriously considering
+to compile the beast. Here's what you'll need:
+
+- Compaq cxx for your Alpha/Linux flavor
+- Compaq's libots
+
+Compaq ccc might be required as well; I had it and cpml installed, too
+(just in case).
+
+Refer to
+
+http://www.support.compaq.com/alpha-tools/software/index.html
+
+for instructions on downloading these tools for non-commercial usage.
+
+Also, you'll need to link the generated object files. As discussed in section 1,
+your version of ld might not cut it. Try running "ld --style=compaq"; if you get
+an error message, you'll need a different version.
+I copied mine from one of the Compaq Test Drive systems, which you can get a
+free account for. Matching versions of the GNU binutils should be available
+in a more official way from Compaq somewhere; please contact me if you're found
+a place that carries them.
+
+If you got a new ld, you will need to replace yours with the new one. Remember
+to make a backup first!
+
+
+4. Compiling
+------------
+
+./configure --enable-long-long-warnings --with-cxx="cxx -O5 -D__inline__=inline"
+
+should do it for normal compiles. If you want to debug, you should use "-g3"
+instead of "-O5", or an appropriate combination of both (refer to the cxx
+man page for details).
+
+The --enable-long-long-warnings is required because cxx passes the
+-Wno-long-long option on to the linker, which chokes on it. Therefore,
+-Wno-long-long must not be used for compiles, which is enforced by the
+--enable-long-long-warnings option.
+
+If everything went well, your system should be set up for compilation. Run
+"make" and (as superuser) "make install". Some sort of "make install" or
+equivalent action is required for Exult to install its own data files.
+
+You should now have an "exult" binary ready to run!
+
+
+
+-- Christoph Reichenbach <jameson@linuxgames.com>
+
+Please contact me if you find any of the information contained herein to be
+wrong, incomplete, or misleading.
+
+
+[Last updated on 12/08/2000]
+
