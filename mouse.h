@@ -86,10 +86,10 @@ public:
 		{ return (Mouse_shapes) cur_framenum; }
 	void move(int x, int y)		// Move to new location (mouse motion).
 		{
-		mousex = x;
-		mousey = y;
 					// Shift to new position.
 		box.shift(x - mousex, y - mousey);
+		mousex = x;
+		mousey = y;
 		}
 	void set_location(int x, int y);// Set to given location.
 					// Set to short arrow.
