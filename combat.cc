@@ -130,10 +130,16 @@ bool Combat_schedule::teleport
 	dest = Map_chunk::find_spot(dest, 3, npc, 1);
 	if (dest.tx == -1)
 		return false;		// No spot found.
-	if (dest.distance(npc->get_tile()) > 6 && rand()%5 != 0)
+	Tile_coord src = npc->get_tile();
+	if (dest.distance(src) > 6 && rand()%5 != 0)
 		return false;		// Got to give Avatar a chance to
 					//   get away.
-	//+++++Original creates a fire field here that burns out shortly.
+					// Create fire-field where he was.
+	src.tz = npc->get_chunk()->get_highest_blocked(src.tz,
+			src.tx%c_tiles_per_chunk, src.ty%c_tiles_per_chunk);
+	if (src.tz < 0)
+		src.tz = 0;
+	eman->add_effect(new Fire_field_effect(src));
 	npc->move(dest.tx, dest.ty, dest.tz);
 					// Show the stars.
 	eman->add_effect(new Sprites_effect(7, npc, 0, 0, 0, 0));
