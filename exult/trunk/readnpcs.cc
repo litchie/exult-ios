@@ -160,8 +160,6 @@ void Game_window::read_npcs
 			read_ireg_objects(nfile, scx, scy, actor);
 		}
 #endif
-	main_actor_inside = 0;
-	check_main_actor_inside();	// See where starting out.
 					// Set where to skip rendering.
 	set_above_main_actor(get_objects(main_actor->get_cx(),
 				main_actor->get_cy())->is_roof(),
