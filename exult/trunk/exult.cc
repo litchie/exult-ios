@@ -727,6 +727,9 @@ int Modal_gump
 					// Get area to repaint when done.
 	Rectangle box = gwin->get_gump_rect(gump);
 	box.enlarge(6);
+#ifdef MOUSE
+	mouse->hide();			// Turn off mouse.
+#endif
 	gump->paint(gwin);		// Paint gump.
 	gwin->show();
 	do
