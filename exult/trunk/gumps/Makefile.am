@@ -47,6 +47,11 @@ libgumps_la_SOURCES = \
 	AudioOptions_gump.cc	\
 	AudioOptions_gump.h	\
 	Gump_ToggleButton.cc	\
-	Gump_ToggleButton.h
+	Gump_ToggleButton.h	\
+	CombatStats_gump.cc	\
+	CombatStats_gump.h	\
+	gump_types.h	\
+	Face_button.cc	\
+	Face_button.h
 
 CLEANFILES = *~

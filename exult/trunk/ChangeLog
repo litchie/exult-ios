@@ -1,5 +1,17 @@
 2001-06-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* actors.*, keyactions.cc: double clicking avatar shows inventory again
+	* gumps/gump_types.h: extracted Gumpshapefile to a header file
+	* gamewin.cc, gumps/Gump.cc, gumps/Gump_widget.*, gumps/gump_types.h:
+	added paperdol.vga to the Gumpshapefile enum
+	* gumps/Gump_button.h, gumps/Face_button.*: a face that opens 
+	inventory when double clicked
+	* gumps/Gump.cc, gumps/CombatStats_gump.*: the SI combat stats gump
+	* keyactions.*, keys.*, defaultkeys.txt: 'L' = show combat stats
+	* shapeid.h: removed some outdated comments
+	* gumps/Gump_ToggleButton.h: made toggle() purely virtual
+	* gumps/Paperdoll_gump.h: made GetCharacterInfo, GetItemInfo public
+	* gumps/misc_buttons.cc: implemented the combat stats button
+	
 
 2001-06-08  Ryan Nunn <triforce@merlin.net.au>
 	* exult.cc, keyactions.cc, mouse.h: When gumps are open, the cursor

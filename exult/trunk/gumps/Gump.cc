@@ -165,6 +165,12 @@ void Gump::initialize
 			checkx = 6;
 			checky = 136;
 		}
+		else if ((shnum >= 58 && shnum <= 63 && Game::get_game_type() == SERPENT_ISLE))
+		{ // Combat Stats
+			object_area = Rectangle(0,0,0,0);
+			checkx = 7;
+			checky = 95;
+		}
 		else
 			object_area = Rectangle(52, 22, 60, 40);
 	}
@@ -185,7 +191,7 @@ void Gump::initialize
 				checkx = 8;
 				checky = 162;
 		}
-	}
+	} // else if (shapefile == GSF_PAPERDOL_VGA)
 
 	checkx += 16; checky -= 12;
 	check_button = new Checkmark_button(this, checkx, checky);
@@ -242,10 +248,14 @@ Gump::Gump
 {
 	Game_window *gwin = Game_window::get_game_window();
 	Shape_frame *shape;
-	if (shapefile == GSF_GUMPS_VGA) 
-		shape = gwin->get_gump_shape(shnum, 0);
-	else if (shapefile == GSF_EXULT_FLX)
-		shape = gwin->get_exult_shape(shnum, 0);
+	switch (shapefile) {
+	case GSF_GUMPS_VGA:
+		shape = gwin->get_gump_shape(shnum, 0); break;
+	case GSF_EXULT_FLX:
+		shape = gwin->get_exult_shape(shnum, 0); break;
+	case GSF_PAPERDOL_VGA:
+		shape = gwin->get_gump_shape(shnum, 0, true); break;
+	}
 	x = (gwin->get_width() - shape->get_width())/2;
 	y = (gwin->get_height() - shape->get_height())/2;
 	initialize();
@@ -433,12 +443,20 @@ void Gump::paint_button
 	)
 {
 	if (btn) {
-		if (btn->shapefile == GSF_GUMPS_VGA)
+		switch (btn->shapefile) {
+		case GSF_GUMPS_VGA:
 			gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, 
 							 btn->framenum + btn->pushed);
-		else if (btn->shapefile == GSF_EXULT_FLX)
+			break;
+		case GSF_EXULT_FLX:
 			gwin->paint_exult_shape(x + btn->x, y + btn->y, btn->shapenum,
 									btn->framenum + btn->pushed);
+			break;
+		case GSF_PAPERDOL_VGA:
+			gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, 
+							 btn->framenum + btn->pushed, true);
+			break;
+		}
 	}
 }
 
@@ -526,10 +544,17 @@ void Gump::paint
 	)
 {
 					// Paint the gump itself.
-	if (shapefile == GSF_GUMPS_VGA) 
+	switch (shapefile) {
+	case GSF_GUMPS_VGA:
 		gwin->paint_gump(x, y, get_shapenum(), get_framenum(), is_paperdoll());
-	else if (shapefile == GSF_EXULT_FLX)
+		break;
+	case GSF_EXULT_FLX:
 		gwin->paint_exult_shape(x, y, get_shapenum(), get_framenum());
+		break;
+	case GSF_PAPERDOL_VGA:
+		gwin->paint_gump(x, y, get_shapenum(), get_framenum(), true);
+		break;
+	}
 					// Paint red "checkmark".
 	paint_button(gwin, check_button);
 	if (!container)

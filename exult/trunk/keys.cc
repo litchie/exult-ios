@@ -92,6 +92,9 @@ const struct Action {
 	{ "INVENTORY", ActionInventory, "Show inventory", true, false, NONE },
 	{ "TRY_KEYS", ActionTryKeys, "Try keys", true, false, NONE },
 	{ "STATS", ActionStats, "Show stats", true, false, NONE },
+	{ "COMBAT_STATS",
+	  ActionCombatStats, "Show combat stats", true, false, SERPENT_ISLE },
+	  
 	
 	{ "SHOW_SI_INTRO",
 	  ActionSIIntro, "Show SI intro", true, true, SERPENT_ISLE },

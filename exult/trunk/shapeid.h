@@ -1,12 +1,5 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
- **	Objs.h - Game objects.
- **
- **	Written: 10/1/98 - JSF
- **/
-
 /*
-Copyright (C) 1998  Jeffrey S. Freedman
+Copyright (C) 1998-2001  The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

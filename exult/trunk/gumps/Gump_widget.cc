@@ -25,7 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump.h"
 #include "Gump_widget.h"
 
-
 /*
  *	Is a given screen point on this widget?
  */
@@ -39,9 +38,19 @@ int Gump_widget::on_widget
 	mx -= parent->get_x() + x;	// Get point rel. to gump.
 	my -= parent->get_y() + y;
 	Shape_frame *cshape;
-	if (shapefile == GSF_GUMPS_VGA)
+	switch (shapefile) {
+	case GSF_GUMPS_VGA:
 		cshape = gwin->get_gump_shape(shapenum, 0);
-	else if (shapefile == GSF_EXULT_FLX)
+		break;
+	case GSF_EXULT_FLX:
 		cshape = gwin->get_exult_shape(shapenum, 0);
+		break;
+	case GSF_PAPERDOL_VGA:
+		cshape = gwin->get_gump_shape(shapenum, 0, true);
+		break;
+	default:
+		// shouldn't happen
+		return false;
+	}
 	return (cshape->has_point(mx, my));
 }
