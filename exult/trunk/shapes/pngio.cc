@@ -23,6 +23,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "config.h"
+
+#ifdef HAVE_PNG_H
+
 #include <png.h>
 #include <setjmp.h>
 
@@ -282,3 +286,6 @@ int Image_file::import_png
 	return (1);
 	}
 #endif
+
+#endif	/* HAVE_PNG_H */
+
