@@ -47,7 +47,7 @@
 	<xsl:text>last changed: </xsl:text>
 	<xsl:value-of select="@changed"/>
 	<xsl:text>&#xA;&#xA;</xsl:text>
-	<xsl:text>A html version can be found at http://exult.sourceforge.net/faq.php&#xA;</xsl:text>
+	<xsl:text>The latest version of this document can be found at http://exult.sourceforge.net/faq.php&#xA;</xsl:text>
 	<xsl:text>&#xA;&#xA;</xsl:text>
 
 	<!-- BEGIN TOC -->
@@ -65,6 +65,8 @@
 	<xsl:text>Documentation&#xA;</xsl:text>
 	<xsl:text>last changed: </xsl:text>
 	<xsl:value-of select="@changed"/>
+	<xsl:text>&#xA;&#xA;</xsl:text>	
+	<xsl:text>The latest version of this document can be found at http://exult.sourceforge.net/docs.php&#xA;</xsl:text>	
 	<xsl:text>&#xA;&#xA;</xsl:text>	
 
 	<!-- BEGIN TOC -->

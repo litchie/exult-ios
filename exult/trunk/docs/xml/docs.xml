@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="06 November 2001(GMT)">
+<readme title="Exult" changed="23 November 2001(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="23112001">
+			<header>- 23 November 2001</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> added &lt;save_compression_level&gt; to zip up savegames.</li>
+				</ul>
+			</body>
+		</sub>	
 		<sub name="06112001">
 			<header>- 06 November 2001</header>
 			<body>
@@ -123,11 +131,17 @@
 				</para>
 				<configdesc>
 					<line>&lt;config&gt;</line>
-					<line>&lt;disk&gt;
-						<comment>**see <ref target="path_config"/> for pathsettings
+					<line>&lt;disk&gt;</line>
+					<line>&lt;save_compression_level&gt;</line>
+					<line>1
+						<comment>**Savegames are now compressed as zip files. 1 enables compression,
+						2 disables it.
 						</comment></line>
+					<line>&lt;/save_compression_level&gt;</line>
 					<line>&lt;data_path&gt;</line>
-					<line>data</line>
+					<line>data
+						<comment>**see <ref target="path_config"/> for pathsettings
+						</comment></line>					
 					<line>&lt;/data_path&gt;</line>
 					<line>&lt;game&gt;</line>
 					<line>&lt;blackgate&gt;</line>
