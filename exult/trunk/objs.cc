@@ -862,6 +862,25 @@ void Egg_object::write_ireg
 	}
 
 /*
+ *	Delete all contents.
+ */
+
+Container_game_object::~Container_game_object
+	(
+	)
+	{
+	while (last_object)
+		{
+		Game_object *obj = last_object->get_next();
+		if (obj == last_object)
+			last_object = 0;// Last one.
+		else
+			last_object->set_next(obj->get_next());
+		delete obj;
+		}
+	}
+
+/*
  *	Remove an object.
  */
 
@@ -1572,6 +1591,23 @@ Chunk_object_list::Chunk_object_list
 	) : objects(0), roof(0), npcs(0),
 	    cache(0), cx(chunkx), cy(chunky)
 	{
+	}
+
+/*
+ *	Delete all objects contained within.
+ */
+
+Chunk_object_list::~Chunk_object_list
+	(
+	)
+	{
+	while (objects)			// Delete all (includes npc's).
+		{
+		Game_object *obj = objects;
+		objects = obj->next;
+		delete obj;
+		}
+	delete cache;
 	}
 
 /*

@@ -21,7 +21,7 @@ SUFFIXES=.cc .h
 INCLUDES += $(AUDIO_INCLUDES)
 INCLUDES += -Iconf
 INCLUDES += -Ipathfinder
-INCLUDES += -I.
+# INCLUDES += -I.  Causes wierd STL error involving <new> - JSF
 INCLUDES += $(SDL_INCLUDES)
 INCLUDES += $(KMID_INCLUDES)
 
