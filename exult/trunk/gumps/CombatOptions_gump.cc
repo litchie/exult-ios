@@ -41,8 +41,8 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 4, 17, 134, 30, 43, 56, 69, 82, 95, 108, 121, 147 };
-static const int colx[] = { 35, 50, 120, 195, 192 };
+static const int rowy[] = { 17, 43, 69, 130 };
+static const int colx[] = { 35, 50, 120, 170, 192 };
 
 static const char* oktext = "OK";
 static const char* canceltext = "CANCEL";
@@ -168,10 +168,10 @@ CombatOptions_gump::CombatOptions_gump()
 
 	// Ok
 	buttons[nbuttons - 2] = 
-		new CombatOptions_button(this, oktext, colx[0], rowy[11]);
+		new CombatOptions_button(this, oktext, colx[0], rowy[3]);
 	// Cancel
 	buttons[nbuttons - 1] = 
-		new CombatOptions_button(this, canceltext, colx[4], rowy[11]);
+		new CombatOptions_button(this, canceltext, colx[4], rowy[3]);
 }
 
 CombatOptions_gump::~CombatOptions_gump()

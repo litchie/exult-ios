@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "AudioOptions_gump.h"
 #include "VideoOptions_gump.h"
 #include "GameplayOptions_gump.h"
+#include "CombatOptions_gump.h"
 #include "Gump_button.h"
 #include "Yesno_gump.h"
 #include "gamewin.h"
@@ -48,6 +49,7 @@ static const char* loadsavetext = "Load/Save Game";
 static const char* videoopttext = "Video Options";
 static const char* audioopttext = "Audio Options";
 static const char* gameopttext = "Gameplay Options";
+static const char *combattext = "Combat Options";
 static const char* quitmenutext = "Quit to Menu";
 static const char* quittext = "Quit";
 
@@ -70,6 +72,8 @@ void Gamemenu_button::activate()
 		((Gamemenu_gump*)parent)->audio_options();
 	} else if (text == gameopttext) {
 		((Gamemenu_gump*)parent)->gameplay_options();
+	} else if (text == combattext) {
+		((Gamemenu_gump*)parent)->combat_options();
 	} else if (text == quitmenutext) {
 		((Gamemenu_gump*)parent)->quit(true);
 	} else if (text == quittext) {
@@ -85,7 +89,7 @@ Gamemenu_gump::Gamemenu_gump() : Modal_gump(0, EXULT_FLX_GAMEMENU_SHP, SF_EXULT_
 	buttons[1] = new Gamemenu_button(this, videoopttext, colx, rowy[1]);
 	buttons[2] = new Gamemenu_button(this, audioopttext, colx, rowy[2]);
 	buttons[3] = new Gamemenu_button(this, gameopttext, colx, rowy[3]);
-	buttons[4] = 0; // new Gamemenu_button(this, quitmenutext, colx, rowy[4]);
+	buttons[4] = new Gamemenu_button(this, combattext, colx, rowy[4]);
 	buttons[5] = new Gamemenu_button(this, quittext, colx, rowy[5]);
 }
 
@@ -141,6 +145,13 @@ void Gamemenu_gump::gameplay_options()
 	GameplayOptions_gump *gp_opts = new GameplayOptions_gump();
 	gumpman->do_modal_gump(gp_opts, Mouse::hand);
 	delete gp_opts;
+}
+
+void Gamemenu_gump::combat_options()
+{
+	CombatOptions_gump *cbt_opts = new CombatOptions_gump();
+	gumpman->do_modal_gump(cbt_opts, Mouse::hand);
+	delete cbt_opts;
 }
 
 void Gamemenu_gump::paint()

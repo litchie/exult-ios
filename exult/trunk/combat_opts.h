@@ -31,9 +31,8 @@ public:
 	static int difficulty;		// 0=normal, >0 harder, <0 easier.
 	enum Mode
 		{
-		original,		// All automatic,
-		keypause,		// Kbd (space) suspends/resumes.
-		round			// (Later).  Pause after each 'round'.
+		original = 0,		// All automatic,
+		keypause = 1		// Kbd (space) suspends/resumes.
 		};
 	static Mode mode;
 	static bool show_hits;		// Display #'s.

@@ -47,6 +47,7 @@ class Gamemenu_gump : public Modal_gump
 	void video_options();
 	void audio_options();
 	void gameplay_options();
+	void combat_options();
 };
 
 #endif
