@@ -46,7 +46,7 @@ MAPEDIT_OBJS=chunklst.o combo.o eggedit.o compile.o execbox.o exult_studio.o loc
 	objbrowse.o objedit.o paledit.o shapedraw.o shapefile.o shapegroup.o \
 	shapeedit.o shapelst.o studio.o
 
-FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o Table.o U7file.o utils.o
+FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o msgfile.o Table.o U7file.o utils.o
 
 IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 
