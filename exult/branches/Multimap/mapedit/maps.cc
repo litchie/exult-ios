@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#include <gtk/gtkradiomenuitem.h>
 #include "studio.h"
 #include "servemsg.h"
 #include "exult_constants.h"
@@ -54,14 +55,6 @@ static int Find_highest_map
  *	Jump to desired map.
  */
 
-C_EXPORT void on_main_map_activate
-	(
-	GtkMenuItem *item,
-	gpointer udata
-	)
-	{
-	// ExultStudio::get_instance()->goto_map(0);
-	}
 static void on_map_activate
 	(
 	GtkMenuItem *item,
@@ -69,6 +62,14 @@ static void on_map_activate
 	)
 	{
 	// ExultStudio::get_instance()->goto_map((int) udata);
+	}
+C_EXPORT void on_main_map_activate
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	on_map_activate(item, (gpointer) 0);
 	}
 
 /*
@@ -112,6 +113,7 @@ void ExultStudio::setup_maps_list
 			GTK_MENU_ITEM(glade_xml_get_widget(app_xml, "map1")));
 	GList *items = gtk_container_get_children(GTK_CONTAINER(maps));
 	GList *each = g_list_last(items);
+	GSList *group = NULL;
 
 	while (each)
 		{
@@ -119,7 +121,13 @@ void ExultStudio::setup_maps_list
 		GtkWidget *label = gtk_bin_get_child(GTK_BIN(item));
 		const char *text = gtk_label_get_label(GTK_LABEL(label));
 		if (strcmp(text, "Main") == 0)
+			{
+			group = gtk_radio_menu_item_get_group(
+				GTK_RADIO_MENU_ITEM(item));
+			gtk_check_menu_item_set_active(
+				GTK_CHECK_MENU_ITEM(item), TRUE);
 			break;
+			}
 		GList *prev = g_list_previous(each);
 		g_list_remove(items, each->data);
 		gtk_widget_unref(GTK_WIDGET(item));
@@ -130,8 +138,8 @@ void ExultStudio::setup_maps_list
 		{
 		char name[40];
 		sprintf(name, "Map #%02x", num);
-		Add_menu_item(maps, name, 
-			GTK_SIGNAL_FUNC(on_map_activate), (gpointer) num);
+		Add_menu_item(maps, name, GTK_SIGNAL_FUNC(on_map_activate), 
+						(gpointer) num, group);
 		}
 	}
 
