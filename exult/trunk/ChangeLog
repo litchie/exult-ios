@@ -1,3 +1,9 @@
+2004-02-11 Dominik Reichardt <dominus@users.sourceforge.net>
+	* docs/xml/docs.xml: updated and added screenshots
+	* docs/images/docs*.png added
+	* docs/readme.html: updated and added screenshots
+	* Readme updated
+
 2004-02-10  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/hawk.shp: hawk paperdoll art
 	* gumps/Paperdoll_gump.cc: fixed dropping items in BG belt slots
