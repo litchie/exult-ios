@@ -2330,6 +2330,12 @@ USECODE_INTRINSIC(set_conversation_slot)
 	return no_ret;
 }
 
+USECODE_INTRINSIC(init_conversation)
+{
+	init_conversation();
+	return no_ret;
+}
+
 USECODE_INTRINSIC(sprite_effect2)
 {
 	// Sprite_effect2(obj, sprite#, xoff?, yoff?, ??, ??, ??, ??) (8 parms).

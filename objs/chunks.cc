@@ -829,6 +829,8 @@ int Map_chunk::is_blocked
 	Game_window *gwin = Game_window::get_game_window();
 	int tx, ty;
 	new_lift = 0;
+	startx %= c_num_tiles;		// Watch for wrapping.
+	starty %= c_num_tiles;
 	int stopy = (starty + ytiles)%c_num_tiles, 
 	    stopx = (startx + xtiles)%c_num_tiles;
 	for (ty = starty; ty != stopy; ty = INCR_TILE(ty))
@@ -1042,7 +1044,7 @@ inline bool Check_spot
 		Game_window::get_game_window()->get_chunk_safely(cx, cy);
 	return (where == Map_chunk::inside) == 
 				(chunk->is_roof(tx % c_tiles_per_chunk, 
-								ty & c_tiles_per_chunk, tz) < 31);
+					ty % c_tiles_per_chunk, tz) < 31);
 	}
 
 /*
