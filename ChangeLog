@@ -1,3 +1,6 @@
+2001-07-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* chunkter.cc: check for NULL shape before drawing flat. (for FoV)
+
 2001-07-07  Max Horn  <max@quendi.de>
 	* files/listfiles.cc: finished up mac implementation of file lister
 	* gumps/Newfile_gump.cc: removed old junk
@@ -389,13 +392,11 @@
 2001-05-28  Jeff Freedman  <jeff@amy.nerble.net>
 	* actors.cc: 'Stop Time' spell implemented.
 
->>>>>>> 1.738
 2001-05-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.h: 'Mode' field has gone away.  RIP.  Use
 	showing_gumps() to test for gump mode.
 
->>>>>>> 1.671
 2001-05-25  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* exult.cc: Added 400x300 to resolution cycler as requested on 
@@ -568,7 +569,6 @@
 	* gumps/gump_utils.cc: undo end_gump_mode with a modal gump
 	* mapedit/Makefile.studio.cygwin: committed Travis' changes
 
->>>>>>> 1.670
 2001-04-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/flx.in, Makefile.*, data/aud*.shp: audio options gump shapes
 	* Makefile.*, gumps/Gump_ToggleButton.*: a button which toggles 
