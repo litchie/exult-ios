@@ -58,7 +58,7 @@ class Chunk_terrain : public Game_singletons
 	void free_rendered_flats();
 public:
 					// Create from 16x16x2 data:
-	Chunk_terrain(unsigned char *data);
+	Chunk_terrain(unsigned char *data, bool v2_chunks);
 					// Copy-constructor:
 	Chunk_terrain(const Chunk_terrain& c2);
 	~Chunk_terrain();
@@ -98,7 +98,7 @@ public:
 		{ get_rendered_flats();  return glflats; }
 	void render_all(int cx, int cy);// Render (in terrain-editing mode).
 					// Write out to chunk.
-	void write_flats(unsigned char *chunk_data);
+	int write_flats(unsigned char *chunk_data, bool v2_chunks);
 	};
 
 

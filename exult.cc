@@ -1952,6 +1952,7 @@ static void Drop_dragged_shape
 		    sid.get_framenum() != curid.get_framenum())
 			{
 			ter->set_flat(tx, ty, sid);
+			gwin->get_map()->set_chunk_terrains_modified();
 			gwin->set_all_dirty();	// ++++++++For now.++++++++++
 			}
 		return;
@@ -2037,6 +2038,7 @@ void Drop_dragged_combo
 			Chunk_terrain *ter = chunk->get_terrain();
 			ntx %= c_tiles_per_chunk; nty %= c_tiles_per_chunk;
 			ter->set_flat(ntx, nty, sid);
+			gwin->get_map()->set_chunk_terrains_modified();
 			continue;
 			}
 		bool ireg;		// Create object.

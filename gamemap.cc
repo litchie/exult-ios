@@ -80,6 +80,7 @@ using std::vector;
 
 Exult_vector<Chunk_terrain *> *Game_map::chunk_terrains = 0;
 std::ifstream *Game_map::chunks = 0;
+bool Game_map::v2_chunks = false;
 bool Game_map::read_all_terrain = false;
 bool Game_map::chunk_terrains_modified = false;
 
@@ -95,6 +96,7 @@ Map_chunk *Game_map::create_chunk
 	return (objects[cx][cy] = new Map_chunk(this, cx, cy));
 	}
 
+const int V2_CHUNK_HDR_SIZE = 4+4+2;	// 0xffff, "exlt", vers.
 /*
  *	Read in a terrain chunk.
  */
@@ -104,11 +106,20 @@ Chunk_terrain *Game_map::read_terrain
 	int chunk_num			// Want this one from u7chunks.
 	)
 	{
+	const int ntiles = c_tiles_per_chunk*c_tiles_per_chunk;
 	assert(chunk_num >= 0 && chunk_num < chunk_terrains->size());
-	unsigned char buf[16*16*2];	
-	chunks->seekg(chunk_num * 512);
-	chunks->read(reinterpret_cast<char*>(buf), sizeof(buf));
-	Chunk_terrain *ter = new Chunk_terrain(&buf[0]);
+	unsigned char buf[ntiles*3];
+	if (v2_chunks)
+		{
+		chunks->seekg(V2_CHUNK_HDR_SIZE + chunk_num*ntiles*3);
+		chunks->read(reinterpret_cast<char*>(buf), ntiles*3);
+		}
+	else
+		{
+		chunks->seekg(chunk_num*ntiles*2);
+		chunks->read(reinterpret_cast<char*>(buf), ntiles*2);
+		}
+	Chunk_terrain *ter = new Chunk_terrain(&buf[0], v2_chunks);
 	chunk_terrains->put(chunk_num, ter);
 	return ter;
 	}
@@ -438,6 +449,8 @@ void Game_map::write_chunk_terrains
 	(
 	)
 	{
+	const int ntiles = c_tiles_per_chunk*c_tiles_per_chunk;
+	int nbytes = v2_chunks ? 3 : 2;
 	int cnt = chunk_terrains->size();
 	int i;				// Any terrains modified?
 	for (i = 0; i < cnt; i++)
@@ -450,22 +463,29 @@ void Game_map::write_chunk_terrains
 		ofstream ochunks;	// Open file for chunks data.
 					// This truncates the file.
 		U7open(ochunks, PATCH_U7CHUNKS);
+		if (v2_chunks)
+			{
+			Write4(ochunks, 0xffffffff);
+			ochunks.write("exlt", 4);
+			Write2(ochunks, 0);	// Will be vers. #.
+			}
 		for (i = 0; i < cnt; i++)
 			{
 			Chunk_terrain *ter = (*chunk_terrains)[i];
-			unsigned char data[512];
+			unsigned char data[ntiles*3];
 			if (ter)
 				{
-				ter->write_flats(data);
+				ter->write_flats(data, v2_chunks);
 				ter->set_modified(false);
 				}
 			else
 				{
-				memset(&data[0], 0, 512);
+				memset(&data[0], 0, ntiles*nbytes);
 				cerr << "NULL terrain.  U7chunks may be bad."
 								<< endl;
 				}
-			ochunks.write(reinterpret_cast<char*>(data), 512);
+			ochunks.write(reinterpret_cast<char*>(data), 
+								ntiles*nbytes);
 			}
 		if (!ochunks.good())
 			throw file_write_exception(U7CHUNKS);
@@ -1373,10 +1393,12 @@ bool Game_map::insert_terrain
 	bool dup			// If true, duplicate #tnum.
 	)
 	{
+	const int ntiles = c_tiles_per_chunk*c_tiles_per_chunk;
+	const int nbytes = v2_chunks ? 3 : 2;
 	if (tnum < -1 || tnum >= chunk_terrains->size())
 		return false;		// Invalid #.
 	get_all_terrain();		// Need all of 'u7chunks' read in.
-	unsigned char buf[16*16*2];	// Set up buffer with shape #'s.
+	unsigned char buf[ntiles*3];	// Set up buffer with shape #'s.
 	if (dup && tnum >= 0)
 		{			// Want to duplicate given terrain.
 		Chunk_terrain *ter = (*chunk_terrains)[tnum];
@@ -1385,14 +1407,25 @@ bool Game_map::insert_terrain
 			for (int tx = 0; tx < c_tiles_per_chunk; tx++)
 			{
 			ShapeID id = ter->get_flat(tx, ty);
-			*data++ = id.get_shapenum()&0xff;
-			*data++ = ((id.get_shapenum()>>8)&3) | 
+			int shnum = id.get_shapenum(), 
+			    frnum = id.get_framenum();
+			if (v2_chunks)
+				{
+				*data++ = shnum&0xff;
+				*data++ = (shnum>>8)&0xff;
+				*data++ = frnum;
+				}
+			else
+				{
+				*data++ = id.get_shapenum()&0xff;
+				*data++ = ((id.get_shapenum()>>8)&3) | 
 						(id.get_framenum()<<2);
+				}
 			}
 		}
 	else
-		memset(reinterpret_cast<char*>(buf), 0, sizeof(buf));
-	Chunk_terrain *new_terrain = new Chunk_terrain(&buf[0]);
+		memset(reinterpret_cast<char*>(buf), 0, ntiles*nbytes);
+	Chunk_terrain *new_terrain = new Chunk_terrain(&buf[0], v2_chunks);
 					// Insert in list.
 	chunk_terrains->insert(chunk_terrains->begin() + tnum + 1,new_terrain);
 					// Indicate terrains are modified.
