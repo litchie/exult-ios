@@ -1,0 +1,16 @@
+CLASSPATH = xerces.jar:xalan.jar
+JAVA = java
+INPUT = exult_faq.xml
+CLASS = org.apache.xalan.xslt.Process
+
+all: html text php
+
+
+html: $(INPUT) faq_html.xsl
+	$(JAVA) -classpath $(CLASSPATH) $(CLASS) -IN $(INPUT) -XSL faq_html.xsl -OUT faq.html
+
+text: $(INPUT) faq_text.xsl
+	$(JAVA) -classpath $(CLASSPATH) $(CLASS) -IN $(INPUT) -XSL faq_text.xsl -OUT faq.txt
+
+php: $(INPUT) faq_php.xsl
+	$(JAVA) -classpath $(CLASSPATH) $(CLASS) -IN $(INPUT) -XSL faq_php.xsl -OUT faq.inc
