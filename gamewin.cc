@@ -1516,6 +1516,8 @@ Ireg_game_object *Game_window::create_ireg_object
 	if (shnum == 607)		// Path.
 		return new Egglike_game_object(
 					shnum, frnum, tilex, tiley, lift);
+	if (shnum == 848 || shnum == 268)	// Mirror
+		return new Mirror_object(shnum, frnum, tilex, tiley, lift);
 #if 0
 	else if (shnum == 330)		// +++++For fixing pre-alpha savegames.
 		{			// +++++Should go away during Alpha.

@@ -80,7 +80,8 @@ public:
 		fire_field = 128,
 		sleep_field = 129,
 		poison_field = 130,
-		caltrops_field = 131
+		caltrops_field = 131,
+		mirror_object = 132
 		};
 	enum Egg_flag_shifts {
 		nocturnal = 0,
@@ -109,7 +110,7 @@ public:
 				unsigned int tiley, unsigned int lft,
 				unsigned char ty);
 	virtual ~Egg_object();
-	void set_area();		// Set up active area.
+	virtual void set_area();		// Set up active area.
 	int get_distance() const
 		{ return distance; }
 	int get_criteria() const
@@ -117,8 +118,9 @@ public:
 	int get_type() const
 		{ return type; }
 					// Can it be activated?
-	int is_active(Game_object *obj,
+	virtual int is_active(Game_object *obj,
 			int tx, int ty, int tz, int from_tx, int from_ty);
+
 	Rectangle get_area() const	// Get active area.
 		{ return area; }
 	int is_solid_area() const
@@ -195,4 +197,34 @@ public:
 	virtual void write_ireg(std::ostream& out);
 	};
 
+/*
+ *	Mirrors are handled like eggs.
+ */
+
+class Mirror_object : public Egg_object
+{
+public:
+	Mirror_object(int shapenum, int framenum, unsigned int tilex, 
+		unsigned int tiley, unsigned int lft);
+
+					// Run usecode function.
+	virtual void activate(Usecode_machine *umachine, int event = 1);
+
+	virtual void activate(Usecode_machine *umachine, Game_object *obj,
+							int must = 0);
+
+					// Can it be activated?
+	virtual int is_active(Game_object *obj,
+			int tx, int ty, int tz, int from_tx, int from_ty);
+
+	virtual void set_area();		// Set up active area.
+
+					// Render.
+	virtual void paint(Game_window *gwin);
+					// Can this be clicked on?
+	virtual int is_findable(Game_window *gwin)
+		{ return Ireg_game_object::is_findable(gwin); }
+
+	virtual void write_ireg(std::ostream& out);
+};
 #endif

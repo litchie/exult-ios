@@ -3866,6 +3866,7 @@ int Npc_actor::step
 	if (get_flag(Obj_flags::paralyzed))
 		return 0;
 					// Store old chunk.
+	Tile_coord oldtile = get_tile();
 	int old_cx = get_cx(), old_cy = get_cy();
 	Game_window *gwin = Game_window::get_game_window();
 					// Get chunk.
@@ -3900,6 +3901,11 @@ int Npc_actor::step
 	Map_chunk *olist = gwin->get_chunk(old_cx, old_cy);
 					// Move it.
 	movef(olist, nlist, tx, ty, frame, t.tz);
+
+					// Near an egg?  (Do this last, since
+					//   it may teleport.)
+	nlist->activate_eggs(this, t.tx, t.ty, t.tz, oldtile.tx, oldtile.ty);
+
 					// Offscreen, but not in party?
 	if (!add_dirty(gwin, 1) && Npc_actor::get_party_id() < 0 &&
 					// And > a screenful away?
