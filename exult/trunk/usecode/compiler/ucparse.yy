@@ -409,7 +409,8 @@ special_method_call_statement:
 					/* Set up 'show' call.		*/
 		stmts->add(new Uc_call_statement(
 			new Uc_call_expression(Uc_function::get_show_face(),
-				new Uc_array_expression($1), function)));
+			new Uc_array_expression($1, new Uc_int_expression(0)), 
+								function)));
 		stmts->add(new Uc_say_statement($5));
 		$$ = stmts;
 		}

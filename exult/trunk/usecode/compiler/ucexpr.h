@@ -259,6 +259,8 @@ public:
 	Uc_array_expression() {  }
 	Uc_array_expression(Uc_expression *e0)
 		{ add(e0); }		// Create with 1st expression.
+	Uc_array_expression(Uc_expression *e0, Uc_expression *e1)
+		{ add(e0); add(e1); }
 	~Uc_array_expression();
 	void add(Uc_expression *e)	// Append an expression.
 		{ exprs.push_back(e); }
