@@ -1235,9 +1235,7 @@ static void Usecode_Trace
 	Usecode_value parms[12]
 	)
 	{
-	if(!usecode_trace)
-		return;
-	cout << hex << "[0x" << setfill(0x30)
+	cout << hex << "[0x" << setfill(0x30) << setw(2)
 		<< intrinsic << "]: " << name << "(";
 	for (int i = 0; i < num_parms; i++)
 		{
@@ -1251,8 +1249,6 @@ static void Usecode_Trace
 
 static	void	Usecode_TraceReturn(Usecode_value &v)
 {
-	if(!usecode_trace)
-		return;
 	v.print(cout);
 	cout << dec << endl;
 }
@@ -1268,98 +1264,126 @@ static void Unhandled
 	}
 
 static Usecode_value	no_ret;
+
+Usecode_value Usecode_machine::Execute_Intrinsic(UsecodeIntrinsicFn func,const char *name,int event,int intrinsic,int num_parms,Usecode_value parms[12])
+{
+	if(usecode_trace)
+		{
+		Usecode_Trace(name,intrinsic,num_parms,parms);
+		Usecode_value u=((*this).*func)(event,intrinsic,num_parms,parms);
+		Usecode_TraceReturn(u);
+		return (u);
+		}
+	else
+		return ((*this).*func)(event,intrinsic,num_parms,parms);
+}
+
 USECODE_INTRINSIC(NOP)
-	USECODE_RETURN(no_ret);
+{
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(UNKNOWN)
+{
 //	Unhandled(intrinsic, num_parms, parms);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(get_random)
+{
 	int range = parms[0].get_int_value();
 	if (range == 0)
 		{
 		Usecode_value u(0);
-		USECODE_RETURN(u);
+		return(u);
 		}
 	Usecode_value u=(1 + (rand() % range));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(execute_usecode_array)
+{
 	cout << "Executing intrinsic 1\n";
 	gwin->get_tqueue()->add(SDL_GetTicks() + 100,
 		new Scheduled_usecode(this, parms[0], parms[1]), (long) this);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(delayed_execute_usecode_array)
+{
 	// Delay = .20 sec.?
 	int delay = parms[2].get_int_value();
 	gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
 		new Scheduled_usecode(this, parms[0], parms[1]),
 							(long) this);
 	cout << "Executing intrinsic 2\n";
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(show_npc_face)
+{
 	show_npc_face(parms[0], parms[1]);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(remove_npc_face)
+{
 	remove_npc_face(parms[0]);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(add_answer)
+{
 	answers.add_answer(parms[0]);
 	user_choice = 0;	//++++Exp. 4/9/00
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(remove_answer)
+{
 	answers.remove_answer(parms[0]);
 	user_choice = 0;	//++++Exp. 4/9/00
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(push_answers)
+{
 	answer_stack.push_front(answers);
 	answers.clear();
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(pop_answers)
+{
 	if(answer_stack.size())
 		{
 		answers=answer_stack.front();
 		answer_stack.pop_front();
 		}
 // +++Maybe not	user_choice = 0;		// Seems like a good idea.
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(select_from_menu)
+{
 	user_choice = 0;
 	const char *choice = get_user_choice();
 	user_choice = 0;
 	Usecode_value u(choice);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(select_from_menu2)
+{
 	// Return index (1-n) of choice.
 	user_choice = 0;
 	Usecode_value val(get_user_choice_num() + 1);
 	user_choice = 0;
-	USECODE_RETURN(val);
+	return(val);
 }
 
 USECODE_INTRINSIC(input_numeric_value)
+{
 	// Ask for # (min, max, step, default).
 	extern int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
 	Slider_gump_object *slider = new Slider_gump_object(
@@ -1369,22 +1393,25 @@ USECODE_INTRINSIC(input_numeric_value)
 	Usecode_value ret(!ok ? 0 : slider->get_val());
 	delete slider;
 	gwin->clear_text_pending();	// Answered a question.
-	USECODE_RETURN(ret);
+	return(ret);
 }
 
 USECODE_INTRINSIC(set_item_shape)
+{
 	// Set item shape.
 	set_item_shape(parms[0], parms[1]);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(find_nearest)
+{
 	// Think it rets. nearest obj. near parm0.
 	Usecode_value u(find_nearest(parms[0], parms[1], parms[2]));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(die_roll)
+{
 	// Rand. # within range.
 	int low = parms[0].get_int_value();
 	int high = parms[1].get_int_value();
@@ -1396,55 +1423,63 @@ USECODE_INTRINSIC(die_roll)
 		}
 	int val = (rand() % (high - low + 1)) + low;
 	Usecode_value u(val);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_item_shape)
+{
 	Usecode_value u(get_item_shape(parms[0]));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_item_frame)
+{
 	Usecode_value u(get_item_frame(parms[0]));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(set_item_frame)
+{
 	set_item_frame(parms[0], parms[1]);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(get_item_quality)
+{
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_quality() : 0);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(set_item_quality)
+{
 	// Guessing it's 
 	//  set_quality(item, value).
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		obj->set_quality(parms[1].get_int_value());
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(count_npc_inventory)
+{
 	// Get # of items in NPC??????
 	//   Count(item, -npc).
 	//+++++++++++++
 	Unhandled(intrinsic, num_parms, parms);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(set_npc_inventory_count)
+{
 	// Set # of items??? (item, newcount).
 	//+++++++++++++
 	Unhandled(intrinsic, num_parms, parms);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(get_object_position)
+{
 	// Takes itemref.  ?Think it rets.
 	//  hotspot coords: (x, y, z).
 	int tx, ty, tz;		// Get tile coords.
@@ -1456,71 +1491,80 @@ USECODE_INTRINSIC(get_object_position)
 	Usecode_value arr(3, &vx);
 	arr.put_elem(1, vy);
 	arr.put_elem(2, vz);
-	USECODE_RETURN(arr);
+	return(arr);
 }
 
 USECODE_INTRINSIC(get_distance)
+{
 	// Distance from parm[0] -> parm[1].  Guessing how it's computed.
 	Game_object *obj0 = get_item(parms[0]);
 	Game_object *obj1 = get_item(parms[1]);
 	Usecode_value u((obj0 && obj1) ? obj0->get_abs_tile_coord().distance(
 					obj1->get_abs_tile_coord()) : 0);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(find_direction)
+{
 	// Direction from parm[0] -> parm[1].
 	// Rets. 0-7.  Is 0 east?
 	Usecode_value u=find_direction(parms[0], parms[1]);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_npc_object)
+{
 	// Takes -npc.  Returns object.
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u((long) obj);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_schedule_type)
+{
 	// GetSchedule(npc).  Rets. schedtype.
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_schedule_type() : 0);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(set_schedule_type)
+{
 	// SetSchedule?(npc, schedtype).
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		obj->set_schedule_type(parms[1].get_int_value());
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(add_to_party)
+{
 	// NPC joins party.
 	add_to_party(get_item(parms[0]));
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(remove_from_party)
+{
 	// NPC leaves party.
 	remove_from_party(get_item(parms[0]));
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(get_npc_prop)
+{
 	// Get NPC prop (item, prop_id).
 	//   (9 is food level).
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? 
 		obj->get_property(parms[1].get_int_value()) : 0);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(set_npc_prop)
+{
 	// Set NPC prop (item, prop_id, delta_value).
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
@@ -1529,22 +1573,25 @@ USECODE_INTRINSIC(set_npc_prop)
 		obj->set_property(prop, obj->get_property(prop) +
 						parms[2].get_int_value());
 		}
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(get_avatar_ref)
+{
 	// Guessing it's Avatar's itemref.
 	Usecode_value u((long) gwin->get_main_actor());
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_party_list)
+{
 	// Return array with party members.
 	Usecode_value u(get_party());
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(create_new_object)
+{
 	// Takes shape, rets. new obj?
 	// Show frames in seq.? (animate?)
 	int shapenum = parms[0].get_int_value();
@@ -1562,25 +1609,27 @@ USECODE_INTRINSIC(create_new_object)
 	gwin->show();
 	last_created = obj;
 	Usecode_value u((long) obj);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(set_last_created)
+{
 	// Take itemref, sets last_created to it.
 	Game_object *obj = get_item(parms[0]);
 	last_created = obj;
 	Usecode_value u((long) obj);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(update_last_created)
+{
 	// Think it takes array from 0x18,
 	//   updates last-created object.
 	//   ??guessing??
 	if (!last_created)
 		{
 		Usecode_value u(0);
-		USECODE_RETURN(u);
+		return(u);
 		}
 	Usecode_value& arr = parms[0];
 	int sz = arr.get_array_size();
@@ -1598,10 +1647,11 @@ USECODE_INTRINSIC(update_last_created)
 	gwin->paint();
 	gwin->show();		// ??
 	Usecode_value u(1);// ??
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_npc_name)
+{
 	// Get NPC name(s).  Works on arrays, too.
 	static char *unknown = "??name??";
 	int cnt = parms[0].get_array_size();
@@ -1615,45 +1665,50 @@ USECODE_INTRINSIC(get_npc_name)
 			Usecode_value v(nm ? nm : unknown);
 			arr.put_elem(i, v);
 			}
-		USECODE_RETURN(arr);
+		return(arr);
 		}
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_name() : unknown);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(count_objects)
+{
 	// How many?
 	// ((npc?-357==party, -356=avatar), 
 	//   item, quality?, frame?).
 	// Quality/frame -359 means any.
 	Usecode_value u(count_objects(parms[0], parms[1], parms[2], parms[3]));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_cont_items)
+{
         // Get cont. items(container, shape, qual, frame).
         Usecode_value u(get_objects(parms[0], parms[1], parms[2], parms[3]));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 
 USECODE_INTRINSIC(remove_party_items)
+{
 	// Remove items(quantity, item, ??quality?? (-359), frame(-359), T/F).
 	Usecode_value u(remove_party_items(parms[0], parms[1], parms[2],
 						parms[3], parms[4]));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(add_party_items)
+{
 	// Add items(num, item, ??quality?? (-359), frame (or -359), T/F).
 	// Returns array of NPC's (->'s) who got the items.
 	Usecode_value u(add_party_items(parms[0], parms[1], parms[2],
 						parms[3], parms[4]));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(play_music)
+{
 	// Play music(item, songnum).
 	// ??Show notes by item?
 #if DEBUG
@@ -1663,27 +1718,30 @@ USECODE_INTRINSIC(play_music)
 	cout << "1: " << ((parms[1].get_int_value()>>8)&0xff) << " " <<  ((parms[1].get_int_value())&0xff) << endl;
 #endif
 	audio->start_music(parms[0].get_int_value()&0xff,(parms[0].get_int_value()>>8)&0xff);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(npc_nearby)
+{
 	// NPC nearby? (item).
 	Game_object *npc = get_item(parms[0]);
 	int near = (npc != 0 && npc->get_abs_tile_coord().distance(
 		gwin->get_main_actor()->get_abs_tile_coord()) < 12);
 	Usecode_value u(near);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(find_nearby_avatar)
+{
 	// Find objs. with given shape near Avatar?
 	Usecode_value av((long) gwin->get_main_actor());
 	Usecode_value qual(-359), mask(0);
 	Usecode_value u(find_nearby(av, parms[0], qual, mask));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(is_npc)
+{
 	// Is item an NPC?
 	Game_object *obj = get_item(parms[0]);
 					// ++++In future, check for monsters.
@@ -1693,14 +1751,15 @@ USECODE_INTRINSIC(is_npc)
 		cerr << "is_npc: get_item returned a NULL pointer" << endl;
 #endif
 		Usecode_value u(0);
-		USECODE_RETURN(u);
+		return(u);
 		}
 	Usecode_value u(obj == gwin->get_main_actor() ||
 			obj->get_npc_num() > 0);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(display_runes)
+{
 	// Render text into runes for signs, tombstones, plaques and the like
 	// Display sign (gump #, array_of_text).
 	int cnt = parms[1].get_array_size();
@@ -1717,23 +1776,26 @@ USECODE_INTRINSIC(display_runes)
 	Get_click(x, y, Mouse::hand);
 	delete sign;
 	gwin->paint();
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(click_on_item)
+{
 	// Doesn't ret. until user single-
 	//   clicks on an item.  Rets. item.
 	Usecode_value u(click_on_item());
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(find_nearby)
+{
 	// Think it rets. objs. near parm0.
 	Usecode_value u(find_nearby(parms[0], parms[1], parms[2], parms[3]));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(give_last_created)
+{
 	// Think it's give_last_created_to_npc(npc).
 	Game_object *npc = get_item(parms[0]);
 	int ret = 0;
@@ -1743,72 +1805,81 @@ USECODE_INTRINSIC(give_last_created)
 		ret = npc->add(last_created);
 		}
 	Usecode_value u(ret);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(game_hour)
+{
 	// Return. game time hour (0-23).
 	Usecode_value u(gwin->get_hour());
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(game_minute)
+{
 	// Return minute (0-59).
 	Usecode_value u(gwin->get_minute());
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_npc_number)
+{
 	// Returns NPC# of item. (-356 =
 	//   avatar).
 	Game_object *obj = get_item(parms[0]);
 	if (obj == gwin->get_main_actor())
 		{
 		Usecode_value u(-356);
-		USECODE_RETURN(u);
+		return(u);
 		}
 	int npc = obj ? obj->get_npc_num() : 0;
 	Usecode_value u(-npc);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(part_of_day)
+{
 	// Return 3-hour # (0-7, 0=midnight).
 	Usecode_value u(gwin->get_hour()/3);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_alignment)
+{
 	// Get npc's alignment.
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_alignment() : 0);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(set_alignment)
+{
 	// Set npc's alignment.
 	// 2,3==bad towards Ava. 0==good.
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		obj->set_alignment(parms[1].get_int_value());
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(item_say)
+{
 	// Show str. near item (item, str).
 	item_say(parms[0], parms[1]);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(get_lift)
+{
 	// ?? Guessing rets. lift(item).
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? Usecode_value(obj->get_lift())
 					: Usecode_value(0));
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(set_lift)
+{
 	// ?? Guessing setlift(item, lift).
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
@@ -1819,81 +1890,92 @@ USECODE_INTRINSIC(set_lift)
 		gwin->paint();
 		gwin->show();
 		}
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(display_map)
+{
 	// Display map.
 	//++++++++++++
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(book_mode)
+{
 	// Display book or scroll.
 	Text_gump *gump;
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		{
-		USECODE_RETURN(no_ret);
+		return(no_ret);
 		}
 	if (obj->get_shapenum() == 797)
 		gump = new Scroll_gump();
 	else
 		gump = new Book_gump();
 	set_book(gump);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(earthquake)
+{
 	int len = parms[0].get_int_value();
 	Earthquake *quake = new Earthquake(gwin, len);
 	gwin->get_tqueue()->add(SDL_GetTicks() + 10,
 		new Earthquake(gwin, len), (long) this);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(is_pc_female)
+{
 	// Is player female?
 	Usecode_value u(0);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(run_endgame)
-	USECODE_RETURN(no_ret);
+{
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(get_array_size)
+{
 	Usecode_value u(parms[0].get_array_size());
 					// ++++++++Return 1 if not an array?
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(is_pc_inside)
+{
 	Usecode_value u(gwin->is_main_actor_inside());
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(mouse_exists)
+{
 	Usecode_value u(1);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_container)
+{
 	// Takes itemref, returns container.
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(0);
 	if (obj)
 		u = Usecode_value((long) obj->get_owner());
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(remove_item)
+{
 	// ?Think it's 'delete object'.
 	remove_item(get_item(parms[0]));
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(get_equipment_list)
+{
 	// Wearing? (npc, where, itemshape, 
 	//   frame (-359=any)).
 	// Where = (1=weapon hand, 
@@ -1902,16 +1984,18 @@ USECODE_INTRINSIC(get_equipment_list)
 	//   7=other finger?,
 	//   9=head).
 	//+++++++++++++++++++++
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(advance_time)
+{
 	// Incr. clock by (parm[0]*.04min.).
 	gwin->increment_clock(parms[0].get_int_value()/25);
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(run_usecode)
+{
 	// exec(loc(x,y,z)?, usecode#, itemref, eventid).
 	// Think it should have Avatar walk path to loc, return 0
 	//  if he can't get there (and return), 1 if he can.
@@ -1931,7 +2015,7 @@ USECODE_INTRINSIC(run_usecode)
 		if (!gwin->get_main_actor()->walk_path_to_tile(dest))
 #if 0 /* ++++Should do this:  return 0 if failure occurs. */
 			{		// Need brackets.
-			USECODE_RETURN(u);
+			return(u);
 			}
 #endif
 					// +++++For now, never fail:
@@ -1940,7 +2024,7 @@ USECODE_INTRINSIC(run_usecode)
 	else
 		{	//++++++Not sure about this.
 		cout << "0x7d Location not a 3-int array\n";
-		USECODE_RETURN(u);	// Return 0.
+		return(u);	// Return 0.
 		}
 	Wait_for_arrival(gwin->get_main_actor());
 	Game_object *obj = get_item(parms[2]);
@@ -1951,25 +2035,28 @@ USECODE_INTRINSIC(run_usecode)
 //		u = Usecode_value(ret);
 		u = Usecode_value(1);	// +++++For now.
 		}
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(direction_from)
+{
 	// ?Direction from parm[0] -> parm[1].
 	// Rets. 0-7.  Is 0 north?
 	// Same as 0x1a??
 	Usecode_value u=find_direction(parms[0], parms[1]);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(get_npc_flag)
+{
 	// Get npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_flag(parms[1].get_int_value())	: 0);
-	USECODE_RETURN(u);
+	return(u);
 }
 
 USECODE_INTRINSIC(set_npc_flag)
+{
 	// Set npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
 	int flag = parms[1].get_int_value();
@@ -1982,10 +2069,11 @@ USECODE_INTRINSIC(set_npc_flag)
 			gwin->show();
 			}
 		}
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(clear_npc_flag)
+{
 	// Clear npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
 	int flag = parms[1].get_int_value();
@@ -1998,20 +2086,27 @@ USECODE_INTRINSIC(clear_npc_flag)
 			gwin->show();
 			}
 		}
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(get_party_list2)
+{
 	// Return party.  Same as 0x23
 	// Probably returns a list of everyone with (or without) some flag
 	// List of live chars? Dead chars?
 	Usecode_value u(get_party());
-	USECODE_RETURN(u);
+	return(u);
 }
 
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
-UsecodeIntrinsicFn intrinsic_table[]=
+#define	USECODE_INTRINSIC_PTR(NAME)	{ &Usecode_machine::UI_ ## NAME, __STRING(NAME) }
+
+struct
+	{
+	UsecodeIntrinsicFn	func;
+	const char *name;
+	} intrinsic_table[]=
 	{
 	USECODE_INTRINSIC_PTR(get_random),	// 0
 	USECODE_INTRINSIC_PTR(execute_usecode_array), // 1
@@ -2296,8 +2391,9 @@ Usecode_value Usecode_machine::call_intrinsic
 		}
 	if (intrinsic<=max_bundled_intrinsics)
 		{
-		UsecodeIntrinsicFn func=intrinsic_table[intrinsic];
-		return ((*this).*func)(event,intrinsic,num_parms,parms);
+		UsecodeIntrinsicFn func=intrinsic_table[intrinsic].func;
+		const char *name=intrinsic_table[intrinsic].name;
+		return Execute_Intrinsic(func,name,event,intrinsic,num_parms,parms);
 		}
 #if 0
 	// Switch is no longer required
@@ -2313,7 +2409,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		}
 	Usecode_value no_ret;				// Dummy return.
 #endif
-	USECODE_RETURN(no_ret);
+	return(no_ret);
 	}
 
 /*
