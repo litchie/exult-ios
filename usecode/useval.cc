@@ -359,14 +359,14 @@ void Usecode_value::print
 	switch ((Val_type) type)
 		{
 	case int_type:
-		cout << hex << setfill((char)0x30) << setw(4);
+		out << hex << setfill((char)0x30) << setw(4);
 		out << (value.intval&0xffff);
-		cout << dec;
+		out << dec;
 		break;
 	case pointer_type:
-		cout << hex << setfill((char)0x30) << setw(8);
+		out << hex << setfill((char)0x30) << setw(8);
 		out << (long)value.ptr;
-		cout << dec;
+		out << dec;
 		break;
 	case string_type:
 		out << '"' << value.str << '"'; break;
@@ -461,7 +461,11 @@ int Usecode_value::save
 		Write4(ptr, value.intval);
 		break;
 	case pointer_type:
-		return -1;		// Can't serialize this.
+		if (buflen < 5)
+			return -1;
+		*ptr++ = type;
+		Write4(ptr, (int)value.ptr);
+		break;
 	case string_type:
 		{
 		int len = std::strlen(value.str);
@@ -474,7 +478,23 @@ int Usecode_value::save
 		break;
 		}
 	case array_type:
-		return -1;		// Not supported/needed for now.
+		{
+		if (buflen < 3)
+			return -1;
+		*ptr++ = type;
+		int len = count_array(*this);
+		Write2(ptr, len); // first length, then length Usecode_values
+		int remaining = buflen - 3;
+		for (int i=0; i < len; i++) {
+			int retval = value.array[i].save(ptr, remaining);
+			if (retval == -1)
+				return -1;
+
+			ptr += retval;
+			remaining -= retval;
+		}
+		break;
+		}
 	default:
 		return -1;
 		}
@@ -502,7 +522,11 @@ bool Usecode_value::restore
 		value.intval = Read4(ptr);
 		return true;
 	case pointer_type:
-		return false;		// Can't serialize this.
+		if (buflen < 5)
+			return false;
+		value.ptr = (Game_object*)Read4(ptr); //DON'T dereference this pointer!
+		// Maybe add a new type "serialized_pointer" to prevent "accidents"?
+		return true;
 	case string_type:
 		{
 		int len = Read2(ptr);
@@ -515,7 +539,21 @@ bool Usecode_value::restore
 		return true;
 		}
 	case array_type:
-		return false;		// Not supported/needed for now.
+		{
+		if (buflen < 3)
+			return false;
+		int len = Read2(ptr);
+		int remaining = buflen - 3; // already read one byte
+		*this = Usecode_value(len, 0); // create array
+		for (int i=0; i < len; i++) {
+			uint8* t = ptr;
+			bool retval = value.array[i].restore(ptr, remaining);
+			remaining -= (ptr - t);
+			if (!retval)
+				return false;
+		}
+		return true;
+		}
 	default:
 		return false;
 		}
