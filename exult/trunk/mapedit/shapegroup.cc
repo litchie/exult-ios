@@ -298,17 +298,13 @@ on_group_list_row_move			(GtkCList	*clist,
 	ExultStudio::get_instance()->move_group(src_row, dest_row);
 }
 
-C_EXPORT gboolean
-on_group_list_button_press_event	(GtkCList	*clist,
-					 GdkEventButton	*event,
+C_EXPORT void
+on_group_list_row_activated		(GtkTreeView	*treeview,
+					 GtkTreePath	*path,
+					 GtkTreeViewColumn *column,
 					 gpointer	 user_data)
 {
-	if (event->type == GDK_2BUTTON_PRESS)
-		{
-		ExultStudio::get_instance()->open_group_window();
-		return true;
-		}
-	return false;
+	ExultStudio::get_instance()->open_group_window();
 }
 
 /* columns */
@@ -336,9 +332,31 @@ void ExultStudio::setup_groups
 		}
 	GtkTreeView *tview = GTK_TREE_VIEW(
 				glade_xml_get_widget(app_xml, "group_list"));
-  	GtkTreeStore *model = gtk_tree_store_new(GRP_NUM_COLUMNS, 
+	GtkTreeModel *oldmod = gtk_tree_view_get_model(tview);
+	GtkTreeStore *model;
+	if (!oldmod)			// Create model first time.
+		{
+  		model = gtk_tree_store_new(GRP_NUM_COLUMNS, 
 						G_TYPE_STRING, G_TYPE_INT);
+		gtk_tree_view_set_model(tview, GTK_TREE_MODEL(model));
+		g_object_unref(model);
+					// Create column.
+	  	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+		g_object_set (renderer, "xalign", 0.0, NULL);
+		gint col_offset = gtk_tree_view_insert_column_with_attributes(
+				tview,
+				-1, "Names",
+				renderer, "text",
+				GRP_FILE_COLUMN, NULL);
+		GtkTreeViewColumn *column = gtk_tree_view_get_column(tview, 
+							col_offset - 1);
+		gtk_tree_view_column_set_clickable(column, TRUE);
+		}
+	else
+		model = GTK_TREE_STORE(oldmod);
+	gtk_tree_store_clear(model);
 	set_visible("groups_frame", TRUE);
+	gtk_tree_view_set_reorderable(tview, TRUE);
 	int cnt = groups->size();	// Add groups from file.
 	GtkTreeIter iter;
 	for (int i = 0; i < cnt; i++)
@@ -350,19 +368,7 @@ void ExultStudio::setup_groups
 			GRP_ROWNUM_COLUMN, i,
 			-1);
 		}
-	gtk_tree_view_set_model(tview, GTK_TREE_MODEL(model));
-	g_object_unref(model);
 	gtk_tree_view_set_rules_hint(tview, TRUE);
-					// Create column.
-  	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-	g_object_set (renderer, "xalign", 0.0, NULL);
-	gint col_offset = gtk_tree_view_insert_column_with_attributes(tview,
-		-1, "Names",
-		renderer, "text",
-		GRP_FILE_COLUMN, NULL);
-	GtkTreeViewColumn *column = gtk_tree_view_get_column(tview, 
-							col_offset - 1);
-	gtk_tree_view_column_set_clickable(column, TRUE);
 	setup_group_controls();		// Enable/disable the controls.
 	}
 
@@ -556,13 +562,24 @@ void ExultStudio::open_group_window
 	(
 	)
 	{
-//++++++Rewrite.
-	GtkCList *clist = GTK_CLIST(
+	GtkTreeView *tview = GTK_TREE_VIEW(
 				glade_xml_get_widget(app_xml, "group_list"));
-	GList *list = clist->selection; 
+	GtkTreeSelection *list = gtk_tree_view_get_selection(tview);
 	if (!list || !curfile || !vgafile || !palbuf)
 		return;
-	int row = (int) list->data;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	if (!gtk_tree_selection_get_selected(list, &model, &iter))
+		return;
+//++++++Rewrite.
+#if 0	/* ++++FINISH */
+	gchar *str = gtk_tree_path_to_string(path);
+	++++Get row # from path.
+	g_free(path);
+#endif
+
+//	int row = (int) list->data;
+	int row = 0;	//+++++++++
 	Shape_group_file *groups = curfile->get_groups();
 	Shape_group *grp = groups->get(row);
 	GladeXML *xml = glade_xml_new(glade_path, "group_window", NULL);
