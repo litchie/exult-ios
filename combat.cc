@@ -34,6 +34,7 @@
 #include "ready.h"
 #include "game.h"
 #include "monstinf.h"
+#include "ucmachine.h"
 
 using std::cout;
 using std::endl;
@@ -99,19 +100,6 @@ void Combat_schedule::find_opponents
 				actor->set_schedule_type(Schedule::combat);
 		}
 	}
-/*
-	Slist_iterator next(nearby);
-	while ((actor = (Actor *) next()) != 0)
-		if (actor->get_alignment() >= Npc_actor::hostile &&
-		    !actor->is_dead())
-		{
-			opponents.push(actor);
-					// And set hostile monsters.
-			if (actor->get_alignment() >= Npc_actor::hostile &&
-			    actor->get_schedule_type() != Schedule::combat)
-				actor->set_schedule_type(Schedule::combat);
-		}
-*/
 					// None found?  Use Avatar's.
 	if (opponents.empty() && npc->get_party_id() >= 0 &&
 	    npc != gwin->get_main_actor())
@@ -225,7 +213,10 @@ Actor *Combat_schedule::find_foe
 						it != opponents.end(); ++it)
 			{
 			Actor *opp = *it;
-			if ((dist = npc->distance(opp)) < best_dist)
+			int dist = npc->distance(opp);
+			if (opp->get_attack_mode() == Actor::flee)
+				dist += 10;	// Avoid fleeing.
+			if (dist < best_dist)
 				{
 				best_dist = dist;
 				new_opponent = opp;
@@ -822,7 +813,9 @@ void Combat_schedule::ending
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	if (gwin->get_main_actor() == npc)
+	if (gwin->get_main_actor() == npc && 
+					// Not if called from usecode.
+	    !gwin->get_usecode()->in_usecode())
 		{			// See if being a coward.
 		find_opponents();
 		bool found = false;	// Find a close-by enemy.
