@@ -24,6 +24,7 @@
 
 #include "contain.h"
 #include "utils.h"		// This is only included for Log2...
+#include "flags.h"
 
 class Image_window;
 class Game_window;
@@ -84,7 +85,6 @@ protected:
 					//   will be saved
 	Schedule *schedule;		// Current schedule.
 	bool dormant;			// I.e., off-screen.
-	bool dead;
 	bool hit;			// Just hit in combat.
 	bool combat_protected;		// 'Halo' on paperdoll screen.
 	bool user_set_attack;		// True if player set attack_mode.
@@ -256,9 +256,7 @@ public:
 	bool is_dormant() const		// Inactive (i.e., off-screen)?
 		{ return dormant; }
 	bool is_dead() const
-		{ return dead; }
-	void set_dead(bool tf)		// +++++I think 'dead' is flag 4.
-		{ dead = tf; }
+		{ return (flags&(1<<Obj_flags::dead)) != 0; }
 	void set_dormant()
 		{ dormant = true; }
 	Actor_action *get_action()	// Return action.
@@ -350,7 +348,7 @@ public:
 	virtual int get_type_flags() const
 		{ return type_flags; }
 
-	virtual unsigned char get_ident() { return dead ? 0 : ident; }
+	virtual unsigned char get_ident() { return is_dead() ? 0 : ident; }
 	virtual void set_ident(unsigned char id) { ident = id; }
 
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).

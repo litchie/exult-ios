@@ -2059,12 +2059,7 @@ USECODE_INTRINSIC(get_item_flag)
 					//   blocked gangplank. What is it?????
 	else if (fnum == 0x18 && Game::get_game_type() == BLACK_GATE)
 		return Usecode_value(1);
-					// Think 4==dead, at least in SI.
-	else if (fnum == 4)
-		{
-		Actor *a = as_actor(obj);
-		return Usecode_value(a ? a->is_dead() : 0);
-		}
+
 	Usecode_value u(obj->get_flag(fnum) != 0);
 	return(u);
 }
@@ -2090,13 +2085,6 @@ USECODE_INTRINSIC(set_item_flag)
 			gwin->add_dirty(obj);
 			}
 		break;
-	case 4:				// When sure, use flag 4 in flags.h.
-		{
-		Actor *a = as_actor(obj);
-		if (a)
-			a->set_dead(true);
-		break;
-		}
 	default:
 		obj->set_flag(flag);
 		if (Is_moving_barge_flag(flag))
@@ -2128,12 +2116,6 @@ USECODE_INTRINSIC(clear_item_flag)
 			Barge_object *barge = Get_barge(obj);
 			if (barge && barge == gwin->get_moving_barge())
 				gwin->set_moving_barge(0);
-			}
-		else if (flag == 4)
-			{
-			Actor *a = as_actor(obj);
-			if (a)
-				a->set_dead(false);
 			}
 		}
 	return(no_ret);

@@ -110,6 +110,8 @@ Actor::Actor
 	if ((rflags >> 0xC) & 1) set_flag (Obj_flags::paralyzed);
 	if ((rflags >> 0xD) & 1) set_flag (Obj_flags::poisoned);
 	if ((rflags >> 0xE) & 1) set_flag (Obj_flags::protection);
+	if (!fix_first && ((rflags >> 0xF) & 1)) 
+		set_flag (Obj_flags::dead);
 
 	// Guess
 	if (((rflags >> 0xA) & 1))
@@ -120,7 +122,6 @@ Actor::Actor
 	if ((rflags >> 0x6) & 1 && !fix_first) set_flag (Obj_flags::is_temporary);
 
 	/*	Not used by exult
-	if ((rflags >> 0xF) & 1) set_flag (Obj_flags::dead);
 
 	Unknown in U7tech
 	if ((rflags >> 0x5) & 1) set_flag (Obj_flags::unknown);
@@ -152,8 +153,8 @@ Actor::Actor
 		if ((strength_val << 7) & 1) set_siflag (Actor::freeze);
 	}
 
-	dead = is_dying();		// Now we know health, strength.
-
+	if (is_dying())			// Now we know health, strength.
+		set_flag(Obj_flags::dead);	// Fixes older savegames.
 	// Dexterity
 	set_property(static_cast<int>(Actor::dexterity), Read1(nfile));
 
