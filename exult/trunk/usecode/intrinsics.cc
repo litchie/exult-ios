@@ -2380,9 +2380,13 @@ USECODE_INTRINSIC(run_schedule)
 	
 	if (actor)
 	{
+#if 0	/* ++++Causes Iolo bug in Fire&Ice test. */
 		actor->set_force_update();
 
 		gwin->get_tqueue()->add(SDL_GetTicks() + 1, actor, 0);
+#endif
+		actor->update_schedule(gwin, gwin->get_hour()/3, 7);
+
 	}
 
 	return no_ret;

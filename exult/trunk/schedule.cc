@@ -32,6 +32,8 @@
 #include "game.h"
 #include "paths.h"
 #include "ucmachine.h"
+#include "ucsched.h"
+#include "ucscriptop.h"
 
 using std::cout;
 using std::endl;
@@ -230,19 +232,6 @@ void Wait_schedule::now_what
 	(
 	)
 	{
-#if 0	/* ++++Bah.  Looks like this isn't needed. */
-	if (Game::get_game_type() != SERPENT_ISLE)
-		return;			// I think this isn't needed for BG.
-	if (start)			// First time?
-		start = false;
-	else				// SI?  Call proximity usecode.
-		{
-		Game_window *gwin = Game_window::get_game_window();
-		npc->activate(gwin->get_usecode(), 0);
-		}
-					// Again in a few seconds.
-	npc->start(200, 4000 + rand()%2000);
-#endif
 	}
 
 /*
@@ -454,12 +443,18 @@ void Patrol_schedule::now_what
 		case 14:		// Check area.
 			break;		//++++++Implement above.
 		case 15:		// Usecode.
-			{		// Next stmt. can delete 'this'!
+			{		// Schedule so we don't get deleted.
+			Usecode_script *scr = new Usecode_script(npc);
+			(*scr) << Ucscript::usecode2 << npc->get_usecode() <<
+					(int) Usecode_machine::npc_proximity;
+			scr->start();	// Start next tick.
+#if 0
 			Actor *safenpc = npc;
 			safenpc->activate(gwin->get_usecode(),
 					Usecode_machine::npc_proximity);
 			if (safenpc->get_schedule() != this)
 				return;	// We're gone.
+#endif
 			}
 		case 16:		// Bow to ground.  ++++Implement.
 		case 17:		// Bow from ground.+++++

@@ -58,6 +58,8 @@ public:
 	void add(int v1, int v2);
 	void add(int v1, char *str);
 	void add(int *vals, int cnt);
+	Usecode_script& operator<<(int v)
+		{ add(v); return *this; }
 	inline void activate_egg(Usecode_internal *usecode, 
 				 Game_object *e, int type);
 
