@@ -27,8 +27,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _UTILS_H_
 
 #include <iostream>
-#include <iosfwd>
 #include <string>
+#ifndef ALPHA_LINUX_CXX
+#  include <iosfwd>
+#endif
 
 #include "exult_types.h"
 
