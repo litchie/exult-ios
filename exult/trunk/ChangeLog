@@ -1,3 +1,7 @@
+2000-10-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Restart_game() intrinsic implemented.
+
 2000-10-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode.cc: Guards attack when you steel.

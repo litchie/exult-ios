@@ -2695,9 +2695,8 @@ USECODE_INTRINSIC(restart_game)
 {
 	// Think it's 'restart game'.  
 	// Happens if you die before leaving trinsic.
-	// +++++++Got to set a flag that's looked at higher up.  Too deeply
-	//        nested to restart here.
-	cout << "Got to restart game." << endl;
+	extern unsigned char quitting_time;
+	quitting_time = 2;		// Quit & restart.
 	return(no_ret);
 }
 
