@@ -301,13 +301,13 @@ toolsinstall: tools
 	strip ucdump.exe -o $(U7PATH)/tools/ucdump.exe
 	strip wuc.exe -o $(U7PATH)/tools/wuc.exe
 	strip wud.exe -o $(U7PATH)/tools/wud.exe
-	strip ucxt.exe -o $(U7PATH)/tools/ucxt.exe
+	strip ucxt.exe -o $(U7PATH)/ucxt.exe
 	strip ucc.exe -o $(U7PATH)/tools/ucc.exe
 	mkdir -p $(U7PATH)/tools/data
-	cp usecode/ucxt/data/events.data $(U7PATH)/tools/data/events.data
-	cp usecode/ucxt/data/flags.data $(U7PATH)/tools/data/flags.data
-	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/tools/data/opcodes.txt
-	cp usecode/ucxt/data/u7misc.data $(U7PATH)/tools/data/u7misc.data 
+	cp usecode/ucxt/data/events.data $(U7PATH)/data/events.data
+	cp usecode/ucxt/data/flags.data $(U7PATH)/data/flags.data
+	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/data/opcodes.txt
+	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data/u7misc.data 
 
 toolsdist: toolsinstall
 	cp tools/expack.txt $(U7PATH)/tools/expack.txt
