@@ -1798,6 +1798,21 @@ void Slider_gump_object::mouse_drag
 	}
 
 /*
+ *	Handle ASCII character typed.
+ */
+
+void Slider_gump_object::key_down
+	(
+	int chr
+	)
+	{
+	if (chr == SDLK_RETURN)
+		{
+		done = 1;
+		}
+	}
+
+/*
  *	Create the load/save box.
  */
 
