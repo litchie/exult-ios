@@ -54,7 +54,7 @@ BEGIN
             VALUE "OriginalFilename", "exconfig.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "Exult\0"
-            VALUE "ProductVersion", "0.97cvs\0"
+            VALUE "ProductVersion", "0.98 RC1\0"
             VALUE "SpecialBuild", "\0"
         END
     END
