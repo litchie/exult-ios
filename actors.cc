@@ -264,9 +264,9 @@ Actor::Actor
 	int uc				// Usecode #.
 	) : Container_game_object(), name(nm),usecode(uc), 
 	    npc_num(num), party_id(-1), attack_mode(nearest),
-	    schedule_type((int) Schedule::loiter), schedule(0), dormant(1),
+	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
 	    alignment(0),
-	    two_handed(0), two_fingered(false), light_sources(0),
+	    two_handed(false), two_fingered(false), light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), action(0), 
 	    frame_time(0), next_path_time(0), timers(0),
 	    weapon_rect(0, 0, 0, 0)
@@ -822,10 +822,10 @@ void Actor::set_schedule_type
 			break;
 			}
 	if (!gwin->is_chunk_read(get_cx(), get_cy()))
-		dormant = 1;		// Chunk hasn't been read in yet.
+		dormant = true;		// Chunk hasn't been read in yet.
 	else if (schedule)		// Try to start it.
 		{
-		dormant = 0;
+		dormant = false;
 		schedule->now_what();
 		}
 	}
@@ -1259,9 +1259,9 @@ void Actor::remove
 			light_sources--;
 		spots[index] = 0;
 		if (index == rhand || index == lhand)
-			two_handed = 0;
+			two_handed = false;
 		if (index == rfinger || index == lfinger)
-			two_fingered = 0;
+			two_fingered = false;
 		}
 	}
 
@@ -1295,12 +1295,12 @@ int Actor::add
 		return (0);
 	if (index == lrhand)		// Two-handed?
 		{
-		two_handed = 1;
+		two_handed = true;
 		index = lhand;
 		}
 	if (index == lrfinger)		// Gloves?
 		{
-		two_fingered = 1;
+		two_fingered = true;
 		index = lfinger;
 		}
 	spots[index] = obj;		// Store in correct spot.
@@ -1369,9 +1369,9 @@ int Actor::add_readied
 		spots[index] = obj;
 		obj->set_chunk(0, 0);	// Clear coords. (set by gump).
 		if (best_index == lrhand)
-			two_handed = 1;	// Must be a two-handed weapon.
+			two_handed = true;	// Must be a two-handed weapon.
 		if (best_index == lrfinger)
-			two_fingered = 1;	// Must be gloves
+			two_fingered = true;	// Must be gloves
 		Game_window *gwin = Game_window::get_game_window();
 		if (index == lfinger || index == rfinger)
 			Call_readied_usecode(gwin, this, 
@@ -2047,7 +2047,7 @@ Npc_actor::Npc_actor
 	int shapenum, 
 	int fshape, 
 	int uc
-	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
+	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(false),
 		num_schedules(0), 
 		schedules(0)
 	{
@@ -2164,7 +2164,7 @@ void Npc_actor::update_schedule
 	schedule_type = Schedule::walk_to_schedule;
 	delete schedule;
 	schedule = new Walk_to_schedule(this, dest, schedules[i].get_type());
-	dormant = 0;
+	dormant = false;
 	schedule->now_what();
 	}
 
@@ -2180,7 +2180,7 @@ void Npc_actor::paint
 	Actor::paint(gwin);		// Draw on screen.
 	if (dormant && schedule)	// Resume schedule.
 		{
-		dormant = 0;		// But clear out old entries first.??
+		dormant = false;		// But clear out old entries first.??
 		gwin->get_tqueue()->remove(this);
 					// Force schedule->now_what().
 					// DO NOT call now_what here!!!
@@ -2227,7 +2227,7 @@ void Npc_actor::handle_event
 	)
 	{
 	if (!action)			// Not doing anything?
-		dormant = 1;
+		dormant = true;
 	else
 		{			// Do what we should.
 		int delay = action->handle_event(this);
@@ -2286,7 +2286,7 @@ int Npc_actor::step
 		stop();
 					// Offscreen, but not in party?
 		if (!gwin->add_dirty(this) && Npc_actor::get_party_id() < 0)
-			dormant = 1;	// Go dormant.
+			dormant = true;	// Go dormant.
 		return (0);		// Done.
 		}
 	if (poison)
@@ -2301,7 +2301,7 @@ int Npc_actor::step
 	    get_schedule_type() != Schedule::talk)
 		{			// No longer on screen.
 		stop();
-		dormant = 1;
+		dormant = true;
 		return (0);
 		}
 	return (1);			// Add back to queue for next time.
@@ -2596,7 +2596,7 @@ int Monster_actor::step
 			schedule->set_blocked(t);
 		stop();
 		if (!gwin->add_dirty(this))
-			dormant = 1;	// Off-screen.
+			dormant = true;	// Off-screen.
 		return (0);		// Done.
 		}
 	add_dirty(gwin);		// Set to repaint old area.
@@ -2607,7 +2607,7 @@ int Monster_actor::step
 	if (!add_dirty(gwin, 1))
 		{			// No longer on screen.
 		stop();
-		dormant = 1;
+		dormant = true;
 		return (0);
 		}
 	return (1);			// Add back to queue for next time.

@@ -80,12 +80,12 @@ private:
 protected:
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Schedule *schedule;		// Current schedule.
-	unsigned char dormant;		// I.e., off-screen.
+	bool dormant;		// I.e., off-screen.
 	short alignment;		// 'Feelings' towards Ava. See below.
 	Game_object *spots[14];		// Where things can go.  See 'Spots'
 					//   below for description.
-	unsigned char two_handed;	// Carrying a two-handed item.
-	bool two_fingered;		// Carrying gauntlets (both fingers)
+	bool two_handed;		// Carrying a two-handed item.
+	bool two_fingered;			// Carrying gauntlets (both fingers)
 	unsigned char light_sources;	// # of light sources readied.
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 	unsigned siflags:32;	// 32 flags used in 'usecode'.
@@ -212,9 +212,9 @@ public:
 		{ return usecode; }
 	int get_frame_time() const	// Return frame time if moving.
 		{ return frame_time; }
-	int is_moving() const
+	bool is_moving() const
 		{ return frame_time != 0; }
-	int is_dormant() const		// Inactive (i.e., off-screen)?
+	bool is_dormant() const		// Inactive (i.e., off-screen)?
 		{ return dormant; }
 	Actor_action *get_action()	// Return action.
 		{ return action; }
@@ -407,11 +407,11 @@ public:
 	Npc_actor *get_next()
 		{ return next; }
 	void set_nearby()		// Set/clear/test 'nearby' flag.
-		{ nearby = 1; }
+		{ nearby = true; }
 	void clear_nearby()
-		{ nearby = 0; }
-	int is_nearby() const
-		{ return nearby != 0; }
+		{ nearby = false; }
+	bool is_nearby() const
+		{ return nearby; }
 					// Set schedule list.
 	void set_schedules(Schedule_change *list, int cnt);
 					// Move and change frame.
@@ -443,14 +443,14 @@ class Dead_body : public Container_game_object
 	{
 	static Dead_body *in_world;	// All decayable dead bodies. 
 	short npc_num;			// # of NPC it came from, or -1.
-	unsigned char decayable;
+	bool decayable;
 	unsigned long decay_hour;	// Game hour when body decays.
 					// Links for 'in_world' list.
 	Dead_body *next_body, *prev_body;
 	void link();			// Add to list & set decay hour.
 public:
 	Dead_body(int shapenum, int framenum, unsigned int tilex, 
-		unsigned int tiley, unsigned int lft, int n, int decble)
+		unsigned int tiley, unsigned int lft, int n, bool decble)
 		: Container_game_object(shapenum, framenum, tilex, tiley, lft),
 			npc_num(n), decayable(decble), next_body(0),
 			prev_body(0)

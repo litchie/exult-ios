@@ -100,7 +100,7 @@ int current_res = 0;
  */
 static void Init();
 static int Play();
-static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl);
+static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl, Uint16 unicode);
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
 static void Try_key(Game_window *);
@@ -275,6 +275,8 @@ static void Init
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
 
+	SDL_EnableUNICODE(1);	// Activate unicode translation for keypresses
+	
 #ifdef XWIN
         SDL_GetWMInfo(&info);
         display = info.info.x11.display;
@@ -665,7 +667,8 @@ static void Handle_event
 		Handle_keystroke(event.key.keysym.sym,
 			event.key.keysym.mod & KMOD_SHIFT,
 			(event.key.keysym.mod & KMOD_ALT) || altkeys,
-			event.key.keysym.mod & KMOD_CTRL);
+			event.key.keysym.mod & KMOD_CTRL,
+			event.key.keysym.unicode);
 		break;
 	case SDL_KEYUP:			// Key released.
 		switch (event.key.keysym.sym)
@@ -721,7 +724,8 @@ static void Handle_keystroke
 	SDLKey sym,
 	int shift,
         int alt,
-	int ctrl
+	int ctrl,
+	Uint16 unicode
 	)
 	{
 	SDLMod mods = SDL_GetModState();
@@ -752,163 +756,6 @@ static void Handle_keystroke
 
 		} else if (!alt && !ctrl) {	// - : Darken
 			gwin->brighten(-20);
-		}
-		break;
-	case SDLK_b:
-		if(ctrl && !alt) {		// Ctrl-b : Shape browser
-			cheat.shape_browser();
-
-		} else if (!alt && !ctrl) {	// b : Open spellbook.
-			gwin->activate_item(761);
-		}
-		break;
-	case SDLK_c:
-		if (ctrl && !alt) {		// Ctrl-c : Create last shape viewed.
-			cheat.create_last_shape();
-
-		} else if (!ctrl && !alt) {	// c : Combat mode
-			toggle_combat();
-		}
-		break;
-	case SDLK_d:
-		if (ctrl && !alt) {		// Ctrl-d : delete what mouse is on.
-			cheat.delete_object();
-		}
-		break;
-	case SDLK_e:
-		if (!alt && !ctrl) {		// e : toggle eggs display
-			cheat.toggle_eggs();
-		}
-		break;
-	case SDLK_f:
-		if (!ctrl && !alt) {		// f : Feed food.
-			gwin->activate_item(377);	// +++++Black gate.
-		}
-		break;
-	case SDLK_g:
-		if (alt && !ctrl) {		// Alt-g : toggle god-mode
-			cheat.toggle_god();
-
-		} else if (!ctrl && !alt) {	// g :  Change Avatars gender
-			cheat.change_gender();
-		}
-		break;
-	case SDLK_h:
-		if (!alt && !ctrl) {		// h : help
-			show_help();
-		
-		} else if (ctrl && !alt) {	// Ctrl-h : cheat help
-			show_cheat_help();
-		}
-		break;
-	case SDLK_i:
-		if (alt && !ctrl) {    		// Alt-i : infravision
-			cheat.toggle_infravision();
-
-		} else if (!alt && !ctrl) {	// i : show inventory
-			gump_next_inventory();
-		}
-		break;
-	case SDLK_k:
-		if (!alt && !ctrl) {		// k : find key
-			Try_key(gwin);
-		}
-		break;
-	case SDLK_l:
-		if(!alt && !ctrl) {		// l : decrement skip_lift
-			cheat.dec_skip_lift();
-		}
-		break;
-	case SDLK_m:
-		if (ctrl && alt) {  		// Ctrl-Alt-m : hack mover
-			cheat.toggle_hack_mover();
-
-		} else if (ctrl && !alt) {	// Ctrl-m : 100 gold coins
-			cheat.create_coins();
-
-		} else if (alt && !ctrl) {	// Alt-m : next song
-						// Shift-Alt-m : previous song
-			static int mnum = 0;
-			if (shift && mnum > 0)
-				Audio::get_ptr()->start_music(--mnum, 0);
-			else
-				Audio::get_ptr()->start_music(mnum++, 0);
-
-		} else if (!alt && !ctrl) {	// m : Show map.
-			gwin->activate_item(178);	//++++Black gate.
-		}
-		break;
-	case SDLK_n:
-		if (alt && !ctrl) {		// Alt-n : Toggle Naked flag
-			cheat.toggle_naked();
-		}
-		break;
-	case SDLK_p:
-		if (alt && !ctrl) {		// Alt-p : Toggle Petra mode
-			cheat.toggle_Petra();
-
-		} else if (!alt && !ctrl) {	// p : Rerender screen
-			gwin->paint();
-		}
-		break;
-#ifdef MACOS
-	case SDLK_q:
-		if (mods & KMOD_META) {		// Mac only: Alt-q/Cmd-Q : Quit
-			Okay_to_quit();
-		}
-		break;
-#endif
-	case SDLK_r:
-		if (ctrl && !alt) {		// Ctrl-r : Restore from 'gamedat'
-			quick_restore();
-		}
-		break;
-	case SDLK_s:
-		if (ctrl && !alt) {		// Ctrl-s : Save to 'gamedat'
-			quick_save();
-
-		} else if (alt && !ctrl) {	// Alt-s : Change skin color
-			cheat.change_skin();
-
-		} else if (!alt && !ctrl) { 	// s : save/restore gump
-			gump_file();
-		}
-		break;
-	case SDLK_t:
-		if (ctrl && alt) {		// Ctrl-Alt-t : map teleport
-			cheat.map_teleport();
-
-		} else if (ctrl && !alt) {	// Ctrl-t :  Fake next time change.
-			cheat.fake_time_period();
-
-		} else if (alt && !ctrl) { 	// Alt-t : Teleport to cursor
-			cheat.cursor_teleport();
-
-		} else if (!alt && !ctrl) {	// t : Target mode.
-			target_mode();
-		}
-		break;
-	case SDLK_v:
-		if(!ctrl && !alt) {
-			show_about();
-		}
-		break;
-	case SDLK_w:
-		if (alt && !ctrl) {  		// Alt-w : toggle archwizard mode
-			cheat.toggle_wizard();
-
-		} else if (!alt && !ctrl) {	// w : Activate watch.
-			gwin->activate_item(159);	// ++++Blackgate.
-		}
-		break;
-	case SDLK_x:
-		if (alt && !ctrl) {		// Alt-x : quit
-			Okay_to_quit();
-		}
-		break;
-	case SDLK_z:
-		if (!alt && !ctrl) { 		// z : Show stats
-			gump_next_stats();
 		}
 		break;
 	case SDLK_ESCAPE:
@@ -973,7 +820,169 @@ static void Handle_keystroke
 		}
 		break;
 	default:
-		break;
+		if ((unicode & 0xFF80) == 0)
+		{
+		switch (unicode & 0x7F)
+			{
+			case 'b':
+				if(ctrl && !alt) {		// Ctrl-b : Shape browser
+					cheat.shape_browser();
+
+				} else if (!alt && !ctrl) {	// b : Open spellbook.
+					gwin->activate_item(761);
+				}
+				break;
+			case 'c':
+				if (ctrl && !alt) {		// Ctrl-c : Create last shape viewed.
+					cheat.create_last_shape();
+
+				} else if (!ctrl && !alt) {	// c : Combat mode
+					toggle_combat();
+				}
+				break;
+			case 'd':
+				if (ctrl && !alt) {		// Ctrl-d : delete what mouse is on.
+					cheat.delete_object();
+				}
+				break;
+			case 'e':
+				if (!alt && !ctrl) {		// e : toggle eggs display
+					cheat.toggle_eggs();
+				}
+				break;
+			case 'f':
+				if (!ctrl && !alt) {		// f : Feed food.
+					gwin->activate_item(377);	// +++++Black gate.
+				}
+				break;
+			case 'g':
+				if (alt && !ctrl) {		// Alt-g : toggle god-mode
+					cheat.toggle_god();
+
+				} else if (!ctrl && !alt) {	// g :  Change Avatars gender
+					cheat.change_gender();
+				}
+				break;
+			case 'h':
+				if (!alt && !ctrl) {		// h : help
+					show_help();
+				
+				} else if (ctrl && !alt) {	// Ctrl-h : cheat help
+					show_cheat_help();
+				}
+				break;
+			case 'i':
+				if (alt && !ctrl) {    		// Alt-i : infravision
+					cheat.toggle_infravision();
+
+				} else if (!alt && !ctrl) {	// i : show inventory
+					gump_next_inventory();
+				}
+				break;
+			case 'k':
+				if (!alt && !ctrl) {		// k : find key
+					Try_key(gwin);
+				}
+				break;
+			case 'l':
+				if(!alt && !ctrl) {		// l : decrement skip_lift
+					cheat.dec_skip_lift();
+				}
+				break;
+			case 'm':
+				if (ctrl && alt) {  		// Ctrl-Alt-m : hack mover
+					cheat.toggle_hack_mover();
+
+				} else if (ctrl && !alt) {	// Ctrl-m : 100 gold coins
+					cheat.create_coins();
+
+				} else if (alt && !ctrl) {	// Alt-m : next song
+								// Shift-Alt-m : previous song
+					static int mnum = 0;
+					if (shift && mnum > 0)
+						Audio::get_ptr()->start_music(--mnum, 0);
+					else
+						Audio::get_ptr()->start_music(mnum++, 0);
+
+				} else if (!alt && !ctrl) {	// m : Show map.
+					gwin->activate_item(178);	//++++Black gate.
+				}
+				break;
+			case 'n':
+				if (alt && !ctrl) {		// Alt-n : Toggle Naked flag
+					cheat.toggle_naked();
+				}
+				break;
+			case 'p':
+				if (alt && !ctrl) {		// Alt-p : Toggle Petra mode
+					cheat.toggle_Petra();
+
+				} else if (!alt && !ctrl) {	// p : Rerender screen
+					gwin->paint();
+				}
+				break;
+		#ifdef MACOS
+			case 'q':
+				if (mods & KMOD_META) {		// Mac only: Alt-q/Cmd-Q : Quit
+					Okay_to_quit();
+				}
+				break;
+		#endif
+			case 'r':
+				if (ctrl && !alt) {		// Ctrl-r : Restore from 'gamedat'
+					quick_restore();
+				}
+				break;
+			case 's':
+				if (ctrl && !alt) {		// Ctrl-s : Save to 'gamedat'
+					quick_save();
+
+				} else if (alt && !ctrl) {	// Alt-s : Change skin color
+					cheat.change_skin();
+
+				} else if (!alt && !ctrl) { 	// s : save/restore gump
+					gump_file();
+				}
+				break;
+			case 't':
+				if (ctrl && alt) {		// Ctrl-Alt-t : map teleport
+					cheat.map_teleport();
+
+				} else if (ctrl && !alt) {	// Ctrl-t :  Fake next time change.
+					cheat.fake_time_period();
+
+				} else if (alt && !ctrl) { 	// Alt-t : Teleport to cursor
+					cheat.cursor_teleport();
+
+				} else if (!alt && !ctrl) {	// t : Target mode.
+					target_mode();
+				}
+				break;
+			case 'v':
+				if(!ctrl && !alt) {
+					show_about();
+				}
+				break;
+			case 'w':
+				if (alt && !ctrl) {  		// Alt-w : toggle archwizard mode
+					cheat.toggle_wizard();
+
+				} else if (!alt && !ctrl) {	// w : Activate watch.
+					gwin->activate_item(159);	// ++++Blackgate.
+				}
+				break;
+			case 'x':
+				if (alt && !ctrl) {		// Alt-x : quit
+					Okay_to_quit();
+				}
+				break;
+			case 'z':
+				if (!alt && !ctrl) { 		// z : Show stats
+					gump_next_stats();
+				}
+				break;
+			}
+		}
 	}
 }
 
