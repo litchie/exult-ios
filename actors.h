@@ -257,6 +257,8 @@ public:
 		{ return dormant; }
 	bool is_dead() const
 		{ return dead; }
+	void set_dead(bool tf)		// +++++I think 'dead' is flag 4.
+		{ dead = tf; }
 	void set_dormant()
 		{ dormant = true; }
 	Actor_action *get_action()	// Return action.

@@ -1,3 +1,8 @@
+2001-09-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Fix Fawn Tower in old savegames.
+	* intrinsics.cc:  Treat flag #4 as 'dead'.
+
 2001-09-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* bggame.cc: fixed nearly-infinite loop in butterfly scene
 

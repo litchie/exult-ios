@@ -1862,7 +1862,7 @@ bool Actor::reduce_health
 			gwin->get_usecode()->call_usecode(get_usecode(), this, 
 							Usecode_machine::died);
 				// Still 'tournament'?  Set hp = 1.
-			if (get_flag(Obj_flags::si_tournament) &&
+			if (!is_dead() && get_flag(Obj_flags::si_tournament) &&
 			    get_property((int) health) < 1)
 				{
 				set_property((int) health, 1);
