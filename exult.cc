@@ -307,14 +307,17 @@ static void Handle_events
 					// Get current time.
 		unsigned long ticks = SDL_GetTicks();
 					// Animate unless dormant.
-		if (gwin->have_focus() && !dragging)
-			gwin->get_tqueue()->activate(ticks);
-					// Show animation every 1/10 sec.
-		if (ticks > last_repaint + 100)
+		if(gwin->get_mode()!=Game_window::splash)
 			{
-			gwin->paint_dirty();
-			last_repaint = ticks;
-			rotate = 1;
+			if (gwin->have_focus() && !dragging)
+				gwin->get_tqueue()->activate(ticks);
+						// Show animation every 1/10 sec.
+			if (ticks > last_repaint + 100)
+				{
+				gwin->paint_dirty();
+				last_repaint = ticks;
+				rotate = 1;
+				}
 			}
 #ifdef MOUSE
 		mouse->show();		// Re-display mouse.
