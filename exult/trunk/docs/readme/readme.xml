@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "readme.dtd">
-<readme title="Exult" changed="19 July 2001(GMT)">
+<readme title="Exult" changed="24 July 2001(GMT)">
 	<section title="Introduction">
 		<sub name="whatis_exult">
 			<header>What is <Exult/>?</header>
@@ -46,13 +46,20 @@
 					<li>From the Ultima7 folder on your PC, copy the STATIC sub folder to 
 						an appropiate folder - see <ref target="path_config"/> what those 
 						could be.</li>
-					<li>Now run <strong>exult.exe</strong> and quit it immediately.</li>
+					<li>Now run <strong>exult</strong> (<strong>exult.exe</strong> in Windows)
+						and quit it immediately.</li>
 					<li>Edit the configuration file with the correct paths for the game 
 						folders and sfx files - see <ref target="exult_config"/></li>
-					<li>Run <strong>exult.exe</strong> and enjoy the game :-)</li>
+					<li>Run <strong>exult</strong> and enjoy the game :-)</li>
 				</ul>
 				<para>
 					<strong>Word of advice:</strong> Don't mix the files from BG and SI.
+				</para>
+				<para>
+					<strong>Important:</strong> Do not run <Exult/> on an origina Ultima7
+					game which you're actually in the middle of playing, as Exult's saved
+					files have a different format. There is no way to convert those 
+					original savegames and they will just crash <Exult/>.
 				</para>
 			</body>
 		</sub>
@@ -407,7 +414,7 @@
 				<para>
 					Using higher resolutions is considered cheating as you can see too much 
 					of the surrounding area. But don't let that stop you :-)<br/>
-					Being able to playin higher resolutions is one of the big advantages 
+					Being able to play in higher resolutions is one of the big advantages 
 					of <Exult/>.
 				</para>
 				<para>	
@@ -415,19 +422,17 @@
 				</para>
 				<para>
 					Within the game you can use the <key>Alt +</key> and <key>Alt -</key>
-					to switch resolution. The game will save the last
-					selected mode and reuse it the next time you run <Exult/>.
+					to switch resolution..
 				</para>				
 			</body>
 		</sub>				
 		<sub name="scaler">
 			<header>Scaler</header>
 			<body>
-				<para>
-					More information on the excellent scaling engine by Derek Liauw is available at
-					<extref target="http://members.xoom.com/derek_liauw/"/>.
-					The scalers also work with higher resolutions. To change the scaling method either
-					use the <Exult/> menu or change your exult.cfg - see <ref target="exult_config"/>.
+				<para>					
+					The scalers also work with higher resolutions than 320x200. To change the
+					scaling method either use the <Exult/> menu or change your exult.cfg - 
+					see <ref target="exult_config"/>.
 				</para>
 				<ul>	
 					<li><strong>SuperEagle</strong> by Derek Liauw</li>
@@ -441,7 +446,7 @@
 					Try them out to see how they look and which you like best.
 				</para>
 				<para>
-					More information on the excellent scaling engine by Derek Liauw is available at
+					More information on the excellent scaling engines by Derek Liauw is available at
 					<extref target="http://members.xoom.com/derek_liauw/"/>.
 				</para>
 			</body>
@@ -453,6 +458,8 @@
 			<body>
 				<ul>
 					<li>Hold right mouse button down to move Avatar.</li>
+					<li>Double-click with the right mouse button will make the Avatar 
+						find a path to the selected spot.</li>
 					<li>Click on objects with left button to identify them.</li>
 					<li>Double-click on characters to hold conversations.</li>
 					<li>Double-click on doors, shutters with left button to open or
@@ -591,14 +598,20 @@
 			</body>
 		</sub>		
 		<sub name="error_log">
-			<header>Error Log for MacOS and Win32(Win9X/WinME/Win2k)</header>
+			<header>Error Log</header>
 			<body>	
-				<para>
-					<Exult/> generates the files 'stdout.txt' and 'stderr.txt'.
-					These may give you some idea of what is going on
-					under the hood. When <Exult/> suddenly quits, sometimes
-					these files can help.
-				</para>
+				<ul>
+					<li><strong>MacOS/Win32:</strong><br/>
+						<Exult/> generates the files 'stdout.txt' and 'stderr.txt'.
+						These may give you some idea of what is going on
+						under the hood. When <Exult/> suddenly quits, sometimes
+						these files can help.</li>
+					<li><strong>Unix/Unix clones:</strong><br/>
+						the above mentioned logs are shown in the console from which Exult
+						is started.<br/>
+						<kbd>./exult &gt; log</kbd><br/>
+						will send both stderr and stdout to the file named "log".</li>
+				</ul>
 			</body>
 		</sub>
 	</section>  	
@@ -611,6 +624,8 @@
 						files was crucial to the early development of <Exult/>.</li>
 					<li>Work by Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag 
 						made the "usecode" interpreter possible.</li>
+					<li>Olivier Marcoux's technical document was also crucial in 
+						understanding some data files.</li>
 					<li>Thanks also go to the person who wrote u7items.txt and the
 						contributor of the "avatar.ttf" font.</li>
 				</ul>

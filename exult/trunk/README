@@ -1,200 +1,654 @@
-                                    EXULT
-                                    =====
+       Exult READ ME documentation
+       last changed: 24 July 2001(GMT)
 
-WHAT IS IT ?
-------------
-EXULT lets you play Ultima 7 - The Black Gate natively under Linux,
-Windows, BeOS and MacOS.  It is released under the GNU General Public 
-License, and source code is available.
+       An html version can be found at http://exult.sourceforge.net/readme.shtml
 
-See the "NEWS" and "ChangeLog" files for the latest changes.
-Also, there are specific README files for several platforms. (README.platform)
+       1. Introduction
+       1.1. What is Exult?
 
-IMPORTANT: Make sure you have a valid configuration file (see below).
-Run "exult" on a clean installation of Ultima7; "exult" should either be
-installed in a directory where you see the "static" subdirectory or the 
-configuration file should point to the static directory.  "Exult" will
-create the "gamedat" directory and files the first time you run it.  And al-
-though I've tried to be safe about this, do not run it on an origina Ultima7
-game which you're actually in the middle of playing, as Exult's saved files
-have a different format.
+       2. Configurations
+       2.1. Installation
+       2.2. Settings in exult.cfg
+       2.3. Path-Settings
 
-CONFIGURATION
--------------
-Exult keeps a configuration file. You can specify where your Ultima 7
-installation is, whether you want full-screen graphics, or windowed, and
-midi devices and midi settings. Some of these options can be set from the
-"Setup" menu when you run Exult.
+       3. Audio
+       3.1. Music
+       3.2. Abilities and limitations of the music engine
+       3.3. Digital Wave Sound Effects
+       3.4. Speech
+       3.5. Turn off Audio
 
-If you do not already have a configuration file, Exult will make one for you
-filling in sensible defaults by itself. The location of this file varies 
-slightly. On unix systems you can expect to find it in $HOME/.exult.cfg while 
-other operating systems will probably locate it as 'exult.cfg' in the same 
-directory as the exult binary. However it is recommended that you edit this 
-file by hand to achieve optimal results for your system.
+       4. Video
+       4.1. Resolution
+       4.2. Scaler
 
-The file uses a simple hierarchical XML-like syntax, which should be simple to
-understand and modify. Take care though. Handling of syntax errors in this file
-is not well tested.
+       5. Movement and Keys
+       5.1. Movement
+       5.2. Keyboard commands
+       5.3. Cheat keys
 
-Here is an example exult.cfg:
+       6. OS specific notes
+       6.1. OSX
+       6.2. Audio with MacOS
+       6.3. Error Log
 
-<config>
- <video>
-  <fullscreen>
-  no
-  </fullscreen>
- </video>
- <gameplay>
-  <cheat>
-  no
-  </cheat>
-  <skip_intro>
-  no
-  </skip_intro>
- </gameplay>
- <disk>
-  <game>
-   <blackgate>
-    <path>
-    /home/user/mystuff/ultima/u7
-    </path>
-    <title>
-    black_gate
-    </title>
-   </blackgate>
-   <serpentisle>
-    <path>
-    /home/user/mystuff/ultima/si
-    </path>
-    <title>
-    serpent_isle
-    </title>
-   </blackgate>
-  </game>
- </disk>
- <audio>
-  <speech>
-   <enabled>
-   yes
-   </enabled>
-  </speech>
-  <midi>
-   <kmidi>
-    <device>
-    5
-    </device>
-   </kmidi>
-   <enabled>
-   yes
-   </enabled>
-  </midi>
- </audio>
-</config>
+       7. Credits and Contact
+       7.1. Thanks
+       7.2. Contacting us
 
-VIDEO
------
-By default Exult runs at 320x200 (which is the resolution the original
-Ultima VII used). Exult uses the 2xSaI scaling engine by Derek Liauw to
-double the size to 640x400 and increase the quality of the graphics.
-More information on this excellent scaling engine is available at 
-http://members.xoom.com/derek_liauw/
-Your screen should be set to 16-bit color mode, and you need to
-add the following to the <video> section of .exult.cfg:
-
-   <width>
-   320
-   </width>
-   <height>
-   200
-   </height>
-   <scale>
-   2
-   </scale>
-
-Within the game you can use the "ALT +" and "ALT -" to switch 
-resolution/scaling modes.
-
-AUDIO
------
-Exult can play the Ultima VII's speech through SDL, and its own
-internal mixer. Configuration is managed through Exult's configuration file.
-Since version 0.93alpha4 Exult supports digital SFX from .wav files.
-Joseph Morris has made recordings of the SFX from the original U7,
-which you can find through our SourceForge download page at
-http://sourceforge.net/project/showfiles.php?group_id=2335
-(look for jmsfx.zip and jmsfxsi.zip)
-
-For more information see the FAQ (in the file 'FAQ' or at 
-http://exult.sourceforge.net/faq.shtml)
-
-MIDI
-----
-MIDI audio is available for both Linux and Windows users.
-Exult automatically remaps the Ultima VII Midi music (which is in the XMIDI
-format) to GM/GS instrument mapping, so the end result should be as close as
-(or better) than the original.
-
-COMPILING
----------
-
-Exult uses the multiplatform library SDL by Sam Lantinga of LokiGames.  
-SDL provides low-level graphics, timing and sound capabilities.
-This made it much easier to create the ports to Windows, BeOS, MacOS, *BSD,
-Solaris.
-
-Unusual library dependencies
-----------------------------
-   Some of you may have SDL or other libraries that have been compiled with
-unusual or inappropriate dynamic link paths. This typically affects linking
-with the X11 libraries. You can add:
-        --x-libraries=/usr/X11R6/lib
-
-(or whatever your X11 library path is) to the configure command-line to get
-around this problem.
-
-Requirements:	Ultima7 must be installed and visible.  The "exult" executable
-		should be placed in the top-level u7 directory (where "static"
-		appears as a subdirectory), or the exult.cfg should contain
-		the path to the U7 directory.
-
-Installation:	Refer to the INSTALL file in the source distribution
-
-Caveats:	The program is a memory hog.  Really makes me appreciate
-		Origin's accomplishment in making it run under DOS.
-
-Running:	Hold right mouse button down to move Avatar.
-		Click on objects with left button to identify them.
-		Double-click on characters to hold conversations.
-		Double-click on doors, shutters with left button to open or
-			close them.
-		Arrow keys scroll around the "universe" when in 'cheat' mode.
-
-		Some other useful keys:
-		'h' brings up a 'help' scroll.
-		'ctrl-h' brings up a 'cheat help' scroll.
-
-Credits:	The paper by Gary Thompson on the structure of the U7 data
-		files was crucial to the early development of Exult.
-
-		Work by Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag 
-		made the "usecode" interpreter possible.
-		
-		Thanks also go to the person who wrote u7items.txt and the
-		contributor of the "avatar.ttf" font.
+--------------------------------------------------------------------------------
 
 
-
-CONTACTING US / GETTING MORE INFORMATION
-
-You can contact the Exult team and/or get more information from:
-
-	http://exult.sourceforge.net/
-or
-	http://sourceforge.net/projects/exult/
+       1. Introduction
 
 
+       1.1. What is Exult?
+       Ultima 7, an RPG from the early 1990's, still has a huge
+       following. But, being a DOS game with a very non-standard memory
+       manager, it is difficult to run it on the latest computers. Exult
+       is a project to create an Ultima 7 game engine that runs on modern
+       operating systems, capable of using the data and graphics files
+       that come with the game. 
 
 
--- The Exult Team
+       Exult is being developed in C++ under Linux, MacOS and Windows
+       using the SDL library to make porting to other platforms
+       relatively easy. The current version supports much of the game's
+       plot, allowing you to talk to NPCs, use items, solve quests, and
+       even fight monsters. Music, speech, and the full introduction are
+       also implemented. This, and further development, is only possible
+       due to the work done by other fans who have decoded the various
+       Ultima 7 data files, especially Gary Thompson, Maxim Shatskih,
+       Jakob Shonberg, and Wouter Dijkslag. 
 
+       Exult aims to let those people who own Ultima 7 (copyright 1993)
+       play the game on modern hardware, in as close to (or perhaps even
+       surpassing) its original splendor as is possible. You need to own
+       "Ultima 7: The Black Gate" in order to use Exult, and we encourage
+       you to buy a legal copy. 
+
+
+--------------------------------------------------------------------------------
+
+       2. Configurations
+
+
+       2.1. Installation
+
+
+          *First you need to get Ultima 7. Either you own it already, or
+           you buy it somewhere. Then you must install it on a
+           DOS/Windows machine to get the data files.
+           Alternatively you can use a PC emulator to install it. The
+           Ultima Collection already contains a pre-installed version of
+           U7 (in the directory /ultima7 on the CD).
+
+          *From the Ultima7 folder on your PC, copy the STATIC sub folder
+           to an appropiate folder - see 2.3. what those could be.
+
+          *Now run exult (exult.exe in Windows) and quit it immediately.
+
+          *Edit the configuration file with the correct paths for the
+           game folders and sfx files - see 2.2.
+
+          *Run exult and enjoy the game :-)
+
+       Word of advice: Don't mix the files from BG and SI. 
+
+       Important: Do not run Exult on an origina Ultima7 game which you're
+       actually in the middle of playing, as Exult's saved files have a 
+       different format. There is no way to convert those original savegames 
+       and they will just crash Exult.
+
+       2.2. Settings in exult.cfg
+
+       Exult keeps a configuration file. You can specify where your
+       Ultima 7 installation is, whether you want full-screen graphics,
+       or windowed, and midi devices and midi settings. Some of these
+       options can be set from the Setup menu when you run Exult or via
+       the Game menu. 
+
+       If you do not already have a configuration file, Exult will make
+       one for you filling in sensible defaults by itself. The location
+       of this file varies slightly. On unix systems you can expect to
+       find it in $HOME/.exult.cfg while other operating systems will
+       probably locate it as 'exult.cfg' in the same directory as the
+       Exult binary. However it is recommended that you edit this file by
+       hand to achieve optimal results for your system. 
+
+
+       The file uses a simple hierarchical XML-like syntax, which should
+       be simple to understand and modify. Take care though. Handling of
+       syntax errors in this file is not well tested. 
+
+       Okay, the default file looks like this (do not copy the **and
+       following - these are my remarks). 
+
+
+       Note: yes means enabled, no means disabled 
+
+       <config>
+       <disk>            **see 2.3. for pathsettings
+       <data_path>
+       data
+       </data_path>
+       <game>
+       <blackgate>
+       <path>
+       ./blackgate
+       </path>
+       <title>
+       blackgate
+       </title>
+       <keys>
+       (default)         **configure custom keybindings or leave the
+       </keys>           (default) - see 5.2.
+       <waves>
+       ./data/jmsfx.flx  **optional setting see 3.3. for configuration
+       </waves>
+       </blackgate>
+       <serpentisle>
+       <path>
+       ./serpentisle
+       </path>
+       <keys>
+       (default)
+       </keys>
+       <waves>
+       ./data/jmsisfx.flx**optional setting see 3.3. for configuration
+       </waves>
+       </serpentisle>
+       </game>
+       </disk>
+       <debug>
+       <trace>
+       <usecode>
+       no                **enable/disable usecode-tracing for debuging
+       </usecode>        (you shouldn't need this one)
+       </trace>
+       </debug>
+       <gameplay>
+       <cheat>
+       yes               **enable/disable cheats for that
+       </cheat>
+       <skip_intro>
+       no                **this skips the intro in BG when you started a
+       </skip_intro>     new game; Iolo talks to Peter, the Avatar
+       <skip_splash>     appears, Iolo talks to you, the mayor talks to
+       no                **this skips the splash screen, the intro before
+       </skip_splash>    you get to the game menu, disabling it brings
+       </gameplay>       you straight to the game menu
+       <audio>
+       <enabled>
+       yes               **enable/disable all audio - this takes
+       </enabled>        precedence over the other audio settings (you
+       <effects>         can change this in game via 'Esc' - the setting
+       <enabled>         is saved)
+       yes               **enable/disable sound effects (you can change
+       </enabled>        this in game via 'Esc' - the setting is saved)
+       </effects>
+       <midi>
+       <enabled>
+       yes               **enable/disable MIDI effects (you can change
+       </enabled>        this in game via 'Esc' - the setting is saved)
+       <convert>
+       gm                **see 3.1.
+       </convert>
+       <volume_curve>
+       1.000000          **set volume (kind of at least, best don't
+       </volume_curve>   change)
+       </midi>
+       <speech>
+       <enabled>
+       yes               **enable/disable speech (you can change this in
+       </enabled>        game via 'Esc' - the setting is saved)
+       </speech>
+       </audio>
+       <video>
+       <width>
+       320               **here you choose your resolution, it can be as
+       </width>          big as your monitor allows. 320x200 is the
+       <height>          resolution of the original.
+       200
+       </height>
+       <scale>
+       2                 **2 enables / 1 disables scaling - see 4.2.
+       </scale>
+       <fullscreen>
+       yes               **do you want to play fullscreen?
+       </fullscreen>
+       <disable_fades>
+       no                **"no" enables fading between different menu
+       </disable_fades>  points
+       <scale_method>
+       SuperEagle        **choose different scalers here - see 4.2.
+       </scale_method>
+       <gamma>           **set gamma levels to adjust brightness, same as
+       <red>             +/- in game
+       1
+       </red>
+       <green>
+       1
+       </green>
+       <blue>
+       1
+       </blue>
+       </gamma>
+       </video>
+       </config>
+
+
+       2.3. Path-Settings
+
+       You have two choices on how to setup Exult. 
+
+       The first one is very easy, just extract all the files from the
+       compiled snapshot archive to the directory where you have The
+       Black Gate or Serpent Isle installed. Concerning the paths you
+       don't have to configure anything. 
+
+
+       The other is a little more complicated but appeals to control
+       freaks like me:
+       Make a directory c:\ultima7
+       make two subfolders named "blackgate" and "serpentisle" (without
+       the quotes of course)
+       Extract or install the two Ultima 7 games into the appropiate
+       folder ("The Black Gate" to c:\ultima7\blackgate and "Serpent
+       Isle" to c:\ultima7\serpentisle)
+       Extract the compiled Exult to c:\ultima7
+       Now you have to edit the exult.cfg file like this: 
+
+       <disk>
+       <data_path>
+       data
+       </data_path>
+       <game>
+       <blackgate>
+       <path>
+       ./blackgate
+       </path>
+       <title>
+       blackgate
+       </title>
+       </blackgate>
+       <serpentisle>
+       <path>
+       ./serpentisle
+       </path>
+       </serpentisle>
+       </game>
+       </disk>
+
+
+       You can either use the relative (./blackgate) or absolute
+       (c:\ultima\blackgate) path to point to the correct directory. 
+
+--------------------------------------------------------------------------------
+
+       3. Audio
+
+
+       3.1. Music
+
+       Midi in Exult is played by firstly loading a file and passing it
+       to the XMIDI class for instrument mapping conversion. This is so
+       the MT32 mapped music files from the original Ultima 7 and Serpent
+       Isle will be playable on modern General Midi and General Midi/GS
+       supporting sound cards. You can change the way the music sounds
+       via the setup or ingame menu or the exult.cfg file. 
+
+       Exult gives users various option for converting Music and Midi
+       Sound Effects. Currently the only way to set the options is via
+       manually editing the config file. Note, the options are case
+       sensitive and all options must be lowercase.
+       Below is a description of all the modes: 
+
+
+          *gm
+           This will convert the MT32 patches to standard General Midi
+           patches. Conversion is fairly accurate but some instruments
+           may be different.
+
+          *gs
+           This will convert the MT32 patches to their equivilant GS
+           patches. This will be a more accurate conversion that straight
+           gm since more of the MT32 patches are in the GS set. However,
+           not all midi devices will support this mode.
+           gs127
+          *
+           This option is for midi devices that have a MT32 patch bank
+           installed in Bank 127. Some GS implimentation have this, some
+           don't. Only use this if you know that you have a MT32
+           implimentation on Bank 127.
+           none
+          *This option will output the music with nothing changed.
+           Because the mapping will be for MT32s you should only use this
+           option if you have a MT32 compatible device or you have
+           replaced the music.
+
+
+       The order of music conversion quality is: 
+
+        1. none (shouldn't really be used, though)
+
+        2. gs127
+
+        3. gs
+
+        4. gm
+
+
+       NOTE: Currently the conversion to GS and GS127 is not finished and
+       the notes are only mapped to General Midi. 
+
+
+       3.2. Abilities and limitations of the music engine
+       Due to the way the class was constructed input can be in either
+       .mid, .rmi or the Miles Sound System .xmi format. There are no
+       limitations to they types of .mid and .rmi supported. They can be
+       Type 0, 1 and the rarely seen type 2. The loading routine is also
+       fairly lineient of errorneous XMIDI files that do not have correct
+       XMIDI headers. 
+
+
+       During the development of the XMIDI class it was found that
+       certain .xmi files in Serpent Isle had the first patch changes
+       after the first note. The converter will attempt to correct these
+       errors. However it may cause problems with some midi files.
+       Currently this can not be disabled and may change in the future. 
+
+
+       3.3. Digital Wave Sound Effects
+       You have to set a path to the sfx pack in the waves settings in
+       exult.cfg (see 2.2.). You have to download seperate packs for each
+       game as order of the sfx in BG and SI varies a bit and otherwise
+       will sound odd. However there is a little issue with sfx playback
+       in SI. 
+
+
+       Note that configuring your soundfonts is not needed for digital
+       wave sfx. 
+
+       The sfx pack made by Joseph Morris can be found at 
+       http://prdownloads.sourceforge.net/exult/jmsfx.zip (~4.55 MB) for
+       "The Black Gate" and 
+       http://prdownloads.sourceforge.net/exult/jmsfxsi.zip (~6.01 MB)
+       for "Serpent Isle".
+       He recorded the original 114 sfx used in Black Gate which must
+       have been a lot of work. If your soundcard doesn't support
+       soundfonts this pack is a "must-have". Enjoy! 
+
+
+       3.4. Speech
+
+       Exult can play the Ultima VII's speech through SDL, and its own
+       internal mixer. Configuration is managed through Exult's
+       configuration file. 
+       3.5. Turn off Audio
+       Press 'Esc' to turn on/off Music, Speech and SoundFX or change the
+       settings in exult.cfg - see 2.2.. 
+
+--------------------------------------------------------------------------------
+
+
+       4. Video
+
+
+       4.1. Resolution
+       By default Exult runs at 320x200 (which is the resolution the
+       original Ultima VII used). Exult uses different scaling engines to
+       double the size to 640x400 and increase the quality of the
+       graphics. 
+
+
+       Using higher resolutions is considered cheating as you can see too
+       much of the surrounding area. But don't let that stop you :-)
+       Being able to play in higher resolutions is one of the big
+       advantages of Exult. 
+
+       Your screen should be set to 16-bit color mode. 
+
+
+       Within the game you can use the 'Alt +' and 'Alt -' to switch
+       resolution.. 
+
+
+       4.2. Scaler
+       The scalers also work with higher resolutions than 320x200. To
+       change the scaling method either use the Exult menu or change your
+       exult.cfg - see 2.2.. 
+
+
+          *SuperEagle by Derek Liauw
+
+          *2xSaI by Derek Liauw
+
+          *bilinear
+
+          *point duplicates the pixels
+           interlaced the same as point except misses every other line
+          *
+
+       Try them out to see how they look and which you like best. 
+
+
+       More information on the excellent scaling engines by Derek Liauw
+       is available at http://members.xoom.com/derek_liauw/. 
+--------------------------------------------------------------------------------
+
+       5. Movement and Keys
+
+
+       5.1. Movement
+
+
+          *Hold right mouse button down to move Avatar.
+
+          *Double-click with the right mouse button will make the Avatar
+           find a path to the selected spot.
+
+          *Click on objects with left button to identify them.
+
+          *Double-click on characters to hold conversations.
+
+          *Double-click on doors, shutters with left button to open or
+           close them.
+
+
+
+       5.2. Keyboard commands
+
+       Starting with V0.91 Alpha2 all key commands can be changed.
+       However, there is a default setting which closely follows the
+       original with the addition of some improvements. 
+
+       To change your key bindings first edit the file defaultkeys.txt in
+       your Exult directory, change the bindings and save the file (e.g.
+       as my_keys.txt). Now you have to change exult.cfg to use that
+       file. You can even choose if you want to change your key bindings
+       for BG or SI. See the keys settings at 2.2.. Change (default) to
+       my_keys.txt. 
+
+
+       During the game press 'h' to see a help screen with all the keys
+       (for MacOS change Alt for Cmd - the in-game help screen shows the
+       correct key combination for MacOS). 
+
+        Default keyboard commands
+
+        +/-        Change brightness (you may have to use
+                   the keypad)
+        F4         Toggle fullscreen
+        b          Use spellbook
+
+        c          Combat mode
+        f          Use food
+        h          Show list of keyboard commands
+
+        i          Show inventory
+        j          SI: Show jawbone
+        k          BG: Try all keys to unlock a lock
+
+        k          SI: Use keyring
+        Alt-k      SI: Try all keys to unlock a lock
+        l          SI: Show combat stats
+
+        m          Show map
+        p          Use lockpicks
+        Alt-q      Exit game
+
+        Ctrl-r     Quick restore
+        Ctrl-Alt-s Screenshot
+        Ctrl-s     Quick save
+
+        s          Show save/load box
+        Esc        Show Game menu box and closes all open
+                   boxes
+        t          Target, instead of double clicking, shows
+                   a cursor and pauses the game until you
+                   click on something
+
+        v          About screen
+        w          Use watch, shows the time if you got a
+                   watch
+        Alt-x      Exit game
+
+        z          Show stats
+        1          Show inventory for Avatar
+        2          Show inventory for character 2
+
+        3          Show inventory for character 3
+        4          Show inventory for character 4
+        5          Show inventory for character 5
+
+        6          Show inventory for character 6
+        7          Show inventory for character 7
+        8          Show inventory for character 8
+
+
+       In conversations you now have the ability not just click on the
+       answer with the mouse but also to use the numeric keys. The
+       response options aren't numbered visually but logically with the
+       dots. Also press 'Esc' to select "bye" if possible. 
+
+
+       5.3. Cheat keys
+
+       Press 'ctrl-h' during the game to see a help screen with all the
+       cheat keys. 
+
+        Cheat commands
+
+        Alt-+/-     Switch resolution( you may have to use
+                    the keypad)
+        Arrow keys  Scroll map
+        Home        Recenter map
+
+        F2          Cheat screen similar to the originals'.
+                    Allows for some level of NPC editing and
+                    other cheat otpions
+        F3          Map teleport
+        F10         Show endgame
+
+        F11         SI: Play alternate intro
+        Ctrl-b      Shape browser
+        Ctrl-c      Create object
+
+        Ctrl-d      Delete object
+        e           Toggle egg display
+        Alt-g       Toggle God mode
+
+        Ctrl-g      SI: Change avatar gender
+        Ctrl-Alt-h  Resurrect, heal party, cure poison and
+                    still hunger
+        Alt-i       Toggle infravision
+
+        Ctrl-l      Level up party
+        l           Decrement skiplift
+        Alt-h       Hackmover (you can move all objects
+                    around and it disables weight check
+
+        Ctrl-Alt-m  Toggle Map editor (usefull for )
+        Ctrl-m      Get 100 gold coins
+        Alt-Shift-m Play previous song
+
+        Alt-m       Play next song
+        Alt-n       SI: Toggle naked flag
+        Alt-p       SI: Toggle petra mode
+
+        Alt-s       SI: Change skin color
+        Ctrl-Alt-t  Map teleport
+        Ctrl-t      Advance to next time period
+
+        Alt-t       Teleport (to current cursor position)
+        Alt-w       Toggle archwizard mode (all spells etc.)
+        Alt-1       Test music, sfx, speech
+
+        Ctrl-Alt-g  Grab NPC for cheat screen
+        Ctrl-Alt-p  Pick pocket cheat, when enabled
+                    double-clicking on a NPC displays the
+                    actors inventory
+        Ctrl-n      NPC number, When enabled, clicking an a
+                    NPC will display their number instead of
+                    their name. Usefull for the cheat
+                    screen.
+
+--------------------------------------------------------------------------------
+
+
+       6. OS specific notes
+
+
+       6.1. OSX
+
+       A port to OSX is in the works. 
+
+
+       6.2. Audio with MacOS
+       Exult Mac has no Audio/Midi support yet. 
+
+
+       6.3. Error Log
+
+
+          *MacOS/Win32:
+           Exult generates the files 'stdout.txt' and 'stderr.txt'. These
+           may give you some idea of what is going on under the hood.
+           When Exult suddenly quits, sometimes these files can help.
+
+          *Unix/Unix clones:
+           the above mentioned logs are shown in the console from which
+           Exult is started.
+           ./exult > log
+           will send both stderr and stdout to the file named "log".
+
+
+--------------------------------------------------------------------------------
+
+
+       7. Credits and Contact
+
+
+       7.1. Thanks
+
+
+          *The paper by Gary Thompson on the structure of the U7 data
+           files was crucial to the early development of Exult.
+
+          *Work by Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag
+           made the "usecode" interpreter possible.
+
+          *Olivier Marcoux's technical document was also crucial in
+           understanding some data files.
+
+          *Thanks also go to the person who wrote u7items.txt and the
+           contributor of the "avatar.ttf" font.
+
+
+
+
+       7.2. Contacting us
+       You can contact the Exult team and/or get more information from:
+       http://exult.sourceforge.net/ or
+       http://sourceforge.net/projects/exult/
