@@ -1017,6 +1017,14 @@ void Tool_schedule::now_what
 		Loiter_schedule::now_what();
 		return;
 		}
+	if (rand()%10 == 0)
+		{
+		Schedule_types ty = (Schedule_types) npc->get_schedule_type();
+		if (ty == Schedule::miner)
+			npc->say(first_miner, last_miner);
+		else if (ty == Schedule::farm)
+			npc->say(first_farmer, last_farmer);
+		}
 	char frames[12];		// Use pick.
 	int cnt = npc->get_attack_frames(toolshape, false, rand()%8, frames);
 	npc->set_action(new Frames_actor_action(frames, cnt));
