@@ -28,7 +28,7 @@ class Jawbone_object : public Container_game_object {
 	Jawbone_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft,
 				char res = 0)
-		: Container_game_object(shapenum, framenum, tilex, tiley, lift, res)
+		: Container_game_object(shapenum, framenum, tilex, tiley, lft, res)
 		{ }
 	Jawbone_object() : Container_game_object() {  }
 
