@@ -1051,7 +1051,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     564, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     36,     1 },
 	// Star Bursts **NEEDS ART**
 	{     565, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     -1,     0 },
-	{     565, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     -1,     1 },
+	{     565, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_STARBURST_SHP,     1 },
 	// Sword of Defense
 	{     567, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,    110,     0 },
 	{     567, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,    110,     1 },
@@ -1198,7 +1198,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Crossbow
 	{     598, -1,      Actor::lhand, OT_Crossbow,  false, SF_PAPERDOL_VGA,      32,    0 },
 	{     598, -1,       Actor::belt, OT_Crossbow,  false, SF_PAPERDOL_VGA,      32,    1 },
-	// Tripple Crossbow **NEEDS ART**
+	// Triple Crossbow **NEEDS ART**
 	{     647, -1,      Actor::lhand, OT_Crossbow,  false, SF_PAPERDOL_VGA,      32,    0 },
 	{     647, -1,       Actor::belt, OT_Crossbow,  false, SF_PAPERDOL_VGA,      32,    1 },
 	// Bolts
