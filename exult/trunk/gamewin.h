@@ -373,8 +373,6 @@ public:
 	void view_left();		// Move view left by 1 chunk.
 	void view_down();		// Move view down.
 	void view_up();			// Move view up.
-					// Repaint sprite after moving it.
-	void repaint_sprite(Sprite *sprite, Rectangle& oldrect);
 					// Start moving actor.
 	void start_actor(int winx, int winy);
 	void stop_actor();		// Stop moving the actor.

@@ -25,20 +25,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "actions.h"
 #include "actors.h"
-#include "PathFinder.h"
+#include "Zombie.h"
 
 /*
- *	Handle a time event.
+ *	Set to walk from one point to another, using the same pathfinder.
  *
- *	Output:	0 if done with this action, else delay for next frame.
+ *	Output:	->this, or 0 if unsuccessful.
  */
 
-int Walking_actor_action::handle_event
+Actor_action *Actor_action::walk_to_tile
 	(
-	Actor *actor
+	Tile_coord src,
+	Tile_coord dest
 	)
 	{
-	return actor->walk();
+	Zombie *path = new Zombie();
+					// Set up new path.
+	if (path->NewPath(src, dest, Get_cost))
+		return (new Path_walking_actor_action(path));
+	else
+		{
+		delete path;
+		return (0);
+		}
 	}
 
 /*
@@ -46,7 +55,7 @@ int Walking_actor_action::handle_event
  */
 Path_walking_actor_action::Path_walking_actor_action
 	(
-	PathFinder *p			// Controls pathfinding.
+	PathFinder *p			// Already set to path.
 	) : path(p), frame_index(0)
 	{
 	Tile_coord src = p->get_src(), dest = p->get_dest();
@@ -97,6 +106,27 @@ void Path_walking_actor_action::stop
 					// ++++For now, just use original dir.
 	Frames_sequence *frames = actor->get_frames(original_dir);
 	actor->set_frame(frames->get_resting());
+	}
+
+/*
+ *	Set to walk from one point to another, using the same pathfinder.
+ *
+ *	Output:	->this, or 0 if unsuccessful.
+ */
+
+Actor_action *Path_walking_actor_action::walk_to_tile
+	(
+	Tile_coord src,
+	Tile_coord dest
+	)
+	{
+					// Set up new path.
+	if (!path->NewPath(src, dest, Get_cost))
+		return (0);
+					// Reset direction (but not index).
+	original_dir = (int) Get_direction4(
+				src.ty - dest.ty, dest.tx - src.tx);
+	return (this);
 	}
 
 /*

@@ -649,7 +649,7 @@ public:
 		return frames[index];
 		}
 	};
-
+#if 0
 /*
  *	A sprite is a game object which can change shape and move around.
  *	++++++So far, this base class is never invoked, so we might not need
@@ -711,6 +711,8 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata) = 0;
 	};
+#endif
+
 /*
  *	A rectangle:
  */

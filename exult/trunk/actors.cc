@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "actions.h"
 #include "ready.h"
+#include "Zombie.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -44,9 +45,11 @@ Actor::Actor
 	int shapenum, 
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
-	) : Sprite(shapenum), npc_num(num), party_id(-1),
+	) : Container_game_object(), npc_num(num), party_id(-1),
+	    frame_time(0),
 	    usecode(uc), flags(0), action(0), usecode_dir(0), two_handed(0)
 	{
+	set_shape(shapenum, 0); 
 	if (!frames[(int) north])
 		set_default_frames();
 	name = nm == 0 ? 0 : strdup(nm);
@@ -97,12 +100,13 @@ void Actor::set_action
 	Actor_action *newact
 	)
 	{
-	delete action;
-#ifndef NEWPATH
-					// Clear us from queue.
-	Game_window::get_game_window()->get_tqueue()->remove(this);
-#endif
-	action = newact;
+	if (newact != action)
+		{
+		delete action;
+		action = newact;
+		if (!action)		// No action?  We're stopped.
+			frame_time = 0;
+		}
 	}
 
 /*
@@ -111,19 +115,18 @@ void Actor::set_action
 
 void Actor::walk_to_tile
 	(
-	int tx, int ty, int tz,		// Tile.  (Tz is the lift.)
+	Tile_coord dest,		// Destination.
 	int speed,			// Time between frames (msecs).
 	int delay			// Delay before starting (msecs) (only
 					//   if not already moving).
 	)
 	{
-#ifdef NEWPATH
-	frame_time = speed;
-	Zombie *path = new Zombie();	// Create dumb pathfinder.
-					// Set up new path.
-	if (path->NewPath(get_abs_tile_coord(), Tile_coord(tx, ty, tz),
-								Get_cost))
+	if (!action)
+		action = new Path_walking_actor_action(new Zombie());
+	set_action(action->walk_to_tile(get_abs_tile_coord(), dest));
+	if (action)			// Successful at setting path?
 		{
+		frame_time = speed;
 		Game_window *gwin = Game_window::get_game_window();
 		if (!in_queue())	// Not already in queue?
 			{
@@ -131,18 +134,9 @@ void Actor::walk_to_tile
 			gwin->get_tqueue()->add(curtime + delay, this, 
 								(long) gwin);
 			}
-		set_action(new Path_walking_actor_action(path));
 		}
 	else
-		delete path;		// Nowhere to go.
-#else
-	Game_window *gwin = Game_window::get_game_window();
-	int liftpixels = tz*4;
-	if (!is_walking())
-		set_action(new Walking_actor_action());
-	start(((unsigned long) tx + 1)*tilesize - liftpixels,
-	      ((unsigned long) ty + 1)*tilesize - liftpixels, speed, delay);
-#endif
+		frame_time = 0;		// Not moving.
 	}
 
 /*
@@ -156,20 +150,12 @@ void Actor::walk_to_point
 	int speed			// Delay between frames.
 	)
 	{
-#ifdef NEWPATH
 	int liftpixels = 4*get_lift();
 	int tx = (destx + liftpixels)/tilesize, 
 	    ty = (desty + liftpixels)/tilesize;
-	walk_to_tile(tx, ty, speed, 0);
-#else
-	Game_window *gwin = Game_window::get_game_window();
-	if (!is_walking())
-		set_action(new Walking_actor_action());
-	start(destx, desty, speed, 0);
-#endif
+	walk_to_tile(tx, ty, get_lift(), speed, 0);
 	}
 
-#ifdef NEWPATH
 /*
  *	Stop walking.
  */
@@ -178,12 +164,9 @@ void Actor::stop
 	)
 	{
 	if (action)
-		{
 		action->stop(this);
-		set_action(0);
-		}
+	frame_time = 0;
 	}
-#endif
 
 /*
  *	Find the best spot where an item may be readied.
@@ -245,7 +228,7 @@ void Actor::paint
 	)
 	{
 	if (!(flags & (1L << dont_render)))
-		Sprite::paint(gwin);
+		Container_game_object::paint(gwin);
 	}
 
 /*
@@ -477,74 +460,6 @@ void Main_actor::get_followers
 	}
 
 /*
- *	Walk in current direction.
- *	++++++All walk() methods go away when NEWPATH is implemented.
- *
- *	Output:	Delay for next frame, or 0 to stop.
- *		Dormant is set if off screen.
- */
-
-int Main_actor::walk
-	(
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
-	int frame;
-	if (next_frame(cx, cy, sx, sy, frame))
-		{
-		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
-		int new_lift;		// Might climb/descend.
-					// Just assume height==3.
-		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift))
-			{
-			stop();
-			return (0);
-			}
-					// Check for scrolling.
-		int chunkx = gwin->get_chunkx(), chunky = gwin->get_chunky();
-					// At left?
-		if (cx - chunkx <= 0 && sx < 6)
-			gwin->view_left();
-					// At right?
-		else if ((cx - chunkx)*16 + sx >= gwin->get_width()/8 - 4)
-			gwin->view_right();
-					// At top?
-		if (cy - chunky <= 0 && sy < 6)
-			gwin->view_up();
-					// At bottom?
-		else if ((cy - chunky)*16 + sy >= gwin->get_height()/8 - 4)
-			gwin->view_down();
-					// Get old rectangle.
-		Rectangle oldrect = gwin->get_shape_rect(this);
-					// Get old chunk.
-		Chunk_object_list *olist = gwin->get_objects(
-						get_cx(), get_cy());
-					// Move it.
-		move(olist, cx, cy, nlist, sx, sy, frame, new_lift);
-					// Near an egg?
-		nlist->activate_eggs(sx, sy);
-		int inside;		// See if moved inside/outside.
-					// In a new chunk?
-		if (olist != nlist)
-			{
-			switched_chunks(olist, nlist);
-			if (gwin->check_main_actor_inside())
-				gwin->paint();
-			}
-		else
-			gwin->repaint_sprite(this, oldrect);
-		if (at_destination())
-			{
-			stop();
-			return (0);
-			}
-		return (frame_time);	// Add back to queue for next time.
-		}
-	return (0);			// Done.
-	}
-
-/*
  *	Step onto an adjacent tile.
  *
  *	Output:	Delay for next frame, or 0 to stop.
@@ -585,11 +500,13 @@ int Main_actor::step
 	else if ((cy - chunky)*16 + ty >= gwin->get_height()/8 - 4)
 		gwin->view_down();
 					// Get old rectangle.
-	Rectangle oldrect = gwin->get_shape_rect(this);
+//	Rectangle oldrect = gwin->get_shape_rect(this);
+	gwin->add_dirty(this);		/// Set to update old location.
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
 					// Move it.
 	move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
+	gwin->add_dirty(this);		// Set to update new.
 					// Near an egg?
 	nlist->activate_eggs(tx, ty);
 	int inside;			// See if moved inside/outside.
@@ -598,14 +515,10 @@ int Main_actor::step
 		{
 		switched_chunks(olist, nlist);
 		if (gwin->check_main_actor_inside())
+			{		// Repaint all.
+			gwin->clear_dirty();
 			gwin->paint();
-		}
-	else
-		gwin->repaint_sprite(this, oldrect);
-	if (at_destination())
-		{
-		stop();
-		return (0);
+			}
 		}
 	return (frame_time);		// Add back to queue for next time.
 	}
@@ -775,6 +688,8 @@ void Talk_schedule::now_what
 	(
 	)
 	{
+	cout << "REWRITE Talk_schedule!\n";
+#if 0	/* ++++++++++++++Rewrite so it's only active when Av is near. */
 	Game_window *gwin = Game_window::get_game_window();
 	Usecode_machine *umachine = gwin->get_usecode();
 	switch (phase)
@@ -803,6 +718,7 @@ void Talk_schedule::now_what
 	default:
 		break;
 		}
+#endif
 	}
 
 /*
@@ -998,55 +914,49 @@ void Npc_actor::handle_event
 	}
 
 /*
- *	Walk in current direction.
+ *	Step onto an adjacent tile.
  *
  *	Output:	Delay for next frame, or 0 to stop.
  *		Dormant is set if off screen.
  */
 
-int Npc_actor::walk
+int Npc_actor::step
 	(
+	Tile_coord t,			// Tile to step onto.
+	int frame			// New frame #.
 	)
 	{
 					// Store old chunk.
 	int old_cx = get_cx(), old_cy = get_cy();
 	Game_window *gwin = Game_window::get_game_window();
-	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
-	int frame;
-	if (next_frame(cx, cy, sx, sy, frame))
-		{
+					// Get chunk.
+	int cx = t.tx/tiles_per_chunk, cy = t.ty/tiles_per_chunk;
+					// Get rel. tile coords.
+	int tx = t.tx%tiles_per_chunk, ty = t.ty%tiles_per_chunk;
 					// Get ->new chunk.
-		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
-		nlist->setup_cache();	// Setup cache if necessary.
-		int new_lift;		// Might climb/descend.
+	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+	nlist->setup_cache();		// Setup cache if necessary.
+	int new_lift;			// Might climb/descend.
 					// Just assume height==3.
-		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift))
-			{
-			stop();
-			return (0);	// Done.
-			}
-		gwin->add_dirty(this);	// Set to repaint old area.
-					// Get old chunk.
-		Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
-					// Move it.
-		move(olist, cx, cy, nlist, sx, sy, frame, new_lift);
-		if (olist != nlist)	// In new chunk?
-			switched_chunks(olist, nlist);
-		if (at_destination())
-			{
-			stop();
-			return (0);
-			}
-		if (!gwin->add_dirty(this))
-			{		// No longer on screen.
-			stop();
-			dormant = 1;
-			return (0);
-			}
-		return (frame_time);	// Add back to queue for next time.
+	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift))
+		{
+		stop();
+		return (0);		// Done.
 		}
-	dormant = 1;			// Not moving.
-	return (0);
+	gwin->add_dirty(this);		// Set to repaint old area.
+					// Get old chunk.
+	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
+					// Move it.
+	move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
+	if (olist != nlist)		// In new chunk?
+		switched_chunks(olist, nlist);
+	if (!gwin->add_dirty(this))
+		{			// No longer on screen.
+		stop();
+		dormant = 1;
+		return (0);
+		}
+	return (frame_time);		// Add back to queue for next time.
 	}
 
 /*
@@ -1240,55 +1150,48 @@ int Monster_actor::is_blocked
 	}
 
 /*
- *	Walk in current direction.
+ *	Step onto an adjacent tile.
  *
  *	Output:	Delay for next frame, or 0 to stop.
  *		Dormant is set if off screen.
  */
 
-int Monster_actor::walk
+int Monster_actor::step
 	(
+	Tile_coord t,			// Tile to step onto.
+	int frame			// New frame #.
 	)
 	{
 					// Store old chunk.
 	int old_cx = get_cx(), old_cy = get_cy();
 	Game_window *gwin = Game_window::get_game_window();
-	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
-	int frame;
-	if (next_frame(cx, cy, sx, sy, frame))
-		{
+					// Get chunk.
+	int cx = t.tx/tiles_per_chunk, cy = t.ty/tiles_per_chunk;
+					// Get rel. tile coords.
+	int tx = t.tx%tiles_per_chunk, ty = t.ty%tiles_per_chunk;
 					// Get ->new chunk.
-		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
-		nlist->setup_cache();	// Setup cache if necessary.
+	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+	nlist->setup_cache();		// Setup cache if necessary.
 					// Blocked.
-		if (is_blocked(cx*tiles_per_chunk + sx,
-						cy*tiles_per_chunk + sy))
-			{
-			stop();
-			return (0);	// Done.
-			}
-		gwin->add_dirty(this);	// Set to repaint old area.
-					// Get old chunk.
-		Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
-					// Move it.
-		move(olist, cx, cy, nlist, sx, sy, frame, -1);
-		if (olist != nlist)	// In new chunk?
-			switched_chunks(olist, nlist);
-		if (at_destination())
-			{
-			stop();
-			return (0);
-			}
-		if (!gwin->add_dirty(this))
-			{		// No longer on screen.
-			stop();
-			dormant = 1;
-			return (0);
-			}
-		return (frame_time);	// Add back to queue for next time.
+	if (is_blocked(cx*tiles_per_chunk + tx, cy*tiles_per_chunk + ty))
+		{
+		stop();
+		return (0);		// Done.
 		}
-	dormant = 1;			// Not moving.
-	return (0);
+	gwin->add_dirty(this);		// Set to repaint old area.
+					// Get old chunk.
+	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
+					// Move it.
+	move(olist, cx, cy, nlist, tx, ty, frame, -1);
+	if (olist != nlist)		// In new chunk?
+		switched_chunks(olist, nlist);
+	if (!gwin->add_dirty(this))
+		{			// No longer on screen.
+		stop();
+		dormant = 1;
+		return (0);
+		}
+	return (frame_time);		// Add back to queue for next time.
 	}
 
 /*
@@ -1302,11 +1205,7 @@ Npc_actor *Monster_info::create
 	int lift			// Lift.
 	)
 	{
-#if 1	/* ++++This is what we need to try. */
 	Monster_actor *monster = new Monster_actor(0, shapenum);
-#else
-	Npc_actor *monster = new Npc_actor(0, shapenum);
-#endif
 	monster->set_property(Actor::strength, strength);
 	monster->set_property(Actor::dexterity, dexterity);
 	monster->set_property(Actor::intelligence, intelligence);
