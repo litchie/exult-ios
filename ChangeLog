@@ -1,3 +1,7 @@
+2001-05-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: 'Stop Time' spell implemented.
+
 2001-05-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.h: 'Mode' field has gone away.  RIP.  Use

@@ -1240,6 +1240,14 @@ USECODE_INTRINSIC(book_mode)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(stop_time)
+{	// stop_time(.25 secs).
+
+	int length = parms[0].get_int_value();
+	gwin->set_time_stopped(length*250);
+	return no_ret;
+}
+
 USECODE_INTRINSIC(cause_light)
 {
 	// Cause_light(game_minutes??)

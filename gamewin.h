@@ -68,6 +68,7 @@ private:
 	bool combat;			// true if in combat.
 	Time_queue *tqueue;		// Time-based queue.
 	Game_clock clock;		// Keeps track of time.
+	long time_stopped;		// For 'stop time' spell.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
 	Special_effect *effects;	// Text snippets, sprite effects.
 	Gump *open_gumps;	// Open containers on screen.
@@ -249,6 +250,13 @@ public:
 		{ return special_light != 0; }
 					// Light spell.
 	void add_special_light(int minutes);
+					// Handle 'stop time' spell.
+	void set_time_stopped(long ticks);
+private:
+	long check_time_stopped();
+public:
+	long is_time_stopped()
+		{ return !time_stopped ? 0 : check_time_stopped(); }
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < num_npcs) ? 
 				npcs[npc_num] : 0; }
