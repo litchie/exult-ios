@@ -1,6 +1,10 @@
 Rewrite Event Loop
 ==================
 
+We need one and only one event loop (maybe defined in an event class), with
+methods for adding callbacks, etc.
+Look at GTK+'s event loop code and mimic that.
+
 What happens in the Exult event loop ?
 
 	Handle mouse motion
@@ -9,3 +13,20 @@ What happens in the Exult event loop ?
 	Handle configure events
 	Rotate palettes
 	
+Garbage Collection
+==================
+
+We need to tag all shapes with a timestamp when they are displayed. Then we 
+can have a task which is executed at regular intervals which invalidates
+shapes which haven't been accessed in a while. Other more intelligent
+mechanisms are welcome, though.
+
+User-Defined Keystrokes
+=======================
+
+It would be good if users could assign custom keystrokes to certain actions.
+
+Development Environment
+=======================
+
+Yeah, yeah...

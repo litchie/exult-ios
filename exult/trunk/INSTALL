@@ -1,8 +1,8 @@
 Exult Installation
 ==================
 
-If you're reading this you have already downloaded and untarred 
-Exult's source distribution. Good.
+If you're reading this you have either downloaded a source distribution and 
+untarred it, or you've checked out the latest tree from CVS. Good.
 Make sure you have the following things installed:
 
 - SDL
@@ -20,6 +20,15 @@ Make sure you have the following things installed:
 - libkmid
 	If you have an FM soundcard
 		http://www.arrakis.es/~rlarrosa/libkmid.html
+
+If you're building from CVS you'll also need:
+
+	automake
+	autoconf
+	libtool
+
+You can find these at any good GNU shop. Run the autogen.sh file to generate
+configure.
 
 Got everything ? Excellent. Now you can build your own binary of Exult.
 From the top directory type the following:
