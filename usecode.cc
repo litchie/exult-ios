@@ -643,6 +643,10 @@ Game_object *Usecode_machine::get_item
 		obj = gwin->get_npc(-val);
 	else if (val < gwin->get_num_npcs())
 		obj = gwin->get_npc(val);
+					// Special case:  palace guards.
+	else if (val < 0x400 && caller_item && 
+					val == caller_item->get_shapenum())
+		obj = caller_item;
 	return obj ? obj : (Game_object *) val;
 	}
 
