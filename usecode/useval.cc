@@ -190,13 +190,13 @@ void	Usecode_value::push_back(int i)
  *	Output:	1 if they match, else 0.
  */
 
-int Usecode_value::operator==
+bool Usecode_value::operator==
 	(
 	const Usecode_value& v2
 	) const
 	{
 	if (&v2 == this)
-		return (1);		// Same object.
+		return true;		// Same object.
 	if (type == int_type)		// Might be ptr==0.
 		return (v2.type == int_type || v2.type == pointer_type) ?
 					(value.intval == v2.value.intval)
@@ -210,10 +210,10 @@ int Usecode_value::operator==
 		else if (v2.type == array_type && v2.get_array_size())
 			{
 			const Usecode_value& val2 = v2.value.array[0];
-			return value.ptr == val2.value.ptr;
+			return (value.ptr == val2.value.ptr);
 			}
 		else
-			return 0;
+			return false;
 		}
 	else if (type == array_type)
 		{
@@ -225,24 +225,24 @@ int Usecode_value::operator==
 			return v2.value.ptr == v.value.ptr;
 			}
 		if (v2.type != array_type)
-			return 0;
+			return false;
 		int cnt = get_array_size();
 		if (cnt != v2.get_array_size())
-			return 0;
+			return false;
 		for (int i = 0; i < cnt; i++)
 			{
 			Usecode_value& e1 = get_elem(i);
 			const Usecode_value& e2 = v2.get_elem(i);
 			if (!(e1 == e2))
-				return 0;
+				return false;
 			}
-		return 1;		// Arrays matched.
+		return true;		// Arrays matched.
 		}
 	else if (type == string_type)
 		return (v2.type == string_type &&
 					strcmp(value.str, v2.value.str) == 0);
 	else
-		return (0);
+		return false;
 	}
 
 /*
