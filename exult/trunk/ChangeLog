@@ -1,3 +1,10 @@
+2004-01-30  Ryan Nunn  <colourles@users.sourceforge.net>
+	* Various files : Updating version to 1.1.10cvs. That's one point one
+	  point ten see vee ess. 
+	* audio/Audio.cc : Fixing up resampling bias problem. Fixing up what 
+	  was actually causing the high pitch voices for Windows users. Using
+	  = instead of == is never good.
+
 2004-01-27 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/docs.xml,faq.xml: updated
 	* docs/ReadMe.html, Faq.html: updated
