@@ -1095,7 +1095,10 @@ void Combo_chooser::add
 	int len;			// Serialize.
 	unsigned char *newbuf = newcombo->write(len);
 	flex_info->set(num, (char *) newbuf, len);	// Update.
-					// ++++++Vert. scrollbar???
+	GtkAdjustment *adj = 
+			gtk_range_get_adjustment(GTK_RANGE(combo_scroll));
+	adj->upper = combos.size();
+	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
 	render();
 	show();
 	}
@@ -1229,6 +1232,8 @@ void Combo_chooser::move
 	Combo *tmp = combos[tnum];
 	combos[tnum] = combos[tnum + 1];
 	combos[tnum + 1] = tmp;
+	selected += upwards ? -1 : 1;
+		//++++++++++Update flex_info entries!!!!!
 	render();
 	show();
 	}
