@@ -18,6 +18,9 @@
 #define DATA_H
 
 #include <stdio.h>
+#ifdef MACOS
+  #include <cassert>
+#endif
 #include <fstream>
 #include "U7file.h"
 
