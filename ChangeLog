@@ -1,3 +1,7 @@
+2001-02-07  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* Makefile.be, Makefile.win32, Makefile.cygwin, configure.in: 
+	  set version to 0.91alpha2
+
 2001-02-07  Christoph Reichenbach  <jameson@linuxgames.com>
 	* files/utils.cc (U7open): Explicitly exported two U7open functions
 
