@@ -123,6 +123,8 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/greycloak.shp \
 	data/bg/ring_of_protection.shp \
 	data/bg/greentop.shp \
+	data/bg/orangedress.shp \
+	data/bg/bluedress.shp \
 	data/bg/flx.in
 
 
