@@ -784,12 +784,20 @@ void Usecode_machine::set_item_shape
 	Game_object *item = get_item(item_arg);
 	if (!item)
 		return;
+					// See if light turned on/off.
+	int light_changed = gwin->get_info(item).is_light_source() !=
+			    gwin->get_info(shape).is_light_source();
 	if (item->get_owner())		// Inside something?
 		{
 		item->set_shape(shape);
-		Gump_object *gump = gwin->find_gump(item);
-		if (gump)
-			gump->paint(gwin);
+		if (light_changed)
+			gwin->paint();	// Repaint finds all lights.
+		else
+			{
+			Gump_object *gump = gwin->find_gump(item);
+			if (gump)
+				gump->paint(gwin);
+			}
 		return;
 		}
 					// Figure area to repaint.
@@ -802,7 +810,10 @@ void Usecode_machine::set_item_shape
 	rect = gwin->get_shape_rect(item).add(rect);
 	rect.enlarge(8);
 	rect = gwin->clip_to_win(rect);
-	gwin->paint(rect);		// Not sure...
+	if (light_changed)
+		gwin->paint();		// Complete repaint refigures lights.
+	else
+		gwin->paint(rect);	// Not sure...
 	gwin->show();		// +++++++
 	}
 

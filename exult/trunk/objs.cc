@@ -1640,7 +1640,7 @@ void Chunk_cache::activate_eggs
 Chunk_object_list::Chunk_object_list
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
-	) : objects(0), npcs(0), cache(0), roof(0),
+	) : objects(0), npcs(0), cache(0), roof(0), light_sources(0),
 	    cx(chunkx), cy(chunky)
 	{
 	}
@@ -1677,6 +1677,7 @@ void Chunk_object_list::add
 	newobj->cy = get_cy();
 	Game_object *obj;
 	Game_object *prev = 0;
+					// +++++Still necessary:???
 					// Just sort by lift.
 	for (obj = objects; obj && newobj->get_lift() > obj->get_lift(); 
 							obj = obj->next)
@@ -1691,7 +1692,6 @@ void Chunk_object_list::add
 		newobj->next = prev->next;
 		prev->next = newobj;
 		}
-#if 1
 					// Figure dependencies.
 	for (obj = objects; obj; obj = obj->next)
 		{
@@ -1701,9 +1701,11 @@ void Chunk_object_list::add
 		else if (cmp == 1)	// Smaller than?
 			obj->dependencies.put(newobj);
 		}
-#endif
 	if (cache)			// Add to cache.
 		cache->update_object(this, newobj, 1);
+	Shape_info& info = Game_window::get_game_window()->get_info(newobj);
+	if (info.is_light_source())	// Count light sources.
+		light_sources++;
 	if (newobj->get_lift() >= 5)	// Looks like a roof?
 		{
 #if 0 /* Not sure yet. */
@@ -1742,6 +1744,9 @@ void Chunk_object_list::remove
 	if (cache)			// Remove from cache.
 		cache->update_object(this, remove, 0);
 	remove->clear_dependencies();	// Remove all dependencies.
+	Shape_info& info = Game_window::get_game_window()->get_info(remove);
+	if (info.is_light_source())	// Count light sources.
+		light_sources--;
 	Game_object *obj;
 	for (obj = objects; obj; obj = obj->next)
 		obj->remove_dependency(remove);
