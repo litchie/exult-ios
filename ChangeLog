@@ -1,3 +1,6 @@
+2001-04-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* usecode/: SI intrinsic 0xB2 returns 'a' or 'an' depending on argument
+	
 2001-04-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Put deleted monsters in a table for later actual deletion.
