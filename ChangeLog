@@ -1,3 +1,7 @@
+2002-01-05  Max Horn  <max@quendi.de>
+
+	* mapedit/Makefile.am: fixed occurance of LIBGLADE_CFLAGS to LIBGLADE_INCLUDES
+
 2002-01-05  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Added support for the 'debug' opcodes in the Spanish
 	version of SI. It'll output the 'function name' rather then just a
