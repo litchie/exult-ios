@@ -171,6 +171,12 @@ void Gump::initialize
 			checkx = 7;
 			checky = 95;
 		}
+		else if (Game::get_game_type() == SERPENT_ISLE && shnum == game->get_shape("gumps/jawbone"))
+		{
+			object_area = Rectangle(0, 0, 138, 116); // whole gump
+			checkx = 10;
+			checky = 109;
+		}
 		else
 			object_area = Rectangle(52, 22, 60, 40);
 	}
