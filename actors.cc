@@ -254,7 +254,7 @@ void Actor::ready_best_weapon
 		int damage = winf->get_damage();
 		if (damage > best_damage)
 			{
-			wtype = (Ready_type) info.get_ready_type();
+			wtype = static_cast<Ready_type>(info.get_ready_type());
 			best = obj;
 			best_damage = damage;
 			}
@@ -461,9 +461,9 @@ void Actor::use_food
 		if (shnum == 658 || shnum == 734 || shnum == 747)
 			return;
 		}
-	int food = get_property((int) food_level);
+	int food = get_property(static_cast<int>(food_level));
 	food -= 3;			// 1 level/hour should do.
-	set_property((int) food_level, food);
+	set_property(static_cast<int>(food_level), food);
 	if (food <= 0)			// Really low?
 		{
 		if (rand()%4)
@@ -559,27 +559,27 @@ void Actor::init_default_frames
 			south_frames[FRAME_NUM] = {16, 17, 16, 18, 16},
 			 east_frames[FRAME_NUM] = {48, 49, 48, 50, 48},
 			 west_frames[FRAME_NUM] = {32, 33, 32, 34, 32};
-	frames[(int) north] = new Frames_sequence(FRAME_NUM, north_frames);
-	frames[(int) northeast] = frames[(int) north];
-	frames[(int) south] = new Frames_sequence(FRAME_NUM, south_frames);
-	frames[(int) southwest] = frames[(int) south];
-	frames[(int) east] = new Frames_sequence(FRAME_NUM, east_frames);
-	frames[(int) southeast] = frames[(int) east];
-	frames[(int) west] = new Frames_sequence(FRAME_NUM, west_frames);
-	frames[(int) northwest] = frames[(int) west];
+	frames[static_cast<int> (north)] = new Frames_sequence(FRAME_NUM, north_frames);
+	frames[static_cast<int> (northeast)] = frames[static_cast<int> (north)];
+	frames[static_cast<int> (south)] = new Frames_sequence(FRAME_NUM, south_frames);
+	frames[static_cast<int> (southwest)] = frames[static_cast<int> (south)];
+	frames[static_cast<int> (east)] = new Frames_sequence(FRAME_NUM, east_frames);
+	frames[static_cast<int> (southeast)] = frames[static_cast<int> (east)];
+	frames[static_cast<int> (west)] = new Frames_sequence(FRAME_NUM, west_frames);
+	frames[static_cast<int> (northwest)] = frames[static_cast<int> (west)];
 #else
 	uint8	north_frames[3] = {0, 1, 2},
 			south_frames[3] = {16, 17, 18},
 			east_frames[3] = {48, 49, 50},
 			west_frames[3] = {32, 33, 34};
-	frames[(int) north] = new Frames_sequence(3, north_frames);
-	frames[(int) northeast] = frames[(int) north];
-	frames[(int) south] = new Frames_sequence(3, south_frames);
-	frames[(int) southwest] = frames[(int) south];
-	frames[(int) east] = new Frames_sequence(3, east_frames);
-	frames[(int) southeast] = frames[(int) east];
-	frames[(int) west] = new Frames_sequence(3, west_frames);
-	frames[(int) northwest] = frames[(int) west];
+	frames[static_cast<int> (north)] = new Frames_sequence(3, north_frames);
+	frames[static_cast<int> (northeast)] = frames[(int) north];
+	frames[static_cast<int> (south)] = new Frames_sequence(3, south_frames);
+	frames[static_cast<int> (southwest)] = frames[(int) south];
+	frames[static_cast<int> (east)] = new Frames_sequence(3, east_frames);
+	frames[static_cast<int> (southeast)] = frames[(int) east];
+	frames[static_cast<int> (west)] = new Frames_sequence(3, west_frames);
+	frames[static_cast<int> (northwest)] = frames[(int) west];
 #endif
 	}
 
@@ -1564,7 +1564,7 @@ void Actor::activate
 		{
 		editing = 0;
 		Tile_coord t = get_abs_tile_coord();
-		unsigned long addr = (unsigned long) this;
+		unsigned long addr = reinterpret_cast<unsigned long>(this);
 		int num_schedules;	// Set up schedule-change list.
 		Schedule_change *changes;
 		get_schedules(changes, num_schedules);
@@ -1824,15 +1824,15 @@ void Actor::set_property
 	if (prop == health && ((party_id != -1) || (npc_num == 0)) && 
 		cheat.in_god_mode() && val < properties[prop])
 		return;
-	switch ((Item_properties) prop)
+	switch (static_cast<Item_properties>(prop))
 		{
 	case exp:
 		{			// Experience?  Check for new level.
 		int old_level = get_level();
-		properties[(int) exp] = (short) val;
+		properties[static_cast<int>(exp)] = static_cast<short>(val);
 		int delta = get_level() - old_level;
 		if (delta > 0)
-			properties[(int) training] += 3*delta;
+			properties[static_cast<int>(training)] += 3*delta;
 		break;
 		}
 	case food_level:
@@ -1840,11 +1840,11 @@ void Actor::set_property
 			val = 36;
 		else if (val < 0)
 			val = 0;
-		properties[prop] = (short) val;
+		properties[prop] = static_cast<short>(val);
 		break;
 	default:
 		if (prop >= 0 && prop < 12)
-			properties[prop] = (short) val;
+			properties[prop] = static_cast<short>(val);
 		break;
 		}
 	Game_window *gwin = Game_window::get_game_window();
@@ -1864,7 +1864,7 @@ public:
 	};
 void Clear_hit::handle_event(unsigned long curtime, long udata)
 	{ 
-	Actor *a = (Actor *) udata;
+	Actor *a = reinterpret_cast<Actor*>(udata);
 	a->hit = false;
 	Game_window *gwin = Game_window::get_game_window();
 	a->add_dirty(gwin);
@@ -1894,10 +1894,10 @@ bool Actor::reduce_health
 				gwin->get_info(this).has_translucency())
 		return false;
 	bool defeated = false;
-	int oldhp = properties[(int) health];
-	int maxhp = properties[(int) strength];
+	int oldhp = properties[static_cast<int>(health)];
+	int maxhp = properties[static_cast<int>(strength)];
 	int val = oldhp - delta;
-	properties[(int) health] = val;
+	properties[static_cast<int>(health)] = val;
 	if (this == gwin->get_main_actor() && val < maxhp/8 &&
 					// Flash red if Avatar badly hurt.
 	    rand()%2)
@@ -1907,7 +1907,7 @@ bool Actor::reduce_health
 		hit = true;		// Flash red outline.
 		add_dirty(gwin);
 		Clear_hit *c = new Clear_hit();
-		gwin->get_tqueue()->add(Game::get_ticks() + 200, c, (long) this);
+		gwin->get_tqueue()->add(Game::get_ticks() + 200, c, reinterpret_cast<long>(this));
 		}
 	Game_object_vector vec;		// Create blood.
 	const int blood = 912;
@@ -1927,9 +1927,9 @@ bool Actor::reduce_health
 							Usecode_machine::died);
 				// Still 'tournament'?  Set hp = 1.
 			if (!is_dead() && get_flag(Obj_flags::si_tournament) &&
-			    get_property((int) health) < 1)
+			    get_property(static_cast<int>(health)) < 1)
 				{
-				set_property((int) health, 1);
+				set_property(static_cast<int>(health), 1);
 				if (get_attack_mode() == Actor::flee)
 					defeated = true;
 				}
@@ -1999,7 +1999,7 @@ void Actor::set_siflag
 	)
 	{
 	if (flag >= 0 && flag < 32)
-		siflags |= ((uint32) 1 << flag);
+		siflags |= (static_cast<uint32>(1) << flag);
 
 	set_actor_shape();
 	}
@@ -2010,7 +2010,7 @@ void Actor::set_type_flag
 	)
 	{
 	if (flag >= 0 && flag < 16)
-		type_flags |= ((uint32) 1 << flag);
+		type_flags |= (static_cast<uint32>(1) << flag);
 
 	set_actor_shape();
 	}
@@ -2028,9 +2028,9 @@ void Actor::clear_flag
 	if (flag == Obj_flags::dont_render && Game::get_game_type() == SERPENT_ISLE)
 		clear_siflag(dont_move);
 	if (flag >= 0 && flag < 32)
-		flags &= ~((uint32) 1 << flag);
+		flags &= ~(static_cast<uint32>(1) << flag);
 	else if (flag >= 32 && flag < 64)
-		flags2 &= ~((uint32) 1 << (flag-32));
+		flags2 &= ~(static_cast<uint32>(1) << (flag-32));
 	Game_window *gwin = Game_window::get_game_window();
 	if (flag == Obj_flags::invisible)	// Restore normal palette.
 		gwin->set_palette();
@@ -2054,7 +2054,7 @@ void Actor::clear_siflag
 	)
 	{
 	if (flag >= 0 && flag < 32)
-		siflags &= ~((uint32) 1 << flag);
+		siflags &= ~(static_cast<uint32>(1) << flag);
 
 	set_actor_shape();
 	}
@@ -2065,7 +2065,7 @@ void Actor::clear_type_flag
 	)
 	{
 	if (flag >= 0 && flag < 16)
-		type_flags &= ~((uint32) 1 << flag);
+		type_flags &= ~(static_cast<uint32>(1) << flag);
 
 	set_actor_shape();
 	}
@@ -2079,7 +2079,7 @@ int Actor::get_siflag
 	int flag
 	) const
 	{
-	return (flag >= 0 && flag < 32) ? (siflags & ((uint32) 1 << flag))
+	return (flag >= 0 && flag < 32) ? (siflags & (static_cast<uint32>(1) << flag))
 			!= 0 : 0;
 	}
 
@@ -2088,7 +2088,7 @@ int Actor::get_type_flag
 	int flag
 	) const
 	{
-	return (flag >= 0 && flag < 16) ? (type_flags & ((uint32) 1 << flag))
+	return (flag >= 0 && flag < 16) ? (type_flags & (static_cast<uint32>(1) << flag))
 			!= 0 : 0;
 	}
 /*
@@ -2114,7 +2114,7 @@ int Actor::get_max_weight
 	(
 	)
 	{
-	return 2*properties[(int) Actor::strength];
+	return 2*properties[static_cast<int>(Actor::strength)];
 	}
 
 /*
@@ -2318,7 +2318,7 @@ int Actor::add_readied
 {
 
 	// Is Out of range?
-	if (index < 0 || index >= (int)(sizeof(spots)/sizeof(spots[0])))
+	if (index < 0 || index >= static_cast<int>(sizeof(spots)/sizeof(spots[0])))
 		return (0);		
 
 	// Already something there? Try to drop into it.
@@ -2428,7 +2428,7 @@ int Actor::move_aside
 	if (i == 8 || to.tx < 0)	// Failed?  Try to swap places.
 		return swap_positions(for_actor);
 					// Step, and face direction.
-	step(to, get_dir_framenum(stepdir, (int) Actor::standing));
+	step(to, get_dir_framenum(stepdir,static_cast<int>(Actor::standing)));
 	Tile_coord newpos = get_abs_tile_coord();
 	return (newpos.tx == to.tx && newpos.ty == to.ty);
 	}
@@ -2465,7 +2465,7 @@ int Actor::get_armor_points
 	Game_window *gwin = Game_window::get_game_window();
 	for (int i = 0; i < num_armor_spots; i++)
 		{
-		Game_object *armor = spots[(int) aspots[i]];
+		Game_object *armor = spots[static_cast<int>(aspots[i])];
 		if (armor)
 			points += gwin->get_info(armor).get_armor();
 		}
@@ -2485,7 +2485,7 @@ Weapon_info *Actor::get_weapon
 	points = 0;
 	Weapon_info *winf = 0;
 	Game_window *gwin = Game_window::get_game_window();
-	Game_object *weapon = spots[(int) lhand];
+	Game_object *weapon = spots[static_cast<int>(lhand)];
 	if (weapon)
 		if ((winf = gwin->get_info(weapon).get_weapon_info()) != 0)
 			{
@@ -2493,7 +2493,7 @@ Weapon_info *Actor::get_weapon
 			shape = weapon->get_shapenum();
 			}
 					// Try both hands.
-	weapon = spots[(int) rhand];
+	weapon = spots[static_cast<int>(rhand)];
 	if (weapon)
 		{
 		Weapon_info *rwinf = gwin->get_info(weapon).get_weapon_info();
@@ -2586,9 +2586,9 @@ bool Actor::figure_hit_points
 
 	int attacker_level = attacker ? attacker->get_level() : 4;
 	int prob = 40 + attacker_level + (attacker ?
-			(attacker->get_property((int) combat) +
-			attacker->get_property((int) dexterity)) : 20) -
-			get_property((int) dexterity) +
+			(attacker->get_property(static_cast<int>(combat)) +
+			attacker->get_property(static_cast<int>(dexterity))) : 20) -
+			get_property(static_cast<int>(dexterity)) +
 			wpoints - armor;
 	if (get_flag(Obj_flags::protection))// Defender is protected?
 		prob -= (40 + rand()%20);
@@ -2600,7 +2600,7 @@ bool Actor::figure_hit_points
 		return false;		// Missed.
 					// +++++Do special atts. too.
 					// Compute hit points to lose.
-	int hp = (attacker ? attacker->get_property((int) strength)/4 : 2) +
+	int hp = (attacker ? attacker->get_property(static_cast<int>(strength))/4 : 2) +
 			(rand()%attacker_level) +
 			wpoints - armor;
 	if (hp < 1)
@@ -2611,11 +2611,11 @@ bool Actor::figure_hit_points
 	    (this == gwin->get_main_actor() || 
 				attacker == gwin->get_main_actor()))
 		Audio::get_ptr()->play_sound_effect(sfx);
-	int oldhealth = properties[(int) health];
-	int maxhealth = properties[(int) strength];
+	int oldhealth = properties[static_cast<int>(health)];
+	int maxhealth = properties[static_cast<int>(strength)];
 
 	if (instant_death)		//instant death
-		hp = properties[(int) health] + properties[(int) strength] + 1;
+		hp = properties[static_cast<int>(health)] + properties[static_cast<int>(strength)] + 1;
 	int newhp = oldhealth - hp;	// Subtract from health.
 
 	if (oldhealth >= maxhealth/2 && newhp < maxhealth/2 && rand()%3 != 0)
@@ -2640,7 +2640,7 @@ bool Actor::figure_hit_points
 
 	cout << name << " hits " << get_name() <<
 		" for " << hp << " hit points, leaving " <<
-		properties[(int) health] << " remaining" << endl;
+		properties[static_cast<int>(health)] << " remaining" << endl;
 //	cout << "Attack damage was " << hp << " hit points, leaving " << 
 //		properties[(int) health] << " remaining" << endl;
 	return defeated;
@@ -2676,15 +2676,15 @@ Game_object *Actor::attacked
 	if (attacker && defeated)
 		{
 					// Experience gained = strength???
-		int expval = get_property((int) strength) +
-				get_property((int) combat)/4 +
-				get_property((int) dexterity)/4 +
-				get_property((int) intelligence)/4;
+		int expval = get_property(static_cast<int>(strength)) +
+				get_property(static_cast<int>(combat))/4 +
+				get_property(static_cast<int>(dexterity))/4 +
+				get_property(static_cast<int>(intelligence))/4;
 		if (!is_dead())		// Tournament win (List Field)?
 			expval /= 2;
 					// Attacker gains experience.
-		attacker->set_property((int) exp,
-				attacker->get_property((int) exp) + expval);
+		attacker->set_property(static_cast<int>(exp),
+				attacker->get_property(static_cast<int>(exp)) + expval);
 		return 0;
 		}
 	return this;
@@ -2792,8 +2792,8 @@ void Actor::mend_hourly
 	{
 	if (is_dead())
 		return;
-	int maxhp = properties[(int) strength];
-	int hp = properties[(int) health];
+	int maxhp = properties[static_cast<int>(strength)];
+	int hp = properties[static_cast<int>(health)];
 	if (maxhp > 0 && hp < maxhp)
 		{
 		if (maxhp >= 3)  
@@ -2802,20 +2802,20 @@ void Actor::mend_hourly
 			hp += 1;
 		if (hp > maxhp)
 			hp = maxhp;
-		properties[(int) health] = hp;
+		properties[static_cast<int>(health)] = hp;
 					// ??If asleep & hps now >= 0, should
 					//   we awaken?
 		}
 					// Restore some mana also.
-	int maxmana = properties[(int) magic];
-	int curmana = properties[(int) mana];
+	int maxmana = properties[static_cast<int>(magic)];
+	int curmana = properties[static_cast<int>(mana)];
 	if (maxmana > 0 && curmana < maxmana)
 		{
 		if (maxmana >= 3)	
 			curmana += 1 + rand()%(maxmana/3);
 		else
 			curmana += 1;
-		properties[(int) mana] = curmana <= maxmana ? curmana 
+		properties[static_cast<int>(mana)] = curmana <= maxmana ? curmana 
 								: maxmana;
 		}
 	}
@@ -2847,7 +2847,7 @@ Actor *Actor::resurrect
 	body->remove_this();		// Remove and delete body.
 	move(pos);			// Move back to life.
 					// Restore health to max.
-	properties[(int) health] = properties[(int) strength];
+	properties[static_cast<int>(health)] = properties[static_cast<int>(strength)];
 	Actor::clear_flag(Obj_flags::dead);
 					// Restore to party if possible.
 	gwin->get_usecode()->update_party_status(this);
@@ -2896,8 +2896,8 @@ void Main_actor::get_followers
 	int cnt = uc->get_party_count();
 	for (int i = 0; i < cnt; i++)
 		{
-		Npc_actor *npc = (Npc_actor *) gwin->get_npc(
-						uc->get_party_member(i));
+		Npc_actor *npc = dynamic_cast<Npc_actor*>(gwin->get_npc(
+						uc->get_party_member(i)));
 		if (!npc || npc->get_flag(Obj_flags::asleep) ||
 		    npc->is_dead())
 			continue;
@@ -2951,7 +2951,7 @@ int Main_actor::step
 		return (0);
 		}
 	if (poison && t.tz == 0)
-		Actor::set_flag((int) Obj_flags::poisoned);
+		Actor::set_flag(static_cast<int>(Obj_flags::poisoned));
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
 	add_dirty(gwin);		/// Set to update old location.
@@ -3272,13 +3272,15 @@ void Npc_actor::set_schedule_time_type (int time, int type)
 			scheds[i].set(tile.tx, tile.ty, schedules[i].get_type(), schedules[i].get_time());
 		}
 
-		scheds[num_schedules].set(0, 0, (unsigned char) type, (unsigned char) time);
+		scheds[num_schedules].set(0, 0, static_cast<unsigned char>(type),
+			static_cast<unsigned char>(time));
 		set_schedules(scheds, num_schedules+1);
 	}
 	else	// Did find it
 	{
 		tile = schedules[i].get_pos();
-		schedules[i].set(tile.tx, tile.ty, (unsigned char) type, (unsigned char) time);
+		schedules[i].set(tile.tx, tile.ty, static_cast<unsigned char>(type),
+			static_cast<unsigned char>(time));
 	}
 }
 
@@ -3303,12 +3305,12 @@ void Npc_actor::set_schedule_time_location (int time, int x, int y)
 			scheds[i].set(tile.tx, tile.ty, schedules[i].get_type(), schedules[i].get_time());
 		}
 
-		scheds[num_schedules].set(x, y, 0, (unsigned char) time);
+		scheds[num_schedules].set(x, y, 0, static_cast<unsigned char>(time));
 		set_schedules(scheds, num_schedules+1);
 	}
 	else	// Did find it
 	{
-		schedules[i].set(x, y, schedules[i].get_type(), (unsigned char) time);
+		schedules[i].set(x, y, schedules[i].get_type(), static_cast<unsigned char>(time));
 	}
 }
 
@@ -3583,7 +3585,7 @@ int Npc_actor::step
 		return (0);		// Done.
 		}
 	if (poison && t.tz == 0)
-		Actor::set_flag((int) Obj_flags::poisoned);
+		Actor::set_flag(static_cast<int>(Obj_flags::poisoned));
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
 	add_dirty(gwin);		// Set to repaint old area.
@@ -3818,7 +3820,7 @@ Monster_actor *Monster_actor::create
 		inf = Monster_info::get_default();
 					// Usecode = shape.
 	Monster_actor *monster = new Monster_actor("", shnum, -1, shnum);
-	monster->set_alignment(align == (int) Actor::neutral 
+	monster->set_alignment(align == static_cast<int>(Actor::neutral)
 						? inf->alignment : align);
 	// Movement flags
 	if ((inf->flags >> Monster_info::fly)&1)
