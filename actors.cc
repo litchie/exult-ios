@@ -3450,7 +3450,8 @@ Monster_actor *Monster_info::create
 	int align			// Alignment.
 	)
 	{
-	Monster_actor *monster = new Monster_actor("", shapenum);
+					// Usecode = shape.
+	Monster_actor *monster = new Monster_actor("", shapenum, -1, shapenum);
 	monster->set_info(this);
 	if (align != -1)
 		monster->set_alignment(align);

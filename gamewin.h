@@ -306,6 +306,8 @@ public:
 		}
 	void center_view(Tile_coord t);	// Center view around t.
 	void set_camera_actor(Actor *a);
+	Actor *get_camera_actor()
+		{ return camera_actor; }
 					// Scroll if necessary.
 	int scroll_if_needed(Tile_coord t);
 	int scroll_if_needed(Actor *a, Tile_coord t)
