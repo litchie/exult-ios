@@ -450,7 +450,7 @@ void Combat_schedule::start_strike
 								ammo_shape)))
 			{		// Out of ammo.
 			Swap_weapons(npc);
-			set_weapon_info();
+			Combat_schedule::set_weapon();
 			state = approach;
 			npc->set_target(0);
 			npc->start(200, 500);
@@ -527,7 +527,7 @@ void Combat_schedule::run_away
  *	Set weapon 'max_range' and 'ammo'.  Ready a new weapon if needed.
  */
 
-void Combat_schedule::set_weapon_info
+void Combat_schedule::set_weapon
 	(
 	)
 	{
@@ -556,13 +556,8 @@ void Combat_schedule::set_weapon_info
 		}
 	max_range = projectile_range > strike_range ? projectile_range
 					: strike_range;
-#if 0
-					// Not shooting?
-	if (!projectile_shape)
-		max_range = 1;		// For now.
-	else
-		max_range = 20;		// Guessing.
-#endif
+	if (state == strike || state == fire)
+		state = approach;	// Got to restart attack.
 	}
 
 /*
@@ -651,7 +646,7 @@ Combat_schedule::Combat_schedule
 		is_thrown(false), yelled(0), 
 		started_battle(false), fleed(0), failures(0)
 	{
-	set_weapon_info();
+	Combat_schedule::set_weapon();
 					// Cache some data.
 	Game_window *gwin = Game_window::get_game_window();
 	Monster_info *minf = gwin->get_info(npc).get_monster_info();
@@ -737,7 +732,7 @@ void Combat_schedule::now_what
 				{
 				npc->remove_quantity(1, weapon_shape,
 						c_any_qual, c_any_framenum);
-				set_weapon_info();
+				Combat_schedule::set_weapon();
 				}
 					// This may delete us!
 			Actor *safenpc = npc;
@@ -759,7 +754,7 @@ void Combat_schedule::now_what
 					c_any_qual, c_any_framenum) == 0)
 				{
 				ashape = weapon_shape;
-				set_weapon_info();
+				Combat_schedule::set_weapon();
 				}
 			}
 		else			// Ammo required?
