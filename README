@@ -1,13 +1,12 @@
 Exult Documentation
-last changed: 05 June 2002(GMT)
+last changed: 24 July 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 05 June 2002
-0.2. - 22 May 2002
-0.3. - 19 May 2002
+0.1. - 24 July 2002
+0.2. - 05 June 2002
 
 1. Introduction
 1.1. What is Exult?
@@ -57,21 +56,14 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 05 June 2002
+0.1. - 24 July 2002
+* 2.4. Command line options added -c and fixed --buildmap.
+
+
+
+0.2. - 05 June 2002
 * 5.1. Movement no keyboard movement.
 * 5.2. Keyboard commands added cut/paste selection keys..
-
-
-
-0.2. - 22 May 2002
-* 3.7. Linux and Audio after some discussion we rephrased this a bit.
-
-
-
-0.3. - 19 May 2002
-* 3.4. Digital Wave Sound Effects added selection move keys.
-* 3.7. Linux and Audio we advice using ALSA instead of OSS.
-* 5.3. Cheat keys added selection move keys.
 
 
 
@@ -436,10 +428,11 @@ Note: Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\). So
 Exult offers some "hidden" command line options:
 * -h or --help Shows all the command line parameters in stderr (stderr.txt on Windows systems)
 * -v or --version Shows version information in stderr
+* -c configfile Specify alternate config file (relative or absolute paths work).
 * --bg Starts the game with the Black Gate menu
 * --si Starts the game with the Serpent Isle menu
+* --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg --buildmap 0). Builds the map of the game specified.The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map.
 * --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data dir aren't the same it got compiled with. This parameter lets the game start nethertheless. Don't try this if you don't know what you are doing.
-* --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg buildmap 0). Builds the map of the game specified.The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map.
 * --game gamename Unused yet. Loads a game specified in exult.cfg when there are other games made with Exult Studio.
 
 

@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="05 June 2002(GMT)">
+<readme title="Exult" changed="24 July 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="24072002">
+			<header>- 24 July 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="command_line"/> added -c and fixed --buildmap.</li>		
+				</ul>
+			</body>
+		</sub>
 		<sub name="05062002">
 			<header>- 05 June 2002</header>
 			<body>
 				<ul>
 				<li><ref1 target="movement"/> no keyboard movement.</li>
 				<li><ref1 target="exult_keys"/> added cut/paste selection keys..</li>		
-				</ul>
-			</body>
-		</sub>
-		<sub name="22052002">
-			<header>- 22 May 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="linux_alsa"/> after some discussion we rephrased this a bit.</li>		
-				</ul>
-			</body>
-		</sub>
-		<sub name="19052002">
-			<header>- 19 May 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="wave_sfx"/> added selection move keys.</li>
-				<li><ref1 target="linux_alsa"/> we advice using ALSA instead of OSS.</li>
-				<li><ref1 target="exult_cheats"/> added selection move keys.</li>			
 				</ul>
 			</body>
 		</sub>
@@ -528,23 +518,25 @@
 						Shows all the command line parameters in stderr (stderr.txt on Windows systems)</li>
 					<li>-v or --version<br/>
 						Shows version information in stderr</li>
+					<li>-c configfile<br/>
+						Specify alternate config file (relative or absolute paths work).</li>
 					<li>--bg<br/>
 						Starts the game with the Black Gate menu</li>
 					<li>--si<br/>
 						Starts the game with the Serpent Isle menu</li>
-					<li>--nocrc<br/>
-						Recently we added a crc check that Exult doesn't start when the
-						exult*.flx files in the data dir aren't the same it got compiled with.
-						This parameter lets the game start nethertheless. Don't try this if you 
-						don't know what you are doing.</li>
 					<li>--buildmap x<br/>
 						x = 0 shows all roofs, x = 2 pops them all.<br/>
-						You have to specify the game first (Example: exult --bg buildmap 0).<br/>
+						You have to specify the game first (Example: exult --bg --buildmap 0).<br/>
 						Builds the map of the game specified.The map is <strong>huge</strong> and in pcx 
 						format, you will need a lot of ram to even look at this map once it is build 
 						(and even that requires a lot of patience)<br/>
 						<Exult/> is required to be run in windowed mode and you get the best map if you 
 						started a new game before you build the map.</li>
+					<li>--nocrc<br/>
+						Recently we added a crc check that Exult doesn't start when the
+						exult*.flx files in the data dir aren't the same it got compiled with.
+						This parameter lets the game start nethertheless. Don't try this if you 
+						don't know what you are doing.</li>
 					<li>--game gamename<br/>
 						Unused yet. Loads a game specified in exult.cfg when there are other games made
 						with <Studio/>.</li>

@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="18 June 2002(GMT)">
+<faqs title="Exult" changed="24 July 2002(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="24072002">
+			<header>- 24 July 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="what_platforms"/> the Amiga port has been integrated ages ago
+					and we have a Zaurus port now.</li>
+				<li><ref1 target="compile_issues"/> makefile.cygwin no longer exists.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="18062002">
 			<header>- 18 June 2002</header>
 			<body>
@@ -11,41 +21,6 @@
 				<li><ref1 target="studio_support"/> <Studio/> is no longer supported in RC2 and stable 
 					snapshots.</li>
 				<li><ref1 target="bug_report"/> SourceForge requires registration for attaching files.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="05062002">
-			<header>- 05 June 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="latest_version"/> new version.</li>
-				<li><ref1 target="arrow_walkning"/> added..</li>
-				<li><ref1 target="pikeman_disappears"/> bug from the original is haunting us.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="19052002">
-			<header>- 19 May 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="how_move_ships"/> this gets asked once in a while.</li>
-				<li><ref1 target="party_formation"/> Jeff changed this a bit.</li>
-				<li>"Why does Exult freeze when I board Hawk's ship on SI?" was a bug and got 
-					fixed and therefore no longer in the FAQ.</li>
-				<li><ref1 target="linux_audio"/> Bug with OSS in Linux.</li>
-				<li><ref1 target="blank_screen"/> this also comes up sometimes.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="07042002">
-			<header>- 07 April 2002</header>
-			<body>
-				<ul>
-				<li>Removed the FAQ part for <Studio/> and integrated it in the <Studio/> documentation.</li>
-				<li><ref1 target="what_platforms"/> MacOS needs to be 8.5 or higher.</li>
-				<li><ref1 target="exult_engine"/> linked to the new <Studio/> documentation.</li>
-				<li><ref1 target="known_issues"/> possible bug with spaces in path.</li>
-				<li><ref1 target="compile_issues"/> makefile.cygwin uses Cygwin only as shell.</li>
 				</ul>
 			</body>
 		</sub>
@@ -252,11 +227,16 @@
 					OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP).
 				</para>
 				<para>
-					Recently we discovered that there is also a working port of <Exult/> for
-					MorphOS and AmigaOS. You can find that version at Ruediger Hanke's homepage
-					<extref target="http://www.muenster.de/~tomjoad/exult.html"/>. We are currently
-					working on integrating his changes into the main code and making those versions
-					available on our homepage.
+					Ruediger Hanke's ported <Exult/> to MorphOS and AmigaOS. You can get this 
+					version at <extref target="http://www.muenster.de/~tomjoad/exult.html"/>.
+				 </para>
+				 <para>
+					Recently Artaxerxes started working on a port for 
+					<extref target="http://www.myzaurus.com/">Zaurus</extref>, a Linux/ARM based PDA.
+					You can already move around and hold conversations. Pictures of the Zaurus running
+					SI can be found at 
+					<extref target="http://exult.sourceforge.net/images/screenshots/zaurus/"/> and an 
+					IPK package at <extref target="http://artaxerxes_2.tripod.com/exult_0.2_arm.ipk"/>.
 				 </para>
 			</body>
 		</sub>
@@ -821,7 +801,6 @@
 			<header>Known Compile Issues</header>
 			<body>
 				<ul>
-					<li>makefile.cygwin uses cygwin only as shell. Mingw is used for compiling.</li>
 					<li>There is a bug/incompatibility with the flex bundled Linux distributions
 						(RH7.0, for example) that breaks compilation. Upgrading to a more recent version
 						of flex should fix it.</li>
