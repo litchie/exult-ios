@@ -168,6 +168,7 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(limits.h sys/time.h unistd.h)
 AC_CHECK_HEADERS(sys/types.h sys/socket.h netdb.h)
+AC_CHECK_HEADERS(sys/wait.h signal.h)
 AM_CONDITIONAL(HAVE_PNG, false)
 AC_CHECK_HEADERS(png.h, AM_CONDITIONAL(HAVE_PNG,true))
 AC_CHECK_ALPHA_LINUX_CXX
