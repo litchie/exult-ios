@@ -207,7 +207,9 @@ void Scheduled_usecode::handle_event
 				}
 			break;
 			}
-		case 0x23:		// ??
+		case 0x23:		// ?? Always appears first.
+					// +++++Maybe means "don't let
+					// +++intrinsic 5c stop it".
 			break;
 		case 0x27:		// ?? 1 parm. Guessing:
 			{		//   delay before next instruction.
