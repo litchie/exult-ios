@@ -508,6 +508,12 @@ Actor_gump_object::Actor_gump_object
 	{
 	heart_button = new Heart_gump_button(this, heartx, hearty);
 	disk_button = new Disk_gump_button(this, diskx, disky);
+	for (int i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
+		{			// Set object coords.
+		Game_object *obj = container->get_readied(i);
+		if (obj)
+			set_to_spot(obj, i);
+		}
 	}
 
 /*
@@ -551,9 +557,14 @@ int Actor_gump_object::add
 					// Try again for an empty spot.
 		index = find_closest(mx, my, 1);
 		if (index < 0 || !container->add_readied(obj, index))
-			return (0);
+					// Just try to add it.
+			if (!container->add(obj))
+				return (0);
 		}
-	set_to_spot(obj, index);	// Set obj. coords.
+					// In case it went in another obj:
+	index = container->find_readied(obj);
+	if (index >= 0)
+		set_to_spot(obj, index);// Set obj. coords.
 	return (1);
 	}
 
