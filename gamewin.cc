@@ -1779,14 +1779,6 @@ void Game_window::start_actor_alt
 	Tile_coord start = main_actor->get_abs_tile_coord();
 	int dir;
 	
-	// Check to see if we are allowed to move, if not, stop moving and return
-	// Too buggy at the moment, don't do it
-	//if (main_actor->get_siflag(Actor::dont_move))
-	//{
-	//	stop_actor();
-	//	return;
-	//}
-
 	for (dir = 0; dir < 8; dir++)
 	{
 		Tile_coord dest = start.get_neighbor(dir);
@@ -1894,6 +1886,12 @@ void Game_window::start_actor
 	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
 	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
+	if (main_actor->get_siflag(Actor::dont_move))
+		{
+//		stop_actor();  Causes problems in animations.
+		return;
+		}
+
 	teleported = 0;
 	int lift = main_actor->get_lift();
 	int liftpixels = 4*lift;	// Figure abs. tile.
