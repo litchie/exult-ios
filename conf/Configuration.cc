@@ -198,7 +198,11 @@ bool	Configuration::read_config_file(const char *n)
 		{
 			// User has a home directory
 			filename=f1;
+#ifndef BEOS
 			filename+="/.";
+#else
+			filename+="/config/settings/";
+#endif
 			filename+=n;
 		}
 		else
