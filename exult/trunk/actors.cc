@@ -163,20 +163,13 @@ void Main_actor::handle_event
 	if (next_frame(curtime, cx, cy, sx, sy, frame))
 		{
 		Chunk_object_list *olist = gwin->get_objects(cx, cy);
-		olist->setup_cache();	//++++++++++++++++
-//++++++++TESTING Remove the above!!!!!!!+++++++++++++++++++++++++++++
+		olist->setup_cache();
 		int new_lift;		// Might climb/descend.
 		if (olist->is_blocked(get_lift(), sx, sy, new_lift))
 			{
 			stop();
 			return;
 			}
-		if (new_lift != get_lift())
-#if DEBUG
-			cout << "New lift is " << new_lift << '\n';
-#else
-			;
-#endif
 					// Add back to queue for next time.
 		gwin->get_tqueue()->add(curtime + frame_time,
 							this, udata);
@@ -216,7 +209,7 @@ void Main_actor::handle_event
  *	Set a schedule.
  */
 
-void Schedule::set
+void Schedule_change::set
 	(
 	unsigned char *entry		// 4 bytes read from schedule.dat.
 	)
@@ -239,7 +232,7 @@ Npc_actor::Npc_actor
 	int fshape, 
 	int uc
 	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
-		schedule((int) Schedule::loiter), num_schedules(0), 
+		schedule((int) Schedule_change::loiter), num_schedules(0), 
 		schedules(0)
 	{
 	}
