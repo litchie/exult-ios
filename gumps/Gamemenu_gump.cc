@@ -35,40 +35,44 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gump_utils.h"
 #include "exult.h"
 #include "exult_flx.h"
+#include "Text_button.h"
+#include <string>
 
-static const int rowy[6] = { 14, 28, 40, 52, 66, 78 };
-static const int colx = 138;
+using std::string;
 
-class Gamemenu_button : public Gump_button {
+static const int rowy[6] = { 4, 18, 30, 42, 56, 68 };
+static const int colx = 31;
+
+static const char* loadsavetext = "Load/Save Game";
+static const char* videoopttext = "Video Options";
+static const char* audioopttext = "Audio Options";
+static const char* gameopttext = "Gameplay Options";
+static const char* quitmenutext = "Quit to Menu";
+static const char* quittext = "Quit";
+
+class Gamemenu_button : public Text_button {
 public:
-	Gamemenu_button(Gump *par, int px, int py, int shapenum)
-		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX)
-		{  }
+	Gamemenu_button(Gump *par, string text, int px, int py)
+		: Text_button(par, text, px, py, 108, 11)
+	{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
 };
 
 void Gamemenu_button::activate(Game_window *gwin)
 {
-	switch (get_shapenum()) {
-	case EXULT_FLX_GAM_LOADSAVE_SHP: // load/save
+	if (text == loadsavetext) {
 		((Gamemenu_gump*)parent)->loadsave();
-		break;
-	case EXULT_FLX_GAM_VIDEO_SHP: // video options
+	} else if (text == videoopttext) {
 		((Gamemenu_gump*)parent)->video_options();
-		break;
-	case EXULT_FLX_GAM_AUDIO_SHP: // audio options
+	} else if (text == audioopttext) {
 		((Gamemenu_gump*)parent)->audio_options();
-		break;
-	case EXULT_FLX_GAM_GAMEPLAY_SHP: // gameplay options
+	} else if (text == gameopttext) {
 		((Gamemenu_gump*)parent)->gameplay_options();
-		break;
-	case EXULT_FLX_GAM_QUITMENU_SHP: // quit to menu
+	} else if (text == quitmenutext) {
 		((Gamemenu_gump*)parent)->quit(true);
-		break;
-	case EXULT_FLX_GAM_QUIT_SHP: // quit
+	} else if (text == quittext) {
 		((Gamemenu_gump*)parent)->quit(false);
-		break;
 	}
 }
 
@@ -76,12 +80,12 @@ Gamemenu_gump::Gamemenu_gump() : Modal_gump(0, EXULT_FLX_GAMEMENU_SHP, SF_EXULT_
 {
 	set_object_area(Rectangle(0,0,0,0), 8, 82); //+++++ ???
 
-	buttons[0] = new Gamemenu_button(this, colx, rowy[0], EXULT_FLX_GAM_LOADSAVE_SHP);
-	buttons[1] = new Gamemenu_button(this, colx, rowy[1], EXULT_FLX_GAM_VIDEO_SHP);
-	buttons[2] = new Gamemenu_button(this, colx, rowy[2], EXULT_FLX_GAM_AUDIO_SHP);
-	buttons[3] = new Gamemenu_button(this, colx, rowy[3], EXULT_FLX_GAM_GAMEPLAY_SHP);
-	buttons[4] = new Gamemenu_button(this, colx, rowy[4], EXULT_FLX_GAM_QUITMENU_SHP);
-	buttons[5] = new Gamemenu_button(this, colx, rowy[5], EXULT_FLX_GAM_QUIT_SHP);
+	buttons[0] = new Gamemenu_button(this, loadsavetext, colx, rowy[0]);
+	buttons[1] = new Gamemenu_button(this, videoopttext, colx, rowy[1]);
+	buttons[2] = new Gamemenu_button(this, audioopttext, colx, rowy[2]);
+	buttons[3] = new Gamemenu_button(this, gameopttext, colx, rowy[3]);
+	buttons[4] = 0; // new Gamemenu_button(this, quitmenutext, colx, rowy[4]);
+	buttons[5] = new Gamemenu_button(this, quittext, colx, rowy[5]);
 }
 
 Gamemenu_gump::~Gamemenu_gump()
@@ -148,7 +152,8 @@ void Gamemenu_gump::paint(Game_window* gwin)
 {
 	Gump::paint(gwin);
 	for (int i=0; i<6; i++)
-		buttons[i]->paint(gwin);
+		if (buttons[i])
+			buttons[i]->paint(gwin);
 	gwin->set_painted();
 }
 
@@ -160,7 +165,7 @@ void Gamemenu_gump::mouse_down(int mx, int my)
 	// Try buttons at bottom.
 	if (!pushed)
 		for (int i=0; i<6; i++)
-			if (buttons[i]->on_button(gwin, mx, my)) {
+			if (buttons[i] && buttons[i]->on_button(gwin, mx, my)) {
 				pushed = buttons[i];
 				break;
 			}

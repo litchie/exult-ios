@@ -5,7 +5,7 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/imagewin -I$(srcdir)/shapes \
 	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
-CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) -all-static $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
+CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
 SUBDIRS =  files data conf flic audio pathfinder gumps shapes \
 	imagewin usecode objs tools server mapedit debian desktop docs

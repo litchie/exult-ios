@@ -21,6 +21,7 @@
 #endif
 
 #include <iostream>
+#include <string>
 
 #include "SDL_events.h"
 
@@ -33,18 +34,41 @@
 #include "exult_flx.h"
 #include "gamewin.h"
 #include "mouse.h"
+#include "Text_button.h"
 
 using std::cerr;
 using std::endl;
 using std::string;
 
 static const int rowy[] = { 5, 20, 35, 50, 80 };
-static const int colx[] = { 35, 50, 120, 127, 130 };
+static const int colx[] = { 35, 50, 115, 127, 130 };
 
-class VideoOptions_button : public Gump_button {
+static const char* oktext = "OK";
+static const char* canceltext = "CANCEL";
+
+static int resolutions[] = { 320, 200,
+							 320, 240,
+							 400, 300,
+							 512, 384,
+							 640, 480,
+							 800, 600,
+							 -1, -1 }; 
+// These -1's are placeholders for a custom resolution
+
+static int num_default_res = sizeof(resolutions)/(2*sizeof(resolutions[0])) -1;
+
+static string resolutionstring(int w, int h)
+{
+	char buf[100];
+	sprintf(buf, "%ix%i", w, h);
+	return buf;
+}
+
+
+class VideoOptions_button : public Text_button {
 public:
-	VideoOptions_button(Gump *par, int px, int py, int shapenum)
-		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX)
+	VideoOptions_button(Gump *par, string text, int px, int py)
+		: Text_button(par, text, px, py, 59, 11)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -52,28 +76,12 @@ public:
 
 void VideoOptions_button::activate(Game_window *gwin)
 {
-	switch (get_shapenum()) {
-	case EXULT_FLX_AUD_CANCEL_SHP:
+	if (text == canceltext) {
 		((VideoOptions_gump*)parent)->cancel();
-		break;
-	case EXULT_FLX_AUD_OK_SHP:
+	} else if (text == oktext) {
 		((VideoOptions_gump*)parent)->close(gwin);
-		break;
 	}
 }
-
-class VideoToggle : public Gump_ToggleButton {
-public:
-	VideoToggle(Gump* par, int px, int py, int shapenum, 
-				int selectionnum, int numsel)
-		: Gump_ToggleButton(par, px, py, shapenum, selectionnum, numsel) {}
-
-	friend class VideoOptions_gump;
-	virtual void toggle(int state) { 
-		((VideoOptions_gump*)parent)->toggle((Gump_button*)this, state);
-	}
-};
-
 
 class VideoTextToggle : public Gump_ToggleTextButton {
 public:
@@ -120,12 +128,22 @@ void VideoOptions_gump::toggle(Gump_button* btn, int state)
 
 void VideoOptions_gump::build_buttons()
 {
-	// resolution
-	buttons[0] = new VideoToggle(this, colx[3], rowy[0], EXULT_FLX_VID_RESOLUTION_SHP, resolution, 5);
-	buttons[1] = new VideoToggle(this, colx[3], rowy[1], EXULT_FLX_VID_SCALING_SHP, scaling, 2);
-	//buttons[2] = new VideoToggle(this, colx[2], rowy[2], EXULT_FLX_VID_SCALER_SHP, scaler, 5);
-	buttons[3] = new VideoToggle(this, colx[3], rowy[3], EXULT_FLX_AUD_ENABLED_SHP, fullscreen, 2);
+	// the text arrays are freed by the destructors of the buttons
 
+	buttons[0] = new VideoTextToggle (this, restext, colx[4], rowy[0], 59,
+									  resolution, num_resolutions);
+
+	std::string *scalingtext = new std::string[2];
+	scalingtext[0] = "x1";
+	scalingtext[1] = "x2";
+	buttons[1] = new VideoTextToggle (this, scalingtext, colx[4], rowy[1], 59,
+									  scaling, 2);
+
+	std::string *enabledtext = new std::string[2];
+	enabledtext[0] = "Disabled";
+	enabledtext[1] = "Enabled";
+	buttons[3] = new VideoTextToggle (this, enabledtext, colx[4], rowy[3], 59,
+									  fullscreen, 2);
 
 	std::string *scalers = new std::string[6];
 	scalers[0] = "Point";
@@ -134,17 +152,38 @@ void VideoOptions_gump::build_buttons()
 	scalers[3] = "2xSaI";
 	scalers[4] = "SuperEagle";
 	scalers[5] = "Super2xSaI";
-	buttons[2] = new VideoTextToggle (this, scalers, colx[2], rowy[2], 74, scaler, 6);
+	buttons[2] = new VideoTextToggle (this, scalers, colx[2], rowy[2], 74,
+									  scaler, 6);
 }
 
 void VideoOptions_gump::load_settings()
 {
 	Game_window *gwin = Game_window::get_game_window();
-	long res_array[] = { 320*200, 320*240, 400*300, 512*384, 640*480, 800*600, -1 };
-	long pixels = gwin->get_width()*gwin->get_height();
-	for(resolution=0; res_array[resolution]>0 && res_array[resolution]!=pixels; resolution++)
-	if(res_array[resolution]<0)
-		resolution = 0;
+	int w = gwin->get_width();
+	int h = gwin->get_height();
+
+	resolutions[2*num_default_res] = w;
+	resolutions[2*num_default_res+1] = h;
+
+	num_resolutions = num_default_res;
+	
+	resolution = -1;
+	for (int i = 0; i < num_default_res; i++) {
+		if (resolutions[2*i] == w && resolutions[2*i+1] == h) {
+			resolution = i;
+			break;
+		}
+	}
+	
+	if (resolution == -1) {
+		num_resolutions++;
+		resolution = num_default_res;
+	}
+
+	restext = new std::string[num_resolutions];
+	for (int i = 0; i < num_resolutions; i++) {
+		restext[i] = resolutionstring(resolutions[2*i], resolutions[2*i+1]);
+	}
 
 	old_resolution = resolution;
 	scaling = gwin->get_win()->get_scale()-1;
@@ -165,9 +204,9 @@ VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SH
 	build_buttons();
 
 	// Ok
-	buttons[8] = new VideoOptions_button(this, colx[0], rowy[4], EXULT_FLX_AUD_OK_SHP);
+	buttons[8] = new VideoOptions_button(this, oktext, colx[0], rowy[4]);
 	// Cancel
-	buttons[9] = new VideoOptions_button(this, colx[4], rowy[4], EXULT_FLX_AUD_CANCEL_SHP);
+	buttons[9] = new VideoOptions_button(this, canceltext, colx[4], rowy[4]);
 }
 
 VideoOptions_gump::~VideoOptions_gump()
@@ -180,38 +219,8 @@ void VideoOptions_gump::save_settings()
 {
 	Game_window *gwin = Game_window::get_game_window();
 	
-	int resx, resy;
-	switch(resolution) {
-	case 0:
-		resx= 320;
-		resy= 200;
-		break;
-	case 1:
-		resx= 320;
-		resy= 240;
-		break;
-	case 2:
-		resx= 400;
-		resy= 300;
-		break;
-	case 3:
-		resx= 512;	
-		resy= 384;
-		break;
-	case 4:
-		resx= 640;
-		resy= 480;
-		break;
-	case 5:
-		resx= 800;
-		resy= 600;
-		break;
-	default:
-		// Handling arbitrary resolutions would be nice, but for now at least
-		// we don't crash anymore...
-		resx= 320;
-		resy= 200;
-	}
+	int resx = resolutions[2*resolution];
+	int resy = resolutions[2*resolution+1];
 	config->set("config/video/width", resx, true);
 	config->set("config/video/height", resy, true);
 	config->set("config/video/scale", scaling+1, true);
