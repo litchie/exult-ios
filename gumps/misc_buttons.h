@@ -72,8 +72,9 @@ public:
  */
 class Halo_button : public Gump_button
 {
+	Actor *actor;			// Who this represents.
 public:
-	Halo_button(Gump *par, int px, int py);
+	Halo_button(Gump *par, int px, int py, Actor *a);
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
 };

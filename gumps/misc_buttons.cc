@@ -123,9 +123,10 @@ void Combat_button::activate
  *	The halo button.
  */
 
-Halo_button::Halo_button(Gump *par, int px, int py)
-	: Gump_button(par, game->get_shape("gumps/halo"), px, py)
+Halo_button::Halo_button(Gump *par, int px, int py, Actor *a)
+	: Gump_button(par, game->get_shape("gumps/halo"), px, py), actor(a)
 {
+	pushed = actor->is_combat_protected();
 }
 
 /*
@@ -137,7 +138,22 @@ void Halo_button::activate
 	Game_window *gwin
 	)
 {
-					// ++++++Later.
+					// Want to toggle it.
+	bool prot = !actor->is_combat_protected();
+	pushed = prot;
+	parent->paint(gwin);
+	actor->set_combat_protected(prot);
+	if (!prot)			// Toggled off?
+		return;
+					// On?  Got to turn off others.
+	Actor *party[9];		// Get entire party, including Avatar.
+	int cnt = gwin->get_party(party, 1);
+	for (int i = 0; i < cnt; i++)
+		{
+		if (party[i] != actor && party[i]->is_combat_protected())
+			party[i]->set_combat_protected(false);
+					// +++++Should also update gumps.
+		}
 }
 
 /*
@@ -145,7 +161,8 @@ void Halo_button::activate
  */
 
 Combat_mode_button::Combat_mode_button(Gump *par, int px, int py, Actor *a)
-	: Gump_button(par, game->get_shape("gumps/combatmode"), px, py), actor(a)
+	: Gump_button(par, game->get_shape("gumps/combatmode"), px, py), 
+	  actor(a)
 {
 	framenum = (int) actor->get_attack_mode();
 }
@@ -159,7 +176,9 @@ void Combat_mode_button::activate
 	Game_window *gwin
 	)
 {
-	framenum = (framenum + 1)%10;
+					// Only Avatar gets last frame (manual)
+	int nframes = actor == gwin->get_main_actor() ? 10 : 9;
+	framenum = (framenum + 1)%nframes;
 	actor->set_attack_mode((Actor::Attack_mode) framenum);
 	parent->paint_button(gwin, this);
 	gwin->set_painted();
