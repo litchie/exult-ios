@@ -28,6 +28,80 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "objs.h"
 
+class Actor;
+class Gump_object;
+
+/*
+ *	Some gump shape numbers:
+ */
+const int CHECKMARK = 2;		// Shape # in gumps.vga for checkmark.
+const int DISK = 24;			// Diskette shape #.
+const int HEART = 25;			// Stats button shape #.
+const int DOVE = 46;
+const int STATSDISPLAY = 47;
+
+/*
+ *	A pushable button on a gump:
+ */
+class Gump_button
+	{
+protected:
+	Gump_object *parent;		// Who this is in.
+	int shapenum;			// In "gumps.vga".
+	short x, y;			// Coords. relative to parent.
+	unsigned char pushed;		// 1 if in pushed state.
+public:
+	friend class Gump_object;
+	Gump_button(Gump_object *par, int shnum, int px, int py)
+		: parent(par), shapenum(shnum), x(px), y(py), pushed(0)
+		{  }
+					// Is a given point on the checkmark?
+	int on_button(Game_window *gwin, int mx, int my);
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin) = 0;
+	void push(Game_window *gwin);	// Redisplay as pushed.
+	void unpush(Game_window *gwin);
+	};
+
+/*
+ *	A checkmark for closing its parent:
+ */
+class Checkmark_gump_button : public Gump_button
+	{
+public:
+	Checkmark_gump_button(Gump_object *par, int px, int py)
+		: Gump_button(par, CHECKMARK, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	A 'heart' button for bringing up stats.
+ */
+class Heart_gump_button : public Gump_button
+	{
+public:
+	Heart_gump_button(Gump_object *par, int px, int py)
+		: Gump_button(par, HEART, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	A diskette for bringing up the 'save' box.
+ */
+class Disk_gump_button : public Gump_button
+	{
+public:
+	Disk_gump_button(Gump_object *par, int px, int py)
+		: Gump_button(par, DISK, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
 /*
  *	A gump contains an image of an open container from "gumps.vga".
  */
@@ -39,11 +113,13 @@ protected:
 	int x, y;			// Location on screen.
 	unsigned char shapenum;
 	Rectangle object_area;		// Area to paint objects in, rel. to
-	int checkx, checky;		// Where to show the red 'check'.
-					//   hot spot of Gump_object.
+					// Where the 'checkmark' goes.
+	Checkmark_gump_button *check_button;
 public:
 	Gump_object(Container_game_object *cont, int initx, int inity, 
 								int shnum);
+	~Gump_object()
+		{ delete check_button; }
 	int get_x()			// Get coords.
 		{ return x; }
 	int get_y()
@@ -72,10 +148,10 @@ public:
 					// Find objs. containing mouse point.
 	int find_objects(Game_window *gwin, int mx, int my,
 						Game_object **list);
-					// Is a given point on the checkmark?
-	int on_checkmark(Game_window *gwin, int mx, int my);
-					// Show checkmark pushed in.
-	void push_checkmark(Game_window *gwin);
+					// Is a given point on a button?
+	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
+					// Paint button.
+	void paint_button(Game_window *gwin, Gump_button *btn);
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1);
 	virtual void remove(Game_object *obj)
@@ -102,6 +178,9 @@ class Actor_gump_spot
  */
 class Actor_gump_object : public Gump_object
 	{
+	Heart_gump_button *heart_button;// For bringing up stats.
+	Disk_gump_button *disk_button;	// For bringing up 'save' box.
+//+++++++Move this info to Actor!!
 	Actor_gump_spot spots[8];	// Where things can go.
 	enum Spots {			// Index of each spot.
 		head = 0,
@@ -117,13 +196,40 @@ class Actor_gump_object : public Gump_object
 	int find_closest(int mx, int my, int only_empty = 0);
 	void add_to_spot(Game_object *obj, int index);
 	static short diskx, disky;	// Where to show 'diskette' button.
-	static short statx, staty;	// Where to show 'stats' button.
+	static short heartx, hearty;	// Where to show 'stats' button.
 public:
 	Actor_gump_object(Container_game_object *cont, int initx, int inity, 
 								int shnum);
+	~Actor_gump_object()
+		{  
+		delete heart_button;
+		delete disk_button;
+		}
+					// Is a given point on a button?
+	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1);
 	virtual void remove(Game_object *obj);
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
+ *	A rectangular area showing a character's statistics:
+ */
+class Stats_gump_object : public Gump_object
+	{
+	Actor *get_actor()
+		{ return (Actor *) container; }
+public:
+	Stats_gump_object(Container_game_object *cont, int initx, int inity)
+		: Gump_object(cont, initx, inity, STATSDISPLAY)
+		{  }
+	~Stats_gump_object()
+		{  }
+					// Add object.
+	virtual int add(Game_object *obj, int mx = -1, int my = -1)
+		{ return 0; }		// Can't drop onto it.
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};
