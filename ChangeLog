@@ -3,9 +3,9 @@
 
 2002-06-09  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamewin.cc (public): Check for player != 0.
 	* mapedit/npcedit.cc,etc:  New NPC's are now created using the
-	'unused' entries.
-
+	'unused' entries, and deleted NPC's are marked 'unused'.
 	* actors.{cc,h},actorio.cc,readnpcs.cc: Use iflag2 correctly.  If
 	0, it means NPC is unused in game (like the extra trappers).
 

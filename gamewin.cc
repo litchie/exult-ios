@@ -153,7 +153,7 @@ void Background_noise::handle_event
 			currentstate = 1;
 
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
-	if (player->music_conversion == XMIDI_CONVERT_OGG)
+	if (player && player->music_conversion == XMIDI_CONVERT_OGG)
 	{
 		delay = 1500;	//Quickly get back to this function check
 		//We've got OGG so play the background SFX tracks
@@ -213,7 +213,7 @@ void Background_noise::handle_event
 		//Tests to see if track is playing the SFX tracks, possible 
 		//when the game has been restored
 		//and the Audio option was changed from OGG to something else
-		if(player->get_current_track() >=4 && 
+		if(player && player->get_current_track() >=4 && 
 		   player->get_current_track() <= 8)
 			player->stop_music();
 
