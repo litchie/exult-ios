@@ -1265,7 +1265,6 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest)
 	    !gwin->is_chunk_read(dest.tx/c_tiles_per_chunk,
 						dest.ty/c_tiles_per_chunk))
 		{			// Src, dest. are off the screen.
-		cout <<"Grrr" << endl;
 		move(dest.tx, dest.ty, dest.tz);
 		set_schedule_type(new_schedule_type);
 		return;
