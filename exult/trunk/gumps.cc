@@ -409,9 +409,10 @@ void Actor_gump_object::add_to_spot
 	spot->obj = obj;		// Put in spot. ++++Check types??
 					// Get shape info.
 	Shape_frame *shape = gwin->get_shape(*obj);
+	int w = shape->get_width(), h = shape->get_height();
 					// Set object's position.
-	obj->cx = spot->x - object_area.x;
-	obj->cy = spot->y - object_area.y;
+	obj->cx = spot->x + shape->get_xleft() - w/2 - object_area.x;
+	obj->cy = spot->y + shape->get_yabove() - h/2 - object_area.y;
 					// Shift if necessary.
 	int x0 = obj->cx - shape->get_xleft(), 
 	    y0 = obj->cy - shape->get_yabove();
@@ -419,7 +420,7 @@ void Actor_gump_object::add_to_spot
 		obj->cx -= x0;
 	if (y0 < 0)
 		obj->cy -= y0;
-	int x1 = x0 + shape->get_width(), y1 = y0 + shape->get_height();
+	int x1 = x0 + w, y1 = y0 + h;
 	if (x1 > object_area.w)
 		obj->cx -= x1 - object_area.w;
 	if (y1 > object_area.h)
