@@ -514,7 +514,7 @@ void Shape_chooser::search
 /*
  *	Callbacks for 'search' buttons:
  */
-extern "C" void
+C_EXPORT void
 on_find_shape_down_clicked             (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -522,7 +522,7 @@ on_find_shape_down_clicked             (GtkButton       *button,
 	chooser->search(gtk_entry_get_text(
 			GTK_ENTRY(chooser->get_find_text())), 1);
 }
-extern "C" void
+C_EXPORT void
 on_find_shape_up_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -530,7 +530,7 @@ on_find_shape_up_clicked               (GtkButton       *button,
 	chooser->search(gtk_entry_get_text(
 			GTK_ENTRY(chooser->get_find_text())), -1);
 }
-extern "C" gboolean
+C_EXPORT gboolean
 on_find_shape_key			(GtkEntry	*entry,
 					 GdkEventKey	*event,
 					 gpointer	 user_data)

@@ -42,7 +42,7 @@
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#include "xdrag.h"
+//#include "xdrag.h"
 #include "server.h"
 #include "chunks.h"
 #include "chunkter.h"
@@ -528,12 +528,14 @@ static void Init
 	gwin->setup_game();		// This will start the scene.
 					// Get scale factor for mouse.
 #ifdef USE_EXULTSTUDIO
+#ifndef WIN32
         SDL_GetWMInfo(&info);
         xfd = ConnectionNumber(info.info.x11.display);
 	Server_init();			// Initialize server (for map-editor).
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
 		info.info.x11.window, Move_dragged_shape, 
 				Drop_dragged_shape, Drop_dragged_chunk);
+#endif	
 #endif
 }
 
@@ -834,6 +836,7 @@ static void Handle_event
 		keybinder->HandleEvent(event);
 		break;
 #ifdef USE_EXULTSTUDIO
+#ifndef WIN32
 	case SDL_SYSWMEVENT:
 		{
 		XEvent& ev = event.syswm.msg->event.xevent;
@@ -843,6 +846,7 @@ static void Handle_event
 			xdnd->select_msg((XSelectionEvent&) ev);
 		break;
 		}
+#endif
 #endif
 #if 0
 //#ifdef WIN32
@@ -1400,12 +1404,12 @@ static void Move_dragged_shape
 	int pix = gwin->get_poison_pixel();
 	Image_window8 *win = gwin->get_win();
 	win->set_clip(0, 0, win->get_width(), win->get_height());
-	for (int y = 0; y <= ytiles; y++)
+	for (int Y = 0; Y <= ytiles; Y++)
 		win->fill8(pix, xtiles*c_tilesize, 1, 
-					tx*c_tilesize, (ty + y)*c_tilesize);
-	for (int x = 0; x <= xtiles; x++)
+					tx*c_tilesize, (ty + Y)*c_tilesize);
+	for (int X = 0; X <= xtiles; X++)
 		win->fill8(pix, 1, ytiles*c_tilesize,
-				(tx + x)*c_tilesize, ty*c_tilesize);
+				(tx + X)*c_tilesize, ty*c_tilesize);
 	win->clear_clip();
 	gwin->set_painted();
 	gwin->show();

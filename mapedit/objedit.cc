@@ -38,7 +38,7 @@ using std::endl;
 /*
  *	Object window's Apply button.
  */
-extern "C" void on_obj_apply_clicked
+C_EXPORT void on_obj_apply_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -50,7 +50,7 @@ extern "C" void on_obj_apply_clicked
 /*
  *	Object window's Cancel button.
  */
-extern "C" void on_obj_cancel_clicked
+C_EXPORT void on_obj_cancel_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -62,7 +62,7 @@ extern "C" void on_obj_cancel_clicked
 /*
  *	Object window's close button.
  */
-extern "C" gboolean on_obj_window_delete_event
+C_EXPORT gboolean on_obj_window_delete_event
 	(
 	GtkWidget *widget,
 	GdkEvent *event,
@@ -76,7 +76,7 @@ extern "C" gboolean on_obj_window_delete_event
 /*
  *	Draw shape in object shape area.
  */
-extern "C" gboolean on_obj_draw_expose_event
+C_EXPORT gboolean on_obj_draw_expose_event
 	(
 	GtkWidget *widget,		// The view window.
 	GdkEventExpose *event,
@@ -92,7 +92,7 @@ extern "C" gboolean on_obj_draw_expose_event
 /*
  *	Object shape/frame # changed, so update shape displayed.
  */
-extern "C" gboolean on_obj_shape_changed
+C_EXPORT gboolean on_obj_shape_changed
 	(
 	GtkWidget *widget,
 	GdkEventFocus *event,
@@ -106,7 +106,7 @@ extern "C" gboolean on_obj_shape_changed
 /*
  *	Object shape/frame # changed, so update shape displayed.
  */
-extern "C" gboolean on_obj_pos_changed
+C_EXPORT gboolean on_obj_pos_changed
 	(
 	GtkWidget *widget,
 	GdkEventFocus *event,

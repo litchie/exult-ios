@@ -39,6 +39,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 namespace Exult_server
 {
 
+// Just a little hack.
+#ifdef WIN32
+inline int write(int file, const void *v, unsigned int len)
+{
+	return 0;
+}
+inline int read(int file, const void *v, unsigned int len)
+{
+	return 0;
+}
+inline int close(int file)
+{
+	return 0;
+}
+#endif
+
 /*
  *	Send data.
  *

@@ -38,7 +38,7 @@ static	string	close_tag(const string &s);
 
 XMLnode::~XMLnode()
 {
-	for(vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
+	for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
 		delete *i;
 }
 
@@ -165,7 +165,7 @@ void XMLnode::dump(ostream &o, const string &indentstr, const unsigned int depth
 			o << endl;
 		
 			// ... then walk through them outputting them all ...
-			for(vector<XMLnode *>::const_iterator it=nodelist.begin(); it!=nodelist.end(); ++it)
+			for(std::vector<XMLnode *>::const_iterator it=nodelist.begin(); it!=nodelist.end(); ++it)
 				(*it)->dump(o, indentstr, depth+1);
 		}
 		// ... else, if we have content in this output it.
@@ -384,12 +384,14 @@ void XMLnode::searchpairs(KeyTypeList &ktl, const string &basekey, const string 
 {
 	//std::cout << basekey << std::endl << '\t' << currkey + id << std::endl << "\t\t" << content << std::endl;
 	
-	if(basekey==currkey+id)
-		for(vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
+	if(basekey==currkey+id) {
+		for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
 			(*i)->selectpairs(ktl, "");
-	else
-		for(vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
+	}
+	else {
+		for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
 			(*i)->searchpairs(ktl, basekey, currkey + id + '/', pos);
+	}
 }
 
 void XMLnode::selectpairs(KeyTypeList &ktl, const std::string currkey)
@@ -398,7 +400,7 @@ void XMLnode::selectpairs(KeyTypeList &ktl, const std::string currkey)
 	
 	ktl.push_back(KeyType(currkey + id, content));
 	
-	for(vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
+	for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
 		(*i)->selectpairs(ktl, currkey + id + '/');
 }
 

@@ -1751,7 +1751,7 @@ void Actor::update_from_studio
 		if (!Get_click(x, y, Mouse::hand, 0))
 			{
 			if (client_socket >= 0)
-				Send_data(client_socket, Exult_server::cancel);
+				Exult_server::Send_data(client_socket, Exult_server::cancel);
 			return;
 			}
 					// Create.  Gets initialized below.
@@ -1764,7 +1764,7 @@ void Actor::update_from_studio
 		if (lift == 12)
 			{
 			if (client_socket >= 0)
-				Send_data(client_socket, Exult_server::cancel);
+				Exult_server::Send_data(client_socket, Exult_server::cancel);
 			delete npc;
 			return;
 			}
@@ -1772,7 +1772,7 @@ void Actor::update_from_studio
 		if (npc->npc_num != npc_num)
 			cerr << "New NPC was assigned a different #" << endl;
 		if (client_socket >= 0)
-			Send_data(client_socket, Exult_server::user_responded);
+			Exult_server::Send_data(client_socket, Exult_server::user_responded);
 		}
 	else				// Old.
 		{
@@ -1783,7 +1783,8 @@ void Actor::update_from_studio
 		}
 	npc->face_num = face;
 	npc->set_ident(ident);
-	for (int i = 0; i < 12; i++)
+	int i;
+	for (i = 0; i < 12; i++)
 		npc->set_property(i, properties[i]);
 	npc->set_attack_mode((Actor::Attack_mode) attack_mode);
 	npc->set_alignment(alignment);
@@ -1792,7 +1793,7 @@ void Actor::update_from_studio
 	npc->type_flags = type_flags;
 	Schedule_change *scheds = num_schedules ? 
 				new Schedule_change[num_schedules] : 0;
-	for (int i = 0; i < num_schedules; i++)
+	for (i = 0; i < num_schedules; i++)
 		scheds[i].set(schedules[i].tx, schedules[i].ty, 
 				schedules[i].type, schedules[i].time);
 	npc->set_schedules(scheds, num_schedules);
