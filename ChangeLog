@@ -2,6 +2,11 @@
 	* usecode.cc: avoided Internal Compiler Error for gcc 2.95.2
 	* README.win32: minor change for release 0.26
 
+2000-05-08  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Pathfinding added to run_usecode().  Can be tested by
+	double-clicking on a bucket.  Works, but needs refinement.
+
 2000-05-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* objs.cc: attempt at synching animations 
 
@@ -36,7 +41,7 @@
 
 2000-04-28  Jeff Freedman  <jeff@amy.nerble.net>
 
-	* Use correct frames for East-West walking animation.
+	* Use correct frames for East-West walking animation!!
 	* Show signs, books, and scrolls.
 	* Create monsters, and have them loiter.
 

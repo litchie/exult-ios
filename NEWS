@@ -1,3 +1,17 @@
+5/8/00:		MIDI in Windows version!!
+
+		Correct Avatar/NPC animation frames (finally), and improvements
+		to 'seashore' animations.
+
+		Inventory improved:  Armor, etc. goes where it's supposed to
+		(although there are still a few things to be fixed).
+
+		You can now read signs, books, and scrolls.
+
+		Much improved shape browser (a development aid).
+
+		Many bug fixes.
+
 4/25/00:	Improved midi support using the timidity binary and patchsets
 		under linux.
 
