@@ -503,3 +503,22 @@ void Face_stats::AdvanceState()
 	}
 }
 
+void Face_stats::save_config(Configuration *config)
+{
+	if(self)
+		config->set("config/gameplay/facestats",mode,true);
+	else
+		config->set("config/gameplay/facestats",-1,true);
+}
+
+void Face_stats::load_config(Configuration *config)
+{
+	int nmode;
+	config->value("config/gameplay/facestats",nmode,-1);
+	if(self)
+		RemoveGump();
+	if(nmode>=0) {
+		mode = nmode%PORTRAIT_NUM_MODES;
+		CreateGump();
+	}
+}

@@ -41,7 +41,8 @@
 </project>
 <project>
 	<description>
-		Implement Gameplay Options with the following options: cheats, SI paperdolls
+		Implement Gameplay Options with the following options: cheats, SI paperdolls,
+		stats bars, etc.
 	</description>
 	<difficulty>
 		Easy
@@ -59,18 +60,6 @@
 	</difficulty>
 	<owner>
 		Nobody
-	</owner>
-</project>
-<project>
-	<description>
-		Change the rendering mechanism to paint the mouse pointer after the scaling,
-		so that underlying graphics don't get corrupted
-	</description>
-	<difficulty>
-		Medium
-	</difficulty>
-	<owner>
-		Jeff Freedman
 	</owner>
 </project>
 <project>

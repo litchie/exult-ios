@@ -354,6 +354,7 @@ void ActionCombatStats(int* params)
 void ActionFaceStats(int* params)
 {
 	Face_stats::AdvanceState();
+	Face_stats::save_config(config);
 }
 
 

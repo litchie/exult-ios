@@ -38,6 +38,7 @@
 #include "Astar.h"
 #include "Audio.h"
 #include "Configuration.h"
+#include "Face_stats.h"
 #include "Flex.h"
 #include "Gump.h"
 #include "Gump_manager.h"
@@ -2976,6 +2977,7 @@ void Game_window::setup_game
 	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1);
 //	paint();
 	set_all_dirty();		// Force entire repaint.
+	Face_stats::load_config(config);
 	}
 
 /*
