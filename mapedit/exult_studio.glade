@@ -1199,7 +1199,7 @@ Party member
 
 		<widget>
 		  <class>GtkEntry</class>
-		  <name>entry6</name>
+		  <name>teleport_x</name>
 		  <can_focus>True</can_focus>
 		  <editable>True</editable>
 		  <text_visible>True</text_visible>
@@ -1244,7 +1244,7 @@ Party member
 
 		<widget>
 		  <class>GtkEntry</class>
-		  <name>entry7</name>
+		  <name>teleport_y</name>
 		  <can_focus>True</can_focus>
 		  <editable>True</editable>
 		  <text_visible>True</text_visible>
@@ -1261,7 +1261,7 @@ Party member
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton10</name>
+	      <name>teleport_coord</name>
 	      <border_width>8</border_width>
 	      <can_focus>True</can_focus>
 	      <label>Use
@@ -1292,7 +1292,7 @@ Coordinates</label>
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton9</name>
+	    <name>teleport_eggnum</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -1408,7 +1408,7 @@ Clouds
 
 	<widget>
 	  <class>GtkSpinButton</class>
-	  <name>spinbutton11</name>
+	  <name>pathegg_num</name>
 	  <can_focus>True</can_focus>
 	  <climb_rate>1</climb_rate>
 	  <digits>0</digits>
@@ -1448,7 +1448,7 @@ Clouds
 
 	<widget>
 	  <class>GtkSpinButton</class>
-	  <name>spinbutton12</name>
+	  <name>btnegg_distance</name>
 	  <can_focus>True</can_focus>
 	  <climb_rate>1</climb_rate>
 	  <digits>0</digits>
@@ -1492,11 +1492,11 @@ Clouds
     <widget>
       <class>GtkHButtonBox</class>
       <name>hbuttonbox1</name>
-      <layout_style>GTK_BUTTONBOX_DEFAULT_STYLE</layout_style>
+      <layout_style>GTK_BUTTONBOX_SPREAD</layout_style>
       <spacing>30</spacing>
       <child_min_width>85</child_min_width>
       <child_min_height>27</child_min_height>
-      <child_ipad_x>7</child_ipad_x>
+      <child_ipad_x>18</child_ipad_x>
       <child_ipad_y>0</child_ipad_y>
       <child>
 	<padding>0</padding>
@@ -1506,17 +1506,14 @@ Clouds
 
       <widget>
 	<class>GtkButton</class>
-	<name>button1</name>
+	<name>egg_apply_btn</name>
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
-	<label>Insert</label>
-      </widget>
-
-      <widget>
-	<class>GtkButton</class>
-	<name>button2</name>
-	<can_default>True</can_default>
-	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_egg_apply_btn_clicked</handler>
+	  <last_modification_time>Sun, 03 Jun 2001 07:48:54 GMT</last_modification_time>
+	</signal>
 	<label>Apply</label>
       </widget>
 

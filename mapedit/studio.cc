@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dirbrowser.h"
 #include "servemsg.h"
 #include "objserial.h"
+#include "exult_constants.h"
 
 ExultStudio *ExultStudio::self = 0;
 
@@ -117,6 +118,18 @@ extern "C" void on_open_egg_activate
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->open_egg_window();
+	}
+
+/*
+ *	Egg window's Apply button.
+ */
+extern "C" void on_egg_apply_btn_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->save_egg_window();
 	}
 
 /*
@@ -432,6 +445,20 @@ void ExultStudio::close_egg_window
 	}
 
 /*
+ *	Get value of a toggle button (false if not found).
+ */
+
+static bool Get_toggle
+	(
+	GladeXML *app_xml,
+	char *name
+	)
+	{
+	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
+	return btn ? gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn)) : -1;
+	}
+
+/*
  *	Find and set a toggle/checkbox button.
  */
 
@@ -445,6 +472,24 @@ static void Set_toggle
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
 	if (btn)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(btn), val);
+	}
+
+/*
+ *	Get value of option-menu button (-1 if unsuccessful).
+ */
+
+static int Get_optmenu
+	(
+	GladeXML *app_xml,
+	char *name
+	)
+	{
+	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
+	if (!btn)
+		return -1;
+	GtkWidget *menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(btn));
+	GtkWidget *active = gtk_menu_get_active(GTK_MENU(menu));
+	return g_list_index(GTK_MENU_SHELL(menu)->children, active);
 	}
 
 /*
@@ -464,6 +509,21 @@ static void Set_optmenu
 	}
 
 /*
+ *	Get value of spin button (-1 if unsuccessful).
+ */
+
+static int Get_spin
+	(
+	GladeXML *app_xml,
+	char *name
+	)
+	{
+	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
+	return btn ? gtk_spin_button_get_value_as_int(
+						GTK_SPIN_BUTTON(btn)) : -1;
+	}
+
+/*
  *	Find and set a spin button.
  */
 
@@ -471,12 +531,16 @@ static void Set_spin
 	(
 	GladeXML *app_xml,
 	char *name,
-	int val
+	int val,
+	bool sensitive = true
 	)
 	{
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
 	if (btn)
+		{
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(btn), val);
+		gtk_widget_set_sensitive(btn, sensitive);
+		}
 	}
 
 /*
@@ -488,7 +552,8 @@ static void Set_entry
 	GladeXML *app_xml,
 	char *name,
 	int val,
-	bool hex = false
+	bool hex = false,
+	bool sensitive = true
 	)
 	{
 	GtkWidget *field = glade_xml_get_widget(app_xml, name);
@@ -498,6 +563,7 @@ static void Set_entry
 				: g_strdup_printf("%d", val);
 		gtk_entry_set_text(GTK_ENTRY(field), txt);
 		g_free(txt);
+		gtk_widget_set_sensitive(field, sensitive);
 		}
 	}
 
@@ -520,18 +586,18 @@ int ExultStudio::init_egg_window
 	int criteria;
 	int probability;
 	int distance;
-	bool nocturnal;
-	bool once;
-	bool auto_reset;
+	bool nocturnal, once, hatched, auto_reset;
 	int data1, data2;
 	if (!Egg_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
-		nocturnal, once, auto_reset,
+		nocturnal, once, hatched, auto_reset,
 		data1, data2))
 		{
 		cout << "Error decoding egg" << endl;
 		return 0;
 		}
+					// Store address with window.
+	gtk_object_set_user_data(GTK_OBJECT(eggwin), (gpointer) addr);
 	GtkWidget *notebook = glade_xml_get_widget(app_xml, "notebook1");
 	if (notebook)			// 1st is monster (1).
 		gtk_notebook_set_page(GTK_NOTEBOOK(notebook), type - 1);
@@ -540,7 +606,7 @@ int ExultStudio::init_egg_window
 	Set_optmenu(app_xml, "criteria", criteria);
 	Set_toggle(app_xml, "nocturnal", nocturnal);
 	Set_toggle(app_xml, "once", once);
-//	Set_toggle(app_xml, "hatched", hatched);  Need value+++++++++
+	Set_toggle(app_xml, "hatched", hatched);
 	Set_toggle(app_xml, "autoreset", auto_reset);
 	switch (type)			// Set notebook page.
 		{
@@ -570,19 +636,76 @@ int ExultStudio::init_egg_window
 		Set_spin(app_xml, "missile_delay", data2>>8);
 		break;
 	case 7:				// Teleport:
-		break;	// +++++finish
+		{
+		int qual = data1&0xff;
+		if (qual == 255)
+			{
+			Set_toggle(app_xml, "teleport_coord", true);
+			int schunk = data1 >> 8;
+			Set_entry(app_xml, "teleport_x",
+				(schunk%12)*c_tiles_per_schunk +(data2&0xff),
+								true);
+			Set_entry(app_xml, "teleport_y",
+				(schunk/12)*c_tiles_per_schunk +(data2>>8),
+								true);
+			Set_spin(app_xml, "teleport_eggnum", 0, false);
+			}
+		else			// Egg #.
+			{
+			Set_toggle(app_xml, "teleport_coord", false);
+			Set_entry(app_xml, "teleport_x", 0, false, false);
+			Set_entry(app_xml, "teleport_y", 0, false, false);
+			Set_spin(app_xml, "teleport_eggnum", qual);
+			}
+		break;
+		}
 	case 8:				// Weather:
 		Set_optmenu(app_xml, "weather_type", data1&0xff); 
 		Set_spin(app_xml, "weather_length", data1>>8);
 		break;
 	case 9:				// Path:
+		Set_spin(app_xml, "pathegg_num", data1&0xff);
+		break;
 	case 10:			// Button:
-		break;	//+++++++++
+		Set_spin(app_xml, "btnegg_distance", data1&0xff);
+		break;
 	default:
 		break;
 		}
-	//+++++++++++
 	return 1;
+	}
+
+/*
+ *	Send updated egg info. back to Exult.
+ *
+ *	Output:	0 if error (reported).
+ */
+
+int ExultStudio::save_egg_window
+	(
+	)
+	{
+	cout << "In save_egg_window()" << endl;
+	unsigned char data[Exult_server::maxlength];
+	unsigned long addr = (unsigned long) gtk_object_get_user_data(
+							GTK_OBJECT(eggwin));
+	int tx = -1, ty = -1, tz = -1;	// +++++For now.
+	int shape = -1, frame = -1;	// For now.
+	int type = -1;
+	GtkWidget *notebook = glade_xml_get_widget(app_xml, "notebook1");
+	if (notebook)			// 1st is monster (1).
+		type = 1 + gtk_notebook_get_current_page(
+						GTK_NOTEBOOK(notebook));
+	int criteria = Get_optmenu(app_xml, "criteria");
+	int probability = Get_spin(app_xml, "probability");
+	int distance = Get_spin(app_xml, "distance");
+	bool nocturnal = Get_toggle(app_xml, "nocturnal"),
+		once = Get_toggle(app_xml, "once"),
+		hatched = Get_toggle(app_xml, "hatched"), 
+		auto_reset = Get_toggle(app_xml, "autoreset");
+	int data1, data2;
+// Finish++++++++++++++++
+	return 0;
 	}
 
 void ExultStudio::run()

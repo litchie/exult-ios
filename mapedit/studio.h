@@ -53,6 +53,7 @@ public:
 	void open_egg_window(unsigned char *data = 0, int datalen = 0);
 	void close_egg_window();
 	int init_egg_window(unsigned char *data, int datalen);
+	int save_egg_window();
 	void run();
 	void read_from_server();
 	void connect_to_server();

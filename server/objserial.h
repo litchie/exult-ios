@@ -38,6 +38,7 @@ extern int Egg_object_out
 	int distance,
 	bool nocturnal,
 	bool once,
+	bool hatched,
 	bool auto_reset,
 	int data1, int data2
 	);
@@ -54,6 +55,7 @@ extern int Egg_object_in
 	int& distance,
 	bool& nocturnal,
 	bool& once,
+	bool& hatched,
 	bool& auto_reset,
 	int& data1, int& data2
 	);

@@ -104,6 +104,7 @@ void Egg_object_io
 	int& distance,
 	bool& nocturnal,
 	bool& once,
+	bool& hatched,
 	bool& auto_reset,
 	int& data1, int& data2
 	)
@@ -116,6 +117,7 @@ void Egg_object_io
 	io.trans(distance);
 	io.trans(nocturnal);
 	io.trans(once);
+	io.trans(hatched);
 	io.trans(auto_reset);
 	io.trans(data1);
 	io.trans(data2);
@@ -139,6 +141,7 @@ int Egg_object_out
 	int distance,
 	bool nocturnal,
 	bool once,
+	bool hatched,
 	bool auto_reset,
 	int data1, int data2
 	)
@@ -147,7 +150,7 @@ int Egg_object_out
 	unsigned char *ptr = &buf[0];
 	Egg_object_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
-		nocturnal, once, auto_reset,
+		nocturnal, once, hatched, auto_reset,
 		data1, data2);
 	return Exult_server::Send_data(fd, Exult_server::egg, buf, ptr - buf);
 	}
@@ -171,6 +174,7 @@ int Egg_object_in
 	int& distance,
 	bool& nocturnal,
 	bool& once,
+	bool& hatched,
 	bool& auto_reset,
 	int& data1, int& data2
 	)
@@ -178,7 +182,7 @@ int Egg_object_in
 	unsigned char *ptr = data;
 	Egg_object_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame,
 		type, criteria, probability, distance, 
-		nocturnal, once, auto_reset, data1, data2);
+		nocturnal, once, hatched, auto_reset, data1, data2);
 	return (ptr - data) == datalen;
 	}
 
