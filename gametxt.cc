@@ -334,6 +334,24 @@ bool Game_window::setup_mainshp_fonts ()
 	return true;
 }
 
+bool Game_window::setup_siintro_fonts ()
+{
+	static bool setup_done = false;
+
+	if(setup_done)
+		return true;
+	
+	extra_fonts[SIINTRO_FONT1-EXTRA_FONTS] = load_extra_font("static/intro.dat", 14, 8);
+	if (!extra_fonts[SIINTRO_FONT1-EXTRA_FONTS]->get_num_frames()) {
+			cerr << "Error loading intro font" << endl;
+			return false;
+	}
+
+	hlead[SIINTRO_FONT1] = 1;
+	setup_done = true;
+	return true;
+}
+
 Shape_frame *Game_window::font_get_shape (int fontnum, int framenum)
 {
 	if (fontnum >= EXTRA_FONTS)
