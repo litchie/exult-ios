@@ -1,3 +1,6 @@
+2000-11-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* game.cc: wait_delay() now handles all waiting events, instead of just one
+
 2000-11-24  Dancer Vesperman <dancer@users.sourceforge.net>
 	* audio/Audio.cc: Remove a redundant assignment
 
