@@ -1,3 +1,6 @@
+2000-11-29  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* audio/midi_drivers/Timidity_binary.*: support repeat of songs
+
 2000-11-29  Max Horn  <max@quendi.de>
 	* updated Makefiles/configure.in to include gumps
 
