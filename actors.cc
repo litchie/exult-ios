@@ -2951,9 +2951,9 @@ Npc_actor::Npc_actor
 	(
 	const std::string &nm, 			// Name.  A copy is made.
 	int shapenum, 
-	int fshape, 
+	int num, 
 	int uc
-	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(false),
+	) : Actor(nm, shapenum, num, uc), next(0), nearby(false),
 		num_schedules(0), 
 		schedules(0)
 	{
@@ -3512,14 +3512,12 @@ Monster_actor::Monster_actor
 	(
 	const std::string &nm, 
 	int shapenum, 
-	int fshape,
+	int num,			// Generally -1.
 	int uc
-	) : Npc_actor(nm, shapenum, fshape, uc), prev_monster(0), info(0),
+	) : Npc_actor(nm, shapenum, num, uc), prev_monster(0), info(0),
 	    animator(0)
 	{
 	init();
-//	if (Game::get_game_type() == SERPENT_ISLE)
-//		set_flag(Obj_flags::si_killable);
 	}
 
 /*

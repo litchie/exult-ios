@@ -474,7 +474,7 @@ protected:
 	Schedule_change *schedules;	// List of schedule changes.
 	int find_schedule_change(int hour3);
 public:
-	Npc_actor(const std::string &nm, int shapenum, int fshape = -1, 
+	Npc_actor(const std::string &nm, int shapenum, int num = -1, 
 								int uc = -1);
 					// Read from file.
 	Npc_actor(std::istream& nfile, int num, int has_usecode);
@@ -562,7 +562,7 @@ class Monster_actor : public Npc_actor
 	void init();			// For constructors.
 public:
 	friend class Monster_info;
-	Monster_actor(const std::string &nm, int shapenum, int fshape = -1, 
+	Monster_actor(const std::string &nm, int shapenum, int num = -1, 
 							int uc = -1);
 					// Read from file.
 	Monster_actor(std::istream& nfile, int num, int has_usecode);

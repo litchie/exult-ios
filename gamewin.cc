@@ -2499,7 +2499,8 @@ void Game_window::delete_object
 	obj->remove_this(1);		// Remove from world or container, but
 					//   don't delete.
 	obj->set_invalid();		// Set to invalid chunk.
-	removed->insert(obj);		// Add to pool instead.
+	if (!obj->is_monster())		// Don't delete these!
+		removed->insert(obj);	// Add to pool instead.
 	}
 
 /*
