@@ -185,9 +185,11 @@ Actor::Actor
 	else
 	{
 		set_ident(magic_val&0x1F);
-		if ((mana_val << 0) & 1) set_flag (Obj_flags::met);
-		if ((mana_val << 1) & 1) set_siflag (Actor::no_spell_casting);
-		if ((mana_val << 2) & 1) set_siflag (Actor::zombie);
+		if ((mana_val >> 0) & 1) set_flag (Obj_flags::met);
+		if ((mana_val >> 1) & 1) set_siflag (Actor::no_spell_casting);
+		if ((mana_val >> 2) & 1) 
+//			set_siflag (Actor::zombie);
+			set_flag(Obj_flags::zombie);
 	}
 
 
@@ -206,7 +208,8 @@ Actor::Actor
 
 	nfile.seekg (4, ios::cur);	//I-Vr ??? (refer to U7tech.txt)
 
-	nfile.seekg (4, ios::cur);	//S-Vr Where npc is supposed to be for schedule)
+	nfile.seekg (4, ios::cur);	//S-Vr Where npc is supposed to 
+					//   be for schedule)
 	
 	// Type flags 2
 	int tflags = Read2 (nfile);
@@ -416,7 +419,8 @@ void Actor::write
 		magic_val = get_ident() & 0x1F;
 		if (get_flag (Obj_flags::met)) mana_val |= 1;
 		if (get_siflag (Actor::no_spell_casting)) mana_val |= 1 << 1;
-		if (get_siflag (Actor::zombie)) mana_val |= 1 << 2;
+//		if (get_siflag (Actor::zombie)) mana_val |= 1 << 2;
+		if (get_flag (Obj_flags::zombie)) mana_val |= 1 << 2;
 	}
 
 	// Tempertures

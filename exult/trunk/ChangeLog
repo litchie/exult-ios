@@ -1,3 +1,10 @@
+2001-03-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Removed more 'paint()' calls in Usecode intrinsics to fix
+	problem with disappearing faces in conversations.
+	* In the File gump, the RETURN key does a 'save' if the action is
+	unambiguous.
+
 2001-03-27  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* tools/Makefile.am: added SDL_INCLUDES to includes
 	* schedule.cc: fixed crash in Sew_schedule
