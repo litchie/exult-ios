@@ -67,7 +67,7 @@ enum ExultFileTypes {
 	FlexArchive
 };
 
-extern "C" void on_filelist_tree_select_row       (GtkCTree        *ctree,
+C_EXPORT void on_filelist_tree_select_row       (GtkCTree        *ctree,
                                         GtkCTreeNode    *node,
                                         gint             column,
                                         gpointer         user_data)
@@ -95,42 +95,42 @@ extern "C" void on_filelist_tree_select_row       (GtkCTree        *ctree,
 	}
 }                                     
 
-extern "C" void
+C_EXPORT void
 on_open_static_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	ExultStudio::get_instance()->choose_static_path();
 }
 
-extern "C" void
+C_EXPORT void
 on_connect_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	ExultStudio::get_instance()->connect_to_server();
 }
 
-extern "C" void
+C_EXPORT void
 on_save_map_menu_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	ExultStudio::get_instance()->write_map();
 }
 
-extern "C" void
+C_EXPORT void
 on_read_map_menu_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	ExultStudio::get_instance()->read_map();
 }
 
-extern "C" void
+C_EXPORT void
 on_reload_usecode_menu_activate        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	ExultStudio::get_instance()->reload_usecode();
 }
 
-extern "C" void
+C_EXPORT void
 on_play_button_clicked			(GtkToggleButton *button,
 					 gpointer	  user_data)
 {
@@ -138,7 +138,7 @@ on_play_button_clicked			(GtkToggleButton *button,
 				gtk_toggle_button_get_active(button));
 }
 
-extern "C" void
+C_EXPORT void
 on_tile_grid_button_toggled		(GtkToggleButton *button,
 					 gpointer	  user_data)
 {
@@ -146,7 +146,7 @@ on_tile_grid_button_toggled		(GtkToggleButton *button,
 				gtk_toggle_button_get_active(button));
 }
 
-extern "C" void
+C_EXPORT void
 on_edit_lift_spin_changed		(GtkSpinButton *button,
 					 gpointer	  user_data)
 {
@@ -154,7 +154,7 @@ on_edit_lift_spin_changed		(GtkSpinButton *button,
 				gtk_spin_button_get_value_as_int(button));
 }
 
-extern "C" void
+C_EXPORT void
 on_edit_terrain_button_toggled		(GtkToggleButton *button,
 					 gpointer	  user_data)
 {
@@ -170,7 +170,7 @@ void on_choose_directory               (gchar *dir)
 /*
  *	Main window's close button.
  */
-extern "C" gboolean on_main_window_delete_event
+C_EXPORT gboolean on_main_window_delete_event
 	(
 	GtkWidget *widget,
 	GdkEvent *event,
@@ -179,7 +179,7 @@ extern "C" gboolean on_main_window_delete_event
 	{
 	return FALSE;
 	}
-extern "C" void on_main_window_destroy_event
+C_EXPORT void on_main_window_destroy_event
 	(
 	GtkWidget *widget,
 	gpointer data
@@ -366,7 +366,7 @@ Object_browser *ExultStudio::create_chunk_browser(const char *fname)
 	delete_chunk_browser();
 					// Get file for this path.
 	char *fullname = g_strdup_printf("%s%s", static_path, fname);	
-	chunkfile = new std::ifstream(fullname);
+	chunkfile = new std::ifstream(fullname, std::ios::binary);
 	g_free(fullname);
 	if (!chunkfile->good()) {
 		cerr << "Error opening file '" << fname << "'.\n";

@@ -461,7 +461,7 @@ void Egg_object::update_from_studio
 		if (!Get_click(x, y, Mouse::hand, 0))
 			{
 			if (client_socket >= 0)
-				Send_data(client_socket, Exult_server::cancel);
+				Exult_server::Send_data(client_socket, Exult_server::cancel);
 			return;
 			}
 		if (shape == -1)
@@ -487,12 +487,12 @@ void Egg_object::update_from_studio
 		if (lift == 12)
 			{
 			if (client_socket >= 0)
-				Send_data(client_socket, Exult_server::cancel);
+				Exult_server::Send_data(client_socket, Exult_server::cancel);
 			delete egg;
 			return;
 			}
 		if (client_socket >= 0)
-			Send_data(client_socket, Exult_server::user_responded);
+			Exult_server::Send_data(client_socket, Exult_server::user_responded);
 		}
 	egg->type = type;
 	if (shape != -1)

@@ -1,3 +1,34 @@
+2002-01-18  Ryan Nunn  <triforce@merlin.net.au>
+	* actors.cc, conf/XMLEntity.cc, server/objserial.cc,
+	  objs/egg.cc, exult.cc : MSVCisms
+
+	* exult.cc : Xdrag code is not to be compile under Windows.
+
+	* cheat.cc : system() doesn't behave in windows so I call CreateProcess
+	  instead.
+
+	* server/servermsg.cc : A little hack for Windows.
+
+	* mapedit/studio.cc : Need to explicitly use ios::binary to open a file
+	  as binary. The default is ASCII!
+
+	* shapes/shapevga.cc : info_read was not initialzed
+
+	* mapedit/studio_win32.* , exult_studio_win32.cc : No longer needed
+
+	* msvcstuff/Exult.dsp, msvcstuff/msvc_kludges.h, Makefile.win32
+	  Makefile.cygwin : Add server dir and compile with USE_EXULTSTUDIO
+
+	* mapedit/Makefile.mingw, mapedit/chunklst.cc, mapedit/eggedit.cc,
+	  mapedit/npcedit.cc, mapedit/objedit.cc, mapedit/shapeedit.cc,
+	  mapedit/shapelst.cc, mapedit/studio.* : Getting Auto connect to work
+	  in windows the 'proper' as far as I know. Exult_studio.exe will now
+	  be compiled with the required functions exported.
+
+	* msvcstuff/Exult.dsp, msvcstuff/msvc_kludges.h, Makefile.win32
+	  Makefile.cygwin : Add server dir and compile with USE_EXULTSTUDIO
+
+
 2002-01-18  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* mapedit/Makefile.am: removed shapetest_LDADD
 

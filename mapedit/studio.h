@@ -32,6 +32,12 @@ class Shapes_vga_file;
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
 
+#ifndef WIN32
+#define C_EXPORT extern "C"
+#else
+#define C_EXPORT extern "C" __declspec(dllexport)
+#endif
+
 class ExultStudio {
 private:
 	GtkWidget		*app;

@@ -39,7 +39,7 @@ using std::endl;
  *	Open egg window.
  */
 
-extern "C" void on_open_egg_activate
+C_EXPORT void on_open_egg_activate
 	(
 	GtkMenuItem     *menuitem,
         gpointer         user_data
@@ -52,7 +52,7 @@ extern "C" void on_open_egg_activate
 /*
  *	Egg window's Apply button.
  */
-extern "C" void on_egg_apply_btn_clicked
+C_EXPORT void on_egg_apply_btn_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -64,7 +64,7 @@ extern "C" void on_egg_apply_btn_clicked
 /*
  *	Egg window's Cancel button.
  */
-extern "C" void on_egg_cancel_btn_clicked
+C_EXPORT void on_egg_cancel_btn_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -76,7 +76,7 @@ extern "C" void on_egg_cancel_btn_clicked
 /*
  *	Egg window's close button.
  */
-extern "C" gboolean on_egg_window_delete_event
+C_EXPORT gboolean on_egg_window_delete_event
 	(
 	GtkWidget *widget,
 	GdkEvent *event,
@@ -90,7 +90,7 @@ extern "C" gboolean on_egg_window_delete_event
 /*
  *	Draw shape in egg 'monster' area.
  */
-extern "C" gboolean on_egg_monster_draw_expose_event
+C_EXPORT gboolean on_egg_monster_draw_expose_event
 	(
 	GtkWidget *widget,		// The view window.
 	GdkEventExpose *event,
@@ -106,7 +106,7 @@ extern "C" gboolean on_egg_monster_draw_expose_event
 /*
  *	Monster shape # lost focus, so update shape displayed.
  */
-extern "C" gboolean on_monst_shape_focus_out_event
+C_EXPORT gboolean on_monst_shape_focus_out_event
 	(
 	GtkWidget *widget,
 	GdkEventFocus *event,

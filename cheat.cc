@@ -39,7 +39,15 @@
 
 #ifdef USE_EXULTSTUDIO  /* Only needed for exult studio. */
 #include "server.h"
+
+#ifdef WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #endif
+#include <windows.h>
+#endif // WIN32
+
+#endif //USE_EXULTSTUDIO 
 
 using std::cout;
 using std::endl;
@@ -162,9 +170,22 @@ void Cheat::toggle_map_editor (void) {
 					strcat(cmnd, game_path.c_str());
 					strcat(cmnd, " &");
 					cout << "Executing: " << cmnd << endl;
+#ifndef WIN32
 					int ret = system(cmnd);
 					if (ret == 127 || ret == -1)
 						cout << "Couldn't run Exult Studio" << endl;
+#else
+					PROCESS_INFORMATION	pi;
+					STARTUPINFO		si;
+
+					std::memset (&si, 0, sizeof(si));
+					si.cb = sizeof(si);
+
+					int ret = CreateProcess (NULL, cmnd, NULL, NULL,
+							FALSE, 0,
+							NULL, NULL, &si, &pi);
+					if (!ret) cout << "Couldn't run Exult Studio" << endl;
+#endif
 				}
 #endif
 		}

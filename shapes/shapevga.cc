@@ -262,7 +262,7 @@ Shapes_vga_file::Shapes_vga_file
 	(
 	const char *nm,			// Path to file.
 	int u7drag			// # from u7drag.h, or -1.
-	) : Vga_file(nm, u7drag)
+	) : Vga_file(nm, u7drag), info_read(false)
 	{
 	info.set_size(num_shapes);
 	}
