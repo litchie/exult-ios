@@ -1525,14 +1525,9 @@ Sew_schedule::Sew_schedule
 	(
 	Actor *n
 	) : Schedule(n), state(get_wool), spindle(0), cloth(0),
-	    sew_clothes_cnt(0)
+	    sew_clothes_cnt(0), bale(0), chair(0), spinwheel(0),
+	    loom(0), work_table(0), wares_table(0)
 	{
-	bale = npc->find_closest(653);
-	chair = npc->find_closest(873);
-	spinwheel = npc->find_closest(651);
-	loom = npc->find_closest(261);
-	work_table = npc->find_closest(971);
-	wares_table = npc->find_closest(890);
 	}
 
 /*
@@ -1558,6 +1553,8 @@ void Sew_schedule::now_what
 		npc->remove_quantity(2, 654, c_any_qual, c_any_framenum);
 		npc->remove_quantity(2, 851, c_any_qual, c_any_framenum);
 		cloth = spindle = 0;
+
+		bale = npc->find_closest(653);
 		if (!bale)		// Just skip this step.
 			{
 			state = sit_at_wheel;
@@ -1574,10 +1571,22 @@ void Sew_schedule::now_what
 		break;
 		}
 	case sit_at_wheel:
+		chair = npc->find_closest(873);
+		if (!chair) {
+			// uh-oh... try again in a few seconds
+			npc->start(250, 2500);
+			return;
+		}
 		Sit_schedule::set_action(npc, chair, 200);
 		state = spin_wool;
 		break;
 	case spin_wool:			// Cycle spinning wheel 8 times.
+		spinwheel = npc->find_closest(651);
+		if (!spinwheel) {
+			// uh-oh... try again in a few seconds?
+			npc->start(250, 2500);
+			return;
+		}
 		npc->set_action(new Object_animate_actor_action(spinwheel,
 								8, 200));
 		state = get_thread;
@@ -1601,6 +1610,7 @@ void Sew_schedule::now_what
 		if (spindle)		// Should be held by NPC.
 			spindle->remove_this();
 		spindle = 0;
+		loom = npc->find_closest(261);
 		if (!loom)		// No loom found?
 			{
 			state = get_wool;
@@ -1634,6 +1644,7 @@ void Sew_schedule::now_what
 		}
 	case to_work_table:
 		{
+		work_table = npc->find_closest(971);
 		if (!work_table)
 			{
 			state = get_wool;
@@ -1724,6 +1735,7 @@ void Sew_schedule::now_what
 	case display_clothes:
 		{
 		state = done;
+		wares_table = npc->find_closest(890);
 		if (!wares_table)
 			{
 			cloth->remove_this();
