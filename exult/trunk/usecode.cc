@@ -935,16 +935,16 @@ static void Unhandled
 	}
 
 static Usecode_value	no_ret;
-USECODE_FUNCTION(NOP)
+USECODE_INTRINSIC(NOP)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(UNKNOWN)
+USECODE_INTRINSIC(UNKNOWN)
 	Unhandled(intrinsic, num_parms, parms);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(get_random)
+USECODE_INTRINSIC(get_random)
 	int range = parms[0].get_int_value();
 	if (range == 0)
 		{
@@ -955,13 +955,13 @@ USECODE_FUNCTION(get_random)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(execute_usecode_array)
+USECODE_INTRINSIC(execute_usecode_array)
 	cout << "Executing intrinsic 1\n";
 	exec_array(parms[0], parms[1]);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(delayed_execute_usecode_array)
+USECODE_INTRINSIC(delayed_execute_usecode_array)
 	// Delay = .20 sec.?
 	int delay = parms[2].get_int_value();
 	gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
@@ -971,33 +971,33 @@ USECODE_FUNCTION(delayed_execute_usecode_array)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(show_npc_face)
+USECODE_INTRINSIC(show_npc_face)
 	show_npc_face(parms[0], parms[1]);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(remove_npc_face)
+USECODE_INTRINSIC(remove_npc_face)
 	remove_npc_face(parms[0]);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(add_answer)
+USECODE_INTRINSIC(add_answer)
 	answers.add_answer(parms[0]);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(remove_answer)
+USECODE_INTRINSIC(remove_answer)
 	answers.remove_answer(parms[0]);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(push_answers)
+USECODE_INTRINSIC(push_answers)
 	answer_stack.push_front(answers);
 	answers.clear();
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(pop_answers)
+USECODE_INTRINSIC(pop_answers)
 	if(answer_stack.size())
 		{
 		answers=answer_stack.front();
@@ -1006,7 +1006,7 @@ USECODE_FUNCTION(pop_answers)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(select_from_menu)
+USECODE_INTRINSIC(select_from_menu)
 	user_choice = 0;
 	const char *choice = get_user_choice();
 	user_choice = 0;
@@ -1014,7 +1014,7 @@ USECODE_FUNCTION(select_from_menu)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(select_from_menu2)
+USECODE_INTRINSIC(select_from_menu2)
 	// Return index (1-n) of choice.
 	user_choice = 0;
 	Usecode_value val(get_user_choice_num() + 1);
@@ -1022,7 +1022,7 @@ USECODE_FUNCTION(select_from_menu2)
 	USECODE_RETURN(val);
 }
 
-USECODE_FUNCTION(input_numeric_value)
+USECODE_INTRINSIC(input_numeric_value)
 	// Ask for # (min, max, step, default).
 	// (Show slider.)
 	//+++++++++++++
@@ -1030,13 +1030,13 @@ USECODE_FUNCTION(input_numeric_value)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(set_item_shape)
+USECODE_INTRINSIC(set_item_shape)
 	// Set item shape.
 	set_item_shape(parms[0], parms[1]);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(die_roll)
+USECODE_INTRINSIC(die_roll)
 	// Rand. # within range.
 	int low = parms[0].get_int_value();
 	int high = parms[1].get_int_value();
@@ -1051,28 +1051,28 @@ USECODE_FUNCTION(die_roll)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(get_item_shape)
+USECODE_INTRINSIC(get_item_shape)
 	Usecode_value u(get_item_shape(parms[0]));
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(get_item_frame)
+USECODE_INTRINSIC(get_item_frame)
 	Usecode_value u(get_item_frame(parms[0]));
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(set_item_frame)
+USECODE_INTRINSIC(set_item_frame)
 	set_item_frame(parms[0], parms[1]);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(get_item_quality)
+USECODE_INTRINSIC(get_item_quality)
 	Game_object *obj = get_item(parms[0].get_int_value());
 	Usecode_value u(obj ? obj->get_quality() : 0);
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(set_item_quality)
+USECODE_INTRINSIC(set_item_quality)
 	// Guessing it's 
 	//  set_quality(item, value).
 	Game_object *obj = get_item(parms[0].get_int_value());
@@ -1081,7 +1081,7 @@ USECODE_FUNCTION(set_item_quality)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(count_npc_inventory)
+USECODE_INTRINSIC(count_npc_inventory)
 	// Get # of items in NPC??????
 	//   Count(item, -npc).
 	//+++++++++++++
@@ -1089,14 +1089,14 @@ USECODE_FUNCTION(count_npc_inventory)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(set_npc_inventory_count)
+USECODE_INTRINSIC(set_npc_inventory_count)
 	// Set # of items??? (item, newcount).
 	//+++++++++++++
 	Unhandled(intrinsic, num_parms, parms);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(get_object_position)
+USECODE_INTRINSIC(get_object_position)
 	// Takes itemref.  ?Think it rets.
 	//  hotspot coords: (x, y, z).
 	int tx, ty, tz;		// Get tile coords.
@@ -1111,28 +1111,28 @@ USECODE_FUNCTION(get_object_position)
 	USECODE_RETURN(arr);
 }
 
-USECODE_FUNCTION(find_direction)
+USECODE_INTRINSIC(find_direction)
 	// Direction from parm[0] -> parm[1].
 	// Rets. 0-7.  Is 0 east?
 	Usecode_value u=find_direction(parms[0], parms[1]);
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(get_npc_object)
+USECODE_INTRINSIC(get_npc_object)
 	// Takes -npc.  Returns object.
 	Game_object *obj = get_item(parms[0].get_int_value());
 	Usecode_value u((long) obj);
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(get_schedule_type)
+USECODE_INTRINSIC(get_schedule_type)
 	// GetSchedule(npc).  Rets. schedtype.
 	Game_object *obj = get_item(parms[0].get_int_value());
 	Usecode_value u(obj ? obj->get_schedule_type() : 0);
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(set_schedule_type)
+USECODE_INTRINSIC(set_schedule_type)
 	// SetSchedule?(npc, schedtype).
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
@@ -1142,19 +1142,19 @@ USECODE_FUNCTION(set_schedule_type)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(add_to_party)
+USECODE_INTRINSIC(add_to_party)
 	// NPC joins party.
 	add_to_party(get_item(parms[0].get_int_value()));
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(remove_from_party)
+USECODE_INTRINSIC(remove_from_party)
 	// NPC leaves party.
 	remove_from_party(get_item(parms[0].get_int_value()));
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(get_npc_prop)
+USECODE_INTRINSIC(get_npc_prop)
 	// Get NPC prop (item, prop_id).
 	//   (9 is food level).
 	Game_object *obj = get_item(parms[0].get_int_value());
@@ -1163,7 +1163,7 @@ USECODE_FUNCTION(get_npc_prop)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(set_npc_prop)
+USECODE_INTRINSIC(set_npc_prop)
 	// Set NPC prop (item, prop_id, delta_value).
 	Game_object *obj = get_item(parms[0].get_int_value());
 	if (obj)
@@ -1175,19 +1175,19 @@ USECODE_FUNCTION(set_npc_prop)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(get_avatar_ref)
+USECODE_INTRINSIC(get_avatar_ref)
 	// Guessing it's Avatar's itemref.
 	Usecode_value u((long) gwin->get_main_actor());
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(get_party_list)
+USECODE_INTRINSIC(get_party_list)
 	// Return array with party members.
 	Usecode_value u(get_party());
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(create_new_object)
+USECODE_INTRINSIC(create_new_object)
 	// Takes shape, rets. new obj?
 	// Show frames in seq.? (animate?)
 	int shapenum = parms[0].get_int_value();
@@ -1208,14 +1208,14 @@ USECODE_FUNCTION(create_new_object)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(mystery_1)
+USECODE_INTRINSIC(mystery_1)
 	// Take itemref, rets. flag.
 	//++++++++++++++++++
 	Usecode_value u(1); //????
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(update_last_created)
+USECODE_INTRINSIC(update_last_created)
 	// Think it takes array from 0x18,
 	//   updates last-created object.
 	//   ??guessing??
@@ -1243,7 +1243,7 @@ USECODE_FUNCTION(update_last_created)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(get_npc_name)
+USECODE_INTRINSIC(get_npc_name)
 	// Get NPC name.
 	// +++++Make this work on array of NPC's.
 	static char *unknown = "player";
@@ -1252,7 +1252,7 @@ USECODE_FUNCTION(get_npc_name)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(count_objects)
+USECODE_INTRINSIC(count_objects)
 	// How many?
 	// ((npc?-357==party, -356=avatar), 
 	//   item, quality?, quality?).
@@ -1261,14 +1261,14 @@ USECODE_FUNCTION(count_objects)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(get_cont_items)
+USECODE_INTRINSIC(get_cont_items)
         // Get cont. items(item, type, qual,?).
         Usecode_value u(get_objects(parms[0], parms[1]));
 	USECODE_RETURN(u);
 }
 
 
-USECODE_FUNCTION(remove_items)
+USECODE_INTRINSIC(remove_items)
 
 	// Remove items(quantity, item, 
 	//   -x?, -x?, T/F).  Often -359.???
@@ -1277,13 +1277,13 @@ USECODE_FUNCTION(remove_items)
 	USECODE_RETURN(u);	// ++++Pretend we did it.
 }
 
-USECODE_FUNCTION(add_items)
+USECODE_INTRINSIC(add_items)
 	// Add items(num, item, ??, ??, T/F).
 	//++++++++++
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(play_music)
+USECODE_INTRINSIC(play_music)
 	// Play music(item, songnum).
 	// ??Show notes by item?
 #if DEBUG
@@ -1296,45 +1296,45 @@ USECODE_FUNCTION(play_music)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(npc_in_party)
+USECODE_INTRINSIC(npc_in_party)
 	// NPC in party? (item).
 	Usecode_value u(npc_in_party(get_item(parms[0].get_int_value())));
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(display_runes)
+USECODE_INTRINSIC(display_runes)
 	// Display sign (gump #, text).
 	//+++++++++++++
 	// Render text into runes for signs, tombstones, plaques and the like
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(click_on_item)
+USECODE_INTRINSIC(click_on_item)
 	// Doesn't ret. until user single-
 	//   clicks on an item.  Rets. item.
 	Usecode_value u(click_on_item());
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(find_nearby)
+USECODE_INTRINSIC(find_nearby)
 	// Think it rets. objs. near parm0.
 	Usecode_value u(find_nearby(parms[0], parms[1], parms[2], parms[3]));
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(game_hour)
+USECODE_INTRINSIC(game_hour)
 	// Return. game time hour (0-23).
 	Usecode_value u(gwin->get_hour());
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(game_minute)
+USECODE_INTRINSIC(game_minute)
 	// Return minute (0-59).
 	Usecode_value u(gwin->get_minute());
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(get_npc_number)
+USECODE_INTRINSIC(get_npc_number)
 	// Returns NPC# of item. (-356 =
 	//   avatar).
 	Game_object *obj = get_item(parms[0].get_int_value());
@@ -1348,19 +1348,19 @@ USECODE_FUNCTION(get_npc_number)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(part_of_day)
+USECODE_INTRINSIC(part_of_day)
 	// Return 3-hour # (0-7, 0=midnight).
 	Usecode_value u(gwin->get_hour()/3);
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(item_say)
+USECODE_INTRINSIC(item_say)
 	// Show str. near item (item, str).
 	item_say(parms[0], parms[1]);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(get_lift)
+USECODE_INTRINSIC(get_lift)
 	// ?? Guessing rets. lift(item).
 	Game_object *obj = get_item(parms[0].get_int_value());
 	Usecode_value u(obj ? Usecode_value(obj->get_lift())
@@ -1368,7 +1368,7 @@ USECODE_FUNCTION(get_lift)
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(set_lift)
+USECODE_INTRINSIC(set_lift)
 	// ?? Guessing setlift(item, lift).
 	Game_object *obj = get_item(parms[0].get_int_value());
 	if (obj)
@@ -1382,51 +1382,51 @@ USECODE_FUNCTION(set_lift)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(display_map)
+USECODE_INTRINSIC(display_map)
 	// Display map.
 	//++++++++++++
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(is_pc_female)
+USECODE_INTRINSIC(is_pc_female)
 	// Is player female?
 	Usecode_value u(0);
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(run_endgame)
+USECODE_INTRINSIC(run_endgame)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(get_array_size)
+USECODE_INTRINSIC(get_array_size)
 	Usecode_value u(parms[0].get_array_size());
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(is_pc_inside)
+USECODE_INTRINSIC(is_pc_inside)
 	Usecode_value u(gwin->is_main_actor_inside());
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(mouse_exists)
+USECODE_INTRINSIC(mouse_exists)
 	Usecode_value u(1);
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(mystery_2)
+USECODE_INTRINSIC(mystery_2)
 	// Takes itemref, returns obj???
 	//+++++++++++++++
 	// Maybe it's obj's container???
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(remove_item)
+USECODE_INTRINSIC(remove_item)
 	// ?Think it's 'delete object'.
 	remove_item(get_item(parms[0].get_int_value()));
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(get_equipment_list)
+USECODE_INTRINSIC(get_equipment_list)
 	// Wearing? (npc, where, itemshape, 
 	//   frame (-359=any)).
 	// Where = (1=weapon hand, 
@@ -1438,13 +1438,13 @@ USECODE_FUNCTION(get_equipment_list)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(advance_time)
+USECODE_INTRINSIC(advance_time)
 	// Incr. clock by (parm[0]*.04min.).
 	gwin->increment_clock(parms[0].get_int_value()/25);
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(direction_from)
+USECODE_INTRINSIC(direction_from)
 	// ?Direction from parm[0] -> parm[1].
 	// Rets. 0-7.  Is 0 north?
 	// Same as 0x1a??
@@ -1452,14 +1452,14 @@ USECODE_FUNCTION(direction_from)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(get_npc_flag)
+USECODE_INTRINSIC(get_npc_flag)
 	// Get npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0].get_int_value());
 	Usecode_value u(obj ? obj->get_flag(parms[1].get_int_value())	: 0);
 	USECODE_RETURN(u);
 }
 
-USECODE_FUNCTION(set_npc_flag)
+USECODE_INTRINSIC(set_npc_flag)
 	// Set npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0].get_int_value());
 	int flag = parms[1].get_int_value();
@@ -1475,7 +1475,7 @@ USECODE_FUNCTION(set_npc_flag)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(clear_npc_flag)
+USECODE_INTRINSIC(clear_npc_flag)
 	// Clear npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0].get_int_value());
 	int flag = parms[1].get_int_value();
@@ -1491,7 +1491,7 @@ USECODE_FUNCTION(clear_npc_flag)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_FUNCTION(get_party_list2)
+USECODE_INTRINSIC(get_party_list2)
 	// Return party.  Same as 0x23
 	// Probably returns a list of everyone with (or without) some flag
 	// List of live chars? Dead chars?
@@ -1503,262 +1503,262 @@ typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intri
 
 UsecodeIntrinsicFn intrinsic_table[]=
 	{
-	USECODE_FUNCTION_PTR(get_random),	// 0
-	USECODE_FUNCTION_PTR(execute_usecode_array), // 1
-	USECODE_FUNCTION_PTR(delayed_execute_usecode_array), // 2
-	USECODE_FUNCTION_PTR(show_npc_face), // 3
-	USECODE_FUNCTION_PTR(remove_npc_face), // 4
-	USECODE_FUNCTION_PTR(add_answer), // 5
-	USECODE_FUNCTION_PTR(remove_answer), // 6
-	USECODE_FUNCTION_PTR(push_answers), // 7
-	USECODE_FUNCTION_PTR(pop_answers), // 8
-	USECODE_FUNCTION_PTR(UNKNOWN), // 9
-	USECODE_FUNCTION_PTR(select_from_menu), // 0x0a
-	USECODE_FUNCTION_PTR(select_from_menu2), // 0x0b
-	USECODE_FUNCTION_PTR(input_numeric_value), // 0xc
-	USECODE_FUNCTION_PTR(set_item_shape), // 0xd
-	USECODE_FUNCTION_PTR(UNKNOWN), // 0xe
-	USECODE_FUNCTION_PTR(UNKNOWN), // 0xf
-	USECODE_FUNCTION_PTR(die_roll), // 0x10
-	USECODE_FUNCTION_PTR(get_item_shape), // 0x11
-	USECODE_FUNCTION_PTR(get_item_frame), // 0x12
-	USECODE_FUNCTION_PTR(set_item_frame), // 0x13
-	USECODE_FUNCTION_PTR(get_item_quality), // 0x14
-	USECODE_FUNCTION_PTR(set_item_quality), // 0x15
-	USECODE_FUNCTION_PTR(count_npc_inventory), // 0x16
-	USECODE_FUNCTION_PTR(set_npc_inventory_count), // 0x17
-	USECODE_FUNCTION_PTR(get_object_position), // 0x18
-	USECODE_FUNCTION_PTR(UNKNOWN), // 0x19
-	USECODE_FUNCTION_PTR(find_direction), // 0x1a
-	USECODE_FUNCTION_PTR(get_npc_object), // 0x1b
-	USECODE_FUNCTION_PTR(get_schedule_type), // 0x1c
-	USECODE_FUNCTION_PTR(set_schedule_type), // 0x1d
-	USECODE_FUNCTION_PTR(add_to_party), // 0x1e
-	USECODE_FUNCTION_PTR(remove_from_party), // 0x1f
-	USECODE_FUNCTION_PTR(get_npc_prop), // 0x20
-	USECODE_FUNCTION_PTR(set_npc_prop), // 0x21
-	USECODE_FUNCTION_PTR(get_avatar_ref), // 0x22
-	USECODE_FUNCTION_PTR(get_party_list), // 0x23
-	USECODE_FUNCTION_PTR(create_new_object), // 0x24
-	USECODE_FUNCTION_PTR(mystery_1), // 0x25
-	USECODE_FUNCTION_PTR(update_last_created), // 0x26
-	USECODE_FUNCTION_PTR(get_npc_name), // 0x27
-	USECODE_FUNCTION_PTR(count_objects), // 0x28
-	USECODE_FUNCTION_PTR(UNKNOWN), // 0x29
-	USECODE_FUNCTION_PTR(get_cont_items), // 0x2a
-	USECODE_FUNCTION_PTR(remove_items), // 0x2b
-	USECODE_FUNCTION_PTR(add_items), // 0x2c
-	USECODE_FUNCTION_PTR(UNKNOWN), // 0x2d
-	USECODE_FUNCTION_PTR(play_music), // 0x2e
-	USECODE_FUNCTION_PTR(npc_in_party), // 0x2f
-	USECODE_FUNCTION_PTR(UNKNOWN), // 0x30
-	USECODE_FUNCTION_PTR(UNKNOWN), // 0x31
-	USECODE_FUNCTION_PTR(display_runes), // 0x32
-	USECODE_FUNCTION_PTR(click_on_item), // 0x33
-	USECODE_FUNCTION_PTR(UNKNOWN), // 0x34
-	USECODE_FUNCTION_PTR(find_nearby), // 0x35
-	USECODE_FUNCTION_PTR(UNKNOWN), // 0x36
-	USECODE_FUNCTION_PTR(UNKNOWN), // 0x37
-	USECODE_FUNCTION_PTR(game_hour), // 0x38
-	USECODE_FUNCTION_PTR(game_minute), // 0x39
-	USECODE_FUNCTION_PTR(get_npc_number),	// 0x3a
-	USECODE_FUNCTION_PTR(part_of_day),	// 0x3b
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x3c
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x3d
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x3e
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x3f
-	USECODE_FUNCTION_PTR(item_say),	// 0x40
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x41
-	USECODE_FUNCTION_PTR(get_lift),	// 0x42
-	USECODE_FUNCTION_PTR(set_lift),	// 0x43
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x44
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x45
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x46
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x47
-	USECODE_FUNCTION_PTR(display_map),	// 0x48
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x49
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4a
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4b
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4c
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4d
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4e
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4f
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x50
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x51
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x52
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x53
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x54
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x55
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x56
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x57
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x58
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x59
-	USECODE_FUNCTION_PTR(is_pc_female),	// 0x5a
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x5b
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x5c
-	USECODE_FUNCTION_PTR(run_endgame),	// 0x5d
-	USECODE_FUNCTION_PTR(get_array_size),	// 0x5e
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x5f
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x60
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x61
-	USECODE_FUNCTION_PTR(is_pc_inside),	// 0x62
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x63
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x64
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x65
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x66
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x67
-	USECODE_FUNCTION_PTR(mouse_exists),	// 0x68
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x69
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x6a
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x6b
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x6c
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x6d
-	USECODE_FUNCTION_PTR(mystery_2),	// 0x6e
-	USECODE_FUNCTION_PTR(remove_item),	// 0x6f
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x70
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x71
-	USECODE_FUNCTION_PTR(get_equipment_list),	// 0x72
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x73
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x74
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x75
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x76
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x77
-	USECODE_FUNCTION_PTR(advance_time),	// 0x78
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x79
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7a
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7b
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7c
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7d
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7e
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7f
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x80
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x81
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x82
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x83
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x84
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x85
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x86
-	USECODE_FUNCTION_PTR(direction_from),	// 0x87
-	USECODE_FUNCTION_PTR(get_npc_flag),	// 0x88
-	USECODE_FUNCTION_PTR(set_npc_flag),	// 0x89
-	USECODE_FUNCTION_PTR(clear_npc_flag),	// 0x8a
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8b
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8c
-	USECODE_FUNCTION_PTR(get_party_list2),	// 0x8d
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8e
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8f
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x90
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x91
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x92
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x93
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x94
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x95
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x96
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x97
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x98
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x99
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9a
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9b
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9c
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9d
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9e
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9f
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa0
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa1
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa2
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa3
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa4
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa5
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa6
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa7
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa8
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa9
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xaa
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xab
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xac
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xad
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xae
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xaf
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb0
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb1
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb2
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb3
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb4
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb5
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb6
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb7
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb8
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb9
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xba
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xbb
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xbc
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xbd
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xbe
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xbf
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc0
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc1
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc2
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc3
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc4
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc5
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc6
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc7
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc8
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc9
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xca
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xcb
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xcc
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xcd
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xce
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xcf
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd0
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd1
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd2
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd3
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd4
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd5
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd6
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd7
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd8
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd9
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xda
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xdb
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xdc
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xdd
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xde
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xdf
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe0
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe1
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe2
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe3
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe4
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe5
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe6
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe7
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe8
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe9
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xea
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xeb
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xec
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xed
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xee
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xef
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf0
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf1
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf2
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf3
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf4
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf5
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf6
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf7
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf8
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf9
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xfa
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xfb
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xfc
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xfd
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xfe
-	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xff
+	USECODE_INTRINSIC_PTR(get_random),	// 0
+	USECODE_INTRINSIC_PTR(execute_usecode_array), // 1
+	USECODE_INTRINSIC_PTR(delayed_execute_usecode_array), // 2
+	USECODE_INTRINSIC_PTR(show_npc_face), // 3
+	USECODE_INTRINSIC_PTR(remove_npc_face), // 4
+	USECODE_INTRINSIC_PTR(add_answer), // 5
+	USECODE_INTRINSIC_PTR(remove_answer), // 6
+	USECODE_INTRINSIC_PTR(push_answers), // 7
+	USECODE_INTRINSIC_PTR(pop_answers), // 8
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 9
+	USECODE_INTRINSIC_PTR(select_from_menu), // 0x0a
+	USECODE_INTRINSIC_PTR(select_from_menu2), // 0x0b
+	USECODE_INTRINSIC_PTR(input_numeric_value), // 0xc
+	USECODE_INTRINSIC_PTR(set_item_shape), // 0xd
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xe
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xf
+	USECODE_INTRINSIC_PTR(die_roll), // 0x10
+	USECODE_INTRINSIC_PTR(get_item_shape), // 0x11
+	USECODE_INTRINSIC_PTR(get_item_frame), // 0x12
+	USECODE_INTRINSIC_PTR(set_item_frame), // 0x13
+	USECODE_INTRINSIC_PTR(get_item_quality), // 0x14
+	USECODE_INTRINSIC_PTR(set_item_quality), // 0x15
+	USECODE_INTRINSIC_PTR(count_npc_inventory), // 0x16
+	USECODE_INTRINSIC_PTR(set_npc_inventory_count), // 0x17
+	USECODE_INTRINSIC_PTR(get_object_position), // 0x18
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x19
+	USECODE_INTRINSIC_PTR(find_direction), // 0x1a
+	USECODE_INTRINSIC_PTR(get_npc_object), // 0x1b
+	USECODE_INTRINSIC_PTR(get_schedule_type), // 0x1c
+	USECODE_INTRINSIC_PTR(set_schedule_type), // 0x1d
+	USECODE_INTRINSIC_PTR(add_to_party), // 0x1e
+	USECODE_INTRINSIC_PTR(remove_from_party), // 0x1f
+	USECODE_INTRINSIC_PTR(get_npc_prop), // 0x20
+	USECODE_INTRINSIC_PTR(set_npc_prop), // 0x21
+	USECODE_INTRINSIC_PTR(get_avatar_ref), // 0x22
+	USECODE_INTRINSIC_PTR(get_party_list), // 0x23
+	USECODE_INTRINSIC_PTR(create_new_object), // 0x24
+	USECODE_INTRINSIC_PTR(mystery_1), // 0x25
+	USECODE_INTRINSIC_PTR(update_last_created), // 0x26
+	USECODE_INTRINSIC_PTR(get_npc_name), // 0x27
+	USECODE_INTRINSIC_PTR(count_objects), // 0x28
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x29
+	USECODE_INTRINSIC_PTR(get_cont_items), // 0x2a
+	USECODE_INTRINSIC_PTR(remove_items), // 0x2b
+	USECODE_INTRINSIC_PTR(add_items), // 0x2c
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x2d
+	USECODE_INTRINSIC_PTR(play_music), // 0x2e
+	USECODE_INTRINSIC_PTR(npc_in_party), // 0x2f
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x30
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x31
+	USECODE_INTRINSIC_PTR(display_runes), // 0x32
+	USECODE_INTRINSIC_PTR(click_on_item), // 0x33
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x34
+	USECODE_INTRINSIC_PTR(find_nearby), // 0x35
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x36
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x37
+	USECODE_INTRINSIC_PTR(game_hour), // 0x38
+	USECODE_INTRINSIC_PTR(game_minute), // 0x39
+	USECODE_INTRINSIC_PTR(get_npc_number),	// 0x3a
+	USECODE_INTRINSIC_PTR(part_of_day),	// 0x3b
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3c
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3d
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3e
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f
+	USECODE_INTRINSIC_PTR(item_say),	// 0x40
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x41
+	USECODE_INTRINSIC_PTR(get_lift),	// 0x42
+	USECODE_INTRINSIC_PTR(set_lift),	// 0x43
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x44
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x45
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x46
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x47
+	USECODE_INTRINSIC_PTR(display_map),	// 0x48
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x49
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4b
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4c
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4f
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x53
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x55
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x57
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x58
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x59
+	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5c
+	USECODE_INTRINSIC_PTR(run_endgame),	// 0x5d
+	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5f
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x60
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x61
+	USECODE_INTRINSIC_PTR(is_pc_inside),	// 0x62
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x64
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x65
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x66
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x67
+	USECODE_INTRINSIC_PTR(mouse_exists),	// 0x68
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x69
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6b
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6c
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6d
+	USECODE_INTRINSIC_PTR(mystery_2),	// 0x6e
+	USECODE_INTRINSIC_PTR(remove_item),	// 0x6f
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x70
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x71
+	USECODE_INTRINSIC_PTR(get_equipment_list),	// 0x72
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x73
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x74
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x75
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x76
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x77
+	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x79
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7c
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7d
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7e
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7f
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x81
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x82
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x83
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x85
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x86
+	USECODE_INTRINSIC_PTR(direction_from),	// 0x87
+	USECODE_INTRINSIC_PTR(get_npc_flag),	// 0x88
+	USECODE_INTRINSIC_PTR(set_npc_flag),	// 0x89
+	USECODE_INTRINSIC_PTR(clear_npc_flag),	// 0x8a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8b
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8c
+	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8e
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8f
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x90
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x92
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x93
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x94
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x95
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x96
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x97
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x98
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x99
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9b
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9c
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9d
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9e
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9f
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa0
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa1
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa2
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa3
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa4
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa5
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa6
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa7
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa8
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa9
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xaa
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xab
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xac
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xad
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xae
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xaf
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb0
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb1
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb2
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb3
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb4
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb5
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb6
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb7
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb8
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb9
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xba
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xbb
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xbc
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xbd
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xbe
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xbf
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc0
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc1
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc2
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc3
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc4
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc5
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc6
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc7
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc8
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xc9
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xca
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xcb
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xcc
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xcd
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xce
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xcf
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xd0
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xd1
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xd2
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xd3
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xd4
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xd5
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xd6
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xd7
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xd8
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xd9
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xda
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xdb
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xdc
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xdd
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xde
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xdf
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xe0
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xe1
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xe2
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xe3
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xe4
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xe5
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xe6
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xe7
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xe8
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xe9
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xea
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xeb
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xec
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xed
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xee
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xef
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xf0
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xf1
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xf2
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xf3
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xf4
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xf5
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xf6
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xf7
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xf8
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xf9
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xfa
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xfb
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xfc
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xfd
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xfe
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xff
 	};
 
 
