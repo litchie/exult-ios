@@ -275,6 +275,7 @@ public:
 					// Handle events:
 	virtual void mouse_down(int mx, int my) = 0;
 	virtual void mouse_up(int mx, int my) = 0;
+	virtual void mouse_drag(int mx, int my) = 0;
 	};
 
 /*
@@ -289,9 +290,12 @@ class Slider_gump_object : public Modal_gump_object
 	int min_val, max_val;		// Max., min. values to choose from.
 	int step_val;			// Amount to step by.
 	int val;			// Current value.
+	unsigned char dragging;		// 1 if dragging the diamond.
+	int prev_dragx;			// Prev. x-coord. of mouse.
 	void set_val(int newval);	// Set to new value.
 					// Coords:
 	static short leftbtnx, rightbtnx, btny;
+	static short xmin, xmax;
 public:
 	Slider_gump_object(int initx, int inity, int mival, int mxval,
 					int step, int defval);
@@ -311,6 +315,7 @@ public:
 					// Handle events:
 	virtual void mouse_down(int mx, int my);
 	virtual void mouse_up(int mx, int my);
+	virtual void mouse_drag(int mx, int my);
 	};
 
 #endif	/* INCL_GUMPS */
