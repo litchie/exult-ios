@@ -361,7 +361,8 @@ int Actor::add_dirty
 
 int Actor::is_blocked
 	(
-	Tile_coord& t			// Tz possibly updated.
+	Tile_coord& t,			// Tz possibly updated.
+	Tile_coord *f			// Step from here, or curpos if null.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -381,9 +382,8 @@ int Actor::is_blocked
 		t.tz = new_lift;
 		return blocked;
 		}
-	Tile_coord cur = get_abs_tile_coord();
 	return Map_chunk::is_blocked(xtiles, ytiles, ztiles,
-			cur, t, get_type_flags());
+			f ? *f : get_abs_tile_coord(), t, get_type_flags());
 	}
 
 /*
