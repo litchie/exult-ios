@@ -43,6 +43,7 @@ extern void decrease_resolution();
 extern void make_screenshot(bool silent = false);
 extern void change_gamma(bool down);
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
+extern int Put_click(int x, int y, int button = 1);
 
 extern Game_window *gwin;
 extern Game* game;
@@ -287,6 +288,7 @@ void ActionTryKeys(int *params)
 		Actor *act = party[i];
 		Game_object_vector keys;		// Get keys.
 		if (act->get_objects(keys, 641, qual, c_any_framenum)) {
+			Put_click(x, y);
 			keys[0]->activate(gwin->get_usecode());
 			return;
 		}

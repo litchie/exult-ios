@@ -1,3 +1,9 @@
+2001-08-05  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* audio/Audio.h (public): Got rid of annoying warning.
+	* conversation.cc: No face for Smith the Nightmare.
+	* keyactions.cc: Applied Put_click() patch for keys.
+
 2001-08-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* game.cc: fixed 'return to menu' after 'start new game' bug
 	* configure.in, acconfig.h: define VER_MAJOR, VER_MINOR, VER_EXTRA 
