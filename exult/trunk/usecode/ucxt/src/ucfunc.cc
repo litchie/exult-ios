@@ -30,7 +30,7 @@
 //#define DEBUG_PARSE2a
 //#define DEBUG_PRINT
 
-const string VARNAME = "uvar";
+const string VARNAME = "var";
 const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
 
@@ -64,20 +64,47 @@ inline ostream &tab_indent(const unsigned int indent, ostream &o)
 void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, bool gnubraces)
 {
 	unsigned int indent=0;
-	// output the "function name"
-	// TODO: Probably want to grab this from a file in the future...
-	tab_indent(indent, o) << "Func" << setw(4) << _funcid
-	// output the "function number"
-		<< " 0x" << _funcid
-	// output ObCurly braces
-		<< " ()" << endl;
 	
+	// output the 'externs'
+	for(vector<unsigned short>::iterator e=_externs.begin(); e!=_externs.end(); e++)
+	{
+		FuncMap::const_iterator fmp = funcmap.find(*e);
+		output_ucs_funcname(tab_indent(indent, o) << "extern ", *e, fmp->second.num_args, fmp->second.return_var) << ';' << endl;
+	}
+	
+	if(_externs.size()) o << endl;
+	
+	// output the function name
+	output_ucs_funcname(tab_indent(indent, o), _funcid, _num_args, _return_var) << endl;
 	// start of func
 	tab_indent(indent++, o) << '{' << endl;
 	
 	output_ucs_data(o, funcmap, intrinsics, uselesscomment, indent);
 	
 	tab_indent(--indent, o) << '}' << endl;
+}
+
+/* outputs the general 'function name' in long format. For function declarations
+	and externs */
+ostream &UCFunc::output_ucs_funcname(ostream &o, unsigned int funcid, unsigned int numargs, bool return_var)
+{
+	// do we return a variable
+	if(return_var) o << VARNAME << ' ';
+	
+	// output the "function name"
+	// TODO: Probably want to grab this from a file in the future...
+	o << "Func" << setw(4) << funcid
+	// output the "function number"
+	  << " 0x" << funcid
+	// output ObCurly braces
+	  << " (";
+	
+	for(unsigned int i=0; i<numargs; i++)
+		o << VARNAME << ' ' << VARPREFIX << setw(4) << i << ((i==numargs-1) ? "" : ", ");
+	
+	o << ")";
+	
+	return o;
 }
 
 void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, unsigned int indent)
@@ -156,9 +183,10 @@ void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &
 	for(vector<UCc>::iterator i=_opcodes.begin(); i!=_opcodes.end(); i++)
 		node.nodelist.push_back(new UCNode(i));
 	
-	parse_ucs_pass1a(node.nodelist);
-	parse_ucs_pass2a(gotoset, funcmap, intrinsics);
+	parse_ucs_pass1(node.nodelist);
+	parse_ucs_pass2(gotoset, funcmap, intrinsics);
 	gc_gotoset(gotoset);
+	parse_ucs_pass3(gotoset, intrinsics);
 	
 	#ifdef DEBUG_PARSE2
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); i++)
@@ -175,7 +203,7 @@ void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &
 
 /* Pass 1 turns the 1-dimentional vector of opcodes, into a 2-dimentional array
    consisting of all the opcodes within two 'goto target offsets'. */
-void UCFunc::parse_ucs_pass1a(vector<UCNode *> &nodes)
+void UCFunc::parse_ucs_pass1(vector<UCNode *> &nodes)
 {
 	vector<unsigned int> jumps;
 
@@ -220,15 +248,15 @@ void UCFunc::parse_ucs_pass1a(vector<UCNode *> &nodes)
    each UCc, having it's parameters sitting in it's UCc::_popped vector. Elements
    that are parameters are flagged for removal (Gotoset::()[i]->second=true) from
    the original GotoSet. */
-void UCFunc::parse_ucs_pass2a(vector<GotoSet> &gotoset, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics)
+void UCFunc::parse_ucs_pass2(vector<GotoSet> &gotoset, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics)
 {
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
 	{
-		parse_ucs_pass2b((*i)().rbegin(), (*i)(), 0, funcmap, intrinsics);
+		parse_ucs_pass2a((*i)().rbegin(), (*i)(), 0, funcmap, intrinsics);
 	}
 }
 
-vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics)
+vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics)
 {
 	vector<UCc *> vucc;
 	unsigned int opsfound=0;
@@ -295,7 +323,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 						   pointing at the 'next' current value */
 						vector<pair<UCc *, bool> >::reverse_iterator ret(current);
 						
-						ret->first->_popped = parse_ucs_pass2b(++current, vec, num_args, funcmap, intrinsics);
+						ret->first->_popped = parse_ucs_pass2a(++current, vec, num_args, funcmap, intrinsics);
 						
 						assert(current!=ret);
 						
@@ -357,6 +385,11 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 	return vucc;
 }
 
+/* The 'optomisation' phase. Attempting to remove as many goto...labels as possible. */
+void UCFunc::parse_ucs_pass3(vector<GotoSet> &gotoset, const map<unsigned int, string> &intrinsics)
+{
+
+}
 
 /* Prints module's data segment */
 /*void UCFunc::process_data_seg()
