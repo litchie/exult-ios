@@ -100,7 +100,6 @@ exult_SOURCES =	\
 	usecode.h	\
 	useval.cc	\
 	useval.h	\
-	vec.cc		\
 	vec.h		\
 	vgafile.cc	\
 	vgafile.h	\

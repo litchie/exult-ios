@@ -3859,17 +3859,23 @@ void Usecode_machine::_init_
 	file.seekg(0, ios::end);
 	int size = file.tellg();	// Get file size.
 	file.seekg(0);
-	funs = new Vector(10);		// A slot for funs. n/256.
+#if 0
+					// A slot for funs. n/256.
+	funs = new vector<Usecode_function*>[16];
+#endif
 					// Read in all the functions.
 	while (file.tellg() < size)
 		{
 		Usecode_function *fun = new Usecode_function(file);
+#if 0
 					// Get slot.
 		Vector *slot = (Vector *) funs->get(fun->id/0x100);
 		if (!slot)
 			funs->put(fun->id/0x100, (slot = new Vector(10)));
 					// Store in slot.
 		slot->put(fun->id%0x100, fun);
+#endif
+		funs[fun->id/0x100].put(fun->id%0x100, fun);
 		}
 	}
 
@@ -3884,9 +3890,11 @@ Usecode_machine::~Usecode_machine
 	delete [] stack;
 	delete String;
 	delete removed;
-	int num_slots = funs->get_cnt();
+//	int num_slots = funs->get_cnt();
+	int num_slots = sizeof(funs)/sizeof(funs[0]);
 	for (int i = 0; i < num_slots; i++)
 		{
+#if 0
 		Vector *slot = (Vector *) funs->get(i);
 		if (!slot)
 			continue;
@@ -3894,8 +3902,13 @@ Usecode_machine::~Usecode_machine
 		for (int j = 0; j < cnt; j++)
 			delete (Usecode_function *) slot->get(j);
 		delete slot;
+#endif
+		vector<Usecode_function*>& slot = funs[i];
+		int cnt = slot.size();
+		for (int j = 0; j < cnt; j++)
+			delete slot[j];
 		}
-	delete funs;
+//	delete funs;
 	delete book;
 	}
 
@@ -4429,9 +4442,14 @@ int Usecode_machine::call_usecode_function
 	if (!call_depth && !Scheduled_usecode::get_count())
 		removed->flush();	// Flush removed objects.
 					// Look up in table.
+#if 0
 	Vector *slot = (Vector *) funs->get(id/0x100);
 	Usecode_function *fun = slot ? (Usecode_function *) slot->get(id%0x100)
 				     : 0;
+#endif
+	vector<Usecode_function*>& slot = funs[id/0x100];
+	int index = id%0x100;
+	Usecode_function *fun = index < slot.size() ? slot[index] : 0;
 	if (!fun)
 		{
 		cout << "Usecode " << id << " not found."<<endl;
