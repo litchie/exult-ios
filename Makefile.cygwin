@@ -222,7 +222,7 @@ usecode/ucxt/src/ucxt.exe : $(UCXT_OBJS)
 UCC_OBJS=ucparse.o uclex.o usecode/compiler/ucmain.o usecode/compiler/ucexpr.o usecode/compiler/ucfun.o usecode/compiler/ucloc.o usecode/compiler/ucstmt.o usecode/compiler/ucsym.o
 
 usecode/compiler/ucc.exe : $(UCC_OBJS)
-	$(CXX) $(LFLAGS) -o usecode/compiler/ucc.exe $(UCC_OBJS)
+	$(CXX) $(LFLAGS) -o usecode/compiler/ucc.exe $(UCC_OBJS) -mconsole
 
 ucparse.cc:  
 	bison -d usecode/compiler/ucparse.yy -o ucparse.c
@@ -235,7 +235,7 @@ uclex.cc:
 CONFREGRESS_OBJS=conf/Configuration.o conf/XMLEntity.o conf/xmain.o files/utils.o
 
 conf/confregress.exe  : $(CONFREGRESS_OBJS)
-	$(CXX) $(LFLAGS) -o conf/confregress.exe $(CONFREGRESS_OBJS)
+	$(CXX) $(LFLAGS) -o conf/confregress.exe $(CONFREGRESS_OBJS) -mconsole
 
 # This should work with the Cygwin rm
 clean:
