@@ -140,6 +140,8 @@ public:
 					// Get the one game window.
 	static Game_window *get_game_window()
 		{ return game_window; }
+		
+	void set_window_size(int w, int h);
 	void abort(const char *msg, ...);	// Fatal error.
 	int get_width()
 		{ return win->get_width(); }
@@ -236,7 +238,7 @@ public:
 		{ return combat; }
 	void toggle_combat();
 					// Resize event occurred.
-	void resized(unsigned int neww, unsigned int newh);
+	void resized(unsigned int neww, unsigned int newh, unsigned int newsc);
 	inline void set_painted()		// Force blit.
 		{ painted = 1; }
 	inline int was_painted()
@@ -490,10 +492,12 @@ public:
 	void show_items(int x, int y);	// Show names of items clicked on.
 					// Add text item.
 	void add_text(const char *msg, int x, int y);
+	void center_text(const char *msg);
 	void add_effect(Special_effect *effect);
 					// Remove text item & delete it.
 	void remove_effect(Special_effect *txt);
 	void remove_all_effects();
+	void remove_text_effects();
 	void remove_weather_effects();	// Remove just the weather.
 					// Handle a double-click in window.
 	void double_clicked(int x, int y);
