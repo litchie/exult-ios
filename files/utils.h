@@ -347,7 +347,6 @@ int Log2
 	);
 
 void add_system_path(const std::string& key, const std::string& value);
-void switch_slashes(std::string &name);
 std::string get_system_path(const std::string &path);
 
 #endif	/* _UTILS_H_ */

@@ -1,3 +1,6 @@
+2001-03-28  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* tools/expack.cc, files/utils.*: fixed expack switch_slashes problem
+
 2001-03-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Removed more 'paint()' calls in Usecode intrinsics to fix
