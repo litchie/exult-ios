@@ -120,7 +120,33 @@ void Cheat::toggle_map_editor (void) {
 
   map_editor = !map_editor;
   if (map_editor)
+    {
     gwin->center_text("Map Editor Mode Enabled");
+#ifdef XWIN			/* Launch ExultStudio! */
+    static bool launched = false;
+    if (!launched && !gwin->get_win()->is_fullscreen())
+	{
+	launched = true;
+	char cmnd[256];		// Set up command.
+	strcpy(cmnd, "exult_studio -x");
+	std::string data_path;
+	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
+	strcat(cmnd, data_path.c_str());// Path to where .glade file should be.
+	strcat(cmnd, " -d");	// Now want path to game.
+	string gametitle = Game::get_game_type() == BLACK_GATE ?
+		"blackgate" : "serpentisle";
+	std::string d = "config/disk/game/" + gametitle + "/path";
+	std::string game_path;
+	config->value(d.c_str(), game_path, ".");
+	strcat(cmnd, game_path.c_str());
+	strcat(cmnd, " &");
+	cout << "Executing: " << cmnd << endl;
+	int ret = system(cmnd);
+	if (ret == 127 || ret == -1)
+		cout << "Couldn't run Exult Studio" << endl;
+	}
+#endif
+    }
   else
     gwin->center_text("Map Editor Mode Disabled");			
 }

@@ -78,7 +78,7 @@ void Shape_chooser::select
 	gtk_adjustment_changed(frame_adj);
 	gtk_widget_set_sensitive(fspin, true);
 					// Remove prev. selection msg.
-	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+//	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	char buf[150];			// Show new selection.
 	g_snprintf(buf, sizeof(buf), "Shape %d (%d frames)",
 						shapenum, nframes);
@@ -563,7 +563,7 @@ void Shape_chooser::unselect
 	char buf[150];			// Show new selection.
 	if (info_cnt > 0)
 		{
-		gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+//		gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 		g_snprintf(buf, sizeof(buf), "Shapes %d to %d",
 			info[0].shapenum, info[info_cnt - 1].shapenum);
 		gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
