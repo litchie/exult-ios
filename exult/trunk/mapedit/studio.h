@@ -119,7 +119,7 @@ public:
 
 	void run();
 	void read_from_server();
-	void connect_to_server();
+	bool connect_to_server();
 };
 
 #endif
