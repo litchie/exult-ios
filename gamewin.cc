@@ -2511,6 +2511,7 @@ void Game_window::setup_game
 
 	// Set palette for time-of-day.
 	clock->set_palette();
+	pal->fade(6, 1, -1);		// Fade back in.
 }
 
 
