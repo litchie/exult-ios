@@ -58,7 +58,7 @@ Usecode_script::Usecode_script
 	int nhalt, 
 	int del
 	) : obj(item), code(cd), i(0), frame_index(findex), 
-	    no_halt(nhalt), delay(del)
+	    no_halt(nhalt != 0), delay(del)
 	{
 	cnt = code->get_array_size();
 	count++;			// Keep track of total.
@@ -70,14 +70,15 @@ Usecode_script::Usecode_script
 	}
 
 /*
- *	Create.
+ *	Create and place in chain after halting others for the same object
+ *	(unless no_halt is set).
  */
 
 Usecode_script::Usecode_script
 	(
 	Game_object *o,
 	Usecode_value *cd		// May be NULL for empty script.
-	) : obj(o), code(cd), cnt(0), i(0), frame_index(0), no_halt(0),
+	) : obj(o), code(cd), cnt(0), i(0), frame_index(0), no_halt(false),
 	    delay(0)
 	{
 	if (!code)			// Empty?
@@ -92,9 +93,13 @@ Usecode_script::Usecode_script
 			}
 					//++++This should be done in start():
 		int opval0 = code->get_elem(0).get_int_value();
-		if (opval0 == 0x23)		// PURE GUESS:
-			no_halt = 1;
+		if (opval0 == 0x23)
+			no_halt = true;
 		}
+	if (!is_no_halt())		// If flag not set,
+					// Remove other entries that aren't
+					//   'no_halt'.
+		Usecode_script::terminate(obj);
 	count++;			// Keep track of total.
 	next = first;			// Put in chain.
 	prev = 0;
@@ -133,6 +138,18 @@ void Usecode_script::start
 //	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
 	gwin->get_tqueue()->add(d + SDL_GetTicks(), this,
 					(long) gwin->get_usecode());
+	}
+
+/*
+ *	Set this script to halt.
+ */
+
+void Usecode_script::halt
+	(
+	)
+	{
+	if (!no_halt)
+		i = cnt;
 	}
 
 /*
@@ -183,6 +200,24 @@ Usecode_script *Usecode_script::find
 			return each;	// Found it.
 	return (0);
 	}
+
+/*
+ *	Terminate all scripts for a given object.
+ */
+
+void Usecode_script::terminate
+	(
+	Game_object *obj
+	)
+	{
+	Usecode_script *next = 0;
+	for (Usecode_script *each = first; each; each = next)
+		{
+		next = each->next;	// Get next in case we delete 'each'.
+		if (each->obj == obj)
+			each->halt();
+		}
+	}			
 
 /*
  *	Remove all from global list (assuming they've already been cleared
@@ -287,7 +322,7 @@ void Usecode_script::handle_event
 		case dont_halt:		// ?? Always appears first.
 					// Maybe means "don't let
 					//    intrinsic 5c stop it".
-			no_halt = 1;	// PURE GUESS.
+			no_halt = true;	// PURE GUESS.
 			do_another = 1;
 			break;
 		case delay_ticks:	// 1 parm.
@@ -541,7 +576,7 @@ int Usecode_script::save
 	if (buflen - (ptr - buf) < 8)	// Enough room left?
 		return -1;
 	Write2(ptr, frame_index);
-	Write2(ptr, no_halt);
+	Write2(ptr, no_halt ? 1 : 0);
 	Write4(ptr, when);
 	return (ptr - buf);
 	}

@@ -38,7 +38,7 @@ class Usecode_script : public Time_sensitive
 	int cnt;			// Length of arrval.
 	int i;				// Current index.
 	int frame_index;		// For taking steps.
-	int no_halt;			// 1 to ignore halt().
+	bool no_halt;			// 1 to ignore halt().
 	int delay;			// Used for restoring.
 					// For restore:
 	Usecode_script(Game_object *item, Usecode_value *cd, int findex,
@@ -49,11 +49,9 @@ public:
 	void start(long delay = 1);	// Start after 'delay' msecs.
 	long get_delay() const
 		{ return delay; }
-	void halt()			// Stop executing.
-		{
-		if (!no_halt)
-			i = cnt;
-		}
+	void halt();			// Stop executing.
+	bool is_no_halt() const		// Is the 'no_halt' flag set?
+		{ return no_halt; }
 	int is_activated()		// Started already?
 		{ return i > 0; }
 	void add(int v1);		// Append new instructions:
@@ -69,6 +67,7 @@ public:
 					// Find for given item.
 	static Usecode_script *find(Game_object *srch, 
 					Usecode_script *last_found = 0);
+	static void terminate(Game_object *obj);
 	static void clear();		// Delete all.
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Move object in given direction.
