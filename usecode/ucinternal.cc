@@ -1534,7 +1534,10 @@ void Usecode_internal::click_to_continue
 	int xx, yy;
 	char c;
 	if (!gwin->get_pal()->is_faded_out())// If black screen, skip!
+		{
+		gwin->paint();		// Repaint scenery.
 		Get_click(xx, yy, Mouse::hand, &c, false, conv);
+		}
 	conv->clear_text_pending();
 	//	user_choice = 0;		// Clear it.
 	}
@@ -1591,6 +1594,7 @@ int Usecode_internal::get_user_choice_num
 	do
 		{
 		char chr;		// Allow '1', '2', etc.
+		gwin->paint();		// Paint scenery.
 		int result=Get_click(x, y, Mouse::hand, &chr, false, conv);
 		if (result<=0) {	// ESC pressed, select 'bye' if poss.
 			choice_num = conv->locate_answer("bye");
