@@ -328,9 +328,9 @@ void Party_manager::move_followers
 	if (rnpc)
 		rdir = step(rnpc, npc, dir, pos + Tile_coord(
 			right_offsets[dir4][0], right_offsets[dir4][1], 0));
-	if (ldir >= 0)
+	if (ldir >= 0 && !lnpc->is_dead())
 		move_followers(lnpc, lnum, ldir);
-	if (rdir >= 0)
+	if (rdir >= 0 && !rnpc->is_dead())
 		move_followers(rnpc, rnum, rdir);
 	}
 
@@ -624,7 +624,10 @@ int Party_manager::step
 			}
 #endif
 		}
-	else if (!Take_best_step(npc, leader, pos, frame, 	
+					// Could have died from stepping on
+					//   something.
+	else if (npc->is_dead() ||
+		 !Take_best_step(npc, leader, pos, frame, 	
 						npc->get_direction(dest)))
 		{			// Failed to take a step.
 		cout << npc->get_name() << " failed to take a step" << endl;
