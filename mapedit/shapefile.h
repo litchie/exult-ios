@@ -87,6 +87,7 @@ public:
 	Shape_file_info *operator[](int i)
 		{ return files[i]; }
 	void flush();			// Write if modified.
+	bool is_modified();		// Any modified?
 	};
 
 #endif

@@ -78,7 +78,9 @@ public:
 	void unselect(bool need_render = true);
 					// About to close this browser.
 	virtual bool closing(bool can_cancel = false);
-	void save();			// Write them out.
+	virtual bool is_modified() const
+		{ return modified; }
+	virtual void save();		// Write them out.
 	void move_palette(bool up);
 	void add_palette();
 	void remove_palette();

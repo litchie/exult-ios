@@ -329,6 +329,7 @@ void ExultStudio::save_equip_window
 			 gtk_spin_button_get_value_as_int(
 					GTK_SPIN_BUTTON(widgets.count)));
 		}
+	shape_info_modified = true;
 	}
 
 /*
@@ -819,6 +820,7 @@ void ExultStudio::save_shape_notebook
 		minfo->set_flags(get_bit_toggles(&flags[0],
 					sizeof(flags)/sizeof(flags[0])));
 		}
+	shape_info_modified = true;
 	}
 
 /*
@@ -880,6 +882,7 @@ void ExultStudio::save_shape_window
 	Shape_info *info = (Shape_info *)
 			gtk_object_get_user_data(GTK_OBJECT(shapewin));
 	//+++++++Save origin, name?
+	//++++Then add:  shape_info_modified = true;
 	if (info)
 		save_shape_notebook(*info, shnum, frnum);
 	}
