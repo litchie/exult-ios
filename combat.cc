@@ -241,7 +241,6 @@ void Combat_schedule::start_strike
 	(
 	)
 	{
-#if 0	/* ++++Need to test.   */
 	if (ammo_shape)			// Firing?
 		{
 		Tile_coord pos = npc->get_abs_tile_coord();
@@ -258,9 +257,6 @@ void Combat_schedule::start_strike
 		}
 	else
 		state = strike;
-#endif
-					// Hitting or firing?
-	state = ammo_shape ? fire : strike;
 	cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
 	int dir = npc->get_direction(opponent);
 	char frames[12];		// Get frames to show.

@@ -1601,15 +1601,13 @@ void Actor::set_actor_shape()
 		}
 	}
 					// Here if Black Gate:
-	else if (avatar->get_type_flag(Actor::tf_sex))
+	else if (get_npc_num() == 0)
 		{
-		sn = 989;
-		}
+		if (avatar->get_type_flag(Actor::tf_sex))
+			sn = 989;
 		else
-		{
 			sn = 721;
 		}
-	
 	set_shape (sn, get_framenum());
 
 	// Set petra
