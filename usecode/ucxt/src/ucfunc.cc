@@ -113,7 +113,7 @@ void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<
 	for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end(); i++)
 	{
 		if((*i)->_popped.size())
-			output_ucs_opcode(o, funcmap, opcode_table_data, **i, indent+1);
+			output_ucs_opcode(o, funcmap, opcode_table_data, **i, intrinsics, indent+1);
 		else
 //			tab_indent(indent+1, o) << demunge_ocstring(*this, funcmap, optab[(*i)->_id].ucs_nmo, optab[(*i)->_id].param_types, op._params_parsed, **i) << endl;
 			tab_indent(indent+1, o) << optab[(*i)->_id].ucs_nmo << endl;
@@ -154,13 +154,13 @@ inline void gc_gotoset(vector<GotoSet> &gotoset)
 	}
 }
 
-void UCFunc::parse_ucs(const FuncMap &funcmap)
+void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &intrinsics)
 {
 	for(vector<UCc>::iterator i=_opcodes.begin(); i!=_opcodes.end(); i++)
 		node.nodelist.push_back(new UCNode(i));
 	
 	parse_ucs_pass1a(node.nodelist);
-	parse_ucs_pass2a(gotoset, funcmap);
+	parse_ucs_pass2a(gotoset, funcmap, intrinsics);
 	gc_gotoset(gotoset);
 	
 	#ifdef DEBUG_PARSE2
@@ -215,30 +215,30 @@ void UCFunc::parse_ucs_pass1a(vector<UCNode *> &nodes)
    each UCc, having it's parameters sitting in it's UCc::_popped vector. Elements
    that are parameters are flagged for removal (Gotoset::()[i]->second=true) from
    the original GotoSet. */
-void UCFunc::parse_ucs_pass2a(vector<GotoSet> &gotoset, const FuncMap &funcmap)
+void UCFunc::parse_ucs_pass2a(vector<GotoSet> &gotoset, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics)
 {
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
 	{
-		parse_ucs_pass2b((*i)().rbegin(), (*i)(), 0, funcmap);
+		parse_ucs_pass2b((*i)().rbegin(), (*i)(), 0, funcmap, intrinsics);
 	}
 }
 
-vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded, const FuncMap &funcmap)
+vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics)
 {
 	vector<UCc *> vucc;
 	unsigned int opsfound=0;
 	
 	#ifdef DEBUG_PARSE2
-	print_asm_opcode(tab_indent(4, cout), *this, funcmap, opcode_table_data, *(current->first));
+	print_asm_opcode(tab_indent(4, cout), *this, funcmap, opcode_table_data, intrinsics, *(current->first));
 	#endif
 	
 	for(;vec.rend()!=current; current++)
 	{
 		#ifdef DEBUG_PARSE2
-		print_asm_opcode(tab_indent(3, cout), *this, funcmap, opcode_table_data, *(current->first));
+		print_asm_opcode(tab_indent(3, cout), *this, funcmap, opcode_table_data, intrinsics, *(current->first));
 		#endif
 		
-		//if(current->second==false);
+		if(current->second==false);
 		{
 			/* Include proper munging of opsneeded, it has special effects for numbers
 			   greater then 0x7F. Currently we just 'ignore' it. */
@@ -247,7 +247,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 				//if(opcode_table_data[current->first->_id].num_pop<0x7F)
 				{
 					#ifdef DEBUG_PARSE2
-					print_asm_opcode(tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-"), *this, funcmap, opcode_table_data, *(current->first));
+					print_asm_opcode(tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-"), *this, funcmap, opcode_table_data, intrinsics, *(current->first));
 					tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-") << opcode_table_data[current->first->_id].num_pop << endl;
 					#endif
 					
@@ -289,15 +289,20 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 						/* save the 'current' value as the return value and increment it so it's
 						   pointing at the 'next' current value */
 						vector<pair<UCc *, bool> >::reverse_iterator ret(current);
-						ret->first->_popped = parse_ucs_pass2b(++current, vec, num_args, funcmap);
+						//ret->second=false;
+						ret->first->_popped = parse_ucs_pass2b(++current, vec, num_args, funcmap, intrinsics);
+						//current->second=false;
+						assert(current!=ret);
+						//assert(current->second==false);
 						--current;
 						//ret->second=false;
+						//assert(ret->second==false);
 						assert(current==ret);
 						#ifdef DEBUG_PARSE2a
 						print_asm_opcode(tab_indent(1, cout), *this, funcmap, opcode_table_data, intrinsics, *(ret->first));
 						
 						for(vector<UCc *>::iterator i=ret->first->_popped.begin(); i!=ret->first->_popped.end(); i++)
-							print_asm_opcode(tab_indent(2, cout), *this, funcmap, opcode_table_data, **i);
+							print_asm_opcode(tab_indent(2, cout), *this, funcmap, opcode_table_data, intrinsics, **i);
 						#endif
 					}
 				}
@@ -308,7 +313,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 				if(opcode_table_data[current->first->_id].num_push!=0)
 				{
 					#ifdef DEBUG_PARSE2
-					print_asm_opcode(tab_indent(4, cout << "P-"), *this, funcmap, opcode_table_data, *(current->first));
+					print_asm_opcode(tab_indent(4, cout << "P-"), *this, funcmap, opcode_table_data, intrinsics, *(current->first));
 					#endif
 					
 					opsfound+=opcode_table_data[current->first->_id].num_push;
@@ -1067,20 +1072,6 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 		unsigned int ssize=s->first;
 		bool offset_munge=s->second;
 		
-/*		// all these are two bytes
-		if(*s=="short")           ssize=2;
-		else if(*s=="flag")       ssize=2;
-		else if(*s=="extoffset")  ssize=2;
-		else if(*s=="dataoffset") ssize=2;
-		else if(*s=="varoffset")  ssize=2;
-		else if(*s=="offset")     { ssize=2; offset_munge=true; }
-		// and the single one byte type
-		else if(*s=="byte")       ssize=1;
-		else
-		{
-			cout << "error: data type '" << *s << "' is not defined. exiting." << endl;
-			exit(1);
-		}*/
 		assert(ssize!=0);
 
 		if(ssize==1)
@@ -1096,45 +1087,6 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 				ucop._params_parsed.push_back((unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
 	}
 }
-
-/*void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
-{
-	unsigned int first=0;
-	
-	for(vector<string>::const_iterator s=otd.param_types.begin(); s!=otd.param_types.end(); ++s)
-	{
-		assert(first<ucop._params.size());
-		unsigned int ssize=0;
-		bool offset_munge=false;
-		// all these are two bytes
-		if(*s=="short")           ssize=2;
-		else if(*s=="flag")       ssize=2;
-		else if(*s=="extoffset")  ssize=2;
-		else if(*s=="dataoffset") ssize=2;
-		else if(*s=="varoffset")  ssize=2;
-		else if(*s=="offset")     { ssize=2; offset_munge=true; }
-		// and the single one byte type
-		else if(*s=="byte")       ssize=1;
-		else
-		{
-			cout << "error: data type '" << *s << "' is not defined. exiting." << endl;
-			exit(1);
-		}
-		assert(ssize!=0);
-
-		if(ssize==1)
-			ucop._params_parsed.push_back((unsigned short)((unsigned int)ucop._params[first++]));
-		else if(ssize==2)
-			if(offset_munge)
-			{
-				unsigned int reloffset = calcreloffset(ucop, (unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
-				ucop._params_parsed.push_back(reloffset);
-				ucop._jump_offsets.push_back(reloffset);
-			}
-			else
-				ucop._params_parsed.push_back((unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
-	}
-}*/
 
 
 void print_asm_data(UCFunc &ucf, ostream &o);
