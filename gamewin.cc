@@ -174,7 +174,9 @@ Game_window::Game_window
 #endif
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
 	clock.set_palette();		// Set palette for correct time.
-	pal->brighten(20);			// Brighten 20%.
+	pal->brighten(20);		// Brighten 20%.
+					// Get a bright green.
+	poison_pixel = pal->find_color(4, 63, 4);
 	}
 
 /*

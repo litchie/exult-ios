@@ -85,6 +85,7 @@ private:
 	unsigned long render_seq;	// For marking rendered objects.
 	unsigned char painted;		// 1 if we updated image buffer.
 	unsigned char focus;		// Do we have focus?
+	unsigned char poison_pixel;	// For rendering poisoned actors.
 	ifstream chunks;		// "u7chunks" file.
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
@@ -331,14 +332,6 @@ public:
 		int lft = 4*tz;
 		x = (tx + 1 - get_scrolltx())*tilesize - 1 - lft;
 		y = (ty + 1 - get_scrollty())*tilesize - 1 - lft;
-#if 0	/* +++++Old way */
-		x = (obj->get_cx() - chunkx)*chunksize +
-				(1 + obj->get_tx())*tilesize - 1
-						- 4*obj->get_lift();
-		y = (obj->get_cy() - chunky)*chunksize +
-				(1 + obj->get_ty())*tilesize - 1
-						- 4*obj->get_lift();
-#endif
 		}
 					// Paint shape in window.
 	void paint_shape(int xoff, int yoff, Shape_frame *shape,
@@ -365,6 +358,14 @@ public:
 		if (shape)
 			paint_shape(xoff, yoff, shape, 
 				shapes.get_info(shapenum).has_translucency());
+		}
+					// Paint outline around a shape.
+	void paint_outline(int xoff, int yoff, int shapenum, int framenum)
+		{
+		Shape_frame *shape = get_shape(shapenum, framenum);
+		if (shape)
+			shape->paint_rle_outline(win->get_ib8(), 
+					xoff, yoff, poison_pixel);
 		}
 					// A "face" is used in conversations.
 	void paint_face(int xoff, int yoff, int shapenum, int framenum)
