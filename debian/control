@@ -1,0 +1,16 @@
+Source: exult
+Section: games
+Priority: optional
+Maintainer: Dancer Vesperman <dancer@users.sourceforge.net>
+Standards-Version: 2.3.0.1
+
+Package: exult
+Architecture: i386
+Depends: libsdl1.1
+Suggests: timidity
+Description: Exult is an open source engine for playing Ultima VII on a variety
+ of operating systems and environments.
+ .
+ Visit Exult's homepage: http://exult.sourceforge.net/
+ .
+ You must own Ultima VII in order to use this package.
