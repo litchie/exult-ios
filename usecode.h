@@ -167,7 +167,7 @@ struct Answers
 /*
  *	Here's our virtual machine for running usecode.
  */
-struct Usecode_machine
+class Usecode_machine
 	{
 	Game_window *gwin;		// Game window.
 	Vector *funs;			// I'th entry contains funs for ID's
