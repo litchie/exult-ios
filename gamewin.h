@@ -257,6 +257,7 @@ public:
 	bool get_fades_enabled() const { return fades_enabled; }
 	void set_palette()		// Set for time, flags, lighting.
 		{ clock.set_palette(); }
+	void reload_shapes(int dragtype);	// Reload a shape file.
 	Map_patch_collection *get_map_patches();
 					// Get/create objs. list for a chunk.
 	Map_chunk *get_chunk(int cx, int cy);
