@@ -383,8 +383,9 @@ void Text_effect::paint
 Weather_effect::Weather_effect
 	(
 	int duration,			// Length in game minutes.
-	int delay			// Delay before starting.
-	)
+	int delay,			// Delay before starting.
+	int n				// Weather number.
+	) : num(n)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	stop_time = SDL_GetTicks() + delay + 1000*((duration*60)/time_factor);
@@ -433,6 +434,7 @@ inline void Raindrop::next
 	if (x >= 0 && y >= 0 && x < w && y < h && oldpix != 255)
 		iwin->put_pixel8(oldpix, x, y);
 	oldpix = 255;
+
 					// Time to restart?
 	if (x < 0 || x >= w || y < 0 || y >= h)
 		{			
@@ -448,6 +450,33 @@ inline void Raindrop::next
 		ax += delta;
 		ay += delta + yperx;
 		}
+					// Save old pixel & paint new.
+	paint(iwin, scrolltx, scrollty, xform);
+	}
+
+/*
+ *	Move raindrop.
+ */
+
+inline void Raindrop::next_random
+	(
+	Image_window8 *iwin,		// Where to draw.	
+	int scrolltx, int scrollty,	// Tile at top-left corner.
+	Xform_palette xform,		// Transform array.
+	int w, int h			// Dims. of window.
+	)
+	{
+	uint32 ascrollx = scrolltx*(uint32)c_tilesize,
+		      ascrolly = scrollty*(uint32)c_tilesize;
+	int x = ax - ascrollx, y = ay - ascrolly;
+					// Still on screen?  Restore pix.
+	if (x >= 0 && y >= 0 && x < w && y < h && oldpix != 255)
+		iwin->put_pixel8(oldpix, x, y);
+	oldpix = 255;
+					// Pick new spot randomly.
+	int newx = rand()%w, newy = rand()%h;
+	ax = ascrollx + newx;
+	ay = ascrolly + newy;
 					// Save old pixel & paint new.
 	paint(iwin, scrolltx, scrollty, xform);
 	}
@@ -469,7 +498,6 @@ void Rain_effect::handle_event
 		int w = win->get_width(), h = win->get_height();
 					// Get transform table.
 		Xform_palette xform = gwin->get_xform(8);//++++Experiment.
-		const int num_drops = sizeof(drops)/sizeof(drops[0]);
 		int scrolltx = gwin->get_scrolltx(),
 		    scrollty = gwin->get_scrollty();
 					// Move drops.
@@ -503,7 +531,6 @@ void Rain_effect::paint
 	int scrolltx = gwin->get_scrolltx(),
 	    scrollty = gwin->get_scrollty();
 	Image_window8 *win = gwin->get_win();
-	const int num_drops = sizeof(drops)/sizeof(drops[0]);
 	for (int i = 0; i < num_drops; i++)
 		drops[i].paint(win, scrolltx, scrollty, xform);
 	gwin->set_painted();
@@ -572,7 +599,7 @@ Storm_effect::Storm_effect
 	(
 	int duration,			// In game minutes.
 	int delay			// In msecs.
-	) : Weather_effect(duration, delay), start(1)
+	) : Weather_effect(duration, delay, 2), start(1)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Start raining soon.
@@ -619,6 +646,40 @@ Storm_effect::~Storm_effect
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	gwin->restore_users_brightness();
+	}
+
+/*
+ *	Sparkles (in Ambrosia).
+ */
+
+void Sparkle_effect::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (!gwin->is_main_actor_inside())
+		{			// Don't show rain inside buildings!
+		Image_window8 *win = gwin->get_win();
+		int w = win->get_width(), h = win->get_height();
+					// Get transform table.
+		Xform_palette xform = gwin->get_xform(8);
+		int scrolltx = gwin->get_scrolltx(),
+		    scrollty = gwin->get_scrollty();
+					// Move drops to random spots.
+		for (int i = 0; i < num_drops; i++)
+			drops[i].next_random(win, scrolltx, scrollty, 
+								xform, w, h);
+		gwin->set_painted();
+		}
+	if (curtime < stop_time)	// Keep going?
+		gwin->get_tqueue()->add(curtime + 100, this, udata);
+	else
+		{
+		gwin->set_all_dirty();
+		gwin->remove_effect(this);
+		}
 	}
 
 /*
@@ -748,7 +809,7 @@ Clouds_effect::Clouds_effect
 	(
 	int duration,			// In game minutes.
 	int delay			// In msecs.
-	) : Weather_effect(duration, delay)
+	) : Weather_effect(duration, delay, 6)
 	{
 	num_clouds = 2 + rand()%5;	// Pick #.
 	clouds = new Cloud *[num_clouds];

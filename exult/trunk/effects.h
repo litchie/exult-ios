@@ -152,13 +152,15 @@ public:
 class Weather_effect : public Special_effect
 	{
 protected:
-	uint32 stop_time;	// Time in 1/1000 secs. to stop.
+	uint32 stop_time;		// Time in 1/1000 secs. to stop.
+	int num;			// Weather ID (0-6), or -1.
 public:
-	Weather_effect(int duration, int delay = 0);
+	Weather_effect(int duration, int delay, int n);
 	virtual ~Weather_effect()
 		{  }
 	virtual int is_weather()
 		{ return 1; }
+	int get_num() { return num; }
 	};
 
 /*
@@ -177,6 +179,8 @@ public:
 					// Move to next position.
 	void next(Image_window8 *iwin, int scrolltx, int scrollty,
 					unsigned char *xform, int w, int h);
+	void next_random(Image_window8 *iwin, int scrolltx, int scrollty,
+					unsigned char *xform, int w, int h);
 	};	
 
 /*
@@ -184,10 +188,15 @@ public:
  */
 class Rain_effect : public Weather_effect
 	{
-	Raindrop drops[200];		// Drops moving down the screen.
+protected:
+#define MAXDROPS 200
+	Raindrop drops[MAXDROPS];	// Drops moving down the screen.
+	int num_drops;			// # to actually use.
 public:
-	Rain_effect(int duration, int delay = 0) 
-		: Weather_effect(duration, delay)
+	Rain_effect(int duration, int delay = 0, 
+			int ndrops = MAXDROPS, int n = -1)
+		: Weather_effect(duration, delay, n),
+		  num_drops(ndrops)
 		{  }
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
@@ -204,7 +213,7 @@ class Lightning_effect : public Weather_effect
 	int save_brightness;		// Palette brightness.
 	friend class Storm_effect;
 	Lightning_effect(int duration, int delay = 0) 
-		: Weather_effect(duration, delay), save_brightness(-1)
+		: Weather_effect(duration, delay, -1), save_brightness(-1)
 		{ }
 public:
 	~Lightning_effect();
@@ -223,6 +232,20 @@ public:
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
 	virtual ~Storm_effect();
+	};
+
+/*
+ *	Ambrosia's 'twinkling rain'.
+ */
+class Sparkle_effect : public Rain_effect
+	{
+public:
+	Sparkle_effect(int duration, int delay = 0) 
+					// Weather #3.
+		: Rain_effect(duration, delay, 50, 3)
+		{  }
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
 /*
