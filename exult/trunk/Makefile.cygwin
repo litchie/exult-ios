@@ -95,7 +95,7 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 	useval.o conversation.o keyring.o ucdisasm.o
 
-SERVER_OBJS=objserial.o servermsg.o server.o
+SERVER_OBJS=objserial.o servemsg.o server.o
 
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS)
 
