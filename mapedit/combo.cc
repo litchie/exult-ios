@@ -33,6 +33,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapefile.h"
 #include "ibuf8.h"
 #include "objserial.h"
+#include "shapegroup.h"
+#include "Flex.h"
+
+const int border = 2;			// Border at bottom, sides of each
+					//   combo in browser.
 
 /*
  *	Open combo window (if not already open).
@@ -148,7 +153,7 @@ C_EXPORT gint on_combo_draw_button_press_event
 	(
 	GtkWidget *widget,		// The view window.
 	GdkEventButton *event,
-	gpointer data			// ->Chunk_chooser.
+	gpointer data			// ->Combo_chooser.
 	)
 	{
 	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
@@ -248,7 +253,8 @@ void Combo::remove
 void Combo::draw
 	(
 	Shape_draw *draw,
-	int selected			// Index of 'selected' item, or -1.
+	int selected,			// Index of 'selected' item, or -1.
+	int xoff, int yoff		// Offset within draw.
 	)
 	{
 	int selx = -1000, sely = -1000;
@@ -272,6 +278,7 @@ void Combo::draw
 					// But draw_shape uses top-left.
 		x -= shape->get_xleft();
 		y -= shape->get_yabove();
+		x += xoff; y += yoff;	// Add offset within area.
 		draw->draw_shape(shape, x, y);
 		if (it - members.begin() == selected)
 			{
@@ -544,3 +551,549 @@ void Combo_editor::remove
 		render();
 		}
 	}
+
+/*
+ *	Blit onto screen.
+ */
+
+void Combo_chooser::show
+	(
+	int x, int y, int w, int h	// Area to blit.
+	)
+	{
+	Shape_draw::show(draw->window, x, y, w, h);
+	if (selected >= 0)		// Show selected.
+		{
+		Rectangle b = info[selected].box;
+					// Draw yellow box.
+		gdk_draw_rectangle(draw->window, drawgc, FALSE, 
+							b.x, b.y, b.w, b.h);
+		}
+	}
+
+/*
+ *	Select an entry.  This should be called after rendering
+ *	the combo.
+ */
+
+void Combo_chooser::select
+	(
+	int new_sel
+	)
+	{
+	if (new_sel < 0 || new_sel >= info_cnt)
+		return;			// Bad value.
+	selected = new_sel;
+	enable_controls();
+	int num = info[selected].num;
+					// Remove prev. selection msg.
+//	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+	char buf[150];			// Show new selection.
+	g_snprintf(buf, sizeof(buf), "Combo %d", num);
+	gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
+	}
+
+/*
+ *	Unselect.
+ */
+
+void Combo_chooser::unselect
+	(
+	bool need_render			// 1 to render and show.
+	)
+	{
+	if (selected >= 0)
+		{
+		selected = -1;
+		gtk_drag_source_unset(draw);
+		if (need_render)
+			{
+			render();
+			show();
+			}
+		if (sel_changed)	// Tell client.
+			(*sel_changed)();
+		}
+	enable_controls();		// Enable/disable controls.
+	char buf[150];			// Show new selection.
+	if (info_cnt > 0)
+		{
+//		gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+		g_snprintf(buf, sizeof(buf), "Combos %d to %d",
+			info[0].num, info[info_cnt - 1].num);
+		gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
+		}
+	}
+
+/*
+ *	Render as many combos as fit in the combo chooser window.
+ */
+
+void Combo_chooser::render
+	(
+	)
+	{
+					// Look for selected frame.
+	int selcombo = -1, new_selected = -1;
+	if (selected >= 0)		// Save selection info.
+		selcombo = info[selected].num;
+					// Remove "selected" message.
+	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+	delete [] info;			// Delete old info. list.
+					// Get drawing area dimensions.
+	gint winw = draw->allocation.width, winh = draw->allocation.height;
+					// Provide more than enough room.
+	info = new Combo_info[256];
+	info_cnt = 0;			// Count them.
+					// Clear window first.
+	iwin->fill8(255);		// Background color.
+	int index = index0;
+					// We'll always show 128x128.
+	const int combow = 128, comboh = 128;
+	int total_cnt = combos.size();
+	int y = border;
+					// Show bottom if at least 1/2 vis.
+	while (index < total_cnt && y + comboh/2 + border <= winh)
+		{
+		int x = border;
+		int cliph = y + comboh <= winh ? comboh : (winh - y);
+		while (index < total_cnt && x + combow + border <= winw)
+			{
+			iwin->set_clip(x, y, combow, cliph);
+			int combonum = group ? (*group)[index] : index;
+			combos[combonum]->draw(this, -1, x, y);
+			iwin->clear_clip();
+					// Store info. about where drawn.
+			info[info_cnt].set(combonum, x, y, combow, comboh);
+			if (combonum == selcombo)
+						// Found the selected combo.
+				new_selected = info_cnt;
+			info_cnt++;
+			index++;		// Next combo.
+			x += combow + border;
+			}
+		y += comboh + border;
+		}
+	if (new_selected == -1)
+		unselect(false);
+	else
+		select(new_selected);
+	}
+
+/*
+ *	Scroll to a new combo.
+ */
+
+void Combo_chooser::scroll
+	(
+	int newindex			// Abs. index of leftmost to show.
+	)
+	{
+	int total = combos.size();
+	if (index0 < newindex)	// Going forwards?
+		index0 = newindex < total ? newindex : total;
+	else if (index0 > newindex)	// Backwards?
+		index0 = newindex >= 0 ? newindex : 0;
+	render();
+	show();
+	}
+
+/*
+ *	Scroll up/down by one row.
+ */
+
+void Combo_chooser::scroll
+	(
+	bool upwards
+	)
+	{
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(combo_scroll));
+	float delta = adj->step_increment;
+	if (upwards)
+		delta = -delta;
+	adj->value += delta;
+	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+	scroll((gint) adj->value);
+	}
+
+/*
+ *	Handle a scrollbar event.
+ */
+
+void Combo_chooser::scrolled
+	(
+	GtkAdjustment *adj,		// The adjustment.
+	gpointer data			// ->Combo_chooser.
+	)
+	{
+	Combo_chooser *chooser = (Combo_chooser *) data;
+	gint newindex = (gint) adj->value;
+	chooser->scroll(newindex);
+	}
+
+/*
+ *	Callbacks for controls:
+ */
+#if 0
+C_EXPORT void
+on_insert_combo_new_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Combo_chooser *chooser = (Combo_chooser *) user_data;
+	chooser->insert(false);
+}
+#endif
+
+C_EXPORT void
+on_move_combo_down_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Combo_chooser *chooser = (Combo_chooser *) user_data;
+	chooser->move(false);
+}
+C_EXPORT void
+on_move_combo_up_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Combo_chooser *chooser = (Combo_chooser *) user_data;
+	chooser->move(true);
+}
+
+/*
+ *	Create box with 'move' controls.
+ */
+
+GtkWidget *Combo_chooser::create_controls
+	(
+	)
+	{
+	GtkWidget *frame;		// Gets each frame.
+					// Create main box.
+	GtkWidget *topframe = gtk_frame_new (NULL);
+	gtk_widget_show(topframe);
+	GtkWidget *hbox0 = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox0);
+	gtk_container_add (GTK_CONTAINER (topframe), hbox0);
+#if 0	/* Maybe....+++++++ */
+	/*
+	 *	The 'Insert' control.
+	 */
+	frame = gtk_frame_new ("Insert");
+	gtk_widget_show(frame);
+	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
+	GtkWidget *hbuttonbox = gtk_hbutton_box_new();
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
+							GTK_BUTTONBOX_START);
+	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
+	gtk_widget_show (hbuttonbox);
+	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
+
+	GtkWidget *insert_combo_new = gtk_button_new_with_label ("New");
+	gtk_widget_show (insert_combo_new);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_combo_new);
+	GTK_WIDGET_SET_FLAGS (insert_combo_new, GTK_CAN_DEFAULT);
+	gtk_signal_connect (GTK_OBJECT (insert_combo_new), "clicked",
+			GTK_SIGNAL_FUNC (on_insert_combo_new_clicked),
+			this);
+#endif
+	/*
+	 *	The 'Move' controls.
+	 */
+	frame = gtk_frame_new ("Move");
+	gtk_widget_show(frame);
+	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
+	GtkWidget *bbox = gtk_hbox_new(TRUE, 0);
+	gtk_widget_show (bbox);
+	gtk_container_add (GTK_CONTAINER (frame), bbox);
+
+	move_combo_down = gtk_button_new();
+	gtk_widget_show (move_combo_down);
+	gtk_box_pack_start (GTK_BOX (bbox), move_combo_down, FALSE, FALSE, 0);
+	GTK_WIDGET_SET_FLAGS (move_combo_down, GTK_CAN_DEFAULT);
+	GtkWidget *arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	gtk_widget_show(arrow);
+	gtk_container_add(GTK_CONTAINER(move_combo_down), arrow);
+
+	move_combo_up = gtk_button_new();
+	gtk_widget_show (move_combo_up);
+	gtk_box_pack_start (GTK_BOX (bbox), move_combo_up, FALSE, FALSE, 0);
+	GTK_WIDGET_SET_FLAGS (move_combo_up, GTK_CAN_DEFAULT);
+	arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_OUT);
+	gtk_widget_show(arrow);
+	gtk_container_add(GTK_CONTAINER(move_combo_up), arrow);
+	gtk_signal_connect (GTK_OBJECT (move_combo_down), "clicked",
+			GTK_SIGNAL_FUNC (on_move_combo_down_clicked),
+			this);
+	gtk_signal_connect (GTK_OBJECT (move_combo_up), "clicked",
+			GTK_SIGNAL_FUNC (on_move_combo_up_clicked),
+			this);
+
+	return topframe;
+	}
+
+/*
+ *	Enable/disable controls after selection changed.
+ */
+
+void Combo_chooser::enable_controls
+	(
+	)
+	{
+	if (selected == -1)		// No selection.
+		{
+		if (!group)
+			{
+			gtk_widget_set_sensitive(move_combo_down, false);
+			gtk_widget_set_sensitive(move_combo_up, false);
+			}
+		return;
+		}
+	if (!group)
+		{
+		gtk_widget_set_sensitive(move_combo_down, 
+				info[selected].num < combos.size() - 1);
+		gtk_widget_set_sensitive(move_combo_up, 
+					info[selected].num > 0);
+		}
+	}
+
+/*
+ *	Create the list.
+ */
+
+Combo_chooser::Combo_chooser
+	(
+	Vga_file *i,			// Where they're kept.
+	Flex *cfile,			// Combos file, or null.
+	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
+	int w, int h,			// Dimensions.
+	Shape_group *g			// Filter, or null.
+	) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
+		index0(0),
+		info(0), info_cnt(0), sel_changed(0)
+	{
+	int num_combos = cfile ? cfile->number_of_objects() : 0;
+	combos.resize(num_combos);	// Set size of list.
+					// Put things in a vert. box.
+	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
+	set_widget(vbox); // This is our "widget"
+	gtk_widget_show(vbox);
+	
+	GtkWidget *hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
+	
+					// A frame looks nice.
+	GtkWidget *frame = gtk_frame_new(NULL);
+	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
+	gtk_widget_show(frame);
+	gtk_box_pack_start(GTK_BOX(hbox), frame, TRUE, TRUE, 0);
+					// NOTE:  draw is in Shape_draw.
+					// Indicate the events we want.
+	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
+		| GDK_POINTER_MOTION_HINT_MASK |
+		GDK_BUTTON1_MOTION_MASK);
+					// Set "configure" handler.
+	gtk_signal_connect(GTK_OBJECT(draw), "configure_event",
+				GTK_SIGNAL_FUNC(configure), this);
+					// Set "expose" handler.
+	gtk_signal_connect(GTK_OBJECT(draw), "expose_event",
+				GTK_SIGNAL_FUNC(expose), this);
+					// Set mouse click handler.
+	gtk_signal_connect(GTK_OBJECT(draw), "button_press_event",
+				GTK_SIGNAL_FUNC(mouse_press), this);
+#if 0	/* +++++Later */
+					// Mouse motion.
+	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
+				GTK_SIGNAL_FUNC(drag_begin), this);
+#ifdef WIN32
+// required to override GTK+ Drag and Drop
+	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
+				GTK_SIGNAL_FUNC(win32_drag_motion), this);
+#endif
+//	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
+//				GTK_SIGNAL_FUNC(Mouse_drag_motion), this);
+	gtk_signal_connect (GTK_OBJECT(draw), "drag_data_get",
+				GTK_SIGNAL_FUNC(drag_data_get), this);
+	gtk_signal_connect (GTK_OBJECT(draw), "selection_clear_event",
+				GTK_SIGNAL_FUNC(selection_clear), this);
+#endif
+	gtk_container_add (GTK_CONTAINER (frame), draw);
+	gtk_drawing_area_size(GTK_DRAWING_AREA(draw), w, h);
+	gtk_widget_show(draw);
+					// Want a scrollbar for the combos.
+	GtkObject *combo_adj = gtk_adjustment_new(0, 0, 
+				num_combos, 1, 
+				4, 1.0);
+	combo_scroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(combo_adj));
+					// Update window when it stops.
+	gtk_range_set_update_policy(GTK_RANGE(combo_scroll),
+					GTK_UPDATE_DELAYED);
+	gtk_box_pack_start(GTK_BOX(hbox), combo_scroll, FALSE, TRUE, 0);
+					// Set scrollbar handler.
+	gtk_signal_connect(GTK_OBJECT(combo_adj), "value_changed",
+					GTK_SIGNAL_FUNC(scrolled), this);
+	gtk_widget_show(combo_scroll);
+					// At the bottom, status bar:
+	GtkWidget *hbox1 = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0);
+	gtk_widget_show(hbox1);
+					// At left, a status bar.
+	sbar = gtk_statusbar_new();
+	sbar_sel = gtk_statusbar_get_context_id(GTK_STATUSBAR(sbar),
+							"selection");
+	gtk_box_pack_start(GTK_BOX(hbox1), sbar, TRUE, TRUE, 0);
+	gtk_widget_show(sbar);
+					// Add controls to bottom.
+	gtk_box_pack_start(GTK_BOX(vbox), create_controls(), FALSE, FALSE, 0);
+	}
+
+/*
+ *	Delete.
+ */
+
+Combo_chooser::~Combo_chooser
+	(
+	)
+	{
+	gtk_widget_destroy(get_widget());
+	delete [] info;
+	int i;
+	int cnt = combos.size();
+	for (i = 0; i < cnt; i++)	// Delete all the combos.
+		delete combos[i];
+	}
+
+/*
+ *	Configure the viewing window.
+ */
+
+gint Combo_chooser::configure
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventConfigure *event,
+	gpointer data			// ->Combo_chooser
+	)
+	{
+	Combo_chooser *chooser = (Combo_chooser *) data;
+	chooser->Shape_draw::configure(widget);
+	chooser->render();
+					// Set new scroll amounts.
+	int w = event->width, h = event->height;
+	int per_row = (w - border)/(128 + border);
+	int num_rows = (h - border)/(128 + border);
+	int page_size = per_row*num_rows;
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(
+						chooser->combo_scroll));
+	adj->step_increment = per_row;
+	adj->page_increment = page_size;
+	adj->page_size = page_size;
+	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+#if 0	/* ++++++Later */
+	if (chooser->group)		// Filtering?
+		chooser->enable_drop();	// Can drop combos here.
+#endif
+	return (TRUE);
+	}
+
+/*
+ *	Handle an expose event.
+ */
+
+gint Combo_chooser::expose
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventExpose *event,
+	gpointer data			// ->Combo_chooser.
+	)
+	{
+	Combo_chooser *chooser = (Combo_chooser *) data;
+	chooser->show(event->area.x, event->area.y, event->area.width,
+							event->area.height);
+	return (TRUE);
+	}
+
+/*
+ *	Handle a mouse button press event.
+ */
+
+gint Combo_chooser::mouse_press
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventButton *event,
+	gpointer data			// ->Combo_chooser.
+	)
+	{
+	Combo_chooser *chooser = (Combo_chooser *) data;
+	int old_selected = chooser->selected;
+					// Search through entries.
+	for (int i = 0; i < chooser->info_cnt; i++)
+		if (chooser->info[i].box.has_point(
+					(int) event->x, (int) event->y))
+			{		// Found the box?
+					// Indicate we can drag.
+#if 0	/* ++++++Later */
+#ifdef WIN32
+// Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
+// usually stucks outside the program window. I think it's because
+// the dragged shape only receives mouse motion events when the new mouse pointer
+// position is *still* inside the shape. So if you move the mouse too fast,
+// we are stuck.
+			win32_button = true;
+#else
+			GtkTargetEntry tents[1];
+			tents[0].target = U7_TARGET_COMBOID_NAME;
+			tents[0].flags = 0;
+			tents[0].info = U7_TARGET_COMBOID;
+			gtk_drag_source_set (chooser->draw, 
+				GDK_BUTTON1_MASK, tents, 1,
+			   (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE));
+#endif
+#endif
+			chooser->selected = i;
+			chooser->render();
+			chooser->show();
+					// Tell client.
+			if (chooser->sel_changed)
+				(*chooser->sel_changed)();
+			break;
+			}
+#if 0
+	if (event->button == 3 && chooser->selected >= 0)
+		{
+					// Clean out old.
+		if (chooser->popup)
+			gtk_widget_destroy(chooser->popup);
+		GtkWidget *popup = Create_browser_popup(chooser);
+		chooser->popup = popup;
+		gtk_menu_popup(GTK_MENU(popup), 0, 0, 0, 0, event->button,
+							event->time);
+		}
+#endif
+	return (TRUE);
+	}
+
+
+/*
+ *	Move currently-selected combo up or down.
+ */
+
+void Combo_chooser::move
+	(
+	bool upwards
+	)
+	{
+	if (selected < 0)
+		return;			// Shouldn't happen.
+	int tnum = info[selected].num;
+	if ((tnum == 0 && upwards) || (tnum == combos.size() - 1 && !upwards))
+		return;
+	if (upwards)			// Going to swap tnum & tnum+1.
+		tnum--;
+	Combo *tmp = combos[tnum];
+	combos[tnum] = combos[tnum + 1];
+	combos[tnum + 1] = tmp;
+	render();
+	show();
+	}
+

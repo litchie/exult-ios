@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "rect.h"
 
 class Shapes_vga_file;
+class Flex;
 
 /*
  *	A single object:
@@ -68,7 +69,8 @@ public:
 	void add(int tx, int ty, int tz, int shnum, int frnum);
 	void remove(int i);		// Remove object #i.
 					// Paint shapes in drawing area.
-	void draw(Shape_draw *draw, int selected = -1);
+	void draw(Shape_draw *draw, int selected = -1, 
+						int xoff = 0, int yoff = 0);
 	int find(int mx, int my);	// Find at mouse position.
 	};
 
@@ -101,7 +103,6 @@ public:
 /**********************************************************************
  *	Below are classes for the combo-browser.
  **********************************************************************/
-#if 0	/* Working on this */
 
 /*
  *	Store information about an individual combo shown in the list.
@@ -127,7 +128,7 @@ class Combo_chooser: public Object_browser, public Shape_draw
 	vector<Combo *> combos;		// List of all combination-objects.
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
-	GtkWidget *vscroll;		// Vertical scrollbar.
+	GtkWidget *combo_scroll;	// Vertical scrollbar.
 	int index0;			// Index (combo) # of leftmost in
 					//   displayed list.
 	Combo_info *info;		// An entry for each combo drawn.
@@ -146,15 +147,15 @@ class Combo_chooser: public Object_browser, public Shape_draw
 		{ Shape_draw::set_background_color(c); }
 	virtual int get_selected_id()
 		{ return selected < 0 ? -1 : info[selected].num; }
-	void render_combo(int combonum, int xoff, int yoff);
 	void scroll(int newindex);	// Scroll.
 	void scroll(bool upwards);
 	GtkWidget *create_controls();
 	void enable_controls();		// Enable/disable controls after sel.
 					//   has changed.
 public:
-	Combo_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
-				Shape_group *g = 0, Shape_file_info *fi = 0);
+	Combo_chooser(Vga_file *i, Flex *combos,
+			unsigned char *palbuf, int w, int h,
+						Shape_group *g = 0);
 	virtual ~Combo_chooser();
 					// Turn off selection.
 	void unselect(bool need_render = true);
@@ -190,6 +191,5 @@ public:
 #endif
 	};
 
-#endif	/* #if 0 */
 
 #endif	/* INCL_COMBO_H */
