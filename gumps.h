@@ -30,100 +30,55 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Actor;
 class Gump_object;
+class Gump_button;
+class Gump_text;
+class Checkmark_gump_button;
+class Heart_gump_button;
+class Disk_gump_button;
+class Slider_gump_button;
 
 /*
- *	Some gump shape numbers:
+ *	Gump shape #'s used outside:
  */
-const int CHECKMARK = 2;		// Shape # in gumps.vga for checkmark.
-const int HORIZBAR = 4;
-const int HALO = 7;
-const int SLIDER = 14;
-const int SLIDERDIAMOND = 15;
-const int SLIDERRIGHT = 16;
-const int SLIDERLEFT = 17;
-const int DISK = 24;			// Diskette shape #.
-const int HEART = 25;			// Stats button shape #.
-const int BOOK = 32;
-const int SPELLBOOK = 43;
-const int DOVE = 46;
 const int STATSDISPLAY = 47;
-const int SCROLL = 55;
-const int YESNOBOX = 69;
-const int YESBTN = 70, NOBTN = 71;
 
 /*
- *	A pushable button on a gump:
+ *	A gump widget, such as a button or text field:
  */
-class Gump_button
+class Gump_widget
 	{
 protected:
 	Gump_object *parent;		// Who this is in.
 	int shapenum;			// In "gumps.vga".
 	short x, y;			// Coords. relative to parent.
+public:
+	friend class Gump_object;
+	Gump_widget(Gump_object *par, int shnum, int px, int py)
+		: parent(par), shapenum(shnum), x(px), y(py)
+		{  }
+					// Is a given point on the widget?
+	int on_widget(Game_window *gwin, int mx, int my);
+	};
+
+/*
+ *	A pushable button on a gump:
+ */
+class Gump_button : public Gump_widget
+	{
+protected:
 	unsigned char pushed;		// 1 if in pushed state.
 public:
 	friend class Gump_object;
 	Gump_button(Gump_object *par, int shnum, int px, int py)
-		: parent(par), shapenum(shnum), x(px), y(py), pushed(0)
+		: Gump_widget(par, shnum, px, py), pushed(0)
 		{  }
 					// Is a given point on the checkmark?
-	int on_button(Game_window *gwin, int mx, int my);
+	int on_button(Game_window *gwin, int mx, int my)
+		{ return on_widget(gwin, mx, my); }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin) = 0;
 	void push(Game_window *gwin);	// Redisplay as pushed.
 	void unpush(Game_window *gwin);
-	};
-
-/*
- *	A checkmark for closing its parent:
- */
-class Checkmark_gump_button : public Gump_button
-	{
-public:
-	Checkmark_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, CHECKMARK, px, py)
-		{  }
-					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
-	};
-
-/*
- *	A 'heart' button for bringing up stats.
- */
-class Heart_gump_button : public Gump_button
-	{
-public:
-	Heart_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, HEART, px, py)
-		{  }
-					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
-	};
-
-/*
- *	A diskette for bringing up the 'save' box.
- */
-class Disk_gump_button : public Gump_button
-	{
-public:
-	Disk_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, DISK, px, py)
-		{  }
-					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
-	};
-
-/*
- *	One of the two arrow button on the slider:
- */
-class Slider_gump_button : public Gump_button
-	{
-public:
-	Slider_gump_button(Gump_object *par, int px, int py, int shapenum)
-		: Gump_button(par, shapenum, px, py)
-		{  }
-					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
 	};
 
 /*
@@ -145,8 +100,7 @@ public:
 								int shnum);
 					// Create centered.
 	Gump_object(Container_game_object *cont, int shnum);
-	virtual ~Gump_object()
-		{ delete check_button; }
+	virtual ~Gump_object();
 	int get_x()			// Get coords.
 		{ return x; }
 	int get_y()
@@ -207,11 +161,7 @@ class Actor_gump_object : public Gump_object
 public:
 	Actor_gump_object(Container_game_object *cont, int initx, int inity, 
 								int shnum);
-	~Actor_gump_object()
-		{  
-		delete heart_button;
-		delete disk_button;
-		}
+	~Actor_gump_object();
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Add object.
@@ -230,9 +180,7 @@ class Stats_gump_object : public Gump_object
 	static short textx;		// X-coord. of where to write.
 	static short texty[10];		// Y-coords.
 public:
-	Stats_gump_object(Container_game_object *cont, int initx, int inity)
-		: Gump_object(cont, initx, inity, STATSDISPLAY)
-		{  }
+	Stats_gump_object(Container_game_object *cont, int initx, int inity);
 	~Stats_gump_object()
 		{  }
 					// Add object.
@@ -286,8 +234,7 @@ public:
 class Book_gump : public Text_gump
 	{
 public:
-	Book_gump() : Text_gump(BOOK)
-		{  }
+	Book_gump();
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};
@@ -298,8 +245,7 @@ public:
 class Scroll_gump : public Text_gump
 	{
 public:
-	Scroll_gump() : Text_gump(SCROLL)
-		{  }
+	Scroll_gump();
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};
@@ -350,11 +296,7 @@ class Slider_gump_object : public Modal_gump_object
 	static short xmin, xmax;
 public:
 	Slider_gump_object(int mival, int mxval, int step, int defval);
-	~Slider_gump_object()
-		{
-		delete left_arrow;
-		delete right_arrow;
-		}
+	~Slider_gump_object();
 	int get_val()			// Get last value set.
 		{ return val; }
 					// An arrow was clicked on.
@@ -367,6 +309,36 @@ public:
 	virtual void mouse_down(int mx, int my);
 	virtual void mouse_up(int mx, int my);
 	virtual void mouse_drag(int mx, int my);
+	};
+
+/*
+ *	The file save/load box:
+ */
+class File_gump_object : public Modal_gump_object
+	{
+	static short textx, texty;	// Where to draw first text field.
+	static short texth;		// Distance down to next text field.
+	static short btn_rows[2];	// y-coord of each button row.
+	static short btn_cols[3];	// x-coord of each button column.
+	Gump_text *names[10];		// 10 filename slots.
+	Gump_button *buttons[6];	// 2 rows, 3 cols of buttons.
+	Gump_text *pushed_text;		// Text mouse is down on.
+	Gump_text *focus;		// Text line that has focus.
+public:
+	File_gump_object();
+	~File_gump_object();
+	void load();			// 'Load' was clicked.
+	void save();			// 'Save' was clicked.
+	void quit();			// 'Quit' was clicked.
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	virtual void close(Game_window *gwin)
+		{ done = 1; }
+					// Handle events:
+	virtual void mouse_down(int mx, int my);
+	virtual void mouse_up(int mx, int my);
+	virtual void mouse_drag(int mx, int my)
+		{  }
 	};
 
 #endif	/* INCL_GUMPS */
