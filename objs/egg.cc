@@ -573,6 +573,8 @@ void Egg_object::activate
 					chunk->add(nobj);
 				gwin->add_dirty(nobj);
 				nobj->set_flag(Obj_flags::okay_to_take);
+					// Objects are created temporary
+				nobj->set_flag(Obj_flags::is_temporary);
 				}
 			break;
 			}
@@ -646,7 +648,8 @@ void Egg_object::activate
 				{
 				Egg_object *egg = *it;
 				if (egg != this &&
-				    egg->criteria == external_criteria)
+				    egg->criteria == external_criteria && 
+				    !(egg->flags & (1 << (int) hatched))) // Experimental attempting to fix problem in Silver Seed
 					egg->activate(umachine, obj, 0);
 				}
 			break;
@@ -754,7 +757,7 @@ void Egg_object::write_ireg
 	Write2(ptr, tword);
 	*ptr++ = probability;
 	Write2(ptr, data1);
-	*ptr++ = (get_lift()&15)<<4;	// Low bits?++++++
+	*ptr++ = (get_lift()&15)<<4;
 	Write2(ptr, data2);
 	out.write((char*)buf, sizeof(buf));
 	}

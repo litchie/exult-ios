@@ -461,21 +461,3 @@ void Animated_ireg_object::paint
 	Game_object::paint(gwin);
 	animator->want_animation();	// Be sure animation is on.
 	}
-
-/*
- *	Write out.  (Same as Ireg_game_object::write_ireg().)
- */
-
-void Animated_ireg_object::write_ireg
-	(
-	ostream& out
-	)
-	{
-	unsigned char buf[7];		// 6-byte entry + length-byte.
-	buf[0] = 6;
-	write_common_ireg(&buf[1]);
-	buf[5] = (get_lift()&15)<<4;
-	buf[6] = get_quality();
-	out.write((char*)buf, sizeof(buf));
-	}
-

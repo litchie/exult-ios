@@ -687,7 +687,7 @@ public:
 		}
 					// Create an instance.
 	Monster_actor *create(int chunkx, int chunky, int tilex, int tiley, 
-				int lift, int sched = -1, int align = -1);
+				int lift, int sched = -1, int align = -1, bool tempoary = true);
 	};
 
 #endif

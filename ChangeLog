@@ -1,3 +1,30 @@
+2001-06-24  Ryan Nunn <triforce@merlin.net.au>
+	* objs/animate.*: Removed unrequired write_ireg() method.
+
+	* exult.cc: Fixed up a SI movement bug.
+
+	* actors.*, actors.h, drag.cc, gamewin.cc, objs/flags.h, objs/egg.cc,
+	  objs/contain.*:
+
+	  Changed Obj_Flag 18 (0x12) to mean is_temporary. Made Monster NPCs
+	  and all items made by eggs have the flag set by default. Items
+	  created by Usecode don't have the flag set by default.
+
+	  Modified emulate_cache to remove all objects and NPCs that have
+	  the is_temporary flag set and only objects and NPCs that have the
+	  flag set.
+
+	  Modified Egg_object::activate so button eggs won't attempt to
+	  activate eggs that have already been hatched.
+
+	  Modified Reading and writing of IREGs to allow for a new 10 byte
+	  object. The object is the same as 6 byte object, except it has
+	  4 bytes added to the end for flags. 1 bit of the first new byte is
+	  being used to write the Temporary Item flag.
+	  
+	  This will cause all new save games to be incompatible with older
+	  versions of Exult.
+
 2001-06-24  Christoph Reichenbach  <jameson@linuxgames.com>
 
 	* actors.cc: Workaround for cxx compiler bug: transformed
