@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "cheat.h"
 #include "chunks.h"
+#include "Audio.h"
 
 extern Cheat cheat;
 
@@ -72,6 +73,8 @@ bool Game_window::start_dragging
 			{
 			dragging_gump = 0;
 			dragging_button->push(this);
+					// Pushed button, so make noise.
+			Audio::get_ptr()->play_sound_effect(96);
 			painted = true;
 			}
 		else
@@ -333,7 +336,12 @@ void Game_window::drop
 						dragging_paintx, 
 						dragging_painty, lift);
 				if (!dropped)
-					Mouse::mouse->flash_shape(Mouse::blocked);
+					{
+					Mouse::mouse->flash_shape(
+							Mouse::blocked);
+					Audio::get_ptr()->play_sound_effect(
+									76);
+					}
 				}
 			}
 		}

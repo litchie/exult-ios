@@ -85,9 +85,7 @@ class Explosion_effect : public Sprites_effect
 	{
 	Game_object *explode;		// What's exploding, or 0.
 public:
-	Explosion_effect(Tile_coord p, Game_object *exp) 
-		: Sprites_effect(1, p), explode(exp)
-		{  }
+	Explosion_effect(Tile_coord p, Game_object *exp);
 	virtual ~Explosion_effect();
 	};
 
