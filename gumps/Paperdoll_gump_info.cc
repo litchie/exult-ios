@@ -798,9 +798,9 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 
 	// Leather Collar **NEEDS ART**
 	{     582,  9,       Actor::neck,   OT_Normal,  false, paperdoll,    -1,     0 },
-	// Gorget **NEEDS ART**
+	// Gorget
 	{     586,  0,       Actor::neck,   OT_Normal,  false, exult_flx,    29,     0 },
-	// Magic Gorget **NEEDS ART**
+	// Magic Gorget
 	{     843,  0,       Actor::neck,   OT_Normal,  false, exult_flx,    30,     0 },
 	// Ankh
 	{     955,  0,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     0 },
@@ -876,7 +876,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Crested Helm
 	{     542, 0,        Actor::head,     OT_Helm,   true, paperdoll,    31,     0 },
 	// Caddellite Helmet
-	{     638, 0,        Actor::head,     OT_Helm,   true, exult_flx,   26,     0 },
+	{     638, 0,        Actor::head,     OT_Helm,   true, exult_flx,    26,     0 },
 	// Leather Helm
 	{    1004, 0,        Actor::head,     OT_Helm,   true, paperdoll,    59,     0 },
 
@@ -1043,9 +1043,9 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Decorative Sword
 	{     608, -1,      Actor::lhand,   OT_Single,  false, paperdoll,   109,     0 },
 	{     608, -1,       Actor::belt,   OT_Single,  false, paperdoll,   109,     1 },
-	// Cleaver **NEEDS ART**
-	{     614, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    -1,     0 },
-	{     614, -1,       Actor::belt,   OT_Single,  false, paperdoll,    -1,     1 },
+	// Cleaver
+	{     614, -1,      Actor::lhand,   OT_Single,  false, exult_flx,    31,     0 },
+	{     614, -1,       Actor::belt,   OT_Single,  false, exult_flx,    31,     1 },
 	// Knives **NEEDS ART**
 	{     615, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    -1,     0 },
 	{     615, -1,       Actor::belt,   OT_Single,  false, paperdoll,    -1,     1 },
