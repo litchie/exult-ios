@@ -23,7 +23,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifdef HAVE_PNG_H
 
@@ -109,7 +111,7 @@ int Import_png8
 		}
 	png_uint_32 pngxoff, pngyoff;	// Get offsets.
 	int utype;
-	if (png_get_oFFs(png, info, &pngxoff, &pngyoff, &utype) &&
+	if (png_get_oFFs(png, info, (png_int_32 *)(&pngxoff), (png_int_32 *)(&pngyoff), &utype) &&
 	    utype == PNG_OFFSET_PIXEL)
 		{
 		xoff = pngxoff;
