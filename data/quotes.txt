@@ -50,3 +50,6 @@
 \Care telling us what to do!"
 \L- Dancer, explaining things clearly.
 
+\C"If we stack kids, 
+\Cwe should use a proper stack"
+\L- Max
