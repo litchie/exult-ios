@@ -1,4 +1,6 @@
+#if !AUTOCONFIGURED
 #include "autoconfig.h"
+#endif
 #include <cstdlib>
 #include <cstdio>
 #include <new>
