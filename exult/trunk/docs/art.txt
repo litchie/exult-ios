@@ -47,7 +47,7 @@ Magic boomerang		550		Willem Jan
 Fire sword		551		Oblivious
 Hawk			555		-
 Great dagger		561		Willem Jan
-Star bursts		565		-
+Star bursts		565		Willem Jan	(belt-only)
 Main gauche		591		-		(left & right hand)
 Cleaver			614		Adam
 Knives			615		Willem Jan
@@ -56,7 +56,7 @@ Hoe of destruction	548		Tristan
 Firedoom staff		553		Adam
 Death Scythe		562		Willem Jan
 Fellowship staff	885		Willem Jan
-Tripple crossbow	647		-
+Triple crossbow		647		-
 Musket			278		-
 Musket ammo		581		-
 Fire wand		630		Willem Jan
