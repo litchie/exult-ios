@@ -637,8 +637,10 @@ static void Handle_keystroke
 		if (gwin->get_mode() == Game_window::gump)
 			gwin->end_gump_mode();
 		else			// For now, quit.
+#if 0	/* +++++Wait til tested.*/
 			if (Yesno_gump_object::ask(
 					"Do you really want to quit?"))
+#endif
 				quitting_time = 1;
 		break;
 	case SDLK_m:			// Show next mouse cursor.
