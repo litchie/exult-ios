@@ -642,7 +642,7 @@ void Gump_object::initialize
 	int shnum = get_shapenum();
 	if(shnum==Game::get_game()->get_shape("gumps/yesnobox"))
 		{
-		object_area = Rectangle(8, 8, 112, 24);
+		object_area = Rectangle(6, 6, 116, 28);
 		}
 	else if(shnum==Game::get_game()->get_shape("gumps/fileio"))
 		{
