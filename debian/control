@@ -23,13 +23,21 @@ Depends: exult, ${shlibs:Depends}
 Description: Tools for editting & viewing exult games; includes exult-studio
  Includes:
  .
- ucc          - A usecode compiler
- shapetest    - ?
- paltest      - ?
- exult_studio - An editor for games using the Exult engine
+ expack       - Command line tool for creating and extracting Flex (.flx)
+                files. Flex files are used by Ultima 7 to store most
+                of its data.
+ splitshp     - Command line tool to take a multi-frame shp file and split
+                it into its individual frames.
+ shp2pcx      - Command line tool to convert shp files to pcx format;
+                the shp files can be extracted using expack.
+ ucxt         - Tool to translate usecode back into `human readable', 
+                roughly assembly like code. The output can be presented
+                in a variety of different format, including one which will,
+                later, have a suitable compiler back into usecode.
+ ucc          - A usecode compiler.
+ exult_studio - An editor for games using the Exult engine.
  .
- These are all works in progress, and are currently of very limited
- functionality.
+ These are all works in progress.
  .
  For more information, visit the Exult homepage at
  http://exult.sourceforge.net/.

@@ -1,3 +1,6 @@
+2001-12-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* debian/*: new debian dir from Michael Z.
+
 2001-12-11  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/ucfunc.cc: Code cleanup
 	* usecode/ucxt/data/opcodes.txt: Assembler comment output tidying
