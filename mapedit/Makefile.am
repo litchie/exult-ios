@@ -15,7 +15,9 @@ noinst_LTLIBRARIES = libmapedit.la
 
 libmapedit_la_SOURCES = \
 	shapelst.cc \
-	shapelst.h
+	shapelst.h \
+	u7drag.cc \
+	u7drag.h
 
 
 
