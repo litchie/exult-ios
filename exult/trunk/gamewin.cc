@@ -1712,9 +1712,9 @@ void Game_window::stop_actor
 	else
 		{
 		main_actor->stop();	// Stop and set resting state.
-//		paint();	// ++++++Necessary?
 		if (!gump_man->gump_mode() ||gump_man->gumps_dont_pause_game())
-//			if (!walk_in_formation)	// FOR NOW.
+//+++++++The following line is for testing:
+//			if (!walk_in_formation)
 				main_actor->get_followers();
 		}
 	}
