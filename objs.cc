@@ -165,6 +165,7 @@ int Game_object::modify_quantity
 		remove_this();		// We're done for.
 		return (delta + quant);
 		}
+	int oldvol = get_volume();	// Get old volume used.
 	quality = 0x80|(char) newquant;	// Store new value.
 	int shapenum = get_shapenum();
 	Game_window *gwin = Game_window::get_game_window();
@@ -176,11 +177,9 @@ int Game_object::modify_quantity
 	if (shapenum != 842)		// ++++Kludge:  reagants.
 					// Guessing:  Works for ammo, arrows.
 		set_frame(num_frames == 32 ? 24 + new_frame : new_frame);
-	Shape_info& info = gwin->get_info(shapenum);
-	int objvol = info.get_volume();
 	Container_game_object *owner = get_owner();
 	if (owner)			// Update owner's volume.
-		owner->modify_volume_used(objvol*(newquant - quant));
+		owner->modify_volume_used(get_volume() - oldvol);
 	return (delta - (newquant - quant));
 	}
 
@@ -1355,12 +1354,11 @@ int Container_game_object::add
 	{
 	if (obj->get_shapenum() == get_shapenum())
 		return (0);		// Can't put a bag in a bag.
-	int vol;			// Note:  NPC's have 0 volume.
-	if (!dont_check && (vol = get_volume()) > 0)
+	int maxvol;			// Note:  NPC's have 0 volume.
+	if (!dont_check && (maxvol = get_max_volume()) > 0)
 		{
-		vol *= 4;		// Let's be more liberal.
 		int objvol = obj->get_volume();
-		if (objvol + volume_used > vol)
+		if (objvol + volume_used > maxvol)
 			return (0);	// Doesn't fit.
 		volume_used += objvol;
 		}
@@ -1414,8 +1412,8 @@ int Container_game_object::add_quantity
 					// Get volume of 1 object.
 	int objvol = Game_window::get_game_window()->get_info(
 			shapenum).get_volume();
-	int ourvol = get_volume();	// 0 means anything (NPC's?).
-	int roomfor = ourvol ? (ourvol - volume_used)/objvol : 20000;
+	int maxvol = get_max_volume();	// 0 means anything (NPC's?).
+	int roomfor = maxvol ? (maxvol - volume_used)/objvol : 20000;
 	int todo = delta < roomfor ? delta : roomfor;
 	Game_object *obj = last_object;
 	if (last_object)
@@ -1467,8 +1465,8 @@ int Container_game_object::create_quantity
 					// Get volume of 1 object.
 	int objvol = Game_window::get_game_window()->get_info(
 			shapenum).get_volume();
-	int ourvol = get_volume();	// 0 means anything (NPC's?).
-	int roomfor = ourvol ? (ourvol - volume_used)/objvol : 20000;
+	int maxvol = get_max_volume();	// 0 means anything (NPC's?).
+	int roomfor = maxvol ? (maxvol - volume_used)/objvol : 20000;
 	int todo = delta < roomfor ? delta : roomfor;
 	while (todo)			// Create them here first.
 		{
