@@ -2134,6 +2134,15 @@ USECODE_INTRINSIC(get_party_list2)
 
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
+// missing from mingw32 header files, so included manually
+#ifndef __STRING
+#if defined __STDC__ && __STDC__
+#define __STRING(x) #x
+#else
+#define __STRING(x) "x"
+#endif
+#endif
+
 #define	USECODE_INTRINSIC_PTR(NAME)	{ &Usecode_machine::UI_ ## NAME, __STRING(NAME) }
 
 struct
