@@ -35,6 +35,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #endif
 
+Ammo_info *Ammo_info::ammo = 0;
+int Ammo_info::count = 0;
+
 /*
  *	+++++Debugging
  */
@@ -927,6 +930,24 @@ int Shapes_vga_file::read_info
 							ammoshape, usecode);
 		}
 	weapon.close();	
+
+	ifstream ammo;
+	if (!U7open(ammo, AMMO))
+		return (0);
+	cnt = Read1(ammo);
+	Ammo_info::count = cnt;		// Create list of all ammo.
+	Ammo_info::ammo = new Ammo_info[cnt];
+	for (int i = 0; i < cnt; i++)
+		{
+		unsigned short shapenum = Read2(ammo);
+		unsigned short family = Read2(ammo);
+		unsigned short type2 = Read2(ammo);	// ???
+		unsigned char id = Read1(ammo);
+		ammo.seekg(6, ios::cur);	// Skip unknown.
+		Ammo_info::ammo[i].set(shapenum, family);
+					// ++++Store in Shape_info,maybe??
+		}
+	ammo.close();
 
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;

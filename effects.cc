@@ -102,15 +102,41 @@ void Sprites_effect::paint
 
 inline int Get_dir16
 	(
-	Game_object *from,
-	Game_object *to
+	Tile_coord& t1,
+	Tile_coord& t2
 	)
 	{
-	Tile_coord t1 = from->get_abs_tile_coord();
-	Tile_coord t2 = to->get_abs_tile_coord();
 					// Treat as cartesian coords.
 	return Get_direction16(t1.ty - t2.ty, t2.tx - t1.tx);
 	}
+
+/*
+ *	Initialize path & add to time queue.
+ */
+
+void Projectile_effect::init
+	(
+	Tile_coord s,			// Source,
+	Tile_coord d			// Destination.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	frames = gwin->get_shape_num_frames(shape_num);
+	pos = s;			// Get starting position.
+	path = new Zombie();		// Create simple pathfinder.
+					// Find path.  Should never fail.
+	path->NewPath(pos, d, 0);
+	if (frames >= 24)		// Use frames 8-23, for direction
+		{			//   going clockwise from North.
+		int dir = Get_dir16(s, d);
+		frame_num = 8 + dir;
+		}
+	else
+		frame_num = -1;		// We just won't show it.
+					// Start immediately.
+	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+	}
+
 
 /*
  *	Create a projectile animation.
@@ -122,25 +148,24 @@ Projectile_effect::Projectile_effect
 	Game_object *to,		// End here, 'attack' it with shape.
 	int shnum,			// Projectile shape # in 'shapes.vga'.
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
-	) : attacker(att), dest(to), shape_num(shnum), weapon(weap),
+	) : attacker(att), target(to), shape_num(shnum), weapon(weap),
 		frame_num(0)
 	{
-	Game_window *gwin = Game_window::get_game_window();
-	frames = gwin->get_shape_num_frames(shnum);
-					// Get starting position.
-	pos = attacker->get_abs_tile_coord();
-	path = new Zombie();		// Create simple pathfinder.
-					// Find path.  Should never fail.
-	path->NewPath(pos, to->get_abs_tile_coord(), 0);
-	if (frames >= 24)		// Use frames 8-23, for direction
-		{			//   going clockwise from North.
-		int dir = Get_dir16(attacker, to);
-		frame_num = 8 + dir;
-		}
-	else
-		frame_num = -1;		// We just won't show it.
-					// Start immediately.
-	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+	init(attacker->get_abs_tile_coord(), to->get_abs_tile_coord());
+	}
+
+/*
+ *	Constructor used by missile eggs.
+ */
+
+Projectile_effect::Projectile_effect
+	(
+	Tile_coord s,			// Start here.
+	Tile_coord d,			// End here.
+	int shnum			// Projectile shape
+	) : attacker(0), target(0), shape_num(shnum), weapon(0), frame_num(0)
+	{
+	init(s, d);
 	}
 
 /*
@@ -186,9 +211,12 @@ void Projectile_effect::handle_event
 	const int delay = 100;		// Delay between frames.
 	Game_window *gwin = Game_window::get_game_window();
 	add_dirty(gwin);		// Force repaint of old pos.
+					// +++++For trap, must detect
+// collisions.  (Maybe for all cases it should do that.)
 	if (!path->GetNextStep(pos))	// Get next spot.
 		{			// Done? 
-		dest->attacked(attacker, weapon, shape_num);
+		if (target)
+			target->attacked(attacker, weapon, shape_num);
 		pos.tx = -1;		// Signal we're done.
 		gwin->remove_effect(this);
 		return;
