@@ -233,7 +233,7 @@ UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o opcodes.o
 ucxt.exe : $(UCXT_OBJS)
 	$(CXX) $(LFLAGS) -o ucxt.exe $(UCXT_OBJS) -mconsole
 
-UCC_OBJS=ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o
+UCC_OBJS=args.o ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o
 
 ucc.exe : $(UCC_OBJS)
 	$(CXX) $(LFLAGS) -o ucc.exe $(UCC_OBJS) -liberty -mconsole
@@ -295,7 +295,7 @@ dist:   $(EXEC)
 	copy SDL\README-SDL.txt $(U7PATH)\Exult
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult
 
-tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe head2data.exe head2data.test
+tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucc.exe ucdump.exe wuc.exe wud.exe ucxt.exe head2data.exe head2data.test
 
 toolsclean:
 	del expack.o expack.exe $(FILE_OBJS)
@@ -324,6 +324,7 @@ toolsinstall: tools
 	strip shp2pcx.exe -o $(U7PATH)\tools\shp2pcx.exe
 	strip splitshp.exe -o $(U7PATH)\tools\splitshp.exe
 	strip textpack.exe -o $(U7PATH)\tools\textpack.exe
+	strip ucc.exe -o $(U7PATH)\tools\ucc.exe
 	strip ucdump.exe -o $(U7PATH)\tools\ucdump.exe
 	strip wuc.exe -o $(U7PATH)\tools\wuc.exe
 	strip wud.exe -o $(U7PATH)\tools\wud.exe
@@ -347,6 +348,7 @@ toolsdist: tools
 	strip shp2pcx.exe -o $(TOOLSPATH)\tools\shp2pcx.exe
 	strip splitshp.exe -o $(TOOLSPATH)\tools\splitshp.exe
 	strip textpack.exe -o $(TOOLSPATH)\tools\textpack.exe
+	strip ucc.exe -o $(TOOLSPATH)\tools\ucc.exe
 	strip ucdump.exe -o $(TOOLSPATH)\tools\ucdump.exe
 	strip wuc.exe -o $(TOOLSPATH)\tools\wuc.exe
 	strip wud.exe -o $(TOOLSPATH)\tools\wud.exe
