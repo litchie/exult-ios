@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.9 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.10 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -411,9 +411,9 @@ ENDSHAPE.FLX: flex file with various objects used in intro (Black Gate only)
   $1E	    Guardian's mouth
   $1F       Guardian's forehead
   $20       Guardian's eyes
-  $21       Guardian "emerging 1"
-  $22       Guardian "emerging 2"
-  $23       Guardian "emerging 3 (final)"
+  $21       Guardian "emerging 1" (frames 0-9)
+  $22       Guardian "emerging 2" (frames 0-9)
+  $23       Guardian "emerging 3 (final)" (frames 0-15)
   
 ENDGAME.DAT
   $0        FLIC with guardian coming into Black Gate
