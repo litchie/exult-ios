@@ -215,7 +215,7 @@ int Uc_function::add_string
 	)
 	{
 					// Search for an existing string.
-	map<string, int>::const_iterator exist = text_map.find(text);
+	map<std::string, int>::const_iterator exist = text_map.find(text);
 	if (exist != text_map.end())
 		return (*exist).second;
 	int offset = text_data_size;	// This is where it will go.
@@ -230,6 +230,46 @@ int Uc_function::add_string
 	text_data_size += textlen;
 	text_map[text] = offset;	// Store map entry.
 	return offset;
+	}
+
+/*
+ *	Find the (unique) string for a given prefix.
+ *
+ *	Output:	Offset of string.  Error printed if more than one.
+ *		0 if not found, with error printed.
+ */
+
+int Uc_function::find_string_prefix
+	(
+	Uc_location& loc,		// For printing errors.
+	const char *text
+	)
+	{
+	int len = strlen(text);
+					// Find 1st entry >= text.
+	map<std::string, int>::const_iterator exist = 
+					text_map.lower_bound(text);
+	if (exist == text_map.end() ||
+	    strncmp(text, (*exist).first.c_str(), len) != 0)
+		{
+		char *buf = new char[len + 100];
+		sprintf(buf, "Prefix '%s' matches no string in this function",
+									text);
+		loc.error(buf);
+		delete buf;
+		return 0;
+		}
+	map<std::string, int>::const_iterator next = exist;
+	++next;
+	if (next != text_map.end() &&
+	    strncmp(text, (*next).first.c_str(), len) == 0)
+		{
+		char *buf = new char[len + 100];
+		sprintf(buf, "Prefix '%s' matches more than one string", text);
+		loc.error(buf);
+		delete buf;
+		}
+	return (*exist).second;		// Return offset.
 	}
 
 /*

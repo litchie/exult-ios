@@ -92,7 +92,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 /*
  *	Other tokens:
  */
-%token <strval> STRING_LITERAL IDENTIFIER
+%token <strval> STRING_LITERAL STRING_PREFIX IDENTIFIER
 %token <intval> INT_LITERAL
 
 /*
@@ -612,6 +612,8 @@ expression:
 		{ $$ = $2; }
 	| STRING_LITERAL
 		{ $$ = new Uc_string_expression(function->add_string($1)); }
+	| STRING_PREFIX
+		{ $$ = new Uc_string_prefix_expression(function, $1); }
 	;
 
 opt_expression_list:

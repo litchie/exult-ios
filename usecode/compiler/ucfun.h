@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucsym.h"
 #include "uclabel.h"
 
+class Uc_location;
 class Uc_statement;
 #ifndef ALPHA_LINUX_CXX
 #  include <iosfwd>
@@ -113,6 +114,7 @@ public:
 	Uc_symbol *add_int_const_symbol(char *nm, int value);
 	static Uc_symbol *add_global_int_const_symbol(char *nm, int val);
 	int add_string(char *text);
+	int find_string_prefix(Uc_location& loc, const char *text);
 					// Start/end loop.
 	void add_label(Uc_label* l) { labels[l->get_name()] = l; }
 	Uc_label *search_label(char *nm);

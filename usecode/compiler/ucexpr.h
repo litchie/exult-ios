@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_UCEXPR	1
 
 #include <vector>
+#include <string>
 #include "ucloc.h"
 
 using std::vector;
@@ -228,6 +229,24 @@ public:
 	virtual void gen_value(vector<char>& out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return offset; }
+	};
+
+/*
+ *	String value given by a prefix (i.e. "Jo"* for "Job").
+ */
+class Uc_string_prefix_expression : public Uc_expression
+	{
+	Uc_function *fun;		// Needed to look up prefix.
+	std::string prefix;		// What to look up.
+	int offset;			// Offset in function's data area.
+					//   This is -1 if not found yet.
+public:
+	Uc_string_prefix_expression(Uc_function *f, char *pre) 
+		: fun(f), prefix(pre), offset(-1)
+		{  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(vector<char>& out);
+	virtual int get_string_offset();// Get offset in text_data.
 	};
 
 /*
