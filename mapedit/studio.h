@@ -35,6 +35,7 @@ class Object_browser;
 class Shape_group;
 class Locator;
 class Combo_editor;
+class Exec_box;
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
@@ -89,6 +90,9 @@ private:
 	Locator			*locwin;
 					// Combo editor:
 	Combo_editor		*combowin;
+					// Compile window:
+	GtkWidget		*compilewin;
+	Exec_box		*compile_box;
 	// For Win32 DND
 #ifdef WIN32
 	HWND			egghwnd;
@@ -214,7 +218,10 @@ public:
 	void open_locator_window();
 	void open_combo_window();	// Combo-object editor.
 	void save_combos();
-
+					// Compile.
+	void open_compile_window();
+	void compile(bool if_needed = false);
+	void halt_compile();
 	void run();
 	bool send_to_server(Exult_server::Msg_type id,
 				unsigned char *data = 0, int datalen = 0);

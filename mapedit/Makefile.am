@@ -24,9 +24,12 @@ exult_studio_SOURCES = \
 	chunklst.h \
 	combo.cc \
 	combo.h \
+	compile.cc \
 	dirbrowser.cc \
 	dirbrowser.h \
 	eggedit.cc \
+	execbox.h \
+	execbox.cc \
 	locator.cc \
 	locator.h \
 	npcedit.cc \

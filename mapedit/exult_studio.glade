@@ -573,6 +573,18 @@
 	    <label>Unused shapes...</label>
 	    <right_justify>False</right_justify>
 	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>compileusecode1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_compile_usecode_menu_activate</handler>
+	      <last_modification_time>Tue, 08 Oct 2002 18:53:48 GMT</last_modification_time>
+	    </signal>
+	    <label>Compile usecode...</label>
+	    <right_justify>False</right_justify>
+	  </widget>
 	</widget>
       </widget>
     </widget>
@@ -12788,6 +12800,11 @@ Random
 	      <name>compile_btn</name>
 	      <border_width>2</border_width>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>on_compile_btn_clicked</handler>
+		<last_modification_time>Wed, 09 Oct 2002 09:44:16 GMT</last_modification_time>
+	      </signal>
 	      <label>Compile</label>
 	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
@@ -12802,6 +12819,11 @@ Random
 	      <name>halt_compile_btn</name>
 	      <border_width>2</border_width>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>clicked</name>
+		<handler>on_halt_compile_btn_clicked</handler>
+		<last_modification_time>Wed, 09 Oct 2002 09:44:23 GMT</last_modification_time>
+	      </signal>
 	      <label>Halt</label>
 	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
@@ -12890,6 +12912,7 @@ Random
 	<widget>
 	  <class>GtkText</class>
 	  <name>compile_msgs</name>
+	  <height>186</height>
 	  <can_focus>True</can_focus>
 	  <editable>False</editable>
 	  <text></text>
@@ -12899,7 +12922,7 @@ Random
 
     <widget>
       <class>GtkStatusbar</class>
-      <name>statusbar1</name>
+      <name>compile_status</name>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
