@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL.h"
 #include "SDL_syswm.h"
 #include "Audio.h"
+#include "mouse.h"
 
 Audio audio;
 
@@ -50,6 +51,7 @@ Audio audio;
  */
 Game_window *gwin = 0;
 unsigned char quitting_time = 0;	// Time to quit.
+Mouse *mouse = 0;
 
 /*
  *	Local functions:
@@ -91,6 +93,7 @@ int main
 	else				// Else start in Trinsic.
 #endif
 		gwin->set_chunk_offsets(64, 136);
+	mouse = new Mouse(gwin);
 	struct stat sbuf;		// Create gamedat files 1st time.
 	if (stat(U7NBUF_DAT, &sbuf) != 0 &&
 	    stat(NPC_DAT, &sbuf) != 0)
@@ -282,6 +285,10 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 			}
 		break;
 	case SDL_MOUSEMOTION:		// Moving with right button down.
+#ifdef MOUSE
+		mouse->move(event.motion.x, event.motion.y);
+		gwin->set_painted();
+#endif
 		if (gwin->get_mode() != Game_window::normal &&
 		    gwin->get_mode() != Game_window::gump)
 			break;
@@ -294,6 +301,15 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 			gwin->start_actor(event.motion.x, event.motion.y);
 		break;
 	case SDL_ACTIVEEVENT:
+#ifdef MOUSE
+		if (event.active.state & SDL_APPMOUSEFOCUS)
+			{
+			if (event.active.gain)
+				mouse->gain_focus(0, 0);//+++++Pos.
+			else
+				mouse->lose_focus();
+			}
+#endif
 		if (event.active.state & SDL_APPINPUTFOCUS)
 			{
 			if (event.active.gain)
@@ -354,6 +370,16 @@ static void Handle_keystroke
 		else			// For now, quit.
 			quitting_time = 1;
 		break;
+	case SDLK_m:			// Show next mouse cursor.
+		{
+#ifdef MOUSE
+		static int mcur = 0;
+		mouse->set_shape(++mcur);
+		gwin->set_painted();
+		cout << "Mouse cursor:  " << mcur << '\n';
+#endif
+		break;
+		}
 	case SDLK_l:			// Decrement skip_lift.
 		if (gwin->skip_lift == 16)
 			gwin->skip_lift = 11;

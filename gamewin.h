@@ -165,6 +165,8 @@ public:
 		{ return mode; }
 					// Resize event occurred.
 	void resized(unsigned int neww, unsigned int newh);
+	void set_painted()		// Force blit.
+		{ painted = 1; }
 	void show()
 		{
 		if (painted)

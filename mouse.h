@@ -45,9 +45,23 @@ class Mouse
 	unsigned char focus;		// 1 if we have focus.
 	static short short_arrows[8];	// Frame #'s of short arrows, indexed
 					//   by direction (0-7, 0=east).
+	static short med_arrows[8];	// Medium arrows.
 	static short long_arrows[8];	// Frame #'s of long arrows.
 public:
 	Mouse(Game_window *gw);
+	~Mouse();
+	enum Mouse_shapes {		// List of shapes.
+		hand = 0,
+		redx = 1,
+		greenselect = 2,	// For modal select.
+		tooheavy = 3,
+		outofrange = 4,
+		outofammo = 5,
+		wontfit = 6,
+		hourglass = 7,
+		greensquare = 23,
+		blocked = 49
+		};
 	void set_shape(int framenum);	// Set to desired shape.
 	void move(int x, int y);	// Move to new location.
 	void gain_focus(int x, int y);	// Turn on mouse.
@@ -55,6 +69,9 @@ public:
 					// Set to short arrow.
 	void set_short_arrow(Direction dir)
 		{ set_shape(short_arrows[(int) dir]); }
+					// Set to medium arrow.
+	void set_medium_arrow(Direction dir)
+		{ set_shape(med_arrows[(int) dir]); }
 					// Set to long arrow.
 	void set_long_arrow(Direction dir)
 		{ set_shape(long_arrows[(int) dir]); }
