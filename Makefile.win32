@@ -102,7 +102,6 @@ SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS)
 
 EXULT_FLX = data/exult.flx data/exult_flx.h
-
 EXULT_FLX_OBJECTS = \
 	data/exult_quotes.shp \
 	data/exult_credits.shp \
@@ -278,7 +277,7 @@ dist:   $(EXEC)
 	copy SDL\README-SDL.txt $(U7PATH)\Exult\README-SDL.txt
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult\SDL.dll
 
-tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe
+tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe 
 
 toolsclean:
 	del mklink.o mklink.exe 
@@ -302,13 +301,13 @@ toolsinstall: tools
 	strip ucdump.exe -o $(U7PATH)\tools\ucdump.exe
 	strip wuc.exe -o $(U7PATH)\tools\wuc.exe
 	strip wud.exe -o $(U7PATH)\tools\wud.exe
-	strip ucxt.exe -o $(U7PATH)\tools\ucxt.exe
+	strip ucxt.exe -o $(U7PATH)\ucxt.exe
 	strip ucc.exe -o $(U7PATH)\tools\ucc.exe
-	if not exist $(U7PATH)\tools\data md $(U7PATH)\tools\data
-	copy usecode\ucxt\data\events.data $(U7PATH)\tools\data\events.data
-	copy usecode\ucxt\data\flags.data $(U7PATH)\tools\data\flags.data
-	copy usecode\ucxt\data\opcodes.txt $(U7PATH)\tools\data\opcodes.txt
-	copy usecode\ucxt\data\u7misc.data $(U7PATH)\tools\data\u7misc.data 
+	if not exist $(U7PATH)\tools\data md $(U7PATH)\data
+	copy usecode\ucxt\data\events.data $(U7PATH)\data\events.data
+	copy usecode\ucxt\data\flags.data $(U7PATH)\data\flags.data
+	copy usecode\ucxt\data\opcodes.txt $(U7PATH)\data\opcodes.txt
+	copy usecode\ucxt\data\u7misc.data $(U7PATH)\data\u7misc.data 
 
 toolsdist: toolsinstall
 	copy tools\expack.txt $(U7PATH)\tools
