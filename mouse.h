@@ -96,6 +96,8 @@ public:
 		mousey = y;
 		}
 	void set_location(int x, int y);// Set to given location.
+					// Flash desired shape for 1/2 sec.
+	void flash_shape(Mouse_shapes flash);
 					// Set to short arrow.
 	void set_short_arrow(Direction dir)
 		{ set_shape(short_arrows[(int) dir]); }

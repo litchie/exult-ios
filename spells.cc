@@ -268,6 +268,9 @@ void Spellbook_gump::do_spell
 	if (spells[spell] && avail[spell])
 		{
 		Game_window *gwin = Game_window::get_game_window();
+#if 0	/* Should be this: */
+		gwin->end_gump_mode();
+#endif
 		gwin->get_usecode()->call_usecode(Get_usecode(spell),
 			gwin->get_main_actor(), Usecode_machine::double_click);
 					// Figure what we used.
@@ -278,8 +281,10 @@ void Spellbook_gump::do_spell
 			if (flags&1)
 				book_owner->remove_quantity(1, REAGANTS,
 								-359, r);
+#if 1	/* Should go away: */
 		set_avail();		// Refigure available spells.
 		gwin->paint();		// Just repaint everything.
+#endif
 		}
 	}
 

@@ -347,6 +347,7 @@ public:
 	USECODE_INTRINSIC_DECL(get_timer);
 	USECODE_INTRINSIC_DECL(set_timer);
 	USECODE_INTRINSIC_DECL(mouse_exists);
+	USECODE_INTRINSIC_DECL(flash_mouse);
 	USECODE_INTRINSIC_DECL(get_container);
 	USECODE_INTRINSIC_DECL(remove_item);
 	USECODE_INTRINSIC_DECL(get_equipment_list);

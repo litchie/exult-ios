@@ -53,6 +53,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 extern void Wait_for_arrival(Actor *actor);
 extern	bool	usecode_trace,usecode_debugging;
+extern Mouse *mouse;
 
 #if USECODE_DEBUGGER
 vector<int> intrinsic_breakpoints;
@@ -189,9 +190,8 @@ void Scheduled_usecode::handle_event
 				}
 			break;
 			}
-#if 1
 		case 0x0c:		// Loop with 3 parms.???
-			{		// Loop(offset, cnt1, cnt2?).
+			{		// Loop(offset, cnt1, cnt2?).++++
 			do_another = 1;
 			Usecode_value& cntval = arrval.get_elem(i + 2);
 			int cnt = cntval.get_int_value();
@@ -206,7 +206,6 @@ void Scheduled_usecode::handle_event
 				}
 			break;
 			}
-#endif
 		case 0x23:		// ??
 			break;
 		case 0x27:		// ?? 1 parm. Guessing:
@@ -262,7 +261,7 @@ void Scheduled_usecode::handle_event
 			break;
 			}
 		case 0x58:		// ?? 1 parm, fairly large byte.
-			i++;		// Perhaps timing??
+			i++;		// Wield weapon (tmporarily). parm=?+++
 			break;
 		case 0x59:		// Parm. is dir. (0-7).  0=north?
 			{
@@ -2324,6 +2323,13 @@ USECODE_INTRINSIC(mouse_exists)
 	return(u);
 }
 
+USECODE_INTRINSIC(flash_mouse)
+{
+	// flash_mouse(mouse_shape).
+	mouse->flash_shape((Mouse::Mouse_shapes) parms[0].get_int_value());
+	return (no_ret);
+}
+
 USECODE_INTRINSIC(get_container)
 {
 	// Takes itemref, returns container.
@@ -2663,9 +2669,9 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x67
 	USECODE_INTRINSIC_PTR(mouse_exists),	// 0x68
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x69     GetSpeechTrack (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6a  +++++++Show red X??
+	USECODE_INTRINSIC_PTR(flash_mouse),	// 0x6a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6b
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6c
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6c +++??set_xxx(item, val).
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6d
 	USECODE_INTRINSIC_PTR(get_container),	// 0x6e
 	USECODE_INTRINSIC_PTR(remove_item),	// 0x6f
