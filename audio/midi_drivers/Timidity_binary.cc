@@ -45,8 +45,10 @@ static  void    playTBmidifile(const char *name)
 {
 	const char	*args[]= {
 			"timidity",
-			"-Oru8",
+			"-Oru8S",	// Raw. Unsigned. 8-bit. Stereo
 			"-id",
+			"-T 175",	// Tempo. Faster than normal to make it
+					// sound right
 			"-o-",
 			name,
 			0 };

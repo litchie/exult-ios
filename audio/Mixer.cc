@@ -72,11 +72,33 @@ void	Mixer::advance(void)
 	buffers.push_back(m);
 }
 
+void	compress_audio_sample(Uint8 *buf,int len)
+{
+	return;
+	char	*dbuf=new Uint8[len*2];
+	Uint8	*source=buf;
+	Uint8	*dest=dbuf;
+	while(len>0)
+		{
+		// Left channel
+		*dest=(*source+*(source+2))/2;
+		++dest;
+		++source;
+		// Right channel
+		*dest=(*source+*(source+2))/2;
+		++dest;
+		source+=3;
+		len-=2;
+		}
+	memcpy(buf,dbuf,len);
+	delete [] dbuf;
+}
+
 void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 {
 #if DEBUG
-	cout << "fill_audio_func: " << len << endl;
-	cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
+	// cout << "fill_audio_func: " << len << endl;
+	// cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
 #endif
 	advance();
 	if(buffers.begin()->num_samples==0&&auxilliary_audio==-1)
@@ -110,6 +132,7 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 			delete [] temp_buffer;
 			return;
 			}
+		compress_audio_sample(temp_buffer,len);
 		SDL::MixAudio(stream, temp_buffer, len, SDL_MIX_MAXVOLUME);
 		delete [] temp_buffer;
 		}
