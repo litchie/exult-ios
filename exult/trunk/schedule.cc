@@ -887,7 +887,7 @@ void Sit_schedule::now_what
 	)
 	{
 	int frnum = npc->get_framenum();
-	if ((frnum&0xf) == Actor::sit_frame)
+	if (chair && (frnum&0xf) == Actor::sit_frame)
 		{			// Already sitting.
 					// Seat on barge?
 		if (!chair || chair->get_shapenum() != 292)
