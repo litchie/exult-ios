@@ -268,7 +268,7 @@ void Audio::Init(int _samplerate,int _channels)
 
 	if ( Mix_OpenAudio(_samplerate, AUDIO_S16SYS, _channels, _buffering_unit) < 0 )
 		{
-		cerr << "Couldn't open audio: " << SDL_GetError() << endl;
+		cerr << "Couldn't open audio: " << Mix_GetError() << endl;
 		audio_enabled = false;	// Prevent crashes.
 		return;
 		}
