@@ -330,7 +330,7 @@ static void Handle_keystroke
 	int shift
 	)
 	{
-	static int shape_cnt = 720, shape_frame = 0;
+	static int shape_cnt = 0x28a, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = -1, gump_frame = 0;
 	gwin->end_intro();
@@ -433,6 +433,10 @@ int Get_click
 		{
 		SDL_Event event;
 		Delay();		// Wait a fraction of a second.
+#if 0
+					// Let animations happen.
+		gwin->get_tqueue()->activate(SDL_GetTicks());
+#endif
 		while (SDL_PollEvent(&event))
 			switch (event.type)
 				{

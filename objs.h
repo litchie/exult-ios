@@ -545,6 +545,23 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 	};
+#if 0
+/*
+ *	A sprite that cycles through its frames.
+ */
+class Frame_cycle_sprite : public Game_object, public Time_sensitive
+	{
+	int cycles;			// # cycles to do, or 0 if no limit.
+	int cycle_num;			// Cycle # we're doing.
+	unsigned char frames;		// # of frames.
+public:
+					// (tx, ty) = abs. tile coords.
+	Frame_cycle_sprite(Game_window *gwin,
+			int shapenum, int tx, int ty, int lft, int cycs);
+					// For Time_sensitive:
+	virtual void handle_event(unsigned long time, long udata);
+	};
+#endif
 
 /*
  *	A rectangle:
@@ -588,6 +605,8 @@ public:					// Let's make it all public.
 		x += deltax;
 		y += deltay;
 		}		
+	void enlarge(int delta)		// Add delta in each dir.
+		{ x -= delta; y -= delta; w += 2*delta; h += 2*delta; }
 	};
 
 /*
