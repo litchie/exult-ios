@@ -40,32 +40,56 @@ playfli::playfli(const char *fli_name)
     fli_flags = Read2(fli_stream);
     fli_speed = Read2(fli_stream);
     fli_stream.seekg(110, ios::cur);
+    streamstart = fli_stream.tellg();
 }
 
-void playfli::info()
+void playfli::info(fliinfo *fi)
 {
     cout << "Frame count : " << fli_frames << endl;
     cout << "Width :       " << fli_width << endl;
     cout << "Height :      " << fli_height << endl;
     cout << "Depth :       " << fli_depth << endl;
     cout << "Speed :       " << fli_speed << endl;
+    
+    if (fi)
+    {
+    	fi->frames = fli_frames;
+    	fi->width = fli_width;
+    	fi->height = fli_height;
+    	fi->depth = fli_depth;
+    	fi->speed = fli_speed;
+    }
 }
 
-void playfli::play(Image_window *win)
+// How to use th
+//
+//
+int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned long ticks, int brightness)
 {
     int frame_size;
     int frame_magic;
     int frame_chunks;
     int chunk_size;
     int chunk_type;
+    int streampos;
     unsigned char *pixbuf;
-    int streampos = fli_stream.tellg();
     int xoffset=(win->get_width()-fli_width)/2;
     int yoffset=(win->get_height()-fli_height)/2;
-	
+    bool dont_show = false;
+
+    // Set up last frame
+    if (first_frame == last_frame) dont_show = true;
+    if (first_frame < 0) first_frame += fli_frames;
+    if (last_frame < 0) last_frame += 1 + fli_frames;
+    if (first_frame == last_frame) last_frame++;
+    if (last_frame < 0 || last_frame > fli_frames) last_frame = fli_frames;
+
+    if (!ticks) ticks = SDL_GetTicks();
+
+    streampos = streamstart;
     pixbuf = new unsigned char[fli_width];
     // Play frames...
-    for (int frame = 0; frame < fli_frames; frame++)
+    for (int frame = 0 ; frame < last_frame; frame++)
       {
 	  fli_stream.seekg(streampos);
 	  frame_size = Read4(fli_stream);
@@ -76,6 +100,7 @@ void playfli::play(Image_window *win)
 	    {
 		chunk_size = Read4(fli_stream);
 		chunk_type = Read2(fli_stream);
+
 		switch (chunk_type)
 		  {
 		  case 11:
@@ -100,7 +125,7 @@ void playfli::play(Image_window *win)
 			    }
 			  // Set palette
 			  if(win)
-				win->set_palette(colors, 63, 100);
+				win->set_palette(colors, 63, brightness);
 		      }
 		      break;
 		  case 12:
@@ -155,7 +180,7 @@ void playfli::play(Image_window *win)
 					pixpos -= size_count;
 				    }
 			      }
-				if(win)
+				if(win && frame >= first_frame)
                                    win->copy8(pixbuf,fli_width,1,xoffset,line+yoffset);
 			}
 		      break;
@@ -167,13 +192,20 @@ void playfli::play(Image_window *win)
 		      break;
 		  }
 	    }
+
 	  streampos += frame_size;
-	  if(win)
-		win->show();
-	  SDL_Delay(fli_speed*10);
+	  
+	  if (frame < first_frame)
+		  continue;
+	  
+	  while (SDL_GetTicks() < ticks);
+	  ticks += fli_speed*10;
+	  if(win && !dont_show)
+             win->show();
       }
-	delete[] pixbuf;
+    delete[] pixbuf;
 	
+  return ticks;
 }
 
 playfli::~playfli()
