@@ -92,6 +92,10 @@
 \C<simonquinn@users.sourceforge.net>
 \CAudio enhancements
 
+\CAurelien "Artaxerxes" Marchand
+\C<artaxerxes@users.sourceforge.net>
+\CZaurus port and Exult Studio tools
+
 \COTHER CONTRIBUTORS
 
 \COlivier Marcoux
@@ -115,8 +119,6 @@
 \CMark Winterrowd
 
 \CAlex Botero-Lowry
-
-\CAurelien Marchand
 
 \CPaul Hebble
 
