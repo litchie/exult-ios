@@ -2065,15 +2065,7 @@ void Actor::call_readied_usecode
 	int eventid
 	)
 	{
-#if 0	/* I think this isn't needed. */
-	if (index != Actor::rfinger && index != Actor::lfinger && 
-	    index != Actor::belt &&
-	    index != Actor::neck &&
-	    index != Actor::head && index != Actor::hands2_spot &&
-	    index != Actor::lhand && index != Actor::rhand)
-		return;
-#endif
-					// In BG, limit to certain types.
+					// Limit to certain types.
 	if (Game::get_game_type() == BLACK_GATE)
 		switch (obj->get_shapenum())
 			{
@@ -2091,6 +2083,23 @@ void Actor::call_readied_usecode
 		default:
 			return;		// Nothing else in BG.
 			}
+	else if (Game::get_game_type() == SERPENT_ISLE)
+		switch (obj->get_shapenum())
+			{
+		case 209:		// ??
+		case 296:		// Rings.
+		case 701:		// Lit torch.
+		case 338:		// Lit light source.
+		case 806:		// Black sword.
+		case 990:		// Erinons Axe.
+		case 996:		// Belt of Strength.
+		case 1001:		// Guantlets of Quickness.
+		case 1013:		// Helm of Light.
+			break;		// Accept these.
+		default:
+			return;
+			}
+
 	Shape_info& info = gwin->get_info(obj);
 	if (info.get_shape_class() != Shape_info::container)
 		{
