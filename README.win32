@@ -1,0 +1,54 @@
+Exult instructions for Windows
+--------------------------------------
+
+To play
+---------
+Copy exult.exe into your Ultima 7 directory.
+If you are currently playing a game of Ultima 7, be sure 
+to make a backup of the gamedat directory.
+Run exult.exe
+
+
+To build
+----------
+
+Exult is originally a Linux project, using a platform
+independent API called SDL. (Simple DirectMedia Layer)
+
+Because of this, the Windows version has been built in
+Linux, using the cross-compiler Mingw32.
+
+Please note it is not necessary to build Exult yourself,
+since the Windows executable is already included.
+
+1) get and install Mingw32 and SDL.
+
+SDL: http://www.devolution.com/~slouken/SDL/
+
+Mingw32: http://www.devolution.com/~slouken/SDL/Xmingw32/
+
+Installation instructions can be found on the same pages.
+(make sure to build SDL for the cross compiler)
+
+2) build exult:
+
+configure --host=i386-linux --target=i386-mingw32 --enable-win32
+make
+
+
+It is possible that the linker complains it cannot find the
+function 'SDL_MixAudio'.
+If this is the case, you have to manually link Exult:
+Copy the file SDL_mixer.o from the SDL source tree
+(from SDL/src/audio) to your exult directory, and link
+Exult using the exact same command line, but insert 
+SDL_mixer.o somewhere between the other listed .o files.
+(This will be fixed in a future release.)
+ 
+3) copy exult.exe to your U7 directory, and run it!
+If you are currently playing a game of Ultima 7, be sure
+to make a backup of the gamedat directory.
+ 
+4) Have fun :-)
+
+
