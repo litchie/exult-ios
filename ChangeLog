@@ -1,3 +1,10 @@
+2001-07-26  Patrick Burke  <takhisisii@yahoo.com.au>
+
+	* usecode/siintrinsics.h: lacked UNKNOWN opcode definitions for
+	0xf7...0xff causing eldritch errors in ucxt.
+
+	* usecode/ucxt/Docs/opcodes.txt: updated to note AIDX change.
+
 2001-07-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc (Actor): Approach_avatar() only waits at most 1/10
