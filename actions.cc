@@ -135,6 +135,31 @@ Path_walking_actor_action::~Path_walking_actor_action
 	}
 
 /*
+ *	Create action for walking to given destination using Astar.
+ *	Note:  This is a static method.
+ *
+ *	Output:	Action if successful, else 0.
+ */
+
+Path_walking_actor_action *Path_walking_actor_action::create_path
+	(
+	Tile_coord src,			// Starting position.
+	Tile_coord dest,		// Destination.
+	Pathfinder_client& cost		// Cost for Astar.
+	)
+	{
+	Astar *path = new Astar();
+					// Get to within 1 tile.
+	if (path->NewPath(src, dest, &cost))
+		return new Path_walking_actor_action(path);
+	else
+		{
+		delete path;
+		return 0;
+		}
+	}
+
+/*
  *	Handle a time event.
  *
  *	Output:	0 if done with this action, else delay for next frame.

@@ -29,7 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "schedule.h"
 #include "actors.h"
-#include "Astar.h"
 #include "Zombie.h"
 #include "gamewin.h"
 #include "actions.h"
@@ -99,11 +98,11 @@ int Schedule::try_street_maintenance
 		shapes = &night[0];
 	else
 		return 0;		// Dusk or dawn.
-	Astar *path = new Astar();
 	Tile_coord npcpos = npc->get_abs_tile_coord();
 					// Get to within 1 tile.
 	Actor_pathfinder_dist_client cost(1);
 	Game_object *found = 0;		// Find one we can get to.
+	Actor_action *pact;		// Gets ->action to walk there.
 	for (int i = 0; !found && i < sizeof(night)/sizeof(night[0]); i++)
 		{
 		Game_object_vector objs;// Find nearby.
@@ -111,8 +110,8 @@ int Schedule::try_street_maintenance
 		int j;
 		for (j = 0; j < cnt; j++)
 			{
-			if (path->NewPath(npcpos, 
-				objs[j]->get_abs_tile_coord(), &cost))
+			if ((pact = Path_walking_actor_action::create_path(
+			    npcpos, objs[j]->get_abs_tile_coord(), cost)) != 0)
 				{
 				found = objs[j];
 				break;
@@ -120,13 +119,10 @@ int Schedule::try_street_maintenance
 			}
 		}
 	if (!found)
-		{
-		delete path;
 		return 0;		// Failed.
-		}
 					// Set actor to walk there.
 	npc->set_schedule_type(Schedule::street_maintenance,
-			new Street_maintenance_schedule(npc, path, found));
+			new Street_maintenance_schedule(npc, pact, found));
 	return 1;
 	}
 
@@ -137,9 +133,9 @@ int Schedule::try_street_maintenance
 Street_maintenance_schedule::Street_maintenance_schedule
 	(
 	Actor *n, 
-	Astar *p, 
+	Actor_action *p, 
 	Game_object *o
-	) : Schedule(n), path(p), obj(o), shapenum(o->get_shapenum())
+	) : Schedule(n), paction(p), obj(o), shapenum(o->get_shapenum())
 	{
 	}
 
@@ -151,13 +147,13 @@ void Street_maintenance_schedule::now_what
 	(
 	)
 	{
-	if (path)			// First time?
+	if (paction)			// First time?
 		{			// Set to follow given path.
 		cout << npc->get_name() << 
 			" walking for street maintenance" << endl;
-		npc->set_action(new Path_walking_actor_action(path));
+		npc->set_action(paction);
 		npc->start(250);
-		path = 0;
+		paction = 0;
 		return;
 		}
 	if (npc->distance(obj) == 1 &&	// We're there.
@@ -431,13 +427,13 @@ void Talk_schedule::now_what
 		{
 		if (npc->distance(gwin->get_main_actor()) > 50)
 			return;		// But not if too far away.
-		PathFinder *path = new Astar();
 					// Aim for within 5 tiles.
 		Fast_pathfinder_client cost(5);
-		if (!path->NewPath(npc->get_abs_tile_coord(),
-			gwin->get_main_actor()->get_abs_tile_coord(), &cost))
+		Actor_action *pact = Path_walking_actor_action::create_path(
+			npc->get_abs_tile_coord(),
+			gwin->get_main_actor()->get_abs_tile_coord(), cost);
+		if (!pact)
 			{
-			delete path;
 			cout << "Talk: Failed to find path for " << 
 						npc->get_name() << endl;
 			npc->follow(gwin->get_main_actor());
@@ -446,8 +442,7 @@ void Talk_schedule::now_what
 			{
 					// Walk there, and retry if
 					//   blocked.
-			npc->set_action(new Path_walking_actor_action(
-								path, 1));
+			npc->set_action(pact);
 			npc->start(400, 250);	// Start walking.
 			}
 		phase++;
@@ -537,11 +532,11 @@ void Kid_games_schedule::now_what
 	if (kid)
 	{
 		Fast_pathfinder_client cost(1);
-		PathFinder *path = new Astar();
-		if (path->NewPath(pos, kid->get_abs_tile_coord(), &cost))
+		Actor_action *pact = Path_walking_actor_action::create_path(
+				pos, kid->get_abs_tile_coord(), cost);
+		if (pact)
 		{
-			npc->set_action(new Path_walking_actor_action(
-								path, 0));
+			npc->set_action(pact);
 			npc->start(100, 250); // Run.
 			return;
 		}
@@ -652,12 +647,13 @@ void Hound_schedule::now_what
 		}
 	int newdist = 1 + rand()%2;	// Aim for about 3 tiles from Avatar.
 	Fast_pathfinder_client cost(newdist);
-	PathFinder *path = new Astar();
 	avpos.tx += rand()%3 - 1;	// Vary a bit randomly.
 	avpos.ty += rand()%3 - 1;
-	if (path->NewPath(npcpos, avpos, &cost))
+	Actor_action *pact = Path_walking_actor_action::create_path(npcpos,
+							avpos, cost);
+	if (pact)
 		{
-		npc->set_action(new Path_walking_actor_action(path, 0));
+		npc->set_action(pact);
 		npc->start(250, 50);
 		}
 	else				// Try again.
@@ -829,8 +825,8 @@ void Sit_schedule::now_what
 		for (int i = 0; i < cnt; i++)
 			if ((party[i]->get_framenum()&0xf) != Actor::sit_frame)
 				return;	// Nope.
-		int bargeshape = 961;	// Find barge.
-		Game_object *barge = chair->find_closest(&bargeshape, 1);
+					// Find barge.
+		Game_object *barge = chair->find_closest(961);
 		if (!barge)
 			return;
 		Game_object_vector fman;// See if Ferryman nearby.
@@ -1218,18 +1214,12 @@ Sew_schedule::Sew_schedule
 	) : Schedule(n), state(get_wool), spindle(0), cloth(0),
 	    sew_clothes_cnt(0)
 	{
-	int shnum = 653;
-	bale = npc->find_closest(&shnum, 1);
-	shnum = 873;
-	chair = npc->find_closest(&shnum, 1);
-	shnum = 651;
-	spinwheel = npc->find_closest(&shnum, 1);
-	shnum = 261;
-	loom = npc->find_closest(&shnum, 1);
-	shnum = 971;
-	work_table = npc->find_closest(&shnum, 1);
-	shnum = 890;
-	wares_table = npc->find_closest(&shnum, 1);
+	bale = npc->find_closest(653);
+	chair = npc->find_closest(873);
+	spinwheel = npc->find_closest(651);
+	loom = npc->find_closest(261);
+	work_table = npc->find_closest(971);
+	wares_table = npc->find_closest(890);
 	}
 
 /*
@@ -1242,6 +1232,8 @@ void Sew_schedule::now_what
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord npcpos = npc->get_abs_tile_coord();
+					// Often want to get within 1 tile.
+	Actor_pathfinder_dist_client cost(1);
 	switch (state)
 		{
 	case get_wool:
@@ -1258,17 +1250,13 @@ void Sew_schedule::now_what
 			state = sit_at_wheel;
 			break;
 			}
-		Astar *path = new Astar();
-					// Get to within 1 tile.
-		Actor_pathfinder_dist_client cost(1);
-		if (path->NewPath(npcpos, bale->get_abs_tile_coord(), &cost))
-			npc->set_action(new Sequence_actor_action(
-				new Path_walking_actor_action(path),
+		Actor_action *pact = Path_walking_actor_action::create_path(
+				npcpos, bale->get_abs_tile_coord(), cost);
+		if (pact)
+			npc->set_action(new Sequence_actor_action(pact,
 				new Pickup_actor_action(bale, 250),
 				new Pickup_actor_action(bale,
 					bale->get_abs_tile_coord(), 250)));
-		else
-			delete path;
 		state = sit_at_wheel;
 		break;
 		}
@@ -1305,19 +1293,15 @@ void Sew_schedule::now_what
 			state = get_wool;
 			break;
 			}
-		Astar *path = new Astar();
-					// Get to within 1 tile.
-		Actor_pathfinder_dist_client cost(1);
 		Tile_coord lpos = loom->get_abs_tile_coord() +
 						Tile_coord(-1, 0, 0);
-		if (path->NewPath(npcpos, lpos, &cost))
-			npc->set_action(new Sequence_actor_action(
-				new Path_walking_actor_action(path),
+		Actor_action *pact = Path_walking_actor_action::create_path(
+				npcpos, lpos, cost);
+		if (pact)
+			npc->set_action(new Sequence_actor_action(pact,
 				new Face_object_actor_action(loom, 250),
 				new Object_animate_actor_action(loom,
 								4, 200)));
-		else
-			delete path;
 		state = get_cloth;
 		break;
 		}
@@ -1342,24 +1326,20 @@ void Sew_schedule::now_what
 			state = get_wool;
 			break;
 			}
-		Astar *path = new Astar();
-					// Get to within 1 tile.
-		Actor_pathfinder_dist_client cost(1);
 		Tile_coord tpos = work_table->get_abs_tile_coord() +
 						Tile_coord(1, -2, 0);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+					npcpos, tpos, cost);
 					// Find where to put cloth.
 		Rectangle foot = work_table->get_footprint();
 		Shape_info& info = gwin->get_info(work_table);
 		Tile_coord cpos(foot.x + foot.w/2, foot.y + foot.h/2,
 			work_table->get_lift() + info.get_3d_height());
-		if (path->NewPath(npcpos, tpos, &cost))
-			npc->set_action(new Sequence_actor_action(
-				new Path_walking_actor_action(path),
+		if (pact)
+			npc->set_action(new Sequence_actor_action(pact,
 				new Face_object_actor_action(
 						work_table, 250),
 				new Pickup_actor_action(cloth, cpos, 250)));
-		else
-			delete path;
 		state = set_to_sew;
 		break;
 		}
@@ -1436,22 +1416,18 @@ void Sew_schedule::now_what
 			cloth->remove_this();
 			break;
 			}
-		Astar *path = new Astar();
-					// Get to within 1 tile.
-		Actor_pathfinder_dist_client cost(1);
 		Tile_coord tpos = wares_table->get_abs_tile_coord() +
 						Tile_coord(1, -2, 0);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+					npcpos, tpos, cost);
 					// Find where to put cloth.
 		Rectangle foot = wares_table->get_footprint();
 		Shape_info& info = gwin->get_info(wares_table);
 		Tile_coord cpos(foot.x + rand()%foot.w, foot.y + rand()%foot.h,
 			wares_table->get_lift() + info.get_3d_height());
-		if (path->NewPath(npcpos, tpos, &cost))
-			npc->set_action(new Sequence_actor_action(
-				new Path_walking_actor_action(path),
+		if (pact)
+			npc->set_action(new Sequence_actor_action(pact,
 				new Pickup_actor_action(cloth, cpos, 250)));
-		else
-			delete path;
 		cloth = 0;			// Leave it be.
 		break;
 		}

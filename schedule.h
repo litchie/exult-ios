@@ -38,7 +38,6 @@ class Game_object;
 class Actor;
 class Rectangle;
 class Actor_action;
-class Astar;
 
 /*
  *	A Schedule controls the NPC it is assigned to.
@@ -104,9 +103,9 @@ class Street_maintenance_schedule : public Schedule
 	{
 	Game_object *obj;		// Lamp/shutters.
 	int shapenum;			// Save original shapenum.
-	Astar *path;			// Path to follow to get there.
+	Actor_action *paction;		// Path to follow to get there.
 public:
-	Street_maintenance_schedule(Actor *n, Astar *p, Game_object *o);
+	Street_maintenance_schedule(Actor *n, Actor_action *p, Game_object *o);
 	virtual void now_what();
 	};
 
