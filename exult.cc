@@ -269,7 +269,7 @@ int main
 			 << "--si\t\tSkip menu and run Serpent Isle" << endl
 			 << "--buildmap\tCreate a fullsize map of the game world in u7map??.pcx" << endl
 			 << "\t\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl
-			 << "\t\tonly valid when used together with -bg or -si" << endl
+			 << "\t\tonly valid when used together with --bg or --si" << endl
 			 << "\t\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl
 			 << "--nocrc\t\tDon't check crc's of .flx files" << endl;
 			
