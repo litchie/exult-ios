@@ -103,14 +103,24 @@ static bool MatchString( const char *str, const std::string& inPat )
 int U7ListFiles(const std::string mask, FileList& files)
 {
 	string			path(get_system_path(mask));
+	const TCHAR		*lpszT;
 	WIN32_FIND_DATA	fileinfo;
 	HANDLE			handle;
 	char			*stripped_path;
-	int				i;
+	int				i, nLen, nLen2;
 
-	handle = FindFirstFile (path.c_str(), &fileinfo);
+#ifdef UNICODE
+	const char *name = path.c_str();
+	nLen = strlen(name)+1;
+	LPTSTR lpszT2 = (LPTSTR) alloca(nLen*2);
+	lpszT = lpszT2;
+	MultiByteToWideChar(CP_ACP, 0, name, -1, lpszT2, nLen);
+#else
+	lpszT = path.c_str();
+#endif
 
-	// 
+	handle = FindFirstFile (lpszT, &fileinfo);
+
 	stripped_path = new char [path.length()+1];
 	strcpy (stripped_path, path.c_str());
 
@@ -131,9 +141,20 @@ int U7ListFiles(const std::string mask, FileList& files)
 	{
 		do
 		{
-			char *filename = new char [strlen (fileinfo.cFileName)+strlen(stripped_path)+1];
+			nLen = strlen(stripped_path);
+
+#ifdef UNICODE
+			nLen2 = wcslen (fileinfo.cFileName)+1;
+			char *filename = new char [nLen+nLen2];
+			strcpy (filename, stripped_path);
+			WideCharToMultiByte(CP_ACP, 0, fileinfo.cFileName, -1, filename+nLen, nLen2, NULL, NULL);
+#else
+			nLen2 = strlen (fileinfo.cFileName)+1;
+			char *filename = new char [nLen+nLen2];
 			strcpy (filename, stripped_path);
 			strcat (filename, fileinfo.cFileName);
+#endif
+
 			files.push_back(filename);
 #ifdef DEBUG
 			std::cerr << filename << std::endl;
