@@ -95,7 +95,7 @@ KMIDI::KMIDI()
 		}
 
 	// This is probably not right for anyone but me
-	kMidSetDevice(0);
+	kMidSetDevice(5);
 }
 
 KMIDI::~KMIDI()
