@@ -46,7 +46,7 @@ public:
 		point = 0,
 		bilinear = 1,
 		interlaced = 2,
-		SaI = 3,
+		SaI = 3
 	};
 protected:
 	Image_buffer *ibuf;		// Where the data is actually stored.
