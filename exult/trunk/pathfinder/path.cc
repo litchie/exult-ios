@@ -343,9 +343,8 @@ Tile_coord *Find_path
 	int max_cost = client->estimate_cost(start, goal);
 					// Create start node.
 	nodes.add(new Search_node(start, 0, max_cost, 0));
-	max_cost *= 3;			// Don't try forever.
-	if (max_cost < 64)
-		max_cost = 64;
+					// Figure when to give up.
+	max_cost = client->get_max_cost(max_cost);
 	Search_node *node;		// Try 'best' node each iteration.
 	while ((node = nodes.pop()) != 0)
 		{
