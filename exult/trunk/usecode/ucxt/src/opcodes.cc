@@ -28,6 +28,16 @@
 #include <fstream>
 #include <stack>
 
+#ifdef HAVE_SSTREAM
+	#include <sstream>
+	using std::stringstream;
+#else
+	#include <strstream>
+	using std::strstream;
+	typedef strstream stringstream;
+	// NOTE: strstreams need to be 'ends' terminated, whilst strstreams don't.
+#endif
+
 #ifndef __STRING
 	#if defined __STDC__ && __STDC__
 		#define __STRING(x) #x
@@ -43,6 +53,9 @@ using std::endl;
 using std::string;
 using std::cerr;
 using std::ends;
+using std::setw;
+using std::setfill;
+using std::setbase;
 
 #define MAX_NO_OPCODES 512
 std::vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
@@ -89,6 +102,30 @@ void init_usecodetables(const Configuration &config, bool noconf, bool verbose)
 	
 	if(verbose) std::cout << "ucxtroot: " << ucxtroot << std::endl;
 	if(ucxtroot.size() && ucxtroot[ucxtroot.size()-1]!='/' && ucxtroot[ucxtroot.size()-1]!='\\') ucxtroot+='/';
+	
+	Configuration opdata(ucxtroot + "u7opcodes.data", "opcodes");
+	
+	vector<string> keys = opdata.listkeys("opcodes");
+		
+	#if 1
+	for(vector<string>::iterator key=keys.begin(); key!=keys.end(); ++key)
+	{
+		if((*key)[0]!='!')
+		{
+			Configuration::KeyTypeList ktl;
+		
+			opdata.getsubkeys(ktl, *key);
+		
+			if(ktl.size())
+			{
+				unsigned int i = strtol(key->substr(key->find_first_of("0")).c_str(), 0, 0);
+				opcode_table_data[i] = UCOpcodeData(i, ktl);
+			}
+		}
+	}
+	
+	#else
+	
 	ucxtroot+= "opcodes.txt";
 
 	std::ifstream file;
@@ -114,6 +151,7 @@ void init_usecodetables(const Configuration &config, bool noconf, bool verbose)
 		}	
 	}
 	file.close();
+	#endif
 	
 	/* Create an {opcode, parameter_index} array of all opcodes that
 		execute a 'jump' statement */

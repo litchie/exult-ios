@@ -38,7 +38,7 @@ static	string	close_tag(const string &s);
 
 XMLnode::~XMLnode()
 {
-	for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
+	for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); ++i)
 		delete *i;
 }
 
@@ -380,27 +380,40 @@ void	XMLnode::xmlparse(string &s,std::size_t &pos)
 	trim(content);
 }
 
-void XMLnode::searchpairs(KeyTypeList &ktl, const string &basekey, const string currkey, const unsigned int pos)
+/* Returns a list of key->value pairs that are found under the provided 'basekey'.
+	Ignores comments (<!-- ... --> and doesn't return them.
+	Returns true if search is 'finished' */
+bool XMLnode::searchpairs(KeyTypeList &ktl, const string &basekey, const string currkey, const unsigned int pos)
 {
-	//std::cout << basekey << std::endl << '\t' << currkey + id << std::endl << "\t\t" << content << std::endl;
-	
-	if(basekey==currkey+id) {
-		for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
-			(*i)->selectpairs(ktl, "");
+	/* If our 'current key' is longer then the key we're serching for
+		we've obviously gone too deep in this branch, and we won't find
+		it here. */
+	if((currkey.size()<=basekey.size()) && (id[0]!='!'))
+	{
+		/* If we've found it, return every key->value pair under this key,
+			then return true, since we've found the key we were looking for. */
+		if(basekey==currkey+id)
+		{
+			for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); ++i)
+				if((*i)->id[0]!='!')
+					(*i)->selectpairs(ktl, "");
+			return true;
+		}
+		/* Else, keep searching for the key under it's subnodes */
+		else
+			for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); ++i)
+				if((*i)->searchpairs(ktl, basekey, currkey + id + '/', pos)==true)
+					return true;
 	}
-	else {
-		for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
-			(*i)->searchpairs(ktl, basekey, currkey + id + '/', pos);
-	}
+	return false;
 }
 
+/* Just adds every key->value pair under the this node to the ktl */
 void XMLnode::selectpairs(KeyTypeList &ktl, const std::string currkey)
 {
-	//std::cout << '>' << currkey + id << std::endl << '\t' << content << std::endl;
-	
 	ktl.push_back(KeyType(currkey + id, content));
 	
-	for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
+	for(std::vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); ++i)
 		(*i)->selectpairs(ktl, currkey + id + '/');
 }
 
