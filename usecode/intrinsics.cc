@@ -472,36 +472,9 @@ USECODE_INTRINSIC(get_party_list)
 
 USECODE_INTRINSIC(create_new_object)
 {
+	// create_new_object(shapenum).   Stores it in 'last_created' (which
+	//   maybe should be a stack.
 	int shapenum = parms[0].get_int_value();
-	unsigned int tx;
-	unsigned int ty;
-	unsigned int cx;
-	unsigned int cy;
-	unsigned int lift;
-
-	if (num_parms == 2)
-	{
-		tx = parms[1].get_elem(0).get_int_value()%c_tiles_per_chunk;
-		ty = parms[1].get_elem(1).get_int_value()%c_tiles_per_chunk;
-		cx = parms[1].get_elem(0).get_int_value()/c_tiles_per_chunk;
-		cy = parms[1].get_elem(1).get_int_value()/c_tiles_per_chunk;
-		lift = parms[1].get_elem(2).get_int_value();
-		cout << "LOC " << endl;
-	}
-	else
-	{
-		Game_object *at = caller_item ? caller_item->get_outermost()
-								: 0;
-		if (!at || at->get_cx() == 255)	// Invalid chunk?
-			at = gwin->get_main_actor();
-		
-		tx = at->get_tx();
-		ty = at->get_ty();
-		cx = at->get_cx();
-		cy = at->get_cy();
-		lift = at->get_lift();
-		cout << " AT " << endl;
-	}
 
 	Game_object *obj;		// Create to be written to Ireg.
 	Monster_info *inf = gwin->get_info(shapenum).get_monster_info();
@@ -511,8 +484,9 @@ USECODE_INTRINSIC(create_new_object)
 					// (Wait sched. added for FOV.)
 		// don't add equipment (Erethian's transform sequence)
 		Monster_actor *monster = Monster_actor::create(shapenum,
-			cx, cy, tx, ty, lift, Schedule::wait, (int) Actor::neutral,
-													   true, false);
+			255, 255, 0, 0, 0,
+			Schedule::wait, (int) Actor::neutral,
+							true, false);
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
@@ -523,39 +497,31 @@ USECODE_INTRINSIC(create_new_object)
 	{
 		if (Is_body(shapenum))
 		{
-			obj = new Dead_body(shapenum, 0, tx, ty, lift, -1);
+			obj = new Dead_body(shapenum, 0, 0, 0, 0, -1);
 			cout << " body " << endl;
 		}
 		else
 		{
-			obj = gwin->create_ireg_object(
-				gwin->get_info(shapenum), shapenum, 0,
-								tx, ty, lift);
+			obj = gwin->create_ireg_object(shapenum, 0);
 					// Be liberal about taking stuff.
 			obj->set_flag(Obj_flags::okay_to_take);
 			cout << " ireg object " << endl;
 		}
 	}
-	Map_chunk *chunk = gwin->get_chunk(cx, cy);
-	if (obj->is_egg())
-		chunk->add_egg((Egg_object *) obj);
-	else
-		chunk->add(obj);
-	gwin->show();
+	obj->set_invalid();		// Not in world yet.
+	obj->set_flag(Obj_flags::okay_to_take);
 	last_created = obj;
-					// Kludge for fixing Buc's Den:
-	if (shapenum == 644 && Game::get_game_type() == BLACK_GATE &&
-	    cx >= 94 && cx <= 96 && cy >= 121 && cy <= 123)
-		obj->set_flag(Obj_flags::okay_to_take);
 	Usecode_value u(obj);
 	return(u);
 }
 
 USECODE_INTRINSIC(set_last_created)
 {
-	// Take itemref, sets last_created to it.
+	// Take itemref off map and set last_created to it.
 	Game_object *obj = get_item(parms[0]);
 	last_created = obj;
+	if (obj)
+		obj->remove_this(1);	// Remove, but don't delete.
 	Usecode_value u(obj);
 	return(u);
 }
@@ -587,8 +553,7 @@ USECODE_INTRINSIC(update_last_created)
 					// And skip if BG.  Causes FoV probs.
 		    Game::get_game_type() != BLACK_GATE)
 			while (Map_chunk::is_blocked(pos, 1,
-					MOVE_ALL_TERRAIN | MOVE_NODROP) &&
-			      Game_object::find_blocking(pos) != last_created)
+					MOVE_ALL_TERRAIN | MOVE_NODROP))
 				{	// Try up to ceiling.
 				if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
 					{
@@ -869,6 +834,7 @@ USECODE_INTRINSIC(give_last_created)
 					// Don't check.  Causes failures.
 		ret = cont->add(last_created, 1);
 		}
+	last_created = 0;
 	Usecode_value u(ret);
 	return(u);
 }

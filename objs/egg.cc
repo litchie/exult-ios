@@ -763,6 +763,31 @@ void Egg_object::set_weather
 	}
 
 /*
+ *	Move to a new absolute location.  This should work even if the old
+ *	location is invalid (cx=cy=255).
+ */
+
+void Egg_object::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Figure new chunk.
+	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
+	Map_chunk *newchunk = gwin->get_chunk_safely(newcx, newcy);
+	if (!newchunk)
+		return;			// Bad loc.
+	remove_this(1);			// Remove from old.
+	set_lift(newlift);		// Set new values.
+	shape_pos = ((newtx%c_tiles_per_chunk) << 4) + newty%c_tiles_per_chunk;
+	newchunk->add_egg(this);	// Updates cx, cy.
+	gwin->add_dirty(this);		// And repaint new area.
+	}
+
+/*
  *	This is needed since it calls remove_egg().
  */
 
@@ -770,14 +795,16 @@ void Egg_object::remove_this
          (
          int nodel                       // 1 to not delete.
          )
-         {
-         Map_chunk *chunk =
-			 Game_window::get_game_window()->get_chunk_safely(
-								 cx, cy);
+	{
+	Game_window *gwin = Game_window::get_game_window();
+         Map_chunk *chunk = gwin->get_chunk_safely(cx, cy);
 	 if (chunk)
-		 chunk->remove_egg(this);
+		{
+		gwin->add_dirty(this);	// (Make's ::move() simpler.).
+		chunk->remove_egg(this);
+		}
 	 if (!nodel)
-		 Game_window::get_game_window()->delete_object(this);
+		 gwin->delete_object(this);
 	 }
 
 /*

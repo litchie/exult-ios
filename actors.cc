@@ -3760,7 +3760,8 @@ static int Find_monster_food
 Monster_actor *Monster_actor::create
 	(
 	int shnum,			// Shape to use.
-	int chunkx, int chunky,		// Chunk to place it in.
+	int chunkx, int chunky,		// Chunk to place it in, or 255's to
+					//   not place in world yet.
 	int tilex, int tiley,		// Tile within chunk.
 	int lift,			// Lift.
 	int sched,			// Schedule type.
@@ -3805,8 +3806,9 @@ Monster_actor *Monster_actor::create
 	// Set temporary
 	if (temporary) monster->set_flag (Obj_flags::is_temporary);
 					// Place in world.
-	Map_chunk *olist = gwin->get_chunk(chunkx, chunky);
-	monster->movef(0, olist, tilex, tiley, 0, lift);
+	Map_chunk *olist = gwin->get_chunk_safely(chunkx, chunky);
+	if (olist)
+		monster->movef(0, olist, tilex, tiley, 0, lift);
 
 	if (equipment) {
 					// Get equipment.
