@@ -1,3 +1,9 @@
+2/10/00:	V0.10 - Added USECODE interpreter.  
+		Removed my previous conversation engine (which I'll use in
+		another project).
+		Exult creates the "gamedat" directory and files automatically.
+		Moved web site to exult.sourceforge.com.
+
 7/5/99:		W.J. Palenstijn's WIN32 port!
 
 6/10/99:	First attempt at obstacle avoidance.

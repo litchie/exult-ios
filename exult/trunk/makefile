@@ -8,7 +8,7 @@ CXX = dos-g++
 CXXFLAGS =
 CPPFLAGS = -DDOS -I/usr/local/include -Inpc -Iscript
 LFLAGS =
-LIBS =  -L npc -L script -lscr -lnpc -lttf -lstdcx
+LIBS =  -L npc -lttf -lstdcx
 
 else				# X-windows.
 CXX = g++
@@ -19,9 +19,8 @@ STATIC = -static
 else
 STATIC =
 endif
-LFLAGS = -g
-LIBS = -L /usr/X11R6/lib -L /usr/local/lib \
-	-lX11 -lXext -lttf
+LFLAGS = -g -L /usr/X11R6/lib -L /usr/local/lib
+LIBS = -lttf -lX11 -lXext
 endif
 
 all:
@@ -29,7 +28,6 @@ all:
 
 exult: $(OBJECTS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJECTS) $(STATIC) $(LIBS)
-#	$(CXX) $(LFLAGS) -o $@ $(OBJECTS) -static $(LIBS)
 
 exult.exe:
 	make DOS=1
@@ -40,7 +38,7 @@ release:
 #	make clean
 	make RELEASE=1
 	make tar
-	make w32zip
+#	make w32zip
 #	make doszip
 
 tar:	exult
@@ -48,7 +46,7 @@ tar:	exult
 	(cd ..; tar cvfz exult10.tgz exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,exult,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
 
 w32zip:
-	(cd ..; zip exult10w..zip exult/{*.h,*.cc,makefile,exult.ide,README,readme.w95,CHANGELOG,exultw32.exe,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
+	(cd ..; zip exult10w.zip exult/{*.h,*.cc,makefile,exult.ide,README,readme.w95,CHANGELOG,exultw32.exe,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
 
 doszip:	exult.exe
 	(cd ..; zip exult06.zip exult/{exult.exe,avatar.ttf,*.scr,csdpmi3b.zip,README,CHANGELOG})
