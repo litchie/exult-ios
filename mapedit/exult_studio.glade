@@ -737,7 +737,7 @@
 			      <property name="rules_hint">False</property>
 			      <property name="reorderable">False</property>
 			      <property name="enable_search">True</property>
-			      <signal name="row_activated" handler="on_filelist_tree_select_row" last_modification_time="Mon, 03 Mar 2003 11:43:39 GMT"/>
+			      <signal name="cursor_changed" handler="on_filelist_tree_cursor_changed" last_modification_time="Wed, 21 May 2003 06:32:19 GMT"/>
 			    </widget>
 			  </child>
 			</widget>
@@ -794,7 +794,7 @@
 				      <property name="rules_hint">False</property>
 				      <property name="reorderable">False</property>
 				      <property name="enable_search">True</property>
-				      <signal name="select_row" handler="on_group_list_select_row"/>
+				      <signal name="select_cursor_row" handler="on_group_list_select_row" last_modification_time="Tue, 20 May 2003 06:58:15 GMT"/>
 				      <signal name="unselect_row" handler="on_group_list_unselect_row"/>
 				      <signal name="row_move" handler="on_group_list_row_move"/>
 				      <signal name="button_press_event" handler="on_group_list_button_press_event" after="yes"/>
