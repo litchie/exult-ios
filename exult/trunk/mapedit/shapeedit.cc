@@ -400,10 +400,10 @@ void ExultStudio::init_shape_notebook
 					// 'Explode'???
 		set_toggle("shinfo_weapon_returns", winfo->returns());
 		}
-	Ammo_info *ainfo = Ammo_info::find(shnum);
+	Ammo_info *ainfo = info.get_ammo_info();
 	set_toggle("shinfo_ammo_check", ainfo != 0);
 	set_visible("shinfo_ammo_box", ainfo != 0);
-	if (ainfo)			// Setup armor page.
+	if (ainfo)			// Setup ammo page.
 		{
 		set_spin("shinfo_ammo_damage", ainfo->get_damage());
 		set_spin("shinfo_ammo_family", ainfo->get_family_shape());
@@ -419,12 +419,18 @@ void ExultStudio::init_shape_notebook
 			sizeof(powers)/sizeof(powers[0]), ainfo->get_powers());
 					// 'Explode'???
 		}
-	int armor = info.get_armor();	// (Should eventually become a class.)
-	set_toggle("shinfo_armor_check", armor > 0);
-	set_visible("shinfo_armor_box", armor > 0);
-	if (armor > 0)			// Setup armor page.
+	Armor_info *arinfo = info.get_armor_info();
+	set_toggle("shinfo_armor_check", arinfo != 0);
+	set_visible("shinfo_armor_box", arinfo != 0);
+	if (arinfo)			// Setup armor page.
 		{
-		set_spin("shinfo_armor_value", armor);
+		static char *immun[] = {"shinfo_armor_immun0",
+					"shinfo_armor_immun1",
+					"shinfo_armor_immun2",
+					"shinfo_armor_immun3" };
+		set_spin("shinfo_armor_value", arinfo->get_prot());
+		set_bit_toggles(&immun[0], 
+			sizeof(immun)/sizeof(immun[0]), arinfo->get_immune());
 		}
 	Monster_info *minfo = info.get_monster_info();
 	set_toggle("shinfo_monster_check", minfo != 0);

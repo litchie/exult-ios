@@ -91,4 +91,6 @@ public:
 	virtual void now_what();
 	};
 
+bool In_ammo_family(int shnum, int family);// Yow, a global function.
+
 #endif

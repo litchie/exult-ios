@@ -85,7 +85,9 @@
 #define SISPEECH	"<STATIC>/sispeech.spc"
 #define XFORMTBL       	"<STATIC>/xform.tbl"
 #define MONSTERS	"<STATIC>/monsters.dat"
+#define PATCH_MONSTERS	"<PATCH>/monsters.dat"
 #define EQUIP		"<STATIC>/equip.dat"
+#define PATCH_EQUIP	"<PATCH>/equip.dat"
 #define READY		"<STATIC>/ready.dat"
 #define PATCH_READY	"<PATCH>/ready.dat"
 #define WIHH		"<STATIC>/wihh.dat"
@@ -106,6 +108,7 @@
 #define PATCH_AMMO	"<PATCH>/ammo.dat"
 #define PAPERDOL	"<STATIC>/paperdol.vga"
 #define OCCLUDE		"<STATIC>/occlude.dat"
+#define PATCH_OCCLUDE	"<PATCH>/occlude.dat"
 
 #define GSCRNSHOT	"<GAMEDAT>/scrnshot.shp"
 #define GSAVEINFO	"<GAMEDAT>/saveinfo.dat"

@@ -29,10 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapeinf.h"
 #include "monstinf.h"
 
-Ammo_table *Ammo_info::table = 0;
-
 #include "utils.h"
-#include "hash_utils.h"
 
 /*
  *	Read in a weapon-info entry from 'weapons.dat'.
@@ -104,7 +101,7 @@ int Weapon_info::read
 	}
 
 /*
- *	Read in a amm-info entry from 'amms.dat'.
+ *	Read in an ammo-info entry from 'ammo.dat'.
  *
  *	Output:	Shape # this entry describes.
  */
@@ -117,7 +114,7 @@ int Ammo_info::read
 	uint8 buf[13];			// Entry length.
 	in.read((char *) buf, sizeof(buf));
 	uint8 *ptr = buf;
-	shapenum = Read2(ptr);		// Bytes 0-1.
+	int shapenum = Read2(ptr);	// Bytes 0-1.
 	family_shape = Read2(ptr);
 	unsigned short type2 = Read2(ptr);	// ???
 	damage = *ptr++;
@@ -129,71 +126,35 @@ int Ammo_info::read
 	}
 
 /*
- *	For looking up ammo entries:
+ *	Read in an armor-info entry from 'armor.dat'.
+ *
+ *	Output:	Shape # this entry describes.
  */
 
-class Ammo_table
-	{
-#ifndef DONT_HAVE_HASH_MAP
-	hash_map<int, Ammo_info> my_map;
-#else
-	std::map<int, Ammo_info> my_map;
-#endif
-public:
-
-#ifndef DONT_HAVE_HASH_MAP
-	Ammo_table() : my_map(53) {  }
-#else
-	Ammo_table() : my_map() {  }
-#endif
-	void insert(int shnum, Ammo_info& ent)
-		{ my_map[shnum] = ent; }
-	Ammo_info *find(int shnum)	// Look up given shape.
-		{
-#ifndef DONT_HAVE_HASH_MAP
-		hash_map<int, Ammo_info>::iterator it = my_map.find(shnum);
-#else
-		std::map<int, Ammo_info>::iterator it = my_map.find(shnum);
-#endif
-		return it == my_map.end() ? 0 : &((*it).second);
-		}
-	};
-
-/*
- *	Create ammo table.
- */
-
-void Ammo_info::create
+int Armor_info::read
 	(
+	std::istream& in		// Read from here.
 	)
 	{
-	table = new Ammo_table;
+	uint8 buf[10];			// Entry length.
+	in.read((char *) buf, sizeof(buf));
+	uint8 *ptr = buf;
+	int shapenum = Read2(ptr);	// Bytes 0-1.
+	prot = *ptr++;			// Protection value.
+	ptr++;				// Unknown.
+	immune = *ptr++;		// Immunity flags.
+					// Last 5 are unknown/unused.
+	return shapenum;
 	}
 
 /*
- *	Insert an entry.
+ *	Clean up.
  */
-
-void Ammo_info::insert(int shnum, Ammo_info& ent)
-	{ table->insert(shnum, ent); }
-
-
-/*
- *	Look up ammo's entry.
- */
-
-Ammo_info *Ammo_info::find
-	(
-	int shnum			// Shape #.
-	)
-	{
-	return Ammo_info::table->find(shnum);
-	}
-
 
 Shape_info::~Shape_info()
 	{
 	delete weapon;
+	delete ammo;
 	if(weapon_offsets)
 		delete [] weapon_offsets;
 	delete monstinf;
