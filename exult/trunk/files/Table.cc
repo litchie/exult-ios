@@ -58,7 +58,7 @@ void	Table::IndexTableFile(void)
 	} catch (const file_open_exception &e)
 	{
 		cerr << e.what() << ". exiting." << endl;
-		exit(1);
+		std::exit(1);
 	}
 	fseek(fp,0,SEEK_END);
 	size_t file_size=ftell(fp);

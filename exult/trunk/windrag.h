@@ -1,15 +1,79 @@
 #ifndef INCL_WINDRAG
 #define INCL_WINDRAG
 
+#include "u7drag.h"
 #include <ole2.h>
+#include "utils.h"
 
-typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y, void *udata);
-typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y, void *udata);
+// A useful structure for Winstudioobj
+class windragdata {
+	sint32 id;
+	uint32 size;			// Size of data
+	unsigned char * data;
+public:
 
-// A usefull structure for Winstudioobj
-struct windragdata {
-	int id;
-	unsigned char data[30];
+	inline unsigned char *get_data() {
+		return data;
+	}
+	inline const int get_id() {
+		return id;
+	}
+	inline const int get_size() {
+		return size;
+	}
+
+	// Default constructor
+	inline windragdata() : size(0), data(0) {
+	}
+	// Copy constructor
+	inline windragdata(windragdata &o) : id(o.id), size(o.size), data(new unsigned char [o.size]) {
+		std::memcpy(data, o.data, size);
+	}
+	// Read from buffer
+	inline windragdata(unsigned char *buf) :data(0) {
+		operator = (buf);
+	}
+	inline windragdata(sint32 i, uint32 s, unsigned char * d) :
+		id(i), size(s), data(new unsigned char [s]) {
+		std::memcpy(data, d, size);
+	}
+
+	// Destructor
+	inline ~windragdata() {
+		delete [] data;
+	}
+
+	inline void serialize(unsigned char *buf) {
+		Write4(buf, id);
+		Write4(buf, size);
+		std::memcpy(buf, data, size);
+	}
+	inline windragdata & operator = (unsigned char *buf) {
+		delete [] data;
+
+		id = Read4(buf);
+		size = Read4(buf);
+		data = new unsigned char [size];
+		std::memcpy(data, buf, size);
+		return *this;
+	}
+	// Copy constructor
+	inline windragdata & operator = (windragdata &o) {
+		delete [] data;
+		id = o.id;
+		size = o.size;
+		data = new unsigned char [size];
+		std::memcpy(data, o.data, size);
+		return *this;
+	}
+	inline void assign(sint32 i, uint32 s, unsigned char * d) {
+		delete [] data;
+		id = i;
+		size = s;
+		data = new unsigned char [s];
+		std::memcpy(data, d, size);
+	}
+
 };
 
 /*
@@ -24,13 +88,34 @@ private:
 
 	void *udata;
 
+	Move_shape_handler_fun move_shape_handler;
+	Move_combo_handler_fun move_combo_handler;
 	Drop_shape_handler_fun shape_handler;
 	Drop_chunk_handler_fun chunk_handler;
 	Drop_shape_handler_fun face_handler;
+	Drop_combo_handler_fun combo_handler;
+
+	// Used for when dragging the mouse over the exult window
+	int drag_id;
+	int prevx, prevy;
+	union {
+		struct {
+			int file,shape,frame;
+		} shape;
+		struct  {
+			int chunknum;
+		} chunk;
+		struct {
+			int xtiles, ytiles;
+			int right, below, cnt;
+			U7_combo_data *combo;
+		} combo;
+	} data;
 
 public:
-	Windnd(HWND hgwnd, 	Drop_shape_handler_fun shapefun,
-	Drop_chunk_handler_fun cfun);
+	Windnd(HWND hgwnd, Move_shape_handler_fun, Move_combo_handler_fun,
+			Drop_shape_handler_fun, Drop_chunk_handler_fun,
+			Drop_combo_handler_fun);
 	Windnd(HWND hgwnd, 	Drop_shape_handler_fun shapefun,
 	Drop_chunk_handler_fun cfun, Drop_shape_handler_fun facefun, void *d);
 	~Windnd();
@@ -53,7 +138,6 @@ public:
 	  DWORD * pdwEffect);
 
 	bool is_valid(IDataObject * pDataObject);
-    void do_handle_drop(windragdata *data);
 
 	static void CreateStudioDropDest(Windnd *& windnd, HWND &hWnd,
 					Drop_shape_handler_fun shapefun,
