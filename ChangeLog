@@ -1,5 +1,7 @@
 2004-02-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/pants.shp: pants paperdoll art (by servus)
+	* data/bg/collar.shp: leather collar paperdoll art (by servus)
+	* data/bg/*gorget.shp: fixed female gorgets
 
 2004-02-11  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/shoes.shp: shoes paperdoll art
