@@ -229,6 +229,7 @@ class Shape_info
 	Weapon_info *weapon;		// From weapon.dat, if a weapon.
 	Ammo_info *ammo;		// From ammo.dat, if ammo.
 	Monster_info *monstinf;		// From monster.dat.
+	short container_gump;		// From container.dat.
 	void set_tfa_data()		// Set fields from tfa.
 		{
 		dims[0] = 1 + (tfa[2]&7);
@@ -246,7 +247,7 @@ public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : weight(0), volume(0),
 		ready_type(255), occludes_flag(false), weapon_offsets(0), 
-		armor(0), weapon(0), ammo(0), monstinf(0)
+		armor(0), weapon(0), ammo(0), monstinf(0), container_gump(-1)
 		{
 		tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
 		dims[0] = dims[1] = dims[2] = 0;
@@ -273,6 +274,10 @@ public:
 	Monster_info *get_monster_info()
 		{ return monstinf; }
 	Monster_info *set_monster_info(bool tf);
+	int get_container_gump()
+		{ return container_gump; }
+	void set_container_gump(int sh)
+		{ container_gump = (short) sh; }
 					// Get tile dims., flipped for
 					//   reflected (bit 5) frames.
 	int get_3d_xtiles(unsigned int framenum = 0)

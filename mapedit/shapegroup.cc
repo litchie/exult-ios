@@ -96,6 +96,11 @@ Shape_group::Shape_group
 			    !vgafile->get_info(i).get_monster_info())
 				add(i);
 		break;
+	case containers_group:
+		for (i = 0; i < cnt; i++)
+			if (vgafile->get_info(i).get_container_gump() >= 0)
+				add(i);
+		break;
 		}
 	file->modified = modified;	// Add() sets this.
 	}
@@ -254,31 +259,34 @@ Shape_group *Shape_group_file::get_builtin
 		type = Shape_group::monsters_group; break;
 	case 3:
 		type = Shape_group::weapons_group; break;
-	case 5:
-		type = Shape_info::unusable; break;
+	case 4:
+		type = Shape_group::containers_group; break;
+	// Separator.
 	case 6:
-		type = Shape_info::quality; break;
+		type = Shape_info::unusable; break;
 	case 7:
-		type = Shape_info::quantity; break;
+		type = Shape_info::quality; break;
 	case 8:
-		type = Shape_info::has_hp; break;
+		type = Shape_info::quantity; break;
 	case 9:
-		type = Shape_info::quality_flags; break;
+		type = Shape_info::has_hp; break;
 	case 10:
-		type = Shape_info::container; break;
+		type = Shape_info::quality_flags; break;
 	case 11:
-		type = Shape_info::hatchable; break;
+		type = Shape_info::container; break;
 	case 12:
-		type = Shape_info::spellbook; break;
+		type = Shape_info::hatchable; break;
 	case 13:
-		type = Shape_info::barge; break;
+		type = Shape_info::spellbook; break;
 	case 14:
-		type = Shape_info::virtue_stone; break;
+		type = Shape_info::barge; break;
 	case 15:
-		type = Shape_info::monster; break;
+		type = Shape_info::virtue_stone; break;
 	case 16:
-		type = Shape_info::human; break;
+		type = Shape_info::monster; break;
 	case 17:
+		type = Shape_info::human; break;
+	case 18:
 		type = Shape_info::building; break;
 	default:
 		type = -1;
