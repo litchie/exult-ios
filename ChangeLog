@@ -1,5 +1,9 @@
 2001-04-16  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keys.*, keyactions.*: added a 'test' action, for testing anything you like
+	* schedule.*, actors.cc: added Forge_schedule
+	* actions.*:	animate action: complete full cycle
+			frames action: allow setting frames of other objects
+			animate action: allow setting length of cycle
 	
 2001-04-16  Dancer Vesperman <dancer@users.sourceforge.net>
 	* Upgrade for g++ 3.0
