@@ -54,6 +54,7 @@ protected:
 					//   below for description.
 	unsigned char two_handed;	// Carrying a two-handed item.
 	bool two_fingered;		// Carrying gauntlets (both fingers)
+	unsigned char light_sources;	// # of light sources readied.
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 	unsigned long flags;		// 32 flags used in 'usecode'.
 	Actor_action *action;		// Controls current animation.
@@ -98,6 +99,8 @@ public:
 			(!spots[lfinger] ? lfinger
 			 	: (!spots[rfinger] ? rfinger : -1));
 		}
+	int has_light_source()		// Carrying a torch?
+		{ return light_sources > 0; }
 	enum Item_flags {		// Bit #'s of flags:
 		poisoned = 8,
 		dont_render = 16	// Completely invisible.
