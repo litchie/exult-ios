@@ -129,6 +129,7 @@ int	timidity_play(string filename, bool repeat, string &newfilename, pid_t &pid)
 		repstr += "l";
 	int pdes[2];
 	pipe(pdes);
+	cerr << "timidity_play fork and exec" << endl;
 	switch(pid = fork())
 	{
 		case -1:
@@ -248,7 +249,8 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 	filename=name;
 	do_repeat=repeat;
 	fprintf(stderr, "Creating new player thread\n");
-	pthread_create(&midi_thread, 0, midi_process, this);
+	if(pthread_create(&midi_thread, 0, midi_process, this)==-1)
+		perror("pthread_create");
 }
 
 
