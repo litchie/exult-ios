@@ -53,6 +53,17 @@ public:
 	};
 
 /*
+ *	Iterate through a chunk's flat objects.
+ */
+class Flat_object_iterator : public Object_iterator
+	{
+public:
+	Flat_object_iterator(Chunk_object_list *chunk)
+			: Object_iterator(chunk->flat_objects)
+		{  }
+	};
+
+/*
  *	Iterate backwards through list of objects.
  */
 class Object_iterator_backwards

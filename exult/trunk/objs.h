@@ -210,6 +210,7 @@ public:
 		next->prev = prev;
 		prev->next = next;
 		}
+	void delete_chain();		// Delete chain this is head of.
 	static int lt(class Ordering_info& inf1, Game_object *obj2);
 	int lt(Game_object& obj2) const;// Is this less than another in pos.?
 					// Return chunk coords.
@@ -605,6 +606,8 @@ class Chunk_object_list
 	{
 	ShapeID flats[256];		// Flat (non-RLE) shapes.  The unused
 					//   are "invalid" entries.
+	Game_object *flat_objects;	// ->flat objs. from map at lift==0
+					//   (with no need to remove).
 	Game_object *objects;		// ->first in ordered list.
 	Npc_actor *npcs;		// List of NPC's in this chunk.
 					//   (Managed by Npc_actor class.)
@@ -617,9 +620,11 @@ class Chunk_object_list
 public:
 	friend class Npc_actor;
 	friend class Object_iterator;
+	friend class Flat_object_iterator;
 	friend class Object_iterator_backwards;
 	Chunk_object_list(int chunkx, int chunky);
 	~Chunk_object_list();		// Delete everything in chunk.
+	void add_flat(Game_object *obj);// Add 'flat' object.
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add/remove an egg.
 	void remove_egg(Egg_object *egg);
