@@ -51,6 +51,19 @@ public:
 	};
 
 /*
+ *	Handle sleep.
+ */
+class Npc_sleep_timer : public Npc_timer
+	{
+	unsigned long end_time;		// Time when it wears off.
+public:
+	Npc_sleep_timer(Npc_timer_list *l);
+	virtual ~Npc_sleep_timer();
+					// Handle events:
+	void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
  *	Delete list.
  */
 
@@ -60,6 +73,7 @@ Npc_timer_list::~Npc_timer_list
 	{
 	delete hunger;
 	delete poison;
+	delete sleep;
 	}
 
 /*
@@ -88,6 +102,19 @@ void Npc_timer_list::start_poison
 	}
 
 /*
+ *	Start sleep.
+ */
+
+void Npc_timer_list::start_sleep
+	(
+	)
+	{
+	if (sleep)			// Remove old one.
+		delete sleep;
+	sleep = new Npc_sleep_timer(this);
+	}
+
+/*
  *	Get game minute from start.
  */
 
@@ -109,8 +136,8 @@ Npc_timer::Npc_timer
 	) : list(l)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-					// Start in 10 secs.
-	gwin->get_tqueue()->add(SDL_GetTicks() + 10000, this, 0L);
+					// Start in 5 secs.
+	gwin->get_tqueue()->add(SDL_GetTicks() + 5000, this, 0L);
 	}
 
 /*
@@ -224,5 +251,52 @@ void Npc_poison_timer::handle_event
 		npc->say(first_ouch, last_ouch);
 					// Check again in 10-20 secs.
 	gwin->get_tqueue()->add(curtime + 10000 + rand()%10000, this, 0L);
+	}
+
+/*
+ *	Initialize sleep timer.
+ */
+
+Npc_sleep_timer::Npc_sleep_timer
+	(
+	Npc_timer_list *l
+	) : Npc_timer(l)
+	{
+					// Lasts 5-10 seconds..
+	end_time = SDL_GetTicks() + 5000 + rand()%5000;
+	}
+
+/*
+ *	Done with sleep timer.
+ */
+
+Npc_sleep_timer::~Npc_sleep_timer
+	(
+	)
+	{
+	list->sleep = 0;
+	}
+
+/*
+ *	Time to penalize for sleep, or see if it's worn off.
+ */
+
+void Npc_sleep_timer::handle_event
+	(
+	unsigned long curtime, 
+	long udata
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Actor *npc = list->npc;
+	if (curtime >= end_time ||	// Long enough?  Or cured?
+	    npc->get_flag(Actor::asleep) == 0)
+		{
+		npc->clear_flag(Actor::asleep);
+		delete this;
+		return;
+		}
+					// Check again in 2 secs.
+	gwin->get_tqueue()->add(curtime + 2000, this, 0L);
 	}
 

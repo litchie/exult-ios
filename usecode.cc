@@ -1791,9 +1791,12 @@ USECODE_INTRINSIC(create_new_object)
 								tx, ty, lift);
 			cout << " ireg object " << endl;
 		}
-		gwin->get_objects(cx, cy)->add(obj);
 	}
-
+	Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+	if (obj->is_egg())
+		chunk->add_egg((Egg_object *) obj);
+	else
+		chunk->add(obj);
 	gwin->show();
 	last_created = obj;
 	Usecode_value u((long) obj);

@@ -33,8 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effects.h"
 #include "game.h"
 #include "items.h"
-
-// #include <math.h>
+#include "npctime.h"
 
 /*
  *	Paint at given spot in world.
@@ -356,15 +355,16 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			else		// Create item.
 				{
 				Shape_info& info = gwin->get_info(shnum);
-				Game_object *nobj = info.is_animated() ?
-					new Animated_ireg_object(
-						shnum, frnum, get_tx(),
-						get_ty(), get_lift())
-					: new Ireg_game_object(
+				Game_object *nobj =
+					gwin->create_ireg_object(info,
 						shnum, frnum, get_tx(),
 						get_ty(), get_lift());
-				gwin->get_objects(get_cx(), get_cy())->add(
-									nobj);
+				Chunk_object_list *chunk = 
+					gwin->get_objects(get_cx(), get_cy());
+				if (nobj->is_egg())
+					chunk->add_egg((Egg_object *) nobj);
+				else
+					chunk->add(nobj);
 				gwin->add_dirty(nobj);
 				nobj->set_flag(okay_to_take);
 				}
@@ -587,15 +587,21 @@ void Field_object::field_effect
 	switch (type)
 		{
 	case poison_field:
-		actor->set_flag(Actor::poisoned);
+		if (rand()%2)
+			actor->set_flag(Actor::poisoned);
 		break;
 	case sleep_field:
-		actor->set_flag(Actor::asleep);
+		if (rand()%2)
+			{
+			actor->set_flag(Actor::asleep);
+			actor->need_timers()->start_sleep();
+			}
 		break;
 	case fire_field:
 		if (rand()%2)
 			{
-			actor->set_property(Actor::health, -1);
+			int health = actor->get_property(Actor::health);
+			actor->set_property(Actor::health, health - 1);
 			if (rand()%2)
 				say(first_ouch, last_ouch);
 			}
