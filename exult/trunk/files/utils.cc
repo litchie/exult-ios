@@ -276,8 +276,8 @@ void U7open(std::ofstream& out,
 
 std::FILE* U7open
 	(
-	const char *fname,			// May be converted to upper-case.
-	const char *mode			// File access mode.
+	const char *fname,		   // May be converted to upper-case.
+	const char *mode		   // File access mode.
 	)
 {
 	string name = get_system_path(fname);
@@ -300,7 +300,7 @@ std::FILE* U7open
 
 void U7remove
 	(
-	const char *fname			// May be converted to upper-case.
+	const char *fname		  // May be converted to upper-case.
 	)
 {
 	string name = get_system_path(fname);
@@ -314,7 +314,7 @@ void U7remove
 
 int U7exists
 	(
-	const char *fname			// May be converted to upper-case.
+	const char *fname		  // May be converted to upper-case.
 	)
 {
 	bool	exists;
@@ -341,10 +341,12 @@ int U7mkdir
 	int mode
 	)
 {
+	string name = get_system_path(dirname);
+	cerr << "creating dir: " << name;
 #ifdef WIN32
-	return mkdir(dirname);
+	return mkdir(name.c_str());
 #else
-	return mkdir(dirname, mode);		// Create dir. if not already there.
+	return mkdir(name.c_str(), mode); // Create dir. if not already there.
 #endif
 }
 
