@@ -49,8 +49,12 @@ public:
 	bool has_ring(Actor *act);	// Has ring-o-reagents?
 					// Can we do this spell?
 	bool can_do_spell(Actor *act, int spell);
+	bool can_do_spell(Actor *act)	// Can we do bookmarked spell?
+		{ return bookmark >= 0 ? can_do_spell(act, bookmark) : false; }
 					// Do the spell.
 	bool do_spell(Actor *act, int spell, bool can_do = false);
+	bool do_spell(Actor *act)	// Do bookmarked spell.
+		{ return bookmark >= 0 ? do_spell(act, bookmark) : false; }
 	static void execute_spell(Actor *act, int spell);
 					// Run usecode function.
 	virtual void activate(int event = 1);
