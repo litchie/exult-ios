@@ -201,7 +201,7 @@ class Paperdoll_gump_object : public Gump_object
 	Disk_gump_button *disk_button;	// For bringing up 'save' box.
 	Combat_gump_button *combat_button;
 	Cstats_gump_button *cstats_button;
-	static short coords[24];	// Coords. of where to draw things,
+	static short coords[26];	// Coords. of where to draw things,
 					//   indexed by spot # (0-11).
 	static int spotx(int i) { return coords[2*i]; }
 	static int spoty(int i) { return coords[2*i + 1]; }

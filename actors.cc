@@ -558,7 +558,7 @@ int Actor::find_best_spot
 	case one_handed_weapon:
 	case tongs:
 		return free_hand();
-	case neck_armor:
+	case neck_armor: // This is Head in SI
 		return !spots[neck] ? neck : free_hand();
 	case torso_armor:
 		return !spots[torso] ? torso : free_hand();
@@ -566,19 +566,21 @@ int Actor::find_best_spot
 		return (free_finger() != -1 ? free_finger() : free_hand());
 	case ammunition:		// ++++++++Check U7.
 		return !spots[ammo] ? ammo : free_hand();
-	case head_armor:
+	case head_armor: // Ears in SI
 		return !spots[head] ? head : free_hand();
 	case leg_armor:
 		return !spots[legs] ? legs : free_hand();
 	case foot_armor:
 		return !spots[feet] ? feet : free_hand();
 	case two_handed_weapon:
-		return (!spots[lhand] && !spots[rhand]) ? lrhand : -1;
+		return (!spots[lhand] && !spots[rhand]) ? lrhand :
+			(Game::get_game_type() == SERPENT_ISLE && !spots[back2]) ? back2 : -1;
 	case gloves:
 		// Gloves occupy both finger spots
 		return (!spots[lfinger] && !spots[rfinger]) ? lrfinger 
 							: free_hand();
 					// ++++++What about belt?
+					// What about Bedroll in SI
 	case other:
 	default:
 		return free_hand();
@@ -793,16 +795,24 @@ void Actor::activate
 	int event
 	)
 	{
+	int serpent = (Game::get_game_type()==SERPENT_ISLE);
+	
 	Game_window *gwin = Game_window::get_game_window();
 					// In gump mode?  Or Avatar?
-	if (!npc_num)			// Avatar?
+	if (!npc_num && !serpent)	// Avatar?
 		gwin->show_gump(this, ACTOR_FIRST_GUMP);
+	else if (!npc_num && serpent)	// Avatar?
+		gwin->show_gump(this, 123);
 					// Gump/combat mode?
 	else if ((gwin->get_mode() == Game_window::gump || gwin->in_combat())&&
 		 get_party_id() >= 0 &&
-		 npc_num >= 1 && npc_num <= 10)
-					// Show companions' pictures.
+		 npc_num >= 1 && npc_num <= 10 && !serpent)
+					// Show companions' pictures. (BG)
 			gwin->show_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
+	else if ((gwin->get_mode() == Game_window::gump || gwin->in_combat())&&
+		 get_party_id() >= 0 && serpent)
+					// Show companions' pictures. (SI)
+			gwin->show_gump(this, 123);
 	else if (get_schedule_type() == (int) Schedule::sleep ||
 		 get_flag(Actor::asleep))
 		return;			// Asleep.
