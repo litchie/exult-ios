@@ -9,7 +9,7 @@
 2806:Alles klar?
 2807:Bereit für das Dessert?
 2808:Geniesse!
-2809:Speziaität des Hauses!
+2809:Spezialität des Hauses!
 2810:Avatar!  Benimm dich!
 2811:Hast Du bemerkt, dass schon jemand im Bett liegt?
 2812:Der Benutzer dieses Bettes wird wohl gerade keinen Wert auf Gesellschaft legen.
