@@ -961,6 +961,24 @@ void Wander_schedule::now_what
 	}
 
 /*
+ *	Stand up if not already.
+ */
+
+static void Stand_up
+	(
+	Actor *npc
+	)
+	{
+	if ((npc->get_framenum()&0xf) != Actor::standing)
+		{			// Stand.
+		Game_window *gwin = Game_window::get_game_window();
+		npc->add_dirty(gwin);
+		npc->set_frame(Actor::standing);
+		npc->add_dirty(gwin);
+		}
+	}
+
+/*
  *	Create a sleep schedule.
  */
 
@@ -993,6 +1011,7 @@ void Sleep_schedule::now_what
 	if (!bed && state == 0)		// Always find bed.
 		{			// Find closest EW or NS bed.
 		static int bedshapes[2] = {696, 1011};
+		Stand_up(npc);
 		bed = npc->find_closest(bedshapes, 2);
 		}
 	int frnum = npc->get_framenum();
@@ -1340,11 +1359,6 @@ Desk_schedule::Desk_schedule
 	Actor *n
 	) : Schedule(n), chair(0)
 	{
-	static int desks[2] = {283, 407};
-	static int chairs[2] = {873,292};
-	Game_object *desk = npc->find_closest(desks, 2);
-	if (desk)
-		chair = desk->find_closest(chairs, 2);
 	}
 
 /*
@@ -1355,8 +1369,20 @@ void Desk_schedule::now_what
 	(
 	)
 	{
-	if (!chair)
-		return;			// Failed.
+	if (!chair)			// No chair found yet.
+		{
+		static int desks[2] = {283, 407};
+		static int chairs[2] = {873,292};
+		Stand_up(npc);
+		Game_object *desk = npc->find_closest(desks, 2);
+		if (desk)
+			chair = desk->find_closest(chairs, 2);
+		if (!chair)		// Failed.
+			{		// Try again in a few seconds.
+			npc->start(200, 5000);
+			return;	
+			}
+		}
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) != Actor::sit_frame)
 		{
