@@ -1,6 +1,6 @@
 /*
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2003  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ void Missile_launcher::handle_event
 	if (proj)
 		eman->add_effect(proj);
 					// Add back to queue for next time.
-	gwin->get_tqueue()->add(curtime + delay, this, udata);
+	gwin->get_tqueue()->add(curtime + (delay > 0 ? delay : 1), this, udata);
 	}
 
 /*
