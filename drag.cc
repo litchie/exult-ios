@@ -50,6 +50,7 @@ int Game_window::start_dragging
 	dragging_rect = Rectangle(0, 0, 0, 0);
 	delete dragging_save;
 	dragging_save = 0;
+	dragging_quantity = 0;
 					// First see if it's a gump.
 	dragging_gump = find_gump(x, y);
 	if (dragging_gump)
@@ -93,30 +94,28 @@ void Game_window::drag
 	int x, int y			// Mouse pos. in window.
 	)
 	{
+	extern int Prompt_for_number(int, int, int, int);
 	if (!dragging && !dragging_gump)
 		return;
 	if (dragging_rect.w == 0)
 		{			// First motion.
-					// Don't want to move walls.
-		if (dragging && !dragging->is_dragable())	
-			{
-#if 1	/* Switch to this: +++++++++ */
-			mouse->flash_shape(Mouse::tooheavy);
-#else
-			Mouse::Mouse_shapes saveshape = mouse->get_shape();
-			mouse->hide();
-			mouse->set_shape(Mouse::tooheavy);
-			mouse->show();
-			painted = 1;
-			show();
-			SDL_Delay(600);
-			mouse->hide();
-			paint();
-			mouse->set_shape(saveshape);
-			painted = 1;
-#endif
-			dragging = 0;
-			return;
+		if (dragging)
+			{		// Don't want to move walls.
+			if (!dragging->is_dragable())	
+				{
+				mouse->flash_shape(Mouse::tooheavy);
+				dragging = 0;
+				return;
+				}
+					// Check for quantity.
+			dragging_quantity = dragging->get_quantity();
+			if (dragging_quantity > 1 &&
+			      !(dragging_quantity = Prompt_for_number(0, 
+				dragging_quantity, 1, dragging_quantity)))
+				{
+				dragging = 0;
+				return;
+				}
 			}
 					// Store original pos. on screen.
 		dragging_rect = dragging_gump ?
@@ -140,11 +139,7 @@ void Game_window::drag
 		dragging_rect.w += 2*pad;
 		dragging_rect.h += 2*pad;
 		Rectangle rect = clip_to_win(dragging_rect);
-#if 0
-		paint();
-#else
 		paint(rect);		// Paint over obj's. area.
-#endif
 					// Create buffer to backup background.
 		dragging_save = win->create_buffer(dragging_rect.w,
 							dragging_rect.h);
@@ -217,32 +212,44 @@ void Game_window::drop
 	int x, int y			// Mouse position.
 	)
 	{
+	int dropped = 0;		// 1 when dropped.
+	Game_object *to_drop;		// If quantity, split it off.
+	if (dragging_quantity == dragging->get_quantity())
+		to_drop = dragging;	// Moving whole thing.
+	else				// Need to drop a copy.
+		{
+		to_drop = new Ireg_game_object(to_drop->get_shapenum(),
+					to_drop->get_framenum(), 0, 0, 0);
+		to_drop->modify_quantity(dragging_quantity - 1);
+		}
 					// First see if it's a gump.
 	Gump_object *on_gump = find_gump(x, y);
 	if (on_gump)
 		{
-#if 1	/* ++++This should be better. */
-		if (on_gump->add(dragging, x, y,
+		if (on_gump->add(to_drop, x, y,
 					dragging_paintx, dragging_painty))
-#else
-		if (on_gump->add(dragging, x, y))
-#endif
-			return;
+			dropped = 1;
 		}
 	else
 		{			// Was it dropped on something?
 		Game_object *found = find_object(x, y);
-		if (found && found != dragging && found->drop(dragging))
-			return;
-					// Find where to drop it.
-		int max_lift = main_actor->get_lift() + 4;
-		int lift;
-		for (lift = dragging->get_lift(); lift < max_lift; lift++)
-			if (drop_at_lift(lift))
-				return;
+		if (found && found != dragging && found->drop(to_drop))
+			dropped = 1;
+		else
+			{		// Find where to drop it.
+			int max_lift = main_actor->get_lift() + 4;
+			int lift;
+			for (lift = dragging->get_lift(); 
+					!dropped && lift < max_lift; lift++)
+				dropped = drop_at_lift(to_drop, lift);
+			}
 		}
-					// Couldn't drop?  Put it back.
-	if (dragging_gump)
+	if (dropped)			// Successful?
+		if (to_drop == dragging)// Whole thing?
+			return;		// All done.
+		else			// Subtract quantity moved.
+			dragging->modify_quantity(-dragging_quantity);
+	if (dragging_gump)		// Put back remaining/orig. piece.
 		dragging_gump->add(dragging);
 	else
 		get_objects(dragging->get_cx(), 
@@ -257,41 +264,30 @@ void Game_window::drop
 
 int Game_window::drop_at_lift
 	(
+	Game_object *to_drop,
 	int at_lift
 	)
 	{
 					// Take lift into account, round.
 	int x = dragging_paintx + at_lift*4 - 1; // + tilesize/2;
 	int y = dragging_painty + at_lift*4 - 1; // + tilesize/2;
-#if 1
 	int tx = scrolltx + x/tilesize;
 	int ty = scrollty + y/tilesize;
 	int cx = (scrolltx + x/tilesize)/tiles_per_chunk;
 	int cy = (scrollty + y/tilesize)/tiles_per_chunk;
 	Chunk_object_list *chunk = get_objects(cx, cy);
-#else
-	int tx = (x/tilesize)%tiles_per_chunk; // - 1;
-	int ty = (y/tilesize)%tiles_per_chunk; // - 1;
-	chunk->setup_cache();		// Be sure cache is set up.
-#endif
 	int lift;			// Can we put it here?
-	Shape_info& info = shapes.get_info(dragging->get_shapenum());
+	Shape_info& info = shapes.get_info(to_drop->get_shapenum());
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
-#if 1
 	if (!Chunk_object_list::is_blocked(info.get_3d_height(), at_lift,
 		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, lift))
-			
-#else
-	if (!chunk->is_blocked(info.get_3d_height(),
-				at_lift, tx, ty, lift))
-#endif
 		{
-		dragging->set_lift(lift);
-		dragging->set_shape_pos(tx%tiles_per_chunk, 
+		to_drop->set_lift(lift);
+		to_drop->set_shape_pos(tx%tiles_per_chunk, 
 							ty%tiles_per_chunk);
 cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
 							<< ")"<<endl;
-		chunk->add(dragging);
+		chunk->add(to_drop);
 		return (1);
 		}
 	return (0);

@@ -106,6 +106,7 @@ private:
 	Game_object *dragging;		// What's being dragged.
 	Gump_object *dragging_gump;
 	Gump_button *dragging_gump_button;
+	int dragging_quantity;		// Quantity to drag.
 					// Last mouse, paint positions:
 	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
 	Rectangle dragging_rect;	// Rectangle to repaint.
@@ -507,7 +508,7 @@ public:
 	int get_text_baseline(int fontnum);
 private:
 	void drop(int x, int y);
-	int drop_at_lift(int at_lift);
+	int drop_at_lift(Game_object *to_drop, int at_lift);
 public:
 	void restore_gamedat(const char *fname);// Explode a savegame into "gamedat".
 	void restore_gamedat(int num);
