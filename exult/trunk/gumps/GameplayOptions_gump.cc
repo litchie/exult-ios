@@ -312,8 +312,10 @@ void GameplayOptions_gump::paint()
 	sman->paint_text(2, "Text Background:", x + colx[0], y + rowy[1] + 1);
 	if (GAME_BG)
 		sman->paint_text(2, "Paperdolls:", x + colx[0], y + rowy[2] + 1);
+#if 0
 	else if (GAME_SI)
 		sman->paint_text(2, "Walk after Teleport:", x + colx[0], y + rowy[2] + 1);
+#endif
 	sman->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[3] + 1);
 	sman->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
 	sman->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
