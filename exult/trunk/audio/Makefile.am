@@ -4,12 +4,14 @@ all-local:	libaudio.a
 
 INCLUDES +=	$(SDL_INCLUDES)
 INCLUDES +=	$(KMID_INCLUDES)
-INCLUDES +=	-I../conf
+INCLUDES +=	-I../conf -I.
 
 CXXFLAGS += $(INCDIRS) -Wall 
 CXXFLAGS += $(PEDANTIC)
 CXXFLAGS += $(DEBUG_FLAGS)
 CXXFLAGS += $(WINDOWING_SYSTEM)
+
+SUBDIRS = midi_drivers
 
 #LIBS +=  -L/usr/X11R6/lib/ -lc -lstdc++ -lgcc -lm -lXi -lXext -lX11 
 
@@ -21,7 +23,7 @@ SOURCES = Audio.cc Audio.h Flex.cc Flex.h IFF.cc IFF.h Midi.cc Midi.h \
 		common.h test.cc
 
 libaudio.a:	$(OFILES)
-	ar rs libaudio.a $(OFILES)
+	ar rs libaudio.a $(OFILES) midi_drivers/*.o
 
 u7audiotool:	libaudio.a u7audiotool.o 
 	g++ -o u7audiotool u7audiotool.o -L../conf -L. -laudio -lconf  $(KMID_LIBS) $(SDL_LIBS)  -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -L/usr/X11R6/lib
