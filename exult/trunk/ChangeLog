@@ -1,3 +1,6 @@
+2001-01-02  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* bggame.cc: cleaned up a bit, correctly aligned some shapes
+
 2001-01-02  Ryan Nunn <triforce@merlin.net.au>
 	* Makefile.cygwin: Should fixed crash on exit problem expirenced by Dominik on JackChaos
                            Added U7PATH to specify where Ultima 7 is installed (for make install)
