@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Imagewin.cc - A window to blit images into.
  **
  **	Written: 8/13/98 - JSF
@@ -89,6 +90,19 @@ void Image_buffer8::copy
 	}
 
 /*
+ *	Create a compatible buffer.
+ */
+
+Image_buffer *Image_buffer::create_buffer
+	(
+	int w, int h			// Dimensions.
+	)
+	{
+	Image_buffer *newbuf = new Image_buffer(w, h, ibuf->depth);
+	newbuf->ibuf->bits = new char[w*h*ibuf->pixel_size];
+	}
+
+/*
  *	Fill with a given 8-bit value.
  */
 
@@ -130,6 +144,26 @@ void Image_buffer8::fill8
 	}
 
 /*
+ *	Fill a line with a given 8-bit value.
+ */
+
+void Image_buffer8::fill_line8
+	(
+	unsigned char pix,
+	int srcw,
+	int destx, int desty
+	)
+	{
+	int srcx = 0, srcy = 0, srch = 1;
+					// Constrain to window's space.
+	if (!clip(srcx, srcy, srcw, srch, destx, desty))
+		return;
+	unsigned char *pixels = (unsigned char *) bits + 
+						desty*line_width + destx;
+	memset(pixels, pix, srcw);
+	}
+
+/*
  *	Copy another rectangle into this one.
  */
 
@@ -156,6 +190,27 @@ void Image_buffer8::copy8
 		to += to_next;
 		from += from_next;
 		}
+	}
+
+/*
+ *	Copy a line into this buffer.
+ */
+
+void Image_buffer8::copy_line8
+	(
+	unsigned char *src_pixels,	// Source rectangle pixels.
+	int srcw,			// Width to copy.
+	int destx, int desty
+	)
+	{
+	int srcx = 0, srcy = 0, srch = 1;
+	int src_width = srcw;		// Save full source width.
+					// Constrain to window's space.
+	if (!clip(srcx, srcy, srcw, srch, destx, desty))
+		return;
+	char *to = bits + desty*line_width + destx;
+	unsigned char *from = src_pixels + srcx;
+	memcpy(to, from, srcw);
 	}
 
 /*
@@ -245,6 +300,26 @@ void Image_buffer16::fill16
 			*pixels++ = pix;
 		pixels += to_next;	// Get to start of next line.
 		}
+	}
+
+/*
+ *	Fill a line with a given 16-bit value.
+ */
+
+void Image_buffer16::fill_line16
+	(
+	unsigned short pix,
+	int srcw,
+	int destx, int desty
+	)
+	{
+	int srcx = 0, srcy = 0, srch = 1;
+					// Constrain to window's space.
+	if (!clip(srcx, srcy, srcw, srch, destx, desty))
+		return;
+	unsigned short *pixels = get_pixels() + desty*line_width + destx;
+	for (int cnt = srcw; cnt; cnt--)
+		*pixels++ = pix;
 	}
 
 /*
@@ -378,6 +453,28 @@ void Image_buffer16::copy8
 	}
 
 /*
+ *	Copy a line into this buffer.
+ */
+
+void Image_buffer16::copy_line8
+	(
+	unsigned char *src_pixels,	// Source rectangle pixels.
+	int srcw,			// Width to copy.
+	int destx, int desty
+	)
+	{
+	int srcx = 0, srcy = 0, srch = 1;
+	int src_width = srcw;		// Save full source width.
+					// Constrain to window's space.
+	if (!clip(srcx, srcy, srcw, srch, destx, desty))
+		return;
+	unsigned short *to = get_pixels() + desty*line_width + destx;
+	unsigned char *from = src_pixels + srcx;
+	for (int cnt = srcw; cnt; cnt--)
+		*to++ = palette[*from++];
+	}
+
+/*
  *	Copy another rectangle into this one, with 0 being the transparent
  *	color.
  */
@@ -472,7 +569,7 @@ Image_window::~Image_window
 	(
 	)
 	{
-	SDL_FreeSurface(surface);
+	free_surface();
 	}
 
 /*

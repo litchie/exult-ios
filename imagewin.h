@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Imagewin.h - A window to blit images into.
  **
  **	Written: 8/13/98 - JSF
@@ -74,9 +75,10 @@ protected:
 public:
 	~Image_buffer_base()
 		{
-		// delete bits;		// In case Image_window didn't.
+		delete bits;		// In case Image_window didn't.
 		}
 	friend class Image_window;
+	friend class Image_buffer;
 	void clear_clip()		// Reset clip to whole window.
 		{ clipx = clipy = 0; clipw = width; cliph = height; }
 					// Set clip.
@@ -113,11 +115,17 @@ public:
 						int brightness = 100) = 0;
 					// Fill with given (8-bit) value.
 	virtual void fill8(unsigned char val) = 0;
-					// Fill rect. wth pixel.
+					// Fill rect. with pixel.
 	virtual void fill8(unsigned char val, int srcw, int srch,
+						int destx, int desty) = 0;
+					// Fill line with pixel.
+	virtual void fill_line8(unsigned char val, int srcw,
 						int destx, int desty) = 0;
 					// Copy rectangle into here.
 	virtual void copy8(unsigned char *src_pixels, int srcw, int srch,
+						int destx, int desty) = 0;
+					// Copy line to here.
+	virtual void copy_line8(unsigned char *src_pixels, int srcw,
 						int destx, int desty) = 0;
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
@@ -173,8 +181,14 @@ public:
 					// Fill rect. wth pixel.
 	virtual void fill8(unsigned char val, int srcw, int srch,
 						int destx, int desty);
+					// Fill line with pixel.
+	virtual void fill_line8(unsigned char val, int srcw,
+						int destx, int desty);
 					// Copy rectangle into here.
 	virtual void copy8(unsigned char *src_pixels, int srcw, int srch,
+						int destx, int desty);
+					// Copy line to here.
+	virtual void copy_line8(unsigned char *src_pixels, int srcw,
 						int destx, int desty);
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
@@ -218,6 +232,9 @@ public:
 					// Fill rect. wth pixel.
 	virtual void fill16(unsigned short pix, int srcw, int srch,
 						int destx, int desty);
+					// Fill line with pixel.
+	virtual void fill_line16(unsigned short pix, int srcw,
+						int destx, int desty);
 					// Copy rectangle into here.
 	virtual void copy16(unsigned short *src_pixels, int srcw, int srch,
 						int destx, int desty);
@@ -241,8 +258,16 @@ public:
 						int destx, int desty)
 		{ Image_buffer16::fill16(
 				palette[val], srcw, srch, destx, desty); }
+					// Fill line with pixel.
+	virtual void fill_line8(unsigned char val, int srcw,
+						int destx, int desty)
+		{ Image_buffer16::fill_line16(palette[val], srcw,
+							destx, desty); }
 					// Copy rectangle into here.
 	virtual void copy8(unsigned char *src_pixels, int srcw, int srch,
+						int destx, int desty);
+					// Copy line to here.
+	virtual void copy_line8(unsigned char *src_pixels, int srcw,
 						int destx, int desty);
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
@@ -261,6 +286,8 @@ public:
 	Image_buffer(unsigned int w, unsigned int h, int dpth);
 	~Image_buffer()
 		{ delete ibuf; }
+					// Create a compatible image buffer.
+	Image_buffer *create_buffer(int w, int h);
 	/*
 	 *	16-bit color methods.
 	 */
@@ -294,10 +321,18 @@ public:
 	void fill8(unsigned char val, int srcw, int srch,
 						int destx, int desty)
 		{ ibuf->fill8(val, srcw, srch, destx, desty); }
+					// Fill line with pixel.
+	virtual void fill_line8(unsigned char val, int srcw,
+						int destx, int desty)
+		{ ibuf->fill_line8(val, srcw, destx, desty); }
 					// Copy rectangle into here.
 	void copy8(unsigned char *src_pixels, int srcw, int srch,
 						int destx, int desty)
 		{ ibuf->copy8(src_pixels, srcw, srch, destx, desty); }
+					// Copy line to here.
+	virtual void copy_line8(unsigned char *src_pixels, int srcw,
+						int destx, int desty)
+		{ ibuf->copy_line8(src_pixels, srcw, destx, desty); }
 					// Copy rect. with transp. color.
 	void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty)

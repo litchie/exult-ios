@@ -32,11 +32,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef __WIN32
 
 #include <sys/time.h>
-#include <sys/stat.h>
 #include <unistd.h>
 
 #endif
 
+#include <sys/stat.h>
 #include "gamewin.h"
 #include "fnames.h"
 #include "SDL.h"
@@ -130,7 +130,8 @@ static void Init
 	(
 	)
 	{
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|
+						SDL_INIT_AUDIO) < 0)
 		{
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << '\n';
 		exit(-1);
