@@ -229,7 +229,10 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	    (/* actor != gwin->get_main_actor() && */ actor->get_party_id() < 0))
 		{
 		Game_object *door = Game_object::find_blocking(tile);
-		if (door != 0 && door->is_closed_door())
+		if (door != 0 && door->is_closed_door() &&
+					// Make sure it's not locked!
+		    door->get_framenum()%4 < 2)
+
 					// Try to open it.
 			{
 			if (open_door(actor, door))
