@@ -675,7 +675,7 @@ struct uint64 {
 		// High 16 bits
 		uint32 h1 =   i >> 16;
 		uint32 h2 = low >> 16;
-		uint32 h3 = high >> 16;
+		//uint32 h3 = high >> 16;
 
 		// Low 16 Bits
 		uint32 l1 =   i & 0xFFFF;
@@ -909,7 +909,6 @@ void XMIDI::AdjustTimings(uint32 ppqn)
 
 int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size, first_state &fs)
 {
-	uint32	delta = 0;
 	int	data;
 
 	data = source->read1();
