@@ -194,6 +194,7 @@ public:
 					// NPC's:
 	void open_npc_window(unsigned char *data = 0, int datalen = 0);
 	void close_npc_window();
+	void init_new_npc();
 	int init_npc_window(unsigned char *data, int datalen);
 	int save_npc_window();
 	void show_npc_shape(int x = 0, int y = 0, int w = -1, int h = -1);

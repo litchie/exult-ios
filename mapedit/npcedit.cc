@@ -318,28 +318,8 @@ void ExultStudio::open_npc_window
 		if (!init_npc_window(data, datalen))
 			return;
 		}
-	else				// Got to get what new NPC # will be.
-		{
-		int npc_num = -1;
-		if (Send_data(server_socket, Exult_server::npc_info) != -1)
-			{		// Should get immediate answer.
-			unsigned char data[Exult_server::maxlength];
-			Exult_server::Msg_type id;
-			Exult_server::wait_for_response(server_socket, 100);
-			int len = Exult_server::Receive_data(server_socket, 
-						id, data, sizeof(data));
-			unsigned char *ptr = &data[0];
-			int npcs = Read2(ptr);
-			int first_unused = Read2(ptr);
-			npc_num = first_unused;
-			//++++++Get data if existing unused??
-			set_entry("npc_num_entry", npc_num, true, false);
-					// Usually, usecode = 0x400 + num.
-			set_entry("npc_usecode_entry", 0x400 + npc_num, true);
-					// Usually, face = npc_num.
-			set_npc_face(npc_num, 0);
-			}
-		}
+	else		
+		init_new_npc();
 	gtk_widget_show(npcwin);
 #ifdef WIN32
 	if (first_time || !npcdnd)
@@ -429,6 +409,65 @@ static bool Get_flag_cbox
 	return (fnum >= 0 && fnum < 32);
 	}
 
+/*
+ *	Init. the npc editor for a new NPC.
+ */
+
+void ExultStudio::init_new_npc
+	(
+	)
+	{
+	int npc_num = -1;		// Got to get what new NPC # will be.
+	if (Send_data(server_socket, Exult_server::npc_info) == -1)
+		cout << "Error sending data to server." << endl;
+					// Should get immediate answer.
+	unsigned char data[Exult_server::maxlength];
+	Exult_server::Msg_type id;
+	Exult_server::wait_for_response(server_socket, 100);
+	int len = Exult_server::Receive_data(server_socket, 
+				id, data, sizeof(data));
+	unsigned char *ptr = &data[0];
+	int npcs = Read2(ptr);
+	int first_unused = Read2(ptr);
+	npc_num = first_unused;
+	set_entry("npc_num_entry", npc_num, true, false);
+			// Usually, usecode = 0x400 + num.
+	set_entry("npc_usecode_entry", 0x400 + npc_num, true);
+			// Usually, face = npc_num.
+	set_npc_face(npc_num, 0);
+	set_entry("npc_name_entry", "");
+	set_entry("npc_ident_entry", 0);
+	set_entry("npc_shape", -1);
+	set_entry("npc_frame", 0);
+	set_entry("npc_usecode_entry", 0, true);
+	set_optmenu("npc_attack_mode", 0);
+	set_optmenu("npc_alignment", 0);
+					// Clear flag buttons.
+	GtkTable *ftable = GTK_TABLE(
+			glade_xml_get_widget(app_xml, "npc_flags_table"));
+					// Set flag checkboxes.
+	for (GList *list = g_list_first(ftable->children); list; 
+						list = g_list_next(list))
+		{
+		GtkTableChild *ent = (GtkTableChild *) list->data;
+		GtkCheckButton *cbox = GTK_CHECK_BUTTON(ent->widget);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cbox), false);
+		}
+					// Set properties.
+	GtkTable *ptable = GTK_TABLE(
+			glade_xml_get_widget(app_xml, "npc_props_table"));
+	for (GList *list = g_list_first(ptable->children); list; 
+						list = g_list_next(list))
+		{
+		GtkSpinButton *spin;
+		int pnum;
+		if (Get_prop_spin(list, spin, pnum))
+			gtk_spin_button_set_value(spin, 12);
+		}
+					// Clear schedules.
+	for (int i = 0; i < 24/3; i++)
+		Set_schedule_line(app_xml, i, -1, 0, 0, 0);
+	}
 
 /*
  *	Init. the npc editor with data from Exult.
