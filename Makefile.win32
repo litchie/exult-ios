@@ -232,6 +232,11 @@ compiler/uclex.cc:
 	flex usecode/compiler/uclex.ll 
 	mv lex.yy.c uclex.cc
 
+CONFREGRESS_OBJS=conf\Configuration.o conf\XMLEntity.o conf\xmain.o files\utils.o
+
+conf/confregress.exe  : $(CONFREGRESS_OBJS)
+	$(CXX) $(LFLAGS) -o conf/confregress.exe $(CONFREGRESS_OBJS)
+
 clean:
 	del $(OBJS) $(EXEC)
 	del tools\expack.exe tools\expack.o
