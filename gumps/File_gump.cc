@@ -176,16 +176,22 @@ public:
 			if (pos >= 0 && pos <= length)
 			{
 				cursor = pos;
-				paint();
+				refresh();
 			}
 		}
-	void paint();			// Paint.
+	void paint(Game_window *gwin);			// Paint.
 					// Handle mouse click.
 	int mouse_clicked(Game_window *gwin, int mx, int my);
 	void insert(int chr);		// Insert a character.
 	int delete_left();		// Delete char. to left of cursor.
 	int delete_right();		// Delete char. to right of cursor.
 	void lose_focus();
+
+protected:
+	void refresh()
+		{
+			paint(Game_window::get_game_window());
+		}
 };
 
 /*
@@ -194,9 +200,10 @@ public:
 
 void Gump_text::paint
 	(
+	Game_window *gwin
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+//	Game_window *gwin = Game_window::get_game_window();
 	gwin->paint_shape(parent->get_x() + x, parent->get_y() + y, get_shape());
 					// Show text.
 	gwin->paint_text(2, text, parent->get_x() + textx,
@@ -260,7 +267,7 @@ void Gump_text::insert
 	text[cursor++] = chr;		// Store, and increment cursor.
 	length++;
 	text[length] = 0;
-	paint();
+	refresh();
 	}
 
 /*
@@ -279,7 +286,7 @@ int Gump_text::delete_left
 		memmove(text + cursor - 1, text + cursor, length - cursor);
 	text[--length] = 0;		// 0-delimit.
 	cursor--;
-	paint();
+	refresh();
 	return (1);
 	}
 
@@ -308,7 +315,7 @@ void Gump_text::lose_focus
 	)
 	{
 	set_frame(0);
-	paint();
+	refresh();
 	}
 
 /*
@@ -521,7 +528,7 @@ void File_gump::paint
 	size_t i;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++)
 		if (names[i])
-			names[i]->paint();
+			names[i]->paint(gwin);
 	for (i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		if (buttons[i])
 			buttons[i]->paint(gwin);
@@ -587,7 +594,7 @@ void File_gump::mouse_up
 	if (!pushed_text->mouse_clicked(gwin, mx, my) ||
 	    pushed_text == focus)	// Same field already selected?
 	{
-		pushed_text->paint();
+		pushed_text->paint(gwin);
 		pushed_text = 0;
 		return;
 	}

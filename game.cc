@@ -45,7 +45,6 @@
 
 using std::cout;
 using std::endl;
-using std::exit;
 using std::ifstream;
 using std::strcmp;
 using std::strcpy;
@@ -267,7 +266,7 @@ bool Game::show_menu()
 		case -1: // Exit
 			pal.fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
-			exit(0);
+			throw quit_exception();
 		case 0: // Intro
 			pal.fade_out(c_fade_out_time);
 			play_intro();
@@ -385,7 +384,9 @@ void Game::clear_avskin ()
 
 
 // wait ms milliseconds, while cycling colours startcol to startcol+ncol-1
-bool wait_delay(int ms, int startcol, int ncol)
+// return 0 if time passed completly, 1 if user pressed any key or mouse button,
+// and 2 if user pressed Return/Enter
+int wait_delay(int ms, int startcol, int ncol)
 {
 	SDL_Event event;
 	int delay;
@@ -422,8 +423,12 @@ bool wait_delay(int ms, int startcol, int ncol)
 					    (event.key.keysym.mod&KMOD_CTRL))
 						make_screenshot(true);
 					break;
+				case SDLK_RETURN:
+				case SDLK_KP_ENTER:
+					return 2;
+					break;
 				default:
-					return true;
+					return 1;
 				}
 				break;
 			case SDL_MOUSEBUTTONDOWN:
@@ -431,7 +436,7 @@ bool wait_delay(int ms, int startcol, int ncol)
 				break;
 			case SDL_MOUSEBUTTONUP:
 				//if (mouse_down)
-					return true;
+					return 1;
 				break;
 			default:
 				break;
@@ -450,5 +455,5 @@ bool wait_delay(int ms, int startcol, int ncol)
 			SDL_Delay(delay - (ticks2 - ticks1));
 	}
 	
-	return false;
+	return 0;
 }

@@ -357,7 +357,7 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 				break;
 			default:
 				cerr << "Unknown VOC chunk " << (*(old_data+data_offset)&0xff) << endl;
-				exit(1);
+				throw exult_exception("Unknown VOC chunk");
 		}
 
 		if(chunk_length==0)

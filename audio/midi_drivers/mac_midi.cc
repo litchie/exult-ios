@@ -22,6 +22,7 @@
 #ifdef MACOS
 
 #include <iomanip>
+#include <cstdlib>
 #include <string>
 
 #include "mac_midi.h"
@@ -29,15 +30,11 @@
 #include <TextUtils.h>
 
 
-#ifdef DEBUG
-#define ASSERT(condition)	((condition) ? ((void) 0) : DebugStr("\pAssertion (" ## #condition ## ") " ## __FILE__ ## ", " ## "__LINE__"))
-#else
-#define ASSERT(x)
-#endif
-
-
 using std::cout;
 using std::endl;
+using std::malloc;
+using std::free;
+using std::realloc;
 using std::memset;
 
 static Handle BuildTuneSequence(midi_event *evntlist);
@@ -58,14 +55,13 @@ Mac_QT_midi::~Mac_QT_midi(void)
 {
 	if(mTunePlayer)
 	{
-		//TuneStop(mTunePlayer, kTuneStopFade);
 		TuneStop(mTunePlayer, 0);
 		CloseComponent(mTunePlayer);
 		mTunePlayer = 0;
 	}
 	if(mTuneSequence)
 	{
-		DisposePtr((Ptr)mTuneSequence);
+		free(mTuneSequence);
 		mTuneSequence = 0;
 	}
 	if(mTuneHeader)
@@ -91,14 +87,7 @@ Mac_QT_midi::~Mac_QT_midi(void)
 
 void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 {
-// FIXME !!! TODO !!! Currently, I use a static sized buffer of 10000 events;
-//  this is very bad of course - will change it to a proper dynamic buffer later
-//
-// one way of doing this might be to revert back using a Handle for the tune memory,
-// and then unlock/resize/lock the handle, as required... then we also would need to
-// adjust tunePos, of course.
-//
-#define	MAX_NOTES		20000
+#define	BUFFER_INCREMENT		5000
 
 	int			part_poly[32];
 	int			part_poly_max[32];
@@ -107,6 +96,7 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 	
 	int			channel_pan[16];
 	int			channel_vol[16];
+	int			channel_pitch_bend[16];
 	
 	int			numParts = 0;
 	int			lastEventTime = 0;
@@ -115,6 +105,7 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 	double		tick = tempo * Ippqn;
 	midi_event	*eventPos = evntlist;
 	uint32 		*tunePos, *endPos;
+	size_t		tuneSize;
 	UInt32		queueFlags = 0;
 #ifdef DEBUG
 	int			numEventsHandled = 0;
@@ -125,13 +116,14 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 	stop_track();
 
 	// allocate space for the tune header
-	mTuneSequence = (uint32 *)NewPtrClear(MAX_NOTES * sizeof(uint32));
+	tuneSize = 5000;
+	mTuneSequence = (uint32 *)malloc(tuneSize * sizeof(uint32));
 	if (mTuneSequence == NULL)
 		goto bail;
 	
 	// Set starting position in our tune memory
 	tunePos = mTuneSequence;
-	endPos = tunePos + MAX_NOTES;
+	endPos = mTuneSequence + tuneSize;
 
 	// Initialise the arrays
 	memset(part_poly,0,sizeof(part_poly));
@@ -141,6 +133,7 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 	memset(channel_to_part,-1,sizeof(channel_to_part));
 	memset(channel_pan,-1,sizeof(channel_pan));
 	memset(channel_vol,-1,sizeof(channel_vol));
+	memset(channel_pitch_bend,-1,sizeof(channel_pitch_bend));
 
 	/*
 	 * Now the major work - iterate over all GM events,
@@ -149,13 +142,25 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 	 * and also the part->instrument mapping.
 	 */
 	COUT("NEW MIDI SONG, ppqn = " << ppqn << ", repat = " << repeat);
-//	while(eventPos && (tunePos < endPos) && (numEventsHandled < 163))
-	while(eventPos && (tunePos < endPos))
+	while(eventPos)
 	{
 		int status = (eventPos->status&0xF0)>>4;
 		int channel = eventPos->status&0x0F;
 		int part = channel_to_part[channel];
+		
+		// Check if we are running low on space...
+		if((tunePos+16) > endPos)
+		{
+			// Resize our data storage.
+			uint32 		*oldTuneSequence = mTuneSequence;
 
+			tuneSize += BUFFER_INCREMENT;
+			mTuneSequence = (uint32 *)realloc(mTuneSequence, tuneSize * sizeof(uint32));
+			if(oldTuneSequence != mTuneSequence)
+				tunePos += mTuneSequence - oldTuneSequence;
+			endPos = mTuneSequence + tuneSize;
+		}
+		
 #if defined(DEBUG) && 0
 		numEventsHandled++;
 
@@ -171,7 +176,7 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 		switch (status)
 		{
 		case MIDI_STATUS_NOTE_OFF:
-			ASSERT(part>=0 && part<=31);
+			assert(part>=0 && part<=31);
 
 			// Keep track of the polyphony of the current part
 			part_poly[part]--;
@@ -190,8 +195,8 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 				part = channel_to_part[channel] = numParts;
 				part_to_inst[numParts++] = newInst;
 			}
-			// FIX ME - remove the following asser and use the appropriate Xtended QTMA methods
-			ASSERT(part<=31);
+			// TODO - add support for more than 32 parts using eXtended QTMA events
+			assert(part<=31);
 			
 			// Decode pitch & velocity
 			int pitch = eventPos->data[0];
@@ -229,11 +234,7 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 				if (noteOffPos)
 				{
 					// We found a NOTE OFF, now calculate the note duration
-					// FIXME - we maybe should consider in between tempo changes...
-					// however, this doesn't seem likely to happen, or is it?!?
 					int duration = (noteOffPos->time - eventPos->time)*tick;
-					
-					ASSERT((duration & 0xFFC00000) == 0);
 					
 					REST_IF_NECESSARY();
 					// Now we need to check if we get along with a normal Note Even, or if we need an extended one...
@@ -278,7 +279,6 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 					{
 						REST_IF_NECESSARY();
 						qtma_StuffControlEvent(*tunePos, part, kControllerVolume, channel_vol[channel]);
-						COUT("Volume change, channel " << channel);
 						tunePos++;
 					}
 				}
@@ -291,7 +291,6 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 					{
 						REST_IF_NECESSARY();
 						qtma_StuffControlEvent(*tunePos, part, kControllerPan, channel_pan[channel]);
-						COUT("Pan change, channel " << channel);
 						tunePos++;
 					}
 				}
@@ -318,28 +317,30 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 				part = channel_to_part[channel] = numParts;
 				part_to_inst[numParts++] = newInst;
 
-				if(channel_vol[channel] > 0)
+				if(channel_vol[channel] >= 0)
 				{
 					REST_IF_NECESSARY();
 					qtma_StuffControlEvent(*tunePos, part, kControllerVolume, channel_vol[channel]);
 					tunePos++;
-					COUT("Volume change, channel " << channel);
 				}
-				if(channel_pan[channel] > 0)
+				if(channel_pan[channel] >= 0)
 				{
 					REST_IF_NECESSARY();
 					qtma_StuffControlEvent(*tunePos, part, kControllerPan, channel_pan[channel]);
 					tunePos++;
-					COUT("Pan change, channel " << channel);
 				}
+				if(channel_pitch_bend[channel] >= 0)
+				{
+					REST_IF_NECESSARY();
+					qtma_StuffControlEvent(*tunePos, part, kControllerPitchBend, channel_pitch_bend[channel]);
+					tunePos++;
+				}			
 			}
 			break;
 		case MIDI_STATUS_PRESSURE:
 			COUT("MIDI_STATUS_PRESSURE");
 			break;
 		case MIDI_STATUS_PITCH_WHEEL:
-			ASSERT(part>=0 && part<=31);
-
 			// In the midi spec, 0x2000 = center, 0x0000 = - 2 semitones, 0x3FFF = +2 semitones
 			// but for QTMA, we specify it as a 8.8 fixed point of semitones
 			// TODO: detect "pitch bend range changes"
@@ -351,11 +352,18 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 			// Move it to our format:
 			bend <<= 4;
 			
-			// Finally, stuff a control event
-			REST_IF_NECESSARY();
-			qtma_StuffControlEvent(*tunePos, part, kControllerPitchBend, bend);
-			tunePos++;
+			// If it turns out the pitch bend didn't change, stop here
+			if(channel_pitch_bend[channel] == bend)
+				break;
 			
+			channel_pitch_bend[channel] = bend;
+			if(part>=0 && part<=31)
+			{
+				// Stuff a control event
+				REST_IF_NECESSARY();
+				qtma_StuffControlEvent(*tunePos, part, kControllerPitchBend, bend);
+				tunePos++;
+			}			
 			break;
 		case MIDI_STATUS_SYSEX:
 			if (eventPos->status == 0xFF && eventPos->data[0] == 0x51) // Tempo change
@@ -366,8 +374,6 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 				
 				tick = tempo * Ippqn;
 			}
-			else
-				COUT("MIDI_STATUS_SYSEX " << (eventPos->status&0xf));
 			break;
 		}
 		
@@ -377,9 +383,6 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 	
 	// Finally, place an end marker
 	*tunePos = kEndMarkerValue;
-	
-	if (tunePos >= endPos)
-		DebugStr("\pOVERFLOW!!!");
 	
 	// Now build a tune header from the data we collect above, create
 	// all parts as needed and assign them the correct instrument.
@@ -433,7 +436,6 @@ void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
 	return;
 	
 bail:
-
 	// Free the event list
 	XMIDI::DeleteEventList (evntlist);
 
@@ -455,7 +457,7 @@ void	Mac_QT_midi::stop_track(void)
 	// Finally, free the data storage
 	if(mTuneSequence)
 	{
-		DisposePtr((Ptr)mTuneSequence);
+		free(mTuneSequence);
 		mTuneSequence = 0;
 	}
 	if(mTuneHeader)
@@ -479,9 +481,9 @@ const	char *Mac_QT_midi::copyright(void)
 }
 
 
-#define kNoteRequestEventLength				((sizeof(NoteRequest)/sizeof(long)) + 2) 	// number of (32-bit) long words in a note request event
-#define kMarkerEventLength					(1) 										// number of (32-bit) long words in a marker event
-#define kGeneralEventLength					(2) 										// number of (32-bit) long words in a general event, minus its data
+#define kNoteRequestEventLength		((sizeof(NoteRequest)/sizeof(long)) + 2) 	// number of (32-bit) long words in a note request event
+#define kMarkerEventLength			(1) 										// number of (32-bit) long words in a marker event
+#define kGeneralEventLength			(2) 										// number of (32-bit) long words in a general event, minus its data
 
 UInt32 *BuildTuneHeader(int part_poly_max[32], int part_to_inst[32], int numParts)
 {

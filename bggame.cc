@@ -20,8 +20,6 @@
 #  include <config.h>
 #endif
 
-#include <memory>
-
 #include "SDL_events.h"
 
 #include "files/U7file.h"
@@ -132,18 +130,18 @@ BG_Game::BG_Game()
 	add_resource("config/defaultkeys", "<DATA>/exult_bg.flx", 13);
 
 	add_resource("palettes/count", 0, 18);
-	add_resource("palettes/0", "<STATIC>/palettes.flx", 0);
-	add_resource("palettes/1", "<STATIC>/palettes.flx", 1);
-	add_resource("palettes/2", "<STATIC>/palettes.flx", 2);
-	add_resource("palettes/3", "<STATIC>/palettes.flx", 3);
-	add_resource("palettes/4", "<STATIC>/palettes.flx", 4);
-	add_resource("palettes/5", "<STATIC>/palettes.flx", 5);
-	add_resource("palettes/6", "<STATIC>/palettes.flx", 6);
-	add_resource("palettes/7", "<STATIC>/palettes.flx", 7);
-	add_resource("palettes/8", "<STATIC>/palettes.flx", 8);
-	add_resource("palettes/9", "<STATIC>/palettes.flx", 10);
-	add_resource("palettes/10", "<STATIC>/palettes.flx", 11);
-	add_resource("palettes/11", "<STATIC>/palettes.flx", 12);
+	add_resource("palettes/0", PALETTES_FLX, 0);
+	add_resource("palettes/1", PALETTES_FLX, 1);
+	add_resource("palettes/2", PALETTES_FLX, 2);
+	add_resource("palettes/3", PALETTES_FLX, 3);
+	add_resource("palettes/4", PALETTES_FLX, 4);
+	add_resource("palettes/5", PALETTES_FLX, 5);
+	add_resource("palettes/6", PALETTES_FLX, 6);
+	add_resource("palettes/7", PALETTES_FLX, 7);
+	add_resource("palettes/8", PALETTES_FLX, 8);
+	add_resource("palettes/9", PALETTES_FLX, 10);
+	add_resource("palettes/10", PALETTES_FLX, 11);
+	add_resource("palettes/11", PALETTES_FLX, 12);
 	add_resource("palettes/12", "<STATIC>/intropal.dat", 0);
 	add_resource("palettes/13", "<STATIC>/intropal.dat", 1);
 	add_resource("palettes/14", "<STATIC>/intropal.dat", 2);
@@ -182,27 +180,33 @@ BG_Game::~BG_Game()
 {
 }
 
-#define WAITDELAY(x) if (wait_delay(x)) { \
-			throw UserBreakException(); \
-		     }
+class UserSkipException : public UserBreakException
+{
+};
 
-#define WAITDELAYCYCLE(x) if (wait_delay((x), 16, 93)) { \
-			throw UserBreakException(); \
-		     }
 
-#define WAITDELAYCYCLE2(x) if (wait_delay((x), 250, 5)) { \
-			throw UserBreakException(); \
-		     }
+#define WAITDELAY(x) switch(wait_delay(x)) { \
+			case 1: throw UserBreakException(); break; \
+			case 2: throw UserSkipException(); break; \
+			}
 
-#define WAITDELAYCYCLE3(x) if (wait_delay((x), 240, 15)) { \
-			throw UserBreakException(); \
-		     }
+#define WAITDELAYCYCLE(x) switch (wait_delay((x), 16, 78)) { \
+			case 1: throw UserBreakException(); break; \
+			case 2: throw UserSkipException(); break; \
+			}
+
+#define WAITDELAYCYCLE2(x) switch (wait_delay((x), 250, 5)) { \
+			case 1: throw UserBreakException(); break; \
+			case 2: throw UserSkipException(); break; \
+			}
+
+#define WAITDELAYCYCLE3(x) switch (wait_delay((x), 240, 15)) { \
+			case 1: throw UserBreakException(); break; \
+			case 2: throw UserSkipException(); break; \
+			}
 
 void BG_Game::play_intro()
 {
-	int i;	// for MSVC
-
-//	Vga_file shapes(ENDSHAPE_FLX);
 	Font *font = fontManager.get_font("END2_FONT");
 
 	const char *txt_msg[] = { "with help from",
@@ -220,18 +224,9 @@ void BG_Game::play_intro()
 	// the others may have other shapes on them, if those are static
 	Image_buffer *backup, *backup2, *backup3;
 	Image_buffer *cbackup, *cbackup2, *cbackup3;
-	Shape_frame *s;
 
 	backup = backup2 = backup3 = 0;
 	cbackup = cbackup2 = cbackup3 = 0;
-
-/*
-TODO
-* add SFX 
-* allow to skip single parts of the animatio
-* red plasma upon new game / journey onward / load game
-*/
-
 
 	try
 	{
@@ -239,13 +234,13 @@ TODO
 		 Lord British Presents
 		********************************************************************/
 		
-//		scene_lord_british();
+		scene_lord_british();
 
 		/********************************************************************
 		 Ultima VII logo w/Trees
 		********************************************************************/
 
-//		scene_butterfly();
+		scene_butterfly();
 
 		/********************************************************************
 		 Enter guardian
@@ -254,11 +249,507 @@ TODO
 		
 		scene_guardian();
 
+		// TODO: transition (zoom out to PC) scene missing
+
 		/********************************************************************
 		 PC screen
-		 TODO: transition (zoom out to PC) scene missing
 		********************************************************************/
 
+		scene_desk();
+
+		/********************************************************************
+		 The Moongate
+		********************************************************************/
+		
+		scene_moongate();
+	}
+	catch(const UserBreakException &x)
+	{
+		// Waste disposal
+		FORGET_OBJECT(backup); FORGET_OBJECT(backup2); FORGET_OBJECT(backup3);
+		FORGET_OBJECT(cbackup); FORGET_OBJECT(cbackup2); FORGET_OBJECT(cbackup3);
+	}
+	
+	// Fade out the palette...
+	pal.fade_out(c_fade_out_time);
+	
+	// ... and clean the screen.
+	gwin->clear_screen(true);
+	
+	// Stop all audio output
+	Audio::get_ptr()->cancel_streams();
+}
+
+void BG_Game::scene_lord_british()
+{
+	Font *font = fontManager.get_font("END2_FONT");
+
+	const char *txt_msg[] = { "with help from",
+			"The Exult Team"};
+
+	// Lord British presents...  (sh. 0x11)
+	pal.load("<STATIC>/intropal.dat",3);
+	gwin->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
+	
+	// insert our own intro text
+	font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
+	font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
+
+	pal.fade_in(c_fade_in_time);
+	if(1 == wait_delay(2000))
+		throw UserBreakException();
+	pal.fade_out(c_fade_out_time);
+	gwin->clear_screen(true);
+}
+
+
+#define	BUTTERFLY_FRAME_DURATION	16
+
+#define	BUTTERFLY_SUB_FRAMES	3
+
+#define	BUTTERFLY(x,y,frame,delay)	do {	\
+		win->get(backup, topx + (x) - butterfly->get_xleft(),	\
+				topy + (y) - butterfly->get_yabove());	\
+		gwin->paint_shape(topx + x, topy + y, shapes.get_shape(butterfly_shp, frame));	\
+		win->show();	\
+		WAITDELAY(delay);	\
+		win->put(backup, topx + (x) - butterfly->get_xleft(),	\
+				topy + (y) - butterfly->get_yabove());	\
+		} while(0)
+
+#define	BUTTERFLY_FLAP()	do {	\
+			if ((rand() % 5)<4) {	\
+				if (frame == 3)	\
+					dir = -1;	\
+				else if (frame == 0)	\
+					dir = +1;	\
+				frame += dir;	\
+			} } while(0)
+
+static int butterfly_x[] =
+{
+	6,18,30,41,52,62,70,78,86,95,
+	104,113,122,132,139,146,151,155,157,158,
+	157,155,151,146,139,132,124,116,108,102,
+	96,93,93,93,95,99,109,111,118,125,
+	132,140,148,157,164,171,178,184,190,196,
+	203,211,219,228,237,246,254,259,262,264,
+	265,265,263,260,256,251,245,239,232,226,
+	219,212,208,206,206,209,212,216,220,224,
+	227,234,231,232,233,233,233,233,234,236,
+	239,243,247,250,258,265
+};
+
+static int butterfly_y[] =
+{
+	155,153,151,150,149,148,148,148,148,149,
+	150,150,150,149,147,142,137,131,125,118,
+	110,103,98,94,92,91,91,91,92,95,
+	99,104,110,117,123,127,131,134,135,135,
+	135,135,135,134,132,129,127,123,119,115,
+	112,109,104,102,101,102,109,109,114,119,
+	125,131,138,144,149,152,156,158,159,159,
+	158,155,150,144,137,130,124,118,112,105,
+	99,93,86,80,73,66,59,53,47,42,
+	38,35,32,29,26,25
+};
+
+static const int butterfly_num_coords = sizeof(butterfly_x)/sizeof(int);
+
+static int butterfly_end_frames[] = { 3, 4, 3, 4, 3, 2, 1, 0 };
+static int butterfly_end_delay[] = { 167, 416, 250, 416, 416, 416, 416, 333 };
+
+
+void BG_Game::scene_butterfly()
+{
+	Font *font = fontManager.get_font("END2_FONT");
+	Image_buffer *backup = 0;
+	Shape_frame *butterfly = 0;
+	const char *txt_msg = "Driven by Exult";
+	int	i, j, frame, dir;
+	
+	try
+	{
+		pal.load("<STATIC>/intropal.dat",4);
+
+		// Load the butterfly shape
+		butterfly = shapes.get_shape(butterfly_shp,0);
+		backup = win->create_buffer(butterfly->get_width(), butterfly->get_height());
+		
+		// Start playing the birdsongs while still faded out
+		play_midi(bird_song_midi);
+
+		// trees with "Ultima VII" on top of 'em
+		gwin->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
+		gwin->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
+		
+		// again display our own text
+		font->center_text(ibuf, centerx, centery+50, txt_msg);
+
+		// Keep it dark for some more time, playing the music 
+		WAITDELAY(3500);
+
+		// Finally fade in
+		pal.fade_in(c_fade_in_time);
+		WAITDELAY(12500);
+
+		// clear 'Exult' text
+		gwin->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
+		gwin->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
+		win->show();
+
+		//
+		// Move the butterfly along its path
+		//
+		frame = 0;
+		Sint16 delay = BUTTERFLY_FRAME_DURATION;
+		Uint16 ticks = SDL_GetTicks();
+		for(i=0; i < butterfly_num_coords-1; ++i)
+		{
+			for(j=0; j < BUTTERFLY_SUB_FRAMES; ++j)
+			{
+				ticks = SDL_GetTicks();
+				int x = butterfly_x[i] + j*(butterfly_x[i+1] - butterfly_x[i])/BUTTERFLY_SUB_FRAMES;
+				int y = butterfly_y[i] + j*(butterfly_y[i+1] - butterfly_y[i])/BUTTERFLY_SUB_FRAMES;
+				BUTTERFLY(x, y, frame, delay);
+
+				// Flap the wings; but not always, so that the butterfly "glides" from time to time
+				BUTTERFLY_FLAP();
+				
+				// Calculate the difference between the time we wanted to spent and the time
+				// we actually spent; then adjust 'delay' accordingly
+				ticks = SDL_GetTicks() - ticks;
+				delay = (delay + (2*BUTTERFLY_FRAME_DURATION - ticks)) / 2;
+				
+				// ... but maybe we also have to skip frames..
+				if( delay < 0 )
+				{
+					// Calculate how many frames we should skip
+					int frames_to_skip = (-delay) / BUTTERFLY_FRAME_DURATION + 1;
+					int new_index = i*BUTTERFLY_SUB_FRAMES + j + frames_to_skip;
+					i = new_index / BUTTERFLY_SUB_FRAMES;
+					j = new_index % BUTTERFLY_SUB_FRAMES;
+					
+					// Did we skip over the end?
+					if ( i >= butterfly_num_coords-1 )
+						break;
+
+					while(frames_to_skip--)
+						BUTTERFLY_FLAP();
+
+					delay = 0;
+				}
+			}
+		}
+
+		// Finally, let it flutter a bit on the end spot
+		for(i=0; i<8; i++) {
+			BUTTERFLY(butterfly_x[butterfly_num_coords-1],
+						butterfly_y[butterfly_num_coords-1],
+						butterfly_end_frames[i],
+						butterfly_end_delay[i]);
+		}
+		
+		WAITDELAY(2000);
+		
+		// Wait till the music finished playing
+		while(Audio::get_ptr()->is_track_playing(bird_song_midi))
+			WAITDELAY(20);
+	}
+	catch(const UserSkipException &x)
+	{
+	}
+}
+
+#define	FLASH_SHAPE(x,y,shape,frame, delay)	do {	\
+		gwin->paint_shape(x,y,shapes.get_shape(shape,frame));	\
+		win->show();	\
+		WAITDELAYCYCLE(delay);	\
+		win->put(backup,(x)-s->get_xleft(),(y)-s->get_yabove());	\
+		} while(0)
+
+#define	EYES_DIST		12
+#define	FORHEAD_DIST	49
+
+void BG_Game::scene_guardian()
+{
+	Image_buffer *backup = 0, *backup2 = 0, *backup3 = 0;
+	Image_buffer *cbackup = 0, *cbackup2 = 0, *cbackup3 = 0;
+	Image_buffer *plasma;
+	char *txt = 0;
+
+	try
+	{
+		char *txt_ptr, *txt_end, *next_txt;
+		Shape_frame *s, *s2, *s3;
+		Uint32 ticks;
+		int i;
+
+		// Start background music
+		play_midi(guardian_midi);
+		
+		// create buffer containing a blue 'plasma' screen
+		plasma = win->create_buffer(gwin->get_width(),
+							gwin->get_height());
+		gwin->plasma(gwin->get_width(), gwin->get_height(), 0, 0, 16, 16+76);
+		win->get(plasma, 0, 0);
+
+		pal.load("<STATIC>/intropal.dat",2);
+		pal.set_color(1,0,0,0); //UGLY hack... set font background to black
+		pal.apply();
+		//TODO: sound effects here!
+		//TODO: timing?
+		win->show();
+		WAITDELAYCYCLE(100);
+		
+		//
+		// Show some "static" alternating with the blue plasma
+		//
+		ticks = SDL_GetTicks();
+		while(1)
+		{
+			win->get_ibuf()->fill_static(0, 7, 15);
+			win->show();
+			WAITDELAY(0);
+			if (SDL_GetTicks() > ticks + 400)
+				break;
+		}
+
+		win->put(plasma,0,0); win->show();
+		WAITDELAYCYCLE(100);
+
+		ticks = SDL_GetTicks();
+		while(1)
+		{
+			win->get_ibuf()->fill_static(0, 7, 15);
+			win->show();
+			WAITDELAY(0);
+			if (SDL_GetTicks() > ticks + 200)
+				break;
+		}
+
+		win->put(plasma,0,0); win->show();
+		WAITDELAYCYCLE(200);
+
+		ticks = SDL_GetTicks();
+		while(1)
+		{
+			win->get_ibuf()->fill_static(0, 7, 15);
+			win->show();
+			WAITDELAY(0);
+			if (SDL_GetTicks() > ticks + 100)
+				break;
+		}
+		
+		win->put(plasma,0,0); win->show();
+
+		FORGET_OBJECT(plasma);
+
+		
+		//
+		// First 'popup' (sh. 0x21)
+		//
+		s = shapes.get_shape(0x21, 0);
+		backup = win->create_buffer(s->get_width(), s->get_height());
+		win->get(backup, centerx-53-s->get_xleft(), centery-68-s->get_yabove());
+		for(i=8; i>=-8; i--)
+		{
+			FLASH_SHAPE(centerx-53, centery-68, 0x21, 1+abs(i),70);
+		}
+		FORGET_OBJECT(backup);
+		WAITDELAYCYCLE(800);
+
+
+		//
+		// Second 'popup' (sh. 0x22)
+		//
+		s = shapes.get_shape(0x22, 0);
+		backup = win->create_buffer(s->get_width(), s->get_height());
+		win->get(backup, centerx - s->get_xleft(), centery-45 - s->get_yabove());
+		for(i=9; i>=-9; i--)
+		{
+			FLASH_SHAPE(centerx, centery-45, 0x22, 9-abs(i),70);
+		}
+		FORGET_OBJECT(backup);
+		WAITDELAYCYCLE(800);
+
+
+		//
+		// Successful 'popup' (sh. 0x23)
+		//
+		s = shapes.get_shape(0x23, 0);
+		backup = win->create_buffer(s->get_width(), s->get_height());
+		cbackup = win->create_buffer(s->get_width(), s->get_height());
+
+		win->get(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
+		gwin->paint_shape(centerx,centery,s); // frame 0 is static background
+		win->get(backup, centerx- s->get_xleft(), centery- s->get_yabove());
+		for(i=1; i<16; i++)
+		{
+			FLASH_SHAPE(centerx, centery, 0x23, i,70);
+		}
+		
+		win->put(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
+		FORGET_OBJECT(backup);
+		FORGET_OBJECT(cbackup);
+
+
+		//
+		// Actual appearance
+		//
+
+
+		// mouth
+		s = shapes.get_shape(guardian_mouth_shp,0);
+		backup = win->create_buffer(s->get_width(), s->get_height());
+		cbackup = win->create_buffer(s->get_width(), s->get_height());
+		win->get(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
+		gwin->paint_shape(centerx,centery,s); // frame 0 is background
+		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
+		// eyes
+		s2 = shapes.get_shape(guardian_eyes_shp,0);
+		backup2 = win->create_buffer(s2->get_width(), s2->get_height());
+		cbackup2 = win->create_buffer(s2->get_width(), s2->get_height());
+		win->get(cbackup2, centerx - s2->get_xleft(),
+			 centery-EYES_DIST - s2->get_yabove());
+		gwin->paint_shape(centerx,centery-EYES_DIST,s2); // frame 0 is background
+		win->get(backup2, centerx - s2->get_xleft(),
+			 centery-EYES_DIST - s2->get_yabove());
+		// forehead
+		s3 = shapes.get_shape(guardian_forehead_shp,0);
+		cbackup3 = win->create_buffer(s3->get_width(), s3->get_height());
+		win->get(cbackup3, centerx - s3->get_xleft(),
+			 centery-FORHEAD_DIST - s3->get_yabove());
+	       	gwin->paint_shape(centerx,centery-FORHEAD_DIST,s3); // forehead isn't animated
+
+		// prepare Guardian speech
+		Font *font = fontManager.get_font("END3_FONT");
+		U7object textobj(MAINSHP_FLX, 0x0D);
+		size_t txt_len;
+		next_txt = txt_ptr = txt = textobj.retrieve(txt_len);
+		if (Audio::get_ptr()->is_speech_enabled())
+			Audio::get_ptr()->playfile(INTROSND,false);
+		int txt_height = font->get_text_height();
+		int txt_ypos = gwin->get_height()-txt_height-16;
+
+		// backup text area
+		backup3 = win->create_buffer(gwin->get_width(),txt_height);
+		win->get(backup3, 0, txt_ypos);
+
+		int speech_delay[] = { 29, 71, 59, 47, 47, 62, 79, 
+				       55, 90, 104, 80, 65, 55, 120 };
+		// start speech
+		for(int speech_item=0; speech_item<14; speech_item++)
+		{
+			unsigned long ticks = SDL_GetTicks();
+			unsigned long end_ticks = ticks+speech_delay[speech_item]*50;
+			i=0;
+			do
+			{
+				// convoluted mess to get eye movement acceptable
+				int eye_frame = 1 + 3*((i/12) % 4) + ((i%50>47&&(i/12)%4!=3)?i%50-47:0);
+				gwin->paint_shape(centerx,centery-EYES_DIST,
+						shapes.get_shape(guardian_eyes_shp, eye_frame));
+		
+				gwin->paint_shape(centerx,centery,
+						  shapes.get_shape(guardian_mouth_shp,1 + i % 13));
+		
+				if (i == 0)
+				{
+					txt_ptr = next_txt;
+					txt_end = strchr(txt_ptr, '\r');
+					*txt_end = '\0';
+					next_txt = txt_end+2;
+				}
+
+				font->center_text(win->get_ib8(), centerx, txt_ypos, txt_ptr);
+		
+				win->show();
+				WAITDELAYCYCLE(50);
+		
+				win->put(backup3, 0, txt_ypos);
+				win->put(backup, centerx - s->get_xleft(),
+					     centery - s->get_yabove());
+				win->put(backup2, centerx - s2->get_xleft(),
+					     centery-EYES_DIST - s2->get_yabove());
+				ticks = SDL_GetTicks();
+				++i;
+			} while (ticks<end_ticks);
+		}
+
+		win->put(backup3, 0, txt_ypos);
+		win->put(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
+		win->put(cbackup2, centerx - s2->get_xleft(), 
+			 centery-EYES_DIST - s2->get_yabove());
+		win->put(cbackup3, centerx - s3->get_xleft(),
+			 centery-FORHEAD_DIST - s3->get_yabove());
+		
+		FORGET_ARRAY(txt);
+		FORGET_OBJECT(backup);
+		FORGET_OBJECT(backup2);
+		FORGET_OBJECT(backup3);
+		FORGET_OBJECT(cbackup);
+		FORGET_OBJECT(cbackup2);
+		FORGET_OBJECT(cbackup3);
+
+		// G. disappears again (sp. 0x23 again)
+		s = shapes.get_shape(0x23, 0);
+		backup = win->create_buffer(s->get_width(), s->get_height());
+		cbackup = win->create_buffer(s->get_width(), s->get_height());
+		win->get(cbackup, centerx- s->get_xleft(), centery- s->get_yabove());
+		gwin->paint_shape(centerx,centery,s); // frame 0 is background
+		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
+		for(i=15; i>0; i--)
+		{
+			FLASH_SHAPE(centerx, centery, 0x23, i, 70);
+		}
+		win->put(cbackup, centerx- s->get_xleft(), centery- s->get_yabove());
+		FORGET_OBJECT(backup);
+		FORGET_OBJECT(cbackup);
+
+		win->show();
+		WAITDELAYCYCLE(1000);
+		
+		Audio::get_ptr()->stop_music();
+		
+		//
+		// White dot
+		//
+		s = shapes.get_shape(0x14, 0);
+		backup = win->create_buffer(s->get_width()+2, s->get_height()+2);
+		win->get(backup, centerx - 1, centery - 1);
+		ticks = SDL_GetTicks();
+		for(i = 0; i < 100; i++)
+		{
+			int x = centerx + rand()%3 - 1;
+			int y = centery + rand()%3 - 1;
+			FLASH_SHAPE(x, y, 0x14, 0, 0);
+			if (SDL_GetTicks() - ticks > 400)
+				break;
+		}
+		FORGET_OBJECT(backup);
+	}
+	catch(const UserBreakException &x)
+	{
+		// Waste disposal
+		FORGET_ARRAY(txt);
+		FORGET_OBJECT(backup); FORGET_OBJECT(backup2); FORGET_OBJECT(backup3);
+		FORGET_OBJECT(cbackup); FORGET_OBJECT(cbackup2); FORGET_OBJECT(cbackup3);
+		FORGET_OBJECT(plasma);
+		
+		if(typeid(x) != typeid(UserSkipException))
+			throw x;
+	}
+}
+
+void BG_Game::scene_desk()
+{
+	Shape_frame *s;
+	Image_buffer *backup = 0;
+	int i;
+
+	try
+	{
 		play_midi(home_song_midi);
 		
 		gwin->clear_screen();
@@ -354,492 +845,67 @@ TODO
 		win->show();
 
 		WAITDELAYCYCLE2(3000);
-
-		// The Moongate
-		// sh. 0x02, 0x03, 0x04, 0x05: various parts of moongate
-		// sh. 0x00, 0x01: parting trees before clearing
-
-		gwin->clear_screen();
-		pal.load("<STATIC>/intropal.dat",5);
-		pal.apply();
-
-		// "Behind your house is the circle of stones"
-		gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x19,0));
-		win->show();
-
-		// TODO: fade in screen while text is onscreen
-
-		WAITDELAY(3000);
-
-		// TODO: misaligned?
-		for(i=120;i>=-170;i-=6) {
-			gwin->paint_shape(centerx+1,centery+1,
-					  shapes.get_shape(0x02,0));
-			gwin->paint_shape(centerx+1,centery+1,
-					  shapes.get_shape(0x03,0));
-			gwin->paint_shape(centerx+1,centery+1,
-					  shapes.get_shape(0x04,0));
-			gwin->paint_shape(centerx+1,centery+1,
-					  shapes.get_shape(0x05,0));
-
-			gwin->paint_shape(centerx+i,topy, shapes.get_shape(0x00,0));
-			gwin->paint_shape(centerx-i,topy, shapes.get_shape(0x01,0));
-
-			// "Why is a moongate already there?"
-			gwin->paint_shape(centerx,centery+50,shapes.get_shape(0x1A,0));
-			win->show();
-			WAITDELAYCYCLE3(50);
-		}
-
-		gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x02,0));
-		gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x03,0));
-		gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x04,0));
-		gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x05,0));
-
-		// "You have but one path to the answer"
-		gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x1C,0));
-		win->show();
-
-		// TODO: zoom (run) into moongate
-
-		WAITDELAYCYCLE3(3000);
 	}
 	catch(const UserBreakException &x)
 	{
 		// Waste disposal
-		FORGET_OBJECT(backup); FORGET_OBJECT(backup2); FORGET_OBJECT(backup3);
-		FORGET_OBJECT(cbackup); FORGET_OBJECT(cbackup2); FORGET_OBJECT(cbackup3);
-	}
-	
-	// Fade out the palette...
-	pal.fade_out(c_fade_out_time);
-	
-	// ... and clean the screen.
-	gwin->clear_screen(true);
-	
-	// Stop all audio output
-	Audio::get_ptr()->cancel_streams();
-}
-
-void BG_Game::scene_lord_british()
-{
-	Font *font = fontManager.get_font("END2_FONT");
-
-	const char *txt_msg[] = { "with help from",
-			"The Exult Team"};
-
-	// Lord British presents...  (sh. 0x11)
-	pal.load("<STATIC>/intropal.dat",3);
-	gwin->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
-	
-	// insert our own intro text
-	font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
-	font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
-
-	pal.fade_in(c_fade_in_time);
-	WAITDELAY(2000);
-	pal.fade_out(c_fade_out_time);
-	gwin->clear_screen(true);
-
-}
-
-
-#define	BUTTERFLY_FRAME_DURATION	16
-
-#define	BUTTERFLY_SUB_FRAMES	3
-
-#define	BUTTERFLY(x,y,frame,delay)	do {	\
-		win->get(backup, topx + (x) - butterfly->get_xleft(),	\
-				topy + (y) - butterfly->get_yabove());	\
-		gwin->paint_shape(topx + x, topy + y, shapes.get_shape(butterfly_shp, frame));	\
-		win->show();	\
-		WAITDELAY(delay);	\
-		win->put(backup, topx + (x) - butterfly->get_xleft(),	\
-				topy + (y) - butterfly->get_yabove());	\
-		} while(0)
-
-#define	BUTTERFLY_FLAP()	do {	\
-			if ((rand() % 5)<4) {	\
-				if (frame == 3)	\
-					dir = -1;	\
-				else if (frame == 0)	\
-					dir = +1;	\
-				frame += dir;	\
-			} } while(0)
-
-static int butterfly_x[] =
-{
-	6,18,30,41,52,62,70,78,86,95,
-	104,113,122,132,139,146,151,155,157,158,
-	157,155,151,146,139,132,124,116,108,102,
-	96,93,93,93,95,99,109,111,118,125,
-	132,140,148,157,164,171,178,184,190,196,
-	203,211,219,228,237,246,254,259,262,264,
-	265,265,263,260,256,251,245,239,232,226,
-	219,212,208,206,206,209,212,216,220,224,
-	227,234,231,232,233,233,233,233,234,236,
-	239,243,247,250,258,265
-};
-
-static int butterfly_y[] =
-{
-	155,153,151,150,149,148,148,148,148,149,
-	150,150,150,149,147,142,137,131,125,118,
-	110,103,98,94,92,91,91,91,92,95,
-	99,104,110,117,123,127,131,134,135,135,
-	135,135,135,134,132,129,127,123,119,115,
-	112,109,104,102,101,102,109,109,114,119,
-	125,131,138,144,149,152,156,158,159,159,
-	158,155,150,144,137,130,124,118,112,105,
-	99,93,86,80,73,66,59,53,47,42,
-	38,35,32,29,26,25
-};
-
-static const int butterfly_num_coords = sizeof(butterfly_x)/sizeof(int);
-
-static int butterfly_end_frames[] = { 3, 4, 3, 4, 3, 2, 1, 0 };
-static int butterfly_end_delay[] = { 167, 416, 250, 416, 416, 416, 416, 333 };
-
-
-void BG_Game::scene_butterfly()
-{
-	Font *font = fontManager.get_font("END2_FONT");
-	Image_buffer *backup = 0;
-	Shape_frame *butterfly = 0;
-	const char *txt_msg = "Driven by Exult";
-	int	i, j, frame, dir;
-	
-	// Load the butterfly shape
-	butterfly = shapes.get_shape(butterfly_shp,0);
-	backup = win->create_buffer(butterfly->get_width(), butterfly->get_height());
-	
-	// We use an auto_ptr so that backup is automatically deleted when we leave this function
-	std::auto_ptr<Image_buffer> backup_auto_ptr(backup);
-
-	// Start playing the birdsongs while still faded out
-	play_midi(bird_song_midi);
-
-	// trees with "Ultima VII" on top of 'em
-	gwin->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
-	gwin->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
-	
-	// again display our own text
-	font->center_text(ibuf, centerx, centery+50, txt_msg);
-	pal.load("<STATIC>/intropal.dat",4);
-
-	// Keep it dark for some more time, playing the music 
-	WAITDELAY(4000);
-
-	// Finally fade in
-	pal.fade_in(c_fade_in_time);
-	WAITDELAY(12500);
-
-	// clear 'Exult' text
-	gwin->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
-	gwin->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
-	win->show();
-
-	//
-	// Move the butterfly along its path
-	//
-	frame = 0;
-	Sint16 delay = BUTTERFLY_FRAME_DURATION;
-	Uint16 ticks = SDL_GetTicks();
-	for(i=0; i < butterfly_num_coords-1; ++i)
-	{
-		for(j=0; j < BUTTERFLY_SUB_FRAMES; ++j)
-		{
-			ticks = SDL_GetTicks();
-			int x = butterfly_x[i] + j*(butterfly_x[i+1] - butterfly_x[i])/BUTTERFLY_SUB_FRAMES;
-			int y = butterfly_y[i] + j*(butterfly_y[i+1] - butterfly_y[i])/BUTTERFLY_SUB_FRAMES;
-			BUTTERFLY(x, y, frame, delay);
-
-			// Flap the wings; but not always, so that the butterfly "glides" from time to time
-			BUTTERFLY_FLAP();
-			
-			// Calculate the difference between the time we wanted to spent and the time
-			// we actually spent; then adjust 'delay' accordingly
-			ticks = SDL_GetTicks() - ticks;
-			delay = (delay + (2*BUTTERFLY_FRAME_DURATION - ticks)) / 2;
-			
-			// ... but maybe we also have to skip frames..
-			if( delay < 0 )
-			{
-				// Calculate how many frames we should skip
-				int frames_to_skip = (-delay) / BUTTERFLY_FRAME_DURATION + 1;
-				int new_index = i*BUTTERFLY_SUB_FRAMES + j + frames_to_skip;
-				i = new_index / BUTTERFLY_SUB_FRAMES;
-				j = new_index % BUTTERFLY_SUB_FRAMES;
-				
-				// Did we skip over the end?
-				if ( i >= butterfly_num_coords-1 )
-					break;
-
-				while(frames_to_skip--)
-					BUTTERFLY_FLAP();
-
-				delay = 0;
-			}
-		}
-	}
-
-	// Finally, let it flutter a bit on the end spot
-	for(i=0; i<8; i++) {
-		BUTTERFLY(butterfly_x[butterfly_num_coords-1],
-					butterfly_y[butterfly_num_coords-1],
-					butterfly_end_frames[i],
-					butterfly_end_delay[i]);
-	}
-	
-	WAITDELAY(2000);
-	
-	// Wait till the music finished playing
-	while(Audio::get_ptr()->is_track_playing(bird_song_midi))
-		WAITDELAY(20);
-}
-
-void BG_Game::scene_guardian()
-{
-	Image_buffer *backup = 0, *backup2 = 0, *backup3 = 0;
-	Image_buffer *cbackup = 0, *cbackup2 = 0, *cbackup3 = 0;
-	Image_buffer *plasma;
-	char *txt = 0;
-
-	try
-	{
-		char *txt_ptr, *txt_end, *next_txt;
-		Shape_frame *s, *s2, *s3;
-		Uint32 ticks;
-		int i;
-
-		// Start background music
-		play_midi(guardian_midi);
-
-		// create buffer containing a blue 'plasma' screen
-		plasma = win->create_buffer(gwin->get_width(),
-							gwin->get_height());
-		gwin->plasma(gwin->get_width(), gwin->get_height(), 0, 0, 16, 110);
-		win->get(plasma, 0, 0);
-
-		pal.load("<STATIC>/intropal.dat",2);
-		pal.set_color(1,0,0,0); //UGLY hack... set font background to black
-		pal.apply();
-		//TODO: sound effects here!
-		//TODO: timing?
-		win->show();
-		WAITDELAYCYCLE(100);
-
-		ticks = SDL_GetTicks();
-		while(1)
-		{
-			win->get_ibuf()->fill_static(0, 7, 15);
-			win->show();
-			WAITDELAY(0);
-			if (SDL_GetTicks() > ticks + 400)
-				break;
-		}
-		win->put(plasma,0,0); win->show();
-		WAITDELAYCYCLE(100);
-
-		ticks = SDL_GetTicks();
-		while(1)
-		{
-			win->get_ibuf()->fill_static(0, 7, 15);
-			win->show();
-			WAITDELAY(0);
-			if (SDL_GetTicks() > ticks + 200)
-				break;
-		}
-		win->put(plasma,0,0); win->show();
-		WAITDELAYCYCLE(200);
-
-		ticks = SDL_GetTicks();
-		while(1)
-		{
-			win->get_ibuf()->fill_static(0, 7, 15);
-			win->show();
-			WAITDELAY(0);
-			if (SDL_GetTicks() > ticks + 100)
-				break;
-		}
-		win->put(plasma,0,0); win->show();
-
-		FORGET_OBJECT(plasma);
-
-		// First 'popup' (sh. 0x21)
-		s = shapes.get_shape(0x21, 0);
-		backup = win->create_buffer(s->get_width(), s->get_height());
-		win->get(backup, centerx-53-s->get_xleft(), centery-68-s->get_yabove());
-		for(i=8; i>=-8; i--) {
-			gwin->paint_shape(centerx-53,centery-68,
-					  shapes.get_shape(0x21,1+abs(i)));
-			win->show();
-			WAITDELAYCYCLE(70);
-			win->put(backup, centerx-53-s->get_xleft(), 
-				 centery-68-s->get_yabove());
-		}
 		FORGET_OBJECT(backup);
-
-		// Second 'popup' (sh. 0x22)
-		s = shapes.get_shape(0x22, 0);
-		backup = win->create_buffer(s->get_width(), s->get_height());
-		win->get(backup, centerx- s->get_xleft(), centery-45- s->get_yabove());
-		for(i=9; i>=-9; i--) {
-			gwin->paint_shape(centerx,centery-45,
-					  shapes.get_shape(0x22,9-abs(i)));
-			win->show();
-			WAITDELAYCYCLE(70);
-			win->put(backup, centerx - s->get_xleft(),
-				 centery-45 - s->get_yabove());
-		}
-		FORGET_OBJECT(backup);
-
-		// Successful 'popup' (sh. 0x23)
-		s = shapes.get_shape(0x23, 0);
-		backup = win->create_buffer(s->get_width(), s->get_height());
-		cbackup = win->create_buffer(s->get_width(), s->get_height());
-
-		win->get(cbackup, centerx- s->get_xleft(), centery-1- s->get_yabove());
-		gwin->paint_shape(centerx,centery-1,s); // frame 0 is static background
-		win->get(backup, centerx- s->get_xleft(), centery-1- s->get_yabove());
-		for(i=1; i<16; i++) {
-			gwin->paint_shape(centerx,centery-1,shapes.get_shape(0x23,i));
-			win->show();
-			WAITDELAYCYCLE(70);
-			win->put(backup, centerx - s->get_xleft(),
-				 centery-1 - s->get_yabove());
-		}
-		
-		win->put(cbackup, centerx- s->get_xleft(), centery-1- s->get_yabove());
-		FORGET_OBJECT(backup);
-		FORGET_OBJECT(cbackup);
-
-		// Actual appearance
-
-		// prepare Guardian speech
-		Font *font = fontManager.get_font("END3_FONT");
-		U7object textobj(MAINSHP_FLX, 0x0D);
-		size_t txt_len;
-		next_txt = txt_ptr = txt = textobj.retrieve(txt_len);
-		if (Audio::get_ptr()->is_speech_enabled())
-			Audio::get_ptr()->playfile(INTROSND,false);
-		int txt_height = font->get_text_height();
-		int txt_ypos = gwin->get_height()-txt_height-16;
-
-		// backup text area
-		backup3 = win->create_buffer(gwin->get_width(),txt_height);
-		win->get(backup3, 0, txt_ypos);
-		// mouth
-		s = shapes.get_shape(guardian_mouth_shp,0);
-		backup = win->create_buffer(s->get_width(), s->get_height());
-		cbackup = win->create_buffer(s->get_width(), s->get_height());
-		win->get(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
-		gwin->paint_shape(centerx,centery,s); // frame 0 is background
-		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
-		// eyes
-		s2 = shapes.get_shape(guardian_eyes_shp,0);
-		backup2 = win->create_buffer(s2->get_width(), s2->get_height());
-		cbackup2 = win->create_buffer(s2->get_width(), s2->get_height());
-		win->get(cbackup2, centerx - s2->get_xleft(),
-			 centery-12 - s2->get_yabove());
-		gwin->paint_shape(centerx,centery-12,s2); // frame 0 is background
-		win->get(backup2, centerx - s2->get_xleft(),
-			 centery-12 - s2->get_yabove());
-		// forehead
-		s3 = shapes.get_shape(guardian_forehead_shp,0);
-		cbackup3 = win->create_buffer(s3->get_width(), s3->get_height());
-		win->get(cbackup3, centerx - s3->get_xleft(),
-			 centery-49 - s3->get_yabove());
-	       	gwin->paint_shape(centerx,centery-49,s3); // forehead isn't animated
-
-		int speech_delay[] = { 29, 71, 59, 47, 47, 62, 79, 
-				       55, 90, 104, 80, 65, 55, 120 };
-		// start speech
-		for(int speech_item=0; speech_item<14; speech_item++) {
-			unsigned long ticks = SDL_GetTicks();
-			unsigned long end_ticks = ticks+speech_delay[speech_item]*50;
-			i=0;
-			do {
-				// convoluted mess to get eye movement acceptable
-				gwin->paint_shape(centerx,centery-12, shapes.get_shape(guardian_eyes_shp,
-					1 + 3*((i/12) % 4) + ((i%50>47&&(i/12)%4!=3)?i%50-47:0)));
-		
-				gwin->paint_shape(centerx,centery,
-						  shapes.get_shape(guardian_mouth_shp,1 + i % 13));
-		
-				if (i == 0) {
-					txt_ptr = next_txt;
-					txt_end = strchr(txt_ptr, '\r');
-					*txt_end = '\0';
-		
-					next_txt = txt_end+2;
-				}
-
-				font->center_text(win->get_ib8(), centerx, txt_ypos, txt_ptr);
-		
-				win->show();
-				WAITDELAYCYCLE(50);
-		
-				win->put(backup3, 0, txt_ypos);
-				win->put(backup, centerx - s->get_xleft(),
-					     centery - s->get_yabove());
-				win->put(backup2, centerx - s2->get_xleft(),
-					     centery-12 - s2->get_yabove());
-				ticks = SDL_GetTicks();
-				++i;
-			} while (ticks<end_ticks);
-		}
-
-		win->put(backup3, 0, txt_ypos);
-		win->put(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
-		win->put(cbackup2, centerx - s2->get_xleft(), 
-			 centery-12 - s2->get_yabove());
-		win->put(cbackup3, centerx - s3->get_xleft(),
-			 centery-49 - s3->get_yabove());
-		
-		FORGET_ARRAY(txt);
-		FORGET_OBJECT(backup);
-		FORGET_OBJECT(backup2);
-		FORGET_OBJECT(backup3);
-		FORGET_OBJECT(cbackup);
-		FORGET_OBJECT(cbackup2);
-		FORGET_OBJECT(cbackup3);
-
-		// G. disappears again (sp. 0x23 again)
-		s = shapes.get_shape(0x23, 0);
-		backup = win->create_buffer(s->get_width(), s->get_height());
-		cbackup = win->create_buffer(s->get_width(), s->get_height());
-		win->get(cbackup, centerx- s->get_xleft(), centery-1- s->get_yabove());
-		gwin->paint_shape(centerx,centery-1,s); // frame 0 is background
-		win->get(backup, centerx- s->get_xleft(), centery-1- s->get_yabove());
-		for(i=15; i>0; i--) {
-			gwin->paint_shape(centerx,centery-1,shapes.get_shape(0x23,i));
-			win->show();
-			WAITDELAYCYCLE(70);
-			win->put(backup, centerx - s->get_xleft(),
-				 centery-1 - s->get_yabove());
-		}
-		win->put(cbackup, centerx- s->get_xleft(), centery-1- s->get_yabove());
-		FORGET_OBJECT(backup);
-		FORGET_OBJECT(cbackup);
-
-		win->show();
-		WAITDELAYCYCLE(1000);
-		}
-	catch(const UserBreakException &x)
-	{
-		// Waste disposal
-		FORGET_ARRAY(txt);
-		FORGET_OBJECT(backup); FORGET_OBJECT(backup2); FORGET_OBJECT(backup3);
-		FORGET_OBJECT(cbackup); FORGET_OBJECT(cbackup2); FORGET_OBJECT(cbackup3);
-		FORGET_OBJECT(plasma);
 		
 		throw x;
 	}
 }
 
-void BG_Game::scene_desk()
+void BG_Game::scene_moongate()
 {
+	// sh. 0x02, 0x03, 0x04, 0x05: various parts of moongate
+	// sh. 0x00, 0x01: parting trees before clearing
+
+	int i;
+		
+	gwin->clear_screen();
+	pal.load("<STATIC>/intropal.dat",5);
+	pal.apply();
+
+	// "Behind your house is the circle of stones"
+	gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x19,0));
+	win->show();
+
+	// TODO: fade in screen while text is onscreen
+
+	WAITDELAY(3000);
+
+	// TODO: misaligned?
+	for(i=120;i>=-170;i-=6) {
+		gwin->paint_shape(centerx+1,centery+1,
+				  shapes.get_shape(0x02,0));
+		gwin->paint_shape(centerx+1,centery+1,
+				  shapes.get_shape(0x03,0));
+		gwin->paint_shape(centerx+1,centery+1,
+				  shapes.get_shape(0x04,0));
+		gwin->paint_shape(centerx+1,centery+1,
+				  shapes.get_shape(0x05,0));
+
+		gwin->paint_shape(centerx+i,topy, shapes.get_shape(0x00,0));
+		gwin->paint_shape(centerx-i,topy, shapes.get_shape(0x01,0));
+
+		// "Why is a moongate already there?"
+		gwin->paint_shape(centerx,centery+50,shapes.get_shape(0x1A,0));
+		win->show();
+		WAITDELAYCYCLE3(50);
+	}
+
+	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x02,0));
+	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x03,0));
+	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x04,0));
+	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x05,0));
+
+	// "You have but one path to the answer"
+	gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x1C,0));
+	win->show();
+
+	// TODO: zoom (run) into moongate
+
+	WAITDELAYCYCLE3(3000);
 }
 
 void BG_Game::top_menu()

@@ -227,7 +227,7 @@ Newfile_gump::~Newfile_gump
 
 	FreeSaveGameDetails();
 	
-	Game_window::get_game_window()->get_win()->put(back, 0, 0);
+//	Game_window::get_game_window()->get_win()->put(back, 0, 0);
 	delete back;
 }
 

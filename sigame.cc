@@ -109,7 +109,7 @@ SI_Game::SI_Game()
 		add_resource("files/shapes/1", "<STATIC>/faces.vga", 0);
 		add_resource("files/shapes/2", "<STATIC>/gumps.vga", 0);
 		add_resource("files/shapes/3", "<STATIC>/sprites.vga", 0);
-		add_resource("files/shapes/4", "<STATIC>/mainshp.flx", 0);
+		add_resource("files/shapes/4", MAINSHP_FLX, 0);
 		add_resource("files/shapes/5", "<STATIC>/paperdol.vga", 0);
 		add_resource("files/shapes/6", "<DATA>/exult.flx", 0);
 
@@ -118,23 +118,23 @@ SI_Game::SI_Game()
 		add_resource("config/defaultkeys", "<DATA>/exult_si.flx", 1);
 
 		add_resource("palettes/count", 0, 14);
-		add_resource("palettes/0", "<STATIC>/palettes.flx", 0);
-		add_resource("palettes/1", "<STATIC>/palettes.flx", 1);
-		add_resource("palettes/2", "<STATIC>/palettes.flx", 2);
-		add_resource("palettes/3", "<STATIC>/palettes.flx", 3);
-		add_resource("palettes/4", "<STATIC>/palettes.flx", 4);
-		add_resource("palettes/5", "<STATIC>/palettes.flx", 5);
-		add_resource("palettes/6", "<STATIC>/palettes.flx", 6);
-		add_resource("palettes/7", "<STATIC>/palettes.flx", 7);
-		add_resource("palettes/8", "<STATIC>/palettes.flx", 8);
-		add_resource("palettes/9", "<STATIC>/palettes.flx", 9);
-		add_resource("palettes/10", "<STATIC>/palettes.flx", 10);
-		add_resource("palettes/11", "<STATIC>/palettes.flx", 11);
-		add_resource("palettes/12", "<STATIC>/palettes.flx", 12);
-		add_resource("palettes/13", "<STATIC>/mainshp.flx", 1);
-		add_resource("palettes/14", "<STATIC>/mainshp.flx", 26);
+		add_resource("palettes/0", PALETTES_FLX, 0);
+		add_resource("palettes/1", PALETTES_FLX, 1);
+		add_resource("palettes/2", PALETTES_FLX, 2);
+		add_resource("palettes/3", PALETTES_FLX, 3);
+		add_resource("palettes/4", PALETTES_FLX, 4);
+		add_resource("palettes/5", PALETTES_FLX, 5);
+		add_resource("palettes/6", PALETTES_FLX, 6);
+		add_resource("palettes/7", PALETTES_FLX, 7);
+		add_resource("palettes/8", PALETTES_FLX, 8);
+		add_resource("palettes/9", PALETTES_FLX, 9);
+		add_resource("palettes/10", PALETTES_FLX, 10);
+		add_resource("palettes/11", PALETTES_FLX, 11);
+		add_resource("palettes/12", PALETTES_FLX, 12);
+		add_resource("palettes/13", MAINSHP_FLX, 1);
+		add_resource("palettes/14", MAINSHP_FLX, 26);
 		
-		fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 1);
+		fontManager.add_font("MENU_FONT", MAINSHP_FLX, 9, 1);
 		fontManager.add_font("SIINTRO_FONT", "<STATIC>/intro.dat", 14, 0);
 	}
 
@@ -763,7 +763,7 @@ void SI_Game::top_menu()
 {
 	play_midi(28, true);
 	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-	pal.load("<STATIC>/mainshp.flx",26);
+	pal.load(MAINSHP_FLX,26);
 	pal.fade_in(60);	
 }
 
@@ -793,7 +793,7 @@ void SI_Game::end_game(bool success)
 void SI_Game::show_quotes()
 	{
 		play_midi(32);
-		TextScroller quotes("<STATIC>/mainshp.flx", 0x10, 
+		TextScroller quotes(MAINSHP_FLX, 0x10, 
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)
 			    );
@@ -803,7 +803,7 @@ void SI_Game::show_quotes()
 void SI_Game::show_credits()
 	{
 		play_midi(30);
-		TextScroller credits("<STATIC>/mainshp.flx", 0x0E, 
+		TextScroller credits(MAINSHP_FLX, 0x0E, 
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)
 			    );

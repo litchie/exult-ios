@@ -191,7 +191,7 @@ void Time_queue::activate0
 		ent=data.front();
 		Time_sensitive *obj = ent.handler;
 		long udata = ent.udata;
-		data.erase(data.begin());	// Remove from chain.
+		data.pop_front();	// Remove from chain.
 		obj->queue_cnt--;
 		obj->handle_event(curtime, udata);
 		}

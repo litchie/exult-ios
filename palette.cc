@@ -62,7 +62,8 @@ void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 	if(len==768) {	// Simple palette
 		if (xindex >= 0) {	// Get xform table.
 			U7object xform(xfname, xindex);
-			char *xbuf; size_t xlen;
+			char *xbuf = 0;
+			size_t xlen;
 			try {
 				xbuf = xform.retrieve( xlen);
 				for (int i = 0; i < 256; i++) {
@@ -73,7 +74,6 @@ void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 				}
 			}
 			catch( const std::exception & err ) {
-				err;
 				xindex = -1;
 			}
 			delete [] xbuf;
@@ -145,51 +145,59 @@ void Palette::brighten(int percent)
 	}
 	
 void Palette::fade_in(int cycles)
+{
+	if (Game_window::get_game_window()->get_fades_enabled())
 	{
- 	        if (Game_window::get_game_window()->get_fades_enabled()) {
-		        unsigned char fade_pal[768];
-		        unsigned int ticks = SDL_GetTicks() + 20;
-			for (int i = 0; i <= cycles; i++) {
-			        for(int c=0; c < 768; c++)
-				        fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
-				win->set_palette(fade_pal, 63, brightness);
-								// Frame skipping on slow systems
-				if (i == cycles || ticks >= SDL_GetTicks() ||
-							!Game_window::get_game_window()->get_frame_skipping())
-					win->show();
-				while (ticks >= SDL_GetTicks())
-					;
-				ticks+= 20;
-			}
-		} else {
-		        win->set_palette(pal1, max_val, brightness);
-			win->show();
+		unsigned char fade_pal[768];
+		unsigned int ticks = SDL_GetTicks() + 20;
+		for (int i = 0; i <= cycles; i++)
+		{
+			for(int c=0; c < 768; c++)
+				fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
+			win->set_palette(fade_pal, max_val, brightness);
+			// Frame skipping on slow systems
+			if (i == cycles || ticks >= SDL_GetTicks() ||
+						!Game_window::get_game_window()->get_frame_skipping())
+				win->show();
+			while (ticks >= SDL_GetTicks())
+				;
+			ticks += 20;
 		}
 	}
+	else
+	{
+		win->set_palette(pal1, max_val, brightness);
+		win->show();
+	}
+}
 
 void Palette::fade_out(int cycles)
+{
+	if (Game_window::get_game_window()->get_fades_enabled())
 	{
-	        if (Game_window::get_game_window()->get_fades_enabled()) {
-		        unsigned char fade_pal[768];
-		        unsigned int ticks = SDL_GetTicks() + 20;
-		        for (int i = cycles; i >= 0; i--) {
-			        for(int c=0; c < 768; c++)
-				        fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
-				win->set_palette(fade_pal, 63, brightness);
-								// Frame skipping on slow systems
-				if (i == 0 || ticks >= SDL_GetTicks() ||
-							 !Game_window::get_game_window()->get_frame_skipping())
-					win->show();
-				while (ticks >= SDL_GetTicks())
-				  ;
-				ticks+= 20;
-			}
-		} else {
-		        win->set_palette(pal1, max_val, brightness);
-			win->show();
+		unsigned char fade_pal[768];
+		unsigned int ticks = SDL_GetTicks() + 20;
+		for (int i = cycles; i >= 0; i--)
+		{
+			for(int c=0; c < 768; c++)
+				fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
+			win->set_palette(fade_pal, max_val, brightness);
+			// Frame skipping on slow systems
+			if (i == 0 || ticks >= SDL_GetTicks() ||
+						!Game_window::get_game_window()->get_frame_skipping())
+				win->show();
+			while (ticks >= SDL_GetTicks())
+				;
+			ticks += 20;
 		}
-//Messes up sleep.	        win->set_palette(pal1, max_val, brightness);
 	}
+	else
+	{
+		win->set_palette(pal2, max_val, brightness);
+		win->show();
+	}
+//Messes up sleep.	        win->set_palette(pal1, max_val, brightness);
+}
 
 //	Find index (0-255) of closest color (r,g,b < 64).
 int Palette::find_color(int r, int g, int b) {
