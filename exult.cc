@@ -146,6 +146,7 @@ void make_screenshot (bool silent = false);
 void show_about (void);
 void show_help (void);
 void show_cheat_help (void);
+void change_gamma (bool down);
 static void Drop_dragged_shape(int shape, int frame, int x, int y);
 
 /*
@@ -332,9 +333,15 @@ static void Init
 	sc = 2;
 
 	int sw, sh, scaleval;
+	string gr, gg, gb;
 	config->value("config/video/width", sw, w);
 	config->value("config/video/height", sh, h);
 	config->value("config/video/scale", scaleval, sc);
+	config->value("config/video/gamma/red", gr, "1.0");
+	config->value("config/video/gamma/green", gg, "1.0");
+	config->value("config/video/gamma/blue", gb, "1.0");
+
+	Image_window8::set_gamma(atof(gr.data()), atof(gg.data()), atof(gb.data()));	
 	gwin = new Game_window(sw, sh, scaleval);
 	current_res = find_resolution(sw, sh, scaleval);
 	Audio::get_ptr();
@@ -785,7 +792,7 @@ static void Handle_keystroke
 			increase_resolution();
 
 		} else if (!alt && !ctrl) {	// + : Brighten
-			gwin->brighten(20);
+			change_gamma(false);
 		}
 		break;
 	case SDLK_MINUS:
@@ -794,7 +801,7 @@ static void Handle_keystroke
 			decrease_resolution();
 
 		} else if (!alt && !ctrl) {	// - : Darken
-			gwin->brighten(-20);
+			change_gamma(true);
 		}
 		break;
 	case SDLK_ESCAPE:
@@ -1550,6 +1557,21 @@ void show_cheat_help (void)
 	} while (scroll->show_next_page(gwin));
 	gwin->paint();
 	delete scroll;
+}
+
+void change_gamma (bool down)
+{
+	float r,g,b;
+	char text[256];
+	float delta = down?-0.05:0.05;
+	Image_window8::get_gamma(r, g, b);	
+	Image_window8::set_gamma(r+delta, g+delta, b+delta);	
+	gwin->set_palette (-1, -1);
+
+	// Message
+	Image_window8::get_gamma(r, g, b);	
+	sprintf (text, "Gamma Set to R: %01.2f G: %01.2f B: %01.2f", r, g, b);
+	gwin->center_text(text);	
 }
 
 #ifdef XWIN

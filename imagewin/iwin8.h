@@ -31,6 +31,8 @@ Boston, MA  02111-1307, USA.
 #include "ibuf8.h"
 #include "SDL.h"
 
+template <class T> class GammaTable;
+
 /*
  *	Here's an 8-bit color-depth window (faster than the generic).
  */
@@ -38,6 +40,10 @@ class Image_window8 : public Image_window
 	{
 	SDL_Color colors[256];		// Palette.
 	Image_buffer8 *ib8;		// Cast to 8-bit buffer.
+
+	static GammaTable<unsigned char>	GammaRed;
+	static GammaTable<unsigned char>	GammaGreen;
+	static GammaTable<unsigned char>	GammaBlue;
 public:
 	Image_window8(unsigned int w, unsigned int h, int scl = 1, 
 							bool fs = false)
@@ -100,6 +106,9 @@ public:
 		{ return ib8->Image_buffer8::get_pixel8(x, y); }
 	void put_pixel8(unsigned char pix, int x, int y)
 		{ ib8->Image_buffer8::put_pixel8(pix, x, y); }
+
+	static void get_gamma (float &r, float &g, float &b);
+	static void set_gamma (float r, float g, float b);
 	};
 
 #endif

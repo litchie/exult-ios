@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "databuf.h"
 #include "imagewin.h"
+class Palette;
 
 class playfli {
  public:
@@ -48,12 +49,17 @@ class playfli {
     int streamstart;
     int streampos;
     int frame;
+    Palette	*palette;
  public:
     playfli(const char *fli_name);
     playfli(char *buffer, size_t len);
     ~playfli();
     void info(fliinfo *fi = NULL);
     int play(Image_window *win, int first_frame = 0, int last_frame = -1, unsigned long ticks = 0, int brightness = 100);
+    inline Palette *get_palette () { return palette; }
  private:
     void initfli();
+    int	nextpal;
+    int thispal;
+    int changepal;
 };

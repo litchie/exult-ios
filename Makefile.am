@@ -49,6 +49,7 @@ exult_SOURCES =	\
 	gamerend.cc	\
 	gamewin.cc	\
 	gamewin.h	\
+	gamma.h		\
 	lists.h		\
 	menulist.cc	\
 	menulist.h	\

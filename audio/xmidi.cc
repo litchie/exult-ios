@@ -36,8 +36,9 @@ using std::cerr;
 using std::endl;
 using std::memcmp;
 using std::memcpy;
-using std::pow;
 using std::string;
+
+#include "gamma.h"
 
 
 // This is used to correct incorrect patch, vol and pan changes in midi files
@@ -315,8 +316,7 @@ const char XMIDI::mt32asgs[256] = {
 	121, 0	// 127	Jungle Tune set to Breath Noise
 };
 
-float XMIDI::gamma_value=-1;
-unsigned char XMIDI::gamma_table[128];
+GammaTable<unsigned char> XMIDI::MidiGamma(128);
 
 // Constructor
 XMIDI::XMIDI(DataSource *source, int pconvert) : events(NULL),timing(NULL),
@@ -879,7 +879,7 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 
 	// Volume modify the note on's, only if converting
 	if (convert_type && (current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
-		current->data[1] = gamma_table[current->data[1]];
+		current->data[1] = MidiGamma[current->data[1]];
 
 	if (size == 2)
 		return 2;
@@ -1249,8 +1249,9 @@ int XMIDI::ExtractTracks (DataSource *source)
 	config->set("config/audio/midi/chorus",chorus_value,true);
 	
 	config->value("config/audio/midi/gamma",s,"1");
-	BuildGammaTable (atof(s.data()));
-	config->set("config/audio/midi/gamma",s,true);
+	MidiGamma.set_gamma (atof(s.data()));
+	sprintf (buf, "%f", MidiGamma.get_gamma ());
+	config->set("config/audio/midi/gamma",buf,true);
 	
 
 	// Read first 4 bytes of header
@@ -1469,20 +1470,3 @@ int XMIDI::ExtractTracks (DataSource *source)
 	
 	return 0;	
 }
-
-void XMIDI::BuildGammaTable (float gamma)
-{
-	if (gamma <= 0) gamma = 0.00001;
-	gamma = 1 / gamma;
-	if (gamma == gamma_value) return;	
-	gamma_value = gamma;
-
-	for (int i = 0; i < 128; i++)
-		gamma_table[i] = GetGamma(i);
-}
-
-unsigned char XMIDI::GetGamma (int v)
-{
-	return (unsigned char) (pow ((v / 127.0F), gamma_value) * 127.0F);
-}
-

@@ -32,11 +32,31 @@ Boston, MA  02111-1307, USA.
 #include "iwin8.h"
 #ifdef MACOS
 #  include "exult_types.h"
+#	include "gamma.h"
 #else
 #  include "../exult_types.h"
+#	include "../gamma.h"
 #endif
 
 using std::memmove;
+
+GammaTable<uint8> Image_window8::GammaRed(256);
+GammaTable<uint8> Image_window8::GammaBlue(256);
+GammaTable<uint8> Image_window8::GammaGreen(256);
+
+void Image_window8::get_gamma (float &r, float &g, float &b)
+{
+	r = GammaRed.get_gamma();
+	g = GammaGreen.get_gamma();
+	b = GammaBlue.get_gamma();
+}
+
+void Image_window8::set_gamma (float r, float g, float b)
+{
+	GammaRed.set_gamma(r);
+	GammaGreen.set_gamma(g);
+	GammaBlue.set_gamma(b);
+}
 
 /*
  *	Convert rgb value.
@@ -50,7 +70,7 @@ inline unsigned short Get_color8
 	)
 	{
 	uint32 c = (((uint32) val)*brightness*255L)/
-							(100*(maxval + 1));
+							(100*maxval);
 	return (c <= 255L ? (unsigned short) c : 255);
 	}
 
@@ -68,11 +88,9 @@ void Image_window8::set_palette
 					// Get the colors.
 	for (int i = 0; i < 256; i++)
 		{
-		colors[i].r = Get_color8(rgbs[3*i], maxval, brightness);
-		colors[i].g = Get_color8(rgbs[3*i + 1], maxval,
-							brightness);
-		colors[i].b = Get_color8(rgbs[3*i + 2], maxval,
-							brightness);
+		colors[i].r = GammaRed[Get_color8(rgbs[3*i], maxval, brightness)];
+		colors[i].g = GammaGreen[Get_color8(rgbs[3*i + 1], maxval, brightness)];
+		colors[i].b = GammaBlue[Get_color8(rgbs[3*i + 2], maxval, brightness)];
 		}
 	SDL_SetColors(surface, colors, 0, 256);
 	}
