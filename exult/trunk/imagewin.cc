@@ -284,11 +284,12 @@ void Image_buffer8::copy_line_translucent8
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	char *to = bits + desty*line_width + destx;
+	unsigned char *to = (unsigned char *) bits + desty*line_width + destx;
 	unsigned char *from = src_pixels + srcx;
 	for (int i = srcw; i; i--)
 		{
-		char c = *from++;	// Get char., and transform.
+					// Get char., and transform.
+		unsigned char c = *from++;
 		if (c >= first_translucent && c <= last_translucent)
 					// Use table to shift existing pixel.
 			c = xforms[c - first_translucent][*to];
