@@ -206,6 +206,6 @@ Exult_app: ${EXE_TARGET}
 
 install-exec-local: Exult_app
 	mkdir -p $(DESTDIR)/Applications/
-	cp -r $< $(DESTDIR)/Applications/
+	cp -r $(bundle_name) $(DESTDIR)/Applications/
 
 endif
