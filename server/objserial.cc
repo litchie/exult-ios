@@ -77,7 +77,7 @@ public:
 		{ v = Read4(buf); return *this; }
 	Serial_in& operator<<(unsigned long& v)
 		{ v = Read4(buf); return *this; }
-	Serial_in& operator<<(short v)
+	Serial_in& operator<<(short& v)
 		{ v = Read2(buf); return *this; }
 	Serial_in& operator<<(bool &v)
 		{ v = *buf++ ? true : false; return *this; }
@@ -163,21 +163,26 @@ void Npc_actor_io
 	std::string& name,
 	short& ident,
 	int& usecode,
-	short properties[12],
+	short *properties,		// Must have room for 12.
 	short& attack_mode,
 	short& alignment,
 	unsigned long& oflags,		// Object flags.
 	unsigned long& siflags,		// Extra flags for SI.
-	unsigned long& type_flags	// Movement flags.
-	//+++++++++Schedule changes.
+	unsigned long& type_flags,	// Movement flags.
+	short& num_schedules,		// # of schedule changes.
+	Serial_schedule *schedules	// Schedule changes.  Room for 8.
 	)
 	{
 	Serial io(buf);
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
 	io << name << ident << usecode;
-	for (int i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
+	for (int i = 0; i < 12; i++)
 		io << properties[i];
 	io << attack_mode << alignment << oflags << siflags << type_flags;
+	io << num_schedules;
+	for (int i = 0; i < num_schedules; i++)
+		io << schedules[i].time << schedules[i].type <<
+				schedules[i].tx << schedules[i].ty;
 	}
 
 /*
@@ -263,15 +268,17 @@ int Npc_actor_out
 	short alignment,
 	unsigned long oflags,		// Object flags.
 	unsigned long siflags,		// Extra flags for SI.
-	unsigned long type_flags	// Movement flags.
-	//+++++++++Schedule changes.
+	unsigned long type_flags,	// Movement flags.
+	short num_schedules,		// # of schedule changes.
+	Serial_schedule *schedules	// Schedule changes.
 	)
 	{
 	unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
 	Npc_actor_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame,
 		name, ident, usecode, properties, attack_mode, alignment,
-		oflags, siflags, type_flags);
+		oflags, siflags, type_flags,
+		num_schedules, schedules);
 	return Exult_server::Send_data(fd, Exult_server::npc, buf, ptr - buf);
 	}
 
@@ -296,14 +303,16 @@ int Npc_actor_in
 	short& alignment,
 	unsigned long& oflags,		// Object flags.
 	unsigned long& siflags,		// Extra flags for SI.
-	unsigned long& type_flags	// Movement flags.
-	//+++++++++Schedule changes.
+	unsigned long& type_flags,	// Movement flags.
+	short& num_schedules,		// # of schedule changes.
+	Serial_schedule *schedules	// Schedule changes.  Room for 8.
 	)
 	{
 	unsigned char *ptr = data;
 	Npc_actor_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame,
 		name, ident, usecode, properties, attack_mode, alignment,
-		oflags, siflags, type_flags);
+		oflags, siflags, type_flags,
+		num_schedules, schedules);
 	return (ptr - data) == datalen;
 	}
 

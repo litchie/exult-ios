@@ -199,9 +199,11 @@ int ExultStudio::init_npc_window
 	unsigned long oflags;		// Object flags.
 	unsigned long siflags;		// Extra flags for SI.
 	unsigned long type_flags;	// Movement flags.
+	short num_schedules;
+	Serial_schedule schedules[8];
 	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame,
 		name, ident, usecode, properties, attack_mode, alignment,
-			oflags, siflags, type_flags))
+			oflags, siflags, type_flags, num_schedules, schedules))
 		{
 		cout << "Error decoding npc" << endl;
 		return 0;
@@ -214,10 +216,11 @@ int ExultStudio::init_npc_window
 					// Shape/frame.
 	set_entry("npc_shape", shape);
 	set_entry("npc_frame", frame);
-#if 0
 					// Usecode #.
 	set_entry("npc_usecode_entry", usecode, true);
-#endif
+					// Combat:
+	set_optmenu("npc_attack_mode", attack_mode);
+	set_optmenu("npc_alignment", alignment);
 					// Set flag buttons.
 	GtkTable *ftable = GTK_TABLE(
 			glade_xml_get_widget(app_xml, "npc_flags_table"));
@@ -249,7 +252,6 @@ int ExultStudio::init_npc_window
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cbox), 
 					(bits&(1<<fnum)) != 0);
 		}
-#if 0
 					// Set properties.
 	GtkTable *ptable = GTK_TABLE(
 			glade_xml_get_widget(app_xml, "npc_props_table"));
@@ -257,7 +259,8 @@ int ExultStudio::init_npc_window
 						list = g_list_next(list))
 		{
 		GtkTableChild *ent = (GtkTableChild *) list->data;
-		GtkSpinButton *spin = GTK_SPIN_BUTTON(ent->widget);
+		GtkBin *frame = GTK_BIN(ent->widget);
+		GtkSpinButton *spin = GTK_SPIN_BUTTON(frame->child);
 		assert (spin != 0);
 		const char *name = glade_get_widget_name(GTK_WIDGET(spin));
 					// Names: npc_prop_nn.
@@ -269,18 +272,46 @@ int ExultStudio::init_npc_window
 		}
 					// Set schedules.
 	for (int i = 0; i < 24/3; i++)	// First init. to empty.
-		;			//++++++
-	for (int i = 0; i < sched_count; i++)
+		set_schedule_line(i, -1, 0, 0, 0);
+	for (int i = 0; i < num_schedules; i++)
 		{
 		Serial_schedule& sched = schedules[i];
 		int time = sched.time;	// 0-7.
-		int type = sched.type;	// Activity.
-		int tx = sched.tx, ty = sched.ty;	// Location.
-					//+++++++++++++++
+		if (time < 0 || time > 7)
+			continue;	// Invalid.
+		set_schedule_line(time, sched.type, sched.tx, sched.ty);
 		}
-#endif
-//++++++++++++
 	return 1;
+	}
+
+					// Schedule names.
+static char *sched_names[32] = {
+		"Combat", "Horiz. Pace", "Vert. Pace", "Talk", "Dance",
+		"Eat", "Farm", "Tend Shop", "Miner", "Hound", "Stand",
+		"Loiter", "Wander", "Blacksmith", "Sleep", "Wait", "Sit",
+		"Graze", "Bake", "Sew", "Shy", "Lab Work", "Thief", "Waiter",
+		"Special", "Kid Games", "Eat at Inn", "Duel", "Preach",
+		"Patrol", "Desk Work", "Follow"};
+
+/*
+ *	Set a line in the schedule page.
+ */
+
+void ExultStudio::set_schedule_line
+	(
+	int time,			// 0-7.
+	int type,			// Activity (0-31, or -1 for none).
+	int tx, int ty, int tz		// Location.
+	)
+	{
+	char *lname = g_strdup_printf("npc_sched%d", time);
+	GtkLabel *label = GTK_LABEL(glade_xml_get_widget(app_xml, lname));
+	g_free(lname);
+					// User data = schedule #.
+	gtk_object_set_user_data(GTK_OBJECT(label), (gpointer) type);
+	gtk_label_set_text(label, 
+			type >= 0 && type < 32 ? sched_names[type] : "-----");
+//+++++++++ Position.
 	}
 
 /*
@@ -332,13 +363,6 @@ void ExultStudio::schedule_btn_clicked
 	gpointer data			// Dialog itself.
 	)
 	{
-	static char *sched_names[32] = {
-		"Combat", "Horiz. Pace", "Vert. Pace", "Talk", "Dance",
-		"Eat", "Farm", "Tend Shop", "Miner", "Hound", "Stand",
-		"Loiter", "Wander", "Blacksmith", "Sleep", "Wait", "Sit",
-		"Graze", "Bake", "Sew", "Shy", "Lab Work", "Thief", "Waiter",
-		"Special", "Kid Games", "Eat at Inn", "Duel", "Preach",
-		"Patrol", "Desk Work", "Follow"};
 	ExultStudio *studio = ExultStudio::get_instance();
 					// Get name assigned in Glade.
 	const char *name = glade_get_widget_name(btn);

@@ -60,6 +60,13 @@ extern int Egg_object_in
 	int& data1, int& data2
 	);
 
+struct Serial_schedule			// For passing a schedule change.
+	{
+	short time;			// 0-7 (3-hour period).
+	short type;			// Schedule type (mostly 0-31).
+	int tx, ty;			// Tile to go to.
+	};
+
 int Npc_actor_out
 	(
 	int fd,				// Socket.
@@ -69,13 +76,14 @@ int Npc_actor_out
 	std::string name,
 	short ident,
 	int usecode,
-	short properties[12],
+	short *properties,		// 12 entries.
 	short attack_mode,
 	short alignment,
 	unsigned long oflags,		// Object flags.
 	unsigned long siflags,		// Extra flags for SI.
-	unsigned long type_flags	// Movement flags.
-	//+++++++++Schedule changes.
+	unsigned long type_flags,	// Movement flags.
+	short num_schedules,		// # of schedule changes.
+	Serial_schedule *schedules	// Schedule changes.
 	);
 int Npc_actor_in
 	(
@@ -87,13 +95,14 @@ int Npc_actor_in
 	std::string& name,
 	short& ident,
 	int& usecode,
-	short properties[12],
+	short *properties,		// Must have room for 12.
 	short& attack_mode,
 	short& alignment,
 	unsigned long& oflags,		// Object flags.
 	unsigned long& siflags,		// Extra flags for SI.
-	unsigned long& type_flags	// Movement flags.
-	//+++++++++Schedule changes.
+	unsigned long& type_flags,	// Movement flags.
+	short& num_schedules,		// # of schedule changes.
+	Serial_schedule *schedules	// Schedule changes.  Room for 8.
 	);
 #endif
 

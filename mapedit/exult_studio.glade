@@ -1827,7 +1827,7 @@ Clouds
 
 	<widget>
 	  <class>GtkEntry</class>
-	  <name>entry5</name>
+	  <name>npc_usecode_entry</name>
 	  <can_focus>True</can_focus>
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
@@ -1913,7 +1913,7 @@ Manual
 
       <widget>
 	<class>GtkTable</class>
-	<name>table2</name>
+	<name>npc_props_table</name>
 	<border_width>4</border_width>
 	<rows>5</rows>
 	<columns>2</columns>
@@ -1944,7 +1944,7 @@ Manual
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton8</name>
+	    <name>npc_prop_00</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -1984,7 +1984,7 @@ Manual
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton9</name>
+	    <name>npc_prop_01</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -2024,7 +2024,7 @@ Manual
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton10</name>
+	    <name>npc_prop_02</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -2064,7 +2064,7 @@ Manual
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton11</name>
+	    <name>npc_prop_03</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -2104,7 +2104,7 @@ Manual
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton12</name>
+	    <name>npc_prop_04</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -2144,7 +2144,7 @@ Manual
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton17</name>
+	    <name>npc_prop_05</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -2184,7 +2184,7 @@ Manual
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton16</name>
+	    <name>npc_prop_06</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -2224,7 +2224,7 @@ Manual
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton15</name>
+	    <name>npc_prop_07</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -2264,7 +2264,7 @@ Manual
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton14</name>
+	    <name>npc_prop_08</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -2304,7 +2304,7 @@ Manual
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton13</name>
+	    <name>npc_prop_09</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
