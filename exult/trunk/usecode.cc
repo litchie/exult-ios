@@ -433,6 +433,14 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 13:			// Set item shape.
 		set_item_shape(parms[0], parms[1]);
 		break;
+	case 16:			// Rand. # within range.
+		{
+		int low = parms[0].get_int_value();
+		int high = parms[1].get_int_value();
+		if (low > high)
+			low = high;
+		return (Usecode_value((rand() % (high - low + 1)) + low));
+		}
 	case 17:			// Get item shape.
 		return (Usecode_value(get_item_shape(parms[0])));
 	case 18:
@@ -440,8 +448,12 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 19:			// Set item shape.
 		set_item_frame(parms[0], parms[1]);
 		break;
+	case 27:			// +++++Not known.  1 parm.
+		return Usecode_value(0);
 	case 0x27:			// Get player name.
 		return Usecode_value("Player");
+	case 90:			// Is player female?
+		return Usecode_value(0);
 	default:
 cout << "Unhandled intrinsic " << intrinsic << " called with " << num_parms
 	<< " parms\n";
@@ -546,6 +558,7 @@ void Usecode_machine::run
 		{
 		Usecode_value val = pop();
 		locals[num_args - i - 1] = val;
+//		locals[i] = val; //+++++I think the above is correct.
 		}
 	int num_externs = Read2(ip);	// # of external refs. following.
 	unsigned char *externals = ip;	// Save -> to them.
@@ -677,9 +690,12 @@ void Usecode_machine::run
 			}
 			break;
 		case 0x1f:		// PUSHI.
-			offset = Read2(ip);
-			pushi(offset);
+			{		// Might be negative.
+			short ival = Read2(ip);
+cout << "Ival = " << ival << '\n';
+			pushi(ival);
 			break;
+			}
 		case 0x21:		// PUSH.
 			offset = Read2(ip);
 			push(locals[offset]);

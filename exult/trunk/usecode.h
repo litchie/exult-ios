@@ -216,7 +216,7 @@ public:
 		{
 		caller_item = obj;
 		Usecode_value parm(0);	// They all seem to take 1 parm.
-		int ret = call_usecode_function(id, 0, &parm);
+		int ret = call_usecode_function(id, 1, &parm);
 		caller_item = 0;
 		return ret;
 		}
