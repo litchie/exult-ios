@@ -143,7 +143,7 @@ public:
 private:
 	void ParseText(char *text);
 	void ParseLine(char *line);
-	static void FillParseMaps();
+	void FillParseMaps();
 };
 
 #endif /* KEYS_H */
