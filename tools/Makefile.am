@@ -46,14 +46,6 @@ ucc_SOURCES = \
 	ucclex.l \
 	uccparse.y
 
-ucclex.c: ucclex.l
-	$(LEX) $< && mv lex.yy.c $@
-uccparse.c: uccparse.y
-	$(YACC) $< && mv y.tab.c $@
-
-uccparse.o: ucclex.c uccparse.c
-	$(COMPILE) -o $@ -c $(srcdir)/uccparse.c
-
 ucc: uccparse.o
 	$(LINK) uccparse.o
 
