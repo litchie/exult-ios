@@ -26,11 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_ACTORS	1
 
 #include "objs.h"
-#include "npc.h"
 
-class Npc;
 class Image_window;
-class Font_face;
 
 /*
  *	An actor:
@@ -78,34 +75,16 @@ public:
 /*
  *	A non-player-character that one can converse with:
  */
-class Npc_actor : public Actor, public Npc_user
+class Npc_actor : public Actor
 	{
-	Npc *npc;			// It's "personality".
-	Npc_sentence *sentences;	// Set during conversation.
-	Image_window *our_win;		// Window to write to.
-	Font_face *our_face;		// Font to write with.
-	Rectangle our_box;		// Where to write our responses.
 	int usecode;			// # of usecode function.
 public:
 	Npc_actor(int shapenum, int fshape = -1, int uc = -1)
-			: Actor(shapenum, fshape), npc(0), sentences(0),
+			: Actor(shapenum, fshape),
 				usecode(uc)
 		{  }
 	~Npc_actor();
-	void set_npc(Npc *n);
-	Npc *get_npc()
-		{ return npc; }
 	virtual int get_usecode();	// Get usecode function to run.
-					// Print sentences we'll respond to.
-	int converse(Image_window *win, Font_face *face, Rectangle& box);
-					// Start conversation.
-	void start_conversation(Image_window *win, Font_face *face, 
-					Rectangle& box);
-					// Respond to mouse click.
-	int respond(Image_window *win, Font_face *face, Rectangle& box,
-							int x, int y);
-					// Print our response on screen.
-	virtual void show_response(char *msg);
 	};
 
 /*

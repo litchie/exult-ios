@@ -52,7 +52,9 @@ private:
 	Usecode_machine *usecode;	// Drives game plot.
 	Game_mode mode;			// Mode we'er in.
 	char *showing_item;		// Item we're showing the name of.
-	Rectangle showing_rect;		// Rectangle text is shown in.
+	Rectangle showing_rect;		// Rectangle item text is shown in.
+	Rectangle npc_text_rect;	// Rectangle NPC statement is shown in.
+	Rectangle *conv_choices;	// Choices during a conversation.
 	unsigned char painted;		// 1 if we updated image buffer.
 	unsigned char focus;		// Do we have focus?
 	ifstream chunks;		// "u7chunks" file.
@@ -62,9 +64,6 @@ private:
 	Script_compiler *script;	// Compiled NPC script.
 	Actor main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
-	Slist *npc_actors;		// For now, list of all NPC's we can
-					//   converse with.
-	Npc_actor *conversing_with;	// Who we're talking to.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];
 					// Get/create objs. list for a chunk.
@@ -245,10 +244,12 @@ public:
 	void double_clicked(Window xwin, int x, int y);
 					// Show a "face" on the screen.
 	void show_face(int shape, int frame);
-					// Converse with an NPC.
-	void converse(Npc_actor *actor, int x = -1, int y = -1);
-	void converse(int x, int y)
-		{ converse(conversing_with, x, y); }
+					// Show what NPC said.
+	void show_npc_message(char *msg);
+					// Show what Avatar can say.
+	void show_avatar_choices(int num_choices, char **choices);
+					// User clicked on a choice.
+	void conversation_choice(int x, int y);
 	void get_focus(Window xwin)	// Get/lose focus.
 		{
 		if (xwin == win->get_win())

@@ -1,7 +1,7 @@
 
 OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o \
 	vgafile.o utils.o readnpcs.o gamedat.o usecode.o \
-	imagetxt.o text.o items.o npctest.o npc/libnpc.a script/libscr.a
+	imagetxt.o text.o items.o
 
 ifdef DOS
 CXX = dos-g++
@@ -47,16 +47,16 @@ release:
 
 tar:	exult
 	strip exult
-	(cd ..; tar cvfz exult09.tgz exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,exult,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
+	(cd ..; tar cvfz exult10.tgz exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,exult,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
 
 w32zip:
-	(cd ..; zip exult09w..zip exult/{*.h,*.cc,makefile,exult.ide,README,readme.w95,CHANGELOG,exultw32.exe,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
+	(cd ..; zip exult10w..zip exult/{*.h,*.cc,makefile,exult.ide,README,readme.w95,CHANGELOG,exultw32.exe,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
 
 doszip:	exult.exe
 	(cd ..; zip exult06.zip exult/{exult.exe,avatar.ttf,*.scr,csdpmi3b.zip,README,CHANGELOG})
 
 srczip:
-	(cd ..; zip exult09.zip exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
+	(cd ..; zip exult10.zip exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
 
 clean:
 	(cd npc; make clean)
