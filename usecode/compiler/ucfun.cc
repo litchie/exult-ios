@@ -42,7 +42,9 @@ Uc_function::Uc_function
 		text_data(0), text_data_size(0)
 	{
 	char *nm = (char *) proto->get_name();
-	if (!globals.search(nm))		// Add prototype to globals.
+	add_global_function_symbol(proto);// Add prototype to globals.
+#if 0
+	if (!globals.search(nm))		
 		globals.add(proto);
 	else
 		{
@@ -50,6 +52,7 @@ Uc_function::Uc_function
 		sprintf(buf, "Name '%s' already defined", nm);
 		Uc_location::yyerror(buf);
 		}
+#endif
 	const vector<char *>& parms = proto->get_parms();
 	for (vector<char *>::const_iterator it = parms.begin();
 				it != parms.end(); it++)

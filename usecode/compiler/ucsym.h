@@ -159,15 +159,17 @@ public:
 	~Uc_scope();
 	Uc_scope *get_parent()
 		{ return parent; }
-	Uc_symbol *search(char *nm)	// Look in this scope.
+	Uc_symbol *search(const char *nm)	// Look in this scope.
 		{
-		Sym_map::const_iterator it = symbols.find(nm);
+		char *nm1 = (char *) nm;
+		Sym_map::const_iterator it = symbols.find(nm1);
 		if (it == symbols.end())
 			return 0;
 		else
 			return (*it).second;
 		}
-	Uc_symbol *search_up(char *nm);	// Search upwards through scopes.
+					// Search upwards through scopes.
+	Uc_symbol *search_up(char *nm);
 	void add(Uc_symbol *sym)	// Add (does NOT check for dups.)
 		{
 		const char *nm = sym->name.c_str();
@@ -180,6 +182,8 @@ public:
 		scopes.push_back(newscope);
 		return newscope;
 		}
+					// Add a function decl.
+	int add_function_symbol(Uc_function_symbol *fun);
 	};
 
 #endif

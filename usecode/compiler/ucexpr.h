@@ -82,6 +82,24 @@ public:
 	Uc_arrayelem_expression(Uc_var_symbol *a, Uc_expression *i)
 		: array(a), index(i)
 		{  }
+	~Uc_arrayelem_expression()
+		{ delete index; }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
+					// Gen. to assign from stack.
+	virtual void gen_assign(ostream& out);
+	};
+
+/*
+ *	Global flag.
+ */
+class Uc_flag_expression : public Uc_expression
+	{
+	int index;
+public:
+	Uc_flag_expression(int i)
+		: index(i)
+		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(ostream& out);
 					// Gen. to assign from stack.

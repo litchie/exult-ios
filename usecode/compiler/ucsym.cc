@@ -233,6 +233,38 @@ Uc_symbol *Uc_scope::search_up
 		return 0;
 	}
 
+/*
+ *	Add a function symbol.
+ *
+ *	Output:	0 if already there.  Errors reported.
+ */
 
+int Uc_scope::add_function_symbol
+	(
+	Uc_function_symbol *fun
+	)
+	{
+	char buf[150];
+	const char *nm = fun->get_name();
+	Uc_symbol *found = search(nm);	// Already here?
+	if (!found)			// If not, that's good.
+		{
+		add(fun);
+		return 1;
+		}
+	Uc_function_symbol *fun2 = dynamic_cast<Uc_function_symbol *> (found);
+	if (!fun2)			// Non-function name.
+		{
+		sprintf(buf, "'%s' already declared", nm);
+		Uc_location::yyerror(buf);
+		}
+	else if (fun->get_usecode_num() != fun2->get_usecode_num() ||
+		fun->get_num_parms() != fun2->get_num_parms())
+		{
+		sprintf(buf, "Decl. of '%s' doesn't match previous decl", nm);
+		Uc_location::yyerror(buf);
+		}
+	return 0;
+	}
 
 

@@ -62,7 +62,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 /*
  *	Keywords:
  */
-%token IF ELSE RETURN WHILE FOR IN WITH TO
+%token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN
 %token VAR STRING
 %token SAY MESSAGE EVENT FLAG ITEM UCTRUE UCFALSE
 
@@ -93,7 +93,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 %type <expr> expression primary
 %type <intval> opt_int
 %type <var> declared_var
-%type <funsym> function_proto
+%type <funsym> function_proto function_decl
 %type <strvec> identifier_list opt_identifier_list
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
@@ -106,8 +106,17 @@ static Uc_function *function = 0;	// Current function being parsed.
 %%
 
 design:
-	design function
-	| function
+	design global_decl
+	| global_decl
+	;
+
+global_decl:
+	function
+	| function_decl
+		{
+		if (!Uc_function::add_global_function_symbol($1))
+			delete $1;
+		}
 	;
 
 function:
@@ -184,6 +193,16 @@ declaration:
 		{
 		function->add_string_symbol($2, $4);
 		}
+	| function_decl
+		{
+		if (!function->add_function_symbol($1))
+			delete $1;
+		}
+	;
+
+function_decl:
+	EXTERN function_proto ';'
+		{ $$ = $2; }
 	;
 
 assignment_statement:
@@ -319,6 +338,8 @@ primary:
 		{ $$ = new Uc_var_expression($1); }
 	| declared_var '[' expression ']'
 		{ $$ = new Uc_arrayelem_expression($1, $3); }
+	| FLAG '[' INT_LITERAL ']'
+		{ $$ = new Uc_flag_expression($3); }
 	| function_call
 		{ $$ = $1; }
 	| UCTRUE

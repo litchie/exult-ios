@@ -131,6 +131,32 @@ void Uc_arrayelem_expression::gen_assign
 	}
 
 /*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_flag_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	out.put((char) UC_PUSHF);	// Opcode, flag #.
+	Write2(out, index);
+	}
+
+/*
+ *	Generate assignment to this variable.
+ */
+
+void Uc_flag_expression::gen_assign
+	(
+	ostream& out
+	)
+	{
+	out.put((char) UC_POPF);
+	Write2(out, index);
+	}
+
+/*
  *	Get offset in function's text_data.
  *
  *	Output:	Offset.
