@@ -2,7 +2,7 @@
 
 <!DOCTYPE todo SYSTEM "todo.dtd">
 
-<todo title="Exult" changed="27 November 2001(GMT)">
+<todo title="Exult" changed="26 Septembre 2002(GMT)">
 
 <project>
 	<description>
@@ -125,10 +125,10 @@
 </project>
 <project>
 	<description>
-		Implement ZIP support for the Zaurus.
+		Implement OGG support for the Zaurus.
 	</description>
 	<difficulty>
-		Easy
+		Medium
 	</difficulty>
 	<owner>
 		Artaxerxes
