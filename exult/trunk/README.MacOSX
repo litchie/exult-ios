@@ -64,7 +64,7 @@ you copy it to another machine it will most likely not work. So you can only
 use it on your own computer.
 
 
-If you want to comile Exult Studio, you have to install this package:
+If you want to compile Exult Studio, you have to install this package:
   libglade2
 
 This might actually cause many other packages required by libglade2 to
