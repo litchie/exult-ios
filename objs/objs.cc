@@ -679,6 +679,20 @@ void Game_object::paint
 	}
 
 /*
+ *	Paint outline.
+ */
+
+void Game_object::paint_outline
+	(
+	Pixel_colors pix		// Color to use.
+	)
+	{
+	int x, y;
+	gwin->get_shape_location(this, x, y);
+	ShapeID::paint_outline(x, y, pix);
+	}
+
+/*
  *	Run usecode when double-clicked.
  */
 

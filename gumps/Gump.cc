@@ -357,7 +357,7 @@ void Gump::paint
 			{
 			int x, y;
 			get_shape_location(obj, x, y);
-			obj->paint_outline(x, y, HIT_PIXEL);
+			obj->ShapeID::paint_outline(x, y, HIT_PIXEL);
 			}
 		}
 }

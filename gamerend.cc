@@ -256,13 +256,9 @@ int Game_render::paint_map
 						it != sel.end(); ++it)
 		{
 		Game_object *obj = *it;
-		int x, y;
 		if (!obj->get_owner() && obj->get_lift() < gwin->skip_lift &&
 				obj->get_lift() < gwin->skip_above_actor)
-			{
-			gwin->get_shape_location(obj, x, y);
-			obj->paint_outline(x, y, HIT_PIXEL);
-			}
+			obj->paint_outline(HIT_PIXEL);
 		}
 					// Paint tile grid if desired.
 	if (cheat.in_map_editor() && cheat.show_tile_grid())
