@@ -1,3 +1,8 @@
+2000-06-22  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* effects.cc: Untested: Faster projectiles.  Run usecode at end.
+	* combat.cc: Show 'strike' sequence during attack (untested).
+
 2000-06-17  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Scaling:  Set width=320, height=200, scale=2 in config file.
