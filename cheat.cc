@@ -210,6 +210,25 @@ void Cheat::toggle_tile_grid (void) {
 	gwin->set_all_dirty();
 }
 
+void Cheat::clear_chunksel(void) {
+	chunksel_left = chunksel_top = c_num_chunks;
+	chunksel_right = chunksel_bottom = -1;
+}
+
+void Cheat::add_chunksel(Map_chunk *chunk, bool extend) {
+	chunk->set_selected(true);
+	int cx = chunk->get_cx(), cy = chunk->get_cy();
+	if (cx < chunksel_left)
+		chunksel_left = cx;
+	if (cx > chunksel_right)
+		chunksel_right = cx;
+	if (cy < chunksel_top)
+		chunksel_top = cy;
+	if (cy > chunksel_bottom)
+		chunksel_bottom = cy;
+	// ++++++++LATER:  Handle extend.
+}
+
 void Cheat::set_edit_lift(int lift) {
 	if (!enabled) return;
 	edit_lift = lift;
