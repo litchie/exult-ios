@@ -171,7 +171,6 @@ void BG_Game::play_intro()
 
 	Audio::get_ptr()->stop_music();
 
-#if 0
 	// Lord British presents...
 	pal.load("<STATIC>/intropal.dat",3);
 	gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
@@ -257,7 +256,6 @@ void BG_Game::play_intro()
 		return;	
 	}
 
-#endif
 	//TODO: show plasma first, then a bit of static
 	//TODO: Guardian appears too high.
 
@@ -331,40 +329,40 @@ void BG_Game::play_intro()
 
 	// Successful 'popup'
 	s = shapes.get_shape(0x23, 0);
-	gwin->paint_shape(centerx,centery-20,s);
+	gwin->paint_shape(centerx,centery,s);
 	backup = gwin->get_win()->create_buffer(s->get_width(), 
 						s->get_height());
 	gwin->get_win()->get(backup, centerx - s->get_xleft(),
-			     centery-20 - s->get_yabove());
+			     centery - s->get_yabove());
 	for(int i=1; i<16; i++) {
-		gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x23,i));
+		gwin->paint_shape(centerx,centery,shapes.get_shape(0x23,i));
 		win->show();
 		if(wait_delay_cycle(70)) {
 			pal.fade_out(30);
 			return;	
 		}
 		gwin->get_win()->put(backup, centerx - s->get_xleft(),
-				     centery-20 - s->get_yabove());
+				     centery - s->get_yabove());
 	}
 	delete backup;
 
 	// Actual appearance
 	// mouth
 	s = shapes.get_shape(0x1E,0);
-	gwin->paint_shape(centerx,centery-4,s);
+	gwin->paint_shape(centerx,centery,s);
 	backup = gwin->get_win()->create_buffer(s->get_width(), 
 						s->get_height());
 	gwin->get_win()->get(backup, centerx - s->get_xleft(),
-			     centery-4 - s->get_yabove());
+			     centery - s->get_yabove());
 	// eyes
 	s2 = shapes.get_shape(0x20,0);
-	gwin->paint_shape(centerx,centery-14,s2);
+	gwin->paint_shape(centerx,centery-10,s2);
 	backup2 = gwin->get_win()->create_buffer(s2->get_width(), 
 						 s2->get_height());
 	gwin->get_win()->get(backup2, centerx - s2->get_xleft(),
-			     centery-14 - s2->get_yabove());
+			     centery-10 - s2->get_yabove());
 	// forehead
-	gwin->paint_shape(centerx,centery-51,shapes.get_shape(0x1F,0));
+	gwin->paint_shape(centerx,centery-47,shapes.get_shape(0x1F,0));
 
 	// Guardian speech
 	U7object textobj(MAINSHP_FLX, 0x0D);
@@ -374,8 +372,8 @@ void BG_Game::play_intro()
 	Audio::get_ptr()->playfile(INTROSND,false);
 	int txt_ypos = gwin->get_height()-gwin->get_text_height(0);
 	for(int i=0; i<14*40; i++) {
-		gwin->paint_shape(centerx,centery-14,shapes.get_shape(0x20,1 + i % 9));
-		gwin->paint_shape(centerx,centery-4,shapes.get_shape(0x1E,1 + i % 14));
+		gwin->paint_shape(centerx,centery-10,shapes.get_shape(0x20,1 + i % 9));
+		gwin->paint_shape(centerx,centery,shapes.get_shape(0x1E,1 + i % 14));
 		if(i % 40 ==0) {
 			char *txt_end = std::strchr(txt_ptr, '\r');
 			*txt_end = 0;
@@ -390,9 +388,9 @@ void BG_Game::play_intro()
 			return;	
 		}
 		gwin->get_win()->put(backup, centerx - s->get_xleft(),
-				     centery-4 - s->get_yabove());
+				     centery - s->get_yabove());
 		gwin->get_win()->put(backup2, centerx - s2->get_xleft(),
-				     centery-14 - s2->get_yabove());
+				     centery-10 - s2->get_yabove());
 	}
 	delete [] txt;
 	delete backup;
@@ -400,14 +398,14 @@ void BG_Game::play_intro()
 
 	// G. disappears again
 	s = shapes.get_shape(0x23, 0);
-	gwin->paint_shape(centerx,centery-20,s);
+	gwin->paint_shape(centerx,centery,s);
 	backup = gwin->get_win()->create_buffer(s->get_width(), 
 						s->get_height());
 	gwin->get_win()->get(backup, centerx - s->get_xleft(),
-			     centery-20 - s->get_yabove());
+			     centery - s->get_yabove());
 	for(int i=15; i>=0; i--) {
 		gwin->clear_screen();
-		gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x23,i));
+		gwin->paint_shape(centerx,centery,shapes.get_shape(0x23,i));
 		win->show();
 		if(wait_delay_cycle(70)) {
 			pal.fade_out(30);
@@ -415,7 +413,7 @@ void BG_Game::play_intro()
 			return;	
 		}
 		gwin->get_win()->put(backup, centerx - s->get_xleft(),
-			     centery-20 - s->get_yabove());
+			     centery - s->get_yabove());
 	}
 	delete backup;
 
