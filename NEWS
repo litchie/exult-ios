@@ -5,6 +5,8 @@
 		Middle mouse button support
 
 		Fast mouse in full-screen modes
+		
+		You can now freeze in SI
 
 		The currently playing music track is stored within savegames
 		so that it started again on load
