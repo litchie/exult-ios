@@ -1,3 +1,7 @@
+2004-01-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* shapeid.cc: don't corrupt game palette to get special colours
+	* palette.*, various: replaced update() by apply(false)
+
 2004-01-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* game.*: added Game::has_expansion() to check for FoV/SS
 	* objnames.cc: fixed SI-without-SS object names

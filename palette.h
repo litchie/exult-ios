@@ -85,7 +85,6 @@ public:
 		unsigned char get_green(int nr) { return pal1[3*nr + 1]; }
 		unsigned char get_blue(int nr) { return pal1[3*nr + 2]; }
 		void set_palette (unsigned char palnew[768]);
-		void update();
 	};
 	
 
