@@ -118,7 +118,13 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/spiked_shield.shp \
 	data/bg/mr_faces.shp \
 	data/bg/mr_intro.shp \
+	data/bg/firesword.shp \
+	data/bg/greencloak.shp \
+	data/bg/greycloak.shp \
+	data/bg/ring_of_protection.shp \
+	data/bg/greentop.shp \
 	data/bg/flx.in
+
 
 EXULT_SI_FLX = data/exult_si.flx data/exult_si_flx.h 
 EXULT_SI_FLX_OBJECTS = \
