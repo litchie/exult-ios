@@ -54,6 +54,8 @@ public:
 		{ return -1; }
 					// Get/create var == this.
 	virtual Uc_var_symbol *need_var(std::ostream& out, Uc_function *fun);
+					// Evaluate constant.
+	virtual bool eval_const(int& val);
 	};
 
 /*
@@ -168,6 +170,8 @@ public:
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(std::ostream& out);
+					// Evaluate constant.
+	virtual bool eval_const(int& val);
 	};
 
 /*

@@ -82,6 +82,17 @@ int Uc_symbol::gen_call
 	}
 
 /*
+ *	Create an expression with this value.
+ */
+
+Uc_expression *Uc_symbol::create_expression
+	(
+	)
+	{
+	return 0;
+	}
+
+/*
  *	Assign value on stack.
  *
  *	Output: 0 if can't do this.
@@ -114,6 +125,44 @@ int Uc_var_symbol::gen_value
 	}
 
 /*
+ *	Create an expression with this value.
+ */
+
+Uc_expression *Uc_var_symbol::create_expression
+	(
+	)
+	{
+	return new Uc_var_expression(this);
+	}
+
+/*
+ *	Generate code to push variable's value on stack.
+ *
+ *	Output: 0 if can't do this.
+ */
+
+int Uc_const_int_symbol::gen_value
+	(
+	std::ostream& out
+	)
+	{
+	out.put((char) UC_PUSHI);
+	Write2(out, value);
+	return 1;
+	}
+
+/*
+ *	Create an expression with this value.
+ */
+
+Uc_expression *Uc_const_int_symbol::create_expression
+	(
+	)
+	{
+	return new Uc_int_expression(value);
+	}
+
+/*
  *	Generate code to push variable's value on stack.
  *
  *	Output: 0 if can't do this.
@@ -127,6 +176,17 @@ int Uc_string_symbol::gen_value
 	out.put((char) UC_PUSHS);
 	Write2(out, offset);
 	return 1;
+	}
+
+/*
+ *	Create an expression with this value.
+ */
+
+Uc_expression *Uc_string_symbol::create_expression
+	(
+	)
+	{
+	return new Uc_string_expression(offset);
 	}
 
 /*

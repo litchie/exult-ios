@@ -136,6 +136,8 @@ in		return IN;
 with		return WITH;
 to		return TO;
 var		return VAR;
+int		return INT;
+const		return CONST;
 string		return STRING;
 extern		return EXTERN;
 true		return UCTRUE;
