@@ -571,9 +571,8 @@ void Animated_object::handle_event
 		else			// Want flat shapes synchronized.
 			{		// Testing -WJP
 			int framenum = (curtime / 100) % frames;
-		
-			set_frame(framenum);	// Set new frame.
 			}
+			set_frame(framenum);	// Set new frame.
 		}
 	else
 		{
