@@ -51,15 +51,17 @@ void Time_queue::add
 
 /*
  *	Remove first entry containing a given object.
+ *
+ *	Output:	1 if found, else 0.
  */
 
-void Time_queue::remove
+int Time_queue::remove
 	(
 	Time_sensitive *obj
 	)
 	{
 	if (!head)
-		return;			// Empty.
+		return (0);		// Empty.
 	Queue_entry *ent = head;
 	do
 		{
@@ -69,11 +71,12 @@ void Time_queue::remove
 				remove_head();
 			else
 				remove_non_head(ent);
-			return;
+			return (1);
 			}
 		ent = ent->next;
 		}
 	while (ent != head);
+	return (0);			// Not found.
 	}
 
 /*

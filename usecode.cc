@@ -476,15 +476,19 @@ void Usecode_machine::set_item_shape
 	int shape = shape_arg.get_int_value();
 	cout << "Set_item_shape: " << val << ", " << shape << '\n';
 	Game_object *item = get_item(val);
-	if (item != 0)
-		{
-		Chunk_object_list *chunk = gwin->get_objects(item);
-		chunk->remove(item);	// Remove and add to update cache.
-		item->set_shape(shape);
-		chunk->add(item);
-		gwin->paint();		// Not sure...
-		gwin->show();		// +++++++
-		}
+	if (!item)
+		return;
+					// Figure area to repaint.
+	Rectangle rect = gwin->get_shape_rect(item);
+	Chunk_object_list *chunk = gwin->get_objects(item);
+	chunk->remove(item);		// Remove and add to update cache.
+	item->set_shape(shape);
+	chunk->add(item);
+	rect = gwin->get_shape_rect(item).add(rect);
+	rect.enlarge(8);
+	gwin->clip_to_win(rect);
+	gwin->paint(rect);		// Not sure...
+	gwin->show();		// +++++++
 	}
 
 /*
@@ -498,14 +502,19 @@ void Usecode_machine::set_item_frame
 	)
 	{
 	Game_object *item = get_item(item_arg.get_int_value());
+	if (!item)
+		return;
 	int frame = frame_arg.get_int_value();
 	cout << "Set_item_frame: " << item->get_shapenum() 
 					<< ", " << frame << '\n';
-	if (item != 0 && 
-	    frame < gwin->get_shape_num_frames(item->get_shapenum()))
+	if (frame < gwin->get_shape_num_frames(item->get_shapenum()))
 		item->set_frame(frame);
+					// Figure area to repaint.
+	Rectangle rect = gwin->get_shape_rect(item);
+	rect.enlarge(8);
+	gwin->clip_to_win(rect);
+	gwin->paint(rect);
 //+++++Testing
-	gwin->paint();
 	gwin->show();
 	}
 
@@ -533,6 +542,28 @@ int Usecode_machine::get_item_frame
 	{
 	Game_object *item = get_item(item_arg.get_int_value());
 	return (item == 0 ? 0 : item->get_framenum());
+	}
+
+/*
+ *	Remove an item from the world.
+ */
+
+void Usecode_machine::remove_item
+	(
+	Game_object *obj
+	)
+	{
+	if (!obj)
+		return;
+					// Get area to repaint.
+	Rectangle rect = gwin->get_shape_rect(obj);
+	rect.enlarge(8);
+	gwin->clip_to_win(rect);
+					// Remove from world.  ?? What if it's
+					//   in a container.+++++++????
+	gwin->get_objects(obj->get_cx(), obj->get_cy())->remove(obj);
+	delete obj;
+	gwin->paint(rect);
 	}
 
 #define PARTY_MAX (sizeof(party)/sizeof(party[0]))
@@ -824,12 +855,7 @@ void Usecode_machine::exec_array
 			i++;
 			break;
 		case 0x2d:		// ?? Remove itemref?
-cout << "0x2d:  Deleting itemref\n";
-			gwin->get_objects(obj->get_cx(), obj->get_cy())->
-						remove(obj);
-			delete obj;
-			obj = 0;
-			gwin->paint();
+			remove_item(obj);
 			break;
 		case 0x46:		// ?? 1 parm. This IS a frame.
 			{		// Set frame?  Pretty sure.
@@ -1452,10 +1478,8 @@ Usecode_value Usecode_machine::call_intrinsic
 					// Maybe it's obj's container???
 		Unhandled(intrinsic, num_parms, parms);
 		break;
-	case 0x6f:			// Animate object (w/ palette?)?
-					// Or delete object?
-//+++++++++++++++
-		Unhandled(intrinsic, num_parms, parms);
+	case 0x6f:			// ?Think it's 'delete object'.
+		remove_item(get_item(parms[0].get_int_value()));
 		break;
 	case 0x72:			// Wearing? (npc, where, itemshape, 
 					//   frame (-359=any)).
