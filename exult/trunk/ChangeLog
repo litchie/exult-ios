@@ -1,3 +1,6 @@
+2001-08-05  Max Horn <max@quendi.de>
+	* flic/playfli.h: was not double include protected! (caused troubles when using precompile headers)
+
 2001-08-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc,actors.cc,actorio.cc:  Turn off 'flee' mode when
