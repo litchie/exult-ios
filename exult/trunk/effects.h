@@ -98,11 +98,9 @@ class Projectile_effect : public Special_effect
 	{
 	Actor *attacker;		// Source of attack/spell.
 	Game_object *target;		// Target of path.
-	ShapeID projectile;
-	//int shape_num;			// Shape # in 'shapes.vga' of projec.
-					//   or spell to 'attack' with.
+	int projectile_shape;		// Shape # of projectile/spell.
+	ShapeID sprite;			// Sprite shape to display.
 	int weapon;			// Shape # of firing weapon, or 0.
-	//int frame_num;			// Current frame.
 	int frames;			// # frames.
 	PathFinder *path;		// Determines path.
 	Tile_coord pos;			// Current position.

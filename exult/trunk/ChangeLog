@@ -1,3 +1,11 @@
+2001-12-05  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Allow talking to NPC in combat if NPC is friendly or
+	neutral.
+	* effects.cc,effects.h,intrinsics.cc (Projectile_effect): Store
+	projectile AND sprite shapes separately so we can test properly
+	for explosion at target.
+
 2001-12-05  Tristan Tarrant <nadir@users.sourceforge.net>
 	* configure.in: added ucxt directories
 	* exult.spec.in: added ucc, ucxt, splitshp and shp2pcx to tools 
