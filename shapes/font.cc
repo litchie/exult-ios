@@ -203,7 +203,7 @@ int Font::paint_text
 	if (font_shapes)
 		while ((chr = *text++) != 0)
 			{
-			Shape_frame *shape = font_shapes->get_frame(chr);
+			Shape_frame *shape = font_shapes->get_frame((unsigned char)chr);
 			if (!shape)
 				continue;
 			shape->paint_rle(x, yoff);
@@ -231,8 +231,7 @@ int Font::paint_text
 	if (font_shapes)
 		while (textlen--)
 			{
-			Shape_frame *shape = font_shapes->get_frame((int)
-								*text++);
+			Shape_frame *shape= font_shapes->get_frame((unsigned char)*text++);
 			if (!shape)
 				continue;
 			shape->paint_rle(x, yoff);
@@ -383,7 +382,7 @@ int Font::paint_text_fixedwidth
 	yoff += get_text_baseline();
 	while ((chr = *text++) != 0)
 		{
-		Shape_frame *shape = font_shapes->get_frame(chr);
+		Shape_frame *shape = font_shapes->get_frame((unsigned char)chr);
 		if (!shape)
 			continue;
 		x += w = (width - shape->get_width()) / 2;
@@ -414,7 +413,7 @@ int Font::paint_text_fixedwidth
 	yoff += get_text_baseline();
 	while (textlen--)
 		{
-		Shape_frame *shape = font_shapes->get_frame((int) *text++);
+		Shape_frame *shape = font_shapes->get_frame((unsigned char) *text++);
 		if (!shape)
 			continue;
 		x += w = (width - shape->get_width()) / 2;
@@ -437,7 +436,7 @@ int Font::get_text_width
 	short chr;
 	if (font_shapes)
 		while ((chr = *text++) != 0) {
-			Shape_frame* shape = font_shapes->get_frame(chr);
+			Shape_frame* shape = font_shapes->get_frame((unsigned char)chr);
 			if (shape)
 				width += shape->get_width() + hor_lead;
 		}
@@ -457,7 +456,7 @@ int Font::get_text_width
 	int width = 0;
 	if (font_shapes)
 		while (textlen--) {
-			Shape_frame* shape = font_shapes->get_frame(*text++);
+			Shape_frame* shape =font_shapes->get_frame((unsigned char)*text++);
 			if (shape)
 				width += shape->get_width() + hor_lead;
 		}

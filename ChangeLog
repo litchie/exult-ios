@@ -1,3 +1,6 @@
+2003-04-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* shapes/font.cc: use unsigned char to index font frames.
+
 2003-04-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* party.cc,gamewin.cc:  Experimental (and half-done) code to have
