@@ -280,7 +280,7 @@ static void Init
 #ifdef WIN32
 	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
 	//(for MIDI repeats)
-	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+	//SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif //WIN32
 
 	// Show the banner

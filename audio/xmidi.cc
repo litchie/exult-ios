@@ -782,7 +782,8 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 		bank127[status&0xF] = false;
 		
 		if (convert_type == XMIDI_CONVERT_MT32_TO_GM || convert_type == XMIDI_CONVERT_MT32_TO_GS
-			|| convert_type == XMIDI_CONVERT_MT32_TO_GS127)
+			|| convert_type == XMIDI_CONVERT_MT32_TO_GS127 ||
+			(convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM && (status&0xF) == 9))
 			return 2;
 
 		CreateNewEvent (time);
@@ -804,10 +805,11 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 			data = mt32asgm[data];
 		}
 		else if ((convert_type == XMIDI_CONVERT_GS127_TO_GS && bank127[status&0xF]) ||
-				convert_type == XMIDI_CONVERT_MT32_TO_GS)
+				convert_type == XMIDI_CONVERT_MT32_TO_GS ||
+				convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM)
 		{
 			CreateNewEvent (time);
-			current->status = 0xB0 | (status >> 4);
+			current->status = 0xB0 | (status&0xF);
 			current->data[0] = 0;
 			current->data[1] = mt32asgs[data*2+1];
 
@@ -816,12 +818,13 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 		else if (convert_type == XMIDI_CONVERT_MT32_TO_GS127)
 		{
 			CreateNewEvent (time);
-			current->status = 0xB0 | (status >> 4);
+			current->status = 0xB0 | (status&0xF);
 			current->data[0] = 0;
 			current->data[1] = 127;
 		}
 	}	// Drum track handling 
-	else if ((status >> 4) == 0xC && (status&0xF) == 9 && convert_type == XMIDI_CONVERT_MT32_TO_GS127)
+	else if ((status >> 4) == 0xC && (status&0xF) == 9 && 
+		(convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM || convert_type == XMIDI_CONVERT_MT32_TO_GS127))
 	{
 		CreateNewEvent (time);
 		current->status = 0xB9;

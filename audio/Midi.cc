@@ -284,6 +284,8 @@ bool MyMidiPlayer::init_device(void)
 		music_conversion = XMIDI_CONVERT_NOCONVERSION;
 	else if (s == "gs127")
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS127;
+	else if (s == "gs127drum")
+		music_conversion = XMIDI_CONVERT_MT32_TO_GS127DRUM;
 	else
 	{
 		music_conversion = XMIDI_CONVERT_MT32_TO_GM;

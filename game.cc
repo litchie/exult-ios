@@ -364,7 +364,7 @@ Exult_Game exult_menu(Game_window *gwin)
 	U7object banner_midi("<DATA>/exult.flx", 8);
 	banner_midi.retrieve(&mid_buf, len);
 	BufferDataSource *midi_data = new BufferDataSource(mid_buf, len);
-	XMIDI midfile(midi_data, false);
+	XMIDI midfile(midi_data, XMIDI_CONVERT_NOCONVERSION);
 	audio->start_music(&midfile, true);
 	Vga_file exult_flx("<DATA>/exult.flx");
 	
