@@ -216,6 +216,8 @@ public:
 	void clear_dependencies();	// Remove all dependencies.
 					// Find nearby objects.
 	int find_nearby(Vector& vec, int shapenum, int quality, int mask);
+					// Find object blocking given tile.
+	static Game_object *find_blocking(Tile_coord tile);
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.

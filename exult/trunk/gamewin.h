@@ -215,6 +215,10 @@ public:
 #endif
 	Shapes_vga_file& get_shapes()	// Get 'shapes.vga' file.
 		{ return shapes; }
+	Shape_info& get_info(int shnum)	// Get shape info.
+		{ return shapes.get_info(shnum); }
+	Shape_info& get_info(Game_object *obj)
+		{ return get_info(obj->get_shapenum()); }
 					// Get shape from shapes.vga.
 	Shape_frame *get_shape(int shapenum, int framenum)
 		{ return shapes.get_shape(shapenum, framenum); }

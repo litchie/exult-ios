@@ -213,8 +213,7 @@ int Actor::find_best_spot
 	)
 	{
 	Shape_info& info = 
-		Game_window::get_game_window()->get_shapes().get_info(
-							obj->get_shapenum());
+		Game_window::get_game_window()->get_info(obj);
 	if (info.get_shape_class() == Shape_info::container)
 		return !spots[back] ? back : free_hand();
 	Ready_type type = (Ready_type) info.get_ready_type();
@@ -1201,7 +1200,7 @@ int Monster_actor::is_blocked
 	int tx, ty, lift;		// Get current position.
 	get_abs_tile(tx, ty, lift);
 	Game_window *gwin = Game_window::get_game_window();
-	Shape_info& info = gwin->get_shapes().get_info(get_shapenum());
+	Shape_info& info = gwin->get_info(this);
 					// Get dim. in tiles.
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
 	int height = info.get_3d_height();
