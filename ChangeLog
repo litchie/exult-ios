@@ -1,3 +1,8 @@
+2002-01-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* effects.cc (Projectile_effect): Applied user's patch to fix
+	boomerang bug.
+
 2002-01-04  Patrick Burke <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Code cleanup and added a 'flag output' option (-ff).
 	It will output all the flags used in the usecode file, sorted both by

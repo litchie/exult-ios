@@ -421,14 +421,15 @@ void Projectile_effect::handle_event
 			}
 		if (return_path)	// Returned a boomerang?
 			target->add(gwin->create_ireg_object(weapon, 0));
-		else if (target && (!attacker || 
-					// Watch for teleporting away.
-					attacker->distance(target) < 50))
-			{
-			target->attacked(attacker, weapon, projectile_shape);
-			if (attacker &&	// Check for boomerangs.
-			    weapon == projectile_shape)
-				{
+		else
+			{		// Not teleported away ?
+			if (target && epos.distance(target->get_tile()) < 50)
+				target->attacked(attacker, weapon, 
+							projectile_shape);
+			if (attacker && // Check for `boomerangs'
+			    weapon == projectile_shape && 
+			    epos.distance(attacker->get_tile() ) < 50)
+				{ 	// not teleported away
 				Weapon_info *winf = 
 				    gwin->get_info(weapon).get_weapon_info();
 				if (winf && winf->returns())
