@@ -76,5 +76,7 @@ private:
 	bool	is_file;
 };
 
+// Global Config
+extern Configuration *config;
 
 #endif

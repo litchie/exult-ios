@@ -39,8 +39,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class	Timidity_binary : virtual public MidiAbstract
 {
 public:
-	virtual void	start_track(const char *,bool repeat);
-	virtual void	start_sfx(const char *);
+	virtual void	start_track(XMIDIEventList *, bool repeat);
+	virtual void	start_sfx(XMIDIEventList *);
 	virtual void	stop_track(void);
 	virtual void	stop_sfx(void);
 	virtual	bool	is_playing(void);

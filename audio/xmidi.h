@@ -22,8 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define __XMIDI_h_
 
 #include <string>
-#include "exult_types.h"
+#include "common_types.h"
 #include "databuf.h"
+
 
 // Conversion types for Midi files
 #define XMIDI_CONVERT_NOCONVERSION		0
@@ -42,50 +43,193 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MIDI_STATUS_PITCH_WHEEL	0xE
 #define MIDI_STATUS_SYSEX		0xF
 
+// XMIDI Controllers
+#define XMIDI_CONTROLLER_FOR_LOOP	116
+#define XMIDI_CONTROLLER_NEXT_BREAK	117
+
+// Maximum number of for loops we'll allow (used by win_midiout)
+#define XMIDI_MAX_FOR_LOOP_COUNT	128
+
 template <class T> class GammaTable;
 
 struct midi_event
 {
-	int		time;
+	int				time;
 	unsigned char	status;
 
 	unsigned char	data[2];
 
-	uint32	len;
-	unsigned char	*buffer;
+	union {
+		struct {
+			uint32			len;		// Length of SysEx Data
+			unsigned char	*buffer;	// SysEx Data
+		};
+
+		struct {
+			int				duration;	// Duration of note (120 Hz)
+			midi_event		*next_note;	// The next note on the stack
+			uint32			note_time;	// Time note stops playing (6000th of second)
+		};
+	};
 
 	midi_event	*next;
 };
 
+class NoteStack {
+	midi_event		*notes;		// Top of the stack
+	int				polyphony;
+	int				max_polyphony;
+public:
+
+	NoteStack() : notes(0), polyphony(0), max_polyphony(0) { }
+
+	// Pops the top of the stack if its off_time is <= time (6000th of second)
+	inline midi_event *PopTime(int time) {
+		if (notes && notes->note_time <= time)  {
+			midi_event *note = notes;
+			notes = note->next_note;
+			note->next_note = 0;
+			polyphony--;
+			return note;
+		}
+
+		return 0;
+	}
+
+	// Pops the top of the stack
+	inline midi_event *Pop() {
+		if (notes)  {
+			midi_event *note = notes;
+			notes = note->next_note;
+			note->next_note = 0;
+			polyphony--;
+			return note;
+		}
+
+		return 0;
+	}
+
+	// Pops the top of the stack
+	inline midi_event *Remove(midi_event *event) {
+		midi_event *prev = 0;
+		midi_event *note = notes;
+		while (note) {
+
+			if (note == event) {
+				if (prev) prev->next_note = note->next_note;
+				else notes = note->next_note;
+				note->next_note = 0;
+				polyphony--;
+				return note;
+			}
+			prev = note;
+			note = note->next_note;
+		}
+		return 0;
+	}
+
+	// Finds the note that has same pitch and channel, and pops it
+	inline midi_event *FindAndPop(midi_event *event) {
+
+		midi_event *prev = 0;
+		midi_event *note = notes;
+		while (note) {
+
+			if ((note->status & 0xF) == (event->status & 0xF) && note->data[0] == event->data[0]) {
+				if (prev) prev->next_note = note->next_note;
+				else notes = note->next_note;
+				note->next_note = 0;
+				polyphony--;
+				return note;
+			}
+			prev = note;
+			note = note->next_note;
+		}
+		return 0;
+	}
+
+	// Pushes a note onto the top of the stack
+	inline void Push(midi_event *event) {
+		event->next_note = notes;
+		notes = event;
+		polyphony++;
+		if (max_polyphony < polyphony) max_polyphony = polyphony;
+	}
+
+
+	inline void Push(midi_event *event, uint32 time) {
+		event->note_time = time;
+		event->next_note = 0;
+
+		polyphony++;
+		if (max_polyphony < polyphony) max_polyphony = polyphony;
+
+		if (!notes || time <= notes->note_time) {
+			event->next_note = notes;
+			notes = event;
+		}
+		else {
+			midi_event *prev = notes;
+			while (prev) {
+				midi_event *note = prev->next_note;
+
+				if (!note || time <= note->note_time) {
+					event->next_note = note;
+					prev->next_note = event;
+					return;
+				}
+				prev = note;
+			}
+		}
+	}
+
+	inline int GetPolyphony() {
+		return polyphony;
+	}
+
+	inline int GetMaxPolyphony() {
+		return max_polyphony;
+	}
+};
+
+class XMIDIEventList 
+{
+	int				counter;
+	
+	// Helper funcs for Write
+	int				PutVLQ(DataSource *dest, uint32 value);
+	uint32			ConvertListToMTrk (DataSource *dest);
+
+public:
+	friend class XMIDI;
+	midi_event		*events;
+
+	// Write this list to a file/buffer
+	int				Write (const char *filename);	
+	int				Write (DataSource *dest);	
+};
+
 class   XMIDI
 {
-public:
-	struct  midi_descriptor
-	{
-		uint16	type;
-		uint16	tracks;
-	};
-
 protected:
-	midi_descriptor	info;
+	uint16				num_tracks;
 
 private:
-	midi_event			**events;
-	signed short		*timing;
+	XMIDIEventList		**events;
 
-	midi_event		*list;
-	midi_event		*current;
+	midi_event			*list;
+	midi_event			*current;
+	midi_event			*notes_on;
 	
 	const static char	mt32asgm[128];
 	const static char	mt32asgs[256];
-	bool 			bank127[16];
-	int			convert_type;
-	bool			*fixed;
+	bool 				bank127[16];
+	int					convert_type;
 	
-	bool			do_reverb;
-	bool			do_chorus;
-	int			chorus_value;
-	int			reverb_value;
+	bool				do_reverb;
+	bool				do_chorus;
+	int					chorus_value;
+	int					reverb_value;
 
 	// Midi Volume Curve Modification
 	static GammaTable<unsigned char>	VolumeCurve;
@@ -94,48 +238,46 @@ public:
 	XMIDI(DataSource *source, int pconvert);
 	~XMIDI();
 
-	int number_of_tracks()
-	{
-		if (info.type != 1)
-			return info.tracks;
-		else
-			return 1;
-	};
+	int number_of_tracks() { return num_tracks; }
 
-	// Retrieve it to a data source
-	int retrieve (uint32 track, DataSource *dest);
-	
 	// External Event list functions
-	int retrieve (uint32 track, midi_event **dest, int &ppqn);
-	static void DeleteEventList (midi_event *mlist);
+	XMIDIEventList *GetEventList (uint32 track);
+	static void DeleteEventList (XMIDIEventList *list);
 
 	// Not yet implimented
 	// int apply_patch (int track, DataSource *source);
 
 private:
 	XMIDI(); // No default constructor
-        
+    
+    struct first_state {			// Status,	Data[0]
+		midi_event		*patch[16];	// 0xC
+		midi_event		*bank[16];	// 0xB,		0
+		midi_event		*pan[16];	// 0xB,		7
+		midi_event		*vol[16];	// 0xB,		10
+	};
+
 	// List manipulation
 	void CreateNewEvent (int time);
 
 	// Variable length quantity
 	int GetVLQ (DataSource *source, uint32 &quant);
 	int GetVLQ2 (DataSource *source, uint32 &quant);
-	int PutVLQ(DataSource *dest, uint32 value);
 
-	void MovePatchVolAndPan (int channel = -1);
-	void DuplicateAndMerge (int num = 0);
+	void AdjustTimings(uint32 ppqn);	// This is used by Midi's ONLY!
+	void ApplyFirstState(first_state &fs, int chan_mask);
 
-	int ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size);
+	int ConvertNote (const int time, const unsigned char status, DataSource *source, const int size);
+	int ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size, first_state& fs);
 	int ConvertSystemMessage (const int time, const unsigned char status, DataSource *source);
 
-	int ConvertFiletoList (DataSource *source, bool is_xmi);
-	uint32 ConvertListToMTrk (DataSource *dest, midi_event *mlist);
+	int ConvertFiletoList (DataSource *source, const bool is_xmi, first_state& fs);
 
 	int ExtractTracksFromXmi (DataSource *source);
-	int ExtractTracksFromMid (DataSource *source);
+	int ExtractTracksFromMid (DataSource *source, const uint32 ppqn, const int num_tracks, const bool type1);
 	
 	int ExtractTracks (DataSource *source);
+	static void DeleteEventList (midi_event *list);
 
 };
 #endif

@@ -20,6 +20,8 @@
 #  include <config.h>
 #endif
 
+#ifndef PENTAGRAM // Exult only at this stage. 
+
 #include "pcb.h"
 
 uint32 ProducerConsumerBuf::sequence_cnt=0;
@@ -28,3 +30,5 @@ uint32 ProducerConsumerBuf::sequence_cnt=0;
 #ifdef DEBUG
 int	ProducerConsumerBuf::counter=0;
 #endif
+
+#endif // PENTAGRAM

@@ -250,8 +250,11 @@ bool	Timidity_binary::is_playing(void)
 	return false;
 }
 
-void	Timidity_binary::start_track(const char *name,bool repeat)
+void	Timidity_binary::start_track(XMIDIEventList *event_list,bool repeat)
 {
+	const char *name = MIDITMPFILE;
+	event_list->Write(name);
+
 #if DEBUG
 	cerr << "Starting midi sequence with Timidity_binary" << endl;
 #endif
@@ -271,9 +274,15 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 		perror("pthread_create");
 }
 
+virtual void	start_track( *, bool repeat);
+virtual void	start_sfx(XMIDIEventList *);
 
-void	Timidity_binary::start_sfx(const char *name)
+
+void	Timidity_binary::start_sfx(XMIDIEventList *event_list)
 {
+	const char *name = MIDISFXFILE;
+	event_list->Write(name);
+
 #if DEBUG
 	cerr << "Starting sound effect with Timidity_binary" << endl;
 #endif

@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001  Ryan Nunn
+Copyright (C) 2000, 2001, 2002  Ryan Nunn
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -44,17 +44,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MMNOMMIO        // Multimedia file I/O support
 
 #include <windows.h>
-#include <winbase.h>
 #include <mmsystem.h>
+#include <winbase.h>
+
+#include <string>
 
 #include "win_midiout.h"
-#include "exceptions.h"
+#include "../xmidi.h"
 
-#include "utils.h"
-#include "xmidi.h"
-#include <unistd.h>
+#include "../../files/utils.h"
+#include "../../conf/Configuration.h"
 
-#include "Configuration.h"
 extern	Configuration	*config;
 
 #define W32MO_THREAD_COM_READY		0
@@ -116,7 +116,7 @@ Windows_MidiOut::~Windows_MidiOut()
 		
 		giveinfo();
 		// Wait 1 MS before trying again
-		if (code == STILL_ACTIVE) Sleep (10);
+		if (code == STILL_ACTIVE) Sleep (1);
 		else break;
 		giveinfo();
 		
@@ -178,7 +178,7 @@ DWORD Windows_MidiOut::thread_main()
 
 	// List all the midi devices.
 	MIDIOUTCAPS caps;
-	sint32 dev_count = (sint32) midiOutGetNumDevs(); 
+	signed long dev_count = (signed long) midiOutGetNumDevs(); 
 	std::cout << dev_count << " Midi Devices Detected" << endl;
 	std::cout << "Listing midi devices:" << endl;
 
@@ -236,33 +236,37 @@ DWORD Windows_MidiOut::thread_main()
 
 void Windows_MidiOut::thread_play ()
 {
-	int	ppqn = 1;
-	int	repeat = false;
-	int	tempo = 0x07A120;
-	double	Ippqn = 1;
-	double	tick = 1;
-	double	last_tick = 0;
-	double	last_time = 0;
-	double	aim = 0;
-	double	diff = 0;
-	
-	midi_event *evntlist = NULL;
-	midi_event *event = NULL;
+	int				repeat = false;
+	uint32			aim = 0;
+	sint32			diff = 0;
+	uint32			last_tick = 0;
+	XMIDIEventList	*evntlist = NULL;
+	midi_event		*event = NULL;
+	NoteStack		notes_on;
+	midi_event		*note = NULL;
+
+	//
+	// Xmidi Looping
+	//
+
+	// The for loop event
+	midi_event	*loop_event[XMIDI_MAX_FOR_LOOP_COUNT];
+
+	// The amount of times we have left that we can loop
+	int		loop_count[XMIDI_MAX_FOR_LOOP_COUNT];
+
+	// The level of the loop we are currently in
+	int		loop_num = -1;		
 
 	giveinfo();
 
-	int	s_ppqn = 1;
-	int	s_tempo = 0x07A120;
-	double	s_Ippqn = 1;
-	double	s_tick = 1;
-	double	s_last_tick = 0;
-	double	s_last_time = 0;
-	double	s_aim = 0;
-	double	s_diff = 0;
-	int	s_track = 0;
-	
-	midi_event *s_evntlist = NULL;
-	midi_event *s_event = NULL;
+	int				s_track = 0;
+	uint32			s_aim = 0;
+	sint32			s_diff = 0;
+	uint32			s_last_tick = 0;
+	NoteStack		s_notes_on;
+	XMIDIEventList	*s_evntlist = NULL;
+	midi_event		*s_event = NULL;
 
 	giveinfo();
 
@@ -271,80 +275,151 @@ void Windows_MidiOut::thread_play ()
 	{
 		if (thread_com == W32MO_THREAD_COM_EXIT && !playing && !s_playing) break;
 		
-	 	if (event)
-	 	{
-	 		aim = last_time + (event->time-last_tick)*tick;
-			diff = aim - wmoGetTime ();
-	 	}
-	 	else 
-	 		diff = 1;
-	
-		if (diff <= 0)
+		if (thread_com == W32MO_THREAD_COM_STOP)
 		{
-			last_tick = event->time;
-			last_time = aim;
-		
-			if ((event->status >> 4) != MIDI_STATUS_SYSEX)
-			{
-				midiOutShortMsg (midi_port, event->status + (event->data[0] << 8) + (event->data[1] << 16));
-			}
-			else if (event->status == 0xFF && event->data[0] == 0x51) // Tempo change
-			{
-				tempo = (event->buffer[0] << 16) +
-					(event->buffer[1] << 8) +
-					event->buffer[2];
-					
-				tick = tempo*Ippqn;
-			}	
-		
-		 	event = event->next;
+			giveinfo();
+			InterlockedExchange (&playing, FALSE);
+			InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
+
+			// Handle note off's here
+			while (note = notes_on.Pop())
+				midiOutShortMsg (midi_port, note->status + (note->data[0] << 8));
+
+			giveinfo();
+		 	// Clean up
+			for (int i = 0; i < 16; i++) reset_channel (i); 
+			midiOutReset (midi_port);
+			giveinfo();
+			if (evntlist) XMIDI::DeleteEventList (evntlist);
+			giveinfo();
+			evntlist = NULL;
+			event = NULL;
+			giveinfo();
+
+			// If stop was requested, we are ready to receive another song
+
+			loop_num = -1;
+
+			wmoInitClock ();
+			last_tick = 0;
 		}
 
-	 	if ((diff <= 0 && !event) || (thread_com != W32MO_THREAD_COM_READY))
+		// Handle note off's here
+		while (note = notes_on.PopTime(wmoGetRealTime()))
+			midiOutShortMsg (midi_port, note->status + (note->data[0] << 8));
+
+		while (note = s_notes_on.PopTime(wmoGetRealTime()))
+			midiOutShortMsg (midi_port, note->status + (note->data[0] << 8));
+
+		while (event && thread_com != W32MO_THREAD_COM_STOP)
 		{
-		 	if (!repeat || thread_com != W32MO_THREAD_COM_READY || last_tick == 0)
-		 	{
-		 		// Clean up
-				giveinfo();
-				for (int i = 0; i < 16; i++) reset_channel (i); 
-				midiOutReset (midi_port);
-				giveinfo();
-				XMIDI::DeleteEventList (evntlist);
-				giveinfo();
-				evntlist = NULL;
-				giveinfo();
-				event = NULL;
-				giveinfo();
-				InterlockedExchange (&playing, false);
-				giveinfo();
-				
-				// If stop was requested, we are ready to receive another song
-				giveinfo();
-				if (thread_com == W32MO_THREAD_COM_STOP)
+	 		aim = (event->time-last_tick)*50;
+			diff = aim - wmoGetTime ();
+
+			if (diff > 0) break;
+
+			last_tick = event->time;
+			wmoAddOffset(aim);
+		
+				// XMIDI For Loop
+			if ((event->status >> 4) == MIDI_STATUS_CONTROLLER && event->data[0] == XMIDI_CONTROLLER_FOR_LOOP)
+			{
+				if (loop_num < XMIDI_MAX_FOR_LOOP_COUNT) loop_num++;
+
+				loop_count[loop_num] = event->data[1];
+				loop_event[loop_num] = event;
+
+			}	// XMIDI Next/Break
+			else if ((event->status >> 4) == MIDI_STATUS_CONTROLLER && event->data[0] == XMIDI_CONTROLLER_NEXT_BREAK)
+			{
+				if (loop_num != -1)
 				{
-					giveinfo();
-					InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
+					if (event->data[1] < 64)
+					{
+						loop_num--;
+					}
 				}
-				giveinfo();
-		 	}
-	 		else
-	 		{
-	 			event = evntlist;
+				event = NULL;
+
+			}	 // Not SysEx
+			else if (event->status < 0xF0)
+			{
+				int type = event->status >> 4;
+
+				if ((type != MIDI_STATUS_NOTE_ON || event->data[1]) && type != MIDI_STATUS_NOTE_OFF) {
+					if (type == MIDI_STATUS_NOTE_ON) {
+						notes_on.Remove(event);
+						notes_on.Push (event, event->duration * 50 + wmoGetStart());
+					}
+
+					midiOutShortMsg (midi_port, event->status + (event->data[0] << 8) + (event->data[1] << 16));
+				}
+			}
+		
+		 	if (event) event = event->next;
+	
+	 		if (!event || thread_com != W32MO_THREAD_COM_READY)
+		 	{
+				bool clean = !repeat || (thread_com != W32MO_THREAD_COM_READY) || last_tick == 0;
+
+		 		if (clean)
+		 		{
+					InterlockedExchange (&playing, FALSE);
+					if (thread_com == W32MO_THREAD_COM_STOP)
+						InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
+
+					// Handle note off's here
+					while (note = notes_on.Pop())
+						midiOutShortMsg (midi_port, note->status + (note->data[0] << 8));
+
+		 			// Clean up
+					for (int i = 0; i < 16; i++) reset_channel (i); 
+					midiOutReset (midi_port);
+					if (evntlist) XMIDI::DeleteEventList (evntlist);
+					evntlist = NULL;
+					event = NULL;
+
+					loop_num = -1;
+					wmoInitClock ();
+		 		}
+
 				last_tick = 0;
-				last_time = 0;
-				wmoInitClock();
-	 		}
+
+				if (evntlist)
+				{
+	 				if (loop_num == -1) event = evntlist->events;
+					else
+					{
+						event = loop_event[loop_num]->next;
+						last_tick = loop_event[loop_num]->time;
+
+						if (loop_count[loop_num])
+							if (!--loop_count[loop_num])
+								loop_num--;
+					}
+				}
+		 	}
 		}
+
 
 		// Got issued a music play command
 		// set up the music playing routine
-		if (!evntlist && thread_com == W32MO_THREAD_COM_PLAY)
+		if (thread_com == W32MO_THREAD_COM_PLAY)
 		{
+			// Handle note off's here
+			while (note = notes_on.Pop())
+				midiOutShortMsg (midi_port, note->status + (note->data[0] << 8));
+
 			// Manual Reset since I don't trust midiOutReset()
 			giveinfo();
 			for (int i = 0; i < 16; i++) reset_channel (i);
 			midiOutReset (midi_port);
-			
+
+			if (evntlist) XMIDI::DeleteEventList (evntlist);
+			evntlist = NULL;
+			event = NULL;
+			InterlockedExchange (&playing, FALSE);
+
 			// Make sure that the data exists
 			giveinfo();
 			while (!thread_data) Sleep(1);
@@ -354,32 +429,30 @@ void Windows_MidiOut::thread_play ()
 			repeat = thread_data->repeat;
 
 			giveinfo();
-			ppqn = thread_data->ppqn;
 			InterlockedExchange ((LONG*) &thread_data, (LONG) NULL);
 			giveinfo();
 			InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
 			
 			giveinfo();
-			event = evntlist;
-			tempo = 0x07A120;
-			
-			Ippqn = 1.0/ppqn;
-			tick = tempo*Ippqn;
-	
+			if (evntlist) event = evntlist->events;
+			else event = 0;
+
 			giveinfo();
 			last_tick = 0;
-			last_time = 0;
 			
 			giveinfo();
 			wmoInitClock ();
 	
+			// Reset XMIDI Looping
+			loop_num = -1;
+
 			giveinfo();
 			InterlockedExchange (&playing, true);
 		}
 
 	 	if (s_event)
 	 	{
-	 		s_aim = s_last_time + (s_event->time-s_last_tick)*s_tick;
+	 		s_aim = (s_event->time-s_last_tick)*50;
 			s_diff = s_aim - wmoGetSFXTime ();
 	 	}
 	 	else 
@@ -388,35 +461,31 @@ void Windows_MidiOut::thread_play ()
 		if (s_diff <= 0)
 		{
 			s_last_tick = s_event->time;
-			s_last_time = s_aim;
+			wmoAddSFXOffset(s_aim);
 		
+			// Not SysEx
 			if ((s_event->status >> 4) != MIDI_STATUS_SYSEX)
 			{
-				midiOutShortMsg (midi_port, s_event->status + (s_event->data[0] << 8) + (s_event->data[1] << 16));
+				int type = s_event->status >> 4;
+
+				if ((type != MIDI_STATUS_NOTE_ON || s_event->data[1]) && type != MIDI_STATUS_NOTE_OFF) {
+					if (type == MIDI_STATUS_NOTE_ON) {
+						s_notes_on.Remove(s_event);
+						s_notes_on.Push (s_event, s_event->duration * 50 + wmoGetSFXStart());
+					}
+
+					midiOutShortMsg (midi_port, s_event->status + (s_event->data[0] << 8) + (s_event->data[1] << 16));
+				}
 				s_track |= 1 << (s_event->status & 0xF);
 			}
-			else if (s_event->status == 0xFF && s_event->data[0] == 0x51) // Tempo change
-			{
-				s_tempo = (s_event->buffer[0] << 16) +
-					(s_event->buffer[1] << 8) +
-					s_event->buffer[2];
-					
-				s_tick = s_tempo*s_Ippqn;
-			}	
-		
+
 		 	s_event = s_event->next;
 		}
 	 	if (s_evntlist && (!s_event || thread_com == W32MO_THREAD_COM_EXIT || sfx_com != W32MO_THREAD_COM_READY))
 		{
 		 	// Play all the remaining note offs 
-		 	while (s_event)
-		 	{
-				if ((s_event->status >> 4) == MIDI_STATUS_NOTE_OFF || 
-					((s_event->status >> 4) == MIDI_STATUS_NOTE_OFF && s_event->data[1] == 0 ))
-					
-					midiOutShortMsg (midi_port, s_event->status + (s_event->data[0] << 8) + (s_event->data[1] << 16));
-				s_event = s_event->next;
-		 	}
+			while (note = s_notes_on.Pop())
+				midiOutShortMsg (midi_port, note->status + (note->data[0] << 8));
 		 	
 		 	// Also reset the played tracks
 			for (int i = 0; i < 16; i++) if ((s_track >> i)&1) reset_channel (i);
@@ -428,13 +497,17 @@ void Windows_MidiOut::thread_play ()
 			if (sfx_com != W32MO_THREAD_COM_PLAY) InterlockedExchange (&sfx_com, W32MO_THREAD_COM_READY);
 		}
 
-
 		// Got issued a sound effect play command
 		// set up the sound effect playing routine
 		if (!s_evntlist && sfx_com == W32MO_THREAD_COM_PLAY)
 		{
 			giveinfo();
 			cout << "Play sfx command" << endl;
+
+		 	// Play all the remaining note offs 
+			while (note = s_notes_on.Pop())
+				midiOutShortMsg (midi_port, note->status + (note->data[0] << 8));
+
 			// Make sure that the data exists
 			while (!sfx_data) Sleep(1);
 			
@@ -442,20 +515,16 @@ void Windows_MidiOut::thread_play ()
 			s_evntlist = sfx_data->list;
 
 			giveinfo();
-			s_ppqn = sfx_data->ppqn;
 			InterlockedExchange ((LONG*) &sfx_data, (LONG) NULL);
 			InterlockedExchange (&sfx_com, W32MO_THREAD_COM_READY);
 			giveinfo();
 			
-			s_event = s_evntlist;
-			s_tempo = 0x07A120;
-			
+			if (s_evntlist) s_event = s_evntlist->events;
+			else s_event = 0;
+
 			giveinfo();
-			s_Ippqn = 1.0/s_ppqn;
-			s_tick = s_tempo*s_Ippqn;
 	
 			s_last_tick = 0;
-			s_last_time = 0;
 			
 			giveinfo();
 			wmoInitSFXClock ();
@@ -468,27 +537,34 @@ void Windows_MidiOut::thread_play ()
 			s_track = 0;
 		}
 
-
-
 	 	if (event)
 	 	{
-	 		aim = last_time + (event->time-last_tick)*tick;
+	 		aim = (event->time-last_tick)*50;
 			diff = aim - wmoGetTime ();
 	 	}
 	 	else 
-	 		diff = 1;
+	 		diff = 6;
 
 	 	if (s_event)
 	 	{
-	 		s_aim = s_last_time + (s_event->time-s_last_tick)*s_tick;
+	 		s_aim = (s_event->time-s_last_tick)*50;
 			s_diff = s_aim - wmoGetSFXTime ();
 	 	}
 	 	else 
-	 		s_diff = 1;
+	 		s_diff = 6;
 
+		//std::cout << sfx_com << endl;
 
-		if (diff > 0 && s_diff > 0) wmoDelay (1000);
+		if (diff > 5 && s_diff > 5) Sleep (1);
 	}
+	// Handle note off's here
+	while (note = notes_on.Pop())
+		midiOutShortMsg (midi_port, note->status + (note->data[0] << 8));
+
+	// Play all the remaining note offs 
+	while (note = s_notes_on.PopTime(wmoGetRealTime()))
+		midiOutShortMsg (midi_port, note->status + (note->data[0] << 8));
+
 	if (evntlist) XMIDI::DeleteEventList (evntlist);
 	if (s_evntlist) XMIDI::DeleteEventList (s_evntlist);
 	for (int i = 0; i < 16; i++) reset_channel (i); 
@@ -534,7 +610,7 @@ void Windows_MidiOut::reset_channel (int i)
 	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (93 << 8));
 }
 
-void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool repeat)
+void Windows_MidiOut::start_track (XMIDIEventList *xmidi, bool repeat)
 {
 	giveinfo();
 	if (!is_available)
@@ -548,9 +624,9 @@ void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool re
 	while (thread_com != W32MO_THREAD_COM_READY) Sleep (1);
 	
 	giveinfo();
-	data.list = evntlist;
-	data.ppqn = ppqn;
+	data.list = xmidi;
 	data.repeat = repeat;
+//	xmidi->Write("winmidi_out.mid");
 	
 	giveinfo();
 	InterlockedExchange ((LONG*) &thread_data, (LONG) &data);
@@ -559,7 +635,7 @@ void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool re
 	giveinfo();
 }
 
-void Windows_MidiOut::start_sfx(midi_event *evntlist, int ppqn)
+void Windows_MidiOut::start_sfx(XMIDIEventList *xmidi)
 {
 	giveinfo();
 	if (!is_available)
@@ -573,8 +649,8 @@ void Windows_MidiOut::start_sfx(midi_event *evntlist, int ppqn)
 	while (sfx_com != W32MO_THREAD_COM_READY) Sleep (1);
 
 	giveinfo();
-	sdata.list = evntlist;
-	sdata.ppqn = ppqn;
+	sdata.list = xmidi;
+	sdata.repeat;
 	
 	giveinfo();
 	InterlockedExchange ((LONG*) &sfx_data, (LONG) &sdata);
@@ -597,6 +673,8 @@ void Windows_MidiOut::stop_track(void)
 	while (thread_com != W32MO_THREAD_COM_READY) Sleep (1);
 	giveinfo();
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_STOP);
+	giveinfo();
+	while (thread_com != W32MO_THREAD_COM_READY) Sleep (1);
 	giveinfo();
 }
 
@@ -625,7 +703,7 @@ bool Windows_MidiOut::is_playing(void)
 const char *Windows_MidiOut::copyright(void)
 {
 	giveinfo();
-	return "Internal Win32 Midiout Midi Player for Exult.";
+	return "Internal Win32 Midiout Midi Player for Exult and Pentagram.";
 }
 
 

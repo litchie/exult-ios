@@ -278,7 +278,7 @@ Exult_Game ExultMenu::run()
 	}
 	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", EXULT_FLX_MEDITOWN_MID);
 	XMIDI midfile(midi_data, XMIDI_CONVERT_NOCONVERSION);
-	Audio::get_ptr()->start_music(&midfile, true);
+	Audio::get_ptr()->start_music(midfile.GetEventList(0), true);
 	
 	ExultDataSource mouse_data("<DATA>/exult.flx", EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);

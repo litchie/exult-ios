@@ -170,8 +170,8 @@ void SI_Game::play_intro()
 {
 	int	next = 0;
 	size_t	flisize;
-	char	*fli_b;
-	uint8	*buffer;
+	char	*fli_b = 0;
+	uint8	*buffer = 0;
 	size_t	size;
 	size_t	shapesize;
 	char *	shape_buf = 0;

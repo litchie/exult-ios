@@ -15,6 +15,8 @@ F3		map_teleport
 F4		toggle_fullscreen
 F10		show_endgame
 F11		show_si_intro
+Alt-F4		quit
+Alt-Enter	toggle_fullscreen
 Alt-1		sound_tester
 Ctrl-B		shape_browser
 B		useitem			761	# Show spellbook
