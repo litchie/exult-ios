@@ -17,9 +17,8 @@ CXXFLAGS += $(WINDOWING_SYSTEM)
 
 OFILES=	forked_player.o KMIDI.o Timidity_binary.o
 
-SOURCES = Audio.cc Audio.h Flex.cc Flex.h IFF.cc IFF.h Midi.cc Midi.h \
-		Mixer.cc Mixer.h SDL_mapping.cc SDL_mapping.h Table.cc Table.h \
-		common.h test.cc
+SOURCES = KMIDI.cc Timidity_binary.cc forked_player.cc KMIDI.h \
+		Timidity_binary.h forked_player.h 
 
 midi-drivers:	$(OFILES)
 
