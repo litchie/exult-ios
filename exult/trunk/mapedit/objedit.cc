@@ -277,8 +277,8 @@ int ExultStudio::save_obj_window
 	int shape = get_num_entry("obj_shape");
 	int frame = get_num_entry("obj_frame");
 	int quality = get_num_entry("obj_quality");
-	if (Object_out(server_socket, addr, tx, ty, tz, shape, frame, quality,
-		name) == -1)
+	if (Object_out(server_socket, Exult_server::obj, addr, tx, ty, tz, 
+					shape, frame, quality, name) == -1)
 		{
 		cout << "Error sending object data to server" <<endl;
 		return 0;
