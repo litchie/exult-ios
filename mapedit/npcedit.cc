@@ -55,7 +55,7 @@ extern "C" void on_npc_apply_btn_clicked
 	gpointer user_data
 	)
 	{
-//++++++++	ExultStudio::get_instance()->save_npc_window();
+	ExultStudio::get_instance()->save_npc_window();
 	}
 
 /*
@@ -177,6 +177,71 @@ void ExultStudio::close_npc_window
 	}
 
 /*
+ *	Get one of the NPC 'property' spin buttons from the table in the NPC
+ *	dialog box.
+ *
+ *	Output:	true if successful, with spin, pnum returned.
+ */
+
+static bool Get_prop_spin
+	(
+	GList *list,			// Entry in table of properties.
+	GtkSpinButton *& spin,		// Spin button returned.
+	int& pnum			// Property number (0-11) returned.
+	)
+	{
+	GtkTableChild *ent = (GtkTableChild *) list->data;
+	GtkBin *frame = GTK_BIN(ent->widget);
+	spin = GTK_SPIN_BUTTON(frame->child);
+	assert (spin != 0);
+	const char *name = glade_get_widget_name(GTK_WIDGET(spin));
+					// Names: npc_prop_nn.
+	if (strncmp(name, "npc_prop_", 9) != 0)
+		return false;
+	pnum = atoi(name + 9);
+	return (pnum >= 0 && pnum < 12);
+	}
+
+/*
+ *	Get one of the NPC flag checkbox's from the table in the NPC
+ *	dialog box.
+ *
+ *	Output:	true if successful, with cbox, fnum returned.
+ */
+
+static bool Get_flag_cbox
+	(
+	GList *list,			// Entry in table of flags.
+	unsigned long *oflags,		// Object flags.
+	unsigned long *siflags,		// Serpent Isle flags.
+	unsigned long *type_flags,	// Type (movement) flags.
+	GtkCheckButton *& cbox,		// Checkbox returned.
+	unsigned long *& bits,		// ->one of 3 flags above.
+	int& fnum			// Flag # (0-31) returned.
+	)
+	{
+	GtkTableChild *ent = (GtkTableChild *) list->data;
+	cbox = GTK_CHECK_BUTTON(ent->widget);
+	assert (cbox != 0);
+	const char *name = glade_get_widget_name(GTK_WIDGET(cbox));
+					// Names: npc_flag_xx_nn, where
+					//   xx = si, of, tf.
+	if (strncmp(name, "npc_flag_", 9) != 0)
+		return false;
+					// Which flag.
+	if (strncmp(name + 9, "si", 2) == 0)
+		bits = siflags;
+	else if (strncmp(name + 9, "of", 2) == 0)
+		bits = oflags;
+	else if (strncmp(name + 9, "tf", 2) == 0)
+		bits = type_flags;
+	else
+		return false;
+	fnum = atoi(name + 9 + 3);
+	return (fnum >= 0 && fnum < 32);
+	}
+
+/*
  *	Init. the npc editor with data from Exult.
  *
  *	Output:	0 if error (reported).
@@ -228,29 +293,13 @@ int ExultStudio::init_npc_window
 	for (GList *list = g_list_first(ftable->children); list; 
 						list = g_list_next(list))
 		{
-		GtkTableChild *ent = (GtkTableChild *) list->data;
-		GtkCheckButton *cbox = GTK_CHECK_BUTTON(ent->widget);
-		assert (cbox != 0);
-		const char *name = glade_get_widget_name(GTK_WIDGET(cbox));
-					// Names: npc_flag_xx_nn, where
-					//   xx = si, of, tf.
-		cout << "Flag: " << name << endl;//++++TESTING.
-					// ++++Maybe make this a subroutine?
-		if (strncmp(name, "npc_flag_", 9) != 0)
-			continue;
-		long bits = 0;		// Which flag.
-		if (strncmp(name + 9, "si", 2) == 0)
-			bits = siflags;
-		else if (strncmp(name + 9, "of", 2) == 0)
-			bits = oflags;
-		else if (strncmp(name + 9, "tf", 2) == 0)
-			bits = type_flags;
-		else
-			continue;
-		int fnum = atoi(name + 9 + 3);
-		if (fnum >= 0 && fnum < 32)
+		GtkCheckButton *cbox;
+		unsigned long *bits;
+		int fnum;
+		if (Get_flag_cbox(list, &oflags, &siflags, &type_flags, cbox,
+						bits, fnum))
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cbox), 
-					(bits&(1<<fnum)) != 0);
+					(*bits&(1<<fnum)) != 0);
 		}
 					// Set properties.
 	GtkTable *ptable = GTK_TABLE(
@@ -258,16 +307,9 @@ int ExultStudio::init_npc_window
 	for (GList *list = g_list_first(ptable->children); list; 
 						list = g_list_next(list))
 		{
-		GtkTableChild *ent = (GtkTableChild *) list->data;
-		GtkBin *frame = GTK_BIN(ent->widget);
-		GtkSpinButton *spin = GTK_SPIN_BUTTON(frame->child);
-		assert (spin != 0);
-		const char *name = glade_get_widget_name(GTK_WIDGET(spin));
-					// Names: npc_prop_nn.
-		if (strncmp(name, "npc_prop_", 9) != 0)
-			continue;
-		int pnum = atoi(name + 9);
-		if (pnum >= 0 && pnum < 12)
+		GtkSpinButton *spin;
+		int pnum;
+		if (Get_prop_spin(list, spin, pnum))
 			gtk_spin_button_set_value(spin, properties[pnum]);
 		}
 					// Set schedules.
@@ -311,7 +353,118 @@ void ExultStudio::set_schedule_line
 	gtk_object_set_user_data(GTK_OBJECT(label), (gpointer) type);
 	gtk_label_set_text(label, 
 			type >= 0 && type < 32 ? sched_names[type] : "-----");
-//+++++++++ Position.
+					// Set location.
+	char *locname = g_strdup_printf("sched_loc%d", time);
+	GtkBox *box = GTK_BOX(glade_xml_get_widget(app_xml, locname));
+	g_free(locname);
+	GList *list = g_list_first(box->children);
+	GtkWidget *spin = ((GtkBoxChild *) list->data)->widget;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tx);
+	list = g_list_next(list);
+	spin = ((GtkBoxChild *) list->data)->widget;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), ty);
+	list = g_list_next(list);
+	spin = ((GtkBoxChild *) list->data)->widget;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tz);
+	}
+
+/*
+ *	Callback for when user clicked where NPC should be inserted.
+ */
+
+static void Npc_response
+	(
+	int id,
+	unsigned char *data,
+	int datalen
+	)
+	{
+	Exult_server::Msg_type mid = (Exult_server::Msg_type) id;
+	if (mid == Exult_server::user_responded)
+		ExultStudio::get_instance()->close_npc_window();
+	//+++++cancel??
+	}
+
+/*
+ *	Send updated NPC info. back to Exult.
+ *
+ *	Output:	0 if error (reported).
+ */
+
+int ExultStudio::save_npc_window
+	(
+	)
+	{
+	cout << "In save_npc_window()" << endl;
+	unsigned char data[Exult_server::maxlength];
+					// Get npc (null if creating new).
+	unsigned long addr = (unsigned long) gtk_object_get_user_data(
+							GTK_OBJECT(npcwin));
+	int tx = -1, ty = -1, tz = -1;	// +++++For now.
+	std::string name(get_text_entry("npc_name_entry"));
+	short ident = get_num_entry("npc_ident_entry");
+	int shape = get_num_entry("npc_shape");
+	int frame = get_num_entry("npc_frame");
+	int usecode = get_num_entry("npc_usecode_entry");
+	short attack_mode = get_optmenu("npc_attack_mode");
+	short alignment = get_optmenu("npc_alignment");
+
+	unsigned long oflags = 0;	// Object flags.
+	unsigned long siflags = 0;	// Extra flags for SI.
+	unsigned long type_flags = 0;	// Movement flags.
+					// Set flag buttons.
+	GtkTable *ftable = GTK_TABLE(
+			glade_xml_get_widget(app_xml, "npc_flags_table"));
+					// Get flags.
+	for (GList *list = g_list_first(ftable->children); list; 
+						list = g_list_next(list))
+		{
+		GtkCheckButton *cbox;
+		unsigned long *bits;
+		int fnum;
+		if (Get_flag_cbox(list, &oflags, &siflags, &type_flags, cbox,
+						bits, fnum))
+			if (gtk_toggle_button_get_active(
+						GTK_TOGGLE_BUTTON(cbox)))
+				*bits |= (1<<fnum);
+		}
+	short properties[12];		// Get properties.
+	GtkTable *ptable = GTK_TABLE(
+			glade_xml_get_widget(app_xml, "npc_props_table"));
+	for (GList *list = g_list_first(ptable->children); list; 
+						list = g_list_next(list))
+		{
+		GtkSpinButton *spin;
+		int pnum;
+		if (Get_prop_spin(list, spin, pnum))
+			properties[pnum] = 
+				gtk_spin_button_get_value_as_int(spin);
+		}
+#if 0	/* +++Finish */
+	short num_schedules;
+	Serial_schedule schedules[8];
++++++++++++++++++
+	if (Npc_object_out(server_socket, addr, tx, ty, tz,
+		shape, frame, type, criteria, probability, distance,
+		nocturnal, once, hatched, auto_reset, data1, data2) == -1)
+		{
+		cout << "Error sending npc data to server" <<endl;
+		return 0;
+		}
+	cout << "Sent npc data to server" << endl;
+	if (!addr)
+		{
+		set_statusbar("npc_status", npc_ctx,
+					"Click on map at place to insert npc");
+					// Make 'apply' insensitive.
+		gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
+						"npc_apply_btn"), false);
+		waiting_for_server = Npc_response;
+		return 1;		// Leave window open.
+		}
+#endif
+	close_npc_window();
+	return 1;
 	}
 
 /*
