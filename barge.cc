@@ -251,9 +251,9 @@ void Barge_object::add_dirty
 	Rectangle box(x - w, y - h, w, h);
 	box.enlarge(10);		// Make it a bit bigger.
 	if (dir%2)			// Horizontal?  Stretch.
-		{ box.x -= 10; box.w += 20; }
+		{ box.x -= 15; box.w += 30; }
 	else
-		{ box.y -= 10; box.h += 20; }
+		{ box.y -= 15; box.h += 30; }
 	box = gwin->clip_to_win(box);	// Intersect with screen.
 	gwin->add_dirty(box);
 	}
@@ -523,11 +523,11 @@ void Barge_object::move
 		int frame = obj->get_framenum();
 		switch (obj->get_shapenum())
 			{
-		case 437:		// Wagon wheel.
-			obj->set_frame(((frame + 1)%3)|(frame&32));
+		case 774:		// Cart wheel.
+			obj->set_frame(((frame + 1)&3)|(frame&32));
 			break;
 		case 796:		// Draft horse.
-			//+++++++++How many groups?
+			obj->set_frame(((frame + 4)&15)|(frame&32));
 			break;
 			}
 		}
