@@ -235,8 +235,19 @@ void Combo::add
 		    shnum == m->shapenum && frnum == m->framenum)
 			return;		// Don't add same one twice.
 		}
-
-//++++++++Make sure it's not too far away from existing objects.
+#if 0	/* This doesn't work right. */
+	if (members.size() != 0)	// Not the first?
+		{			// Push within current range.
+		if (tx < starttx - 16)
+			tx = starttx - 16;
+		else if (tx > starttx + 16)
+			tx = starttx + 16;
+		if (ty < startty - 16)
+			ty = startty - 16;
+		else if (ty > startty + 16)
+			ty = startty + 16;
+		}
+#endif
 	Combo_member *memb = new Combo_member(tx, ty, tz, shnum, frnum);
 	members.push_back(memb);
 					// Figure visible top-left tile.
@@ -244,8 +255,8 @@ void Combo::add
 	int xtiles = info.get_3d_xtiles(frnum),
 	    ytiles = info.get_3d_ytiles(frnum),
 	    ztiles = info.get_3d_height();
-	int vtx = tx - xtiles - (tz + ztiles)/2, 
-	    vty = ty - ytiles - (tz + ztiles)/2;
+	int vtx = tx - xtiles - (tz + ztiles + 1)/2, 
+	    vty = ty - ytiles - (tz + ztiles + 1)/2;
 	if (vtx < starttx)		// Adjust our starting point.
 		starttx = vtx;
 	if (vty < startty)
@@ -451,8 +462,7 @@ Combo_editor::Combo_editor
 		first = false;
 		}
 #if 0
-			//++++++++++Testing:
-	combo->add(5, 5, 0, 162, 0);
+	combo->add(5, 5, 0, 162, 0);	// Testing.
 	combo->add(7, 7, 0, 161, 0);
 #endif
 	set_controls();
@@ -662,13 +672,23 @@ void Combo_editor::save
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
+	Flex_file_info *flex_info = dynamic_cast<Flex_file_info *>
+				(studio->get_files()->create("combos.flx"));
+	if (!flex_info)
+		{
+		EStudio::Alert("Can't open 'combos.flx'");
+		return;
+		}
+	flex_info->set_modified();
+	int len;			// Serialize.
+	unsigned char *newbuf = combo->write(len);
+					// Update or append file data.
+	flex_info->set(file_index == -1 ? flex_info->size() : file_index, 
+					(char *) newbuf, len);
 	Combo_chooser *browser = dynamic_cast<Combo_chooser *>(
 						studio->get_browser());
 	if (browser)			// Browser open?
-					// What if editing existing??
 		file_index = browser->add(new Combo(*combo), file_index);
-	else
-		;	//+++++++++Got to store in Flex_file_info!!!!!
 	}
 
 /*
@@ -916,11 +936,11 @@ GtkWidget *Combo_chooser::create_controls
 	GtkWidget *hbox0 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox0);
 	gtk_container_add (GTK_CONTAINER (topframe), hbox0);
-#if 0	/* Maybe....+++++++ */
+#if 0	/* +++++Thinking about it */
 	/*
-	 *	The 'Insert' control.
+	 *	The 'New/Delete' controls.
 	 */
-	frame = gtk_frame_new ("Insert");
+	frame = gtk_frame_new ("Edit");
 	gtk_widget_show(frame);
 	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
 	GtkWidget *hbuttonbox = gtk_hbutton_box_new();
@@ -1150,10 +1170,6 @@ int Combo_chooser::add
 		delete combos[index];
 		combos[index] = newcombo;
 		}
-	flex_info->set_modified();
-	int len;			// Serialize.
-	unsigned char *newbuf = newcombo->write(len);
-	flex_info->set(index, (char *) newbuf, len);	// Update.
 	GtkAdjustment *adj = 
 			gtk_range_get_adjustment(GTK_RANGE(combo_scroll));
 	adj->upper = combos.size();
