@@ -410,7 +410,7 @@ void Actor::write
 	set_shape( get_shape_real() );	// Change the shape out non polymorph one
 	
 	Game_object::write_common_ireg(buf4);
-	nfile.write((char*)buf4, sizeof(buf4));
+	nfile.write(reinterpret_cast<char*>(buf4), sizeof(buf4));
 
 	set_shape( old_shape );		// Revert the shape to what it was
 
