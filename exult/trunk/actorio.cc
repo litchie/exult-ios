@@ -212,7 +212,19 @@ Actor::Actor
 
 	char namebuf[17];
 	nfile.read(namebuf, 16);
+	
+	for (int i = 0; i < 16; i++)
+		if (namebuf[i] == 0) 
+			i = 16;
+		else if (namebuf[i] < ' ' || namebuf[i] >= 127)
+		{
+			namebuf[0] = 0;
+			break;
+		}
+		
+
 	namebuf[17] = 0;		// Be sure it's 0-delimited.
+	
 	if (num == 0 && Game::get_avname())
 	{
 		cout << Game::get_avname() << endl;
