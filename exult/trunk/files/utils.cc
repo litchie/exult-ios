@@ -1,26 +1,23 @@
-/**
- **	Utils.cc - Common utility routines.
- **
- **	Written: 10/1/98 - JSF
- **/
-
 /*
-Copyright (C) 2000-2001 The Exult Team
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *	utils.cc - Common utility routines.
+ *
+ *  Copyright (C) 1998-1999  Jeffrey S. Freedman
+ *  Copyright (C) 2000-2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -52,6 +49,7 @@ using std::string;
 // Function prototypes
 
 static void switch_slashes(string & name);
+static bool base_to_uppercase(string& str, int count);
 
 // Ugly hack for supporting different paths
 
@@ -118,10 +116,7 @@ string get_system_path(const string &path)
  *	Output: ->original buffer, changed to upper case.
  */
 
-void to_uppercase
-	(
-	string &str
-	)
+void to_uppercase(string &str)
 {
 	for(string::iterator X = str.begin(); X != str.end(); ++X)
 	{
@@ -138,10 +133,7 @@ void to_uppercase
  *  returns false if there are less than 'count' parts
  */
 
-bool base_to_uppercase
-	(
-	 string& str, int count
-	)
+static bool base_to_uppercase(string& str, int count)
 {
 	if (count <= 0) return true;
 
