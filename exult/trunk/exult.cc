@@ -827,7 +827,10 @@ static void Handle_keystroke
 	default:
 		if ((unicode & 0xFF80) == 0)
 		{
-		switch (unicode & 0x7F)
+		int chr = (unicode & 0x7f);
+		if (chr < 0x20)		// Control char?  Branch on orig.
+			chr = (int) sym;
+		switch (chr)
 			{
 			case 'b':
 				if(ctrl && !alt) {		// Ctrl-b : Shape browser
