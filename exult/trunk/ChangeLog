@@ -1,3 +1,7 @@
+2001-02-07  Ryan Nunn <triforce@merlin.net.au>
+	* tools/expack.cc, files/utils.*: Removed the Win32 fix and replaced it
+	  with text file reading modes.
+	  
 2001-02-06  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* FAQ: added Dominik's FAQ to the distribution
 	* */Makefile.am, configure.in: get "make dist" to work

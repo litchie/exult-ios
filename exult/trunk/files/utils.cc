@@ -170,15 +170,18 @@ static void switch_slashes(
 void U7open
 	(
 	std::ifstream& in,			// Input stream to open.
-	const char *fname			// May be converted to upper-case.
+	const char *fname,			// May be converted to upper-case.
+	bool is_text = false			// Should the file be opened in text mode
 	)
 {
 #ifdef MACOS
-	std::ios_base::openmode mode = std::ios::in | std::ios::binary;
+	std::ios_base::openmode mode = std::ios::in;
+	if (!is_text) mode |= ios::binary;
 #elif defined(XWIN)
 	int mode = ios::in;
 #else
-	int mode = ios::in | ios::binary;
+	int mode = ios::in;
+	if (!is_text) mode |= ios::binary;
 #endif
 	string name = get_system_path(fname);
 
@@ -203,15 +206,18 @@ void U7open
 void U7open
 	(
 	std::ofstream& out,			// Output stream to open.
-	const char *fname			// May be converted to upper-case.
+	const char *fname,			// May be converted to upper-case.
+	bool is_text = false			// Should the file be opened in text mode
 	)
 {
 #ifdef MACOS
-	std::ios_base::openmode mode = std::ios::out | std::ios::trunc | std::ios::binary;
+	std::ios_base::openmode mode = std::ios::out | std::ios::trunc;
+	if (!is_text) mode |= ios::binary;
 #elif defined(XWIN)
 	int mode = ios::out | ios::trunc;
 #else
-	int mode = ios::out | ios::trunc | ios::binary;
+	int mode = ios::out | ios::trunc;
+	if (!is_text) mode |= ios::binary;
 #endif
 	string name = get_system_path(fname);
 
