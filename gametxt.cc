@@ -164,7 +164,7 @@ int Game_window::paint_text
 		Shape_frame *shape = fonts.get_shape(fontnum, chr);
 		if (!shape)
 			continue;
-		paint_rle_shape(*shape, x, yoff);
+		shape->paint_rle(win->get_ib8(), x, yoff);
 		x += shape->get_width() + hlead[fontnum];
 		}
 	return (x - xoff);
@@ -191,7 +191,7 @@ int Game_window::paint_text
 		Shape_frame *shape = fonts.get_shape(fontnum, (int) *text++);
 		if (!shape)
 			continue;
-		paint_rle_shape(*shape, x, yoff);
+		shape->paint_rle(win->get_ib8(), x, yoff);
 		x += shape->get_width() + hlead[fontnum];
 		}
 	return (x - xoff);

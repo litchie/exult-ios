@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "autoarray.h"
 
 class Shape;
+class Image_buffer8;
 
 /*
  *	A shape from "shapes.vga":
@@ -57,6 +58,12 @@ public:
 					// Read in shape/frame.
 	unsigned char read(ifstream& shapes, unsigned long shapeoff,
 					unsigned long shapelen, int frnum);
+					// Paint.
+	void paint_rle(Image_buffer8 *win, int xoff, int yoff);
+	void paint_rle(Image_window8 *win, int xoff, int yoff)
+		{ paint_rle(win->get_ib8(), xoff, yoff); }
+	void paint_rle_translucent(Image_buffer8 *win, int xoff, int yoff,
+					Xform_palette *xforms, int xfcnt);
 	int has_point(int x, int y);	// Is a point within the shape?
 	int get_width() const		// Get dimensions.
 		{ return xleft + xright; }
