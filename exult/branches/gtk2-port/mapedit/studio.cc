@@ -946,7 +946,7 @@ void add_to_tree(GtkTreeStore *model, const char *folderName, const char *files,
 	int adding_children = 1;
 	do {
 		char *pattern;
-		char *commapos = index(startpos, ',');
+		char *commapos = strstr(startpos, ",");
 		if(commapos==0) {
 			pattern = strdup(startpos);
 			adding_children = 0;
