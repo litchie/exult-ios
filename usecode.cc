@@ -408,9 +408,12 @@ void Usecode_machine::append_string
 
 Game_object *Usecode_machine::get_item
 	(
-	long val
+	Usecode_value& itemref
 	)
 	{
+					// If array, take 1st element.
+	Usecode_value& elemval = itemref.get_elem(0);
+	long val = elemval.get_int_value();
 	Game_object *obj = 0;
 	if (val == -356)		// +++++Avatar.  Define in .h file.
 		return gwin->get_main_actor();
@@ -485,7 +488,7 @@ void Usecode_machine::show_npc_face
 	{
 	if (gwin->is_npc_text_pending())
 		click_to_continue();
-	Actor *npc = (Actor *) get_item(arg1.get_int_value());
+	Actor *npc = (Actor *) get_item(arg1);
 	if (!npc)
 		return;
 	int shape = npc->get_face_shapenum();
@@ -519,10 +522,8 @@ void Usecode_machine::set_item_shape
 	Usecode_value& shape_arg
 	)
 	{
-	int val = item_arg.get_int_value();
 	int shape = shape_arg.get_int_value();
-	// cout << "Set_item_shape: " << val << ", " << shape << '\n';
-	Game_object *item = get_item(val);
+	Game_object *item = get_item(item_arg);
 	if (!item)
 		return;
 					// Figure area to repaint.
@@ -548,7 +549,7 @@ void Usecode_machine::set_item_frame
 	Usecode_value& frame_arg
 	)
 	{
-	Game_object *item = get_item(item_arg.get_int_value());
+	Game_object *item = get_item(item_arg);
 	if (!item)
 		return;
 	int frame = frame_arg.get_int_value();
@@ -574,7 +575,7 @@ int Usecode_machine::get_item_shape
 	Usecode_value& item_arg
 	)
 	{
-	Game_object *item = get_item(item_arg.get_int_value());
+	Game_object *item = get_item(item_arg);
 	return (item == 0 ? 0 : item->get_shapenum());
 	}
 
@@ -587,7 +588,7 @@ int Usecode_machine::get_item_frame
 	Usecode_value& item_arg
 	)
 	{
-	Game_object *item = get_item(item_arg.get_int_value());
+	Game_object *item = get_item(item_arg);
 	return (item == 0 ? 0 : item->get_framenum());
 	}
 
@@ -709,7 +710,7 @@ void Usecode_machine::item_say
 	Usecode_value& strval
 	)
 	{
-	Game_object *obj = get_item(objval.get_int_value());
+	Game_object *obj = get_item(objval);
 	const char *str = strval.get_str_value();
 	if (obj && str && *str)
 		{
@@ -732,7 +733,7 @@ Usecode_value Usecode_machine::find_nearby
 	Usecode_value& mval		// Some kind of mask?
 	)
 	{
-	Game_object *obj = get_item(objval.get_int_value());
+	Game_object *obj = get_item(objval);
 	if (!obj)
 		return Usecode_value(0, 0);
 	Vector vec;			// Gets list.
@@ -760,7 +761,7 @@ Usecode_value Usecode_machine::find_nearest
 	Usecode_value& unknown		// Might be distance??
 	)
 	{
-	Game_object *obj = get_item(objval.get_int_value());
+	Game_object *obj = get_item(objval);
 	if (!obj)
 		return Usecode_value(0);
 	Vector vec;			// Gets list.
@@ -797,8 +798,8 @@ Usecode_value Usecode_machine::find_direction
 	)
 	{
 	unsigned angle;			// Gets angle 0-7 (east - southeast).
-	Game_object *o1 = get_item(from.get_int_value());
-	Game_object *o2 = get_item(to.get_int_value());
+	Game_object *o1 = get_item(from);
+	Game_object *o2 = get_item(to);
 	if (!o1 || !o2)
 		angle = 0;
 	else
@@ -828,7 +829,7 @@ Usecode_value Usecode_machine::count_objects
 	int framenum = frameval.get_int_value();
 	if (oval != -357)
 		{
-		Game_object *obj = get_item(oval);
+		Game_object *obj = get_item(objval);
 		return (!obj ? 0 : obj->count_objects(shapenum, framenum));
 		}
 					// Look through whole party.
@@ -837,7 +838,7 @@ Usecode_value Usecode_machine::count_objects
 	int total = 0;
 	for (int i = 0; i < cnt; i++)
 		{
-		Game_object *obj = get_item(party.get_elem(i).get_int_value());
+		Game_object *obj = get_item(party.get_elem(i));
 		if (obj)
 			total += obj->count_objects(shapenum, framenum);
 		}
@@ -856,7 +857,7 @@ Usecode_value Usecode_machine::get_objects
 	Usecode_value& frameval		// Frame (-359=any).
 	)
 	{
-	Game_object *obj = get_item(objval.get_int_value());
+	Game_object *obj = get_item(objval);
 	if (!obj)
 		return Usecode_value(0);
 	int shapenum = shapeval.get_int_value();
@@ -903,7 +904,7 @@ int Usecode_machine::remove_party_items
 	int cnt = party.get_array_size();
 	for (int i = 0; i < cnt && quantity > 0; i++)
 		{
-		Game_object *obj = get_item(party.get_elem(i).get_int_value());
+		Game_object *obj = get_item(party.get_elem(i));
 		if (obj)
 			quantity = obj->remove_quantity(quantity, shapenum,
 							quality, framenum);
@@ -937,7 +938,7 @@ Usecode_value Usecode_machine::add_party_items
 	Usecode_value result(0);
 	for (int i = 0; i < cnt && quantity > 0; i++)
 		{
-		Game_object *obj = get_item(party.get_elem(i).get_int_value());
+		Game_object *obj = get_item(party.get_elem(i));
 		if (!obj)
 			continue;
 		int prev = quantity;
@@ -980,6 +981,7 @@ Usecode_value Usecode_machine::click_on_item
 		return Usecode_value((long) obj);
 	else
 		return Usecode_value(0);
+//++++++++++++Should return array(obj, tx, ty, tz).
 	}
 
 /*
@@ -995,7 +997,7 @@ void Usecode_machine::exec_array
 	Usecode_value& arrayval		// Contains instructions.
 	)
 	{
-	Game_object *obj = get_item(objval.get_int_value());
+	Game_object *obj = get_item(objval);
 	if (!obj)
 		return;
 	int cnt = arrayval.get_array_size();
@@ -1053,6 +1055,7 @@ void Usecode_machine::exec_array
 				// +++++++Walk in that dir.??
 			i++;
 			break;
+//+++ 0x61-0x6f? seem to indicate motion in a particular direction.
 		default:
 			break;
 			}
@@ -1252,7 +1255,7 @@ USECODE_INTRINSIC(set_item_frame)
 }
 
 USECODE_INTRINSIC(get_item_quality)
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_quality() : 0);
 	USECODE_RETURN(u);
 }
@@ -1260,7 +1263,7 @@ USECODE_INTRINSIC(get_item_quality)
 USECODE_INTRINSIC(set_item_quality)
 	// Guessing it's 
 	//  set_quality(item, value).
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		obj->set_quality(parms[1].get_int_value());
 	USECODE_RETURN(no_ret);
@@ -1285,7 +1288,7 @@ USECODE_INTRINSIC(get_object_position)
 	// Takes itemref.  ?Think it rets.
 	//  hotspot coords: (x, y, z).
 	int tx, ty, tz;		// Get tile coords.
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	Tile_coord c(0, 0, 0);
 	if (obj)		// (Watch for animated objs' wiggles.)
 		c = obj->get_original_tile_coord();
@@ -1305,14 +1308,14 @@ USECODE_INTRINSIC(find_direction)
 
 USECODE_INTRINSIC(get_npc_object)
 	// Takes -npc.  Returns object.
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	Usecode_value u((long) obj);
 	USECODE_RETURN(u);
 }
 
 USECODE_INTRINSIC(get_schedule_type)
 	// GetSchedule(npc).  Rets. schedtype.
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_schedule_type() : 0);
 	USECODE_RETURN(u);
 }
@@ -1321,7 +1324,7 @@ USECODE_INTRINSIC(set_schedule_type)
 	// SetSchedule?(npc, schedtype).
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		obj->set_schedule_type(parms[1].get_int_value());
 	USECODE_RETURN(no_ret);
@@ -1329,20 +1332,20 @@ USECODE_INTRINSIC(set_schedule_type)
 
 USECODE_INTRINSIC(add_to_party)
 	// NPC joins party.
-	add_to_party(get_item(parms[0].get_int_value()));
+	add_to_party(get_item(parms[0]));
 	USECODE_RETURN(no_ret);
 }
 
 USECODE_INTRINSIC(remove_from_party)
 	// NPC leaves party.
-	remove_from_party(get_item(parms[0].get_int_value()));
+	remove_from_party(get_item(parms[0]));
 	USECODE_RETURN(no_ret);
 }
 
 USECODE_INTRINSIC(get_npc_prop)
 	// Get NPC prop (item, prop_id).
 	//   (9 is food level).
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? 
 		obj->get_property(parms[1].get_int_value()) : 0);
 	USECODE_RETURN(u);
@@ -1350,7 +1353,7 @@ USECODE_INTRINSIC(get_npc_prop)
 
 USECODE_INTRINSIC(set_npc_prop)
 	// Set NPC prop (item, prop_id, delta_value).
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		{			// NOTE: 3rd parm. is a delta!
 		int prop = parms[1].get_int_value();
@@ -1432,7 +1435,7 @@ USECODE_INTRINSIC(get_npc_name)
 	// Get NPC name.
 	// +++++Make this work on array of NPC's.
 	static char *unknown = "player";
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_name() : unknown);
 	USECODE_RETURN(u);
 }
@@ -1483,7 +1486,7 @@ USECODE_INTRINSIC(play_music)
 
 USECODE_INTRINSIC(npc_in_party)
 	// NPC in party? (item).
-	Usecode_value u(npc_in_party(get_item(parms[0].get_int_value())));
+	Usecode_value u(npc_in_party(get_item(parms[0])));
 	USECODE_RETURN(u);
 }
 
@@ -1497,7 +1500,7 @@ USECODE_INTRINSIC(find_nearby_avatar)
 
 USECODE_INTRINSIC(is_npc)
 	// Is item an NPC?
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 					// ++++In future, check for monsters.
 	Usecode_value u(obj == gwin->get_main_actor() ||
 			obj->get_npc_num() > 0);
@@ -1539,7 +1542,7 @@ USECODE_INTRINSIC(game_minute)
 USECODE_INTRINSIC(get_npc_number)
 	// Returns NPC# of item. (-356 =
 	//   avatar).
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	if (obj == gwin->get_main_actor())
 		{
 		Usecode_value u(-356);
@@ -1564,7 +1567,7 @@ USECODE_INTRINSIC(item_say)
 
 USECODE_INTRINSIC(get_lift)
 	// ?? Guessing rets. lift(item).
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? Usecode_value(obj->get_lift())
 					: Usecode_value(0));
 	USECODE_RETURN(u);
@@ -1572,7 +1575,7 @@ USECODE_INTRINSIC(get_lift)
 
 USECODE_INTRINSIC(set_lift)
 	// ?? Guessing setlift(item, lift).
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		{
 		int x, y, z;
@@ -1617,7 +1620,7 @@ USECODE_INTRINSIC(mouse_exists)
 
 USECODE_INTRINSIC(get_container)
 	// Takes itemref, returns container.
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(0);
 	if (obj)
 		u = Usecode_value((long) obj->get_owner());
@@ -1626,7 +1629,7 @@ USECODE_INTRINSIC(get_container)
 
 USECODE_INTRINSIC(remove_item)
 	// ?Think it's 'delete object'.
-	remove_item(get_item(parms[0].get_int_value()));
+	remove_item(get_item(parms[0]));
 	USECODE_RETURN(no_ret);
 }
 
@@ -1651,7 +1654,7 @@ USECODE_INTRINSIC(advance_time)
 USECODE_INTRINSIC(run_usecode)
 	// exec(loc(x,y,z)?, usecode#, itemref, eventid).
 	Usecode_value u(0);
-	Game_object *obj = get_item(parms[2].get_int_value());
+	Game_object *obj = get_item(parms[2]);
 	if (obj)
 		{			// +++For now.  Real return from fun?
 		int ret = call_usecode(parms[1].get_int_value(), obj, 
@@ -1671,14 +1674,14 @@ USECODE_INTRINSIC(direction_from)
 
 USECODE_INTRINSIC(get_npc_flag)
 	// Get npc flag(item, flag#).
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_flag(parms[1].get_int_value())	: 0);
 	USECODE_RETURN(u);
 }
 
 USECODE_INTRINSIC(set_npc_flag)
 	// Set npc flag(item, flag#).
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	int flag = parms[1].get_int_value();
 	if (obj)
 		{
@@ -1694,7 +1697,7 @@ USECODE_INTRINSIC(set_npc_flag)
 
 USECODE_INTRINSIC(clear_npc_flag)
 	// Clear npc flag(item, flag#).
-	Game_object *obj = get_item(parms[0].get_int_value());
+	Game_object *obj = get_item(parms[0]);
 	int flag = parms[1].get_int_value();
 	if (obj)
 		{
