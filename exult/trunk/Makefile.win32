@@ -246,9 +246,11 @@ dist:   $(EXEC)
 	copy AUTHORS $(U7PATH)\Exult\AUTHORS.txt
 	copy ChangeLog $(U7PATH)\Exult\ChangeLog.txt
 	copy COPYING $(U7PATH)\Exult\COPYING.txt
-	copy FAQ $(U7PATH)\Exult\FAQ.txt
+	copy docs\faq.html $(U7PATH)\Exult\faq.html
+	copy docs\images\back.gif $(U7PATH)\Exult\images\back.gif
+	copy docs\images\exult_logo.gif $(U7PATH)\Exult\images\exult_logo.gif
 	copy NEWS $(U7PATH)\Exult\NEWS.txt
-	copy README $(U7PATH)\Exult\README.txt
+	copy docs\ReadMe.html $(U7PATH)\Exult\ReadMe.html
 	copy README.win32 $(U7PATH)\Exult\README.win32.txt
 	copy data\bg\defaultkeys.txt $(U7PATH)\Exult\bgdefaultkeys.txt
 	copy data\si\defaultkeys.txt $(U7PATH)\Exult\sidefaultkeys.txt
