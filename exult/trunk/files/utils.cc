@@ -408,6 +408,11 @@ int U7mkdir
 {
 	string name = get_system_path(dirname);
 	cerr << "creating dir: " << name;
+#ifdef MACOSX
+	string::size_type pos = name.find_last_not_of('/');
+	if (pos != string::npos)
+	  name.resize(pos+1);
+#endif
 #ifdef WIN32
 	return mkdir(name.c_str());
 #else
