@@ -46,34 +46,32 @@ BG_Game::BG_Game()
 		add_shape("gumps/scroll",55);
 
 		add_resource("files/shapes/count", 0, 6);
-		add_resource("files/shapes/0", "static/shapes.vga", 0);
-		add_resource("files/shapes/1", "static/faces.vga", 0);
-		add_resource("files/shapes/2", "static/gumps.vga", 0);
-		add_resource("files/shapes/3", "static/sprites.vga", 0);
-		add_resource("files/shapes/4", "static/mainshp.flx", 0);
-		add_resource("files/shapes/5", "static/endshape.flx", 0);
+		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
+		add_resource("files/shapes/1", "<STATIC>/faces.vga", 0);
+		add_resource("files/shapes/2", "<STATIC>/gumps.vga", 0);
+		add_resource("files/shapes/3", "<STATIC>/sprites.vga", 0);
+		add_resource("files/shapes/4", "<STATIC>/mainshp.flx", 0);
+		add_resource("files/shapes/5", "<STATIC>/endshape.flx", 0);
 	
 		add_resource("palettes/count", 0, 18);
-		add_resource("palettes/0", "static/palettes.flx", 0);
-		add_resource("palettes/1", "static/palettes.flx", 1);
-		add_resource("palettes/2", "static/palettes.flx", 2);
-		add_resource("palettes/3", "static/palettes.flx", 3);
-		add_resource("palettes/4", "static/palettes.flx", 4);
-		add_resource("palettes/5", "static/palettes.flx", 5);
-		add_resource("palettes/6", "static/palettes.flx", 6);
-		add_resource("palettes/7", "static/palettes.flx", 7);
-		add_resource("palettes/8", "static/palettes.flx", 8);
-		add_resource("palettes/9", "static/palettes.flx", 10);
-		add_resource("palettes/10", "static/palettes.flx", 11);
-		add_resource("palettes/11", "static/palettes.flx", 12);
-		add_resource("palettes/12", "static/intropal.dat", 0);
-		add_resource("palettes/13", "static/intropal.dat", 1);
-		add_resource("palettes/14", "static/intropal.dat", 2);
-		add_resource("palettes/15", "static/intropal.dat", 3);
-		add_resource("palettes/16", "static/intropal.dat", 4);
-		add_resource("palettes/17", "static/intropal.dat", 5);
-		if (!gwin->setup_endgame_fonts())
-			gwin->abort ("Unable to setup fonts from 'endgame.dat' file.");
+		add_resource("palettes/0", "<STATIC>/palettes.flx", 0);
+		add_resource("palettes/1", "<STATIC>/palettes.flx", 1);
+		add_resource("palettes/2", "<STATIC>/palettes.flx", 2);
+		add_resource("palettes/3", "<STATIC>/palettes.flx", 3);
+		add_resource("palettes/4", "<STATIC>/palettes.flx", 4);
+		add_resource("palettes/5", "<STATIC>/palettes.flx", 5);
+		add_resource("palettes/6", "<STATIC>/palettes.flx", 6);
+		add_resource("palettes/7", "<STATIC>/palettes.flx", 7);
+		add_resource("palettes/8", "<STATIC>/palettes.flx", 8);
+		add_resource("palettes/9", "<STATIC>/palettes.flx", 10);
+		add_resource("palettes/10", "<STATIC>/palettes.flx", 11);
+		add_resource("palettes/11", "<STATIC>/palettes.flx", 12);
+		add_resource("palettes/12", "<STATIC>/intropal.dat", 0);
+		add_resource("palettes/13", "<STATIC>/intropal.dat", 1);
+		add_resource("palettes/14", "<STATIC>/intropal.dat", 2);
+		add_resource("palettes/15", "<STATIC>/intropal.dat", 3);
+		add_resource("palettes/16", "<STATIC>/intropal.dat", 4);
+		add_resource("palettes/17", "<STATIC>/intropal.dat", 5);
 		
 	}
 
@@ -90,7 +88,7 @@ void BG_Game::play_intro()
 		audio->stop_music();
 
 		// Lord British presents...
-		pal.load("static/intropal.dat",3);
+		pal.load("<STATIC>/intropal.dat",3);
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
 		const char *txt_msg[] = { "with help from",
 				"The Exult Team", 
@@ -107,7 +105,7 @@ void BG_Game::play_intro()
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
 		gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
 		center_text(0, txt_msg[2], centerx, centery+50);
-		pal.load("static/intropal.dat",4);
+		pal.load("<STATIC>/intropal.dat",4);
 		pal.fade_in(30);
 		if(wait_delay(1500)) {
 			pal.fade_out(30);
@@ -142,7 +140,7 @@ void BG_Game::play_intro()
 
 		// The main man :)
 		play_midi(2);
-		pal.load("static/intropal.dat",2);
+		pal.load("<STATIC>/intropal.dat",2);
 		pal.apply();
 		// First
 		for(int i=9; i>0; i--) {
@@ -232,7 +230,7 @@ void BG_Game::play_intro()
 		// PC screen
 		play_midi(1);
 		
-		pal.load("static/intropal.dat",1);
+		pal.load("<STATIC>/intropal.dat",1);
 		pal.apply();
 
 		for(int i=0;i<194;i+=2) {
@@ -278,7 +276,7 @@ void BG_Game::play_intro()
 		clear_screen();
 
 		// The Moongate
-		pal.load("static/intropal.dat",5);
+		pal.load("<STATIC>/intropal.dat",5);
 		pal.apply();
 		for(int i=120;i>=0;i-=2) {
 			gwin->paint_shape(centerx, centery, shapes.get_shape(0x02,0));
@@ -307,7 +305,7 @@ void BG_Game::top_menu()
 	play_midi(3, true);
 		
 	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-	pal.load("static/intropal.dat",0);
+	pal.load("<STATIC>/intropal.dat",0);
 	pal.fade_in(60);	
 }
 
@@ -325,11 +323,13 @@ void BG_Game::end_game(bool success)
 		int	centerx = gwin->get_width() /2;
 		int 	topy = (gwin->get_height()-200)/2;
 
-		
+		if (!gwin->setup_endgame_fonts())
+			gwin->abort ("Unable to setup fonts from 'endgame.dat' file.");
+
 		if(!success) {
-			vector<char *> *text = load_text("static/mainshp.flx", 0x15);
+			vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x15);
 			clear_screen();
-			pal.load("static/intropal.dat",0);
+			pal.load("<STATIC>/intropal.dat",0);
 			for(int i=0; i<text->size(); i++) {
 				show_text_line(topx, topx+320, topy+20+i*12, (*text)[i]);
 			}
@@ -823,7 +823,7 @@ void BG_Game::end_game(bool success)
 void BG_Game::show_quotes()
 	{
 		play_midi(5);
-		vector<char *> *text = load_text("static/mainshp.flx", 0x10);
+		vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x10);
 		scroll_text(text);
 		destroy_text(text);
 	}
@@ -832,7 +832,7 @@ void BG_Game::show_credits()
 	{
 		
 		play_midi(4);
-		vector<char *> *text = load_text("static/mainshp.flx", 0x0E);
+		vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x0E);
 		scroll_text(text);
 		destroy_text(text);
 	}
@@ -848,7 +848,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 		int sex = 0;
 		int selected = 0;
 		int num_choices = 4;
-		pal.load("static/intropal.dat",6);
+		pal.load("<STATIC>/intropal.dat",6);
 		SDL_Event event;
 		bool editing = true;
 		bool redraw = true;

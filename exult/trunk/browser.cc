@@ -124,14 +124,6 @@ void ShapeBrowser::browse_shapes()
 					break;
 				case SDLK_p:
 					handle_key(shift, current_palette, num_palettes);
-					if(shift)
-						--current_palette;
-					else
-						++current_palette;
-					if(current_palette<0)
-						current_palette=num_palettes-1;
-					else if(current_palette>=num_palettes)
-						current_palette=0;
 					break;
 				case SDLK_s:
 					handle_key(shift, current_shape, num_shapes);

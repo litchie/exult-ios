@@ -46,32 +46,29 @@ SI_Game::SI_Game()
 		add_shape("gumps/scroll",49);
 
 		add_resource("files/shapes/count", 0, 6);
-		add_resource("files/shapes/0", "static/shapes.vga", 0);
-		add_resource("files/shapes/1", "static/faces.vga", 0);
-		add_resource("files/shapes/2", "static/gumps.vga", 0);
-		add_resource("files/shapes/3", "static/sprites.vga", 0);
-		add_resource("files/shapes/4", "static/mainshp.flx", 0);
-		add_resource("files/shapes/5", "static/paperdol.vga", 0);
+		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
+		add_resource("files/shapes/1", "<STATIC>/faces.vga", 0);
+		add_resource("files/shapes/2", "<STATIC>/gumps.vga", 0);
+		add_resource("files/shapes/3", "<STATIC>/sprites.vga", 0);
+		add_resource("files/shapes/4", "<STATIC>/mainshp.flx", 0);
+		add_resource("files/shapes/5", "<STATIC>/paperdol.vga", 0);
 
 		add_resource("palettes/count", 0, 14);
-		add_resource("palettes/0", "static/palettes.flx", 0);
-		add_resource("palettes/1", "static/palettes.flx", 1);
-		add_resource("palettes/2", "static/palettes.flx", 2);
-		add_resource("palettes/3", "static/palettes.flx", 3);
-		add_resource("palettes/4", "static/palettes.flx", 4);
-		add_resource("palettes/5", "static/palettes.flx", 5);
-		add_resource("palettes/6", "static/palettes.flx", 6);
-		add_resource("palettes/7", "static/palettes.flx", 7);
-		add_resource("palettes/8", "static/palettes.flx", 8);
-		add_resource("palettes/9", "static/palettes.flx", 9);
-		add_resource("palettes/10", "static/palettes.flx", 10);
-		add_resource("palettes/11", "static/palettes.flx", 11);
-		add_resource("palettes/12", "static/palettes.flx", 12);
-		add_resource("palettes/13", "static/mainshp.flx", 1);
-		add_resource("palettes/14", "static/mainshp.flx", 26);
-
-		if (!gwin->setup_siintro_fonts())
-			gwin->abort ("Unable to setup font from 'intro.dat' file.");
+		add_resource("palettes/0", "<STATIC>/palettes.flx", 0);
+		add_resource("palettes/1", "<STATIC>/palettes.flx", 1);
+		add_resource("palettes/2", "<STATIC>/palettes.flx", 2);
+		add_resource("palettes/3", "<STATIC>/palettes.flx", 3);
+		add_resource("palettes/4", "<STATIC>/palettes.flx", 4);
+		add_resource("palettes/5", "<STATIC>/palettes.flx", 5);
+		add_resource("palettes/6", "<STATIC>/palettes.flx", 6);
+		add_resource("palettes/7", "<STATIC>/palettes.flx", 7);
+		add_resource("palettes/8", "<STATIC>/palettes.flx", 8);
+		add_resource("palettes/9", "<STATIC>/palettes.flx", 9);
+		add_resource("palettes/10", "<STATIC>/palettes.flx", 10);
+		add_resource("palettes/11", "<STATIC>/palettes.flx", 11);
+		add_resource("palettes/12", "<STATIC>/palettes.flx", 12);
+		add_resource("palettes/13", "<STATIC>/mainshp.flx", 1);
+		add_resource("palettes/14", "<STATIC>/mainshp.flx", 26);
 	}
 
 SI_Game::~SI_Game()
@@ -98,12 +95,15 @@ void SI_Game::play_intro()
 		size_t	size;
 		int	i,j;
 
+		if (!gwin->setup_siintro_fonts())
+			gwin->abort ("Unable to setup font from 'intro.dat' file.");
+
 		bool speech = audio->is_speech_enabled();
 		
 		audio->stop_music();
 
 		// Lord British presents...
-		U7object lbflic("static/intro.dat", 0);
+		U7object lbflic("<STATIC>/intro.dat", 0);
 		lbflic.retrieve(&fli_b, flisize);
 		playfli fli0(fli_b+8, flisize-8);
 		fli0.info();
@@ -146,10 +146,10 @@ void SI_Game::play_intro()
 		// No sound... yet, can't decode it :(
 
 		// Start Music
-		audio->start_music ("static/r_sintro.xmi", 0, false);
+		audio->start_music ("<STATIC>/r_sintro.xmi", 0, false);
 
 
-		U7object flic("static/intro.dat", 1);
+		U7object flic("<STATIC>/intro.dat", 1);
 		flic.retrieve(&fli_b, flisize);
 		playfli fli1(fli_b+8, flisize-8);
 		fli1.info();
@@ -267,7 +267,7 @@ void SI_Game::play_intro()
 
 
 		// Guard walks in
-		U7object flic2("static/intro.dat", 2);
+		U7object flic2("<STATIC>/intro.dat", 2);
 		flic2.retrieve(&fli_b, flisize);
 		playfli fli2(fli_b+8, flisize-8);
 		fli2.info();
@@ -301,7 +301,7 @@ void SI_Game::play_intro()
 
 		if (speech && !jive)
 		{
-			U7object voc_my_leige("static/intro.dat", 16);
+			U7object voc_my_leige("<STATIC>/intro.dat", 16);
 			voc_my_leige.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
 			audio->play (buffer+8, size-8, false);
@@ -334,7 +334,7 @@ void SI_Game::play_intro()
 
 		if (speech && !jive)
 		{
-			U7object voc_all_we("static/intro.dat", 17);
+			U7object voc_all_we("<STATIC>/intro.dat", 17);
 			voc_all_we.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
 			audio->play (buffer+8, size-8, false);
@@ -404,7 +404,7 @@ void SI_Game::play_intro()
 
 		if (speech && !jive)
 		{
-			U7object voc_indeed("static/intro.dat", 18);
+			U7object voc_indeed("<STATIC>/intro.dat", 18);
 			voc_indeed.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
 			audio->play (buffer+8, size-8, false);
@@ -444,7 +444,7 @@ void SI_Game::play_intro()
 		delete [] fli_b;
 
 		// Scroll opens
-		U7object flic3("static/intro.dat", 3);
+		U7object flic3("<STATIC>/intro.dat", 3);
 		flic3.retrieve(&fli_b, flisize);
 		playfli fli3(fli_b+8, flisize-8);
 		fli3.info();
@@ -470,7 +470,7 @@ void SI_Game::play_intro()
 
 		if (speech && !jive)
 		{
-			U7object voc_stand_back("static/intro.dat", 19);
+			U7object voc_stand_back("<STATIC>/intro.dat", 19);
 			voc_stand_back.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
 			audio->play (buffer+8, size-8, false);
@@ -498,12 +498,12 @@ void SI_Game::play_intro()
 
 
 		// Big G speaks
-		U7object flic4("static/intro.dat", 4);
+		U7object flic4("<STATIC>/intro.dat", 4);
 		flic4.retrieve(&fli_b, flisize);
 		playfli fli4(fli_b+8, flisize-8);
 		fli4.info();
 
-		U7object shapes("static/intro.dat", 30);
+		U7object shapes("<STATIC>/intro.dat", 30);
 		size_t	shapesize;
 		char *	shape_buf;
 		shapes.retrieve(&shape_buf, shapesize);
@@ -516,7 +516,7 @@ void SI_Game::play_intro()
 
 		if (speech && !jive)
 		{
-			U7object voc_big_g("static/intro.dat", 20);
+			U7object voc_big_g("<STATIC>/intro.dat", 20);
 			voc_big_g.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
 			audio->play (buffer+8, size-8, false);
@@ -617,7 +617,7 @@ void SI_Game::play_intro()
 		delete [] fli_b;
 		
 		// Tis LBs's Worst fear
-		U7object flic5("static/intro.dat", 5);
+		U7object flic5("<STATIC>/intro.dat", 5);
 		flic5.retrieve(&fli_b, flisize);
 		playfli fli5(fli_b+8, flisize-8);
 		fli5.info();
@@ -642,7 +642,7 @@ void SI_Game::play_intro()
 
 		if (speech && !jive)
 		{
-			U7object voc_tis_my("static/intro.dat", 21);
+			U7object voc_tis_my("<STATIC>/intro.dat", 21);
 			voc_tis_my.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
 			audio->play (buffer+8, size-8, false);
@@ -675,7 +675,7 @@ void SI_Game::play_intro()
 
 
 		// Boat 1
-		U7object flic6("static/intro.dat", 6);
+		U7object flic6("<STATIC>/intro.dat", 6);
 		flic6.retrieve(&fli_b, flisize);
 		playfli fli6(fli_b+8, flisize-8);
 		fli6.info();
@@ -696,7 +696,7 @@ void SI_Game::play_intro()
 
 
 		// Boat 2
-		U7object flic7("static/intro.dat", 7);
+		U7object flic7("<STATIC>/intro.dat", 7);
 		flic7.retrieve(&fli_b, flisize);
 		playfli fli7(fli_b+8, flisize-8);
 		fli7.info();
@@ -722,7 +722,7 @@ void SI_Game::play_intro()
 
 
 		// Ultima VII Part 2
-		U7object flic8("static/intro.dat", 8);
+		U7object flic8("<STATIC>/intro.dat", 8);
 		flic8.retrieve(&fli_b, flisize);
 		playfli fli8(fli_b+8, flisize-8);
 		fli8.info();
@@ -763,7 +763,7 @@ void SI_Game::top_menu()
 {
 	play_midi(28, true);
 	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-	pal.load("static/mainshp.flx",26);
+	pal.load("<STATIC>/mainshp.flx",26);
 	pal.fade_in(60);	
 }
 
@@ -779,10 +779,10 @@ void SI_Game::end_game(bool success)
 		size_t	flisize;
 		char	*fli_b;
 
-		audio->start_music ("static/r_send.xmi", 0, false);
+		audio->start_music ("<STATIC>/r_send.xmi", 0, false);
 		
 		for(int i=9; i<14; i++) {
-			U7object flic("static/intro.dat", i);
+			U7object flic("<STATIC>/intro.dat", i);
 			flic.retrieve(&fli_b, flisize);
 			playfli fli1(fli_b+8, flisize-8);
 			fli1.play(win);
@@ -793,7 +793,7 @@ void SI_Game::end_game(bool success)
 void SI_Game::show_quotes()
 	{
 		play_midi(32);
-		vector<char *> *text = load_text("static/mainshp.flx", 0x10);
+		vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x10);
 		scroll_text(text);
 		destroy_text(text);
 	}
@@ -801,7 +801,7 @@ void SI_Game::show_quotes()
 void SI_Game::show_credits()
 	{
 		play_midi(30);
-		vector<char *> *text = load_text("static/mainshp.flx", 0x0E);
+		vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x0E);
 		scroll_text(text);
 		destroy_text(text);
 	}
@@ -817,7 +817,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 		int sex = 0;
 		int selected = 0;
 		int num_choices = 4;
-		//pal.load("static/intropal.dat",6);
+		//pal.load("<STATIC>/intropal.dat",6);
 		SDL_Event event;
 		bool editing = true;
 		bool redraw = true;

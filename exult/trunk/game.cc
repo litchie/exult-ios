@@ -18,11 +18,13 @@
 #include "flic/playfli.h"
 #include "gamewin.h"
 #include "Audio.h"
+#include "Configuration.h"
 #include "game.h"
 #include "palette.h"
 #include "databuf.h"
 
 Game *game = 0;
+extern Configuration *config;
 static Exult_Game game_type = BLACK_GATE;
 
 static char av_name[17] = "";
@@ -30,17 +32,14 @@ static int av_sex = -1;
 static int av_skin = -1;
 
 Game::Game() : menushapes(MAINSHP_FLX)
-{
+{	
+	jive = false;
 	gwin = Game_window::get_game_window();
 	win = gwin->get_win();
 	topx = (gwin->get_width()-320)/2;
 	topy = (gwin->get_height()-200)/2;
 	centerx = gwin->get_width()/2;
 	centery = gwin->get_height()/2;
-	jive = false;
-
-	if (!gwin->setup_mainshp_fonts())
-			gwin->abort ("Unable to setup fonts from 'mainshp.flx' file.");
 }
 
 Game::~Game()
@@ -56,14 +55,59 @@ Exult_Game Game::get_game_type()
 	return game_type;
 }
 
-Game *Game::create_game(const char *static_identity)
+char *Game::get_game_identity(const char *savename)
 {
+    ifstream in;
+    U7open(in, savename);		// Open file & abort if error.
+    in.seekg(0x54);			// Get to where file count sits.
+    int numfiles = Read4(in);
+    char *game_identity = 0;
+    in.seekg(0x80);			// Get to file info.
+    // Read pos., length of each file.
+    long *finfo = new long[2*numfiles];
+    int i;
+    for (i = 0; i < numfiles; i++)
+      {
+	finfo[2*i] = Read4(in);	// The position, then the length.
+	finfo[2*i + 1] = Read4(in);
+      }
+    for (i = 0; i < numfiles; i++)	// Now read each file.
+      {
+	// Get file length.
+	int len = finfo[2*i + 1] - 13;
+	if (len <= 0)
+	  continue;
+	in.seekg(finfo[2*i]);	// Get to it.
+	char fname[50];		// Set up name.
+	in.read(fname, 13);
+	if (!strcmp("identity",fname))
+	    {
+      	      game_identity = new char[len];
+	      in.read(game_identity, len);
+	      // Truncate identity
+	      char *ptr = game_identity;
+	      for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
+	      	;
+	      *ptr = 0;
+	      break;
+	    }
+      }
+    delete [] finfo;
+    return game_identity;
+}
+
+
+Game *Game::create_game(const char *static_path)
+{
+	add_system_path("<STATIC>", strdup(static_path));
+	// Discover the game we are running (BG, SI, ...)
+	char *static_identity = get_game_identity(INITGAME);
 
 	if((!strcmp(static_identity,"ULTIMA7"))||(!strcmp(static_identity,"FORGE")))
                 game_type = BLACK_GATE;
         else if((!strcmp(static_identity,"SERPENT ISLE"))||(!strcmp(static_identity,"SILVER SEED")))
                 game_type = SERPENT_ISLE;
-
+	
 	switch(game_type) {
 	case BLACK_GATE:
 		game = new BG_Game();
@@ -74,6 +118,8 @@ Game *Game::create_game(const char *static_identity)
 	default:
 		game = 0;
 	}
+
+	delete[] static_identity;
 	return game;
 }
 
@@ -307,9 +353,11 @@ void Game::scroll_text(vector<char *> *text)
 
 void Game::banner()
 {
-	Vga_file exult_flx("data/exult.flx");
+	Vga_file exult_flx("<DATA>/exult.flx");
+	if (!gwin->setup_mainshp_fonts())
+		gwin->abort ("Unable to setup fonts from 'mainshp.flx' file.");
 	gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 0));
-	pal.load("data/exult.flx",5);
+	pal.load("<DATA>/exult.flx",5);
 	pal.fade_in(30);
 	wait_delay(2000);
 	pal.fade_out(30);
@@ -318,7 +366,7 @@ void Game::banner()
 
 void Game::show_menu()
 	{
-		Vga_file exult_flx("data/exult.flx");
+		Vga_file exult_flx("<DATA>/exult.flx");
 		int menuy = topy+110;
 
 		top_menu();
@@ -493,14 +541,14 @@ void Game::clear_avskin ()
 
 void Game::show_exult_credits()
 	{
-		vector<char *> *text = load_text("data/exult.flx", 0x03);
+		vector<char *> *text = load_text("<DATA>/exult.flx", 0x03);
 		scroll_text(text);
 		destroy_text(text);
 	}
 
 void Game::show_exult_quotes()
 	{
-		vector<char *> *text = load_text("data/exult.flx", 0x02);
+		vector<char *> *text = load_text("<DATA>/exult.flx", 0x02);
 		scroll_text(text);
 		destroy_text(text);
 	}

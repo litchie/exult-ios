@@ -324,7 +324,7 @@ bool Game_window::setup_mainshp_fonts ()
 	if(setup_done)
 		return true;
 	
-	extra_fonts[MAINSHP_FONT1-EXTRA_FONTS] = load_extra_font("static/mainshp.flx", 9, 0);
+	extra_fonts[MAINSHP_FONT1-EXTRA_FONTS] = load_extra_font("<STATIC>/mainshp.flx", 9, 0);
 	if (!extra_fonts[MAINSHP_FONT1-EXTRA_FONTS]->get_num_frames()) {
 			cerr << "Error loading mainshp font" << endl;
 	}
@@ -341,7 +341,7 @@ bool Game_window::setup_siintro_fonts ()
 	if(setup_done)
 		return true;
 	
-	extra_fonts[SIINTRO_FONT1-EXTRA_FONTS] = load_extra_font("static/intro.dat", 14, 8);
+	extra_fonts[SIINTRO_FONT1-EXTRA_FONTS] = load_extra_font("<STATIC>/intro.dat", 14, 8);
 	if (!extra_fonts[SIINTRO_FONT1-EXTRA_FONTS]->get_num_frames()) {
 			cerr << "Error loading intro font" << endl;
 			return false;

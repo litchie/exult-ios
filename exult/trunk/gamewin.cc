@@ -88,10 +88,7 @@ Game_window::Game_window
 	
 	set_window_size(width, height, scale);
 
-	// Discover the game we are running (BG, SI, ...)
-	char *static_identity = get_game_identity(INITGAME);
-	Game *game = Game::create_game(static_identity);
-	delete[] static_identity;
+	Game *game = Game::create_game("static");
 
 	// Go to starting chunk
 	scrolltx = game->get_start_tile_x();
@@ -122,10 +119,6 @@ Game_window::Game_window
 	for (int i = 0; i < nxforms; i++)
 		if (!xf.read_segment(i, xforms[nxforms - 1 - i], len))
 			abort("Error reading %s.", XFORMTBL);
-
-	
-
-	
 
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
@@ -997,7 +990,7 @@ bool Game_window::init_gamedat(bool create)
 				;
 			*ptr = 0;
 			cout << "Gamedat identity " << gamedat_identity << endl;
-			char *static_identity = get_game_identity(INITGAME);
+			char *static_identity = Game::get_game_identity(INITGAME);
 			if(strcmp(static_identity, gamedat_identity))
 				{
 					delete [] static_identity;
