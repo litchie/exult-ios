@@ -24,8 +24,17 @@ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA  02111-1307, USA.
 */
 
+#ifdef __DECCXX
+#  include "../alpha_kludges.h"
+#else
 #include <cstring>
+#endif
 #include "iwin8.h"
+#ifdef MACOS
+#  include "exult_types.h"
+#else
+#  include "../exult_types.h"
+#endif
 
 using std::memmove;
 
@@ -40,7 +49,7 @@ inline unsigned short Get_color8
 	int brightness			// 100=normal.
 	)
 	{
-	unsigned long c = (((unsigned long) val)*brightness*255L)/
+	uint32 c = (((uint32) val)*brightness*255L)/
 							(100*(maxval + 1));
 	return (c <= 255L ? (unsigned short) c : 255);
 	}

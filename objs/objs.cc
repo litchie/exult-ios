@@ -34,7 +34,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 // #include "game.h"
 #include "ordinfo.h"
-#include <cstring>
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <cstring>
+#endif
 
 using std::cerr;
 using std::cout;
@@ -287,7 +291,11 @@ static int Check_mask
  */
 
 template <class T>
+#ifdef __DECCXX
+int Game_object::find_nearby_static
+#else
 int Game_object::find_nearby
+#endif
 	(
 	Exult_vector<T*>& vec,	// Objects appended to this.
 	Tile_coord pos,			// Look near this point.
@@ -359,6 +367,18 @@ int Game_object::find_nearby
 					// Return # added.
 	return (vec.size() - vecsize);
 	}
+ 
+#ifdef __DECCXX
+#define DEFINE_FIND_NEARBY(decl_type, decl_conttype) \
+int Game_object::find_nearby(decl_type vec, Tile_coord pos, int shapenum, int delta, int mask, int qual, int framenum) \
+{  \
+  return find_nearby_static(vec, pos, shapenum, delta, mask, qual, framenum); \
+}
+
+DEFINE_FIND_NEARBY(Egg_vector&);
+DEFINE_FIND_NEARBY(Actor_vector&);
+DEFINE_FIND_NEARBY(Game_object_vector&);
+#endif
 
 int Game_object::find_nearby_actors
 	(
@@ -1372,8 +1392,8 @@ void Sprite::stop
 
 void Sprite::start
 	(
-	unsigned long destx,		// Move towards pt. within world.
-	unsigned long desty,
+	uint32 destx,		// Move towards pt. within world.
+	uint32 desty,
 	int speed,			// # millisecs. between frames.
 	int delay			// Delay before starting.
 	)
@@ -1384,7 +1404,7 @@ void Sprite::start
 					//  northeast, etc. too.
 	if (!is_walking())		// Not already moving?
 		{			// Start.
-		unsigned long curtime = SDL_GetTicks();
+		uint32 curtime = SDL_GetTicks();
 		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
 		}
 	curx = get_worldx();		// Get current coords.
@@ -1399,7 +1419,7 @@ void Sprite::start
 		stop();
 		return;
 		}		
-	unsigned long abs_deltax, abs_deltay;
+	uint32 abs_deltax, abs_deltay;
 	int x_dir, y_dir;
 	if (deltay >= 0)		// Figure directions.
 		{

@@ -23,6 +23,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#endif
+
 #include "gamewin.h"
 #include "actors.h"
 #include "effects.h"
@@ -401,8 +405,8 @@ inline void Raindrop::paint
 	Xform_palette xform		// Transform array.
 	)
 	{
-	unsigned long ascrollx = scrolltx*(unsigned long)tilesize,
-		      ascrolly = scrollty*(unsigned long)tilesize;
+	uint32 ascrollx = scrolltx*(uint32)tilesize,
+		      ascrolly = scrollty*(uint32)tilesize;
 	int x = ax - ascrollx, y = ay - ascrolly;
 	if (x < 0 || y < 0 || 
 			x >= iwin->get_width() || y >= iwin->get_height())
@@ -424,8 +428,8 @@ inline void Raindrop::next
 	int w, int h			// Dims. of window.
 	)
 	{
-	unsigned long ascrollx = scrolltx*(unsigned long)tilesize,
-		      ascrolly = scrollty*(unsigned long)tilesize;
+	uint32 ascrollx = scrolltx*(uint32)tilesize,
+		      ascrolly = scrollty*(uint32)tilesize;
 	int x = ax - ascrollx, y = ay - ascrolly;
 					// Still on screen?  Restore pix.
 	if (x >= 0 && y >= 0 && x < w && y < h && oldpix != 255)

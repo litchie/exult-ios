@@ -17,15 +17,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _Midi_h_
-#define _Midi_h_
+#ifndef _MIDI_H_
+#define _MIDI_H_
 
 #if (_GNUG__ >= 2) && (!defined WIN32)
 #  pragma interface
 #endif
 
 #if !AUTOCONFIGURED
-#include "../autoconfig.h"
+#  include "../autoconfig.h"
+#endif
+
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
 #endif
 
 #include <vector>

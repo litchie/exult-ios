@@ -1,4 +1,9 @@
 2000-12-11  Max Horn  <max@quendi.de>
+	* lots-o-files: applied some of the changes from Christoph Reichenbach <jameson@linuxgames.com>
+	  I didn't incorporate all changes yet, though.
+	* exult.cc: on mac, META (=Command key) is now used instead of ALT
+
+2000-12-11  Max Horn  <max@quendi.de>
 	* audio/Mixer.*: some code cleanup
 
 2000-12-09  Max Horn  <max@quendi.de>

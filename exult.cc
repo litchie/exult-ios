@@ -23,8 +23,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <cstdlib>
-#include <cctype>
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <cstdlib>
+#  include <cctype>
+#endif
 
 // #ifdef HAVE_SYS_TIME_H
 #ifdef XWIN  /* Only needed in XWIN. */
@@ -168,7 +172,7 @@ int main
 	parameters.declare("--help",&needhelp,true);
 	parameters.declare("/?",&needhelp,true);
 	parameters.declare("/h",&needhelp,true);
-//	parameters.declare("-game",&gamename,"default");
+	parameters.declare("-game",&gamename,"default");
 
 	// Process the args
 	parameters.process(argc,argv);
@@ -215,7 +219,7 @@ int exult_main(void)
 	// Setup virtual directories
 	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
 	cout << "Data path = " << data_path << endl;
-	add_system_path("<DATA>", data_path.c_str());
+	add_system_path("<DATA>", data_path);
 	if (!U7exists("<DATA>/exult.flx"))
 	{
 		add_system_path("<DATA>", EXULT_DATADIR);
@@ -236,12 +240,13 @@ int exult_main(void)
 
 	// Convert from old format if needed
 	vector<string> vs=config->listkeys("config/disk/game",false);
-	if(vs.size()==0) {
+	if(vs.size()==0)
+	{
 		// Convert from the older format
 		string data_directory;
 		config->value("config/disk/u7path",data_directory,".");
 		config->set("config/disk/game/blackgate/path",data_directory,true);
-		string	s("blackgate");
+		const string	s("blackgate");
 		config->set("config/disk/game/blackgate/title",s,true);
 		vs.push_back(s);
 	}
@@ -288,17 +293,17 @@ static void Handle_event(SDL_Event& event);
 static void Init
 	(
 	)
-	{
+{
 	Uint32 init_flags = SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_AUDIO;
 #ifdef NO_SDL_PARACHUTE
 	init_flags |= SDL_INIT_NOPARACHUTE;
 #endif
 
 	if (SDL_Init(init_flags) < 0)
-		{
+	{
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << endl;
 		exit(-1);
-		}
+	}
 	atexit(SDL_Quit);
 	
 	SDL_SysWMinfo info;		// Get system info.
@@ -357,8 +362,8 @@ static void Init
 	gwin->setup_game();		// This will start the scene.
 					// Get scale factor for mouse.
 	if (gwin->get_win())
-		scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
-	}
+		scale = Log2( gwin->get_win()->get_scale() );
+}
 
 /*
  *	Play game.
@@ -437,8 +442,8 @@ static void Handle_events
 	unsigned char *stop
 	)
 	{
-	unsigned long last_repaint = 0;	// For insuring animation repaints.
-	unsigned long last_rotate = 0;
+	uint32 last_repaint = 0;	// For insuring animation repaints.
+	uint32 last_rotate = 0;
 	/*
 	 *	Main event loop.
 	 */
@@ -453,7 +458,7 @@ static void Handle_events
 		while (!*stop && SDL_PollEvent(&event))
 			Handle_event(event);
 					// Get current time.
-		unsigned long ticks = SDL_GetTicks();
+		uint32 ticks = SDL_GetTicks();
 					// Animate unless dormant.
 		if (gwin->have_focus() && !dragging)
 			gwin->get_tqueue()->activate(ticks);
@@ -554,7 +559,7 @@ static void Handle_event
 	)
 	{
 					// For detecting double-clicks.
-	static unsigned long last_b1_click = 0;
+	static uint32 last_b1_click = 0;
 	//cout << "Event " << (int) event.type << " received"<<endl;
 	switch (event.type)
 		{
@@ -591,7 +596,7 @@ static void Handle_event
 			}
 		else if (event.button.button == 1)
 			{
-			unsigned long curtime = SDL_GetTicks();
+			uint32 curtime = SDL_GetTicks();
 			bool click_handled = false;
 			if (dragging) {
 				click_handled = gwin->drop_dragged(event.button.x >> scale, 
@@ -675,7 +680,11 @@ static void Handle_event
 	case SDL_KEYDOWN:		// Keystroke.
 		Handle_keystroke(event.key.keysym.sym,
 			event.key.keysym.mod & KMOD_SHIFT,
+#ifdef MACOS
+			(event.key.keysym.mod & KMOD_META),
+#else
 			(event.key.keysym.mod & KMOD_ALT) || altkeys,
+#endif
 			event.key.keysym.mod & KMOD_CTRL,
 			event.key.keysym.unicode);
 		break;
@@ -737,8 +746,6 @@ static void Handle_keystroke
 	Uint16 unicode
 	)
 	{
-	SDLMod mods = SDL_GetModState();
-
 	switch (sym)
 		{
 	case SDLK_RALT:			// Right alt.
@@ -946,7 +953,7 @@ static void Handle_keystroke
 				break;
 		#ifdef MACOS
 			case 'q':
-				if (mods & KMOD_META) {		// Mac only: Alt-q/Cmd-Q : Quit
+				if (alt && !ctrl) {		// Mac only: Cmd-Q : Quit
 					Okay_to_quit();
 				}
 				break;
@@ -1119,7 +1126,7 @@ void Wait_for_arrival
 	)
 	{
 	unsigned char os = Mouse::mouse->is_onscreen();
-	unsigned long last_repaint = 0;		// For insuring animation repaints.
+	uint32 last_repaint = 0;		// For insuring animation repaints.
 	while (actor->is_moving())
 		{
 		Delay();		// Wait a fraction of a second.
@@ -1138,7 +1145,7 @@ void Wait_for_arrival
 				break;
 				}
 					// Get current time, & animate.
-		unsigned long ticks = SDL_GetTicks();
+		uint32 ticks = SDL_GetTicks();
 		if (gwin->have_focus() && !dragging)
 			gwin->get_tqueue()->activate(ticks);
 					// Show animation every 1/10 sec.

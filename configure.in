@@ -72,6 +72,10 @@ case $WINDOWING_SYSTEM in
 		;;
 esac
 
+AC_CHECK_SIZEOF(short)
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(long long)
 
 dnl ----------------------------
 dnl Compilers and other tools
@@ -85,10 +89,14 @@ AM_PROG_LEX
 AC_PROG_YACC
 AM_CONDITIONAL(LEXYACC, test -n "$YACC")
 
-AC_MSG_CHECKING(for a C++-Compiler)
-dnl if there is one, print out. if not, don't matter
-AC_MSG_RESULT($CXX)
- 
+AC_ARG_WITH(cxx, [  --with-cxx=COMMAND	  Explicitly specify the C++ compiler to use], CXX="$withval")
+
+if test -z "$CXX"; then
+	AC_MSG_CHECKING(for a C++-Compiler)
+	dnl if there is one, print out. if not, don't matter
+	AC_MSG_RESULT($CXX)
+fi
+
 if test -z "$CXX"; then
 	AC_CHECK_PROG(CXX, g++, g++)
 	CXXFLAGS="$CXXFLAGS --pedantic"
@@ -99,6 +107,11 @@ if test -z "$CXX"; then AC_CHECK_PROG(CXX, DCC, DCC) fi
 test -z "$CXX" && AC_MSG_ERROR([no acceptable C++-compiler found in \$PATH])
 
 AC_PROG_CXX_WORKS
+dnl Compaq cxx /will/ break on Debian/Linux. We work around this.
+if test e"$WEIRD_CXX" = e; then
+	AC_PROG_CXX_WORKS
+fi
+
 AC_PROG_CXX_GNU
 
 AM_DISABLE_SHARED
@@ -115,6 +128,7 @@ dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(limits.h sys/time.h unistd.h)
+AC_CHECK_HEADERS(hash_map hash_set)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST

@@ -66,3 +66,7 @@
 /* Define if the C++ compiler supports BOOL */
 #define HAVE_BOOL 1
 
+#define HAVE_HASH_MAP 1
+#define HAVE_HASH_SET 1
+#define SIZEOF_SHORT 2
+#define SIZEOF_LONG 4

@@ -23,10 +23,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <cstdio>			/* Debugging.			*/
-#include <fstream>
-#include <cstring>
-#include <cstdlib>
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <cstdio>			/* Debugging.			*/
+#  include <fstream>
+#  include <cstring>
+#  include <cstdlib>
+#endif
 #include "utils.h"
 #include "schedule.h"
 #include "mouse.h"
@@ -740,7 +744,7 @@ Usecode_value Usecode_machine::find_nearest
 		dist = 16;		// Mage may have wandered.
 	obj->find_nearby(vec, shnum, dist, 0);
 	Game_object *closest = 0;
-	unsigned long bestdist = 100000;// Distance-squared in tiles.
+	uint32 bestdist = 100000;// Distance-squared in tiles.
 	int x1, y1, z1;
 	obj->get_abs_tile(x1, y1, z1);
 	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
@@ -749,7 +753,7 @@ Usecode_value Usecode_machine::find_nearest
 		int x2, y2, z2;
 		each->get_abs_tile(x2, y2, z2);
 		int dx = x1 - x2, dy = y1 - y2, dz = z1 - z2;
-		unsigned long dist = dx*dx + dy*dy + dz*dz;
+		uint32 dist = dx*dx + dy*dy + dz*dz;
 		if (dist < bestdist)
 			{
 			bestdist = dist;

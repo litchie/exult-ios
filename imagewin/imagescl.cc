@@ -26,7 +26,16 @@ Boston, MA  02111-1307, USA.
 
 #include "imagewin.h"
 #include "scale.h"
-#include <cstring>
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <cstring>
+#endif
+#ifdef MACOS
+#  include "exult_types.h"
+#else
+#  include "../exult_types.h"
+#endif
 
 /*
  *	Manipulate from 8-bit to 16-bit pixels.
@@ -40,14 +49,14 @@ public:
 	Manip8to16(SDL_Color *c, SDL_PixelFormat *f)
 		: colors(c), fmt(f)
 		{  }
-	unsigned short rgb(unsigned int r, unsigned int g,
+	uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{
 		return ((r>>fmt->Rloss)<<fmt->Rshift) |
 		       ((g>>fmt->Gloss)<<fmt->Gshift) |
 		       ((b>>fmt->Bloss)<<fmt->Bshift);
 		}
-	void copy(unsigned short& dest, unsigned char src) const
+	void copy(uint16& dest, unsigned char src) const
 		{
 		SDL_Color& color = colors[src];
 		dest = rgb(color.r, color.g, color.b);
@@ -60,7 +69,7 @@ public:
 		g = color.g;
 		b = color.b;
 		}
-	void split_dest(unsigned short pix, unsigned int& r,
+	void split_dest(uint16 pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
 		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
@@ -77,15 +86,15 @@ class Manip8to555 : public Manip8to16
 public:
 	Manip8to555(SDL_Color *c) : Manip8to16(c, 0)
 		{  }
-	unsigned short rgb(unsigned int r, unsigned int g,
+	uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{ return ((r>>3)<<10)|((g>>3)<<5)|(b>>3); }
-	void copy(unsigned short& dest, unsigned char src) const
+	void copy(uint16& dest, unsigned char src) const
 		{
 		SDL_Color& color = colors[src];
 		dest = rgb(color.r, color.g, color.b);
 		}
-	void split_dest(unsigned short pix, unsigned int& r,
+	void split_dest(uint16 pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
 		r = (((pix&0x7c00)>>10)<<3);
@@ -102,15 +111,15 @@ class Manip8to565 : public Manip8to16
 public:
 	Manip8to565(SDL_Color *c) : Manip8to16(c, 0)
 		{  }
-	unsigned short rgb(unsigned int r, unsigned int g,
+	uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{ return ((r>>3)<<11)|((g>>2)<<5)|(b>>3); }
-	void copy(unsigned short& dest, unsigned char src) const
+	void copy(uint16& dest, unsigned char src) const
 		{
 		SDL_Color& color = colors[src];
 		dest = rgb(color.r, color.g, color.b);
 		}
-	void split_dest(unsigned short pix, unsigned int& r,
+	void split_dest(uint16 pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
 		r = (((pix&0xf800)>>11)<<3);
@@ -130,14 +139,14 @@ public:
 	Manip8to32(SDL_Color *c, SDL_PixelFormat *f)
 		: colors(c), fmt(f)
 		{  }
-	unsigned long rgb(unsigned int r, unsigned int g,
+	uint32 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{
 		return ((r>>fmt->Rloss)<<fmt->Rshift) |
 		       ((g>>fmt->Gloss)<<fmt->Gshift) |
 		       ((b>>fmt->Bloss)<<fmt->Bshift);
 		}
-	void copy(unsigned long& dest, unsigned char src) const
+	void copy(uint32& dest, unsigned char src) const
 		{
 		SDL_Color& color = colors[src];
 		dest = rgb(color.r, color.g, color.b);
@@ -150,7 +159,7 @@ public:
 		g = color.g;
 		b = color.b;
 		}
-	void split_dest(unsigned long pix, unsigned int& r,
+	void split_dest(uint32 pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
 		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
@@ -165,19 +174,19 @@ public:
 class Manip16to16
 	{
 public:
-	static void copy(unsigned short& dest, unsigned short src)
+	static void copy(uint16& dest, uint16 src)
 		{ dest = src; }
-	static void split_source(unsigned short pix, unsigned int& r,
+	static void split_source(uint16 pix, unsigned int& r,
 					unsigned int& g, unsigned int& b)
 		{
 		r = (pix>>10)&0x1f;
 		g = (pix>>5)&0x1f;
 		b = pix&0x1f;
 		}
-	static void split_dest(unsigned short pix, unsigned int& r,
+	static void split_dest(uint16 pix, unsigned int& r,
 					unsigned int& g, unsigned int& b)
 		{ return split_source(pix, r, g, b); }
-	static unsigned short rgb(unsigned int r, unsigned int g,
+	static uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b)
 		{ return ((r&0x1f)<<10) | ((g&0x1f)<<5) | (b&0x1f); }
 	};
@@ -193,10 +202,10 @@ void Image_window::show_scaled8to16
 	{
 	Manip8to16 manip(surface->format->palette->colors,
 						scaled_surface->format);
-	Scale2x<unsigned char, unsigned short, Manip8to16>
+	Scale2x<unsigned char, uint16, Manip8to16>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (unsigned short *) scaled_surface->pixels, 
+		    (uint16 *) scaled_surface->pixels, 
 			scaled_surface->pitch/
 				scaled_surface->format->BytesPerPixel,
 			manip);
@@ -209,10 +218,10 @@ void Image_window::show_scaled8to555
 	)
 	{
 	Manip8to555 manip(surface->format->palette->colors);
-	Scale2x<unsigned char, unsigned short, Manip8to555>
+	Scale2x<unsigned char, uint16, Manip8to555>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (unsigned short *) scaled_surface->pixels, 
+		    (uint16 *) scaled_surface->pixels, 
 			scaled_surface->pitch/
 				scaled_surface->format->BytesPerPixel,
 			manip);
@@ -225,10 +234,10 @@ void Image_window::show_scaled8to565
 	)
 	{
 	Manip8to565 manip(surface->format->palette->colors);
-	Scale2x<unsigned char, unsigned short, Manip8to565>
+	Scale2x<unsigned char, uint16, Manip8to565>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
-		    (unsigned short *) scaled_surface->pixels, 
+		    (uint16 *) scaled_surface->pixels, 
 			scaled_surface->pitch/
 				scaled_surface->format->BytesPerPixel,
 			manip);
@@ -242,10 +251,10 @@ void Image_window::show_scaled8to32
 	{
 	Manip8to32 manip(surface->format->palette->colors,
 						scaled_surface->format);
-	Scale2x<unsigned char, unsigned long, Manip8to32>
+	Scale2x<unsigned char, uint32, Manip8to32>
 		(ibuf->get_bits(), x, y, w, h,
 			ibuf->line_width, ibuf->height, 
-			(unsigned long *) scaled_surface->pixels,
+			(uint32 *) scaled_surface->pixels,
 			scaled_surface->pitch/
 				scaled_surface->format->BytesPerPixel,
 								manip);

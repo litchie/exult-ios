@@ -40,7 +40,7 @@ Spellbook_object::Spellbook_object
 	unsigned int shapex, unsigned int shapey, 
 	unsigned int lft, 
 	unsigned char *c,		// Circle spell flags.
-	unsigned long f			// Flags (unknown).
+	uint32 f			// Flags (unknown).
 	) : Ireg_game_object(shapenum, framenum,
 			shapex, shapey, lft), flags(f), bookmark(-1)
 	{
