@@ -39,7 +39,7 @@ public:
 				text(0), textlen(0), curtop(0), curend(0)
 		{  }
 	~Text_gump()
-		{ delete text; }
+		{ delete [] text; }
 	void add_text(const char *str);	// Append text.
 	int paint_page(Game_window *gwin, Rectangle box, int start);
 					// Next page of book/scroll.
