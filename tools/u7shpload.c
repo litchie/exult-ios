@@ -177,6 +177,18 @@ unsigned int read2(FILE *f)
 	return (b0 + (b1<<8));
 }
 
+/* Flauschepelz */
+signed int read2signed(FILE *f)
+{
+        unsigned char b0, b1;
+        signed int i0;
+        b0 = fgetc(f);
+        b1 = fgetc(f);
+        i0 = b0 + (b1<<8);
+        if (i0 >= 32768) { i0 = i0 - 65536; }
+        return (i0);
+}
+
 unsigned int read4(FILE *f)
 {
 	unsigned char b0, b1, b2, b3;
@@ -341,8 +353,8 @@ static gint32 load_image (gchar *filename)
 	gint16 block_length;
 	gint32 max_width;
 	gint32 max_height;
-	gint16 offsetX;
-	gint16 offsetY;
+	signed int offsetX;
+	signed int offsetY;
 	gchar *framename;
 	guchar block;
 	guchar pix;
@@ -351,6 +363,9 @@ static gint32 load_image (gchar *filename)
 	GimpImageType image_type;
 	int i;
 	int j;
+
+        /* Flauschepelz */
+        signed int temp_int;
 
 	struct u7shape shape;
 	struct u7frame *frame;
@@ -413,9 +428,21 @@ static gint32 load_image (gchar *filename)
 			while((slice=read2(fp))!=0) {
 				slice_type = slice & 0x1;
 				slice_length = slice >> 1;
-				offsetX = read2(fp);
-				offsetY = read2(fp);
+
+                                /* Flauschepelz */
+				offsetX = read2signed(fp);
+				offsetY = read2signed(fp);
+
+                                temp_int = (frame->leftY + offsetY)*frame->width*2 +
+                                           (frame->leftX + offsetX)*2;
+
+                                pixptr = frame->pixels;
+                                pixptr = pixptr + temp_int;
+
+                                /*
 				pixptr = frame->pixels+(offsetY*frame->width+offsetX)*2;
+                                */
+
 				if(pixptr<frame->pixels)
 					pixptr = frame->pixels;
 				if(slice_type) {	// Compressed
@@ -460,7 +487,7 @@ static gint32 load_image (gchar *filename)
 			image_type, 100, GIMP_NORMAL_MODE);
 		g_free (framename);
 		gimp_image_add_layer (image_ID, layer_ID, 0);
-		gimp_layer_translate (layer_ID, (gint)frame->leftX, (gint)frame->leftY);
+		gimp_layer_translate (layer_ID, (gint)0, (gint)0);
 
 		drawable = gimp_drawable_get (layer_ID);
 		
