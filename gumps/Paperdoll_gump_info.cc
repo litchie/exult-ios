@@ -983,9 +983,9 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Lightning Whip
 	{     549, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    62,     0 },
 	{     549, -1,       Actor::belt,   OT_Single,  false, paperdoll,    62,     1 },
-	// Magic Boomerang **NEEDS ART**???
-	{     550, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    16,     0 },
-	{     550, -1,       Actor::belt,   OT_Single,  false, paperdoll,    16,     1 },
+	// Magic Boomerang
+	{     550, -1,      Actor::lhand,   OT_Single,  false, exult_flx,    27,     0 },
+	{     550, -1,       Actor::belt,   OT_Single,  false, exult_flx,    27,     1 },
 	// Fire Sword
 	{     551, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    41,     0 },
 	{     551, -1,       Actor::belt,   OT_Single,  false, paperdoll,    41,     1 },
@@ -999,8 +999,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     559, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    67,     0},
 	{     559, -1,       Actor::belt,   OT_Single,  false, paperdoll,    67,     1},
 	// Great Dagger **NEEDS ART**
-	{     561, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    35,     0 },
-	{     561, -1,       Actor::belt,   OT_Single,  false, paperdoll,    35,     1 },
+	{     561, -1,      Actor::lhand,   OT_Single,  false, exult_flx,    28,     0 },
+	{     561, -1,       Actor::belt,   OT_Single,  false, exult_flx,    28,     1 },
 	// Blowgun
 	{     563, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    12,     0 },
 	{     563, -1,       Actor::belt,   OT_Single,  false, paperdoll,    12,     1 },
