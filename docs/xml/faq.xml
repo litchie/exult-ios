@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="07 April 2002(GMT)">
+<faqs title="Exult" changed="19 May 2002(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="19052002">
+			<header>- 19 May 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="how_move_ships"/> this gets asked once in a while.</li>
+				<li><ref1 target="party_formation"/> Jeff changed this a bit.</li>
+				<li>"Why does Exult freeze when I board Hawk's ship on SI?" was a bug and got 
+					fixed and therefore no longer in the FAQ.</li>
+				<li><ref1 target="linux_audio"/> Bug with OSS in Linux.</li>
+				<li><ref1 target="blank_screen"/> this also comes up sometimes.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="07042002">
 			<header>- 07 April 2002</header>
 			<body>
@@ -11,17 +24,6 @@
 				<li><ref1 target="exult_engine"/> linked to the new <Studio/> documentation.</li>
 				<li><ref1 target="known_issues"/> possible bug with spaces in path.</li>
 				<li><ref1 target="compile_issues"/> makefile.cygwin uses Cygwin only as shell.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="12032002">
-			<header>- 12 March 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="latest_version"/> leveled up to v0.98 RC 1.</li>
-				<li><ref1 target="save_crash"/> restore an earlier savegame.</li>
-				<li><ref1 target="hawk_ship"/> a user could run into this bug.</li>
-				<li><ref1 target="not_yet_implemented"/> All spells should work now, right?</li>
 				</ul>
 			</body>
 		</sub>
@@ -337,6 +339,17 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="how_move_ships">
+			<header>So why can't I sail a ship in BG?</header>
+			<body>
+				<para>
+					To sail a ship in BG you naturally need to have the deed to this ship in your party.
+					Then doubleclick on the sail of the ship and your party moves aboard it and sits down.
+					Once they are all seated, doubleclick the gangplank to close it. Now doubleclick on 
+					the sail once more to have it unfold. You should be able to move the ship then.
+				</para>
+			</body>
+		</sub>
 		<sub name="si_ext_intro">
 			<header>Will you implement the extended intro for SI?</header>
 			<body>
@@ -364,7 +377,7 @@
 				<para>
 					In <Exult/> the party (the Avatar and his companions) move quite differently than
 					they do in the original. This is actually not a bug but a disliking of the old
-					style.
+					style. Recently Jeff changed this a bit but it still is not the same as the original.
 				</para>
 				<cite name="Jeff">
 					It's not a bug, it's a feature! I like it that way.  Everyone is sensitive to
@@ -411,6 +424,16 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="linux_audio">
+			<header>Why do I hear strange, noisy effects in Linux?</header>
+			<body>
+				<para>
+					This is due to a bug with OSS. We advice installing ALSA. Please read
+					<extref doc="docs" target="linux_alsa"/> for a little more extensive
+					explanation.
+				</para>
+			</body>
+		</sub>
 		<sub name="diferent_volume">
 			<header>Why is the music so much louder/softer than the sfx/speech?</header>
 			<body>
@@ -421,17 +444,16 @@
 				</para>
 			</body>
 		</sub>
-		<sub name="hawk_ship">
-			<header>Why does Exult freeze when I board Hawk's ship on SI?</header>
+		<sub name="blank_screen">
+			<header>Why does my monitor stay black when I try to run <Exult/>?</header>
 			<body>
 				<para>
-					Exult doesn't really freeze as you can still access the options and
-					savegame menu. You have run into a bug that only happens when you try
-					to sail with Hawk late at night (game time). Please restore to a savegame
-					before you boarded the ship and make sure you board the ship during daytime.
-				</para>
-				<para>
-					Currently we are not sure if that is not a bug in the original as well.
+					The most common reason for this is that you try to run Exult fullscreen in a
+					resolution that isn't supported by either your monitor or your graphics card.
+					Edit your exult.cfg (see <extref doc="docs" target="exult_config"/>) to disable
+					fullscreen. If Exult now runs fine in a window you have to select a different 
+					resolution (also editable in exult.cfg) to run it fullscreen.<br/>
+					If it still doesn't run contact us.
 				</para>
 			</body>
 		</sub>

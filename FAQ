@@ -1,12 +1,12 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 07 April 2002(GMT)
+last changed: 19 May 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 07 April 2002
-0.2. - 12 March 2002
+0.1. - 19 May 2002
+0.2. - 07 April 2002
 
 1. Introduction
 1.1. Why is it called Exult - what is the meaning of this name?
@@ -33,18 +33,20 @@ The latest version of this document can be found at http://exult.sourceforge.net
 3. Miscellaneous
 3.1. Where do I find a walkthrough?
 3.2. Do the carriages, ships and the magic carpet work?
-3.3. Will you implement the extended intro for SI?
-3.4. Why is the party formation different?
-3.5. What should I do when Exult keeps crashing when I try to save?
-3.6. Why does the game run so choppy?
-3.7. Why can't I hear the Sound Effects?
-3.8. Why is the music so much louder/softer than the sfx/speech?
-3.9. Why does Exult freeze when I board Hawk's ship on SI?
-3.10. Why can't I cast mark/recall on the Virtue Runes?
-3.11. What are the improvements in Exult over the original Ultima 7?
-3.12. Are there issues with the SI style pardoll in BG?
-3.13. How do I disable all improvements?
-3.14. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.3. So why can't I sail a ship in BG?
+3.4. Will you implement the extended intro for SI?
+3.5. Why is the party formation different?
+3.6. What should I do when Exult keeps crashing when I try to save?
+3.7. Why does the game run so choppy?
+3.8. Why can't I hear the Sound Effects?
+3.9. Why do I hear strange, noisy effects in Linux?
+3.10. Why is the music so much louder/softer than the sfx/speech?
+3.11. Why does my monitor stay black when I try to run Exult?
+3.12. Why can't I cast mark/recall on the Virtue Runes?
+3.13. What are the improvements in Exult over the original Ultima 7?
+3.14. Are there issues with the SI style pardoll in BG?
+3.15. How do I disable all improvements?
+3.16. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
 
 4. Bugs, known issues and not yet implemented features
 4.1. Bugs
@@ -66,20 +68,21 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 07 April 2002
+0.1. - 19 May 2002
+* 3.3. So why can't I sail a ship in BG? this gets asked once in a while.
+* 3.5. Why is the party formation different? Jeff changed this a bit.
+* "Why does Exult freeze when I board Hawk's ship on SI?" was a bug and got fixed and therefore no longer in the FAQ.
+* 3.9. Why do I hear strange, noisy effects in Linux? Bug with OSS in Linux.
+* 3.11. Why does my monitor stay black when I try to run Exult? this also comes up sometimes.
+
+
+
+0.2. - 07 April 2002
 * Removed the FAQ part for Exult Studio and integrated it in the Exult Studio documentation.
 * 1.11. On what platform does Exult run? MacOS needs to be 8.5 or higher.
-* 3.14. I heard that Exult is meant to be a game engine. Can I make my own game with Exult? linked to the new Exult Studio documentation.
+* 3.16. I heard that Exult is meant to be a game engine. Can I make my own game with Exult? linked to the new Exult Studio documentation.
 * 4.4. Known Issues possible bug with spaces in path.
 * 4.5. Known Compile Issues makefile.cygwin uses Cygwin only as shell.
-
-
-
-0.2. - 12 March 2002
-* 1.10. What is the latest version of Exult? leveled up to v0.98 RC 1.
-* 3.5. What should I do when Exult keeps crashing when I try to save? restore an earlier savegame.
-* 3.9. Why does Exult freeze when I board Hawk's ship on SI? a user could run into this bug.
-* 4.6. Not yet implemented All spells should work now, right?
 
 
 
@@ -204,46 +207,53 @@ If you need help with the game itself, like walktrhoughs, hints, location of Npc
 Yes. The sail of ships look odd sometimes but otherwise these means of transportation work quite well.
 
 
-3.3. Will you implement the extended intro for SI?
+3.3. So why can't I sail a ship in BG?
+To sail a ship in BG you naturally need to have the deed to this ship in your party. Then doubleclick on the sail of the ship and your party moves aboard it and sits down. Once they are all seated, doubleclick the gangplank to close it. Now doubleclick on the sail once more to have it unfold. You should be able to move the ship then.
+
+
+3.4. Will you implement the extended intro for SI?
 The extended intro for Serpent Isle can be found at http://www.io.com/~dloubet/. At this moment we don't even think about implementing this extended intro. Why not? It sure would be nice to use it. But you may have noticed some effects missing from the intro. You may have noticed that there is no sound. You may have noticed that there is neither speech nor subtitles. All that would have to be addressed and add to that the longer running time and that you have to synchronize the music with it. Then what about the size of it? You would need to compress it and make sure all our supported platforms make use of it.
 Everyone volunteering to do it is welcome to.
 
 
-3.4. Why is the party formation different?
-In Exult the party (the Avatar and his companions) move quite differently than they do in the original. This is actually not a bug but a disliking of the old style.
+3.5. Why is the party formation different?
+In Exult the party (the Avatar and his companions) move quite differently than they do in the original. This is actually not a bug but a disliking of the old style. Recently Jeff changed this a bit but it still is not the same as the original.
 
 Jeff:
 It's not a bug, it's a feature! I like it that way. Everyone is sensitive to different things, and I always though the formation-walking in the original U7 looked really stupid. Eventually, someone may add the original type of walking to Exult, probably as an option.
 
 
-3.5. What should I do when Exult keeps crashing when I try to save?
+3.6. What should I do when Exult keeps crashing when I try to save?
 This is not normal behavior for Exult. Normally when you restart and "Journey Onward" Exult will actually restore to the point you saved.
 Please do not play further at this point. You should restore to an earlier savegame, no matter how much game time you loose. Your game must have gotten corrupted and when you play on with it you will most likely experience even more serious problems.
 
 
-3.6. Why does the game run so choppy?
+3.7. Why does the game run so choppy?
 Well, every Ultima required a fast computer. Even though Exult is just an engine that runs the ancient Ultima 7 it still requires a fast computer.
 Seriously, if the game runs choppy for you, try the speed seeting in the Gameoptions menu and if that doesn't help also play with the original resolution (320x200), try a different scaler or disable scaling alltogether.
 
 
-3.7. Why can't I hear the Sound Effects?
+3.8. Why can't I hear the Sound Effects?
 Please read the Audio section of our ReadMe.txt.
 
 
-3.8. Why is the music so much louder/softer than the sfx/speech?
+3.9. Why do I hear strange, noisy effects in Linux?
+This is due to a bug with OSS. We advice installing ALSA. Please read ReadMe.txt for a little more extensive explanation.
+
+
+3.10. Why is the music so much louder/softer than the sfx/speech?
 Music is played via midi but the sfx (sound effects) and speech are played via wave. Midi and Wave volume are set up seperately in the settings of your Operating System and not by Exult.
 
 
-3.9. Why does Exult freeze when I board Hawk's ship on SI?
-Exult doesn't really freeze as you can still access the options and savegame menu. You have run into a bug that only happens when you try to sail with Hawk late at night (game time). Please restore to a savegame before you boarded the ship and make sure you board the ship during daytime.
-Currently we are not sure if that is not a bug in the original as well.
+3.11. Why does my monitor stay black when I try to run Exult?
+The most common reason for this is that you try to run Exult fullscreen in a resolution that isn't supported by either your monitor or your graphics card. Edit your exult.cfg (see ReadMe.txt) to disable fullscreen. If Exult now runs fine in a window you have to select a different resolution (also editable in exult.cfg) to run it fullscreen. If it still doesn't run contact us.
 
 
-3.10. Why can't I cast mark/recall on the Virtue Runes?
+3.12. Why can't I cast mark/recall on the Virtue Runes?
 You never could do this in the original as well. You have to use the Virtue Stones that you find in the same building as the runes.
 
 
-3.11. What are the improvements in Exult over the original Ultima 7?
+3.13. What are the improvements in Exult over the original Ultima 7?
 * Many more keyboard shortcuts than the original had. Including in BG the 'k' key that checks if you have the right key for a lock in your inventory. The list of keys can be found in the Documentation.
 * A new worked over Game menu. This menu is explained in detail in the Documentation and many of the following improvements and Video/Audio options can be accessed via this menu. Open this Game Menu by pressing 'Esc' in the game.
 * SI style paperdoll (inventory screen) in BG. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see the Documentation) and activate it in the Gameplay Options This new inventory screen acts sometimes a little buggy, so if an item seems to have disappeared disable the paperdolls in the Game Options.
@@ -258,7 +268,7 @@ You never could do this in the original as well. You have to use the Virtue Ston
 
 
 
-3.12. Are there issues with the SI style pardoll in BG?
+3.14. Are there issues with the SI style pardoll in BG?
 There are some issues. The paperdoll in BG is still limited to the slots it had originally. That means:
 * You can either equip a pair of gauntlets or one/two rings.
 * The 'shield behind back', 'weapon behind back' and 'belt' slots are one and the same in BG. (So if you have a weapon on your back, you can't use your belt slot)
@@ -267,7 +277,7 @@ There are some issues. The paperdoll in BG is still limited to the slots it had 
 Sparks paperdoll looks very odd (Spark on steroids) as there is no paperdoll for kids in SI and we have to use the adult paperdoll. Unless someone draws heaps of art we can't do anything.
 
 
-3.13. How do I disable all improvements?
+3.15. How do I disable all improvements?
 To get an Ultima 7 that looks and behaves as close to the original as possible there are several things to do (though I wonder why you'd want to do that):
 * make custom keybindings files (see Documentation) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. Since the Alpha 4 release you have to assign 's' to old_file_gump to enable the old savegame menu (the line in your custom keybindings file should look like: S old_file_gump)
 * Edit the exult.cfg file to point to those custom keys.
@@ -278,7 +288,7 @@ To get an Ultima 7 that looks and behaves as close to the original as possible t
 
 
 
-3.14. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.16. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
 Work has begun on "Exult Studio" which is aimed to be an editor for all kinds of files that are used by Ultima 7. As of now there is already a Gimp plug-in to edit shapes.
 For much more information "Exult Studio" see exult_studio.txt.
 
@@ -312,7 +322,7 @@ So if you want to have a bug fixed follow these steps!
 4.3. Broken by Design
 Exult often behaves and works differently than the original Ultima 7. These behaviors are sometimes features that just differ from the way the original worked. Some are bugs that the development team consider to have almost no detrimental effect to the enjoyment/running of the game, but would require a large amount of time and effort to fix. Please don't bother the team about those as some of these will be fixed in the future, others will only be fixed when someone who thinks it should be done differently sits down and codes it. The following are such 'features' of Exult:
 * Birds and animals open doors and such, like the human and sentient creatures of Britannia do.
-* Party members don't walk lockstep with the Avatar like they do in BG/SI. Please see 3.4. Why is the party formation different?.
+* Party members don't walk lockstep with the Avatar like they do in BG/SI. Please see 3.5. Why is the party formation different?.
 * The way the Avatar and the companions walk. Is it 2 frames or 3 frames? This has been changed a lot as this is disputed almost every four weeks. Currently Exult is coded using 2 frames.
 * Combat works differently. We don't have any hard data or formulae that tell us how combat worked in BG/SI, so DrCode put something together. If you have any information you've worked out related to this, please tell either the forum or the exult-general mailing list. Recently Jeff added an option to change the combat difficulty in exult.cfg. See the ReadMe.txt.
 * Negative health and unconsciousness. Yes, it may look weird to have people walking around with negative health, but that's the way it currently works.
