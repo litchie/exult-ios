@@ -72,7 +72,9 @@ exult_SOURCES =	\
 	tqueue.h	\
 	txtscroll.cc	\
 	txtscroll.h	\
-	vec.h
+	vec.h 		\
+	xdrag.cc	\
+	xdrag.h
 
 EXULTLIBS = \
 	pathfinder/libpathfinder.la		\
