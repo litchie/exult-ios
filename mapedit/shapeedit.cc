@@ -473,7 +473,7 @@ void ExultStudio::init_shape_notebook
 		{
 		set_spin("shinfo_ammo_damage", ainfo->get_damage());
 		set_spin("shinfo_ammo_family", ainfo->get_family_shape());
-		set_optmenu("shinfo_ammo_type", ainfo->get_damage());
+		set_optmenu("shinfo_ammo_type", ainfo->get_damage_type());
 		static char *powers[] = {
 					"shinfo_ammo_pow0",
 					"shinfo_ammo_pow1",
@@ -617,15 +617,14 @@ void ExultStudio::save_shape_notebook
 					// 'Explode'???
 		winfo->set_returns(get_toggle("shinfo_weapon_returns"));
 		}
-//++++++++++++++++++++
-	Ammo_info *ainfo = info.get_ammo_info();
-	set_toggle("shinfo_ammo_check", ainfo != 0);
-	set_visible("shinfo_ammo_box", ainfo != 0);
-	if (ainfo)			// Setup ammo page.
+	if (!get_toggle("shinfo_ammo_check"))
+		info.set_ammo_info(false);	// Not ammo.
+	else
 		{
-		set_spin("shinfo_ammo_damage", ainfo->get_damage());
-		set_spin("shinfo_ammo_family", ainfo->get_family_shape());
-		set_optmenu("shinfo_ammo_type", ainfo->get_damage());
+		Ammo_info *ainfo = info.set_ammo_info(true);
+		ainfo->set_family_shape(get_spin("shinfo_ammo_family");
+		ainfo->set_damage(get_spin("shinfo_ammo_damage"),
+				get_optmenu("shinfo_ammo_type"));
 		static char *powers[] = {
 					"shinfo_ammo_pow0",
 					"shinfo_ammo_pow1",
@@ -633,37 +632,38 @@ void ExultStudio::save_shape_notebook
 					"shinfo_ammo_pow3",
 					"shinfo_ammo_pow4",
 					"shinfo_ammo_pow5" };
-		set_bit_toggles(&powers[0], 
-			sizeof(powers)/sizeof(powers[0]), ainfo->get_powers());
+		ainfo->set_powers(get_bit_toggles(&powers[0], 
+					sizeof(powers)/sizeof(powers[0])));
 					// 'Explode'???
 		}
-	Armor_info *arinfo = info.get_armor_info();
-	set_toggle("shinfo_armor_check", arinfo != 0);
-	set_visible("shinfo_armor_box", arinfo != 0);
-	if (arinfo)			// Setup armor page.
+	if (!get_toggle("shinfo_armor_check"))
+		info.set_armor_info(false);	// Not armor.
+	else
 		{
+		Armor_info *arinfo = info.set_armor_info(true);
 		static char *immun[] = {"shinfo_armor_immun0",
 					"shinfo_armor_immun1",
 					"shinfo_armor_immun2",
 					"shinfo_armor_immun3" };
-		set_spin("shinfo_armor_value", arinfo->get_prot());
-		set_bit_toggles(&immun[0], 
-			sizeof(immun)/sizeof(immun[0]), arinfo->get_immune());
+		arinfo->set_prot(get_spin("shinfo_armor_value"));
+		arinfo->set_immun(get_bit_toggles(&immun[0], 
+					sizeof(immun)/sizeof(immun[0])));
 		}
-	Monster_info *minfo = info.get_monster_info();
-	set_toggle("shinfo_monster_check", minfo != 0);
-	set_visible("shinfo_monster_box", minfo != 0);
-	if (minfo)			// Setup monster page.
+	if (!get_toggle("shinfo_monster_check"))
+		info.set_monster_info(false);
+	else
 		{
-		set_spin("shinfo_monster_str", minfo->get_strength());
-		set_spin("shinfo_monster_dex", minfo->get_dexterity());
-		set_spin("shinfo_monster_intel", minfo->get_intelligence());
-		set_spin("shinfo_monster_cmb", minfo->get_combat());
-		set_spin("shinfo_monster_armor", minfo->get_armor());
-		set_spin("shinfo_monster_wpn", minfo->get_weapon());
-		set_spin("shinfo_monster_reach", minfo->get_reach());
-		set_spin("shinfo_monster_equip", minfo->get_equip_offset());
-		set_optmenu("shinfo_monster_align", minfo->get_alignment());
+		Monster_info *minfo = info.set_monster_info(true);
+		minfo->set_stats(
+			get_spin("shinfo_monster_str"),
+			get_spin("shinfo_monster_dex"),
+			get_spin("shinfo_monster_intel"),
+			get_spin("shinfo_monster_cmb"),
+			get_spin("shinfo_monster_armor"),
+			get_spin("shinfo_monster_wpn"),
+			get_spin("shinfo_monster_reach"));
+		minfo->set_equip_offset(get_spin("shinfo_monster_equip"));
+		minfo->set_alignment(get_optmenu("shinfo_monster_align"));
 		static char *vuln[] = {	"shinfo_monster_vuln0",
 					"shinfo_monster_vuln1",
 					"shinfo_monster_vuln2",
@@ -672,23 +672,23 @@ void ExultStudio::save_shape_notebook
 					"shinfo_monster_immun1",
 					"shinfo_monster_immun2",
 					"shinfo_monster_immun3" };
-		set_bit_toggles(&vuln[0], sizeof(vuln)/sizeof(vuln[0]),
-						minfo->get_vulnerable());
-		set_bit_toggles(&immun[0], 
-			sizeof(immun)/sizeof(immun[0]), minfo->get_immune());
-		set_toggle("shinfo_monster_splits", minfo->splits());
-		set_toggle("shinfo_monster_cant_die", minfo->cant_die());
-		set_toggle("shinfo_monster_cant_yell", minfo->cant_yell());
-		set_toggle("shinfo_monster_cant_bleed", minfo->cant_bleed());
-		set_toggle("shinfo_monster_poison_safe",
-						minfo->poison_safe());
+		minfo->set_vulnerable(get_bit_toggles(&vuln[0], 
+						sizeof(vuln)/sizeof(vuln[0])));
+		minfo->set_immune(get_bit_toggles(&immun[0], 
+			sizeof(immun)/sizeof(immun[0])));
+		minfo->set_splits(get_toggle("shinfo_monster_splits"));
+		minfo->set_cant_die(get_toggle("shinfo_monster_cant_die"));
+		minfo->set_cant_yell(get_toggle("shinfo_monster_cant_yell"));
+		minfo->set_cant_bleed(get_toggle("shinfo_monster_cant_bleed"));
+		minfo->set_poison_safe(
+				get_toggle("shinfo_monster_poison_safe"));
 		static char *flags[] = {"shinfo_monster_flag0",
 					"shinfo_monster_flag1",
 					"shinfo_monster_flag2",
 					"shinfo_monster_flag3",
 					"shinfo_monster_flag4" };
-		set_bit_toggles(&flags[0],
-			sizeof(flags)/sizeof(flags[0]), minfo->get_flags());
+		minfo->set_flags(get_bit_toggles(&flags[0],
+					sizeof(flags)/sizeof(flags[0])));
 		}
 	}
 #endif
