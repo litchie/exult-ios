@@ -18,7 +18,7 @@ CPPFLAGS=-mno-cygwin -DWIN32 -DVERSION=\"0.94cvs\" -DEXULT_DATADIR=\"data\" -DDE
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/data \
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
-	$(SDL_INCLUDES)
+	$(SDL_INCLUDES) -DHAVE_SNPRINTF
 
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
 CXXFLAGS=-mno-cygwin -O2 -include mingw_kludges.h
