@@ -60,10 +60,11 @@ public:
 	void swap(int i);		// Swap entries i and i+1.
 	void add(int id);		// Add ID, checking for duplicate 1st.
 	enum Special_builtin {
-		ammo_group = 100,
+		ammo_group = 20,
 		armour_group,
 		monsters_group,
-		weapons_group
+		weapons_group,
+		last_builtin_group
 		};
 	};
 
@@ -76,6 +77,8 @@ class Shape_group_file
 	{
 	std::string name;		// Base filename.
 	std::vector<Shape_group *> groups;// List of groups from the file.
+	std::vector<Shape_group *> builtins;	// Builtin groups, created
+						//  on demand.
 	bool modified;			// Changed since last save.
 public:
 	friend class Shape_group;
@@ -98,6 +101,7 @@ public:
 	int find(const char *nm);	// Find group with given name.
 					// Remove and delete group.
 	void remove(int index, bool del = true);
+	Shape_group *get_builtin(int menindex, const char *nm);
 	void write();			// Write out (to 'patch' directory).
 	};
 
