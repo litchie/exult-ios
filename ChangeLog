@@ -1,5 +1,6 @@
 2002-02-26  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* objs/egg.cc: Delete missile-launcher in remove_this();
 	* usecode/ucinternal.cc (public): Find_nearby() now handles case
 	where parm. 0 is a 4-elem. array.  Fixes 'destroy trap' spell.
 
