@@ -2704,7 +2704,7 @@ void Usecode_machine::run
 		{
 		int opcode = *ip++;
 #if DEBUG
-//		if (debug >= 2)
+		if (debug >= 2)
 			printf("SP = %d, IP = %04x, op = %02x\n", sp - stack,
 						ip - 1 - code, opcode);
 #endif
