@@ -116,6 +116,9 @@ int Uc_function_symbol::gen_value
 	return 0;
 	}
 
+bool String_compare::operator()(char * const &x, char * const &y) const
+	{ return strcmp(x, y) < 0; }
+
 /*
  *	Delete.
  */

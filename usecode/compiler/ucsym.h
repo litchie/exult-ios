@@ -43,6 +43,7 @@ public:
 	friend class Uc_scope;
 	Uc_symbol(char *nm, int off) : name(nm), offset(off)
 		{  }
+	const char *get_name() { return name.data(); }
 					// Gen. code to put result on stack.
 	virtual int gen_value(ostream& out);
 					// Gen. to assign from stack.
@@ -85,12 +86,22 @@ public:
 	};
 
 /*
+ *	For comparing names:
+ */
+class String_compare
+	{
+public:
+	bool operator()(char * const &x, char * const &y) const;
+	};
+
+/*
  *	A 'scope' in the symbol table:
  */
 class Uc_scope
 	{
 	Uc_scope *parent;		// ->parent.
-	map<char *, Uc_symbol *> symbols;// For finding syms. by name.
+	typedef map<char *, Uc_symbol *, String_compare> Sym_map;
+	Sym_map symbols;		// For finding syms. by name.
 	vector<Uc_scope *> scopes;	// Scopes within.
 public:
 	Uc_scope(Uc_scope *p) : parent(p)
@@ -100,7 +111,7 @@ public:
 		{ return parent; }
 	Uc_symbol *search(char *nm)	// Look in this scope.
 		{
-		map<char *, Uc_symbol *>::const_iterator it = symbols.find(nm);
+		Sym_map::const_iterator it = symbols.find(nm);
 		if (it == symbols.end())
 			return 0;
 		else

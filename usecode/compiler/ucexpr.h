@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "ucloc.h"
 
+class Uc_symbol;
+
 /*
  *	Base class for expressions.
  */
@@ -36,8 +38,25 @@ public:
 					// Use current location.
 	Uc_expression() : Uc_location()
 		{  }
+	virtual ~Uc_expression() {  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(ostream& out) = 0;
+					// Gen. to assign from stack.
+	virtual void gen_assign(ostream& out);
+	};
+
+/*
+ *	A variable.
+ */
+class Uc_var_expression : public Uc_expression
+	{
+	Uc_symbol *var;
+public:
+					// Use current location.
+	Uc_var_expression(Uc_symbol *v) : var(v)
+		{  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
 					// Gen. to assign from stack.
 	virtual void gen_assign(ostream& out);
 	};
