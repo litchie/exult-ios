@@ -31,7 +31,7 @@ BG_Game::BG_Game()
 		add_shape("gumps/savebtn",6);
 		add_shape("gumps/disk",24);
 		add_shape("gumps/heart",25);
-		add_shape("gumps/statatts",26);
+		add_shape("gumps/statatts",28);
 		add_shape("gumps/musicbtn",29);
 		add_shape("gumps/speechbtn",30);
 		add_shape("gumps/soundbtn",31);	
