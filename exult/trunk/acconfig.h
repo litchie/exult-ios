@@ -25,3 +25,7 @@
 
 /* Set memoryu before usage? */
 #undef INITIALISE_ALLOCATED_BLOCKS
+
+/* Define if the libraries have mkstemp() */
+#undef HAVE_MKSTEMP
+

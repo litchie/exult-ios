@@ -255,6 +255,25 @@ fi
 
 AC_SUBST(DEBUG_FLAGS)
 
+AC_MSG_CHECKING(for mkstemp())
+AC_TRY_COMPILE([
+#if HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#include <stdlib.h>
+],
+[
+	mkstemp(0);
+],
+  ac_cv_func_mkstemp=yes,
+  ac_cv_func_mkstemp=no)
+AC_MSG_RESULT($ac_cv_func_mkstemp)
+if test x$ac_cv_func_mkstemp = xyes ; then
+  AC_DEFINE(HAVE_MKSTEMP)
+fi
+
+
+
 dnl Weep into your beer warnings
 AC_ARG_ENABLE(awful-warnings, [  --enable-awful-warnings       enable warnings for violations of Scott Meyers Effective C++ style guidelines [default no]],,enable_awful_warnings=no)
 AC_MSG_CHECKING(whether to enable awful warnings)
