@@ -198,6 +198,20 @@ static void Breakpoint
 	return;
 	}
 
+#if (defined(XWIN) && HAVE_SIGNAL_H && HAVE_SYS_WAIT_H)
+
+// a SIGCHLD handler to properly clean up forked playmidi processes (if any)
+
+#include <sys/wait.h>
+#include <signal.h>
+void sigchld_handler(int sig)
+{
+	waitpid(-1, 0, WNOHANG);
+}
+
+#endif
+
+
 /*
  *	Main program.
  */
@@ -216,6 +230,10 @@ int main
 	for (counti=strlen(argv[0]) ; argv[0][counti]!='/' ; counti--);
 	strncpy(datapath, argv[0], counti);
 	chdir(datapath);
+#endif
+
+#if (defined(XWIN) && HAVE_SIGNAL_H && HAVE_SYS_WAIT_H)
+	signal(SIGCHLD, sigchld_handler);
 #endif
 
 
