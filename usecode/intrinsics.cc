@@ -1958,7 +1958,7 @@ USECODE_INTRINSIC(get_item_flag)
 	else if (fnum == (int) Obj_flags::okay_to_land)
 		{			// Okay to land flying carpet?
 		Barge_object *barge = Get_barge(obj);
-		if (!barge || barge != gwin->get_moving_barge())
+		if (!barge)
 			return Usecode_value(0);
 		return Usecode_value(barge->okay_to_land());
 		}
