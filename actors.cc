@@ -2479,8 +2479,8 @@ bool Actor::add
 		}
 		return Container_game_object::add(obj, dont_check, combine);
 	}
-					// Add to ourself.
-	if (!Container_game_object::add(obj, true, combine))
+					// Add to ourself (DON'T combine).
+	if (!Container_game_object::add(obj, true))
 		return false;
 
 	if (type == FIS_2Hand)		// Two-handed?
