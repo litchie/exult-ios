@@ -3,6 +3,8 @@
 
 # Where is Ultima 7 installed
 U7PATH=C:\\Ultima7
+#Only used for snapshots
+TOOLSPATH=C:\\U7Tools
 
 CC=gcc
 # Base of the exult source
@@ -303,19 +305,35 @@ toolsinstall: tools
 	strip wud.exe -o $(U7PATH)\tools\wud.exe
 	strip ucxt.exe -o $(U7PATH)\ucxt.exe
 	strip ucc.exe -o $(U7PATH)\tools\ucc.exe
-	if not exist $(U7PATH)\tools\data md $(U7PATH)\data
+	if not exist $(U7PATH)\data md $(U7PATH)\data
 	copy usecode\ucxt\data\events.data $(U7PATH)\data\events.data
 	copy usecode\ucxt\data\flags.data $(U7PATH)\data\flags.data
 	copy usecode\ucxt\data\opcodes.txt $(U7PATH)\data\opcodes.txt
 	copy usecode\ucxt\data\u7misc.data $(U7PATH)\data\u7misc.data 
 
-toolsdist: toolsinstall
-	copy tools\expack.txt $(U7PATH)\tools
-	copy tools\intrins1.txt $(U7PATH)\tools
-	copy tools\intrins2.txt $(U7PATH)\tools
-	copy tools\u7bgflag.txt $(U7PATH)\tools
-	copy tools\u7siflag.txt $(U7PATH)\tools
-	copy tools\ucformat.txt $(U7PATH)\tools
+toolsdist: tools
+	if not exist $(U7PATH)\tools md $(TOOLSPATH)\tools
+	strip expack.exe -o $(TOOLSPATH)\tools\expack.exe
+	strip mklink.exe -o $(TOOLSPATH)\tools\mklink.exe
+	strip rip.exe -o $(TOOLSPATH)\tools\rip.exe
+	strip shp2pcx.exe -o $(TOOLSPATH)\tools\shp2pcx.exe
+	strip splitshp.exe -o $(TOOLSPATH)\tools\splitshp.exe
+	strip ucdump.exe -o $(TOOLSPATH)\tools\ucdump.exe
+	strip wuc.exe -o $(TOOLSPATH)\tools\wuc.exe
+	strip wud.exe -o $(TOOLSPATH)\tools\wud.exe
+	strip ucxt.exe -o $(TOOLSPATH)\ucxt.exe
+	strip ucc.exe -o $(TOOLSPATH)\tools\ucc.exe
+	if not exist $(U7PATH)\data md $(TOOLSPATH)\data
+	copy usecode\ucxt\data\events.data $(TOOLSPATH)\data\events.data
+	copy usecode\ucxt\data\flags.data $(TOOLSPATH)\data\flags.data
+	copy usecode\ucxt\data\opcodes.txt $(TOOLSPATH)\data\opcodes.txt
+	copy usecode\ucxt\data\u7misc.data $(TOOLSPATH)\data\u7misc.data 
+	copy tools\expack.txt $(TOOLSPATH)\tools
+	copy tools\intrins1.txt $(TOOLSPATH)\tools
+	copy tools\intrins2.txt $(TOOLSPATH)\tools
+	copy tools\u7bgflag.txt $(TOOLSPATH)\tools
+	copy tools\u7siflag.txt $(TOOLSPATH)\tools
+	copy tools\ucformat.txt $(TOOLSPATH)\tools
 
 all: $(EXEC) tools
 
