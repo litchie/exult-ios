@@ -627,7 +627,7 @@ void ExultStudio::init_shape_notebook
 					"shinfo_weapon_pow5" };
 		set_bit_toggles(&powers[0], 
 			sizeof(powers)/sizeof(powers[0]), winfo->get_powers());
-					// 'Explode'???
+		set_toggle("shinfo_weapon_explodes", winfo->explodes());
 		set_toggle("shinfo_weapon_returns", winfo->returns());
 		}
 	Ammo_info *ainfo = info.get_ammo_info();
@@ -780,6 +780,7 @@ void ExultStudio::save_shape_notebook
 					sizeof(powers)/sizeof(powers[0])));
 					// 'Explode'???
 		winfo->set_returns(get_toggle("shinfo_weapon_returns"));
+		winfo->set_explodes(get_toggle("shinfo_weapon_explodes"));
 		}
 	if (!get_toggle("shinfo_ammo_check"))
 		info.set_ammo_info(false);	// Not ammo.

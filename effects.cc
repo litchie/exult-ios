@@ -430,8 +430,11 @@ Explosion_effect::Explosion_effect
 	(
 	Tile_coord p, 
 	Game_object *exp,
-	int delay			// Delay before starting (msecs).
-	) : Sprites_effect(1, p, 0, 0, delay), explode(exp)
+	int delay,			// Delay before starting (msecs).
+	int weap			// Weapon to use for damage calcs., or
+					//   -1 for default(704 = poweder keg).
+	) : Sprites_effect(1, p, 0, 0, delay), explode(exp),
+		weapon(weap >= 0 ? weap : 704)
 {
 	if (exp && exp->get_shapenum() == 704) { // powderkeg
 		exp->set_quality(1); // mark as detonating
@@ -466,7 +469,7 @@ void Explosion_effect::handle_event
 		Game_object::find_nearby(vec, pos, c_any_shapenum, 5, 0);
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
-				(**it).attacked(0, 704, 0);
+				(**it).attacked(0, -704, 0);
 			}
 	}
 	Sprites_effect::handle_event(curtime, udata);

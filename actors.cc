@@ -2797,7 +2797,7 @@ static int Get_effective_prop
 bool Actor::figure_hit_points
 	(
 	Actor *attacker,		// 0 if hit from a missile egg.
-	int weapon_shape,
+	int weapon_shape,		// Negative if from an explosion.
 	int ammo_shape
 	)
 	{
@@ -2808,6 +2808,9 @@ bool Actor::figure_hit_points
 	Monster_info *minf = get_info().get_monster_info();
 	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
 		return false;
+	bool explosion = false;		// From an explosion?
+	if (weapon_shape < 0)		// Don't want recusive explosions.
+		{ explosion = true; weapon_shape = -weapon_shape; }
 	bool theyre_party = attacker &&
 			(attacker->party_id != -1 || attacker->npc_num == 0);
 	bool instant_death = (cheat.in_god_mode() && theyre_party);
@@ -2947,6 +2950,11 @@ bool Actor::figure_hit_points
 	    (this == gwin->get_main_actor() || 
 				attacker == gwin->get_main_actor()))
 		Audio::get_ptr()->play_sound_effect(sfx);
+	if (!explosion && winf->explodes() &&		// Exploding?
+	    rand()%4)			// Let's do it 3/4 the time.
+		eman->add_effect(new Explosion_effect(get_tile() + 
+			Tile_coord(0, 0, get_info().get_3d_height()/2), 0, 0));
+
 	int oldhealth = properties[static_cast<int>(health)];
 	int maxhealth = properties[static_cast<int>(strength)];
 
@@ -3003,6 +3011,7 @@ Game_object *Actor::attacked
 	(
 	Actor *attacker,		// 0 if from a trap.
 	int weapon_shape,		// Weapon shape, or 0 to use readied.
+					//   If < 0, it's an explosion.
 	int ammo_shape			// Also may be 0.
 	)
 	{

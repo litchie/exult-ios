@@ -118,8 +118,10 @@ public:
 class Explosion_effect : public Sprites_effect
 	{
 	Game_object *explode;		// What's exploding, or 0.
+	int weapon;			// Weapon to use for attack values.
 public:
-	Explosion_effect(Tile_coord p, Game_object *exp, int delay = 0);
+	Explosion_effect(Tile_coord p, Game_object *exp, int delay = 0,
+						int weap = -1);
 	virtual void handle_event(unsigned long time, long udata);
 	};
 
