@@ -897,6 +897,7 @@ void Game_window::paint
 			paint_splash();
 			return;
 		}
+	int light_sources = 0;		// Count light sources found.
 					// Which chunks to start with:
 					// Watch for shapes 1 chunk to left.
 	int start_chunkx = chunkx + x/chunksize - 1;
@@ -961,7 +962,14 @@ void Game_window::paint
 					// Draw the chunks' objects.
 	for (cy = start_chunky; cy < stop_chunky; cy++)
 		for (cx = start_chunkx; cx < stop_chunkx; cx++)
+			{
 			paint_chunk_objects(-1, cx, cy, 0);
+					// Also check for light sources.
+			Chunk_object_list *chunk = get_objects(cx, cy);
+			if (is_main_actor_inside() == chunk->is_roof())
+				light_sources += chunk->get_light_sources();
+			}
+
 					// Draw gumps.
 	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
 		gmp->paint(this);
@@ -969,6 +977,11 @@ void Game_window::paint
 	for (Text_object *txt = texts; txt; txt = txt->next)
 		paint_text_object(txt);
 	win->clear_clip();
+					// Complete repaint?
+	if (!x && !y && w == get_width() && h == get_height())
+					// Set palette for lights.
+					// +++++main_actor->has_light_source()?
+		clock.set_light_source(light_sources > 0);
 	painted = 1;
 	}
 

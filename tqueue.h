@@ -42,7 +42,7 @@ class Queue_entry
 	Time_sensitive *handler;	// Object to activate.
 	long udata;			// Data to pass to handler.
 	unsigned long time;			// Time when this is due.
-	void set(unsigned long t, Time_sensitive *h, long ud)
+	inline void set(unsigned long t, Time_sensitive *h, long ud)
 		{
 		time = t;
 		handler = h;
@@ -101,7 +101,7 @@ public:
 	int remove(Time_sensitive *obj);
 	int find(Time_sensitive *obj);	// Find an entry.
 					// Activate entries that are 'due'.
-	void activate(unsigned long curtime)
+	inline void activate(unsigned long curtime)
 		{
 		// if (head && !(curtime < head->time))
 		if (data.size() && !(curtime < data.front().time))
