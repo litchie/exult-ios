@@ -35,7 +35,7 @@ int mac_main(int argc, char **argv);
 
 int main()
 {
-	const	mac_argc = 23;
+	const	mac_argc = 25;
 	char	*mac_argv[mac_argc] =
 		{
 			"expack",
@@ -60,7 +60,9 @@ int main()
 			"data/pointers.shp",
 			"data/exit.shp",
 			"data/play_1st_scene.shp",
-			"data/extras.shp"
+			"data/extras.shp",
+			"data/midi_conversion.shp",
+			"data/sfx_conversion.shp"
 		};
 	mac_main( mac_argc, mac_argv );
 }

@@ -60,7 +60,9 @@ EXULT_FLX_OBJECTS = \
 	data/pointers.shp \
 	data/exit.shp \
 	data/play_1st_scene.shp \
-	data/extras.shp
+	data/extras.shp \
+	data/midi_conversion.shp \
+	data/sfx_conversion.shp
 
 $(EXEC) : Makefile data/exult.flx $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)

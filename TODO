@@ -1,1 +1,11 @@
-????
+Rewrite Event Loop
+==================
+
+What happens in the Exult event loop ?
+
+	Handle mouse motion
+	Handle mouse clicks
+	Handle keypresses
+	Handle configure events
+	Rotate palettes
+	

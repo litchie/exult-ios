@@ -247,6 +247,43 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 			no_device=true;	\
 		}	\
 	}
+	
+void MyMidiPlayer::set_music_conversion(int conv)
+{
+	music_conversion = conv;
+	
+	switch(music_conversion) {
+	case XMIDI_CONVERT_MT32_TO_GS:
+		config->set("config/audio/midi/convert","gs",true);
+		break;
+	case XMIDI_CONVERT_NOCONVERSION:
+		config->set("config/audio/midi/convert","none",true);
+		break;
+	case XMIDI_CONVERT_MT32_TO_GS127:
+		config->set("config/audio/midi/convert","gs127",true);
+		break;
+	case XMIDI_CONVERT_MT32_TO_GS127DRUM:
+		config->set("config/audio/midi/convert","gs127drum",true);
+		break;
+	default:
+		config->set("config/audio/midi/convert","gm",true);
+		break;
+	}
+}
+
+void MyMidiPlayer::set_effects_conversion(int conv)
+{
+	effects_conversion = conv;
+	
+	switch(effects_conversion) {
+	case XMIDI_CONVERT_NOCONVERSION:
+		config->set("config/audio/effects/convert","none",true);
+		break;
+	default:
+		config->set("config/audio/effects/convert","gs",true);
+		break;
+	}
+}
 
 bool MyMidiPlayer::init_device(void)
 {

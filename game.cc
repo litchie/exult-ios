@@ -385,6 +385,25 @@ void ExultMenu::setup()
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	MenuList menu;
 	
+	MenuChoice *midiconv = new MenuChoice(exult_flx.get_shape(0x14,1),
+			      exult_flx.get_shape(0x14,0),
+			      centerx, menuy-22, font);
+	midiconv->add_choice("None");
+	midiconv->add_choice("GM");
+	midiconv->add_choice("GS");
+	midiconv->add_choice("GS127");
+	midiconv->add_choice("GS127DRUM");
+	midiconv->set_choice(audio->get_midi()->get_music_conversion());
+	menu.add_entry(midiconv);
+	
+	MenuChoice *sfxconv = new MenuChoice(exult_flx.get_shape(0x15,1),
+			      exult_flx.get_shape(0x15,0),
+			      centerx, menuy-11, font);
+	sfxconv->add_choice("None");
+	sfxconv->add_choice("GS");
+	sfxconv->set_choice(audio->get_midi()->get_effects_conversion()==XMIDI_CONVERT_GS127_TO_GS?1:0);
+	menu.add_entry(sfxconv);
+	
 	MenuChoice *playintro = new MenuChoice(exult_flx.get_shape(0x0B,1),
 			      exult_flx.get_shape(0x0B,0),
 			      centerx, menuy, font);
@@ -444,9 +463,13 @@ void ExultMenu::setup()
 	for(;;) {
 		pal.apply();
 		switch(menu.handle_events(gwin,menu_mouse)) {
-		case 4: // Ok
+		case 6: // Ok
 			pal.fade_out(30);
 			gwin->clear_screen();
+			// Midi Conversion
+			audio->get_midi()->set_music_conversion(midiconv->get_choice());
+			// SFX Conversion
+			audio->get_midi()->set_effects_conversion(sfxconv->get_choice()==1?XMIDI_CONVERT_GS127_TO_GS:XMIDI_CONVERT_NOCONVERSION);
 			// Play Intro
 			set_play_intro(playintro->get_choice()==1);
 			// Play 1st scene
@@ -460,7 +483,7 @@ void ExultMenu::setup()
 			cheat.set_enabled(cheating->get_choice()==1);
 			calc_win();
 			return;
-		case 5: // Cancel
+		case 7: // Cancel
 			pal.fade_out(30);
 			gwin->clear_screen();
 			return;
