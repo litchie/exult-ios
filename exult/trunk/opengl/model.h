@@ -80,7 +80,8 @@ public:
 	friend class Model3d;
 	friend class Object3d;
 	Material() : texture_id(0), texture_loaded(false)
-		{ set_color(ambient, def_color); set_color(diffuse, def_color);
+		{ set_color(ambient, def_color); 
+		  set_color(diffuse, def_color);
 		  set_color(specular, def_color); }
 	void set_name(const char *nm)
 		{ name = nm; }
@@ -182,7 +183,8 @@ public:
 	void load_textures();		// Load textures for the materials.
 					// OPENGL methods:
 	void render();
-	Vector3 find_center() const;	// Average of all the vertices.
+					// Average of all the vertices.
+	void find_extents(Vector3& low, Vector3& high) const;
 	};
 
 }; // Exult3d namespace.

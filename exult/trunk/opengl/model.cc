@@ -128,15 +128,17 @@ void Model3d::compute_normals
 	}
 
 /*
- *	Find a rough idea of the 'center' of a model.
+ *	Find a rough idea of the range of a model.
  */
 
-Vector3 Model3d::find_center
+void Model3d::find_extents
 	(
+	Vector3& low,			// Lowest extents returned.
+	Vector3& high
 	) const
 	{
-	float lowx = 10000, lowy = 10000, lowz = 10000,
-		highx = -10000, highy = -10000, highz = -10000;
+	low.x = low.y = low.z = 20000;
+	high.x = high.y = high.z = -20000;
 	for (vector<Object3d *>::const_iterator it = objects.begin();
 				it != objects.end(); ++it)
 		{
@@ -145,19 +147,18 @@ Vector3 Model3d::find_center
 		for (int i = 0; i < cnt; i++)
 			{
 			Vector3 v = obj->get_vertex(i);
-			if (v.x < lowx)
-				lowx = v.x;
-			else if (v.x > highx)
-				highx = v.x;
-			if (v.y < lowy)
-				lowy = v.y;
-			else if (v.y > highy)
-				highy = v.y;
-			if (v.z < lowz)
-				lowz = v.z;
-			else if (v.z > highz)
-				highz = v.z;
+			if (v.x < low.x)
+				low.x = v.x;
+			else if (v.x > high.x)
+				high.x = v.x;
+			if (v.y < low.y)
+				low.y = v.y;
+			else if (v.y > high.y)
+				high.y = v.y;
+			if (v.z < low.z)
+				low.z = v.z;
+			else if (v.z > high.z)
+				high.z = v.z;
 			}
 		}
-	return Vector3((highx + lowx)/2, (highy + lowy)/2, (highz + lowz)/2);
 	}
