@@ -1,5 +1,14 @@
 ??/??/??	???
 
+		UCC, Exult's Usecode compiler works again
+
+		Subpackages for Linux distributions can be built (RPM)
+		
+		Exult's data files have a CRC now, so it is easier to 
+		detect a mismatch between them and the main executable
+
+		Tons of bugfixes (see ChangeLog for details)
+		
 
 11/26/01	v0.96 beta 1
 

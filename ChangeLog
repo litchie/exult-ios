@@ -1,3 +1,9 @@
+2001-12-05  Tristan Tarrant <nadir@users.sourceforge.net>
+	* configure.in: GIMP_PLUGIN_PREFIX needs a /plug-ins appended to it
+	* exult.spec.in: implement subpackages for exult-tools, exult-studio,
+	exult-gimp-plugin. Someone should provide deb equivalents
+	* mapedit/Makefile.am: install the GIMP plugin in the right place
+
 2001-12-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/intrinsics.cc: Force created NPC's to start with neutral

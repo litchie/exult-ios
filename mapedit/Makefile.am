@@ -42,9 +42,9 @@ exult_studio_SOURCES = \
 	studio.h \
 	exult_studio.cc
 
-bin_PROGRAMS = $(GIMP_PLUGINS) $(GLADE_APPS)
+bin_PROGRAMS = $(GLADE_APPS)
 
-noinst_PROGRAMS = $(GTK_APPS)
+noinst_PROGRAMS = $(GIMP_PLUGINS) $(GTK_APPS)
 
 shapetest_LDADD = \
 	./libmapedit.la			\
@@ -82,7 +82,8 @@ EXTRA_DIST=	\
 
 if GIMP_PLUGIN
 install-exec-local:
-	gimptool --install-admin-bin u7shp
+	install -d $(GIMP_PLUGIN_PREFIX)
+	install -c $(GIMP_PLUGINS) $(GIMP_PLUGIN_PREFIX)
 else
 install-exec-local:
 endif
