@@ -92,13 +92,18 @@ int Schedule::try_street_maintenance
 	int *shapes;
 	Game_window *gwin = Game_window::get_game_window();
 	int hour = gwin->get_hour();
-	if (hour >= 9 && hour <= 18)
+	if (hour >= 9 && hour < 18)
 		shapes = &day[0];
-	else if (hour >= 20 || hour < 6)
+	else if (hour >= 18 || hour < 6)
 		shapes = &night[0];
 	else
 		return 0;		// Dusk or dawn.
 	Tile_coord npcpos = npc->get_abs_tile_coord();
+					// Look at screen + 1/2.
+	Rectangle winrect = gwin->get_win_tile_rect();
+	winrect.enlarge(winrect.w/4);
+	if (!winrect.has_point(npcpos.tx, npcpos.ty))
+		return 0;
 					// Get to within 1 tile.
 	Actor_pathfinder_dist_client cost(1);
 	Game_object *found = 0;		// Find one we can get to.
@@ -1120,6 +1125,7 @@ void Waiter_schedule::now_what
 		find_tables(1018);
 		find_tables(890);
 		find_tables(964);
+		find_tables(333);
 		}
 	int dist = customer ? npc->distance(customer) : 5000;
 	if (dist > 32)			// Need a new customer?
