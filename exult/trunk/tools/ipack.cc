@@ -446,7 +446,7 @@ static void Write_tiled_frames
 		else
 			{ x = f%dim0_cnt; y = f/dim0_cnt; }
 		frame->paint(&img, x*8 + frame->get_xleft(), 
-						x*8 + frame->get_yabove());
+						y*8 + frame->get_yabove());
 		}
 					// Write out to the .png.
 	if (!Export_png8(filename, transp, w, h, w, 0, 0, img.get_bits(),
@@ -531,6 +531,64 @@ void Write_palettes
 		throw file_write_exception(palname);
 					// Write out in Gimp format.
 	Write_text_palette(palname, palette, palsize);
+	}
+
+/*
+ *	Write tiles from a single input file to and Exult image file.
+ */
+
+static void Write_exult_from_tiles
+	(
+	ostream& out,			// What to write to.
+	char *filename,			// Filename to read.
+	int nframes,			// # frames.
+	bool bycol,			// If true, go down each column first,
+					//   else go across each row first.
+	int dim0_cnt,			// If bycol, #rows; else #cols.
+	char *palname			// Store palette here if !0.
+	)
+	{
+	cout << "Reading " << filename << " tiled" 
+		<< (bycol ? ", by cols" : ", by rows") << " first" << endl;
+					// Figure #tiles in other dim.
+	int dim1_cnt = (nframes + dim0_cnt - 1)/dim0_cnt;
+	int needw, needh;		// Figure min. image dims.
+	if (bycol)
+		{ needh = dim0_cnt*8; needw = dim1_cnt*8; }
+	else
+		{ needw = dim0_cnt*8; needh = dim1_cnt*8; }
+					// Save starting position.
+	unsigned long startpos = out.tellp();
+	int w, h, rowsize, xoff, yoff, palsize;
+	unsigned char *pixels, *palette;
+					// Import, with 255 = transp. index.
+	if (!Import_png8(filename, 255, w, h, rowsize, xoff, yoff,
+						pixels, palette, palsize))
+		throw file_read_exception(filename);
+	if (w < needw || h < needh)
+		{
+		cerr << "File " << filename << " image is too small.  " <<
+			needw << 'x' << needh << " required" << endl;
+		exit(1);
+		}
+	for (int frnum = 0; frnum < nframes; frnum++)
+		{
+		int x, y;
+		if (bycol)
+			{ y = frnum%dim0_cnt; x = frnum/dim0_cnt; }
+		else
+			{ x = frnum%dim0_cnt; y = frnum/dim0_cnt; }
+		unsigned char *src = pixels + w*8*y + 8*x;
+		for (int row = 0; row < 8; row++)
+			{		// Write it out.
+			out.write(src, 8);
+			src += w;
+			}
+		}
+	delete pixels;
+	if (palname)
+		Write_palettes(palname, palette, palsize);
+	delete palette;
 	}
 
 /*
