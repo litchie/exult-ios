@@ -122,7 +122,6 @@ inline Tile_coord Rotate90l
 					// Rotate hot spot.
 	Tile_coord r = Rotate90l(obj->get_abs_tile_coord(), c);
 					// New hot-spot is old lower-left.
-	r.tx;
 	r.ty += xtiles;
 	return r;
 	}
@@ -150,6 +149,33 @@ inline Tile_coord Rotate180
 	}
 
 /*
+ *	Swap dimensions.
+ */
+
+inline void Barge_object::swap_dims
+	(
+	)
+	{
+	int tmp = xtiles;		// Swap dims.
+	xtiles = ytiles;
+	ytiles = tmp;
+	}
+
+/*
+ *	Get footprint in tiles.
+ */
+
+inline Rectangle Barge_object::get_tile_footprint
+	(
+	)
+	{
+	Tile_coord pos = get_abs_tile_coord();
+	int xts = get_xtiles(), yts = get_ytiles();
+	Rectangle foot(pos.tx - xts + 1, pos.ty - yts + 1, xts, yts);
+	return foot;
+	}
+
+/*
  *	Delete.
  */
 
@@ -170,9 +196,8 @@ void Barge_object::gather
 	{
 	objects.truncate(perm_count);	// Start fresh.
 					// Get footprint in tiles.
-	Tile_coord pos = get_abs_tile_coord();
-	int xts = get_xtiles(), yts = get_ytiles();
-	Rectangle foot(pos.tx - xts + 1, pos.ty - yts + 1, xts, yts);
+	Rectangle foot = get_tile_footprint();
+	int lift = get_lift();		// How high we are.
 	Game_window *gwin = Game_window::get_game_window();
 					// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
@@ -190,8 +215,8 @@ void Barge_object::gather
 			Shape_info& info = gwin->get_info(obj);
 					// Above barge, within 5-tiles up?
 			if (foot.has_point(t.tx, t.ty) &&
-			    t.tz + info.get_3d_height() > pos.tz && 
-			    (info.is_barge_part() || t.tz < pos.tz + 5) &&
+			    t.tz + info.get_3d_height() > lift && 
+			    (info.is_barge_part() || t.tz < lift + 5) &&
 			    obj->get_owner() != this)
 				objects.append(obj);
 			}
@@ -209,19 +234,6 @@ void Barge_object::gather
 			boat = info.is_water();
 			}
 		}
-	}
-
-/*
- *	Swap dimensions.
- */
-
-inline void Barge_object::swap_dims
-	(
-	)
-	{
-	int tmp = xtiles;		// Swap dims.
-	xtiles = ytiles;
-	ytiles = tmp;
 	}
 
 /*
@@ -420,6 +432,33 @@ void Barge_object::turn_around
 		obj->set_invalid();	// So it gets added back right.
 		}
 	finish_move(positions);		// Add back & del. positions.
+	}
+
+/*
+ *	Is it okay to land?
+ */
+
+int Barge_object::okay_to_land
+	(
+	)
+	{
+	Rectangle foot = get_tile_footprint();
+	int lift = get_lift();		// How high we are.
+	Game_window *gwin = Game_window::get_game_window();
+					// Go through intersected chunks.
+	Chunk_intersect_iterator next_chunk(foot);
+	Rectangle tiles;
+	int cx, cy;
+	while (next_chunk.get_next(tiles, cx, cy))
+		{			// Check each tile.
+		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+		for (int ty = tiles.y; ty < tiles.y + tiles.h; ty++)
+			for (int tx = tiles.x; tx < tiles.x + tiles.w; tx++)
+				if (chunk->get_highest_blocked(lift, tx, ty)
+								!= -1)
+					return (0);
+		}
+	return (1);
 	}
 
 /*

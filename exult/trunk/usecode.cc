@@ -2498,7 +2498,10 @@ USECODE_INTRINSIC(get_npc_flag)
 		}
 	else if (fnum == (int) Actor::okay_to_land)
 		{			// Okay to land flying carpet?
-		return Usecode_value(1);//+++++++++++++++
+		Barge_object *barge = Get_barge(obj);
+		if (!barge || barge != gwin->get_moving_barge())
+			return Usecode_value(0);
+		return Usecode_value(barge->okay_to_land());
 		}
 	Usecode_value u(obj->get_flag(fnum));
 	return(u);

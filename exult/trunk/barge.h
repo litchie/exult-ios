@@ -48,6 +48,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	Game_object *get_object(int i)
 		{ return (Game_object *) objects.get(i); }
 	void swap_dims();
+	Rectangle get_tile_footprint();
 	void add_dirty(Game_window *gwin);
 					// Finish up move/rotate operation.
 	void finish_move(Tile_coord *positions);
@@ -75,6 +76,7 @@ public:
 	void turn_around();
 	void stop()			// Stop moving.
 		{ frame_time = 0; }
+	int okay_to_land();		// See if clear to land.
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Move to new abs. location.

@@ -1965,6 +1965,39 @@ void Chunk_cache::setup
 	}
 
 /*
+ *	Get highest blocked lift below a given level for a given tile.
+ *
+ *	Output:	Highest lift that's blocked by an object, or -1 if none.
+ */
+
+inline int Chunk_cache::get_highest_blocked
+	(
+	int lift,			// Look below this lift.
+	unsigned short tflags		// Flags for desired tile.
+	)
+	{
+	int i;				// Look downwards.
+	for (i = lift - 1; i >= 0 && !(tflags & (1<<i)); i--)
+		;
+	return i;
+	}
+
+/*
+ *	Get highest blocked lift below a given level for a given tile.
+ *
+ *	Output:	Highest lift that's blocked by an object, or -1 if none.
+ */
+
+int Chunk_cache::get_highest_blocked
+	(
+	int lift,			// Look below this lift.
+	int tx, int ty			// Square to test.
+	)
+	{
+	return get_highest_blocked(lift, blocked[ty*tiles_per_chunk + tx]);
+	}
+
+/*
  *	Is a given square occupied at a given lift?
  *
  *	Output: 1 if so, else 0.
@@ -1993,10 +2026,8 @@ int Chunk_cache::is_blocked
 		else
 			return (0);
 		}
-	int i;				// See if we're going down.
-	for (i = lift - 1; i >= 0 && !(tflags & (1<<i)); i--)
-		;
-	new_lift = i + 1;
+					// See if we're going down.
+	new_lift = get_highest_blocked(lift, tflags) + 1;
 					// Don't allow fall of > 2.
 	return (lift - new_lift > 2 ? 1 : 0);
 	}
