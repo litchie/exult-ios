@@ -1,4 +1,8 @@
 2001-08-03  Max Horn <max@quendi.de>
+	* audio/Audio.cc: added static Audio::Destroy() to deinit the audio system
+	* exult.cc: properly use Audio::Destroy() to deinit the audio system
+
+2001-08-03  Max Horn <max@quendi.de>
 	* configure.in: slight change for Darwin/Mac OS X
 	* audio/conv.cc added, conv.h cleaned up
 	* audio/Audio.cc/.h: cleaned up code, fixed speech output on big endian systems

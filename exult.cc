@@ -444,8 +444,7 @@ static int Play()
 	delete gwin;
 	delete Mouse::mouse;
 
-	delete Audio::get_ptr();	// Follow not this pointer, now, for
-					// that way lies madness.
+	Audio::Destroy();	// Deinit the sound system.
 
 	delete config;
 	return (0);
