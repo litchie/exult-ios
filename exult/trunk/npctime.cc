@@ -21,7 +21,7 @@ protected:
 	Npc_timer_list *list;		// Where NPC stores ->this.
 	unsigned long get_minute();	// Get game minutes.
 public:
-	Npc_timer(Npc_timer_list *l);
+	Npc_timer(Npc_timer_list *l, int start_delay = 0);
 	virtual ~Npc_timer();
 	};
 
@@ -32,7 +32,7 @@ class Npc_hunger_timer : public Npc_timer
 	{
 	unsigned long last_time;	// Last game minute when penalized.
 public:
-	Npc_hunger_timer(Npc_timer_list *l) : Npc_timer(l)
+	Npc_hunger_timer(Npc_timer_list *l) : Npc_timer(l, 5000)
 		{ last_time = get_minute(); }
 	virtual ~Npc_hunger_timer();
 					// Handle events:
@@ -64,7 +64,15 @@ public:
 					// Handle events:
 	void handle_event(unsigned long curtime, long udata);
 	};
-
+#if 0
+/*
+ *	Invisibility timer.
+ */
+class Invisibility_timer : public Npc_timer
+	{
+public:
+	
+#endif
 /*
  *	Delete list.
  */
@@ -134,12 +142,12 @@ unsigned long Npc_timer::get_minute
 
 Npc_timer::Npc_timer
 	(
-	Npc_timer_list *l
+	Npc_timer_list *l,
+	int start_delay			// Time in msecs. before starting.
 	) : list(l)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-					// Start in 5 secs.
-	gwin->get_tqueue()->add(SDL_GetTicks() + 5000, this, 0L);
+	gwin->get_tqueue()->add(SDL_GetTicks() + start_delay, this, 0L);
 	}
 
 /*
@@ -211,7 +219,7 @@ void Npc_hunger_timer::handle_event
 Npc_poison_timer::Npc_poison_timer
 	(
 	Npc_timer_list *l
-	) : Npc_timer(l)
+	) : Npc_timer(l, 5000)
 	{
 					// Lasts 1-3 minutes.
 	end_time = SDL_GetTicks() + 60000 + rand()%120000;
