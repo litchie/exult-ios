@@ -44,8 +44,8 @@ ARCH=""
 AC_MSG_CHECKING("windowing system")
 case "$host_os" in
 	linux*)
+		WINDOWING_SYSTEM="-DXWIN"
 		if test "$host_vendor" = "zaurus"; then
-			WINDOWING_SYSTEM="-DXWIN"
 			AC_MSG_RESULT(Qtopia (Sharp Zaurus))
 			CXXFLAGS="$CXXFLAGS -fsigned-char -DDISABLE_X11 -DQWS -D__zaurus__ -DUSE_FMOPL_MIDI"
 			enable_kmid="no"
@@ -55,7 +55,6 @@ case "$host_os" in
 			enable_gimp_plugin="no"
 			enable_debug="no"
 		else
-			WINDOWING_SYSTEM="-DXWIN"
 			AC_MSG_RESULT(X11 (GNU/Linux))
 		fi
 		;;
@@ -104,8 +103,8 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DCOCOA"
 		AC_DEFINE(MACOSX)
 		AC_MSG_RESULT(Cocoa (MacOS X))
-		SYSLIBS="-lstdc++ -framework QuickTime"
-		CXXFLAGS="$CXXFLAGS -fpascal-strings"
+		SYSLIBS="-framework QuickTime"
+		CXXFLAGS="$CXXFLAGS"
 		EXULT_DATADIR="data"
 		ARCH=macosx
 		;;
@@ -788,13 +787,3 @@ echo Build ExultStudio.......... : $enable_exult_studio
 
 echo
 echo "Now type 'make' to build Exult"
-
-
-
-
-
-
-
-
-
-
