@@ -127,7 +127,7 @@ int main(int argc, char** argv)
 	// Tends to make life easier
 	cout << setfill('0') << setbase(16);
 	cout.setf(ios::uppercase);
-	
+
 	// init the compile time tables
 	init_static_usecodetables();
 	// init the run time tables
