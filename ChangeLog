@@ -1,3 +1,7 @@
+2001-11-26  Max Horn  <max@quendi.de>
+	* version.cc: fixed Metrowerks detection; factored out some std::endl into a single spot
+	* vgafile.cc: get_frame() now checks for lower bound, too (fixing a crash)
+
 2001-11-25 Ryan Nunn <triforce@merlin.net.au>
 	 * audio/Audio.cc : Note to self, Copy and Paste not so good
 
