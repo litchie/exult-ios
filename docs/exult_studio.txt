@@ -109,8 +109,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 * 9.2. Importing and creating your own custom shapes added.
 * 9.3. How to create a custom font? explained.
 
-barge_edit
-			
+
 
 0.2. - 23 May 2004
 * 3.4. Palettes files palette files are compatible with the Gimp.
