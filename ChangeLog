@@ -1,3 +1,6 @@
+2001-03-23  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Makefile.cygwin: committed Travis' changes
+
 2001-03-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SI - Companions wait while you take the Test.  Grandfather clock
