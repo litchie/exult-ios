@@ -470,7 +470,8 @@ void Game_window::write_saveinfo()
 			npc = (Npc_actor *)get_npc(party_man->get_member(i-1));
 
 		char name[18];
-		strncpy (name, npc->get_npc_name().c_str(), 18);
+		std::string namestr = npc->get_npc_name();
+		strncpy (name, namestr.c_str(), 18);
 		out.write(name, 18);
 		out.write2(npc->get_shapenum());
 
@@ -704,8 +705,10 @@ char *Game_window::get_game_identity(const char *savename)
     try {
         U7open(in_stream, savename);		// Open file.
     } catch (const exult_exception &e) {
-	if (Game::is_editing())		// Okay if creating a new game.
-		return newstrdup(Game::get_gametitle().c_str());
+	if (Game::is_editing()) {	// Okay if creating a new game.
+		std::string titlestr = Game::get_gametitle();
+		return newstrdup(titlestr.c_str());
+	}
 	throw e;
     }
 	StreamDataSource in(&in_stream);
@@ -769,7 +772,8 @@ bool Game_window::get_saveinfo_zip(const char *fname, char *&name, Shape_file *&
 	// If a flex, so can't read it
 	if (Flex::is_flex(fname)) return false;
 
-	unzFile unzipfile = unzOpen(get_system_path(fname).c_str());
+	std::string filestr = get_system_path(fname);
+	unzFile unzipfile = unzOpen(filestr.c_str());
 	if (!unzipfile) return false;
 
 	// Name comes from comment
@@ -923,7 +927,8 @@ bool Game_window::restore_gamedat_zip
 	// Display red plasma during load...
 	setup_load_palette();
 #endif
-	unzFile unzipfile = unzOpen(get_system_path(fname).c_str());
+	std::string filestr = get_system_path(fname);
+	unzFile unzipfile = unzOpen(filestr.c_str());
 	if (!unzipfile) return false;
 
 	U7mkdir("<GAMEDAT>", 0755);		// Create dir. if not already there. Don't
@@ -1138,7 +1143,8 @@ bool Game_window::save_gamedat_zip
 		out.close();
 	}
 	
-	zipFile zipfile = zipOpen(get_system_path(fname).c_str(), 1);
+	std::string filestr = get_system_path(fname);
+	zipFile zipfile = zipOpen(filestr.c_str(), 1);
 
 	// Level 1 Compression
 	if (save_compression != 2)
