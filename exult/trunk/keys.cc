@@ -55,7 +55,7 @@ static	class Chardata	// ctype-like character lists
 		{
 		for(size_t i=0;i<256;i++)
 			if(isspace(i))
-				whitespace+=(char)i;
+				whitespace+=static_cast<char>(i);
 		}
 	} chardata;
 
@@ -418,7 +418,7 @@ void KeyBinder::ParseLine(char *line)
 				if (c >= 33 && c <= 122 && c != 37) {
 					if (c >= 'A' && c <= 'Z')
 						c += 32; // need lowercase
-					k.sym = (SDLKey)c;
+					k.sym = static_cast<SDLKey>(c);
 				} else {
 					cerr << "Keybinder: unsupported key: " << keycode << endl;
 				}
