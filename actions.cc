@@ -226,6 +226,8 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		if (actor->step(blocked_tile, blocked_frame))
 			{		// Successful?
 			blocked = 0;
+					// He was stopped, so restore speed.
+			actor->set_frame_time(speed);
 			return speed;
 			}
 					// Wait up to 1.6 secs.
@@ -474,7 +476,8 @@ If_else_path_actor_action::If_else_path_actor_action
 	Tile_coord dest,
 	Actor_action *s,
 	Actor_action *f
-	) : succeeded(false), failed(false), done(false),
+	) : Path_walking_actor_action(0, 6),	// Maxblk = 6.
+		succeeded(false), failed(false), done(false),
 		success(s), failure(f)
 	{
 	if (!walk_to_tile(actor->get_abs_tile_coord(), dest, 
