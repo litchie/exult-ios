@@ -37,6 +37,7 @@ class Gump_object : public ShapeID
 	int x, y;			// Location on screen.
 	unsigned char shapenum;
 	Rectangle object_area;		// Area to paint objects in, rel. to
+	int checkx, checky;		// Where to show the red 'check'.
 					//   hot spot of Gump_object.
 public:
 	Gump_object(Container_game_object *cont, int initx, int inity, 
