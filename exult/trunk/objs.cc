@@ -122,12 +122,12 @@ void Chunk_cache::set_blocked
 
 void Chunk_cache::update_object
 	(
-	Game_window *gwin,
 	Chunk_object_list *chunk,
 	Game_object *obj,
 	int add				// 1 to add, 0 to remove.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	Shapes_vga_file& shapes = gwin->get_shapes();
 	int shnum = obj->get_shapenum();
 	Shape_info& info = shapes.get_info(shnum);
@@ -179,15 +179,14 @@ void Chunk_cache::update_object
 
 void Chunk_cache::setup
 	(
-	Game_window *gwin,
 	Chunk_object_list *chunk
 	)
 	{
-	Shapes_vga_file& shapes = gwin->get_shapes();
+	Shapes_vga_file& shapes = Game_window::get_game_window()->get_shapes();
 					// Set 'blocked' tiles.
 	for (Game_object *obj = chunk->get_first(); obj; 
 						obj = chunk->get_next(obj))
-		update_object(gwin, chunk, obj, 1);
+		update_object(chunk, obj, 1);
 	setup_done = 1;
 	}
 
@@ -267,6 +266,8 @@ void Chunk_object_list::add
 		newobj->next = prev->next;
 		prev->next = newobj;
 		}
+	if (cache)			// Add to cache.
+		cache->update_object(this, newobj, 1);
 	if (newobj->get_lift() >= 5)	// Looks like a roof?
 		roof = 1;
 	}
@@ -306,6 +307,8 @@ void Chunk_object_list::remove
 	Game_object *remove
 	)
 	{
+	if (cache)			// Remove from cache.
+		cache->update_object(this, remove, 0);
 	if (remove == objects)		// First one?
 		{
 		objects = remove->next;

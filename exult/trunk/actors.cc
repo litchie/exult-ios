@@ -154,7 +154,7 @@ void Main_actor::handle_event
 		{
 		Chunk_object_list *olist = gwin->get_objects(cx, cy);
 #if 1 /* Need to fix renderer first. */
-		olist->setup_cache(gwin);	//++++++++++++++++
+		olist->setup_cache();	//++++++++++++++++
 //++++++++TESTING Remove the above!!!!!!!+++++++++++++++++++++++++++++
 		int new_lift;		// Might climb/descend.
 		if (olist->is_blocked(get_lift(), sx, sy, new_lift))

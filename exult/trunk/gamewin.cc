@@ -35,6 +35,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "npcnear.h"
 
+					// THE game window:
+Game_window *Game_window::game_window = 0;
+
 /*
  *	Create game window.
  */
@@ -54,6 +57,7 @@ Game_window::Game_window
 	    faces(FACES_VGA),
 	    gumps(GUMPS_VGA)
 	{
+	game_window = this;		// Set static ->.
 	if (!shapes.is_good())
 		abort("Can't open 'shapes.vga' file.");
 	if (!faces.is_good())

@@ -249,10 +249,10 @@ class Chunk_cache
 	void set_blocked(int startx, int starty, int endx, int endy,
 						int lift, int ztiles, int set);
 					// Add/remove object.
-	void update_object(Game_window *gwin, Chunk_object_list *chunk,
+	void update_object(Chunk_object_list *chunk,
 						Game_object *obj, int add);
 					// Set up with chunk's data.
-	void setup(Game_window *gwin, Chunk_object_list *chunk);
+	void setup(Chunk_object_list *chunk);
 					// Set blocked tile's bits.
 	void set_blocked_tile(int tx, int ty, int lift, int ztiles)
 		{
@@ -327,10 +327,10 @@ public:
 		return cache ? cache 
 				: (cache = new Chunk_cache()); 
 		}
-	void setup_cache(Game_window *gwin)
+	void setup_cache()
 		{ 
 		if (!cache || !cache->setup_done)
-			need_cache()->setup(gwin, this);
+			need_cache()->setup(this);
 		}
 					// Set/unset blocked region.
 	void set_blocked(int startx, int starty, int endx, int endy,
