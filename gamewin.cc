@@ -1557,7 +1557,6 @@ void Game_window::start_actor_alt
 					// Wrap:
 	tx = (tx + c_num_tiles)%c_num_tiles;
 	ty = (ty + c_num_tiles)%c_num_tiles;
-
 	main_actor->walk_to_tile(tx, ty, lift, speed, 0);
 	main_actor->get_followers();
 	}
@@ -1577,7 +1576,6 @@ void Game_window::start_actor
 		return;			// Zzzzz....
 	if (main_actor_dont_move() || gump_man->gump_mode())
 		return;
-
 	teleported = 0;
 	if (moving_barge)
 		{			// Want to move center there.
@@ -1671,7 +1669,9 @@ void Game_window::teleport_party
 	)
 	{
 	Tile_coord oldpos = main_actor->get_tile();
+#if 0	/* Messes up walking after teleport trap. */
 	main_actor->set_action(0);	// I think this is right.
+#endif
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
 	set_all_dirty();
 
