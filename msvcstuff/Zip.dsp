@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "zip_release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GX /O1 /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "HAVE_ZIP_SUPPORT" /FR /YX /FD /c
+# ADD CPP /nologo /G6 /MT /W3 /GX /O1 /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "HAVE_ZIP_SUPPORT" /FR /YX /FD /c
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0xc09 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -89,7 +89,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "zip_release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GX /O1 /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "HAVE_ZIP_SUPPORT" /FR /YX /FD /c
+# ADD CPP /nologo /G6 /MT /W3 /GX /O1 /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB" /D "HAVE_ZIP_SUPPORT" /FR /YX /FD /c
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0xc09 /d "NDEBUG"
 BSC32=bscmake.exe
