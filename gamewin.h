@@ -135,6 +135,7 @@ class Game_window
 	Game_object *dragging;		// What's being dragged.
 	Gump *dragging_gump;
 	Gump_button *dragging_button;
+	int dragging_readied_index;	// If it was a 'readied' item.
 					// Last mouse, paint positions:
 	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
 	Rectangle dragging_rect;	// Rectangle to repaint.
@@ -627,6 +628,7 @@ public:
 	bool start_dragging(int x, int y);
 	bool drag(int x, int y);	// During dragging.
 	bool drop_dragged(int x, int y, bool moved);// Done dragging.
+	bool is_dragging() const { return dragging != 0; }
 					// Paint text using "fonts.vga".
 	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
 		int h, int vert_lead = 0, int pbreak = 0);

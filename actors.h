@@ -377,6 +377,8 @@ public:
 			index < (int)(sizeof(spots)/sizeof(spots[0])) ? 
 				spots[index] : 0; 
 		}
+	virtual void call_readied_usecode(Game_window *gwin, int index,
+					Game_object *obj, int eventid);
 					// Change member shape.
 	virtual void change_member_shape(Game_object *obj, int newshape);
 					// Move out of the way.

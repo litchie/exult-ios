@@ -33,6 +33,7 @@
 #include "chunks.h"
 #include "Audio.h"
 #include "Gump_manager.h"
+#include "ucmachine.h"
 
 using std::cout;
 using std::endl;
@@ -52,6 +53,7 @@ bool Game_window::start_dragging
 	dragging = 0;
 	dragging_gump = 0;
 	dragging_button = 0;
+	dragging_readied_index = -1;
 	dragging_mousex = x;
 	dragging_mousey = y;
 	dragging_rect = Rectangle(0, 0, 0, 0);
@@ -133,9 +135,10 @@ bool Game_window::drag
 			Game_object *owner = dragging->get_outermost();
 			if (owner == dragging)
 				{
-			    	if (!cheat.in_hack_mover() && !Fast_pathfinder_client::is_grabable(
-					main_actor->get_abs_tile_coord(),
-					dragging->get_abs_tile_coord()))
+			    	if (!cheat.in_hack_mover() && 
+					!Fast_pathfinder_client::is_grabable(
+					   main_actor->get_abs_tile_coord(),
+					   dragging->get_abs_tile_coord()))
 					{
 					Mouse::mouse->flash_shape(Mouse::blocked);
 					dragging = 0;
@@ -153,7 +156,14 @@ bool Game_window::drag
 					// Remove from actual position.
 		if (dragging_gump)
 			if (dragging)
+				{
+				Container_game_object *owner = 
+					dragging_gump->get_container();
+				if (owner)
+					dragging_readied_index = 
+						owner->find_readied(dragging);
 				dragging_gump->remove(dragging);
+				}
 			else
 				gump_man->remove_gump(dragging_gump);
 		else {
@@ -197,7 +207,9 @@ bool Game_window::drag
 
 /*
  *	Mouse was released, so drop object. 
- *      Return true iff the dropping mouseclick has been handled. (by buttonpress, drag)
+ *      Return true iff the dropping mouseclick has been handled. 
+ *		(by buttonpress, drag)
+ *	Output:	MUST set dragging = 0.
  */
 
 bool Game_window::drop_dragged
@@ -226,7 +238,10 @@ bool Game_window::drop_dragged
 		gump_man->add_gump(dragging_gump);
 		}
 	else if (!moved)		// For now, if not moved, leave it.
+		{
+		dragging = 0;
 		return handled;
+		}
 	else
 		drop(x, y);		// Drop it.
 	dragging = 0;
@@ -358,7 +373,21 @@ void Game_window::drop
 		if (!dragging_gump)	// Do eggs where it came from.
 			get_chunk(oldcx, oldcy)->activate_eggs(dragging,
 			    oldtx, oldty, dragging->get_lift(), oldtx, oldty);
+		else if (dragging_readied_index >= 0)
+					// Do 'unreadied' usecode.
+			dragging_gump->get_container()->call_readied_usecode(
+				this, dragging_readied_index, dragging,
+					Usecode_machine::unreadied);
 					// Check for theft.
+		if (on_gump)		// Do 'readied' usecode.
+			{
+			Container_game_object *owner = 
+				on_gump->get_container();
+			int index = owner ? owner->find_readied(dragging) : -1;
+			if (index >= 0)
+				owner->call_readied_usecode(this, index,
+					dragging, Usecode_machine::readied);
+			}
 		if (!okay_to_move && !cheat.in_hack_mover() &&
 		    (dragging_gump != on_gump || dropped_in_something ||
 					// Moving:
