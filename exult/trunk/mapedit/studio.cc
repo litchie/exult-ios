@@ -34,8 +34,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>			/* These are for sockets. */
 #ifdef WIN32
-#define __GNU_LIBRARY__
-#include <getopt.h>
 #include <windows.h>
 #include <ole2.h>
 #include "servewin32.h"
