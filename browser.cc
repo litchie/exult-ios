@@ -29,7 +29,14 @@
 #include "font.h"
 #include "items.h"
 
-using std::snprintf;
+#ifndef HAVE_SNPRINTF
+extern int snprintf(char *, size_t, const char *, /*args*/ ...);
+namespace std {
+using ::snprintf;
+}
+#else
+using ::snprintf;
+#endif
 
 ShapeBrowser::ShapeBrowser()
 	{
