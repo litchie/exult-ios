@@ -482,8 +482,9 @@ Frames_actor_action::Frames_actor_action
 	(
 	char *f,			// Frames.  -1 means don't change.
 	int c,				// Count.
-	int spd				// Frame delay in 1/1000 secs.
-	) : cnt(c), index(0), speed(spd)
+	int spd,			// Frame delay in 1/1000 secs.
+	Game_object *o
+	) : cnt(c), index(0), speed(spd), obj(o)
 	{
 	frames = new char[cnt];
 	std::memcpy(frames, f, cnt);
@@ -500,17 +501,22 @@ int Frames_actor_action::handle_event
 	Actor *actor
 	)
 	{
+	Game_object *o = obj;
 	if (index == cnt)
 		return (0);		// Done.
 	int frnum = frames[index++];	// Get frame.
 	if (frnum >= 0)
 		{
 		Game_window *gwin = Game_window::get_game_window();
-//		gwin->add_dirty(actor);
-		actor->add_dirty(gwin);	// Get weapon to redraw too.
-		actor->set_frame(frnum);
-		actor->add_dirty(gwin, 1);
-//		gwin->add_dirty(actor);
+		if (o) {
+			gwin->add_dirty(o);
+			o->set_frame(frnum);
+			gwin->add_dirty(o);
+		} else {
+			actor->add_dirty(gwin);	// Get weapon to redraw too.
+			actor->set_frame(frnum);
+			actor->add_dirty(gwin, 1);
+		}
 		}
 	return (speed);
 	}
@@ -585,6 +591,16 @@ Object_animate_actor_action::Object_animate_actor_action
 	nframes = gwin->get_shape_num_frames(obj->get_shapenum());
 	}
 
+Object_animate_actor_action::Object_animate_actor_action
+	(
+	Game_object *o,
+	int nfr,
+	int cy,
+	int spd
+	) : obj(o), nframes(nfr), cycles(cy), speed(spd) 
+	{ }
+	
+
 /*
  *	Handle tick of the clock.
  */
@@ -594,15 +610,15 @@ int Object_animate_actor_action::handle_event
 	Actor *actor
 	)
 	{
+	if (!cycles) return 0;
 	int frnum = (obj->get_framenum() + 1) % nframes;
 	if (!frnum)			// New cycle?
-		if (!--cycles)
-			return 0;	// Done.
+		--cycles;
 	Game_window *gwin = Game_window::get_game_window();
 	gwin->add_dirty(obj);		// Paint over old.
 	obj->set_frame(frnum);
 	gwin->add_dirty(obj);
-	return speed;
+	return (cycles ? speed : 0);
 	}
 
 /*

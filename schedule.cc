@@ -1837,6 +1837,419 @@ void Sew_schedule::ending
 		}
 	}
 
+Forge_schedule::Forge_schedule(Actor *n) : Schedule(n), 
+	state(put_sword_on_firepit), tongs(0), hammer(0), blank(0),
+	firepit(0), anvil(0), trough(0), bellows(0)
+	{ }
+
+
+/*
+ *	Blacksmith.
+ */
+
+void Forge_schedule::now_what
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord npcpos = npc->get_abs_tile_coord();
+					// Often want to get within 1 tile.
+	Actor_pathfinder_dist_client cost(1);
+
+	switch (state) {
+	case put_sword_on_firepit:
+	{
+		cerr << "put_sword_on_firepit" << endl;
+		if (!blank) {
+			blank = npc->find_closest(668);
+			//TODO: go and get it...
+
+		}
+		if (!blank)
+			blank = new Ireg_game_object(668, 0, 0, 0);
+
+		firepit = npc->find_closest(739);
+		if (!firepit) {
+			// uh-oh... try again in a few seconds
+			npc->start(250, 2500);
+			return;
+		}
+
+		Tile_coord tpos = firepit->get_abs_tile_coord();
+		Actor_action *pact = Path_walking_actor_action::create_path(
+				npcpos, tpos, cost);
+
+		Rectangle foot = firepit->get_footprint();
+		Shape_info& info = gwin->get_info(firepit);
+		Tile_coord bpos(foot.x + foot.w/2 + 1, foot.y + foot.h/2,
+			firepit->get_lift() + info.get_3d_height());
+		if (pact) {
+			npc->set_action(new Sequence_actor_action(pact,
+				new Pickup_actor_action(blank, bpos, 250)));
+		} else {
+			npc->set_action(
+				new Pickup_actor_action(blank, bpos, 250));
+		}
+
+		state = use_bellows;
+		break;
+	}
+	case use_bellows:
+	{
+		cerr << "use_bellows" << endl;
+		bellows = npc->find_closest(431);
+		firepit = npc->find_closest(739);
+		if (!bellows || !firepit || !blank) {
+			// uh-oh... try again in a few second
+			npc->start(250, 2500);
+			state = put_sword_on_firepit;
+			return;
+		}
+
+		Tile_coord tpos = bellows->get_abs_tile_coord() +
+					Tile_coord(3,0,0);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+				npcpos, tpos, cost);
+
+		Actor_action **a = new Actor_action*[38];
+		a[0] = pact;
+		a[1] = new Face_pos_actor_action(bellows, 250);
+		a[2] = new Frames_actor_action("\x2b", 1, 0);
+		a[3] = new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[4] = new Frames_actor_action("\x20", 1, 0);
+		a[5] = new Frames_actor_action("\x01", 1, 0, firepit);
+		a[6] = new Frames_actor_action("\x01", 1, 0, blank);
+		a[7] = new Frames_actor_action("\x2b", 1, 0);
+		a[8] = new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[9] = new Frames_actor_action("\x20", 1, 0);
+		a[10] = new Frames_actor_action("\x02", 1, 0, blank);
+		a[11] = new Frames_actor_action("\x2b", 1, 0);
+		a[12] = new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[13] = new Frames_actor_action("\x20", 1, 0);
+		a[14] = new Frames_actor_action("\x02", 1, 0, firepit);
+		a[15] = new Frames_actor_action("\x03", 1, 0, blank);
+		a[16] = new Frames_actor_action("\x2b", 1, 0);
+		a[17] = new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[18] = new Frames_actor_action("\x20", 1, 0);
+		a[19] = new Frames_actor_action("\x03", 1, 0, firepit);
+		a[20] = new Frames_actor_action("\x04", 1, 0, blank);
+		a[21] = new Frames_actor_action("\x2b", 1, 0);
+		a[22] = new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[23] = new Frames_actor_action("\x20", 1, 0);
+		a[24] = new Frames_actor_action("\x05", 1, 0, blank);
+		a[25] = new Frames_actor_action("\x2b", 1, 0);
+		a[26] =	new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[27] = new Frames_actor_action("\x20", 1, 0);
+		a[28] = new Frames_actor_action("\x06", 1, 0, blank);
+		a[29] = new Frames_actor_action("\x2b", 1, 0);
+		a[30] = new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[31] = new Frames_actor_action("\x20", 1, 0);
+		a[32] = new Frames_actor_action("\x07", 1, 0, blank);
+		a[33] = new Frames_actor_action("\x2b", 1, 0);
+		a[34] = new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[35] = new Frames_actor_action("\x20", 1, 0);
+		a[36] = new Frames_actor_action("\x00", 1, 0, bellows);
+		a[37] = 0;
+
+
+		npc->set_action(new Sequence_actor_action(a));
+		state = get_tongs;
+		break;
+	}
+	case get_tongs:
+	{
+		cerr << "get_tongs" << endl;
+
+#if 0
+		if (!tongs) {
+			tongs = npc->find_closest(994);
+			//TODO: go and get it...
+		}
+#endif
+		if (!tongs)
+			tongs = new Ireg_game_object(994, 0, 0, 0);
+
+		npc->add_dirty(gwin);
+		npc->add_readied(tongs, Actor::rhand);
+		npc->add_dirty(gwin);
+
+		state = sword_on_anvil;
+		break;
+	}
+	case sword_on_anvil:
+	{
+		cerr << "sword_on_anvil" << endl;
+		anvil = npc->find_closest(991);
+		firepit = npc->find_closest(739);
+		if (!anvil || !firepit || !blank) {
+			// uh-oh... try again in a few second
+			npc->start(250, 2500);
+			state = put_sword_on_firepit;
+			return;
+		}
+
+		Tile_coord tpos = firepit->get_abs_tile_coord();
+		Actor_action *pact = Path_walking_actor_action::create_path(
+				npcpos, tpos, cost);
+		Tile_coord tpos2 = anvil->get_abs_tile_coord() + 
+					Tile_coord(0,1,0);
+		Actor_action *pact2 = Path_walking_actor_action::create_path(
+				tpos, tpos2, cost);
+
+		Rectangle foot = anvil->get_footprint();
+		Shape_info& info = gwin->get_info(anvil);
+		Tile_coord bpos(foot.x + 2, foot.y,
+			anvil->get_lift() + info.get_3d_height());
+		if (pact && pact2) {
+			npc->set_action(new Sequence_actor_action(pact,
+				new Pickup_actor_action(blank, 250),
+				pact2,
+				new Pickup_actor_action(blank, bpos, 250)));
+		} else {
+			npc->set_action(new Sequence_actor_action(
+				new Pickup_actor_action(blank, 250),
+				new Pickup_actor_action(blank, bpos, 250)));
+		}
+		state = get_hammer;
+		break;
+	}
+	case get_hammer:
+	{
+		cerr << "get_hammer" << endl;
+
+#if 0
+		if (!hammer) {
+			hammer = npc->find_closest(623);
+			//TODO: go and get it...
+		}
+#endif
+
+		if (!hammer)
+			hammer = new Ireg_game_object(623, 0, 0, 0);
+
+		npc->add_dirty(gwin);
+		if (tongs) {
+			tongs->remove_this();
+			tongs = 0;
+		}
+		npc->add_readied(hammer, Actor::rhand);
+		npc->add_dirty(gwin);
+
+		state = use_hammer;
+		break;
+	}
+	case use_hammer:
+	{
+		cerr << "use_hammer" << endl;
+		anvil = npc->find_closest(991);
+		firepit = npc->find_closest(739);
+		if (!anvil || !firepit || !blank) {
+			// uh-oh... try again in a few seconds
+			npc->start(250, 2500);
+			state = put_sword_on_firepit;
+			return;
+		}
+
+		char frames[12];
+		int cnt = npc->get_attack_frames(0, frames);
+		npc->set_action(new Frames_actor_action(frames, cnt));
+		
+		Actor_action **a = new Actor_action*[10];
+		a[0] = new Frames_actor_action(frames, cnt);
+		a[1] = new Frames_actor_action("\x03", 1, 0, blank);
+		a[2] = new Frames_actor_action("\x02", 1, 0, firepit);
+		a[3] = new Frames_actor_action(frames, cnt);
+		a[4] = new Frames_actor_action("\x02", 1, 0, blank);
+		a[5] = new Frames_actor_action("\x01", 1, 0, firepit);
+		a[6] = new Frames_actor_action(frames, cnt);
+		a[7] = new Frames_actor_action("\x01", 1, 0, blank);
+		a[8] = new Frames_actor_action("\x00", 1, 0, firepit);
+		a[9] = 0;
+		npc->set_action(new Sequence_actor_action(a));
+
+		state = walk_to_trough;
+		break;
+	}
+	case walk_to_trough:
+	{
+		cerr << "walk_to_trough" << endl;
+
+		npc->add_dirty(gwin);
+		if (hammer) {
+			hammer->remove_this();
+			hammer = 0;
+		}
+		npc->add_dirty(gwin);
+
+		trough = npc->find_closest(719);
+		if (!trough) {
+			// uh-oh... try again in a few seconds
+			npc->start(250, 2500);
+			state = put_sword_on_firepit;
+			return;
+		}
+
+		if (trough->get_framenum() == 0) {
+			Tile_coord tpos = trough->get_abs_tile_coord() +
+						Tile_coord(0,2,0);
+			Actor_action *pact = Path_walking_actor_action::
+					create_path(npcpos, tpos, cost);
+			npc->set_action(pact);
+			state = fill_trough;
+			break;
+		}
+		
+		state = get_tongs2;
+		break;
+	}
+	case fill_trough:
+	{
+		cerr << "fill_trough" << endl;
+
+		trough = npc->find_closest(719);
+		if (!trough) {
+			// uh-oh... try again in a few seconds
+			npc->start(250, 2500);
+			state = put_sword_on_firepit;
+			return;
+		}
+
+		int dir = npc->get_direction(trough);
+		gwin->add_dirty(trough);
+		trough->set_frame(3);
+		gwin->add_dirty(trough);
+		npc->add_dirty(gwin);
+		npc->set_frame(
+			npc->get_dir_framenum(dir, Actor::to_sit_frame));
+		npc->add_dirty(gwin);
+
+		state = get_tongs2;
+		break;
+	}
+	case get_tongs2:
+	{
+		cerr << "get_tongs2" << endl;
+
+#if 0
+		if (!tongs) {
+			tongs = npc->find_closest(994);
+			//TODO: go and get it...
+		}
+#endif
+		if (!tongs)
+			tongs = new Ireg_game_object(994, 0, 0, 0);
+
+		npc->add_dirty(gwin);
+		npc->add_readied(tongs, Actor::rhand);
+		npc->add_dirty(gwin);
+
+		state = use_trough;
+		break;
+	}
+	case use_trough:
+	{
+		cerr << "use_trough" << endl;
+
+		trough = npc->find_closest(719);
+		anvil = npc->find_closest(991);
+		if (!trough || !anvil || !blank) {
+			// uh-oh... try again in a few seconds
+			npc->start(250, 2500);
+			state = put_sword_on_firepit;
+			return;
+		}
+		
+		Tile_coord tpos = anvil->get_abs_tile_coord() +
+				Tile_coord(0,1,0);
+		Actor_action *pact = Path_walking_actor_action::
+				create_path(npcpos, tpos, cost);
+
+		Tile_coord tpos2 = trough->get_abs_tile_coord() +
+				Tile_coord(0,2,0);
+		Actor_action *pact2 = Path_walking_actor_action::
+				create_path(tpos, tpos2, cost);
+
+		if (pact && pact2) {
+			char troughframe = trough->get_framenum() - 1;
+			if (troughframe < 0) troughframe = 0;
+
+			int dir = npc->get_direction(trough);
+			char npcframe = npc->get_dir_framenum(dir, Actor::to_sit_frame);
+
+			Actor_action **a = new Actor_action*[7];
+			a[0] = pact;
+			a[1] = new Pickup_actor_action(blank, 250);
+			a[2] = pact2;
+			a[3] = new Frames_actor_action(&npcframe, 1, 250);
+			a[4] = new Frames_actor_action(&troughframe, 1, 0, trough);
+			a[5] = new Frames_actor_action("\x00", 1, 0, blank);
+			a[6] = 0;
+			npc->set_action(new Sequence_actor_action(a));
+		} else {
+			// no path found, just pick up sword blank
+			npc->set_action(new Sequence_actor_action(
+			 	new Pickup_actor_action(blank, 250),
+				new Frames_actor_action("\0", 1, 0, blank)));
+		}	
+
+		state = done;
+		break;
+	}
+	case done:
+	{
+		cerr << "done" << endl;
+
+		npc->add_dirty(gwin);
+		if (tongs) {
+			tongs->remove_this();
+			tongs = 0;
+		}
+		npc->add_dirty(gwin);
+		
+
+		state = put_sword_on_firepit;
+	}
+	}
+
+	npc->start(250, 100);		// Back in queue.
+	}
+
+/*
+ *	Forge schedule is done.
+ */
+
+void Forge_schedule::ending
+	(
+	int new_type			// New schedule.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Remove any tools.
+
+	if (tongs) {
+		tongs->remove_this();
+		tongs = 0;
+	}
+	if (hammer) {
+		hammer->remove_this();
+		hammer = 0;
+	}
+
+	firepit = npc->find_closest(739);
+	bellows = npc->find_closest(431);
+
+	if (firepit && firepit->get_framenum() != 0) {
+		firepit->set_frame(0);
+		gwin->add_dirty(firepit);
+	}
+	if (bellows && bellows->get_framenum() != 0) {
+		bellows->set_frame(0);
+		gwin->add_dirty(bellows);
+	}
+
+	}
+
+
 /*
  *	Modify goal to walk off the screen.
  */
