@@ -54,7 +54,7 @@ using std::snprintf;
 
 bool Game::new_game_flag = false;
 Game *game = 0;
-static Exult_Game game_type = BLACK_GATE;
+Exult_Game Game::game_type = BLACK_GATE;
 
 static char av_name[17] = "";
 static int av_sex = -1;
@@ -76,11 +76,6 @@ Game::Game() : menushapes(MAINSHP_FLX)
 
 Game::~Game()
 {
-}
-
-Exult_Game Game::get_game_type()
-{
-	return game_type;
 }
 
 char *Game::get_game_identity(const char *savename)
