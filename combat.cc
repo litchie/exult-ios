@@ -39,6 +39,7 @@
 #include "ucmachine.h"
 #include "game.h"
 #include "Gump_manager.h"
+#include "spellbook.h"
 
 using std::cout;
 using std::endl;
@@ -466,16 +467,21 @@ void Combat_schedule::start_strike
 		approach_foe();		// Get a path.
 		return;
 		}
-	else
+	else				// See if we can fire spell/projectile.
 		{
 		Game_object *aobj;
-		if (ammo_shape &&
+		bool weapon_dead = false;
+		if (spellbook)
+			weapon_dead = !spellbook->can_do_spell(npc);
+		else if (ammo_shape &&
 		    (!(aobj = npc->get_readied(Actor::ammo)) ||
 			!In_ammo_family(aobj->get_shapenum(), ammo_shape)))
-			{		// Out of ammo.
+			weapon_dead = true;
+		if (weapon_dead)
+			{		// Out of ammo/reagents.
 			if (npc->get_schedule_type() != Schedule::duel)
 				{	// Look in pack for ammo.
-				if (!npc->ready_ammo())
+				if (spellbook || !npc->ready_ammo())
 					Swap_weapons(npc);
 				Combat_schedule::set_weapon();
 				}
@@ -557,6 +563,36 @@ void Combat_schedule::run_away
 	}
 
 /*
+ *	See if a spellbook is readied with a spell
+ *	available.
+ *
+ *	Output:	->spellbook if so, else 0.
+ */
+
+Spellbook_object *Combat_schedule::readied_spellbook
+	(
+	)
+	{
+	Spellbook_object *book = 0;
+					// Check both hands.
+	Game_object *obj = npc->get_readied(Actor::lhand);
+	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook)
+		{
+		book = static_cast<Spellbook_object*> (obj);
+		if (book->can_do_spell(npc))
+			return book;
+		}
+	obj = npc->get_readied(Actor::rhand);
+	if (obj && obj->get_info().get_shape_class() == Shape_info::spellbook)
+		{
+		book = static_cast<Spellbook_object*> (obj);
+		if (book->can_do_spell(npc))
+			return book;
+		}
+	return 0;
+	}
+
+/*
  *	Set weapon 'max_range' and 'ammo'.  Ready a new weapon if needed.
  */
 
@@ -565,12 +601,13 @@ void Combat_schedule::set_weapon
 	)
 	{
 	int points;
-	Game_window *gwin = Game_window::get_instance();
+	spellbook = 0;
 	Weapon_info *info = npc->get_weapon(points, weapon_shape);
-	if (!info &&			// No weapon?  Look in inventory.
-					// But not if dragging.
+	if (!info &&			// No weapon?
+	    !(spellbook = readied_spellbook()) &&	// No spellbook?
+					// Not dragging?
 	    !gumpman->gump_mode() &&
-					// And not if dueling.
+					// And not dueling?
 	    npc->get_schedule_type() != Schedule::duel &&
 	    state != wait_return)	// And not waiting for boomerang.
 		{
@@ -583,6 +620,11 @@ void Combat_schedule::set_weapon
 		projectile_range = 0;
 		strike_range = 1;	// Can always bite.
 		is_thrown = returns = no_blocking = false;
+		if (spellbook)		// Did we find a spellbook?
+			{
+			projectile_range = 10;	// Guessing.
+			no_blocking = true;
+			}
 		}
 	else
 		{
@@ -661,25 +703,6 @@ static int Use_ammo
 	return ammo == proj ? actual_ammo : proj;
 	}
 
-#if 0
-/*
- *	Does this weapon come back?
- */
-
-static bool Boomerangs
-	(
-	int shapenum
-	)
-	{
-	if (shapenum == 552 ||		// Magic axe.
-	    shapenum == 555 ||		// Hawk.
-	    shapenum == 605 ||		// Boomerang.
-	    shapenum == 557)		// Juggernaut hammer.
-		return true;
-	else
-		return false;
-	}
-#endif
 
 /*
  *	Create.
@@ -692,7 +715,7 @@ Combat_schedule::Combat_schedule
 	prev_sched
 	) : Schedule(n), state(initial), prev_schedule(prev_sched),
 		weapon_shape(0),
-		ammo_shape(0), projectile_shape(0), 
+		ammo_shape(0), projectile_shape(0), spellbook(0),
 		strike_range(0), projectile_range(0), max_range(0),
 		practice_target(0), is_thrown(false), yelled(0),
 		no_blocking(false),
@@ -803,7 +826,7 @@ void Combat_schedule::now_what
 					// Save shape (it might change).
 		int ashape = ammo_shape, wshape = weapon_shape,
 		    pshape = projectile_shape;
-		int delay = strange ? 6*gwin->get_std_delay() 
+		int delay = (strange || spellbook) ? 6*gwin->get_std_delay() 
 				: gwin->get_std_delay();
 		if (is_thrown)		// Throwing the weapon?
 			{
@@ -821,6 +844,12 @@ void Combat_schedule::now_what
 				ashape = wshape;
 				Combat_schedule::set_weapon();
 				}
+			}
+		else if (spellbook)
+			{		// Cast the spell.
+			ashape = 0;	// Just to be on the safe side...
+			if (!spellbook->do_spell(npc))
+				Combat_schedule::set_weapon();
 			}
 		else			// Ammo required?
 			ashape = ashape ? Use_ammo(npc, ashape, pshape)
