@@ -39,12 +39,13 @@ UINT MCI_Command(LPCTSTR lpszCommand, LPTSTR lpszReturnString,
 {
   DWORD code = mciSendString(lpszCommand, lpszReturnString, cchReturn, hWndCallBack);
   if (code) {
-    unsigned char buf[128];
+    char buf[128];
     UINT l;
 
     mciGetErrorString(code, buf, l);
+    cerr << "On MCI command: " << lpszCommand << ":" << endl;
     cerr << "MCI error code " << code << ": ";
-    cerr << buf << endl;
+    fprintf(stderr, "%s\n", buf);
   }
   return code;
 }
@@ -60,6 +61,7 @@ void Windows_MCI::stop_track(void)
   if (device_open) {
     MCI_Command("close u7midi", 0, 0, 0);
     device_open = false;
+    repeating = false;
   }
 }
 
@@ -145,23 +147,32 @@ void Windows_MCI::callback(WPARAM wParam, HWND hWnd)
   }
 #endif
   
-  if ((wParam == MCI_NOTIFY_SUCCESSFUL) && repeating) {
-    //music stopped playing, so start over
+  if (wParam == MCI_NOTIFY_SUCCESSFUL) {
+    if (repeating) {
+      //music stopped playing, so start over
 
 #if DEBUG
-    cerr << "Starting repeated MIDI playback\n";
+      cerr << "Starting repeated MIDI playback\n";
 #endif
+      
+      MCI_Command("seek u7midi to start", 0, 0, 0);  //rewind
+      MCI_Command("play u7midi notify", 0, 0, hWnd); //play
+    } else {
 
-    MCI_Command("seek u7midi to start", 0, 0, 0);  //rewind
-    MCI_Command("play u7midi notify", 0, 0, hWnd); //play
-  } else {
-
-    //error or non-continuous playback, so ok to close MIDI device
+    //non-continuous playback, so ok to close MIDI device
+      if (device_open) {
+	MCI_Command("close u7midi", 0, 0, 0);
+	device_open = false;
+	repeating = false;
+      }
+    }
+  } else if (wParam == MCI_NOTIFY_FAILURE) {
     if (device_open) {
       MCI_Command("close u7midi", 0, 0, 0);
       device_open = false;
+      repeating = false;
     }
-  }
+  }    
 }
 
 const	char *Windows_MCI::copyright(void)
