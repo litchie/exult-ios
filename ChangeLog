@@ -1,3 +1,6 @@
+2001-10-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/*/defaultkeys.txt: fixed abacus keybinding
+
 2001-10-12  Tristan Tarrant <nadir@users.sourceforge.net>
 	More patches from Christian Ohm <chr.ohm@gmx.net>
 	mouse.patch, gumps/Gameplay_options.* : Implement GameplayOptions 
