@@ -46,7 +46,8 @@ public:
 		point = 0,
 		bilinear = 1,
 		interlaced = 2,
-		SaI = 3
+		SaI = 3,
+		SuperEagle = 4
 	};
 protected:
 	Image_buffer *ibuf;		// Where the data is actually stored.
@@ -68,6 +69,10 @@ protected:
 	void show_scaled8to555_bilinear(int x, int y, int w, int h);
 	void show_scaled8to565_bilinear(int x, int y, int w, int h);
 	void show_scaled8to32_bilinear(int x, int y, int w, int h);	
+	void show_scaled8to16_SuperEagle(int x, int y, int w, int h);
+	void show_scaled8to555_SuperEagle(int x, int y, int w, int h);
+	void show_scaled8to565_SuperEagle(int x, int y, int w, int h);
+	void show_scaled8to32_SuperEagle(int x, int y, int w, int h);	
 	void show_scaled_point(int x, int y, int w, int h);
 	void show_scaled_interlace(int x, int y, int w, int h);
 	/*

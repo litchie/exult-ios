@@ -1,3 +1,7 @@
+2001-02-20  Ryan Nunn  <triforce@merlin.net.au>
+	* exult.cc, exultmenu.cc imagewin/*.*: Added in Derek Liauw Kie Fa's
+	  SuperEagle scaler.
+	  	
 2001-02-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc: cleaned up 'build game map' code. Now accessible using a
 	cmdline parameter. (-buildmap 0|1|2), where 0,1,2 determines skiplift
