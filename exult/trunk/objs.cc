@@ -1279,7 +1279,8 @@ int Spellbook_object::add_spell
 
 void Spellbook_object::activate
 	(
-	Usecode_machine *umachine
+	Usecode_machine *umachine,
+	int event
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -1569,7 +1570,8 @@ Game_object *Container_game_object::find_item
 
 void Container_game_object::activate
 	(
-	Usecode_machine *umachine
+	Usecode_machine *umachine,
+	int event
 	)
 	{
 	int shnum = get_shapenum();
@@ -1620,7 +1622,7 @@ void Container_game_object::activate
 		}
 					// Try to run normal usecode fun.
 	umachine->call_usecode(shnum, this,
-				Usecode_machine::double_click);
+				(Usecode_machine::Usecode_events) event);
 	}
 
 /*

@@ -457,7 +457,7 @@ public:
 		unsigned long f);
 	int add_spell(int spell);	// Add a spell.
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
 	};
@@ -520,7 +520,7 @@ public:
 								int framenum);
 	virtual Game_object *find_item(int shapenum, int qual, int framenum);
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 					// Count contained objs.
