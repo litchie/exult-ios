@@ -1,3 +1,13 @@
+2001-10-08  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* npcnear.cc: Awakened NPC's shouldn't run proximity Usecode, and
+	should go back to sleep after several seconds.
+	* gamewin.cc: Sleeping NPC's shouldn't detect theft.
+	* gumps/misc_buttons.cc (Combat_button): Update for current combat
+	state.
+	* schedule.cc (Sleep_schedule),intrinsics.cc: Fixed sleep hang,
+	and also position after waking.
+
 2001-10-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* effects.cc:  Show text by owner of object if gump not open.

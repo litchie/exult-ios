@@ -3059,6 +3059,7 @@ void Game_window::theft
 		Actor *npc = *it;
 		if (npc->is_monster() || npc == main_actor ||
 		    npc->get_party_id() >= 0 ||
+		    (npc->get_framenum()&15) == Actor::sleep_frame ||
 		    npc->get_npc_num() >= num_npcs1)
 			continue;
 		int dist = npc->distance(main_actor);
