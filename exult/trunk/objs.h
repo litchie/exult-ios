@@ -565,6 +565,8 @@ class Chunk_cache
 					//   given level for a desired tile.
 	int get_highest_blocked(int lift, unsigned short tflags);
 	int get_highest_blocked(int lift, int tx, int ty);
+	int get_lowest_blocked(int lift, unsigned short tflags);
+	int get_lowest_blocked(int lift, int tx, int ty);
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift);
 					// Activate eggs nearby.
@@ -606,8 +608,7 @@ public:
 	void add_egg(Egg_object *egg);	// Add/remove an egg.
 	void remove_egg(Egg_object *egg);
 	void remove(Game_object *obj);	// Remove an object.
-	int is_roof() const		// Is there a roof?
-		{ return roof; }
+	int is_roof(int tx, int ty, int lift);// Is there a roof? Returns height
 	int get_cx() const
 		{ return cx; }
 	int get_cy() const
@@ -645,6 +646,8 @@ public:
 					// Get highest lift blocked.
 	int get_highest_blocked(int lift, int tx, int ty)
 		{ return need_cache()->get_highest_blocked(lift, tx, ty); }
+	int get_lowest_blocked(int lift, int tx, int ty)
+		{ return need_cache()->get_lowest_blocked(lift, tx, ty); }
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift)
 		{ return cache->is_blocked(height, lift, tx, ty, new_lift); }

@@ -397,10 +397,16 @@ void Game_window::center_view
 	set_scroll_bounds();		// Set scroll-control.
 	paint();			// This pulls in objects.
 					// Set where to skip rendering.
-	if (set_above_main_actor(get_objects(main_actor->get_cx(),
-				main_actor->get_cy())->is_roof(),
-				main_actor->get_lift()))
+	
+	Chunk_object_list *nlist = get_objects(main_actor->get_cx(), main_actor->get_cy());
+							 
+	if (set_above_main_actor(nlist->is_roof (
+					main_actor->get_cx(),
+					main_actor->get_ty(),
+					main_actor->get_lift()
+					)))
 		paint();		// Changed, so paint again.
+		
 					// See who's nearby.
 	add_nearby_npcs(scrolltx/tiles_per_chunk, scrollty/tiles_per_chunk,
 		(scrolltx + get_width()/tilesize)/tiles_per_chunk,
@@ -1079,7 +1085,7 @@ void Game_window::paint
 			paint_chunk_objects(-1, cx, cy, 0);
 					// Also check for light sources.
 			Chunk_object_list *chunk = get_objects(cx, cy);
-			if (is_main_actor_inside() == chunk->is_roof())
+//			if (is_main_actor_inside() && chunk->is_roof())
 				light_sources += chunk->get_light_sources();
 			}
 
