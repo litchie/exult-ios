@@ -1,3 +1,6 @@
+2002-10-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* shapes/font.cc: fixed hang in french BG
+
 2002-10-10  Max Horn  <max@quendi.de>
 
 	* synced with my recent (and some not so recent) changes to HEAD CVS:
