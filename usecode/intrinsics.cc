@@ -549,8 +549,8 @@ USECODE_INTRINSIC(update_last_created)
 		cout << " { Intrinsic 0x26:  "; arr.print(cout); cout << endl << "} ";
 		}
 #endif
-	gwin->paint_dirty();
-	gwin->show();		// ??
+//	gwin->paint_dirty();	Problems in conversations.
+//	gwin->show();		// ??
 	Usecode_value u(1);// ??
 	return(u);
 }
@@ -1707,8 +1707,9 @@ USECODE_INTRINSIC(clear_item_flag)
 		if (flag == Obj_flags::dont_render)
 			{	// Show change in status.
 			show_pending_text();	// Fixes Lydia-tatoo.
-			gwin->paint();
-			gwin->show();
+//			gwin->paint();  Think it messes up conversations.
+//			gwin->show();
+			gwin->set_all_dirty();
 			}
 		else if (flag == (int) Obj_flags::on_moving_barge ||
 					flag == (int) Obj_flags::in_motion)
@@ -1738,14 +1739,6 @@ USECODE_INTRINSIC(fade_palette)
 	int inout = parms[2].get_int_value();
 	gwin->fade_palette(cycles, inout);
 	return(no_ret);
-}
-
-USECODE_INTRINSIC(fade_in)
-{
-	// ++++PURE GUESS:  fadein(0 or 1?).  WRONGO!+++++++++++
-//	gwin->paint();			// Want to show new view in SI.
-//	gwin->fade_palette(0x0c, 1);
-	return no_ret;
 }
 
 USECODE_INTRINSIC(get_party_list2)

@@ -628,8 +628,19 @@ void File_gump::key_down
 {
 	if (!focus)			// Text field?
 		return;
+	Game_window *gwin = Game_window::get_game_window();
 	switch (chr)
 		{
+	case SDLK_RETURN:		// If only 'Save', do it.
+		if (!buttons[0] && buttons[1])
+			{
+			buttons[1]->push(gwin);
+			gwin->show(1);
+			buttons[1]->unpush(gwin);
+			gwin->show(1);
+			buttons[1]->activate(gwin);
+			}
+		break;
 	case SDLK_BACKSPACE:
 		if (focus->delete_left())
 		{		// Can't restore now.
@@ -677,7 +688,6 @@ void File_gump::key_down
 	{
 		int old_length = focus->get_length();
 		focus->insert(chr);
-		Game_window *gwin = Game_window::get_game_window();
 					// Added first character?  Need 
 					//   'Save' button.
 		if (!old_length && focus->get_length() && !buttons[1])

@@ -510,11 +510,18 @@ void Usecode_machine::remove_item
 		return;
 	if (obj == last_created)
 		last_created = 0;
+	if (obj->get_owner())		// Inside a container?
+		{			// Paint gump if open.
+		Gump *gump = gwin->find_gump(obj);
+		if (gump)
+			gump->paint(gwin);
+		}
+	else
+		gwin->add_dirty(obj);
 	obj->remove_this(1);		// Remove from world or container, but
 					//   don't delete.
 	obj->set_invalid();		// Set to invalid chunk.
 	removed->insert(obj);		// Add to pool instead.
-	gwin->paint();
 	}
 
 #define PARTY_MAX (sizeof(party)/sizeof(party[0]))
