@@ -230,12 +230,9 @@ void Spellbook_gump::set_avail
 	bool has_ring = book->has_ring(gwin->get_main_actor());
 	for (i = 0; i < 9*8; i++)	// Now figure what's available.
 	{
-		if (has_ring)
-			{
-			avail[i] = 10000;
-			continue;
-			}
 		avail[i] = 10000;	// 'infinite'.
+		if (has_ring)
+			continue;
 		unsigned short flags = book->reagents[i];
 					// Go through bits.
 		for (r = 0; flags; r++, flags = flags >> 1)
@@ -464,38 +461,31 @@ void Spellbook_gump::paint
 		{
 			Gump_button *spell = spells[spindex + s];
 			paint_button(spell);
-			if (page == 0)	// No quantities for 1st circle.
+			if (GAME_BG && page == 0)	// No quantities for 0th circle in BG.
 				continue;
 			int num = avail[spindex + s];
-			char text[6];
-			if (num > 0 && num < 1000)
-				{
-				snprintf(text, 6, "%d", num < 100 ? num : 99);
+			if (num > 0 || cheat.in_wizard_mode()) {
+				char text[6];
+				if ((num >= 1000 || cheat.in_wizard_mode()) && GAME_SI)
+					std::strcpy(text, "#"); // # = infinity in SI's font 5
+				else if (num > 99 || cheat.in_wizard_mode())
+					std::strcpy(text, "99");
+				else
+					snprintf(text, 6, "%d", num);
+
 				sman->paint_text(5, text,
-					x + spell->x + numx -
-						sman->get_text_width(4, text),
-					y + spell->y + numy);
-				}
-			else if (num >= 1000)	// Fake an 'infinity'.
-				{
-				std::strcpy(text, "oo");
-				int px = x + spell->x + numx + 2 -
-						sman->get_text_width(4, text);
-				sman->paint_text(5, text + 1, px,
-					y + spell->y + numy);
-				sman->paint_text(5, text + 1, px + 3,
-					y + spell->y + numy);
-				}
+						x + spell->x + numx - sman->get_text_width(5, text),
+						y + spell->y + numy);
+			}
 		}
-	if (page > 0 ||			// Paint circle.
-	    Game::get_game_type() == SERPENT_ISLE)
+	if (page > 0 ||	GAME_SI)		// Paint circle.
 	{
 		char *circ = item_names[CIRCLE];
 		char *cnum = item_names[CIRCLENUM + page];
 		sman->paint_text(5, cnum, x + 40 + 
-			(44 - sman->get_text_width(4, cnum))/2, y + 20);
+			(44 - sman->get_text_width(5, cnum))/2, y + 20);
 		sman->paint_text(5, circ, x + 92 +
-			(44 - sman->get_text_width(4, circ))/2, y + 20);
+			(44 - sman->get_text_width(5, circ))/2, y + 20);
 	}
 	if (book->bookmark >= 0)	// Bookmark?
 		paint_button(bookmark);
