@@ -2230,7 +2230,6 @@ void Game_window::show_face
 	int frame
 	)
 	{
-	
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 	mode = conversation;		// Make sure mode is set right.
 	if (num_faces == max_faces)
@@ -2238,6 +2237,28 @@ void Game_window::show_face
 		cout << "Can't show more than " << max_faces << " faces" << endl;
 		return;
 		}
+
+	if (shape == 28 && main_actor->get_flag(Actor::petra)) // Petra
+	{
+		shape = main_actor->get_face_shapenum();
+		if (main_actor->get_skin_color() == 0) // WH
+		{
+			frame = 1 - main_actor->get_type_flag(Actor::tf_sex);
+		}
+		else if (main_actor->get_skin_color() == 1) // BN
+		{
+			frame = 3 - main_actor->get_type_flag(Actor::tf_sex);
+		}
+		else if (main_actor->get_skin_color() == 2) // BK
+		{
+			frame = 5 - main_actor->get_type_flag(Actor::tf_sex);
+		}
+		else // None
+		{
+			frame = main_actor->get_type_flag(Actor::tf_sex);
+		}
+	}
+
 					// Get character's portrait.
 	Shape_frame *face = faces.get_shape(shape, frame);
 	Npc_face_info *info = 0;
@@ -2385,9 +2406,9 @@ void Game_window::show_avatar_choices
 	int shape = main_actor->get_face_shapenum();
 	int frame;
 
-	if (main_actor->get_siflag(Actor::petra)) // Petra
+	if (main_actor->get_flag(Actor::petra)) // Petra
 	{
-//		shape =
+		shape = 28;
 		frame = 0;
 	}
 	else if (main_actor->get_skin_color() == 0) // WH
@@ -2412,7 +2433,12 @@ void Game_window::show_avatar_choices
 	Npc_face_info *prev = num_faces ? face_info[num_faces - 1] : 0;
 	int fx = prev ? prev->face_rect.x + prev->face_rect.w + 4 : 16;
 	int fy;
-	if (!prev)
+	if (Game::get_game_type()==SERPENT_ISLE)
+	{
+		fy = sbox.h - 2 - face->get_height();
+		fx = 8;
+	}
+	else if (!prev)
 		fy = sbox.h - face->get_height() - 3*height;
 	else
 		{
@@ -2521,7 +2547,7 @@ void Game_window::show_gump
 // Messes up other gumps	if (obj->get_npc_num() == 0)  How about:
 	if (paperdoll && obj == main_actor)
 	{
-		if (main_actor->get_siflag(Actor::petra)) // Petra
+		if (main_actor->get_flag(Actor::petra)) // Petra
 		{
 //			shapenum =
 		}

@@ -88,6 +88,9 @@ protected:
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 	unsigned siflags:32;	// 32 flags used in 'usecode'.
 	unsigned type_flags:32;	// 32 flags used in movement among other things
+
+	unsigned char ident;
+
 	int	skin_color;
 	Actor_action *action;		// Controls current animation.
 	int frame_time;			// Time between frames in msecs.  0 if
@@ -154,7 +157,8 @@ public:
 		read = 1,
 		tournament = 2,
 		polymorph = 3,
-		petra = 4,
+		// petra = 4,
+		// met = 5,
 		no_spell_casting = 6,
 		zombie = 7,
 		naked = 8
@@ -264,6 +268,10 @@ public:
 	void set_skin_color (int color) { skin_color = color;}
 	virtual int get_type_flags() const
 		{ return type_flags; }
+
+	virtual unsigned char get_ident() { return ident; }
+	virtual void set_ident(unsigned char id) { ident = id; }
+
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return npc_num; }
 					// Get/set index within party.
@@ -314,6 +322,7 @@ public:
 		{  }
 	void write(ostream& nfile);	// Write out (to 'npc.dat').
 	void set_actor_shape(); 	// Set shape based on sex and color and petra flag
+	
 	};
 
 /*

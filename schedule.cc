@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actions.h"
 #include "dir.h"
 #include "items.h"
+#include "game.h"
 
 /*
  *	Set up an action to get an actor to a location (via pathfinding), and
@@ -186,6 +187,12 @@ void Talk_schedule::now_what
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+
+	// Switch to phase 3 if we are reasonable close
+	if (phase != 0 && npc->distance(gwin->get_main_actor()) < 7)
+		phase = 3;
+		
+
 	switch (phase)
 		{
 	case 0:				// Start by approaching Avatar.
@@ -210,7 +217,12 @@ void Talk_schedule::now_what
 		npc->set_frame(npc->get_dir_framenum(npc->get_direction(
 				gwin->get_main_actor()), Actor::standing));
 		gwin->add_dirty(npc);
-		npc->activate(gwin->get_usecode(), 9);
+		
+		if (Game::get_game_type() == SERPENT_ISLE)
+			npc->activate(gwin->get_usecode(), 9);
+		else
+			npc->activate(gwin->get_usecode(), 1);
+			
 		gwin->set_mode(Game_window::normal);
 		gwin->paint();
 		phase++;
