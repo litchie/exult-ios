@@ -132,6 +132,8 @@ public:
 //		slow = 9		// E.g., slime, corpser.
 					// 10:  skeleton only.
 		};
+	unsigned char get_flags() const	// Get above set of flags.
+		{ return flags; }
 	bool has_no_body() const	// No dead body?
 		{ return (flags>>no_body)&1; }
 	int get_strength() const	
