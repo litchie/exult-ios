@@ -31,12 +31,83 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 extern	Configuration	config;
 
+static  void    playTBmidifile(const char *name)
+{
+        execlp("timidity","-Oe","-idvvv",name,0);
+}
 
 
-static  void    playmidifile(const char *name)
+static  void    playFJmidifile(const char *name)
 {
         execlp("playmidi","-v","-v","-e",name,0);
 }
+
+#undef HAVE_TIMIDITY_BIN	// Damn. Can't do this while SDL has the audio device.
+// New strategy - Tell timidity to output to stdout. Capture that via a pipe, and
+// introduce it back up to the mixing layer.
+#if HAVE_TIMIDITY_BIN
+Timidity_binary::Timidity_binary() :forked_job(-1)
+	{
+		// Figure out if the binary is where we expect it to be.
+		
+	}
+
+Timidity_binary::~Timidity_binary()
+	{
+	// Stop any current player
+	stop_track();
+	}
+
+void	Timidity_binary::stop_track(void)
+	{
+	if(forked_job!=-1)
+		kill(forked_job,SIGKILL);
+	forked_job=-1;
+		
+		
+	}
+bool	Timidity_binary::is_playing(void)
+{
+	if(forked_job==-1)
+		return false;
+	if(kill(forked_job,0))
+		{
+		forked_job=-1;
+		return false;
+		}
+	return true;
+}
+
+void	Timidity_binary::start_track(const char *name,int repeats)
+{
+#if DEBUG
+	cerr << "Starting midi sequence with Timidity_binary" << endl;
+#endif
+        if(forked_job!=-1)
+                {
+#if DEBUG
+	cerr << "Stopping any running track" << endl;
+#endif
+		stop_track();
+                }
+        forked_job=fork();
+        if(!forked_job)
+                {
+#if DEBUG
+	cerr << "Starting to play " << name << endl;
+#endif
+                playTBmidifile(name);
+                raise(SIGKILL);
+                }
+}
+
+const	char *Timidity_binary::copyright(void)
+{
+	return "Internal cheapass forked timidity synthesiser";
+}
+
+#endif
+
 
 forked_player::forked_player() : forked_job(-1)
 {}
@@ -73,12 +144,15 @@ void	forked_player::start_track(const char *name,int repeats)
 #endif
         if(forked_job!=-1)
                 {
+#if DEBUG
+	cerr << "Stopping any running track" << endl;
+#endif
 		stop_track();
                 }
         forked_job=fork();
         if(!forked_job)
                 {
-                playmidifile(name);
+                playFJmidifile(name);
                 raise(SIGKILL);
                 }
 }
@@ -111,8 +185,10 @@ int	kmidi_device_selection(void)
 
 KMIDI::KMIDI()
 {
+	cerr << "libkmid initialisation..." << endl;
 	if(KMidSimpleAPI::kMidInit())
 		{
+		cerr << "failed. Falling back..." << endl;
 		throw 0;
 		}
 
@@ -236,6 +312,21 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 		}
 	config.set("config/audio/midi/enabled",s,true);
 
+	if(no_device)
+		{
+		try {
+#if HAVE_TIMIDITY_BIN
+		midi_device=new Timidity_binary();
+#else
+		throw 0;
+#endif
+		no_device=false;
+		cerr << midi_device->copyright() << endl;
+		} catch(...)
+			{
+			no_device=true;
+			}
+		}
 	if(no_device)
 		{
 		try {

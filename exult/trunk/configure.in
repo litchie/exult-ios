@@ -70,6 +70,13 @@ fi
 dnl Just for record-keeping
 AC_DEFINE(AUTOCONFIGURED)
 
+AC_MSG_CHECKING(for a timidity binary)
+AC_CHECK_PROG(HAVE_TIMIDITY_BIN, timidity, yes, no)
+if test "$HAVE_TIMIDITY_BIN" = "yes"; then
+	AC_MSG_RESULT(Found a binary. We'll build a driver for it)
+	AC_DEFINE(HAVE_TIMIDITY_BIN)
+fi
+
 AC_MSG_CHECKING(the SDL installation)
 AC_CHECK_PROG(HAVE_SDL_CONFIG, sdl-config, yes, no)
 
@@ -171,6 +178,7 @@ AC_SUBST(RELNUM)
 AC_SUBST(KMID_INCLUDES)
 AC_SUBST(KMID_LIBS)
 AC_SUBST(PEDANTIC)
+AC_SUBST(HAVE_TIMIDITY_BIN)
 
 dnl Checks for header files.
 AC_HEADER_DIRENT

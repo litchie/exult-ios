@@ -68,6 +68,7 @@ DLLTOOL = @DLLTOOL@
 EXEEXT = @EXEEXT@
 FREETYPE_DIR = @FREETYPE_DIR@
 HAVE_SDL_CONFIG = @HAVE_SDL_CONFIG@
+HAVE_TIMIDITY_BIN = @HAVE_TIMIDITY_BIN@
 KMID_INCLUDES = @KMID_INCLUDES@
 KMID_LIBS = @KMID_LIBS@
 LIBTOOL = @LIBTOOL@
@@ -300,7 +301,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

@@ -149,7 +149,7 @@ const int answer_stack_size = 10;
 /*
  *	A set of answers:
  */
-class Answers
+struct Answers
 	{
 	friend class Usecode_machine;
 	char *answers[max_answers];	// What we can click on.
@@ -165,7 +165,7 @@ class Answers
 /*
  *	Here's our virtual machine for running usecode.
  */
-class Usecode_machine
+struct Usecode_machine
 	{
 	Game_window *gwin;		// Game window.
 	Vector *funs;			// I'th entry contains funs for ID's
@@ -218,6 +218,7 @@ class Usecode_machine
 	/*
 	 *	Built-in usecode functions:
 	 */
+public:
 	void show_npc_face(Usecode_value& arg1, Usecode_value& arg2);
 	void remove_npc_face(Usecode_value& arg1);
 	void set_item_shape(Usecode_value& item_arg, Usecode_value& shape_arg);
