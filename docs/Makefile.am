@@ -1,3 +1,5 @@
+man_MANS = exult.6
+
 EXTRA_DIST =		\
 	FLI.txt 	\
 	exscript.txt	\
@@ -5,6 +7,7 @@ EXTRA_DIST =		\
 	schedule.txt	\
 	u7combat.txt	\
 	u7edit.txt	\
+	u7eggs.txt	\
 	u7itemtypes.txt	\
 	u7monst.txt	\
 	u7playend.zip	\
@@ -12,4 +15,6 @@ EXTRA_DIST =		\
 	u7tech.txt	\
 	unknown		\
 	usedis.zip	\
-	wuc.zip
+	weapons.txt	\
+	wuc.zip		\
+	$(man_MANS)
