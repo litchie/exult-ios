@@ -1,3 +1,11 @@
+2003-11-01    <jeff@mini.nerble.net>
+
+	* schedule.cc (Waiter_schedule): Create plates if needed.
+
+2003-10-31    <jeff@mini.nerble.net>
+
+	* combat.cc: Play music only when someone can approach an enemy.
+
 2003-10-30    <jeff@mini.nerble.net>
 
 	* gameclk.cc,actors.cc:  Check hunger every hour, instead of every

@@ -1935,15 +1935,16 @@ void Waiter_schedule::find_tables
 /*
  *	Find serving spot for a customer.
  *
- *	Output:	1 if found, with spot set.
+ *	Output:	Plate if found, with spot set.  Plate is created if needed.
  */
 
-int Waiter_schedule::find_serving_spot
+Game_object *Waiter_schedule::find_serving_spot
 	(
 	Tile_coord& spot
 	)
 	{
-	Game_object_vector plates;		// First look for a nearby plate.
+	Game_object_vector plates;	// First look for a nearby plate.
+	Game_object *plate = 0;
 	int cnt = npc->find_nearby(plates, 717, 1, 0);
 	if (!cnt)
 		cnt = npc->find_nearby(plates, 717, 2, 0);
@@ -1951,12 +1952,12 @@ int Waiter_schedule::find_serving_spot
 	for (Game_object_vector::const_iterator it = plates.begin();
 					it != plates.end(); ++it)
 		{
-		Game_object *plate = *it;
+		plate = *it;
 		if (plate->get_lift()/5 == floor)
 			{
 			spot = plate->get_tile();
 			spot.tz++;	// Just above plate.
-			return 1;
+			return plate;
 			}
 		}
 	Tile_coord cpos = customer->get_tile();
@@ -1965,30 +1966,32 @@ int Waiter_schedule::find_serving_spot
 	{
 		// Go through tables.
 
-		for (Game_object_vector::const_iterator it = eating_tables.begin();
-						it != eating_tables.end(); ++it)
-			{
-			Game_object *table = *it;
-			Rectangle foot = table->get_footprint();
-			if (foot.distance(cpos.tx, cpos.ty) <= 2)
-				{		// Found it.
-				spot = cpos;	// Start here.
-						// East/West of table?
-				if (cpos.ty >= foot.y && cpos.ty < foot.y + foot.h)
-					spot.tx = cpos.tx <= foot.x ? foot.x
-								: foot.x + foot.w - 1;
-				else		// North/south.
-					spot.ty = cpos.ty <= foot.y ? foot.y
-								: foot.y + foot.h - 1;
-				if (foot.has_point(spot.tx, spot.ty))
-					{	// Passes test.
-					Shape_info& info = table->get_info();
-					spot.tz = table->get_lift() +
-							info.get_3d_height();
-					return 1;
-					}
-				}
+	for (Game_object_vector::const_iterator it = eating_tables.begin();
+					it != eating_tables.end(); ++it)
+		{
+		Game_object *table = *it;
+		Rectangle foot = table->get_footprint();
+		if (foot.distance(cpos.tx, cpos.ty) > 2)
+			continue;
+					// Found it.
+		spot = cpos;		// Start here.
+					// East/West of table?
+		if (cpos.ty >= foot.y && cpos.ty < foot.y + foot.h)
+			spot.tx = cpos.tx <= foot.x ? foot.x
+							: foot.x + foot.w - 1;
+		else			// North/south.
+			spot.ty = cpos.ty <= foot.y ? foot.y
+						: foot.y + foot.h - 1;
+		if (foot.has_point(spot.tx, spot.ty))
+			{		// Passes test.
+			Shape_info& info = table->get_info();
+			spot.tz = table->get_lift() + info.get_3d_height();
+			plate = gmap->create_ireg_object(717, 0);
+			plate->move(spot);
+			spot.tz++;	// Food goes above plate.
+			return plate;
 			}
+		}
 	}
 	return 0;			// Failed.
 	}
