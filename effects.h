@@ -126,13 +126,12 @@ public:
 class Death_vortex : public Special_effect
 	{
 	Actor *target;			// We'll follow this around if not 0.
-	Tile_coord tpos;		// If !target, our location.
 	Tile_coord pos;			// Current position.
 	int frame_num;			// Current frame.
 	int frames;			// # frames.
 	uint32 stop_time;		// Time in 1/1000 secs. to stop.
 	uint32 next_damage_time;	// When to check for NPC's beneath us.
-	Rectangle get_rect(Game_window *gwin);		// Get rectangle used.
+	int add_dirty(Game_window *gwin);
 public:
 	Death_vortex(Game_object *trg, Tile_coord tp);
 					// For Time_sensitive:

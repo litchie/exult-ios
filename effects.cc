@@ -394,8 +394,7 @@ Death_vortex::Death_vortex
 	Tile_coord tp			// Target pos, if trg==0.
 	) : frame_num(0), next_damage_time(0)
 	{
-	tpos = trg ? trg->get_abs_tile_coord() : tp;
-	pos = tpos;
+	pos = trg ? trg->get_abs_tile_coord() : tp;
 	target = dynamic_cast<Actor *> (trg);
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_sprite_num_frames(8);
@@ -407,18 +406,21 @@ Death_vortex::Death_vortex
 
 /*
  *	Add a dirty rectangle for the current position and frame.
+ *
+ *	Output:	Width in pixels.
  */
 
-inline Rectangle Death_vortex::get_rect
+inline int Death_vortex::add_dirty
 	(
 	Game_window *gwin
 	)
 	{
 	Shape_frame *shape = gwin->get_sprite_shape(8, frame_num);
 	int liftpix = pos.tz*c_tilesize/2;
-	return (gwin->get_shape_rect(shape,
+	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
 		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
-		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix));
+	    (pos.ty - gwin->get_scrollty())*c_tilesize - liftpix).enlarge(4)));
+	return shape->get_width();
 	}
 
 /*
@@ -433,33 +435,38 @@ void Death_vortex::handle_event
 	{
 	const int delay = 100;		// Delay between frames.
 	Game_window *gwin = Game_window::get_game_window();
-	Rectangle rect = get_rect(gwin);
-	Rectangle dirty = rect;		// Repaint old area.
-	gwin->add_dirty(gwin->clip_to_win(dirty.enlarge(4)));
-	//+++++++++Follow target.
-
+	int width = add_dirty(gwin);	// Repaint old area.
+	if (target && !target->is_dead())	// Follow target.
+		{
+		Tile_coord tpos = target->get_abs_tile_coord();
+		int deltax = tpos.tx - pos.tx, deltay = tpos.ty - pos.ty;
+		int absx = deltax >= 0 ? deltax : -deltax;
+		int absy = deltay >= 0 ? deltay : -deltay;
+		if (absx > 2 || absy > 2)
+			{
+			if (deltax)
+				pos.tx += deltax/absx;
+			if (deltay)
+				pos.ty += deltay/absy;
+			}
+		}
 	if (curtime > next_damage_time)	// Time to cause damage.
 		{			// Do it every second.
 		next_damage_time = curtime + 1000;
-					// Get center of area covered.
-		int liftpix = pos.tz*c_tilesize/2;
-		Tile_coord center(rect.x + rect.w/2 + liftpix, 
-				rect.y + rect.h/2 + liftpix, pos.tz);
-		Actor_vector npcs;	// Find NPC's there.
-		Game_object::find_nearby(npcs, center, -1, rect.w/2, 8);
+		Actor_vector npcs;	// Find NPC's.
+		Game_object::find_nearby(npcs, pos, -1, width/(2*c_tilesize), 
+									8);
 		for (Actor_vector::const_iterator it = npcs.begin();
 							it != npcs.end(); ++it)
 			{
 			Actor *npc = *it;
 			if (npc != gwin->get_main_actor() &&
 						npc->get_party_id() < 0)
-				continue;
-			npc->reduce_health(40);
+				npc->reduce_health(40);
 			}
 		}
 	frame_num = (frame_num + 1)%frames;
-	rect = get_rect(gwin);		// Paint new.
-	gwin->add_dirty(gwin->clip_to_win(rect.enlarge(4)));
+	add_dirty(gwin);		// Paint new.
 	if (curtime < stop_time)	// Keep going?
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
