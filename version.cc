@@ -102,7 +102,30 @@ void getVersionInfo(std::ostream& out)
 
 	out << std::endl;
 
-	out << "Platform: ";
+	out << "Compiler: ";
+#if (defined(__GNUC__))
+	out << "gcc";
+#if defined(__VERSION__)
+	out << ", version: " << __VERSION__ << std::endl;
+#elif (defined(__GNUC_MINOR__))
+	out << ", version " << __GNUC__ << "." << __GNUC_MINOR__;
+#if (defined(__GNUC_PATCHLEVEL__))
+	out << "." << __GNUC_PATCHLEVEL__;
+#endif
+	out << std::endl;
+#endif
+
+#elif (defined(_MSC_FULL_VER))
+	out << "MSC, version: " << (_MSC_FULL_VER/1000000) << "."
+				<< ((_MSC_FULL_VER/10000)%100) << "."
+				<< (_MSC_FULL_VER%10000) << std::endl;
+#elif (defined(_MSC_VER))
+	out << "MSC, version: " << (_MSC_VER/100) << "." << (_MSC_VER%100) << std::endl;
+#else
+	out << "Unknown" << std::endl;
+#endif
+
+	out << std::endl << "Platform: ";
 
 #if (defined(__linux__) || defined(__linux) || defined(linux))
 	std::string ver;
@@ -164,27 +187,5 @@ void getVersionInfo(std::ostream& out)
 	out << "Unknown" << std::endl;
 #endif
  
-	out << "Compiler: ";
-#if (defined(__GNUC__))
-	out << "gcc";
-#if defined(__VERSION__)
-	out << ", version: " << __VERSION__ << std::endl;
-#elif (defined(__GNUC_MINOR__))
-	out << ", version " << __GNUC__ << "." << __GNUC_MINOR__;
-#if (defined(__GNUC_PATCHLEVEL__))
-	out << "." << __GNUC_PATCHLEVEL__;
-#endif
-	out << std::endl;
-#endif
-
-#elif (defined(_MSC_FULL_VER))
-	out << "MSC, version: " << (_MSC_FULL_VER/1000000) << "."
-				<< ((_MSC_FULL_VER/10000)%100) << "."
-				<< (_MSC_FULL_VER%10000) << std::endl;
-#elif (defined(_MSC_VER))
-	out << "MSC, version: " << (_MSC_VER/100) << "." << (_MSC_VER%100) << std::endl;
-#else
-	out << "Unknown" << std::endl;
-#endif
 
 }

@@ -51,6 +51,7 @@
 #include "Newfile_gump.h"
 #include "actors.h"
 #include "ucmachine.h"
+#include "version.h"
 
 using std::cerr;
 using std::cout;
@@ -115,6 +116,8 @@ void Game_window::restore_gamedat
 	U7remove ("<STATIC>/flags.flg");
 	U7remove (GSCRNSHOT);
 	U7remove (GSAVEINFO);
+	U7remove (GNEWGAMEVER);
+	U7remove (GEXULTVER);
 	U7remove (KEYRINGDAT);
 
 	cout.flush();
@@ -186,6 +189,7 @@ void Game_window::restore_gamedat
  */
 static const char *bgsavefiles[] = {
 	GSCRNSHOT,	GSAVEINFO,	// MUST BE FIRST!!
+	GEXULTVER,	GNEWGAMEVER,
 	NPC_DAT,	MONSNPCS,
 	IDENTITY,	USEDAT,
 	FLAGINIT,	GWINDAT,
@@ -195,6 +199,7 @@ static const int bgnumsavefiles = sizeof(bgsavefiles)/sizeof(bgsavefiles[0]);
 
 static const char *sisavefiles[] = {
 	GSCRNSHOT,	GSAVEINFO,	// MUST BE FIRST!!
+	GEXULTVER,	GNEWGAMEVER,
 	NPC_DAT,	MONSNPCS,
 	IDENTITY,	USEDAT,
 	FLAGINIT,	GWINDAT,
@@ -386,7 +391,6 @@ void Game_window::write_saveinfo()
 		ifstream in;
 		U7open(in, GSAVEINFO);		// Open file; throws an exception 
 
-		// The Game Time that the save was done at
 		in.seekg(10, ios::cur);	// Skip 10 bytes.
 		save_count += Read2(in);
 
@@ -472,7 +476,22 @@ void Game_window::write_saveinfo()
 	map->save(&ds);
 	out.close();
 	delete map;
+
+	// Current Exult version
+
+	U7open(out, GEXULTVER);
+	getVersionInfo(out);
+	out.close();
+
+	// Exult version that started this game
+	if (!U7exists(GNEWGAMEVER)) {
+		U7open(out, GNEWGAMEVER);
+		out << "Unknown" << endl;
+		out.close();
+	}
 }
+
+
 void Game_window::read_saveinfo(DataSource *in,
 		SaveGame_Details *&details,
 		SaveGame_Party *& party)

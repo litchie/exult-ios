@@ -76,6 +76,7 @@
 #include "utils.h"
 #include "virstone.h"
 #include "mappatch.h"
+#include "version.h"
 
 using std::cerr;
 using std::cout;
@@ -1648,6 +1649,11 @@ bool Game_window::init_gamedat(bool create)
 			restore_gamedat(PATCH_INITGAME);
 		else
 			restore_gamedat(INITGAME);
+		
+		ofstream out;
+		U7open(out, GNEWGAMEVER);
+		getVersionInfo(out);
+		out.close();
 		}
 	else if (!U7exists(U7NBUF_DAT) && !U7exists(NPC_DAT))
 		{

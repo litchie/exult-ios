@@ -1,3 +1,11 @@
+2001-11-25  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* version.cc: reordered the output
+	* exult.cc: -v/--version outputs version info
+	* fnames.h, gamedat.cc, gamewin.cc: add exult.ver and newgame.ver
+	to savegames, containing the version of exult that saved the game
+	and started the game, respectively.
+	* Makefile.*: added version.*
+
 2001-11-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Newfile_gump.cc: reset 'filename' in FreeSaveGameDetails
 	* version.*: more namespaces, expanded linux version a bit

@@ -66,6 +66,7 @@
 #include "mouse.h"
 #include "ucmachine.h"
 #include "utils.h"
+#include "version.h"
 
 using std::atof;
 using std::cerr;
@@ -189,6 +190,7 @@ int main
 
 
 	bool	needhelp=false;
+	bool	showversion=false;
 	int		result;
 	Args    parameters;
 
@@ -197,6 +199,8 @@ int main
 	parameters.declare("--help",&needhelp,true);
 	parameters.declare("/?",&needhelp,true);
 	parameters.declare("/h",&needhelp,true);
+	parameters.declare("-v",&showversion,true);
+	parameters.declare("--version",&showversion,true);
 	parameters.declare("-game",&arg_gamename,"default");
 	parameters.declare("-buildmap",&arg_buildmap,-1);
 
@@ -205,8 +209,9 @@ int main
 
 	if(needhelp)
 	{
-		cerr << "Usage: exult [--help|-h|/?|/h] [-game GAMENAME] [-buildmap 0|1|2]" << endl <<
+		cerr << "Usage: exult [--help|-h|/?|/h] [-v|--version] [-game GAMENAME] [-buildmap 0|1|2]" << endl <<
 			"--help\t\tShow this information" << endl <<
+			"--version\t\tShow version info" << endl <<
 			"-game GAMENAME\tSet the game data name to play" << endl <<
 			"\t(refer to the documentation)" << endl <<
 			"-buildmap\tCreate a fullsize map of the game world in u7map??.pcx" << endl <<
@@ -214,6 +219,11 @@ int main
 			"\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl;
 			
 		exit(1);
+	}
+
+	if(showversion) {
+		getVersionInfo(cerr);
+		return 0;
 	}
 	
 	try
