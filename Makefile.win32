@@ -4,7 +4,7 @@
 # Where is Ultima 7 installed
 U7PATH=C:\\UC\\Ultima7
 
-# Base of the exult source (I'm building in a subdir called 'debug')
+# Base of the exult source
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs
 
@@ -63,7 +63,6 @@ SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o
 
 OBJS_OBJS=animate.o barge.o chunks.o contain.o egg.o iregobjs.o objs.o \
 	spellbook.o virstone.o
-# unused: test.o
 
 USECODE_OBJS=ucmachine.o ucsched.o intrinsics.o useval.o conversation.o
 
@@ -110,11 +109,11 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/bgfiredoom.shp \
 	data/bg/flx.in
 
-$(EXEC) : $(OBJS) data/exult.flx
+$(EXEC) : $(OBJS) data/exult.flx data/exult_bg.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
 tools/expack.exe : tools/expack.o $(FILE_OBJS) 
-	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) $(LIBS) -mconsole
+	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) -mconsole
 
 data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
 	tools/expack.exe -i data/flx.in
@@ -125,24 +124,64 @@ data/exult_bg.flx: tools/expack.exe $(EXULT_BG_FLX_OBJECTS)
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres win32/exultico.rc exultico.o
 
-tools/wud.exe : tools/wud.o tools/uctools.h usecode/bgintrinsics.h usecode/siintrinsics.h 
-	$(CXX) $(LFLAGS) -o tools/wud.exe tools/wud.o -mconsole
+tools/mklink.exe : tools/mklink.o
+	$(CXX) $(LFLAGS) -o tools/mklink.exe tools/mklink.o -mconsole
+
+tools/rip.exe : tools/rip.o
+	$(CXX) $(LFLAGS) -o tools/rip.exe tools/rip.o -mconsole
 
 tools/ucdump.exe : tools/ucdump.o
 	$(CXX) $(LFLAGS) -o tools/ucdump.exe tools/ucdump.o -mconsole
 
+tools/wud.exe : tools/wud.o tools/uctools.h usecode/bgintrinsics.h usecode/siintrinsics.h 
+	$(CXX) $(LFLAGS) -o tools/wud.exe tools/wud.o -mconsole
+
+tools/wuc.exe : tools/wuc.o
+	$(CXX) $(LFLAGS) -o tools/wuc.exe tools/wuc.o -mconsole
+
 clean:
 	del $(OBJS)
 	del tools\expack.exe
+	del tools\expack.o
 	del $(EXEC)
-	del data\exult.flx
+	del data\exult.flx 
+	del data\exult_bg.flx
 
 install: $(EXEC)
-	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
+	strip $(EXEC) -o $(U7PATH)/$(EXEC)
 	if not exist $(U7PATH)\data md  $(U7PATH)\data
 	copy data\exult.flx  $(U7PATH)\data
 	copy data\exult_bg.flx $(U7PATH)\data
 	copy data\midisfx.flx  $(U7PATH)\data
+
+tools:  tools/expack.exe tools/wuc.exe tools/wud.exe tools/ucdump.exe tools/mklink.exe tools/rip.exe
+
+toolsclean:
+	del tools\wuc.o 
+	del tools\wuc.exe 
+	del tools\wud.o 
+	del tools\wud.exe 
+	del tools\ucdump.o 
+	del tools\ucdump.exe 
+	del tools\mklink.o 
+	del tools\mklink.exe 
+	del tools\rip.o 
+	del tools\rip.exe
+
+toolsinstall: tools
+	if not exist $(U7PATH)\tools md $(U7PATH)\tools
+	strip tools/expack.exe -o $(U7PATH)/tools/expack.exe
+	strip tools/mklink.exe -o $(U7PATH)/tools/mklink.exe
+	strip tools/rip.exe -o $(U7PATH)/tools/rip.exe
+	strip tools/ucdump.exe -o $(U7PATH)/tools/ucdump.exe
+	strip tools/wuc.exe -o $(U7PATH)/tools/wuc.exe
+	strip tools/wud.exe -o $(U7PATH)/tools/wud.exe
+
+all: $(EXEC) tools
+
+allclean: clean toolsclean
+
+allinstall: install toolsinstall
 
 run:
 	start $(EXEC)
