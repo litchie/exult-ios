@@ -25,6 +25,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMLEntity.h"
 #include <iostream>
 
+static	void	trim(string &s)
+{
+	// Clean off leading whitespace
+	while(s.length()&&s[0]<=32)
+		{
+		s=s.substr(1);
+		}
+	// Clean off trailing whitespace
+	while(s.length()&&s[s.length()-1]<=32)
+		{
+		s.erase(s.length()-1);
+		}
+}
+
 void	xmlparse(string &s,size_t &pos,XMLnode *x)
 {
 	bool	intag=true;
@@ -32,12 +46,6 @@ void	xmlparse(string &s,size_t &pos,XMLnode *x)
 		{
 		switch(s[pos])
 			{
-			case ' ':
-			case '\t':
-			case '\n':
-			case '\r':
-				++pos;
-				break;
 			case '<':
 				{
 				// New tag?
@@ -47,7 +55,8 @@ void	xmlparse(string &s,size_t &pos,XMLnode *x)
 					while(s[pos]!='>')
 						pos++;
 					pos++;
-//					cout << "End of entity '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
+					trim(x->entity.content);
+//					cout << "End of entity(1) '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
 					return;
 					}
 				XMLnode t;
@@ -65,17 +74,11 @@ void	xmlparse(string &s,size_t &pos,XMLnode *x)
 					x->entity.id+=s[pos++];
 				else
 					{
-					if((s[pos]==' '||s[pos]=='\t'||s[pos]==0x0d||s[pos]==0x0a))
-	++pos;
-					else
 					x->entity.content+=s[pos++];
 					}
 			}
 		}
-	while(x->entity.content.length()>0&&x->entity.content[x->entity.content.length()-1]<32)
-		{
-		x->entity.content.erase(x->entity.content.length()-1);
-		}
-//					cout << "End of entity '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
+	trim(x->entity.content);
+//	cout << "End of entity(2) '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
 }
 
