@@ -1,3 +1,9 @@
+2001-11-25 Ryan Nunn <triforce@merlin.net.au>
+	 * version.cc : Will this ever end... Windows and MSC stuff
+	 * msvcstuff/Exult.dsp : Add in the version files to the project 
+	 * msvcstuff/msvc_kludges.h : Finally updated version to 0.95cvs 
+	 * audio/Audio.cc : Also search for SFX flexes in the <DATA> directory.
+
 2001-11-25  Max Horn  <max@quendi.de>
 
 	* version.cc: added MacOS support; added Metrowerks Codewarrior to the compiler list
