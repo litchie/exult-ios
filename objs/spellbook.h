@@ -52,10 +52,14 @@ public:
 	bool can_do_spell(Actor *act)	// Can we do bookmarked spell?
 		{ return bookmark >= 0 ? can_do_spell(act, bookmark) : false; }
 					// Do the spell.
-	bool do_spell(Actor *act, int spell, bool can_do = false);
-	bool do_spell(Actor *act)	// Do bookmarked spell.
-		{ return bookmark >= 0 ? do_spell(act, bookmark) : false; }
-	static void execute_spell(Actor *act, int spell);
+	bool do_spell(Actor *act, int spell, bool can_do = false,
+						bool in_combat = false);
+					// Do bookmarked spell.
+	bool do_spell(Actor *act, bool in_combat = false)
+		{ return bookmark >= 0 ?
+		 	do_spell(act, bookmark, false, in_combat) : false; }
+	static void execute_spell(Actor *act, int spell, 
+						bool in_combat = false);
 					// Run usecode function.
 	virtual void activate(int event = 1);
 					// Write out to IREG file.

@@ -223,7 +223,8 @@ bool Spellbook_object::do_spell
 	(
 	Actor *act,
 	int spell,
-	bool can_do			// Already checked.
+	bool can_do,			// Already checked.
+	bool in_combat			// Being used in combat.
 	)
 	{
 	if (can_do || can_do_spell(act, spell))
@@ -245,7 +246,7 @@ bool Spellbook_object::do_spell
 					act->remove_quantity(1, 
 						REAGENTS, c_any_qual, r);
 			}
-		execute_spell(act, spell);
+		execute_spell(act, spell, in_combat);
 		return true;
 		}
 	return false;
@@ -258,11 +259,13 @@ bool Spellbook_object::do_spell
 void Spellbook_object::execute_spell
 	(
 	Actor *act,
-	int spell
+	int spell,
+	bool in_combat			// Being used in combat.
 	)
 	{
-	ucmachine->call_usecode(Get_usecode(spell),
-					act, Usecode_machine::double_click);
+	ucmachine->call_usecode(Get_usecode(spell), act, 
+		in_combat ? Usecode_machine::weapon :
+			    Usecode_machine::double_click);
 	}
 
 /*
