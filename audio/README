@@ -34,6 +34,9 @@ Sound Effects
 Sound effects were originally played through MIDI but now that the SFX
 digital sound packs (jmsfx & sqsfx) are available this has been disabled 
 and will not be developed in future. MIDI now only plays the music.
+Sound effects are loaded when required from the flx files, each time they
+are played, but the last 6, or so, played are cached in memory to save disk
+I/O and conversion processing.
 
 
 MIDI Music
@@ -59,9 +62,15 @@ Exult sourceforge site. This should work on any platform that supports
 SDL_mixer and will give the closest musical experience to the original
 Ultima VII games.
 
-Additionally a number of SFX "music" tracks are used by the Digital Music
-support. These play bird, wind etc background sound effects when no music 
-is playing.  Also when in the dungeon a track plays atmospheric SFX and music. 
+Additionally, with the Digital Music support, a number of atmospheric 
+SFX tracks are played when no music is playing. The tracks played are 
+as follows:
+* Day time outside: wind, bird and frog track
+* Night time: wind track with randomly generated digital sfx crickets
+* Dungeon: dungeon music track (atmospheric SFX and music)
+Music tracks always take priority over these SFX tracks and being "music"
+tracks they will not play if the music has been switched off.
+
 These SFX "music" tracks are not available with the MIDI support as they 
 play Roland MT-32 specific voices that cannot be mapped to GM.
 
@@ -71,9 +80,13 @@ has OGG supported compiled into the drivers by default, from v1.2.4.
 
 Voice/VOC support
 -----------------
-The VOC decoding is partially customised to Exult, and
-the U7 data files. Samples are converted to 22Khz and expanded to two channels,
-and some bytes are cut off each end to eliminate harsh clicking
+The VOC decoding is partially customised to Exult and the U7 data files. 
+Samples are converted to 22Khz (or to match the audio output sample rate)
+and expanded to two channels, and some bytes are cut off each end to 
+eliminate harsh clicking.
 
 Sample rate conversion has been left in the VOC decoder as currently,
-v.1.2.4 of SDL, does not have good enough sample rate conversion.
+v1.2.4 of SDL, does not have good sample rate conversion.
+
+The code currently uses a lot of memory as the whole VOC to be played is
+loaded and converted in RAM, potentially using many megabytes of memory.
