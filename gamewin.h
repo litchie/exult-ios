@@ -265,9 +265,11 @@ public:
 #endif
 			return Rectangle(0,0,0,0);
 			}
+#if 0	/* ++++Old way */
 		int cx = obj->get_cx(), cy = obj->get_cy();
 		int lft = 4*obj->get_lift();
-		return Rectangle(
+//		return Rectangle(
+		Rectangle rect(
 			(cx - chunkx)*chunksize +
 				obj->get_tx()*tilesize + 
 						tilesize - 1 - s->xleft - lft,
@@ -277,6 +279,19 @@ public:
 			s->get_width(),
 			s->get_height()
 			);
+#endif
+		int tx, ty, tz;		// Get tile coords.
+		obj->get_abs_tile(tx, ty, tz);
+		int lftpix = 4*tz;
+		return Rectangle(
+			(tx + 1 - get_scrolltx())*tilesize - 1 -
+							s->xleft - lftpix,
+			(ty + 1 - get_scrollty())*tilesize - 1 - 
+							s->yabove - lftpix,
+			s->get_width(),
+			s->get_height()
+			);
+
 		}
 	Shape_frame *get_gump_shape(int shapenum, int framenum)
 		{ return gumps.get_shape(shapenum, framenum); }
@@ -289,12 +304,19 @@ public:
 					// Get screen loc. of object.
 	void get_shape_location(Game_object *obj, int& x, int& y)
 		{
+		int tx, ty, tz;		// Get tile coords.
+		obj->get_abs_tile(tx, ty, tz);
+		int lft = 4*tz;
+		x = (tx + 1 - get_scrolltx())*tilesize - 1 - lft;
+		y = (ty + 1 - get_scrollty())*tilesize - 1 - lft;
+#if 0	/* +++++Old way */
 		x = (obj->get_cx() - chunkx)*chunksize +
 				(1 + obj->get_tx())*tilesize - 1
 						- 4*obj->get_lift();
 		y = (obj->get_cy() - chunky)*chunksize +
 				(1 + obj->get_ty())*tilesize - 1
 						- 4*obj->get_lift();
+#endif
 		}
 					// Paint shape in window.
 	void paint_shape(int xoff, int yoff, Shape_frame *shape,
@@ -427,8 +449,8 @@ public:
 					// Start moving actor.
 	void start_actor(int winx, int winy, int speed = 125)
 		{
-		main_actor->walk_to_point(chunkx*chunksize + winx, 
-				chunky*chunksize + winy, speed);
+		main_actor->walk_to_point(get_scrolltx()*tilesize + winx, 
+				get_scrollty()*tilesize + winy, speed);
 		}
 	void stop_actor();		// Stop main actor.
 					// Find gump (x, y) is in.
