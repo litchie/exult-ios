@@ -258,8 +258,9 @@ public:
 	Usecode_value	UI_pop_answers(int event,int intrinsic,Usecode_value parms[12]);
 	Usecode_value	UI_select_from_menu(int event,int intrinsic,Usecode_value parms[12]);
 	Usecode_value	UI_select_from_menu2(int event,int intrinsic,Usecode_value parms[12]);
-
-
+	Usecode_value	UI_input_numeric_value(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_set_item_shape(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_die_roll(int event,int intrinsic,Usecode_value parms[12]);
 
 
 
