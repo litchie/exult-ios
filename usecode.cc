@@ -668,6 +668,9 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value(obj ? obj->get_quality() : 0);
 		break;
 		}
+	case 0x15:			// Guessing it's set_quality(item, value).
+		//+++++++++++++++++
+		break;
 	case 0x16:			// Get # of items in NPC??????
 					//   Count(item, -npc).
 		//+++++++++++++
