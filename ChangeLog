@@ -1,3 +1,11 @@
+2003-11-29    <jeff@mini.nerble.net>
+
+	* usecode/ucinternal.h,intrinsics.cc:  Only force barge to do a
+	'gather' when we've actually add/deleted/moved an object.
+
+	* objs/egg.cc (Egg_object): Teleport eggs should not automatically
+	reset (unless they have the auto_reset flag).
+
 2003-11-28    <jeff@mini.nerble.net>
 
 	* mapedit/npcedit.cc: Each schedule line now has a "Game" entry
