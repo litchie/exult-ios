@@ -20,10 +20,15 @@ LIBGLADE_INCLUDES = `pkg-config --cflags libglade-0.17`
 # If this doesn't work, insert output of 'pkg-config --libs libglade-0.17' manually
 LIBGLADE_LIBS = `pkg-config --libs libglade-0.17`
 
-INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
-	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/server -I$(SRC)/objs -I$(SRC)/conf $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
+# If this doesn't work, insert output of 'pkg-config --cflags freetype2' manually
+FREETYPE2_INCLUDES = `pkg-config --cflags freetype2`
+# If this doesn't work, insert output of 'pkg-config --libs freetype2' manually
+FREETYPE2_LIBS = `pkg-config --libs freetype2`
 
-CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_SNPRINTF -DHAVE_PNG_H $(INCLUDES)
+INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
+	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/server -I$(SRC)/objs -I$(SRC)/conf $(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES)
+
+CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_SNPRINTF -DHAVE_PNG_H -DHAVE_FREETYPE2 $(INCLUDES)
 
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
 CXXFLAGS= -O2 -fnative-struct -fvtable-thunks -include mingw_kludges.h
@@ -32,7 +37,7 @@ CXX=g++
 CFLAGS=-fnative-struct -fvtable-thunks
 CC=gcc
 
-LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) -liberty -lole32 -lpng -luuid -lz -mwindows
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -liberty -lole32 -lpng -luuid -lz -mwindows
 EXEC=exult_studio.exe
 EXP_FILE=exult_studio.exp
 
@@ -46,7 +51,7 @@ FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o Table.o U7file.o utils.o
 
 IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 
-SHAPES_OBJS=font.o fontvga.o items.o pngio.o monstinf.o shapeinf.o shapevga.o shapewrite.o u7drag.o vgafile.o
+SHAPES_OBJS=font.o fontgen.o fontvga.o items.o pngio.o monstinf.o shapeinf.o shapevga.o shapewrite.o u7drag.o vgafile.o
 
 CONF_OBJS=Configuration.o XMLEntity.o
 
