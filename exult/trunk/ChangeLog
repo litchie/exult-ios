@@ -1,3 +1,6 @@
+2001-11-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* gamewin.cc, cheat_screen.cc: implemented NPC-browser's 'teleport' key
+
 2001-10-31  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* actions.cc, actors.cc, cheat.cc, combat.cc, monsters.cc, npctime.cc: Improved casts. This'd be a whole lot easier if you folks remembered to use them, you know :)

@@ -1193,8 +1193,9 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		break;
 
 		case '\'':	// Teleport
-		mode = CP_NotAvail;
+		Game_window::get_game_window()->teleport_party(actor->get_abs_tile_coord());
 		break;
+
 
 		case 'e':	// Experience
 		if (i < 0) mode = CP_InvalidNPC;
