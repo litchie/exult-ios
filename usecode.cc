@@ -592,8 +592,14 @@ Usecode_value Usecode_machine::call_intrinsic
 		int low = parms[0].get_int_value();
 		int high = parms[1].get_int_value();
 		if (low > high)
+			{
+			int tmp = low;
 			low = high;
-		return (Usecode_value((rand() % (high - low + 1)) + low));
+			high = tmp;
+			}
+		int val = (rand() % (high - low + 1)) + low;
+cout << "Rand. value = " << val << '\n';
+		return (Usecode_value(val));
 		}
 	case 0x11:			// Get item shape.
 		return (Usecode_value(get_item_shape(parms[0])));
@@ -625,8 +631,10 @@ Usecode_value Usecode_machine::call_intrinsic
 					// Just return -npc for now.++++++
 		return Usecode_value(-parms[0].get_int_value());
 	case 0x1c:			// GetSchedule(npc).  Rets. schedtype.
-		//++++++++++++++++++++
-		break;
+		{
+		Game_object *obj = get_item(parms[0].get_int_value());
+		return Usecode_value(obj ? obj->get_schedule() : 0);
+		}
 	case 0x1d:			// SetSchedule?(npc, schedtype).
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
@@ -700,9 +708,15 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value(gwin->get_minute());
 		break;
 	case 0x40:			// Show str. near item (item, str).
+		{
 		//+++++++++
-cout << "Say '" << parms[1].get_str_value() << "' near an item.\n";
+		Game_object *obj = get_item(parms[0].get_int_value());
+		char *str = parms[1].get_str_value();
+		if (obj)
+			cout << "Say '" << str << "' near '" << 
+				obj->get_name() << "'\n";
 		break;
+		}
 	case 0x48:			// Display map.
 		//++++++++++++
 		break;

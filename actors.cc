@@ -211,7 +211,8 @@ Npc_actor::Npc_actor
 	int shapenum, 
 	int fshape, 
 	int uc
-	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0)
+	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
+		schedule((int) Schedule::loiter)
 	{
 	}
 

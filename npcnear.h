@@ -24,7 +24,8 @@ public:
 	Npc_proximity_handler(Game_window *gw) : gwin(gw)
 		{  }
 					// Add npc to queue.
-	void add(timeval curtime, Npc_actor *npc);
+	void add(timeval curtime, Npc_actor *npc,
+					int additional_secs = 0);
 					// Run usecode function.
 	void handle_event(timeval curtime, long udata);
 	};

@@ -244,6 +244,7 @@ public:
 	enum Usecode_events {
 		npc_proximity = 0,
 		double_click = 1,
+		game_start = 2,		// Definitely guessing.
 		egg_proximity = 3
 		};
 					// Call desired function.

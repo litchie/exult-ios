@@ -175,10 +175,10 @@ void Handle_events
 			Handle_event(display);
 					// Get current time.
 		gettimeofday(&timer, 0);
-		gwin->get_tqueue()->activate(timer);
-#if 0 /*+++++Old way. */
-		gwin->animate(timer);
-#endif
+					// Animate unless modal or dormant.
+		if (gwin->have_focus() && gwin->get_mode() == 
+							Game_window::normal)
+			gwin->get_tqueue()->activate(timer);
 		gwin->show();		// Blit to screen if necessary.
 		}
 	}
