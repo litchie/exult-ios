@@ -645,7 +645,10 @@ void Actor::set_schedule_type
 		default:
 			break;
 			}
-	if (schedule)			// Try to start it.
+	Game_window *gwin = Game_window::get_game_window();
+	if (!gwin->is_chunk_read(get_cx(), get_cy()))
+		dormant = 1;		// Chunk hasn't been read in yet.
+	else if (schedule)		// Try to start it.
 		{
 		dormant = 0;
 		schedule->now_what();
@@ -1739,11 +1742,19 @@ void Npc_actor::update_schedule
 			stop();		// Stop moving.
 			if (schedule)	// End prev.
 				schedule->ending(schedules[i].get_type());
+			Tile_coord dest = schedules[i].get_pos();
+			if (!gwin->is_chunk_read(get_cx(), get_cy()) &&
+			    !gwin->is_chunk_read(dest.tx/tiles_per_chunk,
+						dest.ty/tiles_per_chunk))
+				{	// Src, dest. are off the screen.
+				move(dest.tx, dest.ty, dest.tz);
+				set_schedule_type(schedules[i].get_type());
+				return;
+				}
 					// Going to walk there.
 			schedule_type = Schedule::walk_to_schedule;
 			delete schedule;
-			schedule = new Walk_to_schedule(this, 
-						schedules[i].get_pos(),
+			schedule = new Walk_to_schedule(this, dest,
 						schedules[i].get_type());
 			dormant = 0;
 			schedule->now_what();
