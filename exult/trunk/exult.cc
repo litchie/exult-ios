@@ -821,6 +821,8 @@ static void Handle_events
 				if (SDL_BUTTON(3) & ms)
 					gwin->start_actor(x/scale, y/scale, 
 						Mouse::mouse->avatar_speed);
+				else 
+					gwin->get_main_actor()->resting(50);
 				}
 			}
 

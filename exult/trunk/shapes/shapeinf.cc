@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "monstinf.h"
 
 #include "utils.h"
+#include <iomanip>	/* Debugging */
 
 /*
  *	Read in a weapon-info entry from 'weapons.dat'.
@@ -54,11 +55,8 @@ int Weapon_info::read
 	projectile = Read2(ptr);
 #if 0
 		extern char **item_names;
-		cout << dec << "Weapon " << item_names[shapenum]
+		cout << dec << "Weapon " //  << item_names[shapenum]
 			<< '(' << shapenum << ')' << endl;
-		cout << "ammoshape = " << ammoshape << ", projectile = " 
-				<< projectile
-				<< endl;
 #endif
 					// +++++Wonder what strike < 0 means.
 	if (projectile == shapenum || projectile < 0)
@@ -73,6 +71,10 @@ int Weapon_info::read
 	unsigned char flags1 = *ptr++;
 	m_returns = (flags1&1);
 	unsigned char unk1 = *ptr++;
+#if 0
+	cout << "Unk1 = " << hex << "0x" << setfill('0') << setw(2) <<(int)unk1
+							<< endl;
+#endif
 	powers = *ptr++;
 	*ptr++;				// Skip (0).
 	usecode = Read2(ptr);
