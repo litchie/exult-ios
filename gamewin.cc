@@ -618,6 +618,7 @@ void Game_window::get_ifix_chunk_objects
 		olist->add(obj);
 		}
 	delete[] entries;		// Done with buffer.
+	olist->setup_dungeon_bits();	// Should have all dungeon pieces now.
 	}
 
 /*

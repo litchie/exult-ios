@@ -2209,7 +2209,7 @@ void Chunk_cache::activate_eggs
 Chunk_object_list::Chunk_object_list
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
-	) : objects(0), first_nonflat(0), 
+	) : objects(0), first_nonflat(0), dungeon_bits(0),
 	    npcs(0), cache(0), roof(0), light_sources(0),
 	    cx(chunkx), cy(chunky)
 	{
@@ -2226,6 +2226,7 @@ Chunk_object_list::~Chunk_object_list
 	if (objects)
 		objects->delete_chain();
 	delete cache;
+	delete dungeon_bits;
 	}
 
 /*
@@ -2591,6 +2592,37 @@ void Chunk_object_list::try_all_eggs
 				}
 		}
 	norecurse--;
+	}
+
+/*
+ *	Set up the dungeon flags (after IFIX objects read).
+ */
+
+void Chunk_object_list::setup_dungeon_bits
+	(
+	)
+	{
+	delete dungeon_bits;
+	dungeon_bits = 0;
+	Object_iterator next(this);
+	Game_object *each;
+	while ((each = next.get_next()) != 0)
+		{
+		int shnum = each->get_shapenum();
+					// Test for mountain-tops.
+		if (shnum == 983 || shnum == 969 || shnum == 183 ||
+		    shnum == 182 || shnum == 180 || shnum == 324)
+			{
+			if (!dungeon_bits)
+				{	// First one found.
+				dungeon_bits = new unsigned char[256/8];
+				memset(dungeon_bits, 0, 256/8);
+				}
+			int tnum = each->get_ty()*tiles_per_chunk + 
+							each->get_tx();
+			dungeon_bits[tnum/8] |= (1 << (tnum%8));
+			}
+		}
 	}
 
 /*
