@@ -199,14 +199,14 @@ void U7open
 	bool is_text				// Should the file be opened in text mode
 	)
 {
-#ifdef MACOS
+#if defined(MACOS) || (__GNUG__ > 2)
 	std::ios_base::openmode mode = std::ios::in;
 	if (!is_text) mode |= std::ios::binary;
 #elif defined(XWIN)
-	int mode = ios::in;
+	int mode = std::ios::in;
 #else
-	int mode = ios::in;
-	if (!is_text) mode |= ios::binary;
+	int mode = std::ios::in;
+	if (!is_text) mode |= std::ios::binary;
 #endif
 	string name = get_system_path(fname);
 	
@@ -255,14 +255,14 @@ void U7open
 	bool is_text				// Should the file be opened in text mode
 	)
 {
-#ifdef MACOS
+#if defined(MACOS) || (__GNUG__ > 2)
 	std::ios_base::openmode mode = std::ios::out | std::ios::trunc;
 	if (!is_text) mode |= std::ios::binary;
 #elif defined(XWIN)
-	int mode = ios::out | ios::trunc;
+	int mode = std::ios::out | std::ios::trunc;
 #else
-	int mode = ios::out | ios::trunc;
-	if (!is_text) mode |= ios::binary;
+	int mode = std::ios::out | std::ios::trunc;
+	if (!is_text) mode |= std::ios::binary;
 #endif
 	string name = get_system_path(fname);
 	

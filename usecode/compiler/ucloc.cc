@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 #include "ucloc.h"
 
-vector<char *> Uc_location::source_names;
+std::vector<char *> Uc_location::source_names;
 char *Uc_location::cur_source = 0;
 int Uc_location::cur_line = 0;
 int Uc_location::num_errors = 0;
@@ -46,7 +46,7 @@ void Uc_location::set_cur
 	{
 	cur_line = l;
 	cur_source = 0;			// See if already here.
-	for (vector<char *>::const_iterator it = source_names.begin();
+	for (std::vector<char *>::const_iterator it = source_names.begin();
 			it != source_names.end(); it++)
 		if (strcmp(s, *it) == 0)
 			{

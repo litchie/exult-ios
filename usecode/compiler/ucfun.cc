@@ -57,8 +57,8 @@ Uc_function::Uc_function
 		Uc_location::yyerror(buf);
 		}
 #endif
-	const vector<char *>& parms = proto->get_parms();
-	for (vector<char *>::const_iterator it = parms.begin();
+	const std::vector<char *>& parms = proto->get_parms();
+	for (std::vector<char *>::const_iterator it = parms.begin();
 				it != parms.end(); it++)
 		add_symbol(*it);
 	num_parms = num_locals;		// Set counts.
@@ -163,7 +163,7 @@ int Uc_function::link
 	Uc_function_symbol *fun
 	)
 	{
-	for (vector<Uc_function_symbol *>::const_iterator it = links.begin();
+	for (std::vector<Uc_function_symbol *>::const_iterator it = links.begin();
 						it != links.end(); it++)
 		if (*it == fun)		// Found it?  Return offset.
 			return (it - links.begin());
@@ -178,7 +178,7 @@ int Uc_function::link
 
 void Uc_function::gen
 	(
-	ostream& out
+	std::ostream& out
 	)
 	{
 					// Start with function #.
@@ -199,7 +199,7 @@ void Uc_function::gen
 	Write2(out, num_locals);
 	Write2(out, num_links);
 					// Write external links.
-	for (vector<Uc_function_symbol *>::const_iterator it = links.begin();
+	for (std::vector<Uc_function_symbol *>::const_iterator it = links.begin();
 						it != links.end(); it++)
 		Write2(out, (*it)->get_usecode_num());
 	char *ucstr = code.str();	// Finally, the code itself.

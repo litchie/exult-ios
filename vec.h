@@ -40,7 +40,7 @@ public:
 		{
 			if (i >= size())
 				{
-				T *iter = begin() + size();
+				T *iter = &*begin() + size();
 				insert(begin() + size(), i - size(), 0);
 				push_back(v);
 				}
@@ -58,7 +58,7 @@ public:
 	size_type	find( const T& obj ) const
 		{
 			size_type pos = 0;
-			for (const T *X = begin(); X != end(); ++X, ++pos)
+			for (const T *X = &*begin(); X != &*end(); ++X, ++pos)
 				{
 				if( *X == obj )
 					return pos;
@@ -74,7 +74,11 @@ public:
 
 	void		remove( const T& obj )
 		{
+#if __GNUG__ > 2
+			for(std::vector<T>::iterator X = begin(); X != end(); ++X)
+#else
 			for(T *X = begin(); X != end(); ++X)
+#endif
 				if( *X == obj )
 				{
 					erase(X);

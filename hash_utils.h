@@ -24,7 +24,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef DONT_HAVE_HASH_MAP
 #  include <map>
 #else
+#if __GNUC__ > 2
+#  include <ext/hash_map>
+using std::hash_map;
+#else
 #  include <hash_map>
+#endif
 #  ifdef MACOS
 	using Metrowerks::hash_map;
 #  endif
@@ -33,7 +38,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef DONT_HAVE_HASH_SET
 #  include <set>
 #else
+#if __GNUG__ > 2
+#  include <ext/hash_set>
+using std::hash_set;
+#else
 #  include <hash_set>
+#endif
 #  ifdef MACOS
 	using Metrowerks::hash_set;
 #  endif

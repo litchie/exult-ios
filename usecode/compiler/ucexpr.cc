@@ -286,7 +286,7 @@ Uc_array_expression::~Uc_array_expression
 	(
 	)
 	{
-	for (vector<Uc_expression *>::iterator it = exprs.begin(); 
+	for (std::vector<Uc_expression *>::iterator it = exprs.begin(); 
 						it != exprs.end(); it++)
 		delete (*it);
 	}
@@ -297,12 +297,12 @@ Uc_array_expression::~Uc_array_expression
 
 void Uc_array_expression::gen_value
 	(
-	ostream& out
+	std::ostream& out
 	)
 	{
 	int actual = 0;			// (Just to be safe.)
 					// Push backwards, so #0 pops first.
-	for (vector<Uc_expression *>::reverse_iterator it = exprs.rbegin();
+	for (std::vector<Uc_expression *>::reverse_iterator it = exprs.rbegin();
 						it != exprs.rend(); it++)
 		{
 		Uc_expression *expr = *it;
@@ -322,7 +322,7 @@ void Uc_array_expression::gen_value
 
 void Uc_call_expression::gen_value
 	(
-	ostream& out
+	std::ostream& out
 	)
 	{
 	if (!sym)

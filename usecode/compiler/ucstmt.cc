@@ -44,7 +44,7 @@ Uc_block_statement::~Uc_block_statement
 	)
 	{
 					// Delete all the statements.
-	for (vector<Uc_statement *>::const_iterator it = statements.begin();
+	for (std::vector<Uc_statement *>::const_iterator it = statements.begin();
 					it != statements.end(); it++)
 		delete (*it);
 	}
@@ -55,11 +55,11 @@ Uc_block_statement::~Uc_block_statement
 
 void Uc_block_statement::gen
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function *fun
 	)
 	{
-	for (vector<Uc_statement *>::const_iterator it = statements.begin();
+	for (std::vector<Uc_statement *>::const_iterator it = statements.begin();
 					it != statements.end(); it++)
 		{
 		Uc_statement *stmt = *it;
@@ -87,7 +87,7 @@ Uc_assignment_statement::~Uc_assignment_statement
 
 void Uc_assignment_statement::gen
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function * /* fun */
 	)
 	{
@@ -101,7 +101,7 @@ void Uc_assignment_statement::gen
 
 void Uc_if_statement::gen
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function *fun
 	)
 	{
@@ -167,7 +167,7 @@ Uc_while_statement::~Uc_while_statement
 
 void Uc_while_statement::gen
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function *fun
 	)
 	{
@@ -230,7 +230,7 @@ void Uc_arrayloop_statement::finish
 
 void Uc_arrayloop_statement::gen
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function *fun
 	)
 	{
@@ -244,7 +244,7 @@ void Uc_arrayloop_statement::gen
 	Write2(out, var->get_offset());	// Loop variable, than array.
 	Write2(out, array->get_offset());
 					// Still need to write offset to end.
-	int testlen = out.tellp() + 2 - top;
+	int testlen = (int)out.tellp() + 2 - top;
 	ostrstream stmt_code;
 	stmt->gen(stmt_code, fun);	// Generate statement's code.
 					// Back to top includes JMP at end.
@@ -276,7 +276,7 @@ Uc_return_statement::~Uc_return_statement
 
 void Uc_return_statement::gen
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function *fun
 	)
 	{
@@ -296,7 +296,7 @@ void Uc_return_statement::gen
 
 void Uc_say_statement::gen
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function * /* fun */
 	)
 	{
@@ -309,7 +309,7 @@ void Uc_say_statement::gen
 
 void Uc_message_statement::gen
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function *fun
 	)
 	{
@@ -362,7 +362,7 @@ Uc_call_statement::~Uc_call_statement
 
 void Uc_call_statement::gen
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function *fun
 	)
 	{

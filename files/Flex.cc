@@ -106,7 +106,7 @@ char *	Flex::retrieve(uint32 objnum, size_t &len)
 
 void Flex::write_header
 	(
-	ostream& out,			// File to write to.
+	std::ostream& out,			// File to write to.
 	const char *title,
 	int count			// # entries.
 	)

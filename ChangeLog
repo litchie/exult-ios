@@ -1,3 +1,24 @@
+2001-04-16  Dancer Vesperman <dancer@users.sourceforge.net>
+	* Upgrade for g++ 3.0
+		- Repair a throw specification in exceptions.h
+		- Missing std:: qualifier to ostream in files/Flex.h
+		- hash_utils.h: Fixed up inclusion for hash_map/hash_set
+		- autoarray.h: Fixed range_error exception definition
+		- gamewin.h: qualify ostream with std::
+		- pathfinder/path.cc: Fix up inclusion of hash_set
+		- vec.h: &*begin() instead of begin. Iterators aren't
+			necessarily pointers. vec.h makes lots of foolish
+			assumptions that a vector::iterator is typedef'ed
+			to a pointer, and that a pointer can be used in
+			their place. Not so.
+		- files/Flex.cc: std::ostream
+		- files/utils.cc: Max will be pleased. We now do things
+			the way his compiler does :)
+		- gumps/Paperdoll_gump.cc: std::cerr and std::endl
+		- conf/xmain.cc: What standard namespace? Fix.
+		- shapes/shapeinf.cc: Fix up inclusion of hash_map
+		- usecode/compiler/*: std namespace rides again...
+		- delobjs.c: std::set
 2001-04-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* mapedit/u7shp.c: corrected a palette entry
 	* data/*.shp, data/flx.in, Makefile.*: added lots of shapes for new game menu

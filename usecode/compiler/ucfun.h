@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucsym.h"
 
 class Uc_statement;
-class ostream;
+#include <iosfwd>
 
 /* 
  *	This represents a usecode function:
@@ -42,7 +42,7 @@ class Uc_function
 	int num_parms;			// # parameters.
 	int num_locals;			// Counts locals.
 					// Links to called functions:
-	vector<Uc_function_symbol *> links;
+	std::vector<Uc_function_symbol *> links;
 	char *text_data;		// All strings.
 	int text_data_size;
 	Uc_statement *statement;	// Statement(s) in function.
@@ -80,7 +80,7 @@ public:
 	int add_string(char *text);
 					// Link external function.
 	int link(Uc_function_symbol *fun);
-	void gen(ostream& out);		// Generate Usecode.
+	void gen(std::ostream& out);		// Generate Usecode.
 	};
 
 #endif

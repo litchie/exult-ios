@@ -42,7 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int Uc_symbol::gen_assign
 	(
-	ostream& out
+	std::ostream& out
 	)
 	{
 	return 0;
@@ -56,7 +56,7 @@ int Uc_symbol::gen_assign
 
 int Uc_symbol::gen_value
 	(
-	ostream& out
+	std::ostream& out
 	)
 	{
 	return 0;
@@ -70,7 +70,7 @@ int Uc_symbol::gen_value
 
 int Uc_symbol::gen_call
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function *fun,
 	Uc_array_expression *parms,	// Parameter list.
 	bool retvalue			// True if a function.
@@ -87,7 +87,7 @@ int Uc_symbol::gen_call
 
 int Uc_var_symbol::gen_assign
 	(
-	ostream& out
+	std::ostream& out
 	)
 	{
 	out.put((char) UC_POP);
@@ -103,7 +103,7 @@ int Uc_var_symbol::gen_assign
 
 int Uc_var_symbol::gen_value
 	(
-	ostream& out
+	std::ostream& out
 	)
 	{
 	out.put((char) UC_PUSH);
@@ -119,7 +119,7 @@ int Uc_var_symbol::gen_value
 
 int Uc_string_symbol::gen_value
 	(
-	ostream& out
+	std::ostream& out
 	)
 	{
 	out.put((char) UC_PUSHS);
@@ -135,7 +135,7 @@ int Uc_string_symbol::gen_value
 
 int Uc_intrinsic_symbol::gen_call
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function *fun,
 	Uc_array_expression *parms,	// Parameter list.
 	bool retvalue			// True if a function.
@@ -143,9 +143,9 @@ int Uc_intrinsic_symbol::gen_call
 	{
 	int parmcnt = 0;
 					// Want to push parm. values.
-	const vector<Uc_expression *>& exprs = parms->get_exprs();
+	const std::vector<Uc_expression *>& exprs = parms->get_exprs();
 					// Push backwards, so #0 pops first.
-	for (vector<Uc_expression *>::const_reverse_iterator it = 
+	for (std::vector<Uc_expression *>::const_reverse_iterator it = 
 			exprs.rbegin(); it != exprs.rend(); it++)
 		{
 		Uc_expression *expr = *it;
@@ -168,7 +168,7 @@ int Uc_intrinsic_symbol::gen_call
 
 int Uc_function_symbol::gen_call
 	(
-	ostream& out,
+	std::ostream& out,
 	Uc_function *fun,
 	Uc_array_expression *aparms,	// Actual parameter list.
 	bool /* retvalue */		// True if a function.
@@ -176,9 +176,9 @@ int Uc_function_symbol::gen_call
 	{
 	int parmcnt = 0;
 					// Want to push parm. values.
-	const vector<Uc_expression *>& exprs = aparms->get_exprs();
+	const std::vector<Uc_expression *>& exprs = aparms->get_exprs();
 					// Push forwards, so #0 pops last.
-	for (vector<Uc_expression *>::const_iterator it = exprs.begin(); 
+	for (std::vector<Uc_expression *>::const_iterator it = exprs.begin(); 
 						it != exprs.end(); it++)
 		{
 		Uc_expression *expr = *it;
@@ -210,10 +210,10 @@ Uc_scope::~Uc_scope
 	(
 	)
 	{
-	for (map<char *, Uc_symbol *, String_compare>::iterator it = symbols.begin();
+	for (std::map<char *, Uc_symbol *, String_compare>::iterator it = symbols.begin();
 				it != symbols.end(); it++)
 		delete (*it).second;
-	for (vector<Uc_scope *>::iterator it = scopes.begin();
+	for (std::vector<Uc_scope *>::iterator it = scopes.begin();
 				it != scopes.end(); it++)
 		delete *it;
 	}

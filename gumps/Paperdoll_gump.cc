@@ -582,7 +582,7 @@ void Paperdoll_gump::paint_object
 		gwin->paint_gump (box.x + sx, box.y + sy, item->shape, f, true);
 		break;
 	default:
-		cerr << "Paperdolling: wrong file specified!" << endl;
+		std::cerr << "Paperdolling: wrong file specified!" << std::endl;
 	}
 }
 
@@ -674,7 +674,7 @@ void Paperdoll_gump::paint_head
 		gwin->paint_gump (box.x + headx, box.y + heady, info->head_shape, f, true);
 		break;
 	default:
-		cerr << "Paperdolling: wrong shapefile specified!" << endl;
+		std::cerr << "Paperdolling: wrong shapefile specified!" << std::endl;
 	}
 }
 
@@ -1129,7 +1129,7 @@ bool Paperdoll_gump::check_shape
 		s = gwin->get_shape(shape, frame);
 		break;
 	default:
-		cerr << "Paperdolling: wrong shapefile specified!" << endl;
+		std::cerr << "Paperdolling: wrong shapefile specified!" << std::endl;
 	}
 
 	// If no shape, return
