@@ -81,7 +81,7 @@ public:
 	void show_exult_quotes();
 	void play_flic(const char *archive, int index);
 	void play_audio(const char *archive, int index);
-	void play_midi(int track);
+	void play_midi(int track, bool repeat = false);
 	bool wait_delay(int ms);
 	void add_shape(const char *name, int shapenum);
 	int get_shape(const char *name);

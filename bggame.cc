@@ -302,7 +302,7 @@ void BG_Game::play_intro()
 	
 void BG_Game::top_menu()
 {
-	play_midi(3);
+	play_midi(3, true);
 		
 	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	pal.load("static/intropal.dat",0);
@@ -822,6 +822,7 @@ void BG_Game::show_quotes()
 void BG_Game::show_credits()
 	{
 		
+		play_midi(3);
 		vector<char *> *text = load_text("static/mainshp.flx", 0x0E);
 		scroll_text(text);
 		destroy_text(text);

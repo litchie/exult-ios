@@ -67,54 +67,236 @@ SI_Game::SI_Game()
 		add_resource("palettes/12", "static/palettes.flx", 12);
 		add_resource("palettes/13", "static/mainshp.flx", 1);
 		add_resource("palettes/14", "static/mainshp.flx", 26);
+
+		if (!gwin->setup_siintro_fonts())
+			gwin->abort ("Unable to setup font from 'intro.dat' file.");
 	}
 
 SI_Game::~SI_Game()
 	{
 	}
 
+// Little weighted random function for lightning on the castle
+static int castle_frame = 0;
+
+static int get_frame (void)
+{
+	int num = rand();
+
+	for (int i = castle_frame; i > 2; i--)
+		num%=i+2;
+	
+	num %= 4;
+	num %= 3;
+
+	castle_frame+=2;
+	castle_frame %= 16;
+
+	return num;
+}
+
 void SI_Game::play_intro()
 	{
-		bool skip = false;
+		int	next = 0;
 		size_t	flisize;
 		char	*fli_b;
-
+		int	i,j;
+		
 		// Lord British presents...
 		//pal.load("static/lblogo.pal",0);
 		U7object lbflic("static/intro.dat", 0);
 		lbflic.retrieve(&fli_b, flisize);
 		playfli fli0(fli_b+8, flisize-8);
 		fli0.info();
-		fli0.play(win);
+
 		const char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
 				"Willem Jan Palenstijn, Tristan Tarrant,", 
 				"Max Horn, Luke Dunstan, Ryan Nunn",
 				"Driven by the Exult game engine V" VERSION };
-		for(int i=0; i<3; i++) {
+
+		for (j = 0; j < 20; j++)
+		{
+			next = fli0.play(win, 0, 0, next, j*5);
+			for(i=0; i<3; i++) {
+				gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
+			}
+			win->show();
+		}
+
+
+		next = fli0.play(win, 0, 0, next, 100);
+		for(i=0; i<3; i++) {
 			gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
 		}
-		skip = wait_delay(2000);
-		if(skip)
+		win->show();
+
+		for (i = 0; i < 300; i++)
+			if (wait_delay (10))
+			{
+				delete [] fli_b;
+				return;
+			}
+
+
+		for (j = 20; j; j--)
+		{
+			next = fli0.play(win, 0, 0, next, j*5);
+			for(i=0; i<3; i++) {
+				gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
+			}
+			win->show();
+		}
+
+
+		delete [] fli_b;
+
+
+		if (wait_delay (0))
+			return;
+		
+		// Castle Outside
+		// No sound... yet, can't decode it :(
+			
+		U7object flic("static/intro.dat", 1);
+		flic.retrieve(&fli_b, flisize);
+		playfli fli1(fli_b+8, flisize-8);
+		fli1.info();
+
+		fli1.play(win, 0, 1, 0, 0);
+
+		next = SDL_GetTicks();
+		int	prev = -1;
+		int 	num;
+		
+		for (j = 0; j < 20; j++)
+		{
+			num = get_frame();
+			if (prev != num)
+				for (i = 0; i < num+1; i++)
+					fli1.play(win, i, i, next);
+
+			prev = num;
+			next += 75;
+			win->show();
+			if (wait_delay (1))
+			{
+				delete [] fli_b;
+				return;
+			}
+
+		}
+
+		const char *lb_cas = "Lord British's Castle";
+		
+		for (j = 0; j < 50; j++)
+		{
+			num = get_frame();
+			if (prev != num)
+				for (i = 0; i < num+1; i++)
+					fli1.play(win, i, i, next);
+
+			gwin->paint_text(SIINTRO_FONT1, lb_cas, centerx-gwin->get_text_width(SIINTRO_FONT1, lb_cas)/2, centery+50);
+
+			prev = num;
+			next += 75;
+			win->show();
+			if (wait_delay (1))
+			{
+				delete [] fli_b;
+				return;
+			}
+
+		}
+
+		for (j = 0; j < 10; j++)
+		{
+			num = get_frame();
+			if (prev != num)
+				for (i = 0; i < num+1; i++)
+					fli1.play(win, i, i, next);
+
+			prev = num;
+			next += 75;
+			win->show();
+			if (wait_delay (1))
+			{
+				delete [] fli_b;
+				return;
+			}
+
+		}
+
+		const char *bg_fellow[] = { "Eighteen months after the destruction", 
+				"of the Black Gate and the", 
+				"dismantling of The Fellowship"};
+
+
+		for (j = 0; j < 75; j++)
+		{
+			num = get_frame();
+			if (prev != num)
+				for (i = 0; i < num+1; i++)
+					fli1.play(win, i, i, next);
+
+			for(i=0; i<3; i++) {
+				gwin->paint_text(SIINTRO_FONT1, bg_fellow[i], centerx-gwin->get_text_width(SIINTRO_FONT1, bg_fellow[i])/2, centery+50+15*i);
+			}
+
+			prev = num;
+			next += 75;
+			win->show();
+			if (wait_delay (1))
+			{
+				delete [] fli_b;
+				return;
+			}
+
+		}
+
+		for (j = 20; j; j--)
+		{
+			next = fli1.play(win, 0, 0, next, j*5);
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+
+		}
+		delete [] fli_b;
+
+		if (wait_delay (0))
 			return;
 
-		
 
-		// Flic 0: Lord British presents
-		// Flic 1: Castle with lightning
-		// Flic 2:
-		// Flic 3:
-		for(int i=1; i<9; i++) {
-			U7object flic("static/intro.dat", i);
-			flic.retrieve(&fli_b, flisize);
-			playfli fli1(fli_b+8, flisize-8);
-			fli1.info();
-			fli1.play(win);
-			delete [] fli_b;
+		// Start Music
+		audio->start_music ("static/r_sintro.xmi", 0, false);
+
+		U7object flic2("static/intro.dat", 2);
+		flic2.retrieve(&fli_b, flisize);
+		playfli fli2(fli_b+8, flisize-8);
+		fli2.info();
+
+		for (j = 0; j < 20; j++)
+		{
+			next = fli2.play(win, 0, 0, next, j*5);
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
 		}
+
+		fli2.play(win, 0, 55);
+		
+		delete [] fli_b;
 	}
 
 void SI_Game::top_menu()
 {
+	play_midi(28, true);
 	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	pal.load("static/mainshp.flx",26);
 	pal.fade_in(60);	
@@ -124,6 +306,8 @@ void SI_Game::end_game(bool success)
 	{
 		size_t	flisize;
 		char	*fli_b;
+
+		audio->start_music ("static/r_send.xmi", 0, false);
 		
 		for(int i=9; i<14; i++) {
 			U7object flic("static/intro.dat", i);
@@ -136,6 +320,7 @@ void SI_Game::end_game(bool success)
 
 void SI_Game::show_quotes()
 	{
+		play_midi(32);
 		vector<char *> *text = load_text("static/mainshp.flx", 0x10);
 		scroll_text(text);
 		destroy_text(text);
@@ -143,6 +328,7 @@ void SI_Game::show_quotes()
 
 void SI_Game::show_credits()
 	{
+		play_midi(30);
 		vector<char *> *text = load_text("static/mainshp.flx", 0x0E);
 		scroll_text(text);
 		destroy_text(text);

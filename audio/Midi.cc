@@ -212,6 +212,7 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 
 	add_midi_bank(MAINMUS);
 	add_midi_bank(INTROMUS);
+	add_midi_bank("static/mainshp.flx");
 
 	// instrument_patches=AccessTableFile(XMIDI_MT);
 	string	s;
