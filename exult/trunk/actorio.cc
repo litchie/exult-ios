@@ -37,10 +37,10 @@ Actor::Actor
 	int num,			// NPC #, or -1.
 	int has_usecode			// 1 if a 'type1' NPC.
 	) : Container_game_object(), npc_num(num), party_id(-1),
-	    two_handed(0),
+	    schedule(0), dormant(1), two_handed(0),
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
-	    light_sources(0), dormant(1),
-	    schedule(0), usecode_dir(0), flags(0), action(0), frame_time(0)
+	    light_sources(0),
+	    usecode_dir(0), flags(0), action(0), frame_time(0)
 	{
 	init();				// Clear rest of stuff.
 	unsigned locx = Read1(nfile);	// Get chunk/tile coords.
