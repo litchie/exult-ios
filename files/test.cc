@@ -8,16 +8,18 @@
 
 
 
-int	main(void)
+int	main(int argc, char **argv)
 {
-	chdir("/home/dancer2/projects/u7");
-	U7object	u("static/endgame.dat",8);
+	if(argc==3) {
+		U7object f(argv[1],atoi(argv[2]));
 
-	if(u.retrieve("/tmp/blah"))
-		cout << "Got object ok" << endl;
-	else
-		cout << "Failed to get object" << endl;
-
+		if(f.retrieve("/tmp/blah"))
+			cout << "Got object ok" << endl;
+		else
+			cout << "Failed to get object" << endl;
+	} else {
+		cout << "Usage:\n " << argv[0] << " file index" << endl;
+	}
 	return 0;
 }
 

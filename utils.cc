@@ -45,6 +45,19 @@ static char *To_upper
 	return (ret);
 	}
 
+static char *Switch_slash(
+	char *name
+	)
+	{
+#ifdef WIN32
+		for(;*name!=0;name++)
+			{
+				if(*name=='/')
+					*name = '\\';
+			}
+#endif
+		return name;
+	}
 /*
  *	Open a file for input, 
  *	trying the original name (lower case), and the upper case version 
@@ -64,11 +77,14 @@ int U7open
 #else
 	int mode = ios::in;
 #endif
-	in.open(fname, mode);		// Try to open original name.
+	char name[512];
+	strcpy(name, fname);
+	Switch_slash(name);
+	in.open(name, mode);		// Try to open original name.
 	if (!in.good())			// No good?  Try upper-case.
 		{
-		char upper[512];
-		in.open(To_upper(strcpy(upper, fname)), mode);
+		To_upper(name);
+		in.open(name, mode);
 		if (!in.good())
 			return (0);
 		}

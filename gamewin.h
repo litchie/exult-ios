@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "vgafile.h"
 #include "gameclk.h"
+#include "fnames.h"
 
 #include <string>	// STL string
 #include <vector>	// STL container
@@ -74,7 +75,8 @@ private:
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	Vga_file fonts;			// "fonts.vga" file.
 	Vga_file sprites;		// "sprites.vga" file.
-	Vga_file mainshp;		// "mainshp.flx" file.
+	Vga_file mainshp;
+	Vga_file endshape;		
 	ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
@@ -274,6 +276,11 @@ public:
 	void paint_shape(int xoff, int yoff, Shape_frame *shape,
 						int translucent = 0)
 		{
+		if (!shape)
+			{
+				cout << "NULL SHAPE!!!" << endl;
+				return;
+			}
 		if (!shape->rle)	// Not RLE?
 			win->copy8(shape->data, 8, 8, xoff - tilesize, 
 						yoff - tilesize);
@@ -378,6 +385,7 @@ public:
 					// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj, int at_lift, int flat_only);
 	void set_palette(int pal_num);	// Set desired palette.
+	void set_palette(char *fname, int res);	// Set palette from Flex
 	void brighten(int per);		// Brighten/darken by percentage.
 	void view_right();		// Move view 1 chunk to right.
 	void view_left();		// Move view left by 1 chunk.
@@ -458,5 +466,8 @@ public:
 	char *get_shape_file_name(int n);
 	Vga_file *get_shape_file_data(int n);
 	int get_shape_file_count();
+	void play_flic(char *archive, int index);
+	void paint_splash();
+	void end_game();
 	};
 
