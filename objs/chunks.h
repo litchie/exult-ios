@@ -148,7 +148,9 @@ class Map_chunk
 public:
 	friend class Npc_actor;
 	Map_chunk(int chunkx, int chunky);
-	~Map_chunk();		// Delete everything in chunk.
+	~Map_chunk();			// Delete everything in chunk.
+	Chunk_terrain *get_terrain() const
+		{ return terrain; }
 	void set_terrain(Chunk_terrain *ter);
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add/remove an egg.

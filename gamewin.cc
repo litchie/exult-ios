@@ -179,6 +179,7 @@ Game_window::Game_window
 	) : 
 	    win(0), map(new Game_map()),
 	    usecode(0), combat(false), armageddon(false),
+	    terrain_editing(false),
             tqueue(new Time_queue()), clock(tqueue), time_stopped(0),
 	    std_delay(c_std_delay),
 	    npc_prox(new Npc_proximity_handler(this)),
@@ -853,17 +854,20 @@ Rectangle Game_window::get_shape_rect(Game_object *obj)
 		t.ty*c_tilesize - 1 - lftpix);
 }
 
-
 /*
- *	Get screen loc. of object.
+ *	Get screen location of given tile.
  */
 
-void Game_window::get_shape_location(Game_object *obj, int& x, int& y)
-{
-	Tile_coord t = obj->get_tile();// Get tile coords.
+inline void Get_shape_location
+	(
+	Tile_coord t,
+	int scrolltx, int scrollty,
+	int& x, int& y
+	)
+	{
 	int lft = 4*t.tz;
-	t.tx += 1 - get_scrolltx();
-	t.ty += 1 - get_scrollty();
+	t.tx += 1 - scrolltx;
+	t.ty += 1 - scrollty;
 				// Watch for wrapping.
 	if (t.tx < -c_num_tiles/2)
 		t.tx += c_num_tiles;
@@ -871,6 +875,19 @@ void Game_window::get_shape_location(Game_object *obj, int& x, int& y)
 		t.ty += c_num_tiles;
 	x = t.tx*c_tilesize - 1 - lft;
 	y = t.ty*c_tilesize - 1 - lft;
+	}
+
+/*
+ *	Get screen loc. of object.
+ */
+
+void Game_window::get_shape_location(Game_object *obj, int& x, int& y)
+{
+	Get_shape_location(obj->get_tile(), scrolltx, scrollty, x, y);
+}
+void Game_window::get_shape_location(Tile_coord t, int&x, int& y)
+{
+	Get_shape_location(t, scrolltx, scrollty, x, y);
 }
 
 /*

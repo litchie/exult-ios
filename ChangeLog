@@ -1,3 +1,10 @@
+2002-01-01  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamerend.cc: Rendering in terrain-editing mode.
+	* gamemap.cc (Game_map): Clear 'modified' flag after writing terrain.
+	* objs/chunkter.cc:  Render_all() for terrain-editing mode.
+	* gamewin.cc: A get_shape_location() for a tile.
+
 2002-01-01  Patrick Burke  <takhisisii@yahoo.com.au>
 	* tools/.cvsignore: Added cmanip to ignore list.
 	* usecode/ucxt/src/Makefile.am: Added -Wall and -W compile options.

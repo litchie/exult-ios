@@ -80,6 +80,79 @@ inline int Figure_screen_offset
 	}
 
 /*
+ *	Show the outline around a chunk.
+ */
+
+inline void Paint_chunk_outline
+	(
+	Game_window *gwin,
+	int pixel,			// Pixel value to use.
+	int tnum,			// Terrain #.
+	int xoff, int yoff		// Where chunk was painted.
+	)
+	{
+	gwin->get_win()->fill8(pixel, c_chunksize, 1, xoff, yoff);
+	gwin->get_win()->fill8(pixel, 1, c_chunksize, xoff, yoff);
+	char text[8];			// Show chunk #.
+	snprintf(text, 8, "%d", tnum);
+	gwin->paint_text(7, text, xoff + 2, yoff + 2);
+	}
+
+/*
+ *	Paint tile grid.
+ */
+
+static void Paint_grid
+	(
+	Game_window *gwin,
+	Xform_palette& xform		// For transparency.
+	)
+	{
+	Image_window8 *win = gwin->get_win();
+					// Paint grid at edit height.
+	int xtiles = gwin->get_width()/c_tilesize,
+	    ytiles = gwin->get_height()/c_tilesize;
+	int lift = cheat.get_edit_lift();
+	int liftpixels = lift*(c_tilesize/2) + 1;
+	for (int y = 0; y < ytiles; y++)
+		win->fill_translucent8(0, xtiles*c_tilesize, 1, 
+				-liftpixels, y*c_tilesize - liftpixels, xform);
+	for (int x = 0; x < xtiles; x++)
+		win->fill_translucent8(0, 1, ytiles*c_tilesize,
+				x*c_tilesize - liftpixels, -liftpixels, xform);
+	}
+
+
+/*
+ *	Just paint terrain.  This is for terrain_editing mode.
+ */
+
+void Game_window::paint_terrain_only
+	(
+	int start_chunkx, int start_chunky,
+	int stop_chunkx, int stop_chunky
+	)
+	{
+	int cx, cy;			// Chunk #'s.
+					// Paint all the flat scenery.
+	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
+		{
+		int yoff = Figure_screen_offset(cy, scrollty);
+		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
+			{
+			int xoff = Figure_screen_offset(cx, scrolltx);
+			Map_chunk *chunk = get_chunk(cx, cy);
+			chunk->get_terrain()->render_all(cx, cy);
+			Paint_chunk_outline(this, hit_pixel,
+				map->get_terrain_num(cx, cy), xoff, yoff);
+			}
+		}
+					// Paint tile grid if desired.
+	if (cheat.show_tile_grid())
+		Paint_grid(this, xforms[10]);
+	}
+
+/*
  *	Paint just the map and its objects (no gumps, effects).
  *	(The caller should set/clear clip area.)
  *
@@ -91,8 +164,8 @@ int Game_window::paint_map
 	int x, int y, int w, int h	// Rectangle to cover.
 	)
 	{
-
 	render_seq++;			// Increment sequence #.
+	painted = 1;
 	int light_sources = 0;		// Count light sources found.
 					// Get chunks to start with, starting
 					//   1 tile left/above.
@@ -109,7 +182,12 @@ int Game_window::paint_map
 					// Wrap around the world:
 	stop_chunkx = (stop_chunkx + c_num_chunks)%c_num_chunks;
 	stop_chunky = (stop_chunky + c_num_chunks)%c_num_chunks;
-
+	if (terrain_editing)		// Special mode for editing?
+		{
+		paint_terrain_only(start_chunkx, start_chunky,
+						stop_chunkx, stop_chunky);
+		return 10;		// Pretend there's lots of light!
+		}
 	int cx, cy;			// Chunk #'s.
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
@@ -121,16 +199,8 @@ int Game_window::paint_map
 			paint_chunk_flats(cx, cy, xoff, yoff);
 
 			if (cheat.in_map_editor())
-				{	// Show lines around chunks.
-				win->fill8(hit_pixel, c_chunksize, 1, 
-								xoff, yoff);
-				win->fill8(hit_pixel, 1, c_chunksize, 
-								xoff, yoff);
-				char text[8];	// Show chunk #.
-				snprintf(text, 8, "%d", 
-						map->get_terrain_num(cx, cy));
-				paint_text(7, text, xoff + 2, yoff + 2);
-				}
+				Paint_chunk_outline(this, hit_pixel,
+				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
 					// Draw the chunks' objects
@@ -155,24 +225,11 @@ int Game_window::paint_map
 
 	/// Dungeon Blackness (but disable in map editor mode)
 	if (in_dungeon >= skip_above_actor && !cheat.in_map_editor())
-		paint_blackness (start_chunkx, start_chunky, stop_chunkx, stop_chunky, ice_dungeon?73:0);
-
+		paint_blackness (start_chunkx, start_chunky, stop_chunkx, 
+						stop_chunky, ice_dungeon?73:0);
+					// Paint tile grid if desired.
 	if (cheat.in_map_editor() && cheat.show_tile_grid())
-		{			// Paint grid at edit height.
-		int xtiles = get_width()/c_tilesize,
-		    ytiles = get_height()/c_tilesize;
-		int lift = cheat.get_edit_lift();
-		int liftpixels = lift*(c_tilesize/2) + 1;
-					// Try a little color-coding.
-		Xform_palette& xform = xforms[10];
-		for (int y = 0; y < ytiles; y++)
-			win->fill_translucent8(0, xtiles*c_tilesize, 1, 
-				-liftpixels, y*c_tilesize - liftpixels, xform);
-		for (int x = 0; x < xtiles; x++)
-			win->fill_translucent8(0, 1, ytiles*c_tilesize,
-				x*c_tilesize - liftpixels, -liftpixels, xform);
-		}
-	painted = 1;
+		Paint_grid(this, xforms[10]);
 	return light_sources;
 	}
 

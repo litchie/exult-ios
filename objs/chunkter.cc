@@ -145,6 +145,7 @@ Chunk_terrain::~Chunk_terrain
 	remove_from_queue();
 	}
 
+#if 0	/* +++++ I think this can go away */
 /*
  *	Less-than another?  This is used for STL Map.
  */
@@ -172,6 +173,7 @@ bool Chunk_terrain::operator<
 			}
 	return false;			// Equal if we got here.
 	}
+#endif
 
 /*
  *	Set tile's shape.
@@ -244,6 +246,42 @@ void Chunk_terrain::free_rendered_flats
 	{
 	delete rendered_flats; 
 	rendered_flats = 0; 
+	}
+
+/*
+ *	This method is only used in 'terrain-editor' mode, NOT in normal
+ *	gameplay.
+ */
+
+void Chunk_terrain::render_all
+	(
+	int cx, int cy			// Chunk rendering too.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Image_window8 *iwin = gwin->get_win();
+	int ctx = cx*c_tiles_per_chunk, cty = cy*c_tiles_per_chunk;
+	int scrolltx = gwin->get_scrolltx(), scrollty = gwin->get_scrollty();
+					// Go through array of tiles.
+	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
+		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
+			{
+			Shape_frame *shape = get_shape(tilex, tiley);
+			if (!shape)
+				continue;
+			if (!shape->is_rle())
+				iwin->copy8(shape->get_data(), c_tilesize, 
+					c_tilesize, 
+					(ctx + tilex - scrolltx)*c_tilesize,
+					(cty + tiley - scrollty)*c_tilesize);
+			else		// RLE.
+				{
+				int x, y;
+				Tile_coord tile(ctx + tilex, cty + tiley, 0);
+				gwin->get_shape_location(tile, x, y);
+				gwin->paint_shape(x, y, shape);
+				}
+			}
 	}
 
 /*
