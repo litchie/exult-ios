@@ -1,3 +1,7 @@
+2001-01-13  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Found 1 memory corruption (my fault:-( ).
+
 2001-01-12  Tristan Tarrant <nadir@users.sourceforge.net>
 	* NEWS: updated
 	* gamma.h: added newline at the end to keep gcc happy
