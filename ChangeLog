@@ -1,5 +1,6 @@
 2001-08-06  Max Horn <max@quendi.de>
 	* Stats_gump.cc fixed bug where you could drag items from the gump
+	* actors.cc: fixed pick pocketing bug (pick pocket could be triggered by usecode events)
 
 2001-08-06  Jeff Freedman  <jeff@amy.nerble.net>
 
