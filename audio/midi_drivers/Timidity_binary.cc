@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern	Configuration	*config;
 
 
-const	Uint32	Timidity_binary_magic=0x345312;
+const	Uint32	Timidity_binary_magic=0x345300;
 
 // #undef HAVE_TIMIDITY_BIN	// Damn. Can't do this while SDL has the audio device.
 // New strategy - Tell timidity to output to stdout. Capture that via a pipe, and
@@ -115,14 +115,14 @@ void	Timidity_binary::stop_track(void)
 	{
 	if(my_thread)
 		{
-		pclose(data);
+		Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
 		my_thread=0;
 		}
 	}
 
 bool	Timidity_binary::is_playing(void)
 {
-	if(my_thread)
+	if(Audio::get_ptr()->is_playing(Timidity_binary_magic))
 		return true;
 	return false;
 }
