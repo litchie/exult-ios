@@ -200,7 +200,7 @@ int Chunk_cache::is_blocked
 			return (0);
 		}
 	int i;				// See if we're going down.
-	for (i = lift - 1; i >= 0 && !(tflags & (1<<lift)); i--)
+	for (i = lift - 1; i >= 0 && !(tflags & (1<<i)); i--)
 		;
 	new_lift = i + 1;
 	return (0);
@@ -363,8 +363,10 @@ void Sprite::start
 	curx = get_worldx();		// Get current coords.
 	cury = get_worldy();
 	sum = 0;			// Clear accumulator.
-	long deltax = destx - curx;	// Get changes.
-	long deltay = desty - cury;
+					// Get change at current lift.
+	int liftpixels = 4*get_lift();
+	long deltax = destx + liftpixels - curx;
+	long deltay = desty + liftpixels - cury;
 	unsigned long abs_deltax, abs_deltay;
 	if (deltay >= 0)		// Figure directions.
 		{

@@ -153,12 +153,14 @@ void Main_actor::handle_event
 	if (next_frame(curtime, cx, cy, sx, sy, frame))
 		{
 		Chunk_object_list *olist = gwin->get_objects(cx, cy);
-#if 0 /* Need to fix renderer first. */
+#if 1 /* Need to fix renderer first. */
 		olist->setup_cache(gwin, cx, cy);	//++++++++++++++++
 //++++++++TESTING Remove the above!!!!!!!+++++++++++++++++++++++++++++
 		int new_lift;		// Might climb/descend.
 		if (olist->is_blocked(get_lift(), sx, sy, new_lift))
 			return;
+		if (new_lift != get_lift())
+			cout << "New lift is " << new_lift << '\n';
 #else
 		int new_lift = get_lift();
 #endif
