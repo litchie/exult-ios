@@ -29,11 +29,15 @@ public:
 	Shape_frame *frame_on, *frame_off;
 	int x, y, x1, y1, x2, y2;
 	bool selected;
+	bool dirty;
 
 	MenuObject() { };
 	virtual ~MenuObject() { }
 	
-	void set_selected(bool sel) { selected = sel; }
+	void set_selected(bool sel) { 
+  	        dirty |= (selected != sel);
+ 	        selected = sel;
+	}
 	bool is_selected() { return selected; }
 	bool is_mouse_over(int mx, int my) 
 		{ return ((mx>=x1)&&(mx<=x2)&&(my>=y1)&&(my<=y2)); };
