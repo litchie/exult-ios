@@ -22,17 +22,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exceptions.h"
 #include "rect.h"
 #include "shapeid.h"
+#include "gump_types.h"
 
 class Checkmark_button;
 class Container_game_object;
 class Game_object;
 class Game_window;
 class Gump_button;
-
-#ifndef _GUMPSHAPEFILE
-#define _GUMPSHAPEFILE
-enum Gumpshapefile { GSF_GUMPS_VGA, GSF_EXULT_FLX };
-#endif
 
 /*
  *	A gump contains an image of an open container from "gumps.vga".

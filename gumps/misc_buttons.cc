@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "misc_buttons.h"
 #include "Modal_gump.h"
 #include "mouse.h"
+#include "ucmachine.h"
 
 
 /*
@@ -204,5 +205,6 @@ void Cstats_button::activate
 	Game_window *gwin
 	)
 {
-					// ++++++Later.
+	int cnt = gwin->get_usecode()->get_party_count();
+	gwin->show_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }

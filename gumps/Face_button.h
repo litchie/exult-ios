@@ -16,33 +16,26 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _GUMP_TOGGLEBUTTON_H
-#define _GUMP_TOGGLEBUTTON_H
+#ifndef _FACE_BUTTON_H_
+#define _FACE_BUTTON_H_
 
 #include "Gump_button.h"
 
+class Actor;
+
 /*
- * A button that toggles shape when pushed
+ *	A character's face, that will open inventory when clicked.
  */
-
-class Gump_ToggleButton : public Gump_button
+class Face_button : public Gump_button
 {
- public:
-	Gump_ToggleButton(Gump *par, int px, int py, int shapenum,
-						   int selectionnum, int numsel)
-		: Gump_button(par, shapenum, px, py, GSF_EXULT_FLX), 
-		numselections(numsel)
-	 {
-		 framenum = 2 * selectionnum;
-	 }
+	Actor *actor;			// Who this represents.
+public:
+	Face_button(Gump *par, int px, int py, Actor *a);
+	virtual void double_clicked(Game_window *gwin);
+	virtual void activate(Game_window *gwin) {}
 
-	virtual void activate(Game_window *gwin);
-	virtual void toggle(int state)=0;
-
-	int getselection() const { return framenum/2; }
-
- private:
-	int numselections;
+	virtual void push(Game_window *gwin) {}
+	virtual void unpush(Game_window *gwin) {}
 };
 
 #endif

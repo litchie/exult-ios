@@ -32,7 +32,8 @@ Alt-I		toggle_infravision
 I		inventory
 K		try_keys
 Ctrl-L		party_increase_level
-L		skiplift_decrement
+Alt-L		skiplift_decrement
+L		combat_stats
 Ctrl-Alt-M	toggle_map_editor
 Ctrl-M		create_item		644 -1 100	# Create gold
 Shift-Alt-M	play_music		-2	# Previous song

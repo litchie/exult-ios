@@ -160,11 +160,6 @@ protected:
 	static int spotx(int i) { return coords[2*i]; }
 	static int spoty(int i) { return coords[2*i + 1]; }
 
-	// Retreive info about an item or NPC
-	static Paperdoll_npc *GetCharacterInfo(int shape);
-	static Paperdoll_item *GetItemInfo(int shape, int frame = -1, int spot = -1);
-
-
 	// Non Statics
 
 	// Find index of closest spot to the mouse pointer
@@ -185,6 +180,10 @@ public:
 
 	inline static bool IsNPCFemale(int shape)
 	{ return GetCharacterInfo(shape)?GetCharacterInfo(shape)->is_female:true; }
+
+	// Retrieve info about an item or NPC
+	static Paperdoll_npc *GetCharacterInfo(int shape);
+	static Paperdoll_item *GetItemInfo(int shape, int frame = -1, int spot = -1);
 
 	// Non Statics
 

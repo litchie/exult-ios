@@ -69,6 +69,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Paperdoll_gump.h"
 #include "Spellbook_gump.h"
 #include "Stats_gump.h"
+#include "CombatStats_gump.h"
 
 #include "cheat.h"
 
@@ -764,10 +765,20 @@ Rectangle Game_window::get_gump_rect
 {
 	Shape_frame *s;
 
-	if (gump->get_shapefile() == GSF_EXULT_FLX)
+	switch (gump->get_shapefile()) {
+	case GSF_EXULT_FLX:
 		s = get_exult_shape(gump->get_shapenum(), gump->get_framenum());
-	else
+		break;
+	case GSF_GUMPS_VGA:
 		s = get_gump_shape (gump->get_shapenum(), gump->get_framenum(), gump->is_paperdoll());
+		break;
+	case GSF_PAPERDOL_VGA:
+		s = get_gump_shape (gump->get_shapenum(), gump->get_framenum(), true);
+		break;
+	default:
+		cerr << "Error! Wrong gumpshapefile!" << endl;
+		return Rectangle(0,0,0,0);
+	} 
 		
 	return Rectangle(gump->get_x() - s->xleft, 
 			gump->get_y() - s->yabove,
@@ -2731,6 +2742,10 @@ void Game_window::show_gump
 					// +++++Put this in config.
 			: shapenum == 65 && Game::get_game_type() ==
 				SERPENT_ISLE ? new Spellscroll_gump(obj)
+			: (Game::get_game_type() == SERPENT_ISLE &&
+				shapenum >= game->get_shape("gumps/cstats/1")&&
+				shapenum <= game->get_shape("gumps/cstats/6"))?
+				new CombatStats_gump(x, y)
 			: new Gump((Container_game_object *) obj, 
 							x, y, shapenum);
 					// Paint new one last.
