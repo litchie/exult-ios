@@ -3352,7 +3352,7 @@ int Usecode_machine::run
 		case 0x24:		// CALL.
 			offset = Read2(ip);
 			if (!call_usecode_function(externals[2*offset] + 
-					256*externals[2*offset + 1]))
+					256*externals[2*offset + 1], event))
 				abort = 1;
 			break;
 		case 0x25:		// RET.
