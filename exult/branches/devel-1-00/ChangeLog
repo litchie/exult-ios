@@ -1,3 +1,9 @@
+2002-06-18  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* combat.cc: When shooting, take don't be blocked by opponent's
+	footprint.
+	* combat.cc: The enemy of my friend is my enemy.
+
 2002-06-13  Ryan Nunn  <triforce@merlin.net.au>
 	* exult.cc, audio/xmidi.cc : Getting around some problems with (our)
 	  snprintf not supporting floating point types. 
