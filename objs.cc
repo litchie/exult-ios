@@ -968,6 +968,22 @@ int Container_game_object::add
 	}
 
 /*
+ *	Change shape of a member.
+ */
+
+void Container_game_object::change_member_shape
+	(
+	Game_object *obj,
+	int newshape
+	)
+	{
+	int oldvol = obj->get_volume();
+	obj->set_shape(newshape);
+					// Update total volume.
+	volume_used += obj->get_volume() - oldvol;
+	}
+
+/*
  *	Recursively add a quantity of an item to those existing in
  *	this container, and create new objects if necessary.
  *
