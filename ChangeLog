@@ -1,3 +1,6 @@
+2000-05-21  Willem Jan Palenstijn <palenstijn@wanandoo.nl>
+	* exult.cc, mouse.h: Wait_for_arrival() didn't restore on-screen state of the mouse
+
 2000-05-20  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* lots_of_files: changed most #ifndef WIN32 to #ifdef XWIN since that's what
 	they were supposed to mean

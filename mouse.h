@@ -86,6 +86,10 @@ public:
 		{ return (Mouse_shapes) cur_framenum; }
 	void move(int x, int y)		// Move to new location (mouse motion).
 		{
+#if DEBUG
+		if (onscreen)
+			cerr << "Trying to move mouse while onscreen!\n";
+#endif
 					// Shift to new position.
 		box.shift(x - mousex, y - mousey);
 		mousex = x;
@@ -101,6 +105,8 @@ public:
 					// Set to long arrow.
 	void set_long_arrow(Direction dir)
 		{ set_shape(long_arrows[(int) dir]); }
+
+	unsigned char is_onscreen() { return onscreen; }
 	};
 
 #endif	/* INCL_MOUSE */
