@@ -1,0 +1,28 @@
+Exult instructions for MacOS
+----------------------------
+
+
+To play
+-------
+First you need to get Ultima 7. Either you own it already, or
+you buy it somewhere. Then you must install it on a DOS/Windows
+machine in order to get the data file. A good way is to use a
+PC emulator for this, e.g. Virtual PC, Real PC or SoftWindows.
+
+From the Ultima7 folder on your PC, copy the STATIC sub folder
+to the folder that contains the ExultMac application.
+
+Now run ExultMac, and have fun!
+
+
+
+Notes
+------
+* Exult generates the files 'stdout.txt' and 'stderr.txt'.
+These may give you some idea of what is going on
+under the hood. When Exult suddenly quits, sometimes
+these files can help.
+
+* You can build exult from the source yourself if you want, provided
+you own a copy of CodeWarrior for MacOS. If you need help with that,
+feel free to contact me at <mailto:max@quendi.de>

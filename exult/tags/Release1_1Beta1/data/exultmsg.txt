@@ -1,0 +1,18 @@
+# These messages are used in the Exult engine, and follow the
+# game-specific ones.
+2800:Put that chair back!
+2801:Thief!!
+2802:Thou scoundrel!!
+2803:Not funny!
+2804:Who moved my chair??
+2805:You look like you're doing fine.
+2806:Everything okay?
+2807:Ready for dessert?
+2808:Enjoy!
+2809:Specialty of the house!
+2810:Avatar!  Please restrain thyself!
+2811:Hast thou noticed that this bed is occupied?
+2812:The resident of this bed may not be desirouth of company at the moment.
+2813:Thou shan't lose me so easily!
+2814:Ah, there thou art!
+2815:Found ye!

@@ -1,0 +1,43 @@
+Source: exult
+Section: contrib/games
+Priority: extra
+Maintainer: Michael Zinn <michael.z@acm.org>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.5.2
+
+Package: exult
+Architecture: any
+Depends: ${shlibs:Depends}
+Recommends: timidity
+Description: An engine for Ultima VII (BG, FOV, SI, SS)
+ Exult is an open source engine for playing Ultima VII on a variety of
+ modern operating systems and environments.
+ .
+ Visit the Exult homepage at http://exult.sourceforge.net/
+ .
+ You must own Ultima VII in order to use this package.
+
+Package: exult-tools
+Architecture: any
+Depends: exult, ${shlibs:Depends}
+Description: Tools for editting & viewing exult games; includes exult-studio
+ Includes:
+ .
+ expack       - Command line tool for creating and extracting Flex (.flx)
+                files. Flex files are used by Ultima 7 to store most
+                of its data.
+ splitshp     - Command line tool to take a multi-frame shp file and split
+                it into its individual frames.
+ shp2pcx      - Command line tool to convert shp files to pcx format;
+                the shp files can be extracted using expack.
+ ucxt         - Tool to translate usecode back into `human readable', 
+                roughly assembly like code. The output can be presented
+                in a variety of different format, including one which will,
+                later, have a suitable compiler back into usecode.
+ ucc          - A usecode compiler.
+ exult_studio - An editor for games using the Exult engine.
+ .
+ These are all works in progress.
+ .
+ For more information, visit the Exult homepage at
+ http://exult.sourceforge.net/.
