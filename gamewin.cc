@@ -699,6 +699,10 @@ void Game_window::read_ireg_objects
 			if (shapeid == 961)
 				obj = new Barge_object(
 				    entry[2], entry[3], tilex, tiley, lift);
+			else if (quality == 1 && entry[8] >= 0x80)
+				obj = new Dead_body(
+				    entry[2], entry[3], tilex, tiley, lift,
+							entry[8] - 0x80);
 			else
 				obj = new Container_game_object(
 				    entry[2], entry[3], tilex, tiley, lift);
@@ -1957,8 +1961,8 @@ void Game_window::show_face
 	else
 		actbox = info->face_rect;
 					// Draw whom we're talking to.
-	paint_shape(actbox.x + actbox.w - 2, 
-			actbox.y + actbox.h - 2, face);
+	paint_shape(actbox.x + face->get_xleft(),
+			actbox.y + face->get_yabove(), face);
 	}
 
 /*

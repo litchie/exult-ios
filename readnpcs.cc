@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "fnames.h"
 #include "schedule.h"
+//#include "items.h"			/* Debugging only */
 
 /*
  *	Read in the NPC's, plus the monster info.
@@ -83,6 +84,8 @@ void Game_window::read_npcs
 		for (i = 0; i < num_monsters; i++)
 			{
 			int shape = Read2(mfile);
+//			cout << "Monster info: " << item_names[shape] <<
+//							endl;
 			mfile.read((char*)monster, 23);// Get the rest.
 					// Point to flags.
 			unsigned char *ptr = &monster[7];
