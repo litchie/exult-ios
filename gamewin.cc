@@ -441,7 +441,6 @@ void Game_window::get_chunk_objects
 	unsigned char buf[16*16*2];	// Read in 16x16 2-byte shape #'s.
 	chunks.read(buf, sizeof(buf));
 	unsigned char *data = &buf[0];
-	int rlenum = 0;			// An index into rles.
 					// Get list we'll store into.
 	Chunk_object_list *olist = get_objects(cx, cy);
 					// A chunk is 16x16 tiles.
@@ -715,6 +714,7 @@ Egg_object *Game_window::create_egg
 	int data1 = entry[7] + 256*entry[8];
 	int lift = entry[9] >> 4;
 	int data2 = entry[10] + 256*entry[11];
+#if 0
 					// Get egg info. (debugging).
 	unsigned char egg_type = type&0xf;
 	unsigned char criteria = (type & (7<<4)) >> 4;
@@ -723,7 +723,6 @@ Egg_object *Game_window::create_egg
 	unsigned char hatched = (type >> 9) & 1;
 	unsigned short distance = (type & (0x1f << 10)) >> 10;
 	unsigned char auto_reset = (type >> 15) & 1;
-#if 0
 printf("Egg has type %02x, crit=%d, once=%d, ar=%d\n", type, (int) criteria,
 		(int) once,
 			(int) auto_reset);
@@ -907,8 +906,6 @@ void Game_window::paint
 	int start_chunky = chunky + y/chunksize - 1;
 	if (start_chunky < 0)
 		start_chunky = 0;
-	int startx = (start_chunkx - chunkx) * chunksize;
-	int starty = (start_chunky - chunky) * chunksize;
 	int stopx = x + w;
 	int stopy = y + h;
 					// Go 1 chunk past end.

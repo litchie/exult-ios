@@ -102,7 +102,7 @@ void	IFF::IndexIFFFile(void)
 		char	type[5],name[9];
 		memset(type,0,sizeof(type));
 		memset(name,0,sizeof(name));
-		bool	even=false;
+//		bool	even=false;
 
 		fread(type,4,1,fp);	// 4 bytes of type
 		if(type[0]<32)

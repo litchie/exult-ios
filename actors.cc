@@ -575,7 +575,6 @@ int Main_actor::step
 	gwin->add_dirty(this);		// Set to update new.
 					// Near an egg?
 	nlist->activate_eggs(tx, ty);
-	int inside;			// See if moved inside/outside.
 					// In a new chunk?
 	if (olist != nlist)
 		{
@@ -705,7 +704,6 @@ void Patrol_schedule::now_what
 	Game_object *path = (Game_object *) paths.get(pathnum);
 	if (!path)			// No, so look around.
 		{
-		Game_window *gwin = Game_window::get_game_window();
 		Vector nearby;
 		int cnt = npc->find_nearby(nearby, PATH_SHAPE, -359, -359);
 		for (int i = 0; i < cnt; i++)
@@ -759,7 +757,6 @@ void Talk_schedule::now_what
 	cout << "REWRITE Talk_schedule!\n";
 #if 1	/* ++++++++++++++Rewrite so it's only active when Av is near. */
 	Game_window *gwin = Game_window::get_game_window();
-	Usecode_machine *umachine = gwin->get_usecode();
 	switch (phase)
 		{
 	case 0:				// Start by approaching Avatar.
@@ -1001,14 +998,15 @@ void Walk_to_schedule::now_what
 	else if (!screen.has_point(from.tx, from.ty))
 					// Modify src. to walk from off-screen.
 		walk_off_screen(screen, from);
-	Game_object *bobj;		// Blocked by a door?
+					// Blocked by a door?
 	if (legs > 0 && !retries &&
-	    npc->get_abs_tile_coord().distance(blocked) == 1 &&
-	    (bobj = Game_object::find_blocking(blocked)) != 0 &&
-	    gwin->get_info(bobj).is_door())
+	    npc->get_abs_tile_coord().distance(blocked) == 1)
+		{
+		Game_object *door = Game_object::find_blocking(blocked);
+		if (door != 0 && gwin->get_info(door).is_door())
 					// Try to open it.
-			open_door(bobj);
-
+			open_door(door);
+		}
 	cout << "Finding path to schedule for " << npc->get_name() << '\n';
 					// Create path to dest., delaying
 					//   0 to 2 seconds.
@@ -1322,7 +1320,6 @@ void Npc_actor::switched_chunks
 	Chunk_object_list *nlist	// New chunk, or null.
 	)
 	{
-	Npc_actor *each;
 	if (olist)			// Remove from old list.
 		{
 		if (this == olist->npcs)
