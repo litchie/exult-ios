@@ -20,6 +20,7 @@
 #include "Audio.h"
 #include "titles.h"
 #include "palette.h"
+#include "databuf.h"
 
 Titles::Titles()
 	{
@@ -58,7 +59,7 @@ void Titles::play_intro()
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
 		const char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
 				"Willem Jan Palenstijn, Tristan Tarrant,", 
-				"Max Horn, Coder Infidel, Ryan Nunn",
+				"Max Horn, Luke Dunstan, Ryan Nunn",
 				"Driven by the Exult game engine V" VERSION };
 		for(int i=0; i<3; i++) {
 			gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
@@ -83,7 +84,7 @@ void Titles::play_intro()
 			gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
 			gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
 			if(i>20) {
-				gwin->paint_shape(i, centery-i/5, shapes.get_shape(0x0E, i%4));
+				gwin->paint_shape(topx+i, centery-i/5, shapes.get_shape(0x0E, i%4));
 			}
 			win->show();
 			if(wait_delay(50)) {
@@ -303,10 +304,13 @@ void Titles::show_menu()
 
 void Titles::play_flic(const char *archive, int index) 
 	{
+		char *fli_buf;
+		size_t len;
 		U7object flic(archive, index);
-		flic.retrieve("flic.fli");
-		playfli fli("flic.fli");
+		flic.retrieve(&fli_buf, len);
+		playfli fli(fli_buf);
 		fli.play(win);
+		delete [] fli_buf;
 	}
 
 void Titles::play_audio(const char *archive, int index) 
@@ -336,6 +340,11 @@ void Titles::end_game(bool success)
 		int	centerx = gwin->get_width() /2;
 		Uint8	*buffer;
 		size_t	size;
+		char    *fli_buf;
+ 		size_t  fli_size;
+
+		int topx = (gwin->get_width()-320)/2;
+		int topy = (gwin->get_height()-200)/2;
 
 		// Clear screen
 		clear_screen();
@@ -407,8 +416,8 @@ void Titles::end_game(bool success)
 		audio->play (buffer+8, size-8, false);
 		delete [] buffer;
 
-		const char 	*message = "No.  You must not!";
-		int	height = gwin->get_height() - gwin->get_text_height(ENDGAME_FONT2) * 2;
+		char 	*message = "No. You cannot do that! You must not!";
+		int	height = topy+200 - gwin->get_text_height(ENDGAME_FONT2) * 2;
 		int	width = (gwin->get_width() - gwin->get_text_width(ENDGAME_FONT2,message)) / 2;
 
 		for (i = 150; i < 204; i++)
@@ -426,6 +435,7 @@ void Titles::end_game(bool success)
 				return;
 			}
 		}
+		delete [] fli_buf;
 
 		// Set new music
 		audio->start_music(ENDSCORE_XMI,2,false);
@@ -531,7 +541,8 @@ void Titles::end_game(bool success)
 
 		// Fade out for 1 sec (50 cycles)
 		gwin->fade_palette (50, 0, 0);
-
+		
+		delete [] fli_buf;
 
 		// Now for the final flic
 
@@ -561,10 +572,10 @@ void Titles::end_game(bool success)
 		const char *txt_screen0[] = {
 			"Avatar! You think you have won>",
 			"Think again! You are unable to",
-			"leavee britannia, whereas I am free",
+			"leave britannia, whereas I am free",
 			"to enter other worlds",
-			"Prehaps your puny Earth shal be",
-			"my NEXT targer!."
+			"Perhaps your puny Earth shall be",
+			"my NEXT target!."
 		};
 
 		starty = (gwin->get_height() - gwin->get_text_height(ENDGAME_FONT3)*8)/2;
@@ -603,6 +614,9 @@ void Titles::end_game(bool success)
 				return;
 			}
 		}
+
+				
+		delete [] fli_buf;
 
 		// Text Screen 1
 
@@ -819,11 +833,9 @@ void Titles::show_credits()
 			++lines;
 		}
 		printf("Credits lines: %d\n", lines);
-#if defined(MACOS)
-		char **text = new char*[lines] ;
-#else
-		char **text = new (char*)[lines];
-#endif
+
+		char **text = new charptr[lines];
+
 		ptr = credits;
 		while(ptr<end) {
 			text[lines] = ptr;
