@@ -338,13 +338,15 @@ void Titles::end_game(bool success)
 		int	i, j, next = 0;
 		int	starty;
 		int	centerx = gwin->get_width() /2;
-		Uint8	*buffer;
-		size_t	size;
-		char    *fli_buf;
- 		size_t  fli_size;
+		int 	topy = (gwin->get_height()-200)/2;
 
-		int topx = (gwin->get_width()-320)/2;
-		int topy = (gwin->get_height()-200)/2;
+		// Audio buffer
+		size_t	size;
+		Uint8	*buffer;
+		
+		// Fli Buffers
+		size_t	flisize;
+		char	*fli_b[3];
 
 		// Clear screen
 		clear_screen();
@@ -365,8 +367,6 @@ void Titles::end_game(bool success)
 		int y = get_height()/2-100;
 		cout << "Shape in Endgame.dat has " << sf.get_num_frames() << endl;
 */
-		size_t	flisize;
-		char	*fli_b[3];
 
 		flic1.retrieve(&(fli_b[0]), flisize);
 		playfli fli1(fli_b[0]+8, flisize-8);
@@ -435,7 +435,6 @@ void Titles::end_game(bool success)
 				return;
 			}
 		}
-		delete [] fli_buf;
 
 		// Set new music
 		audio->start_music(ENDSCORE_XMI,2,false);
@@ -542,8 +541,6 @@ void Titles::end_game(bool success)
 		// Fade out for 1 sec (50 cycles)
 		gwin->fade_palette (50, 0, 0);
 		
-		delete [] fli_buf;
-
 		// Now for the final flic
 
 		next = 0;
@@ -614,9 +611,6 @@ void Titles::end_game(bool success)
 				return;
 			}
 		}
-
-				
-		delete [] fli_buf;
 
 		// Text Screen 1
 
