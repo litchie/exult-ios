@@ -25,6 +25,8 @@
 #include "objs.h"
 #include "game.h"
 #include "items.h"
+#include "gamewin.h"
+#include "actors.h"
 
 using std::string;
 #ifndef HAVE_SNPRINTF
@@ -629,10 +631,20 @@ string Game_object::get_name
 				name = 0;
 			break;
 		case 0x392:         // urn
-			// TODO: umm... x's ashes?.. should be interesting
-			if (frnum <= 1)
+			if (frnum <= 1) {
+				// when frame = 0,1, the quality is an NPC num
+				// the item name is then the name of that NPC + "'s ashes"
+				// (quality == 0: 'urn of ashes')
+				Actor* npc = gwin->get_npc(get_quality());
+				if (get_quality() > 0 && npc) {
+					string tmp = npc->get_npc_name();
+					if (tmp != "") {
+						tmp += item_names[0x65e]; // 's ashes
+						return tmp;
+					}
+				}
 				name = item_names[0x632]; // urn with ashes
-			else if (frnum == 2)
+			} else if (frnum == 2)
 				name = item_names[0x633]; // pot of unguent
 			else
 				name = item_names[shnum];
