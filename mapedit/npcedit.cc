@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objserial.h"
 #include "exult_constants.h"
 #include "utils.h"
+#include "shapefile.h"
 
 #ifdef WIN32
 #include "windrag.h"
@@ -286,13 +287,14 @@ void ExultStudio::open_npc_window
 
 		if (vgafile && palbuf)
 			{
-			npc_draw = new Shape_draw(vgafile, palbuf,
+			npc_draw = new Shape_draw(vgafile->get_ifile(), palbuf,
 			    glade_xml_get_widget(app_xml, "npc_draw"));
 			npc_draw->enable_drop(Npc_shape_dropped, this);
 			}
 		if (facefile && palbuf)
 			{
-			npc_face_draw = new Shape_draw(facefile, palbuf,
+			npc_face_draw = new Shape_draw(facefile->get_ifile(),
+								palbuf,
 			    glade_xml_get_widget(app_xml, "npc_face_draw"));
 			npc_face_draw->enable_drop(Npc_face_dropped, this);
 			}
