@@ -988,6 +988,15 @@ int Egg_object::within_distance
 	{
 	int egg_tx = ((int) cx)*tiles_per_chunk + get_tx();
 	int egg_ty = ((int) cy)*tiles_per_chunk + get_ty();
+	if (criteria == avatar_footpad)	// Must stop on it?
+		{
+		Game_window *gwin = Game_window::get_game_window();
+		Shape_info& info = gwin->get_info(this);
+		return (abs_tx <= egg_tx && 
+		        abs_tx > egg_tx - info.get_3d_xtiles() &&
+		        abs_ty <= egg_ty &&
+			abs_ty > egg_ty - info.get_3d_ytiles());
+		}
 	int deltax = abs_tx - egg_tx;
 	if (deltax >= distance || -deltax >= distance)
 		return (0);
@@ -1021,7 +1030,9 @@ void Egg_object::activate
 cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		", distance = " << (int) distance << ", crit = " <<
 		(int) criteria << ", once = " <<
-	((flags & (1<<(int)once) != 0)) << ", areset = " <<
+	((flags & (1<<(int)once) != 0)) << ", hatched = " <<
+	((flags & (1<<(int)hatched) != 0)) <<
+	", areset = " <<
 	((flags & (1<<(int)auto_reset) != 0)) << ", data1 = " << data1
 		<< ", data2 = " << data2 << '\n';
 #endif
@@ -1092,6 +1103,32 @@ void Egg_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;	// Low bits?++++++
 	Write2(ptr, data2);
 	out.write(buf, sizeof(buf));
+	}
+
+/*
+ *	Render.
+ */
+
+void Animated_egg_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	Game_object::paint(gwin);	// Always paint these.
+	animator->want_animation();	// Be sure animation is on.
+	}
+
+/*
+ *	Run usecode when double-clicked or when activated by proximity.
+ */
+
+void Animated_egg_object::activate
+	(
+	Usecode_machine *umachine
+	)
+	{
+	Egg_object::activate(umachine);
+	flags &= ~(1 << (int) hatched);	// Moongate:  reset always.
 	}
 
 /*
@@ -1747,8 +1784,18 @@ void Chunk_cache::add_egg
 	int tx, ty, tz;			// Get absolute tile coords.
 	egg->get_abs_tile(tx, ty, tz);
 	int dist = egg->get_distance();
-					// Set up rect. with abs. tile range.
-	Rectangle tiles(tx - dist, ty - dist, 2*dist + 1, 2*dist + 1);
+	Rectangle tiles;		// Set up rect. with abs. tile range.
+	if (egg->get_criteria() == Egg_object::avatar_footpad)
+		{
+		Shape_info& info = gwin->get_info(egg);
+		int xtiles = info.get_3d_xtiles(), 
+		    ytiles = info.get_3d_ytiles();
+		tiles = Rectangle(tx - xtiles + 1, ty - ytiles + 1,
+							xtiles, ytiles);
+		}
+	else
+		tiles = Rectangle(tx - dist, ty - dist, 
+						2*dist + 1, 2*dist + 1);
 					// Don't go outside the world.
 	Rectangle world(0, 0, num_chunks*tiles_per_chunk,
 						num_chunks*tiles_per_chunk);
@@ -1851,7 +1898,7 @@ void Chunk_cache::activate_eggs
 		Egg_object *egg;
 		if ((eggbits&1) && (egg = (Egg_object *) egg_objects.get(i)) &&
 		    egg->is_active())
-			egg->Egg_object::activate(usecode);
+			egg->activate(usecode);
 		}
 	if (eggbits)			// Check 15th bit.
 		{
@@ -1864,7 +1911,7 @@ void Chunk_cache::activate_eggs
 			Egg_object *egg = (Egg_object *) egg_objects.get(i);
 			if (egg && egg->within_distance(atx, aty) &&
 			    egg->is_active())
-				egg->Egg_object::activate(usecode);
+				egg->activate(usecode);
 			}
 		}
 	}
