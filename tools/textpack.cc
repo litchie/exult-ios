@@ -178,14 +178,15 @@ static void Write_text
 	for (int i = 0; i < cnt; i++)
 		{
 		char *text = strings[i];
+		if (!text)
+			continue;
 		if (strlen(text) + 1 > 1024)
 			{
 			cerr << "Text in entry " << i << " is too long"
 							<< endl;
 			exit(1);
 			}
-		if (text)
-			out << i << ':' << text << endl;
+		out << i << ':' << text << endl;
 		}
 	out.flush();
 	}
