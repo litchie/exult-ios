@@ -1,3 +1,7 @@
+2000-09-06  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* More schedules:  Waiter, thief, preach, eat_at_inn.
+
 2000-09-04  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* files/utils.*: Added get_system_path() for remapping virtual paths
