@@ -228,11 +228,11 @@ ucc.exe : $(UCC_OBJS)
 
 ucparse.cc:  
 	bison -d usecode/compiler/ucparse.yy -o ucparse.c
-	move ucparse.c ucparse.cc
+	ren ucparse.c ucparse.cc
  
 uclex.cc:  
 	flex usecode/compiler/uclex.ll 
-	move lex.yy.c uclex.cc
+	ren lex.yy.c uclex.cc
 
 CONFREGRESS_OBJS=Configuration.o XMLEntity.o xmain.o utils.o
 
