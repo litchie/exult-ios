@@ -138,7 +138,7 @@ void target_mode (void);
 void gump_next_inventory (void);
 void gump_next_stats (void);
 void gump_file (void);
-void make_screenshot (void);
+void make_screenshot (bool silent = false);
 void show_about (void);
 void show_help (void);
 void show_cheat_help (void);
@@ -1397,7 +1397,7 @@ void gump_file (void)
 	delete fileio;
 }
 
-void make_screenshot (void)
+void make_screenshot (bool silent)
 {
 	char fn[15];
 	int i;
@@ -1415,15 +1415,15 @@ void make_screenshot (void)
 	}
 
 	if (!namefound) {
-		gwin->center_text("Too many screenshots");
+		if (!silent) gwin->center_text("Too many screenshots");
 	} else {
 		SDL_RWops *dst = SDL_RWFromFile(fn, "wb");
 
 		if (gwin->get_win()->screenshot(dst)) {
 			cout << "Screenshot saved in " << fn << endl;
-			gwin->center_text("Screenshot");
+			if (!silent) gwin->center_text("Screenshot");
 		} else {
-			gwin->center_text("Screenshot failed");
+			if (!silent) gwin->center_text("Screenshot failed");
 		}
 	}	
 }

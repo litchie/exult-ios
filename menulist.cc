@@ -22,6 +22,8 @@
 #include "mouse.h"
 #include "rect.h"
 
+void make_screenshot(bool silent = false);
+
 // MenuEntry: a selectable menu entry (a button)
 MenuEntry::MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos)
 {
@@ -276,6 +278,10 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 				else
 					set_selection(selection+1);
 				continue;
+			case SDLK_s:
+				if ((event.key.keysym.mod & KMOD_ALT) &&
+				    (event.key.keysym.mod & KMOD_CTRL))
+					make_screenshot(true);
 			default:
 				{
 				        // let key be processed by selected menu-item

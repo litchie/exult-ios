@@ -48,6 +48,7 @@ void create_static(Image_buffer8* ib, int w, int h, int x, int y,
 	}
 }
 
+#if 0
 bool wait_delay_cycle(int ms, int startcol, int ncol)
 {
 	SDL_Event event;
@@ -80,7 +81,7 @@ bool wait_delay_cycle(int ms, int startcol, int ncol)
 	}
 	return false;
 }
-
+#endif
 
 BG_Game::BG_Game()
 {
@@ -193,19 +194,19 @@ BG_Game::~BG_Game()
 			return; \
 		     }
 
-#define WAITDELAYCYCLE(x) if (wait_delay_cycle((x), 16, 95)) { \
+#define WAITDELAYCYCLE(x) if (wait_delay((x), 16, 95)) { \
 			pal.fade_out(30); \
 			delete backup; delete backup2; delete backup3; \
 			delete cbackup; delete cbackup2; delete cbackup3; \
 			return; \
 		     }
 
-#define WAITDELAYCYCLE2(x) if (wait_delay_cycle((x), 250, 5)) { \
+#define WAITDELAYCYCLE2(x) if (wait_delay((x), 250, 5)) { \
 			pal.fade_out(30); \
 			return; \
 		     }
 
-#define WAITDELAYCYCLE3(x) if (wait_delay_cycle((x), 240, 15)) { \
+#define WAITDELAYCYCLE3(x) if (wait_delay((x), 240, 15)) { \
 			pal.fade_out(30); \
 			return; \
 		     }
@@ -462,7 +463,7 @@ void BG_Game::play_intro()
 		font->center_text(win->get_ib8(), centerx, txt_ypos, txt_ptr);
 
 		win->show();
-		if(wait_delay_cycle(50, 16, 95)) {
+		if(wait_delay(50, 16, 95)) {
 			pal.fade_out(30);
 			delete [] txt;
 			delete backup; delete backup2; delete backup3;
@@ -502,7 +503,7 @@ void BG_Game::play_intro()
 	for(int i=15; i>0; i--) {
 		gwin->paint_shape(centerx,centery-1,shapes.get_shape(0x23,i));
 		win->show();
-		if(wait_delay_cycle(70, 16, 95)) {
+		if(wait_delay(70, 16, 95)) {
 			pal.fade_out(30);
 			Audio::get_ptr()->cancel_streams();
 			delete backup; delete cbackup;
