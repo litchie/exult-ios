@@ -525,7 +525,7 @@ void Field_frame_animator::handle_event
 	if (animating)
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
 	if (activated && rand()%10 == 0)// Check for damage?
-		obj->activate(0);
+		obj->activate(gwin->get_usecode(), 0);
 	}
 
 /*
