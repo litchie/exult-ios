@@ -44,6 +44,10 @@ public:
 	virtual ~Uc_expression() {  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(std::ostream& out) = 0;
+					// Gen code to push value(s).
+	virtual int gen_values(std::ostream& out);
+					// Gen. code to jmp if this is false.
+	virtual void gen_jmp_if_false(std::ostream& out, int offset);
 					// Gen. to assign from stack.
 	virtual void gen_assign(std::ostream& out);
 	virtual int get_string_offset()	// Get offset in text_data.
@@ -134,6 +138,23 @@ public:
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(std::ostream& out);
+	};
+
+/*
+ *	Compare user conversation response to a given string (or list of
+ *	strings.
+ */
+class Uc_response_expression : public Uc_expression
+	{
+	Uc_expression *operand;
+public:
+	Uc_response_expression(Uc_expression *r)
+		: operand(r)
+		{  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(std::ostream& out);
+					// Gen. code to jmp if this is false.
+	virtual void gen_jmp_if_false(std::ostream& out, int offset);
 	};
 
 /*
