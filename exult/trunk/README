@@ -104,15 +104,15 @@ This documentation is for the 1.1.9rc1 version of Exult. If you have another Exu
 
 1.2. What is Exult?
 Ultima 7, an RPG from the early 1990's, still has a huge following. But, being a DOS game with a very nonstandard memory manager, it is difficult to run it on the latest computers. Exult is a project to create an Ultima 7 game engine that runs on modern operating systems, capable of using the data and graphics files that come with the game.
-Exult is being developed in C++ under Linux, MacOS and Windows using the SDL library to make porting to other platforms relatively easy. The current version supports much of the game's plot, allowing you to talk to NPCs, use items, solve quests, and even fight monsters. Music, speech, and the full introduction are also implemented. This, and further development, is only possible due to the work done by other fans who have decoded the various Ultima 7 data files, especially Gary Thompson, Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag.
-Exult aims to let those people who own Ultima 7 (copyright 1993) play the game on modern hardware, in as close to (or perhaps even surpassing) its original splendor as is possible. You need to own "Ultima 7: The Black Gate" "Ultima 7: Serpent Isle" and all the add-ons (not required to run but we require you to own them if you use them) in order to use Exult, and we encourage you to buy a legal copy.
+Exult is written in C++ and runs on, at least, Linux, Mac OS X and Windows using the SDL library to make porting to other platforms relatively easy. The current version supports all of "Ultima 7: The Black Gate" and "Ultima 7 part 2: The Serpent Isle", allowing you to finish both games. This is only possible due to the work done by other fans who have decoded the various Ultima 7 data files, especially Gary Thompson, Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag.
+Exult aims to let those people who own Ultima 7 (copyright 1993) play the game on modern hardware, in as close to (or perhaps even surpassing) its original splendor as is possible. You need to own "Ultima 7: The Black Gate" and/or "Ultima 7: Serpent Isle" and optionally the add-ons (not required to run) in order to use Exult, and we encourage you to buy a legal copy.
 
 
 1.3. Terms we use in regard to Exult and Ultima 7
 We are using many terms in this documentation, the FAQ and other documentation files that people may have difficulties to understand. Here we will try to give some explanations.
 * BG, SI, FoV or SS: we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle" as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.
-* eggs: these are trip-wires that cause monsters to spawn, execute scripts, play music, change weather, trigger traps, teleport when you get near them.
-* flex files: or flexes are used by the original to store the data files. Also when you choose not use compressed save games (see save_compression_level in 2.2.) our save games are also "flexed".
+* eggs: these are trip-wires that can cause monsters to spawn, execute scripts, play music, change weather, trigger traps or teleport when you get near them.
+* flex files: also known as flexes, these are used by the original to store the data files. Also when you choose not use compressed save games (see save_compression_level in 2.2.) our save games are also "flexed".
 * gumps: the windows used in the game interface for containers, characters, menus, etc..
 * paperdoll: when pressing 'i' you get the inventory display. It's the picture of your characters body (or the bodies of your party members) onto which you can drag all kinds of equipment. The way this is displayed in SI is what we call paperdoll. We integrated this for BG as well. (see FAQ.txt).
 * shapes: shape files are the format used for storage of all graphics elements (from UI buttons to terrain features) of the games Exult supports. Shapes may contain one or more frames (a frame is a single image).
@@ -127,19 +127,20 @@ We are using many terms in this documentation, the FAQ and other documentation f
 
 2. Configurations
 2.1. Installation
-* First you need to get Ultima 7. Either you own it already, or you buy it somewhere. Then you must install it on a DOS/Windows machine to get the data files. Alternatively you can use a PC emulator to install it. The Ultima Collection already contains a pre-installed version of U7 (in the directory /ultima7 on the CD).
-* From the Ultima7 folder on your PC, copy the STATIC sub folder to an appropriate folder - see 2.3. what those could be.
+* First you need to get Ultima 7. Either you own it already, or you buy it somewhere.
+* You need an installed version of Ultima 7 to run Exult with. The Ultima Collection already contains a pre-installed version of U7 (in the directory /ultima7 on the CD), but with older versions you may have to install the game yourself.
+* Copy the installed Ultima7 folder to an appropriate folder - see 2.3. for suggestions.
 * Now run exult (exult.exe in Windows) and quit it immediately.
 * Edit the configuration file with the correct paths for the game folders and sfx files - see 2.2.
 * Run exult and enjoy the game :-)
 
 Word of advice: Don't mix the files from BG and SI.
-Important: Do not run Exult on an original Ultima7 game which you're actually in the middle of playing, as Exult's saved files have a different format. There is no way to convert those original save games and they will just crash Exult.
+Note: If you run Exult on an original Ultima7 game which you're actually in the middle of playing, your game will be overwritten. Since Exult's files have a different format, there is no way to convert those original save games.
 
 
 2.2. Settings in exult.cfg
 Exult keeps a configuration file. You can specify where your Ultima 7 installation is, whether you want full screen graphics, or windowed, and midi devices and midi settings. Some of these options can be set from the Setup menu when you run Exult or via the Game Options menu.
-If you do not already have a configuration file, Exult will make one for you filling in sensible defaults by itself. The location of this file varies slightly. On UNIX systems you can expect to find it in $HOME/.exult.cfg while other operating systems will probably locate it as 'exult.cfg' in the same directory as the Exult binary. However it is recommended that you edit this file by hand to achieve optimal results for your system.
+If you do not already have a configuration file, Exult will make one for you filling in sensible defaults by itself. The location of this file varies slightly. On UNIX systems you can expect to find it in $HOME/.exult.cfg. In Windows it is 'exult.cfg' in the same directory as the Exult binary. In Mac OS X it is ~/Library/Preferences/exult.cfg.
 Note: the settings in exult.cfg are the same on all operating systems (except when explicitly stated below).
 The file uses a simple hierarchical XML-like syntax, which should be simple to understand and modify. Take care though. Handling of syntax errors in this file is not well tested.
 The default file looks like this (do not copy the **and following - these are my remarks).
