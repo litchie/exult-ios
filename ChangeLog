@@ -1,3 +1,6 @@
+2003/05/09: Aurelien Marchand (artaxerxes@users.sf.net)
+	* added command option to tools/cmanip.cc to return the value of a key
+
 2003-05-05 Tristan Tarrant <nadir@users.sourceforge.net>
 	* exult.cc, audio/Midi.cc: add new configuration
 	  config/disk/music_path, where the user can specify a path to the
