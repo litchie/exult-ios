@@ -242,6 +242,10 @@ public:
 				unsigned int shapey, unsigned int lft = 0)
 		: Game_object(l, h, shapex, shapey, lft)
 		{  }
+	Ireg_game_object(int shapenum, int framenum, unsigned int tilex, 
+				unsigned int tiley, unsigned int lft = 0)
+		: Game_object(shapenum, framenum, tilex, tiley, lft)
+		{  }
 	Ireg_game_object()		// Create fake entry.
 		{  }
 	virtual int is_dragable();	// Can this be dragged?
@@ -301,24 +305,28 @@ public:
 	};
 
 /*
- *	An object that cycles through its frames.
+ *	An object that cycles through its frames, or wiggles if just one
+ *	frame.
  */
 class Animated_object : public Ireg_game_object, public Time_sensitive
 	{
-	int cycles;			// # cycles to do, or 0 if no limit.
-	int cycle_num;			// Cycle # we're doing.
 	unsigned char frames;		// # of frames.
 	unsigned char animating;	// 1 if animation turned on.
+	unsigned char deltax, deltay;	// If wiggling, deltas from
+					//   original position.
 public:
 	Animated_object(unsigned char l, unsigned char h, 
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0);
+	Animated_object(int shapenum, int framenum, unsigned int tilex, 
+				unsigned int tiley, unsigned int lft = 0);
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 	};
 
+#if 0	/* ++++Going away. */
 /*
  *	A light source.  We'll try animated by playing with its translucent
  *	pixels.
@@ -336,6 +344,7 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 	};
+#endif
 
 /*
  *	An "egg" is a special object that activates under certain

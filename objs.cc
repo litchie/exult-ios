@@ -311,11 +311,29 @@ Animated_object::Animated_object
 	unsigned int shapex,
 	unsigned int shapey,
 	unsigned int lft
-	) : Ireg_game_object(l, h, shapex, shapey, lft), cycles(0),
-		cycle_num(0), animating(0)
+	) : Ireg_game_object(l, h, shapex, shapey, lft),
+		animating(0), deltax(0), deltay(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	frames = gwin->get_shape_num_frames(get_shapenum());
+	int shapenum = get_shapenum();
+	frames = gwin->get_shape_num_frames(shapenum);
+	}
+
+/*
+ *	Create at given position.
+ */
+
+Animated_object::Animated_object
+	(
+	int shapenum, 
+	int framenum, 
+	unsigned int tilex, unsigned int tiley, 
+	unsigned int lft
+	) : Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
+		animating(0), deltax(0), deltay(0)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	frames = gwin->get_shape_num_frames(shapenum);
 	}
 
 /*
@@ -350,28 +368,39 @@ void Animated_object::handle_event
 	Game_window *gwin = (Game_window *) udata;
 					// Get area we're taking.
 	Rectangle rect = gwin->get_shape_rect(this);
-	rect.enlarge(4);
+	rect.enlarge(5);
 	rect = gwin->clip_to_win(rect);
 	if (rect.w <= 0 || rect.h <= 0)	// No longer on screen?
 		{
 		animating = 0;
 		return;
 		}
-					// Get next frame.
-	int framenum = get_framenum() + 1;
-	if (framenum >= frames)		// End of cycle?
+	if (frames > 1)		// Going through frames?
 		{
-		framenum = 0;
-		if (cycles && ++cycle_num >= cycles)
-			animating = 0;
+					// Get next frame.
+		int framenum = get_framenum() + 1;
+		if (framenum >= frames)	// End of cycle?
+			framenum = 0;
+		set_frame(framenum);	// Set new frame.
 		}
-	set_frame(framenum);		// Set new frame.
+	else
+		{
+		int tx, ty, tz;		// Get current position.
+		get_abs_tile(tx, ty, tz);
+		int newdx = rand()%3;
+		int newdy = rand()%3;
+		tx -= deltax + newdx;
+		ty -= deltay + newdy;
+		deltax = newdx;
+		deltay = newdy;
+		move(tx, ty, tz);
+		}
 	gwin->add_dirty(rect);		// Paint.
 					// Add back to queue for next time.
 	if (animating)
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
-
+#if 0	/* +++++going away. */
 /*
  *	Create an animated object.
  */
@@ -436,6 +465,7 @@ void Lightsource_object::handle_event
 	if (animating)
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
+#endif
 
 /*
  *	Is a given tile within this egg's influence?
