@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Game_window::paint_map_at_tile
 	(
+	int x, int y, int w, int h,	// Clip to this area.
 	int toptx, int topty,
 	int skip_above			// Don't display above this lift.
 	)
@@ -47,7 +48,7 @@ void Game_window::paint_map_at_tile
 	scrollty = topty;
 	skip_lift = skip_above;
 	read_map_data();		// Gather in all objs., etc.
-	win->set_clip(0, 0, get_width(), get_height());
+	win->set_clip(x, y, w, h);
 	paint_map(0, 0, get_width(), get_height());
 	win->clear_clip();
 	scrolltx = savescrolltx;
