@@ -417,7 +417,7 @@ static int Swap_weapons
 		return 0;		// Not a weapon.
 	int ammo = winf->get_ammo_consumed();
 	if (ammo)			// Check for readied ammo.
-		{
+		{//+++++Needs improvement.  Ammo could be in pack.
 		Game_object *aobj = npc->get_readied(Actor::ammo);
 		if (!aobj || !In_ammo_family(aobj->get_shapenum(), ammo))
 			return 0;
@@ -474,8 +474,9 @@ void Combat_schedule::start_strike
 			!In_ammo_family(aobj->get_shapenum(), ammo_shape)))
 			{		// Out of ammo.
 			if (npc->get_schedule_type() != Schedule::duel)
-				{
-				Swap_weapons(npc);
+				{	// Look in pack for ammo.
+				if (!npc->ready_ammo())
+					Swap_weapons(npc);
 				Combat_schedule::set_weapon();
 				}
 			state = approach;
