@@ -101,7 +101,7 @@ char	*Table::read_object(int objnum,uint32 &length)
 	FILE	*fp=U7open(filename.c_str(),"rb");
 	if(!fp)
 		{
-		cerr << "File open failed in read_object" << endl;
+		cerr << "File open failed in read_object: " << filename << endl;
 		return 0;
 		}
 	fseek(fp,object_list[objnum].offset,SEEK_SET);
