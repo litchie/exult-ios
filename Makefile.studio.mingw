@@ -2,7 +2,7 @@
 # The shell IS required! 
 
 # Where is Exult Studio will be installed. 
-U7PATH=C:/Ultima7
+U7PATH=C:\\Ultima7
 # Only used for snapshots
 STUDIOPATH=C:/Studio
 TOOLSPATH=C:/GimpPlugin
@@ -73,9 +73,9 @@ clean:
 	del $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
 
 install: $(EXEC)
-	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
-	mkdir -p $(U7PATH)/data
-	cp mapedit/exult_studio.glade $(U7PATH)/data
+	strip $(EXEC) -o $(U7PATH)\\$(EXEC)
+	if not exist $(U7PATH)\data md $(U7PATH)\data
+	copy mapedit\exult_studio.glade $(U7PATH)\data
 
 tools: u7shp.exe
 
