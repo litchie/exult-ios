@@ -1,6 +1,7 @@
 2003-02-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.ac: renamed configure.in to configure.ac; updated for
 	autoconf 2.53+; removed acconfig.h
+	* audio/Makefile.am: missing header from sources
 
 2003-02-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* version.cc: output HAVE_OPENGL setting
