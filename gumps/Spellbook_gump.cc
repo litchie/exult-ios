@@ -415,7 +415,7 @@ void Spellbook_gump::paint
 		paint_button(gwin, rightpage);
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Paint spells.
-		if (spells[spindex + s] || cheat.in_wizard_mode())
+		if (spells[spindex + s])
 		{
 			Gump_button *spell = spells[spindex + s];
 			paint_button(gwin, spell);
