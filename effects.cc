@@ -34,7 +34,7 @@ Sprites_effect::Sprites_effect
 	(
 	int num,			// Index.
 	int px, int py			// Screen location.
-	) : sprite_num(num), tx(px), ty(py), frame_num(0)
+	) : sprite_num(num), frame_num(0), tx(px), ty(py)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_sprite_num_frames(num);
