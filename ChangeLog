@@ -1,3 +1,22 @@
+2002-06-04  Ryan Nunn  <triforce@merlin.net.au>
+	* files/utils.cc : Working around the evil Windows 'Long Filename
+	  Problem', even though it's actually got very little to do with
+	  filenames at all. Hopefully it's gone now! Also added in a work
+	  around for when trailing slashes are detected in a filename that has
+	  been passed to get_system_path().
+	* fnames.h, gamedat.cc, gamemap.cc, palette.cc : Removed STATICDAT and
+	  PATCHDAT defines because they include a trailing slash, and this
+	  might cause things to get into trouble in Win9x.
+	* server/server.cc : YATSP (Yet another trailing slash problem)
+	* mapedit/studio.cc : Fixed Win9x shape file list problem. It was being
+	  caused by trailing slashes on path names! Also fixed compiling
+	  problem.
+	* objs/objiter.cc : MSVC discards static void DummY() since it isn't
+	  referenced in the file. Needed to remove the static so there wont be
+	  linking errors because of missing template methods.
+	* msvcstuff/Exult.dsp, msvcstuff/msvc_kludges.h : Fixing a few problems
+
+
 2002-06-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/studio.cc,etc:  Send a 'Server version' # in the 'info'

@@ -44,7 +44,8 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /TP /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /Zi /O2 /Ob0 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
+# SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -52,8 +53,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"Release\Exult.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.99 /subsystem:windows /incremental:yes /machine:I386 /nodefaultlib:"libc.lib"
-# SUBTRACT LINK32 /pdb:none
+# ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.99 /subsystem:windows /debug /machine:I386 /nodefaultlib:"libc.lib"
+# SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
 
@@ -95,8 +96,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G6 /MD /W3 /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /Zi /O2 /Ob0 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
-# SUBTRACT CPP /FA<none> /Fr
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -105,7 +105,8 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.99 /subsystem:windows /pdb:none /debug /debugtype:both /machine:I386 /nodefaultlib:"libc.lib"
+# ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.99 /subsystem:windows /pdb:none /machine:I386 /nodefaultlib:"libc.lib"
+# SUBTRACT LINK32 /debug
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
 TargetPath=\UC\exult\Exult.exe
 TargetName=Exult
@@ -278,31 +279,6 @@ SOURCE=..\audio\midi_drivers\mac_midi.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\audio\midi_drivers\Makefile.am
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-# PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=..\audio\midi_drivers\Timidity_binary.cc
 
 !IF  "$(CFG)" == "Exult - Win32 Release"
@@ -378,10 +354,6 @@ SOURCE=..\audio\conv.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\audio\Makefile.am
-# End Source File
-# Begin Source File
-
 SOURCE=..\audio\Midi.cc
 # End Source File
 # Begin Source File
@@ -418,14 +390,6 @@ SOURCE=..\conf\Configuration.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\conf\Makefile.am
-# End Source File
-# Begin Source File
-
-SOURCE=..\conf\README
-# End Source File
-# Begin Source File
-
 SOURCE=..\conf\XMLEntity.cc
 # End Source File
 # End Group
@@ -439,6 +403,19 @@ SOURCE=..\actions.cc
 # Begin Source File
 
 SOURCE=..\actorio.cc
+
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# ADD CPP /O1
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -530,10 +507,6 @@ SOURCE=..\keys.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\Makefile.am
-# End Source File
-# Begin Source File
-
 SOURCE=..\menulist.cc
 # End Source File
 # Begin Source File
@@ -603,52 +576,143 @@ SOURCE=..\windrag.cc
 # Begin Source File
 
 SOURCE=..\files\crc.cc
+
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# ADD CPP /O2
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\Flat.cc
+
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# ADD CPP /O2
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\Flex.cc
+
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# ADD CPP /O2
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\IFF.cc
+
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# ADD CPP /O2
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\listfiles.cc
-# End Source File
-# Begin Source File
 
-SOURCE=..\files\Makefile.am
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# ADD CPP /O2
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\Table.cc
+
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# ADD CPP /O2
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\U7file.cc
+
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# ADD CPP /O2
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\utils.cc
-# End Source File
-# Begin Source File
 
-SOURCE=..\files\zip\zip_u7file.cc
-# PROP Exclude_From_Build 1
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# ADD CPP /O2
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Group "flic"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\flic\Makefile.am
-# End Source File
 # Begin Source File
 
 SOURCE=..\flic\playfli.cc
@@ -724,10 +788,6 @@ SOURCE=..\gumps\Gump_widget.cc
 # Begin Source File
 
 SOURCE=..\gumps\Jawbone_gump.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\gumps\Makefile.am
 # End Source File
 # Begin Source File
 
@@ -824,24 +884,20 @@ SOURCE=..\imagewin\scale.cc
 !IF  "$(CFG)" == "Exult - Win32 Release"
 
 # PROP Exclude_From_Build 1
-# PROP Ignore_Default_Tool 1
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
 
 # PROP Exclude_From_Build 1
-# PROP Ignore_Default_Tool 1
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
 
 # PROP BASE Exclude_From_Build 1
 # PROP Exclude_From_Build 1
-# PROP Ignore_Default_Tool 1
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
 
 # PROP BASE Exclude_From_Build 1
 # PROP Exclude_From_Build 1
-# PROP Ignore_Default_Tool 1
 
 !ENDIF 
 
@@ -884,11 +940,24 @@ SOURCE=..\objs\jawbone.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\objs\Makefile.am
+SOURCE=..\objs\mappatch.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\objs\mappatch.cc
+SOURCE=..\objs\objiter.cc
+
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# ADD CPP /Ob0
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -909,10 +978,6 @@ SOURCE=..\objs\virstone.cc
 # Begin Source File
 
 SOURCE=..\pathfinder\Astar.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\pathfinder\Makefile.am
 # End Source File
 # Begin Source File
 
@@ -945,10 +1010,6 @@ SOURCE=..\shapes\fontvga.cc
 # Begin Source File
 
 SOURCE=..\shapes\items.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapes\Makefile.am
 # End Source File
 # Begin Source File
 
@@ -988,10 +1049,6 @@ SOURCE=..\usecode\keyring.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\usecode\Makefile.am
-# End Source File
-# Begin Source File
-
 SOURCE=..\usecode\ucdisasm.cc
 # End Source File
 # Begin Source File
@@ -1020,15 +1077,7 @@ SOURCE=..\server\objserial.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\server\objserial.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\server\servemsg.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\server\servemsg.h
 # End Source File
 # Begin Source File
 
@@ -1036,23 +1085,9 @@ SOURCE=..\server\server.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\server\server.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\server\servewin32.cc
 # End Source File
-# Begin Source File
-
-SOURCE=..\server\servewin32.h
-# End Source File
 # End Group
-# Begin Source File
-
-SOURCE=..\win32\exultico.rc
-# ADD BASE RSC /l 0xc09 /i "\UC\exult\win32"
-# ADD RSC /l 0xc09 /i "\UC\exult\win32" /i "..\win32"
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -1388,11 +1423,6 @@ SOURCE=..\files\U7file.h
 
 SOURCE=..\files\utils.h
 # End Source File
-# Begin Source File
-
-SOURCE=..\files\zip\zip_u7file.h
-# PROP Exclude_From_Build 1
-# End Source File
 # End Group
 # Begin Group "flic h"
 
@@ -1726,6 +1756,26 @@ SOURCE=..\usecode\ucscriptop.h
 SOURCE=..\usecode\useval.h
 # End Source File
 # End Group
+# Begin Group "server h"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\server\objserial.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\servemsg.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\server.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\servewin32.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\headers\common_types.h
@@ -1769,6 +1819,12 @@ SOURCE=..\files\zip\zip.h
 # Begin Source File
 
 SOURCE=..\win32\exult.ico
+# End Source File
+# Begin Source File
+
+SOURCE=..\win32\exultico.rc
+# ADD BASE RSC /l 0xc09 /i "\UC\exult\win32"
+# ADD RSC /l 0xc09 /i "\UC\exult\win32" /i "..\win32"
 # End Source File
 # End Group
 # Begin Group "MSVC Kludges"
@@ -1855,6 +1911,75 @@ SOURCE=..\docs\u7tech.txt
 SOURCE=..\docs\weapons.txt
 # End Source File
 # End Group
+# Begin Group "Makefiles"
+
+# PROP Default_Filter "*.am"
+# Begin Source File
+
+SOURCE=..\audio\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\midi_drivers\Makefile.am
+
+!IF  "$(CFG)" == "Exult - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
+
+# PROP BASE Exclude_From_Build 1
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\conf\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\flic\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\gumps\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\Makefile.am
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\AUTHORS
@@ -1906,6 +2031,10 @@ SOURCE=..\MidiInfo.txt
 # Begin Source File
 
 SOURCE=..\NEWS
+# End Source File
+# Begin Source File
+
+SOURCE=..\conf\README
 # End Source File
 # Begin Source File
 

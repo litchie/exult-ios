@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Make linker happy.
 
-static void DummY()
+void DummY()
 	{
 	Object_list dummylist;
 	Recursive_object_iterator dummy(dummylist);

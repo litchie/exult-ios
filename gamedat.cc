@@ -113,8 +113,10 @@ void Game_window::restore_gamedat
 	// Display red plasma during load...
 	setup_load_palette();
 #endif
-
-	U7mkdir(GAMEDAT, 0755);		// Create dir. if not already there.
+									
+	U7mkdir("<GAMEDAT>", 0755);		// Create dir. if not already there. Don't
+									// use GAMEDAT define cause that's got a
+									// trailing slash
 	try
 		{
 		U7open(in, fname);	// Open file; throws an exception 
@@ -342,6 +344,7 @@ void Game_window::save_gamedat
 	bool result = flex.close();	// Write it all out.
 	if (!result)			// ++++Better error system needed??
 		throw file_write_exception(fname);
+	return;
 	}
 
 /*
@@ -924,8 +927,9 @@ bool Game_window::restore_gamedat_zip
 	unzFile unzipfile = unzOpen(get_system_path(fname).c_str());
 	if (!unzipfile) return false;
 
-	U7mkdir(GAMEDAT, 0755);		// Create dir. if not already there.
-
+	U7mkdir("<GAMEDAT>", 0755);		// Create dir. if not already there. Don't
+									// use GAMEDAT define cause that's got a
+									// trailing slash
 	U7remove (USEDAT);
 	U7remove (U7NBUF_DAT);
 	U7remove (NPC_DAT);

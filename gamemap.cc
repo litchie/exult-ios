@@ -369,7 +369,10 @@ void Game_map::write_static
 	(
 	)
 	{
-	U7mkdir(PATCHDAT, 0755);	// Create dir if not already there.
+	U7mkdir("<PATCH>", 0755);		// Create dir if not already there. Don't
+									// use PATCHDAT define cause it has a
+									// trailing slash
+
 	int schunk;			// Write each superchunk to 'static'.
 	for (schunk = 0; schunk < 12*12 - 1; schunk++)
 					// Only write what we've modified.
@@ -466,6 +469,7 @@ void Game_map::write_ifix_objects
 	int result = ifix.good();
 	if (!result)
 		throw file_write_exception(fname);
+	return;
 	}
 
 /*
@@ -637,6 +641,7 @@ void Game_map::write_ireg_objects
 	int result = ireg.good();
 	if (!result)
 		throw file_write_exception(fname);
+	return;
 	}
 
 /*
