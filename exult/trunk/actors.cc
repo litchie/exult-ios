@@ -686,7 +686,7 @@ int Main_actor::step
 	Game_object::move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
 	gwin->add_dirty(this);		// Set to update new.
 					// Near an egg?
-	nlist->activate_eggs(t.tx, t.ty, oldtile.tx, oldtile.ty);
+	nlist->activate_eggs(this, t.tx, t.ty, oldtile.tx, oldtile.ty);
 					// In a new chunk?
 	if (olist != nlist)
 		{

@@ -96,6 +96,7 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
+	void activate(Usecode_machine *umachine, Game_object *obj);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual int is_egg() const	// An egg?
