@@ -85,6 +85,7 @@ private:
 	std::vector<std::string>	midi_bank;
 	int	current_track;
 	MidiAbstract	*midi_device;
+	bool	initialized;
 
 	bool	init_device(void);
 
