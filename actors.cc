@@ -805,7 +805,7 @@ void Actor::set_flag
 	int flag
 	)
 	{
-	cout << "Set flag for NPC " << get_npc_num() << " = =" << flag << endl;
+	cout << "Set flag for NPC " << get_npc_num() << " = " << flag << endl;
 	if (flag >= 0 && flag < 32)
 		flags |= ((unsigned long) 1 << flag);
 	if (flag == asleep)
@@ -821,6 +821,8 @@ void Actor::set_siflag
 	{
 	if (flag >= 0 && flag < 32)
 		siflags |= ((unsigned long) 1 << flag);
+
+	set_actor_shape();
 	}
 
 void Actor::set_type_flag
@@ -830,6 +832,8 @@ void Actor::set_type_flag
 	{
 	if (flag >= 0 && flag < 16)
 		type_flags |= ((unsigned long) 1 << flag);
+
+	set_actor_shape();
 	}
 
 /*
@@ -841,9 +845,10 @@ void Actor::clear_flag
 	int flag
 	)
 	{
-	cout << "Clear flag for NPC " << get_npc_num() << " = =" << flag << endl;
+	cout << "Clear flag for NPC " << get_npc_num() << " = " << flag << endl;
 	if (flag >= 0 && flag < 32)
 		flags &= ~((unsigned long) 1 << flag);
+
 	if (flag == asleep)
 		set_schedule_type(Schedule::stand);
 	}
@@ -855,6 +860,8 @@ void Actor::clear_siflag
 	{
 	if (flag >= 0 && flag < 32)
 		siflags &= ~((unsigned long) 1 << flag);
+
+	set_actor_shape();
 	}
 
 void Actor::clear_type_flag
@@ -864,6 +871,8 @@ void Actor::clear_type_flag
 	{
 	if (flag >= 0 && flag < 16)
 		type_flags &= ~((unsigned long) 1 << flag);
+
+	set_actor_shape();
 	}
 
 /*
@@ -897,6 +906,7 @@ void Actor::set_type_flags
 	)
 	{
 	type_flags = tflags;
+	set_actor_shape();
 	}
 
 /*
@@ -1534,43 +1544,50 @@ void Main_actor::die
 	}
 
 /*
- *	Get the shapenum based on skin color, sex, naked flag ans  petra flag
+ *	Set the shapenum based on skin color, sex, naked flag and petra flag
  */
-int Actor::get_shapenum() const
+void Actor::set_actor_shape()
 {
-	if (get_npc_num() == 0 || get_npc_num() == 28)
+	if (get_npc_num() != 0 && get_npc_num() != 28)
+		return;
+
+	Game_window *gwin = Game_window::get_game_window();
+	Actor *avatar = gwin->get_main_actor();
+	if (!avatar) return;
+
+	int sn;
+
+	if ((avatar->get_siflag (Actor::petra) && get_npc_num() == 0) ||
+		(!avatar->get_siflag (Actor::petra) && get_npc_num() != 0))
 	{
-		Game_window *gwin = Game_window::get_game_window();
-		Actor *avatar = gwin->get_main_actor();
-		if (!avatar) return ShapeID::get_shapenum();
-
-		if ((avatar->get_siflag (Actor::petra) && get_npc_num() == 0) ||
-			(!avatar->get_siflag (Actor::petra) && get_npc_num() != 0))
-		{
-			return 658;
-		}
-		else if (avatar->get_skin_color() == 0) // WH
-		{
-			return 1028+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
-		}
-		else if (avatar->get_skin_color() == 1) // BN
-		{
-			return 1026+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
-		}
-		else if (avatar->get_skin_color() == 2) // BK
-		{
-			return 1024+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
-		}
-		else if (avatar->get_type_flag(Actor::tf_sex))
-		{
-			return 989;
-		}
-
-		return 721;
+		sn = 658;
 	}
+	else if (avatar->get_skin_color() == 0) // WH
+	{
+		sn = 1028+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
+	}
+	else if (avatar->get_skin_color() == 1) // BN
+	{
+		sn = 1026+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
+	}
+	else if (avatar->get_skin_color() == 2) // BK
+	{
+		sn = 1024+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
+	}
+	else if (avatar->get_type_flag(Actor::tf_sex))
+	{
+		sn = 989;
+	}
+	else
+	{
+		sn = 721;
+	}
+			
+	set_shape (sn, get_framenum());
 
-	return ShapeID::get_shapenum();
-
+	// Set petra
+	if (get_npc_num() != 28)
+		gwin->get_npc(28)->set_actor_shape();
 }
 
 /*

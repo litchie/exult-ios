@@ -54,7 +54,7 @@ public:
 		{ return shapenum == -1; }
 	int is_eol() const
 		{ return is_invalid(); }
-	virtual int get_shapenum() const
+	inline int get_shapenum() const
 		{ return shapenum; }
 	int get_framenum() const
 		{ return framenum; }
