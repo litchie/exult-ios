@@ -237,15 +237,17 @@ dist:   $(EXEC)
 	cp AUTHORS $(U7PATH)/Exult/AUTHORS.txt
 	cp ChangeLog $(U7PATH)/Exult/ChangeLog.txt
 	cp COPYING $(U7PATH)/Exult/COPYING.txt
-	cp FAQ $(U7PATH)/Exult/FAQ.txt
+	cp docs/faq.html $(U7PATH)/Exult/faq.html
+	cp docs/images/back.gif $(U7PATH)/Exult/images/back.gif
+	cp docs/images/exult_logo.gif $(U7PATH)/Exult/images/exult_logo.gif
 	cp NEWS $(U7PATH)/Exult/NEWS.txt
-	cp README $(U7PATH)/Exult/README.txt
+	cp docs/ReadMe.html $(U7PATH)/Exult/ReadMe.html
 	cp README.win32 $(U7PATH)/Exult/README.win32.txt
 	cp data/bg/defaultkeys.txt $(U7PATH)/Exult/bgdefaultkeys.txt
 	cp data/si/defaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 	cp SDL/README-SDL.txt $(U7PATH)/Exult/README-SDL.txt
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult/SDL.dll
-	u2d $(U7PATH)/Exult/AUTHORS.txt $(U7PATH)/Exult/ChangeLog.txt $(U7PATH)/Exult/COPYING.txt $(U7PATH)/Exult/FAQ.txt $(U7PATH)/Exult/NEWS.txt $(U7PATH)/Exult/README.txt $(U7PATH)/Exult/README.win32.txt
+	u2d $(U7PATH)/Exult/AUTHORS.txt $(U7PATH)/Exult/ChangeLog.txt $(U7PATH)/Exult/COPYING.txt $(U7PATH)/Exult/NEWS.txt $(U7PATH)/Exult/README.win32.txt
 	u2d $(U7PATH)/Exult/bgdefaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 
 tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe
