@@ -216,7 +216,6 @@ void BG_Game::play_intro()
 	cbackup = cbackup2 = cbackup3 = 0;
 	noise = plasma = 0;
 
-#if 0
 	// Lord British presents...  (sh. 0x11)
 	pal.load("<STATIC>/intropal.dat",3);
 	gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
@@ -229,7 +228,6 @@ void BG_Game::play_intro()
 	if(skip)
 		return;
 
-#endif
 
 	// Ultima VII logo w/Trees
 	// sh. 0x12 = trees, sh. 0x0D = text, sh. 0x0E = butterfly
@@ -519,7 +517,7 @@ void BG_Game::play_intro()
 
 	// PC screen
 
-	// TODO: transition scene missing
+	// TODO: transition (zoom out to PC) scene missing
 
 	play_midi(1);
 	
@@ -527,21 +525,58 @@ void BG_Game::play_intro()
 	pal.load("<STATIC>/intropal.dat",1);
 	pal.apply();
 
+	// draw monitor
+	gwin->paint_shape(centerx, centery, shapes.get_shape(0x07,0));
+	gwin->paint_shape(centerx, centery, shapes.get_shape(0x09,0));
+	gwin->paint_shape(centerx, centery, shapes.get_shape(0x08,0));
+	gwin->paint_shape(centerx, centery, shapes.get_shape(0x0A,0));
 
-	for(int i=0;i<194;i+=2) {
+	gwin->paint_shape(centerx+12, centery-22, shapes.get_shape(0x14,0));
+
+	s = shapes.get_shape(0x0C, 0);
+	backup = win->create_buffer(s->get_width(), s->get_height());
+
+	// draw arm hitting pc
+	for (int i=0; i<9; i++) {
+	  win->get(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
+		   centery+100 - s->get_yabove());
+	  gwin->paint_shape(centerx-96-30*abs(i%4-2), centery+100, s);
+	  win->show();
+	  win->put(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
+		   centery+100 - s->get_yabove());
+	  WAITDELAY(0); //just to catch events
+	}
+
+	// screen comes back up
+	gwin->paint_shape(centerx+12, centery-22, shapes.get_shape(0x1D,0));
+	win->show();
+	delete backup; backup = 0;
+
+	// "Something is obviously amiss"
+	gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x15,0));
+	win->show();
+	WAITDELAY(4000);
+
+	// scroll right
+	for(int i=0;i<194;i+=4) {
 		gwin->paint_shape(centerx-i, centery, shapes.get_shape(0x07,0));
 		gwin->paint_shape(centerx-i, centery, shapes.get_shape(0x09,0));
 		gwin->paint_shape(centerx-i, centery, shapes.get_shape(0x08,0));
 		gwin->paint_shape(centerx-i, centery, shapes.get_shape(0x0A,0));
 		gwin->paint_shape(centerx-i+12, centery-22, shapes.get_shape(0x1D,0));
 		gwin->paint_shape(topx+320-i, topy, shapes.get_shape(0x06,0));
-		if(i<75)
-			gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x15,0));
-		else
-			gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x16,0));
+
+		if (i > 20 && i < 175) {
+		  // "It has been a long time..."
+		  gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x16,0));
+		}
 		win->show();
-		WAITDELAY(50);
+		WAITDELAY(30);
 	}
+
+	// TODO: colour cycle the Orb of the Moons somehow
+
+	// scroll down
 	for(int i=0;i<50;i++) {
 		gwin->paint_shape(centerx-194, centery-i, shapes.get_shape(0x07,0));
 		gwin->paint_shape(centerx-194, centery-i, shapes.get_shape(0x09,0));
@@ -550,40 +585,72 @@ void BG_Game::play_intro()
 		gwin->paint_shape(centerx-194+12, centery-22-i, shapes.get_shape(0x1D,0));
 		gwin->paint_shape(topx+320-194, topy-i, shapes.get_shape(0x06,0));
 		gwin->paint_shape(topx+320, topy+200-i, shapes.get_shape(0x0B,0));
-		if(i>48) {
-			gwin->paint_shape(centerx, topy, shapes.get_shape(0x18,0));
-		} else if(i>15)
-			gwin->paint_shape(centerx, topy, shapes.get_shape(0x17,0));
+		// "The mystical Orb beckons you"
+		gwin->paint_shape(centerx, topy, shapes.get_shape(0x17,0));
+
 		win->show();
 		WAITDELAY(50);
 	}
-	WAITDELAY(2000);
+	WAITDELAY(1000);
+
+	gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x07,0));
+	gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x09,0));
+	gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x08,0));
+	gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x0A,0));
+	gwin->paint_shape(centerx-182, centery-72, shapes.get_shape(0x1D,0));
+	gwin->paint_shape(topx+320-194, topy-50, shapes.get_shape(0x06,0));
+	gwin->paint_shape(topx+320, topy+150, shapes.get_shape(0x0B,0));
+	// "It has opened gateways to Britannia in the past"
+	gwin->paint_shape(centerx, topy, shapes.get_shape(0x18,0));
+
+	win->show();
+
+	WAITDELAY(3000);
 
 	gwin->clear_screen();
 
 	// The Moongate
 
-	// TODO: "There's only one path to the answer" not shown
-	// TODO: trees don't part far enough?
-
 	pal.load("<STATIC>/intropal.dat",5);
 	pal.apply();
-	for(int i=120;i>=0;i-=2) {
+
+	// "Behind your house is the circle of stones"
+	gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x19,0));
+	win->show();
+
+	// TODO: fade in screen while text is onscreen
+	// TODO: colour-cycle moongate
+
+	WAITDELAY(3000);
+
+	for(int i=120;i>=-170;i-=6) {
 		gwin->paint_shape(centerx, centery, shapes.get_shape(0x02,0));
 		gwin->paint_shape(centerx, centery, shapes.get_shape(0x03,0));
 		gwin->paint_shape(centerx, centery, shapes.get_shape(0x04,0));
 		gwin->paint_shape(centerx, centery, shapes.get_shape(0x05,0));
 
-		gwin->paint_shape(centerx+i, topy, shapes.get_shape(0x00,0));
-		gwin->paint_shape(centerx-i, topy, shapes.get_shape(0x01,0));
-		if(i>60)
-			gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x19,0));
-		else
-			gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x1A,0));
+		gwin->paint_shape(centerx+i,topy+16, shapes.get_shape(0x00,0));
+		gwin->paint_shape(centerx-i,topy+16, shapes.get_shape(0x01,0));
+
+		// "Why is a moongate already there?"
+		gwin->paint_shape(centerx,centery+50,shapes.get_shape(0x1A,0));
 		win->show();
 		WAITDELAY(50)
 	}
-	WAITDELAY(2000);
+
+	gwin->paint_shape(centerx, centery, shapes.get_shape(0x02,0));
+	gwin->paint_shape(centerx, centery, shapes.get_shape(0x03,0));
+	gwin->paint_shape(centerx, centery, shapes.get_shape(0x04,0));
+	gwin->paint_shape(centerx, centery, shapes.get_shape(0x05,0));
+
+	// "You have but one path to the answer"
+	gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x1C,0));
+	win->show();
+	
+	WAITDELAY(3000);
+
+	// TODO: zoom into moongate
+
 	gwin->clear_screen();
 }
 	
