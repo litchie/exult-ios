@@ -2,7 +2,7 @@
  *	ucinternal.cc - Interpreter for usecode.
  *
  *  Copyright (C) 1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -120,7 +120,17 @@ Usecode_function::Usecode_function
 	)
 	{
 	id = Read2(file);
-	len = Read2(file);
+
+	// support for our extended usecode format. (32 bit lengths)
+	if (id == 0xFFFF) {
+		id = Read2(file);
+		len = Read4(file);
+		extended = true;
+	} else {
+		len = Read2(file);
+		extended = false;
+	}
+
 	code = new unsigned char[len];	// Allocate buffer & read it in.
 	file.read((char*)code, len);
 	}
@@ -1587,7 +1597,13 @@ int Usecode_internal::run
 	uint8 *ip = fun->code;	// Instruction pointer.
 					// Where it ends.
 	uint8 *endp = ip + fun->len;
-	int data_len = Read2(ip);	// Get length of (text) data.
+
+	int data_len;
+	if (!fun->extended)
+		data_len = Read2(ip);	// Get length of (text) data.
+	else
+		data_len = (sint32)(Read4(ip)); // 32 bit lengths
+
 	char *data = (char *) ip;	// Save ->text.
 	ip += data_len;			// Point past text.
 	int num_args = Read2(ip);	// # of args. this function takes.
@@ -1659,8 +1675,13 @@ int Usecode_internal::run
 		switch (opcode)
 			{
 		case 0x04:  // start conversation
+		case 0x84: // (32 bit version)
 			{
-			offset = (short) Read2(ip);
+			if (opcode < 0x80)
+				offset = (short) Read2(ip);
+			else
+				offset = (sint32) Read4(ip);
+
 			found_answer = false;
 			if (!get_user_choice())	// Exit conv. if no choices.
 				ip += offset;	// (Emp's and honey.)
@@ -1674,14 +1695,31 @@ int Usecode_internal::run
 				ip += offset;
 			break;
 			}
+		case 0x85:		// JNE32
+			{
+				offset = (sint32) Read4(ip);
+				Usecode_value val = pop();
+				if (val.is_false())
+					ip += offset;
+				break;
+			}
 		case 0x06:		// JMP.
 			offset = (short) Read2(ip);
 			ip += offset;
 			break;
+		case 0x86:		// JMP32
+			offset = (sint32) Read4(ip);
+			ip += offset;
+			break;
 		case 0x07:		// CMPS.
+		case 0x87: // (32 bit version)
 			{
 				int cnt = Read2(ip);	// # strings.
-				offset = (short) Read2(ip);
+				if (opcode < 0x80)
+					offset = (short) Read2(ip);
+				else
+					offset = (sint32) Read4(ip);
+
 				bool matched = false;
 
 				// only try to match if we haven't found an answer yet
@@ -1786,8 +1824,16 @@ int Usecode_internal::run
 			offset = Read2(ip);
 			append_string(data + offset);
 			break;
+		case 0x9c:		// ADDSI32
+			offset = (sint32)Read4(ip);
+			append_string(data + offset);
+			break;
 		case 0x1d:		// PUSHS.
 			offset = Read2(ip);
+			pushs(data + offset);
+			break;
+		case 0x9d:		// PUSHS32
+			offset = (sint32)Read4(ip);
 			pushs(data + offset);
 			break;
 		case 0x1e:		// ARRC.
@@ -1812,6 +1858,12 @@ int Usecode_internal::run
 			pushi(ival);
 			break;
 			}
+		case 0x9f:		// PUSHI32
+			{
+				int ival = (sint32)Read4(ip);
+				pushi(ival);
+				break;
+			}
 		case 0x21:		// PUSH.
 			offset = Read2(ip);
 			push(locals[offset]);
@@ -1834,19 +1886,11 @@ int Usecode_internal::run
 			cout << "...back into usecode " << hex << setw(4) << 
 				setfill((char)0x30) << fun->id << dec << setfill(' ') << endl;
 #endif
-			if (!result)
-				{	// Catch ABRT.
+			if (!result) {	// Catch ABRT.
 				abort = 1;
-#if 0
-				if (catch_ip)
-					ip = catch_ip;
-				else	// No catch?  I think we should exit.
-#endif
-					{
-					sp = save_sp;
-					ip = endp;
-					}
-				}
+				sp = save_sp;
+				ip = endp;
+			}
 			}
 			break;
 		case 0x25:		// RET.
@@ -1914,10 +1958,16 @@ int Usecode_internal::run
 			break;
 			}
 		case 0x2e:		// Looks like a loop.
-			if (*ip++ != 2)
-				cout << "2nd byte in loop isn't a 2!"<<endl;
+		case 0xae:		// (32 bit version)   
+			{
+				int nextopcode = *ip++;
+				if ((opcode == 0x2e && nextopcode != 0x02) ||
+					(opcode == 0xae && nextopcode != 0x82))
+					cout << "2nd byte in loop isn't a 2 (or 0x82)!"<<endl;
 					// FALL THROUGH.
+			}
 		case 0x02:		// 2nd byte of loop.
+		case 0x82:  // (32 bit version)
 			{
 					// Counter (1-based).
 			int local1 = Read2(ip);
@@ -1928,10 +1978,15 @@ int Usecode_internal::run
 					// Array of values to loop over.
 			int local4 = Read2(ip);
 					// Get offset to end of loop.
-			offset = (short) Read2(ip);
+
+			if (opcode < 0x80)
+				offset = (short) Read2(ip);
+			else
+				offset = (sint32) Read4(ip); // 32 bit offset
+
 					// Get array to loop over.
 			Usecode_value& arr = locals[local4];
-			if (opcode == 0x2e)
+			if (opcode == 0x2e || opcode == 0xae)
 				{	// Initialize loop.
 				int cnt = arr.is_array() ?
 					arr.get_array_size() : 1;
@@ -1978,16 +2033,22 @@ int Usecode_internal::run
 			break;
 			}
 		case 0x31:		// Unknown.
+		case 0xB1:		// (32 bit version)
 			// this opcode only occurs in the 'audition' usecode function (BG)
 			// not sure what it's supposed to do, but this function results
 			// in the same behaviour as the original
 			ip += 2;
-			offset = (short)Read2(ip);
+			if (opcode < 0x80)
+				offset = (short)Read2(ip);
+			else
+				offset = (sint32)Read4(ip);
+
 			if (!found_answer)
 				found_answer = true;
 			else
 				ip += offset;
 			break;
+
 		case 0x32:		// RTS: Push return value & ret. 
 					//   from function.
 			sp = save_sp;	// Restore stack.
@@ -2102,6 +2163,11 @@ int Usecode_internal::run
 				int funcname = Read2(ip);
 				int paramnames = Read2(ip);
 				break;
+			}
+		case 0xcd: // 32 bit debugging function init
+			{
+				int funcname = (sint32)Read4(ip);
+				int paramnames = (sint32)Read4(ip);
 			}
 		default:
 			cout << "Opcode " << opcode << " not known." << endl;

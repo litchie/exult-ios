@@ -9,22 +9,27 @@
 // Will add command offset before printing
 #define	RELATIVE_JUMP			2
 // Will print third byte as decimal after comma
-#define CALL					4
+#define CALL					3
 // Will print in square brackets
-#define VARREF					8
+#define VARREF					4
 // Will print in square brackets with "flag:" prefix
-#define FLGREF					16
+#define FLGREF					5
 // Call of usecode function using extern table
-#define EXTCALL					32
+#define EXTCALL					6
 // An immediate op. and then a rel. jmp address:  JSF
-#define IMMED_AND_RELATIVE_JUMP			64
+#define IMMED_AND_RELATIVE_JUMP			7
 // Just x bytes
-#define PUSH					128
+#define PUSH					8
 // Just a byte
-#define BYTE					256
+#define BYTE					9
 // variable + relative jump (for the 'sloop')
-#define SLOOP		512
-#define POP 1024
+#define SLOOP		10
+#define POP 11
+#define IMMED32 12
+#define DATA_STRING32 13
+#define RELATIVE_JUMP32 14
+#define IMMED_RELJUMP32 15
+#define SLOOP32 16
 
 // Opcode descriptor
 typedef struct _opcode_desc
@@ -117,7 +122,99 @@ static opcode_desc opcode_table[] =
 	{ "arra", 0, 0 },					// 4a
 	{ "pop\teventid", 0, 0 },					// 4b
 	{ "line",2,IMMED },					// 4c
-	{ "func",4,DATA_STRING }			// 4d
+	{ "func",4,DATA_STRING },			// 4d
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },		// 4e - 4f
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 50-53
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 54-57
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 58-5B
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 5C-5F
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 60-63
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 64-67
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 68-6B
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 6C-6F
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 70-73
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 74-77
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 78-7B
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 7C-7F
+	{ NULL, 0, 0 },						// 80
+	{ NULL, 0, 0 },						// 81
+	{ "sloop_iter32", 12, SLOOP32 },		// 82
+	{ NULL, 0, 0 },						// 83
+	{ "startconv32", 4, RELATIVE_JUMP32 },	// 84
+	{ "jne32", 4, RELATIVE_JUMP32 },		// 85
+	{ "jmp32", 4, RELATIVE_JUMP32 },		// 86
+	{ "cmps32", 6, IMMED_RELJUMP32 },	// 87
+	{ NULL, 0, 0 },						// 88
+	{ NULL, 0, 0 },					// 89
+	{ NULL, 0, 0 },					// 8a
+	{ NULL, 0, 0 },					// 8b
+	{ NULL, 0, 0 },					// 8c
+	{ NULL, 0, 0 },					// 8d
+	{ NULL, 0, 0 },					// 8e
+	{ NULL, 0, 0 },						// 8f
+	{ NULL, 0, 0 },					// 90
+	{ NULL, 0, 0 },						// 91
+	{ NULL, 0, 0 },				// 92
+	{ NULL, 0, 0 },				// 93
+	{ NULL, 0, 0 },			// 94
+	{ NULL, 0, 0 },						// 95
+	{ NULL, 0, 0 },					// 96
+	{ NULL, 0, 0 },					// 97
+	{ NULL, 0, 0 },					// 98
+	{ NULL, 0, 0 },					// 99
+	{ NULL, 0, 0 },					// 9a
+	{ NULL, 0, 0 },						// 9b
+	{ "addsi32", 4, DATA_STRING32 },		// 9c
+	{ "pushs32", 4, DATA_STRING32 },		// 9d
+	{ NULL, 0, 0 },				// 9e
+	{ "pushi32", 4, IMMED32 },				// 9f
+	{ NULL, 0, 0 },						// a0
+	{ NULL, 0, 0 },				// a1
+	{ NULL, 0, 0 },					// a2
+	{ NULL, 0, 0 },						// a3
+	{ NULL, 0, 0 },				// a4
+	{ NULL, 0, 0 },					// a5
+	{ NULL, 0, 0 },				// a6
+	{ NULL, 0, 0 },						// a7
+	{ NULL, 0, 0 },						// a8
+	{ NULL, 0, 0 },						// a9
+	{ NULL, 0, 0 },						// aa
+	{ NULL, 0, 0 },						// ab
+	{ NULL, 0, 0 },					// ac
+	{ NULL, 0, 0 },					// ad
+	{ "sloop32", 13, SLOOP32 },				// ae
+	{ NULL, 0, 0 },				// af
+	{ NULL, 0, 0 },						// b0
+	{ "conv_something32", 6, IMMED_RELJUMP32 },			// b1
+	{ NULL, 0, 0 },					// b2
+	{ NULL, 0, 0 },					// b3
+	{ NULL, 0, 0 },						// b4
+	{ NULL, 0, 0 },						// b5
+	{ NULL, 0, 0 },						// b6
+	{ NULL, 0, 0 },						// b7
+	{ NULL, 0, 0 },					// b8
+	{ NULL, 0, 0 },					// b9
+	{ NULL, 0, 0 },						// ba
+	{ NULL, 0, 0 },						// bb
+	{ NULL, 0, 0 },						// bc
+	{ NULL, 0, 0 },						// bd
+	{ NULL, 0, 0 },				// be
+	{ NULL, 0, 0 },					// bf
+	{ NULL, 0, 0 },					// c0
+	{ NULL, 0, 0 },						// c1
+	{ NULL, 0, 0 },					// c2
+	{ NULL, 0, 0 },					// c3
+	{ NULL, 0, 0 },					// c4
+	{ NULL, 0, 0 },						// c5
+	{ NULL, 0, 0 },			// c6
+	{ NULL, 0, 0 },					// c7
+	{ NULL, 0, 0 },				// c8
+	{ NULL, 0, 0 },						// c9
+	{ NULL, 0, 0 },					// ca
+	{ NULL, 0, 0 },					// cb
+	{ NULL, 0, 0 },					// cc
+	{ "func32",8,DATA_STRING32 }			// cd
+
 };
 
 
