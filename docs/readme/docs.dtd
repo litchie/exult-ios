@@ -8,6 +8,7 @@
 
 
 <!-- ****************** elements ****************** -->
+<!ELEMENT faqs (section*)>
 <!ELEMENT readme (section*)>
 <!ELEMENT section (sub*)>
 <!ELEMENT sub (header, body)>
@@ -24,12 +25,13 @@
 <!ELEMENT kbd (#PCDATA)>
 <!ELEMENT strong (#PCDATA)>
 <!ELEMENT em (#PCDATA)>
-<!ELEMENT q (#PCDATA)>
 
 <!ELEMENT ref (#PCDATA)>
 <!ELEMENT ref1 (#PCDATA)>
 <!ELEMENT ref2 (#PCDATA)>
 <!ELEMENT extref (#PCDATA)>
+
+<!ELEMENT q (#PCDATA)>
 
 <!-- Empty elements -->
 <!ELEMENT br (#PCDATA)>
@@ -41,9 +43,11 @@
 <!ELEMENT comment (#PCDATA|ref|key|q)*>
 
 <!ELEMENT keytable (keydesc*)>
-<!ELEMENT keydesc (#PCDATA|Studio)*>
+<!ELEMENT keydesc (#PCDATA)>
 
 <!-- ****************** attributes ****************** -->
+<!ATTLIST	faqs		title	CDATA	#REQUIRED>
+<!ATTLIST	faqs		changed	CDATA	"">
 <!ATTLIST	readme		title	CDATA	#REQUIRED>
 <!ATTLIST	readme		changed	CDATA	"">
 <!ATTLIST	section		title	CDATA	#REQUIRED>

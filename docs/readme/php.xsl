@@ -13,11 +13,14 @@
 <xsl:strip-space elements="*"/>
 
 
-<!-- Templates -->
-<xsl:template match="readme">
+<!-- FAQ Templates -->
+<xsl:template match="faqs">
 <test>
 	<p>last changed: <xsl:value-of select="@changed"/></p>
 	<hr/>
+	<p>
+		A text only version can be found <a href="http://exult.sourceforge.net/faq.txt">here</a> 
+	</p>
 	<br/>
 	
 	<!-- BEGIN TOC -->
@@ -27,7 +30,7 @@
 			<xsl:number level="multiple"
 						count="section"
 						format="1. "
-						value="position()"/>
+						value="position() -1"/>
 				<xsl:value-of select="@title"/>
 		</a>
 		<br/>
@@ -36,7 +39,7 @@
 				<xsl:number level="multiple"
 							count="section|sub"
 							format="1."
-							value="count(ancestor::section/preceding-sibling::section)+1"/>									
+							value="count(ancestor::section/preceding-sibling::section)"/>									
 				<xsl:number format="1. "/>
 				<xsl:apply-templates select="header"/>
 			</a>
@@ -52,14 +55,53 @@
 </test>
 </xsl:template>
 
-<!-- Readme Group Template -->
+<!-- Readme Template -->
+<xsl:template match="readme">
+<test>
+	<p>last changed: <xsl:value-of select="@changed"/></p>
+	<hr/>
+	<br/>
+	
+	<!-- BEGIN TOC -->
+	<xsl:for-each select="section">
+		<p>
+		<a href="#{generate-id(key('section_ref',@title))}">
+			<xsl:number level="multiple"
+						count="section"
+						format="1. "
+						value="position() -1"/>
+				<xsl:value-of select="@title"/>
+		</a>
+		<br/>
+		<xsl:for-each select="sub">
+			<a href="#{generate-id(key('sub_ref',@name))}">
+				<xsl:number level="multiple"
+							count="section|sub"
+							format="1."
+							value="count(ancestor::section/preceding-sibling::section)"/>									
+				<xsl:number format="1. "/>
+				<xsl:apply-templates select="header"/>
+			</a>
+			<br/>
+		</xsl:for-each>
+		</p>
+	</xsl:for-each>
+	<!-- END TOC -->
+	
+	<!-- BEGIN CONTENT -->
+	<xsl:apply-templates select="section"/>
+	<!-- END CONTENT -->
+</test>
+</xsl:template>
+
+<!-- Group Template -->
 <xsl:template match="section">
 	<hr width="100%"/>
 	<table width="100%">
 		<tr><th align="left">
 			<a name="{generate-id()}">
 				<xsl:number format="1. "
-				value="position()"/>
+				value="position() -1"/>
 				<xsl:value-of select="@title"/>
 			</a>
 		</th></tr>
@@ -68,13 +110,13 @@
 </xsl:template>
 
 
-<!-- Readme Entry Template -->
+<!-- Entry Template -->
 <xsl:template match="sub">
 	<xsl:variable name = "num_idx">
 		<xsl:number level="single"
 					count="section"					
 					format="1."
-					value="count(ancestor::section/preceding-sibling::section)+1"/>									
+					value="count(ancestor::section/preceding-sibling::section)"/>									
 		<xsl:number format="1. "/>		
 	</xsl:variable> 
 	<tr><td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td></tr>
@@ -173,12 +215,11 @@
 </xsl:template>
 
 <xsl:template match="cite">
-		<p>
-		<xsl:value-of select="@name"/>:<br/>
-		<cite><xsl:value-of select="."/></cite>
-		</p>
+                <p>
+                <xsl:value-of select="@name"/>:<br/>
+                <cite><xsl:apply-templates/></cite>
+                </p>
 </xsl:template>
-
 
 <xsl:template match="para">
 	<p><xsl:apply-templates/></p>
