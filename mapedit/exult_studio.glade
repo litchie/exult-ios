@@ -317,6 +317,92 @@
 
       <widget>
 	<class>GtkMenuItem</class>
+	<name>mode1</name>
+	<label>_Mode</label>
+	<right_justify>False</right_justify>
+
+	<widget>
+	  <class>GtkMenu</class>
+	  <name>mode1_menu</name>
+
+	  <widget>
+	    <class>GtkRadioMenuItem</class>
+	    <name>move1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_move1_activate</handler>
+	      <last_modification_time>Sat, 23 Mar 2002 07:22:35 GMT</last_modification_time>
+	    </signal>
+	    <label>Move</label>
+	    <active>True</active>
+	    <always_show_toggle>True</always_show_toggle>
+	    <group>mouse_mode</group>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioMenuItem</class>
+	    <name>paint1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_paint1_activate</handler>
+	      <last_modification_time>Sat, 23 Mar 2002 04:07:28 GMT</last_modification_time>
+	    </signal>
+	    <label>Paint</label>
+	    <active>False</active>
+	    <always_show_toggle>True</always_show_toggle>
+	    <group>mouse_mode</group>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioMenuItem</class>
+	    <name>select1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_select1_activate</handler>
+	      <last_modification_time>Sat, 23 Mar 2002 04:07:28 GMT</last_modification_time>
+	    </signal>
+	    <label>Select</label>
+	    <active>False</active>
+	    <always_show_toggle>True</always_show_toggle>
+	    <group>mouse_mode</group>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioMenuItem</class>
+	    <name>hide1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_hide1_activate</handler>
+	      <last_modification_time>Sat, 23 Mar 2002 07:19:12 GMT</last_modification_time>
+	    </signal>
+	    <label>Hide</label>
+	    <active>False</active>
+	    <always_show_toggle>True</always_show_toggle>
+	    <group>mouse_mode</group>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>separator5</name>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>unhide1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_unhide1_activate</handler>
+	      <last_modification_time>Sat, 23 Mar 2002 07:19:12 GMT</last_modification_time>
+	    </signal>
+	    <label>Unhide</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
 	<name>tools1</name>
 	<label>_Tools</label>
 	<right_justify>False</right_justify>
@@ -382,7 +468,7 @@
 	      <handler>on_play_button_clicked</handler>
 	      <last_modification_time>Sun, 15 Jul 2001 16:17:23 GMT</last_modification_time>
 	    </signal>
-	    <label>Play/test game</label>
+	    <label>Play game</label>
 	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <active>False</active>
 	    <child>
@@ -10856,7 +10942,7 @@ Random
       <class>GtkTable</class>
       <name>table23</name>
       <border_width>6</border_width>
-      <rows>3</rows>
+      <rows>4</rows>
       <columns>2</columns>
       <homogeneous>False</homogeneous>
       <row_spacing>0</row_spacing>
@@ -10910,8 +10996,8 @@ Random
 	<child>
 	  <left_attach>0</left_attach>
 	  <right_attach>1</right_attach>
-	  <top_attach>1</top_attach>
-	  <bottom_attach>2</bottom_attach>
+	  <top_attach>2</top_attach>
+	  <bottom_attach>3</bottom_attach>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
 	  <xexpand>False</xexpand>
@@ -10944,8 +11030,8 @@ Random
 	<child>
 	  <left_attach>1</left_attach>
 	  <right_attach>2</right_attach>
-	  <top_attach>1</top_attach>
-	  <bottom_attach>2</bottom_attach>
+	  <top_attach>2</top_attach>
+	  <bottom_attach>3</bottom_attach>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
 	  <xexpand>False</xexpand>
@@ -10959,6 +11045,7 @@ Random
 	<widget>
 	  <class>GtkEntry</class>
 	  <name>prefs_default_game</name>
+	  <height>32</height>
 	  <can_focus>True</can_focus>
 	  <editable>True</editable>
 	  <text_visible>True</text_visible>
@@ -10999,6 +11086,7 @@ Random
 	  <widget>
 	    <class>GtkEntry</class>
 	    <name>prefs_image_editor</name>
+	    <height>32</height>
 	    <can_focus>True</can_focus>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
@@ -11017,8 +11105,8 @@ Random
 	<child>
 	  <left_attach>0</left_attach>
 	  <right_attach>1</right_attach>
-	  <top_attach>2</top_attach>
-	  <bottom_attach>3</bottom_attach>
+	  <top_attach>3</top_attach>
+	  <bottom_attach>4</bottom_attach>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
 	  <xexpand>False</xexpand>
@@ -11051,8 +11139,8 @@ Random
 	<child>
 	  <left_attach>1</left_attach>
 	  <right_attach>2</right_attach>
-	  <top_attach>2</top_attach>
-	  <bottom_attach>3</bottom_attach>
+	  <top_attach>3</top_attach>
+	  <bottom_attach>4</bottom_attach>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
 	  <xexpand>False</xexpand>
@@ -11066,6 +11154,7 @@ Random
 	<widget>
 	  <class>GtkHBox</class>
 	  <name>hbox29</name>
+	  <height>32</height>
 	  <homogeneous>False</homogeneous>
 	  <spacing>4</spacing>
 
@@ -11109,6 +11198,72 @@ Random
 	      <fill>True</fill>
 	    </child>
 	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame131</name>
+	<border_width>2</border_width>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+	<child>
+	  <left_attach>0</left_attach>
+	  <right_attach>1</right_attach>
+	  <top_attach>1</top_attach>
+	  <bottom_attach>2</bottom_attach>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <xexpand>False</xexpand>
+	  <yexpand>True</yexpand>
+	  <xshrink>False</xshrink>
+	  <yshrink>False</yshrink>
+	  <xfill>True</xfill>
+	  <yfill>True</yfill>
+	</child>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label81</name>
+	  <label>Image-Edit Filetype:</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame132</name>
+	<border_width>2</border_width>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+	<child>
+	  <left_attach>1</left_attach>
+	  <right_attach>2</right_attach>
+	  <top_attach>1</top_attach>
+	  <bottom_attach>2</bottom_attach>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	  <xexpand>False</xexpand>
+	  <yexpand>False</yexpand>
+	  <xshrink>False</xshrink>
+	  <yshrink>False</yshrink>
+	  <xfill>True</xfill>
+	  <yfill>True</yfill>
+	</child>
+
+	<widget>
+	  <class>GtkOptionMenu</class>
+	  <name>prefs_image_type</name>
+	  <can_focus>True</can_focus>
+	  <items>.PNG
+.SHP
+</items>
+	  <initial_choice>0</initial_choice>
 	</widget>
       </widget>
     </widget>

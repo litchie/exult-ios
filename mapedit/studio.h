@@ -146,6 +146,7 @@ public:
 	void set_tile_grid(gboolean grid);
 	void set_edit_lift(int lift);
 	void set_edit_terrain(gboolean terrain);
+	void set_edit_mode(int md);
 					// Groups:
 	void setup_groups(const char *fname);
 	void setup_group_controls();
