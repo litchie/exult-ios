@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -174,6 +174,9 @@ public:
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
+
+	virtual void push(Game_window *gwin) {}
+	virtual void unpush(Game_window *gwin) {}
 	};
 
 /*
@@ -334,9 +337,9 @@ Spellbook_gump::Spellbook_gump
 				int spnum = spindex + s;
 				spells[spnum] = new Spell_button(this,
 					s < 4 ? object_area.x +
-						spshape->get_xleft()
+						spshape->get_xleft() + 1
 					: object_area.x + object_area.w - 
-						spshape->get_xright(),
+						spshape->get_xright() - 2,
 					object_area.y + spshape->get_yabove() +
 						(spheight + vertspace)*(s%4),
 					spnum,
@@ -523,7 +526,7 @@ void Spellbook_gump::paint
 				{
 				strcpy(text, "oo");
 				int px = x + spell->x + numx -
-						gwin->get_text_width(4, text);
+						gwin->get_text_width(4, text) + 2;
 				gwin->paint_text(4, text + 1, px,
 					y + spell->y + numy);
 				gwin->paint_text(4, text + 1, px + 3,
