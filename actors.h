@@ -69,7 +69,7 @@ public:
 		};
 private:
 					// Party positions
-	const static short Actor::party_pos[4][10][2];
+	const static short party_pos[4][10][2];
 
 	Attack_mode attack_mode;
 					// A frame sequence for each dir.:
