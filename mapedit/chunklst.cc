@@ -41,6 +41,9 @@ using std::cout;
 using std::endl;
 using std::strlen;
 
+const int border = 2;			// Border at bottom, sides of each
+					//   chunk.
+
 /*
  *	Blit onto screen.
  */
@@ -87,7 +90,6 @@ void Chunk_chooser::render
 	(
 	)
 	{
-	const int border = 2;		// Border at bottom, sides.
 					// Look for selected frame.
 	int selchunk = -1, new_selected = -1;
 	if (selected >= 0)		// Save selection info.
@@ -156,7 +158,8 @@ void Chunk_chooser::render_chunk
 			ShapeID id(data);
 			Shape_frame *s = ifile->get_shape(id.get_shapenum(),
 							id.get_framenum());
-			s->paint(iwin, xoff + x - 1, yoff + y -1);
+			if (s)
+				s->paint(iwin, xoff + x - 1, yoff + y -1);
 			}
 		}
 	}
@@ -175,6 +178,17 @@ gint Chunk_chooser::configure
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
 	chooser->Shape_draw::configure(widget);
 	chooser->render();
+					// Set new scroll amounts.
+	int w = event->width, h = event->height;
+	int per_row = (w - border)/(128 + border);
+	int num_rows = (h - border)/(128 + border);
+	int page_size = per_row*num_rows;
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(
+						chooser->chunk_scroll));
+	adj->step_increment = per_row;
+	adj->page_increment = page_size;
+	adj->page_size = page_size;
+	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
 	return (TRUE);
 	}
 
@@ -389,7 +403,7 @@ Chunk_chooser::Chunk_chooser
 		info(0), info_cnt(0), selected(-1), sel_changed(0)
 	{
 	chunkfile.seekg(0, ios::end);	// Figure total #chunks.
-	num_chunks = chunkfile.tellg()/(c_tiles_per_chunk*2);
+	num_chunks = chunkfile.tellg()/(c_tiles_per_chunk*c_tiles_per_chunk*2);
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
 		colors[i] = (palbuf[3*i]<<16)*4 + (palbuf[3*i+1]<<8)*4 + 
@@ -439,8 +453,7 @@ Chunk_chooser::Chunk_chooser
 	GtkObject *chunk_adj = gtk_adjustment_new(0, 0, 
 				num_chunks, 1, 
 				4, 1.0);
-	GtkWidget *chunk_scroll = gtk_vscrollbar_new(
-					GTK_ADJUSTMENT(chunk_adj));
+	chunk_scroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(chunk_adj));
 					// Update window when it stops.
 	gtk_range_set_update_policy(GTK_RANGE(chunk_scroll),
 					GTK_UPDATE_DELAYED);

@@ -57,6 +57,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 					//   256 shape ID's = 512 bytes).
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
+	GtkWidget *chunk_scroll;	// Vertical scrollbar.
 	int num_chunks;			// Total # of chunks.
 	int chunknum0;			// Chunk # of leftmost in
 					//   displayed list.
