@@ -79,7 +79,8 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/shoes.shp			\
 	bg/triple_xbow.shp		\
 	bg/pants.shp			\
-	bg/collar.shp
+	bg/collar.shp			\
+	bg/hoods.shp
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\

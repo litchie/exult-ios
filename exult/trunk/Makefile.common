@@ -140,6 +140,7 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/triple_xbow.shp \
 	data/bg/pants.shp \
 	data/bg/collar.shp \
+	data/bg/hoods.shp \
 	data/bg/flx.in
 
 

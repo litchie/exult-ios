@@ -907,10 +907,10 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 
 	// Magic (shape is different)
 	{     383, 0,        Actor::head,     OT_Helm,   true, SF_PAPERDOL_VGA,     74,     0 },
-	// Hood **NEEDS ART**
-	{     444, 0,        Actor::head,     OT_Helm,   true, SF_PAPERDOL_VGA,     59,     0 },
-	// Hood **NEEDS ART**
-	{     444, 1,        Actor::head,     OT_Helm,   true, SF_PAPERDOL_VGA,     59,     0 },
+	// Hood
+	{     444, 0,        Actor::head,     OT_Helm,   true, SF_GAME_FLX,       EXULT_BG_FLX_HOODS_SHP,     0 },
+	// Hood
+	{     444, 1,        Actor::head,     OT_Helm,   true, SF_GAME_FLX,       EXULT_BG_FLX_HOODS_SHP,     2 },
 	// Chain Coif
 	{     539, 0,        Actor::head,     OT_Helm,   true, SF_PAPERDOL_VGA,     24,     0 },
 	// Great Helm

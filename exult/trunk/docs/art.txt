@@ -34,8 +34,8 @@ Brown (fur?) cloak	285/2		Adam
 Green top		249/0		sbx
 Brown/orange dress	249/1		sbx
 Blue dress		249/2		sbx
-Dark-brown hood		444/0		-
-Light-brown hood	444/1		-
+Dark-brown hood		444/0		Sam
+Light-brown hood	444/1		Sam
 Caddellite helmet	638/0		Willem Jan
 Greaves			353		Oblivious
 Brown pants		738/0,1		Sam
