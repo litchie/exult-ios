@@ -1,3 +1,8 @@
+2001-09-11  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* mapedit/(studio files). G++ v3 compilation: Standards and
+		namespaces. Recast unsigned char* to char*
+
 2001-09-10  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* several:  Map_chunk::find_spot() replaces find_unblocked_tile().

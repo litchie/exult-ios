@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapedraw.h"
 
 class Image_buffer8;
-class istream;
+#include <iosfwd>
 
 /*
  *	Store information about an individual chunk shown in the list.
@@ -53,7 +53,7 @@ class Chunk_info
  */
 class Chunk_chooser: public Object_browser, public Shape_draw
 	{
-	istream& chunkfile;		// Where chunks are read from (each is
+	std::istream& chunkfile;		// Where chunks are read from (each is
 					//   256 shape ID's = 512 bytes).
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
@@ -74,7 +74,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	void render_chunk(int xoff, int yoff);
 	void scroll(int newindex);	// Scroll.
 public:
-	Chunk_chooser(Vga_file *i, istream& cfile, unsigned char *palbuf, 
+	Chunk_chooser(Vga_file *i, std::istream& cfile, unsigned char *palbuf, 
 							int w, int h);
 	virtual ~Chunk_chooser();
 	
