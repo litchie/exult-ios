@@ -296,3 +296,17 @@ void Combat_schedule::now_what
 		npc->set_schedule_type(Schedule::follow_avatar);
 		}
 	}
+
+/*
+ *	Set opponent.  (Gets called when you double-click on one.)
+ */
+
+void Combat_schedule::set_opponent
+	(
+	Game_object *obj		// Could be a door, too.
+	)
+	{
+	opponent = obj;
+	state = approach;
+	}
+

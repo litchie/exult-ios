@@ -1860,9 +1860,10 @@ void Game_window::double_clicked
 		obj = find_object(x, y);
 	if (obj)
 		{
-		if (combat && !gump && obj != main_actor)
+		if (combat && !gump && obj != main_actor &&
+						obj->get_party_id() < 0)
 			{		// In combat mode.
-			obj->attacked(main_actor);
+			main_actor->set_opponent(obj);
 			return;
 			}
 		remove_all_effects();	// Remove text msgs. from screen.

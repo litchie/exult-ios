@@ -440,6 +440,24 @@ void Actor::follow
 	}
 
 /*
+ *	Set combat opponent.
+ */
+
+void Actor::set_opponent
+	(
+	Game_object *obj
+	)
+	{
+#if 0	/* Got to try this.+++++++ */
+	if (schedule_type != Schedule::combat)
+		set_schedule_type(Schedule::combat);
+#endif
+	if (schedule)
+		schedule->set_opponent(obj);
+	//+++++ schedule->now_what(); ?????
+	}
+
+/*
  *	Find the best spot where an item may be readied.
  *
  *	Output:	Index, or -1 if none found.
