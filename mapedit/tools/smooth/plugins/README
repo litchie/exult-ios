@@ -1,0 +1,75 @@
+README: how to write your plugins
+=================================
+
+1. Introduction
+This readme file is aimed at helping you create new plugins for smooth.
+You can use plugin_randomize.c as a base to get you started. Please
+submit your plugins to Artaxerxes2@iname.com for inclusion in this
+package.
+
+2. Plugins
+Plugins must have at least 4 special functions, one called
+plugin_parse(), one called plugin_apply(), one called init_plugin()
+and one called deinit_plugin() and must have in the "#include" one for
+"../globals.h" (found in the source for smooth)
+
+init_plugin() is called first and should be used to set a local
+variable of type glob_statics with what is passed in its parameters
+(which is the main's glob_statics struct).
+The function plugin_parse will then be called by main and will be given as
+parameter a string (that is a "char *") representing 1 (one) line from
+the config file that is found in the section [your_plugin]. The return
+value is an integer, which is < 0 when a problem occur (like a
+mistyped string).
+The function plugin_apply will be called with a 6 char string
+containing the hex value for the colour being transformed from and
+must return a 6 char string containing the hex valur for the colour
+being transformed to as well as a copy of glob_variables which is a
+structure holding all the global data that change a lot, like the
+global_x and the global_y and the image_out SDL_Surface.
+At unload time, the deinit_function will be automatically called. It
+could be used for doing reporting for instance.
+
+3. Inner workings
+Whenever the config file parser see a strings starting with
+[plugin_name], it will load the library "libsmooth_plugin_name.so",
+call it's init_plugin() with the glob_statics as a parameter  and
+call its plugin_parse() function for each line of config read from now
+on until the next [section]. It is then important that you use this
+function to prepare your structures so that when plugin_apply is
+called with a colour as a parameter, you will know what colour to
+return. It might be possible that not preparation work is involved
+depending on the type of plugin you are writing; in this case simply
+return a value > 0. Note that this case should be very rare.
+When the config file as been entirely parsed, the program will walk
+across the map, pixel by pixel, retrieve the colour index for this
+pixel, and use this index to get the head of the chained list holding
+the address of the plugin_apply()s to apply against this pixel. The
+result from the calls to plugin_apply()s is a colour which is then put
+on the output image, even if the colour does not exist in the original
+image. Eventually, when all is done, a new palette is created to
+reflect the fact new colours might have been added to the image.
+All in all, the only thing you have to worry about is:
+* initialising your plugin's global variables
+* parsing the config file line given in plugin_parse (see
+plugin_randomize.c for getting ideas on how I did it)
+* be prepared to return a hex colour when given a colour as a
+parameter.
+
+It seems that knowing what colour we want to transform from is not
+enough. That's why you also have access to the coordinates for the
+pixel being transformed. image_in, global_x and global_y are global
+variables accessed through a structure passed to plugin_apply.
+
+For instance, if your plugin requires knowing the colour value on the
+direct left of the pixel being transformed, you could use
+getpixel(g_vars.image_in,g_vars.global_x+1,g_vars.global_y). Of
+course, you need to check if g_vars.global_x+1 is still in
+the boundaries of the image and you need to write your own getpixel function.
+
+Don't be afraid to look at plugin_randomize.c to get an idea on how to
+start your plugin. In case you are really stomped, just email me at:
+Artaxerxes2 at iname dot com
+
+Written by Artaxerxes2 at iname dot com
+=======================================
