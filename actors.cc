@@ -936,8 +936,9 @@ void Talk_schedule::now_what
 
 Loiter_schedule::Loiter_schedule
 	(
-	Npc_actor *n
-	) : Schedule(n), center(n->get_abs_tile_coord())
+	Npc_actor *n,
+	int d				// Distance in tiles to roam.
+	) : Schedule(n), center(n->get_abs_tile_coord()), dist(d)
 	{
 	}
 
@@ -949,7 +950,6 @@ void Loiter_schedule::now_what
 	(
 	)
 	{
-	const int dist = 12;		// Distance in tiles to roam.
 	int newx = center.tx - dist + rand()%(2*dist);
 	int newy = center.ty - dist + rand()%(2*dist);
 					// Wait a bit.
@@ -1314,7 +1314,10 @@ void Npc_actor::set_schedule_type
 	case Schedule::patrol:
 		schedule = new Patrol_schedule(this);
 		break;
-	case Schedule::wait:		// Do nothing.
+	case Schedule::wait:		// Loiter just a little
+//+++++Figure out why this messes up Mayor's talk at intro.
+//		schedule = new Loiter_schedule(this, 1);
+		break;
 	default:
 		break;
 		}

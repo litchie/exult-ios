@@ -1,3 +1,8 @@
+2000-06-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Change to lt() fixes a couple rendering goofs.
+	* gameclk.cc: Start 1st schedule after 6 minutes max.
+
 2000-06-01  Jeff Freedman  <jeff@patches.simutech.com>
 
 	* Spellbook mostly done.  (Spells need intrinsic 0x41 to work.)
