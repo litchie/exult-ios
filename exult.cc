@@ -189,6 +189,7 @@ static int Play()
 	{
 	Handle_events(&quitting_time);
 	delete gwin;
+	delete mouse;
 	return (0);
 	}
 
