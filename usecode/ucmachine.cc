@@ -50,6 +50,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iomanip>
 #include "ucsched.h"
 #include "chunks.h"
+#include "conversation.h"
 
 #ifdef XWIN
 #include <signal.h>
@@ -273,7 +274,7 @@ void Usecode_machine::show_pending_text
 		gwin->paint();
 		}
 					// Normal conversation:
-	else if (conv.is_npc_text_pending())
+	else if (conv->is_npc_text_pending())
 		click_to_continue();
 	}
 
@@ -316,11 +317,11 @@ void Usecode_machine::say_string
 			break;
 		if (!eol)		// Not found?
 			{
-			conv.show_npc_message(str);
+			conv->show_npc_message(str);
 			break;
 			}
 		*eol = 0;
-		conv.show_npc_message(str);
+		conv->show_npc_message(str);
 		click_to_continue();
 		str = eol + 1;
 		if (*str == '~')
@@ -366,7 +367,7 @@ void Usecode_machine::show_npc_face
 	gwin->end_gump_mode();
 //	gwin->set_all_dirty();
 	gwin->paint();
-	conv.show_face(shape, frame);
+	conv->show_face(shape, frame);
 //	user_choice = 0;		// Seems like a good idea.
 // Also seems to create a conversation bug in Test of Love :-(
 
@@ -383,7 +384,7 @@ void Usecode_machine::remove_npc_face
 	{
 	show_pending_text();
 	int shape = -arg1.get_int_value();
-	conv.remove_face(shape);
+	conv->remove_face(shape);
 	}
 
 /*
@@ -1048,7 +1049,7 @@ void Usecode_machine::click_to_continue
 	char c;
 	if (!gwin->is_palette_faded_out())// If black screen, skip!
 		Get_click(xx, yy, Mouse::hand, &c);
-	conv.clear_text_pending();
+	conv->clear_text_pending();
 	user_choice = 0;		// Clear it.
 	}
 
@@ -1076,7 +1077,7 @@ const char *Usecode_machine::get_user_choice
 	(
 	)
 	{
-	if (!conv.get_num_answers())
+	if (!conv->get_num_answers())
 		return (0);		// Shouldn't happen.
 	if (!user_choice)		// May have already been done.
 		get_user_choice_num();
@@ -1095,7 +1096,7 @@ int Usecode_machine::get_user_choice_num
 	)
 	{
 	user_choice = 0;
-	conv.show_avatar_choices();
+	conv->show_avatar_choices();
 	int x, y;			// Get click.
 	int choice_num;
 	do
@@ -1103,21 +1104,21 @@ int Usecode_machine::get_user_choice_num
 		char chr;		// Allow '1', '2', etc.
 		int result=Get_click(x, y, Mouse::hand, &chr);
 		if (result<=0) {	// ESC pressed, select 'bye' if poss.
-			choice_num = conv.locate_answer("bye");
+			choice_num = conv->locate_answer("bye");
 		} else if (chr) {		// key pressed
-			if (chr>='1' && chr <='0'+conv.get_num_answers()) {
+			if (chr>='1' && chr <='0'+conv->get_num_answers()) {
 				choice_num = chr - '1';
 			} else
 				choice_num = -1;	//invalid key
 		} else
-			choice_num = conv.conversation_choice(x, y);
+			choice_num = conv->conversation_choice(x, y);
 		}
 					// Wait for valid choice.
-	while (choice_num  < 0 || choice_num >= conv.get_num_answers());
+	while (choice_num  < 0 || choice_num >= conv->get_num_answers());
 
-	conv.clear_avatar_choices();
+	conv->clear_avatar_choices();
 					// Store ->answer string.
-	user_choice = conv.get_answer(choice_num);
+	user_choice = conv->get_answer(choice_num);
 	return (choice_num);		// Return choice #.
 	}
 
@@ -1187,6 +1188,8 @@ void Usecode_machine::_init_
 #endif
 		funs[fun->id/0x100].put(fun->id%0x100, fun);
 		}
+
+	conv = new Conversation;
 	}
 
 /*
@@ -1200,6 +1203,7 @@ Usecode_machine::~Usecode_machine
 	delete [] stack;
 	delete [] String;
 	delete removed;
+	delete conv;
 //	int num_slots = funs->get_cnt();
 	int num_slots = sizeof(funs)/sizeof(funs[0]);
 	for (int i = 0; i < num_slots; i++)
@@ -1308,7 +1312,7 @@ int Usecode_machine::run
 			offset = (short) Read2(ip);
 			catch_ip = ip + offset;
 					// ++++++Not sure if this is needed:
-			if (set_ret_value || !conv.get_num_answers() || abort)
+			if (set_ret_value || !conv->get_num_answers() || abort)
 				{
 				ip = catch_ip;
 				user_choice = 0;
@@ -1793,7 +1797,7 @@ int Usecode_machine::call_usecode
 		return (0);
 	Game_object *prev_item = caller_item;
 	caller_item = obj;
-	conv.clear_answers();
+	conv->clear_answers();
 	int ret = call_usecode_function(id, event, 0);
 	set_book(0);
 	caller_item = prev_item;
@@ -1906,5 +1910,10 @@ void Usecode_machine::link_party
 
 void Usecode_machine::init_conversation()
 {
-	conv.init_faces();
+	conv->init_faces();
+}
+
+int Usecode_machine::get_num_faces_on_screen() const
+{
+	 return conv->get_num_faces_on_screen();
 }
