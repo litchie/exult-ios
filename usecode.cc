@@ -2436,53 +2436,57 @@ struct
 	USECODE_INTRINSIC_PTR(get_alignment),	// 0x3c
 	USECODE_INTRINSIC_PTR(set_alignment),	// 0x3d
 	USECODE_INTRINSIC_PTR(move_object),	// 0x3e
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f  +++++++Vanish NPC?
+                     // (according to ucdump.c)
 	USECODE_INTRINSIC_PTR(item_say),	// 0x40
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x41++++++++Some kind of animation?
 	// something(npc/item, item, wand/powderkeg-shape).
 	USECODE_INTRINSIC_PTR(get_lift),	// 0x42
 	USECODE_INTRINSIC_PTR(set_lift),	// 0x43
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x44++++Get_something() (0-3)
-	// 3==can't do magic here?
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x45++++Set_something(i)
+	// 3==can't do magic here?         GetWeather (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x45++++Set_something(i) SetWeather (ucdump.c)
 	USECODE_INTRINSIC_PTR(sit_down),// 0x46
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x47
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x47     SummonCreature (ucdump.c)
 	USECODE_INTRINSIC_PTR(display_map),	// 0x48
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x49
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x49     KillNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4a
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4b
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4c
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4b     SetNPCAttackMode (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4c     SetTargetNPCToAttack (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d     CloneNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4f ++++called when you dbl-click
                          	// on FoV gem. (gift from LB) display area???
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52
-	USECODE_INTRINSIC_PTR(sprite_effect),	// 0x53
+                                // ShowCrystalBall  (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50     ShowWizardEye (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51     ResurrectNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52     AddSpellToBook (ucdump.c)
+	USECODE_INTRINSIC_PTR(sprite-effect),	// 0x53     ExecuteSprite (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54
 	USECODE_INTRINSIC_PTR(book_mode),// 0x55
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.
+                           // StopTime (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x57 ++++?Light_source(time)?
+                           //CauseLight (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x58 ++++Get_barge(item):  Rets.
 					// barge item is on.
 	USECODE_INTRINSIC_PTR(earthquake),	// 0x59
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b     Armageddon (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5c
-	USECODE_INTRINSIC_PTR(run_endgame),	// 0x5d
+	USECODE_INTRINSIC_PTR(run_endgame),	// 0x5d  +++++CauseBlackout (ucdump.c)
 	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5f
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x60
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x61
 	USECODE_INTRINSIC_PTR(is_pc_inside),	// 0x62
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x64
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x65
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x66
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63     SetOrreryState (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x64     UNUSED
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x65     GetTimerElapsetHours (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x66     SetTimer (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x67
 	USECODE_INTRINSIC_PTR(mouse_exists),	// 0x68
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x69
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x69     GetSpeechTrack (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6c
@@ -2494,8 +2498,8 @@ struct
 	USECODE_INTRINSIC_PTR(get_equipment_list),	// 0x72
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x73
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x74
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x75
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x76
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x75     +++++ StartEndGame (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x76     FireCannon (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x77
 	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x79
@@ -2503,7 +2507,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7c
 	USECODE_INTRINSIC_PTR(run_usecode),	// 0x7d
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7e
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7e     PlaySpeech (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7f
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x81
@@ -2527,7 +2531,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x92
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x93
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x94
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x94    SetupOrrery (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x95
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x96
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x97
