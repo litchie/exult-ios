@@ -43,6 +43,12 @@ class Uc_function
 	Uc_scope *cur_scope;		// Current scope.
 	int num_parms;			// # parameters.
 	int num_locals;			// Counts locals.
+					// Stack of loops (where 'break' can
+					//   be used.
+	vector<Uc_statement *> breakables;
+	vector<int> breaks;		// Offsets of generated breaks in 
+					//   current loop, with loops separated
+					//   by -1's.
 					// Links to called functions:
 	std::vector<Uc_function_symbol *> links;
 	char *text_data;		// All strings.
@@ -85,6 +91,14 @@ public:
 	Uc_symbol *add_int_const_symbol(char *nm, int value);
 	static Uc_symbol *add_global_int_const_symbol(char *nm, int val);
 	int add_string(char *text);
+					// Start/end loop.
+	void start_breakable(Uc_statement *s);
+	void end_breakable(Uc_statement *s, vector<char>& stmt_code);
+					// Store 'break' location.
+	void add_break(int op_offset);	// DANGER:  Offset is filled in when
+					//   end_breakable() is called, so the
+					//   string this is in better not have
+					//   been deleted!!!
 					// Link external function.
 	int link(Uc_function_symbol *fun);
 	void gen(std::ostream& out);		// Generate Usecode.

@@ -43,17 +43,17 @@ public:
 		{  }
 	virtual ~Uc_expression() {  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out) = 0;
+	virtual void gen_value(vector<char>& out) = 0;
 					// Gen code to push value(s).
-	virtual int gen_values(std::ostream& out);
+	virtual int gen_values(vector<char>& out);
 					// Gen. code to jmp if this is false.
-	virtual void gen_jmp_if_false(std::ostream& out, int offset);
+	virtual int gen_jmp_if_false(vector<char>& out, int offset);
 					// Gen. to assign from stack.
-	virtual void gen_assign(std::ostream& out);
+	virtual void gen_assign(vector<char>& out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return -1; }
 					// Get/create var == this.
-	virtual Uc_var_symbol *need_var(std::ostream& out, Uc_function *fun);
+	virtual Uc_var_symbol *need_var(vector<char>& out, Uc_function *fun);
 					// Evaluate constant.
 	virtual bool eval_const(int& val);
 	};
@@ -69,11 +69,11 @@ public:
 	Uc_var_expression(Uc_var_symbol *v) : var(v)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(std::ostream& out);
+	virtual void gen_assign(vector<char>& out);
 	virtual int get_string_offset();// Get offset in text_data.
-	virtual Uc_var_symbol *need_var(std::ostream& , Uc_function *)
+	virtual Uc_var_symbol *need_var(vector<char>& , Uc_function *)
 		{ return var; }
 	};
 
@@ -91,9 +91,9 @@ public:
 	~Uc_arrayelem_expression()
 		{ delete index; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(std::ostream& out);
+	virtual void gen_assign(vector<char>& out);
 	};
 
 /*
@@ -107,9 +107,9 @@ public:
 		: index(i)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(std::ostream& out);
+	virtual void gen_assign(vector<char>& out);
 	};
 
 /*
@@ -124,7 +124,7 @@ public:
 		: opcode(o), left(l), right(r)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 					// Evaluate constant.
 	virtual bool eval_const(int& val);
 	};
@@ -141,7 +141,7 @@ public:
 		: opcode(o), operand(r)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 	};
 
 /*
@@ -156,9 +156,9 @@ public:
 		: operand(r)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 					// Gen. code to jmp if this is false.
-	virtual void gen_jmp_if_false(std::ostream& out, int offset);
+	virtual int gen_jmp_if_false(vector<char>& out, int offset);
 	};
 
 /*
@@ -171,7 +171,7 @@ public:
 	Uc_int_expression(int v) : value(v)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 					// Evaluate constant.
 	virtual bool eval_const(int& val);
 	};
@@ -186,7 +186,7 @@ public:
 	Uc_bool_expression(bool t) : tf(t)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 	};
 
 /*
@@ -197,9 +197,9 @@ class Uc_event_expression : public Uc_expression
 public:
 	Uc_event_expression() {  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(std::ostream& out);
+	virtual void gen_assign(vector<char>& out);
 	};
 
 /*
@@ -210,7 +210,7 @@ class Uc_item_expression : public Uc_expression
 public:
 	Uc_item_expression() {  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 	};
 
 /*
@@ -223,7 +223,7 @@ public:
 	Uc_string_expression(int o) : offset(o)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return offset; }
 	};
@@ -242,9 +242,9 @@ public:
 	const std::vector<Uc_expression*>& get_exprs()
 		{ return exprs; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 					// Gen code to push value(s).
-	virtual int gen_values(std::ostream& out);
+	virtual int gen_values(vector<char>& out);
 	};
 
 /*
@@ -267,7 +267,22 @@ public:
 	void set_no_return()
 		{ return_value = false; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(std::ostream& out);
+	virtual void gen_value(vector<char>& out);
 	};
+
+/*
+ *	Write a 2-byte value to the end/position of a character stream.
+ */
+
+inline void Write2(vector<char>& out, unsigned short val)
+	{
+	out.push_back((char) (val&0xff));
+	out.push_back((char) ((val>>8)&0xff));
+	}
+inline void Write2(vector<char>& out, int pos, unsigned short val)
+	{
+	out[pos] = (char) (val&0xff);
+	out[pos + 1] = (char) ((val>>8)&0xff);
+	}
 
 #endif

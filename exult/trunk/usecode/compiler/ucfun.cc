@@ -27,10 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <stdio.h>
-#include <strstream.h>
 #include "ucfun.h"
 #include "ucstmt.h"
 #include "utils.h"
+#include "opcodes.h"
+#include "ucexpr.h"			/* Needed only for Write2(). */
 
 using std::strlen;
 using std::memcpy;
@@ -207,6 +208,65 @@ int Uc_function::add_string
 	}
 
 /*
+ *	Start a loop.
+ */
+
+void Uc_function::start_breakable
+	(
+	Uc_statement *s			// Loop.
+	)
+	{
+	breakables.push_back(s);
+	breaks.push_back(-1);		// Set marker in 'break' list.
+	}
+
+/*
+ *	Fix up stuff when a loop's body has been generated.
+ */
+
+void Uc_function::end_breakable
+	(
+	Uc_statement *s,		// Loop.  For verification.
+	vector<char>& stmt_code
+	)
+	{
+					// Just make sure things are right.
+	assert(!breakables.empty() && s == breakables.back());
+	breakables.pop_back();
+	int stmtlen = stmt_code.size();
+					// Fix all the 'break' statements,
+					//   going backwards.
+	while (!breaks.empty() && breaks.back() >= 0)
+		{			// Get offset within loop.
+		int break_offset = breaks.back();
+		breaks.pop_back();	// Remove from end of list.
+		assert(break_offset < stmtlen - 2);
+					// Store offset.
+		Write2(stmt_code, break_offset + 1, 
+						stmtlen - (break_offset + 3));
+		}
+	assert(!breaks.empty() && breaks.back() == -1);
+	breaks.pop_back();		// Remove marker (-1).
+	}
+
+/*
+ *	Store a 'break' statement's offset so it can be filled in at the end
+ *	of the current loop.
+ */
+
+void Uc_function::add_break
+	(
+	int op_offset			// Offset in loop's code of JMP.
+	)
+	{
+	assert(op_offset >= 0);
+	if (breakables.empty())		// Not in a loop?
+		Uc_location::yyerror("'break' is not valid here");
+	else
+		breaks.push_back(op_offset);
+	}
+
+/*
  *	Lookup/add a link to an external function.
  *
  *	Output:	Link offset.
@@ -237,10 +297,12 @@ void Uc_function::gen
 	{
 					// Start with function #.
 	Write2(out, proto->get_usecode_num());
-	ostrstream code;		// Generate code here first.
+	vector<char> code;		// Generate code here first.
+	code.reserve(30000);
 	if (statement)
 		statement->gen(code, this);
-	int codelen = code.pcount();	// Get its length.
+	code.push_back((char) UC_RET);	// Always end with a RET.
+	int codelen = code.size();	// Get its length.
 	int num_links = links.size();
 					// Total: text_data_size + data + 
 					//   #args + #locals + #links + links +
@@ -253,12 +315,11 @@ void Uc_function::gen
 	Write2(out, num_locals);
 	Write2(out, num_links);
 					// Write external links.
-	for (std::vector<Uc_function_symbol *>::const_iterator it = links.begin();
-						it != links.end(); it++)
+	for (std::vector<Uc_function_symbol *>::const_iterator it = 
+				links.begin(); it != links.end(); it++)
 		Write2(out, (*it)->get_usecode_num());
-	char *ucstr = code.str();	// Finally, the code itself.
+	char *ucstr = &code[0];		// Finally, the code itself.
 	out.write(ucstr, codelen);
-	delete ucstr;
 	out.flush();
 	}
 

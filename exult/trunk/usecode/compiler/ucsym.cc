@@ -44,7 +44,7 @@ using std::strcmp;
 
 int Uc_symbol::gen_assign
 	(
-	std::ostream& out
+	vector<char>& out
 	)
 	{
 	return 0;
@@ -58,7 +58,7 @@ int Uc_symbol::gen_assign
 
 int Uc_symbol::gen_value
 	(
-	std::ostream& out
+	vector<char>& out
 	)
 	{
 	return 0;
@@ -72,7 +72,7 @@ int Uc_symbol::gen_value
 
 int Uc_symbol::gen_call
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun,
 	Uc_array_expression *parms,	// Parameter list.
 	bool retvalue			// True if a function.
@@ -100,10 +100,10 @@ Uc_expression *Uc_symbol::create_expression
 
 int Uc_var_symbol::gen_assign
 	(
-	std::ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_POP);
+	out.push_back((char) UC_POP);
 	Write2(out, offset);
 	return 1;
 	}
@@ -116,10 +116,10 @@ int Uc_var_symbol::gen_assign
 
 int Uc_var_symbol::gen_value
 	(
-	std::ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_PUSH);
+	out.push_back((char) UC_PUSH);
 	Write2(out, offset);
 	return 1;
 	}
@@ -143,10 +143,10 @@ Uc_expression *Uc_var_symbol::create_expression
 
 int Uc_const_int_symbol::gen_value
 	(
-	std::ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_PUSHI);
+	out.push_back((char) UC_PUSHI);
 	Write2(out, value);
 	return 1;
 	}
@@ -170,10 +170,10 @@ Uc_expression *Uc_const_int_symbol::create_expression
 
 int Uc_string_symbol::gen_value
 	(
-	std::ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_PUSHS);
+	out.push_back((char) UC_PUSHS);
 	Write2(out, offset);
 	return 1;
 	}
@@ -197,7 +197,7 @@ Uc_expression *Uc_string_symbol::create_expression
 
 int Uc_intrinsic_symbol::gen_call
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun,
 	Uc_array_expression *parms,	// Parameter list.
 	bool retvalue			// True if a function.
@@ -216,9 +216,9 @@ int Uc_intrinsic_symbol::gen_call
 		}
 					// ++++ parmcnt == num_parms.
 					// Opcode depends on val. returned.
-	out.put((char) (retvalue ? UC_CALLIS : UC_CALLI));
+	out.push_back((char) (retvalue ? UC_CALLIS : UC_CALLI));
 	Write2(out, intrinsic_num);	// Intrinsic # is 2 bytes.
-	out.put((char) parmcnt);	// Parm. count is 1.
+	out.push_back((char) parmcnt);	// Parm. count is 1.
 	return 1;
 	}
 
@@ -230,7 +230,7 @@ int Uc_intrinsic_symbol::gen_call
 
 int Uc_function_symbol::gen_call
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun,
 	Uc_array_expression *aparms,	// Actual parameter list.
 	bool /* retvalue */		// True if a function.
@@ -254,7 +254,7 @@ int Uc_function_symbol::gen_call
 			"# parms. passed (%d) doesn't match '%s' count (%d)",
 			parmcnt, get_name(), parms.size());
 		}				
-	out.put((char) UC_CALL);	// Called function sets return.
+	out.push_back((char) UC_CALL);	// Called function sets return.
 	int link = fun->link(this);	// Get offset in function's list.
 	Write2(out, link);
 	return 1;
