@@ -1449,6 +1449,11 @@ void Actor::activate
 		 get_flag(Obj_flags::asleep))
 		return;
 					// Usecode
+					// Failed copy-protection?
+	else if (serpent &&
+		 gwin->get_main_actor()->get_flag(Obj_flags::confused))
+		umachine->call_usecode(0x63d, this,
+			(Usecode_machine::Usecode_events) event);	
 	else if (usecode == -1)
 		umachine->call_usecode(get_shapenum(), this,
 			(Usecode_machine::Usecode_events) event);
@@ -2952,7 +2957,8 @@ void Npc_actor::activate
 					// Converse, etc.
 	Actor::activate(umachine, event);
 	int i;				// Past 6:00pm first day?
-	if (gwin->get_total_hours() >= 18 || Game::get_game_type() == SERPENT_ISLE ||
+	if (gwin->get_total_hours() >= 18 || 
+	    Game::get_game_type() == SERPENT_ISLE ||
 					// Or party member/asleep?
 	    (i = find_schedule_change(gwin->get_hour()/3)) < 0 ||
 					// Or schedule is already correct?
