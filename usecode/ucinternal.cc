@@ -1723,14 +1723,17 @@ int Usecode_internal::run
 			break;
 		case 0x1e:		// ARRC.
 			{		// Get # values to pop into array.
-			offset = Read2(ip);
-			Usecode_value arr(offset, 0);
+			int num = Read2(ip);
+			int cnt = num;
+			Usecode_value arr(num, 0);
 			int to = 0;	// Store at this index.
-			while (offset--)
+			while (cnt--)
 				{
 				Usecode_value val = pop();
 				to += arr.add_values(to, val);
 				}
+			if (to < num)// 1 or more vals empty arrays?
+				arr.resize(to);
 			push(arr);
 			}
 			break;

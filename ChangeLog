@@ -1,3 +1,8 @@
+2001-09-29  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucinternal.cc (Usecode_internal): Fixed ARRC bug in
+	cases where one or more values are empty arrays.
+
 2001-09-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/objs.cc: Give fake HP's to serpent statue in SI.
