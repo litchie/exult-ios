@@ -125,12 +125,12 @@ void Background_noise::handle_event
 	unsigned long delay = 8000;
 					// Only if outside.
 	if (ava && !gwin->is_main_actor_inside() &&
-					// ++++++Need SI SFX #'s.
+					// +++++SI SFX's don't sound right.
 	    Game::get_game_type() == BLACK_GATE)
 		{
-		int sound;		// SFX #.
+		int sound;		// BG SFX #.
 		static unsigned char bgnight[] = {61, 103, 110},
-				     bgday[] = {75, 82, 85, 85};
+				     bgday[] = {82, 85, 85};
 		if (repeats > 0)	// Repeating?
 			sound = last_sound;
 		else
@@ -140,6 +140,8 @@ void Background_noise::handle_event
 				sound = bgnight[rand()%sizeof(bgnight)];
 			else
 				sound = bgday[rand()%sizeof(bgday)];
+					// Translate BG to SI #'s.
+			sound = Audio::game_sfx(sound);
 			last_sound = sound;
 			}
 		Audio::get_ptr()->play_sound_effect(sound);
@@ -2755,7 +2757,8 @@ void Game_window::show_gump
 	if (++cnt == 8)
 		cnt = 0;
 	clock.set_palette();		// Gumps get lighter palette.
-	Audio::get_ptr()->play_sound_effect(14);	// The weird noise.
+	int sfx = Audio::game_sfx(14);
+	Audio::get_ptr()->play_sound_effect(sfx);	// The weird noise.
 	paint();			// Show everything.
 	}
 

@@ -55,6 +55,7 @@ class Audio
 {
 private:
 	static	Audio	*self;
+	static  int *bg2si_sfxs;	// Converts BG sfx's to SI sfx's.
         bool truthful_;
 	bool audio_enabled, speech_enabled, music_enabled, effects_enabled;
 	bool SDL_open;
@@ -71,6 +72,9 @@ public:
 	static	Audio	*get_ptr(void);
 	Mixer	*mixer;
 
+					// Given BG sfx, get SI if playing SI.
+	static	int game_sfx(int sfx)
+		{ return bg2si_sfxs ? bg2si_sfxs[sfx] : sfx; }
 	void	honest_sample_rates(void) { truthful_=true; }
 	void	cancel_streams(void);	// Dump any audio streams
 	void	play(uint8 *sound_data,uint32 len,bool);

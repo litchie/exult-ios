@@ -66,6 +66,7 @@ using std::vector;
 #define	TRAILING_VOC_SLOP 32
 #define	LEADING_VOC_SLOP 32
 
+extern int bgconv[];
 
 //-----SFX -------------------------------------------------------------
 
@@ -373,6 +374,7 @@ static	size_t calc_sample_buffer(uint16 _samplerate)
 }
 	
 Audio *Audio::self=0;
+int *Audio::bg2si_sfxs = 0;
 
 Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
 	effects_enabled(true), SDL_open(false),mixer(0),midi(0), sfxs(0),
@@ -460,6 +462,10 @@ void	Audio::Init_sfx()
 	{
 	if (sfx_file)
 		return;			// Already done.
+	if (Game::get_game_type() == SERPENT_ISLE)
+		bg2si_sfxs = &bgconv[0];
+	else
+		bg2si_sfxs = 0;
 					// Collection of .wav's?
 	string gametitle = Game::get_game_type() == BLACK_GATE ?
 		"blackgate" : "serpentisle";
@@ -765,7 +771,6 @@ AudioID Audio::play_wave_sfx
 	if (!effects_enabled || !sfx_file) 
 		return AudioID(0, 0);  // no .wav sfx available
 
-	extern int bgconv[];
 	const int max_cached = 12;	// Max. we'll cache.
 
 	if (!mixer)
