@@ -11,8 +11,9 @@ MAJOR=0
 RELNUM=99.0
 VERSION=$MAJOR.$RELNUM
 
-dnl check host/target/build systems. For now, only target is used
-AC_CANONICAL_SYSTEM
+dnl check host/build systems. For now, only host is used
+AC_CANONICAL_HOST
+AC_CANONICAL_BUILD
 
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION,no-define)
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
@@ -30,16 +31,16 @@ dnl -------------------------
 
 dnl determine windowing system from target
 AC_MSG_CHECKING("windowing system")
-case "$target" in
-	*-*-linux*)
+case "$host_os" in
+	linux*)
 		WINDOWING_SYSTEM="-DXWIN"
 		AC_MSG_RESULT(X11)
 		;;
-	*-*-beos*)
+	beos)
 		WINDOWING_SYSTEM="-DBEOS"
 		AC_MSG_RESULT(BeOS)
 		;;
-	*-*-mingw32*)
+	mingw32* | cygwin )
 		WINDOWING_SYSTEM="-DWIN32"
 		AC_MSG_RESULT(Win32)
 		;;

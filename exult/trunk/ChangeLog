@@ -1,3 +1,6 @@
+2000-11-27  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* configure.in: I mistakenly used target instead of host. fixed.
+
 2000-11-27  Max Horn  <max@quendi.de>
 	* files/*.cc: changed retrieve() to return a char* instead of taking a char**
 	* various files: changed Uint? to uint? (so we are less dependant on SDL)
