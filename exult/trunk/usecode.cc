@@ -986,7 +986,7 @@ void Usecode_machine::item_say
 	if (obj && str && *str)
 		{
 		Rectangle box = gwin->get_shape_rect(obj);
-		gwin->add_text((char *)str, box.x, box.y);	// &&& Fix me later and avoid the ugly cast
+		gwin->add_text(str, box.x, box.y);	// &&& Fix me later and avoid the ugly cast
 		gwin->show();		// Not sure.+++++testing.
 		}
 	}

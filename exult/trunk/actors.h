@@ -195,7 +195,7 @@ public:
 	virtual int find_readied(Game_object *obj);
 	virtual Game_object *get_readied(int index)
 		{
-		return index >= 0 && index < sizeof(spots)/sizeof(spots[0]) ? 
+		return index >= 0 && index < (int)(sizeof(spots)/sizeof(spots[0])) ? 
 				spots[index] : 0; 
 		}
 #if 0	/* ++++++ Trying to init. 1st-day schedules in gameclk.cc. */
