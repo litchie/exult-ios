@@ -322,7 +322,8 @@ fi
 AC_ARG_ENABLE(zip-support, [ --enable-zip-support     Enable zipped savegame support [default yes]],,enable_zip_support=yes)
 
 if test x$enable_zip_support = xyes ; then
-	AC_CHECK_LIB(z,main,enable_zip_support=yes,enable_zip_support=no)
+	AC_CHECK_HEADER(zlib.h,,enable_zip_support=no)
+	AC_CHECK_HEADER(zutil.h,,enable_zip_support=no)
 fi
 
 AC_MSG_CHECKING(for zipped savegame support)
