@@ -1,3 +1,8 @@
+2001-10-29  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/faq and docs/readme: unified xsl and dtd files, changed makefiles
+	  accordingly and updated exult_faq.xml/readme.xml
+	* Faq, Readme updated
+
 2001-10-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Don't teleport party members in 'wait' state.
