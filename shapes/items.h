@@ -36,7 +36,9 @@ extern int num_text_msgs;
 extern char **misc_names;		// Frames, etc (0x500 - ).
 extern int num_misc_names;
 
-void Setup_item_names (std::ifstream& items, std::ifstream& msgs);
+void Setup_text();
+void Write_text_file();
+void Set_item_name(int num, const char *name);
 
 /*
  *	Message #'s.  These are (offset-0x400) in text.flx and exultmsg.txt:
