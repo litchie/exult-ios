@@ -179,6 +179,7 @@ BG_Game::BG_Game()
 	fontManager.add_font("MENU_FONT", MAINSHP_FLX, 9, 1);
 	fontManager.add_font("END2_FONT", ENDGAME, 4, -1);
 	fontManager.add_font("END3_FONT", ENDGAME, 5, -2);
+	fontManager.add_font("NORMAL_FONT", FONTS_VGA, 0, -1);
 }
 
 BG_Game::~BG_Game()
@@ -1035,6 +1036,7 @@ void BG_Game::end_game(bool success)
 	FORGET_ARRAY(buffer);
 	Font *endfont2 = fontManager.get_font("END2_FONT");
 	Font *endfont3 = fontManager.get_font("END3_FONT");
+	Font *normal = fontManager.get_font("NORMAL_FONT");
 
 	const char 	*message = "No. You cannot do that! You must not!";
 	int	height = topy+200 - endfont2->get_text_height()*2;
@@ -1115,10 +1117,10 @@ void BG_Game::end_game(bool success)
 
 	// Paint text
 	message = "The Black Gate is destroyed.";
-	width = (gwin->get_width() - gwin->get_text_width(0,message)) / 2;
-	height = (gwin->get_height() - gwin->get_text_height(0)) / 2;
+	width = (gwin->get_width() - normal->get_text_width(message)) / 2;
+	height = (gwin->get_height() - normal->get_text_height()) / 2;
 	
-	gwin->paint_text (0, message, width, height);
+	normal->draw_text (ibuf, width, height, message);
 
 	// Fade in for 1 sec (50 cycles)
 	gwin->fade_palette (50, 1, 0);
@@ -1148,9 +1150,9 @@ void BG_Game::end_game(bool success)
 
 	// Paint text
 	message = "The Guardian has been stopped.";
-	width = (gwin->get_width() - gwin->get_text_width(0,message)) / 2;
+	width = (gwin->get_width() - normal->get_text_width(message)) / 2;
 
-	gwin->paint_text (0, message, width, height);
+	normal->draw_text (ibuf, width, height, message);
 
 	// Fade in for 1 sec (50 cycles)
 	gwin->fade_palette (50, 1, 0);
@@ -1277,10 +1279,10 @@ void BG_Game::end_game(bool success)
 		"soon destroyed."
 	};
 
-	starty = (gwin->get_height() - gwin->get_text_height(0)*10)/2;
+	starty = (gwin->get_height() - normal->get_text_height()*10)/2;
 	
 	for(i=0; i<10; i++)
-		gwin->paint_text(0, txt_screen1[i], centerx-gwin->get_text_width(0, txt_screen1[i])/2, starty+gwin->get_text_height(0)*i);
+		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen1[i])/2, starty+normal->get_text_height()*i, txt_screen1[i]);
 
 	// Fade in for 1 sec (50 cycles)
 	gwin->fade_palette (50, 1, 0);
@@ -1324,10 +1326,10 @@ void BG_Game::end_game(bool success)
 		"death of Spark's father."
 	};
 
-	starty = (gwin->get_height() - gwin->get_text_height(0)*6)/2;
+	starty = (gwin->get_height() - normal->get_text_height()*6)/2;
 	
 	for(i=0; i<6; i++)
-		gwin->paint_text(0, txt_screen2[i], centerx-gwin->get_text_width(0, txt_screen2[i])/2, starty+gwin->get_text_height(0)*i);
+		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen2[i])/2, starty+normal->get_text_height()*i, txt_screen2[i]);
 
 
 	// Fade in for 1 sec (50 cycles)
@@ -1374,10 +1376,10 @@ void BG_Game::end_game(bool success)
 		"who got away?"
 	};
 
-	starty = (gwin->get_height() - gwin->get_text_height(0)*6)/2;
+	starty = (gwin->get_height() - normal->get_text_height()*6)/2;
 	
 	for(i=0; i<6; i++)
-		gwin->paint_text(0, txt_screen3[i], centerx-gwin->get_text_width(0, txt_screen3[i])/2, starty+gwin->get_text_height(0)*i);
+		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen3[i])/2, starty+normal->get_text_height()*i, txt_screen3[i]);
 
 	// Fade in for 1 sec (50 cycles)
 	gwin->fade_palette (50, 1, 0);
@@ -1421,10 +1423,10 @@ void BG_Game::end_game(bool success)
 		"The Serpent Isle..."
 	};
 
-	starty = (gwin->get_height() - gwin->get_text_height(0)*4)/2;
+	starty = (gwin->get_height() - normal->get_text_height()*4)/2;
 	
 	for(i=0; i<4; i++)
-		gwin->paint_text(0, txt_screen4[i], centerx-gwin->get_text_width(0, txt_screen4[i])/2, starty+gwin->get_text_height(0)*i);
+		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen4[i])/2, starty+normal->get_text_height()*i, txt_screen4[i]);
 
 
 	// Fade in for 1 sec (50 cycles)

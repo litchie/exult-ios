@@ -1,3 +1,6 @@
+2001-11-08  Ryan Nunn  <triforce@merlin.net.au>
+	* bggame.cc : Fixed BG Endgame crash
+
 2001-11-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/objs.cc: Rendering order again:  Added special case when
@@ -4981,6 +4984,7 @@
 
 2000-05-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode.cc: implemented intrinsic 0x09 (clear_answers)
+
 
 2000-05-24  Tristan Tarrant  <nadir@users.sourceforge.net>
 
