@@ -1,3 +1,13 @@
+2000-09-09  Tristan Tarrant  <nadir@users.sourceforge.net>
+
+	* Makefile.am: Add EXULT_DATADIR to the defines
+	* Makefile.win32: Try to do the same for Win32
+	* exult.cc: default directory for <DATA> files is now EXULT_DATADIR
+	* exult.spec.in: Install data files in the appropriate place,
+	learnt how a spec file actually works :-)
+	* data/Makefile.am: fiddle with rules to install exult.flx in the
+	correct place, and get rpm -tb working
+
 2000-09-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Light spells (glimmer, etc.) work now.

@@ -7,10 +7,16 @@ EXULT_FLX_OBJECTS = \
 	exult_logo.shp \
 	exult0.pal
 
+flexdir = $(datadir)/exult
+
+flex_DATA = exult.flx
+
 CLEANFILES = \
 	exult.flx *~
 
 EXTRA_DIST = $(EXULT_FLX_OBJECTS)
 
-all-local:
+all-local: exult.flx
+
+exult.flx:
 	../tools/expack -c exult.flx $(EXULT_FLX_OBJECTS)

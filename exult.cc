@@ -157,7 +157,7 @@ int main
 	audio = new Audio;
 	
 	// Setup virtual directories
-	config->value("config/disk/data_path",data_path,"data");
+	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
 	cout << "Data path = " << data_path << endl;
 	add_system_path("<DATA>", data_path.c_str());
 	add_system_path("<STATIC>", "static");
