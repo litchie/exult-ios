@@ -335,8 +335,7 @@ void Usecode_machine::say_string
 		{
 		char *eol = str;
 		while ((eol = strchr(str, '~')) != 0)
-			if (eol[1] == '~')
-				break;
+			break;
 		if (!eol)		// Not found?
 			{
 			gwin->show_npc_message(str);
@@ -345,7 +344,9 @@ void Usecode_machine::say_string
 		*eol = 0;
 		gwin->show_npc_message(str);
 		click_to_continue();
-		str = eol + 2;
+		str = eol + 1;
+		if (*str == '~')
+			str++;		// 2 in a row.
 		}
 	delete string;
 	string = 0;
@@ -568,6 +569,27 @@ void Usecode_machine::item_say
 	}
 
 /*
+ *	Report unhandled intrinsic.
+ */
+
+static void Unhandled
+	(
+	int intrinsic,
+	int num_parms,
+	Usecode_value parms[12]
+	)
+	{
+	printf("Unhandled intrinsic 0x%03x called with %d parms: ",
+					intrinsic, num_parms);
+	for (int i = 0; i < num_parms; i++)
+		{
+		parms[i].print(cout);
+		cout << ' ';
+		}
+	cout << '\n';
+	}
+
+/*
  *	Call an intrinsic function.
  */
 
@@ -593,8 +615,10 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value(1 + (rand() % range));
 		}
 	case 1:				// ??Animate (itemref, array).+++++++
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 2:				// ??(npc, array, ??)
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 3:				// Show NPC face.
 		show_npc_face(parms[0], parms[1]);
@@ -670,10 +694,12 @@ Usecode_value Usecode_machine::call_intrinsic
 		}
 	case 0x15:			// Guessing it's set_quality(item, value).
 		//+++++++++++++++++
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x16:			// Get # of items in NPC??????
 					//   Count(item, -npc).
 		//+++++++++++++
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x18:			// Takes itemref.  Rets. some kind
 					//   of array.
@@ -701,6 +727,7 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x1d:			// SetSchedule?(npc, schedtype).
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
+		Unhandled(intrinsic, num_parms, parms);
 		//+++++++++++++++++++++
 		break;
 	case 0x1e:			// NPC joins party.
@@ -740,30 +767,37 @@ Usecode_value Usecode_machine::call_intrinsic
 					//   item, quality?, quality?).
 					// Quality -359 means any?
 		//++++++++++++
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x2a:			// Get cont. items(item, type, qual,?).
 				// Think it rets. array of them.
 		//++++++++++++
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x2b:			// Remove items(num, item, 
 					//   -x?, -x?, T/F).  Often -359.???
 		//+++++++++++
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x2c:			// Add items(num, item, ??, ??, T/F).
 		//++++++++++
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x2e:			// Play music(item, songnum).
 		//++++++++++++
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x2f:			// NPC in party? (item).
 		return (Usecode_value(npc_in_party(
 					parms[0].get_int_value())));
 	case 0x32:			// Display sign (gump #, text).
 		//+++++++++++++
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x33:			// Doesn't ret. until user single-
 					//   clicks on an item.  Rets. item.
 		//+++++++++++Show crosshair cursor.
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x38:			// Return. game time hour (0-23).
 		return Usecode_value(gwin->get_hour());
@@ -776,6 +810,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 	case 0x48:			// Display map.
 		//++++++++++++
+		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x5a:			// Is player female?
 		return Usecode_value(0);
@@ -806,17 +841,8 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 		}
 	default:
-		{
-		printf("Unhandled intrinsic 0x%03x called with %d parms: ",
-					intrinsic, num_parms);
-		for (int i = 0; i < num_parms; i++)
-			{
-			parms[i].print(cout);
-			cout << ' ';
-			}
-		cout << '\n';
+		Unhandled(intrinsic, num_parms, parms);
 		break;
-		}
 		}
 	Usecode_value no_ret;				// Dummy return.
 	return (no_ret);
