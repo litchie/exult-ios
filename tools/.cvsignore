@@ -15,4 +15,5 @@ rip
 ucc
 ucclex.c
 uccparse.c
+expack
 *.tab.c
