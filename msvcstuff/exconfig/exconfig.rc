@@ -29,7 +29,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
 
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 1,0,0,2
- PRODUCTVERSION 1,1,10,0
+ PRODUCTVERSION 1,1,11,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -54,7 +54,7 @@ BEGIN
             VALUE "OriginalFilename", "exconfig.dll\0"
             VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "Exult\0"
-            VALUE "ProductVersion", "1.1.10rc2\0"
+            VALUE "ProductVersion", "1.1.11cvs\0"
             VALUE "SpecialBuild", "\0"
         END
     END
