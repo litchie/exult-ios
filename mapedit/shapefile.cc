@@ -130,7 +130,8 @@ void Image_file_info::flush
 		shapes[shnum] = ifile->extract_shape(shnum);
 	string filestr("<PATCH>/");	// Always write to 'patch'.
 	filestr += basename;
-	write_file(filestr.c_str(), shapes, nshapes, false);
+					// !flex means single-shape.
+	write_file(filestr.c_str(), shapes, nshapes, !ifile->is_flex());
 	delete [] shapes;
 					// Tell Exult to reload this file.
 	unsigned char buf[Exult_server::maxlength];
