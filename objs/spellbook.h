@@ -33,14 +33,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Spellbook_object : public Ireg_game_object
 	{
 	unsigned char circles[9];	// Spell-present flags for each circle.
-	uint32 flags;		// Unknown at present.
 	int bookmark;			// Spell # that bookmark is on, or -1.
 public:
 	friend class Spellbook_gump;
 					// Create from ireg. data.
 	Spellbook_object(int shapenum, int framenum, unsigned int shapex,
 		unsigned int shapey, unsigned int lft, unsigned char *c,
-		uint32 f);
+		unsigned char bmark);
 	int add_spell(int spell);	// Add a spell.
 					// Run usecode function.
 	virtual void activate(int event = 1);

@@ -1007,10 +1007,11 @@ void Game_map::read_ireg_objects
 			lift = entry[9] >> 4;
 			memcpy(&circles[5], &entry[10], 4);
 			uint8 *ptr = &entry[14];
-			unsigned long flags = Read4(ptr);
+					// 3 unknowns, then bookmark.
+			unsigned char bmark = ptr[3];
 			obj = new Spellbook_object(
 				shnum, frnum, tilex, tiley, lift,
-				&circles[0], flags);
+				&circles[0], bmark);
 			}
 		obj->set_quality(quality);
 		obj->set_flags(oflags);
@@ -1073,7 +1074,7 @@ Ireg_game_object *Game_map::create_ireg_object
 		static unsigned char circles[9] = {0};
 		return new Spellbook_object(
 				shnum, frnum, tilex, tiley, lift,
-				&circles[0], 0L);
+				&circles[0], 0);
 		}
 	else if (info.get_shape_class() == Shape_info::container)
 		{
