@@ -116,7 +116,7 @@ int Ammo_info::read
 	uint8 *ptr = buf;
 	int shapenum = Read2(ptr);	// Bytes 0-1.
 	family_shape = Read2(ptr);
-	unsigned short type2 = Read2(ptr);	// ???
+	type2 = Read2(ptr);		// ???
 	damage = *ptr++;
 	ptr += 2;			// 2 unknown.
 	damage_type = (*ptr++>>4)&15;

@@ -18,6 +18,8 @@ libshapes_la_SOURCES = \
 	shapeinf.h \
 	shapevga.cc \
 	shapevga.h \
+	shapewrite.cc \
+	shapewrite.h \
 	u7drag.cc \
 	u7drag.h \
 	vgafile.cc \
