@@ -2,6 +2,7 @@
 	* effects.*: changed explosion effect to do damage in the middle of
 	the explosion instead of afterwards
 	* objs.cc: powderkegs blow up more doors
+	* objs.cc: powderkegs blow up other powderkegs
 
 2001-10-11  Jeff Freedman  <jeff@amy.nerble.net>
 

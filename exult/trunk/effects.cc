@@ -172,14 +172,18 @@ Explosion_effect::Explosion_effect
 	Tile_coord p, 
 	Game_object *exp
 	) : Sprites_effect(1, p), explode(exp)
-	{
+{
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord apos = gwin->get_main_actor()->get_abs_tile_coord();
 	int dir = Get_direction16(apos.ty - p.ty, p.tx - apos.tx);
 					// Max. volume, with stereo position.
 	Audio::get_ptr()->play_sound_effect(
 		Audio::game_sfx(9), SDL_MIX_MAXVOLUME, dir);
+
+	if (exp && exp->get_shapenum() == 704) { // powderkeg
+		exp->set_quality(1); // mark as detonating
 	}
+}
 
 void Explosion_effect::handle_event
 	(
@@ -187,7 +191,7 @@ void Explosion_effect::handle_event
 	long udata
 	)
 {
-	if (frame_num == frames/2) {
+	if (frame_num == frames/4) {
 		// this was in ~Explosion_effect before
 		if (explode)
 			{
@@ -196,7 +200,7 @@ void Explosion_effect::handle_event
 				explode = 0;
 			}
 		Game_object_vector vec;			// Find objects near explosion.
-		Game_object::find_nearby(vec, pos, c_any_shapenum, 3, 0);
+		Game_object::find_nearby(vec, pos, c_any_shapenum, 5, 0);
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
 				(**it).attacked(0, 704, 0);

@@ -35,6 +35,8 @@
 #include "ordinfo.h"
 #include "game.h"
 #include "Gump_manager.h"
+#include "effects.h"
+
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #  include <cstdio>
@@ -336,10 +338,10 @@ static int Check_mask
 				return 0;
 			}
 	return 1;			// Passed all tests.
-	}
 
 #if 0	/* +++++Old code. */
-		if (obj->is_monster())
+	{	
+	if (obj->is_monster())
 			return 1;
 					// Avatar?  FALSE for SI.  Unsure
 					//  about BG, so return TRUE.
@@ -367,8 +369,8 @@ static int Check_mask
 	if (!mask)			// Guessing a bit here.
 		return !obj->is_egg();	// Don't pass eggs if 0.
 	return 1;
-	}
 #endif
+}
 
 /*
  *	Find objects near a given position.
@@ -1784,8 +1786,13 @@ Game_object *Game_object::attacked
 		else if (shnum == 743 && Game::get_game_type() == SERPENT_ISLE)
 			hp = 1;
 		else if (shnum == 704 && weapon_shape == 704) { // Powder keg...
-			// cause chain reaction here
-			// need to mark already detonating powderkegs somehow (use qual.?)
+			// cause chain reaction
+
+			// marked already detonating powderkegs with quality
+			if (get_quality()==0) {
+				Tile_coord pos = get_abs_tile_coord();
+				gwin->add_effect(new Explosion_effect(pos, this));
+			}
 		}
 #if 0
 		else if (shnum == 522 && frnum < 2) { // locked normal chest
