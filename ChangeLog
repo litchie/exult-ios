@@ -1,3 +1,8 @@
+2003-08-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* shapes/shapeinf.cc: Kludge:  Don't use sfx 123 for weapons in
+	SI; use 61 instead.
+
 2003-08-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/shapefile.cc (Image_file_info): Write out single-shape

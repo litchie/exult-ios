@@ -32,6 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "utils.h"
 #include <iomanip>	/* Debugging */
+using std::cout;
+using std::endl;
 
 /*
  *	Read in a weapon-info entry from 'weapons.dat'.
@@ -84,6 +86,8 @@ int Weapon_info::read
 	int sfx_delta = bg ? -1 : 0;
 	sfx = Read2(ptr) + sfx_delta;
 	hitsfx = Read2(ptr) + sfx_delta;
+	if (hitsfx == 123 && !bg)	// SerpentIsle:  Does not sound right.
+		hitsfx = 61;		// Sounds more like a weapon.
 					// Last 2 bytes unknown/unused.
 #if 0
 		cout << "Damage = " << damage << ", flags0 = " << hex
