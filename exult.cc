@@ -67,6 +67,7 @@ Game_window *gwin = 0;
 unsigned char quitting_time = 0;	// Time to quit.
 Mouse *mouse = 0;
 int scale = 0;				// 1 if scaling X2.
+bool    cheat=true;			// Enable cheating keys
 bool	usecode_trace=false;		// Do we trace Usecode-intrinsics?
 #if USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
@@ -178,6 +179,11 @@ int main
 	config->value("config/debug/trace/intrinsics",tracing,"no");
 	if(tracing=="yes")
 		usecode_trace=true;	// Enable tracing of intrinsics
+
+	string  cheating;
+	config->value("config/gameplay/cheat",cheating,"yes");
+	if(cheating=="no")
+		cheat = false;
 
 #if USECODE_DEBUGGER
 	string	u_debugging;
@@ -818,7 +824,7 @@ static void Handle_keystroke
 		}
 	case SDLK_d:			// ctrl-d:  delete what mouse is on.
 		{
-		if (ctrl)
+		if (ctrl&&cheat)
 			{
 			int x, y;
 			SDL_GetMouseState(&x, &y);
@@ -858,6 +864,7 @@ static void Handle_keystroke
 			
 		gwin->paint_text_box(2, buf, 
 			15, 15, 300, 400);
+		gwin->paint();
 		break;
 		}
 	case SDLK_ESCAPE:		// ESC key.
@@ -868,7 +875,7 @@ static void Handle_keystroke
 			Okay_to_quit();
 		break;
 	case SDLK_m:
-		if (ctrl) {		// CTRL-m:  get 100 gold coins!
+		if (ctrl&&cheat) {	// CTRL-m:  get 100 gold coins!
 			gwin->get_main_actor()->add_quantity(100, 644);
 			break;
 		} else {
@@ -880,6 +887,8 @@ static void Handle_keystroke
 		}
 		break;
 	case SDLK_l:			// Decrement skip_lift.
+		if(!cheat)
+			break;
 		if (gwin->skip_lift == 16)
 			gwin->skip_lift = 11;
 		else
@@ -894,10 +903,14 @@ static void Handle_keystroke
 		gwin->paint();
 		break;
 	case SDLK_e:
+		if(!cheat)
+			break;
 		gwin->paint_eggs = !gwin->paint_eggs;
 		gwin->paint();
 		break;
 	case SDLK_f:		// Show next frame
+		if(!cheat)
+			break;
 		vga_file = gwin->get_shape_file_data(current_file);
 		if (!shift) {
 			current_frame += stepping;
@@ -933,6 +946,8 @@ static void Handle_keystroke
 			}
 		break;
 	case SDLK_v:
+		if(!cheat)
+			break;
 					// Show next shape.
 		current_frame = 0;
 		vga_file = gwin->get_shape_file_data(current_file);
@@ -949,13 +964,13 @@ static void Handle_keystroke
 		break;
 	case SDLK_t:			// 'Target' mode.
 		{
-		if (ctrl)		// 'T':  Fake next time change.
+		if (ctrl&&cheat)		// 'T':  Fake next time change.
 			{
 			gwin->fake_next_period();
 			break;
 			}
 		int x, y;
-		if (alt)		// Teleport.
+		if (alt&&cheat)		// Teleport.
 			{
 			SDL_GetMouseState(&x, &y);
 			x = x>>scale;
@@ -973,7 +988,7 @@ static void Handle_keystroke
 		break;
 		}
 	case SDLK_w:			// Test weather.
-		if (ctrl)		// Duration is 4*number secs.
+		if (ctrl&&cheat)		// Duration is 4*number secs.
 			{
 			static int wcnt = 0, wmax = 1;
 			if (wcnt == 0)
@@ -989,6 +1004,8 @@ static void Handle_keystroke
 			Okay_to_quit();
 		break;
 	case SDLK_PAGEUP:
+		if(!cheat)
+			break;
 		current_shape=0;
 		current_frame=0;
 		--current_file;
@@ -997,6 +1014,8 @@ static void Handle_keystroke
 		shape_showcase(current_file, current_shape, current_frame);
 		break;
 	case SDLK_PAGEDOWN:
+		if(!cheat)
+			break;
 		current_shape=0;
 		current_frame=0;
 		++current_file;
@@ -1005,26 +1024,42 @@ static void Handle_keystroke
 		shape_showcase(current_file, current_shape, current_frame);
 		break;
 	case SDLK_RIGHT:
+		if(!cheat)
+			break;
 		for (int i = 16; i; i--)
 			gwin->view_right();
 		break;
 	case SDLK_LEFT:
+		if(!cheat)
+			break;
 		for (int i = 16; i; i--)
 			gwin->view_left();
 		break;
 	case SDLK_DOWN:
+		if(!cheat)
+			break;
 		for (int i = 16; i; i--)
 			gwin->view_down();
 		break;
 	case SDLK_UP:
+		if(!cheat)
+			break;
 		for (int i = 16; i; i--)
 			gwin->view_up();
+		break;
+	case SDLK_HOME:
+		if(!cheat)
+			break;
+		gwin->center_view(gwin->get_main_actor()->get_abs_tile_coord());
+		gwin->paint();
 		break;
 	case SDLK_F4:
 		gwin->get_win()->toggle_fullscreen();
 		gwin->paint();
 		break;
 	case SDLK_F10:
+		if(!cheat)
+			break;
 		{
 			Titles titles;
 			titles.end_game(true);
