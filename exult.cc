@@ -447,7 +447,8 @@ static void Handle_events
 				last_repaint = ticks;
 				rotate = 1;
 				int x, y;// Check for 'stuck' Avatar.
-				if (!gwin->is_moving())
+//				if (!gwin->is_moving())
+				if ((gwin->get_moving_barge() && !gwin->is_moving()) || !gwin->get_moving_barge())
 					{
 					int ms = SDL_GetMouseState(&x, &y);
 					if ((SDL_BUTTON(3) & ms) &&
@@ -496,7 +497,7 @@ inline void Set_mouse_and_speed
 			mouse->set_short_arrow(dir);
 		avatar_speed = slow_speed;
 		}
-	else if (dist < 90*90)
+	else if (dist < 75*75)
 		{
 		if(gwin->in_combat())
 			mouse->set_medium_combat_arrow(dir);
@@ -811,7 +812,7 @@ static void Handle_keystroke
 			"Plus-Minus - Increment-decrement brightness\n"
 			"e - Toggle eggs visibility\n"
 			"PgUp/PgDn - Show next-previous shape file\n"
-			"sS - Show next-previous shape\n"
+			"vV - Show next-previous shape\n"
 			"fF - Show next-previous frame\n"
 			"c - Combat mode\n"
 			"i - Show inventory\n"

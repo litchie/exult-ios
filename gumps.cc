@@ -89,7 +89,7 @@ short File_gump_object::textx = 237, File_gump_object::texty = 14,
       File_gump_object::texth = 13;
 
 short Yesno_gump_object::yesx = 63;
-short Yesno_gump_object::yesnoy = 44;
+short Yesno_gump_object::yesnoy = 45;
 short Yesno_gump_object::nox = 84;
 
 

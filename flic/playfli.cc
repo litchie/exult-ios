@@ -40,7 +40,8 @@ playfli::playfli(const char *fli_name)
     fli_flags = Read2(fli_stream);
     fli_speed = Read2(fli_stream);
     fli_stream.seekg(110, ios::cur);
-    streamstart = fli_stream.tellg();
+    streampos = streamstart = fli_stream.tellg();
+    frame = 0;
 }
 
 void playfli::info(fliinfo *fi)
@@ -71,7 +72,6 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
     int frame_chunks;
     int chunk_size;
     int chunk_type;
-    int streampos;
     unsigned char *pixbuf;
     int xoffset=(win->get_width()-fli_width)/2;
     int yoffset=(win->get_height()-fli_height)/2;
@@ -86,10 +86,14 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 
     if (!ticks) ticks = SDL_GetTicks();
 
-    streampos = streamstart;
+    if (first_frame < frame)
+    {
+    	    frame = 0;
+	    streampos = streamstart;
+    }
     pixbuf = new unsigned char[fli_width];
     // Play frames...
-    for (int frame = 0 ; frame < last_frame; frame++)
+    for ( ; frame < last_frame; frame++)
       {
 	  fli_stream.seekg(streampos);
 	  frame_size = Read4(fli_stream);
@@ -197,9 +201,10 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	  
 	  if (frame < first_frame)
 		  continue;
-	  
+
 	  while (SDL_GetTicks() < ticks);
 	  ticks += fli_speed*10;
+
 	  if(win && !dont_show)
              win->show();
       }

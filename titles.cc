@@ -321,6 +321,14 @@ void Titles::play_midi(int track)
 		audio->start_music(track,0,1);
 	}
 
+void Titles::refresh_screen ()
+{
+	clear_screen();
+	gwin->set_palette(0);
+	gwin->paint();
+	gwin->fade_palette (50, 1, 0);
+}
+
 void Titles::end_game(bool success) 
 	{
 		int	i, j, next = 0;
@@ -331,6 +339,7 @@ void Titles::end_game(bool success)
 
 		// Clear screen
 		clear_screen();
+		win->show();
 
 		U7object flic1(ENDGAME, 0);
 		U7object flic2(ENDGAME, 1);
@@ -366,15 +375,43 @@ void Titles::end_game(bool success)
 		for (i = 0; i < 240; i++)
 		{
 			next = fli1.play(win, 0, 1, next);
-			win->show();
+			if (wait_delay (10))
+			{
+				refresh_screen();
+				return;
+			}
 		}
-
-		next = fli1.play(win, 1, 150, next);
+		
+		for (i = 1; i < 150; i++)
+		{
+			next = fli1.play(win, i, i+1, next);
+			if (wait_delay (10))
+			{
+				refresh_screen();
+				delete [] buffer;
+				return;
+			}
+		}
 
 		audio->play (buffer+8, size-8, false);
 		delete [] buffer;
 
-		next = fli1.play(win, 150, -1, next);
+		char 	*message = "No.  You must not!";
+		int	height = gwin->get_height() - gwin->get_text_height(ENDGAME_FONT2) * 2;
+		int	width = (gwin->get_width() - gwin->get_text_width(ENDGAME_FONT2,message)) / 2;
+
+		for (i = 150; i < 204; i++)
+		{
+			next = fli1.play(win, i, i, next);
+			if (1) gwin->paint_text (ENDGAME_FONT2, message, width, height);
+			
+			win->show();
+			if (wait_delay (10))
+			{
+				refresh_screen();
+				return;
+			}
+		}
 
 		// Set new music
 		audio->start_music(ENDSCORE_XMI,2,false);
@@ -385,12 +422,34 @@ void Titles::end_game(bool success)
 		audio->play (buffer+8, size-8, false);
 		delete [] buffer;
 
-		next = fli2.play(win, 0, -1, next);
-		
+		message = "Damn you Avatar!  Damn you!";
+		width = (gwin->get_width() - gwin->get_text_width(ENDGAME_FONT2,message)) / 2;
+
+		for (i = 0; i < 50; i++)
+		{
+			next = fli2.play(win, i, i, next);
+			if (1) gwin->paint_text (ENDGAME_FONT2, message, width, height);
+			
+			win->show();
+			if (wait_delay (10))
+			{
+				refresh_screen();
+				return;
+			}
+		}
+
 		next+=5000;
 
-		for (i = 200; i > 0; i-=5)
-			fli2.play(win, 0, 0, next, i/2);
+		// Eh, this wont work properly for 
+		for (i = 100; i > 0; i-=10)
+		{
+			next = fli2.play(win, 0, 0, next, i);
+			if (wait_delay (10))
+			{
+				refresh_screen();
+				return;
+			}
+		}
 
 		// Text message 1
 
@@ -398,17 +457,24 @@ void Titles::end_game(bool success)
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
 		// Paint text
-		char 	*message = "The Black Gate is destroyed.";
-		int	height = (gwin->get_height() - gwin->get_text_baseline(0)) / 2;
-		int	width = (gwin->get_width() - gwin->get_text_width(0,message)) / 2;
-
+		message = "The Black Gate is destroyed.";
+		width = (gwin->get_width() - gwin->get_text_width(0,message)) / 2;
+		height = (gwin->get_height() - gwin->get_text_height(0)) / 2;
+		
 		gwin->paint_text (0, message, width, height);
 
 		// Fade in for 1 sec (50 cycles)
 		gwin->fade_palette (50, 1, 0);
 
-		// Display text for 3 seonds
-		SDL_Delay(3000); 
+		// Display text for 3 seconds
+		for (i = 0; i < 30; i++)
+		{
+			if (wait_delay (100))
+			{
+				refresh_screen();
+				return;
+			}
+		}
 
 		// Fade out for 1 sec (50 cycles)
 		gwin->fade_palette (50, 0, 0);
@@ -430,7 +496,14 @@ void Titles::end_game(bool success)
 		gwin->fade_palette (50, 1, 0);
 
 		// Display text for 3 seonds
-		SDL_Delay(3000); 
+		for (i = 0; i < 30; i++)
+		{
+			if (wait_delay (100))
+			{
+				refresh_screen();
+				return;
+			}
+		}
 
 		// Fade out for 1 sec (50 cycles)
 		gwin->fade_palette (50, 0, 0);
@@ -439,21 +512,64 @@ void Titles::end_game(bool success)
 		// Now for the final flic
 
 		next = 0;
-		playfli::fliinfo fi;
-		fli3.info (&fi);
-		for (j = 0, i = 0; i <= 200; i+=7, j++)
-			next = fli3.play(win, j%fi.frames, (j%fi.frames)+1, next, i/2);
+		for (i = 0; i <= 200; i+=7)
+		{
+			next = fli3.play(win, 0, 1, next, i/2);
+			if (wait_delay (10))
+			{
+				refresh_screen();
+				return;
+			}
+		}
+
 		speech3.retrieve (&buf, size);
 		buffer = (Uint8 *) buf;
 		audio->play (buffer+8, size-8, false);
 		delete [] buffer;
 
+		playfli::fliinfo finfo;
+		fli3.info (&finfo);
+		
+		int	m;
+		char *txt_screen0[] = {
+			"Avatar! You think you have won>",
+			"Think again! You are unable to",
+			"leavee britannia, whereas I am free",
+			"to enter other worlds",
+			"Prehaps your puny Earth shal be",
+			"my NEXT targer!."
+		};
+
+		starty = (gwin->get_height() - gwin->get_text_height(ENDGAME_FONT3)*8)/2;
+
 		for (i = next+29000; i > next; )
-			next = fli3.play(win, 0, -1, next);
+		{
+			for (j = 0; j < finfo.frames; j++)
+			{
+				next = fli3.play(win, j, j, next);
+				if (1)
+					for(m=0; m<6; m++)
+						gwin->paint_text(ENDGAME_FONT3, txt_screen0[m], centerx-gwin->get_text_width(ENDGAME_FONT3, txt_screen0[m])/2, starty+gwin->get_text_height(ENDGAME_FONT3)*m);
+
+				win->show ();
+				if (wait_delay (10))
+				{
+					refresh_screen();
+					return;
+				}
+			}
+		}
 
 		
-		for (i = 200; i > 0; i-=5)
-			fli3.play(win, 0, 0, next, i/2);
+		for (i = 200; i > 0; i-=7)
+		{
+			next = fli3.play(win, 0, 0, next, i/2);
+			if (wait_delay (10))
+			{
+				refresh_screen();
+				return;
+			}
+		}
 
 		// Text Screen 1
 
@@ -482,13 +598,24 @@ void Titles::end_game(bool success)
 		// Fade in for 1 sec (50 cycles)
 		gwin->fade_palette (50, 1, 0);
 
-		// Display text for 20 seonds
-		SDL_Delay(10000); 
+		// Display text for 20 seonds (only 10 at the moment)
+		for (i = 0; i < 100; i++)
+		{
+			if (wait_delay (100))
+			{
+				refresh_screen();
+				return;
+			}
+		}
 
 		// Fade out for 1 sec (50 cycles)
 		gwin->fade_palette (50, 0, 0);
 
-
+		if (wait_delay (10))
+		{
+			refresh_screen();
+			return;
+		}
 
 		// Text Screen 2
 
@@ -513,12 +640,25 @@ void Titles::end_game(bool success)
 		// Fade in for 1 sec (50 cycles)
 		gwin->fade_palette (50, 1, 0);
 
-		// Display text for 20 seonds
-		SDL_Delay(8000); 
+		// Display text for 20 seonds (only 8 at the moment)
+		for (i = 0; i < 80; i++)
+		{
+			if (wait_delay (100))
+			{
+				refresh_screen();
+				return;
+			}
+		}
 
 		// Fade out for 1 sec (50 cycles)
 		gwin->fade_palette (50, 0, 0);
 
+
+		if (wait_delay (10))
+		{
+			refresh_screen();
+			return;
+		}
 
 
 		// Text Screen 3 
@@ -543,12 +683,25 @@ void Titles::end_game(bool success)
 		// Fade in for 1 sec (50 cycles)
 		gwin->fade_palette (50, 1, 0);
 
-		// Display text for 20 seonds
-		SDL_Delay(8000); 
+		// Display text for 20 seonds (only 8 at the moment)
+		for (i = 0; i < 80; i++)
+		{
+			if (wait_delay (100))
+			{
+				refresh_screen();
+				return;
+			}
+		}
 
 		// Fade out for 1 sec (50 cycles)
 		gwin->fade_palette (50, 0, 0);
 
+
+		if (wait_delay (10))
+		{
+			refresh_screen();
+			return;
+		}
 
 
 		// Text Screen 4
@@ -572,19 +725,21 @@ void Titles::end_game(bool success)
 		// Fade in for 1 sec (50 cycles)
 		gwin->fade_palette (50, 1, 0);
 
-		// Display text for 10 seonds
-		SDL_Delay(5000); 
+		// Display text for 10 seonds (only 5 at the moment)
+		for (i = 0; i < 50; i++)
+		{
+			if (wait_delay (100))
+			{
+				refresh_screen();
+				return;
+			}
+		}
 
 		// Fade out for 1 sec (50 cycles)
 		gwin->fade_palette (50, 0, 0);
 
 
-
-		// Paint backgound black
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-
-		// Fade in for .5 sec (25 cycles)
-		gwin->fade_palette (25, 1, 0);
+		refresh_screen();
 	}
 
 void Titles::show_quotes()

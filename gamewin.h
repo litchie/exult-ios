@@ -89,6 +89,7 @@ private:
 	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	Vga_file fonts;			// "fonts.vga" file.
+	Shape_file *end_fonts[4];	// fonts from "endgame.dat" file
 	Vga_file sprites;		// "sprites.vga" file.
 	Vga_file mainshp;
 	Vga_file endshape;		
@@ -548,6 +549,8 @@ public:
 					// Get text height, baseline.
 	int get_text_height(int fontnum);
 	int get_text_baseline(int fontnum);
+	bool setup_endgame_fonts();	// Read the fonts from "endgame.dat" file
+	Shape_frame *font_get_shape (int fontnum, int framenum);
 private:
 	void drop(int x, int y);
 	int drop_at_lift(Game_object *to_drop, int at_lift);
@@ -562,6 +565,10 @@ public:
 	Vga_file *get_shape_file_data(int n);
 	int get_shape_file_count();
 	int find_roof(int cx, int cy);
+	
+private:
+	void start_actor_alt (int winx, int winy, int speed);
+
 	};
 
 #endif

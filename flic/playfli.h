@@ -45,6 +45,8 @@ class playfli {
     int fli_flags;
     int fli_speed;
     int streamstart;
+    int streampos;
+    int frame;
  public:
     playfli(const char *fli_name);
     ~playfli();
