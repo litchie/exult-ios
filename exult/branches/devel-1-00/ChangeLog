@@ -1,5 +1,6 @@
 2002-10-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gumps/Face_stats.cc: fixed division by zero
+	* shapes/Makefile.am: new automakes don't support OMIT_DEPENDENCIES
 
 2002-10-31  Jeff Freedman  <jeff@amy.nerble.net>
 
