@@ -1684,7 +1684,7 @@ void Shy_schedule::now_what
 	if (pact)			// Found path?
 		{
 		npc->set_action(pact);
-		npc->start(200);		// Start walking.
+		npc->start(200, 100 + rand()%200);	// Start walking.
 		}
 	else					// Try again in a couple secs.
 		npc->start(250, 500 + rand()%1000);
