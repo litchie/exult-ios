@@ -536,6 +536,13 @@ void Combat_schedule::now_what
 			npc->set_frame(npc->get_dir_framenum(dir,
 							Actor::standing));
 			gwin->add_dirty(npc);
+					// Glass sword?  Only 1 use.
+			if (weapon_shape == 604)
+				{
+				npc->remove_quantity(1, weapon_shape,
+						c_any_qual, c_any_framenum);
+				set_weapon_info();
+				}
 			}
 		state = approach;
 		npc->start(200);	// Back into queue.
