@@ -888,6 +888,9 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 		return 2;
 
 	// XMI Note On handling
+
+	// This is an optimization
+	midi_event *prev = current;
 		
 	int i = GetVLQ (source, delta);
 	CreateNewEvent (time+delta*3);
@@ -896,6 +899,9 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 	current->data[0] = data;
 	current->data[1] = 0;
 	
+	// Optimization
+	current = prev;
+
 	return i + 2;
 }
 
