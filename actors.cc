@@ -82,12 +82,12 @@ void Actor::activate
 	Game_window *gwin = Game_window::get_game_window();
 					// In gump mode?  Or Avatar?
 	if (!npc_num)			// Avatar?
-		gwin->show_gump(this, 57);	// ++++58 if female.
+		gwin->show_gump(this, ACTOR_FIRST_GUMP);// ++++58 if female.
 	else if (gwin->get_mode() == Game_window::gump)
 		{			// Show companions' pictures.
 					// +++++Check for companions.
 		if (npc_num <= 10)
-			gwin->show_gump(this, 58 + npc_num);
+			gwin->show_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
 		}
 	else if (usecode == -1)
 		umachine->call_usecode(get_shapenum(), this,

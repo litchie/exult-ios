@@ -31,6 +31,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Image_window;
 class Game_window;
 
+					// The range of actors' rect. gumps:
+const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
+
 /*
  *	An actor:
  */

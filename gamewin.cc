@@ -1481,7 +1481,10 @@ void Game_window::show_gump
 		}
 	int x = (1 + cnt)*get_width()/10, 
 	    y = (1 + cnt)*get_height()/10;
-	Gump_object *new_gump = new Gump_object(obj, x, y, shapenum);
+	Gump_object *new_gump = (shapenum >= ACTOR_FIRST_GUMP &&
+		shapenum <= ACTOR_LAST_GUMP) ?
+			new Actor_gump_object(obj, x, y, shapenum)
+			: new Gump_object(obj, x, y, shapenum);
 					// Paint new one last.
 	new_gump->append_to_chain(open_gumps);
 	if (++cnt == 8)
