@@ -2,6 +2,11 @@
 	* usecode/ucxt/*: Added ability to specify multiple functions to
 	decompile on the command line. Also some namespace fiddling.
 
+	* conf/*: Added the ability to have a 'generic' root node for the
+	xmltree, rather then the default 'config', also cleaned up some of the
+	external interface to Configuration, and added an additional way of
+	accessing the file data through Configuration::getpairs.
+	
 2002-01-08  Patrick Burke  <takhisisii@yahoo.com.au>
 	* audio/midi_drivers/forked_player.cc, conf/XMLEntity.cc: Fixed
 	namespace related errors.

@@ -25,19 +25,28 @@
 class	Configuration
 {
 public:
-	Configuration() : xmltree(new XMLnode("config")), filename(), is_file(false)
-		{}//{ xmltree = new XMLnode("config"); }
-	Configuration(const char *s) : xmltree(new XMLnode("config")), filename(), is_file(false)
-		{ /*xmltree = new XMLnode();*/ read_config_file(s); }
+	Configuration()
+	             : xmltree(new XMLnode("config")), rootname("config"), filename(), is_file(false)
+		{ }
+	Configuration(const std::string fname, const std::string root)
+	             : xmltree(new XMLnode(root)), rootname(root), filename(), is_file(false)
+		{ if(fname.size()) read_config_file(fname); }
 
-	bool	read_config_file(const char *input_filename)
-			{ return read_config_file(std::string(input_filename)); };
-	bool	read_config_file(const std::string &input_filename);
+	bool	read_config_file(const std::string input_filename);
 	
 	bool	read_config_string(const std::string &);
-	void	value(const char *key,std::string &ret,const char *defaultvalue="") const;
-	void	value(const char *key,bool &ret,bool defaultvalue=false) const;
-	void	value(const char *key,int &ret,int defaultvalue=0) const;
+	
+	void	value(const std::string key, std::string &ret, const char *defaultvalue="") const;
+	void	value(const std::string key, bool &ret, bool defaultvalue=false) const;
+	void	value(const std::string key, int &ret, int defaultvalue=0) const;
+	
+	void	value(const char *key, std::string &ret, const char *defaultvalue="") const
+			{ value(std::string(key), ret, defaultvalue); };
+	void	value(const char *key, bool &ret, bool defaultvalue=false) const
+			{ value(std::string(key), ret, defaultvalue); };
+	void	value(const char *key, int &ret, int defaultvalue=0) const
+			{ value(std::string(key), ret, defaultvalue); };
+	
 	void    set(const char *key,const char *value,bool write_to_file);
 	void    set(const char *key,const std::string &value,bool write_to_file);
 	void    set(const char *key,int,bool write_to_file);
@@ -51,11 +60,17 @@ public:
 
 	void	write_back(void);
 
-	void clear(void) { delete xmltree; xmltree = new XMLnode("config"); };
+	void clear(std::string new_root=std::string());
+	
+	typedef XMLnode::KeyType     KeyType;
+	typedef XMLnode::KeyTypeList KeyTypeList;
+	
+	void getpairs(KeyTypeList &ktl, const std::string basekey);
 	
 private:
 	void    set(std::string &key,std::string &value,bool write_to_file);
 	XMLnode *xmltree;
+	std::string	rootname;
 	std::string	filename;
 	bool	is_file;
 };
