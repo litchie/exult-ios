@@ -103,6 +103,7 @@ toolsclean:
 	rm -f shp2pcx.o shp2pcx.exe
 	rm -f splitshp.o splitshp.exe
 	rm -f textpack.o textpack.exe
+	rm -f ucc.o ucc.exe
 	rm -f wuc.o wuc.exe
 	rm -f wud.o wud.exe
 	rm -f $(UCXT_OBJS) ucxt.exe
