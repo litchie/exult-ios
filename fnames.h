@@ -46,6 +46,7 @@
 #define MONSTERS	"static/monsters.dat"
 #define READY		"static/ready.dat"
 #define IDENTITY	"gamedat/identity"
+#define MIDITMPFILE     "/tmp/u7midi"
 
 #endif
 #ifdef WIN32
@@ -81,6 +82,7 @@
 #define MONSTERS	"static\\monsters.dat"
 #define READY		"static\\ready.dat"
 #define IDENTITY	"gamedat\\identity"
+#define MIDITMPFILE     "u7midi"
 
 #endif
 
