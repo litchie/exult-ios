@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="08 August 2003(GMT)">
+<studiodoc title="Exult" changed="06 February 2004(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="06022004">
+			<header>- 06 February 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="studio_terms"/> some corrections by Willem.</li>
+				<li><ref1 target="run_steps"/> some corrections.</li>
+				<li><ref1 target="studio_run"/> some corrections.</li>
+				<li><ref1 target="map_files"/> More right click options.</li>
+				<li><section_ref target="NPC editing"/> finally took on that task.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="08082003">
 			<header>- 08 August 2003</header>
 			<body>
@@ -96,11 +108,11 @@
 						we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle"
 						as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.</li>
 					<li><strong>eggs</strong>:<br/>
-						these are trip-wires that cause monsters to spawn, execute scripts, play music,
-						change weather, trigger traps, teleport when you get near them.</li>
+						 these are trip-wires that can cause monsters to spawn, execute scripts, play 
+						 music, change weather, trigger traps or teleport when you get near them.</li>
 					<li><strong>flex files</strong>:<br/>
-						or flexes are used by the original to store the data files.
-						Also when you choose not use compressed save games (see save_compression_level in
+						 also known as flexes, these are used by the original to store the data files.
+						Also when you choose to not use compressed save games (see save_compression_level in
 						<extref doc="docs" target="exult_config"/>) our save games are also "flexed".</li>
 					<li><strong>gumps</strong>:<br/>
 						the windows used in the game interface for containers, characters, menus, etc..</li>
@@ -133,8 +145,8 @@
 				<ul>
 					<li>You need <Exult/> and you need to install it properly
 						(see <extref doc="docs" target="installation"/>). Also make sure that
-						you are using the <strong>latest snapshot of the 1.1.x branch</strong> of <Exult/>.<br/>
-						<Studio/> only works with the latest snapshot, not the latest release.</li>
+						you are using the <strong>latest snapshot</strong> of <Exult/>.<br/>
+						<Studio/> <strong>only</strong> works with the latest snapshot, not the latest release.</li>
 					<li>For U*ix platforms you need to build <Studio/> from the source available from our
 						source snapshot at <extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 						You will also need the GTK+ library installed as well as
@@ -154,14 +166,14 @@
 				</para>
 				<ul>
    				<li>Put 'exult_studio.glade' in the <Exult/> 'data' directory.</li>
-   				<li>Be sure 'exult_studio' is in your path. (on Win32
+   				<li>Be sure 'exult_studio' is in your path. (on Windows
    					'exult_studio.exe' needs to be in the same directory as exult.exe)</li>
 				<li>On U*ix platforms you need to be running <Exult/> on X.</li>
    				<li>Run <Exult/> in <strong>windowed mode</strong> (not fullscreen).</li>
+   				<li>Enable the <Exult/> cheat mode (see <extref doc="docs" target="gameplay_gump"/>).</li>
    				<li>Press 'alt+ctrl+m' to go into 'map-editor' mode. If all is set
 					up correctly, exult_studio will start up, and will have a list of files
-					on the left side of its window (you need to have cheats enabled in <Exult/>,
-					see the <extref doc="docs" target="gameplay_gump"/>).</li>
+					on the left side of its window.</li>
 				</ul>
 				<para>
 					Starting up one or the other separately will reconnect them:
@@ -192,19 +204,21 @@
 				<ol>
 				<li>While it is not explicitly needed it is useful to have a working copy of either
 					BG or SI properly installed onto your computer.</li>
-				<li>Next, you need to have the Exult 1.1x snapshot and the SDL mixer installed properly
+				<li>Next, you need to have the latest <Exult/> snapshot and the SDL mixer installed properly
 					onto your computer and working correctly. If you are currently playing either BG or SI
 					on your machine this is probably done right. To make sure you have the correct version,
-					ensure that it says 1.10 CVS during Exult's start-up screen.</li>
+					ensure that it says X.XX CVS (X.XX stands for some version number) during <Exult/>'s 
+					start-up screen (for example see 
+					<extref target="http://exult.sourceforge.net/images/screenshots/mainmenu.png"/>).</li>
 				<li>You need to make sure the newest version of <Studio/> is installed properly onto your
-					computer as well. <Studio/> should be installed in the same directory as the Exult 1.10x
+					computer as well. <Studio/> should be installed in the same directory as the <Exult/> 
 					snapshot.</li>
 				<li>You <strong>need</strong> to set up the path for the patch to save any changes to existing
 					games. See <ref1 target="can_do_atm"/> on how to change exult.cfg accordingly.</li>
 				<li>In order for <Studio/> to work properly, you need to have <Exult/> running in windowed mode.
 					If you can see your desktop while playing, then you're doing it right.</li>
 				<li>Make sure you have Cheats enabled. This can be enabled in the Gameplay options of the Game
-					menu.</li>
+					 see (see <extref doc="docs" target="gameplay_gump"/>).</li>
 				<li>While running <Exult/> in windowed mode, hit <key>ctrl+alt+m</key> to enter map-editing mode.
 					<Studio/> should open up if you did everything correctly. In map-editing mode the world is
 					frozen, but you are still able to move your characters around in order to place objects.
@@ -414,13 +428,15 @@
 					Right clicking on a chunk gives you another two options
 					(also the File-save/revert option):
 				</para>
-				<ul>
+				<ul>					
 					<li><strong>New...</strong><br/>
 						<strong>Empty</strong><br/>
 						Creates a new chunk. Drag the new chunk onto the game and edit it by dragging
 						shapes on it.<br/>
 						<strong>Duplicate</strong><br/>
 						Duplicates a chunk. Drag the duplicate chunk onto the map to edit it.</li>
+					<li><strong>Delete</strong><br/>
+						Deletes that chunk. Be very careful with this option.</li>
 				</ul>
 			</body>
 		</sub>
@@ -713,7 +729,10 @@
 					<li><strong>New frame</strong>:<br/>
 						Creates a new frame after the currently-selected one. The 'insert' key
 						also does this (and the 'del' key deletes a frame, though it's
-						buggy if there's just one frame left).</li>
+						buggy if there's just one frame left).</li>					
+					<li><strong>Import/Export frame</strong>:<br/>
+						Let's you import a single frame from a .png file or
+						export to a .png.</li>
 					<li><strong>New shape</strong>:<br/>
 						Gives you a dialog for choosing the shape #, as well as the
 						initial # of frames.<br/>
@@ -722,9 +741,6 @@
 						only single-colored. Maybe in the future we'll have some functions to
 						create two-colored fonts like the main one in U7, although it might take
 						hand-editing to make the letters look that nice.</li>
-					<li><strong>Import/Export frame</strong>:<br/>
-						Let's you import a single frame from a .png file or
-						export to a .png.</li>
 				</ul>
 				<para>
 					<em>Note:</em> <strong>Edit...</strong> doesn't work on Windows system. It stores
@@ -754,7 +770,7 @@
 			<header>Custom Usecode</header>
 			<body>
 				<para>
-					As hinted at (see <extref doc="docs" target="terms"/>) Usecode is actually what runs Ultima 7
+					As hinted at (see <ref target="studio_terms"/>) Usecode is actually what runs Ultima 7
 					and therefore any game created with <Studio/>.<br/>
 					As of yet we do not have a Usecode editor/debugger. So writing your own Usecode is not
 					that easy.
@@ -1089,11 +1105,161 @@
 	</section>
 	<section title="NPC editing">
 		<sub name="npc_edit">
-			<header>How to edit an NPC</header>
+			<header>Editing an existing NPC</header>
 			<body>
 				<para>
-					Sorry to disappoint but this section is not yet done...
+					To edit an NPC with <Studio/> you need to be running a game in <Exult/> and of course <Studio/>.
+					Enable map editing and double click the NPC you want to edit. The <Studio/> NPC window will pop
+					up with all the stats of the NPC.<br/>
+					<img alt="NPC window" src="images/studio10.png"/>
 				</para>
+			</body>
+		</sub>
+		<sub name="npc_create">
+			<header>Creating a new NPC</header>
+			<body>
+				<para>
+					If you want to create a new NPC you have to select <strong>Create NPC</strong> in the edit menu.
+					This will pop up the same NPC window as when you double click an NPC. Now enter all the properties
+					of the new NPC as will be described in the following text. When you are satisfied with your new 
+					NPC hit Apply and you will be asked to choose a spot in <Exult/> to place the NPC.
+				</para>
+			</body>
+		</sub>
+		<sub name="npc_basic">
+			<header>Basic NPC settings</header>
+			<body>
+				<ul>
+					<li><strong>Face #</strong><br/>
+						Drag and drop a face from Faces.vga in the main <Studio/> window to the face field in 
+						the NPC window.</li>
+					<li><strong>Name</strong><br/>
+						Choose a name for your NPC.</li>
+					<li><strong>Usecode</strong><br/>
+						Here you enter the usecode that is associated with the NPC.</li>
+					<li><strong>NPC #</strong><br/>
+						This cannot be changed.</li>
+					<li><strong>Ident</strong><br/>
+						I (Dominus) have no idea what this means.</li>
+					<li><strong>Shape #</strong><br/>
+						Either drag and drop a shape from shapes.vga into the line (or the black box to the 
+						right of it) or enter a shape number.</li>
+					<li><strong>Frame #</strong><br/>
+						The frame of the above given shape the NPC starts with.</li>
+					<li><strong>Alignment</strong><br/>
+						Any NPC set to a neutral alignment will ignore the Avatar and friends, following their
+						schedule until attacked. Any NPC set to hostile will immediately be attacked by the Avatar
+						when you go into combat mode. Some NPCs will not talk to you or will even attack you on sight 
+						when set to hostile.</li>
+					<li><strong>Attack Mode</strong><br/>
+						You can choose the mode in which the NPC attacks when it goes into combat. Choose
+						between Nearest, Weakest, Strongest, Berserk, Protect, Defend, Flank, Flee Random 
+						and Manual. I don't advice using Manual as for most NPCs you will not be able to
+						actually change the attack mode manually.</li>					
+				</ul>
+			</body>
+		</sub>
+		<sub name="npc_properties">
+			<header>NPC Properties</header>
+			<body>
+				<para>
+					The vital properties of an NPC are set in the Properties tab of the NPC Window.
+				</para>
+				<ul>
+					<li><strong>Strength</strong></li>
+					<li><strong>Dexterity</strong></li>
+					<li><strong>Intelligence</strong></li>
+					<li><strong>Health</strong></li>
+					<li><strong>Combat</strong></li>
+					<li><strong>Mana</strong><br/>
+						How much mana you have left for casting spells. Only useful for members of the party 
+						and if the game allows party members casting spells.</li>
+					<li><strong>Max. Mana</strong><br/>
+						Maximum amount of mana you can have. Only useful for members of the party 
+						and if the game allows party members casting spells.</li>
+					<li><strong>Training</strong><br/>
+						How much Training points the NPC has left and can use at trainers. Only useful for 
+						party members.</li>
+					<li><strong>Experience</strong></li>
+					<li><strong>Food Level</strong><br/>
+						How hungry is the NPC. Only relevant for party members. Normal NPCs don't starve 
+						and need to be fed.</li>					
+				</ul>
+			</body>
+		</sub>
+		<sub name="npc_flags">
+			<header>NPC Flags</header>
+			<body>
+				<para>
+					Here you can set special properties of NPCs. Some are only set for special NPCs, party members 
+					or just the Avatar. A lot are also only available in SI. Here a brief listing of the flags and
+					when needed a short description.
+				</para>
+				<ul>
+					<li><strong>Asleep</strong></li>
+					<li><strong>Confused</strong></li>
+					<li><strong>Dancing</strong></li>
+					<li><strong>Fly</strong></li>
+					<li><strong>In motion</strong></li>
+					<li><strong>Invisible</strong></li>
+					<li><strong>No Magic</strong></li>
+					<li><strong>Petra</strong></li>
+					<li><strong>Protection</strong><br/>
+						When you cast the protection spell on an NPC this flag gets set.</li>
+					<li><strong>Swim</strong></li>
+					<li><strong>Tremor</strong></li>
+					<li><strong>Bleeding</strong><br/>
+						The NPC looses blood, and leaves a trail of blood when he moves.</li>
+					<li><strong>Conjured</strong></li>
+					<li><strong>Don't move</strong></li>
+					<li><strong>Freeze</strong><br/>
+						The NPC is cold and needs warmer clothing.</li>
+					<li><strong>In party</strong><br/>
+						The NPC is a member of the party.</li>
+					<li><strong>Met</strong><br/>
+						The Avatar has previously spoken to the NPC.</li>
+					<li><strong>Okay to land</strong></li>
+					<li><strong>Poisoned</strong></li>
+					<li><strong>Tattooed</strong></li>
+					<li><strong>Walk</strong></li>
+					<li><strong>Charmed</strong></li>
+					<li><strong>Cursed</strong></li>
+					<li><strong>Ethereal</strong><br/>
+						This makes it possible for the NPC to behave like a ghost 
+						(walk through walls, walk on water...)</li>
+					<li><strong>In action</strong></li>
+					<li><strong>Naked</strong></li>
+					<li><strong>Paralyzed</strong></li>
+					<li><strong>Polymorph</strong></li>
+					<li><strong>Summoned</strong></li>
+					<li><strong>Tournament</strong><br/>
+						In combat this NPC is unable to die.</li>
+					<li><strong>Zombie</strong></li>					
+				</ul>
+			</body>
+		</sub>
+		<sub name="npc_schedules">
+			<header>NPC Schedules</header>
+			<body>
+				<para>
+					In this Tab you can set the schedule the NPC follows normally.
+				</para>
+				<ul>
+					<li><strong>Activity</strong><br/>
+					 	With the button Set you can choose the schedule. Keep in mind that some schedules also 
+					 	require items, e.g. for the Blacksmith activity you need a smithy to work in. If there
+					 	is no such item near the location you set, the NPC will use the next near item in the 
+					 	vicinity, for example the sleep activity will have the NPC wander to the next available 
+					 	bed.<br/>
+					 	To clear the activity set it to --None--.</li>
+					 <li><strong>Location</strong><br/>
+					 	Enter the x and y coordinates of the place you want the NPC to follow his schedule at.
+					 	Unfortunately you cannot (yet) set the z coordinate (on which floor of a house the 
+					 	schedule begins). By placing the Avatar at the spot for the scheduled activity and 
+					 	pressing the Game button, <Studio/> will fill out the coordinates.<br/>
+					 	Also by pressing <key>F2</key> at a place, the cheat screen will show you the coordinates 
+					 	in hex and decimal and you can use either system to enter the location.</li>					 	
+				</ul>
 			</body>
 		</sub>
 	</section>
