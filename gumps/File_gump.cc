@@ -62,7 +62,7 @@ public:
 		: Gump_button(par, shapenum, px, py)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 };
 
 /*
@@ -76,7 +76,7 @@ public:
 			game->get_shape("gumps/quitbtn"), px, py)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 };
 
 /*
@@ -90,7 +90,7 @@ public:
 	  : Gump_button(par, shapenum, px, py)
 		{ pushed = enabled; }
 					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 };
 
 /*
@@ -99,7 +99,6 @@ public:
 
 void Load_save_button::activate
 	(
-	Game_window *gwin
 	)
 {
 	if (get_shapenum() == game->get_shape("gumps/loadbtn"))
@@ -114,7 +113,6 @@ void Load_save_button::activate
 
 void Quit_button::activate
 	(
-	Game_window *gwin
 	)
 {
 	((File_gump *) parent)->quit();
@@ -126,7 +124,6 @@ void Quit_button::activate
 
 void Sound_button::activate
 	(
-	Game_window *gwin
 	)
 {
 	pushed = ((File_gump *) parent)->toggle_option(this);
@@ -180,7 +177,7 @@ public:
 		}
 	void paint();			// Paint.
 					// Handle mouse click.
-	int mouse_clicked(Game_window *gwin, int mx, int my);
+	int mouse_clicked(int mx, int my);
 	void insert(int chr);		// Insert a character.
 	int delete_left();		// Delete char. to left of cursor.
 	int delete_right();		// Delete char. to right of cursor.
@@ -221,11 +218,10 @@ void Gump_text::paint
 
 int Gump_text::mouse_clicked
 	(
-	Game_window *gwin,
 	int mx, int my			// Mouse position on screen.
 	)
 	{
-	if (!on_widget(gwin, mx, my))	// Not in our area?
+	if (!on_widget(mx, my))		// Not in our area?
 		return (0);
 	mx -= textx + parent->get_x();	// Get pt. rel. to text area.
 	if (!get_framenum())		// Gaining focus?
@@ -538,24 +534,24 @@ void File_gump::mouse_down
 	pushed = 0;
 	pushed_text = 0;
 					// First try checkmark.
-	Gump_button *btn = Gump::on_button(gwin, mx, my);
+	Gump_button *btn = Gump::on_button(mx, my);
 	if (btn)
 		pushed = btn;
 	else				// Try buttons at bottom.
 		for (size_t i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
-			if (buttons[i] && buttons[i]->on_button(gwin, mx, my))
+			if (buttons[i] && buttons[i]->on_button(mx, my))
 			{
 				pushed = buttons[i];
 				break;
 			}
 	if (pushed)			// On a button?
 	{
-		pushed->push(gwin);
+		pushed->push();
 		return;
 	}
 					// See if on text field.
 	for (size_t i = 0; i < sizeof(names)/sizeof(names[0]); i++)
-		if (names[i]->on_widget(gwin, mx, my))
+		if (names[i]->on_widget(mx, my))
 		{
 			pushed_text = names[i];
 			break;
@@ -573,15 +569,15 @@ void File_gump::mouse_up
 {
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush(gwin);
-		if (pushed->on_button(gwin, mx, my))
-			pushed->activate(gwin);
+		pushed->unpush();
+		if (pushed->on_button(mx, my))
+			pushed->activate();
 		pushed = 0;
 	}
 	if (!pushed_text)
 		return;
 					// Let text field handle it.
-	if (!pushed_text->mouse_clicked(gwin, mx, my) ||
+	if (!pushed_text->mouse_clicked(mx, my) ||
 	    pushed_text == focus)	// Same field already selected?
 	{
 		pushed_text->paint();
@@ -630,11 +626,11 @@ void File_gump::key_down
 	case SDLK_RETURN:		// If only 'Save', do it.
 		if (!buttons[0] && buttons[1])
 			{
-			buttons[1]->push(gwin);
+			buttons[1]->push();
 			gwin->show(1);
-			buttons[1]->unpush(gwin);
+			buttons[1]->unpush();
 			gwin->show(1);
-			buttons[1]->activate(gwin);
+			buttons[1]->activate();
 			}
 		break;
 	case SDLK_BACKSPACE:

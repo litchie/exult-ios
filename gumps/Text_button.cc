@@ -150,7 +150,7 @@ void Text_button::paint()
 	gwin->paint_text(TB_FONTNUM, text.c_str(), px+text_x+offset, py+text_y+offset);
 }
 
-int Text_button::on_widget(Game_window *gwin, int mx, int my)
+int Text_button::on_widget(int mx, int my)
 {
 	int px = x;
 	int py = y;

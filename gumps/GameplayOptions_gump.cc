@@ -69,15 +69,15 @@ public:
 		: Text_button(par, text, px, py, 59, 11)
 		{ }
 					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 };
 
-void GameplayOptions_button::activate(Game_window *gwin)
+void GameplayOptions_button::activate()
 {
 	if (text == canceltext) {
 		((GameplayOptions_gump*)parent)->cancel();
 	} else if (text == oktext) {
-		((GameplayOptions_gump*)parent)->close(gwin);
+		((GameplayOptions_gump*)parent)->close();
 	}
 }
 
@@ -107,7 +107,7 @@ public:
 	}
 };	
 
-void GameplayOptions_gump::close(Game_window* gwin)
+void GameplayOptions_gump::close()
 {
 	save_settings();
 	done = 1;
@@ -326,19 +326,19 @@ void GameplayOptions_gump::paint()
 
 void GameplayOptions_gump::mouse_down(int mx, int my)
 {
-	pushed = Gump::on_button(gwin, mx, my);
+	pushed = Gump::on_button(mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
 	if (!pushed)
 		for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
-			if (buttons[i] && buttons[i]->on_button(gwin, mx, my)) {
+			if (buttons[i] && buttons[i]->on_button(mx, my)) {
 				pushed = buttons[i];
 				break;
 			}
 
 	if (pushed)			// On a button?
 	{
-		pushed->push(gwin);
+		pushed->push();
 		return;
 	}
 }
@@ -347,9 +347,9 @@ void GameplayOptions_gump::mouse_up(int mx, int my)
 {
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush(gwin);
-		if (pushed->on_button(gwin, mx, my))
-			((Gump_button*)pushed)->activate(gwin);
+		pushed->unpush();
+		if (pushed->on_button(mx, my))
+			((Gump_button*)pushed)->activate();
 		pushed = 0;
 	}
 }

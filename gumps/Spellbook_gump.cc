@@ -173,7 +173,7 @@ public:
 		  leftright(lr)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 	};
 
 /*
@@ -182,7 +182,6 @@ public:
 
 void Page_button::activate
 	(
-	Game_window *gwin
 	)
 	{
 	((Spellbook_gump *) parent)->change_page(leftright ? 1 : -1);
@@ -201,10 +200,10 @@ public:
 		set_frame(frnum);	// Frame # is circle.
 		}
 					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
-	virtual void double_clicked(Game_window *gwin, int x, int y);
-	virtual void push(Game_window *gwin) { }
-	virtual void unpush(Game_window *gwin) { }
+	virtual void activate();
+	virtual void double_clicked(int x, int y);
+	virtual void push() { }
+	virtual void unpush() { }
 	};
 
 /*
@@ -213,7 +212,6 @@ public:
 
 void Spell_button::activate
 	(
-	Game_window *gwin
 	)
 	{
 	((Spelltype_gump *) parent)->select_spell(spell);
@@ -225,7 +223,6 @@ void Spell_button::activate
 
 void Spell_button::double_clicked
 	(
-	Game_window *gwin,
 	int x, int y
 	)
 	{
@@ -451,22 +448,21 @@ Game_object *Spellbook_gump::get_owner()
 
 Gump_button *Spellbook_gump::on_button
 	(
-	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
 {
-	Gump_button *btn = Gump::on_button(gwin, mx, my);
+	Gump_button *btn = Gump::on_button(mx, my);
 	if (btn)
 		return btn;
-	else if (leftpage->on_button(gwin, mx, my))
+	else if (leftpage->on_button(mx, my))
 		return leftpage;
-	else if (rightpage->on_button(gwin, mx, my))
+	else if (rightpage->on_button(mx, my))
 		return rightpage;
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Check spells.
 	{
 		Gump_button *spell = spells[spindex + s];
-		if (spell && spell->on_button(gwin, mx, my))
+		if (spell && spell->on_button(mx, my))
 			return spell;
 	}
 	return 0;
@@ -585,7 +581,7 @@ void Spellscroll_gump::do_spell
 	{
 	scroll->remove_this();		// Scroll is gone.
 	scroll = 0;
-	close(gwin);			// We've just been deleted!
+	close();			// We've just been deleted!
 	gwin->paint();
 	gwin->show();
 	ucmachine->call_usecode(Get_usecode(spellnum),
@@ -611,14 +607,13 @@ Game_object *Spellscroll_gump::get_owner
 
 Gump_button *Spellscroll_gump::on_button
 	(
-	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
 	{
-	Gump_button *btn = Gump::on_button(gwin, mx, my);
+	Gump_button *btn = Gump::on_button(mx, my);
 	if (btn)
 		return btn;
-	else if (spell && spell->on_button(gwin, mx, my))
+	else if (spell && spell->on_button(mx, my))
 		return spell;
 	return 0;
 	}

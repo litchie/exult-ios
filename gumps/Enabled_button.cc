@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 const char* Enabled_button::selections[] = { "Disabled", "Enabled" };
 
 
-void Enabled_button::activate(Game_window *gwin)
+void Enabled_button::activate()
 {
 	set_frame(get_framenum() + 1);
 	if (get_framenum() >= 2) set_frame(0);

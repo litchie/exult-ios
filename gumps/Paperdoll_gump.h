@@ -187,7 +187,7 @@ public:
 	~Paperdoll_gump();
 
 	// Is a given point on a button?
-	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
+	virtual Gump_button *on_button(int mx, int my);
 
 	// Find the object the mouse is over
 	virtual Game_object *find_object(int mx, int my);

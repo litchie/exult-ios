@@ -39,12 +39,12 @@ Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 }
 
 
-void Face_button::double_clicked(Game_window *gwin, int x, int y)
+void Face_button::double_clicked(int x, int y)
 {
 	actor->show_inventory();
 }
 
-void Face_button::update_widget(Game_window *gwin)
+void Face_button::update_widget()
 {
 	Paperdoll_gump::Paperdoll_npc *npcinfo =
 		Paperdoll_gump::GetCharacterInfo(actor->get_shapenum());

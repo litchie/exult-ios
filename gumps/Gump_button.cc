@@ -31,7 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Gump_button::push
 	(
-	Game_window *gwin
 	)
 {
 	pushed = 1;
@@ -45,7 +44,6 @@ void Gump_button::push
 
 void Gump_button::unpush
 	(
-	Game_window *gwin
 	)
 {
 	pushed = 0;
@@ -59,7 +57,6 @@ void Gump_button::unpush
 
 void Gump_button::double_clicked
 	(
-	Game_window *gwin,
 	int x, int y
 	)
 {

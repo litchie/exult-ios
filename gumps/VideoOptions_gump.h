@@ -47,7 +47,7 @@ class VideoOptions_gump : public Modal_gump
 
 					// Paint it and its contents.
 	virtual void paint();
-	virtual void close(Game_window *gwin);
+	virtual void close();
 
  					// Handle events:
 	virtual void mouse_down(int mx, int my);

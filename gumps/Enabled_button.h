@@ -36,7 +36,7 @@ class Enabled_button : public Text_button
 
 	virtual ~Enabled_button()
 	{ }
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 
 	int getselection() const { return get_framenum(); }
 	virtual void toggle(int state) = 0;

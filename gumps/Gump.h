@@ -81,7 +81,7 @@ public:
 	virtual Rectangle get_dirty();		// Get dirty rect. for gump+contents.
 	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?
-	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
+	virtual Gump_button *on_button(int mx, int my);
 					// Paint button.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 			int sx = -1, int sy = -1, bool dont_check = false,
@@ -90,9 +90,9 @@ public:
 					// Paint it and its contents.
 	virtual void paint();
 					// Close (and delete).
-	virtual void close(Game_window *gwin);
+	virtual void close();
 					// update the gump, if required
-	virtual void update_gump (Game_window *gwin) { }
+	virtual void update_gump () { }
 					// Can be dragged with mouse
 	virtual bool is_draggable() const { return true; }
 					// Close on end_gump_mode

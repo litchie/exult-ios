@@ -205,11 +205,10 @@ Game_object *Gump::get_owner()
 
 Gump_button *Gump::on_button
 	(
-	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
 {
-	return (check_button->on_button(gwin, mx, my) ?
+	return (check_button->on_button(mx, my) ?
 			check_button : 0);
 }
 
@@ -370,7 +369,6 @@ void Gump::paint
 
 void Gump::close
 	(
-	Game_window *gwin
 	)
 {
 	gwin->get_gump_man()->close_gump(this);

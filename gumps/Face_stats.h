@@ -39,8 +39,8 @@ class Face_stats : public Gump
 	int		resx;
 	int		resy;
 
-	bool		has_changed(Game_window *);
-	void		create_buttons(Game_window *);
+	bool		has_changed();
+	void		create_buttons();
 	void		delete_buttons();
 
 	Rectangle	region;
@@ -48,7 +48,7 @@ class Face_stats : public Gump
 public:
 	virtual ~Face_stats();
 						// Is a given point on a button?
-	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
+	virtual Gump_button *on_button(int mx, int my);
 	virtual void paint();
 					// Don't close on end_gump_mode
 	virtual bool is_persistent() const { return true; }
@@ -61,7 +61,7 @@ public:
 	virtual bool has_point(int x, int y);
 
 					// add dirty region, if dirty
-	virtual void update_gump(Game_window *gwin);
+	virtual void update_gump();
 
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 			int sx = -1, int sy = -1, bool dont_check = false,
