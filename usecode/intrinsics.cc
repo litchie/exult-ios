@@ -568,7 +568,7 @@ USECODE_INTRINSIC(update_last_created)
 					// And skip if BG.  Causes FoV probs.
 		    Game::get_game_type() != BLACK_GATE)
 			while (Map_chunk::is_blocked(pos, 1,
-					MOVE_ALL_TERRAIN | MOVE_NODROP))
+					MOVE_ALL_TERRAIN | MOVE_NODROP, 1))
 				{	// Try up to ceiling.
 				if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
 					{
@@ -2021,7 +2021,7 @@ USECODE_INTRINSIC(is_not_blocked)
 	int blocked = Map_chunk::is_blocked(
 		info.get_3d_height(), tile.tz, 
 		footprint.x, footprint.y, footprint.w, footprint.h,
-		new_lift, MOVE_ALL_TERRAIN);
+		new_lift, MOVE_ALL_TERRAIN, 1);
 					// Okay?
 	if (!blocked && new_lift == tile.tz)
 		return Usecode_value(1);
