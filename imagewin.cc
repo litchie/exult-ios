@@ -622,7 +622,8 @@ Image_buffer::Image_buffer
 		break;
 	case 15:
 	case 16:
-		ibuf = new Image_buffer16(w, h, dpth);
+		ibuf = new Image_buffer8(w, h);
+//++++++		ibuf = new Image_buffer16(w, h, dpth);
 		break;
 	case 32:
 		cout << "Ouch. No 32 bit support. Try a 16 bit or an 8 bit display" << endl;
@@ -760,9 +761,9 @@ inline unsigned short Get_color8
 	int brightness			// 100=normal.
 	)
 	{
-	unsigned long c = (((unsigned long) val)*brightness*65535L)/
+	unsigned long c = (((unsigned long) val)*brightness*255L)/
 							(100*(maxval + 1));
-	return (c <= 65535L ? (unsigned short) c : 65535);
+	return (c <= 255L ? (unsigned short) c : 255);
 	}
 
 /*
