@@ -1,3 +1,6 @@
+2001-06-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* tools/splitshp.cc: implemented merging shapes
+
 2001-06-28  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* NEWS, Makefile.*, configure.in, README.*: updated for release
 	* exult.cc: clarified "exult.flx not found" error msg a bit
