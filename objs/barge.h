@@ -41,6 +41,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	unsigned char dir;		// Direction: 0=N, 1=E, 2=S, 3=W.
 	bool complete;			// Flag:  all members have been read.
 	bool gathered;			// Items on barge have been gathered.
+	bool ice_raft;			// For Serpent Isle.
 	char boat;			// 1 if a boat, 0 if not; -1=untested.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   not moving.
@@ -62,7 +63,7 @@ public:
 							shapex, shapey, lft),
 			perm_count(0),
 			xtiles(xt), ytiles(yt), dir(d),
-			complete(false), gathered(false),
+			complete(false), gathered(false), ice_raft(false),
 			boat(-1), frame_time(0), path(0)
 		{  }
 	Rectangle get_tile_footprint();
