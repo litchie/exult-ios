@@ -66,6 +66,11 @@
 #include "ucmachine.h"
 #include "utils.h"
 
+#ifdef MACOSX
+#import <sys/param.h> /* for MAXPATHLEN */
+char exult_datadir[MAXPATHLEN];
+#endif
+
 using std::atof;
 using std::cerr;
 using std::cout;
@@ -534,7 +539,6 @@ static void Handle_event
 	{
 	// Mouse scale factor
 	int scale = gwin->get_win()->get_scale();
-	Gump_manager *gump_man = gwin->get_gump_man();
 
 					// For detecting double-clicks.
 	static uint32 last_b1_click = 0, last_b3_click = 0;
@@ -600,8 +604,6 @@ static void Handle_event
 		break;
 	case SDL_MOUSEMOTION:
 		{
-		Gump *gmp = 0;
-
 		Mouse::mouse->move(event.motion.x / scale, event.motion.y / scale);
 		Mouse::mouse->set_speed_cursor();
 		Mouse::mouse_update = true;	// Need to blit mouse.
