@@ -2208,6 +2208,7 @@ void Game_window::double_clicked
 	if (!obj)
 		return;			// Nothing found.
 	if (combat && !gump &&		// In combat?
+	    !Combat::is_paused() &&
 	    (!gump_man->gump_mode() || gump_man->gumps_dont_pause_game()))
 		{
 		Actor *npc = obj->as_actor();
