@@ -2391,6 +2391,24 @@ int Chunk_object_list::is_blocked
 	}
 
 /*
+ *	See if a tile is water.
+ */
+
+inline int Is_water
+	(
+	Game_window *gwin,
+	Chunk_object_list *nlist,	// Chunk.
+	int tx, int ty			// Tile within chunk.
+	)
+	{
+	ShapeID flat = nlist->get_flat(tx, ty);
+	if (flat.is_invalid())
+		return 0;
+	else
+		return gwin->get_info(flat.get_shapenum()).is_water();
+	}
+
+/*
  *	This one is used to see if an object of dims. possibly > 1X1 can
  *	step onto an adjacent square.  For now, changes in lift aren't
  *	allowed.
@@ -2401,9 +2419,12 @@ int Chunk_object_list::is_blocked
 					// Object dims:
 	int xtiles, int ytiles, int ztiles,
 	Tile_coord from,		// Stepping from here.
-	Tile_coord to			// Stepping to here.
+	Tile_coord to,			// Stepping to here.
+	int& terrain			// Returns: 1==land, 2==sea,
+					// 	    3==both.
 	)
 	{
+	terrain = 0;
 	Game_window *gwin = Game_window::get_game_window();
 	int vertx0, vertx1;		// Get x-coords. of vert. block
 					//   to right/left.
@@ -2449,10 +2470,15 @@ int Chunk_object_list::is_blocked
 			Chunk_object_list *olist = gwin->get_objects(
 					x/tiles_per_chunk, cy);
 			olist->setup_cache();
-			if (olist->is_blocked(ztiles, from.tz, 
-					x%tiles_per_chunk, rty, new_lift) ||
+			int rtx = x%tiles_per_chunk;
+			if (olist->is_blocked(ztiles, from.tz, rtx, rty, 
+								new_lift) ||
 			    new_lift != from.tz)
 				return (1);
+			if (new_lift == 0 && Is_water(gwin, olist, rtx, rty))
+				terrain |= 2;
+			else
+				terrain |= 1;
 			}
 		}
 					// Do vert. block.
@@ -2465,10 +2491,15 @@ int Chunk_object_list::is_blocked
 			Chunk_object_list *olist = gwin->get_objects(
 					cx, y/tiles_per_chunk);
 			olist->setup_cache();
-			if (olist->is_blocked(ztiles, from.tz, rtx,
-					y%tiles_per_chunk, new_lift) ||
+			int rty = y%tiles_per_chunk;
+			if (olist->is_blocked(ztiles, from.tz, rtx, rty, 
+								new_lift) ||
 			    new_lift != from.tz)
 				return (1);
+			if (new_lift == 0 && Is_water(gwin, olist, rtx, rty))
+				terrain |= 2;
+			else
+				terrain |= 1;
 			}
 		}
 	return (0);			// All clear.

@@ -1752,8 +1752,9 @@ int Monster_actor::is_blocked
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
 	int ztiles = info.get_3d_height();
 	Tile_coord cur = get_abs_tile_coord();
+	int terrain;			// Gets 1=land, 2=sea, 3=both.+++++Use
 	return Chunk_object_list::is_blocked(xtiles, ytiles, ztiles,
-			cur, Tile_coord(destx, desty, cur.tz));
+			cur, Tile_coord(destx, desty, cur.tz), terrain);
 	}
 
 /*

@@ -611,11 +611,13 @@ int Barge_object::step
 	{
 	Tile_coord cur = get_abs_tile_coord();
 					// Blocked? (Assume ht.=4, for now.)
-	if (cur.tz < 11 && 		// But don't check flying carpet.
-            Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
-								4, cur, t))
+	if (cur.tz < 11) 		// But don't check flying carpet.
 		{
-		return (0);		// Done.
+		int terrain;		// Gets 1=land, 2=sea, 3=both.
+        	if (Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
+						4, cur, t, terrain) ||
+		    !(boat ? (terrain == 2) : (terrain == 1)))
+			return (0);	// Done.
 		}
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.
 	return (1);			// Add back to queue for next time.
