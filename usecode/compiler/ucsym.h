@@ -108,6 +108,8 @@ public:
 	virtual int gen_value(vector<char>& out);
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
+	int get_value() const
+		{ return value; }
 	};
 
 /*
