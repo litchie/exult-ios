@@ -26,7 +26,7 @@ EXEC=exult2.exe
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
 	args.o barge.o bggame.o bodies.o browser.o \
 	combat.o delobjs.o dir.o drag.o effects.o egg.o exult.o exultico.o \
-	game.o  gameclk.o gamedat.o gametxt.o gamewin.o \
+	game.o  gameclk.o gamedat.o gamerend.o gametxt.o gamewin.o \
 	gumps.o imagescl.o imagewin.o items.o lists.o mouse.o npcnear.o \
 	npctime.o  objs.o palette.o paths.o readnpcs.o scale.o schedule.o \
 	segfile.o sigame.o spells.o tqueue.o usecode.o \
