@@ -384,11 +384,11 @@ static Actor *Find_member_blocking
 /*
  *	Get a notion of 'cost' for stepping to a particular tile.
  *
- *	Output:	Currently, 10000 if blocked, or (delta-z)**2, so a
- *		difference in z of 1 will return 1 as the cost.
+ *	Output:	Currently, 10000 if blocked, or (dist)**2.
  */
 
 const int max_cost = 10000;
+
 static int Get_cost
 	(
 	Actor *npc,			// NPC to take the step.
@@ -398,6 +398,8 @@ static int Get_cost
 	)
 	{
 	int cost = 0;
+	if (find_blocking)
+		*find_blocking = 0;
 	if (npc->is_blocked(to))	// (To.tz is updated.)
 		{			// Can't go there.
 		if (find_blocking)
@@ -412,44 +414,13 @@ static int Get_cost
 		else
 			return max_cost;
 		}
-	int ltz = leader->get_lift();	// Leader's z-coord.
-	int difftz = to.tz - ltz;	// Measure closeness.
-	cost += difftz*difftz;
+	Tile_coord lpos = leader->get_tile();
+	int difftz = to.tz - lpos.tz,	// Measure closeness.
+	    diffty = Tile_coord::delta(to.ty, lpos.ty),
+	    difftx = Tile_coord::delta(to.tx, lpos.tx);
+	cost += difftz*difftz + diffty*diffty + difftx*difftx;
 	return cost;
 	}
-#if 0	/* ++++ Not used. */
-/*
- *	Take the better of two steps.
- *
- *	Output:	True if successful.
- */
-
-static bool Take_better_step
-	(
-	Actor *npc,
-	Actor *leader,
-	Tile_coord& pos,		// Current pos.
-	int frame,			// Frame to show.
-	int dir1, int dir2		// Dirs.  We'll take mod 8.
-	)
-	{
-	dir1 %= 8; dir2 %= 8;
-	Tile_coord dest1 = pos.get_neighbor(dir1);
-	int cost1 = Get_cost(npc, leader, dest1);
-	if (!cost1 && npc->step(dest1, frame))
-		return true;
-	Tile_coord dest2 = pos.get_neighbor(dir2);
-	int cost2 = Get_cost(npc, leader, dest2);
-	if (cost1 <= cost2)
-		{
-		if (cost1 == max_cost)	// Both fail.
-			return false;
-		if (npc->step(dest1, frame))
-			return true;
-		}
-	return npc->step(dest2, frame);
-	}
-#endif
 
 /*
  *	Take best step to follow the leader.
@@ -467,25 +438,59 @@ static bool Take_best_step
 	)
 	{
 	static int deltadir[8] = {0, 1, 7, 2, 6, 3, 5, 4};
+	const int cnt = sizeof(deltadir)/sizeof(deltadir[0]);
 
 	int best_cost = max_cost + 8;
 	Tile_coord best(-1, -1, -1);
-	for (int i = 0; i < 8; i++)
+	Actor *best_in_way = 0;
+	for (int i = 0; i < cnt; i++)
 		{
 		int diri = (dir + deltadir[i])%8;
 		Tile_coord to = pos.get_neighbor(diri);
-					// Fudge cost with diff. in dir.
-		int cost = Get_cost(npc, leader, to) + (i + 1)/2;
+		Actor *in_way;		// Fudge cost with diff. in dir.
+		int cost = Get_cost(npc, leader, to, &in_way);
 		if (cost < best_cost)
 			{
 			best_cost = cost;
+			best_in_way = in_way;
 			best = to;
 			}
 		}
-	if (best_cost < max_cost)
-		return npc->step(best, frame);
-	else
+	if (best_cost >= max_cost)
 		return false;
+	if (!best_in_way)		// Nobody in way?
+		return npc->step(best, frame);
+	best = best_in_way->get_tile();	// Swap positions.
+	npc->remove_this(true);
+	best_in_way->remove_this(true);
+	npc->set_frame(frame);		// Appear to take a step.
+	npc->move(best);
+	best_in_way->move(pos);
+	return true;
+	}
+
+/*
+ *	See if a step is reasonable.  This is the first test made.
+ */
+
+inline bool Is_step_okay
+	(
+	Actor *npc,			// NPC to take the step.
+	Actor *leader,			// NPC he's following.
+	Tile_coord to			// Tile to step to.
+	)
+	{
+	if (npc->is_blocked(to))	// (To.tz is updated.)
+		return false;
+	int difftz = to.tz - leader->get_lift();
+	difftz *= difftz;		// Deltaz squared.
+	if (difftz <= 1)
+		return true;		// Close.
+	if (difftz > 4)			// More than 2?
+		return false;		// We'll want to find best dir.
+					// DZ = 2.  How close in XY.
+	int dist = to.distance(leader->get_tile());
+	return dist > 1;		// If dist==1 & deltaz>1, not good.
 	}
 
 /*
@@ -512,9 +517,8 @@ bool Party_manager::step
 		step_index = frames->find_unrotated(npc->get_framenum());
 					// Get next (updates step_index).
 	int frame = frames->get_next(step_index);
-	int cost = Get_cost(npc, leader, to);
-					// Want delta-z <= 1.
-	if (cost <= 3 && npc->step(to, frame))
+					// Want dz<=1, dx<=2, dy<=2.
+	if (Is_step_okay(npc, leader, to) && npc->step(to, frame))
 		{
 		if (to.tx != dest.tx || to.ty != dest.ty)
 			{		// Take a 2nd step (w/ same frame).
@@ -526,17 +530,8 @@ bool Party_manager::step
 	int destdir = npc->get_direction(dest);
 	int cost0, cost1;
 					// Try next/prev dir.
-#if 0
-	if (Take_better_step(npc, leader, pos, frame, destdir+1, destdir+7))
-		return true;
-	if (Take_better_step(npc, leader, pos, frame, destdir+2, destdir+6))
-		return true;
-	if (Take_better_step(npc, leader, pos, frame, destdir+3, destdir+5))
-		return true;
-#else
 	if (Take_best_step(npc, leader, pos, frame, destdir))
 		return true;
-#endif
 	frames->decrement(step_index);	// We didn't take the step.
 	return false;
 	}
