@@ -29,6 +29,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucloc.h"
 
 class Uc_symbol;
+class Uc_var_symbol;
+class Uc_function;
 
 /*
  *	Base class for expressions.
@@ -44,6 +46,10 @@ public:
 	virtual void gen_value(ostream& out) = 0;
 					// Gen. to assign from stack.
 	virtual void gen_assign(ostream& out);
+	virtual int get_string_offset()	// Get offset in text_data.
+		{ return -1; }
+					// Get/create var == this.
+	virtual Uc_var_symbol *need_var(ostream& out, Uc_function *fun);
 	};
 
 /*
@@ -51,10 +57,30 @@ public:
  */
 class Uc_var_expression : public Uc_expression
 	{
-	Uc_symbol *var;
+	Uc_var_symbol *var;
 public:
 					// Use current location.
-	Uc_var_expression(Uc_symbol *v) : var(v)
+	Uc_var_expression(Uc_var_symbol *v) : var(v)
+		{  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
+					// Gen. to assign from stack.
+	virtual void gen_assign(ostream& out);
+	virtual int get_string_offset();// Get offset in text_data.
+	virtual Uc_var_symbol *need_var(ostream& , Uc_function *)
+		{ return var; }
+	};
+
+/*
+ *	An array element.
+ */
+class Uc_arrayelem_expression : public Uc_expression
+	{
+	Uc_var_symbol *array;
+	Uc_expression *index;
+public:
+	Uc_arrayelem_expression(Uc_var_symbol *a, Uc_expression *i)
+		: array(a), index(i)
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(ostream& out);
@@ -116,6 +142,8 @@ public:
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(ostream& out);
+	virtual int get_string_offset()	// Get offset in text_data.
+		{ return offset; }
 	};
 
 /*

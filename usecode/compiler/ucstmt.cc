@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <strstream.h>
 #include "ucstmt.h"
 #include "ucexpr.h"
+#include "ucsym.h"
 #include "opcodes.h"
 #include "utils.h"
 
@@ -48,14 +49,15 @@ Uc_block_statement::~Uc_block_statement
 
 void Uc_block_statement::gen
 	(
-	ostream& out
+	ostream& out,
+	Uc_function *fun
 	)
 	{
 	for (vector<Uc_statement *>::const_iterator it = statements.begin();
 					it != statements.end(); it++)
 		{
 		Uc_statement *stmt = *it;
-		stmt->gen(out);
+		stmt->gen(out, fun);
 		}
 	}
 
@@ -79,7 +81,8 @@ Uc_assignment_statement::~Uc_assignment_statement
 
 void Uc_assignment_statement::gen
 	(
-	ostream& out
+	ostream& out,
+	Uc_function * /* fun */
 	)
 	{
 	value->gen_value(out);		// Get value on stack.
@@ -92,7 +95,8 @@ void Uc_assignment_statement::gen
 
 void Uc_if_statement::gen
 	(
-	ostream& out
+	ostream& out,
+	Uc_function *fun
 	)
 	{
 	expr->gen_value(out);		// Eval. test expression.
@@ -101,13 +105,13 @@ void Uc_if_statement::gen
 	if (else_stmt)
 		{
 		ostrstream code;
-		else_stmt->gen(code);
+		else_stmt->gen(code, fun);
 		elselen = code.pcount();
 		elsestr = code.str();
 		}
 	ostrstream ifcode;		// Generate IF code.
 	if (if_stmt)
-		if_stmt->gen(ifcode);
+		if_stmt->gen(ifcode, fun);
 	if (elselen)			// JMP past ELSE code.
 		{
 		ifcode.put((char) UC_JMP);
@@ -157,14 +161,15 @@ Uc_while_statement::~Uc_while_statement
 
 void Uc_while_statement::gen
 	(
-	ostream& out
+	ostream& out,
+	Uc_function *fun
 	)
 	{
 	long top = out.tellp();		// Get current position.
 	expr->gen_value(out);		// Generate expr. value.
 	ostrstream stmt_code;
 	if (stmt)
-		stmt->gen(stmt_code);	// Generate statement's code.
+		stmt->gen(stmt_code, fun);	// Generate statement's code.
 	int stmtlen = stmt_code.pcount();
 					// Get distance back to top, including
 					//   a JNE and a JMP.
@@ -197,7 +202,8 @@ Uc_return_statement::~Uc_return_statement
 
 void Uc_return_statement::gen
 	(
-	ostream& out
+	ostream& out,
+	Uc_function *fun
 	)
 	{
 	if (expr)			// Returning something?
@@ -216,7 +222,8 @@ void Uc_return_statement::gen
 
 void Uc_say_statement::gen
 	(
-	ostream& out
+	ostream& out,
+	Uc_function * /* fun */
 	)
 	{
 	out.put((char) UC_SAY);
@@ -228,12 +235,27 @@ void Uc_say_statement::gen
 
 void Uc_message_statement::gen
 	(
-	ostream& out
+	ostream& out,
+	Uc_function *fun
 	)
 	{
 	if (!msg)
 		return;
-
-//+++++++++++++	out.put((char) UC_SAY);
+					// A known string?
+	int offset = msg->get_string_offset();
+	if (offset >= 0)
+		{
+		out.put((char) UC_ADDSI);
+		Write2(out, offset);
+		}
+	else
+		{
+		Uc_var_symbol *var = msg->need_var(out, fun);
+		if (var)		// Shouldn't fail.
+			{
+			out.put((char) UC_ADDSV);
+			Write2(out, var->get_offset());
+			}
+		}
 	}
 

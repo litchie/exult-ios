@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucsym.h"
 #include "utils.h"
 #include "opcodes.h"
+#include "ucfun.h"
 
 /*
  *	Default assignment generation.
@@ -39,6 +40,28 @@ void Uc_expression::gen_assign
 	)
 	{
 	error("Can't assign to this expression");
+	}
+
+/*
+ *	Need a variable whose value is this expression.
+ */
+
+Uc_var_symbol *Uc_expression::need_var
+	(
+	ostream& out,
+	Uc_function *fun
+	)
+	{
+	static int cnt = 0;
+	char buf[50];
+	sprintf(buf, "_tmp_%d", cnt++);
+					// Create a 'tmp' variable.
+	Uc_var_symbol *var = fun->add_symbol(buf);
+	if (!var)
+		return 0;		// Shouldn't happen.  Err. reported.
+	gen_value(out);			// Want to assign this value to it.
+	var->gen_assign(out);
+	return var;
 	}
 
 /*
@@ -73,6 +96,51 @@ void Uc_var_expression::gen_assign
 		sprintf(buf, "Can't assign to '%s'", var->get_name());
 		error(buf);
 		}
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_arrayelem_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	if (!index || !array)
+		return;
+	index->gen_value(out);		// Want index on stack.
+	out.put((char) UC_AIDX);	// Opcode, var #.
+	Write2(out, array->get_offset());
+	}
+
+/*
+ *	Generate assignment to this variable.
+ */
+
+void Uc_arrayelem_expression::gen_assign
+	(
+	ostream& out
+	)
+	{
+	if (!index || !array)
+		return;
+	index->gen_value(out);		// Want index on stack.
+	out.put((char) UC_POPARR);	// Opcode, var #.
+	Write2(out, array->get_offset());
+	}
+
+/*
+ *	Get offset in function's text_data.
+ *
+ *	Output:	Offset.
+ */
+
+int Uc_var_expression::get_string_offset
+	(
+	)
+	{ 
+	return var->get_string_offset(); 
 	}
 
 /*

@@ -30,20 +30,39 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 
 /*
- *	A formal parameter or local symbol within a function.  The base class
- *	represents standard Usecode (untyped) variables.
+ *	A formal parameter or local symbol within a function.
  */
 class Uc_symbol
 	{
 protected:
 	string name;			// This will be the key.
+public:
+	friend class Uc_scope;
+	Uc_symbol(char *nm) : name(nm)
+		{  }
+	const char *get_name() { return name.data(); }
+					// Gen. code to put result on stack.
+	virtual int gen_value(ostream& out);
+					// Gen. to assign from stack.
+	virtual int gen_assign(ostream& out);
+	virtual int get_string_offset()	// Get offset in text_data.
+		{ return -1; }
+	};
+
+/*
+ *	A variable (untyped) that can be assigned to.
+ */
+class Uc_var_symbol : public Uc_symbol
+	{
+protected:
 	int offset;			// Within function.  Locals follow
 					//   formal parameters.
 public:
 	friend class Uc_scope;
-	Uc_symbol(char *nm, int off) : name(nm), offset(off)
+	Uc_var_symbol(char *nm, int off) : Uc_symbol(nm), offset(off)
 		{  }
-	const char *get_name() { return name.data(); }
+	int get_offset()
+		{ return offset; }
 					// Gen. code to put result on stack.
 	virtual int gen_value(ostream& out);
 					// Gen. to assign from stack.
@@ -56,14 +75,14 @@ public:
  */
 class Uc_string_symbol : public Uc_symbol
 	{
+	int offset;			// In function's text_data.
 public:
-	Uc_string_symbol(char *nm, int off)
-		: Uc_symbol(nm, off)
+	Uc_string_symbol(char *nm, int off) : Uc_symbol(nm), offset(off)
 		{  }
 					// Gen. code to put result on stack.
 	virtual int gen_value(ostream& out);
-					// Gen. to assign from stack.
-	virtual int gen_assign(ostream& out);
+	virtual int get_string_offset()	// Get offset in text_data.
+		{ return offset; }
 	};
 
 /*
@@ -72,19 +91,16 @@ public:
 class Uc_function_symbol : public Uc_symbol
 	{
 					// Note:  offset = Usecode fun. #.
-	vector<char *> parms;	// Parameters.
+	vector<char *> parms;		// Parameters.
+	int usecode_num;		// Usecode function #.
 public:
 	Uc_function_symbol(char *nm, int num, vector<char *>& p)
-		: Uc_symbol(nm, num), parms(p)
+		: Uc_symbol(nm), parms(p), usecode_num(num)
 		{  }
-					// Gen. code to put result on stack.
-	virtual int gen_value(ostream& out);
-					// Gen. to assign from stack.
-	virtual int gen_assign(ostream& out);
 	const vector<char *>& get_parms()
 		{ return parms; }
-	int get_function_num()
-		{ return offset; }
+	int get_usecode_num()
+		{ return usecode_num; }
 	int get_num_parms()
 		{ return parms.size(); }
 	};

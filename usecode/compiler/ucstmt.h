@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class ostream;
 class Uc_expression;
+class Uc_function;
 
 /*
  *	A statement:
@@ -41,7 +42,7 @@ public:
 		{  }
 	virtual ~Uc_statement() {  }
 					// Generate code.
-	virtual void gen(ostream& out) = 0;
+	virtual void gen(ostream& out, Uc_function *fun) = 0;
 	};
 
 /*
@@ -57,7 +58,7 @@ public:
 	void add(Uc_statement *stmt)
 		{ statements.push_back(stmt); }
 					// Generate code.
-	virtual void gen(ostream& out);
+	virtual void gen(ostream& out, Uc_function *fun);
 	};
 
 /*
@@ -72,7 +73,7 @@ public:
 		{  }
 	~Uc_assignment_statement();
 					// Generate code.
-	virtual void gen(ostream& out);
+	virtual void gen(ostream& out, Uc_function *fun);
 	};
 
 /*
@@ -89,7 +90,7 @@ public:
 		{  }
 	~Uc_if_statement();
 					// Generate code.
-	virtual void gen(ostream& out);
+	virtual void gen(ostream& out, Uc_function *fun);
 	};
 
 /*
@@ -105,7 +106,7 @@ public:
 		{  }
 	~Uc_while_statement();
 					// Generate code.
-	virtual void gen(ostream& out);
+	virtual void gen(ostream& out, Uc_function *fun);
 	};
 
 /*
@@ -119,7 +120,7 @@ public:
 		{  }
 	~Uc_return_statement();
 					// Generate code.
-	virtual void gen(ostream& out);
+	virtual void gen(ostream& out, Uc_function *fun);
 	};
 
 /*
@@ -130,7 +131,7 @@ class Uc_say_statement : public Uc_statement
 public:
 	Uc_say_statement() {  }
 					// Generate code.
-	virtual void gen(ostream& out);
+	virtual void gen(ostream& out, Uc_function *fun);
 	};
 
 /*
@@ -142,7 +143,7 @@ class Uc_message_statement : public Uc_statement
 public:
 	Uc_message_statement(Uc_expression *m) : msg(m) {  }
 					// Generate code.
-	virtual void gen(ostream& out);
+	virtual void gen(ostream& out, Uc_function *fun);
 	};
 
 #endif

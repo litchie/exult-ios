@@ -37,9 +37,7 @@ int Uc_symbol::gen_assign
 	ostream& out
 	)
 	{
-	out.put((char) UC_POP);
-	Write2(out, offset);
-	return 1;
+	return 0;
 	}
 
 /*
@@ -53,9 +51,7 @@ int Uc_symbol::gen_value
 	ostream& out
 	)
 	{
-	out.put((char) UC_PUSH);
-	Write2(out, offset);
-	return 1;
+	return 0;
 	}
 
 /*
@@ -64,12 +60,30 @@ int Uc_symbol::gen_value
  *	Output: 0 if can't do this.
  */
 
-int Uc_string_symbol::gen_assign
+int Uc_var_symbol::gen_assign
 	(
 	ostream& out
 	)
 	{
-	return 0;
+	out.put((char) UC_POP);
+	Write2(out, offset);
+	return 1;
+	}
+
+/*
+ *	Generate code to push variable's value on stack.
+ *
+ *	Output: 0 if can't do this.
+ */
+
+int Uc_var_symbol::gen_value
+	(
+	ostream& out
+	)
+	{
+	out.put((char) UC_PUSH);
+	Write2(out, offset);
+	return 1;
 	}
 
 /*
@@ -86,34 +100,6 @@ int Uc_string_symbol::gen_value
 	out.put((char) UC_PUSHS);
 	Write2(out, offset);
 	return 1;
-	}
-
-/*
- *	Assign value on stack.
- *
- *	Output: 0 if can't do this.
- */
-
-int Uc_function_symbol::gen_assign
-	(
-	ostream& out
-	)
-	{
-	return 0;
-	}
-
-/*
- *	Generate code to push variable's value on stack.
- *
- *	Output: 0 if can't do this.
- */
-
-int Uc_function_symbol::gen_value
-	(
-	ostream& out
-	)
-	{
-	return 0;
 	}
 
 bool String_compare::operator()(char * const &x, char * const &y) const
