@@ -48,15 +48,17 @@ class Combat_schedule : public Schedule
 		} state;
 	Actor *opponent;		// Current opponent.
 	int max_reach;			// Max. weapon reach in tiles.
+	unsigned char yelled;		// Yell when first opponent targeted.
 					// Find monsters, opponents.
 	void find_monsters(Chunk_object_list *chunk, Vector& vec);
 	void find_opponents(Vector& vec);
 	Actor *find_foe(int mode);	// Find a new opponent.
 	Actor *find_foe();
 	void approach_foe();		// Approach foe.
+	void start_strike();		// Start to hit.
 public:
 	Combat_schedule(Actor *n) : Schedule(n), state(approach), opponent(0),
-			max_reach(1)
+			max_reach(1), yelled(0)
 		{  }
 	virtual void now_what();	// Npc calls this when it's done
 	};

@@ -57,9 +57,7 @@ void Npc_proximity_handler::handle_event
 	    npc->distance(gwin->get_main_actor()) < 6 && rand()%3 != 0)
 		{
 		npc->set_schedule_type(Schedule::stand);
-		Rectangle box = gwin->get_shape_rect(npc);
-		int i = rand()%(last_awakened - first_awakened + 1);
-		gwin->add_text(item_names[first_awakened + i], box.x, box.y);
+		npc->say(first_awakened, last_awakened);
 		}
 					// Do it 50% of the time.
 	else if (!(curtime < wait_until) && rand()%2 == 1)

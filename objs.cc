@@ -399,6 +399,33 @@ Game_object *Game_object::get_outermost
 	}
 
 /*
+ *	Show text by the object on the screen.
+ */
+
+inline void Game_object::say
+	(
+	char *text
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Rectangle box = gwin->get_shape_rect(this);
+	gwin->add_text(text, box.x, box.y);
+	}
+
+/*
+ *	Show a random string from 'text.flx' by the object.
+ */
+
+void Game_object::say
+	(
+	int from, int to		// Range (inclusive).
+	)
+	{
+	int offset = rand()%(to - from + 1);
+	say(item_names[from + offset]);
+	}
+
+/*
  *	Paint at given spot in world.
  */
 
