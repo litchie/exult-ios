@@ -92,6 +92,28 @@ extern int Object_in
 	std::string& name
 	);
 
+extern int Barge_object_out
+	(
+	int fd,				// Socket.
+	unsigned long addr,		// Address.
+	int tx, int ty, int tz,	// Absolute tile coords.
+	int shape, int frame,
+	int xtiles,
+	int ytiles,
+	int dir
+	);
+extern int Barge_object_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	int &xtiles,
+	int &ytiles,
+	int &dir
+	);
+
 extern int Egg_object_out
 	(
 	int fd,				// Socket.

@@ -1,3 +1,7 @@
+2004-10-16    <jeff@mini.nerble.net>
+
+	* mapedit/bargeedit.cc: EStudio dialog for adding a barge.
+
 2004-10-07    <jeff@mini.nerble.net>
 
 	* objs/contain.cc: Use gump # from 'containers.dat' for given

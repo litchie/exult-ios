@@ -62,6 +62,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 #include "utils.h"
 #include "egg.h"
+#include "barge.h"
 #include "actors.h"
 #include "gamewin.h"
 #include "gamemap.h"
@@ -237,6 +238,9 @@ static void Handle_client_message
 		{
 	case Exult_server::obj:
 		Game_object::update_from_studio(&data[0], datalen);
+		break;
+	case Exult_server::barge:
+		Barge_object::update_from_studio(&data[0], datalen);
 		break;
 	case Exult_server::egg:
 		Egg_object::update_from_studio(&data[0], datalen);
