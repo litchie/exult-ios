@@ -92,6 +92,7 @@ public:
 	void set_position();		// Set selected to desired position.
 					// Add object/shape picked from Exult.
 	void add(unsigned char *data, int datalen);
+	void remove();			// Remove selected.
 	bool is_visible()
 		{ return GTK_WIDGET_VISIBLE(win); }
 	};
