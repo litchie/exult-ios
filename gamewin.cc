@@ -174,7 +174,7 @@ int Game_window::u7open
 
 /*
  *	Show the absolute game location, where each coordinate is of the
- *	8x8 shape box clicked on.
+ *	8x8 tiles clicked on.
  */
 
 void Game_window::show_game_location
@@ -182,8 +182,8 @@ void Game_window::show_game_location
 	int x, int y			// Point on screen.
 	)
 	{
-	x = chunkx*16 + x/8;
-	y = chunky*16 + y/8;
+	x = chunkx*tiles_per_chunk + x/tilesize;
+	y = chunky*tiles_per_chunk + y/tilesize;
 	cout << "Game location is (" << x << ", " << y << ")\n";
 	}
 
@@ -352,41 +352,30 @@ void Game_window::get_chunk_objects
 	unsigned char buf[16*16*2];	// Read in 16x16 2-byte shape #'s.
 	chunks.read(buf, sizeof(buf));
 	unsigned char *data = &buf[0];
-	Game_object *rles = 0;		// We'll store RLE shapes list here.
-	Game_object *last_rle;		// ->last one we added.
 	int rlenum = 0;			// An index into rles.
 					// Get list we'll store into.
 	Chunk_object_list *olist = get_objects(cx, cy);
-					// A chunk is 16x16 shapes.
-	for (int shapey = 0; shapey < 16; shapey++)
-		for (int shapex = 0; shapex < 16; shapex++)
+					// A chunk is 16x16 tiles.
+	for (int tiley = 0; tiley < tiles_per_chunk; tiley++)
+		for (int tilex = 0; tilex < tiles_per_chunk; tilex++)
 			{
 			ShapeID id(data[0], data[1]);
 			Shape_frame *shape = get_shape(id);
 			if (shape->rle)
 				{
-				Game_object *obj = new Game_object(
-					data[0], data[1], shapex, shapey);
-				if (rles)
-					last_rle->set_next(obj);
-				else
-					rles = obj;
-				last_rle = obj;
+				int shapenum = id.get_shapenum();
+				Shape_info& info = shapes.get_info(shapenum);
+				Game_object *obj = info.is_animated() ?
+					new Animated_object(
+					    data[0], data[1], tilex, tiley)
+					: new Game_object(
+					    data[0], data[1], tilex, tiley);
+				olist->add(obj);
 				}
 			else		// Flat.
-				olist->set_flat(shapex, shapey, id);
+				olist->set_flat(tilex, tiley, id);
 			data += 2;
 			}
-	if (rles)
-		{
-		last_rle->set_next(0);	// Finish list.
-		while (rles)
-			{
-			Game_object *nxt = rles->get_next();
-			olist->add(rles);
-			rles = nxt;
-			}
-		}
 	}
 
 
@@ -513,8 +502,8 @@ void Game_window::read_ireg_objects
 		int cx = entry[0] >> 4; // Get chunk indices within schunk.
 		int cy = entry[1] >> 4;
 					// Get coord. #'s where shape goes.
-		int shapex = entry[0] & 0xf;
-		int shapey = entry[1] & 0xf;
+		int tilex = entry[0] & 0xf;
+		int tiley = entry[1] & 0xf;
 					// Get shape #.
 		int shapeid = entry[2]+256*(entry[3]&3);
 		unsigned int lift, quality, type;
@@ -532,11 +521,12 @@ void Game_window::read_ireg_objects
 			lift = entry[4] >> 4;
 			quality = entry[5];
 			Shape_info& info = shapes.get_info(shapeid);
-			obj = (info.is_animated()) ?
-				new Animated_object(
-				   entry[2], entry[3], shapex, shapey, lift)
-				: new Ireg_game_object(
-				   entry[2], entry[3], shapex, shapey, lift);
+			if (info.is_animated())
+				obj = new Animated_object(
+				   entry[2], entry[3], tilex, tiley, lift);
+			else
+				obj = new Ireg_game_object(
+				   entry[2], entry[3], tilex, tiley, lift);
 			}
 		else if (entlen == 12)	// Container?
 			{
@@ -551,10 +541,10 @@ cout << '\n';
 #endif
 			if (shapeid == 961)
 				obj = new Barge_object(
-				    entry[2], entry[3], shapex, shapey, lift);
+				    entry[2], entry[3], tilex, tiley, lift);
 			else
 				obj = new Container_game_object(
-				    entry[2], entry[3], shapex, shapey, lift);
+				    entry[2], entry[3], tilex, tiley, lift);
 					// Read container's objects.
 			if (type)	// ???Don't understand this yet.
 				read_ireg_objects(ireg, scx, scy, obj);
@@ -760,17 +750,17 @@ void Game_window::paint_chunk_flats
 	int xoff = (cx - chunkx)*chunksize;
 	int yoff = (cy - chunky)*chunksize;
 	Chunk_object_list *olist = get_objects(cx, cy);
-					// Go through array of shapes.
-	for (int shapey = 0; shapey < 16; shapey++)
-		for (int shapex = 0; shapex < 16; shapex++)
+					// Go through array of tiles.
+	for (int tiley = 0; tiley < tiles_per_chunk; tiley++)
+		for (int tilex = 0; tilex < tiles_per_chunk; tilex++)
 			{
-			ShapeID id = olist->get_flat(shapex, shapey);
+			ShapeID id = olist->get_flat(tilex, tiley);
 			if (!id.is_invalid())
 				{	// Draw flat.
 				Shape_frame *shape = get_shape(id);
-				win->copy8(shape->data, 8, 8, 
-					xoff + shapex*8,
-					yoff + shapey*8);
+				win->copy8(shape->data, tilesize, tilesize, 
+					xoff + tilex*tilesize,
+					yoff + tiley*tilesize);
 				}
 			}
 	}

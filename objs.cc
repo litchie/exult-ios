@@ -192,8 +192,6 @@ int Game_object::drop
 	return (0);
 	}
 
-#if 1	/* +++++For new rendering scheme.+++++++*/
-
 static void Lt_wall()		//+++++Debugging.
 	{ cout << "Before the wall.\n"; }
 
@@ -286,8 +284,6 @@ int Game_object::lt
 	return (-1);
 	}
 
-#endif
-
 /*
  *	Can this be dragged?
  */
@@ -311,7 +307,7 @@ Animated_object::Animated_object
 	unsigned int shapex,
 	unsigned int shapey,
 	unsigned int lft
-	) : Ireg_game_object(l, h, shapex, shapey, lft),
+	) : Game_object(l, h, shapex, shapey, lft),
 		animating(0), deltax(0), deltay(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -329,7 +325,7 @@ Animated_object::Animated_object
 	int framenum, 
 	unsigned int tilex, unsigned int tiley, 
 	unsigned int lft
-	) : Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
+	) : Game_object(shapenum, framenum, tilex, tiley, lft),
 		animating(0), deltax(0), deltay(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -358,7 +354,7 @@ void Animated_object::paint
 	Game_window *gwin
 	)
 	{
-	Ireg_game_object::paint(gwin);
+	Game_object::paint(gwin);
 	if (!animating)			// Turn on animation.
 		{			// Clean out old entry if there.
 		gwin->get_tqueue()->remove(this);

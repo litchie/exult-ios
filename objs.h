@@ -189,15 +189,6 @@ public:
 	void set_next(Game_object *obj) // Set next in list.
 		{ next = obj; }
 	int lt(Game_object& obj2);	// Is this less than another in pos.?
-#if 0
-		{
-		int y = get_ty(), y2 = obj2.get_ty();
-		int l = lift, l2 = obj2.lift;
-		return (l < l2 || (l == l2 &&
-			(y < y2 || (y == y2 && 
-				get_tx() < obj2.get_tx()))));
-		} 
-#endif
 					// Return chunk coords.
 	int get_cx()
 		{ return cx; }
@@ -336,7 +327,7 @@ public:
  *	An object that cycles through its frames, or wiggles if just one
  *	frame.
  */
-class Animated_object : public Ireg_game_object, public Time_sensitive
+class Animated_object : public Game_object, public Time_sensitive
 	{
 	unsigned char frames;		// # of frames.
 	unsigned char animating;	// 1 if animation turned on.
