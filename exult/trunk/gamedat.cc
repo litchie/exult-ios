@@ -442,7 +442,7 @@ void Game_window::write_saveinfo()
 	Shape_file *map = create_mini_screenshot();
 	U7open(out, GSCRNSHOT);		// Open file; throws an exception - Don't care
 	StreamDataSource ds(&out);
-	map->save(ds);
+	map->save(&ds);
 	out.close();
 	delete map;
 }
@@ -555,7 +555,7 @@ void Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 			char *buf = new char[len];
 			in.read(buf, len);
 			BufferDataSource ds(buf, len);
-			map = new Shape_file(ds);
+			map = new Shape_file(&ds);
 			delete [] buf;
 		}
 		else if (!strcmp (fname, GSAVEINFO))
@@ -589,7 +589,7 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 		ifstream in;
 		U7open(in, GSCRNSHOT);		// Open file; throws an exception 
 		StreamDataSource ds(&in);
-		map = new Shape_file(ds);
+		map = new Shape_file(&ds);
 		in.close();
 	}
 	catch(...)

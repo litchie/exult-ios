@@ -292,7 +292,7 @@ void Shape_frame::create_rle
 
 unsigned char Shape_frame::read
 	(
-	DataSource& shapes,		// Shapes data source to read.
+	DataSource* shapes,		// Shapes data source to read.
 	uint32 shapeoff,		// Offset of shape in file.
 	uint32 shapelen,		// Length expected for detecting RLE.
 	int frnum			// Frame #.
@@ -302,9 +302,9 @@ unsigned char Shape_frame::read
 	rle = 0;
 	if (!shapelen && !shapeoff) return 0;
 					// Get to actual shape.
-	shapes.seek(shapeoff);
-	uint32 datalen = shapes.read4();
-	uint32 hdrlen = shapes.read4();
+	shapes->seek(shapeoff);
+	uint32 datalen = shapes->read4();
+	uint32 hdrlen = shapes->read4();
 	if (datalen == shapelen)
 		{
 		rle = 1;		// It's run-length-encoded.
@@ -317,18 +317,18 @@ unsigned char Shape_frame::read
 		if (framenum == 0)
 			{
 			frameoff = hdrlen;
-			framelen = nframes > 1 ? shapes.read4() - frameoff :
+			framelen = nframes > 1 ? shapes->read4() - frameoff :
 						datalen - frameoff;
 			}
 		else
 			{
-			shapes.skip((framenum - 1) * 4);
-			frameoff = shapes.read4();
+			shapes->skip((framenum - 1) * 4);
+			frameoff = shapes->read4();
 					// Last frame?
 			if (framenum == nframes - 1)
 				framelen = datalen - frameoff;
 			else
-				framelen = shapes.read4() - frameoff;
+				framelen = shapes->read4() - frameoff;
 			}
 					// Get compressed data.
 		get_rle_shape(shapes, shapeoff + frameoff, framelen);
@@ -338,10 +338,10 @@ unsigned char Shape_frame::read
 	framenum &= 31;			// !!!Guessing here.
 	xleft = yabove = 8;		// Just an 8x8 bitmap.
 	xright= ybelow = -1;
-	shapes.seek(shapeoff + framenum*64);
+	shapes->seek(shapeoff + framenum*64);
 	data = new unsigned char[64];	// Read in 8x8 pixels.
 	datalen = 64;
-	shapes.read((char *) data, 64);
+	shapes->read((char *) data, 64);
 	return (shapelen/64);		// That's how many frames.
 	}
 	
@@ -351,20 +351,20 @@ unsigned char Shape_frame::read
 
 void Shape_frame::get_rle_shape
 	(
-	DataSource& shapes,		// Shapes data source to read.
+	DataSource* shapes,		// Shapes data source to read.
 	long filepos,			// Position in file.
 	long len			// Length of entire frame data.
 	)
 	{
-	shapes.seek(filepos);		// Get to extents.
-	xright = shapes.read2();
-	xleft = shapes.read2();
-	yabove = shapes.read2();
-	ybelow = shapes.read2();
+	shapes->seek(filepos);		// Get to extents.
+	xright = shapes->read2();
+	xleft = shapes->read2();
+	yabove = shapes->read2();
+	ybelow = shapes->read2();
 	len -= 8;			// Subtract what we just read.
 	data = new unsigned char[len + 2];	// Allocate and read data.
 	datalen = len+2;
-	shapes.read((char*)data, len);
+	shapes->read((char*)data, len);
 	data[len] = 0;			// 0-delimit.
 	data[len + 1] = 0;
 	rle = 1;
@@ -624,7 +624,7 @@ int Shape_frame::has_point
 
 Shape_frame *Shape::reflect
 	(
-	DataSource& shapes,		// shapes data source to read.
+	DataSource* shapes,		// shapes data source to read.
 	int shapenum,			// Shape #.
 	int framenum			// Frame # without the 'reflect' bit.
 	)
@@ -677,18 +677,48 @@ inline void Shape::create_frames_list
 
 Shape_frame *Shape::read
 	(
-	DataSource& shapes,		// Shapes data source to read.
+	DataSource *shapes1,		// Shapes data source to read.
 	int shapenum,			// Shape #.
-	int framenum			// Frame # within shape.
+	int framenum,			// Frame # within shape.
+	DataSource *shapes2,		// Shapes data source to read (alternative).
+	int count1,			// Number of shapes in shapes
+	int count2			// Number of shapes in shapes2
 	)
 	{
+	DataSource *shapes = 0;
 	Shape_frame *frame = new Shape_frame();
 					// Figure offset in "shapes.vga".
 	uint32 shapeoff = 0x80 + shapenum*8;
-	shapes.seek(shapeoff);
-					// Get location, length.
-	shapeoff = shapes.read4();
-	uint32 shapelen = shapes.read4();
+	uint32 shapelen = 0;
+
+	// If shapes2 exists and shapenum is valid for shapes2
+	if (shapes2 && (count2 == -1 || shapenum < count2))
+	{
+		shapes2->seek(shapeoff);
+						// Get location, length.
+		int s = shapes2->read4();
+		shapelen = shapes2->read4();
+
+		if (s && shapelen)
+		{
+			shapeoff = s;
+			shapes = shapes2;
+		}
+	}
+	if (shapes == 0)
+	{
+		shapes = shapes1;
+		if (count1 != -1 && shapenum >= count1)
+		{
+			std::cerr << "Shape num out of range: shapenum" << std::endl;
+			return 0;
+		}
+
+		shapes->seek(shapeoff);
+						// Get location, length.
+		shapeoff = shapes->read4();
+		shapelen = shapes->read4();
+	}
 					// Read it in and get frame count.
 	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
@@ -795,13 +825,13 @@ void Shape_file::load
 	StreamDataSource shape_source(&file);
 	uint32 shapelen = shape_source.read4();
 					// Read frame 0 & get frame count.
-	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
+	create_frames_list(frame->read(&shape_source, 0L, shapelen, 0));
 	store_frame(frame, 0);
 					// Get the rest.
 	for (int i = 1; i < num_frames; i++)
 		{
 		frame = new Shape_frame();
-		frame->read(shape_source, 0L, shapelen, i);
+		frame->read(&shape_source, 0L, shapelen, i);
 		store_frame(frame, i);
 		}
 	}
@@ -811,7 +841,7 @@ void Shape_file::load
 
 Shape_file::Shape_file
 	(
-	DataSource& shape_source		// datasource.
+	DataSource* shape_source		// datasource.
 	) : Shape()
 	{
 		load(shape_source);
@@ -819,12 +849,12 @@ Shape_file::Shape_file
 
 void Shape_file::load
 	(
-	DataSource& shape_source		// datasource.
+	DataSource* shape_source		// datasource.
 	)
 	{
 	reset();
 	Shape_frame *frame = new Shape_frame();
-	uint32 shapelen = shape_source.read4();
+	uint32 shapelen = shape_source->read4();
 					// Read frame 0 & get frame count.
 	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
 	store_frame(frame, 0);
@@ -849,7 +879,7 @@ int Shape_file::get_size()
 }
 
 // NOTE: Only works on shapes other than the special 8x8 tile-shapes
-void Shape_file::save(DataSource& shape_source)
+void Shape_file::save(DataSource* shape_source)
 {
 	int* offsets = new int[num_frames];
 	int size;
@@ -858,15 +888,15 @@ void Shape_file::save(DataSource& shape_source)
 	for (i=1; i<num_frames; i++)
 		offsets[i] = offsets[i-1] + frames[i-1]->get_size() + 8;
 	size = offsets[num_frames-1] + frames[num_frames-1]->get_size() + 8;
-	shape_source.write4(size);
+	shape_source->write4(size);
 	for (i=0; i<num_frames; i++)
-		shape_source.write4(offsets[i]);
+		shape_source->write4(offsets[i]);
 	for (i=0; i<num_frames; i++) {
-		shape_source.write2(frames[i]->xright);
-		shape_source.write2(frames[i]->xleft);
-		shape_source.write2(frames[i]->yabove);
-		shape_source.write2(frames[i]->ybelow);
-		shape_source.write((char*)(frames[i]->data), frames[i]->get_size());
+		shape_source->write2(frames[i]->xright);
+		shape_source->write2(frames[i]->xleft);
+		shape_source->write2(frames[i]->yabove);
+		shape_source->write2(frames[i]->ybelow);
+		shape_source->write((char*)(frames[i]->data), frames[i]->get_size());
 	}
 	delete [] offsets;
 }
@@ -883,14 +913,18 @@ Vga_file::Vga_file
 	(
 	const char *nm,			// Path to file.
 	int u7drag			// # from u7drag.h, or -1.
-	) : shape_source(0), num_shapes(0), shapes(0), u7drag_type(u7drag)
+	) : shape_source(0), shape_source2(0),
+	    num_shapes(0), num_shapes1(0), num_shapes2(0), 
+	    shapes(0), u7drag_type(u7drag)
 	{
 	load(nm);
 	}
 
 Vga_file::Vga_file
 	(
-	) : shape_source(0), num_shapes(0), shapes(0), u7drag_type(-1)
+	) : shape_source(0), shape_source2(0),
+	    num_shapes(0), num_shapes1(0), num_shapes2(0), 
+	    shapes(0), u7drag_type(-1)
 	{
 		// Nothing to see here !!!
 	}
@@ -902,14 +936,24 @@ Vga_file::Vga_file
 
 void Vga_file::load
 	(
-	const char *nm			// Path to file.
+	const char *nm,			// Path to file.
+	const char *nm2			// Path to patch file.
 	)
 	{
 	reset();
 	U7open(file, nm);		// throws an error if it fails
 	shape_source = new StreamDataSource(&file);
 	shape_source->seek(0x54);		// Get # of shapes.
-	num_shapes = shape_source->read4();
+	num_shapes = num_shapes1 = shape_source->read4();
+
+	if (nm2 && U7exists(nm2))
+	{
+		U7open(file2, nm2);		// throws an error if it fails
+		shape_source2 = new StreamDataSource(&file2);
+		shape_source2->seek(0x54);		// Get # of shapes.
+		num_shapes2 = shape_source2->read4();
+		if (num_shapes2 > num_shapes) num_shapes = num_shapes2;
+	}
 					// Set up lists of pointers.
 	shapes = new Shape[num_shapes];
 	}
@@ -921,6 +965,18 @@ void Vga_file::reset()
 	if( shape_source )
 		delete shape_source;
 	file.close();
+
+	if( shape_source2 )
+		delete shape_source2;
+
+	if (file2.is_open()) file2.close();
+
+	num_shapes = 0;
+	num_shapes1 = 0;
+	num_shapes2 = 0;
+	shape_source = 0;
+	shape_source2 = 0;
+	shapes = 0;
 	}
 
 Vga_file::~Vga_file()

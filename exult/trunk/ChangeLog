@@ -1,3 +1,15 @@
+2001-07-31 Ryan Nunn <triforce@merlin.net.au>
+	* exultmenu.cc, bggame.cc, sigame.cc : Namespace, need I say more?
+	* fnames.h, shapes/*.*: Allow patch reading for vga files. Made
+	  shapes.vga and all shape info files to read patches.
+	* gamerend.cc, gamewin.h: Moved call to Gump_manager::update_gumps() to
+	  Game_window::paint_dirty() from Game_window::paint(x,y,w,h).
+	* gumps/Face_stats.cc: Made the Face Stat Bars a little safer by only
+	  accessing the actors during calls to update and not when painting.
+	* gumps/*.* : Some minor changes to gump shape painting.
+	* otherfiles : Misc changes required due to referencecs to DataSources
+	  being change to pointers in shapevga.cc/h.
+
 2001-07-31  Max Horn <max@quendi.de>
 	* files/utils.cc: worked arround bug in mkdir() on OS X/Darwin
 

@@ -72,7 +72,7 @@ Mouse::Mouse
 	SDL_GetMouseState(&mousex, &mousey);
 	mousex /= iwin->get_scale();
 	mousey /= iwin->get_scale();
-	pointers.load(shapes);
+	pointers.load(&shapes);
 	Init();
 	set_shape0(0);
 }
