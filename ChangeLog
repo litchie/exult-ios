@@ -1,3 +1,11 @@
+2003-11-12  Ryan Nunn  <colourles@users.sourceforge.net>
+	* tools/u7voice2syx.cc : Small tool that will convert various files 
+	  ("u7voice.flx" BG, "u7intro.tim" BG, and "mainmenu.tim" SI) into syx 
+	  (SysEx) format files for people with MT32s. For everyone else these 
+	  files are kinda useless. Doesn't do anything with the XMIDI.MT files
+	  which are used for the BG endgame xmis, and the SI intro, in game and
+	  endgame xmis.
+
 2003-11-09  Ryan Nunn  <colourles@users.sourceforge.net>
 	* exultmenu.cc, gamewin.cc, audio/Midi.*, audio/xmidi.*,
 	  gumps/AudioOptions_gump.* : 
