@@ -36,7 +36,7 @@ Boston, MA  02111-1307, USA.
 #include "iwin8.h"
 #include "exult_types.h"
 #include "gamma.h"
-
+#include <limits.h>
 
 using std::memmove;
 
@@ -184,7 +184,7 @@ unsigned char* Image_window8::mini_screenshot()
 			r = r/9; g = g/9; b = b/9;
 
 			//find nearest-colour in non-rotating palette
-			int bestdist = MAXINT, bestindex = -1;
+			int bestdist = INT_MAX, bestindex = -1;
 			for (int i=0; i<224; i++) {
 				int dist = (colors[0+3*i]-r)*(colors[0+3*i]-r)+
 					(colors[1+3*i]-g)*(colors[1+3*i]-g)+
