@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vgafile.h"
 #include "utils.h"
 #include "objs.h"
+#include "imagewin.h"
 
 /*
  *	+++++Debugging
@@ -41,6 +42,210 @@ inline void Check_file
 		cout << "VGA file is bad!\n";
 		shapes.clear();
 		}
+	}
+
+/*
+ *	Create a new frame by reflecting across a line running NW to SE.
+ */
+
+Shape_frame *Shape_frame::reflect
+	(
+	)
+	{
+	int w = get_width(), h = get_height();
+	Shape_frame *reflected = new Shape_frame();
+	reflected->rle = 1;		// Set data.
+	reflected->xleft = yabove;
+	reflected->yabove = xleft;
+	reflected->xright = ybelow;
+	reflected->ybelow = xright;
+					// Create drawing area.
+	Image_buffer8 *ibuf = new Image_buffer8(h, w);
+	ibuf->fill8(255);		// Fill with 'transparent' pixel.
+	int xoff = yabove, yoff = xleft;// Figure origin.
+	unsigned char *in = data; 	// Point to data, and draw.
+	int scanlen;
+	while ((scanlen = Read2(in)) != 0)
+		{
+					// Get length of scan line.
+		int encoded = scanlen&1;// Is it encoded?
+		scanlen = scanlen>>1;
+		short scanx = Read2(in);
+		short scany = Read2(in);
+		if (!encoded)		// Raw data?
+			{
+			ibuf->copy8(in, 1, scanlen,
+					xoff + scany, yoff + scanx);
+			in += scanlen;
+			continue;
+			}
+		for (int b = 0; b < scanlen; )
+			{
+			unsigned char bcnt = *in++;
+					// Repeat next char. if odd.
+			int repeat = bcnt&1;
+			bcnt = bcnt>>1; // Get count.
+			if (repeat)
+				{
+				unsigned char pix = *in++;
+				ibuf->fill8(pix, 1, bcnt,
+					xoff + scany, yoff + scanx + b);
+				}
+			else		// Get that # of bytes.
+				{
+				ibuf->copy8(in, 1, bcnt,
+					xoff + scany, yoff + scanx + b);
+				in += bcnt;
+				}
+			b += bcnt;
+			}
+		}
+	reflected->create_rle(ibuf->get_bits(), w, h);
+	delete ibuf;			// Done with this.
+	return (reflected);
+	}
+/*
+ *	Skip transparent pixels.
+ *
+ *	Output:	Index of first non-transparent pixel (w if no more).
+ *		Pixels is incremented by (delta x).
+ */
+
+static int Skip_transparent
+	(
+	unsigned char *& pixels,	// 8-bit pixel scan line.
+	int x,				// X-coord. of pixel to start with.
+	int w				// Remaining width of pixels.
+	)
+	{
+	while (x < w && *pixels == 255)
+		{
+		x++;
+		pixels++;
+		}
+	return (x);
+	}
+
+/*
+ *	Split a line of pixels into runs, where a run
+ *	consists of different pixels, or a repeated pixel.
+ *
+ *	Output:	Index of end of scan line.
+ */
+
+static int Find_runs
+	(
+	short *runs,			// Each run's length is returned.
+					// For each byte, bit0==repeat.
+					// List ends with a 0.
+	unsigned char *pixels,		// Scan line (8-bit color).
+	int x,				// X-coord. of pixel to start with.
+	int w				// Remaining width of pixels.
+	)
+	{
+	int runcnt = 0;			// Counts runs.
+	while (x < w && *pixels != 255)	// Stop at first transparent pixel.
+		{
+		int run = 0;		// Look for repeat.
+		while (x < w - 1 && pixels[0] == pixels[1])
+			{
+			x++;
+			pixels++;
+			run++;
+			}
+		if (run)		// Repeated?  Count 1st, shift, flag.
+			{
+			run = ((run + 1)<<1)&1;
+			x++;		// Also pass the last one.
+			pixels++;
+			}
+		else do			// Pass non-repeated run of
+			{		//   andy length.
+			x++;
+			pixels++;
+			run += 2;	// So we don't have to shift.
+			}
+		while (x < w && *pixels != 255 &&
+			(x == w - 1 || pixels[0] != pixels[1]));
+					// Store run length.
+		runs[runcnt++] = run;
+		}
+	runs[runcnt] = 0;		// 0-delimit list.
+	return (x);
+	}
+
+/*
+ *	Encode an 8-bit image into an RLE frame.
+ *
+ *	Output:	Data is set to compressed image.
+ */
+
+void Shape_frame::create_rle
+	(
+	unsigned char *pixels,		// 8-bit uncompressed data.
+	int w, int h			// Width, height.
+	)
+	{
+					// Create an oversized buffer.
+	unsigned char *buf = new unsigned char[w*h*2 + 16*h];
+	unsigned char *out = buf;
+	int newx;			// Gets new x at end of a scan line.
+	for (int y = 0; y < h; y++)	// Go through rows.
+		for (int x = 0; (x = Skip_transparent(pixels, x, w)) < w; 
+								x = newx)
+			{
+			short runs[100];// Get runs.
+			newx = Find_runs(runs, pixels, x, w);
+					// Just 1 non-repeated run?
+			if (!runs[1] && !(runs[0]&1))
+				{
+				int len = runs[0] >> 1;
+				Write2(out, runs[0]);
+					// Write position.
+				Write2(out, x - xleft);
+				Write2(out, y - yabove);
+				memcpy(out, pixels, len);
+				pixels += len;
+				out += len;
+				continue;
+				}
+					// Encoded, so write it with bit0==1.
+			Write2(out, ((newx - x)<<1)|1);
+					// Write position.
+			Write2(out, x - xleft);
+			Write2(out, y - yabove);
+					// Go through runs.
+			for (int i = 0; runs[i]; i++)
+				{
+				int len = runs[i]>>1;
+					// Check for repeated run.
+				if (runs[i]&1)
+					{
+					while (len)
+						{
+						int c = len > 127
+							? 127 : len;
+						*out++ = (c<<1)|1;
+						*out++ = *pixels;
+						pixels += c;
+						len -= c;
+						}
+					}
+				else while (len > 0)
+					{
+					int c = len > 127 ? 127 : len;
+					*out++ = c<<1;
+					memcpy(out, pixels, c);
+					out += c;
+					pixels += c;
+					len -= c;
+					}
+				}
+			}
+	int datalen = out - buf;	// Create buffer of correct size.
+	delete data;			// Delete old data if there.
+	data = new unsigned char[datalen];
+	memcpy(data, buf, datalen);
 	}
 
 /*
@@ -169,6 +374,7 @@ int Shape_frame::has_point
 		}
 	return (0);			// Never found it.
 	}
+
 
 /*
  *	Read in a frame.

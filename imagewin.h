@@ -44,7 +44,7 @@ protected:
 	unsigned int width, height;	// Dimensions (in pixels).
 	int depth;			// # bits/pixel.
 	int pixel_size;			// # bytes/pixel.
-	char *bits;			// Allocated image buffer.
+	unsigned char *bits;		// Allocated image buffer.
 	unsigned int line_width;	// # words/scan-line.
 
 	int clipx, clipy, clipw, cliph; // Clip rectangle.
@@ -84,6 +84,8 @@ public:
 		}
 	friend class Image_window;
 	friend class Image_buffer;
+	unsigned char *get_bits()	// Get ->data.
+		{ return bits; }
 	void clear_clip()		// Reset clip to whole window.
 		{ clipx = clipy = 0; clipw = width; cliph = height; }
 					// Set clip.
@@ -182,10 +184,17 @@ public:
 class Image_buffer8 : public Image_buffer_base
 	{
 	SDL_Color colors[256];		// Palette.
+					// Private ctor. for Image_buffer.
+	Image_buffer8(unsigned int w, unsigned int h, Image_buffer *)
+		: Image_buffer_base(w, h, 8)
+		{  }
 public:
 	Image_buffer8(unsigned int w, unsigned int h)
 		: Image_buffer_base(w, h, 8)
-		{  }
+		{
+		bits = new unsigned char[w*h];
+		}
+	friend class Image_buffer;
 	/*
 	 *	Depth-independent methods:
 	 */

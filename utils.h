@@ -87,6 +87,20 @@ inline unsigned long Read4
 	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	}
 
+/*
+ *	Write a 2-byte value to a buffer, lsb first.
+ */
+
+inline void Write2
+	(
+	unsigned char *& out,		// Write here and update.
+	int val
+	)
+	{
+	*out++ = val & 0xff;
+	*out++ = (val>>8) & 0xff;
+	}
+
 int U7open
 	(
 	ifstream& in,			// Input stream to open.

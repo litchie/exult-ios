@@ -141,8 +141,8 @@ void Image_buffer8::copy
 		yfrom = srcy + srch - 1;
 		yto = desty + srch - 1;
 		}
-	char *to = bits + yto*line_width + destx;
-	char *from = bits + yfrom*line_width + srcx;
+	unsigned char *to = bits + yto*line_width + destx;
+	unsigned char *from = bits + yfrom*line_width + srcx;
 					// Go through lines.
 	while (srch--)
 		{
@@ -208,7 +208,7 @@ Image_buffer *Image_buffer::create_buffer
 	)
 	{
 	Image_buffer *newbuf = new Image_buffer(w, h, ibuf->depth);
-	newbuf->ibuf->bits = new char[w*h*ibuf->pixel_size];
+	newbuf->ibuf->bits = new unsigned char[w*h*ibuf->pixel_size];
 	return (newbuf);
 	}
 
@@ -221,7 +221,7 @@ void Image_buffer8::fill8
 	unsigned char pix
 	)
 	{
-	char *pixels = bits;
+	unsigned char *pixels = bits;
 	int cnt = line_width*height;
 	for (int i = 0; i < cnt; i++)
 		*pixels++ = pix;
@@ -289,7 +289,7 @@ void Image_buffer8::copy8
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	char *to = bits + desty*line_width + destx;
+	unsigned char *to = bits + desty*line_width + destx;
 	unsigned char *from = src_pixels + srcy*src_width + srcx;
 	int to_next = line_width - srcw;// # pixels to next line.
 	int from_next = src_width - srcw;
@@ -318,7 +318,7 @@ void Image_buffer8::copy_line8
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	char *to = bits + desty*line_width + destx;
+	unsigned char *to = bits + desty*line_width + destx;
 	unsigned char *from = src_pixels + srcx;
 	memcpy(to, from, srcw);
 	}
@@ -399,7 +399,7 @@ void Image_buffer8::copy_transparent8
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	char *to = bits + desty*line_width + destx;
+	unsigned char *to = bits + desty*line_width + destx;
 	unsigned char *from = src_pixels + srcy*src_width + srcx;
 	int to_next = line_width - srcw;// # pixels to next line.
 	int from_next = src_width - srcw;
@@ -756,12 +756,12 @@ Image_buffer::Image_buffer
 	)
 	{
 #if 1	/* +++++Let's see what SDL can do. */
-	ibuf = new Image_buffer8(w, h);
+	ibuf = new Image_buffer8(w, h, this);
 #else
 	switch (dpth)			// What depth?
 		{
 	case 8: 
-		ibuf = new Image_buffer8(w, h);
+		ibuf = new Image_buffer8(w, h, this);
 		break;
 	case 15:
 	case 16:
@@ -841,7 +841,7 @@ void Image_window::create_surface
 			SDL_GetError() << '\n';
 		exit(-1);
 		}
-	ibuf->bits = (char *) surface->pixels;
+	ibuf->bits = (unsigned char *) surface->pixels;
 					// Update line size in words.
 	ibuf->line_width = surface->pitch/ibuf->pixel_size;
 	}
