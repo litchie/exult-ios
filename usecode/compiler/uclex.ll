@@ -158,6 +158,7 @@ true		return UCTRUE;
 false		return UCFALSE;
 break		return BREAK;
 case		return CASE;
+static		return STATIC_;
 
 converse	return CONVERSE;
 say		return SAY;

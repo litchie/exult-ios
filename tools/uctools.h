@@ -123,8 +123,10 @@ static opcode_desc opcode_table[] =
 	{ "pop\teventid", 0, 0 },					// 4b
 	{ "line",2,IMMED },					// 4c
 	{ "func",4,DATA_STRING },			// 4d
-	{ NULL, 0, 0 },	{ NULL, 0, 0 },		// 4e - 4f
-	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 50-53
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },			// 4e - 4f
+	{ "push\tstatic", 2, VARREF },			// 50
+	{ "pop\tstatic", 2, VARREF },			// 51
+	{ NULL, 0, 0 },	{ NULL, 0, 0 },			// 52-53
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 54-57
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 58-5B
 	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	{ NULL, 0, 0 },	// 5C-5F
