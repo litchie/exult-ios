@@ -2442,7 +2442,8 @@ void Usecode_internal::link_party
 			}
 		npc->set_party_id(party_count);
 		party[party_count++] = npc_num;
-		npc->set_schedule_type(Schedule::follow_avatar);
+// ++++This messes up places where they should wait, and should be unnecessary.
+//		npc->set_schedule_type(Schedule::follow_avatar);
 					// We can use all his/her items.
 		npc->set_flag_recursively(Obj_flags::okay_to_take);
 		npc->set_flag (Obj_flags::in_party);
