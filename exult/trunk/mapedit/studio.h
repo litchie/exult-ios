@@ -146,7 +146,7 @@ public:
 	bool need_to_save();		// Anything modified?
 	void write_map();
 	void read_map();
-	void write_shape_info();
+	void write_shape_info(bool force = false);
 	void reload_usecode();
 	void set_play(gboolean play);
 	void set_tile_grid(gboolean grid);
