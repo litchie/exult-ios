@@ -2371,7 +2371,7 @@ void Game_window::double_clicked
 		{
 		obj = find_object(x, y);
 					// Check path, except if an NPC.
-	    	if (obj && obj->get_npc_num() <= 0 &&
+	    	if (obj && obj->get_npc_num() <= 0 && !obj->is_monster() &&
 			!Fast_pathfinder_client::is_grabable(
 					main_actor->get_abs_tile_coord(),
 					obj->get_abs_tile_coord()))

@@ -990,7 +990,8 @@ int Usecode_machine::path_run_usecode
 	Usecode_value& useval,		// Usecode #.
 	Usecode_value& itemval,		// Use as itemref in Usecode fun.
 	Usecode_value& eventval,	// Eventid.
-	int find_free
+	int find_free			// Not sure.  For SI.  We'll also
+					//   interpret as 'don't fail'.
 	)
 	{
 	Actor *npc = as_actor(get_item(npcval));
@@ -1020,7 +1021,7 @@ int Usecode_machine::path_run_usecode
 	cout << endl << "Path_run_usecode:  first walk to (" << 
 			dx << ", " << dy << ", " << dz << ")" << endl;
 	if (src != dest &&
-	    !npc->walk_path_to_tile(dest))
+	    !npc->walk_path_to_tile(dest) && !find_free)
 		{			// Failed to find path.  Return 0.
 		cout << "Failed to find path" << endl;
 		return 0;
