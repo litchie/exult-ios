@@ -19,7 +19,9 @@ EXULT_FLX_OBJECTS = \
 	pointers.shp		\
 	exit.shp		\
 	play_1st_scene.shp	\
-	extras.shp
+	extras.shp		\
+	midi_conversion.shp	\
+	sfx_conversion.shp
 
 flexdir = $(datadir)/exult
 
