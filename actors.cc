@@ -1825,7 +1825,7 @@ void Actor::reduce_health
 		}
 	if (Actor::is_dying())
 		{
-		if (Game::get_game_type() == SERPENT_ISLE && usecode >= 0 &&
+		if (Game::get_game_type() == SERPENT_ISLE &&
 					// SI 'tournament'?
 		    get_flag(Obj_flags::si_tournament))
 			{
@@ -1836,7 +1836,7 @@ void Actor::reduce_health
 				 (attacker->get_flag(Obj_flags::in_party) ||
 							attacker == c)))
 				gwin->get_usecode()->call_usecode(
-					usecode, this, Usecode_machine::died);
+					get_usecode(), this, Usecode_machine::died);
 
 				// Still 'tournament'?  Set hp = 1.
 			if (get_flag(Obj_flags::si_tournament) &&
