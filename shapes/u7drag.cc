@@ -70,3 +70,36 @@ void Get_u7_shapeid
 	frame = *ptr;
 	}
 
+/*
+ *	Store in char array.
+ *
+ *	Output:	Length of what's stored.
+ */
+
+int Store_u7_chunkid
+	(
+	unsigned char *data, 		// At least 4 bytes.
+	int cnum			// Chunk #.
+	)
+	{
+	unsigned char *ptr = data;
+	*ptr++ = cnum&0xff;		// Low-byte first.
+	*ptr++ = (cnum>>8)&0xff;
+	return (ptr - data);
+	}
+
+/*
+ *	Retrieve cnum#.
+ */
+
+void Get_u7_cnumid
+	(
+	unsigned char *data, 		// At least 4 bytes.
+	int& cnum			// 0-0xffff returned.
+	)
+	{
+	unsigned char *ptr = data;
+	cnum = *ptr++;			// Low-byte first.
+	cnum += (*ptr++)<<8;
+	}
+
