@@ -49,10 +49,10 @@ RSC=rc.exe
 # ADD RSC /l 0xc09 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
+# ADD BSC32 /nologo /o"Release\Exult.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /version:93.4 /subsystem:windows /incremental:yes /machine:I386
+# ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:93.4 /subsystem:windows /incremental:yes /machine:I386
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
@@ -74,10 +74,10 @@ LINK32=link.exe
 # ADD RSC /l 0xc09 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
+# ADD BSC32 /nologo /o"debug\Exult.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /version:93.4 /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:93.4 /subsystem:console /debug /machine:I386 /pdbtype:sept
 # SUBTRACT LINK32 /incremental:no /map
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
@@ -100,11 +100,11 @@ LINK32=link.exe
 # ADD RSC /l 0xc09 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
+# ADD BSC32 /nologo /o"Release\Exult.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /version:93.4 /subsystem:windows /incremental:yes /machine:I386
+# ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:93.4 /subsystem:windows /incremental:yes /machine:I386
 # SUBTRACT LINK32 /pdb:none
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
 TargetPath=\UC\exult\Exult.exe
@@ -137,11 +137,11 @@ SOURCE="$(InputPath)"
 # ADD RSC /l 0xc09 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
+# ADD BSC32 /nologo /o"debug\Exult.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /incremental:no /map
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /version:93.4 /subsystem:console /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:93.4 /subsystem:console /debug /machine:I386 /pdbtype:sept
 # SUBTRACT LINK32 /incremental:no /map
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
 TargetPath=\UC\exult\Exult.exe
@@ -618,6 +618,11 @@ SOURCE=..\files\U7file.cc
 # Begin Source File
 
 SOURCE=..\files\utils.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\zip\zip_u7file.cc
+# PROP Exclude_From_Build 1
 # End Source File
 # End Group
 # Begin Group "flic"
@@ -1300,6 +1305,11 @@ SOURCE=..\files\U7file.h
 
 SOURCE=..\files\utils.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\files\zip\zip_u7file.h
+# PROP Exclude_From_Build 1
+# End Source File
 # End Group
 # Begin Group "flic h"
 
@@ -1761,6 +1771,10 @@ SOURCE=..\FAQ
 # Begin Source File
 
 SOURCE=..\INSTALL
+# End Source File
+# Begin Source File
+
+SOURCE=..\Makefile
 # End Source File
 # Begin Source File
 

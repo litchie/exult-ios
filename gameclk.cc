@@ -144,7 +144,7 @@ static void Check_freezing
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Avatar's flag applies to party.
-	bool freeze = gwin->get_main_actor()->get_flag(Obj_flags::freeze);
+	bool freeze = gwin->get_main_actor()->get_flag(Obj_flags::freeze)!=false;
 	Actor *party[9];		// Get party + Avatar.
 	int cnt = gwin->get_party(party, 1);
 	for (int i = 0; i < cnt; i++)

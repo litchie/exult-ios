@@ -131,10 +131,37 @@ using std::_off_t;
 #include <fcntl.h>
 #include <direct.h>
 
-// Only include these headers if we are actually compiling Exult
-#ifdef EXULT
 #include <windows.h>
 #include <mmsystem.h>
+#include <windef.h>
+
+// Why oh why!
+// MSVC thinks near and far are actually supposed to be used with pointers
+// but because they are no longer used, it consequently causes an error
+#undef near
+#define near ex_near
+#undef far
+#define far ex_far
+#undef FAR
+#define FAR
+#undef NEAR
+#define NEAR
+
+// We need this defined
+#define __STRING(x) #x
+
+#ifdef DEBUG
+#define STRICTUNZIP
+#define STRICTZIP
+#endif
+
+// Only include these headers if we are actually compiling Exult
+#ifdef EXULT
+
+#ifndef HAVE_ZIP_SUPPORT
+#define HAVE_ZIP_SUPPORT
+#endif
+
 #include <SDL.h>
 
 #include "../actions.h"
@@ -258,6 +285,8 @@ using std::_off_t;
 #include "../shapes/shapevga.h"
 #include "../shapes/u7drag.h"
 #include "../shapes/vgafile.h"
+
+//#include "../files/zip/zip_u7file.h"
 #endif
 
 // We will probably always want these
@@ -269,17 +298,6 @@ using std::_off_t;
 #include "../files/Table.h"
 #include "../files/U7file.h"
 #include "../files/utils.h"
-
-// Why oh why!
-// MSVC thinks near and far are actually supposed to be used with pointers
-// but because they are no longer used, it consequently causes an error
-#undef near
-#define near ex_near
-#undef far
-#define far ex_far
-
-// We need this defined
-#define __STRING(x) #x
 
 // When doing a DEBUG compile we will output to the console
 // However, SDL doesn't want us to do that

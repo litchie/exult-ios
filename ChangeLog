@@ -1,3 +1,19 @@
+2001-11-09  Ryan Nunn  <triforce@merlin.net.au>
+	* actorio.cc, combat.cc, gameclk.cc, gumps/GameplayOptions_gump.cc :
+	  Fixed up some bool warnings.
+	* cheat_screen.cc : Can put spaces in names and added feedback after
+	  setting polymorph.
+	* gamewin.cc : Added "Saving Game" message.
+	* gumps/Newfile_gump.* : General Improvements.
+	* msvcstuff/*.* : Misc updated project settings
+	* files/Flex.* : is_flex() methods.
+	* Makefile.win32, Makefile.cygwin, gamewin.h, gamedat.cc, exult.cc
+	  files/zip/*.* : Zipped savegame support. Zlib headers and library are
+	  required to use it. HAVE_ZIP_SUPPORT needs to be defined. Config key
+	  "config/disk/save_compression_level" is used to control save game 
+	  compression. Valid values are 0 (normal flex saves), 1 (normal zip,
+	  default) and 2 (zip with combined files).
+
 2001-11-08  Ryan Nunn  <triforce@merlin.net.au>
 	* bggame.cc : Fixed BG Endgame crash
 

@@ -72,6 +72,9 @@ using std::time_t;
 using std::tm;
 using std::time_t;
 
+// Save game compression level
+extern int save_compression;
+
 /*
  *	Write out the gamedat directory from a saved game.
  *
@@ -83,6 +86,13 @@ void Game_window::restore_gamedat
 	const char *fname		// Name of savegame file.
 	)
 	{
+
+	// Check for a ZIP file first
+#ifdef HAVE_ZIP_SUPPORT
+	if (restore_gamedat_zip(fname) != false)
+		return;
+#endif
+
 	ifstream in;
 
 #ifdef RED_PLASMA
@@ -260,6 +270,13 @@ void Game_window::save_gamedat
 	const char *savename			// User's savegame name.
 	)
 	{
+
+		// First check for compressed save game
+#ifdef HAVE_ZIP_SUPPORT
+	if (save_compression > 0 && save_gamedat_zip(fname, savename) != false)
+		return;
+#endif
+
 	// setup correct file list 
 	int numsavefiles = (Game::get_game_type() == BLACK_GATE) ?
 			bgnumsavefiles : sinumsavefiles;
@@ -456,7 +473,7 @@ void Game_window::write_saveinfo()
 	out.close();
 	delete map;
 }
-void Game_window::read_saveinfo(std::ifstream &in,
+void Game_window::read_saveinfo(DataSource *in,
 		SaveGame_Details *&details,
 		SaveGame_Party *& party)
 {
@@ -465,72 +482,79 @@ void Game_window::read_saveinfo(std::ifstream &in,
 
 	// This order must match struct SaveGame_Details
 	// Time that the game was saved
-	in.get(details->real_minute);
-	in.get(details->real_hour);
-	in.get(details->real_day);
-	in.get(details->real_month);
-	details->real_year = Read2(in);
+	details->real_minute = in->read1();
+	details->real_hour = in->read1();
+	details->real_day = in->read1();
+	details->real_month = in->read1();
+	details->real_year = in->read2();
+	
 
 	// The Game Time that the save was done at
-	in.get(details->game_minute);
-	in.get(details->game_hour);
-	details->game_day = Read2(in);
+	details->game_minute = in->read1();
+	details->game_hour = in->read1();
+	details->game_day = in->read2();
 
-	details->save_count = Read2(in);
-	in.get(details->party_size);
+	details->save_count = in->read2();
+	details->party_size = in->read1();
 
-	in.get(details->unused);	// Unused
+	details->unused = in->read1();	// Unused
 
-	in.get(details->real_second);	// 15
+	details->real_second = in->read1();	// 15
 
 	// Packing for the rest of the structure
-	for (j = reinterpret_cast<long>(&(((SaveGame_Details *)0)->reserved0)); j < sizeof(SaveGame_Details); j++)
-		in.get();
+	in->skip(sizeof(SaveGame_Details) - reinterpret_cast<long>(&(((SaveGame_Details *)0)->reserved0)));
 
 	party = new SaveGame_Party[details->party_size];
 	for (i=0; i<8 && i<details->party_size ; i++)
 	{
-		in.read(party[i].name, 18);
-		party[i].shape = Read2(in);
+		in->read(party[i].name, 18);
+		party[i].shape = in->read2();
 
-		party[i].exp = Read4(in);
-		party[i].flags = Read4(in);
-		party[i].flags2 = Read4(in);
+		party[i].exp = in->read4();
+		party[i].flags = in->read4();
+		party[i].flags2 = in->read4();
 
-		in.get(reinterpret_cast<char &>(party[i].food));
-		in.get(reinterpret_cast<char &>(party[i].str));
-		in.get(reinterpret_cast<char &>(party[i].combat));
-		in.get(reinterpret_cast<char &>(party[i].dext));
-		in.get(reinterpret_cast<char &>(party[i].intel));
-		in.get(reinterpret_cast<char &>(party[i].magic));
-		in.get(reinterpret_cast<char &>(party[i].mana));
-		in.get(reinterpret_cast<char &>(party[i].training));
+		party[i].food = in->read1();
+		party[i].str = in->read1();
+		party[i].combat = in->read1();
+		party[i].dext = in->read1();
+		party[i].intel = in->read1();
+		party[i].magic = in->read1();
+		party[i].mana = in->read1();
+		party[i].training = in->read1();
 
-		party[i].health = Read2(in);
-		party[i].shape_file = Read2(in);
+		party[i].health = in->read2();
+		party[i].shape_file = in->read2();
 
 		// Packing for the rest of the structure
-		for (j = reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved1)); j < sizeof(SaveGame_Party); j++)
-			in.get();
+		in->skip (sizeof(SaveGame_Party) -  reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved1)));
 	}
 }
 
-void Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_Details *&details, SaveGame_Party *& party)
+bool Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_Details *&details, SaveGame_Party *& party)
 {
 	char fname[50];			// Set up name.
 	snprintf(fname, 50, SAVENAME, num, 
 		Game::get_game_type() == BLACK_GATE ? "bg" : "si");
 
+	// First check for compressed save game
+#ifdef HAVE_ZIP_SUPPORT
+	if (get_saveinfo_zip(fname, name, map, details, party) != false)
+		return true;
+#endif
+
 	ifstream in;
 	U7open(in, fname);		// Open file; throws an exception 
 					// in case of an error.
-
-	// Read Name
+	// Always try to Read Name
 	char buf[0x50];
 	memset(buf, 0, sizeof(buf));
 	in.read(buf, sizeof(buf) - 1);
 	name = new char [strlen (buf)+1];
 	strcpy (name, buf);
+
+	// Isn't a flex, can't actually read it
+	if (!Flex::is_flex(in)) return false;
 
 	// Now get dir info
 	in.seekg(0x54);			// Get to where file count sits.
@@ -571,13 +595,22 @@ void Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 		}
 		else if (!strcmp (fname, GSAVEINFO))
 		{
-			read_saveinfo (in, details, party);
+#if 0
+			char *buf = new char[len];
+			in.read(buf, len);
+			BufferDataSource ds(buf, len);
+#else
+			StreamDataSource ds(&in);
+#endif
+			read_saveinfo (&ds, details, party);
 		}
 
 	}
 	in.close();
 
 	delete [] finfo;
+
+	return true;
 }
 
 void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, SaveGame_Party *& party)
@@ -586,7 +619,8 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 	{
 		ifstream in;
 		U7open(in, GSAVEINFO);		// Open file; throws an exception 
-		read_saveinfo (in, details, party);
+		StreamDataSource ds(&in);
+		read_saveinfo (&ds, details, party);
 		in.close();
 	}
 	catch(const file_exception & f)
@@ -610,3 +644,419 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 		map = 0; map = 0;
 	}
 }
+
+// Zip file support
+#ifdef HAVE_ZIP_SUPPORT
+
+#include "files/zip/unzip.h"
+#include "files/zip/zip.h"
+
+static const char *remove_dir(const char *fname)
+{
+	const char *base = strchr(fname, '/');// Want the base name.
+	if (!base)
+		base = strchr(fname, '\\');
+	if (base)
+		return base+1;
+
+	return fname;
+}
+
+
+bool Game_window::get_saveinfo_zip(const char *fname, char *&name, Shape_file *&map, SaveGame_Details *&details, SaveGame_Party *& party)
+{
+	// If a flex, so can't read it
+	if (Flex::is_flex(fname)) return false;
+
+	unzFile unzipfile = unzOpen(get_system_path(fname).c_str());
+	if (!unzipfile) return false;
+
+	// Name comes from comment
+	char namebuf[0x50];
+	if (unzGetGlobalComment(unzipfile, namebuf, 0x50) <= 0) strncpy (namebuf, "UNNAMED", 0x50);
+	name = new char [strlen (namebuf)+1];
+	strcpy (name, namebuf);
+
+
+	// Things we need
+	unz_file_info file_info;
+	char *buf = 0;
+
+	// Get the screenshot first
+	if (unzLocateFile(unzipfile, remove_dir(GSCRNSHOT), 2) == UNZ_OK)
+	{
+		unzGetCurrentFileInfo(unzipfile, &file_info, NULL, 0, NULL, 0, NULL, 0);
+		buf = new char[file_info.uncompressed_size];
+
+		unzOpenCurrentFile(unzipfile);
+		unzReadCurrentFile(unzipfile, buf, file_info.uncompressed_size);
+		if (unzCloseCurrentFile(unzipfile) == UNZ_OK)
+		{
+			BufferDataSource ds(buf, file_info.uncompressed_size);
+			map = new Shape_file(&ds);
+		}
+
+		delete [] buf;
+	}
+
+	// Now saveinfo
+	if (unzLocateFile(unzipfile, remove_dir(GSAVEINFO), 2) == UNZ_OK)
+	{
+		unzGetCurrentFileInfo(unzipfile, &file_info, NULL, 0, NULL, 0, NULL, 0);
+		buf = new char[file_info.uncompressed_size];
+
+		unzOpenCurrentFile(unzipfile);
+		unzReadCurrentFile(unzipfile, buf, file_info.uncompressed_size);
+		if (unzCloseCurrentFile(unzipfile) == UNZ_OK)
+		{
+			BufferDataSource ds(buf, file_info.uncompressed_size);
+			read_saveinfo (&ds, details, party);
+		}
+
+		delete [] buf;
+	}
+
+	unzClose (unzipfile);
+
+	return true;
+}
+
+
+// Level 2 Compression
+bool Game_window::Restore_level2 (void *uzf)
+{
+	unzFile unzipfile = static_cast<unzFile>(uzf);
+
+	char oname[50];		// Set up name.
+	char *oname2 = oname+sizeof(GAMEDAT) - 1;		// Set up name.
+	char size_buffer[4];
+	int size;
+	strcpy(oname, GAMEDAT);
+
+	if (unzOpenCurrentFile(unzipfile) != UNZ_OK)
+	{
+		std::cerr << "Couldn't open current file" << std::endl;
+		return false;
+	}
+
+	while (!unzeof(unzipfile))
+	{
+		// Read Filename
+		oname2[12] = 0;
+		if (unzReadCurrentFile(unzipfile, oname2, 12) != 12)
+		{
+			std::cerr << "Couldn't read for filename" << std::endl;
+			return false;
+		}
+
+		// Check to see if was are at the end of the list
+		if (*oname2 == 0) break;
+
+		// Get file length.
+		if (unzReadCurrentFile(unzipfile, size_buffer, 4) != 4)
+		{
+			std::cerr << "Couldn't read for size" << std::endl;
+			return false;
+		}
+		BufferDataSource ds(size_buffer, 4);
+		size = ds.read4();
+
+		if (size)
+		{
+			// Watch for names ending in '.'.
+			int namelen = strlen(oname);
+			if (oname[namelen - 1] == '.')
+				oname[namelen - 1] = 0;
+
+
+			// Now read the file.
+			char *buf = new char[size];
+			if (unzReadCurrentFile(unzipfile, buf, size) != size)
+			{
+				delete [] buf;
+				std::cerr << "Couldn't read for buf" << std::endl;
+				return false;
+			}
+
+			// Then write it out.
+			ofstream out;
+			U7open(out, oname);
+			out.write(buf, size);
+
+			delete [] buf;
+			if (!out.good())
+			{
+				std::cerr << "out was bad" << std::endl;
+				return false;
+			}
+			out.close();
+			CYCLE_RED_PLASMA();
+		}
+	}
+
+	return unzCloseCurrentFile(unzipfile) == UNZ_OK;
+}
+
+
+/*
+ *	Write out the gamedat directory from a saved game.
+ *
+ *	Output: Aborts if error.
+ */
+
+bool Game_window::restore_gamedat_zip
+	(
+	const char *fname		// Name of savegame file.
+	)
+	{
+	// If a flex, so can't read it
+	if (Flex::is_flex(fname)) return false;
+
+#ifdef RED_PLASMA
+	// Display red plasma during load...
+	setup_load_palette();
+#endif
+	unzFile unzipfile = unzOpen(get_system_path(fname).c_str());
+	if (!unzipfile) return false;
+
+	U7mkdir(GAMEDAT, 0755);		// Create dir. if not already there.
+
+	U7remove (USEDAT);
+	U7remove (U7NBUF_DAT);
+	U7remove (NPC_DAT);
+	U7remove (MONSNPCS);
+	U7remove (FLAGINIT);
+	U7remove (GWINDAT);
+	U7remove (IDENTITY);
+	U7remove (GSCHEDULE);
+	U7remove ("<STATIC>/flags.flg");
+	U7remove (GSCRNSHOT);
+	U7remove (GSAVEINFO);
+	U7remove (KEYRINGDAT);
+
+	cout.flush();
+
+	unz_global_info	global;
+	unzGetGlobalInfo(unzipfile, &global);
+
+	// Now read each file.
+	char oname[50];		// Set up name.
+	char *oname2 = oname + sizeof(GAMEDAT) - 1;
+	strcpy(oname, GAMEDAT);
+
+	do
+	{
+		unz_file_info	file_info;
+	
+		unzGetCurrentFileInfo(unzipfile, &file_info,
+			oname2, 13,
+			NULL, 0,
+			NULL, 0);
+
+		// Get file length.
+		int len = file_info.uncompressed_size;
+		if (len <= 0)
+			continue;
+
+		// Level 2 compression handling
+		if (!std::strcmp("GAMEDAT", oname2))
+		{
+			if (Restore_level2(unzipfile) == false)
+				abort("Error reading level2 from zip '%s'.", fname);
+
+			continue;
+		}
+
+					// Watch for names ending in '.'.
+		int namelen = strlen(oname);
+		if (oname[namelen - 1] == '.')
+			oname[namelen - 1] = 0;
+
+
+					// Open the file in the zip
+		if (unzOpenCurrentFile(unzipfile) != UNZ_OK)
+			abort("Error opening current from zipfile '%s'.", fname);
+
+					// Now read the file.
+		char *buf = new char[len];
+		if (unzReadCurrentFile(unzipfile, buf, len) != len)
+			abort("Error reading current from zip '%s'.", fname);
+
+					// now write it out.
+		ofstream out;
+		U7open(out, oname);
+		out.write(buf, len);
+		if (!out.good()) abort("Error writing to '%s'.", oname);
+		out.close();
+
+					// Close the file in the zip
+		if (unzCloseCurrentFile(unzipfile) != UNZ_OK)
+			abort("Error closing current in zip '%s'.", fname);
+		delete [] buf;
+
+		CYCLE_RED_PLASMA();
+	}
+	while (unzGoToNextFile(unzipfile) == UNZ_OK);
+
+	unzClose(unzipfile);
+
+	cout.flush();
+
+#ifdef RED_PLASMA
+	load_palette_timer = 0;
+#endif
+
+	return true;
+	}
+
+
+// Level 1 Compression
+static bool Save_level1 (zipFile zipfile, const char *fname)
+{
+	ifstream in;
+	U7open (in, fname);
+
+	StreamDataSource ds(&in);
+
+	unsigned int size = ds.getSize();
+	char *buf = new char[size];
+	ds.read(buf, size);
+	
+
+	zipOpenNewFileInZip (zipfile, remove_dir(fname), NULL, NULL, 0,
+				NULL, 0, NULL, Z_DEFLATED, Z_BEST_COMPRESSION);
+
+	zipWriteInFileInZip (zipfile, buf, size);
+	delete [] buf;
+
+	return zipCloseFileInZip (zipfile) == ZIP_OK;
+}
+
+// Level 2 Compression
+static bool Begin_level2 (zipFile zipfile)
+{
+	return zipOpenNewFileInZip (zipfile, "GAMEDAT", NULL, NULL, 0,
+				NULL, 0, NULL, Z_DEFLATED, Z_BEST_COMPRESSION) == ZIP_OK;
+}
+
+static bool Save_level2 (zipFile zipfile, const char *fname)
+{
+	ifstream in;
+	U7open (in, fname);
+
+	StreamDataSource ds(&in);
+
+	uint32 size = ds.getSize();
+	char *buf = new char[size<13?13:size]; // We want at least 13 bytes
+	
+	// Filename first
+	memset (buf, 0, 13);
+	strncpy (buf, remove_dir(fname), 13);
+	int err = zipWriteInFileInZip (zipfile, buf, 12);
+
+	// Size of the file
+	if (err == ZIP_OK)
+	{
+		// Must be platform independant
+		BufferDataSource bds(buf, 4);
+		bds.write4(size);
+		err = zipWriteInFileInZip (zipfile, buf, 4);
+	}
+
+	// Now the actual file
+	if (err == ZIP_OK)
+	{
+		ds.read(buf, size);
+		err = zipWriteInFileInZip (zipfile, buf, size);
+	}
+
+	delete [] buf;
+
+	return err == ZIP_OK;
+}
+
+static bool End_level2 (zipFile zipfile)
+{
+	uint32 zeros = 0;
+
+	// Write a terminator (12 zeros)
+	int err = zipWriteInFileInZip (zipfile, &zeros, 4);
+	if (err == ZIP_OK) err = zipWriteInFileInZip (zipfile, &zeros, 4);
+	if (err == ZIP_OK) err = zipWriteInFileInZip (zipfile, &zeros, 4);
+
+	return zipCloseFileInZip (zipfile) == ZIP_OK;
+}
+
+
+bool Game_window::save_gamedat_zip
+	(
+	const char *fname,			// File to create.
+	const char *savename			// User's savegame name.
+	)
+{
+	// If no compression return
+	if (save_compression < 1) return false;
+
+	// setup correct file list 
+	int numsavefiles = (Game::get_game_type() == BLACK_GATE) ?
+			bgnumsavefiles : sinumsavefiles;
+	const char **savefiles = (Game::get_game_type() == BLACK_GATE) ?
+			bgsavefiles : sisavefiles;	
+
+	// Name
+	{
+		ofstream out;
+		char title[0x50];
+		memset (title, 0, 0x50);
+		std::strncpy (title, savename, 0x50);
+		U7open(out, fname);
+		out.write(title, 0x50);
+		out.close();
+	}
+	
+	zipFile zipfile = zipOpen(get_system_path(fname).c_str(), 1);
+
+	// Level 1 Compression
+	if (save_compression != 2)
+	{
+		for (int i = 0; i < numsavefiles; i++)
+			Save_level1(zipfile, savefiles[i]);
+
+		// Now the Ireg's.
+		for (int schunk = 0; schunk < 12*12; schunk++)
+		{
+			char iname[80];
+			Save_level1(zipfile, get_schunk_file_name(U7IREG, schunk, iname));
+		}
+	}
+	// Level 2 Compression
+	else
+	{
+		// Keep saveinfo and screenshot using normal compression
+		// There are always files 0 and 1
+		Save_level1(zipfile, GSCRNSHOT);
+		Save_level1(zipfile, GSAVEINFO);
+
+		Begin_level2(zipfile);
+
+		for (int i = 2; i < numsavefiles; i++)
+			Save_level2(zipfile, savefiles[i]);
+
+		// Now the Ireg's.
+		for (int schunk = 0; schunk < 12*12; schunk++)
+		{
+			char iname[80];
+			Save_level2(zipfile, get_schunk_file_name(U7IREG, schunk, iname));
+		}
+
+		End_level2(zipfile);
+	}
+
+	// ++++Better error system needed??
+	if (zipClose(zipfile, savename) != ZIP_OK)
+		throw file_write_exception(fname);
+
+	return true;
+}
+
+#endif
