@@ -1,3 +1,16 @@
+2001-01-11  Max Horn  <max@quendi.de>
+	* hash_utils.h: contains hash_set/hash_map stuff
+	* files/utils.h: moved hash related stuff to hash_utils.h
+	* bodies.cc: #include hash_utils.h instead of files/utils.h
+	* delobjs.h: 
+	* font.h: #include hash_utils.h instead of files/utils.h; removed the std:: from std::hash_map
+	  since hash_map is *not* part of the standard C++ lib and should not be part of std::
+	* game.h: #include hash_utils.h instead of files/utils.h; removed unneeded
+	  "extern const int c_tiles_per_chunk;"
+	* Mixer.cc: (hopefully) fixed crashing bug on MacOS. Please read the comment in fill_audio_func
+	* Audio.cc: rearranged the #includes at the top of the file a bit
+	* various other files: changed header comment a bit (to read: (c) 2000-2001 The Exult Team)
+
 2001-01-12  Ryan Nunn <triforce@merlin.net.au>
 	* usecode/ucmachine.cc : add_cont_items returns num not added.
 	  remove_cont_items changed to return num removed. These changes now
