@@ -184,8 +184,8 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 					// +++++For now create 8-bit surface
 					//   to avoid crashing places we
 					//   haven't converted yet.
-		if ((scaled_surface = SDL_SetVideoMode(w, h, hwdepth, 
-							video_flags)) != 0 &&
+		if ((scaled_surface = SDL_SetVideoMode(scale*w, scale*h, 
+						hwdepth, video_flags)) != 0 &&
 		    (unscaled_surface = surface = SDL_CreateRGBSurface(
 					SDL_SWSURFACE, w, h,
 						8, 0, 0, 0, 0)) != 0)

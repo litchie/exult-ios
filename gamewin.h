@@ -162,7 +162,6 @@ public:
  	 *	Display:
 	 */
 	void clear_screen(bool update = false);
-	void set_window_size(int w, int h, int s, int sclr);
 	int get_width() const
 		{ return win->get_width(); }
 	int get_height() const

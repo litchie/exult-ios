@@ -158,7 +158,7 @@ void Yesno_gump::mouse_up
  *	Handle ASCII character typed.
  */
 
-void Yesno_gump::key_down(int chr, SDL_Event& ev)
+void Yesno_gump::key_down(int chr)
 {
 	if (chr == 'y' || chr == 'Y' || chr == SDLK_RETURN)
 		set_answer(1);

@@ -70,11 +70,6 @@ void GL_texshape::create
 					// Linear filtering.
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-#if 0
-					// Repeat pattern.
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-#endif
 	}
 
 /*
@@ -141,10 +136,6 @@ void GL_texshape::paint
 					//   of screen.
 	)
 	{
-#if 0	/* +++++Testing */
-	if (px < 0 || py < 0)
-		return;
-#endif
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glPushMatrix();
 					// Convert to tile position.
@@ -159,26 +150,17 @@ void GL_texshape::paint
 	y = -y;
 	x /= c_tilesize;
 	y /= c_tilesize;
-	float w = static_cast<float>(texsize)/c_tilesize, 
-	      h = static_cast<float>(texsize)/c_tilesize;
+	float w = static_cast<float>(texsize)/(c_tilesize), 
+	      h = static_cast<float>(texsize)/(c_tilesize);
 	glTranslatef(x, y, 0);
 					// Choose texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBegin(GL_QUADS);
 		{
-#if 0
-//++++++TESTING
-		glColor3f(1,.5, 0);	// Orange.
-		glVertex3f(0, 0, 0);
-		glVertex3f(0, 1, 0);
-		glVertex3f(1, 1, 0);
-		glVertex3f(1, 0, 0);
-#else
-		glTexCoord2f(0, 0);		glVertex3f(0, 0, 0);
-		glTexCoord2f(0, 1);		glVertex3f(0, h, 0);
-		glTexCoord2f(1, 1);		glVertex3f(w, h, 0);
-		glTexCoord2f(1, 0);		glVertex3f(w, 0, 0);
-#endif
+		glTexCoord2f(0, 0);		glVertex3f(0, h, 0);
+		glTexCoord2f(0, 1);		glVertex3f(0, 0, 0);
+		glTexCoord2f(1, 1);		glVertex3f(w, 0, 0);
+		glTexCoord2f(1, 0);		glVertex3f(w, h, 0);
 		}
 	glEnd();
 	glPopMatrix();
@@ -190,7 +172,7 @@ void GL_texshape::paint
 
 GL_manager::GL_manager
 	(
-	) : shapes(0), num_shapes(0), palette(0)
+	) : shapes(0), num_shapes(0), palette(0), scale(1)
 	{
 	assert (instance == 0);		// Should only be one.
 	instance = this;
@@ -229,11 +211,13 @@ GL_manager::~GL_manager
  */
 void GL_manager::resized
 	(
-	int new_width, int new_height
+	int new_width, int new_height,
+	int new_scale
 	)
 	{
+	scale = new_scale;
 					// Set viewing area to whole window.
-	glViewport(0, 0, new_width, new_height);
+	glViewport(0, 0, scale*new_width, scale*new_height);
 	glMatrixMode(GL_PROJECTION);	// Set up orthogonal volume.
 	glLoadIdentity();
 					// Set camera.
@@ -254,7 +238,6 @@ void GL_manager::paint
 	int px, int py			// 'Pixel' position from top-left.
 	)
 	{
-#if 0	/*  ++++++Disable for testing terrain painting. */
 	GL_texshape *tex = frame->glshape;
 	if (!tex)			// Need to create texture?
 		{
@@ -275,7 +258,6 @@ void GL_manager::paint
 		shapes->lru_prev = tex;
 	shapes = tex;
 	tex->paint(px, py);
-#endif
 	}
 
 #endif	/* HAVE_OPENGL */
