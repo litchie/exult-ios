@@ -30,6 +30,9 @@ class ostream;
 class Game_window;
 class Game_object;
 class Vector;
+#include <vector>	// STL container
+#include <deque>	// STL container
+#include <string>	// STL string
 
 /*
  *	A value that we store can be an integer, string, or array.
@@ -49,7 +52,7 @@ private:
 	union
 		{
 		long intval;
-		char *str;
+		const char *str;
 		Usecode_value *array;
 		} value;
 					// Count array elements.
@@ -59,7 +62,7 @@ public:
 		{ value.intval = 0; }
 	Usecode_value(int ival) : type((unsigned char) int_type)
 		{ value.intval = ival; }
-	Usecode_value(char *s) : type((unsigned char) string_type)
+	Usecode_value(const char *s) : type((unsigned char) string_type)
 		{ value.str = s; }
 					// Create array with 1st element.
 	Usecode_value(int size, Usecode_value *elem0) 
@@ -110,7 +113,7 @@ public:
 	unsigned int get_int_value()	// Get integer value.
 		{ return (type == (int) int_type ? value.intval : 0); }
 					// Get string value.
-	char *get_str_value()
+	const char *get_str_value()
 		{ return (type == (int) string_type ? value.str : 0); }
 					// Add array element. (No checking!)
 	void put_elem(int i, Usecode_value& val)
@@ -143,8 +146,6 @@ class Usecode_function
 		{ delete code; }
 	};
 
-const int max_answers = 40;
-const int answer_stack_size = 10;
 
 /*
  *	A set of answers:
@@ -152,14 +153,13 @@ const int answer_stack_size = 10;
 struct Answers
 	{
 	friend class Usecode_machine;
-	char *answers[max_answers];	// What we can click on.
-	int num_answers;
-	Answers() : num_answers(0)
-		{  }
-	void add_answer(char *str);	// Add to the list.
+	vector<string> answers;	// What we can click on.
+	Answers();
+	void add_answer(const char *str);	// Add to the list.
 	void add_answer(Usecode_value& val);
 	void remove_answer(Usecode_value& val);
-	void operator=(Answers& cpy);	// Shallow copy.
+	void _remove_answer(const char *);
+	void	clear(void);
 	};	
 
 /*
@@ -175,9 +175,9 @@ struct Usecode_machine
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
 	Game_object *caller_item;	// Item this is being called on.
-	char *user_choice;		// String user clicked on.
-	char *string;			// The single string register.
-	void append_string(char *txt);	// Append to string.
+	const char *user_choice;		// String user clicked on.
+	char *String;			// The single string register.
+	void append_string(const char *txt);	// Append to string.
 	void say_string();		// "Say" the string.
 	Usecode_value *stack;		// Stack.
 	Usecode_value *sp;		// Stack ptr.  Grows upwards.
@@ -206,14 +206,13 @@ struct Usecode_machine
 		Usecode_value val(s);
 		push(val);
 		}
-	char *pops()
+	const char *pops()
 		{
 		Usecode_value val = pop();
 		return (val.get_str_value());
 		}
 	Answers answers;		// What user can click on.
-	int saved_answers;		// # of 'saved' answer sets.
-	Answers *answer_stack[answer_stack_size];
+	deque< Answers > answer_stack;
 	Game_object *get_item(long val);// Get ->obj. from 'itemref'.
 	/*
 	 *	Built-in usecode functions:
@@ -254,7 +253,11 @@ public:
 	Usecode_value	UI_remove_npc_face(int event,int intrinsic,Usecode_value parms[12]);
 	Usecode_value	UI_add_answer(int event,int intrinsic,Usecode_value parms[12]);
 	Usecode_value	UI_remove_answer(int event,int intrinsic,Usecode_value parms[12]);
-	Usecode_value	UI_save_answers(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_push_answers(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_pop_answers(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_select_from_menu(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_select_from_menu2(int event,int intrinsic,Usecode_value parms[12]);
+
 
 
 
@@ -265,7 +268,7 @@ public:
 					// Call instrinsic function.
 	Usecode_value call_intrinsic(int event, int intrinsic, int num_parms);
 	void click_to_continue();	// Wait for user to click.
-	char *get_user_choice();	// Get user's choice.
+	const char *get_user_choice();	// Get user's choice.
 	int get_user_choice_num();
 					// Run the function.
 	void run(Usecode_function *fun, int event);
