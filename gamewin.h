@@ -114,6 +114,7 @@ class Game_window
 	Chunk_object_list *objects[c_num_chunks][c_num_chunks];
 	Deleted_objects *removed;	// List of 'removed' objects.
 	bool schunk_read[144]; 		// Flag for reading in each "ifix".
+	bool schunk_modified[144];	// Flag for modified "ifix".
 	int scrolltx, scrollty;		// Top-left tile of screen.
 	Actor *camera_actor;		// What to center view around.
 	Rectangle scroll_bounds;	// Walking outside this scrolls.
@@ -159,7 +160,8 @@ public:
 	int skip_lift;			// Skip objects with lift > 0.
 	bool paint_eggs;
 	int debug;
-	Game_window(int width = 0, int height = 0, int scale = 1, int scaler = 0);
+	Game_window(int width = 0, int height = 0, int scale = 1, 
+							int scaler = 0);
 	~Game_window();
 					// Get the one game window.
 	static Game_window *get_game_window()
@@ -214,6 +216,9 @@ public:
 	bool is_chunk_read(int cx, int cy)
 		{ return schunk_read[12*(cy/c_chunks_per_schunk) +
 						cx/c_chunks_per_schunk]; }
+	void set_ifix_modified(int cx, int cy)
+		{ schunk_modified[12*(cy/c_chunks_per_schunk) +
+					cx/c_chunks_per_schunk] = true; }
 					// Get/create objs. list for a chunk.
 	Chunk_object_list *get_objects(int cx, int cy)
 		{
