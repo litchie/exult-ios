@@ -745,8 +745,8 @@ void Map_chunk::add_egg
 	{
 	add(egg);			// Add it normally.
 	egg->set_area();
-	if (cache)			// Add to cache.
-		cache->update_egg(this, egg, 1);
+// Messed up Moonshade after Banes if (cache)		// Add to cache.
+	need_cache()->update_egg(this, egg, 1);
 	}
 
 /*
