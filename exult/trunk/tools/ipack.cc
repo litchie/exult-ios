@@ -264,6 +264,8 @@ static void Write_frame
 	cout << "Writing " << fullname << endl;
 	int w = frame->get_width(), h = frame->get_height();
 	Image_buffer8 img(w, h);	// Render into a buffer.
+	unsigned char transp = 0;	// Gimp prefers this?? S.B. 255.
+	img.fill8(transp);		// Fill with transparent pixel.
 	frame->paint(&img, frame->get_xleft(), frame->get_yabove());
 	int xoff = 0, yoff = 0;
 	if (frame->is_rle())
@@ -272,7 +274,7 @@ static void Write_frame
 		yoff = -frame->get_ybelow();
 		}
 					// Write out to the .png.
-	if (!Export_png8(fullname, w, h, w, xoff, yoff, img.get_bits(),
+	if (!Export_png8(fullname, transp, w, h, w, xoff, yoff, img.get_bits(),
 					palette, 256))
 		throw file_write_exception(fullname);
 	delete fullname;
@@ -360,7 +362,8 @@ static void Write_exult
 		cout << "Reading " << fullname << endl;
 		int w, h, rowsize, xoff, yoff, palsize;
 		unsigned char *pixels, *palette;
-		if (!Import_png8(fullname, w, h, rowsize, xoff, yoff,
+					// Import, with 255 = transp. index.
+		if (!Import_png8(fullname, 255, w, h, rowsize, xoff, yoff,
 						pixels, palette, palsize))
 			throw file_read_exception(fullname);
 		int datalen = h*rowsize;// Figure total #bytes.

@@ -2354,7 +2354,8 @@ void Usecode_internal::write
 	(
 	)
 	{
-	if (Game::get_game_type() == SERPENT_ISLE)
+					// Assume new games will have keyring.
+	if (Game::get_game_type() != BLACK_GATE)
 		keyring->write();	// write keyring data
 
 	ofstream out;
