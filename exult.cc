@@ -218,7 +218,6 @@ static void Handle_event
 		{
 	case ButtonPress:
 		gwin->end_intro();
-		gwin->stop_showing_item();
 		if (gwin->get_mode() != Game_window::normal)
 			break;
 					// Move sprite toward mouse
@@ -380,7 +379,6 @@ static int Play()
 			if (prev_mouse != 1)
 				{
 				gwin->end_intro();
-				gwin->stop_showing_item();
 				int x, y;
 				Image_window::get_mouse(x, y);
 					// Identify item(s) clicked on.
@@ -660,7 +658,6 @@ LONG APIENTRY Handle_event (HWND hWnd, UINT Message, UINT wParam, LONG lParam) {
       break;
     case WM_LBUTTONDOWN: //left mouse pressed
 		  gwin->end_intro();
-			gwin->stop_showing_item();
 			if (gwin->get_mode() != Game_window::normal)
 			break; //not in normal game mode
 

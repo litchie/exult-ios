@@ -392,6 +392,30 @@ void Sprite::handle_event
 		}
 	}
 
+/*
+ *	Remove from screen.
+ */
+
+void Text_object::handle_event
+	(
+	timeval curtime,		// Current time of day.
+	long udata			// Ignored.
+	)
+	{
+	Game_window *gwin = (Game_window *) udata;
+					// Repaint slightly bigger rectangle.
+	Rectangle rect((cx - gwin->get_chunkx())*chunksize +
+				sx*tilesize - tilesize,
+		       (cy - gwin->get_chunky())*chunksize +
+				sy*tilesize - tilesize,
+			width + 2*tilesize, height + 2*tilesize);
+					// Intersect with screen.
+	rect = gwin->clip_to_win(rect);
+	if (rect.w > 0 && rect.h > 0)	// Watch for negatives.
+		gwin->paint(rect.x, rect.y, rect.w, rect.h);
+	gwin->remove_text(this);	// Remove & delete this.
+	}
+
 #if 0
 /*
  *	Lookup arctangent in a table for degrees 5-85.

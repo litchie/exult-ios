@@ -57,8 +57,7 @@ private:
 	Time_queue *tqueue;		// Time-based queue.
 	Game_clock clock;		// Keeps track of time.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
-	char *showing_item;		// Item we're showing the name of.
-	Rectangle showing_rect;		// Rectangle item text is shown in.
+	Text_object *texts;		// Text snippets shown on screen.
 	Rectangle npc_text_rect;	// Rectangle NPC statement is shown in.
 	Rectangle *conv_choices;	// Choices during a conversation.
 	unsigned char painted;		// 1 if we updated image buffer.
@@ -199,9 +198,11 @@ public:
 		int lft = 4*obj->get_lift();
 		return Rectangle(
 			(cx - chunkx)*chunksize +
-				obj->get_shape_pos_x()*8 + 8 - s->xleft - lft,
+				obj->get_shape_pos_x()*tilesize + 
+						tilesize - s->xleft - lft,
 			(cy - chunky)*chunksize +
-				obj->get_shape_pos_y()*8 + 8 - s->yabove - lft,
+				obj->get_shape_pos_y()*tilesize + 
+						tilesize - s->yabove - lft,
 			s->get_width(),
 			s->get_height()
 			);
@@ -265,6 +266,8 @@ public:
 		{ paint(r.x, r.y, r.w, r.h); }
 	void paint()			// Paint whole image.
 		{ paint(0, 0, get_width(), get_height()); }
+					// Paint a bit of text.
+	void paint_text(Text_object *txt);
 					// Paint "flat" scenery in a chunk.
 	void paint_chunk_flats(int cx, int cy, int xoff, int yoff);
 					// Paint objects in given chunk at
@@ -290,6 +293,8 @@ public:
 					// Find objects that (x,y) is in.
 	int find_objects(int lift, int x, int y, Game_object **list);
 	void show_items(int x, int y);	// Show names of items clicked on.
+					// Remove text item & delete it.
+	void remove_text(Text_object *txt);
 					// Handle a double-click in window.
 	void double_clicked(Window xwin, int x, int y);
 					// Show a "face" on the screen.
@@ -316,18 +321,6 @@ public:
 	int have_focus()
 		{ return focus; }
 	void end_intro();		// End splash screen.
-	void stop_showing_item()	// Turn off display of item name.
-		{
-		if (showing_item)
-			{
-			showing_item = 0;
-			showing_rect.x -= 4; showing_rect.y -= 4;
-			showing_rect.w += 8; showing_rect.h += 8;
-			showing_rect = clip_to_win(showing_rect);
-			paint(showing_rect.x, showing_rect.y,
-				showing_rect.w, showing_rect.h);
-			}
-		}
 	void read_npcs();		// Read in npc's & schedules.
 	void read_schedules();
 	void write_gamedat(char *fname);// Explode a savegame into "gamedat".
