@@ -356,7 +356,7 @@ TODO: document
 
 > 0x49	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
-> 0x4a	ARRA	"arra"	"\t\t\t\t;"	"append(%p2,%p1)"	0	{}	2	1	0	000000
+> 0x4a	ARRA	"arra"	"\t\t\t\t;"	"%p2 & %p1"	0	{}	2	1	0	000000
 
 Appends second param. to the list in first param.
 
