@@ -1,3 +1,8 @@
+2001-12-21  Max Horn  <max@quendi.de>
+
+	* configure.in: fixed output at end of configure run to do what it is
+	supposed to (e.g. print out the SDL version instead of "sdl-config --version").
+
 2001-12-21  Ryan Nunn  <triforce@merlin.net.au>
 	* combat.cc, drag.cc, conf/Configuration.* : Warnings and errors
 	* audio/Audio.cc, msvcstuff/msvc_kludges.h : Added a config file option
