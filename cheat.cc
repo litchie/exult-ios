@@ -788,8 +788,11 @@ void Cheat::heal_party (void) const {
 		int npc_num = dead[i];
 		Dead_body *body = gwin->get_body(npc_num);
 		Actor *live_npc = gwin->get_npc(npc_num);
-		if (body && live_npc)
+		if (body && live_npc) {
+			Tile_coord avpos = gwin->get_main_actor()->get_tile();
+			body->move(avpos);
 			live_npc->resurrect(body);
+		}
 	}
 
 	// heal everyone
