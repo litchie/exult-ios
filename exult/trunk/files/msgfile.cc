@@ -159,7 +159,8 @@ void Write_msg_file_section
 	{
 	out << "%%section " << section << endl;
 	for (int i = 0; i < num_items; ++i)
-		out << hex << "0x" << i << ':' << items[i] << endl;
+		if (items[i])
+			out << hex << "0x" << i << ':' << items[i] << endl;
 	out << "%%endsection " << section << endl;
 	}
 
