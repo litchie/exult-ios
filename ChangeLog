@@ -1,3 +1,16 @@
+2001-06-22  Ryan Nunn <triforce@merlin.net.au>
+	* actors.cc: Fixing a variety of bugs to do the add_readied code. 
+	* gumps/Paperdoll_gump.cc: Fixed problem with items being hidden in BG
+	  when using Paperdoll.
+	* gumps/Paperdoll_gump.h, gumps/Paperdoll_gump_info.cc: Changes for
+	  Musket.
+	* actorio.cc, actors.h, gamewin.cc, objs/contain.h, objs/objs.h:
+	  Changes to ensure that items are placed in the correct slots when
+	  restoring a game. This was done by writing a 2 byte index id that is
+	  read/written before the item. The id contains the slot number the
+	  item goes it. New savegames will be backward compatible, but will
+	  produce warning messages on earlier versions.
+
 2001-06-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* tools/expack.cc: allow NULL entries
 	* keys.cc, ??game.cc, exult.cc, */defaultkeys.txt, */flx.in:
