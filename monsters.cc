@@ -110,7 +110,7 @@ static int Monster_food[] = {
 	500,  9,			// Cow - beef steaks.
 	502,  14,			// Deer - meat.
 	509, 12,			// Fish.
-	811, 14,			// Rabbit - small leg.
+	811, 9,				// Rabbit - same as cow?
 	970, 8,				// Sheep - mutton.
 	727, 23,			// Horse - ribs.
 	329, 11				// Boar - ham.
