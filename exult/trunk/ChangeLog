@@ -1,5 +1,8 @@
 2000-04-28  Tristan Tarrant  <tarrant_tristan@emc.com>
 
+	* gamedat.cc, gamewin.h: implement get_game_identity
+	* gamewin.cc, exult.cc: generate initial gamedat before opening window.
+	Also if static and gamedat identities don't match, recreate gamedat.
 	* autogen.sh: clear old generated files first
 	* configure.in: if I don't have kmid build without it anyway, don't
 	tell me to run configure with --disable-kmid
