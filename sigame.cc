@@ -828,10 +828,11 @@ bool SI_Game::new_game(Vga_file &shapes)
 		bool ok = true;
 		do {
      		        if (redraw) {
-			        win->fill8(0,gwin->get_width(),90,0,menuy);
+				clear_screen();
+				gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 				gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
 				gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
-				gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(0x16+sex,0));
+				gwin->paint_face(topx+300,menuy+50,0,sex);
 				gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
 				gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
 				if(selected==0)
@@ -907,6 +908,10 @@ bool SI_Game::new_game(Vga_file &shapes)
 				}
 			}
 		} while(editing);
+
+		clear_screen();
+		gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+
 		if(ok)
 		{
 			set_avname (npc_name);
@@ -914,6 +919,6 @@ bool SI_Game::new_game(Vga_file &shapes)
 			set_avskin (sex/2);
 			ok = gwin->init_gamedat(true);
 		}
-		win->fill8(0,gwin->get_width(),90,0,menuy);
+
 		return ok;
 	}
