@@ -1953,8 +1953,9 @@ void Game_window::show_items
 	// Do we want the NPC number?
 	if (obj && cheat.number_npcs() && (obj->get_npc_num() > 0 || obj==main_actor))
 	{
-		char str[8];
-		snprintf (str, 8, "%i\n", obj->get_npc_num());
+		char str[64];
+		snprintf (str, 64, "(%i) %s", obj->get_npc_num(), 
+				  obj->get_name().c_str());
 		add_text(str, obj);
 	}
 	else if (obj)
