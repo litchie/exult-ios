@@ -1,21 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="03 May 2002(GMT)">
+<studiodoc title="Exult" changed="06 May 2002(GMT)">
 	<section title="Changes to the Documentation">		
+		<sub name="06052002">
+			<header>06 May 2002</header>
+			<body>
+				<ul>
+					<li><ref1 target="command_line"/> -d option no longer exists.</li>
+					<li><ref1 target="mode_menu"/> more information on Pick- and Combo-mode.</li>
+					<li><ref1 target="can_do_atm"/> shift-clicking adds currently selected shape in 
+						any mode.</li>
+					<li><section_ref target="Main Working Window"/> added (working title only).</li>
+					<li><ref1 target="combo_edit"/> when it gets saved combos.flx gets used.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="03052002">
 			<header>03 May 2002</header>
 			<body>
 				<para>
 					This is the second draft of the <Studio/> documentation. 					
 				</para>
-				<li><ref1 target="command_line"/> I had spaces between the commands and the options.</li>
-				<li><section_ref target="Menu Options"/> description of all the Menu Options.</li>
-				<li><ref1 target="can_do_atm"/> added warning on editing terrains.</li>
-				<li><ref1 target="egg_edit"/> added place holder for actual documentation.</li>
-				<li><ref1 target="npc_edit"/> added place holder for actual documentation.</li>
-				<li><ref1 target="combo_edit"/> the latest addition.</li>
-				<li><ref1 target="usecode_edit"/> link to latest patch and link to Pertex'documentation.</li>
-				<li><ref1 target="what_next"/> 'scratched' the stuff I think got implemented.</li>
+				<ul>
+					<li><ref1 target="command_line"/> I had spaces between the commands and the options.</li>
+					<li><section_ref target="Menu Options"/> description of all the Menu Options.</li>
+					<li><ref1 target="can_do_atm"/> added warning on editing terrains.</li>
+					<li><ref1 target="egg_edit"/> added place holder for actual documentation.</li>
+					<li><ref1 target="npc_edit"/> added place holder for actual documentation.</li>
+					<li><ref1 target="combo_edit"/> the latest addition.</li>
+					<li><ref1 target="usecode_edit"/> link to latest patch and link to Pertex'
+						documentation.</li>
+					<li><ref1 target="what_next"/> 'scratched' the stuff I think got implemented.</li>
+				</ul>
 			</body>
 		</sub>
 		<sub name="07042002">
@@ -177,8 +193,6 @@
 					<li>-gGAMENAME<br/>
 						specifies GAMENAME and <Studio/> will read the game base directory from exult.cfg.
 						GAMENAME can be choosen from the games specified in &lt;game&gt; part of exult.cfg.</li>
-					<li>-dDIRECTORY<br/>
-						specifies DIRECTORY as the game base directory.</li>
 					<li>-xDIRECTORY<br/>
 						tells exult_studio to look in DIRECTORY for its user-interface specification 
 						(exult_studio.glade).<br/>
@@ -273,9 +287,12 @@
 					a single-left-click inserts the last-selected shape from 'shapes.vga', and dragging 
 					with the left-button inserts that shape in every tile (so you'd probably only want 
 					to do this with 8x8 flat shapes).  Also, in 'Paint' mode, the footprint at ground 
-					level is shown (though this may be changed in the future).</li>
+					level is shown (though this may be changed in the future).<br/>
+					If you hold the alt key down, random frames from the currently-selected shape will 
+					be painted (handy for grassy areas).</li>
 					<li><strong>Pick for Combo</strong><br/>
-					Picks objects for a new combo file. See <ref1 target="combo_edit"/></li>
+					Picks objects for a new combo file. Double-left-click to add objects to the combo, 
+					single-left-click to identify object. See <ref1 target="combo_edit"/></li>
 					<li><strong>Select</strong><br/>
 					not yet implemented (?)</li>
 					<li><strong>Hide</strong><br/>
@@ -316,32 +333,144 @@
 			</body>
 		</sub>
 	</section>
-	<section title="Editing a Game">
+	<section title="Main Working Window">
 		<sub name="description">
 			<header>Description</header>
 			<body>
 				<para>
 					Once <Studio/> runs correctly , a tree of game files is displayed to the left of 
 					the main window, while the currently selected file is viewed in detail to the right. 
-					At the moment, the following types of files are supported:
+					At the moment, the following types of files are supported.
+				</para>
+			</body>
+		</sub>
+		<sub name="shape_files">
+			<header>Shape files</header>
+			<body>
+				<para>
+					Shapes are the basic graphical elements of the game. Each shape has one or more 
+					frames that typically represent different states or angles of the same thing. 
+					E.g. a button shape could have frames for pressed, and released; a character 
+					could have frames depicting her sitting, standing up facing one way, or another, 
+					swinging a punch, etc.<br/> 
+					When a shape file is selected, the right part of the main window will show frame 
+					zero of the shapes contained therein. Shapes can be selected by clicking, which 
+					will show there number, number of frames, and name if known. Other frames can be 
+					viewed by changing the frame number.
+				</para>
+				<para>
+					When the selected file contains shapes that have names in their info you can also use
+					the find option to find shapes that have that name (e.g. in shapes.vga you can search 
+					for 'door' to find all shapes that have door frames). You can search down or up in the
+					selected file.
+				</para>
+				<para>
+					Shape files also have a special right-click-menu. See <ref1 target="shape_menu"/>.
+				</para>
+			</body>
+		</sub>
+		<sub name="map_files">
+			<header>Map files</header>
+			<body>
+				<para>
+					These files contain so called chunks that serve as templates in the final map. 
+					The chunks of the selected map file are shown in the right part of the main window.<br/>
+					When a chunk is selected you have some options:
 				</para>
 				<ul>
-					<li><strong>Shape files</strong><br/>
-						Shapes are the basic graphical elements of the game. Each shape has one or more 
-						frames that typically represent different states or angles of the same thing. 
-						E.g. a button shape could have frames for pressed, and released; a character 
-						could have frames depicting her sitting, standing up facing one way, or another, 
-						swinging a punch, etc.<br/> 
-						When a shape file is selected, the right part of the main window will show frame 
-						zero of the shapes contained therein. Shapes can be selected by clicking, which 
-						will show there number, number of frames, and name if known. Other frames can be 
-						viewed by changing the frame number.</li>
-					<li><strong>Map files</strong><br/>
-						These files contain so called chunks that serve as templates in the final map. 
-						The chunks of the selected map file are shown to the right of the main window.</li>
+					<li><strong>Locate</strong><br/>
+						shows places in the <Exult/> game where that chunk is used.</li>
+					<li><strong>Inset</strong><br/>
+						<strong>New</strong><br/>
+						Creates a new chunk. More information will follow shortly.<br/>
+						<strong>Dupe</strong><br/>
+						Duplicates a chunk. More information will follow shortly.</li>
+					<li><strong>Move</strong><br/>
+						Moves a chunk in the chunk file. This does not effect the display on the map.</li>
+				</ul>	 
+			</body>
+		</sub>
+		<sub name="palettes_files">
+			<header>Palettes files</header>
+			<body>
+				<para>
+					The palettes used by a game are stored in the files listed there.<br/>
+					When you select a palette with number zero is shown in the right part of the main 
+					window. Other palettes are shown by selecting another palettes number  
+					When a palettes file is selected you have some options:
+				</para>
+				<ul>
+					<li><strong>Edit</strong><br/>
+						New/Remove adds or deletes a palettes.</li>
+					<li><strong>Move</strong><br/>
+						Moves palettes in the file.</li>
+					<li><strong>File</strong><br/>
+						<strong>Import</strong><br/>
+						Overwrites the current palettes with palette text file.<br/>
+						<strong>Export</strong><br/>
+						Exports the current palette to a text file.</li>
+				</ul>	 
+			</body>
+		</sub>
+		<sub name="groups_files">
+			<header>Groups files</header>
+			<body>
+				<para>
+					Editing a game can become quite cumbersome when you have to choose between a lot
+					of shape files containing several frames. To make this task easier we have 
+					implemented so called groups to groups several shapes together. For example you can 
+					group all shapes containing door frames together in a group called 'doors'.<br/>
+					For this you have to select Groups and create a new group by writing the name in the 
+					lower part of the window and then click 'add'. You now have the option in the Shape 
+					Menu to add a shape to this group.<br/>
+					When you doubleclick a group the group window opens that shows the shapes in the group 
+					and by selecting a shape you see the shape info.
+					You also have some options to edit the group:
+				</para>
+				<ul>
+					<li><strong>Move</strong><br/>
+						Moves the shapes within the group.</li>
+					<li><strong>Remove</strong><br/>
+						Removes the shape from the group.</li>
+					<li><strong>Name</strong><br/>						
+						Changes the name of the group.</li>
+					<li><strong>Frame:</strong><br/>						
+						select the frame displayed.</li>
+					<li><strong>Frames</strong><br/>						
+						shows all the frames of a shape next to each others.</li>
+					<li><strong>Find</strong><br/>						
+						Lets you search for a specified shape in the group.</li>	
+				</ul>	 
+			</body>
+		</sub>
+		<sub name="shape_menu">
+			<header>Right-Click on Shapes Menu</header>
+			<body>
+				<ul>
+					<li><strong>Info...</strong><br/>
+					Displays the information of an object. You can change a lot of stuff there and 
+					caution is adviced. The information is saved by 
+					<ref1 target="file_menu">'Save all' or 'Save:Shape Info'</ref1>.</li>
+					<li><strong>Add to group...</strong><br/>
+					If you set up groups you can add shapes to them with this.</li>
+					<li><strong>Edit</strong><br/>
+					Launches the image editor specified in <ref1 target="file_menu">Preferences</ref1> 
+					with the current frame as target. The image itself is saved in a subdir called 'itmp' in 
+					the file-format chosen in 'Preferences'.</li>
+					<li><strong>New Frame</strong><br/>
+					Should add a new frame to the shape.</li>
+					<li><strong>Export frame...</strong><br/>
+					Exports the current frame of a shape to a png file in a directory you specify.</li>
+					<li><strong>Import frame...</strong><br/>
+					Imports a png file in a directory you specify to the selected shape.</li>
+					<li><strong>New shape...</strong><br/>
+					Lets you add a new shape. You can choose the shape number, number of frames.<br/>
+					You can also add a new font - information on this coming soon (TM).</li>
 				</ul>
 			</body>
 		</sub>
+	</section>
+	<section title="Editing a Game">
 		<sub name="can_do_atm">
 			<header>What you can do at the moment</header>
 			<body>
@@ -395,6 +524,9 @@
 				</configdesc>
 				<para>
 					<Exult/> will also read files from 'patch' if it exists on starting a new game.
+				</para>
+				<para>
+					In any mode, you can add the currently selected shape by shift-clicking..
 				</para>
 			</body>
 		</sub>
@@ -462,7 +594,8 @@
 					To see what's there, choose the 'Combo pick' choice in the 'Modes' menu, and 
 					an empty window should pop up. In the game window, double-click a group of objects,
 					and they should appear in the window.  You can then select an object there and tweak 
-					its position.  Nothing gets saved yet.
+					its position. Nothing gets saved yet, when it does your combinations get saved in
+					a file called combos.flx. 
 				</para>
 			</body>
 		</sub>
