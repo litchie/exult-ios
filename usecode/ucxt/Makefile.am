@@ -6,6 +6,7 @@ INCLUDES = -I$(srcdir)/../../headers -I$(srcdir)/../include -I$(srcdir)/../../..
 
 if BUILD_TOOLS
 noinst_PROGRAMS = head2data
+noinst_SCRIPTS = head2data.test
 endif
 
 head2data_SOURCES = head2data.cc head2data.test
@@ -13,6 +14,6 @@ head2data_SOURCES = head2data.cc head2data.test
 head2data_LDADD = \
         ../../files/libu7file.la
 
-head2data.test: ../bgintrinsics.h ../siintrinsics.h
+head2data.test: head2data ../bgintrinsics.h ../siintrinsics.h
 	./head2data data/u7bgintrinsics.data data/u7siintrinsics.data
 
