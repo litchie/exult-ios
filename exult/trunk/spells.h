@@ -23,3 +23,33 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#ifndef INCL_SPELLS
+#define INCL_SPELLS 1
+
+#include "gumps.h"
+
+/*
+ *	Open spellbook.  The spells are drawn in the object area.
+ */
+class Spellbook_gump : public Gump_object
+	{
+	short avail[9*8];		// For each spell, # which the
+					//   available reagants make possible.
+	int page;			// Starting with 0 (= circle #).
+	Spellbook_object *book;		// Book this shows.
+					// Page turners:
+	Gump_button *leftpage, *rightpage;
+	Gump_button *spells[9*8];	// ->spell 'buttons'.
+	int spwidth, spheight;		// Dimensions of a spell shape.
+public:
+	Spellbook_gump(Spellbook_object *b);
+	~Spellbook_gump();
+	void do_spell(int spell);	// Perform spell.
+	void change_page(int delta);	// Page forward/backward.
+					// Paint button.
+	virtual void paint_button(Game_window *gwin, Gump_button *btn);
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+#endif
