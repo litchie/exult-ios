@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="24 July 2002(GMT)">
+<readme title="Exult" changed="11 September 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="11092002">
+			<header>- 11 September 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> added a couple of gameplay options and the FM synth emulation.</li>
+				<li><ref1 target="music"/> added FM Synth.</li>
+				<li><ref1 target="audio_gump"/> added FMSynth to conversions.</li>
+				<li><ref1 target="gameplay_gump"/> also added a couple of options.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="24072002">
 			<header>- 24 July 2002</header>
 			<body>
@@ -74,17 +85,17 @@
 						we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle"
 						as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.</li>
 					<li><strong>eggs</strong>:<br/>
-						these are trip-wires that cause monsters to spawn,execute scripts,play music, 
+						these are trip-wires that cause monsters to spawn, execute scripts, play music, 
 						change weather, trigger traps, teleport when you get near them.</li>
 					<li><strong>flex files</strong>:<br/>
 						or flexes are used by the original to store the data files.
-						Also when you choose not use compressed savegames (see save_compression_level in
-						<ref target="exult_config"/>) our savegames are also "flexed".</li>
+						Also when you choose not use compressed save games (see save_compression_level in
+						<ref target="exult_config"/>) our save games are also "flexed".</li>
 					<li><strong>gumps</strong>:<br/>
 						the windows used in the game interface for containers, characters, menus, etc..</li>
 					<li><strong>paperdoll</strong>:<br/>
 						when pressing <key>i</key> you get the inventory display. It's the picture of your 
-						characters body (or the bodies of your party memebrs) onto which you can drag all 
+						characters body (or the bodies of your party members) onto which you can drag all 
 						kinds of equipment. The way this is displayed in SI is what we call 
 						<strong>paperdoll</strong>. We integrated this for BG as well. 
 						(see <extref doc="faq" target="improvements"/>).</li>
@@ -131,7 +142,7 @@
 					<strong>Important:</strong> Do not run <Exult/> on an original Ultima7
 					game which you're actually in the middle of playing, as Exult's saved
 					files have a different format. There is no way to convert those 
-					original savegames and they will just crash <Exult/>.
+					original save games and they will just crash <Exult/>.
 				</para>
 			</body>
 		</sub>
@@ -140,9 +151,9 @@
 			<body>
 				<para>
 					<Exult/> keeps a configuration file. You can specify where your Ultima 7
-					installation is, whether you want fullscreen graphics, or windowed, and
+					installation is, whether you want full screen graphics, or windowed, and
 					midi devices and midi settings. Some of these options can be set from the
-					<strong>Setup</strong> menu when you run <Exult/> or via the Game menu.
+					<strong>Setup</strong> menu when you run <Exult/> or via the Game Options menu.
 				</para>
 				<para>
 					If you do not already have a configuration file, <Exult/> will make one for you
@@ -169,7 +180,7 @@
 					<line>&lt;disk&gt;</line>
 					<line>&lt;save_compression_level&gt;</line>
 					<line>1
-						<comment>**Savegames are now compressed as zip files. 0 disables compression,
+						<comment>**save games are now compressed as zip files. 0 disables compression,
 						1 enables it, 2 compresses even a bit better. Default is 1.
 						</comment></line>
 					<line>&lt;/save_compression_level&gt;</line>
@@ -186,12 +197,12 @@
 					<line>&lt;path&gt;</line>
 					<line>./blackgate</line>
 					<line>&lt;/path&gt;</line>
-					<line>&lt;save_path&gt;</line>
+					<line>&lt;savegame_path&gt;</line>
 					<line>./blackgate
 						<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.
 						Also see <ref target="path_config"/> for recommendations.
 						</comment></line>
-					<line>&lt;/save_path&gt;</line>
+					<line>&lt;/savegame_path&gt;</line>
 					<line>&lt;static_path&gt;</line>
 					<line>./blackgate
 						<comment>**optional. See &lt;save_path&gt;.
@@ -204,7 +215,7 @@
 					<line>&lt;/gamedat_path&gt;</line>					
 					<line>&lt;keys&gt;</line>
 					<line>(default)
-						<comment>**configure custom keybindings or leave the (default)
+						<comment>**configure custom key bindings or leave the (default)
 						- see <ref target="exult_keys"/>
 						</comment></line>
 					<line>&lt;/keys&gt;</line>
@@ -218,20 +229,20 @@
 					<line>&lt;path&gt;</line>
 					<line>./serpentisle</line>
 					<line>&lt;/path&gt;</line>
-					<line>&lt;save_path&gt;</line>
+					<line>&lt;savegame_path&gt;</line>
 					<line>./serpentisle
 						<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.
 						Also see <ref target="path_config"/> for recommendations.
 						</comment></line>
-					<line>&lt;/save_path&gt;</line>
+					<line>&lt;/savegame_path&gt;</line>
 					<line>&lt;static_path&gt;</line>
 					<line>./serpentisle
-						<comment>**optional. See &lt;save_path&gt;.
+						<comment>**optional. See &lt;savegame_path&gt;.
 						</comment></line>
 					<line>&lt;/static_path&gt;</line>
 					<line>&lt;gamedat_path&gt;</line>
 					<line>./serpentisle
-						<comment>**optional. See &lt;save_path&gt;.
+						<comment>**optional. See &lt;savegame_path&gt;.
 						</comment></line>
 					<line>&lt;/gamedat_path&gt;</line>
 					<line>&lt;keys&gt;</line>
@@ -296,7 +307,7 @@
 					<line>&lt;/mouse3rd&gt;</line>
 					<line>&lt;fastmouse&gt;</line>
 					<line>no
-						<comment>**yes enables faster cursor movement in fullscreen mode.
+						<comment>**yes enables faster cursor movement in full screen mode.
 						</comment></line>
 					<line>&lt;/fastmouse&gt;</line>
 					<line>&lt;bg_paperdolls&gt;</line>
@@ -311,7 +322,24 @@
 						harder. It affects the chance of a hit, and the HP's lost if a hit occurs.
 						</comment></line>
 					<line>&lt;/difficulty&gt;</line>
-					<line>&lt;/combat&gt;</line>						
+					<line>&lt;/combat&gt;</line>
+					<line>&lt;gumps_dont_pause_game&gt;</line>
+					<line>no
+						<comment>**yes doesn't pause the game when gumps are shown.
+						</comment></line>
+					<line>&lt;/gumps_dont_pause_game&gt;</line>
+					<line>&lt;step_tile_delta&gt;</line>
+					<line>8
+						<comment>**this affects how the party follows the Avatar. 
+						Bigger # avoids jerkiness, but may cause other problems.
+						</comment></line>
+					<line>&lt;/step_tile_delta&gt;</line>
+					<line>&lt;allow_double_right_move&gt;</line>
+					<line>yes
+						<comment>**double right-click lets the Avatar walk automatically 
+						to where you clicked.
+						</comment></line>
+					<line>&lt;/allow_double_right_move&gt;</line>
 					<line>&lt;/gameplay&gt;</line>
 					<line>&lt;audio&gt;</line>
 					<line>&lt;enabled&gt;</line>
@@ -366,9 +394,14 @@
    					<line>&lt;/win32_device&gt;</line>
    					<line>&lt;looping&gt;</line>
    					<line>Yes
-   						<comment>**No disables muisc looping. See <ref target="audio_gump"/>
+   						<comment>**No disables music looping. See <ref target="audio_gump"/>
    						</comment></line>
    					<line>&lt;/looping&gt;</line>
+   					<line>&lt;dual_opl&gt;</line>
+   					<line>Yes
+   						<comment>**No disables 'dual' mode for stereo sound when &lt;convert&gt; is set to fmsynth.
+   						</comment></line>
+   					<line>&lt;/dual_opl&gt;</line>
 					<line>&lt;/midi&gt;</line>
 					<line>&lt;speech&gt;</line>
 					<line>&lt;enabled&gt;</line>
@@ -397,7 +430,7 @@
 					<line>&lt;/scale&gt;</line>
 					<line>&lt;fullscreen&gt;</line>
 					<line>yes
-						<comment>**do you want to play fullscreen?
+						<comment>**do you want to play full screen?
 						</comment></line>
 					<line>&lt;/fullscreen&gt;</line>
 					<line>&lt;disable_fades&gt;</line>
@@ -477,9 +510,9 @@
 					<line>&lt;/disk&gt;</line>
 				</configdesc>
 				<para>
-					You can also specify where Exult reads and stores the game specifc data, like the files
-					in the Static and Gamedat directory and the savegames.<br/>
-					This is optional and not required but may be usefull (it only works in post-RC1 
+					You can also specify where Exult reads and stores the game specific data, like the files
+					in the Static and Gamedat directory and the save games.<br/>
+					This is optional and not required but may be useful (it only works in post-RC1 
 					snapshots).<br/>
 					My recommendations and example for BG (for SI use the same syntax) are:
 				</para>
@@ -496,9 +529,9 @@
 					<line>&lt;path&gt;</line>
 					<line>./blackgate</line>
 					<line>&lt;/path&gt;</line>
-					<line>&lt;save_path&gt;</line>
+					<line>&lt;savegame_path&gt;</line>
 					<line>./blackgate/savegames</line>
-					<line>&lt;/save_path&gt;</line>
+					<line>&lt;/savegame_path&gt;</line>
 					<line>&lt;static_path&gt;</line>
 					<line>./blackgate</line>
 					<line>&lt;/static_path&gt;</line>
@@ -539,7 +572,7 @@
 					<li>--buildmap x<br/>
 						x = 0 shows all roofs, x = 2 pops them all.<br/>
 						You have to specify the game first (Example: exult --bg --buildmap 0).<br/>
-						Builds the map of the game specified.The map is <strong>huge</strong> and in pcx 
+						Builds the map of the game specified. The map is <strong>huge</strong> and in pcx 
 						format, you will need a lot of ram to even look at this map once it is build 
 						(and even that requires a lot of patience)<br/>
 						<Exult/> is required to be run in windowed mode and you get the best map if you 
@@ -579,6 +612,11 @@
         				Digital Music plays the OGG files which must be located in the Exult data/music 
         				directory. This does not use MIDI but plays the music digitally through 
         				any soundcard.</li>
+      				<li><strong>fmsynth</strong><br/>
+      					This emulates FM synth. Has a 'dual'mode for stereo sound. Use 
+      					"config/audio/midi/dual_opl" set to "yes" or "no" to 
+      					enable/disable it. Default is "yes".<br/>
+      					<strong>You have to restart Exult if you change this in the game.</strong></li>
       				<li><strong>none</strong><br/>
         				This option will output the music with nothing changed. Because
                			the mapping will be for MT32s you should only use this option if
@@ -695,13 +733,13 @@
 					and SI varies a bit and otherwise will sound odd. However there is a little 
 					issue with sfx playback in SI: In combat the sfx may be a little wrong as we 
 					still haven't figured out all the data in the 'weapons.dat'.<br/>
-					Also <Exult/> doesn't yet playback all the sfx that the orignal did.
+					Also <Exult/> doesn't yet playback all the sfx that the original did.
 				</para>
 				<para>
 					Note that configuring your soundfonts is not needed for digital wave sfx.
 				</para>
 				<para> 
-					 We curently have two soundpacks for each game. Joseph Morris recorded the original
+					 We currently have two soundpacks for each game. Joseph Morris recorded the original
 					 SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on
 					 our download page at 
 					<extref target="http://exult.sourceforge.net/download.php"/>.	
@@ -755,7 +793,7 @@
 				</para>
 				<para>
 					Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably
- 					with the Soundblaster Live.<br/>
+ 					with the SoundBlaster Live.<br/>
 					Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture)
 					found at <extref target="http://www.alsa-project.org"/>. ALSA is going to replace 
 					OSS in the upcoming stable (2.6) Kernel anyway.<br/>
@@ -866,7 +904,7 @@
 				<keytable title="Default keyboard commands">
 					<keydesc name="KP+/-">Change brightness</keydesc>
 					<keydesc name="Alt-KP+/-">Change resolution</keydesc>
-					<keydesc name="F4">Toggle fullscreen</keydesc>
+					<keydesc name="F4">Toggle full screen</keydesc>
 					<keydesc name="right">walk east</keydesc>
 					<keydesc name="left">walk west</keydesc>
 					<keydesc name="up">walk north</keydesc>
@@ -1000,8 +1038,8 @@
 			<body>
 				<para>
 					This on is pretty straightforward. You can load and save a game, delete a game and 
-					view some information of a savegame on the right side (a screenshot and some stats).<br/>
-					If you have a wheelmouse you can scroll one line up/down by using the wheel. Pressing 
+					view some information of a save game on the right side (a screenshot and some stats).<br/>
+					If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing 
 					<key>Alt</key> while using the wheel scrolls by pages.<br/>
 					Pressing <strong>Cancel</strong> exits the Load/Save options.
 				</para>
@@ -1042,13 +1080,13 @@
 					<li><strong>Music</strong><br/>
 						Enable or disable music.</li>
 					<li><strong>Conversion</strong><br/>
-						choose between Digital, None, GM, GS, GS127.</li>
+						choose between Digital, FMSynth, None, GM, GS, GS127.</li>
 					<li><strong>Reverb</strong><br/>
 					 	alters the way the midi is played. Enable or disable to hear if you like it.</li>
 					<li><strong>Chorus</strong><br/>
 						the same as <strong>Reverb</strong></li>
 					<li><strong>Looping</strong><br/>
-						Disable restores the (broken) way the original handeled the music looping flag.</li>	
+						Disable restores the (broken) way the original handled the music looping flag.</li>	
 					<li><strong>SFX</strong><br/>
 						Enable or disable digital sound effects.</li>
 					<li><strong>Speech Options</strong><br/>
@@ -1067,13 +1105,10 @@
 						the bottom of the screen (left, middle, right).</li>
 					<li><strong>Text Background</strong><br/>
 						shows a tinted background behind text in conversations to make it easier to read.
-						Either disable it or choose between the colours purple, orange, light gray, green, 
-						yellow,pale blue, dark green, red, bright white, dark gray and white.</li>
-					<li><strong>Paperdolls</strong><br/>
-						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls 
-						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
+						Either disable it or choose between the colors purple, orange, light gray, green, 
+						yellow, pale blue, dark green, red, bright white, dark gray and white.</li>
 					<li><strong>Fast Mouse</strong><br/>
-						makes the mouse cursor move faster in fullscreen modes. Enable or disable it.</li>
+						makes the mouse cursor move faster in full screen modes. Enable or disable it.</li>
 					<li><strong>Use middle mouse button</strong><br/>
 						In the normal game, the middle mouse button activates the target-function 
 						(which could also be accomplished by pressing <key>t</key>). For modal gumps,
@@ -1085,12 +1120,19 @@
 						pretty straightforward, right?</li>
 					<li><strong>Right click closes gumps</strong><br/>
 						the same but different.</li>
+					<li><strong>Double Right Pathfinds</strong><br/>
+						Double right-clicking on a spot makes the avatar walk to it.</li>
+					<li><strong>Gumps pause games</strong><br/>
+						In the original the game got paused when Gumps were shown. Enable/disable it.</li>
 					<li><strong>Cheats</strong><br/>
 						Enables or disables all the cheats that we implemented in <Exult/>. 
 						See <ref1 target="exult_cheats"/> what those cheats are.</li>
 					<li><strong>Speed</strong><br/>
 						if <Exult/> seems too fast lower this setting. If it seems to sluggish raising 
 						this setting may help.</li>
+					<li><strong>Paperdolls</strong><br/>
+						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls 
+						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
 					<li><strong>OK/Cancel</strong><br/>
 						Ok accepts your changes, Cancel discards your changes.</li>
 				</ul>
@@ -1105,7 +1147,7 @@
 					actually more difficult to implement than it sounds so don't expect it too soon.
 				</para>
 				<para>
-					In snapshots after the Beta 1 release this option is no longer availlable.
+					In snapshots after the Beta 1 release this option is no longer available.
 				</para>
 			</body>
 		</sub>
