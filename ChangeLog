@@ -1,3 +1,7 @@
+2000-09-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode.cc,effects.cc: Showing explosions.
+
 2000-09-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Check for dying in 'set_properties()'.
