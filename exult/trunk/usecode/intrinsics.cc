@@ -253,8 +253,10 @@ USECODE_INTRINSIC(set_item_frame)
 USECODE_INTRINSIC(get_item_quality)
 {
 	Game_object *obj = get_item(parms[0]);
-	Usecode_value u(obj ? obj->get_quality() : 0);
-	return(u);
+	if (!obj)
+		return Usecode_value(0);
+	Shape_info& info = gwin->get_info(obj);
+	return Usecode_value(info.has_quality() ? obj->get_quality() : 0);
 }
 
 USECODE_INTRINSIC(set_item_quality)
@@ -267,14 +269,12 @@ USECODE_INTRINSIC(set_item_quality)
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		{
-					// Fail if it has quantity.
 		Shape_info& info = gwin->get_info(obj);
-		//+++++++++++++USE has_quality()!!!
-		if (info.has_quantity() &&
-		    Game::get_game_type() == SERPENT_ISLE)
-			return Usecode_value(0);
-		obj->set_quality((unsigned int) qual);
-		return Usecode_value(1);
+		if (info.has_quality())
+			{
+			obj->set_quality((unsigned int) qual);
+			return Usecode_value(1);
+			}
 		}
 	return Usecode_value(0);
 }
