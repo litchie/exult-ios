@@ -286,7 +286,8 @@ int Main_actor::walk
 		Chunk_object_list *olist = gwin->get_objects(cx, cy);
 		olist->setup_cache();
 		int new_lift;		// Might climb/descend.
-		if (olist->is_blocked(get_lift(), sx, sy, new_lift) ||
+					// Just assume height==3.
+		if (olist->is_blocked(3, get_lift(), sx, sy, new_lift) ||
 		    at_destination())
 			{
 			stop();
@@ -406,15 +407,20 @@ void Patrol_schedule::now_what
 		if (!path)
 			{
 			cout << "Couldn't find patrol path " << pathnum
+				<< " for obj. shape " << npc->get_shapenum()
 								<< '\n';
 					// Wiggle a bit.
 			Tile_coord pos = npc->get_abs_tile_coord();
 			Tile_coord delta = Tile_coord(rand()%3 - 1,
 					rand()%3 - 1, 0);
 			npc->walk_to_tile(pos + delta, 250, 500);
+			int pathcnt = paths.get_cnt();
+			pathnum = rand()%(pathcnt < 4 ? 4 : pathcnt);
 			return;
 			}
 		}
+					//++++Testing.  Works for passion play.
+	npc->set_lift(path->get_lift());
 					// Delay up to 2 secs.
 	npc->walk_to_tile(path->get_abs_tile_coord(), 250, rand()%2000);
 	}
@@ -601,7 +607,8 @@ int Npc_actor::walk
 		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
 		nlist->setup_cache();
 		int new_lift;		// Might climb/descend.
-		if (nlist->is_blocked(get_lift(), sx, sy, new_lift) ||
+					// Just assume height==3.
+		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift) ||
 		    at_destination())
 			{
 			stop();
