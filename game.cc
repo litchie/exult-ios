@@ -322,10 +322,13 @@ bool Game::show_menu()
 			break;
 		}
 	} while(!menu || menu->get_selection()!=2);
-	pal.fade_out(c_fade_out_time);
+
+	if (menu->get_selection() != 2) {
+		pal.fade_out(c_fade_out_time);
+		gwin->clear_screen(true);
+	}
 	delete menu;
 	delete[] menuentries;
-	gwin->clear_screen(true);
 	Audio::get_ptr()->stop_music();
 	delete menu_mouse;
 	return play;

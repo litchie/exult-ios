@@ -1,3 +1,7 @@
+2001-10-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* game.cc, gamewin.*, gamedat.cc: fixed some more display glitches on
+	starting a new game
+
 2001-10-13  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Gump_manager.cc (Gump_manager): non_persistent_count added so we
