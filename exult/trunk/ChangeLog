@@ -1,3 +1,7 @@
+2004-09-13    <jeff@mini.nerble.net>
+
+	* schedule.cc:  Support thief schedule.
+
 2004-09-06    <jeff@mini.nerble.net>
 
 	* gamemap.cc,Flex.cc,Flex.h: Write Vers2 u7ifix files, so that
