@@ -313,15 +313,18 @@ void Rain_effect::handle_event
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Image_window8 *win = gwin->get_win();
-	int w = win->get_width(), h = win->get_height();
+	if (!gwin->is_main_actor_inside())
+		{			// Don't show rain inside buildings!
+		Image_window8 *win = gwin->get_win();
+		int w = win->get_width(), h = win->get_height();
 					// Get transform table.
-	Xform_palette xform = gwin->get_xform(8);	//++++Experiment.
-	const int num_drops = sizeof(drops)/sizeof(drops[0]);
+		Xform_palette xform = gwin->get_xform(8);//++++Experiment.
+		const int num_drops = sizeof(drops)/sizeof(drops[0]);
 					// Move drops.
-	for (int i = 0; i < num_drops; i++)
-		drops[i].next(win, xform, w, h);
-	gwin->set_painted();
+		for (int i = 0; i < num_drops; i++)
+			drops[i].next(win, xform, w, h);
+		gwin->set_painted();
+		}
 	if (curtime < stop_time)	// Keep going?
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
@@ -614,8 +617,9 @@ void Clouds_effect::paint
 	Game_window *gwin
 	)
 	{
-	for (int i = 0; i < num_clouds; i++)
-		clouds[i]->paint(gwin);
+	if (!gwin->is_main_actor_inside())
+		for (int i = 0; i < num_clouds; i++)
+			clouds[i]->paint(gwin);
 	}
 
 /*

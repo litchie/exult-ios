@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "items.h"
 #include "egg.h"
+#include "bodies.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 const char Actor::attack_frames1[4] = {3, 4, 5, 6};
@@ -1011,8 +1012,12 @@ void Actor::die
 	set_action(0);
 	remove_this(1);			// Remove (but don't delete this).
 	cx = cy = 0xff;			// Set to invalid chunk coords.
-	int shnum = 400;		// +++++Figure out correct shape.
-	int frnum = 3;			// +++++
+	int shnum, frnum;		// Lookup body shape/frame.
+	if (!Body_lookup::find(get_shapenum(), shnum, frnum))
+		{
+		shnum = 400;
+		frnum = 3;
+		}
 					// Put body here.
 	Dead_body *body = new Dead_body(shnum, frnum, 0, 0, 0, 
 						npc_num > 0 ? npc_num : -1);
