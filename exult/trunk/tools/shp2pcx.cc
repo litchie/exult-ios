@@ -251,6 +251,8 @@ u7shape* load_shape(char* filename)
     }
   }
 
+  cout << "origin: x = " << max_leftX << ", y = " << max_leftY << endl;
+
   int width = max_leftX + max_rightX + 1;
   int height = max_leftY + max_rightY + 1;
 
@@ -427,7 +429,7 @@ int main(int argc, char *argv[])
   if (!palette) return 1;
 
   for (int i = 0; i < sh->num_frames; i++) {
-    sprintf(outfilename, "%s%i.pcx", outprefix, i);
+    sprintf(outfilename, "%s%02i.pcx", outprefix, i);
     cout << "Writing frame " << i << " to " << outfilename << "..." << endl;
     save_image(sh->frames[i].pixels, palette, sh->width, sh->height, outfilename);
   }

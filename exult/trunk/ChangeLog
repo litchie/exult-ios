@@ -1,5 +1,8 @@
 2001-03-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* audio/Midi.h/cc: fixed no-midi-device-found bug
+	* shp2pcx.cc: output origin
+	* defaultkeys.txt: re-added change_skin
+	* tools/.cvsignore: added shp2pcx, removed u7shp
 
 2001-03-10  Jeff Freedman  <jeff@amy.nerble.net>
 
