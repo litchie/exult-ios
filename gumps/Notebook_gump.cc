@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_flx.h"
 #include "game.h"
 #include "gamewin.h"
+#include "gameclk.h"
+#include "actors.h"
 #include "SDL_events.h"
 
 vector<One_note *> Notebook_gump::notes;
@@ -41,6 +43,29 @@ vector<Notebook_top> Notebook_gump::page_info;
 const int font = 4;			// Small black.
 const int vlead = 1;			// Extra inter-line spacing.
 const int pagey = 10;			// Top of page.
+
+class One_note
+{
+	int day, hour, minute;		// Game time when note was written.
+	int lat, lng;			// Latitute, longitude where written.
+	char *text;			// Text, 0-delimited.
+	int textlen;			// Length, not counting ending NULL.
+	int textmax;			// Max. space.
+	bool is_new;			// Newly created at cur. time/place.
+public:
+	friend class Notebook_gump;
+	One_note() : day(0), hour(0), minute(0), lat(0), lng(0), 
+					text(0), textlen(0), textmax(0)
+		{  }
+	void set(int d, int h, int m, int la, int ln, char *txt = 0);
+	One_note(int d, int h, int m, int la, int ln, char *txt = 0) : text(0)
+		{ set(d, h, m, la, ln, txt); }
+	~One_note()
+		{ delete [] text; }
+	void insert(int chr, int offset);	// Insert text.
+	bool del(int offset);			// Delete text.
+};
+
 /*
  *	setup one note (from already-allocated text).
  */
@@ -59,8 +84,18 @@ void One_note::set
 	lng = ln;
 	delete text;
 	text = txt;
-	textlen = text ? strlen(text) : 0;
-	textmax = text ? textlen + 1 : 0;
+	if (text)
+		{
+		textlen = strlen(text);
+		textmax = textlen + 1;
+		}
+	else
+		{
+		textlen = 0;
+		textmax = 16;
+		text = new char[textmax];
+		text[0] = 0;
+		}
 	}
 
 /*
@@ -163,6 +198,7 @@ void Notebook_gump::initialize
 	)
 	{
 	initialized = 1;
+#if 0
 	// ++++TESTING:
 	notes.push_back(new One_note(1, 1,10, 10, 10, 
 				strdup("Note  #1\nHello")));
@@ -170,6 +206,25 @@ void Notebook_gump::initialize
 				"Note  #2\nworld.\n\nHow are you?")));
 	notes.push_back(new One_note(3, 3,30, 30, 30, strdup(
 				"Note #3")));
+#endif
+	}
+
+/*
+ *	Add a new note at the current time/place.
+ */
+
+void Notebook_gump::add_new
+	(
+	)
+	{
+	Game_clock *clk = gwin->get_clock();
+	Tile_coord t = gwin->get_main_actor()->get_tile();
+	int lat = (t.tx - 0x3a5)/10,	// +++++(May have these switched.)
+	    lng = (t.ty - 0x46e)/10;
+	One_note *note = new One_note(clk->get_day(), clk->get_hour(),
+			clk->get_minute(), lat, lng);
+	note->is_new = true;
+	notes.push_back(note);
 	}
 
 /*
@@ -189,7 +244,10 @@ Notebook_gump::Notebook_gump
 	const int lpagex = 35, rpagex = 300, lrpagey = 12;
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
  	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
+	if (!notes.size())
+		add_new();
 	}
+
 Notebook_gump *Notebook_gump::create
 	(
 	)
@@ -231,8 +289,15 @@ int Notebook_gump::paint_page
 	if (start == 0)			// Print note info. at start.
 		{
 		char buf[60];
-		snprintf(buf, sizeof(buf), "Day %d, %02d:%02d",
-			note->day, note->hour, note->minute);
+		char *ampm = "am";
+		int h = note->hour;
+		if (h >= 12)
+			{
+			h -= 12;
+			ampm = "pm";
+			}
+		snprintf(buf, sizeof(buf), "Day %d, %02d:%02d%s",
+			note->day, h?h:12, note->minute, ampm);
 		sman->paint_text(2, buf, x + box.x, y + pagey);
 		gwin->get_win()->fill8(sman->get_special_pixel(CHARMED_PIXEL),
 			box.w, 1, x + box.x, y + box.y - 3);
