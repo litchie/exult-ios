@@ -88,7 +88,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	midi_event	*eventlist;
 	int		ppqn;
 	
-	if (midfile.retrieve(0, &eventlist, ppqn))
+	if (midfile->retrieve(0, &eventlist, ppqn))
 		midi_device->start_track(eventlist, ppqn, repeat);
 #endif
 }
