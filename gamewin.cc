@@ -1457,8 +1457,7 @@ void Game_window::stop_actor
 	{
 	main_actor->stop();		// Stop and set resting state.
 	paint();	// ++++++Necessary?
-	if (!in_combat())		// Have followers get to spot.
-		main_actor->get_followers();
+	main_actor->get_followers();
 	}
 
 #if 0

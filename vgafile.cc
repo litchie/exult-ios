@@ -576,6 +576,10 @@ Shape_frame *Shape::read
 					// Get location, length.
 	shapeoff = Read4(shapes);
 	unsigned long shapelen = Read4(shapes);
+#if 0
+	if (shapenum == 465)
+		cout << "Shape 465 (iolo)" << endl;	//++++++
+#endif
 					// Read it in and get frame count.
 	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
