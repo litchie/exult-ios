@@ -378,43 +378,9 @@ void Shape_frame::paint_rle
 	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
 			return;
-	BufferDataSource in((char *)data,0);
-	int scanlen;
-	while ((scanlen = in.read2()) != 0)
-		{
-					// Get length of scan line.
-		int encoded = scanlen&1;// Is it encoded?
-		scanlen = scanlen>>1;
-		short scanx = in.read2();
-		short scany = in.read2();
-		if (!encoded)		// Raw data?
-			{
-			win->copy_line8(in.getPtr(), scanlen,
-					xoff + scanx, yoff + scany);
-			in.skip(scanlen);
-			continue;
-			}
-		for (int b = 0; b < scanlen; )
-			{
-			unsigned char bcnt = in.read1();
-					// Repeat next char. if odd.
-			int repeat = bcnt&1;
-			bcnt = bcnt>>1; // Get count.
-			if (repeat)
-				{
-				unsigned char pix = in.read1();
-				win->fill_line8(pix, bcnt,
-					xoff + scanx + b, yoff + scany);
-				}
-			else		// Get that # of bytes.
-				{
-				win->copy_line8(in.getPtr(), bcnt,
-					xoff + scanx + b, yoff + scany);
-				in.skip(bcnt);
-				}
-			b += bcnt;
-			}
-		}
+
+	win->paint_rle (xoff, yoff, data);
+	return;
 	}
 
 /*
@@ -452,32 +418,32 @@ void Shape_frame::paint_rle_translucent
 			return;
 					// First pix. value to transform.
 	const int xfstart = 0xff - xfcnt;
-	BufferDataSource in((char *)data,0);
+	uint8 *in = data;
 	int scanlen;
-	while ((scanlen = in.read2()) != 0)
+	while ((scanlen = Read2(in)) != 0)
 		{
 					// Get length of scan line.
 		int encoded = scanlen&1;// Is it encoded?
 		scanlen = scanlen>>1;
-		short scanx = in.read2();
-		short scany = in.read2();
+		short scanx = Read2(in);
+		short scany = Read2(in);
 		if (!encoded)		// Raw data?
 			{
-			win->copy_line_translucent8(in.getPtr(), scanlen,
+			win->copy_line_translucent8(in, scanlen,
 					xoff + scanx, yoff + scany,
 					xfstart, 0xfe, xforms);
-			in.skip(scanlen);
+			in += scanlen;
 			continue;
 			}
 		for (int b = 0; b < scanlen; )
 			{
-			unsigned char bcnt = in.read1();
+			unsigned char bcnt = *in++;
 					// Repeat next char. if odd.
 			int repeat = bcnt&1;
 			bcnt = bcnt>>1; // Get count.
 			if (repeat)
 				{
-				unsigned char pix = in.read1();
+				unsigned char pix = *in++;
 				if (pix >= xfstart && pix <= 0xfe)
 					win->fill_line_translucent8(pix, bcnt,
 						xoff + scanx + b, yoff + scany,
@@ -488,10 +454,10 @@ void Shape_frame::paint_rle_translucent
 				}
 			else		// Get that # of bytes.
 				{
-				win->copy_line_translucent8(in.getPtr(), bcnt,
+				win->copy_line_translucent8(in, bcnt,
 					xoff + scanx + b, yoff + scany,
 					xfstart, 0xfe, xforms);
-				in.skip(bcnt);
+				in += bcnt;
 				}
 			b += bcnt;
 			}
@@ -515,29 +481,29 @@ void Shape_frame::paint_rle_transformed
 		if (!win->is_visible(xoff - xleft, 
 						yoff - yabove, w, h))
 			return;
-	BufferDataSource in((char *)data,0);
+	uint8 * in = data;
 	int scanlen;
-	while ((scanlen = in.read2()) != 0)
+	while ((scanlen = Read2(in)) != 0)
 		{
 					// Get length of scan line.
 		int encoded = scanlen&1;// Is it encoded?
 		scanlen = scanlen>>1;
-		short scanx = in.read2();
-		short scany = in.read2();
+		short scanx = Read2(in);
+		short scany = Read2(in);
 		if (!encoded)		// Raw data?
 			{		// (Note: 1st parm is ignored).
 			win->fill_line_translucent8(0, scanlen,
 					xoff + scanx, yoff + scany, xform);
-			in.skip(scanlen);
+			in += scanlen;
 			continue;
 			}
 		for (int b = 0; b < scanlen; )
 			{
-			unsigned char bcnt = in.read1();
+			unsigned char bcnt = *in++;
 					// Repeat next char. if odd.
 			int repeat = bcnt&1;
 			bcnt = bcnt>>1; // Get count.
-			in.skip(repeat ? 1 : bcnt);
+			in += repeat ? 1 : bcnt;
 			win->fill_line_translucent8(0, bcnt,
 				xoff + scanx + b, yoff + scany, xform);
 			b += bcnt;
@@ -562,15 +528,15 @@ void Shape_frame::paint_rle_outline
 						yoff - yabove, w, h))
 			return;
 	int firsty = -10000;		// Finds first line.
-	BufferDataSource in((char *)data,0);
+	uint8 * in = data;
 	int scanlen;
-	while ((scanlen = in.read2()) != 0)
+	while ((scanlen = Read2(in)) != 0)
 		{
 					// Get length of scan line.
 		int encoded = scanlen&1;// Is it encoded?
 		scanlen = scanlen>>1;
-		short scanx = in.read2();
-		short scany = in.read2();
+		short scanx = Read2(in);
+		short scany = Read2(in);
 		int x = xoff + scanx;
 		int y = yoff + scany;
 		if (firsty == -10000)
@@ -583,19 +549,19 @@ void Shape_frame::paint_rle_outline
 			{
 			if (y == firsty)// First line?
 				win->fill_line8(color, scanlen, x, y);
-			in.skip(scanlen);
+			in += scanlen;
 			continue;
 			}
 		for (int b = 0; b < scanlen; )
 			{
-			unsigned char bcnt = in.read1();
+			unsigned char bcnt = *in++;
 					// Repeat next char. if odd.
 			int repeat = bcnt&1;
 			bcnt = bcnt>>1; // Get count.
 			if (repeat)	// Pass repetition byte.
-				in.skip(1);
+				in++;
 			else		// Skip that # of bytes.
-				in.skip(bcnt);
+				in += bcnt;
 			if (y == firsty)// First line?
 				win->fill_line8(color, bcnt, x + b, y);
 			b += bcnt;

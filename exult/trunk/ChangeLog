@@ -1,3 +1,16 @@
+2001-07-06  Ryan Nunn <triforce@merlin.net.au>
+	* cheat.cc, exult.cc, menulist.cc, gumps/gump_utils.cc: Fixed all
+	  problems with scale factors other 2.
+	* exult.cc, imagewin/imagewin.cc, imagewin/imagewin.h: Only repaint the
+	  entire screen when doing palette cylcing and scaling if a palette isn't
+	  being used.
+	* imagewin/ibuf8.cc, imagewin/ibuf8.h, shapes/vgafile.cc: Improved RLE
+	  drawing code. Almost completely rewrote paint_rle(), and moved it to
+	  Image_buffer8
+	* imagewin/scale.cc, imagewin/scale.h: Slightly improved Point and 
+	  Interlaced scalers.
+	* msvcstuff/msvc_kludges.h: Tweak
+
 2001-07-06  Tristan Tarrant <nadir@users.sourceforge.net>
 	* exultmenu.cc, bggame.cc, sigame.cc: display version on main menu,
 	instead of during intro

@@ -344,3 +344,159 @@ void Image_buffer8::copy_transparent8
 		}
 	}
 
+// Slightly Optimized RLE Painter
+void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *in)
+{
+	int scanlen;
+	const int right = clipx+clipw;
+	const int bottom = clipy+cliph;
+
+	while ((scanlen = Read2(in)) != 0)
+	{
+					// Get length of scan line.
+		int encoded = scanlen&1;// Is it encoded?
+		scanlen = scanlen>>1;
+		int scanx = xoff + (sint16) Read2(in);
+		int scany = yoff + (sint16) Read2(in);
+
+		// Is there somthing on screen?
+		bool on_screen = true;
+		if (scanx >= right || scany >= bottom || scany < clipy || scanx+scanlen < clipx)
+			on_screen = false;
+
+		if (!encoded)	// Raw data?
+		{
+			// Only do the complex calcs if we think it could be on screen
+			if (on_screen)
+			{
+				// Do we need to skip pixels at the start?
+				if (scanx < clipx)
+				{
+					const int delta = clipx-scanx;
+					in += delta;
+					scanlen -= delta;
+					scanx = clipx;
+				}
+
+				// Do we need to skip pixels at the end?
+				int skip = scanx+scanlen - right;
+				if (skip < 0) skip = 0;
+
+				// Is there anything to put on the screen?
+				if (skip < scanlen)
+				{
+					unsigned char *dest = bits + scany*line_width + scanx;
+					unsigned char *end = in+scanlen-skip;
+					while (in < end) *dest++ = *in++;
+					in += skip;
+					continue;
+				}
+			}
+			in += scanlen;
+			continue;
+		}
+		else	// Encoded
+		{
+			unsigned char *dest = bits + scany*line_width + scanx;
+
+			while (scanlen)
+			{
+				unsigned char bcnt = *in++;
+						// Repeat next char. if odd.
+				int repeat = bcnt&1;
+				bcnt = bcnt>>1; // Get count.
+
+				// Only do the complex calcs if we think it could be on screen
+				if (on_screen && scanx < right && scanx+bcnt > clipx)
+				{
+					if (repeat)	// Const Colour
+					{
+						// Do we need to skip pixels at the start?
+						if (scanx < clipx)
+						{
+							const int delta = clipx-scanx;
+							dest += delta;
+							bcnt -= delta;
+							scanlen -= delta;
+							scanx = clipx;
+						}
+
+						// Do we need to skip pixels at the end?
+						int skip = scanx+bcnt - right;
+						if (skip < 0) skip = 0;
+
+						// Is there anything to put on the screen?
+						if (skip < bcnt)
+						{
+							unsigned char col = *in++;
+							unsigned char *end = dest+bcnt-skip;
+							while (dest < end) *dest++ = col;
+
+							// dest += skip; - Don't need it
+							scanx += bcnt;
+							scanlen -= bcnt;
+							continue;
+						}
+
+						// Make sure all the required values get
+						// properly updated
+
+						// dest += bcnt; - Don't need it
+						scanx += bcnt;
+						scanlen -= bcnt;
+						++in;
+						continue;
+					}
+					else
+					{
+						// Do we need to skip pixels at the start?
+						if (scanx < clipx)
+						{
+							const int delta = clipx-scanx;
+							dest += delta;
+							in += delta;
+							bcnt -= delta;
+							scanlen -= delta;
+							scanx = clipx;
+						}
+
+						// Do we need to skip pixels at the end?
+						int skip = scanx+bcnt - right;
+						if (skip < 0) skip = 0;
+
+						// Is there anything to put on the screen?
+						if (skip < bcnt)
+						{
+							unsigned char *end = dest+bcnt-skip;
+							while (dest < end) *dest++ = *in++;
+							// dest += skip; - Don't need it
+							in += skip;
+							scanx += bcnt;
+							scanlen -= bcnt;
+							continue;
+						}
+
+						// Make sure all the required values get
+						// properly updated
+
+						// dest += skip; - Don't need it
+						scanx += bcnt;
+						scanlen -= bcnt;
+						in += bcnt;
+						continue;
+					}
+				}
+
+				// Make sure all the required values get
+				// properly updated
+
+				dest += bcnt;
+				scanx += bcnt;
+				scanlen -= bcnt;
+				if (!repeat) in += bcnt;
+				else ++in;
+				continue;
+			}
+		}
+	}
+}

@@ -92,6 +92,8 @@ public:
 		    y >= clipy && y < clipy + cliph)
 			bits[y*line_width + x] = pix;
 		}
+
+	void paint_rle (int xoff, int yoff, unsigned char *in);
 	};
 
 #endif

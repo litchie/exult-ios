@@ -198,7 +198,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
         unsigned char mouse_visible;
 	int count = entries->size();
 	bool exit_loop = false;
-	int scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
+	int scale = gwin->get_win()->get_scale();
 	SDL_Event event;
 
 	for(int i=0; i<count; i++)
@@ -225,25 +225,25 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 		SDL_WaitEvent(&event);
 		if(event.type==SDL_MOUSEMOTION) {
 			mouse->hide();
-			mouse->move(event.motion.x >> scale, 
-					event.motion.y >> scale);
-			set_selection(event.motion.x >> scale, 
-					event.motion.y >> scale); 
+			mouse->move(event.motion.x / scale, 
+					event.motion.y / scale);
+			set_selection(event.motion.x / scale, 
+					event.motion.y / scale); 
 			mouse->show();
 			mouse->blit_dirty();
 		} else if(event.type==SDL_MOUSEBUTTONDOWN) {
 		        if (!mouse_visible) {
 			        // if invisible, redraw mouse
-			        set_selection(event.button.x >> scale, 
-					      event.button.y >> scale); 
+			        set_selection(event.button.x / scale, 
+					      event.button.y / scale); 
 			        mouse->show();
 			        mouse->blit_dirty();
 			}
 		} else if(event.type==SDL_MOUSEBUTTONUP) {
 		        MenuObject *entry = (*entries)[selection];
 			if (entry->is_mouse_over(
-					   event.button.x >> scale, 
-					   event.button.y >> scale)) {
+					   event.button.x / scale, 
+					   event.button.y / scale)) {
 			        exit_loop = entry->handle_event(event);
 			}
 		} else if(event.type==SDL_KEYDOWN) {

@@ -42,7 +42,6 @@ using std::strcpy;
 using std::strcat;
 
 extern Configuration* config;
-extern int scale;
 
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 
@@ -362,8 +361,8 @@ void Cheat::cursor_teleport (void) const {
 
 	int x, y;
 	SDL_GetMouseState(&x, &y);
-	x = x>>scale;
-	y = y>>scale;
+	x = x / gwin->get_win()->get_scale();
+	y = y / gwin->get_win()->get_scale();
 	Tile_coord t(gwin->get_scrolltx() + x/c_tilesize,
 				 gwin->get_scrollty() + y/c_tilesize, 0);
 	gwin->teleport_party(t);
@@ -394,8 +393,8 @@ void Cheat::delete_object (void) const {
 
 	int x, y;
 	SDL_GetMouseState(&x, &y);
-	x = x>>scale;
-	y = y>>scale;
+	x = x / gwin->get_win()->get_scale();
+	y = y / gwin->get_win()->get_scale();
 	Game_object *obj = gwin->find_object(x, y);
 	if (obj) {
 		obj->remove_this();

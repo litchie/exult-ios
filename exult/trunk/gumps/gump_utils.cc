@@ -41,7 +41,6 @@ using std::snprintf;
 
 extern Game_window *gwin;	// from exult.cc - FIX ME!!!
 extern unsigned char quitting_time;	// from exult.cc - FIX ME!!!
-extern int scale;	// from exult.cc - FIX ME!!!
 
 void make_screenshot(bool silent = false);
 
@@ -68,29 +67,31 @@ static int Handle_gump_event
 	SDL_Event& event
 	)
 {
+	int scale_factor = Game_window::get_game_window()->get_win()->get_scale();
+
 	switch (event.type)
 	{
 	case SDL_MOUSEBUTTONDOWN:
 #ifdef DEBUG
-cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
-	 << ", " <<	((event.button.y>>scale) - gump->get_y()) << ")"<<endl;
+cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->get_x())
+	 << ", " <<	((event.button.y / scale_factor) - gump->get_y()) << ")"<<endl;
 #endif
 		if (event.button.button == 1)
-			gump->mouse_down(event.button.x >> scale, 
-						event.button.y >> scale);
+			gump->mouse_down(event.button.x / scale_factor, 
+						event.button.y / scale_factor);
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 1)
-			gump->mouse_up(event.button.x >> scale,
-						event.button.y >> scale);
+			gump->mouse_up(event.button.x / scale_factor,
+						event.button.y / scale_factor);
 		break;
 	case SDL_MOUSEMOTION:
-		Mouse::mouse->move(event.motion.x >> scale, event.motion.y >> scale);
+		Mouse::mouse->move(event.motion.x / scale_factor, event.motion.y / scale_factor);
 		Mouse::mouse_update = true;
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
-			gump->mouse_drag(event.motion.x >> scale,
-						event.motion.y >> scale);
+			gump->mouse_drag(event.motion.x / scale_factor,
+						event.motion.y / scale_factor);
 		break;
 	case SDL_QUIT:
 		if (Okay_to_quit())
