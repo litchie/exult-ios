@@ -129,6 +129,8 @@ void Sprites_effect::paint
 	Game_window *gwin
 	)
 	{
+	if (frame_num >= frames)
+		return;
 	int lp = pos.tz/2;		// Account for lift.
 	gwin->paint_sprite((pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
 		(pos.ty - lp - gwin->get_scrollty())*c_tilesize, 
