@@ -43,6 +43,9 @@ public:
 class Spellbook_gump : public Spelltype_gump
 	{
 	int page;			// Starting with 0 (= circle #).
+	int turning_page;		// 1 if turning forward, -1 backward,
+					//   0 if not turning.
+	int turning_frame;		// Next frame to show.
 	short avail[9*8];		// For each spell, # which the
 					//   available reagents make possible.
 	Spellbook_object *book;		// Book this shows.
