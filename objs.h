@@ -164,6 +164,12 @@ public:
 		atx = cx*tiles_per_chunk + get_tx();
 		aty = cy*tiles_per_chunk + get_ty();
 		}
+	Tile_coord get_abs_tile_coord()	// Same thing.
+		{
+		int x, y, z;
+		get_abs_tile(x, y, z);
+		return Tile_coord(x, y, z);
+		}
 	int get_quality()
 		{ return quality; }
 	void set_quality(int q)

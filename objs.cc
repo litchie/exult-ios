@@ -88,7 +88,7 @@ int Game_object::find_nearby
 	Game_window *gwin = Game_window::get_game_window();
 	int atx, aty, atz;		// Get abs. tile coords.
 	get_abs_tile(atx, aty, atz);
-	const int delta = 8;		// Let's try 8 tiles each dir.
+	const int delta = 16;		// Let's try 16 tiles each dir.
 	Rectangle tiles(atx - delta, aty - delta, 2*delta, 2*delta);
 					// Stay within world.
 	Rectangle world(0, 0, num_chunks*tiles_per_chunk, 
@@ -1174,6 +1174,11 @@ void Sprite::start
 	int liftpixels = 4*get_lift();
 	long deltax = destx + liftpixels - curx;
 	long deltay = desty + liftpixels - cury;
+	if (!deltax && !deltay)		// Going nowhere?
+		{
+		stop();
+		return;
+		}		
 	unsigned long abs_deltax, abs_deltay;
 	int x_dir, y_dir;
 	if (deltay >= 0)		// Figure directions.
