@@ -238,10 +238,12 @@ int Game_window::paint_chunk_objects
 		skip_lift = skip_above_actor;
 	Nonflat_object_iterator next(olist);
 	if (in_dungeon)
+		{
 		while ((obj = next.get_next()) != 0)
 			if (obj->render_seq != render_seq &&
 			    olist->in_dungeon(obj))
 				paint_dungeon_object(olist, obj);
+		}
 	else
 		while ((obj = next.get_next()) != 0)
 			if (obj->render_seq != render_seq)
