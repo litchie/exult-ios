@@ -342,7 +342,8 @@ void Game::scroll_text(vector<char *> *text)
 			}
 		} while (ypos<endy);
 		pal.apply();
-		while (next_time > SDL_GetTicks());
+		while (next_time > SDL_GetTicks())
+			;
 		next_time += 120;
 		looping = looping && !wait_delay(0);
 		if(!looping)
@@ -487,7 +488,8 @@ void Game::journey_failed_text()
 {
 	center_text(MAINSHP_FONT1, "You must start a new game first.", centerx, centery+30);
 	pal.fade_in(50);
-	while (!wait_delay(10));
+	while (!wait_delay(10))
+		;
 	pal.fade_out(50);
 }
 	
