@@ -778,6 +778,42 @@ int Actor::get_weapon_points
 	}
 
 /*
+ *	Figure hit points lost from an attack, and subtract from total.
+ *
+ *	Output:	# of hit points lost (already subtracted).
+ */
+
+int Actor::figure_hit_points
+	(
+	Actor *attacker
+	)
+	{
+#if 1	/* +++++Test it. */
+	int armor = get_armor_points();
+	int weapon = attacker->get_weapon_points();
+	if (!weapon)
+		weapon = 1;
+	int attacker_level = attacker->get_level();
+	int prob = 30 + attacker_level + 
+			attacker->get_property((int) combat) +
+			attacker->get_property((int) dexterity) -
+			get_property((int) dexterity) +
+			weapon - armor;
+	if (rand()%100 > prob)
+		return 0;		// Missed.
+					// Compute hit points to lose.
+	int hp = attacker->get_property((int) strength) +
+			attacker_level +
+			weapon - armor;
+	if (hp < 1)
+		hp = 1;
+	properties[(int) health] -= hp;	// Subtract from health.
+	return hp;
+#endif
+	return 1;	//+++++++++
+	}
+
+/*
  *	Being attacked.
  */
 
@@ -786,11 +822,9 @@ void Actor::attacked
 	Actor *attacker
 	)
 	{
-#if 0	/* +++++Test it. */
-	int armor = get_armor_points();
-	int weapon = attacker->get_weapon_points();
-#endif
-	die();				// +++++++Wimp.
+	figure_hit_points(attacker);
+	if (is_dead_npc())
+		die();			// +++++++Wimp.
 	}
 
 /*
