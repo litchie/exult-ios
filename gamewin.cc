@@ -57,7 +57,7 @@ Game_window::Game_window
 	    open_gumps(0),
 	    main_actor_inside(0), mode(splash), npcs(0),
 	    shapes(), dragging(0), dragging_save(0),
-	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA), sprites(SPRITES_VGA)
+	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA), sprites(SPRITES_VGA), mainshp(MAINSHP_FLX)
 	{
 	game_window = this;		// Set static ->.
 	if (!shapes.is_good())
@@ -70,6 +70,8 @@ Game_window::Game_window
 		abort("Can't open 'fonts.vga' file.");
 	if (!sprites.is_good())
 		abort("Can't open 'sprites.vga' file.");
+	if (!mainshp.is_good())
+		abort("Can't open 'mainshp.flx' file.");
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);
 	ifstream ucfile;		// Read in usecode.
@@ -110,13 +112,13 @@ Game_window::Game_window
 			cout << gamedat_identity;
 			if(strcmp(static_identity, gamedat_identity))
 				{
-					cout << " BAD" << endl;
+					cout << " ->BAD" << endl;
 					cout << "Creating 'gamedat' files.\n";
 					write_gamedat(INITGAME);
 				}
 			else
 				{
-					cout << " GOOD" << endl;
+					cout << " ->GOOD" << endl;
 				}
 			delete[] static_identity;
 		}
@@ -756,10 +758,12 @@ void Game_window::paint
 			paint_chunk_objects(-1, cx, cy, 0);
 	if (mode == splash && win->ready())
 		{
-		int x = 15, y = 15;
+		// Paint intro title (we should use the mainshp palette...)
+		paint_shape(get_width()/2-160,get_height()/2-100,mainshp.get_shape(2,0));
+		int x = 5, y = 5;
 		int w = get_width() - x, h = get_height() - y;
 		char buf[512];
-		sprintf(buf, "Welcome to EXULT V 0.%02d,\na free RPG game engine.\n\nCopyright 2000 J. S. Freedman\n              and Dancer Vesperman\n\nGraphics and audio remain\n the property of Origin Systems", RELNUM);
+		sprintf(buf, "Welcome to EXULT V 0.%02d, a free RPG game engine.\n\nCopyright 2000 J. S. Freedman\n              and Dancer Vesperman\n\nGraphics and audio remain\n the property of Origin Systems", RELNUM);
 		paint_text_box(0, buf, 
 				x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
 		}
@@ -1768,6 +1772,7 @@ void Game_window::end_splash
 	{
 	if (mode == splash)
 		{
+		set_palette(0);
 		mode = normal;
 		init_actors();		// Set up actors if not already done.
 					// This also sets up initial 
@@ -1783,4 +1788,53 @@ void Game_window::end_splash
 						main_actor->get_ty());
 #endif
 		}
+	}
+
+char *Game_window::get_shape_file_name
+	(
+	int n
+	)
+	{		// FIXME: should be dynamic
+	switch(n) {
+	case 0:
+		return SHAPES_VGA;
+	case 1:
+		return FACES_VGA;
+	case 2:
+		return GUMPS_VGA;
+	case 3:
+		return SPRITES_VGA;
+	case 4:
+		return MAINSHP_FLX;
+	default:
+		return 0;
+	}
+	}
+
+int Game_window::get_shape_file_count
+	(
+	)
+	{
+	return 5;	// FIXME: should be dynamic
+	}
+
+Vga_file *Game_window::get_shape_file_data
+	(
+	int n
+	)
+	{
+	switch(n) {	// FIXME: should be dynamic
+	case 0:
+		return &shapes;
+	case 1:
+		return &faces;
+	case 2:
+		return &gumps;
+	case 3:
+		return &sprites;
+	case 4:
+		return &mainshp;
+	default:
+		return 0;
+	}
 	}

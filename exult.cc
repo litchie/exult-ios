@@ -532,6 +532,35 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 	}
 
 /*
+ *	Display a shape with info
+ *
+ */
+static void shape_showcase(
+	int current_file, 
+	int current_shape,
+	int current_frame
+	)
+	{
+	char buf[256];
+	gwin->paint();
+	// First of all draw the shape
+	Vga_file *shape_file = gwin->get_shape_file_data(current_file);
+	gwin->paint_shape(gwin->get_width()/2, gwin->get_height()/2,
+		shape_file->get_shape(current_shape, current_frame));
+	// Then show some info about it
+	sprintf(buf, "Shape file: \"%s\"", gwin->get_shape_file_name(current_file));
+	gwin->paint_text_box(2, buf, 
+		100, 100,  gwin->get_width(), gwin->get_height());
+	sprintf(buf, "Shape %d/%d - Frame %d/%d", 
+		current_shape, shape_file->get_num_shapes()-1,
+		current_frame, shape_file->get_num_frames(current_shape)-1);
+	gwin->paint_text_box(2, buf, 
+		100, 300,  gwin->get_width(), gwin->get_height());
+	}
+
+
+
+/*
  *	Handle a keystroke.
  */
 
@@ -541,11 +570,9 @@ static void Handle_keystroke
 	int shift
 	)
 	{
-	static int shape_cnt = 720, shape_frame = 0;
-	static int face_cnt = -1, face_frame = 0;
-	static int gump_cnt = -1, gump_frame = 0;
-	static int font_cnt = -1, font_frame = 0;
-	static int sprite_cnt = -1, sprite_frame = 0;
+	static int current_shape = 0, current_frame = 0, current_file = 0;
+	Vga_file *vga_file;
+	
 	static int inventory_page = -1;
 	switch (sym)
 		{
@@ -579,19 +606,18 @@ static void Handle_keystroke
 			"Arrow keys - scroll map\n"
 			"Plus-Minus - Increment-decrement brightness\n"
 			"e - Toggle eggs visibility\n"
+			"PgUp/PgDn - Show next-previous shape file\n"
+			"sS - Show next-previous shape\n"
 			"fF - Show next-previous frame\n"
-			"g - Show next gump\n"
 			"i - Show inventory\n"
 			"l - Decrement lift\n"
 			"m - Change mouse shape\n"
-			"oO - Show next-previous sprite\n"
 			"p - Repaint screen\n"
 			"q - Exit\n"
-			"sS - Show next-previous shape\n"
 			"t - Fake time period change\n"
 		);
 			
-		gwin->paint_text_box(0, buf, 
+		gwin->paint_text_box(2, buf, 
 			15, 15, 300, 400);
 		break;
 		}
@@ -635,84 +661,48 @@ static void Handle_keystroke
 		gwin->paint_eggs = 1-gwin->paint_eggs;
 		gwin->paint();
 		break;
-	case SDLK_r:			// Show rotated frame.
-		gwin->paint();
-		gwin->paint_shape(200, 200, shape_cnt, 32+shape_frame);
+	case SDLK_f:		// Show next frame
+		vga_file = gwin->get_shape_file_data(current_file);
+		if (!shift) {
+			++current_frame;
+			if(current_frame>=vga_file->get_num_frames(current_shape))
+				current_frame = 0;
+		} else {
+			--current_frame;
+			if(current_frame<0)
+				current_frame = vga_file->get_num_frames(current_shape);
+		}
+		shape_showcase(current_file, current_shape, current_frame);
 		break;
 	case SDLK_s:		// Show next shape.
+		current_frame = 0;
+		vga_file = gwin->get_shape_file_data(current_file);
 		if (!shift) {
-#if 1
-		shape_frame = 0;
-		if (++shape_cnt == gwin->get_num_shapes())
-			shape_cnt = 0;
-		cout << "Painting shape " << shape_cnt;
-		cout << ", # frames = " << 
-			gwin->get_shape_num_frames(shape_cnt) << '\n';
-		gwin->paint();
-		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
-#else
-		gump_frame = 0;
-		if (++gump_cnt == gwin->get_num_gumps())
-			gump_cnt = 0;
-		cout << "Painting gump " << gump_cnt << '\n';
-		gwin->paint();
-		gwin->paint_gump(gwin->get_width()/2, gwin->get_height()/2, 
-						gump_cnt, gump_frame);
-#endif
-		break;
-		} else {	// Upper case 'S':
-				// Show prev. shape.
-		shape_frame = 0;
-		if (--shape_cnt < 0)
-			shape_cnt = gwin->get_num_shapes() - 1;
-		cout << "Painting shape " << shape_cnt << '\n';
-		gwin->paint();
-		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
-		break;
-		}
-	case SDLK_o:
-	    if(shift) {
-		++sprite_frame;
-		if(sprite_frame==gwin->get_sprite_num_frames(sprite_cnt))
-		    sprite_frame = 0;
-	    } else {
-		sprite_frame = 0;
-		if (++sprite_cnt == gwin->get_num_sprites())
-		    sprite_cnt = 0;
-	    }
-	  cout << "Painting sprite " << sprite_cnt << "/" << gwin->get_num_sprites() << '\n';
-	  cout << "Frames = " << gwin->get_sprite_num_frames(sprite_cnt) << '\n';
-	  gwin->paint();
-	  gwin->paint_sprite(gwin->get_width()/2, gwin->get_height()/2,
-			   sprite_cnt, sprite_frame);
-	  break;       
-	case SDLK_g:
-	  gump_frame = 0;
-	  if (++gump_cnt == gwin->get_num_gumps())
-	    gump_cnt = 0;
-	  cout << "Painting gump " << gump_cnt << '\n';
-	  gwin->paint();
-	  gwin->paint_gump(gwin->get_width()/2, gwin->get_height()/2, 
-			   gump_cnt, gump_frame);
-	  break;
-	case SDLK_f:			// Show next frame.
-		if(!shift) {
-			++shape_frame;
-			if(shape_frame >= gwin->get_shape_num_frames(shape_cnt))
-				shape_frame=0;
+			++current_shape;
+			if(current_shape>=vga_file->get_num_shapes())
+				current_shape = 0;
 		} else {
-			--shape_frame;
-			if(shape_frame<0)
-				shape_frame = gwin->get_shape_num_frames(shape_cnt)-1;
+			--current_shape;
+			if(current_shape<0)
+				current_shape = vga_file->get_num_shapes()-1;
 		}
-		cout << "Frame # " << shape_frame << "/" << gwin->get_shape_num_frames(shape_cnt) << '\n';
-		gwin->paint();
-#if 1
-		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
-#else
-		gwin->paint_font(gwin->get_width()/2,
-				gwin->get_height()/2, font_cnt, font_frame);
-#endif
+		shape_showcase(current_file, current_shape, current_frame);
+		break;
+	case SDLK_PAGEUP:
+		current_shape=0;
+		current_frame=0;
+		--current_file;
+		if(current_file<0)
+			current_file = gwin->get_shape_file_count()-1;
+		shape_showcase(current_file, current_shape, current_frame);
+		break;
+	case SDLK_PAGEDOWN:
+		current_shape=0;
+		current_frame=0;
+		++current_file;
+		if(current_file==gwin->get_shape_file_count())
+			current_file = 0;
+		shape_showcase(current_file, current_shape, current_frame);
 		break;
 	case SDLK_t:			// Fake out time period change.
 		gwin->fake_next_period();
@@ -731,6 +721,7 @@ static void Handle_keystroke
 		break;
 		}
 	}
+
 
 /*
  *	Wait for a click.

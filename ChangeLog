@@ -1,8 +1,11 @@
 2000-05-03  Tristan Tarrant  <tarrant_tristan@emc.com>
 
+	* gamewin.cc: Show game title in splash screen
+
 	* exult.cc: you can now press 'i' to show the npc's inventories just
 	like the real U7. Needs improvement.
-	Also 'q' quits and ESC only closes gumps.
+	New shape browser: PgUp/PgDn selects file, sS selects shape, fF 
+	selects frame. Also 'q' quits and ESC only closes gumps.
 
 2000-05-02  Jeff Freedman  <jeff@patches.simutech.com>
 
