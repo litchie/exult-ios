@@ -26,7 +26,7 @@ Leather Collar		582		-
 Gorget			586		Adam Delman
 Magic gorget		843		Adam
 Heart Amulet		955/2		Adam
-FoV amulets		955/7-10	-
+FoV amulets		955/7-10	Willem Jan
 Grey cloak		285/0		-
 Green cloak		285/1		-
 Brown (fur?) cloak	285/2		Adam

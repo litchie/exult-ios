@@ -817,13 +817,13 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Amulet of ???
 	{     955,  6,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     3 },
 	// Forge Amulet **NEEDS ART**???
-	{     955,  7,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     6 },
+	{     955,  7,       Actor::neck,   OT_Normal,  false, gameflx,       9,     1 },
 	// Forge Amulet **NEEDS ART**???
-	{     955,  8,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     6 },
+	{     955,  8,       Actor::neck,   OT_Normal,  false, gameflx,       9,     2 },
 	// Forge Amulet **NEEDS ART**???
-	{     955,  9,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     6 },
+	{     955,  9,       Actor::neck,   OT_Normal,  false, gameflx,       9,     3 },
 	// Forge Amulet **NEEDS ART**???
-	{     955, 10,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     6 },
+	{     955, 10,       Actor::neck,   OT_Normal,  false, gameflx,       9,     4 },
 
 
 	// CLOAKS
