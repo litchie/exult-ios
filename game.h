@@ -41,7 +41,8 @@ struct str_int_pair
 enum Exult_Game {
 	NONE,
 	BLACK_GATE,
-	SERPENT_ISLE
+	SERPENT_ISLE,
+	EXULT_DEVEL_GAME		// One that we develop.
 };
 
 #define GAME_BG (Game::get_game_type() == BLACK_GATE)
@@ -78,7 +79,7 @@ public:
 	static void set_new_game() { new_game_flag = true; }
 	static bool is_new_game() { return new_game_flag; }
 	static char *get_game_identity(const char *savename);
-	static Game *create_game(Exult_Game mygame);
+	static Game *create_game(Exult_Game mygame, const char *title = 0);
 	static Exult_Game get_game_type()
 		{ return game_type; }
 

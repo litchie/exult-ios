@@ -122,12 +122,17 @@ char *Game::get_game_identity(const char *savename)
 }
 
 
-Game *Game::create_game(Exult_Game mygame)
+Game *Game::create_game(Exult_Game mygame, const char *title)
 {
 	// Choose the startup path
 	string data_directory, keyfilename;
 	
 	switch(mygame) {
+	case EXULT_DEVEL_GAME:
+		assert(title != 0);
+		gametitle = title;
+		game_type = mygame;
+		break;
 	case SERPENT_ISLE:
 		gametitle = "serpentisle";
 		break;
@@ -173,6 +178,11 @@ Game *Game::create_game(Exult_Game mygame)
 	case SERPENT_ISLE:
 		cout << "Starting a SERPENT ISLE game" << endl;
 		game = new SI_Game();
+		break;
+	case EXULT_DEVEL_GAME:
+		cout << "Starting '" << gametitle << "' game" << endl;
+//		game = new DEV_Game();	// Got to write this.
+		game = 0;			// ++++++++FOR NOW
 		break;
 	default:
 		game = 0;

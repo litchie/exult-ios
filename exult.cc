@@ -236,9 +236,9 @@ int main
 			
 		exit(1);
 	}
-	
 	if (run_bg && run_si) {
-		cerr << "Error: You may only specify either -bg or -si!" << endl;
+		cerr << "Error: You may only specify either -bg or -si!" << 
+									endl;
 		exit(1);
 	}
 
@@ -495,6 +495,7 @@ static void Init
 		reset_system_paths();
 		fontManager.reset();
 		U7FileManager::get_ptr()->reset();
+		const char *title = 0;
 
 		if(game)
 			delete game;
@@ -505,11 +506,14 @@ static void Init
 		} else if (run_si) {
 			mygame = SERPENT_ISLE;
 			run_si = false;
+		} else if (arg_buildmap < 0 && arg_gamename != "default") {
+			mygame = EXULT_DEVEL_GAME;
+			title = arg_gamename.c_str();
 		} else {
 			ExultMenu exult_menu(gwin);
 			mygame = exult_menu.run();
 		}
-		Game::create_game(mygame);
+		Game::create_game(mygame, title);
 		
 					// Skip splash screen?
 		bool skip_splash;
@@ -1319,6 +1323,7 @@ void BuildGameMap()
 		current_res = find_resolution(w, h, sc);
 		Game::create_game(gametype);
 		gwin->init_files(false); //init, but don't show plasma	
+		gwin->get_map()->init();// +++++Got to clean this up.
 		gwin->set_palette(0);
 		for (int x = 0; x < c_num_chunks / c_chunks_per_schunk; x++) {
 			for (int y = 0; y < c_num_chunks / c_chunks_per_schunk; y++) {
