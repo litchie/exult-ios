@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="08 August 2003(GMT)">
+<readme title="Exult" changed="18 October 2003(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="18102003">
+			<header>- 18 October 2003</header>
+			<body>
+				<ul>
+				<li><section_ref target="exult_version"/> note Exult version.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="08082003">
 			<header>- 08 August 2003</header>
 			<body>
@@ -23,7 +31,7 @@
 			<header>- 04 March 2003</header>
 			<body>
 				<ul>
-				<li><ref1 target="important"/> this doc is for 1.1.x and not for 1.0 anymore.</li>
+				<li><ref1 target="exult_version"/> this doc is for 1.1.x and not for 1.0 anymore.</li>
 				<li><ref1 target="exult_config"/> added more combat options and Scale2x.</li>
 				<li><ref1 target="scaler"/> added Scale2x and information on it.</li>
 				<li><ref1 target="combat_gump"/> Some explanations for the combat options.</li>
@@ -32,12 +40,12 @@
 		</sub>
 	</section>
 	<section title="Introduction">
-		<sub name="important">
-			<header>Important Notice</header>
+		<sub name="exult_version">
+			<header>Exult Version</header>
 			<body>
 				<para>
-					This documentation is for the work-in-progress 1.1.x version of <Exult/>.
-					Documentation for the 1.0 version can be found where you installed the release.
+					This documentation is for the 1.1beta3 version of <Exult/>.
+					If you have another <Exult/> version, its documentation can be found where you installed the release.
 				</para>
 			</body>
 		</sub>

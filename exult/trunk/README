@@ -1,16 +1,17 @@
 Exult Documentation
-last changed: 08 August 2003(GMT)
+last changed: 18 October 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 08 August 2003
-0.2. - 04 May 2003
-0.3. - 04 March 2003
+0.1. - 18 October 2003
+0.2. - 08 August 2003
+0.3. - 04 May 2003
+0.4. - 04 March 2003
 
 1. Introduction
-1.1. Important Notice
+1.1. Exult Version
 1.2. What is Exult?
 1.3. Terms we use in regard to Exult and Ultima 7
 
@@ -73,19 +74,24 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 08 August 2003
+0.1. - 18 October 2003
+* 0. note Exult version.
+
+
+
+0.2. - 08 August 2003
 * 8. Zaurus Guide added Artaxerxes' guide.
 * 9.1. Thanks added Artaxerxes for his guide.
 
 
 
-0.2. - 04 May 2003
+0.3. - 04 May 2003
 * 2.2. Settings in exult.cfg option for "original" party formation added.
 
 
 
-0.3. - 04 March 2003
-* 1.1. Important Notice this doc is for 1.1.x and not for 1.0 anymore.
+0.4. - 04 March 2003
+* 1.1. Exult Version this doc is for 1.1.x and not for 1.0 anymore.
 * 2.2. Settings in exult.cfg added more combat options and Scale2x.
 * 4.2. Scaler added Scale2x and information on it.
 * 6.6. Combat Options Some explanations for the combat options.
@@ -96,8 +102,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 1. Introduction
-1.1. Important Notice
-This documentation is for the work-in-progress 1.1.x version of Exult. Documentation for the 1.0 version can be found where you installed the release.
+1.1. Exult Version
+This documentation is for the 1.1beta3 version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
 
 
 1.2. What is Exult?
