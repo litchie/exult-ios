@@ -1,3 +1,6 @@
+2000-01-08  Max Horn  <max@quendi.de>
+	* gameclk.cc/h: fixed parameter types of Game_clock::handle_event
+
 2001-01-08  Christoph Reichenbach  <jameson@linuxgames.com>
 
 	* usecode/conversation.cc: Included alpha_kludges.h
@@ -10,7 +13,7 @@
 	* removed some dependencies on objs.h (most importantly, from gamewin.h!)
 	* objs/flags.h: added, contains item flags
 	* objs/objlist.h: added, contains Object_list -> enables us to remove more dependencies
-	* audio/Mixer.cc: made temp_buffer (from fill_audio_func) a class member and pre-allocate it
+	* audio/Mixer.cc/h: made temp_buffer (from fill_audio_func) a class member and pre-allocate it
 	  two reasons for this: 1) more efficient 2) no more crash on MacOS
 	
 2001-01-08  Tristan Tarrant <nadir@users.sourceforge.net>
