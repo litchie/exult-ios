@@ -546,7 +546,10 @@ void Game_window::get_chunk_objects
 					    data[0], data[1], tilex, tiley)
 					: new Game_object(
 					    data[0], data[1], tilex, tiley);
-				olist->add(obj);
+				if (info.get_3d_height() > 0)
+					olist->add(obj);
+				else
+					olist->add_flat(obj);
 				}
 			else		// Flat.
 				olist->set_flat(tilex, tiley, id);
@@ -614,7 +617,10 @@ void Game_window::get_ifix_chunk_objects
 	for (int i = 0; i < cnt; i++, ent += 4)
 		{
 		Game_object *obj = new Game_object(ent);
-		olist->add(obj);
+		if (obj->get_lift() == 0 && get_info(obj).get_3d_height() == 0)
+			olist->add_flat(obj);
+		else
+			olist->add(obj);
 		}
 	delete[] entries;		// Done with buffer.
 	}
@@ -1205,6 +1211,10 @@ void Game_window::paint_chunk_flats
 					yoff + tiley*tilesize);
 				}
 			}
+	Flat_object_iterator next(olist);// Now do flat RLE objects.
+	Game_object *obj;
+	while ((obj = next.get_next()) != 0)
+		obj->paint(this);
 	}
 
 /*

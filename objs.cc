@@ -774,6 +774,25 @@ public:
 		{ init(obj); }
 	};
 
+/*
+ *	Delete the chain that starts with this object.
+ */
+
+void Game_object::delete_chain
+	(
+	)
+	{
+	Game_object *objects = this;
+	Game_object *first = objects;
+	Game_object *obj;
+	do
+		{
+		obj = objects;
+		objects = obj->get_next();
+		delete obj;
+		}
+	while (obj != first);
+	}
 
 /*
  *	Should obj1 be rendered before obj2?
@@ -1298,17 +1317,7 @@ Container_game_object::~Container_game_object
 	)
 	{
 	if (objects)
-		{
-		Game_object *first = objects;
-		Game_object *obj;
-		do
-			{
-			obj = objects;
-			objects = obj->get_next();
-			delete obj;
-			}
-		while (obj != first);
-		}
+		objects->delete_chain();
 	}
 
 /*
@@ -2187,7 +2196,8 @@ void Chunk_cache::activate_eggs
 Chunk_object_list::Chunk_object_list
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
-	) : objects(0), npcs(0), cache(0), roof(0), light_sources(0),
+	) : flat_objects(0),
+	    objects(0), npcs(0), cache(0), roof(0), light_sources(0),
 	    cx(chunkx), cy(chunky)
 	{
 	}
@@ -2201,17 +2211,9 @@ Chunk_object_list::~Chunk_object_list
 	)
 	{
 	if (objects)
-		{
-		Game_object *first = objects;
-		Game_object *obj;
-		do
-			{
-			obj = objects;
-			objects = obj->get_next();
-			delete obj;
-			}
-		while (obj != first);
-		}
+		objects->delete_chain();
+	if (flat_objects)
+		flat_objects->delete_chain();
 	delete cache;
 	}
 
@@ -2288,6 +2290,21 @@ void Chunk_object_list::add
 		if (ord.info.get_shape_class() == Shape_info::building)
 			roof = 1;
 		}
+	}
+
+/*
+ *	Add a flat, fixed object.
+ */
+
+void Chunk_object_list::add_flat
+	(
+	Game_object *newobj		// Should be 0 height, lift=0.
+	)
+	{
+	newobj->cx = get_cx();		// Set object's chunk.
+	newobj->cy = get_cy();
+					// Just put in front.
+	flat_objects = newobj->insert_in_chain(flat_objects);
 	}
 
 /*

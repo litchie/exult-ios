@@ -133,6 +133,12 @@ public:
 		if (!no_halt)
 			i = cnt;
 		}
+	void activate_egg(Usecode_machine *usecode, Game_object *e)
+		{
+		if (e->is_egg())
+			((Egg_object *) e)->activate(usecode,
+				usecode->gwin->get_main_actor(), 1);
+		}
 	static int get_count()
 		{ return count; }
 					// Find for given item.
@@ -260,12 +266,21 @@ void Scheduled_usecode::handle_event
 			break;
 			}
 		case 0x48:		// Guessing:  activate egg.
-			if (obj->is_egg())
-				{
-				((Egg_object *) obj)->activate(usecode,
-					gwin->get_main_actor(), 1);
-				}
+			{
+			int size = objval.get_array_size();
+			if (size)	// An array?
+				for (int i = 0; i < size; i++)
+					{
+					Game_object *egg = 
+						usecode->get_item(
+							objval.get_elem(i));
+					if (egg)
+						activate_egg(usecode, egg);
+					}
+			else
+				activate_egg(usecode, obj);
 			break;
+			}
 		case 0x4e:		// Show next frame.
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
@@ -1201,7 +1216,7 @@ Usecode_value Usecode_machine::add_party_items
 					// ++++++First see if there's room.
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
-	int quality = qualval.get_int_value();
+	unsigned int quality = (unsigned int) qualval.get_int_value();
 					// Look through whole party.
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
@@ -1515,7 +1530,7 @@ USECODE_INTRINSIC(set_item_quality)
 	//  set_quality(item, value).
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
-		obj->set_quality(parms[1].get_int_value());
+		obj->set_quality((unsigned int) parms[1].get_int_value());
 	return(no_ret);
 }
 
