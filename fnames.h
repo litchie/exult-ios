@@ -20,6 +20,7 @@
  *	Here are the files we use:
  */
 #define GAMEDAT		"<GAMEDAT>/"
+#define STATICDAT	"<STATIC>/"
 #define SHAPES_VGA	"<STATIC>/shapes.vga"
 #define FACES_VGA	"<STATIC>/faces.vga"
 #define GUMPS_VGA	"<STATIC>/gumps.vga"

@@ -444,13 +444,16 @@ public:
 	void get_map_objects(int schunk);
 					// Get "chunk" objects/scenery.
 	void get_chunk_objects(int cx, int cy, int chunk_num);
+					// Get ifixxxx/iregxx name.
+	static char *get_schunk_file_name(char *prefix,
+						int schunk, char *fname);
+					// Write (static) map objects.
+	void write_map_objects(ostream& ochunks, int schunk);
 					// Get "ifix" objects for a superchunk.
 	void get_ifix_objects(int schunk);
 					// Get "ifix" objs. for given chunk.
 	void get_ifix_chunk_objects(std::ifstream& ifix, long filepos, int cnt,
 							int cx, int cy);
-					// Get iregxx name.
-	static char *get_ireg_name(int schunk, char *fname);
 					// Write moveable objects to file.
 	void write_ireg_objects(int schunk);
 					// Get moveable objects.
@@ -469,6 +472,7 @@ public:
 	void read();			// Read in 'gamedat'.
 	void write_gwin();		// Write gamedat/gamewin.dat.
 	void read_gwin();		// Read gamedat/gamewin.dat.
+	void write_map();		// Write map data to 'static'.
 	void init_actors();		// Place actors in the world.
 	void init_files();		// Load all files
 	void clear_dirty()		// Clear dirty rectangle.

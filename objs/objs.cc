@@ -1374,6 +1374,26 @@ Game_object *Game_object::attacked
 	}
 
 /*
+ *	Write out a chunk object.
+ */
+
+void Game_object::write_map
+	(
+	ostream& ifix,			// Where to write.
+	unsigned char *chunk_data	// Store chunk entries here.
+	)
+	{
+					// Get tile # within chunk.
+	int tnum = get_tx() + get_ty()*c_tiles_per_chunk;
+	ShapeID curshape(chunk_data[tnum*2], chunk_data[tnum*2 + 1]);
+	assert(curshape.is_invalid());	// Better not already be set.
+					// Store 2-bytes for shape, frame.
+	int shapenum = get_shapenum(), framenum = get_framenum();
+	chunk_data[tnum*2] = shapenum&0xff;
+	chunk_data[tnum*2 + 1] = ((shapenum>>8)&3) | (framenum<<2);
+	}
+
+/*
  *	Write the common IREG data for an entry.
  */
 
@@ -1390,168 +1410,26 @@ void Game_object::write_common_ireg
 	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
 	}
 
-#if 0
 /*
- *	Create a moveable sprite.
+ *	Write out an IFIX object.
  */
 
-Sprite::Sprite
+void Ifix_game_object::write_map
 	(
-	int shapenum
-	)  : Container_game_object(),
-		major_dir(0), major_frame_incr(8), frames_seq(0)
-	{
-	set_shape(shapenum, 0); 
-	for (int i = 0; i < 8; i++)
-		frames[i] = 0;
-	}
-
-/*
- *	Stop moving.
- */
-
-void Sprite::stop
-	(
+	ostream& ifix,			// Where to write.
+	unsigned char *chunk_data	// Store chunk entries here.
 	)
 	{
-	major_dir = 0;
-	if (frames_seq)			// Set to "resting" frame.
-		set_frame(frames_seq->get_resting());
+	unsigned char buf[4];
+	buf[0] = shape_pos;
+	buf[1] = lift;
+	int shapenum = get_shapenum(), framenum = get_framenum();
+	buf[2] = shapenum&0xff;
+	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
+	ifix.write((char*)buf, sizeof(buf));
 	}
 
-/*
- *	Start moving.
- */
 
-void Sprite::start
-	(
-	uint32 destx,		// Move towards pt. within world.
-	uint32 desty,
-	int speed,			// # millisecs. between frames.
-	int delay			// Delay before starting.
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-	frame_time = speed;
-	Direction dir;			// Gets compass direction.++++++Get
-					//  northeast, etc. too.
-	if (!is_walking())		// Not already moving?
-		{			// Start.
-		uint32 curtime = SDL_GetTicks();
-		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
-		}
-	curx = get_worldx();		// Get current coords.
-	cury = get_worldy();
-	sum = 0;			// Clear accumulator.
-					// Get change at current lift.
-	int liftpixels = 4*get_lift();
-	long deltax = destx + liftpixels - curx;
-	long deltay = desty + liftpixels - cury;
-	if (!deltax && !deltay)		// Going nowhere?
-		{
-		stop();
-		return;
-		}		
-	uint32 abs_deltax, abs_deltay;
-	int x_dir, y_dir;
-	if (deltay >= 0)		// Figure directions.
-		{
-		y_dir = 1;
-		abs_deltay = deltay;
-		}
-	else
-		{
-		y_dir = -1;
-		abs_deltay = -deltay;
-		}
-	if (deltax >= 0)
-		{
-		x_dir = 1;
-		abs_deltax = deltax;
-		}
-	else
-		{
-		x_dir = -1;
-		abs_deltax = -deltax;
-		}
-	if (abs_deltay >= abs_deltax)	// Moving faster along y?
-		{
-		dir = y_dir > 0 ? south : north;
-		major_coord = &cury;
-		minor_coord = &curx;
-		major_dir = y_dir;
-		minor_dir = x_dir;
-		major_delta = abs_deltay;
-		minor_delta = abs_deltax;
-		}
-	else				// Moving faster along x?
-		{
-		dir = x_dir > 0 ? east : west;
-		major_coord = &curx;
-		minor_coord = &cury;
-		major_dir = x_dir;
-		minor_dir = y_dir;
-		major_delta = abs_deltax;
-		minor_delta = abs_deltay;
-		}
-	major_distance = major_delta;	// How far to go.
-					// Different dir. than before?
-	if (frames[(int) dir] != frames_seq)
-		{			// Set frames sequence.
-		frames_seq = frames[(int) dir];
-		frame_index = -1;
-		}
-	}
-
-/*
- *	Can this be dragged?
- */
-
-int Sprite::is_dragable
-	(
-	) const
-	{
-	return (0);			// No.
-	}
-
-/*
- *	Figure where the sprite will be in the next frame.
- *
- *	Output: 0 if don't need to move.
- */
-
-int Sprite::next_frame
-	(
-	int& new_cx, int& new_cy,	// New chunk coords. returned.
-	int& new_tx, int& new_ty,	// New tile coords. returned.
-	int& next_frame			// Next frame # returned.
-	)
-	{
-	if (!is_walking())
-		return (0);
-					// Figure change in faster axis.
-	int new_major = major_frame_incr;
-					// Subtract from distance to go.
-	major_distance -= major_frame_incr;
-					// Accumulate change.
-	sum += major_frame_incr * minor_delta;
-					// Figure change in slower axis.
-	int new_minor = sum/major_delta;
-	sum = sum % major_delta;	// Remove what we used.
-					// Update coords. within world.
-	*major_coord += major_dir*new_major;
-	*minor_coord += minor_dir*new_minor;
-	new_cx = curx/c_chunksize;	// Return new chunk pos.
-	new_cy = cury/c_chunksize;
-	new_tx = (curx%c_chunksize)/c_tilesize;
-	new_ty = (cury%c_chunksize)/c_tilesize;
-	if (frames_seq)			// Got a sequence of frames?
-		next_frame = frames_seq->get_next(frame_index);
-	else
-		next_frame = -1;
-	return (1);
-	}
-#endif
 
 
 
