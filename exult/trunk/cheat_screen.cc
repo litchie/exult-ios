@@ -1145,8 +1145,9 @@ void CheatScreen::FlagMenu (Actor *actor)
 	std::snprintf (buf, 512, "[P] Conjrd.%c", actor->get_type_flag(Actor::tf_conjured)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-45, 8);
 
-	// Tournament (SI ONLY)
-	std::snprintf (buf, 512, "[3] Tourna.%c", actor->get_siflag(Actor::tournament)?'Y':'N');
+	// Tournament (SI ONLY) = !si_killable
+	std::snprintf (buf, 512, "[3] Tourna.%c", !actor->get_flag(
+		Obj_flags::si_killable)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-36, 8);
 
 	// Naked (AV SI ONLY)
@@ -1334,10 +1335,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 		
 		case '3':	// Tournament
-		if (actor->get_siflag(Actor::tournament))
-			actor->clear_siflag(Actor::tournament);
+		if (actor->get_flag(Obj_flags::si_killable))
+			actor->clear_flag(Obj_flags::si_killable);
 		else
-			actor->set_siflag(Actor::tournament);
+			actor->set_flag(Obj_flags::si_killable);
 		break;
 		
 		case 's':	// Sex
