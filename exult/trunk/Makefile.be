@@ -77,8 +77,8 @@ tools/expack : tools/expack.o $(FILE_OBJS)
 data/exult.flx: tools/expack $(EXULT_FLX_OBJECTS)
 	tools/expack -c data/exult.flx $(EXULT_FLX_OBJECTS)
 
-imagescl.o: imagescl.cc scale.cc
-	$(CXX) $(CPPFLAGS) -O3 -c imagescl.cc -o imagescl.o
+imagescl.o: imagewin/imagescl.cc scale.cc
+	$(CXX) $(CPPFLAGS) -O3 -c imagewin/imagescl.cc -o imagescl.o
 
 Makefile: Makefile.be
 	cp Makefile.be Makefile

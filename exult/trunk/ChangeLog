@@ -1,5 +1,6 @@
 2000-11-28  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* usecode.h: in usecode macros: '## NAME ## (int...' to '## NAME (int...'  
+	* usecode.h: in usecode macros: '## NAME ## (int...' to '## NAME (int...'
+	* Makefile.be: adapted somewhat because of new imagewin directory
 
 2000-11-27  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in: I mistakenly used target instead of host. fixed.
