@@ -1,3 +1,8 @@
+2001-07-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* npcnear.cc: Fixed Lucilla 'sleep' bug.  Also, delay was being
+	set to 3000 seconds; now set to 5 secs. between checks.
+
 2001-07-10  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* /mapedit: Chunk browser added.  And you can drag a chunk

@@ -1490,8 +1490,9 @@ void Actor::activate
 			(serpent || (npc_num >= 1 && npc_num <= 10))) ||
 			cheat.in_pickpocket())		// Pickpocket cheat
 		show_inventory();
-					// Asleep.
-	else if (get_schedule_type() == (int) Schedule::sleep ||
+					// Asleep (but not awakened)?
+	else if ((get_schedule_type() == (int) Schedule::sleep &&
+		(get_framenum()&0xf) == Actor::sleep_frame) ||
 		 get_flag(Obj_flags::asleep))
 		return;
 					// Usecode
