@@ -1368,8 +1368,9 @@ USECODE_INTRINSIC(get_speech_track)
 
 USECODE_INTRINSIC(flash_mouse)
 {
-	// flash_mouse(mouse_shape).
-	Mouse::mouse->flash_shape((Mouse::Mouse_shapes) parms[0].get_int_value());
+	// flash_mouse(??No: mouse_shape).
+	Mouse::mouse->flash_shape(Mouse::redx);
+//			(Mouse::Mouse_shapes) parms[0].get_int_value());
 	return (no_ret);
 }
 
