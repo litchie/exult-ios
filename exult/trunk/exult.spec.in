@@ -20,7 +20,7 @@ URL: http://exult.sourceforge.net
 Prereq: /sbin/install-info
 Prefix: %{prefix}
 Docdir: %{prefix}/doc
-Requires: SDL >= 1.1.3
+Requires: SDL >= 1.1.7
 
 %description
 Exult: an implementation of the Ultima VII engine for modern Operating Systems.

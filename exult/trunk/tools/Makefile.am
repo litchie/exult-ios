@@ -6,14 +6,8 @@ else
 UCC=
 endif
 
-if GIMP_PLUGIN
-GIMP_PLUGINS=u7shp
-else
-GIMP_PLUGINS=
-endif
-
 if BUILD_TOOLS
-noinst_PROGRAMS = expack wuc wud mklink rip ucdump $(UCC) $(GIMP_PLUGINS)
+noinst_PROGRAMS = expack wuc wud mklink rip ucdump $(UCC)
 endif
 
 expack_SOURCES = \
@@ -49,13 +43,6 @@ uccparse.o: ucclex.c uccparse.c
 ucc: uccparse.o
 	$(LINK) uccparse.o
 
-u7shp: u7shp.c
-	gimptool --build $<
-
-if GIMP_PLUGIN
-install-exec-local:
-	gimptool --install-admin-bin u7shp
-endif
 
 EXTRA_DIST = \
 	intrins1.txt \
@@ -65,4 +52,4 @@ EXTRA_DIST = \
 	u7siflag.txt \
 	ucformat.txt
 
-CLEANFILES = *~ u7shp
+CLEANFILES = *~
