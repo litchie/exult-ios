@@ -632,12 +632,15 @@ void Game_map::get_ifix_chunk_objects
 	for (int i = 0; i < cnt; i++, ent += 4)
 		{
 		Ifix_game_object *obj;
+		int tx = (ent[0]>>4)&0xf, ty = ent[0]&0xf, lift = ent[1] & 0xf;
 		int shnum = ent[2]+256*(ent[3]&3);
+		int frnum = ent[3]>>2;
 		Shape_info& info = ShapeID::get_info(shnum);
 		if (info.is_animated() || info.has_sfx())
-			obj = new Animated_ifix_object(ent);
+			obj = new Animated_ifix_object(shnum, frnum, tx, ty,
+									lift);
 		else
-			obj = new Ifix_game_object(ent);
+			obj = new Ifix_game_object(shnum, frnum, tx, ty, lift);
 
 		olist->add(obj);
 		}

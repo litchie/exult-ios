@@ -172,7 +172,6 @@ class Animated_ifix_object : public Ifix_game_object
 	{
 	Animator *animator;		// Controls animation.
 public:
-	Animated_ifix_object(unsigned char *ifix);
 	Animated_ifix_object(int shapenum, int framenum, unsigned int tilex, 
 	       unsigned int tiley, unsigned int lft = 0);
 	virtual ~Animated_ifix_object();
