@@ -39,10 +39,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "audio/midi_drivers/win_MCI.h"
 #endif
 
-#ifdef MACOS
-#include <Events.h>
-#endif
-
 
 #include "gamewin.h"
 #include "actors.h"
