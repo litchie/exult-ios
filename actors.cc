@@ -2670,6 +2670,35 @@ bool Actor::roll_to_win
 	}
 
 /*
+ *	Get a property, modified by flags.
+ */
+
+static int Get_effective_prop
+	(
+	Actor *npc,
+	Actor::Item_properties prop,	// Property #.
+	int defval			// Default val if npc==0.
+	)
+	{
+	if (!npc)
+		return defval;
+	int val = npc->get_property((int) prop);
+	switch ((int) prop)
+		{
+	case Actor::dexterity:
+	case Actor::intelligence:
+	case Actor::combat:
+	case Actor::strength:
+		if (npc->get_flag(Obj_flags::might))
+			val *= 2;	// Mighty.
+		if (npc->get_flag(Obj_flags::cursed))
+			val /= 2;
+		break;
+		}
+	return val;
+	}
+
+/*
  *	Figure hit points lost from an attack, and subtract from total.
  *
  *	Output:	True if defeated (dead, or lost battle on List Field).
@@ -2721,19 +2750,14 @@ bool Actor::figure_hit_points
 					// KLUDGE:  putting Draygan to sleep.
 		gwin->get_usecode()->call_usecode(0x7e1, this,
 					Usecode_machine::weapon);
-	if (!wpoints && (!winf || !winf->get_special_atts()))
+	if (!wpoints)
 		return false;		// No harm can be done.
 
 	int attacker_level = attacker ? attacker->get_level() : 4;
-					// Double stats if 'mighty'.
-	int attmighty = (attacker && attacker->get_flag(Obj_flags::might)) 
-							? 2 : 1;
-	int mighty = get_flag(Obj_flags::might) ? 2 : 1;
-	int prob = 40 + attacker_level + (attacker ?
-			(attacker->get_property(static_cast<int>(combat)) +
-		attacker->get_property(static_cast<int>(dexterity))*attmighty) 
-								: 20) -
-			get_property(static_cast<int>(dexterity))*mighty +
+	int prob = 40 + attacker_level +
+		Get_effective_prop(attacker, combat, 10) +
+		Get_effective_prop(attacker, dexterity, 10) -
+		Get_effective_prop(this, dexterity, 10) +
 			wpoints - armor;
 	if (get_flag(Obj_flags::protection))// Defender is protected?
 		prob -= (40 + rand()%20);
@@ -2743,11 +2767,24 @@ bool Actor::figure_hit_points
 	cout << "Hit probability is " << prob << endl;
 	if (rand()%100 > prob)
 		return false;		// Missed.
-					// +++++Do special atts. too.
+	unsigned char powers = winf ? winf->get_powers() : 0;
+	if (ainf)
+		powers |= ainf->get_powers();
+	if (powers)			// Special attacks?
+		{
+		if ((powers&Weapon_info::poison) && rand()%4 == 0 &&
+		    !(minf && minf->poison_safe()))
+			set_flag(Obj_flags::poisoned);
+		if (powers&Weapon_info::magebane)
+			{
+			int mana = properties[(int) Actor::mana];
+			set_property((int) Actor::mana, 
+					mana > 1 ? rand()%(mana - 1) : 0);
+			}
+		// ++++++++++MORE in shapeinf.h
+		}
 					// Compute hit points to lose.
-	int attacker_str = attacker ? 
-	    (attacker->get_property(static_cast<int>(strength))*attmighty)/4 
-									: 2;
+	int attacker_str = Get_effective_prop(attacker, strength, 8)/4;
 	int hp = attacker_str + (rand()%attacker_level) + wpoints - armor;
 	if (hp < 1)
 		hp = 1;

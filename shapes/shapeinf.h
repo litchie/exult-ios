@@ -36,7 +36,18 @@ class Monster_info;
 class Weapon_info
 	{
 	char damage;			// Damage points (positive).
-	unsigned char special_atts;	// Poison, sleep, charm. flags.
+	unsigned char powers;		// Poison, sleep, charm. flags.
+public:
+	enum Powers			// Special weapon powers.
+		{			// Guesses from printout:
+		sleep = 1,
+		charm = 2,
+		curse = 4,
+		poison = 8,
+		paralyze = 16,
+		magebane = 32		// Takes away mana.
+		};
+private:
 	short ammo;			// Shape # of ammo. consumed, or
 					//   -1 = ?? (swords, also sling).
 					//   -2 = ?? wands?
@@ -54,8 +65,8 @@ public:
 	int read(std::istream& mfile);	// Read in from file.
 	int get_damage()
 		{ return damage; }
-	unsigned char get_special_atts()// Test for special damage.
-		{ return special_atts; }
+	unsigned char get_powers() const
+		{ return powers; }
 	int get_ammo_consumed()
 		{ return ammo > 0 ? ammo : 0; }
 	bool is_thrown()
@@ -83,23 +94,21 @@ class Ammo_info
 	int shapenum;			// Ammo's shape.
 	int family_shape;		// I.e., burst-arrow's is 'arrow'.
 	unsigned char damage;		// Extra damage points.
+	unsigned char powers;		// Save as for weapons.
 //	unsigned char unknown[6];	// ??
 public:
 	friend class Shapes_vga_file;
 	Ammo_info() : shapenum(0)
 		{  }
-	Ammo_info(int shnum, int family, unsigned char dmge)
-		{
-		shapenum = shnum;
-		family_shape = family;
-		damage = dmge;
-		}
+	int read(std::istream& mfile);	// Read in from file.
 	int get_shapenum()
 		{ return shapenum; }
 	int get_family_shape()
 		{ return family_shape; }
 	int get_damage()
 		{ return damage; }
+	unsigned char get_powers() const
+		{ return powers; }
 	static void create();		// Create table.
 	static void insert(int shnum, Ammo_info& ent);
 	static Ammo_info *find(int shnum);// Find given ammo's entry.

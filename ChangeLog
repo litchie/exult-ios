@@ -1,5 +1,8 @@
 2001-10-15  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* shapes/shapeinf.cc: Ammo_info::read().
+	* actors.cc: Handle a couple special weapon 'powers'.
+	* shapes/shapeinf.h (public): Weapon 'powers' added.
 	* actors.h (public): Fix for 'training' bug.
 
 2001-10-14  Jeff Freedman  <jeff@amy.nerble.net>
