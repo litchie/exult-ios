@@ -653,22 +653,20 @@ bool ExultStudio::has_focus
  */
 void ExultStudio::set_browser(const char *name, Object_browser *obj)
 {
+	GtkWidget *browser_frame = glade_xml_get_widget(app_xml, 
+							"browser_frame" );
+	GtkWidget *browser_box = glade_xml_get_widget(app_xml, "browser_box" );
+//+++Now owned by Shape_file_info.	delete browser;
 	if (browser)
-		browser->save_pos();	// Save selection #, scroll pos.
-	delete browser;
+		gtk_container_remove(GTK_CONTAINER(browser_box),
+							browser->get_widget());
 	browser = obj;
 	
-	GtkWidget *browser_frame = glade_xml_get_widget( app_xml, "browser_frame" );
 	gtk_frame_set_label( GTK_FRAME( browser_frame ), name );
-	
-	GtkWidget *browser_box = glade_xml_get_widget( app_xml, "browser_box" );
 	gtk_widget_show( browser_box );
 	if (browser)
-		{
 		gtk_box_pack_start(GTK_BOX(browser_box), 
 					browser->get_widget(), TRUE, TRUE, 0);
-// ++++Not working yet.		browser->restore_pos();	// Restore vert. scroll, selection #.
-		}
 }
 
 Object_browser *ExultStudio::create_browser(const char *fname)
@@ -676,7 +674,7 @@ Object_browser *ExultStudio::create_browser(const char *fname)
 	curfile = open_shape_file(fname);
 	if (!curfile)
 		return 0;
-	Object_browser *chooser = curfile->create_browser(vgafile, palbuf);
+	Object_browser *chooser = curfile->get_browser(vgafile, palbuf);
 	setup_groups();			// Set up 'groups' page.
 	return chooser;
 }

@@ -575,7 +575,7 @@ void Shape_chooser::goto_index
  *	Configure the viewing window.
  */
 
-gint Shape_chooser::configure
+static gint Configure_chooser
 	(
 	GtkWidget *widget,		// The view window.
 	GdkEventConfigure *event,
@@ -583,19 +583,34 @@ gint Shape_chooser::configure
 	)
 	{
 	Shape_chooser *chooser = (Shape_chooser *) data;
-	chooser->Shape_draw::configure(widget);
-	chooser->row_indices.resize(1);	// Start over with row info.
-	chooser->row0 = 0;
-	chooser->info_cnt = 0;
-	int i0 = chooser->index0;	// Get back to where we were.
-	chooser->index0 = 0;
-	chooser->goto_index(i0);	// Now goto where we were.
-	chooser->render();		// This also adjusts scrollbar.
-	chooser->adjust_hscrollbar(-1);
+	return chooser->configure(event);
+	}
+gint Shape_chooser::configure
+	(
+	GdkEventConfigure *event
+	)
+	{
+	Shape_draw::configure(get_widget());
+					// Did the size change?
+	if (event->width != config_width || event->height != config_height)
+		{
+		row_indices.resize(1);	// Start over with row info.
+		row0 = 0;
+		info_cnt = 0;
+		int i0 = index0;	// Get back to where we were.
+		index0 = 0;
+		goto_index(i0);	// Now goto where we were.
+		render();		// This also adjusts scrollbar.
+		adjust_hscrollbar(-1);
+		config_width = event->width;
+		config_height = event->height;
+		}
+	else
+		render();		// Same size?  Just render it.
 					// Set handler for shape dropped here,
 					//   BUT not more than once.
-	if (chooser->drop_callback != Shape_dropped_here)
-		chooser->enable_drop(Shape_dropped_here, chooser);
+	if (drop_callback != Shape_dropped_here)
+		enable_drop(Shape_dropped_here, this);
 	return (TRUE);
 	}
 
@@ -2171,7 +2186,7 @@ Shape_chooser::Shape_chooser
 		GDK_BUTTON1_MOTION_MASK | GDK_KEY_PRESS_MASK);
 					// Set "configure" handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "configure_event",
-				GTK_SIGNAL_FUNC(configure), this);
+				GTK_SIGNAL_FUNC(Configure_chooser), this);
 					// Set "expose" handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "expose_event",
 				GTK_SIGNAL_FUNC(expose), this);

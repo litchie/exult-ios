@@ -16,7 +16,7 @@ Object_browser::Object_browser(Shape_group *grp, Shape_file_info *fi)
 	: group(grp), file_info(fi), popup(0),
 	selected(-1), vscroll(0), hscroll(0), find_text(0), 
 	loc_down(0), loc_up(0),
-	move_down(0), move_up(0)
+	move_down(0), move_up(0), config_width(0), config_height(0)
 {
 	widget = 0;
 }
@@ -32,6 +32,7 @@ void Object_browser::set_widget(GtkWidget *w)
 	widget = w;
 }
 
+#if 0	/* ++++++Remove*/
 /*
  *	Save current position in 'file' this came from.
  */
@@ -72,7 +73,7 @@ void Object_browser::restore_pos
 		gtk_adjustment_set_value(adj, vvalue);
 		}
 	}
-
+#endif
 
 bool Object_browser::server_response(int , unsigned char *, int )
 {
