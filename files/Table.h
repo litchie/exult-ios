@@ -42,6 +42,13 @@ protected:
 public:
 	Table(const char *name);
 	Table(const string &name);
+	Table(const Table &t) : object_list(t.object_list)
+		{  }
+	Table &operator=(const Table &t)
+		{
+		object_list=t.object_list;
+		return *this;
+		}
 	virtual ~Table();
 
         virtual int     number_of_objects(const char *) { return object_list.size(); };

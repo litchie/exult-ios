@@ -47,7 +47,21 @@ protected:
 public:
 	Flex(const char *fname);
 	Flex(const string &fname);
-	~Flex();
+	Flex(const Flex &f) : magic1(f.magic1),count(f.count),magic2(f.magic2),object_list(f.object_list)
+		{ memcpy(title,f.title,sizeof(title));
+		  memcpy(padding,f.padding,sizeof(padding)); }
+	Flex &operator=(const Flex &f)
+		{
+		magic1=f.magic1;
+		count=f.count;
+		magic2=f.magic2;
+		object_list=f.object_list;
+		memcpy(title,f.title,sizeof(title));
+		memcpy(padding,f.padding,sizeof(padding));
+		return *this;
+		}
+		
+	virtual ~Flex();
 	
 	// char *read_object(int objnum,uint32 &length);
         virtual int     number_of_objects(const char *) { return object_list.size(); };
