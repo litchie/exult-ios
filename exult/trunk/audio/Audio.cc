@@ -350,18 +350,13 @@ void Audio::Init(int _samplerate,int _channels)
          wanted.callback = fill_audio;
          wanted.userdata = NULL;
 
-#if 1
 	if(SDL_open)
 		SDL::CloseAudio();
-#endif
 
          /* Open the audio device, forcing the desired format */
          if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
                  fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
          }
-#if 1
-	SDL::CloseAudio();
-#endif
 #if DEBUG
          cout << "We think SDL will call-back for " << actual.samples <<" bytes at a time." << endl;
 #endif
@@ -371,9 +366,6 @@ void Audio::Init(int _samplerate,int _channels)
 #if DEBUG
          cout << "Each buffer in the mixing ring is " << _buffering_unit <<" bytes." << endl;
 #endif
-         if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
-                 fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
-         }
 	SDL_open=true;
 #if DEBUG
 	cout << "Audio system assembled. Ring buffers at "<<_buffering_unit<<endl;
