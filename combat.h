@@ -69,6 +69,7 @@ protected:
 	int failures;			// # failures to find opponent.
 	unsigned int teleport_time;	// Next time we can teleport.
 	unsigned int dex_points;	// Need these to attack.
+	int alignment;			// So we can tell if it changed.
 
 	void start_battle();		// Play music at start of battle.
 	bool teleport();		// For monsters that can.
