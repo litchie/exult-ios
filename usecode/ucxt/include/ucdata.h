@@ -39,6 +39,7 @@ class UCData
 		bool noconf()      const { return _noconf;      };
 		bool rawops()      const { return _rawops;      };
 		bool autocomment() const { return _autocomment; };
+		bool uselesscomment() const { return _uselesscomment; };
 		bool verbose()     const { return _verbose;     };
 		
  		unsigned int mode() const { return _mode; };
@@ -68,6 +69,7 @@ class UCData
 		bool _noconf;
 		bool _rawops;
 		bool _autocomment;
+		bool _uselesscomment;
 		bool _verbose;
 		
 		unsigned int _mode;

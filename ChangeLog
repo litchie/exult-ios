@@ -1,7 +1,9 @@
-2001-12-24  Patrick Burke  <takhisisi@yahoo.com.au>
+2001-12-25  Patrick Burke  <takhisisi@yahoo.com.au>
 	* usecode/ucxt/*: Added 'return' flag to opcodes.txt, better error
 	messages to handle badly edited opcodes.txt files, and correct RTS
 	handling for the CALL opcode.
+	* usecode/ucxt/opcodes.txt: Fixed output of cmps and arrc opcodes under
+	-fz
 
 2001-12-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* usecode/ucxt/src/ucfunc.cc: fixed intrinsic bug, re-used opcode bug 

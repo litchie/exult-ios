@@ -11,6 +11,12 @@
 	$LBClueless = TRUE;
 */
 
+/* TODO:
+	* cmps() doesn't have a jump target set, the jump target list of opcodes is static and needs to be fixed.
+	* Escape characters (double quotes (")) in string data for -fz.
+	* Add 'full text' output in addition to the short text output for text strings.
+*/
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -267,6 +273,7 @@ void usage()
 	     << "\t\t-ofile\t- output to the specified file" << endl
 	     << "\t\t-ro\t- output the raw opcodes in addition to the -f format" << endl
 	     << "\t\t-ac\t- output an automatically generated comment" << endl
+	     << "\t\t-uc\t- output an automatically generated useless comment" << endl
 	     << "\t\t\t  in addition to the -f format" << endl
 	     << "\tGame Specifier Flags (only one of these):" << endl
 	     << "\t\t-bg\t- select the black gate usecode file" << endl
