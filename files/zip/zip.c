@@ -20,7 +20,11 @@
 #include "zip.h"
 
 /* Added by Ryan Nunn to overcome DEF_MEM_LEVEL being undeclared */
-#include "zutil.h"
+#if MAX_MEM_LEVEL >= 8
+#  define DEF_MEM_LEVEL 8
+#else
+#  define DEF_MEM_LEVEL  MAX_MEM_LEVEL
+#endif
 
 #ifdef STDC
 #  include <stddef.h>

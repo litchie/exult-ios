@@ -232,14 +232,15 @@ bool	Audio::can_sfx(const std::string &game) const
 	string s;
 	string d = "config/disk/game/" + game + "/waves";
 	config->value(d.c_str(), s, "---");
-	if (s != "---")
-	{
-		if (!U7exists(s.c_str()))
-			return false;
-		else
-			return true;
-	} else
-		return false;
+	if (s != "---" && U7exists(s.c_str()))
+		return true;
+
+#ifdef ENABLE_MIDISFX
+	if (U7exists("<DATA>/midisfx.flx"))
+		return true;
+#endif
+	
+	return false;
 }
 
 void	Audio::Init_sfx()

@@ -1,3 +1,8 @@
+2001-11-18 Ryan Nunn <triforce@merlin.net.au>
+	* actors.cc, gamewin.*, gamerend.cc, objs/chunks.* : Ice Dungeons
+	* audio/Audio.cc : can_sfx() also looks for Midi SFX, if compiled
+	* files/zip/zip.c : Removed dependency on zutil.h
+
 2001-11-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.in: fixed broken test on non-MacOSX platforms
 	
