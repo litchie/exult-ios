@@ -265,6 +265,7 @@ private:
 	USECODE_INTRINSIC_DECL(restart_game);
 	USECODE_INTRINSIC_DECL(start_speech);
 	USECODE_INTRINSIC_DECL(run_endgame);
+	USECODE_INTRINSIC_DECL(fire_cannon);
 	USECODE_INTRINSIC_DECL(nap_time);
 	USECODE_INTRINSIC_DECL(advance_time);
 	USECODE_INTRINSIC_DECL(in_usecode);
