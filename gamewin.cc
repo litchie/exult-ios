@@ -30,7 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "items.h"
 #include "utils.h"
-#include "compile.h"
 #include "fnames.h"
 #include "usecode.h"
 #include "npcnear.h"
