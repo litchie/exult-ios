@@ -660,26 +660,30 @@ int Pickup_actor_action::handle_event
 	}
 
 /*
- *	Action to turn towards an object.
+ *	Action to turn towards a position or an object.
  */
 
-Face_object_actor_action::Face_object_actor_action(Game_object *o, int spd)
-	: obj(o), speed(spd),
-	  objpos(obj->get_abs_tile_coord())
+Face_pos_actor_action::Face_pos_actor_action(Tile_coord p, int spd)
+	: speed(spd), pos(p)
+	{
+	}
+Face_pos_actor_action::Face_pos_actor_action(Game_object *o, int spd)
+	: speed(spd),
+	  pos(o->get_abs_tile_coord())
 	{
 	}
 
 /*
- *	Just turn to face an object.
+ *	Just turn to face a tile.
  */
 
-int Face_object_actor_action::handle_event
+int Face_pos_actor_action::handle_event
 	(
 	Actor *actor
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	int dir = actor->get_direction(objpos);
+	int dir = actor->get_direction(pos);
 	int frnum = actor->get_dir_framenum(dir, Actor::standing);
 	if (actor->get_framenum() == frnum)
 		return 0;		// There.

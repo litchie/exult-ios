@@ -247,17 +247,17 @@ public:
 	
 
 /*
- *	Action to turn towards an object.
+ *	Action to turn towards an object or spot.
  */
 
-class Face_object_actor_action : public Actor_action
+class Face_pos_actor_action : public Actor_action
 	{
-	Game_object *obj;		// What to pick up/put down.
 	int speed;			// Time between frames.
-	Tile_coord objpos;		// Where to put it.
+	Tile_coord pos;			// Where to put it.
 public:
+	Face_pos_actor_action(Tile_coord p, int spd);
 					// To pick up an object:
-	Face_object_actor_action(Game_object *o, int spd);
+	Face_pos_actor_action(Game_object *o, int spd);
 	virtual int handle_event(Actor *actor);
 	};
 	
