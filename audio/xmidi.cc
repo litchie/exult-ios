@@ -279,8 +279,11 @@ const char XMIDI::mt32asgs[256] = {
 };
 // Constructor
 XMIDI::XMIDI(DataSource *source, int pconvert) : events(NULL),timing(NULL),
-						convert_from_mt32(pconvert),fixed(NULL)
+						convert_type(pconvert),fixed(NULL)
 {
+	int i = 16;
+	while (i--) bank127[i] = 0;
+	
 	ExtractTracks (source);
 }
 
@@ -524,6 +527,11 @@ int XMIDI::PutVLQ(DataSource *dest, uint32 value)
 //
 // This little function attempts to correct errors in midi files
 // that relate to patch, volume and pan changing
+//
+// FIXME!!
+//
+// THIS ISN'T SAFE!!!!!
+// Really badly formed midi files will cause a memory leak
 void XMIDI::MovePatchVolAndPan (int channel)
 {
 	if (channel == -1)
@@ -757,76 +765,6 @@ void XMIDI::DuplicateAndMerge (int num)
 // size 2 is dual data byte
 // size 3 is XMI Note on
 // Returns bytes converted
-#if 0
-static const char *event_type[] = 
-{
-	"note off",
-	"note on",
-	"after touch",
-	"control change",
-	"patch change",
-	"channel pressure",
-	"pitch wheel",
-	"NME"
-};
-
-static void *load_global_timbre(FILE *GTL, int bank, int patch)
-{
-   unsigned char *timb_ptr;
-   static unsigned len;
-
-   char GTL_hdr_patch;
-   char GTL_hdr_bank;
-   unsigned long GTL_hdr_offset;
-
-   if (GTL==NULL) return NULL;    // if no GTL, return failure
-
-   rewind(GTL);                   // else rewind to GTL header
-   do                             // search file for requested timbre
-      {
-      GTL_hdr_patch = getc (GTL);
-      GTL_hdr_bank = getc (GTL);
-      GTL_hdr_offset = Read4 (GTL);
-      if (GTL_hdr_bank == -1) 
-         return NULL;             // timbre not found, return NULL
-      }
-   while ((GTL_hdr_bank != bank) ||
-          (GTL_hdr_patch != patch));       
-
-   fseek(GTL,GTL_hdr_offset,SEEK_SET);    
-   //fread(&len,2,1,GTL);           // timbre found, read its length
-   len = Read2 (GTL);
-   timb_ptr = (unsigned char *) malloc(len);     // allocate memory for timbre ..
-                                  // and load it
-   fread(timb_ptr,len-2,1,GTL);       
-   *timb_ptr = len;         
-                                  // and load it
-   fread((timb_ptr+1),len-2,1,GTL);       
-
-   FILE *fout = fopen ("temp", "wb");
-   fwrite ((timb_ptr+1),len-2,1,fout);
-   fclose (fout);
-
-   if (ferror(GTL))               // return NULL if any errors
-      return NULL;                // occurred
-   else
-      return timb_ptr;            // else return pointer to timbre
-}
-
-int timbre[16] = {
-	0,0,0,0,
-	0,0,0,0,
-	0,0,0,0,
-	0,0,0,0
-};
-#endif 
-
-static bool tchange[16] = {
-	false, false, false, false,
-	false, false, false, false,
-	false, false, false, false,
-	false, false, false, false
-};
 
 int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size)
 {
@@ -836,66 +774,55 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 	data = source->read1();
 
 
-	// Temporary change for bank 127 MT32 patch
-	// Do this first
+	// Bank changes are handled here
 	if ((status >> 4) == 0xB && data == 0)
 	{
 		data = source->read1();
 		
-		if (data == 127)
-		{
-			tchange[(status&0xF)]=true;
+		bank127[status&0xF] = false;
+		
+		if (convert_type == XMIDI_CONVERT_MT32_TO_GM || convert_type == XMIDI_CONVERT_MT32_TO_GS)
 			return 2;
-		}
-		else
-		{
-			tchange[(status&0xF)]=false;
 
-			CreateNewEvent (time);
-			current->status = status;
-			current->data[0] = 0;
-			current->data[1] = data;
+		CreateNewEvent (time);
+		current->status = status;
+		current->data[0] = 0;
+		current->data[1] = data;
 
-			return 2;
-		}
+		if (convert_type == XMIDI_CONVERT_GSMT_TO_GS && data == 127)
+			bank127[status&0xF] = true;
+
+		return 2;
 	}
 
+	// Handling for patch change mt32 conversion, probably should go elsewhere
+	if ((status >> 4) == 0xC && convert_type != XMIDI_CONVERT_NOCOVERSION)
+	{
+		if (convert_type == XMIDI_CONVERT_MT32_TO_GM)
+		{
+			data = mt32asgm[data];
+		}
+		else if ((convert_type == XMIDI_CONVERT_GSMT_TO_GS && bank127[status&0xF]) ||
+				convert_type == XMIDI_CONVERT_MT32_TO_GS)
+		{
+			CreateNewEvent (time);
+			current->status = 0xB0 | (status >> 4);
+			current->data[0] = 0;
+			current->data[1] = mt32asgs[data*2+1];
+
+			data = mt32asgs[data*2];
+		}
+	}
 
 	CreateNewEvent (time);
 	current->status = status;
 
 	current->data[0] = data;
 
-	// Handling for patch change mt32 conversion, probably should go elsewhere
-	if (((status >> 4) == 0xC) && (convert_from_mt32 || tchange[(status&0xF)])) 
-		current->data[0] = mt32asgm[current->data[0]];
-
-#if 0	// This was just for a test, when working with the SFX
-	if ((status >> 4) == 0xC && timbre[(status&0xF)])
-	{
-		FILE *tfile = U7open ("c:/uc/serpent/static/xmidi.mt", "rb");
-		if (tfile)
-		{
-			char *timb = (char *) load_global_timbre(tfile, timbre[(status&0xF)], current->data[0]);
-
-			if (timb)
-			{
-				timb[13] = 0;
-				cout << timb+3 << endl;
-				free (timb);
-			}
-		}
-	}
-#endif 
-	
 	if (size == 1)
 		return 1;
 
 	current->data[1] = source->read1();
-
-	// XMIDI Bank change
-//	if ((status >> 4) == 0xB && current->data[0] == 114)
-//		timbre[(status&0xF)]=current->data[1];
 
 	if (size == 2)
 		return 2;
