@@ -46,7 +46,7 @@ shapetest_LDADD = \
 
 paltest_LDADD = $(shapetest_LDADD)
 
-exult_studio_LDADD = $(shapetest_LDADD) -lglade -lxml
+exult_studio_LDADD = $(shapetest_LDADD) $(LIBGLADE_LIBS)
 
 noinst_LTLIBRARIES = $(OUTPUT_LIBS)
 
