@@ -2830,6 +2830,24 @@ void Game_window::schedule_npcs
 	}
 
 /*
+ *	Tell all npc's to restore some of their HP's and/or mana on the hour.
+ */
+
+void Game_window::mend_npcs
+	(
+	)
+	{
+					// Go through npc's.
+	for (Actor_vector::iterator it = npcs.begin(); 
+						it != npcs.end(); it++)
+		{
+		Npc_actor *npc = (Npc_actor *) *it;
+		if (npc)
+			npc->mend_hourly();
+		}
+	}
+
+/*
  *	Handle theft.
  */
 

@@ -1,3 +1,7 @@
+2001-08-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc,gameclk.cc,gamewin.cc:  Restore HP's, mana hourly.
+
 2001-08-29  Ryan Nunn <triforce@merlin.net.au>
 	* audio/midi_drivers/win_midiout.* : Enumerate the midi devices and
 	  output the list to stdout. Allow setting of the midi device with the
