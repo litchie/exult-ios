@@ -549,7 +549,9 @@ void Cheat::cut(bool copy)
 					// Set pos. & add to list.
 		obj->set_shape_pos(t.tx%c_tiles_per_chunk,
 				   t.ty%c_tiles_per_chunk);
+#if 0	/* ++++++What's this for? */
 		obj->set_chunk(t.tx/c_tiles_per_chunk, t.ty/c_tiles_per_chunk);
+#endif
 		clipboard.push_back(obj);
 		}
 					// Sort.
@@ -727,6 +729,25 @@ void Cheat::cursor_teleport (void) const {
 	gwin->teleport_party(t);
 	eman->center_text("Teleport!!!");
 }
+
+void Cheat::next_map_teleport() const
+	{
+	int curmap = gwin->get_map()->get_num();
+	int newmap = Find_next_map(curmap + 1, 4);	// Look forwards by 4.
+	if (newmap == -1)		// Not found?
+		{			// Look from 0.
+		newmap = Find_next_map(0, curmap);
+		if (newmap == -1)
+			{
+			eman->center_text("Map not found");
+			return;
+			}
+		}
+	gwin->teleport_party(gwin->get_main_actor()->get_tile(), true, newmap);
+	char msg[80];
+	sprintf(msg, "To map #%02x", newmap);
+	eman->center_text(msg);
+	}
 
 void Cheat::create_coins (void) const {
 	if (!enabled) return;

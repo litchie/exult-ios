@@ -47,9 +47,12 @@ class DataSource;
  */
 class Game_map
 	{
+	int num;			// Map #.  Index in gwin->maps.
 					// Flat chunk areas:
-	Exult_vector<Chunk_terrain *> chunk_terrains;
-	bool read_all_terrain;		// True if we've read them all.
+	static Exult_vector<Chunk_terrain *> *chunk_terrains;
+	static std::ifstream *chunks;	// "u7chunks" file.
+	static bool read_all_terrain;	// True if we've read them all.
+	static bool chunk_terrains_modified;
 	bool map_modified;		// True if any map changes from
 					//   map-editing.
 					// Chunk_terrain index for each chunk:
@@ -60,19 +63,22 @@ class Game_map
 	bool schunk_modified[144];	// Flag for modified "ifix".
 	char *schunk_cache[144];
 	int  schunk_cache_sizes[144];
-	std::ifstream *chunks;		// "u7chunks" file.
 	Map_patch_collection *map_patches;
 
 	Map_chunk *create_chunk(int cx, int cy);
-	Chunk_terrain *read_terrain(int chunk_num);
+	static Chunk_terrain *read_terrain(int chunk_num);
 
 	void cache_out_schunk(int schunk);
 public:
-	Game_map();
+	Game_map(int n);
 	~Game_map();
+	static void init_chunks();
 	void init();			// Set up map.
+	static void clear_chunks();
 	void clear();			// Clear out old map.
 	void read_map_data();		// Read in 'ifix', 'ireg', etc.
+	int get_num() const
+		{ return num; }
 	inline short get_terrain_num(int cx, int cy) const
 		{ return terrain_map[cx][cy]; }
 	inline Map_patch_collection *get_map_patches()
@@ -81,6 +87,8 @@ public:
 		{ map_modified = true; }
 	bool was_map_modified() const
 		{ return map_modified; }
+	static bool was_chunk_terrain_modified()
+		{ return chunk_terrains_modified; }
 	bool is_chunk_read(int cx, int cy)
 		{ return cx < c_num_chunks && cy < c_num_chunks &&
 			schunk_read[12*(cy/c_chunks_per_schunk) +
@@ -111,20 +119,21 @@ public:
 	void get_map_objects(int schunk);
 					// Get "chunk" objects/scenery.
 	void get_chunk_objects(int cx, int cy);
-	void get_all_terrain();		// Read in all terrains.
+	static void get_all_terrain();	// Read in all terrains.
 					// Get desired terrain.
-	Chunk_terrain *get_terrain(int tnum)
+	static Chunk_terrain *get_terrain(int tnum)
 		{
-		Chunk_terrain *ter = chunk_terrains[tnum];
+		Chunk_terrain *ter = (*chunk_terrains)[tnum];
 		return ter ? ter : read_terrain(tnum);
 		}
 	inline int get_num_chunk_terrains() const
-		{ return chunk_terrains.size(); }
+		{ return chunk_terrains->size(); }
 					// Set new terrain chunk.
 	void set_chunk_terrain(int cx, int cy, int chunknum);
+	char *get_mapped_name(char *from, char *to);
 					// Get ifixxxx/iregxx name.
-	static char *get_schunk_file_name(char *prefix,
-						int schunk, char *fname);
+	char *get_schunk_file_name(char *prefix, int schunk, char *fname);
+	static void write_chunk_terrains();
 	void write_static();		// Write to 'static' directory.
 					// Write (static) map objects.
 	void write_ifix_objects(int schunk);
@@ -156,18 +165,18 @@ public:
 	void get_superchunk_objects(int schunk);
 					// Locate chunk with desired terrain.
 	bool locate_terrain(int tnum, int& cx, int& cy, bool upwards = false);
-	bool swap_terrains(int tnum);	// Swap adjacent terrain #'s.
+	static bool swap_terrains(int tnum);	// Swap adjacent terrain #'s.
 					// Insert new terrain after 'tnum'.
-	bool insert_terrain(int tnum, bool dup = false);
-	bool delete_terrain(int tnum);
-	void commit_terrain_edits();	// End terrain-editing mode.
-	void abort_terrain_edits();
+	static bool insert_terrain(int tnum, bool dup = false);
+	static bool delete_terrain(int tnum);
+	static void commit_terrain_edits();	// End terrain-editing mode.
+	static void abort_terrain_edits();
 					// Search entire game for unused.
 	void find_unused_shapes(unsigned char *found, int foundlen);
 					// Locate shape (for EStudio).
 	Game_object *locate_shape(int shapenum, bool upwards, 
 							Game_object *start);
-					// Do a cache out. (cx, cy) is the center
+				// Do a cache out. (cx, cy) is the center
 	void cache_out(int cx, int cy);
 	};
 

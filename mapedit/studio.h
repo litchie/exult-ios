@@ -147,7 +147,8 @@ public:
 	void new_game();
 	void choose_game_path();
 	Object_browser  *create_browser(const char *fname);
-	void set_game_path(const char *path, const char *patchpath = 0);
+	void set_game_path(const char *path, const char *patchpath = 0,
+						const char *gdatpath = 0);
 	void setup_file_list();
 	void save_all();		// Write out everything.
 	bool need_to_save();		// Anything modified?
@@ -174,6 +175,8 @@ public:
 	void groups_changed(GtkTreeModel *model, GtkTreePath *path,
 					GtkTreeIter *loc, bool value = false);
 	void open_group_window();
+	void open_builtin_group_window();
+	void open_group_window(Shape_group *grp);
 	void close_group_window(GtkWidget *gtkwin);
 	void save_groups();
 	bool groups_modified();
@@ -229,6 +232,10 @@ public:
 	void compile(bool if_needed = false);
 	void halt_compile();
 	void run();
+					// Maps.
+	void new_map_dialog();
+	void setup_maps_list();
+
 	bool send_to_server(Exult_server::Msg_type id,
 				unsigned char *data = 0, int datalen = 0);
 	void read_from_server();
@@ -270,9 +277,10 @@ int Prompt(const char *msg, const char *choice0,
 			const char *choice1 = 0,const char *choice2 = 0);
 void Alert(const char *msg, ...);
 GtkWidget *Add_menu_item(GtkWidget *menu, const char *label = 0,
-			GtkSignalFunc func = 0, gpointer func_data = 0);
+	GtkSignalFunc func = 0, gpointer func_data = 0, GSList *group = 0);
 GtkWidget *Create_arrow_button(GtkArrowType dir, GtkSignalFunc clicked,
 							gpointer func_data);
+bool Copy_file(const char *src, const char *dest);
 }
 
 #endif

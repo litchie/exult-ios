@@ -316,10 +316,10 @@ int Monster_actor::step
 	// I'll do nothing for now
 	if (!gwin->emulate_is_move_allowed(t.tx, t.ty))
 		return (0);
-	if (get_flag(Obj_flags::paralyzed))
+	if (get_flag(Obj_flags::paralyzed) || chunk->get_map() != gmap)
 		return 0;
-					// Store old chunk.
-	int old_cx = get_cx(), old_cy = get_cy();
+					// Get old chunk.
+	Map_chunk *olist = get_chunk();
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get ->new chunk.
@@ -338,8 +338,6 @@ int Monster_actor::step
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
 	add_dirty();			// Set to repaint old area.
-					// Get old chunk.
-	Map_chunk *olist = gmap->get_chunk(old_cx, old_cy);
 					// Move it.
 					// Get rel. tile coords.
 	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
@@ -426,12 +424,12 @@ int Monster_actor::get_armor_points
 Weapon_info *Monster_actor::get_weapon
 	(
 	int& points,
-	int& shape
+	int& shape,
+	Game_object *& obj		// ->weapon itself returned, or 0.
 	)
 	{
-	Monster_info *inf = get_info().get_monster_info();
 					// Kind of guessing here.
-	Weapon_info *winf = Actor::get_weapon(points, shape);
+	Weapon_info *winf = Actor::get_weapon(points, shape, obj);
 	if (!winf)			// No readied weapon?
 		{			// Look up monster itself.
 		shape = 0;
@@ -441,8 +439,12 @@ Weapon_info *Monster_actor::get_weapon
 			shape = get_shapenum();
 			points = winf->get_damage();
 			}
-		else if (inf)		// Builtin (claws?):
-			points = inf->weapon;
+		else 			// Builtin (claws?):
+			{
+			Monster_info *inf = get_info().get_monster_info();
+			if (inf)	
+				points = inf->weapon;
+			}
 		}
 	return winf;
 	}
@@ -625,7 +627,7 @@ void Slime_actor::move
 	{
 					// Save old pos.
 	Tile_coord pos = get_tile();
-	if (get_cx() == 255)		// Invalid?
+	if (is_pos_invalid())		// Invalid?
 		pos = Tile_coord(-1, -1, -1);
 	Monster_actor::move(newtx, newty, newlift);
 					// Update surrounding frames (& this).
