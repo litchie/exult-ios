@@ -1,3 +1,7 @@
+2003-08-08 Aurelien Marchand <artaxerxes@users.sourceforge.net>
+	* data/exultmsg_fr.txt: added French translation of exultmsg.txt. Now
+	Exult only needs to support it. ;-)
+
 2003-08-06 Dominik Reichardt <dominus@users.sourceforge.net>
 	* data/exultmsg_de.txt: added German translation of exultmsg.txt. Now
 	Exult only needs to support it.
