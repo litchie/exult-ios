@@ -1,3 +1,11 @@
+2001-12-30  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/data/opcodes.txt: Added a parenthesis flag to help with
+	pretty printing output under -fz, modified the usecode-script output
+	column under a number of opcodes as a consequence.
+	* usecode/ucxt/*: More pretty-printing output corrections under -fz,
+	including local vars, return var and semicolons in the appropriate
+	places.
+
 2001-12-29  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Added output for -fl to show whether the function
 	returns a value or not. Polishing off -fz output, including outputting

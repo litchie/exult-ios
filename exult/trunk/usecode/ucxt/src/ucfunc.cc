@@ -65,6 +65,7 @@ void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned i
 {
 	unsigned int indent=0;
 	
+	if(_externs.size()) tab_indent(indent, o) << "// externs" << endl;
 	// output the 'externs'
 	for(vector<unsigned short>::iterator e=_externs.begin(); e!=_externs.end(); e++)
 	{
@@ -79,14 +80,22 @@ void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	// start of func
 	tab_indent(indent++, o) << '{' << endl;
 	
+	for(unsigned int i=_num_args; i<_num_args+_num_locals; i++)
+		tab_indent(indent, o) << VARNAME << ' ' << VARPREFIX << setw(4) << i << ';' << endl;
+		
+	if(_return_var) tab_indent(indent, o) << VARNAME << ' ' << "rr" << ';' << endl;
+	
+	if(_num_locals>0) o << endl;
+	
 	output_ucs_data(o, funcmap, intrinsics, uselesscomment, indent);
 	
 	tab_indent(--indent, o) << '}' << endl;
 }
 
-/* outputs the general 'function name' in long format. For function declarations
-	and externs */
-ostream &UCFunc::output_ucs_funcname(ostream &o, unsigned int funcid, unsigned int numargs, bool return_var)
+/* outputs the general 'function name' in long format. For function
+	declarations and externs */
+ostream &UCFunc::output_ucs_funcname(ostream &o, unsigned int funcid,
+                                     unsigned int numargs, bool return_var)
 {
 	// do we return a variable
 	if(return_var) o << VARNAME << ' ';
@@ -131,7 +140,7 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsig
 
 void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, const map<unsigned int, string> &intrinsics, unsigned int indent)
 {
-	tab_indent(indent, o) << demunge_ocstring(*this, funcmap, optab[op._id].ucs_nmo, optab[op._id].param_types, op._params_parsed, intrinsics, op) << endl;
+	tab_indent(indent, o) << demunge_ocstring(*this, funcmap, optab[op._id].ucs_nmo, optab[op._id].param_types, op._params_parsed, intrinsics, op) << ';' << endl;
 	
 	#ifdef DEBUG_PRINT
 	for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end(); i++)
@@ -1283,6 +1292,8 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 	unsigned int i=0; // istr index
 	unsigned int width=0; // width value for setw()
 
+	if(opcode_table_data[op._id].flag_paren) str << '(';
+	
 	while(!finished&&i<len)
 	{
 		bool special_call(false); // FIXME: <sigh> temporary exception handling for call (0x24)
@@ -1436,6 +1447,9 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 		i++;
 		if(i==asmstr.size()) finished=true;
 	}
+	
+	if(opcode_table_data[op._id].flag_paren) str << ')';
+	
 	str << ends;
 	return str.str();
 }
