@@ -1,8 +1,8 @@
 INCLUDES = -I$(srcdir)/../files -I$(srcdir)/../usecode -I$(srcdir)/.. \
-		$(DEBUG_FLAGS) $(CPPFLAGS) $(SDL_CFLAGS)
+		-I$(srcdir)/../conf $(DEBUG_FLAGS) $(CPPFLAGS) $(SDL_CFLAGS)
 
 if BUILD_TOOLS
-NOINSTTOOLS = wuc wud mklink rip ucdump
+NOINSTTOOLS = wuc wud mklink rip ucdump cmanip
 EXTRATOOLS = splitshp shp2pcx
 else
 EXTRATOOLS =
@@ -38,6 +38,14 @@ shp2pcx_LDADD = $(SYSLIBS)
 splitshp_SOURCES = splitshp.cc
 
 splitshp_LDADD = $(SYSLIBS)
+
+cmanip_SOURCES = \
+	cmanip.cc 
+
+cmanip_LDADD = \
+	../conf/libconf.la \
+	../files/libu7file.la \
+	$(SYSLIBS)
 
 EXTRA_DIST = \
 	intrins1.txt \
