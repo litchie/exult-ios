@@ -7,9 +7,10 @@
 
 \CJeff S. "DrCode" Freedman
 \C<jsf@users.sourceforge.net>
-\CThe man who started it all: from map browser
-\Cto usecode interpreter, animation & combat.
-\CHe's the leader !
+\CThe man who started it all: from usecode to
+\Cmap browser to usecode to animation to usecode
+\Cto ExultStudio to usecode.
+\CHe's the leader ! (Did we mention usecode?)
 
 
 \CDancer Vesperman
@@ -21,13 +22,15 @@
 \CWillem Jan "Arthuris Dragon" Palenstijn
 \C<palenstijn@wanadoo.nl>
 \CPorting to obscure OSs (Windows) and less
-\Cobscure ones (BeOS), cheats, autoconf
+\Cobscure ones (BeOS), cheats, autoconf, 
+\Cexultbot and lots more !
 
 
 \CTristan "Nadir" Tarrant
 \C<nadir@users.sourceforge.net>
 \CIntro, ending, menus, autoconf/automake, 
-\CGIMP plugin, FLEX packing, CVS police
+\CGIMP plugin, FLEX packing, CVS config,
+\CFree Software advocate, Forum police
 
 
 \CMax "Fingolfin" Horn
@@ -45,7 +48,13 @@
 \CRyan "Colourless" Nunn
 \C<triforce@merlin.net.au>
 \CXMIDI meister, endings, roof removalist,
-\CSI Intro, NPC flag IO, Avatar identity
+\CSI Intro, NPC flag IO, Avatar identity,
+\CBG Paperdolls, "Big Commits(tm)"
+
+
+\CPatrick Burke
+\C<takhisisii@yahoo.com.au>
+\CUsecode decompiler/disassembler/docs
 
 
 \CChristoph "Jameson" Reichenbach
@@ -54,12 +63,13 @@
 
 
 \CDerek Liauw Kie Fa
-\C2xSaI Scaling code
+\C2xSaI scaler
+\CSuperEagle scaler
 
 
 \COTHER CONTRIBUTORS
 
-\COlivier Marcoux !!!!!!
+\COlivier Marcoux
 
 \CGary Thompson
 
@@ -101,7 +111,7 @@
 \CJackchaos.com
 \CFor hosting the Exult message board
 
-\CTravis Howell
+\CTravis "Kirben" Howell
 \CFor making daily Windows binaries
 
 \CSam Lantinga
