@@ -990,6 +990,20 @@ void Palette_edit::move_palette
 	}
 
 /*
+ *	Update upper bound of a range widget.
+ */
+
+void Update_range_upper
+	(
+	GtkAdjustment *adj,
+	int new_upper
+	)
+	{
+	adj->upper = new_upper;
+	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+	}
+
+/*
  *	Add a new palette at the end of the list.
  */
 
@@ -1000,6 +1014,7 @@ void Palette_edit::add_palette
 	modified = true;
 	palettes.push_back(New_palette());
 	cur_pal = palettes.size() - 1;	// Set to display new palette.
+	Update_range_upper(palnum_adj, palettes.size() - 1);
 					// This will update the display:
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pspin), cur_pal);
 	}
@@ -1024,8 +1039,11 @@ void Palette_edit::remove_palette
 	palettes.erase(palettes.begin() + cur_pal);
 	if (cur_pal >= palettes.size())
 		cur_pal = palettes.size() - 1;
+	Update_range_upper(palnum_adj, palettes.size() - 1);
 					// This will update the display:
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pspin), cur_pal);
+	render();			// Cur_pal may not have changed.
+	show();
 	}
 
 /*
@@ -1068,7 +1086,8 @@ void Palette_edit::export_palette
 		int r = (pal->colors[i]>>16)&255,
 		    g = (pal->colors[i]>>8)&255,
 		    b = pal->colors[i]&255;
-		out << setw(3) << r << ' ' << g << ' ' << b << endl;
+		out << setw(3) << r << ' ' << setw(3) << g << ' ' << 
+						setw(3) << b << endl;
 		}
 	out.close();
 	}

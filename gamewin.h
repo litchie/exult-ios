@@ -108,7 +108,7 @@ class Game_window
 	Fonts_vga_file *fonts;		// "fonts.vga" file.
 	Shape_file *extra_fonts[5];	// extra font shapes
 	Vga_file sprites;		// "sprites.vga" file.
-	Vga_file mainshp;
+//	Vga_file mainshp;+++++NOT USED
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
 	Xform_palette invis_xform;	// For showing invisible NPC's.
