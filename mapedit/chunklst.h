@@ -79,6 +79,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
 	unsigned char *get_chunk(int chunknum);
+	void set_chunk(unsigned char *data, int datalen);
 	void render_chunk(int chunknum, int xoff, int yoff);
 	void scroll(int newindex);	// Scroll.
 	void scroll(bool upwards);

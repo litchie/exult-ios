@@ -65,6 +65,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "gamewin.h"
 #include "gamemap.h"
+#include "chunkter.h"
 #include "cheat.h"
 
 using std::cout;
@@ -274,6 +275,17 @@ static void Handle_client_message
 		bool okay = gwin->get_map()->insert_terrain(tnum, dup);
 		*ptr++ = okay ? 1 : 0;
 		Send_data(client_socket, Exult_server::insert_terrain, data,
+							ptr - data);
+		break;
+		}
+	case Exult_server::send_terrain:
+		{			// Send back #, total, 512-bytes data.
+		int tnum = (short) Read2(ptr);
+		Write2(ptr, gwin->get_map()->get_num_chunk_terrains());
+		Chunk_terrain *ter = gwin->get_map()->get_terrain(tnum);
+		ter->write_flats(ptr);	// Serialize it.
+		ptr += 512;		// I just happen to know the length...
+		Send_data(client_socket, Exult_server::send_terrain, data,
 							ptr - data);
 		break;
 		}
