@@ -1366,13 +1366,10 @@ USECODE_INTRINSIC(select_from_menu2)
 USECODE_INTRINSIC(input_numeric_value)
 {
 	// Ask for # (min, max, step, default).
-	extern int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
-	Slider_gump_object *slider = new Slider_gump_object(
+	extern int Prompt_for_value(int minval, int maxval, int step, int def);
+	Usecode_value ret(Prompt_for_value(
 		parms[0].get_int_value(), parms[1].get_int_value(),
-		parms[2].get_int_value(), parms[3].get_int_value());
-	int ok = Modal_gump(slider, Mouse::hand);
-	Usecode_value ret(!ok ? 0 : slider->get_val());
-	delete slider;
+		parms[2].get_int_value(), parms[3].get_int_value()));
 	gwin->clear_text_pending();	// Answered a question.
 	return(ret);
 }
