@@ -755,7 +755,7 @@ void Ireg_game_object::write_ireg
 	write_common_ireg(&buf[1]);
 	buf[5] = (get_lift()&15)<<4;
 	buf[6] = get_quality();
-	out.write(buf, sizeof(buf));
+	out.write((char*)buf, sizeof(buf));
 	}
 
 /*
@@ -938,14 +938,14 @@ void Animated_object::write_ireg
 	ostream& out
 	)
 	{
-	if (!ireg)
+if (!ireg)
 		return;			// Not from an Ireg file.
 	unsigned char buf[7];		// 6-byte entry + length-byte.
 	buf[0] = 6;
 	write_common_ireg(&buf[1]);
 	buf[5] = (get_lift()&15)<<4;
 	buf[6] = get_quality();
-	out.write(buf, sizeof(buf));
+	out.write((char*)buf, sizeof(buf));
 	}
 
 /*
@@ -1102,7 +1102,7 @@ void Egg_object::write_ireg
 	Write2(ptr, data1);
 	*ptr++ = (get_lift()&15)<<4;	// Low bits?++++++
 	Write2(ptr, data2);
-	out.write(buf, sizeof(buf));
+	out.write((char*)buf, sizeof(buf));
 	}
 
 /*
@@ -1573,7 +1573,7 @@ void Container_game_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = 0;			// Resistance+++++
 	*ptr++ = 0;			// Flags++++++
-	out.write(buf, sizeof(buf));
+	out.write((char*)buf, sizeof(buf));
 	write_contents(out);		// Write what's contained within.
 	}
 
