@@ -170,7 +170,7 @@ void Game_window::write_npcs
 	Write2(nfile, 0);		// Write 0 as a place holder.
 	for (Monster_actor *mact = Monster_actor::get_first_in_world();
 					mact; mact = mact->get_next_in_world())
-		if (!mact->Actor::is_dead_npc())	// Alive?
+		if (!mact->is_dead())	// Alive?
 			{
 			mact->write(nfile);
 			cnt++;

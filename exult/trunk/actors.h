@@ -84,7 +84,8 @@ private:
 protected:
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Schedule *schedule;		// Current schedule.
-	bool dormant;		// I.e., off-screen.
+	bool dormant;			// I.e., off-screen.
+	bool dead;
 	short alignment;		// 'Feelings' towards Ava. See below.
 	Game_object *spots[18];		// Where things can go.  See 'Spots'
 					//   below for description.
@@ -231,6 +232,8 @@ public:
 		{ return frame_time != 0; }
 	bool is_dormant() const		// Inactive (i.e., off-screen)?
 		{ return dormant; }
+	bool is_dead() const
+		{ return dead; }
 	void set_dormant()
 		{ dormant = true; }
 	Actor_action *get_action()	// Return action.
@@ -287,7 +290,7 @@ public:
 	void reduce_health(int delta);	// Lose HP's and check for death.
 	virtual int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
-	virtual int is_dead_npc() const	// Dead when health below -1/3 str.
+	int is_dying() const		// Dead when health below -1/3 str.
 		{ return properties[(int) health] < 
 					-(properties[(int) strength]/3); }
 	int get_level() const		// Get experience level.
