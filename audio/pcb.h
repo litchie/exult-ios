@@ -275,7 +275,7 @@ class ByteBuffer
 
 
 
-
+#define	MAX_PCB_SIZE	8192
 
 
 class	ProducerConsumerBuf
@@ -283,21 +283,34 @@ class	ProducerConsumerBuf
 private:
 	ByteBuffer Buffer;
 	SDL_mutex	*mutex;
-	void	lock(void)
+	inline 	void	lock(void)
 		{
 		SDL_mutexP(mutex);
 		}
-	void	unlock(void)
+	inline 	void	unlock(void)
 		{
 		SDL_mutexV(mutex);
 		}
 	bool	producing,consuming;
 public:
+	Uint32	id;
 	void	produce(const void *p,size_t l)
 		{
 		if(!l||!consuming)
 			return;	// No data? Do nothing
-		lock();
+		while(1)
+			{
+			lock();
+			size_t	n=Buffer.size();
+			unlock();
+			if(n>MAX_PCB_SIZE)
+				{
+				unlock();
+				SDL::Delay(100);
+				}
+			else
+				break;
+			}
 		Buffer.push_back((const char *)p,l);
 		unlock();
 		}
@@ -311,7 +324,7 @@ public:
 		unlock();
 		return l;
 		}
-	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),producing(true),consuming(true)
+	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),producing(true),consuming(true),id(0)
 		{  }
 	~ProducerConsumerBuf()
 		{
@@ -333,6 +346,7 @@ public:
 			delete this;
 		unlock();
 		}
+	size_t	size(void) { return Buffer.size(); }
 	};
 
 
