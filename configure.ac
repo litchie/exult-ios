@@ -681,7 +681,7 @@ AC_MSG_CHECKING(whether to build the GIMP plugin)
 if test x$enable_gimp_plugin = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_MSG_CHECKING(for gimptool)
-	AC_CHECK_PROGS(GIMPTOOL, gimptool-1.3 gimptool)
+	AC_CHECK_PROGS(GIMPTOOL, gimptool-1.2 gimptool-2.0 gimptool-1.3 gimptool-1.2 gimptool)
 	if test -z "$GIMPTOOL"; then
 		AC_MSG_RESULT(no, not building GIMP plugin)
 	else
@@ -696,6 +696,21 @@ if test x$enable_gimp_plugin = xyes; then
 			GIMP_PLUGIN_PREFIX="$GIMP_PLUGIN_PREFIX/plug-ins"
 			AC_SUBST(GIMP_PLUGIN_PREFIX)
 			AC_DEFINE(HAVE_GIMP, 1, [Have GIMP])
+			GIMP_INCLUDES=`$GIMPTOOL --cflags`
+			GIMP_LIBS=`$GIMPTOOL --libs`
+			AC_SUBST(GIMP_INCLUDES)
+			AC_SUBST(GIMP_LIBS)
+		elif test "$gimp_version" -ge 1200 -a \
+			  "$gimp_version" -lt 1300; then
+			AC_MSG_RESULT(found 1.2.x)
+			AC_SUBST(GIMPTOOL)
+			AM_CONDITIONAL(GIMP_PLUGIN, true)
+			CPPFLAGS="$save_cppflags"
+			GIMP_PLUGIN_PREFIX=`$GIMPTOOL --gimpplugindir`
+			GIMP_PLUGIN_PREFIX="$GIMP_PLUGIN_PREFIX/plug-ins"
+			AC_SUBST(GIMP_PLUGIN_PREFIX)
+			AC_DEFINE(HAVE_GIMP, 1, [Have GIMP])
+			AC_DEFINE(HAVE_GIMP_1_2, 1, [Have GIMP 1.2.x])
 			GIMP_INCLUDES=`$GIMPTOOL --cflags`
 			GIMP_LIBS=`$GIMPTOOL --libs`
 			AC_SUBST(GIMP_INCLUDES)
