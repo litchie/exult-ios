@@ -409,28 +409,36 @@ void Patrol_schedule::now_what
 			return;		// We no longer exist.
 	const int PATH_SHAPE = 607;
 	Game_object *path;
-					// SI:  Special scenes.
-	if (Game::get_game_type() == SERPENT_ISLE && pathnum >= 0 &&
-					// Arrived at path with qual==0xf?
+	Game_window *gwin = Game_window::get_game_window();
+	if (pathnum >= 0 &&		// Arrived at path?
 	    pathnum < paths.size() && (path = paths[pathnum]) != 0 &&
 	    path->get_quality() == 0xf && npc->distance(path) < 2)
-		{
-		Game_window *gwin = Game_window::get_game_window();
-		Actor *safenpc = npc;	// Next stmt. can delete 'this'!
-		safenpc->activate(gwin->get_usecode(),
+					// Quality = type.  (I think high bits
+					//   are flags.
+		switch (path->get_quality()&31)
+			{
+		case 0:			// None.
+			break;
+		case 1:			// Wrap to 0.+++++Implement these.
+		case 3:			// Sit.
+		case 6:			// Loiter.
+		case 7:			// Left about-face.
+		case 8:			// Right about-face.
+		case 14:		// Check area.
+			break;		//++++++Implement above.
+		case 15:		// Usecode.
+			{		// Next stmt. can delete 'this'!
+			Actor *safenpc = npc;
+			safenpc->activate(gwin->get_usecode(),
 					Usecode_machine::npc_proximity);
-#if 0
-		if (npc == gwin->get_main_actor() ||
-		    npc->get_party_id() >= 0)
-			return;		// Avatar/party?  Done. (Guessing)
-		int ucfun = npc->get_usecode();
-		gwin->get_usecode()->call_usecode(
-			ucfun == -1 ? npc->get_shapenum() : ucfun, npc,
-					Usecode_machine::npc_proximity);
-#endif
-		if (safenpc->get_schedule() != this)
-			return;		// We're gone.
-		}
+			if (safenpc->get_schedule() != this)
+				return;	// We're gone.
+			}
+		case 16:		// Bow to ground.  ++++Implement.
+		case 22:		// One-handed swing.
+		default:
+			break;
+			}
 	pathnum++;			// Find next path.
 					// Already know its location?
 	path =  pathnum < paths.size() ? paths[pathnum] : 0;
