@@ -1,3 +1,12 @@
+2001-09-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: try harder to avoid putting objects in the actor-container
+	itself
+	* contain.cc: allow putting a bag in a bag if dont_check is set
+	* ucdisasm.cc: cosmetic fix with display of backward jumps
+	* tools/Makefile.am: fixed make warning
+	* Paperdoll_gump.cc: option for showing non-readied objects
+	* exult_constants.h: made the CERR/COUT macro's 'if'-safe
+	
 2001-09-29  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucinternal.cc (Usecode_internal): Fixed ARRC bug in

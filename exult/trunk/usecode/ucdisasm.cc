@@ -88,7 +88,8 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 			case RELATIVE_JUMP:
 				// Print jump desination
 				offset = Read2(ip);
-				std::printf("\t%04X", offset + func_ip+1+pdesc->nbytes);
+				std::printf("\t%04X",
+							(offset + func_ip+1+pdesc->nbytes)&0xFFFF);
 				break;
 			case SLOOP:
 				if (pdesc->nbytes == 11)
@@ -99,14 +100,14 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				varref = Read2(ip);
 				offset = Read2(ip);
 				std::printf("\t[%04X], %04X\t= ", varref, 
-					   offset +func_ip+1+pdesc->nbytes);
+					   (offset +func_ip+1+pdesc->nbytes)&0xFFFF);
 				locals[varref].print(cout, true); // print value (short format)
 				break;
 			case IMMED_AND_RELATIVE_JUMP:
 				immed = Read2(ip);
 				offset = Read2(ip);
 				std::printf("\t%04XH, %04X", immed, 
-					   offset + func_ip+1+pdesc->nbytes);
+					   (offset + func_ip+1+pdesc->nbytes)&0xFFFF);
 				break;
 			case CALL:
 				{
