@@ -1,3 +1,15 @@
+2000-11-25  Max Horn  <max@quendi.de>
+	* Configuration.cc: some cleanup
+	* exceptions.h: exult_exception now saves errno when it is thrown
+	* exult.cc: moved most code of main() to exult_main()
+	* exult.cc: added try/catch block to the new main()
+	* gameclk.cc: added GPL header (should be in every source/header file)
+	* gamewin.cc: u7open removed in favor of U7open
+	* files/utils.cc: U7open throws an file_open_exception if it fails; does not return an int anmore
+	* files/utils.cc: U7exists now also checks upper case variant of the name
+	* files/utils.cc: fixed a MacOS only bug in switch_slashes
+	* *.cc: changed all calls to U7open to correctly handle exceptions if appropriate
+
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc/usecode.cc: added config/debug/trace/usecode (yes/no) option
 

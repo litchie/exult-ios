@@ -50,13 +50,11 @@ void	IFF::IndexIFFFile(void)
 	FILE	*fp;
 	char	ckid[4];
 	fp=U7open(filename.c_str(),"rb");
-	if(!fp)
-		throw file_not_found_error(filename);
 	fread(ckid,4,1,fp);
 	if(memcmp(ckid,"FORM",4))
 		{
 		// Not an IFF file we recognise
-		throw wrong_file_type_error();
+		throw wrong_file_type_exception(filename,"IFF");
 		}
 #if DEBUG
 	cout << "Okay. It looks like an IFF file chunk" << endl;

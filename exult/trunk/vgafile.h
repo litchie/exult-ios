@@ -395,7 +395,7 @@ public:
 		{  }
 	void init() { load(SHAPES_VGA); info.set_size(num_shapes); }
 	virtual ~Shapes_vga_file();
-	int read_info();		// Read additional data files.
+	void read_info();		// Read additional data files.
 	Shape_info& get_info(int shapenum)
 		{ return info[shapenum]; }
 	};

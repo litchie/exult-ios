@@ -21,9 +21,7 @@ using std::string;
 	if(!uf) \
 	try {	\
 		uf=new CLASS_NAME(s);	\
-		file_list[s]=uf;	\
-		return uf;	\
-	} catch(...)	\
+	} catch(const wrong_file_type_exception &e)	\
 		{	\
 		;	\
 		}
@@ -44,10 +42,9 @@ U7file  *U7FileManager::get_file_object(const string &s)
 
 	// Failed
 	if (!uf)
-	{
-		std::cerr << "Unable to find/open U7file " << s << endl;
-		throw file_not_found_error(s);
-	}
+		throw file_open_exception(s);
+
+	file_list[s]=uf;
 	return uf;
 }
 
@@ -102,8 +99,6 @@ void	U7object::retrieve(char **buf,size_t &len)
 void	U7object::retrieve(const char *fname)
 {
 	FILE	*fp=U7open(fname,"wb");
-	if(!fp)
-		throw file_not_found_error(fname);
 
 	char	*n;
 	size_t	l;

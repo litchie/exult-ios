@@ -353,8 +353,8 @@ public:
 		{ return call_depth > 0; }
 					// Call desired function.
 	int call_usecode(int id, Game_object *obj, Usecode_events event);
-	int write();			// Write out 'gamedat/usecode.dat'.
-	int read();			// Reat in 'gamedat/usecode.dat'.
+	void write();			// Write out 'gamedat/usecode.dat'.
+	void read();			// Reat in 'gamedat/usecode.dat'.
 	void link_party();		// Set party's id's.
 	
 	};

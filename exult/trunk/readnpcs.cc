@@ -48,7 +48,7 @@ void Game_window::read_npcs
 	)
 	{
 	ifstream nfile;
-	u7open(nfile, NPC_DAT);
+	U7open(nfile, NPC_DAT);
 	num_npcs1 = Read2(nfile);	// Get counts.
 	int cnt2 = Read2(nfile);
 	num_npcs = num_npcs1 + cnt2;
@@ -65,8 +65,10 @@ void Game_window::read_npcs
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
 	nfile.close();
 	main_actor->set_actor_shape();
-	if (u7open(nfile, MONSNPCS, 1))	// Monsters.
-		{			// (Won't exist the first time.)
+	try
+	{
+		U7open(nfile, MONSNPCS);	// Monsters.
+		// (Won't exist the first time; in this case U7open throws
 		int cnt = Read2(nfile);
 		char tmp = Read1(nfile);// Read 1 ahead to test.
 		int okay = nfile.good();
@@ -78,13 +80,16 @@ void Game_window::read_npcs
 			if (get_shape_num_frames(act->get_shapenum()) < 16)
 				act->remove_this();
 			}
-		}
+	}
+	catch(...)
+	{
+	}
 	center_view(main_actor->get_abs_tile_coord());
 	read_schedules();		// Now get their schedules.
 	if (!monster_info)		// Might be a 'restore'.
 		{
 		ifstream mfile;		// Now get monster info.
-		u7open(mfile, MONSTERS);
+		U7open(mfile, MONSTERS);
 		num_monsters = Read1(mfile);
 					// Create list, and read it in.
 		monster_info = new Monster_info[num_monsters];
@@ -103,7 +108,7 @@ void Game_window::read_npcs
 				flags, equip);
 			}
 		mfile.close();
-		u7open(mfile, EQUIP);	// Get 'equip.dat'.
+		U7open(mfile, EQUIP);	// Get 'equip.dat'.
 		int num_recs = Read1(mfile);
 		Equip_record *equip = new Equip_record[num_recs];
 		for (i = 0; i < num_recs; i++)
@@ -130,17 +135,12 @@ void Game_window::read_npcs
  *	Output:	false if error, already reported.
  */
 
-bool Game_window::write_npcs
+void Game_window::write_npcs
 	(
 	)
 	{
 	ofstream nfile;
-	if (!U7open(nfile, NPC_DAT))
-		{			// +++++Better error???
-		cerr << "Exult:  Error opening '" << NPC_DAT <<
-				"' for writing"<<endl;
-		return (false);
-		}
+	U7open(nfile, NPC_DAT);
 	Write2(nfile, num_npcs1);	// Start with counts.
 	Write2(nfile, num_npcs - num_npcs1);
 	int i;
@@ -148,19 +148,11 @@ bool Game_window::write_npcs
 		npcs[i]->write(nfile);
 	nfile.flush();
 	bool result = nfile.good();
-	if (!result)			// ++++Better error system needed??
-		{
-		cerr << "Exult:  Error writing '" << NPC_DAT << "'"<<endl;
-		return (false);
-		}
+	if (!result)
+		throw file_write_exception(NPC_DAT);
 	nfile.close();
 					// Now write out monsters in world.
-	if (!U7open(nfile, MONSNPCS))
-		{			// +++++Better error???
-		cerr << "Exult:  Error opening '" << MONSNPCS <<
-				"' for writing"<<endl;
-		return (false);
-		}
+	U7open(nfile, MONSNPCS);
 	int cnt = 0;
 	Write2(nfile, 0);		// Write 0 as a place holder.
 	for (Monster_actor *mact = Monster_actor::get_first_in_world();
@@ -175,12 +167,8 @@ bool Game_window::write_npcs
 	nfile.flush();
 	result = nfile.good();
 	nfile.close();
-	if (!result)			// ++++Better error system needed??
-		{
-		cerr << "Exult:  Error writing '" << MONSNPCS << "'"<<endl;
-		return (0);
-		}
-	return (result);
+	if (!result)
+		throw file_write_exception(NPC_DAT);
 	}
 
 /*
@@ -192,7 +180,7 @@ void Game_window::read_schedules
 	)
 	{
 	ifstream sfile;
-	u7open(sfile, SCHEDULE_DAT);
+	U7open(sfile, SCHEDULE_DAT);
 	int num_npcs = Read4(sfile);	// # of NPC's, not include Avatar.
 
 	short *offsets = new short[num_npcs];
