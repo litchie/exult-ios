@@ -527,6 +527,24 @@ void Game_window::toggle_combat
 		}
 	if (main_actor->get_schedule_type() != newsched)
 		main_actor->set_schedule_type(newsched);
+	if (combat)			// Get rid of flee modes.
+		{
+		Actor *all[9];
+		int cnt = get_party(all, 1);
+		for (int i = 0; i < cnt; i++)
+			{		// Did Usecode set to flee?
+			Actor *act = all[i];
+			if (act->get_attack_mode() == Actor::flee &&
+			    !act->did_user_set_attack())
+				act->set_attack_mode(Actor::nearest);
+					// And avoid attacking party members,
+					//  in case of Usecode bug.
+			Game_object *targ = act->get_target();
+			if (targ &&
+			    (targ == main_actor || targ->get_party_id() >= 0))
+				act->set_target(0);
+			}
+		}
 	}
 
 /*

@@ -180,7 +180,8 @@ void Combat_mode_button::activate
 					// Only Avatar gets last frame (manual)
 	int nframes = actor == gwin->get_main_actor() ? 10 : 9;
 	set_frame((get_framenum() + 1)%nframes);
-	actor->set_attack_mode((Actor::Attack_mode) get_framenum());
+					// Flag that player set the mode.
+	actor->set_attack_mode((Actor::Attack_mode) get_framenum(), true);
 	paint(gwin);
 	gwin->set_painted();
 }

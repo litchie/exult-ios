@@ -87,6 +87,7 @@ protected:
 	bool dead;
 	bool hit;			// Just hit in combat.
 	bool combat_protected;		// 'Halo' on paperdoll screen.
+	bool user_set_attack;		// True if player set attack_mode.
 	short alignment;		// 'Feelings' towards Ava. See below.
 	Game_object *spots[18];		// Where things can go.  See 'Spots'
 					//   below for description.
@@ -176,8 +177,10 @@ public:
 		{ return light_sources > 0; }
 	Attack_mode get_attack_mode()
 		{ return attack_mode; }
-	void set_attack_mode(Attack_mode amode)
-		{ attack_mode = amode; }
+	void set_attack_mode(Attack_mode amode, bool byuser = false)
+		{ attack_mode = amode; user_set_attack = byuser; }
+	bool did_user_set_attack() const
+		{ return user_set_attack; }
 	bool is_combat_protected() const
 		{ return combat_protected; }
 	void set_combat_protected(bool v)
