@@ -375,13 +375,17 @@ dnl --------------------
 dnl External features
 dnl --------------------
 
-dnl Future GTK interface?
-dnl AC_ARG_ENABLE(gtk-interface, [  --enable-gtk-interface          build the GTK+ interface [default no]],,enable_gtk_interface=no)
-dnl if test x$enable_gtk_interface = xyes; then
-dnl	AC_PATH_PROG(GTKCONFIG, gtk-config)
-dnl	AM_CONDITIONAL(GTK_INTERFACE, true)
-dnl	AC_SUBST(GTK_INTERFACE)
-dnl fi
+dnl GTK interface
+AC_ARG_ENABLE(gtk-interface, [  --enable-gtk-interface          build the GTK+ interface [default no]],,enable_gtk_interface=no)
+if test x$enable_gtk_interface = xyes; then
+	AC_PATH_PROG(GTKCONFIG, gtk-config)
+	AM_CONDITIONAL(GTK_INTERFACE, true)
+	AC_SUBST(GTK_INTERFACE)
+	GTK_INCLUDES=`gtk-config --cflags`
+	GTK_LIBS=`gtk-config --libs`
+	AC_SUBST(GTK_INCLUDES)
+	AC_SUBST(GTK_LIBS)
+fi
 
 dnl GNOME desktop files
 AC_PATH_PROG(GNOMECONFIG, gnome-config)

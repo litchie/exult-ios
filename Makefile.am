@@ -5,7 +5,7 @@ INCLUDES = -I. -Iimagewin -Ishapes -Iobjs -Iconf -Ifiles -Igumps -Iaudio -Ipathf
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
 SUBDIRS = audio pathfinder files gumps conf flic tools data docs desktop \
-	shapes imagewin usecode objs
+	shapes imagewin usecode objs mapedit
 
 bin_PROGRAMS = exult
 
