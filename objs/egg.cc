@@ -38,12 +38,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "npctime.h"
 #include "paths.h"
 #include "chunks.h"
+#include "cheat.h"
+
 #ifdef XWIN
 #include "server.h"
 #include "objserial.h"
 #include "mouse.h"
 #include "servemsg.h"
-#include "cheat.h"
 #endif
 
 using std::cout;

@@ -431,8 +431,11 @@ int Font::get_text_width
 	{
 	int width = 0;
 	short chr;
-	while ((chr = *text++) != 0)
-		width += font_shapes->get_frame(chr)->get_width() + hor_lead;
+	while ((chr = *text++) != 0) {
+		Shape_frame* shape = font_shapes->get_frame(chr);
+		if (shape)
+			width += shape->get_width() + hor_lead;
+	}
 	return (width);
 	}
 
@@ -447,8 +450,11 @@ int Font::get_text_width
 	)
 	{
 	int width = 0;
-	while (textlen--)
-		width += font_shapes->get_frame(*text++)->get_width() + hor_lead;
+	while (textlen--) {
+		Shape_frame* shape = font_shapes->get_frame(*text++);
+		if (shape)
+			width += shape->get_width() + hor_lead;
+	}
 	return (width);
 	}
 
