@@ -12,7 +12,7 @@ SDL_INCLUDES=-I/boot/develop/tools/gnupro/include/SDL
 SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
-	-DNO_INTRO -I$(SRC)/imagewin -I$(SRC)/shapes\
+	-I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC) -I$(SRC)/audio -I$(SRC)/conf \
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
 	$(SDL_INCLUDES)

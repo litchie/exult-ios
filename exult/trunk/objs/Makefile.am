@@ -16,9 +16,11 @@ libobjs_la_SOURCES = \
 	contain.h \
 	egg.cc \
 	egg.h \
+	flags.h \
 	iregobjs.cc \
 	iregobjs.h \
 	objiter.h \
+	objlist.h \
 	objs.cc \
 	objs.h \
 	ordinfo.h \
