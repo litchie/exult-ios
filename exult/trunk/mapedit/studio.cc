@@ -183,7 +183,7 @@ ExultStudio::~ExultStudio()
 	if (eggwin)
 		gtk_widget_destroy(eggwin);
 	eggwin = 0;
-//Should be done in destroy handler	gtk_widget_destroy( app );
+//Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 	if (server_socket >= 0)
 		close(server_socket);

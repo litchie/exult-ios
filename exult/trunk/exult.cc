@@ -915,7 +915,7 @@ void Wait_for_arrival
 				}
 					// Get current time, & animate.
 		uint32 ticks = SDL_GetTicks();
-		if (gwin->have_focus() && !dragging)
+		if (gwin->have_focus())
 			gwin->get_tqueue()->activate(ticks);
 					// Show animation every 1/20 sec.
 		if (ticks > last_repaint + 50 || gwin->was_painted())

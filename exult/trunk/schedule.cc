@@ -224,7 +224,7 @@ void Street_maintenance_schedule::now_what
 	int period = gwin->get_hour()/3;
 	Npc_actor *nnpc = dynamic_cast<Npc_actor *> (npc);
 	if (nnpc)
-		nnpc->update_schedule(gwin, period, 7);
+		nnpc->update_schedule(gwin, period, 7, 0);
 	}
 
 /*
@@ -799,9 +799,19 @@ void Wander_schedule::now_what
 Sleep_schedule::Sleep_schedule
 	(
 	Actor *n
-	) : Schedule(n), bed(0)
+	) : Schedule(n), bed(0), state(0)
 	{
 	floorloc.tx = -1;		// Set to invalid loc.
+	if (Game::get_game_type() == BLACK_GATE)
+		{
+		spread0 = 3;
+		spread1 = 16;
+		}
+	else				// Serpent Isle.
+		{
+		spread0 = 7;
+		spread1 = 20;
+		}
 	}
 
 /*
@@ -815,48 +825,74 @@ void Sleep_schedule::now_what
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) == Actor::sleep_frame)
 		return;			// Already sleeping.
-					// Find closest EW or NS bed.
-	static int bedshapes[2] = {696, 1011};
 	Game_window *gwin = Game_window::get_game_window();
-	bed = npc->find_closest(bedshapes, 2);
-	if (!bed)
-		{			// Just lie down at current spot.
-		gwin->add_dirty(npc);
-		int dirbits = npc->get_framenum()&(0x30);
-		npc->set_frame(Actor::sleep_frame|dirbits);
-		gwin->add_dirty(npc);
-		return;
-		}
-	Game_object_vector tops;			// Want to find top of bed.
-	bed->find_nearby(tops, bed->get_shapenum(), 1, 0);
-	for (Game_object_vector::const_iterator it = tops.begin(); it != tops.end();
-									++it)
+	switch (state)
+		{
+	case 0:				// Find bed.
+		{			// Find closest EW or NS bed.
+		static int bedshapes[2] = {696, 1011};
+		bed = npc->find_closest(bedshapes, 2);
+		if (!bed)
+			{		// Just lie down at current spot.
+			gwin->add_dirty(npc);
+			int dirbits = npc->get_framenum()&(0x30);
+			npc->set_frame(Actor::sleep_frame|dirbits);
+			gwin->add_dirty(npc);
+			return;
+			}
+		state = 1;
+		Game_object_vector tops;	// Want to find top of bed.
+		bed->find_nearby(tops, bed->get_shapenum(), 1, 0);
+		for (Game_object_vector::const_iterator it = tops.begin(); 
+						it != tops.end(); ++it)
 			{
 			Game_object *top = *it;
 			int frnum = top->get_framenum();
-			if (frnum >= 3 && frnum <= 16)
+			if (frnum >= spread0 && frnum <= spread1)
 				{
 				bed = top;
 				break;
 				}
 			}
-	int dir = bed->get_shapenum() == 696 ? west : north;
-	npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
-					// Get bed info.
-	Shape_info& info = Game_window::get_game_window()->get_info(bed);
-	Tile_coord bedloc = bed->get_abs_tile_coord();
-	floorloc = npc->get_abs_tile_coord();
-	int bedframe = bed->get_framenum();// Unmake bed.
-	if (bedframe >= 3 && bedframe < 16 && (bedframe%2))
-		{
-		bedframe++;
-		bed->set_frame(bedframe);
-		gwin->add_dirty(bed);
+		Tile_coord bloc = bed->get_abs_tile_coord();
+		bloc.tz -= bloc.tx%5;	// Round down to floor level.
+		Shape_info& info = gwin->get_info(bed);
+		bloc.tx -= info.get_3d_xtiles(bed->get_framenum())/2;
+		bloc.ty -= info.get_3d_ytiles(bed->get_framenum())/2;
+					// Get within 3 tiles.
+		Actor_pathfinder_dist_client cost(3);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+				npc->get_abs_tile_coord(), bloc, cost);
+		if (pact)
+			npc->set_action(pact);
+		npc->start(200);	// Start walking.
+		break;
 		}
-	int bedspread = (bedframe >= 4 && !(bedframe%2));
+	case 1:				// Go to bed.
+		{
+		int dir = bed->get_shapenum() == 696 ? west : north;
+		npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
+					// Get bed info.
+		Shape_info& info = gwin->get_info(bed);
+		Tile_coord bedloc = bed->get_abs_tile_coord();
+		floorloc = npc->get_abs_tile_coord();
+		int bedframe = bed->get_framenum();// Unmake bed.
+		if (bedframe >= spread0 && bedframe < spread1 && (bedframe%2))
+			{
+			bedframe++;
+			bed->set_frame(bedframe);
+			gwin->add_dirty(bed);
+			}
+		int bedspread = (bedframe >= spread0 && !(bedframe%2));
 					// Put NPC on top of bed.
-	npc->move(bedloc.tx, bedloc.ty, bedloc.tz + 
+		npc->move(bedloc.tx, bedloc.ty, bedloc.tz + 
 				(bedspread ? 0 : info.get_3d_height()));
+		state = 2;
+		break;
+		}
+	default:
+		break;
+		}
 	}
 
 /*
@@ -870,15 +906,17 @@ void Sleep_schedule::ending
 	{
 	if (new_type == (int) wait)	// Needed for Skara Brae.
 		return;			// ++++Does this leave NPC's stuck?++++
-	if (bed)			// Locate free spot.
+	if (bed &&			// Locate free spot.
+	    (npc->get_framenum()&0xf) == Actor::sleep_frame)
+
 		{		//++++++Got to look on floor.
 		for (int dist = 1; dist < 8 && floorloc.tx == -1; dist++)
 			floorloc = npc->find_unblocked_tile(dist, 4);
 					// Make bed.
 		int frnum = bed->get_framenum();
-		Actor_vector occ;		// Unless there's another occupant.
-		if (frnum >= 4 && frnum <= 16 && !(frnum%2) &&
-				bed->find_nearby_actors(occ, c_any_shapenum, 0) < 2)
+		Actor_vector occ;	// Unless there's another occupant.
+		if (frnum >= spread0 && frnum <= spread1 && !(frnum%2) &&
+			  bed->find_nearby_actors(occ, c_any_shapenum, 0) < 2)
 			bed->set_frame(frnum - 1);
 		}
 	if (floorloc.tx >= 0)		// Get back on floor.
@@ -2642,10 +2680,12 @@ Walk_to_schedule::Walk_to_schedule
 	(
 	Actor *n,
 	Tile_coord d,			// Destination.
-	int new_sched			// Schedule when we get there.
+	int new_sched,			// Schedule when we get there.
+	int delay			// Msecs, or -1 for random delay.
 	) : Schedule(n), dest(d), new_schedule(new_sched), retries(0), legs(0)
 	{
-	first_delay = 2*(rand()%10000);	// Delay 0-20 secs.
+					// Delay 0-20 secs.
+	first_delay = delay >= 0 ? delay : 2*(rand()%10000);
 	}
 
 /*

@@ -1270,7 +1270,8 @@ void Actor::set_schedule_type
  *	Set new schedule by type AND location.
  */
 
-void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest)
+void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
+				int delay)	// -1 for random delay.
 {
 	Game_window *gwin = Game_window::get_game_window();
 	if (!gwin->get_objects_safely(get_cx(), get_cy()))
@@ -1293,7 +1294,7 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest)
 	next_schedule = new_schedule_type;
 	schedule_type = Schedule::walk_to_schedule;
 	delete schedule;
-	schedule = new Walk_to_schedule(this, dest, next_schedule);
+	schedule = new Walk_to_schedule(this, dest, next_schedule, delay);
 	dormant = false;
 	schedule->now_what();
 }
@@ -1705,10 +1706,20 @@ void Actor::clear_flag
 		flags &= ~((uint32) 1 << flag);
 	else if (flag >= 32 && flag < 64)
 		flags2 &= ~((uint32) 1 << (flag-32));
-	if (flag == Obj_flags::invisible)		// Restore normal palette.
-		Game_window::get_game_window()->set_palette();
-	else if (flag == Obj_flags::asleep && schedule_type == Schedule::sleep)
-		set_schedule_type(Schedule::stand);
+	Game_window *gwin = Game_window::get_game_window();
+	if (flag == Obj_flags::invisible)	// Restore normal palette.
+		gwin->set_palette();
+	else if (flag == Obj_flags::asleep)
+		{
+		if (schedule_type == Schedule::sleep)
+			set_schedule_type(Schedule::stand);
+		else if ((get_framenum()&0xf) == Actor::sleep_frame)
+			{
+			add_dirty(gwin);
+			set_frame(Actor::standing);
+			add_dirty(gwin);
+			}
+		}
 	set_actor_shape();
 	}
 
@@ -2927,7 +2938,8 @@ void Npc_actor::update_schedule
 	(
 	Game_window *gwin,
 	int hour3,			// 0=midnight, 1=3am, etc.
-	int backwards			// Extra periods to look backwards.
+	int backwards,			// Extra periods to look backwards.
+	int delay			// Delay in msecs, or -1 for random.
 	)
 	{
 	if (!gwin->get_objects_safely(get_cx(), get_cy()))
@@ -2948,7 +2960,8 @@ void Npc_actor::update_schedule
 		//if (schedule_type == schedules[i].get_type())
 		//	return;		// Already in it.
 		}
-	set_schedule_and_loc (schedules[i].get_type(), schedules[i].get_pos());
+	set_schedule_and_loc (schedules[i].get_type(), schedules[i].get_pos(),
+								delay);
 	}
 
 /*
