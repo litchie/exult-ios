@@ -212,7 +212,9 @@ static void Set_schedule_line
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), ty);
 	list = g_list_next(list);
 	spin = ((GtkBoxChild *) list->data)->widget;
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tz);
+					// Current engine assumes tz==0.
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), 0);
+	gtk_widget_set_sensitive(spin, FALSE);
 	}
 
 /*
@@ -776,3 +778,56 @@ C_EXPORT void on_npc_set_sched
 	gtk_widget_show(schedwin);
 	}
 
+/*
+ *	Received game position for schedule.
+ */
+static void Game_loc_response
+	(
+	Exult_server::Msg_type id,
+	unsigned char *data,
+	int datalen,
+	void *client
+	)
+	{
+	if (id != Exult_server::game_pos)
+		return;
+					// Get box with loc. spin btns.
+	GtkBox *box = (GtkBox *) client;
+	int tx = Read2(data);
+	int ty = Read2(data);
+	int tz = Read2(data);
+	if (tz != 0)
+		{
+		EStudio::Alert("Non-zero height (%d) not yet supported", tz);
+		return;
+		}
+	GList *list = g_list_first(box->children);
+	GtkWidget *spin = ((GtkBoxChild *) list->data)->widget;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tx);
+	list = g_list_next(list);
+	spin = ((GtkBoxChild *) list->data)->widget;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), ty);
+	list = g_list_next(list);
+	spin = ((GtkBoxChild *) list->data)->widget;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tz);
+	}
+
+/*
+ *	One of the "Game" buttons to set location from current game position.
+ */
+
+C_EXPORT void on_sched_loc_clicked
+	(
+	GtkWidget *btn,			// One of the 'Game' buttons.
+	gpointer user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+					// Get location box.
+	GtkBox *box = GTK_BOX(gtk_widget_get_parent(btn));
+	if (Send_data(studio->get_server_socket(), 
+					Exult_server::game_pos) == -1)
+		cout << "Error sending message to server" << endl;
+	else
+		studio->set_msg_callback(Game_loc_response, box);
+	}
