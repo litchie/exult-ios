@@ -125,6 +125,10 @@ public:
 	void insert_response(unsigned char *data, int datalen);
 	void move(bool upwards);	// Move current selected chunk.
 	void swap_response(unsigned char *data, int datalen);
+#ifdef WIN32
+	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
+		gpointer data);
+#endif
 	};
 
 #endif

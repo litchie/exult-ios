@@ -1036,6 +1036,14 @@ SOURCE=..\win32\exultico.rc
 # ADD BASE RSC /l 0xc09 /i "\UC\exult\win32"
 # ADD RSC /l 0xc09 /i "\UC\exult\win32" /i "..\win32"
 # End Source File
+# Begin Source File
+
+SOURCE=..\windrag.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\windrag.h
+# End Source File
 # End Group
 # Begin Group "Header Files"
 

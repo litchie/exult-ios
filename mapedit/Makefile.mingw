@@ -19,16 +19,16 @@ LIBGLADE_INCLUDES = `pkg-config --cflags libglade-0.17`
 # If this doesn't work, insert output of 'pkg-config --libs libglade-0.17' manually
 LIBGLADE_LIBS = `pkg-config --libs libglade-0.17`
 
-INCLUDES = -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
+INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
 	-I$(SRC)/files -I$(SRC)/server -I$(SRC)/objs $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
 
-CPPFLAGS = -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO $(INCLUDES)
+CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO $(INCLUDES)
 
-CXXFLAGS = -fnative-struct
+CXXFLAGS= -fnative-struct -fvtable-thunks
 
 CXX=g++
 
-LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) -liberty -mwindows
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) -liberty -mwindows -lole32 -luuid
 EXEC=exult_studio.exe
 EXP_FILE=exult_studio.exp
 
@@ -44,7 +44,7 @@ IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 
 SHAPES_OBJS=font.o fontvga.o items.o monstinf.o shapeinf.o shapevga.o shapewrite.o u7drag.o vgafile.o
 
-MISC_OBJS=exultstudioico.o
+MISC_OBJS=exultstudioico.o windrag.o
 
 OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS) $(MISC_OBJS)
 

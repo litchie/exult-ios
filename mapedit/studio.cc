@@ -37,7 +37,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <cstdio>			/* These are for sockets. */
-#ifndef WIN32
+#ifdef WIN32
+#include <windows.h>
+#include <getopt.h>
+#include <ole2.h>
+#else
 #include <sys/socket.h>
 #include <sys/un.h>
 #endif
@@ -250,10 +254,16 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 		strcat(path, "/static/");// Set up path to static.
 		set_static_path(path);
 		}
+#ifdef WIN32
+    OleInitialize(NULL);
+#endif
 }
 
 ExultStudio::~ExultStudio()
 {
+#ifdef WIN32
+    OleUninitialize();
+#endif
 	delete_shape_browser();
 	delete_chunk_browser();
 	delete [] palbuf;

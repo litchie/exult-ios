@@ -42,7 +42,9 @@
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-#ifdef XWIN
+#ifdef WIN32
+#include "windrag.h"
+#elif defined(XWIN)
 #include "xdrag.h"
 #endif
 #include "server.h"
@@ -135,6 +137,9 @@ int current_res = 0;
 #ifdef XWIN
 int xfd = 0;			// X connection #.
 static class Xdnd *xdnd = 0;
+#elif defined(WIN32)
+static HWND hgwin;
+static class Windnd *windnd = 0;
 #endif
 
 
@@ -416,6 +421,17 @@ int exult_main(const char *runpath)
 	Mouse::mouse->set_shape(Mouse::hand);
 
 	int result = Play();		// start game
+
+#ifdef WIN32
+	// Currently, leaving the game results in destruction of the window.
+	//  Maybe sometime in the future, there is an option like "return to
+	//  main menu and select another scenario". Becaule DnD isn't registered until
+	//  you really enter the game, we remove it here to prevent possible bugs
+	//  invilved with registering DnD a second time over an old variable.
+    RevokeDragDrop(hgwin);
+	delete windnd;
+#endif
+
 	return result;
 }
 
@@ -537,7 +553,15 @@ static void Init
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
 		info.info.x11.window, Move_dragged_shape, 
 				Drop_dragged_shape, Drop_dragged_chunk);
-#endif	
+#else
+	SDL_GetWMInfo(&info);
+	hgwin = info.window;
+    OleInitialize(NULL);
+	windnd = new Windnd(hgwin, Drop_dragged_shape, Drop_dragged_chunk);
+	if (FAILED(RegisterDragDrop(hgwin, windnd))) {
+	     cout << "Something's wrong with OLE2 ..." << endl;
+	};
+#endif
 #endif
 }
 
