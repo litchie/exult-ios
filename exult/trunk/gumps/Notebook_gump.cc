@@ -38,20 +38,21 @@ vector<Notebook_top_left> Notebook_gump::page_info;
 
 const int font = 4;			// Small black.
 const int vlead = 1;			// Extra inter-line spacing.
-
+const int pagey = 10;			// Top of page.
 /*
  *	setup one note (from already-allocated text).
  */
 
 void One_note::set
 	(
-	int d, int h, 
+	int d, int h, int m,
 	int la, int ln, 
 	char *txt
 	)
 	{
 	day = d;
 	hour = h;
+	minute = m;
 	lat = la;
 	lng = ln;
 	delete text;
@@ -63,10 +64,15 @@ void One_note::set
  *	Get left/right text area.
  */
 
-inline Rectangle Get_text_area(bool right)
+inline Rectangle Get_text_area(bool right, bool startnote)
 	{
-	return right ? Rectangle(174, 10, 122, 130)
-		     : Rectangle(36, 10, 122, 130);
+	const int ninf = 12;		// Space for note info.
+	if (!startnote)
+		return right ? Rectangle(174, pagey, 122, 130)
+			     : Rectangle(36, pagey, 122, 130);
+	else
+		return right ? Rectangle(174, pagey+ninf, 122, 130-ninf)
+			     : Rectangle(36, pagey+ninf, 122, 130-ninf);
 	}
 
 /*
@@ -114,10 +120,11 @@ Notebook_gump::Notebook_gump
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
  	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
 	// ++++TESTING:
-	notes.push_back(new One_note(1, 1, 10, 10, strdup("Note  #1\nHello")));
-	notes.push_back(new One_note(2, 2, 20, 20, strdup(
+	notes.push_back(new One_note(1, 1,10, 10, 10, 
+				strdup("Note  #1\nHello")));
+	notes.push_back(new One_note(2, 2,20, 20, 20, strdup(
 				"Note  #2\nworld.\n\nHow are you?")));
-	notes.push_back(new One_note(3, 3, 30, 30, strdup(
+	notes.push_back(new One_note(3, 3,30, 30, 30, strdup(
 				"Note #3")));
 	}
 Notebook_gump *Notebook_gump::create
@@ -153,6 +160,15 @@ int Notebook_gump::paint_page
 	int pagenum
 	)
 {
+	if (start == 0)			// Print note info. at start.
+		{
+		char buf[60];
+		snprintf(buf, sizeof(buf), "Day %d, %02d:%02d",
+			note->day, note->hour, note->minute);
+		sman->paint_text(2, buf, x + box.x, y + pagey);
+		gwin->get_win()->fill8(sman->get_special_pixel(CHARMED_PIXEL),
+			box.w, 1, x + box.x, y + box.y - 3);
+		}
 	int textheight = sman->get_text_height(font) + vlead;
 	char *str = note->text + start;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
@@ -218,11 +234,11 @@ Gump_button *Notebook_gump::on_button
 		return leftpage;
 	else if (rightpage->on_button(mx, my))
 		return rightpage;
-	Rectangle box = Get_text_area(false);	// Left page.
 	int curnote = page_info[curpage/2].notenum;
 	if (curnote < 0)
 		return 0;
 	int offset = page_info[curpage/2].offset;
+	Rectangle box = Get_text_area(false, offset == 0);	// Left page.
 	One_note *note = notes[curnote];
 	int coff = sman->find_cursor(font, note->text + offset, x + box.x,
 			y + box.y, box.w, box.h, mx, my, vlead);
@@ -242,7 +258,7 @@ Gump_button *Notebook_gump::on_button
 			note = notes[++curnote];
 			offset = 0;
 			}
-		box = Get_text_area(true);	// Right page.
+		box = Get_text_area(true, offset == 0);	// Right page.
 		coff = sman->find_cursor(font, note->text + offset, x + box.x,
 			y + box.y, box.w, box.h, mx, my, vlead);
 		if (coff >= 0)			// Found it?
@@ -273,7 +289,8 @@ void Notebook_gump::paint
 	One_note *note = notes[curnote];
 	int topleft = curpage & ~1;
 					// Paint left page.
-	offset = paint_page(Get_text_area(false), note, offset, topleft);
+	offset = paint_page(Get_text_area(false, offset == 0), 
+						note, offset, topleft);
 	if (offset >= note->textlen)	// Finished note?
 		{
 		if (curnote == notes.size() - 1)
@@ -283,7 +300,8 @@ void Notebook_gump::paint
 		offset = 0;
 		}
 					// Paint right page.
-	offset = paint_page(Get_text_area(true), note, offset, topleft + 1);
+	offset = paint_page(Get_text_area(true, offset == 0), 
+						note, offset, topleft + 1);
 	if (offset >= note->textlen)	// Finished note?
 		{
 		if (curnote == notes.size() - 1)
