@@ -294,26 +294,22 @@ on_group_list_cursor_changed		(GtkTreeView	*tview)
 	ExultStudio::get_instance()->setup_group_controls();
 }
 
-#if 0
-C_EXPORT void
-on_group_list_row_move			(GtkCList	*clist,
-					 gint		src_row,
-					 gint		dest_row,
-					 gpointer	 user_data)
-{
-	ExultStudio::get_instance()->move_group(src_row, dest_row);
-}
-#endif
-
 void
 on_group_list_row_inserted		(GtkTreeModel *model,
 					 GtkTreePath *path,
 					 GtkTreeIter *iter,
 					 gpointer user_data)
 {
-cout << "In row_inserted.  Row = " << Get_tree_row(model, iter) << endl;
-	ExultStudio *studio = ExultStudio::get_instance();
-	//+++++FINISH.
+	ExultStudio::get_instance()->groups_changed(model, path, iter);
+}
+
+void
+on_group_list_row_changed		(GtkTreeModel *model,
+					 GtkTreePath *path,
+					 GtkTreeIter *iter,
+					 gpointer user_data)
+{
+	ExultStudio::get_instance()->groups_changed(model, path, iter, true);
 }
 
 void
@@ -321,9 +317,7 @@ on_group_list_row_deleted		(GtkTreeModel *model,
 					 GtkTreePath *path,
 					 gpointer user_data)
 {
-cout << "In row_deleted.  Row = " << Get_tree_row(path) << endl;
-	ExultStudio *studio = ExultStudio::get_instance();
-	//+++++FINISH.
+	ExultStudio::get_instance()->groups_changed(model, path, 0);
 }
 
 C_EXPORT void
@@ -339,7 +333,7 @@ on_group_list_row_activated		(GtkTreeView	*treeview,
 enum
 {
   GRP_FILE_COLUMN = 0,
-  GRP_ROWNUM_COLUMN,
+  GRP_GROUP_COLUMN,
   GRP_NUM_COLUMNS
 };
 
@@ -362,10 +356,11 @@ void ExultStudio::setup_groups
 				glade_xml_get_widget(app_xml, "group_list"));
 	GtkTreeModel *oldmod = gtk_tree_view_get_model(tview);
 	GtkTreeStore *model;
+	gulong addsig = 0, delsig = 0, chgsig = 0;
 	if (!oldmod)			// Create model first time.
 		{
   		model = gtk_tree_store_new(GRP_NUM_COLUMNS, 
-						G_TYPE_STRING, G_TYPE_INT);
+						G_TYPE_STRING, G_TYPE_POINTER);
 		gtk_tree_view_set_model(tview, GTK_TREE_MODEL(model));
 		g_object_unref(model);
 					// Create column.
@@ -379,13 +374,34 @@ void ExultStudio::setup_groups
 		GtkTreeViewColumn *column = gtk_tree_view_get_column(tview, 
 							col_offset - 1);
 		gtk_tree_view_column_set_clickable(column, TRUE);
-		g_signal_connect(G_OBJECT(model), "row-inserted",
+		addsig = g_signal_connect(G_OBJECT(model), "row-inserted",
 			GTK_SIGNAL_FUNC(on_group_list_row_inserted), this);
-		g_signal_connect(G_OBJECT(model), "row-deleted",
+					// Store signal id with model.
+		g_object_set_data(G_OBJECT(model), "row-inserted",
+							(gpointer) addsig);
+		delsig = g_signal_connect(G_OBJECT(model), "row-deleted",
 			GTK_SIGNAL_FUNC(on_group_list_row_deleted), this);
+		g_object_set_data(G_OBJECT(model), "row-deleted",
+							(gpointer) delsig);
+		chgsig = g_signal_connect(G_OBJECT(model), "row-changed",
+			GTK_SIGNAL_FUNC(on_group_list_row_changed), this);
+		g_object_set_data(G_OBJECT(model), "row-changed",
+							(gpointer) delsig);
 		}
 	else
+		{
 		model = GTK_TREE_STORE(oldmod);
+		addsig = (gulong) g_object_get_data(G_OBJECT(model), 
+							"row-inserted");
+		delsig = (gulong) g_object_get_data(G_OBJECT(model), 
+							"row-deleted");
+		chgsig = (gulong) g_object_get_data(G_OBJECT(model), 
+							"row-changed");
+		}
+					// Block this signal during creation.
+	g_signal_handler_block(model, addsig);
+	g_signal_handler_block(model, delsig);
+	g_signal_handler_block(model, chgsig);
 	gtk_tree_store_clear(model);
 	set_visible("groups_frame", TRUE);
 	gtk_tree_view_set_reorderable(tview, TRUE);
@@ -397,10 +413,13 @@ void ExultStudio::setup_groups
 		gtk_tree_store_append(model, &iter, NULL);
 		gtk_tree_store_set(model, &iter,
 			GRP_FILE_COLUMN, grp->get_name(),
-			GRP_ROWNUM_COLUMN, i,
+			GRP_GROUP_COLUMN, grp,
 			-1);
 		}
 	gtk_tree_view_set_rules_hint(tview, TRUE);
+	g_signal_handler_unblock(model, addsig);
+	g_signal_handler_unblock(model, delsig);
+	g_signal_handler_unblock(model, chgsig);
 	setup_group_controls();		// Enable/disable the controls.
 	}
 
@@ -451,13 +470,12 @@ void ExultStudio::add_group
 					// Make sure name isn't already there.
 	if (nm && *nm && groups->find(nm) < 0)
 		{
-		int num = groups->size();
-		groups->add(new Shape_group(nm, groups));
+		Shape_group *grp = new Shape_group(nm, groups);
 		GtkTreeIter iter;
 		gtk_tree_store_append(model, &iter, NULL);
 		gtk_tree_store_set(model, &iter,
 			GRP_FILE_COLUMN, nm,
-			GRP_ROWNUM_COLUMN, num,
+			GRP_GROUP_COLUMN, grp,
 			-1);
 		}
 	set_entry("groups_new_name", "");
@@ -487,7 +505,7 @@ void ExultStudio::del_group
 	int choice = prompt(msg.c_str(), "Yes", "No");
 	if (choice != 0)		// Yes?
 		return;
-	groups->remove(row, true);
+	delete groups->get(row);	// Delete the group.
 	gtk_tree_store_remove(GTK_TREE_STORE(model), &iter);
 					// Close the group's windows.
 	vector<GtkWindow*> toclose;
@@ -505,25 +523,34 @@ void ExultStudio::del_group
 	}
 
 /*
- *	Move a group in the list.
+ *	A group has been inserted or deleted from the list.
  */
 
-void ExultStudio::move_group
+void ExultStudio::groups_changed
 	(
-	int src_row,
-	int dest_row
+	GtkTreeModel *model,
+	GtkTreePath *path,		// Position.
+	GtkTreeIter *loc,		// Insert/change location, or 0.
+	bool value			// True if value changed at loc.
 	)
 	{
 	if (!curfile)
 		return;
-//++++++Rewrite.
-	GtkCList *clist = GTK_CLIST(
-				glade_xml_get_widget(app_xml, "group_list"));
-//	cout << "Row " << src_row << " moved to row " << dest_row << endl;
 	Shape_group_file *groups = curfile->get_groups();
-	Shape_group *grp = groups->get(src_row);
-	groups->remove(src_row, false);	// Remove from old pos.
-	groups->insert(grp, dest_row);	// Put into new spot.
+	int row = Get_tree_row(path);
+	if (!loc)
+		groups->remove(row, false);
+	else
+		{
+		void *grpaddr = 0;
+		gtk_tree_model_get(model, loc, GRP_GROUP_COLUMN, &grpaddr,
+								-1);
+		Shape_group *grp = (Shape_group *) grpaddr;
+		if (value)		// Changed?
+			groups->set(grp, row);
+		else
+			groups->insert(grp, row);
+		}
 	}
 
 /*
