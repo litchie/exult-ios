@@ -626,6 +626,25 @@ void Combat_schedule::im_dormant
 	}
 
 /*
+ *	Leaving combat.
+ */
+
+void Combat_schedule::ending
+	(
+	int /* newtype */
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (gwin->get_main_actor() == npc)
+		{			// See if being a coward.
+		find_opponents();
+		if (!opponents.empty())
+			Audio::get_ptr()->start_music_combat(CSRun_Away,
+								false);
+		}
+	}
+
+/*
  *	Set opponent.  (Gets called when you double-click on one.)
  */
 
