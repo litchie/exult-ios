@@ -1,3 +1,10 @@
+2001-11-21 Ryan Nunn <triforce@merlin.net.au>
+	* Makefile.am: Added msvcstuff files to EXTRA_DIST
+	* README.win32: Added MSVC build instructions.
+	* msvcstuff/Zip.dsp: ZIP File support project for MSVC.
+	* msvcstuff/Exult?Tools.dsp: Removing Space in filename.
+	* msvcstuff/exconfig/exconfig.dsp: Needs to be Binary in CVS.
+
 2001-11-18  Max Horn  <max@quendi.de>
 
 	* audio/midi_drivers/mac_midi.cc: fixed crash on exit when music is disabled
