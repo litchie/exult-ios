@@ -28,6 +28,7 @@ class CheatScreen;
 class Actor;
 class Game_object;
 class Tile_coord;
+class Effects_manager;
 
 class Cheat
 {
@@ -44,6 +45,7 @@ class Cheat
   };
 private:
   Game_window *gwin;
+  Effects_manager *eman;
   ShapeBrowser *browser;
   SoundTester *tester;
   CheatScreen *cscreen;

@@ -32,6 +32,34 @@ class Game_window;
 class Image_window8;
 class Shape_frame;
 class Actor;
+class Special_effect;
+
+/*
+ *	Manage special effects.
+ */
+class Effects_manager
+	{
+	Game_window *gwin;		// Handy pointer.
+	Special_effect *effects;	// Text snippets, sprite effects.
+public:
+	Effects_manager(Game_window *g) : gwin(g), effects(0)
+		{  }
+	~Effects_manager();
+					// Add text item.
+	void add_text(const char *msg, Game_object *item);
+	void add_text(const char *msg, int x, int y);
+	void center_text(const char *msg);
+	void add_effect(Special_effect *effect);
+	void remove_text_effect(Game_object *item);
+					// Remove text item & delete it.
+	void remove_effect(Special_effect *txt);
+	void remove_all_effects(bool repaint=false);
+	void remove_text_effects();
+					// Remove just the weather.
+	void remove_weather_effects(int dist = 0);
+	int get_weather();		// Get # of last weather added.
+	void paint();			// Draw all effects.
+	};
 
 /*
  *	Base class for special-effects:
@@ -41,7 +69,7 @@ class Special_effect : public Time_sensitive
 	Special_effect *next, *prev;	// All of them are chained together in
 					//   Game_window.
 public:
-	friend class Game_window;
+	friend class Effects_manager;
 	Special_effect() : next(0), prev(0)
 		{  }
 	virtual ~Special_effect()

@@ -62,7 +62,7 @@
 #include "actions.h"
 #include "stackframe.h"
 #include "ucfunction.h"
-
+#include "effects.h"
 
 #if (defined(USE_EXULTSTUDIO) && defined(USECODE_DEBUGGER))
 #include "server.h"
@@ -580,7 +580,7 @@ void Usecode_internal::show_npc_face
 			shape = -1;
 		}
 	if (!conv->get_num_faces_on_screen())
-		gwin->remove_text_effects();
+		gwin->get_effects()->remove_text_effects();
 	// Only non persitent
 	if (gwin->get_gump_man()->showing_gumps(true))
 		{
@@ -769,9 +769,10 @@ void Usecode_internal::item_say
 	const char *str = strval.get_str_value();
 	if (obj && str && *str)
 		{
+		Effects_manager *eman = gwin->get_effects();
 					// Added Nov01,01 to fix 'locate':
-		gwin->remove_text_effect(obj);
-		gwin->add_text(str, obj);
+		eman->remove_text_effect(obj);
+		eman->add_text(str, obj);
 		}
 	}
 

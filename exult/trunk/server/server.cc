@@ -68,6 +68,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunkter.h"
 #include "cheat.h"
 #include "objserial.h"
+#include "effects.h"
 
 #ifdef USECODE_DEBUGGER
 #include "debugserver.h"
@@ -344,7 +345,7 @@ static void Handle_client_message
 		else if (onoff == -1)
 			gwin->get_map()->abort_terrain_edits();
 		if (onoff >= -1 && onoff <= 1)
-			gwin->center_text(msgs[onoff + 1]);
+			gwin->get_effects()->center_text(msgs[onoff + 1]);
 		gwin->set_all_dirty();
 		break;
 		}

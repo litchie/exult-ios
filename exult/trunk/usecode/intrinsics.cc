@@ -1019,7 +1019,7 @@ USECODE_INTRINSIC(clear_item_say)
 	// Clear str. near item (item).
 	Game_object *item = get_item(parms[0]);
 	if (item)
-		gwin->remove_text_effect(item);
+		gwin->get_effects()->remove_text_effect(item);
 	return(no_ret);
 }
 
@@ -1036,7 +1036,8 @@ USECODE_INTRINSIC(projectile_effect)
 	if (!attacker)
 		return Usecode_value(0);
 	int shnum = parms[2].get_int_value();
-	gwin->add_effect(new Projectile_effect(attacker, to, shnum));
+	gwin->get_effects()->add_effect(
+				new Projectile_effect(attacker, to, shnum));
 
 	return Usecode_value(0);	// Not sure what this should be.
 }
@@ -1069,7 +1070,7 @@ USECODE_INTRINSIC(set_lift)
 USECODE_INTRINSIC(get_weather)
 {
 	// Get_weather()
-	return Usecode_value(gwin->get_weather());
+	return Usecode_value(gwin->get_effects()->get_weather());
 }
 
 USECODE_INTRINSIC(set_weather)
@@ -1375,7 +1376,8 @@ USECODE_INTRINSIC(sprite_effect)
 	// Display animation from sprites.vga.
 	// show_sprite(sprite#, tx, ty, dx, dy, frame, length??);
 					// ++++++Pass frame, length+++++++
-	gwin->add_effect(new Sprites_effect(parms[0].get_int_value(),
+	gwin->get_effects()->add_effect(
+		new Sprites_effect(parms[0].get_int_value(),
 		Tile_coord(parms[1].get_int_value(), parms[2].get_int_value(),
 									0),
 			parms[3].get_int_value(), parms[4].get_int_value()));
@@ -1389,8 +1391,8 @@ USECODE_INTRINSIC(obj_sprite_effect)
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
 					// ++++++Pass frame, length+++++++
-		gwin->add_effect(new Sprites_effect(parms[1].get_int_value(),
-			obj,
+		gwin->get_effects()->add_effect(
+			new Sprites_effect(parms[1].get_int_value(), obj,
 			-parms[2].get_int_value(), -parms[3].get_int_value(),
 			parms[4].get_int_value(), parms[5].get_int_value()));
 	return(no_ret);
@@ -1404,7 +1406,7 @@ USECODE_INTRINSIC(explode)
 		return Usecode_value(0);
 	Tile_coord pos = exp->get_tile();
 					// Sprite 1,4,5 look like explosions.
-	gwin->add_effect(new Explosion_effect(pos, exp));
+	gwin->get_effects()->add_effect(new Explosion_effect(pos, exp));
 	return Usecode_value(1);
 }
 
@@ -1517,7 +1519,7 @@ USECODE_INTRINSIC(halt_scheduled)
 USECODE_INTRINSIC(lightning)
 {
 					// 1 sec. is long enough for 1 flash.
-	gwin->add_effect(new Lightning_effect(1000));
+	gwin->get_effects()->add_effect(new Lightning_effect(1000));
 	return no_ret;
 }
 
@@ -1882,7 +1884,7 @@ USECODE_INTRINSIC(fire_cannon)
 	Tile_coord blastpos = pos + Tile_coord(
 				blastoff[2*dir], blastoff[2*dir + 1], 0);
 					// Sprite 5 is a small explosion.
-	gwin->add_effect(new Sprites_effect(5, blastpos));
+	gwin->get_effects()->add_effect(new Sprites_effect(5, blastpos));
 	Tile_coord dest = pos;
 	switch (dir)			// Figure where to aim.
 		{
@@ -1892,7 +1894,8 @@ USECODE_INTRINSIC(fire_cannon)
 	case 3: dest.tx -= dist; break;
 		}
 					// Shoot cannonball.
-	gwin->add_effect(new Projectile_effect(blastpos, dest, ball, cshape));
+	gwin->get_effects()->add_effect(
+			new Projectile_effect(blastpos, dest, ball, cshape));
 	return no_ret;
 }
 

@@ -623,7 +623,7 @@ void Game_object::say
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	gwin->add_text(text, this);
+	gwin->get_effects()->add_text(text, this);
 	}
 
 /*
@@ -1528,8 +1528,8 @@ Game_object *Game_object::attacked
 			// marked already detonating powderkegs with quality
 			if (get_quality()==0) {
 				Tile_coord pos = get_tile();
-				gwin->add_effect(new Explosion_effect(pos, 
-									this));
+				gwin->get_effects()->add_effect(
+					new Explosion_effect(pos, this));
 			}
 		}
 					// Arrow hitting practice targt?
@@ -1564,9 +1564,9 @@ Game_object *Game_object::attacked
 
 	if (wpoints >= hp) {
 		// object destroyed
-		gwin->remove_text_effect(this);	// Avoids crash.
-		gwin->get_usecode()->call_usecode(0x626, this,Usecode_machine::weapon);
-
+		gwin->get_effects()->remove_text_effect(this);
+		gwin->get_usecode()->call_usecode(0x626, this,
+						Usecode_machine::weapon);
 		return 0;
 	} else {
 		set_obj_hp(hp - wpoints);

@@ -59,7 +59,6 @@ class Npc_actor;
 class Npc_face_info;
 class Npc_proximity_handler;
 class Palette;
-class Special_effect;
 class Time_queue;
 class Usecode_machine;
 class Deleted_objects;
@@ -73,6 +72,7 @@ class Shape_manager;
 class ShapeID;
 class Shape_info;
 class Game_render;
+class Effects_manager;
 
 					// Special pixels.
 enum Pixel_colors {POISON_PIXEL = 0, PROTECT_PIXEL, CURSED_PIXEL, HIT_PIXEL,
@@ -95,7 +95,7 @@ class Game_window
 	long time_stopped;		// For 'stop time' spell.
 	int std_delay;			// Standard delay between frames.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
-	Special_effect *effects;	// Text snippets, sprite effects.
+	Effects_manager *effects;	// Manages special effects.
 	Gump_manager *gump_man;		// Open containers on screen.
 	Game_render *render;		// Helps with rendering.
 	bool painted;			// true if we updated image buffer.
@@ -480,19 +480,8 @@ public:
 	ShapeID get_flat(int x, int y);	// Return terrain (x, y) is in.
 					// Schedule object for deletion.
 	void delete_object(Game_object *obj);
-					// Add text item.
-	void add_text(const char *msg, Game_object *item);
-	void add_text(const char *msg, int x, int y);
-	void center_text(const char *msg);
-	void add_effect(Special_effect *effect);
-	void remove_text_effect(Game_object *item);
-					// Remove text item & delete it.
-	void remove_effect(Special_effect *txt);
-	void remove_all_effects(bool repaint=false);
-	void remove_text_effects();
-					// Remove just the weather.
-	void remove_weather_effects(int dist = 0);
-	int get_weather();		// Get # of last weather added.
+	Effects_manager *get_effects()
+		{ return effects; }
 					// Handle a double-click in window.
 	void double_clicked(int x, int y);
 					// Add npc to 'nearby' list.
