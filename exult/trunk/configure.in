@@ -225,7 +225,7 @@ AC_MSG_CHECKING(whether to enable debug)
 if test x$enable_debug = xyes; then
   AC_MSG_RESULT(yes)
   AC_DEFINE(DEBUG)
-  DEBUG_FLAGS="-g"
+  DEBUG_FLAGS="-O -g -Wunused -Wuninitialized -Woverloaded-virtual"
 else
   AC_MSG_RESULT(no)
 fi
