@@ -23,9 +23,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 template<class T>
 class T_Object_iterator;
-template<class T>
+template<class T, class L>
 class T_Flat_object_iterator;
-template<class T>
+template<class T, class L>
 class T_Object_iterator_backwards;
 
 /*
@@ -36,8 +36,8 @@ template<class T>
 class T_Object_list
 	{
 	friend class T_Object_iterator<T>;
-	friend class T_Flat_object_iterator<T>;
-	friend class T_Object_iterator_backwards<T>;
+	friend class T_Flat_object_iterator<T, class L>;
+	friend class T_Object_iterator_backwards<T, class L>;
 
 	T first;		// ->first in (circular) chain.
 	unsigned short iter_count;	// # of iterators.
@@ -59,7 +59,12 @@ public:
 			}
 		while (obj != first);
 		}
-	void report_problem();		// Message if iterators exist.
+					// Report iterator problem.
+	void report_problem()
+		{
+			std::cerr << "Danger! Danger! Object list modified while being iterated." << std::endl;
+			std::cerr.flush();
+		}
 	int is_empty()
 		{ return first == 0; }
 	void add_iterator()
