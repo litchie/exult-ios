@@ -31,6 +31,10 @@
 #include <cstring>
 #include "mouse.h"
 
+#ifdef _AIX
+#include <strings.h>
+#endif
+
 #ifndef XWIN
 #include "SDL_timer.h"
 #endif

@@ -257,6 +257,7 @@ public:
 		{ return get_shape_class() == quantity; }
 	bool has_quality()
 		{
+#if 0
 		static bool qual[16] = 	// Ugly, but quick.
 		//			quality
 		      { false,	false,	true,	false,	false, 	false,
@@ -264,9 +265,10 @@ public:
 			true,	true,	false,	false,	false,	true,
 		//	monst	human
 			true,	true,	false,	false };
-
+#endif
 		Shape_class c = get_shape_class();
-		return qual[(int) c];
+		return (c == 2 || c == 6 || c == 7 || c == 11 || c == 12 || c == 13);
+		//		return qual[(int) c];
 		}
 	bool occludes() const
 		{ return occludes_flag; }
