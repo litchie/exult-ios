@@ -2052,15 +2052,25 @@ USECODE_INTRINSIC(move_object)
 		for (int i = 0; i < cnt; i++)
 			{
 			Game_object *obj = get_item(party.get_elem(i));
-			if (obj)
-				obj->move(tile.tx, tile.ty, tile.tz);
+			if (!obj)
+				continue;
+			obj->move(tile.tx, tile.ty, tile.tz);
+					// Fixes moongate bug:
+			if (obj == gwin->get_main_actor() ||
+			    obj->get_npc_num() > 0)
+				((Actor *) obj)->set_action(0);
 			}
 		}
 	else
 		{
 		Game_object *obj = get_item(parms[0]);
 		if (obj)
+			{
 			obj->move(tile.tx, tile.ty, tile.tz);
+			if (obj == gwin->get_main_actor() ||
+			    obj->get_npc_num() > 0)
+				((Actor *) obj)->set_action(0);
+			}
 		}
 	gwin->center_view(tile);	// Make new loc. visible.
 	return(no_ret);
@@ -2268,6 +2278,13 @@ USECODE_INTRINSIC(run_usecode)
 		u = Usecode_value(1);	// Success.
 		}
 	return(u);
+}
+
+USECODE_INTRINSIC(close_gumps)
+{
+	// Guessing+++++ close all gumps.
+	gwin->end_gump_mode();
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(is_not_blocked)
@@ -2489,7 +2506,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x67
 	USECODE_INTRINSIC_PTR(mouse_exists),	// 0x68
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x69     GetSpeechTrack (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6a  +++++++Show red X??
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6c
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6d
@@ -2509,7 +2526,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7c
 	USECODE_INTRINSIC_PTR(run_usecode),	// 0x7d
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7e     PlaySpeech (ucdump.c)
+	USECODE_INTRINSIC_PTR(close_gumps),	// 0x7e   PlaySpeech (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7f
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x81

@@ -87,9 +87,14 @@ int Actor_pathfinder_client::get_step_cost
 	else
 		cost *= 2;
 					// Get 'flat' shapenum.
-	int shapenum = olist->get_flat(tx, ty).get_shapenum();
+	ShapeID flat = olist->get_flat(tx, ty);
+	int shapenum = flat.get_shapenum();
 	if (shapenum == 24)		// Cobblestone path in BlackGate?
-		cost--;
+		{
+		int framenum = flat.get_framenum();
+		if (framenum <= 1)
+			cost--;
+		}
 	return (cost);
 	}
 

@@ -683,7 +683,8 @@ void Game_window::read_ireg_objects
 					// An "egg"?
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
-			Egg_object *egg = create_egg(entry);
+			Egg_object *egg = create_egg(entry,
+							info.is_animated());
 			get_objects(scx + cx, scy + cy)->add_egg(egg);
 			continue;
 			}
@@ -729,7 +730,8 @@ void Game_window::read_ireg_objects
 
 Egg_object *Game_window::create_egg
 	(
-	unsigned char *entry		// 1-byte ireg entry.
+	unsigned char *entry,		// 1-byte ireg entry.
+	int animated
 	)
 	{
 	unsigned short type = entry[4] + 256*entry[5];
@@ -737,9 +739,13 @@ Egg_object *Game_window::create_egg
 	int data1 = entry[7] + 256*entry[8];
 	int lift = entry[9] >> 4;
 	int data2 = entry[10] + 256*entry[11];
-	Egg_object *obj = new Egg_object(entry[2], entry[3], 
-		entry[0]&0xf, entry[1]&0xf, lift, type, prob,
-		data1, data2);
+	Egg_object *obj = animated ?
+		new Animated_egg_object(entry[2], entry[3], 
+			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
+						data1, data2)
+		: new Egg_object(entry[2], entry[3], 
+			entry[0]&0xf, entry[1]&0xf, lift, type, prob,
+						data1, data2);
 	return (obj);
 	}
 
