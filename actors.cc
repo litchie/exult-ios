@@ -756,9 +756,10 @@ void Actor::die
 	gwin->add_dirty(this);		// Want to repaint area.
 					// Get location.
 	Tile_coord pos = get_abs_tile_coord();
+	set_action(0);
 	remove_this(1);			// Remove (but don't delete this).
 	int shnum = 400;		// +++++Figure out correct shape.
-	int frnum = 0;			// +++++
+	int frnum = 3;			// +++++
 					// Put body here.
 	Container_game_object *body = new Container_game_object(
 							shnum, frnum, 0, 0);
@@ -1356,7 +1357,7 @@ Monster_actor *Monster_info::create
 	monster->move(0, chunkx, chunky, olist, tilex, tiley, 0, lift);
 					// ++++++For now:
 	monster->set_schedule_type(Schedule::loiter);
-#if 0	/* +++++++Enable when tested. */
+#if 1	/* +++++++Enable when tested. */
 					// Get equipment.
 	if (!equip_offset || equip_offset - 1 >= equip_cnt)
 		return (monster);	// Out of range.
