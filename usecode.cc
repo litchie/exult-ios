@@ -2069,6 +2069,7 @@ USECODE_INTRINSIC(is_pc_female)
 
 USECODE_INTRINSIC(run_endgame)
 {
+	gwin->end_game();
 	return(no_ret);
 }
 

@@ -29,7 +29,6 @@
 #define U7CHUNKS	"static/u7chunks"
 #define U7MAP		"static/u7map"
 #define TEXT_FLX	"static/text.flx"
-#define AVATAR_TTF	"avatar.ttf"
 #define U7IFIX		"static/u7ifix"
 #define U7IREG		"gamedat/u7ireg"
 #define PALETTES_FLX	"static/palettes.flx"

@@ -791,6 +791,9 @@ static void Handle_keystroke
 		gwin->get_win()->toggle_fullscreen();
 		gwin->paint();
 		break;
+	case SDLK_F10:
+		gwin->end_game();
+		break;
 	default:
 		break;
 	}
