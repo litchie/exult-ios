@@ -187,6 +187,8 @@ class UCFunc
 		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0),
 		           _return_var(false) {};
 
+		void output_list(ostream &o, unsigned int funcno, bool debug);
+		
 		// temp passing UCData, probably shouldn't need it.
 		void output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment);
 		ostream &output_ucs_funcname(ostream &o, unsigned int funcid, unsigned int num_args, bool return_var);
@@ -227,13 +229,15 @@ class UCFunc
 		
 		bool           _return_var; // does the function return a variable?
 		
-		// the following vars are for data compatibility with the original UCFunc
 		unsigned short codesize() const { return _funcsize - _datasize; };
+		
+		// the following vars are for data compatibility with the original UCFunc
 		vector<FlagData *>   _flagcount;
 		UCNode node;
 };
 
 void readbin_UCFunc(ifstream &f, UCFunc &ucf);
+class UCData;
 void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCData &uc);
 
 #endif

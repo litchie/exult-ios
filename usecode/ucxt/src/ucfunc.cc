@@ -61,6 +61,22 @@ inline ostream &tab_indent(const unsigned int indent, ostream &o)
 	return o;
 }
 
+void UCFunc::output_list(ostream &o, unsigned int funcno, bool debug)
+{
+	o << "#" << setbase(10) << setw(4) << funcno << setbase(16) << ": "
+	  << (_return_var ? '&' : ' ')
+	  << setw(4) << _funcid    << "H  "
+	  << setw(8) << _offset    << "  "
+	  << setw(4) << _funcsize  << "  "
+	  << setw(4) << _datasize  << "  "
+	  << setw(4) << codesize() << "  ";
+	
+	if(debug)
+		o << _data.find(0)->second;
+	
+	o << endl;
+}
+
 void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment)
 {
 	unsigned int indent=0;
@@ -156,10 +172,8 @@ void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<
 
 void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, const map<unsigned int, string> &intrinsics, unsigned int indent)
 {
-	//if(gnubraces) o << '\t';
 	if(!ucn->nodelist.empty()) tab_indent(indent, o) << '{' << endl;
 	
-	//assert(ucn->ucc!=0);
 	if(ucn->ucc!=0)
 		print_asm_opcode(tab_indent(indent, o), *this, funcmap, opcode_table_data, intrinsics, *(ucn->ucc));
 	
@@ -171,7 +185,6 @@ void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, co
 		}
 			
 	// end of func
-	//if(gnubraces) o << '\t';
 	if(!ucn->nodelist.empty()) tab_indent(indent, o) << '}' << endl;
 }
 
@@ -398,7 +411,7 @@ vector<UCc *> UCFunc::parse_ucs_pass2a(vector<pair<UCc *, bool> >::reverse_itera
 	return vucc;
 }
 
-/* The 'optomisation' phase. Attempting to remove as many goto...labels as possible. */
+/* The 'optimisation' phase. Attempting to remove as many goto...labels as possible. */
 void UCFunc::parse_ucs_pass3(vector<GotoSet> &gotoset, const map<unsigned int, string> &intrinsics)
 {
 
