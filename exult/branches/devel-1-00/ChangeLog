@@ -1,3 +1,7 @@
+2002-06-09  Ryan Nunn  <triforce@merlin.net.au>
+	* gumps/Paperdoll_gump.cc : Fixing up cosmetic problem with belt slot
+	  items lacking paperdoll art.
+
 2002-06-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* autogen.sh: always include /usr/local/share/aclocal if it exists
 

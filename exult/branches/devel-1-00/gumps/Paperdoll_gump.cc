@@ -62,7 +62,7 @@ short Paperdoll_gump::halox = 123, Paperdoll_gump::haloy = 120;
 
 short Paperdoll_gump::coords[36] = {
 	76, 20,		/* head */	115, 27,	/* back */
-	92,  61,	/* belt */	38, 55,		/* lhand */
+	105, 65,	/* belt */	38, 55,		/* lhand */
 	55, 62,		/* lfinger */	80, 80,		/* legs */
 	84, 105,	/* feet */	90, 50,		/* rfinger */
 	117, 55,	/* rhand */	83, 43,		/* torso */
@@ -73,7 +73,7 @@ short Paperdoll_gump::coords[36] = {
 };
 short Paperdoll_gump::coords_blue[36] = {
 	76, 20,		/* head */	64, 27,		/* back */
-	84, 61,		/* belt */	30, 58,		/* lhand */
+	54, 56,		/* belt */	30, 58,		/* lhand */
 	55, 62,		/* lfinger */	80, 80,		/* legs */
 	84, 105,	/* feet */	90, 50,		/* rfinger */
 	68, 50,		/* rhand */	83, 43,		/* torso */
