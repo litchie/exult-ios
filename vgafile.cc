@@ -587,7 +587,7 @@ Shape_frame *Shape::reflect
 	if (!reflected)
 		return (0);
 	framenum |= 32;			// Put back 'reflect' flag.
-	if (framenum >= num_frames - 1)	// Expand list of necessary.
+	if (framenum >= num_frames - 1)	// Expand list if necessary.
 		{
 		Shape_frame **newframes = new Shape_frame *[framenum + 1];
 		int i;
@@ -601,6 +601,20 @@ Shape_frame *Shape::reflect
 		}
 	frames[framenum] = reflected;	// Store new frame.
 	return reflected;
+	}
+
+/*
+ *	Call this to set num_frames and create 'frames' list.
+ */
+
+inline void Shape::create_frames_list
+	(
+	int nframes
+	)
+	{
+	num_frames = nframes;
+	frames = new Shape_frame *[num_frames];
+	memset((char *) frames, 0, num_frames * sizeof(Shape_frame *));
 	}
 
 /*
@@ -627,7 +641,7 @@ Shape_frame *Shape::read
 					// Read it in and get frame count.
 	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
-		num_frames = nframes;
+		create_frames_list(nframes);
 	if (framenum >= nframes &&	// Compare against #frames in file.
 	    (framenum&32))		// Reflection desired?
 		{
@@ -652,12 +666,14 @@ Shape_frame *Shape::store_frame
 	if (framenum >= num_frames)	// Something fishy?
 		{
 		delete frame;
+		cerr << "Shape::store_frame:  framenum >= num_frames"
+								<< endl;
 		return (0);
 		}
 	if (!frames)	// First one?
 		{
 		frames = new Shape_frame *[num_frames];
-		memset((char *) frames, 0, num_frames * sizeof(Shape *));
+		memset((char *) frames, 0, num_frames * sizeof(Shape_frame *));
 		}
 	frames[framenum] = frame;
 	return (frame);
@@ -671,6 +687,9 @@ Shape::~Shape()
 			delete frames[i];
 		delete [] frames;
 		}
+	else if (num_frames)
+		cerr << "Shape::~Shape():  'frames' is null, while num_frames="
+				<< (int) num_frames << endl;
 	}
 
 /*
@@ -689,7 +708,7 @@ Shape_file::Shape_file
 	StreamDataSource shape_source(&file);
 	unsigned long shapelen = shape_source.read4();
 					// Read frame 0 & get frame count.
-	num_frames = frame->read(shape_source, 0L, shapelen, 0);
+	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
 	store_frame(frame, 0);
 					// Get the rest.
 	for (int i = 1; i < num_frames; i++)
@@ -712,7 +731,7 @@ Shape_file::Shape_file
 	Shape_frame *frame = new Shape_frame();
 	unsigned long shapelen = shape_source.read4();
 					// Read frame 0 & get frame count.
-	num_frames = frame->read(shape_source, 0L, shapelen, 0);
+	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
 	store_frame(frame, 0);
 					// Get the rest.
 	for (int i = 1; i < num_frames; i++)

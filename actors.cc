@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "bodies.h"
 #include "Audio.h"
 #include "npctime.h"
+#include "game.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 const char Actor::attack_frames1[4] = {3, 4, 5, 6};
@@ -609,6 +610,9 @@ void Actor::set_schedule_type
 		case Schedule::hound:	// For now.
 		case Schedule::graze:
 			schedule = new Loiter_schedule(this);
+			break;
+		case Schedule::tend_shop:// For now.
+			schedule = new Loiter_schedule(this, 3);
 			break;
 		case Schedule::sleep:
 			schedule = new Sleep_schedule(this);
@@ -1558,36 +1562,43 @@ void Actor::set_actor_shape()
 
 	int sn;
 
-	if ((avatar->get_siflag (Actor::petra) && get_npc_num() == 0) ||
-		(!avatar->get_siflag (Actor::petra) && get_npc_num() != 0))
+	if (Game::get_game_type() == SERPENT_ISLE)
 	{
-		sn = 658;
+		if ((avatar->get_siflag (Actor::petra) && npc_num == 0) ||
+			(!avatar->get_siflag (Actor::petra) && npc_num != 0))
+		{
+			sn = 658;
+		}
+		else if (avatar->get_skin_color() == 0) // WH
+		{
+			sn = 1028+avatar->get_type_flag(Actor::tf_sex)+
+					6*avatar->get_siflag(Actor::naked);
+		}
+		else if (avatar->get_skin_color() == 1) // BN
+		{
+			sn = 1026+avatar->get_type_flag(Actor::tf_sex)+
+					6*avatar->get_siflag(Actor::naked);
+		}
+		else if (avatar->get_skin_color() == 2) // BK
+		{
+			sn = 1024+avatar->get_type_flag(Actor::tf_sex)+
+					6*avatar->get_siflag(Actor::naked);
+		}
 	}
-	else if (avatar->get_skin_color() == 0) // WH
-	{
-		sn = 1028+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
-	}
-	else if (avatar->get_skin_color() == 1) // BN
-	{
-		sn = 1026+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
-	}
-	else if (avatar->get_skin_color() == 2) // BK
-	{
-		sn = 1024+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
-	}
+					// Here if Black Gate:
 	else if (avatar->get_type_flag(Actor::tf_sex))
-	{
+		{
 		sn = 989;
-	}
-	else
-	{
-		sn = 721;
-	}
-			
+		}
+		else
+		{
+			sn = 721;
+		}
+	
 	set_shape (sn, get_framenum());
 
 	// Set petra
-	if (get_npc_num() != 28)
+	if (npc_num != 28)
 		gwin->get_npc(28)->set_actor_shape();
 }
 
@@ -1695,7 +1706,15 @@ void Npc_actor::paint
 		{
 		dormant = 0;		// But clear out old entries first.??
 		gwin->get_tqueue()->remove(this);
+//+++++NOOOOOOOOO!  Messes up iterator during painting!
+#if 0
 		schedule->now_what();	// Ask scheduler what to do.
+#else
+					// Force schedule->now_what().
+		unsigned long curtime = SDL_GetTicks();
+		gwin->get_tqueue()->add(curtime, this, (long) gwin);
+		set_action(new Null_action());
+#endif
 		}
 	if (!nearby)			// Make sure we're in 'nearby' list.
 		gwin->add_nearby_npc(this);
