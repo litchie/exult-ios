@@ -1,3 +1,7 @@
+2001-12-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* server.cc, gumps_utils.h: some minor changes for AIX 
+	* shapeinf.h: removed static var from inlined function
+
 2001-12-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/chunklst.cc: Added controls for 'chunks' list.
