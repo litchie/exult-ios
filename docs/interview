@@ -41,8 +41,12 @@ everyone, so if you're interested in what's going on behind the scenes,
 please join!   (You can do this through our project page at 
 http://www.sourceforge.net/projects/exult)
 
+Tristan:
+A good way to keep up with what's going on is subscribing to the
+Exult-cvs-logs mailing list (you can do that from the SourceForge page). You
+will get an e-mail everytime a developer commits something new to the code.
+I find it a very useful way to keep up with the project.
 
->
 > - How much support do you receive from Ultima-fans ?
 
 Jeff:
@@ -56,7 +60,6 @@ They really appreciate to be able to run it on their machines, and we get a lot
 of positive & helpful feedback, which is very encouraging.
 
 
->
 > - Did you try to get the permission from OSI before you began the project ?
 > Or are they helping you decode the scripts and/or engine itself ?
 >  (I heard the rumour that OSI itself lost the sourcecode for BG and
@@ -77,7 +80,6 @@ information from it. And I doubt the programmers still remember all the little
 details we'd need to know :/
 
 
->
 > - When Exult will be running fine, do you think Origin/EA would be
 > interested in using/selling it ??
 
@@ -86,7 +88,6 @@ That's part of the reason I've been emailing 'Lady MOI':-), but the idea hasn't
 gotten anywhere.  Origin/EA doesn't seem to be that interested in anything
 other than online games lately.
 
->
 > - There is a rumour about an Online-Version of U7 (with the Exult-Engine),
 > what is the truth behind that ? (I really would love that, since the
 > U7-online-project has obviously died some time ago...)
@@ -117,7 +118,6 @@ Willem Jan:
 Seriously though, Serpent Isle support has improved enormously over the last
 couple of versions.
 
->
 > - You mention in the FAQ problems with the german version and the lack of
 > testers for this one. Since we are a german site, maybe some of our readers
 > would like to test it, what shall they do then ?
@@ -150,6 +150,10 @@ Another piece needed for this is a compiler for Usecode, the script that runs
 U7's plots and conversations.  A first version has been written, but it needs
 a bit more work.
 
+Tristan:
+I've been slacking a bit on ExultStudio, but I hope to pick it up soon. It
+is currently Linux-only (because it is based on GTK+), but that won't be
+much of a problem as GTK+ is being ported to many things lately.
 
 > - When the Editor is available, will gather new adventures/sidequests/plots
 > from fans, and make them available on your website ??
@@ -159,7 +163,6 @@ That would be a good idea.  However, this is an area where we might need
 Origin's permission, since we'd be modifying a story that they own.
 
 
->
 > - Are you planning introduce more music, other graphics (maybe renders or
 > something)  etc in the running engine ?
 
@@ -175,7 +178,6 @@ graphics. We are working on adding graphics for those, and one or two items are 
 added. More will come.
 
 
->
 > - If BG and SI (??) are running perfect some day, will you start making new
 > plots with the engine, or maybe starting a new project like this ?
 
@@ -201,7 +203,6 @@ Since the graphics are Origin's, we couldn't legally use any of them without
 their permission.
 
 
->
 > - When do you think the Exult will be running (almost) perfect ? Any slight
 > timeplan ?
 
@@ -223,7 +224,6 @@ for now. But it will come eventually, maybe already tomorrow, maybe next year. I
 prefer earlier, though ;)
 
 
->
 > - With u7run now available, will still try to make Exult perfect ? (I heard
 > that the program did crashes some machines instead of working, but i have
 > no first-hand information on that...)
@@ -233,6 +233,12 @@ On the one hand, U7run makes Exult less necessary, at least for Windows users.
 On the other, it's been extremely helpful to me when I need to see how the
 original U7 does things.  Previously, I had to reboot my Windows machine to
 DOS to run U7; and it was such a pain that I rarely bothered.
+
+Tristan:
+The original goal of Exult was to make an U7 map-browser that ran under
+Linux and X11. Now it is a complete, multi-platform, open-source game
+architecture that happens to play U7. U7run is just a simple "fix" to get
+BG/SI to run under some (not all) Win32 platforms.
 
 
 > - Since U4 is now shareware, and there is no Ultima4-Remake with DS yet
