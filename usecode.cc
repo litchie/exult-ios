@@ -2676,6 +2676,26 @@ Usecode_machine::Usecode_machine
 	    last_created(0), removed(new Deleted_objects()), user_choice(0),
 	    String(0), stack(new Usecode_value[1024])
 	{
+	_init_(file);
+	}
+
+Usecode_machine::Usecode_machine
+	(
+	Game_window *gw
+	) : gwin(gw), call_depth(0), cur_function(0), book(0), caller_item(0),
+	    last_created(0), removed(new Deleted_objects()), user_choice(0),
+	    String(0), stack(new Usecode_value[1024])
+	{
+	ifstream file;                // Read in usecode.
+        U7open(file, USECODE);
+	_init_(file);
+	}
+
+void Usecode_machine::_init_
+	(
+	istream &file
+	)
+	{
 	sp = stack;
 					// Clear global flags.
 	memset(gflags, 0, sizeof(gflags));
