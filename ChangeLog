@@ -1,3 +1,9 @@
+2003-08-15  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/shapefile.cc (Image_file_info): Write out single-shape
+	files correctly.
+	* data/estudio/new:  Added (primitive) fonts.vga, pointers.shp.
+
 2003-08-14  Ryan Nunn  <colourles@users.sourceforge.net>
 	* usecode/intrinsics.cc, usecode/siintrinsics.h, usecode/ucinternal.h :
 	  B5 Intrinsic in SI (modify_schedule)
