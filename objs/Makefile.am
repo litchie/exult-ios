@@ -20,6 +20,7 @@ libobjs_la_SOURCES = \
 	contain.h \
 	egg.cc \
 	egg.h \
+	find_nearby.h \
 	flags.h \
 	iregobjs.cc \
 	iregobjs.h \

@@ -174,13 +174,6 @@ public:
 	void clear_dependencies();	// Remove all dependencies.
 
 					// Find nearby objects.
-
-#ifdef ALPHA_LINUX_CXX
-	template<class T>
-	static int find_nearby_static(Exult_vector<T*>& vec, Tile_coord pos,
-			int shapenum, int delta, int mask, 
-			int qual = c_any_qual, int framenum = c_any_framenum);
-
 #define HDR_DECLARE_FIND_NEARBY(decl_type) \
 	static int find_nearby(decl_type vec, Tile_coord pos, \
 			int shapenum, int delta, int mask,  \
@@ -191,25 +184,6 @@ public:
 	HDR_DECLARE_FIND_NEARBY(Game_object_vector&);
 
 #undef HDR_DECLARE_FIND_NEARBY
-
-#elif defined(MSVC_FIND_NEARBY_KLUDGE)
-
-#define HDR_DECLARE_FIND_NEARBY(decl_type) \
-	static int find_nearby(decl_type vec, Tile_coord pos, \
-			int shapenum, int delta, int mask,  \
-			int qual = c_any_qual, int framenum = c_any_framenum)
-
-	HDR_DECLARE_FIND_NEARBY(Egg_vector&);
-	HDR_DECLARE_FIND_NEARBY(Actor_vector&);
-	HDR_DECLARE_FIND_NEARBY(Game_object_vector&);
-
-#undef HDR_DECLARE_FIND_NEARBY
-#else
-	template<class T>
-	static int find_nearby(Exult_vector<T*>& vec, Tile_coord pos,
-			int shapenum, int delta, int mask, 
-			int qual = c_any_qual, int framenum = c_any_framenum);
-#endif //ALPHA_LINUX_CXX
 
 	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta) 
 									const;
