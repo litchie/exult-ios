@@ -164,6 +164,22 @@ public:
 	};
 
 /*
+ *	Specific information about weapons from 'weapons.dat':
+ */
+class Weapon_info
+	{
+	short damage;			// Damage points (positive).
+	short ammo;			// Shape # of ammo., or 0.
+public:
+	Weapon_info(short d, short am) : damage(d), ammo(am)
+		{  }
+	int get_damage()
+		{ return damage; }
+	int get_ammo()
+		{ return ammo; }
+	};
+
+/*
  *	This class contains information only about shapes from "shapes.vga".
  */
 class Shape_info
@@ -178,8 +194,8 @@ class Shape_info
 					//   be worn.
 	unsigned char *weapon_offsets;	// From "wihh.dat": pixel offsets
 					//   for drawing weapon in hand
-	unsigned char armor, weapon;	// Armour, weapon values from
-					//   "armor.dat", "weapons.dat".
+	unsigned char armor;		// Armor, from armor.dat.
+	Weapon_info *weapon;		// From weapon.dat, if a weapon.
 	void set_tfa_data()		// Set fields from tfa.
 		{
 		xtiles = 1 + (tfa[2]&7);
@@ -202,8 +218,10 @@ public:
 		{ return volume; }
 	int get_armor()			// Get armor protection.
 		{ return armor; }
-	int get_weapon()		// Get weapon hits.
+	Weapon_info *get_weapon_info()
 		{ return weapon; }
+	int get_weapon_damage()
+		{ return weapon ? weapon->get_damage() : 0; }
 	int get_3d_height()		// Height (in lifts?).
 		{ return ztiles; }
 	int get_3d_xtiles()		// Dimension in tiles - X.

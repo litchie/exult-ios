@@ -829,7 +829,7 @@ void Usecode_machine::add_to_party
 		return;			// Can't add.
 	npc->set_party_id(party_count);
 	party[party_count++] = npc->get_npc_num();
-
+	npc->set_schedule_type(Schedule::follow_avatar);
 // cout << "NPC " << npc->get_npc_num() << " added to party." << endl;
 	}
 

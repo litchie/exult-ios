@@ -100,6 +100,7 @@ Actor::Actor
 	Chunk_object_list *olist = gwin->get_objects(scx + cx, scy + cy);
 					// Put into chunk list.
 	move(0, scx + cx, scy + cy, olist, tilex, tiley, -1, -1);
+	ready_best_weapon();		// Get best weapon in hand.
 #if 0
 cout << i << " Creating " << namebuf << ", shape = " << 
 	actor->get_shapenum() <<
