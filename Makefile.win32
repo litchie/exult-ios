@@ -16,7 +16,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw32 automatically defines WIN32
-CPPFLAGS=-DVERSION=30 -DDEBUG -DAUTOCONFIGURED -I$(SRC)/files \
+CPPFLAGS=-DVERSION=35 -DDEBUG -DAUTOCONFIGURED -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
 	$(SDL_INCLUDES)
 CXXFLAGS=-g -mwindows -Wall
@@ -53,7 +53,7 @@ clean:
 	rm -f $(OBJS) $(EXEC)
 
 install:
-	strip $(EXEC) -o e:/games/ultima7/$(EXEC)
+	strip $(EXEC) -o c:/ultima7/$(EXEC)
 
 run:
 	start $(EXEC)
