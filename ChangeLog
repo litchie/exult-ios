@@ -1,3 +1,6 @@
+2002-06-24  Max Horn  <max@quendi.de>
+	* audio/Audio.cc: removed usage of malloc.h; removed some unused variables
+
 2002-06-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actions.h,usecode/intrinsics.cc: as_usecode_path().
