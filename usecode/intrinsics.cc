@@ -1934,6 +1934,8 @@ USECODE_INTRINSIC(is_water)
 		if (t.tz != 0 || gwin->find_object(x, y))
 			return Usecode_value(0);
 		ShapeID sid = gwin->get_flat(x, y);
+		if (sid.is_invalid())
+			return Usecode_value(0);
 		Shape_info& info = sid.get_info();
 		return Usecode_value(info.is_water());
 		}
