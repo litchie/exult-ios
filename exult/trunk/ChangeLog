@@ -1,3 +1,7 @@
+2002-01-14  Ryan Nunn  <triforce@merlin.net.au>
+	* audio/Audio.cc : Force waveout as defualt for Windows. Don't use
+	  DirectSound as it's buggy with SDL.
+
 2002-01-14  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* vec.h: explicity typename
 
@@ -1866,6 +1870,7 @@
 	* fnames.h: changed for MacOS X again (set default value for EXULT_DATADIR)
 	* gamewin.*: red plasma is now blue in SI
 	* gumps/Modal_gump.h, Gamemenu_gump.cc, gump_utils.cc, Newfile_gump.cc:
+
 	  fixed screen redrawal after loading a game.
 
 2001-08-17  Ryan Nunn <triforce@merlin.net.au>
@@ -3597,6 +3602,7 @@
 	* sigame.cc: Added some more gump shape nums
 	* audio/xmidi.*: Changes reverb and chorusing config keys to
 	  config/audio/midi/reverb/level and config/audio/midi/chorus/level
+
 	  Added two new options
 	  config/audio/midi/reverb/enabled and config/audio/midi/chorus/enabled
 	  so reverb and chorus can be enabled/disabled. Default is "no".
