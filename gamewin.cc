@@ -79,6 +79,10 @@
 #include "mappatch.h"
 #include "version.h"
 #include "drag.h"
+#ifdef USE_EXULTSTUDIO
+#include "server.h"
+#include "servemsg.h"
+#endif
 
 using std::cerr;
 using std::cout;
@@ -718,6 +722,32 @@ void Game_window::clear_world
 	}
 
 /*
+ *	Set location to ExultStudio.
+ */
+
+inline void Send_location
+	(
+	Game_window *gwin
+	)
+	{
+#ifdef USE_EXULTSTUDIO
+	if (client_socket >= 0 &&	// Talking to ExultStudio?
+	    cheat.in_map_editor())
+		{
+		unsigned char data[50];
+		unsigned char *ptr = &data[0];
+		Write4(ptr, gwin->get_scrolltx());
+		Write4(ptr, gwin->get_scrollty());
+		Write4(ptr, gwin->get_width()/c_tilesize);
+		Write4(ptr, gwin->get_height()/c_tilesize);
+		Write4(ptr, gwin->get_win()->get_scale());
+		Exult_server::Send_data(client_socket, Exult_server::view_pos,
+					&data[0], ptr - data);
+		}
+#endif
+	}
+
+/*
  *	Set the scroll position so that a given tile is centered.  (Used by
  *	center_view.)
  */
@@ -731,16 +761,6 @@ void Game_window::set_scrolls
 	int tw = get_width()/c_tilesize, th = get_height()/c_tilesize;
 	scrolltx = DECR_TILE(cent.tx, tw/2);
 	scrollty = DECR_TILE(cent.ty, th/2);
-#if 0
-	if (scrolltx < 0)
-		scrolltx = 0;
-	if (scrollty < 0)
-		scrollty = 0;
-	if (scrolltx + tw > c_num_chunks*c_tiles_per_chunk)
-		scrolltx = c_num_chunks*c_tiles_per_chunk - tw - 1;
-	if (scrollty + th > c_num_chunks*c_tiles_per_chunk)
-		scrollty = c_num_chunks*c_tiles_per_chunk - th - 1;
-#endif
 	set_scroll_bounds();		// Set scroll-control.
 	Barge_object *old_active_barge = moving_barge;
 	map->read_map_data();		// This pulls in objects.
@@ -760,6 +780,7 @@ void Game_window::set_scrolls
 						camera_actor->get_lift()));
 	set_in_dungeon(nlist->has_dungeon()?nlist->is_dungeon(tx, ty):0);
 	set_ice_dungeon(nlist->is_ice_dungeon(tx, ty));
+	Send_location(this);		// Tell ExultStudio.
 	}
 
 /*
@@ -1351,10 +1372,13 @@ void Game_window::view_right
 	int new_rcx = ((scrolltx + (w - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks;
 	if (new_rcx != old_rcx)
+		{
 		add_nearby_npcs(new_rcx, scrollty/c_tiles_per_chunk, 
-			INCR_CHUNK(new_rcx),
-	((scrollty + (h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
+			INCR_CHUNK(new_rcx), ((scrollty + 
+			(h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks);
+		Send_location(this);
+		}
 	}
 void Game_window::view_left
 	(
@@ -1379,10 +1403,13 @@ void Game_window::view_left
 					// Find newly visible NPC's.
 	int new_lcx = (scrolltx/c_tiles_per_chunk)%c_num_chunks;
 	if (new_lcx != old_lcx)
+		{
 		add_nearby_npcs(new_lcx, scrollty/c_tiles_per_chunk, 
 			INCR_CHUNK(new_lcx), 
 	((scrollty + (h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks);
+		Send_location(this);
+		}
 	}
 void Game_window::view_down
 	(
@@ -1409,10 +1436,13 @@ void Game_window::view_down
 	int new_bcy = ((scrollty + (h - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks;
 	if (new_bcy != old_bcy)
-	add_nearby_npcs(scrolltx/c_tiles_per_chunk, new_bcy, 
+		{
+		add_nearby_npcs(scrolltx/c_tiles_per_chunk, new_bcy, 
 	    ((scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks,
 			INCR_CHUNK(new_bcy));
+		Send_location(this);
+		}
 	}
 void Game_window::view_up
 	(
@@ -1437,10 +1467,13 @@ void Game_window::view_up
 					// Find newly visible NPC's.
 	int new_tcy = (scrollty/c_tiles_per_chunk)%c_num_chunks;
 	if (new_tcy != old_tcy)
+		{
 		add_nearby_npcs(scrolltx/c_tiles_per_chunk, new_tcy,
 	    ((scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks,
 							INCR_CHUNK(new_tcy));
+		Send_location(this);
+		}
 	}
 
 /*

@@ -33,6 +33,7 @@ class Shape_group_file;
 class Shape_draw;
 class Object_browser;
 class Shape_group;
+class Locator;
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
@@ -79,7 +80,7 @@ private:
 	Shape_draw		*shape_draw;
 	GtkWidget		*equipwin;
 					// Map locator:
-	GtkWidget		*locwin;
+	Locator			*locwin;
 	// For Win32 DND
 #ifdef WIN32
 	HWND			egghwnd;
