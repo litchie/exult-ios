@@ -132,6 +132,8 @@ public:
 		{ return clock.get_hour(); }
 	int get_minute()
 		{ return clock.get_minute(); }
+	void increment_clock(int num_minutes)
+		{ clock.increment(num_minutes); }
 	void fake_next_period()		// For debugging.
 		{ clock.fake_next_period(); }
 					// Get/create objs. list for a chunk.
