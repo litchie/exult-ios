@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="7 March 2002(GMT)">
+<faqs title="Exult" changed="13 March 2002(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="12032002">
+			<header>- 12 March 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="latest_version"/> leveled up to v0.98 RC 1.</li>
+				<li><ref1 target="save_crash"/> restore an earlier savegame.</li>
+				<li><ref1 target="hawk_ship"/> a user could run into this bug.</li>
+				<li><ref1 target="not_yet_implemented"/> All spells should work now, right?</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="07032002">
 			<header>- 7 March 2002</header>
 			<body>
 				<ul>
 				<li><ref1 target="pentagram"/> rewritten a bit.</li>
-				<li><ref1 target="virtue_stones"/> this comes up from time to time.</li>				
-				<li><ref1 target="paperdoll_issues"/> Why Sparks Paperdoll looks odd.</li>				
+				<li><ref1 target="virtue_stones"/> this comes up from time to time.</li>
+				<li><ref1 target="paperdoll_issues"/> Why Sparks Paperdoll looks odd.</li>
 				<li><ref1 target="need_to_run"/> runs on Win32 now.</li>
-				<li><ref1 target="port_platforms"/> also noted that it runs on Win32.</li>				
+				<li><ref1 target="port_platforms"/> also noted that it runs on Win32.</li>
 				<li><ref1 target="how_to_run"/> some notes on Win32 mode.</li>
 				<li><ref1 target="bug_report"/> Cookies need to be enabled to attach savegames.</li>
-				<li><ref1 target="by_design"/> combat difficulty option mentioned and linked.</li>				
-				<li><ref1 target="known_issues"/> Alternate SI intro is fully working now and 
+				<li><ref1 target="by_design"/> combat difficulty option mentioned and linked.</li>
+				<li><ref1 target="known_issues"/> Alternate SI intro is fully working now and
 					force_waveout is now default.</li>
-													
 				</ul>
 			</body>
 		</sub>
@@ -26,9 +36,9 @@
 				<ul>
 				<li><ref1 target="walkthroughs"/> updated changed links.</li>
 				<li><ref1 target="si_ext_intro"/> this gets asked from time to time.</li>
-				<li><ref1 target="need_to_run"/> libglade needed as well.</li>				
+				<li><ref1 target="need_to_run"/> libglade needed as well.</li>
 				<li><ref1 target="how_to_run"/> You need to have cheats enabled.</li>
-				<li><ref1 target="bug_report"/> Added a screenshot of the upload checkbox.</li>				
+				<li><ref1 target="bug_report"/> Added a screenshot of the upload checkbox.</li>
 				</ul>
 			</body>
 		</sub>
@@ -36,10 +46,10 @@
 			<header>- 07 January 2002</header>
 			<body>
 				<ul>
-				<li><ref1 target="pentagram"/> some information on the U8 shapes/map viewer.</li>				
+				<li><ref1 target="pentagram"/> some information on the U8 shapes/map viewer.</li>
 				<li><ref1 target="whereis_exult"/> added link to AmigaOS/MorphOS port.</li>
 				<li><ref1 target="what_platforms"/> updated with AmigaOS/MorphOS port.</li>
-				<li><ref1 target="u7_versions"/> Spanish SI version.</li>					
+				<li><ref1 target="u7_versions"/> Spanish SI version.</li>
 				<li><ref1 target="choppy_game"/> some help for people that have choppy gameplay.</li>
 				<li><ref1 target="no_sfx"/> people still ask so this should be in the FAQ.</li>
 				<li><ref1 target="diferent_volume"/> added.</li>
@@ -49,11 +59,10 @@
 				<li><ref1 target="known_issues"/> Neither speech nor subtitles in SI-Endgame.
 					Also possible <strong>workaround</strong> for sound issues on Windows.</li>
 				<li><ref1 target="compile_issues"/> Max is working to make <Exult/> compile on OSX.
-					Don't forget the exult*.flx files</li>												
+					Don't forget the exult*.flx files</li>
 				</ul>
 			</body>
 		</sub>
-
 	</section>
 	<section title="Introduction">
 		<sub name="why_name_exult">
@@ -85,9 +94,9 @@
 					in turn. Obviously the <Exult/> team would be very grateful if any
 					modifications you make are contributed back to the main code, so that
 					everyone can benefit from them. If you want to work on <Exult/> just send an
-					e-mail to the 
+					e-mail to the
 					<extref target="mailto:exult-general@lists.sourceforge.net">team</extref>.<br/>
- 					More information on the GNU GPL at 
+ 					More information on the GNU GPL at
  					<extref target="http://www.gnu.org/copyleft/gpl.html"/>.
 				</para>
 			</body>
@@ -96,20 +105,20 @@
 			<header>Does Origin support <Exult/>?</header>
 			<body>
 				<para>
-					First of all, Origin has been owned by EA for a long time now and from recent 
-					developments it seems that Origin only exists now to maintain Ultima Online. 
-					Furthermore, Origin and/or people that worked for Origin claim that the source 
+					First of all, Origin has been owned by EA for a long time now and from recent
+					developments it seems that Origin only exists now to maintain Ultima Online.
+					Furthermore, Origin and/or people that worked for Origin claim that the source
 					code for Ultima 7 (BG/SI) has been lost for some time.
 					So there is no chance for the <Exult/> team to have a look at the actual code.
 				</para>
 				<para>
 					Also the team tried to contact some people from Origin earlier but got no positive
-					or negative response on the <Exult/> project. So far it seems that both Origin and 
+					or negative response on the <Exult/> project. So far it seems that both Origin and
 					EA have decided to ignore <Exult/>.
 				</para>
 				<para>
-					On the other hand former Origin employees contacted the team and congratulated the 
-					team on their effort. Most noticeable are Lord British himself and Ken Demarest 
+					On the other hand former Origin employees contacted the team and congratulated the
+					team on their effort. Most noticeable are Lord British himself and Ken Demarest
 					(Programming Manager of Ultima 7)(hint:spell his name backwards).
 				</para>
 			</body>
@@ -120,9 +129,9 @@
 				<para>
 					<Exult/> supports only Ultima 7 (BG/SI and the add-ons). It will never support
 					any other Ultima nor do members of the team plan to develop something similar.
-					The reasons for this are that no other Ultima is similar to Ultima 7 in the 
-					internal workings and also the team used to be quite sick of reverse engineering 
-					a game already. 
+					The reasons for this are that no other Ultima is similar to Ultima 7 in the
+					internal workings and also the team used to be quite sick of reverse engineering
+					a game already.
 				</para>
 			</body>
 		</sub>
@@ -130,9 +139,9 @@
 			<header>But isn't <Pentagram/> some kind of <Exult/> for U8?</header>
 			<body>
 				<para>
-					<Pentagram/> is a pet project by some members of the <Exult/>team (currently mostly 
-					Willem, Colourless, Fingolfin and Darke). It is a <strong>map and shapes viewer</strong> 
-					and nothing more (although the team does indeed invest some time to disassemble the Usecode 
+					<Pentagram/> is a pet project by some members of the <Exult/>team (currently mostly
+					Willem, Colourless, Fingolfin and Darke). It is a <strong>map and shapes viewer</strong>
+					and nothing more (although the team does indeed invest some time to disassemble the Usecode
 					of U8). It isn't meant to be something similar to <Exult/>. It is rather a clever plan
 					to stir up interest in other coders to carry this basic work further.<br/>
 					Any <strong>developer</strong> is welcome to take a look and contact us.
@@ -146,14 +155,14 @@
 					No.
 				</para>
 				<cite name="Jeff on the Forum">
-					The question is 'why?'. I continue working on <Exult/>, in large part, because 
-					nobody makes games like Ultima7 anymore. While I think a multiplayer game 
-					would be technically interesting, I don't see the need. There are <em>lots</em> 
+					The question is 'why?'. I continue working on <Exult/>, in large part, because
+					nobody makes games like Ultima7 anymore. While I think a multiplayer game
+					would be technically interesting, I don't see the need. There are <em>lots</em>
 					of them already, and many experienced people working on new ones.
 				</cite>
 				<para>
 					Note however that <Exult/> is open source. If you want a multiplayer U7 no one
-					holds you back to code it in. 
+					holds you back to code it in.
 				</para>
 			</body>
 		</sub>
@@ -161,15 +170,17 @@
 			<header>Where do I find <Exult/>?</header>
 			<body>
 				<para>
-					The latest official version is found on <extref target="http://exult.sourceforge.net/"/><br/>
-					Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree can be found at
+					The latest official version is found on 
+					<extref target="http://exult.sourceforge.net/"/><br/>
+					Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree 
+					can be found at
 					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
-					A BeOS binary snapshot can be found at 
-					<extref target="http://digilander.iol.it/burton666/exult-beos.zip"/>. Jack Burton provides
-					this weekly or whenever it compiles for him. Thanks!<br/>
+					A BeOS binary snapshot can be found at
+					<extref target="http://digilander.iol.it/burton666/exult-beos.zip"/>. Jack Burton 
+					provides this weekly or whenever it compiles for him. Thanks!<br/>
 					There is also a version available for AmigaOS/MorphOS at
 					<extref target="http://www.muenster.de/~tomjoad/exult.html"/>. Please see
-					<ref target="what_platforms"/> for some more information on this port. 
+					<ref target="what_platforms"/> for some more information on this port.
 				</para>
 			</body>
 		</sub>
@@ -179,7 +190,7 @@
 			    <para>
 			    	Bugs and not yet implemented features in <Exult/> get fixed almost daily in the code.
 			    	A release is very time consuming that's why there are so few.
-			    </para>	
+			    </para>
 			    <para>
 					The snapshot is the newest source code of the program. It is updated almost
 					daily, sometimes twice a day. There is information on how to build your
@@ -197,7 +208,7 @@
 			<header>How do I compile a source code snapshot for my OS?</header>
 			<body>
 				<para>
-					The source code snapshots contain a file called "README.OS" (like Readme.win32, 
+					The source code snapshots contain a file called "README.OS" (like Readme.win32,
 					Readme.MacOS) that explains everything.
 				</para>
 			</body>
@@ -206,7 +217,8 @@
 			<header>What is the latest version of <Exult/>?</header>
 			<body>
 				<para>
-					The current official release is V0.96 Beta1. See also <ref target="whereis_exult"/>
+					The current official release is V0.98 RC 1 (Release Candidate 1).
+					See also <ref target="whereis_exult"/>
 					to learn where to get the latest version.
 				</para>
 				<para>
@@ -221,7 +233,7 @@
 					<Exult/> should be able to be compiled (with minor modifications) on
 					any platform that SDL supports. Right now the source can be compiled
 					in Linux/i386, Linux/Alpha, MacOS, OSX, OpenBSD, FreeBSD, Solaris, BeOS and 
-					Win32 (Windows 9x/ME/NT4/2000/XP).					
+					Win32 (Windows 9x/ME/NT4/2000/XP).
 				</para>
 				<para>
 					Recently we discovered that there is also a working port of <Exult/> for
@@ -247,7 +259,7 @@
 			<body>
 				<para>
 					It seems to run most of the available versions of the game. The most common
-					ones nowadays with the included Add-ons (Forge of Virtue and Silver Seed) 
+					ones nowadays with the included Add-ons (Forge of Virtue and Silver Seed)
 					runs for sure.
 				</para>
 				<para>
@@ -259,7 +271,7 @@
 				</para>
 				<para>
 					V0.91 Alpha2 adds fixes for the French version, which should work now.
-					If you are running a Spanish or German version Black Gate and you notice 
+					If you are running a Spanish or German version Black Gate and you notice
 					problems please contact us.
 				</para>
 			</body>
@@ -279,7 +291,7 @@
 			<body>
 				<para>
 					Serpent Isle is now playable without cheating and plotholes. Two members of the team
-					have already finished the game with <Exult/>. 
+					have already finished the game with <Exult/>.
 				</para>
 				<para>
 					Old quotes on this topic from the time when SI wasn't playable at all in <Exult/>.
@@ -287,7 +299,7 @@
 				<cite name="Colourless">
 					I can't say much about the what will happen except that a completely
 					working Serpent Isle will be an annoying task to complete. It is
-					close to BG in some ways, but very different in others. 
+					close to BG in some ways, but very different in others.
 				</cite>
 				<cite name="Jeff">
 					My feelings about SI are the same as Colourless, who has done all
@@ -303,7 +315,7 @@
 			<header>Do the Add-ons work?</header>
 			<body>
 				<para>
-					"Forge of Virtue" (Add-on to Black Gate) and the "The Silver Seed" 
+					"Forge of Virtue" (Add-on to Black Gate) and the "The Silver Seed"
 					(Add-on to Serpent Isle) are bug-free now.
 				</para>
 			</body>
@@ -314,7 +326,7 @@
 				<para>
 					Savegames that were made with the original Ultima 7 or U7Run don't work
 					with <Exult/>. You have to start a new game when you begin playing with <Exult/>.
-					Sorry! 
+					Sorry!
 				</para>
 			</body>
 		</sub>
@@ -327,8 +339,8 @@
 					the Ultima Collection in stores or on Ebay (<extref target="http://www.ebay.com"/>).
 				</para>
 				<para>
-					<em>Don't</em> ask the team for copies. <em>Don't</em> ask on the forum for copies, 
-					your post and the entire thread <em>will</em> be deleted. And please don't ask for 
+					<em>Don't</em> ask the team for copies. <em>Don't</em> ask on the forum for copies,
+					your post and the entire thread <em>will</em> be deleted. And please don't ask for
 					the answers to the copyright questions.
 				</para>
 			</body>
@@ -339,7 +351,7 @@
 			<header>Where do I find a walkthrough?</header>
 			<body>
 				<para>
-					If you need help with the game itself, like walktrhoughs, hints, location of 
+					If you need help with the game itself, like walktrhoughs, hints, location of
 					Npcs items take a look at the following sites:
 				</para>
 				<ul>
@@ -367,16 +379,16 @@
 			<header>Will you implement the extended intro for SI?</header>
 			<body>
 				<para>
-					The extended intro for Serpent Isle can be found at 
+					The extended intro for Serpent Isle can be found at
 					<extref target="http://www.io.com/~dloubet/"/>. At this moment we don't
 					even think about implementing this extended intro.<br/>
 					Why not?<br/>
-					It sure would be nice to use it. But you may have noticed some effects 
-					missing from the intro. You may have noticed that there is no sound. You may 
+					It sure would be nice to use it. But you may have noticed some effects
+					missing from the intro. You may have noticed that there is no sound. You may
 					have noticed that there is neither speech nor subtitles.<br/>
-					All that would have to be addressed and add to that the longer running time and 
-					that you have to synchronize the music with it. Then what about the size of it? 
-					You would need to compress it and make sure all our supported platforms make use 
+					All that would have to be addressed and add to that the longer running time and
+					that you have to synchronize the music with it. Then what about the size of it?
+					You would need to compress it and make sure all our supported platforms make use
 					of it.
 				</para>
 				<para>
@@ -393,22 +405,37 @@
 					style.
 				</para>
 				<cite name="Jeff">
-					It's not a bug, it's a feature! I like it that way.  Everyone is sensitive to 
-					different things, and I always though the formation-walking in the original 
-					U7 looked really stupid. Eventually, someone may add the original type of walking 
+					It's not a bug, it's a feature! I like it that way.  Everyone is sensitive to
+					different things, and I always though the formation-walking in the original
+					U7 looked really stupid. Eventually, someone may add the original type of walking
 					to Exult, probably as an option.
 				</cite>
 			</body>
 		</sub>
+		<sub name="save_crash">
+			<header>What should I do when Exult keeps crashing when I try to save?</header>
+			<body>
+				<para>
+					This is <strong>not</strong> normal behavior for Exult. Normally when you restart
+					and "Journey Onward"  Exult will actually restore to the point you saved.
+				</para>
+				<para>
+					<em>Please do not play further</em> at this point. You should restore to an earlier
+					savegame, no matter how much game time you loose. Your game must have gotten
+					corrupted and when you play on with it you will most likely experience even more
+					serious problems.
+				</para>
+			</body>
+		</sub>
 		<sub name="choppy_game">
 			<header>Why does the game run so choppy?</header>
-			<body>				
+			<body>
 				<para>
 					Well, every Ultima required a fast computer. Even though <Exult/> is just an
 					engine that runs the ancient Ultima 7 it still requires a fast computer.
 				</para>
 				<para>
-					Seriously, if the game runs choppy for you, try the speed seeting in the Gameoptions 
+					Seriously, if the game runs choppy for you, try the speed seeting in the Gameoptions
 					menu and if that doesn't help also play with the original resolution (320x200),
 					try a different scaler or disable scaling alltogether.
 				</para>
@@ -416,15 +443,15 @@
 		</sub>
 		<sub name="no_sfx">
 			<header>Why can't I hear the Sound Effects?</header>
-			<body>				
+			<body>
 				<para>
-					Please read the Audio section of our <extref2 target="wave_sfx"/>.					
+					Please read the Audio section of our <extref2 target="wave_sfx"/>.
 				</para>
 			</body>
 		</sub>
 		<sub name="diferent_volume">
 			<header>Why is the music so much louder/softer than the sfx/speech?</header>
-			<body>				
+			<body>
 				<para>
 					Music is played via midi but the sfx (sound effects) and speech are
 					played via wave. Midi and Wave volume are set up seperately in the settings
@@ -432,40 +459,54 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="hawk_ship">
+			<header>Why does Exult freeze when I board Hawk's ship on SI?</header>
+			<body>
+				<para>
+					Exult doesn't really freeze as you can still access the options and
+					savegame menu. You have run into a bug that only happens when you try
+					to sail with Hawk late at night (game time). Please restore to a savegame
+					before you boarded the ship and make sure you board the ship during daytime.
+				</para>
+				<para>
+					Currently we are not sure if that is not a bug in the original as well.
+				</para>
+			</body>
+		</sub>
 		<sub name="virtue_stones">
 			<header>Why can't I cast mark/recall on the Virtue Runes?</header>
-			<body>				
+			<body>
 				<para>
-					You never could do this in the original as well. You have to use the 
+					You never could do this in the original as well. You have to use the
 					<strong>Virtue Stones</strong> that you find in the same building as the runes.
 				</para>
 			</body>
-		</sub>		
+		</sub>
 		<sub name="improvements">
 			<header>
 				What are the improvements in <Exult/> over the original Ultima 7?</header>
 			<body>
-				<ul>					
-				<li>Many more keyboard shortcuts than the original had. Including in BG the 
-					<key>k</key> key that checks if you have the right key for a lock in your 
-					inventory. The list of keys can be found in the Documentation.</li>				
-				<li>A new worked over Game menu. This menu is explained in detail in the 
-					<extref target="docs.php">Documentation</extref> and many of the following 
-					improvements  and Video/Audio options can be accessed via this menu. Open 
+				<ul>
+				<li>Many more keyboard shortcuts than the original had. Including in BG the
+					<key>k</key> key that checks if you have the right key for a lock in your
+					inventory. The list of keys can be found in the Documentation.</li>
+				<li>A new worked over Game menu. This menu is explained in detail in the
+					<extref target="docs.php">Documentation</extref> and many of the following
+					improvements  and Video/Audio options can be accessed via this menu. Open
 					this Game Menu by pressing <key>Esc</key> in the game.</li>
-				<li>SI style paperdoll (inventory screen) in BG. Very impressive. For this you 
-					need to have Serpent Isle installed on your hard drive and you must set the 
-					path to it in exult.cfg (see the Documentation) and activate it in the 
+				<li>SI style paperdoll (inventory screen) in BG. Very impressive. For this you
+					need to have Serpent Isle installed on your hard drive and you must set the
+					path to it in exult.cfg (see the Documentation) and activate it in the
 					Gameplay Options<br/>
-					This new inventory screen acts sometimes a little buggy, so if an item seems 
+					This new inventory screen acts sometimes a little buggy, so if an item seems
 					to have disappeared disable the paperdolls in the Game Options.</li>
-				<li>A beautiful new savegame box. This allows you much more savegames than 
-					the original (you should run out of disc space before you run out of savegame 
-					slots), shows a screenshot of the location you saved at, the members of your 
-					party, your stats, game time and the date you actually saved. The save game 
+				<li>A beautiful new savegame box. This allows you much more savegames than
+					the original (you should run out of disc space before you run out of savegame
+					slots), shows a screenshot of the location you saved at, the members of your
+					party, your stats, game time and the date you actually saved. The save game
 					box is opened either via the game menu or the <key>s</key> key.</li>
-				<li>Face status bars at the bottom of the screen that show your health (and that 
-					of your party members) as well as your mana. Doubleclicking on the face opens 
+				<li>Face status bars at the bottom of the screen that show your health (and that
+					of your party members) as well as your mana. Doubleclicking on the face opens
 					the inventory and doubleclicking on the bars shows the status screen.</li>
 				<li>Middle mouse button support. In the normal game, the middle mouse button
 					activates the target-function (which could also be accomplished by pressing
@@ -473,19 +514,19 @@
 					as 'escape', so you can now for example accept the default slider value by
 					just pressing the middle button. The escape function is also available
 					during most other actions like selecting a target or conversations.</li>
-				<li>Wheelmouse support. If you have a wheelmouse some features are auto-enabled 
-					in <Exult/>.<br/> 
-					In slider gumps (e.g. how much gold you want to 
-					drop), scrolling the mouse up/down, moves the slider either left or right. 
+				<li>Wheelmouse support. If you have a wheelmouse some features are auto-enabled
+					in <Exult/>.<br/>
+					In slider gumps (e.g. how much gold you want to
+					drop), scrolling the mouse up/down, moves the slider either left or right.
 					Holding down <key>Alt</key> while using the wheel scrolls 10 steps.<br/>
-					The savegame menu scrolls one line, while pressing <key>Alt</key> it scrolls 
+					The savegame menu scrolls one line, while pressing <key>Alt</key> it scrolls
 					pages.<br/>
-					You can also scroll the map of the game up or down and while pressing 
+					You can also scroll the map of the game up or down and while pressing
 					<key>Alt</key>  you scroll left or right.</li>
 				<li>Fast Mouse which makes the mouse cursor move faster in fullscreen mode.</li>
-				<li>Multiracial Avatar in BG. As with the paperdoll support you need to have SI 
+				<li>Multiracial Avatar in BG. As with the paperdoll support you need to have SI
 					installed and the path set in exult.cfg.</li>
-				<li>Higher resolutions than the original. You can set the resolution as high as 
+				<li>Higher resolutions than the original. You can set the resolution as high as
 					your computer supports. But there are some issues with it and it is considered
 					cheating.</li>
 				<li>Compressed savegames. Since Beta1 <Exult/> compresses savegames by default as
@@ -501,15 +542,15 @@
 			<body>
 				<para>
 					There are some issues. The paperdoll in BG is still limited to the slots
-					it had originally.
+					it had originally.<br/>
 					That means:
 				</para>
 				<ul>
 					<li>You can either equip a pair of gauntlets or one/two rings.</li>
-					<li>The 'shield behind back', 'weapon behind back' and 'belt' slots are one 
-					and the same in BG. (So if you have a weapon on your back, you can't use your 
+					<li>The 'shield behind back', 'weapon behind back' and 'belt' slots are one
+					and the same in BG. (So if you have a weapon on your back, you can't use your
 					belt slot)</li>
-					<li>If an item seems to have disappeared disable the paperdolls in the Game 
+					<li>If an item seems to have disappeared disable the paperdolls in the Game
 					Options, retrieve the item and enable the paperdolls again.</li>
 				</ul>
 				<para>
@@ -529,20 +570,20 @@
 					are several things to do (though I wonder why you'd want to do that):
 				</para>
 				<ul>
-				<li>make custom keybindings files (see <extref target="docs.php">Documentation</extref>) 
-					in which you disable all the keys that were not in the original for Black Gate and 
-					Serpents Isle.<br/> 
+				<li>make custom keybindings files (see <extref target="docs.php">Documentation</extref>)
+					in which you disable all the keys that were not in the original for Black Gate and
+					Serpents Isle.<br/>
 					Since the Alpha 4 release you have to assign <key>s</key> to old_file_gump
-					to enable the old savegame menu (the line in your custom keybindings file should look 
+					to enable the old savegame menu (the line in your custom keybindings file should look
 					like: S old_file_gump)</li>
 				<li>Edit the exult.cfg file to point to those custom keys.</li>
 				<li>Disable SI-style paperdolls for BG in exult.cfg (see the documentation for that).</li>
-				<li>Alternatively click on the disk icon and disable the paperdolls in the Gameplay 
+				<li>Alternatively click on the disk icon and disable the paperdolls in the Gameplay
 					Options.</li>
-				<li>Edit the exult.cfg to use the resolution of 320x200, to run in full screen and 
+				<li>Edit the exult.cfg to use the resolution of 320x200, to run in full screen and
 					disable scalers.</li>
-				<li>The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot 
-					be altered. Sorry!</li> 
+				<li>The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot
+					be altered. Sorry!</li>
 				</ul>
 			</body>
 		</sub>
@@ -571,7 +612,7 @@
 			<header>What is it?</header>
 			<body>
 				<para>
-					<Studio/> is a map-editor for <Exult/>, allowing you to modify the map of a 
+					<Studio/> is a map-editor for <Exult/>, allowing you to modify the map of a
 					game and, eventually, to create a completely new landscape for a new game.
 				</para>
 			</body>
@@ -590,7 +631,7 @@
 				<para>
 					Currently, you need to be running <Exult/> on X (Linux, UNIX, etc.), with
 					<Exult/> set to run in a window (not fullscreen).  You also need the GTK+
-					library installed as well as 
+					library installed as well as
 					<extref target="http://developer.gnome.org/doc/API/libglade/libglade.html">libglade</extref>
 				</para>
 				<para>
@@ -603,13 +644,13 @@
 			<body>
 				<para>
 					That depends on when someone volunteers to do the work :-)
-					Colourless, Kirben and Mark Siewert already did this for Win32. 
+					Colourless, Kirben and Mark Siewert already did this for Win32.
 					There are three issues:
 				</para>
 				<ul>
    				<li>GTK has to be ported to the platform. This is already
 					true for Win32.</li>
-   				<li><Studio/> uses sockets to communicate with <Exult/>.  This also 
+   				<li><Studio/> uses sockets to communicate with <Exult/>.  This also
 					shouldn't be a problem for Win32.</li>
    				<li>X drag-n-drop is used to put new objects on the landscape.  The
 					'drop' part of this had to be rewritten for Win32 <Exult/>, OR,
@@ -629,12 +670,12 @@
 				</para>
 				<ul>
    				<li>Put 'exult_studio.glade' in the <Exult/> 'data' directory.</li>
-   				<li>Be sure 'exult_studio' is in your path. (on Win32 
+   				<li>Be sure 'exult_studio' is in your path. (on Win32
    					'exult_studio.exe' needs to be in the same directory as exult.exe)</li>
    				<li>Run <Exult/> in windowed mode (not fullscreen).</li>
    				<li>Press 'alt-ctrl-m' to go into 'map-editor' mode.  If all is set
 					up correctly, exult_studio will start up, and will have a list of files
-					on the left side of its window (you need to have cheats enabled in <Exult/>,  
+					on the left side of its window (you need to have cheats enabled in <Exult/>,
 					see the <extref2 target="gameplay_gump"/>).</li>
 				</ul>
 				<para>
@@ -645,7 +686,7 @@
 					use the 'File' menu to choose the static directory (for the game you're
 					playing).</li>
    				<li>If <Studio/> isn't running start it up with:
-        			exult_studio -x (path to dir containing exult_studio.glade) -d 
+        			exult_studio -x (path to dir containing exult_studio.glade) -d
         			(path to game directory)</li>
 				</ul>
 				<para>
@@ -659,31 +700,31 @@
 			<body>
 				<para>
 					With the latest source you can
-				</para>				
+				</para>
 				<ul>
 				<li>browse shapes in the main window.</li>
    				<li>drag a shape from the shape browser to <Exult/>, and that
 					object will be placed in the game.</li>
    				<li>edit an 'egg' by double-clicking on it.  An edit box
 					should appear.</li>
-   				<li>create a new 'egg' using the pull-down menu in <Studio/>.  
+   				<li>create a new 'egg' using the pull-down menu in <Studio/>.
 					In the Egg edit box, after you hit 'Apply', you'll be prompted to
 					click in <Exult/> where you want the egg to appear.</li>
    				<li>If editing a 'monster' egg, you can set the monster by dragging
-					the shape from the browser to the area that displays the monster.</li>					
+					the shape from the browser to the area that displays the monster.</li>
 				<li>edit an NPC by double-clicking on it, and also create a new
 					NPC using the pull-down menu.  Attributes, flags, and schedules can
-					all be viewed and modified.</li>					
-				<li>can edit other objects' position and quality by double-clicking on them.</li>					
+					all be viewed and modified.</li>
+				<li>can edit other objects' position and quality by double-clicking on them.</li>
 				<li>browse the 'u7chunks' file, and drag them into <Exult/> to change
 					the terrain.  In this browser, you can also create new terrains and
-					modify their order.</li>					
+					modify their order.</li>
 				<li>edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit
 					terrain" checkbox in <Studio/>.  This is a special mode where
 					dragging with the left mouse button 'paints' the currently-selected
 					shape (generally one of the flat tiles near the top of the shapes
 					browser).  Note that a 'terrain' is generally used in multiple places
-					in the map.</li>					
+					in the map.</li>
 				<li>save the map using ExultStudio's "File-Save map" pulldown.
 					In order to avoid writing over files inadvertantly, the files that
 					would normally go into the 'static' directory, will, instead, go into
@@ -702,7 +743,7 @@
 					<line>&lt;title&gt;</line>
 					<line>blackgate</line>
 					<line>&lt;/title&gt;</line>
-					<line>.</line>					
+					<line>.</line>
 					<line>&lt;/blackgate&gt;</line>
 				</configdesc>
 				<para>
@@ -736,8 +777,8 @@
 					<Studio/>.  However, <Exult/> is already a huge program, and is getting
 					unwieldy to work on.
 				</para>
-				<para>  
-					With this architecture, <Studio/> can have all the messy code for 
+				<para>
+					With this architecture, <Studio/> can have all the messy code for
 					displaying/editing dialog boxes, while <Exult/> only needs a little bit
 					of work to handle requests.
 				</para>
@@ -758,7 +799,7 @@
 					with the idea behind 'u7chunks' to save artists time and to give the
 					map a consistent look.
 				</para>
-				<para>  
+				<para>
 					The basic idea is that each 'chunk' of flat terrain, 16x16 tiles, is
 					stored in 'u7chunks', and is indexed by its position in this file (0,
 					1, 2, ....  The 'u7map' file specifies, for each 'chunk' in the U7
@@ -781,14 +822,14 @@
 				<para>
 					The challenge of writing a map-editor is keeping the above straight,
 					and reading/storing from/to the correct files.  It's sorta-kinda
-					working now :-) 
+					working now :-)
 				</para>
 				<para>
 					For a more detailed explanation, see Gary Thompson's paper,
-					'u7edit.txt' in our 'docs' directory. 
-				</para>				
+					'u7edit.txt' in our 'docs' directory.
+				</para>
 			</body>
-		</sub>		
+		</sub>
 	</section>
   	<section title="Bugs, known issues and not yet implemented features">
 		<sub name="known_bugs">
@@ -806,49 +847,49 @@
 				<ol>
 				<li>Read the <extref target="http://exult.sourceforge.net/docs.php">Documentation</extref>
 					and this FAQ to see if that is not already covered and you have all set up correctly.</li>
-				<li>Before you report a bug to the 
-					<extref target="http://sourceforge.net/bugs/?group_id=2335">bug tracker</extref> 
-					please try the latest 
+				<li>Before you report a bug to the
+					<extref target="http://sourceforge.net/bugs/?group_id=2335">bug tracker</extref>
+					please try the latest
 					<extref target="http://exult.sourceforge.net/download.php">snapshot</extref>.
-					If the bug still occurs make sure that no one else already reported the bug 
+					If the bug still occurs make sure that no one else already reported the bug
 					(in the bug tracker).</li>
-				<li>If you are not a Sourceforge member please include your e-mail address. This is 
-					important so we can get back to you. If you are a Sourceforge member please log in 
+				<li>If you are not a Sourceforge member please include your e-mail address. This is
+					important so we can get back to you. If you are a Sourceforge member please log in
 					before submitting a bug. If you are a member of Sourceforge you will also get notified
 					of follow ups on your bug automatically by E-mail.</li>
-				<li>Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae 
-					don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more 
-					sense. Sadly the space for the topics is limited. Explain the topic in "Detailed 
+				<li>Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae
+					don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more
+					sense. Sadly the space for the topics is limited. Explain the topic in "Detailed
 					Description".</li>
-				<li>Include information on what version of <Exult/> you are using. You should have used 
+				<li>Include information on what version of <Exult/> you are using. You should have used
 					the latest snapshot but please tell us the date of the snapshot.</li>
 				<li>State which Operating System you use (Windows 9X, Linux, ...).</li>
-				<li>Please include a savegame (use common sense if it is really needed). You will find 
-					those in the game directories you put in the exult.cfg. They are called exult**bg.sav 
+				<li>Please include a savegame (use common sense if it is really needed). You will find
+					those in the game directories you put in the exult.cfg. They are called exult**bg.sav
 					(** is a number) for BG and exult**si.sav for SI. You can look up the filename int the
-					savegame dialog as well (to the right, above the party members). As some parts of the game 
-					may require you to complete other quests or stuff before you get to the bug you want to 
-					report it's much easier for the team to look at the problem (speeds the process up a bit 
+					savegame dialog as well (to the right, above the party members). As some parts of the game
+					may require you to complete other quests or stuff before you get to the bug you want to
+					report it's much easier for the team to look at the problem (speeds the process up a bit
 					as they are much more likely you take a look at the problem this way).<br/>
-					<strong>You need to check the box saying "Check to upload and Attach file".</strong>. 
+					<strong>You need to check the box saying "Check to upload and Attach file".</strong>.
 					See this screenshot for an example:
 					<extref target="http://exult.sourceforge.net/images/sfbug.jpg"/></li>
-				<li><em>One</em> bug per subject please.</li>			
+				<li><em>One</em> bug per subject please.</li>
 				</ol>
 				<para>
 					<strong>Note</strong> that SourceForge requires users to enable cookies to attach files.
 					If you use Internet Explorer 6.0 your Cookies Security needs to be at medium or below.
 				</para>
 				<para>
-					You can also use our 
-					<extref target="http://exult.sourceforge.net/forum/">forum</extref> 
+					You can also use our
+					<extref target="http://exult.sourceforge.net/forum/">forum</extref>
 					to report bugs. But if you do please follow the guidelines mentioned above (you can't
 					include a savegame of course). Though be aware that bugs submitted to the bug tracker
 					are more likely to get attention than bugs submitted to the forum.
-				</para>	
+				</para>
 				<para>
 					So if you want to have a bug fixed follow these steps!
-				</para>	
+				</para>
 			</body>
 		</sub>
 		<sub name="by_design">
@@ -856,37 +897,37 @@
 			<body>
 				<para>
 					<Exult/> often behaves and works differently than the original Ultima 7. These
-					behaviors are sometimes features that just differ from the way the original 
-					worked.<br/> 
-					Some are bugs that the development team consider to have almost no detrimental 
-					effect to the enjoyment/running of the game, but would require a large amount 
+					behaviors are sometimes features that just differ from the way the original
+					worked.<br/>
+					Some are bugs that the development team consider to have almost no detrimental
+					effect to the enjoyment/running of the game, but would require a large amount
 					of time and effort to fix.<br/>
-					Please don't bother the team about those as some of these will be fixed in the 
-					future, others will only be fixed when someone who thinks it should be done 
+					Please don't bother the team about those as some of these will be fixed in the
+					future, others will only be fixed when someone who thinks it should be done
 					differently sits down and codes it.<br/>
 					The following are such 'features' of Exult:
 				</para>
 				<ul>
-					<li>Birds and animals open doors and such, like the human and sentient 
+					<li>Birds and animals open doors and such, like the human and sentient
 						creatures of Britannia do.</li>
-					<li>Party members don't walk lockstep with the Avatar like they do in 
+					<li>Party members don't walk lockstep with the Avatar like they do in
 						BG/SI. Please see <ref1 target="party_formation"/>.</li>
 					<li>The way the Avatar and the companions walk. Is it 2 frames or 3 frames?
 						This has been changed a lot as this is disputed almost every four weeks.
 						Currently <Exult/> is coded using 2 frames.</li>
-					<li>Combat works differently. We don't have any hard data or formulae 
-						that tell us how combat worked in BG/SI, so DrCode put something 
-						together. If you have any information you've worked out related to 
+					<li>Combat works differently. We don't have any hard data or formulae
+						that tell us how combat worked in BG/SI, so DrCode put something
+						together. If you have any information you've worked out related to
 						this, please tell either the forum or the exult-general mailing list.<br/>
 						Recently Jeff added an option to change the combat difficulty in exult.cfg.
 						See the <extref2 target="exult_config"/>.</li>
-					<li>Negative health and unconsciousness. Yes, it may look weird to have 
-						people walking around with negative health, but that's the way it 
+					<li>Negative health and unconsciousness. Yes, it may look weird to have
+						people walking around with negative health, but that's the way it
 						currently works.</li>
 					<li>Some music loops endlessly in <Exult/>. This is actually a correction of a bug
-						in the original. We respects the midi looping flag as set by U7's original data 
+						in the original. We respects the midi looping flag as set by U7's original data
 						files but the original didn't. Users who prefer the original (broken) are able
-						to choose so in the Game menu.</li> 
+						to choose so in the Game menu.</li>
 				</ul>
 			</body>
 		</sub>
@@ -904,24 +945,24 @@
 						you get away or closer to them.</li>
 					<li>With scalers enabled you might encounter slow downs of the game. The team is
 						working on this right now and it is already a lot faster.</li>
-					<li>The speech in the intro is out of synch with the lips animation. But now it 
+					<li>The speech in the intro is out of synch with the lips animation. But now it
 						matches the speed of the text.</li>
-					<li>There are reported problems with digital sound effects or speech when 
+					<li>There are reported problems with digital sound effects or speech when
 						using Vortex series sound cards (like the Diamond MX 300) under Win9x/ME. <Exult/>
 						is triggering a bug in the drivers.</li>
 					<li>There is also a problem involving Win9x/ME, C-Media soundcard chipsets and MIDI music.
-						We suggest you first upgrade your drivers to the newest ones. Get them at 
+						We suggest you first upgrade your drivers to the newest ones. Get them at
 						<extref target="http://www.cmedia.com.tw/"/>. If that doesn't help, please contact
 						us.</li>
 				</ul>
 				<para>
 					Possible <strong>workaround</strong> for the above mentioned audio issues:<br/>
-					We added a config file option for Windows "config/audio/force_waveout" 
+					We added a config file option for Windows "config/audio/force_waveout"
 					that when set to "yes" will force SDL to use waveout rather than attempting to use
 					DirectSound. Using this option may fix problems some people have with sound in
-	  				Exult under Windows. Additionally it seems to fix the popping sound when starting 
+	  				Exult under Windows. Additionally it seems to fix the popping sound when starting
 	  				Exult in Win9x/ME/2k.<br/>
-	  				This setting is now the default setting so downloading the latest snapshot is the 
+	  				This setting is now the default setting so downloading the latest snapshot is the
 	  				only thing you need to do.
 				</para>
 			</body>
@@ -932,10 +973,10 @@
 				<ul>
 					<li>Max is working to make Exult compile on OSX like it does on all UNIX systems but that
 						requires SDL 1.2.3 or newer.</li>
-					<li>There is a bug/incompatibility with the flex bundled Linux distributions 
-						(RH7.0, for example) that breaks compilation. Upgrading to a more recent version 
+					<li>There is a bug/incompatibility with the flex bundled Linux distributions
+						(RH7.0, for example) that breaks compilation. Upgrading to a more recent version
 						of flex should fix it.</li>
-					<li>Ater compiling yourself remember to copy the exult*.flx files from the data dir in 
+					<li>Ater compiling yourself remember to copy the exult*.flx files from the data dir in
 						the source to the <Exult/> data dir you chose in exult.cfg. This applies only if
 						you don't use "make install"</li>
 				</ul>
@@ -945,9 +986,8 @@
 			<header>Not yet implemented</header>
 			<body>
 				<ul>
-					<li>A few magic spells don't work yet.</li>
 					<li>Stealing, killing innocent NPCs doesn't work yet correctly</li>
-				</ul>				
+				</ul>
 			</body>
 		</sub>
 	</section>
@@ -970,8 +1010,9 @@
 					way from there (this is an online Ultima fanclub)
 				</para>
 				<para>
-					Some <Exult/> developers like to hang out on IRC on irc.openprojects.net, channel #exult.<br/>
-					The logs of #exult can be found at 
+					Some <Exult/> developers like to hang out on IRC on irc.openprojects.net, 
+					channel #exult.<br/>
+					The logs of #exult can be found at
 					<extref target="http://www.math.leidenuniv.nl/~wpalenst/exultlog.php3"/>.
 				</para>
 			</body>
@@ -980,7 +1021,7 @@
 			<header>How do I contact the author of this FAQ?</header>
 			<body>
 				<para>
-					This FAQ is maintained by Dominus Dragon of the 
+					This FAQ is maintained by Dominus Dragon of the
 					<extref target="http://www.udic.org">UDIC</extref>
 					AKA <extref target="mailto:gigdr@tesionmail.de">Dominik Reichardt</extref>.
 					Feel free to contact me with improvements or complaints regarding
@@ -1018,7 +1059,7 @@
 					me in some way feel my gratitude without being mentioned.
 				</para>
 				<para>
-					Thanks go to <strong>Matt0</strong> who really got me thinking about doing 
+					Thanks go to <strong>Matt0</strong> who really got me thinking about doing
 					this FAQ (though he just did it to tease me).
 				</para>
 			</body>
