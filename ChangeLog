@@ -1,3 +1,7 @@
+2001-03-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/bg/fellowshipstaff.shp: my attempt at a fellowship staff
+	* data/bg/flx.in, gump/Paperdoll_gump_info.cc, Makefile.*: added art
+
 2001-03-30  Tristan Tarrant <nadir@users.sourceforge.net>
 
 	* data/quotes.txt: New quote from Jeff
