@@ -1,3 +1,9 @@
+2000-07-28 Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* exult.cc: Implement "Home" key which recenters view on Avatar.
+	Useful if you've been scrolling around with the arrow keys.
+	Also implement config/gameplay/cheat option.
+
 2000-07-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Support 'something_on' eggs.
