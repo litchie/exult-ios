@@ -82,10 +82,15 @@ static void	run_server(int in_fd,int out_fd,const char *midi_file_name)
 	perror("execlp");
 }
 
-static	pid_t	sub_process(const char *midi_file_name)
+static	pid_t	sub_process(const char *midi_file_name,bool repeat)
 {
 	int	pipe1[2],pipe2[2];
 	pid_t	childpid;
+	if(repeat)
+		{
+		// &&&&
+		cerr << "No support for continuous MIDI play yet" << endl;
+		}
 
 	if(s_infd!=-1)
 		{
@@ -156,7 +161,7 @@ bool	Timidity_binary::is_playing(void)
 	return true;
 }
 
-void	Timidity_binary::start_track(const char *name,int repeats)
+void	Timidity_binary::start_track(const char *name,bool repeat)
 {
 #if DEBUG
 	cerr << "Starting midi sequence with Timidity_binary" << endl;
@@ -171,7 +176,7 @@ void	Timidity_binary::start_track(const char *name,int repeats)
 #if DEBUG
 	cerr << "Starting to play " << name << endl;
 #endif
-	forked_job=sub_process(name);
+	forked_job=sub_process(name,repeat);
 	Audio::get_ptr()->set_external_signal(s_infd);
 }
 

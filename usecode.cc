@@ -1728,9 +1728,9 @@ USECODE_INTRINSIC(play_music)
 	cout << "Music request in usecode" << endl;
 	cout << "Parameter data follows" << endl;
 	cout << "0: " << ((parms[0].get_int_value()>>8)&0xff) << " " <<  ((parms[0].get_int_value())&0xff) << endl;
-	cout << "1: " << ((parms[1].get_int_value()>>8)&0xff) << " " <<  ((parms[1].get_int_value())&0xff) << endl;
+	cout << "1: " << ((parms[1].get_int_value()>>8)&0x01) << " " <<  ((parms[1].get_int_value())&0x01) << endl;
 #endif
-	audio->start_music(parms[0].get_int_value()&0xff,(parms[0].get_int_value()>>8)&0xff);
+	audio->start_music(parms[0].get_int_value()&0xff,(parms[0].get_int_value()>>8)&0x01);
 	return(no_ret);
 }
 

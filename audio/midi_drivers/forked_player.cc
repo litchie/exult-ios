@@ -65,9 +65,9 @@ bool	forked_player::is_playing(void)
 }
 
 
-void	forked_player::start_track(const char *name,int numrepeats)
+void	forked_player::start_track(const char *name,bool repeat)
 {
-	repeats=numrepeats;
+	repeat_=repeat;
 #if DEBUG
 	cerr << "Starting midi sequence with forked_player" << endl;
 #endif
@@ -81,8 +81,9 @@ void	forked_player::start_track(const char *name,int numrepeats)
         forked_job=fork();
         if(!forked_job)
                 {
-		for(int i=0;repeats==-2||i<=repeats;i++)
+		do {
 			playFJmidifile(name);
+		   } while(repeat);
 		raise(SIGKILL);
                 }
 }
