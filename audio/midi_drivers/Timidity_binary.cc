@@ -127,6 +127,9 @@ void	Timidity_binary::player(void)
 
 	audiostream->id=Timidity_binary_magic;
 	string	s="timidity -Oru8S -id -s 22050 -o- "+newfilename;
+#ifndef DEBUG
+	s+=" 2>/dev/null";	// Swallow extraneous output if !debug
+#endif
 	FILE *data=popen(s.c_str(),"r");
 	if(!data)
 		return;
