@@ -98,6 +98,7 @@ private:
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();
+	bool okay_to_quit();
 	
 	static ExultStudio *get_instance()
 		{ return self; }

@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "u7drag.h"
 #include "U7file.h"
 #include "utils.h"
+#include "exceptions.h"
 #include <iostream>
 #include <iomanip>
 #include <ctype.h>
@@ -196,6 +197,7 @@ void Palette_edit::color_okay
 							paled->selected] = 
 							(r<<16) + (g<<8) + b;
 		gtk_widget_destroy(GTK_WIDGET(paled->colorsel));
+		paled->modified = true;
 		paled->render();
 		paled->show();
 		}
@@ -696,11 +698,22 @@ void Palette_edit::setup
 
 Palette_edit::Palette_edit
 	(
-	const char *fullname		// Full filename.
+	const char *bname		// Base filename.
 	) : image(0), width(0), height(0),
-		colorsel(0),
-		selected(-1), file(g_strdup(fullname))
+		colorsel(0), modified(false),
+		selected(-1), basename(g_strdup(bname))
 	{
+	const char *file = 0;
+	string fname("<PATCH>/");	// First try 'patch' directory.
+	fname += basename;
+	if (U7exists(fname.c_str()))
+		file = fname.c_str();
+	else
+		{
+		fname = "<STATIC>/";
+		fname += basename;
+		file = fname.c_str();
+		}
 	U7object pal(file, 0);
 	int count = U7exists(file) ? pal.number_of_objects() : 0;
 	palettes.resize(count);		// Set size of list.
@@ -730,7 +743,7 @@ Palette_edit::~Palette_edit
 	(
 	)
 	{
-	g_free(file);
+	g_free(basename);
 	for (vector<GdkRgbCmap*>::iterator it = palettes.begin();
 					it != palettes.end(); ++it)
 		gdk_rgb_cmap_free(*it);
@@ -772,6 +785,92 @@ void Palette_edit::unselect
 	}
 
 /*
+ *	About to delete this.
+ *
+ *	Output:	True if okay to delete.
+ */
+
+bool Palette_edit::closing
+	(
+	bool can_cancel			// User allowed to cancel.
+	)
+	{
+	if (!modified)
+		return true;
+	ExultStudio *studio = ExultStudio::get_instance();
+	int choice = studio->prompt("Palette(s) modified.  Save?",
+		"Yes", "No", can_cancel ? "Cancel" : 0);
+	if (choice == 2)		// Cancel?
+		return false;
+	if (choice == 0)
+		save();			// Write out changes.
+	return true;
+	}
+
+/*
+ *	Write out a single palette.
+ */
+
+static void Write_palette
+	(
+	ostream& out,
+	GdkRgbCmap *pal			// Palette to write.
+	)
+	{
+	unsigned char buf[3*256];	// 3 bytes/color.
+	for (int i = 0; i < 256; i++)
+		{
+		int r = (pal->colors[i]>>16)&255,
+		    g = (pal->colors[i]>>8)&255,
+		    b = pal->colors[i]&255;
+		buf[3*i] = r/4;		// Range 0-63.
+		buf[3*i + 1] = g/4;
+		buf[3*i + 2] = b/4;
+		}
+	out.write(buf, sizeof(buf));
+	}
+
+/*
+ *	Write out palette(s).
+ */
+
+void Palette_edit::save
+	(
+	)
+	{
+	modified = false;
+	string fname("<PATCH>/");	// Write to 'patch' directory.
+	fname += basename;
+	ofstream out;
+	try {
+	U7open(out, fname.c_str());
+	} catch (exult_exception& e) {
+		ExultStudio::get_instance()->prompt("Error creating file.",
+								"Okay");
+		return;
+	}
+	int cnt = palettes.size();
+	if (cnt <= 1)			// Simple file?
+		{
+		if (cnt == 1)
+			Write_palette(out, palettes[0]);
+		out.close();
+		}
+	Flex_writer flex(out, "Exult palettes", cnt);
+	for (int i = 0; i < cnt; i++)
+		{
+		Write_palette(out, palettes[i]);
+		flex.mark_section_done();
+		}
+	if (!flex.close())
+		{
+		string msg("Error writing '");
+		msg += fname; msg += "'.";
+		ExultStudio::get_instance()->prompt(msg.c_str(), "Okay");
+		}
+	}
+
+/*
  *	Export current palette.
  */
 
@@ -799,7 +898,7 @@ void Palette_edit::export_palette
 		}
 					// Write out current palette.
 	GdkRgbCmap *pal = ed->palettes[ed->cur_pal];
-	ofstream out(fname);
+	ofstream out(fname);		// OKAY that it's a 'text' file.
 	out << "Palette from ExultStudio" << endl;
 	int i;				// Skip 0's at end.
 	for (i = 255; i > 0; i--)
@@ -840,7 +939,7 @@ void Palette_edit::import_palette
 		return;
 					// Read in current palette.
 	GdkRgbCmap *pal = ed->palettes[ed->cur_pal];
-	ifstream in(fname);
+	ifstream in(fname);		// OKAY that it's a 'text' file.
 	char buf[256];
 	in.getline(buf, sizeof(buf));	// Skip 1st line.
 	if (!in.good())
@@ -865,6 +964,7 @@ void Palette_edit::import_palette
 			pal->colors[i++] = (r<<16) + (g<<8) + b;
 		}
 	in.close();
+	ed->modified = true;
 	ed->render();
 	ed->show();
 	}

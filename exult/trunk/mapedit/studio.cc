@@ -197,6 +197,8 @@ C_EXPORT gboolean on_main_window_delete_event
 	gpointer user_data
 	)
 	{
+	if (!ExultStudio::get_instance()->okay_to_quit())
+		return TRUE;		// Can't quit.
 	return FALSE;
 	}
 C_EXPORT void on_main_window_destroy_event
@@ -207,6 +209,19 @@ C_EXPORT void on_main_window_destroy_event
 	{
 	gtk_main_quit();
 	}
+/*
+ *	"Exit" in main window.
+ */
+C_EXPORT void
+on_main_window_quit                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (ExultStudio::get_instance()->okay_to_quit())
+		gtk_main_quit();
+}
+
+
+
 
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
 	names(0), glade_path(0),
@@ -323,10 +338,29 @@ ExultStudio::~ExultStudio()
 	self = 0;
 }
 
+/*
+ *	Okay to quit?
+ */
+
+bool ExultStudio::okay_to_quit
+	(
+	)
+	{
+	if (browser && !browser->closing(true))
+		return false;		// User cancelled.
+	return true;
+	}
+
+/*
+ *	Set browser area.
+ */
 void ExultStudio::set_browser(const char *name, Object_browser *obj)
 {
 	if(browser)
+		{
+		browser->closing();
 		delete browser;
+		}
 	browser = obj;
 	
 	GtkWidget *browser_frame = glade_xml_get_widget( app_xml, "browser_frame" );
@@ -349,9 +383,7 @@ Object_browser *ExultStudio::create_browser(const char *fname)
 
 Object_browser *ExultStudio::create_palette_browser(const char *fname)
 {
-	char *fullname = g_strdup_printf("%s%s", static_path, fname);
-	Palette_edit *paled = new Palette_edit(fullname);
-	g_free(fullname);
+	Palette_edit *paled = new Palette_edit(fname);
 	return paled;
 }
 
@@ -1030,7 +1062,7 @@ int ExultStudio::prompt
 	while (prompt_choice == -1)	// Spin.
 		gtk_main_iteration();	// (Blocks).
 	gtk_widget_hide(dlg);
-	assert(prompt_choice == 0 || prompt_choice == 1);
+	assert(prompt_choice >= 0 && prompt_choice <= 2);
 	return prompt_choice;
 	}
 

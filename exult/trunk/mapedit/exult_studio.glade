@@ -228,8 +228,8 @@
 	    </accelerator>
 	    <signal>
 	      <name>activate</name>
-	      <handler>gtk_main_quit</handler>
-	      <last_modification_time>Thu, 25 Jan 2001 13:38:19 GMT</last_modification_time>
+	      <handler>on_main_window_quit</handler>
+	      <last_modification_time>Mon, 11 Feb 2002 19:48:51 GMT</last_modification_time>
 	    </signal>
 	    <label>E_xit</label>
 	    <right_justify>False</right_justify>
