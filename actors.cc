@@ -136,7 +136,27 @@ const short Actor::party_pos[4][10][2] = {
 	}
 };
 
+//	Actor frame to substitute when a frame is empty (as some are):
+uint8 visible_frames[16] = {
+	Actor::standing,		// Standing.
+	Actor::standing,		// Steps.
+	Actor::standing,
+	Actor::standing,		// Ready.
+	Actor::raise2_frame,		// 1-handed strikes => 2-handed.
+	Actor::reach2_frame,
+	Actor::strike2_frame,
+	Actor::raise1_frame,		// 2-handed => 1-handed.
+	Actor::reach1_frame,
+	Actor::strike1_frame,
+	Actor::standing,		// When you can't sit...
+	Actor::kneel_frame,		// When you can't bow.
+	Actor::bow_frame,		// When you can't kneel.
+	Actor::standing,		// Can't lie.
+	Actor::strike2_frame,		// Can't raise hands.
+	Actor::strike2_frame };
+
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+//	Frame sequences.  This may be replaced by an algorithm.
 const char attack_frames1[4] = {3, 4, 5, 6};
 const char attack_frames2[4] = {3, 7, 8, 9};
 const char alligator_attack_frames[4] = {7, 8, 9};

@@ -235,9 +235,21 @@ public:
 	enum Frames {			// Frames 0-15.  16-31 are the same,
 					//   only S instead of N.
 		standing = 0,
+		step_right_frame = 1,
+		step_left_frame = 2,
+		ready_frame = 3,	// Ready to fight?
+		raise1_frame = 4,	// 1-handed strikes.
+		reach1_frame = 5,
+		strike1_frame = 6,
+		raise2_frame = 7,	// 2-handed strikes.
+		reach2_frame = 8,
+		strike2_frame = 9,
 		sit_frame = 10,
-		to_sit_frame = 11,
-		sleep_frame = 13
+		bow_frame = 11,
+		kneel_frame = 12,
+		sleep_frame = 13,
+		up_frame = 14,		// Both hands reach up.
+		out_frame = 15		// Both hands reach out.
 		};
 	enum FIS_Type {			// The types used in the call to fit_in_spot
 		FIS_Other	= 0,
