@@ -44,8 +44,7 @@ template<class D>
 D_Recursive_object_iterator<D>::D_Recursive_object_iterator
 	(
 	Game_object *start		// Start here.
-	) : elems(Game_window::get_instance()->get_chunk(
-		start->get_outermost())->get_objects()), child(0)
+	) : elems(start->get_outermost()->get_chunk()->get_objects()), child(0)
 	{
 					// Get what obj. is in (or itself).
 	Game_object *owner = start->get_outermost();

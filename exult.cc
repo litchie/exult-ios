@@ -1760,7 +1760,7 @@ static void Drop_dragged_shape
 		int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles;
 		int ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
 		int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
-		Map_chunk *chunk = gwin->get_chunk(cx, cy);
+		Map_chunk *chunk = gwin->get_map()->get_chunk(cx, cy);
 		Chunk_terrain *ter = chunk->get_terrain();
 		tx %= c_tiles_per_chunk; ty %= c_tiles_per_chunk;
 		ShapeID curid = ter->get_flat(tx, ty);
@@ -1874,7 +1874,7 @@ void Drop_dragged_combo
 			{
 			int cx = ntx/c_tiles_per_chunk, 
 			    cy = nty/c_tiles_per_chunk;
-			Map_chunk *chunk = gwin->get_chunk(cx, cy);
+			Map_chunk *chunk = gwin->get_map()->get_chunk(cx, cy);
 			Chunk_terrain *ter = chunk->get_terrain();
 			ntx %= c_tiles_per_chunk; nty %= c_tiles_per_chunk;
 			ter->set_flat(ntx, nty, sid);

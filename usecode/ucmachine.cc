@@ -30,8 +30,7 @@
 
 Usecode_machine::Usecode_machine
 	(
-	Game_window *gw
-	) : gwin(gw), call_depth(0), keyring(0), conv(0), party_count(0),
+	) : call_depth(0), keyring(0), conv(0), party_count(0),
 	    dead_party_count(0)
 	{
 					// Clear global flags.
