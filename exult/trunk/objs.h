@@ -454,7 +454,7 @@ enum Axis
 	yaxis = 1
 	};
 
-extern unsigned Arctangent			// Find angle (0-359).
+Direction Get_direction
 	(
 	int deltay,
 	int deltax
