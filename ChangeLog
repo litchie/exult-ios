@@ -1,3 +1,8 @@
+2002-02-14  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* tools/textpack.cc:  A tool for creating 'text.flx' more 
+	conveniently from a single text file.  Can also extract.
+
 2002-02-13  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.h (public): Sit_schedule:  did_barge_usecode flag added
