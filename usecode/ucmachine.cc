@@ -149,13 +149,16 @@ void Usecode_machine::append_string
 	else
 		String = strcpy(newstr, str);
 	}
-
-	inline void Usecode_machine::push(Usecode_value& val)	// Push/pop stack.
+					// Push/pop stack.
+	inline void Usecode_machine::push(Usecode_value& val)
 		{ *sp++ = val; }
-	inline Usecode_value Usecode_machine::pop()		// +++++Watch for too many str. copies.
+	inline Usecode_value Usecode_machine::pop()
 		{ 
 		if (sp <= stack)
-			stack_error(1);
+			{		// Happens in SI #0x939
+			cerr << "Stack underflow" << endl;
+			return Usecode_value(0);
+			}
 		return *--sp; 
 		}
 	inline void Usecode_machine::pushref(Game_object *obj)
