@@ -69,6 +69,8 @@ static int Has_quantity
 		}
 	}
 
+const int MAX_QUANTITY = 0x7f;		// Highest quantity possible.
+
 /*
  *	Get the quantity.
  */
@@ -109,8 +111,6 @@ int Game_object::get_volume
 
 int Game_object::modify_quantity
 	(
-	Container_game_object *owner,	// Container it's in, or null if obj.
-					//   is in a chunk.
 	int delta			// >0 to add, <0 to remove.
 	)
 	{
@@ -126,9 +126,9 @@ int Game_object::modify_quantity
 	int quant = quality&0x7f;	// Get current quality.
 	int newquant = quant + delta;
 	if (delta > 0)			// Adding?
-		{
-		if (newquant > 0x7f)	// Too much?
-			newquant = 0x7f;
+		{			// Too much?
+		if (newquant > MAX_QUANTITY)
+			newquant = MAX_QUANTITY;
 		}
 	else if (newquant <= 0)		// Subtracting.
 		{
@@ -144,6 +144,7 @@ int Game_object::modify_quantity
 	set_frame(new_frame < num_frames ? new_frame : num_frames - 1);
 	Shape_info& info = gwin->get_shapes().get_info(shapenum);
 	int objvol = info.get_volume();
+	Container_game_object *owner = get_owner();
 	if (owner)			// Update owner's volume.
 		owner->modify_volume_used(objvol*(newquant - quant));
 	return (delta - (newquant - quant));
@@ -319,14 +320,21 @@ int Game_object::is_dragable
 
 int Game_object::drop
 	(
-	Game_object *obj
+	Game_object *obj		// This may be deleted.
 	)
 	{
-	return (0);
+	int shapenum = get_shapenum();	// It's possible if shapes match.
+	if (obj->get_shapenum() != shapenum ||
+	    !Has_quantity(shapenum))
+		return (0);
+	int objq = obj->get_quantity();
+	int total_quant = get_quantity() + objq;
+	if (total_quant > MAX_QUANTITY)	// Too much?
+		return (0);
+	modify_quantity(objq);		// Add to our quantity.
+	obj->remove();			// It's been used up.
+	return (1);
 	}
-
-static void Lt_wall()		//+++++Debugging.
-	{ cout << "Before the wall.\n"; }
 
 /*
  *	Should this object be rendered before obj2?
@@ -339,6 +347,11 @@ int Game_object::lt
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+					// See if there's no overlap.
+	Rectangle r1 = gwin->get_shape_rect(this),
+		  r2 = gwin->get_shape_rect(&obj2);
+	if (!r1.intersects(r2))
+		return (-1);		// No overlap on screen.
 	Shapes_vga_file& shapes = gwin->get_shapes();
 	int shapenum1 = get_shapenum(), shapenum2 = obj2.get_shapenum();
 	Shape_info& info1 = shapes.get_info(shapenum1),
@@ -348,11 +361,6 @@ int Game_object::lt
 	int x1, x2, y1, y2, z1, z2;	// Dims. in tiles.
 	get_abs_tile(atx1, aty1, atz1);
 	obj2.get_abs_tile(atx2, aty2, atz2);
-					// See if there's no overlap.
-	Rectangle r1 = gwin->get_shape_rect(this),
-		  r2 = gwin->get_shape_rect(&obj2);
-	if (!r1.intersects(r2))
-		return (-1);		// No overlap on screen.
 	x1 = info1.get_3d_xtiles(), x2 = info2.get_3d_xtiles();
 	y1 = info1.get_3d_ytiles(), y2 = info2.get_3d_ytiles();
 	z1 = info1.get_3d_height(), z2 = info2.get_3d_height();
@@ -775,7 +783,7 @@ int Container_game_object::add_quantity
 					// ++++++Quality???
 				{
 				int used = 
-				    todo - obj->modify_quantity(this, todo);
+				    todo - obj->modify_quantity(todo);
 				todo -= used;
 				delta -= used;
 				}
@@ -829,7 +837,7 @@ int Container_game_object::create_quantity
 		if (todo > 0)
 			{
 			int used = 
-				todo - newobj->modify_quantity(this, todo);
+				todo - newobj->modify_quantity(todo);
 			todo -= used;
 			delta -= used;
 			}
@@ -877,7 +885,7 @@ int Container_game_object::remove_quantity
 		if (obj->get_shapenum() == shapenum &&
 		    (framenum == -359 || obj->get_framenum() == framenum))
 					// ++++++Quality???
-			delta = -obj->modify_quantity(this, -delta);
+			delta = -obj->modify_quantity(-delta);
 					// Do it recursively.
 		delta = obj->remove_quantity(delta, shapenum, qual, framenum);
 		}

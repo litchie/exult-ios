@@ -1146,7 +1146,7 @@ void Game_window::show_items
 	Gump_object *gump = find_gump(x, y);
 	Game_object *obj;		// What we find.
 	if (gump)
-		obj = gump->find_object(this, x, y);
+		obj = gump->find_object(x, y);
 	else				// Search rest of world.
 		obj = find_object(x, y);
 	if (obj)
@@ -1274,7 +1274,7 @@ void Game_window::double_clicked
 	Gump_object *gump = find_gump(x, y);
 	Game_object *obj;
 	if (gump)
-		obj = gump->find_object(this, x, y);
+		obj = gump->find_object(x, y);
 	else				// Search rest of world.
 		obj = find_object(x, y);
 	remove_all_text();		// Remove text msgs. from screen.

@@ -165,7 +165,7 @@ public:
 		oy = y + object_area.y + obj->cy;
 		}
 					// Find obj. containing mouse point.
-	Game_object *find_object(Game_window *gwin, int mx, int my);
+	Game_object *find_object(int mx, int my);
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.

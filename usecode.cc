@@ -969,7 +969,7 @@ Usecode_value Usecode_machine::click_on_item
 	Gump_object *gump = gwin->find_gump(x, y);
 	Game_object *obj;
 	if (gump)
-		obj = gump->find_object(gwin, x, y);
+		obj = gump->find_object(x, y);
 	else				// Search rest of world.
 		obj = gwin->find_object(x, y);
 	if (obj)
@@ -2076,8 +2076,6 @@ Usecode_machine::Usecode_machine
 					// Clear party list.
 	memset((char *) &party[0], 0, sizeof(party));
 	party_count = 0;
-//	gflags[0x1b3] = 1;		// Testing Ferryman.
-	gflags[0x3d] = 1;	//+++++Password to leave Trinsic.
 	file.seekg(0, ios::end);
 	int size = file.tellg();	// Get file size.
 	file.seekg(0);
@@ -2179,7 +2177,7 @@ void Usecode_machine::run
 #if DEBUG
 		if (debug >= 2)
 			printf("SP = %d, IP = %04x, op = %02x\n", sp - stack,
-						ip - code, opcode);
+						ip - 1 - code, opcode);
 #endif
 		switch (opcode)
 			{
