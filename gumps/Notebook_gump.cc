@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 vector<One_note *> Notebook_gump::notes;
 bool Notebook_gump::initialized = false;	// Set when read in.
+Notebook_gump *Notebook_gump::instance = 0;
 vector<Notebook_top> Notebook_gump::page_info;
 
 /*
@@ -136,6 +137,24 @@ void Notebook_page_button::activate
 	}
 
 /*
+ *	Read in notes the first time.
+ */
+
+void Notebook_gump::initialize
+	(
+	)
+	{
+	initialized = 1;
+	// ++++TESTING:
+	notes.push_back(new One_note(1, 1,10, 10, 10, 
+				strdup("Note  #1\nHello")));
+	notes.push_back(new One_note(2, 2,20, 20, 20, strdup(
+				"Note  #2\nworld.\n\nHow are you?")));
+	notes.push_back(new One_note(3, 3,30, 30, 30, strdup(
+				"Note #3")));
+	}
+
+/*
  *	Create notebook gump.
  */
 
@@ -152,20 +171,16 @@ Notebook_gump::Notebook_gump
 	const int lpagex = 35, rpagex = 300, lrpagey = 12;
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
  	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
-	// ++++TESTING:
-	notes.push_back(new One_note(1, 1,10, 10, 10, 
-				strdup("Note  #1\nHello")));
-	notes.push_back(new One_note(2, 2,20, 20, 20, strdup(
-				"Note  #2\nworld.\n\nHow are you?")));
-	notes.push_back(new One_note(3, 3,30, 30, 30, strdup(
-				"Note #3")));
 	}
 Notebook_gump *Notebook_gump::create
 	(
 	)
 	{
-	// ++++++Initialize.
-	return new Notebook_gump;
+	if (!initialized)
+		initialize();
+	if (!instance)
+		instance = new Notebook_gump;
+	return instance;
 	}
 
 /*
@@ -177,6 +192,8 @@ Notebook_gump::~Notebook_gump
 	{
 	delete leftpage;
 	delete rightpage;
+	if (this == instance)
+		instance = 0;
 	}
 
 /*

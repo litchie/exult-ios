@@ -67,17 +67,20 @@ class Notebook_gump : public Gump
 	static vector<One_note *> notes;// The text.
 					// Indexed by page#.
 	static vector<Notebook_top> page_info;
+	static Notebook_gump *instance;
 	static bool initialized;
 	int curpage;			// Current page # (from 0).
 	Cursor_info cursor;		// Cursor loc. within current page.
 					// Page turners:
 	Gump_button *leftpage, *rightpage;
 
+	static void initialize();
 	int paint_page(Rectangle box, One_note *note, int start, int pagenum);
 public:
 	Notebook_gump();
 	~Notebook_gump();
 	static Notebook_gump *create();
+	static Notebook_gump *get_instance() { return instance; }
 	void change_page(int delta);	// Page forward/backward.
 					// Is a given point on a button?
 	virtual Gump_button *on_button(int mx, int my);
