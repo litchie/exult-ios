@@ -1314,7 +1314,7 @@ void Map_chunk::gravity
 					// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;		// Rel. tiles.  Not used.
-	int cx, cy;
+	int cx, cy, new_lift;
 	while (next_chunk.get_next(tiles, cx, cy))
 		{
 		Map_chunk *chunk = gwin->get_chunk(cx, cy);
@@ -1328,22 +1328,36 @@ void Map_chunk::gravity
 			Tile_coord t = obj->get_abs_tile_coord();
 					// Get footprint.
 			Rectangle foot = obj->get_footprint();
-			int new_lift;
 					// Above area?
 			if (t.tz >= lift && foot.intersects(area) &&
-					// Unblocked below itself?  Let drop.
+					// Unblocked below itself?
 			    !is_blocked(1, t.tz - 1, foot.x, foot.y,
 					foot.w, foot.h, new_lift,
-						MOVE_ALL_TERRAIN, 100) &&
+						MOVE_ALL_TERRAIN, 0) &&
 			    new_lift < t.tz)
-				{	// Save it, and drop it.
 				dropped.push_back(obj);
-				obj->move(t.tx, t.ty, new_lift);
-				}
 			}
 		}
-	for (Game_object_vector::const_iterator it = dropped.begin(); 
-						it != dropped.end(); ++it)
+	Game_object_vector::const_iterator it;
+					// Drop each one found.
+	for (it = dropped.begin(); it != dropped.end(); ++it)
+		{
+		Game_object *obj = *it;
+		Tile_coord t = obj->get_abs_tile_coord();
+					// Get footprint.
+		Rectangle foot = obj->get_footprint();
+					// Let drop as far as possible.
+		if (!is_blocked(1, t.tz - 1, foot.x, foot.y,
+			foot.w, foot.h, new_lift, MOVE_ALL_TERRAIN, 100) &&
+			    				new_lift < t.tz)
+			{		// Drop & recurse.
+			obj->move(t.tx, t.ty, new_lift);
+			gravity(foot, obj->get_lift() +
+					gwin->get_info(obj).get_3d_height());
+			}
+		}
+#if 0
+	for (it = dropped.begin(); it != dropped.end(); ++it)
 		{			// Recurse on each one.
 		Game_object *obj = *it;
 					// Get footprint.
@@ -1351,6 +1365,7 @@ void Map_chunk::gravity
 		gravity(foot, obj->get_lift() +
 					gwin->get_info(obj).get_3d_height());
 		}
+#endif
 	}
 
 /*

@@ -269,7 +269,8 @@ int Monster_actor::step
 	// I'll do nothing for now
 	if (!gwin->emulate_is_move_allowed(t.tx, t.ty))
 		return (0);
-
+	if (get_flag(Obj_flags::paralyzed))
+		return 0;
 					// Store old chunk.
 	int old_cx = get_cx(), old_cy = get_cy();
 					// Get chunk.
