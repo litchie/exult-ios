@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="23 November 2001(GMT)">
+<readme title="Exult" changed="25 November 2001(GMT)">
 	<section title="Changes to the Documentation">
-		<sub name="23112001">
-			<header>- 23 November 2001</header>
+		<sub name="25112001">
+			<header>- 25 November 2001</header>
 			<body>
 				<ul>
-				<li><ref1 target="exult_config"/> added &lt;save_compression_level&gt; to zip up savegames.</li>
+				<li><ref1 target="exult_config"/> added &lt;save_compression_level&gt; to zip up savegames,
+					&lt;waves&gt; no longer needs path set if in data dir.</li>
+				<li><ref1 target="wave_sfx"/> no longer needs paths for sfx pack (if in data dir).</li>				
+				<li><ref1 target="scaler"/> updated link To Derek Liauw's scaler page.</li>
 				</ul>
 			</body>
-		</sub>	
+		</sub>
 		<sub name="06112001">
 			<header>- 06 November 2001</header>
 			<body>
@@ -158,7 +161,7 @@
 						</comment></line>
 					<line>&lt;/keys&gt;</line>
 					<line>&lt;waves&gt;</line>
-					<line>./data/jmsfx.flx
+					<line>jmsfx.flx
 						<comment>**optional setting see <ref target="wave_sfx"/> for configuration
 						</comment></line>
 					<line>&lt;/waves&gt;</line>
@@ -171,7 +174,7 @@
 					<line>(default)</line>
 					<line>&lt;/keys&gt;</line>
 					<line>&lt;waves&gt;</line>
-					<line>./data/jmsisfx.flx
+					<line>jmsisfx.flx
 						<comment>**optional setting see <ref target="wave_sfx"/> for configuration
 						</comment></line>
 					<line>&lt;/waves&gt;</line>
@@ -502,12 +505,12 @@
 		<header>Digital Wave Sound Effects</header>
 			<body>
 				<para>
-					You have to set a path to the sfx pack in the waves settings in exult.cfg 
-					(see <ref target="exult_config"/>). You have to download separate packs for 
-					each game as order of the sfx in BG and SI varies a bit and otherwise will 
-					sound odd. However there is a little issue with sfx playback in SI. In combat
-					the sfx may be a little wrong as we still haven't figured out all the data in
-					the 'weapons.dat'.
+					<Exult/> needs the so called sfx packs to enable sound effects for Ultima 7.
+					You have to download separate packs for each game as order of the sfx in BG 
+					and SI varies a bit and otherwise will sound odd. However there is a little 
+					issue with sfx playback in SI: In combat the sfx may be a little wrong as we 
+					still haven't figured out all the data in the 'weapons.dat'.<br/>
+					Also <Exult/> doesn't yet playback all the sfx that the orignal did.
 				</para>
 				<para>
 					Note that configuring your soundfonts is not needed for digital wave sfx.
@@ -518,10 +521,28 @@
 					for "The Black Gate" and 
 					<extref target="http://prdownloads.sourceforge.net/exult/jmsfxsi.zip"/> (~6.01 MB) 
 					for "Serpent Isle".<br/>
-					He recorded the original 114 sfx used in Black Gate which must
-					have been a lot of work. If your soundcard doesn't support soundfonts
-					this pack is a "must-have". Enjoy!
+					J.Morris recorded the original sfx used in BG and SI which meant a lot of work. Don't 
+					complain that the sfx sounds strange, instead load up the original and you will 
+					find that it sounds the same. Enjoy!
 				</para>
+				<para>
+					Extract the zip files into your Exult data directory and write down the name of the 
+					pack in your exult.cfg file (see <ref target="exult_config"/>). You don't need to
+					set correct paths anymore if the pack is in the data directory.<br/> 
+					An example of how the relevant part of exult.cfg looks with these packs:
+				</para>
+				<configdesc>
+					<line>&lt;blackgate&gt;</line>					
+					<line>&lt;waves&gt;</line>
+					<line>jmsfx.flx</line>
+					<line>&lt;/waves&gt;</line>
+					<line>&lt;/blackgate&gt;</line>
+					<line>&lt;serpentisle&gt;</line>
+					<line>&lt;waves&gt;</line>
+					<line>jmsisfx.flx</line>
+					<line>&lt;/waves&gt;</line>
+					<line>&lt;/serpentisle&gt;</line>
+				</configdesc>
 			</body>
 		</sub>
 		<sub name="speech">
@@ -592,7 +613,7 @@
 				</para>
 				<para>
 					More information on the excellent scaling engines by Derek Liauw is available at
-					<extref target="http://members.xoom.com/derek_liauw/"/>.
+					<extref target="http://elektron.its.tudelft.nl/~dalikifa/"/>.
 				</para>
 			</body>
 		</sub>
