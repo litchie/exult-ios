@@ -155,7 +155,8 @@ uint8 visible_frames[16] = {
 	Actor::strike2_frame,		// Can't raise hands.
 	Actor::strike2_frame };
 
-Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+Frames_sequence *Actor::avatar_frames[4] = {0, 0, 0, 0};
+Frames_sequence *Actor::npc_frames[4] = {0, 0, 0, 0};
 const char sea_serpent_attack_frames[] = {13, 12, 11, 0, 1, 2, 3, 11, 12, 
 								13, 14};
 // inline int Is_attack_frame(int i) { return i >= 3 && i <= 9; }
@@ -184,7 +185,7 @@ void Actor::init
 	(
 	)
 	{
-	if (!frames[static_cast<int>(north)])
+	if (!avatar_frames[0])
 		init_default_frames();
 	size_t i;
 	for (i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
@@ -453,6 +454,7 @@ Actor::Actor
 	{
 	set_shape(shapenum, 0); 
 	init();
+	frames = &npc_frames[0];	// Default:  5-frame walking.
 	}
 
 /*
@@ -670,36 +672,34 @@ void Actor::init_default_frames
 	)
 	{
 					// Set up actor's frame lists.
-					// These are rough guesses.
-#if 0
-	// Evil hack to allow "smooth" 3-frame walking
+					// Most NPC's walk with a 'stand'
+					//   frame between steps.
 	const int FRAME_NUM = 5;
-	uint8	north_frames[FRAME_NUM] = { 0,  1,  0,  2,  0},
-			south_frames[FRAME_NUM] = {16, 17, 16, 18, 16},
-			 east_frames[FRAME_NUM] = {48, 49, 48, 50, 48},
-			 west_frames[FRAME_NUM] = {32, 33, 32, 34, 32};
-	frames[static_cast<int> (north)] = new Frames_sequence(FRAME_NUM, north_frames);
-	frames[static_cast<int> (northeast)] = frames[static_cast<int> (north)];
-	frames[static_cast<int> (south)] = new Frames_sequence(FRAME_NUM, south_frames);
-	frames[static_cast<int> (southwest)] = frames[static_cast<int> (south)];
-	frames[static_cast<int> (east)] = new Frames_sequence(FRAME_NUM, east_frames);
-	frames[static_cast<int> (southeast)] = frames[static_cast<int> (east)];
-	frames[static_cast<int> (west)] = new Frames_sequence(FRAME_NUM, west_frames);
-	frames[static_cast<int> (northwest)] = frames[static_cast<int> (west)];
-#else
-	uint8	north_frames[3] = {0, 1, 2},
-			south_frames[3] = {16, 17, 18},
-			east_frames[3] = {48, 49, 50},
-			west_frames[3] = {32, 33, 34};
-	frames[static_cast<int> (north)] = new Frames_sequence(3, north_frames);
-	frames[static_cast<int> (northeast)] = frames[static_cast<int>(north)];
-	frames[static_cast<int> (south)] = new Frames_sequence(3, south_frames);
-	frames[static_cast<int> (southwest)] = frames[static_cast<int>(south)];
-	frames[static_cast<int> (east)] = new Frames_sequence(3, east_frames);
-	frames[static_cast<int> (southeast)] = frames[static_cast<int>(east)];
-	frames[static_cast<int> (west)] = new Frames_sequence(3, west_frames);
-	frames[static_cast<int> (northwest)] = frames[static_cast<int>(west)];
-#endif
+	uint8		npc_north_frames[FRAME_NUM] = { 0,  1,  0,  2,  0},
+			npc_south_frames[FRAME_NUM] = {16, 17, 16, 18, 16},
+			npc_east_frames[FRAME_NUM] = {48, 49, 48, 50, 48},
+			npc_west_frames[FRAME_NUM] = {32, 33, 32, 34, 32};
+	npc_frames[static_cast<int> (north)/2] = 
+			new Frames_sequence(FRAME_NUM, npc_north_frames);
+	npc_frames[static_cast<int> (south)/2] = 
+			new Frames_sequence(FRAME_NUM, npc_south_frames);
+	npc_frames[static_cast<int> (east)/2] = 
+			new Frames_sequence(FRAME_NUM, npc_east_frames);
+	npc_frames[static_cast<int> (west)/2] = 
+			new Frames_sequence(FRAME_NUM, npc_west_frames);
+					// Avatar just walks left, right.
+	uint8		avatar_north_frames[3] = {0, 1, 2},
+			avatar_south_frames[3] = {16, 17, 18},
+			avatar_east_frames[3] = {48, 49, 50},
+			avatar_west_frames[3] = {32, 33, 34};
+	avatar_frames[static_cast<int> (north)/2] = 
+			new Frames_sequence(3, avatar_north_frames);
+	avatar_frames[static_cast<int> (south)/2] = 
+			new Frames_sequence(3, avatar_south_frames);
+	avatar_frames[static_cast<int> (east)/2] = 
+			new Frames_sequence(3, avatar_east_frames);
+	avatar_frames[static_cast<int> (west)/2] = 
+			new Frames_sequence(3, avatar_west_frames);
 	}
 
 /*
