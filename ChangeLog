@@ -1,3 +1,6 @@
+2002-11-04  Max Horn  <max@quendi.de>
+	* exult.cc, game.cc, file/utils.*: Added and make use of clone_system_path()
+
 2002-11-03  Max Horn  <max@quendi.de>
 	* audio/xmidi.cc, gumps/Actor_gump.cc, gumps/Paperdoll_gump.cc, gumps/Spellbook_gump.cc,
 	  objs/objs.cc, usecode/useval.cc: CodeWarrior has snprintf incorrectly in std::

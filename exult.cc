@@ -561,7 +561,7 @@ void get_game_paths(const string &gametitle)
 	string patch_directory;
 	config->value(config_path.c_str(), patch_directory, "");
 	if (patch_directory != "")
-		add_system_path("<" + system_path_tag + "_PATCH>", patch_directory.c_str());
+		add_system_path("<" + system_path_tag + "_PATCH>", patch_directory);
 }
 
 /*
