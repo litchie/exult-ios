@@ -205,7 +205,6 @@ void Gump_manager::add_gump
 	int shapenum			// Shape # in 'gumps.vga'.
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
 	int paperdoll = 0;
 	
 	if (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP
@@ -213,7 +212,6 @@ void Gump_manager::add_gump
 		paperdoll = 1;
 
 	// overide for paperdolls
-	Shape_manager *sman = Shape_manager::get_instance();
 	if (shapenum == 123 && (Game::get_game_type() == SERPENT_ISLE ||
 		(sman->can_use_paperdolls() && sman->get_bg_paperdolls())))
 		paperdoll=2;
@@ -300,7 +298,6 @@ void Gump_manager::close_all_gumps
 	bool pers
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
 	bool removed = false;
 
 	Gump_list *prev = 0;
@@ -346,10 +343,9 @@ bool Gump_manager::double_clicked
 		obj = gump->find_object(x, y);
 		if (!obj)		// Maybe it's a spell.
 		{
-			Game_window *gwin = Game_window::get_instance();
 		 	Gump_button *btn = gump->on_button(gwin, x, y);
 			if (btn) btn->double_clicked(gwin, x, y);
-			else if (Game_window::get_instance()->get_double_click_closes_gumps())
+			else if (gwin->get_double_click_closes_gumps())
 			{
 				gump->close(gwin);
 				gwin->paint();
