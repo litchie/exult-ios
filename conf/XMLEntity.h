@@ -49,7 +49,7 @@ class	XMLnode
 	{
 public:
 	XMLEntity	entity;
-	std::vector<XMLnode>	nodelist;
+	std::vector<XMLnode*>	nodelist;
 	std::string	&reference(std::string &,bool &);
 	XMLnode *subtree(std::string &);
 	XMLnode &operator=(const XMLnode &n) { entity=n.entity; nodelist=n.nodelist; return *this; }

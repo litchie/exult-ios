@@ -63,11 +63,11 @@ string	&XMLnode::reference(string &h,bool &exists)
 	string k;
 	k=h.substr(h.find('/')+1);
 	string k2=k.substr(0,k.find('/'));
-	for(vector<XMLnode>::iterator it=nodelist.begin();
+	for(vector<XMLnode*>::iterator it=nodelist.begin();
 		it!=nodelist.end();++it)
 		{
-		if(it->entity.id==k2)
-			return it->reference(k,exists);
+		if((*it)->entity.id==k2)
+			return (*it)->reference(k,exists);
 		}
 
 	return dummy;
@@ -95,11 +95,11 @@ XMLnode *XMLnode::subtree(string &h)
 	string k;
 	k=h.substr(h.find('/')+1);
 	string k2=k.substr(0,k.find('/'));
-	for(vector<XMLnode>::iterator it=nodelist.begin();
+	for(vector<XMLnode*>::iterator it=nodelist.begin();
 		it!=nodelist.end();++it)
 		{
-		if(it->entity.id==k2)
-			return it->subtree(k);
+		if((*it)->entity.id==k2)
+			return (*it)->subtree(k);
 		}
 
 	return 0;

@@ -71,11 +71,11 @@ void	xmldump(string &s,XMLnode *x,int depth)
 	s+=">\n";
 	if(x->entity.id[x->entity.id.length()-1]!='/')
 		{
-		for(vector<XMLnode>::iterator it=x->nodelist.begin();
+		for(vector<XMLnode*>::iterator it=x->nodelist.begin();
 			it!=x->nodelist.end();
 			++it)
 			{
-			xmldump(s,it,depth+1);
+			xmldump(s,*it,depth+1);
 			}
 
 		if(x->entity.content.length())

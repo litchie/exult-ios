@@ -260,7 +260,7 @@ void Usecode_value::print
 	switch ((Val_type) type)
 		{
 	case int_type:
-		cout << hex << setfill(0x30) << setw(4);
+		cout << hex << setfill((char)0x30) << setw(4);
 		out << (value.intval&0xffff);
 		cout << dec;
 		break;
