@@ -1280,8 +1280,8 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 				int delay)	// -1 for random delay.
 {
 	Game_window *gwin = Game_window::get_game_window();
-	if (!gwin->get_objects_safely(get_cx(), get_cy()))
-		return;			// Not on the map.
+//Causes bugs in SI.  Maybe not needed.	if (!gwin->get_objects_safely(get_cx(), get_cy()))
+//		return;			// Not on the map.
 
 	stop();				// Stop moving.
 	if (schedule)			// End prev.
@@ -3098,8 +3098,6 @@ void Npc_actor::update_schedule
 	int delay			// Delay in msecs, or -1 for random.
 	)
 	{
-	if (!gwin->get_objects_safely(get_cx(), get_cy()))
-		return;			// Not on the map.
 	int i = find_schedule_change(hour3);
 	if (i < 0)
 		{			// Not found?  Look at prev.?
