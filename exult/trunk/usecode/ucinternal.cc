@@ -60,6 +60,7 @@
 #include "vec.h"
 #include "actors.h"
 #include "egg.h"
+#include "actions.h"
 
 using std::cerr;
 using std::cout;
@@ -1042,6 +1043,52 @@ int Usecode_internal::path_run_usecode
 	Actor *npc = as_actor(get_item(npcval));
 	if (!npc)
 		return 0;
+	int usefun = useval.get_elem0().get_int_value();
+	Game_object *obj = get_item(itemval);
+	int sz = locval.get_array_size();
+	if (!npc || !obj || sz < 2)
+		{
+		CERR("Path_run_usecode: bad inputs");
+		return 0;
+		}
+	Tile_coord src = npc->get_abs_tile_coord();
+	Tile_coord dest(locval.get_elem(0).get_int_value(),
+			locval.get_elem(1).get_int_value(),
+			sz == 3 ? locval.get_elem(2).get_int_value() : 0);
+	if (dest.tz < 0)		// ++++Don't understand this.
+		dest.tz = 0;
+	if (find_free)
+		{
+		dest = Find_unblocked(dest, src.tz);
+		if (usefun == 0x60a &&	// ++++Added 7/21/01 to fix Iron
+		    src.distance(dest) <= 1)
+			return 1;	// Maiden loop in SI.  Kludge+++++++
+		}
+					// Walk there and execute.
+	If_else_path_actor_action *action = 
+		new If_else_path_actor_action(npc, dest,
+				new Usecode_actor_action(usefun, obj, 
+						eventval.get_int_value()));
+	npc->set_action(action);
+	npc->start(200, 0);		// Get into time queue.
+	return !action->done_and_failed();
+}
+
+
+#if 0	/* +++++++++Old way */
+int Usecode_internal::path_run_usecode
+	(
+	Usecode_value& npcval,		// # or ref.
+	Usecode_value& locval,		// Where to walk to.
+	Usecode_value& useval,		// Usecode #.
+	Usecode_value& itemval,		// Use as itemref in Usecode fun.
+	Usecode_value& eventval,	// Eventid.
+	int find_free			// Not sure.  For SI.  
+	)
+	{
+	Actor *npc = as_actor(get_item(npcval));
+	if (!npc)
+		return 0;
 	int usefun = useval.get_int_value();
 	int sz = locval.get_array_size();
 	if (sz != 3)			// Looks like tile coords.
@@ -1057,7 +1104,7 @@ int Usecode_internal::path_run_usecode
 	cout << endl << "Path_run_usecode:  first walk to (" << 
 			dx << ", " << dy << ", " << dz << ")" << endl;
 	Tile_coord dest(dx, dy, dz);
-	if (find_free)
+	if (find_free && dest != src)
 		{
 		dest = Find_unblocked(dest, src.tz);
 		if (usefun == 0x60a &&	// ++++Added 7/21/01 to fix Iron
@@ -1090,6 +1137,7 @@ int Usecode_internal::path_run_usecode
 		}
 	return 0;
 	}
+#endif
 
 /*
  *	Schedule a script.

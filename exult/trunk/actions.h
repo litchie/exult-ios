@@ -47,7 +47,7 @@ public:
 					//   exec. another action when there.
 	static Actor_action *create_action_sequence(Actor *actor, 
 			Tile_coord dest, Actor_action *when_there, 
-		bool from_off_screen = false, bool no_teleport = false);
+					bool from_off_screen = false);
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest)
 		{ return 0; }
@@ -102,6 +102,26 @@ public:
 	virtual int get_dest(Tile_coord& dest);
 					// Check for Astar.
 	virtual int following_smart_path();
+	};
+
+/*
+ *	Follow a path and execute one action if successful, another if
+ *	failed.
+ */
+
+class If_else_path_actor_action : public Path_walking_actor_action
+	{
+	bool succeeded, failed, done;
+	Actor_action *success, *failure;
+public:
+	If_else_path_actor_action(Actor *actor, Tile_coord dest, 
+				Actor_action *s, Actor_action *f = 0);
+	~If_else_path_actor_action();
+	void set_failure(Actor_action *f);
+	bool done_and_failed()		// Happens if no path found in ctor.
+		{ return done && failed; }
+					// Handle time event.
+	virtual int handle_event(Actor *actor);
 	};
 
 /*
