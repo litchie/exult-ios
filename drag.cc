@@ -336,7 +336,7 @@ void Game_window::drop
 			get_objects(oldcx, oldcy)->activate_eggs(dragging,
 			    oldtx, oldty, dragging->get_lift(), oldtx, oldty);
 					// Check for theft.
-		if (!okay_to_take &&
+		if (!okay_to_take && !cheat.in_hack_mover() &&
 		    (dragging_gump != on_gump || dropped_in_something ||
 					// Moving:
 		     (!dragging_gump && !okay_to_move &&
@@ -403,6 +403,12 @@ cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
 							<< ")"<<endl;
 					// On an egg?
 		chunk->activate_eggs(to_drop, tx, ty, lift, tx, ty);
+
+		if (to_drop == main_actor) {
+			center_view(to_drop->get_abs_tile_coord());
+			paint();
+		}
+
 		return (true);
 		}
 	return (false);
