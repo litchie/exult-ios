@@ -664,13 +664,10 @@ void Slider_gump_object::set_val
 	int newval
 	)
 	{
-cout << "Set_val:: val = " << newval << '\n';
 	val = newval;
 	static int xdist = xmax - xmin;
 	diamondx = xmin + ((val - min_val)*xdist)/(max_val - min_val);
 	Game_window *gwin = Game_window::get_game_window();
-	paint(gwin);
-	gwin->set_painted();
 	}
 
 /*
@@ -687,6 +684,7 @@ Slider_gump_object::Slider_gump_object
 	    val(defval), min_val(mival), max_val(mxval), step_val(step),
 	    dragging(0), prev_dragx(0)
 	{
+cout << "Slider:  " << min_val << " to " << max_val << " by " << step << '\n';
 	left_arrow = new Slider_gump_button(this, leftbtnx, btny, SLIDERLEFT);
 	right_arrow = new Slider_gump_button(this, rightbtnx, btny, 
 								SLIDERRIGHT);
@@ -717,6 +715,9 @@ void Slider_gump_object::clicked_arrow
 			newval = max_val;
 		}
 	set_val(newval);
+	Game_window *gwin = Game_window::get_game_window();
+	paint(gwin);
+	gwin->set_painted();
 	}
 
 /*
@@ -785,14 +786,16 @@ void Slider_gump_object::mouse_up
 	int mx, int my			// Position in window.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	if (dragging)			// Done dragging?
 		{
 		set_val(val);		// Set diamond in correct pos.
+		paint(gwin);
+		gwin->set_painted();
 		dragging = 0;
 		}
 	if (!pushed)
 		return;
-	Game_window *gwin = Game_window::get_game_window();
 	pushed->unpush(gwin);
 	if (pushed->on_button(gwin, mx, my))
 		pushed->activate(gwin);
@@ -817,8 +820,10 @@ void Slider_gump_object::mouse_drag
 	else if (diamondx > xmax)
 		diamondx = xmax;
 	static int xdist = xmax - xmin;
-	int newval = min_val + 
-			(diamondx - xmin)*(max_val - min_val)/xdist;
+	int delta = (diamondx - xmin)*(max_val - min_val)/xdist;
+					// Round down to nearest step.
+	delta -= delta%step_val;
+	int newval = min_val + delta;
 	if (newval != val)		// Set value.
 		val = newval;
 	paint(Game_window::get_game_window());

@@ -714,7 +714,8 @@ int Container_game_object::add_quantity
 	do				// First try existing items.
 		{
 		obj = obj->get_next();
-		if (framenum == -359 || obj->get_framenum() == framenum)
+		if (obj->get_shapenum() == shapenum &&
+		    (framenum == -359 || obj->get_framenum() == framenum))
 					// ++++++Quality???
 			delta = obj->modify_quantity(this, delta);
 					// Do it recursively.
@@ -752,19 +753,24 @@ int Container_game_object::remove_quantity
 	int framenum			// Frame, or -359 for any.
 	)
 	{
-	int todo = -delta;
-	Game_object *obj = last_object;
-	do
+	if (!last_object)
+		return delta;		// Empty.
+	Game_object *obj;
+	Game_object *next = last_object->get_next();
+	int done = 0;
+	while (!done && delta)
 		{
-		obj = obj->get_next();
-		if (framenum == -359 || obj->get_framenum() == framenum)
+		obj = next;		// Might be deleting obj.
+		next = obj->get_next();
+		done = (obj == last_object);
+		if (obj->get_shapenum() == shapenum &&
+		    (framenum == -359 || obj->get_framenum() == framenum))
 					// ++++++Quality???
-			todo = obj->modify_quantity(this, todo);
+			delta = -obj->modify_quantity(this, -delta);
 					// Do it recursively.
-		todo = obj->remove_quantity(todo, shapenum, qual, framenum);
+		delta = obj->remove_quantity(delta, shapenum, qual, framenum);
 		}
-	while (obj != last_object);
-	return (-todo);
+	return (delta);
 	}
 
 /*
