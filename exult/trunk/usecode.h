@@ -284,9 +284,11 @@ class Usecode_machine
 					// Call desired function.
 	int call_usecode_function(int id, int event = 0, 
 						Usecode_value *parm0 = 0);
+	void	_init_(istream &);
 public:
 	friend class Scheduled_usecode;
 	Usecode_machine(istream& file, Game_window *gw);
+	Usecode_machine(Game_window *gw);
 	~Usecode_machine();
 					// Possible events:
 	enum Usecode_events {
