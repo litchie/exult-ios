@@ -12,6 +12,7 @@ RELNUM=99.0
 VERSION=$MAJOR.$RELNUM
 
 dnl check host/build systems. For now, only host is used
+dnl (build = system we're building on, host = system we're building for)
 AC_CANONICAL_HOST
 AC_CANONICAL_BUILD
 
@@ -26,10 +27,10 @@ AC_DEFINE(AUTOCONFIGURED)
 
 
 dnl -------------------------
-dnl Target system settings
+dnl Host system settings
 dnl -------------------------
 
-dnl determine windowing system from target
+dnl determine windowing system from 'host'
 AC_MSG_CHECKING("windowing system")
 case "$host_os" in
 	linux*)
@@ -386,6 +387,31 @@ dnl --------------------
 dnl External features
 dnl --------------------
 
+dnl Build any external programs?
+AC_ARG_ENABLE(tools, [ --disable-tools                   only build the main program [default no]],,enable_tools=yes)
+AC_MSG_CHECKING(whether to build only the main program)
+if test x$enable_tools = xno; then
+	AC_MSG_RESULT(yes)
+	AM_CONDITIONAL(BUILD_TOOLS, false)
+	enable_gtk_interface=no
+	enable_gimp_plugin=no
+	enable_data=no
+else
+	AM_CONDITIONAL(BUILD_TOOLS, true)
+	AC_MSG_RESULT(no)
+fi
+
+dnl Build data files?
+AC_ARG_ENABLE(data, [ --disable-data                    don't build the data files [default no]],,enable_data=yes)
+AC_MSG_CHECKING(whether to build the data files)
+if test x$enable_data = xno; then
+	AC_MSG_RESULT(no)
+	AM_CONDITIONAL(DATA_FILES, false)
+else
+	AM_CONDITIONAL(DATA_FILES, true)
+	AC_MSG_RESULT(yes)
+fi
+
 dnl GTK interface
 AC_ARG_ENABLE(gtk-interface, [  --enable-gtk-interface          build the GTK+ interface [default no]],,enable_gtk_interface=no)
 AC_MSG_CHECKING(whether to build the GTK+ interface)
@@ -413,7 +439,7 @@ else
 fi
 
 dnl GIMP plugin
-AM_CONDITIONAL(HAVE_GIMP, false)
+AM_CONDITIONAL(GIMP_PLUGIN, false)
 AC_ARG_ENABLE(gimp-plugin, [  --disable-gimp-plugin          do not build the GIMP plugin [default no]],,enable_gimp_plugin=yes)
 dnl Check for GIMP devel stuff. We need to check for glib first
 if test x$enable_gimp_plugin = xyes; then
@@ -428,7 +454,7 @@ if test x$enable_gimp_plugin = xyes; then
 			gimp_version=`gimptool --version |  awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2*100+$3;}'`
 			if test "$gimp_version" -ge 1126; then
 				AC_MSG_RESULT(found >= 1.1.26)
-				AM_CONDITIONAL(HAVE_GIMP, true)
+				AM_CONDITIONAL(GIMP_PLUGIN, true)
 				CPPFLAGS="$save_cppflags"
 				GIMP_PLUGIN_PREFIX=`gimptool --gimpplugindir`
 				AC_SUBST(GIMP_PLUGIN_PREFIX)
@@ -455,21 +481,23 @@ AC_SUBST(ICON_FILE)
 AC_SUBST(DEBUG_FLAGS)
 
 
-AC_OUTPUT(exult.spec \
-Makefile \
-audio/Makefile \
-audio/midi_drivers/Makefile \
-conf/Makefile \
-files/Makefile \
-gumps/Makefile \
-pathfinder/Makefile \
-flic/Makefile \
-tools/Makefile \
-data/Makefile \
-docs/Makefile \
-desktop/Makefile \
-objs/Makefile \
-imagewin/Makefile \
-shapes/Makefile \
-usecode/Makefile 
-mapedit/Makefile)
+AC_OUTPUT([
+exult.spec
+Makefile
+audio/Makefile
+audio/midi_drivers/Makefile
+conf/Makefile
+files/Makefile
+gumps/Makefile
+pathfinder/Makefile
+flic/Makefile
+tools/Makefile
+data/Makefile
+docs/Makefile
+desktop/Makefile
+objs/Makefile
+imagewin/Makefile
+shapes/Makefile
+usecode/Makefile
+mapedit/Makefile
+])
