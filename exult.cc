@@ -839,16 +839,20 @@ static void Handle_keystroke
 		shape_showcase(current_file, current_shape, current_frame);
 		break;
 	case SDLK_RIGHT:
-		gwin->view_right();
+		for (int i = 16; i; i--)
+			gwin->view_right();
 		break;
 	case SDLK_LEFT:
-		gwin->view_left();
+		for (int i = 16; i; i--)
+			gwin->view_left();
 		break;
 	case SDLK_DOWN:
-		gwin->view_down();
+		for (int i = 16; i; i--)
+			gwin->view_down();
 		break;
 	case SDLK_UP:
-		gwin->view_up();
+		for (int i = 16; i; i--)
+			gwin->view_up();
 		break;
 	case SDLK_F4:
 		gwin->get_win()->toggle_fullscreen();

@@ -70,21 +70,29 @@ void Egg_object::set_area
 	Game_window *gwin = Game_window::get_game_window();
 	int tx, ty, tz;			// Get absolute tile coords.
 	get_abs_tile(tx, ty, tz);
-					// Set up active area.
-	if (!distance || criteria == avatar_footpad)
+	switch (criteria)		// Set up active area.
+		{
+	case cached_in:			// Make it really large.
+		area = Rectangle(tx - 32, ty - 32, 64, 64);
+		break;
+	case avatar_footpad:
+	case party_footpad:
 		{
 		Shape_info& info = gwin->get_info(this);
 		int xtiles = info.get_3d_xtiles(), 
 		    ytiles = info.get_3d_ytiles();
 		area = Rectangle(tx - xtiles + 1, ty - ytiles + 1,
 							xtiles, ytiles);
+		break;
 		}
-	else
-		{
+	case avatar_far:		// Make it 1 tile bigger each dir.
+		area = Rectangle(tx - distance - 1, ty - distance - 1, 
+					2*distance + 3, 2*distance + 3);
+		break;
+	default:
 		area = Rectangle(tx - distance, ty - distance, 
 					2*distance + 1, 2*distance + 1);
-		if (criteria == avatar_far)
-			area.enlarge(1);// Hot area is outside.
+		break;
 		}
 					// Don't go outside the world.
 	Rectangle world(0, 0, num_chunks*tiles_per_chunk,
@@ -106,6 +114,7 @@ int Egg_object::is_active
 		return (0);		// For now... Already hatched.
 	switch (get_criteria())
 		{
+	case cached_in:			// Anywhere in square.
 	case avatar_footpad:
 	case party_footpad:
 		return area.has_point(tx, ty);
@@ -202,18 +211,16 @@ void Egg_object::activate
 cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		", distance = " << (int) distance << ", crit = " <<
 		(int) criteria << ", once = " <<
-	((flags & (1<<(int)once) != 0)) << ", hatched = " <<
-	((flags & (1<<(int)hatched) != 0)) <<
+	((flags & (1<<(int)once)) != 0) << ", hatched = " <<
+	((flags & (1<<(int)hatched)) != 0) <<
 	", areset = " <<
-	((flags & (1<<(int)auto_reset) != 0)) << ", data1 = " << data1
+	((flags & (1<<(int)auto_reset)) != 0) << ", data1 = " << data1
 		<< ", data2 = " << data2 << '\n';
 #endif
 	int roll = 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
 	flags |= (1 << (int) hatched);	// Flag it as done.
-					// Flag to delete.
-	int del = flags & (1 << (int) once);
 	Game_window *gwin = Game_window::get_game_window();
 	switch(type)
 		{
@@ -225,7 +232,6 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			break;
 		case voice:
 			audio->start_speech((data1)&0xff);
-			del = 1;	// Just do these once.
 			break;
 		case monster:
 			{
@@ -282,7 +288,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		default:
 			cout << "Egg not actioned" << endl;
                 }
-	if (del)
+	if (flags & (1 << (int) once))
 		remove_this();		// All done, so go away.
 	}
 

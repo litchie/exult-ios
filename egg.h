@@ -65,7 +65,7 @@ public:
 		auto_reset = 3
 		};
 	enum Egg_criteria {
-		cached_in = 0,		// ???
+		cached_in = 0,		// Activated when chunk read in?
 		party_near = 1,
 		avatar_near = 2,	// Avatar steps into area.
 		avatar_far = 3,		// Avatar steps outside area.

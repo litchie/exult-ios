@@ -605,7 +605,9 @@ class Chunk_cache
 	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
 				int tx, int ty, int from_tx, int from_ty)
 		{
-		unsigned short eggbits = eggs[ty*tiles_per_chunk + tx];
+		unsigned short eggbits = eggs[
+			(ty%tiles_per_chunk)*tiles_per_chunk + 
+							(tx%tiles_per_chunk)];
 		if (eggbits)
 			activate_eggs(obj, chunk, tx, ty, 
 						from_tx, from_ty,  eggbits);
