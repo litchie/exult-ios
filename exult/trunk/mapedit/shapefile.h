@@ -34,6 +34,7 @@ class ifstream;
 class Object_browser;
 class Shape_group;
 class Shape;
+class Flex;
 
 /*
  *	A shape file:
@@ -44,15 +45,16 @@ class Shape_file_info
 	std::string pathname;		// Full pathname.
 	Vga_file *ifile;		// Contains the images.
 	std::ifstream *file;		// For 'chunks'; ifile is NULL.
+	Flex *flex;			// For 'combos.flx'.
 	Shape_group_file *groups;	// Groups within ifile.
 	bool modified;			// Ifile was modified.
 public:
 	friend class Shape_file_set;
 					// We will own ifile and groups.
 	Shape_file_info(const char *bnm, const char *pnm, Vga_file *i, 
-					std::ifstream *f, Shape_group_file *g)
-		: basename(bnm), pathname(pnm), ifile(i), file(f), groups(g),
-		  modified(false)
+			std::ifstream *f, Flex *fl, Shape_group_file *g)
+		: basename(bnm), pathname(pnm), ifile(i), file(f), 
+		  flex(fl), groups(g), modified(false)
 		{  }
 	~Shape_file_info();
 	const char *get_basename()

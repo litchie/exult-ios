@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "Flex.h"
 #include "exceptions.h"
+#include "combo.h"
 
 using std::vector;
 using std::string;
@@ -68,6 +69,9 @@ Object_browser *Shape_file_info::create_browser
 	{
 	if (file)			// Must be 'u7chunks' (for now).
 		return new Chunk_chooser(vgafile->get_ifile(), *file, palbuf, 
+								400, 64, g);
+	else if (flex)
+		return new Combo_chooser(vgafile->get_ifile(), flex, palbuf,
 								400, 64, g);
 	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64, 
 								g, this);
@@ -188,6 +192,7 @@ Shape_file_info *Shape_file_set::create
 	int u7drag_type = U7_SHAPE_UNK;
 	Vga_file *ifile = 0;
 	std::ifstream *file = 0;
+	Flex *flex = 0;
 	if (strcasecmp(basename, "shapes.vga") == 0)
 		{			// Special case.
 		u7drag_type = U7_SHAPE_SHAPES;
@@ -204,7 +209,9 @@ Shape_file_info *Shape_file_set::create
 		file = new std::ifstream;
 		U7open(*file, fullname);// Automatically does binary.
 		}
-	if (!ifile && !file)		// Not handled above?
+	else if (strcasecmp(basename, "combos.flx") == 0)
+		flex = new Flex(fullname);
+	if (!ifile && !file && !flex)	// Not handled above?
 					// Get image file for this path.
 		ifile = new Vga_file(fullname, u7drag_type);
 	if ((ifile && !ifile->is_good()) || (file && !file->good()))
@@ -213,7 +220,7 @@ Shape_file_info *Shape_file_set::create
 		abort();
 		}
 	Shape_file_info *fi = new Shape_file_info(basename, fullname, 
-							ifile, file, groups);
+					ifile, file, flex, groups);
 	files.push_back(fi);
 	return fi;
 	}
