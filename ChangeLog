@@ -4,5 +4,8 @@
 	* ChangeLog: started changelog using standard GNU notation. Emacs 
 	has a major mode which enables easy editing of this beast.
 	* autogen.sh: script which generates automake/autoconf stuff.
+	* configure.in: should not use acinclude.m4 as AC_INIT. Use exult.cc 
+	instead.
+	
 	
 
