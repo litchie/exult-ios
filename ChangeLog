@@ -6,6 +6,8 @@
 	* And again. Fixing a bug where I was reading the config file twice
 	upon loading. The file size would grow exponentially at each write.
 
+	* usecode/ucxt/src/opcodes.cc: Fixed compile problems under mingw.
+
 2002-01-23  Darke  <darkepaw@users.sourceforge.net>
 	* exult.cc: Fixed a compile error with people compiling using
 	--enable-usecode-debugger.
