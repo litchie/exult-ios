@@ -340,7 +340,6 @@ SuperEagle
 You have two choices on how to setup Exult.
 The first one is very easy, just extract all the files from the compiled snapshot archive to the directory where you have The Black Gate or Serpent Isle installed. Concerning the paths you don't have to configure anything.
 The other is a little more complicated but appeals to control freaks like me: Make a directory c:\ultima7 make two subfolders named "blackgate" and "serpentisle" (without the quotes of course) Extract or install the two Ultima 7 games into the appropriate folder ("The Black Gate" to c:\ultima7\blackgate and "Serpent Isle" to c:\ultima7\serpentisle) Extract the compiled Exult to c:\ultima7 Now you have to edit the exult.cfg file like this:
-
 <disk>
 <data_path>
 data
@@ -372,7 +371,7 @@ Exult offers some "hidden" command line options:
 * --si Starts the game with the Serpent Isle menu
 * --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data dir aren't the same it got compiled with. This parameter lets the game start nethertheless. Don't try this if you don't know what you are doing.
 * --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg buildmap 0). Builds the map of the game specified.The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience)
-* --game gamename Unused yet. Loads a game specified in exult.cfg when there are other games made with .
+* --game gamename Unused yet. Loads a game specified in exult.cfg when there are other games made with Exult Studio.
 
 
 
@@ -476,86 +475,93 @@ Note that on MacOS you have to hold down the 'Cmd' key and the mouse button to h
 
 
 5.2. Keyboard commands
-Starting with V0.91 Alpha2 all key commands can be changed. However, there is a default setting which closely follows the original with the addition of some improvements. 
+Starting with V0.91 Alpha2 all key commands can be changed. However, there is a default setting which closely follows the original with the addition of some improvements.
+To change your key bindings first edit the file defaultkeys.txt in your Exult directory, change the bindings and save the file (e.g. as my_keys.txt). Now you have to change exult.cfg to use that file. You can even choose if you want to change your key bindings for BG or SI. See the keys settings at 2.2.. Change (default) to my_keys.txt.
+During the game press 'h' to see a help screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen shows the correct key combination for MacOS).
 
-To change your key bindings first edit the file defaultkeys.txt in your Exult directory, change the bindings and save the file (e.g. as my_keys.txt). Now you have to change exult.cfg to use that file. You can even choose if you want to change your key bindings for BG or SI. See the keys settings at 2.2.. Change (default) to my_keys.txt. 
-
-During the game press 'h' to see a help screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen shows the correct key combination for MacOS). 
 Default keyboard commands
-+/-     Change brightness (you may have to use the keypad)
-F4     Toggle fullscreen
-b     Use spellbook
-c     Combat mode
-f     Use food
-g     Use Abacus
-h     Show list of keyboard commands
-i     Show inventory
-j     SI: Show jawbone
-k     BG: Try all keys to unlock a lock
-k     SI: Use keyring
-Alt-k     SI: Try all keys to unlock a lock
-l     SI: Show combat stats
-m     Show map
-p     Use lockpicks
-Alt-q     Exit game
-r     Brings up status bars. First three strokes change the location of the bar. The fourth disables it again.
-Ctrl-r     Quick restore
-Ctrl-Alt-s     Screenshot
-Ctrl-s     Quick save
-s     Show save/load box
-Esc     Show Game menu box and closes all open boxes
-t     Target, instead of double clicking, shows a cursor and pauses the game until you click on something
-v     About screen
-w     Use watch, shows the time if you got a watch
-Alt-x     Exit game
-z     Show stats
-1     Show inventory for Avatar
-2     Show inventory for character 2
-3     Show inventory for character 3
-4     Show inventory for character 4
-5     Show inventory for character 5
-6     Show inventory for character 6
-7     Show inventory for character 7
-8     Show inventory for character 8
++/- : Change brightness (you may have to use the keypad)
+F4 : Toggle fullscreen
+b : Use spellbook
+c : Combat mode
+f : Use food
+g : Use Abacus
+h : Show list of keyboard commands
+i : Show inventory
+j : SI: Show jawbone
+k : BG: Try all keys to unlock a lock
+k : SI: Use keyring
+Alt-k : SI: Try all keys to unlock a lock
+l : SI: Show combat stats
+m : Show map
+p : Use lockpicks
+Alt-q : Exit game
+r : Brings up status bars. First three strokes change the location 
+									of the bar. The fourth disables it again.
+Ctrl-r : Quick restore
+Ctrl-Alt-s : Screenshot
+Ctrl-s : Quick save
+s : Show save/load box
+Esc : Show Game menu box and closes all open boxes
+t : Target, instead of double clicking, shows a cursor and 
+									pauses the game until you click on something
+v : About screen
+w : Use watch, shows the time if you got a watch
+Alt-x : Exit game
+z : Show stats
+1 : Show inventory for Avatar
+2 : Show inventory for character 2
+3 : Show inventory for character 3
+4 : Show inventory for character 4
+5 : Show inventory for character 5
+6 : Show inventory for character 6
+7 : Show inventory for character 7
+8 : Show inventory for character 8
+In conversations you now have the ability not just click on the answer with the mouse but also to use the numeric keys. The response options aren't numbered visually but logically with the dots. Also press 'Esc' to select "bye" if possible.
 
-In conversations you now have the ability not just click on the answer with the mouse but also to use the numeric keys. The response options aren't numbered visually but logically with the dots. Also press 'Esc' to select "bye" if possible. 
- 
+
 5.3. Cheat keys
-Press 'ctrl-h' during the game to see a help screen with all the cheat keys. 
+Press 'ctrl-h' during the game to see a help screen with all the cheat keys.
+
 Cheat commands
-Alt-+/-     Switch resolution( you may have to use the keypad)
-Arrow keys     Scroll map
-Home     Recenter map
-F2     Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options
-F3     Map teleport
-F10     Show endgame
-F11     SI: Play alternate intro
-Ctrl-b     Shape browser
-Ctrl-c     Create object
-Ctrl-d     Delete object
-e     Toggle egg display
-Alt-g     Toggle God mode
-Ctrl-g     Change avatar gender
-Ctrl-Alt-h     Resurrect, heal party, cure poison and still hunger
-Alt-i     Toggle infravision
-Ctrl-l     Level up party
-l     Decrement skiplift
-Alt-h     Hackmover (you can move all objects around and it disables weight check
-Ctrl-Alt-m     Toggle Map editor (useful for Exult Studio)
-Ctrl-m     Get 100 gold coins
-Alt-Shift-m     Play previous song
-Alt-m     Play next song
-Alt-n     SI: Toggle naked flag
-Alt-p     SI: Toggle Petra mode
-Alt-s     SI: Change skin color
-Ctrl-Alt-t     Map teleport
-Ctrl-t     Advance to next time period
-Alt-t     Teleport (to current cursor position)
-Alt-w     Toggle archwizard mode (all spells etc.)
-Alt-1     Test music, sfx, speech
-Ctrl-Alt-g     Grab NPC for cheat screen
-Ctrl-Alt-p     Pick pocket cheat, when enabled double-clicking on a NPC displays the actors inventory
-Ctrl-n     NPC number, When enabled, clicking an a NPC will display their number instead of their name. Useful for the cheat screen.
+Alt-+/- : Switch resolution( you may have to use the keypad)
+Arrow keys : Scroll map
+Home : Recenter map
+F2 : Cheat screen similar to the originals'. Allows for some level of
+									NPC editing and other cheat options
+F3 : Map teleport
+F10 : Show endgame
+F11 : SI: Play alternate intro
+Ctrl-b : Shape browser
+Ctrl-c : Create object
+Ctrl-d : Delete object
+e : Toggle egg display
+Alt-g : Toggle God mode
+Ctrl-g : Change avatar gender
+Ctrl-Alt-h : Resurrect, heal party, cure poison and still hunger
+Alt-i : Toggle infravision
+Ctrl-l : Level up party
+l : Decrement skiplift
+Alt-h : Hackmover (you can move all objects around and it 
+									disables weight check
+Ctrl-Alt-m : Toggle Map editor (useful for Exult Studio)
+Ctrl-m : Get 100 gold coins
+Alt-Shift-m : Play previous song
+Alt-m : Play next song
+Alt-n : SI: Toggle naked flag
+Alt-p : SI: Toggle Petra mode
+Alt-s : SI: Change skin color
+Ctrl-Alt-t : Map teleport
+Ctrl-t : Advance to next time period
+Alt-t : Teleport (to current cursor position)
+Alt-w : Toggle archwizard mode (all spells etc.)
+Alt-1 : Test music, sfx, speech
+Ctrl-Alt-g : Grab NPC for cheat screen
+Ctrl-Alt-p : Pick pocket cheat, when enabled double-clicking on a 
+									NPC displays the actors inventory
+Ctrl-n : NPC number, When enabled, clicking an a NPC will 
+									display their number instead of their name. Useful for the cheat screen.
+
 
 
 --------------------------------------------------------------------------------
@@ -640,3 +646,5 @@ Exits Exult.
 
 8.2. Contacting us
 You can contact the Exult team and/or get more information from: http://exult.sourceforge.net/ or http://sourceforge.net/projects/exult/
+
+
