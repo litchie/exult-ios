@@ -140,6 +140,11 @@ private:
 	void read_map_data();		// Read in 'ifix', 'ireg', etc.
 					// Render the map & objects.
 	int paint_map(int x, int y, int w, int h);
+
+	// For Paperdolls in BG
+	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file is found when playing BG
+	bool bg_paperdolls;		// Set true if paperdolls are wanted in BG
+	Vga_file bg_serpgumps;		// "gumps.vga" - from serpent isle for BG Paperdolls
 public:
 	int skip_lift;			// Skip objects with lift > 0.
 	bool paint_eggs;
@@ -191,6 +196,7 @@ public:
 		{ clock.increment(num_minutes); }
 	void fake_next_period()		// For debugging.
 		{ clock.fake_next_period(); }
+	Game_clock *get_clock () { return &clock; }
 	void set_fades_enabled(bool f) { fades_enabled = f; }		
 	bool get_fades_enabled() const { return fades_enabled; }
 	void set_palette()		// Set for time, flags, lighting.
@@ -378,6 +384,14 @@ public:
 		{
 		Shape_frame *shape = paperdoll ? paperdolls.get_shape(shapenum & 0xFFF, framenum) :
 				gumps.get_shape(shapenum, framenum);
+		if (shape)
+			paint_shape(xoff, yoff, shape);
+		}
+	// ONLY USE this in BG if the following are true
+	void paint_bg_serpgump(int xoff, int yoff, int shapenum, int framenum)
+		{
+		if (!bg_paperdolls_allowed || !bg_paperdolls) return;
+		Shape_frame *shape = bg_serpgumps.get_shape(shapenum, framenum);
 		if (shape)
 			paint_shape(xoff, yoff, shape);
 		}
@@ -583,9 +597,19 @@ public:
 	
 	bool get_frame_skipping()	// This needs doing
 	{ return true; }
-	
+
+	// BG Only
+	bool can_use_paperdolls() const
+	{ return bg_paperdolls_allowed; }
+
+	bool get_bg_paperdolls() const
+	{ return bg_paperdolls; }
+
+	void set_bg_paperdolls(bool p)
+	{ bg_paperdolls = p; }
 private:
 	void start_actor_alt (int winx, int winy, int speed);
+
 
 	};
 

@@ -1,3 +1,11 @@
+01/19/01	v??.??
+
+		Can now use the Serpent Isle paperdolls while playing
+		The Black Gate. To use, the Serpent Isle path in the 
+		config file must be filled in with an absolute path.
+		Paperdolls may be a little buggy.
+
+
 ??/??/00:	v??.??
 
 		Massive code restructuring and cleanup (use STL wherever

@@ -25,15 +25,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //Windows-specific code
 #ifdef WIN32
 
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <windows.h>
 #include <winbase.h>
 #include <mmsystem.h>
 
+#include "win_midiout.h"
+#include "exceptions.h"
+
+#include "utils.h"
 #include "xmidi.h"
 #include <unistd.h>
-#include "utils.h"
-#include "SDL.h"
-#include "win_midiout.h"
 
 #include "Configuration.h"
 extern	Configuration	*config;

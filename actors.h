@@ -275,6 +275,7 @@ public:
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 	virtual std::string get_name() const;
+	std::string get_npc_name() const;
 	virtual void set_property(int prop, int val);
 	void reduce_health(int delta);	// Lose HP's and check for death.
 	virtual int get_property(int prop) const
