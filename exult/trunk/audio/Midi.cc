@@ -139,11 +139,16 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 			repeat = 2;		//Convert repeats to repeat 2 times only
 
 	    oggmusic = Mix_LoadMUS(filename);
-	    Mix_PlayMusic(oggmusic, repeat);
+		if (!oggmusic) {
+			cout << "Error playing " << filename << ": " << Mix_GetError()
+				 << std::endl;
+		}
+
+		Mix_PlayMusic(oggmusic, repeat);
 		Mix_VolumeMusic(MIX_MAX_VOLUME);
 
 #ifdef DEBUG
-       	cout << "Audio OGG: Music track " << filename << endl;
+       	cout << "OGG audio: Music track " << filename << endl;
 #endif
 
 		return;		//We don't want to continue with Midi conversions!!
@@ -706,7 +711,7 @@ bool OGG_MIDI::is_playing(void)
 
 const char * OGG_MIDI::copyright(void)
 {
-	return "Internal OGG NULL device";
+	return "Internal OGG digital music player";
 }
 
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2004  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1601,12 +1601,20 @@ bool BG_Game::new_game(Vga_file &shapes)
 bool BG_Game::is_installed()
 {
 	std::string buf("<BLACKGATE_STATIC>/endgame.dat");
-	std::cout << "is_installed: '" << get_system_path(buf);
-	bool found = U7exists(buf) && U7exists("<DATA>/exult_bg.flx");
-	if (found)
-		std::cout << "': yes" << std::endl;
-	else
-		std::cout << "': no" << std::endl;
+	bool foundbg = U7exists(buf);
+	bool foundbgflx = U7exists("<DATA>/exult_bg.flx");
 
-	return found;
+	if (foundbg)
+		std::cout << "Black Gate   : found" << std::endl;
+	else
+		std::cout << "Black Gate   : not found (" 
+				  << get_system_path(buf) << ")" << std::endl;
+
+	if (foundbgflx)
+		std::cout << "exult_bg.flx : found" << std::endl;
+	else
+		std::cout << "exult_bg.flx : not found (" 
+				  << get_system_path("<DATA>/exult_bg.flx") << std::endl;
+
+	return (foundbg && foundbgflx);
 }

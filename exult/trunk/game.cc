@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2004  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -154,7 +154,7 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		game = 0;
 	}
 
-	std::cout << "Current path settings:" << std::endl;
+	std::cout << "Game path settings:" << std::endl;
 	std::cout << "Static  : " << get_system_path("<STATIC>") << std::endl;
 	std::cout << "Gamedat : " << get_system_path("<GAMEDAT>") << std::endl;
 	std::cout << "Savegame: " << get_system_path("<SAVEGAME>") << std::endl;

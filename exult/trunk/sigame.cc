@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2004  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1413,12 +1413,20 @@ bool SI_Game::new_game(Vga_file &shapes)
 bool SI_Game::is_installed()
 {
 	std::string buf("<SERPENTISLE_STATIC>/sispeech.spc");
-	std::cout << "is_installed: '" << get_system_path(buf);
-	bool found = U7exists(buf) && U7exists("<DATA>/exult_si.flx");
-	if (found)
-		std::cout << "' : yes" << std::endl;
-	else
-		std::cout << "' : no" << std::endl;
+	bool foundsi = U7exists(buf);
+	bool foundsiflx = U7exists("<DATA>/exult_si.flx");
 
-	return found;
+	if (foundsi)
+		std::cout << "Serpent Isle : found" << std::endl;
+	else
+		std::cout << "Serpent Isle : not found (" 
+				  << get_system_path(buf) << ")" << std::endl;
+
+	if (foundsiflx)
+		std::cout << "exult_si.flx : found" << std::endl;
+	else
+		std::cout << "exult_si.flx : not found (" 
+				  << get_system_path("<DATA>/exult_si.flx") << std::endl;
+
+	return (foundsi && foundsiflx);
 }
