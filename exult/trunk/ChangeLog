@@ -1,3 +1,7 @@
+2002-04-25  Ryan Nunn  <triforce@merlin.net.au>
+	* exult.cc : Added missing parenthesis
+	* gamedat.cc : Namespace stuff
+
 2002-04-25  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* exult.cc: Create gamedat, savegames in $HOME/.exult if gamedat

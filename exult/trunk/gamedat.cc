@@ -95,7 +95,7 @@ void Game_window::restore_gamedat
 					// Note: "*" means an old game.
 	if(!id || (*id != '*' && strcmp(static_identity, id) != 0))
 		{
-		string msg("Wrong identity '");
+		std::string msg("Wrong identity '");
 		msg += id; msg += "'.  Open anyway?";
 		int ok = Yesno_gump::ask(msg.c_str());
 		if (!ok)
