@@ -80,6 +80,7 @@
 #include "version.h"
 #include "u7drag.h"
 #include "drag.h"
+#include "palette.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
@@ -595,7 +596,7 @@ static void Init
 
 	bool disable_fades;
 	config->value("config/video/disable_fades", disable_fades, false);
-	gwin->set_fades_enabled(!disable_fades);
+	gwin->get_pal()->set_fades_enabled(!disable_fades);
 
 
 	if (arg_buildmap >= 0)
@@ -1525,7 +1526,7 @@ void change_gamma (bool down)
 	float delta = down?0.05:-0.05;
 	Image_window8::get_gamma(r, g, b);	
 	Image_window8::set_gamma(r+delta, g+delta, b+delta);	
-	gwin->set_palette (-1, -1);
+	gwin->get_pal()->set(-1, -1);
 
 	// Message
 #ifdef HAVE_SNPRINTF
@@ -1579,7 +1580,7 @@ void BuildGameMap()
 		Game::create_game(gametype);
 		gwin->init_files(false); //init, but don't show plasma	
 		gwin->get_map()->init();// +++++Got to clean this up.
-		gwin->set_palette(0);
+		gwin->get_pal()->set(0);
 		for (int x = 0; x < c_num_chunks / c_chunks_per_schunk; x++) {
 			for (int y = 0; y < c_num_chunks / c_chunks_per_schunk; y++) {
 				gwin->paint_map_at_tile(0,0,w,h,x * c_tiles_per_schunk, y * c_tiles_per_schunk, maplift);

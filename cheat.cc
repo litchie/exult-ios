@@ -223,7 +223,7 @@ void Cheat::toggle_infravision (void) {
 	infravision = !infravision;
 	if (infravision) {
 		eman->center_text("Infravision Enabled");
-		gwin->set_palette(0);
+		gwin->get_pal()->set(0);
 	} else
 		eman->center_text("Infravision Disabled");	
 }
@@ -234,7 +234,7 @@ void Cheat::toggle_pickpocket (void) {
 	pickpocket = !pickpocket;
 	if (pickpocket) {
 		eman->center_text("Pick Pocket Enabled");
-		gwin->set_palette(0);
+		gwin->get_pal()->set(0);
 	} else
 		eman->center_text("Pick Pocket Disabled");	
 }
@@ -800,7 +800,7 @@ void Cheat::shape_browser (void) const {
 
 	browser->browse_shapes();
 	gwin->paint();
-	gwin->set_palette(-1,-1);
+	gwin->get_pal()->set(-1,-1);
 }
 
 bool Cheat::get_browser_shape (int &shape, int &frame) const {

@@ -24,10 +24,11 @@
 #  include <cstring> 
 #endif
 #include "files/U7file.h" 
-#include "gamewin.h"
 #include "palette.h"
 #include "ibuf8.h"
 #include "utils.h"
+#include "fnames.h"
+#include "gamewin.h"
 
 #include "SDL_timer.h"
 
@@ -37,16 +38,78 @@ using std::size_t;
 using std::string;
 
 Palette::Palette()
-	{
-		win = Game_window::get_instance()->get_win();
-		brightness = 100;
-		max_val = 63;
+	: win(Game_window::get_instance()->get_win()), 
+	    palette(-1), brightness(100), 
+	    faded_out(false), fades_enabled(true), max_val(63)
+    	{
 	}
 
 Palette::~Palette()
 	{
 	}
 	
+/*
+ *	Fade the current palette in or out.
+ *	Note:  If pal_num != -1, the current palette is set to it.
+ */
+
+void Palette::fade
+	(
+	int cycles,			// Length of fade.
+	int inout,			// 1 to fade in, 0 to fade to black.
+	int pal_num			// 0-11, or -1 for current.
+	)
+	{
+	  if (pal_num == -1) pal_num = palette;
+	  load(PALETTES_FLX, pal_num);
+	  if(inout)
+		fade_in(cycles);
+	  else
+		fade_out(cycles);
+	  faded_out = !inout;		// Be sure to set flag.
+	}
+
+/*
+ *	Flash the current palette red.
+ */
+
+void Palette::flash_red
+	(
+	)
+	{
+	int savepal = palette;
+	set(PALETTE_RED);		// Palette 8 is the red one.
+	win->show();
+	SDL_Delay(100);
+	set(savepal);
+	Game_window::get_instance()->set_painted();
+	}
+
+/*
+ *	Read in a palette.
+ */
+
+void Palette::set
+	(
+	int pal_num,			// 0-11, or -1 to leave unchanged.
+	int new_brightness,		// New percentage, or -1.
+	bool repaint
+	)
+	{
+	if (palette == pal_num && brightness == new_brightness)
+		return;			// Already set.
+	if (pal_num != -1)
+		palette = pal_num;	// Store #.
+	if (new_brightness > 0)
+		brightness = new_brightness;
+	if (faded_out)
+		return;			// In the black.
+	
+	load(PALETTES_FLX, palette);	// could throw!
+	set_brightness(brightness);
+	apply(repaint);
+	}
+
 void Palette::apply(bool repaint)
 {
 	win->set_palette(pal1, max_val, brightness);
@@ -158,23 +221,9 @@ void Palette::set_brightness(int bright)
 		brightness = bright;
 	}
 	
-int Palette::get_brightness()
-	{
-		return brightness;
-	}
-	
-void Palette::brighten(int percent)
-	{
-		brightness += percent;
-		if(brightness>100)
-			brightness = 100;
-		if(brightness<20)
-			brightness = 20;		
-	}
-	
 void Palette::fade_in(int cycles)
 {
-	if (Game_window::get_instance()->get_fades_enabled())
+	if (fades_enabled)
 	{
 		unsigned char fade_pal[768];
 		unsigned int ticks = SDL_GetTicks() + 20;
@@ -185,7 +234,7 @@ void Palette::fade_in(int cycles)
 			win->set_palette(fade_pal, max_val, brightness);
 			// Frame skipping on slow systems
 			if (i == cycles || ticks >= SDL_GetTicks() ||
-						!Game_window::get_instance()->get_frame_skipping())
+			    !Game_window::get_instance()->get_frame_skipping())
 				win->show();
 			while (ticks >= SDL_GetTicks())
 				;
@@ -201,7 +250,7 @@ void Palette::fade_in(int cycles)
 
 void Palette::fade_out(int cycles)
 {
-	if (Game_window::get_instance()->get_fades_enabled())
+	if (fades_enabled)
 	{
 		unsigned char fade_pal[768];
 		unsigned int ticks = SDL_GetTicks() + 20;
@@ -212,7 +261,7 @@ void Palette::fade_out(int cycles)
 			win->set_palette(fade_pal, max_val, brightness);
 			// Frame skipping on slow systems
 			if (i == 0 || ticks >= SDL_GetTicks() ||
-						!Game_window::get_instance()->get_frame_skipping())
+			   !Game_window::get_instance()->get_frame_skipping())
 				win->show();
 			while (ticks >= SDL_GetTicks())
 				;

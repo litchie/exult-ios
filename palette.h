@@ -46,16 +46,31 @@ class Palette
 		unsigned char pal2[768];
 		int brightness;
 		int max_val;
-		
+		int palette;		// Palette #.
+		bool faded_out;		// true if faded palette to black.
+		bool fades_enabled;
+
 public:
 		Palette();
 		~Palette();
+					// Fade palette in/out.
+		void fade(int cycles, int inout, int pal_num = -1);
+		bool is_faded_out()
+			{ return faded_out; }
+		void flash_red();	// Flash red for a moment.
+					// Set desired palette.
+		void set(int pal_num, int new_brightness = -1, 
+							bool repaint=true);
+		int get_brightness()	// Percentage:  100 = normal.
+			{ return brightness; }
+					//   the user.
+		void set_fades_enabled(bool f) { fades_enabled = f; }
+		bool get_fades_enabled() const { return fades_enabled; }
+
 		void apply(bool repaint=true);
 		void load(const char *fname, int index,
 				const char *xfname = 0, int xindex = -1);
 		void set_brightness(int bright);
-		int get_brightness();
-		void brighten(int percent);
 		void set_max_val(int max);
 		int get_max_val();
 		void fade_in(int cycles);
