@@ -302,7 +302,6 @@ void Game_object::clear_dependencies
 
 /*
  *	Check an object in find_nearby() against the mask.
- *	+++++These don't seem to be acting like masks!!
  *
  *	Output:	1 if it passes.
  */
@@ -313,11 +312,32 @@ static int Check_mask
 	int mask
 	)
 	{
-	if (mask == 4 ||		// Seems to also be all NPC's.
-// 1Feb01		return (obj->get_party_id() >= 0 || 
-//					obj == gwin->get_main_actor());
-	    mask == 8)			// All NPCs.
-		{
+	Shape_info& info = gwin->get_info(obj);
+	if ((mask&(4|8)) &&		// Both seem to be all NPC's.
+	    !info.is_npc())
+		return 0;
+	Shape_info::Shape_class sclass = info.get_shape_class();
+					// Egg/barge?
+	if ((sclass == Shape_info::hatchable || sclass == Shape_info::barge) &&
+	    !(mask&0x10))		// Only accept if bit 16 set.
+		return 0;
+	if (info.is_transparent() &&	// Transparent?
+	    !(mask&0x80))
+		return 0;
+					// Invisible object?
+	if (obj->get_flag(Obj_flags::invisible))
+		if (!(mask&20))	// Guess:  0x20 == invisible.
+			{
+			if (!(mask&0x40))	// Guess:  Inv. party member.
+				return 0;
+			if (obj != gwin->get_main_actor() && 
+						obj->get_party_id() < 0)
+				return 0;
+			}
+	return 1;			// Passed all tests.
+	}
+
+#if 0	/* +++++Old code. */
 		if (obj->is_monster())
 			return 1;
 					// Avatar?  FALSE for SI.  Unsure
@@ -347,6 +367,7 @@ static int Check_mask
 		return !obj->is_egg();	// Don't pass eggs if 0.
 	return 1;
 	}
+#endif
 
 /*
  *	Find objects near a given position.
@@ -370,11 +391,7 @@ int Game_object::find_nearby
 					//   -1=any (but always use mask?),
 					//   c_any_shapenum=any.
 	int delta,			// # tiles to look in each direction.
-	int mask,			// Guessing+++:
-					//   4 == party members only???
-					//   8 == all NPC's.
-					//  16 == egg or barge.
-					//  32 == ???
+	int mask,			// See Check_mask() above.
 	int qual,			// Quality, or c_any_qual for any.
 	int framenum			// Frame #, or c_any_framenum for any.
 	)
@@ -413,17 +430,13 @@ int Game_object::find_nearby
 				if (qual != c_any_qual && obj->get_quality() 
 								!= qual)
 					continue;
-				if ((mask || shapenum == -1 ||
-					// c_any_shape added 6/17/01 for SI.
-				    shapenum == c_any_shapenum) && 
-						!Check_mask(gwin, obj, mask))
-					continue;
 				if (framenum !=  c_any_framenum &&
 					obj->get_framenum() != framenum)
 					continue;
+				if (!Check_mask(gwin, obj, mask))
+					continue;
 				int tx, ty, tz;
 				obj->get_abs_tile(tx, ty, tz);
-					// +++++Check tz too?
 				if (tiles.has_point(tx, ty))
 					vec.push_back(dynamic_cast<T*>(obj));
 				}
