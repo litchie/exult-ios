@@ -122,6 +122,8 @@ const struct Action {
 	  ActionSkipLift, "Decrement skiplift", true, true, NONE },
 	{ "TOGGLE_MAP_EDITOR",
 	  ActionMapEditor, "Toggle map-editor mode", true, true, NONE },
+	{ "TOGGLE_HACK_MOVER",
+	  ActionHackMover, "Toggle hack-mover mode", true, true, NONE },
 	{ "MAP_TELEPORT", ActionMapTeleport, "Map teleport", true, true, NONE },
 	{ "CURSOR_TELEPORT",
 	  ActionTeleport, "Teleport to cursor", true, true, NONE },

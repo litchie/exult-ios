@@ -436,7 +436,7 @@ void CheatScreen::NormalMenu ()
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-72, 8);
 
 	// Hackmover
-	std::snprintf (buf, 512, "[H]ack Mover..: %3s", cheat.in_map_editor()?"Yes":"No");
+	std::snprintf (buf, 512, "[H]ack Mover..: %3s", cheat.in_hack_mover()?"Yes":"No");
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-63, 8);
 
 	// Eggs
@@ -500,7 +500,7 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 
 		// Hack mover
 		case 'h':
-		cheat.toggle_map_editor();
+		cheat.toggle_hack_mover();
 		break;
 
 		// Set Time

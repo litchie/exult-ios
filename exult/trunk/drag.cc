@@ -119,7 +119,7 @@ bool Game_window::drag
 			return (false);	// Wait for greater motion.
 		if (dragging)
 			{		// Don't want to move walls.
-			if (!cheat.in_map_editor() && !dragging->is_dragable())	
+			if (!cheat.in_hack_mover() && !dragging->is_dragable())	
 				{
 				Mouse::mouse->flash_shape(Mouse::tooheavy);
 				dragging = 0;
@@ -128,7 +128,7 @@ bool Game_window::drag
 			Game_object *owner = dragging->get_outermost();
 			if (owner == dragging)
 				{
-			    	if (!cheat.in_map_editor() && !Fast_pathfinder_client::is_grabable(
+			    	if (!cheat.in_hack_mover() && !Fast_pathfinder_client::is_grabable(
 					main_actor->get_abs_tile_coord(),
 					dragging->get_abs_tile_coord()))
 					{
@@ -247,7 +247,7 @@ static bool Check_weight
 	Game_object *owner		// Who the new owner will be.
 	)
 	{
-	if (cheat.in_map_editor())	// map-editor  -> no weight checking
+	if (cheat.in_hack_mover())	// hack-mover  -> no weight checking
 		return true;
 
 	if (!owner)
@@ -315,7 +315,7 @@ void Game_window::drop
 			}
 		else
 			{		// Was it dropped on something?
-			int max_lift = cheat.in_map_editor() ? 13 :
+			int max_lift = cheat.in_hack_mover() ? 13 :
 						main_actor->get_lift() + 4;
 			int lift;
 			Game_object *found = find_object(x, y);
@@ -355,7 +355,7 @@ void Game_window::drop
 			get_chunk(oldcx, oldcy)->activate_eggs(dragging,
 			    oldtx, oldty, dragging->get_lift(), oldtx, oldty);
 					// Check for theft.
-		if (!okay_to_move && !cheat.in_map_editor() &&
+		if (!okay_to_move && !cheat.in_hack_mover() &&
 		    (dragging_gump != on_gump || dropped_in_something ||
 					// Moving:
 		     (!dragging_gump &&
@@ -406,7 +406,7 @@ bool Game_window::drop_at_lift
 					// Allow drop up to 5.
 	if (!Map_chunk::is_blocked(info.get_3d_height(), at_lift,
 		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, 
-			lift, MOVE_FLY, 5) && (cheat.in_map_editor() ||
+			lift, MOVE_FLY, 5) && (cheat.in_hack_mover() ||
 					// Check for path to location.
 	    Fast_pathfinder_client::is_grabable(
 		main_actor->get_abs_tile_coord(), Tile_coord(tx, ty, lift))))

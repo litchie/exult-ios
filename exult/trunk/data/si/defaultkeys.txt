@@ -26,6 +26,7 @@ F		useitem			377	# Feed
 Alt-G		toggle_god_mode
 Ctrl-G		change_gender
 H		help
+Alt-H		toggle_hack_mover
 Ctrl-H		cheat_help
 Ctrl-Alt-H	party_heal
 Alt-I		toggle_infravision
