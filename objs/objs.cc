@@ -1356,11 +1356,10 @@ string Game_object::get_name
 		case 0x313:        // lever
 			if (frnum == 8 || frnum == 9)
 				name = item_names[0x613]; // button
-			else		
+			else
 				name = item_names[shnum];
 			break;
 		case 0x314:        // switch
-			// TODO: CHECK 10, 11
 			if (frnum >= 6 && frnum <= 9)
 				name = item_names[0x613]; // button
 			else
@@ -1428,7 +1427,14 @@ string Game_object::get_name
 			break;
 		case 0x392:         // urn
 			// TODO: umm... x's ashes?.. should be interesting
-			name = item_names[shnum];
+			// SB-X: when frame = 0,1, quality = NPC num. Name=name+"'s ashes"
+			//       quality = 0: "urn with ashes"
+			if (frnum <= 1)
+				name = item_names[0x632]; // urn with ashes
+			else if (frnum == 2)
+				name = item_names[0x633]; // pot of unguent
+			else
+				name = item_names[shnum];
 			break;
 		case 0x397:         // bookshelf
 			if (frnum == 6)
@@ -1495,13 +1501,14 @@ string Game_object::get_name
 			name = item_names[0x5a6 + frnum];
 			break;
 		case 0x3f3:			// Beds
-			// TODO: CHECK
-			if (frnum >= 1 && frnum <= 4)
-				name = item_names[0x5da + frnum - 1];
+			if (frnum == 1)
+				name = item_names[0x5da]; // stone bier
+			else if (frnum == 2)
+				name = item_names[0x5db]; // cot
+			else if (frnum == 4)
+				name = item_names[0x5dc]; // pallet
 			else if (frnum == 5)
-				name = item_names[0x5dd];
-			else if (frnum == 6)
-				name = item_names[0x5da];
+				name = item_names[0x5dd]; // fur pallet
 			else
 				name = item_names[shnum];
 			break;

@@ -1,3 +1,6 @@
+2002-07-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs.cc: last commit seems to have gone wrong... should be ok now
+
 2002-07-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc,chunks.{cc,h},egg.{cc,h},ucsched.cc:  Have initial
