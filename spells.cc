@@ -316,6 +316,14 @@ void Spellbook_gump::set_bookmark
 	}
 
 /*
+ *	Get object that 'owns' this.
+ */
+Game_object *Spellbook_gump::get_owner()
+	{
+	return book; 
+	}
+
+/*
  *	Is a given screen point on one of our buttons?
  *
  *	Output: ->button if so.

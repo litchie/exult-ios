@@ -49,6 +49,21 @@ class Actor : public Container_game_object, public Time_sensitive
 	short npc_num;			// # in Game_window::npcs list, or -1.
 	short party_id;			// Index in party, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
+public:
+	enum Attack_mode {		// Setting from gump.+++++Save/restore.
+		manual = 0,
+		weakest = 1,		// Attack weakest.
+		strongest = 2,
+		defend = 3,
+		nearest = 4,
+		beserk = 5,		// Always attack, never retreat.
+		flee = 6,
+		random = 7,		// Choose target at random.
+		flank = 8,		// Attempt to attack from side.
+		protect = 9		// Protect NPC with halo.
+		};
+private:
+	Attack_mode attack_mode;
 					// A frame sequence for each dir.:
 	static Frames_sequence *frames[8];
 					// Draw weapon in hand
@@ -108,6 +123,10 @@ public:
 		}
 	int has_light_source() const	// Carrying a torch?
 		{ return light_sources > 0; }
+	Attack_mode get_attack_mode()
+		{ return attack_mode; }
+	void set_attack_mode(Attack_mode amode)
+		{ attack_mode = amode; }
 	enum Item_flags {		// Bit #'s of flags:
 		poisoned = 8,
 		dont_render = 16	// Completely invisible.
