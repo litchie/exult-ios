@@ -99,7 +99,8 @@ void Combat_schedule::find_opponents
 		int cnt = gwin->get_party(party, 1);
 		for (int i = 0; i < cnt; i++)
 					// But ignore invisible ones.
-			if (!party[i]->get_flag(Obj_flags::invisible))
+			if (!party[i]->get_flag(Obj_flags::invisible) &&
+			    party[i] != npc)
 				opponents.push(party[i]);
 		return;
 	}
