@@ -651,8 +651,8 @@ void Sit_schedule::set_action
 Waiter_schedule::Waiter_schedule
 	(
 	Actor *n
-	) : Schedule(n), startpos(n->get_abs_tile_coord()), customer(0),
-		first(1)
+	) : Schedule(n), first(1), startpos(n->get_abs_tile_coord()), customer(0)
+		
 	{
 	}
 
