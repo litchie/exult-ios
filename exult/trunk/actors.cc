@@ -785,7 +785,8 @@ int Actor::approach_another
 	bool wait			// If true, game hangs until arrival.
 	)
 	{
-	extern void Wait_for_arrival(Actor *actor, Tile_coord dest);
+	extern void Wait_for_arrival(Actor *actor, Tile_coord dest,
+							long maxticks);
 	Tile_coord startdest = other->get_abs_tile_coord();
 	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
 	for (int i = 2; dest.tx == -1 && i < 8; i++)
@@ -806,8 +807,8 @@ int Actor::approach_another
 		}
 	set_action(action);
 	start(150);			// Walk fairly fast.
-	if (wait)
-		Wait_for_arrival(this, dest);
+	if (wait)			// Only wait 1/10 sec.
+		Wait_for_arrival(this, dest, 100);
 	return 1;
 	}
 
@@ -857,7 +858,7 @@ void Actor::set_target
 	)
 	{
 	target = obj;
-	if (start_combat && schedule_type != Schedule::combat || !schedule)
+	if (start_combat && (schedule_type != Schedule::combat || !schedule))
 		set_schedule_type(Schedule::combat);
 	}
 
