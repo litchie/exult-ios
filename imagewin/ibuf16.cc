@@ -26,6 +26,7 @@
 #include "ibuf16.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
+#  include <cstdlib>
 #endif
 
 using std::memmove;
