@@ -67,6 +67,7 @@ private:
 	static const unsigned char	coarse_value;
 	static const unsigned short	combined_value;
 
+	sint32		dev_num;
 	HMIDIOUT	midi_port;
 	
 	HANDLE	 	*thread_handle;
