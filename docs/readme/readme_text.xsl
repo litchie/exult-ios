@@ -33,15 +33,12 @@
 	<xsl:for-each select="section">
 		<xsl:number level="multiple" 
 					count="section" 
-					format="1. "
-					value="position() -1"/>
+					format="1. "/>
 		<xsl:value-of select="@title"/><xsl:text>&#xA;</xsl:text>
 		<xsl:for-each select="sub">
 			<xsl:number level="multiple" 
 						count="section|sub" 
-						format="1."
-						value="count(ancestor::section/preceding-sibling::section)"/>
-			<xsl:number format="1. "/>
+						format="1.1 "/>
 			<xsl:apply-templates select="header"/><xsl:text>&#xA;</xsl:text>
 		</xsl:for-each>
 		<xsl:text>&#xA;</xsl:text>
@@ -58,8 +55,7 @@
 	<xsl:text>&#xA;</xsl:text>
 	<xsl:text>--------------------------------------------------------------------------------&#xA;</xsl:text>
 	<xsl:text>&#xA;</xsl:text>
-	<xsl:number format="1. "
-				value="position() -1"/>
+	<xsl:number format="1. "/>
 	<xsl:value-of select="@title"/>
 	<xsl:text>&#xA;</xsl:text>
 	<xsl:apply-templates select="sub"/>
@@ -71,9 +67,7 @@
 	<xsl:variable name = "num_idx">
 		<xsl:number level="multiple"
 					count="section|sub"
-					format="1."
-					value="count(ancestor::section/preceding-sibling::section)"/>									
-		<xsl:number format="1. "/>
+					format="1.1 "/>
 	</xsl:variable> 
 	<xsl:value-of select="$num_idx"/><xsl:apply-templates select="header"/>
 	<xsl:text>&#xA;</xsl:text>
