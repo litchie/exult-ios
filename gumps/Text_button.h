@@ -16,6 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#ifndef TEXT_BUTTON_H
+#define TEXT_BUTTON_H
 
 #include "Gump_button.h"
 #include <string>
@@ -41,3 +43,5 @@ public:
 	{ return on_widget (gwin, mx, my); }
 	
 };
+
+#endif

@@ -16,6 +16,9 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifndef EXULTMENU_H
+#define EXULTMENU_H
+
 #include "palette.h"
 #include "game.h"
 
@@ -38,3 +41,5 @@ public:
 	Exult_Game run();
 	void setup();
 };
+
+#endif //EXULTMENU_H

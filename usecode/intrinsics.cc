@@ -1397,7 +1397,15 @@ USECODE_INTRINSIC(book_mode)
 		{
 		return(no_ret);
 		}
-	if (obj->get_shapenum() == 797)
+
+	// check for avatar read here
+	bool do_serp = gwin->get_main_actor()->get_flag(Obj_flags::read) == false;
+	
+	if (obj->get_shapenum() == 707)		// Serpentine Scroll - Make SI only???
+		gump = new Scroll_gump(do_serp);
+	else if (obj->get_shapenum() == 705)	// Serpentine Book - Make SI only???
+		gump = new Book_gump(do_serp);
+	else if (obj->get_shapenum() == 797)
 		gump = new Scroll_gump();
 	else
 		gump = new Book_gump();

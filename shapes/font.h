@@ -35,6 +35,9 @@ private:
 	DataSource *font_data;
 	char *font_buf;
 	char *orig_font_buf;
+	int  highest, lowest;
+
+	void calc_highlow();
 public:
 	Font();
 	Font(const char *fname, int index, int hlead=0, int vlead=1);

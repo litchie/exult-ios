@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Sign_gump.h"
 #include "gamewin.h"
 #include "game.h"
+#include "actors.h"
 
 
 /*
@@ -33,8 +34,21 @@ Sign_gump::Sign_gump
 	(
 	int shapenum,
 	int nlines			// # of text lines.
-	) : Gump(0, shapenum), num_lines(nlines)
+	) : Gump(0, shapenum), num_lines(nlines), serpentine(false)
 {
+	// THIS IS A HACK, but don't ask me why this is like this,
+	if (Game::get_game_type() == SERPENT_ISLE && shapenum==49)
+	{
+		// check for avatar read here
+		Main_actor *avatar = Game_window::get_game_window()->get_main_actor();
+		if (!avatar->get_flag(Obj_flags::read))
+			serpentine = true;
+
+		shapenum = game->get_shape("gumps/goldsign");
+		set_shape(shapenum);
+		set_pos();	// Recenter
+	}
+
 	if(shapenum==game->get_shape("gumps/woodsign"))
 	{
 		set_object_area(Rectangle(0, 4, 196, 92));
@@ -78,7 +92,54 @@ void Sign_gump::add_text
 {
 	if (line < 0 || line >= num_lines)
 		return;
-	lines[line] = txt;
+
+	// check for avatar read here
+	Main_actor *avatar = Game_window::get_game_window()->get_main_actor();
+
+	if (!serpentine && avatar->get_flag(Obj_flags::read))
+	{
+		for (int i = 0; i < txt.size(); i++)
+		{
+			if (txt[i] == 40) 
+			{
+				lines[line] += 'T';
+				lines[line] += 'H';
+			}
+			else if (txt[i] == 41) 
+			{
+				lines[line] += 'E';
+				lines[line] += 'E';
+			}
+			else if (txt[i] == 42) 
+			{
+				lines[line] += 'N';
+				lines[line] += 'G';
+			}
+			else if (txt[i] == 43) 
+			{
+				lines[line] += 'E';
+				lines[line] += 'A';
+			}
+			else if (txt[i] == 44) 
+			{
+				lines[line] += 'S';
+				lines[line] += 'T';
+			}
+			else if (txt[i] == '|')
+			{
+				lines[line] += ' ';
+			}
+			else if (txt[i] >= 'a')
+				lines[line] += txt[i] - 32;
+			else
+				lines[line] += txt[i];
+		}
+	}
+	else
+	{
+		lines[line] = txt;
+
+	}
 }
 
 /*
@@ -91,8 +152,15 @@ void Sign_gump::paint
 	)
 {
 	int font = 1;			// Normal runes.
-	if (get_shapenum() == 0x33)
-		font = 6;		// Embossed.
+	if (get_shapenum() == game->get_shape("gumps/goldsign"))
+	{
+		if (serpentine)
+			font = 10;
+		else
+			font = 6;		// Embossed.
+	}
+	else if (serpentine)
+		font = 8;
 					// Get height of 1 line.
 	int lheight = gwin->get_text_height(font);
 					// Get space between lines.

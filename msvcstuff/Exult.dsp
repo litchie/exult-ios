@@ -954,6 +954,10 @@ SOURCE=..\usecode\Makefile.am
 # End Source File
 # Begin Source File
 
+SOURCE=..\usecode\ucdisasm.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\usecode\ucinternal.cc
 # End Source File
 # Begin Source File

@@ -26,6 +26,7 @@
 #include "font.h"
 #include "ibuf8.h"
 #include "vgafile.h"
+#include "exceptions.h"
 
 using std::cout;
 using std::endl;
@@ -466,9 +467,10 @@ int Font::get_text_height
 	(
 	)
 	{
-	Shape_frame *A = font_shapes->get_frame('A');
-	Shape_frame *y = font_shapes->get_frame('y');
-	return A->get_yabove() + y->get_ybelow() + 1;	
+	// Note, I wont assume the fonts exist
+	//Shape_frame *A = font_shapes->get_frame('A');
+	//Shape_frame *y = font_shapes->get_frame('y');
+	return highest + lowest + 1;	
 	}
 
 /*
@@ -479,8 +481,8 @@ int Font::get_text_baseline
 	(
 	)
 	{
-	Shape_frame *A = font_shapes->get_frame('A');
-	return A->get_yabove();
+	//Shape_frame *A = font_shapes->get_frame('A');
+	return highest;
 	}
 
 Font::Font(): font_shapes(0), font_data(0), font_buf(0)
@@ -506,22 +508,63 @@ int Font::load(const char *fname, int index, int hlead, int vlead)
 {
 	if(font_shapes)
 		delete font_shapes;
-	size_t len;
-	U7object font_obj(fname, index);
-	font_buf = font_obj.retrieve(len);
-	orig_font_buf = font_buf;
-	if(!strncmp(font_buf,"font",4))	// If it's an IFF archive...
-		font_buf += 8;		// Skip first 8 bytes
-	font_data = new BufferDataSource(font_buf, len);
-	font_shapes = new Shape_file(font_data);
-	hor_lead = hlead;
-	ver_lead = vlead;
+
+	try 
+	{
+
+		size_t len;
+
+		U7object font_obj(fname, index);
+		font_buf = font_obj.retrieve(len);
+
+		if (!font_buf || !len) throw (exult_exception ("Unable to retrieve data"));
+
+			orig_font_buf = font_buf;
+		if(!strncmp(font_buf,"font",4))	// If it's an IFF archive...
+			font_buf += 8;		// Skip first 8 bytes
+		font_data = new BufferDataSource(font_buf, len);
+		font_shapes = new Shape_file(font_data);
+		hor_lead = hlead;
+		ver_lead = vlead;
+		calc_highlow();
+	}
+	catch (exult_exception &e)
+	{
+		font_data = 0;
+		font_shapes = 0;
+		hor_lead = 0;
+		ver_lead = 0;
+		orig_font_buf = 0;
+	}
 	return 0;
 }
 
 int Font::center_text(Image_buffer8 *win, int x, int y, const char *s)
 {
 	return draw_text(win, x - get_text_width(s)/2, y, s);
+}
+
+void Font::calc_highlow()
+{
+	bool unset = true;
+
+	for (int i = 0; i < font_shapes->get_num_frames(); i++)
+	{
+		Shape_frame *f = font_shapes->get_frame(i);
+
+		if (!f) continue;
+
+		if (unset)
+		{
+			unset = false;
+			highest = f->get_yabove();
+			lowest = f->get_ybelow();
+			continue;
+		}
+		
+		if (f->get_yabove() > highest) highest = f->get_yabove();
+		if (f->get_ybelow() > lowest) lowest = f->get_ybelow();
+	}
 }
 
 FontManager::FontManager()

@@ -61,6 +61,7 @@ public:
 		x = newx;
 		y = newy;
 		}
+	void set_pos();			// Set centered.
 	Container_game_object *get_container()
 		{ return container; }
 					// Get screen rect. of obj. in here.
