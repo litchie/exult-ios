@@ -1,3 +1,6 @@
+2001-06-21  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* path.cc: fixed memory leaks from A* pathfinder
+
 2001-06-21  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.cc: Added (and implemented a few) path types in
