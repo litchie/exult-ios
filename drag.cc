@@ -402,7 +402,7 @@ bool Dragging_info::drop
 					// On a barge?
 	Barge_object *barge = gwin->get_moving_barge();
 	if (barge)
-		barge->gather();	// Refigure what's on barge.
+		barge->set_to_gather();	// Refigure what's on barge.
 					// Check for theft.
 	if (!okay_to_move && !cheat.in_hack_mover() &&
 		    (gump != on_gump || dropped_in_something ||
