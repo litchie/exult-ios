@@ -595,6 +595,9 @@ public:
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift)
 		{ return cache->is_blocked(height, lift, tx, ty, new_lift); }
+					// Old entry:
+	int is_blocked(int lift, int tx, int ty, int& new_lift)
+		{ return cache->is_blocked(1, lift, tx, ty, new_lift); }
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles)
 		{ need_cache()->set_egged(egg, tiles); }
