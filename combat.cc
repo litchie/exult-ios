@@ -265,6 +265,8 @@ inline Actor *Combat_schedule::find_foe
 	(
 	)
 	{
+	if (npc->get_attack_mode() == Actor::manual)
+		return 0;		// Find it yourself.
 	return find_foe((int) npc->get_attack_mode());
 	}
 
@@ -303,10 +305,16 @@ void Combat_schedule::approach_foe
 	if (!path->NewPath(pos, opponent->get_abs_tile_coord(), &cost))
 		{			// Failed?  Try nearest opponent.
 		failures++;
-		npc->set_target(opponent = find_foe(Actor::nearest));
-		Monster_pathfinder_client cost(npc, max_range, opponent);
-		if (!opponent || !path->NewPath(
-				pos, opponent->get_abs_tile_coord(), &cost))
+		bool retry_ok = false;
+		if (npc->get_attack_mode() != Actor::manual)
+			{
+			npc->set_target(opponent = find_foe(Actor::nearest));
+			Monster_pathfinder_client cost(npc, max_range, 
+								opponent);
+			retry_ok = (opponent != 0 && path->NewPath(
+				pos, opponent->get_abs_tile_coord(), &cost));
+			}
+		if (!retry_ok)
 			{
 			delete path;	// Really failed.  Try again in 
 					//  .5 - 2 secs.
@@ -614,8 +622,8 @@ void Combat_schedule::now_what
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	if (npc->get_attack_mode() == Actor::manual)
-		return;
+//	if (npc->get_attack_mode() == Actor::manual)
+//		return;
 	if (npc->get_flag(Obj_flags::asleep))
 		{
 		npc->start(200, 1000);	// Check again in a second.
@@ -680,7 +688,11 @@ void Combat_schedule::now_what
 				set_weapon_info();
 				}
 					// This may delete us!
-			opponent->attacked(npc);
+			Actor *safenpc = npc;
+			safenpc->set_target(opponent->attacked(npc));
+					// Strike but once at objects.
+			if (!dynamic_cast<Actor*>(safenpc->get_target()))
+				safenpc->set_target(0);
 			return;		// We may no longer exist!
 			}
 		break;

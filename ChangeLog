@@ -1,3 +1,8 @@
+2001-06-15  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Emulate_swapout() now does chunks 3 or more away.
+	* combat.cc: Manual combat mode works.
+
 2001-06-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* bgintrinsics.h: added 2 guesses
 	* exult.cc: don't show hand cursor when clicking left mouse button
