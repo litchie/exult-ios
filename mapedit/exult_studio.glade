@@ -7557,8 +7557,8 @@ LR Hand
 	  <column_spacing>0</column_spacing>
 	  <child>
 	    <padding>0</padding>
-	    <expand>True</expand>
-	    <fill>True</fill>
+	    <expand>False</expand>
+	    <fill>False</fill>
 	  </child>
 
 	  <widget>
@@ -7640,41 +7640,6 @@ LR Hand
 	      <step>1</step>
 	      <page>4</page>
 	      <page_size>4</page_size>
-	    </widget>
-	  </widget>
-
-	  <widget>
-	    <class>GtkFrame</class>
-	    <name>frame77</name>
-	    <border_width>4</border_width>
-	    <label>Damage Type</label>
-	    <label_xalign>0</label_xalign>
-	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	    <child>
-	      <left_attach>2</left_attach>
-	      <right_attach>3</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>True</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>True</yfill>
-	    </child>
-
-	    <widget>
-	      <class>GtkOptionMenu</class>
-	      <name>optionmenu3</name>
-	      <can_focus>True</can_focus>
-	      <items>Normal
-Fire
-Magic
-Poison
-</items>
-	      <initial_choice>0</initial_choice>
 	    </widget>
 	  </widget>
 
@@ -7938,6 +7903,41 @@ Fires
 	      <step>1</step>
 	      <page>4</page>
 	      <page_size>4</page_size>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>frame77</name>
+	    <border_width>4</border_width>
+	    <label>Damage Type</label>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <left_attach>2</left_attach>
+	      <right_attach>3</right_attach>
+	      <top_attach>0</top_attach>
+	      <bottom_attach>1</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>True</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>True</yfill>
+	    </child>
+
+	    <widget>
+	      <class>GtkOptionMenu</class>
+	      <name>optionmenu3</name>
+	      <can_focus>True</can_focus>
+	      <items>Normal
+Fire
+Magic
+Poison
+</items>
+	      <initial_choice>0</initial_choice>
 	    </widget>
 	  </widget>
 	</widget>
@@ -8537,7 +8537,7 @@ Poison
 	  <class>GtkFrame</class>
 	  <name>frame96</name>
 	  <border_width>4</border_width>
-	  <label>Shape</label>
+	  <label>Points</label>
 	  <label_xalign>0</label_xalign>
 	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	  <child>
@@ -8548,7 +8548,7 @@ Poison
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton115</name>
+	    <name>shinfo_armor_value</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -8711,7 +8711,7 @@ Poison
 	  <column_spacing>0</column_spacing>
 	  <child>
 	    <padding>0</padding>
-	    <expand>True</expand>
+	    <expand>False</expand>
 	    <fill>True</fill>
 	  </child>
 
@@ -8739,7 +8739,7 @@ Poison
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton117</name>
+	      <name>shinfo_monster_dex</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -8780,7 +8780,7 @@ Poison
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton118</name>
+	      <name>shinfo_monster_intel</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -8821,7 +8821,7 @@ Poison
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton120</name>
+	      <name>shinfo_monster_cmb</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -8862,7 +8862,7 @@ Poison
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton121</name>
+	      <name>shinfo_monster_armor</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -8903,7 +8903,7 @@ Poison
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton123</name>
+	      <name>shinfo_monster_reach</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -8944,7 +8944,7 @@ Poison
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton124</name>
+	      <name>shinfo_monster_equip</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -8985,7 +8985,7 @@ Poison
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton116</name>
+	      <name>shinfo_monster_str</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -9026,7 +9026,7 @@ Poison
 
 	    <widget>
 	      <class>GtkOptionMenu</class>
-	      <name>optionmenu7</name>
+	      <name>shinfo_monster_align</name>
 	      <border_width>1</border_width>
 	      <can_focus>True</can_focus>
 	      <items>Friendly
@@ -9062,7 +9062,7 @@ Random
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton122</name>
+	      <name>shinfo_monster_wpn</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
