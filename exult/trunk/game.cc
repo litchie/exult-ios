@@ -232,6 +232,43 @@ str_int_pair Game::get_resource(const char *name)
 	return resources[name];
 }
 
+/*	
+ *	Write out game resources/shapes to "patch/exultgame.xml".	
+*/
+void Game::write_game_xml()
+{
+	string name = get_system_path("<PATCH>/exultgame.xml");
+
+	U7mkdir("<PATCH>", 0755);	// Create dir. if not already there.
+	if (U7exists(name))
+		U7remove(name.c_str());
+	string root = "Game_config";
+	Configuration xml(name, root);
+	for (rsc_map::iterator it1 = resources.begin(); it1 != resources.end();
+								++it1)
+		{
+		string key = (*it1).first;
+		str_int_pair& val = (*it1).second;
+		key = root + "/resources/" + key;
+		if (val.str)
+			xml.set(key.c_str(), val.str, false);
+		if (val.num != 0)
+			{
+			string valkey = key;
+			valkey += "/num";
+			xml.set(valkey.c_str(), val.num, false);
+			}
+		}
+	for (shapes_map::iterator it2 = shapes.begin(); it2 != shapes.end();
+								++it2)
+		{
+		string key = (*it2).first;
+		int num = (*it2).second;
+		key = root + "/shapes/" + key;
+		xml.set(key.c_str(), num, false);
+		}
+	xml.write_back();
+}
 
 bool Game::show_menu(bool skip)
 {

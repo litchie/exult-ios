@@ -57,12 +57,14 @@ private:
 	static Exult_Game game_type;
 	static bool expansion;
 #ifndef DONT_HAVE_HASH_MAP
-	hash_map<const char*, int, hashstr, eqstr> shapes;
-	hash_map<const char*, str_int_pair, hashstr, eqstr> resources;
+	typedef hash_map<const char*, int, hashstr, eqstr> shapes_map;
+	typedef hash_map<const char*, str_int_pair, hashstr, eqstr> rsc_map;
 #else /* !HAVE_HASH_MAP */
-	std::map<const char*, int, ltstr> shapes;
-	std::map<const char*, str_int_pair, ltstr> resources;
+	typedef std::map<const char*, int, ltstr> shapes_map;
+	typedef std::map<const char*, str_int_pair, ltstr> rsc_map;
 #endif
+	shapes_map shapes;
+	rsc_map resources;
 	Mouse *menu_mouse;
 	static std::string gametitle;
 	static unsigned int ticks;
@@ -118,7 +120,8 @@ public:
 	int get_shape(const char *name);
 	void add_resource(const char *name, const char *str, int num);
 	str_int_pair get_resource(const char *name);
-	
+	void write_game_xml();
+
 	bool show_menu(bool skip = false);
 	void journey_failed_text();
 	void set_jive () {jive = true;}

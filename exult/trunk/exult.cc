@@ -189,6 +189,7 @@ static string arg_configfile = "";
 static int arg_buildmap = -1;
 static bool arg_nomenu = false;
 static bool arg_edit_mode = false;	// Start up ExultStudio.
+static bool arg_write_xml = false;	// Write out game's config. as XML.
 
 static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
@@ -268,6 +269,7 @@ int main
 	parameters.declare("--nocrc",&ignore_crc,true);
 	parameters.declare("-c",&arg_configfile,"");
 	parameters.declare("--edit",&arg_edit_mode,true);
+	parameters.declare("--write-xml",&arg_write_xml,true);
 
 	// Process the args
 	parameters.process(argc,argv);
@@ -288,7 +290,8 @@ int main
 			 << "\t\tonly valid when used together with --bg or --si" << endl
 			 << "\t\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl
 			 << "--nocrc\t\tDon't check crc's of .flx files" << endl
-			 << "--edit\t\tStart in map-edit mode" << endl;
+			 << "--edit\t\tStart in map-edit mode" << endl
+			 << "--write-xml\tWrite 'patch/exultgame.xml'" << endl;
 			
 		exit(1);
 	}
@@ -499,6 +502,8 @@ int exult_main(const char *runpath)
 	Init();				// Create main window.
 	cheat.finish_init();
 	cheat.set_map_editor(arg_edit_mode);	// Start in map-edit mode?
+	if (arg_write_xml)
+		game->write_game_xml();
 
 	Mouse::mouse = new Mouse(gwin);
 	Mouse::mouse->set_shape(Mouse::hand);
