@@ -5,6 +5,8 @@
 #include "../files/U7file.h"
 #include "xmidi.h"
 
+#define PATCH_CONVERT_DEFAULT true
+
 // This is a default set of patches to convert from MT32 to GM
 // The index is the MT32 Patch nubmer and the value is the GM Patch
 unsigned char XMIDI::mt32asgm[128] = {
@@ -130,7 +132,7 @@ unsigned char XMIDI::mt32asgm[128] = {
 	119,	// 119	Cymbal, no real equiv, set to reverse cymbal(119)
 	115,	// 120	Castanets, no real equiv, in GM set to Woodblock(115)
 	112,	// 121	Triangle, no real equiv, set to TinkleBell(112)
-	55,	// 122	Orchestal Hit
+	55,	// 122	Orchestral Hit
 	124,	// 123	Telephone
 	123,	// 124	BirdTweet
 	94,	// 125	Big Notes Pad no equiv, set to halo pad (94)
@@ -139,17 +141,17 @@ unsigned char XMIDI::mt32asgm[128] = {
 };
 
 // Constructors
-XMIDI::XMIDI(const char *fname) : events(NULL),timing(NULL), convert_from_mt32(true)
+XMIDI::XMIDI(const char *fname) : events(NULL),timing(NULL), convert_from_mt32(PATCH_CONVERT_DEFAULT)
 {
 	ExtractTracksFromFile (fname);
 }
 
-XMIDI::XMIDI(const std::string &fname) : events(NULL),timing(NULL), convert_from_mt32(true)
+XMIDI::XMIDI(const std::string &fname) : events(NULL),timing(NULL), convert_from_mt32(PATCH_CONVERT_DEFAULT)
 {	
 	ExtractTracksFromFile (fname.c_str());
 }
 
-XMIDI::XMIDI(const unsigned char *stream, std::size_t len):events(NULL), timing(NULL), convert_from_mt32(true)
+XMIDI::XMIDI(const unsigned char *stream, std::size_t len):events(NULL), timing(NULL), convert_from_mt32(PATCH_CONVERT_DEFAULT)
 {
 	ExtractTracks (stream);
 }
