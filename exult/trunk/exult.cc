@@ -208,6 +208,8 @@ int main
 	
 	Init();				// Create main window.
 
+	cheat.init_gwin();
+
 	mouse = new Mouse(gwin);
 	mouse->set_shape(Mouse::hand);
 	

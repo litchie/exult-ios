@@ -49,8 +49,6 @@ Cheat::~Cheat() {
 void Cheat::init (void) {
   std::string cheating;
 
-  gwin = Game_window::get_game_window();
-
   config->value("config/gameplay/cheat",cheating,"yes");
   enabled = true;
   if (cheating == "no")
@@ -59,6 +57,11 @@ void Cheat::init (void) {
   if (enabled)
     cout << "Cheats enabled." << endl;
 }
+
+void Cheat::init_gwin (void) {
+  gwin = Game_window::get_game_window();
+}
+
 
 void Cheat::set_enabled (bool en) {
   enabled = en;
