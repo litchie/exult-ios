@@ -93,8 +93,6 @@ Game_window::Game_window
 		abort("Can't open 'fonts.vga' file.");
 	if (!sprites.is_good())
 		abort("Can't open 'sprites.vga' file.");
-	if (!setup_endgame_fonts())
-		abort ("Unable to setup fonts from 'endgame.dat' file.");
 	
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);

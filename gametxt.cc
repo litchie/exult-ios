@@ -271,6 +271,10 @@ int Game_window::get_text_baseline
 
 bool Game_window::setup_endgame_fonts ()
 {
+	static setup_done = false;
+
+	if(setup_done)
+		return true;
 	for (int i = 0; i < 4; i++)
 	{
 		U7object s_in(ENDGAME,i+3);
@@ -305,6 +309,7 @@ bool Game_window::setup_endgame_fonts ()
 	hlead[ENDGAME_FONT2] = 0;
 	hlead[ENDGAME_FONT3] = 0;
 	hlead[ENDGAME_FONT4] = 0;
+	setup_done = true;
 	return true;
 }
 
