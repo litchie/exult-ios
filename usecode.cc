@@ -61,7 +61,13 @@ void Scheduled_usecode::handle_event
 	)
 	{
 	Usecode_machine *usecode = (Usecode_machine *) udata;
+	Game_window *gwin = usecode->gwin;
 	usecode->exec_array(objval, arrval);
+	if (gwin->get_mode() == Game_window::conversation)
+		{
+		gwin->set_mode(Game_window::normal);
+		gwin->paint();
+		}
 	delete this;			// Hope this is safe.
 	}
 
@@ -652,8 +658,19 @@ void Usecode_machine::exec_array
 			break;
 		case 0x23:		// ??
 			break;
-		case 0x27:		// ?? 1 parm.
-			i++;
+		case 0x27:		// ?? 1 parm. Pure guess:
+			{		// ++++++set frame?
+			Usecode_value& fval = arrayval.get_elem(++i);
+			set_item_frame(objval, fval);
+			break;
+			}
+		case 0x2d:		// ?? Remove itemref?
+cout << "0x2d:  Deleting itemref\n";
+			gwin->get_objects(obj->get_cx(), obj->get_cy())->
+						remove(obj);
+			delete obj;
+			obj = 0;
+			gwin->paint();
 			break;
 		case 0x46:		// ?? 1 parm.
 			i++;
@@ -680,7 +697,6 @@ void Usecode_machine::exec_array
 			break;
 			}
 		}
-	gwin->paint();			// +++++Probably a good idea.
 	}
 
 /*
@@ -735,9 +751,9 @@ Usecode_value Usecode_machine::call_intrinsic
 		exec_array(parms[0], parms[1]);
 		break;
 	case 2:				// ??Exec (itemref, array, delay?)
-		{			// Delay = .10 sec.?
+		{			// Delay = .20 sec.?
 		int delay = parms[2].get_int_value();
-		gwin->get_tqueue()->add(SDL_GetTicks() + 100*delay,
+		gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
 			new Scheduled_usecode(parms[0], parms[1]),
 								(long) this);
 		cout << "Executing intrinsic 2\n";
@@ -885,14 +901,18 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x24:			// Takes shape, rets. new obj?
 					// Show frames in seq.? (animate?)
 		{
+		int shapenum = parms[0].get_int_value();
 					// Guessing:
 		Game_object *at = gwin->get_main_actor();
-		Game_object *obj;
-		int shapenum = parms[0].get_int_value();
-		gwin->get_objects(at->get_cx(), at->get_cy())->add(
-			(obj = new Game_object(shapenum, 0, at->get_tx(),
-				at->get_ty(), 0)));
-		gwin->paint();
+#if 0
+		int tx, ty, tz;		// Get location.
+		at->get_abs_tile(tx, ty, tz);
+		Game_object *obj = new Frame_cycle_sprite(gwin,
+			shapenum, tx, ty, tz, 1);
+#endif
+		Game_object *obj = new Game_object(shapenum, 0,
+				at->get_tx(), at->get_ty(), at->get_lift());
+		gwin->get_objects(at->get_cx(), at->get_cy())->add(obj);
 		gwin->show();
 		return Usecode_value((long) obj);
 		break;

@@ -195,6 +195,9 @@ public:
 		{ return shapes.get_shape(shapenum, framenum); }
 	Shape_frame *get_shape(ShapeID& id)
 		{ return get_shape(id.get_shapenum(), id.get_framenum()); }
+					// Get # frames in a shape.
+	int get_shape_num_frames(int shapenum)
+		{ return shapes.get_num_frames(shapenum); }
 					// Get screen area used by object in
 					//   given chunk.
 	Rectangle get_shape_rect(Game_object *obj)
