@@ -169,7 +169,8 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 			}
 					// Set up SDL video flags.
 		int video_flags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER |
-				SDL_HWPALETTE | SDL_RESIZABLE;
+				SDL_HWPALETTE | SDL_RESIZABLE |
+				(flags&SDL_FULLSCREEN);
 					// Can surface be in video RAM?
 		if (vinfo->hw_available)
 			video_flags |= SDL_HWSURFACE;
