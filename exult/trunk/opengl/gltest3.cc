@@ -83,6 +83,18 @@ void InitGL
 	glDepthFunc(GL_LEQUAL);
 //    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	// ??
+
+
+					// Ambient light.
+	static GLfloat ambient[] = {.8, .8, .8, 1.0};
+	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
+					// A diffuse light source.
+	static GLfloat diffuse[] = {1, 1, 1, 1.0};
+	static GLfloat diffuse_pos[] = {0, 0, 8, 1};
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
+	glLightfv(GL_LIGHT1, GL_POSITION, diffuse_pos);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHTING);		// Enable lighting.
 	}
 
 /*
