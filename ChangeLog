@@ -1,6 +1,6 @@
 2002-07-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ucinternal.cc: allow small changes to loop-array in mid-loop in SI
-	* effects.cc: 'backported' delayed-blast fix from main branch
+	* effects.*: 'backported' delayed-blast fix from main branch
 
 2002-07-05  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 

@@ -63,14 +63,15 @@ Sprites_effect::Sprites_effect
 	(
 	int num,			// Index.
 	Tile_coord p,			// Position within world.
-	int dx, int dy			// Add to offset for each frame.
+	int dx, int dy,			// Add to offset for each frame.
+	int delay               // Delay (msecs) before starting
 	) : sprite(num, 0, SF_SPRITES_VGA), item(0), pos(p), xoff(0), yoff(0),
 						deltax(dx), deltay(dy)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	frames = sprite.get_num_frames();
 					// Start immediately.
-	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, 0L);
 	}
 
 /*
@@ -172,8 +173,9 @@ void Sprites_effect::paint
 Explosion_effect::Explosion_effect
 	(
 	Tile_coord p, 
-	Game_object *exp
-	) : Sprites_effect(1, p), explode(exp)
+	Game_object *exp,
+	int delay                 // Delay before starting (msecs).
+	) : Sprites_effect(1, p, 0, 0, delay), explode(exp)
 {
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord apos = gwin->get_main_actor()->get_tile();
@@ -395,6 +397,7 @@ void Projectile_effect::handle_event
 					// If missile egg, detect target.
 			(!target && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
+		int explosiondelay = 0;
 		switch (projectile_shape)
 			{
 		case 287:		// Swordstrike.
@@ -412,11 +415,11 @@ void Projectile_effect::handle_event
 			break;
 		case 82:		// Delayed explosion.
 		case 621:		//    "       "
-			delay = 3000;	// Wait 3 secs.  FALL THROUGH!
+			explosiondelay = 3000;	// Wait 3 secs.  FALL THROUGH!
 		case 78:		// Explosion.
 		case 702:		// Cannon.
 		case 704:		// Powder keg.
-			gwin->add_effect(new Explosion_effect(epos, 0));
+			gwin->add_effect(new Explosion_effect(epos, 0, explosiondelay));
 			target = 0;	// Takes care of attack.
 			break;
 			}
