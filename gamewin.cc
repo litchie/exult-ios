@@ -1039,7 +1039,7 @@ inline void Get_shape_location
 	}
 
 /*
- *	Get screen loc. of object.
+ *	Get screen loc. of object which MUST be on the map (no owner).
  */
 
 void Game_window::get_shape_location(Game_object *obj, int& x, int& y)
@@ -1050,6 +1050,7 @@ void Game_window::get_shape_location(Tile_coord t, int&x, int& y)
 {
 	Get_shape_location(t, scrolltx, scrollty, x, y);
 }
+
 
 /*
  *	Put the actor(s) in the world.

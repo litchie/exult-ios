@@ -376,7 +376,7 @@ void Cheat::toggle_selected(Game_object *obj) {
 	else
 		gwin->set_all_dirty();
 					// In list?
-	for (std::vector<Game_object *>::iterator it = selected.begin();
+	for (Game_object_vector::iterator it = selected.begin();
 					it != selected.end(); ++it)
 		if (*it == obj)
 			{		// Yes, so remove it.
@@ -392,7 +392,7 @@ void Cheat::toggle_selected(Game_object *obj) {
 void Cheat::clear_selected() {
 	if (selected.empty())
 		return;
-	for (std::vector<Game_object *>::iterator it = selected.begin();
+	for (Game_object_vector::iterator it = selected.begin();
 					it != selected.end(); ++it)
 		{
 		Game_object *obj = *it;
@@ -429,7 +429,7 @@ void Cheat::move_selected(int dx, int dy, int dz) {
 	std::vector<Tile_coord> tiles;	// Store locations here.
 	int lowz = 1000, highz = -1000;	// Get min/max lift.
 					// Remove & store old locations.
-	std::vector<Game_object *>::iterator it;
+	Game_object_vector::iterator it;
 	for (it = selected.begin(); it != selected.end(); ++it)
 		{
 		Game_object *obj = *it;

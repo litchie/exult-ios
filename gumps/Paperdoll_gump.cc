@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "contain.h"
 #include "actors.h"
 #include "objiter.h"
+#include "cheat.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
@@ -553,9 +554,11 @@ void Paperdoll_gump::paint_object
 		gwin->paint_shape(box.x + coords_blue[spot*2],
 				box.y + coords_blue[spot*2+1],
 				s);
-
-		gwin->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy(), 
-			*obj);
+		int ox = box.x + obj->get_cx(), oy = box.y + obj->get_cy();
+		gwin->paint_shape(x, y, *obj);
+		if (cheat.is_selected(obj))
+					// Outline selected obj.
+			gwin->paint_hit_outline(ox, oy, obj->get_shape());
 
 		return;
 	}
@@ -585,6 +588,8 @@ void Paperdoll_gump::paint_object
  
 	ShapeID s(item->shape, f, item->file);
 	gwin->paint_shape(box.x + sx, box.y + sy, s, 1);
+	if (cheat.is_selected(obj))	// Outline selected obj.
+		gwin->paint_hit_outline(box.x + sx, box.y + sy, s.get_shape());
 }
 
 /*
