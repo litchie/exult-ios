@@ -6,6 +6,7 @@ U7PATH=C:/Ultima7
 # Only used for snapshots
 STUDIOPATH=C:/Studio
 
+CC=gcc
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
 
@@ -61,7 +62,7 @@ exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
 	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc $@
 
 u7shp.exe : u7shp.o
-	$(CXX) $(LFLAGS) -o u7shp.exe u7shp.o $(GTK_LIBS) -lgimp -lgimpui -mconsole
+	$(CXX) -o u7shp.exe u7shp.o $(GTK_LIBS) -lgimp -lgimpui -mconsole
 
 allclean:
 	rm -f $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
