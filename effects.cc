@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "effects.h"
 #include "Zombie.h"
-#include "usecode.h"
 
 int Cloud::randcnt = 0;
 
@@ -101,16 +100,15 @@ void Sprites_effect::paint
 
 Projectile_effect::Projectile_effect
 	(
-	Game_object *from,		// Start here.
-	Game_object *to,		// End here, then run usecode on it.
-	int ufun,			// Usecode function to run.
+	Actor *att,			// Source of spell/attack.
+	Game_object *to,		// End here, 'attack' it with shape.
 	int shnum			// Shape # in 'shapes.vga'.
-	) : dest(to), usefun(ufun), shape_num(shnum), frame_num(0)
+	) : attacker(att), dest(to), shape_num(shnum), frame_num(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_shape_num_frames(shnum);
 					// Get starting position.
-	pos = from->get_abs_tile_coord();
+	pos = attacker->get_abs_tile_coord();
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
 	path->NewPath(pos, to->get_abs_tile_coord(), 0);
@@ -165,9 +163,7 @@ void Projectile_effect::handle_event
 		{			// Done? 
 		pos.tx = -1;		// Signal we're done.
 		gwin->remove_effect(this);
-//		gwin->paint();
-		gwin->get_usecode()->call_usecode(usefun, dest, 
-					Usecode_machine::after_projectile);
+		dest->attacked(attacker, shape_num);
 		return;
 		}
 					// Next frame.
