@@ -228,6 +228,9 @@ public:
 	void compile(bool if_needed = false);
 	void halt_compile();
 	void run();
+					// Maps.
+	void new_map_dialog();
+
 	bool send_to_server(Exult_server::Msg_type id,
 				unsigned char *data = 0, int datalen = 0);
 	void read_from_server();

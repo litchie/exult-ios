@@ -65,7 +65,6 @@
 
 	      <child>
 		<widget class="GtkMenu" id="file1_menu">
-		  <property name="visible">True</property>
 
 		  <child>
 		    <widget class="GtkMenuItem" id="new_game">
@@ -109,7 +108,6 @@
 
 		      <child>
 			<widget class="GtkMenu" id="new_menu">
-			  <property name="visible">True</property>
 
 			  <child>
 			    <widget class="GtkMenuItem" id="new_shapes_file">
@@ -141,7 +139,6 @@
 
 		      <child>
 			<widget class="GtkMenu" id="save1_menu">
-			  <property name="visible">True</property>
 
 			  <child>
 			    <widget class="GtkMenuItem" id="save_map_menu">
@@ -191,7 +188,6 @@
 
 		      <child>
 			<widget class="GtkMenu" id="reload1_menu">
-			  <property name="visible">True</property>
 
 			  <child>
 			    <widget class="GtkMenuItem" id="read_map_menu">
@@ -262,7 +258,6 @@
 
 	      <child>
 		<widget class="GtkMenu" id="edit1_menu">
-		  <property name="visible">True</property>
 
 		  <child>
 		    <widget class="GtkMenuItem" id="cut1">
@@ -354,7 +349,6 @@
 
 	      <child>
 		<widget class="GtkMenu" id="mode1_menu">
-		  <property name="visible">True</property>
 
 		  <child>
 		    <widget class="GtkRadioMenuItem" id="move1">
@@ -371,7 +365,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Paint</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">move1</property>
 		      <signal name="activate" handler="on_paint1_activate"/>
 		    </widget>
@@ -382,7 +376,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Paint with chunks</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">move1</property>
 		      <signal name="activate" handler="on_paint_with_chunks1_activate"/>
 		    </widget>
@@ -393,7 +387,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">Pick for combo</property>
 		      <property name="use_underline">True</property>
-		      <property name="active">False</property>
+		      <property name="active">True</property>
 		      <property name="group">move1</property>
 		      <signal name="activate" handler="on_pick_for_combo1_activate"/>
 		    </widget>
@@ -411,7 +405,6 @@
 
 	      <child>
 		<widget class="GtkMenu" id="tools1_menu">
-		  <property name="visible">True</property>
 
 		  <child>
 		    <widget class="GtkMenuItem" id="locator1">
@@ -447,6 +440,44 @@
 		      <property name="label" translatable="yes">Compile usecode...</property>
 		      <property name="use_underline">True</property>
 		      <signal name="activate" handler="on_compile_usecode_menu_activate"/>
+		    </widget>
+		  </child>
+		</widget>
+	      </child>
+	    </widget>
+	  </child>
+
+	  <child>
+	    <widget class="GtkMenuItem" id="map1">
+	      <property name="visible">True</property>
+	      <property name="label" translatable="yes">_Map</property>
+	      <property name="use_underline">True</property>
+
+	      <child>
+		<widget class="GtkMenu" id="map1_menu">
+
+		  <child>
+		    <widget class="GtkMenuItem" id="newmap">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">New...</property>
+		      <property name="use_underline">True</property>
+		      <signal name="activate" handler="on_newmap_activate" last_modification_time="Tue, 03 Feb 2004 05:51:20 GMT"/>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkMenuItem" id="separator7">
+		      <property name="visible">True</property>
+		    </widget>
+		  </child>
+
+		  <child>
+		    <widget class="GtkRadioMenuItem" id="main_map">
+		      <property name="visible">True</property>
+		      <property name="label" translatable="yes">Main</property>
+		      <property name="use_underline">True</property>
+		      <property name="active">False</property>
+		      <signal name="activate" handler="on_main_map_activate" last_modification_time="Tue, 03 Feb 2004 06:15:14 GMT"/>
 		    </widget>
 		  </child>
 		</widget>
