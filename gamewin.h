@@ -277,23 +277,23 @@ public:
 	void resized(unsigned int neww, unsigned int newh, unsigned int newsc);
 	inline void set_painted()		// Force blit.
 		{ painted = 1; }
-	inline int was_painted()
+	inline bool was_painted()
 		{ return painted; }
-	int show()			// Returns 1 if blit occurred.
+	bool show()			// Returns true if blit occurred.
 		{
 		if (painted)
 			{
 			win->show();
-			painted = 0;
-			return 1;
+			painted = false;
+			return true;
 			}
-		return 0;
+		return false;
 		}
-	int show(int)
+	bool show(int)
 		{
 		win->show();
-		painted = 0;
-		return 1;
+		painted = false;
+		return true;
 		}
 	void center_view(Tile_coord t);	// Center view around t.
 					// Scroll if necessary.
@@ -483,9 +483,9 @@ public:
 		{ dirty = Rectangle(0, 0, get_width(), get_height()); }
 	void add_dirty(Rectangle r)	// Add rectangle to dirty area.
 		{ dirty = dirty.w > 0 ? dirty.add(r) : r; }
-					// Add dirty rect. for obj.  Rets. 0
+					// Add dirty rect. for obj.  Rets. false
 					//   if not on screen.
-	int add_dirty(Game_object *obj)
+	bool add_dirty(Game_object *obj)
 		{
 		Rectangle rect = get_shape_rect(obj);
 		rect.enlarge(5);
@@ -493,10 +493,10 @@ public:
 		if (rect.w > 0 && rect.h > 0)
 			{
 			add_dirty(rect);
-			return 1;
+			return true;
 			}
 		else
-			return 0;
+			return false;
 		}
 	inline char *get_save_name(int i) const	// Get ->saved-game name.
 		{ return save_names[i]; }
@@ -513,7 +513,7 @@ public:
 	void paint_dungeon_object(Chunk_object_list *olist, Game_object *obj);
 					// Fade palette in/out.
 	void fade_palette(int cycles, int inout, int pal_num = -1);
-	int is_palette_faded_out()
+	bool is_palette_faded_out()
 		{ return faded_out; }
 	void flash_palette_red();	// Flash red for a moment.
 					// Set desired palette.
@@ -584,12 +584,12 @@ public:
 	void theft();			// Handle thievery.
 	void get_focus();		// Get/lose focus.
 	inline void lose_focus()
-		{ focus = 0; }
-	inline int have_focus() const
+		{ focus = false; }
+	inline bool have_focus() const
 		{ return focus; }
 	void setup_game();		// Prepare for game
 	void read_npcs();		// Read in npc's.
-	int write_npcs();		// Write them back.
+	bool write_npcs();		// Write them back.
 	void read_schedules();		// Read npc's schedules.
 					// Start dragging.
 	bool start_dragging(int x, int y);
@@ -610,14 +610,14 @@ public:
 	Shape_frame *font_get_shape (int fontnum, int framenum);
 private:
 	void drop(int x, int y);
-	int drop_at_lift(Game_object *to_drop, int at_lift);
+	bool drop_at_lift(Game_object *to_drop, int at_lift);
 public:
 	bool init_gamedat(bool create); // Initialize gamedat directory
 	void restore_gamedat(const char *fname);// Explode a savegame into "gamedat".
 	void restore_gamedat(int num);
 					// Save "gamedat".
-	int save_gamedat(const char *fname, const char *savename);
-	int save_gamedat(int num, const char *savename);
+	bool save_gamedat(const char *fname, const char *savename);
+	bool save_gamedat(int num, const char *savename);
 	int find_roof(int cx, int cy);
 	
 private:
