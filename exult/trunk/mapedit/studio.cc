@@ -45,7 +45,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Flex.h"
 #include "studio.h"
 #include "dirbrowser.h"
-#include "servemsg.h"
 #include "utils.h"
 #include "u7drag.h"
 
@@ -517,8 +516,7 @@ void ExultStudio::write_map
 	(
 	)
 	{
-	if (Send_data(server_socket, Exult_server::write_map) == -1)
-		cerr << "Error sending to server" << endl;
+	send_to_server(Exult_server::write_map);
 	}
 
 /*
@@ -529,8 +527,7 @@ void ExultStudio::read_map
 	(
 	)
 	{
-	if (Send_data(server_socket, Exult_server::read_map) == -1)
-		cerr << "Error sending to server" << endl;
+	send_to_server(Exult_server::read_map);
 	}
 
 /*
@@ -541,8 +538,7 @@ void ExultStudio::reload_usecode
 	(
 	)
 	{
-	if (Send_data(server_socket, Exult_server::reload_usecode) == -1)
-		cerr << "Error sending to server" << endl;
+	send_to_server(Exult_server::reload_usecode);
 	}
 
 /*
@@ -557,9 +553,7 @@ void ExultStudio::set_play
 	unsigned char data[Exult_server::maxlength];
 	unsigned char *ptr = &data[0];
 	Write2(ptr, play ? 0 : 1);	// Map_edit = !play.
-	if (Send_data(server_socket, Exult_server::map_editing_mode,
-						data, ptr - data) == -1)
-		cerr << "Error sending to server" << endl;
+	send_to_server(Exult_server::map_editing_mode, data, ptr - data);
 	}
 
 /*
@@ -574,9 +568,7 @@ void ExultStudio::set_tile_grid
 	unsigned char data[Exult_server::maxlength];
 	unsigned char *ptr = &data[0];
 	Write2(ptr, grid ? 1 : 0);	// Map_edit = !play.
-	if (Send_data(server_socket, Exult_server::tile_grid,
-						data, ptr - data) == -1)
-		cerr << "Error sending to server" << endl;
+	send_to_server(Exult_server::tile_grid, data, ptr - data);
 	}
 
 /*
@@ -591,9 +583,7 @@ void ExultStudio::set_edit_lift
 	unsigned char data[Exult_server::maxlength];
 	unsigned char *ptr = &data[0];
 	Write2(ptr, lift);
-	if (Send_data(server_socket, Exult_server::edit_lift,
-						data, ptr - data) == -1)
-		cerr << "Error sending to server" << endl;
+	send_to_server(Exult_server::edit_lift, data, ptr - data);
 	}
 
 /*
@@ -812,6 +802,27 @@ static gint Reconnect
 	}
 
 /*
+ *	Send message to server.
+ *
+ *	Output:	false if error sending (reported).
+ */
+
+bool ExultStudio::send_to_server
+	(
+	Exult_server::Msg_type id,
+	unsigned char *data, 
+	int datalen
+	)
+	{
+	if (Send_data(server_socket, id, data, datalen) == -1)
+		{
+		cerr << "Error sending to server" << endl;
+		return false;
+		}
+	return true;
+	}
+
+/*
  *	Input from server is available.
  */
 
@@ -865,8 +876,9 @@ void ExultStudio::read_from_server
 	case Exult_server::swap_terrain:
 	case Exult_server::insert_terrain:
 		if (waiting_for_server)	// Send msg. to callback.
-			waiting_for_server((int) id, data, datalen);
+			waiting_for_server(id, data, datalen, waiting_client);
 		waiting_for_server = 0;
+		waiting_client = 0;
 		break;
 		}
 	}

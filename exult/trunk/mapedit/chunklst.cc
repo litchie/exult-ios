@@ -38,6 +38,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "u7drag.h"
 #include "exult_constants.h"
 #include "shapeid.h"
+#include "studio.h"
+#include "utils.h"
 
 #include <iosfwd>
 
@@ -395,6 +397,24 @@ cout << "Scrolled to " << adj->value << '\n';
 	}
 
 /*
+ *	Callbacks for controls:
+ */
+extern "C" void
+on_loc_chunk_down_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Chunk_chooser *chooser = (Chunk_chooser *) user_data;
+	chooser->locate(false);
+}
+extern "C" void
+on_loc_chunk_up_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Chunk_chooser *chooser = (Chunk_chooser *) user_data;
+	chooser->locate(true);
+}
+
+/*
  *	Create box with 'find' and 'edit' controls.
  */
 
@@ -475,14 +495,12 @@ GtkWidget *Chunk_chooser::create_controls
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_up);
 	GTK_WIDGET_SET_FLAGS (move_chunk_up, GTK_CAN_DEFAULT);
 
-#if 0
 	gtk_signal_connect (GTK_OBJECT (loc_chunk_down), "clicked",
                       GTK_SIGNAL_FUNC (on_loc_chunk_down_clicked),
                       this);
 	gtk_signal_connect (GTK_OBJECT (loc_chunk_up), "clicked",
                       GTK_SIGNAL_FUNC (on_loc_chunk_up_clicked),
                       this);
-#endif
 	return topframe;
 	}
 
@@ -645,4 +663,75 @@ void Chunk_chooser::unselect
 		}
 	}
 
+/*
+ *	Server response from 'locate'.
+ */
+
+static void Locate_response
+	(
+	Exult_server::Msg_type id,
+	unsigned char *data,
+	int datalen,
+	void *client
+	)
+	{
+	if (id != Exult_server::locate_terrain)
+		{
+		cout << "Locate_response:  received wrong id " << (int) id
+								<< endl;
+		return;
+		}
+	((Chunk_chooser *) client)->locate_response(data, datalen);
+	}
+
+/*
+ *	Locate terrain on game map.
+ */
+
+void Chunk_chooser::locate
+	(
+	bool upwards
+	)
+	{
+	if (selected < 0)
+		return;			// Shouldn't happen.
+	unsigned char data[Exult_server::maxlength];
+	unsigned char *ptr = &data[0];
+	int tnum = info[selected].num;	// Terrain #.
+	Write2(ptr, tnum);
+	Write2(ptr, locate_cx);		// Current chunk, or -1.
+	Write2(ptr, locate_cy);
+	*ptr++ = upwards ? 1 : 0;
+	ExultStudio *studio = ExultStudio::get_instance();
+	if (!studio->send_to_server(
+			Exult_server::locate_terrain, data, ptr - data))
+		return;			// Failed to send data.
+	studio->set_response_callback(Locate_response, this);
+	}
+
+/*
+ *	Response from server to a 'locate'.
+ */
+
+void Chunk_chooser::locate_response
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+	unsigned char *ptr = data;
+	int tnum = Read2(ptr);
+	if (selected < 0 || tnum != info[selected].num)
+		return;			// Not the current selection.
+	short cx = (short) Read2(ptr);	// Get chunk found.
+	short cy = (short) Read2(ptr);
+	ptr++;				// Skip upwards flag.
+	if (!*ptr)
+		cout << "Terrain not found." << endl;
+	else
+		{
+		locate_cx = cx;		// Save new chunk.
+		locate_cy = cy;
+		}
+	}
 
