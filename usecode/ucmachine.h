@@ -46,11 +46,6 @@ class Usecode_machine : public Game_singletons
 protected:
 	unsigned char gflags[1024];	// Global flags.
 	Keyring* keyring;
-	int party[8];			// NPC #'s of party members.
-	int party_count;		// # of NPC's in party.
-	int dead_party[16];		// NPC #'s of dead party members.
-	int dead_party_count;
-
 	Conversation *conv;		// Handles conversations
 public:
 	friend class Usecode_script;
@@ -83,17 +78,6 @@ public:
 		{ return gflags[i]; }
 	void set_global_flag(int i, int val = 1)
 		{ gflags[i] = (val == 1); }
-	int get_party_count()		// Get # party members.
-		{ return party_count; }
-	int get_party_member(int i)	// Get npc# of i'th party member.
-		{ return party[i]; }
-	int get_dead_party_count()	// Same for dead party members.
-		{ return dead_party_count; }
-	int get_dead_party_member(int i)
-		{ return dead_party[i]; }
-					// Update status of NPC that died or
-					//   was resurrected.
-	virtual void update_party_status(Actor *npc) = 0;
 					// Start speech, or show text.
 	virtual void do_speech(int num) = 0;
 	virtual int in_usecode() = 0;	// Currently in a usecode function?

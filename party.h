@@ -25,24 +25,30 @@
 
 class Actor;
 
+#define EXULT_PARTY_MAX 8
+
 /*
  *	Manage the party.
  */
 class Party_manager
 	{
-	int party[8];			// NPC #'s of party members.
+	int party[EXULT_PARTY_MAX];	// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
 	int dead_party[16];		// NPC #'s of dead party members.
 	int dead_party_count;
 public:
 	Party_manager();
-	int get_party_count()		// Get # party members.
+	void set_count(int n)		// For initializing from file.
+		{ party_count = n; }
+	void set_member(int i, int npcnum)
+		{ party[i] = npcnum; }
+	int get_count()			// Get # party members.
 		{ return party_count; }
-	int get_party_member(int i)	// Get npc# of i'th party member.
+	int get_member(int i)		// Get npc# of i'th party member.
 		{ return party[i]; }
-	int get_dead_party_count()	// Same for dead party members.
+	int get_dead_count()		// Same for dead party members.
 		{ return dead_party_count; }
-	int get_dead_party_member(int i)
+	int get_dead_member(int i)
 		{ return dead_party[i]; }
 					// Add/remove party member.
 	bool add_to_party(Actor *npc);
@@ -55,5 +61,6 @@ public:
 	void update_party_status(Actor *npc);
 	void link_party();		// Set party's id's.
 	};
+
 
 #endif
