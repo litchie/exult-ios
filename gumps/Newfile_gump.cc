@@ -227,7 +227,6 @@ Newfile_gump::~Newfile_gump
 
 	FreeSaveGameDetails();
 	
-//	Game_window::get_game_window()->get_win()->put(back, 0, 0);
 	delete back;
 }
 
@@ -250,8 +249,11 @@ void Newfile_gump::load()
 	gwin->read();
 
 	// Set Done
-	done = 1;
+	done = true;
 	restored = 1;
+	
+	// Since we just loaded a new game, we don't want Do_Modal_gump to restore the background.
+	restore_background = false;
 
 	// Reset Selection
 	selected = -3;
