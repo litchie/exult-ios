@@ -478,9 +478,9 @@ USECODE_INTRINSIC(create_new_object)
 	int shapenum = parms[0].get_int_value();
 
 	Game_object *obj;		// Create to be written to Ireg.
-	Monster_info *inf = ShapeID::get_info(shapenum).get_monster_info();
-
-	if (inf)
+	Shape_info& info = ShapeID::get_info(shapenum);
+					// +++Not sure if 1st test is needed.
+	if (info.get_monster_info() || info.is_npc())
 	{
 					// (Wait sched. added for FOV.)
 		// don't add equipment (Erethian's transform sequence)
