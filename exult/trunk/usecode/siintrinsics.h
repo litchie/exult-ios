@@ -4,7 +4,6 @@
  *	Note:	This is used in the virtual machine and the Usecode compiler.
  */
 
-<<<<<<< siintrinsics.h
 	USECODE_INTRINSIC_PTR(get_random),			// 0
 	USECODE_INTRINSIC_PTR(execute_usecode_array),		// 1
 	USECODE_INTRINSIC_PTR(delayed_execute_usecode_array),	// 2
