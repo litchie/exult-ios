@@ -1,3 +1,6 @@
+2002-06-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* various: applied patches by Robert Bihlmeyer
+
 2002-06-04  Ryan Nunn  <triforce@merlin.net.au>
 	* files/utils.cc : Working around the evil Windows 'Long Filename
 	  Problem', even though it's actually got very little to do with
