@@ -10,6 +10,8 @@ TOOLSPATH=C:/GimpPlugin
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
 
+VERSION=1.4.01cvs
+
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
 GTK_INCLUDES = `pkg-config --cflags gtk+-win32-2.0`
 # If this doesn't work, insert output of `pkg-config --libs gtk+-win32-2.0` manually
@@ -33,7 +35,7 @@ GIMP_LIBS = `pkg-config --libs gimp-2.0`
 INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
 	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/server -I$(SRC)/objs -I$(SRC)/conf $(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(FREETYPE2_INCLUDES) $(GIMP_INCLUDES)
 
-CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_PNG_H -DHAVE_FREETYPE2 $(INCLUDES)
+CPPFLAGS= -DVERSION=\"$(VERSION)\" -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_PNG_H -DHAVE_FREETYPE2 $(INCLUDES)
 
 CXXFLAGS= -O2 -mms-bitfields -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM
 CXX=g++
