@@ -46,8 +46,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Audio.h"
 
-#define DEBUG 1
-
 //---- Mixer ---------------------------------------------------------
 
 Mixer::~Mixer()
@@ -110,23 +108,24 @@ void Mixer::cancel(void)
 void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 {
 #if DEBUG
-	// cout << "fill_audio_func: " << len << endl;
+	cout << "fill_audio_func: " << len << endl;
 	// cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
 #endif
 	advance();
 	// if(buffers.begin()->num_samples==0&&auxilliary_audio==-1)
+	stream_lock();
 	if(buffers.begin()->num_samples==0&&audio_streams.size()==0)
 		{
 #if DEBUG
 		cerr << "No more audio data" << endl;
 #endif
 		SDL::PauseAudio(1);
+		stream_unlock();
 		return;
 		}
 	if(audio_streams.size()!=0)
 		{
 		int which=0;
-		stream_lock();
 		vector<list<ProducerConsumerBuf *>::iterator> close_list;
 		for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
 			it!=audio_streams.end();++it)
@@ -149,7 +148,7 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 #endif
 				if(len-sofar&&ret==-1)
 					{
-					perror("consume");
+					// perror("consume");
 					// delete the entry
 					close_list.push_back(it);
 					delete [] temp_buffer;
@@ -165,8 +164,8 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 				(**it)->end_consumption();
 				audio_streams.erase(*it);
 				}
-		stream_unlock();
 		}
+	stream_unlock();
 	if(buffers.begin()->num_samples)
 		{
 #if DEBUG

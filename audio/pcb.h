@@ -324,7 +324,7 @@ public:
 		l=Buffer.pop_front((char *)p,l);
 		unlock();
 		if(l>0)
-			window+=l;
+			window+=(l>>3);
 		return l?l:(producing?0:-1);
 		}
 	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),producing(true),consuming(true),id(0),window(2048)
@@ -350,7 +350,8 @@ public:
 		consuming=false;
 		if(!producing)
 			delete this;
-		unlock();
+		else
+			unlock();
 		}
 	size_t	size(void) { return Buffer.size(); }
 	};
