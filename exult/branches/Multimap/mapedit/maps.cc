@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using	std::cout;
 using	std::endl;
+using EStudio::Add_menu_item;
 
 /*
  *	Find highest map #.
@@ -99,4 +100,38 @@ void ExultStudio::new_map_dialog
 	gtk_widget_show(win);
 	}
 
+/*
+ *	Set up the list of maps in the "maps" menu.
+ */
+
+void ExultStudio::setup_maps_list
+	(
+	)
+	{
+	GtkWidget *maps = gtk_menu_item_get_submenu(
+			GTK_MENU_ITEM(glade_xml_get_widget(app_xml, "map1")));
+	GList *items = gtk_container_get_children(GTK_CONTAINER(maps));
+	GList *each = g_list_last(items);
+
+	while (each)
+		{
+		GtkMenuItem *item = GTK_MENU_ITEM(each->data);
+		GtkWidget *label = gtk_bin_get_child(GTK_BIN(item));
+		const char *text = gtk_label_get_label(GTK_LABEL(label));
+		if (strcmp(text, "Main") == 0)
+			break;
+		GList *prev = g_list_previous(each);
+		g_list_remove(items, each->data);
+		gtk_widget_unref(GTK_WIDGET(item));
+		each = prev;
+		}
+	int num = 0;
+	while ((num = Find_next_map(num + 1, 10)) != -1)
+		{
+		char name[40];
+		sprintf(name, "Map #%02x", num);
+		Add_menu_item(maps, name, 
+			GTK_SIGNAL_FUNC(on_map_activate), (gpointer) num);
+		}
+	}
 
