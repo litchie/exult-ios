@@ -44,7 +44,7 @@ long Actor_action::seqcnt = 0;
  *	Output:	Delay value from handle_event (0 if we've been deleted).
  */
 
-Actor_action::handle_event_safely
+int Actor_action::handle_event_safely
 	(
 	Actor *actor,
 	bool& deleted			// True returned if we're gone!

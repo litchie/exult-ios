@@ -1,3 +1,6 @@
+2001-08-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc, actions.cc: fixed compile error + warning
+
 2001-08-22  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* conversation.cc: Limit to two spots, & replace 2nd if no room.
