@@ -143,6 +143,7 @@ false		return UCFALSE;
 
 UcSay		return SAY;
 UcMessage	return MESSAGE;
+UcResponse	return RESPONSE;
 UcEvent		return EVENT;
 UcFlag		return FLAG;
 UcItem		return ITEM;

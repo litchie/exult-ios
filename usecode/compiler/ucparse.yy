@@ -71,7 +71,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  */
 %token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN
 %token VAR STRING
-%token SAY MESSAGE EVENT FLAG ITEM UCTRUE UCFALSE
+%token SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE
 
 /*
  *	Other tokens:
@@ -339,6 +339,8 @@ expression:
 		{ $$ = new Uc_binary_expression(UC_MOD, $1, $3); }
 	| expression EQUALS expression
 		{ $$ = new Uc_binary_expression(UC_CMPEQ, $1, $3); }
+	| RESPONSE EQUALS expression
+		{ $$ = new Uc_response_expression($3); }
 	| expression NEQUALS expression
 		{ $$ = new Uc_binary_expression(UC_CMPNE, $1, $3); }
 	| expression '<' expression

@@ -36,6 +36,36 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucfun.h"
 
 /*
+ *	Default.  Just push the one value.
+ *
+ *	Output:	# pushed
+ */
+
+int Uc_expression::gen_values
+	(
+	ostream& out
+	)
+	{
+	gen_value(out);			// Gen. result on stack.
+	return 1;
+	}
+
+/*
+ *	Default jmp-if-false generation.
+ */
+
+void Uc_expression::gen_jmp_if_false
+	(
+	ostream& out,
+	int offset			// Offset to jmp (relative).
+	)
+	{
+	gen_value(out);			// Gen. result on stack.
+	out.put((char) UC_JNE);		// Pop and jmp if false.
+	Write2(out, offset);
+	}
+
+/*
  *	Default assignment generation.
  */
 
@@ -202,6 +232,36 @@ void Uc_unary_expression::gen_value
 	}
 
 /*
+ *	Can't use this expression just anywhere.
+ */
+
+void Uc_response_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	error("Must use UcResponse in 'if (UcResponse == ...)'");
+	}
+
+/*
+ *	Jmp-if-false generation for getting conversation response & comparing
+ *	to a string or strings.
+ */
+
+void Uc_response_expression::gen_jmp_if_false
+	(
+	ostream& out,
+	int offset			// Offset to jmp (relative).
+	)
+	{
+					// Push string(s) on stack.
+	int cnt = operand.gen_values(out);
+	out.put((char) UC_CMPS);
+	Write2(out, cnt);		// # strings on stack.
+	Write2(out, offset);		// Offset to jmp if false.
+	}
+
+/*
  *	Generate code to evaluate expression and leave result on stack.
  */
 
@@ -300,10 +360,26 @@ void Uc_array_expression::gen_value
 	std::ostream& out
 	)
 	{
+	int actual = Uc_array_expression::gen_values(out);
+	out.put((char) UC_ARRC);
+	Write2(out, actual);
+	}
+
+/*
+ *	Push all values onto the stack.
+ *
+ *	Output:	# pushed
+ */
+
+int Uc_array_expression::gen_values
+	(
+	ostream& out
+	)
+	{
 	int actual = 0;			// (Just to be safe.)
 					// Push backwards, so #0 pops first.
-	for (std::vector<Uc_expression *>::reverse_iterator it = exprs.rbegin();
-						it != exprs.rend(); it++)
+	for (std::vector<Uc_expression *>::reverse_iterator it = 
+				exprs.rbegin(); it != exprs.rend(); it++)
 		{
 		Uc_expression *expr = *it;
 		if (expr)
@@ -312,8 +388,7 @@ void Uc_array_expression::gen_value
 			expr->gen_value(out);
 			}
 		}
-	out.put((char) UC_ARRC);
-	Write2(out, actual);
+	return actual;
 	}
 
 /*
