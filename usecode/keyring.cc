@@ -40,8 +40,7 @@ void Keyring::read()
 	{
 		U7open(in, KEYRINGDAT);
 	}
-	catch(...)
-	{
+	catch(exult_exception &e) {
 		// maybe an old savegame, just leave the keyring empty
 		return;
 	}
