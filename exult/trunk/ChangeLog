@@ -1,4 +1,8 @@
 2000-05-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* gamewin.cc: dirty fix to visual artifacting (see mailing list)
+	* objs.cc: reverted anim. code to earlier state
+
+2000-05-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* imagewin.cc, exult.cc: pressing Enter will toggle fullscreen
 	I don't get why SDL won't detect ALT though...
 
