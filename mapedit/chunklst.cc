@@ -287,13 +287,13 @@ int Chunk_chooser::get_count
 
 gint Chunk_chooser::configure
 	(
-	GtkWidget *widget,		// The view window.
+	GtkWidget *widget,		// The drawing area.
 	GdkEventConfigure *event,
 	gpointer data			// ->Chunk_chooser
 	)
 	{
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
-	chooser->Shape_draw::configure(widget);
+	chooser->Shape_draw::configure();
 	chooser->render();
 					// Set new scroll amounts.
 	int w = event->width, h = event->height;

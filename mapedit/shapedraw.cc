@@ -195,25 +195,24 @@ void Shape_draw::set_background_color
 
 void Shape_draw::configure
 	(
-	GtkWidget *widget		// The view window.
 	)
 	{
-	if (!widget->window)
+	if (!draw->window)
 		return;			// Not ready yet.
 	if (!iwin)			// First time?
 		{
-		drawgc = gdk_gc_new(widget->window);
+		drawgc = gdk_gc_new(draw->window);
 					// Foreground = yellow.
 		gdk_rgb_gc_set_foreground(drawgc, (255<<16) + (255<<8));
 		iwin = new Image_buffer8(
-			widget->allocation.width, widget->allocation.height);
+			draw->allocation.width, draw->allocation.height);
 		}
-	else if (iwin->get_width() != widget->allocation.width ||
-		 iwin->get_height() != widget->allocation.height)
+	else if (iwin->get_width() != draw->allocation.width ||
+		 iwin->get_height() != draw->allocation.height)
 		{
 		delete iwin;
 		iwin = new Image_buffer8(
-			widget->allocation.width, widget->allocation.height);
+			draw->allocation.width, draw->allocation.height);
 		}
 	}
 
