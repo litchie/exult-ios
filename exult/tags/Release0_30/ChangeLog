@@ -1,0 +1,223 @@
+2000-06-01  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Spellbook mostly done.  (Spells need intrinsic 0x41 to work.)
+	* Spell activation tests/uses reagants.
+	* Handle intrinsic 0x6a (flash mouse shape).
+
+2000-05-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Party members use pathfinding.
+	* exult.cc: Alt keys work now (by catching their events).
+	* 't' key does 'target' as in original game.
+	* Scrolling/moving with gumps fixed.
+
+2000-05-28  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
+	* Makefile.be: modified windows makefile to serve as Be makefile
+	* gamedat.cc: only include dir.h on windows
+	* Midi.cc: only try forked,KMIDI,timidity in XWin
+	* Configuration.cc: put .exult.cfg in user's homedir
+	* Makefile.win32: added delobjs.cc, effects.cc
+	* be_midi.[cc,h], Midi.cc: added (untestable) Be MIDI support.
+
+2000-05-26  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
+	* Configuration.cc: added a temp. BeOS config file section
+	* Configuration.cc: is_file set to true, even if file not found
+
+2000-05-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Fade in/fade out working.
+	* Sprite effects done.
+	* Sleeping (in bed) working.
+
+2000-05-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Orb of Moons, Moongates working (but not perfect visually)
+	* Moongates appear animated.
+
+2000-05-25  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
+	* objs.cc: treat bones as containers
+	* usecode.cc: make remove_answer accept arrays too
+	* usecode.cc: added a _lot_ of intrinsic descriptions from ucdump.c
+	* usecode.dis.bz2: a new usecode dump with all known intrinsics
+
+2000-05-25  Coder Infidel  <coder_infidel@hotmail.com>
+
+	* Display a better string when identifying objects that have a
+	  quantity
+	* objs.h, actors.h: Made many member functions const
+	* gamewin.h: Made a few arguments const
+	* actors.cc: Fixed slight inventory problem, removed unused variable
+	* objs.cc, gumps.cc: Add support for Fellowship box container gump
+
+2000-05-24  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Finally got the 'sit' schedule to work.
+	* Fixed pathfinding problem with getting stuck behind open doors.
+
+2000-05-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* usecode.cc: implemented intrinsic 0x09 (clear_answers)
+
+2000-05-24  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* usecode.cc: call endgame
+	* exult.cc: press F10 to see the endgame sequence
+
+2000-05-23  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Support for lighting (torches, lamps, etc)
+
+2000-05-23  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Makefile.win32: added
+	* Makefile.am: added Makefile.win32 to dist_targets
+
+2000-05-22  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* */Makefile.am, configure.in, etc...: Rehauled build mechanism,
+	no need to regenerate dependencies by hand, gcc dynamically does
+	that, Makefile.am files are now much nicer and easier to maintain
+	and this is the proper GNU way. Maybe I've broken Win32 builds...
+	Removed old files as they can be found in CVS's attic.
+	Made 'make dist' work (try it)
+
+2000-05-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc: added default case to key switch (kill warning)
+	* objs.cc, imagewin.cc, actors.cc, gamewin.cc, gumps.cc,
+	  actorio.cc, usecode.cc: re-ordered initializers to kill warnings
+	* configure.in: added -Wno-long-long to Windows build, since
+	  SDL and Windows header files contain long-long's
+
+2000-05-21  Willem Jan Palenstijn <palenstijn@wanandoo.nl>
+	* exult.cc, mouse.h: Wait_for_arrival() didn't restore on-screen 
+	state of the mouse
+	* configure.in: --enable-warnings turns on ALL warnings, in addition
+	to everything --enable-debug does
+	* usecode.cc: added a guess to intrinsic 0x4F
+	
+2000-05-20  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* lots_of_files: changed most #ifndef WIN32 to #ifdef XWIN since 
+	that's what they were supposed to mean
+	* gamedat.cc, Configuration.cc: some preliminary BEOS things
+
+2000-05-19  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc, Audio.h, win_MCI.h, win_MCI.cc: Windows MIDI repeating support
+
+2000-05-19  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* gamewin.cc: Blank screen after intro...
+
+2000-05-18  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Improved rendering when climbing stairs.
+	* Realized Usecode array-opcode 0x4e means 'increment frame'.
+	* Improved object placement within backpacks.
+
+2000-05-18  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc, win_MCI.cc: preliminary work on Windows Midi repeats
+
+2000-05-18  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Save/restore working as of last night.
+	* Have Avatar 'run' when shift key is down.
+
+2000-05-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* usecode.cc: defined __STRING if not yet defined (e.g. in mingw32)
+	* configure.in: added flic library to windows section
+	
+2000-05-16  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* gamewin.cc: Load correct palettes for intro. Implement palette fade 
+	out/in
+
+2000-05-13  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc: F4 toggles fullscreen (Windows & Linux)
+
+2000-05-11  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Midi.cc: fix to windows playing MIDI only once
+	* fnames.h: included MIDITMPFILE
+
+2000-05-11  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* utils.cc: Implemented Switch_slash which takes care of using
+	backslashes instead of slashes in Windows filenames...
+	* fnames.h: Removed the duplication of filenames with backslashes
+
+2000-05-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* gamewin.cc: dirty fix to visual artifacting (see mailing list)
+	* objs.cc: reverted anim. code to earlier state
+	* imagewin.cc, exult.cc: pressing Enter will toggle fullscreen
+	I don't get why SDL won't detect ALT though...
+
+2000-05-08  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* flic/*: Implement flic-playing library
+	* gamewin.cc: stuff for flics.
+
+2000-05-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* usecode.cc: avoided Internal Compiler Error for gcc 2.95.2
+	* README.win32: minor change for release 0.26
+
+2000-05-08  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Pathfinding added to run_usecode().  Can be tested by
+	double-clicking on a bucket.  Works, but needs refinement.
+
+2000-05-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* objs.cc: attempt at synching animations 
+
+2000-05-03  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* gamewin.cc: Show game title in splash screen
+
+	* exult.cc: you can now press 'i' to show the npc's inventories just
+	like the real U7. Needs improvement.
+	New shape browser: PgUp/PgDn selects file, sS selects shape, fF 
+	selects frame. Also 'q' quits and ESC only closes gumps.
+
+2000-05-02  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Use data from 'ready.dat' to place objects on Actor.
+
+2000-05-02  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* gamewin.cc (Game_window): Free string used to determine game
+	identity.
+
+2000-04-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Use direction to get correct frames for Usecode animations.
+	* The 'bucket bug' is partly fixed.
+
+2000-04-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Re-enabled sound in Windows (Where did it go??)
+	* added some more #ifndef WIN32 to the pragma's
+	* added exult.exe to .cvsignore
+	* added MIDI support for Windows
+
+2000-04-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Use correct frames for East-West walking animation!!
+	* Show signs, books, and scrolls.
+	* Create monsters, and have them loiter.
+
+2000-04-28  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* Testing of CVS commit mails...
+	* gamedat.cc, gamewin.h: implement get_game_identity
+	* gamewin.cc, exult.cc: generate initial gamedat before opening window.
+	Also if static and gamedat identities don't match, recreate gamedat.
+	* autogen.sh: clear old generated files first
+	* configure.in: if I don't have kmid build without it anyway, don't
+	tell me to run configure with --disable-kmid
+
+2000-04-26  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* exult.cc: Implement 'h' key to show a simple help page
+	* .cvsignore: added cvsignore files everywhere
+	* ChangeLog: started changelog using standard GNU notation. Emacs 
+	has a major mode which enables easy editing of this beast.
+	* autogen.sh: script which generates automake/autoconf stuff.
+	* configure.in: should not use acinclude.m4 as AC_INIT. Use exult.cc 
+	instead.
+	
+	
+
