@@ -32,6 +32,7 @@ class Actor;
 class Game_object;
 class Tile_coord;
 class PathFinder;
+class Pathfinder_client;
 
 /*
  *	This class controls the current actions of an actor:
@@ -93,6 +94,8 @@ class Path_walking_actor_action : public Actor_action
 public:
 	Path_walking_actor_action(PathFinder *p, int maxblk = 3);
 	virtual ~Path_walking_actor_action();
+	static Path_walking_actor_action *create_path(Tile_coord src,
+			Tile_coord dest, Pathfinder_client& cost);
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
 	int open_door(Actor *actor, Game_object *door);
