@@ -1,3 +1,8 @@
+2003-03-18  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/egg.cc (Egg_object): Mark egg as 'hatched' even if it fails
+	the probability test.  (This is experimental.)
+
 2003-03-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* wuc.c: 256 bytes just isn't large enough for a static string buffer
 
