@@ -30,7 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "lists.h"
 
 class Actor;
-class Chunk_object_list;
 
 /*
  *	Combat schedule:
@@ -56,10 +55,6 @@ class Combat_schedule : public Schedule
 	int ammo_shape;			// If required, else 0.
 	unsigned char yelled;		// Yell when first opponent targeted.
 	int failures;			// # failures to find opponent.
-#if 0	/* ++++Going away. */
-					// Find monsters, opponents.
-	void find_monsters(Chunk_object_list *chunk);
-#endif
 	void find_opponents();
 	Actor *find_foe(int mode);	// Find a new opponent.
 	Actor *find_foe();

@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include "gamewin.h"
 #include "egg.h"
+#include "animate.h"
 #include "items.h"
 #include "utils.h"
 #include "fnames.h"
