@@ -87,7 +87,7 @@ Game_window::Game_window
 	gettimeofday(&timer, 0);	// Get time of day.
 	srand(timer.tv_usec);		// Use it to seed rand. generator.
 	timer.tv_sec = 0;		// Force clock to start.
-	tqueue->add(timer, &clock, 0);
+	tqueue->add(timer, &clock, (long) this);
 					// Clear object lists, flags.
 	memset((char *) objects, 0, sizeof(objects));
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
@@ -1472,6 +1472,21 @@ void Game_window::add_nearby_npcs
 					npc->set_nearby();
 					npc_prox->add(curtime, npc);
 					}
+	}
+
+/*
+ *	Tell all npc's to update their schedules at a new 3-hour period.
+ */
+
+void Game_window::schedule_npcs
+	(
+	int hour3			// 0=midnight, 1=3am, 2=6am, etc.
+	)
+	{
+					// Go through npc's.
+	for (int i = 1; i < num_npcs; i++)
+		((Npc_actor *) npcs[i])->update_schedule(this, hour3);
+	paint();			// Repaint all.
 	}
 
 /*

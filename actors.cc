@@ -189,16 +189,19 @@ void Main_actor::handle_event
 	}
 
 /*
- *	Create a schedule.
+ *	Set a schedule.
  */
 
-Schedule::Schedule
+void Schedule::set
 	(
 	unsigned char *entry		// 4 bytes read from schedule.dat.
-	) : x(entry[1]), y(entry[2]), superchunk(entry[3])
+	)
 	{
 	time = entry[0]&7;
 	type = entry[0]>>3;
+	x = entry[1];
+	y = entry[2];
+	superchunk = entry[3];
 	}
 
 /*
@@ -212,7 +215,8 @@ Npc_actor::Npc_actor
 	int fshape, 
 	int uc
 	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
-		schedule((int) Schedule::loiter)
+		schedule((int) Schedule::loiter), num_schedules(0), 
+		schedules(0)
 	{
 	}
 
@@ -226,6 +230,35 @@ Npc_actor::~Npc_actor
 	{
 	}
 
+/*
+ *	Update schedule at a 3-hour time change.
+ */
+
+void Npc_actor::update_schedule
+	(
+	Game_window *gwin,
+	int hour3			// 0=midnight, 1=3am, etc.
+	)
+	{
+	for (int i = 0; i < num_schedules; i++)
+		if (schedules[i].get_time() == hour3)
+			{		// Found entry.
+			schedule = schedules[i].get_type();
+					// Store old chunk list.
+			Chunk_object_list *olist = gwin->get_objects(
+							get_cx(), get_cy());
+			int new_cx, new_cy, tx, ty;
+			schedules[i].get_pos(new_cx, new_cy, tx, ty);
+cout << "Npc " << get_name() << " has new schedule " << schedule << '\n';
+			Chunk_object_list *nlist = 
+					gwin->get_objects(new_cx, new_cy);
+					// Move it.
+			move(new_cx, new_cy, nlist, tx, ty, -1);
+			if (nlist != olist)
+				switched_chunks(olist, nlist);
+			return;
+			}
+	}
 
 /*
  *	Animation.
