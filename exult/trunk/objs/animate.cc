@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 #include "actors.h"			/* Only need this for Object_sfx. */
 #include "dir.h"
+#include "Flex.h"
 #include <map>
 
 using std::map;
@@ -153,6 +154,20 @@ int Object_sfx::get_shape_sfx
 					// Moongates:
 		table[776] = 77;
 		table[777] = 77;
+
+		// Grandfather clock tick tock, only in the SQSFX files,
+		if (Audio::get_ptr()->get_sfx_file() != 0)
+			{
+			std::string s = 
+				Audio::get_ptr()->get_sfx_file()->filename;
+			to_uppercase(s);
+			if(s.find("SQSFX") != std::string::npos)
+				{
+				table[252] = 17;	// Grandfather clock 
+				table[695] = 17;	// Grandfather clock 
+	 			}
+			}		
+
 		}
 	std::map<int, int>::iterator it = table.find(shapenum);
 	if (it == table.end())
