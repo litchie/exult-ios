@@ -1,3 +1,30 @@
+2003-11-09  Ryan Nunn  <colourles@users.sourceforge.net>
+	* exultmenu.cc, gamewin.cc, audio/Midi.*, audio/xmidi.*,
+	  gumps/AudioOptions_gump.* : 
+	  
+	  Removing the, IMO horrible, hack to the XMIDI convert types to 
+	  support OGG and FMSynth Midi drivers. 
+	  
+	  Added a separate setting that can be used to select which driver you 
+	  want. Config key is "config/audio/midi/driver". Current settings are 
+	  "normal", "digital" and "fmsynth" (if compiled in). 
+	  
+	  Gumps and menus modified to reflect the changes. It is no longer 
+	  possible to change midi driver in Exult menu, you must use the Audio 
+	  Options Gump.
+	  
+	  Changing midi driver is now immediate. Restarting Exult is no longer 
+	  required if you switch to or from the Ogg or FMSynth drivers. 
+	  
+	  These changes are just the beginning... after 1.1 has gone final, I 
+	  will integrate the New Pentagram midi system into Exult, which will 
+	  bring all sorts of wonders with i... ok, maybe not, it's just better. 
+	  :-)
+	
+	* vec.h, files/U7file.*, msvcstuff/msvc_kludges.h : Minor changes so 
+	  Exult will compile in MSVC.Net. No projects yet, probably will add 
+	  them after 1.1.
+
 2003-11-02    <jeff@mini.nerble.net>
 
 	* combat.cc,actors.cc,npcnear.cc:  No longer automatically put

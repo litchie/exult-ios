@@ -25,6 +25,23 @@
 #endif
 #include "xmidi.h"
 
+// The 'types' of midi drivers
+enum MidiDriverType {
+	MIDI_DRIVER_NORMAL	= 0,	// We are outputting using Normal Midi Drivers
+	MIDI_DRIVER_OGG,			// We are outputting using Oggs
+
+#ifdef USE_FMOPL_MIDI
+	MIDI_DRIVER_FMSYNTH,		// We are outputting using FM Synth Driver
+#endif
+
+#ifdef USE_MT32EMU_MIDI
+	MIDI_DRIVER_MT32EMU,		// We are outputting using MT32EMU Driver (Ha, you'll never see this!)
+#endif
+
+	NUM_MIDI_DRIVER_TYPES		// Count of midi drivers
+};
+
+
 #include "SDL_mixer.h"
 
 #include <string>
@@ -53,11 +70,12 @@ public:
 //Pseudo device, used purely to create the OGG_MIDI class with something
 class	OGG_MIDI : virtual public MidiAbstract
 {
+	static void		music_complete_callback(void);
 public:
+	OGG_MIDI();
+	virtual	~OGG_MIDI();
 	virtual void	start_track(XMIDIEventList *, bool repeat);
-	virtual void	start_sfx(XMIDIEventList *);
 	virtual void	stop_track(void);
-	virtual void	stop_sfx(void);
 	virtual	bool	is_playing(void);
 	virtual const	char *copyright(void);
 };
@@ -84,22 +102,23 @@ public:
 	
 	bool	add_midi_bank(const char *s);
 	void	set_music_conversion(int conv);
-	int	get_music_conversion() { return music_conversion; }
+	int		get_music_conversion() { return music_conversion; }
 	void	set_effects_conversion(int conv);
-	int	get_effects_conversion() { return effects_conversion; }
-	
+	int		get_effects_conversion() { return effects_conversion; }
+
+	int		get_output_driver_type() { return output_driver_type; }
+	void	set_output_driver_type(int);
+
 	inline bool	is_track_playing(int num) { 
 		return midi_device && current_track==num && midi_device->is_playing();
 	}
 	inline int	get_current_track() { return (midi_device!=0)&&midi_device->is_playing()?current_track:-1; }
 	inline int	is_repeating() { return repeating; }
-	int		music_conversion;		//was in private SQ
 
 	bool is_fm_synth() { return midi_device?midi_device->is_fm_synth():false; }
 
 	
 private:
-	static void music_complete_callback(void);
 
 	MyMidiPlayer(const MyMidiPlayer &m) ; // Cannot call
 	MyMidiPlayer &operator=(const MyMidiPlayer &); // Cannot call
@@ -112,7 +131,9 @@ private:
 
 	bool	init_device(void);
 
+	int		music_conversion;
 	int		effects_conversion;
+	int		output_driver_type;
 };
 
 #endif

@@ -16,6 +16,9 @@
  *
  */
 
+// Nope, not any more we don't
+#if 1
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -1758,3 +1761,5 @@ void XMIDIEventList::DecerementCounter()
 		Free(this);
 	}
 }
+
+#endif

@@ -56,7 +56,7 @@ protected:
 	};
 	std::map<const std::string,U7file *,ltstr> file_list;
 #endif
-	std::map<const std::string,U7file *> file_list;
+	std::map<std::string,U7file *> file_list;
 
 
 	static	U7FileManager	*self;
