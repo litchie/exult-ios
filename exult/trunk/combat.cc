@@ -32,6 +32,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actions.h"
 #include "items.h"
 #include "effects.h"
+#include "Audio.h"
+
+unsigned long Combat_schedule::battle_time = 0;
 
 /*
  *	Find nearby opponents in the 9 surrounding chunks.
@@ -137,7 +140,18 @@ Actor *Combat_schedule::find_foe
 			break;
 		}
 	if (new_opponent)
+		{
 		opponents.remove(new_opponent);
+		unsigned long curtime = SDL_GetTicks();
+					// A minute since last start?
+		if (!started_battle && curtime - battle_time >= 60000)
+			{
+			audio->start_music(rand()%2 ? ATTACKED1 : ATTACKED2,
+									0);
+			battle_time = curtime;
+			}
+		started_battle = 1;
+		}
 	return new_opponent;
 	}
 
@@ -174,6 +188,13 @@ void Combat_schedule::approach_foe
 	if (mode == Actor::flee || 
 	    (mode != Actor::beserk && npc->get_property(Actor::health) < 3))
 		{
+		if (!fleed)
+			{
+			fleed = 1;
+			if (npc == 
+			    Game_window::get_game_window()->get_main_actor())
+				audio->start_music(RUN_AWAY, 0);
+			}
 		int rx = rand();	// Get random position away from here.
 		int ry = rand();
 		int dirx = 2*(rx%2) - 1;// Get 1 or -1.

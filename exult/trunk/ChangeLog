@@ -1,3 +1,7 @@
+2000-07-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* combat.cc: Monsters attack automatically; midi's played.
+
 2000-07-29  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Added 'prev' field to Game_object, and added iterators.
