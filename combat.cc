@@ -33,6 +33,7 @@
 #include "Audio.h"
 #include "ready.h"
 #include "game.h"
+#include "monstinf.h"
 
 using std::cout;
 using std::endl;
@@ -60,7 +61,7 @@ void Combat_schedule::start_battle
 					CSAttacked1 : CSAttacked2, 0);
 		battle_time = curtime;
 		}
-	started_battle = 1;
+	started_battle = true;
 	}
 
 /*
@@ -326,15 +327,18 @@ void Combat_schedule::approach_foe
 	if (!yelled && gwin->add_dirty(npc))
 		{
 		yelled++;
+		if (can_yell && rand()%2)// Half the time.
+			{
 					// Goblin?
-		if (Game::get_game_type() == SERPENT_ISLE &&
-			 (npc->get_shapenum() == 0x1de ||
-			  npc->get_shapenum() == 0x2b3 ||
-			  npc->get_shapenum() == 0x2d5 ||
-			  npc->get_shapenum() == 0x2e8))
-			npc->say(0x4c9, 0x4d1);
-	    	else if (!npc->is_monster())
-			npc->say(first_to_battle, last_to_battle);
+			if (Game::get_game_type() == SERPENT_ISLE &&
+				 (npc->get_shapenum() == 0x1de ||
+				  npc->get_shapenum() == 0x2b3 ||
+				  npc->get_shapenum() == 0x2d5 ||
+				  npc->get_shapenum() == 0x2e8))
+				npc->say(0x4c9, 0x4d1);
+	    		else
+				npc->say(first_to_battle, last_to_battle);
+			}
 		}
 					// Walk there, but don't retry if
 					//   blocked.
@@ -475,9 +479,6 @@ void Combat_schedule::run_away
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-// +++I think this should only be played if you quit combat+++++
-//	if (npc->get_party_id() >= 0 && !fleed && gwin->in_combat())
-//		Audio::get_ptr()->start_music_combat(CSRun_Away, 0);
 	fleed++;
 					// Might be nice to run from opp...
 	int rx = rand();		// Get random position away from here.
@@ -488,10 +489,10 @@ void Combat_schedule::run_away
 	pos.tx += dirx*(8 + rx%8);
 	pos.ty += diry*(8 + ry%8);
 	npc->walk_to_tile(pos, 100, 0);
-	if (!yelled && gwin->add_dirty(npc))
+	if (fleed == 1 && rand()%3 && gwin->add_dirty(npc))
 		{
 		yelled++;
-		if (!npc->is_monster())
+		if (can_yell)
 			npc->say(first_flee, last_flee);
 		}
 	}
@@ -608,6 +609,30 @@ static bool Boomerangs
 	else
 		return false;
 	}
+
+/*
+ *	Create.
+ */
+
+Combat_schedule::Combat_schedule
+	(
+	Actor *n, 
+	Schedule_types 
+	prev_sched
+	) : Schedule(n), state(initial), prev_schedule(prev_sched),
+		weapon_shape(0),
+		ammo_shape(0), projectile_shape(0), 
+		strike_range(0), projectile_range(0), max_range(0),
+		is_thrown(false), yelled(0), 
+		started_battle(false), fleed(0), failures(0)
+	{
+	set_weapon_info();
+					// Cache some data.
+	Game_window *gwin = Game_window::get_game_window();
+	Monster_info *minf = gwin->get_info(npc).get_monster_info();
+	can_yell = !minf || !minf->cant_yell();
+	}
+
 
 /*
  *	Previous action is finished.
@@ -805,7 +830,7 @@ Duel_schedule::Duel_schedule
 	) : Combat_schedule(n, duel), start(n->get_abs_tile_coord()),
 		attacks(0)
 	{
-	started_battle = 1;		// Avoid playing music.
+	started_battle = true;		// Avoid playing music.
 	}
 
 /*
