@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objserial.h"
 #include "shapegroup.h"
 #include "Flex.h"
+#include "u7drag.h"
 
 const int border = 2;			// Border at bottom, sides of each
 					//   combo in browser.
@@ -877,6 +878,133 @@ void Combo_chooser::scroll
 	}
 
 /*
+ *	Someone wants the dragged combo.
+ */
+
+void Combo_chooser::drag_data_get
+	(
+	GtkWidget *widget,		// The view window.
+	GdkDragContext *context,
+	GtkSelectionData *seldata,	// Fill this in.
+	guint info,
+	guint time,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	cout << "In DRAG_DATA_GET" << endl;
+	Combo_chooser *chooser = (Combo_chooser *) data;
+	if (chooser->selected < 0 || info != U7_TARGET_COMBOID)
+		return;			// Not sure about this.
+					// Get combo #.
+	int num = chooser->info[chooser->selected].num;
+	Combo *combo = chooser->combos[num];
+					// Get enough memory.
+	int cnt = combo->members.size();
+	guchar *buf = new unsigned char[4 + cnt*5*4];
+	guchar *ptr = buf;
+	U7_combo_data *ents = new U7_combo_data[cnt];
+					// Get 'hot-spot' member.
+	Combo_member *hot = combo->members[combo->hot_index];
+	for (int i = 0; i < cnt; i++)
+		{
+		Combo_member *m = combo->members[i];
+		ents[i].tx = m->tx - hot->tx;
+		ents[i].ty = m->ty - hot->ty;
+		ents[i].tz = m->tz - hot->tz;
+		ents[i].shape = m->shapenum;
+		ents[i].frame = m->framenum;
+		}
+	int len = Store_u7_comboid(buf, cnt, ents);
+#ifdef WIN32
+	windragdata *wdata = (windragdata *)seldata;
+	wdata->data = buf;
+	wdata->id = info;
+#else
+					// Make us owner of xdndselection.
+	gtk_selection_owner_set(widget, gdk_atom_intern("XdndSelection", 0),
+								time);
+					// Set data.
+	gtk_selection_data_set(seldata,
+			gdk_atom_intern(U7_TARGET_COMBOID_NAME, 0),
+                                				8, buf, len);
+#endif
+	delete buf;
+	delete [] ents;
+	}
+
+/*
+ *	Another app. has claimed the selection.
+ */
+
+gint Combo_chooser::selection_clear
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventSelection *event,
+	gpointer data			// ->Combo_chooser.
+	)
+	{
+//	Combo_chooser *chooser = (Combo_chooser *) data;
+	cout << "SELECTION_CLEAR" << endl;
+	return TRUE;
+	}
+
+/*
+ *	Beginning of a drag.
+ */
+
+gint Combo_chooser::drag_begin
+	(
+	GtkWidget *widget,		// The view window.
+	GdkDragContext *context,
+	gpointer data			// ->Combo_chooser.
+	)
+	{
+	cout << "In DRAG_BEGIN" << endl;
+	Combo_chooser *chooser = (Combo_chooser *) data;
+	if (chooser->selected < 0)
+		return FALSE;		// ++++Display a halt bitmap.
+					// Get ->combo.
+	int num = chooser->info[chooser->selected].num;
+	Combo *combo = chooser->combos[num];
+#if 0	/* ++++++++++ */
+	int w = shape->get_width(), h = shape->get_height(),
+		xright = shape->get_xright(), ybelow = shape->get_ybelow();
+	Image_buffer8 tbuf(w, h);	// Create buffer to render to.
+	tbuf.fill8(0xff);		// Fill with 'transparent' pixel.
+	unsigned char *tbits = tbuf.get_bits();
+	shape->paint(&tbuf, w - 1 - xright, h - 1 - ybelow);
+					// Put shape on a pixmap.
+	GdkPixmap *pixmap = gdk_pixmap_new(widget->window, w, h, -1);
+	gdk_draw_indexed_image(pixmap, chooser->drawgc, 0, 0, w, h,
+			GDK_RGB_DITHER_NORMAL, tbits,
+			tbuf.get_line_width(), chooser->palette);
+	int mask_stride = (w + 7)/8;	// Round up to nearest byte.
+	char *mdata = new char[mask_stride*h];
+	for (int y = 0; y < h; y++)	// Do each row.
+					// Do each byte.
+		for (int b = 0; b < mask_stride; b++)
+			{
+			char bits = 0;
+			unsigned char *vals = tbits + y*w + b*8;
+			for (int i = 0; i < 8; i++)
+				if (vals[i] != 0xff)
+					bits |= (1<<i);
+			mdata[y*mask_stride + b] = bits;
+			}
+	GdkBitmap *mask = gdk_bitmap_create_from_data(widget->window,
+							mdata, w, h);
+	delete mdata;
+					// This will be the shape dragged.
+	gtk_drag_set_icon_pixmap(context,
+			gdk_window_get_colormap(widget->window), pixmap, mask,
+					w - 2 - xright, h - 2 - ybelow);
+	gdk_pixmap_unref(pixmap);
+	gdk_bitmap_unref(mask);
+#endif
+	return TRUE;
+	}
+
+/*
  *	Handle a scrollbar event.
  */
 
@@ -1106,7 +1234,6 @@ Combo_chooser::Combo_chooser
 					// Set mouse click handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "button_press_event",
 				GTK_SIGNAL_FUNC(mouse_press), this);
-#if 0	/* +++++Later */
 					// Mouse motion.
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
 				GTK_SIGNAL_FUNC(drag_begin), this);
@@ -1121,7 +1248,6 @@ Combo_chooser::Combo_chooser
 				GTK_SIGNAL_FUNC(drag_data_get), this);
 	gtk_signal_connect (GTK_OBJECT(draw), "selection_clear_event",
 				GTK_SIGNAL_FUNC(selection_clear), this);
-#endif
 	gtk_container_add (GTK_CONTAINER (frame), draw);
 	gtk_drawing_area_size(GTK_DRAWING_AREA(draw), w, h);
 	gtk_widget_show(draw);
@@ -1328,7 +1454,6 @@ gint Combo_chooser::mouse_press
 					(int) event->x, (int) event->y))
 			{		// Found the box?
 					// Indicate we can drag.
-#if 0	/* ++++++Later */
 #ifdef WIN32
 // Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
 // usually stucks outside the program window. I think it's because
@@ -1344,7 +1469,6 @@ gint Combo_chooser::mouse_press
 			gtk_drag_source_set (chooser->draw, 
 				GDK_BUTTON1_MASK, tents, 1,
 			   (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE));
-#endif
 #endif
 			chooser->selected = i;
 			chooser->render();
