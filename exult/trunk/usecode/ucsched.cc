@@ -129,7 +129,9 @@ void Usecode_script::start
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
+//++++ Messes up Moonshade Trial.
+//	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
+	gwin->get_tqueue()->add(d + SDL_GetTicks(), this,
 					(long) gwin->get_usecode());
 	}
 
