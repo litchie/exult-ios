@@ -97,7 +97,6 @@ public:
 
 	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,bool);
-	void	playwave(const char *,bool);
 	bool	playing(void);
 	void	start_music(int num,bool continuous,int bank=0);
 	void	start_music(const char *fname,int num,bool continuous);
