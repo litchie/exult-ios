@@ -81,7 +81,7 @@ protected:
 	Schedule *schedule;		// Current schedule.
 	unsigned char dormant;		// I.e., off-screen.
 	short alignment;		// 'Feelings' towards Ava. See below.
-	Game_object *spots[12];		// Where things can go.  See 'Spots'
+	Game_object *spots[14];		// Where things can go.  See 'Spots'
 					//   below for description.
 	unsigned char two_handed;	// Carrying a two-handed item.
 	bool two_fingered;		// Carrying gauntlets (both fingers)
@@ -136,6 +136,7 @@ public:
 		torso = 9,
 		neck = 10,
 		ammo = 11,
+		back2 = 12,
 		lrhand = 100,		// Special:  uses lhand & rhand.
 		lrfinger = 101		// Special:  uses lfinger & rfinger
 		};

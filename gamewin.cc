@@ -2461,11 +2461,8 @@ void Game_window::show_gump
 	int paperdoll = (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP);
 
 	// overide for paperdolls
-	if (Game::get_game_type() == SERPENT_ISLE && paperdoll)
-	{
-		shapenum = 123;
+	if (Game::get_game_type() == SERPENT_ISLE && shapenum == 123)
 		paperdoll=2;
-	}
 	else if (paperdoll && obj == main_actor)
 		shapenum += main_actor->get_type_flag(Actor::tf_sex);
 		
