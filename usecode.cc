@@ -2437,7 +2437,19 @@ USECODE_INTRINSIC(get_npc_flag)
 {
 	// Get npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
-	Usecode_value u(obj ? obj->get_flag(parms[1].get_int_value())	: 0);
+	if (!obj)
+		return Usecode_value(0);
+	int fnum = parms[1].get_int_value();
+					// Special cases:
+	if (fnum == (int) Actor::on_moving_barge ||
+	    fnum == (int) Actor::in_motion)
+		{			// Test for moving barge.
+		Barge_object *barge;
+		if (!gwin->get_moving_barge() || !(barge = Get_barge(obj)))
+			return Usecode_value(0);
+		return Usecode_value(barge == gwin->get_moving_barge());
+		}
+	Usecode_value u(obj->get_flag(fnum));
 	return(u);
 }
 
@@ -2453,6 +2465,13 @@ USECODE_INTRINSIC(set_npc_flag)
 			{	// Show change in status.
 			gwin->paint();
 			gwin->show();
+			}
+		else if (flag == (int) Actor::on_moving_barge ||
+					flag == (int) Actor::in_motion)
+			{	// Set barge in motion.
+			Barge_object *barge = Get_barge(obj);
+			if (barge)
+				gwin->set_moving_barge(barge);
 			}
 		}
 	return(no_ret);
@@ -2470,6 +2489,13 @@ USECODE_INTRINSIC(clear_npc_flag)
 			{	// Show change in status.
 			gwin->paint();
 			gwin->show();
+			}
+		else if (flag == (int) Actor::on_moving_barge ||
+					flag == (int) Actor::in_motion)
+			{	// Stop barge object is on or part of.
+			Barge_object *barge = Get_barge(obj);
+			if (barge && barge == gwin->get_moving_barge())
+				gwin->set_moving_barge(0);
 			}
 		}
 	return(no_ret);
