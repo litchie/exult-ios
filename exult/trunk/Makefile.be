@@ -94,7 +94,7 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/flx.in
 
 
-$(EXEC) : Makefile data/exult.flx $(OBJS) beos/exult.rsrc
+$(EXEC) : Makefile data/exult.flx data/exult_bg.flx $(OBJS) beos/exult.rsrc
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 	xres -o $(EXEC) beos/exult.rsrc
 
