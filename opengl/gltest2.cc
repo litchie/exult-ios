@@ -165,10 +165,11 @@ void Draw_sprite
 	glBegin(GL_QUADS);
 		{
 //		glColor4f(1, 1, 0, 1);
-		glTexCoord2f(0, 0);		glVertex3f(0, 0, 0);
-		glTexCoord2f(0, 1);		glVertex3f(0, h, 0);
-		glTexCoord2f(1, 1);		glVertex3f(w, h, 0);
-		glTexCoord2f(1, 0);		glVertex3f(w, 0, 0);
+//++++Testing:  Can we draw a subset of a texture?  Yes.
+		glTexCoord2f(0.5, .5);		glVertex3f(0, 0, 0);
+		glTexCoord2f(0.5, 1);		glVertex3f(0, h, 0);
+		glTexCoord2f(.75, 1);		glVertex3f(w, h, 0);
+		glTexCoord2f(.75, .5);		glVertex3f(w, 0, 0);
 		}
 	glEnd();
 	glPopMatrix();
@@ -278,7 +279,7 @@ void Render
 #endif
 	glLoadIdentity();
 	Draw_sprite(-8, 0, 0, 4, 4, texture);	// A 'sprite'.
-	Draw_sprite(-10, 0, 0, 4, 4, texture);	// A 'sprite'.
+//	Draw_sprite(-10, 0, 0, 4, 4, texture);	// A 'sprite'.
 	SDL_GL_SwapBuffers();		// Blit.
 	}
 
