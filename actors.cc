@@ -530,8 +530,8 @@ void Actor::set_schedule_type
 	)
 	{
 	stop();				// Stop moving.
-	if (schedule)
-		schedule->ending();	// Finish up old if necessary.
+	if (schedule)			// Finish up old if necessary.
+		schedule->ending(new_schedule_type);
 	set_action(0);			// Clear out old action.
 					// Save old for a moment.
 	Schedule::Schedule_types old_schedule = (Schedule::Schedule_types)
