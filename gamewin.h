@@ -219,6 +219,7 @@ public:
 	void show(int)
 		{
 		win->show();
+		painted = 0;
 		}
 	void set_chunk_offsets(int cx, int cy)
 		{
@@ -279,6 +280,9 @@ public:
 					// Get screen area of a gump.
 					//   for painting it.
 	Rectangle get_gump_rect(Gump_object *gump);
+					// Get sprites shape.
+	Shape_frame *get_sprite_shape(int shapenum, int framenum)
+		{ return sprites.get_shape(shapenum, framenum); }
 					// Get screen loc. of object.
 	void get_shape_location(Game_object *obj, int& x, int& y)
 		{

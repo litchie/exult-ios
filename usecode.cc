@@ -1727,7 +1727,6 @@ USECODE_INTRINSIC(set_schedule_type)
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
 	Game_object *obj = get_item(parms[0]);
-//++++++++++++++++If av, set for all party members?
 	if (obj)
 		obj->set_schedule_type(parms[1].get_int_value());
 	return(no_ret);
@@ -2184,7 +2183,15 @@ USECODE_INTRINSIC(sit_down)
 USECODE_INTRINSIC(display_map)
 {
 	// Display map.
-	//++++++++++++
+	Shape_frame *map = gwin->get_sprite_shape(22, 0);
+					// Get coords. for centered view.
+	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
+	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
+	gwin->paint_shape(x, y, map, 1);
+	gwin->show(1);
+	int xx, yy;
+	Get_click(xx, yy, Mouse::hand);
+	gwin->paint();
 	return(no_ret);
 }
 
