@@ -559,7 +559,7 @@ void Talk_schedule::now_what
 			return;
 			}
 					// Aim for within 5 tiles.
-		Fast_pathfinder_client cost(5);
+		Actor_pathfinder_dist_client cost(5);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 			npc->get_abs_tile_coord(),
 			gwin->get_main_actor()->get_abs_tile_coord(), cost);
