@@ -619,19 +619,23 @@ string Game_object::get_name
 	int quantity;
 	string display_name;
 	int shnum = get_shapenum();
+	int frnum = get_framenum();
 	switch (shnum)			// Some special cases!
 		{
 	case 0x34a:			// Reagants.
-		name = item_names[0x500 + get_framenum()];
+		name = item_names[0x500 + frnum];
 		break;
 	case 0x3bb:			// Medallions?
-		name = item_names[0x508 + get_framenum()];
+		if (frnum >= 3)
+			name = item_names[shnum];
+		else
+			name = item_names[0x508 + frnum];
 		break;
 	case 0x179:			// Food items.
-		name = item_names[0x50b + get_framenum()];
+		name = item_names[0x50b + frnum];
 		break;
 	case 0x2a3:			// Desk item.
-		name = item_names[0x52d + get_framenum()];
+		name = item_names[0x52d + frnum];
 		break;
 	default:
 		name = item_names[shnum];

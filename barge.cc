@@ -177,6 +177,19 @@ inline Rectangle Barge_object::get_tile_footprint
 	}
 
 /*
+ *	Set center.
+ */
+
+inline void Barge_object::set_center
+	(
+	)
+	{
+	center = get_abs_tile_coord();
+	center.tx -= xtiles/2;
+	center.ty -= ytiles/2;
+	}
+
+/*
  *	See if okay to rotate.
  */
 
@@ -233,6 +246,7 @@ Barge_object::~Barge_object
 
 /*
  *	Gather up all objects that appear to be on this barge.
+ *	Also inits. 'center'.
  */
 
 void Barge_object::gather
@@ -267,16 +281,14 @@ void Barge_object::gather
 				objects.append(obj);
 			}
 		}
+					// Test landscape under center.
+	set_center();
 	if (boat == -1)			// Test for boat the first time.
 		{
-					// Test landscape under center.
-		Tile_coord c = get_abs_tile_coord();
-		c.tx -= xtiles/2;
-		c.ty -= ytiles/2;
 		Chunk_object_list *chunk = gwin->get_objects(
-				c.tx/tiles_per_chunk, c.ty/tiles_per_chunk);
-		ShapeID flat = chunk->get_flat(c.tx%tiles_per_chunk,
-						c.ty%tiles_per_chunk);
+			center.tx/tiles_per_chunk, center.ty/tiles_per_chunk);
+		ShapeID flat = chunk->get_flat(center.tx%tiles_per_chunk,
+						center.ty%tiles_per_chunk);
 		if (flat.is_invalid())
 			boat = 0;
 		else
@@ -319,6 +331,7 @@ void Barge_object::finish_move
 	Tile_coord *positions		// New positions.  Deleted when done.
 	)
 	{
+	set_center();			// Update center.
 	int cnt = objects.get_cnt();	// We'll move each object.
 	for (int i = 0; i < cnt; i++)	// Now add them back in new location.
 		{
@@ -386,10 +399,6 @@ void Barge_object::turn_right
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	add_dirty(gwin);		// Want to repaint old position.
-					// Get center to rotate around.
-	Tile_coord center = get_abs_tile_coord();
-	center.tx -= xtiles/2;
-	center.ty -= ytiles/2;
 					// Move the barge itself.
 	Tile_coord rot = Rotate90r(gwin, this, xtiles, ytiles, center);
 	if (!okay_to_rotate(rot))	// Check for blockage.
@@ -425,10 +434,6 @@ void Barge_object::turn_left
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	add_dirty(gwin);		// Want to repaint old position.
-					// Get center to rotate around.
-	Tile_coord center = get_abs_tile_coord();
-	center.tx -= xtiles/2;
-	center.ty -= ytiles/2;
 					// Move the barge itself.
 	Tile_coord rot = Rotate90l(gwin, this, xtiles, ytiles, center);
 	if (!okay_to_rotate(rot))	// Check for blockage.
@@ -464,10 +469,6 @@ void Barge_object::turn_around
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	add_dirty(gwin);		// Want to repaint old position.
-					// Get center to rotate around.
-	Tile_coord center = get_abs_tile_coord();
-	center.tx -= xtiles/2;
-	center.ty -= ytiles/2;
 					// Move the barge itself.
 	Tile_coord rot = Rotate180(gwin, this, xtiles, ytiles, center);
 	Game_object::move(rot.tx, rot.ty, rot.tz);
@@ -664,6 +665,11 @@ int Barge_object::step
 			return (0);	// Done.
 		}
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.
+	Game_window *gwin = Game_window::get_game_window();
+					// Near an egg?
+	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
+	nlist->activate_eggs(gwin->get_main_actor(), t.tx, t.ty, t.tz, 
+						cur.tx, cur.ty);
 	return (1);			// Add back to queue for next time.
 	}
 

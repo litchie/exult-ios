@@ -34,6 +34,8 @@ void Setup_item_names (ifstream& items);
 /*
  *	Some offsets in text.flx:
  */
+const int first_move_aside = 0x400;	// For guards when blocked.
+const int last_move_aside = 0x402;
 const int first_ouch = 0x429;
 const int last_ouch = 0x42c;
 const int first_to_battle = 0x439;
