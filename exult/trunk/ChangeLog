@@ -1,3 +1,6 @@
+2001-07-30 Ryan Nunn <triforce@merlin.net.au>
+	* gumps/Spellbook_gump.cc: Fixed incorrect drawing of spells.
+
 2001-07-30 Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* various: made it compile on Linux again
 	* cheat.cc: heal-party now also restores mana

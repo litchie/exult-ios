@@ -202,6 +202,8 @@ public:
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
 	virtual void double_clicked(Game_window *gwin, int x, int y);
+	virtual void push(Game_window *gwin) { }
+	virtual void unpush(Game_window *gwin) { }
 	};
 
 /*
@@ -329,6 +331,7 @@ Spellbook_gump::Spellbook_gump
 			if ((cflags & (1<<s)) || cheat.in_wizard_mode())
 				{
 				int spnum = spindex + s;
+				std::cout << c << ":" << s << ":"<< spells0 + spnum%8 << std::endl;
 				spells[spnum] = new Spell_button(this,
 					s < 4 ? object_area.x +
 						spshape->get_xleft()
@@ -481,7 +484,7 @@ void Spellbook_gump::paint_button
 	Gump_button *btn
 	)
 {
-	gwin->paint_shape(x + btn->x, y + btn->y, get_shape());
+	btn->paint(gwin);
 }
 
 /*
@@ -636,7 +639,7 @@ void Spellscroll_gump::paint_button
 	Gump_button *btn
 	)
 	{
-	gwin->paint_shape(x + btn->x, y + btn->y, get_shape());
+	btn->paint(gwin);
 	}
 
 /*
