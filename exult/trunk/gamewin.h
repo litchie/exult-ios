@@ -74,6 +74,7 @@ private:
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	Vga_file fonts;			// "fonts.vga" file.
 	Vga_file sprites;		// "sprites.vga" file.
+	Vga_file mainshp;		// "mainshp.flx" file.
 	ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
@@ -446,5 +447,8 @@ private:
 public:
 	void write_gamedat(char *fname);// Explode a savegame into "gamedat".
 	char *get_game_identity(char *fname);
+	char *get_shape_file_name(int n);
+	Vga_file *get_shape_file_data(int n);
+	int get_shape_file_count();
 	};
 
