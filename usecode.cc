@@ -3061,7 +3061,10 @@ void Usecode_machine::_init_
 					// Clear party list.
 	memset((char *) &party[0], 0, sizeof(party));
 	party_count = 0;
-	read();				// Read saved data (might be absent).
+
+	// This shouldn't be here!!!!!!!!!!
+	// read();				// Read saved data (might be absent).
+	
 	file.seekg(0, ios::end);
 	int size = file.tellg();	// Get file size.
 	file.seekg(0);

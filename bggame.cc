@@ -870,7 +870,15 @@ bool BG_Game::new_game(Vga_file &shapes)
 			if(event.type==SDL_KEYDOWN) {
 				switch(event.key.keysym.sym) {
 				case SDLK_SPACE:
-					if(selected==1)
+					if(selected==0)
+					{
+						int len = strlen(npc_name);
+						if(len<max_len) {
+							npc_name[len] = ' ';
+							npc_name[len+1] = 0;
+						}
+					}
+					else if(selected==1)
 						sex = 1-sex;
 					break;
 				case SDLK_ESCAPE:
@@ -924,7 +932,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 		{
 			set_avname (npc_name);
 			set_avsex (sex);
-			gwin->init_gamedat(true);
+			ok =gwin->init_gamedat(true);
 		}
 		win->fill8(0,gwin->get_width(),90,0,menuy);
 		return ok;

@@ -70,7 +70,6 @@ void Game_window::read_npcs
 		}
 	center_view(main_actor->get_abs_tile_coord());
 	read_schedules();		// Now get their schedules.
-	usecode->link_party();		// Make sure party ID's are set.
 	if (!monster_info)		// Might be a 'restore'.
 		{
 		ifstream mfile;		// Now get monster info.

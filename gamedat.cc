@@ -59,6 +59,16 @@ void Game_window::restore_gamedat
 #else
 	mkdir("gamedat", 0755);		// Create dir. if not already there.
 #endif
+
+	remove (USEDAT);
+	remove (U7NBUF_DAT);
+	remove (NPC_DAT);
+	remove (MONSNPCS);
+	remove (FLAGINIT);
+	remove (GWINDAT);
+	remove (IDENTITY);
+	remove ("static/flags.flg");
+
 	in.seekg(0x54);			// Get to where file count sits.
 	int numfiles = Read4(in);
 	in.seekg(0x80);			// Get to file info.
