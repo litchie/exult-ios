@@ -54,6 +54,27 @@ Shape_file_info::~Shape_file_info
 	)
 	{
 	delete groups;
+	delete browser;
+	}
+
+/*
+ *	Get the main browser for this file, or create it.
+ *
+ *	Output:	->browser.
+ */
+
+Object_browser *Shape_file_info::get_browser
+	(
+	Shape_file_info *vgafile,
+	unsigned char *palbuf
+	)
+	{
+	if (browser)
+		return browser;		// Okay.
+	browser = create_browser(vgafile, palbuf, 0);
+					// Add a reference (us).
+	gtk_widget_ref(browser->get_widget());
+	return browser;
 	}
 
 /*
