@@ -333,8 +333,8 @@ USECODE_INTRINSIC(get_distance)
 	// Distance from parm[0] -> parm[1].  Guessing how it's computed.
 	Game_object *obj0 = get_item(parms[0]);
 	Game_object *obj1 = get_item(parms[1]);
-	Usecode_value u((obj0 && obj1) ? obj0->get_abs_tile_coord().distance(
-					obj1->get_abs_tile_coord()) : 0);
+	Usecode_value u((obj0 && obj1) ? obj0->get_tile().distance(
+					obj1->get_tile()) : 0);
 	return(u);
 }
 
@@ -720,8 +720,8 @@ USECODE_INTRINSIC(npc_nearby)
 {
 	// NPC nearby? (item).
 	Game_object *npc = get_item(parms[0]);
-	int near = (npc != 0 && npc->get_abs_tile_coord().distance(
-		gwin->get_main_actor()->get_abs_tile_coord()) < 12);
+	int near = (npc != 0 && npc->get_tile().distance(
+		gwin->get_main_actor()->get_tile()) < 12);
 	Usecode_value u(near);
 	return(u);
 }
@@ -795,19 +795,19 @@ USECODE_INTRINSIC(click_on_item)
 	// Doesn't ret. until user single-
 	//   clicks on an item.  Rets. item.
 	Game_object *obj;
-	int tx, ty, tz;
+	Tile_coord t;
 
 	// intercept this click?
 	if (intercept_item) {
 		obj = intercept_item;
 		intercept_item = 0;
-		obj->get_abs_tile(tx, ty, tz);
+		t = obj->get_tile();
 
 					// Special case for weapon hit:
 	} else if (event == weapon && caller_item)
 		{
 		obj = caller_item;
-		obj->get_abs_tile(tx, ty, tz);
+		t = obj->get_tile();
 		}
 	else
 		{
@@ -815,9 +815,8 @@ USECODE_INTRINSIC(click_on_item)
 		if (!Get_click(x, y, Mouse::greenselect))
 			return Usecode_value(0);
 					// Get abs. tile coords. clicked on.
-		tx = gwin->get_scrolltx() + x/c_tilesize;
-		ty = gwin->get_scrollty() + y/c_tilesize;
-		tz = 0;
+		t = Tile_coord(gwin->get_scrolltx() + x/c_tilesize,
+				gwin->get_scrollty() + y/c_tilesize, 0);
 					// Look for obj. in open gump.
 		Gump *gump = gwin->get_gump_man()->find_gump(x, y);
 		if (gump)
@@ -829,12 +828,12 @@ USECODE_INTRINSIC(click_on_item)
 			{
 			obj = gwin->find_object(x, y);
 			if (obj)	// Found object?  Use its coords.
-				obj->get_abs_tile(tx, ty, tz);
+				t = obj->get_tile();
 			}
 		}
 	Usecode_value oval(obj);	// Ret. array with obj as 1st elem.
 	Usecode_value ret(4, &oval);
-	Usecode_value xval(tx), yval(ty), zval(tz);
+	Usecode_value xval(t.tx), yval(t.ty), zval(t.tz);
 	ret.put_elem(1, xval);
 	ret.put_elem(2, yval);
 	ret.put_elem(3, zval);
@@ -955,7 +954,7 @@ USECODE_INTRINSIC(move_object)
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return (no_ret);
-	Tile_coord oldpos = obj->get_abs_tile_coord();
+	Tile_coord oldpos = obj->get_tile();
 	obj->move(tile.tx, tile.ty, tile.tz);
 	Actor *act = as_actor(obj);
 	if (act)
@@ -1060,11 +1059,10 @@ USECODE_INTRINSIC(set_lift)
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		{
-		int x, y, z;
-		obj->get_abs_tile(x, y, z);
+		Tile_coord t = obj->get_tile();
 		int lift = parms[1].get_int_value();
 		if (lift >= 0 && lift < 20)
-			obj->move(x, y, lift);
+			obj->move(t.tx, t.ty, lift);
 		gwin->paint();
 		gwin->show();
 		}
@@ -1108,7 +1106,7 @@ USECODE_INTRINSIC(summon)
 	Monster_info *info = gwin->get_info(shapenum).get_monster_info();
 	if (!info)
 		return Usecode_value(0);
-	Tile_coord start = gwin->get_main_actor()->get_abs_tile_coord();
+	Tile_coord start = gwin->get_main_actor()->get_tile();
 	Tile_coord dest = Map_chunk::find_spot(start, 5, shapenum, 0, 1,
 			-1, gwin->is_main_actor_inside() ?
 				Map_chunk::inside : Map_chunk::outside);
@@ -1135,15 +1133,15 @@ USECODE_INTRINSIC(display_map)
 	long sextants = count_objects(v_357, v650, v_359, v_359).get_int_value();
 	if ((!gwin->is_main_actor_inside()) && (sextants > 0)) {
 		// mark location
-		int tx, ty, z, xx, yy;
-		gwin->get_main_actor()->get_abs_tile(tx, ty, z);
+		int xx, yy;
+		Tile_coord t = gwin->get_main_actor()->get_tile();
 
 		if (Game::get_game_type()==BLACK_GATE) {
-			xx = (int)(tx/16.05 + 5 + 0.5);
-			yy = (int)(ty/15.95 + 4 + 0.5);
+			xx = (int)(t.tx/16.05 + 5 + 0.5);
+			yy = (int)(t.ty/15.95 + 4 + 0.5);
 		} else if (Game::get_game_type()==SERPENT_ISLE) {
-			xx = (int)(tx/16.0 + 18 + 0.5);
-			yy = (int)(ty/16.0 + 9.4 + 0.5);
+			xx = (int)(t.tx/16.0 + 18 + 0.5);
+			yy = (int)(t.ty/16.0 + 9.4 + 0.5);
 		}
 
 		xx += x - map->get_xleft();
@@ -1407,7 +1405,7 @@ USECODE_INTRINSIC(explode)
 	Game_object *exp = get_item(parms[1]);
 	if (!exp)
 		return Usecode_value(0);
-	Tile_coord pos = exp->get_abs_tile_coord();
+	Tile_coord pos = exp->get_tile();
 					// Sprite 1,4,5 look like explosions.
 	gwin->add_effect(new Explosion_effect(pos, exp));
 	return Usecode_value(1);
@@ -1491,7 +1489,7 @@ USECODE_INTRINSIC(armageddon)
 			{
 			const char *text[] = {"Aiiiieee!", "Noooo!", "#!?*#%!"};
 			const int numtext = sizeof(text)/sizeof(text[0]);
-			Tile_coord loc = npc->get_abs_tile_coord();
+			Tile_coord loc = npc->get_tile();
 			if (screen.has_point(loc.tx, loc.ty))
 				npc->say(text[rand()%numtext]);
 			npc->die();
@@ -1532,7 +1530,7 @@ USECODE_INTRINSIC(mark_virtue_stone)
 	Game_object *obj = get_item(parms[0]);
 	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *> (obj);
 	if (vs)
-		vs->set_pos(obj->get_outermost()->get_abs_tile_coord());
+		vs->set_pos(obj->get_outermost()->get_tile());
 	return no_ret;
 }
 
@@ -1670,7 +1668,7 @@ USECODE_INTRINSIC(on_barge)
 		for (int i = 0; i < cnt; i++)
 			{
 			Actor *act = party[i];
-			Tile_coord t = act->get_abs_tile_coord();
+			Tile_coord t = act->get_tile();
 			if (!foot.has_point(t.tx, t.ty))
 				return Usecode_value(0);
 			}
@@ -1863,7 +1861,7 @@ USECODE_INTRINSIC(fire_cannon)
 	int ball = parms[2].get_int_value();
 	int dist = parms[3].get_int_value();
 	int cshape = parms[4].get_int_value();
-	Tile_coord pos = cannon->get_abs_tile_coord();
+	Tile_coord pos = cannon->get_tile();
 	short blastoff[8] = {-2, -5, 1, -2, -2, 1, -5, -2};
 	Tile_coord blastpos = pos + Tile_coord(
 				blastoff[2*dir], blastoff[2*dir + 1], 0);
@@ -1924,7 +1922,7 @@ USECODE_INTRINSIC(nap_time)
 		}
 					// Give him a chance to get there (at
 					//   most 5 seconds.)
-	Wait_for_arrival(gwin->get_main_actor(), bed->get_abs_tile_coord(),
+	Wait_for_arrival(gwin->get_main_actor(), bed->get_tile(),
 								5000);
 	call_usecode(0x622, bed, double_click);
 	return(no_ret);
@@ -2238,7 +2236,7 @@ USECODE_INTRINSIC(center_view)
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		{
-		Tile_coord t = obj->get_abs_tile_coord();
+		Tile_coord t = obj->get_tile();
 		gwin->center_view(t);
 		activate_cached(t);	// Mar-10-01 - For Test of Love.
 		}
@@ -2281,8 +2279,8 @@ USECODE_INTRINSIC(play_sound_effect2)
 	int dir = 0;
 	if (obj)
 		{
-		Tile_coord apos = gwin->get_main_actor()->get_abs_tile_coord();
-		Tile_coord opos = obj->get_abs_tile_coord();
+		Tile_coord apos = gwin->get_main_actor()->get_tile();
+		Tile_coord opos = obj->get_tile();
 		int dist = apos.distance(opos);
 		if (dist)
 			{		// 160/8 = 20 tiles. 20*20=400.
@@ -2407,7 +2405,7 @@ USECODE_INTRINSIC(si_path_run_usecode)
 		CERR("Si_path_run_usecode: bad inputs");
 		return no_ret;		// Bad data.
 		}
-	Tile_coord src = npc->get_abs_tile_coord();
+	Tile_coord src = npc->get_tile();
 	Tile_coord dest(parms[1].get_elem(0).get_int_value(),
 			parms[1].get_elem(1).get_int_value(),
 			sz == 3 ? parms[1].get_elem(2).get_int_value() : 0);
@@ -2604,7 +2602,7 @@ USECODE_INTRINSIC(add_removed_npc)
 	int tx, ty;
 
 	// Avatars coords
-	Tile_coord av = gwin->get_main_actor()->get_abs_tile_coord();;
+	Tile_coord av = gwin->get_main_actor()->get_tile();;
 
 	Tile_coord close;	// The tile coords of the closest tile
 	int dist = -1;		// The distance
@@ -2810,7 +2808,7 @@ USECODE_INTRINSIC(save_pos)
 	// save_pos(item).
 	Game_object *item = get_item(parms[0]);
 	if (item)
-		saved_pos = item->get_abs_tile_coord();
+		saved_pos = item->get_tile();
 	return no_ret;
 }
 

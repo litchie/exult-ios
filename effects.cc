@@ -86,7 +86,7 @@ Sprites_effect::Sprites_effect
 	) : sprite(num, 0, SF_SPRITES_VGA), item(it), xoff(xf), 
 					yoff(yf), deltax(dx), deltay(dy)
 	{
-	pos = item->get_abs_tile_coord();
+	pos = item->get_tile();
 	Game_window *gwin = Game_window::get_game_window();
 	frames = sprite.get_num_frames();
 					// Start immediately.
@@ -137,7 +137,7 @@ void Sprites_effect::handle_event
 	add_dirty(gwin, frame_num - 1);	// Clear out old.
 	gwin->set_painted();
 	if (item)			// Following actor?
-		pos = item->get_abs_tile_coord();
+		pos = item->get_tile();
 	xoff += deltax;			// Add deltas.
 	yoff += deltay;
 	add_dirty(gwin, frame_num);	// Want to paint new frame.
@@ -176,7 +176,7 @@ Explosion_effect::Explosion_effect
 	) : Sprites_effect(1, p), explode(exp)
 {
 	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord apos = gwin->get_main_actor()->get_abs_tile_coord();
+	Tile_coord apos = gwin->get_main_actor()->get_tile();
 	int dir = Get_direction16(apos.ty - p.ty, p.tx - apos.tx);
 					// Max. volume, with stereo position.
 	Audio::get_ptr()->play_sound_effect(
@@ -282,7 +282,7 @@ Projectile_effect::Projectile_effect
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
 	) : attacker(att), target(to), projectile(shnum, 0), weapon(weap)
 	{
-	init(attacker->get_abs_tile_coord(), to->get_abs_tile_coord());
+	init(attacker->get_tile(), to->get_tile());
 	}
 
 /*
@@ -312,7 +312,7 @@ Projectile_effect::Projectile_effect
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
 	) : attacker(0), target(to), projectile(shnum, 0), weapon(weap)
 	{
-	init(s, to->get_abs_tile_coord());
+	init(s, to->get_tile());
 	}
 
 /*
@@ -448,7 +448,7 @@ Death_vortex::Death_vortex
 	Tile_coord tp			// Target pos, if trg==0.
 	) : vortex(8, 0, SF_SPRITES_VGA), next_damage_time(0)
 	{
-	pos = trg ? trg->get_abs_tile_coord() : tp;
+	pos = trg ? trg->get_tile() : tp;
 	target = dynamic_cast<Actor *> (trg);
 	Game_window *gwin = Game_window::get_game_window();
 	frames = vortex.get_num_frames();
@@ -491,7 +491,7 @@ void Death_vortex::handle_event
 	int width = add_dirty(gwin);	// Repaint old area.
 	if (target && !target->is_dead())	// Follow target.
 		{
-		Tile_coord tpos = target->get_abs_tile_coord();
+		Tile_coord tpos = target->get_tile();
 		int deltax = tpos.tx - pos.tx, deltay = tpos.ty - pos.ty;
 		int absx = deltax >= 0 ? deltax : -deltax;
 		int absy = deltay >= 0 ? deltay : -deltay;
@@ -689,7 +689,7 @@ Weather_effect::Weather_effect
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	if (egg)
-		eggloc = egg->get_abs_tile_coord();
+		eggloc = egg->get_tile();
 	else
 		eggloc = Tile_coord(-1, -1, -1);
 	stop_time = Game::get_ticks() + delay + 1000*((duration*60)/time_factor);

@@ -124,7 +124,7 @@ public:
 					// +++++Needed on this one:
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
-		{ return get_abs_tile_coord() + 
+		{ return get_tile() + 
 			Tile_coord(-animator->get_deltax(), 
 				   -animator->get_deltay(), 0); }
 	};
@@ -144,7 +144,7 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
-		{ return get_abs_tile_coord() + 
+		{ return get_tile() + 
 			Tile_coord(-animator->get_deltax(), 
 				   -animator->get_deltay(), 0); }
 
@@ -169,7 +169,7 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
-		{ return get_abs_tile_coord() + 
+		{ return get_tile() + 
 			Tile_coord(-animator->get_deltax(), 
 				   -animator->get_deltay(), 0); }
 

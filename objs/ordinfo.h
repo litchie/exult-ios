@@ -41,7 +41,8 @@ public:
 private:
 	void init(const Game_object *obj)
 		{
-		obj->get_abs_tile(tx, ty, tz);
+		Tile_coord t = obj->get_tile();
+		tx = t.tx; ty = t.ty; tz = t.tz;
 		int frnum = obj->get_framenum();
 		xs = info.get_3d_xtiles(frnum);
 		ys = info.get_3d_ytiles(frnum);

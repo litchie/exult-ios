@@ -138,8 +138,8 @@ bool Game_window::drag
 				{
 			    	if (!cheat.in_hack_mover() && 
 					!Fast_pathfinder_client::is_grabable(
-					   main_actor->get_abs_tile_coord(),
-					   dragging->get_abs_tile_coord()))
+					   main_actor->get_tile(),
+					   dragging->get_tile()))
 					{
 					Mouse::mouse->flash_shape(Mouse::blocked);
 					dragging = 0;
@@ -399,7 +399,7 @@ void Game_window::drop
 		    (dragging_gump != on_gump || dropped_in_something ||
 					// Moving:
 		     (!dragging_gump &&
-		      to_drop->get_abs_tile_coord().distance(
+		      to_drop->get_tile().distance(
 					Tile_coord(oldtx, oldty, oldtz)) > 2)))
 			theft();			
 		if (to_drop == dragging)// Whole thing?
@@ -463,7 +463,7 @@ bool Game_window::drop_at_lift
 	   (cheat.in_hack_mover() ||
 					// Check for path to location.
 	    Fast_pathfinder_client::is_grabable(
-		main_actor->get_abs_tile_coord(), Tile_coord(tx, ty, lift))))
+		main_actor->get_tile(), Tile_coord(tx, ty, lift))))
 		{
 		to_drop->set_invalid();
 		to_drop->move(tx, ty, lift);
@@ -473,7 +473,7 @@ cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
 		chunk->activate_eggs(to_drop, tx, ty, lift, tx, ty);
 
 		if (to_drop == main_actor) {
-			center_view(to_drop->get_abs_tile_coord());
+			center_view(to_drop->get_tile());
 			paint();
 		}
 

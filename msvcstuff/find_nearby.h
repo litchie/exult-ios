@@ -73,10 +73,9 @@ int Game_object::find_nearby
 				if (framenum !=  c_any_framenum &&
 					obj->get_framenum() != framenum)
 					continue;
-				int tx, ty, tz;
-				obj->get_abs_tile(tx, ty, tz);
+				Tile_coord t = obj->get_tile();
 					// +++++Check tz too?
-				if (tiles.has_point(tx, ty))
+				if (tiles.has_point(t.tx, t.ty))
 					vec.push_back(static_cast<FN_OBJECT*>(obj));
 				}
 			}

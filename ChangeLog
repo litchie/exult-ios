@@ -1,3 +1,8 @@
+2001-11-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Lots:  Code cleanup:  get_abs_tile_coord() => get_tile(),
+	get_abs_tile(),get_worldx(),get_worldy() went away.
+
 2001-11-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* vgafile.cc: 'fixed' Spark's palette-cycling pants
 	* Paperdoll_gump.cc: improved two-rings+staff display glitch

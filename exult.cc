@@ -879,7 +879,7 @@ void Wait_for_arrival
 	uint32 stop_time = SDL_GetTicks() + maxticks;
 	bool timeout = false;
 	while (actor->is_moving() && actor->get_action() == orig_action &&
-	       actor->get_abs_tile_coord() != dest && !timeout)
+	       actor->get_tile() != dest && !timeout)
 		{
 		Delay();		// Wait a fraction of a second.
 
@@ -1039,7 +1039,7 @@ void Wizard_eye
 
 	if (!os)
 		Mouse::mouse->hide();
-	gwin->center_view(gwin->get_main_actor()->get_abs_tile_coord());
+	gwin->center_view(gwin->get_main_actor()->get_tile());
 	}
 
 

@@ -438,7 +438,7 @@ Monster_pathfinder_client::Monster_pathfinder_client
 		return;			// Means this isn't usable.
 	set_move_flags(attacker->get_type_flags());
 	Shape_info& info2 = gwin->get_info(opponent);
-	Tile_coord opos = opponent->get_abs_tile_coord();
+	Tile_coord opos = opponent->get_tile();
 	int oxtiles = info2.get_3d_xtiles(), oytiles = info2.get_3d_ytiles();
 	destbox = Rectangle(opos.tx - oxtiles + 1, opos.ty - oytiles + 1,
 							oxtiles, oytiles);

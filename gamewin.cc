@@ -639,7 +639,7 @@ void Game_window::resized
 	win->resized(neww, newh, newsc, newsclr);
 	// Do the following only if in game (not for menus)
 	if(usecode) {
-		center_view(get_main_actor()->get_abs_tile_coord());
+		center_view(get_main_actor()->get_tile());
 		paint();
 		char msg[80];
 		snprintf(msg, 80, "%dx%dx%d", neww, newh, newsc);
@@ -795,7 +795,7 @@ void Game_window::set_camera_actor
 		emulate_cache(camera_actor->get_cx(), camera_actor->get_cy(),
 			main_actor->get_cx(), main_actor->get_cy());
 	camera_actor = a;
-	Tile_coord t = a->get_abs_tile_coord();
+	Tile_coord t = a->get_tile();
 	set_scrolls(t);			// Set scrolling around position,
 					//   and read in map there.
 	set_all_dirty();
@@ -878,19 +878,18 @@ Rectangle Game_window::get_shape_rect(Game_object *obj)
 #endif
 		return Rectangle(0,0,0,0);
 	}
-	int tx, ty, tz;		// Get tile coords.
-	obj->get_abs_tile(tx, ty, tz);
-	int lftpix = 4*tz;
-	tx += 1 - get_scrolltx();
-	ty += 1 - get_scrollty();
-				// Watch for wrapping.
-	if (tx < -c_num_tiles/2)
-		tx += c_num_tiles;
-	if (ty < -c_num_tiles/2)
-		ty += c_num_tiles;
+	Tile_coord t = obj->get_tile();	// Get tile coords.
+	int lftpix = 4*t.tz;
+	t.tx += 1 - get_scrolltx();
+	t.ty += 1 - get_scrollty();
+					// Watch for wrapping.
+	if (t.tx < -c_num_tiles/2)
+		t.tx += c_num_tiles;
+	if (t.ty < -c_num_tiles/2)
+		t.ty += c_num_tiles;
 	return get_shape_rect(s,
-		tx*c_tilesize - 1 - lftpix,
-		ty*c_tilesize - 1 - lftpix);
+		t.tx*c_tilesize - 1 - lftpix,
+		t.ty*c_tilesize - 1 - lftpix);
 }
 
 
@@ -900,18 +899,17 @@ Rectangle Game_window::get_shape_rect(Game_object *obj)
 
 void Game_window::get_shape_location(Game_object *obj, int& x, int& y)
 {
-	int tx, ty, tz;		// Get tile coords.
-	obj->get_abs_tile(tx, ty, tz);
-	int lft = 4*tz;
-	tx += 1 - get_scrolltx();
-	ty += 1 - get_scrollty();
+	Tile_coord t = obj->get_tile();// Get tile coords.
+	int lft = 4*t.tz;
+	t.tx += 1 - get_scrolltx();
+	t.ty += 1 - get_scrollty();
 				// Watch for wrapping.
-	if (tx < -c_num_tiles/2)
-		tx += c_num_tiles;
-	if (ty < -c_num_tiles/2)
-		ty += c_num_tiles;
-	x = tx*c_tilesize - 1 - lft;
-	y = ty*c_tilesize - 1 - lft;
+	if (t.tx < -c_num_tiles/2)
+		t.tx += c_num_tiles;
+	if (t.ty < -c_num_tiles/2)
+		t.ty += c_num_tiles;
+	x = t.tx*c_tilesize - 1 - lft;
+	y = t.ty*c_tilesize - 1 - lft;
 }
 
 /*
@@ -2158,7 +2156,7 @@ void Game_window::start_actor_alt
 	int height = shapes.get_info(
 				main_actor->get_shapenum()).get_3d_height();
 	
-	Tile_coord start = main_actor->get_abs_tile_coord();
+	Tile_coord start = main_actor->get_tile();
 	int dir;
 	
 	for (dir = 0; dir < 8; dir++)
@@ -2289,7 +2287,7 @@ void Game_window::start_actor
 		tx = (tx + c_num_tiles)%c_num_tiles;
 		ty = (ty + c_num_tiles)%c_num_tiles;
 		Tile_coord atile = moving_barge->get_center(),
-			   btile = moving_barge->get_abs_tile_coord();
+			   btile = moving_barge->get_tile();
 					// Go faster than walking.
 		moving_barge->travel_to_tile(
 			Tile_coord(tx + btile.tx - atile.tx, 
@@ -2370,7 +2368,7 @@ void Game_window::teleport_party
 	bool skip_eggs			// Don't activate eggs at dest.
 	)
 	{
-	Tile_coord oldpos = main_actor->get_abs_tile_coord();
+	Tile_coord oldpos = main_actor->get_tile();
 	main_actor->set_action(0);	// I think this is right.
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
 	set_all_dirty();
@@ -2606,10 +2604,9 @@ void Game_window::show_items
 			obj->get_alignment() << ", npcnum = " <<
 			obj->get_npc_num()
 			<< endl;
-		int tx, ty, tz;
-		obj->get_abs_tile(tx, ty, tz);
-		cout << "tx = " << tx << ", ty = " << ty << ", tz = " <<
-			tz << ", quality = " <<
+		Tile_coord t = obj->get_tile();
+		cout << "tx = " << t.tx << ", ty = " << t.ty << ", tz = " <<
+			t.tz << ", quality = " <<
 			obj->get_quality() << ", low lift = " <<
 			obj->get_low_lift() << ", high shape = " <<
 			obj->get_high_shape () << ", okay_to_take = " <<
@@ -2851,7 +2848,7 @@ void Game_window::remove_weather_effects
 					//   least this far away.
 	)
 	{
-	Tile_coord apos = main_actor ? main_actor->get_abs_tile_coord()
+	Tile_coord apos = main_actor ? main_actor->get_tile()
 				: Tile_coord(-1, -1, -1);
 	Special_effect *each = effects;
 	while (each)
@@ -2941,8 +2938,8 @@ void Game_window::double_clicked
 	    	if (obj && obj->get_npc_num() <= 0 && !obj->is_monster() &&
 			!Is_sign(obj->get_shapenum()) &&
 			!Fast_pathfinder_client::is_grabable(
-					main_actor->get_abs_tile_coord(),
-					obj->get_abs_tile_coord()))
+					main_actor->get_tile(),
+					obj->get_tile()))
 		{
 			Mouse::mouse->flash_shape(Mouse::blocked);
 			return;
@@ -3123,8 +3120,8 @@ void Game_window::theft
 			continue;
 		int dist = npc->distance(main_actor);
 		if (dist < best_dist && Fast_pathfinder_client::is_grabable(
-			npc->get_abs_tile_coord(),
-			main_actor->get_abs_tile_coord()))
+			npc->get_tile(),
+			main_actor->get_tile()))
 			{
 			closest_npc = npc;
 			best_dist = dist;
@@ -3147,9 +3144,9 @@ void Game_window::theft
 					// Show guard running up.
 					// Create it off-screen.
 	Monster_actor *guard = Monster_actor::create(0x3b2,
-		main_actor->get_abs_tile_coord() + Tile_coord(128, 128, 0));
+		main_actor->get_tile() + Tile_coord(128, 128, 0));
 	add_nearby_npc(guard);
-	Tile_coord actloc = main_actor->get_abs_tile_coord();
+	Tile_coord actloc = main_actor->get_tile();
 	Tile_coord dest = Map_chunk::find_spot(actloc, 5, 
 			guard->get_shapenum(), guard->get_framenum(), 1);
 	if (dest.tx != -1)
@@ -3181,7 +3178,7 @@ void Game_window::attack_avatar
 		{
 					// Create it off-screen.
 		Monster_actor *guard = Monster_actor::create(0x3b2,
-			main_actor->get_abs_tile_coord() + 
+			main_actor->get_tile() + 
 						Tile_coord(128, 128, 0));
 		add_nearby_npc(guard);
 		guard->set_target(main_actor, true);
@@ -3298,7 +3295,7 @@ void Game_window::setup_game
 			main_actor->get_cx(), main_actor->get_cy());
 	olist->setup_cache();
 
-	Tile_coord t = main_actor->get_abs_tile_coord();
+	Tile_coord t = main_actor->get_tile();
 	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1);
 	
 	// Force entire repaint.
@@ -3437,7 +3434,9 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 						it!=removes.end(); ++it)
 		{
 #ifdef DEBUG
-		cout << "Culling object: " << (*it)->get_name() << "@" << ((Game_object *)(*it))->get_worldx() << "," << ((Game_object *)(*it))->get_worldy() << "," << ((Game_object *)(*it))->get_lift() <<endl;
+		Tile_coord t = (*it)->get_tile();
+		cout << "Culling object: " << (*it)->get_name() << "@" << 
+			t.tx << "," << t.ty << "," << t.tz <<endl;
 #endif
 		(*it)->delete_contents();  // first delete item's contents
 		(*it)->remove_this(0);

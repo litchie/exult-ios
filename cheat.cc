@@ -353,14 +353,14 @@ void Cheat::map_teleport (void) const {
 	gwin->paint_shape(x, y, map, 1);
   
 	// mark current location
-	int tx, ty, z, xx, yy;
-	gwin->get_main_actor()->get_abs_tile(tx, ty, z);
+	int xx, yy;
+	Tile_coord t = gwin->get_main_actor()->get_tile();
   
 	const int worldsize = c_tiles_per_chunk * c_num_chunks;
 	int border=2;
 
-	xx = ((tx * (map->get_width() - border*2)) / worldsize);
-	yy = ((ty * (map->get_height() - border*2)) / worldsize);
+	xx = ((t.tx * (map->get_width() - border*2)) / worldsize);
+	yy = ((t.ty * (map->get_height() - border*2)) / worldsize);
 
 
 	xx += x - map->get_xleft() + border;
@@ -377,14 +377,14 @@ void Cheat::map_teleport (void) const {
 	xx -= x - map->get_xleft() + border;
 	yy -= y - map->get_yabove() + border;
 
-	tx = static_cast<int>(((xx + 0.5)*worldsize) / (map->get_width() - 2*border));
-	ty = static_cast<int>(((yy + 0.5)*worldsize) / (map->get_height() - 2*border));
+	t.tx = static_cast<int>(((xx + 0.5)*worldsize) / (map->get_width() - 2*border));
+	t.ty = static_cast<int>(((yy + 0.5)*worldsize) / (map->get_height() - 2*border));
 
 	// World-wrapping.
-	tx = (tx + c_num_tiles)%c_num_tiles;
-	ty = (ty + c_num_tiles)%c_num_tiles;
-	cout << "Teleporting to " << tx << "," << ty << "!" << endl;
-	Tile_coord t(tx,ty,0);
+	t.tx = (t.tx + c_num_tiles)%c_num_tiles;
+	t.ty = (t.ty + c_num_tiles)%c_num_tiles;
+	cout << "Teleporting to " << t.tx << "," << t.ty << "!" << endl;
+	t.tz = 0;
 	gwin->teleport_party(t);
 	gwin->center_text("Teleport!!!");
 }
