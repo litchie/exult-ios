@@ -12,6 +12,7 @@
 #include <gtk/gtk.h>
 
 #include <libgimp/gimp.h>
+#include <libgimp/gimpui.h>
 
 /* Declare some local functions.
  */
@@ -135,6 +136,7 @@ run (gchar   *name,
 	values[0].data.d_status = STATUS_EXECUTION_ERROR;
 
 	if (strcmp (name, "file_shp_load") == 0) {
+		printf("Loading %s...\n", param[1].data.d_string);
 		image_ID = load_image (param[1].data.d_string);
 
 		if (image_ID != -1) {
@@ -223,6 +225,56 @@ unsigned char *out4(unsigned char *p, unsigned int b)
     return p;
 }
 
+static void choose_palette()
+{
+	GtkWidget *dlg;
+	GtkWidget *label;
+	GtkWidget *frame;
+	GtkWidget *vbox;
+	
+	dlg = gimp_dialog_new ("SHP Loader", "shp_loader",
+		NULL, NULL,
+		GTK_WIN_POS_MOUSE,
+		FALSE, FALSE, FALSE,
+
+		"OK", NULL,
+		NULL, NULL, NULL, TRUE, FALSE,
+		"Cancel", gtk_widget_destroy,
+		NULL, 1, NULL, FALSE, TRUE,
+		NULL);
+
+  gtk_signal_connect (GTK_OBJECT (dlg), "destroy",
+		      GTK_SIGNAL_FUNC (gtk_main_quit),
+		      NULL);
+
+  frame = gtk_frame_new (NULL);
+  gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
+  gtk_container_set_border_width (GTK_CONTAINER (frame), 6);
+  gtk_box_pack_start (GTK_BOX (GTK_DIALOG (dlg)->vbox), frame, TRUE, TRUE, 0);
+
+  vbox = gtk_vbox_new (FALSE, 4);
+  gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
+  gtk_container_add (GTK_CONTAINER (frame), vbox);
+  
+  label= gtk_label_new ("The image which you are trying to save as a GIF\n"
+			  "contains layers which extend beyond the actual\n"
+			  "borders of the image.  This isn't allowed in GIFs,\n"
+			  "I'm afraid.\n\n"
+			  "You may choose whether to crop all of the layers to\n"
+			  "the image borders, or cancel this save.");
+  gtk_box_pack_start (GTK_BOX (vbox), label, TRUE, TRUE, 0);
+  gtk_widget_show (label);
+
+  gtk_widget_show (vbox);
+  gtk_widget_show (frame);
+
+  gtk_widget_show (dlg);
+
+  gtk_main ();
+  gdk_flush ();
+
+}
+
 
 static gint32 load_image (gchar *filename)
 {
@@ -242,7 +294,6 @@ static gint32 load_image (gchar *filename)
 	gint32 max_height;
 	gint16 offsetX;
 	gint16 offsetY;
-	gchar *name_buf;
 	gchar *framename;
 	guchar block;
 	guchar pix;
@@ -259,13 +310,7 @@ static gint32 load_image (gchar *filename)
 		g_message ("SHP: can't open \"%s\"\n", filename);
 		return -1;
 	}
-
-	if (run_mode != RUN_NONINTERACTIVE) {
-		name_buf = g_strdup_printf ("Loading %s:", filename);
-		gimp_progress_init (name_buf);
-		g_free (name_buf);
-	}
-
+	printf("load_image(\"%s\");\n", filename);
 	shape_size = read4(fp);
 	hdr_size = read4(fp);
 	shape.num_frames = (hdr_size-4)/4;
@@ -363,7 +408,7 @@ static gint32 load_image (gchar *filename)
 
 	free(shape.frames);
 
-	return 0;
+	return image_ID;
 }
 
 static int find_runs(short *runs, unsigned char *pixptr, int x,	int w)
