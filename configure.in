@@ -225,7 +225,7 @@ fi
 
 
 dnl For storage initialisation
-AC_ARG_ENABLE(storate_initialisation, [  --enable-storate-initialisation          clear storage when allocated [default no]],,storate_initialisation=no)
+AC_ARG_ENABLE(storage_initialisation, [  --enable-storage-initialisation          clear storage when allocated [default no]],,storage_initialisation=no)
 if test x$enable_storage_initialisation = xyes; then
   AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
   AC_DEFINE(INITIALISE_ALLOCATED_BLOCKS,0)
