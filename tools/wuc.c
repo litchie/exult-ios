@@ -28,7 +28,8 @@ static const char* compiler_table[]=
 #define MAX_LABELS 3500
 
 char token[256],*token2,curlabel[256],indata;
-int byte,word,pass,offset,datasize,codesize;
+int byte,word,pass,offset,datasize,codesize,funcnum;
+int extended;
 
 char labels[MAX_LABELS][10];
 int offsets[MAX_LABELS];
@@ -178,18 +179,34 @@ int main(int argc,char *argv[])
 						}
 					else if (!strcmp(token,".data"))
 						{
+							if (extended == 0) {
+								emit_word(funcnum);
+								emit_word(0);
+								emit_word(0);
+								codesize = 2;
+							} else {
+								emit_word(-1);
+								emit_word(funcnum);
+								emit_dword(0);
+								emit_dword(0);
+								codesize = 4;
+							}
+
 							indata=1;
 							offset=0;
+
 						}
 					else if (!strcmp(token,".funcnumber"))
 						{
 							read_token(fi);
-							sscanf(token,"%x",&word);
-							printf("Function %04X\n", word);
-							emit_word(word);
-							emit_word(0);
-							emit_word(0);
-							codesize=2;
+							sscanf(token,"%x",&funcnum);
+							printf("Function %04X\n", funcnum);
+							//							codesize=2;
+							extended = 0;
+						}
+					else if (!strcmp(token,".ext32"))
+						{
+							extended = 1;
 						}
 					else if (token[0]=='.')
 						{
@@ -265,6 +282,11 @@ int main(int argc,char *argv[])
 													read_token(fi);
 													emit_word(get_label());
 													break;
+												case DATA_STRING32:
+													emit_byte(i);
+													read_token(fi);
+													emit_dword(get_label());
+													break;
 												case EXTCALL:
 												case VARREF:
 													emit_byte(i);
@@ -318,6 +340,12 @@ int main(int argc,char *argv[])
 													sscanf(token,"%x",&word);
 													emit_word(word);
 													break;
+												case IMMED32:
+													emit_byte(i);
+													read_token(fi);
+													sscanf(token,"%x",&word);
+													emit_dword(word);
+													break;
 												case RELATIVE_JUMP:
 													emit_byte(i);
 													read_token(fi);
@@ -326,6 +354,15 @@ int main(int argc,char *argv[])
 														emit_word(get_label()-offset-2);
 													} else
 														emit_word(-1);
+													break;
+												case RELATIVE_JUMP32:
+													emit_byte(i);
+													read_token(fi);
+													if (pass==1) {
+														//														printf("%x, %x, %x\n", get_label(), offset, get_label() - offset-2);
+														emit_dword(get_label()-offset-4);
+													} else
+														emit_dword(-1);
 													break;
 												case IMMED_AND_RELATIVE_JUMP:
 													emit_byte(i);
@@ -337,6 +374,17 @@ int main(int argc,char *argv[])
 														emit_word(get_label()-offset-2);
 													else
 														emit_word(-1);
+													break;
+												case IMMED_RELJUMP32:
+													emit_byte(i);
+													read_token(fi);
+													sscanf(token,"%x",&word);
+													emit_word(word);
+													read_token(fi);
+													if (pass==1)
+														emit_dword(get_label()-offset-4);
+													else
+														emit_dword(-1);
 													break;
 												case SLOOP:
 													emit_byte(0x2E);
@@ -366,6 +414,34 @@ int main(int argc,char *argv[])
 													else
 														emit_word(-1);
 													break;
+												case SLOOP32:
+													emit_byte(0xAE);
+													if (pass == 0) {
+														sscanf(curlabel, "%x:",&word);
+														sprintf(token,"%04X:",word+1);
+														printf("adding sloop label %s (curlabel=%s)\n", token, curlabel);
+														add_label();
+													}
+													emit_byte(0x82);
+													read_token(fi);
+													sscanf(token,"[%x]",&word);
+													emit_word(word);
+													read_token(fi);
+													sscanf(token,"[%x]",&word);
+													emit_word(word);
+													read_token(fi);
+													sscanf(token,"[%x]",&word);
+													emit_word(word);
+													read_token(fi);
+													sscanf(token,"[%x]",&word);
+													emit_word(word);
+													read_token(fi);
+													sscanf(token,"%x",&word);
+													if (pass==1)
+														emit_dword(get_label()-offset-2);
+													else
+														emit_dword(-1);
+													break;
 												default:
 													break;
 												}
@@ -374,11 +450,20 @@ int main(int argc,char *argv[])
 								
 							}
 				}
-			fseek(fo,2,SEEK_SET);
-			indata=0;
-			i=codesize;
-			emit_word(i);
-			emit_word(datasize);
+
+			if (extended == 0) {
+				fseek(fo,2,SEEK_SET);
+				indata=0;
+				i=codesize;
+				emit_word(i);
+				emit_word(datasize);
+			} else {
+				fseek(fo,4,SEEK_SET);
+				indata=0;
+				i=codesize;
+				emit_dword(i);
+				emit_dword(datasize);
+			}
 			fclose(fo);
 			fclose(fi);
 		}

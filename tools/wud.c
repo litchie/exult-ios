@@ -310,6 +310,8 @@ void printfunc(FILE* f, long func, int i, const char **func_table, int funsize)
 	if( funcnum == func || func == -2)
 	{
 		printf("\t\t.funcnumber\t%04XH\n", funcnum);
+		if (extended == 1)
+			printf("\t\t.ext32\n");
 		// Dump function contents
 		printdataseg(f, ds);
 		printcodeseg(f, ds, s, func_table, funsize, extended);
