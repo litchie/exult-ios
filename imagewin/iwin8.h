@@ -29,12 +29,14 @@ Boston, MA  02111-1307, USA.
 
 #include "imagewin.h"
 #include "ibuf8.h"
+#include "SDL.h"
 
 /*
  *	Here's an 8-bit color-depth window (faster than the generic).
  */
 class Image_window8 : public Image_window
 	{
+	SDL_Color colors[256];		// Palette.
 	Image_buffer8 *ib8;		// Cast to 8-bit buffer.
 public:
 	Image_window8(unsigned int w, unsigned int h, int scl = 1, 
@@ -46,6 +48,11 @@ public:
 		}
 	Image_buffer8 *get_ib8() const
 		{ return ib8; }
+					// Set palette.
+	virtual void set_palette(unsigned char *rgbs, int maxval, 
+						int brightness = 100);
+					// Rotate palette colors.
+	virtual void rotate_colors(int first, int num, int upd);
 	/*
 	 *	8-bit color methods:
 	 */

@@ -27,8 +27,6 @@ Boston, MA  02111-1307, USA.
 #ifndef INCL_IMAGEBUF
 #define INCL_IMAGEBUF	1
 
-#include "SDL.h"
-
 
 					// Table for translating palette vals.:
 typedef unsigned char *Xform_palette;	// Should be 256-bytes.
@@ -124,12 +122,6 @@ public:
 	/*
 	 *	8-bit color methods:
 	 */
-					// Set palette.
-	virtual void set_palette(SDL_Surface *surface, 
-		unsigned char *rgbs, int maxval, int brightness = 100) = 0;
-					// Rotate palette colors.
-	virtual void rotate_colors(SDL_Surface *surface,
-					int first, int num, int upd) = 0;
 					// Fill with given (8-bit) value.
 	virtual void fill8(unsigned char val) = 0;
 					// Fill rect. with pixel.

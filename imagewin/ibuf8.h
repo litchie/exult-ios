@@ -34,7 +34,6 @@ Boston, MA  02111-1307, USA.
  */
 class Image_buffer8 : public Image_buffer
 	{
-	SDL_Color colors[256];		// Palette.
 					// Private ctor. for Image_window8.
 	Image_buffer8(unsigned int w, unsigned int h, Image_buffer *)
 		: Image_buffer(w, h, 8)
@@ -59,12 +58,6 @@ public:
 	/*
 	 *	8-bit color methods:
 	 */
-					// Set palette.
-	virtual void set_palette(SDL_Surface *surface, 
-		unsigned char *rgbs, int maxval, int brightness = 100);
-					// Rotate palette colors.
-	virtual void rotate_colors(SDL_Surface *surface, int first, int num,
-								int upd);
 					// Fill with given (8-bit) value.
 	virtual void fill8(unsigned char val);
 					// Fill rect. wth pixel.

@@ -233,7 +233,6 @@ inline unsigned char Get_color16
 
 void Image_buffer16::set_palette
 	(
-	SDL_Surface *surface,		// Surface to set (ignored).
 	unsigned char *rgbs,		// 256 3-byte entries.
 	int maxval,			// Highest val. for each color.
 	int brightness			// Brightness control (100 = normal).
@@ -255,7 +254,6 @@ void Image_buffer16::set_palette
 
 void Image_buffer16::rotate_colors
 	(
-	SDL_Surface *surface,		// Surface to set (ignored).
 	int first,			// Palette index of 1st.
 	int num,			// # in range.
 	int upd				// 1 to update hardware now.
