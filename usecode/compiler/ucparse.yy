@@ -77,8 +77,8 @@ static int enum_val = -1;		// Keeps track of enum elements.
 /*
  *	Keywords:
  */
-%token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN BREAK GOTO CASE
-%token VAR INT CONST STRING ENUM
+%token IF ELSE RETURN WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
+%token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token ADD HIDE SCRIPT AFTER TICKS
 
@@ -106,11 +106,11 @@ static int enum_val = -1;		// Keeps track of enum elements.
  *	Expression precedence rules (lowest to highest):
  */
 %left AND OR
-%left EQUALS NEQUALS LTEQUALS GTEQUALS '<' '>' IN
+%left EQUALS NEQUALS LTEQUALS GTEQUALS '<' '>' UCC_IN
 %left '-' '+' '&'
 %left '*' '/' '%'
 %left NOT
-%left POINTS
+%left UCC_POINTS
 
 /*
  *	Production types:
@@ -285,7 +285,7 @@ enum_item:
 	;
 
 const_int_decl:
-	CONST INT const_int_decl_list ';'
+	UCC_CONST UCC_INT const_int_decl_list ';'
 	;
 
 const_int_decl_list:
@@ -384,7 +384,7 @@ array_loop_statement:
 	;
 
 start_array_loop:
-	start_for IDENTIFIER IN declared_var
+	start_for IDENTIFIER UCC_IN declared_var
 		{
 		Uc_var_symbol *var = function->add_symbol($2);
 		$$ = new Uc_arrayloop_statement(var, $4);
@@ -403,7 +403,7 @@ function_call_statement:
 
 special_method_call_statement:
 					/* Have 'primary' say something.*/
-	primary POINTS SAY '(' opt_expression_list ')' ';'
+	primary UCC_POINTS SAY '(' opt_expression_list ')' ';'
 		{
 		Uc_block_statement *stmts = new Uc_block_statement();
 					/* Set up 'show' call.		*/
@@ -413,7 +413,7 @@ special_method_call_statement:
 		stmts->add(new Uc_say_statement($5));
 		$$ = stmts;
 		}
-	| primary POINTS HIDE '(' ')' ';'
+	| primary UCC_POINTS HIDE '(' ')' ';'
 		{
 		$$ = new Uc_call_statement(
 			new Uc_call_expression(Uc_function::get_remove_face(),
@@ -665,7 +665,7 @@ expression:
 		{ $$ = new Uc_binary_expression(UC_AND, $1, $3); }
 	| expression OR expression
 		{ $$ = new Uc_binary_expression(UC_OR, $1, $3); }
-	| expression IN expression	/* Value in array. */
+	| expression UCC_IN expression	/* Value in array. */
 		{ $$ = new Uc_binary_expression(UC_IN, $1, $3); }
 	| expression '&' expression	/* append arrays */
 		{ $$ = new Uc_binary_expression(UC_ARRA, $1, $3); }
@@ -727,7 +727,7 @@ function_call:
 	;
 
 method_call:
-	primary POINTS routine_call	/* Really a way to do CALLE.	*/
+	primary UCC_POINTS routine_call	/* Really a way to do CALLE.	*/
 		{
 		$3->set_itemref($1);
 		$$ = $3;	
