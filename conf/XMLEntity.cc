@@ -34,6 +34,11 @@ using std::vector;
 static	string	encode_entity(const string &s);
 static	string	close_tag(const string &s);
 
+XMLnode::~XMLnode()
+{
+	for(vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
+		delete *i;
+}
 
 const string	&XMLnode::reference(const string &h,bool &exists)
 {
@@ -289,7 +294,7 @@ void	XMLnode::xmlparse(string &s,std::size_t &pos)
 			}
 			case '>':
 				// End of tag
-				if(s[pos-1]=='/')
+				if((s[pos-1]=='/') && (s[pos-2]=='<'))
 				{
 					++pos;
 					return; // An empty tag
