@@ -62,7 +62,7 @@ class Fast_pathfinder_client : public Pathfinder_client
 	{
 	int dist;			// Succeeds at this distance from goal.
 public:
-	Fast_pathfinder_client(int d = 0) : dist(0)
+	Fast_pathfinder_client(int d = 0) : dist(d)
 		{  }
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);

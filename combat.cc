@@ -99,6 +99,7 @@ Actor *Combat_schedule::find_foe
 	int mode			// Mode to use.
 	)
 	{
+	cout << "'" << npc->get_name() << "' is looking for a foe" << endl;
 	Vector vec(0, 20);
 	find_opponents(vec);		// Find all nearby.
 	int cnt = vec.get_cnt();

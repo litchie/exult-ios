@@ -34,6 +34,10 @@ void Setup_item_names (ifstream& items);
 /*
  *	Some offsets in text.flx:
  */
+const int first_ouch = 0x429;
+const int last_ouch = 0x42c;
+const int first_to_battle = 0x439;
+const int last_to_battle = 0x43b;
 const int first_awakened = 0x495;
 const int last_awakened = 0x49a;
 
