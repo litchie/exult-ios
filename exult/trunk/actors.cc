@@ -729,6 +729,29 @@ string Actor::get_name
 	}
 
 /*
+ *	Set property.
+ */
+
+void Actor::set_property
+	(
+	int prop, 
+	int val
+	)
+	{
+	if (prop >= 0 && prop < 12)
+		if (prop == (int) exp)
+			{		// Experience?  Check for new level.
+			int old_level = get_level();
+			properties[(int) exp] = (short) val;
+			int delta = get_level() - old_level;
+			if (delta > 0)
+				properties[(int) training] += 3*delta;
+			}
+		else
+			properties[prop] = (short) val;
+	}
+
+/*
  *	Set flag.
  */
 
@@ -1053,13 +1076,9 @@ void Actor::attacked
 					// Experience gained = strength???
 		int expval = get_property((int) strength);
 		if (is_monster())
-			{		// Attacker gains experience.
-			int old_level = attacker->get_level();
-			attacker->properties[(int) exp] += expval;
-					// New level?  Get training points.
-			if (attacker->get_level() > old_level)
-				attacker->properties[(int) training] += 3;
-			}
+					// Attacker gains experience.
+			attacker->set_property((int) exp,
+				attacker->get_property((int) exp) + expval);
 		}
 	}
 
@@ -1616,7 +1635,7 @@ int Dead_body::find_dead_companions
 							each = each->prev_body)
 		{
 		Actor *npc = gwin->get_npc(each->npc_num);
-		if (npc->get_party_id() >= 0)
+		if (npc && npc->get_party_id() >= 0)
 			list[cnt++] = each;
 		}
 	return cnt;

@@ -1997,15 +1997,15 @@ void Game_window::show_face
 			starty += 2*text_height;
 			}
 		else
-			starty = 8;
+			starty = 2;
 		actbox = clip_to_win(Rectangle(8, starty,
 			face->get_width() + 4, face->get_height() + 4));
 		info->face_rect = actbox;
 					// This is where NPC text will go.
 		info->text_rect = clip_to_win(Rectangle(
-			actbox.x + actbox.w + 12, actbox.y + 6,
-			get_width() - actbox.x - actbox.w - 32,
-							8*text_height));
+			actbox.x + actbox.w + 6, actbox.y + 6,
+			get_width() - actbox.x - actbox.w - 18,
+							9*text_height));
 		info->last_text_height = info->text_rect.h;
 		}
 	else

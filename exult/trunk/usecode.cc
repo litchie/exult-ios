@@ -465,7 +465,7 @@ void Usecode_machine::append_string
 	inline int Usecode_machine::popi()
 		{
 		Usecode_value val = pop();
-		return (val.get_int_value());
+		return val.need_int_value();
 		}
 					// Push/pop strings.
 	inline void Usecode_machine::pushs(char *s)
@@ -1078,7 +1078,7 @@ int Usecode_machine::remove_party_items
 	Usecode_value& flagval		// Flag??
 	)
 	{
-	int quantity = quantval.get_int_value();
+	int quantity = quantval.need_int_value();
 	Usecode_value all(-357);	// See if they exist.
 	Usecode_value avail = count_objects(all, shapeval, qualval, frameval);
 	if (avail.get_int_value() < quantity)
