@@ -36,6 +36,7 @@
 #include "gameclk.h"
 #include "mouse.h"
 #include "Text_button.h"
+#include "palette.h"
 
 using std::cerr;
 using std::endl;
@@ -224,6 +225,7 @@ void VideoOptions_gump::save_settings()
 	   ((fullscreen==1)&&(!gwin->get_win()->is_fullscreen())))
 		{
 		gwin->get_win()->toggle_fullscreen();
+		gwin->get_pal()->apply(false);
 		gwin->paint();
 		}
 	gwin->set_painted();
