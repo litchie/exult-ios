@@ -1499,18 +1499,22 @@ void Actor::activate
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||
 		(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
 	
-	bool show_party_inv = gwin->get_gump_man()->showing_gumps(true) || gwin->in_combat();
-
+	bool show_party_inv = gwin->get_gump_man()->showing_gumps(true) || 
+							gwin->in_combat();
+	Schedule::Schedule_types sched = get_schedule_type();
 	if (!npc_num ||		// Avatar
 			(show_party_inv && get_party_id() >= 0 && // Party
 			(serpent || (npc_num >= 1 && npc_num <= 10))) ||
-			(cheat.in_pickpocket() && event == 1))		// Pickpocket cheat && double click
+					// Pickpocket cheat && double click
+			(cheat.in_pickpocket() && event == 1))
 		show_inventory();
 					// Asleep (but not awakened)?
-	else if ((get_schedule_type() == (int) Schedule::sleep &&
+	else if ((sched == Schedule::sleep &&
 		(get_framenum()&0xf) == Actor::sleep_frame) ||
 		 get_flag(Obj_flags::asleep))
 		return;
+	else if (sched == Schedule::combat && party_id < 0)
+		return;			// Too busy fighting.
 					// Usecode
 					// Failed copy-protection?
 	else if (serpent &&

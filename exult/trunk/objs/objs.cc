@@ -1275,6 +1275,8 @@ static void Debug_lt
 /*
  *	Should obj1 be rendered before obj2?
  *
+ *	+++++++++This should go away, replaced by compare().
+ *
  *	Output:	1 if so, 0 if not, -1 if cannot compare.
  */
 int Game_object::lt
@@ -1428,10 +1430,8 @@ inline void Compare_ranges
 		else if (from1 > from2)
 			cmp = 1;
 		else if (to1 - from1 < to2 - from2)
-//			cmp = -1;
 			cmp = 1;
 		else if (to1 - from1 > to2 - from2)
-//			cmp = 1;
 			cmp = -1;
 		else
 			cmp = 0;
@@ -1469,17 +1469,10 @@ int Game_object::compare
 							ycmp, yover);
 	Compare_ranges(inf1.zbot, inf1.ztop, inf2.zbot, inf2.ztop,
 							zcmp, zover);
+	if (!xcmp && !ycmp && !zcmp)
+		return 0;
 	if (xcmp >= 0 && ycmp >= 0 && zcmp >= 0)
 		return 1;		// GTE in all dimensions.
-#if 0	/* Fix above means this isn't needed, I think */
-					// Experiment to fix tapestries in
-					//   Fawn, LB's castle:
-	if (xover && yover && zover && inf1.tz == inf2.tz)
-		{
-		if (!xcmp || !ycmp)	// Inside N-S wall?  Take shorter.
-			return -zcmp;
-		}
-#endif
 	if (xcmp <= 0 && ycmp <= 0 && zcmp <= 0)
 		return -1;		// LTE in all dimensions.
 	if (yover)			// Y's overlap.
