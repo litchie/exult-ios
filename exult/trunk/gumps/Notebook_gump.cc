@@ -244,8 +244,7 @@ Notebook_gump::Notebook_gump
 	const int lpagex = 35, rpagex = 300, lrpagey = 12;
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
  	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
-	if (!notes.size())
-		add_new();
+	add_new();			// Add new note to end.
 	}
 
 Notebook_gump *Notebook_gump::create
@@ -266,6 +265,17 @@ Notebook_gump::~Notebook_gump
 	(
 	)
 	{
+	if (notes.size())
+		{			// Check for empty 'new' note.
+		One_note *note = notes.back();
+		if (note->is_new && !note->textlen)
+			{
+			notes.pop_back();
+			delete note;
+			}
+		else
+			note->is_new = false;
+		}
 	delete leftpage;
 	delete rightpage;
 	if (this == instance)
@@ -510,6 +520,12 @@ bool Notebook_gump::handle_kbd_event
 	case SDLK_END:
 		// ++++++Finish.
 		break;		
+	case SDLK_PAGEUP:
+		change_page(-1);
+		break;
+	case SDLK_PAGEDOWN:
+		change_page(1);
+		break;
 	default:
 #if 1	/* Assumes unicode is enabled. */
 		if ((unicode & 0xFF80) == 0 )
