@@ -287,6 +287,9 @@ public:
 		{ return 0; }		// For now.
 					// Get frame if rotated clockwise.
 	virtual int get_rotated_frame(int quads);
+					// Step onto an (adjacent) tile.
+	virtual int step(Tile_coord t, int frame)
+		{ return 0; }
 					// Under attack.
 	virtual void attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);

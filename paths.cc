@@ -197,9 +197,18 @@ int Fast_pathfinder_client::get_step_cost
 	int new_lift;			// Might climb/descend.
 					// For now, look at 1 tile's height.
 	if (olist->is_blocked(1, to.tz, tx, ty, new_lift))
+		{
+		int i;			// Look upwards a bit.
+		for (i = to.tz + 1; i < to.tz + 3; i++)
+			if (!olist->is_blocked(1, i, tx, ty, new_lift))
+				return 1;
+					// Look downwards a bit.
+		for (i = to.tz - 1; i >= 0 && i >= to.tz - 3; i--) 
+			if (!olist->is_blocked(1, i, tx, ty, new_lift))
+				return 1;
 		return -1;
-	else
-		return 1;
+		}
+	return 1;
 	}
 
 /*
@@ -238,7 +247,7 @@ int Fast_pathfinder_client::is_grabable
 	Tile_coord to			// To this spot.
 	)
 	{
-	from.tz = to.tz;		// Just look along dest's lift.
+//No.	from.tz = to.tz;		// Just look along dest's lift.
 	Fast_pathfinder_client client(1);
 	Astar path;
 	return path.NewPath(from, to, &client);

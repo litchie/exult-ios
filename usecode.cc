@@ -305,19 +305,29 @@ void Scheduled_usecode::handle_event
 				static short offset[16] = {
 					-1,0, -1,1, 1,0, 1,-1, 0,-1,
 					-1,-1, -1,0, -1,1 };
-				Actor *act = usecode->as_actor(obj);
-				if (!act)
-					break;
 				int dir = opcode&7;
-				Frames_sequence *frames = act->get_frames(dir);
+				int frame = obj->get_framenum();
+				Actor *act = usecode->as_actor(obj);
+				if (act)
+					{
+					Frames_sequence *frames = 
+							act->get_frames(dir);
 					// Get frame (updates frame_index).
-				int frame = frames->get_next(frame_index);
-				Tile_coord tile = act->get_abs_tile_coord() +
-				  	Tile_coord(offset[2*dir],
+					frame = frames->get_next(frame_index);
+					}
+				Barge_object *brg = 
+					dynamic_cast<Barge_object *> (obj);
+				int repeat = brg ? 4 : 1;
+				for (int i = 0; i < repeat; i++)
+					{
+					Tile_coord tile = 
+						obj->get_abs_tile_coord() +
+				  		Tile_coord(offset[2*dir],
 							offset[2*dir + 1], 0);
-				act->step(tile, frame);
-				gwin->paint_dirty();
-				gwin->show();
+					obj->step(tile, frame);
+					gwin->paint_dirty();
+					gwin->show();
+					}
 				}
 			else
 			        cout << "Unhandled sched. opcode " << hex << 
@@ -1391,6 +1401,7 @@ USECODE_INTRINSIC(pop_answers)
 		{
 		answers=answer_stack.front();
 		answer_stack.pop_front();
+		user_choice = 0;	// Added 7/24/2000.
 		}
 	return(no_ret);
 }
@@ -3096,15 +3107,18 @@ int debug = 0;				// 2 for more stuff.
 
 /*
  *	Interpret a single usecode function.
+ *
+ *	Output:	0 if ABRT executed.
  */
 
-void Usecode_machine::run
+int Usecode_machine::run
 	(
 	Usecode_function *fun,
 	int event			// Event (??) that caused this call.
 	)
 	{
 	call_depth++;
+	int abort = 0;			// Flag if ABRT executed.
 #if DEBUG
 	if (debug >= 0)
 		printf("Running usecode %04x with event %d\n", fun->id, event);
@@ -3153,7 +3167,7 @@ void Usecode_machine::run
 			{
 		case 0x04:		// Jump if done with function.
 			offset = (short) Read2(ip);
-			if (set_ret_value || !answers.answers.size())
+			if (set_ret_value || !answers.answers.size() || abort)
 				{
 				ip += offset;
 				user_choice = 0;
@@ -3172,8 +3186,9 @@ void Usecode_machine::run
 			ip += offset;
 			break;
 		case 0x07:		// Guessing CMPS.
-			{
-			if (!get_user_choice())
+			{		// Skip out if ABRT in effect.
+				// ++++Trying set_ret_value:  7/24/00
+			if (abort || set_ret_value || !get_user_choice())
 				user_choice = "";
 			int cnt = Read2(ip);	// # strings.
 			offset = (short) Read2(ip);
@@ -3336,8 +3351,9 @@ void Usecode_machine::run
 			}
 		case 0x24:		// CALL.
 			offset = Read2(ip);
-			call_usecode_function(externals[2*offset] + 
-					256*externals[2*offset + 1]);
+			if (!call_usecode_function(externals[2*offset] + 
+					256*externals[2*offset + 1]))
+				abort = 1;
 			break;
 		case 0x25:		// RET.
 					// Experimenting...
@@ -3475,10 +3491,11 @@ void Usecode_machine::run
 			pushi((long) caller_item);
 			break;
 		case 0x3f:		// Guessing some kind of return.
-					// Experimenting...
+					// Experimenting... ABRT.
 			show_pending_text();
 			ip = endp;
 			sp = save_sp;		// Restore stack.
+			abort = 1;
 			break;
 		case 0x40:		// Unknown.
 			break;
@@ -3510,10 +3527,18 @@ void Usecode_machine::run
 				arr.put_elem(index, val);
 			break;
 			}
-		case 0x47:		// CALLE.
+		case 0x47:		// CALLE.  Stack has caller_item.
+			{
+			Game_object *prev_item = caller_item;
+			Usecode_value ival = pop();
+			caller_item = get_item(ival);
+			push(ival);
 			offset = Read2(ip);
-			call_usecode_function(offset, event);
+			if (!call_usecode_function(offset, event))
+				abort = 1;
+			caller_item = prev_item;
 			break;
+			}
 		case 0x48:		// PUSH EVENTID.
 			pushi(event);
 			break;
@@ -3539,12 +3564,13 @@ void Usecode_machine::run
 #endif
 	cur_function = save_fun;
 	call_depth--;
+	return (abort == 0);		// Return 0 if ABRT.
 	}
 
 /*
  *	Call a usecode function.
  *
- *	Output:	0 if not found.
+ *	Output:	0 if not found or if ABRT executed.
  */
 
 int Usecode_machine::call_usecode_function
@@ -3568,8 +3594,7 @@ int Usecode_machine::call_usecode_function
 		}
 	if (parm0)
 		push(*parm0);
-	run(fun, event);		// Do it.
-	return (1);
+	return run(fun, event);		// Do it.  Rets. 0 if aborted.
 	}
 
 /*

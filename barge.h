@@ -89,7 +89,8 @@ public:
 	virtual int drop(Game_object *obj);
 					// Render.
 	virtual void paint(Game_window *gwin);
-	int step(Tile_coord t);		// Step onto an (adjacent) tile.
+					// Step onto an (adjacent) tile.
+	virtual int step(Tile_coord t, int frame = -1);
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
 	virtual void elements_read();	// Called when all member items read.
