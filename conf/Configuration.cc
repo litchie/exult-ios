@@ -24,24 +24,32 @@ Configuration::~Configuration()
 {}
 
 
-string	&Configuration::value(const char *key)
+string	&Configuration::value(const char *key,bool &exists)
 {
 	string	s=key;
-	return xmltree.reference(s);
+	exists=false;
+	return xmltree.reference(s,exists);
 }
 
-void	Configuration::value(const char *key,string &s)
+void	Configuration::value(const char *key,string &s,const char *defaultvalue)
 {
-	s=value(key);
+	bool	exists;
+	s=value(key,exists);
+	if(!exists)
+		s=defaultvalue;
 }
 
-void	Configuration::value(const char *key,int &n)
+void	Configuration::value(const char *key,int &n,int defaultvalue)
 {
 	n=0;
 	string	s;
+	bool	exists;
 
-	s=value(key);
-	n=atoi(s.c_str());
+	s=value(key,exists);
+	if(!exists)
+		n=defaultvalue;
+	else
+		n=atoi(s.c_str());
 }
 
 

@@ -34,16 +34,22 @@ XMLnode::XMLnode() {}
 XMLnode::~XMLnode() {}
 
 
-string	&XMLnode::reference(string &h)
+string	&XMLnode::reference(string &h,bool &exists)
 {
 	static string dummy("");
 	if(h.find('/')==string::npos)
 		{
 		// Must refer to me.
 		if(entity.id==h)
+			{
+			exists=true;
 			return entity.content;
+			}
 		else
+			{
+			exists=false;
 			return dummy;
+			}
 		}
 	// Otherwise we want to split the string at the first /
 	// then locate the branch to walk, and pass the rest
@@ -56,8 +62,9 @@ string	&XMLnode::reference(string &h)
 		it!=nodelist.end();++it)
 		{
 		if(it->entity.id==k2)
-			return it->reference(k);
+			return it->reference(k,exists);
 		}
 
 	return dummy;
 }
+
