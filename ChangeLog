@@ -1,3 +1,6 @@
+2001-08-10  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* configure.in: also build data files even with --disable-tools (oops)
+
 2001-08-10  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Got to set flag 0x10 even if in SI, since it gets
