@@ -53,9 +53,10 @@ public:
 		SaI = 4,
 		SuperEagle = 5,
 		Super2xSaI = 6,
+		OpenGL = 7,
 
 		NoScaler = -1,
-		NumScalers = 7
+		NumScalers = 8
 	};
 	static const char *ScalerNames[];
 	static ScalerType get_scaler_for_name(const std::string &name);
@@ -98,6 +99,7 @@ protected:
 	void show_scaled8to555_BilinearPlus(int x, int y, int w, int h);
 	void show_scaled8to565_BilinearPlus(int x, int y, int w, int h);
 	void show_scaled8to32_BilinearPlus(int x, int y, int w, int h);	
+	void show_scaledOpenGL(int x, int y, int w, int h);
 	/*
 	 *	Image info.
 	 */
