@@ -6,7 +6,7 @@ Exult Release Checklist
   - Makefile.common
   - win32/exultico.rc, win32/exultstudioico.rc (PRODUCTVERSION, "FileVersion" and "ProductVersion")
   - msvcstuff\msvc_kludges.h
-  - win32\exconfig\exconfig.rc
+  - msvcstuff\exconfig\exconfig.rc
 
 * update NEWS; make sure version and date are correct
 
