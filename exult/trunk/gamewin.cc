@@ -1380,7 +1380,7 @@ void Game_window::brighten
 	}
 
 /*
- *	Shift view by one chunk.
+ *	Shift view by one tile.
  */
 #if 0
 // +++++++++++++++++ Got to shift the dirty rectangle list in all 4 of
@@ -1407,8 +1407,9 @@ void Game_window::view_right
 	read_map_data();		// Be sure objects are present.
 					// Shift image to left.
 	win->copy(tilesize, 0, w - tilesize, h, 0, 0);
+	dirty.x -= tilesize;		// Shift dirty rect.
+	dirty = clip_to_win(dirty);
 					// Paint 1 column to right.
-//	paint(w - tilesize, 0, tilesize, h);
 	add_dirty(Rectangle(w - tilesize, 0, tilesize, h));
 					// Find newly visible NPC's.
 	int new_rcx = (scrolltx + (w - 1)/tilesize)/tiles_per_chunk;
@@ -1432,12 +1433,10 @@ void Game_window::view_left
 		}
 	read_map_data();		// Be sure objects are present.
 	win->copy(0, 0, get_width() - tilesize, get_height(), tilesize, 0);
+	dirty.x += tilesize;		// Shift dirty rect.
+	dirty = clip_to_win(dirty);
 	int h = get_height();
-#if 0
-	paint(0, 0, tilesize, h);
-#else	/* +++++Experiment. */
 	add_dirty(Rectangle(0, 0, tilesize, h));
-#endif
 					// Find newly visible NPC's.
 	int new_lcx = scrolltx/tiles_per_chunk;
 	if (new_lcx != (scrolltx + 1)/tiles_per_chunk)
@@ -1463,7 +1462,8 @@ void Game_window::view_down
 		}
 	read_map_data();		// Be sure objects are present.
 	win->copy(0, tilesize, w, h - tilesize, 0, 0);
-//	paint(0, h - tilesize, w, tilesize);
+	dirty.y -= tilesize;		// Shift dirty rect.
+	dirty = clip_to_win(dirty);
 	add_dirty(Rectangle(0, h - tilesize, w, tilesize));
 					// Find newly visible NPC's.
 	int new_bcy = (scrollty + (h - 1)/tilesize)/tiles_per_chunk;
@@ -1488,7 +1488,8 @@ void Game_window::view_up
 	read_map_data();		// Be sure objects are present.
 	int w = get_width();
 	win->copy(0, 0, w, get_height() - tilesize, 0, tilesize);
-//	paint(0, 0, w, tilesize);
+	dirty.y += tilesize;		// Shift dirty rect.
+	dirty = clip_to_win(dirty);
 	add_dirty(Rectangle(0, 0, w, tilesize));
 					// Find newly visible NPC's.
 	int new_tcy = scrollty/tiles_per_chunk;
