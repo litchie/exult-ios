@@ -44,7 +44,8 @@ public:
 		OT_Bow = 4,
 		OT_Crossbow = 5,
 		OT_Shield = 6,
-		OT_Helm = 7
+		OT_Helm = 7,
+		OT_Musket = 8
 	};
 
 	enum Paperdoll_file

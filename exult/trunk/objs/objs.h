@@ -314,6 +314,9 @@ public:
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0)
 		{ return 0; }
+					// Add to NPC 'ready' spot.
+	virtual int add_readied(Game_object *obj, int index, int dont_check = 0, int force_pos = 0)
+		{ return add(obj, dont_check); }
 	virtual int add_quantity(int delta, int shapenum, int qual = c_any_qual,
 				int framenum = c_any_framenum, int dontcreate = 0)
 		{ return delta; }

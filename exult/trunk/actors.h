@@ -353,7 +353,7 @@ public:
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0);
 					// Add to NPC 'readied' spot.
-	virtual int add_readied(Game_object *obj, int index);
+	virtual int add_readied(Game_object *obj, int index, int dont_check = 0, int force_pos = 0);
 	virtual int find_readied(Game_object *obj);
 	virtual Game_object *get_readied(int index) const
 		{
@@ -383,7 +383,8 @@ public:
 					// Don't write out to IREG file.
 	virtual void write_ireg(std::ostream& out)
 		{  }
-	void write(std::ostream& nfile);// Write out (to 'npc.dat').
+	void write(std::ostream& nfile);		// Write out (to 'npc.dat').
+	virtual void write_contents(std::ostream& out);	// Write contents
 	void set_actor_shape(); 	// Set shape based on sex and skin color
 	void set_polymorph(int shape);	// Set a polymorph shape
 	void set_polymorph_default();	// Set the default shape

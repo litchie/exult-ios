@@ -61,9 +61,6 @@ public:
 	virtual void remove(Game_object *obj);
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0);
-					// Add to NPC 'ready' spot.
-	virtual int add_readied(Game_object *obj, int index)
-		{ return add(obj); }
 					// Change member shape.
 	virtual void change_member_shape(Game_object *obj, int newshape);
 					// Find object's spot.
@@ -97,7 +94,7 @@ public:
 					// Write out to IREG file.
 	virtual void write_ireg(std::ostream& out);
 					// Write contents in IREG format.
-	void write_contents(std::ostream& out);
+	virtual void write_contents(std::ostream& out);
 	};
 
 #endif

@@ -353,7 +353,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items[] =
 	{     231, -1,       Actor::belt,   OT_Single,  false, paperdoll,    67,     1},
 	// Spear
 	{     592, -1,      Actor::lhand,    OT_Staff,  false, paperdoll,   103,     0 },
-	{     592, -1,       Actor::back,    OT_Staff,  false, paperdoll,   103,     1 },
+	{     592, -1,Actor::back2h_spot,    OT_Staff,  false, paperdoll,   103,     1 },
 	// Blowgun
 	{     563, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    12,     0 },
 	{     563, -1,       Actor::belt,   OT_Single,  false, paperdoll,    12,     1 },
@@ -1021,7 +1021,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     591, -1,       Actor::belt,   OT_Single,  false, paperdoll,   107,     1 },
 	// Spear
 	{     592, -1,      Actor::lhand,    OT_Staff,  false, paperdoll,   103,     0 },
-	{     592, -1,       Actor::back,    OT_Staff,  false, paperdoll,   103,     1 },
+	{     592, -1,Actor::back2h_spot,    OT_Staff,  false, paperdoll,   103,     1 },
 	// Throwing Axe
 	{     593, -1,      Actor::lhand,   OT_Single,  false, paperdoll,   111,     0 },
 	{     593, -1,       Actor::belt,   OT_Single,  false, paperdoll,   111,     1 },
@@ -1244,10 +1244,10 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 
 
 	// Musket **NEEDS ART**
-	{     278, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    -1,     0 },
-	{     278, -1,Actor::back2h_spot,   OT_Single,  false, paperdoll,    -1,     1 },
+	{     278, -1,      Actor::lhand,   OT_Musket,  false, paperdoll,    -1,     0 },
+	{     278, -1,Actor::back2h_spot,   OT_Musket,  false, paperdoll,    -1,     1 },
 	// Ammunition **NEEDS ART**
-	{     581, -1,       Actor::ammo,      OT_Bow,  false, paperdoll,    -1,    2,      1, 0 },
+	{     581, -1,       Actor::ammo,   OT_Musket,  false, paperdoll,    -1,    2,      1, 0 },
 
 	// Terminator
 	{ 0 }
