@@ -36,7 +36,8 @@ Uc_function::Uc_function
 	(
 	Uc_function_symbol *p
 	) : top(0), proto(p), cur_scope(&top), num_parms(0),
-		num_locals(0), num_links(0), statement(0)
+		num_locals(0), num_links(0), statement(0),
+		text_data(0), text_data_size(0)
 	{
 	const vector<char *>& parms = proto->get_parms();
 	for (vector<char *>::const_iterator it = parms.begin();
@@ -60,9 +61,11 @@ Uc_function::~Uc_function
 
 /*
  *	Add a new variable to the current scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
  */
 
-Uc_symbol *Uc_function::add_symbol
+Uc_var_symbol *Uc_function::add_symbol
 	(
 	char *nm
 	)
@@ -73,12 +76,12 @@ Uc_symbol *Uc_function::add_symbol
 		char msg[180];
 		sprintf(msg, "Symbol '%s' already declared", nm);
 		Uc_location::yyerror(msg);
-		return sym;
+		return 0;
 		}
 					// Create & assign slot.
-	sym = new Uc_symbol(nm, num_parms + num_locals++);
-	cur_scope->add(sym);
-	return sym;
+	Uc_var_symbol *var = new Uc_var_symbol(nm, num_parms + num_locals++);
+	cur_scope->add(var);
+	return var;
 	}
 
 /*
@@ -118,8 +121,16 @@ int Uc_function::add_string
 	{
 					// NOTE:  We could search for an
 					//   existing string & return that!
-	int offset = text_data.length();// This is where it will go.
-	text_data.append(text);
+	int offset = text_data_size;	// This is where it will go.
+	int textlen = strlen(text) + 1;	// Got to include ending null.
+	char *new_text_data = new char[text_data_size + textlen];
+	if (text_data_size)		// Copy over old.
+		memcpy(new_text_data, text_data, text_data_size);
+					// Append new.
+	memcpy(new_text_data + text_data_size, text, textlen);
+	delete text_data;
+	text_data = new_text_data;
+	text_data_size += textlen;
 	return offset;
 	}
 
@@ -133,20 +144,18 @@ void Uc_function::gen
 	)
 	{
 					// Start with function #.
-	Write2(out, proto->get_function_num());
+	Write2(out, proto->get_usecode_num());
 	ostrstream code;		// Generate code here first.
 	if (statement)
-		statement->gen(code);
+		statement->gen(code, this);
 	int codelen = code.pcount();	// Get its length.
-					// Get data length.
-	int datalen = text_data.length();
-					// Total: datalen + data + #args +
-					//   #locals + #links + links +
+					// Total: text_data_size + data + 
+					//   #args + #locals + #links + links +
 					//   codelen.
-	int totallen =  2 + datalen + 2 + 2 + 2 + 2*num_links + codelen;
+	int totallen =  2 + text_data_size + 2 + 2 + 2 + 2*num_links + codelen;
 	Write2(out, totallen);
-	Write2(out, datalen);		// Now data.
-	out.write(text_data.data(), datalen);
+	Write2(out, text_data_size);		// Now data.
+	out.write(text_data, text_data_size);
 	Write2(out, num_parms);		// Counts.
 	Write2(out, num_locals);
 	Write2(out, 0);			// ++++Num_links.

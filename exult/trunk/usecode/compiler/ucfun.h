@@ -41,7 +41,8 @@ class Uc_function
 	int num_parms;			// # parameters.
 	int num_locals;			// Counts locals.
 	int num_links;			// # links to external functions.
-	string text_data;		// All strings.
+	char *text_data;		// All strings.
+	int text_data_size;
 	Uc_statement *statement;	// Statement(s) in function.
 public:
 	Uc_function(Uc_function_symbol *p);
@@ -58,7 +59,7 @@ public:
 		{ return cur_scope->search(nm); }
 	Uc_symbol *search_up(char *nm)
 		{ return cur_scope->search_up(nm); }
-	Uc_symbol *add_symbol(char *nm);// Add symbol to current scope.
+	Uc_var_symbol *add_symbol(char *nm);// Add symbol to current scope.
 					// Add string constant.
 	Uc_symbol *add_string_symbol(char *nm, char *text);
 	int add_string(char *text);
