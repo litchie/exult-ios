@@ -479,7 +479,6 @@ void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 
 			// Need the chunk cache (needs to be setup!)
 			Map_chunk *mc = gwin->map->get_chunk(cx, cy);
-			mc->setup_cache();
 			Chunk_cache *chunk = mc->need_cache();
 
 			// For each line in the chunk

@@ -56,7 +56,7 @@ using std::rand;
 
 Chunk_cache::Chunk_cache
 	(
-	) : setup_done(0), egg_objects(4)
+	) : egg_objects(4)
 	{
 	memset((char *) &blocked[0], 0, sizeof(blocked));
 	memset((char *) &eggs[0], 0, sizeof(eggs));
@@ -326,8 +326,6 @@ void Chunk_cache::setup
 			update_object(chunk, obj, 1);
 			
 	obj_list = chunk;
-	
-	setup_done = 1;
 	}
 
 /*
@@ -757,7 +755,6 @@ void Map_chunk::add
 					newobj, ord)->from_below++;
 		first_nonflat = newobj;	// Inserted before old first_nonflat.
 		}
-			// +++++Maybe should skip test, do update_object(...).
 	if (cache)			// Add to cache.
 		cache->update_object(this, newobj, 1);
 	if (ord.info.is_light_source())	// Count light sources.
