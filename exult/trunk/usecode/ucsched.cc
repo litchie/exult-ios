@@ -253,6 +253,13 @@ void Scheduled_usecode::handle_event
 			usecode->call_usecode(fun, obj, ev);
 			break;
 			}
+		case 0x56:		// Play speech track.
+			{
+			Usecode_value& val = arrval.get_elem(++i);
+			int track = val.get_int_value();
+			if (track >= 0)
+				Audio::get_ptr()->start_speech(track);
+			}
 		case 0x58:		// Play sound effect!
 			{
 			Usecode_value& val = arrval.get_elem(++i);
