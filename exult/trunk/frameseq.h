@@ -41,5 +41,14 @@ public:
 			index = 1;
 		return frames[index];
 		}
+					// Find frame, masking off rotation.
+					// Rets. 0 if not found.
+	int find_unrotated(unsigned char frame)
+		{
+		for (int i = num_frames - 1; i > 0; i--)
+			if (((frame ^ frames[i])&0xf) == 0)
+				return i;
+		return 0;
+		}
 	};
 #endif

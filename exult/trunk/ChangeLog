@@ -1,3 +1,9 @@
+2001-09-05  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc (Actor): Fiddling with follow() again.
+
+	* frameseq.h: Find_unrotated() added to make walking a bit smoother.
+
 2001-09-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* tools/Makefile.am: let automake handle the .l and .y files
 

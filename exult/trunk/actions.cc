@@ -146,8 +146,8 @@ Path_walking_actor_action::Path_walking_actor_action
 	(
 	PathFinder *p,			// Pathfinder, or 0 for Astar.
 	int maxblk			// Max. retries when blocked.
-	) : reached_end(false), path(p), frame_index(0), from_offscreen(false),
-	    subseq(0), blocked(0), max_blocked(maxblk)
+	) : reached_end(false), path(p), from_offscreen(false),
+	    subseq(0), blocked(0), frame_index(0), max_blocked(maxblk)
 	{
 	if (!path)
 		path = new Astar();
@@ -242,7 +242,9 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	Tile_coord cur = actor->get_abs_tile_coord();
 	int newdir = (int) Get_direction4(cur.ty - tile.ty, tile.tx - cur.tx);
 	Frames_sequence *frames = actor->get_frames(newdir);
-					// Get frame (updates frame_index).
+	if (!frame_index)		// First time?  Init.
+		frame_index = frames->find_unrotated(actor->get_framenum());
+					// Get next (updates frame_index).
 	int frame = frames->get_next(frame_index);
 	if (from_offscreen)		// Teleport to 1st spot.
 		{
