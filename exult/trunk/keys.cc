@@ -56,102 +56,103 @@ const struct Action {
 	bool show;
 	bool cheat;
 	Exult_Game game;
+    bool during_dont_move;
 } ExultActions[] = {
-	{ "QUIT", ActionQuit, "Quit", true, false, NONE },
-	{ "SAVE_RESTORE", ActionFileGump, "Save/restore", true, false, NONE },
-	{ "QUICKSAVE", ActionQuicksave, "Quick-save", true, false, NONE },
+	{ "QUIT", ActionQuit, "Quit", true, false, NONE, true },
+	{ "SAVE_RESTORE", ActionFileGump, "Save/restore", true, false, NONE, true },
+	{ "QUICKSAVE", ActionQuicksave, "Quick-save", true, false, NONE, false },
 	{ "QUICKRESTORE", 
-	  ActionQuickrestore, "Quick-restore", true, false, NONE },
-	{ "ABOUT", ActionAbout, "About Exult", true, false, NONE },
-	{ "HELP", ActionHelp, "List keys", true, false, NONE },
-	{ "CLOSE_GUMPS", ActionCloseGumps, "Close gumps", false, false, NONE },
-	{ "CLOSE_OR_MENU", ActionCloseOrMenu, "Game menu", true, false, NONE },
+	  ActionQuickrestore, "Quick-restore", true, false, NONE, true },
+	{ "ABOUT", ActionAbout, "About Exult", true, false, NONE, false },
+	{ "HELP", ActionHelp, "List keys", true, false, NONE, false },
+	{ "CLOSE_GUMPS", ActionCloseGumps, "Close gumps", false, false, NONE, false},
+	{ "CLOSE_OR_MENU", ActionCloseOrMenu, "Game menu", true, false, NONE, true },
 	{ "SCREENSHOT",
-	  ActionScreenshot, "Take screenshot", true, false, NONE  },
-	{ "GAME_MENU", ActionMenuGump, "Game Menu", true, false, NONE },
+	  ActionScreenshot, "Take screenshot", true, false, NONE, true },
+	{ "GAME_MENU", ActionMenuGump, "Game Menu", true, false, NONE, true },
 	{ "OLD_FILE_GUMP",
-	  ActionOldFileGump, "Save/restore", true, false, NONE },
+	  ActionOldFileGump, "Save/restore", true, false, NONE, true },
 	
-	{ "REPAINT", ActionRepaint, "Repaint screen", false, false, NONE },
+	{ "REPAINT", ActionRepaint, "Repaint screen", false, false, NONE, true },
 	{ "RESOLUTION_INCREASE", 
-	  ActionResIncrease, "Increase resolution", true, true, NONE },
+	  ActionResIncrease, "Increase resolution", true, true, NONE, true },
 	{ "RESOLUTION_DECREASE", 
-	  ActionResDecrease,  "Decrease resolution", true, true, NONE },
+	  ActionResDecrease,  "Decrease resolution", true, true, NONE, true },
 	{ "BRIGHTER", 
-	  ActionBrighter, "Increase brightness", true, false, NONE },
-	{ "DARKER", ActionDarker, "Decrease brightness", true, false, NONE },
+	  ActionBrighter, "Increase brightness", true, false, NONE, true },
+	{ "DARKER", ActionDarker, "Decrease brightness", true, false, NONE, true },
 	{ "TOGGLE_FULLSCREEN", 
-	  ActionFullscreen, "Toggle fullscreen", true, false, NONE },
+	  ActionFullscreen, "Toggle fullscreen", true, false, NONE, true },
 	
-	{ "USEITEM", ActionUseItem, "Use item", false, false, NONE },
-	{ "TOGGLE_COMBAT", ActionCombat, "Toggle combat", true, false, NONE },
-	{ "TARGET_MODE", ActionTarget, "Target mode", true, false, NONE },
-	{ "INVENTORY", ActionInventory, "Show inventory", true, false, NONE },
-	{ "TRY_KEYS", ActionTryKeys, "Try keys", true, false, NONE },
-	{ "STATS", ActionStats, "Show stats", true, false, NONE },
+	{ "USEITEM", ActionUseItem, "Use item", false, false, NONE, false },
+	{ "TOGGLE_COMBAT", ActionCombat, "Toggle combat", true, false, NONE, false },
+	{ "TARGET_MODE", ActionTarget, "Target mode", true, false, NONE, false },
+	{ "INVENTORY", ActionInventory, "Show inventory", true, false, NONE, false },
+	{ "TRY_KEYS", ActionTryKeys, "Try keys", true, false, NONE, false },
+	{ "STATS", ActionStats, "Show stats", true, false, NONE, false },
 	{ "COMBAT_STATS",
-	  ActionCombatStats, "Show combat stats", true, false, SERPENT_ISLE },
+	  ActionCombatStats, "Show combat stats", true, false, SERPENT_ISLE, false },
 	{ "FACE_STATS",
-	  ActionFaceStats, "Change Face Stats State", true, false, NONE },
+	  ActionFaceStats, "Change Face Stats State", true, false, NONE, false },
 	
 	{ "SHOW_SI_INTRO",
-	  ActionSIIntro, "Show Alternate SI intro", true, true, SERPENT_ISLE },
-	{ "SHOW_ENDGAME", ActionEndgame, "Show endgame", true, true, NONE },
-	{ "SCROLL_LEFT", ActionScrollLeft, "Scroll left", true, true, NONE },
-	{ "SCROLL_RIGHT", ActionScrollRight, "Scroll right", true, true, NONE },
-	{ "SCROLL_UP", ActionScrollUp, "Scroll up", true, true, NONE },
-	{ "SCROLL_DOWN", ActionScrollDown, "Scroll down", true, true, NONE },
-	{ "CENTER_SCREEN", ActionCenter, "Center screen", true, true, NONE },
+	  ActionSIIntro, "Show Alternate SI intro", true, true, SERPENT_ISLE, false },
+	{ "SHOW_ENDGAME", ActionEndgame, "Show endgame", true, true, NONE, false },
+	{ "SCROLL_LEFT", ActionScrollLeft, "Scroll left", true, true, NONE, false },
+	{ "SCROLL_RIGHT", ActionScrollRight, "Scroll right", true, true, NONE, false },
+	{ "SCROLL_UP", ActionScrollUp, "Scroll up", true, true, NONE, false },
+	{ "SCROLL_DOWN", ActionScrollDown, "Scroll down", true, true, NONE, false },
+	{ "CENTER_SCREEN", ActionCenter, "Center screen", true, true, NONE, false },
 	{ "SHAPE_BROWSER",
-	  ActionShapeBrowser, "Shape browser", true, true, NONE },
+	  ActionShapeBrowser, "Shape browser", true, true, NONE, false },
 	{ "CREATE_ITEM",
-	  ActionCreateShape, "Create last shape", true, true, NONE },
+	  ActionCreateShape, "Create last shape", true, true, NONE, false },
 	{ "DELETE_OBJECT", 
-	  ActionDeleteObject, "Delete object", true, true, NONE },
+	  ActionDeleteObject, "Delete object", true, true, NONE, false },
 	{ "TOGGLE_EGGS",
-	  ActionToggleEggs, "Toggle egg display", true, true, NONE },
+	  ActionToggleEggs, "Toggle egg display", true, true, NONE, false },
 	{ "TOGGLE_GOD_MODE",
-	  ActionGodMode, "Toggle god mode", true, true, NONE },
+	  ActionGodMode, "Toggle god mode", true, true, NONE, false },
     { "CHANGE_GENDER", 
-	  ActionGender, "Change gender", true, true, NONE },
-	{ "CHEAT_HELP", ActionCheatHelp, "List cheat keys", true, true, NONE },
+	  ActionGender, "Change gender", true, true, NONE, false },
+	{ "CHEAT_HELP", ActionCheatHelp, "List cheat keys", true, true, NONE, false },
 	{ "TOGGLE_INFRAVISION",
-	  ActionInfravision, "Toggle infravision", true, true, NONE },
+	  ActionInfravision, "Toggle infravision", true, true, NONE, false },
 	{ "SKIPLIFT_DECREMENT",
-	  ActionSkipLift, "Decrement skiplift", true, true, NONE },
+	  ActionSkipLift, "Decrement skiplift", true, true, NONE, false },
 	{ "TOGGLE_MAP_EDITOR",
-	  ActionMapEditor, "Toggle map-editor mode", true, true, NONE },
+	  ActionMapEditor, "Toggle map-editor mode", true, true, NONE, false },
 	{ "TOGGLE_HACK_MOVER",
-	  ActionHackMover, "Toggle hack-mover mode", true, true, NONE },
-	{ "MAP_TELEPORT", ActionMapTeleport, "Map teleport", true, true, NONE },
+	  ActionHackMover, "Toggle hack-mover mode", true, true, NONE, false },
+	{ "MAP_TELEPORT", ActionMapTeleport, "Map teleport", true, true, NONE, false },
 	{ "CURSOR_TELEPORT",
-	  ActionTeleport, "Teleport to cursor", true, true, NONE },
+	  ActionTeleport, "Teleport to cursor", true, true, NONE, false },
 	{ "NEXT_TIME_PERIOD",
-	  ActionTime, "Next time period", true, true, NONE },
+	  ActionTime, "Next time period", true, true, NONE, false },
 	{ "TOGGLE_WIZARD_MODE",
-	  ActionWizard, "Toggle archwizard mode", true, true, NONE },
-	{ "PARTY_HEAL", ActionHeal, "Heal party", true, true, NONE },
+	  ActionWizard, "Toggle archwizard mode", true, true, NONE, false },
+	{ "PARTY_HEAL", ActionHeal, "Heal party", true, true, NONE, false },
 	{ "PARTY_INCREASE_LEVEL",
-	  ActionLevelup, "Level-up party", true, true, NONE },
-	{ "CHEAT_SCREEN", ActionCheatScreen, "Cheat Screen", true, true, NONE },
+	  ActionLevelup, "Level-up party", true, true, NONE, false },
+	{ "CHEAT_SCREEN", ActionCheatScreen, "Cheat Screen", true, true, NONE, false },
 	{ "PICK_POCKET",
-	  ActionPickPocket, "Toggle Pick Pocket", true, true, NONE },
+	  ActionPickPocket, "Toggle Pick Pocket", true, true, NONE, false },
 	{ "NPC_NUMBERS",
-	  ActionNPCNumbers, "Toggle NPC Numbers", true, true, NONE },
+	  ActionNPCNumbers, "Toggle NPC Numbers", true, true, NONE, false },
 	{ "GRAB_ACTOR",
-	  ActionGrabActor, "Grab NPC for Cheat Screen", true, true, NONE },
+	  ActionGrabActor, "Grab NPC for Cheat Screen", true, true, NONE, false },
 	
-	{ "PLAY_MUSIC", ActionPlayMusic, "Play song", false, true, NONE },
+	{ "PLAY_MUSIC", ActionPlayMusic, "Play song", false, true, NONE, false },
 	{ "TOGGLE_NAKED",
-	  ActionNaked, "Toggle naked mode", true, true, SERPENT_ISLE },
+	  ActionNaked, "Toggle naked mode", true, true, SERPENT_ISLE, false },
 	{ "TOGGLE_PETRA",
-	  ActionPetra, "Toggle Petra mode", true, true, SERPENT_ISLE },
+	  ActionPetra, "Toggle Petra mode", true, true, SERPENT_ISLE, false },
 	{ "CHANGE_SKIN",
-	  ActionSkinColour, "Change skin colour", true, true, SERPENT_ISLE },
+	  ActionSkinColour, "Change skin colour", true, true, SERPENT_ISLE, false },
 	{ "SOUND_TESTER", 
-	  ActionSoundTester, "Sound tester", false, true, NONE },
-	{ "TEST", ActionTest, "Test", false, false, NONE },
-	{ "", 0, "", false, false, NONE } //terminator
+	  ActionSoundTester, "Sound tester", false, true, NONE, false },
+	{ "TEST", ActionTest, "Test", false, false, NONE, false },
+	{ "", 0, "", false, false, NONE, false } //terminator
 };
 
 const struct {
@@ -252,15 +253,15 @@ bool KeyBinder::DoAction(ActionType a)
 	if (a.action->game != NONE && a.action->game != Game::get_game_type())
 		return true;
 	
+       // Restrict key actions in dont_move mode
     Main_actor *main_actor = Game_window::get_game_window()->get_main_actor();
-	if (main_actor->get_siflag(Actor::dont_move) ||
-	    main_actor->get_flag(Obj_flags::dont_render))
+	if (a.action->during_dont_move
+        || (!main_actor->get_siflag(Actor::dont_move)
+            && !main_actor->get_flag(Obj_flags::dont_render))
+        )
     {
-        // No key actions in dont_move mode, except to quit
-        if (a.action->func != ActionQuit)
-            return true;
+        a.action->func(a.params);
     }
-	a.action->func(a.params);
 	
 	return true;
 }
