@@ -1595,6 +1595,10 @@ SOURCE=.\exult.ico
 # End Source File
 # Begin Source File
 
+SOURCE=..\win32\exult.ico
+# End Source File
+# Begin Source File
+
 SOURCE=.\exult.rc
 # End Source File
 # End Group

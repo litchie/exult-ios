@@ -58,7 +58,7 @@ class Shape_frame
 					// Create RLE data & store in frame.
 	void create_rle(unsigned char *pixels, int w, int h);
 					// Create from RLE entry.
-	void get_rle_shape(DataSource& shapes, long filepos, long len);
+	void get_rle_shape(DataSource* shapes, long filepos, long len);
 	
 public:
 	friend class Game_window;
@@ -69,7 +69,7 @@ public:
 	unsigned char *get_data() { return data; }
 	bool is_rle() const { return rle != 0; }
 					// Read in shape/frame.
-	unsigned char read(DataSource& shapes, uint32 shapeoff,
+	unsigned char read(DataSource* shapes, uint32 shapeoff,
 					uint32 shapelen, int frnum);
 					// Paint.
 	void paint_rle(Image_buffer8 *win, int xoff, int yoff);
@@ -111,10 +111,10 @@ protected:
 	unsigned char frames_size;	// Size of 'frames' (incl. reflects).
 	unsigned char num_frames;	// # of frames (not counting reflects).
 					// Create reflected frame.
-	Shape_frame *reflect(DataSource& shapes, int shnum, int frnum);
+	Shape_frame *reflect(DataSource* shapes, int shnum, int frnum);
 	void create_frames_list(int nframes);
 					// Read in shape/frame.
-	Shape_frame *read(DataSource& shapes, int shnum, int frnum);
+	Shape_frame *read(DataSource* shapes, int shnum, int frnum, DataSource *shapes2 = 0, int count1 = -1, int count2 = -1);
 					// Store shape that was read.
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
 public:
@@ -126,10 +126,10 @@ public:
 	
 	virtual ~Shape();
 	void reset();
-	Shape_frame *get(DataSource& shapes, int shnum, int frnum)
+	Shape_frame *get(DataSource* shapes, int shnum, int frnum, DataSource *shapes2 = 0, int count1 = -1, int count2 = -1)
 		{ 
 		return (frames && frnum < frames_size && frames[frnum]) ? 
-			frames[frnum] : read(shapes, shnum, frnum); 
+			frames[frnum] : read(shapes, shnum, frnum, shapes2, count1, count2); 
 		}
 	int get_num_frames()
 		{ return num_frames; }
@@ -146,13 +146,13 @@ class Shape_file : public Shape
 public:
 	Shape_file(const char *nm);
 	Shape_file(Shape_frame *fr): Shape(fr) {}
-	Shape_file(DataSource& shape_source);
+	Shape_file(DataSource* shape_source);
 	Shape_file();
 	virtual ~Shape_file() {}
 	void load(const char *nm);
-	void load(DataSource& shape_source);
+	void load(DataSource* shape_source);
 	int get_size();
-	void save(DataSource& shape_source);
+	void save(DataSource* shape_source);
 	};
 
 /*
@@ -162,20 +162,24 @@ class Vga_file
 	{
 	std::ifstream file;
 	DataSource *shape_source;
+	std::ifstream file2;
+	DataSource *shape_source2;
 	int u7drag_type;		// # from u7drag.h, or -1.
 protected:
 	int num_shapes;			// Total # of shapes.
+	int num_shapes1;		// Total # of shapes in file 1.
+	int num_shapes2;		// Total # of shapes in file 2.
 	Shape *shapes;			// List of ->'s to shapes' lists
 public:
 	Vga_file(const char *nm, int u7drag = -1);
 	Vga_file();
 	int get_u7drag_type() const
 		{ return u7drag_type; }
-	void load(const char *nm);
+	void load(const char *nm, const char *nm2 = 0);
 	void reset();
 	virtual ~Vga_file();
 	int get_num_shapes()
-		{ return num_shapes; }
+	{ return num_shapes>num_shapes2?num_shapes:num_shapes2; }
 	int is_good()
 		{ return (num_shapes != 0); }
 					// Get shape.
@@ -186,7 +190,7 @@ public:
 					// but we will return rubbish.
 		// I've put this assert in _before_ you know...
 		// So this isn't the first time we've had trouble here
-		Shape_frame *r=(shapes[shapenum].get(*shape_source, shapenum, framenum));
+		Shape_frame *r=(shapes[shapenum].get(shape_source, shapenum, framenum, shape_source2, num_shapes1, num_shapes2));
 		if(!r)
 			{
 #ifdef DEBUG
@@ -205,7 +209,7 @@ public:
 		int count = get_num_frames(shapenum);
 		for(int i=1; i<count; i++)
 			get_shape(shapenum, i);
-		return &shapes[shapenum];
+		return shapes+shapenum;
 		}
 					// Get # frames for a shape.
 	int get_num_frames(int shapenum)

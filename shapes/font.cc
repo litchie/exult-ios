@@ -513,7 +513,7 @@ int Font::load(const char *fname, int index, int hlead, int vlead)
 	if(!strncmp(font_buf,"font",4))	// If it's an IFF archive...
 		font_buf += 8;		// Skip first 8 bytes
 	font_data = new BufferDataSource(font_buf, len);
-	font_shapes = new Shape_file(*font_data);
+	font_shapes = new Shape_file(font_data);
 	hor_lead = hlead;
 	ver_lead = vlead;
 	return 0;

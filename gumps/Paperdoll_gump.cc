@@ -353,7 +353,7 @@ void Paperdoll_gump::paint
 	Rectangle box = object_area;	// Paint objects inside.
 	box.shift(x, y);		// Set box to screen location.
 
-	gwin->paint_shape(x, y, get_shape());
+	gwin->paint_shape(x, y, *this);
 
 	// Paint red "checkmark".
 	check_button->paint(gwin);
@@ -539,7 +539,7 @@ void Paperdoll_gump::paint_object
 
 		gwin->paint_shape(box.x + coords_blue[spot*2],
 				box.y + coords_blue[spot*2+1],
-				s.get_shape());
+				s);
 
 		gwin->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy(), 
 			obj->get_shapenum(), obj->get_framenum());
@@ -571,7 +571,7 @@ void Paperdoll_gump::paint_object
 	if (item->gender && !info->is_female) f++;
  
 	ShapeID s(item->shape, f, item->file);
-	gwin->paint_shape(box.x + sx, box.y + sy, s.get_shape());
+	gwin->paint_shape(box.x + sx, box.y + sy, s);
 }
 
 /*
@@ -615,7 +615,7 @@ void Paperdoll_gump::paint_body
 	)
 {
 	ShapeID s(info->body_shape, info->body_frame, SF_PAPERDOL_VGA);
-	gwin->paint_shape (box.x + bodyx, box.y + bodyy, s.get_shape());
+	gwin->paint_shape (box.x + bodyx, box.y + bodyy, s);
 }
 
 /*
@@ -654,7 +654,7 @@ void Paperdoll_gump::paint_head
 		f = info->head_frame_helm;
 
 	ShapeID s(info->head_shape, f, info->file);
-	gwin->paint_shape(box.x + headx, box.y + heady, s.get_shape());
+	gwin->paint_shape(box.x + headx, box.y + heady, s);
 }
 
 /*

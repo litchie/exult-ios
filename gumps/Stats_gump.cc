@@ -56,8 +56,8 @@ static int Show_atts
 	int framenum
 	)
 {
-	Shape_frame *s = gwin->get_gump_shape(game->get_shape(
-						"gumps/statatts"), framenum);
+	ShapeID sid(game->get_shape("gumps/statatts"), framenum, SF_GUMPS_VGA);
+	Shape_frame *s = sid.get_shape();
 	gwin->paint_shape(x + s->get_xleft(),
 				 y + s->get_ybelow(), s, 1);
 	return s->get_width() + 2;

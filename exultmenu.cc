@@ -247,7 +247,7 @@ void ExultMenu::setup()
 Exult_Game ExultMenu::run()
 {
 	Font *font = fontManager.get_font("CREDITS_FONT");
-	string bg_dir, si_dir;
+	std::string bg_dir, si_dir;
 	config->value("config/disk/game/blackgate/path",bg_dir,".");
 	config->value("config/disk/game/serpentisle/path",si_dir,".");
 	bool bg_installed = BG_Game::is_installed(bg_dir.c_str());
@@ -267,7 +267,7 @@ Exult_Game ExultMenu::run()
 				  centerx, topy+70, "and restart Exult");
 		pal.apply();
 		while(!wait_delay(200));	
-		exit(1);
+		std::exit(1);
 
 	}
 	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", EXULT_FLX_MEDITOWN_MID);

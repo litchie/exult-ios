@@ -1389,8 +1389,8 @@ bool BG_Game::new_game(Vga_file &shapes)
 bool BG_Game::is_installed(const char *path)
 {
 	char buf[2048];
-	strcpy(buf, path);
-	strcat(buf, "/static/endgame.dat");
-	cout << "is_installed: " << buf << endl;
-	return U7exists(buf);
+	std::strcpy(buf, path);
+	std::strcat(buf, "/static/endgame.dat");
+	std::cout << "is_installed: " << buf << std::endl;
+	return U7exists(buf)!=0;
 }

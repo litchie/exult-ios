@@ -184,11 +184,7 @@ void Game_window::paint
 	int x, int y, int w, int h	// Rectangle to cover.
 	)
 	{
-	if (!win->ready())
-		return;
-
-					// Update the gumps before painting (may change dirty area)
-	gump_man->update_gumps(this);
+	if (!win->ready()) return;
 
 	win->set_clip(x, y, w, h);	// Clip to this area.
 	int light_sources = paint_map(x, y, w, h);
@@ -361,3 +357,18 @@ void Game_window::paint_dungeon_object
 	}
 
 
+/*
+ *	Paint 'dirty' rectangle.
+ */
+
+void Game_window::paint_dirty()
+{
+	// Update the gumps before painting (may change dirty area)
+	gump_man->update_gumps(this);
+
+	Rectangle box = clip_to_win(dirty);
+	if (box.w > 0 && box.h > 0)
+		paint(box);	// (Could create new dirty rects.)
+
+	clear_dirty();
+}

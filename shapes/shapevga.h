@@ -39,18 +39,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *	The "shapes.vga" file:
  */
 class Shapes_vga_file : public Vga_file
-	{
+{
 	autoarray<Shape_info> info;	// Extra info. about each shape.
 	Shape_info zinfo;		// A fake one (all 0's).
 public:
-	Shapes_vga_file() : info()
-		{  }
-	void init() { load(SHAPES_VGA); info.set_size(num_shapes); }
+	Shapes_vga_file() : info() {  }
+	void init();
 	virtual ~Shapes_vga_file();
 	void read_info();		// Read additional data files.
 	Shape_info& get_info(int shapenum)
-	{ return shapenum>=1024&&shapenum%2?info[989]:
-		 shapenum>=1024?info[721]:info[shapenum]; }
-	};
+	{
+		// Shapes 1024 -> 1035 in SI are alternative player chars.
+		// Odd are female, even are male.
+		return shapenum>=1024&&shapenum<=1035&&shapenum%2 ? info[989]:
+			shapenum>=1024&&shapenum<=1035 ? info[721]:
+			info[shapenum];
+	}
+};
 
 #endif
