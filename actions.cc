@@ -71,8 +71,7 @@ int Actor_pathfinder_client::get_step_cost
 		Game_object *block = Game_object::find_blocking(to);
 		if (!block)
 			return -1;
-		Shape_info& info = gwin->get_info(block);
-		if (!info.is_door())
+		if (!block->is_closed_door())
 			return -1;
 		new_lift = to.tz;	// We can open doors.
 		cost++;			// But try to avoid them.

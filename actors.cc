@@ -1038,7 +1038,7 @@ void Sit_schedule::set_action
 	}
 
 /*
- *	Open door that's blocking the NPC, after checking that it's closed.
+ *	Open door that's blocking the NPC.
  */
 
 void Walk_to_schedule::open_door
@@ -1047,26 +1047,7 @@ void Walk_to_schedule::open_door
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Shape_info& info = gwin->get_info(door);
-					// Get door's footprint.
-	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
-					// Get its location.
-	Tile_coord doortile = door->get_abs_tile_coord();
-	Tile_coord before, after;	// Want tiles to both sides.
-	if (xtiles > ytiles)		// Horizontal footprint?
-		{
-		before = doortile + Tile_coord(-xtiles, 0, 0);
-		after = doortile + Tile_coord(1, 0, 0);
-		}
-	else				// Vertical footprint.
-		{
-		before = doortile + Tile_coord(0, -ytiles, 0);
-		after = doortile + Tile_coord(0, 1, 0);
-		}
-	if (!Chunk_object_list::is_blocked(before) ||
-	    !Chunk_object_list::is_blocked(after))
-		return;			// Looks like it's not closed.
-					// ++++++Move away from door++++
+					// ++++++Move away from door?++++
 					// Open it.
 	door->activate(gwin->get_usecode());
 	}
@@ -1164,7 +1145,7 @@ void Walk_to_schedule::now_what
 	    npc->get_abs_tile_coord().distance(blocked) == 1)
 		{
 		Game_object *door = Game_object::find_blocking(blocked);
-		if (door != 0 && gwin->get_info(door).is_door())
+		if (door != 0 && door->is_closed_door())
 					// Try to open it.
 			open_door(door);
 		}

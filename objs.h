@@ -225,6 +225,7 @@ public:
 	Game_object *find_closest(int *shapenums, int num_shapes);
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
+	int is_closed_door();		// Checking for a closed door.
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
