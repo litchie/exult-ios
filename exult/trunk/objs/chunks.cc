@@ -1346,10 +1346,17 @@ void Map_chunk::setup_dungeon_levels
 		int shnum = each->get_shapenum();
 					// Test for mountain-tops.
 		if (shnum == 983 || shnum == 969 || shnum == 183 ||
-				shnum == 182 || shnum == 180 || shnum == 324 || 
-				(shnum == 941 && Game::get_game_type() == SERPENT_ISLE))
+		    shnum == 182 || shnum == 180 || shnum == 324 || 
+		    (shnum == 941 && Game::get_game_type() == SERPENT_ISLE))
 		{
-			Rectangle area = each->get_footprint();
+			// SI shape 941, frame 0 => do whole chunk (I think).
+			Rectangle area = 
+				(shnum == 941 && each->get_framenum() == 0)
+				? Rectangle(cx*c_tiles_per_chunk,
+					    cy*c_tiles_per_chunk,
+					    c_tiles_per_chunk,
+					    c_tiles_per_chunk)
+				: each->get_footprint();
 
 					// Go through interesected chunks.
 			Chunk_intersect_iterator next_chunk(area);
@@ -1357,7 +1364,7 @@ void Map_chunk::setup_dungeon_levels
 			int cx, cy;
 			while (next_chunk.get_next(tiles, cx, cy))
 				gmap->get_chunk(cx, cy)->add_dungeon_levels(
-								tiles, each->get_lift());
+						tiles, each->get_lift());
 		}			// Ice Dungeon Pieces in SI
 		else if (Game::get_game_type() == SERPENT_ISLE && (
 			shnum == 436 || shnum == 437 || shnum == 444 ||

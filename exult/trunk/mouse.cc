@@ -304,7 +304,8 @@ void Mouse::set_speed_cursor()
 	 * get_nearby_npcs, but on the other hand, its a negligible point.
 	 */
 	Actor_queue nearby;
-	gwin->get_nearby_npcs( nearby );
+	if (!cheat.in_god_mode())
+		gwin->get_nearby_npcs( nearby );
 
 	bool nearby_hostile = false;
 	for( Actor_queue::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
