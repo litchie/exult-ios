@@ -48,6 +48,7 @@ EXEC=Exult.exe
 EXEEXT=.exe
 
 FILE_OBJS = snprintf.o
+SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
 OBJS	= exultico.o
 
 include Makefile.common
