@@ -360,7 +360,7 @@ void Shape_chooser::render_frames
 		for (int framenum = 0; framenum < nframes; framenum++,
 						x += sw + border)
 			{
-			if (x >= winw)	// Past right edge?
+			if (x >= winw - 1)	// Past right edge?
 				break;
 			Shape_frame *frame = shape->get_frame(framenum);
 			sh = frame->get_height();
@@ -577,7 +577,7 @@ void Shape_chooser::goto_index
 
 static gint Configure_chooser
 	(
-	GtkWidget *widget,		// The view window.
+	GtkWidget *widget,		// The drawing area.
 	GdkEventConfigure *event,
 	gpointer data			// ->Shape_chooser
 	)
@@ -590,7 +590,7 @@ gint Shape_chooser::configure
 	GdkEventConfigure *event
 	)
 	{
-	Shape_draw::configure(get_widget());
+	Shape_draw::configure();
 					// Did the size change?
 	if (event->width != config_width || event->height != config_height)
 		{

@@ -989,6 +989,7 @@ void ExultStudio::set_game_path(const char *gamepath)
 		delete names[i];
 	names.resize(0);
 	delete files;			// Close old shape files.
+	browser = 0;			// This was owned by 'files'.
 	files = new Shape_file_set();
 	vgafile = open_shape_file("shapes.vga");
 	facefile = open_shape_file("faces.vga");
