@@ -344,6 +344,7 @@ void	Audio::start_music(int num,bool repetition)
 		midi->start_music(num,repetition);
 }
 
+#if 0	// Unused
 static void	load_buffer(char *buffer,const char *filename,size_t start,size_t len)
 {
 	FILE	*fp=fopen(filename,"rb");
@@ -356,6 +357,7 @@ static void	load_buffer(char *buffer,const char *filename,size_t start,size_t le
 	fread(buffer,len,1,fp);
 	fclose(fp);
 }
+#endif
 
 void	Audio::start_speech(int num,bool wait)
 {

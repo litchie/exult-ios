@@ -77,7 +77,7 @@ void	IFF::IndexIFFFile(void)
 		throw 0;
 		}
 	cout << "Okay. It looks like an IFF file chunk" << endl;
-	size_t	full_length;
+	long	full_length;
 	fread(&full_length,sizeof(full_length),1,fp);
 	full_length=ntohl(full_length);
 	cout << "length looks like: " << full_length << endl;
