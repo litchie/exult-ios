@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#include "ucinternal.h"
 #include "ucsched.h"
 #include "Audio.h"
 #include "barge.h"
@@ -45,7 +46,7 @@ Scheduled_usecode *Scheduled_usecode::first = 0;
 
 Scheduled_usecode::Scheduled_usecode
 	(
-	Usecode_machine *usecode,
+	Usecode_internal *usecode,
 	Usecode_value& oval, 
 	Usecode_value& aval
 	) : objval(oval), arrval(aval), i(0), frame_index(0), no_halt(0)
@@ -99,7 +100,7 @@ Scheduled_usecode *Scheduled_usecode::find
 	}
 
 
-inline void Scheduled_usecode::activate_egg(Usecode_machine *usecode,
+inline void Scheduled_usecode::activate_egg(Usecode_internal *usecode,
 				     Game_object *e, int type)
 {
 	if (e && e->is_egg() && (type == -1 || 
@@ -114,7 +115,7 @@ inline void Scheduled_usecode::activate_egg(Usecode_machine *usecode,
 
 void Scheduled_usecode::activate_eggs
 	(
-	Usecode_machine *usecode
+	Usecode_internal *usecode
 	)
 	{
 	int size = objval.get_array_size();
@@ -146,7 +147,7 @@ void Scheduled_usecode::handle_event
 	long udata			// ->usecode machine.
 	)
 	{
-	Usecode_machine *usecode = (Usecode_machine *) udata;
+	Usecode_internal *usecode = (Usecode_internal *) udata;
 	Game_window *gwin = usecode->gwin;
 	int delay = 200;			// Trying default delay.
 	int do_another = 1;			// Flag to keep going.
@@ -302,13 +303,13 @@ void Scheduled_usecode::handle_event
 			Usecode_value& val = arrval.get_elem(++i);
 			int fun = val.get_int_value();
 					// REALLY guessing (for Forge):
-			Usecode_machine::Usecode_events ev = 
-					Usecode_machine::internal_exec;
+			Usecode_internal::Usecode_events ev = 
+					Usecode_internal::internal_exec;
 			if (obj && obj->is_egg() && 
 				((Egg_object *)obj)->get_type() ==
 			    				Egg_object::usecode)
 				{
-				ev = Usecode_machine::egg_proximity;
+				ev = Usecode_internal::egg_proximity;
 				cout << "0x55:  guessing with egg" << endl;
 				}
 			usecode->call_usecode(fun, obj, ev);
@@ -382,7 +383,7 @@ void Scheduled_usecode::handle_event
 
 void Scheduled_usecode::step
 	(
-	Usecode_machine *usecode,
+	Usecode_internal *usecode,
 	int dir				// 0-7.
 	)
 	{

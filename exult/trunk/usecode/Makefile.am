@@ -11,6 +11,8 @@ libusecode_la_SOURCES = \
 	bgintrinsics.h	\
 	siintrinsics.h	\
 	intrinsics.cc	\
+	ucinternal.cc	\
+	ucinternal.h	\
 	ucmachine.cc	\
 	ucmachine.h	\
 	ucsched.h	\

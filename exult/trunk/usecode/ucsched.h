@@ -19,8 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _UCSCHED_H
 #define _UCSCHED_H
 
+class Usecode_internal;
 
-#include "ucmachine.h"
 #include "useval.h"
 #include "tqueue.h"
 #include "egg.h"
@@ -43,7 +43,7 @@ class Scheduled_usecode : public Time_sensitive
 	int frame_index;		// For taking steps.
 	int no_halt;			// 1 to ignore halt().
 public:
-	Scheduled_usecode(Usecode_machine *usecode,
+	Scheduled_usecode(Usecode_internal *usecode,
 				Usecode_value& oval, Usecode_value& aval);
 					// Execute when due.
 	virtual ~Scheduled_usecode()
@@ -63,7 +63,7 @@ public:
 		}
 	int is_activated()		// Started already?
 		{ return i > 0; }
-	inline void activate_egg(Usecode_machine *usecode, 
+	inline void activate_egg(Usecode_internal *usecode, 
 				 Game_object *e, int type);
 
 	static int get_count()
@@ -71,10 +71,10 @@ public:
 					// Find for given item.
 	static Scheduled_usecode *find(Game_object *srch);
 					// Activate itemref eggs.
-	void activate_eggs(Usecode_machine *usecode);
+	void activate_eggs(Usecode_internal *usecode);
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Move object in given direction.
-	void step(Usecode_machine *usecode, int dir);
+	void step(Usecode_internal *usecode, int dir);
 	};
 
 
