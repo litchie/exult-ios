@@ -548,7 +548,7 @@ void Loiter_schedule::now_what
 	int newx = center.tx - dist + rand()%(2*dist);
 	int newy = center.ty - dist + rand()%(2*dist);
 					// Wait a bit.
-	npc->walk_to_tile(newx, newy, center.tz, 300, rand()%500);
+	npc->walk_to_tile(newx, newy, center.tz, 350, rand()%2000);
 	}
 
 /*
@@ -874,8 +874,6 @@ void Npc_actor::switched_chunks
  *	And don't allow climbing/descending, at least for now.
  *
  *	Output: 1 if so, else 0.
- *		If 0 (tile is free), new_lift contains the new height that
- *		   an actor will be at if he walks onto the tile.
  */
 
 int Monster_actor::is_blocked
@@ -898,6 +896,8 @@ int Monster_actor::is_blocked
 					//   above/below.
 	int horizy0, horizy1;		// Get y-coords of vert. block
 					//   to right/left.
+	horizx0 = destx + 1 - xtiles;
+	horizx1 = destx;
 	if (destx >= tx)		// Moving right?
 		{
 		vertx0 = tx + 1;	// Start to right of hot spot.
@@ -908,22 +908,20 @@ int Monster_actor::is_blocked
 		vertx0 = destx + 1 - xtiles;
 		vertx1 = tx - xtiles;
 		}
-	horizx0 = destx + 1 - xtiles;
-	horizx1 = destx;
+	verty0 = desty + 1 - ytiles;
+	verty1 = desty;
 	if (desty >= ty)		// Moving down?
 		{
 		horizy0 = ty + 1;	// Start below hot spot.
 		horizy1 = desty;	// End at dest.
-		vertx1--;		// Includes bottom of vert. area.
+		verty1--;		// Includes bottom of vert. area.
 		}
 	else				// Moving up?
 		{
 		horizy0 = desty + 1 - ytiles;
 		horizy1 = ty - ytiles;
-		vertx0++;		// Includes top of vert. area.
+		verty0++;		// Includes top of vert. area.
 		}
-	verty0 = desty + 1 - ytiles;
-	verty1 = desty;
 	int x, y;			// Go through horiz. part.
 	for (y = horizy0; y <= horizy1; y++)
 		{			// Get y chunk, tile-in-chunk.
@@ -936,7 +934,7 @@ int Monster_actor::is_blocked
 			if (olist->is_blocked(height, lift, x%tiles_per_chunk,
 							rty, new_lift) ||
 			    new_lift != lift)
-				return (0);
+				return (1);
 			}
 		}
 					// Do vert. block.
@@ -951,10 +949,10 @@ int Monster_actor::is_blocked
 			if (olist->is_blocked(height, lift, rtx,
 					y%tiles_per_chunk, new_lift) ||
 			    new_lift != lift)
-				return (0);
+				return (1);
 			}
 		}
-	return (1);			// All clear.
+	return (0);			// All clear.
 	}
 
 /*
@@ -1016,7 +1014,7 @@ Npc_actor *Monster_info::create
 	int lift			// Lift.
 	)
 	{
-#if 0	/* ++++This is what we need to try. */
+#if 1	/* ++++This is what we need to try. */
 	Monster_actor *monster = new Monster_actor(0, shapenum);
 #else
 	Npc_actor *monster = new Npc_actor(0, shapenum);

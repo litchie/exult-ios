@@ -1,3 +1,9 @@
+2000-04-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Use correct frames for East-West walking animation.
+	* Show signs, books, and scrolls.
+	* Create monsters, and have them loiter.
+
 2000-04-28  Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* Testing of CVS commit mails...
