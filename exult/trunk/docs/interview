@@ -25,6 +25,16 @@ Also, we informally tend to pick different pieces of the project to work on, so
 that we're not stepping on each other's code.  It's almost surprising how
 smoothly this works, better than at most companies I've worked at.
 
+Max:
+Hi there. Yes, I do still live in Darmstadt and study there ;) 
+I'd like to add to what Jeff said. We also have our own IRC channel, at the
+open projects network (irc.openprojects.net, channel #exult). Willem and me are
+very often there (as wjp and fingolfin), and jeff, dancer, tristan and colourless
+also join in from time to time. Not to forget dominus, our trusty FAQ maintainer ;)
+If you have any questions, need help or want to contribute, or just like to chat a bit,
+feel free to drop in.
+
+
 >
 > - How much support do you receive from Ultima-fans ?
 
@@ -32,6 +42,12 @@ Jeff:
 First, most of us developers are Ultima fans:-)  In addition, we get lots of
 testing, bug reports, and suggestions from users.  And the occasional fan-mail
 doesn't hurt either.
+
+Max:
+I think the exult "community" is quite strong, there are a big lot of U7 fans out there.
+They really appreciate to be able to run it on their machines, and we get a lot 
+of positive & helpful feedback, which is very encouraging.
+
 
 >
 > - Did you try to get the permission from OSI before you began the project ?
@@ -46,6 +62,14 @@ at Origin, but haven't heard back from her in a while.  I've also heard the
 rumour about the lost sourcecode; but there are also rumours that it's on an
 unmarked tape somewhere at Origin.
 
+Max:
+It would be really nice to get some help from them on some of the more "arcane"
+things in exult which we still haven't figured out... however, I think even
+if they still do have the source code, it will not be easy to extract helpful
+information from it. And I doubt the programmers still remember all the little
+details we'd need to know :/
+
+
 >
 > - When Exult will be running fine, do you think Origin/EA would be
 > interested in using/selling it ??
@@ -58,7 +82,7 @@ other than online games lately.
 >
 > - There is a rumour about an Online-Version of U7 (with the Exult-Engine),
 > what is the truth behind that ? (I really would love that, since the
-> U7-online-project has obviusly died some time ago...)
+> U7-online-project has obviously died some time ago...)
 
 Jeff:
 One or two people have emailed me about using the Exult engine to do an online
@@ -69,7 +93,7 @@ project, but my main interest is in single-player RPG's.
 >
 > - I know that you stated in the FAQ that Serpent Isle will likely not be
 > made playable with Exult, but i think a lot of people would like to hear
-> you have not totally burried the idea, so what is the current status on SI
+> you have not totally buried the idea, so what is the current status on SI
 > ??
 
 Jeff:
@@ -77,11 +101,21 @@ Thanks to Ryan Nunn ('Colourless Dragon'), that's no longer true.  He's done a
 lot of work towards getting SI to run, and you can now play through quite a bit
 of the first part of the game.
 
+Max:
+I think the current version of the FAQ corrects this, btw. SI is not yet running
+perfect, but is already visibly working, and you can enjoy it ;)
+
+
 >
 > - You mention in the FAQ problems with the german version and the lack of
 > testers for this one. Since we are a german site, maybe some of our readers
 > would like to test it, what shall they do then ?
 
+Max:
+Yes! This would be greatly appreciated. We got some french people helping, and that
+version is now running (at least partly, not sure if everything got fixed already).
+So if you have the german version and some time & guts and want to help, write us
+an email, please.
 
 
 > - What about the editor to make new games with the engine. Whose idea was
@@ -107,20 +141,41 @@ a bit more work.
 Jeff:
 That would be a good idea.  However, this is an area where we might need
 Origin's permission, since we'd be modifying a story that they own.
+
+
 >
 > - Are you planning introduce more music, other graphics (maybe renders or
 > something)  etc in the running engine ?
+
+Max:
+Some fans have provided us new/resampled wave files to replace the original U7
+sounds, and we eventually might add support to easily plug those in. Of course,
+if we extend it to a full-fledged game engine (as planned), adding new data like this
+will be possible.
+
+BTW, one addition we made to the game is that paperdolling is working in BG, provided
+you have SI installed! However, some items in BG are not in SI, and hence have no paperdoll
+graphics. We are working on adding graphics for those, and one or two items are already
+added. More will come.
 
 
 
 >
 > - If BG and SI (??) are running perfect some day, will you start making new
-> plots with the engine, or maybe starting a new poject like this ?
+> plots with the engine, or maybe starting a new project like this ?
 
 Jeff:
 Yes, I'd like to create a new non-Ultima game using the Exult engine someday.
 But it's a daunting task, especially when you consider all the artwork that's
 involved.
+
+Max:
+...and I am not sure we will ever get it to run "perfect". Then again, how exactly
+do you define perfect in this context? Emulating the original game as close as possible?
+We do not really strive to achieve this, e.g. there were some plot bugs in BG which
+we tried to cover up if possible. I think in this case this is better than staying to close
+to the original.
+
 
 > - If you are going to make a new RPG with the engine, how much of the
 > original graphic will stay in the game, or are there no plans to change
@@ -129,6 +184,7 @@ involved.
 Jeff:
 Since the graphics are Origin's, we couldn't legally use any of them without
 their permission.
+
 
 >
 > - When do you think the Exult will be running (almost) perfect ? Any slight
@@ -140,6 +196,18 @@ done, and I played through all the way about 3 months ago.  But we've
 probably broken some things since then.  There's really not much more new
 development to do, though, so I'm hoping Black Gate will be 'done' in the next
 2-3 months.
+
+Max:
+Since we all do it in our free time and for fun, it is very hard to predict this.
+Sometimes stuff doesn't get done for a long time, then someone feels inclined to do it
+(and has the time <g>) and it gets done really really quick.
+E.g. so far the mac version still has no MIDI support, which is a pity. It's just
+that I never did anything with MIDI on the Mac, and I gotta dig all the information up.
+I once started with it, but it turned out to become very complicated. So I dropped it
+for now. But it will come eventually, maybe already tomorrow, maybe next year. I would
+prefer earlier, though ;)
+
+
 
 >
 > - With u7run now available, will still try to make Exult perfect ? (I heard
@@ -162,6 +230,13 @@ have to redesign the dungeons.  We could also add various subplots that weren't
 possible in the original U4, lots more conversations, etc.  But we'd need
 Origin's consent.
 
+Max:
+Yeah, it would be *way* cool! U4 is one of the best Ultimas ever IMO. Of course
+it would be a big lot of work, and as Jeff pointed out, we'd need Origin's 
+permission. Maybe all fans should start writing letters to Origin asking
+about it ;)
+
+
 >
 > - What are you plans (or team plans) after the Exult-project ?
 
@@ -170,7 +245,7 @@ With plans for a map-editor, Serpent Isle support, and maybe a new game,
 there may never be an 'after':-)
 
 >
-> - How do you feel abou all the other Ultima-Remakes, that want to do a
+> - How do you feel abo all the other Ultima-Remakes, that want to do a
 > complete overhaul of the games (either with the DS-Engine or NWN) ?
 
 Jeff:
@@ -179,7 +254,7 @@ rewrite of Ultima3 for the GameBoy.  Whether any of our projects succeed,
 they certainly demonstrate the popularity of the Ultima universe.
 
 >
-> - I personaly feel that U5 and U7 were the greatest milestones in Ultima,
+> - I personally feel that U5 and U7 were the greatest milestones in Ultima,
 > how do you feel about the later ones (U8 and U9) and what is happening now
 > with UO and UWO:O (Changing names once a week *g*) (hmmm, i better let this
 > comment out later ;-) )
@@ -196,9 +271,29 @@ reminiscent of Ultima4.
 As for the online games, I've never tried any of them.  Maybe I'm afraid I'll
 get addicted.
 
+Max:
+Actually, my first Ultima was U8 ! I liked it a lot and played through it twice,
+once before the patch (which was sometimes very frustrating, but I still enjoyed it)
+and once after the patch, which really made it a good game IMHO. I was very
+disappointed when they canceled the add-on (anyone else tried hack-moving the big
+doors in the cave near Mythran, only to find walls behind it? <g>)
+
+I then tried the Ultima 3 rewrite for mac. It is very well done, but I didn't like
+U3 that much. (I hope nobody kills me for that <g>)
+
+Maybe one year later I was able to get hold on a box containing all the U7 stuff,
+both parts and both addons. It's a great 
+
+
 >
 > - Are you (or anyone from your team) playing UO or maybe thinking about
 > testing UWO:O ?
+
+Max:
+I never played UO. I think it to be interesting, but I don't have the time, really.
+Actually, I don't even get to play exult much ;) Same for UWO:O. :/
+
+
 >
 
 > Thank you very much for taking your time for that interview.

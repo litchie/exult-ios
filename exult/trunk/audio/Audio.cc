@@ -461,7 +461,7 @@ void	Audio::playwave(const char *fname, bool wait)
 	if (!audio_enabled) return;
 
 	uint8 *buf;
-	uint32 len;
+	Uint32 len;
 	SDL_AudioSpec src;
 	if (!SDL_LoadWAV(fname, &src, &buf, &len))
 		{

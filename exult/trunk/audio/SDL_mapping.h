@@ -61,5 +61,5 @@ extern	Thread *(*CreateThread)(int (*fn)(void *), void *data);
 
 
 
-}; // Namespace
+} // Namespace
 #endif

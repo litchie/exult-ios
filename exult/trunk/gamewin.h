@@ -208,6 +208,8 @@ public:
 					// Get/create objs. list for a chunk.
 	Chunk_object_list *get_objects(int cx, int cy)
 		{
+		assert((cx >= 0) && (cx < c_num_chunks) && 
+		        (cy >= 0) && (cy < c_num_chunks));
 		Chunk_object_list *list = objects[cx][cy];
 		if (!list)
 			list = create_chunk(cx, cy);
