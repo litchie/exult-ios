@@ -523,8 +523,10 @@ void Talk_schedule::now_what
 			gwin->get_main_actor()->get_abs_tile_coord(), cost);
 		if (!pact)
 			{
+#ifdef DEBUG
 			cout << "Talk: Failed to find path for " << 
 						npc->get_name() << endl;
+#endif
 			npc->follow(gwin->get_main_actor());
 			}
 		else
@@ -2736,7 +2738,9 @@ void Walk_to_schedule::now_what
 	if (!npc->walk_path_to_tile(from, to, 200, 
 						first_delay + rand()%2000))
 		{			// Wait 1 sec., then try again.
+#ifdef DEBUG
 		cout << "Failed to find path for " << npc->get_name() << endl;
+#endif
 		npc->walk_to_tile(dest, 200, 1000);
 		retries++;		// Failed.  Try again next tick.
 		}

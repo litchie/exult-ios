@@ -1,3 +1,14 @@
+2001-05-17  Tristan Tarrant  <nadir@users.sourceforge.net>
+
+	* sigame.cc: allow splash screen to be interrupted
+	
+	* gamewin.cc, audio/Audio.cc, audio/Mixer.cc, 
+	  audio/midi_drivers/Timidity_binary.cc, actors.cc,
+	  schedule.cc:
+	  be verbose only when compiled with debugging
+
+	* tools/.cvsignore: Add splitshp
+
 2001-05-17  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* combat.cc: Added support for the 'protected' halo button and the
