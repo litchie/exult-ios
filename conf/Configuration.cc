@@ -147,16 +147,18 @@ bool	Configuration::read_config_file(const string &input_filename, const string 
 	// Or if it's not a relative path.
 	if((fname.find("./")!=0) && (fname[0]!='/'))
 	{
-#if ((defined XWIN) || (defined BEOS))
+#if ((defined XWIN) || (defined BEOS) || (defined MACOSX))
 		const char *f1=getenv("HOME");
 		if(f1)
 		{
 			// User has a home directory
 			fname=f1;
-#ifndef BEOS
-			fname+="/.";
-#else
+#if defined(BEOS)
 			fname+="/config/settings/";
+#elif defined(MACOSX)
+			fname+="/Library/Preferences/";
+#else
+			fname+="/.";
 #endif
 			fname+=input_filename;
 		}
