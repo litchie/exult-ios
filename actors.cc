@@ -2879,6 +2879,7 @@ bool Actor::figure_hit_points
 								ammo_shape, 0);
 			if (attacker->get_flag(	Obj_flags::is_temporary))
 				aobj->set_flag(	Obj_flags::is_temporary);
+			aobj->set_flag(Obj_flags::okay_to_take);
 			aobj->move(pos);
 			}
 		return false;
