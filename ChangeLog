@@ -1,5 +1,9 @@
 2000-08-30  Tristan Tarrant  <nadir@users.sourceforge.net>
 
+	* tools/u7shpload.c: Saving works properly now. Damn alpha :-)
+
+2000-08-30  Tristan Tarrant  <nadir@users.sourceforge.net>
+
 	* tools/u7shpload.c: Prompt user for a palette file for loading.
 	Decent colours at last !!!
 

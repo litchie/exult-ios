@@ -460,7 +460,9 @@ static int find_runs(short *runs, unsigned char *pixptr, int x,	int w)
     int runcnt = 0;
     while (x < w && pixptr[1] != 0) {	// Stop at first transparent pixel.
 	int run = 0;		// Look for repeat.
-	while (x < w - 1 && pixptr[0] == pixptr[2]) {
+	while (x < w - 1 && pixptr[0] == pixptr[2] && pixptr[3]!=0) {
+	    if(pixptr[3]==0)
+		printf("Warning: found pixel pair, but second is transparent\n");
 	    x++;
 	    pixptr+=2;
 	    run++;
@@ -469,23 +471,25 @@ static int find_runs(short *runs, unsigned char *pixptr, int x,	int w)
 	    run = ((run + 1)<<1)|1;
 	    x++;		// Also pass the last one.
 	    pixptr+=2;
-	} else do {			// Pass non-repeated run of
-	    x++;
-	    pixptr+=2;
-	    run += 2;	// So we don't have to shift.
-	} while (x < w && pixptr[1] != 0 &&
+	} else {
+		do {			/* Pass non-repeated run of */
+		    x++;
+		    pixptr+=2;
+		    run += 2;	// So we don't have to shift.
+		} while (x < w && pixptr[1] != 0 &&
 		 (x == w - 1 || pixptr[0] != pixptr[2]));
+	}
 	// Store run length.
 	runs[runcnt++] = run;
     }
-    runs[runcnt] = 0;		// 0-delimit list.
-    return (x);
+    runs[runcnt] = 0;		/* 0-delimit list. */
+    return x;
 }
 
 static int skip_transparent(unsigned char **pixptr, int x, int w)
 {
     unsigned char *pixel = *pixptr;
-    while (x < w && pixel[1] == 0) {
+    while (x < w && pixel[1] == 0) {	/* Pixel is transparent if alpha is 0 */
 	x++;
 	pixel+=2;
     }
