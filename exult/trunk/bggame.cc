@@ -257,9 +257,11 @@ void BG_Game::play_intro()
 	}
 
 	//TODO: show plasma first, then a bit of static
-	//TODO: Guardian appears too high.
+        //TODO: text is wrong font
+	//TODO: guardian seems to shift a bit before and after speech
+	//TODO: reduce sudden facial movements in speech
 
-	// The main man :)
+	// Enter guardian
 	play_midi(2);
 
 	gwin->plasma(gwin->get_width(), gwin->get_height(), 0, 0, 16, 110);
@@ -267,10 +269,13 @@ void BG_Game::play_intro()
 	pal.load("<STATIC>/intropal.dat",2);
 	pal.apply();
 
-	Image_buffer *backup, *backup2;
-	Shape_frame *s, *s2;
+	// these backups store the area under the guardian shapes being drawn
+	// the cbackups are 'clean' backups, ie. just background
+	// the others may have other shapes on them, if those are static
+	Image_buffer *backup, *backup2, *backup3;
+	Image_buffer *cbackup, *cbackup2, *cbackup3;
+	Shape_frame *s, *s2, *s3;
 	
-
 	// First 'popup'
 	s = shapes.get_shape(0x21, 0);
 	backup = gwin->get_win()->create_buffer(s->get_width(), 
@@ -329,9 +334,14 @@ void BG_Game::play_intro()
 
 	// Successful 'popup'
 	s = shapes.get_shape(0x23, 0);
-	gwin->paint_shape(centerx,centery,s);
 	backup = gwin->get_win()->create_buffer(s->get_width(), 
 						s->get_height());
+	cbackup = gwin->get_win()->create_buffer(s->get_width(), 
+						s->get_height());
+
+	gwin->get_win()->get(cbackup, centerx - s->get_xleft(),
+			     centery - s->get_yabove());
+	gwin->paint_shape(centerx,centery,s);
 	gwin->get_win()->get(backup, centerx - s->get_xleft(),
 			     centery - s->get_yabove());
 	for(int i=1; i<16; i++) {
@@ -344,67 +354,107 @@ void BG_Game::play_intro()
 		gwin->get_win()->put(backup, centerx - s->get_xleft(),
 				     centery - s->get_yabove());
 	}
+	gwin->get_win()->put(cbackup, centerx - s->get_xleft(),
+			     centery - s->get_yabove());
 	delete backup;
+	delete cbackup;
 
 	// Actual appearance
+
+	// prepare Guardian speech
+	U7object textobj(MAINSHP_FLX, 0x0D);
+	char * txt, *txt_ptr, *txt_end, *next_txt;
+	size_t txt_len;
+	next_txt = txt_ptr = txt = textobj.retrieve(txt_len);
+	Audio::get_ptr()->playfile(INTROSND,false);
+	int txt_height = gwin->get_text_height(0);
+	int txt_ypos = gwin->get_height()-txt_height;
+
+	// backup text area
+	backup3 = gwin->get_win()->create_buffer(gwin->get_width(),txt_height);
+	gwin->get_win()->get(backup3, 0, txt_ypos);
 	// mouth
 	s = shapes.get_shape(0x1E,0);
-	gwin->paint_shape(centerx,centery,s);
 	backup = gwin->get_win()->create_buffer(s->get_width(), 
 						s->get_height());
+	cbackup = gwin->get_win()->create_buffer(s->get_width(), 
+						s->get_height());
+	gwin->get_win()->get(cbackup, centerx - s->get_xleft(),
+			     centery - s->get_yabove());
+	gwin->paint_shape(centerx,centery,s);
 	gwin->get_win()->get(backup, centerx - s->get_xleft(),
 			     centery - s->get_yabove());
 	// eyes
 	s2 = shapes.get_shape(0x20,0);
-	gwin->paint_shape(centerx,centery-10,s2);
 	backup2 = gwin->get_win()->create_buffer(s2->get_width(), 
 						 s2->get_height());
+	cbackup2 = gwin->get_win()->create_buffer(s2->get_width(), 
+						 s2->get_height());
+	gwin->get_win()->get(cbackup2, centerx - s2->get_xleft(),
+			     centery-12 - s2->get_yabove());
+	gwin->paint_shape(centerx,centery-12,s2);
 	gwin->get_win()->get(backup2, centerx - s2->get_xleft(),
-			     centery-10 - s2->get_yabove());
+			     centery-12 - s2->get_yabove());
 	// forehead
-	gwin->paint_shape(centerx,centery-47,shapes.get_shape(0x1F,0));
+	s3 = shapes.get_shape(0x1F,0);
+	cbackup3 = gwin->get_win()->create_buffer(s3->get_width(), 
+						 s3->get_height());
+	gwin->get_win()->get(cbackup3, centerx - s3->get_xleft(),
+			     centery-49 - s3->get_yabove());
+       	gwin->paint_shape(centerx,centery-49,s3);
 
-	// Guardian speech
-	U7object textobj(MAINSHP_FLX, 0x0D);
-	char * txt, *txt_ptr;
-	size_t txt_len;
-	txt_ptr = txt = textobj.retrieve(txt_len);
-	Audio::get_ptr()->playfile(INTROSND,false);
-	int txt_ypos = gwin->get_height()-gwin->get_text_height(0);
+	// start speech
 	for(int i=0; i<14*40; i++) {
-		gwin->paint_shape(centerx,centery-10,shapes.get_shape(0x20,1 + i % 9));
+		gwin->paint_shape(centerx,centery-12,shapes.get_shape(0x20,1 + i % 9));
 		gwin->paint_shape(centerx,centery,shapes.get_shape(0x1E,1 + i % 14));
-		if(i % 40 ==0) {
-			char *txt_end = std::strchr(txt_ptr, '\r');
-			*txt_end = 0;
-//			win->fill8(0,gwin->get_width(),txt_ypos,0,txt_ypos);
-			gwin->paint_text(0, txt_ptr, centerx-gwin->get_text_width(0, txt_ptr)/2, txt_ypos);
-			txt_ptr = txt_end+2;
+
+		if ((i % 40) == 0) {
+			txt_ptr = next_txt;
+			txt_end = std::strchr(txt_ptr, '\r');
+			*txt_end = '\0';
+
+			next_txt = txt_end+2;
 		}
+
+		gwin->paint_text(0, txt_ptr, centerx-gwin->get_text_width(0, txt_ptr)/2, txt_ypos);
+
 		win->show();
 		if(wait_delay_cycle(50)) {
 			pal.fade_out(30);
 			Audio::get_ptr()->cancel_streams();
 			return;	
 		}
+
+		gwin->get_win()->put(backup3, 0, txt_ypos);
 		gwin->get_win()->put(backup, centerx - s->get_xleft(),
 				     centery - s->get_yabove());
 		gwin->get_win()->put(backup2, centerx - s2->get_xleft(),
-				     centery-10 - s2->get_yabove());
+				     centery-12 - s2->get_yabove());
 	}
+	gwin->get_win()->put(backup3, 0, txt_ypos);
+	gwin->get_win()->put(cbackup, centerx - s->get_xleft(),
+			     centery - s->get_yabove());
+	gwin->get_win()->put(cbackup2, centerx - s2->get_xleft(),
+			     centery-12 - s2->get_yabove());
+	gwin->get_win()->put(cbackup3, centerx - s3->get_xleft(),
+			     centery-49 - s3->get_yabove());
+
 	delete [] txt;
-	delete backup;
-	delete backup2;
+	delete backup; delete backup2; delete backup3;
+	delete cbackup; delete cbackup2; delete cbackup3;
 
 	// G. disappears again
 	s = shapes.get_shape(0x23, 0);
-	gwin->paint_shape(centerx,centery,s);
 	backup = gwin->get_win()->create_buffer(s->get_width(), 
 						s->get_height());
+	cbackup = gwin->get_win()->create_buffer(s->get_width(), 
+						s->get_height());
+	gwin->get_win()->get(cbackup, centerx - s->get_xleft(),
+			     centery - s->get_yabove());
+	gwin->paint_shape(centerx,centery,s);
 	gwin->get_win()->get(backup, centerx - s->get_xleft(),
 			     centery - s->get_yabove());
-	for(int i=15; i>=0; i--) {
-		gwin->clear_screen();
+	for(int i=15; i>0; i--) {
 		gwin->paint_shape(centerx,centery,shapes.get_shape(0x23,i));
 		win->show();
 		if(wait_delay_cycle(70)) {
@@ -415,11 +465,18 @@ void BG_Game::play_intro()
 		gwin->get_win()->put(backup, centerx - s->get_xleft(),
 			     centery - s->get_yabove());
 	}
+	gwin->get_win()->put(cbackup, centerx - s->get_xleft(),
+			     centery - s->get_yabove());
 	delete backup;
+	delete cbackup;
+
+	gwin->get_win()->show();
+	wait_delay_cycle(1000);
 
 	// PC screen
 	play_midi(1);
 	
+	gwin->clear_screen();
 	pal.load("<STATIC>/intropal.dat",1);
 	pal.apply();
 
