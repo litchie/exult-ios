@@ -132,11 +132,11 @@ public:
 	void enable_drop();
 					// Handle scrollbar.
 	static void scrolled(GtkAdjustment *adj, gpointer data);
-	void locate(bool upwards);	// Locate terrain on game map.
+	virtual void locate(bool upwards);	// Locate terrain on game map.
 	void locate_response(unsigned char *data, int datalen);
 	void insert(bool dup);		// Insert new chunk.
 	void insert_response(unsigned char *data, int datalen);
-	void move(bool upwards);	// Move current selected chunk.
+	virtual void move(bool upwards);	// Move current selected chunk.
 	void swap_response(unsigned char *data, int datalen);
 #ifdef WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,

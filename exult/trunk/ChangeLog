@@ -1,3 +1,8 @@
+2002-05-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/objbrowse.cc (Object_browser): Adding a common
+	'create_controls()' method (partly done) for consistency.
+
 2002-05-28  Darke <darkepaw@users.sourceforge.net>
 	* conf/Configuration.*, tools/cmanip.cc: Fixed segfault in cmanip.
 
