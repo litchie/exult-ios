@@ -48,6 +48,8 @@ public:
 		{  }
 					// Render.
 	virtual void paint(Game_window *gwin);
+					// Can this be clicked on?
+	virtual int is_findable(Game_window *gwin);
 	};
 
 /*
@@ -147,6 +149,9 @@ public:
 	virtual ~Animated_egg_object();
 					// Render.
 	virtual void paint(Game_window *gwin);
+					// Can this be clicked on?
+	virtual int is_findable(Game_window *gwin)
+		{ return Ireg_game_object::is_findable(gwin); }
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	};
