@@ -54,7 +54,7 @@ public:
 	void	stream_unlock(void) { SDL_mutexV(stream_mutex); };
 	void fill_audio_func(void *, uint8 *, int);
 	void play(uint8 *, uint32);
-	ProducerConsumerBuf *Create_Audio_Stream(void);
+	ProducerConsumerBuf *Create_Audio_Stream(uint32 id);
 	void	Destroy_Audio_Stream(uint32 id);
 	void	cancel_streams(void);
 	bool	is_playing(uint32 id);

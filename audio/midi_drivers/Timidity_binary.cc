@@ -51,6 +51,7 @@ const	Uint32	Timidity_binary_magic_sfx=0x345301;
 // #undef HAVE_TIMIDITY_BIN	// Damn. Can't do this while SDL has the audio device.
 // New strategy - Tell timidity to output to stdout. Capture that via a pipe, and
 // introduce it back up to the mixing layer.
+
 #if HAVE_TIMIDITY_BIN
 #include "Timidity_binary.h"
 
@@ -162,8 +163,8 @@ int	timidity_play(string filename, bool repeat, string &newfilename, pid_t &pid)
 void	Timidity_binary::player(void)
 {
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
-	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
-	audiostream->id=Timidity_binary_magic;
+	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream(
+					Timidity_binary_magic);
 	char buf[4096];
 	string newfilename;
 	pid_t timidity_pid;
@@ -185,8 +186,8 @@ void	Timidity_binary::player(void)
 void	Timidity_binary::sfxplayer(void)
 {
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic_sfx);
-	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
-	audiostream->id=Timidity_binary_magic_sfx;
+	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream(
+						Timidity_binary_magic_sfx);
 	char buf[4096];
 	string newfilename;
 	pid_t timidity_pid;

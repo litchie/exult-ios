@@ -91,7 +91,7 @@ public:
 	bool	are_effects_enabled() { return effects_enabled; }
 	void	set_effects_enabled(bool ena) { effects_enabled = ena; }
 
-	ProducerConsumerBuf	*Create_Audio_Stream(void) { return !mixer?0:mixer->Create_Audio_Stream(); }
+	ProducerConsumerBuf	*Create_Audio_Stream(uint32 id) { return !mixer?0:mixer->Create_Audio_Stream(id); }
 	void    Destroy_Audio_Stream(uint32 id) { if(mixer) mixer->Destroy_Audio_Stream(id); }
 	bool	is_playing(uint32 id) { return !mixer?0:mixer->is_playing(id); }
 

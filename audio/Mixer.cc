@@ -59,6 +59,8 @@ using std::memcpy;
 using std::memset;
 using std::vector;
 
+static const int Mixer_Sample_Magic_Number=0x55443322;
+
 //---- Mixer ---------------------------------------------------------
 
 Mixer::Mixer(Audio *a, uint32 __buffer_size,uint32 channels, 
@@ -180,7 +182,8 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 
 void	Mixer::play(uint8 *sound_data,uint32 len)
 {
-	ProducerConsumerBuf *audiostream=Create_Audio_Stream();
+	ProducerConsumerBuf *audiostream=Create_Audio_Stream(
+						Mixer_Sample_Magic_Number);
 	if (!audiostream)
 		{
 		cerr << "All audio streams in use" << endl;
@@ -202,7 +205,7 @@ void	Mixer::set_auxilliary_audio(int fh)
 }
 #endif
 
-ProducerConsumerBuf	*Mixer::Create_Audio_Stream(void)
+ProducerConsumerBuf	*Mixer::Create_Audio_Stream(uint32 id)
 {
 	ProducerConsumerBuf *buf = 0;
 	SDL::PauseAudio(1);
@@ -216,7 +219,7 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(void)
 	if (i < MAX_AUDIO_STREAMS)
 		{
 		buf = streams[i];
-		buf->init();
+		buf->init(id);
 		cerr << "Create_Audio_Stream:  " << i << endl;
 		}
 	stream_unlock();
@@ -227,12 +230,15 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(void)
 
 void	Mixer::Destroy_Audio_Stream(uint32 id)
 {
-	if(id >= MAX_AUDIO_STREAMS || id < 0)
-		return;
 	cerr << "Destroy_Audio_Stream:  " << id << endl;
 	SDL::PauseAudio(1);
 	stream_lock();
-	streams[id]->end_consumption();
+	for (int i = 0; i < MAX_AUDIO_STREAMS; i++)
+		if (streams[i]->get_id() == id)
+			{
+			streams[i]->end_consumption();
+			break;
+			}
 	stream_unlock();
 	SDL::PauseAudio(0);
 }
@@ -240,8 +246,13 @@ void	Mixer::Destroy_Audio_Stream(uint32 id)
 bool	Mixer::is_playing(uint32 id)
 {
 	stream_lock();
-	bool result = (id < MAX_AUDIO_STREAMS && id >= 0 && 
-						streams[id]->is_active());
+	bool result = false;
+	for (int i = 0; i < MAX_AUDIO_STREAMS; i++)
+		if (streams[i]->get_id() == id)
+			{
+			result = streams[i]->is_active();
+			break;
+			}
 	stream_unlock();
 	return result;
 }
