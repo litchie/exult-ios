@@ -1,3 +1,7 @@
+2000-11-27  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* acconfig.h, configure.in: complete overhaul of configure.in
+	* exult.cc: included '--disable-sdl-parachute' configure option
+
 2000-11-26  Jeff Freedman <freedman@hevanet.com>
 	* Split up imagewin.{cc,h} and moved to imagwin directory.
 
