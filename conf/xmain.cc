@@ -28,7 +28,7 @@ Configuration	config;
 
 void	dump_stringvec(vector<string> &vs)
 {
-	int	n;
+	size_t	n;
 	cout << "vs is " << vs.size() << " entries" << endl;
 	for(n=0;n<vs.size();n++)
 		cout << n << " : " << vs[n] << endl;

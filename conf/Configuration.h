@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _Configuration_h_
 #define _Configuration_h_
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
+#if __GNUG__ >= 2
 #  pragma interface
 #endif
 
@@ -37,6 +37,7 @@ public:
 	~Configuration();
 
 	bool	read_config_file(const char *);
+	bool	read_config_string(const string &);
 	void	value(const char *key,string &ret,const char *defaultvalue="");
 	void	value(const char *key,int &ret,int defaultvalue=0);
 	void    set(const char *key,const char *value,bool write_to_file);
@@ -58,6 +59,7 @@ private:
 	void    set(string &key,string &value,bool write_to_file);
 	XMLnode xmltree;
 	string	filename;
+	bool	is_file;
 };
 
 
