@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class	Zombie: public virtual PathFinder
 	{
 	int major_distance;		// Distance in tiles to go.
+	int major_frame_incr;		// # steps to take in faster dir.
 	Tile_coord cur;			// Current pos. within world.
 					// ->'s to cur.tx, cur.ty.
 	short *major_coord, *minor_coord;
@@ -37,7 +38,8 @@ class	Zombie: public virtual PathFinder
 					//   subtract 'major_delta' from sum.
 	int sum;			// Sum of 'minor_delta''s.
 public:
-	Zombie() : major_distance(0)
+	Zombie(int major_incr = 1) : major_distance(0), 
+					major_frame_incr(major_incr)
 		{  }
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.

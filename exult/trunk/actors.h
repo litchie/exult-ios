@@ -268,6 +268,9 @@ public:
 					// Change member shape.
 	virtual void change_member_shape(Game_object *obj, int newshape);
 	virtual int move_aside(int dir);// Move out of the way.
+					// Step onto an (adjacent) tile.
+	virtual int step(Tile_coord t, int frame)
+		{ return 0; }
 #if 0	/* ++++++ Trying to init. 1st-day schedules in gameclk.cc. */
 	struct	{
 		int cx;
@@ -289,9 +292,6 @@ public:
 		initial_location.lift=new_lift;
 		};
 #endif
-					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t, int frame)
-		{ return 0; }
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
 	virtual Weapon_info *get_weapon(int& points, int& shape);	
@@ -399,6 +399,8 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
+					// Remove/delete this object.
+	virtual void remove_this(int nodel = 0);
 					// Update chunks after NPC moved.
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);

@@ -18,7 +18,8 @@ LFLAGS=-g
 LIBS=$(SDL_LIBS) -lmidi -lbe
 
 EXEC=exult
-MAIN_OBJS=actions.o actorio.o actors.o args.o delobjs.o drag.o effects.o \
+MAIN_OBJS=actions.o actorio.o actors.o args.o barge.o \
+	delobjs.o drag.o effects.o \
 	exult.o gameclk.o gamedat.o \
 	gametxt.o gamewin.o gumps.o imagewin.o items.o lists.o mouse.o \
 	npcnear.o objs.o paths.o readnpcs.o \
