@@ -1,14 +1,13 @@
 Exult Studio Documentation
-last changed: 06 February 2004(GMT)
+last changed: 01 March 2005(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/studio.php
 
 
 0. Changes to the Documentation
-0.1. - 06 February 2004
-0.2. - 08 August 2003
-0.3. - 04 May 2003
-0.4. - 28 October 2002
+0.1. - 01 March 2005
+0.2. - 23 May 2004
+0.3. - 06 February 2004
 
 1. Introduction
 1.1. What is Exult Studio?
@@ -37,7 +36,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 4.3. Edit
 4.4. Mode
 4.5. Tools
-4.6. Tool bar
+4.6. Map
+4.7. Tool bar
 
 5. Basic editors
 5.1. The shape editor
@@ -58,6 +58,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 6.11. Weather eggs
 6.12. Path eggs
 6.13. Button eggs
+6.14. Intermap eggs
+6.15. Multi-map support
 
 7. NPC editing
 7.1. Editing an existing NPC
@@ -80,12 +82,15 @@ The latest version of this document can be found at http://exult.sourceforge.net
 8.10. Use the paint feature to quickly create a forest
 
 9. Miscellaneous
-9.1. Other tools that might be useful
-9.2. Porting Exult Studio to other platforms
-9.3. About this client/server stuff?
-9.4. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
-9.5. What's next?
-9.6. Known Bugs with the Win32 port
+9.1. Creating a boat, flying carpet, or horse drawn carriage
+9.2. Importing and creating your own custom shapes
+9.3. How to create a custom font?
+9.4. Other tools that might be useful
+9.5. Porting Exult Studio to other platforms
+9.6. About this client/server stuff?
+9.7. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
+9.8. What's next?
+9.9. Known Bugs with the Win32 port
 
 10. Credits
 10.1. Thanks
@@ -94,32 +99,34 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 06 February 2004
+0.1. - 01 March 2005
+* 4.3. Edit Create Barg added.
+* 4.6. Map added this menu option.
+* 6.2. The different types of eggs intermap egg added.
+* 6.14. Intermap eggs explains how to use this egg type.
+* 6.15. Multi-map support explained.
+* 9.1. Creating a boat, flying carpet, or horse drawn carriage added.
+* 9.2. Importing and creating your own custom shapes added.
+* 9.3. How to create a custom font? explained.
+
+barge_edit
+			
+
+0.2. - 23 May 2004
+* 3.4. Palettes files palette files are compatible with the Gimp.
+* 4.3. Edit note about map-editing operations.
+* 6.4. Properties of eggs some more infos.
+* 6.6. Schedules of Creatures more on the patrol schedule.
+* 7.5. NPC Flags removed some unused flags.
+
+
+
+0.3. - 06 February 2004
 * 1.3. Terms we use in regard to Exult and Ultima 7 some corrections by Willem.
 * 2.3. Step-by-step instructions to run Exult Studio some corrections.
 * 2.2. Running Exult Studio some corrections.
 * 3.3. Map files More right click options.
 * 7. NPC editing finally took on that task.
-
-
-
-0.2. - 08 August 2003
-* 2.1. Installation only use latest snapshots not latest release.
-* 2.3. Step-by-step instructions to run Exult Studio you need to set up the patch path in exult.cfg.
-* 9.6. Known Bugs with the Win32 portExult Studio now works on all Win32 platforms.
-
-
-
-0.3. - 04 May 2003
-* 9.6. Known Bugs with the Win32 port two bugs fixed in the win32 port.
-
-
-
-0.4. - 28 October 2002
-* 1.3. Terms we use in regard to Exult and Ultima 7 added NPC schedules.
-* 2.2. Running Exult Studio the -d command line arg is now -gGAME.
-* 2.4. What you can do at the moment 'Paint with chunk' added.
-* 3.2. Shape files 'Frames' mode mentioned and explained.
 
 
 
@@ -223,7 +230,7 @@ With the latest source you can
     ./blackgate/patch
     </patch>
   </blackgate>
-Exult will also read files from 'patch' if it exists on starting a new game.
+Exult will also read files from 'patch' if it exists on starting a new game. The patch dir is expected to be within the main game directory, parallel to the static and gamedat directories.
 In any mode, you can add the currently selected shape by shift-clicking..
 
 
@@ -242,7 +249,7 @@ You can change the settings of Exult Studio either with the preferences dialog o
       </height>
     </main>
     <default_game>
-    gamename 
+    gamename
 				** default game to edit (games must be specified in
 				<game> part of exult.cfg)
     </default_game>
@@ -306,7 +313,8 @@ The palettes used by a game are stored in the files listed there. When you selec
 * Move Moves palettes in the file.
 * File Import Overwrites the current palettes with palette text file. Export Exports the current palette to a text file.
 
-Right clicking on a chunk only gives you the default File-save/revert option.
+The palette text files are compatible with the Gimp.
+Right clicking on a palette only gives you the default File-save/revert option.
 
 
 3.5. Groups files
@@ -362,8 +370,10 @@ Note that the default location for saving and creation of new files is the STATI
 * Properties... Shows the properties of the selected object. If more than one object is selected it shows the properties of the last selected object. Only NPCs and eggs show different properties than if you select Basic properties.
 * Basic properties... Shows the properties of the selected object. If more than one object is selected it shows the properties of the last selected object.
 * Create egg... Create or edit eggs with this. See 6. Egg editing for detailed information.
-* Create NPC... Create or edit NPCs with this. See 7. NPC editing for more information (not yet there).
+* Create NPC... Create or edit NPCs with this. See 7. NPC editing for more information.
+* Create Barge... Create a barge such as a magic carpet or a horse drawn carriage. See 9.1. for more information.
 
+When in map-edit mode, you can select shapes in Exult by left-clicking, or multiple shapes by ctrl+left-clicking.
 
 
 4.4. Mode
@@ -384,7 +394,13 @@ Note that you can only drag objects in the game window when you are in "Move" mo
 
 
 
-4.6. Tool bar
+4.6. Map
+* New Used to create a new map to use for multi-map support (see 6.15. Multi-map support).
+* Main The default map or the map that is loaded upon starting of a new game.
+
+
+
+4.7. Tool bar
 * Play This is the same as pressing 'Alt+Ctrl+M' in Exult. It exits the Map Edit Mode and lets you play the game. By pressing it again you enter Map Edit Mode again.
 * Grid Shows a grid of white lines in the game window for better control on placing objects.
 * Edit lift: Changes the lift of a selected object in the game window. Lift means the distance of an object from the ground.
@@ -417,7 +433,7 @@ Create 'combination shapes', like a fence or an entire roof by selecting "Tools-
 5.3. Custom Usecode
 As hinted at (see 1.3.) Usecode is actually what runs Ultima 7 and therefore any game created with Exult Studio. As of yet we do not have a Usecode editor/debugger. So writing your own Usecode is not that easy.
 For an example of how Usecode may look like download our experimental patch for BG at http://exult.sourceforge.net/snapshots/patch.zip. In that zip you'll find a readme.txt which tells you how to run it. You will also see two files called usecode.uc and usecode.
-Usecode.uc is the usecode script that will help you understand our usecode language. When you run ucc (see 9.1.) with that file (e.g. "ucc -o usecode usecode.uc") you will get the file called usecode. This file 'usecode' should be the same as the one in the zip file.
+Usecode.uc is the usecode script that will help you understand our usecode language. When you run ucc (see 9.4.) with that file (e.g. "ucc -o usecode usecode.uc") you will get the file called usecode. This file 'usecode' should be the same as the one in the zip file.
 Someone does have to write extensive documentation for this but I (Dominus) am not really up for that task. Pertex has written some documentation at http://www.sophen.de/exult/ that might be able help you.
 
 
@@ -440,6 +456,7 @@ Currently Exult Studio supports the following types of eggs (more details follow
 * Weather temporarily set the in-game weather.
 * Path set the destination of a teleport egg to a specific object.
 * Button is used to activate eggs in the vicinity that are set to external
+* Intermap Now that Exult has multi-map support, this egg can be used to create a teleporter between maps.
 
 
 
@@ -451,8 +468,8 @@ The most convenient way to create an egg is to select Create new egg from the ed
 Before you select the type of egg you want you can edit basic properties of eggs. These are:
 * Probability of the egg being activated. By giving an egg a probability of 100 you can ensure that whenever the requirements necessary to make an egg activate are met, the egg will activate. With a probability of 0 nothing will ever happen when the egg's requirements are met. A probability anywhere between 0 and 100 will cause the activation of an egg to be a random event.
 * Distance allows you to set how far a character needs to be from an egg in order to activate it. Each distance unit is equal to one tile (8x8 pixel) of the map.
-* Criteria is very important as it sets what needs to be done to activate the egg. The options are: Cached in - An egg with this characteristic is activated when the chunk it is on is loaded into memory. This usually happens from several screens away. Party near - causes an egg to be activated whenever the player controlled character or any of his party members wander within the area specified by the distance option. Avatar near - exactly the same as party near except only registers where the main character is moved, ignoring actions by the party members. Avatar far - Its like Avatar near except with a twist. This property allows you to walk into the area specified by the distance property but then as you leave the area the egg will be activated as you distance yourself from it. Can be great for sneak attacks from behind. Avatar footpad - In this case the distance property is ignored and the Avatar has to physically step onto the egg. Party footpad - This option is identical to the Avatar footpad option except if either the main character or one of his companions stumbles onto the egg it will be activated. Something on - This egg is activated whenever an object is placed within the area specified by an egg. External - Eggs set to the external characteristic will be activated by button eggs in the vicinity.
-* Flag final attribute you can give an egg to determine whether it will be activated or not. As a note you can mix and match flags, you can set an egg to nocturnal once only or nocturnal auto-reset. Nocturnal - Any egg with this setting will only be activated during the nighttime. Great for setting the spawning of creatures of the night, or giving some nice night time music. Hatched - This creates an egg that has already been activated. It is inactive and will not do anything. Once-Only - Any egg with this flag applied will only hatch once and then disappear from the game world. Auto-reset - Eggs with this flag attached will continue to activate every time the conditions set in the egg menu are met.
+* Criteria is very important as it sets what needs to be done to activate the egg. The options are: Cached in - An egg with this characteristic is activated when the chunk it is on is loaded into memory. This usually happens from several screens away. Party near - causes an egg to be activated whenever the player controlled character or any of his party members wander within the area specified by the distance option. Avatar near - exactly the same as party near except only registers where the main character is moved, ignoring actions by the party members. Avatar far - Its like Avatar near except with a twist. This property allows you to walk into the area specified by the distance property but then as you leave the area the egg will be activated as you distance yourself from it. Can be great for sneak attacks from behind. Avatar footpad - In this case the distance property is ignored and the Avatar has to physically step onto the egg. Party footpad - This option is identical to the Avatar footpad option except if either the main character or one of his companions stumbles onto the egg it will be activated. Something on - This egg is activated whenever an object is placed AND removed within the area specified by an egg. External - Eggs set to the external characteristic will be activated by button eggs in the vicinity.
+* Flag final attribute you can give an egg to determine whether it will be activated or not. As a note you can mix and match flags, you can set an egg to nocturnal once only or nocturnal auto-reset.Not that an egg will be reactivated after you walk about a screenful away and then return if the the flags "once-only" or "auto-reset" are not set. Nocturnal - Any egg with this setting will only be activated during the nighttime. Great for setting the spawning of creatures of the night, or giving some nice night time music. Hatched - This creates an egg that has already been activated. It is inactive and will not do anything. Once-Only - Any egg with this flag applied will only hatch once and then disappear from the game world. Auto-reset - Eggs with this flag attached will continue to activate every time the conditions set in the egg menu are met.
 
 
 
@@ -473,7 +490,7 @@ When setting a monster spawn you will most like want to use one of the following
 * Waiter Give a creature this schedule and watch him run back and forth around a crowded area like he has a purpose.
 * Graze An awful lot like loiter except the character seems to stay a little more to one area.
 * Duel Doesn't do a whole lot by itself, but put two neutral creatures with these settings beside each other and its rumble time. This also works by placing them near training dummies or archery targets. For an extra laugh place 10 spawns each set for 31 guards to appear in dueling mode.
-* Patrol A creature given this setting will very slowly wander from place to place.
+* Patrol An NPC with this schedule will follow "path" markers (shape #607). The default behavior is to go to "1", then "2", etc., and return to "1" when no higher numbers are found. There are also some fairly complicated rules that depend on the "quality" that you give to each of the path markers. (Exult Studio should have a dialog to create these, so I wouldn't worry about them right now.)
 
 
 
@@ -507,6 +524,14 @@ The path egg is useful for placing an individual teleport location by hand. Give
 
 6.13. Button eggs
 The button egg has the interesting ability to activate all eggs in the immediate vicinity that are set to external. You can set the area around the egg that will be affected by increasing the distance setting, keeping in mind that each distance setting is equal to 1 tile (8x8 pixel).
+
+
+6.14. Intermap eggs
+An intermap egg works precisely the same as a regular teleport egg except it can be used to teleport the main character between maps. The Coordinates options are used to set the precise tile the Avatar will be teleported to on the opposing map. The Map Number condition is used to set which map the main character will appear at.
+
+
+6.15. Multi-map support
+Exult now supports multiple maps. To create new maps select New from the Map menu. You now have an option to copy information over from an existing map. The Terrain option allows you to retain the lay of the land. If this option isn't selected your new map will be entirely ocean. Fixed and Moveable objects allow you to retain the remaining objects from the previous map (Jeffrey's favourite idea is to entirely copy the current Exult map and create a new 'Bizarro-Brittania'). You can quickly switch between maps in game using the command 'ctrl-alt-t'.
 
 
 
@@ -555,23 +580,21 @@ Here you can set special properties of NPCs. Some are only set for special NPCs,
 * Confused
 * Dancing
 * Fly
-* In motion
 * Invisible
 * No Magic
 * Petra
 * Protection When you cast the protection spell on an NPC this flag gets set.
-* Swim
+* Swim Allows an NPC to walk on water.
 * Tremor
 * Bleeding The NPC looses blood, and leaves a trail of blood when he moves.
 * Conjured
-* Don't move
+* Don't move Causes an NPC to become invisible
 * Freeze The NPC is cold and needs warmer clothing.
 * In party The NPC is a member of the party.
 * Met The Avatar has previously spoken to the NPC.
-* Okay to land
 * Poisoned
 * Tattooed
-* Walk
+* Walk An NPC without this flag set cannot move
 * Charmed
 * Cursed
 * Ethereal This makes it possible for the NPC to behave like a ghost (walk through walls, walk on water...)
@@ -643,7 +666,24 @@ The best way to create multiple objects fast and conveniently is to use the pain
 --------------------------------------------------------------------------------
 
 9. Miscellaneous
-9.1. Other tools that might be useful
+9.1. Creating a boat, flying carpet, or horse drawn carriage
+By double clicking on a barge (horse drawn carriage/magic carpet) in map editing mode one can alter the properties of the barge through the barge editor. The Barge Editor allows one to alter the size of a currently existing barge. By increasing the size of the Magic Carpet you can use the added space to create some sort of a flying battleship. Theoretically the maximum size of a barge is 100x100, but an object that large will fill the entire screen and become extremely difficult to steer.
+To create your own barge, you first need to chose Create Barge, select the dimensions of your barge and place them in the map. To create a magic carpet, place the small blue tiles from the magic carpet (shape# 840, frame 57) within the barge area and place the required number of seats on top of the magic carpet tiles. You now have your own custom carpet. Magic carpet tiles are only required for the seats your party will sit on, by expanding the area of the barge further you can create a custom area where you can place walls and other flooring tiles. Unfortunately there are limitations, all objects must be placed no more than four values in the vertical direction from the floor. For a craft to work you must have at least as many seats as party members.
+To create a cart you need only place a floor tile from the carriage (shape 652, frame 7) within the barge area and place a seat on top of it but you must have a deed from one of the carriage vendors. If you place a draft horse on your cart then you will need a cart deed (shape 797, frame 0) that had the same quality set as the draft horse. The quality for an object can be set using the Exult Studio object tool.
+You can also create a ship by placing the deck (shape 700, frame 2) a chair, and an unfurled sail within a barge created on the water. You also need a deed for the boat. To create a boat deed need a scroll that has the same quality value as the sail of your boat.
+
+
+9.2. Importing and creating your own custom shapes
+Importing a shape into Exult Studio is quite easy. Simply select the type of object you wish to create (shape, chunk, gump, etc.) and right-click on the display window and select New Shape or New Frame depending on which is pertinent. Once the new shape is created, right click on the new shape and select Import frame. Now select the desired shape from the directory. You must now save all in Exult Studio and both Exult Studio and Exult need to be restarted before the newly imported shape can be used in a game.
+Note All shapes imported into Exult Studio must be in either .png or .shp format. .png is a standard format while .shp is an Exult specific file format. We recommend The Gimp (The GNU Image Manipulation Program) for editing graphic files for several reasons. It is free, it is relatively easy on hardware, and it has all the necessary functions for creating and importing shapes into Exult Studio.
+Important For a shape to be compatible with Exult Studio it must be saved as a 255 colour interlaced .png/.shp file. RGB or grayscale images are not compatible. Transparent sections will remain transparent in Exult.
+
+
+9.3. How to create a custom font?
+For your convenience Exult Studio accepts .ttf (true type font) files, which is the standard file format for text in a Windows machine. Select new shape from fonts.vga, here you can either manually overwrite a single frame of a font or you can import an entire .ttf file by selecting the From font option. To overwrite an existing font set the shape of your newly imported font to that of a preexisting font. Unfortunately newly imported .ttf files don't have the correct offsets and you letters will look stuck together. To fix that you will have to manually edit all font frames to give them proper spacing.
+
+
+9.4. Other tools that might be useful
 In the process of creating Exult the team came up with some useful tools that might help in editing/making a game. These can be built from the Exult source or you can download the Windows binary snapshot. The source and binary snapshot can be found at http://exult.sourceforge.net/download.php. The tools are:
 * expack: lets you extract and create Flex files. See the manual.
 * ipack: a tool for creating and updating Exult and U7 image archives, such as 'shapes.vga'. See the manual.
@@ -656,7 +696,7 @@ In the process of creating Exult the team came up with some useful tools that mi
 
 
 
-9.2. Porting Exult Studio to other platforms
+9.5. Porting Exult Studio to other platforms
 Currently Exult Studio runs on U*ix and Windows platforms. First it only ran on U*ix but with some effort by Colourless, Kirben and Mark Siewart it was successfully ported to Win32.
 A port to other platforms depends on when someone volunteers to do the work :-) There are three issues:
 * GTK has to be ported to the platform.
@@ -665,13 +705,13 @@ A port to other platforms depends on when someone volunteers to do the work :-) 
 
 
 
-9.3. About this client/server stuff?
+9.6. About this client/server stuff?
 A map-editor needs to provide the ability to display the game, place objects on the map, and move objects around. That functionality is already in Exult, and it makes sense to reuse it. So we could have made Exult a part of Exult Studio. However, Exult is already a huge program, and is getting unwieldy to work on.
 With this architecture, Exult Studio can have all the messy code for displaying/editing dialog boxes, while Exult only needs a little bit of work to handle requests.
 Also, I (Jeff) wanted to get a little experience programming with sockets:-)
 
 
-9.4. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
+9.7. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
 This confused me too, and I originally planned on doing away with it. But do a little arithmetic: U7's world has 3072x3072 tiles; that's over 9 million that need to be set. My guess is that they came up with the idea behind 'u7chunks' to save artists time and to give the map a consistent look.
 The basic idea is that each 'chunk' of flat terrain, 16x16 tiles, is stored in 'u7chunks', and is indexed by its position in this file (0, 1, 2, ...). The 'u7map' file specifies, for each 'chunk' in the U7 map, which of the terrains is to be used. Since the entire map has 192x192 chunks, or a total of 36,864, and since 'u7chunks' has 3072 entries, each terrain is shared an average of over 10 times. When you go into map-editing mode in Exult, the numbers displayed are the indices from 'u7chunks'.
 So here are the three sorts of scenery that you can see and edit:
@@ -683,16 +723,15 @@ The challenge of writing a map-editor is keeping the above straight, and reading
 For a more detailed explanation, see Gary Thompson's paper, 'u7edit.txt' in our 'docs' directory.
 
 
-9.5. What's next?
+9.8. What's next?
 The next things to be implemented are:
 * Exult Studio needs to be able to automatically create palettes 1-n from palette 0 using the code from ipack.
 * It will also be very nice to have a Usecode debugger someday as well (Willem is actually working on it).
 * A 'flags' editor for viewing and editing the global Usecode flags by name.
-* A 'barge' editor for creating things like ships and carts.
 
 
 
-9.6. Known Bugs with the Win32 port
+9.9. Known Bugs with the Win32 port
 Exult Studio runs fine on all versions of Win32. However there may still be unexpected crashes. If you can reproduce a crash, please contact us.
 
 

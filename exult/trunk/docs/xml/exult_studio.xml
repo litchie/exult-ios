@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="23 May 2004(GMT)">
+<studiodoc title="Exult" changed="01 March 2005(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="01032005">
+			<header>- 01 March 2005</header>
+			<body>
+				<ul>
+				<li><ref1 target="edit_menu"/> Create Barg added.</li>
+				<li><ref1 target="map_menu"/> added this menu option.</li>
+				<li><ref1 target="eggs_type"/> intermap egg added.</li>
+				<li><ref1 target="intermap_eggs"/> explains how to use this egg type.</li>
+				<li><ref1 target="multi_map"/> explained.</li>
+				<li><ref1 target="barge_edit"/> added.</li>
+				<li><ref1 target="custom_shapes"/> added.</li>
+				<li><ref1 target="custom_font"/> explained.</li>
+				</ul>barge_edit
+			</body>
+		</sub>
 		<sub name="23052004">
 			<header>- 23 May 2004</header>
 			<body>
@@ -335,7 +350,7 @@
 			</body>
 		</sub>
 	</section>
-		<section title="Exult Studio basics">
+	<section title="Exult Studio basics">
 		<sub name="overview">
 			<header>Description</header>
 			<body>
@@ -612,7 +627,10 @@
 					See <section_ref target="Egg editing"/> for detailed information.</li>
 					<li><strong>Create NPC...</strong><br/>
 					Create or edit NPCs with this.
-					See <section_ref target="NPC editing"/> for more information (not yet there).</li>
+					See <section_ref target="NPC editing"/> for more information.</li>
+					<li><strong>Create Barge...</strong><br/>
+					Create a barge such as a magic carpet or a horse drawn carriage.
+					See <ref target="barge_edit"/> for more information.</li>
 				</ul>
 				<para>
 				When in map-edit mode, you can select shapes in Exult by left-clicking, or multiple shapes by 
@@ -668,6 +686,17 @@
 					<li><strong>Compile Usecode...</strong><br/>
 					Compiles the usecode script usecode.uc in the patch directory
 					(see <ref target="usecode_edit"/>)</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="map_menu">
+			<header>Map</header>
+			<body>
+				<ul>
+					<li><strong>New</strong><br/>
+					Used to create a new map to use for multi-map support (see <ref1 target="multi_map"/>).</li>
+					<li><strong>Main</strong><br/>
+					The default map or the map that is loaded upon starting of a new game.</li>
 				</ul>
 			</body>
 		</sub>
@@ -833,6 +862,9 @@
 						set the destination of a teleport egg to a specific object.</li>
 					<li><strong>Button</strong><br/>
 						is used to activate eggs in the vicinity that are set to external</li>
+					<li><strong>Intermap</strong><br/>
+						Now that Exult has multi-map support, this egg can be used to create a teleporter
+						between maps.</li>	
 				</ul>
 			</body>
 		</sub>
@@ -1098,6 +1130,31 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="intermap_eggs">
+			<header>Intermap eggs</header>
+			<body>
+				<para>
+					An intermap egg works precisely the same as a regular teleport egg except it can be used to 
+					teleport the main character between maps. The <strong>Coordinates</strong> options are used 
+					to set the precise tile the Avatar will be teleported to on the opposing map. The 
+					<strong>Map Number</strong> condition is used to set which map the main character will appear at.
+				</para>
+			</body>
+		</sub>
+		<sub name="multi_map">
+			<header>Multi-map support</header>
+			<body>
+				<para>
+					Exult now supports multiple maps. To create new maps select <strong>New</strong> from the 
+					<strong>Map</strong> menu. You now have an option to copy information over from an existing map. 
+					The <strong>Terrain</strong> option allows you to retain the lay of the land. If this option 
+					isn't selected your new map will be entirely ocean. <strong>Fixed</strong> and 
+					<strong>Moveable objects</strong> allow you to retain the remaining objects from the previous map 
+					(Jeffrey's favourite idea is to entirely copy the current Exult map and create a new 'Bizarro-Brittania'). 
+					You can quickly switch between maps in game using the command <key>ctrl-alt-t</key>.
+				</para>
+			</body>
+		</sub>
 	</section>
 	<section title="NPC editing">
 		<sub name="npc_edit">
@@ -1201,12 +1258,14 @@
 					<li><strong>Petra</strong></li>
 					<li><strong>Protection</strong><br/>
 						When you cast the protection spell on an NPC this flag gets set.</li>
-					<li><strong>Swim</strong></li>
+					<li><strong>Swim</strong><br/>
+						Allows an NPC to walk on water.</li>
 					<li><strong>Tremor</strong></li>
 					<li><strong>Bleeding</strong><br/>
 						The NPC looses blood, and leaves a trail of blood when he moves.</li>
 					<li><strong>Conjured</strong></li>
-					<li><strong>Don't move</strong></li>
+					<li><strong>Don't move</strong><br/>
+						Causes an NPC to become invisible</li>
 					<li><strong>Freeze</strong><br/>
 						The NPC is cold and needs warmer clothing.</li>
 					<li><strong>In party</strong><br/>
@@ -1215,7 +1274,8 @@
 						The Avatar has previously spoken to the NPC.</li>
 					<li><strong>Poisoned</strong></li>
 					<li><strong>Tattooed</strong></li>
-					<li><strong>Walk</strong></li>
+					<li><strong>Walk</strong><br/>
+						An NPC without this flag set cannot move</li>
 					<li><strong>Charmed</strong></li>
 					<li><strong>Cursed</strong></li>
 					<li><strong>Ethereal</strong><br/>
@@ -1433,6 +1493,81 @@
 		</sub>
 	</section>
 	<section title="Miscellaneous">
+		<sub name="barge_edit">		
+			<header>Creating a boat, flying carpet, or horse drawn carriage</header>
+			<body>
+				<para>
+					By double clicking on a barge (horse drawn carriage/magic carpet) in map editing mode one can 
+					alter the properties of the barge through the barge editor. The Barge Editor allows one to alter 
+					the size of a currently existing barge. By increasing the size of the Magic Carpet you can use 
+					the added space to create some sort of a flying battleship. Theoretically the maximum size of a 
+					barge is 100x100, but an object that large will fill the entire screen and become extremely 
+					difficult to steer.  
+				</para>
+				<para>
+					To create your own barge, you first need to chose Create Barge, select the dimensions of your 
+					barge and place them in the map. To create a magic carpet, place the small blue tiles from the 
+					magic carpet (shape# 840, frame 57) within the barge area and place the required number of seats 
+					on top of the magic carpet tiles. You now have your own custom carpet. Magic carpet tiles are only 
+					required for the seats your party will sit on, by expanding the area of the barge further you can 
+					create a custom area where you can place walls and other flooring tiles. Unfortunately there are 
+					limitations, all objects must be placed no more than four values in the vertical direction from the 
+					floor. <strong>For a craft to work you must have at least as many seats as party members</strong>.
+				</para>
+				<para>
+					To create a cart you need only place a floor tile from the carriage (shape 652, frame 7) within the 
+					barge area and place a seat on top of it but you must have a deed from one of the carriage vendors. 
+					If you place a draft horse on your cart then you will need a cart deed (shape 797, frame 0) that had 
+					the same quality set as the draft horse. The quality for an object can be set using the <Studio/> 
+					object tool.
+				</para>
+				<para>
+					You can also create a ship by placing the deck (shape 700, frame 2) a chair, and an unfurled sail within 
+					a barge created on the water. You also need a deed for the boat. To create a boat deed need a scroll that 
+					has the same quality value as the sail of your boat.
+				</para>
+			</body>
+		</sub>
+		<sub name="custom_shapes">
+			<header>Importing and creating your own custom shapes</header>
+			<body>
+				<para>
+					Importing a shape into <Studio/> is quite easy. Simply select the type of object you wish to 
+					create (shape, chunk, gump, etc.) and right-click on the display window and select <strong>New Shape</strong>
+					or <strong>New Frame</strong> depending on which is pertinent. Once the new shape is created, right 
+					click on the new shape and select <strong>Import frame</strong>. Now select the desired shape from 
+					the directory. You must now save all in <Studio/> and both <Studio/> and <Exult/> need to be restarted 
+					before the newly imported shape can be used in a game.
+				</para>
+				<para>
+					<em>Note</em><br/>
+					All shapes imported into <Studio/> must be in either .png or .shp format. .png is a standard format 
+					while .shp is an <Exult/> specific file format. We recommend 
+					<extref target="http://www.gimp.org">The Gimp (The GNU Image Manipulation Program)</extref> for editing 
+					graphic files for several reasons. It is free, it is relatively easy on hardware, and it has all the 
+					necessary functions for creating and importing shapes into <Studio/>.
+				</para>
+				<para>
+					<em>Important</em><br/>
+					For a shape to be compatible with <Studio/> it must be saved as a 255 colour interlaced .png/.shp file. 
+					RGB or grayscale images are not compatible. Transparent sections will remain transparent in <Exult/>.
+				</para>
+			</body>
+		</sub>
+		<sub name="custom_font">
+			<header>How to create a custom font?</header>
+			<body>
+				<para>
+					For your convenience <Studio/> accepts .ttf (true type font) files, which is the standard file 
+					format for text in a Windows machine. Select new shape from fonts.vga, here you can either 
+					manually overwrite a single frame of a font or you can import an entire .ttf file by selecting 
+					the <strong>From font</strong> option. To overwrite an existing font set the shape of your 
+					newly imported font to that of a preexisting font. Unfortunately newly imported .ttf files 
+					don't have the correct offsets and you letters will look stuck together. To fix that you will 
+					have to manually edit all font frames to give them proper spacing.
+				</para>
+			</body>
+		</sub>
 		<sub name="tools">
 			<header>Other tools that might be useful</header>
 			<body>
@@ -1541,7 +1676,7 @@
 					map, which of the terrains is to be used. Since the entire map has
 					192x192 chunks, or a total of 36,864, and since 'u7chunks' has 3072
 					entries, each terrain is shared an average of over 10 times. When you
-					go into map-editing mode in Exult, the numbers displayed are the
+					go into map-editing mode in <Exult/>, the numbers displayed are the
 					indices from 'u7chunks'.
 				</para>
 				<para>
@@ -1577,10 +1712,9 @@
 				<li>It will also be very nice to have a Usecode debugger someday as well
 					(Willem is actually working on it).</li>
    				<li>A 'flags' editor for viewing and editing the global Usecode flags by name.</li>
-				<li>A 'barge' editor for creating things like ships and carts.</li>
 				</ul>
 			</body>
-		</sub>
+		</sub>		
 		<sub name="win32_bugs">
 			<header>Known Bugs with the Win32 port</header>
 			<body>
