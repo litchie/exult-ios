@@ -12,9 +12,11 @@
 #include <algorithm>
 #include "opcodes.h"
 
-UCData::UCData() : _noconf(false), _verbose(false),
-                   _mode(0), _game(GAME_BG), _output_asm(false),
-                   _output_ucs(false), _search_opcode(-1),
+UCData::UCData() : _noconf(false), _rawops(false), _autocomment(false),
+                   _verbose(false), _mode(MODE_NONE), _game(GAME_BG),
+                   _output_list(false), _output_asm(false), _output_ucs(false),
+                   _mode_all(false), _mode_dis(false),
+                   _search_opcode(-1),
                    _search_intrinsic(-1),
                    _search_func(-1)
 {
@@ -72,12 +74,14 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 		if     (strcmp(argv[i], "-si")==0)  _game    = GAME_SI;
 		else if(strcmp(argv[i], "-bg")==0)  _game    = GAME_BG;
 
-		else if(strcmp(argv[i], "-a" )==0)  _mode    = MODE_ALL;
+		else if(strcmp(argv[i], "-a" )==0)  { _mode  = MODE_ALL; _mode_all=true; }
 		else if(strcmp(argv[i], "-f" )==0)  _mode    = MODE_FLAG_DUMP;
 //		else if(strcmp(argv[i], "-a" )==0)  _mode    = MODE_DISASSEMBLE_ALL;
 //		else if(strcmp(argv[i], "-c" )==0)  _mode    = MODE_OPCODE_SCAN; // Opcode scan mode
 
 		else if(strcmp(argv[i], "-nc")==0)  _noconf  = true;
+		else if(strcmp(argv[i], "-ro")==0)  _rawops  = true;
+		else if(strcmp(argv[i], "-ac")==0)  _autocomment  = true;
 		else if(strcmp(argv[i], "-v" )==0)  _verbose = true;
 
 		else if(strcmp(argv[i], "-fl" )==0)  _output_list = true;
@@ -96,6 +100,7 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 			{
 				if(verbose()) cout << "Disassembling Function: " << _search_func << endl;
 				_mode = MODE_DISASSEMBLY;
+				_mode_dis = true;
 			}
 		}
 		else if((string(argv[i]).size()>2) && string(argv[i]).substr(0, 2)=="-o")
@@ -150,16 +155,29 @@ void UCData::disassamble(const char **func_table)
 
 	cout << "Looking for function number " << setw(8) << _search_func << endl << endl;
 
+  if(output_list())
+		cout << "Function     offset    size  data  code" << endl;
+
 	bool _foundfunc=false; //did we find and print the function?
 	for(unsigned int i=0; i<_funcs.size(); i++)
 	{
 		//cout << _funcs[i]->_funcid << "\t" << _search_func << endl;
-		if(_funcs[i]->_funcid==_search_func)
+		if(mode_all() || (mode_dis() && (_funcs[i]->_funcid==_search_func)))
 		{
 			_foundfunc=true;
 			if(output_ucs())
 				output_ucfunc(_funcid, _funcs[i]->_data, _funcs[i]->_num_args, _funcs[i]->_num_locals, _funcs[i]->_externs,
 				              _funcs[i]->_opcodes, func_table);
+			else if(output_list())
+			{
+		    cout << "#" << setbase(10) << setw(3) << i << setbase(16) << ": "
+		         << setw(4) << _funcs[i]->_funcid   << "H  "
+		         << setw(8) << _funcs[i]->_offset   << "  "
+		         << setw(4) << _funcs[i]->_funcsize << "  "
+		         << setw(4) << _funcs[i]->_datasize << "  "
+		         << setw(4) << _funcs[i]->codesize() << "  "
+		         << endl;
+			}
 			else
 				print_asm(*_funcs[i], cout, *this);
 		}
@@ -174,6 +192,9 @@ void UCData::disassamble(const char **func_table)
 
 //	if(uc.mode()==MODE_OPCODE_SEARCH)
 //		output_flags(funcs);
+
+	if(output_list())
+	  cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
 
 	dump_unknown_opcodes();
 	dump_unknown_intrinsics();

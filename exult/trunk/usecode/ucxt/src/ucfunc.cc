@@ -11,6 +11,8 @@ const string VARNAME = "uvar";
 const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
 
+extern UCData uc;
+
 //#define TEST_V3 false
 #define TEST_V3 true
 
@@ -721,7 +723,7 @@ void readbin_UCFunc(ifstream &f, UCFunc &ucf)
 
 			const UCOpcodeData &otd = opcode_table_data[ucop._id];
 
-			//assert(((otd.asm_nmo.size()==0) && (otd.ucs_nmo.size()==0)));
+			//assert(((otd.asm_nmo.size()!=0) && (otd.ucs_nmo.size()!=0)));
 			for(unsigned int i=0; i<otd.num_bytes; i++)
 				ucop._params.push_back(read_ubyte(f));
 
@@ -748,14 +750,14 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 		assert(first<ucop._params.size());
 		unsigned int ssize=0;
 		// all these are two bytes
-		if(*s=="short")           ssize=2;//vpsi.push_back(pair<string, unsigned int>(*s, 2));
-		else if(*s=="flag")       ssize=2;//vpsi.push_back(pair<string, unsigned int>(*s, 2));
-		else if(*s=="extoffset")  ssize=2;//vpsi.push_back(pair<string, unsigned int>(*s, 2));
-		else if(*s=="dataoffset") ssize=2;//vpsi.push_back(pair<string, unsigned int>(*s, 2));
-		else if(*s=="varoffset")  ssize=2;//vpsi.push_back(pair<string, unsigned int>(*s, 2));
-		else if(*s=="offset")     ssize=2;//vpsi.push_back(pair<string, unsigned int>(*s, 2));
+		if(*s=="short")           ssize=2;
+		else if(*s=="flag")       ssize=2;
+		else if(*s=="extoffset")  ssize=2;
+		else if(*s=="dataoffset") ssize=2;
+		else if(*s=="varoffset")  ssize=2;
+		else if(*s=="offset")     ssize=2;
 		// and the single one byte type
-		else if(*s=="byte")       ssize=1;//vpsi.push_back(pair<string, unsigned int>(*s, 1));
+		else if(*s=="byte")       ssize=1;
 		else
 		{
 			cout << "error: data type '" << *s << "' is not defined. exiting." << endl;
@@ -780,7 +782,7 @@ void print_asm(UCFunc &ucf, ostream &o, const UCData &uc)
 {
 	if(uc.verbose()) cout << "Printing function..." << endl;
 
-  o << "Function at file offset " << setw(8) << ucf._codeoffset << "H" << endl;
+  o << "Function at file offset " << setw(8) << ucf._offset << "H" << endl;
   o << "\t.funcnumber " << setw(4) << ucf._funcid << "H" << endl;
   o << "\t.msize      " << setw(4) << ucf._funcsize << "H" << endl;
   o << "\t.dsize      " << setw(4) << ucf._datasize << "H" << endl;
@@ -804,6 +806,7 @@ void print_asm(UCFunc &ucf, ostream &o, const UCData &uc)
 
 void print_asm_data(UCFunc &ucf, ostream &o)
 {
+	static const unsigned int nochars=70;
   // limit of about 70 chars to a line, wrap to the next line if longer then this...
   for(map<unsigned int, string, less<unsigned int> >::iterator i=ucf._data.begin(); i!=ucf._data.end(); i++)
   {
@@ -811,9 +814,9 @@ void print_asm_data(UCFunc &ucf, ostream &o)
     {
       if(j==0)
         o << setw(4) << i->first;
-      if((j!=0) && !(j%70))
+      if((j!=0) && !(j%nochars))
         o << "'" << endl;
-      if(!(j%70))
+      if(!(j%nochars))
         o << "\tdb\t'";
 
       o << i->second[j];
@@ -824,43 +827,51 @@ void print_asm_data(UCFunc &ucf, ostream &o)
 }
 
 string demunge_ocstring(const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op);
+void output_raw_opcodes(ostream &o, const UCc &op);
 
 void print_asm_opcodes(ostream &o, UCFunc &ucf, const vector<UCOpcodeData> &optab)
 {
   for(vector<UCc>::iterator op=ucf._opcodes.begin(); op!=ucf._opcodes.end(); op++)
   {
 		// offset
-		o << setw(4) << op->_offset << ": ";
+		o << setw(4) << op->_offset << ':';
 
-		// chars in opcode
-		cout << setw(2) << (unsigned int)op->_id;
-		if(op->_params.size()) cout << ' ';
+		if(uc.rawops()) output_raw_opcodes(o, *op);
+		else            o << '\t';
 
-		for(unsigned int i=0; i<op->_params.size(); i++)
-		{
-			o << setw(2) << (unsigned int) op->_params[i];
-			if(i!=op->_params.size())
-				o << ' ';
-		}
-
-		// seperator
-		unsigned int numsep = op->_params.size();
-		//cout << endl << numsep << endl;
-		if(numsep>6)
-			o << endl << "\t\t\t\t";
-		else if (numsep>5)
-			o << "\t";
-		else if (numsep>2)
-			o << "\t\t";
-		else
-			o << "\t\t\t";
-
-		
 		o << demunge_ocstring(optab[op->_id].asm_nmo, optab[op->_id].param_types, op->_params_parsed, *op);
 
-		o << "\t";
-		o << ";" << endl;
+		if(uc.autocomment())
+			o << demunge_ocstring(optab[op->_id].asm_comment, optab[op->_id].param_types, op->_params_parsed, *op);
+
+		o << endl;
   }
+}
+
+void output_raw_opcodes(ostream &o, const UCc &op)
+{
+	// chars in opcode
+	o << ' ' << setw(2) << (unsigned int)op._id;
+	if(op._params.size()) cout << ' ';
+
+	for(unsigned int i=0; i<op._params.size(); i++)
+	{
+		o << setw(2) << (unsigned int) op._params[i];
+		if(i!=op._params.size())
+			o << ' ';
+	}
+
+	// seperator
+	unsigned int numsep = op._params.size();
+	//cout << endl << numsep << endl;
+	if(numsep>6)
+		o << endl << "\t\t\t\t";
+	else if (numsep>5)
+		o << "\t";
+	else if (numsep>2)
+		o << "\t\t";
+	else
+		o << "\t\t\t";
 }
 
 /* calculates the relative offset jump location, used in opcodes jmp && jne */
@@ -883,6 +894,8 @@ string demunge_ocstring(const string &asmstr, const vector<string> &param_types,
 	strstream str;
 	str << setfill('0') << setbase(16);
 	str.setf(ios::uppercase);
+
+	if(asmstr.size()==0) return string(); // for the degenerate case
 
 	bool finished=false; // terminating details are at end-of-while
   unsigned int i=0; // istr index

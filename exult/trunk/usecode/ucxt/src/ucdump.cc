@@ -6,78 +6,8 @@
 	Maintainter:
 		Patrick Burke (takhisisii@yahoo.com.au)
 	
-	Original ucdump history, credits and stuff follows:
+	Original ucdump history, credits and stuff moved to Docs/ucxtread.txt
 	
-	----------------------------------------------------------------------------------
-	
- Ultima 7 usecode dump/disassembly utility
- Distributed under GPL
-
- Maintainer:
-  Maxim S. Shatskih aka Moscow Dragon (maxim__s@mtu-net.ru)
- 
- History:
- - originally written June 99 by Maxim S. Shatskih aka Moscow Dragon (maxim__s@mtu-net.ru)
- Thanks to Keldon Jones (keldon@umr.edu)
-  and Wouter Dijklslag aka Wody Dragon (wody@wody.demon.nl) for their help
- 11-Oct-99
-  - added "function search by opcode & intrinsic" feature
-  - added "unknown opcode & intrinsic counting" feature
- 12-Oct-99
-  - the good deal of intrinsic functions is now known
- 
- See source file comments for the description of usecode opcodes & intrinsic functions
-  (the latter one differs between BG & SI)
- 
- Some general usecode ideas:
- - usecode functions 0x0-0x3ff are shape handlers - called on double-clicks & other
-  event with appropriate shapes
- - usecode functions 0x401-0x4ff are NPC handlers - called on double-clicks & other
-  event with appropriate NPCs - NPCID + 0x400 (401 for Iolo, 417 for LB etc).
- - usecode functions 0x500-0x5ff is for Wisps & guards (nonNPC characters able to talk)
-  (these ranges seems to be hardcoded)
- - stack machine used to execute bytecodes
- - the machine's state is:
-  stack
-  local variables(forgotten on function exit, first N of them are call arguments -
-          first pushed is 0, next are 1, 2...)
-  game flags
-  ItemRef (???seems to be valid only for top-level functions-event handlers
-        or maybe is persistent till quitting usecode executuion???)
-  EventID (???seems to be valid only for top-level functions-event handlers
-        or maybe is persistent till quitting usecode executuion???)
- - game flags are bytes treated as booleans (0/1), persistent across engine shutdown/restart
-  and stored as a simple array (??? 0 or 1 based. Don't remember. Flag 3 means
-  - Tetrahedron is down, flag 4 means - Sphere is down) in GAMEDAT\FLAGINIT.
- - usecode can also manipulate items & NPCs by means of intrinsic functions
- - "add" opcode can sum strings (concatenation). Also it can add integer to string
- - any array operations can be peformed on scalar values. In fact, each scalar value is
-  treated by the array operations as an array with a single element. Vice versa is also
-  true - for instance, ItemsNearItem() function returns an array. Sometimes it is used in
-  enum/next loop as an array, but sometimes it is used as an itemref.
- - array indices are 1-based as in VB
- - itemref is a unique ID of the given item. For NPCs, itemref is (-NPCID). For other items,
-  itemrefs seems to be non-persistent (not saved to savegame & re-invented on each
-  engine startup)??? indexes into engine's item lists
- - there is a value called "referent" which identifies item & stored in U7IBUF
-    Maybe Itemref is the same thing?
- - -356 is always an Itemref for Avatar. So, Avatar's NPC ID is possibly 356.
- - usecode execution starts from the event handler function. It is called by the engine
-  without arguments (double-click) in some cases. ItemRef & EventID are set before entering usecode.
- - the easiest case is double-click on some item. In this case, a usecode event handler
-  function called. Function ID usually matches the shape's Type number
-  or is (NPCID + 0x400) for NPCs.
-  ItemRef is set to the item double-clicked, EventID is set to 1 (double-click).
- - other causes for the engine to call usecode function:
-  - events scheduled by intrinsic functions 1 & 2 have EventID 2
-  - item is put on another item - the underlying item's handler is called with EventID 3
-    (Penumbra's plaque)
-  - usecode Egg - also calls a function with EventID 3
-  - use item as a weapon (flammable oil) - EventID 4
-  - NPC being beaten to death (examples: Hook in BG, Dracothaxus in FoV,
-          Pomdirgun & Rotoluncia in SI) - 7 in SI???
-  - Avatar & NPC approaching to some distance??? - 9 in SI
- - hex coords to sextant coords - ( x - 933 ) / 10, ( y - 1134 ) / 10
 */
 #define HAVE_CONFIG_H
 
@@ -115,10 +45,11 @@ void usage();
 void output_flags(const vector<UCFunc *> &funcs);
 void open_usecode_file(UCData &uc, const Configuration &config);
 
+UCData uc;
+
 int main(int argc, char** argv)
 {
 	/* Preset to no match */
-	UCData uc;
 
 	cout << "Ultima 7 usecode disassembler v0.6.1" << endl
 	     << "    compiled with " << PACKAGE << " " << VERSION << endl
@@ -153,7 +84,7 @@ int main(int argc, char** argv)
 	init_usecodetables(config, uc);
 	
 	// ICK! Don't try this at home kids...
-	// done because for some reason it started crashing upon piping or redirection to file... vierd.
+	// done because for some reason it started crashing upon piping or redirection to file... wierd.
 	// yes, it's a hack to fix an eldritch bug I can't find... it seems appropriate
 	ofstream outputstream;
 	streambuf *coutbuf=0;
@@ -182,7 +113,7 @@ int main(int argc, char** argv)
 //  int func_table_size = sizeof(bg_func_table);
 
 
-	if     ( uc.mode() == MODE_DISASSEMBLY )
+	if     (uc.mode_dis() || uc.mode_all())
 	{
 		uc.disassamble(func_table);
 	}
@@ -198,7 +129,6 @@ int main(int argc, char** argv)
 	{
 		uc.list_funcs(func_table);
 	}
-//	if( ( ( uc.mode() == MODE_DISASSEMBLY ) || ( uc.mode() == MODE_OPCODE_SEARCH ) ) && !found )
 
 	// now we clean up the <ick>y ness from before
 	if(uc.output_redirect().size())
@@ -342,9 +272,9 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 void usage()
 {
   cout << "Usage:" << endl
-       << "\tucxt [-v] [-nc] [-bg | -si] [-ofile] [-fa | -fs | -fl] -a" << endl
+       << "\tucxt [options] -a" << endl
        << "\t\t- prints all of the functions" << endl
-       << "\tucxt [-v] [-nc] [-bg | -si] [-ofile] [-fa | -fs | -fl] <hex number>" << endl
+       << "\tucxt [options] <hex function number>" << endl
        << "\t\t- disassembles single function to stdout" << endl
 //       << "\tucdump -c - scans the whole usecode file for unknown opcodes" << endl
 //       << "\tucdump -o <hex number> - prints list of functions which use "
@@ -353,14 +283,17 @@ void usage()
 //       << "the given intrinsic function\n" << endl
 //       << "\tucxt -f - prints list of all flags x functions" << endl
        << endl
-	     << "\tMisc Flags:" << endl
+	     << "\tMisc Flags (any/all of these):" << endl
        << "\t\t-nc\t- don't look for exult's .xml config file" << endl
        << "\t\t-v \t- turns on verbose output mode" << endl
        << "\t\t-ofile\t- output to the specified file" << endl
-	     << "\tGame Specifier Flags:" << endl
+	     << "\t\t-ro\t- output the raw opcodes in addition to the -f format" << endl
+	     << "\t\t-ac\t- output an automatically generated comment" << endl
+	     << "\t\t\t  in addition to the -f format" << endl
+	     << "\tGame Specifier Flags (only one of these):" << endl
        << "\t\t-bg\t- select the black gate usecode file" << endl
        << "\t\t-si\t- select the serpent isle usecode file" << endl
-	     << "\tOutput Format Flags:" << endl
+	     << "\tOutput Format Flags (only one of these):" << endl
 	     << "\t\t-fl\t- output using brief \"list\" format" << endl
 	     << "\t\t-fa\t- output using \"assembler\" format (default)" << endl
 	     << "\t\t-fs\t- output using \"exult script\" format" << endl
