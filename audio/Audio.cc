@@ -91,7 +91,11 @@ static	uint8 *chunks_to_block(vector<Chunk> &chunks);
 static	void resample(uint8 *sourcedata, uint8 **destdata,
 						size_t sourcelen, size_t *destlen,
 						int current_rate, int wanted_rate);
-
+static void decode_ADPCM_4(uint8* inBuf,	
+						  int bufSize,				// Size of inbuf
+						  uint8* outBuf,	// Size is 2x bufsize
+						  int& reference,			// ADPCM reference value
+						  int& scale);
 
 Audio *Audio::self = 0;
 int *Audio::bg2si_sfxs = 0;
@@ -362,6 +366,9 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 	uint16	sample_rate;
 	size_t  l = 0;
 	size_t	chunk_length;
+	int		compression = 0;
+	int		adpcm_reference = -1;
+	int		adpcm_scale = 0;
 
 	while(!last_chunk)
 	{
@@ -380,7 +387,12 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 				sample_rate=1000000/(256-(old_data[4+data_offset]&0xff));
 				COUT("Original sample_rate is " << sample_rate << ", hw rate is " << actual.freq);
 				COUT("Sample rate ("<< sample_rate<<") = _real_rate");
-				COUT("compression type " << (old_data[5+data_offset]&0xff));
+				compression = old_data[5+data_offset]&0xff;
+				COUT("compression type " << compression);
+				if (compression) {
+					adpcm_reference = -1;
+					adpcm_scale = 0;
+				}
 				COUT("Channels " << (old_data[6+data_offset]&0xff));
 				chunk_length=l+4;
 				break;
@@ -392,9 +404,12 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 				COUT("Chunk length appears to be " << l);
 				chunk_length = l+4;
 				break;
-			case 5:
 			case 3:
 				COUT("Silence");
+				chunk_length=0;
+				break;
+			case 5:		// A null terminated string
+				COUT("Text string chunk");
 				chunk_length=0;
 				break;
 			default:
@@ -404,13 +419,37 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 
 		if(chunk_length==0)
 			break;
+
+
+		l -= (TRAILING_VOC_SLOP+LEADING_VOC_SLOP);
+
+		// 
+		uint8 *dec_data = old_data+LEADING_VOC_SLOP;
+		size_t dec_len = l;
+
+		// Decompress data
+		if (compression == 1) {
+			// Allocate temp buffer
+			if (adpcm_reference == -1) dec_len = (dec_len-1)*2;
+			else dec_len *= 2;
+			dec_data = new uint8[dec_len];
+			decode_ADPCM_4(old_data+LEADING_VOC_SLOP, l, dec_data, adpcm_reference, adpcm_scale);
+		}
+		else if (compression != 0) {
+			CERR("Can't handle VOC compression type"); 
+		}
+
 		// Resample to the current rate
 		uint8 *new_data;
 		size_t new_len;
-		l -= (TRAILING_VOC_SLOP+LEADING_VOC_SLOP);
-		resample(old_data+LEADING_VOC_SLOP,&new_data,l,&new_len,
+		resample(dec_data,&new_data,dec_len,&new_len,
 						sample_rate,actual.freq);
 		l = new_len;
+
+		// Delete temp buffer
+		if (compression == 1) {
+			delete [] dec_data;
+		}
 
 		COUT("Have " << l << " bytes of resampled data");
 
@@ -905,4 +944,49 @@ static	void resample(uint8 *sourcedata, uint8 **destdata,
 		last=pos;
 		}
 	CERR("End resampling. Resampled " << sourcelen << " bytes to " << *destlen << " bytes");
+}
+
+//
+// Decode 4bit ADPCM vocs (thunder in SI intro)
+//
+// Code grabbed from VDMS
+//
+
+inline int decode_ADPCM_4_sample(uint8 sample,
+								 int& reference,
+								 int& scale)
+{
+	static int scaleMap[8] = { -2, -1, 0, 0, 1, 1, 1, 1 };
+	
+	if (sample & 0x08) {
+		reference = max(0x00, reference - ((sample & 0x07) << scale));
+	} else {
+		reference = min(0xff, reference + ((sample & 0x07) << scale));
+	}
+	
+	scale = max(2, min(6, scaleMap[sample & 0x07]));
+	
+	return reference;
+}
+
+//
+// Performs 4-bit ADPCM decoding in-place.
+//
+static void decode_ADPCM_4(uint8* inBuf,	
+						  int bufSize,				// Size of inbuf
+						  uint8* outBuf,			// Size is 2x bufsize
+						  int& reference,			// ADPCM reference value
+						  int& scale)
+{
+	int i, skip = 0;
+	
+	if (reference < 0) {
+		reference = inBuf[0] & 0xff;   // use the first byte in the buffer as the reference byte
+		bufSize--;                          // remember to skip the reference byte
+	}
+	
+	for (i = 0; i < bufSize; i++) {
+		outBuf[i * 2 + 0] = decode_ADPCM_4_sample(inBuf[i] >> 4, reference, scale);
+		outBuf[i * 2 + 1] = decode_ADPCM_4_sample(inBuf[i] >> 0, reference, scale);
+	}
 }

@@ -1,3 +1,10 @@
+2002-01-30  Ryan Nunn  <triforce@merlin.net.au>
+	* sigame.cc : Added the thunder sfx to intro. Clear the screen between
+	  the flics to prevent palette corruption.
+	* audio/Audio.cc : Handle voc chunk type '5' as a text message. Also
+	  added 4bit ADPCM VOC decompression for the SI intro thunder SFX.
+	  Code obtained from VDMS.
+
 2002-01-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/chunklst.cc,etc:  'Groups' work for 'u7chunks' now.
