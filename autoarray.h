@@ -42,7 +42,7 @@ public:
 		{  }
 	T &operator[](sint32 i)	 throw(range_error)
 		{
-		if(i>=size_ || i < 0)
+		if(i>=(sint32)size_ || i < 0)
 			throw range_error("out of bounds");
 		if(data_)
 			return data_[i];

@@ -40,7 +40,6 @@ public:
 		{
 			if (i >= size())
 				{
-				T *iter = &*begin() + size();
 				insert(begin() + size(), i - size(), 0);
 				push_back(v);
 				}
