@@ -75,7 +75,7 @@ void	Mixer::advance(void)
 void	compress_audio_sample(Uint8 *buf,int len)
 {
 	return;
-	char	*dbuf=new Uint8[len*2];
+	Uint8	*dbuf=new Uint8[len*2];
 	Uint8	*source=buf;
 	Uint8	*dest=dbuf;
 	while(len>0)
