@@ -1,5 +1,8 @@
-2001-12-13  Tristan Tarrant <nadir@users.sourceforge.net>
-	* gumps/gumps_utils.h: #include <string.h> to get it to compile under
+2001-12-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* gumps/gump_utils.h: #include <cstring>
+
+2001-12-12  Tristan Tarrant <nadir@users.sourceforge.net>
+	* gumps/gump_utils.h: #include <string.h> to get it to compile under
 	Solaris with g++
 	* usecode/ucxt/data/Makefile.am: include opcodes.txt in EXTRA_DIST
 
