@@ -154,10 +154,10 @@ void Image_window::create_surface
 
 bool Image_window::try_scaler(int w, int h, uint32 flags)
 {
-#ifdef HAVE_OPENGL
 	// OpenGL
 	if (scaler ==OpenGL)
 		{
+#ifdef HAVE_OPENGL
 					// Get info. about video.
 		const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
 		if (!vinfo)
@@ -189,8 +189,11 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 			}
 		show_scaled = &Image_window::show_scaledOpenGL;
 		return true;
-		}
+#else
+		cerr << "OpenGL not supported" << endl;
+		return false;
 #endif
+		}
 	// 2xSaI scaler
 	if (scale == 2 && scaler ==  SaI)
 	{

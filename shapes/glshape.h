@@ -23,11 +23,7 @@
 #ifndef GLSHAPE_H
 #define GLSHAPE_H	1
 
-/* ++++++TESTING. */
-#define HAVE_OPENGL	1
 #ifdef HAVE_OPENGL
-
-#include <GL/gl.h>
 
 class Shape_frame;
 class GL_texshape;
@@ -38,8 +34,8 @@ class GL_texshape;
 class GL_texshape
 	{
 	Shape_frame *frame;		// Source for this.
-	GLuint texture;			// Texture ID.
-	GLuint texsize;			// Width/ht of texture (power of 2).
+	unsigned int texture;		// Texture ID.
+	unsigned int texsize;		// Width/ht of texture (power of 2).
 					// Least-recently used chain:
 	GL_texshape *lru_next, *lru_prev;
 public:
