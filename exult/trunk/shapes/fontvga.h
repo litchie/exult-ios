@@ -62,6 +62,11 @@ public:
 	int get_text_baseline(int fontnum)
 		{ return fonts[fontnum].get_text_baseline(); }
 
+	int find_cursor(int fontnum, const char *text, int x, int y, 
+				int w, int h, int cx, int cy, int vert_lead)
+		{ return fonts[fontnum].find_cursor(text, x, y, w, h,
+						cx, cy, vert_lead); }
+
 	Font *get_font(int fontnum)
 		{ return fontnum>=0&&fontnum<8?fonts+fontnum:NULL; };
 	};
