@@ -100,6 +100,13 @@ int get_label(void)
 	return(word);
 }
 
+void check_label_16(int label)
+{
+	if (label < -65536 || label > 65535) {
+		printf("Warning: offset too big for 16 bit at label %s!\n", curlabel);
+	}
+}
+
 void read_token(FILE *fi)
 {
 	int i=0,c=32;
@@ -131,6 +138,7 @@ int main(int argc,char *argv[])
 		pushsize=sizeof(push_table)/sizeof(opcode_desc),
 		popsize=sizeof(pop_table)/sizeof(opcode_desc),
 		compsize=sizeof(compiler_table)/sizeof(char*);
+	int label;
 	const char **func_table = bg_intrinsic_table;
 	int funsize = bg_intrinsic_size;
 	int findex = 1;			// Index in argv of 1st filename.
@@ -168,8 +176,10 @@ int main(int argc,char *argv[])
 			while (!feof(fi))
 				{
 					read_token(fi);
-					if (pass==0 && strlen(token)>1 && token[strlen(token)-1]==':') {
-						add_label();
+					if (strlen(token)>1 && token[strlen(token)-1]==':') {
+						token[strlen(token)-1]=0; // remove trailing ':'
+						if (pass == 0)
+							add_label();
 						strcpy(curlabel, token);
 					}
 					else if (!strcmp(token,".code"))
@@ -280,7 +290,9 @@ int main(int argc,char *argv[])
 												case DATA_STRING:
 													emit_byte(i);
 													read_token(fi);
-													emit_word(get_label());
+													label = get_label();
+													check_label_16(label);
+													emit_word(label);
 													break;
 												case DATA_STRING32:
 													emit_byte(i);
@@ -351,7 +363,9 @@ int main(int argc,char *argv[])
 													read_token(fi);
 													if (pass==1) {
 														//														printf("%x, %x, %x\n", get_label(), offset, get_label() - offset-2);
-														emit_word(get_label()-offset-2);
+														label = get_label() - offset - 2;
+														check_label_16(label);
+														emit_word(label);
 													} else
 														emit_word(-1);
 													break;
@@ -370,9 +384,11 @@ int main(int argc,char *argv[])
 													sscanf(token,"%x",&word);
 													emit_word(word);
 													read_token(fi);
-													if (pass==1)
-														emit_word(get_label()-offset-2);
-													else
+													if (pass==1) {
+														label = get_label() - offset - 2;
+														check_label_16(label);
+														emit_word(label);
+													} else
 														emit_word(-1);
 													break;
 												case IMMED_RELJUMP32:
@@ -409,9 +425,11 @@ int main(int argc,char *argv[])
 													emit_word(word);
 													read_token(fi);
 													sscanf(token,"%x",&word);
-													if (pass==1)
-														emit_word(get_label()-offset-2);
-													else
+													if (pass==1) {
+														label = get_label() - offset - 2;
+														check_label_16(label);
+														emit_word(label);
+													} else
 														emit_word(-1);
 													break;
 												case SLOOP32:
@@ -455,7 +473,16 @@ int main(int argc,char *argv[])
 				fseek(fo,2,SEEK_SET);
 				indata=0;
 				i=codesize;
+
+				if (codesize > 65535) {
+					printf("Error: code size > 64Kb and not in ext32 mode!\n");
+				}
 				emit_word(i);
+
+				if (datasize > 65535) {
+					printf("Error: data size > 64Kb and not in ext32 mode!\n");
+				}
+
 				emit_word(datasize);
 			} else {
 				fseek(fo,4,SEEK_SET);
