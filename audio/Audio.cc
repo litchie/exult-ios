@@ -626,7 +626,6 @@ bool	Audio::start_speech(int num,bool wait)
 	}
 	catch( const std::exception & err )
 	{
-		err;
 		return false;
 	}
 	play((uint8*)buf,len,wait);
