@@ -741,9 +741,17 @@ void Usecode_machine::set_item_shape
 	Game_object *item = get_item(item_arg);
 	if (!item)
 		return;
+	if (item->get_owner())		// Inside something?
+		{
+		item->set_shape(shape);
+		Gump_object *gump = gwin->find_gump(item);
+		if (gump)
+			gump->paint(gwin);
+		return;
+		}
 					// Figure area to repaint.
 	Rectangle rect = gwin->get_shape_rect(item);
-					// +++++++What if in a container?
+					// Get chunk it's in.
 	Chunk_object_list *chunk = gwin->get_objects(item);
 	chunk->remove(item);		// Remove and add to update cache.
 	item->set_shape(shape);
@@ -773,11 +781,19 @@ void Usecode_machine::set_item_frame
 	//				<< ", " << frame << '\n';
 	if (frame < gwin->get_shape_num_frames(item->get_shapenum()))
 		item->set_frame(frame);
-					// Figure area to repaint.
-	Rectangle rect = gwin->get_shape_rect(item);
-	rect.enlarge(8);
-	gwin->clip_to_win(rect);
-	gwin->paint(rect);
+	if (item->get_owner())		// Inside a container?
+		{
+		Gump_object *gump = gwin->find_gump(item);
+		if (gump)
+			gump->paint(gwin);
+		}
+	else
+		{			// Figure area to repaint.
+		Rectangle rect = gwin->get_shape_rect(item);
+		rect.enlarge(8);
+		gwin->clip_to_win(rect);
+		gwin->paint(rect);
+		}
 //+++++Testing
 	gwin->show();
 	}
@@ -1918,8 +1934,8 @@ USECODE_INTRINSIC(direction_from)
 	// ?Direction from parm[0] -> parm[1].
 	// Rets. 0-7.  Is 0 north?
 	// Same as 0x1a??
-	//+++++++++++++++++++++
-	USECODE_RETURN(no_ret);
+	Usecode_value u=find_direction(parms[0], parms[1]);
+	USECODE_RETURN(u);
 }
 
 USECODE_INTRINSIC(get_npc_flag)

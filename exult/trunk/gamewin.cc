@@ -1091,6 +1091,26 @@ Gump_object *Game_window::find_gump
 	}
 
 /*
+ *	Find gump containing a given object.
+ */
+
+Gump_object *Game_window::find_gump
+	(
+	Game_object *obj
+	)
+	{
+					// Get container object is in.
+	Game_object *owner = obj->get_owner();
+	if (!owner)
+		return (0);
+					// Look for container's gump.
+	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
+		if (gmp->get_container() == owner)
+			return (gmp);
+	return (0);
+	}
+
+/*
  *	Find the top object that can be selected, dragged, or activated.
  *	The one returned is the 'highest'.
  *
