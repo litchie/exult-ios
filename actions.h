@@ -74,6 +74,20 @@ public:
 	};
 
 /*
+ *	Just move (i.e. teleport) to a desired location.
+ */
+class Move_actor_action : public Actor_action
+	{
+	Tile_coord dest;		// Where to go.
+public:
+	Move_actor_action(Tile_coord d) : dest(d)
+		{  }
+					// Handle time event.
+	virtual int handle_event(Actor *actor);
+	};
+
+
+/*
  *	Go through a series of frames.
  */
 class Frames_actor_action : public Actor_action
@@ -99,8 +113,12 @@ class Sequence_actor_action : public Actor_action
 	Actor_action **actions;		// List of actions, ending with null.
 	int index;			// Index into list.
 public:
+					// Create with allocated list.
 	Sequence_actor_action(Actor_action **act) : actions(act), index(0)
 		{  }
+					// Create with up to 4.
+	Sequence_actor_action(Actor_action *a0, Actor_action *a1,
+				Actor_action *a2 = 0, Actor_action *a3 = 0);
 	virtual ~Sequence_actor_action();
 					// Handle time event.
 	virtual int handle_event(Actor *actor);

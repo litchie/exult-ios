@@ -210,6 +210,24 @@ Frames_actor_action::Frames_actor_action
  *	Output:	0 if done with this action, else delay for next frame.
  */
 
+int Move_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	if (dest.tx < 0)
+		return (0);		// Done.
+	actor->move(dest);		// Zip right there.
+	dest.tx = -1;			// Set to stop.
+	return (100);			// Wait 1/10 sec.
+	}
+
+/*
+ *	Handle a time event.
+ *
+ *	Output:	0 if done with this action, else delay for next frame.
+ */
+
 int Frames_actor_action::handle_event
 	(
 	Actor *actor
@@ -229,8 +247,29 @@ int Frames_actor_action::handle_event
 	}
 
 /*
+ *	Create a sequence with up to 4 actions.
+ */
+
+Sequence_actor_action::Sequence_actor_action
+	(
+	Actor_action *a0,		// (These will be deleted when done.)
+	Actor_action *a1,
+	Actor_action *a2,
+	Actor_action *a3
+	) : index(0)
+	{
+	actions = new Actor_action *[5];// Create list.
+	actions[0] = a0;
+	actions[1] = a1;
+	actions[2] = a2;
+	actions[3] = a3;
+	actions[4] = 0;			// 0-delimit.
+	}
+
+/*
  *	Delete.
  */
+
 Sequence_actor_action::~Sequence_actor_action
 	(
 	)
