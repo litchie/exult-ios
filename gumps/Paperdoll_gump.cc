@@ -581,8 +581,8 @@ void Paperdoll_gump::paint_object
 	case exult_flx:
 		gwin->paint_exult_shape (box.x + sx, box.y + sy, item->shape, f);
 		break;
-	case exultbg_flx:
-		gwin->paint_exultbg_shape (box.x + sx, box.y + sy, item->shape, f);
+	case gameflx:
+		gwin->paint_gameflx_shape (box.x + sx, box.y + sy, item->shape, f);
 		break;
 	case paperdoll:
 		gwin->paint_gump (box.x + sx, box.y + sy, item->shape, f, true);
@@ -673,8 +673,8 @@ void Paperdoll_gump::paint_head
 	case exult_flx:
 		gwin->paint_exult_shape(box.x + headx, box.y + heady, info->head_shape, f);
 		break;
-	case exultbg_flx:
-		gwin->paint_exultbg_shape(box.x + headx, box.y + heady, info->head_shape, f);
+	case gameflx:
+		gwin->paint_gameflx_shape(box.x + headx, box.y + heady, info->head_shape, f);
 		break;
 	case paperdoll:
 		gwin->paint_gump (box.x + headx, box.y + heady, info->head_shape, f, true);
@@ -1125,8 +1125,8 @@ bool Paperdoll_gump::check_shape
 	case exult_flx:
 		s = gwin->get_exult_shape(shape, frame);
 		break;
-	case exultbg_flx:
-		s = gwin->get_exultbg_shape(shape, frame);
+	case gameflx:
+		s = gwin->get_gameflx_shape(shape, frame);
 		break;
 	case paperdoll:
 		s = gwin->get_gump_shape(shape, frame, true);

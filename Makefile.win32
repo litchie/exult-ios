@@ -133,9 +133,14 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/amulets.shp \
 	data/bg/bgfiredoom.shp \
 	data/bg/fellowshipstaff.shp \
+	data/bg/BGmap.shp \
 	data/bg/flx.in
 
-$(EXEC) : $(OBJS) data/exult.flx data/exult_bg.flx
+EXULT_SI_FLX_OBJECTS = \
+	data/si/SImap.shp \
+	data/si/flx.in
+
+$(EXEC) : $(OBJS) data/exult.flx data/exult_bg.flx data/exult_si.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
 tools/expack.exe : tools/expack.o $(FILE_OBJS) 
@@ -146,6 +151,9 @@ data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
 
 data/exult_bg.flx: tools/expack.exe $(EXULT_BG_FLX_OBJECTS)
 	tools/expack.exe -i data/bg/flx.in
+
+data/exult_si.flx: tools/expack.exe $(EXULT_SI_FLX_OBJECTS)
+	tools/expack.exe -i data/si/flx.in
 
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres win32/exultico.rc exultico.o
@@ -178,12 +186,14 @@ clean:
 	del $(EXEC)
 	del data\exult.flx 
 	del data\exult_bg.flx
+	del data\exult_si.flx
 
 install: $(EXEC)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
 	if not exist $(U7PATH)\data md  $(U7PATH)\data
 	copy data\exult.flx  $(U7PATH)\data
 	copy data\exult_bg.flx $(U7PATH)\data
+	copy data\exult_si.flx $(U7PATH)\data
 
 tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe
 
