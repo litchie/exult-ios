@@ -1,3 +1,7 @@
+2001-01-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Actor::unready_weapon() to fix Krieg.
+
 2001-01-30  Tristan Tarrant <nadir@users.sourceforge.net>
 	* tools/expack.cc: Added an -i option which reads in a file describing
 	  the flx to build. Got rid of the really gross MacOS hack.
