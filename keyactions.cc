@@ -156,7 +156,7 @@ void ActionCloseGumps(int *params)
 //  { ActionCloseOrMenu, "Game menu", true, false, NONE },
 void ActionCloseOrMenu(int* params)
 {
-	if (gwin->get_mode() == Game_window::gump)
+	if (gwin->showing_gumps())
 		gwin->end_gump_mode();
 	else
 		ActionMenuGump(0);
@@ -233,7 +233,7 @@ void ActionTarget(int *params)
 	if (!Get_click(x, y, Mouse::greenselect))
 		return;
 	gwin->double_clicked(x, y);
-	if (gwin->get_mode() == Game_window::gump)
+	if (gwin->showing_gumps())
 		Mouse::mouse->set_shape(Mouse::hand);
 }
 
@@ -244,7 +244,7 @@ void ActionInventory(int *params)
 	static int inventory_page = -1;
 	
 	if (params[0] == -1) {
-		if (gwin->get_mode() != Game_window::gump)
+		if (!gwin->showing_gumps())
 			inventory_page = -1;
 		if(inventory_page<gwin->get_usecode()->get_party_count())
 			++inventory_page;
@@ -259,12 +259,12 @@ void ActionInventory(int *params)
 	
 	Actor *actor = Get_party_member(inventory_page);
 	if (actor) {
-		if (inventory_page > 0) // If companion, force gump-mode
-			gwin->set_mode(Game_window::gump);
+//		if (inventory_page > 0) // If companion, force gump-mode
+//			gwin->set_mode(Game_window::gump);
 		actor->activate(gwin->get_usecode());
 	}
 
-	if (gwin->get_mode() == Game_window::gump)
+	if (gwin->showing_gumps())
 		Mouse::mouse->set_shape(Mouse::hand);
 }
 
@@ -304,7 +304,7 @@ void ActionStats(int *params)
 	static int stats_page = -1;
 	
 	if (params[0] == -1) {
-		if (gwin->get_mode() != Game_window::gump)
+		if (!gwin->showing_gumps())
 			stats_page = -1;
 		if (stats_page < gwin->get_usecode()->get_party_count())
 			++stats_page;
@@ -320,7 +320,7 @@ void ActionStats(int *params)
 	Actor *actor = Get_party_member(stats_page);
 	if (actor)
 		gwin->show_gump(actor, game->get_shape("gumps/statsdisplay"));
-	if (gwin->get_mode() == Game_window::gump)
+	if (gwin->showing_gumps())
 		Mouse::mouse->set_shape(Mouse::hand);
 }
 

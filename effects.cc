@@ -605,8 +605,7 @@ void Rain_effect::paint
 	Game_window *gwin
 	)
 	{
-	if (gwin->is_main_actor_inside() || gwin->get_mode() !=
-						Game_window::normal)
+	if (gwin->is_main_actor_inside() || gwin->showing_gumps())
 		return;			// Inside.
 					// Get transform table.
 	Xform_palette xform = gwin->get_xform(8);//++++Experiment.
@@ -958,8 +957,7 @@ void Clouds_effect::paint
 	Game_window *gwin
 	)
 	{
-	if (!gwin->is_main_actor_inside() && gwin->get_mode() == 
-						Game_window::normal)
+	if (!gwin->is_main_actor_inside() && !gwin->showing_gumps())
 		for (int i = 0; i < num_clouds; i++)
 			clouds[i]->paint(gwin);
 	}

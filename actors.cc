@@ -1480,12 +1480,12 @@ void Actor::activate
 	else if (!npc_num && serpent)	// Avatar Paperdolls
 		gwin->show_gump(this, 123);
 					// Gump/combat mode?
-	else if ((gwin->get_mode() == Game_window::gump || gwin->in_combat())&&
+	else if ((gwin->showing_gumps() || gwin->in_combat())&&
 		 get_party_id() >= 0 &&
 		 npc_num >= 1 && npc_num <= 10 && !serpent)
 					// Show companions' pictures. (BG)
 			gwin->show_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
-	else if ((gwin->get_mode() == Game_window::gump || gwin->in_combat())&&
+	else if ((gwin->showing_gumps() || gwin->in_combat())&&
 		 get_party_id() >= 0 && serpent)
 					// Show companions' pictures. (SI)
 			gwin->show_gump(this, 123);
@@ -1591,7 +1591,7 @@ void Actor::set_property
 		else
 			properties[prop] = (short) val;
 		Game_window *gwin = Game_window::get_game_window();
-		if (gwin->get_mode() == Game_window::gump)
+		if (gwin->showing_gumps())
 			gwin->set_all_dirty();
 		}
 	}
@@ -1699,7 +1699,7 @@ void Actor::set_flag
 		gwin->set_palette();
 		}
 					// Update stats if open.
-	if (gwin->get_mode() == Game_window::gump)
+	if (gwin->showing_gumps())
 		gwin->set_all_dirty();
 	set_actor_shape();
 	}
@@ -2377,8 +2377,6 @@ void Actor::die
 		{			// Exec. usecode before dying.
 		gwin->get_usecode()->call_usecode(shnum, this, 
 					Usecode_machine::internal_exec);
-					// Restore mode.
-		gwin->set_mode(Game_window::normal);
 		if (get_cx() == 255)	// Invalid now?
 			return;
 		}

@@ -1,3 +1,8 @@
+2001-05-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.h: 'Mode' field has gone away.  RIP.  Use
+	showing_gumps() to test for gump mode.
+
 2001-05-25  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* exult.cc: Added 400x300 to resolution cycler as requested on 
