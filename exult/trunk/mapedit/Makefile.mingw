@@ -18,34 +18,31 @@ LIBGLADE_LIBS = `libglade-config --libs`
 INCLUDES = -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
 	-I$(SRC)/files -I$(SRC)/server $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
 
-CPPFLAGS = -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 $(INCLUDES)
+CPPFLAGS = -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO $(INCLUDES)
 
 CXXFLAGS = -fnative-struct
 
 CXX=g++
 
-LFLAGS=-lmingw32 -lberty
+LFLAGS=-lmingw32 -liberty -mwindows
 LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS)
 EXEC=exult_studio.exe
 
-SERVER_OBJS=server.o servemsg.o objserial.o 
+SERVER_OBJS=objserial.o servemsg.o server.o
 
-MAPEDIT_OBJS=dirbrowser.o studio.o exult_studio.o objbrowse.o shapelst.o \
-	paledit.o chunklst.o
+MAPEDIT_OBJS=chunklst.o dirbrowser.o eggedit.o exult_studio.o npcedit.o objbrowse.o objedit.o paledit.o  \
+	shapedraw.o shapelst.o studio.o
 
-FILES_OBJS=Flat.o Flex.o Table.o IFF.o U7file.o utils.o listfiles.o
+FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o Table.o U7file.o utils.o
 
 IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 
-SHAPES_OBJS=font.o fontvga.o items.o shapeinf.o shapevga.o u7drag.o vgafile.o
+SHAPES_OBJS=font.o fontvga.o items.o monstinf.o u7drag.o vgafile.o
 
-OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS)
+OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS)
 
 $(EXEC): $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
-
-clean:
-	rm -f $(OBJS) $(EXEC)
 
 install: $(EXEC)
 	mkdir -p $(STUDIOPATH)
