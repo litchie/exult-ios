@@ -6,7 +6,7 @@
 	* Scrolling/moving with gumps fixed.
 
 2000-05-28  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
-	* Makefile.be: modified to windows makefile to serve as Be makefile
+	* Makefile.be: modified windows makefile to serve as Be makefile
 	* gamedat.cc: only include dir.h on windows
 	* Midi.cc: only try forked,KMIDI,timidity in XWin
 	* Configuration.cc: put .exult.cfg in user's homedir
