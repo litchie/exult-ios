@@ -476,10 +476,8 @@ static int Handle_gump_event
 	case SDL_MOUSEBUTTONDOWN:
 		if (event.button.button == 1)
 			{
-#if 0
 			dragging = gwin->start_dragging(event.button.x,
 							event.button.y);
-#endif
 			dragged = 0;
 			}
 		break;
@@ -489,9 +487,7 @@ static int Handle_gump_event
 			{
 			if (!dragging && !dragged)
 				return (0);
-#if 0
 			gwin->drop_dragged(event.button.x, event.button.y);
-#endif
 			if (!dragged)
 					// Identify item(s) clicked on.
 				gwin->show_items(event.button.x,
@@ -502,9 +498,7 @@ static int Handle_gump_event
 	case SDL_MOUSEMOTION:		// Moving with left button down.
 		if (event.motion.state & SDL_BUTTON(1))
 			{
-#if 0
-			gwin->drag(event.button.x, event.button.y);
-#endif
+			gwin->drag(event.motion.x, event.motion.y);
 			dragged = 1;
 			}
 		break;
