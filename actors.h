@@ -247,7 +247,7 @@ public:
 	};
 
 /*
- *	A non-player-character that one can converse with:
+ *	A non-player-character that one can converse (or fight) with:
  */
 class Npc_actor : public Actor
 	{
@@ -296,6 +296,34 @@ public:
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);
 	};
+
+/*
+ *	Monster info. from 'monsters.dat':
+ */
+class Monster_info
+	{
+	int shapenum;			// Shape #.
+	unsigned char strength;		// Attributes.
+	unsigned char dexterity;
+	unsigned char intelligence;
+	unsigned char combat;
+	unsigned char armor;
+public:
+	Monster_info() {  }
+	void set(int sh, int str, int dex, int intel, int comb, int ar)
+		{
+		shapenum = sh;
+		strength = str;
+		dexterity = dex;
+		intelligence = intel;
+		combat = comb;
+		armor = ar;
+		}
+					// Create an instance.
+	Npc_actor *create(int chunkx, int chunky, int tilex, int tiley, 
+								int lift);
+	};
+
 #if 0
 /*
  *	Here's an actor that's just hanging around an area.

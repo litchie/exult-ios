@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 
 /*
- *	Read in the NPC's.
+ *	Read in the NPC's, plus the monster info.
  */
 
 void Game_window::read_npcs
@@ -43,7 +43,8 @@ void Game_window::read_npcs
 cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 	num_npcs = cnt1 + cnt2;
 	npcs = new Actor *[num_npcs];
-	for (int i = 0; i < num_npcs; i++)
+	int i;
+	for (i = 0; i < num_npcs; i++)
 		{
 					// Get chunk/tile coords.
 		unsigned locx = Read1(nfile);
@@ -150,6 +151,19 @@ cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 			read_ireg_objects(nfile, scx, scy, actor);
 		}
 	read_schedules();		// Now get their schedules.
+	ifstream mfile;			// Now get monsters.
+	u7open(mfile, MONSTERS);
+	num_monsters = Read1(mfile);	// Get count.
+					// Create list, and read it in.
+	monster_info = new Monster_info[num_monsters];
+	unsigned char monster[25];
+	for (i = 0; i < num_monsters; i++)
+		{
+		int shape = Read2(mfile);
+		mfile.read(monster, 23);// Get the rest.
+		monster_info[i].set(shape, monster[0], monster[1],
+				monster[2], monster[3], monster[4]);
+		}
 	}
 /*
  *	Read NPC schedules.
