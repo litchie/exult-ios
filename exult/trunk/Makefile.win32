@@ -224,11 +224,11 @@ UCC_OBJS=ucparse.o uclex.o usecode\compiler\ucmain.o usecode\compiler\ucexpr.o u
 usecode/compiler/ucc.exe : $(UCC_OBJS)
 	$(CXX) $(LFLAGS) -o usecode/compiler/ucc.exe $(UCC_OBJS)
 
-compiler/ucparse.cc:  
+ucparse.cc:  
 	bison -d usecode/compiler/ucparse.yy -o ucparse.c
 	mv ucparse.c ucparse.cc
  
-compiler/uclex.cc:  
+uclex.cc:  
 	flex usecode/compiler/uclex.ll 
 	mv lex.yy.c uclex.cc
 
