@@ -130,6 +130,18 @@ void InitGL
 	glEnable(GL_DEPTH_TEST);	// Enable depth-testing.
 	glDepthFunc(GL_LEQUAL);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	// ??
+					// Ambient light.
+	static GLfloat ambient[] = {.4, .4, .4, 1.0};
+	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
+					// A diffuse light source.
+	static GLfloat diffuse[] = {1, 1, 1, 1.0};
+	static GLfloat diffuse_pos[] = {0, 0, 10, 1};
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
+	glLightfv(GL_LIGHT1, GL_POSITION, diffuse_pos);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHTING);		// Enable lighting.
+//	glEnable(GL_NORMALIZE);		// Compute automatic normals.  May be
+					//   CPU-intensive.
 	}
 
 /*
@@ -145,7 +157,7 @@ void Draw_block
 	glPushMatrix();
 	glTranslatef(x, y, z);
 	glEnable(GL_TEXTURE_2D);	// Enable texture-mapping.
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 					// Choose texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
 					// Texture dims.:
