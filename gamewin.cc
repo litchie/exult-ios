@@ -43,7 +43,7 @@
 #include "Gump.h"
 #include "Gump_manager.h"
 #include "actions.h"
-#include "actors.h"
+#include "monsters.h"
 #include "animate.h"
 #include "barge.h"
 #include "bodies.h"
