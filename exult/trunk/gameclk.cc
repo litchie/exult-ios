@@ -156,7 +156,6 @@ void Game_clock::increment
 	hour %= 24;
 					// Update palette to new time.
 	set_time_palette();
-	Dead_body::decay(get_total_hours());
 	int new_3hour = hour/3;		// New 3-hour period.
 	int delta_3hour = new_3hour - old_3hour;
 	if (delta_3hour != 0)		// In a new period?
@@ -198,7 +197,6 @@ void Game_clock::handle_event
 			day++;
 			}
 		set_time_palette();
-		Dead_body::decay(get_total_hours());
 		if (hour%3 == 0)	// New 3-hour period?
 			{
 			check_hunger();	// Use food, and print complaints.
@@ -228,7 +226,6 @@ void Game_clock::fake_next_period
 	set_time_palette();
 	check_hunger();
 	gwin->schedule_npcs(hour/3);
-	Dead_body::decay(get_total_hours());
 	cout << "The hour is now " << hour << endl;
 	}
 

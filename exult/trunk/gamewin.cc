@@ -176,7 +176,7 @@ Game_window::Game_window
 	    render_seq(0), painted(false), focus(true), 
 	    teleported(false), in_dungeon(false), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
-	    npcs(0),
+	    npcs(0), bodies(0),
 	    monster_info(0), 
 	    palette(-1), brightness(100), user_brightness(100), 
 	    faded_out(false), fades_enabled(true),
@@ -583,13 +583,13 @@ void Game_window::clear_world
 			objects[x][y] = 0;
 			}
 	Monster_actor::delete_all();	// To be safe, del. any still around.
-	Dead_body::delete_all();
 	main_actor = 0;
 	camera_actor = 0;
 	num_npcs1 = 0;
 	theft_cx = theft_cy = -1;
 	combat = 0;
 	npcs.resize(0);			// NPC's already deleted above.
+	bodies.resize(0);
 	moving_barge = 0;		// Get out of barge mode.
 	special_light = 0;		// Clear out light spells.
 		//++++++++Clear monsters list when we have it.
@@ -1256,20 +1256,15 @@ void Game_window::read_ireg_objects
 					tilex, tiley, lift, entry[10]);
 				}
 			else if (quality == 1 && entry[8] >= 0x80)
+				{		// NPC's body.
 				obj = new Dead_body(
 				    shnum, frnum, tilex, tiley, lift,
-							entry[8] - 0x80, 1);
-			else if (Is_body(shnum))
-				{	// Qual==2 for monsters killed.
-				bool decay = (quality == 2);
-				if (decay &&
-				    clock.get_total_hours() - last_restore_hour
-								> 3)
-					continue;// Body decayed.
-				obj = new Dead_body(
-				    shnum, frnum, tilex, tiley, lift,
-								-1, decay);
+						entry[8] - 0x80);
+				bodies[entry[8] - 0x80] = obj;
 				}
+			else if (Is_body(shnum))
+				obj = new Dead_body(
+				    shnum, frnum, tilex, tiley, lift, -1);
 			else
 				obj = new Container_game_object(
 				    shnum, frnum, tilex, tiley, lift,
