@@ -39,6 +39,7 @@ Ammo_table *Ammo_info::table = 0;
 
 #ifdef MACOS
   #include <hashmap.h>
+  #include <map>
 #else
   #include <hash_map>
 #endif
@@ -46,6 +47,23 @@ Ammo_table *Ammo_info::table = 0;
 /*
  *	For looking up ammo entries:
  */
+#ifdef MACOS
+class Ammo_table
+	{
+	std::map<int, Ammo_info> AmmoMap;
+public:
+	Ammo_table() {  }
+	void insert(int shnum, Ammo_info& ent)
+		{ AmmoMap[shnum] = ent; }
+	Ammo_info *find(int shnum)	// Look up given shape.
+		{
+		std::map<int, Ammo_info>::iterator it = AmmoMap.find(shnum);
+		return it == AmmoMap.end() ? 0 : &((*it).second);
+		}
+	};
+
+#else
+
 class Ammo_table
 	{
 	hash_map<int, Ammo_info> map;
@@ -59,6 +77,7 @@ public:
 		return it == map.end() ? 0 : &((*it).second);
 		}
 	};
+#endif
 
 /*
  *	Look up ammo's entry.
