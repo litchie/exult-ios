@@ -1,13 +1,14 @@
 Exult Documentation
-last changed: 11 September 2002(GMT)
+last changed: 24 October 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 11 September 2002
-0.2. - 24 July 2002
-0.3. - 18 June 2002
+0.1. - 24 October 2002
+0.2. - 11 September 2002
+0.3. - 24 July 2002
+0.4. - 18 June 2002
 
 1. Introduction
 1.1. What is Exult?
@@ -48,7 +49,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 6.7. Quit
 
 7. OS specific notes
-7.1. Error Log
+7.1. How to get the Zaurus port working
+7.2. Error Log
 
 8. Credits and Contact
 8.1. Thanks
@@ -58,7 +60,13 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 11 September 2002
+0.1. - 24 October 2002
+* 3.1. Music rewrote the FM synth emulation part a bit.
+* 7.1. How to get the Zaurus port working quick guide where the necessary files can be found.
+
+
+
+0.2. - 11 September 2002
 * 2.2. Settings in exult.cfg added a couple of gameplay options and the FM synth emulation.
 * 3.1. Music added FM Synth.
 * 6.4. Audio Options added FMSynth to conversions.
@@ -66,7 +74,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 24 July 2002
+0.3. - 24 July 2002
 * 2.2. Settings in exult.cfg Walk_after_teleport removed (it is always enabled now)
 * 2.4. Command line options added -c and --nomenu, fixed --buildmap.
 * 5.1. Movement Keyboard walking implemented.
@@ -76,7 +84,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 18 June 2002
+0.4. - 18 June 2002
 * 2.2. Settings in exult.cfg added disablepause for digital music.
 * 3.1. Music You can play Music either through MIDI or Digital Music.
 * 3.4. Digital Music Digital Music now works and is documented.
@@ -283,8 +291,9 @@ no
 </gumps_dont_pause_game>
 <step_tile_delta>
 8
-						**this affects how the party follows the Avatar. 
-						Bigger # avoids jerkiness, but may cause other problems.
+						**Controls how far the Avatar will move before Exult recalculates the 
+						Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other 
+						problems.
 						
 </step_tile_delta>
 <allow_double_right_move>
@@ -487,7 +496,7 @@ Exult offers some "hidden" command line options:
 There are two ways that music is played in Exult. One is using MIDI, which plays the music through any GM MIDI device, Timidity can be used in Linux. The other is Digital Music encoded into OGG (similar to MP3) which was recorded directly from a Roland MT-32. The MIDI files are converted on-the-fly from the original Ultima 7 MT-32 files to General Midi format so that they will be playable on modern General Midi and General Midi/GS supporting sound cards.
 The options for changing the Music format are in the opening Exult menu Setup screen or in the actual game's audio options. The following settings can be used (in order of music conversion quality):
 * Digital Digital Music plays the OGG files which must be located in the Exult data/music directory. This does not use MIDI but plays the music digitally through any soundcard.
-* fmsynth This emulates FM synth. Has a 'dual'mode for stereo sound. Use "config/audio/midi/dual_opl" set to "yes" or "no" to enable/disable it. Default is "yes". You have to restart Exult if you change this in the game.
+* fmsynth This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib). It has a 'dual'mode for stereo sound. Use "config/audio/midi/dual_opl" set to "yes" or "no" to enable/disable it. Default is "yes". You have to restart Exult if you change this in the game.
 * none This option will output the music with nothing changed. Because the mapping will be for MT32s you should only use this option if you have a MT32 compatible device or you have replaced the music.
 * gs127 This option is for midi devices that have a MT32 patch bank installed in Bank 127. Some GS implementation have this, some don't. Only use this if you know that you have a MT32 implementation on Bank 127.
 * gs This will convert the MT32 patches to their equivalent GS patches. This will be a more accurate conversion that straight gm since more of the MT32 patches are in the GS set. However, not all midi devices will support this mode.
@@ -765,7 +774,16 @@ Exits Exult.
 --------------------------------------------------------------------------------
 
 7. OS specific notes
-7.1. Error Log
+7.1. How to get the Zaurus port working
+Some people were confused where to put the Exult and U7 files and this is a quick guide.
+* BG and SI are expected to be installed in /mnt/cf/exult-data/bg and /mnt/cf/exult-data/si
+* Exult binary is in /opt/QtPalmtop/bin/
+* the shared files (like exult_bg.flx) go into /opt/QtPalmtop/share/exult/
+* exult.cfg is can be found as /home/root/.exult.cfg
+
+
+
+7.2. Error Log
 * MacOS/Win32: Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help.
 * UNIX/UNIX clones: the above mentioned logs are shown in the console from which Exult is started. ./exult >&log will send both stderr and stdout to the file named "log".
 
