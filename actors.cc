@@ -35,6 +35,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Astar.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+Equip_record *Monster_info::equip = 0;
+int Monster_info::equip_cnt = 0;
 Monster_actor *Monster_actor::in_world = 0;
 int Monster_actor::in_world_cnt = 0;
 
@@ -1557,6 +1559,20 @@ Npc_actor *Monster_info::create
 	monster->move(0, chunkx, chunky, olist, tilex, tiley, 0, lift);
 					// ++++++For now:
 	monster->set_schedule_type(Schedule::loiter);
+#if 0	/* +++++++Enable when tested. */
+					// Get equipment.
+	if (equip_offset >= equip_cnt)
+		return (monster);	// Out of range.
+	Equip_record& rec = equip[equip_offset];
+	for (int i = 0; i < sizeof(equip->elements)/sizeof(equip->elements[0]);
+								i++)
+		{			// Give equipment.
+		Equip_element& elem = rec.elements[i];
+		if (!elem.shapenum || 1 + rand()%100 > elem.probability)
+			continue;	// You lose.
+		monster->add_quantity(elem.quantity, elem.shapenum);
+		}
+#endif
 	return (monster);
 	}
 
