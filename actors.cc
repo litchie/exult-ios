@@ -923,12 +923,26 @@ void Actor::get_tile_info
 		Shape_info& finfo = gwin->get_info(flat.get_shapenum());
 		water = finfo.is_water();
 		poison = finfo.is_poisonous();
-		Game_object *boots;	// Check for swamp/swamp boots.
-		if (poison && actor && 
-		    (boots = actor->Actor::get_readied(Actor::feet)) != 0 &&
-		    ((boots->get_shapenum() == 588 && Game::get_game_type() == BLACK_GATE) ||
-		    (boots->get_shapenum() == 587 && boots->get_framenum() == 6 && Game::get_game_type() == SERPENT_ISLE)))
-			poison = 0;
+					// Check for swamp/swamp boots.
+		if (poison && actor)
+			{
+			Game_object *boots = actor->Actor::get_readied(
+							Actor::feet);
+			if (boots != 0 &&
+		    	    ((boots->get_shapenum() == 588 && 
+					Game::get_game_type() == BLACK_GATE) ||
+		    	     (boots->get_shapenum() == 587 && 
+				boots->get_framenum() == 6 && 
+				Game::get_game_type() == SERPENT_ISLE)))
+				poison = 0;
+			else
+				{	// Safe from poisoning?
+				Monster_info *minf = gwin->get_info(
+				    actor->get_shapenum()).get_monster_info();
+				if (minf && minf->poison_safe())
+					poison = 0;
+				}
+			}
 		}
 	}
 

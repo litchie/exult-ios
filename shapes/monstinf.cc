@@ -29,6 +29,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "monstinf.h"
 
+// #include "items.h"
+
 using std::ios;
 using std::cout;
 using std::endl;
@@ -55,6 +57,11 @@ int Monster_info::read
 	int shapenum = Read2(ptr);	// Bytes 0-1.
 	strength = (*ptr++ >> 2) & 63;	// Byte 2.
 	dexterity = (*ptr++ >> 2) & 63;	// Byte 3.
+	m_poison_safe = (*ptr&1) != 0;	// This looks reasonable, as it
+					//   includes automaton, slug, spider.
+//	if (poison_safe)
+//		cout << "Shape " << item_names[shapenum] << " is poison_safe"<<
+					endl;
 	intelligence = (*ptr++ >> 2) & 63;	// Byte 4.
 	alignment = *ptr & 3;		// Byte 5.
 	combat = (*ptr++ >> 2) & 63;
