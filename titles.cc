@@ -354,8 +354,9 @@ void Titles::end_game(bool success)
 		playfli fli1("flic1.fli");
 		playfli fli2("flic2.fli");
 		playfli fli3("flic3.fli");
-
-		speech1.retrieve (& (char*)buffer, size);
+		char *buf;
+		speech1.retrieve (&buf, size);
+		buffer = (Uint8 *) buf;
 
 		fli1.play(win, 0, 0, 0);
 		
@@ -379,7 +380,8 @@ void Titles::end_game(bool success)
 		audio->start_music(ENDSCORE_XMI,2,false);
 		
 		// Set speech
-		speech2.retrieve (& (char*)buffer, size);
+		speech2.retrieve (&buf, size);
+		buffer = (Uint8 *) buf;
 		audio->play (buffer+8, size-8, false);
 		delete [] buffer;
 
@@ -441,8 +443,8 @@ void Titles::end_game(bool success)
 		fli3.info (&fi);
 		for (j = 0, i = 0; i <= 200; i+=7, j++)
 			next = fli3.play(win, j%fi.frames, (j%fi.frames)+1, next, i/2);
-
-		speech3.retrieve (& (char*)buffer, size);
+		speech3.retrieve (&buf, size);
+		buffer = (Uint8 *) buf;
 		audio->play (buffer+8, size-8, false);
 		delete [] buffer;
 
