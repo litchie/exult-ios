@@ -1,0 +1,812 @@
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES **** V1.0 ****
+
+This is a list of all the U7 files I have studied while developping U7Wizard.
+You will find in here technical descriptions of format and content of the
+ files. 
+Each time you see a "?" in this file, this means I was unable to find the
+ meaning of some data.
+You can help complete this technical reference by sending your remarks and
+ discoverings to u7wizard@pulsar.eu.org
+
+You can download the latest version of this document
+from the U7Wizard Official Web Site:
+  http://www.pulsar.eu.org/wizard/ultima/u7wizard.htm
+    "U7Wizard: The Ultimate World & Scenery Editor for the U7 game engine"
+
+You can freely redistribute this document as long as you don't modify it.
+You are not allowed to make profit using the informations contained in this
+document.
+
+The author cannot be held responsible for any damage or other consequences of
+using this document.
+This document is unofficial. It is the result of pure guess.
+No reverse-engineering of machine code was involved in this process.
+"Ultima 7", "The Black Gate" and "Serpent's Isle" are registered trademarks
+ from Origin Systems, Inc.
+
+Olivier Marcoux
+
+-----------------------------------------------------------------------
+HISTORY
+
+1.0       First public release
+
+-----------------------------------------------------------------------
+DATA TYPES
+
+Simple data types used in the description of the formats:
+  char    = unsigned 8 bits representing a character
+  shortint= signed 8 bits
+  byte    = unsigned 8 bits
+  integer = signed 16 bits
+  word    = unsigned 16 bits
+  longint = signed 32 bits
+
+When describing the format of the data, i will use the following conventions:
+A = word [b0=.. bF=..]
+  means that A is a word (b0..bF are the description of each byte)
+A = nn B
+  means that A is composed by nn times B
+A = B, C, D
+  means that A is composed by B followed by C followed by D
+A = set of B
+  means that A is composed by a certain number of B
+A = B | C
+  means that A can be composed by either B or C
+xx        (2 hex digits)
+  means a byte constant
+xxxx      (4 hex digits)
+  means a word constant
+xxxxxxxx  (8 hex digits)
+  means a longint constant
+
+Chunk items = shapes coming from the U7CHUNKS map file
+Fixed items = shapes coming from U7IFIX files
+Game items  = shapes coming from U7IREG files
+
+-----------------------------------------------------------------------
+COLLECTION FILE FORMATS
+
+U7 games make extensive use of Flex Files.
+A flex file is a collection of objects, it is composed of:
+-a header (128 bytes long)
+  header  = title, magic1, count, magic2, d1..d9
+  title   = $50 characters (optionnal, filled with 00s)
+  magic1  = longint (seems to be always $FFFF1A00)
+  count   = longint (number of object in table, including empty objects)
+  magic2  = longint (seems to be always $000000CC)
+  d1..d9 = longints (often set to 0, but sometimes used, meaning?)
+-a table of references
+  reference = offset, size
+  offset    = longint (relative to the beginning of the file)
+  size      = longint
+  note: empty objects are referenced as null offset and null size
+-the objects data (in the same order as declared in the table)
+  the format depends on the object type
+
+U7 games use also IFF files. (Interchange File Format)
+An IFF file is a collection of file associated with their type/name.
+It is composed of:
+-a header (12 bytes long)
+  header  = 'FORM', size, type
+  size    = reversed longint (size of the file excluding the first 8 bytes)
+  type    = 4 chars representing the type of data contained in the IFF file
+-the objects entries
+  entry   = type, size, object, [even]
+  type    = 4 chars representing the type of this object
+  size    = reversed longint (size of the entry excluding the first 8 bytes)
+  even    = 1 byte (set to 0) present only to get an even number of bytes
+  (the objects found in U7 IFF files have the following format:)
+  object  = name, data
+  name    = 8 chars (filled with 0s)
+  data    = the data of the object
+
+U7 games use also table files.
+A table file is a collection of object of the same type. It is composed of:
+-a table of reference
+  reference = info, offset
+  info    = 2 bytes (meaning?)
+  offset  = longint (relative to the beginning of the file)
+-the objects entries (in the same order as declared in the table)
+  entry   = size, data
+  size    = word (including the size word)
+  data    = the data of the object
+
+U7 games use also enumeration files.
+An enumeration file is a short collection of data of same type/length
+It is composed of:
+  enumeration = size, entries
+  size    = byte (number of entries)
+  entry   = depends of the file, constant length
+
+-----------------------------------------------------------------------
+COMMON OBJECTS
+
+Here is a description of the known object type that can be found in
+a flex or iff file. Remember that the size of each object is given in the
+flex/iff entries so that you can calculate the size of the variant parts
+of the object
+
+* Tiles
+This is a set of graphic tile representing a certain type of floor that
+can appears on the ground in the game view. One tile is 8x8 pixel large
+Format:
+  tiles = set of tile
+  tile  = 8x8 pixel
+  pixel = byte (index inside the color palette)
+
+* Shape
+This is the graphic representing any item that appears on the game view
+except floor tiles. The graphic can include transparent area.
+A shape represent a type of object. One shape can have many frames representing
+the different appearance of this kind of object. Each frame is describe as a
+set of "slices" composing the non-transparent area of the graphic.
+A shape can be found in a flex file or as a separate .SHP file
+Format:
+  shape   = size, set of offset, set of frame
+  size    = longint (should be same as in flex table)
+  offset  = longint (one for each frame, relative to beginning of shape)
+  frame   = rightX, leftX, leftY, rightY, set of slice
+    (coordinates are positive distance from the hot spot of the shape)
+  slice   = word=0000   (if end of frame)
+          | slength, offsetX, offsetY, scontent
+    (a slice represents several pixels on the same line)
+  slength = word [b0    =type of slice (0=standard, 1=compressed)
+                  b1..bF=length in pixel]
+  offsetX = integer (relative to hot spot)
+  offsetY = integer (relative to hot spot)
+  scontent= set of pixel  (if standard slice)
+          | set of block  (if compressed slice)
+  block   = blength, bcontent
+  blength = byte [b0    =type of block (0=standard, 1=repeated pixel)
+                  b1..b7=length in pixel]
+  bcontent= set of pixel  (if standard block)
+          | pixel         (if repeated pixel block)
+
+* Palette
+A palette is an array describing the RGB values for 256 color indexes
+This format is compatible with the bios call for setting a palette.
+A palette can be found in a flex file or as a separate .PAL file
+Format:
+  palette = 256 rgb
+  rgb     = red green blue
+  red     = byte (0..3F)
+  green   = byte (0..3F)
+  blue    = byte (0..3F)
+
+* Font
+A font is simply a shape where each frame represents the graphic for each
+ASCII letter
+Format:
+  font    = shape
+Note: the number of frame of a shape is not limited to 32 as
+      suggested by the U7CHUNKS file
+
+* String
+A string is a short single line of text ending with a null char
+Format:
+  string    = set of char
+
+* Text
+A text is a like a text file, composed with lines of characters.
+The texts used in the main menu contains backslashed sequences that
+indicates the output format of the lines:
+      \Px   include picture number x (frame of MAINSHP.FLX shape 14h)
+      \C    center line
+      \L    left-aligned line
+Format:
+  text    = set of char (with 0D 0A at end of lines)
+
+* Midi music
+There are 2 kind of midi music found in flex files:
+-MID music that share the same format as a .MID file
+  these musics can be extracted and saved as a .MID file to be played
+  for example with Windows Media Player
+-XMI music & special effects that share the same format as a .XMI file
+  these musics can be extracted and saved as a .XMI file to be played
+Note: I don't know of a player for such XMI files but there must be some
+      Origin FX screen saver uses these files
+The format of such file is beyond the scope of this document
+
+* Vocal speech
+This contains a vocal waveform that share the same format as a .VOC file
+These speeches can be extracted and saved as a .VOC file to be heared
+  for example with WinAmp
+The format of such file is beyond the scope of this document
+
+* Drivers
+This is used to store various drivers in a flex file, for example sound
+cards drivers.
+Format: seems to be pure machine code
+
+-----------------------------------------------------------------------
+STATIC DIRECTORY
+
+Here is a description of the files found in the STATIC directory:
+(some infos here are specific to Serpent's Isle)
+
+U7MAP:        12x12 regions
+  region  = 16x16 chunkID
+  chunkID = word (0..$C00-1)
+U7CHUNKS:     $C00 chunks
+  chunk   = 16x16 shapeID
+  shapeID = word [b0..b9=shapeType  (0..$400-1)
+                  bA..bE=shapeFrame (0..$20-1)
+                  bF=? ]
+SHPDIMS.DAT:  $400-$96 shpdims  (one for each Game Shape)
+  shpdims = dimY, dimX
+  dimY    = byte [b0: obstacle in N-S direction?
+                  b1..b7: Y dimension of the shape=number of tiles covered?]
+  dimX    = byte [b0: obstacle in W-E direction?
+                  b1..b7: X dimension of the shape=number of tiles covered?]
+WGTVOL.DAT:   $400 wgtvol       (one for each Game Shape & Tiles)
+  wgtvol  = weight, volume
+  weight  = byte: weight of the shape (in 0.1 stone)
+  volume  = byte: volume of the shape
+    (stone is the unit used in the inventory window in the game)
+TFA.DAT:      $400 entries (one for each Game Shape & Tiles)
+  tfa     = $400 triplet
+  triplet = tfa1, tfa2, tfa3
+  tfa1    = byte [b0..1 =?
+                  b2    =animated shape
+                  b3..4 =?
+                  b5..b7=height of shape]
+  tfa2    = byte [b0..b6=?
+                  b7    =is transparent (cannot be selected, cannot place item on it)]
+  tfa3    = byte [b0..b2=X size of the shape - 1  (number of tiles covered)
+                  b3..b5=Y size of the shape - 1  (number of tiles covered)
+                  b6    =is a light source
+                  b7    =contains transparency colors (light,dark,blood)]
+SHAPES.VGA:   flex file with $464 shapes
+  $0..$95     the Game Tiles (floor)
+  $96..$3FF   the Game Shapes
+  $400..$40B  extra shapes (sex/skin/dress variants of Avatar)
+  $40C..$463  empty
+FACES.VGA:    flex file with shapes
+  (represents the face of the people you can speak with)
+  there are also some full-screen drawings that appears during the game:
+   $100       full-screen deamon from The Black Sword
+   $125..$127 full-screen serpents
+   $128       full-screen guardian
+   $12C       full-screen semi-transparent serpent
+  and some strange faces :
+   $103,$104  ?
+   $106       a cat speaking ?
+   $129       weird!?
+SPRITES.VGA:  flex file with shapes
+  (used to display maps or special effects during the game)
+PAPERDOL.VGA: flex file with shapes
+  (parts of suits,weapons,armor,etc.. that are combined on the inventory
+  screen to show what the character is wearing)
+GUMPS.VGA:    flex file with shapes
+  (parts of the user interface of the game like bags, windows, buttons...)
+FONTS.VGA:    flex file with fonts
+TEXT.FLX:     flex file with lots of string (name of shape, quotes, cheat texts)
+PALETTES.FLX: flex file with palettes
+MAINSHP.FLX:  flex file with various objects used in main menu
+  $0        shape (the "warp" screen)
+  $1        palette (to be used with the previous screen)
+  $2        shape ("serpent's isle", the main menu title)
+  $3        shape (mask for the portrait?)
+  $4..$8    shape (menu options)
+  $9        font  (used when the user types the name of the Avatar)
+  $A..$C    shape (avatar options)
+  $D        empty
+  $E        text  (credits)
+  $F        empty
+  $10       text  (quotes)
+  $11,$12   shape (additionnal main menu options)
+  $13       shape (mouse cursor)
+  $14       shape (pictures used in texts)
+  $15       text  (game lost text)
+  $16..$19  shape (additionnal avatar options)
+  $1A       palette (to be used with previous shapes)
+  $1B..$20  mid music
+  $1B..$27  empty
+INITGAME.DAT: flex file with archived files
+  (these files are to be extracted to the GAMEDAT directory with their
+   original name. they represent the state of a new game. the format is the
+   same for the saved games GAMExx.U7)
+  archived file = filename, data
+  filename      = 13 characters giving the filename (filled with 00s)
+  data          = the remaining is the file content
+SISPEECH.SPC: flex file with vocal speech
+ADLIBMUS.DAT: flex file with xmi music (for Adlib sound card)
+MT32MUS.DAT:  flex file with xmi music (for Roland MT32 sound card)
+ADLIBSFX.DAT: flex file with xmi special effects (for Adlib sound card)
+MT32SFX.DAT:  flex file with xmi special effects (for Roland MT32 sound card)
+MAINMENU.TIM: flex file with instrument timbres (for the main menu)
+  (This is used by the main menu. Format unknown?)
+MAINMENU.DRV: flex file with drivers (for the main menu)
+SNDDRVRS.DAT: flex file with drivers (for each type of supported sound cards)
+XFORM.TBL:    flex file with shape transform tables
+  These are matrix used to transform the color of pixels that are seen
+  through semi-transparent effect (glass, cloud, blood...)
+  table     = 256 new_color (one for each possible color index)
+  new_color = byte  (the new color index to use)
+POINTERS.SHP: shape file
+  (contains the mouse cursors used in the game)
+INTRO.DAT / ENDGAME.DAT: iff file with intro/endgame animation data
+  (contains FLIC animations, font, shape, speeches)
+ADLIB.ADV:    driver for the Adlib sound card
+MT32MPU.ADV:  driver for the Adlib sound card
+SBDIG.ADV:    driver for the SoundBlaster sound card
+SBPDIG.ADV:   driver for the SoundBlaster Pro sound card
+XMIDI.AD:     table file with data relative to midi music
+XMIDI.MT:     table file with data relative to midi instruments
+WIHH.DAT:     wihh entries for the game shapes
+  table   = $400 offset
+  offset  = word  (0 if no object associated with the shape)
+  (the offsets are relative to the beginning of the file and point to objects:)
+  object  = 32 words (meaning? one per shape frame?)
+WEAPONS.DAT:  weapons enumeration
+  weapon    = 21 bytes (meaning?)
+AMMO.DAT:     ammunitions enumeration
+  ammunition= type, family, type2, id, flags
+  type      = word (shape type)
+  family    = word (shape type of the base ammunition eg: lucky arrow->arrow)
+  type2     = word (always same as type)
+  id        = byte (meaning?)
+  flags     = 6 bytes (meaning?)
+ARMOR.DAT:    armors enumeration
+  armor     = type, defence, flags
+  type      = word (shape type)
+  defence   = byte (points of damage removed from a successful attack)
+  flags     = 7 bytes (meaning? always 0s except for kite shield)
+MONSTERS.DAT: monsters enumeration
+  monster   = type, str, dex, int, com, ar, unknown
+  type      = word (shape type)
+  str       = byte (strength,     divided by 4 for display)
+  dex       = byte (dexterity,    divided by 4 for display)
+  int       = byte (intelligence, divided by 4 for display)
+  com       = byte (combat skill, divided by 4 for display)
+  ar        = byte (armor,        divided by 16 for display)
+  unknown   = 18 bytes (meaning?)
+EQUIP.DAT:  equipment enumeration
+  equipment = 60 bytes (meaning?)
+READY.DAT:  weapon ready enumeration
+  ready     = 9 bytes (meaning?)
+SCHEDULE.DAT: schedule file
+  schedules = count, activities, sched_types
+  count     = longint (number of activities = number of npc with schedule)
+  activity  = word (index of the type of schedule)
+  sched_type= word (meaning?)
+USECODE     = usecode functions list
+  function  = number, size, dseg, cseg
+  number    = word (number of the usecode function, sometimes linked to shape type)
+  size      = word (size of the data & code segments)
+  dseg      = dsize, data (data segment)
+  dsize     = word (size of the data)
+  data      = texts/data used by the codes (strings are zero-terminated)
+  cseg      = args, locals, links, usecodes
+  args      = word (number of arguments)
+  locals    = word (number of local variables)
+  links     = count, link, ..., link
+  count     = word (number of link)
+  link      = word (number of a usecode function that will be called by this function)
+  usecodes  = <you will need a usecode disassembler>
+LINKDEP1 = usecode functions link dependencies
+  (one dependency for each usecode function number plus one, even if the function is not defined in USECODE)
+  dependency= index, size
+  index     = word (index of first pointer for this function in LINKDEP2, starting from 0)
+  size      = word (size in bytes taken by all functions linked to this function, FFFF if no function)
+LINKDEP2 = linked functions pointer list
+  list      = pointer, ..., pointer
+  pointer   = longint (offset of usecode function inside the USECODE file)
+OCCLUDE.DAT = bit array (128 byte = $400 bit)
+  one bit per game shape. set if the shape completely occludes the space
+  it is covering (not sure?)
+U7IFIXnn    = flex file with fixed items list
+  (nn represents the region number.
+   There are 16x16 lists in each file, one for each chunk in the region.
+   The lists contain the static items found in the given chunk.
+   Static items are items which can't interact with the user)
+  list    = entries (each entry is 4 bytes long)
+  entry   = coord, lift, shapeID
+  coord   = byte [b0..b3=Y coord inside chunk
+                  b4..b7=X coord inside chunk]
+  lift    = byte [b0..b3=lift level
+                  b4..b7=0]
+  shapeID = word [b0..b9=shapeType  (0..$400-1)
+                  bA..bE=shapeFrame (0..$20-1)
+                  bF=0]
+
+
+-----------------------------------------------------------------------
+GAMEDAT DIRECTORY
+
+Here is a description of the files found in the GAMEDAT directory:
+
+MAPCOORDS.DAT = coordinates of the avatar
+  coords  = X, Y, d1, d2, d3, d4
+  X       = word (X coordinate 0..3071)
+  Y       = word (Y coordinate 0..3071)
+  d1,d2,d3= byte (meaning?)
+  d4      = word (meaning?)
+
+IDENTITY  = text file containing the name of the world
+  one single line, followed by RC LF (0D 0A)
+  can also be followed by EOF (1A)
+  it is either "ULTIMA7" or "SERPENT ISLE"
+
+RANDSEED  = current value of the seed used by the random number generator
+  seed    = longint
+
+U7IREGnn    = same meaning as U7IFIX but for game items (different format)
+  Each U7IREGnn file contains the game items for the region number nn.
+  Game items are items the user can interact with: move, use etc...
+  Note: fixed items items from 2 chunks around the Avatar position are copied in
+    the U7IREG files
+  reg_items = 16x16 chk_items (one for each chunk of the region)
+  chk_items = item, item, ..., item, 00 (or just 00 if no item for this chunk)
+  item      = standard | extended | extra
+  standard  = 06, XY, shapeID, lift, quality
+  extended  = 0C, XY, shapeID, type, proba, data1, lift, data2, [content]
+  extra     = 12, XY, shapeID, extradata
+    (content is present if shapeID represents a container and type not null)
+  content   = item, item, ..., item, 01
+  shapeID   = word [b0..b9=shapeType  (0..$400-1)
+                    bA..bE=shapeFrame (0..$20-1)
+                    bF=0]
+  lift      = byte [b0..b3=? (inside:6, outside:0..3 - same for all items in region)
+                    b4..b7=lift level]
+  quality   = byte (quality of the item)
+
+  for outside items:
+  XY        = X, Y
+  X         = byte (X coordinate inside the region)
+  Y         = byte (Y coordinate inside the region)
+
+  for inside items: (item in content)
+  XY        = referent of the parent container
+  referent  = word (offset of the data inside U7IBUF.DAT)
+
+  for containers:
+  type      = referent of the first item in the container (0000 if empty)
+  proba     = byte (? always 00 or current region number)
+  data1     = quality, quantity
+  data2     = resist, flags
+  quality   = byte (00:no key 01:Dead NPC 02..F9:matching key FA..FF:trap)
+  quantity  = byte (00 or 01 or npc#-$80 if corpse can become NPC)
+  resist    = byte (attack/lockpicking resistance points)
+  flags     = byte [b0:invisible
+                    b1..b2:0
+                    b3:?
+                    b4..b6:0
+                    b7:?]
+  note: key-locked containers cannot be lockpicked but can be attacked if
+  resistance points are > 0
+
+
+  for barges:
+  type      = sizeX, sizeY
+  proba     = byte (? id of the barge?)
+  data1     = flags, 00
+  data2     = 0000
+  sizeX     = byte (X number of tiles covered by the barge)
+  sizeY     = byte (Y number of tiles covered by the barge)
+  flags     = byte [b0:0
+                    b1:currently horizontal
+                    b2:? same as b1 except for the flying carpet
+                    b3..b7:0]
+
+  for a spellbook:
+  extradata = circle1, .., circle5, lift, circle6, .. circle9, flags
+  circle    = byte [b0=book contains spell 1 of this circle
+                    ...
+                    b7=book contains spell 8 of this circle]
+  flags     = longint  [b0..b1D=?
+                        b1E=infinite spellbook
+                        b1F=?]
+
+  for all egg items: (if shapeID represents an Egg)
+  type      = word [b0..b3=egg type
+                    b4..b6=criteria
+                    b7=nocturnal
+                    b8=once ever
+                    b9=hatched
+                    bA..bE=distance for activation
+                    bF=auto-reset]
+  proba     = byte (probability for activation 0..100)
+
+  for none egg (0):
+
+  for monster egg (1):
+  data1     = mode, workType
+  mode      = byte [b0..b1:alignment
+                    b2..b7:number]
+  workType  = byte
+  data2     = word (type of creature)
+
+  for jukebox egg (2):
+  data1     = score, flags
+  score     = byte
+  flags     = byte [b0:continuous
+                    b1..b7=0]
+  data2     = 0000
+
+  for sound effects egg (3): (must be verified?)
+  data1     = sfxNum, flags
+  sfxNum    = byte
+  flags     = byte [b0:continuous
+                    b1..b7=0]
+  data2     = 0000
+
+  for voice egg (4):
+  data1     = speechNum, 00
+  speechNum = byte
+  data2     = 0000
+
+  for usecode egg (5):
+  data1     = quality, quantity
+  quality   = byte
+  quantity  = byte
+  data2     = word (usecode function number)
+
+  for missile egg (6): (must be verified?)
+  data1     = word (missile type)
+  data2     = direction, frequency
+  direction = byte
+  frequency = byte
+
+  for teleport egg (7):
+  data1     = quality, mapNum
+  quality   = byte
+  mapNum    = byte
+  data2     = x, y (coordinates inside region)
+  x         = byte
+  y         = byte
+  Note: if quality = 255, jumps to the given coordinates
+        otherwise, jumps to the path egg (9) with the same quality
+
+  for weather egg (8):
+  data1     = weather, duration
+  weather   = byte (type of weather)
+  duration  = byte (number of minutes, null=continuous)
+  data2     = 0000
+
+  for path egg (9):
+  data1     = quality, nextQual
+  quality   = byte
+  nextQual  = byte (next quality)
+  data2     = 0000
+
+  for button egg (10): (must be verified?)
+  data1     = area, 00
+  area      = byte  (area of effect)
+  data2     = 0000
+
+
+ITEMNODE.DAT:
+  itemnode = first_free, free_count, 0000?, chunks1, ..., chunks4,
+             region1, .., region4, region1?
+  first_free = referent (of first free block inside U7IBUF.DAT)
+  free_count = word (number of free blocks)
+  chunksN  = 16x16 referent (of first visible shape in each chunk)
+  regionN  = byte (region number corresponding to chunksN)
+
+U7IBUF.DAT: Cache file for objects in use (inventories, visible map shapes,...)
+  It is composed with 8-bytes blocks that can be referenced by their offset (word).
+  Here is cached all NPC shape & content, all game items from cached regions
+   (see ITEMNODE.DAT), all fixed items & chunk items from 2 chunks around
+   the Avatar position
+  block = next, XY, shapeID, info
+  next    = referent (of next item, 0000 when no more item)
+  offset = word
+  XY = X, Y     (for outside items)
+     | referent (of parent container)
+  shapeID = word
+  info = lift, quality  (for standard items)
+       | referent (of additionnal infos for extended items)
+
+  additionnal infos:
+  block = type, proba, data1, lift, data2  (same as extended item in U7IREG)
+
+PARTY:
+  party = companion1, .. companion8, count, ???
+  companionN = referent (of Nth companion of the party in U7IBUF.DAT)
+  count      = byte (number of companion in party)
+  must contain str/int etc.. for the persons
+
+U7NBUF.DAT: Cache file for NPCs in use
+  It is composed with 105-bytes NPC definition block
+  It contains the whole NPC list. It is build from NPC.DAT when creating a new
+  game. The NPCs shape & inventory are in U7IBUF under the given referent.
+  npcBlock  = index, referent, status, str, dexterity, intel, combat, activity,
+              DAM, 3-bytes?, status2, index2, 2-bytes?, exper, training, primary,
+              secondary, oppressor, I-Vr, S-Vr, status3, 5-bytes?, acty?, SN, V1,
+              V2, 29-bytes?, food, 7-bytes?, name
+  index     = word (meaning? 1-based?)
+  status    = word [b0: ?
+                    b1..b2: Heading direction (N,E,S,W)
+                    b3..b4: Follow/Alignment (Neutral,Good,Evil,Chaotic)
+                    b5,b6: ?
+                    b7: Asleep
+                    b8: Charmed
+                    b9: Cursed
+                    bA: ? (Busy?)
+                    bB: In Party
+                    bC: Paralyzed
+                    bD: Poisonned
+                    bE: Protected
+                    bF: Dead]
+  str       = byte [b0..b4: Strength
+                    b5..b6: Skin color
+                    b7: Freeze]
+  dexterity = byte
+  intel     = byte [b0..b4: intelligence
+                    b5: Read
+                    b6: Tournament
+                    b7: Polymorph]
+  combat    = byte [b0..b4: Combat skill
+                    b5..b6: ?
+                    b7: Petra]
+  activity  = byte (should be 0..31)
+  DAM       = byte (default attack mode 0..9)
+  status2   = word [b0..b4: Maximum Magic Points (for NPC#0)
+                    b0..b4: ID#
+                    b5..b7: Temperature (high 3 bits)
+                    b8..bC: Mana, Current Magic Points (for NPC#0)
+                    b8: Met
+                    b9: No Spell Casting
+                    bA: Zombie
+                    bB..bC: ?
+                    bD..bF: Temperature (low 3 bits)]
+  index2    = byte (meaning? 0-based? face from FACES.VGA ?)
+  exper     = longint (experience points)
+  training  = byte (training points)
+  primary   = integer (primary target NPC#)
+  secondary = integer (secondary target NPC#)
+  oppressor = integer (oppressor NPC#)
+  I-Vr      = vector (called "I-Vr" in cheat menu, means?)
+  S-Vr      = vector (location where the NPC is supposed to be for his schedule)
+  vector    = integer, integer
+  status3   = word [b0..b2: D/R (called "D/R" in cheat menu, means?)
+                    b3: ?
+                    b4: Fly
+                    b5: Walk
+                    b6: Swim
+                    b7: Ethereal
+                    b8: Want Primary
+                    b9: Sex (M/F)
+                    bA: Bleeding
+                    bB: In Party?
+                    bC: ?
+                    bD: In Action
+                    bE: Conjured
+                    bF: Summonned]
+  food      = byte (food level)
+  SN        = byte (meaning?)
+  V1        = word (meaning?)
+  V2        = word (meaning?)
+  name      = 16-chars (zero-terminated string)
+
+NPC.DAT: Initial NPC definition (taken from INITGAME.DAT)
+  npcDef    = npc1count, npc2count, npc, npc, ..., npc
+  npc1count = number of NPC type 1 in this file
+  npc2count = number of NPC type 2 in this file
+    (there are npc1count+npc2count npc in the file)
+  npc       = extended, npcBlock, [inventory]
+    (inventory is present if type of extended item not null)
+  extended  = part after the 0C of an extended item (see U7IREG)
+  header    = 12-bytes?
+  npcBlock  = see U7NBUF.DAT file
+  inventory = item, item, ..., item, 00
+  item      = see U7IREG files
+
+FRAMES.FLG: $400 frame_flag
+  frame_flag = longint  (-1 if not applicable)
+  (meaning?)
+
+-----------------------------------------------------------------------
+USECODE OPCODES
+
+List of arguments that can be found after the opcode byte:
+argument size description
+<local>    2  zero-based index of a local variable (the first local variables are the arguments of the function)
+<jump>     2  offset inside the code segment, relative to beginning of the next opcode
+<data>     2  offset of a string inside the data segment
+<byte>     1  immediate 8-bits value
+<word>     2  immediate 16-bits value
+<link>     2  zero-based index of a usecode function inside the links array
+<function> 2  number of a usecode function
+<native>   2  index of an external function native to the game engine
+<flag>     2  index of a game flag
+
+name  codes description
+?           00
+?           01
+LOOP        02 <local1> <local2> <local3> <local4> <jump>: beginning of a loop
+     <local3> gets each value of the <local4> array
+     to be verified: <local1> receive the 1-based index of the loop
+     to be verified: <local2> receive the number of values in the array
+     once the loop is over, <jump> to the end of the loop
+?           03
+JTRUE/JNZ   04 <jump>: pop a boolean/integer, <jump> if it's true/non-zero  (need to be verified)
+JFALSE/JZ   05 <jump>: pop a boolean/integer, <jump> if it's false/zero
+JMP         06 <jump>: do an immediate <jump>
+CMPS        07 <word> <jump>: ? (need to be verified)
+?           08
+ADD         09: pop 2 integers, add them and push the result
+SUB         0A: pop 2 integers, substract 1st from 2nd and push the result
+DIV         0B: pop 2 integers, divide 2nd by 1st and push the result
+MUL         0C: pop 2 integers, multiply them and push the result
+MOD         0D: pop 2 integers, operate 2nd modulo 1st and push the result
+AND         0E: pop 2 booleans, operate a "and" and push the result
+OR          0F: pop 2 booleans, operate a "or" and push the result
+NOT         10: pop a boolean, operate a "not" and push the result
+?           11
+POP LOCAL[] 12 <local>: pop a value inside the given <local>
+PUSH TRUE   13: push the boolean TRUE
+PUSH FALSE  14: push the boolean FALSE
+?           15
+TEST >      16: pop 2 integers, test if 2nd is greater than 1st, push the boolean result
+TEST <      17: pop 2 integers, test if 2nd is less than 1st, push the boolean result
+TEST >=     18: pop 2 integers, test if 2nd is greater or equal to 1st, push the boolean result
+TEST <=     19: pop 2 integers, test if 2nd is less or equal to 1st, push the boolean result
+TEST !=     1A: pop 2 integers, test if they are different, push the boolean result
+?           1B
+CONCAT      1C <data>: concatenate the given string to the string register
+PUSH        1D <data>: push the given string
+ARRAY       1E <word>: pop the given number of value, create an array with them and push the result
+PUSH        1F <word>: push the immediate 16-bits value
+?           20
+PUSH LOCAL[]21 <local>: push the value of the given <local>
+TEST ==     22: pop 2 integers, test if they are equal, push the boolean result
+?           23
+CALL        24 <link>: call the given usecode function from the links array
+RET         25: return from function
+GET         26 <local>: pop an integer index and push the indexed value from the <local> array
+?           27
+?           28
+?           29
+?           2A
+?           2B
+ABORT2      2C: abort the function (need to be verified)
+POP RESULT  2D: pop a value and set it as the return value of the function
+SLOOP       2E: initiate a loop (always followed by the opcode 02)
+CONCAT      2F <local>: concatenate the string from the <local> to the string register
+TEST IN     30: pop an array and a value, test if value is inside the array, push the boolean result
+?           31 <4 bytes>: ?
+RET RESULT  32: push the return value of the function and return from function
+SAY         33: say the string register as part of current talk and empty the string register
+?           34
+?           35
+?           36
+?           37
+CALLIS      38 <native> <byte>: call the external function with the given number of argument on the stack. push the result on the stack
+CALLI       39 <native> <byte>: call the external function with the given number of argument on the stack. no result on the stack
+?           3A
+?           3B
+?           3C
+?           3D
+PUSH REF    3E: push an identifier of the game item for which the usecode function has been called
+EXIT        3F: abort the function and any previous call (need to be verified)
+?           40: ?
+?           41
+PUSH FLAG[] 42 <flag>: push the given game flag as a boolean
+POP FLAG[]  43 <flag>: pop a boolean as the given game flag
+PUSH        44 <byte>: push the immediate 8-bits value
+?           45 <byte>: ?
+PUT         46 <local>: pop an integer index and a value, replace the indexed value in the <local> array
+CALL        47 <function>: call the given usecode function (must appear also in the links array)
+PUSH EVENT  48: push an integer that identify the reason why the usecode function has been called
+?           49
+ARRAYADD    4A: pop a value and an array, add the value at the end of the array and push the result
+POP EVENT   4B: pop an integer and set it as the current reason identification
+?           4C through FF
+-----------------------------------------------------------------------
+WHAT REMAINS TO BE EXPLAINED
+
+
+how does the association "NPC" <-> "FACES.VGA" work
+some shapes have different title for each frame (eg: desk items)
+what does bit 15 of shapeID mean
+some infos about NPCs are not yet found
+
+plus, everywhere you find a "?" in this file, there is something i was unable to figure out.
+
+-----------------------------------------------------------------------
+
+Olivier Marcoux
+u7wizard@pulsar.eu.org

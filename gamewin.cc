@@ -48,7 +48,7 @@ Game_window::Game_window
 	    brightness(100), 
 	    skip_lift(16), debug(0), shapewin(0),
 	    script(0),
-	    main_actor(721, 0),		// Someone to move around.
+		main_actor(0),
 	    conv_choices(0),
 	    main_actor_inside(0), mode(intro), showing_item(0),
 	    shapes(SHAPES_VGA),
@@ -683,43 +683,8 @@ void Game_window::init_actors
 	(
 	)
 	{
-	extern Npc *Init_sara_npc(), *Init_iolo_npc();
-	if (main_actor.in_world())	// Already done?
+	if (main_actor->in_world())	// Already done?
 		return;
-	main_actor.move(chunkx, chunky + 1, 
-				get_objects(chunkx, chunky + 1), 10, 4, -1);
-#if 0
-	if (script)			// Script file given?
-		{
-					// Add new ones to list.
-		Actor *prev = &main_actor;
-		Npc *npc;		// Get them.
-		int shape, portrait, cx, cy, sx, sy;
-		while ((*script)(npc, shape, portrait, cx, cy, sx, sy))
-			{
-			Area_actor *actor = new Area_actor(shape, portrait);
-			actor->set_npc(npc);
-					// Add to list.
-			prev->add_after_this(actor);
-			prev = actor;
-			actor->move(cx, cy, get_objects(cx, cy), sx, sy, -1);
-			}
-		}
-	else
-		{			//+++++Add another (Iolo).
-		Npc_actor *iolo = new Area_actor(465, 1);
-		iolo->set_npc(Init_iolo_npc()); // Init. "personality".
-		iolo->move(chunkx + 1, chunky + 1, 
-			get_objects(chunkx + 1, chunky + 1), 6, 10, -1);
-		main_actor.add_after_this(iolo);
-					// And another (female Avatar).
-		Npc_actor *sara = new Area_actor(989, 5);
-		sara->set_npc(Init_sara_npc());
-		sara->move(chunkx + 1, chunky + 1, 
-			get_objects(chunkx + 1, chunky + 1), 7, 14, -1);
-		iolo->add_after_this(sara);
-		}
-#endif
 	read_npcs();			// Read in all U7 NPC's.
 	}
 
@@ -1010,10 +975,10 @@ void Game_window::animate
 	int frame;
 	int repaint_all = 0;		// Flag to repaint window.
 	int blocked = 0;		// Flag for obstacle.
-	if (main_actor.next_frame(time, cx, cy, sx, sy, frame) &&
+	if (main_actor->next_frame(time, cx, cy, sx, sy, frame) &&
 					// Watch for occupied square.
-	    !(blocked = objects[cx][cy]->is_occupied(shapes, &main_actor,
-					main_actor.get_lift(), sx, sy)))
+	    !(blocked = objects[cx][cy]->is_occupied(shapes, main_actor,
+					main_actor->get_lift(), sx, sy)))
 		{
 					// At left?
 		if (cx - chunkx <= 0 && sx < 6)
@@ -1028,29 +993,29 @@ void Game_window::animate
 		else if ((cy - chunky)*16 + sy >= get_height()/8 - 4)
 			view_down();
 					// Get old chunk it's in.
-		int old_cx = main_actor.get_cx(),
-					old_cy = main_actor.get_cy();
+		int old_cx = main_actor->get_cx(),
+					old_cy = main_actor->get_cy();
 					// Get old rectangle.
-		Rectangle oldrect = get_shape_rect(&main_actor);
+		Rectangle oldrect = get_shape_rect(main_actor);
 					// Move it.
-		main_actor.move(cx, cy, get_objects(cx, cy), sx, sy, frame);
+		main_actor->move(cx, cy, get_objects(cx, cy), sx, sy, frame);
 		int inside;		// See if moved inside/outside.
 					// In a new chunk?
-		if ((main_actor.get_cx() != old_cx ||
-		    main_actor.get_cy() != old_cy) &&
-			main_actor_inside != find_roof(main_actor.get_cx(),
-						main_actor.get_cy()))
+		if ((main_actor->get_cx() != old_cx ||
+		    main_actor->get_cy() != old_cy) &&
+			main_actor_inside != find_roof(main_actor->get_cx(),
+						main_actor->get_cy()))
 			{
 			main_actor_inside = !main_actor_inside;
 			repaint_all = 1;// Changed, so paint everything.
 			}
 		else
-			repaint_actor(&main_actor, oldrect);
+			repaint_actor(main_actor, oldrect);
 		}
 	else if (blocked)
-		main_actor.stop();	// Not sure about this.
-	Actor *actor = &main_actor;	// Go through rest of actors.
-	while ((actor = actor->get_next()) != &main_actor)
+		main_actor->stop();	// Not sure about this.
+	Actor *actor = main_actor;	// Go through rest of actors.
+	while ((actor = actor->get_next()) != main_actor)
 		{
 		blocked = 0;
 		if (actor->next_frame(time, cx, cy, sx, sy, frame) &&
@@ -1086,7 +1051,7 @@ void Game_window::start_actor
 	if (mode != normal)
 		return;
 					// Move every 1/8 sec.
-	main_actor.start(chunkx*chunksize + winx, chunky*chunksize + winy,
+	main_actor->start(chunkx*chunksize + winx, chunky*chunksize + winy,
 						125000);
 	}
 
@@ -1098,7 +1063,7 @@ void Game_window::stop_actor
 	(
 	)
 	{
-	main_actor.stop();		// Stop and set resting state.
+	main_actor->stop();		// Stop and set resting state.
 	paint();
 	}
 
@@ -1182,7 +1147,7 @@ void Game_window::show_items
 	int cnt = 0;
 					// See what was clicked on.
 	for (int lift = 0; lift < 3; lift++)
-		cnt += find_objects(main_actor.get_lift() + lift, 
+		cnt += find_objects(main_actor->get_lift() + lift, 
 							x, y, &found[cnt]);
 	for (int i = 0; i < cnt; i++)	// Go through them.
 		{
@@ -1222,13 +1187,13 @@ void Game_window::double_clicked
 	int cnt = 0;
 					// See what was clicked on.
 	for (int lift = 0; lift < 3; lift++)
-		cnt += find_objects(main_actor.get_lift() + lift, 
+		cnt += find_objects(main_actor->get_lift() + lift, 
 							x, y, &found[cnt]);
 //	cout << cnt << " objects found.\n";
 	for (int i = 0; i < cnt; i++)	// Go through them.
 		{
 		Game_object *obj = found[i];
-		int save_mode = mode;
+		enum Game_mode save_mode = mode;
 		usecode->call_usecode(obj->get_usecode(), obj);
 		mode = save_mode;
 		paint();//????Not sure+++++++++
@@ -1296,7 +1261,7 @@ void Game_window::show_avatar_choices
 	int height = win->get_text_height(font12);
 	int space_width = win->get_text_width(font12, "   ");
 					// Get main actor's portrait.
-	Shape_frame *face = faces.get_shape(main_actor.get_face_shapenum());
+	Shape_frame *face = faces.get_shape(main_actor->get_face_shapenum());
 
 	Rectangle mbox(16, npc_text_rect.y + npc_text_rect.h + 6*height,
 			face->get_width() + 4, face->get_height() + 4);

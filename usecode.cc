@@ -395,6 +395,80 @@ int Usecode_machine::get_item_frame
 	return (item == 0 ? 0 : item->get_framenum());
 	}
 
+#define PARTY_MAX (sizeof(party)/sizeof(party[0]))
+
+/*
+ *	Is an NPC in the party?
+ */
+
+int Usecode_machine::npc_in_party
+	(
+	int npc				// NPC #.
+	)
+	{
+	for (int i = 0; i < PARTY_MAX; i++)
+		if (party[i] == npc)
+			return (1);
+	return (0);
+	}
+
+/*
+ *	Add an NPC to the party.
+ */
+
+void Usecode_machine::add_to_party
+	(
+	int npc
+	)
+	{
+	if (party_count == PARTY_MAX || npc_in_party(npc))
+		return;			// Can't add.
+	for (int i = 0; i < PARTY_MAX; i++)
+		if (party[i] == 0)	// Find empty spot.
+			{
+			party[i] = npc;
+			party_count++;
+			break;
+			}
+	}
+
+/*
+ *	Remove an NPC from the party.
+ */
+
+void Usecode_machine::remove_from_party
+	(
+	int npc
+	)
+	{
+	for (int i = 0; i < PARTY_MAX; i++)
+		if (party[i] == npc)
+			{
+			party[i] = 0;
+			party_count--;
+			break;
+			}
+	}
+
+/*
+ *	Return an array containing the party.
+ */
+
+Usecode_value Usecode_machine::get_party
+	(
+	)
+	{
+	Usecode_value arr(party_count, 0);
+	int num_added = 0;
+	for (int i = 0; i < PARTY_MAX && num_added < party_count; i++)
+		if (party[i] != 0)
+			{
+			Usecode_value val(party[i]);
+			arr.put_elem(num_added, val);
+			}
+	return arr;
+	}
+
 /*
  *	Call an intrinsic function.
  */
@@ -432,10 +506,23 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 6:				// Remove answer.
 		remove_answer(parms[0]);
 		break;
-	case 13:			// Set item shape.
+	case 7:				// Save answers. (0)
+		//++++++++++++++
+		break;
+	case 8:				// Restore answers. (0)
+		//++++++++++++++
+		break;
+	case 0xa:			// Get answer from player.  (0)
+		// ++++++++++++++++
+		break;
+	case 0xc:			// Ask for # (min, max, step, default).
+					// (Show slider.)
+		//+++++++++++++
+		break;
+	case 0xd:			// Set item shape.
 		set_item_shape(parms[0], parms[1]);
 		break;
-	case 16:			// Rand. # within range.
+	case 0x10:			// Rand. # within range.
 		{
 		int low = parms[0].get_int_value();
 		int high = parms[1].get_int_value();
@@ -443,23 +530,81 @@ Usecode_value Usecode_machine::call_intrinsic
 			low = high;
 		return (Usecode_value((rand() % (high - low + 1)) + low));
 		}
-	case 17:			// Get item shape.
+	case 0x11:			// Get item shape.
 		return (Usecode_value(get_item_shape(parms[0])));
-	case 18:
+	case 0x12:			// Get item frame.
 		return (Usecode_value(get_item_frame(parms[0])));
-	case 19:			// Set item shape.
+	case 0x13:			// Set item frame.
 		set_item_frame(parms[0], parms[1]);
 		break;
-	case 27:			// +++++Not known.  1 parm.
-		return Usecode_value(0);
-	case 0x27:			// Get player name.
-		return Usecode_value("Player");
-	case 90:			// Is player female?
-		return Usecode_value(0);
-	default:
-cout << "Unhandled intrinsic " << intrinsic << " called with " << num_parms
-	<< " parms\n";
+	case 0x14:			// Get item quality.
+		//++++++++++++++++++
 		break;
+	case 0x1e:			// NPC joins party.
+		add_to_party(-parms[0].get_int_value());
+		break;
+	case 0x1f:			// NPC leaves party.
+		remove_from_party(-parms[0].get_int_value());
+		break;
+	case 0x20:			// Get NPC prop (item, prop_id).
+					//   (9 is food level).
+		//+++++++++++
+		break;
+	case 0x21:			// Set NPC prop (item, prop_id, value).
+		//+++++++++++++
+		break;
+	case 0x23:			// Return array with party members.
+		return (get_party());
+	case 0x27:			// Get player name.
+		return Usecode_value(
+		    ((Game_object *) parms[0].get_int_value())->get_name());
+	case 0x2a:			// Get cont. items(item, type, qual,?).
+		//++++++++++++
+		break;
+	case 0x2e:			// Play music(item, songnum).
+		//++++++++++++
+		break;
+	case 0x2f:			// NPC in party? (item).
+		return (Usecode_value(npc_in_party(
+					-parms[0].get_int_value())));
+	case 0x32:			// Display sign (gump #, text).
+		//+++++++++++++
+		break;
+	case 0x33:			// Doesn't ret. until user single-
+					//   clicks on an item.  Rets. item.
+		//+++++++++++Show crosshair cursor.
+		break;
+	case 0x38:			// Return. game time hour (0-23).
+		//++++++++++
+		break;
+	case 0x39:			// Return minute (0-59).
+		//++++++++
+		break;
+	case 0x40:			// Show str. near item (item, str).
+		//+++++++++
+		break;
+	case 0x48:			// Display map.
+		//++++++++++++
+		break;
+	case 0x5a:			// Is player female?
+		return Usecode_value(0);
+	case 0x5d:			// Start endgame.
+		break;
+	case 0x5e:			// Returns size of array (arr).
+		return Usecode_value(parms[0].get_array_size());
+	case 0x68:			// Returns 1 if mouse exists.
+		return Usecode_value(1);
+	default:
+		{
+		printf("Unhandled intrinsic 0x%03x called with %d parms: ");
+		for (int i = 0; i < num_parms; i++)
+			{
+			parms[i].print(cout);
+			cout << ' ';
+			}
+		cout << '\n';
+		break;
+		}
 		}
 	Usecode_value no_ret;				// Dummy return.
 	return (no_ret);
@@ -518,7 +663,10 @@ Usecode_machine::Usecode_machine
 	sp = stack;
 					// Clear global flags.
 	memset(gflags, 0, sizeof(gflags));
-	gflags[0x1b3] = 1;		// Testing Ferryman.
+					// Clear party list.
+	memset((char *) &party[0], 0, sizeof(party));
+	party_count = 0;
+//	gflags[0x1b3] = 1;		// Testing Ferryman.
 	file.seekg(0, ios::end);
 	int size = file.tellg();	// Get file size.
 	file.seekg(0);
@@ -906,7 +1054,10 @@ int Usecode_machine::call_usecode_function
 		if (funs[i]->id == id)
 			break;
 	if (i == num_funs)
+		{
+		cout << "Usecode " << id << " not found.\n";
 		return (0);
+		}
 	if (parm0)
 		push(*parm0);
 	run(funs[i], event);		// Do it.

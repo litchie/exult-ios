@@ -44,7 +44,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "gamewin.h"
-#include "compile.h"
 #include "fnames.h"
 
 /*
@@ -85,15 +84,6 @@ int main
 	{
 	cout << "Exult V0.09.  Copyright (C) 1998 J. S. Freedman\n";
 	cout << "Text rendering done using the 'FreeType' font engine.\n";
-	Script_compiler *cmp = 0;
-	if (argc > 1)			// Make this an option.
-		{			// Script file name.
-		cout << "Compiling script '" << argv[1] << "'.\n";
-		cmp = new Script_compiler(argv[1]);
-		if (cmp->get_error())
-			gwin->abort("Errors compiling script '%s'.",
-							argv[1]);
-		}
 	Init();				// Create main window.
 #if 0	/* Make this an option. */
 	if (argc > 2)			// Specify chunkx, chunky on cmndline.
@@ -108,7 +98,6 @@ int main
 		cout << "Creating 'gamedat' files.\n";
 		gwin->write_gamedat(INITGAME);
 		}
-	gwin->set_script(cmp);
 	return (Play());
 	}
 
@@ -571,10 +560,6 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   //init location (Trinsic)
   gwin->set_chunk_offsets(64, 135);
-
-  //init script compiler
-	Script_compiler *cmp = 0;
-	gwin->set_script(cmp);
 
   return (Play());
 }
