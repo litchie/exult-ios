@@ -3,6 +3,9 @@
 	slightly broken. It _should_ work now. Code is a mess, but I want to
 	get off this 'doze box. <grin>
 
+	* And again. Fixing a bug where I was reading the config file twice
+	upon loading. The file size would grow exponentially at each write.
+
 2002-01-23  Darke  <darkepaw@users.sourceforge.net>
 	* exult.cc: Fixed a compile error with people compiling using
 	--enable-usecode-debugger.
