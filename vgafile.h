@@ -156,6 +156,8 @@ public:
 		{ return 1 + (tfa[2]&7); }
 	int get_3d_ytiles()		// Dimension in tiles - Y.
 		{ return 1 + ((tfa[2]>>3)&7); }
+	unsigned char get_tfa(int i)	// For debugging:
+		{ return tfa[i]; }
 	int is_animated()
 		{ return (tfa[0] & (1<<2)) != 0; }
 	int is_light_source()
