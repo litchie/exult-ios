@@ -676,10 +676,11 @@ void Game_window::read_ireg_objects
 		int tiley = entry[1] & 0xf;
 					// Get shape #.
 		int shapeid = entry[2]+256*(entry[3]&3);
+		Shape_info& info = shapes.get_info(shapeid);
 		unsigned int lift, quality, type;
 		Game_object *obj;
 					// An "egg"?
-		if (shapeid == 275)
+		if (info.get_shape_class() == Shape_info::hatchable)
 			{
 			Egg_object *egg = create_egg(entry);
 			get_objects(scx + cx, scy + cy)->add_egg(egg);
@@ -690,7 +691,6 @@ void Game_window::read_ireg_objects
 			type = 0;
 			lift = entry[4] >> 4;
 			quality = entry[5];
-			Shape_info& info = shapes.get_info(shapeid);
 			if (info.is_animated())
 				obj = new Animated_object(
 				   entry[2], entry[3], tilex, tiley, lift, 1);
