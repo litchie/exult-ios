@@ -1035,12 +1035,17 @@ Usecode_value Usecode_machine::find_nearby
 					// It might be (tx, ty, tz).
 	int arraysize = objval.get_array_size();
 	if (arraysize >= 3 && objval.get_elem(0).get_int_value() < num_tiles)
+		{
+					// Qual may be 4th.  5th is ???.
+		int qual = arraysize == 5 ? objval.get_elem(3).get_int_value()
+							: -359;
 		cnt = Game_object::find_nearby(vec,
 			Tile_coord(objval.get_elem(0).get_int_value(),
 				   objval.get_elem(1).get_int_value(),
 				   objval.get_elem(2).get_int_value()),
 			shapeval.get_int_value(),
-			distval.get_int_value(), mval.get_int_value());
+			distval.get_int_value(), mval.get_int_value(), qual);
+		}
 	else
 		{
 		Game_object *obj = get_item(objval);
@@ -2384,7 +2389,8 @@ USECODE_INTRINSIC(recall_virtue_stone)
 			obj->remove_this(1);
 			Usecode_value party = get_party();
 			int cnt = party.get_array_size();
-			for (int i = 0; i < cnt; i++)
+			int i;
+			for (i = 0; i < cnt; i++)
 				{
 				Game_object *npc = get_item(party.get_elem(i));
 				if (npc && npc->add(obj))

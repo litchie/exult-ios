@@ -246,10 +246,11 @@ public:
 	void clear_dependencies();	// Remove all dependencies.
 					// Find nearby objects.
 	static int find_nearby(Vector& vec, Tile_coord pos,
-					int shapenum, int delta, int mask);
-	int find_nearby(Vector& vec, int shapenum, int delta, int mask)
+			int shapenum, int delta, int mask, int qual = -359);
+	int find_nearby(Vector& vec, int shapenum, int delta, int mask,
+							int qual = -359)
 		{ return find_nearby(vec, get_abs_tile_coord(), shapenum,
-							delta, mask); }
+							delta, mask, qual); }
 	Game_object *find_closest(int *shapenums, int num_shapes);
 					// Find nearby unblocked tile.
 	Tile_coord find_unblocked_tile(int dist, int height = 1,
