@@ -35,6 +35,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Astar.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+Monster_actor *Monster_actor::in_world = 0;
+int Monster_actor::in_world_cnt = 0;
 
 /*
  *	Initialize.
@@ -1454,6 +1456,37 @@ int Monster_actor::is_blocked
 			}
 		}
 	return (0);			// All clear.
+	}
+
+/*
+ *	Delete.
+ */
+
+Monster_actor::~Monster_actor
+	(
+	)
+	{
+					// Remove from chain.
+	if (next_monster)
+		next_monster->prev_monster = prev_monster;
+	if (prev_monster)
+		prev_monster->next_monster = next_monster;
+	else				// We're at start of list.
+		in_world = next_monster;
+	in_world_cnt--;
+	}
+
+/*
+ *	Delete all monsters.  (Should only be called after deleting chunks.)
+ */
+
+void Monster_actor::delete_all
+	(
+	)
+	{
+	while (in_world)
+		delete in_world;
+	in_world_cnt = 0;
 	}
 
 /*

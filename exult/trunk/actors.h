@@ -488,14 +488,31 @@ public:
  */
 class Monster_actor : public Npc_actor
 	{
+	static Monster_actor *in_world;	// All monsters in the world.
+	static int in_world_cnt;	// # in list.
+					// Links for 'in_world' list.
+	Monster_actor *next_monster, *prev_monster;
 					// Are new tiles blocked?
 	int is_blocked(int destx, int desty);
 public:
 	Monster_actor(char *nm, int shapenum, int fshape = -1, int uc = -1)
-		: Npc_actor(nm, shapenum, fshape, uc)
-		{  }
+		: Npc_actor(nm, shapenum, fshape, uc), prev_monster(0)
+		{ 
+		next_monster = in_world ? in_world->next_monster : 0;
+		in_world = this;
+		in_world_cnt++;
+		}
 					// Read from file.
 	Monster_actor(istream& nfile, int num, int has_usecode);
+	virtual ~Monster_actor();
+					// Methods to retrieve them all:
+	static Monster_actor *get_first_in_world()
+		{ return in_world; }
+	Monster_actor *get_next_in_world()
+		{ return next_monster; }
+	static int get_num_in_world()
+		{ return in_world_cnt; }
+	static void delete_all();	// Delete all monsters.
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
 	};
