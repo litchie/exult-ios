@@ -27,11 +27,57 @@ The file uses a simple hierarchical XML-like syntax, which should be simple to
 understand and modify. Take care though. Handling of syntax errors in this file
 is not well tested.
 
+Exult will create this file for you, with some sensible defaults, and you can
+then edit it to suit your preferences. Here is an example of what it looks
+like:
+
+<config>
+ <video>
+  <fullscreen>
+  no
+  </fullscreen>
+ </video>
+ <gameplay>
+  <skip_intro>
+  no
+  </skip_intro>
+ </gameplay>
+ <disk>
+  <game>
+   <blackgate>
+    <path>
+    /home/user/mystuff/ultima/u7
+    </path>
+    <title>
+    blackgate
+    </title>
+   </blackgate>
+  </game>
+ </disk>
+ <audio>
+  <speech>
+   <enabled>
+   yes
+   </enabled>
+  </speech>
+  <midi>
+   <kmidi>
+    <device>
+    5
+    </device>
+   </kmidi>
+   <enabled>
+   yes
+   </enabled>
+  </midi>
+ </audio>
+</config>
+
+
 AUDIO
 -----
 Exult can now play the Guardian's sound-bites through SDL, and it's own
-internal mixer. No configuration or tuning of this is available in this
-release
+internal mixer. Configuration is managed through Exult's configuration file.
 
 MIDI
 ----

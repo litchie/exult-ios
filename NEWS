@@ -12,6 +12,10 @@
 
 		Many bug fixes.
 
+		New pathfinding framework.
+
+		New object access API for some data-objects
+
 4/25/00:	Improved midi support using the timidity binary and patchsets
 		under linux.
 
