@@ -1,5 +1,10 @@
 2001-10-13  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* Gump_manager.cc (Gump_manager): non_persistent_count added so we
+	can do a fast "gump_mode()" test.
+	* gamewin.cc,combat.cc:  No walking/combat if in 'gump mode'.
+
+	* actors.cc,flags.h,npctimer.cc:  'Might' flag implemented.
 	* effects.cc (Projectile_effect): More sprites implemented for
 	various projectiles (like swordstrike).
 

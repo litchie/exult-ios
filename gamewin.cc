@@ -2121,7 +2121,8 @@ void Game_window::start_actor_alt
 	int blocked[8];
 	get_shape_location(main_actor, ax, ay);
 
-	int	height = shapes.get_info(main_actor->get_shapenum()).get_3d_height();
+	int height = shapes.get_info(
+				main_actor->get_shapenum()).get_3d_height();
 	
 	Tile_coord start = main_actor->get_abs_tile_coord();
 	int dir;
@@ -2134,7 +2135,9 @@ void Game_window::start_actor_alt
 
 		Map_chunk *clist = get_chunk_safely(cx, cy);
 		clist->setup_cache();
-		blocked[dir] = clist->is_blocked (height, main_actor->get_lift(), tx, ty, nlift, main_actor->get_type_flags(), 1);
+		blocked[dir] = clist->is_blocked (height, 
+			main_actor->get_lift(), tx, ty, nlift, 
+					main_actor->get_type_flags(), 1);
 	}
 
 	dir = Get_direction (ay - winy, winx - ax);
@@ -2238,11 +2241,8 @@ void Game_window::start_actor
 	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
 	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
-	if (main_actor_dont_move())
-		{
-//		stop_actor();  Causes problems in animations.
+	if (main_actor_dont_move() || gump_man->gump_mode())
 		return;
-		}
 
 	teleported = 0;
 	if (moving_barge)
@@ -2321,7 +2321,8 @@ void Game_window::stop_actor
 		{
 		main_actor->stop();	// Stop and set resting state.
 		paint();	// ++++++Necessary?
-		main_actor->get_followers();
+		if (!gump_man->gump_mode())
+			main_actor->get_followers();
 		}
 	}
 
@@ -2910,6 +2911,7 @@ void Game_window::double_clicked
 	if (obj)
 	{
 		if (combat && !gump && obj != main_actor &&
+			!gump_man->gump_mode() &&
 					// But don't attack party members.
 						obj->get_party_id() < 0 &&
 					// Or bodies.

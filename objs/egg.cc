@@ -949,7 +949,8 @@ void Field_object::field_effect
 		actor->clear_flag(Obj_flags::asleep);
 		break;
 	case caltrops_field:
-		if (actor->get_property(Actor::intelligence) < rand()%40)
+		if (actor->get_property(Actor::intelligence)*
+		    (actor->get_flag(Obj_flags::might) ? 2 : 1) < rand()%40)
 			{
 			actor->reduce_health(2 + rand()%3);
 			say(first_ouch, last_ouch);

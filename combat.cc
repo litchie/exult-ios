@@ -36,6 +36,7 @@
 #include "monstinf.h"
 #include "ucmachine.h"
 #include "game.h"
+#include "Gump_manager.h"
 
 using std::cout;
 using std::endl;
@@ -667,6 +668,11 @@ void Combat_schedule::now_what
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	if (gwin->get_gump_man()->gump_mode())
+		{			// No combat when gumps showing.
+		npc->start(200, 1000);	// Try again in a second.
+		return;
+		}
 	if (state == initial)		// Do NOTHING in initial state so
 		{			//   usecode can, e.g., set opponent.
 					// Way far away (50 tiles)?
