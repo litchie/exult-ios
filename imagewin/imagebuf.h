@@ -162,6 +162,9 @@ public:
 	virtual void get(Image_buffer *dest, int srcx, int srcy) = 0;
 					// Put rect. back.
 	virtual void put(Image_buffer *src, int destx, int desty) = 0;
+	
+	virtual void fill_static(int black, int gray, int white) = 0;
+
 	};
 
 #endif

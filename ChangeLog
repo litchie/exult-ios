@@ -1,3 +1,22 @@
+2001-08-07  Max Horn <max@quendi.de>
+	* audio/Audio.h/.cc: added is_track_playing method; also fixed speech on MacOS
+	  (my first speech bug fix was breaking the second, real fix)
+	* audio/Midi.h: added is_track_playing method
+	* bggame.cc: loads of changes, intro should be much better now, and better structured;
+	  this is work in progess, not yet finished
+	* exceptions.h: added UserBreakException
+	* imagewin/imagebuf.cc/.h, ibuf8.cc/.h, ibu16.cc/.h: added fill_static method
+	* game.cc: fixed wait_delay() to recognize very quick clicks (that measn very short
+	  delay between mouse down and mouse up)
+	* game.h: factored out BG_Game && SI_Game class declarations into new headers
+	* added bggame.h, sigame.h
+	* mac/*: added legal header to some files
+	* sigame.cc; cleaned up intro code a little bit
+	* various files: updated legal headers
+
+2001-08-06  Max Horn <max@quendi.de>
+	* audio/Audio.cc: fixed the fix for MacOS speech output
+
 2001-08-06  Tristan Tarrant <nadir@users.sourceforge.net>
 	* configure.in, files/snprintf.cc, files/Makefile.am,
 	files/utils.h: add an implementation of snprintf for OSs

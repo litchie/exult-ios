@@ -1,27 +1,23 @@
-/**
- **	Ibuf8.cc - 8-bit image buffer.
- **
- **	Written: 8/13/98 - JSF
- **/
-
 /*
-Copyright (C) 1998 Jeffrey S. Freedman
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Library General Public
-License as published by the Free Software Foundation; either
-version 2 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Library General Public License for more details.
-
-You should have received a copy of the GNU Library General Public
-License along with this library; if not, write to the
-Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-Boston, MA  02111-1307, USA.
-*/
+ *	ibuf8.cc - 8-bit image buffer.
+ *
+ *  Copyright (C) 1998-1999  Jeffrey S. Freedman
+ *  Copyright (C) 2000-2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -118,6 +114,21 @@ void Image_buffer8::put
 	Image_buffer8::copy8((unsigned char *) src->bits,
 		src->get_width(), src->get_height(), destx, desty);
 	}
+
+/*
+ * Fill buffer with random static
+ */
+void Image_buffer8::fill_static(int black, int gray, int white)
+{
+	unsigned char *p = bits;
+	for (int i = width*height; i > 0; --i) {
+		switch (std::rand()%5) {
+			case 0: case 1: *p++ = black; break;
+			case 2: case 3: *p++ = gray; break;
+			case 4: *p++ = white; break;
+		}
+	}
+}
 
 /*
  *	Fill with a given 8-bit value.
@@ -528,4 +539,3 @@ void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *inptr)
 		}
 	}
 }
-
