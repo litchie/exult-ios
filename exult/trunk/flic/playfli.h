@@ -22,7 +22,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <fstream.h>
+#include "databuf.h"
 #include "imagewin.h"
 
 class playfli {
@@ -35,7 +35,7 @@ class playfli {
     int speed;
  };
  private:
-    ifstream fli_stream;
+    DataSource *fli_data;
     int fli_size;
     int fli_magic;
     int fli_frames;
@@ -49,7 +49,10 @@ class playfli {
     int frame;
  public:
     playfli(const char *fli_name);
+    playfli(char *buffer, size_t len);
     ~playfli();
     void info(fliinfo *fi = NULL);
     int play(Image_window *win, int first_frame = 0, int last_frame = -1, unsigned long ticks = 0, int brightness = 100);
+ private:
+    void initfli();
 };
