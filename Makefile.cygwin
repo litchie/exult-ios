@@ -256,7 +256,7 @@ head2data.test:
 
 # This should work with the Cygwin rm
 clean:
-	rm -f $(OBJS) expack.o $(EXEC) expack.exe data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
+	rm -f $(OBJS) expack.o $(EXEC) expack.exe data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h del content/islefaq/usecode
 
 install: $(EXEC)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
@@ -290,6 +290,27 @@ dist:   $(EXEC)
 	cp SDL/README-SDL.txt $(U7PATH)/Exult
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
+
+patch: ucc.exe
+	mkdir -p $(U7PATH)/patch
+	ucc -o content/islefaq/usecode content/islefaq/usecode.uc
+	cp content/islefaq/initgame.dat $(U7PATH)/patch
+	cp content/islefaq/u7ifix0d $(U7PATH)/patch
+	cp content/islefaq/u7ifix64 $(U7PATH)/patch
+	cp content/islefaq/u7ifix65 $(U7PATH)/patch
+	cp content/islefaq/u7map $(U7PATH)/patch
+	cp content/islefaq/usecode $(U7PATH)/patch
+
+patchdist: ucc.exe
+	mkdir -p $(U7PATH)/Exult
+	mkdir -p $(U7PATH)/Exult/patch
+	ucc -o content/islefaq/usecode content/islefaq/usecode.uc
+	cp content/islefaq/initgame.dat $(U7PATH)/Exult/patch
+	cp content/islefaq/u7ifix0d $(U7PATH)/Exult/patch
+	cp content/islefaq/u7ifix64 $(U7PATH)/Exult/patch
+	cp content/islefaq/u7ifix65 $(U7PATH)/Exult/patch
+	cp content/islefaq/u7map $(U7PATH)/Exult/patch
+	cp content/islefaq/usecode $(U7PATH)/Exult/patch
 
 tools:  expack.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
