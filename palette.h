@@ -21,6 +21,24 @@
 
 class Image_window8;
 
+/*
+ *	Palette #'s in 'palettes.flx':
+ */
+const int PALETTE_DAY = 0;
+const int PALETTE_DUSK = 1;
+const int PALETTE_DAWN = 1;		// Think this is it.
+const int PALETTE_NIGHT = 2;
+const int PALETTE_INVISIBLE = 3;	// When Avatar is invisible.
+					// 4 looks just like #1.
+const int PALETTE_HAZE = 5;
+					// 6 looks a little brighter than #2.
+					// 7 is somewhat warmer.  Torch?
+const int PALETTE_RED = 8;		// Used when hit in combat.
+					// 9 has lots of black.
+const int PALETTE_LIGHTNING = 10;
+
+
+
 class Palette
 	{
 		Image_window8 *win;
