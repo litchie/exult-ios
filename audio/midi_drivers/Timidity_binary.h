@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exceptions.h"
 #include "utils.h"
 #include <pthread.h>
+#include <string>
 
 #if HAVE_TIMIDITY_BIN
 class	Timidity_binary : virtual public MidiAbstract
