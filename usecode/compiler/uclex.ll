@@ -235,7 +235,7 @@ se		return SE;
 
 \#.*			/* Ignore other cpp directives. */
 
-[ \t]+						/* Ignore spaces. */
+[ \t\r]+					/* Ignore spaces. */
 "//".*						/* Comments. */
 "/*"			BEGIN(comment);
 <comment>[^*\n]*				/* All but '*'. */
