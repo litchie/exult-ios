@@ -1,3 +1,8 @@
+2002-04-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* exult.cc: Create gamedat, savegames in $HOME/.exult if gamedat
+	doesn't already exist.
+
 2002-04-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucsched.cc (Usecode_script): Whoops!  Next_frame_max
