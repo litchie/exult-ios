@@ -138,7 +138,7 @@ void VideoOptions_gump::build_buttons()
 void VideoOptions_gump::load_settings()
 {
 	Game_window *gwin = Game_window::get_game_window();
-	long res_array[] = { 320*200, 320*240, 400*300, 512*384, 800*600, -1 };
+	long res_array[] = { 320*200, 320*240, 400*300, 512*384, 640*480, 800*600, -1 };
 	long pixels = gwin->get_width()*gwin->get_height();
 	for(resolution=0; res_array[resolution]>0 && res_array[resolution]!=pixels; resolution++)
 	if(res_array[resolution]<0)
@@ -195,6 +195,10 @@ void VideoOptions_gump::save_settings()
 		resy= 384;
 		break;
 	case 4:
+		resx= 640;
+		resy= 480;
+		break;
+	case 5:
 		resx= 800;
 		resy= 600;
 		break;
@@ -202,7 +206,7 @@ void VideoOptions_gump::save_settings()
 		// Handling arbitrary resolutions would be nice, but for now at least
 		// we don't crash anymore...
 		resx= 320;
-		resy= 240;
+		resy= 200;
 	}
 	config->set("config/video/width", resx, true);
 	config->set("config/video/height", resy, true);

@@ -347,7 +347,7 @@ void Conversation::show_npc_message(const char *msg)
 	gwin->paint(box);		// Clear what was there before.
 	int height;			// Break at punctuation.
 	while ((height = gwin->paint_text_box(0, msg, box.x,box.y,box.w,box.h, 
-								-1, 1)) < 0)
+								-1, 1, gwin->get_text_bg())) < 0)
 		{			// More to do?
 		int x, y; char c;
 		Get_click(x, y, Mouse::hand, &c);

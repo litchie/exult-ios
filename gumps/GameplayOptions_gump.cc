@@ -41,7 +41,7 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 5, 20, 35, 50, 65, 80, 95, 110, 125, 146 };
+static const int rowy[] = { 5, 18, 31, 46, 57, 70, 83, 96, 109, 122, 146 };
 static const int colx[] = { 35, 50, 120, 127, 130 };
 
 class GameplayOptions_button : public Gump_button {
@@ -112,6 +112,8 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 		cheats = state;
 	else if (btn == buttons[5])
 		paperdolls = state;
+	else if (btn == buttons[6])
+		text_bg = state;
 }
 
 void GameplayOptions_gump::build_buttons()
@@ -128,6 +130,7 @@ void GameplayOptions_gump::build_buttons()
 	buttons[4] = new GameplayToggle(this, colx[3], rowy[7], EXULT_FLX_AUD_ENABLED_SHP, cheats, 2);
 	if (Game::get_game_type() == BLACK_GATE)
 		buttons[5] = new GameplayToggle(this, colx[3], rowy[6], EXULT_FLX_AUD_ENABLED_SHP, paperdolls, 2);
+	buttons[6] = new GameplayToggle(this, colx[3], rowy[9], EXULT_FLX_AUD_ENABLED_SHP, text_bg, 2);
 }
 
 void GameplayOptions_gump::load_settings()
@@ -142,6 +145,7 @@ void GameplayOptions_gump::load_settings()
 	string pdolls;
 	paperdolls = gwin->get_bg_paperdolls();
 //	config->value("config/gameplay/double_click_closes_gumps", doubleclick);
+	text_bg = gwin->get_text_bg();
 }
 
 GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SHP, SF_EXULT_FLX)
@@ -156,9 +160,9 @@ GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTI
 	build_buttons();
 
 	// Ok
-	buttons[8] = new GameplayOptions_button(this, colx[0], rowy[9], EXULT_FLX_AUD_OK_SHP);
+	buttons[8] = new GameplayOptions_button(this, colx[0], rowy[10], EXULT_FLX_AUD_OK_SHP);
 	// Cancel
-	buttons[9] = new GameplayOptions_button(this, colx[4], rowy[9], EXULT_FLX_AUD_CANCEL_SHP);
+	buttons[9] = new GameplayOptions_button(this, colx[4], rowy[10], EXULT_FLX_AUD_CANCEL_SHP);
 }
 
 GameplayOptions_gump::~GameplayOptions_gump()
@@ -171,6 +175,8 @@ GameplayOptions_gump::~GameplayOptions_gump()
 void GameplayOptions_gump::save_settings()
 {
 	Game_window *gwin = Game_window::get_game_window();
+	gwin->set_text_bg(text_bg);
+	config->set("config/gameplay/textbackground", text_bg ? "yes" : "no", true);
 	gwin->set_fastmouse(fastmouse);
 	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", true);
 	gwin->set_mouse3rd(mouse3rd);
@@ -199,6 +205,7 @@ void GameplayOptions_gump::paint(Game_window* gwin)
 	if (Game::get_game_type() == BLACK_GATE)
 		gwin->paint_text(2, "Paperdolls:", x+ colx[0], y + rowy[6] + 1);
 	gwin->paint_text(2, "Cheats:", x + colx[0], y + rowy[7] + 1);
+	gwin->paint_text(2, "Text Background:", x + colx[0], y + rowy[8] + 1);
 	gwin->set_painted();
 }
 

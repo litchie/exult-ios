@@ -1,3 +1,11 @@
+2001-10-22  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* gamewin.*, gumps/GameplayOptions_gump.*, usecode/conversation.cc:
+	implemented "Text Background" feature which puts a dark backdrop
+	behind conversations. There is also an entry in the Gameplay Options
+	menu for it.
+	* gumps/VideoOptions_gump.cc, data/vid_resolution.shp: added 640x480
+	as a "valid" entry
+
 2001-10-21  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc,intrinsics.cc: Skip egg-activation if teleported via
