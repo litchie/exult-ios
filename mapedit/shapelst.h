@@ -141,12 +141,14 @@ public:
 					// Handle mouse press.
 	static gint mouse_press(GtkWidget *widget, GdkEventButton *event,
 							gpointer data);
+					// Export current frame as a PNG.
+	time_t export_png(const char *fname);
 	void edit_shape_info();		// Edit selected shape's info.
 	void edit_shape();		// Edit selected shape-frame.
 					// Deal with list of files being edited
 					//   by an external prog. (Gimp).
 	static gint check_editing_files(gpointer data = 0);
-	static void import_shape(Editing_file *ed);
+	static void read_back_edited(Editing_file *ed);
 	static void clear_editing_files();
 					// Import/export from file selector.
 	static void export_frame(char *fname, gpointer user_data);

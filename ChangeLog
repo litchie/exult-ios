@@ -1,3 +1,8 @@
+2002-03-18  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/shapelst.cc: Import/export frames.  Also put in WIN32
+	code (untested) for running image-editor.
+
 2002-03-18  Dominik Reichardt <gigdr@tesionmail.de>
 	* mapedit/gimpwin32.txt: added to provide a small guide for install/usage
 
