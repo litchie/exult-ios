@@ -551,7 +551,7 @@ Animated_object::Animated_object
 	int framenum, 
 	unsigned int tilex, unsigned int tiley, 
 	unsigned int lft
-	) : Game_object(shapenum, framenum, tilex, tiley, lft)
+	) : Terrain_game_object(shapenum, framenum, tilex, tiley, lft)
 	{
 	animator = Animator::create(this, 0);
 	}

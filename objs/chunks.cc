@@ -540,8 +540,7 @@ void Map_chunk::set_terrain
 		Game_object *each;
 		while ((each = it.get_next()) != 0)
 					// Kind of nasty, I know:
-			if (!dynamic_cast<Ireg_game_object *>(each) &&
-			    !dynamic_cast<Ifix_game_object *>(each))
+			if (dynamic_cast<Terrain_game_object *>(each))
 				removes.push_back(each);
 		}
 		for (Game_object_vector::const_iterator it=removes.begin(); 
@@ -564,7 +563,7 @@ void Map_chunk::set_terrain
 				Game_object *obj = info.is_animated() ?
 					new Animated_object(shapenum,
 					    	framenum, tilex, tiley)
-					: new Game_object(shapenum,
+					: new Terrain_game_object(shapenum,
 					    	framenum, tilex, tiley);
 				add(obj);
 				}

@@ -110,9 +110,9 @@ public:
 
 /*
  *	An object that cycles through its frames, or wiggles if just one
- *	frame.  The base class is for non-Ireg ones.
+ *	frame.  The base class is for those in U7chunks.
  */
-class Animated_object : public Game_object
+class Animated_object : public Terrain_game_object
 	{
 	Animator *animator;		// Controls animation.
 public:

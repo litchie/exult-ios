@@ -1688,6 +1688,18 @@ void Game_object::write_common_ireg
 	}
 
 /*
+ *	Paint terrain objects only.
+ */
+
+void Terrain_game_object::paint_terrain
+	(
+	Game_window *gwin
+	)
+	{
+	paint(gwin);
+	}
+
+/*
  *	Write out an IFIX object.
  */
 

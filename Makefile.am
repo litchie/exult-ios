@@ -126,8 +126,7 @@ exult_LDADD = \
 exult_DEPENDENCIES = $(ICON_FILE) $(EXULTLIBS)
 
 noinst_HEADERS = \
-	alpha_kludges.h \
-	mingw_kludges.h 
+	alpha_kludges.h
 
 EXTRA_DIST = 	\
 	README.1ST \
