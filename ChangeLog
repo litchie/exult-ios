@@ -1,5 +1,6 @@
 2001-10-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.in: cleaned up some more (especially C++ comp. detection)
+	* gamewin.cc: fixed palette glitch in plasma screen
 
 2001-10-12  Max Horn  <max@quendi.de>
 	* configure.in: some cleanup, added some suggestions from autoscan

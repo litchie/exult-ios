@@ -3228,13 +3228,22 @@ void Game_window::setup_game
 
 	CYCLE_RED_PLASMA();
 
+	// Fade out & clear screen before palette change
+	pal->fade_out(c_fade_out_time);
+	clear_screen(true);
+#ifdef RED_PLASMA
+	load_palette_timer = 0;
+#endif
+
+	// note: we had to stop the plasma here already, because init_readied
+	// and activate_eggs may update the screen through usecode functions
+	// (Helm of Light, for example)
+
 	Actor *party[9];
 	int cnt = get_party(party, 1);	// Get entire party.
-
 	for (int i = 0; i < cnt; i++)	// Init. rings.
 	{
 		party[i]->init_readied();
-		CYCLE_RED_PLASMA();
 	}
 	faded_out = 0;
 	time_stopped = 0;
@@ -3244,20 +3253,13 @@ void Game_window::setup_game
 	Map_chunk *olist = get_chunk(
 			main_actor->get_cx(), main_actor->get_cy());
 	olist->setup_cache();
-	CYCLE_RED_PLASMA();
+
 	Tile_coord t = main_actor->get_abs_tile_coord();
 	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1);
 	
 	// Force entire repaint.
 	set_all_dirty();
 	Face_stats::load_config(config);
-
-	// Fade out & clear screen before palette change
-	pal->fade_out(c_fade_out_time);
-	clear_screen(true);
-#ifdef RED_PLASMA
-	load_palette_timer = 0;
-#endif
 
 	// Set palette for time-of-day.
 	clock.set_palette();
