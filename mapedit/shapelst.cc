@@ -58,6 +58,8 @@ using std::strlen;
 using std::string;
 using EStudio::Prompt;
 using EStudio::Alert;
+using EStudio::Add_menu_item;
+using EStudio::Create_arrow_button;
 
 std::vector<Editing_file*> Shape_chooser::editing_files;
 int Shape_chooser::check_editing_timer = -1;
@@ -2103,37 +2105,37 @@ GtkWidget *Shape_chooser::create_popup
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
 	Object_browser::create_popup();	// Create popup with groups, files.
-	studio->add_menu_item(popup, "Info...",
-			GTK_SIGNAL_FUNC(on_shapes_popup_info_activate), this);
 	if (selected >= 0)		// Add editing choices.
 		{
+		Add_menu_item(popup, "Info...",
+			GTK_SIGNAL_FUNC(on_shapes_popup_info_activate), this);
 		if (studio->get_image_editor())
 			{
-			studio->add_menu_item(popup, "Edit...",
+			Add_menu_item(popup, "Edit...",
 				GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate),
 								 this);
 			if (info[selected].shapenum < 0x96 && 
 					file_info == studio->get_vgafile())
-				studio->add_menu_item(popup, "Edit tiled...",
+				Add_menu_item(popup, "Edit tiled...",
 				    GTK_SIGNAL_FUNC(
 				    on_shapes_popup_edtiles_activate), this);
 			}
 					// Separator.
-		studio->add_menu_item(popup);
+		Add_menu_item(popup);
 					// Add/del.
-		studio->add_menu_item(popup, "New frame",
+		Add_menu_item(popup, "New frame",
 			GTK_SIGNAL_FUNC(on_shapes_popup_new_frame), this);
 					// Export/import.
-		studio->add_menu_item(popup, "Export frame...",
+		Add_menu_item(popup, "Export frame...",
 			GTK_SIGNAL_FUNC(on_shapes_popup_export), this);
-		studio->add_menu_item(popup, "Import frame...",
+		Add_menu_item(popup, "Import frame...",
 			GTK_SIGNAL_FUNC(on_shapes_popup_import), this);
 		}
 	if (ifile->is_flex())		// Multiple-shapes file (.vga)?
 		{
 					// Separator.
-		studio->add_menu_item(popup);
-		studio->add_menu_item(popup, "New shape",
+		Add_menu_item(popup);
+		Add_menu_item(popup, "New shape",
 			GTK_SIGNAL_FUNC(on_shapes_popup_new_shape), this);
 		}
 	return popup;
@@ -2147,73 +2149,38 @@ GtkWidget *Shape_chooser::create_search_controls
 	(
 	)
 	{
-	GtkWidget *frame = gtk_frame_new (NULL);
-	gtk_widget_show(frame);
+	GtkWidget *topframe = gtk_frame_new (NULL);
+	gtk_widget_show(topframe);
 
 	GtkWidget *hbox1 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox1);
-	gtk_container_add (GTK_CONTAINER (frame), hbox1);
+	gtk_container_add (GTK_CONTAINER (topframe), hbox1);
+
+	GtkWidget *frame = gtk_frame_new("Find");
+	gtk_widget_show(frame);
+	gtk_box_pack_start (GTK_BOX (hbox1), frame, FALSE, FALSE, 2);
 
 	GtkWidget *hbox2 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
-
-	GtkWidget *label1 = gtk_label_new ("Find:");
-	gtk_widget_show (label1);
-	gtk_box_pack_start (GTK_BOX (hbox2), label1, FALSE, FALSE, 0);
-	gtk_misc_set_padding (GTK_MISC (label1), 4, 0);
+	gtk_container_add (GTK_CONTAINER(frame), hbox2);
 
 	find_text = gtk_entry_new ();
 	gtk_widget_show (find_text);
 	gtk_box_pack_start (GTK_BOX (hbox2), find_text, FALSE, FALSE, 0);
 	gtk_widget_set_usize (find_text, 110, -2);
 
-	GtkWidget *hbuttonbox1 = gtk_hbutton_box_new ();
-	gtk_widget_show (hbuttonbox1);
-	gtk_box_pack_start (GTK_BOX (hbox2), hbuttonbox1, FALSE, FALSE, 0);
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), 
-							GTK_BUTTONBOX_START);
-	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 0);
-//	gtk_button_box_set_child_ipadding (GTK_BUTTON_BOX(hbuttonbox1), 0, -1);
+	GtkWidget *find_shape_down = Create_arrow_button(GTK_ARROW_DOWN,
+                      GTK_SIGNAL_FUNC(on_find_shape_down_clicked), this);
+	gtk_box_pack_start (GTK_BOX (hbox2), find_shape_down, FALSE, FALSE, 0);
 
-	GtkWidget *find_shape_down = gtk_button_new_with_label ("Down");
-	gtk_widget_show (find_shape_down);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox1), find_shape_down);
-	GTK_WIDGET_SET_FLAGS (find_shape_down, GTK_CAN_DEFAULT);
+	GtkWidget *find_shape_up = Create_arrow_button(GTK_ARROW_UP,
+                      GTK_SIGNAL_FUNC (on_find_shape_up_clicked), this);
+	gtk_box_pack_start (GTK_BOX (hbox2), find_shape_up, FALSE, FALSE, 0);
 
-	GtkWidget *find_shape_up = gtk_button_new_with_label ("Up");
-	gtk_widget_show (find_shape_up);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox1), find_shape_up);
-	GTK_WIDGET_SET_FLAGS (find_shape_up, GTK_CAN_DEFAULT);
-#if 0
-	GtkWidget *hbox3 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox3);
-	gtk_box_pack_start (GTK_BOX (hbox1), hbox3, FALSE, FALSE, 0);
-
-	GtkWidget *label2 = gtk_label_new ("History:");
-	gtk_widget_show (label2);
-	gtk_box_pack_start (GTK_BOX (hbox3), label2, FALSE, FALSE, 0);
-	gtk_misc_set_padding (GTK_MISC (label2), 4, 0);
-
-	GtkWidget *combo1 = gtk_combo_new ();
-	gtk_widget_show (combo1);
-	gtk_box_pack_start (GTK_BOX (hbox3), combo1, TRUE, TRUE, 0);
-
-	GtkWidget *history_combo = GTK_COMBO (combo1)->entry;
-	gtk_widget_show (history_combo);
-	gtk_widget_set_usize (history_combo, 120, -2);
-#endif
-
-	gtk_signal_connect (GTK_OBJECT (find_shape_down), "clicked",
-                      GTK_SIGNAL_FUNC (on_find_shape_down_clicked),
-                      this);
-	gtk_signal_connect (GTK_OBJECT (find_shape_up), "clicked",
-                      GTK_SIGNAL_FUNC (on_find_shape_up_clicked),
-                      this);
 	gtk_signal_connect (GTK_OBJECT (find_text), "key-press-event",
 		      GTK_SIGNAL_FUNC (on_find_shape_key),
 		      this);
-	return frame;
+	return topframe;
 	}
 
 /*
