@@ -12,13 +12,14 @@ class	Astar: public virtual PathFinder
 public:
 	Astar() : path(0), next_index(0)
 		{  }
-	// Find a path from sx,sy to dx,dy
+	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
-	virtual	int	NewPath(int sx,int sy,int dx,int dy,int (*tileclassifier)(int,int));
+	virtual	int	NewPath(int sx,int sy,int sz,int dx,int dy, int dz,
+					int (*tileclassifier)(int,int,int));
 
 	// Retrieve the coordinates of the next step on the path
-	virtual	int	GetNextStep(int &nx,int &ny);
+	virtual	int	GetNextStep(int &nx,int &ny, int &nz);
 
 	virtual ~Astar();
 	};
