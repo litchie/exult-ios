@@ -1,3 +1,6 @@
+2001-12-05  Patrick Burke  <takhisisii@yahoo.com.au>
+        * usecode/ucxt : Removed a bug, added support for 'callis' and 'calli'
+
 2001-12-04  Ryan Nunn <triforce@merlin.net.au>
 	* files/crc.cc : Now actually works because it now actually reads files
 	  as binary. Also did std namespace, and some casting.
