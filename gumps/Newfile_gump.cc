@@ -334,7 +334,9 @@ void Newfile_gump::scroll_line(int dir)
 	if (list_position < -2)
 		list_position = -2;
 
+#ifdef DEBUG
 	cout << "New list position " << list_position << endl;
+#endif
 
 	paint(Game_window::get_game_window());
 	Game_window::get_game_window()->set_painted();
@@ -535,7 +537,9 @@ void Newfile_gump::mouse_down
 
 	if (hit+list_position >= num_games || hit+list_position < -2 || selected == hit+list_position) return;
 
+#ifdef DEBUG
 	cout << "Hit a save game field" << endl;
+#endif
 	selected = hit+list_position;
 
 	int	want_load = true;
