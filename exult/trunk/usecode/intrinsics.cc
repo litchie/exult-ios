@@ -1700,43 +1700,6 @@ USECODE_INTRINSIC(path_run_usecode)
 				parms[2], parms[3],
 					// SI:  Look for free spot. (Guess).
 			Game::get_game_type() == SERPENT_ISLE));
-#if 0
-
-	Usecode_value u(0);
-	Usecode_value& loc = parms[0];
-	int sz = loc.get_array_size();
-	if (sz == 3)			// Looks like tile coords.
-		{
-					// Get source, dest.
-		Tile_coord src = gwin->get_main_actor()->get_abs_tile_coord();
-		int dx = loc.get_elem(0).get_int_value();
-		int dy = loc.get_elem(1).get_int_value();
-		int dz = loc.get_elem(2).get_int_value();
-		Tile_coord dest(dx, dy, dz);
-		cout << endl << "Paty_run_usecode:  first walk to (" << 
-			dx << ", " << dy << ", " << dz << ")" << endl;
-		if (src != dest &&
-		    !gwin->get_main_actor()->walk_path_to_tile(dest))
-			{		// Failed to find path.  Return 0.
-			cout << "Failed to find path" << endl;
-			return(u);
-			}
-		}
-	else
-		{	//++++++Not sure about this.
-		cout << "0x7d Location not a 3-int array" << endl;
-		return(u);	// Return 0.
-		}
-	Wait_for_arrival(gwin->get_main_actor());
-	Game_object *obj = get_item(parms[2]);
-	if (obj)
-		{
-		call_usecode(parms[1].get_int_value(), obj, 
-				(Usecode_events) parms[3].get_int_value());
-		u = Usecode_value(1);	// Success.
-		}
-	return(u);
-#endif
 }
 
 USECODE_INTRINSIC(close_gumps)
@@ -1906,8 +1869,14 @@ USECODE_INTRINSIC(run_usecode)
 {
 	// run_usecode(fun, itemref, eventid)
 	Game_object *obj = get_item(parms[1]);
+	int ucfun = parms[0].get_int_value();
+					// ++++++To fix tattooing in SI, since
+					// there's something we don't under-
+					// stand about this.+++++++++
+	if (ucfun == 0x28c && Game::get_game_type() == SERPENT_ISLE)
+		return no_ret;
 	if (obj)
-		call_usecode(parms[0].get_int_value(), obj, 
+		call_usecode(ucfun, obj, 
 				(Usecode_events) parms[2].get_int_value());
 	return(no_ret);
 }
