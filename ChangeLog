@@ -1,3 +1,6 @@
+2001-09-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* bggame.cc: fixed nearly-infinite loop in butterfly scene
+
 2001-09-22 Patrick Burke <takhisisii@yahoo.com.au>
 	* Makefile.cygwin: Added from Kirben "Just added distribution option"
 
