@@ -1606,8 +1606,9 @@ void Actor::activate
 	if (edit())
 		return;
 	// We are serpent if we can use serpent isle paperdolls
+	Shape_manager *sman = Shape_manager::get_instance();
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||
-		(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
+		(sman->can_use_paperdolls() && sman->get_bg_paperdolls());
 	
 	bool show_party_inv = gwin->get_gump_man()->showing_gumps(true) || 
 							gwin->in_combat();
@@ -1800,7 +1801,8 @@ int Actor::inventory_shapenum()
 	Game_window *gwin = Game_window::get_instance();
 
 	// We are serpent if we can use serpent isle paperdolls
-	bool serpent = Game::get_game_type()==SERPENT_ISLE||(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
+	Shape_manager *sman = Shape_manager::get_instance();
+	bool serpent = Game::get_game_type()==SERPENT_ISLE||(sman->can_use_paperdolls() && sman->get_bg_paperdolls());
 	
 	if (!npc_num && !serpent)	// Avatar No paperdolls
 		return (ACTOR_FIRST_GUMP);
@@ -3427,7 +3429,7 @@ void Actor::set_actor_shape()
 	ShapeFile the_file = SF_SHAPES_VGA;
 	int female = get_type_flag(tf_sex)?1:0;
 
-	if (Game::get_game_type() == SERPENT_ISLE || Game_window::get_instance()->can_use_multiracial())
+	if (Game::get_game_type() == SERPENT_ISLE || Shape_manager::get_instance()->can_use_multiracial())
 	{
 		if (Game::get_game_type() == BLACK_GATE) the_file = SF_BG_SISHAPES_VGA;
 

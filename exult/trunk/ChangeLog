@@ -1,3 +1,8 @@
+2002-06-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* shapeid.h (public),etc: New 'Shape_manager' class takes over the
+	various .vga files from Game_window.
+
 2002-06-19  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* shapeid.cc,etc:  Game_window::get_info(Game_object *) is

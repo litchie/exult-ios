@@ -214,8 +214,9 @@ void Gump_manager::add_gump
 		paperdoll = 1;
 
 	// overide for paperdolls
+	Shape_manager *sman = Shape_manager::get_instance();
 	if (shapenum == 123 && (Game::get_game_type() == SERPENT_ISLE ||
-		(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls())))
+		(sman->can_use_paperdolls() && sman->get_bg_paperdolls())))
 		paperdoll=2;
 	else if (paperdoll && obj == main_actor)
 		shapenum += main_actor->get_type_flag(Actor::tf_sex);

@@ -29,7 +29,6 @@
 #include "rect.h"
 #include "tiles.h"
 #include "shapeid.h"
-#include "shapevga.h"
 #include "gameclk.h"
 
 #include <string>	// STL string
@@ -77,6 +76,7 @@ class Game_window
 	{
 	static Game_window *game_window;// There's just one.
 	Image_window8 *win;		// Window to display into.
+	Shape_manager *shape_man;	// Manages shape file.
 	Palette *pal;
 	Game_map *map;			// Holds all terrain.
 	Usecode_machine *usecode;	// Drives game plot.
@@ -98,17 +98,8 @@ class Game_window
 	bool teleported;		// true if just teleported.
 	unsigned int in_dungeon;	// true if inside a dungeon.
 	bool ice_dungeon;		// true if inside ice dungeon
-	Vga_file exult_flx;		// "<data>/exult.flx"
-	Vga_file gameflx;		// "<data>/exult_bg.flx" or 
-					//   "<data>/exult_si.flx"
-	Shapes_vga_file shapes;		// "shapes.vga" file.
-	Vga_file gumps;			// "gumps.vga" - open chests, bags.
-	Vga_file paperdolls;		// "paperdoll.vga" - paperdolls in SI
-	Vga_file faces;			// "faces.vga" - faces for conv.
 	Fonts_vga_file *fonts;		// "fonts.vga" file.
 	Shape_file *extra_fonts[5];	// extra font shapes
-	Vga_file sprites;		// "sprites.vga" file.
-//	Vga_file mainshp;+++++NOT USED
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
 	Xform_palette invis_xform;	// For showing invisible NPC's.
@@ -118,10 +109,6 @@ class Game_window
 	int num_npcs1;			// Number of type1 NPC's.
 	Actor_vector npcs;		// Array of NPC's + the Avatar.
 	Game_object_vector bodies;	// Corresponding Dead_body's.
-#if 0	/* +++++SHould be going away. */
-					// Path eggs, indexed by 'quality'.
-	Exult_vector<Egg_object *> path_eggs;
-#endif
 	Deleted_objects *removed;	// List of 'removed' objects.
 	int scrolltx, scrollty;		// Top-left tile of screen.
 	Actor *camera_actor;		// What to center view around.
@@ -151,17 +138,6 @@ class Game_window
 	int paint_map(int x, int y, int w, int h);
 					// Render dungeon blackness
 	void paint_blackness(int cx, int cy, int stop_chunkx, int stop_chunky, int index=0);
-
-	// For Paperdolls in BG
-	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
-					//   is found when playing BG
-	bool bg_paperdolls;		// True if paperdolls are wanted in BG
-	Vga_file bg_serpgumps;		// "gumps.vga" - from serpent isle 
-					//   for BG Paperdolls
-	bool bg_multiracial_allowed;	// Set true if the SI shapes file 
-					//   is found when playing BG
-	Vga_file bg_serpshapes;		// "shapes.vga" - from serpent isle 
-					//   for BG multiracial
 
 	bool mouse3rd;			// use third (middle) mouse button
 	bool fastmouse;
@@ -318,13 +294,7 @@ public:
 	int get_unused_npc();		// Find first unused NPC #.
 	void add_npc(Actor *npc, int num);	// Add new one.
 	int get_num_shapes()
-		{ return shapes.get_num_shapes(); }
- 	int get_num_faces() 
-		{ return faces.get_num_shapes(); }
-	int get_num_gumps()
-		{ return gumps.get_num_shapes(); }
-	int get_num_sprites()
-		{ return sprites.get_num_shapes(); }
+		{ return shape_man->get_shapes().get_num_shapes(); }
 	inline int in_combat()		// In combat mode?
 		{ return combat; }
 	void toggle_combat();
@@ -362,9 +332,10 @@ public:
 	void show_game_location(int x, int y);
 #endif
 	inline Shapes_vga_file& get_shapes()	// Get 'shapes.vga' file.
-		{ return shapes; }
+		{ return shape_man->get_shapes(); }
+	//+++++Gets replaced by one in shape_man.:
 	Shape_info& get_info(int shnum)	// Get shape info.
-		{ return shapes.get_info(shnum); }
+		{ return shape_man->get_info(shnum); }
 					// Get screen area of shape at pt.
 	Rectangle get_shape_rect(const Shape_frame *s, int x, int y) const
 		{
@@ -373,56 +344,6 @@ public:
 		}
 					// Get screen area used by object.
 	Rectangle get_shape_rect(Game_object *obj);
-
-private: 
-	friend class ShapeID;
-
-			// Get shape from shapes.vga.
-	inline Shape_frame *get_shape(int shapenum, int framenum)
-		{ return shapes.get_shape(shapenum, framenum); }
-	inline Shape_frame *get_gump_shape(int shapenum, int framenum)
-		{ return gumps.get_shape(shapenum, framenum); }
-	inline Shape_frame *get_paperdoll_shape(int shapenum, int framenum)
-		{ return paperdolls.get_shape(shapenum, framenum); }
-	inline Shape_frame *get_exult_shape(int shapenum, int framenum)
-		{ return exult_flx.get_shape(shapenum, framenum); }
-	inline Shape_frame *get_gameflx_shape(int shapenum, int framenum)
-		{ return gameflx.get_shape(shapenum, framenum); }
-	inline Shape_frame *get_sprite_shape(int shapenum, int framenum)
-		{ return sprites.get_shape(shapenum, framenum); }
-	inline Shape_frame *get_face(int shapenum, int framenum)
-		{ return faces.get_shape(shapenum, framenum); }
-	inline Shape_frame *get_bg_sigump_shape(int shapenum, int framenum)
-		{ return (!bg_paperdolls_allowed || !bg_paperdolls) ? 0:
-			bg_serpgumps.get_shape(shapenum, framenum); }
-	inline Shape_frame *get_bg_sishape(int shapenum, int framenum)
-		{ return (!bg_multiracial_allowed) ? 0:
-			bg_serpshapes.get_shape(shapenum, framenum); }
-
-					// Get # frames in a shape.
-	inline int get_shape_num_frames(int shapenum)
-		{ return shapes.get_num_frames(shapenum); }
-	inline int get_gump_num_frames(int shapenum)
-		{ return gumps.get_num_frames(shapenum); }
-	inline int get_paperdoll_num_frames(int shapenum)
-		{ return paperdolls.get_num_frames(shapenum); }
-	inline int get_exult_num_frames(int shapenum)
-		{ return exult_flx.get_num_frames(shapenum); }
-	inline int get_gameflx_num_frames(int shapenum)
-		{ return gameflx.get_num_frames(shapenum); }
-	inline int get_sprite_num_frames(int shapenum)
-		{ return sprites.get_num_frames(shapenum); }
-	inline int get_face_num_frames(int shapenum)
-		{ return faces.get_num_frames(shapenum); }
-	inline int get_bg_sigump_num_frames(int shapenum)
-		{ return (!bg_paperdolls_allowed || !bg_paperdolls) ? 0:
-			bg_serpgumps.get_num_frames(shapenum); }
-	inline int get_bg_sishape_num_frames(int shapenum)
-		{ return (!bg_multiracial_allowed) ? 0:
-			bg_serpshapes.get_num_frames(shapenum); }
-	
-public:
-
 					// Get screen loc. of object.
 	void get_shape_location(Game_object *obj, int& x, int& y);
 	void get_shape_location(Tile_coord t, int& x, int& y);
@@ -667,20 +588,6 @@ public:
 
 	inline bool get_frame_skipping()	// This needs doing
 	{ return true; }
-
-	// BG Only
-	inline bool can_use_paperdolls() const
-	{ return bg_paperdolls_allowed; }
-
-	inline bool get_bg_paperdolls() const
-	{ return bg_paperdolls; }
-
-	inline void set_bg_paperdolls(bool p)
-	{ bg_paperdolls = p; }
-
-	inline bool can_use_multiracial() const
-	{ return bg_multiracial_allowed; }
-
 	// Old Style Caching Emulation. Called if player has changed chunks
 	void emulate_cache(int oldx, int oldy, int newx, int newy);
 	// Is a specific move by a monster or item allowed

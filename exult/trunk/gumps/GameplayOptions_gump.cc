@@ -221,7 +221,7 @@ void GameplayOptions_gump::load_settings()
 	doubleclick = 0;
 	paperdolls = false;
 	string pdolls;
-	paperdolls = gwin->get_bg_paperdolls();
+	paperdolls = Shape_manager::get_instance()->get_bg_paperdolls();
 	doubleclick = gwin->get_double_click_closes_gumps();
 	rightclick_close = gwin->get_gump_man()->can_right_click_close();
 	text_bg = gwin->get_text_bg()+1;
@@ -298,8 +298,9 @@ void GameplayOptions_gump::save_settings()
 	while (facestats != Face_stats::get_state() + 1)
 		Face_stats::AdvanceState();
 	Face_stats::save_config(config);
-	if (GAME_BG && gwin->can_use_paperdolls())
-		gwin->set_bg_paperdolls(paperdolls!=false);
+	Shape_manager *sman = Shape_manager::get_instance();
+	if (GAME_BG && sman->can_use_paperdolls())
+		sman->set_bg_paperdolls(paperdolls!=false);
 	config->set("config/gameplay/bg_paperdolls", 
 				paperdolls ? "yes" : "no", true);
 }

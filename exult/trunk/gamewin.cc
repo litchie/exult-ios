@@ -283,8 +283,7 @@ Game_window::Game_window
 	    dragging(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    background_noise(new Background_noise(this)),
-	    bg_paperdolls_allowed(false), bg_paperdolls(false),
-	    double_click_closes_gumps(false), bg_multiracial_allowed(false),
+	    double_click_closes_gumps(false),
 	    walk_after_teleport(false), removed(new Deleted_objects()), 
 	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0)
 #ifdef RED_PLASMA
@@ -292,6 +291,7 @@ Game_window::Game_window
 #endif
 	{
 	game_window = this;		// Set static ->.
+	shape_man = new Shape_manager();// Create the single instance.
 
 	for (int i=0; i<5; i++)
 		extra_fonts[i] = NULL;
@@ -308,10 +308,6 @@ Game_window::Game_window
 	if (str == "yes")
 		fastmouse = true;
 	config->set("config/gameplay/fastmouse", str, true);
-	config->value("config/gameplay/bg_paperdolls", str, "yes");
-	if (str == "yes")
-		bg_paperdolls = true;
-	config->set("config/gameplay/bg_paperdolls", str, true);
 	config->value("config/gameplay/double_click_closes_gumps", str, "no");
 	if (str == "yes")
 		double_click_closes_gumps = true;
@@ -373,6 +369,7 @@ Game_window::~Game_window
 	for (i = 0; i < nxforms; i++)
 		delete [] xforms[nxforms - 1 - i];
 //++++Now points into xforms	delete [] invis_xform;
+	delete shape_man;
 	delete gump_man;
 	delete background_noise;
 	delete tqueue;
@@ -446,27 +443,16 @@ void Game_window::init_files(bool cycle)
 #endif
 
 	usecode = Usecode_machine::create(this);
-	cout << "Loading exult.flx..." << endl;
-	exult_flx.load("<DATA>/exult.flx");
 
-	const char* gamedata = game->get_resource("files/gameflx").str;
-	cout << "Loading " << gamedata << "..." << endl;
-	gameflx.load(gamedata);
 	CYCLE_RED_PLASMA();
-	faces.load(FACES_VGA, PATCH_FACES);
-	CYCLE_RED_PLASMA();
-	gumps.load(GUMPS_VGA);
+	shape_man->load();		// All the .vga files!
 	CYCLE_RED_PLASMA();
 	if (!fonts)
 	{
 		fonts = new Fonts_vga_file();
 		fonts->init();
 	}
-	sprites.load(SPRITES_VGA);
 	CYCLE_RED_PLASMA();
-//	mainshp.load(MAINSHP_FLX);
-//	CYCLE_RED_PLASMA();
-	shapes.init();
 
 	ifstream textflx;	
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_TEXT))
@@ -474,8 +460,6 @@ void Game_window::init_files(bool cycle)
 	else
   		U7open(textflx, TEXT_FLX);
 	Setup_item_names(textflx);	// Set up list of item names.
-					// Read in shape dimensions.
-	shapes.read_info(GAME_BG);
 	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
 	if (U7exists(XFORMTBL))
 		{			// Read in translucency tables.
@@ -524,39 +508,6 @@ void Game_window::init_files(bool cycle)
 	scrolltx = game->get_start_tile_x();
 	scrollty = game->get_start_tile_y();
 		
-	if (Game::get_game_type()==SERPENT_ISLE)
-	{
-		paperdolls.load(PAPERDOL);
-		if (!paperdolls.is_good())
-			abort("Can't open 'paperdol.vga' file.");
-	}
-	else
-	{
-		try
-		{
-			paperdolls.load("<SERPENT_STATIC>/paperdol.vga");
-			bg_serpgumps.load("<SERPENT_STATIC>/gumps.vga");
-			bg_serpshapes.load("<SERPENT_STATIC>/shapes.vga");
-
-			if (paperdolls.is_good() && bg_serpgumps.is_good() && bg_serpshapes.is_good())
-			{
-				cout << "Found Serpent Isle 'paperdol.vga', 'gumps.vga' and 'shapes.vga'." << endl << "Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' ENABLED." << endl;
-				bg_paperdolls_allowed = true;
-				bg_multiracial_allowed = true;
-			}
-			else
-				cout << "Found Serpent Isle 'paperdol.vga', 'gumps.vga' and 'shapes.vga' but one or more as bad." << endl << "Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' DISABLED." << endl;
-		}
-		catch (const exult_exception &e)	
-		{
-			cerr << "Exception attempting to load Serpent Isle 'paperdol.vga', 'gumps.vga' or 'shapes.vga'"<< endl <<
-				"Do you have Serpent Isle and is the correct path set in the config for Serpent Isle?" << endl <<
-				"Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' DISABLED." << endl;
-		}
-
-	}
-
-
 	// initialize keybinder
 	if (keybinder)
 		delete keybinder;
@@ -593,6 +544,7 @@ void Game_window::reload_shapes
 	int dragtype			// Type from u7drag.h.
 	)
 	{
+#if 0	/* +++++++Got to rewrite in Shape_manager */
 	switch (dragtype)
 		{
 	case U7_SHAPE_SHAPES:
@@ -616,6 +568,7 @@ void Game_window::reload_shapes
 		cerr << "Type not supported:  " << dragtype << endl;
 		break;
 		}
+#endif
 	}
 
 /*
@@ -2247,7 +2200,7 @@ void Game_window::show_items
 		if (id.is_invalid())
 			return;
 		}
-	Shape_info& info = shapes.get_info(shnum);
+	Shape_info& info = shape_man->get_info(shnum);
 	cout << "TFA[1][0-6]= " << ((static_cast<int>(info.get_tfa(1)))&127) << endl;
 	cout << "TFA[0][0-1]= " << ((static_cast<int>(info.get_tfa(0))&3)) << endl;
 	cout << "TFA[0][3-4]= " << ((static_cast<int>((info.get_tfa(0)>>3))&3)) << endl;

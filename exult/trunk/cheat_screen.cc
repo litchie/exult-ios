@@ -510,7 +510,8 @@ void CheatScreen::NormalMenu ()
 	// Left Column
 
 	// Use
-	if (Game::get_game_type() == SERPENT_ISLE || (gwin->can_use_paperdolls() && gwin->get_bg_paperdolls()))
+	Shape_manager *sman = Shape_manager::get_instance();
+	if (Game::get_game_type() == SERPENT_ISLE || (sman->can_use_paperdolls() && sman->get_bg_paperdolls()))
 		std::snprintf (buf, 512, "[P]aperdolls..: Yes");
 	else
 		std::snprintf (buf, 512, "[P]aperdolls..:  No");		
@@ -566,6 +567,7 @@ void CheatScreen::NormalMenu ()
 void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 {
 	int npc = std::atoi(input);
+	Shape_manager *sman = Shape_manager::get_instance();
 
 	mode = CP_Command;
 
@@ -642,10 +644,10 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 		// Paperdolls
 		case 'p':
 			if (Game::get_game_type() == BLACK_GATE 
-				&& gwin->can_use_paperdolls()) {
-				gwin->set_bg_paperdolls (gwin->get_bg_paperdolls()?false:true);
+				&& sman->can_use_paperdolls()) {
+				sman->set_bg_paperdolls (sman->get_bg_paperdolls()?false:true);
 				config->set("config/gameplay/bg_paperdolls",
-							gwin->get_bg_paperdolls() ? "yes" : "no", true);
+							sman->get_bg_paperdolls() ? "yes" : "no", true);
 			}
 		break;
 
