@@ -52,6 +52,8 @@ int Monster_info::equip_cnt = 0;
 Monster_actor *Monster_actor::in_world = 0;
 int Monster_actor::in_world_cnt = 0;
 
+extern bool no_damage;
+
 /*
  *	Get/create timers.
  */
@@ -791,13 +793,14 @@ string Actor::get_name
 /*
  *	Set property.
  */
-
 void Actor::set_property
 	(
 	int prop, 
 	int val
 	)
 	{
+	if (prop == health && npc_num == 0 && no_damage && val < 1)
+		return;
 	if (prop >= 0 && prop < 12)
 		if (prop == (int) exp)
 			{		// Experience?  Check for new level.
@@ -1190,6 +1193,9 @@ int Actor::figure_hit_points
 	int ammo_shape
 	)
 	{
+	if (npc_num == 0 && no_damage)
+		return;
+
 	Game_window *gwin = Game_window::get_game_window();
 	int armor = get_armor_points();
 	int wpoints;

@@ -70,6 +70,7 @@ Mouse *mouse = 0;
 ShapeBrowser *browser;
 int scale = 0;				// 1 if scaling X2.
 bool    cheat=true;			// Enable cheating keys
+bool	no_damage = false;
 bool	usecode_trace=false;		// Do we trace Usecode-intrinsics?
 #if USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
@@ -852,38 +853,57 @@ static void Handle_keystroke
 				obj->remove_this();
 				gwin->paint();
 				}
+			}		// alt-d toggle avatar damage
+		else if (alt&&cheat)
+			{
+			no_damage = 1 - no_damage;
+			if(no_damage)
+				gwin->center_text("Player Damage Disabled");
+			else
+				gwin->center_text("Player Damage Enabled");
 			}
 		break;
 		}
-	case SDLK_h:
+	case SDLK_h:	// Help keys, ctrl = cheat keys
 		{
 		char buf[1024];
-		sprintf(buf, "Keyboard commands\n"
-			"  +/- - Higher/Lower brightness\n"
-			"  c - Combat mode\n"
-			"  i - Show inventory\n"
-			"  m - Turn on/off music\n"
-			"  p - Repaint screen\n"
-			"  ctrl-s/r - Quick Save/Restore\n"
-			"  s - Show save box\n"
-			"  z - Show stats\n"
-			"  F4 - Toggle fullscreen\n"
-			"  alt-x, F10, ESC - Exit\n\n"
-			"Cheat commands\n"
-			"  Arrow keys - scroll map\n"
-			"  alt-+/- - Switch resolution\n"
-			"  ctrl-b - Shape Browser\n"
-			"  ctrl-c - Create Object\n"
-			"  ctrl-d - Delete Object\n"
-			"  g - Change Avatar gender\n"
-			"  ctrl-m - Get 100 gold coins\n"
-			"  alt-p  - Toggle Petra mode (SI)\n"
-			"  alt-s - Change skin color (SI)\n"
-			"  ctrl-t - Fake time period change\n"
-			"  alt-t  - Teleport\n"
-			"  ctrl-w - Test weather\n"
-		);
-			
+
+		if (!ctrl)
+			{
+			sprintf(buf, "Keyboard commands\n"
+				"  +/- - Higher/Lower brightness\n"
+				"  c - Combat mode\n"
+				"  i - Show inventory\n"
+				"  m - Turn on/off music\n"
+				"  p - Repaint screen\n"
+				"  ctrl-s/r - Quick Save/Restore\n"
+				"  s - Show save box\n"
+				"  z - Show stats\n"
+				"  F4 - Toggle fullscreen\n"
+				"  alt-x, F10, ESC - Exit\n"
+				"  ctrl-h - Cheat Commands\n"
+			);
+			}
+		else
+			{
+			sprintf(buf, "Cheat commands\n"
+				"  Arrow keys - scroll map\n"
+				"  alt-+/- - Switch resolution\n"
+				"  ctrl-b - Shape Browser\n"
+				"  ctrl-c - Create Object\n"
+				"  ctrl-d - Delete Object\n"
+				"  alt-d - Toggle Player Damage\n"
+				"  g - Change Avatar gender\n"
+				"  ctrl-m - Get 100 gold coins\n"
+				"  alt-n  - Toggle Naked flag (SI)\n"
+				"  alt-p  - Toggle Petra mode (SI)\n"
+				"  alt-s - Change skin color (SI)\n"
+				"  ctrl-t - Fake time period change\n"
+				"  alt-t  - Teleport\n"
+				"  ctrl-w - Test weather\n"
+			);
+			}
+
 		gwin->paint_text_box(MAINSHP_FONT1, buf, 
 			5, 5, 300, 400);
 		gwin->get_win()->show();
