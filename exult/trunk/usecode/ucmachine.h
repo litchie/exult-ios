@@ -265,6 +265,7 @@ private:
 	USECODE_INTRINSIC_DECL(get_barge);
 	USECODE_INTRINSIC_DECL(earthquake);
 	USECODE_INTRINSIC_DECL(is_pc_female);
+	USECODE_INTRINSIC_DECL(armageddon);
 	USECODE_INTRINSIC_DECL(halt_scheduled);
 	USECODE_INTRINSIC_DECL(get_array_size);
 	USECODE_INTRINSIC_DECL(mark_virtue_stone);

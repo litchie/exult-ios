@@ -221,6 +221,7 @@ void Scheduled_usecode::handle_event
 		case 0x48:		// Guessing:  activate egg.
 			activate_eggs(usecode);
 			break;
+		case 0x4d:		// ??Also show next frame?
 		case 0x4e:		// Show next frame.
 			{
 			int nframes = gwin->get_shapes().get_num_frames(

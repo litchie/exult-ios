@@ -95,7 +95,7 @@
 	USECODE_INTRINSIC_PTR(get_barge),// 0x58
 	USECODE_INTRINSIC_PTR(earthquake),	// 0x59
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b     Armageddon (ucdump.c)
+	USECODE_INTRINSIC_PTR(armageddon),	// 0x5b
 	USECODE_INTRINSIC_PTR(halt_scheduled),	// 0x5c
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5d  +++++CauseBlackout (ucdump.c)
 	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
