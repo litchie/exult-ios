@@ -349,8 +349,9 @@ public:
 	void set_skin_color (int color) { skin_color = color; set_actor_shape();}
 	virtual int get_type_flags() const
 		{ return type_flags; }
-
-	virtual unsigned char get_ident() { return is_dead() ? 0 : ident; }
+//++++++Is_dead() test messes up training.
+//	virtual unsigned char get_ident() { return is_dead() ? 0 : ident; }
+	virtual unsigned char get_ident() { return ident; }
 	virtual void set_ident(unsigned char id) { ident = id; }
 
 	int get_temperature() const	// Get/set measure of coldness.
