@@ -95,10 +95,11 @@ class Scheduled_usecode : public Time_sensitive
 	int cnt;			// Length of arrval.
 	int i;				// Current index.
 	int frame_index;		// For taking steps.
+	int no_halt;			// 1 to ignore halt().
 public:
 	Scheduled_usecode(Usecode_machine *usecode,
 				Usecode_value& oval, Usecode_value& aval)
-		: objval(oval), arrval(aval), i(0), frame_index(0)
+		: objval(oval), arrval(aval), i(0), frame_index(0), no_halt(0)
 		{
 		cnt = arrval.get_array_size();
 		obj = usecode->get_item(objval);
@@ -111,6 +112,9 @@ public:
 		if (first)
 			first->prev = this;
 		first = this;
+		int opval0 = arrval.get_elem(0).get_int_value();
+		if (opval0 == 0x23)	// PURE GUESS:
+			no_halt = 1;
 		}
 					// Execute when due.
 	virtual ~Scheduled_usecode()
@@ -124,7 +128,10 @@ public:
 			first = next;
 		}
 	void halt()			// Stop executing.
-		{ i = cnt; }
+		{
+		if (!no_halt)
+			i = cnt;
+		}
 	static int get_count()
 		{ return count; }
 					// Find for given item.
@@ -208,8 +215,10 @@ void Scheduled_usecode::handle_event
 			break;
 			}
 		case 0x23:		// ?? Always appears first.
-					// +++++Maybe means "don't let
-					// +++intrinsic 5c stop it".
+					// Maybe means "don't let
+					//    intrinsic 5c stop it".
+			no_halt = 1;	// PURE GUESS.
+			do_another = 1;
 			break;
 		case 0x27:		// ?? 1 parm. Guessing:
 			{		//   delay before next instruction.
@@ -2237,7 +2246,7 @@ USECODE_INTRINSIC(is_pc_female)
 USECODE_INTRINSIC(halt_scheduled)
 {
 	// Halt_scheduled(item)
-#if 0	/* +++++Doesn't seem right.  Messes up intro. */
+#if 1	/* May be okay with no_halt flag enabled. */
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return(no_ret);

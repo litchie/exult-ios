@@ -32,22 +32,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Object_iterator
 	{
 	Game_object *first;
+	Game_object *stop;
 	Game_object *cur;		// Next to return.
 public:
 	void reset()
-		{ cur = first; }
+		{ cur = first; stop = 0; }
 	Object_iterator(Game_object *f) : first(f)
 		{ reset(); }
 	Object_iterator(Chunk_object_list *chunk) : first(chunk->objects)
 		{ reset(); }
 	Game_object *get_next()
 		{
-		if (!cur)
+		if (cur == stop)
 			return 0;
 		Game_object *ret = cur;
-		cur = cur->get_next();
-		if (cur == first)
-			cur = 0;
+		cur = cur->next;
+		stop = first;
 		return ret;
 		}
 	};
@@ -58,22 +58,21 @@ public:
 class Object_iterator_backwards
 	{
 	Game_object *first;
+	Game_object *stop;
 	Game_object *cur;		// Return prev. to this.
 public:
 	void reset()
-		{ cur = first; }
+		{ cur = first; stop = 0; }
 	Object_iterator_backwards(Chunk_object_list *chunk) 
 		: first(chunk->objects)
 		{ reset(); }
 	Game_object *get_next()
 		{
-		if (!cur)
+		if (cur == stop)
 			return 0;
-		cur = cur->get_prev();
-		Game_object *ret = cur;
-		if (cur == first)
-			cur = 0;
-		return ret;
+		cur = cur->prev;
+		stop = first;
+		return cur;
 		}
 	};
 
