@@ -1,3 +1,6 @@
+2001-08-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* intrinsics.cc: *_execute_uc_array return true (fixes bedroll bug)
+
 2001-08-20  Max Horn <max@quendi.de>
 	* mouse.cc: changed set_speed_cursor() to set hand cursor when in dont_move mode
 
