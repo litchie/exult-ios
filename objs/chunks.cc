@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objs.h"
 #include "ordinfo.h"
 #include "game.h"
+#include "animate.h"
 
 using std::memset;
 
@@ -527,10 +528,46 @@ void Chunk_object_list::set_terrain
 	Chunk_terrain *ter
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	if (terrain)
+		{
 		terrain->remove_client();
+					// Remove objs. from terrain.
+		Game_object_vector removes;
+		{			// Separate scope for Object_iterator.
+		Object_iterator it(get_objects());
+		Game_object *each;
+		while ((each = it.get_next()) != 0)
+					// Kind of nasty, I know:
+			if (!dynamic_cast<Ireg_game_object *>(each) &&
+			    !dynamic_cast<Ifix_game_object *>(each))
+				removes.push_back(each);
+		}
+		for (Game_object_vector::const_iterator it=removes.begin(); 
+						it!=removes.end(); ++it)
+			(*it)->remove_this();
+		}
 	terrain = ter;
 	terrain->add_client();
+					// Get RLE objects in chunk.
+	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
+		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
+			{
+			ShapeID id = ter->get_flat(tilex, tiley);
+			Shape_frame *shape = gwin->get_shape(id);
+			if (shape && shape->is_rle())
+				{
+				int shapenum = id.get_shapenum(),
+				    framenum = id.get_framenum();
+				Shape_info& info = gwin->get_info(shapenum);
+				Game_object *obj = info.is_animated() ?
+					new Animated_object(shapenum,
+					    	framenum, tilex, tiley)
+					: new Game_object(shapenum,
+					    	framenum, tilex, tiley);
+				add(obj);
+				}
+			}
 	}
 
 /*

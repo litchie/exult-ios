@@ -28,7 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 const int max_types = 15;
 
-typedef void (*Drop_handler_fun)(int shape, int frame, int x, int y);
+typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y);
+typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y);
 
 /*
  *	This supports the 'drop' side of Xdnd:
@@ -38,7 +39,8 @@ class Xdnd
 	Display *display;
 	Window xwmwin;			// Gets WM window.
 	Window xgamewin;		// Game window within xwmwin.
-	Atom shapeid_atom;		// For drag-and-drop.
+	Atom shapeid_atom;		// For drag-and-drop of shapes.
+	Atom chunkid_atom;		// For chunks.
 	Atom xdnd_aware;		// For XdndAware.
 	Atom xdnd_enter;
 	Atom xdnd_leave;
@@ -53,9 +55,11 @@ class Xdnd
 	int num_types;
 	Atom drag_types[max_types];	// Data type atoms source can supply.
 	int lastx, lasty;		// Last mouse pos. during drag.public:
-	Drop_handler_fun drop_handler;	// For dropping shapes.
+	Drop_shape_handler_fun shape_handler;	// For dropping shapes.
+	Drop_chunk_handler_fun chunk_handler;	// For dropping chunks.
 public:
-	Xdnd(Display *d, Window xw, Window xgw, Drop_handler_fun dropfun);
+	Xdnd(Display *d, Window xw, Window xgw, 
+		Drop_shape_handler_fun shapefun, Drop_chunk_handler_fun cfun);
 	void client_msg(XClientMessageEvent& cev);
 	void select_msg(XSelectionEvent& sev);
 	};
