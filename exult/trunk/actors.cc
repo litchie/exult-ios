@@ -446,6 +446,30 @@ void Actor::follow
 	}
 
 /*
+ *	Get information about a tile that an actor is about to step onto.
+ */
+
+inline void Actor::get_tile_info
+	(
+	Game_window *gwin,
+	Chunk_object_list *nlist,	// Chunk.
+	int tx, int ty,			// Tile within chunk.
+	int& water,			// Returns 1 if water.
+	int& poison			// Returns 1 if poison.
+	)
+	{
+	ShapeID flat = nlist->get_flat(tx, ty);
+	if (flat.get_shapenum() == -1)
+		water = poison = 0;
+	else
+		{
+		Shape_info& finfo = gwin->get_info(flat.get_shapenum());
+		water = finfo.is_water();
+		poison = finfo.is_poisonous();
+		}
+	}
+
+/*
  *	Set combat opponent.
  */
 
@@ -524,6 +548,7 @@ void Actor::set_schedule_type
 	stop();				// Stop moving.
 	if (schedule)
 		schedule->ending();	// Finish up old if necessary.
+	set_action(0);			// Clear out old action.
 					// Save old for a moment.
 	Schedule::Schedule_types old_schedule = (Schedule::Schedule_types)
 								schedule_type;
@@ -1176,13 +1201,18 @@ int Main_actor::step
 	int tx = t.tx%tiles_per_chunk, ty = t.ty%tiles_per_chunk;
 	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
 	int old_lift = get_lift();
+	int water, poison;		// Get tile info.
+	get_tile_info(gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 					// Just assume height==3.
-	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift))
+	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift) ||
+	    (water && new_lift == 0))
 		{
 		stop();
 		return (0);
 		}
+	if (poison)
+		Actor::set_flag((int) Actor::poisoned);
 					// Check for scrolling.
 	gwin->scroll_if_needed(t);
 	gwin->add_dirty(this);		/// Set to update old location.
@@ -1448,15 +1478,20 @@ int Npc_actor::step
 					// Get ->new chunk.
 	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
 	nlist->setup_cache();		// Setup cache if necessary.
+	int water, poison;		// Get tile info.
+	get_tile_info(gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 					// Just assume height==3.
-	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift))
+	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift) ||
+	    (water && new_lift == 0))
 		{
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);
 		stop();
 		return (0);		// Done.
 		}
+	if (poison)
+		Actor::set_flag((int) Actor::poisoned);
 	gwin->add_dirty(this);		// Set to repaint old area.
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
