@@ -78,6 +78,8 @@ using std::endl;
 using std::istream;
 using std::ifstream;
 using std::ofstream;
+using std::istream;
+using std::ostream;
 using std::exit;
 using std::ios;
 using std::dec;
@@ -2721,6 +2723,24 @@ void Usecode_internal::do_speech
 	}
 
 /*
+ *	Write out one usecode value.
+ */
+
+static void Write_useval
+	(
+	ostream& out,
+	Usecode_value& val
+	)
+	{
+	unsigned char buf[1024];
+	int len = val.save(buf, sizeof(buf));
+	if (len < 0)
+		throw file_exception("Static usecode value overflows buf");
+	else
+		out.write((char *) buf, len);
+	}
+
+/*
  *	Write out global data to 'gamedat/usecode.dat'.
  *	(and 'gamedat/keyring.dat')
  *
@@ -2753,6 +2773,35 @@ void Usecode_internal::write
 	out.flush();
 	if( !out.good() )
 		throw file_write_exception(USEDAT);
+	out.close();
+	U7open(out, USEVARS);		// Static variables. 1st, globals.
+	Write4(out, statics.size());	// # globals.
+	Exult_vector<Usecode_value>::iterator it;
+	for (it = statics.begin(); it != statics.end(); ++it)
+		Write_useval(out, *it);
+					// Now do the local statics.
+	int num_slots = sizeof(funs)/sizeof(funs[0]);
+	for (int i = 0; i < num_slots; i++)
+		{
+		vector<Usecode_function*>& slot = funs[i];
+		for (vector<Usecode_function*>::iterator fit = slot.begin();
+						fit != slot.end(); ++fit)
+			{
+			Usecode_function *fun = *fit;
+			if (!fun || fun->statics.empty())
+				continue;
+			Write4(out, fun->id);
+			Write4(out, fun->statics.size());
+			for (it = fun->statics.begin();
+					it != fun->statics.end(); ++it)
+				Write_useval(out, *it);
+			}
+		}
+	Write4(out, 0xffffffffU);	// End with -1.
+	out.flush();
+	if( !out.good() )
+		throw file_write_exception(USEVARS);
+	out.close();
 	}
 
 /*
@@ -2783,6 +2832,16 @@ void Usecode_internal::read
 	}
 	try
 	{
+		U7open(in, USEVARS);
+		read_usevars(in);
+		in.close();
+	}
+	catch(exult_exception &e) {
+		;			// Okay if this doesn't exist.
+					// ++++Maybe we should clear them all.
+	}
+	try
+	{
 		U7open(in, USEDAT);
 	}
 	catch(exult_exception &e) {
@@ -2806,6 +2865,48 @@ void Usecode_internal::read
 	if (!in.good() ||		// Failed.+++++Can remove this later.
 	    saved_pos.tz < 0 || saved_pos.tz > 13)
 		saved_pos = Tile_coord(-1, -1, -1);
+	}
+
+/*
+ *	Read in static variables from USEVARS.
+ */
+
+void Usecode_internal::read_usevars
+	(
+	std::istream& in
+	)
+	{
+	in.seekg(0, ios::end);
+	int size = in.tellg();		// Get file size.
+	in.seekg(0);
+	if (!size)
+		return;
+	unsigned char *buf = new unsigned char[size];	// Get the whole thing.
+	in.read((char *) buf, size);
+	unsigned char *ptr = buf;
+	unsigned char *ebuf = buf + size;
+	int cnt = Read4(ptr);		// Global statics.
+	statics.resize(cnt);
+	int i;
+	for (i = 0; i < cnt; i++)
+		statics[i].restore(ptr, ebuf - ptr);
+	unsigned long funid;
+	while (ptr < ebuf && (funid = Read4(ptr)) != 0xffffffffU)
+		{
+		int cnt = Read4(ptr);
+		vector<Usecode_function*>& slot = funs[funid/0x100];
+		size_t index = funid%0x100;
+		Usecode_function *fun = index < slot.size() ? slot[index] : 0;
+		if (!fun)
+			{
+			cerr << "Usecode " << funid << " not found" << endl;
+			continue;
+			}
+		fun->statics.resize(cnt);
+		for (i = 0; i < cnt; i++)
+			fun->statics[i].restore(ptr, ebuf - ptr);
+		}
+	delete [] buf;
 	}
 
 /*
