@@ -881,7 +881,9 @@ void Gump_object::paint_button
 	}
 
 /*
- *	Add an object.
+ *	Add an object.  If mx, my, sx, sy are all -1, the object's position
+ *	is calculated by 'paint()'.  If they're all -2, it's assumed that
+ *	obj->cx, obj->cy are already correct.
  *
  *	Output:	0 if cannot add it.
  */
@@ -904,8 +906,9 @@ int Gump_object::add
 					// Not a valid spot?
 	if (sx == -1 && sy == -1 && mx == -1 && my == -1)
 					// Let paint() set spot.
-		obj->cx = obj->cy = 255;	
-	else
+		obj->cx = obj->cy = 255;
+					// -2's mean cx, cy are already set.
+	else if (sx != -2 && sy != -2 && mx != -2 && my != -2)
 		{			// Put it where desired.
 		sx -= x + object_area.x;// Get point rel. to object_area.
 		sy -= y + object_area.y;
