@@ -42,6 +42,7 @@ using std::ios;
 using std::string;
 using std::cout;
 using std::endl;
+using EStudio::Alert;
 
 /*
  *	Create an empty group.
