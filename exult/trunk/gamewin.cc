@@ -843,8 +843,7 @@ void Game_window::paint_object
 
 void Game_window::set_palette
 	(
-	int pal_num,			// 0-11.
-	int brightness			// Brightness % (100 = normal).
+	int pal_num			// 0-11.
 	)
 	{
 	palette = pal_num;		// Store #.
@@ -869,7 +868,7 @@ void Game_window::brighten
 	brightness += per;
 	if (brightness < 20)		// Have a min.
 		brightness = 20;
-	set_palette(palette, brightness);
+	set_palette(palette);
 	paint();
 	}
 

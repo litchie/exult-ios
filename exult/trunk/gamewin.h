@@ -328,8 +328,7 @@ public:
 	void paint_chunk_objects(int at_lift, int cx, int cy, int flat_only);
 					// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj, int at_lift, int flat_only);
-					// Set desired palette.
-	void set_palette(int pal_num, int brightness = 100);
+	void set_palette(int pal_num);	// Set desired palette.
 	void brighten(int per);		// Brighten/darken by percentage.
 	void view_right();		// Move view 1 chunk to right.
 	void view_left();		// Move view left by 1 chunk.

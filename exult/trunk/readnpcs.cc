@@ -56,12 +56,12 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		int schunk = Read1(nfile);
 		Read1(nfile);		// Skip next byte.
 					// Get usecode function #.
-		int usecode = Read2(nfile);
+		int usefun = Read2(nfile);
 					// Lift is high 4 bits.
-		int lift = usecode >> 12;
-		usecode &= 0xfff;
+		int lift = usefun >> 12;
+		usefun &= 0xfff;
 		if (i >= cnt1)		// Type2?
-			usecode = -1;	// Let's try this.
+			usefun = -1;	// Let's try this.
 		nfile.seekg(4, ios::cur);// Skip 4 bytes.
 					// Another inventory flag.
 		int iflag2 = Read2(nfile);
@@ -85,13 +85,17 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 			{
 			actor = main_actor =
 				new Main_actor(namebuf, 
-				shape[0] + 256*(shape[1]&0x3), i, usecode);
-					// +++++Start out invisible.
-//+++++			main_actor->set_flag(Actor::dont_render);
+				shape[0] + 256*(shape[1]&0x3), i, usefun);
+					// Skipping intro?
+			if (usecode->get_global_flag(
+					Usecode_machine::did_first_scene))
+				main_actor->clear_flag(Actor::dont_render);
+			else
+				main_actor->set_flag(Actor::dont_render);
 			}
 		else			// Create NPC.
 			actor = npc_actor = new Npc_actor(namebuf, 
-				shape[0] + 256*(shape[1]&0x3), i, usecode);
+				shape[0] + 256*(shape[1]&0x3), i, usefun);
 		npcs[i] = actor;	// Store in list.
 		Chunk_object_list *olist = get_objects(scx + cx, scy + cy);
 		actor->move(scx + cx, scy + cy, olist,
@@ -103,7 +107,7 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 cout << i << " Creating " << namebuf << ", shape = " << 
 	actor->get_shapenum() <<
 	", frame = " << actor->get_framenum() << ", usecode = " <<
-				usecode << '\n';
+				usefun << '\n';
 cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 	<< lift << '\n';
 #endif

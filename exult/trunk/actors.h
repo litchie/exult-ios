@@ -103,7 +103,6 @@ public:
 	Main_actor(char *nm, int shapenum, int num = -1, int uc = -1)
 		: Actor(nm, shapenum, num, uc)
 		{ 
-		flags |= 1L<<16;	// Gets into starting usecode seq.
 		}
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
