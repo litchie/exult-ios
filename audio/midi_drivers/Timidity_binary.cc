@@ -64,66 +64,39 @@ T max(T x,T y)
 	}
 
 
-static	int	s_outfd,s_infd;
 
-static void	run_server(int in_fd,int out_fd,const char *midi_file_name)
+static	int	sub_process(void *p)
 {
-	close(0);	// Destroy stdin
-	close(1);	// Destroy stdout
-	
-	// Tie pipes to stdio
-	if(dup2(in_fd,0)==-1)
-		perror("dup2 stdin");
-	if(dup2(out_fd,1)==-1)
-		perror("dup2 stdout");
-
-	playTBmidifile(midi_file_name);
-	// Shouldn't get here
-	perror("execlp");
+	Timidity_binary *ptr=static_cast<Timidity_binary *>(p);
+	ptr->player();
+	return 0;
 }
 
-static	pid_t	sub_process(const char *midi_file_name,bool repeat)
+void	Timidity_binary::player(void)
 {
-	int	pipe1[2],pipe2[2];
-	pid_t	childpid;
-	if(repeat)
+	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
+	string	s="timidity -Oru8S -id -T 175 -o- "+filename;
+	data=popen(s.c_str(),"r");
+	if(!data)
+		return;
+	while(!feof(data))
 		{
-		// &&&&
-		cerr << "No support for continuous MIDI play yet" << endl;
+		char	buf[1024];
+		size_t	x=fread(buf,1,sizeof(buf),data);
+		if(x==0)
+			{
+			audiostream->end_production();
+			fclose(data);
+			audiostream=0;
+			my_thread=0;	// Race?
+			}
+		audiostream->produce(buf,x);
 		}
-
-	if(s_infd!=-1)
-		{
-		close(s_infd);
-		s_infd=-1;
-		}
-	if(s_outfd!=-1)
-		{
-		close(s_outfd);
-		s_outfd=-1;
-		}
-	
-	pipe(pipe1);
-	pipe(pipe2);
-
-	if((childpid=fork())==0)
-		{
-		// Child
-		close(pipe1[1]);
-		close(pipe2[0]);
-		
-		run_server(pipe1[0],pipe2[1],midi_file_name);
-		exit(0);
-		}
-	close(pipe1[0]);
-	close(pipe2[1]);
-	s_outfd=pipe1[1];
-	s_infd=pipe2[0];
-	return childpid;
 }
 
 
-Timidity_binary::Timidity_binary() : forked_job(-1)
+
+Timidity_binary::Timidity_binary() : my_thread(0),data(0),filename()
 	{
 		// Figure out if the binary is where we expect it to be.
 		
@@ -137,28 +110,18 @@ Timidity_binary::~Timidity_binary()
 
 void	Timidity_binary::stop_track(void)
 	{
-	if(forked_job!=-1)
+	if(my_thread)
 		{
-		close(s_infd);
-		close(s_outfd);
-		s_infd=s_outfd=-1;
-		Audio::get_ptr()->terminate_external_signal();
-		kill(forked_job,SIGKILL);
+		pclose(data);
+		my_thread=0;
 		}
-	forked_job=-1;
-		
-		
 	}
+
 bool	Timidity_binary::is_playing(void)
 {
-	if(forked_job==-1)
-		return false;
-	if(kill(forked_job,0))
-		{
-		forked_job=-1;
-		return false;
-		}
-	return true;
+	if(my_thread)
+		return true;
+	return false;
 }
 
 void	Timidity_binary::start_track(const char *name,bool repeat)
@@ -166,7 +129,7 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 #if DEBUG
 	cerr << "Starting midi sequence with Timidity_binary" << endl;
 #endif
-        if(forked_job!=-1)
+        if(my_thread)
                 {
 #if DEBUG
 	cerr << "Stopping any running track" << endl;
@@ -176,8 +139,8 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 #if DEBUG
 	cerr << "Starting to play " << name << endl;
 #endif
-	forked_job=sub_process(name,repeat);
-	Audio::get_ptr()->set_external_signal(s_infd);
+	filename=name;
+	my_thread=SDL_CreateThread(sub_process,this);
 }
 
 const	char *Timidity_binary::copyright(void)

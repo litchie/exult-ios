@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/types.h>
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
+#include <SDL_thread.h>
 #include "Flex.h"
 #include "Table.h"
 #include "Mixer.h"
@@ -48,11 +49,14 @@ public:
 	virtual void	stop_track(void);
 	virtual	bool	is_playing(void);
 	virtual const	char *copyright(void);
+	void	player(void);
 
 	Timidity_binary();
 	virtual ~Timidity_binary();
 private:
-	pid_t	forked_job;
+	SDL_Thread	*my_thread;
+	FILE	*data;
+	string	filename;
 	UNREPLICATABLE_CLASS(Timidity_binary);
 };
 #endif

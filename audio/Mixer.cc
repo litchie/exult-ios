@@ -232,5 +232,7 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(void)
 	ProducerConsumerBuf	*pcb=new ProducerConsumerBuf;
 
 	audio_streams.push_back(pcb);
+	SDL::PauseAudio(0);
+	SDL::UnlockAudio();
 	return pcb;
 }
