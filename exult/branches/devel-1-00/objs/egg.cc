@@ -158,8 +158,10 @@ Egg_object::Egg_object
 	{
 	type = itype&0xf;
 					// Teleport destination?
-	if (type == teleport && framenum == 6)
+	if (type == teleport && framenum == 6 && shapenum == 275)
 		type = path;		// (Mountains N. of Vesper).
+	else if (type == path && (shapenum == 776 || shapenum == 777))
+		type = teleport;	// Fix moongates we broke.
 	criteria = (itype & (7<<4)) >> 4;
 	distance = (itype >> 10) & 0x1f;
 	unsigned char noct = (itype >> 7) & 1;
