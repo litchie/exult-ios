@@ -1059,7 +1059,8 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 		if (shape) actor->paint_shape (shape->get_xright()+240, shape->get_yabove());
 
 		// Now the info
-		snprintf (buf, 512, "NPC %i - %s", num, actor->get_npc_name().c_str());
+		std::string namestr = actor->get_npc_name();
+		snprintf (buf, 512, "NPC %i - %s", num, namestr.c_str());
 		font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
 
 		snprintf (buf, 512, "Loc (%04i, %04i, %02i)", 
@@ -1961,7 +1962,8 @@ void CheatScreen::BusinessDisplay (Actor *actor)
 	Tile_coord t = actor->get_tile();
 
 	// Now the info
-	snprintf (buf, 512, "NPC %i - %s", actor->get_npc_num(), actor->get_npc_name().c_str());
+	std::string namestr = actor->get_npc_name();
+	snprintf (buf, 512, "NPC %i - %s", actor->get_npc_num(), namestr.c_str());
 	font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
 
 	snprintf (buf, 512, "Loc (%04i, %04i, %02i)", t.tx, t.ty, t.tz);
