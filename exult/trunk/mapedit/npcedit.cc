@@ -214,7 +214,10 @@ int ExultStudio::init_npc_window
 					// Shape/frame.
 	set_entry("npc_shape", shape);
 	set_entry("npc_frame", frame);
-
+#if 0
+					// Usecode #.
+	set_entry("npc_usecode_entry", usecode, true);
+#endif
 					// Set flag buttons.
 	GtkTable *ftable = GTK_TABLE(
 			glade_xml_get_widget(app_xml, "npc_flags_table"));
@@ -246,6 +249,36 @@ int ExultStudio::init_npc_window
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(cbox), 
 					(bits&(1<<fnum)) != 0);
 		}
+#if 0
+					// Set properties.
+	GtkTable *ptable = GTK_TABLE(
+			glade_xml_get_widget(app_xml, "npc_props_table"));
+	for (GList *list = g_list_first(ptable->children); list; 
+						list = g_list_next(list))
+		{
+		GtkTableChild *ent = (GtkTableChild *) list->data;
+		GtkSpinButton *spin = GTK_SPIN_BUTTON(ent->widget);
+		assert (spin != 0);
+		const char *name = glade_get_widget_name(GTK_WIDGET(spin));
+					// Names: npc_prop_nn.
+		if (strncmp(name, "npc_prop_", 9) != 0)
+			continue;
+		int pnum = atoi(name + 9);
+		if (pnum >= 0 && pnum < 12)
+			gtk_spin_button_set_value(spin, properties[pnum]);
+		}
+					// Set schedules.
+	for (int i = 0; i < 24/3; i++)	// First init. to empty.
+		;			//++++++
+	for (int i = 0; i < sched_count; i++)
+		{
+		Serial_schedule& sched = schedules[i];
+		int time = sched.time;	// 0-7.
+		int type = sched.type;	// Activity.
+		int tx = sched.tx, ty = sched.ty;	// Location.
+					//+++++++++++++++
+		}
+#endif
 //++++++++++++
 	return 1;
 	}
