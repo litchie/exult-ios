@@ -84,8 +84,8 @@ class Monster_info
 	unsigned char reach;
 	unsigned char flags;		// Defined below.
 	unsigned char equip_offset;	// Offset in 'equip.dat' (1 based;
-	bool splits;			// For slimes.
-	bool cant_die;
+	bool m_splits;			// For slimes.
+	bool m_cant_die;
 					//   if 0, there's none.)
 public:
 	friend class Monster_actor;
@@ -98,6 +98,10 @@ public:
 		equip = eq;
 		equip_cnt = cnt;
 		}
+	bool splits() const
+		{ return m_splits; }
+	bool cant_die() const
+		{ return m_cant_die; }
 	enum Flags {
 		fly = 0,
 		swim = 1,

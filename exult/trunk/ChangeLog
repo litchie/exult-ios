@@ -1,3 +1,7 @@
+2001-08-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Test 'dont_die' flag during combat.
+
 2001-08-13  Max Horn <max@quendi.de>
 	* audio/Audio.cc: make use of exceptions
 	* audio/midi_drivers/mac_midi.cc: dynamic buffer resizing, enhanced pitch

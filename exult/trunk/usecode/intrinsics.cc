@@ -47,6 +47,7 @@
 #include "virstone.h"
 #include "actors.h"
 #include "egg.h"
+#include "monstinf.h"
 
 using std::cerr;
 using std::cout;
@@ -2000,6 +2001,11 @@ USECODE_INTRINSIC(get_item_flag)
 		if (!barge)
 			return Usecode_value(0);
 		return Usecode_value(barge->okay_to_land());
+		}
+	else if (fnum == (int) Obj_flags::cant_die)
+		{
+		Monster_info *inf = gwin->get_info(obj).get_monster_info();
+		return Usecode_value(inf != 0 && inf->cant_die());
 		}
 					// +++++0x18 is used in testing for
 					//   blocked gangplank. What is it?????
