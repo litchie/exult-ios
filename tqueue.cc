@@ -135,3 +135,24 @@ void Time_queue::activate0
 		}
 	while (data.size() && !(curtime < data.front().time));
 	}
+
+/*
+ *	Get next element in queue.
+ */
+
+int Time_queue_iterator::operator()
+	(
+	Time_sensitive *& obj,		// Main object.
+	long& data			// Data that was added with it.
+	)
+	{
+	while (iter != tqueue->data.end() && this_obj &&
+						(*iter).handler != this_obj)
+		++iter;
+	if (iter == tqueue->data.end())
+		return (0);
+	obj = (*iter).handler;		// Return fields.
+	data = (*iter).udata;
+	return (1);
+	}
+

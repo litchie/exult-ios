@@ -518,6 +518,8 @@ public:
 					// Queue up npcs in range of chunks.
 	void add_nearby_npcs(int from_cx, int from_cy,
 						int stop_cx, int stop_cy);
+					// Get all nearby NPC's.
+	void get_nearby_npcs(Slist& list);
 	void schedule_npcs(int hour3);	// Update NPCs' schedules.
 	void get_focus();		// Get/lose focus.
 	inline void lose_focus()

@@ -93,6 +93,7 @@ class Time_queue
 		}
 #endif
 public:
+	friend class Time_queue_iterator;
 	// Time_queue() : head(0), free_entries(0)
 	Time_queue() 
 		{  }
@@ -108,6 +109,19 @@ public:
 		if (data.size() && !(curtime < data.front().time))
 			activate0(curtime);
 		}
+	};
+
+
+class Time_queue_iterator
+	{
+	Time_queue::Temporal_sequence::iterator iter;
+	Time_queue *tqueue;
+	Time_sensitive *this_obj;	// Only return entries for this obj.
+public:
+	Time_queue_iterator(Time_queue *tq, Time_sensitive *obj)
+			: iter(tq->data.begin()), tqueue(tq), this_obj(obj)
+		{  }
+	int operator()(Time_sensitive *& obj, long& data);
 	};
 
 #endif	/* INCL_TQUEUE */
