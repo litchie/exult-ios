@@ -66,7 +66,6 @@ class Game_window
 public:
 	enum Game_mode {		// Can be in different modes.
 		normal,			// Normal game-play.
-		conversation,		// Talking.
 		gump			// Showing open container(s).
 		};
 private:
