@@ -280,4 +280,5 @@ conf/Makefile \
 files/Makefile \
 pathfinder/Makefile \
 flic/Makefile \
-tools/Makefile )
+tools/Makefile \
+data/Makefile )

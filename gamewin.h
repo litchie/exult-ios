@@ -94,7 +94,6 @@ private:
 	Shape_file *extra_fonts[5];	// extra font shapes
 	Vga_file sprites;		// "sprites.vga" file.
 	Vga_file mainshp;
-	Vga_file *xtrashapes;		
 	ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
@@ -567,9 +566,6 @@ public:
 	int save_gamedat(const char *fname, const char *savename);
 	int save_gamedat(int num, const char *savename);
 	char *get_game_identity(const char *fname);
-	const char *get_shape_file_name(int n);
-	Vga_file *get_shape_file_data(int n);
-	int get_shape_file_count();
 	int find_roof(int cx, int cy);
 	
 private:
