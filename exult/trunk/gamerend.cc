@@ -133,6 +133,37 @@ static void Paint_grid
 				x*c_tilesize - liftpixels, -liftpixels, xform);
 	}
 
+/*
+ *	Highlight selected chunks.
+ */
+
+static void Paint_selected_chunks
+	(
+	Game_window *gwin,
+	Xform_palette& xform,		// For transparency.
+	int start_chunkx, int start_chunky,
+	int stop_chunkx, int stop_chunky
+	)
+	{
+	Game_map *map = gwin->get_map();
+	Image_window8 *win = gwin->get_win();
+	int cx, cy;			// Chunk #'s.
+					// Paint all the flat scenery.
+	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
+		{
+		int yoff = Figure_screen_offset(cy, gwin->get_scrollty());
+		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
+			{
+			Map_chunk *chunk = map->get_chunk(cx, cy);
+			if (!chunk->is_selected())
+				continue;
+			int xoff = Figure_screen_offset(
+						cx, gwin->get_scrolltx());
+			win->fill_translucent8(0, c_chunksize, c_chunksize,
+				xoff, yoff, xform);
+			}
+		}
+	}
 
 /*
  *	Just paint terrain.  This is for terrain_editing mode.
@@ -276,9 +307,15 @@ int Game_render::paint_map
 			obj->paint_outline(HIT_PIXEL);
 		}
 					// Paint tile grid if desired.
-	if (cheat.in_map_editor() && cheat.show_tile_grid())
-		Paint_grid(gwin, sman->get_xform(10));
-
+	if (cheat.in_map_editor())
+		{
+		if (cheat.show_tile_grid())
+			Paint_grid(gwin, sman->get_xform(10));
+		if (cheat.get_edit_mode() == Cheat::select_chunks)
+			Paint_selected_chunks(gwin, sman->get_xform(7),
+				start_chunkx, start_chunky, stop_chunkx,
+							stop_chunky);
+		}
 	return light_sources;
 	}
 
