@@ -1050,7 +1050,7 @@ void change_gamma (bool down)
 {
 	float r,g,b;
 	char text[256];
-	float delta = down?-0.05:0.05;
+	float delta = down?0.05:-0.05;
 	Image_window8::get_gamma(r, g, b);	
 	Image_window8::set_gamma(r+delta, g+delta, b+delta);	
 	gwin->set_palette (-1, -1);
@@ -1059,6 +1059,14 @@ void change_gamma (bool down)
 	Image_window8::get_gamma(r, g, b);	
 	snprintf (text, 256, "Gamma Set to R: %01.2f G: %01.2f B: %01.2f", r, g, b);
 	gwin->center_text(text);	
+
+	snprintf (text, 256, "%.2f", r);
+	config->set("config/video/gamma/red", text, true);
+	snprintf (text, 256, "%.2f", g);
+	config->set("config/video/gamma/green", text, true);
+	snprintf (text, 256, "%.2f", b);
+	config->set("config/video/gamma/blue", text, true);
+
 }
 
 void BuildGameMap()
