@@ -594,7 +594,46 @@ static int Play()
 	return (0);
 }
 
+/*
+ *	Add a shape while map-editing.
+ */
 
+static void Drop_in_map_editor
+	(
+	SDL_Event& event,
+	bool dragging			// Painting terrain.
+	)
+	{
+	static int lasttx = -1, lastty = -1;
+	int scale = gwin->get_win()->get_scale();
+	int x = event.button.x/scale, y = event.button.y/scale;
+	int tx = (gwin->get_scrolltx() + x/c_tilesize);
+	int ty = (gwin->get_scrollty() + y/c_tilesize);
+	if (dragging)			// See if moving to a new tile.
+		{
+		if (tx == lasttx && ty == lastty)
+			return;
+		}
+	lasttx = tx; lastty = ty;
+	int shnum = cheat.get_edit_shape();
+	int frnum;
+	SDLMod mod = SDL_GetModState();
+	if (mod & KMOD_SHIFT)		// SHIFT?  Pick random frame.
+		{
+		ShapeID id(shnum, 0);
+		frnum = rand()%id.get_num_frames();
+		}
+	else if (mod & KMOD_CTRL)	// Cycle through frames.
+		{
+		frnum = cheat.get_edit_frame();
+		ShapeID id(shnum, 0);
+		int nextframe = (frnum + 1)%id.get_num_frames();
+		cheat.set_edit_shape(shnum, nextframe);
+		}
+	else
+		frnum = cheat.get_edit_frame();
+	Drop_dragged_shape(shnum, frnum, event.button.x, event.button.y, 0);
+	}
 
 /*
  *	Handle events until a flag is set.
@@ -711,9 +750,7 @@ static void Handle_event
 			    (gwin->skip_lift == 0 ||
 					(SDL_GetModState() & KMOD_SHIFT)))
 				{
-				Drop_dragged_shape(cheat.get_edit_shape(),
-					cheat.get_edit_frame(),
-					event.button.x, event.button.y, 0);
+				Drop_in_map_editor(event, false);
 				break;
 				}
 #endif
@@ -805,9 +842,7 @@ static void Handle_event
 			if (cheat.in_map_editor() && gwin->skip_lift == 0 &&
 			    cheat.get_edit_shape() >= 0)
 				{
-				Drop_dragged_shape(cheat.get_edit_shape(),
-					cheat.get_edit_frame(),
-					event.button.x, event.button.y, 0);
+				Drop_in_map_editor(event, true);
 				break;
 				}
 #endif
