@@ -316,27 +316,28 @@ int Game_window::scroll_if_needed
 	Tile_coord t
 	)
 	{
+	int scrolled = 0;
 	if (t.tx == scroll_bounds.x - 1)
 		{
 		view_left();
-		return (1);
+		scrolled = 1;
 		}
-	if (t.tx == scroll_bounds.x + scroll_bounds.w)
+	else if (t.tx == scroll_bounds.x + scroll_bounds.w)
 		{
 		view_right();
-		return (1);
+		scrolled = 1;
 		}
 	if (t.ty == scroll_bounds.y - 1)
 		{
 		view_up();
-		return (1);
+		scrolled = 1;
 		}
-	if (t.ty == scroll_bounds.y + scroll_bounds.h)
+	else if (t.ty == scroll_bounds.y + scroll_bounds.h)
 		{
 		view_down();
-		return (1);
+		scrolled = 1;
 		}
-	return (0);
+	return (scrolled);
 	}
 
 /*
