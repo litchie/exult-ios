@@ -25,8 +25,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef INCL_UTILS
 #define INCL_UTILS	1
-#include <stdio.h>
-#include <fstream>
+//#include <stdio.h>
+//#include <fstream>
+#include <iosfwd>
 #include <exception>
 #include <string>
         class replication_error : public std::exception
@@ -88,6 +89,7 @@ inline unsigned int Read2
 	return (b0 + (b1 << 8));
 	}
 
+#ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
 /*
  *	Read a 2-byte value from a file.
  */
@@ -102,6 +104,7 @@ inline unsigned int Read2
 	fread(&b1,sizeof(unsigned char),1,in);
 	return (b0 + (b1 << 8));
 	}
+#endif
 
 /*
  *	Read a 2-byte value, hsb first.
@@ -132,6 +135,7 @@ inline unsigned int Read2high
 	return ((b0 << 8) + b1);
 	}
 
+#ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
 /*
  *	Read a 2-byte value from a file.
  */
@@ -146,6 +150,7 @@ inline unsigned int Read2high
 	fread(&b1,sizeof(unsigned char),1,in);
 	return ((b0 << 8) + b1);
 	}
+#endif
 
 /*
  *	Read a 4-byte long value, lsb first.
@@ -180,6 +185,7 @@ inline unsigned long Read4
 	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	}
 
+#ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
 /*
  *	Read a 4-byte value from a file.
  */
@@ -196,7 +202,7 @@ inline unsigned long Read4
 	fread(&b3,sizeof(unsigned char),1,in);
 	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	}
-
+#endif
 /*
  *	Read a 4-byte long value, hsb first.
  */
@@ -230,6 +236,7 @@ inline unsigned long Read4high
 	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
 	}
 
+#ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
 /*
  *	Read a 4-byte value from a file.
  */
@@ -246,6 +253,7 @@ inline unsigned long Read4high
 	fread(&b3,sizeof(unsigned char),1,in);
 	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
 	}
+#endif
 
 /*
  *	Write a 2-byte value, lsb first.
