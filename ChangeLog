@@ -1,3 +1,6 @@
+2003-10-07  Ryan Nunn  <colourles@users.sourceforge.net>
+	* usecode/intrinsics.cc : Doing what needs doing (std)
+
 2003-09-17  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucinternal.cc: New opcode 0x52, CALLO, calls original
