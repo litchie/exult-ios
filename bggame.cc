@@ -913,10 +913,7 @@ void BG_Game::scene_moongate()
 
 	// Wait till the music finished playing
 	while(Audio::get_ptr()->is_track_playing(home_song_midi))
-//sqdebug
-//Change to WAITDELAYCYCLE3?
 		WAITDELAYCYCLE3(50);
-//		WAITDELAY(20);
 }
 
 void BG_Game::top_menu()
