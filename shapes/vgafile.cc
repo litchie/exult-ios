@@ -1156,3 +1156,35 @@ Vga_file::~Vga_file()
 	{
 	reset();
 	}
+
+/*
+ *	Make a spot for a new shape, and delete frames in existing shape.
+ *
+ *	Output:	->shape, or 0 if invalid shapenum.
+ */
+
+Shape *Vga_file::new_shape
+	(
+	int shapenum
+	)
+	{
+	if (shapenum < 0 || shapenum >= 2048)	// (2048 is really arbitrary.)
+		return 0;
+	if (shapenum < num_shapes)
+		{
+		shapes[shapenum].reset();
+		shapes[shapenum].num_frames = shapes[shapenum].frames_size = 0;
+		}
+	else				// Enlarge list.
+		{
+		Shape *newshapes = new Shape[shapenum + 1];
+		if (num_shapes)
+			memcpy(newshapes, shapes, num_shapes*sizeof(Shape));
+					// (Don't want destructor called.)
+		delete reinterpret_cast<char *> (shapes);
+		shapes = newshapes;
+		num_shapes = shapenum + 1;
+		}
+	return &shapes[shapenum];
+	}
+
