@@ -73,7 +73,7 @@ public:
 	Shape_file_set() {  }
 	~Shape_file_set();
 					// Create, or return existing one.
-	Shape_file_info *create(const char *basename, const char *fullname);
+	Shape_file_info *create(const char *basename);
 	int size()
 		{ return files.size(); }
 	Shape_file_info *operator[](int i)
