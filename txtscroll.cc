@@ -161,6 +161,9 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 
 void TextScroller::run(Game_window *gwin, Palette& pal)
 {
+	gwin->clear_screen();
+	gwin->show(1);
+
 	int topx = (gwin->get_width()-320)/2;
 	int topy = (gwin->get_height()-200)/2;
 	int endy = topy+200;
@@ -221,6 +224,7 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 		starty --;
 	}
 	gwin->clear_screen();
+	gwin->show(1);
 }
 
 int TextScroller::get_count()
