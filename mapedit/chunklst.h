@@ -66,6 +66,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	int info_cnt;			// # entries in info.
 	int locate_cx, locate_cy;	// Last chunk found by 'locate'.
 	bool drop_enabled;		// So we only do it once.
+	int to_del;			// Terrain # to delete, or -1.
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
@@ -80,6 +81,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	virtual int get_selected_id()
 		{ return selected < 0 ? -1 : info[selected].num; }
 	unsigned char *get_chunk(int chunknum);
+	void update_num_chunks(int new_num_chunks);
 	void set_chunk(unsigned char *data, int datalen);
 	void render_chunk(int chunknum, int xoff, int yoff);
 	void scroll(int newindex);	// Scroll.
@@ -125,10 +127,13 @@ public:
 	void enable_drop();
 					// Handle scrollbar.
 	static void scrolled(GtkAdjustment *adj, gpointer data);
-	virtual void locate(bool upwards);	// Locate terrain on game map.
+	void locate(int dir);		// Locate terrain on game map.
+	virtual void locate(bool upwards);
 	void locate_response(unsigned char *data, int datalen);
 	void insert(bool dup);		// Insert new chunk.
+	void del();			// Delete current chunk.
 	void insert_response(unsigned char *data, int datalen);
+	void delete_response(unsigned char *data, int datalen);
 	virtual void move(bool upwards);	// Move current selected chunk.
 	void swap_response(unsigned char *data, int datalen);
 #ifdef WIN32

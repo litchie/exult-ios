@@ -157,6 +157,7 @@ public:
 	bool swap_terrains(int tnum);	// Swap adjacent terrain #'s.
 					// Insert new terrain after 'tnum'.
 	bool insert_terrain(int tnum, bool dup = false);
+	bool delete_terrain(int tnum);
 	void commit_terrain_edits();	// End terrain-editing mode.
 	void abort_terrain_edits();
 					// Search entire game for unused.
