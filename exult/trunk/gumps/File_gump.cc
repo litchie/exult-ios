@@ -149,7 +149,8 @@ public:
 		  cursor(0)
 		{
 		text[0] = text[maxsz] = 0;
-		Shape_frame *shape = ShapeID(shnum, 0).get_shape();
+		Shape_frame *shape = 
+				ShapeID(shnum, 0, SF_GUMPS_VGA).get_shape();
 					// Want text coords. rel. to parent.
 		textx -= shape->get_xleft();
 		texty -= shape->get_yabove();
