@@ -24,6 +24,7 @@
 #define BYTE					256
 // variable + relative jump (for the 'sloop')
 #define SLOOP		512
+#define POP 1024
 
 // Opcode descriptor
 typedef struct _opcode_desc

@@ -6,6 +6,8 @@ void rebuild(void)
 {
 	unsigned int c;
 	char s[10];
+	char filename[18];
+	char *pos;
 	FILE *fi=fopen("index","r"),*fi2,*fo=fopen("usecode","wb");
 	if (fi==NULL)
 		{
@@ -19,13 +21,17 @@ void rebuild(void)
 		}
 	while (!feof(fi)) {
 		fgets(s,10,fi);
+		strcpy(filename, s);
+		pos = strchr(filename, '\n');
+		if (pos) *pos = '\0';
+		strcat(filename, ".uco");
 		if (!feof(fi))
 			{
 				s[strlen(s)-1]=0;
 				printf("Writing function: %s... ",s);
-				if ((fi2=fopen(s,"rb"))==NULL)
+				if ((fi2=fopen(filename,"rb"))==NULL)
 					{
-						printf("Can't open file\n");
+						printf("Can't open file %s\n", filename);
 						exit(0);
 					}
 				while(!feof(fi2))
