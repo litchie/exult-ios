@@ -171,7 +171,7 @@ void	Timidity_binary::player(void)
 	for (;;)
 		{
 		size_t	x=read(fd, buf, sizeof(buf));
-		if(x<=0 || !audiostream->consuming)
+		if(x<=0 || !audiostream->is_consuming())
 			break;
 		audiostream->produce(buf,x);
 		}
@@ -194,7 +194,7 @@ void	Timidity_binary::sfxplayer(void)
 	for (;;)
 		{
 		size_t	x=read(fd, buf, sizeof(buf));
-		if(x<=0 || !audiostream->consuming)
+		if(x<=0 || !audiostream->is_consuming())
 			break;
 		audiostream->produce(buf,x);
 		}
