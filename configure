@@ -540,7 +540,7 @@ fi
 
 PACKAGE=exult
 MAJOR=0
-RELNUM=25
+RELNUM=26
 VERSION=$MAJOR.$RELNUM
 
 ac_aux_dir=

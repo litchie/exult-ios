@@ -73,6 +73,7 @@ public:
 					// Create "end-of-list"/invalid entry.
 	ShapeID() : low(0xff), high(0xff)
 		{  }
+	~ShapeID() {};
 	int is_invalid()		// End-of-list or invalid?
 		{ return (low == 0xff && high == 0xff); }
 	int is_eol()
@@ -308,6 +309,8 @@ public:
 		{  }
 	Ireg_game_object() : owner(0)	// Create fake entry.
 		{  }
+	virtual ~Ireg_game_object()
+		{  }
 	virtual Game_object *clone()	// Create a copy.
 		{ return new Ireg_game_object(*this); }
 					// Remove/delete this object.
@@ -335,6 +338,8 @@ public:
 		  volume_used(0), last_object(0)
 		{  }
 	Container_game_object() : volume_used(0), last_object(0) {  }
+	virtual ~Container_game_object()
+		{  }
 	Game_object *get_last_object()
 		{ return last_object; }
 	Game_object *get_first_object()	// Get first inside.
@@ -391,6 +396,8 @@ public:
 	Barge_object() : Ireg_game_object()
 		{  }
 #endif
+	virtual ~Barge_object()
+		{  }
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0);
 					// Render.
@@ -460,6 +467,8 @@ public:
 		unsigned int shapey, unsigned int lft, 
 		unsigned short itype,
 		unsigned char prob, short d1, short d2);
+	virtual ~Egg_object()
+		{  }
 	int get_distance()
 		{ return distance; }
 	int is_active()			// Can it be activated?
@@ -683,6 +692,8 @@ protected:
 public:
 	Sprite(int shapenum);
 					// Set a frame seq. for a direction.
+	virtual ~Sprite()
+		{  }
 	void set_frame_sequence(Direction dir, int cnt, unsigned char *seq)
 		{
 		delete frames[(int) dir];
