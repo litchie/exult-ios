@@ -205,7 +205,9 @@ bool Gump_manager::remove_gump(Gump *gump)
 		}
 		if (!gump->is_persistent())	// Count 'gump mode' gumps.
 			{			// And resume queue if last.
-			non_persistent_count--;
+					// Gets messed up upon 'load'.
+			if (non_persistent_count > 0)
+				non_persistent_count--;
 			if (!dont_pause_game) gwin->get_tqueue()->resume(Game::get_ticks());
 			}
 	}
