@@ -2748,7 +2748,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist)
 	    old_maxx = c_num_chunks + oldx + 2;
 	int old_miny = c_num_chunks + oldy - 2, 
 	    old_maxy = c_num_chunks + oldy + 2;
-	if (nlist == olist)		// Same map?
+	if (nmap == omap)		// Same map?
 		{
 		// Set to 0
 		// No casting _should_ be necessary at this point.
