@@ -45,6 +45,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "useval.h"
 #include "game.h"
 #include "barge.h"
+#include "egg.h"
 #include <iomanip>
 #ifdef XWIN
 #include <signal.h>
@@ -258,6 +259,13 @@ void Scheduled_usecode::handle_event
 			usecode->set_item_frame(objval, fval);
 			break;
 			}
+		case 0x48:		// Guessing:  activate egg.
+			if (obj->is_egg())
+				{
+				((Egg_object *) obj)->activate(usecode,
+					gwin->get_main_actor(), 1);
+				}
+			break;
 		case 0x4e:		// Show next frame.
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
@@ -982,7 +990,7 @@ Usecode_value Usecode_machine::find_nearby
 	Usecode_value& objval,		// Find them near this.
 	Usecode_value& shapeval,	// Shape to find, or -1 for any,
 					//  -359 for any npc.
-	Usecode_value& qval,		// Quality??
+	Usecode_value& distval,		// Distance in tiles?
 	Usecode_value& mval		// Some kind of mask?
 	)
 	{
@@ -996,7 +1004,7 @@ Usecode_value Usecode_machine::find_nearby
 				   objval.get_elem(1).get_int_value(),
 				   objval.get_elem(2).get_int_value()),
 			shapeval.get_int_value(),
-			qval.get_int_value(), mval.get_int_value());
+			distval.get_int_value(), mval.get_int_value());
 	else
 		{
 		Game_object *obj = get_item(objval);
@@ -1004,7 +1012,7 @@ Usecode_value Usecode_machine::find_nearby
 			return Usecode_value(0, 0);
 		obj = obj->get_outermost();	// Might be inside something.
 		cnt = obj->find_nearby(vec, shapeval.get_int_value(),
-			qval.get_int_value(), mval.get_int_value());
+			distval.get_int_value(), mval.get_int_value());
 		}
 	Usecode_value nearby(cnt, 0);	// Create return array.
 	for (int i = 0; i < cnt; i++)
@@ -2492,8 +2500,8 @@ USECODE_INTRINSIC(is_not_blocked)
 	int new_lift;
 	int blocked = Chunk_object_list::is_blocked(
 		info.get_3d_height(), tile.tz, 
-		tile.tx - info.get_3d_xtiles() - 1,
-		tile.ty - info.get_3d_ytiles() - 1,
+		tile.tx - info.get_3d_xtiles() + 1,
+		tile.ty - info.get_3d_ytiles() + 1,
 		info.get_3d_xtiles(), info.get_3d_ytiles(), new_lift, MOVE_ALL_TERRAIN);
 	return Usecode_value(!blocked && new_lift == tile.tz);
 }

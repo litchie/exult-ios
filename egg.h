@@ -117,7 +117,8 @@ public:
 #endif
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
-	void activate(Usecode_machine *umachine, Game_object *obj);
+	void activate(Usecode_machine *umachine, Game_object *obj,
+							int must = 0);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual int is_egg() const	// An egg?

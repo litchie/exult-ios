@@ -280,11 +280,11 @@ static void Init
 	h = 200;
 	sc = 2;
 
-	int sw, sh, scale;
+	int sw, sh, scaleval;
 	config->value("config/video/width", sw, w);
 	config->value("config/video/height", sh, h);
-	config->value("config/video/scale", scale, sc);
-	gwin = new Game_window(sw, sh, scale);
+	config->value("config/video/scale", scaleval, sc);
+	gwin = new Game_window(sw, sh, scaleval);
 
 	if (Game::get_game_type() == BLACK_GATE)
 		audio->Init(9615*2,2);
@@ -311,6 +311,9 @@ static void Init
 	SDL_SetEventFilter(Filter_intro_events);
 	browser = new ShapeBrowser();
 	gwin->setup_game();		// This will start the scene.
+					// Get scale factor for mouse.
+	if (gwin->get_win())
+		scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 	}
 
 /*
