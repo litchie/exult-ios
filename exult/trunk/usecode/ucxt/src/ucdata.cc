@@ -74,6 +74,7 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 		else if(strcmp(argv[i], "-fz" )==0) options.output_ucs  = true;
 		else if(strcmp(argv[i], "-fs" )==0) options.output_ucs  = true;
 		else if(strcmp(argv[i], "-ff" )==0) options.output_flag = true;
+		else if(strcmp(argv[i], "-ftt")==0) options.output_trans_table = true;
 
 		else if(strcmp(argv[i], "--extern-header" )==0) options.output_extern_header = true;
 		
@@ -131,6 +132,9 @@ void UCData::disassamble()
 	if(options.output_list)
 		cout << "Function       offset    size  data  code" << (options.ucdebug ? " funcname" : "") << endl;
 
+	if(options.output_trans_table)
+		cout << "<trans>" << endl;
+		
 	bool _foundfunc=false; //did we find and print the function?
 	for(unsigned int i=0; i<_funcs.size(); i++)
 	{
@@ -152,6 +156,12 @@ void UCData::disassamble()
 				_func_printed=true;
 			}
 
+			if(options.output_trans_table)
+			{
+				_funcs[i]->output_tt(cout);
+				_func_printed=true;
+			}
+			
 			// if we haven't printed one by now, we'll print an asm output.
 			if(options.output_asm || (_func_printed==false))
 				print_asm(*_funcs[i], cout, _funcmap, uc_intrinsics, options);
@@ -169,6 +179,9 @@ void UCData::disassamble()
 	if(options.output_list)
 		cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
 	
+	if(options.output_trans_table)
+		cout << "</>" << endl;
+		
 	cout << endl;
 }
 

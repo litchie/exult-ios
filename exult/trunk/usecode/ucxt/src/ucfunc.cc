@@ -60,6 +60,8 @@ using std::pair;
 using std::ios;
 using std::streampos;
 using std::cout;
+using std::setw;
+using std::less;
 
 const string VARNAME = "var";
 const string VARPREFIX = "var";
@@ -466,6 +468,19 @@ void UCFunc::parse_ucs_pass3(vector<GotoSet> &gotoset, const map<unsigned int, s
 
 }
 
+void UCFunc::output_tt(std::ostream &o)
+{
+	o << "\t<0x" << setw(4) << _funcid << ">" << endl;
+	
+	for(map<unsigned int, string, less<unsigned int> >::iterator i=_data.begin(); i!=_data.end(); i++)
+	{
+		o << "\t\t<0x" << setw(4) << i->first << ">" << endl
+		  << "\t\t`" << i->second << "`" << endl
+		  << "\t\t</>" << endl;
+	}
+	o << "\t</>" << endl;
+}
+
 inline unsigned short read_ushort(ifstream &f)
 {
   return static_cast<unsigned short> (static_cast<unsigned int>(f.get()) + (static_cast<unsigned int>(f.get()) << 8));
@@ -556,12 +571,12 @@ void print_asm_data(UCFunc &ucf, ostream &o)
 {
 	static const unsigned int nochars=60;
 	// limit of about 60 chars to a line, wrap to the next line if longer then this...
-	for(std::map<unsigned int, std::string, std::less<unsigned int> >::iterator i=ucf._data.begin(); i!=ucf._data.end(); i++)
+	for(map<unsigned int, string, less<unsigned int> >::iterator i=ucf._data.begin(); i!=ucf._data.end(); i++)
 	{
 		for(unsigned int j=0; j<i->second.size(); j++)
 		{
 			if(j==0)
-				o << std::setw(4) << i->first;
+				o << setw(4) << i->first;
 			if((j!=0) && !(j%nochars))
 				o << "'" << endl;
 			if(!(j%nochars))
