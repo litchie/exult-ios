@@ -85,7 +85,7 @@ int Weapon_info::read
 	uses = (range>>1)&3;		// Throwable, etc.:
 	range = range>>3;
 	unsigned short unk1 = Read2(ptr);
-	special_atts = *ptr++;
+	powers = *ptr++;
 	*ptr++;				// Skip (0).
 	usecode = Read2(ptr);
 					// BG:  Subtract 1 from each sfx.
@@ -110,6 +110,30 @@ int Weapon_info::read
 						(short) unk2[i] << ' ';
 		cout << dec << endl << endl;
 #endif
+	return shapenum;
+	}
+
+/*
+ *	Read in a amm-info entry from 'amms.dat'.
+ *
+ *	Output:	Shape # this entry describes.
+ */
+
+int Ammo_info::read
+	(
+	std::istream& in		// Read from here.
+	)
+	{
+	uint8 buf[13];			// Entry length.
+	in.read((char *) buf, sizeof(buf));
+	uint8 *ptr = buf;
+	shapenum = Read2(ptr);		// Bytes 0-1.
+	family_shape = Read2(ptr);
+	unsigned short type2 = Read2(ptr);	// ???
+	damage = *ptr++;
+	ptr += 3;			// 3 unknown.
+	powers = *ptr++;
+					// Last 2 unknown.
 	return shapenum;
 	}
 

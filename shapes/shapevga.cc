@@ -121,12 +121,8 @@ void Shapes_vga_file::read_info
 	Ammo_info::create();		// Create table.
 	for (i = 0; i < cnt; i++)
 		{
-		unsigned short shapenum = Read2(ammo);
-		unsigned short family = Read2(ammo);
-		unsigned short type2 = Read2(ammo);	// ???
-		unsigned char damage = Read1(ammo);
-		ammo.seekg(6, ios::cur);	// Skip unknown.
-		Ammo_info ent(shapenum, family, damage);
+		Ammo_info ent;
+		unsigned short shapenum = ent.read(ammo);
 		Ammo_info::insert(shapenum, ent);
 		}
 	ammo.close();
