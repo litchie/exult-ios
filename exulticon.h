@@ -11,7 +11,7 @@ static unsigned int height = 32;
   pixel[2] = header_data_cmap[(unsigned char)data[0]][2]; \
   data ++; }
 
-static char header_data_cmap[256][3] = {
+static unsigned char header_data_cmap[256][3] = {
 	{  0,128,128},
 	{ 34, 34, 34},
 	{  0,  0,  0},
@@ -269,7 +269,7 @@ static char header_data_cmap[256][3] = {
 	{255,255,255},
 	{255,255,255}
 	};
-static char header_data[] = {
+static unsigned char header_data[] = {
 	0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,
 	2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,2,2,1,3,4,
