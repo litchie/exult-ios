@@ -1,3 +1,11 @@
+2001-10-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actions.cc (If_else_path_actor_action): Reset speed after being
+	blocked.
+	* usecode/intrinsics.cc: Return 'fake' schedule if walking on a
+	path.  Fixes Fawn Trial bug where companions don't show up and
+	game slows down.
+
 2001-10-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* sigame.cc (SI_Game): Add patches to remove 'bad' egg and
