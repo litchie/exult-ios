@@ -984,6 +984,12 @@
 					RelativePath="..\gumps\Newfile_gump.cc">
 				</File>
 				<File
+					RelativePath="..\gumps\Notebook_gump.cc">
+				</File>
+				<File
+					RelativePath="..\gumps\Notebook_gump.h">
+				</File>
+				<File
 					RelativePath="..\gumps\Paperdoll_gump.cc">
 				</File>
 				<File
@@ -1630,10 +1636,10 @@
 				RelativePath="..\NEWS">
 			</File>
 			<File
-				RelativePath="..\conf\README">
+				RelativePath="..\README">
 			</File>
 			<File
-				RelativePath="..\README">
+				RelativePath="..\conf\README">
 			</File>
 			<File
 				RelativePath="..\README.1ST">

@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\."
+			OutputDirectory="..\..\win32"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -34,25 +34,24 @@
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
 				UsePrecompiledHeader="3"
-				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderThrough="msvc_kludges.h"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				CompileAs="2"
-				ForcedIncludeFiles="StdAfx.h"/>
+				ForcedIncludeFiles="msvc_kludges.h"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\./exconfig.dll"
 				Version="1.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				ModuleDefinitionFile=".\exconfig.def"
+				ModuleDefinitionFile="..\..\win32\exconfig.def"
 				ProgramDatabaseFile=".\./exconfig.pdb"
 				ImportLibrary=".\./exconfig.lib"/>
 			<Tool
@@ -79,7 +78,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\."
+			OutputDirectory="..\..\win32"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -93,7 +92,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="3"
-				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderThrough="msvc_kludges.h"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
@@ -102,18 +101,17 @@
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="4"
 				CompileAs="2"
-				ForcedIncludeFiles="StdAfx.h"/>
+				ForcedIncludeFiles="msvc_kludges.h"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\./exconfig.dll"
 				Version="1.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				ModuleDefinitionFile=".\exconfig.def"
+				ModuleDefinitionFile="..\..\win32\exconfig.def"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\./exconfig.pdb"
 				ImportLibrary=".\./exconfig.lib"/>
@@ -157,21 +155,6 @@
 				RelativePath="..\..\files\IFF.cc">
 			</File>
 			<File
-				RelativePath=".\StdAfx.cpp">
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\files\Table.cc">
 			</File>
 			<File
@@ -181,19 +164,48 @@
 				RelativePath="..\..\conf\XMLEntity.cc">
 			</File>
 			<File
-				RelativePath=".\exconfig.cpp">
+				RelativePath="..\..\win32\exconfig.cc">
 			</File>
 			<File
-				RelativePath=".\exconfig.def">
+				RelativePath="..\..\win32\exconfig.def">
 			</File>
 			<File
-				RelativePath=".\exconfig.rc">
+				RelativePath="..\..\win32\exconfig.rc">
 			</File>
 			<File
 				RelativePath="..\..\files\listfiles.cc">
 			</File>
 			<File
+				RelativePath="..\msvc_kludges.cc">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						ForcedIncludeFiles=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+						ForcedIncludeFiles=""/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\files\utils.cc">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ForcedIncludeFiles=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						ForcedIncludeFiles=""/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
@@ -212,9 +224,6 @@
 				RelativePath="..\..\files\IFF.h">
 			</File>
 			<File
-				RelativePath=".\StdAfx.h">
-			</File>
-			<File
 				RelativePath="..\..\files\Table.h">
 			</File>
 			<File
@@ -228,6 +237,9 @@
 			</File>
 			<File
 				RelativePath=".\exconfig.h">
+			</File>
+			<File
+				RelativePath="..\..\win32\exconfig.h">
 			</File>
 			<File
 				RelativePath="..\..\files\listfiles.h">
