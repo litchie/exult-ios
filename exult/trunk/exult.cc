@@ -111,6 +111,7 @@ quitting_time_enum quitting_time = QUIT_TIME_NO;
 bool intrinsic_trace = false;		// Do we trace Usecode-intrinsics?
 int usecode_trace = 0;		// Do we trace Usecode-instructions?
 							// 0 = no, 1 = short, 2 = long
+bool combat_trace = false; // show combat messages?
 
 // Save game compression level
 int save_compression = 1;
@@ -450,6 +451,8 @@ int exult_main(const char *runpath)
 		usecode_trace = 2;
 	else
 		usecode_trace = 0;
+
+	config->value("config/debug/trace/combat",combat_trace);
 
 	// Save game compression level
 	config->value("config/disk/save_compression_level", save_compression, 1);
