@@ -47,13 +47,13 @@ case "$host_os" in
 		if test "$host_vendor" = "zaurus"; then
 			WINDOWING_SYSTEM="-DXWIN"
 			AC_MSG_RESULT(Qtopia (Sharp Zaurus))
-			CXXFLAGS="$CXXFLAGS -fsigned-char -DDISABLE_X11 -DQWS -D__zaurus__"
+			CXXFLAGS="$CXXFLAGS -fsigned-char -DDISABLE_X11 -DQWS -D__zaurus__ -DUSE_FMOPL_MIDI"
 			enable_kmid="no"
 			enable_timidity="no"
 			enable_exult_studio_support="no"
 			enable_exult_studio="no"
 			enable_gimp_plugin="no"
-			enable_debug="yes"
+			enable_debug="no"
 		else
 			WINDOWING_SYSTEM="-DXWIN"
 			AC_MSG_RESULT(X11 (GNU/Linux))
