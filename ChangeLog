@@ -1,5 +1,5 @@
 2000-04-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* Re-enabled sound in Windows (where did it go??)
+	* Re-enabled sound in Windows (Where did it go??)
 	* added some more #ifndef WIN32 to the pragma's
 	* added exult.exe to .cvsignore
 

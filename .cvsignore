@@ -1,7 +1,7 @@
 *.o
 *~
-exult
 exult.exe
+exult
 Makefile
 Makefile.in
 autoconfig.h.in
