@@ -27,3 +27,6 @@
 
 /* disable SDL parachute? */
 #undef NO_SDL_PARACHUTE
+
+/* have GIMP devel environment */
+#undef HAVE_GIMP

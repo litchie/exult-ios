@@ -28,12 +28,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <glib.h>
+#include "exult_types.h"
 #include "shapelst.h"
 #include "paledit.h"
 #include "vgafile.h"
 #include "ibuf8.h"
 #include "Flex.h"
 #include "u7drag.h"
+#ifdef HAVE_GIMP
+#include <libgimp/gimp.h>
+#include <libgimp/gimpui.h>
+#endif
 
 Vga_file *ifile = 0;
 char **names = 0;
@@ -41,11 +46,138 @@ GtkWidget *topwin = 0;
 Shape_chooser *chooser = 0;
 Palette_edit *paled = 0;
 
+#ifdef HAVE_GIMP
+bool gimp_plugin = false;
+static int exult_studio_interface(int argc, char **argv);
+static void exult_studio_gimp_query(void);
+static void exult_studio_gimp_run(char *name, int nparams, GimpParam * param, int *nreturn_vals, GimpParam ** return_vals);
+
+GimpPlugInInfo PLUG_IN_INFO =
+{
+  NULL,                         /* init_proc */
+  NULL,                         /* quit_proc */
+  exult_studio_gimp_query,      /* query_proc */
+  exult_studio_gimp_run,        /* run_proc */
+};
+
+static void
+exult_studio_gimp_query (void)
+{
+	static GimpParamDef args[] = {
+		{ GIMP_PDB_INT32, "run_mode", "Interactive, non-interactive" }
+	};
+	static GimpParamDef *return_vals = NULL;
+
+	static gint nargs = sizeof (args) / sizeof (args[0]);
+	static gint nreturn_vals = 0;
+
+	gimp_install_procedure ("exult_studio",
+		"Runs the Exult Studio Extension",
+		"FIXME: write help for exult_studio",
+		"Tristan Tarrant",
+		"Tristan Tarrant",
+		"2000-2001",
+		"<Toolbox>/Xtns/Exult Studio...",
+		NULL,
+		GIMP_PLUGIN,
+		nargs, nreturn_vals,
+		args, return_vals);
+}
+
+static void exult_studio_gimp_run(char *name, int nparams, GimpParam * param, int *nreturn_vals, GimpParam ** return_vals)
+{
+ static GimpParam values[2];
+ GimpRunModeType run_mode;
+ char devname[1024];
+ char *args[2];
+ int nargs;
+
+  run_mode = (GimpRunModeType)param[0].data.d_int32;
+
+  *nreturn_vals = 1;
+  *return_vals = values;
+
+  values[0].type = GIMP_PDB_STATUS;
+  values[0].data.d_status = GIMP_PDB_CALLING_ERROR;
+
+  nargs = 0;
+  args[nargs++] = "exultstudio";
+
+  switch (run_mode)
+  {
+    case GIMP_RUN_INTERACTIVE:
+      exult_studio_interface(nargs, args);
+      values[0].data.d_status = GIMP_PDB_SUCCESS;
+      break;
+
+    case GIMP_RUN_NONINTERACTIVE:
+      /*  Make sure all the arguments are there!  */
+      break;
+
+    case GIMP_RUN_WITH_LAST_VALS:
+      /*  Possibly retrieve data  */
+      break;
+
+    default:
+      break;
+  }
+}
+        
+#endif
+
+static void file_sel_delete( GtkWidget *widget, GtkWidget **file_sel )
+{
+	gtk_widget_destroy( *file_sel );
+	*file_sel = NULL;
+}
+
+static void file_selected( GtkWidget *widget, gboolean *selected )
+{
+	*selected = TRUE;
+}
+
+gchar* file_select( gchar *title )
+{
+	GtkWidget *file_sel;
+	gchar *filename;
+	gboolean selected = FALSE;
+
+	file_sel = gtk_file_selection_new( title );
+	gtk_window_set_modal( GTK_WINDOW( file_sel ), TRUE );
+
+	gtk_signal_connect( GTK_OBJECT( file_sel ), "destroy", 
+                            GTK_SIGNAL_FUNC( file_sel_delete ), &file_sel );
+	
+        gtk_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( file_sel )->cancel_button ), "clicked", GTK_SIGNAL_FUNC( file_sel_delete ), &file_sel );
+        
+        gtk_signal_connect( GTK_OBJECT( GTK_FILE_SELECTION( file_sel )->ok_button ), "clicked", GTK_SIGNAL_FUNC( file_selected ), &selected );
+
+        gtk_widget_show( file_sel );
+
+	while( ( ! selected ) && ( file_sel ) )
+		gtk_main_iteration();
+
+	/* canceled or window was closed */
+	if( ! selected )
+		return NULL;
+
+	/* ok */
+	filename = g_strdup( gtk_file_selection_get_filename( GTK_FILE_SELECTION( file_sel ) ) );
+	gtk_widget_destroy( file_sel );
+	return filename;
+}
+
+
 void
 on_shapes_add_clicked                  (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+	gchar *filename = file_select("Load shape file");
+	if(!filename)
+		return;
+	GtkWidget *item = gtk_list_item_new_with_label(filename);
+	gtk_container_add(GTK_CONTAINER(user_data), item);
+	gtk_widget_show(item);
 }
 
 
@@ -61,7 +193,12 @@ void
 on_add_palette_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-
+	gchar *filename = file_select("Load palette file");
+	if(!filename)
+		return;
+	GtkWidget *item = gtk_list_item_new_with_label(filename);
+	gtk_container_add(GTK_CONTAINER(user_data), item);
+	gtk_widget_show(item);
 }
 
 
@@ -80,6 +217,7 @@ create_exult_studio (void)
   GtkWidget *frame1;
   GtkWidget *hbox1;
   GtkWidget *vbox3;
+  GtkWidget *scroll1;
   GtkWidget *list1;
   GtkWidget *hbox2;
   GtkWidget *button2;
@@ -92,6 +230,7 @@ create_exult_studio (void)
   GtkWidget *frame2;
   GtkWidget *hbox3;
   GtkWidget *vbox4;
+  GtkWidget *scroll2;
   GtkWidget *list2;
   GtkWidget *hbox4;
   GtkWidget *button4;
@@ -132,13 +271,17 @@ create_exult_studio (void)
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox3);
   gtk_box_pack_start (GTK_BOX (hbox1), vbox3, TRUE, TRUE, 0);
+  
+  scroll1 = gtk_scrolled_window_new(0, 0);
+  gtk_widget_show(scroll1);
+  gtk_container_add(GTK_CONTAINER(vbox3), scroll1);
 
   list1 = gtk_list_new ();
   gtk_widget_ref (list1);
   gtk_object_set_data_full (GTK_OBJECT (window1), "list1", list1,
                             (GtkDestroyNotify) gtk_widget_unref);
+  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scroll1), list1);
   gtk_widget_show (list1);
-  gtk_box_pack_start (GTK_BOX (vbox3), list1, TRUE, TRUE, 0);
 
   hbox2 = gtk_hbox_new (TRUE, 0);
   gtk_widget_ref (hbox2);
@@ -182,14 +325,6 @@ create_exult_studio (void)
   gtk_widget_show (label1);
   gtk_box_pack_start (GTK_BOX (vbox2), label1, FALSE, FALSE, 0);
   
-  /*
-  label2 = gtk_label_new ("Shape Browser Widget Placeholder");
-  gtk_widget_ref (label2);
-  gtk_object_set_data_full (GTK_OBJECT (window1), "label2", label2,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label2);
-  gtk_box_pack_start (GTK_BOX (vbox2), label2, TRUE, TRUE, 0);
-  */
   chooser = new Shape_chooser(ifile, names, vbox2, 400, 64);
 
   button1 = gtk_button_new_with_label ("Load in GIMP");
@@ -220,12 +355,16 @@ create_exult_studio (void)
   gtk_widget_show (vbox4);
   gtk_box_pack_start (GTK_BOX (hbox3), vbox4, TRUE, TRUE, 0);
 
+  scroll2 = gtk_scrolled_window_new(0, 0);
+  gtk_widget_show(scroll2);
+  gtk_container_add(GTK_CONTAINER(vbox4), scroll2);
+
   list2 = gtk_list_new ();
   gtk_widget_ref (list2);
   gtk_object_set_data_full (GTK_OBJECT (window1), "list2", list2,
                             (GtkDestroyNotify) gtk_widget_unref);
+  gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scroll2), list2);
   gtk_widget_show (list2);
-  gtk_box_pack_start (GTK_BOX (vbox4), list2, TRUE, TRUE, 0);
 
   hbox4 = gtk_hbox_new (TRUE, 0);
   gtk_widget_ref (hbox4);
@@ -269,14 +408,6 @@ create_exult_studio (void)
   gtk_widget_show (label3);
   gtk_box_pack_start (GTK_BOX (vbox5), label3, FALSE, FALSE, 0);
 
-  /*
-  label4 = gtk_label_new ("Palette Browser Widget Placeholder");
-  gtk_widget_ref (label4);
-  gtk_object_set_data_full (GTK_OBJECT (window1), "label4", label4,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (label4);
-  gtk_box_pack_start (GTK_BOX (vbox5), label4, TRUE, TRUE, 0);
-  */
   U7object pal("static/palettes.flx", 0);
   size_t len;
   unsigned char *buf;		// this may throw an exception
@@ -289,78 +420,23 @@ create_exult_studio (void)
 
   gtk_signal_connect (GTK_OBJECT (button2), "clicked",
                       GTK_SIGNAL_FUNC (on_shapes_add_clicked),
-                      NULL);
+                      list1);
   gtk_signal_connect (GTK_OBJECT (button3), "clicked",
                       GTK_SIGNAL_FUNC (on_shapes_remove_clicked),
-                      NULL);
+                      list1);
   gtk_signal_connect (GTK_OBJECT (button4), "clicked",
                       GTK_SIGNAL_FUNC (on_add_palette_clicked),
-                      NULL);
+                      list2);
   gtk_signal_connect (GTK_OBJECT (button5), "clicked",
                       GTK_SIGNAL_FUNC (on_palette_remove_clicked),
-                      NULL);
+                      list2);
 
   return window1;
 }
 
-GtkWidget*
-create_fileselection1 (void)
+
+int exult_studio_quit ()
 {
-  GtkWidget *fileselection1;
-  GtkWidget *ok_button1;
-  GtkWidget *cancel_button1;
-
-  fileselection1 = gtk_file_selection_new ("Select shape file");
-  gtk_object_set_data (GTK_OBJECT (fileselection1), "fileselection1", fileselection1);
-  gtk_container_set_border_width (GTK_CONTAINER (fileselection1), 10);
-
-  ok_button1 = GTK_FILE_SELECTION (fileselection1)->ok_button;
-  gtk_object_set_data (GTK_OBJECT (fileselection1), "ok_button1", ok_button1);
-  gtk_widget_show (ok_button1);
-  GTK_WIDGET_SET_FLAGS (ok_button1, GTK_CAN_DEFAULT);
-
-  cancel_button1 = GTK_FILE_SELECTION (fileselection1)->cancel_button;
-  gtk_object_set_data (GTK_OBJECT (fileselection1), "cancel_button1", cancel_button1);
-  gtk_widget_show (cancel_button1);
-  GTK_WIDGET_SET_FLAGS (cancel_button1, GTK_CAN_DEFAULT);
-
-  return fileselection1;
-}
-
-GtkWidget*
-create_fileselection2 (void)
-{
-  GtkWidget *fileselection2;
-  GtkWidget *ok_button2;
-  GtkWidget *cancel_button2;
-
-  fileselection2 = gtk_file_selection_new ("Select Palette File");
-  gtk_object_set_data (GTK_OBJECT (fileselection2), "fileselection2", fileselection2);
-  gtk_container_set_border_width (GTK_CONTAINER (fileselection2), 10);
-
-  ok_button2 = GTK_FILE_SELECTION (fileselection2)->ok_button;
-  gtk_object_set_data (GTK_OBJECT (fileselection2), "ok_button2", ok_button2);
-  gtk_widget_show (ok_button2);
-  GTK_WIDGET_SET_FLAGS (ok_button2, GTK_CAN_DEFAULT);
-
-  cancel_button2 = GTK_FILE_SELECTION (fileselection2)->cancel_button;
-  gtk_object_set_data (GTK_OBJECT (fileselection2), "cancel_button2", cancel_button2);
-  gtk_widget_show (cancel_button2);
-  GTK_WIDGET_SET_FLAGS (cancel_button2, GTK_CAN_DEFAULT);
-
-  return fileselection2;
-}
-
-
-
-/*
- *	Quit.
- */
-
-int Quit
-	(
-	)
-	{
 	delete chooser;
 	int num_shapes = ifile->get_num_shapes();
 	delete ifile;
@@ -369,19 +445,10 @@ int Quit
 	delete [] names;
 	gtk_exit(0);
 	return (FALSE);			// Shouldn't get here.
-	}
-
-/*
- *	Main program.
- */
-
-int main
-	(
-	int argc,
-	char **argv
-	)
-	{
-					// Open file.
+}
+	
+int exult_studio_interface(int argc, char **argv)
+{
 	ifile = new Vga_file("static/shapes.vga");
 	if (!ifile->is_good())
 		{
@@ -401,7 +468,7 @@ int main
 					// Create top-level window.
 	topwin = create_exult_studio ();
 	gtk_signal_connect(GTK_OBJECT(topwin), "delete_event",
-				GTK_SIGNAL_FUNC(Quit), NULL);
+				GTK_SIGNAL_FUNC(exult_studio_quit), NULL);
 					// Set border width of top window.
 
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
@@ -410,5 +477,30 @@ int main
 	
 	gtk_widget_show(topwin);	// Show top window.
 	gtk_main();
-	return (0);
+	return 0;
+}
+
+/*
+ *	Main program.
+ */
+
+int main(int argc, char **argv)
+{
+#ifdef HAVE_GIMP
+	if(!gimp_main(argc, argv)) {
+		gimp_plugin = true;
+		cout << "Running as GIMP plugin" << endl;
+	} else
+		exult_studio_interface(argc, argv);
+#else
+	exult_studio_interface(argc, argv);
+#endif
+	
+		
+#ifdef HAVE_GIMP
+	if(gimp_plugin) {
+		gimp_quit();
 	}
+#endif
+	return (0);
+}
