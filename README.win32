@@ -33,6 +33,10 @@ http://prdownloads.sourceforge.net/mingw/MinGW-1.1.tar.gz
 Extract the files to a mingw directory in root directory of drive
 (ie C:\mingw\ )
 
+Get the zlib binaries & headers from:
+http://exult.sourceforge.net/snapshots/exult_zlib_win32.zip
+Unzip this file into the MinGW directory. 
+
 Get the SDL binaries & headers from:
 http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
 Unzip this file into the Exult directory. (it should add a SDL subdirectory)
