@@ -67,7 +67,7 @@ $(EXEC) : $(OBJS) data/exult.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
 tools/expack.exe : tools/expack.o $(FILE_OBJS) utils.o 
-	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o utils.o $(FILE_OBJS) $(LIBS)
+	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) $(LIBS)
 
 data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
 	tools/expack -c data/exult.flx $(EXULT_FLX_OBJECTS)
