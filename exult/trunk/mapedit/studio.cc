@@ -32,9 +32,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #include <errno.h>
 
+#ifdef WIN32
+#include <getopt.h>
+#endif
+
 #include <cstdio>			/* These are for sockets. */
+#ifndef WIN32
 #include <sys/socket.h>
 #include <sys/un.h>
+#endif
 #include <fcntl.h>
 
 #include "shapelst.h"
@@ -182,7 +188,9 @@ extern "C" void on_main_window_destroy_event
 	gtk_main_quit();
 	}
 
-
+#ifdef WIN32
+#include <win32hack.cc>
+#endif
 
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	vgafile(0), facefile(0), chunkfile(0), eggwin(0), 
@@ -229,8 +237,12 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	app = glade_xml_get_widget( app_xml, "main_window" );
 
 	// More setting up...
+#ifdef WIN32
+#include <gladehack.cc>
+#else
 					// Connect signals automagically.
 	glade_xml_signal_autoconnect(app_xml);
+#endif
 	gtk_widget_show( app );
 	if (gamedir)			// Game directory given?
 		{
@@ -969,6 +981,7 @@ bool ExultStudio::connect_to_server
 	(
 	)
 	{
+#ifndef WIN32
 	if (!static_path)
 		return false;		// No place to go.
 	if (server_socket >= 0)		// Close existing socket.
@@ -1019,6 +1032,7 @@ bool ExultStudio::connect_to_server
 		cout << "Connected to server" << endl;
 		return true;
 		}
+#endif
 	}
 
 
