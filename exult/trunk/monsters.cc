@@ -30,8 +30,45 @@
 #include "chunks.h"
 #include "Audio.h"
 #include "gamemap.h"
+#include "game.h"
+#include "effects.h"
 
 using std::rand;
+
+/*
+ *	Slimes move differently.
+ */
+class Slime_actor : public Monster_actor
+	{
+	void update_frames(Tile_coord src, Tile_coord dest);
+public:
+	Slime_actor(const std::string &nm, int shapenum, int num = -1, 
+							int uc = -1)
+		: Monster_actor(nm, shapenum, num, uc)
+		{  }
+					// Step onto an (adjacent) tile.
+	virtual int step(Tile_coord t, int frame);
+					// Remove/delete this object.
+	virtual void remove_this(int nodel = 0);
+					// Move to new abs. location.
+	virtual void move(int newtx, int newty, int newlift);
+	};
+
+/*
+ *	Monsters (like cyclops) that cause quakes when they walk:
+ */
+class Quaking_actor : public Monster_actor
+	{
+	int qsteps;			// # steps between quakes.
+	int steps;			// # steps taken.
+public:
+	Quaking_actor(const std::string &nm, int shapenum, int qs = 5,
+						int num = -1, int uc = -1)
+		: Monster_actor(nm, shapenum, num, uc), qsteps(qs), steps(0)
+		{  }
+					// Step onto an (adjacent) tile.
+	virtual int step(Tile_coord t, int frame);
+	};
 
 Monster_actor *Monster_actor::in_world = 0;
 
@@ -146,6 +183,8 @@ Monster_actor *Monster_actor::create
 	if (shnum == 529)		// Slime?
 					// Usecode = shape.
 		return new Slime_actor("", shnum, -1, shnum);
+	else if (shnum == 501 || (shnum == 380 && GAME_BG))
+		return new Quaking_actor("", shnum, 5, -1, shnum);
 	else
 		return new Monster_actor("", shnum, -1, shnum);
 	}
@@ -593,4 +632,28 @@ void Slime_actor::move
 	Monster_actor::move(newtx, newty, newlift);
 					// Update surrounding frames (& this).
 	update_frames(pos, get_tile());
+	}
+
+/*
+ *	Step onto an adjacent tile.
+ *
+ *	Output:	0 if blocked.
+ *		Dormant is set if off screen.
+ */
+
+int Quaking_actor::step
+	(
+	Tile_coord t,			// Tile to step onto.
+	int frame			// New frame #.
+	)
+	{
+	int ret = Monster_actor::step(t, frame);
+	if (ret)
+		{
+		steps = (steps + 1)%qsteps;
+		if (!steps)		// Time to roll?
+			gwin->get_tqueue()->add(Game::get_ticks() + 10,
+					new Earthquake(2), 0L);
+		}
+	return ret;
 	}
