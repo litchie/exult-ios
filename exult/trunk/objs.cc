@@ -559,19 +559,21 @@ void Animated_object::handle_event
 		animating = 0;
 		return;
 		}
-	if (frames > 1)		// Going through frames?
+	if (frames > 1)			// Going through frames?
 		{
-/*
-					// Get next frame.
-		int framenum = get_framenum() + 1;
-		if (framenum >= frames)	// End of cycle?
-			framenum = 0;
-*/
+					// Experiment:  A non-flat shape?
+		if (get_shapenum() >= 0x96)
+			{		// Get next frame.
+			int framenum = get_framenum() + 1;
+			if (framenum >= frames)	// End of cycle?
+				framenum = 0;
+			}
+		else			// Want flat shapes synchronized.
+			{		// Testing -WJP
+			int framenum = (curtime / 100) % frames;
 		
-					// Testing -WJP
-		int framenum = (curtime / 100) % frames;
-		
-		set_frame(framenum);	// Set new frame.
+			set_frame(framenum);	// Set new frame.
+			}
 		}
 	else
 		{
