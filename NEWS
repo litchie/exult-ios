@@ -1,3 +1,17 @@
+??/??/01	current
+
+		New in-game menu, with audio options.
+
+		New save gump with mini-screenshot, infinite savegames, etc.
+
+		World wrapping
+
+		Lots of work on SI (spell scrolls, spellbook, general fixes)
+
+		More work on ExultStudio (Linux only for now)
+
+		Tons of bugfixes
+
 04/11/01	v0.92 alpha 3
 
 		Savegame names have been changed to exultXXbg.sav for the
