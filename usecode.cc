@@ -998,6 +998,21 @@ USECODE_FUNCTION(die_roll)
 	return (Usecode_value(val));
 }
 
+USECODE_FUNCTION(get_item_shape)
+{
+	return (Usecode_value(get_item_shape(parms[0])));
+}
+USECODE_FUNCTION(get_item_frame)
+{
+	return (Usecode_value(get_item_frame(parms[0])));
+}
+
+USECODE_FUNCTION(set_item_frame)
+{
+	set_item_frame(parms[0], parms[1]);
+	return no_ret;
+}
+
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,Usecode_value parms[12]);
 
 UsecodeIntrinsicFn intrinsic_table[]=
@@ -1019,9 +1034,12 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_FUNCTION_PTR(UNKNOWN), // 0xe
 	USECODE_FUNCTION_PTR(UNKNOWN), // 0xf
 	USECODE_FUNCTION_PTR(die_roll), // 0x10
+	USECODE_FUNCTION_PTR(get_item_shape), // 0x11
+	USECODE_FUNCTION_PTR(get_item_frame), // 0x12
+	USECODE_FUNCTION_PTR(set_item_frame), // 0x13
 	};
 
-int	max_bundled_intrinsics=0x10;	// Index of the last intrinsic in this table
+int	max_bundled_intrinsics=0x13;	// Index of the last intrinsic in this table
 
 /*
  *	Call an intrinsic function.
@@ -1048,13 +1066,6 @@ Usecode_value Usecode_machine::call_intrinsic
 	else
 	switch (intrinsic)
 		{
-	case 0x11:			// Get item shape.
-		return (Usecode_value(get_item_shape(parms[0])));
-	case 0x12:			// Get item frame.
-		return (Usecode_value(get_item_frame(parms[0])));
-	case 0x13:			// Set item frame.
-		set_item_frame(parms[0], parms[1]);
-		break;
 	case 0x14:			// Get item quality.
 		{
 		Game_object *obj = get_item(parms[0].get_int_value());
