@@ -39,6 +39,7 @@ class Monster_info;
 class Weapon_info;
 class Dead_body;
 class Npc_timer_list;
+class Frames_sequence;
 
 					// The range of actors' rect. gumps:
 const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
