@@ -166,12 +166,12 @@ void Talk_schedule::now_what
 	(
 	)
 	{
-	cout << "REWRITE Talk_schedule!"<<endl;
-#if 1	/* ++++++++++++++Rewrite so it's only active when Av is near. */
 	Game_window *gwin = Game_window::get_game_window();
 	switch (phase)
 		{
 	case 0:				// Start by approaching Avatar.
+		if (npc->distance(gwin->get_main_actor()) > 50)
+			return;		// But not if too far away.
 		npc->follow(gwin->get_main_actor());
 		phase++;
 		return;
@@ -187,6 +187,10 @@ void Talk_schedule::now_what
 		return;
 		}
 	case 3:				// Talk.
+		gwin->add_dirty(npc);	// But first face Avatar.
+		npc->set_frame(npc->get_dir_framenum(npc->get_direction(
+				gwin->get_main_actor()), Actor::standing));
+		gwin->add_dirty(npc);
 		npc->activate(gwin->get_usecode());
 		gwin->set_mode(Game_window::normal);
 		gwin->paint();
@@ -195,7 +199,6 @@ void Talk_schedule::now_what
 	default:
 		break;
 		}
-#endif
 	}
 
 /*

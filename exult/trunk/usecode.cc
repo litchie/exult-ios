@@ -2145,6 +2145,7 @@ USECODE_INTRINSIC(is_pc_female)
 USECODE_INTRINSIC(halt_scheduled)
 {
 	// Halt_scheduled(item)
+#if 0	/* +++++Doesn't seem right.  Messes up intro. */
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return(no_ret);
@@ -2159,6 +2160,7 @@ USECODE_INTRINSIC(halt_scheduled)
 #else
 	if ((uc = Scheduled_usecode::find(obj)) != 0)
 		uc->halt();
+#endif
 #endif
 	return(no_ret);
 }
