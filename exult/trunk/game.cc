@@ -66,8 +66,14 @@ std::string Game::gametitle;
 
 unsigned int Game::ticks = 0;
 
-Game::Game() : menushapes(MAINSHP_FLX)
-{	
+Game::Game() : menushapes()
+{
+	try {				// Okay to fail if development game.
+		menushapes.load(MAINSHP_FLX);
+	} catch (const exult_exception &e) {
+		if (!is_editing())
+			throw e;
+	}
 	jive = false;
 	gwin = Game_window::get_game_window();
 	win = gwin->get_win();
@@ -255,6 +261,16 @@ str_int_pair Game::get_resource(const char *name)
 bool Game::show_menu()
 {
 	int menuy = topy+120;
+					// Brand-new game in development?
+	if (is_editing() && !U7exists(MAINSHP_FLX))
+		{
+		int first = !U7exists(IDENTITY);
+		if (first)
+			set_avname("Newbie");
+		if (!gwin->init_gamedat(first))
+			return false;
+		return true;
+		}
 	ExultDataSource mouse_data(MAINSHP_FLX, 19);
 	menu_mouse = new Mouse(gwin, mouse_data);
 	

@@ -349,8 +349,8 @@ void Game_window::init_files(bool cycle)
 	}
 	sprites.load(SPRITES_VGA);
 	CYCLE_RED_PLASMA();
-	mainshp.load(MAINSHP_FLX);
-	CYCLE_RED_PLASMA();
+//	mainshp.load(MAINSHP_FLX);
+//	CYCLE_RED_PLASMA();
 	shapes.init();
 //	map->init();	++++++Moved to setup_game().
 
