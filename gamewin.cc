@@ -56,7 +56,7 @@ Game_window::Game_window
 	(
 	int width, int height		// Window dimensions.
 	) : 
-	    mode(splash),
+	    mode(splash), combat(0),
             tqueue(new Time_queue()), clock(tqueue),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
@@ -1874,6 +1874,11 @@ void Game_window::double_clicked
 		obj = find_object(x, y);
 	if (obj)
 		{
+		if (combat && !gump)
+			{		// In combat mode.
+			obj->attacked(main_actor);
+			return;
+			}
 		remove_all_effects();	// Remove text msgs. from screen.
 		cout << "Object name is " << obj->get_name() << endl;
 		init_faces();		// Be sure face list is empty.

@@ -692,7 +692,8 @@ static void Handle_keystroke
 		}
 		break;
 	case SDLK_c:
-		// Go into combat mode
+		gwin->toggle_combat();	// Go into combat mode
+		gwin->paint();
 		break;
 	case SDLK_h:
 		{

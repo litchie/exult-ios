@@ -60,6 +60,7 @@ public:
 private:
 	Usecode_machine *usecode;	// Drives game plot.
 	Game_mode mode;			// Mode we're in.
+	unsigned char combat;		// 1 if in combat.
 	Time_queue *tqueue;		// Time-based queue.
 	Game_clock clock;		// Keeps track of time.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
@@ -218,6 +219,10 @@ public:
 		{ mode = md; }
 	inline Game_mode get_mode() const
 		{ return mode; }
+	inline int in_combat()		// In combat mode?
+		{ return combat; }
+	inline void toggle_combat()
+		{ combat = !combat; }
 					// Resize event occurred.
 	void resized(unsigned int neww, unsigned int newh);
 	inline void set_painted()		// Force blit.
