@@ -16,7 +16,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "files/common_types.h"
+#include "exult_types.h"
 #include "files/U7file.h"
 #include "gamewin.h"
 #include "txtscroll.h"
@@ -39,7 +39,7 @@ TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp
 #endif
 		
 	char *txt, *ptr, *end;
-	txtobj.retrieve(&txt, len);
+	txt = txtobj.retrieve(len);
 	ptr = txt;
 	end = ptr+len;
 

@@ -24,6 +24,7 @@
 #include "databuf.h"
 #include "font.h"
 #include "txtscroll.h"
+#include "exult_types.h"
 
 using std::cout;
 using std::endl;
@@ -121,8 +122,7 @@ void SI_Game::play_intro()
 		int	next = 0;
 		size_t	flisize;
 		char	*fli_b;
-		char	*buf;
-		Uint8	*buffer;
+		uint8	*buffer;
 		size_t	size;
 		int	i,j;
 		Font *font = fontManager.get_font("MENU_FONT");
@@ -134,7 +134,7 @@ void SI_Game::play_intro()
 
 		// Lord British presents...
 		U7object lbflic("<STATIC>/intro.dat", 0);
-		lbflic.retrieve(&fli_b, flisize);
+		fli_b = lbflic.retrieve(flisize);
 		playfli fli0(fli_b+8, flisize-8);
 		fli0.info();
 
@@ -180,7 +180,7 @@ void SI_Game::play_intro()
 
 
 		U7object flic("<STATIC>/intro.dat", 1);
-		flic.retrieve(&fli_b, flisize);
+		fli_b = flic.retrieve(flisize);
 		playfli fli1(fli_b+8, flisize-8);
 		fli1.info();
 
@@ -298,7 +298,7 @@ void SI_Game::play_intro()
 
 		// Guard walks in
 		U7object flic2("<STATIC>/intro.dat", 2);
-		flic2.retrieve(&fli_b, flisize);
+		fli_b = flic2.retrieve(flisize);
 		playfli fli2(fli_b+8, flisize-8);
 		fli2.info();
 
@@ -332,8 +332,7 @@ void SI_Game::play_intro()
 		if (speech && !jive)
 		{
 			U7object voc_my_leige("<STATIC>/intro.dat", 16);
-			voc_my_leige.retrieve (&buf, size);
-			buffer = (Uint8 *) buf;
+			buffer = (uint8 *) voc_my_leige.retrieve (size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 			delete [] buffer;
 		}
@@ -365,10 +364,9 @@ void SI_Game::play_intro()
 		if (speech && !jive)
 		{
 			U7object voc_all_we("<STATIC>/intro.dat", 17);
-			voc_all_we.retrieve (&buf, size);
-			buffer = (Uint8 *) buf;
+			buffer = (uint8 *) voc_all_we.retrieve (size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
-			delete [] buf;
+			delete [] buffer;
 		}
 
 		for (; j < 73; j++)
@@ -435,10 +433,9 @@ void SI_Game::play_intro()
 		if (speech && !jive)
 		{
 			U7object voc_indeed("<STATIC>/intro.dat", 18);
-			voc_indeed.retrieve (&buf, size);
-			buffer = (Uint8 *) buf;
+			buffer = (uint8 *) voc_indeed.retrieve(size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
-			delete [] buf;
+			delete [] buffer;
 		}
 
 		next = fli2.play(win, j, j);
@@ -475,7 +472,7 @@ void SI_Game::play_intro()
 
 		// Scroll opens
 		U7object flic3("<STATIC>/intro.dat", 3);
-		flic3.retrieve(&fli_b, flisize);
+		fli_b = flic3.retrieve(flisize);
 		playfli fli3(fli_b+8, flisize-8);
 		fli3.info();
 
@@ -501,8 +498,7 @@ void SI_Game::play_intro()
 		if (speech && !jive)
 		{
 			U7object voc_stand_back("<STATIC>/intro.dat", 19);
-			voc_stand_back.retrieve (&buf, size);
-			buffer = (Uint8 *) buf;
+			buffer = (uint8 *) voc_stand_back.retrieve(size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 			delete [] buffer;
 		}
@@ -529,14 +525,14 @@ void SI_Game::play_intro()
 
 		// Big G speaks
 		U7object flic4("<STATIC>/intro.dat", 4);
-		flic4.retrieve(&fli_b, flisize);
+		fli_b = flic4.retrieve(flisize);
 		playfli fli4(fli_b+8, flisize-8);
 		fli4.info();
 
 		U7object shapes("<STATIC>/intro.dat", 30);
 		size_t	shapesize;
 		char *	shape_buf;
-		shapes.retrieve(&shape_buf, shapesize);
+		shape_buf = shapes.retrieve(shapesize);
 		BufferDataSource gshape_ds(shape_buf+8, shapesize-8);
 		Shape_frame *sf;
 	
@@ -547,8 +543,7 @@ void SI_Game::play_intro()
 		if (speech && !jive)
 		{
 			U7object voc_big_g("<STATIC>/intro.dat", 20);
-			voc_big_g.retrieve (&buf, size);
-			buffer = (Uint8 *) buf;
+			buffer = (uint8 *) voc_big_g.retrieve ( size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 			delete [] buffer;
 		}
@@ -648,7 +643,7 @@ void SI_Game::play_intro()
 		
 		// Tis LBs's Worst fear
 		U7object flic5("<STATIC>/intro.dat", 5);
-		flic5.retrieve(&fli_b, flisize);
+		fli_b = flic5.retrieve(flisize);
 		playfli fli5(fli_b+8, flisize-8);
 		fli5.info();
 
@@ -673,8 +668,7 @@ void SI_Game::play_intro()
 		if (speech && !jive)
 		{
 			U7object voc_tis_my("<STATIC>/intro.dat", 21);
-			voc_tis_my.retrieve (&buf, size);
-			buffer = (Uint8 *) buf;
+			buffer = (uint8 *) voc_tis_my.retrieve(size);
 			Audio::get_ptr()->play (buffer+8, size-8, false);
 			delete [] buffer;
 		}
@@ -706,7 +700,7 @@ void SI_Game::play_intro()
 
 		// Boat 1
 		U7object flic6("<STATIC>/intro.dat", 6);
-		flic6.retrieve(&fli_b, flisize);
+		fli_b = flic6.retrieve(flisize);
 		playfli fli6(fli_b+8, flisize-8);
 		fli6.info();
 
@@ -727,7 +721,7 @@ void SI_Game::play_intro()
 
 		// Boat 2
 		U7object flic7("<STATIC>/intro.dat", 7);
-		flic7.retrieve(&fli_b, flisize);
+		fli_b = flic7.retrieve(flisize);
 		playfli fli7(fli_b+8, flisize-8);
 		fli7.info();
 
@@ -753,7 +747,7 @@ void SI_Game::play_intro()
 
 		// Ultima VII Part 2
 		U7object flic8("<STATIC>/intro.dat", 8);
-		flic8.retrieve(&fli_b, flisize);
+		fli_b = flic8.retrieve(flisize);
 		playfli fli8(fli_b+8, flisize-8);
 		fli8.info();
 
@@ -813,7 +807,7 @@ void SI_Game::end_game(bool success)
 		
 		for(int i=9; i<14; i++) {
 			U7object flic("<STATIC>/intro.dat", i);
-			flic.retrieve(&fli_b, flisize);
+			fli_b = flic.retrieve(flisize);
 			playfli fli1(fli_b+8, flisize-8);
 			fli1.play(win);
 			delete [] fli_b;

@@ -16,8 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef	__Flex_h_
-#define	__Flex_h_
+#ifndef	__FLEX_H_
+#define	__FLEX_H_
 
 #if !AUTOCONFIGURED
 #include "../autoconfig.h"
@@ -25,12 +25,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <vector>
 #include <string>
-#include "common_types.h"
+#include "exult_types.h"
 #include "U7file.h"
 
 
-class	Flex	:	public virtual U7file
-	{
+class Flex : public U7file
+{
 protected:
 	char	title[80];
 	uint32	magic1;
@@ -38,12 +38,13 @@ protected:
 	uint32	magic2;
 	uint32	padding[9];
 	struct Reference
-		{
+	{
 		uint32 offset;
 		uint32 size;
 		Reference() : offset(0),size(0) {};
-		};
+	};
 	std::vector<Reference> object_list;
+
 public:
 	Flex(const std::string &fname);
 	Flex(const Flex &f) : magic1(f.magic1),count(f.count),magic2(f.magic2),object_list(f.object_list)
@@ -51,23 +52,23 @@ public:
 		  std::memcpy(padding,f.padding,sizeof(padding)); }
 	Flex &operator=(const Flex &f)
 		{
-		magic1=f.magic1;
-		count=f.count;
-		magic2=f.magic2;
-		object_list=f.object_list;
-		std::memcpy(title,f.title,sizeof(title));
-		std::memcpy(padding,f.padding,sizeof(padding));
-		return *this;
+			magic1=f.magic1;
+			count=f.count;
+			magic2=f.magic2;
+			object_list=f.object_list;
+			std::memcpy(title,f.title,sizeof(title));
+			std::memcpy(padding,f.padding,sizeof(padding));
+			return *this;
 		}
 		
-	// char *read_object(int objnum,uint32 &length);
-        virtual int     number_of_objects(const char *) { return object_list.size(); };
-        virtual void     retrieve(int objnum,char **,std::size_t *len); // To a memory block
+   virtual uint32	number_of_objects(void) { return object_list.size(); };
+   virtual	char *	retrieve(uint32 objnum,std::size_t &len); // To a memory block
 	virtual const char *get_archive_type() { return "FLEX"; };
+
 private:
 	Flex();	// No default constructor
 	void IndexFlexFile(void);
-	};
+};
 
 
 #endif

@@ -78,7 +78,7 @@ public:
 	friend class Image_buffer16;
 	virtual ~Image_buffer()
 		{
-		delete bits;		// In case Image_window didn't.
+		delete [] bits;		// In case Image_window didn't.
 		}
 	friend class Image_window;
 	unsigned char *get_bits()	// Get ->data.

@@ -52,10 +52,8 @@ void	IFF::IndexIFFFile(void)
 	fp=U7open(filename.c_str(),"rb");
 	fread(ckid,4,1,fp);
 	if(memcmp(ckid,"FORM",4))
-		{
-		// Not an IFF file we recognise
-		throw wrong_file_type_exception(filename,"IFF");
-		}
+		throw wrong_file_type_exception(filename,"IFF");	// Not an IFF file we recognise
+
 #if DEBUG
 	cout << "Okay. It looks like an IFF file chunk" << endl;
 #endif
@@ -67,7 +65,7 @@ void	IFF::IndexIFFFile(void)
 	fseek(fp,4,SEEK_CUR);	// We don't really need to know what the general data type is
 
 
-#if 0
+/*
 -the objects entries
   entry   = type, size, object, [even]
   type    = 4 chars representing the type of this object
@@ -77,24 +75,21 @@ void	IFF::IndexIFFFile(void)
   object  = name, data
   name    = 8 chars (filled with 0s)
   data    = the data of the object
+*/
 
-
-#endif
-
-	while(ftell(fp)<full_length)
-		{
+	while(ftell(fp) < full_length)
+	{
 		Reference	r;
 		char	type[5];
 		memset(type,0,sizeof(type));
-//		bool	even=false;
 
 		fread(type,4,1,fp);	// 4 bytes of type
 		if(type[0]<32)
-			{
+		{
 			// We've missed the target. Try to correct
 			fseek(fp,-3,SEEK_CUR);
 			continue;
-			}
+		}
 			
 		r.size=Read4high(fp);	// 4 bytes for len
 		r.offset=ftell(fp);
@@ -106,32 +101,26 @@ void	IFF::IndexIFFFile(void)
 #endif
 		object_list.push_back(r);
 		fseek(fp,r.offset+r.size,SEEK_SET);
-		}
+	}
 
 	fclose(fp);
 }
 
-void     IFF::retrieve(int objnum,char **buf,size_t *len)
+char *	IFF::retrieve(uint32 objnum, size_t &len)
 {
-	*buf=0;
-	*len=0;
-	if((unsigned)objnum>=object_list.size())
-		{
-		cerr << "objnum too large in read_object()" << endl;
-		throw exult_exception("objnum too large in read_object()");
-		}
-	FILE	*fp=U7open(filename.c_str(),"rb");
-	if(!fp)
-		{
-		cerr << "File open failed in read_object: " << filename << endl;
-		throw exult_exception("File open failed in read_object: "+filename);
-		}
-	fseek(fp,object_list[objnum].offset,SEEK_SET);
-	size_t length=object_list[objnum].size;
-	char	*ret=new char[length];
-	fread(ret,length,1,fp);
+	FILE	*fp;
+	char	*buffer;
+
+	if (objnum >= object_list.size())
+		throw exult_exception("objnum too large in retrieve()");
+
+	fp = U7open(filename.c_str(), "rb");
+	fseek(fp, object_list[objnum].offset, SEEK_SET);
+	len = object_list[objnum].size;
+	buffer = new char[len];
+	fread(buffer, len, 1, fp);
 	fclose(fp);
-	*buf=ret;
-	*len=length;
+
+	return buffer;
 }
 

@@ -240,11 +240,12 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 			        exit_loop = entry->handle_event(event);
 			}			
 		} else if(event.type==SDL_KEYDOWN) {
-		        mouse->hide();
+			mouse->hide();
 			mouse->blit_dirty();
-		        if (!selected) {
-			        // if unselected (by 'MouseOut' event), just re-select
-  		                set_selection(selection);
+			if (!selected)
+			{
+			// if unselected (by 'MouseOut' event), just re-select
+				set_selection(selection);
 				continue;
 			}
 			switch(event.key.keysym.sym) {

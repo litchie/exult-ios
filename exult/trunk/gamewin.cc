@@ -59,6 +59,8 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::istream;
+using std::ifstream;
+using std::ofstream;
 using std::string;
 using std::vector;
 
@@ -189,12 +191,10 @@ void Game_window::init_files()
 					// Read in shape dimensions.
 		shapes.read_info();
 		Segment_file xf(XFORMTBL);	// Read in translucency tables.
-		int len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
+		std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
 		for (int i = 0; i < nxforms; i++)
-			if (!xf.read_segment(i, xforms[nxforms - 1 - i], len))
-				abort("Error reading %s.", XFORMTBL);
-		if (!xf.read_segment(2, invis_xform, len))
-			abort("Error reading %s.", XFORMTBL);
+			xforms[nxforms - 1 - i] = (uint8*)xf.retrieve(i, len);
+		invis_xform = (uint8*)xf.retrieve(2, len);
 		unsigned long timer = SDL_GetTicks();
 		srand(timer);			// Use time to seed rand. generator.
 						// Force clock to start.
