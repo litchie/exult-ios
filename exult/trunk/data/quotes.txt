@@ -29,3 +29,7 @@
 
 \C"Working on Forge (but Love broken now)"
 \L- Jeff
+
+\C"Paladin reproduces infinitely"
+\L- Dominik
+\C(on Jackchaos)
