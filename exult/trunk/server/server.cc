@@ -189,6 +189,9 @@ static void Handle_client_message
 	Game_window *gwin = Game_window::get_game_window();
 	switch (id)
 		{
+	case Exult_server::obj:
+		Game_object::update_from_studio(&data[0], datalen);
+		break;
 	case Exult_server::egg:
 		Egg_object::update_from_studio(&data[0], datalen);
 		break;

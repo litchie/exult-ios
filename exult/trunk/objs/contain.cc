@@ -306,6 +306,8 @@ void Container_game_object::activate
 	int event
 	)
 	{
+	if (edit())
+		return;			// Map-editing.
 	int shnum = get_shapenum();
 	Game_window *gwin = Game_window::get_game_window();
 

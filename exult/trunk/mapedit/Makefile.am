@@ -35,6 +35,7 @@ exult_studio_SOURCES = \
 	dirbrowser.h \
 	eggedit.cc \
 	npcedit.cc \
+	objedit.cc \
 	studio.cc \
 	studio.h \
 	exult_studio.cc

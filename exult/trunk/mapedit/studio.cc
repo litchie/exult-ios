@@ -168,7 +168,7 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), 
 	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
-	npc_ctx(0)
+	npc_ctx(0), objwin(0), obj_draw(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -219,6 +219,9 @@ ExultStudio::~ExultStudio()
 	delete_chunk_browser();
 	delete [] palbuf;
 	palbuf = 0;
+	if (objwin)
+		gtk_widget_destroy(objwin);
+	delete obj_draw;
 	if (eggwin)
 		gtk_widget_destroy(eggwin);
 	delete egg_monster_draw;
@@ -791,9 +794,11 @@ void ExultStudio::read_from_server
 		}
 	cout << "Read " << datalen << " bytes from server" << endl;
 	cout << "ID = " << (int) id << endl;
-	if (id == Exult_server::egg)
+	if (id == Exult_server::obj)
+		open_obj_window(data, datalen);
+	else if (id == Exult_server::egg)
 		open_egg_window(data, datalen);
-	if (id == Exult_server::npc)
+	else if (id == Exult_server::npc)
 		open_npc_window(data, datalen);
 	else if (id == Exult_server::user_responded ||
 		 id == Exult_server::cancel)

@@ -48,6 +48,9 @@ private:
 	GtkWidget		*npcwin;
 	Shape_draw		*npc_draw, *npc_face_draw;
 	int			npc_ctx;
+					// Object editor:
+	GtkWidget		*objwin;
+	Shape_draw		*obj_draw;
 					// Server data.
 	int			server_socket;
 	gint			server_input_tag;
@@ -89,12 +92,21 @@ public:
 	void set_play(gboolean play);
 	void set_tile_grid(gboolean grid);
 	void set_edit_lift(int lift);
+					// Objects:
+	void open_obj_window(unsigned char *data, int datalen);
+	void close_obj_window();
+	int init_obj_window(unsigned char *data, int datalen);
+	int save_obj_window();
+	void show_obj_shape(int x = 0, int y = 0, int w = -1, int h = -1);
+	void set_obj_shape(int shape, int frame);
+					// Eggs:
 	void open_egg_window(unsigned char *data = 0, int datalen = 0);
 	void close_egg_window();
 	int init_egg_window(unsigned char *data, int datalen);
 	int save_egg_window();
 	void show_egg_monster(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_egg_monster(int shape, int frame);
+					// NPC's:
 	void open_npc_window(unsigned char *data = 0, int datalen = 0);
 	void close_npc_window();
 	int init_npc_window(unsigned char *data, int datalen);

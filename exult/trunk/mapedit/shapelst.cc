@@ -226,8 +226,8 @@ gint Shape_chooser::mouse_press
 		if (chooser->info[i].box.has_point(
 					(int) event->x, (int) event->y))
 			{		// Found the box?
-			if (i == old_selected)
-				return TRUE;
+//			if (i == old_selected)
+//				return TRUE;
 					// Indicate we can dra.
 			GtkTargetEntry tents[1];
 			tents[0].target = U7_TARGET_SHAPEID_NAME;

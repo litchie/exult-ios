@@ -64,6 +64,7 @@ class T_Object_list;
 class Game_object : public ShapeID
 	{
 protected:
+	static Game_object *editing;	// Obj. being edited by ExultStudio.
 	unsigned char shape_pos;	// (X,Y) of shape within chunk.
 	unsigned char lift;		// Raise by 4* this number.
 	short quality;			// Some sort of game attribute.
@@ -255,6 +256,9 @@ public:
 		{ return 1; }
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
+	bool edit();			// Edit in ExultStudio.
+					// Saved from ExultStudio.
+	static void update_from_studio(unsigned char *data, int datalen);
 					// Set new NPC schedule.
 	virtual void set_schedule_type(int new_schedule_type,
 						Schedule *newsched = 0)
