@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef WIN32
 #include <getopt.h>
 #include <windows.h>
-#include <getopt.h>
 #include <ole2.h>
 #include "servewin32.h"
 #else
