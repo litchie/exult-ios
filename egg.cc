@@ -57,13 +57,13 @@ Egg_object::Egg_object
 		set_quality(data1&0xff);
 	}
 
-static	int	distance_between_points(int ax,int ay,int az,int bx,int by,int bz)
+static	inline int	distance_between_points(int ax,int ay,int az,int bx,int by,int bz)
 {
 	int	dx(abs(ax-bx)),dy(abs(ay-by)),dz(abs(az-bz));
 	return	(int)sqrt(dx*dx+dy*dy+dz*dz);
 }
 
-static	int	distance_between_points(int ax,int ay,int bx,int by)
+static	inline int	distance_between_points(int ax,int ay,int bx,int by)
 {
 	int	dx(abs(ax-bx)),dy(abs(ay-by));
 	return	(int)sqrt(dx*dx+dy*dy);
