@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effects.h"
 #include "mouse.h"
 #include "Audio.h"
+#include "useval.h"
 #include <iomanip>
 #ifdef XWIN
 #include <signal.h>
@@ -326,223 +327,6 @@ void Scheduled_usecode::handle_event
 	}
 
 /*
- *	Get array size.
- */
-
-int Usecode_value::count_array
-	(
-	const Usecode_value& val
-	)
-	{
-	int i;
-	for (i = 0; val.value.array[i].type != (int) end_of_array_type; i++)
-		;
-	return (i);
-	}
-
-/*
- *	Destructor
- *
- */
-
-Usecode_value::~Usecode_value()
-{
-	if (type == (unsigned char) array_type)
-		delete [] value.array;
-	else if (type == (unsigned char) string_type)
-		delete value.str;
-}
-
-/*
- *	Create a string value.
- */
-
-Usecode_value::Usecode_value
-	(
-	const char *s
-	) : type((unsigned char) string_type)
-	{
-	value.str = s ? strdup(s) : 0; 
-	}
-
-/*
- *	Resize array (or turn single element into an array).
- *
- *	Output:	Always true.
- */
-
-int Usecode_value::resize
-	(
-	int new_size
-	)
-	{
-	if (type != (int) array_type)	// Turn it into an array.
-		{
-		Usecode_value elem(*this);
-		*this = Usecode_value(new_size, &elem);
-		return (1);
-		}
-	int size = count_array(*this);	// Get current size.
-	if (new_size == size)
-		return (1);		// Nothing to do.
-	Usecode_value *newvals = new Usecode_value[new_size + 1];
-	newvals[new_size].type = (unsigned char) end_of_array_type;
-					// Move old values over.
-	int cnt = new_size < size ? new_size : size;
-	for (int i = 0; i < cnt; i++)
-		newvals[i] = value.array[i];
-	delete [] value.array;		// Delete old list.
-	value.array = newvals;		// Store new.
-	return (1);
-	}
-
-/*
- *	Comparator.
- *
- *	Output:	1 if they match, else 0.
- */
-
-int Usecode_value::operator==
-	(
-	const Usecode_value& v2
-	)
-	{
-	if (&v2 == this)
-		return (1);		// Same object.
-	if (v2.type != type)
-		return (0);		// Wrong type.
-	if (type == (int) int_type)
-		return (value.intval == v2.value.intval);
-	else if (type == (int) string_type)
-		return (strcmp(value.str, v2.value.str) == 0);
-	else
-		return (0);
-	}
-
-/*
- *	Search an array for a given value.
- *
- *	Output:	Index if found, else -1.
- */
-
-int Usecode_value::find_elem
-	(
-	const Usecode_value& val
-	)
-	{
-	if (type != array_type)
-		return (-1);		// Not an array.
-	int i;
-	for (i = 0; value.array[i].type != (int) end_of_array_type; i++)
-		if (value.array[i] == val)
-			return (i);
-	return (-1);
-	}
-
-/*
- *	Concatenate two values.
- */
-
-Usecode_value& Usecode_value::concat
-	(
-	Usecode_value& val2		// Concat. val2 onto end.
-	)
-	{
-	Usecode_value *result;
-	int size;			// Size of result.
-	if (type != array_type)		// Not an array?  Create one.
-		{
-				//++++Memory leak here, for sure:++++++
-		result = new Usecode_value(1, this);
-		size = 1;
-		}
-	else
-		{
-		result = this;
-		size = get_array_size();
-		}
-	if (val2.type != array_type)	// Appending a single value?
-		{
-		result->resize(size + 1);
-		result->put_elem(size, val2);
-		}
-	else				// Appending an array.
-		{
-		int size2 = val2.get_array_size();
-		result->resize(size + size2);
-		for (int i = 0; i < size2; i++)
-			result->put_elem(size + i, val2.get_elem(i));
-		}
-	return (*result);
-	}
-
-/*
- *	Given an array and an index, and a 2nd value, add the new value at that
- *	index, or if the new value is an array itself, add its values.
- *
- *	Output:	# elements added.
- */
-
-int Usecode_value::add_values
-	(
-	int index,
-	Usecode_value& val2
-	)
-	{
-	int size = get_array_size();
-	if (!val2.is_array())		// Simple case?
-		{
-		if (index >= size)
-			resize(index + 1);
-		put_elem(index, val2);
-		return (1);
-		}
-					// Add each element.
-	int size2 = val2.get_array_size();
-	if (index + size2 > size)
-		resize(index + size2);
-	for (int i = 0; i < size2; i++)
-		put_elem(index++, val2.get_elem(i));
-	return (size2);			// Return # added.
-	}
-
-/*
- *	Print in ASCII.
- */
-
-void Usecode_value::print
-	(
-	ostream& out
-	)
-	{
-	switch ((Val_type) type)
-		{
-	case int_type:
-		cout << hex << setfill(0x30) << setw(4);
-		out << (value.intval&0xffff);
-		cout << dec;
-		break;
-	case string_type:
-		out << '"' << value.str << '"'; break;
-	case array_type:
-		{
-		out << "[ ";
-		for (int i = 0; value.array[i].type != (int) end_of_array_type;
-									i++)
-			{
-			if (i)
-				out << ", ";
-			value.array[i].print(out);
-			}
-		out << " ]";
-		}
-		break;
-	default:
-		break;
-		}
-	}
-
-/*
  *	Read in a function.
  */
 
@@ -555,39 +339,6 @@ Usecode_function::Usecode_function
 	len = Read2(file);
 	code = new unsigned char[len];	// Allocate buffer & read it in.
 	file.read((char*)code, len);
-	}
-
-/*
- *	Copy another to this.
- */
-
-Usecode_value& Usecode_value::operator=
-	(
-	const Usecode_value& v2
-	)
-	{
-	if (&v2 == this)
-		return *this;
-	if (type == (int) array_type)
-		delete [] value.array;
-	else if (type == (int) string_type)
-		delete value.str;
-	type = v2.type;			// Assign new values.
-	if (type == (int) int_type)
-		value.intval = v2.value.intval;
-	else if (type == (int) string_type)
-		value.str = v2.value.str ? strdup(v2.value.str) : 0;
-	else if (type == (int) array_type)
-		{
-                int tempsize = 1+count_array(v2);
-		value.array = new Usecode_value[tempsize];
-		int i = 0;
-		do
-			value.array[i] = v2.value.array[i];
-		while (value.array[i++].type != 
-					(int) end_of_array_type);
-		}
-	return *this;
 	}
 
 /*
@@ -703,6 +454,30 @@ void Usecode_machine::append_string
 		String = strcpy(newstr, str);
 	}
 
+	inline void Usecode_machine::push(Usecode_value& val)	// Push/pop stack.
+		{ *sp++ = val; }
+	inline Usecode_value Usecode_machine::pop()		// +++++Watch for too many str. copies.
+		{ 
+		if (sp <= stack)
+			stack_error(1);
+		return *--sp; 
+		}
+	inline void Usecode_machine::pushi(long val)		// Push/pop integers.
+		{
+		Usecode_value v(val);
+		push(v);
+		}
+	inline int Usecode_machine::popi()
+		{
+		Usecode_value val = pop();
+		return (val.get_int_value());
+		}
+					// Push/pop strings.
+	inline void Usecode_machine::pushs(char *s)
+		{
+		Usecode_value val(s);
+		push(val);
+		}
 /*
  *	Get a game object from an "itemref", which might be the actual
  *	pointer, or might be -(npc number).
@@ -2568,11 +2343,8 @@ typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intri
 
 #define	USECODE_INTRINSIC_PTR(NAME)	{ &Usecode_machine::UI_ ## NAME, __STRING(NAME) }
 
-struct
-	{
-	UsecodeIntrinsicFn	func;
-	const char *name;
-	} intrinsic_table[]=
+struct Usecode_machine::IntrinsicTableEntry
+	  Usecode_machine::intrinsic_table[]=
 	{
 	USECODE_INTRINSIC_PTR(get_random),	// 0
 	USECODE_INTRINSIC_PTR(execute_usecode_array), // 1
@@ -3479,6 +3251,30 @@ int Usecode_machine::call_usecode_function
 		push(*parm0);
 	run(fun, event);		// Do it.
 	return (1);
+	}
+
+/*
+ *	This is the main entry for outside callers.
+ */
+
+int Usecode_machine::call_usecode
+	(
+	int id, 			// Function #.
+	Game_object *obj,		// Item ref.
+	Usecode_events event
+	)
+	{
+					// Avoid these when already execing.
+	if (call_depth && event == npc_proximity)
+		return (0);
+	Game_object *prev_item = caller_item;
+	caller_item = obj;
+	answers.clear();
+	Usecode_value parm(0);		// They all seem to take 1 parm.
+	int ret = call_usecode_function(id, event, &parm);
+	set_book(0);
+	caller_item = prev_item;
+	return ret;
 	}
 
 /*

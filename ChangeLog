@@ -1,3 +1,7 @@
+2000-06-05  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Allow numeric keys in conversations (like U9).
+
 2000-06-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs.cc (Egg_object): Restore mode after Usecode egg.
