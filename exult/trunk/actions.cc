@@ -226,9 +226,8 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		return speed;
 	Game_window *gwin = Game_window::get_game_window();
 					// Blocked by a door?
-	if (actor->get_abs_tile_coord().distance(tile) == 1 &&
-					// But not a party member.
-	    (/* actor != gwin->get_main_actor() && */ actor->get_party_id() < 0))
+	if (actor->get_abs_tile_coord().distance(tile) == 1)
+					// +++++Check for intelligence?
 		{
 		Game_object *door = Game_object::find_blocking(tile);
 		if (door != 0 && door->is_closed_door() &&
