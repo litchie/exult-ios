@@ -923,8 +923,8 @@ int Game_object::get_rotated_frame
 			curframe = rot[curframe];
 		return curframe;
 		}
-	default:
-		return curframe;
+	default:			// Reflect.  Bit 32==horizontal.
+		return curframe ^ ((quads%2)<<5);
 		}
 	}
 
