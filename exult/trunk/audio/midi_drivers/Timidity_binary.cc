@@ -126,7 +126,7 @@ void	Timidity_binary::player(void)
 #endif
 
 	audiostream->id=Timidity_binary_magic;
-	string	s="timidity -Oru8S -id -T 175 -o- "+newfilename;
+	string	s="timidity -Oru8S -id -s 22050 -o- "+newfilename;
 	FILE *data=popen(s.c_str(),"r");
 	if(!data)
 		return;
@@ -170,7 +170,7 @@ void	Timidity_binary::sfxplayer(void)
 #endif
 
 	audiostream->id=Timidity_binary_magic_sfx;
-	string	s="timidity -Oru8S -id -T 175 -o- "+newfilename;
+	string	s="timidity -Oru8S -id -s 22050 -o- "+newfilename;
 	FILE *data=popen(s.c_str(),"r");
 	if(!data)
 		return;
