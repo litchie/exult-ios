@@ -225,7 +225,7 @@ AC_MSG_CHECKING(whether to enable debug)
 if test x$enable_debug = xyes; then
   AC_MSG_RESULT(yes)
   AC_DEFINE(DEBUG)
-  DEBUG_FLAGS="-O -g -Wunused -Wuninitialized -Woverloaded-virtual"
+  DEBUG_FLAGS="-O -g"
 else
   AC_MSG_RESULT(no)
 fi
@@ -236,7 +236,7 @@ AC_MSG_CHECKING(whether to enable all warnings)
 if test x$enable_warnings = xyes; then
   AC_MSG_RESULT(yes)
   AC_DEFINE(DEBUG)
-  DEBUG_FLAGS="-O -g -Wall"
+  DEBUG_FLAGS="$DEBUG_FLAGS -Wall -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
 else
   AC_MSG_RESULT(no)
 fi
