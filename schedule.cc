@@ -1143,6 +1143,10 @@ bool Sit_schedule::set_action
 		if (!chairobj)
 			return false;
 		}
+	else if (Sit_actor_action::is_occupied(chairobj->get_abs_tile_coord(),
+								actor))
+		return false;		// Given chair is occupied.
+							
 	Tile_coord chairloc = chairobj->get_abs_tile_coord();
 	switch (chairobj->get_framenum()%4)
 		{			// Figure where to sit.
@@ -1190,8 +1194,13 @@ void Desk_schedule::now_what
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) != Actor::sit_frame)
 		{
-		Sit_schedule::set_action(npc, chair, 0);
-		npc->start(250, 0);
+		if (!Sit_schedule::set_action(npc, chair, 0))
+			{
+			chair = 0;	// Look for any nearby chair.
+			npc->start(200, 5000);	// Failed?  Try again later.
+			}
+		else
+			npc->start(250, 0);
 		}
 	else				// Stand up a second.
 		{
