@@ -113,7 +113,7 @@ static void detect_winnt()
 	GetVersionEx (&info);
 
 	// Platform is NT
-	//if (info.dwPlatformId == 2) bWinNT = TRUE;
+	if (info.dwPlatformId == 2) bWinNT = TRUE;
 }
 
 
