@@ -216,7 +216,7 @@ void Scheduled_usecode::handle_event
 					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode <= 0x38)
 				{	// Step in dir. opcode&7.????
-				static short offsets[8] = {
+				static short offsets[16] = {
 					-1,0, -1,1, 1,0, 1,-1, 0,-1,
 					-1,-1, -1,0, -1,1 };
 //++++++++++++
