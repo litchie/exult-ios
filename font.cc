@@ -137,9 +137,9 @@ void FontManager::add_font(const char *name, const char *archive, int index, int
 {
 #if DEBUG
 	if(fonts[name]!=0)
-		cerr << "font " << name << " already here" << endl;
+		cout << "font " << name << " already here" << endl;
 	else
-		cerr << "adding font " << name << endl;
+		cout << "adding font " << name << endl;
 #endif
 	Font *font = new Font(archive, index, hlead, vlead);
 	

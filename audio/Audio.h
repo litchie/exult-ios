@@ -42,8 +42,7 @@ class Audio
 private:
 	static	Audio	*self;
 	bool speech_enabled, music_enabled, effects_enabled;
-	Audio(const Audio &) { throw replication_error("Audio class cannot be duplicated"); };
-	Audio &operator=(const Audio &) { throw replication_error("Audio class cannot be duplicated"); return *this; };
+	UNREPLICATABLE_CLASS(Audio);
 public:
     Audio();
     void	Init(void);
