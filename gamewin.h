@@ -569,7 +569,7 @@ public:
 		{ return faded_out; }
 	void flash_palette_red();	// Flash red for a moment.
 					// Set desired palette.
-	void set_palette(int pal_num, int new_brightness = -1);
+	void set_palette(int pal_num, int new_brightness = -1, bool repaint=true);
 	int get_brightness()		// Percentage:  100 = normal.
 		{ return brightness; }
 	void brighten(int per);		// Brighten/darken by percentage for

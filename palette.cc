@@ -45,11 +45,13 @@ Palette::~Palette()
 	{
 	}
 	
-void Palette::apply()
-	{
-		win->set_palette(pal1, max_val, brightness);
+void Palette::apply(bool repaint)
+{
+	win->set_palette(pal1, max_val, brightness);
+	if (repaint)
 		win->show();
-	}
+}
+
 /*
  *	Returns 0 if file not found.
  */
