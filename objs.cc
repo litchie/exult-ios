@@ -76,23 +76,6 @@ static int Has_quantity
 const int MAX_QUANTITY = 0x7f;		// Highest quantity possible.
 
 /*
- *	Write the common IREG data for an entry.
- */
-
-void Game_object::write_common_ireg
-	(
-	unsigned char *buf		// 4-byte buffer to be filled.
-	)
-	{
-					// Coords:
-	buf[0] = (get_cx() << 4) | get_tx();
-	buf[1] = (get_cy() << 4) | get_ty();
-	int shapenum = get_shapenum(), framenum = get_framenum();
-	buf[2] = shapenum&0xff;
-	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
-	}
-
-/*
  *	Get the quantity.
  */
 
@@ -483,6 +466,23 @@ int Game_object::lt
 			return (0);
 		}
 	return (-1);
+	}
+
+/*
+ *	Write the common IREG data for an entry.
+ */
+
+void Game_object::write_common_ireg
+	(
+	unsigned char *buf		// 4-byte buffer to be filled.
+	)
+	{
+					// Coords:
+	buf[0] = (get_cx() << 4) | get_tx();
+	buf[1] = (get_cy() << 4) | get_ty();
+	int shapenum = get_shapenum(), framenum = get_framenum();
+	buf[2] = shapenum&0xff;
+	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
 	}
 
 /*
