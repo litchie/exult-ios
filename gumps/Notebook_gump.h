@@ -31,28 +31,30 @@ class One_note
 	int lat, lng;			// Latitute, longitude where written.
 	char *text;			// Text, 0-delimited.
 	int textlen;			// Length, not counting ending NULL.
+	int textmax;			// Max. space.
 public:
 	friend class Notebook_gump;
 	One_note() : day(0), hour(0), minute(0), lat(0), lng(0), 
-							text(0), textlen(0)
+					text(0), textlen(0), textmax(0)
 		{  }
 	void set(int d, int h, int m, int la, int ln, char *txt = 0);
 	One_note(int d, int h, int m, int la, int ln, char *txt = 0) : text(0)
 		{ set(d, h, m, la, ln, txt); }
 	~One_note()
 		{ delete [] text; }
+	void insert(int chr, int offset);	// Insert text.
 };
 
 /*
- *	Info. for top left page.
+ *	Info. for top of a page.
  */
-class Notebook_top_left
+class Notebook_top
 {
 	int notenum;
 	int offset;
 public:
 	friend class Notebook_gump;
-	Notebook_top_left(int n = 0, int o = 0) : notenum(n), offset(o)
+	Notebook_top(int n = 0, int o = 0) : notenum(n), offset(o)
 		{  }
 };
 
@@ -63,8 +65,8 @@ class Notebook_gump : public Gump
 {
 	UNREPLICATABLE_CLASS(Notebook_gump);
 	static vector<One_note *> notes;// The text.
-					// Indexed by page#/2:
-	static vector<Notebook_top_left> page_info;
+					// Indexed by page#.
+	static vector<Notebook_top> page_info;
 	static bool initialized;
 	int curpage;			// Current page # (from 0).
 	Cursor_info cursor;		// Cursor loc. within current page.
