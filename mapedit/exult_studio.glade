@@ -7153,7 +7153,7 @@ Coordinates</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="button11">
+	    <widget class="GtkButton" id="npc_cancel_btn">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>
