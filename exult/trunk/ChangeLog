@@ -1,3 +1,6 @@
+2002-04-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mapedit/shapelst.*: don't take address of overloaded function
+
 2002-04-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/studio.cc (ExultStudio): Copy files from
