@@ -35,6 +35,10 @@ binary-arch: checkroot build
 	make
 	cp exult debian/tmp/usr/games/exult
 	cp data/*.flx debian/tmp/usr/lib/games/exult
+	# Documentation
+	gzip -c README > debian/tmp/usr/doc/exult/README.gz
+	gzip -c AUTHORS > debian/tmp/usr/doc/exult/AUTHORS.gz
+	gzip -c COPYING > debian/tmp/usr/doc/exult/COPYING.gz
 # Must have debmake installed for this to work. Otherwise please copy
 # /usr/bin/debstd into the debian directory and change debstd to debian/debstd
 	debstd 
