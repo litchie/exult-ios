@@ -123,6 +123,11 @@ public:
 	Ireg_game_object *create_ireg_object(int shnum, int frnum);
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
+					// Locate chunk with desired terrain.
+	bool locate_terrain(int tnum, int& cx, int& cy, bool upwards = false);
+	bool swap_terrains(int tnum);	// Swap adjacent terrain #'s.
+					// Insert new terrain after 'tnum'.
+	bool insert_terrain(int tnum, bool dup = false);
 	};
 
 #endif

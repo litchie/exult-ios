@@ -1,5 +1,7 @@
 2001-12-27  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamemap.cc,gamemap.h (public): Added terrain-list modification
+	methods.
 	* gamemap.cc,gamemap.h (public): Many map methods moved here from
 	Game_window.
 
