@@ -526,7 +526,7 @@ public:
 	virtual void rotate_colors(int first, int num, int upd)
 		{ ibuf->rotate_colors(surface, first, num, upd); }
 					// Resize event occurred.
-	void resized(unsigned int neww, unsigned int nehh);
+	void resized(unsigned int neww, unsigned int nehh, unsigned int newsc);
 	void show();			// Repaint entire window.
 					// Repaint rectangle.
 	void show(int x, int y, int w, int h);

@@ -53,6 +53,8 @@ public:
 	virtual void paint(Game_window *gwin);
 	virtual int is_weather()	// Need to distinguish weather.
 		{ return 0; }
+	virtual int is_text()
+		{ return 0; }
 	};
 
 /*
@@ -120,6 +122,8 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Render.
 	virtual void paint(Game_window *gwin);
+	virtual int is_text()
+		{ return 1; }
 	};
 
 /*

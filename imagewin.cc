@@ -928,15 +928,17 @@ void Image_window::free_surface
 void Image_window::resized
 	(
 	unsigned int neww, 
-	unsigned int newh
+	unsigned int newh,
+	unsigned int newsc
 	)
 	{
 	if (surface)
 		{
-		if (neww == ibuf->width && newh == ibuf->height)
+		if (neww == ibuf->width && newh == ibuf->height && newsc == scale)
 			return;		// Nothing changed.
 		free_surface();		// Delete old image.
 		}
+	scale = newsc;
 	create_surface(neww, newh);	// Create new one.
 	}
 
