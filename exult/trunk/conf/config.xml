@@ -1,5 +1,7 @@
 <config>
+	<!-- Just a comment -->
 	<audio>
+		<!-- Just another comment -->
 		<enabled> yes </>
 		<speech>
 			<enabled> yes </enabled>
@@ -11,6 +13,7 @@
 		</midi>
 	</audio>
 	<disk>
+		<!-- Yet a third comment -->
 		<u7path>/home/dancer/projects/u7/</u7path>
 	</disk>
 	<newform option="something">newstuff</newform>

@@ -130,10 +130,14 @@ string	XMLnode::dump(int depth)
 		if(content.length())
 			s += "\n";
 
+		if(!no_close)
+		{
 		s += string(depth,' ');
-		s += "</";
-		s += close_tag(id);
-		s += ">\n";
+		
+			s += "</";
+			s += close_tag(id);
+			s += ">\n";
+		}
 	}
 	
 	return s;
@@ -282,7 +286,7 @@ void	XMLnode::xmlparse(string &s,std::size_t &pos)
 					// No. Close tag.
 					while(s[pos]!='>')
 						pos++;
-					pos++;
+					++pos;
 					trim(content);
 					return;
 				}
@@ -301,6 +305,12 @@ void	XMLnode::xmlparse(string &s,std::size_t &pos)
 						++pos;
 						return; // An empty tag
 					}
+				}
+				else if((id[0]=='!') && (id[1]=='-') && (id[2]=='-'))
+				{
+					++pos;
+					no_close=true;
+					return;
 				}
 				++pos;
 				intag = false;
