@@ -1,4 +1,7 @@
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
+	* Never call the mixer object through it's pointer without verifying the validity of that pointer. Should fix occasional segfault at shutdown
+
+2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
 	* Create newstrdup() in gumps.cc as an interim solution. Goal is to encapsulate all char arrays into an efficient storage unit (coming soon. Be patient). For now we lose strdup to avoid the mixed memory models. newstrdup() will throw std::invalid_argument() if handed a NULL.
 	* Change all strdup()'s to newstrdup()
 	* Change free() for all strdup'ed() blocks to delete []
