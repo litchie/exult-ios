@@ -1,6 +1,8 @@
 2004-12-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: don't let avatar move if right clicking on gump to close it
 	  (based on patch #1088000)
+	* exult.cc: wait for possible dblclick before showing item info when
+	  not in map-edit mode (based on patch #1088157)
 
 2004-12-01    <jeff@mini.nerble.net>
 
