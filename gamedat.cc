@@ -266,7 +266,8 @@ void Game_window::read_save_names
 		{
 		char fname[50];		// Set up name.
 		sprintf(fname, SAVENAME, i);
-		ifstream in(fname);
+		ifstream in;
+		U7open(in, fname);
 		char buf[0x50];		// It's at start of file.
 		memset(buf, 0, sizeof(buf));
 		in.read(buf, sizeof(buf) - 1);
