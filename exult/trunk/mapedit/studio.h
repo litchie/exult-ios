@@ -43,7 +43,7 @@ public:
 		{ return self; }
 		
 	void set_browser_frame_name(const char *name);	
-
+	void choose_static_dir();
 	void create_shape_browser(const char *fname);
 	void delete_shape_browser();
 	void create_palette_browser();

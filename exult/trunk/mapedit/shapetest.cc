@@ -98,7 +98,8 @@ int main
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(topwin), vbox);
 	gtk_widget_show(vbox);
-	chooser = new Shape_chooser(ifile, names, 400, 64);
+	chooser = new Shape_chooser(ifile, 400, 64);
+	chooser->set_shape_names(names);
 	gtk_box_pack_start(GTK_BOX(vbox), chooser->get_widget(), TRUE, TRUE, 0);
 	gtk_widget_show(topwin);	// Show top window.
 	gtk_main();

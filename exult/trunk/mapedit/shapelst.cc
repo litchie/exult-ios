@@ -113,7 +113,7 @@ void Shape_chooser::render
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width, winh = draw->allocation.height;
 					// Provide more than enough room.
-	info = new Shape_info[2*winw/8];
+	info = new Shape_info[1024];
 					// Clear window first.
 	iwin->fill8(0);			// ++++Which color?
 	int x = 0;
@@ -121,35 +121,43 @@ void Shape_chooser::render
 	Shape_frame *shape = ifile->get_shape(shapenum, 0);
 	int sw;
 	info_cnt = 0;			// Count them.
-	while (shape && x + (sw = shape->get_width()) <= winw)
-		{
+	int curr_y = 0;
+	int row_h = 0;
+	do {
+		while (shape && x + (sw = shape->get_width()) <= winw) {
 					// Get height, top y-coord.
-		int sh = shape->get_height();
-		int sy = winh - sh - border;
-		shape->paint(iwin, x + shape->get_xleft(),
-						sy + shape->get_yabove());
-		if (sh > winh)
-			{
-			sy += sh - winh;
-			sh = winh;
+			int sh = shape->get_height();
+			if(sh>row_h)
+				row_h = sh;
+			//int sy = winh - sh - border;
+			int sy = curr_y+border;
+			shape->paint(iwin, x + shape->get_xleft(),
+							sy + shape->get_yabove());
+			if (sh > winh) {
+				sy += sh - winh;
+				sh = winh;
 			}
-					// Store info. about where drawn.
-		info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
-		if (shapenum == selshape)
-					// Found the selected shape.
-			new_selected = info_cnt;
-		shapenum++;		// Next shape.
-		framenum = shapenum == selshape ? selframe : 0;
-		shape = shapenum >= num_shapes ? 0 
-				: ifile->get_shape(shapenum, framenum);
-		x += sw + border;
-		info_cnt++;
+						// Store info. about where drawn.
+			info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
+			if (shapenum == selshape)
+						// Found the selected shape.
+				new_selected = info_cnt;
+			shapenum++;		// Next shape.
+			framenum = shapenum == selshape ? selframe : 0;
+			shape = shapenum >= num_shapes ? 0 
+					: ifile->get_shape(shapenum, framenum);
+			x += sw + border;
+			info_cnt++;
 		}
+		curr_y += row_h + border;
+		x = 0;
+	} while(shape && (curr_y+72<winh));
 	if (new_selected == -1)
 		unselect(false);
 	else
 		select(new_selected);
-	}
+}
+	
 
 /*
  *	Configure the viewing window.
@@ -409,10 +417,9 @@ cout << "Frame changed to " << adj->value << '\n';
 Shape_chooser::Shape_chooser
 	(
 	Vga_file *i,			// Where they're kept.
-	char **nms,			// Shape names, or null.
 	int w, int h			// Dimensions.
-	) : ifile(i), names(nms),
-		iwin(0), shapenum0(0), palette(0),
+	) : ifile(i),
+		iwin(0), shapenum0(0), palette(0), names(0),
 		info(0), info_cnt(0), selected(-1), sel_changed(0)
 	{
 	U7object pal("static/palettes.flx", 0);
@@ -428,6 +435,7 @@ Shape_chooser::Shape_chooser
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	chooser = vbox; // This is our "widget"
 	gtk_widget_show(vbox);
+	
 	num_shapes = ifile->get_num_shapes();
 					// A frame looks nice.
 	GtkWidget *frame = gtk_frame_new(NULL);
@@ -508,9 +516,15 @@ Shape_chooser::~Shape_chooser
 	)
 	{
 	gdk_rgb_cmap_free(palette);
+	gtk_widget_destroy(chooser);
 	delete [] info;
 	delete iwin;
 	}
+	
+void Shape_chooser::set_shape_names(char **nms)
+{
+	names = nms;
+}
 
 /*
  *	Unselect.

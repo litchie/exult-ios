@@ -42,6 +42,13 @@ void on_filelist_select_row(GtkCList        *clist,
 	ExultStudio::get_instance()->create_shape_browser(text);
 }
 
+void
+on_open_static_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->choose_static_dir();
+}
+
 ExultStudio::ExultStudio(int argc, char **argv)
 {
 	// Initialize the various subsystems
@@ -62,6 +69,9 @@ ExultStudio::ExultStudio(int argc, char **argv)
 	temp = glade_xml_get_widget( app_xml, "file_list" );
 	gtk_signal_connect(GTK_OBJECT(temp), "select_row",
 				GTK_SIGNAL_FUNC(on_filelist_select_row), this);
+	temp = glade_xml_get_widget( app_xml, "open_static" );
+	gtk_signal_connect(GTK_OBJECT(temp), "activate",
+				GTK_SIGNAL_FUNC(on_open_static_activate), this);
 	
 	// More setting up...
 	gtk_widget_show( app );
@@ -75,7 +85,6 @@ ExultStudio::~ExultStudio()
 	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 	delete_shape_browser();
-	delete paled;
 	self = 0;
 }
 
@@ -109,7 +118,8 @@ void ExultStudio::create_shape_browser(const char *fname)
 	
 	GtkWidget *browser_box = glade_xml_get_widget( app_xml, "browser_box" );
 	gtk_widget_show( browser_box );
-	chooser = new Shape_chooser(ifile, names, 400, 64);
+	chooser = new Shape_chooser(ifile, 400, 64);
+	chooser->set_shape_names(names);
 	gtk_box_pack_start(GTK_BOX(browser_box), chooser->get_widget(), TRUE, TRUE, 0);
 	set_browser_frame_name("Shape Browser");
 }
@@ -117,7 +127,6 @@ void ExultStudio::create_shape_browser(const char *fname)
 void ExultStudio::delete_shape_browser()
 {
 	if(chooser) {
-		gtk_widget_destroy(chooser->get_widget());
 		delete chooser;
 		chooser = 0;
 		int num_shapes = ifile->get_num_shapes();
@@ -146,6 +155,11 @@ void ExultStudio::create_palette_browser()
 	paled = new Palette_edit(colors, palette_browser_box, 128, 128);	
 }
 
+void ExultStudio::choose_static_dir()
+{
+
+}
+
 void ExultStudio::scan_static_path()
 {
 	GtkWidget *filelist = glade_xml_get_widget( app_xml, "file_list" );
@@ -157,8 +171,9 @@ void ExultStudio::scan_static_path()
 	gtk_clist_clear( GTK_CLIST( filelist ) );
 	while(entry=readdir(dir)) {
 		char *name = entry->d_name;
-		if(!strcmp(name,".")||!strcmp(name,".."))
+		if(!strcmp(name,".")||!strcmp(name,"..")||!strstr(name,".vga"))
 			continue;
+		
 		char *text[2];
 		text[0] = name;
 		text[1] = "N/A";
