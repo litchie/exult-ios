@@ -338,6 +338,7 @@ void ActionSIIntro(int *params)
 	game->set_jive();
 	game->play_intro();
 	game->clear_jive();
+	gwin->clear_screen(true);
 	gwin->set_palette(0);
 	gwin->paint();
 	gwin->fade_palette (50, 1, 0);
@@ -348,6 +349,7 @@ void ActionSIIntro(int *params)
 void ActionEndgame(int *params)
 {
 	game->end_game(params[0] != 1);
+	gwin->clear_screen(true);
 	gwin->set_palette(0);
 	gwin->paint();
 	gwin->fade_palette (50, 1, 0);

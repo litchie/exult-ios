@@ -216,9 +216,13 @@ void Game_window::set_window_size(int width, int height, int scale, int scaler)
 	
 }
 
-void Game_window::clear_screen()
+void Game_window::clear_screen(bool update)
 {
 	win->fill8(0,get_width(),get_height(),0,0);
+
+	// update screen
+	if (update)
+		show(1);
 }
 
 

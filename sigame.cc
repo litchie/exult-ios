@@ -163,6 +163,8 @@ void SI_Game::play_intro()
 		Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
 		bool speech = Audio::get_ptr()->is_speech_enabled();
+
+		gwin->clear_screen(true);
 		
 		Audio::get_ptr()->stop_music();
 
