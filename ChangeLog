@@ -1,3 +1,8 @@
+2000-09-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs.cc (Chunk_object_list): Dungeon rendering works, except
+	palette change still to be implemented.
+
 2000-09-08  Jeff Freedman  <jeff@patches.simutech.com>
 
 	* Split rendering routines off into 'gamerend.cc'.

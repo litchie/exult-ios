@@ -2593,6 +2593,29 @@ void Chunk_object_list::try_all_eggs
 	}
 
 /*
+ *	Add a rectangle of dungeon tiles.
+ */
+
+void Chunk_object_list::add_dungeon_bits
+	(
+	Rectangle& tiles
+	)
+	{
+	if (!dungeon_bits)
+		{			// First one found.
+		dungeon_bits = new unsigned char[256/8];
+		memset(dungeon_bits, 0, 256/8);
+		}
+	int endy = tiles.y + tiles.h, endx = tiles.x + tiles.w;
+	for (int ty = tiles.y; ty < endy; ty++)
+		for (int tx = tiles.x; tx < endx; tx++)
+			{
+			int tnum = ty*tiles_per_chunk + tx;
+			dungeon_bits[tnum/8] |= (1 << (tnum%8));
+			}
+	}
+
+/*
  *	Set up the dungeon flags (after IFIX objects read).
  */
 
@@ -2600,8 +2623,7 @@ void Chunk_object_list::setup_dungeon_bits
 	(
 	)
 	{
-	delete dungeon_bits;
-	dungeon_bits = 0;
+	Game_window *gwin = Game_window::get_game_window();
 	Object_iterator next(this);
 	Game_object *each;
 	while ((each = next.get_next()) != 0)
@@ -2611,14 +2633,14 @@ void Chunk_object_list::setup_dungeon_bits
 		if (shnum == 983 || shnum == 969 || shnum == 183 ||
 		    shnum == 182 || shnum == 180 || shnum == 324)
 			{
-			if (!dungeon_bits)
-				{	// First one found.
-				dungeon_bits = new unsigned char[256/8];
-				memset(dungeon_bits, 0, 256/8);
-				}
-			int tnum = each->get_ty()*tiles_per_chunk + 
-							each->get_tx();
-			dungeon_bits[tnum/8] |= (1 << (tnum%8));
+			Rectangle area = each->get_footprint();
+					// Go through interesected chunks.
+			Chunk_intersect_iterator next_chunk(area);
+			Rectangle tiles;// Rel. tiles.
+			int cx, cy;
+			while (next_chunk.get_next(tiles, cx, cy))
+				gwin->get_objects(cx, cy)->add_dungeon_bits(
+								tiles);
 			}
 		}
 	}
