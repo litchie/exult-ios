@@ -270,7 +270,9 @@ void Gump_manager::add_gump
 	}
 
 	Gump *new_gump = 0;
-	Actor *npc = obj->as_actor();
+	Actor *npc = 0;
+    if (obj)
+        npc = obj->as_actor();
 	if (npc && paperdoll == 2)
 		new_gump = new Paperdoll_gump(npc, x, y, npc->get_npc_num());
 	else if (npc && paperdoll) 
