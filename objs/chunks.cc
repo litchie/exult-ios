@@ -360,7 +360,7 @@ int Chunk_cache::is_blocked
 	int tx, int ty,			// Square to test.
 	int& new_lift,			// New lift returned.
 	const int move_flags,
-	int max_drop			// Max. drop allowed.
+	int max_drop			// Max. drop/rise allowed.
 	)
 {
 
@@ -373,10 +373,41 @@ int Chunk_cache::is_blocked
 	}
 					// Get bits.
 	unsigned short tflags = blocked[ty*c_tiles_per_chunk + tx];
-
-	int new_high;
-	if (tflags & (1 << lift))	// Something there?
-		{			// Not flying?
+					// Figure max lift allowed.
+	int max_lift = lift + ((move_flags & MOVE_FLY) ? max_drop : 1);
+	if (max_lift > 15)
+		max_lift = 15;		// As high as we can go.
+	for (new_lift = lift; new_lift <= max_lift; new_lift++)
+		{
+		if ((tflags & (1 << new_lift)) == 0)
+			{		// Not blocked?
+			int new_high = get_lowest_blocked(new_lift, tflags);
+					// Not blocked above?
+			if (new_high == -1 || new_high >= (new_lift + height))
+				break;	// Okay.
+			}
+		}
+	if (new_lift > max_lift)// Spot not found?
+		return 1;		// Blocked.
+	if (new_lift == lift)		// Not blocked?  See if falling.
+		{
+		new_lift =  (move_flags & MOVE_NODROP) ? lift :
+				get_highest_blocked(lift, tflags) + 1;
+					// Don't allow fall of > max_drop.
+		if (lift - new_lift > max_drop)
+			{		// Map-editing?  Suspend in air there.
+			if (move_flags & MOVE_MAPEDIT)
+				new_lift = lift - max_drop;
+			else
+				return 1;
+			}
+		int new_high = get_lowest_blocked (new_lift, tflags);
+	
+		// Make sure that where we want to go is tall enough for us
+		if (new_high != -1 && new_high < (new_lift + height)) 
+			return 1;
+		}
+#if 0	/* +++++ Old way */
 		if (!(move_flags & MOVE_FLY))		
 			{
 			new_lift = lift + 1;	// Maybe we can step up.
@@ -420,11 +451,12 @@ int Chunk_cache::is_blocked
 			else
 				return 1;
 			}
-		new_high = get_lowest_blocked (new_lift, tflags);
+		int new_high = get_lowest_blocked (new_lift, tflags);
 	
 		// Make sure that where we want to go is tall enough for us
 		if (new_high != -1 && new_high < (new_lift + height)) return 1;
 		}
+#endif
 		
 	
 	// Found a new place to go, lets test if we can actually move there
@@ -791,7 +823,7 @@ int Map_chunk::is_blocked
 	int xtiles, int ytiles,		// Width, height in tiles.
 	int& new_lift,			// New lift returned.
 	const int move_flags,
-	int max_drop			// Max. drop allowed.
+	int max_drop			// Max. drop/rise allowed.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -832,7 +864,7 @@ int Map_chunk::is_blocked
 	Tile_coord& tile,
 	int height,			// Height in tiles to check.
 	const int move_flags,
-	int max_drop
+	int max_drop			// Max. drop/rise allowed.
 	)
 	{
 					// Get chunk tile is in.
@@ -862,7 +894,7 @@ int Map_chunk::is_blocked
 	Tile_coord from,		// Stepping from here.
 	Tile_coord& to,			// Stepping to here.  Tz updated.
 	const int move_flags,
-	int max_drop			// Max drop allowed.
+	int max_drop			// Max drop/rise allowed.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -1037,7 +1069,9 @@ Tile_coord Map_chunk::find_spot
 	int xs = info.get_3d_xtiles(framenum);
 	int ys = info.get_3d_ytiles(framenum);
 	int zs = info.get_3d_height();
-	const int mflags = MOVE_WALK;
+					// The 'MOVE_FLY' flag really means
+					//   we can look upwards by max_drop.
+	const int mflags = MOVE_WALK|MOVE_FLY;
 	int new_lift;
 					// Start with original position.
 	if (!Map_chunk::is_blocked(zs, pos.tz, pos.tx - xs + 1,
