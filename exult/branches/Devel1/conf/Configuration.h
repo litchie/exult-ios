@@ -43,6 +43,11 @@ public:
 	void    set(const char *key,const string &value,bool write_to_file);
 	void    set(const char *key,int,bool write_to_file);
 
+	// Return a list of keys that are subsidiary to the supplied
+	// key
+	vector<string>	list(string &key);
+	vector<string>	list(const char *key);
+
 	string	dump(void); // Assembles a readable representation
 
 	void	write_back(void);

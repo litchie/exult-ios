@@ -68,3 +68,35 @@ string	&XMLnode::reference(string &h,bool &exists)
 	return dummy;
 }
 
+
+XMLnode *XMLnode::subtree(string &h)
+{
+	if(h.find('/')==string::npos)
+		{
+		// Must refer to me.
+		if(entity.id==h)
+			{
+			return this;
+			}
+		else
+			{
+			return 0;
+			}
+		}
+	// Otherwise we want to split the string at the first /
+	// then locate the branch to walk, and pass the rest
+	// down.
+
+	string k;
+	k=h.substr(h.find('/')+1);
+	string k2=k.substr(0,k.find('/'));
+	for(vector<XMLnode>::iterator it=nodelist.begin();
+		it!=nodelist.end();++it)
+		{
+		if(it->entity.id==k2)
+			return it->subtree(k);
+		}
+
+	return 0;
+}
+
