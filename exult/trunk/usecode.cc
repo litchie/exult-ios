@@ -1139,11 +1139,14 @@ USECODE_FUNCTION(get_npc_prop)
 }
 
 USECODE_FUNCTION(set_npc_prop)
-	// Set NPC prop (item, prop_id, value).
+	// Set NPC prop (item, prop_id, delta_value).
 	Game_object *obj = get_item(parms[0].get_int_value());
 	if (obj)
-		obj->set_property(parms[1].get_int_value(),
-				parms[2].get_int_value());
+		{			// NOTE: 3rd parm. is a delta!
+		int prop = parms[1].get_int_value();
+		obj->set_property(prop, obj->get_property(prop) +
+						parms[2].get_int_value());
+		}
 	USECODE_RETURN(no_ret);
 }
 
