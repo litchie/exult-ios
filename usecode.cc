@@ -96,6 +96,18 @@ int Usecode_value::count_array
 	}
 
 /*
+ *	Create a string value.
+ */
+
+Usecode_value::Usecode_value
+	(
+	const char *s
+	) : type((unsigned char) string_type)
+	{
+	value.str = s ? strdup(s) : 0; 
+	}
+
+/*
  *	Resize array.
  *
  *	Output:	false if not an array.
@@ -250,6 +262,38 @@ Usecode_function::Usecode_function
 	len = Read2(file);
 	code = new unsigned char[len];	// Allocate buffer & read it in.
 	file.read(code, len);
+	}
+
+/*
+ *	Copy another to this.
+ */
+
+Usecode_value& Usecode_value::operator=
+	(
+	const Usecode_value& v2
+	)
+	{
+	if (&v2 == this)
+		return *this;
+	if (type == (int) array_type)
+		delete [] value.array;
+	else if (type == (int) string_type)
+		delete value.str;
+	type = v2.type;			// Assign new values.
+	if (type == (int) int_type)
+		value.intval = v2.value.intval;
+	else if (type == (int) string_type)
+		value.str = v2.value.str ? strdup(v2.value.str) : 0;
+	else if (type == (int) array_type)
+		{
+		value.array = new Usecode_value[1+count_array(v2)];
+		int i = 0;
+		do
+			value.array[i] = v2.value.array[i];
+		while (value.array[i++].type != 
+					(int) end_of_array_type);
+		}
+	return *this;
 	}
 
 /*
@@ -2025,15 +2069,58 @@ void Usecode_machine::run
 				user_choice = "";
 			int cnt = Read2(ip);	// # strings.
 			offset = (short) Read2(ip);
-			while (cnt-- && strcmp(pops(), user_choice) != 0)
-				;
+			while (cnt--)
+				{
+				Usecode_value s = pop();
+				char *str = s.get_str_value();
+				if (str && strcmp(str, user_choice) == 0)
+					break;
+				}
 			if (cnt == -1)	// Jump if no match.
 				ip += offset;
 			}
 			break;
-		case 0x09:		// ADD.+++++Handle strings here.
-			pushi(popi() + popi());
+		case 0x09:		// ADD.
+			{
+			char buf[300];
+			Usecode_value v2 = pop();
+			Usecode_value v1 = pop();
+			Usecode_value sum(0);
+			if (v1.get_type() == Usecode_value::int_type)
+				{
+				if (v2.get_type() == Usecode_value::int_type)
+					sum = Usecode_value(v1.get_int_value()
+							+ v2.get_int_value());
+				else if (v2.get_type() == 
+						Usecode_value::string_type)
+					{
+					sprintf(buf, "%d%s", 
+						v1.get_int_value(),
+						v2.get_str_value());
+					sum = Usecode_value(buf);
+					}
+				}
+			else if (v1.get_type() == Usecode_value::string_type)
+				{
+				if (v2.get_type() == Usecode_value::int_type)
+					{
+					sprintf(buf, "%s%d", 
+							v1.get_str_value(),
+							v2.get_int_value());
+					sum = Usecode_value(buf);
+					}
+				else if (v2.get_type() == 
+						Usecode_value::string_type)
+					{
+					sprintf(buf, "%s%s", 
+							v1.get_str_value(),
+							v2.get_str_value());
+					sum = Usecode_value(buf);
+					}
+				}
+			push(sum);
 			break;
+			}
 		case 0x0a:		// SUB.
 			sval = popi();
 			pushi(popi() - sval);
