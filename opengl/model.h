@@ -30,17 +30,17 @@ public:
 /*
  *	Vector operations:
  */
-Vector3 Cross(Vector3 a, Vector3 b)
+inline Vector3 Cross(Vector3 a, Vector3 b)
 	{ return Vector3(a.y*b.z - a.z*b.y, 
 			 a.z*b.x - a.x*b.z,
 			 a.x*b.y - a.y*b.x); }
-float Dot(Vector3 a, Vector3 b)
+inline float Dot(Vector3 a, Vector3 b)
 	{ return a.x*b.x + a.y*b.y + a.z*b.z; }
-Vector3 operator-(Vector3 a, Vector3 b)
+inline Vector3 operator-(Vector3 a, Vector3 b)
 	{ return Vector3(a.x - b.x, a.y - b.y, a.z - b.z); }
-Vector3 operator+(Vector3 a, Vector3 b)
+inline Vector3 operator+(Vector3 a, Vector3 b)
 	{ return Vector3(a.x + b.x, a.y + b.y, a.z + b.z); }
-Vector3 operator/(Vector3 a, float b)
+inline Vector3 operator/(Vector3 a, float b)
 	{ return Vector3(a.x/b, a.y/b, a.z/b); }
 
 /*
@@ -66,10 +66,11 @@ class Material
 	unsigned int texture_id;	// OpenGL texture ID.
 	bool texture_loaded;		// True if texture_id is valid.
 	unsigned char r, g, b;		// Color components, 0-255.
+	bool read_texture();		// Read texture & init. for OpenGL.
 public:
 	friend class Model3d;
 	friend class Object3d;
-	Material() : r(0), g(0), b(0), texture_id(0), texture_loaded(false)
+	Material() : texture_id(0), texture_loaded(false), r(0), g(0), b(0)
 		{  }
 	void set_name(const char *nm)
 		{ name = nm; }
@@ -77,6 +78,11 @@ public:
 		{ texture_filename = nm; }
 	void set_color(const unsigned char *c)
 		{ r = c[0]; g = c[1]; b = c[2]; }
+	bool load()			// Load texture.
+		{ 
+		return (texture_loaded || texture_filename.empty()) ? true
+							: read_texture();
+		}
 	};
 
 /*
@@ -152,6 +158,7 @@ public:
 	Material *find_material(const char *nm);
 	void compute_normals();		// Create normals after all vertices
 					//   and faces have been added.
+	void load_textures();		// Load textures for the materials.
 					// OPENGL methods:
 	void render();
 	};
