@@ -142,6 +142,13 @@ on_reload_usecode_menu_activate        (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
+on_save_groups1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->save_groups();
+}
+
+C_EXPORT void
 on_play_button_clicked			(GtkToggleButton *button,
 					 gpointer	  user_data)
 {

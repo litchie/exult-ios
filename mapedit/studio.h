@@ -130,6 +130,7 @@ public:
 	void move_group(int from_row, int to_row);
 	void open_group_window();
 	void close_group_window(GtkWidget *gtkwin);
+	void save_groups();
 					// Objects:
 	void open_obj_window(unsigned char *data, int datalen);
 	void close_obj_window();

@@ -67,6 +67,7 @@ void Shape_group::add
 		if ((*it) == id)
 			return;		// Already there.
 	push_back(id);
+	file->modified = true;
 	}
 
 /*
@@ -106,6 +107,24 @@ Shape_group_file::Shape_group_file
 			}
 		delete flex;
 		}
+	}
+
+/*
+ *	Search for a group with a given name.
+ *
+ *	Output:	Index if found, else -1.
+ */
+
+int Shape_group_file::find
+	(
+	const char *nm
+	)
+	{
+	for (vector<Shape_group *>::const_iterator it = groups.begin();
+						it != groups.end(); ++it)
+		if ((*it)->name == nm)
+			return (it - groups.begin());
+	return -1;
 	}
 
 /*
@@ -183,6 +202,7 @@ void Shape_group_file::write
 	if (!result)			// ++++Better error system needed??
 		throw file_write_exception(patchname.c_str());
 	out.close();
+	modified = false;
 	}
 
 /*
@@ -333,9 +353,10 @@ void ExultStudio::add_group
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
 	char *nm = get_text_entry("groups_new_name");
-	if (nm)
+	Shape_group_file *groups = curfile->get_groups();
+					// Make sure name isn't already there.
+	if (nm && *nm && groups->find(nm) < 0)
 		{
-		Shape_group_file *groups = curfile->get_groups();
 		groups->add(new Shape_group(nm, groups));
 		gtk_clist_append(clist, &nm);
 		}
@@ -455,4 +476,24 @@ void ExultStudio::close_group_window
 	delete chooser;
 	gtk_widget_destroy(grpwin);
 	gtk_object_destroy(GTK_OBJECT(xml));
+	}
+
+/*
+ *	Save all modified group files.
+ */
+
+void ExultStudio::save_groups
+	(
+	)
+	{
+	if (!files)
+		return;
+	int cnt = files->size();
+	for (int i = 0; i < cnt; i++)	// Check each file.
+		{
+		Shape_file_info *info = (*files)[i];
+		Shape_group_file *gfile = info->get_groups();
+		if (gfile && gfile->is_modified())
+			gfile->write();
+		}
 	}
