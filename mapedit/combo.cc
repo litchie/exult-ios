@@ -902,6 +902,37 @@ void Combo_chooser::unselect
 	}
 
 /*
+ *	Load/reload from file.
+ */
+
+void Combo_chooser::load
+	(
+	)
+	{
+	int cnt = combos.size();
+	for (int i = 0; i < cnt; i++)	// Delete all the combos.
+		delete combos[i];
+	int num_combos = flex_info->size();
+					// We need 'shapes.vga'.
+	Shape_file_info *svga_info = 
+				ExultStudio::get_instance()->get_vgafile();
+	Shapes_vga_file *svga = svga_info ?
+			(Shapes_vga_file *) svga_info->get_ifile() : 0;
+	combos.resize(num_combos);	// Set size of list.
+	if (!svga)
+		num_combos = 0;
+					// Read them all in.
+	for (int i = 0; i < num_combos; i++)
+		{
+		size_t len;
+		unsigned char *buf = (unsigned char *) flex_info->get(i, len);
+		Combo *combo = new Combo(svga);
+		combo->read(buf, len);
+		combos[i] = combo;	// Store in list.
+		}
+	}
+
+/*
  *	Render as many combos as fit in the combo chooser window.
  */
 
@@ -1270,28 +1301,12 @@ Combo_chooser::Combo_chooser
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h,			// Dimensions.
 	Shape_group *g			// Filter, or null.
-	) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
+	) : Object_browser(g, flinfo), 
+		Shape_draw(i, palbuf, gtk_drawing_area_new()),
 		flex_info(flinfo), index0(0),
 		info(0), info_cnt(0), sel_changed(0)
 	{
-	int num_combos = flinfo->size();
-					// We need 'shapes.vga'.
-	Shape_file_info *svga_info = 
-				ExultStudio::get_instance()->get_vgafile();
-	Shapes_vga_file *svga = svga_info ?
-			(Shapes_vga_file *) svga_info->get_ifile() : 0;
-	combos.resize(num_combos);	// Set size of list.
-	if (!svga)
-		num_combos = 0;
-					// Read them all in.
-	for (int i = 0; i < num_combos; i++)
-		{
-		size_t len;
-		unsigned char *buf = (unsigned char *) flex_info->get(i, len);
-		Combo *combo = new Combo(svga);
-		combo->read(buf, len);
-		combos[i] = combo;	// Store in list.
-		}
+	load();				// Init. from file data.
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	set_widget(vbox); // This is our "widget"
@@ -1344,7 +1359,7 @@ Combo_chooser::Combo_chooser
 	gtk_widget_show(draw);
 					// Want a scrollbar for the combos.
 	GtkObject *combo_adj = gtk_adjustment_new(0, 0, 
-				num_combos, 1, 
+				combos.size(), 1, 
 				4, 1.0);
 	combo_scroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(combo_adj));
 					// Update window when it stops.
@@ -1622,18 +1637,9 @@ gint Combo_chooser::mouse_press
 		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
 			chooser->edit();
 		}
-#if 0
-	if (event->button == 3 && chooser->selected >= 0)
-		{
-					// Clean out old.
-		if (chooser->popup)
-			gtk_widget_destroy(chooser->popup);
-		GtkWidget *popup = Create_browser_popup(chooser);
-		chooser->popup = popup;
-		gtk_menu_popup(GTK_MENU(popup), 0, 0, 0, 0, event->button,
-							event->time);
-		}
-#endif
+	if (event->button == 3)
+		gtk_menu_popup(GTK_MENU(chooser->create_popup()), 
+				0, 0, 0, 0, event->button, event->time);
 	return (TRUE);
 	}
 
