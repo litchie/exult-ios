@@ -302,19 +302,17 @@ void U7open
 #endif
 	string name = get_system_path(fname);
 	
-	// We first "clear" the stream object. This is done to prevent
-	// problems when re-using stream objects
-	in.clear();
-
 	int uppercasecount = 0;
 	do {
+		// We first "clear" the stream object. This is done to prevent
+		// problems when re-using stream objects
+		in.clear();
 		try {
 			in.open(name.c_str(), mode);		// Try to open
 		} catch (std::exception &)
 		{}
-		if (in.good())
+		if (in.good() && !in.fail())
 			return; // found it!
-		in.clear();	// Must do this again
 	} while (base_to_uppercase(name, ++uppercasecount));
 
 	// file not found.
