@@ -758,7 +758,7 @@ void Animated_ifix_object::paint
  *	Write out an IFIX object.
  */
 
-void Animated_ifix_object::write_ifix(DataSource *ifix, bool v2)
+void Animated_ifix_object::write_ifix(DataSource *ifix,  bool v2)
 
 {
 	int oldframe = get_framenum();

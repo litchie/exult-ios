@@ -535,7 +535,7 @@ void Game_map::write_ifix_objects
 	int nshapes = 
 		Shape_manager::get_instance()->get_shapes().get_num_shapes();
 	Flex::Flex_vers vers = nshapes <= u7nshapes ? Flex::orig
-							: Flex::exult_v2;
+						: Flex::exult_v2;
 	bool v2 = vers == Flex::exult_v2;
 	Flex_writer writer(&ifix, "Exult",  count, vers);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
