@@ -1858,6 +1858,25 @@ void Game_window::remove_all_effects
 	}
 
 /*
+ *	Remove weather effects.
+ */
+
+void Game_window::remove_weather_effects
+	(
+	)
+	{
+	Special_effect *each = effects;
+	while (each)
+		{
+		Special_effect *next = each->next;
+		if (each->is_weather())
+			remove_effect(each);
+		each = next;
+		}
+	set_all_dirty();
+	}
+
+/*
  *	Handle a double-click.
  */
 

@@ -50,6 +50,8 @@ public:
 		{  }
 					// Render.
 	virtual void paint(Game_window *gwin);
+	virtual int is_weather()	// Need to distinguish weather.
+		{ return 0; }
 	};
 
 /*
@@ -126,6 +128,8 @@ public:
 	Weather_effect(int duration, int delay = 0);
 	virtual ~Weather_effect()
 		{  }
+	virtual int is_weather()
+		{ return 1; }
 	};
 
 /*
