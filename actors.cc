@@ -834,9 +834,9 @@ void Actor::start
 		{
 		if (delay)
 			gwin->get_tqueue()->remove(this);
-
 		uint32 curtime = Game::get_ticks();
-		gwin->get_tqueue()->add(curtime + delay, this, reinterpret_cast<long>(gwin));
+		gwin->get_tqueue()->add(curtime + delay, this, 
+					reinterpret_cast<long>(gwin));
 		}
 	}
 

@@ -1478,7 +1478,6 @@ void Game_window::start_actor_alt
 	int nlift;
 	int blocked[8];
 	get_shape_location(main_actor, ax, ay);
-
 	int height = main_actor->get_info().get_3d_height();
 	
 	Tile_coord start = main_actor->get_tile();
@@ -1692,9 +1691,8 @@ void Game_window::teleport_party
 	)
 	{
 	Tile_coord oldpos = main_actor->get_tile();
-#if 0	/* Messes up walking after teleport trap. */
-	main_actor->set_action(0);	// I think this is right.
-#endif
+	main_actor->set_action(0);	// Definitely need this, or you may
+					//   step back to where you came from.
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
 	set_all_dirty();
 
