@@ -74,7 +74,7 @@ Stat_bar::Stat_bar (Gump *par, int px, int py, Actor *a, int s, int m, unsigned 
 
 void Stat_bar::double_clicked(int x, int y)
 {
-	gwin->get_gump_man()->add_gump(actor, game->get_shape("gumps/statsdisplay"));
+	gumpman->add_gump(actor, game->get_shape("gumps/statsdisplay"));
 }
 
 
@@ -488,14 +488,14 @@ void Face_stats::CreateGump()
 	if (!self)
 	{
 		new Face_stats();
-		gwin->get_gump_man()->add_gump(self);
+		gumpman->add_gump(self);
 	}
 }
 
 // Removes is exists
 void Face_stats::RemoveGump()
 {
-	if (self) gwin->get_gump_man()->close_gump(self);
+	if (self) gumpman->close_gump(self);
 	//delete self;
 }
 

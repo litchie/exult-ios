@@ -83,7 +83,7 @@ void Stats_gump::paint
 	(
 	)
 {
-	Gump_manager* gman = gwin->get_gump_man();
+	Gump_manager* gman = gumpman;
 
 					// Area to print name in.
 	const int namex = 30, namey = 6, namew = 95;

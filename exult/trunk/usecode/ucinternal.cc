@@ -582,9 +582,9 @@ void Usecode_internal::show_npc_face
 	if (!conv->get_num_faces_on_screen())
 		gwin->get_effects()->remove_text_effects();
 	// Only non persistent
-	if (gwin->get_gump_man()->showing_gumps(true))
+	if (gumpman->showing_gumps(true))
 		{
-		gwin->get_gump_man()->close_all_gumps();
+		gumpman->close_all_gumps();
 		gwin->set_all_dirty();
 		init_conversation();	// jsf-Added 4/20/01 for SI-Lydia.
 		}
@@ -636,7 +636,7 @@ void Usecode_internal::set_item_shape
 			gwin->paint();	// Repaint finds all lights.
 		else
 			{
-			Gump *gump = gwin->get_gump_man()->find_gump(item);
+			Gump *gump = gumpman->find_gump(item);
 			if (gump)
 				gump->paint();
 			}
@@ -693,7 +693,7 @@ void Usecode_internal::set_item_frame
 		if (item->get_owner())	// Inside a container?
 			{
 			item->set_frame(frame);
-			Gump *gump = gwin->get_gump_man()->find_gump(item);
+			Gump *gump = gumpman->find_gump(item);
 			if (gump)
 				gwin->set_all_dirty();
 			}
@@ -718,7 +718,7 @@ void Usecode_internal::remove_item
 		last_created.pop_back();
 	if (obj->get_owner())		// Inside a container?
 		{			// Paint gump if open.
-		Gump *gump = gwin->get_gump_man()->find_gump(obj);
+		Gump *gump = gumpman->find_gump(obj);
 		if (gump)
 			gump->paint();
 		}

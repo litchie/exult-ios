@@ -224,7 +224,7 @@ void GameplayOptions_gump::load_settings()
 	string pdolls;
 	paperdolls = sman->get_bg_paperdolls();
 	doubleclick = gwin->get_double_click_closes_gumps();
-	rightclick_close = gwin->get_gump_man()->can_right_click_close();
+	rightclick_close = gumpman->can_right_click_close();
 	text_bg = gwin->get_text_bg()+1;
 	int realframes = 1000/gwin->get_std_delay();
 	int i;
@@ -288,7 +288,7 @@ void GameplayOptions_gump::save_settings()
 	gwin->set_double_click_closes_gumps(doubleclick!=false);
 	config->set("config/gameplay/double_click_closes_gumps", 
 				doubleclick ? "yes" : "no", true);
-	gwin->get_gump_man()->set_right_click_close(rightclick_close!=false);
+	gumpman->set_right_click_close(rightclick_close!=false);
 	config->set("config/gameplay/right_click_closes_gumps", 
 				rightclick_close ? "yes" : "no" , true);
 	cheat.set_enabled(cheats!=false);

@@ -794,9 +794,10 @@ static inline Tile_coord Figure_text_pos
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
+	Gump_manager *gumpman = gwin->get_gump_man();
 	Rectangle box;
 					// See if it's in a gump.
-	Gump *gump = gwin->get_gump_man()->find_gump(item);
+	Gump *gump = gumpman->find_gump(item);
 	if (gump)
 		box = gump->get_shape_rect(item);
 	else
@@ -1051,7 +1052,7 @@ void Rain_effect::handle_event
 	{
 	Game_window *gwin = Game_window::get_instance();
 	if (!gwin->is_main_actor_inside() &&
-	    !gwin->get_gump_man()->showing_gumps(true))
+	    !gumpman->showing_gumps(true))
 		{			// Don't show rain inside buildings!
 		Image_window8 *win = gwin->get_win();
 		int w = win->get_width(), h = win->get_height();
@@ -1081,7 +1082,7 @@ void Rain_effect::paint
 	(
 	)
 	{
-	if (gwin->is_main_actor_inside() || gwin->get_gump_man()->showing_gumps(true))
+	if (gwin->is_main_actor_inside() || gumpman->showing_gumps(true))
 		return;			// Inside.
 					// Get transform table.
 	Xform_palette xform = sman->get_xform(8);//++++Experiment.
@@ -1423,7 +1424,7 @@ void Clouds_effect::paint
 	(
 	)
 	{
-	if (!gwin->is_main_actor_inside() && !gwin->get_gump_man()->showing_gumps(true))
+	if (!gwin->is_main_actor_inside() && !gumpman->showing_gumps(true))
 		for (int i = 0; i < num_clouds; i++)
 			clouds[i]->paint();
 	}

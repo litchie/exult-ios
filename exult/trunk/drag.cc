@@ -74,7 +74,7 @@ Dragging_info::Dragging_info
 	    save(0), okay(false), possible_theft(false)
 	{
 					// First see if it's a gump.
-	gump = gwin->get_gump_man()->find_gump(x, y);
+	gump = gumpman->find_gump(x, y);
 	if (gump)
 		{
 		obj = gump->find_object(x, y);
@@ -180,7 +180,7 @@ bool Dragging_info::start
 			gump->remove(obj);
 			}
 		else
-			gwin->get_gump_man()->remove_gump(gump);
+			gumpman->remove_gump(gump);
 	else
 		obj->remove_this(true);	// This SHOULD work (jsf 21-12-01).
 					// Make a little bigger.
@@ -263,8 +263,8 @@ bool Dragging_info::drop
 		if (!gump)
 			return handled;
 		if (!moved)		// A click just raises it to the top.
-			gwin->get_gump_man()->remove_gump(gump);
-		gwin->get_gump_man()->add_gump(gump);
+			gumpman->remove_gump(gump);
+		gumpman->add_gump(gump);
 		}
 	else if (!moved)		// For now, if not moved, leave it.
 		return handled;
@@ -428,10 +428,10 @@ bool Dragging_info::drop
 	int okay_to_move = to_drop->get_flag(Obj_flags::okay_to_take);
 	int old_top = old_pos.tz + obj->get_info().get_3d_height();
 					// First see if it's a gump.
-	Gump *on_gump = gwin->get_gump_man()->find_gump(x, y);
+	Gump *on_gump = gumpman->find_gump(x, y);
 					// Don't prompt if within same gump.
 	if (quantity > 1 && (!on_gump || on_gump != gump))
-		quantity = gwin->get_gump_man()->Prompt_for_number(0, quantity, 
+		quantity = gumpman->Prompt_for_number(0, quantity, 
 														   1, quantity);
 	if (quantity <= 0)
 		return false;
