@@ -1,3 +1,7 @@
+2001-01-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Usecode compiler - 1st pass pretty much complete.
+
 2001-01-10  Ryan Nunn <triforce@merlin.net.au>
 	* gamma.h : Gamma Table Class
 	* Makefile.am : Added gamma.h

@@ -6,7 +6,7 @@ extern adder 0x480(a, b);	// Declaration.
 //	Return sum.
 //
 
-adder1 0x481 (a, b) xxxxx
+adder1 0x481 (a, b)
 	{
 	var c;
 	var d;
@@ -31,6 +31,7 @@ adder1 0x481 (a, b) xxxxx
 		UcMessage("Hello, ");
 		UcMessage(UI_get_npc_name(actor));
 		}
+	var dd = a + 5, f, e = 2*d;
 	return adder(a, 3);
 	}
 
