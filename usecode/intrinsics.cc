@@ -1816,6 +1816,19 @@ USECODE_INTRINSIC(set_conversation_slot)
 	return no_ret;
 }
 
+USECODE_INTRINSIC(sprite_effect2)
+{
+	// Sprite_effect2(obj, sprite#, xoff?, yoff?, ??, ??, ??, ??) (8 parms).
+	Game_object *obj = get_item(parms[0]);
+	if (obj)
+		{
+		Tile_coord pos = obj->get_abs_tile_coord();
+		gwin->add_effect(new Sprites_effect(parms[1].get_int_value(),
+							pos));
+		}
+	return no_ret;
+}
+
 USECODE_INTRINSIC(si_path_run_usecode)
 {
 	// exec(npc, loc(x,y,z)?, eventid, itemref, usecode#, ??true/false).
