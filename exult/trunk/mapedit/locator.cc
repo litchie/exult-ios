@@ -165,7 +165,7 @@ C_EXPORT gint on_loc_draw_motion_notify_event
 Locator::Locator
 	(
 	) : drawgc(0), tx(0), ty(0), txs(40), tys(25), scale(1),
-	    dragging(false)
+	    dragging(false), send_location_timer(-1)
 	{
 	GladeXML *app_xml = ExultStudio::get_instance()->get_xml();
 	win = glade_xml_get_widget(app_xml, "loc_window");
@@ -200,6 +200,8 @@ Locator::~Locator
 	(
 	)
 	{
+	if (send_location_timer != -1)
+		gtk_timeout_remove(send_location_timer);
 	gtk_widget_destroy(win);
 	}
 
@@ -351,7 +353,6 @@ void Locator::vscrolled			// For vertical scrollbar.
 	Locator *loc = (Locator *) data;
 	int oldty = loc->ty;
 	loc->ty = ((gint) adj->value)*c_tiles_per_chunk;
-	cout << "Vscrolled:  New ty is " << loc->ty << endl;
 	if (loc->ty != oldty)		// (Already equal if this event came
 					//   from Exult msg.).
 		{
@@ -368,7 +369,6 @@ void Locator::hscrolled			// For horizontal scrollbar.
 	Locator *loc = (Locator *) data;
 	int oldtx = loc->tx;
 	loc->tx = ((gint) adj->value)*c_tiles_per_chunk;
-	cout << "Hscrolled:  New tx is " << loc->tx << endl;
 	if (loc->tx != oldtx)		// (Already equal if this event came
 					//   from Exult msg.).
 		{
@@ -392,8 +392,25 @@ void Locator::send_location
 	Write4(ptr, txs);
 	Write4(ptr, tys);
 	Write4(ptr, -1);		// Don't change.
+	cout << "Locator::send_location" << endl;
 	ExultStudio::get_instance()->send_to_server(Exult_server::view_pos,
 					&data[0], ptr - data);
+	}
+
+/*
+ *	This is called a fraction of a second after mouse motion to send
+ *	the new location to Exult if the mouse hasn't moved further.
+ */
+
+gint Locator::delayed_send_location
+	(
+	gpointer data			// ->locator.
+	)
+	{
+	Locator *loc = (Locator *) data;
+	loc->send_location();
+	loc->send_location_timer = -1;
+	return 0;			// Cancels timer.
 	}
 
 /*
@@ -402,7 +419,8 @@ void Locator::send_location
 
 void Locator::goto_mouse
 	(
-	int mx, int my			// Pixel coords. in draw area.
+	int mx, int my,			// Pixel coords. in draw area.
+	bool delay_send			// Delay send_location for a bit.
 	)
 	{
 	GdkRectangle oldbox = viewbox;	// Old location of box.
@@ -424,7 +442,16 @@ void Locator::goto_mouse
 					// Now we just send it once.
 	if (tx != oldtx || ty != oldty)
 		{
-		send_location();
+		if (send_location_timer != -1)
+			gtk_timeout_remove(send_location_timer);
+		if (delay_send)		// Send in 1/3 sec. if no more motion.
+			send_location_timer = gtk_timeout_add(333, 
+					delayed_send_location, this);
+		else
+			{
+			send_location();
+			send_location_timer = -1;
+			}
 		GdkRectangle newbox;	// Figure dirty rectangle;
 		GdkRectangle dirty;
 		newbox.x = (cx*draw->allocation.width)/c_num_chunks,
@@ -504,9 +531,9 @@ gint Locator::mouse_motion
 		my = (int) event->y;
 		state = (GdkModifierType) event->state;
 		}
-	cout << "Locator dragging: (" << mx << ',' << my << ')' << endl;
 	if (!dragging || !(state & GDK_BUTTON1_MASK))
 		return FALSE;		// Not dragging with left button.
-	goto_mouse(mx + drag_relx, my + drag_rely);
+					// Delay sending location to Exult.
+	goto_mouse(mx + drag_relx, my + drag_rely, true);
 	return TRUE;
 	}
