@@ -113,7 +113,7 @@
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
 	USECODE_INTRINSIC_PTR(armageddon),	// 0x5b
 	USECODE_INTRINSIC_PTR(halt_scheduled),	// 0x5c
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5d  +++++white flash? (lightning)
+	USECODE_INTRINSIC_PTR(lightning),	// 0x5d
 	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
 	USECODE_INTRINSIC_PTR(mark_virtue_stone),	// 0x5f
 	USECODE_INTRINSIC_PTR(recall_virtue_stone),	// 0x60

@@ -1469,6 +1469,13 @@ USECODE_INTRINSIC(halt_scheduled)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(lightning)
+{
+					// 1 sec. is long enough for 1 flash.
+	gwin->add_effect(new Lightning_effect(1000));
+	return no_ret;
+}
+
 USECODE_INTRINSIC(get_array_size)
 {
 	int cnt;
