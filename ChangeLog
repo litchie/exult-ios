@@ -1,3 +1,8 @@
+2002-03-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* exult.cc: 'Paint' mode implemented.  Tile grid is shown on
+	ground when in this mode.
+
 2002-03-23  Willem Jan Palenstijn  <wjpalenstijn@users.sourceforge.net>
 	* Makefile.be, be_midi.cc, xmidi.cc: merged BeOS patch by Jack Burton
 
