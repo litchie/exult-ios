@@ -1,5 +1,6 @@
 2000-12-07  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* mapedit: VERY rudimentary start of a GTK shape browser.
 	* gamewin.cc: Stealing food is now a crime.
 	* objs.h, chunks.cc:  Fixed my recent breakage of is_blocked().
 
