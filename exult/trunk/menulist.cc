@@ -98,7 +98,8 @@ void MenuChoice::paint(Game_window *gwin)
 	gwin->get_win()->show(x1,y1,x2-x1+1,y2-y1+1);
 	if(choice>=0) {
 		gwin->get_win()->fill8(0, max_choice_width, font->get_text_height(), x+32, y);
-		font->draw_text(gwin, x+32, y, (*choices)[choice].c_str());
+		font->draw_text(gwin->get_win()->get_ib8(), 
+					x+32, y, (*choices)[choice].c_str());
 		gwin->get_win()->show(x+32,y, x+32+max_choice_width, y+font->get_text_height());
 	}
 }

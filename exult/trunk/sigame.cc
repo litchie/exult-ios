@@ -147,15 +147,15 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
-			font->center_text(gwin, centerx, centery+50, txt_msg[0]);
-			font->center_text(gwin, centerx, centery+65, txt_msg[1]);
+			font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
+			font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
 			win->show();
 		}
 
 
 		next = fli0.play(win, 0, 0, next, 100);
-		font->center_text(gwin, centerx, centery+50, txt_msg[0]);
-		font->center_text(gwin, centerx, centery+65, txt_msg[1]);
+		font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
+		font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
 		win->show();
 
 		SDL_Delay (3000);
@@ -163,8 +163,8 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
-			font->center_text(gwin, centerx, centery+50, txt_msg[0]);
-			font->center_text(gwin, centerx, centery+65, txt_msg[1]);
+			font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
+			font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
 			win->show();
 		}
 
@@ -221,9 +221,9 @@ void SI_Game::play_intro()
 					fli1.play(win, i, i, next);
 
 			if (jive)
-				sifont->center_text(gwin, centerx, centery+50, db_cas);
+				sifont->center_text(ibuf, centerx, centery+50, db_cas);
 			else 
-				sifont->center_text(gwin, centerx, centery+50, lb_cas);
+				sifont->center_text(ibuf, centerx, centery+50, lb_cas);
 
 			prev = num;
 			next += 75;
@@ -267,7 +267,7 @@ void SI_Game::play_intro()
 					fli1.play(win, i, i, next);
 
 			for(i=0; i<3; i++) {
-				sifont->center_text(gwin, centerx, centery+50+15*i, bg_fellow[i]);
+				sifont->center_text(ibuf, centerx, centery+50+15*i, bg_fellow[i]);
 			}
 
 			prev = num;
@@ -345,9 +345,9 @@ void SI_Game::play_intro()
 			next = fli2.play(win, j, j, next);
 
 			if (jive)
-				sifont->draw_text(gwin, centerx+30, centery+87, yo_homes);
+				sifont->draw_text(ibuf, centerx+30, centery+87, yo_homes);
 			else if (!speech)
-				sifont->draw_text(gwin, centerx+30, centery+87, my_leige);
+				sifont->draw_text(ibuf, centerx+30, centery+87, my_leige);
 
 			win->show();
 			if (wait_delay (0))
@@ -377,8 +377,8 @@ void SI_Game::play_intro()
 
 			if (!speech || jive)
 			{
-				sifont->draw_text(gwin, centerx+150-sifont->get_text_width(all_we[0]), centery+74, all_we[0]);
-				sifont->draw_text(gwin, centerx+160-sifont->get_text_width(all_we[1]), centery+87, all_we[1]);
+				sifont->draw_text(ibuf, centerx+150-sifont->get_text_width(all_we[0]), centery+74, all_we[0]);
+				sifont->draw_text(ibuf, centerx+160-sifont->get_text_width(all_we[1]), centery+87, all_we[1]);
 			}
 
 			win->show();
@@ -402,8 +402,8 @@ void SI_Game::play_intro()
 
 		if (!speech || jive)
 		{
-			sifont->draw_text(gwin, centerx+150-sifont->get_text_width(and_a[0]), centery+74, and_a[0]);
-			sifont->draw_text(gwin, centerx+150-sifont->get_text_width(and_a[1]), centery+87, and_a[1]);
+			sifont->draw_text(ibuf, centerx+150-sifont->get_text_width(and_a[0]), centery+74, and_a[0]);
+			sifont->draw_text(ibuf, centerx+150-sifont->get_text_width(and_a[1]), centery+87, and_a[1]);
 		}
 
 		win->show();
@@ -448,11 +448,11 @@ void SI_Game::play_intro()
 			next = fli2.play(win, j, j, next);
 
 			if (jive)
-				sifont->draw_text(gwin, topx+40, centery+74, iree);
+				sifont->draw_text(ibuf, topx+40, centery+74, iree);
 			else if (!speech)
 			{
-				sifont->draw_text(gwin, topx+40, centery+74, indeed[0]);
-				sifont->draw_text(gwin, topx+40, centery+87, indeed[1]);
+				sifont->draw_text(ibuf, topx+40, centery+74, indeed[0]);
+				sifont->draw_text(ibuf, topx+40, centery+87, indeed[1]);
 			}
 
 			win->show();
@@ -510,9 +510,9 @@ void SI_Game::play_intro()
 			next = fli3.play(win, j, j, next)+20;
 
 			if (jive)
-				sifont->draw_text(gwin, topx+70, centery+60, jump_back);
+				sifont->draw_text(ibuf, topx+70, centery+60, jump_back);
 			else if (!speech)	
-				sifont->draw_text(gwin, topx+70, centery+60, stand_back);
+				sifont->draw_text(ibuf, topx+70, centery+60, stand_back);
 
 			win->show();
 			if (wait_delay (0))
@@ -586,33 +586,33 @@ void SI_Game::play_intro()
 
 			if (j < 100 && jive)
 			{
-				sifont->center_text(gwin, centerx, centery+74, batlin2[0]);
-				sifont->center_text(gwin, centerx, centery+87, batlin2[1]);
+				sifont->center_text(ibuf, centerx, centery+74, batlin2[0]);
+				sifont->center_text(ibuf, centerx, centery+87, batlin2[1]);
 			}
 			else if (j < 200 && jive)
 			{
-				sifont->center_text(gwin, centerx, centery+74, you_must[0]);
-				sifont->center_text(gwin, centerx, centery+87, you_must[1]);
+				sifont->center_text(ibuf, centerx, centery+74, you_must[0]);
+				sifont->center_text(ibuf, centerx, centery+87, you_must[1]);
 			}
 			else if (j < 300 && jive)
 			{
-				sifont->center_text(gwin, centerx, centery+74, soon_i[0]);
-				sifont->center_text(gwin, centerx, centery+87, soon_i[1]);
+				sifont->center_text(ibuf, centerx, centery+74, soon_i[0]);
+				sifont->center_text(ibuf, centerx, centery+87, soon_i[1]);
 			}
 			else if (j < 100 && !speech)
 			{
-				sifont->center_text(gwin, centerx, centery+74, batlin[0]);
-				sifont->center_text(gwin, centerx, centery+87, batlin[1]);
+				sifont->center_text(ibuf, centerx, centery+74, batlin[0]);
+				sifont->center_text(ibuf, centerx, centery+87, batlin[1]);
 			}
 			else if (j < 200 && !speech)
 			{
-				sifont->center_text(gwin, centerx, centery+74, you_shall[0]);
-				sifont->center_text(gwin, centerx, centery+87, you_shall[1]);
+				sifont->center_text(ibuf, centerx, centery+74, you_shall[0]);
+				sifont->center_text(ibuf, centerx, centery+87, you_shall[1]);
 			}
 			else if (j < 300 && !speech)
 			{
-				sifont->center_text(gwin, centerx, centery+74, there_i[0]);
-				sifont->center_text(gwin, centerx, centery+87, there_i[1]);
+				sifont->center_text(ibuf, centerx, centery+74, there_i[0]);
+				sifont->center_text(ibuf, centerx, centery+87, there_i[1]);
 			}
 
 			win->show();
@@ -681,12 +681,12 @@ void SI_Game::play_intro()
 
 			if (j < 20 && (!speech || jive))
 			{
-				sifont->center_text(gwin, centerx, centery+74, tis_my[0]);
+				sifont->center_text(ibuf, centerx, centery+74, tis_my[0]);
 			}
 			else if (j > 22 && (!speech || jive))
 			{
-				sifont->center_text(gwin, centerx, centery+74, tis_my[1]);
-				sifont->center_text(gwin, centerx, centery+87, tis_my[2]);
+				sifont->center_text(ibuf, centerx, centery+74, tis_my[1]);
+				sifont->center_text(ibuf, centerx, centery+87, tis_my[2]);
 			}
 
 			win->show();
@@ -734,7 +734,7 @@ void SI_Game::play_intro()
 			next = fli7.play(win, j, j, next)+30;
 
 			if (j > 55 && jive)
-				sifont->center_text(gwin, centerx, centery+74, zot);
+				sifont->center_text(ibuf, centerx, centery+74, zot);
 
 			win->show();
 			if (wait_delay (0))
@@ -756,13 +756,13 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
-			font->center_text(gwin, centerx, centery+75, txt_msg[2]);
+			font->center_text(ibuf, centerx, centery+75, txt_msg[2]);
 			win->show();
 		}
 
 
 		next = fli8.play(win, 0, 0, next, 100);
-		font->center_text(gwin, centerx, centery+75, txt_msg[2]);
+		font->center_text(ibuf, centerx, centery+75, txt_msg[2]);
 		win->show();
 
 		for (i = 0; i < 300; i++)
@@ -776,7 +776,7 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
-			font->center_text(gwin, centerx, centery+75, txt_msg[2]);
+			font->center_text(ibuf, centerx, centery+75, txt_msg[2]);
 			win->show();
 		}
 
@@ -866,7 +866,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 				        sprintf(disp_name, "%s_", npc_name);
 				else
 				        sprintf(disp_name, "%s", npc_name);
-				font->draw_text(gwin, topx+50, menuy+10, disp_name );
+				font->draw_text(ibuf, topx+50, menuy+10, disp_name );
 				redraw = false;
 			}
 			pal.apply();

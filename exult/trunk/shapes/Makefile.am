@@ -5,6 +5,10 @@ noinst_LTLIBRARIES = libshapes.la
 libshapes_la_SOURCES = \
 	bodies.cc \
 	bodies.h \
+	font.cc \
+	font.h \
+	fontvga.cc \
+	fontvga.h \
 	items.cc \
 	items.h \
 	shapeinf.cc \

@@ -57,6 +57,7 @@ Game::Game() : menushapes(MAINSHP_FLX)
 	jive = false;
 	gwin = Game_window::get_game_window();
 	win = gwin->get_win();
+	ibuf = win->get_ib8();
 	topx = (gwin->get_width()-320)/2;
 	topy = (gwin->get_height()-200)/2;
 	centerx = gwin->get_width()/2;
@@ -290,7 +291,7 @@ void Game::show_menu()
 void Game::journey_failed_text()
 {
 	Font *font = fontManager.get_font("MENU_FONT");
-	font->center_text(gwin, centerx, centery+30,  "You must start a new game first.");
+	font->center_text(ibuf, centerx, centery+30,  "You must start a new game first.");
 	pal.fade_in(50);
 	while (!wait_delay(10))
 		;
@@ -373,6 +374,7 @@ bool wait_delay(int ms)
 ExultMenu::ExultMenu(Game_window *gw)
 {
 	gwin = gw;
+	ibuf = gwin->get_win()->get_ib8();
 	calc_win();
 	fontManager.add_font("CREDITS_FONT", "<DATA>/exult.flx", 9, 1);
 	exult_flx.load("<DATA>/exult.flx");

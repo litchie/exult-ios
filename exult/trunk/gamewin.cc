@@ -53,6 +53,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Astar.h"
 #include "objiter.h"
 #include "mouse.h"
+#include "fontvga.h"
 
 #include "Actor_gump.h"
 #include "Paperdoll_gump.h"
@@ -94,10 +95,11 @@ Game_window::Game_window
 	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
 	    conv_choices(0), render_seq(0), painted(false), focus(true), 
 	    teleported(false), in_dungeon(false), 
-	    moving_barge(0), main_actor(0), skip_above_actor(31), 
+	    moving_barge(0), main_actor(0), skip_above_actor(31), fonts(0),
 	    npcs(0),
 	    monster_info(0), 
-	    palette(-1), brightness(100), user_brightness(100), faded_out(false),
+	    palette(-1), brightness(100), user_brightness(100), 
+	    faded_out(false),
 	    special_light(0), last_restore_hour(6),
 	    dragging(0), dragging_save(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
@@ -157,6 +159,7 @@ Game_window::~Game_window
 	delete pal;
 	delete [] conv_choices;
 	delete usecode;
+	delete fonts;
 	}
 
 /*
@@ -190,7 +193,11 @@ void Game_window::init_files()
 		usecode = new Usecode_machine(this);
 		faces.load(FACES_VGA);
 		gumps.load(GUMPS_VGA);
-		fonts.load(FONTS_VGA);
+		if (!fonts)
+			{
+			fonts = new Fonts_vga_file();
+			fonts->init();
+			}
 		sprites.load(SPRITES_VGA);
 		mainshp.load(MAINSHP_FLX);
 		shapes.init();
@@ -2830,3 +2837,28 @@ void Game_window::setup_game
 	Tile_coord t = main_actor->get_abs_tile_coord();
 	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1);
 	}
+
+/*
+ *	Text-drawing methods:
+ */
+int Game_window::paint_text_box(int fontnum, const char *text, 
+		int x, int y, int w, int h, int vert_lead, int pbreak)
+	{ return fonts->paint_text_box(win->get_ib8(),
+			fontnum, text, x, y, w, h, vert_lead, pbreak); }
+int Game_window::paint_text(int fontnum, const char *text, int xoff, int yoff)
+	{ return fonts->paint_text(win->get_ib8(), fontnum, text,
+							xoff, yoff); }
+int Game_window::paint_text(int fontnum, const char *text, int textlen, 
+							int xoff, int yoff)
+	{ return fonts->paint_text(win->get_ib8(), fontnum, text, textlen,
+							xoff, yoff); }
+	
+int Game_window::get_text_width(int fontnum, const char *text)
+	{ return fonts->get_text_width(fontnum, text); }
+int Game_window::get_text_width(int fontnum, const char *text, int textlen)
+	{ return fonts->get_text_width(fontnum, text, textlen); }
+int Game_window::get_text_height(int fontnum)
+	{ return fonts->get_text_height(fontnum); }
+int Game_window::get_text_baseline(int fontnum)
+	{ return fonts->get_text_baseline(fontnum); }
+

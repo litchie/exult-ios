@@ -25,8 +25,8 @@ LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
 EXEC=exult.exe
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
 	args.o barge.o bggame.o browser.o cheat.o \
-	combat.o delobjs.o dir.o drag.o effects.o egg.o exult.o font.o \
-	game.o gameclk.o gamedat.o gamerend.o gametxt.o gamewin.o \
+	combat.o delobjs.o dir.o drag.o effects.o egg.o exult.o \
+	game.o gameclk.o gamedat.o gamerend.o gamewin.o \
 	lists.o menulist.o mouse.o npcnear.o npctime.o objs.o palette.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
     virstone.o exultico.o
@@ -45,7 +45,7 @@ GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	Scroll_gump.o Sign_gump.o  Slider_gump.o  Spellbook_gump.o  Stats_gump.o  \
 	Text_gump.o  Yesno_gump.o
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o
-SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o
+SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o
 # unused: test.o
 USECODE_OBJS=ucmachine.o ucsched.o intrinsics.o useval.o
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
