@@ -19,6 +19,13 @@ adder1 0x481 (a, b)
 	UcMessage(11);
 	UcMessage(" o'clock");
 	UcSay;
+	if (UcResponse == "Name")
+		{
+		UcMessage("My name is DrCode.");
+		UcSay;
+		}
+	else if (UcResponse == "Bye")
+		return;
 				// This is nonsense:
 	c = a[7];
 	a[13] = 46;
