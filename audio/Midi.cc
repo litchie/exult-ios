@@ -45,19 +45,18 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	if (!midi_device)
 	        return;
 
-#ifdef WIN32
-	//stop track before writing to temp. file
-	midi_device->stop_track();
-#endif
+//Not needed anymore
+//#ifdef WIN32
+//	//stop track before writing to temp. file
+//	midi_device->stop_track();
+//#endif
 	
 	char		*buffer;
 	size_t		size;
-	FILE		*mid_file;
 	DataSource 	*mid_data;
 	
 	if(!track.retrieve(&buffer, size))
 	        return;
-
 
 	// Read the data into the XMIDI class
 	mid_data = new BufferDataSource(buffer, size);
@@ -70,7 +69,9 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 
 	// Now get the data out of the XMIDI class and play it
 	
-	mid_file = U7open(MIDITMPFILE, "wb");
+#ifndef WIN32
+	
+	FILE* mid_file = U7open(MIDITMPFILE, "wb");
 	mid_data = new FileDataSource(mid_file);
 
 	int can_play = midfile.retrieve(0, mid_data);
@@ -79,6 +80,14 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	fclose(mid_file);
 
 	if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
+	
+#else
+	midi_event	*eventlist;
+	int		ppqn;
+	
+	if (midfile.retrieve(0, &eventlist, ppqn))
+		midi_device->start_track(eventlist, ppqn, repeat);
+#endif
 }
 
 void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
@@ -90,10 +99,12 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	if (!midi_device || !fname)
 	        return;
 
-#ifdef WIN32
-	//stop track before writing to temp. file
-	midi_device->stop_track();
-#endif
+// Not Needed anymore
+//#ifdef WIN32
+//	//stop track before writing to temp. file
+//	midi_device->stop_track();
+//#endif
+	        
 	FILE		*mid_file;
 	DataSource	*mid_data;
 	
@@ -110,7 +121,7 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	
 	
 	// Now get the data out of the XMIDI class and play it
-	
+#ifndef WIN32
 	mid_file = U7open(MIDITMPFILE, "wb");
 	mid_data = new FileDataSource(mid_file);
 
@@ -120,6 +131,13 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	fclose(mid_file);
 
 	if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
+#else
+	midi_event	*eventlist;
+	int		ppqn;
+	
+	if (midfile.retrieve(num, &eventlist, ppqn))
+		midi_device->start_track(eventlist, ppqn, repeat);
+#endif
 }
 
 void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
@@ -158,7 +176,8 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
   #include "midi_drivers/forked_player.h"
 #endif
 #ifdef WIN32
-  #include "midi_drivers/win_MCI.h"
+//  #include "midi_drivers/win_MCI.h"
+  #include "midi_drivers/win_midiout.h"
 #endif
 #ifdef BEOS
   #include "midi_drivers/be_midi.h"
@@ -201,7 +220,8 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 	config->set("config/audio/midi/enabled",s,true);
 
 #ifdef WIN32
-	TRY_MIDI_DRIVER(Windows_MCI)
+//	TRY_MIDI_DRIVER(Windows_MCI)
+	TRY_MIDI_DRIVER(Windows_MidiOut)
 #endif
 #ifdef BEOS
 	TRY_MIDI_DRIVER(Be_midi)

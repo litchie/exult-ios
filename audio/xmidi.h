@@ -29,6 +29,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "common_types.h"
 #include "databuf.h"
 
+struct midi_event
+{
+	int		time;
+	unsigned char	status;
+
+	unsigned char	data[2];
+
+	uint32	len;
+	unsigned char	*buffer;
+
+	midi_event	*next;
+};
+
 class   XMIDI
 {
 public:
@@ -36,19 +49,6 @@ public:
 	{
 		uint16	type;
 		uint16	tracks;
-	};
-
-	struct  midi_event
-	{
-		int		time;
-		unsigned char	status;
-
-		unsigned char	data[2];
-
-		uint32	len;
-		unsigned char	*buffer;
-
-		midi_event	*next;
 	};
 
 protected:
@@ -63,6 +63,7 @@ private:
 	
 	static unsigned char	mt32asgm[128];
 	bool			convert_from_mt32;
+	bool			*fixed;
 
 public:
 	XMIDI(DataSource *source, bool pconvert = true);
@@ -76,8 +77,13 @@ public:
 			return 1;
 	};
 
+	// Retrieve it to a data source
 	int retrieve (uint32 track, DataSource *dest);
 	
+	// External Event list functions
+	int retrieve (uint32 track, midi_event **dest, int &ppqn);
+	static void DeleteEventList (midi_event *mlist);
+
 	// Not yet implimented
 	// int apply_patch (int track, DataSource *source);
 
@@ -85,13 +91,15 @@ private:
 	XMIDI(); // No default constructor
         
 	// List manipulation
-	void DeleteEventList (midi_event *mlist);
 	void CreateNewEvent (int time);
 
 	// Variable length quantity
 	int GetVLQ (DataSource *source, uint32 &quant);
 	int GetVLQ2 (DataSource *source, uint32 &quant);
 	int PutVLQ(DataSource *dest, uint32 value);
+
+	void MovePatchVolAndPan (int channel = -1);
+	void DuplicateAndMerge (int num = 0);
 
 	int ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size);
 	int ConvertSystemMessage (const int time, const unsigned char status, DataSource *source);

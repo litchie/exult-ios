@@ -46,6 +46,7 @@ class	Timidity_binary : virtual public MidiAbstract
 {
 public:
 	virtual void	start_track(const char *,bool repeat);
+	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat) { }
 	virtual void	stop_track(void);
 	virtual	bool	is_playing(void);
 	virtual const	char *copyright(void);

@@ -11,6 +11,8 @@ libmididrv_la_SOURCES =	\
 	forked_player.h		\
 	win_MCI.cc		\
 	win_MCI.h		\
+	win_midiout.cc		\
+	win_midiout.h		\
 	be_midi.cc		\
 	be_midi.h
 
