@@ -1,3 +1,10 @@
+2004-08-14 Dominik Reichardt <dominus@users.sourceforge.net>
+	* docs/xml/docs.xml,faq.xml: updated documentation and FAQ
+	* docs/xml/html.xsl: got rid of another pointer to our ML
+	* docs/ReadMe.html,FAQ.html: updated documentation and FAQ
+	* Readme, FAQ: updated
+	* ReadMe.1st: got rid of another pointer to our ML
+	
 2004-08-06    <jeff@mini.nerble.net>
 
 	* drag.cc (Dragging_info): Avoid dropping an object where it is no
