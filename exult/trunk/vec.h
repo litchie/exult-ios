@@ -38,7 +38,7 @@ public:
 #endif
 	void put(int i, T& v)		// Set i'th entry.
 		{
-			if (i >= size())
+			if (i >= (int)size())
 				{
 				insert(begin() + size(), i - size(), 0);
 				push_back(v);
