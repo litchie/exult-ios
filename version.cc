@@ -107,7 +107,7 @@ void getVersionInfo(ostream& out)
 	out << "Compiler: ";
 #if (defined(__GNUC__))
 	out << "gcc";
-#if defined(__VERSIO__)
+#if defined(__VERSION__)
 	out << ", version: " << __VERSION__ << endl;
 #elif (defined(__GNUC_MINOR__))
 	out << ", version " << __GNUC__ << "." << __GNUC_MINOR__;
