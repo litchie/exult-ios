@@ -838,7 +838,13 @@ void Game_window::read_ireg_objects
 			oflags =	// Override flags (I think).
 			    ((entry[11]&1) << Game_object::invisible) |
 			    (((entry[11]>>3)&1) << Game_object::okay_to_take);
-			if (shnum == 961)
+			if (shnum == 330)// Virtue stone?
+				{	// Locs. stored in Usecode for now.
+				obj = new Ireg_game_object(shnum, frnum, tilex,
+						tiley, lift);
+				type = 0;
+				}
+			else if (shnum == 961)
 				{
 				Barge_object *b = new Barge_object(
 				    shnum, frnum, tilex, tiley, lift,
