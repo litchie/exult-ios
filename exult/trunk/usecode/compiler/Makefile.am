@@ -13,7 +13,9 @@ ucc_SOURCES = ucparse.yy uclex.ll ucmain.cc \
 	ucsym.cc	\
 	ucsym.h
 
+if BUILD_TOOLS
 bin_PROGRAMS = ucc
+endif
 
 ucc_LDADD = 			\
 	$(SYSLIBS)

@@ -547,7 +547,7 @@ void BG_Game::play_intro()
 		win->show();
 		win->put(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
 			 centery+100 - s->get_yabove());
-		WAITDELAY(0); //just to catch events
+		WAITDELAY(1); //just to catch events
 	}
 
 	// screen comes back up (sh. 0x1D)
