@@ -1030,6 +1030,8 @@ Usecode_value Usecode_internal::add_party_items
 					// Create and place.
 		Game_object *newobj = gwin->create_ireg_object(
 					info, shapenum, framenum, 0, 0, 0);
+		if (quality != c_any_qual)
+			newobj->set_quality(quality); // set quality
 		newobj->set_flag(Obj_flags::okay_to_take);
 		newobj->move(pos);
 		todo--;
