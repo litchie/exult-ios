@@ -905,7 +905,10 @@ void Actor::follow
 	else				// Leader stopped?
 		{
 		goal = leaderpos;	// Aim for leader.
+		if (gwin->walk_in_formation && pos.distance(leaderpos) <= 6)
+			return;		// In formation, & close enough.
 //		cout << "Follow:  Leader is stopped" << endl;
+		// +++++For formation, why not get correct positions?
 		static int xoffs[10] = {-1, 1, -2, 2, -3, 3, -4, 4, -5, 5},
 			   yoffs[10] = {1, -1, 2, -2, 3, -3, 4, -4, 5, -5};
 		goal.tx += xoffs[party_id] + 1 - rand()%3;

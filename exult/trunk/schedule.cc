@@ -278,7 +278,7 @@ void Follow_avatar_schedule::now_what
 	Tile_coord pos = npc->get_tile();
 	int dist2lead = leaderpos.distance(pos);
 	if (!av->is_moving() &&		// Avatar stopped.
-	    dist2lead <= 5)		// And we're already close enough.
+	    dist2lead <= 6)		// And we're already close enough.
 		return;
 	uint32 curtime = SDL_GetTicks();// Want the REAL time here.
 	if (!is_blocked)		// Not blocked?
