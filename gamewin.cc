@@ -439,22 +439,33 @@ void Game_window::add_special_light
 
 void Game_window::set_time_stopped
 	(
-	long delay			// Delay in ticks (1/1000 secs.).
+	long delay			// Delay in ticks (1/1000 secs.),
+					//   -1 to stop indefinitely, or 0
+					//   to end.
 	)
 	{
-	long new_expire = SDL_GetTicks() + delay;
-	if (new_expire > time_stopped)	// Set expiration time.
-		time_stopped = new_expire;
+	if (delay == -1)
+		time_stopped = -1;
+	else if (!delay)
+		time_stopped = 0;
+	else
+		{
+		long new_expire = SDL_GetTicks() + delay;
+		if (new_expire > time_stopped)	// Set expiration time.
+			time_stopped = new_expire;
+		}
 	}
 
 /*
- *	Return delay to expiration.
+ *	Return delay to expiration (or 3000 if indefinite).
  */
 
 long Game_window::check_time_stopped
 	(
 	)
 	{
+	if (time_stopped == -1)
+		return 3000;
 	long delay = time_stopped - SDL_GetTicks();
 	if (delay > 0)
 		return delay;

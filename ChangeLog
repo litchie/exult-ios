@@ -1,3 +1,8 @@
+2001-07-15  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* EStudio: Stop time when map-editing.
+	* Added "Play/test" toggle button to main EStudio window.
+
 2001-07-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Name changes:  Chunk_object_list -> Map_chunk.
