@@ -421,6 +421,7 @@ void Game::show_menu()
 						exit_loop = true;
 						break;
 					default:
+					        redraw = false;
 						break;
 					}
 				}
