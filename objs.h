@@ -704,7 +704,8 @@ public:
 		{ return major_dir != 0; }
 	void stop();			// Stop motion.
 					// Start moving.
-	void start(unsigned long destx, unsigned long desty, int speed);
+	void start(unsigned long destx, unsigned long desty, int speed,
+								int delay = 0);
 	int at_destination()		// Reached/passed dest. in start()?
 		{ return major_distance <= 0; }
 	virtual int is_dragable();	// Can this be dragged?

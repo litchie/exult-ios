@@ -1499,7 +1499,8 @@ void Sprite::start
 	(
 	unsigned long destx,		// Move towards pt. within world.
 	unsigned long desty,
-	int speed			// # millisecs. between frames.
+	int speed,			// # millisecs. between frames.
+	int delay			// Delay before starting.
 	)
 	{
 	if (!in_world())
@@ -1509,9 +1510,9 @@ void Sprite::start
 	Direction dir;			// Gets compass direction.++++++Get
 					//  northeast, etc. too.
 	if (!is_moving())		// Not already moving?
-		{			// Start immediately.
+		{			// Start.
 		unsigned long curtime = SDL_GetTicks();
-		gwin->get_tqueue()->add(curtime, this, (long) gwin);
+		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
 		}
 	curx = get_worldx();		// Get current coords.
 	cury = get_worldy();
