@@ -74,16 +74,16 @@ Game_window::Game_window
 	(
 	int width, int height, int scale		// Window dimensions.
 	) : 
-	    win(0), usecode(0), mode(splash), combat(0),
+	    win(0), usecode(0), mode(splash), combat(false),
             tqueue(new Time_queue()), clock(tqueue),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
-	    conv_choices(0), render_seq(0), painted(0), focus(1), 
-	    teleported(0), in_dungeon(0), 
+	    conv_choices(0), render_seq(0), painted(false), focus(true), 
+	    teleported(false), in_dungeon(false), 
 	    moving_barge(0), main_actor(0), skip_above_actor(31), 
 	    npcs(0),
 	    monster_info(0), 
-	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
+	    palette(-1), brightness(100), user_brightness(100), faded_out(false),
 	    special_light(0), last_restore_hour(6),
 	    dragging(0), dragging_save(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
@@ -987,7 +987,7 @@ Ireg_game_object *Game_window::create_ireg_object
 Egg_object *Game_window::create_egg
 	(
 	unsigned char *entry,		// 1-byte ireg entry.
-	int animated
+	bool animated
 	)
 	{
 	int shnum = entry[2]+256*(entry[3]&3);
@@ -2171,7 +2171,7 @@ void Game_window::double_clicked
 class Npc_face_info
 	{
 	int shape;			// NPC's shape #.
-	unsigned char text_pending;	// Text has been written, but user
+	bool text_pending;	// Text has been written, but user
 					//   has not yet been prompted.
 	Rectangle face_rect;		// Rectangle where face is shown.
 	Rectangle text_rect;		// Rectangle NPC statement is shown in.

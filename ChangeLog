@@ -1,3 +1,8 @@
+2000-11-25  Max Horn  <max@quendi.de>
+	* changed a lot vars from unsigned char to bool (and 0->false, 1->true)
+	* objs.cc: static find_nearby() now properly uses dynamic_cast instead of C-style cast
+	* exult.cc: activated Unicode mapping for key, used that to improve Handle_keystroke()
+	
 2000-11-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* drag.cc,exult.cc,gamewin.h: fixed gump buttons passing clicks to underlying items
 	* cheat.h/cc: made most member functions const
