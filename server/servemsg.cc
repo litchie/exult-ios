@@ -54,7 +54,7 @@ int Send_data
 	buf[2] = datalen&0xff;		// Data length.
 	buf[3] = (datalen>>8)&0xff;
 	buf[4] = id;
-	memcpy(&buf[5], data, datalen);	// The data itself.
+	std::memcpy(&buf[5], data, datalen);	// The data itself.
 	int len = datalen + hdrlength;
 	return (write(socket, buf, len) == len);
 	}
