@@ -428,7 +428,7 @@ static void Handle_keystroke
 		gwin->paint();
 		break;
 	case SDLK_s:		// Show next shape.
-#if 1
+#if 0
 		shape_frame = 0;
 		if (++shape_cnt == gwin->get_num_shapes())
 			shape_cnt = 0;

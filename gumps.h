@@ -61,8 +61,6 @@ public:
 		{ return next; }
 	Container_game_object *get_container()
 		{ return container; }
-	void remove(Game_object *obj)
-		{ container->remove(obj); }
 					// Get screen rect. of obj. in here.
 	Rectangle get_shape_rect(Game_object *obj);
 					// Get screen loc. of object.
@@ -80,6 +78,8 @@ public:
 	void push_checkmark(Game_window *gwin);
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1);
+	virtual void remove(Game_object *obj)
+		{ container->remove(obj); }
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};
@@ -114,7 +114,8 @@ class Actor_gump_object : public Gump_object
 		rfinger = 7
 		};
 					// Find index of closest spot.
-	int find_closest(int mx, int my);
+	int find_closest(int mx, int my, int only_empty = 0);
+	void add_to_spot(Game_object *obj, int index);
 	static short diskx, disky;	// Where to show 'diskette' button.
 	static short statx, staty;	// Where to show 'stats' button.
 public:
@@ -122,6 +123,7 @@ public:
 								int shnum);
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1);
+	virtual void remove(Game_object *obj);
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};

@@ -27,14 +27,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 
 const int CHECKMARK = 2;		// Shape # in gumps.vga for checkmark.
-const int DISK = 2;			// Diskette shape #.+++++++++
-const int STATS = 2;			// Stats button shape #.+++++++++
+const int DISK = 24;			// Diskette shape #.
+const int STATS = 25;			// Stats button shape #.
+const int DOVE = 46;
+const int STATSDISPLAY = 47;
 
 /*
  *	Statics:
  */
-short Actor_gump_object::diskx = 20, Actor_gump_object::disky = 20;//++++++++
-short Actor_gump_object::statx = 30, Actor_gump_object::staty = 30;
+short Actor_gump_object::diskx = 122, Actor_gump_object::disky = 132;
+short Actor_gump_object::statx = 122, Actor_gump_object::staty = 114;
 
 
 /*
@@ -84,7 +86,7 @@ Gump_object::Gump_object
 					// Character pictures:
 		if (shnum >= 57 && shnum <= 68)
 			{		// +++++Want whole rectangle.
-			object_area = Rectangle(32, 4, 92, 126);
+			object_area = Rectangle(26, 0, 104, 132);
 			checkx = 6; checky = 136;
 			}
 		else
@@ -261,8 +263,8 @@ void Gump_object::paint
 		{
 		obj = obj->get_next();
 		Shape_frame *shape = gwin->get_shape(*obj);
-		int objx = obj->cx - shape->get_xleft();
-		int objy = obj->cy - shape->get_yabove();
+		int objx = obj->cx - shape->get_xleft() + object_area.x;
+		int objy = obj->cy - shape->get_yabove() + object_area.y;
 					// Does obj. appear to be placed?
 		if (!object_area.has_point(objx, objy) ||
 		    !object_area.has_point(objx + shape->get_width() - 2,
@@ -298,12 +300,13 @@ void Gump_object::paint
 /*
  *	Find the index of the closest 'spot' to a mouse point.
  *
- *	Output:	Index.
+ *	Output:	Index, or -1 if unsuccessful.
  */
 
 int Actor_gump_object::find_closest
 	(
-	int mx, int my			// Mouse point in window.
+	int mx, int my,			// Mouse point in window.
+	int only_empty			// Only allow empty spots.
 	)
 	{
 	mx -= x; my -= y;		// Get point rel. to us.
@@ -314,7 +317,8 @@ int Actor_gump_object::find_closest
 		int dx = mx - spots[i].x, dy = my - spots[i].y;
 		long dsquared = dx*dx + dy*dy;
 					// Better than prev.?
-		if (dsquared < closest_squared)
+		if (dsquared < closest_squared && (!only_empty ||
+						    !spots[i].obj))
 			{
 			closest_squared = dsquared;
 			closest = i;
@@ -334,7 +338,31 @@ Actor_gump_object::Actor_gump_object
 	int shnum			// Shape #.
 	) : Gump_object(cont, initx, inity, shnum)
 	{
-	// +++++++++Init spot locations, ids.
+					// Set spot locations.
+	spots[(int) head].x = 114; spots[(int) head].y = 10;
+	spots[(int) back].x = 115; spots[(int) back].y = 24;
+	spots[(int) lhand].x = 115; spots[(int) lhand].y = 55;
+	spots[(int) rhand].x = 37; spots[(int) rhand].y = 56;
+	spots[(int) legs].x = 114; spots[(int) legs].y = 85;
+	spots[(int) feet].x = 76; spots[(int) feet].y = 98;
+	spots[(int) lfinger].x = 116; spots[(int) lfinger].y = 70;
+	spots[(int) rfinger].x = 35; spots[(int) rfinger].y = 70;
+					// Store objs. in their spots.
+	Game_object *last_object = container->get_last_object();
+	if (!last_object)
+		return;			// Empty.
+	Game_object *obj = last_object;
+	do
+		{
+		obj = obj->get_next();
+		int ox, oy;		// Get screen location.
+		get_shape_location(obj, ox, oy);
+					// Find an empty spot.
+		int index = find_closest(ox, oy, 1);
+		if (index >= 0)		// And if it fails???
+			add_to_spot(obj, index);
+		}
+	while (obj != last_object);
 	}
 
 /*
@@ -351,16 +379,70 @@ int Actor_gump_object::add
 	{
 					// Find index of closest spot.
 	int index = find_closest(mx, my);
-	Actor_gump_spot& spot = spots[index];
-	if (spot.obj)			// Already something there?
-					// Try to put into container.
-		return (spot.obj->drop(obj));
-	spot.obj = obj;			// Put in spot. ++++Check types??
+	Actor_gump_spot *spot = &spots[index];
+	if (spot->obj)			// Already something there?
+		{			// Try to put into container.
+		if (spot->obj->drop(obj))
+			return (1);
+					// Try again for an empty spot.
+		index = find_closest(mx, my, 1);
+		if (index < 0)
+			return (0);
+		}
 	container->add(obj);		// Add to whom we represent.
-					// Set object's position.
-	obj->cx = spot.x - object_area.x;
-	obj->cy = spot.y - object_area.y;
+	add_to_spot(obj, index);
 	return (1);
+	}
+
+/*
+ *	Add object to an empty spot.
+ */
+
+void Actor_gump_object::add_to_spot
+	(
+	Game_object *obj,
+	int index			// Spot index.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Actor_gump_spot *spot = &spots[index];
+	spot->obj = obj;		// Put in spot. ++++Check types??
+					// Get shape info.
+	Shape_frame *shape = gwin->get_shape(*obj);
+					// Set object's position.
+	obj->cx = spot->x - object_area.x;
+	obj->cy = spot->y - object_area.y;
+					// Shift if necessary.
+	int x0 = obj->cx - shape->get_xleft(), 
+	    y0 = obj->cy - shape->get_yabove();
+	if (x0 < 0)
+		obj->cx -= x0;
+	if (y0 < 0)
+		obj->cy -= y0;
+	int x1 = x0 + shape->get_width(), y1 = y0 + shape->get_height();
+	if (x1 > object_area.w)
+		obj->cx -= x1 - object_area.w;
+	if (y1 > object_area.h)
+		obj->cy -= y1 - object_area.h;
+	}
+
+/*
+ *	Remove an object.
+ */
+
+void Actor_gump_object::remove
+	(
+	Game_object *obj
+	)
+	{
+	Gump_object::remove(obj);
+					// Find its spot.
+	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+		if (spots[i].obj == obj)
+			{
+			spots[i].obj = 0;
+			break;
+			}
 	}
 
 /*
@@ -372,9 +454,8 @@ void Actor_gump_object::paint
 	Game_window *gwin
 	)
 	{
-	Gump_object::paint(gwin);	// Paint objects, checkmark.
+	Gump_object::paint(gwin);	// Paint gump & objects.
 					// Paint buttons.
-	gwin->paint_gump(x + checkx, y + checky, CHECKMARK, 0);
 	gwin->paint_gump(x + diskx, y + disky, DISK, 0);
 	gwin->paint_gump(x + statx, y + staty, STATS, 0);
 	}
