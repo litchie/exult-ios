@@ -1,9 +1,7 @@
-6/8/00:		V??.??
-		ALL save games from before this update are now broken.
-		Games must be restared.
-		
+8/22/00:
+		Note:  ALL save games from before this update are now broken.
+		Games must be restarted.
 
-??/??/00:	V??.??
 		Better introduction sequence. Can be interrupted by
 		keypress.
 
@@ -14,11 +12,15 @@
 		Cheating mode: any keys which enable additional features can
 		be disabled/enabled from the config file
 
+		'God mode' (alt-G) and teleport (ctrl-alt-t) cheat added.
+
 		Support for barges (Flying carpet, ships, carts...)
 
 		Teleports.
 
 		Combat:  Monsters attack, and the music plays.
+
+		More shortcuts:  'f', 'w', 'm', 'b'.
 
 		Serpent Isle awareness (not useful yet)
 
