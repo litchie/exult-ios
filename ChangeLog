@@ -1,6 +1,7 @@
 2002-07-08  Willem Jan Palenstijn <wjpalenstijn@users.souceforge.net>
 	* Newfile_gump.cc: use SDL's unicode translation for text input
 	* lots: moved gump_utils.cc into Gump_manager class
+	* exult.cc: don't count dragging for double clicks
 
 2002-07-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ucinternal.cc: allow small changes to loop-array in mid-loop in SI
