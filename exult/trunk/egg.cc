@@ -310,8 +310,8 @@ int Egg_object::is_active
 					//   been reset.
 	if (cri == cached_in && !solid_area)
 		cri = avatar_near;
-	int deltaz = get_lift() - tz;
-	deltaz = deltaz < 0 ? -deltaz : deltaz;
+	int deltaz = tz - get_lift();
+//	deltaz = deltaz < 0 ? -deltaz : deltaz;
 	switch (cri)
 		{
 	case cached_in:			// Anywhere in square.
@@ -319,12 +319,13 @@ int Egg_object::is_active
 	case party_near:
 		return (obj->get_party_id() >= 0 || 
 					obj == gwin->get_main_actor()) &&
-			area.has_point(tx, ty) && deltaz <= 1 &&
+			area.has_point(tx, ty) && 
+			(deltaz == 0 || deltaz == 1) &&
 					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
 	case external_criteria:		// For now, just guessing.
 		return obj == gwin->get_main_actor() && 
-			(deltaz <= 1 || 
+			(deltaz == 0 || deltaz == 1 ||
 				(type == missile && tz/5 == get_lift()/5)) &&
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty);
@@ -416,7 +417,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		flags |= (1 << (int) hatched);
 	Game_window *gwin = Game_window::get_game_window();
 					// Taking a guess:
-	if (criteria == external_criteria)
+	if (criteria == external_criteria && !(flags & (1 << (int) once)))
 		{			// Look for nearby eggs.
 		Vector eggs;
 		int cnt = find_nearby(eggs, get_shapenum(), 8, 16);
