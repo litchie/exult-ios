@@ -1,6 +1,6 @@
 /**	-*-mode: Fundamental; tab-width: 8; -*-
  **
- **	Path.cc - Pathfinding algorithm.
+ **	Path.cc - Pathfinding algorithms.
  **
  **	Written: 4/7/2000 - JSF
  **/
@@ -25,7 +25,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <hash_set>
 #include "objs.h"
-#include "gamewin.h"
 
 /*
  *	Iterate through neighbors of a tile (in 2 dimensions).
@@ -33,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Neighbor_iterator
 	{
 	Tile_coord tile;		// Original tile.
-	static int coords[2][8];	// Coords to go through.
+	static int coords[16];		// Coords to go through ((x,y) pairs)
 	int index;			// 0-7.
 public:
 	Neighbor_iterator(Tile_coord t) : tile(t), index(0)
@@ -43,8 +42,8 @@ public:
 		{
 		while (index < 8)
 			{
-			newt = Tile_coord(tile.tx + coords[index][0],
-					tile.ty + coords[index][1], tile.tz);
+			newt = Tile_coord(tile.tx + coords[2*index],
+				tile.ty + coords[2*index + 1], tile.tz);
 			index++;
 			if (newt.tx >= 0 && newt.tx < num_tiles &&
 			    newt.ty >= 0 && newt.ty < num_tiles)
@@ -57,7 +56,7 @@ public:
 /*
  *	Statics:
  */
-int Neighbor_iterator::coords[2][8] = {
+int Neighbor_iterator::coords[16] = {
 	-1, -1, 0, -1, 1, -1,
 	0, -1,           0, 1,
 	1, -1,  1, 0,  1, 1
@@ -76,6 +75,7 @@ inline int Cost_to_goal
 	return from.distance(to);
 	}
 
+#if 0	/* Move this to its own file above & pass as a parm. */
 /*
  *	Figure cost going from one tile to an adjacent tile.
  *
@@ -109,6 +109,7 @@ static int Get_cost
 					// Maybe check types of ground?
 	return (cost);
 	}
+#endif
 
 /*
  *	A node for our search:
@@ -335,10 +336,10 @@ public:
 Tile_coord *Find_path
 	(
 	Tile_coord start,		// Where to start from.
-	Tile_coord goal			// Where to end up.
+	Tile_coord goal,		// Where to end up.
+	int (*get_cost)(int, int, int)	// Gets cost of moving to a tile.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
 	A_star_queue nodes;		// The priority queue & hash table.
 	int max_cost = Cost_to_goal(start, goal);
 					// Create start node.
@@ -357,7 +358,7 @@ Tile_coord *Find_path
 		Tile_coord ntile(0, 0, 0);
 		while (get_next(ntile))
 			{		// Get cost to next tile.
-			int step_cost = Get_cost(gwin, ntile);
+			int step_cost = get_cost(ntile.tx, ntile.ty, ntile.tz);
 					// Blocked?
 			if (step_cost == -1)
 				continue;
