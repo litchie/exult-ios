@@ -204,7 +204,6 @@ void Combat_schedule::approach_foe
 		npc->walk_to_tile(pos, 100, 0);
 		return;
 		}
-					// If range weapon, find clear path????
 	PathFinder *path = new Astar();
 					// Try this for now:
 	Monster_pathfinder_client cost(npc, max_reach, opponent);
@@ -242,6 +241,24 @@ void Combat_schedule::start_strike
 	(
 	)
 	{
+#if 0	/* ++++Need to test.   */
+	if (ammo_shape)			// Firing?
+		{
+		Tile_coord pos = npc->get_abs_tile_coord();
+		if (!Fast_pathfinder_client::is_straight_path(pos,
+					opponent->get_abs_tile_coord()))
+			{		// Blocked.  Find another spot.
+			pos.tx += rand()%7 - 3;
+			pos.ty += rand()%7 - 3;
+			npc->walk_to_tile(pos, 100, 0);
+			state = approach;
+			return;
+			}
+		state = fire;		// Clear to go.
+		}
+	else
+		state = strike;
+#endif
 					// Hitting or firing?
 	state = ammo_shape ? fire : strike;
 	cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
