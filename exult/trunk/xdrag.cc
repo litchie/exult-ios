@@ -144,6 +144,8 @@ void Xdnd::client_msg
 							cev.data.l[2+i];
 			cout << "num_types = " << num_types << endl;
 			}
+					// Save current window coords.
+		Get_window_coords(display, xgamewin, winx, winy);
 		}
 	else if (cev.message_type == xdnd_position)
 		{
@@ -161,8 +163,8 @@ void Xdnd::client_msg
 		xev.xclient.data.l[4] = xdnd_copy;
 		XSendEvent(display, drag_win, false, 0, &xev);
 					// Save mouse position.
-		lastx = (cev.data.l[2]>>16)&0xffff;
-		lasty = cev.data.l[2]&0xffff;
+		lastx = ((cev.data.l[2]>>16)&0xffff) - winx;
+		lasty = (cev.data.l[2]&0xffff) - winy;
 					// Get timestamp.
 		unsigned long time = 0;	//????++++++++++++++++
 		if (!data_valid)	// Tell owner we want data.
@@ -187,18 +189,14 @@ void Xdnd::client_msg
 		num_types = 0;
 		if (!okay)
 			return;
-		int x, y;		// Figure relative pos. within window.
-		Get_window_coords(display, xgamewin, x, y);
-		x = lastx - x;
-		y = lasty - y;
 		if (shape >= 0)		// Dropping a shape?
 			{
 			if (file == U7_SHAPE_SHAPES)
 					// For now, just allow "shapes.vga".
-				(*shape_handler)(shape, frame, x, y);
+				(*shape_handler)(shape, frame, lastx, lasty);
 			}
 		else if (chunknum >= 0)	// A whole chunk.
-			(*chunk_handler)(chunknum, x, y);
+			(*chunk_handler)(chunknum, lastx, lasty);
 
 		data_valid = false;
 		}
