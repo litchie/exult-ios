@@ -838,8 +838,8 @@ void Gump_object::paint
 		{
 		obj = obj->get_next();
 		Shape_frame *shape = gwin->get_shape(*obj);
-		int objx = obj->cx - shape->get_xleft() + object_area.x;
-		int objy = obj->cy - shape->get_yabove() + object_area.y;
+		int objx = obj->cx - shape->get_xleft() + 1 + object_area.x;
+		int objy = obj->cy - shape->get_yabove() + 1 + object_area.y;
 					// Does obj. appear to be placed?
 		if (!object_area.has_point(objx, objy) ||
 		    !object_area.has_point(objx + shape->get_xright() - 1,
@@ -851,9 +851,8 @@ void Gump_object::paint
 				px = endx;
 			if (py > endy)
 				py = endy;
-			obj->cx = px - shape->get_width() + shape->get_xleft();
-			obj->cy = py - shape->get_height() +
-							shape->get_yabove();
+			obj->cx = px - shape->get_xright();
+			obj->cy = py - shape->get_ybelow();
 			curx += 8;
 			if (curx >= endx)
 				{
