@@ -105,3 +105,22 @@ const Monster_info *Monster_info::get_default
 	return &default_info;
 	}
 
+/*
+ *	Set all the stats.
+ */
+
+void Monster_info::set_stats
+	(
+	int str, int dex, int intel, int cmb, int arm,
+	int wpn, int rch
+	)
+	{
+	strength = str;
+	dexterity = dex;
+	intelligence = intel;
+	combat = cmb;
+	armor = arm;
+	weapon = wpn;
+	reach = rch;
+	}
+
