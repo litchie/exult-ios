@@ -476,7 +476,7 @@ Actor::~Actor
 
 /*
  *	Decrement food level and print complaints if it gets too low.
- *	NOTE:  Should be called every three hours.
+ *	NOTE:  Should be called every hour.
  */
 
 void Actor::use_food
@@ -490,7 +490,7 @@ void Actor::use_food
 			return;
 		}
 	int food = get_property(static_cast<int>(food_level));
-	food -= 3;			// 1 level/hour should do.
+	food -= 1;			// 1 level/hour should do.
 	set_property(static_cast<int>(food_level), food);
 	if (food <= 0)			// Really low?
 		{
