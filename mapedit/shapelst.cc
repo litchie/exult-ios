@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 #ifdef XWIN
 #include <gdk/gdkx.h>
 #endif
@@ -529,6 +530,21 @@ on_find_shape_up_clicked               (GtkButton       *button,
 	chooser->search(gtk_entry_get_text(
 			GTK_ENTRY(chooser->get_find_text())), -1);
 }
+extern "C" gboolean
+on_find_shape_key			(GtkEntry	*entry,
+					 GdkEventKey	*event,
+					 gpointer	 user_data)
+{
+	if (event->keyval == GDK_Return)
+		{
+		Shape_chooser *chooser = (Shape_chooser *) user_data;
+		chooser->search(gtk_entry_get_text(
+			GTK_ENTRY(chooser->get_find_text())), 1);
+		return TRUE;
+		}
+	return FALSE;			// Let parent handle it.
+}
+
 
 /*
  *	Create box with 'find' and 'history' controls.
@@ -601,6 +617,9 @@ GtkWidget *Shape_chooser::create_search_controls
 	gtk_signal_connect (GTK_OBJECT (find_shape_up), "clicked",
                       GTK_SIGNAL_FUNC (on_find_shape_up_clicked),
                       this);
+	gtk_signal_connect (GTK_OBJECT (find_text), "key-press-event",
+		      GTK_SIGNAL_FUNC (on_find_shape_key),
+		      this);
 	return frame;
 	}
 
