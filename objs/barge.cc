@@ -269,8 +269,6 @@ void Barge_object::gather
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Game_map *gmap = gwin->get_map();
 	if (!gmap->get_chunk_safely(get_cx(), get_cy()))
 		return;			// Not set in world yet.
 	ice_raft = false;		// We'll just detect it each time.
@@ -375,7 +373,6 @@ void Barge_object::finish_move
 		obj->move(positions[i]);
 		}
 	delete [] positions;
-	Game_window *gwin = Game_window::get_instance();
 					// Check for scrolling.
 	gwin->scroll_if_needed(center);
 	}
@@ -422,7 +419,6 @@ void Barge_object::travel_to_tile
 	if (path->NewPath(get_tile(), dest, 0))
 		{
 		frame_time = speed;
-		Game_window *gwin = Game_window::get_instance();
 					// Figure new direction.
 		Tile_coord cur = get_tile();
 		int dy = Tile_coord::delta(cur.ty, dest.ty),
@@ -445,7 +441,6 @@ void Barge_object::turn_right
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	add_dirty(gwin);		// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate90r(gwin, this, xtiles, ytiles, center);
@@ -480,7 +475,6 @@ void Barge_object::turn_left
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	add_dirty(gwin);		// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate90l(gwin, this, xtiles, ytiles, center);
@@ -515,7 +509,6 @@ void Barge_object::turn_around
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	add_dirty(gwin);		// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate180(gwin, this, xtiles, ytiles, center);
@@ -560,7 +553,6 @@ int Barge_object::okay_to_land
 	{
 	Rectangle foot = get_tile_footprint();
 	int lift = get_lift();		// How high we are.
-	Game_map *gmap = Game_window::get_instance()->get_map();
 					// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
 	Rectangle tiles;
@@ -587,7 +579,6 @@ void Barge_object::handle_event
 	long udata			// Ignored.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	if (!path || !frame_time || gwin->get_moving_barge() != this)
 		return;			// We shouldn't be doing anything.
 	Tile_coord tile;		// Get spot & walk there.	
@@ -616,7 +607,7 @@ void Barge_object::move
 	if (!gathered)			// Happens in SI with turtle.
 		gather();
 					// Want to repaint old position.
-	add_dirty(Game_window::get_instance());
+	add_dirty(gwin);
 					// Get current location.
 	Tile_coord old = get_tile();
 					// Move the barge itself.
@@ -753,9 +744,8 @@ int Barge_object::step
 						4, cur, t, move_type, 0))
 		return (0);		// Done.
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.
-	Game_window *gwin = Game_window::get_instance();
 					// Near an egg?
-	Map_chunk *nlist = gwin->get_chunk(get_cx(), get_cy());
+	Map_chunk *nlist = gmap->get_chunk(get_cx(), get_cy());
 	nlist->activate_eggs(gwin->get_main_actor(), t.tx, t.ty, t.tz, 
 						cur.tx, cur.ty);
 	return (1);			// Add back to queue for next time.
@@ -781,9 +771,7 @@ void Barge_object::write_ireg
 	*ptr++ = 0;			// Unknown.
 					// Flags (quality).  Taking B3 to in-
 					//   dicate barge mode.
-	*ptr++ = (dir<<1) | 
-		((Game_window::get_instance()->get_moving_barge() == this)
-								<<3);
+	*ptr++ = (dir<<1) | ((gwin->get_moving_barge() == this)<<3);
 	*ptr++ = 0;			// (Quantity).
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = 0;			// Data2.
@@ -804,7 +792,7 @@ void Barge_object::write_ireg
 int Barge_object::get_ireg_size()
 {
 	// These shouldn't ever happen, but you never know
-	if (Game_window::get_instance()->get_moving_barge() == this || Usecode_script::find(this))
+	if (gwin->get_moving_barge() == this || Usecode_script::find(this))
 		return -1;
 
 	int total_size = 13;

@@ -20,9 +20,11 @@
 #define SHAPEID_H	1
 
 #include "shapevga.h"
+#include "singles.h"
 
 class Shape_frame;
 class Shape_info;
+
 
 enum ShapeFile {
 	SF_SHAPES_VGA = 0,	// <STATIC>/shapes.vga.  MUST be first.
@@ -44,7 +46,7 @@ enum ShapeFile {
 /*
  *	Manage the set of shape files.
  */
-class Shape_manager
+class Shape_manager : public Game_singletons
 	{
 	static Shape_manager *instance;	// There shall be only one.
 	Shapes_vga_file shapes;		// Main 'shapes.vga' file.
@@ -83,7 +85,7 @@ public:
  *	A shape ID contains a shape # and a frame # within the shape encoded
  *	as a 2-byte quantity.
  */
-class ShapeID
+class ShapeID : public Game_singletons
 	{
 	short shapenum;			// Shape #.
 	char framenum;			// Frame # within shape.

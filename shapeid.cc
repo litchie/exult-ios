@@ -34,6 +34,27 @@ using std::string;
 Shape_manager *Shape_manager::instance = 0;
 
 /*
+ *	Singletons:
+ */
+Game_window *Game_singletons::gwin = 0;
+Game_map *Game_singletons::gmap = 0;
+Effects_manager *Game_singletons::eman = 0;
+Shape_manager *Game_singletons::sman = 0;
+Usecode_machine *Game_singletons::ucmachine = 0;
+
+void Game_singletons::init
+	(
+	Game_window *g
+	)
+	{
+	gwin = g;
+	gmap = g->get_map();
+	eman = g->get_effects();
+	sman = Shape_manager::get_instance();
+	ucmachine = g->get_usecode();
+	}
+
+/*
  *	Create shape manager.
  */
 Shape_manager::Shape_manager
@@ -66,8 +87,7 @@ void Shape_manager::load
 		{
 		files[SF_PAPERDOL_VGA].load(PAPERDOL);
 		if (!files[SF_PAPERDOL_VGA].is_good())
-			Game_window::get_instance()->abort(
-					"Can't open 'paperdol.vga' file.");
+			gwin->abort("Can't open 'paperdol.vga' file.");
 		}
 	else
 		{
@@ -123,7 +143,6 @@ Shape_frame *ShapeID::cache_shape()
 {
 	if (framenum == -1) return 0;
 
-	Shape_manager *sman = Shape_manager::get_instance();
 	if (has_trans != 2) has_trans = 0;
 	if (!shapefile)
 		{			// Special case.
@@ -147,15 +166,12 @@ Shape_frame *ShapeID::cache_shape()
 void ShapeID::paint_shape(int xoff, int yoff, bool force_trans)
 { 
 	Shape_frame *s = get_shape();
-	Game_window::get_instance()->paint_shape(
-				xoff, yoff, s, force_trans||has_trans);
+	gwin->paint_shape(xoff, yoff, s, force_trans||has_trans);
 }
 
 
 int ShapeID::get_num_frames() const
 {
-	Shape_manager *sman = Shape_manager::get_instance();
-
 	if (!shapefile)
 		return sman->shapes.get_num_frames(shapenum);
 	else if (shapefile < SF_OTHER)

@@ -90,7 +90,6 @@ int Schedule::try_street_maintenance
 	long curtime = Game::get_ticks();
 	if (curtime < street_maintenance_time)
 		return 0;		// Not time yet.
-	Game_window *gwin = Game_window::get_instance();
 	if (npc->Actor::get_npc_num() <= 0 ||
 	    npc == gwin->get_camera_actor())
 		return 0;		// Only want normal NPC's.
@@ -239,7 +238,6 @@ void Street_maintenance_schedule::now_what
 	cout << npc->get_name() << 
 			" done with street maintenance" << endl;
 				// Set back to old schedule.
-	Game_window *gwin = Game_window::get_instance();
 	int period = gwin->get_hour()/3;
 	npc->update_schedule(gwin, period, 7, 0);
 	}
@@ -271,7 +269,6 @@ void Follow_avatar_schedule::now_what
 #if 0
 	cout << npc->get_name() << " in Follow_avatar::now_what()" << endl;
 #endif
-	Game_window *gwin = Game_window::get_instance();
 	Actor *av = gwin->get_main_actor();
 	Tile_coord leaderpos = av->get_tile();
 	Tile_coord pos = npc->get_tile();
@@ -382,7 +379,6 @@ void Pace_schedule::now_what
 			return;		// We no longer exist.
 	which = !which;			// Flip direction.
 	int delay = 750;		// Delay .75 secs.
-	Game_window *gwin = Game_window::get_instance();
 	if (blocked.tx != -1 &&		// Blocked?
 	    !npc->is_monster())
 		{
@@ -415,7 +411,6 @@ void Eat_at_inn_schedule::now_what
 			return;
 			}
 		}
-	Game_window *gwin = Game_window::get_instance();
 	Game_object_vector foods;			// Food nearby?
 	int cnt = npc->find_nearby(foods, 377, 2, 0);
 	if (cnt)			// Found?
@@ -549,13 +544,6 @@ void Patrol_schedule::now_what
 			(*scr) << Ucscript::usecode2 << npc->get_usecode() <<
 					static_cast<int>(Usecode_machine::npc_proximity);
 			scr->start();	// Start next tick.
-#if 0
-			Actor *safenpc = npc;
-			safenpc->activate(gwin->get_usecode(),
-					Usecode_machine::npc_proximity);
-			if (safenpc->get_schedule() != this)
-				return;	// We're gone.
-#endif
 			}
 		case 16:		// Bow to ground.  ++++Implement.
 		case 17:		// Bow from ground.+++++
@@ -575,7 +563,6 @@ void Patrol_schedule::now_what
 	pathnum += dir;			// Find next path.
 					// Already know its location?
 	path =  pathnum >= 0 && pathnum < paths.size() ? paths[pathnum] : 0;
-	Game_window *gwin = Game_window::get_instance();
 	if (!path)			// No, so look around.
 		{
 		Game_object_vector nearby;
@@ -655,7 +642,6 @@ void Talk_schedule::now_what
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 
 	// Switch to phase 3 if we are reasonable close
 	if (phase != 0 && phase != 4 &&
@@ -702,7 +688,7 @@ void Talk_schedule::now_what
 		npc->walk_to_tile(npc->get_tile() +
 			Tile_coord(dx, -dx, 0), 300, 500);
 					// Wait til conversation is over.
-//		if (gwin->get_usecode()->get_num_faces_on_screen() == 0)
+//		if (ucmachine->get_num_faces_on_screen() == 0)
 //			phase++;
 			phase = 3;
 		return;
@@ -727,9 +713,9 @@ void Talk_schedule::now_what
 		npc->stop();		// Stop moving.
 					// NOTE:  This could DESTROY us!
 		if (Game::get_game_type() == SERPENT_ISLE)
-			npc->activate(gwin->get_usecode(), 9);
+			npc->activate(ucmachine, 9);
 		else
-			npc->activate(gwin->get_usecode(), 1);
+			npc->activate(ucmachine, 1);
 					// SO don't refer to any instance
 					//   variables from here on.
 		gwin->paint();
@@ -765,7 +751,6 @@ void Loiter_schedule::now_what
 	int newx = center.tx - dist + rand()%(2*dist);
 	int newy = center.ty - dist + rand()%(2*dist);
 					// Wait a bit.
-	Game_window *gwin = Game_window::get_instance();
 	npc->walk_to_tile(newx, newy, center.tz, 2*gwin->get_std_delay(), 
 								rand()%2000);
 	}
@@ -840,7 +825,6 @@ void Dance_schedule::now_what
 					// Walk, then spin.
 	npc->set_action(new Sequence_actor_action(walk,
 		new Frames_actor_action(frames, sizeof(frames), 100)));
-	Game_window *gwin = Game_window::get_instance();
 	npc->start(gwin->get_std_delay(), 500);		// Start in 1/2 sec.
 	}
 
@@ -896,7 +880,6 @@ void Hound_schedule::now_what
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Actor *av = gwin->get_main_actor();
 	Tile_coord avpos = av->get_tile(),
 		   npcpos = npc->get_tile();
@@ -950,7 +933,6 @@ void Wander_schedule::now_what
 					// Find a free spot.
 	Tile_coord dest = Map_chunk::find_spot(pos, 4, npc->get_shapenum(), 0,
 									1);
-	Game_window *gwin = Game_window::get_instance();
 	if (dest.tx == -1 || !npc->walk_path_to_tile(dest,
 					gwin->get_std_delay(), rand()%2000))
 					// Failed?  Try again a little later.
@@ -1116,7 +1098,6 @@ void Sleep_schedule::ending
 	if (floorloc.tx >= 0)		// Get back on floor.
 		npc->move(floorloc);
 	npc->set_frame(Actor::standing);
-	Game_window *gwin = Game_window::get_instance();
 	gwin->set_all_dirty();		// Update all, since Av. stands up.
 	state = 0;			// In case we go back to sleep.
 	}
@@ -1151,7 +1132,6 @@ void Sit_schedule::now_what
 		if (did_barge_usecode)
 			return;		// But NOT more than once for party.
 		did_barge_usecode = true;
-		Game_window *gwin = Game_window::get_instance();
 		if (gwin->get_moving_barge())
 			return;		// Already moving.
 		if (!npc->is_in_party())
@@ -1173,7 +1153,7 @@ void Sit_schedule::now_what
 			}
 		did_barge_usecode = true;
 					// Special usecode for barge pieces:
-		gwin->get_usecode()->call_usecode(usefun, barge,
+		ucmachine->call_usecode(usefun, barge,
 					Usecode_machine::double_click);
 		return;
 		}
@@ -1188,7 +1168,7 @@ void Sit_schedule::now_what
  *	Action to sit in the chair NPC is in front of.
  */
 
-class Sit_actor_action : public Frames_actor_action
+class Sit_actor_action : public Frames_actor_action, public Game_singletons
 	{
 	Game_object *chair;		// Chair.
 	Tile_coord chairloc;		// Original chair location.
@@ -1222,7 +1202,6 @@ class Sit_actor_action : public Frames_actor_action
 		if (actor->get_tile() == sitloc)
 			return false;	// We're standing there.
 					// See if spot is blocked.
-		Game_window *gwin = Game_window::get_instance();
 		Map_chunk *ch = gwin->get_chunk(sitloc.tx/c_tiles_per_chunk,
 						sitloc.ty/c_tiles_per_chunk);
 		int new_lift;
@@ -1524,7 +1503,6 @@ void Lab_schedule::now_what
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Tile_coord npcpos = npc->get_tile();
 	int delay = 100;		// 1/10 sec. to next action.
 					// Often want to get within 1 tile.
@@ -1669,7 +1647,6 @@ void Shy_schedule::now_what
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Actor *av = gwin->get_main_actor();
 	Tile_coord avpos = av->get_tile(),
 		   npcpos = npc->get_tile();
@@ -1730,7 +1707,6 @@ void Waiter_schedule::get_customer
 	(
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
 	if (customers.empty())			// Got to search?
 	{
 		Actor_vector vec;		// Look within 32 tiles;
@@ -1881,7 +1857,6 @@ void Waiter_schedule::now_what
 		get_customer();		// Find one, and walk to a prep. table.
 		return;
 		}
-	Game_window *gwin = Game_window::get_instance();
 	if (dist < 3)			// Close enough to customer?
 		{
 		Game_object_vector foods;
@@ -1976,7 +1951,6 @@ void Sew_schedule::now_what
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Tile_coord npcpos = npc->get_tile();
 					// Often want to get within 1 tile.
 	Actor_pathfinder_client cost(npc, 1);
@@ -2229,7 +2203,6 @@ void Sew_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 					// Remove shears.
 	Game_object *obj = npc->get_readied(Actor::lhand);
 	if (obj)
@@ -2257,7 +2230,6 @@ Bake_schedule::Bake_schedule(Actor *n) : Schedule(n),
 
 void Bake_schedule::now_what()
 {
-	Game_window *gwin = Game_window::get_instance();
 	Tile_coord npcpos = npc->get_tile();
 	Actor_pathfinder_client cost(npc, 1);
 	int delay = 100;
@@ -2603,7 +2575,6 @@ void Forge_schedule::now_what
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Tile_coord npcpos = npc->get_tile();
 					// Often want to get within 1 tile.
 	Actor_pathfinder_client cost(npc, 1);
@@ -3031,7 +3002,6 @@ void Walk_to_schedule::now_what
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	if (npc->get_tile().distance(dest) <= 3)
 		{			// Close enough!
 		npc->set_schedule_type(new_schedule);

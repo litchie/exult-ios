@@ -107,14 +107,12 @@ static int Has_quantity
 	int shnum			// Shape number.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = ShapeID::get_info(shnum);
 	return info.has_quantity();
 	}
 
 static int Has_hitpoints(int shnum)
 {
-	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = ShapeID::get_info(shnum);
 	return ((info.get_shape_class() == Shape_info::has_hp) ||
 			(info.get_shape_class() == Shape_info::container));
@@ -243,8 +241,6 @@ void Game_object::move
 	int newlift
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Game_map *gmap = gwin->get_map();
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
 	Map_chunk *newchunk = gmap->get_chunk_safely(newcx, newcy);
@@ -272,7 +268,6 @@ void Game_object::change_frame
 	int frnum
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	gwin->add_dirty(this);		// Set to repaint old area.
 	set_frame(frnum);
 	gwin->add_dirty(this);		// Set to repaint new.
@@ -289,7 +284,6 @@ int Game_object::swap_positions
 	Game_object *obj2
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Shape_info& inf1 = get_info();
 	Shape_info& inf2 = obj2->get_info();
 	if (inf1.get_3d_xtiles() != inf2.get_3d_xtiles() ||
@@ -515,7 +509,6 @@ Rectangle Game_object::get_footprint
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = get_info();
 					// Get footprint.
 	int frame = get_framenum();
@@ -539,8 +532,7 @@ Game_object *Game_object::find_blocking
 	Tile_coord tile			// Tile to check.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	Map_chunk *chunk = gwin->get_chunk(tile.tx/c_tiles_per_chunk,
+	Map_chunk *chunk = gmap->get_chunk(tile.tx/c_tiles_per_chunk,
 						    tile.ty/c_tiles_per_chunk);
 	Game_object *obj;
 	Object_iterator next(chunk->get_objects());
@@ -572,7 +564,6 @@ int Game_object::is_closed_door
 	(
 	) const
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = get_info();
 	if (!info.is_door())
 		return 0;
@@ -622,8 +613,7 @@ void Game_object::say
 	const char *text
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	gwin->get_effects()->add_text(text, this);
+	eman->add_text(text, this);
 	}
 
 /*
@@ -671,7 +661,6 @@ void Game_object::activate
 					// Serpent Isle spell scrolls:
 	if (usefun == 0x2cb && Game::get_game_type() == SERPENT_ISLE)
 		{
-		Game_window *gwin = Game_window::get_instance();
 		gwin->get_gump_man()->add_gump(this, 65);
 		return;
 		}
@@ -748,7 +737,6 @@ void Game_object::update_from_studio
 		return;
 		}
 //	editing = 0;	// He may have chosen 'Apply', so still editing.
-	Game_window *gwin = Game_window::get_instance();
 	gwin->add_dirty(obj);
 	obj->set_shape(shape, frame);
 	gwin->add_dirty(obj);
@@ -1130,13 +1118,11 @@ void Game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	Map_chunk *chunk = 
-			Game_window::get_instance()->get_chunk_safely(
-								cx, cy);
+	Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
 	if (chunk)
 		chunk->remove(this);
 	if (!nodel)
-		Game_window::get_instance()->delete_object(this);
+		gwin->delete_object(this);
 	}
 
 /*
@@ -1300,12 +1286,11 @@ int Game_object::compare
 	Game_object *obj2
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 					// See if there's no overlap.
 	Rectangle r2 = gwin->get_shape_rect(obj2);
 	if (!inf1.area.intersects(r2))
 		return (0);		// No overlap on screen.
-	Ordering_info inf2(Game_window::get_instance(), obj2, r2);
+	Ordering_info inf2(gwin, obj2, r2);
 #ifdef DEBUGLT
 	Debug_lt(inf1.tx, inf1.ty, inf2.tx, inf2.ty);
 #endif
@@ -1402,7 +1387,6 @@ int Game_object::lt
 	Game_object& obj2
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	Ordering_info ord(gwin, this);
 	int cmp = compare(ord, &obj2);
 	return cmp == -1 ? 1 : cmp == 1 ? 0 : -1;
@@ -1419,7 +1403,6 @@ int Game_object::get_rotated_frame
 	int quads			// 1=90, 2=180, 3=270.
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	int curframe = get_framenum();
 	int shapenum = get_shapenum();
 	Shape_info& info = get_info();
@@ -1468,7 +1451,7 @@ int Game_object::attack_object
 		winf = attacker->get_weapon(wpoints);
 	int usefun;			// Run usecode if present.
 	if (winf && (usefun = winf->get_usecode()) != 0)
-		gwin->get_usecode()->call_usecode(usefun, this,
+		ucmachine->call_usecode(usefun, this,
 					Usecode_machine::weapon);
 	if (!wpoints && winf)
 		wpoints = winf->get_damage();
@@ -1491,7 +1474,6 @@ Game_object *Game_object::attacked
 	int ammo_shape
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	int wpoints = attack_object(gwin,
 					attacker, weapon_shape, ammo_shape);
 	int shnum = get_shapenum();
@@ -1528,7 +1510,7 @@ Game_object *Game_object::attacked
 			// marked already detonating powderkegs with quality
 			if (get_quality()==0) {
 				Tile_coord pos = get_tile();
-				gwin->get_effects()->add_effect(
+				eman->add_effect(
 					new Explosion_effect(pos, this));
 			}
 		}
@@ -1564,9 +1546,8 @@ Game_object *Game_object::attacked
 
 	if (wpoints >= hp) {
 		// object destroyed
-		gwin->get_effects()->remove_text_effect(this);
-		gwin->get_usecode()->call_usecode(0x626, this,
-						Usecode_machine::weapon);
+		eman->remove_text_effect(this);
+		ucmachine->call_usecode(0x626, this, Usecode_machine::weapon);
 		return 0;
 	} else {
 		set_obj_hp(hp - wpoints);
@@ -1621,8 +1602,7 @@ void Ifix_game_object::move
 	int cx = get_cx(), cy = get_cy();
 	if (cx >= 0 && cx < c_num_chunks &&
 	    cy >= 0 && cy < c_num_chunks)
-		Game_window::get_instance()->get_map()->
-					set_ifix_modified(cx, cy);
+		gmap->set_ifix_modified(cx, cy);
 	}
 
 /*
@@ -1639,8 +1619,7 @@ void Ifix_game_object::remove_this
 	int cx = get_cx(), cy = get_cy();
 	if (cx >= 0 && cx < c_num_chunks &&
 	    cy >= 0 && cy < c_num_chunks)
-		Game_window::get_instance()->get_map()->
-					set_ifix_modified(cx, cy);
+		gmap->set_ifix_modified(cx, cy);
 	Game_object::remove_this(nodel);
 	}
 

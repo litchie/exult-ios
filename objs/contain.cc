@@ -306,9 +306,8 @@ int Container_game_object::create_quantity
 		qual = c_any_qual;	// Then don't set it.
 	while (delta)			// Create them here first.
 		{
-		Game_object *newobj = Game_window::get_instance()->
-			create_ireg_object(shp_info, shnum, frnum,0,0,0);
-
+		Game_object *newobj = gmap->create_ireg_object(
+						shp_info, shnum, frnum,0,0,0);
 		if (!add(newobj))
 			{
 			delete newobj;
@@ -422,7 +421,7 @@ void Container_game_object::activate
 	if (edit())
 		return;			// Map-editing.
 	int shnum = get_shapenum();
-	Gump_manager *gump_man = Game_window::get_instance()->get_gump_man();
+	Gump_manager *gump_man = gwin->get_gump_man();
 
 	if (Game::get_game_type() == BLACK_GATE)  switch(shnum)	// Watch for gumps.
 	{
@@ -698,7 +697,7 @@ void Container_game_object::write_ireg
 int Container_game_object::get_ireg_size()
 {
 	// These shouldn't ever happen, but you never know
-	if (Game_window::get_instance()->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+	if (gwin->get_gump_man()->find_gump(this) || Usecode_script::find(this))
 		return -1;
 
 	int total_size = 13;
