@@ -425,8 +425,9 @@ void Actor::follow
 			}
 		}
 	unsigned long curtime = SDL_GetTicks();
-	if (pos.distance(leaderpos) >= 8 && get_party_id() >= 0 &&
-	    curtime >= next_path_time)
+	if (((!leader->is_moving() && pos.distance(leaderpos) >= 4) || 
+		(pos.distance(leaderpos) >= 8) && curtime >= next_path_time) &&
+	    get_party_id() >= 0)
 		{			// A little stuck?
 		cout << get_name() << " trying to catch up." << endl;
 					// Don't try again for a few seconds.
@@ -1015,6 +1016,8 @@ void Actor::die
 					// Put body here.
 	Dead_body *body = new Dead_body(shnum, frnum, 0, 0, 0, 
 						npc_num > 0 ? npc_num : -1);
+	if (body->Dead_body::get_live_npc_num() != -1)
+		body->set_quality(1);	// Flag for dead body of NPC.
 	body->move(pos);
 	Game_object *item;		// Move all the items.
 	while ((item = get_first_object()) != 0)
@@ -1049,6 +1052,8 @@ Actor *Actor::resurrect
 	Tile_coord pos = body->get_abs_tile_coord();
 	body->remove_this();		// Remove and delete body.
 	move(pos);			// Move back to life.
+					// Restore health to max.
+	properties[(int) health] = properties[(int) strength];
 	return (this);
 	}
 
@@ -1304,8 +1309,8 @@ void Npc_actor::update_schedule
 	int hour3			// 0=midnight, 1=3am, etc.
 	)
 	{
-	if (Npc_actor::get_party_id() >= 0)
-		return;			// Skip if a party member.
+	if (Npc_actor::get_party_id() >= 0 || Npc_actor::is_dead_npc())
+		return;			// Skip if a party member or dead.
 	for (int i = 0; i < num_schedules; i++)
 		if (schedules[i].get_time() == hour3)
 			{		// Found entry.
@@ -1407,7 +1412,8 @@ int Npc_actor::step
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
 					// Move it.
 	move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
-	if (!gwin->add_dirty(this))
+					// Offscreen, but not in party?
+	if (!gwin->add_dirty(this) && Npc_actor::get_party_id() < 0)
 		{			// No longer on screen.
 		stop();
 		dormant = 1;

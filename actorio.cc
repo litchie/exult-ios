@@ -59,19 +59,20 @@ Actor::Actor
 	usecode = usefun & 0xfff;
 	if (!has_usecode)		// Type2?
 		usecode = -1;		// Let's try this.
-					// Guessing:  !!
-	set_property((int) Actor::food_level, Read1(nfile));
+					// Guessing:  !!  (Want to get signed.)
+	int health_val = (int) (char) Read1(nfile);
+	set_property((int) Actor::health, health_val);
 	nfile.seekg(3, ios::cur);	// Skip 3 bytes.
 	int iflag2 = Read2(nfile);	// Another inventory flag.
 	nfile.seekg(2, ios::cur);	// Skip next 2.
 					// Get char. atts.
 	int strength_val = Read1(nfile);
 	set_property((int) Actor::strength, strength_val);
-					// Hits = strength, I think.
-	set_property((int) Actor::health, strength_val);
 	set_property((int) Actor::dexterity, Read1(nfile));
 	set_property((int) Actor::intelligence, Read1(nfile));
 	set_property((int) Actor::combat, Read1(nfile));
+					// +++++For now (cheating):
+	set_property((int) Actor::food_level, 18);
 	schedule_type = Read1(nfile);
 	nfile.seekg(4, ios::cur); 	//??
 	int mana_val = Read1(nfile);	// ??
@@ -99,7 +100,8 @@ Actor::Actor
 	int tiley = locy & 0xf;
 	Chunk_object_list *olist = gwin->get_objects(scx + cx, scy + cy);
 					// Put into chunk list.
-	move(0, scx + cx, scy + cy, olist, tilex, tiley, -1, -1);
+	if (!is_dead_npc())
+		move(0, scx + cx, scy + cy, olist, tilex, tiley, -1, -1);
 	ready_best_weapon();		// Get best weapon in hand.
 #if 0
 cout << i << " Creating " << namebuf << ", shape = " << 
@@ -133,7 +135,7 @@ void Actor::write
 					// Lift is in high 4 bits.
 	usefun |= ((get_lift()&15) << 12);
 	Write2(nfile, usefun);
-	nfile.put(get_property(Actor::food_level));
+	nfile.put(get_property(Actor::health));
 	nfile.put(0);			// Unknown 3 bytes.
 	Write2(nfile, 0);
 					// ??Another inventory flag.

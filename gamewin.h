@@ -192,8 +192,8 @@ public:
 	inline Actor *get_main_actor() const
 		{ return main_actor; }
 	int set_above_main_actor(int inside, int lift)
-		{			// Use ht=4, round up to nearest 5.
-		int new_skip = !inside ? 31 : ((lift + 4 + 4)/5)*5;
+		{			// Use ht=4, round to nearest 5.
+		int new_skip = !inside ? 31 : ((lift + 4 + 2)/5)*5;
 		return (new_skip == skip_above_actor ? 0
 				: ((skip_above_actor = new_skip), 1));
 		}
@@ -202,7 +202,7 @@ public:
 	int set_above_main_actor(int lift)// Use this if chunk didn't change.
 		{
 		return !is_main_actor_inside() ? 0 : 
-			((skip_above_actor = ((lift + 4 + 4)/5)*5), 1);
+			((skip_above_actor = ((lift + 4 + 2)/5)*5), 1);
 		}
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < num_npcs) ? 

@@ -670,12 +670,12 @@ static void shape_showcase(
 	// Then show some info about it
 	sprintf(buf, "Shape file: \"%s\"", gwin->get_shape_file_name(current_file));
 	gwin->paint_text_box(2, buf, 
-		100, 100,  gwin->get_width(), gwin->get_height());
+		50, 50,  gwin->get_width(), gwin->get_height());
 	sprintf(buf, "Shape %d/%d - Frame %d/%d", 
 		current_shape, shape_file->get_num_shapes()-1,
 		current_frame, shape_file->get_num_frames(current_shape)-1);
 	gwin->paint_text_box(2, buf, 
-		100, 300,  gwin->get_width(), gwin->get_height());
+		50, 170,  gwin->get_width(), gwin->get_height());
 	}
 
 /*
