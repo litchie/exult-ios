@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Actor;
 class Barge_object;
 class Chunk_object_list;
+class Chunk_terrain;
 class Egg_object;
 class Font;
 class Fonts_vga_file;
@@ -105,6 +106,8 @@ private:
 	int num_monsters;		// Number of monster types.
 	Monster_info *monster_info;	// Array from 'monsters.dat'.
 	std::vector<Egg_object *> path_eggs;// Path eggs, indexed by 'quality'.
+					// Flat chunk areas:
+	Exult_vector<Chunk_terrain *> chunk_terrains;
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[c_num_chunks][c_num_chunks];
 	Deleted_objects *removed;	// List of 'removed' objects.
