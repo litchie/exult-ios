@@ -384,6 +384,7 @@ void Patrol_schedule::now_what
 		if (try_street_maintenance())
 			return;		// We no longer exist.
 	const int PATH_SHAPE = 607;
+	bool cycled = false;
 	pathnum++;			// Find next path.
 					// Already know its location?
 	Game_object *path =  pathnum < paths.size() ? paths[pathnum] : 0;
@@ -405,7 +406,8 @@ void Patrol_schedule::now_what
 				}
 			}
 		if (!path)		// Turn back if at end.
-			{
+			{		// This also happens at start (0).
+			cycled = true;	// WANT this at start, end.
 			pathnum = 0;
 			path = paths.size() ? paths[0] : 0;
 			}
@@ -430,6 +432,12 @@ void Patrol_schedule::now_what
 	npc->set_lift(path->get_lift());
 					// Delay up to 2 secs.
 	npc->walk_to_tile(path->get_abs_tile_coord(), 250, rand()%2000);
+	if (cycled)			// At end?  Needed for SI.
+		{			// Ends crystal-ball space scene.
+		Game_window *gwin = Game_window::get_game_window();
+		if (npc == gwin->get_camera_actor())
+			npc->activate(gwin->get_usecode(), 0);
+		}
 	}
 
 /*

@@ -1742,9 +1742,9 @@ USECODE_INTRINSIC(fade_palette)
 
 USECODE_INTRINSIC(fade_in)
 {
-	// ++++PURE GUESS:  fadein(0 or 1?).
-	gwin->paint();			// Want to show new view in SI.
-	gwin->fade_palette(0x0c, 1);
+	// ++++PURE GUESS:  fadein(0 or 1?).  WRONGO!+++++++++++
+//	gwin->paint();			// Want to show new view in SI.
+//	gwin->fade_palette(0x0c, 1);
 	return no_ret;
 }
 
