@@ -1,3 +1,8 @@
+2000-11-16  Tristan Tarrant <nadir@users.sourceforge.net>
+
+	* menulist.cc: fixed usage of vector
+	* Makefile.win32, Makefile.cygwin:  updated by Travis Howell
+
 2000-11-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Finished work on removing class Vector that Max started.
