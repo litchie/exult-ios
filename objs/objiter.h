@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_OBJITER	1
 
 #include "objlist.h"
+
+class	Chunk_object_list;
 class	Game_object;
 
 /*
@@ -58,7 +60,7 @@ public:
 	void reset()
 		{ cur = first; stop = 0; }
 	T_Object_iterator(T_Object_list<T>& objects) 
-		: T_Safe_object_iterator<T>(objects), first(objects.first)
+		: T_Safe_object_iterator(objects), first(objects.get_first())
 		{ reset(); }
 	T get_next()
 		{
@@ -76,24 +78,24 @@ typedef T_Object_iterator<Game_object *> Object_iterator;
 /*
  *	Iterate through a chunk's nonflat objects.
  */
-template<class T>
+template<class T, class L>
 class T_Nonflat_object_iterator : public T_Object_iterator<T>
 	{
 	T nonflats;
 public:
 	void reset()
 		{ cur = nonflats; stop = 0; }
-	T_Nonflat_object_iterator(T_Object_list<T>& objects, T first_nonflat)
-		: T_Object_iterator<T>(objects), nonflats(first_nonflat)
+	T_Nonflat_object_iterator(L chunk)
+		: T_Object_iterator<T>(chunk->get_objects()), nonflats(chunk->get_first_nonflat())
 		{ reset(); }
 	};
 
-typedef T_Nonflat_object_iterator<Game_object *> Nonflat_object_iterator;
+typedef T_Nonflat_object_iterator<Game_object *, Chunk_object_list *> Nonflat_object_iterator;
 
 /*
  *	Iterate through a chunk's flat objects.
  */
-template<class T>
+template<class T, class L>
 class T_Flat_object_iterator : public T_Safe_object_iterator<T>
 	{
 	T first;
@@ -103,13 +105,13 @@ class T_Flat_object_iterator : public T_Safe_object_iterator<T>
 public:
 	void reset()
 		{ cur = first; stop = 0; }
-	T_Flat_object_iterator(T_Object_list<T>& objects, T first_nonflat)
-		: T_Safe_object_iterator<T>(objects)
+	T_Flat_object_iterator(L chunk)
+		: T_Safe_object_iterator<T>(chunk->get_objects())
 		{
-		first = objects.first == first_nonflat ? 0 :
-							objects.first;
-		stop_at = first_nonflat ? first_nonflat
-						: objects.first;
+		first = chunk->get_objects().get_first() == chunk->get_first_nonflat() ? 0 :
+							chunk->get_objects().get_first();
+		stop_at = chunk->get_first_nonflat() ? chunk->get_first_nonflat()
+						: chunk->get_objects().get_first();
 		reset();
 		}
 	T get_next()
@@ -117,18 +119,18 @@ public:
 		if (cur == stop)
 			return 0;
 		T ret = cur;
-		cur = cur->next;
+		cur = cur->get_next();
 		stop = stop_at;
 		return ret;
 		}
 	};
 
-typedef T_Flat_object_iterator<Game_object *> Flat_object_iterator;
+typedef T_Flat_object_iterator<Game_object *, Chunk_object_list *> Flat_object_iterator;
 
 /*
  *	Iterate backwards through list of objects.
  */
-template<class T>
+template<class T, class L>
 class T_Object_iterator_backwards : public T_Safe_object_iterator<T>
 	{
 	T first;
@@ -137,9 +139,9 @@ class T_Object_iterator_backwards : public T_Safe_object_iterator<T>
 public:
 	void reset()
 		{ cur = first; stop = 0; }
-	T_Object_iterator_backwards(T_Object_list<T>& objects, T first_nonflat) 
-		: T_Safe_object_iterator<T>(objects),
-		  first(objects.first)
+	T_Object_iterator_backwards(L chunk) 
+		: T_Safe_object_iterator<T>(chunk->get_objects()),
+		  first(chunk->get_objects().get_first())
 		{ reset(); }
 	T get_next()
 		{
@@ -151,6 +153,6 @@ public:
 		}
 	};
 
-typedef T_Object_iterator_backwards<Game_object *> Object_iterator_backwards;
+typedef T_Object_iterator_backwards<Game_object *, Chunk_object_list *> Object_iterator_backwards;
 
 #endif

@@ -912,7 +912,7 @@ void Chunk_object_list::setup_dungeon_bits
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Object_iterator next(this->objects);
+	Object_iterator next(objects);
 	Game_object *each;
 	while ((each = next.get_next()) != 0)
 		{

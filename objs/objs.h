@@ -47,6 +47,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objlist.h"
 
 class Actor;
+class Chunk_object_list;
 class Container_game_object;
 class Egg_object;
 class Game_window;
@@ -87,8 +88,8 @@ protected:
 public:
 	friend class T_Object_list<Game_object *>;
 	friend class T_Object_iterator<Game_object *>;
-	friend class T_Flat_object_iterator<Game_object *>;
-	friend class T_Object_iterator_backwards<Game_object *>;
+	friend class T_Flat_object_iterator<Game_object *, Chunk_object_list *>;
+	friend class T_Object_iterator_backwards<Game_object *, Chunk_object_list *>;
 	friend class Chunk_object_list;
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
