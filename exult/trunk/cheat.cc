@@ -54,7 +54,6 @@ using std::endl;
 using std::strcpy;
 using std::strcat;
 
-
 Cheat cheat;
 
 
@@ -374,7 +373,7 @@ void Cheat::append_selected(Game_object *obj) {
 void Cheat::toggle_selected(Game_object *obj) {
 	gwin->add_dirty(obj);
 					// In list?
-	for (vector<Game_object *>::iterator it = selected.begin();
+	for (std::vector<Game_object *>::iterator it = selected.begin();
 					it != selected.end(); ++it)
 		if (*it == obj)
 			{		// Yes, so remove it.
@@ -390,7 +389,7 @@ void Cheat::toggle_selected(Game_object *obj) {
 void Cheat::clear_selected() {
 	if (selected.empty())
 		return;
-	for (vector<Game_object *>::iterator it = selected.begin();
+	for (std::vector<Game_object *>::iterator it = selected.begin();
 					it != selected.end(); ++it)
 		gwin->add_dirty(*it);
 	selected.clear();
@@ -415,10 +414,10 @@ void Cheat::delete_selected() {
 void Cheat::move_selected(int dx, int dy, int dz) {
 	if (selected.empty())
 		return;			// Nothing to do.
-	vector<Tile_coord> tiles;	// Store locations here.
+	std::vector<Tile_coord> tiles;	// Store locations here.
 	int lowz = 1000, highz = -1000;	// Get min/max lift.
 					// Remove & store old locations.
-	vector<Game_object *>::iterator it;
+	std::vector<Game_object *>::iterator it;
 	for (it = selected.begin(); it != selected.end(); ++it)
 		{
 					// Get location.

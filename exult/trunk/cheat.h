@@ -56,7 +56,7 @@ private:
   Map_editor_mode edit_mode;
   int  edit_lift;
   int  edit_shape, edit_frame;		// What to 'paint' with.
-  vector<Game_object *> selected;	// Selected objects (map-editing).
+  std::vector<Game_object *> selected;	// Selected objects (map-editing).
   bool infravision;
   bool pickpocket;
   bool grab_actor;
@@ -117,7 +117,7 @@ public:
   void clear_selected();
   void delete_selected();
   void move_selected(int dx, int dy, int dz);
-  const vector<Game_object *>& get_selected() const
+  const std::vector<Game_object *>& get_selected() const
 	{ return selected; }
 
   void map_teleport (void) const;
