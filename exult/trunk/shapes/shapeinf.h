@@ -215,9 +215,9 @@ public:
 		human = 13,		// Human NPC's.
 		building = 14		// Roof, window, mountain.
 		};
-	Shape_class get_shape_class() const
+	Shape_class get_shape_class()
 		{ return (Shape_class) (tfa[1]&15); }
-	bool is_npc() const
+	bool is_npc()
 		{
 		Shape_class c = get_shape_class();
 		return c == human || c == monster;
