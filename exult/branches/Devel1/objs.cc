@@ -1117,6 +1117,12 @@ void Chunk_cache::update_object
 					// Get lower-right corner of obj.
 	int endx = obj->get_tx();
 	int endy = obj->get_ty();
+#if 0
+//++++Testing
+	if (cx*tiles_per_chunk + endx == 1023 && 
+	    cy*tiles_per_chunk + endy == 2015 && obj->get_lift() == 1)
+		cout << "This is the one.\n";
+#endif
 					// Get footprint dimensions.
 	int xtiles = info.get_3d_xtiles();
 	int ytiles = info.get_3d_ytiles();
@@ -1251,6 +1257,8 @@ void Chunk_cache::setup
 
 int Chunk_cache::is_blocked
 	(
+	int height,			// Height (in tiles) of obj. being
+					//   tested.
 	int lift,			// Given lift.
 	int tx, int ty,			// Square to test.
 	int& new_lift			// New lift returned.
@@ -1258,7 +1266,8 @@ int Chunk_cache::is_blocked
 	{
 					// Get bits.
 	unsigned short tflags = blocked[ty*tiles_per_chunk + tx];
-	if (tflags & (1<<lift))		// Something there?
+					// Something there?
+	if (tflags & (((1<<height) - 1) << lift))		
 		{
 		new_lift = lift + 1;	// Maybe we can step up.
 		if (new_lift > 15 || (tflags & (1<<new_lift)))

@@ -526,7 +526,7 @@ class Chunk_cache
 					~(((1 << ztiles) - 1) << lift);
 		}
 					// Is a spot occupied?
-	int is_blocked(int lift, int tx, int ty, int& new_lift);
+	int is_blocked(int height, int lift, int tx, int ty, int& new_lift);
 					// Activate eggs nearby.
 	void activate_eggs(Chunk_object_list *chunk,
 				int tx, int ty, unsigned short eggbits);
@@ -593,8 +593,8 @@ public:
 		{ need_cache()->set_blocked(startx, starty, endx, endy,
 							lift, ztiles, set); }
 					// Is a spot occupied?
-	int is_blocked(int lift, int tx, int ty, int& new_lift)
-		{ return cache->is_blocked(lift, tx, ty, new_lift); }
+	int is_blocked(int height, int lift, int tx, int ty, int& new_lift)
+		{ return cache->is_blocked(height, lift, tx, ty, new_lift); }
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles)
 		{ need_cache()->set_egged(egg, tiles); }
