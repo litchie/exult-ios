@@ -476,6 +476,9 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	int fy;
 	if (SI)
 	{
+		if (num_faces == max_faces)
+					// Remove face #1 if still there.
+			remove_slot_face(max_faces - 1);
 		fy = sbox.h - 2 - face->get_height();
 		fx = 8;
 	}
@@ -584,9 +587,9 @@ void Conversation::paint
 	(
 	)
 	{
+	paint_faces(true);
 	if (avatar_face.w)		// Choices?
 		show_avatar_choices();
-	paint_faces(true);
 	}
 
 /*
