@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Flex.h"
 #include "exceptions.h"
 #include "combo.h"
+#include "studio.h"
 
 using std::vector;
 using std::string;
@@ -110,6 +111,12 @@ void Image_file_info::flush
 	filestr += basename;
 	write_file(filestr.c_str(), shapes, nshapes, false);
 	delete [] shapes;
+					// Tell Exult to reload this file.
+	unsigned char buf[Exult_server::maxlength];
+	unsigned char *ptr = &buf[0];
+	Write2(ptr, ifile->get_u7drag_type());
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->send_to_server(Exult_server::reload_shapes, buf, ptr - buf);
 	}
 
 /*
@@ -147,7 +154,8 @@ void Image_file_info::write_file
 	U7open(out, pathname);		// May throw exception.
 	if (single)
 		{
-		shapes[0]->write(out);
+		if (nshapes)
+			shapes[0]->write(out);
 		out.flush();
 		if (!out.good())
 			throw file_write_exception(pathname);

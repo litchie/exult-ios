@@ -69,6 +69,7 @@ enum Msg_type
 	set_edit_mode = 20,		// Move(0), paint(1), select(2).
 	combo_pick = 21,		// Sending shape to add to combo.
 	hide_lift = 22,			// Lift passed: 1-16.
+	reload_shapes = 23,		// Reload a .vga file.
 	usecode_debugging = 128
 	};
 

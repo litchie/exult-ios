@@ -1625,6 +1625,9 @@ void Shape_chooser::del_frame
 	if (!shape ||			// Shouldn't happen.
 	    frnum > shape->get_num_frames() - 1)
 		return;
+					// 1-shape file & last frame?
+	if (!ifile->is_flex() && shape->get_num_frames() == 1)
+		return;
 	shape->del_frame(frnum);
 	file_info->set_modified();
 	ExultStudio *studio = ExultStudio::get_instance();
