@@ -34,6 +34,8 @@
 #include "Flex.h"
 #include "exceptions.h"
 
+#include <cassert>
+
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -422,6 +424,8 @@ void Shape_frame::paint_rle
 	int xoff, int yoff		// Where to show in iwin.
 	)
 	{
+	assert(rle);
+
 	int w = get_width(), h = get_height();
 	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
@@ -459,6 +463,8 @@ void Shape_frame::paint_rle_translucent
 	int xfcnt			// Number of xforms.
 	)
 	{
+	assert(rle);
+
 	int w = get_width(), h = get_height();
 	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, 
@@ -524,6 +530,8 @@ void Shape_frame::paint_rle_transformed
 	Xform_palette xform		// Use to transform pixels.
 	)
 	{
+	assert(rle);
+
 	int w = get_width(), h = get_height();
 	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, 
@@ -570,6 +578,8 @@ void Shape_frame::paint_rle_outline
 	unsigned char color		// Color to use.
 	)
 	{
+	assert(rle);
+
 	int w = get_width(), h = get_height();
 	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
 		if (!win->is_visible(xoff - xleft, 
