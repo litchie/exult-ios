@@ -1,3 +1,10 @@
+2001-03-17  Christoph Reichenbach  <jameson@linuxgames.com>
+
+	* game.cc (get_game_identity): long -> sint32 fix
+
+	* cheat_screen.cc: 
+	  tools/shp2pcx.cc: Appropriate #ifndefs for Alpha/Linux/cxx
+
 2001-03-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/faces2.shp: the rest of the faces by Philip G.
 	* data/cleaver.shp: updated cleaver

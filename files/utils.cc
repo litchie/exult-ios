@@ -188,7 +188,6 @@ void U7open
 	// We first "clear" the stream object. This is done to prevent
 	// problems when re-using stream objects
 	in.clear();
-
 	in.open(name.c_str(), mode);		// Try to open original name.
 	if (!in.good())			// No good?  Try upper-case.
 	{

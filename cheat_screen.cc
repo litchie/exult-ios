@@ -24,7 +24,9 @@
 #include "game.h"
 #include "cheat_screen.h"
 #include "font.h"
-#include "cstring"
+#ifndef ALPHA_LINUX_CXX
+#  include "cstring"
+#endif
 #include "actors.h"
 #include "cheat.h"
 #include "imagewin.h"
