@@ -1430,7 +1430,14 @@ void Chunk_object_list::add
 	if (cache)			// Add to cache.
 		cache->update_object(this, newobj, 1);
 	if (newobj->get_lift() >= 5)	// Looks like a roof?
-		roof = 1;
+		{
+#if 0 /* Not sure yet. */
+		Shape_info& info = Game_window::get_game_window()->
+			get_shapes().get_info(newobj->get_shapenum());
+		if (info.get_shape_class() == Shape_info::building)
+#endif
+			roof = 1;
+		}
 	}
 
 /*

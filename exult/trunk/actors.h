@@ -120,6 +120,9 @@ public:
 					// Walk to desired point.
 	void walk_to_point(unsigned long destx, unsigned long desty, 
 								int speed);
+					// Get there, avoiding obstacles.
+	int walk_path_to_tile(Tile_coord dest, 
+					int speed = 250, int delay = 0);
 	void stop();			// Stop walking.
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);

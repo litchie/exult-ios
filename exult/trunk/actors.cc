@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actions.h"
 #include "ready.h"
 #include "Zombie.h"
+#include "Astar.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
@@ -104,9 +105,9 @@ void Actor::set_action
 		{
 		delete action;
 		action = newact;
-		if (!action)		// No action?  We're stopped.
-			frame_time = 0;
 		}
+	if (!action)			// No action?  We're stopped.
+		frame_time = 0;
 	}
 
 /*
@@ -137,6 +138,38 @@ void Actor::walk_to_tile
 		}
 	else
 		frame_time = 0;		// Not moving.
+	}
+
+/*
+ *	Find a path towards a given tile.
+ *
+ *	Output:	0 if failed.
+ */
+
+int Actor::walk_path_to_tile
+	(
+	Tile_coord dest,		// Destination.
+	int speed,			// Time between frames (msecs).
+	int delay			// Delay before starting (msecs) (only
+					//   if not already moving).
+	)
+	{
+	set_action(new Path_walking_actor_action(new Astar()));
+	set_action(action->walk_to_tile(get_abs_tile_coord(), dest));
+	if (action)			// Successful at setting path?
+		{
+		frame_time = speed;
+		Game_window *gwin = Game_window::get_game_window();
+		if (!in_queue())	// Not already in queue?
+			{
+			unsigned long curtime = SDL_GetTicks();
+			gwin->get_tqueue()->add(curtime + delay, this, 
+								(long) gwin);
+			}
+		return (1);
+		}
+	frame_time = 0;			// Not moving.
+	return (0);
 	}
 
 /*
@@ -689,7 +722,7 @@ void Talk_schedule::now_what
 	)
 	{
 	cout << "REWRITE Talk_schedule!\n";
-#if 0	/* ++++++++++++++Rewrite so it's only active when Av is near. */
+#if 1	/* ++++++++++++++Rewrite so it's only active when Av is near. */
 	Game_window *gwin = Game_window::get_game_window();
 	Usecode_machine *umachine = gwin->get_usecode();
 	switch (phase)
