@@ -57,6 +57,19 @@ void Game_object::move
 	}
 
 /*
+ *	Remove all dependencies.
+ */
+
+void Game_object::clear_dependencies
+	(
+	)
+	{
+	int cnt = get_dependency_count();
+	for (int i = 0; i < cnt; i++)
+		dependencies.put(i, 0);
+	}
+
+/*
  *	Find nearby objects.
  *
  *	Output:	# found, appended to vec.
@@ -179,48 +192,71 @@ int Game_object::drop
 	return (0);
 	}
 
-#if 0	/* +++++For new rendering scheme.+++++++*/
+#if 1	/* +++++For new rendering scheme.+++++++*/
+
+static void Lt_wall()		//+++++Debugging.
+	{ cout << "Before the wall.\n"; }
+
 /*
  *	Should this object be rendered before obj2?
+ *
+ *	Output:	1 if so, 0 if not, -1 if cannot compare.
  */
 int Game_object::lt
 	(
 	Game_object& obj2
 	)
 	{
-	Shapes_vga_file& shapes = Game_window::get_game_window()->get_shapes();
-	Shape_info& info1 = shapes.get_info(get_shapenum()),
-		    info2 = shapes.get_info(obj2.get_shapenum());
+	Game_window *gwin = Game_window::get_game_window();
+	Shapes_vga_file& shapes = gwin->get_shapes();
+	int shapenum1 = get_shapenum(), shapenum2 = obj2.get_shapenum();
+	Shape_info& info1 = shapes.get_info(shapenum1),
+		    info2 = shapes.get_info(shapenum2);
 					// Get absolute tile positions.
 	int atx1, aty1, atz1, atx2, aty2, atz2;
+	int x1, x2, y1, y2, z1, z2;	// Dims. in tiles.
 	get_abs_tile(atx1, aty1, atz1);
 	obj2.get_abs_tile(atx2, aty2, atz2);
+					// ++++Testing. Seems to work now.
+	Rectangle r1 = gwin->get_shape_rect(this),
+		  r2 = gwin->get_shape_rect(&obj2);
+	Rectangle ri = r1.intersect(r2);
+	if (ri.w <= 0 || ri.h <= 0)
+		return (-1);		// No overlap on screen.
+	x1 = info1.get_3d_xtiles(), x2 = info2.get_3d_xtiles();
+	y1 = info1.get_3d_ytiles(), y2 = info2.get_3d_ytiles();
 	if (atz1 != atz2)		// Is one obj. on top of another?
 		{
-		int z1 = info1.get_3d_height(), z2 = info2.get_3d_height();
+		z1 = info1.get_3d_height(), z2 = info2.get_3d_height();
 		if (atz1 + z1 <= atz2)
 			return (1);	// It's above us.
 		if (atz2 + z2 <= atz1)
 			return (0);	// We're above.
 		}
-	if (atx1 != atx2)		// Is one obj. to right of the other?
-		{
-		int x1 = info1.get_3d_xtiles(), x2 = info2.get_3d_xtiles();
-		if (atx1 <= atx2 - x2)
-			return (1);	// Obj2 is to right of us.
-		if (atx2 <= atx1 - x1)
-			return (0);	// We're to the right.
-		}
 	if (aty1 != aty2)		// Is one obj. in front of the other?
 		{
-		int y1 = info1.get_3d_ytiles(), y2 = info2.get_3d_ytiles();
 		if (aty1 <= aty2 - y2)
 			return (1);	// Obj2 is in front.
 		if (aty2 <= aty1 - y1)
 			return (0);	// We're in front.
 		}
-	cout << "Couldn't compare objects in 'lt()'\n";
-	return (0);
+	if (atx1 != atx2)		// Is one obj. to right of the other?
+		{
+		if (atx1 <= atx2 - x2)
+			return (1);	// Obj2 is to right of us.
+		if (atx2 <= atx1 - x1)
+			return (0);	// We're to the right.
+		}
+//++++Not sure if these help:
+					// If x's overlap, see if in front.
+	if ((atx1 > atx2 - x2 && atx1 <= atx2) ||
+	    (atx2 > atx1 - x1 && atx2 <= atx1))
+		return (aty1 < aty2 ? 1 : aty1 > aty2 ? 0 : -1);
+					// If y's overlap, see if to left.
+	if ((aty1 > aty2 - y2 && aty1 <= aty2) ||
+	    (aty2 > aty1 - y1 && aty2 <= aty1))
+		return (atx1 < atx2 ? 1 : atx1 > atx2 ? 0 : -1);
+	return (-1);
 	}
 
 #endif
@@ -857,8 +893,25 @@ void Chunk_object_list::add
 	int num_entries = 0;		// Need to count as we sort.
 	Game_object *obj;
 	Game_object *prev = 0;
+#if 0
 	for (obj = objects; obj && !newobj->lt(*obj); obj = obj->next)
 		prev = obj;
+#else	/* ++++++Testing */
+#if 0
+	for (obj = objects; obj; obj = obj->next)
+		{
+		int cmp = newobj->lt(*obj);
+		if (!cmp)		// Bigger than this object?
+			prev = obj;	// Let's find last that we're bigger
+					//   than.
+		}
+#else	/* Just sort by lift. */
+	for (obj = objects; obj && newobj->get_lift() > obj->get_lift(); 
+							obj = obj->next)
+		prev = obj;
+
+#endif
+#endif
 	if (!prev)			// Goes in front?
 		{
 		newobj->next = objects;
@@ -869,6 +922,17 @@ void Chunk_object_list::add
 		newobj->next = prev->next;
 		prev->next = newobj;
 		}
+#if 1
+					// Figure dependencies.
+	for (obj = objects; obj; obj = obj->next)
+		{
+		int cmp = newobj->lt(*obj);
+		if (!cmp)		// Bigger than this object?
+			newobj->dependencies.put(obj);
+		else if (cmp == 1)	// Smaller than?
+			obj->dependencies.put(newobj);
+		}
+#endif
 	if (cache)			// Add to cache.
 		cache->update_object(this, newobj, 1);
 	if (newobj->get_lift() >= 5)	// Looks like a roof?
@@ -901,12 +965,16 @@ void Chunk_object_list::remove
 	{
 	if (cache)			// Remove from cache.
 		cache->update_object(this, remove, 0);
+	remove->clear_dependencies();	// Remove all dependencies.
+	Game_object *obj;
+	for (obj = objects; obj; obj = obj->next)
+		obj->remove_dependency(remove);
 	if (remove == objects)		// First one?
 		{
 		objects = remove->next;
 		return;
 		}
-	Game_object *obj;		// Got to find it.
+					// Find obj. in list.
 	for (obj = objects; obj && obj->next != remove; obj = obj->next)
 		;
 	if (obj)			// This is before it.

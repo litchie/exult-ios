@@ -307,7 +307,9 @@ public:
 	void paint_chunk_flats(int cx, int cy);
 					// Paint objects in given chunk at
 					//   given lift.
-	void paint_chunk_objects(int at_lift, int cx, int cy);
+	void paint_chunk_objects(int at_lift, int cx, int cy, int flat_only);
+					// Paint an obj. after dependencies.
+	void paint_object(Game_object *obj, int at_lift, int flat_only);
 					// Get desired palette.
 	void get_palette(int pal_num, int brightness = 100);
 	void brighten(int per);		// Brighten/darken by percentage.
