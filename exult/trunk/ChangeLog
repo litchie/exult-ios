@@ -1,3 +1,6 @@
+2001-06-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* actors.cc: put reduce_health() call back in combat :-)
+	
 2001-06-24  Ryan Nunn <triforce@merlin.net.au>
 	* objs/animate.*: Removed unrequired write_ireg() method.
 
