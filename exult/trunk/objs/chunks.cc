@@ -569,7 +569,8 @@ Map_chunk::~Map_chunk
 	}
 
 /*
- *	Set terrain.
+ *	Set terrain.  Even if the terrain is the same, it still reloads the
+ *	'flat' objects.
  */
 
 void Map_chunk::set_terrain
