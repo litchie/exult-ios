@@ -15,6 +15,8 @@ public:
 		 range_error (const string& what_arg): what_ (what_arg) { }
 		 const char *what(void) { return what_.c_str(); }
 		};
+	autoarray() : size_(0), data_(0) 
+		{  }
 	autoarray(size_t n) : size_(n),data_(n?new T[n]:0)
 		{  }
 	T &operator[](size_t i)	 throw(range_error)
@@ -53,6 +55,15 @@ public:
 			size_=a.size_;
 			}
 		return *this;
+		}
+	void set_size(size_t new_size)
+		{
+		if(data_)
+			{
+			delete [] data_;
+			}
+		data_=new T[new_size];
+		size_=new_size;
 		}
 	};
 

@@ -415,6 +415,7 @@ public:
 	int write_gwin();		// Write gamedat/gamewin.dat.
 	int read_gwin();		// Read gamedat/gamewin.dat.
 	void init_actors();		// Place actors in the world.
+	void init_files();		// Load all files
 	void clear_dirty()		// Clear dirty rectangle.
 		{ dirty.w = 0; }
 					// Paint scene at given tile.

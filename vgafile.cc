@@ -694,6 +694,15 @@ Shape::~Shape()
 	}
 
 /*
+ * Empty constructor
+ */
+
+Shape_file::Shape_file() : Shape()
+	{
+		// Nothing to see here
+	}
+
+/*
  *	Read in all shapes from a single-shape file.
  */
 
@@ -701,6 +710,18 @@ Shape_file::Shape_file
 	(
 	const char *nm			// Path to file.
 	) : Shape()
+	{
+		load(nm);
+	}
+
+/*
+ *	Read in all shapes from a single-shape file.
+ */
+
+void Shape_file::load
+	(
+	const char *nm			// Path to file.
+	)
 	{
 	ifstream file;
 	if (!U7open(file, nm))
@@ -719,7 +740,6 @@ Shape_file::Shape_file
 		store_frame(frame, i);
 		}
 	}
-
 /*
  *	Read in all shapes from a single-shape file.
  */
@@ -728,6 +748,14 @@ Shape_file::Shape_file
 	(
 	DataSource& shape_source		// datasource.
 	) : Shape()
+	{
+		load(shape_source);
+	}
+
+void Shape_file::load
+	(
+	DataSource& shape_source		// datasource.
+	)
 	{
 	Shape_frame *frame = new Shape_frame();
 	unsigned long shapelen = shape_source.read4();
@@ -743,6 +771,9 @@ Shape_file::Shape_file
 		}
 	}
 
+
+
+
 /*
  *	Open file.
  */
@@ -751,6 +782,26 @@ Vga_file::Vga_file
 	(
 	const char *nm			// Path to file.
 	) : num_shapes(0), shapes(0)
+	{
+	load(nm);
+	}
+
+Vga_file::Vga_file
+	(
+	) : num_shapes(0), shapes(0)
+	{
+		// Nothing to see here !!!
+	}
+
+
+/*
+ *	Open file.
+ */
+
+void Vga_file::load
+	(
+	const char *nm			// Path to file.
+	)
 	{
 	if (!U7open(file, nm))
 		return;

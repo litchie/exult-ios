@@ -230,7 +230,6 @@ int main
 	}
 
 static int Filter_intro_events(const SDL_Event *event);
-static int Filter_splash_events(const SDL_Event *event);
 static void Handle_events(unsigned char *stop);
 static void Handle_event(SDL_Event& event);
 
@@ -309,6 +308,8 @@ static void Init
 
 	Game::get_game()->banner();
 	string yn;
+
+	gwin->init_files();
 					// Skip splash screen?
 	config->value("config/gameplay/skip_splash", yn, "no");
 	if(yn == "no") {
@@ -367,29 +368,6 @@ static int Okay_to_quit
 	if (Yesno_gump_object::ask("Do you really want to quit?"))
 		quitting_time = 1;
 	return quitting_time;
-	}
-
-/*
- *	Filter out events during the splash screen.
- */
-static int Filter_splash_events
-	(
-	const SDL_Event *event
-	)
-	{
-	switch (event->type)
-		{
-	case SDL_MOUSEBUTTONUP:
-	case SDL_KEYUP:
-		return 0;
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_KEYDOWN:
-					// Now handle intro. scene.
-		SDL_SetEventFilter(Filter_intro_events);
-		gwin->setup_game();		// This will start the scene.
-		return 0;
-		}
-	return (1);
 	}
 
 /*

@@ -126,6 +126,9 @@ class Shape_file : private Shape
 public:
 	Shape_file(const char *nm);
 	Shape_file(DataSource& shape_source);
+	Shape_file();
+	void load(const char *nm);
+	void load(DataSource& shape_source);
 	int get_num_frames()
 		{ return num_frames; }
 	Shape_frame *get_frame(int framenum)
@@ -146,6 +149,8 @@ protected:
 	Shape *shapes;			// List of ->'s to shapes' lists
 public:
 	Vga_file(const char *nm);
+	Vga_file();
+	void load(const char *nm);
 	virtual ~Vga_file();
 	int get_num_shapes()
 		{ return num_shapes; }
@@ -330,8 +335,9 @@ class Shapes_vga_file : public Vga_file
 	autoarray<Shape_info> info;		// Extra info. about each shape.
 	Shape_info zinfo;		// A fake one (all 0's).
 public:
-	Shapes_vga_file() : Vga_file(SHAPES_VGA),info(num_shapes)
+	Shapes_vga_file() : info()
 		{  }
+	void init() { load(SHAPES_VGA); info.set_size(num_shapes); }
 	virtual ~Shapes_vga_file();
 	int read_info();		// Read additional data files.
 	Shape_info& get_info(int shapenum)
