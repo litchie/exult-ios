@@ -63,6 +63,8 @@ public:
 	short tx, ty, tz;		// Coords. within world. tz=lift.
 	Tile_coord(int x, int y, int z) : tx(x), ty(y), tz(z)
 		{  }
+	int operator==(Tile_coord& t2)
+		{ return t2.tx == tx && t2.ty == ty && t2.tz == tz; }
 	};
 					// Add two coords.
 inline Tile_coord operator+(Tile_coord a, Tile_coord b)

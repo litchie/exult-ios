@@ -209,6 +209,8 @@ static int Play()
 	Handle_events(&quitting_time);
 	delete gwin;
 	delete mouse;
+	delete audio;
+	delete config;
 	return (0);
 	}
 
