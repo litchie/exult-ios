@@ -46,6 +46,8 @@ libgumps_la_SOURCES = \
 	Newfile_gump.h	\
 	AudioOptions_gump.cc	\
 	AudioOptions_gump.h	\
+	VideoOptions_gump.cc	\
+	VideoOptions_gump.h	\
 	Gump_ToggleButton.cc	\
 	Gump_ToggleButton.h	\
 	CombatStats_gump.cc	\
