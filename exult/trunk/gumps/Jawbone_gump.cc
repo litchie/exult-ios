@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "objiter.h"
 #include "misc_buttons.h"
+#include "jawbone.h"
 
 const int toothx[19] = { 34, 32, 31, 31, 28, 31, 27, 31, 40, 50,
 						 57, 63, 72, 70, 75, 82, 83, 87, 0 };
@@ -35,11 +36,11 @@ const int toothy[19] = { 19, 30, 37, 44, 52, 57, 66, 77, 82, 84,
 
 Jawbone_gump::Jawbone_gump
 	(
-	Container_game_object *cont,	// Container it represents.
+	Jawbone_object *cont,	// Jawbone it represents.
 	int initx, int inity 		// Coords. on screen.
-	) : Gump(cont, initx, inity, game->get_shape("gumps/jawbone"), false)
+	) : Gump(cont, initx, inity, game->get_shape("gumps/jawbone"), false),
+		jawbone(cont)
 {
-
 
 }
 
@@ -47,35 +48,8 @@ Jawbone_gump::Jawbone_gump
 int Jawbone_gump::add(Game_object *obj, int mx, int my,	int sx, int sy,
 					  bool dont_check)
 {
-	if (obj->get_shapenum() != 559) // not a serpent tooth?
-		return 0;
-
-	// no need for volume check... serpent teeth will always fit
-
-	// check if this serpent tooth already present
-	Object_list& objects = container->get_objects();
-	if (!objects.is_empty()) {
-
-		Game_object *contobj;
-		Object_iterator next(objects);
-
-		while ((contobj = next.get_next()) != 0) {
-			if (contobj->get_shapenum() != 559) {
-				contobj = contobj->get_next();
-				continue; // not a serpent tooth... (shouldn't happen)
-			}
-
-			if (obj->get_framenum() == contobj->get_framenum())
-				return 0;
-
-			contobj = contobj->get_next();
-		}
-	}
-
-	if (!container->add(obj, dont_check))
-		return 0;
-
-	return 1;
+	// Jawbone_object handles all the checks required
+	return jawbone->add(obj, dont_check);
 }
 
 void Jawbone_gump::paint(Game_window *gwin)
@@ -86,13 +60,13 @@ void Jawbone_gump::paint(Game_window *gwin)
 	// Paint red "checkmark".
 	paint_button(gwin, check_button);
 
-	find_teeth();
+	jawbone->find_teeth();
 
 	for (int i=0; i<9; i++)
-		if (teeth[i])
+		if (jawbone->teeth[i])
 			paint_tooth(gwin, i);
 	for (int i=17; i>8; i--)
-		if (teeth[i])
+		if (jawbone->teeth[i])
 			paint_tooth(gwin, i);
 }
 
@@ -111,7 +85,7 @@ Game_object *Jawbone_gump::find_object(int mx, int my)
 {
 	Game_window* gwin = Game_window::get_game_window();
 
-	find_teeth();
+	jawbone->find_teeth();
 
 	// get position relative to gump
 	mx -= x;
@@ -119,16 +93,16 @@ Game_object *Jawbone_gump::find_object(int mx, int my)
 
 	// reverse of drawing order
 	for (int i=9; i<18; i++)
-		if (teeth[i] && on_tooth(mx, my, i)) {
+		if (jawbone->teeth[i] && on_tooth(mx, my, i)) {
 			// set correct position (otherwise tooth won't be on mouse cursor)
-			set_to_spot(teeth[i], mx, my);
-			return teeth[i];
+			set_to_spot(jawbone->teeth[i], mx, my);
+			return jawbone->teeth[i];
 		}
 	for (int i=8; i>=0; i--)
-		if (teeth[i] && on_tooth(mx, my, i)) {
+		if (jawbone->teeth[i] && on_tooth(mx, my, i)) {
 			// set correct position (otherwise tooth won't be on mouse cursor)
-			set_to_spot(teeth[i], mx, my);
-			return teeth[i];
+			set_to_spot(jawbone->teeth[i], mx, my);
+			return jawbone->teeth[i];
 		}
 
 	return 0;
@@ -172,28 +146,3 @@ void Jawbone_gump::set_to_spot(Game_object *obj, int sx, int sy)
 		sy + shape->get_yabove() - h/2);
 }
 
-
-void Jawbone_gump::find_teeth()
-{
-	for (int i=0; i<19; i++)
-		teeth[i] = 0;
-
-	Object_list& objects = container->get_objects();
-	if (objects.is_empty())
-		return;			// Empty.
-
-	Game_object *obj;
-	Object_iterator next(objects);
-
-	while ((obj = next.get_next()) != 0)
-	{
-		if (obj->get_shapenum() != 559) {
-			obj = obj->get_next();
-			continue; // not a serpent tooth... (shouldn't happen)
-		}
-
-		teeth[obj->get_framenum()] = obj;
-
-		obj = obj->get_next();
-	}
-}

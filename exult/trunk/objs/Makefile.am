@@ -29,6 +29,8 @@ libobjs_la_SOURCES = \
 	spellbook.cc \
 	spellbook.h \
 	virstone.cc \
-	virstone.h
+	virstone.h \
+	jawbone.cc \
+	jawbone.h
 
 CLEANFILES = *~
