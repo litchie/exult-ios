@@ -172,7 +172,7 @@ void	Timidity_binary::player(void)
 	for (;;)
 		{
 		size_t	x=read(fd, buf, sizeof(buf));
-		if(x<=0 || !audiostream->is_consuming())
+		if(stop_music_flag || x<=0 || !audiostream->is_consuming())
 			break;
 		audiostream->produce(buf,x);
 		}
@@ -206,7 +206,8 @@ void	Timidity_binary::sfxplayer(void)
 	audiostream=0;
 }
 
-Timidity_binary::Timidity_binary() : midi_thread(0), sfx_thread(0), filename()
+Timidity_binary::Timidity_binary() : midi_thread(0), sfx_thread(0), filename(),
+		stop_music_flag(false)
 	{
 		// Figure out if the binary is where we expect it to be.
 		
@@ -221,8 +222,12 @@ Timidity_binary::~Timidity_binary()
 
 void	Timidity_binary::stop_track(void)
 	{
+	stop_music_flag = true;
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
-	pthread_join(midi_thread, 0);
+	if (midi_thread)
+		pthread_join(midi_thread, 0);
+	midi_thread = 0;
+	stop_music_flag = false;
 	fprintf(stderr,"Closed music\n");
 	}
 

@@ -1,3 +1,7 @@
+2001-03-12  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Timidity - Fixed bug that Wilem figured out.
+
 2001-03-12  Wilem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.*: added new art to dependencies
 	* Makefile.cygwin, files/utils.cc, cheat_screen.cc, configure.in: updated for Cygwin
