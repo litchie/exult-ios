@@ -25,8 +25,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <cassert>
 #ifdef MACOS
-#  include <cassert>
 #  include "exult_types.h"
 #else
 #  include "../exult_types.h"
