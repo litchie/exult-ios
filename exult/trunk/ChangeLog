@@ -1,3 +1,8 @@
+2001-06-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* gumps/Jawbone_gump.*: gump for the Serpent Jawbone
+	* gamewin.cc, gumps/Gump.cc, objs/contain.cc: use new gump
+	* Makefile.*: build new gump
+
 2001-06-17  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs.cc: Use Check_mask() if shapenum=c_any_shapenum.  Can now

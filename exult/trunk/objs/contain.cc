@@ -416,6 +416,10 @@ void Container_game_object::activate
 		case 297:			// Hollow Tree
 		gwin->show_gump(this, game->get_shape("gumps/tree"));
 		return;
+
+		case 555:			// Serpent Jawbone
+		gwin->show_gump(this, game->get_shape("gumps/jawbone"));
+		return;
 	}
 
 					// Try to run normal usecode fun.

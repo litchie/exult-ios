@@ -70,6 +70,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Spellbook_gump.h"
 #include "Stats_gump.h"
 #include "CombatStats_gump.h"
+#include "Jawbone_gump.h"
 
 #include "cheat.h"
 
@@ -2734,26 +2735,32 @@ void Game_window::show_gump
 		x = get_width()/10;
 		y = get_width()/10;
 		}
-	Gump *new_gump = paperdoll == 2 ?
-				new Paperdoll_gump(
-					(Container_game_object *) obj, x, y, obj->get_npc_num())
-			: paperdoll ?
-				new Actor_gump(
-					(Container_game_object *) obj, x, y, shapenum)
-			: shapenum == game->get_shape("gumps/statsdisplay") ?
-				new Stats_gump(
-					(Container_game_object *) obj, x, y)
-			: shapenum == game->get_shape("gumps/spellbook") ?
-				new Spellbook_gump((Spellbook_object *) obj)
-					// +++++Put this in config.
-			: shapenum == 65 && Game::get_game_type() ==
-				SERPENT_ISLE ? new Spellscroll_gump(obj)
-			: (Game::get_game_type() == SERPENT_ISLE &&
-				shapenum >= game->get_shape("gumps/cstats/1")&&
-				shapenum <= game->get_shape("gumps/cstats/6"))?
-				new CombatStats_gump(x, y)
-			: new Gump((Container_game_object *) obj, 
-							x, y, shapenum);
+
+	Gump *new_gump = 0;
+	if (paperdoll == 2)
+		new_gump = new Paperdoll_gump((Container_game_object *) obj,
+						 x, y, obj->get_npc_num());
+	else if (paperdoll)
+		new_gump = new Actor_gump((Container_game_object *) obj,
+						 x, y, shapenum);
+	else if (shapenum == game->get_shape("gumps/statsdisplay"))
+		new_gump = new Stats_gump((Container_game_object *) obj, x, y);
+	else if (shapenum == game->get_shape("gumps/spellbook"))
+		new_gump = new Spellbook_gump((Spellbook_object *) obj);
+	else if (Game::get_game_type() == SERPENT_ISLE) {
+		if (shapenum == game->get_shape("gumps/spell_scroll"))
+			new_gump = new Spellscroll_gump(obj);
+		else if (shapenum >= game->get_shape("gumps/cstats/1")&&
+				shapenum <= game->get_shape("gumps/cstats/6"))
+			new_gump = new CombatStats_gump(x, y);
+		else if (shapenum == game->get_shape("gumps/jawbone"))
+			new_gump = new Jawbone_gump(
+					(Container_game_object*) obj, x, y);
+	}
+
+	if (!new_gump)
+		new_gump = new Gump((Container_game_object *) obj, x, y, shapenum);
+
 					// Paint new one last.
 	new_gump->append_to_chain(open_gumps);
 	if (++cnt == 8)
