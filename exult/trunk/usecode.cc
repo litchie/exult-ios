@@ -422,6 +422,7 @@ void Usecode_machine::set_item_shape
 		chunk->remove(item);	// Remove and add to update cache.
 		item->set_shape(shape);
 		chunk->add(item);
+		gwin->paint();		// Not sure...
 		}
 	}
 
@@ -569,6 +570,58 @@ void Usecode_machine::item_say
 	}
 
 /*
+ *	Execute a list of instructions in an array.
+ */
+
+void Usecode_machine::exec_array
+	(
+	Usecode_value& objval,
+	Usecode_value& arrayval		// Contains instructions.
+	)
+	{
+	Game_object *obj = get_item(objval.get_int_value());
+	if (!obj)
+		return;
+	int cnt = arrayval.get_array_size();
+	for (int i = 0; i < cnt; i++)	// Go through instructions.
+		{
+		Usecode_value& opval = arrayval.get_elem(i);
+		int opcode = opval.get_int_value();
+		switch (opcode)
+			{
+		case 0x01:		// ??
+			break;
+		case 0x0b:		// ?? 2 parms, 1st one < 0.
+			i += 2;
+			break;
+		case 0x23:		// ??
+			break;
+		case 0x27:		// ?? 1 parm.
+			i++;
+			break;
+		case 0x46:		// ?? 1 parm.
+			i++;
+			break;
+		case 0x50:		// ??
+			break;
+		case 0x55:		// Call?
+			{
+			Usecode_value& val = arrayval.get_elem(++i);
+					// +++++For now, event = 1.
+			call_usecode_function(val.get_int_value(), 1,
+							&objval);
+			break;
+			}
+		case 0x58:		// ?? 1 parm.
+			i++;
+			break;
+		default:
+			break;
+			}
+		}
+	}
+
+/*
  *	Report unhandled intrinsic.
  */
 
@@ -614,11 +667,14 @@ Usecode_value Usecode_machine::call_intrinsic
 			return Usecode_value(0);
 		return Usecode_value(1 + (rand() % range));
 		}
-	case 1:				// ??Animate (itemref, array).+++++++
-		Unhandled(intrinsic, num_parms, parms);
+	case 1:				// ??Exec (itemref, array).
+		cout << "Executing intrinsic 1\n";
+		exec_array(parms[0], parms[1]);
 		break;
-	case 2:				// ??(npc, array, ??)
-		Unhandled(intrinsic, num_parms, parms);
+	case 2:				// ??Exec (itemref, array, ??)
+		cout << "Executing intrinsic 2\n";
+		exec_array(parms[0], parms[1]);
+					// 3rd parm does what?+++++
 		break;
 	case 3:				// Show NPC face.
 		show_npc_face(parms[0], parms[1]);
@@ -895,9 +951,9 @@ int Usecode_machine::get_user_choice_num
 	)
 	{
 	user_choice = 0;
-	cout << "Choose: ";		// TESTING.
-	for (int i = 0; i < answers.num_answers; i++)
-		cout << ' ' << answers.answers[i] << '(' << i << ") ";
+//	cout << "Choose: ";		// TESTING.
+//	for (int i = 0; i < answers.num_answers; i++)
+//		cout << ' ' << answers.answers[i] << '(' << i << ") ";
 	gwin->show_avatar_choices(answers.num_answers, answers.answers);
 	extern int Get_click(int& x, int& y);
 	int x, y;			// Get click.
@@ -954,7 +1010,7 @@ Usecode_machine::~Usecode_machine
 		delete funs[i];
 	}
 
-int debug = 1;				// 2 for more stuff.
+int debug = 0;				// 2 for more stuff.
 
 /*
  *	Interpret a single usecode function.
@@ -966,7 +1022,8 @@ void Usecode_machine::run
 	int event			// Event (??) that caused this call.
 	)
 	{
-	printf("Running usecode %04x with event %d\n", fun->id, event);
+	if (debug >= 1)
+		printf("Running usecode %04x with event %d\n", fun->id, event);
 	Usecode_value *save_sp = sp;	// Save TOS.
 	Answers save_answers;		// Save answers list.
 	save_answers = answers;
@@ -1327,7 +1384,8 @@ void Usecode_machine::run
 	delete [] locals;
 					// Restore list of answers.
 	answers = save_answers;
-	printf("RETurning from usecode %04x\n", fun->id);
+	if (debug >= 1)
+		printf("RETurning from usecode %04x\n", fun->id);
 	}
 
 /*
