@@ -23,24 +23,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#if !(defined(XWIN) || defined(DOS))
-#define __WIN32
-#endif
-
 #include <stdlib.h>
-
-#ifndef __WIN32
 
 #include <sys/time.h>
 #include <unistd.h>
 
-#endif
+#include "SDL.h"
+#include "SDL_syswm.h"
 
 #include <sys/stat.h>
 #include "gamewin.h"
 #include "fnames.h"
-#include "SDL.h"
-#include "SDL_syswm.h"
 #include "Audio.h"
 #include "Configuration.h"
 #include "mouse.h"
