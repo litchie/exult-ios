@@ -471,12 +471,14 @@ static int Filter_intro_events
 		show_mouse = true;
 		return 0;
 		}
+	if (gwin->get_mode() == Game_window::gump)
+		return 1;		// Dialog to quit.
 	switch (event->type)
 		{
 	case SDL_MOUSEBUTTONUP:
 	case SDL_MOUSEBUTTONDOWN:
-	case SDL_KEYDOWN:
 	case SDL_MOUSEMOTION:
+	case SDL_KEYDOWN:
 	case SDL_KEYUP:
 		return 0;		// The intro. is running.
 		}
