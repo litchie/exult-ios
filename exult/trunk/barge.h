@@ -49,6 +49,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 		{ return (Game_object *) objects.get(i); }
 	void swap_dims();
 	Rectangle get_tile_footprint();
+	int okay_to_rotate(Tile_coord pos);
 	void add_dirty(Game_window *gwin);
 					// Finish up move/rotate operation.
 	void finish_move(Tile_coord *positions);
