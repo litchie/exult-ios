@@ -34,6 +34,7 @@ class Combat_schedule : public Schedule
 	{
 protected:
 	static unsigned long battle_time;// Time when battle started.
+	static unsigned long battle_end_time;	// And when it ended.
 	enum Phase			// We'll be a finite-state-machine.
 		{
 		initial = 0,		// Just constructed.
@@ -77,6 +78,7 @@ protected:
 	Spellbook_object *readied_spellbook();
 public:
 	Combat_schedule(Actor *n, Schedule_types prev_sched);
+	static void monster_died();	// Checks for victory.
 	virtual void now_what();	// Npc calls this when it's done
 	virtual void im_dormant();	// Npc calls this when it goes dormant.
 	virtual void ending(int newtype);// Switching to another schedule.
