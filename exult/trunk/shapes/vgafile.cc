@@ -342,9 +342,9 @@ unsigned char Shape_frame::read
 	if (!shapelen && !shapeoff) return 0;
 					// Get to actual shape.
 	shapes->seek(shapeoff);
-	uint32 datalen = shapes->read4();
+	uint32 dlen = shapes->read4();
 	uint32 hdrlen = shapes->read4();
-	if (datalen == shapelen)
+	if (dlen == shapelen)
 		{
 		rle = true;		// It's run-length-encoded.
 					// Figure # frames.
@@ -357,7 +357,7 @@ unsigned char Shape_frame::read
 			{
 			frameoff = hdrlen;
 			framelen = nframes > 1 ? shapes->read4() - frameoff :
-						datalen - frameoff;
+						dlen - frameoff;
 			}
 		else
 			{
@@ -365,7 +365,7 @@ unsigned char Shape_frame::read
 			frameoff = shapes->read4();
 					// Last frame?
 			if (framenum == nframes - 1)
-				framelen = datalen - frameoff;
+				framelen = dlen - frameoff;
 			else
 				framelen = shapes->read4() - frameoff;
 			}
