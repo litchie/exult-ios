@@ -53,6 +53,7 @@
 #include "ucmachine.h"
 #include "monstinf.h"
 #include "exult_constants.h"
+#include "monsters.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -2722,7 +2723,7 @@ bool Actor::figure_hit_points
 	int attacker_level = attacker ? attacker->get_level() : 4;
 	int prob = 40 + attacker_level + (attacker ?
 			(attacker->get_property(static_cast<int>(combat)) +
-			attacker->get_property(static_cast<int>(dexterity))) : 20) -
+		attacker->get_property(static_cast<int>(dexterity))) : 20) -
 			get_property(static_cast<int>(dexterity)) +
 			wpoints - armor;
 	if (get_flag(Obj_flags::protection))// Defender is protected?
@@ -2735,8 +2736,8 @@ bool Actor::figure_hit_points
 		return false;		// Missed.
 					// +++++Do special atts. too.
 					// Compute hit points to lose.
-	int hp = (attacker ? attacker->get_property(static_cast<int>(strength))/4 : 2) +
-			(rand()%attacker_level) +
+	int hp = (attacker ? attacker->get_property(
+		static_cast<int>(strength))/4 : 2) + (rand()%attacker_level) +
 			wpoints - armor;
 	if (hp < 1)
 		hp = 1;
@@ -2750,7 +2751,8 @@ bool Actor::figure_hit_points
 	int maxhealth = properties[static_cast<int>(strength)];
 
 	if (instant_death)		//instant death
-		hp = properties[static_cast<int>(health)] + properties[static_cast<int>(strength)] + 1;
+		hp = properties[static_cast<int>(health)] + 
+				properties[static_cast<int>(strength)] + 1;
 	int newhp = oldhealth - hp;	// Subtract from health.
 
 	if (oldhealth >= maxhealth/2 && newhp < maxhealth/2 && rand()%3 != 0)
@@ -2778,6 +2780,10 @@ bool Actor::figure_hit_points
 		properties[static_cast<int>(health)] << " remaining" << endl;
 //	cout << "Attack damage was " << hp << " hit points, leaving " << 
 //		properties[(int) health] << " remaining" << endl;
+	if (!defeated && minf->splits() && rand()%2 == 0 && 
+	    properties[(int) health] > 0)
+		clone();
+
 	return defeated;
 	}
 
@@ -2819,7 +2825,7 @@ Game_object *Actor::attacked
 			expval /= 2;
 					// Attacker gains experience.
 		attacker->set_property(static_cast<int>(exp),
-				attacker->get_property(static_cast<int>(exp)) + expval);
+		    attacker->get_property(static_cast<int>(exp)) + expval);
 		return 0;
 		}
 	return this;
@@ -2915,6 +2921,32 @@ void Actor::die
 	gwin->get_usecode()->update_party_status(this);
 	remove_this(1);			// Remove (but don't delete this).
 	set_invalid();
+	}
+
+/*
+ *	Create another monster of the same type as this, and adjacent.
+ *
+ *	Output:	->monster, or 0 if failed.
+ */
+
+Monster_actor *Actor::clone
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(this);
+					// Base distance on greater dim.
+	int xs = info.get_3d_xtiles(), ys = info.get_3d_ytiles();
+					// Find spot.
+	Tile_coord pos = Map_chunk::find_spot(get_abs_tile_coord(), 
+		xs > ys ? xs : ys, get_shapenum(), 0, 1);
+	if (pos.tx < 0)
+		return 0;		// Failed.
+					// Create, temporary & with equip.
+	Monster_actor *monst = Monster_actor::create(
+			get_shapenum(), pos, get_schedule_type(),
+			get_alignment(), true, true);
+	return monst;
 	}
 
 /*

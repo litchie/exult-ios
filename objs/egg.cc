@@ -531,12 +531,8 @@ static void Create_monster
 				egg->get_abs_tile_coord(), 5, shnum, 0, 1);
 	if (dest.tx != -1)
 		{
-		Monster_actor *monster = Monster_actor::create(shnum,
-				dest.tx/c_tiles_per_chunk,
-				dest.ty/c_tiles_per_chunk,
-				dest.tx%c_tiles_per_chunk,
-				dest.ty%c_tiles_per_chunk,
-				dest.tz, sched, align);
+		Monster_actor *monster = Monster_actor::create(shnum, dest,
+								sched, align);
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		}
