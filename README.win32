@@ -27,23 +27,11 @@ To build in Windows using MinGW
 -----------------------------------
 (Thanks to Travis Howell)
 
-Download MinGW from:
-http://prdownloads.sourceforge.net/mingw/gcc-3.2.3-20030504-1.tar.gz
-http://prdownloads.sourceforge.net/mingw/binutils-2.13.90-20021006-2.tar.gz
-http://prdownloads.sourceforge.net/mingw/mingw-runtime-3.0.tar.gz
-http://prdownloads.sourceforge.net/mingw/w32api-2.3.tar.gz
-
-Create a directory called mingw in the root directory of drive 
-(ie C:\mingw\ )
-
-Extract the MinGW files into the mingw directory in the follow order!  
-gcc-3.2.3-20030504-1.tar.gz
-binutils-2.13.90-20021006-2.tar.gz  (Overwrite any existing files)
-mingw-runtime-3.0.tar.gz 
-w32api-2.3.tar.gz
+Download and install MinGW from:
+http://prdownloads.sourceforge.net/mingw/MinGW-3.1.0-1.exe
 
 Download and install MSYS from:
-http://prdownloads.sourceforge.net/mingw/MSYS-1.0.8.exe
+http://prdownloads.sourceforge.net/mingw/MSYS-1.0.9.exe
 
 Download the SDL binaries & headers from:
 http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
