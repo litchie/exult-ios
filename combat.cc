@@ -698,7 +698,9 @@ void Combat_schedule::set_opponent
 	{
 	opponent = obj;
 	state = approach;
-	start_battle();			// Play music.
+					// A real battle?
+	if (npc->get_attack_mode() != Actor::flee)
+		start_battle();			// Play music.
 	}
 
 /*
