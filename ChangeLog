@@ -1,3 +1,6 @@
+2001-05-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* ucsched.cc: changed scheduled usecode 0x0b loop behaviour
+
 2001-05-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Working on server.  It's now polled in the main loop
