@@ -343,7 +343,7 @@ void Barge_object::finish_move
 	delete [] positions;
 	Game_window *gwin = Game_window::get_game_window();
 					// Check for scrolling.
-	gwin->scroll_if_needed(gwin->get_main_actor()->get_abs_tile_coord());
+	gwin->scroll_if_needed(center);
 	}
 
 
