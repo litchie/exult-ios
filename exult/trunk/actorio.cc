@@ -383,14 +383,14 @@ void Actor::read
 	int tiley = locy & 0xf;
 	set_shape_pos(tilex, tiley);
 	Map_chunk *olist = gwin->get_chunk_safely(scx + cx, scy + cy);
-	if (olist && !is_dead())	// Put into chunk list.
+	set_invalid();			// Not in world yet.
+	if (olist && !is_dead())	// Valid & alive?  Put into chunk list.
 		{
-		olist->add(this);
-		switched_chunks(0, olist);	// Put in chunk's NPC list.
+		move((scx + cx)*c_tiles_per_chunk + tilex,
+		     (scy + cy)*c_tiles_per_chunk + tiley, get_lift());
+//		olist->add(this);
+//		switched_chunks(0, olist);	// Put in chunk's NPC list.
 		}
-	else
-		set_invalid();		// Or set to invalid chunk.
-
 	// Only do ready best weapon if we are in BG, this is the first time
 	// and we are the Avatar or Iolo
 	if (Game::get_game_type() == BLACK_GATE && Game::get_avname() && (num == 0 || num == 1))

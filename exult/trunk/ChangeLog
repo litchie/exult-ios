@@ -1,3 +1,8 @@
+2002-04-05  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* monsters.{cc,h}:  In_world linking rewritten.
+	* actorio.cc: Use move() to place actors in world.
+
 2002-04-05  Dominik Reichardt <gigdr@tesionmail.de>
 	* tools/shp2pcx.txt, splitshp.txt, textpack.txt added, expack.txt updated.
   	  According to Robert Bihlmeyer's manuals

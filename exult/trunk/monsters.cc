@@ -33,25 +33,39 @@
 using std::rand;
 
 Monster_actor *Monster_actor::in_world = 0;
-int Monster_actor::in_world_cnt = 0;
 
 /*
- *	Initialize a new monster.
+ *	Add to global list (if not already there).
  */
 
-void Monster_actor::init
+void Monster_actor::link_in
 	(
 	)
 	{
-	if (in_world)
+	if (prev_monster || in_world == this)
+		return;			// Already in list.
+	if (in_world)			// Add to head.
 		in_world->prev_monster = this;
 	next_monster = in_world;
 	in_world = this;
-	in_world_cnt++;
-					// Check for animated shape.
-	Shape_info& info = Game_window::get_game_window()->get_info(this);
-	if (info.is_animated())
-		animator = Animator::create(this, 1);
+	}
+
+/*
+ *	Remove from global list (if in list).
+ */
+
+void Monster_actor::link_out
+	(
+	)
+	{
+	if (next_monster)
+		next_monster->prev_monster = prev_monster;
+	if (prev_monster)
+		prev_monster->next_monster = next_monster;
+	else				// We're at start of list.
+		if (in_world == this)
+			in_world = next_monster;
+	next_monster = prev_monster = 0;
 	}
 
 /*
@@ -65,9 +79,12 @@ Monster_actor::Monster_actor
 	int num,			// Generally -1.
 	int uc
 	) : Npc_actor(nm, shapenum, num, uc), prev_monster(0),
-	    animator(0)
+	    next_monster(0), animator(0)
 	{
-	init();
+					// Check for animated shape.
+	Shape_info& info = Game_window::get_game_window()->get_info(this);
+	if (info.is_animated())
+		animator = Animator::create(this, 1);
 	}
 
 /*
@@ -79,15 +96,7 @@ Monster_actor::~Monster_actor
 	)
 	{
 	delete animator;
-					// Remove from chain.
-	if (next_monster)
-		next_monster->prev_monster = prev_monster;
-	if (prev_monster)
-		prev_monster->next_monster = next_monster;
-	else				// We're at start of list.
-		in_world = next_monster;
-	if (!is_dead())			// Dying decrements count.
-		in_world_cnt--;
+	link_out();			// Remove from chain.
 	}
 
 /*
@@ -232,7 +241,6 @@ void Monster_actor::delete_all
 	{
 	while (in_world)
 		delete in_world;
-	in_world_cnt = 0;
 	}
 
 /*
@@ -309,6 +317,35 @@ int Monster_actor::step
 	}
 
 /*
+ *	Remove an object from its container, or from the world.
+ *	The object is deleted.
+ */
+
+void Monster_actor::remove_this
+	(
+	int nodel			// 1 to not delete.
+	)
+	{
+	link_out();			// Remove from list.
+	Npc_actor::remove_this(nodel);
+	}
+
+/*
+ *	Move (teleport) to a new spot.
+ */
+
+void Monster_actor::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift
+	)
+	{
+	Npc_actor::move(newtx, newty, newlift);
+	link_in();			// Insure it's in global list.
+	}
+
+/*
  *	Add an object.
  *
  *	Output:	1, meaning object is completely contained in this,
@@ -379,7 +416,6 @@ void Monster_actor::die
 	Audio::get_ptr()->start_music_combat ( CSVictory, 0);
 					// Got to delete this somewhere, but
 					//   doing it here crashes.
-	in_world_cnt--;			// So... Decrement 'live' count here.
 	}
 
 /*
