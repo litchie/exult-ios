@@ -38,12 +38,12 @@ ShapeBrowser::~ShapeBrowser()
 			delete shapes;
 	}
 
-static void handle_key(int shift, int& value, int max)
+static void handle_key(int shift, int& value, int max, int amt = 1)
 {
 	if(shift)
-		--value;
+		value -= amt;
 	else
-		++value;
+		value += amt;
 	if(value<0)
 		value = max-1;
 	else if(value>=max)
@@ -130,6 +130,11 @@ void ShapeBrowser::browse_shapes()
 					break;
 				case SDLK_s:
 					handle_key(shift, current_shape, num_shapes);
+					current_frame = 0;
+					break;
+				case SDLK_j:	// Jump by 20.
+					handle_key(shift, current_shape, 
+							num_shapes, 20);
 					current_frame = 0;
 					break;
 				case SDLK_f:

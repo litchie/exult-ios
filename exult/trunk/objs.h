@@ -475,7 +475,7 @@ public:
 	Container_game_object(unsigned char l, unsigned char h, 
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft,
-				unsigned char res)
+				unsigned char res = 0)
 		: Ireg_game_object(l, h, shapex, shapey, lft),
 		  volume_used(0), resistance(res), objects(0)
 		{  }
@@ -591,16 +591,16 @@ class Chunk_cache
 							const int move_flags, int max_drop = 1);
 					// Activate eggs nearby.
 	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
-			int tx, int ty, 
+			int tx, int ty, int tz,
 			int from_tx, int from_ty, unsigned short eggbits);
 	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
-				int tx, int ty, int from_tx, int from_ty)
+			int tx, int ty, int tz, int from_tx, int from_ty)
 		{
 		unsigned short eggbits = eggs[
 			(ty%tiles_per_chunk)*tiles_per_chunk + 
 							(tx%tiles_per_chunk)];
 		if (eggbits)
-			activate_eggs(obj, chunk, tx, ty, 
+			activate_eggs(obj, chunk, tx, ty, tz,
 						from_tx, from_ty,  eggbits);
 		}
 	};
@@ -686,10 +686,10 @@ public:
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles, int add)
 		{ need_cache()->set_egged(egg, tiles, add); }
-	void activate_eggs(Game_object *obj, int tx, int ty, 
+	void activate_eggs(Game_object *obj, int tx, int ty, int tz,
 						int from_tx, int from_ty)
 		{ need_cache()->activate_eggs(obj, 
-					this, tx, ty, from_tx, from_ty);}
+					this, tx, ty, tz, from_tx, from_ty);}
 	};
 
 /*

@@ -146,7 +146,7 @@ void Egg_object::monster_died
 int Egg_object::is_active
 	(
 	Game_object *obj,		// Object placed (or Actor).
-	int tx, int ty,			// Tile stepped onto.
+	int tx, int ty, int tz,		// Tile stepped onto.
 	int from_tx, int from_ty	// Tile stepped from.
 	)
 	{
@@ -164,10 +164,10 @@ int Egg_object::is_active
 		return area.has_point(tx, ty);
 	case party_near:
 		return obj->get_party_id() >= 0 &&
-			area.has_point(tx, ty) &&
+			area.has_point(tx, ty) && tz == get_lift() &&
 					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
-		return obj == gwin->get_main_actor() &&
+		return obj == gwin->get_main_actor() && tz == get_lift() &&
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty);
 	case avatar_far:		// New tile is outside, old is inside.
@@ -180,11 +180,14 @@ int Egg_object::is_active
 			!inside.has_point(tx, ty);
 		}
 	case avatar_footpad:
-		return obj == gwin->get_main_actor() && area.has_point(tx, ty);
+		return obj == gwin->get_main_actor() && tz == get_lift() &&
+						area.has_point(tx, ty);
 	case party_footpad:
-		return area.has_point(tx, ty) && obj->get_party_id() >= 0;
+		return area.has_point(tx, ty) && tz == get_lift() &&
+						obj->get_party_id() >= 0;
 	case something_on:
-		return obj != gwin->get_main_actor() &&
+		return obj != gwin->get_main_actor() && 
+			tz >= get_lift() && tz - get_lift() <= 3 &&
 			area.has_point(tx, ty) && obj->get_npc_num() <= 0;
 	default:
 		return 0;

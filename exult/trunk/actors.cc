@@ -1433,7 +1433,8 @@ int Main_actor::step
 	Actor::movef(olist, nlist, tx, ty, frame, new_lift);
 	gwin->add_dirty(this);		// Set to update new.
 					// Near an egg?
-	nlist->activate_eggs(this, t.tx, t.ty, oldtile.tx, oldtile.ty);
+	nlist->activate_eggs(this, t.tx, t.ty, new_lift, 
+						oldtile.tx, oldtile.ty);
 					// In a new chunk?
 	if (olist != nlist)
 		switched_chunks(olist, nlist);
