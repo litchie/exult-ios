@@ -465,7 +465,6 @@ public:
 			   int qual=c_any_qual); // Activate item in party.
 					// Find object (x, y) is in.
 	Game_object *find_object(int x, int y);
-	int find_objects(int lift, int x, int y, Game_object_vector& list);
 					// Show names of items clicked on.
 	void show_items(int x, int y, bool ctrl = false);
 	ShapeID get_flat(int x, int y);	// Return terrain (x, y) is in.
