@@ -787,41 +787,146 @@ string Game_object::get_name
 	(
 	) const
 	{
-	const char *name;
+	const char *name = 0;
 	int quantity;
 	string display_name;
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
-	bool si = Game::get_game_type() == SERPENT_ISLE;
-
-	switch (shnum)			// Some special cases!
-	{
-	case 0x34a:			// Reagants.
-		name = item_names[0x500 + frnum];
-		break;
-	case 0x3bb:			// Medallions?
-		if (frnum >= 3)
+	if (Game::get_game_type() == BLACK_GATE) {
+		//TODO: yourself 
+		switch (shnum)			// Some special cases!
+		{
+		case 0x34a:			// Reagents
+			name = item_names[0x500 + frnum];
+			break;
+		case 0x3bb:			// Amulets
+			if (frnum < 3)
+				name = item_names[0x508 + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x179:			// Food items
+			name = item_names[0x50b + frnum];
+			break;
+		case 0x28a:			// Sextants
+			name = item_names[0x52c - frnum];
+			break;
+		case 0x2a3:			// Desk items
+			name = item_names[0x52d + frnum];
+			break;
+		default:
 			name = item_names[shnum];
-		else
-			name = item_names[0x508 + frnum];
-		break;
-	case 0x179:			// Food items.
-		name = item_names[0x50b + (si ? 5 : 0) + frnum];
-		break;
-	case 0x28a:			// Sextant
-		// TODO: fix this for SI
-		name = si ? item_names[shnum] : item_names[0x52c - frnum];
-		break;
-	case 0x2a3:			// Desk item.
-		name = item_names[0x52d + (si ? 5 : 0) + frnum];
-		break;
-	case 0x32a:			// Bucket (SI).
-		name = si ? item_names[0x55b + frnum] : item_names[shnum];
-		break;
-	default:
-		name = item_names[shnum];
-		break;
+			break;
 		}
+
+
+	} else if (Game::get_game_type() == SERPENT_ISLE) {
+		//TODO: yourself, oilskin, ice dragon blood, water of ...
+		//TODO: Dave, >= text.flx nr. 1502
+		
+		switch (shnum)			// More special cases!
+		{
+		case 0x34a:			// Reagents
+			name = item_names[0x500 + frnum];
+			break;
+		case 0x32a:			// Bucket
+			name = item_names[0x55b + frnum];
+			break;
+		case 0x179:			// Food items
+			name = item_names[0x510 + frnum];
+			break;
+		case 0x2a3:			// Desk items
+			name = item_names[0x532 + frnum];
+			break;
+		case 0x28a:			// Sextants
+			name = item_names[0x531 - frnum];
+			break;
+		case 0x1bd:			// Soul prisms
+			name = item_names[0x56b + frnum];
+			break;
+		case 0x289:			// Artifacts
+			name = item_names[0x573 + frnum];
+			break;
+		case 0x1d3:			// Magic plants
+			name = item_names[0x581 + frnum/2];
+			// not sure about 'catnip'
+			break;
+		case 0x1c2:			// Orbs
+			name = item_names[0x585 + frnum];
+			break;
+		case 0x106:			// Blackrock Serpents
+			if (frnum < 4)
+				name = item_names[0x592 + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x0b2:			// Cloth maps
+			name = item_names[0x596 + frnum];
+			break;
+		case 0x24b:			// Boots
+			name = item_names[0x59c + frnum];
+			break;
+		case 0x21e:			// Crested Helmets
+			name = item_names[0x5a3 + frnum];
+			break;
+		case 0x3ec:			// Helmets
+			name = item_names[0x5a6 + frnum];
+			break;
+		case 0x241:			// Nests
+			if (frnum < 6)
+				name = item_names[0x5ab + frnum/3];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3bb:			// Amulets
+			name = item_names[0x5ae + frnum];
+			break;
+		case 0x128:			// Rings
+			name = item_names[0x5b8 + frnum];
+			break;
+		case 0x377:			// More rings
+			name = item_names[0x5bd - frnum];
+			break;
+		case 0x2b4:			// Lute
+			if (frnum == 2)
+				name = item_names[0x5be];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x347:			// Hourglass
+			if (frnum == 1)
+				name = item_names[0x5bf];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x0d1:			// Artifacts
+			name = item_names[0x5c0 + frnum];
+			break;
+		case 0x0f4:			// Large skulls
+			if (frnum < 2)
+				name = item_names[0x5d8 + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3f3:			// Beds
+			if (frnum >= 1 && frnum <= 4)
+				name = item_names[0x5da + frnum - 1];
+			else if (frnum == 5)
+				name = item_names[0x5dd];
+			else if (frnum == 6)
+				name = item_names[0x5da];
+			else
+				name = item_names[shnum];
+			break;
+		default:
+			name = item_names[shnum];
+			break;
+		}
+
+	} else {
+		name = item_names[shnum];
+	}
+
 	if(name == 0)
 		return "?";
 
