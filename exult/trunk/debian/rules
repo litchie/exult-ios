@@ -7,7 +7,9 @@ package=exult
 build:
 	$(checkdir)
 	
-	make CFLAGS="-O2 -g -Wall"
+	sh autogen.sh
+	./configure --x-libraries=/usr/X11R6/lib --datadir=/usr/lib/games
+	make
 	touch build
 
 clean:
@@ -28,6 +30,7 @@ binary-arch: checkroot build
 	-rm -rf debian/tmp
 	install -d debian/tmp
 	cd debian/tmp && install -d `cat ../dirs`
+	sh autogen.sh
 	./configure --x-libraries=/usr/X11R6/lib --datadir=/usr/lib/games
 	make
 	cp exult debian/tmp/usr/games/exult
