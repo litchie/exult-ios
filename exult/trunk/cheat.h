@@ -19,7 +19,7 @@
 #ifndef CHEAT_H
 #define CHEAT_H
 
-#include <vector>
+#include "vec.h"
 
 class Game_window;
 class ShapeBrowser;
@@ -54,7 +54,7 @@ private:
   Map_editor_mode edit_mode;
   int  edit_lift;
   int  edit_shape, edit_frame;		// What to 'paint' with.
-  std::vector<Game_object *> selected;	// Selected objects (map-editing).
+  Game_object_vector selected;		// Selected objects (map-editing).
   bool infravision;
   bool pickpocket;
   bool grab_actor;
@@ -115,8 +115,10 @@ public:
   void clear_selected();
   void delete_selected();
   void move_selected(int dx, int dy, int dz);
-  const std::vector<Game_object *>& get_selected() const
+  const Game_object_vector& get_selected() const
 	{ return selected; }
+  bool is_selected(Game_object *o)
+	{ return selected.size() ? (selected.find(o) != -1) : false; }
 
   void map_teleport (void) const;
   void cursor_teleport (void) const;

@@ -33,6 +33,7 @@ using std::snprintf;
 #include "chunks.h"
 #include "objiter.h"
 #include "Gump_manager.h"
+#include "Gump.h"
 #include "effects.h"
 #include "cheat.h"
 
@@ -231,17 +232,17 @@ int Game_window::paint_map
 						stop_chunky, ice_dungeon?73:0);
 
 					// Outline selected objects.
-	const std::vector<Game_object *>& sel = cheat.get_selected();
-	for (std::vector<Game_object *>::const_iterator it = sel.begin();
+	const Game_object_vector& sel = cheat.get_selected();
+	for (Game_object_vector::const_iterator it = sel.begin();
 						it != sel.end(); ++it)
 		{
 		Game_object *obj = *it;
-		int lift = obj->get_lift();
-		if (lift < skip_lift && lift < skip_above_actor)
+		int x, y;
+		if (!obj->get_owner() && obj->get_lift() < skip_lift &&
+					obj->get_lift() < skip_above_actor)
 			{
-			int x, y;
 			get_shape_location(obj, x, y);
-				paint_hit_outline(x, y, obj->get_shape());
+			paint_hit_outline(x, y, obj->get_shape());
 			}
 		}
 					// Paint tile grid if desired.
