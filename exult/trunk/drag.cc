@@ -217,7 +217,12 @@ void Game_window::drop
 	Gump_object *on_gump = find_gump(x, y);
 	if (on_gump)
 		{
+#if 1	/* ++++This should be better. */
+		if (on_gump->add(dragging, x, y,
+					dragging_paintx, dragging_painty))
+#else
 		if (on_gump->add(dragging, x, y))
+#endif
 			return;
 		}
 	else
