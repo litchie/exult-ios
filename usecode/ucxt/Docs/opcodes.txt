@@ -268,7 +268,7 @@ The intrinsic called will return a value on the stack.
 
 The intrinsic called also has the same "event" flag as the caller function.
 
-> 0x39	CALLI	"calli"	3	{short, byte}
+> 0x39	CALLI	"calli"	3	{short,byte}
 
 Same as opcode CALLIS (0x38), except no return value.
 
