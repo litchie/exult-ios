@@ -10,13 +10,13 @@ endif
 
 if BUILD_TOOLS
 NOINSTTOOLS = wuc wud mklink rip ucdump cmanip
-EXTRATOOLS = splitshp shp2pcx textpack $(IPACK)
+EXTRATOOLS = splitshp shp2pcx textpack
 else
 EXTRATOOLS =
 NOINSTTOOLS =
 endif
 
-bin_PROGRAMS = expack $(EXTRATOOLS)
+bin_PROGRAMS = expack $(EXTRATOOLS) $(IPACK)
 noinst_PROGRAMS = $(NOINSTTOOLS)
 
 expack_SOURCES = \
