@@ -3,7 +3,7 @@ INCLUDES = -I.. -I../shapes -I../imagewin -I../files \
 
 bin_PROGRAMS = shapetest
 
-shapetest_SOURCES = shapelst.cc shapelst.h
+shapetest_SOURCES = shapelst.cc shapelst.h u7drag.cc u7drag.h
 
 shapetest_LDADD = 			\
 	../files/libu7file.la	\

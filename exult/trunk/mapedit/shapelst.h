@@ -99,8 +99,12 @@ public:
 					// Handle mouse press.
 	static gint mouse_press(GtkWidget *widget, GdkEventButton *event,
 							gpointer data);
-	static gint selection_get(GtkWidget *widget, GtkSelectionData *data,
-						guint info, guint time);
+					// Give selected shape.
+	static void selection_get(GtkWidget *widget, GtkSelectionData *data,
+					guint info, guint time, gpointer data);
+					// Someone else selected.
+	static gint selection_clear(GtkWidget *widget,
+				GdkEventSelection *event, gpointer data);
 //	static gint mouse_motion(GtkWidget *widget, GdkEventButton *event,
 //							gpointer data);
 					// Handle scrollbar.
