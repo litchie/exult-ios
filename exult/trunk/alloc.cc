@@ -1,3 +1,4 @@
+#include "autoconfig.h"
 #include <cstdlib>
 #include <cstdio>
 #include <new>
