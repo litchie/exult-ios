@@ -387,7 +387,7 @@ void Scheduled_usecode::handle_event
 		case 0x58:		// Play sound effect!
 			{
 			Usecode_value& val = arrval.get_elem(++i);
-			audio->play_sound_effect(val.get_int_value());
+			Audio::get_ptr()->play_sound_effect(val.get_int_value());
 					// Or play sound effect??
 			break;
 			}
@@ -2012,9 +2012,9 @@ USECODE_INTRINSIC(play_music)
 #endif
 	int track = parms[0].get_int_value()&0xff;
 	if (track == 0xff)		// I think this is right:
-		audio->cancel_streams();	// Stop playing.
+		Audio::get_ptr()->cancel_streams();	// Stop playing.
 	else
-		audio->start_music(track, (parms[0].get_int_value()>>8)&0x01);
+		Audio::get_ptr()->start_music(track, (parms[0].get_int_value()>>8)&0x01);
 	return(no_ret);
 }
 
@@ -2710,7 +2710,7 @@ USECODE_INTRINSIC(start_speech)
 	bool okay = false;
 	speech_track = parms[0].get_int_value();
 	if (speech_track >= 0)
-		okay = audio->start_speech(speech_track);
+		okay = Audio::get_ptr()->start_speech(speech_track);
 	return(Usecode_value(okay ? 1 : 0));
 }
 
@@ -3028,7 +3028,7 @@ USECODE_INTRINSIC(play_sound_effect)
 #if DEBUG
 	cout << "Sound effect " << parms[0].get_int_value() << " request in usecode" << endl;
 #endif
-	audio->play_sound_effect (parms[0].get_int_value());
+	Audio::get_ptr()->play_sound_effect (parms[0].get_int_value());
 	return(no_ret);
 }
 

@@ -298,14 +298,14 @@ bool MyMidiPlayer::init_device(void)
 	// instrument_patches=AccessTableFile(XMIDI_MT);
 	string	s;
 
-	bool sfx = audio->are_effects_enabled();
+	bool sfx = Audio::get_ptr()->are_effects_enabled();
 
 	if (!sfx) s = "no";
 	else s = "yes";
 
 	config->set("config/audio/effects/enabled",s,true);
 
-	bool music = audio->is_music_enabled();
+	bool music = Audio::get_ptr()->is_music_enabled();
 
 	if (!music) s = "no";
 	else s = "yes";

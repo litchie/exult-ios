@@ -104,6 +104,9 @@ static	void copy_to_name(std::string name1,std::string name2)
 
 void	Timidity_binary::player(void)
 {
+#if DEBUG
+	cout << "Timidity_binary::player() starting up" << endl;
+#endif
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
 	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
 #if HAVE_MKSTEMP
@@ -128,7 +131,7 @@ void	Timidity_binary::player(void)
 	audiostream->id=Timidity_binary_magic;
 	char nbuf[32];
 	sprintf(nbuf,"%ul",Audio::get_ptr()->actual.freq);
-	string	s="timidity -Oru8S -id -s ";
+	string	s="timidity -j -Oru8S -id -s ";
 	s+=nbuf;
 	s+=" -o- ";
 	s+=newfilename;
@@ -180,7 +183,7 @@ void	Timidity_binary::sfxplayer(void)
 	audiostream->id=Timidity_binary_magic_sfx;
 	char nbuf[32];
 	sprintf(nbuf,"%ul",Audio::get_ptr()->actual.freq);
-	string	s="timidity -Oru8S -id -s ";
+	string	s="timidity -j -Oru8S -id -s ";
 	s+=nbuf;
 	s+=" -o- ";
 	s+=newfilename;

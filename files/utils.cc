@@ -40,23 +40,31 @@ void add_system_path(const char *key, const char *value)
 	path_map[key] = value;
 }
 
-char *get_system_path(char *path)
+char *get_system_path(const char *path)
 {
 	char * slash = strchr(path, '/');
 	// If there is no separator, return the path as is
 	if(!slash)
-		return strdup(path);
+		{
+		char *ret=new char[strlen(path+1)];
+		strcpy(ret,path);
+		return ret;
+		}
 	int prefix_size = slash-path;
 	char *prefix = new char[prefix_size+1];
 	strncpy(prefix, path, prefix_size);
 	prefix[prefix_size] = 0;
-	char *new_prefix = (char *)path_map[prefix];
+	const char *new_prefix = path_map[prefix];
 	delete [] prefix;
 	// If the prefix path is not recognised, return the path as is
 	if(!new_prefix)
-		return strdup(path);
+		{
+		char *ret=new char[strlen(path+1)];
+		strcpy(ret,path);
+		return ret;
+		}
 	
-	char *new_path = (char *)malloc(sizeof(char)*(strlen(new_prefix)+strlen(path)-prefix_size+1));
+	char *new_path = new char[sizeof(char)*(strlen(new_prefix)+strlen(path)-prefix_size+1)];
 	strcpy(new_path, new_prefix);
 	strcat(new_path, slash);
 	return new_path;
@@ -134,10 +142,10 @@ int U7open
 #else
 	int mode = ios::in | ios::binary;
 #endif
-	char * filename = get_system_path((char *)fname);
+	const char * filename = get_system_path(fname);
 	char name[512];
 	Switch_slash(name, filename);
-	free(filename);
+	delete [] filename;
 	in.open(name, mode);		// Try to open original name.
 	if (!in.good())			// No good?  Try upper-case.
 		{
@@ -170,11 +178,11 @@ int U7open
 #else
 	int mode = ios::out | ios::trunc | ios::binary;
 #endif
-	char * filename = get_system_path((char *)fname);
+	const char * filename = get_system_path(fname);
 
 	char name[512];
 	Switch_slash(name, filename);
-	free(filename);
+	delete [] filename;
 	out.open(name, mode);		// Try to open original name.
 	if (!out.good())		// No good?  Try upper-case.
 		{
@@ -199,11 +207,11 @@ std::FILE* U7open
 	const char *mode			// File access mode.
 	)
 	{
-	char * filename = get_system_path((char *)fname);
+	char * filename = get_system_path(fname);
 	
 	char name[512];
 	Switch_slash(name, filename);
-	free(filename);
+	delete [] filename;
 	std::FILE *f = std::fopen(name, mode);
 	if (!f)				// No good?  Try upper-case.
 		{
@@ -225,11 +233,11 @@ void U7remove
 	const char *fname			// May be converted to upper-case.
 	)
 	{
-	char * filename = get_system_path((char *)fname);
+	const char * filename = get_system_path(fname);
 	
 	char name[512];
 	Switch_slash(name, filename);
-	free(filename);
+	delete [] filename;
 	remove(name);
 	}
 
@@ -242,11 +250,11 @@ int U7exists
 	const char *fname			// May be converted to upper-case.
 	)
 	{
-	char * filename = get_system_path((char *)fname);
+	const char * filename = get_system_path(fname);
 	
 	char name[512];
 	Switch_slash(name, filename);
-	free(filename);
+	delete [] filename;
 	struct stat sbuf;
 	return (stat(name, &sbuf) == 0);
 	}

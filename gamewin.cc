@@ -2835,8 +2835,8 @@ void Game_window::setup_game
 	set_all_dirty();		// Force entire repaint.
 
 	paint();
-	audio->cancel_raw();
-	audio->cancel_streams();
+	Audio::get_ptr()->cancel_raw();
+	Audio::get_ptr()->cancel_streams();
 				// Want to activate first egg.
 	Chunk_object_list *olist = get_objects(
 			main_actor->get_cx(), main_actor->get_cy());

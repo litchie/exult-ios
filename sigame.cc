@@ -128,9 +128,9 @@ void SI_Game::play_intro()
 		Font *font = fontManager.get_font("MENU_FONT");
 		Font *sifont = fontManager.get_font("SIINTRO_FONT");
 
-		bool speech = audio->is_speech_enabled();
+		bool speech = Audio::get_ptr()->is_speech_enabled();
 		
-		audio->stop_music();
+		Audio::get_ptr()->stop_music();
 
 		// Lord British presents...
 		U7object lbflic("<STATIC>/intro.dat", 0);
@@ -176,7 +176,7 @@ void SI_Game::play_intro()
 		// No sound... yet, can't decode it :(
 
 		// Start Music
-		audio->start_music ("<STATIC>/r_sintro.xmi", 0, false);
+		Audio::get_ptr()->start_music ("<STATIC>/r_sintro.xmi", 0, false);
 
 
 		U7object flic("<STATIC>/intro.dat", 1);
@@ -334,7 +334,7 @@ void SI_Game::play_intro()
 			U7object voc_my_leige("<STATIC>/intro.dat", 16);
 			voc_my_leige.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
-			audio->play (buffer+8, size-8, false);
+			Audio::get_ptr()->play (buffer+8, size-8, false);
 			delete [] buffer;
 		}
 
@@ -367,7 +367,7 @@ void SI_Game::play_intro()
 			U7object voc_all_we("<STATIC>/intro.dat", 17);
 			voc_all_we.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
-			audio->play (buffer+8, size-8, false);
+			Audio::get_ptr()->play (buffer+8, size-8, false);
 			delete [] buf;
 		}
 
@@ -437,7 +437,7 @@ void SI_Game::play_intro()
 			U7object voc_indeed("<STATIC>/intro.dat", 18);
 			voc_indeed.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
-			audio->play (buffer+8, size-8, false);
+			Audio::get_ptr()->play (buffer+8, size-8, false);
 			delete [] buf;
 		}
 
@@ -503,7 +503,7 @@ void SI_Game::play_intro()
 			U7object voc_stand_back("<STATIC>/intro.dat", 19);
 			voc_stand_back.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
-			audio->play (buffer+8, size-8, false);
+			Audio::get_ptr()->play (buffer+8, size-8, false);
 			delete [] buffer;
 		}
 
@@ -549,7 +549,7 @@ void SI_Game::play_intro()
 			U7object voc_big_g("<STATIC>/intro.dat", 20);
 			voc_big_g.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
-			audio->play (buffer+8, size-8, false);
+			Audio::get_ptr()->play (buffer+8, size-8, false);
 			delete [] buffer;
 		}
 
@@ -675,7 +675,7 @@ void SI_Game::play_intro()
 			U7object voc_tis_my("<STATIC>/intro.dat", 21);
 			voc_tis_my.retrieve (&buf, size);
 			buffer = (Uint8 *) buf;
-			audio->play (buffer+8, size-8, false);
+			Audio::get_ptr()->play (buffer+8, size-8, false);
 			delete [] buffer;
 		}
 
@@ -809,7 +809,7 @@ void SI_Game::end_game(bool success)
 		size_t	flisize;
 		char	*fli_b;
 
-		audio->start_music ("<STATIC>/r_send.xmi", 0, false);
+		Audio::get_ptr()->start_music ("<STATIC>/r_send.xmi", 0, false);
 		
 		for(int i=9; i<14; i++) {
 			U7object flic("<STATIC>/intro.dat", i);

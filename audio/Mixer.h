@@ -47,21 +47,7 @@ public:
 	Mixer(size_t ringsize,size_t bufferlength);
 	~Mixer();
 
-	struct	MixBuffer
-		{
-		Uint8 *buffer;
-		Uint8 num_samples;
-		size_t	length;
-		MixBuffer(size_t size,Uint8 silence) : buffer(new Uint8[size]),num_samples(0),length(0) { std::memset(buffer,silence,size); };
-		MixBuffer(const MixBuffer &m) : buffer(m.buffer),num_samples(m.num_samples),length(m.length) {  };
-#ifdef MACOS
-		MixBuffer() : buffer(NULL),num_samples(0),length(0) {};
-#endif
-		};
 	size_t	buffer_length;
-	std::list<MixBuffer>	buffers;
-	size_t ring_size;
-	void	advance(void);
 	Uint8	silence;
 	SDL_mutex	*stream_mutex;
 	void	stream_lock(void) { SDL_mutexP(stream_mutex); };
