@@ -3249,7 +3249,8 @@ void Monster_actor::paint
 	)
 	{
 	Npc_actor::paint(gwin);		// Draw on screen.
-	animator->want_animation();	// Be sure animation is on.
+	if (animator)			// Be sure animation is on.
+		animator->want_animation();
 	}
 
 /*
