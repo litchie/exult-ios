@@ -76,7 +76,7 @@ public:
 	NoteStack() : notes(0), polyphony(0), max_polyphony(0) { }
 
 	// Pops the top of the stack if its off_time is <= time (6000th of second)
-	inline midi_event *PopTime(int time) {
+	inline midi_event *PopTime(uint32 time) {
 		if (notes && notes->note_time <= time)  {
 			midi_event *note = notes;
 			notes = note->next_note;
