@@ -150,7 +150,7 @@ void Gump_manager::add_gump(Gump *gump)
 {
 	Gump_list *g = new Gump_list(gump);
 
-	kbd_focus = gump->can_handle_kbd() ? gump : 0;
+	set_kbd_focus(gump);
 	if (!open_gumps)
 		open_gumps = g;		// First one.
 	else
@@ -184,7 +184,7 @@ bool Gump_manager::close_gump(Gump *gump)
 bool Gump_manager::remove_gump(Gump *gump)
 {
 	if (gump == kbd_focus)
-		kbd_focus = 0;
+		set_kbd_focus(0);
 	if (open_gumps)
 	{
 		if (open_gumps->gump == gump)
@@ -261,7 +261,7 @@ void Gump_manager::add_gump
 			remove_gump(gump);
 			add_gump(gump);
 		} else
-			kbd_focus = gump->can_handle_kbd() ? gump : 0;
+			set_kbd_focus(gump);
 		gwin->paint();
 		return;
 	}
@@ -351,11 +351,31 @@ void Gump_manager::close_all_gumps
 			prev = gump;
 	}
 	non_persistent_count = 0;
-	kbd_focus = 0;
+	set_kbd_focus(0);
 	gwin->get_npc_prox()->wait(4);		// Delay "barking" for 4 secs.
 	if (removed) gwin->paint();
 }
 
+/*
+ *	Set the keyboard focus to a given gump.
+ */
+
+void Gump_manager::set_kbd_focus
+	(
+	Gump *gump			// May be NULL.
+	)
+	{
+	if (gump && gump->can_handle_kbd())
+		{
+		kbd_focus = gump;
+		SDL_EnableUNICODE(1); 	// Enable unicode translation.
+		}
+	else
+		{
+		kbd_focus = 0;
+		SDL_EnableUNICODE(0);
+		}
+	}
 
 /*
  *	Handle a double-click.
