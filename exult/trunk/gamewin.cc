@@ -1622,6 +1622,18 @@ void Game_window::schedule_npcs
 	}
 
 /*
+ *	Gain focus.
+ */
+
+void Game_window::get_focus
+	(
+	)
+	{
+	focus = 1; 
+	npc_prox->wait(4);		// Delay "barking" for 4 secs.
+	}
+
+/*
  *	End intro.
  */
 
@@ -1639,11 +1651,13 @@ void Game_window::end_intro
 		// ++++++Test for 1st egg here?
 		paint();
 		mode = normal;
+#if 0	/* Too irritating at start of game. */
 					// Want to run proximity usecode on
 					//   the visible ones.
 		add_nearby_npcs(chunkx, chunky, 
 			chunkx + (get_width() + chunksize - 1)/chunksize,
 			chunky + (get_height() + chunksize - 1)/chunksize);
+#endif
 //++++??		schedule_npcs(2);	//++++++Test??
 		}
 	}

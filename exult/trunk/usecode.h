@@ -168,6 +168,7 @@ class Usecode_machine
 	Game_window *gwin;		// Game window.
 	Vector *funs;			// I'th entry contains funs for ID's
 					//    256*i + n.
+	int call_depth;			// How far deep we are.
 	unsigned char gflags[1024];	// Global flags.
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
@@ -226,8 +227,7 @@ class Usecode_machine
 	void remove_from_party(Game_object *npc);
 	Usecode_value get_party();
 	void item_say(Usecode_value& objval, Usecode_value& strval);
-	void exec_array(Usecode_value& objval, Usecode_value& arrayval,
-								int delay);
+	void exec_array(Usecode_value& objval, Usecode_value& arrayval);
 
 	/*
 	 *	Other private methods:
@@ -243,6 +243,7 @@ class Usecode_machine
 	int call_usecode_function(int id, int event = 0, 
 						Usecode_value *parm0 = 0);
 public:
+	friend class Scheduled_usecode;
 	Usecode_machine(istream& file, Game_window *gw);
 	~Usecode_machine();
 					// Possible events:
@@ -250,12 +251,14 @@ public:
 		npc_proximity = 0,
 		double_click = 1,
 		internal_exec = 2,	// Internal call via intr. 1 or 2.
-//+++		game_start = 2,		// Definitely guessing.
 		egg_proximity = 3
 		};
 					// Call desired function.
 	int call_usecode(int id, Game_object *obj, Usecode_events event)
 		{
+					// Avoid these when already execing.
+		if (call_depth && event == npc_proximity)
+			return (0);
 		Game_object *prev_item = caller_item;
 		caller_item = obj;
 		Usecode_value parm(0);	// They all seem to take 1 parm.

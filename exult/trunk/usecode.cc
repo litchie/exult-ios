@@ -33,6 +33,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objs.h"
 #include "vec.h"
 #include "SDL.h"
+#include "tqueue.h"
+
+/*
+ *	A class for executing usecode at a scheduled time:
+ */
+class Scheduled_usecode : public Time_sensitive
+	{
+	Usecode_value objval;		// The itemref.
+	Usecode_value arrval;		// Array of code to execute.
+public:
+	Scheduled_usecode(Usecode_value& oval, Usecode_value& aval)
+		: objval(oval), arrval(aval)
+		{  }
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
+ *	Execute an array of usecode.
+ */
+
+void Scheduled_usecode::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata			// ->usecode machine.
+	)
+	{
+	Usecode_machine *usecode = (Usecode_machine *) udata;
+	usecode->exec_array(objval, arrval);
+	delete this;			// Hope this is safe.
+	}
 
 /*
  *	Get array size.
@@ -553,9 +584,12 @@ Usecode_value Usecode_machine::get_party
 	(
 	)
 	{
-	Usecode_value arr(party_count, 0);
-	int num_added = 0;
-	for (int i = 0; i < PARTY_MAX && num_added < party_count; i++)
+	Usecode_value arr(1 + party_count, 0);
+					// Add avatar.
+	Usecode_value aval((long) gwin->get_main_actor());
+	arr.put_elem(0, aval);	
+	int num_added = 1;
+	for (int i = 0; i < PARTY_MAX && num_added < 1 + party_count; i++)
 		if (party[i] != 0)
 			{
 			Game_object *obj = gwin->get_npc(party[i]);
@@ -595,15 +629,12 @@ void Usecode_machine::item_say
 void Usecode_machine::exec_array
 	(
 	Usecode_value& objval,
-	Usecode_value& arrayval,	// Contains instructions.
-	int delay			// 10ths?  Guessing!
+	Usecode_value& arrayval		// Contains instructions.
 	)
 	{
 	Game_object *obj = get_item(objval.get_int_value());
 	if (!obj)
 		return;
-	if (delay)			//+++++Really want to queue this.
-		SDL_Delay(100*delay);
 	int cnt = arrayval.get_array_size();
 	for (int i = 0; i < cnt; i++)	// Go through instructions.
 		{
@@ -649,6 +680,7 @@ void Usecode_machine::exec_array
 			break;
 			}
 		}
+	gwin->paint();			// +++++Probably a good idea.
 	}
 
 /*
@@ -700,13 +732,17 @@ Usecode_value Usecode_machine::call_intrinsic
 		}
 	case 1:				// ??Exec (itemref, array).
 		cout << "Executing intrinsic 1\n";
-		exec_array(parms[0], parms[1], 0);
+		exec_array(parms[0], parms[1]);
 		break;
 	case 2:				// ??Exec (itemref, array, delay?)
+		{			// Delay = .10 sec.?
+		int delay = parms[2].get_int_value();
+		gwin->get_tqueue()->add(SDL_GetTicks() + 100*delay,
+			new Scheduled_usecode(parms[0], parms[1]),
+								(long) this);
 		cout << "Executing intrinsic 2\n";
-		exec_array(parms[0], parms[1], parms[2].get_int_value());
-					// 3rd parm does what?+++++
 		break;
+		}
 	case 3:				// Show NPC face.
 		show_npc_face(parms[0], parms[1]);
 		break;
@@ -1075,7 +1111,7 @@ Usecode_machine::Usecode_machine
 	(
 	istream& file,
 	Game_window *gw
-	) : string(0), gwin(gw), caller_item(0),
+	) : string(0), gwin(gw), call_depth(0), caller_item(0),
 	    stack(new Usecode_value[1024]), user_choice(0),
 	    saved_answers(0)
 	{
@@ -1139,6 +1175,7 @@ void Usecode_machine::run
 	int event			// Event (??) that caused this call.
 	)
 	{
+	call_depth++;
 	if (debug >= 0)
 		printf("Running usecode %04x with event %d\n", fun->id, event);
 	Usecode_value *save_sp = sp;	// Save TOS.
@@ -1350,8 +1387,10 @@ void Usecode_machine::run
 			}
 		case 0x2c:		// Unknown.
 			break;
-		case 0x2d:		// Set return value.
-			ret_value = pop();
+		case 0x2d:		// Set return value (SETR).
+					// But 1st takes precedence.
+			if (!set_ret_value)
+				ret_value = pop();
 			set_ret_value = 1;
 			break;
 		case 0x2e:		// Looks like a loop.
@@ -1506,6 +1545,7 @@ void Usecode_machine::run
 	answers = save_answers;
 	if (debug >= 1)
 		printf("RETurning from usecode %04x\n", fun->id);
+	call_depth--;
 	}
 
 /*
