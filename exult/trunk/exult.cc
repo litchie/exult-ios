@@ -369,7 +369,7 @@ static void Init
 	config->value("config/video/gamma/green", gg, "1.0");
 	config->value("config/video/gamma/blue", gb, "1.0");
 
-	Image_window8::set_gamma(atof(gr.data()), atof(gg.data()), atof(gb.data()));	
+	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));	
 	gwin = new Game_window(sw, sh, scaleval);
 	current_res = find_resolution(sw, sh, scaleval);
 	Audio::get_ptr();
