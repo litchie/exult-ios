@@ -20,7 +20,7 @@ LIBGLADE_INCLUDES = `pkg-config --cflags libglade-0.17`
 LIBGLADE_LIBS = `pkg-config --libs libglade-0.17`
 
 INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
-	-I$(SRC)/files -I$(SRC)/server -I$(SRC)/objs $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
+	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/server -I$(SRC)/objs $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
 
 CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO $(INCLUDES)
 
