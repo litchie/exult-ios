@@ -538,7 +538,7 @@ void Spellbook_gump::paint
 		Shape_frame *bshape = bm.get_shape();
 		bx += bshape->get_xleft();
 		int by = object_area.y - 14 + bshape->get_yabove();
-		gwin->paint_shape(x + bx, y + by, bm);
+		bm.paint_shape(x + bx, y + by);
 	}
 	gwin->set_painted();
 }

@@ -166,7 +166,7 @@ void Sign_gump::paint
 					// Get space between lines.
 	int lspace = (object_area.h - num_lines*lheight)/(num_lines + 1);
 					// Paint the gump itself.
-	gwin->paint_shape(x, y, *this);
+	paint_shape(x, y);
 	int ypos = y + object_area.y;	// Where to paint next line.
 	for (int i = 0; i < num_lines; i++)
 	{

@@ -106,7 +106,7 @@ void Yesno_gump::paint
 	)
 {
 					// Paint the gump itself.
-	gwin->paint_shape(x, y, *this);
+	paint_shape(x, y);
 					// Paint buttons.
 	yes_button->paint(gwin);
 	no_button->paint(gwin);

@@ -1124,7 +1124,7 @@ USECODE_INTRINSIC(display_map)
 					// Get coords. for centered view.
 	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
 	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
-	gwin->paint_shape(x, y, msid);
+	msid.paint_shape(x, y);
 
 	//count all sextants in party
 	Usecode_value v_357(-357), v650(650), v_359(-359);
@@ -1179,7 +1179,7 @@ USECODE_INTRINSIC(si_display_map)
 				// Get coords. for centered view.
 	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
 	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
-	gwin->paint_shape(x, y, msid);
+	msid.paint_shape(x, y);
 
 	gwin->show(1);
 	int xx, yy;

@@ -301,7 +301,7 @@ void Gump::paint
 	)
 {
 		// Paint the gump itself.
-	gwin->paint_shape(x, y, *this);
+	paint_shape(x, y);
 		
 		// Paint red "checkmark".
 	if (check_button) check_button->paint(gwin);
@@ -350,8 +350,7 @@ void Gump::paint
 					cury = 2*(++loop);
 			}
 		}
-		gwin->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy(), 
-				*obj);
+		obj->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy());
 		obj = obj->get_next();
 	}
 					// Outline selections in this gump.

@@ -1401,8 +1401,8 @@ void Wizard_eye
 			int sw = spr->get_width(), sh = spr->get_height();
 			int topx = (w - sw)/2,
 			    topy = (h - sh)/2;
-			gwin->paint_shape(topx + spr->get_xleft(),
-					topy + spr->get_yabove(), eye);
+			eye.paint_shape(topx + spr->get_xleft(),
+					topy + spr->get_yabove());
 			if (topy > 0)	// Black-fill area around sprite.
 				{
 				gwin->get_win()->fill8(0, w, topy, 0, 0);

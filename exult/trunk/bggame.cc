@@ -37,6 +37,7 @@
 #include "data/exult_bg_flx.h"
 #include "exult.h"
 #include "Configuration.h"
+#include "shapeid.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>

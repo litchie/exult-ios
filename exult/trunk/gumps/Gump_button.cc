@@ -85,7 +85,7 @@ void Gump_button::paint
 
 	int prev_frame = get_framenum();
 	set_frame(prev_frame + pushed);
-	gwin->paint_shape(x+px, y+py, *this);
+	paint_shape(x+px, y+py);
 	set_frame(prev_frame);
 
 }
