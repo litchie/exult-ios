@@ -45,7 +45,7 @@ class Jawbone_gump : public Gump {
 
  private:
 	void set_to_spot(Game_object *obj, int sx, int sy);
-	void paint_tooth(Game_window* gwin, int index);
+	void paint_tooth(int index);
 
 	bool on_tooth(int sx, int sy, int index); // is spot on tooth?
 

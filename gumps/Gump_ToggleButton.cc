@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "Gump.h"
 
-void Gump_ToggleButton::activate(Game_window *gwin)
+void Gump_ToggleButton::activate()
 {
 	set_frame(get_framenum() + 2);
 	if (get_framenum() >= 2*numselections) set_frame(0);
@@ -34,7 +34,7 @@ void Gump_ToggleButton::activate(Game_window *gwin)
 }
 
 
-void Gump_ToggleTextButton::activate(Game_window *gwin)
+void Gump_ToggleTextButton::activate()
 {
 	set_frame(get_framenum() + 1);
 	if (get_framenum() >= numselections) set_frame(0);

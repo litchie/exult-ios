@@ -42,7 +42,7 @@ public:
 		{ return 0; }		// Can't drop onto it.
 					// Paint it and its contents.
 	virtual void paint();
-	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
+	virtual Gump_button *on_button(int mx, int my);
 
 private:
 	Actor* party[9];

@@ -59,7 +59,7 @@ public:
 
 					// Paint it and its contents.
 	virtual void paint();
-	virtual void close(Game_window *gwin)
+	virtual void close()
 		{ done = 1; }
 					// Handle events:
 	virtual void mouse_down(int mx, int my);

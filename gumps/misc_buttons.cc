@@ -45,10 +45,9 @@ Checkmark_button::Checkmark_button(Gump *par, int px, int py)
 
 void Checkmark_button::activate
 	(
-	Game_window *gwin
 	)
 {
-	parent->close(gwin);
+	parent->close();
 }
 
 /*
@@ -66,7 +65,6 @@ Heart_button::Heart_button(Gump *par, int px, int py)
 
 void Heart_button::activate
 	(
-	Game_window *gwin
 	)
 {
 	gwin->get_gump_man()->add_gump(parent->get_container(), game->get_shape("gumps/statsdisplay"));
@@ -87,7 +85,6 @@ Disk_button::Disk_button(Gump *par, int px, int py)
 
 void Disk_button::activate
 	(
-	Game_window *gwin
 	)
 {
 	Gamemenu_gump *menu = new Gamemenu_gump();
@@ -112,7 +109,6 @@ Combat_button::Combat_button(Gump *par, int px, int py)
 
 void Combat_button::activate
 	(
-	Game_window *gwin
 	)
 {
 	gwin->toggle_combat();
@@ -148,7 +144,6 @@ Halo_button::Halo_button(Gump *par, int px, int py, Actor *a)
 
 void Halo_button::activate
 	(
-	Game_window *gwin
 	)
 {
 					// Want to toggle it.
@@ -186,7 +181,6 @@ Combat_mode_button::Combat_mode_button(Gump *par, int px, int py, Actor *a)
 
 void Combat_mode_button::activate
 	(
-	Game_window *gwin
 	)
 {
 					// Only Avatar gets last frame (manual)
@@ -215,7 +209,6 @@ Cstats_button::Cstats_button(Gump *par, int px, int py)
 
 void Cstats_button::activate
 	(
-	Game_window *gwin
 	)
 {
 	int cnt = ucmachine->get_party_count();

@@ -65,13 +65,13 @@ void Jawbone_gump::paint()
 	int i;	// Blame MSVC
 	for (i=0; i<9; i++)
 		if (jawbone->teeth[i])
-			paint_tooth(gwin, i);
+			paint_tooth(i);
 	for (i=17; i>8; i--)
 		if (jawbone->teeth[i])
-			paint_tooth(gwin, i);
+			paint_tooth(i);
 }
 
-void Jawbone_gump::paint_tooth(Game_window* gwin, int index)
+void Jawbone_gump::paint_tooth(int index)
 {
 	ShapeID shape(game->get_shape("gumps/tooth"), index, SF_GUMPS_VGA);
 

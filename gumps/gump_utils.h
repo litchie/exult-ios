@@ -73,7 +73,7 @@ int Do_Modal_gump(Modal_gump *, Mouse::Mouse_shapes);
  *	Show a number.
  */
 
-void Paint_num(Game_window *gwin, int num, int x, int y);
+void Paint_num(int num, int x, int y);
 
 
 /*

@@ -223,12 +223,12 @@ int Prompt_for_number
 
 void Paint_num
 	(
-	Game_window *gwin,
 	int num,
 	int x,				// Coord. of right edge of #.
 	int y				// Coord. of top of #.
 	)
 {
+	Game_window *gwin = Game_window::get_instance();
 	const int font = 2;
 	char buf[20];
   	snprintf(buf, 20, "%d", num);

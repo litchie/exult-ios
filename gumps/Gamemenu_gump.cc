@@ -56,10 +56,10 @@ public:
 		: Text_button(par, text, px, py, 108, 11)
 	{  }
 					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 };
 
-void Gamemenu_button::activate(Game_window *gwin)
+void Gamemenu_button::activate()
 {
 	if (text == loadsavetext) {
 		((Gamemenu_gump*)parent)->loadsave();
@@ -159,19 +159,19 @@ void Gamemenu_gump::paint()
 
 void Gamemenu_gump::mouse_down(int mx, int my)
 {
-	pushed = Gump::on_button(gwin, mx, my);
+	pushed = Gump::on_button(mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
 	if (!pushed)
 		for (int i=0; i<6; i++)
-			if (buttons[i] && buttons[i]->on_button(gwin, mx, my)) {
+			if (buttons[i] && buttons[i]->on_button(mx, my)) {
 				pushed = buttons[i];
 				break;
 			}
 
 	if (pushed)			// On a button?
 	{
-		pushed->push(gwin);
+		pushed->push();
 		return;
 	}
 }
@@ -180,9 +180,9 @@ void Gamemenu_gump::mouse_up(int mx, int my)
 {
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush(gwin);
-		if (pushed->on_button(gwin, mx, my))
-			((Gamemenu_button*)pushed)->activate(gwin);
+		pushed->unpush();
+		if (pushed->on_button(mx, my))
+			((Gamemenu_button*)pushed)->activate();
 		pushed = 0;
 	}
 }
