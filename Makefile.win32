@@ -228,7 +228,7 @@ wud.exe : wud.o uctools.h bgintrinsics.h siintrinsics.h
 wuc.exe : wuc.o
 	$(CXX) $(LFLAGS) -o wuc.exe wuc.o -mconsole
 
-UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o opcodes.o
+UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o ops.o
 
 ucxt.exe : $(UCXT_OBJS)
 	$(CXX) $(LFLAGS) -o ucxt.exe $(UCXT_OBJS) -mconsole
