@@ -129,6 +129,21 @@ Locator::Locator
 	win = glade_xml_get_widget(app_xml, "loc_window");
 	gtk_object_set_user_data(GTK_OBJECT(win), this);
 	draw = glade_xml_get_widget(app_xml, "loc_draw");
+					// Set up scales.
+	GtkWidget *scale = glade_xml_get_widget(app_xml, "loc_hscale");
+	hadj = gtk_range_get_adjustment(GTK_RANGE(scale));
+	scale = glade_xml_get_widget(app_xml, "loc_vscale");
+	vadj = gtk_range_get_adjustment(GTK_RANGE(scale));
+	hadj->upper = vadj->upper = c_num_chunks;
+	hadj->page_increment = vadj->page_increment = 
+		hadj->page_size = vadj->page_size = c_chunks_per_schunk;
+	gtk_signal_emit_by_name(GTK_OBJECT(hadj), "changed");
+	gtk_signal_emit_by_name(GTK_OBJECT(vadj), "changed");
+					// Set scrollbar handlers.
+	gtk_signal_connect(GTK_OBJECT(hadj), "value_changed",
+					GTK_SIGNAL_FUNC(hscrolled), this);
+	gtk_signal_connect(GTK_OBJECT(vadj), "value_changed",
+					GTK_SIGNAL_FUNC(vscrolled), this);
 	}
 
 /*
@@ -180,9 +195,17 @@ void Locator::configure
 
 void Locator::render
 	(
-	GdkRectangle *area
+	GdkRectangle *area		// 0 for whole draw area.
 	)
 	{
+	GdkRectangle all;
+	if (!area)
+		{
+		all.x = all.y = 0;
+		all.width = draw->allocation.width;
+		all.height = draw->allocation.height;
+		area = &all;
+		}
 	gdk_gc_set_clip_rectangle(drawgc, area);
 					// Background is dark blue.
 	gdk_rgb_gc_set_foreground(drawgc, 64);
@@ -203,6 +226,10 @@ void Locator::render
 					// Draw location in yellow.
 	gdk_rgb_gc_set_foreground(drawgc, (255<<16) + (255<<8));
 	gdk_draw_rectangle(draw->window, drawgc, FALSE, x, y, w, h);
+					// Put a red box around it.
+	gdk_rgb_gc_set_foreground(drawgc, (255<<16) + (64<<8) + 64);
+	gdk_draw_rectangle(draw->window, drawgc, FALSE, 
+					x - 2, y - 2, w + 4, h + 4);
 	}
 
 /*
@@ -221,9 +248,34 @@ void Locator::view_changed
 	ty = Read4(data);
 	txs = Read4(data);
 	tys = Read4(data);
-	GdkRectangle area;		// Paint new position.
-	area.x = area.y = 0;
-	area.width = draw->allocation.width;
-	area.height = draw->allocation.height;
-	render(&area);
+//	render(&area);
+					// Update scrolls.
+	gtk_adjustment_set_value(hadj, tx/c_tiles_per_chunk);
+	gtk_adjustment_set_value(vadj, ty/c_tiles_per_chunk);
 	}
+
+/*
+ *	Handle a scrollbar event.
+ */
+
+void Locator::vscrolled			// For vertical scrollbar.
+	(
+	GtkAdjustment *adj,		// The adjustment.
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	Locator *loc = (Locator *) data;
+	loc->tx = ((gint) adj->value)*c_tiles_per_chunk;
+	loc->render();	//++++Maybe wrong.  Should send msg. to Exult.
+	}
+void Locator::hscrolled			// For horizontal scrollbar.
+	(
+	GtkAdjustment *adj,		// The adjustment.
+	gpointer data			// ->Locator.
+	)
+	{
+	Locator *loc = (Locator *) data;
+	loc->ty = ((gint) adj->value)*c_tiles_per_chunk;
+	loc->render();	//++++Maybe wrong.  Should send msg. to Exult.
+	}
+
