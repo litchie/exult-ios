@@ -11,6 +11,7 @@
 	* keys.*, keyactions.*: actions for game menu, new escape function
 	* audio/Audio.*: added is_audio_enabled(), set_audio_enabled() funcs
 	* audio/Midi.cc: fixed midi conversion typo
+	* schedule.cc: fixing bake_schedule for SI
 
 2001-04-29  Christoph Reichenbach  <jameson@linuxgames.com>
 

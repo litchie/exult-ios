@@ -1873,6 +1873,8 @@ void Sew_schedule::ending
 
 /*
  *	Bake bread/pastries
+ *
+ * TODO: fix for SI tables... (specifically in Moonglow)
  */
 
 Bake_schedule::Bake_schedule(Actor *n) : Schedule(n),
@@ -1977,7 +1979,10 @@ void Bake_schedule::now_what()
 				dough->remove_this();
 				dough = 0;
 			}
-			dough = new Ireg_game_object(658, 0, 0, 0);
+			if (Game::get_game_type() == SERPENT_ISLE)
+				dough = new Ireg_game_object(863, 16, 0, 0);
+			else
+				dough = new Ireg_game_object(658, 0, 0, 0);
 			npc->set_action(new Sequence_actor_action(pact,
 				new Pickup_actor_action(dough,tablepos,250)));
 		} else {
@@ -2003,11 +2008,16 @@ void Bake_schedule::now_what()
 		char fr[2];
 		fr[0] = npc->get_dir_framenum(dir, 3);
 		fr[1] = npc->get_dir_framenum(dir, 0);
+
 		npc->set_action(new Sequence_actor_action(
 				new Frames_actor_action(fr, 2, 500),
-				new Frames_actor_action("\x01", 1, 250, dough),
+		((Game::get_game_type() == SERPENT_ISLE) ?
+				new Frames_actor_action("\x11",1,250,dough) :
+				new Frames_actor_action("\x01",1,250,dough)),
 				new Frames_actor_action(fr, 2, 500),
-				new Frames_actor_action("\x02", 1, 250, dough)
+		((Game::get_game_type() == SERPENT_ISLE) ?
+				new Frames_actor_action("\x12",1,250,dough) :
+				new Frames_actor_action("\x02",1,250,dough))
 				));
 		
 		state = remove_from_oven;
