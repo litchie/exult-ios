@@ -258,6 +258,7 @@ clean:
 	del $(OBJS) $(EXEC)
 	del expack.exe expack.o
 	del data\exult.flx  data\exult_flx.h data\exult_bg.flx data\exult_bg_flx.h data\exult_si.flx data\exult_si_flx.h
+	del content\islefaq\usecode
 
 
 install: $(EXEC)
@@ -291,6 +292,27 @@ dist:   $(EXEC)
 	copy data\si\defaultkeys.txt $(U7PATH)\Exult\sidefaultkeys.txt
 	copy SDL\README-SDL.txt $(U7PATH)\Exult
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult
+
+patch: ucc.exe
+	if not exist $(U7PATH)\patch md $(U7PATH)\patch
+	ucc -o content/islefaq/usecode content/islefaq/usecode.uc
+	copy content\islefaq\initgame.dat $(U7PATH)\patch
+	copy content\islefaq\u7ifix0d $(U7PATH)\patch
+	copy content\islefaq\u7ifix64 $(U7PATH)\patch
+	copy content\islefaq\u7ifix65 $(U7PATH)\patch
+	copy content\islefaq\u7map $(U7PATH)\patch
+	copy content\islefaq\usecode $(U7PATH)\patch
+
+patchdist: ucc.exe
+	if not exist $(U7PATH)\Exult md $(U7PATH)\Exult
+	if not exist $(U7PATH)\Exult\patch md $(U7PATH)\Exult\patch
+	ucc -o content/islefaq/usecode content/islefaq/usecode.uc
+	copy content\islefaq\initgame.dat $(U7PATH)\Exult\patch
+	copy content\islefaq\u7ifix0d $(U7PATH)\Exult\patch
+	copy content\islefaq\u7ifix64 $(U7PATH)\Exult\patch
+	copy content\islefaq\u7ifix65 $(U7PATH)\Exult\patch
+	copy content\islefaq\u7map $(U7PATH)\Exult\patch
+	copy content\islefaq\usecode $(U7PATH)\Exult\patch
 
 tools:  expack.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
