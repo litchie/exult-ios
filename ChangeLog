@@ -1,3 +1,10 @@
+2001-11-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/egg.cc (Animated_egg_object): Remove poison/sleep field
+	after one use.
+	* usecode/ucinternal.cc:  Add_party_items doesn't drop things on
+	ground for BG.
+
 2001-11-17  Tristan Tarrant <nadir@users.sourceforge.net>
 	* data/sfx_icon.shp: sfx icon from SB-X
 	* audio/Audio.*: added can_sfx() method
