@@ -348,6 +348,8 @@ int Usecode_script::exec
 				cntval = Usecode_value(cnt - 1);
 				Usecode_value& offval = code->get_elem(i + 1);
 				i += offval.get_int_value() - 1;
+				if (i < -1)	// Before start?
+					i = -1;
 				do_another = true;
 				}
 			break;
