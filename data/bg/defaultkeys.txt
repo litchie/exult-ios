@@ -5,10 +5,14 @@ Alt-KP- 	resolution_decrease
 KP+		brighter
 KP- 		darker
 Esc		close_or_menu
-right		scroll_right
-left		scroll_left
-up		scroll_up
-down		scroll_down
+right		walk_right
+left		walk_left
+up		walk_up
+down		walk_down
+Alt-right	scroll_right
+Alt-left	scroll_left
+Alt-up		scroll_up
+Alt-down	scroll_down
 home		center_screen
 
 Del		delete_selected

@@ -429,6 +429,42 @@ void ActionScrollDown(int *params)
 		gwin->view_down();
 }
 
+//  { ActionWalkLeft, 0, "Walk left", true, true, NONE },
+void ActionWalkLeft(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2);
+}
+
+//  { ActionWalkRight, 0, "Walk right", true, true, NONE },
+void ActionWalkRight(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2);
+}
+
+//  { ActionWalkUp, 0, "Walk up", true, true, NONE },
+void ActionWalkUp(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2-50);
+	gwin->start_actor(160, 50);
+}
+
+//  { ActionWalkDown, 0, "Walk down", true, true, NONE },
+void ActionWalkDown(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2+50);
+}
+
+//  { ActionStopWalking, 0, "Stop Walking", true, true, NONE },
+void ActionStopWalking(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	gwin->stop_actor();
+}
+
 //  { ActionCenter, 0, "Center screen", true, true, NONE },
 void ActionCenter(int *params)
 {
