@@ -82,6 +82,7 @@ using std::endl;
 using std::exit;
 using std::istream;
 using std::ifstream;
+using std::ios;
 using std::memcpy;
 using std::memset;
 using std::ofstream;
