@@ -371,7 +371,7 @@ inline void Sprites_effect::add_dirty
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
 		xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
 	    	yoff + (pos.ty - lp - 
-			gwin->get_scrollty())*c_tilesize).enlarge(4)));
+			gwin->get_scrollty())*c_tilesize).enlarge(12)));
 	}
 
 /*
@@ -394,14 +394,14 @@ void Sprites_effect::handle_event
 		gwin->set_all_dirty();
 		return;
 		}
-	add_dirty(frame_num - 1);	// Clear out old.
+	add_dirty(frame_num);		// Clear out old.
 	gwin->set_painted();
 	if (item)			// Following actor?
 		pos = item->get_tile();
 	xoff += deltax;			// Add deltas.
 	yoff += deltay;
-	add_dirty(frame_num);		// Want to paint new frame.
 	frame_num++;			// Next frame.
+	add_dirty(frame_num);		// Want to paint new frame.
 	sprite.set_frame(frame_num);
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
