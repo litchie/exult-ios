@@ -1740,9 +1740,9 @@ void Sew_schedule::now_what
 			spindle->remove_this();
 		if (cloth)
 			cloth->remove_this();
+		cloth = spindle = 0;
 		npc->remove_quantity(2, 654, c_any_qual, c_any_framenum);
 		npc->remove_quantity(2, 851, c_any_qual, c_any_framenum);
-		cloth = spindle = 0;
 
 		bale = npc->find_closest(653);
 		if (!bale)		// Just skip this step.
@@ -1935,6 +1935,7 @@ void Sew_schedule::now_what
 		if (!wares_table)
 			{
 			cloth->remove_this();
+			cloth = 0;
 			break;
 			}
 		Tile_coord tpos = wares_table->get_abs_tile_coord() +
@@ -1992,6 +1993,7 @@ void Sew_schedule::ending
 		if (!cloth->get_owner())
 			gwin->add_dirty(cloth);
 		cloth->remove_this();
+		cloth = 0;
 		}
 	}
 
