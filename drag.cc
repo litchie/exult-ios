@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "paths.h"
 #include "actors.h"
 
+extern bool hack_mover;
 extern Mouse *mouse;
 
 /*
@@ -106,7 +107,7 @@ int Game_window::drag
 			return (0);	// Wait for greater motion.
 		if (dragging)
 			{		// Don't want to move walls.
-			if (!dragging->is_dragable())	
+			if (!hack_mover && !dragging->is_dragable())	
 				{
 				mouse->flash_shape(Mouse::tooheavy);
 				dragging = 0;
@@ -115,7 +116,7 @@ int Game_window::drag
 			Game_object *owner = dragging->get_outermost();
 			if (owner == dragging)
 				{
-			    	if (!Fast_pathfinder_client::is_grabable(
+			    	if (!hack_mover && !Fast_pathfinder_client::is_grabable(
 					main_actor->get_abs_tile_coord(),
 					dragging->get_abs_tile_coord()))
 					{

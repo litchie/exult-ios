@@ -1,3 +1,13 @@
+2000-09-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+
+	* exult.cc, usecode.cc: location marker on map changed to yellow
+	* exult.cc, drag.cc: added 'hack-mover' cheat (can move _anything_)
+
+2000-09-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	
+	* actors.cc: fixed bug in godmode: poison/hunger do no damage in GM now
+	* bodies.cc: added/changed body shape/frames (from Jackchaos forum)
+
 2000-09-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs.cc: Explosions do damage.
