@@ -1,3 +1,10 @@
+2001-10-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucsched.cc (Usecode_script): Purge() forces halt.
+
+	* usecode/intrinsics.cc: Add moved NPC to 'nearby' list.
+	* usecode/intrinsics.cc: set_lift() should check for valid number.
+
 2001-10-23  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Makefile.*, data/bg/flx.in, data/bg/*.shp, docs/art.txt: new art
 	by Oblivious
