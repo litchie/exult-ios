@@ -37,7 +37,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Ammo_table *Ammo_info::table = 0;
 
-#include <hash_map>
+#ifdef MACOS
+  #include <hashmap.h>
+#else
+  #include <hash_map>
+#endif
 
 /*
  *	For looking up ammo entries:

@@ -25,9 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef INCL_UTILS
 #define INCL_UTILS	1
-//#include <stdio.h>
-//#include <fstream>
 #ifdef MACOS
+  #include <cstring>
   #include <iostream>
   // it is not sufficient to #include <iosfwd> here because Read1() etc.
   // call methods of class istream
@@ -62,7 +61,7 @@ struct hashstr
 struct eqstr
 {
 	bool operator()(const char* s1, const char* s2) const {
-		return strcmp(s1, s2) == 0;
+		return std::strcmp(s1, s2) == 0;
 	}
 };
 
