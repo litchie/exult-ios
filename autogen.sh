@@ -1,17 +1,17 @@
 #!/bin/sh
 
+DIE=0
+
 # Check for availability
 (autoconf --version) < /dev/null > /dev/null 2>&1 || {
-  echo
-  echo "**Error**: You must have 'autoconf' installed to compile $PKG_NAME."
+  echo "**Error**: You must have 'autoconf' installed to compile Exult."
   echo "Download the appropriate package for your distribution,"
   echo "or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
   DIE=1
 }
 
 (automake --version) < /dev/null > /dev/null 2>&1 || {
-  echo
-  echo "**Error**: You must have \utomake' installed to compile $PKG_NAME."
+  echo "**Error**: You must have 'automake' installed to compile Exult."
   echo "Get ftp://ftp.gnu.org/pub/gnu/automake-1.4.tar.gz"
   echo "(or a newer version if it is available)"
   DIE=1
@@ -19,7 +19,6 @@
 }
 # if no automake, don't bother testing for aclocal
 test -n "$NO_AUTOMAKE" || (aclocal --version) < /dev/null > /dev/null 2>&1 || {
-  echo
   echo "**Error**: Missing 'aclocal'.  The version of 'automake'"
   echo "installed doesn't appear recent enough."
   echo "Get ftp://ftp.gnu.org/pub/gnu/automake-1.4.tar.gz"
