@@ -33,6 +33,7 @@ class Locator
 	GtkWidget *win;			// Main window.
 	GtkWidget *draw;		// GTK draw area to display.
 	GdkGC *drawgc;			// For drawing in 'draw'.
+	GtkAdjustment *hadj, *vadj;	// For horiz., vert. scales.
 	int tx, ty, txs, tys, scale;	// Current Exult win. info. in tiles.
 public:
 	Locator();
@@ -40,9 +41,12 @@ public:
 	void show(bool tf);		// Show/hide.
 					// Configure when created/resized.
 	void configure(GtkWidget *widget);
-	void render(GdkRectangle *area);
+	void render(GdkRectangle *area = 0);
 					// Message from exult.
 	void view_changed(unsigned char *data, int datalen);
+					// Handle scrollbar.
+	static void vscrolled(GtkAdjustment *adj, gpointer data);
+	static void hscrolled(GtkAdjustment *adj, gpointer data);
 	};
 
 #endif
