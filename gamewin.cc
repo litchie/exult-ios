@@ -83,6 +83,9 @@ Game_window::Game_window
 	    skip_lift(16), paint_eggs(0), debug(0)
 	{
 	game_window = this;		// Set static ->.
+
+	for (int i=0; i<5; i++)
+		extra_fonts[i] = NULL;
 	
 	set_window_size(width, height, scale);
 

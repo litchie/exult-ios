@@ -457,8 +457,13 @@ bool Game_window::setup_siintro_fonts ()
 
 Shape_frame *Game_window::font_get_shape (int fontnum, int framenum)
 {
-	if (fontnum >= EXTRA_FONTS)
+	if (fontnum >= EXTRA_FONTS) {
+#if DEBUG
+		if (!extra_fonts[fontnum-EXTRA_FONTS])
+			cerr << "FATAL! Font " << fontnum << " not loaded!" << endl;
+#endif
 		return extra_fonts[fontnum-EXTRA_FONTS]->get_frame (framenum);
+	}
 	
 	return fonts.get_shape(fontnum, framenum);
 }
