@@ -323,4 +323,8 @@ public:
 	void link_party();		// Set party's id's.
 	};
 
+#if USECODE_DEBUGGER
+extern	void	initialise_usecode_debugger(void);
+#endif
+
 #endif	/* INCL_USECODE */
