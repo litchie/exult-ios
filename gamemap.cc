@@ -942,8 +942,8 @@ void Game_map::read_ireg_objects
 					quality &= 0x7f;
 				}
 			else if (info.has_quality_flags())
-				{	// +++Shouldn't it = Get_quality_flags?
-				oflags |= Get_quality_flags(quality);
+				{	// Use those flags instead of deflt.
+				oflags = Get_quality_flags(quality);
 				quality = 0;
 				}
 			}
