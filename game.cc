@@ -61,6 +61,8 @@ static char av_name[17] = "";
 static int av_sex = -1;
 static int av_skin = -1;
 
+std::string Game::gametitle = "";
+
 Game::Game() : menushapes(MAINSHP_FLX)
 {	
 	jive = false;
@@ -128,7 +130,6 @@ Game *Game::create_game(Exult_Game mygame)
 {
 	// Choose the startup path
 	string data_directory, keyfilename;
-	string gametitle;
 	
 	switch(mygame) {
 	case BLACK_GATE:
@@ -183,19 +184,7 @@ Game *Game::create_game(Exult_Game mygame)
 		game = 0;
 	}
 
-	// initialize keybinder
-	keybinder = new KeyBinder();
-	d = "config/disk/game/"+gametitle+"/keys";
-	config->value(d.c_str(),keyfilename,"(default)");
-	if (keyfilename == "(default)") {
-	  config->set(d.c_str(), keyfilename, true);
-	  keybinder->LoadDefaults();
-	} else {
-	  keybinder->LoadFromFile(keyfilename.c_str());
-	}
-
 	delete[] static_identity;
-	Audio::get_ptr()->Init_sfx();
 	return game;
 }
 

@@ -84,7 +84,7 @@ using std::vector;
 using std::snprintf;
 
 Configuration *config;
-KeyBinder *keybinder;
+KeyBinder *keybinder = 0;
 Cheat cheat;
 
 /*
