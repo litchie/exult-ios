@@ -106,10 +106,10 @@ C_EXPORT void on_filelist_tree_select_row       (GtkCTree        *ctree,
 }                                     
 
 C_EXPORT void
-on_open_static_activate                (GtkMenuItem     *menuitem,
+on_open_game_activate                  (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ExultStudio::get_instance()->choose_static_path();
+	ExultStudio::get_instance()->choose_game_path();
 }
 
 C_EXPORT void
@@ -188,7 +188,7 @@ on_edit_terrain_button_toggled		(GtkToggleButton *button,
 
 void on_choose_directory               (gchar *dir)
 {
-	ExultStudio::get_instance()->set_static_path(dir);
+	ExultStudio::get_instance()->set_game_path(dir);
 }
 
 /*
@@ -269,12 +269,8 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 			}
 
 	string dirstr, datastr;
-	if (game)			// Game given?
+	if (!xmldir)
 		{
-		string d("config/disk/game/");
-		d += game; d += "/path";
-		config->value(d.c_str(), dirstr, ".");
-		gamedir = dirstr.c_str();
 		config->value("config/disk/data_path", datastr, EXULT_DATADIR);
 		xmldir = datastr.c_str();
 		}
@@ -294,12 +290,28 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	// More setting up...
 					// Connect signals automagically.
 	glade_xml_signal_autoconnect(app_xml);
+	int w, h;			// Get main window dims.
+	config->value("config/estudio/main/width", w, 0);
+	config->value("config/estudio/main/height", h, 0);
+	if (w > 0 && h > 0)
+		gtk_window_set_default_size(GTK_WINDOW(app), w, h);
 	gtk_widget_show( app );
+	if (game)			// Game given?
+		{
+		string d("config/disk/game/");
+		d += game; d += "/path";
+		config->value(d.c_str(), dirstr, "");
+		if (dirstr == "")
+			{
+			cerr << "Game '" << game << 
+				"' path not found in config. file" << endl;
+			exit(1);
+			}
+		gamedir = dirstr.c_str();
+		}
 	if (gamedir)			// Game directory given?
 		{
-		strcpy(path, gamedir);
-		strcat(path, "/static/");// Set up path to static.
-		set_static_path(path);
+		set_game_path(gamedir);
 		}
 #ifdef WIN32
     OleInitialize(NULL);
@@ -311,6 +323,10 @@ ExultStudio::~ExultStudio()
 #ifdef WIN32
     OleUninitialize();
 #endif
+					// Store main window size.
+	int w = app->allocation.width, h = app->allocation.height;
+	config->set("config/estudio/main/width", w, true);
+	config->set("config/estudio/main/height", h, true);
 	if(names) {
 		int num_shapes = vgafile->get_ifile()->get_num_shapes();
 		for (int i = 0; i < num_shapes; i++)
@@ -359,6 +375,8 @@ ExultStudio::~ExultStudio()
 #endif
 	g_free(static_path);
 	self = 0;
+	delete config;
+	config = 0;
 }
 
 /*
@@ -422,9 +440,9 @@ Shape_group_file *ExultStudio::get_cur_groups
 	}
 
 /*
- *	Choose 'static'.
+ *	Choose game directory.
  */
-void ExultStudio::choose_static_path()
+void ExultStudio::choose_game_path()
 {
 	size_t	bufsize=128;
 	char * cwd(new char[bufsize]);
@@ -443,10 +461,12 @@ void ExultStudio::choose_static_path()
 			return;
 			}
 		}
-	GtkWidget *dirbrowser = xmms_create_dir_browser("Select static directory",
-							cwd, GTK_SELECTION_SINGLE,
-							on_choose_directory);
-	gtk_signal_connect(GTK_OBJECT(dirbrowser), "destroy", GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dirbrowser);
+	GtkWidget *dirbrowser = xmms_create_dir_browser(
+					"Select game directory",
+					cwd, GTK_SELECTION_SINGLE,
+					on_choose_directory);
+	gtk_signal_connect(GTK_OBJECT(dirbrowser), "destroy", 
+		GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dirbrowser);
         gtk_window_set_transient_for(GTK_WINDOW(dirbrowser), GTK_WINDOW(app));
 	gtk_widget_show (dirbrowser);
 	delete [] cwd;	// Prevent leakage
@@ -540,13 +560,14 @@ GtkCTreeNode *Create_subtree( GtkCTree *ctree,
 	return parent;
 }
 
-void ExultStudio::set_static_path(const char *path)
+void ExultStudio::set_game_path(const char *gamepath)
 {
 	if(static_path)
 		g_free(static_path);
-	static_path = g_strdup(path);	// Set up palette for showing shapes.
+					// Set up path to static.
+	static_path = g_strdup_printf("%s/static/", gamepath);
 	add_system_path("<STATIC>", static_path);
-	char *patch_path = g_strdup_printf("%s../%s", static_path, "patch");
+	char *patch_path = g_strdup_printf("%s/patch", gamepath);
 	add_system_path("<PATCH>", patch_path);
 	g_free(patch_path);
 	delete palbuf;			// Delete old.
