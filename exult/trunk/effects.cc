@@ -417,7 +417,7 @@ Storm_effect::~Storm_effect
 Cloud::Cloud
 	(
 	short dx, short dy		// Deltas for movement.
-	) : count(-1), deltax(dx), deltay(dy), wx(0), wy(0), frame(0)
+	) : frame(0), wx(0), wy(0), deltax(dx), deltay(dy), count(-1)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Get abs. values.
@@ -540,7 +540,6 @@ Clouds_effect::Clouds_effect
 	int delay			// In msecs.
 	) : Weather_effect(duration, delay)
 	{
-	Game_window *gwin = Game_window::get_game_window();
 	num_clouds = 2 + rand()%5;	// Pick #.
 	clouds = new Cloud *[num_clouds];
 					// Figure wind direction.
