@@ -325,6 +325,9 @@ int Egg_object::is_active
 		}
 	case party_near:
 	case avatar_near:		// New tile is in, old is out.
+		if (obj != gwin->get_main_actor() &&
+		    (cri != party_near || obj->get_party_id() < 0))
+			return 0;
 		if (type == teleport)	// Teleports:  Any tile, exact lift.
 			return absdeltaz == 0 && area.has_point(tx, ty);
 		if (!((absdeltaz <= 1 || 
@@ -335,8 +338,7 @@ int Egg_object::is_active
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty)))
 			return 0;
-		return (obj == gwin->get_main_actor() ||
-		    (cri == party_near && obj->get_party_id() >= 0));
+		return 1;
 	case avatar_far:		// New tile is outside, old is inside.
 		{
 		if (obj != gwin->get_main_actor() || !area.has_point(tx, ty))

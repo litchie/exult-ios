@@ -838,7 +838,8 @@ void Rain_effect::handle_event
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	if (!gwin->is_main_actor_inside())
+	if (!gwin->is_main_actor_inside() &&
+	    !gwin->get_gump_man()->showing_gumps())
 		{			// Don't show rain inside buildings!
 		Image_window8 *win = gwin->get_win();
 		int w = win->get_width(), h = win->get_height();
