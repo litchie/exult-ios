@@ -63,6 +63,28 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	midi_device->start_track(MIDITMPFILE,repeat);
 }
 
+void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
+{
+  #if DEBUG
+        cout << "Audio subsystem request: Music track # " << num << " in file "<< fname << endl;
+  #endif
+
+	if (!midi_device || !fname)
+	        return;
+
+#ifdef WIN32
+	//stop track before writing to temp. file
+	midi_device->stop_track();
+#endif
+	
+	XMIDI		midfile(fname);
+	
+	if(!midfile.retrieve(num, MIDITMPFILE))
+	        return;
+	
+	midi_device->start_track(MIDITMPFILE,repeat);
+}
+
 void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
 {
 	if(!midi_device)
@@ -71,6 +93,14 @@ void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
 		return;	// Already playing it
 	current_track=num;
 	start_track(num,repeat,bank);
+}
+
+void	MyMidiPlayer::start_music(const char *fname,int num,bool repeat)
+{
+	if(!midi_device || !fname)
+		return;
+	current_track=-1;
+	start_track(fname,num,repeat);
 }
 
 bool	MyMidiPlayer::add_midi_bank(const char *bankname)
