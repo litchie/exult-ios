@@ -1,0 +1,48 @@
+/*
+Copyright (C) 1998  Jeffrey S. Freedman
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+#ifndef FLAGS_H
+#define FLAGS_H
+
+
+namespace  Obj_flags
+{
+	enum {		// Bit #'s of flags:
+		invisible = 0,
+		asleep = 1,
+		charmed = 2,
+		cursed = 3,
+		paralyzed = 7,
+		poisoned = 8,
+		protection = 9,
+		on_moving_barge = 10,	// ??Guessing.
+		okay_to_take = 11,	// Okay to take??
+		tremor = 12,		// ??Earthquake??
+		dancing = 15,		// ??Not sure.
+		dont_render = 16,	// Completely invisible.
+		okay_to_move = 18,	// ??Guess: for Usecode-created items.
+		okay_to_land = 21,	// Used for flying-carpet.
+		confused = 25,		// ??Guessing.
+		in_motion = 26,		// ??Guessing (cart, boat)??
+		met = 28,			// Has the npc been met
+		// Flags > 31
+		petra = 35			// Guess
+	};
+};
+
+#endif
