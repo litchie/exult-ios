@@ -30,8 +30,8 @@
 </project>
 <project>
 	<description>
-		Implement Video Options menu with the following options: resolution, scaling
-		engine, fullscreen, RGB gamma correction sliders
+		Finish up implementation of Video Options menu with RGB gamma 
+		correction sliders
 	</description>
 	<difficulty>
 		Medium
@@ -72,17 +72,6 @@
 	</difficulty>
 	<owner>
 		Jeff Freedman
-	</owner>
-</project>
-<project>
-	<description>
-		Synchronize the BG intro
-	</description>
-	<difficulty>
-		Easy
-	</difficulty>
-	<owner>
-		Nobody
 	</owner>
 </project>
 <project>
