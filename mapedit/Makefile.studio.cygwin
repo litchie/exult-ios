@@ -1,0 +1,38 @@
+SRC=..
+VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit
+
+# If this doesn't work, insert output of 'gtk-config --cflags' manually
+GTK_INCLUDES = `gtk-config --cflags`
+# If this doesn't work, insert output of 'gtk-config --libs' manually
+GTK_LIBS = `gtk-config --libs`
+
+# If this doesn't work, insert output of 'libglade-config --cflags' manually
+LIBGLADE_INCLUDES = `libglade-config --cflags`
+# If this doesn't work, insert output of 'libglade-config --libs' manually
+LIBGLADE_LIBS = `libglade-config --libs`
+
+INCLUDES = -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
+	-I$(SRC)/files $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
+
+CPPFLAGS = -mno-cygwin -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 $(INCLUDES)
+
+CXXFLAGS = -mno-cygwin -O2 -include mingw_kludges
+
+CXX=g++
+
+LFLAGS=-mno-cygwin -mwindows
+LIBS=-lmingw32 $(GTK_LIBS) $(LIBGLADE_LIBS)
+
+MAPEDIT_OBJS=dirbrowser.o studio.o exult_studio.o objbrowse.o shapelst.o \
+	paledit.o
+
+FILES_OBJS=Flat.o Flex.o Table.o IFF.o U7file.o utils.o listfiles.o
+
+IMAGEWIN_OBJS=ibuf8.o imagebuf.o
+
+SHAPES_OBJS=font.o fontvga.o items.o shapeinf.o shapevga.o u7drag.o vgafile.o
+
+OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS)
+
+exult_studio.exe: $(OBJS)
+	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
