@@ -1471,9 +1471,8 @@ int Game_object::compare
 		return 1;		// GTE in all dimensions.
 #if 1	/* Seems to work so far... */
 					// Experiment to fix tapestries in
-					//   Fawn:
-	if (xover && yover && zover && inf1.tz == inf2.tz &&
-	    Game::get_game_type() == SERPENT_ISLE)
+					//   Fawn, LB's castle:
+	if (xover && yover && zover && inf1.tz == inf2.tz)
 		{
 		if (!xcmp || !ycmp)	// Inside N-S wall?  Take shorter.
 			return -zcmp;
@@ -1493,13 +1492,12 @@ int Game_object::compare
 		else			// See if X and Z dirs. agree.
 			if (xcmp == zcmp)
 				return xcmp;
-#if 0 /* ++++The following messes up N. Trinsic gate when it's raised. */
-// Maybe we should use the 'occlude.dat' info here... 
+#if 1 /* Woohoo!  Seems to work without messing up N. Trinsic gate. */
 					// Experiment:  Fixes Trinsic mayor
 					//   statue-through-roof.
-		else if (inf1.ztop/5 < inf2.zbot/5)
+		else if (inf1.ztop/5 < inf2.zbot/5 && inf2.info.occludes())
 			return -1;	// A floor above/below.
-		else if (inf2.ztop/5 < inf1.zbot/5)
+		else if (inf2.ztop/5 < inf1.zbot/5 && inf1.info.occludes())
 			return 1;
 #endif
 		else
