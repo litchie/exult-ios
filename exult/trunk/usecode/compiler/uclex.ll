@@ -151,6 +151,7 @@ response	return RESPONSE;
 event		return EVENT;
 gflags		return FLAG;
 item		return ITEM;
+goto		return GOTO;
 
 "&&"		return AND;
 "||"		return OR;
@@ -170,7 +171,7 @@ item		return ITEM;
 			yylval.intval = atoi(yytext);
 			return INT_LITERAL;
 			}
-0x[0-9a-f]+		{
+0x[0-9a-fA-F]+		{
 			yylval.intval = strtol(yytext + 2, 0, 16);
 			return INT_LITERAL;
 			}

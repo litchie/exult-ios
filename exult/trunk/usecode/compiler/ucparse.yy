@@ -70,7 +70,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 /*
  *	Keywords:
  */
-%token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN BREAK
+%token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN BREAK GOTO
 %token VAR INT CONST STRING
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE
 
@@ -108,6 +108,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 %type <stmt> statement_block return_statement function_call_statement
 %type <stmt> array_loop_statement var_decl var_decl_list declaration
 %type <stmt> break_statement converse_statement
+%type <stmt> label_statement goto_statement
 %type <block> statement_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list
@@ -142,10 +143,10 @@ function:
 
 					/* Opt_int assigns function #. */
 function_proto:
-	IDENTIFIER opt_int '(' opt_identifier_list ')'
+	opt_var IDENTIFIER opt_int '(' opt_identifier_list ')'
 		{
-		$$ = new Uc_function_symbol($1, $2, *$4);
-		delete $4;		// A copy was made.
+		$$ = new Uc_function_symbol($2, $3, *$5);
+		delete $5;		// A copy was made.
 		}
 	;
 
@@ -186,6 +187,8 @@ statement:
 	| statement_block
 	| converse_statement
 	| break_statement
+	| label_statement
+	| goto_statement
 	| SAY  '(' opt_expression_list ')' ';'
 		{ $$ = new Uc_say_statement($3); }
 	| MESSAGE '(' opt_expression_list ')' ';'
@@ -364,6 +367,29 @@ break_statement:
 		{ $$ = new Uc_break_statement(); }
 	;
 
+label_statement:
+	IDENTIFIER ':'
+		{
+			Uc_label *label = function->search_label($1);
+			if (label) {
+				char buf[150];
+				sprintf(buf, "duplicate label: '%s'", $1);
+				yyerror(buf);
+				$$ = 0;
+			}
+			else {
+				label = new Uc_label($1);
+				function->add_label(label);
+				$$ = new Uc_label_statement(label);
+			}
+		}
+	;
+
+goto_statement:
+	GOTO IDENTIFIER
+		{ $$ = new Uc_goto_statement($2); }
+	;
+
 expression:
 	primary
 		{ $$ = $1; }
@@ -470,13 +496,18 @@ opt_identifier_list:
 	;
 
 identifier_list:
-	identifier_list ',' IDENTIFIER
-		{ $1->push_back($3); }
-	| IDENTIFIER
+	identifier_list ',' opt_var IDENTIFIER
+		{ $1->push_back($4); }
+	| opt_var IDENTIFIER
 		{
 		$$ = new std::vector<char *>;
-		$$->push_back($1);
+		$$->push_back($2);
 		}
+	;
+
+opt_var:
+	VAR
+	|
 	;
 
 declared_var_value:

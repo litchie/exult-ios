@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_UCFUN
 
 #include "ucsym.h"
+#include "uclabel.h"
 
 class Uc_statement;
 #ifndef ALPHA_LINUX_CXX
@@ -51,9 +52,12 @@ class Uc_function
 					//   by -1's.
 					// Links to called functions:
 	std::vector<Uc_function_symbol *> links;
+	std::map<std::string, Uc_label *> labels;
 	char *text_data;		// All strings.
 	int text_data_size;
 	Uc_statement *statement;	// Statement(s) in function.
+
+	int reloffset; // relative offset of the code being generated
 public:
 	Uc_function(Uc_function_symbol *p);
 	~Uc_function();
@@ -65,6 +69,8 @@ public:
 	static void set_intrinsics(Intrinsic_type ty);
 	void set_statement(Uc_statement *s)
 		{ statement = s; }
+	void adjust_reloffset(int diff) { reloffset += diff; }
+	int get_reloffset() const { return reloffset; }
 	void push_scope()		// Start a new scope.
 		{ cur_scope = cur_scope->add_scope(); }
 	void pop_scope()		// End scope.
@@ -92,6 +98,9 @@ public:
 	static Uc_symbol *add_global_int_const_symbol(char *nm, int val);
 	int add_string(char *text);
 					// Start/end loop.
+	void add_label(Uc_label* l) { labels[l->get_name()] = l; }
+	Uc_label *search_label(char *nm);
+
 	void start_breakable(Uc_statement *s);
 	void end_breakable(Uc_statement *s, vector<char>& stmt_code);
 					// Store 'break' location.
@@ -101,6 +110,7 @@ public:
 					//   been deleted!!!
 					// Link external function.
 	int link(Uc_function_symbol *fun);
+	void link_labels(std::vector<char>& code);
 	void gen(std::ostream& out);		// Generate Usecode.
 	};
 
