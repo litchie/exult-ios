@@ -18,6 +18,11 @@ will now produce acceptable MIDI music. Enjoy.
 As before, none of the game's own instrument sets are loaded. We're still
 working on that.
 
+Windows
+-------
+Exult now runs in Windows! See the README.win32 file for more information.
+
+
 =================================================================================
 ** NEW for 0.20 **
 
