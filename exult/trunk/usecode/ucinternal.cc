@@ -1535,19 +1535,19 @@ int Usecode_internal::run
 				user_choice = "";
 			int cnt = Read2(ip);	// # strings.
 			offset = (short) Read2(ip);
-			while (cnt--)
+			bool matched = false;
+			while (!matched && cnt-- > 0)
 				{
 				Usecode_value s = pop();
 				const char *str = s.get_str_value();
 				if (!user_choice||!*user_choice)
-					{
-					cnt=-1;
 					break;
-					}
 				if (str && strcmp(str, user_choice) == 0)
-					break;
+					matched = true;
 				}
-			if (cnt == -1)	// Jump if no match.
+			while (cnt-- > 0)	// Pop rest of stack.
+				pop();
+			if (!matched)		// Jump if no match.
 				ip += offset;
 			}
 			break;
