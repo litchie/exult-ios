@@ -1,5 +1,14 @@
 2000-11-13  Tristan Tarrant <nadir@users.sourceforge.net>
 
+	* bggame.cc: Load endgame fonts using Font class
+	* sigame.cc: Likewise for intro
+	* font.cc: Handle fonts coming from IFF files
+	* gametxt.cc, gamewin.h: get rid of setup_endgame_fonts()
+	* fnames.h: Get rid of some _FONT definitions
+	* TODO: updated a bit
+
+2000-11-13  Tristan Tarrant <nadir@users.sourceforge.net>
+
 	* configure.in: make version 0.90alpha1
 	* browser.cc: use new Font class
 

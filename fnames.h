@@ -68,14 +68,7 @@
 #define AMMO		"<STATIC>/ammo.dat"
 #define PAPERDOL	"<STATIC>/paperdol.vga"
 
-#define EXTRA_FONTS     32
-#define ENDGAME_FONT1	(EXTRA_FONTS)
-#define ENDGAME_FONT2	(EXTRA_FONTS+1)
-#define ENDGAME_FONT3	(EXTRA_FONTS+2)
-#define ENDGAME_FONT4	(EXTRA_FONTS+3)
-#define MAINSHP_FONT1	(EXTRA_FONTS+4)
-#define SIINTRO_FONT1	(EXTRA_FONTS+5)
-#define NUM_FONTS	(SIINTRO_FONT1+1)
+#define NUM_FONTS	(20)
 
 #endif
 
