@@ -1,3 +1,8 @@
+2000-05-18  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Save/restore working as of last night.
+	* Have Avatar 'run' when shift key is down.
+
 2000-05-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode.cc: defined __STRING if not yet defined (e.g. in mingw32)
 	* configure.in: added flic library to windows section
