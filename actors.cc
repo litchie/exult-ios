@@ -44,6 +44,8 @@ Actor::Actor
 	next = prev = this;
 	set_default_frames();
 	name = nm == 0 ? 0 : strdup(nm);
+	for (int i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
+		properties[i] = 0;
 	}
 
 /*
