@@ -3947,6 +3947,7 @@ void Npc_actor::activate
 		return;
 					// Converse, etc.
 	Actor::activate(event);
+#if 0	/* +++Sometimes causes former companions to wander off. */
 	//++++++ This might no longer be needed.  Need to test.++++++ (jsf)
 					// Want to get BG actors from start
 					//   to their regular schedules:
@@ -3961,6 +3962,7 @@ void Npc_actor::activate
 	cout << "Setting '" << get_name() << "' to 1st schedule" << endl;
 					// Maybe a delay here?  Okay for now.
 	update_schedule(gclock->get_hour()/3);
+#endif
 	}
 
 /*
