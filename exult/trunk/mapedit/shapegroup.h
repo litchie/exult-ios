@@ -67,7 +67,10 @@ public:
 		{ return groups[i]; }
 	void add(Shape_group *grp)	// Add a new group.
 		{ groups.push_back(grp); modified = true; }
-	void remove(int index);		// Remove and delete group.
+	void insert(Shape_group *grp, int i)
+		{ groups.insert(groups.begin() + i, grp); modified = true; }
+					// Remove and delete group.
+	void remove(int index, bool del = true);
 	void write();			// Write out (to 'patch' directory).
 	};
 

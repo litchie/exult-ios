@@ -125,6 +125,7 @@ public:
 	void setup_group_controls();
 	void add_group();
 	void del_group();
+	void move_group(int from_row, int to_row);
 					// Objects:
 	void open_obj_window(unsigned char *data, int datalen);
 	void close_obj_window();

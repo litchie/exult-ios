@@ -110,12 +110,16 @@ Shape_group_file::~Shape_group_file
 
 void Shape_group_file::remove
 	(
-	int index
+	int index,
+	bool del			// True to delete the group.
 	)
 	{
+	modified = true;
 	assert(index >= 0 && index < groups.size());
-	delete groups[index];
+	Shape_group *grp = groups[index];
 	groups.erase(groups.begin() + index);
+	if (del)
+		delete grp;
 	}
 
 /*
@@ -194,11 +198,14 @@ on_groups_new_name_key_press		(GtkEntry	*entry,
 	return FALSE;			// Let parent handle it.
 }
 
+/*
+ *	Groups list signals:
+ */
 C_EXPORT gboolean
 on_group_list_select_row		(GtkCList	*clist,
 					 gint		row,
 					 gint		column,
-					 GdkEventKey	*event,
+					 GdkEventButton	*event,
 					 gpointer	 user_data)
 {
 	ExultStudio::get_instance()->setup_group_controls();
@@ -208,10 +215,33 @@ C_EXPORT gboolean
 on_group_list_unselect_row		(GtkCList	*clist,
 					 gint		row,
 					 gint		column,
-					 GdkEventKey	*event,
+					 GdkEventButton	*event,
 					 gpointer	 user_data)
 {
 	ExultStudio::get_instance()->setup_group_controls();
+}
+
+C_EXPORT void
+on_group_list_row_move			(GtkCList	*clist,
+					 gint		src_row,
+					 gint		dest_row,
+					 gpointer	 user_data)
+{
+	ExultStudio::get_instance()->move_group(src_row, dest_row);
+}
+
+C_EXPORT gboolean
+on_group_list_button_press_event	(GtkCList	*clist,
+					 GdkEventButton	*event,
+					 gpointer	 user_data)
+{
+	if (event->type == GDK_2BUTTON_PRESS)
+		{
+		cout << "Double-clicked" << endl;
+		//++++++++++++
+		return true;
+		}
+	return false;
 }
 
 /*
@@ -242,6 +272,8 @@ void ExultStudio::setup_groups
 		g_free(nm0);
 		}
 	gtk_clist_thaw(clist);
+					// Enable reordering.
+	gtk_clist_set_reorderable(clist, true);
 	setup_group_controls();		// Enable/disable the controls.
 	}
 
@@ -253,23 +285,24 @@ void ExultStudio::setup_group_controls
 	(
 	)
 	{
+	set_visible("groups_frame", true);
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
 	GList *list = clist->selection; 
 	if (list)
 		{
 		int row = (int) list->data;
-		set_sensitive("groups_open", true);
+//		set_sensitive("groups_open", true);
 		set_sensitive("groups_del", true);
-		set_sensitive("groups_up_arrow", row > 0);
-		set_sensitive("groups_down_arrow", row < clist->rows);
+//		set_sensitive("groups_up_arrow", row > 0);
+//		set_sensitive("groups_down_arrow", row < clist->rows);
 		}
 	else
 		{
-		set_sensitive("groups_open", false);
+//		set_sensitive("groups_open", false);
 		set_sensitive("groups_del", false);
-		set_sensitive("groups_up_arrow", false);
-		set_sensitive("groups_down_arrow", false);
+//		set_sensitive("groups_up_arrow", false);
+//		set_sensitive("groups_down_arrow", false);
 		}
 	}
 
@@ -281,6 +314,8 @@ void ExultStudio::add_group
 	(
 	)
 	{
+	if (!groups)
+		return;
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
 	char *nm = get_text_entry("groups_new_name");
@@ -299,4 +334,24 @@ void ExultStudio::del_group
 //	GtkCList *clist = GTK_CLIST(
 //				glade_xml_get_widget(app_xml, "group_list"));
 	//++++++++++
+	}
+
+/*
+ *	Move a group in the list.
+ */
+
+void ExultStudio::move_group
+	(
+	int src_row,
+	int dest_row
+	)
+	{
+	if (!groups)
+		return;
+	GtkCList *clist = GTK_CLIST(
+				glade_xml_get_widget(app_xml, "group_list"));
+//	cout << "Row " << src_row << " moved to row " << dest_row << endl;
+	Shape_group *grp = groups->get(src_row);
+	groups->remove(src_row, false);	// Remove from old pos.
+	groups->insert(grp, dest_row);	// Put into new spot.
 	}
