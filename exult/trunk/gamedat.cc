@@ -51,6 +51,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gump_utils.h"
 #include "game.h"
 #include "Flex.h"
+#include "databuf.h"
 
 using std::cerr;
 using std::cout;
@@ -202,6 +203,24 @@ static long Savefile
 		throw file_read_exception(fname);
 	return len + 13;		// Include filename.
 	}
+
+static long SavefileFromDataSource(
+	ostream& out,		// write here
+	DataSource& source,	// read from here
+	const char *fname	// store data using this filename
+)
+{
+	long len = source.getSize();
+	char namebuf[13];
+	memset(namebuf, 0, sizeof(namebuf));
+	strncpy(namebuf, fname, sizeof(namebuf));
+	out.write(namebuf, sizeof(namebuf));
+	char *buf = new char[len];
+	source.read(buf, len);
+	out.write(buf, len);
+	delete [] buf;
+	return len + 13;
+}
 
 /*
  *	Save 'gamedat' into a given file.
