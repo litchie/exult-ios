@@ -99,11 +99,15 @@ Actor::Actor
 					// Get tile #'s.
 	int tilex = locx & 0xf;
 	int tiley = locy & 0xf;
+	set_shape_pos(tilex, tiley);
 	Chunk_object_list *olist = gwin->get_objects(scx + cx, scy + cy);
 					// Put into chunk list.
 	if (!is_dead_npc())
+		olist->add(this);
+#if 0	/* +++Old way */
 		Game_object::move(
 			0, scx + cx, scy + cy, olist, tilex, tiley, -1, -1);
+#endif
 	ready_best_weapon();		// Get best weapon in hand.
 #if 0
 cout << i << " Creating " << namebuf << ", shape = " << 

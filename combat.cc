@@ -33,24 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #include "effects.h"
 
-#if 0
-/*
- *	Find monsters in given chunk.
- */
-
-void Combat_schedule::find_monsters
-	(
-	Chunk_object_list *chunk
-	)
-	{
-	const int maxdist = 20;		// Max distance in tiles.
-	for (Npc_actor *each = chunk->get_npcs(); each; 
-						each = each->get_next())
-		if (npc->distance(each) < maxdist && each->is_monster())
-			opponents.append(each);
-	}
-#endif
-
 /*
  *	Find nearby opponents in the 9 surrounding chunks.
  */
