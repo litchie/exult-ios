@@ -958,6 +958,23 @@ int Actor::move_aside
 	}
 
 /*
+ *	Get frame if rotated 1, 2, or 3 quadrants clockwise.
+ */
+
+int Actor::get_rotated_frame
+	(
+	int quads			// 1=90, 2=180, 3=270.
+	)
+	{
+	int curframe = get_framenum();
+					// Bit 4=rotate180, 5=rotate90.
+	int curdir = 2*((curframe>>4)&1) + ((curframe>>5)&1);
+	int newdir = (curdir + quads)%4;
+					// Convert to 8-value dir & get frame.
+	return get_dir_framenum(2*newdir, curframe);
+	}
+
+/*
  *	Get total value of armor being worn.
  */
 
