@@ -45,6 +45,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include <iomanip>
 #include "ucsched.h"
+#include "chunks.h"
 
 #ifdef XWIN
 #include <signal.h>

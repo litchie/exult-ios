@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "items.h"
 #include "egg.h"
+#include "chunks.h"
 #include "bodies.h"
 #include "Audio.h"
 #include "npctime.h"
