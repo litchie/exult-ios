@@ -1,4 +1,4 @@
-# Exult makefile for use in Windows with mingw using gcc 3.1
+# Exult makefile for use in Windows with mingw using gcc 3.2
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
@@ -40,7 +40,7 @@ CPPFLAGS=-DVERSION=\"0.99.2cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data\
 	$(SDL_CFLAGS) -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
-CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DNEED_SNPRINTF_ONLY -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -finline-limit-1000
+CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DNEED_SNPRINTF_ONLY -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM
 CXX=g++
 
 LFLAGS=-mwindows
