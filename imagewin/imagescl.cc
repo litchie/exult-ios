@@ -108,7 +108,7 @@ class Manip8to565 : public Manip8to16
 	{
 public:
 	Manip8to565(SDL_Color *c) : Manip8to16(c, 0)
-		{  }
+	{  }
 	uint16 rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{ return ((r>>3)<<11)|((g>>2)<<5)|(b>>3); }
@@ -253,6 +253,75 @@ void Image_window::show_scaled8to32_2xSaI
 	Manip8to32 manip(surface->format->palette->colors,
 						scaled_surface->format);
 	Scale_2xSaI<unsigned char, uint32, Manip8to32>
+		(ibuf->get_bits(), x, y, w, h,
+			ibuf->line_width, ibuf->height, 
+			(uint32 *) scaled_surface->pixels,
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+								manip);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	}
+
+//
+// SuperEagle Filtering
+//
+void Image_window::show_scaled8to16_SuperEagle
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	Manip8to16 manip(surface->format->palette->colors,
+						scaled_surface->format);
+	Scale_SuperEagle<unsigned char, uint16, Manip8to16>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (uint16 *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	}
+
+void Image_window::show_scaled8to555_SuperEagle
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	Manip8to555 manip(surface->format->palette->colors);
+	Scale_SuperEagle<unsigned char, uint16, Manip8to555>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (uint16 *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	}
+
+void Image_window::show_scaled8to565_SuperEagle
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	Manip8to565 manip(surface->format->palette->colors);
+	Scale_SuperEagle<unsigned char, uint16, Manip8to565>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (uint16 *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	}
+
+void Image_window::show_scaled8to32_SuperEagle
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	Manip8to32 manip(surface->format->palette->colors,
+						scaled_surface->format);
+	Scale_SuperEagle<unsigned char, uint32, Manip8to32>
 		(ibuf->get_bits(), x, y, w, h,
 			ibuf->line_width, ibuf->height, 
 			(uint32 *) scaled_surface->pixels,
