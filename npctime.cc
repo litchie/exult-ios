@@ -282,10 +282,10 @@ void Npc_hunger_timer::handle_event
 		int hp = rand()%3;
 		if (rand()%4)
 			npc->say(first_starving, first_starving + 2);
-//++++Problems		npc->reduce_health(hp);
+		npc->reduce_health(hp);
 
-		npc->set_property((int) Actor::health,
-			npc->get_property((int) Actor::health) - hp);
+//		npc->set_property((int) Actor::health,
+//			npc->get_property((int) Actor::health) - hp);
 		last_time = minute;
 		}
 	gwin->get_tqueue()->add(curtime + 30000, this, 0L);
@@ -337,10 +337,10 @@ void Npc_poison_timer::handle_event
 	int penalty = rand()%3;
 	if (penalty && rand()%4)
 		npc->say(first_ouch, last_ouch);
-//+++Problems	npc->reduce_health(penalty);
+	npc->reduce_health(penalty);
 
-	npc->set_property((int) Actor::health,
-		npc->get_property((int) Actor::health) - penalty);
+//	npc->set_property((int) Actor::health,
+//		npc->get_property((int) Actor::health) - penalty);
 					// Check again in 10-20 secs.
 	gwin->get_tqueue()->add(curtime + 10000 + rand()%10000, this, 0L);
 	}
