@@ -93,6 +93,7 @@ dist:   $(EXEC)
 	cp data/bg/defaultkeys.txt $(U7PATH)/Exult/bgdefaultkeys.txt
 	cp data/si/defaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 	cp SDL/README-SDL.txt $(U7PATH)/Exult
+	cp SDL/README-SDL_mixer.txt $(U7PATH)/Exult
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult
 	cp SDL/lib/SDL_mixer.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
