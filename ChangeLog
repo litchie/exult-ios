@@ -1,5 +1,6 @@
 2001-07-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc: palette-cycle 244-247 too
+	* scale.cc: merged Maciej Kalisiak's bilinear scaler patch. Thanks!
 
 2001-07-15  Jeff Freedman  <jeff@amy.nerble.net>
 
