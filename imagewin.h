@@ -479,12 +479,14 @@ class Image_window : public Image_buffer
 	SDL_Surface *surface;		// Represents window in memory.
 	SDL_Surface *scaled_surface;	// 2X surface if scaling, else 0.
 					// Method to blit scaled:
-	void (Image_window::*show_scaled)();
+	void (Image_window::*show_scaled)(int x, int y, int w, int h);
 	/*
 	 *	Scaled blits:
 	 */
-	void show_scaled8to16();	// Scale 8-bits to 16-bits.
-	void show_scaled8to32();	// Scale 8-bits to 32-bits.
+					// Scale 8-bits to 16-bits.
+	void show_scaled8to16(int x, int y, int w, int h);
+					// Scale 8-bits to 32-bits.
+	void show_scaled8to32(int x, int y, int w, int h);	
 	/*
 	 *	Image info.
 	 */
@@ -501,6 +503,8 @@ public:
 		  scaled_surface(0), show_scaled(0)
 		{ create_surface(w, h); }
 	virtual ~Image_window();
+	int get_scale()			// Returns 1 or 2.
+		{ return scale; }
 					// Is rect. visible within clip?
 	int is_visible(int x, int y, int w, int h)
 		{ return ibuf->is_visible(x, y, w, h); }

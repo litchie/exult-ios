@@ -101,7 +101,8 @@ public:
 		mousey = y;
 		}
 	void blit_dirty()		// Blit dirty area.
-		{ iwin->show(dirty.x, dirty.y, dirty.w, dirty.h); }
+		{ iwin->show(dirty.x - 1, dirty.y - 1, dirty.w + 2, 
+							dirty.h + 2); }
 	void set_location(int x, int y);// Set to given location.
 					// Flash desired shape for 1/2 sec.
 	void flash_shape(Mouse_shapes flash);
