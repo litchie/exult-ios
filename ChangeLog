@@ -4,6 +4,7 @@
 	  Now works much better, but I just got a crash for it, so it needs more work
 	* audio/xmidi.cc: fixed default channel volume from 64 to 90; initialize
 	  all event structs with zeros, which makes debuggin midi drivers easier
+	* mac/ExultMac.mcp.xml.sit: new version of the MacOS project file
 
 2001-08-09  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* shapeinf.h: added the 'has_hp' object type
