@@ -279,6 +279,17 @@ public:
 	};
 
 /*
+ *	Desk work - Just sit in front of desk.
+ */
+class Desk_schedule : public Schedule
+	{
+	Game_object *chair;		// What to sit in.
+public:
+	Desk_schedule(Actor *n);
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	Shy away from Avatar.
  */
 class Shy_schedule : public Schedule

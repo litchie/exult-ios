@@ -53,6 +53,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cheat.h"
 #include "frameseq.h"
 #include "Paperdoll_gump.h"
+#include "animate.h"
 
 using std::cerr;
 using std::cout;
@@ -1167,7 +1168,8 @@ void Actor::set_schedule_type
 			schedule = new Patrol_schedule(this);
 			break;
 		case Schedule::desk_work:
-			break;		//+++++++
+			schedule = new Desk_schedule(this);
+			break;
 		default:
 			break;
 			}
@@ -3170,6 +3172,41 @@ void Monster_actor::set_info
 	}
 
 /*
+ *	Initialize a new monster.
+ */
+
+void Monster_actor::init
+	(
+	)
+	{
+	if (in_world)
+		in_world->prev_monster = this;
+	next_monster = in_world;
+	in_world = this;
+	in_world_cnt++;
+					// Check for animated shape.
+	Shape_info& info = Game_window::get_game_window()->get_info(this);
+	if (info.is_animated())
+		animator = Animator::create(this, 1);
+	}
+
+/*
+ *	Create monster.
+ */
+
+Monster_actor::Monster_actor
+	(
+	const std::string &nm, 
+	int shapenum, 
+	int fshape,
+	int uc
+	) : Npc_actor(nm, shapenum, fshape, uc), prev_monster(0), info(0),
+	    animator(0)
+	{
+	init();
+	}
+
+/*
  *	Delete.
  */
 
@@ -3177,6 +3214,7 @@ Monster_actor::~Monster_actor
 	(
 	)
 	{
+	delete animator;
 					// Remove from chain.
 	if (next_monster)
 		next_monster->prev_monster = prev_monster;
@@ -3199,6 +3237,19 @@ void Monster_actor::delete_all
 	while (in_world)
 		delete in_world;
 	in_world_cnt = 0;
+	}
+
+/*
+ *	Render.
+ */
+
+void Monster_actor::paint
+	(
+	Game_window *gwin
+	)
+	{
+	Npc_actor::paint(gwin);		// Draw on screen.
+	animator->want_animation();	// Be sure animation is on.
 	}
 
 /*
