@@ -174,14 +174,14 @@ void Slider_gump::paint
 {
 	const int textx = 128, texty = 7;
 					// Paint the gump itself.
-	gwin->paint_shape(x, y, *this);
+	paint_shape(x, y);
 					// Paint red "checkmark".
 	check_button->paint(gwin);
 					// Paint buttons.
 	left_arrow->paint(gwin);
 	right_arrow->paint(gwin);
 					// Paint slider diamond.
-	gwin->paint_shape(x + diamondx, y + diamondy, diamond);
+	diamond.paint_shape(x + diamondx, y + diamondy);
 					// Print value.
   	Paint_num(gwin, val, x + textx, y + texty);
 	gwin->set_painted();

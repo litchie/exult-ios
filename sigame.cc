@@ -37,6 +37,7 @@
 #include "txtscroll.h"
 #include "exult_types.h"
 #include "mappatch.h"
+#include "shapeid.h"
 
 using std::cout;
 using std::endl;

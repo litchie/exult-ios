@@ -361,7 +361,7 @@ void Paperdoll_gump::paint
 	Rectangle box = object_area;	// Paint objects inside.
 	box.shift(x, y);		// Set box to screen location.
 
-	gwin->paint_shape(x, y, *this);
+	paint_shape(x, y);
 
 	// Paint red "checkmark".
 	check_button->paint(gwin);
@@ -493,7 +493,7 @@ void Paperdoll_gump::paint
 	Object_iterator iter(container->get_objects());
 	while ((obj = iter.get_next()) != 0)
 		if (actor->find_readied(obj) == -1)
-			gwin->paint_shape(box.x, box.y, *obj);
+			obj->paint(box.x, box.y);
 #endif
 
 
@@ -551,11 +551,10 @@ void Paperdoll_gump::paint_object
 
 		if (Game::get_game_type() == BLACK_GATE) s.set_file(SF_BG_SIGUMP_FLX);
 
-		gwin->paint_shape(box.x + coords_blue[spot*2],
-				box.y + coords_blue[spot*2+1],
-				s);
+		s.paint_shape(box.x + coords_blue[spot*2],
+				box.y + coords_blue[spot*2+1]);
 		int ox = box.x + obj->get_cx(), oy = box.y + obj->get_cy();
-		gwin->paint_shape(ox, oy, *obj);
+		obj->paint_shape(ox, oy);
 		if (cheat.is_selected(obj))
 					// Outline selected obj.
 			gwin->paint_outline(ox, oy, obj->get_shape(),
@@ -588,7 +587,7 @@ void Paperdoll_gump::paint_object
 	if (item->gender && !info->is_female) f++;
  
 	ShapeID s(item->shape, f, item->file);
-	gwin->paint_shape(box.x + sx, box.y + sy, s, 1);
+	s.paint_shape(box.x + sx, box.y + sy, 1);
 	if (cheat.is_selected(obj))	// Outline selected obj.
 		gwin->paint_outline(box.x + sx, box.y + sy, s.get_shape(),
 								HIT_PIXEL);
@@ -635,7 +634,7 @@ void Paperdoll_gump::paint_body
 	)
 {
 	ShapeID s(info->body_shape, info->body_frame, SF_PAPERDOL_VGA);
-	gwin->paint_shape (box.x + bodyx, box.y + bodyy, s);
+	s.paint_shape(box.x + bodyx, box.y + bodyy);
 }
 
 /*
@@ -650,7 +649,7 @@ void Paperdoll_gump::paint_belt
 {
 	ShapeID s(10, 0, SF_PAPERDOL_VGA);
 	if (!info->is_female) s.set_frame(1);
-	gwin->paint_shape (box.x + beltmx, box.y + beltmy, s);
+	s.paint_shape (box.x + beltmx, box.y + beltmy);
 }
 
 /*
@@ -674,7 +673,7 @@ void Paperdoll_gump::paint_head
 		f = info->head_frame_helm;
 
 	ShapeID s(info->head_shape, f, info->file);
-	gwin->paint_shape(box.x + headx, box.y + heady, s);
+	s.paint_shape(box.x + headx, box.y + heady);
 }
 
 /*
@@ -708,7 +707,7 @@ void Paperdoll_gump::paint_arms
 		break;
 	}
 
-	gwin->paint_shape (box.x + bodyx, box.y + bodyy, s);
+	s.paint_shape (box.x + bodyx, box.y + bodyy);
 }
 
 

@@ -28,6 +28,7 @@
 #include "exult.h"
 #include "font.h"
 #include "items.h"
+#include "shapeid.h"
 
 #ifndef HAVE_SNPRINTF
 extern int snprintf(char *, size_t, const char *, /*args*/ ...);

@@ -229,7 +229,7 @@ bool Dragging_info::moved
 		if (obj->get_flag(Obj_flags::invisible))
 			gwin->paint_invisible(paintx, painty,obj->get_shape());
 		else
-			gwin->paint_shape(paintx, painty, *obj);
+			obj->paint_shape(paintx, painty);
 		}
 	else				// Obj whole gump.
 		{

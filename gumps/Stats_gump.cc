@@ -98,7 +98,7 @@ void Stats_gump::paint
 		set_frame(framenum);
 		}
 					// Paint the gump itself.
-	gwin->paint_shape(x, y, *this);
+	paint_shape(x, y);
 					// Paint red "checkmark".
 	check_button->paint(gwin);
 					// Show statistics.

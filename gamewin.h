@@ -29,7 +29,7 @@
 #include "rect.h"
 #include "tiles.h"
 #include "gameclk.h"
-#include "shapeid.h"
+#include "vgafile.h"
 
 #include <string>	// STL string
 #include "vec.h"
@@ -69,7 +69,9 @@ struct SaveGame_Party;
 class Map_patch_collection;
 class Dragging_info;
 class Game_map;
-
+class Shape_manager;
+class ShapeID;
+class Shape_info;
 					// Special pixels.
 enum Pixel_colors {POISON_PIXEL = 0, PROTECT_PIXEL, CURSED_PIXEL, HIT_PIXEL,
 			NPIXCOLORS};
@@ -362,8 +364,6 @@ public:
 					sizeof(xforms)/sizeof(xforms[0]));
 		}
 
-	inline void paint_shape(int xoff, int yoff, ShapeID &shape, bool force_trans = false)
-		{ paint_shape(xoff, yoff, shape.get_shape(), force_trans||shape.is_translucent()); }
 	inline void paint_invisible(int xoff, int yoff, Shape_frame *shape)
 		{
 		if (shape) shape->paint_rle_transformed(win->get_ib8(),
