@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 extern char **item_names;		// The game items' names.
+extern int num_item_names;
 
 void Setup_item_names (std::ifstream& items);
 

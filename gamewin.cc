@@ -2037,11 +2037,12 @@ void Game_window::add_text
 	Game_object *item		// Item text ID's, or null.
 	)
 	{
+	if (!msg)			// Happens with edited games.
+		return;
 					// Don't duplicate for item.
 	for (Special_effect *each = effects; each; each = each->next)
 		if (each->is_text(item))
 			return;		// Already have text on this.
-
 	Text_effect *txt = new Text_effect(msg, item);
 //	txt->paint(this);		// Draw it.
 //	painted = 1;
