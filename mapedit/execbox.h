@@ -33,6 +33,9 @@ class Exec_process;
 typedef void (*Exec_done_fun)(int exit_code, Exec_box *box, 
 							gpointer user_data);
 
+
+#ifndef WIN32
+
 /*
  *	A class for executing a child process and capturing its output in a
  *	GTK program.
@@ -62,6 +65,24 @@ public:
 							void *udata);
 	bool check_child(int& exit_code);	// Is child still running?
 	};
+
+#else
+
+class Exec_process
+{
+ public:
+	typedef void (*Reader_fun)(char *data, int datalen, int exit_code,
+							gpointer user_data);
+	Exec_process() {}
+	~Exec_process() {}
+	void kill_child() {}
+	void read_from_child(int id) {}
+	bool exec(const char *file, char *argv[], Reader_fun rfun,
+                  void *udata) { return false; }
+	bool check_child(int& exit_code) { return false; }
+	};
+
+#endif
 
 /*
  *	This class can execute a command-line program and display its output.
