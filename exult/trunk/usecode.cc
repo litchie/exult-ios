@@ -3979,15 +3979,15 @@ int Usecode_machine::run
 		{
 		int opcode = *ip++;
 #if DEBUG
-//		if (debug >= 2)
-//			{
+		if (debug >= 2)
+			{
 			int curip = ip - 1 - code;
 			printf("SP = %d, IP = %04x, op = %02x\n", sp - stack,
 						curip, opcode);
 			if (ucbp_fun == fun->id && ucbp_ip == curip)
 				cout << "At breakpoint" << endl;
 			cout.flush();
-//			}
+			}
 #endif
 		switch (opcode)
 			{
