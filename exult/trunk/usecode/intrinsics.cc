@@ -112,7 +112,7 @@ USECODE_INTRINSIC(delayed_execute_usecode_array)
 	    parms[1].get_elem(2).get_int_value() == 0x6f7)
 		return(no_ret);
 	int delay = parms[2].get_int_value();
-	create_script(parms[0], parms[1], delay*c_std_delay);
+	create_script(parms[0], parms[1], delay*gwin->get_std_delay());
 	COUT("Executing intrinsic 2");
 
 	Usecode_value u(1);

@@ -244,7 +244,7 @@ void Usecode_script::handle_event
 	{
 	Usecode_internal *usecode = (Usecode_internal *) udata;
 	Game_window *gwin = usecode->gwin;
-	int delay = c_std_delay;		// Trying default delay.
+	int delay = gwin->get_std_delay();	// Start with default delay.
 	int do_another = 1;			// Flag to keep going.
 	int opcode;
 					// If a 1 follows, keep going.
@@ -314,11 +314,8 @@ void Usecode_script::handle_event
 		case delay_ticks:	// 1 parm.
 			{		//   delay before next instruction.
 			Usecode_value& delayval = code->get_elem(++i);
-					// ?? Guessing at time.
-// NOTE: Changing this can have a major impact!
-//			delay = 250*(delayval.get_int_value());
-// Changed Jul. 30, 2001 to:
-			delay = c_std_delay*(delayval.get_int_value());
+					// It's # of ticks.
+			delay = gwin->get_std_delay()*delayval.get_int_value();
 			break;		
 			}
 #if 0

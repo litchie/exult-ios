@@ -277,10 +277,10 @@ void Pace_schedule::now_what
 			return;		// We no longer exist.
 	which = !which;			// Flip direction.
 	int delay = 750;		// Delay .75 secs.
+	Game_window *gwin = Game_window::get_game_window();
 	if (blocked.tx != -1 &&		// Blocked?
 	    !npc->is_monster())
 		{
-		Game_window *gwin = Game_window::get_game_window();
 		Game_object *obj = Game_object::find_blocking(blocked);
 		blocked.tx = -1;
 		if (obj && (obj->get_npc_num() > 0 || 
@@ -291,7 +291,7 @@ void Pace_schedule::now_what
 			}
 		}
 					// Wait 1 sec. before moving.
-	npc->walk_to_tile(which ? p1 : p0, 250, delay);
+	npc->walk_to_tile(which ? p1 : p0, gwin->get_std_delay(), delay);
 	}
 
 /*
@@ -449,7 +449,6 @@ void Patrol_schedule::now_what
 			scr->start();	// Start next tick.
 #if 0
 			Actor *safenpc = npc;
-            Game_window *gwin = Game_window::get_game_window();
 			safenpc->activate(gwin->get_usecode(),
 					Usecode_machine::npc_proximity);
 			if (safenpc->get_schedule() != this)
@@ -474,6 +473,7 @@ void Patrol_schedule::now_what
 	pathnum += dir;			// Find next path.
 					// Already know its location?
 	path =  pathnum >= 0 && pathnum < paths.size() ? paths[pathnum] : 0;
+	Game_window *gwin = Game_window::get_game_window();
 	if (!path)			// No, so look around.
 		{
 		Game_object_vector nearby;
@@ -524,18 +524,20 @@ void Patrol_schedule::now_what
 			int dist = failures + 2;
 			Tile_coord delta = Tile_coord(rand()%dist - dist/2,
 					rand()%dist - dist, 0);
-			npc->walk_to_tile(pos + delta, 250, failures*300);
+			npc->walk_to_tile(pos + delta, gwin->get_std_delay(), 
+								failures*300);
 			int pathcnt = paths.size();
 			pathnum = rand()%(pathcnt < 4 ? 4 : pathcnt);
 			return;
 			}
 		}
 	Tile_coord d = path->get_abs_tile_coord();
-    	if (!npc->walk_path_to_tile(d, 250, rand()%1000))
+    	if (!npc->walk_path_to_tile(d, gwin->get_std_delay(), rand()%1000))
 		{			// Look for free tile within 1 square.
 		d = Map_chunk::find_spot(d, 1, npc->get_shapenum(),
 						npc->get_framenum(), 1);
-		if (d.tx == -1 || !npc->walk_path_to_tile(d, 250, rand()%1000))
+		if (d.tx == -1 || !npc->walk_path_to_tile(d,
+					gwin->get_std_delay(), rand()%1000))
 			{		// Failed.  Later.
 			npc->start(200, 2000);
 			return;
@@ -662,7 +664,9 @@ void Loiter_schedule::now_what
 	int newx = center.tx - dist + rand()%(2*dist);
 	int newy = center.ty - dist + rand()%(2*dist);
 					// Wait a bit.
-	npc->walk_to_tile(newx, newy, center.tz, 350, rand()%2000);
+	Game_window *gwin = Game_window::get_game_window();
+	npc->walk_to_tile(newx, newy, center.tz, 2*gwin->get_std_delay(), 
+								rand()%2000);
 	}
 
 /*
@@ -734,7 +738,8 @@ void Dance_schedule::now_what
 					// Walk, then spin.
 	npc->set_action(new Sequence_actor_action(walk,
 		new Frames_actor_action(frames, sizeof(frames), 100)));
-	npc->start(200, 500);		// Start in 1/2 sec.
+	Game_window *gwin = Game_window::get_game_window();
+	npc->start(gwin->get_std_delay(), 500);		// Start in 1/2 sec.
 	}
 
 /*
@@ -843,7 +848,9 @@ void Wander_schedule::now_what
 					// Find a free spot.
 	Tile_coord dest = Map_chunk::find_spot(pos, 4, npc->get_shapenum(), 0,
 									1);
-	if (dest.tx == -1 || !npc->walk_path_to_tile(dest, 250, rand()%2000))
+	Game_window *gwin = Game_window::get_game_window();
+	if (dest.tx == -1 || !npc->walk_path_to_tile(dest,
+					gwin->get_std_delay(), rand()%2000))
 					// Failed?  Try again a little later.
 		npc->start(250, rand()%3000);
 	}
@@ -1416,7 +1423,7 @@ void Lab_schedule::now_what
 		break;
 		}
 		}
-	npc->start(250, delay);		// Back in queue.
+	npc->start(gwin->get_std_delay(), delay);	// Back in queue.
 	}
 
 /*
@@ -1488,6 +1495,7 @@ void Waiter_schedule::get_customer
 	(
 	)
 {
+	Game_window *gwin = Game_window::get_game_window();
 	if (customers.empty())			// Got to search?
 	{
 		Actor_vector vec;		// Look within 32 tiles;
@@ -1510,13 +1518,15 @@ void Waiter_schedule::get_customer
 		Tile_coord pos = Map_chunk::find_spot(
 			table->get_abs_tile_coord(), 1, npc);
 		if (pos.tx != -1 &&
-		    npc->walk_path_to_tile(pos, 200, 1000 + rand()%1000))
+		    npc->walk_path_to_tile(pos, gwin->get_std_delay(), 
+							1000 + rand()%1000))
 			return;
 	}
 	const int dist = 8;		// Bad luck?  Walk randomly.
 	int newx = startpos.tx - dist + rand()%(2*dist);
 	int newy = startpos.ty - dist + rand()%(2*dist);
-	npc->walk_to_tile(newx, newy, startpos.tz, 350, rand()%2000);
+	npc->walk_to_tile(newx, newy, startpos.tz, 2*gwin->get_std_delay(), 
+								rand()%2000);
 }
 
 /*
@@ -1688,7 +1698,8 @@ void Waiter_schedule::now_what
 		}
 	Tile_coord dest = Map_chunk::find_spot(customer->get_abs_tile_coord(),
 					3, npc);
-	if (dest.tx != -1 && npc->walk_path_to_tile(dest, 250, rand()%1000))
+	if (dest.tx != -1 && npc->walk_path_to_tile(dest,
+					gwin->get_std_delay(), rand()%1000))
 		return;				// Walking there.
 
 	npc->start(200, 2000 + rand()%4000);	// Failed so try again later.
@@ -2829,13 +2840,13 @@ void Walk_to_schedule::now_what
 	cout << "Finding path to schedule for " << npc->get_name() << endl;
 					// Create path to dest., delaying
 					//   0 to 2 seconds.
-	if (!npc->walk_path_to_tile(from, to, 200, 
+	if (!npc->walk_path_to_tile(from, to, gwin->get_std_delay(),
 						first_delay + rand()%2000))
 		{			// Wait 1 sec., then try again.
 #ifdef DEBUG
 		cout << "Failed to find path for " << npc->get_name() << endl;
 #endif
-		npc->walk_to_tile(dest, 200, 1000);
+		npc->walk_to_tile(dest, gwin->get_std_delay(), 1000);
 		retries++;		// Failed.  Try again next tick.
 		}
 	else				// Okay.  He's walking there.

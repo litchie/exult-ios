@@ -80,6 +80,7 @@ class Game_window
 	Time_queue *tqueue;		// Time-based queue.
 	Game_clock clock;		// Keeps track of time.
 	long time_stopped;		// For 'stop time' spell.
+	int std_delay;			// Standard delay between frames.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
 	Special_effect *effects;	// Text snippets, sprite effects.
 	Gump_manager *gump_man;		// Open containers on screen.
@@ -291,6 +292,10 @@ protected:
 public:
 	long is_time_stopped()
 		{ return !time_stopped ? 0 : check_time_stopped(); }
+	int get_std_delay() const	// Get/set animation frame delay.
+		{ return std_delay; }
+	void set_std_delay(int msecs)
+		{ std_delay = msecs; }
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < npcs.size()) ? 
 				npcs[npc_num] : 0; }
