@@ -336,15 +336,16 @@ void Talk_schedule::now_what
 		npc->set_frame(npc->get_dir_framenum(npc->get_direction(
 				gwin->get_main_actor()), Actor::standing));
 		gwin->add_dirty(npc);
-		
+		phase++;
+					// NOTE:  This could DESTROY us!
 		if (Game::get_game_type() == SERPENT_ISLE)
 			npc->activate(gwin->get_usecode(), 9);
 		else
 			npc->activate(gwin->get_usecode(), 1);
-			
+					// SO don't refer to any instance
+					//   variables from here on.
 		gwin->set_mode(Game_window::normal);
 		gwin->paint();
-		phase++;
 		return;
 	default:
 		break;

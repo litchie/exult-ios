@@ -532,7 +532,10 @@ USECODE_INTRINSIC(update_last_created)
 			  arr.get_elem(2).get_int_value());
 				// Taking a guess here:
 	else if (parms[0].get_int_value() == -358)
+		{
 		last_created->remove_this();
+		last_created = 0;
+		}
 #if DEBUG
 	else
 		{
