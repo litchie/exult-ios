@@ -143,13 +143,12 @@ bool MenuList::set_selected(int x, int y)
 {
 	MenuObject *entry;
 	// Skip everything if it's the same
-	if(selected>=0) {
-		entry = (*entries)[selected];
-		if(entry->is_mouse_over(x, y))
-			return false;
-		else
-			entry->set_selected(false);
-	}
+	entry = (*entries)[selected];
+	if(entry->is_mouse_over(x, y))
+	        return false;
+	else
+ 	        entry->set_selected(false);
+
 	
 	for(int i=0; i<entries->size(); i++) {
 		entry = (*entries)[i];
@@ -192,11 +191,13 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 			mouse->show();
 			mouse->blit_dirty();
 		} else if(event.type==SDL_MOUSEBUTTONUP) {
-			if(selected>=0) {
-				MenuObject *entry = (*entries)[selected];
-				exit_loop = entry->handle_event(event);
-				redraw = true;
-			}
+		        MenuObject *entry = (*entries)[selected];
+			if (entry->is_mouse_over(
+					   event.button.x >> scale, 
+					   event.button.y >> scale)) {
+			        exit_loop = entry->handle_event(event);
+			        redraw = true;
+			}			
 		} else if(event.type==SDL_KEYDOWN) {
 		        redraw = true;
 		        mouse->hide();
