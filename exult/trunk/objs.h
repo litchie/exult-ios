@@ -581,7 +581,7 @@ public:
 	void remove_egg(Egg_object *egg);
 	void remove(Game_object *obj);	// Remove an object.
 					// Apply gravity over given area.
-	void gravity(Rectangle area, int lift);
+	static void gravity(Rectangle area, int lift);
 					// Is there a roof? Returns height
 	int is_roof(int tx, int ty, int lift);
 	int get_cx() const

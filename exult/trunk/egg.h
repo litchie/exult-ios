@@ -33,10 +33,27 @@ class	Animator;
 #include "objs.h"
 
 /*
+ *	Here's a class for eggs and paths; i.e., objects that generally aren't
+ *	visible.
+ */
+class Egglike_game_object : public Ireg_game_object
+	{
+public:
+					// Create from ireg. data.
+	Egglike_game_object(unsigned char l, unsigned char h, 
+				unsigned int shapex,
+				unsigned int shapey, unsigned int lft = 0)
+		: Ireg_game_object(l, h, shapex, shapey, lft)
+		{  }
+					// Render.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
  *	An "egg" is a special object that activates under certain
  *	circumstances.
  */
-class Egg_object : public Game_object
+class Egg_object : public Egglike_game_object
 	{
 protected:
 	unsigned char type;		// One of the below types.
@@ -98,8 +115,6 @@ public:
 #if 0	/* ++++Going away. Is_active() does the test. */
 	int within_distance(int abs_tx, int abs_ty) const;
 #endif
-					// Render.
-	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	void activate(Usecode_machine *umachine, Game_object *obj);

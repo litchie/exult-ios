@@ -2369,12 +2369,14 @@ void Chunk_object_list::gravity
 		Game_object *obj;
 		while ((obj = objs.get_next()) != 0)
 			{
+			if (!obj->is_dragable())
+				continue;
 			Tile_coord t = obj->get_abs_tile_coord();
 					// Get footprint.
 			Rectangle foot = obj->get_footprint();
 			int new_lift;
 					// Above area?
-			if (t.tz == lift && foot.intersects(area) &&
+			if (t.tz >= lift && foot.intersects(area) &&
 					// Unblocked below itself?  Let drop.
 			    !is_blocked(1, t.tz - 1, foot.x, foot.y,
 					foot.w, foot.h, new_lift, 100))
