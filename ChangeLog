@@ -1,3 +1,7 @@
+2003-01-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: When resurrecting, set schedule to something reasonable.
+
 2002-12-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* keyactions.cc: fixed crash in alternate SI intro
 	* sigame.cc: fixed wrong char* initializer (Philipp Thomas <pthomas@suse.de>)
