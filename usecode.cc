@@ -1335,6 +1335,113 @@ USECODE_FUNCTION(game_minute)
 	USECODE_RETURN(u);
 }
 
+USECODE_FUNCTION(get_npc_number)
+	// Returns NPC# of item. (-356 =
+	//   avatar).
+	Game_object *obj = get_item(parms[0].get_int_value());
+	if (obj == gwin->get_main_actor())
+		return Usecode_value(-356);
+	int npc = obj ? obj->get_npc_num() : 0;
+	Usecode_value u(-npc);
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(part_of_day)
+	// Return 3-hour # (0-7, 0=midnight).
+	Usecode_value u(gwin->get_hour()/3);
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(item_say)
+	// Show str. near item (item, str).
+	item_say(parms[0], parms[1]);
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(get_lift)
+	// ?? Guessing rets. lift(item).
+	Game_object *obj = get_item(parms[0].get_int_value());
+	Usecode_value u(obj ? Usecode_value(obj->get_lift())
+					: Usecode_value(0));
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(set_lift)
+	// ?? Guessing setlift(item, lift).
+	Game_object *obj = get_item(parms[0].get_int_value());
+	if (obj)
+		{
+		int x, y, z;
+		obj->get_abs_tile(x, y, z);
+		obj->move(x, y, parms[1].get_int_value());
+		gwin->paint();
+		gwin->show();
+		}
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(display_map)
+	// Display map.
+	//++++++++++++
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(is_pc_female)
+	// Is player female?
+	Usecode_value u(0);
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(run_endgame)
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(get_array_size)
+	Usecode_value u(parms[0].get_array_size());
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(is_pc_inside)
+	Usecode_value u(gwin->is_main_actor_inside());
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(mouse_exists)
+	Usecode_value u(1);
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(mystery_2)
+	// Takes itemref, returns obj???
+	//+++++++++++++++
+	// Maybe it's obj's container???
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(remove_item)
+	// ?Think it's 'delete object'.
+	remove_item(get_item(parms[0].get_int_value()));
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(get_equipment_list)
+	// Wearing? (npc, where, itemshape, 
+	//   frame (-359=any)).
+	// Where = (1=weapon hand, 
+	//   2=other hand,
+	//   6=one finger?, 
+	//   7=other finger?,
+	//   9=head).
+	//+++++++++++++++++++++
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(advance_time)
+	// Incr. clock by (parm[0]*.04min.).
+	gwin->increment_clock(parms[0].get_int_value()/25);
+	return no_ret;
+}
+
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
 UsecodeIntrinsicFn intrinsic_table[]=
@@ -1397,9 +1504,207 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_FUNCTION_PTR(UNKNOWN), // 0x37
 	USECODE_FUNCTION_PTR(game_hour), // 0x38
 	USECODE_FUNCTION_PTR(game_minute), // 0x39
+	USECODE_FUNCTION_PTR(get_npc_number),	// 0x3a
+	USECODE_FUNCTION_PTR(part_of_day),	// 0x3b
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x3c
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x3d
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x3e
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x3f
+	USECODE_FUNCTION_PTR(item_say),	// 0x40
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x41
+	USECODE_FUNCTION_PTR(get_lift),	// 0x42
+	USECODE_FUNCTION_PTR(set_lift),	// 0x43
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x44
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x45
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x46
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x47
+	USECODE_FUNCTION_PTR(display_map),	// 0x48
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x49
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4a
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4b
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4c
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4d
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4e
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x4f
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x50
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x51
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x52
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x53
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x54
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x55
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x56
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x57
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x58
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x59
+	USECODE_FUNCTION_PTR(is_pc_female),	// 0x5a
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x5b
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x5c
+	USECODE_FUNCTION_PTR(run_endgame),	// 0x5d
+	USECODE_FUNCTION_PTR(get_array_size),	// 0x5e
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x5f
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x60
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x61
+	USECODE_FUNCTION_PTR(is_pc_inside),	// 0x62
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x63
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x64
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x65
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x66
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x67
+	USECODE_FUNCTION_PTR(mouse_exists),	// 0x68
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x69
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x6a
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x6b
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x6c
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x6d
+	USECODE_FUNCTION_PTR(mystery_2),	// 0x6e
+	USECODE_FUNCTION_PTR(remove_item),	// 0x6f
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x70
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x71
+	USECODE_FUNCTION_PTR(get_equipment_list),	// 0x72
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x73
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x74
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x75
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x76
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x77
+	USECODE_FUNCTION_PTR(advance_time),	// 0x78
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x79
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7a
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7b
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7c
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7d
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7e
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x7f
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x80
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x81
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x82
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x83
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x84
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x85
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x86
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x87
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x88
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x89
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8a
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8b
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8c
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8d
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8e
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x8f
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x90
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x91
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x92
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x93
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x94
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x95
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x96
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x97
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x98
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x99
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9a
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9b
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9c
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9d
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9e
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0x9f
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa0
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa1
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa2
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa3
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa4
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa5
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa6
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa7
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa8
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xa9
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xaa
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xab
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xac
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xad
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xae
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xaf
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb0
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb1
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb2
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb3
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb4
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb5
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb6
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb7
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb8
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xb9
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xba
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xbb
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xbc
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xbd
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xbe
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xbf
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc0
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc1
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc2
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc3
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc4
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc5
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc6
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc7
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc8
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xc9
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xca
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xcb
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xcc
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xcd
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xce
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xcf
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd0
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd1
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd2
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd3
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd4
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd5
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd6
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd7
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd8
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xd9
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xda
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xdb
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xdc
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xdd
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xde
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xdf
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe0
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe1
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe2
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe3
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe4
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe5
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe6
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe7
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe8
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xe9
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xea
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xeb
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xec
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xed
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xee
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xef
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf0
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf1
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf2
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf3
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf4
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf5
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf6
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf7
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf8
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xf9
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xfa
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xfb
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xfc
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xfd
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xfe
+	USECODE_FUNCTION_PTR(UNKNOWN),	// 0xff
 	};
 
-int	max_bundled_intrinsics=0x39;	// Index of the last intrinsic in this table
+int	max_bundled_intrinsics=0x86;	// Index of the last intrinsic in this table
 
 /*
  *	Call an intrinsic function.
@@ -1426,74 +1731,6 @@ Usecode_value Usecode_machine::call_intrinsic
 	else
 	switch (intrinsic)
 		{
-	case 0x3a:			// Returns NPC# of item. (-356 =
-					//   avatar).
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		if (obj == gwin->get_main_actor())
-			return Usecode_value(-356);
-		int npc = obj ? obj->get_npc_num() : 0;
-		return Usecode_value(-npc);
-		}
-	case 0x3b:			// Return 3-hour # (0-7, 0=midnight).
-		return Usecode_value(gwin->get_hour()/3);
-	case 0x40:			// Show str. near item (item, str).
-		item_say(parms[0], parms[1]);
-		break;
-	case 0x42:			// ?? Guessing rets. lift(item).
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		return obj ? Usecode_value(obj->get_lift())
-						: Usecode_value(0);
-		}
-	case 0x43:			// ?? Guessing setlift(item, lift).
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		if (obj)
-			{
-			int x, y, z;
-			obj->get_abs_tile(x, y, z);
-			obj->move(x, y, parms[1].get_int_value());
-			gwin->paint();
-			gwin->show();
-			}
-		break;
-		}
-	case 0x48:			// Display map.
-		//++++++++++++
-		Unhandled(intrinsic, num_parms, parms);
-		break;
-	case 0x5a:			// Is player female?
-		return Usecode_value(0);
-	case 0x5d:			// Start endgame.
-		break;
-	case 0x5e:			// Returns size of array (arr).
-		return Usecode_value(parms[0].get_array_size());
-	case 0x62:			// Are we inside (under a roof)?
-		return Usecode_value(gwin->is_main_actor_inside());
-	case 0x68:			// Returns 1 if mouse exists.
-		return Usecode_value(1);
-	case 0x6e:			// Takes itemref, returns obj???
-//+++++++++++++++
-					// Maybe it's obj's container???
-		Unhandled(intrinsic, num_parms, parms);
-		break;
-	case 0x6f:			// ?Think it's 'delete object'.
-		remove_item(get_item(parms[0].get_int_value()));
-		break;
-	case 0x72:			// Wearing? (npc, where, itemshape, 
-					//   frame (-359=any)).
-					// Where = (1=weapon hand, 
-					//   2=other hand,
-					//   6=one finger?, 
-					//   7=other finger?,
-					//   9=head).
-		Unhandled(intrinsic, num_parms, parms);
-		//+++++++++++++++++++++
-		break;
-	case 0x78:			// Incr. clock by (parm[0]*.04min.).
-		gwin->increment_clock(parms[0].get_int_value()/25);
-		break;
 	case 0x87:			// ?Direction from parm[0] -> parm[1].
 					// Rets. 0-7.  Is 0 north?
 					// Same as 0x1a??
