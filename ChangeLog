@@ -1,5 +1,7 @@
 2003-02-28  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamerend.cc (using): Draw modal gumps after text.
+
 	* combat.cc (Combat): Only play victory music when there are no
 	more enemies around.  Also, play one of two pieces.
 
