@@ -1,5 +1,6 @@
 2001-09-22  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* usecode/ucsched.cc (Usecode_script): Fixed (again) Moonshade Trial.
 	* schedule.cc (public): Better checks for occupied chairs.
 	* objs/objs.cc:  A find_closest(vec,...) added.
 
