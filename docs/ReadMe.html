@@ -32,22 +32,21 @@
 					using the data and graphics files that come with the game.
 				</p>
 				<p>
-					<em>Exult</em> is being developed in C++ under Linux, MacOS and Windows
+					<em>Exult</em> is written in C++ and runs on, at least, Linux, Mac OS X and Windows
 					using the SDL library to make porting to other platforms relatively easy.
-					The current version supports much of the game's plot, allowing you to
-					talk to NPCs, use items, solve quests, and even fight monsters. Music,
-					speech, and the full introduction are also implemented. This, and further
-					development, is only possible due to the work done by other fans who have
-					decoded the various Ultima 7 data files, especially Gary Thompson, Maxim
-					Shatskih, Jakob Shonberg, and Wouter Dijkslag.
+					The current version supports all of "Ultima 7: The Black Gate"
+					and "Ultima 7 part 2: The Serpent Isle", allowing you to
+					finish both games. This is only possible due to the work done
+					by other fans who have decoded the various Ultima 7 data files,
+					especially Gary Thompson, Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag.
 				</p>
 				<p>
 					<em>Exult</em> aims to let those people who own Ultima 7 (copyright 1993)
 					play the game on modern hardware, in as close to (or perhaps even surpassing)
 					its original splendor as is possible. You need to <strong>own</strong>
-					"Ultima 7: The Black Gate" "Ultima 7: Serpent Isle" and all the add-ons (not
-					required to run but we require you to own them if you use them) in order
-					to use <em>Exult</em>, and we encourage you to buy a legal copy.
+					"Ultima 7: The Black Gate" and/or "Ultima 7: Serpent Isle" and optionally
+					the add-ons (not required to run) in order to use <em>Exult</em>,
+					and we encourage you to buy a legal copy.
 				</p>
 			</td></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="terms">1.3. Terms we use in regard to Exult and Ultima 7</a></strong></td></tr><tr><td>
 				<p>
@@ -61,10 +60,11 @@
 						we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle"
 						as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.</li>
 					<li><strong>eggs</strong>:<br />
-						these are trip-wires that cause monsters to spawn, execute scripts, play music,
-						change weather, trigger traps, teleport when you get near them.</li>
+						these are trip-wires that can cause monsters to spawn, execute scripts,
+						play music, change weather, trigger traps or teleport when you
+						get near them.</li>
 					<li><strong>flex files</strong>:<br />
-						or flexes are used by the original to store the data files.
+						also known as flexes, these are used by the original to store the data files.
 						Also when you choose not use compressed save games (see save_compression_level in
 						<a href="#exult_config">2.2.</a>) our save games are also "flexed".</li>
 					<li><strong>gumps</strong>:<br />
@@ -93,14 +93,13 @@
 			</td></tr></table><hr width="100%" /><table width="100%"><tr><th align="left"><a name="Configurations">2. Configurations</a></th></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="installation">2.1. Installation</a></strong></td></tr><tr><td>
 				<ul>
 					<li>First you need to get Ultima 7. Either you own it already, or
-						you buy it somewhere. Then you must install it on a DOS/Windows
-						machine to get the data files.<br />
-						Alternatively  you can use a PC emulator to install it.
+						you buy it somewhere.</li>
+					<li>You need an installed version of Ultima 7 to run <em>Exult</em> with.
 						The <strong>Ultima Collection</strong> already contains a pre-installed
-						version of U7 (in the directory /ultima7 on the CD).</li>
-					<li>From the Ultima7 folder on your PC, copy the STATIC sub folder to
-						an appropriate folder - see <a href="#path_config">2.3.</a> what those
-						could be.</li>
+						version of U7 (in the directory /ultima7 on the CD), but
+						with older versions you may have to install the game yourself.</li>
+					<li>Copy the installed Ultima7 folder to an appropriate folder
+					 	- see <a href="#path_config">2.3.</a> for suggestions.</li>
 					<li>Now run <strong>exult</strong> (<strong>exult.exe</strong> in Windows)
 						and quit it immediately.</li>
 					<li>Edit the configuration file with the correct paths for the game
@@ -111,10 +110,11 @@
 					<strong>Word of advice:</strong> Don't mix the files from BG and SI.
 				</p>
 				<p>
-					<strong>Important:</strong> Do not run <em>Exult</em> on an original Ultima7
-					game which you're actually in the middle of playing, as <em>Exult</em>'s saved
-					files have a different format. There is no way to convert those
-					original save games and they will just crash <em>Exult</em>.
+					<strong>Note:</strong> If you run <em>Exult</em> on an original Ultima7
+					game which you're actually in the middle of playing, your game
+					will be overwritten. Since <em>Exult</em>'s files
+					have a different format, there is no way to convert those
+					original save games.
 				</p>
 			</td></tr><tr><td>&nbsp;</td></tr><tr><td><strong><a name="exult_config">2.2. Settings in exult.cfg</a></strong></td></tr><tr><td>
 				<p>
@@ -126,10 +126,9 @@
 				<p>
 					If you do not already have a configuration file, <em>Exult</em> will make one for you
 					filling in sensible defaults by itself. The location of this file varies
-					slightly. On UNIX systems you can expect to find it in $HOME/.exult.cfg while
-					other operating systems will probably locate it as 'exult.cfg' in the same
-					directory as the <em>Exult</em> binary. However it is recommended that you edit this
-					file by hand to achieve optimal results for your system.
+					slightly. On UNIX systems you can expect to find it in $HOME/.exult.cfg.
+					In Windows it is 'exult.cfg' in the same directory as the <em>Exult</em> binary.
+					In Mac OS X it is ~/Library/Preferences/exult.cfg.
 				</p>
 				<p>
 					<b><i><font size="+1">Note:</font></i></b> the settings in exult.cfg are the <strong>same</strong> on
