@@ -122,7 +122,8 @@ Game_window::Game_window
 			char gamedat_identity[256];
 			identity_file.read(gamedat_identity, 256);
 			char *ptr = gamedat_identity;
-			for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++);
+			for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
+				;
 			*ptr = 0;
 			cout << gamedat_identity;
 			if(strcmp(static_identity, gamedat_identity))
