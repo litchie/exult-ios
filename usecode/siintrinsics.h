@@ -8,17 +8,17 @@
 	USECODE_INTRINSIC_PTR(execute_usecode_array),		// 1
 	USECODE_INTRINSIC_PTR(delayed_execute_usecode_array),	// 2
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 3
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 4
+	USECODE_INTRINSIC_PTR(show_npc_face),	// Guess	// 3
+	USECODE_INTRINSIC_PTR(remove_npc_face),	// Guess	// 4
 	
 	USECODE_INTRINSIC_PTR(show_npc_face0),			// 5
 	USECODE_INTRINSIC_PTR(show_npc_face1),			// 6
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 7
+	USECODE_INTRINSIC_PTR(remove_last_face), // Guess!	// 7
 	USECODE_INTRINSIC_PTR(remove_last_face),		// 8
 	USECODE_INTRINSIC_PTR(set_conversation_slot),		// 9
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xa
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb
+	USECODE_INTRINSIC_PTR(UNKNOWN),		// UNUSED	// 0xa
+	USECODE_INTRINSIC_PTR(UNKNOWN),		// UNUSED	// 0xb
 
 	USECODE_INTRINSIC_PTR(add_answer),			// 0xc
 	USECODE_INTRINSIC_PTR(remove_answer),			// 0xd
@@ -36,7 +36,7 @@
 	USECODE_INTRINSIC_PTR(play_sound_effect),		// 0x16
 	
 	USECODE_INTRINSIC_PTR(die_roll),			// 0x17
-	USECODE_INTRINSIC_PTR(get_item_shape),			// 0x18 Getitemshape????
+	USECODE_INTRINSIC_PTR(get_item_shape),			// 0x18
 	
 	USECODE_INTRINSIC_PTR(get_item_shape),			// 0x19
 	USECODE_INTRINSIC_PTR(get_item_frame),			// 0x1a
@@ -92,7 +92,7 @@
 	USECODE_INTRINSIC_PTR(give_last_created),		// 0x42
 	USECODE_INTRINSIC_PTR(give_last_created),		// 0x43
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x44 - Guess
+	USECODE_INTRINSIC_PTR(is_dead),				// 0x44
 
 	USECODE_INTRINSIC_PTR(game_hour),			// 0x45 - Correct
 	USECODE_INTRINSIC_PTR(game_minute),			// 0x46 - Correct
@@ -107,7 +107,7 @@
 
 	
 	USECODE_INTRINSIC_PTR(item_say),			// 0x4d
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x4e Gets an Array??
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x4e
 
 	USECODE_INTRINSIC_PTR(projectile_effect),		// 0x4f
 	USECODE_INTRINSIC_PTR(get_lift),			// 0x50
@@ -119,55 +119,50 @@
 	USECODE_INTRINSIC_PTR(sit_down),			// 0x54 - Known (is it???)
 
 	// Packing
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x55
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x56
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x57
+	USECODE_INTRINSIC_PTR(summon),				// 0x55
+	USECODE_INTRINSIC_PTR(si_display_map),			// 0x56
+	USECODE_INTRINSIC_PTR(remove_npc),	// Guess	// 0x57
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x58
 	USECODE_INTRINSIC_PTR(set_attack_mode),			// 0x59	
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x5a +++Looks like get_attack_mode().
+	USECODE_INTRINSIC_PTR(get_attack_mode),			// 0x5a
 	USECODE_INTRINSIC_PTR(set_opponent),			// 0x5b
 	// End pack
 
 
-	USECODE_INTRINSIC_PTR(summon),				// 0x5c     SummonCreature (ucdump.c)  NO!!! I think it should be get_attacker().!!!
-	USECODE_INTRINSIC_PTR(display_map),			// 0x5d
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x5e NOT kil_npc
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x5f
+	USECODE_INTRINSIC_PTR(get_oppressor),			// 0x5c
+	USECODE_INTRINSIC_PTR(get_weapon),			// 0x5d
+	USECODE_INTRINSIC_PTR(set_oppressor),	// Guess	// 0x5e
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x5f UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x60 UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x61 UNUSED
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x62     CloneNPC (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x63 UNUSED
-	USECODE_INTRINSIC_PTR(display_area),			// 0x64 ++++called when you dbl-click
-                         					// on FoV gem. (gift from LB) display area???
-								// ShowCrystalBall  (ucdump.c)
-
-	USECODE_INTRINSIC_PTR(resurrect),			// 0x65 ResurrectNPC (ucdump.c)
-	USECODE_INTRINSIC_PTR(add_spell),			// 0x66 AddSpellToBook (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x62 UNUSED
+	USECODE_INTRINSIC_PTR(resurrect),	// Guess	// 0x63
+	USECODE_INTRINSIC_PTR(UNKNOWN),			// 0x64
+	USECODE_INTRINSIC_PTR(UNKNOWN),			// 0x65 Maybe get_npc#(body)
+	USECODE_INTRINSIC_PTR(add_spell),			// 0x66
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x67 Remove all spells????
-	USECODE_INTRINSIC_PTR(sprite_effect),			// 0x68	ExecuteSprite (ucdump.c)
+	USECODE_INTRINSIC_PTR(sprite_effect),			// 0x68
 	USECODE_INTRINSIC_PTR(explode),				// 0x69 
 
 
 	USECODE_INTRINSIC_PTR(book_mode),			// 0x6a - Known
 	
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x6b ++++Something to do with time.
-								// StopTime (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x6c ++++?Light_source(time)?
-								//CauseLight (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x6b
+	USECODE_INTRINSIC_PTR(cause_light),			// 0x6c
 	USECODE_INTRINSIC_PTR(get_barge),			// 0x6d
 	USECODE_INTRINSIC_PTR(earthquake),			// 0x6e
 	USECODE_INTRINSIC_PTR(is_pc_female),			// 0x6f - Known
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x70     Armageddon (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x70 UNUSED
 	USECODE_INTRINSIC_PTR(halt_scheduled),			// 0x71
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x72  +++++CauseBlackout (ucdump.c)
 	USECODE_INTRINSIC_PTR(get_array_size),			// 0x73
 	
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x74  ++++mark(virtue-stone)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x75  ++++recall(virtue-stone)
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x74
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x75
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x76
 	USECODE_INTRINSIC_PTR(is_pc_inside),			// 0x77
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x78     SetOrreryState (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x79     UNUSED
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x78 UNUSED
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x79 UNUSED
 	USECODE_INTRINSIC_PTR(get_timer),			// 0x7a
 	USECODE_INTRINSIC_PTR(set_timer),			// 0x7b
 	USECODE_INTRINSIC_PTR(wearing_fellowship),		// 0x7c
@@ -183,41 +178,36 @@
 
 	USECODE_INTRINSIC_PTR(remove_item),			// 0x84 - Known
 
-	// Packing!!!
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x85
-	// End Pack
-
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x86
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x87
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x87++++ Increments experience??
 	USECODE_INTRINSIC_PTR(is_readied),			// 0x88
 	USECODE_INTRINSIC_PTR(restart_game),			// 0x89
 	USECODE_INTRINSIC_PTR(start_speech),			// 0x8a
 	USECODE_INTRINSIC_PTR(run_endgame),			// 0x8b StartEndGame (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x8c     FireCannon (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x8c UNUSED
 	USECODE_INTRINSIC_PTR(nap_time),			// 0x8d
 	USECODE_INTRINSIC_PTR(advance_time),			// 0x8e
 	USECODE_INTRINSIC_PTR(in_usecode),			// 0x8f
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x90
-	USECODE_INTRINSIC_PTR(sprite_effect2),			// 0x91 ++++Another sprite animation?
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x92
+	USECODE_INTRINSIC_PTR(sprite_effect2),			// 0x91
+	USECODE_INTRINSIC_PTR(attack_avatar),			// 0x92
 
-	// Packing
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x93
-	// End Pack
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x93 ++++Stop_attacking_avatar()??
 
 	USECODE_INTRINSIC_PTR(path_run_usecode),		// 0x94 - Known
 	
-	USECODE_INTRINSIC_PTR(close_gumps),			// 0x95
-	USECODE_INTRINSIC_PTR(item_say),			// 0x96 ItemSay in gump.
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x97 ++++Open_gump(item)???
-	USECODE_INTRINSIC_PTR(in_gump_mode),			// 0x98
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x95 UNUSED
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x96
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x97 UNUSED
+	USECODE_INTRINSIC_PTR(close_gumps),	// Guess	// 0x98
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x99
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9a
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9b
+	USECODE_INTRINSIC_PTR(in_gump_mode),	// Guess	// 0x9b
 
 	// Packing!!!
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9c
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9d
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9d UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9e
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9f
 	// End Pack
@@ -237,29 +227,29 @@
 //	USECODE_INTRINSIC_PTR(run_usecode),			// 0xa7 
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xa7 
 	USECODE_INTRINSIC_PTR(fade_palette),			// 0xa8
-	USECODE_INTRINSIC_PTR(in_combat),			// 0xa9
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xa9
 	USECODE_INTRINSIC_PTR(get_party_ids),			// 0xaa
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xab
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xac
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xad
+	USECODE_INTRINSIC_PTR(in_combat),			// 0xab
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xac +++Something(pos).  Only used when fishing!
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xad UNUSED
 	USECODE_INTRINSIC_PTR(set_camera),			// 0xae
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xaf    SetupOrrery (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb0
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xaf UNUSED
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb0 UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb1
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb2
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb2 Gets some sort of string.
 	USECODE_INTRINSIC_PTR(set_polymorph),			// 0xb3    Set Polymorph
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb4
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb5
 	USECODE_INTRINSIC_PTR(set_new_schedules),		// 0xb6 Set New Schedules
 	USECODE_INTRINSIC_PTR(run_schedule),			// 0xb7 Run the scheduled activity
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb8
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb9
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb9 UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xba SetTemperature???
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xbb
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xbb UNUSED
 	USECODE_INTRINSIC_PTR(get_npc_id),			// 0xbc - Known
 	USECODE_INTRINSIC_PTR(set_npc_id),			// 0xbd - Known
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xbe
+	USECODE_INTRINSIC_PTR(get_readied),	// Guess	// 0xbe
 	USECODE_INTRINSIC_PTR(add_removed_npc),			// 0xbf - This looks like it may be used to detect if a npc is near a certain location
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xc0
 	USECODE_INTRINSIC_PTR(si_path_run_usecode),		// 0xc1
