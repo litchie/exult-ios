@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Vga_file;
 class Image_buffer8;
 class Shapes_vga_file;
+class Shape_group;
 
 /*
  *	Store information about an individual shape shown in the list.
@@ -55,6 +56,7 @@ class Shape_entry
 class Shape_chooser: public Object_browser, public Shape_draw
 	{
 	Shapes_vga_file *shapes_file;	// Non-null if 'shapes.vga'.
+	Shape_group *group;		// Non-null to use filter.
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
 	GtkWidget *fspin;		// Spin button for frame #.
@@ -84,6 +86,8 @@ public:
 	virtual ~Shape_chooser();
 	void set_shapes_file(Shapes_vga_file *sh)
 		{ shapes_file = sh; }	
+	void set_group(Shape_group *g)
+		{ group = g; }
 	void set_framenum0(int f)
 		{ framenum0 = f; }
 	void search(char *srch, int dir);

@@ -200,7 +200,7 @@ C_EXPORT void on_main_window_destroy_event
 	}
 
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
-	names(0),
+	names(0), glade_path(0),
 	vgafile(0), facefile(0), chunkfile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
 	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), 
@@ -244,6 +244,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	// Load the Glade interface
 	app_xml = glade_xml_new(path, NULL);
 	app = glade_xml_get_widget( app_xml, "main_window" );
+	glade_path = g_strdup(path);
 
 	// More setting up...
 					// Connect signals automagically.
@@ -272,6 +273,7 @@ ExultStudio::~ExultStudio()
 		delete [] names;
 		names = 0;
 	}
+	g_free(glade_path);
 	delete_chunk_browser();
 	delete files;
 	files = 0;
@@ -393,6 +395,20 @@ Object_browser *ExultStudio::create_palette_browser(const char *fname)
 	return paled;
 }
 
+/*
+ *	Get current groups.
+ */
+
+Shape_group_file *ExultStudio::get_cur_groups
+	(
+	)
+	{
+	return curfile ? curfile->get_groups() : 0;
+	}
+
+/*
+ *	Choose 'static'.
+ */
 void ExultStudio::choose_static_path()
 {
 	size_t	bufsize=128;
