@@ -351,9 +351,10 @@ void Barge_object::turn_right
 	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *obj = get_object(i);
+		int frame = obj->get_framenum();
 		Shape_info& info = gwin->get_info(obj);
-		positions[i] = Rotate90r(gwin, obj, info.get_3d_xtiles(),
-						info.get_3d_ytiles(), center);
+		positions[i] = Rotate90r(gwin, obj, info.get_3d_xtiles(frame),
+					info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);	// Remove object from world.
 					// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(1));
@@ -388,9 +389,10 @@ void Barge_object::turn_left
 	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *obj = get_object(i);
+		int frame = obj->get_framenum();
 		Shape_info& info = gwin->get_info(obj);
-		positions[i] = Rotate90l(gwin, obj, info.get_3d_xtiles(),
-						info.get_3d_ytiles(), center);
+		positions[i] = Rotate90l(gwin, obj, info.get_3d_xtiles(frame),
+					info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);	// Remove object from world.
 					// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(3));
@@ -423,9 +425,10 @@ void Barge_object::turn_around
 	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *obj = get_object(i);
+		int frame = obj->get_framenum();
 		Shape_info& info = gwin->get_info(obj);
-		positions[i] = Rotate180(gwin, obj, info.get_3d_xtiles(),
-						info.get_3d_ytiles(), center);
+		positions[i] = Rotate180(gwin, obj, info.get_3d_xtiles(frame),
+					info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);	// Remove object from world.
 					// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(2));

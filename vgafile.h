@@ -196,7 +196,7 @@ class Shape_info
 	unsigned char tfa[3];		// From "tfa.dat".+++++Keep for
 					//   debugging, for now.
 					// 3D dimensions in tiles:
-	unsigned char xtiles, ytiles, ztiles;
+	unsigned char dims[3];		//   (x, y, z)
 	unsigned char weight, volume;	// From "wgtvol.dat".
 	unsigned char shpdims[2];	// From "shpdims.dat".
 	unsigned char ready_type;	// From "ready.dat":  where item can
@@ -207,9 +207,9 @@ class Shape_info
 	Weapon_info *weapon;		// From weapon.dat, if a weapon.
 	void set_tfa_data()		// Set fields from tfa.
 		{
-		xtiles = 1 + (tfa[2]&7);
-		ytiles = 1 + ((tfa[2]>>3)&7);
-		ztiles = (tfa[0] >> 5);
+		dims[0] = 1 + (tfa[2]&7);
+		dims[1] = 1 + ((tfa[2]>>3)&7);
+		dims[2] = (tfa[0] >> 5);
 		}
 	// This private copy constructor and assignment operator are never
 	// defined so copying will cause a link error (intentional)
@@ -217,9 +217,12 @@ class Shape_info
 	const Shape_info & operator = (const Shape_info & other);
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
-	Shape_info() : xtiles(0), ytiles(0), ztiles(0), weight(0), volume(0),
+	Shape_info() : weight(0), volume(0),
 		ready_type(0), weapon_offsets(0), armor(0), weapon(0)
-		{ tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0; }
+		{
+		tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
+		dims[0] = dims[1] = dims[2] = 0;
+		}
 	virtual ~Shape_info();
 	int get_weight()		// Get weight, volume.
 		{ return weight; }
@@ -231,19 +234,22 @@ public:
 		{ return weapon; }
 	int get_weapon_damage()
 		{ return weapon ? weapon->get_damage() : 0; }
+#if 0	/* ++++++++Old way. */
 	int get_3d_height()		// Height (in lifts?).
 		{ return ztiles; }
 	int get_3d_xtiles()		// Dimension in tiles - X.
 		{ return xtiles; }
 	int get_3d_ytiles()		// Dimension in tiles - Y.
 		{ return ytiles; }
-#if 0	/* ++++Might be going to these, which check for reflected frames: */
+#else
 					// Get tile dims., flipped for
 					//   reflected (bit 5) frames.
 	int get_3d_xtiles(unsigned int framenum = 0)
-		{ return tiledims[(framenum >> 5)&1]; }
+		{ return dims[(framenum >> 5)&1]; }
 	int get_3d_ytiles(unsigned int framenum = 0)
-		{ return tiledims[1 ^ ((framenum >> 5)&1)]; }
+		{ return dims[1 ^ ((framenum >> 5)&1)]; }
+	int get_3d_height()		// Height (in lifts?).
+		{ return dims[2]; }
 #endif
 	unsigned char get_tfa(int i)	// For debugging:
 		{ return tfa[i]; }
