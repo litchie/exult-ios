@@ -650,7 +650,7 @@ void init_static_usecodetables()
 	{
 	#include "bgintrinsics.h"
 	};
-	string siut[] = 
+	string siut[] =
 	{
 	#include "siintrinsics.h"
 	};

@@ -199,6 +199,7 @@ on the stack (ie: returns "void").
 Pops one (pop v1) element off the stack (the array index), and uses it as an
 index of the local variable {varoffset}. (varoffset[v1]) The element obtained
 is then pushed onto the stack.
+TODO: NOTE: This opcode has been changed... need to redocument.
 
 > 0x27	NULL	"null"	0	{}
 

@@ -1,9 +1,12 @@
 #CXX = gpp
 CXX = g++
 SRC = src/
-IDIR   = -Iinclude -I../
+IDIR   = -Iinclude -I../ -I../../ -I../../conf/ -I../../files/
 
 CXXFLAGS = -O $(IDIR)
+
+EXTOBJS = ../../conf/Configuration.o ../../conf/XMLEntity.o \
+	../../conf/xmldump.o ../../conf/xmlparse.o ../../files/utils.o
 
 PGM = ucxt
 OBJS = $(SRC)opcodec_.o $(SRC)printucc.o $(SRC)stacki.o \
@@ -12,7 +15,7 @@ OBJS = $(SRC)opcodec_.o $(SRC)printucc.o $(SRC)stacki.o \
 	 
 
 $(PGM): $(OBJS)
-	$(CXX) -o $(PGM) $(OBJS)
+	$(CXX) -o $(PGM) $(OBJS) $(EXTOBJS)
 
 clean:
 	rm src/*.o
