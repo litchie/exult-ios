@@ -23,7 +23,8 @@ class Game_window;
 class ShapeBrowser;
 class SoundTester;
 
-class Cheat {
+class Cheat
+{
  public:
   Cheat();
   ~Cheat();

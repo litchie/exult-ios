@@ -237,11 +237,11 @@ void Game::show_menu()
 		
 		switch(menu->handle_events(gwin,menu_mouse)) {
 		case -1: // Exit
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
 			exit(0);
 		case 0: // Intro
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			play_intro();
 			top_menu();
 			break;
@@ -262,17 +262,17 @@ void Game::show_menu()
 				menu->set_selection(2); // This will start the game
 			break;
 		case 3: // Credits
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			show_credits();
 			top_menu();
 			break;
 		case 4: // Quotes
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			show_quotes();
 			top_menu();
 			break;
 		case 5: // End Game
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			end_game(true);
 			top_menu();
 			break;
@@ -280,7 +280,7 @@ void Game::show_menu()
 			break;
 		}
 	} while(menu->get_selection()!=2);
-	pal.fade_out(30);
+	pal.fade_out(c_fade_out_time);
 	delete menu;
 	gwin->clear_screen();
 	Audio::get_ptr()->stop_music();

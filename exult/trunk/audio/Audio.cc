@@ -386,7 +386,7 @@ void Audio::Init(int _samplerate,int _channels)
 	cout << "Audio system assembled. Ring buffers at "<<_buffering_unit<<endl;
 #endif
 	midi=new MyMidiPlayer();
-	mixer=new Mixer(_buffering_unit,ringsize,actual.silence);
+	mixer=new Mixer(_buffering_unit,_channels,actual.silence);
 #if DEBUG
 	cout << "Audio initialisation OK" << endl;
 #endif

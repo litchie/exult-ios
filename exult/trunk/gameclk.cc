@@ -54,7 +54,7 @@ void Game_clock::set_time_palette
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *main_actor = gwin->get_main_actor();
 	int new_palette;
-	if (main_actor && main_actor->get_flag(Actor::invisible))
+	if (main_actor && main_actor->get_flag(Obj_flags::invisible))
 		{
 		gwin->set_palette(PALETTE_INVISIBLE);
 		return;

@@ -244,6 +244,8 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 					   event.button.y >> scale)) {
 			        exit_loop = entry->handle_event(event);
 			}
+		} else if(event.type==SDL_KEYUP) {
+			std::cerr << "Test" << std::endl;
 		} else if(event.type==SDL_KEYDOWN) {
 			mouse->hide();
 			mouse->blit_dirty();

@@ -43,8 +43,8 @@ void Virtue_stone_object::set_pos
 	unsigned char lift
 	)
 	{
-	pos.tx = (schunk%12)*tiles_per_schunk + tilex;
-	pos.ty = (schunk/12)*tiles_per_schunk + tiley;
+	pos.tx = (schunk%12)*c_fade_out_time + tilex;
+	pos.ty = (schunk/12)*c_fade_out_time + tiley;
 	pos.tz = lift;
 	}
 
@@ -63,11 +63,11 @@ void Virtue_stone_object::write_ireg
 	write_common_ireg(ptr);		// Fill in bytes 1-4.
 	ptr += 4;
 					// Write tilex, tiley.
-	*ptr++ = pos.tx%tiles_per_schunk;
-	*ptr++ = pos.ty%tiles_per_schunk;
+	*ptr++ = pos.tx%c_fade_out_time;
+	*ptr++ = pos.ty%c_fade_out_time;
 					// Get superchunk index.
-	int sx = pos.tx/tiles_per_schunk,
-	    sy = pos.ty/tiles_per_schunk;
+	int sx = pos.tx/c_fade_out_time,
+	    sy = pos.ty/c_fade_out_time;
 	*ptr++ = sy*12 + sx;		// Write superchunk #.
 	*ptr++ = pos.tz;		// Finally, lift in entry[7].??Guess+++
 	*ptr++ = 0;			// Entry[8] unknown.

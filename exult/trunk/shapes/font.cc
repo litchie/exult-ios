@@ -192,7 +192,6 @@ int Font::paint_text
 	)
 	{
 	int x = xoff;
-	int w;
 	int chr;
 	yoff += get_text_baseline();
 	while ((chr = *text++) != 0)

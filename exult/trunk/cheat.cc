@@ -155,10 +155,10 @@ void Cheat::toggle_eggs (void) const {
 void Cheat::toggle_Petra (void) const {
   if (!enabled || (Game::get_game_type() != SERPENT_ISLE)) return;
 
-  if (gwin->get_main_actor()->get_flag(Actor::petra))
-    gwin->get_main_actor()->clear_flag(Actor::petra);
+  if (gwin->get_main_actor()->get_flag(Obj_flags::petra))
+    gwin->get_main_actor()->clear_flag(Obj_flags::petra);
   else
-    gwin->get_main_actor()->set_flag(Actor::petra);
+    gwin->get_main_actor()->set_flag(Obj_flags::petra);
   gwin->set_all_dirty();
 }
 
@@ -277,8 +277,8 @@ void Cheat::cursor_teleport (void) const {
   SDL_GetMouseState(&x, &y);
   x = x>>scale;
   y = y>>scale;
-  Tile_coord t(gwin->get_scrolltx() + x/tilesize,
-	       gwin->get_scrollty() + y/tilesize, 0);
+  Tile_coord t(gwin->get_scrolltx() + x/c_tilesize,
+	       gwin->get_scrollty() + y/c_tilesize, 0);
   gwin->teleport_party(t);
   gwin->center_text("Teleport!!!");
 }
@@ -340,7 +340,7 @@ void Cheat::heal_party (void) const {
       // heal
       party[i]->set_property(Actor::health, party[i]->get_property(Actor::strength));
       // cure poison
-      party[i]->clear_flag(Actor::poisoned);
+      party[i]->clear_flag(Obj_flags::poisoned);
 
       // remove hunger  +++++ what is "normal" food level??
       party[i]->set_property(Actor::food_level, 30);

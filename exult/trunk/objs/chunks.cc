@@ -25,13 +25,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../alpha_kludges.h"
 
+
 #include "chunks.h"
 #include "gamewin.h"
 #include "shapeinf.h"
 #include "citerate.h"
 #include "egg.h"
 #include "objiter.h"
+#include "objs.h"
 #include "ordinfo.h"
+
 
 using std::memset;
 
@@ -151,7 +154,7 @@ void Chunk_cache::set_egged
 		int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
 		for (int ty = tiles.y; ty < stopy; ++ty)
 			for (int tx = tiles.x; tx < stopx; ++tx)
-				eggs[ty*tiles_per_chunk + tx] |= mask;
+				eggs[ty*c_tiles_per_chunk + tx] |= mask;
 		}
 	else				// Remove.
 		{
@@ -172,7 +175,7 @@ void Chunk_cache::set_egged
 		int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
 		for (int ty = tiles.y; ty < stopy; ty++)
 			for (int tx = tiles.x; tx < stopx; tx++)
-				eggs[ty*tiles_per_chunk + tx] &= mask;
+				eggs[ty*c_tiles_per_chunk + tx] &= mask;
 		}
 	}
 
@@ -232,7 +235,7 @@ void Chunk_cache::setup
 	)
 	{
 	Game_object *obj;		// Set 'blocked' tiles.
-	Object_iterator next(chunk);
+	Object_iterator next(chunk->get_objects());
 	while ((obj = next.get_next()) != 0)
 		if (obj->is_egg())
 			update_egg(chunk, (Egg_object *) obj, 1);
@@ -274,7 +277,7 @@ int Chunk_cache::get_highest_blocked
 	int tx, int ty			// Square to test.
 	)
 	{
-	return get_highest_blocked(lift, blocked[ty*tiles_per_chunk + tx]);
+	return get_highest_blocked(lift, blocked[ty*c_tiles_per_chunk + tx]);
 	}
 
 /*
@@ -308,7 +311,7 @@ int Chunk_cache::get_lowest_blocked
 	int tx, int ty			// Square to test.
 	)
 	{
-	return get_lowest_blocked(lift, blocked[ty*tiles_per_chunk + tx]);
+	return get_lowest_blocked(lift, blocked[ty*c_tiles_per_chunk + tx]);
 	}
 
 /*
@@ -365,7 +368,7 @@ int Chunk_cache::is_blocked
 		return 0;
 	}
 					// Get bits.
-	unsigned short tflags = blocked[ty*tiles_per_chunk + tx];
+	unsigned short tflags = blocked[ty*c_tiles_per_chunk + tx];
 
 	int new_high;
 	if (tflags & (1 << lift))	// Something there?
@@ -523,7 +526,7 @@ void Chunk_object_list::add_dependencies
 	)
 	{
 	Game_object *obj;		// Figure dependencies.
-	Nonflat_object_iterator next(this);
+	Nonflat_object_iterator next(objects, first_nonflat);
 	while ((obj = next.get_next()) != 0)
 		{
 		//cout << "Here " << __LINE__ << " " << obj << endl;
@@ -691,14 +694,14 @@ int Chunk_object_list::is_blocked
 	int stopy = starty + ytiles, stopx = startx + xtiles;
 	for (ty = starty; ty < stopy; ty++)
 		{			// Get y chunk, tile-in-chunk.
-		int cy = ty/tiles_per_chunk, rty = ty%tiles_per_chunk;
+		int cy = ty/c_tiles_per_chunk, rty = ty%c_tiles_per_chunk;
 		for (tx = startx; tx < stopx; tx++)
 			{
 			int this_lift;
 			Chunk_object_list *olist = gwin->get_objects(
-					tx/tiles_per_chunk, cy);
+					tx/c_tiles_per_chunk, cy);
 			olist->setup_cache();
-			if (olist->is_blocked(height, lift, tx%tiles_per_chunk,
+			if (olist->is_blocked(height, lift, tx%c_tiles_per_chunk,
 						rty, this_lift, move_flags, max_drop))
 				return (1);
 					// Take highest one.
@@ -727,11 +730,11 @@ int Chunk_object_list::is_blocked
 					// Get chunk tile is in.
 	Game_window *gwin = Game_window::get_game_window();
 	Chunk_object_list *chunk = gwin->get_objects(
-			tile.tx/tiles_per_chunk, tile.ty/tiles_per_chunk);
+			tile.tx/c_tiles_per_chunk, tile.ty/c_tiles_per_chunk);
 	chunk->setup_cache();		// Be sure cache is present.
 	int new_lift;			// Check it within chunk.
-	if (chunk->is_blocked(height, tile.tz, tile.tx%tiles_per_chunk,
-				tile.ty%tiles_per_chunk, new_lift, move_flags, max_drop))
+	if (chunk->is_blocked(height, tile.tz, tile.tx%c_tiles_per_chunk,
+				tile.ty%c_tiles_per_chunk, new_lift, move_flags, max_drop))
 		return (1);
 	tile.tz = new_lift;
 	return (0);
@@ -792,14 +795,14 @@ int Chunk_object_list::is_blocked
 	int x, y;			// Go through horiz. part.
 	for (y = horizy0; y <= horizy1; y++)
 		{			// Get y chunk, tile-in-chunk.
-		int cy = y/tiles_per_chunk, rty = y%tiles_per_chunk;
+		int cy = y/c_tiles_per_chunk, rty = y%c_tiles_per_chunk;
 		for (x = horizx0; x <= horizx1; x++)
 			{
 			int new_lift;
 			Chunk_object_list *olist = gwin->get_objects(
-					x/tiles_per_chunk, cy);
+					x/c_tiles_per_chunk, cy);
 			olist->setup_cache();
-			int rtx = x%tiles_per_chunk;
+			int rtx = x%c_tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
 					new_lift, move_flags, max_drop) ||
 			    new_lift != from.tz)
@@ -809,14 +812,14 @@ int Chunk_object_list::is_blocked
 					// Do vert. block.
 	for (x = vertx0; x <= vertx1; x++)
 		{			// Get x chunk, tile-in-chunk.
-		int cx = x/tiles_per_chunk, rtx = x%tiles_per_chunk;
+		int cx = x/c_tiles_per_chunk, rtx = x%c_tiles_per_chunk;
 		for (y = verty0; y <= verty1; y++)
 			{
 			int new_lift;
 			Chunk_object_list *olist = gwin->get_objects(
-					cx, y/tiles_per_chunk);
+					cx, y/c_tiles_per_chunk);
 			olist->setup_cache();
-			int rty = y%tiles_per_chunk;
+			int rty = y%c_tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
 					new_lift, move_flags, max_drop) ||
 			    new_lift != from.tz)
@@ -858,7 +861,7 @@ void Chunk_object_list::try_all_eggs
 		if (!chunk)
 			continue;
 		chunk->setup_cache();	// I think we should do this.
-		Object_iterator next(chunk);
+		Object_iterator next(chunk->objects);
 		Game_object *each;
 		while ((each = next.get_next()) != 0)
 			if (each->is_egg())
@@ -895,7 +898,7 @@ void Chunk_object_list::add_dungeon_bits
 	for (int ty = tiles.y; ty < endy; ty++)
 		for (int tx = tiles.x; tx < endx; tx++)
 			{
-			int tnum = ty*tiles_per_chunk + tx;
+			int tnum = ty*c_tiles_per_chunk + tx;
 			dungeon_bits[tnum/8] |= (1 << (tnum%8));
 			}
 	}
@@ -909,7 +912,7 @@ void Chunk_object_list::setup_dungeon_bits
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Object_iterator next(this);
+	Object_iterator next(this->objects);
 	Game_object *each;
 	while ((each = next.get_next()) != 0)
 		{
@@ -953,7 +956,7 @@ void Chunk_object_list::gravity
 	while (next_chunk.get_next(tiles, cx, cy))
 		{
 		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
-		Object_iterator objs(chunk);
+		Object_iterator objs(chunk->objects);
 		Game_object *obj;
 		while ((obj = objs.get_next()) != 0)
 			{
@@ -1007,3 +1010,11 @@ int Chunk_object_list::is_roof(int tx, int ty, int lift)
 	return height;
 }
 
+
+/*
+ *  Is object within dungeon?
+ */
+int Chunk_object_list::in_dungeon(Game_object *obj) // Is object within dungeon?
+{
+	return in_dungeon(obj->get_tx(), obj->get_ty());
+}

@@ -35,7 +35,7 @@
 #include "palette.h"
 #include "vgafile.h"
 
-extern const int tiles_per_chunk;
+extern const int c_tiles_per_chunk;
 
 class Game_window;
 class Image_window8;
@@ -128,9 +128,9 @@ public:
 	virtual void show_credits();
 	virtual bool new_game(Vga_file &shapes);
 	virtual int  get_start_tile_x()
-		{ return (64*tiles_per_chunk); }
+		{ return (64*c_tiles_per_chunk); }
 	virtual int  get_start_tile_y()
-		{ return (136*tiles_per_chunk); }
+		{ return (136*c_tiles_per_chunk); }
 	virtual void show_journey_failed();
 };
 
@@ -146,9 +146,9 @@ public:
 	virtual void show_credits();
 	virtual bool new_game(Vga_file &shapes);
 	virtual int  get_start_tile_x()
-		{ return (25*tiles_per_chunk); }
+		{ return (25*c_tiles_per_chunk); }
 	virtual int  get_start_tile_y()
-		{ return (155*tiles_per_chunk); }
+		{ return (155*c_tiles_per_chunk); }
 	virtual void show_journey_failed();
 };
 

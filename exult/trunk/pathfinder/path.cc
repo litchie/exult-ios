@@ -32,8 +32,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif /* !HAVE_HASH_SET */
 
 #include <iostream>
+
 #include "PathFinder.h"
-#include "objs.h"
+#include "exult_constants.h"
+#include "vec.h"
 
 #ifdef MACOS
   using Metrowerks::hash_set;
@@ -61,8 +63,8 @@ public:
 			newt = Tile_coord(tile.tx + coords[2*index],
 				tile.ty + coords[2*index + 1], tile.tz);
 			index++;
-			if (newt.tx >= 0 && newt.tx < num_tiles &&
-			    newt.ty >= 0 && newt.ty < num_tiles)
+			if (newt.tx >= 0 && newt.tx < c_num_tiles &&
+			    newt.ty >= 0 && newt.ty < c_num_tiles)
 				return (1);
 			}
 		return (0);

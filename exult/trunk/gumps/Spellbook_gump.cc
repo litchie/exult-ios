@@ -194,7 +194,7 @@ void Spellbook_gump::set_avail
 	int r;
 	for (r = 0; r < 8; r++)		// Count, by frame (frame==bit#).
 		reagant_counts[r] = book_owner->count_objects(
-							REAGANTS, -359, r);
+							REAGANTS, c_any_qual, r);
 	for (i = 0; i < 9*8; i++)	// Now figure what's available.
 	{
 		avail[i] = 10000;	// 'infinite'.
@@ -297,7 +297,7 @@ void Spellbook_gump::do_spell
 			for (int r = 0; flags; r++, flags = flags >> 1)
 					// Remove 1 of each required reagant.
 				if (flags&1)
-					book_owner->remove_quantity(1, REAGANTS, -359, r);
+					book_owner->remove_quantity(1, REAGANTS, c_any_qual, r);
 		}
 		gwin->end_gump_mode();
 		gwin->get_usecode()->call_usecode(Get_usecode(spell),

@@ -21,6 +21,7 @@
 #ifndef ALPHA_LINUX_CXX
 #  include <unistd.h>
 #  include <cstdio>
+#  include <cmath>
 #  include <iostream>
 #  include <cmath>
 #endif
@@ -29,10 +30,15 @@
 #include "Configuration.h"
 extern	Configuration	*config;
 
+using std::atof;
+using std::atoi;
 using std::cerr;
 using std::endl;
 using std::memcmp;
 using std::memcpy;
+using std::pow;
+using std::string;
+
 
 // This is used to correct incorrect patch, vol and pan changes in midi files
 // The bias is just a value to used to work out if a vol and pan belong with a 

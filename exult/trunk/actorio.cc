@@ -89,24 +89,24 @@ Actor::Actor
 	// Read first set of flags
 	const int rflags = Read2(nfile);
 	
-	if ((rflags >> 0x7) & 1) set_flag (Actor::asleep);
-	if ((rflags >> 0x8) & 1) set_flag (Actor::charmed);
-	if ((rflags >> 0x9) & 1) set_flag (Actor::cursed);
-	if ((rflags >> 0xD) & 1) set_flag (Actor::poisoned);
-	if ((rflags >> 0xC) & 1) set_flag (Actor::paralyzed);
-	if ((rflags >> 0xE) & 1) set_flag (Actor::protection);
+	if ((rflags >> 0x7) & 1) set_flag (Obj_flags::asleep);
+	if ((rflags >> 0x8) & 1) set_flag (Obj_flags::charmed);
+	if ((rflags >> 0x9) & 1) set_flag (Obj_flags::cursed);
+	if ((rflags >> 0xD) & 1) set_flag (Obj_flags::poisoned);
+	if ((rflags >> 0xC) & 1) set_flag (Obj_flags::paralyzed);
+	if ((rflags >> 0xE) & 1) set_flag (Obj_flags::protection);
 
 	// Guess
-	if ((rflags >> 0xA) & 1) set_flag (Actor::on_moving_barge);
+	if ((rflags >> 0xA) & 1) set_flag (Obj_flags::on_moving_barge);
 	alignment = (rflags >> 3)&3;
 
 /*	Not used by exult
-	if ((rflags >> 0xB) & 1) set_flag (Actor::in_party);
-	if ((rflags >> 0xF) & 1) set_flag (Actor::dead);
+	if ((rflags >> 0xB) & 1) set_flag (Obj_flags::in_party);
+	if ((rflags >> 0xF) & 1) set_flag (Obj_flags::dead);
 
 	Unknown in U7tech
-	if ((rflags >> 0x5) & 1) set_flag (Actor::unknown);
-	if ((rflags >> 0x6) & 1) set_flag (Actor::unknown);
+	if ((rflags >> 0x5) & 1) set_flag (Obj_flags::unknown);
+	if ((rflags >> 0x6) & 1) set_flag (Obj_flags::unknown);
 */
 	
 					// Get char. atts.
@@ -142,7 +142,7 @@ Actor::Actor
 	// Combat skill (0-6), Petra (7)
 	int combat_val = Read1(nfile);
 	set_property((int) Actor::combat, combat_val & 0x7F);
-	if ((combat_val << 7) & 1) set_flag (Actor::petra);
+	if ((combat_val << 7) & 1) set_flag (Obj_flags::petra);
 
 	schedule_type = Read1(nfile);
 	nfile.seekg(1, ios::cur);	// Default attack mode
@@ -165,12 +165,12 @@ Actor::Actor
 		else
 			set_property((int) Actor::mana, magic_val);
 
-		set_flag (Actor::met);
+		set_flag (Obj_flags::met);
 	}
 	else
 	{
 		set_ident(magic_val&0x1F);
-		if ((mana_val << 0) & 1) set_flag (Actor::met);
+		if ((mana_val << 0) & 1) set_flag (Obj_flags::met);
 		if ((mana_val << 1) & 1) set_siflag (Actor::no_spell_casting);
 		if ((mana_val << 2) & 1) set_siflag (Actor::zombie);
 	}
@@ -338,15 +338,15 @@ void Actor::write
 	//Write first set of flags
 	int iout = 0;
 	
-	if (get_flag (Actor::asleep)) iout |= 1 << 0x7;
-	if (get_flag (Actor::charmed)) iout |= 1 << 0x8;
-	if (get_flag (Actor::cursed)) iout |= 1 << 0x9;
-	if (get_flag (Actor::paralyzed)) iout |= 1 << 0xC;
-	if (get_flag (Actor::poisoned)) iout |= 1 << 0xD;
-	if (get_flag (Actor::protection)) iout |= 1 << 0xE;
+	if (get_flag (Obj_flags::asleep)) iout |= 1 << 0x7;
+	if (get_flag (Obj_flags::charmed)) iout |= 1 << 0x8;
+	if (get_flag (Obj_flags::cursed)) iout |= 1 << 0x9;
+	if (get_flag (Obj_flags::paralyzed)) iout |= 1 << 0xC;
+	if (get_flag (Obj_flags::poisoned)) iout |= 1 << 0xD;
+	if (get_flag (Obj_flags::protection)) iout |= 1 << 0xE;
 
 	// Guess
-	if (get_flag (Actor::on_moving_barge)) iout |= 1 << 0xA;
+	if (get_flag (Obj_flags::on_moving_barge)) iout |= 1 << 0xA;
 					// Alignment is bits 3-4.
 	iout |= ((alignment&3) << 3);
 
@@ -368,7 +368,7 @@ void Actor::write
 
 
 	iout = get_property(Actor::combat);
-	if (get_flag (Actor::petra)) iout |= 1 << 7;
+	if (get_flag (Obj_flags::petra)) iout |= 1 << 7;
 	nfile.put(iout);
 	
 
@@ -388,7 +388,7 @@ void Actor::write
 	else
 	{
 		magic_val = get_ident() & 0x1F;
-		if (get_flag (Actor::met)) mana_val |= 1;
+		if (get_flag (Obj_flags::met)) mana_val |= 1;
 		if (get_siflag (Actor::no_spell_casting)) mana_val |= 1 << 1;
 		if (get_siflag (Actor::zombie)) mana_val |= 1 << 2;
 	}

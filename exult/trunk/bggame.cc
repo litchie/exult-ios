@@ -31,6 +31,8 @@
 #  include <cstring>
 #endif
 
+using std::abs;
+using std::rand;
 using std::toupper;
 
 void create_static(Image_buffer8* ib, int w, int h, int x, int y,
@@ -187,7 +189,7 @@ BG_Game::~BG_Game()
 }
 
 #define WAITDELAY(x) if (wait_delay(x)) { \
-			pal.fade_out(30); \
+			pal.fade_out(c_fade_out_time); \
 			delete backup; delete backup2; delete backup3; \
 			delete cbackup; delete cbackup2; delete cbackup3; \
 			delete noise; delete plasma; \
@@ -195,19 +197,19 @@ BG_Game::~BG_Game()
 		     }
 
 #define WAITDELAYCYCLE(x) if (wait_delay((x), 16, 95)) { \
-			pal.fade_out(30); \
+			pal.fade_out(c_fade_out_time); \
 			delete backup; delete backup2; delete backup3; \
 			delete cbackup; delete cbackup2; delete cbackup3; \
 			return; \
 		     }
 
 #define WAITDELAYCYCLE2(x) if (wait_delay((x), 250, 5)) { \
-			pal.fade_out(30); \
+			pal.fade_out(c_fade_out_time); \
 			return; \
 		     }
 
 #define WAITDELAYCYCLE3(x) if (wait_delay((x), 240, 15)) { \
-			pal.fade_out(30); \
+			pal.fade_out(c_fade_out_time); \
 			return; \
 		     }
 
@@ -243,10 +245,10 @@ void BG_Game::play_intro()
 	gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
 	font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
 	font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
-	pal.fade_in(30);
+	pal.fade_in(c_fade_in_time);
 	skip = wait_delay(2000);
 	play_midi(0);	// Start the birdsongs just before we fade
-	pal.fade_out(30);
+	pal.fade_out(c_fade_out_time);
 	if(skip)
 		return;
 
@@ -261,7 +263,7 @@ void BG_Game::play_intro()
 	gwin->paint_shape(topx+160,topy+50,shapes.get_shape(0x0D,0));
 	font->center_text(ibuf, centerx, centery+50, txt_msg[2]);
 	pal.load("<STATIC>/intropal.dat",4);
-	pal.fade_in(30);
+	pal.fade_in(c_fade_in_time);
 
 	WAITDELAY(10000);
 
@@ -464,7 +466,7 @@ void BG_Game::play_intro()
 
 		win->show();
 		if(wait_delay(50, 16, 95)) {
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			delete [] txt;
 			delete backup; delete backup2; delete backup3;
 			delete cbackup; delete cbackup2; delete cbackup3;
@@ -504,7 +506,7 @@ void BG_Game::play_intro()
 		gwin->paint_shape(centerx,centery-1,shapes.get_shape(0x23,i));
 		win->show();
 		if(wait_delay(70, 16, 95)) {
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			Audio::get_ptr()->cancel_streams();
 			delete backup; delete cbackup;
 			return;	
@@ -703,21 +705,21 @@ void BG_Game::end_game(bool success)
 			text.show_line(gwin, topx, topx+320, topy+20+i*12, i);
 		}
 		
-		pal.fade_in(30);
+		pal.fade_in(c_fade_in_time);
 		wait_delay(10000);
-		pal.fade_out(30);
+		pal.fade_out(c_fade_out_time);
 		
 		gwin->clear_screen();
 		font->center_text(ibuf, centerx, centery-10, "The end of Ultima VII");
-		pal.fade_in(30);
+		pal.fade_in(c_fade_in_time);
 		wait_delay(4000);
-		pal.fade_out(30);
+		pal.fade_out(c_fade_out_time);
 		
 		gwin->clear_screen();
 		font->center_text(ibuf, centerx, centery-10, "The end of Britannia as you know it!");
-		pal.fade_in(30);
+		pal.fade_in(c_fade_in_time);
 		wait_delay(4000);
-		pal.fade_out(30);
+		pal.fade_out(c_fade_out_time);
 
 		return;
 	}

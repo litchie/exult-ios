@@ -1,12 +1,5 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
- **	Gamewin.h - X-windows Ultima7 map browser.
- **
- **	Written: 7/22/98 - JSF
- **/
-
 /*
-Copyright (C) 1998  Jeffrey S. Freedman
+Copyright (C) 2000 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,32 +19,38 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef GAMEWIN_H
 #define GAMEWIN_H
 
+#include "exult_constants.h"
+#include "flags.h"
 #include "iwin8.h"
 #include "lists.h"
-#include "objs.h"
+#include "rect.h"
+#include "tiles.h"
+#include "shapeid.h"
 #include "shapevga.h"
 #include "gameclk.h"
 
 #include <string>	// STL string
 #include <vector>	// STL container
 
-class Palette;
+class Actor;
 class Barge_object;
-class Main_actor;
-class Monster_info;
 class Chunk_object_list;
+class Egg_object;
+class Font;
+class Fonts_vga_file;
+class Game_object;
 class Gump;
 class Gump_button;
-class Special_effect;
-class Usecode_machine;
-class Actor;
-class Time_queue;
-class Npc_proximity_handler;
-class Npc_face_info;
-class Egg_object;
-class Fonts_vga_file;
 class Ireg_game_object;
-class Font;
+class Main_actor;
+class Monster_info;
+class Npc_actor;
+class Npc_face_info;
+class Npc_proximity_handler;
+class Palette;
+class Special_effect;
+class Time_queue;
+class Usecode_machine;
 
 /*
  *	The main game window:
@@ -108,7 +107,7 @@ private:
 	Monster_info *monster_info;	// Array from 'monsters.dat'.
 	std::vector<Egg_object *> path_eggs;	// Path eggs, indexed by 'quality'.
 					// A list of objects in each chunk.
-	Chunk_object_list *objects[num_chunks][num_chunks];
+	Chunk_object_list *objects[c_num_chunks][c_num_chunks];
 	bool schunk_read[144]; // Flag for reading in each "ifix".
 	int scrolltx, scrollty;
 	Rectangle scroll_bounds;	// Walking outside this scrolls.
@@ -168,8 +167,8 @@ public:
 		{ return Rectangle(0, 0, win->get_width(), win->get_height());}
 	Rectangle get_win_tile_rect()	// Get it in tiles, rounding up.
 		{ return Rectangle(get_scrolltx(), get_scrollty(),
-			(get_width() + tilesize - 1)/tilesize,
-			(get_height() + tilesize - 1)/tilesize); }
+			(get_width() + c_tilesize - 1)/c_tilesize,
+			(get_height() + c_tilesize - 1)/c_tilesize); }
 					// Clip rectangle to window's.
 	Rectangle clip_to_win(Rectangle r)
 		{
@@ -197,8 +196,8 @@ public:
 	void set_palette()		// Set for time, flags, lighting.
 		{ clock.set_palette(); }
 	bool is_chunk_read(int cx, int cy)
-		{ return schunk_read[12*(cy/chunks_per_schunk) +
-						cx/chunks_per_schunk]; }
+		{ return schunk_read[12*(cy/c_chunks_per_schunk) +
+						cx/c_chunks_per_schunk]; }
 					// Get/create objs. list for a chunk.
 	Chunk_object_list *get_objects(int cx, int cy)
 		{
@@ -207,12 +206,11 @@ public:
 			list = create_chunk(cx, cy);
 		return (list);
 		}
-	Chunk_object_list *get_objects(Game_object *obj)
-		{ return get_objects(obj->get_cx(), obj->get_cy()); }
+	Chunk_object_list *get_objects(Game_object *obj);
 	Chunk_object_list *get_objects_safely(int cx, int cy)
 		{
-		return (cx >= 0 && cx < num_chunks && 
-		        cy >= 0 && cy < num_chunks ? get_objects(cx, cy) : 0);
+		return (cx >= 0 && cx < c_num_chunks && 
+		        cy >= 0 && cy < c_num_chunks ? get_objects(cx, cy) : 0);
 		}
 	inline Barge_object *get_moving_barge() const
 		{ return moving_barge; }
@@ -302,8 +300,7 @@ public:
 		{ return shapes; }
 	Shape_info& get_info(int shnum)	// Get shape info.
 		{ return shapes.get_info(shnum); }
-	Shape_info& get_info(const Game_object *obj)
-		{ return get_info(obj->get_shapenum()); }
+	Shape_info& get_info(const Game_object *obj);
 					// Get shape from shapes.vga.
 	Shape_frame *get_shape(int shapenum, int framenum)
 		{ return shapes.get_shape(shapenum, framenum); }
@@ -321,25 +318,7 @@ public:
 				s->get_width(), s->get_height());
 		}
 					// Get screen area used by object.
-	Rectangle get_shape_rect(const Game_object *obj)
-		{
-		Shape_frame *s = get_shape(*obj);
-		if(!s)
-			{
-			// This is probably fatal.
-#if DEBUG
-			std::cerr << "DEATH! get_shape() returned a NULL pointer: " << __FILE__ << ":" << __LINE__ << std::endl;
-			std::cerr << "Betcha it's a little doggie." << std::endl;
-#endif
-			return Rectangle(0,0,0,0);
-			}
-		int tx, ty, tz;		// Get tile coords.
-		obj->get_abs_tile(tx, ty, tz);
-		int lftpix = 4*tz;
-		return get_shape_rect(s,
-			(tx + 1 - get_scrolltx())*tilesize - 1 - lftpix,
-			(ty + 1 - get_scrollty())*tilesize - 1 - lftpix);
-		}
+	Rectangle get_shape_rect(const Game_object *obj);
 	Shape_frame *get_gump_shape(int shapenum, int framenum, bool paperdoll = false)
 		{ return paperdoll ? paperdolls.get_shape(shapenum, framenum) : gumps.get_shape(shapenum, framenum); }
 					// Get screen area of a gump.
@@ -349,14 +328,7 @@ public:
 	Shape_frame *get_sprite_shape(int shapenum, int framenum)
 		{ return sprites.get_shape(shapenum, framenum); }
 					// Get screen loc. of object.
-	void get_shape_location(Game_object *obj, int& x, int& y)
-		{
-		int tx, ty, tz;		// Get tile coords.
-		obj->get_abs_tile(tx, ty, tz);
-		int lft = 4*tz;
-		x = (tx + 1 - scrolltx)*tilesize - 1 - lft;
-		y = (ty + 1 - scrollty)*tilesize - 1 - lft;
-		}
+	void get_shape_location(Game_object *obj, int& x, int& y);
 					// Paint shape in window.
 	void paint_shape(int xoff, int yoff, Shape_frame *shape,
 						int translucent = 0)
@@ -367,8 +339,8 @@ public:
 				return;
 			}
 		if (!shape->rle)	// Not RLE?
-			win->copy8(shape->data, 8, 8, xoff - tilesize, 
-						yoff - tilesize);
+			win->copy8(shape->data, 8, 8, xoff - c_tilesize, 
+						yoff - c_tilesize);
 		else if (!translucent)
 			shape->paint_rle(win->get_ib8(), xoff, yoff);
 		else
@@ -441,7 +413,8 @@ public:
 	void get_ireg_objects(int schunk);
 	void read_ireg_objects(std::istream& ireg, int scx, int scy,
 					Game_object *container = 0,
-			unsigned long flags = (1<<Game_object::okay_to_take));
+//			unsigned long flags = (1<<11));
+			unsigned long flags = (1<<Obj_flags::okay_to_take));
 	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
 			int frnum, int tilex, int tiley, int lift);
 					// Create special objects.

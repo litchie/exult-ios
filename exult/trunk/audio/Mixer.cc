@@ -59,11 +59,20 @@ using std::memset;
 using std::vector;
 
 static const int Mixer_Sample_Magic_Number=0x55443322;
-
 //---- Mixer ---------------------------------------------------------
 
+Mixer::Mixer(uint32 __buffer_size,uint32 channels, uint8 silence_value) : audio_streams(),stream_mutex(SDL_CreateMutex())
+{
+	buffer_length=__buffer_size*channels;
+	silence=silence_value;
+	
+	temp_buffer=new uint8[buffer_length];
+}
+
+
 Mixer::~Mixer()
-{ 
+{
+	delete [] temp_buffer;
 	SDL_DestroyMutex(stream_mutex);
 }
 
@@ -78,14 +87,16 @@ Mixer::~Mixer()
 void fill_audio(void *udata, uint8 *stream, int len)
 {
 	Mixer *m = Audio::get_ptr()->mixer;
-	
+#if MACOS
+#else
 	if( m )
 		m->fill_audio_func(udata,stream,len);
+#endif
 }
 
 void	compress_audio_sample(uint8 *buf,int len)
 {
-	return;
+#if 0
 	uint8	*dbuf=new uint8[len*2];
 	uint8	*source=buf;
 	uint8	*dest=dbuf;
@@ -103,6 +114,7 @@ void	compress_audio_sample(uint8 *buf,int len)
 		}
 	memcpy(buf,dbuf,len);
 	delete [] dbuf;
+#endif
 }
 
 void Mixer::cancel_raw(void)
@@ -116,6 +128,9 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 	cout << "fill_audio_func: " << len << endl;
 	// cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
 #endif
+	if( len > buffer_length )
+		return;		// This should never happen, but just to keep on the safe side we check anyway...
+	
 	stream_lock();
 	if(audio_streams.size()==0)
 	{
@@ -130,7 +145,6 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 	{
 		int which=0;
 		vector<pcb_list::iterator> close_list;
-		uint8	*temp_buffer=new uint8[len];
 		for(pcb_list::iterator it=audio_streams.begin();
 			it!=audio_streams.end();++it)
 		{
@@ -165,7 +179,6 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 			SDL::MixAudio(stream, temp_buffer, len, SDL_MIX_MAXVOLUME);
 			++which;
 		}
-		delete [] temp_buffer;
 		for(vector<pcb_list::iterator>::iterator it=close_list.begin();it!=close_list.end();++it)
 		{
 			(**it)->end_consumption();
@@ -193,13 +206,6 @@ void	Mixer::play(uint8 *sound_data,uint32 len)
 	audiostream->produce(sound_data,len);
 	audiostream->end_production();
 }
-
-Mixer::Mixer(uint32 __buffer_size,uint32 ringsize,uint8 silence_value) : audio_streams(),stream_mutex(SDL_CreateMutex())
-{
-	buffer_length=__buffer_size;
-	silence=silence_value;
-}
-
 
 #if 0
 void	Mixer::set_auxilliary_audio(int fh)

@@ -23,7 +23,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include "../alpha_kludges.h"
+#include "alpha_kludges.h"
 
 #include "objs.h"
 #include "chunks.h"
@@ -34,9 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucmachine.h"
 #include "items.h"
 #include "dir.h"
-// #include "game.h"
 #include "ordinfo.h"
-#include "alpha_kludges.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #endif
@@ -186,7 +184,7 @@ void Game_object::move
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Figure new chunk.
-	int newcx = newtx/tiles_per_chunk, newcy = newty/tiles_per_chunk;
+	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
 	Chunk_object_list *newchunk = gwin->get_objects_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
@@ -198,7 +196,7 @@ void Game_object::move
 		oldchunk->remove(this);
 		}
 	set_lift(newlift);		// Set new values.
-	shape_pos = ((newtx%tiles_per_chunk) << 4) + newty%tiles_per_chunk;
+	shape_pos = ((newtx%c_tiles_per_chunk) << 4) + newty%c_tiles_per_chunk;
 	newchunk->add(this);		// Updates cx, cy.
 	gwin->add_dirty(this);		// And repaint new area.
 	}
@@ -302,15 +300,15 @@ int Game_object::find_nearby
 	Tile_coord pos,			// Look near this point.
 	int shapenum,			// Shape to look for.  
 					//   -1=any (but always use mask?),
-					//   -359=any.
+					//   c_any_shapenum=any.
 	int delta,			// # tiles to look in each direction.
 	int mask,			// Guessing+++:
 					//   4 == party members only???
 					//   8 == all NPC's.
 					//  16 == egg or barge.
 					//  32 == monsters? 
-	int qual,			// Quality, or -359 for any.
-	int framenum			// Frame #, or -359 for any.
+	int qual,			// Quality, or c_any_qual for any.
+	int framenum			// Frame #, or c_any_framenum for any.
 	)
 	{
 	if (delta < 0)			// +++++Until we check all old callers.
@@ -322,20 +320,20 @@ int Game_object::find_nearby
 	Rectangle tiles(pos.tx - delta, pos.ty - delta, 1 + 2*delta, 1 + 
 								2*delta);
 					// Stay within world.
-	Rectangle world(0, 0, num_chunks*tiles_per_chunk, 
-						num_chunks*tiles_per_chunk);
+	Rectangle world(0, 0, c_num_chunks*c_tiles_per_chunk, 
+						c_num_chunks*c_tiles_per_chunk);
 	tiles = tiles.intersect(world);
 					// Figure range of chunks.
-	int start_cx = tiles.x/tiles_per_chunk,
-	    end_cx = (tiles.x + tiles.w - 1)/tiles_per_chunk;
-	int start_cy = tiles.y/tiles_per_chunk,
-	    end_cy = (tiles.y + tiles.h - 1)/tiles_per_chunk;
+	int start_cx = tiles.x/c_tiles_per_chunk,
+	    end_cx = (tiles.x + tiles.w - 1)/c_tiles_per_chunk;
+	int start_cy = tiles.y/c_tiles_per_chunk,
+	    end_cy = (tiles.y + tiles.h - 1)/c_tiles_per_chunk;
 					// Go through all covered chunks.
 	for (int cy = start_cy; cy <= end_cy; cy++)
 		for (int cx = start_cx; cx <= end_cx; cx++)
 			{		// Go through objects.
 			Chunk_object_list *chunk = gwin->get_objects(cx, cy);
-			Object_iterator next(chunk);
+			Object_iterator next(chunk->get_objects());
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)
 				{	// Check shape.
@@ -345,17 +343,17 @@ int Game_object::find_nearby
 						continue;
 					}
 #if 0
-				else if (shapenum == -359 &&
+				else if (shapenum == c_any_shapenum &&
 							!obj->get_npc_num() &&
 						 obj != gwin->get_main_actor())
 					continue;
 #endif
-				if (qual != -359 && obj->get_quality() != qual)
+				if (qual != c_any_qual && obj->get_quality() != qual)
 					continue;
 				if ((mask || shapenum == -1) && 
 						!Check_mask(gwin, obj, mask))
 					continue;
-				if (framenum !=  -359 &&
+				if (framenum !=  c_any_framenum &&
 					obj->get_framenum() != framenum)
 					continue;
 				int tx, ty, tz;
@@ -389,7 +387,7 @@ int Game_object::find_nearby_actors
 	) const
 	{
 	return Game_object::find_nearby(vec, get_abs_tile_coord(), shapenum,
-						delta, 8, -359, -359);
+						delta, 8, c_any_qual, c_any_framenum);
 	}
 
 int Game_object::find_nearby_eggs
@@ -400,7 +398,7 @@ int Game_object::find_nearby_eggs
 	) const
 	{
 	return Game_object::find_nearby(vec, get_abs_tile_coord(), shapenum,
-						delta, 16, -359, -359);
+						delta, 16, c_any_qual, c_any_framenum);
 	}
 
 int Game_object::find_nearby
@@ -425,7 +423,7 @@ int Game_object::find_nearby
 
 Game_object *Game_object::find_closest
 	(
-	int *shapenums,			// Shapes to look for. -359=any NPC.
+	int *shapenums,			// Shapes to look for. c_any_shapenum=any NPC.
 	int num_shapes			// Size of shapenums.
 	)
 	{
@@ -470,7 +468,7 @@ Tile_coord Game_object::find_unblocked_tile
 	{
 					// Get box to go through.
 	Rectangle box(pos.tx - dist, pos.ty - dist, 2*dist + 1, 2*dist + 1);
-	Rectangle world(0, 0, num_tiles, num_tiles);
+	Rectangle world(0, 0, c_num_tiles, c_num_tiles);
 	box = box.intersect(world);
 	int stopx = box.x + box.w, stopy = box.y + box.h;
 	for (int y = box.y; y < stopy; y++)
@@ -515,10 +513,10 @@ Game_object *Game_object::find_blocking
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Chunk_object_list *chunk = gwin->get_objects(tile.tx/tiles_per_chunk,
-						     tile.ty/tiles_per_chunk);
+	Chunk_object_list *chunk = gwin->get_objects(tile.tx/c_tiles_per_chunk,
+						     tile.ty/c_tiles_per_chunk);
 	Game_object *obj;
-	Object_iterator next(chunk);
+	Object_iterator next(chunk->get_objects());
 	while ((obj = next.get_next()) != 0)
 		{
 		int tx, ty, tz;		// Get object's coords.
@@ -629,8 +627,8 @@ void Game_object::paint
 	get_abs_tile(tx, ty, tz);
 	int liftpix = 4*tz;
 	gwin->paint_shape(
-		(tx + 1 - gwin->get_scrolltx())*tilesize - 1 - liftpix,
-		(ty + 1 - gwin->get_scrollty())*tilesize - 1 - liftpix,
+		(tx + 1 - gwin->get_scrolltx())*c_tilesize - 1 - liftpix,
+		(ty + 1 - gwin->get_scrollty())*c_tilesize - 1 - liftpix,
 					get_shapenum(), get_framenum());
 #else
 	int x, y;
@@ -1287,7 +1285,7 @@ static void Get_connected
 	vec.append(obj);
 	Game_object_vector newones;
 					// (Delta = 2 ok for glass counters.)
-	obj->find_nearby(newones, obj->get_shapenum(), 2, 0, -359, -359);
+	obj->find_nearby(newones, obj->get_shapenum(), 2, 0, c_any_qual, c_any_framenum);
 	bool found = false;
 	for (Game_object_vector::const_iterator it = newones.begin();
 						it != newones.end(); ++it)
@@ -1366,27 +1364,6 @@ void Game_object::write_common_ireg
 	int shapenum = get_shapenum(), framenum = get_framenum();
 	buf[2] = shapenum&0xff;
 	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
-	}
-
-/*
- *	Delete the chain.
- */
-
-Object_list::~Object_list
-	(
-	)
-	{
-	if (!first)
-		return;
-	Game_object *objects = first;
-	Game_object *obj;
-	do
-		{
-		obj = objects;
-		objects = obj->get_next();
-		delete obj;
-		}
-	while (obj != first);
 	}
 
 /*
@@ -1553,10 +1530,10 @@ int Sprite::next_frame
 					// Update coords. within world.
 	*major_coord += major_dir*new_major;
 	*minor_coord += minor_dir*new_minor;
-	new_cx = curx/chunksize;	// Return new chunk pos.
-	new_cy = cury/chunksize;
-	new_tx = (curx%chunksize)/tilesize;
-	new_ty = (cury%chunksize)/tilesize;
+	new_cx = curx/c_chunksize;	// Return new chunk pos.
+	new_cy = cury/c_chunksize;
+	new_tx = (curx%c_chunksize)/c_tilesize;
+	new_ty = (cury%c_chunksize)/c_tilesize;
 	if (frames_seq)			// Got a sequence of frames?
 		next_frame = frames_seq->get_next(frame_index);
 	else

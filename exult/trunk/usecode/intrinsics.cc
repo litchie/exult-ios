@@ -443,10 +443,10 @@ USECODE_INTRINSIC(create_new_object)
 
 	if (num_parms == 2)
 	{
-		tx = parms[1].get_elem(0).get_int_value()%tiles_per_chunk;
-		ty = parms[1].get_elem(1).get_int_value()%tiles_per_chunk;
-		cx = parms[1].get_elem(0).get_int_value()/tiles_per_chunk;
-		cy = parms[1].get_elem(1).get_int_value()/tiles_per_chunk;
+		tx = parms[1].get_elem(0).get_int_value()%c_tiles_per_chunk;
+		ty = parms[1].get_elem(1).get_int_value()%c_tiles_per_chunk;
+		cx = parms[1].get_elem(0).get_int_value()/c_tiles_per_chunk;
+		cy = parms[1].get_elem(1).get_int_value()/c_tiles_per_chunk;
 		lift = parms[1].get_elem(2).get_int_value();
 		cout << "LOC " << endl;
 	}
@@ -569,7 +569,7 @@ USECODE_INTRINSIC(count_objects)
 {
 	// How many?
 	// ((npc?-357==party, -356=avatar), 
-	//   item, quality, frame (-359 = any)).
+	//   item, quality, frame (c_any_framenum = any)).
 	// Quality/frame -359 means any.
 	Usecode_value u(count_objects(parms[0], parms[1], parms[2], parms[3]));
 	return(u);
@@ -909,7 +909,7 @@ USECODE_INTRINSIC(sit_down)
 	if (!chair)
 		return(no_ret);
 	Game_object_vector vec;			// See if someone already there.
-	chair->find_nearby(vec, -359, 1, 8);
+	chair->find_nearby(vec, c_any_shapenum, 1, 8);
 	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
@@ -1007,8 +1007,8 @@ USECODE_INTRINSIC(display_area)
 		int ty = parms[0].get_elem(1).get_int_value();
 		int unknown = parms[0].get_elem(2).get_int_value();
 					// Figure in tiles.
-		int tw = gwin->get_width()/tilesize, 
-		    th = gwin->get_height()/tilesize;
+		int tw = gwin->get_width()/c_tilesize, 
+		    th = gwin->get_height()/c_tilesize;
 		gwin->clear_screen();	// Fill with black.
 		Shape_frame *sprite = gwin->get_sprite_shape(10, 0);
 					// Center it.
@@ -1326,7 +1326,7 @@ USECODE_INTRINSIC(is_readied)
 		{			// See if it's the right one.
 		Game_object *obj = npc->get_readied(spot);
 		if (obj && obj->get_shapenum() == shnum &&
-		    (frnum == -359 || obj->get_framenum() == frnum))
+		    (frnum == c_any_framenum || obj->get_framenum() == frnum))
 			return Usecode_value(1);
 		}
 	return Usecode_value(0);
@@ -1404,7 +1404,7 @@ USECODE_INTRINSIC(nap_time)
 		return no_ret;
 					// !!! Seems 622 handles sleeping.
 	Actor_vector npcs;		// See if bed is occupied by an NPC.
-	int cnt = bed->find_nearby_actors(npcs, -359, 0);
+	int cnt = bed->find_nearby_actors(npcs, c_any_shapenum, 0);
 	if (cnt > 0)
 		{
 		Actor_vector::const_iterator it;
@@ -1452,7 +1452,7 @@ USECODE_INTRINSIC(attack_avatar)
 {
 	// Attack thieving Avatar.
 	Actor_vector npcs;			// See if someone is nearby.
-	gwin->get_main_actor()->find_nearby_actors(npcs, -359, 12);
+	gwin->get_main_actor()->find_nearby_actors(npcs, c_any_shapenum, 12);
 	for (Actor_vector::const_iterator it = npcs.begin(); it != npcs.end();++it)
 		{
 		Actor *npc = (Actor *) *it;
@@ -1572,15 +1572,15 @@ USECODE_INTRINSIC(get_item_flag)
 		return Usecode_value(0);
 	int fnum = parms[1].get_int_value();
 					// Special cases:
-	if (fnum == (int) Actor::on_moving_barge ||
-	    fnum == (int) Actor::in_motion)
+	if (fnum == (int) Obj_flags::on_moving_barge ||
+	    fnum == (int) Obj_flags::in_motion)
 		{			// Test for moving barge.
 		Barge_object *barge;
 		if (!gwin->get_moving_barge() || !(barge = Get_barge(obj)))
 			return Usecode_value(0);
 		return Usecode_value(barge == gwin->get_moving_barge());
 		}
-	else if (fnum == (int) Actor::okay_to_land)
+	else if (fnum == (int) Obj_flags::okay_to_land)
 		{			// Okay to land flying carpet?
 		Barge_object *barge = Get_barge(obj);
 		if (!barge || barge != gwin->get_moving_barge())
@@ -1599,13 +1599,13 @@ USECODE_INTRINSIC(set_item_flag)
 	if (obj)
 		{
 		obj->set_flag(flag);
-		if (flag == Actor::dont_render)
+		if (flag == Obj_flags::dont_render)
 			{	// Show change in status.
 			gwin->paint();
 			gwin->show();
 			}
-		else if (flag == (int) Actor::on_moving_barge ||
-					flag == (int) Actor::in_motion)
+		else if (flag == (int) Obj_flags::on_moving_barge ||
+					flag == (int) Obj_flags::in_motion)
 			{	// Set barge in motion.
 			Barge_object *barge = Get_barge(obj);
 			if (barge)
@@ -1623,13 +1623,13 @@ USECODE_INTRINSIC(clear_item_flag)
 	if (obj)
 		{
 		obj->clear_flag(flag);
-		if (flag == Actor::dont_render)
+		if (flag == Obj_flags::dont_render)
 			{	// Show change in status.
 			gwin->paint();
 			gwin->show();
 			}
-		else if (flag == (int) Actor::on_moving_barge ||
-					flag == (int) Actor::in_motion)
+		else if (flag == (int) Obj_flags::on_moving_barge ||
+					flag == (int) Obj_flags::in_motion)
 			{	// Stop barge object is on or part of.
 			Barge_object *barge = Get_barge(obj);
 			if (barge && barge == gwin->get_moving_barge())

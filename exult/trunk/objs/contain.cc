@@ -86,8 +86,8 @@ int Container_game_object::add
 	obj->set_owner(this);		// Set us as the owner.
 	objects.append(obj);		// Append to chain.
 					// Guessing:
-	if (get_flag(okay_to_take))
-		obj->set_flag(okay_to_take);
+	if (get_flag(Obj_flags::okay_to_take))
+		obj->set_flag(Obj_flags::okay_to_take);
 	return 1;
 	}
 
@@ -118,8 +118,8 @@ int Container_game_object::add_quantity
 	(
 	int delta,			// Quantity to add.
 	int shapenum,			// Shape #.
-	int qual,			// Quality, or -359 for any.
-	int framenum,			// Frame, or -359 for any.
+	int qual,			// Quality, or c_any_qual for any.
+	int framenum,			// Frame, or c_any_framenum for any.
 	int dontcreate			// If 1, don't create new objs.
 	)
 	{
@@ -136,7 +136,7 @@ int Container_game_object::add_quantity
 		while ((obj = next.get_next()) != 0)
 			{
 			if (obj->get_shapenum() == shapenum &&
-		    	 (framenum == -359 || obj->get_framenum() == framenum))
+		    	 (framenum == c_any_framenum || obj->get_framenum() == framenum))
 					// ++++++Quality???
 				{
 				int used = 
@@ -154,7 +154,7 @@ int Container_game_object::add_quantity
 		return (delta);
 	else
 		return (create_quantity(delta, shapenum, qual,
-				framenum == -359 ? 0 : framenum));
+				framenum == c_any_framenum ? 0 : framenum));
 	}
 
 /*
@@ -167,7 +167,7 @@ int Container_game_object::create_quantity
 	(
 	int delta,			// Quantity to add.
 	int shapenum,			// Shape #.
-	int qual,			// Quality, or -359 for any.
+	int qual,			// Quality, or c_any_qual for any.
 	int framenum			// Frame.
 	)
 	{
@@ -186,7 +186,7 @@ int Container_game_object::create_quantity
 			delete newobj;
 			break;
 			}
-		if (qual != -359)	// Set desired quality.
+		if (qual != c_any_qual)	// Set desired quality.
 			newobj->set_quality(qual);
 		todo--; delta--;
 		if (todo > 0)
@@ -220,8 +220,8 @@ int Container_game_object::remove_quantity
 	(
 	int delta,			// Quantity to remove.
 	int shapenum,			// Shape #.
-	int qual,			// Quality, or -359 for any.
-	int framenum			// Frame, or -359 for any.
+	int qual,			// Quality, or c_any_qual for any.
+	int framenum			// Frame, or c_any_framenum for any.
 	)
 	{
 	if (objects.is_empty())
@@ -233,8 +233,8 @@ int Container_game_object::remove_quantity
 		{
 		next = obj->get_next();	// Might be deleting obj.
 		if (obj->get_shapenum() == shapenum &&
-		    (qual == -359 || obj->get_quality() == qual) &&
-		    (framenum == -359 || obj->get_framenum() == framenum))
+		    (qual == c_any_qual || obj->get_quality() == qual) &&
+		    (framenum == c_any_framenum || obj->get_framenum() == framenum))
 			delta = -obj->modify_quantity(-delta);
 					// Still there?
 		if (next->get_prev() == obj)
@@ -256,8 +256,8 @@ int Container_game_object::remove_quantity
 Game_object *Container_game_object::find_item
 	(
 	int shapenum,			// Shape #.
-	int qual,			// Quality, or -359 for any. ???+++++
-	int framenum			// Frame, or -359 for any.
+	int qual,			// Quality, or c_any_qual for any. ???+++++
+	int framenum			// Frame, or c_any_framenum for any.
 	)
 	{
 	if (objects.is_empty())
@@ -267,7 +267,7 @@ Game_object *Container_game_object::find_item
 	while ((obj = next.get_next()) != 0)
 		{
 		if (obj->get_shapenum() == shapenum &&
-		    (framenum == -359 || obj->get_framenum() == framenum))
+		    (framenum == c_any_framenum || obj->get_framenum() == framenum))
 					// ++++++Quality???
 			return (obj);
 
@@ -377,9 +377,9 @@ int Container_game_object::drop
 
 int Container_game_object::count_objects
 	(
-	int shapenum,			// Shape#, or -359 for any.
-	int qual,			// Quality, or -359 for any.
-	int framenum			// Frame#, or -359 for any.
+	int shapenum,			// Shape#, or c_any_shapenum for any.
+	int qual,			// Quality, or c_any_qual for any.
+	int framenum			// Frame#, or c_any_framenum for any.
 	)
 	{
 	int total = 0;
@@ -387,9 +387,9 @@ int Container_game_object::count_objects
 	Object_iterator next(objects);
 	while ((obj = next.get_next()) != 0)
 		{
-		if ((shapenum == -359 || obj->get_shapenum() == shapenum) &&
-		    (framenum == -359 || obj->get_framenum() == framenum) &&
-		    (qual == -359 || obj->get_quality() == qual))
+		if ((shapenum == c_any_shapenum || obj->get_shapenum() == shapenum) &&
+		    (framenum == c_any_framenum || obj->get_framenum() == framenum) &&
+		    (qual == c_any_qual || obj->get_quality() == qual))
 			{		// Check quantity.
 			int quant = obj->get_quantity();
 			total += quant;
@@ -407,9 +407,9 @@ int Container_game_object::count_objects
 int Container_game_object::get_objects
 	(
 	Game_object_vector& vec,			// Objects returned here.
-	int shapenum,			// Shape#, or -359 for any.
-	int qual,			// Quality, or -359 for any.
-	int framenum			// Frame#, or -359 for any.
+	int shapenum,			// Shape#, or c_any_shapenum for any.
+	int qual,			// Quality, or c_any_qual for any.
+	int framenum			// Frame#, or c_any_framenum for any.
 	)
 	{
 	int vecsize = vec.size();
@@ -417,9 +417,9 @@ int Container_game_object::get_objects
 	Object_iterator next(objects);
 	while ((obj = next.get_next()) != 0)
 		{
-		if ((shapenum == -359 || obj->get_shapenum() == shapenum) &&
-		    (qual == -359 || obj->get_quality() == qual) &&
-		    (framenum == -359 || obj->get_framenum() == framenum))
+		if ((shapenum == c_any_shapenum || obj->get_shapenum() == shapenum) &&
+		    (qual == c_any_qual || obj->get_quality() == qual) &&
+		    (framenum == c_any_framenum || obj->get_framenum() == framenum))
 			vec.push_back(obj);
 					// Search recursively.
 		obj->get_objects(vec, shapenum, qual, framenum);
@@ -496,8 +496,8 @@ void Container_game_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = resistance;		// Resistance.
 					// Flags:  B0=invis. B3=okay_to_take.
-	*ptr++ = get_flag((Game_object::invisible) != 0) +
-		 ((get_flag(Game_object::okay_to_take) != 0) << 3);
+	*ptr++ = get_flag((Obj_flags::invisible) != 0) +
+		 ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
 	out.write((char*)buf, sizeof(buf));
 	write_contents(out);		// Write what's contained within.
 	}

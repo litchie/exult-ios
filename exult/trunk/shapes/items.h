@@ -25,9 +25,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_ITEMS
 #define INCL_ITEMS 1
 
-#include "../alpha_kludges.h"
-
-#ifndef ALPHA_LINUX_CXX
+#ifdef ALPHA_LINUX_CXX
+#  include "../alpha_kludges.h"
+#else
 #  include	<iosfwd>
 #endif
 

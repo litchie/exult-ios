@@ -39,10 +39,10 @@ class Chunk_intersect_iterator
 	int curcx, curcy;		// Next chunk to return.
 public:
 	Chunk_intersect_iterator(Rectangle t) : tiles(t),
-		  firstcx(t.x/tiles_per_chunk),
-		  lastcx((t.x + t.w - 1)/tiles_per_chunk),
-		  lastcy((t.y + t.h - 1)/tiles_per_chunk),
-		  curcy(t.y/tiles_per_chunk)
+		  firstcx(t.x/c_tiles_per_chunk),
+		  lastcx((t.x + t.w - 1)/c_tiles_per_chunk),
+		  lastcy((t.y + t.h - 1)/c_tiles_per_chunk),
+		  curcy(t.y/c_tiles_per_chunk)
 		{
 		curcx = firstcx;
 		if (t.x <= 0 || t.y <= 0)
@@ -62,8 +62,8 @@ public:
 				curcy++;
 				curcx = firstcx;
 				}
-		Rectangle cr(curcx*tiles_per_chunk, curcy*tiles_per_chunk,
-				tiles_per_chunk, tiles_per_chunk);
+		Rectangle cr(curcx*c_tiles_per_chunk, curcy*c_tiles_per_chunk,
+				c_tiles_per_chunk, c_tiles_per_chunk);
 					// Intersect given rect. with chunk.
 		intersect = cr.intersect(tiles);
 					// Make it 0-based rel. to chunk.
