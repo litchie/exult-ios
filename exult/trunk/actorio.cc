@@ -297,15 +297,11 @@ Actor::Actor
 	set_shape_pos(tilex, tiley);
 	Chunk_object_list *olist = gwin->get_objects_safely(
 							scx + cx, scy + cy);
-					// Put into chunk list.
-	if (!is_dead())
-		if (olist)
-			olist->add(this);
-		else
-			{
-			cout << "NPC has invalid chunk coord." << endl;
-			set_invalid();	// Or set to invalid chunk.
-			}
+	if (olist && !is_dead())	// Put into chunk list.
+		olist->add(this);
+	else
+		set_invalid();		// Or set to invalid chunk.
+
 	// Only do ready best weapon if we are in BG, this is the first time
 	// and we are the Avatar or Iolo
 	if (Game::get_game_type() == BLACK_GATE && Game::get_avname() && (num == 0 || num == 1))
