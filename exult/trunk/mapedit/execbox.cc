@@ -29,8 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
-#include <iostream.h>	/* Debugging only */
+#include <iostream>	/* Debugging only */
 #include <string>
+
+using std::cout;
+using std::endl;
 
 /*
  *	Create.
