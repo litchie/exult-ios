@@ -88,7 +88,6 @@ int main(int argc, char** argv)
 	streambuf *coutbuf=0;
 	if(uc.output_redirect().size())
 	{
-		//outputstream.open(uc.output_redirect().c_str(), ios::out);
 		U7open(outputstream, uc.output_redirect().c_str(), false);
 		if(outputstream.fail())
 		{

@@ -89,6 +89,8 @@
 
 vector<string> qnd_ocsplit(const string &s);
 
+void map_type_size(const vector<string> &param_types, vector<pair<unsigned int, bool> > &param_sizes);
+
 class UCOpcodeData
 {
 	public:
@@ -114,6 +116,7 @@ class UCOpcodeData
 			num_pop = strtol(v[8].c_str(), 0, 0);
 			num_push = strtol(v[9].c_str(), 0, 0);
 			call_effect = strtol(v[10].c_str(), 0, 0);
+			map_type_size(param_types, param_sizes);
 		};
 		
 		unsigned int   opcode;
@@ -122,7 +125,10 @@ class UCOpcodeData
 		string         asm_comment;
 		string         ucs_nmo;
 		unsigned int   num_bytes;
+		
 		vector<string> param_types;
+		vector<pair<unsigned int, bool> > param_sizes; // .first==size of parameter in bytes .second==whether to treat it as a relative offset and calculate for it
+		
 		unsigned int   num_pop;
 		unsigned int   num_push;
 		unsigned int   call_effect;

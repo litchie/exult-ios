@@ -14,6 +14,7 @@
 # Column 10: the 'call effect' true false (1/0) if this is a 'call type' opcode
 
 # DataType Notes:
+# long == 4 bytes
 # flag == extoffset == dataoffset == varoffset == offset == short == 2 bytes
 # byte == 1 byte
 
