@@ -802,11 +802,35 @@ static void Handle_keystroke
 		}
 	case SDLK_c:
 		{
+		if (ctrl)		// Create last shape viewed.
+			{
+			gwin->get_main_actor()->add(
+				new Ireg_game_object(current_shape,
+					current_frame, 0, 0), 1);
+			break;
+			}
 		gwin->toggle_combat();	// Go into combat mode
 		gwin->paint();
 		int mx, my;		// Update mouse.
 		SDL_GetMouseState(&mx, &my);
 		Set_mouse_and_speed(mx, my);
+		break;
+		}
+	case SDLK_d:			// ctrl-d:  delete what mouse is on.
+		{
+		if (ctrl)
+			{
+			int x, y;
+			SDL_GetMouseState(&x, &y);
+			x = x>>scale;
+			y = y>>scale;
+			Game_object *obj = gwin->find_object(x, y);
+			if (obj)
+				{
+				obj->remove_this();
+				gwin->paint();
+				}
+			}
 		break;
 		}
 	case SDLK_h:
