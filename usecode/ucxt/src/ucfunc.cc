@@ -2,56 +2,162 @@
 #  include <config.h>
 #endif
 
+#include "ucdata.h"
 #include "ucfunc.h"
 #include "newopcode.h"
 #include <set>
 #include <strstream>
+#include <algorithm>
 
 #include "opcodes.h"
 
 #if 0
 	#define DEBUG_PARSE
+	#define DEBUG_PARSE2
 	#define DEBUG_READ
+	#define DEBUG_PRINT
 	#define DEBUG_READ_PAIR(X, Y) cout << '\t' << X << '\t' << Y << endl;
 #else
 	#undef DEBUG_PARSE
+	#undef DEBUG_PARSE2
 	#undef DEBUG_READ
+	#undef DEBUG_PRINT
 	#define DEBUG_READ_PAIR(X, Y)
 #endif
 
-//#define DEBUG_PARSE
+//#define DEBUG_PARSE2
+//#define DEBUG_PRINT
 
 const string VARNAME = "uvar";
 const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
 
-extern UCData uc;
+void print_asm_opcode(ostream &o, UCFunc &ucf, const vector<UCOpcodeData> &optab, const UCc &op);
+string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op);
 
 /* Assumption the 'var's are in their 'zeroed' state on initialization,
    unless something else is assigned to them. */
 
+inline ostream &tab_indent(const unsigned int indent, ostream &o)
+{
+	#ifdef DEBUG_PARSE2
+	o << indent;
+	#endif
+	
+	switch(indent)
+	{
+		case 0:                    break;
+	 	case 1: o << '\t';         break;
+	 	case 2: o << "\t\t";       break;
+	 	case 3: o << "\t\t\t";     break;
+	 	case 4: o << "\t\t\t\t";   break;
+	 	case 5: o << "\t\t\t\t\t"; break;
+	 	default:
+			for(unsigned int i=0; i<indent; ++i) o << '\t';
+			break;
+	}
+	return o;
+}
+
 void UCFunc::output_ucs(ostream &o, bool gnubraces)
 {
+	unsigned int indent=0;
 	// output the "function name"
 	// TODO: Probably want to grab this from a file in the future...
-	o << "Func" << setw(4) << _funcid
+	tab_indent(indent, o) << "Func" << setw(4) << _funcid
 	// output the "function number"
-	  << " 0x" << _funcid
+		<< " 0x" << _funcid
 	// output ObCurly braces
-	  << " ()" << endl;
+		<< " ()" << endl;
 	
 	// start of func
-	output_ucs_node(o, &node, 0);
+	tab_indent(indent++, o) << '{' << endl;
+	
+	output_ucs_data(o, indent);
+	
+	tab_indent(--indent, o) << '}' << endl;
+}
+
+void UCFunc::output_ucs_data(ostream &o, unsigned int indent)
+{
+	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
+	{
+		//o << "//" << uccs[i]._offset << endl;
+
+		// we don't want to output the first "jump" (the start of the function)
+		if(i!=gotoset.begin())
+			tab_indent(indent++, o) << setbase(16) << "label" << setw(4) << _funcid << "_" << setw(4) << i->offset() << ":" << endl;
+
+		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); j++)
+		{
+			const UCc &ucc = *(j->first);
+			const UCOpcodeData &opcode = opcode_table_data[ucc._id];
+			
+			//if we've already done this
+			if(ucc._tagged!=true)
+			{
+				if(opcode.name=="NULL") // print the basic assembler for it
+				{
+					output_ucs_opcode(o, opcode_table_data, ucc, indent);
+				}
+				else // print the proper decompiled usecode-script
+				{
+					// FIXME: Needs to point to the ucs versions in the future.
+					output_ucs_opcode(o, opcode_table_data, ucc, indent);
+				}
+			}
+		}
+		if(i!=gotoset.begin()) --indent; //decrement it again to skip the label statement.
+		
+	}
+}
+
+void UCFunc::output_ucs_opcode(ostream &o, const vector<UCOpcodeData> &optab, const UCc &op, unsigned int indent)
+{
+	tab_indent(indent, o) << demunge_ocstring(*this, optab[op._id].ucs_nmo, optab[op._id].param_types, op._params_parsed, op) << endl;
+	
+	#ifdef DEBUG_PRINT
+	for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end(); i++)
+	{
+		if((*i)->_popped.size())
+			output_ucs_opcode(o, opcode_table_data, **i, indent+1);
+		else
+			tab_indent(indent+1, o) << demunge_ocstring(*this, optab[(*i)->_id].ucs_nmo, optab[(*i)->_id].param_types, op._params_parsed, **i) << endl;
+	}
+	#endif
 }
 
 void UCFunc::output_ucs_node(ostream &o, UCNode* ucn, unsigned int indent)
 {
 	//if(gnubraces) o << '\t';
-	if(!ucn->nodelist.empty()) o << '{' << endl;
+	if(!ucn->nodelist.empty()) tab_indent(indent, o) << '{' << endl;
 	
+	//assert(ucn->ucc!=0);
+	if(ucn->ucc!=0)
+		print_asm_opcode(tab_indent(indent, o), *this, opcode_table_data, *(ucn->ucc));
+	
+	if(ucn->nodelist.size())
+		for(vector<UCNode *>::iterator i=ucn->nodelist.begin(); i!=ucn->nodelist.end(); i++)
+		{
+			//tab_indent(indent, o);
+			output_ucs_node(o, *i, indent+1);
+		}
+			
 	// end of func
 	//if(gnubraces) o << '\t';
-	if(!ucn->nodelist.empty()) o << '}' << endl;
+	if(!ucn->nodelist.empty()) tab_indent(indent, o) << '}' << endl;
+}
+
+/* Just a quick function to remove all the ucc structured flagged as removable */
+inline void gc_gotoset(vector<GotoSet> &gotoset)
+{
+	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); i++)
+	{
+		i->gc();
+		#ifdef DEBUG_GOTOSET
+		cout << "----" << endl;
+		#endif
+	}
 }
 
 void UCFunc::parse_ucs()
@@ -59,7 +165,144 @@ void UCFunc::parse_ucs()
 	for(vector<UCc>::iterator i=_opcodes.begin(); i!=_opcodes.end(); i++)
 		node.nodelist.push_back(new UCNode(i));
 	
-	parse_ucs_pass1(node.nodelist);
+	parse_ucs_pass1a(node.nodelist);
+	parse_ucs_pass2a(gotoset);
+	gc_gotoset(gotoset);
+	
+	#ifdef DEBUG_PARSE2
+	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); i++)
+	{
+		cout << setw(4) << i->offset() << endl;
+		
+		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); j++)
+		{
+			cout << '\t' << setw(4) << j->first->_offset << '\t' << j->first->_id << endl;
+		
+		}
+	}
+	#endif
+}
+
+void UCFunc::parse_ucs_pass1a(vector<UCNode *> &nodes)
+{
+	vector<unsigned int> jumps;
+
+	// collect jump references
+	for(unsigned int i=0; i<nodes.size(); i++)
+	{
+		/* TODO: Need to expand this so it handles anything that has goto targets
+		   in it, not just these two opcodes. */
+		if(nodes[i]->ucc!=0)
+			if((nodes[i]->ucc->_id==0x05) || (nodes[i]->ucc->_id==0x06))
+			{
+				assert(nodes[i]->ucc->_params_parsed.size());
+				jumps.push_back(nodes[i]->ucc->_params_parsed[0]);
+			}
+	}
+
+	gotoset.push_back(GotoSet());
+
+	for(unsigned int i=0; i<nodes.size(); i++)
+	{
+		if(nodes[i]->ucc!=0)
+		{
+			if(count(jumps.begin(), jumps.end(), nodes[i]->ucc->_offset))
+			{
+				gotoset.push_back(nodes[i]->ucc);
+			}
+			else
+				gotoset.back().add(nodes[i]->ucc);
+		}
+	}
+}
+
+void UCFunc::parse_ucs_pass2a(vector<GotoSet> &gotoset)
+{
+	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
+	{
+		//o << "//" << uccs[i]._offset << endl;
+
+		parse_ucs_pass2b((*i)().rbegin(), (*i)().rend(), (*i)(), 0);
+		// we don't want to output the first "jump" (the start of the function)
+//		if(i!=gotoset.begin())
+//			tab_indent(indent++, o) << setbase(16) << "label" << setw(4) << _funcid << "_" << setw(4) << i->offset() << ":" << endl;
+
+/*		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); j++)
+		{
+			const UCc &ucc = **j;
+			const UCOpcodeData &opcode = opcode_table_data[ucc._id];
+			
+		}*/
+//		if(i!=gotoset.begin()) --indent; //decrement it again to skip the label statement.
+		
+	}
+}
+
+void remvec(vector<UCc *> &vec, const UCc &remucc)
+{
+	for(vector<UCc *>::iterator i=vec.begin(); i!=vec.end(); i++)
+		if((*i)->_offset==remucc._offset)
+			vec.erase(i);
+			
+}
+
+vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> >::reverse_iterator end, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded)
+{
+	vector<UCc *> vucc;
+	unsigned int opsfound=0;
+	
+	#ifdef DEBUG_PARSE2
+	print_asm_opcode(tab_indent(4, cout), *this, opcode_table_data, *(current->first));
+	#endif
+	
+	for(;current!=end; current++)
+	{
+		#ifdef DEBUG_PARSE2
+		print_asm_opcode(tab_indent(3, cout), *this, opcode_table_data, *(current->first));
+		#endif
+		
+		/* Include proper munging of opsneeded, it has special effects for numbers
+		   greater then 0x7F. Currently we just 'ignore' it. */
+		if((opcode_table_data[current->first->_id].num_pop!=0) && (opcode_table_data[current->first->_id].num_pop<0x7F))
+		{
+			#ifdef DEBUG_PARSE2
+			print_asm_opcode(tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-"), *this, opcode_table_data, *(current->first));
+			tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-") << opcode_table_data[current->first->_id].num_pop << endl;
+			#endif
+			
+			/* save the 'current' value as the return value and increment it so it's
+			   pointing at the 'next' current value */
+			vector<pair<UCc *, bool> >::reverse_iterator ret(current++);
+			ret->first->_popped = parse_ucs_pass2b(current, end, vec, opcode_table_data[ret->first->_id].num_pop);
+		}
+		if(opsneeded!=0)
+		{
+			// if it's a 'push' opcode and we need items to return that we've popped off the stack...
+			if(opcode_table_data[current->first->_id].num_push!=0)
+			{
+				/* we need an ::iterator to pass to vector<>::erase(), rather then the
+				   ::reverse_iterator we have at the moment. I have no idea, why you just
+				   can't get this as a function of ::reverse_iterator, rather then have to go
+				   through this. */
+				//vector<pair<UCc *, bool> >::iterator rem(current.base());
+				//--rem;
+				
+				#ifdef DEBUG_PARSE2
+				print_asm_opcode(tab_indent(4, cout << "P-"), *this, opcode_table_data, *(current->first));
+				//print_asm_opcode(tab_indent(4, cout << "R-"), *this, opcode_table_data, *(rem->first));
+				#endif
+				
+				opsfound+=opcode_table_data[current->first->_id].num_push;
+				vucc.push_back(current->first);
+				current->second=true;
+				//vec.erase(rem);
+			}
+			// if we've found all the ops we were searching for, return them
+			if(opsfound>=opsneeded)
+				return vucc;
+		}
+	}
+	return vucc;
 }
 
 /* Pass 1 involves turning the 'list' of opcodes into a tree-like structure
@@ -68,7 +311,6 @@ void UCFunc::parse_ucs()
    statements. */
 void UCFunc::parse_ucs_pass1(vector<UCNode *> &nodes)
 {
-	
 	#ifdef DEBUG_PARSE
 	UCNode *begin(*nodes.begin());
 	UCNode *end(nodes[nodes.size()-1]);
@@ -154,13 +396,13 @@ void UCFunc::parse_ucs_pass1(vector<UCNode *> &nodes)
 			if(first<last)
 			{
 				orig=first;
-				(*orig)->nodelist.insert(0, ++first, ++last);
+				(*orig)->nodelist.insert(0, ++first, last);
 				nodes.erase(first, last);
 			}
 			else
 			{
 				orig=last;
-				(*orig)->nodelist.insert(0, ++last, ++first);
+				(*orig)->nodelist.insert(0, ++last, first);
 				nodes.erase(last, first);
 			}
 			
@@ -791,14 +1033,14 @@ void readbin_UCFunc(ifstream &f, UCFunc &ucf)
 
 	// offset to start of function
 	ucf._offset = f.tellg();
-  DEBUG_READ_PAIR("Offset: ", ucf._offset);
+	DEBUG_READ_PAIR("Offset: ", ucf._offset);
 
 	// Read Function Header
 	
 	ucf._funcid = read_ushort(f);
-  DEBUG_READ_PAIR("FuncID: ", ucf._funcid);
+	DEBUG_READ_PAIR("FuncID: ", ucf._funcid);
 	ucf._funcsize = read_ushort(f);	
-  DEBUG_READ_PAIR("FuncSize: ", ucf._funcsize);
+	DEBUG_READ_PAIR("FuncSize: ", ucf._funcsize);
 	
 	// save body offset in case we need it
 	ucf._bodyoffset = f.tellg();
@@ -976,7 +1218,8 @@ void print_asm(UCFunc &ucf, ostream &o, const UCData &uc)
 
 	//o << "-----" << endl;
     //_opcodes[i]->print_asm(cout);
-	print_asm_opcodes(o, ucf, opcode_table_data);
+	for(vector<UCc>::iterator op=ucf._opcodes.begin(); op!=ucf._opcodes.end(); op++)
+		print_asm_opcode(o, ucf, opcode_table_data, *op);
 }
 
 void print_asm_data(UCFunc &ucf, ostream &o)
@@ -1001,26 +1244,25 @@ void print_asm_data(UCFunc &ucf, ostream &o)
 	}
 }
 
-string demunge_ocstring(const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op);
+string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op);
 void output_raw_opcodes(ostream &o, const UCc &op);
 
-void print_asm_opcodes(ostream &o, UCFunc &ucf, const vector<UCOpcodeData> &optab)
+extern UCData uc;
+
+void print_asm_opcode(ostream &o, UCFunc &ucf, const vector<UCOpcodeData> &optab, const UCc &op)
 {
-	for(vector<UCc>::iterator op=ucf._opcodes.begin(); op!=ucf._opcodes.end(); op++)
-	{
-		// offset
-		o << setw(4) << op->_offset << ':';
+	// offset
+	o << setw(4) << op._offset << ':';
 
-		if(uc.rawops()) output_raw_opcodes(o, *op);
-		else            o << '\t';
+	if(uc.rawops()) output_raw_opcodes(o, op);
+	else            o << '\t';
 
-		o << demunge_ocstring(optab[op->_id].asm_nmo, optab[op->_id].param_types, op->_params_parsed, *op);
+	o << demunge_ocstring(ucf, optab[op._id].asm_nmo, optab[op._id].param_types, op._params_parsed, op);
 
-		if(uc.autocomment())
-			o << demunge_ocstring(optab[op->_id].asm_comment, optab[op->_id].param_types, op->_params_parsed, *op);
+	if(uc.autocomment())
+		o << demunge_ocstring(ucf, optab[op._id].asm_comment, optab[op._id].param_types, op._params_parsed, op);
 
-		o << endl;
-	}
+	o << endl;
 }
 
 void output_raw_opcodes(ostream &o, const UCc &op)
@@ -1049,7 +1291,7 @@ void output_raw_opcodes(ostream &o, const UCc &op)
 		o << "\t\t\t";
 }
 
-string demunge_ocstring(const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op)
+string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op)
 {
 	strstream str;
 	str << setfill('0') << setbase(16);
@@ -1091,6 +1333,60 @@ string demunge_ocstring(const string &asmstr, const vector<string> &param_types,
 					if(c=='b')      { i++; c = asmstr[i]; width=2; }
 					// if it's a "short" set width to 4, and get the next char
 					else if(c=='s') { i++; c = asmstr[i]; width=4; }
+					// if it's the character representation of a text data string we want
+					else if(c=='t')
+					{
+						i++; c = asmstr[i];
+						unsigned int t=0;
+						switch(c)
+						{
+							case '1': assert(params.size()>=1); t=1; break;
+							case '2': assert(params.size()>=2); t=2; break;
+							case '3': assert(params.size()>=3); t=3; break;
+							case '4': assert(params.size()>=4); t=4; break;
+							case '5': assert(params.size()>=5); t=5; break;
+							case '6': assert(params.size()>=6); t=6; break;
+							case '7': assert(params.size()>=7); t=7; break;
+							case '8': assert(params.size()>=8); t=8; break;
+							case '9': assert(params.size()>=9); t=9; break;
+							default:   // we'll silently drop errors... it's the only "clean" way
+								str << '%' << c;
+						}
+						assert(t!=0);
+						string s = ucf._data.find(params[t-1])->second;
+						if(s.size()>17) s = s.substr(0, 17) + string("...");
+						str << s;
+						break;
+					}
+					// if it's the character representation of a text data string we want
+					else if(c=='p')
+					{
+						i++; c = asmstr[i];
+						unsigned int t=0;
+						switch(c)
+						{
+							case '1': t=1; break;
+							case '2': t=2; break;
+							case '3': t=3; break;
+							case '4': t=4; break;
+							case '5': t=5; break;
+							case '6': t=6; break;
+							case '7': t=7; break;
+							case '8': t=8; break;
+							case '9': t=9; break;
+							default:   // we'll silently drop errors... it's the only "clean" way
+								str << '%' << c;
+						}
+						assert(t!=0);
+						if(t>op._popped.size())
+							str << "SOMETHING_GOES_HERE()";
+						else
+						{
+							UCc &ucc(*op._popped[t-1]);
+							str << demunge_ocstring(ucf, opcode_table_data[ucc._id].ucs_nmo, opcode_table_data[ucc._id].param_types, ucc._params_parsed, ucc);
+						}
+						break;
+					}
 					// width defaults to 4 if it's not specified
 					else            width=4;
 					
