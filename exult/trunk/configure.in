@@ -388,14 +388,18 @@ dnl --------------------
 
 dnl GTK interface
 AC_ARG_ENABLE(gtk-interface, [  --enable-gtk-interface          build the GTK+ interface [default no]],,enable_gtk_interface=no)
+AC_MSG_CHECKING(whether to build the GTK+ interface)
+AM_CONDITIONAL(GTK_INTERFACE, false)
 if test x$enable_gtk_interface = xyes; then
+	AC_MSG_RESULT(yes)
 	AC_PATH_PROG(GTKCONFIG, gtk-config)
 	AM_CONDITIONAL(GTK_INTERFACE, true)
-	AC_SUBST(GTK_INTERFACE)
 	GTK_INCLUDES=`gtk-config --cflags`
 	GTK_LIBS=`gtk-config --libs`
 	AC_SUBST(GTK_INCLUDES)
 	AC_SUBST(GTK_LIBS)
+else
+	AC_MSG_RESULT(no)
 fi
 
 dnl GNOME desktop files
