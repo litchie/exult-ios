@@ -152,6 +152,7 @@ var		return VAR;
 int		return INT;
 const		return CONST;
 string		return STRING;
+enum		return ENUM;
 extern		return EXTERN;
 true		return UCTRUE;
 false		return UCFALSE;
