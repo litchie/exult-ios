@@ -1,3 +1,9 @@
+2002-06-08  Max Horn  <max@quendi.de>
+	* configure.in: fixed check for SDL_mixer
+	* gamemap.cc: #include objiter.cc instead of objiter.h to get template
+	  linking right on all compilers (I hope...)
+	* objs/objiter.cc: removed template instantiation hack
+
 2002-06-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* autogen.sh: always include /usr/local/share/aclocal if it exists
 
