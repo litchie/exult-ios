@@ -67,6 +67,9 @@ void Game_window::read_npcs
 		if (!Game::is_editing())
 			throw e;
 		num_npcs1 = num_npcs = 1; 
+		if (Game::get_avname())
+			main_actor->set_npc_name(Game::get_avname());
+		main_actor->set_shape(721);	// FOR NOW.
 		main_actor->set_invalid();	// Put in middle of world.
 		main_actor->move(c_num_tiles/2, c_num_tiles/2, 0);
 		}
