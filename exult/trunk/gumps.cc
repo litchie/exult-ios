@@ -459,6 +459,17 @@ void Gump_button::unpush
 	}
 
 /*
+ *	Default method for double-click.
+ */
+
+void Gump_button::double_clicked
+	(
+	Game_window *gwin
+	)
+	{
+	}
+
+/*
  *	Handle click on a 'checkmark'.
  */
 
