@@ -977,6 +977,7 @@ Usecode_value Usecode_machine::call_intrinsic
 					get_item(parms[0].get_int_value()))));
 	case 0x32:			// Display sign (gump #, text).
 		//+++++++++++++
+		// Render text into runes for signs, tombstones, plaques and the like
 		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x33:			// Doesn't ret. until user single-

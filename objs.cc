@@ -28,6 +28,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "Audio.h"
 #include <string.h>
+#include <Audio.h>
+
+extern	Audio audio;
 
 /*
  *	Move to a new absolute location.
@@ -263,17 +266,23 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	static int cnt = 0;
 //	audio.start_speech(cnt++);//++++++++++++
 	flags |= (1 << (int) hatched);	// Flag it as done.
-        if (type == jukebox)
-                {
-                audio.start_music((data1)&0xff);
-                }
-    	else if (type == voice)
-                {
-                audio.start_speech(data1);
-                }
-	else if (type == (int) usecode)	// Data2 is the usecode function.
-		umachine->call_usecode(data2, this,
+	switch(type)
+		{
+		case jukebox:
+			audio.start_music((data1)&0xff);
+			break;
+		case voice:
+			audio.start_speech((data1)&0xff);
+			break;
+		case usecode:
+			// Data2 is the usecode function.
+			umachine->call_usecode(data2, this,
 					Usecode_machine::egg_proximity);
+			break;
+		default:
+			cout << "Egg not actioned" << endl;
+                }
+
 	}
 
 /*
