@@ -30,6 +30,7 @@ exult_studio_SOURCES = \
 	dirbrowser.cc \
 	dirbrowser.h \
 	eggedit.cc \
+	locator.cc \
 	npcedit.cc \
 	objedit.cc \
 	shapeedit.cc \
