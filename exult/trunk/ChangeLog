@@ -1,5 +1,8 @@
 2001-09-19  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* objs/contain.cc (Container_game_object): Fixed bug in
+	remove_quantity() where all items weren't being removed.
+
 	* gamewin.cc:  Save/restore Usecode scripts.
 	* actorio.cc (Actor): Nastiness:  Taking over iflag1 to indicate
 	saving of scheduled usecode.
