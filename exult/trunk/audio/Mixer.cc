@@ -236,3 +236,21 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(void)
 	SDL::UnlockAudio();
 	return pcb;
 }
+
+void	Mixer::Destroy_Audio_Stream(Uint32 id)
+{
+	SDL::PauseAudio(1);
+	for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
+		it!=audio_streams.end();++it)
+			{
+			ProducerConsumerBuf *p=*it;
+			if(p->id==id)
+				{
+				p->end_consumption();
+				audio_streams.erase(it);
+				break;
+				}
+			}
+	SDL::PauseAudio(0);
+}
+
