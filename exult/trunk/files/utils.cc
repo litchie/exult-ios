@@ -156,9 +156,14 @@ string get_system_path(const string &path)
 #endif
 	switch_slashes(new_path);
 #ifdef WIN32
-	pos = path.find('*');
-	pos2 = path.find('?');
-	string::size_type pos3 = path.find(' ');
+	if (*(new_path.end()-1) == '/' || *(new_path.end()-1) == '\\') {
+		std::cerr << "Trailing slash in path: \"" << new_path << "\"" << std::endl << "...compensating, but go complain to Colourless anyway" << std::endl;
+		new_path += '.';
+	}
+#ifdef NO_WIN32_PATH_SPACES
+	pos = new_path.find('*');
+	pos2 = new_path.find('?');
+	string::size_type pos3 = new_path.find(' ');
 	// pos and pos2 will equal each other if neither is found
 	// and we'll only convert to short if a space is found
 	// really, we don't need to do this, but hey, you never know
@@ -172,6 +177,7 @@ string get_system_path(const string &path)
 		}
 		//else std::cerr << "Warning unable to get short path for: " << new_path << std::endl;
 	}
+#endif
 #endif
 	return new_path;
 }
@@ -316,15 +322,19 @@ void U7open
 		// problems when re-using stream objects
 		in.clear();
 		try {
+			//std::cout << "trying: " << name << std::endl;
 			in.open(name.c_str(), mode);		// Try to open
 		} catch (std::exception &)
 		{}
-		if (in.good() && !in.fail())
+		if (in.good() && !in.fail()) {
+			//std::cout << "got it!" << std::endl;
 			return; // found it!
+		}
 	} while (base_to_uppercase(name, ++uppercasecount));
 
 	// file not found.
 	throw file_open_exception(get_system_path(fname));
+	return;
 }
 
 #ifdef ALPHA_LINUX_CXX
@@ -381,6 +391,7 @@ void U7open
 
 	// file not found.
 	throw file_open_exception(get_system_path(fname));
+	return;
 }
 
 #ifdef ALPHA_LINUX_CXX
@@ -422,6 +433,7 @@ std::FILE* U7open
 
 	// file not found.
 	throw file_open_exception(get_system_path(fname));
+	return 0;
 }
 
 /*
@@ -547,6 +559,8 @@ void U7copy
 		throw file_read_exception(src);
 	if (!outok)
 		throw file_write_exception(dest);
+
+	return;
 	}
 
 /*

@@ -23,9 +23,11 @@
 #define DONT_HAVE_HASH_MAP
 #define MSVC_FIND_NEARBY_KLUDGE
 
+#ifndef NDEBUG
 #define ENABLE_MIDISFX
 #define COLOURLESS_REALLY_HATES_THE_BG_SFX
 #define FORCE_44KHZ
+#endif
 
 // Don't need everything in the windows headers
 #define WIN32_LEAN_AND_MEAN
@@ -124,6 +126,15 @@ using std::isspace;
 #endif
 #include <sys/stat.h>
 
+// When doing a DEBUG compile we will output to the console
+// However, SDL doesn't want us to do that
+#ifdef DEBUG
+#define SDL_main main
+#endif
+
+#ifndef DEBUG
+#define DEBUG 1
+#endif
 
 // Some often used headers that could be included in out precompiled header
 #include <fstream>
@@ -306,12 +317,6 @@ using std::isspace;
 #include "../files/U7file.h"
 #include "../files/utils.h"
 #include "../files/crc.h"
-
-// When doing a DEBUG compile we will output to the console
-// However, SDL doesn't want us to do that
-#ifdef DEBUG
-#define SDL_main main
-#endif
 
 // Don't want SDL Parachute
 #define NO_SDL_PARACHUTE

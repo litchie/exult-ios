@@ -61,11 +61,11 @@ void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 	{
 	size_t len;
 	char *buf = 0;
-	if (std::strncmp(fname, STATICDAT, sizeof(STATICDAT) - 1) == 0 &&
+	if (std::strncmp(fname, "<STATIC>/", sizeof("<STATIC>/") - 1) == 0 &&
 					is_system_path_defined("<PATCH>"))
 		{			// Check in "patch" dir. first.
-		string pname(PATCHDAT);
-		pname += fname + sizeof(STATICDAT) - 1;
+		string pname("<PATCH>/");
+		pname += fname + sizeof("<STATIC>/") - 1;
 		U7object pal(pname.c_str(), index);
 		try {
 			buf = pal.retrieve(len);

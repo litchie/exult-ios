@@ -38,8 +38,6 @@
  *	Here are the files we use:
  */
 #define GAMEDAT		"<GAMEDAT>/"
-#define STATICDAT	"<STATIC>/"
-#define PATCHDAT	"<PATCH>/"
 #define SHAPES_VGA	"<STATIC>/shapes.vga"
 #define PATCH_SHAPES	"<PATCH>/shapes.vga"
 #define FACES_VGA	"<STATIC>/faces.vga"
