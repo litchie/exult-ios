@@ -149,6 +149,13 @@ void Game::show_text_line(int x, int y, const char *s)
 	// \Px   include picture number x (frame of MAINSHP.FLX shape 14h)
 	// \C    center line
 	// \L    left-aligned line
+
+	char *ptr = s;
+	int xpos = x;
+	
+	if(!strncmp(s,"\\C",2)) {
+		ptr += 2;
+	}
 }
 
 vector<char *> *Game::load_text(const char *archive, int index)
@@ -222,6 +229,8 @@ void Game::show_menu()
 						continue;
 					case SDLK_RETURN:
 						exit_loop = true;
+						break;
+					default:
 						break;
 					}
 				}
