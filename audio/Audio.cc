@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 #include "fnames.h"
 #include "game.h"
-#include "U7file.h"
+#include "Flex.h"
 #include "utils.h"
 extern	Configuration *config;
 
@@ -67,6 +67,27 @@ using std::vector;
 #define	LEADING_VOC_SLOP 32
 
 
+//-----SFX -------------------------------------------------------------
+
+/*
+ *	For caching sound effects:
+ */
+class SFX_cached
+	{
+	int num;			// Sound-effects #.
+	uint8 *buf;			// The data.  It's passed in to us,
+					//   and then we own it.
+	uint32 len;
+	SFX_cached *next;		// Next in chain.
+public:
+	friend class Audio;
+	SFX_cached(int sn, uint8 *b, uint32 l, SFX_cached *oldhead)
+		: num(sn), buf(b), len(l), next(oldhead)
+		{  }
+	~SFX_cached()
+		{ delete [] buf; }
+	};
+
 //---- Audio ---------------------------------------------------------
 
 Audio::~Audio()
@@ -96,6 +117,13 @@ cerr << "~Audio:  deleted mixer" << endl; cerr.flush();
 		delete midi;
 		midi=0;
 		}
+	while (sfxs)			// Cached sound effects.
+		{
+		SFX_cached *todel = sfxs;
+		sfxs = todel->next;
+		delete todel;
+		}
+	delete sfx_file;
 cerr << "~Audio:  deleted midi" << endl; cerr.flush();
 	// Avoid closing SDL audio. This seems to trigger a segfault
 	// SDL::CloseAudio();
@@ -304,12 +332,8 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 		
 void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 {
-	if (!audio_enabled) return;
+	if (!audio_enabled || !speech_enabled) return;
 
-	string s;
-	config->value("config/audio/speech/enabled",s,"yes");
-	if(s=="no")
-		return;
 	bool	own_audio_data=false;
 	if(!strncmp((const char *)sound_data,"Creative Voice File",19))
 		{
@@ -349,7 +373,8 @@ static	size_t calc_sample_buffer(uint16 _samplerate)
 Audio *Audio::self=0;
 
 Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
-			effects_enabled(true), SDL_open(false),mixer(0),midi(0)
+	effects_enabled(true), SDL_open(false),mixer(0),midi(0), sfxs(0),
+	sfx_file(0)
 {
 	self=this;
 	string s;
@@ -363,6 +388,16 @@ Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
 	music_enabled = (s!="no");
 	config->value("config/audio/effects/enabled",s,"---");
 	effects_enabled = (s!="no");
+					// Collection of .wav's?
+	config->value("config/audio/effects/waves", s, "---");
+	if (s != "---")
+		{
+		cerr << "Digital SFX's file specified: " << s << endl;
+		if (!U7exists(s.c_str()))
+			cerr << "... but file not found" << endl;
+		else
+			sfx_file = new Flex(s);
+		}
 
 	midi = 0; mixer = 0;
 }
@@ -687,11 +722,88 @@ Audio	*Audio::get_ptr(void)
 
 void	Audio::play_sound_effect (int num)
 {
-	if (!audio_enabled) return;
+	if (!audio_enabled || !effects_enabled) return;
 
 	// Where sort of sfx are we using????
-	
-	if(effects_enabled && midi != 0) midi->start_sound_effect(num);
+	if (sfx_file != 0)		// Digital .wav's?
+		play_wave_sfx(num);
+	else if (midi != 0) 
+		midi->start_sound_effect(num);
 
 }
+
+/*
+ *	Play a .wav format sound effect.
+ */
+void Audio::play_wave_sfx
+	(
+	int num
+	)
+	{
+	extern int bgconv[];
+	const int max_cached = 12;	// Max. we'll cache.
+
+	if (!mixer)
+		return;
+        if (Game::get_game_type() == BLACK_GATE)
+        	num = bgconv[num];
+	if (num < 0 || num >= sfx_file->number_of_objects())
+		{
+		cerr << "SFX " << num << " is out of range" << endl;
+		return;
+		}
+					// First see if we have it already.
+	SFX_cached *each = sfxs, *prev = 0;
+	int cnt = 0;
+	while (each && each->num != num && each->next)
+		{
+		cnt++;
+		prev = each;
+		each = each->next;
+		}
+	if (each && each->num == num)	// Found it?
+		{			// Move to head of chain.
+		if (prev)
+			{
+			prev->next = each->next;
+			each->next = sfxs;
+			sfxs = each;
+			}
+		mixer->play(each->buf, each->len);
+		return;
+		}
+	if (cnt == max_cached)		// Hit our limit?  Remove last.
+		{
+		prev->next = 0;
+		delete each;
+		}
+	size_t wavlen;			// Read .wav file.
+	char *wavbuf = sfx_file->retrieve(num, wavlen);
+	SDL_RWops *rwsrc = SDL_RWFromMem(wavbuf, wavlen);
+	uint8 *buf;
+	Uint32 len;
+	SDL_AudioSpec src;		// Load .wav data (& free rwsrc).
+	if (!SDL_LoadWAV_RW(rwsrc, 1, &src, &buf, &len))
+		{
+		cerr << "Couldn't play sfx '" << num << "'" << endl;
+		return;
+		}
+	SDL_AudioCVT cvt;		// Got to convert.
+	if (SDL_BuildAudioCVT(&cvt, src.format, src.channels, src.freq,
+			actual.format, actual.channels, actual.freq) < 0)
+		{
+		cerr << "Couldn't convert wave data" << endl;
+		return;
+		}
+	cvt.len = len;
+	cvt.buf = new uint8[len*cvt.len_mult];
+	memcpy(cvt.buf, buf, len);
+	SDL_FreeWAV(buf);
+	SDL_ConvertAudio(&cvt);
+	if(mixer)
+		mixer->play(cvt.buf,cvt.len_cvt);
+					// Cache at head of chain.
+	sfxs = new SFX_cached(num, cvt.buf, cvt.len_cvt, sfxs);
+	}
+
 
