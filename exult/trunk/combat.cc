@@ -47,6 +47,7 @@ using std::rand;
 
 unsigned long Combat_schedule::battle_time = 0;
 
+bool Combat::paused = false;
 int Combat::difficulty = 0;
 Combat::Mode Combat::mode = Combat::original;
 bool Combat::show_hits = false;
@@ -1101,4 +1102,41 @@ void Duel_schedule::now_what
 		}
 	else
 		Combat_schedule::now_what();
+	}
+
+/*
+ *	Pause/unpause while in combat.
+ */
+
+void Combat::toggle_pause
+	(
+	)
+	{
+	if (!paused && mode == original)
+		return;			// Not doing that sort of thing.
+	if (paused)
+		{
+		resume();		// Text is probably for debugging.
+		eman->center_text("Combat resumed");
+		}
+	else
+		{
+		gwin->get_tqueue()->pause(SDL_GetTicks());
+		eman->center_text("Combat paused");
+		paused = true;
+		}
+	}
+
+/*
+ *	Resume.
+ */
+
+void Combat::resume
+	(
+	)
+	{
+	if (!paused)
+		return;
+	gwin->get_tqueue()->resume(SDL_GetTicks());
+	paused = false;
 	}

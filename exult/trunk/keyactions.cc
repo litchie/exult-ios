@@ -33,6 +33,7 @@
 #include "File_gump.h"
 #include "Scroll_gump.h"
 #include "cheat.h"
+#include "combat.h"
 #include "ucmachine.h"
 #include "Audio.h"
 #include "Gamemenu_gump.h"
@@ -236,6 +237,13 @@ void ActionCombat(int *params)
 	Game_window *gwin = Game_window::get_instance();
 	gwin->toggle_combat();
 	gwin->paint();
+	Mouse::mouse->set_speed_cursor();
+}
+
+//  { ActionCombatPause, 0, "Pause combat", true, false, NONE },
+void ActionCombatPause(int *params)
+{
+	Combat::toggle_pause();
 	Mouse::mouse->set_speed_cursor();
 }
 

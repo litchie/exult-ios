@@ -100,6 +100,7 @@ const struct Action {
 	{ "USEITEM", ActionUseItem, 0, "Use item", false, false, NONE, false },
 	{ "USEFOOD", ActionUseFood, 0, "Use food", false, false, NONE, false },
 	{ "TOGGLE_COMBAT", ActionCombat, 0, "Toggle combat", true, false, NONE, false },
+	{ "PAUSE_COMBAT", ActionCombatPause, 0, "Pause combat", true, false, NONE, false },
 	{ "TARGET_MODE", ActionTarget, 0, "Target mode", true, false, NONE, false },
 	{ "INVENTORY", ActionInventory, 0, "Show inventory", true, false, NONE, false },
 	{ "TRY_KEYS", ActionTryKeys, 0, "Try keys", true, false, NONE, false },

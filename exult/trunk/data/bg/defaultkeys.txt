@@ -62,6 +62,7 @@ Ctrl-B		shape_browser
 B		useitem			761	# Show spellbook
 INSERT		create_item		-1	# Create last shape
 C		toggle_combat
+SPACE		pause_combat
 Ctrl-D		delete_object
 E		toggle_eggs
 F		useitem			377	# Feed
