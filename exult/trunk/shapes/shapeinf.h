@@ -82,10 +82,16 @@ public:
 		{ return powers; }
 	int get_ammo_consumed()
 		{ return ammo > 0 ? ammo : 0; }
+	bool uses_charges()
+		{ return ammo == -2; }
 	bool is_thrown() const
 		{ return uses == 1 || uses == 2 || m_returns; }
 	bool returns() const
 		{ return m_returns; }
+	unsigned char get_uses() const
+		{ return uses; }
+	int get_range()			// Raw # (for map-editor).
+		{ return range; }
 	int get_striking_range()	// Guessing about div. by 2.
 		{ return uses < 3 ? range/2 : 0; }
 	int get_projectile_range()	// +++Guess for thrown weapons.
