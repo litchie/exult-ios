@@ -501,13 +501,6 @@ void Game_object::paint
 		(tx + 1 - gwin->get_scrolltx())*tilesize - 1 - liftpix,
 		(ty + 1 - gwin->get_scrollty())*tilesize - 1 - liftpix,
 					get_shapenum(), get_framenum());
-#if 0	/* OLD WAY++++++++++++ */
-	int xoff = (cx - gwin->get_chunkx())*chunksize;
-	int yoff = (cy - gwin->get_chunky())*chunksize;
-	gwin->paint_shape(xoff + (1 + get_tx())*tilesize - 1 - 4*lift, 
-				yoff + (1 + get_ty())*tilesize - 1 - 4*lift,
-					get_shapenum(), get_framenum());
-#endif
 	}
 
 /*
@@ -757,11 +750,13 @@ static void Debug_lt
  */
 class Ordering_info
 	{
+public:
 	Rectangle area;			// Area (pixels) rel. to screen.
 	Shape_info& info;		// Info. about shape.
 	int tx, ty, tz;			// Absolute tile coords.
 	int xs, ys, zs;			// Tile dimensions.
-	void init(Game_object *obj)
+private:
+	void init(const Game_object *obj)
 		{
 		obj->get_abs_tile(tx, ty, tz);
 		int frnum = obj->get_framenum();
@@ -772,17 +767,17 @@ class Ordering_info
 public:
 	friend Game_object, Chunk_object_list;
 					// Create from scratch.
-	Ordering_info(Game_window *gwin, Game_object *obj)
+	Ordering_info(Game_window *gwin, const Game_object *obj)
 		: area(gwin->get_shape_rect(obj)),
 		  info(gwin->get_shapes().get_info(obj->get_shapenum()))
 		{ init(obj); }
-	Ordering_info(Game_window *gwin, Game_object *obj, Rectangle& a)
+	Ordering_info(Game_window *gwin, const Game_object *obj, Rectangle& a)
 		: area(a),
 		  info(gwin->get_shapes().get_info(obj->get_shapenum()))
 		{ init(obj); }
 	};
 
-#if 0	/* This will be the new version: */
+#if 1	/* This will be the new version: */
 /*
  *	Should obj1 be rendered before obj2?
  *
@@ -792,11 +787,11 @@ int Game_object::lt
 	(
 	Ordering_info& inf1,		// Info. for object 1.
 	Game_object *obj2
-	) const
+	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// See if there's no overlap.
-	Rectangle r2 = gwin->get_shape_rect(&obj2);
+	Rectangle r2 = gwin->get_shape_rect(obj2);
 	if (!inf1.area.intersects(r2))
 		return (-1);		// No overlap on screen.
 	Ordering_info inf2(Game_window::get_game_window(), obj2, r2);
@@ -893,6 +888,23 @@ int Game_object::lt
 		}
 	return (-1);
 	}
+
+/*
+ *	Should this object be rendered before obj2?
+ *	NOTE:  This older interface isn't as efficient.
+ *
+ *	Output:	1 if so, 0 if not, -1 if cannot compare.
+ */
+int Game_object::lt
+	(
+	Game_object& obj2
+	) const
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Ordering_info ord(gwin, this);
+	return lt(ord, &obj2);
+	}
+
 #else	/* Old version: */
 
 /*
@@ -2302,7 +2314,7 @@ Chunk_object_list::~Chunk_object_list
 
 void Chunk_object_list::add_dependencies
 	(
-#if 0	/* This will be the new way: */
+#if 1	/* This will be the new way: */
 	Game_object *newobj,		// Object to add.
 	Ordering_info& newinfo		// Info. for new object's ordering.
 #else
@@ -2314,7 +2326,7 @@ void Chunk_object_list::add_dependencies
 	Object_iterator next(objects);
 	while ((obj = next.get_next()) != 0)
 		{
-#if 0
+#if 1
 		int cmp = Game_object::lt(newinfo, obj);
 #else
 		int cmp = newobj->lt(*obj);
@@ -2341,7 +2353,7 @@ void Chunk_object_list::add
 	newobj->cy = get_cy();
 					// Just put in front.
 	objects = newobj->insert_in_chain(objects);
-#if 0	/* This will be the new way: */
+#if 1	/* This will be the new way: */
 	Game_window *gwin = Game_window::get_game_window();
 	Ordering_info ord(gwin, newobj);
 	add_dependencies(newobj, ord);	// Figure dependencies.

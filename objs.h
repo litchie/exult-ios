@@ -207,11 +207,8 @@ public:
 		next->prev = prev;
 		prev->next = next;
 		}
-#if 0	/* This will be the new version: */
-	static int lt(class Ordering_info& inf1, Game_object *obj2) const;
-#else
+	static int lt(class Ordering_info& inf1, Game_object *obj2);
 	int lt(Game_object& obj2) const;// Is this less than another in pos.?
-#endif
 					// Return chunk coords.
 	int get_cx() const
 		{ return cx; }
@@ -620,7 +617,8 @@ class Chunk_object_list
 	unsigned char roof;		// 1 if a roof present.
 	unsigned char light_sources;	// # light sources in chunk.
 	unsigned char cx, cy;		// Absolute chunk coords. of this.
-	void add_dependencies(Game_object *newobj);
+	void add_dependencies(Game_object *newobj,
+					class Ordering_info& newinfo);
 public:
 	friend class Npc_actor;
 	friend class Object_iterator;
