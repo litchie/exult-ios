@@ -84,6 +84,7 @@ using std::vector;
 
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 extern	bool intrinsic_trace,usecode_trace,usecode_debugging;
+extern void Wait_for_arrival(Actor *actor);
 
 #if USECODE_DEBUGGER
 std::vector<int> intrinsic_breakpoints;
@@ -901,6 +902,65 @@ Usecode_value Usecode_machine::click_on_item
 	ret.put_elem(2, yval);
 	ret.put_elem(3, zval);
 	return (ret);
+	}
+
+/*
+ *	Have an NPC walk somewhere and then execute usecode.
+ *
+ *	Output:	1 if successful, else 0.
+ */
+
+int Usecode_machine::path_run_usecode
+	(
+	Usecode_value& npcval,		// # or ref.
+	Usecode_value& locval,		// Where to walk to.
+	Usecode_value& useval,		// Usecode #.
+	Usecode_value& itemval,		// Use as itemref in Usecode fun.
+	Usecode_value& eventval,	// Eventid.
+	int find_free
+	)
+	{
+	Actor *npc = as_actor(get_item(npcval));
+	if (!npc)
+		return 0;
+	int sz = locval.get_array_size();
+	if (sz != 3)			// Looks like tile coords.
+		{	//++++++Not sure about this.
+		cout << "0x7d Location not a 3-int array" << endl;
+		return 0;
+		}
+					// Get source, dest.
+	Tile_coord src = npc->get_abs_tile_coord();
+	int dx = locval.get_elem(0).get_int_value();
+	int dy = locval.get_elem(1).get_int_value();
+	int dz = locval.get_elem(2).get_int_value();
+	Tile_coord dest(dx, dy, dz);
+	if (find_free)
+		{
+		Tile_coord start = dest;
+		dest.tx = -1;		// Look outwards.
+		for (int i = 0; dest.tx == -1 && i < 3; i++)
+			dest = Game_object::find_unblocked_tile(start, i);
+		if (dest.tx == -1)
+			dest = start;
+		}
+	cout << endl << "Path_run_usecode:  first walk to (" << 
+			dx << ", " << dy << ", " << dz << ")" << endl;
+	if (src != dest &&
+	    !npc->walk_path_to_tile(dest))
+		{			// Failed to find path.  Return 0.
+		cout << "Failed to find path" << endl;
+		return 0;
+		}
+	Wait_for_arrival(npc);
+	Game_object *obj = get_item(itemval);
+	if (obj)
+		{
+		call_usecode(useval.get_int_value(), obj, 
+				(Usecode_events) eventval.get_int_value());
+		return 1;	// Success.
+		}
+	return 0;
 	}
 
 /*

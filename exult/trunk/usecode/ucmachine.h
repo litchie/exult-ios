@@ -162,6 +162,10 @@ private:
 
 	Usecode_value click_on_item();
 
+	int path_run_usecode(Usecode_value& npcval, Usecode_value& locval,
+		Usecode_value& useval, Usecode_value& itemval,
+				Usecode_value& eventval, int find_free = 0);
+
 	/*
          *	Embedded intrinsics
 	 */
@@ -297,6 +301,7 @@ private:
 	USECODE_INTRINSIC_DECL(get_npc_id);
 	USECODE_INTRINSIC_DECL(set_npc_id);
 	USECODE_INTRINSIC_DECL(add_cont_items);
+	USECODE_INTRINSIC_DECL(si_path_run_usecode);
 
 	/*
 	 *	Other private methods:

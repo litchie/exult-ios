@@ -44,7 +44,6 @@ using std::rand;
 
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 Barge_object *Get_barge	(Game_object *obj);
-void Wait_for_arrival(Actor *actor);
 extern unsigned char quitting_time;
 extern Usecode_value no_ret;
 
@@ -1469,6 +1468,11 @@ USECODE_INTRINSIC(path_run_usecode)
 	// exec(loc(x,y,z)?, usecode#, itemref, eventid).
 	// Think it should have Avatar walk path to loc, return 0
 	//  if he can't get there (and return), 1 if he can.
+	Usecode_value ava(gwin->get_main_actor());
+	return Usecode_value(path_run_usecode(ava, parms[0], parms[1],
+				parms[2], parms[3]));
+#if 0
+
 	Usecode_value u(0);
 	Usecode_value& loc = parms[0];
 	int sz = loc.get_array_size();
@@ -1503,6 +1507,7 @@ USECODE_INTRINSIC(path_run_usecode)
 		u = Usecode_value(1);	// Success.
 		}
 	return(u);
+#endif
 }
 
 USECODE_INTRINSIC(close_gumps)
@@ -1737,3 +1742,13 @@ USECODE_INTRINSIC(add_cont_items)
 					parms[3], parms[4], parms[5]);
 	return(no_ret);
 }
+
+USECODE_INTRINSIC(si_path_run_usecode)
+{
+	// exec(npc, loc(x,y,z)?, eventid, itemref, usecode#, ??true/false).
+	// Npc should walk to loc and then execute usecode.
+	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2],
+						parms[5].get_int_value());
+	return no_ret;
+}
+
