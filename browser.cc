@@ -19,6 +19,7 @@
 #include "game.h"
 #include "browser.h"
 #include "font.h"
+#include "items.h"
 	
 ShapeBrowser::ShapeBrowser()
 	{
@@ -111,7 +112,7 @@ void ShapeBrowser::browse_shapes()
  				        if (frame) {
 					        sprintf(buf,"%d x %d", frame->get_width(), frame->get_height());
 					        font->draw_text(gwin, 32, 32, buf);
-  					        
+  					        font->draw_text(gwin, 32, 24, item_names[current_shape]);
 						//draw outline
 						gwin->get_win()->fill8(255, 
 						    frame->get_width()+4, frame->get_height()+4, 
