@@ -1994,6 +1994,21 @@ USECODE_INTRINSIC(set_lift)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(sit_down)
+{
+	// Sit_down(npc, chair).
+	Game_object *nobj = get_item(parms[0]);
+	if (!nobj ||
+	    (nobj->get_npc_num() < 0 && nobj != gwin->get_main_actor()))
+		return (no_ret);	// Doesn't look like an NPC.
+	Actor *npc = (Actor *) nobj;
+	Game_object *chair = get_item(parm[1]);
+	if (!chair)
+		return(no_ret);
+	Sit_schedule::set_action(npc, chair);
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(display_map)
 {
 	// Display map.
@@ -2289,7 +2304,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x44++++Get_something() (0-3)
 	// 3==can't do magic here?
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x45++++Set_something(i)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x46++++Sitdown(npc, chair)???
+	USECODE_INTRINSIC_PTR(sit_down),// 0x46
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x47
 	USECODE_INTRINSIC_PTR(display_map),	// 0x48
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x49

@@ -208,7 +208,27 @@ void Actor::walk_to_point
 	}
 
 /*
- *	Stop walking.
+ *	Begin animation.
+ */
+
+void Actor::start
+	(
+	int speed,			// Time between frames (msecs).
+	int delay			// Delay before starting (msecs) (only
+					//   if not already moving).
+	)
+	{
+	frame_time = speed;
+	Game_window *gwin = Game_window::get_game_window();
+	if (!in_queue())		// Not already in queue?
+		{
+		unsigned long curtime = SDL_GetTicks();
+		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
+		}
+	}
+
+/*
+ *	Stop animation.
  */
 void Actor::stop
 	(
@@ -887,6 +907,53 @@ void Sleep_schedule::now_what
 	}
 
 /*
+ *	Create a 'sit' schedule.
+ */
+
+Sit_schedule::Sit_schedule
+	(
+	Npc_actor *n,
+	Game_object *ch			// Chair, or null to find one.
+	) : Schedule(n), chair(ch)
+	{
+	}
+
+/*
+ *	Schedule change for 'sit':
+ */
+
+void Sit_schedule::now_what
+	(
+	)
+	{
+	int frnum = npc->get_framenum();
+	if ((frnum&0xf) == Actor::sit_frame)
+		return;			// Already sitting.
+	if (!chair)			// ++++++Find chair.
+		return;	//++++++++++
+	set_action(npc, chair);
+	}
+
+/*
+ *	Set up action.  Used in usecode too.
+ */
+
+void Sit_schedule::set_action
+	(
+	Actor *actor,
+	Game_object *chairobj
+	)
+	{
+					// Frame 0 faces S, 1 E, etc.
+	int dir = 2*((chairobj->get_framenum() + 4)%4);
+	char frames[2];
+	frames[0] = actor->get_dir_framenum(dir, Actor::to_sit_frame);
+	frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
+	actor->set_action(new Frames_actor_action(frames, sizeof(frames)));
+	actor->start();			// Get into time queue.
+	}
+
+/*
  *	Open door that's blocking the NPC, after checking that it's closed.
  */
 
@@ -1117,7 +1184,7 @@ void Npc_actor::update_schedule
 	}
 
 /*
- *	Set new schedule.
+ *	Set new schedule by type.
  */
 
 void Npc_actor::set_schedule_type
@@ -1147,6 +1214,9 @@ void Npc_actor::set_schedule_type
 		break;
 	case Schedule::sleep:
 		schedule = new Sleep_schedule(this);
+		break;
+	case Schedule::sit:
+		schedule = new Sit_schedule(this);
 		break;
 	case Schedule::patrol:
 		schedule = new Patrol_schedule(this);
