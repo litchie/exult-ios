@@ -498,7 +498,10 @@ void BG_Game::scene_guardian()
 		pal.load("<STATIC>/intropal.dat",2);
 		pal.set_color(1,0,0,0); //UGLY hack... set font background to black
 		pal.apply();
-		//TODO: sound effects here!
+
+		//play static SFX
+		Audio::get_ptr()->play_sound_effect(115, MIX_MAX_VOLUME, 0, 0);
+
 		//TODO: timing?
 		win->show();
 		WAITDELAYCYCLE(100);
@@ -907,6 +910,10 @@ void BG_Game::scene_moongate()
 	// TODO: zoom (run) into moongate
 
 	WAITDELAYCYCLE3(3000);
+
+	// Wait till the music finished playing
+	while(Audio::get_ptr()->is_track_playing(home_song_midi))
+		WAITDELAYCYCLE3(50);
 }
 
 void BG_Game::top_menu()
