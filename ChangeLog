@@ -3,6 +3,7 @@
 	* All books should work now.
 	* Projectile-firing checks for clear path to target.
 	* Another attempt to fix random-crash bug.
+	* Fixed crashing bug with pirate S of Trinsic.
 
 2000-08-14  Jeff Freedman  <jeff@amy.nerble.net>
 
