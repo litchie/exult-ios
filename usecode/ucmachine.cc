@@ -1193,12 +1193,21 @@ int Usecode_machine::get_user_choice_num
 		{
 		char chr;		// Allow '1', '2', etc.
 		int result=Get_click(x, y, Mouse::hand, &chr);
-		if (result<=0)		// Ignore ESC, and keep going.
-			choice_num = -1;
-		else if (chr) {		// key pressed
+		if (result<=0) {	// ESC pressed, select 'bye' if poss.
+			vector<string>::iterator it;
+			choice_num = 0;
+			for(it=answers.answers.begin(); 
+				it!=answers.answers.end(); ++it)
+			{
+				if(*it=="bye")
+					break;
+				choice_num++;
+			}
+			if(it==answers.answers.end())
+				choice_num = -1;
+		} else if (chr) {		// key pressed
 			if (chr>='1' && chr <='0'+(int)answers.answers.size()){
 				choice_num = chr - '1';
-				gwin->clear_avatar_choices();
 			} else
 				choice_num = -1;	//invalid key
 		} else
@@ -1206,6 +1215,8 @@ int Usecode_machine::get_user_choice_num
 		}
 					// Wait for valid choice.
 	while (choice_num  < 0 || choice_num >= (int)answers.answers.size());
+
+	gwin->clear_avatar_choices();
 					// Store ->answer string.
 	user_choice = answers.answers[choice_num].c_str();
 	return (choice_num);		// Return choice #.
