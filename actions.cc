@@ -214,6 +214,17 @@ int Path_walking_actor_action::get_dest
 	}
 
 /*
+ *	Following an Astar path?
+ */
+
+int Path_walking_actor_action::following_smart_path
+	(
+	)
+	{
+	return path != 0 && path->following_smart_path();
+	}
+
+/*
  *	Handle a time event.
  *
  *	Output:	0 if done with this action, else delay for next frame.

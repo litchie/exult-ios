@@ -462,9 +462,11 @@ void Actor::follow
 		}
 	unsigned long curtime = SDL_GetTicks();
 	int dist2lead;
-	if (((dist2lead = pos.distance(leaderpos)) >= 8 &&
+	if ((((dist2lead = pos.distance(leaderpos)) >= 8 &&
 						curtime >= next_path_time) ||
-	     (dist2lead >= 4 && !leader->is_moving()) && get_party_id() >= 0)
+	     (dist2lead >= 4 && !leader->is_moving())) && 
+	      get_party_id() >= 0 && 
+	      (!is_moving() || !action || !action->following_smart_path()))
 		{			// A little stuck?
 		cout << get_name() << " trying to catch up." << endl;
 					// Don't try again for a few seconds.
