@@ -22,16 +22,6 @@ This could be fixed by
 - give the 'real' pillar a quality and check for that
 
 
-(SI) Resurrecting Gwenno:
-==========================
-Author: Clock Nova
-Date:   04-20-03 19:31
-
-Immediately after freeing Gwenno from the ice, I used the Hourglass and the
-female Monk came and resurrected her. Gwenno immediately began a conversation
-with me, talking to me as though she were already on Monk Isle. After breaking
-off conversation, she lapsed into her 'twisted soul' mode.
-
 
 (SI) Resurrecting possessed party:
 ===================================
@@ -131,3 +121,112 @@ Replace it with:
 ===============================
 
 
+(SI) Shamino's exchanged-items list
+====================================
+
+In the beginning Shamino talks about preparing a list of exchanged 
+objects but at a first look at that list his own objects are missing. This 
+gets normally corrected in the game at the latest when Dupre or Iolo join.
+You might also change usecode function 0402 like this:
+
+Usecode Function 0402:
+
+Code to replace:
+025D: 24 0A 00          call    [000A]                  ; 092BH
+0260: 13                push    true
+0261: 43 A2 02          popf    flag:[02A2]
+0264: 1F 00 00          pushi   0000H                   ; 0
+0267: 1D 84 03          pushs   L0384                   ; @Such 
+strangeness!@
+026A: 1F FE FF          pushi   FFFEH                   ; -2
+026D: 24 09 00          call    [0009]                  ; 097FH
+0270: 24 0B 00          call    [000B]                  ; 09AAH
+0273: 1F FE FF          pushi   FFFEH                   ; -2
+0276: 39 26 00 01       calli   _add_to_party@1 (0026)
+
+Replace with:
+025D: 13                push    true
+025E: 43 A2 02          popf    flag:[02A2]
+0261: 1F 00 00          pushi   0000H                   ; 0
+0264: 1D 84 03          pushs   L0384                   ; @Such 
+strangeness!@
+0267: 1F FE FF          pushi   FFFEH                   ; -2
+026A: 24 09 00          call    [0009]                  ; 097FH
+026D: 24 0B 00          call    [000B]                  ; 09AAH
+0270: 1F FE FF          pushi   FFFEH                   ; -2
+0273: 39 26 00 01       calli   _add_to_party@1 (0026)
+0277: 24 0A 00          call    [000A]
+
+This checks for the exchanged items in the party _after_ Shamino joins.
+
+
+===============================
+
+
+(SI) Silk stockings missing from exchanged item list.
+=======================================================
+
+Usecode function 092B checks for silk stockings in inventory but sets 
+wrong flag (not harmful, sets flag 27A which has already been set by the same 
+code call for another object (pinecone)).
+
+Usecode Function 092B
+
+Code to replace:
+
+00DC: 43 7A 02          popf    flag:[027A]
+
+Replace with:
+
+00DC: 43 7B 02          popf    flag:[027B]
+
+
+
+===============================
+
+(SI) Filari in exchanged item list. 
+
+On the exchanged items list there should also be the filari in your 
+inventory. This is either due to a wrong handling of count_objects by 
+exult or a wrong parameter in the usecode. This is the only instance of 
+using count_objects like this so I think its probably a bug in usecode. 
+count_objects gets called with shapenum 3B4 (filari), quality 14h and 
+framenum 0. Normally quality and framenum FE99 (any) is used if 
+money is counted, only not in this case. The result is that the 
+parameters do not match the characteristics of the filari in your 
+inventory (quality=87dec, framenum=7) and are ignored.
+
+Usecode Function 092C:
+
+replace:
+
+0057: 1F 14 00          pushi   0014H                   ; 20
+with: 
+0057: 1F 99 FE          pushi   FE99H                   ; -359
+
+
+and
+
+0087: 1F 00 00          pushi   0000H                   ; 0
+with
+0087: 1F 99 FE          pushi   FE99H                   ; -359
+
+
+(SI) Resurrecting Gwenno:
+==========================
+
+Gwennos activity flag gets set to 3 (talk) by the resurrect function (She 
+is even handled especially). This
+triggers an automatic conversation when the Avatar stands near her (event 
+== 0 or 9 I assume) and skips the function that checks for her 
+status: (!UI_get_item_flag(0xFF6B, 0x001E). When you stand far enough 
+apart this should not happen anyway. 
+
+Usecode function 08FE:
+
+replace 
+0109: 1F 03 00          pushi   0003H                   ; 3
+with 
+0109: 1F 0C 00          pushi   000CH                   ; 12
+
+(0C = wander) and this should not happen.
