@@ -118,7 +118,15 @@ void Gamemenu_gump::video_options()
 {
 	VideoOptions_gump *vid_opts = new VideoOptions_gump();
 	Do_Modal_gump(vid_opts, Mouse::hand);
+
+	if (!vid_opts->want_restore_background()) {
+		// resolution could have changed, so recenter & repaint menu.
+		set_pos();
+		paint(Game_window::get_game_window());
+		restore_background = false;
+	}
 	delete vid_opts;
+
 	Game_window::get_game_window()->set_palette();
 }
 
