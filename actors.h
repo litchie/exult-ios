@@ -92,6 +92,25 @@ public:
 	virtual int get_flag(int flag);
 	virtual int get_npc_num()	// Get its ID (1-num_npcs).
 		{ return npc_num; }
+	struct	{
+		int cx;
+		int cy;
+		Chunk_object_list *chunk;
+		int sx;
+		int sy;
+		int frame;
+		int lift;
+		} initial_location;
+	void set_initial_location(int new_cx,int new_cy,Chunk_object_list *new_chunk,int new_sx,int new_sy,int new_frame,int new_lift=-1)
+		{
+		initial_location.cx=new_cx;
+		initial_location.cy=new_cy;
+		initial_location.chunk=new_chunk;
+		initial_location.sx=new_sx;
+		initial_location.sy=new_sy;
+		initial_location.frame=new_frame;
+		initial_location.lift=new_lift;
+		};
 	};
 
 /*
