@@ -90,6 +90,7 @@ private:
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
+		// +++++Want to replace these with scrolltx, scrollty:
 	int chunkx, chunky;		// Chunk coord. of window within world.
 	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
@@ -121,14 +122,18 @@ public:
 		{ return win->get_width(); }
 	int get_height()
 		{ return win->get_height(); }
-	int get_chunkx()		// Get window offsets.
-		{ return chunkx; }
-	int get_chunky()
-		{ return chunky; }
+	int get_scrolltx()		// Get window offsets in tiles.
+		{ return chunkx*tiles_per_chunk; }
+	int get_scrollty()
+		{ return chunky*tiles_per_chunk; }
 	Usecode_machine *get_usecode()
 		{ return usecode; }
 	Rectangle get_win_rect()	// Get window's rectangle.
 		{ return Rectangle(0, 0, win->get_width(), win->get_height());}
+	Rectangle get_win_tile_rect()	// Get it in tiles, rounding up.
+		{ return Rectangle(get_scrolltx(), get_scrollty(),
+			(get_width() + tilesize - 1)/tilesize,
+			(get_height() + tilesize - 1)/tilesize); }
 					// Clip rectangle to window's.
 	Rectangle clip_to_win(Rectangle r)
 		{
