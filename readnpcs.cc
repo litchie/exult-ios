@@ -65,7 +65,7 @@ void Game_window::read_npcs
 	// Don't like it... no i don't.
 	center_view(main_actor->get_abs_tile_coord());
 					// SI: 231-255 are bogus automatons(?).
-	int skip = Game::get_game_type() == SERPENT_ISLE ? 231 : 10000;
+	int skip = Game::get_game_type() == SERPENT_ISLE ? 233 : 10000;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 	{
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);

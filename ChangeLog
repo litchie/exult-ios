@@ -1,5 +1,7 @@
 2001-09-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Configuration.cc, keyring.cc: added missing #include
+	* objs/contain.cc: save correct dead-body-npc-number in SI
+	* readnpcs.cc: only skip SI NPCs >= 233 (instead of >= 231)
 	
 2001-09-20  Ryan Nunn <triforce@merlin.net.au>
 	* audio/Midi.h : Fixed the crash when saving a game with midi disabled
