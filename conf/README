@@ -17,9 +17,13 @@ what we're doing here.
 Just at the moment, I'm not supporting:
 
 * XML empty tags (I did, but I'm not right now)
+	- Update: empty tags are back
 * Spaces,tabs,carriage returns, line-feeds inside entities (just because)
 	- Update: I'm now supporting whitespace within the entity, but not
 		leading or trailing whitespace
+* modifiers inside tags (eg: <something mod1="blah" colour="blue"> )
+  (and honestly, I'm not at all sure what we would do with them if we supported
+   them anyway)
 
 * The only supported entity encodings are &amp; &gt; and &lt;
 
