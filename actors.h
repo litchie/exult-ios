@@ -48,6 +48,8 @@ class Actor : public Container_game_object, public Time_sensitive
 	short properties[12];		// Properties set/used in 'usecode'.
 					// A frame sequence for each dir.:
 	static Frames_sequence *frames[8];
+					// Draw weapon in hand
+	void paint_weapon(Game_window *gwin);
 protected:
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Game_object *spots[12];		// Where things can go.  See 'Spots'

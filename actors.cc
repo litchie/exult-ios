@@ -50,9 +50,9 @@ void Actor::init
 	{
 	if (!frames[(int) north])
 		set_default_frames();
-	for (int i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
+	for (size_t i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
 		properties[i] = 0;
-	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+	for (size_t i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
 		spots[i] = 0;
 	}
 
@@ -68,8 +68,9 @@ Actor::Actor
 	int uc				// Usecode #.
 	) : Container_game_object(), usecode(uc), npc_num(num), party_id(-1),
 	    schedule_type((int) Schedule::loiter), two_handed(0), 
-	    two_fingered(false), usecode_dir(0), flags(0), action(0),
-	    frame_time(0), light_sources(0)
+	    two_fingered(false), light_sources(0), usecode_dir(0), flags(0),
+	    action(0),
+	    frame_time(0)
 	{
 	name = nm == 0 ? 0 : strdup(nm);
 	set_shape(shapenum, 0); 
@@ -302,6 +303,69 @@ void Actor::paint
 	{
 	if (!(flags & (1L << dont_render)))
 		Container_game_object::paint(gwin);
+	paint_weapon(gwin);
+	}
+
+// Utility function for paint_weapon()
+static inline void swap(unsigned char & a, unsigned char & b)
+	{
+	unsigned char temp = a;
+	a = b;
+	b = temp;
+	}
+
+/*
+ *	Draw the weapon in the actor's hand (if any).
+ */
+/* Weapon frames:
+	0 - normal item
+	1 - in hand, actor facing north/south
+	2 - attacking (pointing north)
+	3 - attacking (pointing east)
+	4 - attacking (pointing south)
+*/
+void Actor::paint_weapon
+	(
+	Game_window *gwin
+	)
+	{
+	unsigned char actor_x, actor_y;
+	unsigned char weapon_x, weapon_y;
+	Game_object * weapon = spots[lhand];
+
+	if(weapon == 0)
+		return;
+	// Get offsets for actor shape
+	gwin->get_info(this).get_weapon_offset(get_framenum() & 0x1f, actor_x,
+			actor_y);
+	// Get offsets for weapon shape
+	// NOTE: when combat is implemented, weapon frame should depend on
+	// actor's current attacking frame
+	int weapon_frame = 1;
+	gwin->get_info(weapon).get_weapon_offset(weapon_frame, weapon_x,
+			weapon_y);
+	// actor_x will be 255 if (for example) the actor is lying down
+	// weapon_x will be 255 if the actor is not holding a proper weapon
+	if(actor_x != 255 && weapon_x != 255)
+		{
+		// Need to swap offsets if actor's shape is reflected
+		if(get_framenum() & 32)
+		{
+			swap(actor_x, actor_y);
+			swap(weapon_x, weapon_y);
+			weapon_frame |= 32;
+		}
+		// Paint the weapon shape using the actor's coordinates
+		int tx, ty, tz;
+		get_abs_tile(tx, ty, tz);
+		int liftpix = 4*tz;
+		gwin->paint_shape(
+			(tx + 1 - gwin->get_scrolltx())*tilesize
+				- 1 - liftpix - actor_x + weapon_x,
+			(ty + 1 - gwin->get_scrollty())*tilesize
+				- 1 - liftpix - actor_y + weapon_y,
+			weapon->get_shapenum(), weapon_frame);
+		}
 	}
 
 /*
@@ -475,7 +539,7 @@ int Actor::add_readied
 	int index			// Spot #.
 	)
 	{
-	if (index < 0 || index >= sizeof(spots)/sizeof(spots[0]))
+	if (index < 0 || index >= (int)(sizeof(spots)/sizeof(spots[0])))
 		return (0);		// Out of range.
 	if (spots[index])		// Already something there?
 					// Try to drop into it.
@@ -484,8 +548,7 @@ int Actor::add_readied
 	int best_index = find_best_spot(obj);
 	if (best_index == -1)		// No place?
 		return (0);
-	if (index == best_index || (!two_handed &&
-			(index == lhand || index == rhand)))
+	if (index == best_index || (!two_handed && index == lhand))
 		{			// Okay.
 		if (!Container_game_object::add(obj))
 			return (0);	// No room, or too heavy.
@@ -514,7 +577,7 @@ int Actor::find_readied
 	Game_object *obj
 	)
 	{
-	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+	for (size_t i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
 		if (spots[i] == obj)
 			return (i);
 	return (-1);

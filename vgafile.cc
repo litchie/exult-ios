@@ -261,9 +261,15 @@ void Shape_frame::create_rle
 #endif
 	Write2(out, 0);			// End with 0 length.
 	int datalen = out - buf;	// Create buffer of correct size.
-	delete data;			// Delete old data if there.
+#ifdef DEBUG
+	if(datalen > w*h*2 + 16*h)
+		cerr << "create_rle: datalen: " << datalen << " w: " << w
+			<< " h: " << h << endl;
+#endif
+	delete [] data;			// Delete old data if there.
 	data = new unsigned char[datalen];
 	memcpy(data, buf, datalen);
+	delete [] buf;
 	}
 
 /*
@@ -490,6 +496,13 @@ Shape_frame *Shape::store_frame
 	return (frame);
 	}
 
+Shape::~Shape()
+	{
+	for(int i = 0; i < num_frames; i++)
+		delete frames[i];
+	delete [] frames;
+	}
+
 /*
  *	Read in all shapes from a single-shape file.
  */
@@ -534,6 +547,11 @@ Vga_file::Vga_file
 #if 0
 	memset((char *) shapes, 0, num_shapes * sizeof(Shape **));
 #endif
+	}
+
+Vga_file::~Vga_file()
+	{
+	delete [] shapes;
 	}
 
 /*
@@ -582,6 +600,46 @@ int Shapes_vga_file::read_info
 		info[shapenum].ready_type = type;
 		ready.seekg(6, ios::cur);// Skip 9 bytes.
 		}
+	// Load data about drawing the weapon in an actor's hand
+	ifstream wihh;
+	unsigned short offsets[1024];
+	if (!U7open(wihh, WIHH))
+		return (0);
+	for (int i = 0; i < 1024; i++)
+		offsets[i] = Read2(wihh);
+	for (int i = 0; i < 1024; i++)
+		// A zero offset means there is no record
+		if(offsets[i] == 0)
+			info[i].weapon_offsets = 0;
+		else
+			{
+			wihh.seekg(offsets[i]);
+			// There are two bytes per frame: 64 total
+			info[i].weapon_offsets = new unsigned char[64];
+			for(int j = 0; j < 32; j++)
+				{
+				unsigned char x = Read1(wihh);
+				unsigned char y = Read1(wihh);
+				// Set x/y to 255 if weapon is not to be drawn
+				// In the file x/y are either 64 or 255:
+				// I am assuming that they mean the same
+				if(x > 63 || y > 63)
+					x = y = 255;
+				info[i].weapon_offsets[j * 2] = x;
+				info[i].weapon_offsets[j * 2 + 1] = y;
+				}
+			}
 	return (1);
+	}
+
+Shape_info::~Shape_info()
+	{
+	if(weapon_offsets)
+		delete [] weapon_offsets;
+	}
+
+Shapes_vga_file::~Shapes_vga_file()
+	{
+	delete [] info;
 	}
 
