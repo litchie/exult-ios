@@ -253,6 +253,8 @@ void Mouse::set_speed_cursor()
 	    cursor = short_arrows[7]; break;		// Short NW green.
 	case Cheat::hide:
 	    cursor = redx; break;
+	case Cheat::combo_pick:
+	    cursor = greenselect; break;
 	}
     }
     if (cursor == dontchange)
