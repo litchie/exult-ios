@@ -58,7 +58,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 0. Changes to the Documentation
 0.1. 24 July 2002
-* 1.2. About this Documentation. You need a snasphot of the 1.1.x branch to work with Exult Studio.
+* 1.2. About this Documentation. You need a snapshot of the 1.1.x branch to work with Exult Studio.
 * 2.1. Installation corrected link to Exult Studio.
 * 3.1. File updated.
 * 3.2. Edit formerly known as Objects menu.
@@ -115,7 +115,7 @@ Along with the terms explained in ReadMe.txt there are some more terms that need
 2. Configurations
 2.1. Installation
 * You need Exult and you need to install it properly (see ReadMe.txt). Also make sure that you are using the latest snapshot of the 1.1.x branch of Exult.
-* For U*ix platforms you need to build Exult Studio from the source avillable from our source snapshot at http://exult.sourceforge.net/download.php. You will also need the GTK+ library installed as well as libglade.
+* For U*ix platforms you need to build Exult Studio from the source avilable from our source snapshot at http://exult.sourceforge.net/download.php. You will also need the GTK+ library installed as well as libglade.
 * For Win32 platforms (Win9x,ME,2k,XP) you need to download http://exult.sourceforge.net/snapshots/2.0/ExultStudio.exe and install it in the same directory where you installed Exult.
 
 
@@ -136,7 +136,7 @@ You can also reconnect by selecting File-Connect in Exult Studio's menus.
 
 
 2.3. Settings in exult.cfg.
-You can change the settings of Exult Studio either with the prefernces dialog or via exult.cfg. Those settings are:
+You can change the settings of Exult Studio either with the preferences dialog or via exult.cfg. Those settings are:
 <config>
 <estudio>
 <main>
@@ -175,7 +175,7 @@ gimp-remote -n
 
 2.4. Command line options
 Exult Studio offers some "hidden" command line options:
-* -gGAMENAME specifies GAMENAME and Exult Studio will read the game base directory from exult.cfg. GAMENAME can be choosen from the games specified in <game> part of exult.cfg.
+* -gGAMENAME specifies GAMENAME and Exult Studio will read the game base directory from exult.cfg. GAMENAME can be chosen from the games specified in <game> part of exult.cfg.
 * -xDIRECTORY tells exult_studio to look in DIRECTORY for its user-interface specification (exult_studio.glade). This option is only useful to developers who want to edit exult_studio.glade themselves.
 
 
@@ -187,12 +187,12 @@ Exult Studio offers some "hidden" command line options:
 3.1. File
 * New Game... This lets you begin the work on a new game. Jeff wrote an extensive description of how to use this and how it works. See New Game manual.
 * Open Game... Choose the Game directory of the game you want to edit.
-* Save all 'Ctrl+S' Saves map, shape infos and groups you edited (see below).
+* Save all 'Ctrl+S' Saves map, shape info and groups you edited (see below).
 * New... Shapes file... Lets you choose the directory where you want to create a new vga file and requires you to enter a name for it (e.g. mygame.vga). Single shape file... Lets you choose the directory where you want to create a new shape file and requires you to enter a name for it (e.g. mygame.shp).
 * Save... Map Saves the map of the edited game. Shape info When you right click a shape in a vga file you can change the info of the shape. This saves this changed info. Groups You can "bundle" shapes of vga files into groups to make world building easier. These groups get saved with this option. Combos This saves the combination files.
 * Reload... Map 'Ctrl+R' Reloads the map. All changes made since the last save get discarded. Usecode Very useful when you edit the usecode of a game or add new usecode to an existing game. Normally this would require a restart of Exult.
 * Connect Connects Exult and Exult Studio if one of them had to be restarted.
-* Preferences Image Editor Command: This executes the chosen image editor when you want to edit a shape when you right click it. Image-Edit Filetype: Choose which filetype gets executed with the above cosen image editor. Default Game Name: Choose the game Exult Studio opens by default. Use the name specified in exult.cfg. Shape List Background: Sometimes the default black background may make certain shapes hard to see. Choose a different background colour here.
+* Preferences Image Editor Command: This executes the chosen image editor when you want to edit a shape when you right click it. Image-Edit Filetype: Choose which filetype gets executed with the above chosen image editor. Default Game Name: Choose the game Exult Studio opens by default. Use the name specified in exult.cfg. Shape List Background: Sometimes the default black background may make certain shapes hard to see. Choose a different background color here.
 * Exit 'Ctrl+Q' Exits Exult Studio.
 
 Note that the default location for saving and creation of new files is the STATIC directory of a game if there is no PATCH directory specified. See 5.1. What you can do at the moment.
@@ -202,8 +202,8 @@ Note that the default location for saving and creation of new files is the STATI
 * Cut 'Ctrl-X' Removes the selected object(s) and puts it into memory.
 * Copy 'Ctrl-C' Copies the selected object(s) into memory.
 * Paste 'Ctrl-V' Shows the crosshair cursor and copies the object(s) from the memory into the game where you left click the crosshair.
-* Properties... Shows the properties of the selected object. If more than one object is selected it shows the properies of the last selected object. Only NPCs and eggs show different properties than if you select Basic properties.
-* Basic properties... Shows the properties of the selected object. If more than one object is selected it shows the properies of the last selected object.
+* Properties... Shows the properties of the selected object. If more than one object is selected it shows the properties of the last selected object. Only NPCs and eggs show different properties than if you select Basic properties.
+* Basic properties... Shows the properties of the selected object. If more than one object is selected it shows the properties of the last selected object.
 * Create egg... Create or edit eggs with this. See 5.3. Creating/editing Eggs for more information (not yet there).
 * Create NPC... Create or edit NPCs with this. See 5.4. Creating/editing NPCs for more information (not yet there).
 
@@ -211,7 +211,7 @@ Note that the default location for saving and creation of new files is the STATI
 
 3.3. Mode
 It describes how the mouse behaves inside Exult when map-editing.
-* Move This is the normal mode where you can drag things with the mouse, or single-click to identify objects. In this mode you also select objects. A selected object is shwon with a red outline. To select more than one object hold down 'Ctrl' while selecting. Move the selection 'Ctrl-arrow' (x,y coordinates) and 'Ctrl-page' keys (z coordinates).
+* Move This is the normal mode where you can drag things with the mouse, or single-click to identify objects. In this mode you also select objects. A selected object is shown with a red outline. To select more than one object hold down 'Ctrl' while selecting. Move the selection 'Ctrl-arrow' (x,y coordinates) and 'Ctrl-page' keys (z coordinates).
 * Paint a single-left-click inserts the last-selected shape from 'shapes.vga', and dragging with the left-button inserts that shape in every tile (so you'd probably only want to do this with 8x8 flat shapes). Also, in 'Paint' mode, the footprint at ground level is shown (though this may be changed in the future). If you hold the alt key down, random frames from the currently-selected shape will be painted (handy for grassy areas).
 * Pick for Combo Picks objects for a new combo file. Double-left-click to add objects to the combo, single-left-click to identify object. See 5.5. Creating Combination files
 
@@ -229,7 +229,7 @@ Note that you can only drag objects in the game window when you are in "Move" mo
 * Play This is the same as pressing 'Alt+Ctrl+M' in Exult. It exits the Map Edit Mode and lets you play the game. By pressing it again you enter Map Edit Mode again.
 * Grid Shows a grid in the game window for better control on placing objects.
 * Edit lift: Changes the lift of a selected object in the game window. Lift means the distance of an object from the ground.
-* Hide lift: Hides objects that are above the choosen height.
+* Hide lift: Hides objects that are above the chosen height.
 * Edit terrain See 5.1. What you can do at the moment. Note that a terrain is used in multiple instances of the map and changing it in one place changes it in all the others as well.
 
 
@@ -271,7 +271,7 @@ Right clicking on a chunk only gives you the default File-save/revert option.
 
 
 4.5. Groups files
-Editing a game can become quite cumbersome when you have to choose between a lot of shape files containing several frames. To make this task easier we have implemented so called groups to groups several shapes together. For example you can group all shapes containing door frames together in a group called 'doors'. For this you have to select Groups and create a new group by writing the name in the lower part of the window and then click 'add'. You now have the option in the Shape Menu to add a shape to this group. When you doubleclick a group the group window opens that shows the shapes in the group and by selecting a shape you see the shape info. You also have some options to edit the group:
+Editing a game can become quite cumbersome when you have to choose between a lot of shape files containing several frames. To make this task easier we have implemented so called groups to groups several shapes together. For example you can group all shapes containing door frames together in a group called 'doors'. For this you have to select Groups and create a new group by writing the name in the lower part of the window and then click 'add'. You now have the option in the Shape Menu to add a shape to this group. When you double-click a group the group window opens that shows the shapes in the group and by selecting a shape you see the shape info. You also have some options to edit the group:
 * Move Moves the shapes within the group.
 * Remove Removes the shape from the group.
 * Name Changes the name of the group.
@@ -296,8 +296,8 @@ With the latest source you can
 * edit an NPC by double-clicking on it, and also create a new NPC using the pull-down menu. Attributes, flags, and schedules can all be viewed and modified.
 * can edit other objects' position and quality by double-clicking on them.
 * browse the 'u7chunks' file, and drag them into Exult to change the terrain. In this browser, you can also create new terrains and modify their order.
-* edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit terrain" checkbox in Exult Studio. This is a special mode where dragging with the left mouse button 'paints' the currently-selected shape (generally one of the flat tiles near the top of the shapes browser). Note that a 'terrain' is generally used in multiple places in the mapand changing it in one place changes it in all the others as well.
-* save the map using ExultStudio's "File-Save map" pulldown. In order to avoid writing over files inadvertantly, the files that would normally go into the 'static' directory, will, instead, go into a 'patch' directory that you specify in your 'exult.cfg' file. Here's an example for editing BG:
+* edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit terrain" checkbox in Exult Studio. This is a special mode where dragging with the left mouse button 'paints' the currently-selected shape (generally one of the flat tiles near the top of the shapes browser). Note that a 'terrain' is generally used in multiple places in the map and changing it in one place changes it in all the others as well.
+* save the map using Exult Studio's "File-Save map" pulldown menu. In order to avoid writing over files inadvertently, the files that would normally go into the 'static' directory, will, instead, go into a 'patch' directory that you specify in your 'exult.cfg' file. Here's an example for editing BG:
 
 <game>
 <blackgate>
@@ -319,7 +319,7 @@ In any mode, you can add the currently selected shape by shift-clicking..
 5.2. The shape editor
 When you right click on a shape in the Shape browser (e.g. Files-Shapes.vga) you get some options of how to edit the shapes.
 * Add to group... If you set up groups you can add shapes to them with this.
-* Info... Displays the information of an object. You can change a lot of stuff there and caution is adviced. The information is saved by 3.1. File.
+* Info... Displays the information of an object. You can change a lot of stuff there and caution is advised. The information is saved by 3.1. File.
 * Edit...: Brings up your image-editor on the chosen frame. When you save in the image-editor, ES will read the changes back within 5 seconds. This is especially convenient if you have 'gimp-remote', as it will open a window for the frame in an already-running gimp.
 * Edit tiled: This is only for 'flat' (8x8) shapes. It forms an image from all the frames and brings it up in the image-editor. This is really handy for making lots of terrain frames like grass. A dialog lets you choose the dimensions.
 * New frame: Creates a new frame after the currently-selected one. The 'insert' key also does this (and the 'del' key deletes a frame, though it's buggy if there's just one frame left).
@@ -344,7 +344,7 @@ sorry, not documented yet (very extensive work).
 
 
 5.5. Creating Combination files
-Create 'combination shapes', like a fence or an entire roof by selecting "Tools-New Combo" (see 3.4.). When you run Exult Studio the first time a file called combos.flx gets automatically created in the "Patch" directory. Choose the 'Pick for Combo' choice in the 'Modes' menu, and an empty window should pop up. In the game window, double-click a group of objects, and they should appear in the window. You can then select an object there and tweak its position. When you are done hit aply and the combo gets temporally saved until you hit "Save all" or "Save - Save map". You can drag and drop combinations into the game window.
+Create 'combination shapes', like a fence or an entire roof by selecting "Tools-New Combo" (see 3.4.). When you run Exult Studio the first time a file called combos.flx gets automatically created in the "Patch" directory. Choose the 'Pick for Combo' choice in the 'Modes' menu, and an empty window should pop up. In the game window, double-click a group of objects, and they should appear in the window. You can then select an object there and tweak its position. When you are done hit apply and the combo gets temporally saved until you hit "Save all" or "Save - Save map". You can drag and drop combinations into the game window.
 
 
 5.6. Custom Usecode
@@ -366,13 +366,13 @@ In the process of creating Exult the team came up with some useful tools that mi
 * splitshp: can be used to combine frames of a Shape file into one file, or split a Shape file into its component frames. See the manual.
 * textpack: can be used edit text flex files. See manual.
 * ucc: can be used to create custom usecode (see 5.6.). See the manual.
-* The GIMP Plug-in: can be used for editing shapes in the GIMP. Handles multiframe Shape files. See http://www.gimp.org for inormation on the GIMP.
+* The GIMP Plug-in: can be used for editing shapes in the GIMP. Handles multiframe Shape files. See http://www.gimp.org for information on the GIMP.
 * Photoshop Plug-in: can be used for editing shapes in Photoshop. Can't handle multiframe Shape files. And also can't handle indexed images with Alpha correctly.
 
 
 
 6.2. Porting Exult Studio to other platforms
-Currently Exult Studio runs on U*ix and Windows platforms. First it only ran on U*ix but with some effort by Colourless, Kirben and Mark Siewert it was succesfully ported to Win32.
+Currently Exult Studio runs on U*ix and Windows platforms. First it only ran on U*ix but with some effort by Colourless, Kirben and Mark Siewart it was successfully ported to Win32.
 A port to other platforms depends on when someone volunteers to do the work :-) There are three issues:
 * GTK has to be ported to the platform.
 * Exult Studio uses sockets to communicate with Exult.
@@ -400,7 +400,7 @@ For a more detailed explanation, see Gary Thompson's paper, 'u7edit.txt' in our 
 
 6.5. What's next?
 The next things to be implemented are:
-* Exult Studioneeds to be able to automatically create palettes 1-n from palette 0 using the code from ipack.
+* Exult Studio needs to be able to automatically create palettes 1-n from palette 0 using the code from ipack.
 * It will also be very nice to have a Usecode debugger someday as well (Willem is actually working on it).
 * A 'flags' editor for viewing and editing the global Usecode flags by name.
 * A 'barge' editor for creating things like ships and carts.
