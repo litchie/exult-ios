@@ -3192,7 +3192,7 @@ int Dead_body::get_live_npc_num
 
 int Monster_actor::is_blocked
 	(
-	int destx, int desty		// Square we want to move to.
+	Tile_coord& t			// Tz possibly updated.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -3202,7 +3202,7 @@ int Monster_actor::is_blocked
 	int ztiles = info.get_3d_height();
 	Tile_coord cur = get_abs_tile_coord();
 	return Chunk_object_list::is_blocked(xtiles, ytiles, ztiles,
-			cur, Tile_coord(destx, desty, cur.tz), get_type_flags());
+			cur, t, get_type_flags());
 	}
 
 /*
@@ -3327,14 +3327,11 @@ int Monster_actor::step
 	int old_cx = get_cx(), old_cy = get_cy();
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
-					// Get rel. tile coords.
-	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
 					// Get ->new chunk.
 	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
 	nlist->setup_cache();		// Setup cache if necessary.
-					// Blocked.
-//Try is_blocked(t.tx, t.ty)+++++++
-	if (is_blocked(cx*c_tiles_per_chunk + tx, cy*c_tiles_per_chunk + ty))
+					// Blocked?
+	if (is_blocked(t))
 		{
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);
@@ -3349,7 +3346,9 @@ int Monster_actor::step
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
 					// Move it.
-	movef(olist, nlist, tx, ty, frame, -1);
+					// Get rel. tile coords.
+	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
+	movef(olist, nlist, tx, ty, frame, t.tz);
 	if (!add_dirty(gwin, 1))
 		{			// No longer on screen.
 		stop();

@@ -289,7 +289,11 @@ static int Check_mask
 		{
 		if (obj->is_monster())
 			return 1;
-		if (obj->get_npc_num() <= 0 && obj != gwin->get_main_actor())
+					// Avatar?  FALSE for SI.  Unsure
+					//  about BG, so return TRUE.
+		if (obj == gwin->get_main_actor())
+			return Game::get_game_type() != SERPENT_ISLE;
+		if (obj->get_npc_num() <= 0)
 			return 0;	// Not an NPC & not the Avatar.
 		return 1;
 		}
