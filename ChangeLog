@@ -1,3 +1,7 @@
+2003-10-30    <jeff@mini.nerble.net>
+
+	* objs/citerate.h,barge.cc: Fixed world-wrapping bug.
+
 2003-10-26    <jeff@mini.nerble.net>
 
 	* schedule.cc (Walk_to_schedule): Changed pathfinding so you can
