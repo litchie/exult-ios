@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../autoconfig.h"
 #endif
 
+#ifndef WIN32
+
 #include <vector>
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
@@ -73,6 +75,17 @@ private:
 	void build_speech_vector(void);
 
 };
+
+#else
+
+class Audio {
+public:
+  void Init(int _samplerate, int _channels) {};
+  void start_music(int num, int repetition) {};
+  viod start_speech(int num, bool wait=false) {};
+};
+
+#endif
 
 extern	Audio audio;
 
