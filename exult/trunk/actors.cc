@@ -2019,10 +2019,10 @@ int Actor::add_readied
 	obj->set_chunk(0, 0);
 
 	// Must be a two-handed weapon.
-	if (type == FIS_2Hand) two_handed = true;
+	if (type == FIS_2Hand && index == lhand) two_handed = true;
 
 	// Must be gloves
-	if (type == FIS_2Finger) two_fingered = true;
+	if (type == FIS_2Finger && index == lfinger) two_fingered = true;
 
 	Game_window *gwin = Game_window::get_game_window();
 
