@@ -250,6 +250,12 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 			Game_window::get_game_window()->get_win_tile_rect();
 					// Get center.
 		int cx = scr.x + scr.w/2, cy = scr.y + scr.h/2;
+					// More than 4 screens away?
+		if (best.distance(Tile_coord(cx, cy, 0)) > 4*scr.w)
+			{
+			best.tx = best.ty = -1;
+			return;
+			}
 		if (best.tx > cx + scr.w)
 					// Too far to right of screen.
 			best.tx = scr.x + scr.w + 1;
