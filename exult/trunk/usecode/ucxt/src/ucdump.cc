@@ -36,10 +36,6 @@
 #include "exult_constants.h"
 const std::string c_empty_string; // Ob for exult_constants.h
 
-//#define DEBUG(x) x
-#define DEBUG(x)
-
-// PATRICK
 /* Functions */
 void usage();
 void output_flags(const vector<UCFunc *> &funcs);
@@ -49,8 +45,6 @@ UCData uc;
 
 int main(int argc, char** argv)
 {
-	/* Preset to no match */
-
 	cout << "Ultima 7 usecode disassembler v0.6.1" << endl
 	     << "    compiled with " << PACKAGE << " " << VERSION << endl
 	     << endl;
@@ -79,6 +73,7 @@ int main(int argc, char** argv)
 	// init the compile time tables
 	if(uc.verbose()) cout << "Initing static tables..." << endl;
 	init_static_usecodetables(config);
+
 	// init the run time tables
 	if(uc.verbose()) cout << "Initing runtime tables..." << endl;
 	init_usecodetables(config, uc);
@@ -99,36 +94,27 @@ int main(int argc, char** argv)
 		coutbuf = cout.rdbuf();
 		cout.rdbuf(outputstream.rdbuf());
 	}
-	// you man now uncover your eyes <grin>
-
-	if( uc.mode() == MODE_NONE )
-		usage();
+	// you may now uncover your eyes <grin>
 
 	open_usecode_file(uc, config);
-	
 
-	if     (uc.mode_dis() || uc.mode_all())
+	if     ( uc.mode_dis() || uc.mode_all() )
 	{
 		uc.disassamble();
-	}
-	else if( uc.mode() == MODE_DISASSEMBLE_ALL )
-	{
-		uc.disassamble_all();
 	}
 	else if( uc.mode() == MODE_FLAG_DUMP )
 	{
 		uc.dump_flags();
 	}
-	else if( uc.mode() == MODE_ALL )
-	{
-		uc.list_funcs();
-	}
+	else
+		usage();
 
 	// now we clean up the <ick>y ness from before
 	if(uc.output_redirect().size())
 	{
 		cout.rdbuf(coutbuf);
 	}
+	
 	return 0;
 }
 
@@ -174,7 +160,7 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 	string mucc_sil("serpent");
 	string mucc_sic("SERPENT");
 	
-	/* The four mysitcal usecode configurations: */
+	/* The four mystical usecode configurations: */
 	
 	string mucc_ll(string("/") + mucc_sl + "/" + mucc_ul);
 	string mucc_cl(string("/") + mucc_sc + "/" + mucc_ul);
@@ -248,13 +234,8 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 		uc.open_usecode(mucc_uc);
 	if(uc.fail())
 		uc.open_usecode(mucc_ul);
+
 	// if we get through all this, usecode can't be installed anywhere sane
-	if(uc.fail())
-	{
-		cout << "Error. Could not find usecode file. Exiting." << endl;
-		exit(1);
-	}
-	
 	if(uc.fail())
 	{
 		cout << "Failed to locate usecode file. Exiting." << endl;
@@ -265,32 +246,33 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 
 void usage()
 {
-  cout << "Usage:" << endl
-       << "\tucxt [options] -a" << endl
-       << "\t\t- prints all of the functions" << endl
-       << "\tucxt [options] <hex function number>" << endl
-       << "\t\t- disassembles single function to stdout" << endl
+	cout << "Usage:" << endl
+	     << "\tucxt [options] -a" << endl
+	     << "\t\t- prints all of the functions" << endl
+	     << "\tucxt [options] <hex function number>" << endl
+	     << "\t\t- disassembles single function to stdout" << endl
 //       << "\tucdump -c - scans the whole usecode file for unknown opcodes" << endl
 //       << "\tucdump -o <hex number> - prints list of functions which use "
 //       << "the given opcode" << endl
 //       << "\tucdump -i <hex number> - prints list of functions which use "
 //       << "the given intrinsic function\n" << endl
 //       << "\tucxt -f - prints list of all flags x functions" << endl
-       << endl
+	     << endl
 	     << "\tMisc Flags (any/all of these):" << endl
-       << "\t\t-nc\t- don't look for exult's .xml config file" << endl
-       << "\t\t-v \t- turns on verbose output mode" << endl
-       << "\t\t-ofile\t- output to the specified file" << endl
+	     << "\t\t-nc\t- don't look for exult's .xml config file" << endl
+	     << "\t\t-v \t- turns on verbose output mode" << endl
+	     << "\t\t-ofile\t- output to the specified file" << endl
 	     << "\t\t-ro\t- output the raw opcodes in addition to the -f format" << endl
 	     << "\t\t-ac\t- output an automatically generated comment" << endl
 	     << "\t\t\t  in addition to the -f format" << endl
 	     << "\tGame Specifier Flags (only one of these):" << endl
-       << "\t\t-bg\t- select the black gate usecode file" << endl
-       << "\t\t-si\t- select the serpent isle usecode file" << endl
+	     << "\t\t-bg\t- select the black gate usecode file" << endl
+	     << "\t\t-si\t- select the serpent isle usecode file" << endl
 	     << "\tOutput Format Flags (only one of these):" << endl
 	     << "\t\t-fl\t- output using brief \"list\" format" << endl
 	     << "\t\t-fa\t- output using \"assembler\" format (default)" << endl
-	     << "\t\t-fs\t- output using \"exult script\" format" << endl
+	     << "\t\t-fs\t- output using \"old exult script\" format" << endl
+//	     << "\t\t-fz\t- output using \"exult script\" format" << endl
 	     ;
   exit(1);
 }
