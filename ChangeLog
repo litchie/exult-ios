@@ -1,3 +1,8 @@
+2002-09-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Taking a guess to fix the 'savegump repaint' bug.
+	* drag.cc (Dragging_info): If not dragging, don't paint!
+
 2002-09-13  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* keyactions.cc,etc: USEFOOD added to support SI goblet.
