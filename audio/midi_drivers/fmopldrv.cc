@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopldrv.cc,v 1.1 2002/08/06 18:10:31 colourles Exp $
+ * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopldrv.cc,v 1.2 2002/08/09 12:10:21 colourles Exp $
  */
 
 /*
@@ -916,7 +916,8 @@ void OplDriver::LoadXMIDIBank(const char *fn)
 	}
 
 	// Read all the timbres
-	for (uint32 i = 0; ds.getPos() < ds.getSize(); i++) {
+	uint32 i;
+	for (i = 0; ds.getPos() < ds.getSize(); i++) {
 		// Seek to the entry
 		ds.seek(i*6);
 
@@ -1105,7 +1106,8 @@ void OplDriver::LoadU7VBank(const char *fn)
 	int count = ds.read1() & 0xFF;
 
 	// Read all the timbres
-	for (int i = 0; i < count; i++) {
+	int i;
+	for (i = 0; i < count; i++) {
 
 		// Read the timbre
 		u7voice_ins.read(ds);
