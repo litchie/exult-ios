@@ -107,6 +107,8 @@ public:
 				GdkEventSelection *event, gpointer data);
 //	static gint mouse_motion(GtkWidget *widget, GdkEventButton *event,
 //							gpointer data);
+	static gint drag_begin(GtkWidget *widget, GdkDragContext *context,
+							gpointer data);
 					// Handle scrollbar.
 	static void scrolled(GtkAdjustment *adj, gpointer data);
 	};
