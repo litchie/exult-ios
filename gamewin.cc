@@ -274,7 +274,7 @@ void Game_window::abort
 	throw quit_exception(-1);
 	}
 
-void Game_window::init_files()
+void Game_window::init_files(bool cycle)
 {
 	
 	// Determine some colors based on the default palette
@@ -289,7 +289,8 @@ void Game_window::init_files()
 
 #ifdef RED_PLASMA
 	// Display red plasma during load...
-	setup_load_palette();
+	if (cycle)
+		setup_load_palette();
 #endif
 
 	usecode = Usecode_machine::create(this);
