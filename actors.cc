@@ -788,7 +788,6 @@ int Actor::figure_hit_points
 	Actor *attacker
 	)
 	{
-#if 1	/* +++++Test it. */
 	int armor = get_armor_points();
 	int weapon = attacker->get_weapon_points();
 	if (!weapon)
@@ -799,18 +798,19 @@ int Actor::figure_hit_points
 			attacker->get_property((int) dexterity) -
 			get_property((int) dexterity) +
 			weapon - armor;
+	cout << "Hit probability is " << prob << endl;
 	if (rand()%100 > prob)
 		return 0;		// Missed.
 					// Compute hit points to lose.
-	int hp = attacker->get_property((int) strength) +
-			attacker_level +
+	int hp = attacker->get_property((int) strength)/4 +
+			(rand()%attacker_level) +
 			weapon - armor;
 	if (hp < 1)
 		hp = 1;
 	properties[(int) health] -= hp;	// Subtract from health.
+	cout << "Attack damage was " << hp << " hit points, leaving " << 
+		properties[(int) health] << " remaining" << endl;
 	return hp;
-#endif
-	return 1;	//+++++++++
 	}
 
 /*
@@ -1463,7 +1463,7 @@ int Monster_actor::get_armor_points
 	{
 	Monster_info *inf = get_info();
 					// Kind of guessing here.
-	return Actor::get_armor_points() + (inf ? inf->armor : 0);
+	return Actor::get_armor_points() + (inf ? inf->armor/4 : 0);
 	}
 
 /*
@@ -1478,7 +1478,7 @@ int Monster_actor::get_weapon_points
 					// Kind of guessing here.
 	int points = Actor::get_weapon_points();
 	if (!points)			// No readied weapon?
-		return inf ? inf->weapon : 0;
+		return inf ? inf->weapon/4 : 0;
 	else
 		return points;
 	}
@@ -1496,10 +1496,13 @@ Monster_actor *Monster_info::create
 	{
 	Monster_actor *monster = new Monster_actor(0, shapenum);
 	monster->set_info(this);
-	monster->set_property(Actor::strength, strength);
-	monster->set_property(Actor::dexterity, dexterity);
-	monster->set_property(Actor::intelligence, intelligence);
-	monster->set_property(Actor::combat, combat);
+					// Seems like the #'s are x4.
+	monster->set_property(Actor::strength, strength/4);
+					// Max. health = strength.
+	monster->set_property(Actor::health, strength/4);
+	monster->set_property(Actor::dexterity, dexterity/4);
+	monster->set_property(Actor::intelligence, intelligence/4);
+	monster->set_property(Actor::combat, combat/4);
 					// ++++Armor?
 					// Place in world.
 	Game_window *gwin = Game_window::get_game_window();
