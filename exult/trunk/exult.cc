@@ -1068,6 +1068,7 @@ static int Get_click
 					{
 					x = event.button.x >> scale;
 					y = event.button.y >> scale;
+					if (chr) *chr = 0;
 					return (1);
 					}
 				break;
@@ -1078,16 +1079,35 @@ static int Get_click
 				break;
 			case SDL_KEYDOWN:
 				{
+				//+++++ convert to unicode first?
 				int c = event.key.keysym.sym;
-				if (c == SDLK_ESCAPE)
-					return (0);
-				if (chr)// Looking for a character?
-					{
-					*chr = (event.key.keysym.mod & 
-							KMOD_SHIFT)
-						? toupper(c) : c;
-					return (1);
+				switch(c) {
+				case SDLK_ESCAPE:
+					return 0;
+				case SDLK_RSHIFT: case SDLK_LSHIFT:
+				case SDLK_RCTRL: case SDLK_LCTRL:
+				case SDLK_RALT: case SDLK_LALT:
+				case SDLK_RMETA: case SDLK_LMETA:
+				case SDLK_RSUPER: case SDLK_LSUPER:
+				case SDLK_NUMLOCK: case SDLK_CAPSLOCK:
+				case SDLK_SCROLLOCK:
+					break;
+				default:
+					if ((c == 's') && 
+ 					   (event.key.keysym.mod & KMOD_ALT) &&
+					   (event.key.keysym.mod & KMOD_CTRL)){
+						make_screenshot(true);
+						break;
 					}
+					if (chr)// Looking for a character?
+					{
+						*chr = (event.key.keysym.mod & 
+							KMOD_SHIFT)
+							? toupper(c) : c;
+						return (1);
+					}
+					break;
+				}
 				break;
 				}
 			case SDL_KEYUP:

@@ -1195,9 +1195,13 @@ int Usecode_machine::get_user_choice_num
 		int result=Get_click(x, y, Mouse::hand, &chr);
 		if (result<=0)		// Ignore ESC, and keep going.
 			choice_num = -1;
-		else if (chr >= '1' && chr <= '9')
-			choice_num = chr - '1';
-		else
+		else if (chr) {		// key pressed
+			if (chr>='1' && chr <='0'+(int)answers.answers.size()){
+				choice_num = chr - '1';
+				gwin->clear_avatar_choices();
+			} else
+				choice_num = -1;	//invalid key
+		} else
 			choice_num = gwin->conversation_choice(x, y);
 		}
 					// Wait for valid choice.

@@ -2520,6 +2520,10 @@ void Game_window::show_avatar_choices
 	delete [] result;
 	}
 
+void Game_window::clear_avatar_choices()
+{
+	paint(avatar_face);
+}
 
 /*
  *	User clicked during a conversation.
@@ -2538,7 +2542,7 @@ int Game_window::conversation_choice
 		;
 	if (conv_choices[i].w != 0)	// Found one?
 		{
-		paint(avatar_face);	// Repaint.
+		clear_avatar_choices();
 		return (i);
 		}
 	else
