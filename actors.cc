@@ -2078,6 +2078,8 @@ Monster_actor::~Monster_actor
 	(
 	)
 	{
+	if (creator)
+		creator->monster_gone();
 					// Remove from chain.
 	if (next_monster)
 		next_monster->prev_monster = prev_monster;
@@ -2217,8 +2219,11 @@ void Monster_actor::die
 	{
 	Actor::die();
 	if (creator)
-		creator->monster_died();
+		creator->monster_gone();
+	creator = 0;
 	audio->start_music(VICTORY, 0);
+					// Got to delete this somewhere, but
+					//   doing it here crashes.
 	}
 
 /*
