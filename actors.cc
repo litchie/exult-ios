@@ -1453,8 +1453,11 @@ void Npc_actor::follow
 					// Figure where to aim.
 	goal.tx = Approach(pos.tx, goal.tx, dist);
 	goal.ty = Approach(pos.ty, goal.ty, dist);
-	goal.tx += 1 - rand()%3;	// Jiggle a bit.
-	goal.ty += 1 - rand()%3;
+	if (!leader->is_moving())	// Leader stopped?
+		{
+		goal.tx += 1 - rand()%3;// Jiggle a bit.
+		goal.ty += 1 - rand()%3;
+		}
 					// Get his speed.
 	int speed = leader->get_frame_time();
 	if (!speed)			// Not moving?
