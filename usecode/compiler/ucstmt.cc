@@ -105,7 +105,6 @@ void Uc_if_statement::gen
 	Uc_function *fun
 	)
 	{
-	expr->gen_value(out);		// Eval. test expression.
 	int elselen = 0;		// Get ELSE code.
 	char *elsestr = 0;
 	if (else_stmt)
@@ -125,11 +124,8 @@ void Uc_if_statement::gen
 		}
 	int iflen = ifcode.pcount();
 	char *ifstr = ifcode.str();
-	if (iflen)			// JNE past IF code.
-		{
-		out.put((char) UC_JNE);
-		Write2(out, iflen);
-		}
+					// Gen JNE (or CMPS) past IF code.
+	expr->gen_jmp_if_false(out, iflen);
 	out.write(ifstr, iflen);	// Now the IF code.
 	out.write(elsestr, elselen);	// Then the ELSE code.
 	delete elsestr;
