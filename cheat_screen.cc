@@ -1151,6 +1151,8 @@ void CheatScreen::NPCMenu (Actor *actor, int &num)
 void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor, int &num)
 {
 	int i = std::atoi(input);
+	int nshapes = 
+		Shape_manager::get_instance()->get_shapes().get_num_shapes();
 
 	mode = CP_Command;
 
@@ -1223,7 +1225,7 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 
 		if (i == -1) mode = CP_Canceled;
 		else if (i < 0) mode = CP_InvalidShape;
-		else if (i >= gwin->get_num_shapes()) mode = CP_InvalidShape;
+		else if (i >= nshapes) mode = CP_InvalidShape;
 		else if (input[0] && (input[0] != '-' || input[1]))
 		{
 			actor->set_shape(i);
@@ -1531,6 +1533,8 @@ void CheatScreen::FlagMenu (Actor *actor)
 void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor)
 {
 	int i = std::atoi(input);
+	int nshapes = 
+		Shape_manager::get_instance()->get_shapes().get_num_shapes();
 
 	mode = CP_Command;
 	switch (command)
@@ -1736,7 +1740,7 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 
 		if (i == -1) mode = CP_Canceled;
 		else if (i < 0) mode = CP_InvalidShape;
-		else if (i >= gwin->get_num_shapes()) mode = CP_InvalidShape;
+		else if (i >= nshapes) mode = CP_InvalidShape;
 		else if (input[0] && (input[0] != '-' || input[1]))
 		{
 			actor->set_polymorph(i);

@@ -427,13 +427,13 @@ void Game_window::init_files(bool cycle)
 	// Determine some colors based on the default palette
 	pal->load(PALETTES_FLX, 0);	// could throw!
 					// Get a bright green.
-	poison_pixel = pal->find_color(4, 63, 4);
+	special_pixels[POISON_PIXEL] = pal->find_color(4, 63, 4);
 					// Get a light gray.
-	protect_pixel = pal->find_color(62, 62, 55);
+	special_pixels[PROTECT_PIXEL] = pal->find_color(62, 62, 55);
 					// Yellow for cursed.
-	cursed_pixel = pal->find_color(62, 62, 5);
+	special_pixels[CURSED_PIXEL] = pal->find_color(62, 62, 5);
 					// Red for hit in battle.
-	hit_pixel = pal->find_color(63, 4, 4);
+	special_pixels[HIT_PIXEL] = pal->find_color(63, 4, 4);
 	// What about charmed/cursed/paralyzed?
 
 #ifdef RED_PLASMA
@@ -1241,6 +1241,16 @@ Ireg_game_object *Game_window::create_ireg_object
 	{
 	return map->create_ireg_object(info, shnum, frnum, tilex, tiley, lift);
 	}
+
+Ireg_game_object *Game_window::create_ireg_object
+	(
+	int shnum, int frnum
+	)
+	{
+	return map->create_ireg_object(ShapeID::get_info(shnum), shnum, frnum,
+						0, 0, 0); 	
+	}
+
 
 /*
  *	Save game by writing out to the 'gamedat' directory.
@@ -2200,7 +2210,7 @@ void Game_window::show_items
 		if (id.is_invalid())
 			return;
 		}
-	Shape_info& info = shape_man->get_info(shnum);
+	Shape_info& info = ShapeID::get_info(shnum);
 	cout << "TFA[1][0-6]= " << ((static_cast<int>(info.get_tfa(1)))&127) << endl;
 	cout << "TFA[0][0-1]= " << ((static_cast<int>(info.get_tfa(0))&3)) << endl;
 	cout << "TFA[0][3-4]= " << ((static_cast<int>((info.get_tfa(0)>>3))&3)) << endl;

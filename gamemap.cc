@@ -543,7 +543,7 @@ void Game_map::get_ifix_chunk_objects
 		{
 		Ifix_game_object *obj;
 		int shnum = ent[2]+256*(ent[3]&3);
-		Shape_info& info = gwin->get_info(shnum);
+		Shape_info& info = ShapeID::get_info(shnum);
 		if (info.is_animated())
 			obj = new Animated_ifix_object(ent);
 		else
@@ -829,7 +829,7 @@ void Game_map::read_ireg_objects
 		int shnum = entry[2]+256*(entry[3]&3);
 		int frnum = entry[3] >> 2;
 
-		Shape_info& info = gwin->get_info(shnum);
+		Shape_info& info = ShapeID::get_info(shnum);
 		unsigned int lift, quality, type;
 		Ireg_game_object *obj;
 		int is_egg = 0;		// Fields are eggs.
@@ -1248,6 +1248,7 @@ void Game_map::find_unused_shapes
 	{
 	memset(found, 0, foundlen);
 	Game_window *gwin = Game_window::get_instance();
+	Shape_manager *sman = Shape_manager::get_instance();
 	cout << "Reading all chunks";
 					// Read in EVERYTHING!
 	for (int sc = 0; sc < c_num_schunks*c_num_schunks; sc++)
@@ -1264,8 +1265,9 @@ void Game_map::find_unused_shapes
 		}
 	cout << endl;
 	int maxbits = foundlen*8;	// Total #bits in 'found'.
-	if (maxbits > gwin->get_num_shapes())
-		maxbits = gwin->get_num_shapes();
+	int nshapes = sman->get_shapes().get_num_shapes();
+	if (maxbits > nshapes)
+		maxbits = nshapes;
 					// Go through chunks.
 	for (int cy = 0; cy < c_num_chunks; cy++)
 		for (int cx = 0; cx < c_num_chunks; cx++)
@@ -1283,7 +1285,7 @@ void Game_map::find_unused_shapes
 	int i;
 	for (i = 0; i < maxbits; i++)	// Add all possible monsters.
 		{
-		Shape_info& info = gwin->get_info(i);
+		Shape_info& info = ShapeID::get_info(i);
 		Monster_info *minf = info.get_monster_info();
 		if (minf)
 			found[i/8] |= (1<<(i%8));

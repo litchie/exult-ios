@@ -52,8 +52,7 @@ bool In_ammo_family(int shnum, int family)
 	{
 	if (shnum == family)
 		return true;
-	Ammo_info *ainf = 
-	    Game_window::get_instance()->get_info(shnum).get_ammo_info();
+	Ammo_info *ainf = ShapeID::get_info(shnum).get_ammo_info();
 	return (ainf != 0 && ainf->get_family_shape() == family);
 	}
 
@@ -511,7 +510,7 @@ void Combat_schedule::start_strike
 	npc->start();			// Get back into time queue.
 	int sfx;			// Play sfx.
 	Game_window *gwin = Game_window::get_instance();
-	Weapon_info *winf = gwin->get_info(weapon_shape).get_weapon_info();
+	Weapon_info *winf = ShapeID::get_info(weapon_shape).get_weapon_info();
 	if (winf && (sfx = winf->get_sfx()) >= 0 &&
 					// But only if Ava. involved.
 	    (npc == gwin->get_main_actor() || 

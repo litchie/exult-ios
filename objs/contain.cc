@@ -181,7 +181,7 @@ static bool Get_combine_info
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = gwin->get_info(shapenum);
+	Shape_info& info = ShapeID::get_info(shapenum);
 	quantity_frame = false;
 	if (!info.has_quantity())
 		return false;
@@ -300,8 +300,7 @@ int Container_game_object::create_quantity
 					// Usecode container?
 	if (get_shapenum() == 486 && Game::get_game_type() == SERPENT_ISLE)
 		return delta;
-	Shape_info& shp_info=Game_window::get_instance()->get_info(
-								shnum);
+	Shape_info& shp_info = ShapeID::get_info(shnum);
 	if (!shp_info.has_quality())	// Not a quality object?
 		qual = c_any_qual;	// Then don't set it.
 	while (delta)			// Create them here first.

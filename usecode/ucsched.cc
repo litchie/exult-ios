@@ -400,8 +400,7 @@ void Usecode_script::handle_event
 			break;
 		case next_frame_max:	// Stop at last frame.
 			{
-			int nframes = gwin->get_shapes().get_num_frames(
-							obj->get_shapenum());
+			int nframes = obj->get_num_frames();
 			if (obj->get_framenum() < nframes - 1)
 				usecode->set_item_frame(obj,
 							1+obj->get_framenum());
@@ -409,8 +408,7 @@ void Usecode_script::handle_event
 			}
 		case next_frame:
 			{
-			int nframes = gwin->get_shapes().get_num_frames(
-							obj->get_shapenum());
+			int nframes = obj->get_num_frames();
 			usecode->set_item_frame(obj, 
 					(1 + obj->get_framenum())%nframes);
 			break;
@@ -422,8 +420,7 @@ void Usecode_script::handle_event
 			break;
 		case prev_frame:
 			{
-			int nframes = gwin->get_shapes().get_num_frames(
-							obj->get_shapenum());
+			int nframes = obj->get_num_frames();
 			int pframe = obj->get_framenum() - 1;
 			usecode->set_item_frame(obj, 
 						(pframe + nframes)%nframes);

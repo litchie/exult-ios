@@ -108,14 +108,14 @@ static int Has_quantity
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = gwin->get_info(shnum);
+	Shape_info& info = ShapeID::get_info(shnum);
 	return info.has_quantity();
 	}
 
 static int Has_hitpoints(int shnum)
 {
 	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = gwin->get_info(shnum);
+	Shape_info& info = ShapeID::get_info(shnum);
 	return ((info.get_shape_class() == Shape_info::has_hp) ||
 			(info.get_shape_class() == Shape_info::container));
 
@@ -214,9 +214,8 @@ int Game_object::modify_quantity
 	int oldvol = get_volume();	// Get old volume used.
 	quality = (char) newquant;	// Store new value.
 	int shapenum = get_shapenum();
-	Game_window *gwin = Game_window::get_instance();
 					// Set appropriate shape.
-	int num_frames = gwin->get_shapes().get_num_frames(shapenum);
+	int num_frames = get_num_frames();
 	int new_frame = newquant - 1;
 	if (new_frame > 7)		// Range is 0-7.
 		new_frame = 7;
@@ -1233,8 +1232,7 @@ int Game_object::get_weight
 	int quant			// Quantity.
 	)
 	{
-	int wt = quant *
-		Game_window::get_instance()->get_info(shnum).get_weight();
+	int wt = quant * ShapeID::get_info(shnum).get_weight();
 					// Special case:  reagents, coins.
 	if (shnum == 842 || shnum == 644 || 
 	    (Game::get_game_type() == SERPENT_ISLE &&
@@ -1528,9 +1526,9 @@ int Game_object::attack_object
 	int wpoints = 0;
 	Weapon_info *winf;
 	if (weapon_shape > 0)
-		winf = gwin->get_info(weapon_shape).get_weapon_info();
+		winf = ShapeID::get_info(weapon_shape).get_weapon_info();
 	else if (ammo_shape > 0)	// Not sure about all this...
-		winf = gwin->get_info(ammo_shape).get_weapon_info();
+		winf = ShapeID::get_info(ammo_shape).get_weapon_info();
 	else
 		winf = attacker->get_weapon(wpoints);
 	int usefun;			// Run usecode if present.

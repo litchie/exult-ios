@@ -364,7 +364,8 @@ void Gump::paint
 			{
 			int x, y;
 			get_shape_location(obj, x, y);
-			gwin->paint_hit_outline(x, y, obj->get_shape());
+			gwin->paint_outline(x, y, obj->get_shape(),
+								HIT_PIXEL);
 			}
 		}
 }

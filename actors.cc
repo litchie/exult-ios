@@ -1471,16 +1471,20 @@ void Actor::paint
 
 		paint_weapon(gwin);
 		if (hit)		// Want a momentary red outline.
-			gwin->paint_hit_outline(xoff, yoff, get_shape());
+			gwin->paint_outline(xoff, yoff, get_shape(),
+								HIT_PIXEL);
 		else if (flags & ((1L<<Obj_flags::protection) | 
 		    (1L << Obj_flags::poisoned) | (1 << Obj_flags::cursed)))
 			{
 			if (flags & (1L << Obj_flags::poisoned))
-				gwin->paint_poison_outline(xoff, yoff, get_shape());
+				gwin->paint_outline(xoff, yoff, get_shape(),
+								POISON_PIXEL);
 			else if (flags & (1L << Obj_flags::cursed))
-				gwin->paint_cursed_outline(xoff, yoff, get_shape());
+				gwin->paint_outline(xoff, yoff, get_shape(),
+								CURSED_PIXEL);
 			else
-				gwin->paint_protect_outline(xoff, yoff, get_shape());
+				gwin->paint_outline(xoff, yoff, get_shape(),
+								PROTECT_PIXEL);
 			}
 		}
 	}
@@ -2746,19 +2750,19 @@ bool Actor::figure_hit_points
 	Weapon_info *winf;
 	if (weapon_shape > 0)
 		{
-		winf = gwin->get_info(weapon_shape).get_weapon_info();
+		winf = ShapeID::get_info(weapon_shape).get_weapon_info();
 		wpoints = winf ? winf->get_damage() : 0;
 		}
 	else if (ammo_shape > 0)
 		{
-		winf = gwin->get_info(ammo_shape).get_weapon_info();
+		winf = ShapeID::get_info(ammo_shape).get_weapon_info();
 		wpoints = winf ? winf->get_damage() : 0;
 		}
 	else
 		winf = attacker->get_weapon(wpoints, weapon_shape);
 					// Get bonus ammo points.
 	Ammo_info *ainf = ammo_shape > 0 ? 
-			gwin->get_info(ammo_shape).get_ammo_info() : 0;
+			ShapeID::get_info(ammo_shape).get_ammo_info() : 0;
 	if (ainf)
 		wpoints += ainf->get_damage();
 	int usefun;			// See if there's usecode for it.

@@ -237,7 +237,7 @@ void Projectile_effect::init
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = gwin->get_info(projectile_shape);
+	Shape_info& info = ShapeID::get_info(projectile_shape);
 	Weapon_info *winfo = info.get_weapon_info();
 	if (winfo && winfo->get_projectile())	// Different sprite to show?
 		sprite.set_shape(winfo->get_projectile());
@@ -431,7 +431,7 @@ void Projectile_effect::handle_event
 			    epos.distance(attacker->get_tile() ) < 50)
 				{ 	// not teleported away
 				Weapon_info *winf = 
-				    gwin->get_info(weapon).get_weapon_info();
+				    ShapeID::get_info(weapon).get_weapon_info();
 				if (winf && winf->returns())
 					gwin->add_effect(new Projectile_effect(
 						pos, attacker, weapon, weapon,

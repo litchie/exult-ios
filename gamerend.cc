@@ -153,7 +153,8 @@ void Game_window::paint_terrain_only
 			Map_chunk *chunk = get_chunk(cx, cy);
 			chunk->get_terrain()->render_all(cx, cy);
 			if (cheat.in_map_editor())
-				Paint_chunk_outline(this, hit_pixel, cx, cy,
+				Paint_chunk_outline(this, 
+					special_pixels[HIT_PIXEL], cx, cy,
 				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
@@ -209,7 +210,8 @@ int Game_window::paint_map
 			paint_chunk_flats(cx, cy, xoff, yoff);
 
 			if (cheat.in_map_editor())
-				Paint_chunk_outline(this, hit_pixel, cx, cy,
+				Paint_chunk_outline(this, 
+					special_pixels[HIT_PIXEL], cx, cy,
 				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
@@ -249,7 +251,7 @@ int Game_window::paint_map
 					obj->get_lift() < skip_above_actor)
 			{
 			get_shape_location(obj, x, y);
-			paint_hit_outline(x, y, obj->get_shape());
+			paint_outline(x, y, obj->get_shape(), HIT_PIXEL);
 			}
 		}
 					// Paint tile grid if desired.

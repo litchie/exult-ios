@@ -1645,7 +1645,7 @@ static void Move_grid
 	tx -= xtiles - 1;		// Get top-left of footprint.
 	ty -= ytiles - 1;
 					// Let's try a green outline.
-	int pix = gwin->get_poison_pixel();
+	int pix = gwin->get_special_pixel(POISON_PIXEL);
 	Image_window8 *win = gwin->get_win();
 	win->set_clip(0, 0, win->get_width(), win->get_height());
 	for (int Y = 0; Y <= ytiles; Y++)
@@ -1677,7 +1677,7 @@ static void Move_dragged_shape
 		gwin->set_all_dirty();
 		return;
 		}
-	Shape_info& info = gwin->get_info(shape);
+	Shape_info& info = ShapeID::get_info(shape);
 					// Get footprint in tiles.
 	int xtiles = info.get_3d_xtiles(frame),
 	    ytiles = info.get_3d_ytiles(frame);
@@ -1720,7 +1720,7 @@ static Game_object *Create_object
 	bool& ireg			// Rets. TRUE if ireg (moveable).
 	)
 	{
-	Shape_info& info = gwin->get_info(shape);
+	Shape_info& info = ShapeID::get_info(shape);
 	int sclass = info.get_shape_class();
 					// Is it an ireg (changeable) obj?
 	ireg = (sclass != Shape_info::unusable &&
