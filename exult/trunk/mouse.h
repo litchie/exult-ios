@@ -100,7 +100,7 @@ public:
 			set_shape0(framenum);
 		}
 	void set_shape(Mouse_shapes shape)
-		{ set_shape((int) shape); }
+		{ set_shape(static_cast<int>(shape)); }
 	Mouse_shapes get_shape()
 		{ return (Mouse_shapes) cur_framenum; }
 	void move(int x, int y)		// Move to new location (mouse motion).
@@ -123,19 +123,19 @@ public:
 	void flash_shape(Mouse_shapes flash);
 					// Set to short arrow.
 	int get_short_arrow(Direction dir)
-		{ return (short_arrows[(int) dir]); }
+		{ return (short_arrows[static_cast<int>(dir)]); }
 					// Set to medium arrow.
 	int get_medium_arrow(Direction dir)
-		{ return (med_arrows[(int) dir]); }
+		{ return (med_arrows[static_cast<int>(dir)]); }
 					// Set to long arrow.
 	int get_long_arrow(Direction dir)
-		{ return (long_arrows[(int) dir]); }
+		{ return (long_arrows[static_cast<int>(dir)]); }
 					// Set to short combat mode arrow.
 	int get_short_combat_arrow(Direction dir)
-		{ return (short_combat_arrows[(int) dir]); }
+		{ return (short_combat_arrows[static_cast<int>(dir)]); }
 					// Set to medium combat mode arrow.
 	int get_medium_combat_arrow(Direction dir)
-		{ return (med_combat_arrows[(int) dir]); }
+		{ return (med_combat_arrows[static_cast<int>(dir)]); }
 
 	unsigned char is_onscreen() { return onscreen; }
 

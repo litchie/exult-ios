@@ -1,3 +1,8 @@
+2001-09-16  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* Actorio.cc: Use C++ style casts.
+	* mouse.h: Use C++ style casts.
+
 2001-09-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Many:  Fixed a bunch of bugs involving fighting on List Field.
