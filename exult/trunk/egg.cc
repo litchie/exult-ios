@@ -64,15 +64,25 @@ void Missile_launcher::handle_event
 	Game_window *gwin = Game_window::get_game_window();
 					// +++++Halt if egg off screen.
 	Tile_coord src = egg->get_abs_tile_coord();
-					// ++++Handle dir==8.
-					// Get adjacent tile in direction.
-	Tile_coord adj = src.get_neighbor(dir%8);
-					// Make it go 8 tiles.
-	int dx = adj.tx - src.tx, dy = adj.ty - src.ty;
-	Tile_coord dest = src;
-	dest.tx += 8*dx;
-	dest.ty += 8*dy;
-	gwin->add_effect(new Projectile_effect(src, dest, shapenum));
+	Projectile_effect *proj;
+	if (dir < 8)			// Direction given?
+		{			// Get adjacent tile in direction.
+		Tile_coord adj = src.get_neighbor(dir%8);
+					// Make it go 12 tiles.
+		int dx = adj.tx - src.tx, dy = adj.ty - src.ty;
+		Tile_coord dest = src;
+		dest.tx += 12*dx;
+		dest.ty += 12*dy;
+		proj = new Projectile_effect(src, dest, shapenum);
+		}
+	else				// Target a party member.
+		{
+		Actor *party[9];
+		int cnt = gwin->get_party(party, 1);
+		int n = rand()%cnt;	// Pick one at random.
+		proj = new Projectile_effect(src, party[n], shapenum);
+		}
+	gwin->add_effect(proj);
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
@@ -432,12 +442,18 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		case missile:
 			{
 					// Get data.  Not sure about delay.
-			int aindex = data1, dir = data2&0xff, delay = data2>>8;
-			//+++++This is not right yet!!
-			Ammo_info *ammo = Ammo_info::get_ammo(aindex);
-			int shnum = ammo->get_shapenum();
+			int shnum = data1, dir = data2&0xff, delay = data2>>8;
 			cout << "Missile egg:  " << item_names[shnum]
 				<< endl;
+			switch (shnum)	// Get a more reasonable shape.
+				{
+			case 3:		// Lightning.
+				shnum = 807; break;
+			case 6:		// Arrow.
+				shnum = 722; break;
+			case 9:		// Fireball.
+				shnum = 856; break;
+				}
 			if (!launcher)
 				launcher = new Missile_launcher(this, shnum,
 						dir, 1000*delay);
