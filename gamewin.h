@@ -216,10 +216,10 @@ public:
 	void get_shape_location(Game_object *obj, int& x, int& y)
 		{
 		x = (obj->get_cx() - chunkx)*chunksize +
-				obj->get_shape_pos_x()*tilesize
+				(1 + obj->get_shape_pos_x())*tilesize
 						- 4*obj->get_lift();
 		y = (obj->get_cy() - chunky)*chunksize +
-				obj->get_shape_pos_y()*tilesize
+				(1 + obj->get_shape_pos_y())*tilesize
 						- 4*obj->get_lift();
 		}
 					// Paint shape in window.
