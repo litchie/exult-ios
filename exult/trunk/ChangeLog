@@ -1,7 +1,8 @@
-2001-07-09  Dominik Reichardt <gigdr@tesionmail.de>
+2001-07-18  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/faq/: updated FAQ
 	* docs/IslandAddOn.txt added with all the ideas so far for a BG Add-On
 	* Faq: updated
+	* audi/conv.h : changed to play correct sfx in SI (hopefully)
 
 2001-07-18  Jeff Freedman  <jeff@amy.nerble.net>
 
