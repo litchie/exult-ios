@@ -1,3 +1,7 @@
+2002-03-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* imagewin/imagewin.h: include <string>
+	* imagewin/imagewin.cc: include utils.h
+
 2002-03-06  Ryan Nunn  <triforce@merlin.net.au>
 	* exult.cc, exultmenu.cc, gumps/VideoOptions_gump.cc,
 	  imagewin/imagescl.cc, imagewin/imagewin.*, imagewin/scale.* :
