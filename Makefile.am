@@ -97,12 +97,12 @@ EXULTLIBS = \
 	audio/midi_drivers/libmididrv.la	\
 	flic/libflic.la		\
 	conf/libconf.la		\
-	files/libu7file.la	\
 	imagewin/libimagewin.la	\
 	usecode/libusecode.la	\
 	shapes/libshapes.la \
 	objs/libobjs.la \
-	gumps/libgumps.la
+	gumps/libgumps.la \
+	files/libu7file.la
 
 exult_LDADD = 			\
 	$(EXULTLIBS) \

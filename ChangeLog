@@ -1,3 +1,9 @@
+2001-04-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* imagewin/imagewin.*, iwin8.*: moved mini_screenshot to iwin8, use
+	a nearest average colour scaler
+	* files/listfiles.cc: added config.h
+	* Makefile.am: changed library order
+
 2001-04-22  Ryan Nunn <triforce@merlin.net.au>
 	* Makefiles.* : Added files/listfiles.* and gumps/Newfile_gump.*
 	* actorio.cc : Made a change to the size of the array used when reading

@@ -149,3 +149,55 @@ void Image_window8::rotate_colors
 	}
 }
 
+//a nearest-average-colour 1/3 scaler
+unsigned char* Image_window8::mini_screenshot()
+{
+	if (!surface) return 0;
+
+	unsigned char* pixels = ibuf->get_bits();
+	int pitch = ibuf->get_line_width();
+	unsigned char* buf = new Uint8[96*60];
+	const int w = 3*96, h = 3*60;
+
+	for (int y = 0; y < h; y+=3)
+		for (int x = 0; x < w; x+=3)
+#if 0
+			buf[y*w/9 + x/3] = pixels[
+				pitch * (y + (get_height()-h)/2) +
+				x + (get_width()-w)/2 ];
+#else
+		{
+			//calculate average colour
+			int r=0, g=0, b=0;
+			for (int i=0; i<3; i++)
+				for (int j=0; j<3; j++) {
+					r+=colors[0 + 3*pixels[
+				pitch * (j + y + (get_height()-h)/2) +
+				i + x + (get_width()-w)/2 ]];
+					g+=colors[1 + 3*pixels[
+				pitch * (j + y + (get_height()-h)/2) +
+				i + x + (get_width()-w)/2 ]];
+					b+=colors[2 + 3*pixels[
+				pitch * (j + y + (get_height()-h)/2) +
+				i + x + (get_width()-w)/2 ]];
+				}
+			r = r/9; g = g/9; b = b/9;
+
+			//find nearest-colour in non-rotating palette
+			int bestdist = MAXINT, bestindex = -1;
+			for (int i=0; i<224; i++) {
+				int dist = (colors[0+3*i]-r)*(colors[0+3*i]-r)+
+					(colors[1+3*i]-g)*(colors[1+3*i]-g)+
+					(colors[2+3*i]-b)*(colors[2+3*i]-b);
+				if (dist < bestdist) {
+					bestdist = dist;
+					bestindex = i;
+				}
+			}
+			buf[y*w/9 + x/3] = bestindex;
+		}
+				
+#endif
+
+	return buf;
+}
