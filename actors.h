@@ -541,7 +541,7 @@ public:
 	static int get_num_in_world()
 		{ return in_world_cnt; }
 	static void delete_all();	// Delete all monsters.
-	virtual int move_aside(int dir)	// Move out of the way.
+	virtual int move_aside(Actor* for_actor, int dir)
 		{ return 0; }		// Monsters don't move aside.
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
