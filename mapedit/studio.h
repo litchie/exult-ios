@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
-#include "shapelst.h"
+#include <vector>
 #include "paledit.h"
 #include "vgafile.h"
 #include "servemsg.h"
@@ -31,6 +31,7 @@ class Equip_row_widgets;
 class Shape_file_set;
 class Shape_file_info;
 class Shape_group_file;
+class Shape_draw;
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
@@ -54,6 +55,7 @@ private:
 	char 			*static_path;
 	static ExultStudio	*self;
 	Shape_file_set		*files;		// All the shape files.
+	vector<GtkWindow*>	group_windows;	// All 'group' windows.
 	Shape_file_info		*curfile;	// Current browser file info.
 	Shape_file_info		*vgafile;	// Main 'shapes.vga'.
 	Shape_file_info		*facefile;	// 'faces.vga'.
@@ -131,6 +133,7 @@ public:
 	void open_group_window();
 	void close_group_window(GtkWidget *gtkwin);
 	void save_groups();
+	void update_group_windows(Shape_group *grp);
 					// Objects:
 	void open_obj_window(unsigned char *data, int datalen);
 	void close_obj_window();
@@ -195,7 +198,8 @@ public:
 	void set_button(char *name, const char *text);
 	void set_visible(char *name, bool vis);
 	void set_sensitive(char *name, bool vis);
-	int prompt2(const char *msg, const char *choice1, const char *choice2);
+	int prompt(const char *msg, const char *choice0, const char *choice1,
+						const char *choice2 = 0);
 };
 
 #endif
