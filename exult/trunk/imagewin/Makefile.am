@@ -15,6 +15,7 @@ libimagewin_la_SOURCES = \
 	iwin8.cc \
 	iwin8.h \
 	scale.cc \
-	scale.h
+	scale.h \
+	savepcx.cc
 
 
