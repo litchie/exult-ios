@@ -1,41 +1,35 @@
-exult (1.00-alpha7) unstable; urgency=low
-
-  * Irregular synchronisation with source-tree
-
- -- Dancer Vesperman <dancer@users.sourceforge.net>  Fri, 17 Nov 2000 18:40:06 +1100
-
-exult (1.00-alpha6) unstable; urgency=low
+exult (0.90-alpha1-6) unstable; urgency=low
 
   * Irregular synchronisation with source-tree
 
  -- Dancer Vesperman <dancer@users.sourceforge.net>  Fri, 17 Nov 2000 18:35:44 +1100
 
-exult (1.00-alpha5) unstable; urgency=low
+exult (0.90-alpha1-5) unstable; urgency=low
 
   * Irregular CVS snapshot
 
  -- Dancer Vesperman <dancer@users.sourceforge.net>  Tue, 14 Nov 2000 14:14:56 +1100
 
-exult (1.00-alpha4) unstable; urgency=low
+exult (0.90-alpha1-4) unstable; urgency=low
 
   * Irregular CVS snapshot. Some egg bugs fixed.
 
  -- Dancer Vesperman <dancer@users.sourceforge.net>  Mon, 13 Nov 2000 10:27:03 +1100
 
-exult (1.00-alpha3) unstable; urgency=low
+exult (0.90-alpha1-3) unstable; urgency=low
 
   * Added some documentation to the package.
   * Daily snapshot of code-tree
 
  -- Dancer Vesperman <dancer@users.sourceforge.net>  Sat, 11 Nov 2000 11:29:59 +1100
 
-exult (1.00-alpha2) unstable; urgency=low
+exult (0.90-alpha1-2) unstable; urgency=low
 
   * Changed Suggests: timidity to Recommends: timidity
 
  -- Dancer Vesperman <dancer@users.sourceforge.net>  Fri, 10 Nov 2000 13:42:37 +1100
 
-exult (1.00-alpha1) unstable; urgency=low
+exult (0.90-alpha1-1) unstable; urgency=low
 
   * Initial Alpha Release.
 
