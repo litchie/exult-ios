@@ -8,6 +8,11 @@
 	* schedule.cc (Walk_to_schedule): Moved door detection to
 	Path_walking_actor_action class.
 
+2001-02-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* configure.in, acconfig.h: configure changes for OpenBSD support
+	* utils.cc, gump_utils.cc: attempt at OpenBSD support. (thanks to Alex Botero-Lowry)
+	* Midi.cc: disable forked_player in OpenBSD
+	
 2001-02-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Npc_actor::handle_event always looks for schedule.
