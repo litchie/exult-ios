@@ -1401,13 +1401,13 @@ void Combo_chooser::edit
 
 gint Combo_chooser::configure
 	(
-	GtkWidget *widget,		// The view window.
+	GtkWidget *widget,		// The draw area.
 	GdkEventConfigure *event,
 	gpointer data			// ->Combo_chooser
 	)
 	{
 	Combo_chooser *chooser = (Combo_chooser *) data;
-	chooser->Shape_draw::configure(widget);
+	chooser->Shape_draw::configure();
 	chooser->render();
 					// Set new scroll amounts.
 	int w = event->width, h = event->height;

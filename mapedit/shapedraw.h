@@ -66,10 +66,8 @@ public:
 	void draw_shape_centered(int shapenum, int framenum);
 	virtual void render();		// Update what gets shown.
 	void set_background_color(guint32 c);
-					// Configure when created/resized.
-	void configure(GtkWidget *widget);
-	void configure()
-		{ configure(draw); }
+			
+	void configure();		// Configure when created/resized.
 					// Handler for drop.
 	static void drag_data_received(GtkWidget *widget, 
 		GdkDragContext *context, gint x, gint y, 
