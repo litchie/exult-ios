@@ -111,7 +111,7 @@ void Missile_launcher::handle_event
 					src, party[i], shapenum, weapon);
 		}
 	if (proj)
-		gwin->add_effect(proj);
+		gwin->get_effects()->add_effect(proj);
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
@@ -771,24 +771,25 @@ void Egg_object::set_weather
 	{
 	if (!len)			// Means continuous.
 		len = 120;		// How about a couple game hours?
-	int cur = gwin->get_weather();
+	Effects_manager *eman = gwin->get_effects();
+	int cur = eman->get_weather();
 	cout << "Current weather is " << cur << "; setting " << weather
 							<< endl;
 	switch (weather)
 		{
 	case 0:		// Back to normal.
-		gwin->remove_weather_effects();
+		eman->remove_weather_effects();
 		break;
 	case 2:		// Storm.
 		if (cur != weather)
-			gwin->add_effect(new Storm_effect(len, 0, egg));
+			eman->add_effect(new Storm_effect(len, 0, egg));
 		break;
 	case 3:		// (On Ambrosia).
-		gwin->remove_weather_effects();
-		gwin->add_effect(new Sparkle_effect(len, 0, egg));
+		eman->remove_weather_effects();
+		eman->add_effect(new Sparkle_effect(len, 0, egg));
 		break;
 	case 6:		// Clouds.
-		gwin->add_effect(new Clouds_effect(len, 0, egg));
+		eman->add_effect(new Clouds_effect(len, 0, egg));
 		break;
 	default:
 		break;

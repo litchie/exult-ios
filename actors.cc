@@ -55,6 +55,7 @@
 #include "monstinf.h"
 #include "exult_constants.h"
 #include "monsters.h"
+#include "effects.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -2823,7 +2824,7 @@ bool Actor::figure_hit_points
 	    	if (get_weapon(pts, sh) && sh == 0xe7)
 			{
 			prob -= (70 + rand()%20);
-			gwin->remove_text_effect(attacker);
+			gwin->get_effects()->remove_text_effect(attacker);
 			attacker->say(item_names[0x49b]);
 			}
 		}

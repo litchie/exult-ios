@@ -1491,6 +1491,7 @@ void make_screenshot (bool silent)
 	int i;
 	FILE *f;
 	bool namefound = false;
+	Effects_manager *eman = gwin->get_effects();
 
 	// look for the next available exult???.pcx file
 	for (i = 0; i < 1000 && !namefound; i++) {
@@ -1504,15 +1505,15 @@ void make_screenshot (bool silent)
 	}
 
 	if (!namefound) {
-		if (!silent) gwin->center_text("Too many screenshots");
+		if (!silent) eman->center_text("Too many screenshots");
 	} else {
 		SDL_RWops *dst = SDL_RWFromFile(fn, "wb");
 
 		if (gwin->get_win()->screenshot(dst)) {
 			cout << "Screenshot saved in " << fn << endl;
-			if (!silent) gwin->center_text("Screenshot");
+			if (!silent) eman->center_text("Screenshot");
 		} else {
-			if (!silent) gwin->center_text("Screenshot failed");
+			if (!silent) eman->center_text("Screenshot failed");
 		}
 	}	
 }
@@ -1533,7 +1534,7 @@ void change_gamma (bool down)
 #else
 	strncpy (text, "Gamma Changed", 256);
 #endif
-	gwin->center_text(text);	
+	gwin->get_effects()->center_text(text);	
 
 	int igam = (int) ((r*10000)+0.5);
 	snprintf (text, 256, "%d.%04d", igam/10000, igam%10000);

@@ -284,9 +284,7 @@ void Game_window::paint
 					// Draw gumps unless in dont_move mode.
     if (!main_actor_dont_move())
         gump_man->paint(this);
-					// Draw text, sprites.
-	for (Special_effect *txt = effects; txt; txt = txt->next)
-		txt->paint(this);
+	effects->paint();		// Draw text, sprites.
 	win->clear_clip();
 					// Complete repaint?
 	if (!x && !y && w == get_width() && h == get_height() && main_actor)

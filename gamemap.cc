@@ -54,6 +54,7 @@
 #include "gamewin.h"	/* With some work, could get rid of this. */
 #include "bodies.h"
 #include "game.h"
+#include "effects.h"
 #include "objiter.cc"	/* Yes we #include the .cc here on purpose! Please don't "fix" this */
 #include "databuf.h"
 #include <fstream>
@@ -1311,7 +1312,7 @@ void Game_map::find_unused_shapes
 		cout.flush();
 		char msg[80];
 		snprintf(msg, sizeof(msg), "Scanning superchunk %d", sc);
-		gwin->center_text(msg);
+		gwin->get_effects()->center_text(msg);
 		gwin->paint();
 		gwin->show();
 		if (!schunk_read[sc])
