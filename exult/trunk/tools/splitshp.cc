@@ -41,6 +41,7 @@ using std::strcpy;
 using std::memcpy;
 
 struct u7frame {
+	bool tile;
 	uint32 datalen;
 	uint8 *data;
 };
@@ -195,15 +196,83 @@ void split_shape(char* filename)
 
 void merge_frames(char *shapefile, char** framefiles, int numframefiles)
 {
-#if 0
-	u7shape shape;
+	FILE *shpfile, *framefile;
+	int i;
+	bool tiles = false;
+	int file_size, shape_size, hdr_size, frame_size;
+	int total_size;
+	uint8 *data;
 
-	shape->numframes = numframefiles;
-	shape->frames = new u7frame[numframefiles];
-#endif
+	shpfile = fopen(shapefile, "wb");
 
-	// finish this later...
+	total_size = 4 + 4*numframefiles;
 
+	for (i=0; i<numframefiles; i++) {
+		framefile = fopen(framefiles[i], "rb");
+
+		cout << "reading " << framefiles[i] << "..." << endl;
+		
+		fseek(framefile, 0, SEEK_END);
+		file_size = ftell(framefile);
+		fseek(framefile, 0, SEEK_SET);
+		shape_size = read4(framefile);
+
+		if (file_size != shape_size) { // 8x8 tile
+			if (i > 0 && !tiles) {
+				cout << "Error: can't mix 8x8 tiles and non-tile shapes!" << endl;
+				exit(1);
+			}
+
+			tiles = true;
+
+			fseek(framefile, 0, SEEK_SET);
+			fseek(shpfile, 64*i, SEEK_SET);
+
+			data = new uint8[64];
+
+			fread(data, 1, 64, framefile);
+			fwrite(data, 1, 64, shpfile);
+			fclose(framefile);
+
+			delete [] data;
+		} else {
+			if (tiles) {
+				cout << "Error: can't mix 8x8 tiles and non-tile shapes!" << endl;
+				exit(1);
+			}
+
+			hdr_size = read4(framefile);
+			
+			if (hdr_size > 8) {
+				frame_size = read4(framefile);
+				frame_size -= hdr_size;
+			} else {
+				frame_size = shape_size - hdr_size;
+			}
+
+			data = new uint8[frame_size];
+			fseek(framefile, hdr_size, SEEK_SET);
+			fread(data, 1, frame_size, framefile);
+			fclose(framefile);
+
+			fseek(shpfile, 4 + (i*4), SEEK_SET);
+			write4(shpfile, total_size);
+			fseek(shpfile, total_size, SEEK_SET);
+			fwrite(data, 1, frame_size, shpfile);
+
+			total_size += frame_size;
+			delete [] data;
+		}
+	}
+
+	if (!tiles) {
+		fseek(shpfile, 0, SEEK_SET);
+		write4(shpfile, total_size);
+	}
+
+	cout << "done" << endl;
+
+	fclose(shpfile);
 }
 
 int main(int argc, char *argv[])
