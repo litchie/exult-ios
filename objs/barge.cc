@@ -177,7 +177,7 @@ inline void Barge_object::swap_dims
  */
 
 // Can't inline like this in MSVC
-#ifndef _MSC_VER
+#if (!(defined(_MSC_VER) || defined(BEOS)))
 inline
 #endif
 Rectangle Barge_object::get_tile_footprint

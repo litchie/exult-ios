@@ -49,9 +49,9 @@ int Monster_info::read
 	istream& in			// Read from here.
 	)
 	{
-	unsigned char buf[25];		// Entry length.
+	uint8 buf[25];		// Entry length.
 	in.read((char *) buf, sizeof(buf));
-	unsigned char *ptr = buf;
+	uint8 *ptr = buf;
 	int shapenum = Read2(ptr);	// Bytes 0-1.
 	strength = (*ptr++ >> 2) & 63;	// Byte 2.
 	dexterity = (*ptr++ >> 2) & 63;	// Byte 3.
