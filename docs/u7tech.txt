@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.19 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.20 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -535,7 +535,8 @@ WEAPONS.DAT:  weapons enumeration (jsf)
 		  0x40 == ?? (insects have this).
   zero	    = 1 byte, always 0.
   usecode   = int16 (Usecode function.  ??Call upon strike with event=4.??)
-
+  strikeSFX = int16.  1 + SFX# to play during attack.
+  hitSFX    = int16.  1 + SFX# to play when hit.
 
 AMMO.DAT:     ammunitions enumeration
   ammunition= type, family, type2, id, flags
