@@ -237,6 +237,7 @@ static void Init
 	SDL_VERSION(&info.version);
 					// Ignore clicks until splash done.
 	SDL_SetEventFilter(Filter_splash_events);
+	int w, h;
 #ifdef XWIN
 	SDL_GetWMInfo(&info);
 	display = info.info.x11.display;
@@ -245,21 +246,26 @@ static void Init
 	unsigned int display_width = DisplayWidth(display, screen_num);
 	unsigned int display_height = DisplayHeight(display, screen_num);
 					// Make window 1/2 size of screen.
-	int w = display_width/2, h = display_height/2;
+	w = display_width/2, h = display_height/2;
 	if (w < 500)
 		w = 500;
 	if (h < 400)
 		h = 400;
-	gwin = new Game_window(w, h);
 #else
-	gwin = new Game_window(640, 480);
+	w = 640;
+	h = 480;
+#endif //not XWIN
+
+	int sw, sh;			// Get screen size.
+	config->value("config/video/width", sw, w);
+	config->value("config/video/height", sh, h);
+	gwin = new Game_window(sw, sh);
 
 #ifdef WIN32
 	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
 	//(for MIDI repeats)
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif //WIN32
-#endif //not XWIN
 
 	string yn;			// Skip intro. scene?
 	config->value("config/gameplay/skip_intro", yn, "no");
@@ -833,7 +839,7 @@ static void Handle_keystroke
 			{
 			static int wcnt = 0, wmax = 1;
 			if (wcnt == 0)
-				gwin->add_effect(new Storm_effect(6));
+				gwin->add_effect(new Clouds_effect(15));
 			else if (wcnt == 1)
 				gwin->add_effect(
 						new Lightning_effect(2));

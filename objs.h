@@ -794,8 +794,11 @@ public:					// Let's make it all public.
 		x += deltax;
 		y += deltay;
 		}		
-	void enlarge(int delta)		// Add delta in each dir.
-		{ x -= delta; y -= delta; w += 2*delta; h += 2*delta; }
+	Rectangle& enlarge(int delta)	// Add delta in each dir.
+		{
+		x -= delta; y -= delta; w += 2*delta; h += 2*delta; 
+		return *this;
+		}
 	};
 
 /*
