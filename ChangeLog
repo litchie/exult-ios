@@ -1,3 +1,7 @@
+2001-03-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* schedule.cc (Lab_schedule): Implemented.
+
 2001-03-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Desk_schedule.

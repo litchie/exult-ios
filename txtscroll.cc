@@ -171,7 +171,8 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 	SDL_Event event;
 	uint32 next_time = SDL_GetTicks() + 200;
 	uint32 incr = 120;
-	
+	pal.apply();
+
 	while(looping) {
 		int ypos = starty;
 		uint32 curline = startline;
@@ -189,7 +190,8 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 				}
 			}
 		} while (ypos<endy);
-		pal.apply();
+//		pal.apply();
+		gwin->show(1);
 		do {
 		  // this could be a problem when too many events are produced
 		  while (SDL_PollEvent(&event)) {
@@ -218,6 +220,7 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 			pal.fade_out(c_fade_out_time);
 		starty --;
 	}
+	gwin->clear_screen();
 }
 
 int TextScroller::get_count()
