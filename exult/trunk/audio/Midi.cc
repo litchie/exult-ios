@@ -143,6 +143,38 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 #endif
 }
 
+void    MyMidiPlayer::start_track(XMIDI *midfile, bool repeat)
+{
+
+  #if DEBUG
+        cout << "Audio subsystem request: Custom Music track" << endl;
+  #endif
+	if (!midi_device)
+	        return;
+
+	// Now get the data out of the XMIDI class and play it
+	
+#ifndef WIN32
+	
+	FILE* mid_file = U7open(MIDITMPFILE, "wb");
+	DataSource *mid_data = new FileDataSource(mid_file);
+
+	int can_play = midfile->retrieve(0, mid_data);
+	
+	delete mid_data;
+	fclose(mid_file);
+
+	if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
+	
+#else
+	midi_event	*eventlist;
+	int		ppqn;
+	
+	if (midfile.retrieve(0, &eventlist, ppqn))
+		midi_device->start_track(eventlist, ppqn, repeat);
+#endif
+}
+
 void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
 {
 	if(!midi_device)

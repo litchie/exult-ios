@@ -7,7 +7,8 @@ EXULT_FLX_OBJECTS = \
 	exult_logo.shp \
 	exult0.pal \
 	black_gate.shp \
-	serpent_isle.shp
+	serpent_isle.shp \
+	marketpl.mid
 
 flexdir = $(datadir)/exult
 
