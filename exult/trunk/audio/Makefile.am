@@ -12,14 +12,8 @@ libaudio_la_SOURCES =	\
 	Audio.h		\
 	Midi.cc		\
 	Midi.h		\
-	Mixer.cc	\
-	Mixer.h		\
-	SDL_mapping.cc	\
-	SDL_mapping.h	\
 	conv.cc		\
 	conv.h		\
-	pcb.cc		\
-	pcb.h		\
 	xmidi.cc	\
 	xmidi.h		\
 	soundtest.cc	\

@@ -24,10 +24,8 @@
 #endif
 
 #include <vector>
-#include "SDL_mapping.h"
 #include <SDL.h>
 #include <SDL_audio.h>
-#include "Mixer.h"
 #include "Midi.h"
 #include "exceptions.h"
 
@@ -61,14 +59,14 @@ private:
 	bool allow_music_looping;
 	bool SDL_open;
 	SFX_cached *sfxs;		// ->list of cached .wav snd. effects.
-	Flex *sfx_file;			// Holds .wav sound effects.
-	Mixer	*mixer;
-	MyMidiPlayer	*midi;
+	MyMidiPlayer *midi;
 	bool initialized;
 	SDL_AudioSpec wanted;
+	Mix_Chunk *wave;
 
 public:
 	SDL_AudioSpec actual;
+	Flex *sfx_file;			// Holds .wav sound effects.
 
 private:
 	// You never allocate an Audio object directly, you rather access it using get_ptr()
@@ -78,8 +76,6 @@ private:
 
 	uint8 *	convert_VOC(uint8 *,uint32 &);
 	void	build_speech_vector(void);
-
-	static void	fill_audio(void *udata, uint8 *stream, int len);
 
 public:
 	friend class Tired_of_compiler_warnings;
@@ -95,23 +91,22 @@ public:
 
 	void	honest_sample_rates(void) { truthful_=true; }
 	void	cancel_streams(void);	// Dump any audio streams
+
+	void	pause_audio(void);
+	void    resume_audio(void);
+
 	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,bool);
-	void	playwave(const char *,bool);
-	void	mix_audio(void);
-	void	mix(uint8 *sound_data,uint32 len);
-	void	mixfile(const char *fname);
 	bool	playing(void);
-	void	clear(uint8 *,int);
 	void	start_music(int num,bool continuous,int bank=0);
 	void	start_music(const char *fname,int num,bool continuous);
 	void	start_music(XMIDIEventList *midfile,bool continuous);
 	void	start_music_combat(Combat_song song,bool continuous,int bank=0);
 	void	stop_music();
-	AudioID	play_sound_effect (int num, int volume = SDL_MIX_MAXVOLUME,
-					int dir = 0, bool repeat = false);
-	AudioID	play_wave_sfx(int num, int volume = SDL_MIX_MAXVOLUME,
-					int dir = 0, bool repeat = false);
+	int		play_sound_effect (int num, int volume = SDL_MIX_MAXVOLUME,
+					int dir = 0, int repeat = 0);
+	int		play_wave_sfx(int num, int volume = SDL_MIX_MAXVOLUME,
+					int dir = 0, int repeat = 0);
 	void	stop_sound_effects();
 	bool	start_speech(int num,bool wait=false);
 	bool	is_speech_enabled() const { return speech_enabled; }
@@ -125,27 +120,15 @@ public:
 	bool	is_music_looping_allowed() const { return allow_music_looping; }
 	void	set_allow_music_looping(bool ena) { allow_music_looping = ena; }
 	bool	can_sfx(const std::string &game) const;
+	static void	channel_complete_callback(int chan);
 
-	ProducerConsumerBuf	*Create_Audio_Stream(uint32 id) {
-		return !mixer?0:mixer->Create_Audio_Stream(id);
-	}
-	void    Destroy_Audio_Stream(uint32 id) {
-		if(mixer) mixer->Destroy_Audio_Stream(id);
-	}
-	bool	is_playing(uint32 id) {
-		return !mixer?0:mixer->is_playing(id);
-	}
 	bool	is_track_playing(int num) { 
-		return midi && midi->is_track_playing(num);
+			return midi && midi->is_track_playing(num);
 	}
-
-//	static	const	unsigned int	ringsize=3000;
-//	static	const	int	samplerate=11025;
-//	static	const	int	persecond=2;
-//	static	const	int	buffering_unit=1024;
 
 	MyMidiPlayer *get_midi() {return midi;}
-	Flex *get_sfx_file()
+
+	Flex *get_sfx_file()                   
 		{ return sfx_file; }
 };
 

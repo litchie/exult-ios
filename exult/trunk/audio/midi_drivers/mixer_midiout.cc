@@ -24,23 +24,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
-#ifdef XWIN
-
-#ifndef ALPHA_LINUX_CXX
-#  include <unistd.h>
-#  include <csignal>
-#  include <sys/types.h>
-#  include <sys/stat.h>
-#  include <fcntl.h>
-#endif
+//#ifndef ALPHA_LINUX_CXX
+//#  include <unistd.h>
+//#  include <csignal>
+//#  include <sys/types.h>
+//#  include <sys/stat.h>
+//#  include <fcntl.h>
+//#endif
 
 #include "fnames.h"
 
 using std::cerr;
 using std::endl;
 
-#if HAVE_TIMIDITY_BIN
-#include "Timidity_binary.h"
+#include "mixer_midiout.h"
 
 static Mix_Music *mixermusic;
 
@@ -48,20 +45,20 @@ static Mix_Music *mixermusic;
 // Woohoo. This is easy with SDL_mixer! :)
 //
 
-Timidity_binary::Timidity_binary() 
+Mixer_MidiOut::Mixer_MidiOut() 
 {
 	//Point to music finish cleanup code
 	Mix_HookMusicFinished(music_complete_callback);
 }
 
-Timidity_binary::~Timidity_binary()
+Mixer_MidiOut::~Mixer_MidiOut()
 {
 	// Stop any current player
 	stop_track();
 	stop_sfx();
 }
 
-void Timidity_binary::stop_track(void)
+void Mixer_MidiOut::stop_track(void)
 {
 	Mix_HaltMusic();
 	if(mixermusic)
@@ -70,8 +67,9 @@ void Timidity_binary::stop_track(void)
 		mixermusic = NULL;
 	}
 }
+
 //Clean up last track played, freeing memory each time
-void Timidity_binary::music_complete_callback(void)
+void Mixer_MidiOut::music_complete_callback(void)
 {
 	if(mixermusic)
 	{
@@ -80,39 +78,37 @@ void Timidity_binary::music_complete_callback(void)
 	}
 }
 
-bool	Timidity_binary::is_playing(void)
+bool	Mixer_MidiOut::is_playing(void)
 {
 	return Mix_PlayingMusic()!=0;
 }
 
-void	Timidity_binary::start_track(XMIDIEventList *event_list,bool repeat)
+void	Mixer_MidiOut::start_track(XMIDIEventList *event_list,bool repeat)
 {
 	const char *name = MIDITMPFILE;
 	event_list->Write(name);
 
 #if DEBUG
-	cerr << "Starting midi sequence with Timidity_binary" << endl;
+	cerr << "Starting midi sequence with Mixer_MidiOut" << endl;
 #endif
 	stop_track();
 
 	mixermusic = Mix_LoadMUS(name);
 	Mix_PlayMusic(mixermusic, repeat);
-	Mix_VolumeMusic(MIX_MAX_VOLUME - 50);	//Balance volume with other music types
+	Mix_VolumeMusic(MIX_MAX_VOLUME);	//Balance volume with other music types
 }
 
-void	Timidity_binary::start_sfx(XMIDIEventList *event_list)
+void	Mixer_MidiOut::start_sfx(XMIDIEventList *event_list)
 {
+//Defunct?
 }
 
-void	Timidity_binary::stop_sfx(void)
+void	Mixer_MidiOut::stop_sfx(void)
 {
+//Defunct?
 }
 
-const	char *Timidity_binary::copyright(void)
+const	char *Mixer_MidiOut::copyright(void)
 {
-	return "Internal SDL_mixer timidity synthesiser";
+	return "Internal SDL_mixer midi out";
 }
-
-#endif // HAVE_TIMIDITY_BIN
-
-#endif // XWIN
