@@ -1,5 +1,6 @@
 2001-11-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.in: remove check for zutil.h
+	* configure.in: link dynamically against zlib
 
 2001-11-18 Ryan Nunn <triforce@merlin.net.au>
 	* actors.cc, gamewin.*, gamerend.cc, objs/chunks.* : Ice Dungeons

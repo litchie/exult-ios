@@ -332,12 +332,14 @@ fi
 AC_MSG_CHECKING(for zipped savegame support)
 
 if test x$enable_zip_support = xyes ; then
+	# disabled for now (non-portable):
+
 	# link statically against zlib if using gcc
-	if test x$GCC = xyes ; then
-		ZLIB_LIBS="-Wl,-Bstatic -lz -Wl,-Bdynamic"
-	else
+	# if test x$GCC = xyes ; then
+	#	ZLIB_LIBS="-Wl,-Bstatic -lz -Wl,-Bdynamic"
+	# else
 		ZLIB_LIBS="-lz"
-	fi
+	# fi
 	AC_DEFINE(HAVE_ZIP_SUPPORT)
 	AC_MSG_RESULT(yes)
 else
