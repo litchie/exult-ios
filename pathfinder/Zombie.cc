@@ -90,10 +90,13 @@ int Zombie::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *)
  *
  *	Output:	0 if all done.
  */
-int Zombie::GetNextStep(Tile_coord& n)
+int Zombie::GetNextStep(Tile_coord& n, bool& done)
 {
 	if (major_distance <= 0)
+		{
+		done = true;
 		return (0);
+		}
 					// Subtract from distance to go.
 	major_distance -= major_frame_incr;
 					// Accumulate change.
@@ -109,6 +112,7 @@ int Zombie::GetNextStep(Tile_coord& n)
 	*minor_coord = (*minor_coord + c_num_tiles)%c_num_tiles;
 	n = cur;			// Return new tile.
 					// ++++++For now, ignore tz.
+	done = (major_distance <= 0);	// Indicate if this is the last one.
 	return (1);
 }
 
