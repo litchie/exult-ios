@@ -41,9 +41,26 @@ short Mouse::med_combat_arrows[8] = {40, 41, 42, 43, 44, 45, 46, 47};
 Mouse::Mouse
 	(
 	Game_window *gw			// Where to draw.
-	) : pointers(POINTERS), gwin(gw), iwin(gwin->get_win()),backup(0),mousex(-1), mousey(-1),cur_framenum(0),cur(0) 
+	) : gwin(gw), iwin(gwin->get_win()),backup(0),mousex(-1), mousey(-1),cur_framenum(0),cur(0) 
 	{
-					// Get max. backup size.
+	pointers.load(POINTERS);
+	Init();
+	set_short_arrow(east);		// +++++For now.
+	}
+	
+Mouse::Mouse
+	(
+	Game_window *gw,		// Where to draw.
+	DataSource &shapes
+	) : gwin(gw), iwin(gwin->get_win()),backup(0),mousex(-1), mousey(-1),cur_framenum(0),cur(0) 
+	{
+	pointers.load(shapes);
+	Init();
+	set_shape0(0);
+	}
+	
+void Mouse::Init()
+	{
 	int cnt = pointers.get_num_frames();
 	int maxleft = 0, maxright = 0, maxabove = 0, maxbelow = 0;
 	for (int i = 0; i < cnt; i++)
@@ -65,7 +82,7 @@ Mouse::Mouse
 	backup = iwin->create_buffer(maxw, maxh);
 	box.w = maxw;
 	box.h = maxh;
-	set_short_arrow(east);		// +++++For now.
+	
 	onscreen = 0;                   // initially offscreen
 	}
 

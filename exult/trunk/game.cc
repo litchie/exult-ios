@@ -27,6 +27,7 @@
 #include "txtscroll.h"
 #include "menulist.h"
 #include "cheat.h"
+#include "mouse.h"
 
 Game *game = 0;
 extern Configuration *config;
@@ -202,7 +203,9 @@ str_int_pair Game::get_resource(const char *name)
 void Game::show_menu()
 {
 	int menuy = topy+120;
-
+	ExultDataSource mouse_data("<DATA>/exult.flx", 16);
+	menu_mouse = new Mouse(gwin, mouse_data);
+	
 	top_menu();
 	MenuList *menu = new MenuList();
 		
@@ -221,7 +224,7 @@ void Game::show_menu()
 	do {
 		bool created = false;
 		
-		switch(menu->handle_events(gwin)) {
+		switch(menu->handle_events(gwin,menu_mouse)) {
 		case -1: // Exit
 			pal.fade_out(30);
 			exit(0);
@@ -269,6 +272,7 @@ void Game::show_menu()
 	delete menu;
 	gwin->clear_screen();
 	audio->stop_music();
+	delete menu_mouse;
 }
 	
 void Game::journey_failed_text()
@@ -426,7 +430,7 @@ void ExultMenu::setup()
 	gwin->clear_screen();
 	for(;;) {
 		pal.apply();
-		switch(menu.handle_events(gwin)) {
+		switch(menu.handle_events(gwin,menu_mouse)) {
 		case 3: // Ok
 			pal.fade_out(30);
 			gwin->clear_screen();
@@ -453,13 +457,12 @@ void ExultMenu::setup()
 
 Exult_Game ExultMenu::run()
 {
-	char *mid_buf;
-	size_t len;
-	U7object banner_midi("<DATA>/exult.flx", 8);
-	banner_midi.retrieve(&mid_buf, len);
-	BufferDataSource *midi_data = new BufferDataSource(mid_buf, len);
+	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", 8);
 	XMIDI midfile(midi_data, XMIDI_CONVERT_NOCONVERSION);
 	audio->start_music(&midfile, true);
+	
+	ExultDataSource mouse_data("<DATA>/exult.flx", 16);
+	menu_mouse = new Mouse(gwin, mouse_data);
 	
 	gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 0));
 	pal.load("<DATA>/exult.flx",5);
@@ -479,7 +482,7 @@ Exult_Game ExultMenu::run()
 	Exult_Game sel_game = NONE;
 	do {
 		gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 1));
-		switch(menu->handle_events(gwin)) {
+		switch(menu->handle_events(gwin, menu_mouse)) {
 		case -1: // Exit
 			pal.fade_out(30);
 			exit(0);
@@ -526,6 +529,7 @@ Exult_Game ExultMenu::run()
 	
 	gwin->clear_screen();
 	audio->stop_music();
-	
+	delete menu_mouse;
+	delete midi_data;
 	return sel_game;
 }
