@@ -34,6 +34,7 @@ using std::vector;
 using std::cout;
 using std::cerr;
 using std::endl;
+using std::free;
 using std::string;
 
 #include "utils.h"
@@ -94,6 +95,13 @@ int U7ListFiles(const char *p, char **& files, int& count)
 	for (i = 0; i < count; i++) files[i] = filelist[i];
 
 	return 0;
+}
+
+#elif defined(MACOS)
+
+int U7ListFiles(const char *p, char **& files, int& count)
+{
+	// TODO Implement this!
 }
 
 #else	// This system has glob.h

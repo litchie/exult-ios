@@ -52,8 +52,8 @@ class Special_effect;
 class Time_queue;
 class Usecode_machine;
 class Deleted_objects;
-class SaveGame_Details;
-class SaveGame_Party;
+struct SaveGame_Details;
+struct SaveGame_Party;
 
 /*
  *	The main game window:
