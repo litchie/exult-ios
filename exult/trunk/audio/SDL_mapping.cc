@@ -33,7 +33,12 @@ void (*SDL::PauseAudio)(int)=::SDL_PauseAudio;
 
 void (*SDL::UnlockAudio)(void)=::SDL_UnlockAudio;
 void (*SDL::LockAudio)(void)=::SDL_LockAudio;
+
+#if (SDL_MAJOR_VERSION*1000+SDL_MINOR_VERSION*100+SDL_PATCHLEVEL >= 1201)
 void (*SDL::MixAudio)(Uint8 *dst, const Uint8 *src, Uint32 len,int)=::SDL_MixAudio;
+#else
+void (*SDL::MixAudio)(Uint8 *dst, Uint8 *src, Uint32 len, int)=::SDL_MixAudio;
+#endif
 void (*SDL::CloseAudio)(void)=::SDL_CloseAudio;
 int (*SDL::OpenAudio)(SDL_AudioSpec *desired, SDL_AudioSpec *obtained)=::SDL_OpenAudio;
 void (*SDL::QuitSubSystem)(Uint32)=::SDL_QuitSubSystem;
