@@ -28,6 +28,7 @@
 #endif
 
 #include <unistd.h>
+#include <string.h>
 #include "mouse.h"
 
 #ifndef XWIN
