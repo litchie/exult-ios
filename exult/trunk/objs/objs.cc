@@ -100,6 +100,17 @@ int Game_object::get_direction
 	}
 
 /*
+ *	Get chunk this is in.
+ */
+
+Map_chunk *Game_object::get_chunk
+	(
+	)
+	{
+	return gmap->get_chunk(cx, cy);
+	}
+
+/*
  *	Does a given shape come in quantity.
  */
 static int Has_quantity

@@ -421,7 +421,7 @@ private:
 	bool remove_from_dead_party(Actor *npc);
 public:
 	friend class Usecode_script;
-	Usecode_internal(Game_window *gw);
+	Usecode_internal();
 	~Usecode_internal();
 					// Read in usecode functions.
 	virtual void read_usecode(std::istream& file);

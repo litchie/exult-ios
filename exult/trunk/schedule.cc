@@ -1202,13 +1202,8 @@ class Sit_actor_action : public Frames_actor_action, public Game_singletons
 		if (actor->get_tile() == sitloc)
 			return false;	// We're standing there.
 					// See if spot is blocked.
-		Map_chunk *ch = gwin->get_chunk(sitloc.tx/c_tiles_per_chunk,
-						sitloc.ty/c_tiles_per_chunk);
-		int new_lift;
-		ch->setup_cache();	// ++++Maybe a simpler interface??
-		if (ch->is_blocked(3, sitloc.tz, sitloc.tx%c_tiles_per_chunk,
-				sitloc.ty%c_tiles_per_chunk, new_lift, 
-				MOVE_WALK, 0))
+		Tile_coord pos = sitloc;// Careful, .tz gets updated.
+		if (Map_chunk::is_blocked(pos, 3, MOVE_WALK, 0))
 			return true;
 #endif
 		return false;
