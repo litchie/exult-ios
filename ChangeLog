@@ -1,3 +1,11 @@
+2002-06-18  Dominik Reichardt <gigdr@tesionmail.de>
+	* data/bg/defaultkeys.txt: mapped ctrl-c to copy and 
+	  INSERT to "create item
+	* data/si/defaultkeys.txt: the same
+	* docs/xml/docs.xml, faq.xml : updated
+	* docs/readme.html, faq.html : updated
+	* readme/FAQ : updated
+
 2002-06-13 Simon Quinn <email@simonquinn.co.uk>
 	* Fixed sound crashing on startup and in-game when sound was disabled
 
