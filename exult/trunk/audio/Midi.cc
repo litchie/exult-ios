@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 extern	Configuration	*config;
 
-
 void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 {
   #if DEBUG
@@ -65,33 +64,35 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	// Read the data into the XMIDI class
 	mid_data = new BufferDataSource(buffer, size);
 
-	XMIDI		midfile(mid_data);
+	XMIDI		midfile(mid_data, XMIDI_CONVERT_MT32_TO_GM);
 	
 	delete mid_data;
 	delete [] buffer;
 
 
 	// Now get the data out of the XMIDI class and play it
-	
-#ifndef WIN32
-	
-	FILE* mid_file = U7open(MIDITMPFILE, "wb");
-	mid_data = new FileDataSource(mid_file);
+		
+	if (!midi_device->accepts_events())
+		{
+		FILE* mid_file = U7open(MIDITMPFILE, "wb");
+		mid_data = new FileDataSource(mid_file);
 
-	int can_play = midfile.retrieve(0, mid_data);
+		int can_play = midfile.retrieve(0, mid_data);
 	
-	delete mid_data;
-	fclose(mid_file);
+		delete mid_data;
+		fclose(mid_file);
 
-	if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
+		if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
+		}
+	else
+		{
+		midi_event	*eventlist;
+		int		ppqn;
 	
-#else
-	midi_event	*eventlist;
-	int		ppqn;
-	
-	if (midfile.retrieve(0, &eventlist, ppqn))
-		midi_device->start_track(eventlist, ppqn, repeat);
-#endif
+		if (midfile.retrieve(0, &eventlist, ppqn))
+			midi_device->start_track(eventlist, ppqn, repeat);
+		}
+
 }
 
 void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
@@ -118,30 +119,33 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	mid_file = U7open(fname, "rb");
 	mid_data = new FileDataSource(mid_file);
 
-	XMIDI		midfile(mid_data);
+	XMIDI		midfile(mid_data, XMIDI_CONVERT_MT32_TO_GM);
 	
 	delete mid_data;
 	fclose(mid_file);
 	
 	
 	// Now get the data out of the XMIDI class and play it
-#ifndef WIN32
-	mid_file = U7open(MIDITMPFILE, "wb");
-	mid_data = new FileDataSource(mid_file);
+	if (!midi_device->accepts_events())
+		{
+		mid_file = U7open(MIDITMPFILE, "wb");
+		mid_data = new FileDataSource(mid_file);
 
-	int can_play = midfile.retrieve(num, mid_data);
+		int can_play = midfile.retrieve(num, mid_data);
 	
-	delete mid_data;
-	fclose(mid_file);
+		delete mid_data;
+		fclose(mid_file);
 
-	if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
-#else
-	midi_event	*eventlist;
-	int		ppqn;
+		if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
+		}
+	else
+		{
+		midi_event	*eventlist;
+		int		ppqn;
 	
-	if (midfile.retrieve(num, &eventlist, ppqn))
-		midi_device->start_track(eventlist, ppqn, repeat);
-#endif
+		if (midfile.retrieve(num, &eventlist, ppqn))
+			midi_device->start_track(eventlist, ppqn, repeat);
+		}
 }
 
 void    MyMidiPlayer::start_track(XMIDI *midfile, bool repeat)
@@ -155,25 +159,27 @@ void    MyMidiPlayer::start_track(XMIDI *midfile, bool repeat)
 
 	// Now get the data out of the XMIDI class and play it
 	
-#ifndef WIN32
-	
-	FILE* mid_file = U7open(MIDITMPFILE, "wb");
-	DataSource *mid_data = new FileDataSource(mid_file);
+	if (!midi_device->accepts_events())
+		{	
+		FILE* mid_file = U7open(MIDITMPFILE, "wb");
+		DataSource *mid_data = new FileDataSource(mid_file);
 
-	int can_play = midfile->retrieve(0, mid_data);
+		int can_play = midfile->retrieve(0, mid_data);
 	
-	delete mid_data;
-	fclose(mid_file);
+		delete mid_data;
+		fclose(mid_file);
 
-	if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
+		if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
 	
-#else
-	midi_event	*eventlist;
-	int		ppqn;
+		}
+	else
+		{
+		midi_event	*eventlist;
+		int		ppqn;
 	
-	if (midfile->retrieve(0, &eventlist, ppqn))
-		midi_device->start_track(eventlist, ppqn, repeat);
-#endif
+		if (midfile->retrieve(0, &eventlist, ppqn))
+			midi_device->start_track(eventlist, ppqn, repeat);
+		}
 }
 
 void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
@@ -249,16 +255,12 @@ bool MyMidiPlayer::init_device()
 	// instrument_patches=AccessTableFile(XMIDI_MT);
 	string	s;
 
-	bool sfx = false;
-
-#ifdef WIN32
-	sfx = audio->are_effects_enabled();
+	bool sfx = audio->are_effects_enabled();
 
 	if (!sfx) s = "no";
 	else s = "yes";
 
 	config->set("config/audio/effects/enabled",s,true);
-#endif
 
 	bool music = audio->is_music_enabled();
 
@@ -352,19 +354,31 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	mid_data = new BufferDataSource(buffer, size);
 
 	// It's already GM, so dont convert
-	XMIDI		midfile(mid_data, false);
+	XMIDI		midfile(mid_data, XMIDI_CONVERT_GSMT_TO_GS);
 	
 	delete mid_data;
 	delete [] buffer;
 
 	// Now get the data out of the XMIDI class and play it
+	if (!midi_device->accepts_events())
+		{
+		FILE *mid_file = U7open(MIDISFXFILE, "wb");
+		mid_data = new FileDataSource(mid_file);
+
+		int can_play = midfile.retrieve(num, mid_data);
 	
-#ifdef WIN32
-	midi_event	*eventlist;
-	int		ppqn;
+		delete mid_data;
+		fclose(mid_file);
+
+		if (can_play) midi_device->start_sfx(MIDISFXFILE);
+		}
+	else
+		{
+		midi_event	*eventlist;
+		int		ppqn;
 	
-	if (midfile.retrieve(0, &eventlist, ppqn))
-		midi_device->start_sfx(eventlist, ppqn);
-#endif
+		if (midfile.retrieve(num, &eventlist, ppqn))
+			midi_device->start_sfx(eventlist, ppqn);
+		}
 }
 
