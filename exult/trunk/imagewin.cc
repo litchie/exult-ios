@@ -912,8 +912,14 @@ void Image_window::toggle_fullscreen() {
                 surface = SDL_SetVideoMode(w, h, bpp, flags);
                 if ( surface == NULL ) {
            	        /* Uh oh... */;
-                }
+                }	
+					// Point to new buffer.
+		ibuf->bits = (unsigned char *) surface->pixels;
+					// Update line size in words.
+		ibuf->line_width = surface->pitch/ibuf->pixel_size;
+
 		/* Redraw surface contents... */
+	
 		// show();  // Why doesn't this work??
         }
 }
