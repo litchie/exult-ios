@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "readme.dtd">
-<readme title="Exult" changed="10 August 2001(GMT)">
+<readme title="Exult" changed="03 Septembre 2001(GMT)">
 	<section title="Introduction">
 		<sub name="whatis_exult">
 			<header>What is <Exult/>?</header>
@@ -143,6 +143,10 @@
 					<line>&lt;/trace&gt;</line>
 					<line>&lt;/debug&gt;</line>
 					<line>&lt;gameplay&gt;</line>
+					<line>&lt;double_click_closes_gumps&gt;</line>
+					<line>yes
+						<comment>**doesn't need an explanation, right?</comment></line>
+					<line>&lt;double_click_closes_gumps&gt;</line>
 					<line>&lt;cheat&gt;</line>
 					<line>yes
 						<comment>**enable/disable cheats for that</comment></line>
@@ -186,6 +190,10 @@
    					<line>1.000000
    						<comment>**set volume (kind of at least, best don't change)</comment></line>
    					<line>&lt;/volume_curve&gt;</line>
+   					<line>&lt;win32_device&gt;</line>
+   					<line>-1
+   						<comment>**choose the Windows MIDI Device. See <ref target="win32_device"/></comment></line>
+   					<line>&lt;/win32_device&gt;</line>
 					<line>&lt;/midi&gt;</line>
 					<line>&lt;speech&gt;</line>
 					<line>&lt;enabled&gt;</line>
@@ -206,7 +214,8 @@
 					<line>&lt;/height&gt;</line>
 					<line>&lt;scale&gt;</line>
 					<line>2
-						<comment>**2 enables / 1 disables scaling - see <ref target="scaler"/></comment></line>
+						<comment>**2 enables / 1 disables scaling, some scalers support higher values.
+						See <ref target="scaler"/>.</comment></line>
 					<line>&lt;/scale&gt;</line>
 					<line>&lt;fullscreen&gt;</line>
 					<line>yes
@@ -358,6 +367,43 @@
 				</para>
 			</body>
 		</sub>
+			<sub name="win32_device">
+			<header>Windows MIDI Mapper</header>
+			<body>
+				<para>
+					You can now tell <Exult/> which MIDI device it should use. Usefull if you 
+					want Exult to use a different MIDI device than the default Windows device 
+					(like an MT-32).
+				</para>
+				<para>
+					To do this start <Exult/>, on the menu choose "Exit". Now open the file stdout.txt
+					in the folder where exult.exe is located. You will see a listing of the midi 
+					devices.<br/>
+					For example with an SB Live! in Win2k it will look like this:
+				</para>
+				<para>
+					4 Midi Devices Detected<br/>
+					Listing midi devices:<br/>
+					-1: Microsoft MIDI-Mapper<br/>
+					0: A: SB Live! MIDI Synth<br/>
+					1: B: SB Live! MIDI Synth<br/>
+					2: SB Live! MIDI UART<br/>
+				</para>
+				<para>
+					By default <Exult/> uses the Microsoft MIDI-Mapper (which uses the device you choose 
+					in the Windows Multimedia Properties).<br/>
+					To change the MIDI Device open exult.cfg and change 
+				 </para>
+				 <configdesc>
+					<line>&lt;win32_device&gt;</line>
+   					<line>-1</line>
+   					<line>&lt;/win32_device&gt;</line>
+				</configdesc>
+				<para>
+					with the device you want to use.
+				</para>
+			</body>
+		</sub>
 	<sub name="wave_sfx">
 		<header>Digital Wave Sound Effects</header>
 			<body>
@@ -408,17 +454,16 @@
 			<body>
 				<para>	
 					By default <Exult/> runs at 320x200 (which is the resolution the original
-					Ultima VII used). <Exult/> uses different scaling engines to
+					Ultima VII used). <Exult/> can use different scaling engines to
 					double the size to 640x400 and increase the quality of the graphics.
 				</para>
 				<para>
-					Using higher resolutions is considered cheating as you can see too much 
-					of the surrounding area. But don't let that stop you :-)<br/>
-					Being able to play in higher resolutions is one of the big advantages 
-					of <Exult/>.
-				</para>
-				<para>	
-					Your screen should be set to 16-bit color mode.
+					Using higher resolutions is considered cheating as you can see too much of
+					the surrounding area. Since the game was designed to be played at a specific
+					size, this can actually lead to plot-stopping problems; hence we will not fix 
+					any problem caused by your cheating! Don't say we didn't warn you :-)<br/>
+					Actually being able to play in higher resolutions is one of the big advantages 
+					of <Exult/> but as mentioned above it comes with a price.
 				</para>
 				<para>
 					Within the game you can use the <key>Alt +</key> and <key>Alt -</key>
@@ -435,15 +480,19 @@
 					see <ref target="exult_config"/>.
 				</para>
 				<ul>	
-					<li><strong>SuperEagle</strong> by Derek Liauw</li>
-					<li><strong>2xSaI</strong> by Derek Liauw</li>
-					<li><strong>bilinear</strong></li>
-					<li><strong>point</strong> duplicates the pixels</li>
-					<li><strong>interlaced</strong> the same as <strong>point</strong> 
-					except misses every other line</li>
+					<li><strong>SuperEagle</strong> by Derek Liauw. Only 2x.</li>
+					<li><strong>Super2xSai</strong> by Derek Liauw. Only 2x.</li>
+					<li><strong>2xSaI</strong> by Derek Liauw. Only 2x.</li>
+					<li><strong>bilinear</strong>bilinear interpolation to smooth the result. 
+						Slower, but looks better. Only 2x.</li>
+					<li><strong>point</strong> simplest but also very fast scaler. simply duplicates 
+						pixels. can be used for arbitrary integer scales (2x, 3x, 4x...).</li>
+					<li><strong>interlaced</strong> identical to <strong>point</strong> except that 
+						it skips every other line to be even faster</li>
 				</ul>
 				<para>
-					Try them out to see how they look and which you like best.
+					The scalers by Derek Liauw are slower but much better looking. Try out yourself 
+					which one you like most.
 				</para>
 				<para>
 					More information on the excellent scaling engines by Derek Liauw is available at
@@ -582,23 +631,7 @@
 			</body>
 		</sub>
   	</section>
-  	<section title="OS specific notes">
-		<sub name="mac_osx">
-			<header>OSX</header>
-			<body>	
-				<para>
-					A port to OSX is in the works.
-				</para>
-			</body>
-		</sub>		
-		<sub name="mac_audio">
-			<header>Audio with MacOS</header>
-			<body>	
-				<para>
-					<Exult/> Mac will have midi, sfx and speech support in the next version.
-				</para>
-			</body>
-		</sub>		
+  	<section title="OS specific notes">		
 		<sub name="error_log">
 			<header>Error Log</header>
 			<body>	
@@ -611,7 +644,7 @@
 					<li><strong>Unix/Unix clones:</strong><br/>
 						the above mentioned logs are shown in the console from which Exult
 						is started.<br/>
-						<kbd>./exult &gt; log</kbd><br/>
+						<kbd>./exult &gt;&amp;log</kbd><br/>
 						will send both stderr and stdout to the file named "log".</li>
 				</ul>
 			</body>

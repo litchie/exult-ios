@@ -1,12 +1,13 @@
 ExultF.A.Q. (frequently asked questions)
-last changed: 10 August 2001(GMT)
+last changed: 03 Septembre 2001(GMT)
 
 A html version can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 10 August 2001
-0.2. - 19 July 2001
+0.1. - 03 Septembre 2001
+0.2. - 10 August 2001
+0.3. - 19 July 2001
 
 1. Introduction
 1.1. Why is it called Exult - what is the meaning of this name?
@@ -53,7 +54,8 @@ A html version can be found at http://exult.sourceforge.net/faq.php
 5.1. Bugs
 5.2. How do I submit a proper bug report?
 5.3. Known Issues
-5.4. Not yet implemented
+5.4. Known Compile Issues
+5.5. Not yet implemented
 
 6. Questions and Answers
 6.1. How can I get answers concerning Ultima 7/Exult?
@@ -67,9 +69,17 @@ A html version can be found at http://exult.sourceforge.net/faq.php
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 10 August 2001
+0.1. - 03 Septembre 2001
+* 1.9. What is the latest version of Exult? Version updated
+* 3.6. Any other improvements/features? Added "close on doubleclick".
+* 5.3. Known Issues added note about stealing, killing NPCs
+* 5.4. Known Compile Issues added this with information on compiling in Unix and the bug with the flex bundled with some Linux systems.
+
+
+
+0.2. - 10 August 2001
 * 1.3. Does Origin support Exult? noted praise from LB and Ken Demarest.
-* 1.5. Will there be a multiplayer Exult? This gets asked quite often.
+* 1.5. Will there be a multiplayer Exult? this gets asked quite often.
 * 1.7. What is a snapshot? Are these screenshots or what? added some more information.
 * 1.8. How do I compile a source code snapshot for my OS? made this gnereic for all the OS'.
 * 1.10. On what platform does Exult run? added OSX.
@@ -79,7 +89,7 @@ A html version can be found at http://exult.sourceforge.net/faq.php
 
 
 
-0.2. - 19 July 2001
+0.3. - 19 July 2001
 * With the updated Documentation parts of the FAQ are no longer necessary and thus left out. So see the Documentation for all your configuration problems
 
 
@@ -133,7 +143,7 @@ The source code snapshots contain a file called "README.OS" (like Readme.win32, 
 
 
 1.9. What is the latest version of Exult?
-The current official release is V0.93 Alpha4. See also 1.6. to learn where to get the latest version.
+The current official release is V0.94 Alpha5. See also 1.6. to learn where to get the latest version.
 To find out which version you are running, press 'v' while in game.
 
 
@@ -213,6 +223,7 @@ Recently Ryan added paperdoll support in Black Gate. Though it is still buggy (s
 
 
 3.6. Any other improvements/features?
+You can now close gumps with a double click like it worked in Ultima8. See "Configurations" in the Documentation.
 Since the Alpha 4 release a new game menu was added with improved Audio and Video Options boxes (the Gameplay Options don't work yet) and a very much improved (awesome)savegame box. This allows you much more savegames than the original (you should run out of disc space before you run out of savegame slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The game menu is opened via 'Esc' and the save game box is opened either via the game menu or the 's' key.
 Post Alpha 4 the team added status bars to the game. Press 'r' while playing to see it.
 In Exult, you can still move your party even if there is a box/body/stats open/on. In the original, the world was kind of frozen. Now it is only frozen if you hit the 't' or 's' key.
@@ -317,6 +328,7 @@ So if you want to have a bug fixed follow these steps!
 
 
 5.3. Known Issues
+* Stealing and killing innocent NPCs doesn't work yet like it does in the original
 * Movement is sometimes jerky or slow.
 * We don't know what all the data in 'weapons.dat' and 'ammo.dat' means, so hit points and damage don't work as well as in the original game.
 * Sound effects in SI are sometimes odd with the wave pack as some sounds were coded in Exult to correspond to the sfx number in BG. This is a bug and will be addressed in due time.
@@ -328,8 +340,16 @@ So if you want to have a bug fixed follow these steps!
 
 
 
-5.4. Not yet implemented
-A few magic spells don't work yet.
+5.4. Known Compile Issues
+* Max is working to make Exult compile on all Unix systems but currently it requires SDL 1.2.3. When that works there will be compile instructions in the source.
+* There is a bug/incompatibility with the flex bundled Linux distributions (RH7.0, for example) that breaks compilation. Upgrading to a more recent version of flex should fix it.
+
+
+
+5.5. Not yet implemented
+* A few magic spells don't work yet.
+* stealing, killing innocent NPCs doesn't work yet
+
 
 
 

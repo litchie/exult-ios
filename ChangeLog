@@ -1,3 +1,7 @@
+2001-09-03  Dominik Reichardt <gigdr@tesionmail.de>
+	* FAQ and docs/faq/exult_faq.xml: updated FAQ	
+	* README and docs/readme/readme.xml: Updated Documentation
+
 2001-09-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs/chunks.cc: fixed crash (is_roof() needs tile coords, not abs.)
 
