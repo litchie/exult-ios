@@ -33,7 +33,7 @@ private:
 	Vga_file		*ifile;
 	char			**names;
 	Object_browser		*browser;
-
+	GtkWidget		*eggwin;// Egg window.
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();
@@ -48,6 +48,8 @@ public:
 	void delete_shape_browser();
 	Object_browser  *create_palette_browser(const char *fname);
 	void set_static_path(const char *path);
+	void open_egg_window();
+	void close_egg_window();
 	void run();
 };
 

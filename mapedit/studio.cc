@@ -42,7 +42,7 @@ enum ExultFileTypes {
 	FlexArchive
 };
 
-void on_filelist_tree_select_row       (GtkCTree        *ctree,
+extern "C" void on_filelist_tree_select_row       (GtkCTree        *ctree,
                                         GtkCTreeNode    *node,
                                         gint             column,
                                         gpointer         user_data)
@@ -64,7 +64,7 @@ void on_filelist_tree_select_row       (GtkCTree        *ctree,
 	}
 }                                     
 
-void
+extern "C" void
 on_open_static_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -76,7 +76,63 @@ void on_choose_directory               (gchar *dir)
 	ExultStudio::get_instance()->set_static_path(dir);
 }
 
-ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0)
+/*
+ *	Main window's close button.
+ */
+extern "C" gboolean on_main_window_delete_event
+	(
+	GtkWidget *widget,
+	GdkEvent *event,
+	gpointer user_data
+	)
+	{
+// Crashes	delete ExultStudio::get_instance();
+	gtk_main_quit();
+	return FALSE;
+	}
+
+/*
+ *	Open egg window.
+ */
+
+extern "C" void on_open_egg_activate
+	(
+	GtkMenuItem     *menuitem,
+        gpointer         user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->open_egg_window();
+	}
+
+/*
+ *	Egg window's Cancel button.
+ */
+extern "C" void on_egg_cancel_btn_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->close_egg_window();
+	}
+
+/*
+ *	Egg window's close button.
+ */
+extern "C" gboolean on_egg_window_delete_event
+	(
+	GtkWidget *widget,
+	GdkEvent *event,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->close_egg_window();
+	return TRUE;
+	}
+
+ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
+	eggwin(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -85,7 +141,7 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0)
 	glade_init();
 	
 	// Load the Glade interface
-	app_xml = glade_xml_new( "./exult_studio.glade", "main_window" );
+	app_xml = glade_xml_new( "./exult_studio.glade", NULL);
 	app = glade_xml_get_widget( app_xml, "main_window" );
 	
 	// Connect signals
@@ -93,14 +149,17 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0)
 	temp = glade_xml_get_widget( app_xml, "exit" );
 	gtk_signal_connect(GTK_OBJECT(temp), "activate",
 				GTK_SIGNAL_FUNC(gtk_main_quit), 0);
+#if 0
 	temp = glade_xml_get_widget( app_xml, "file_list" );
 	gtk_signal_connect(GTK_OBJECT(temp), "tree_select_row",
-				GTK_SIGNAL_FUNC(on_filelist_tree_select_row), this);
+			GTK_SIGNAL_FUNC(on_filelist_tree_select_row), this);
 	temp = glade_xml_get_widget( app_xml, "open_static" );
 	gtk_signal_connect(GTK_OBJECT(temp), "activate",
-				GTK_SIGNAL_FUNC(on_open_static_activate), this);
-	
+			GTK_SIGNAL_FUNC(on_open_static_activate), this);
+#endif
 	// More setting up...
+					// Connect signals automagically.
+	glade_xml_signal_autoconnect(app_xml);
 	gtk_widget_show( app );
 	browser = 0;
 	static_path = 0;
@@ -109,6 +168,9 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0)
 ExultStudio::~ExultStudio()
 {
 	delete_shape_browser();
+	if (eggwin)
+		gtk_widget_destroy(eggwin);
+	eggwin = 0;
 	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 	self = 0;
@@ -279,7 +341,27 @@ void ExultStudio::set_static_path(const char *path)
 						   (gpointer)FlexArchive );
 	gtk_clist_thaw( GTK_CLIST( file_list ) );
 }
-	
+
+/*
+ *	Open/close the egg-editing window.
+ */
+
+void ExultStudio::open_egg_window
+	(
+	)
+	{
+	if (!eggwin)			// First time?
+		eggwin = glade_xml_get_widget( app_xml, "egg_window" );
+	gtk_widget_show(eggwin);
+	}
+void ExultStudio::close_egg_window
+	(
+	)
+	{
+	if (eggwin)
+		gtk_widget_hide(eggwin);
+	}
+
 void ExultStudio::run()
 {
 	gtk_main();
