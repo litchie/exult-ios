@@ -478,8 +478,8 @@ void Game_object::write_common_ireg
 	)
 	{
 					// Coords:
-	buf[0] = (get_cx() << 4) | get_tx();
-	buf[1] = (get_cy() << 4) | get_ty();
+	buf[0] = ((get_cx()%16) << 4) | get_tx();
+	buf[1] = ((get_cy()%16) << 4) | get_ty();
 	int shapenum = get_shapenum(), framenum = get_framenum();
 	buf[2] = shapenum&0xff;
 	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
@@ -1184,15 +1184,29 @@ void Container_game_object::write_ireg
 	*ptr++ = 0;			// Resistance+++++
 	*ptr++ = 0;			// Flags++++++
 	out.write(buf, sizeof(buf));
-	if (!last_object)		// Now write out what's inside.
-		return;
-	Game_object *obj = last_object;
-	do
+	write_contents(out);		// Write what's contained within.
+	}
+
+/*
+ *	Write contents.
+ */
+
+void Container_game_object::write_contents
+	(
+	ostream& out
+	)
+	{
+	if (last_object)		// Now write out what's inside.
 		{
-		obj = obj->get_next();
-		obj->write_ireg(out);
+		Game_object *obj = last_object;
+		do
+			{
+			obj = obj->get_next();
+			obj->write_ireg(out);
+			}
+		while (obj != last_object);
 		}
-	while (obj != last_object);
+	out.put(0x01);			// A 01 terminates the list.
 	}
 
 /*
