@@ -150,6 +150,9 @@ int Object_sfx::get_shape_sfx
 		table[780] = 56;
 					// Fountains:
 		table[893] = 36;
+					// Moongates:
+		table[776] = 77;
+		table[777] = 77;
 		}
 	map<int, int>::iterator it = table.find(shapenum);
 	return it == table.end() ? -1 : (*it).second;

@@ -136,6 +136,24 @@ void Sprites_effect::paint
 	}
 
 /*
+ *	Start explosion.
+ */
+
+Explosion_effect::Explosion_effect
+	(
+	Tile_coord p, 
+	Game_object *exp
+	) : Sprites_effect(1, p), explode(exp)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord apos = gwin->get_main_actor()->get_abs_tile_coord();
+	int dir = Get_direction16(apos.ty - p.ty, p.tx - apos.tx);
+					// Max. volume, with stereo position.
+	Audio::get_ptr()->play_sound_effect(9, SDL_MIX_MAXVOLUME, dir);
+	}
+
+
+/*
  *	Done with explosion.
  */
 

@@ -2476,6 +2476,7 @@ void Game_window::show_gump
 		cnt = 0;
 	mode = gump;			// Special mode.
 	clock.set_palette();		// Gumps get lighter palette.
+	Audio::get_ptr()->play_sound_effect(14);	// The weird noise.
 	paint();			// Show everything.
 	}
 
