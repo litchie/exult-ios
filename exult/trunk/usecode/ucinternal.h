@@ -29,6 +29,8 @@
 #  include <iosfwd>
 #endif
 
+#include "exult_types.h"
+
 class Actor;
 class Barge_object;
 class Npc_actor;
@@ -371,6 +373,10 @@ class Usecode_internal : public Usecode_machine
 
 	Game_object *intercept_item;
 	Game_object *temp_to_be_deleted;
+
+	void uc_trace_disasm(Usecode_value* locals, int num_locals,
+						 uint8* data, uint8* externals, uint8* code,
+						 uint8* ip);
 
 public:
 	friend class Usecode_script;
