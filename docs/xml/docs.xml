@@ -572,7 +572,7 @@
 						contains the (dynamic) data for the game you're currently playing. It's where the "journey onward" 'savegame' is stored.</li>
 				</ul>
 				<para>
-					If you don't change the loaction of either the Static or Gamedat directories, <Exult/> expects to find both directories in the
+					If you don't change the location of either the Static or Gamedat directories, <Exult/> expects to find both directories in the
 					path you specified in &lt;path&gt;. <strong>Don't ever</strong> point these two at the same directory.
 				</para>
 				<para>
@@ -662,7 +662,7 @@
 					You can choose between:
 				</para>
 				<ul>
-      				<li><strong>Nromal</strong><br/>
+      				<li><strong>Normal</strong><br/>
         				This setting utilizes the MIDI driver of your system. See the MIDI conversion order below.</li>
       				<li><strong>Digital</strong><br/>
         				Digital Music plays the OGG files which must be located in the <Exult/> data/music
