@@ -967,10 +967,10 @@ static void Handle_keystroke
 		// Toggle petra mode
 		if(alt && cheat && (Game::get_game_type() != BLACK_GATE))
 		{
-			if (gwin->get_main_actor()->get_siflag(Actor::petra))
-				gwin->get_main_actor()->clear_siflag(Actor::petra);
+			if (gwin->get_main_actor()->get_flag(Actor::petra))
+				gwin->get_main_actor()->clear_flag(Actor::petra);
 			else
-				gwin->get_main_actor()->set_siflag(Actor::petra);
+				gwin->get_main_actor()->set_flag(Actor::petra);
 			gwin->set_all_dirty();
 			break;
 		}

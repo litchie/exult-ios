@@ -292,6 +292,8 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(in_combat);
 	USECODE_INTRINSIC_DECL(get_dead_party);
 	USECODE_INTRINSIC_DECL(play_sound_effect);
+	USECODE_INTRINSIC_DECL(get_npc_id);
+	USECODE_INTRINSIC_DECL(set_npc_id);
 
 	/*
 	 *	Other private methods:
@@ -346,6 +348,7 @@ public:
 	int write();			// Write out 'gamedat/usecode.dat'.
 	int read();			// Reat in 'gamedat/usecode.dat'.
 	void link_party();		// Set party's id's.
+	
 	};
 
 #if USECODE_DEBUGGER

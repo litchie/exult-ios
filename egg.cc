@@ -329,13 +329,6 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			}
 		case usecode:
 			{		// Data2 is the usecode function.
-
-			//Not allowing SI lightning usecode eggs
-			if (Game::get_game_type() == SERPENT_ISLE
-				&& data2 == 1965
-				&& !(flags & (1 << (int) once)))
-				break;
-				
 			Game_window::Game_mode savemode = gwin->get_mode();
 			umachine->call_usecode(data2, this,
 					Usecode_machine::egg_proximity);
@@ -399,7 +392,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
                 }
 	if (flags & (1 << (int) once))
 		remove_this();		// All done, so go away.
-	else if (criteria == cached_in && solid_area && type != usecode)
+	else if (criteria == cached_in && solid_area && (type != usecode || Game::get_game_type() == SERPENT_ISLE))
 		{			// Replace solid area with outline.
 		Chunk_object_list *chk = gwin->get_objects(get_cx(), get_cy());
 		chk->remove_egg(this);	// Remove from chunk.
