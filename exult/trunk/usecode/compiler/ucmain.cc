@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <fstream.h>
+#include <getopt.h>
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -42,8 +43,10 @@ using std::strrchr;
 using std::strlen;
 using std::ios;
 
-extern std::vector<Uc_function *> functions;	// THIS is what the parser produces.
+					// THIS is what the parser produces.
+extern std::vector<Uc_function *> functions;	
 
+std::vector<char *> include_dirs;	// -I directories.
 
 /*
  *	MAIN.
@@ -58,22 +61,43 @@ int main
 	extern int yyparse();
 	extern FILE *yyin;
 	char *src;
-	char outname[150];
-	if (argc > 1)
+	char outbuf[256];
+	char *outname = 0;
+	static char *optstring = "o:I:";
+	extern int optind, opterr, optopt;
+	extern char *optarg;
+	opterr = 0;			// Don't let getopt() print errs.
+	int optchr;
+	while ((optchr = getopt(argc, argv, optstring)) != -1)
+		switch (optchr)
+			{
+		case 'o':		// Output to write.
+			outname = optarg;
+			break;
+		case 'I':		// Include dir.
+			include_dirs.push_back(optarg);
+			break;
+			}
+	if (optind < argc)		// Filename?
 		{
-		src = argv[1];
-		yyin = fopen(argv[1], "r");
-		strcpy(outname, src);	// Set up output name.
-		char *dot = strrchr(outname, '.');
-		if (!dot)
-			dot = outname + strlen(outname);
-		strcpy(dot, ".uco");
+		src = argv[optind];
+		yyin = fopen(argv[optind], "r");
+		if (!outname)		// No -o option?
+			{		// Set up output name.
+			outname = strncpy(outbuf, src, sizeof(outbuf) - 5);
+			outbuf[sizeof(outbuf) - 5] = 0;
+			char *dot = strrchr(outname, '.');
+			if (!dot)
+				dot = outname + strlen(outname);
+			strcpy(dot, ".uco");
+			}
 		}
 	else
 		{
 		src = "<stdin>";
 		yyin = stdin;
-		strcpy(outname, "a.ucout");
+		if (!outname)
+			outname = strcpy(outbuf, "a.ucout");
 		}
 	Uc_location::set_cur(src, 0);
 					// For now, use black gate.

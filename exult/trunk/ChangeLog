@@ -1,3 +1,8 @@
+2002-05-01  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* usecode/compiler/uclex.ll,ucmain.cc: Added "-o outfile" option
+	and "-I includdir" options.
+
 2002-04-30  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/eggedit.cc: Now sets teleport data1 correctly.
