@@ -203,5 +203,45 @@ public:
 	virtual int handle_event(Actor *actor);
 	};
 
+//
+//	The below could perhaps go into a highact.h file.
+//
+
+/*
+ *	Rotate through an object's frames.
+ */
+class Object_animate_actor_action : public Actor_action
+	{
+	Game_object *obj;
+	int nframes;			// # of frames.
+	int cycles;			// # of cycles to do.
+	int speed;			// Time between frames.
+public:
+	Object_animate_actor_action(Game_object *o, int cy, int spd);
+					// Handle time event.
+	virtual int handle_event(Actor *actor);
+	};
+
+/*
+ *	Action to pick up an item or put it down.
+ */
+
+class Pickup_actor_action : public Actor_action
+	{
+	Game_object *obj;		// What to pick up/put down.
+	int pickup;			// 1 to pick up, 0 to put down.
+	int speed;			// Time between frames.
+	int cnt;			// 0, 1, 2.
+	Tile_coord objpos;		// Where to put it.
+	int dir;			// Direction to face.
+public:
+					// To pick up an object:
+	Pickup_actor_action(Game_object *o, int spd);
+					// To put down an object:
+	Pickup_actor_action(Game_object *o, Tile_coord opos, int spd);
+	virtual int handle_event(Actor *actor);
+	};
+	
+
 #endif	/* INCL_ACTIONS */
 

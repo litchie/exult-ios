@@ -76,6 +76,20 @@ int Game_object::get_direction
 	}
 
 /*
+ *	Get direction to a given tile.
+ */
+
+int Game_object::get_direction
+	(
+	Tile_coord t2
+	) const
+	{
+	Tile_coord t1 = get_abs_tile_coord();
+					// Treat as cartesian coords.
+	return (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
+	}
+
+/*
  *	Does a given shape come in quantity.
  */
 static int Has_quantity
