@@ -11,6 +11,7 @@
 
 #include <stack.h>
 #include <vector>
+#include <list>
 
 
 
@@ -51,7 +52,7 @@ bool	operator <(const Queue_entry &q1,const Queue_entry &q2);
  */
 class Time_queue
 	{
-	typedef vector<Queue_entry>	Temporal_sequence;
+	typedef list<Queue_entry>	Temporal_sequence;
 	Temporal_sequence data;
 
 	// Activate head + any others due.

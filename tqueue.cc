@@ -21,8 +21,21 @@ void Time_queue::add
 	{
 	Queue_entry	newent;
 	newent.set(t,obj,ud);
+	if(!data.size())
+		{
+		data.push_back(newent);
+		return;
+		}
+	for(Temporal_sequence::iterator it=data.begin();
+		it!=data.end(); ++it)
+		{
+		if(newent<*it)
+			{
+			data.insert(it,newent);
+			return;
+			}
+		}
 	data.push_back(newent);
-	sort(data.begin(),data.end());
 	}
 
 bool    operator <(const Queue_entry &q1,const Queue_entry &q2)
