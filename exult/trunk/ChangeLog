@@ -5,11 +5,22 @@
 	* Midi.cc: fix to windows playing MIDI only once
 	* fnames.h: included MIDITMPFILE
 
+2000-05-11  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* utils.cc: Implemented Switch_slash which takes care of using
+	backslashes instead of slashes in Windows filenames...
+	* fnames.h: Removed the duplication of filenames with backslashes
+
 2000-05-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gamewin.cc: dirty fix to visual artifacting (see mailing list)
 	* objs.cc: reverted anim. code to earlier state
 	* imagewin.cc, exult.cc: pressing Enter will toggle fullscreen
 	I don't get why SDL won't detect ALT though...
+
+2000-05-08  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* flic/*: Implement flic-playing library
+	* gamewin.cc: stuff for flics.
 
 2000-05-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode.cc: avoided Internal Compiler Error for gcc 2.95.2

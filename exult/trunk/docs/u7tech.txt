@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.4 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.5 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -327,6 +327,35 @@ FONTS.VGA:    flex file with fonts
 TEXT.FLX:     flex file with lots of string (name of shape, quotes, cheat texts)
 PALETTES.FLX: flex file with palettes
 MAINSHP.FLX:  flex file with various objects used in main menu
+Content for Black Gate/Forge of Virtue
+  $0        shape (male face)
+  $1        shape (female face)
+  $2        shape (main screen)
+  $3        font
+  $4        shape ("view introduction")
+  $5        shape ("start new game")
+  $6        shape ("view credits")
+  $7        shape ("return to menu")
+  $8        shape ("journey onward")
+  $9        font
+  $A        shape ("sex:")
+  $B        shape ("male/female")
+  $C        shape ("name")
+  $D        text (Guardian speech...)
+  $E        text (Credits)
+  $F        ???
+  $10       text (Quotes)
+  $11       shape ("view quotes")
+  $12       shape ("view endgame")
+  $13       ???
+  $14       shapes ("rated mp-13/origin fx/dana glover/voodoo")
+  $15       text (lose message)
+  $16       shape ("male")
+  $17       shape ("female")
+  $18       ???
+  $19-$1D   empty
+  
+Content for Serpent Isle/Silver Seed
   $0        shape (the "warp" screen)
   $1        palette (to be used with the previous screen)
   $2        shape ("serpent's isle", the main menu title)
@@ -346,6 +375,47 @@ MAINSHP.FLX:  flex file with various objects used in main menu
   $1A       palette (to be used with previous shapes)
   $1B..$20  mid music
   $1B..$27  empty
+
+ENDSHAPE.FLX: flex file with various objects used in intro (Black Gate only)
+  $0        Thorns on left
+  $1        Thorns on right
+  $2        Top left moongate
+  $3        Right moongate
+  $4        Bottom left moongate
+  $5        Bottom right moongate
+  $6        ???
+  $7        Top right computer
+  $8        Bottom right computer
+  $9        Top left computer
+  $A        Bottom left computer
+  $B        Orb
+  $C        Fist
+  $D        Ultima VII
+  $E        Butterfly
+  $F        "Ultima VII The Black Gate The Quest Begins Christmas 1991"
+  $10       "The Quest Begins Christmas 1991"
+  $11       "Lord British presents..."
+  $12       Trees
+  $15       "Something is obviously amiss"
+  $16       "It has been a long time since your last visit to Britannia"
+  $17       "The mystical Orb beckons you..."
+  $18       "It has opened gateways to Britannia in the past"
+  $19       "Behind your house lies the circle of stones"
+  $1A       "Why is a Moongate already there?"
+  
+ENDGAME.DAT
+  $0        FLIC with guardian coming into Black Gate
+  $1        FLIC with Black Gate exploding
+  $2        FLIC with flickering torches
+  $3        Font
+  $4        Font
+  $5        Font
+  $6        Font
+  $7        Voice file
+  $8        Voice file
+  $9        Voice file
+  $A        Shape file
+
 INITGAME.DAT: flex file with archived files
   (these files are to be extracted to the GAMEDAT directory with their
    original name. they represent the state of a new game. the format is the
@@ -478,7 +548,7 @@ MAPCOORDS.DAT = coordinates of the avatar
 IDENTITY  = text file containing the name of the world
   one single line, followed by RC LF (0D 0A)
   can also be followed by EOF (1A)
-  it is either "ULTIMA7" or "SERPENT ISLE"
+  it "ULTIMA7", "SERPENT ISLE", "FORGE"
 
 RANDSEED  = current value of the seed used by the random number generator
   seed    = longint

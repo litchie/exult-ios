@@ -580,6 +580,13 @@ static void Handle_keystroke
 	Vga_file *vga_file;
 	
 	static int inventory_page = -1;
+	int stepping = 1;
+	int shift = modifier & KMOD_SHIFT;
+	int alt = modifier & KMOD_ALT;
+	
+	if(alt)
+		stepping = 10;	// If the user is pressing alt, use a
+				// larger stepping when cycling shapes
 	switch (sym)
 		{
 	case SDLK_PLUS:			// Brighten.
@@ -672,11 +679,11 @@ static void Handle_keystroke
 	case SDLK_f:		// Show next frame
 		vga_file = gwin->get_shape_file_data(current_file);
 		if (!shift) {
-			++current_frame;
+			current_frame += stepping;
 			if(current_frame>=vga_file->get_num_frames(current_shape))
 				current_frame = 0;
 		} else {
-			--current_frame;
+			current_frame -= stepping;
 			if(current_frame<0)
 				current_frame = vga_file->get_num_frames(current_shape);
 		}

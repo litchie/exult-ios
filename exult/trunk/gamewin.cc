@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 #include "segfile.h"
 #include "Audio.h"
+#include "files/U7file.h"
+#include "flic/playfli.h"
 					// THE game window:
 Game_window *Game_window::game_window = 0;
 
@@ -57,7 +59,9 @@ Game_window::Game_window
 	    open_gumps(0),
 	    main_actor_inside(0), mode(splash), npcs(0),
 	    shapes(), dragging(0), dragging_save(0),
-	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA), sprites(SPRITES_VGA), mainshp(MAINSHP_FLX)
+	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
+	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
+	    endshape(ENDSHAPE_FLX)
 	{
 	game_window = this;		// Set static ->.
 	if (!shapes.is_good())
@@ -70,8 +74,7 @@ Game_window::Game_window
 		abort("Can't open 'fonts.vga' file.");
 	if (!sprites.is_good())
 		abort("Can't open 'sprites.vga' file.");
-	if (!mainshp.is_good())
-		abort("Can't open 'mainshp.flx' file.");
+	
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);
 	ifstream ucfile;		// Read in usecode.
@@ -714,6 +717,19 @@ void Game_window::get_superchunk_objects
 	}
 
 /*
+ *	Put the actor(s) in the world.
+ */
+
+void Game_window::init_actors
+	(
+	)
+	{
+	if (main_actor)			// Already done?
+		return;
+	read_npcs();			// Read in all U7 NPC's.
+	}
+
+/*
  *	Save game by writing out to the 'gamedat' directory.
  *
  *	Output:	0 if error, already reported.
@@ -735,18 +751,29 @@ int Game_window::write
 	}
 
 /*
- *	Put the actor(s) in the world.
+ *      Paint splash screen
  */
 
-void Game_window::init_actors
+void Game_window::paint_splash
 	(
 	)
 	{
-	if (main_actor)			// Already done?
-		return;
-	read_npcs();			// Read in all U7 NPC's.
+		Vga_file shapes(ENDSHAPE_FLX);
+		int x = get_width()/2-160;
+		int y = get_height()/2-100;
+		
+		paint_shape(x,y,shapes.get_shape(0x11,0));
+		paint_text_box(0,"With the help of Jeff Freedman, Dancer Vesperman, " \
+				 "Willem Jan Palenstijn, Tristan Tarrant", x, y+160, 320, 200);
+		win->show();
+		SDL_Delay(2000);
+		paint_shape(x,y,shapes.get_shape(0x12,0));
+		paint_shape(x+160,y+30,shapes.get_shape(0x0D,0));
+		paint_text_box(0,"Driven by the Exult game engine", x, y+160, 320, 200);
+		win->show();
+		SDL_Delay(2000);
+		paint_shape(x,y,shapes.get_shape(0x0,0));
 	}
-
 
 /*
  *	Paint a rectangle in the window by pulling in vga chunks.
@@ -760,6 +787,12 @@ void Game_window::paint
 	if (!win->ready())
 		return;
 	win->set_clip(x, y, w, h);	// Clip to this area.
+	
+	if (mode == splash)
+		{
+			paint_splash();
+			return;
+		}
 					// Which chunks to start with:
 					// Watch for shapes 1 chunk to left.
 	int start_chunkx = chunkx + x/chunksize - 1;
@@ -827,17 +860,6 @@ void Game_window::paint
 	for (cy = start_chunky; cy < stop_chunky; cy++)
 		for (cx = start_chunkx; cx < stop_chunkx; cx++)
 			paint_chunk_objects(-1, cx, cy, 0);
-	if (mode == splash && win->ready())
-		{
-		// Paint intro title (we should use the mainshp palette...)
-		paint_shape(get_width()/2-160,get_height()/2-100,mainshp.get_shape(2,0));
-		int x = 5, y = 5;
-		int w = get_width() - x, h = get_height() - y;
-		char buf[512];
-		sprintf(buf, "Welcome to EXULT V 0.%02d, a free RPG game engine.\n\nCopyright 2000 J. S. Freedman, Dancer Vesperman,\n     Willem Jan Palenstijn, Tristan Tarrant\n\nGraphics and audio remain the property of Origin Systems", RELNUM);
-		paint_text_box(0, buf, 
-				x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
-		}
 					// Draw gumps.
 	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
 		gmp->paint(this);
@@ -981,6 +1003,23 @@ void Game_window::set_palette
 	win->set_palette(colors, 63, brightness);
 	}
 
+void Game_window::set_palette
+	(
+	char *fname,
+	int pal_num
+	)
+	{
+	U7object pal(fname, pal_num);
+	unsigned char colors_raw[1536];	// Read it in.
+	size_t len;
+	pal.retrieve((char **)&colors_raw,len);
+	unsigned char colors[768];
+	for(int i=0;i<768;i++)
+		colors[i]=colors_raw[i*2];
+					// They use 6 bits.
+	win->set_palette(colors, 63, brightness);
+	}
+
 /*
  *	Brighten/darken palette.
  */
@@ -1091,6 +1130,30 @@ void Game_window::stop_actor
 	{
 	main_actor->stop();		// Stop and set resting state.
 	paint();	// ++++++Necessary?
+	}
+
+/*
+ *	Find a "roof" in the given chunk.
+ *
+ *	Output: 1 if found, else 0.
+ */
+
+int Game_window::find_roof
+	(
+	int cx, int cy			// Absolute chunk coords.
+	)
+	{
+	Chunk_object_list *olist = objects[cx][cy];
+	if (!olist)
+		return (0);
+	return (olist->is_roof());
+#if 0
+	Game_object *obj;
+	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
+		if (obj->get_lift() >= 5)
+			return (1);	// Found one.
+	return (0);
+#endif
 	}
 
 /*
@@ -1809,10 +1872,13 @@ void Game_window::end_splash
 	(
 	)
 	{
+	
 	if (mode == splash)
 		{
-		set_palette(0);
 		mode = normal;
+		set_palette(0);
+		brighten(20);
+		
 		init_actors();		// Set up actors if not already done.
 					// This also sets up initial 
 					//   schedules and positions.
@@ -1846,6 +1912,8 @@ char *Game_window::get_shape_file_name
 		return SPRITES_VGA;
 	case 4:
 		return MAINSHP_FLX;
+	case 5:
+		return ENDSHAPE_FLX;
 	default:
 		return 0;
 	}
@@ -1855,7 +1923,7 @@ int Game_window::get_shape_file_count
 	(
 	)
 	{
-	return 5;	// FIXME: should be dynamic
+	return 6;	// FIXME: should be dynamic
 	}
 
 Vga_file *Game_window::get_shape_file_data
@@ -1874,7 +1942,25 @@ Vga_file *Game_window::get_shape_file_data
 		return &sprites;
 	case 4:
 		return &mainshp;
+	case 5:
+		return &endshape;
 	default:
 		return 0;
 	}
 	}
+
+void Game_window::play_flic(char *archive, int index) 
+	{
+		U7object flic(archive, index);
+		flic.retrieve("flic.fli");
+		playfli fli("flic.fli");
+		fli.play(win);
+	}
+
+void Game_window::end_game() 
+	{
+		play_flic(ENDGAME,0);
+		play_flic(ENDGAME,1);
+		play_flic(ENDGAME,2);
+	}
+
