@@ -786,6 +786,8 @@ void Shape::write
 	)
 	{
 	int frnum;
+	if (!num_frames)
+		return;			// Empty.
 	assert(frames != 0 && *frames != 0);
 	bool flat = !frames[0]->is_rle();
 					// Save starting position.
