@@ -108,13 +108,13 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
-	    <name>open_static</name>
+	    <name>open_game</name>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_open_static_activate</handler>
-	      <last_modification_time>Thu, 25 Jan 2001 13:33:13 GMT</last_modification_time>
+	      <handler>on_open_game_activate</handler>
+	      <last_modification_time>Sat, 09 Mar 2002 09:20:00 GMT</last_modification_time>
 	    </signal>
-	    <label>_Open Static...</label>
+	    <label>_Open game...</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 

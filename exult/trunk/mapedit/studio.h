@@ -113,10 +113,10 @@ public:
 	Shape_group_file *get_cur_groups();
 	void set_browser(const char *name, Object_browser *obj);
 
-	void choose_static_path();
+	void choose_game_path();
 	Object_browser  *create_browser(const char *fname);
 	Object_browser  *create_palette_browser(const char *fname);
-	void set_static_path(const char *path);
+	void set_game_path(const char *path);
 	void write_map();
 	void read_map();
 	void write_shape_info();
