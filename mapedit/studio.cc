@@ -73,6 +73,9 @@ ExultStudio *ExultStudio::self = 0;
 Configuration *config = 0;
 const std::string c_empty_string;	// Used by config. library.
 
+					// Mode menu items:
+static char *mode_names[3] = {"move1", "paint1", "pick_for_combo1"};
+
 enum ExultFileTypes {
 	ShapeArchive =1,
 	ChunkArchive,
@@ -297,8 +300,9 @@ C_EXPORT gint on_main_window_configure_event
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-					// Configure "Hide lift" spin.
-	studio->set_spin("hide_lift_spin", 16, 1, 16);
+					// Configure "Hide lift" spin range.
+	studio->set_spin("hide_lift_spin", 
+				studio->get_spin("hide_lift_spin"), 1, 16);
 	}
 
 /*
@@ -348,7 +352,9 @@ C_EXPORT gboolean on_main_window_focus_in_event
 	}
 
 
-
+/*
+ *	Set up everything.
+ */
 
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
 	names(0), glade_path(0), shape_info_modified(false),
@@ -448,11 +454,10 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 #endif
 					// Init. 'Mode' menu, since Glade
 					//   doesn't seem to do it right.
-	static char *names[3] = {"move1", "paint1", "pick_for_combo1"};
 	GSList *group = NULL;
-	for (int i = 0; i <= 2; i++)
+	for (int i = 0; i < sizeof(mode_names)/sizeof(mode_names[0]); i++)
 		{
-		GtkWidget *item = glade_xml_get_widget(app_xml, names[i]);
+		GtkWidget *item = glade_xml_get_widget(app_xml, mode_names[i]);
 		gtk_radio_menu_item_set_group(GTK_RADIO_MENU_ITEM(item),
 								group);
 		group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(item));
@@ -1024,11 +1029,11 @@ bool ExultStudio::need_to_save
 		int len = Exult_server::Receive_data(server_socket, 
 						id, data, sizeof(data));
 		unsigned char *ptr = &data[0];
-		int npcs, edlift, hdlift;
+		int vers, npcs, edlift, hdlift, edmode;
 		bool editing, grid, mod;
 		if (id == Exult_server::info &&
-		    Game_info_in(data, len, npcs, edlift, hdlift, editing, 
-								grid, mod) &&
+		    Game_info_in(data, len, vers, npcs, edlift, hdlift, 
+						editing, grid, mod, edmode) &&
 		    mod == true)
 			return true;
 		}
@@ -1950,6 +1955,10 @@ void ExultStudio::save_preferences
 		browser->set_background_color(background_color);
 	}
 
+
+/*
+ *	Main routine.
+ */
 void ExultStudio::run()
 {
 	gtk_main();
@@ -2093,6 +2102,9 @@ void ExultStudio::read_from_server
 		else if (browser)
 			browser->server_response((int) id, data, datalen);
 		break;
+	case Exult_server::info:
+		info_received(data, datalen);
+		break;
 	case Exult_server::view_pos:
 		if (locwin)
 			locwin->view_changed(data, datalen);
@@ -2177,26 +2189,64 @@ bool ExultStudio::connect_to_server
 		server_socket = -1;
 		return false;
 		}
-	else
-		{
-		server_input_tag = gdk_input_add(server_socket,
+	server_input_tag = gdk_input_add(server_socket,
 			GDK_INPUT_READ, Read_from_server, this);
-		cout << "Connected to server" << endl;
-		return true;
-		}
 #else
 		// Close existing socket.
 	if (server_socket != -1) Exult_server::disconnect_from_server();
 	if (server_input_tag != -1) gtk_timeout_remove(server_input_tag);
 	server_socket = server_input_tag = -1;
 
-	if (Exult_server::try_connect_to_server(static_path) > 0) {
+	if (Exult_server::try_connect_to_server(static_path) > 0)
 		server_input_tag = gtk_timeout_add(50, Read_from_server, this);
-		cout << "Connected to server" << endl;
-		return true;
-	}
+	else
+		return false;
 #endif
-	return false;
+	cout << "Connected to server" << endl;
+	send_to_server(Exult_server::info);	// Request version, etc.
+	return true;
+	}
+/*
+ *	'Info' message received.
+ */
+
+void ExultStudio::info_received
+	(
+	unsigned char *data,		// Message from Exult.
+	int len
+	)
+	{
+	int vers, npcs, edlift, hdlift, edmode;
+	bool editing, grid, mod;
+	Game_info_in(data, len, vers, npcs, edlift, hdlift, 
+					editing, grid, mod, edmode);
+	if (vers != Exult_server::version)
+		{			// Wrong version of Exult.
+		EStudio::Alert("Expected ExultServer version %d, but got %d",
+				Exult_server::version, vers);
+#ifndef WIN32
+		close(server_socket);
+		gdk_input_remove(server_input_tag);
+#else
+		Exult_server::disconnect_from_server();
+		gdk_timeout_remove(server_input_tag);
+#endif
+		server_socket = server_input_tag = -1;
+		return;
+		}
+					// Set controls to what Exult thinks.
+	set_spin("edit_lift_spin", edlift);
+	set_spin("hide_lift_spin", hdlift);
+	set_toggle("play_button", !editing);
+	set_toggle("tile_grid_button", grid);
+	if (edmode >= 0 && edmode < sizeof(mode_names)/sizeof(mode_names[0]))
+		{
+		GtkWidget *mitem = glade_xml_get_widget(app_xml, 
+							mode_names[edmode]);
+
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mitem),
+									TRUE);
+		}
 	}
 
 

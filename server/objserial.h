@@ -176,23 +176,27 @@ int Npc_actor_in
 extern int Game_info_out
 	(
 	int fd,				// Socket.
+	int version,			// Server/client version.
 	int num_npcs,			// # in game.
 	int edit_lift,			// Lift being edited.
 	int hide_lift,			// Lift being hidden.
 	bool map_editing,		// In 'map-editing' mode.
 	bool tile_grid,			// Showing tile grid.
-	bool map_modified		// Map was changed.
+	bool map_modified,		// Map was changed.
+	int edit_mode			// Mode we're in.
 	);
 extern int Game_info_in
 	(
 	unsigned char *data,		// Data that was read.
 	int datalen,			// Length of data.
+	int& version,			// Server/client version.
 	int& num_npcs,			// # in game.
 	int& edit_lift,			// Lift being edited.
 	int& hide_lift,			// Lift being hidden.
 	bool& map_editing,		// In 'map-editing' mode.
 	bool& tile_grid,		// Showing tile grid.
-	bool& map_modified		// Map was changed.
+	bool& map_modified,		// Map was changed.
+	int& edit_mode			// Mode we're in.
 	);
 
 #endif
