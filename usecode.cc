@@ -2263,15 +2263,6 @@ USECODE_INTRINSIC(halt_scheduled)
 	return(no_ret);
 }
 
-USECODE_INTRINSIC(run_endgame)
-{
-#if 0	/* +++++This isn't right.  CauseBlackout sounds more plausible. */
-	Titles titles;
-	titles.end_game(true);
-#endif
-	return(no_ret);
-}
-
 USECODE_INTRINSIC(get_array_size)
 {
 	int cnt;
@@ -2377,6 +2368,14 @@ USECODE_INTRINSIC(start_speech)
 		audio->start_speech(speech_track);
 	return(Usecode_value(0));	// +++++For now, pretend it failed.
 }
+
+USECODE_INTRINSIC(run_endgame)
+{
+	Titles titles;
+	titles.end_game(parms[0].get_int_value() != 0);
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(nap_time)
 {
 	// nap_time(bed)
@@ -2728,7 +2727,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b     Armageddon (ucdump.c)
 	USECODE_INTRINSIC_PTR(halt_scheduled),	// 0x5c
-	USECODE_INTRINSIC_PTR(run_endgame),	// 0x5d  +++++CauseBlackout (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5d  +++++CauseBlackout (ucdump.c)
 	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5f  ++++mark(virtue-stone)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x60  ++++recall(virtue-stone)
@@ -2752,7 +2751,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(get_equipment_list),	// 0x72
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x73
 	USECODE_INTRINSIC_PTR(start_speech),	// 0x74
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x75   +++++ StartEndGame (ucdump.c)
+	USECODE_INTRINSIC_PTR(run_endgame),	// 0x75 StartEndGame (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x76     FireCannon (ucdump.c)
 	USECODE_INTRINSIC_PTR(nap_time),	// 0x77
 	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
