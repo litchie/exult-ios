@@ -47,6 +47,7 @@ int main(int argc,char *argv[])
 	unsigned int i,put=0;
 	int number;
 	char s[10];
+	char filename[18];
 	FILE *fi,*fo,*fo2;
 	printf("Wody's Rip v0.005\nCopyright (c) 1999 Wody Dragon (a.k.a. Wouter Dijkslag)\n");
 	if (argc<2||(!strcasecmp(argv[1],"put")&&argc!=3))
@@ -88,6 +89,8 @@ int main(int argc,char *argv[])
 		if (number==-1||number==-2||number==fn)
 		{
 			sprintf(s,"%04X",fn);
+			strcpy(filename, s);
+			strcat(filename, ".uco");
 			fprintf(fo2,"%s\n",s);
 		}
 		if (number==-1||number==fn)
@@ -95,9 +98,9 @@ int main(int argc,char *argv[])
 			if (!put)
 			{
 				printf("Writing function: %s... ",s);
-				if ((fo=fopen(s,"wb"))==NULL)
+				if ((fo=fopen(filename,"wb"))==NULL)
 				{
-					printf("Can't open file\n");
+					printf("Can't open file %s\n", filename);
 					exit(0);
 				}
 				fwrite(&fn,2,1,fo);
@@ -110,9 +113,9 @@ int main(int argc,char *argv[])
 			else
 			{
 				printf("Reading function: %s... ",s);
-				if ((fo=fopen(s,"rb"))==NULL)
+				if ((fo=fopen(filename,"rb"))==NULL)
 				{
-					printf("Can't open file\n");
+					printf("Can't open file %s\n", filename);
 					exit(0);
 				}
 				fread(&fnc,2,1,fo);
