@@ -10,7 +10,9 @@ libmididrv_la_SOURCES =	\
 	forked_player.cc	\
 	forked_player.h		\
 	win_MCI.cc		\
-	win_MCI.h
+	win_MCI.h		\
+	be_midi.cc		\
+	be_midi.h
 
 EXTRA_DIST = 		\
 	README
