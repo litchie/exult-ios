@@ -330,17 +330,12 @@ void Game_window::get_chunk_objects
 	if (rles)
 		{
 		last_rle->set_next(0);	// Finish list.
-#if 0
-		olist->set(rles);	// Store list (already sorted by
-					//   (y, x)).
-#else
 		while (rles)
 			{
 			Game_object *nxt = rles->get_next();
 			olist->add(rles);
 			rles = nxt;
 			}
-#endif
 		}
 	}
 
