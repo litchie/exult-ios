@@ -42,7 +42,9 @@ class	MidiAbstract
 {
 public:
 	virtual void	start_track(const char *,bool repeat)=0;
+#ifdef WIN32
 	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat)=0;
+#endif
 	virtual void	stop_track(void)=0;
 	virtual	bool	is_playing(void)=0;
 	virtual	const	char *copyright(void)=0;
