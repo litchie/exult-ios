@@ -65,8 +65,6 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	guint sbar_sel;			// Status bar context for selection.
 	GtkWidget *fspin;		// Spin button for frame #.
 	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
-	int index0;			// Index of top-leftmost in
-					//   displayed list.
 	int framenum0;			// Default frame # to display.
 	Shape_entry *info;		// An entry for each shape drawn.
 	int info_cnt;			// # entries in info.
