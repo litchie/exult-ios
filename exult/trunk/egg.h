@@ -89,7 +89,8 @@ public:
 		{ return criteria; }
 	void monster_died();		// Monster this created just died.
 					// Can it be activated?
-	int is_active(int tx, int ty, int from_tx, int from_ty);
+	int is_active(Game_object *obj,
+				int tx, int ty, int from_tx, int from_ty);
 	Rectangle get_area() const	// Get active area.
 		{ return area; }
 	int is_solid_area() const

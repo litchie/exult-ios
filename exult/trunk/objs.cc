@@ -2039,7 +2039,7 @@ void Chunk_cache::activate_eggs
 		{
 		Egg_object *egg;
 		if ((eggbits&1) && (egg = (Egg_object *) egg_objects.get(i)) &&
-		    egg->is_active(tx, ty, from_tx, from_ty))
+		    egg->is_active(obj, tx, ty, from_tx, from_ty))
 			egg->activate(usecode, obj);
 		}
 	if (eggbits)			// Check 15th bit.
@@ -2048,7 +2048,8 @@ void Chunk_cache::activate_eggs
 		for ( ; i < num_eggs; i++)
 			{
 			Egg_object *egg = (Egg_object *) egg_objects.get(i);
-			if (egg && egg->is_active(tx, ty, from_tx, from_ty))
+			if (egg && egg->is_active(obj,
+						tx, ty, from_tx, from_ty))
 				egg->activate(usecode, obj);
 			}
 		}

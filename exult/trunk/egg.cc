@@ -125,17 +125,20 @@ void Egg_object::monster_died
 	}
 
 /*
- *	Is the egg active when stepping onto a given spot?
+ *	Is the egg active when stepping onto a given spot, or placing an obj.
+ *	on the spot?
  */
 
 int Egg_object::is_active
 	(
+	Game_object *obj,		// Object placed (or Actor).
 	int tx, int ty,			// Tile stepped onto.
 	int from_tx, int from_ty	// Tile stepped from.
 	)
 	{
 	if (flags & (1 << (int) hatched))
 		return (0);		// For now... Already hatched.
+	Game_window *gwin = Game_window::get_game_window();
 	Egg_criteria cri = (Egg_criteria) get_criteria();
 					// Watch for cached_in eggs which have
 					//   been reset.
@@ -144,23 +147,32 @@ int Egg_object::is_active
 	switch (cri)
 		{
 	case cached_in:			// Anywhere in square.
-	case avatar_footpad:
-	case party_footpad:
 		return area.has_point(tx, ty);
+	case party_near:
+		return obj->get_party_id() >= 0 &&
+			area.has_point(tx, ty) &&
+					!area.has_point(from_tx, from_ty);
+	case avatar_near:		// New tile is in, old is out.
+		return obj == gwin->get_main_actor() &&
+			area.has_point(tx, ty) &&
+					!area.has_point(from_tx, from_ty);
 	case avatar_far:		// New tile is outside, old is inside.
 		{
-		if (!area.has_point(tx, ty))
+		if (obj != gwin->get_main_actor() || !area.has_point(tx, ty))
 			return (0);
 		Rectangle inside(area.x + 1, area.y + 1, 
 						area.w - 2, area.h - 2);
 		return inside.has_point(from_tx, from_ty) &&
 			!inside.has_point(tx, ty);
 		}
-	case avatar_near:		// New tile is in, old is out.
-	case party_near:
+	case avatar_footpad:
+		return obj == gwin->get_main_actor() && area.has_point(tx, ty);
+	case party_footpad:
+		return area.has_point(tx, ty) && obj->get_party_id() >= 0;
+	case something_on:
+		return area.has_point(tx, ty) && obj->get_npc_num() <= 0;
 	default:
-		return area.has_point(tx, ty) &&
-					!area.has_point(from_tx, from_ty);
+		return 0;
 		}
 	}
 

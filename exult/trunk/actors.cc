@@ -408,8 +408,8 @@ void Actor::follow
 					// Get his speed.
 	int speed = leader->get_frame_time();
 	if (!speed)			// Not moving?
-		speed = 125;
-	if (goaldist <= leaderdist)	// Closer than leader?
+		speed = 100;
+	if (goaldist < leaderdist)	// Closer than leader?
 		{			// Delay a bit.
 		delay = (1 + leaderdist - goaldist)*100;
 //		speed += 10;		// And slow a bit.
@@ -430,9 +430,10 @@ void Actor::follow
 			}
 		}
 	unsigned long curtime = SDL_GetTicks();
-	if (((!leader->is_moving() && pos.distance(leaderpos) >= 4) || 
-		(pos.distance(leaderpos) >= 8) && curtime >= next_path_time) &&
-	    get_party_id() >= 0)
+	int dist2lead;
+	if (((dist2lead = pos.distance(leaderpos)) >= 8 &&
+						curtime >= next_path_time) ||
+	     (dist2lead >= 4 && !leader->is_moving()) && get_party_id() >= 0)
 		{			// A little stuck?
 		cout << get_name() << " trying to catch up." << endl;
 					// Don't try again for a few seconds.
@@ -441,7 +442,7 @@ void Actor::follow
 					// Find a free spot.
 			goal = leader->find_unblocked_tile(1, 3);
 		if (goal.tx == -1 ||	// No free spot?  Give up.
-		    walk_path_to_tile(goal, speed - speed/20, 0))
+		    walk_path_to_tile(goal, speed - speed/4, 0))
 			return;
 		else
 			cout << "... but failed to find path." << endl;
