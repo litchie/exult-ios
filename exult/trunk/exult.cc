@@ -642,11 +642,8 @@ static void Handle_event
 			break;
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
-			{
-			gwin->drag(event.motion.x >> scale, 
+			dragged = gwin->drag(event.motion.x >> scale, 
 						event.motion.y >> scale);
-			dragged = 1;
-			}
 					// Dragging with right?
 		if ((event.motion.state & SDL_BUTTON(3)) &&
 					// But not right after teleport.
