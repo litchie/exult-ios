@@ -998,12 +998,23 @@ Usecode_value Usecode_internal::remove_cont_items
 
 static Tile_coord Find_unblocked
 	(
-	Tile_coord dest			// Where to go.
+	Tile_coord dest,		// Where to go.
+	int src_tz			// Current lift.
 	)
 	{
 	Tile_coord start = dest;
-	dest.tx = -1;			// Look outwards.
-	for (int i = 0; dest.tx == -1 && i < 3; i++)
+	dest.tx = -1;			// Start at desired position.
+	dest = Game_object::find_unblocked_tile(start, 0);
+	if (dest.tx != -1)
+		return dest;		// Okay.
+	int dest_tz = start.tz;
+	start.tz = src_tz;		// Now try at source height.
+	dest = Game_object::find_unblocked_tile(start, 0);
+	if (dest.tx != -1)
+		return dest;		// Okay.
+	start.tz = dest_tz;
+					// Look outwards.
+	for (int i = 1; dest.tx == -1 && i < 3; i++)
 		dest = Game_object::find_unblocked_tile(start, i);
 	if (dest.tx == -1)
 		return start;
@@ -1048,14 +1059,14 @@ int Usecode_internal::path_run_usecode
 	Tile_coord dest(dx, dy, dz);
 	if (find_free)
 		{
-		dest = Find_unblocked(dest);
+		dest = Find_unblocked(dest, src.tz);
 		if (usefun == 0x60a &&	// ++++Added 7/21/01 to fix Iron
 		    src.distance(dest) <= 1)
 			return 1;	// Maiden loop in SI.  Kludge+++++++
 		if (src != dest && !npc->walk_path_to_tile(dest))
 			{		// Try again at npc's level.
 			dest.tz = src.tz;
-			dest = Find_unblocked(dest);
+			dest = Find_unblocked(dest, src.tz);
 			if (src != dest && !npc->walk_path_to_tile(dest))
 				{
 				cout << "Failed to find path" << endl;

@@ -585,6 +585,8 @@ public:
 	static int get_num_in_world()
 		{ return in_world_cnt; }
 	static void delete_all();	// Delete all monsters.
+	static void give_up()		// For file errors only!
+		{ in_world = 0; in_world_cnt = 0; }
 	virtual int move_aside(Actor* for_actor, int dir)
 		{ return 0; }		// Monsters don't move aside.
 					// Render.
