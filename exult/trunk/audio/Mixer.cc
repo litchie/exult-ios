@@ -46,11 +46,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Audio.h"
 
+#define DEBUG 1
 
 //---- Mixer ---------------------------------------------------------
 
 Mixer::~Mixer()
-{ }
+{ 
+	SDL_DestroyMutex(stream_mutex);
+}
 
 
 
@@ -120,16 +123,15 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 		SDL::PauseAudio(1);
 		return;
 		}
-	if(audio_streams.size())
+	if(audio_streams.size()!=0)
 		{
+		int which=0;
+		stream_lock();
 		vector<list<ProducerConsumerBuf *>::iterator> close_list;
 		for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
 			it!=audio_streams.end();++it)
 				{
 				
-#if DEBUG
-				cerr << "Mixing auxilliary data" << endl;
-#endif
 				Uint8	*temp_buffer=new Uint8[len];
 				int	ret;
 				size_t	sofar=0;
@@ -141,6 +143,10 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 						break;
 					sofar+=ret;
 					}
+#if DEBUG
+				cerr << "(" << which <<"/"<<audio_streams.size()<< ")" << " Mixing auxilliary data " ;
+				cerr << sofar << " of " << (*it)->size() << endl;
+#endif
 				if(len-sofar&&ret==-1)
 					{
 					perror("consume");
@@ -152,12 +158,14 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 				compress_audio_sample(temp_buffer,len);
 				SDL::MixAudio(stream, temp_buffer, len, SDL_MIX_MAXVOLUME);
 				delete [] temp_buffer;
+				++which;
 				}
 			for(vector<list<ProducerConsumerBuf *>::iterator>::iterator it=close_list.begin();it!=close_list.end();++it)
 				{
 				(**it)->end_consumption();
 				audio_streams.erase(*it);
 				}
+		stream_unlock();
 		}
 	if(buffers.begin()->num_samples)
 		{
@@ -202,7 +210,7 @@ void	Mixer::play(Uint8 *sound_data,Uint32 len)
 }
 
 // Mixer::Mixer(Uint32 __buffer_size,Uint32 ringsize,Uint8 silence_value) : auxilliary_audio(-1)
-Mixer::Mixer(Uint32 __buffer_size,Uint32 ringsize,Uint8 silence_value)
+Mixer::Mixer(Uint32 __buffer_size,Uint32 ringsize,Uint8 silence_value) : audio_streams(),stream_mutex(SDL_CreateMutex())
 {
 	buffer_length=__buffer_size;
 	ring_size=ringsize;
@@ -232,7 +240,12 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(void)
 	ProducerConsumerBuf	*pcb=new ProducerConsumerBuf;
 
 	SDL::PauseAudio(1);
+	stream_lock();
+#if DEBUG
+	cerr << "Create_Audio_Stream()" << endl;
+#endif
 	audio_streams.push_back(pcb);
+	stream_unlock();
 	SDL::PauseAudio(0);
 	SDL::UnlockAudio();
 	return pcb;
@@ -243,6 +256,7 @@ void	Mixer::Destroy_Audio_Stream(Uint32 id)
 	if(id==0)
 		return;	// We don't honour id 0
 	SDL::PauseAudio(1);
+	stream_lock();
 	for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
 		it!=audio_streams.end();++it)
 			{
@@ -254,6 +268,7 @@ void	Mixer::Destroy_Audio_Stream(Uint32 id)
 				break;
 				}
 			}
+	stream_unlock();
 	SDL::PauseAudio(0);
 }
 
@@ -261,14 +276,17 @@ bool	Mixer::is_playing(Uint32 id)
 {
 	if(id==0)
 		return false; // We don't honor id 0
+	stream_lock();
 	for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
 		it!=audio_streams.end();++it)
 			{
 			ProducerConsumerBuf *p=*it;
 			if(p->id==id)
 				{
+				stream_unlock();
 				return true;
 				}
 			}
+	stream_unlock();
 	return false;
 }

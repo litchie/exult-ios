@@ -87,14 +87,13 @@ void	Timidity_binary::player(void)
 		char	buf[1024];
 		size_t	x=fread(buf,1,sizeof(buf),data);
 		if(x==0)
-			{
-			audiostream->end_production();
-			fclose(data);
-			audiostream=0;
-			my_thread=0;	// Race?
-			}
+			break;
 		audiostream->produce(buf,x);
 		}
+	audiostream->end_production();
+	pclose(data);
+	audiostream=0;
+	my_thread=0;	// Race?
 }
 
 

@@ -63,6 +63,9 @@ public:
 	size_t ring_size;
 	void	advance(void);
 	Uint8	silence;
+	SDL_mutex	*stream_mutex;
+	void	stream_lock(void) { SDL_mutexP(stream_mutex); };
+	void	stream_unlock(void) { SDL_mutexV(stream_mutex); };
 	void	cancel(void);
 	void fill_audio_func(void *, Uint8 *, int);
 	void play(Uint8 *, unsigned int);
