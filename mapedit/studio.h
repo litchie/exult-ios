@@ -113,6 +113,10 @@ public:
 		{ return names ? names[shnum] : 0; }
 	const char *get_image_editor()
 		{ return image_editor; }
+	Shape_file_set *get_files()
+		{ return files; }
+	Shape_file_info *get_vgafile()	// 'shapes.vga'.
+		{ return vgafile; }
 	Shape_group_file *get_cur_groups();
 	void set_browser(const char *name, Object_browser *obj);
 
