@@ -227,7 +227,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
   #include "midi_drivers/forked_player.h"
 #endif
 #ifdef WIN32
-//  #include "midi_drivers/win_MCI.h"
+  #include "midi_drivers/win_MCI.h"
   #include "midi_drivers/win_midiout.h"
 #endif
 #ifdef BEOS
@@ -282,6 +282,8 @@ bool MyMidiPlayer::init_device(void)
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS;
 	else if (s == "none")
 		music_conversion = XMIDI_CONVERT_NOCONVERSION;
+	else if (s == "gs127")
+		music_conversion = XMIDI_CONVERT_MT32_TO_GS127;
 	else
 	{
 		music_conversion = XMIDI_CONVERT_MT32_TO_GM;
@@ -294,19 +296,19 @@ bool MyMidiPlayer::init_device(void)
 		effects_conversion = XMIDI_CONVERT_NOCONVERSION;
 	else
 	{
-		effects_conversion = XMIDI_CONVERT_GSMT_TO_GS;
+		effects_conversion = XMIDI_CONVERT_GS127_TO_GS;
 		config->set("config/audio/effects/convert","gs",true);
 	}
 
 
 #ifdef WIN32
 //	TRY_MIDI_DRIVER(Windows_MCI)
-	TRY_MIDI_DRIVER(Windows_MidiOut)
+//	TRY_MIDI_DRIVER(Windows_MidiOut)
 #endif
 #ifdef BEOS
 	TRY_MIDI_DRIVER(Be_midi)
 #endif
-#if HAVE_TIMIDITY_BIN && defined(XWIN)
+#if defined(HAVE_TIMIDITY_BIN) && (defined(XWIN) || defined(WIN32))
 	TRY_MIDI_DRIVER(Timidity_binary)
 #endif
 #if HAVE_LIBKMIDI
@@ -330,7 +332,7 @@ bool MyMidiPlayer::init_device(void)
 
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0),
 				  music_conversion(XMIDI_CONVERT_MT32_TO_GM),
-				  effects_conversion(XMIDI_CONVERT_GSMT_TO_GS)
+				  effects_conversion(XMIDI_CONVERT_GS127_TO_GS)
 {
 	add_midi_bank(MAINMUS);
 	add_midi_bank(INTROMUS);
@@ -341,8 +343,9 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0),
 
 MyMidiPlayer::~MyMidiPlayer()
 {
-	if(midi_device&&midi_device->is_playing())
-		midi_device->stop_track();
+	if(midi_device)//&&midi_device->is_playing())
+		//midi_device->stop_track();
+		delete midi_device;
 }
 
 
