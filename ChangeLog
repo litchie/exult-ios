@@ -1,5 +1,8 @@
 2001-03-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/credits.txt: added Aurelien Marchand (Artaxerxes)
+	* data/bg/: added subdir. with bg shapes
+	* Makefile.*: build exult_bg.flx
+	* tools/expack.cc: convert paths (unix->dos, unix->macos)
 
 2001-03-21  Max Horn  <max@quendi.de>
 	* FAQ, doc/faq/faq_html.xsl, doc/faq/exult_faq.xml: applied update made by Dominus

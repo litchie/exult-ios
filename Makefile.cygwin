@@ -89,24 +89,27 @@ EXULT_FLX_OBJECTS = \
 	data/cancel.shp \
 	data/pointers.shp \
 	data/exit.shp \
-	data/play_1st_scene.shp	\
+	data/play_1st_scene.shp \
 	data/extras.shp \
 	data/midi_conversion.shp \
 	data/sfx_conversion.shp \
 	data/palette_fades.shp \
 	data/defaultkeys.txt \
-	data/hoe_of_destruction.shp \
-	data/caddellite_helmet.shp \
-	data/magic_boomerang.shp \
-	data/great_dagger.shp \
-	data/gorget.shp \
-	data/magicgorget.shp \
-	data/cleaver.shp \
-	data/faces.shp \
-	data/faces2.shp \
-	data/amulets.shp \
-	data/bgfiredoom.shp \
-	data/flx.in 
+	data/flx.in
+
+EXULT_BG_FLX_OBJECTS = \
+	data/bg/hoe_of_destruction.shp \
+	data/bg/caddellite_helmet.shp \
+	data/bg/great_dagger.shp \
+	data/bg/magic_boomerang.shp \
+	data/bg/gorget.shp \
+	data/bg/magicgorget.shp \
+	data/bg/cleaver.shp \
+	data/bg/faces.shp \
+	data/bg/faces2.shp \
+	data/bg/amulets.shp \
+	data/bg/bgfiredoom.shp \
+	data/bg/flx.in
 
 $(EXEC) : $(OBJS) data/exult.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
@@ -116,6 +119,9 @@ tools/expack.exe : tools/expack.o $(FILE_OBJS)
 
 data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
 	tools/expack.exe -i data/flx.in
+
+data/exult_bg.flx: tools/expack.exe $(EXULT_BG_FLX_OBJECTS)
+	tools/expack.exe -i data/bg/flx.in
 
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres win32/exultico.rc exultico.o

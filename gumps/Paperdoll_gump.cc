@@ -571,10 +571,19 @@ void Paperdoll_gump::paint_object
 		
 	if (item->gender && !info->is_female) f++;
 
-	if (item->file == exult_flx)
+	switch (item->file) {
+	case exult_flx:
 		gwin->paint_exult_shape (box.x + sx, box.y + sy, item->shape, f);
-	else if (item->file == paperdoll)
+		break;
+	case exultbg_flx:
+		gwin->paint_exultbg_shape (box.x + sx, box.y + sy, item->shape, f);
+		break;
+	case paperdoll:
 		gwin->paint_gump (box.x + sx, box.y + sy, item->shape, f, true);
+		break;
+	default:
+		cerr << "Paperdolling: wrong file specified!" << endl;
+	}
 }
 
 /*
@@ -654,10 +663,19 @@ void Paperdoll_gump::paint_head
 	if (item && item->type == OT_Helm)
 		f = info->head_frame_helm;
 
-	if (info->file == exult_flx)
-		gwin->paint_exult_shape  (box.x + headx, box.y + heady, info->head_shape, f);
-	else if (info->file == paperdoll)
-		gwin->paint_gump  (box.x + headx, box.y + heady, info->head_shape, f, true);
+	switch (info->file) {
+	case exult_flx:
+		gwin->paint_exult_shape(box.x + headx, box.y + heady, info->head_shape, f);
+		break;
+	case exultbg_flx:
+		gwin->paint_exultbg_shape(box.x + headx, box.y + heady, info->head_shape, f);
+		break;
+	case paperdoll:
+		gwin->paint_gump (box.x + headx, box.y + heady, info->head_shape, f, true);
+		break;
+	default:
+		cerr << "Paperdolling: wrong shapefile specified!" << endl;
+	}
 }
 
 /*
@@ -1097,10 +1115,23 @@ bool Paperdoll_gump::check_shape
 {
 	Shape_frame *s;
 	
-	if (file == paperdoll) s = gwin->get_gump_shape(shape, frame, true);
-	else if (file == shapes) s = gwin->get_shape(shape, frame);
-	else if (file == exult_flx) s = gwin->get_exult_shape(shape, frame);
-	
+	switch (file) {
+	case exult_flx:
+		s = gwin->get_exult_shape(shape, frame);
+		break;
+	case exultbg_flx:
+		s = gwin->get_exultbg_shape(shape, frame);
+		break;
+	case paperdoll:
+		s = gwin->get_gump_shape(shape, frame, true);
+		break;
+	case shapes:
+		s = gwin->get_shape(shape, frame);
+		break;
+	default:
+		cerr << "Paperdolling: wrong shapefile specified!" << endl;
+	}
+
 	// If no shape, return
 	if (!s) return false;
 
