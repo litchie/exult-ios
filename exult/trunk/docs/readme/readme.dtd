@@ -12,11 +12,10 @@
 <!ELEMENT section (sub*)>
 <!ELEMENT sub (header, body)>
 <!ELEMENT header (#PCDATA|Exult)*>
-<!ELEMENT body ( #PCDATA | %block; )*>
+<!ELEMENT body (%block;)*>
 
 <!ELEMENT para ( #PCDATA | %inline; )*>
-<!ELEMENT cite (#PCDATA|para|q)*>
-<!ELEMENT q (#PCDATA)>
+<!ELEMENT cite ( #PCDATA | %inline; )*>
 <!ELEMENT ol (li*)>
 <!ELEMENT ul (li*)>
 <!ELEMENT li ( #PCDATA | %inline; )*>
@@ -25,6 +24,7 @@
 <!ELEMENT kbd (#PCDATA)>
 <!ELEMENT strong (#PCDATA)>
 <!ELEMENT em (#PCDATA)>
+<!ELEMENT q (#PCDATA)>
 
 <!ELEMENT ref (#PCDATA)>
 <!ELEMENT ref1 (#PCDATA)>

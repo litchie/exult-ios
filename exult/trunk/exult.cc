@@ -135,8 +135,10 @@ static int Play();
 static int Get_click(int& x, int& y, char *chr);
 static int find_resolution(int w, int h, int s);
 static void set_resolution (int new_res, bool save);
+#ifdef USE_EXULTSTUDIO
 static void Drop_dragged_shape(int shape, int frame, int x, int y);
 static void Drop_dragged_chunk(int chunknum, int x, int y);
+#endif
 static void BuildGameMap();
 static void Handle_events();
 static void Handle_event(SDL_Event& event);

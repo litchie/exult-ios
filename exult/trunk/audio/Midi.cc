@@ -30,16 +30,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <csignal>
 #  include <iostream>
 #endif
+#include <unistd.h>
 
 #include "Midi.h"
 
-#include <unistd.h>
 #include "fnames.h"
 #include "U7file.h"
 #include "exult.h"
 #include "utils.h"
 #include "xmidi.h"
-#include "gamewin.h"
 #include "game.h"
 #include "conv.h"
 #include "Audio.h"
@@ -398,7 +397,7 @@ bool MyMidiPlayer::init_device(void)
 #if (defined(XWIN) && !defined(OPENBSD))
 	TRY_MIDI_DRIVER(forked_player)
 #endif
-#ifdef MACOS
+#if defined(MACOS) // || defined(MACOSX)
 	TRY_MIDI_DRIVER(Mac_QT_midi)
 #endif
 

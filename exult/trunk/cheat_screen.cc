@@ -1762,7 +1762,6 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 
 void CheatScreen::BusinessLoop (Actor *actor)
 {
-	int num = actor->get_npc_num();
 	bool looping = true;
 
 	// This is for the prompt message
@@ -1783,8 +1782,10 @@ void CheatScreen::BusinessLoop (Actor *actor)
 		gwin->clear_screen();
 
 		// First the display
-		if (mode == CP_Activity) ActivityDisplay();
-		else BusinessDisplay(actor);
+		if (mode == CP_Activity)
+            ActivityDisplay();
+		else
+            BusinessDisplay(actor);
 
 		// Now the Menu Column
 		BusinessMenu(actor);
