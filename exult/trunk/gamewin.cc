@@ -729,7 +729,9 @@ void Game_window::resized
 	{			
 	win->resized(neww, newh, newsc, newsclr);
 	Set_renderer(win, pal);
-	center_view(get_main_actor()->get_tile());
+	if (!main_actor)		// In case we're before start.
+		return;
+	center_view(main_actor->get_tile());
 	paint();
 	// Do the following only if in game (not for menus)
 	if(!gump_man->gump_mode()) {
