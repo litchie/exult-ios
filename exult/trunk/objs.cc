@@ -347,7 +347,8 @@ void Animated_object::paint
 	{
 	Ireg_game_object::paint(gwin);
 	if (!animating)			// Turn on animation.
-		{
+		{			// Clean out old entry if there.
+		gwin->get_tqueue()->remove(this);
 		gwin->get_tqueue()->add(SDL_GetTicks() + 100, 
 							this, (long) gwin);
 		animating = 1;
@@ -389,8 +390,8 @@ void Animated_object::handle_event
 		get_abs_tile(tx, ty, tz);
 		int newdx = rand()%3;
 		int newdy = rand()%3;
-		tx -= deltax + newdx;
-		ty -= deltay + newdy;
+		tx += -deltax + newdx;
+		ty += -deltay + newdy;
 		deltax = newdx;
 		deltay = newdy;
 		move(tx, ty, tz);
