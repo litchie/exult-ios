@@ -148,6 +148,7 @@ class Raindrop
 public:
 	Raindrop() : oldpix(0), yperx(1), x(-1), y(-1)
 		{  }
+	void paint(Image_window8 *iwin, unsigned char *xform);
 					// Move to next position.
 	void next(Image_window8 *iwin, unsigned char *xform, int w, int h);
 	};	
@@ -164,6 +165,8 @@ public:
 		{  }
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
+					// Render.
+	virtual void paint(Game_window *gwin);
 	};
 
 /*

@@ -184,6 +184,8 @@ public:
 		{ return frame_time; }
 	int is_moving() const
 		{ return frame_time != 0; }
+	int is_dormant() const		// Inactive (i.e., off-screen)?
+		{ return dormant; }
 	Actor_action *get_action()	// Return action.
 		{ return action; }
 					// Set new action.

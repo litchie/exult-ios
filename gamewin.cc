@@ -840,6 +840,7 @@ int Game_window::read
 	if (!usecode->read())		// Usecode.dat (party, global flags).
 		return (0);
 	clock.set_palette();		// Set palette for time-of-day.
+	set_all_dirty();		// Force entire repaint.
 	return (1);
 	}
 
