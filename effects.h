@@ -81,8 +81,9 @@ class Projectile_effect : public Special_effect
 	{
 	Actor *attacker;		// Source of attack/spell.
 	Game_object *dest;		// Destination of path.
-	int shape_num;			// Shape # in 'shapes.vga' of weapon
+	int shape_num;			// Shape # in 'shapes.vga' of projec.
 					//   or spell to 'attack' with.
+	int weapon;			// Shape # of firing weapon, or 0.
 	int frame_num;			// Current frame.
 	int frames;			// # frames.
 	PathFinder *path;		// Determines path.
@@ -90,7 +91,8 @@ class Projectile_effect : public Special_effect
 					// Add dirty rectangle.
 	void add_dirty(Game_window *gwin);
 public:
-	Projectile_effect(Actor *att, Game_object *to, int shnum);
+	Projectile_effect(Actor *att, Game_object *to, int shnum,
+							int weap = 0);
 	~Projectile_effect();
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);

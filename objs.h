@@ -273,7 +273,8 @@ public:
 	virtual Tile_coord get_original_tile_coord() const
 		{ return get_abs_tile_coord(); }
 					// Under attack.
-	virtual void attacked(Actor *attacker, int weapon_shape = 0);
+	virtual void attacked(Actor *attacker, int weapon_shape = 0,
+					int ammo_shape = 0);
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out)
 		{  }

@@ -102,8 +102,10 @@ Projectile_effect::Projectile_effect
 	(
 	Actor *att,			// Source of spell/attack.
 	Game_object *to,		// End here, 'attack' it with shape.
-	int shnum			// Shape # in 'shapes.vga'.
-	) : attacker(att), dest(to), shape_num(shnum), frame_num(0)
+	int shnum,			// Projectile shape # in 'shapes.vga'.
+	int weap			// Weapon (bow, gun, etc.) shape, or 0.
+	) : attacker(att), dest(to), shape_num(shnum), weapon(weap),
+		frame_num(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_shape_num_frames(shnum);
@@ -112,6 +114,12 @@ Projectile_effect::Projectile_effect
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
 	path->NewPath(pos, to->get_abs_tile_coord(), 0);
+					// Use frames 8-23, for direction
+					//   going clockwise from North.
+					// ++++++Want a Get_direction16.
+					// +++++Use 8-valued version for now.
+	int dir = att->get_direction(to);
+	frame_num = 8 + 2*dir;		// Seem to range from 8-23.
 					// Start immediately.
 	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
 	}
@@ -161,13 +169,11 @@ void Projectile_effect::handle_event
 	add_dirty(gwin);		// Force repaint of old pos.
 	if (!path->GetNextStep(pos))	// Get next spot.
 		{			// Done? 
+		dest->attacked(attacker, weapon, shape_num);
 		pos.tx = -1;		// Signal we're done.
 		gwin->remove_effect(this);
-		dest->attacked(attacker, shape_num);
 		return;
 		}
-					// Next frame.
-	frame_num = (frame_num + 1)%frames;
 	add_dirty(gwin);		// Paint new spot/frame.
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);

@@ -852,7 +852,8 @@ int Game_object::lt
 void Game_object::attacked
 	(
 	Actor *attacker,
-	int weapon_shape		// Weapon shape, or 0 to use readied.
+	int weapon_shape,		// Weapon shape, or 0 to use readied.
+	int ammo_shape
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -860,6 +861,8 @@ void Game_object::attacked
 	Weapon_info *winf;
 	if (weapon_shape > 0)
 		winf = gwin->get_info(weapon_shape).get_weapon_info();
+	else if (ammo_shape > 0)	// Not sure about all this...
+		winf = gwin->get_info(ammo_shape).get_weapon_info();
 	else
 		winf = attacker->get_weapon(wpoints);
 	int usefun;			// Run usecode if present.

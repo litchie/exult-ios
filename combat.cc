@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Astar.h"
 #include "actions.h"
 #include "items.h"
+#include "effects.h"
 
 #if 0
 /*
@@ -212,7 +213,7 @@ void Combat_schedule::approach_foe
 		npc->walk_to_tile(pos, 100, 0);
 		return;
 		}
-	// +++++npc->get_weapon_range(mindist, max_reach);
+					// If range weapon, find clear path????
 	PathFinder *path = new Astar();
 					// Try this for now:
 	Monster_pathfinder_client cost(npc, max_reach, opponent);
@@ -250,13 +251,31 @@ void Combat_schedule::start_strike
 	(
 	)
 	{
-	state = strike;
+					// Hitting or firing?
+	state = ammo_shape ? fire : strike;
 	cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
 	int dir = npc->get_direction(opponent);
 	char frames[12];		// Get frames to show.
 	int cnt = npc->get_attack_frames(dir, frames);
 	npc->set_action(new Frames_actor_action(frames, cnt));
 	npc->start();			// Get back into time queue.
+	}
+
+/*
+ *	Set weapon 'max_reach' and 'ammo'.
+ */
+
+void Combat_schedule::set_weapon_info
+	(
+	)
+	{
+	int points;
+	Weapon_info *info = npc->get_weapon(points, weapon_shape);
+					// No ammo. required?
+	if (!info || !(ammo_shape = info->get_ammo()))
+		max_reach = 1;		// For now.
+	else
+		max_reach = 20;		// Guessing.
 	}
 
 /*
@@ -317,7 +336,6 @@ void Combat_schedule::now_what
 	case approach:
 		if (opponent && Get_tiles(npc).enlarge(max_reach).intersects(
 						Get_tiles(opponent)))
-//		if (opponent && npc->distance(opponent) <= max_reach)
 					// Close enough.  ++++Need to parry??
 			start_strike();	// Start strike animation, for now.
 		else
@@ -326,7 +344,6 @@ void Combat_schedule::now_what
 	case strike:			// He hasn't moved away?
 		if (Get_tiles(npc).enlarge(max_reach).intersects(
 						Get_tiles(opponent)))
-//+++old way		if (npc->distance(opponent) <= max_reach)
 			{
 			int dir = npc->get_direction(opponent);
 			opponent->attacked(npc);
@@ -335,6 +352,13 @@ void Combat_schedule::now_what
 							Actor::standing));
 			gwin->add_dirty(npc);
 			}
+		state = approach;
+		npc->start(200);	// Back into queue.
+		break;
+	case fire:			// Range weapon.
+				//++++Decrement ammo count.
+		gwin->add_effect(new Projectile_effect(npc, opponent,
+						ammo_shape, weapon_shape));
 		state = approach;
 		npc->start(200);	// Back into queue.
 		break;
