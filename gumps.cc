@@ -81,9 +81,9 @@ short File_gump_object::btn_cols[3] = {94, 163, 232};
 short File_gump_object::textx = 237, File_gump_object::texty = 14,
       File_gump_object::texth = 13;
 
-short Yesno_gump_object::yesx = 10;	//++++++Guessing.
+short Yesno_gump_object::yesx = 63;
 short Yesno_gump_object::yesnoy = 44;
-short Yesno_gump_object::nox = 30;	//++++++Guessing.
+short Yesno_gump_object::nox = 84;
 
 
 /*
@@ -566,7 +566,7 @@ void Gump_object::initialize
 		checkx = 8; checky = 70;
 		break;
 	case YESNOBOX:
-		object_area = Rectangle(4, 4, 40, 40); //++++++Guessing.
+		object_area = Rectangle(8, 8, 112, 24);
 					// No checkmark.
 		break;
 	default:
@@ -1574,6 +1574,7 @@ void File_gump_object::load
 		return;
 	Game_window *gwin = Game_window::get_game_window();
 	gwin->restore_gamedat(num);	// Aborts if unsuccessful.
+	gwin->read();			// And read the files in.
 	done = 1;
 	restored = 1;
 	}
@@ -1597,7 +1598,8 @@ void File_gump_object::save
 		if (!Yesno_gump_object::ask(
 			"Okay to overwrite existing saved game?"))
 			return;
-	if (gwin->save_gamedat(num, focus->get_text()))
+	if (gwin->write() &&		// First flush to 'gamedat'.
+	    gwin->save_gamedat(num, focus->get_text()))
 		cout << "Saved game #" << num << " successfully.\n";
 	}
 
@@ -1766,12 +1768,12 @@ void File_gump_object::key_down
 		focus->set_cursor(focus->get_length());
 		return;
 		}
+	if (chr < ' ')
+		return;			// Ignore other special chars.
 	if (isascii(chr))
 		{
 		int old_length = focus->get_length();
 		focus->insert(chr);
-		delete buttons[0];	// Can't load now.
-		buttons[0] = 0;
 					// Added first character?  Need 
 					//   'Save' button.
 		if (!old_length && focus->get_length() && !buttons[1])
@@ -1780,6 +1782,12 @@ void File_gump_object::key_down
 					btn_cols[1], btn_rows[0], SAVEBTN);
 			paint_button(Game_window::get_game_window(),
 								buttons[1]);
+			}
+		if (buttons[0])		// Can't load now.
+			{
+			delete buttons[0];
+			buttons[0] = 0;
+			paint(Game_window::get_game_window());
 			}
 		}
 	}
@@ -1824,6 +1832,9 @@ void Yesno_gump_object::paint
 					// Paint buttons.
 	paint_button(gwin, yes_button);
 	paint_button(gwin, no_button);
+					// Paint text.
+	gwin->paint_text_box(2, text, x + object_area.x, y + object_area.y,
+			object_area.w, object_area.h, 2);
 	}
 
 /*

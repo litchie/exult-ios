@@ -137,13 +137,24 @@ static long Savefile
 	in.seekg(0, ios::end);		// Get to end so we can get length.
 	long len = in.tellg();
 	in.seekg(0, ios::beg);
+	char namebuf[13];		// First write 13-byte name.
+	memset(namebuf, 0, sizeof(namebuf));
+	char *base = strchr(fname, '/');// Want the base name.
+	if (!base)
+		base = strchr(fname, '\\');
+	if (base)
+		base++;
+	else
+		base = fname;
+	strncpy(namebuf, base, sizeof(namebuf));
+	out.write(namebuf, sizeof(namebuf));
 	char *buf = new char[len];	// Get it all at once.
 	in.read(buf, len);
 	out.write(buf, len);
 	delete buf;
-	if (in.good())
+	if (!in.good())
 		cerr << "Exult: Error reading '" << fname << "'\n";
-	return len;
+	return len + 13;		// Include filename.
 	}
 
 /*
