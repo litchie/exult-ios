@@ -51,8 +51,9 @@ class Notebook_gump : public Gump
 	static vector<Notebook_top> page_info;
 	static Notebook_gump *instance;
 	static bool initialized;
+	int curnote;			// Current note # being edited.
 	int curpage;			// Current page # (from 0).
-	Cursor_info cursor;		// Cursor loc. within current page.
+	Cursor_info cursor;		// Cursor loc. within current note.
 					// Page turners:
 	Gump_button *leftpage, *rightpage;
 
