@@ -26,8 +26,9 @@ static const char* compiler_table[]=
 	};
 
 #define MAX_LABELS 3500
+#define TOKEN_LENGTH 25600
 
-char token[256],*token2,curlabel[256],indata;
+char token[TOKEN_LENGTH],*token2,curlabel[256],indata;
 int byte,word,pass,offset,datasize,codesize,funcnum;
 int extended;
 
@@ -120,6 +121,10 @@ void read_token(FILE *fi)
 		c=fgetc(fi);
 	while (!((c==' ') || (c=='\t') || (c=='\n') || (c==',')) && (!feof(fi)))
 		{
+			if (i >= TOKEN_LENGTH - 1) {
+				fprintf(stderr, "Error: token too long!\n");
+				exit(-1);
+			}
 			token[i++]=c;
 			if (c==';')
 				{
@@ -128,13 +133,23 @@ void read_token(FILE *fi)
 				}
 			if (c==39)
 				{
-					while ((c=fgetc(fi))!='\n')
+					while ((c=fgetc(fi))!='\n') {
+						if (i >= TOKEN_LENGTH - 1) {
+							fprintf(stderr, "Error: token too long!\n");
+							exit(-1);
+						}
 						token[i++]=c;
+					}
 					ungetc(c,fi);
 					i--;
 				}
 			c=fgetc(fi);
 		}
+					
+	if (i >= TOKEN_LENGTH - 1) {
+		fprintf(stderr, "Error: token too long!\n");
+		exit(-1);
+	}
 	token[i]=0;
 }
 
