@@ -81,6 +81,7 @@ public:
 		{ set_weapon_info(); }
 	virtual void now_what();	// Npc calls this when it's done
 	virtual void im_dormant();	// Npc calls this when it goes dormant.
+	virtual void ending(int newtype);// Switching to another schedule.
 					// Set opponent in combat.
 	virtual void set_opponent(Game_object *obj);
 	virtual Game_object *get_opponent();	// Get opponent.
