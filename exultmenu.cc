@@ -322,6 +322,7 @@ Exult_Game ExultMenu::run()
 	delete menu;
 	
 	gwin->clear_screen();
+	gwin->show(1);
 	Audio::get_ptr()->stop_music();
 	delete menu_mouse;
 	delete midi_data;
