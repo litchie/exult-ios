@@ -2105,6 +2105,9 @@ void Usecode_machine::link_party
 	(
 	)
 	{
+	// avatar is a party member too
+	gwin->get_main_actor()->set_flag(Obj_flags::in_party);
+
 	for (int i = 0; i < party_count; i++)
 		{
 		Actor *npc = gwin->get_npc(party[i]);
@@ -2124,6 +2127,7 @@ void Usecode_machine::link_party
 		npc->set_schedule_type(Schedule::follow_avatar);
 					// We can use all his/her items.
 		npc->set_flag_recursively(Obj_flags::okay_to_take);
+		npc->set_flag (Obj_flags::in_party);
 		}
 	}
 
