@@ -5,6 +5,16 @@ SUBDIRS = zip
 
 noinst_LTLIBRARIES = libu7file.la
 
+noinst_PROGRAMS = rwregress
+
+rwregress_SOURCES = \
+	rwregress.cc \
+	utils.h
+
+rwregress_LDADD = \
+	libu7file.la \
+	$(SYSLIBS)
+
 if HAVE_SNPRINTF
 SNPRINTF =
 else

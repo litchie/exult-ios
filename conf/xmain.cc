@@ -50,7 +50,7 @@ void	dump_stringvec(std::vector<std::string> &vs,int expect=-2)
 		cout << n << " : " << vs[n] << endl;
 	if(expect==-2)
 		return;
-	assert(vs.size()==expect);
+	assert(static_cast<int>(vs.size())==expect);
 }
 
 void	test1(void)
@@ -60,7 +60,8 @@ void	test1(void)
 	int	n;
 	std::string	r;
 	
-	cout << config.dump() << endl;
+	config.dump(cout, "\t");
+	cout << endl;
 	
 	std::string test_device("config/audio/midi/device");
 	config.value(test_device, n, -1);
@@ -111,7 +112,7 @@ void	test1(void)
 	
 	Configuration::KeyTypeList ktl;
 	string basekey("config/audio");
-	confnew.getpairs(ktl, basekey);
+	confnew.getsubkeys(ktl, basekey);
 	
 	cout << endl;
 	
@@ -124,7 +125,7 @@ void	test1(void)
 void test2(void)
 {
 	config.read_config_file("exult.cfg");
-	cout << config.dump() << endl;
+	config.dump(cout, "\t") << endl;
 }
 
 int	main(int argc, char *argv[])

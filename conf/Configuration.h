@@ -32,7 +32,7 @@ public:
 	             : xmltree(new XMLnode(root)), rootname(root), filename(), is_file(false)
 		{ if(fname.size()) read_config_file(fname); }
 
-	bool	read_config_file(const std::string input_filename);
+	bool	read_config_file(const std::string input_filename, const std::string root=std::string());
 	
 	bool	read_config_string(const std::string &);
 	
@@ -57,6 +57,7 @@ public:
 	std::vector<std::string>	listkeys(const char *key,bool longformat=true);
 
 	std::string	dump(void); // Assembles a readable representation
+	std::ostream &dump(std::ostream &o, std::string indentstr);
 
 	void	write_back(void);
 
@@ -65,7 +66,7 @@ public:
 	typedef XMLnode::KeyType     KeyType;
 	typedef XMLnode::KeyTypeList KeyTypeList;
 	
-	void getpairs(KeyTypeList &ktl, const std::string basekey);
+	void getsubkeys(KeyTypeList &ktl, const std::string basekey);
 	
 private:
 	void    set(std::string &key,std::string &value,bool write_to_file);

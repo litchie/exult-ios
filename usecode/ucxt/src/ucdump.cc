@@ -86,6 +86,14 @@ int main(int argc, char** argv)
 		}
 	}
 	
+	#if 0
+	{
+		Configuration opdata("./data/u7opcodes.data", "opcodes");
+		
+		cout << opdata.dump() << endl;
+	}
+	#endif
+	
 	// init the compile time tables
 	if(uc.verbose()) cout << "Initing static tables..." << endl;
 	init_static_usecodetables();
@@ -96,7 +104,7 @@ int main(int argc, char** argv)
 	
 	// ICK! Don't try this at home kids...
 	// done because for some reason it started crashing upon piping or redirection to file... wierd.
-	// yes, it's a hack to fix an eldritch bug I can't find... it seems appropriate
+	// yes, it's a hack to fix an eldritch bug I could't find... it seems appropriate
 	std::ofstream outputstream;
 	std::streambuf *coutbuf=0;
 	if(uc.output_redirect().size())
