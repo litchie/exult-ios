@@ -1,5 +1,6 @@
 2002-03-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: also display name when showing NPC numbers
+	* gamedat.cc: delete newgame.ver, exult.ver when loading zipped saves
 
 2002-03-23  Jeff Freedman  <jeff@amy.nerble.net>
 
