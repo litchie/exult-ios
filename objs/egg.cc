@@ -805,6 +805,7 @@ void Egg_object::set_weather
 	case 0:		// Back to normal.
 		eman->remove_weather_effects();
 		break;
+	case 1:		// ++++++++LATER:  Should be snow, I think (jsf).
 	case 2:		// Storm.
 		if (cur != weather)
 			eman->add_effect(new Storm_effect(len, 0, egg));
