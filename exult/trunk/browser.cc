@@ -90,13 +90,28 @@ void ShapeBrowser::browse_shapes()
 				gwin->paint_text(MAINSHP_FONT1, buf, 160, 180);
 				sprintf(buf,"Palette: %s, %d", pal_tuple.str, pal_tuple.num);
 				gwin->paint_text(MAINSHP_FONT1, buf, 0, 190);
-			
+
 			        if (num_frames) {
 				        Shape_frame *frame = shapes->get_shape(
 					        current_shape, current_frame);
- 				        if (frame)
+ 				        if (frame) {
+					        sprintf(buf,"%d x %d", frame->get_width(), frame->get_height());
+					        gwin->paint_text(MAINSHP_FONT1, buf, 32, 32);
+  					        
+						//draw outline
+						gwin->get_win()->fill8(255, 
+						    frame->get_width()+4, frame->get_height()+4, 
+						    gwin->get_width()/2 - frame->get_xleft() - 2, 
+						    gwin->get_height()/2 - frame->get_yabove() - 2);
+					        gwin->get_win()->fill8(0,
+						    frame->get_width()+2, frame->get_height()+2,
+						    gwin->get_width()/2 - frame->get_xleft()-1, 
+						    gwin->get_height()/2 - frame->get_yabove()-1);
+
+						//draw shape
 					        gwin->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
-				        else
+
+				        } else
 					        gwin->paint_text(MAINSHP_FONT1, "No Shape", centerx-20, centery-5);
  			        } else
 				        gwin->paint_text(MAINSHP_FONT1, "No Shape", centerx-20, centery-5);

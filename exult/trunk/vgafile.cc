@@ -320,7 +320,7 @@ unsigned char Shape_frame::read
 		return (nframes);
 		}
 	xleft = yabove = 8;
-	xright= ybelow = 0;
+	xright= ybelow = -1;
 	shapes.seek(shapeoff + framenum*64);
 	data = new unsigned char[64];	// Read in 8x8 pixels.
 	shapes.read((char *) data, 64);
@@ -363,8 +363,7 @@ void Shape_frame::paint_rle
 	{
 	int w = get_width(), h = get_height();
 	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
-		if (!win->is_visible(xoff - xleft, 
-						yoff - yabove, w, h))
+		if (!win->is_visible(xoff - xleft, yoff - yabove, w, h))
 			return;
 	BufferDataSource in((char *)data,0);
 	int scanlen;

@@ -72,9 +72,9 @@ public:
 							unsigned char color);
 	int has_point(int x, int y);	// Is a point within the shape?
 	int get_width() const		// Get dimensions.
-		{ return xleft + xright; }
+		{ return xleft + xright + 1; }
 	int get_height() const
-		{ return yabove + ybelow; }
+		{ return yabove + ybelow + 1; }
 	int get_xleft()
 		{ return xleft; }
 	int get_xright()

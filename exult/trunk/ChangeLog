@@ -2,6 +2,8 @@
 
 	* exult.cc, usecode.cc: location marker on map changed to yellow
 	* exult.cc, drag.cc: added 'hack-mover' cheat (can move _anything_)
+	* browser.cc: show shape outline & display dimensions
+	* vgafile.cc, vgafile.h: fixed (xleft, yabove, xright, ybelow)
 
 2000-09-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	
