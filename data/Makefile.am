@@ -23,7 +23,8 @@ EXULT_FLX_OBJECTS = \
 	midi_conversion.shp	\
 	sfx_conversion.shp	\
 	palette_fades.shp	\
-	defaultkeys.txt
+	defaultkeys.txt		\
+	scaling_method.shp
 
 flexdir = $(datadir)/exult
 
