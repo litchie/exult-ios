@@ -1,14 +1,28 @@
 ??/??/01	next release
+
+		It is now possible to complete both BG and SI
+
+		Savegames are now compressed. They are now actually zip files,
+		so you can use your favourite tool to open them. This should 
+		make things easier especially when submitting bugs to 
+		SourceForge which has a size restriction on attachments.
 	
-		Gameplay Options Dialog has been implemented 
+		Gameplay Options Dialog has been implemented together with a 
+		slew of extra features that can be configured
+
+		The speed of the party may be configured
 		
 		Middle mouse button support
 
 		Fast mouse in full-screen modes
 
-		Dark background behind text in conversations
-		
+		Tinted background behind text in conversations
+
+		Wheelmouse support for slider gumps
+
 		You can now freeze in SI
+
+		Multiracial Avatar support in BG (requires SI)
 
 		The currently playing music track is stored within savegames
 		so that it started again on load
