@@ -1,3 +1,7 @@
+2000-11-24  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Write out correct count for 'monsnpcs.dat'.
+
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gamewin.h/cc, palette.cc, exult.cc: new config/video/disable_fades (yes/no) option
 
