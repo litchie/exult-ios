@@ -40,6 +40,7 @@
 #include "cheat.h"
 #include "chunks.h"
 #include "combat.h"
+#include "combat_opts.h"
 #include "dir.h"
 #include "egg.h"
 #include "exult.h"

@@ -97,27 +97,4 @@ public:
 
 bool In_ammo_family(int shnum, int family);// Yow, a global function.
 
-/*
- *	Combat options:
- */
-class Combat : public Game_singletons
-	{
-	static bool paused;		// For suspending.
-public:
-	static int difficulty;		// 0=normal, >0 harder, <0 easier.
-	enum Mode
-		{
-		original,		// All automatic,
-		keypause,		// Kbd (space) suspends/resumes.
-		round			// (Later).  Pause after each 'round'.
-		};
-	static Mode mode;
-	static bool show_hits;		// Display #'s.
-					// In game:
-	static void toggle_pause();	// Pause/resume.
-	static void resume();		// Always resume.
-	static bool is_paused()
-		{ return paused; }
-	};
-
 #endif
