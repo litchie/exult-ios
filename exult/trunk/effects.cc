@@ -840,7 +840,7 @@ void Rain_effect::handle_event
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	if (!gwin->is_main_actor_inside() &&
-	    !gwin->get_gump_man()->showing_gumps())
+	    !gwin->get_gump_man()->showing_gumps(true))
 		{			// Don't show rain inside buildings!
 		Image_window8 *win = gwin->get_win();
 		int w = win->get_width(), h = win->get_height();
@@ -871,7 +871,7 @@ void Rain_effect::paint
 	Game_window *gwin
 	)
 	{
-	if (gwin->is_main_actor_inside() || gwin->get_gump_man()->showing_gumps())
+	if (gwin->is_main_actor_inside() || gwin->get_gump_man()->showing_gumps(true))
 		return;			// Inside.
 					// Get transform table.
 	Xform_palette xform = gwin->get_xform(8);//++++Experiment.
@@ -1215,7 +1215,7 @@ void Clouds_effect::paint
 	Game_window *gwin
 	)
 	{
-	if (!gwin->is_main_actor_inside() && !gwin->get_gump_man()->showing_gumps())
+	if (!gwin->is_main_actor_inside() && !gwin->get_gump_man()->showing_gumps(true))
 		for (int i = 0; i < num_clouds; i++)
 			clouds[i]->paint(gwin);
 	}

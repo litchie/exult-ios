@@ -1,3 +1,6 @@
+2002-05-24  Ryan Nunn  <triforce@merlin.net.au>
+	* effects.cc : Fixing weather problem with facestats.
+
 2002-05-23  Tristan Tarrant  <nadir@users.sf.net>
 
 	* Namespace issues with G++ 3.1. We also nead to use sstream instead
