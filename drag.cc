@@ -100,7 +100,7 @@ void Game_window::drag
 					// Don't want to move walls.
 		if (dragging && !dragging->is_dragable())	
 			{
-#if 0	/* Switch to this: +++++++++ */
+#if 1	/* Switch to this: +++++++++ */
 			mouse->flash_shape(Mouse::tooheavy);
 #else
 			Mouse::Mouse_shapes saveshape = mouse->get_shape();

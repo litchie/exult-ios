@@ -125,7 +125,7 @@ void Projectile_effect::handle_event
 	long udata
 	)
 	{
-	const int delay = 50;		// Delay between frames.
+	const int delay = 100;		// Delay between frames.
 	Game_window *gwin = Game_window::get_game_window();
 	if (frame_num == frames)	// Last frame?
 		frame_num = 0;
@@ -137,8 +137,12 @@ void Projectile_effect::handle_event
 		gwin->paint();
 		return;
 		}
+#if 1
+	gwin->paint();		// ++++Experiment.
+#else	/* +++++Doesn't clean up prev. */
 	Projectile_effect::paint(gwin);	// Render.
 	gwin->set_painted();
+#endif
 	frame_num++;			// Next frame.
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
