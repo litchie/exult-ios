@@ -2739,7 +2739,8 @@ int Usecode_machine::get_user_choice_num
 	do
 		{
 		char chr;		// Allow '1', '2', etc.
-		if (!Get_click(x, y, Mouse::hand, &chr))
+		int result=Get_click(x, y, Mouse::hand, &chr);
+		if (result<=0)
 			return (-1);
 		if (chr >= '1' && chr <= '9')
 			choice_num = chr - '1';
@@ -2928,6 +2929,11 @@ void Usecode_machine::run
 				{
 				Usecode_value s = pop();
 				const char *str = s.get_str_value();
+				if (!user_choice||!*user_choice)
+					{
+					cnt=-1;
+					break;
+					}
 				if (str && strcmp(str, user_choice) == 0)
 					break;
 				}

@@ -82,7 +82,7 @@ protected:
 	bool two_fingered;		// Carrying gauntlets (both fingers)
 	unsigned char light_sources;	// # of light sources readied.
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
-	unsigned long flags;		// 32 flags used in 'usecode'.
+	unsigned flags:32;		// 32 flags used in 'usecode'.
 	Actor_action *action;		// Controls current animation.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   actor not moving.
