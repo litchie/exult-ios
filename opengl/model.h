@@ -114,6 +114,8 @@ public:
 	~Object3d();
 	void init_vertices(int cnt)	// Init. to given size.
 		{ vertices.resize(cnt); }
+	int vertices_size() const
+		{ return vertices.size(); }
 	Vector3& get_vertex(int i)
 		{ return vertices[i]; }
 	void init_tex_vertices(int cnt)
@@ -161,6 +163,7 @@ public:
 	void load_textures();		// Load textures for the materials.
 					// OPENGL methods:
 	void render();
+	Vector3 find_center() const;	// Average of all the vertices.
 	};
 
 }; // Exult3d namespace.
