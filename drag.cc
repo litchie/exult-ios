@@ -370,7 +370,8 @@ void Game_window::drop
 			dragging->modify_quantity(-dragging_quantity);
 		}
 	if (dragging_gump)		// Put back remaining/orig. piece.
-		dragging_gump->add(dragging, -2, -2, -2, -2);
+					// And don't check for volume!
+		dragging_gump->add(dragging, -2, -2, -2, -2, true);
 	else
 		get_objects(dragging->get_cx(), 
 				dragging->get_cy())->add(dragging);
