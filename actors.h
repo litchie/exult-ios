@@ -148,7 +148,9 @@ public:
 					int speed = 250, int delay = 0)
 		{ return walk_path_to_tile(get_abs_tile_coord(), dest,
 							speed, delay); }
-	void stop();			// Stop walking.
+					// Start animation.
+	void start(int speed = 250, int delay = 0);
+	void stop();			// Stop animation.
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
 					// Render.
@@ -374,6 +376,18 @@ class Sleep_schedule : public Schedule
 public:
 	Sleep_schedule(Npc_actor *n);
 	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
+ *	Sit in a chair.
+ */
+class Sit_schedule : public Schedule
+	{
+	Game_object *chair;		// What to sit in.
+public:
+	Sit_schedule(Npc_actor *n, Game_object *ch = 0);
+	virtual void now_what();	// Now what should NPC do?
+	static void set_action(Actor *actor, Game_object *chairobj);
 	};
 
 /*
