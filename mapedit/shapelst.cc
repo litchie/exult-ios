@@ -171,6 +171,11 @@ void Shape_chooser::render
 	(
 	)
 	{
+	if (frames_mode)
+		{
+		render_frames();
+		return;
+		}
 					// Look for selected frame.
 	int selshape = -1, selframe = -1, new_selected = -1;
 	if (selected >= 0)		// Save selection info.
@@ -247,6 +252,110 @@ void Shape_chooser::render
 }
 
 /*
+ *	Get maximum shape height for all its frames.
+ */
+
+static int Get_max_height
+	(
+	Shape *shape
+	)
+	{
+	int cnt = shape->get_num_frames();
+	int maxh = 0;
+	for (int i = 0; i < cnt; i++)
+		{
+		int ht = shape->get_frame(i)->get_height();
+		if (ht > maxh)
+			maxh = ht;
+		}
+	return maxh;
+	}
+
+/*
+ *	Render one shape per row, showing its frames from left to right.
+ */
+
+void Shape_chooser::render_frames
+	(
+	)
+	{
+					// Look for selected frame.
+	int selshape = -1, selframe = -1, new_selected = -1;
+	if (selected >= 0)		// Save selection info.
+		{
+		selshape = info[selected].shapenum;
+		selframe = info[selected].framenum;
+		}
+					// Remove "selected" message.
+	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+	delete [] info;			// Delete old info. list.
+					// Get drawing area dimensions.
+	gint winw = draw->allocation.width, winh = draw->allocation.height;
+	iwin->set_clip(0, 0, winw, winh);
+					// Provide more than enough room.
+	info = new Shape_entry[1024];
+					// Clear window first.
+	iwin->fill8(0);			// ++++Which color?
+	info_cnt = 0;			// Count them.
+	int curr_y = 0;
+	int row = row0;			// Row #.
+	int total_cnt = get_count();
+	int index;			// This is shapenum if there's no
+					//   filter (group).
+	for (int index = index0; index < total_cnt; index++)
+		{
+		int shapenum = group ? (*group)[index] : index;
+					// Get all frames.
+		Shape *shape = ifile->extract_shape(shapenum);
+		if (!shape)
+			continue;
+		int nframes = shape->get_num_frames();
+		int row_h = Get_max_height(shape);
+		int x = 0;
+		for (int framenum = 0; framenum < nframes; framenum++)
+			{
+			if (x >= winw)	// Past right edge?
+				break;
+			Shape_frame *frame = shape->get_frame(framenum);
+			int sh = frame->get_height(),
+			    sw = frame->get_width();
+			int sy = curr_y+border;	// Get top y-coord.
+			frame->paint(iwin, x + frame->get_xleft(),
+						sy + frame->get_yabove());
+			if (sh > winh)
+				{
+				sy += sh - winh;
+				sh = winh;
+				}
+					// Store info. about where drawn.
+			info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
+			if (shapenum == selshape && framenum == selframe)
+						// Found the selected shape.
+				new_selected = info_cnt;
+			x += sw + border;
+			info_cnt++;
+			}
+					// Next line.
+		curr_y += row_h + border;
+		x = 0;
+		if (row == row_indices.size())
+			row_indices.push_back(index);
+		else if (row < row_indices.size())
+			row_indices[row] = index;
+		row++;
+		if (curr_y + 36 >= winh)
+			break;
+		}
+	int nrows = row - row0;		// # rows shown.
+	if (new_selected == -1)
+		unselect(false);
+	else
+		select(new_selected);
+	iwin->clear_clip();
+	adjust_scrollbar();		// Set new scroll values.
+}
+
+/*
  *	Find start of next row.
  *
  *	Output:	Index of start of next row, or -1 if given is last.
@@ -257,6 +366,9 @@ int Shape_chooser::next_row
 	int start			// Index of row to start at.
 	)
 	{
+	int total_cnt = get_count();
+	if (frames_mode)		// Easy if 1 shape/row.
+		return start < total_cnt - 1 ? (start + 1) : -1;
 	int selshape = -1, selframe = -1;
 	if (selected >= 0)		// Save selection info.
 		{
@@ -264,7 +376,6 @@ int Shape_chooser::next_row
 		selframe = info[selected].framenum;
 		}
 	gint winw = draw->allocation.width;
-	int total_cnt = get_count();
 	int index = start;
 	int x = 0;
 	while (index < total_cnt)
@@ -388,21 +499,11 @@ gint Shape_chooser::configure
 	chooser->row_indices.resize(1);	// Start over with row info.
 	chooser->row0 = 0;
 	chooser->info_cnt = 0;
-	int i = 0;
-	while (i >= 0 && i < chooser->index0)	// Get back to where we were.
-		{
-		i = chooser->next_row(i);	// Find start of next row.
-		if (i >= 0)
-			{
-			chooser->row_indices.push_back(i);
-			chooser->row0++;
-			}
-		}
-	if (i != chooser->index0)
-		chooser->row0--;		// We passed it.
+	int i0 = chooser->index0;	// Get back to where we were.
+	chooser->index0 = 0;
+	chooser->goto_index(i0);
 	chooser->index0 = chooser->row_indices[chooser->row0];
 	chooser->render();		// This also adjusts scrollbar.
-//	chooser->adjust_scrollbar();	// Figure new scroll amounts.
 					// Set handler for shape dropped here,
 					//   BUT not more than once.
 	if (chooser->drop_callback != Shape_dropped_here)
@@ -765,6 +866,23 @@ cout << "Frame changed to " << adj->value << '\n';
 	}
 
 /*
+ *	'All frames' toggled.
+ */
+
+void Shape_chooser::all_frames_toggled
+	(
+	GtkToggleButton *btn,
+        gpointer data
+	)
+	{
+	Shape_chooser *chooser = (Shape_chooser *) data;
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	chooser->frames_mode = on;
+	chooser->render();
+	chooser->show();
+	}
+
+/*
  *	Handle popup menu items.
  */
 
@@ -973,7 +1091,7 @@ Shape_chooser::Shape_chooser
 		Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
 		shapes_file(0), index0(0), framenum0(0),
 		info(0), info_cnt(0), row0(0), nrows(0),
-		sel_changed(0)
+		sel_changed(0), frames_mode(false)
 	{
 	row_indices.reserve(40);
 	row_indices.push_back(0);	// First row is 0.
@@ -1052,7 +1170,7 @@ Shape_chooser::Shape_chooser
 	GtkWidget *label = gtk_label_new("Frame:");
 	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 4);
 	gtk_widget_show(label);
-					// Finally, a spin button for frame#.
+					// A spin button for frame#.
 	frame_adj = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 
 				16, 1, 
 				4, 1.0));
@@ -1062,7 +1180,12 @@ Shape_chooser::Shape_chooser
 					GTK_SIGNAL_FUNC(frame_changed), this);
 	gtk_box_pack_start(GTK_BOX(hbox1), fspin, FALSE, FALSE, 0);
 	gtk_widget_show(fspin);
-
+					// A toggle for 'All Frames'.
+	GtkWidget *allframes = gtk_toggle_button_new_with_label("Frames");
+	gtk_box_pack_start(GTK_BOX(hbox1), allframes, FALSE, FALSE, 4);
+	gtk_widget_show(allframes);
+	gtk_signal_connect(GTK_OBJECT(allframes), "toggled",
+				GTK_SIGNAL_FUNC(all_frames_toggled), this);
 					// Add search controls to bottom.
 	gtk_box_pack_start(GTK_BOX(vbox), create_search_controls(),
 						FALSE, FALSE, 0);
