@@ -136,8 +136,14 @@ int Game_object::modify_quantity
 		return (delta + quant);
 		}
 	quality = 0x80|(char) newquant;	// Store new value.
-	int objvol = Game_window::get_game_window()->get_shapes().get_info(
-			get_shapenum()).get_volume();
+	int shapenum = get_shapenum();
+	Game_window *gwin = Game_window::get_game_window();
+					// Set appropriate shape.
+	int num_frames = gwin->get_shapes().get_num_frames(shapenum);
+	int new_frame = newquant - 1;
+	set_frame(new_frame < num_frames ? new_frame : num_frames - 1);
+	Shape_info& info = gwin->get_shapes().get_info(shapenum);
+	int objvol = info.get_volume();
 	if (owner)			// Update owner's volume.
 		owner->modify_volume_used(objvol*(newquant - quant));
 	return (delta - (newquant - quant));
@@ -714,10 +720,14 @@ int Container_game_object::add
 	Game_object *obj
 	)
 	{
-	int objvol = obj->get_volume();
-	if (objvol + volume_used > get_volume())
-		return (0);		// Doesn't fit.
-	volume_used += objvol;
+	int vol = get_volume();		// NPC's have volume 0.
+	if (vol)
+		{
+		int objvol = obj->get_volume();
+		if (objvol + volume_used > vol)
+			return (0);	// Doesn't fit.
+		volume_used += objvol;
+		}
 	obj->set_owner(this);		// Set us as the owner.
 	if (!last_object)		// First one.
 		{
@@ -755,20 +765,31 @@ int Container_game_object::add_quantity
 	int roomfor = (get_volume() - volume_used)/objvol;
 	int todo = delta < roomfor ? delta : roomfor;
 	Game_object *obj = last_object;
-	do				// First try existing items.
+	if (last_object)
 		{
-		obj = obj->get_next();
-		if (obj->get_shapenum() == shapenum &&
-		    (framenum == -359 || obj->get_framenum() == framenum))
+		do			// First try existing items.
+			{
+			obj = obj->get_next();
+			if (obj->get_shapenum() == shapenum &&
+		    	 (framenum == -359 || obj->get_framenum() == framenum))
 					// ++++++Quality???
-			delta -= todo - 
-				(todo = obj->modify_quantity(this, todo));
+				{
+				int used = 
+				    todo - obj->modify_quantity(this, todo);
+				todo -= used;
+				delta -= used;
+				}
+			}
+		while (obj != last_object && todo);
+		obj = last_object;
+		do			// Now try recursively.
+			{
+			obj = obj->get_next();
+			delta = obj->add_quantity(
+					delta, shapenum, qual, framenum, 1);
+			}
+		while (obj != last_object && delta);
 		}
-	while (obj != last_object && todo);
-	obj = last_object;
-	do				// Now try recursively.
-		delta = obj->add_quantity(delta, shapenum, qual, framenum, 1);
-	while (obj != last_object && delta);
 	if (!delta || dontcreate)	// All added?
 		return (delta);
 	else
@@ -806,13 +827,19 @@ int Container_game_object::create_quantity
 			}
 		todo--; delta--;
 		if (todo > 0)
-			delta -= todo -
-				(todo = newobj->modify_quantity(this, todo));
+			{
+			int used = 
+				todo - newobj->modify_quantity(this, todo);
+			todo -= used;
+			delta -= used;
+			}
 		}
 	if (!delta)			// All done?
 		return (0);
 					// Now try those below.
 	Game_object *obj = last_object;
+	if (!last_object)
+		return (delta);
 	do
 		{
 		obj = obj->get_next();
@@ -925,6 +952,8 @@ int Container_game_object::count_objects
 	{
 	int total = 0;
 	Game_object *obj = last_object;
+	if (!last_object)
+		return (0);
 	do
 		{
 		obj = obj->get_next();
@@ -954,6 +983,8 @@ int Container_game_object::get_objects
 	{
 	int vecsize = vec.get_cnt();
 	Game_object *obj = last_object;
+	if (!last_object)
+		return (0);
 	do
 		{
 		obj = obj->get_next();

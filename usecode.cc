@@ -598,12 +598,8 @@ void Usecode_machine::remove_item
 	{
 	if (!obj)
 		return;
-					// Get area to repaint.
-	Rectangle rect = gwin->get_shape_rect(obj);
-	rect.enlarge(8);
-	gwin->clip_to_win(rect);
 	obj->remove();			// Remove from world or container.
-	gwin->paint(rect);
+	gwin->paint();
 	}
 
 #define PARTY_MAX (sizeof(party)/sizeof(party[0]))
@@ -2191,6 +2187,8 @@ void Usecode_machine::run
 			offset = (short) Read2(ip);
 			if (set_ret_value || !answers.answers.size())
 				ip += offset;
+			else		// ++++Experimenting 4/4/00:
+				user_choice = 0;
 			break;
 		case 0x05:		// JNE.
 			{

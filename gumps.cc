@@ -741,6 +741,7 @@ void Slider_gump_object::paint
 	gwin->paint_gump(x + diamondx, y + diamondy, SLIDERDIAMOND, 0);
 					// Print value.
   	Paint_num(gwin, val, x + textx, y + texty);
+	gwin->set_painted();
 	}
 
 /*
