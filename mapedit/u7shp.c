@@ -640,7 +640,12 @@ static gint32 save_image (gchar  *filename,
 	}
 	
 	/* get a list of layers for this image_ID */
-	layers = gimp_image_get_layers (image_ID, &nlayers);  
+	layers = gimp_image_get_layers (image_ID, &nlayers);
+
+	if (nlayers > 0 && !gimp_drawable_is_indexed(layers[0])) {
+		g_message ("SHP: You can only save indexed images!");
+		return -1;	  
+	}
 
 	max_width = gimp_image_width (image_ID);
 	max_height = gimp_image_height (image_ID);

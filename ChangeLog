@@ -1,4 +1,7 @@
 2001-02-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* mapedit/u7shp.c: check if image is indexed before saving. (fixes crash)
+
+2001-02-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/great_dagger.shp, data/magic_boomerang.shp: added some more art
 	* data/flx.in, Makefile.*, gumps/Paperdoll_gump_info.cc: added shapes
 
