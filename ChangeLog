@@ -1,3 +1,7 @@
+2001-06-14  Dancer Vesperman <dancer@users.sourceforge.net>
+	- Code Nazi
+	* server/objserial.cc: std::string, std::memcpy, std::strlen
+
 2001-06-13  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Several: 'opponent' from Combat_schedule is now 'target' in
