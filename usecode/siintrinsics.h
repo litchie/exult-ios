@@ -123,13 +123,13 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x56
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x57
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x58
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x59	
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x5a
+	USECODE_INTRINSIC_PTR(set_attack_mode),			// 0x59	
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x5a +++Looks like get_attack_mode().
 	USECODE_INTRINSIC_PTR(set_opponent),			// 0x5b
 	// End pack
 
 
-	USECODE_INTRINSIC_PTR(summon),				// 0x5c     SummonCreature (ucdump.c)
+	USECODE_INTRINSIC_PTR(summon),				// 0x5c     SummonCreature (ucdump.c)  NO!!! I think it should be get_attacker().!!!
 	USECODE_INTRINSIC_PTR(display_map),			// 0x5d
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x5e NOT kil_npc
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x5f

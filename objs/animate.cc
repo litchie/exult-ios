@@ -276,6 +276,7 @@ void Frame_animator::handle_event
 		case 284:		// Sundial is a special case.
 			framenum = gwin->get_hour(); 
 			break;
+		case 614:		// Magic music box (SI).
 		case 655:		// Planets (SI). (Groups of 6).
 		case 695:		// Grandfather clock (SI).
 			framenum = obj->get_framenum();
