@@ -174,9 +174,6 @@ splitshp$(EXEEXT) : splitshp.o
 textpack$(EXEEXT) : textpack.o $(FILE_OBJS) 
 	$(CXX) $(LFLAGS) -o $(@) textpack.o $(FILE_OBJS) -mconsole
 
-ucdump$(EXEEXT) : ucdump.o
-	$(CXX) $(LFLAGS) -o $(@) ucdump.o -mconsole
-
 wud$(EXEEXT) : wud.o uctools.h bgintrinsics.h siintrinsics.h 
 	$(CXX) $(LFLAGS) -o $(@) wud.o -mconsole
 
