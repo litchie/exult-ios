@@ -64,6 +64,7 @@ public:
 		armour_group,
 		monsters_group,
 		weapons_group,
+		containers_group,
 		last_builtin_group
 		};
 	};

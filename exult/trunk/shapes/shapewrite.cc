@@ -124,6 +124,22 @@ void Shapes_vga_file::write_info
 			info[i].ammo->write(i, ammo);
 	ammo.close();
 
+	ofstream container;
+	U7open(container, PATCH_CONTAINER);
+	cnt = 0;
+	for (i = 0; i < num_shapes; i++)
+		if (info[i].container_gump >= 0)
+			cnt++;
+	container.put(0);		// Version #.
+	container.put(cnt);
+	for (i = 0; i < num_shapes; i++)
+		if (info[i].container_gump >= 0)
+			{
+			Write2(container, i);
+			Write2(container, info[i].container_gump);
+			}
+	container.close();
+
 	// Write data about drawing the weapon in an actor's hand
 	ofstream wihh;
 	U7open(wihh, PATCH_WIHH);

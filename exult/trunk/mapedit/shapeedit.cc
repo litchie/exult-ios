@@ -528,6 +528,15 @@ C_EXPORT void on_shinfo_monster_check_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_monster_box", on);
 	}
+C_EXPORT void on_shinfo_container_check_toggled
+	(
+	GtkToggleButton *btn,
+        gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_visible("shinfo_container_box", on);
+	}
 
 /*
  *	Set frame-dependent fields in the shape-editing notebook.
@@ -703,6 +712,14 @@ void ExultStudio::init_shape_notebook
 		set_bit_toggles(&flags[0],
 			sizeof(flags)/sizeof(flags[0]), minfo->get_flags());
 		}
+	int container_gump = info.get_container_gump();
+	set_toggle("shinfo_container_check", container_gump >= 0);
+	set_visible("shinfo_container_box", container_gump >= 0);
+	if (container_gump >= 0)	// Setup container page.
+		{
+		set_spin("shinfo_gump_num", container_gump);
+		}
+
 	gtk_widget_show(book);
 	}
 
@@ -855,6 +872,12 @@ void ExultStudio::save_shape_notebook
 					"shinfo_monster_flag4" };
 		minfo->set_flags(get_bit_toggles(&flags[0],
 					sizeof(flags)/sizeof(flags[0])));
+		}
+	if (!get_toggle("shinfo_container_check"))
+		info.set_container_gump(-1);
+	else
+		{
+		info.set_container_gump(get_spin("shinfo_gump_num"));
 		}
 	shape_info_modified = true;
 	}
