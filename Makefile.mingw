@@ -27,15 +27,6 @@ ZIP_LIBS=-L$(SRC)/zlib-1.1.4 -lZ
 # Leave this option empty
 EXTRA_OPTIONS=
 
-CXX      = c++
-RM      = rm -f
-MKDIR = mkdir -p
-ECHO  = echo -n
-CAT    = cat
-RM      = rm -f
-
-# NOTE: make's builtin implicit rules are used for .cc => .o
-# mingw automatically defines WIN32
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
@@ -101,7 +92,7 @@ dist:   $(EXEC)
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
 
-tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe wuc.exe wud.exe ucxt.exe head2data.exe head2data.test
+tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe wuc.exe wud.exe ucc.exe ucxt.exe head2data.exe head2data.test
 
 toolsclean:
 	rm -f expack.o expack.exe $(FILE_OBJS)

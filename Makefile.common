@@ -183,6 +183,19 @@ wud$(EXEEXT) : wud.o uctools.h bgintrinsics.h siintrinsics.h
 wuc$(EXEEXT) : wuc.o
 	$(CXX) $(LFLAGS) -o $(@) wuc.o -mconsole
 
+UCC_OBJS=ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o
+
+ucc$(EXEEXT) : $(UCC_OBJS)
+	$(CXX) $(LFLAGS) -o $(@) $(UCC_OBJS) -liberty -mconsole
+
+ucparse.cc:  
+	bison -d usecode/compiler/ucparse.yy -o ucparse.c
+	mv ucparse.c ucparse.cc
+ 
+uclex.cc:  
+	flex usecode/compiler/uclex.ll 
+	mv lex.yy.c uclex.cc
+
 UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o ops.o
 
 ucxt$(EXEEXT) : $(UCXT_OBJS)
@@ -200,28 +213,3 @@ head2data.test:
 	head2data data/u7bgintrinsics.data data/u7siintrinsics.data
 
 all: $(EXEC)
-
-# The name for the directory used for depenency tracking
-DEPDIR := .deps
-
-# Default (dumb) compile & dependcy rules
-#.cc.o:
-#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
-
-# If you use GCC, disable the above and enable this for intelligent
-# dependency tracking. 
-.cc.o:
-	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2" $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
-	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
-	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
-	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
-
-# If you even have GCC 3.x, you can use this build rule, which is safer; the above
-# rule can get you into a bad state if you Ctrl-C it in the wrong moment.
-#.cc.o:
-#	$(MKDIR) $(*D)/$(DEPDIR)
-#	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d",-MQ,"$@",-MP $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
-
-
-
