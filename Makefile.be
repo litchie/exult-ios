@@ -46,7 +46,7 @@ GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	Gamemenu_gump.o Newfile_gump.o Gump_ToggleButton.o \
 	AudioOptions_gump.o Face_button.o CombatStats_gump.o \
 	Jawbone_gump.o VideoOptions_gump.o Face_stats.o Gump_manager.o \
-	Text_button.o
+	Text_button.o GameplayOptions_gump.o
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o
 SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o \
