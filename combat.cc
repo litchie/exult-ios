@@ -179,7 +179,6 @@ void Combat_schedule::approach_foe
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
 					// Find opponent.
 	if (!opponent && !(opponent = find_foe()))
 		{
@@ -292,6 +291,7 @@ void Combat_schedule::now_what
 		cout << npc->get_name() << " is giving up" << endl;
 		npc->walk_to_tile(
 			gwin->get_main_actor()->get_abs_tile_coord());
+					// WARNING:  Destroys ourself.
 		npc->set_schedule_type(Schedule::follow_avatar);
 		}
 	}
