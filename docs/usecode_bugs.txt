@@ -1,15 +1,59 @@
 Documentation for the bugs in usecode and the corrections that can be made
-Author: Artaxerxes (artaxerxes@users.sf.net)
+Started by: Artaxerxes (artaxerxes@users.sf.net)
 
 Forewords:
-every action on usecode should be done on the _decompiled_ usecode. Please
-use "rip" and "wud" to decompile usecode appropriately. Once the changes are
-made, recompile using "wuc" and "rip". Those tools can be found on Exult's
+every action on usecode should be done on the _disassembled_ usecode. Please
+use "rip" and "wud" to disassemble usecode appropriately. Once the changes are
+made, re-assemble using "wuc" and "rip". Those tools can be found on Exult's
 download page.
 
-================================
-Gwenno and the Diamond Necklace:
-================================
+Unfixed bugs:
+=================
+
+(SI) Resurrecting Gwenno:
+==========================
+Author: Clock Nova
+Date:   04-20-03 19:31
+
+Immediately after freeing Gwenno from the ice, I used the Hourglass and the
+female Monk came and resurrected her. Gwenno immediately began a conversation
+with me, talking to me as though she were already on Monk Isle. After breaking
+off conversation, she lapsed into her 'twisted soul' mode.
+
+
+(SI) Resurrecting possessed party:
+===================================
+Author: Clock Nova
+Date:   04-21-03 08:36
+
+On the other hand, I would not have thought of using the Hourglass after
+releasing the Banes had I not read about it elsewhere. If you use it in the
+room where you fought Selena, your companions get "resurrected" so they can
+fight themselves later on. Oops!
+
+
+(BG) Pocketwatch AM/PM confusion:
+==================================
+Author: MagicMop
+Date:   12-14-01 10:12
+
+1. Between 12 and 1 o clock in the afternoon, the time is listed as 'am' not
+'pm'
+
+[Note: this has been fixed in SI's usecode]
+
+
+
+
+
+
+
+Fixed bugs:
+==================
+
+(SI) Gwenno and the Diamond Necklace:
+======================================
+
 No matter who has the diamond necklace, Iolo is going to say he's lost it
 during the adventures to find Gwenno. This is due to an error in the usecode
 function that checks whether you have the diamond or not. It is looking for
@@ -52,3 +96,5 @@ Replace it with:
 01D5: 24 06 00 		call	[0006]			; 0996H
 
 ===============================
+
+
