@@ -92,40 +92,33 @@ any of the previous CMPSs since the last ASK.
 
 > 0x08	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
-> 0x09	ADD	"add"	""	"%p1 + %p2"	0	{}	2	1	0	010000
+> 0x09	ADD	"add"	""	"%p2 + %p1"	0	{}	2	1	0	010000
 
-Pops two values from the stack (pop v2, then pop v1), adds them together
-(v1 + v2), and then pushes the result on the stack. Integers are added,
-strings are concatenated, collections are appended.
+Adds %p1 to %p2.
 
-> 0x0A	SUB	"sub"	""	"%p1 - %p2"	0	{}	2	1	0	010000
+> 0x0A	SUB	"sub"	""	"%p2 - %p1"	0	{}	2	1	0	010000
 
-Pops two values from the stack (pop v2, then pop v1), subtracts them
-from each other (v1 - v2) then pushes the result to the stack. Only works
-with integers.
+Subtracts %p1 from %p2.
 
-> 0x0B	DIV	"div"	""	"%p1 / %p2"	0	{}	2	1	0	010000
+> 0x0B	DIV	"div"	""	"%p2 / %p1"	0	{}	2	1	0	010000
 
-Pops two values from the stack (pop v2, then pop v1), divides v1 by v2
-(v1 / v2), then pushes the result to the stack. Only works with integers.
+Divides %p2 by %p1.
 
-> 0x0C	MUL	"mul"	""	"%p1 * %p2"	0	{}	2	1	0	010000
+> 0x0C	MUL	"mul"	""	"%p2 * %p1"	0	{}	2	1	0	010000
 
-Pops two elements from the stack, multiplies them and pushes them back on
-the stack (multiplication is commutative). Only works with integers.
+Multiplies %p1 by %p2.
 
-> 0x0D	MOD	"mod"	""	"%p1 %% %p2"	0	{}	2	1	0	010000
+> 0x0D	MOD	"mod"	""	"%p2 %% %p1"	0	{}	2	1	0	010000
 
-Pops two elements from the stack (pop v2, then pop v1), mods v1 by v2
-(v1 % v2), then pushes the result on the stack. Only works with integers.
+Mods %p2 by %p1.
 
-> 0x0E	AND	"and"	""	"%p1 && %p2"	0	{}	2	1	0	010000
+> 0x0E	AND	"and"	""	"%p2 && %p1"	0	{}	2	1	0	010000
 
 Pops two elements from the stack, converts them to true/false, logically
 "and"s the values, and pushes the resulting truth value back on the stack
 as a 1/0(true/false).
 
-> 0x0F	OR	"or"	""	"%p1 || %p2"	0	{}	2	1	0	010000
+> 0x0F	OR	"or"	""	"%p2 || %p1"	0	{}	2	1	0	010000
 
 The "logical or" counterpart the the "logical and" (opcode 0x0E). Refer to
 that opcode for more information.
@@ -153,27 +146,25 @@ Pushes false onto the stack.
 
 > 0x15	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
-> 0x16	CMPGT	"cmpgt"	""	"%p1 > %p2"	0	{}	2	1	0	010000
+> 0x16	CMPGT	"cmpgt"	""	"%p2 > %p1"	0	{}	2	1	0	010000
 
-Pops two values from the stack (pop v2, then pop v1), perform the logical
-comparison "greater then" on them (v1 > v2), and push the resultant truth
-value back on the stack. Only works with integers.
+Tests if %p2 is greater then %p1.
 
-> 0x17	CMPLT	"cmplt"	""	"%p1 < %p2"	0	{}	2	1	0	010000
+> 0x17	CMPLT	"cmplt"	""	"%p2 < %p1"	0	{}	2	1	0	010000
 
-As CMPGT, except using the "less than" comparison (<).
+Tests if %p2 is less then %p1.
 
-> 0x18	CMPGE	"cmpge"	""	"%p1 >= %p2"	0	{}	2	1	0	010000
+> 0x18	CMPGE	"cmpge"	""	"%p2 >= %p1"	0	{}	2	1	0	010000
 
-As CMPGT, except using the "greater then or equal to" comparison (>=).
+Tests if %p2 is greater then or equal to %p1.
 
-> 0x19	CMPLE	"cmple"	""	"%p1 <= %p2"	0	{}	2	1	0	010000
+> 0x19	CMPLE	"cmple"	""	"%p2 <= %p1"	0	{}	2	1	0	010000
 
-As CMPLE, except using the "less then or equal to" comparison (<=).
+Tests if %p2 is less then or equal to %p1.
 
-> 0x1A	CMPNE	"cmpne"	""	"%p1 != %p2"	0	{}	2	1	0	010000
+> 0x1A	CMPNE	"cmpne"	""	"%p2 != %p1"	0	{}	2	1	0	010000
 
-As CMPNE, except using the "not equal to" comparison (!=).
+Tests if %p2 is not equal to %p1.
 
 > 0x1B	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
@@ -203,10 +194,9 @@ Pushes the element {short} to the stack as a signed 16bit integer.
 
 Pushes the variable stored at {varoffset} onto the stack.
 
-> 0x22	CMPEQ	"cmpeq"	""	"%p1 == %p2"	0	{}	2	1	0	010000
+> 0x22	CMPEQ	"cmpeq"	""	"%p2 == %p1"	0	{}	2	1	0	010000
 
-Pops two elements off the stack (pop v1, then pop v2), tests if they are equal,
-and pushes the resulting truth value on the stack.
+Tests if %p2 is equal to %p1.
 
 > 0x23	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
@@ -257,7 +247,7 @@ Part one of the two opcode for...each opcode loop. Details under opcode 0x02.
 Appends the local variable pointed to by {varoffset} onto the end of the
 string register.
 
-> 0x30	IN	"in"	"\t\t\t\t;"	"in(%p1, %p2)"	0	{}	2	1	0	000000
+> 0x30	IN	"in"	"\t\t\t\t;"	"in(%p2, %p1)"	0	{}	2	1	0	000000
 
 Tests if a value is in an array. Pops two elements from the stack (pop v1,
 then pop v2) test if any of the elements inside the array v1 are equal to
@@ -266,7 +256,6 @@ on the stack.
 
 > 0x31	SMTH	"smth\t%1 %2"	"\t\t\t;"	"smth()"	4	{short,offset}	0	0	0	000000
 
-# TODO: Needs more documenting, need to find the pop/push numbers.
 Does something related to conversations. Only occurs (2x) in the usecode
 function handling the 'audition' in Britain. Current implementation
 produces same result as original, although we're unsure of the exact
@@ -325,7 +314,7 @@ Same as opcode CALLIS (0x38), except no return value.
 
 (ucdump calles this "exit") (exult says this is "really like a throw") Shows
 any text in the string register, and exits the function immediatly.
-TODO: Does it exit just this function, or all the called functions as well?
+ABRT also exits all calling functions, effectively stopping the usecode interpreter.
 
 > 0x40 END_CONV "end_conv" ""	"end_conv()"	0	{}	0	0	0	000000
 
@@ -349,9 +338,8 @@ TODO: document
 
 > 0x45	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
-> 0x46	APUT	"aput\t[%1]"	"\t\t\t;"	"aput()"	2	{varoffset}	0	0	0	000000
+> 0x46	APUT	"aput\t[%1]"	"\t\t\t;"	"var%1[%p1] = %p2"	2	{varoffset}	2	0	0	000000
 
-# TODO: Needs more documenting, need to find the pop/push numbers.
 TODO: document
 
 > 0x47	CALLE	"calle\t%1H"	"\t\t\t;"	"calle()"	2	{short}	0	0	0	000000
@@ -367,10 +355,11 @@ TODO: document
 
 > 0x49	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
-> 0x4a	ARRA	"arra"	"\t\t\t\t;"	"append(%p1,%p2)"	0	{}	2	1	0	000000
+> 0x4a	ARRA	"arra"	"\t\t\t\t;"	"append(%p2,%p1)"	0	{}	2	1	0	000000
+
 Appends second param. to the list in first param.
 
-> 0x4b	POPEID	"pop\teventid"	""	"popeid()"	0	{}	1	0	0	000000
+> 0x4b	POPEID	"pop\teventid"	""	"UcEvent = %p1"	0	{}	1	0	0	000000
 
 # TODO: Needs more documenting, need to find the pop/push numbers.
 (ucdump & exult calls this "pop eventid")
@@ -385,3 +374,4 @@ TODO: document
 # Fake opcodes for use with optimsations in ucxt
 
 > 0x101	LABEL	"(invalid)" "" "label%f*_%1"	2	{offset}	1	0	0	000001
+
