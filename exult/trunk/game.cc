@@ -321,20 +321,25 @@ void Game::show_menu()
 		sprintf(npc_name, "Exult");
 		do {
 			bool exit_loop = false;
+			bool redraw = true;
 			do {
-				for(int i=0; i<num_choices; i++) {
-					if(menuchoices[i]==-1) {
-						center_text(MAINSHP_FONT1, "EXULT CREDITS", centerx, menuy+i*10);
-					} else if(menuchoices[i]==-2) {
-						center_text(MAINSHP_FONT1, "EXULT QUOTES", centerx, menuy+i*10);
-					} else {
-						Shape_frame *shape = menushapes.get_shape(menuchoices[i],i==selected);
-						gwin->paint_shape(centerx-shape->get_width()/2,menuy+i*10,shape);
+			        if (redraw) {
+				        for(int i=0; i<num_choices; i++) {
+					        if(menuchoices[i]==-1) {
+						        center_text(MAINSHP_FONT1, "EXULT CREDITS", centerx, menuy+i*10);
+					        } else if(menuchoices[i]==-2) {
+						        center_text(MAINSHP_FONT1, "EXULT QUOTES", centerx, menuy+i*10);
+					        } else {
+						        Shape_frame *shape = menushapes.get_shape(menuchoices[i],i==selected);
+						        gwin->paint_shape(centerx-shape->get_width()/2,menuy+i*10,shape);
+					        }
 					}
-				}		
-				win->show();
+					win->show();
+					redraw = false;
+				}
 				SDL_WaitEvent(&event);
 				if(event.type==SDL_KEYDOWN) {
+				        redraw = true;
 					switch(event.key.keysym.sym) {
 					case SDLK_x:
 						if(event.key.keysym.mod & KMOD_ALT) {
