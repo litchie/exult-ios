@@ -164,11 +164,8 @@ void Cheat::toggle_map_editor (void) {
 					std::string data_path;
 					config->value("config/disk/data_path",data_path,EXULT_DATADIR);
 					strcat(cmnd, data_path.c_str());// Path to where .glade file should be.
-					strcat(cmnd, " -d");	// Now want path to game.
-					std::string d = "config/disk/game/" + Game::get_gametitle() + "/path";
-					std::string game_path;
-					config->value(d.c_str(), game_path, ".");
-					strcat(cmnd, game_path.c_str());
+					strcat(cmnd, " -g");	// Now want game name.
+					strcat(cmnd, Game::get_gametitle().c_str());
 					strcat(cmnd, " &");
 					cout << "Executing: " << cmnd << endl;
 #ifndef WIN32
