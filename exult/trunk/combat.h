@@ -64,7 +64,9 @@ protected:
 	unsigned char fleed;		// Incremented when fleeing.
 	bool can_yell;
 	int failures;			// # failures to find opponent.
+	unsigned int teleport_time;	// Next time we can teleport.
 	void start_battle();		// Play music at start of battle.
+	bool teleport();		// For monsters that can.
 	virtual void find_opponents();
 	Actor *find_protected_attacker();// Find attacker of protected member.
 	Game_object *find_foe(int mode);// Find a new opponent.
