@@ -302,9 +302,6 @@ void Scheduled_usecode::handle_event
 					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode < 0x38)
 				{	// Step in dir. opcode&7.????
-				static short offset[16] = {
-					-1,0, -1,1, 1,0, 1,-1, 0,-1,
-					-1,-1, -1,0, -1,1 };
 				int dir = opcode&7;
 				int frame = obj->get_framenum();
 				Actor *act = usecode->as_actor(obj);
@@ -321,9 +318,8 @@ void Scheduled_usecode::handle_event
 				for (int i = 0; i < repeat; i++)
 					{
 					Tile_coord tile = 
-						obj->get_abs_tile_coord() +
-				  		Tile_coord(offset[2*dir],
-							offset[2*dir + 1], 0);
+						obj->get_abs_tile_coord().
+							get_neighbor(dir);
 					obj->step(tile, frame);
 					gwin->paint_dirty();
 					gwin->show();

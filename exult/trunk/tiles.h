@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Tile_coord
 	{
+	static short neighbors[16];	// Neighboring tiles in each dir.
 public:
 	short tx, ty, tz;		// Coords. within world. tz=lift.
 	Tile_coord(int x, int y, int z) : tx(x), ty(y), tz(z)
@@ -50,6 +51,10 @@ public:
 			dx = -dx;
 		return (dy > dx ? dy : dx);
 		}
+					// Get neighbor in given dir (0-7).
+	inline Tile_coord get_neighbor(int dir)
+		{ return Tile_coord(tx + neighbors[2*dir],
+					ty + neighbors[2*dir + 1], tz); }
 	};
 					// Add two coords.
 inline Tile_coord operator+(Tile_coord a, Tile_coord b)
