@@ -857,7 +857,33 @@ void Image_window::create_surface
 	ibuf->height = h;
 	int flags = (fullscreen?SDL_FULLSCREEN:0) |
 					SDL_SWSURFACE |  SDL_HWPALETTE;
-	surface = SDL_SetVideoMode(w, h, ibuf->depth, flags);
+	show_scaled = 0;
+	surface = scaled_surface = 0;
+	if (scale == 2)			// We support 2X scaling.
+		{
+		int hwdepth = Get_best_depth();
+		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
+			cout << "Doubling from " << ibuf->depth << "bits to "
+				<< hwdepth << " not yet supported." << endl;
+		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
+						hwdepth, flags)) != 0 &&
+			 (surface = SDL_CreateRGBSurface(flags, w, h,
+							8, 0, 0, 0, 0)) != 0)
+			show_scaled = hwdepth == 16 ? &show_scaled8to16
+						    : &show_scaled8to32;
+		else
+			{
+			cout << "Couldn't create scaled surface" << endl;
+			delete surface;
+			delete scaled_surface;
+			surface = scaled_surface = 0;
+			}
+		}
+	if (!surface)			// No scaling, or failed?
+		{
+		surface = SDL_SetVideoMode(w, h, ibuf->depth, flags);
+		scale = 1;
+		}
 	if (!surface)
 		{
 		cout << "Couldn't set video mode (" << w << ", " << h <<
@@ -868,20 +894,6 @@ void Image_window::create_surface
 	ibuf->bits = (unsigned char *) surface->pixels;
 					// Update line size in words.
 	ibuf->line_width = surface->pitch/ibuf->pixel_size;
-	if (scale == 2)			// We support 2X scaling.
-		{
-		show_scaled = 0;
-		int hwdepth = Get_best_depth();
-		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
-			cout << "Doubling from " << ibuf->depth << "bits to "
-				<< hwdepth << " not yet supported." << endl;
-		else if (scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
-							hwdepth, flags))
-			show_scaled = hwdepth == 16 ? &show_scaled8to16
-						    : &show_scaled8to32;
-		else
-			cout << "Couldn't create scaled surface" << endl;
-		}
 	}
 
 /*
