@@ -1,3 +1,7 @@
+2001-06-12  Ryan Nunn <triforce@merlin.net.au>
+	* audio/xmidi.cc, audio/midi_drivers/win_midiout.cc : Changes to make
+	  Exult SMP safe in Win32.
+
 2001-06-12  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* configure.in: HAVE_GLADE is false if no GTK available
 

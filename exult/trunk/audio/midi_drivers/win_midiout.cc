@@ -60,41 +60,63 @@ const unsigned char Windows_MidiOut::fine_value = centre_value & 127;
 const unsigned char Windows_MidiOut::coarse_value = centre_value >> 7;
 const unsigned short Windows_MidiOut::combined_value = (coarse_value << 8) | fine_value;
 
+//#define DO_SMP_TEST
+
+#ifdef DO_SMP_TEST
+#define giveinfo() std::cerr << __FILE__ << ":" << __LINE__ << std::endl; std::cerr.flush();
+#else
+#define giveinfo()
+#endif
+
 Windows_MidiOut::Windows_MidiOut()
 {
+	giveinfo();
 	InterlockedExchange (&playing, false);
 	InterlockedExchange (&s_playing, false);
 	InterlockedExchange (&is_available, false);
+	giveinfo();
 	init_device();
+	giveinfo();
 }
 
 Windows_MidiOut::~Windows_MidiOut()
 {
+	giveinfo();
 	if (!is_available) return;
 
-	while (thread_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
+	giveinfo();
+	while (thread_com != W32MO_THREAD_COM_READY) Sleep (1);
 	
+	giveinfo();
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_EXIT);
 
+	giveinfo();
 	int count = 0;
 	
+	giveinfo();
 	while (count < 100)
 	{
+		giveinfo();
 		DWORD code;
 		GetExitCodeThread (thread_handle, &code);
 		
+		giveinfo();
 		// Wait 1 MS before trying again
-		if (code == STILL_ACTIVE) SDL_Delay (10);
+		if (code == STILL_ACTIVE) Sleep (10);
 		else break;
+		giveinfo();
 		
 		count++;
 	}
 
 	// We waited a second and it still didn't terminate
+	giveinfo();
 	if (count == 100 && is_available)
 		TerminateThread (thread_handle, 1);
 
+	giveinfo();
 	InterlockedExchange (&is_available, false);
+	giveinfo();
 }
 
 void Windows_MidiOut::init_device()
@@ -102,50 +124,71 @@ void Windows_MidiOut::init_device()
 	string s;
 		
 	// Opened, lets open the thread
+	giveinfo();
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_INIT);
 	
+	giveinfo();
 	thread_handle = (HANDLE*) CreateThread (NULL, 0, thread_start, this, 0, &thread_id);
 	
-	while (thread_com == W32MO_THREAD_COM_INIT) SDL_Delay (1);
+	giveinfo();
+	while (thread_com == W32MO_THREAD_COM_INIT) Sleep (1);
 	
+	giveinfo();
 	if (thread_com == W32MO_THREAD_COM_INIT_FAILED) cerr << "Failure to initialize midi playing thread" << endl;
+	giveinfo();
 }
 
 DWORD Windows_MidiOut::thread_start(void *data)
 {
+	giveinfo();
 	Windows_MidiOut *ptr=static_cast<Windows_MidiOut *>(data);
+	giveinfo();
 	return ptr->thread_main();
 }
 
 DWORD Windows_MidiOut::thread_main()
 {
 	thread_data = NULL;
+	giveinfo();
 	InterlockedExchange (&playing, false);
 	InterlockedExchange (&s_playing, false);
 
+	giveinfo();
 	UINT mmsys_err = midiOutOpen (&midi_port, MIDI_MAPPER, 0, 0, 0);
 
+	giveinfo();
 	if (mmsys_err != MMSYSERR_NOERROR)
 	{
 		char buf[512];
 
+		giveinfo();
 		mciGetErrorString(mmsys_err, buf, 512);
 		cerr << "Unable to open device: " << buf << endl;
+		giveinfo();
 		InterlockedExchange (&thread_com, W32MO_THREAD_COM_INIT_FAILED);
+		giveinfo();
 		return 1;
 	}
+	giveinfo();
 	InterlockedExchange (&is_available, true);
 	
 //	SetThreadPriority (thread_handle, THREAD_PRIORITY_HIGHEST);
+	giveinfo();
 	SetThreadPriority (thread_handle, THREAD_PRIORITY_TIME_CRITICAL);
 	
+	giveinfo();
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
 	InterlockedExchange (&sfx_com, W32MO_THREAD_COM_READY);
 
+	giveinfo();
 	thread_play();
+	giveinfo();
 
+	giveinfo();
 	midiOutClose (midi_port);
+	giveinfo();
 	InterlockedExchange (&is_available, false);
+	giveinfo();
 	return 0;
 }
 
@@ -164,6 +207,7 @@ void Windows_MidiOut::thread_play ()
 	midi_event *evntlist = NULL;
 	midi_event *event = NULL;
 
+	giveinfo();
 
 	int	s_ppqn = 1;
 	int	s_tempo = 0x07A120;
@@ -177,6 +221,8 @@ void Windows_MidiOut::thread_play ()
 	
 	midi_event *s_evntlist = NULL;
 	midi_event *s_event = NULL;
+
+	giveinfo();
 
 	// Play while there isn't a message waiting
 	while (1)
@@ -217,15 +263,26 @@ void Windows_MidiOut::thread_play ()
 		 	if (!repeat || thread_com != W32MO_THREAD_COM_READY || last_tick == 0)
 		 	{
 		 		// Clean up
+				giveinfo();
 				midiOutReset (midi_port);
+				giveinfo();
 				XMIDI::DeleteEventList (evntlist);
+				giveinfo();
 				evntlist = NULL;
+				giveinfo();
 				event = NULL;
+				giveinfo();
 				InterlockedExchange (&playing, false);
+				giveinfo();
 				
 				// If stop was requested, we are ready to receive another song
+				giveinfo();
 				if (thread_com == W32MO_THREAD_COM_STOP)
+				{
+					giveinfo();
 					InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
+				}
+				giveinfo();
 		 	}
 	 		else
 	 		{
@@ -241,29 +298,38 @@ void Windows_MidiOut::thread_play ()
 		if (!evntlist && thread_com == W32MO_THREAD_COM_PLAY)
 		{
 			// Manual Reset since I don't trust midiOutReset()
+			giveinfo();
 			for (int i = 0; i < 16; i++) reset_channel (i);
 			
 			// Make sure that the data exists
-			while (!thread_data) SDL_Delay(1);
+			giveinfo();
+			while (!thread_data) Sleep(1);
 			
+			giveinfo();
 			evntlist = thread_data->list;
 			repeat = thread_data->repeat;
 
+			giveinfo();
 			ppqn = thread_data->ppqn;
 			InterlockedExchange ((LONG*) &thread_data, (LONG) NULL);
+			giveinfo();
 			InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
 			
+			giveinfo();
 			event = evntlist;
 			tempo = 0x07A120;
 			
 			Ippqn = 1.0/ppqn;
 			tick = tempo*Ippqn;
 	
+			giveinfo();
 			last_tick = 0;
 			last_time = 0;
 			
+			giveinfo();
 			wmoInitClock ();
 	
+			giveinfo();
 			InterlockedExchange (&playing, true);
 		}
 
@@ -323,29 +389,37 @@ void Windows_MidiOut::thread_play ()
 		// set up the sound effect playing routine
 		if (!s_evntlist && sfx_com == W32MO_THREAD_COM_PLAY)
 		{
+			giveinfo();
 			cout << "Play sfx command" << endl;
 			// Make sure that the data exists
-			while (!sfx_data) SDL_Delay(1);
+			while (!sfx_data) Sleep(1);
 			
+			giveinfo();
 			s_evntlist = sfx_data->list;
 
+			giveinfo();
 			s_ppqn = sfx_data->ppqn;
 			InterlockedExchange ((LONG*) &sfx_data, (LONG) NULL);
 			InterlockedExchange (&sfx_com, W32MO_THREAD_COM_READY);
+			giveinfo();
 			
 			s_event = s_evntlist;
 			s_tempo = 0x07A120;
 			
+			giveinfo();
 			s_Ippqn = 1.0/s_ppqn;
 			s_tick = s_tempo*s_Ippqn;
 	
 			s_last_tick = 0;
 			s_last_time = 0;
 			
+			giveinfo();
 			wmoInitSFXClock ();
 
+			giveinfo();
 			InterlockedExchange (&s_playing, true);
 			
+			giveinfo();
 			// Reset thet track counter
 			s_track = 0;
 		}
@@ -417,69 +491,95 @@ void Windows_MidiOut::reset_channel (int i)
 
 void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool repeat)
 {
+	giveinfo();
 	if (!is_available)
 		init_device();
 
+	giveinfo();
 	if (!is_available)
 		return;
 		
-	while (thread_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
+	giveinfo();
+	while (thread_com != W32MO_THREAD_COM_READY) Sleep (1);
 	
+	giveinfo();
 	data.list = evntlist;
 	data.ppqn = ppqn;
 	data.repeat = repeat;
 	
+	giveinfo();
 	InterlockedExchange ((LONG*) &thread_data, (LONG) &data);
+	giveinfo();
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_PLAY);
+	giveinfo();
 }
 
 void Windows_MidiOut::start_sfx(midi_event *evntlist, int ppqn)
 {
+	giveinfo();
 	if (!is_available)
 		init_device();
 
+	giveinfo();
 	if (!is_available)
 		return;
 	
-	while (sfx_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
+	giveinfo();
+	while (sfx_com != W32MO_THREAD_COM_READY) Sleep (1);
 
+	giveinfo();
 	sdata.list = evntlist;
 	sdata.ppqn = ppqn;
 	
+	giveinfo();
 	InterlockedExchange ((LONG*) &sfx_data, (LONG) &sdata);
+	giveinfo();
 	InterlockedExchange (&sfx_com, W32MO_THREAD_COM_PLAY);
+	giveinfo();
 }
 
 
 void Windows_MidiOut::stop_track(void)
 {
+	giveinfo();
 	if (!is_available)
 		return;
 
+	giveinfo();
 	if (!playing) return;
 
-	while (thread_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
+	giveinfo();
+	while (thread_com != W32MO_THREAD_COM_READY) Sleep (1);
+	giveinfo();
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_STOP);
+	giveinfo();
 }
 
 void Windows_MidiOut::stop_sfx(void)
 {
+	giveinfo();
 	if (!is_available)
 		return;
 
+	giveinfo();
 	if (!s_playing) return;
 
-	while (sfx_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
+	giveinfo();
+	while (sfx_com != W32MO_THREAD_COM_READY) Sleep (1);
+	giveinfo();
 	InterlockedExchange (&sfx_com, W32MO_THREAD_COM_STOP);
+	giveinfo();
 }
 
 bool Windows_MidiOut::is_playing(void)
 {
+	giveinfo();
 	return playing;
 }
 
 const char *Windows_MidiOut::copyright(void)
 {
+	giveinfo();
 	return "Internal Win32 Midiout Midi Player for Exult.";
 }
 
