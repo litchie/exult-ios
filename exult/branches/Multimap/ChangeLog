@@ -1,3 +1,7 @@
+2004-02-19    <jeff@mini.nerble.net>
+
+	* combat.cc (Combat_schedule): Use dexterity during combat.
+
 2004-02-16    <jeff@mini.nerble.net>
 
 	* combat.cc,etc:  Keep track of wand charges.

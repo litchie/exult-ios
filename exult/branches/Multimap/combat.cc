@@ -56,6 +56,8 @@ bool Combat::show_hits = false;
 
 extern bool combat_trace;
 
+const int dex_to_attack = 30;
+
 /*
  *	Is a given ammo shape in a given family.
  */
@@ -668,14 +670,7 @@ void Combat_schedule::start_strike
 	    (npc == gwin->get_main_actor() || 
 				opponent == gwin->get_main_actor()))
 		Audio::get_ptr()->play_sound_effect(sfx);
-#if 0	/* +++++Now done in 'attacked' */
-					// Have them attack back.
-	Actor *opp = opponent ? opponent->as_actor() : 0;
-					// But not if it's a party member.
-	if (opp && !opp->get_target() && !opp->is_in_party())
-		opp->set_target(npc, 
-				npc->get_schedule_type() != Schedule::duel);
-#endif
+	dex_points -= dex_to_attack;
 	}
 
 /*
@@ -866,7 +861,8 @@ Combat_schedule::Combat_schedule
 		strike_range(0), projectile_range(0), max_range(0),
 		practice_target(0), is_thrown(false), yelled(0),
 		no_blocking(false), uses_charges(false),
-		started_battle(false), fleed(0), failures(0), teleport_time(0)
+		started_battle(false), fleed(0), failures(0), teleport_time(0),
+		dex_points(0)
 	{
 	Combat_schedule::set_weapon();
 					// Cache some data.
@@ -932,16 +928,25 @@ void Combat_schedule::now_what
 	switch (state)			// Note:  state's action has finished.
 		{
 	case approach:
-		if (opponent)
+		if (!opponent)
+			approach_foe();
+		else if (dex_points >= dex_to_attack)
 			start_strike();
 		else
-			approach_foe();
+			{
+#if 0
+			cout << npc->get_name() << " only has " <<
+				dex_points << " dex. points" << endl;
+#endif
+			dex_points += npc->get_property(Actor::dexterity);
+			npc->start(gwin->get_std_delay(),
+						gwin->get_std_delay());
+			}
 		break;
 	case strike:			// He hasn't moved away?
 		state = approach;
 					// Back into queue.
-		npc->start(gwin->get_std_delay(), strange 
-			? 4*gwin->get_std_delay() : gwin->get_std_delay());
+		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
 		if (npc->get_footprint().enlarge(strike_range).intersects(
 					opponent->get_footprint()))
 			{
@@ -973,7 +978,7 @@ void Combat_schedule::now_what
 					// Save shape (it might change).
 		int ashape = ammo_shape, wshape = weapon_shape,
 		    pshape = projectile_shape;
-		int delay = (strange || spellbook) ? 6*gwin->get_std_delay() 
+		int delay = spellbook ? 6*gwin->get_std_delay() 
 				: gwin->get_std_delay();
 		if (is_thrown)		// Throwing the weapon?
 			{
@@ -1015,6 +1020,7 @@ void Combat_schedule::now_what
 		}
 	case wait_return:		// Boomerang should have returned.
 		state = approach;
+		dex_points += npc->get_property(Actor::dexterity);
 		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
 		break;
 	default:
