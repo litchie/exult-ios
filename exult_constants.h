@@ -21,6 +21,8 @@
 #ifndef EXULT_CONSTANTS_H
 #define EXULT_CONSTANTS_H
 
+#include <string>
+
 /*
  *	Sizes:
  */
@@ -42,6 +44,11 @@ const int c_std_delay = 200;	// Standard animation delay.  May want to
 const int c_any_shapenum = -359;
 const int c_any_qual = -359;
 const int c_any_framenum = -359;
+
+/*
+ * Empty string
+ */
+extern const std::string c_empty_string;
 
 
 #define MOVE_NODROP (1<<3)

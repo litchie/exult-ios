@@ -1,28 +1,23 @@
-
 /*
-Copyright (C) 2000  Dancer A.L Vesperman
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *  Copyright (C) 2000-2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
-#endif
-
-#if __GNUG__ >= 2
-#  pragma implementation
 #endif
 
 #include "Configuration.h"
@@ -38,45 +33,26 @@ using std::atoi;
 using std::cerr;
 using std::endl;
 using std::FILE;
-//using std::size_t;
 using std::snprintf;
+using std::string;
 
-Configuration::Configuration() : xmltree(),filename(""),is_file(false)
-{}
-
-Configuration::Configuration(const char *s) : xmltree(),filename(""),is_file(false)
+const std::string	&Configuration::value(const char *key,bool &exists)
 {
-	read_config_file(s);
-}
+	XMLnode *sub=xmltree.subtree(string(key));
+	exists = (sub != NULL);
+	if(exists)
+		return sub->value();
 
-Configuration::~Configuration()
-{}
-
-
-std::string	&Configuration::value(const char *key,bool &exists)
-{
-	std::string	s=key;
-	exists=false;
-	XMLnode *sub=xmltree.subtree(s);
-	if(!sub)
-	{
-		static std::string dummy("");
-		exists=false;
-		return dummy;
-	}
-	else
-	{
-		exists=true;
-		return sub->entity.content;
-	}
+	return c_empty_string;
 }
 
 void	Configuration::value(const char *key,std::string &s,const char *defaultvalue)
 {
-	bool	exists;
-	s=value(key,exists);
-	if(!exists)
-		s=defaultvalue;
+	XMLnode *sub=xmltree.subtree(string(key));
+	if(sub)
+		s = sub->value();
+	else
+		s = defaultvalue;
 }
 
 void	Configuration::value(const char *key,int &n,int defaultvalue)
@@ -92,45 +68,8 @@ void	Configuration::value(const char *key,int &n,int defaultvalue)
 		n=atoi(s.c_str());
 }
 
-// This function does not make sense here. It should be in XMLEntity
-static void	xmlassign(XMLnode *walk,std::string &key,std::string &value)
-{
-	// cout << "xmlassign(" << key << "," << value << ")"<<endl;
-	if(key.find('/')==std::string::npos)
-	{
-		// Must refer to me.
-		if(walk->entity.id==key)
-			walk->entity.content=value;
-		else
-			cerr << "Walking the XML tree failed to create a final node." << endl;
-		return;
-	}
-	std::string k;
-	k=key.substr(key.find('/')+1);
-	std::string k2=k.substr(0,k.find('/'));
-	for(std::vector<XMLnode*>::iterator it=walk->nodelist.begin();it!=walk->nodelist.end();++it)
-	{
-		if((*it)->entity.id==k2)
-		{
-			xmlassign(*it,k,value);
-			return;
-		}
-	}
-	XMLnode *t = new XMLnode;
-	t->entity.id=k2;
-	walk->nodelist.push_back(t);
-	// cout << "New node " << k2 << endl;
-	std::vector<XMLnode*>::reverse_iterator rit=walk->nodelist.rbegin();
-	xmlassign(*rit,k,value);
-}
-
 void	Configuration::set(std::string &key,std::string &value,bool write_out)
 {
-	std::string	k=key;
-	XMLnode *walk;
-
-	walk=&xmltree;
-
 	// Break k up into '/' separated elements.
 	// start advancing walk, one element at a time, creating nodes
 	// as needed.
@@ -139,13 +78,8 @@ void	Configuration::set(std::string &key,std::string &value,bool write_out)
 
 	// We must also properly encode the value before writing it out.
 	// Must remember that.
-	if(xmltree.entity.id.length()==0)
-	{
-		std::string k;
-		k=key.substr(0,key.find('/'));
-		xmltree.entity.id=k;
-	}
-	xmlassign(walk,k,value);
+
+	xmltree.xmlassign(key,value);
 	if(write_out)
 		write_back();
 }
@@ -173,14 +107,11 @@ void	Configuration::set(const char *key,int value,bool write_out)
 }
 
 
-
-extern	void	xmlparse(std::string &s,std::size_t &pos,XMLnode *x);
-
 bool	Configuration::read_config_string(const std::string &s)
 {
 	std::string	sbuf(s);
 	std::size_t	nn=1;
-	xmlparse(sbuf,nn,&xmltree);
+	xmltree.xmlparse(sbuf,nn);
 	is_file=false;
 	return true;
 }
@@ -244,10 +175,7 @@ bool	Configuration::read_config_file(const char *n)
 
 std::string	Configuration::dump(void)
 {
-	extern	void xmldump(std::string &,XMLnode *,int);
-	std::string	out("");
-	xmldump(out,&xmltree,0);
-	return out;
+	return xmltree.dump();
 }
 
 
@@ -267,24 +195,13 @@ void	Configuration::write_back(void)
 }
 
 
-std::vector<std::string>	Configuration::listkeys(std::string &key,bool longformat)
+std::vector<std::string>	Configuration::listkeys(const std::string &key,bool longformat)
 {
 	std::vector<std::string>	vs;
 	XMLnode *sub=xmltree.subtree(key);
-	if(!sub)
-		return vs;
-
-	for(std::vector<XMLnode*>::const_iterator it=sub->nodelist.begin();
-		it!=sub->nodelist.end(); ++it)
-	{
-		std::string	s=key;
-		s+="/";
-		if(!longformat)
-			s="";
-		s+=(*it)->entity.id;
-		vs.push_back(s);
-	}
-
+	if(sub)
+		sub->listkeys(key,vs,longformat);
+	
 	return vs;
 }
 

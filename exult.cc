@@ -97,6 +97,8 @@ unsigned char quitting_time = 0;	// 1 = Time to quit, 2 = Restart.
 bool intrinsic_trace = false;		// Do we trace Usecode-intrinsics?
 bool usecode_trace = false;		// Do we trace Usecode-instruction?
 
+const std::string c_empty_string;
+
 #if USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
 #endif

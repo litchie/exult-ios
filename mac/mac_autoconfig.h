@@ -26,12 +26,9 @@
 
 // missing defines:
 #define PACKAGE "exult"
-#define MAJOR	"0.92"
-#define	RELNUM	"alpha3"
+#define MAJOR	"0.94"
+#define	RELNUM	"cvs"
 #define VERSION MAJOR RELNUM
-
-/* Was debugging selected from configure? */
-#define DEBUG 1
 
 /* Do we appear to have a runnable copy of Timidity in our path? */
 /* #undef HAVE_TIMIDITY_BIN */

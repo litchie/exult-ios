@@ -1,26 +1,23 @@
-/**
- **	Utils.h - Common utility routines.
- **
- **	Written: 10/1/98 - JSF
- **/
-
 /*
-Copyright (C) 2000-2001 The Exult Team
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *	utils.h - Common utility routines.
+ *
+ *  Copyright (C) 1998-1999  Jeffrey S. Freedman
+ *  Copyright (C) 2000-2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifndef _UTILS_H_
 #define _UTILS_H_
@@ -350,5 +347,7 @@ void store_system_paths();
 void reset_system_paths();
 void add_system_path(const std::string& key, const std::string& value);
 std::string get_system_path(const std::string &path);
+
+void to_uppercase(std::string &str);
 
 #endif	/* _UTILS_H_ */
