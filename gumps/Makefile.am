@@ -43,6 +43,10 @@ libgumps_la_SOURCES = \
 	Yesno_gump.cc	\
 	Yesno_gump.h	\
 	Newfile_gump.cc	\
-	Newfile_gump.h
+	Newfile_gump.h	\
+	AudioOptions_gump.cc	\
+	AudioOptions_gump.h	\
+	Gump_ToggleButton.cc	\
+	Gump_ToggleButton.h
 
 CLEANFILES = *~

@@ -16,37 +16,33 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _GAMEMENU_GUMP_H
-#define _GAMEMENU_GUMP_H
+#ifndef _GUMP_TOGGLEBUTTON_H
+#define _GUMP_TOGGLEBUTTON_H
 
-#include "Modal_gump.h"
+#include "Gump_button.h"
 
-class Gump_button;
+/*
+ * A button that toggles shape when pushed
+ */
 
-class Gamemenu_gump : public Modal_gump
+class Gump_ToggleButton : public Gump_button
 {
-	UNREPLICATABLE_CLASS_I(Gamemenu_gump,Modal_gump(0,0,0,0));
+ public:
+	Gump_ToggleButton(Gump *par, int px, int py, int shapenum,
+						   int selectionnum, int numsel)
+		: Gump_button(par, shapenum, px, py, GSF_EXULT_FLX), 
+		numselections(numsel)
+	 {
+		 framenum = 2 * selectionnum;
+	 }
+
+	virtual void activate(Game_window *gwin);
+	virtual void toggle(int state) {};
+
+	int getselection() const { return framenum/2; }
 
  private:
-	Gump_button* buttons[6];
-
- public:
-	Gamemenu_gump();
-	~Gamemenu_gump();
-
-					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
-	virtual void close(Game_window *gwin)
-		{ done = 1; }
-					// Handle events:
-	virtual void mouse_down(int mx, int my);
-	virtual void mouse_up(int mx, int my);
-
-	void quit(bool return_to_menu = false);
-	void loadsave();
-	void video_options();
-	void audio_options();
-	void gameplay_options();
+	int numselections;
 };
 
 #endif

@@ -42,7 +42,12 @@ EXULT_FLX_OBJECTS = \
 	gam_video.shp		\
 	gam_gameplay.shp	\
 	gam_quitmenu.shp	\
-	gam_quit.shp
+	gam_quit.shp		\
+	audiooptions.shp	\
+	aud_enabled.shp 	\
+	aud_conversion.shp	\
+	aud_cancel.shp		\
+	aud_ok.shp
 
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in			\

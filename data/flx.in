@@ -42,3 +42,8 @@ gam_audio.shp
 gam_gameplay.shp
 gam_quitmenu.shp
 gam_quit.shp
+audiooptions.shp
+aud_enabled.shp
+aud_conversion.shp
+aud_ok.shp
+aud_cancel.shp

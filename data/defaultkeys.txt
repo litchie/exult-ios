@@ -4,7 +4,7 @@ Alt-KP+		resolution_increase
 Alt-KP- 	resolution_decrease
 KP+		brighter
 KP- 		darker
-Esc		close_gumps
+Esc		close_or_menu
 right		scroll_right
 left		scroll_left
 up		scroll_up

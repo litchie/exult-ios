@@ -92,7 +92,7 @@ public:
 
 Audio::~Audio()
 { 
-	if (!audio_enabled) {
+	if (!initialized) {
 		self = 0;
 		SDL_open = false;
 		return;
@@ -374,7 +374,7 @@ Audio *Audio::self=0;
 
 Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
 	effects_enabled(true), SDL_open(false),mixer(0),midi(0), sfxs(0),
-	sfx_file(0)
+	sfx_file(0), initialized(false)
 {
 	self=this;
 	string s;
@@ -450,6 +450,8 @@ void Audio::Init(int _samplerate,int _channels)
 #if DEBUG
 	cout << "Audio initialisation OK" << endl;
 #endif
+
+	initialized = true;
 }
 
 void	Audio::Init_sfx()
@@ -841,4 +843,27 @@ void Audio::stop_sound_effects
 		midi->stop_sound_effects();
 	}
 
+void Audio::set_audio_enabled(bool ena)
+{
+	if (ena && audio_enabled && initialized) {
 
+	} else if (!ena && audio_enabled && initialized) {
+		stop_sound_effects();
+		stop_music();
+		audio_enabled = false;
+	} else if (ena && !audio_enabled && initialized) {
+		audio_enabled = true;
+	} else if (!ena && !audio_enabled && initialized) {
+
+	} else if (ena && !audio_enabled && !initialized) {
+		audio_enabled = true;
+
+#if !defined(WIN32)	/* !!!! 44100 caused the freeze upon exit in Win! */
+		Init(44100,2);
+#else
+		Init(22050,2);
+#endif
+	} else if (!ena && !audio_enabled && !initialized) {
+
+	}
+}
