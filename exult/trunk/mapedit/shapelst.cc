@@ -71,12 +71,21 @@ class Editing_file
 	string pathname;		// Full path to file.
 	time_t mtime;			// Last modification time.
 	int shapenum, framenum;		// Shape/frame.
+	int tiles;			// If > 0, #8x8 tiles per row or col.
+	bool bycolumns;			// If true tile by column first.
 public:
 	friend class Shape_chooser;
+					// Create for single frame:
 	Editing_file(const char *vganm, const char *pnm, time_t m, 
 							int sh, int fr) 
 		: vga_basename(vganm), pathname(pnm), 
-		  mtime(m), shapenum(sh), framenum(fr)
+		  mtime(m), shapenum(sh), framenum(fr), tiles(0)
+		{  }
+					// Create tiled:
+	Editing_file(const char *vganm, const char *pnm, time_t m, int sh,
+						int ts, bool bycol)
+		: vga_basename(vganm), pathname(pnm), mtime(m), shapenum(sh),
+		  framenum(0), tiles(ts), bycolumns(bycol)
 		{  }
 	};		
 
@@ -722,6 +731,8 @@ on_draw_key_press			(GtkEntry	*entry,
 	return FALSE;			// Let parent handle it.
 }
 
+const unsigned char transp = 255;
+
 /*
  *	Export the currently selected frame as a .png file.
  *
@@ -739,7 +750,6 @@ time_t Shape_chooser::export_png
 	Shape_frame *frame = ifile->get_shape(shnum, frnum);
 	int w = frame->get_width(), h = frame->get_height();
 	Image_buffer8 img(w, h);	// Render into a buffer.
-	const unsigned char transp = 255;
 	img.fill8(transp);		// Fill with transparent pixel.
 	frame->paint(&img, frame->get_xleft(), frame->get_yabove());
 	int xoff = 0, yoff = 0;
@@ -748,6 +758,22 @@ time_t Shape_chooser::export_png
 		xoff = -frame->get_xright();
 		yoff = -frame->get_ybelow();
 		}
+	return export_png(fname, img, xoff, yoff);
+	}
+
+/*
+ *	Export an image as a .png file.
+ *
+ *	Output:	Modification time of file written, or 0 if error.
+ */
+
+time_t Shape_chooser::export_png
+	(
+	const char *fname,		// File to write out.
+	Image_buffer8& img,		// Image.
+	int xoff, int yoff		// Offset (from bottom-right).
+	)
+	{
 	unsigned char pal[3*256];	// Set up palette.
 	for (int i = 0; i < 256; i++)
 		{
@@ -755,17 +781,72 @@ time_t Shape_chooser::export_png
 		pal[3*i + 1] = (palette->colors[i]>>8)&0xff;
 		pal[3*i + 2] = palette->colors[i]&0xff;
 		}
+	int w = img.get_width(), h = img.get_height();
 	struct stat fs;			// Write out to the .png.
 	if (!Export_png8(fname, transp, w, h, w, xoff, yoff, img.get_bits(),
 					&pal[0], 256) ||
 	    stat(fname, &fs) != 0)
 		{
-		string msg("Error creating file:  ");
-		msg += fname;
-		studio->prompt(msg.c_str(), "Continue");
+		Alert("Error creating '%s'", fname);
 		return 0;
 		}
 	return fs.st_mtime;
+	}
+
+/*
+ *	Export the current shape (which better be 8x8 flat) as a tiled PNG.
+ *
+ *	Output:	modification time of file, or 0 if error.
+ */
+
+time_t Shape_chooser::export_tiled_png
+	(
+	const char *fname,		// File to write out.
+	int tiles,			// If #0, write all frames as tiles,
+					//   this many in each row (col).
+	bool bycols			// Write tiles columns-first.
+	)
+	{
+	assert (selected >= 0);
+	int shnum = info[selected].shapenum;
+	ExultStudio *studio = ExultStudio::get_instance();
+					// Low shape in 'shapes.vga'?
+	assert (shnum < 0x96 && file_info == studio->get_vgafile());
+	Shape *shape = ifile->extract_shape(shnum);
+	assert(shape != 0);
+	cout << "Writing " << fname << " tiled" 
+		<< (bycols ? ", by cols" : ", by rows") << " first" << endl;
+	int nframes = shape->get_num_frames();
+					// Figure #tiles in other dim.
+	int dim1_cnt = (nframes + tiles - 1)/tiles;
+	int w, h;
+	if (bycols)
+		{ h = tiles*8; w = dim1_cnt*8; }
+	else
+		{ w = tiles*8; h = dim1_cnt*8; }
+	Image_buffer8 img(w, h);
+	img.fill8(transp);		// Fill with transparent pixel.
+	for (int f = 0; f < nframes; f++)
+		{
+		Shape_frame *frame = shape->get_frame(f);
+		if (!frame)
+			continue;	// We'll just leave empty ones blank.
+		if (!frame->is_rle() || frame->get_width() != 8 ||
+					frame->get_height() != 8)
+			{
+			Alert("Can only tile 8x8 flat shapes");
+			return 0;
+			}
+		int x, y;
+		if (bycols)
+			{ y = f%tiles; x = f/tiles; }
+		else
+			{ x = f%tiles; y = f/tiles; }
+		frame->paint(&img, x*8 + frame->get_xleft(), 
+						y*8 + frame->get_yabove());
+		}
+					// Write out to the .png.
+	return export_png(fname, img, 0, 0);
 	}
 
 /*
@@ -795,6 +876,9 @@ void Shape_chooser::edit_shape_info
 
 void Shape_chooser::edit_shape
 	(
+	int tiles,			// If #0, write all frames as tiles,
+					//   this many in each row (col).
+	bool bycols			// Write tiles columns-first.
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
@@ -803,19 +887,35 @@ void Shape_chooser::edit_shape
 	string filestr("<GAME>");	// Set up filename.
 	filestr += "/itmp";		// "Image tmp" directory.
 	U7mkdir(filestr.c_str(), 0755);	// Create if not already there.
-					// Create name from file,shape,frame.
-	char *ext = g_strdup_printf("/%s.s%d_f%d.png",
-				file_info->get_basename(), shnum, frnum);
-	filestr += ext;
-	g_free(ext);
 					// Lookup <GAME>.
 	filestr = get_system_path(filestr);
+	char *ext;
+	if (!tiles)			// Create name from file,shape,frame.
+		ext = g_strdup_printf("/%s.s%d_f%d.png",
+				file_info->get_basename(), shnum, frnum);
+	else				// Tiled.
+		ext = g_strdup_printf("/%s.s%d_%c%d.png",
+				file_info->get_basename(), shnum,
+				(bycols ? 'c' : 'r'), tiles);
+	filestr += ext;
+	g_free(ext);
 	const char *fname = filestr.c_str();
 	cout << "Writing image '" << fname << "'" << endl;
-	time_t mtime = export_png(fname);
+	time_t mtime;
+	if (!tiles)			// One frame?
+		{
+		mtime = export_png(fname);
 					// Store info. about file.
-	editing_files.push_back(new Editing_file(
-		file_info->get_basename(), fname, mtime, shnum, frnum));
+		editing_files.push_back(new Editing_file(
+		    file_info->get_basename(), fname, mtime, shnum, frnum));
+		}
+	else
+		{
+		mtime = export_tiled_png(fname, tiles, bycols);
+		editing_files.push_back(new Editing_file(
+			file_info->get_basename(), fname, mtime, shnum,
+						tiles, bycols));
+		}
 	string cmd(studio->get_image_editor());
 	cmd += ' ';
 	cmd += fname;
@@ -946,7 +1046,11 @@ void Shape_chooser::read_back_edited
 	ExultStudio *studio = ExultStudio::get_instance();
 	Shape_file_info *finfo = studio->get_files()->create(
 						ed->vga_basename.c_str());
-	Import_png(ed->pathname.c_str(), finfo, ed->shapenum, ed->framenum);
+	if (!ed->tiles)
+		Import_png(ed->pathname.c_str(), finfo, 
+						ed->shapenum, ed->framenum);
+	else
+		;//++++++++++IMPORT TILED.
 	}
 
 /*
