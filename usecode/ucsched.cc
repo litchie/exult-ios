@@ -115,7 +115,7 @@ void Scheduled_usecode::handle_event
 		int opcode = opval.get_int_value();
 		switch (opcode)
 			{
-		case 0x01:		// ??
+		case 0x01:		// ?? Might mean 'paint/show()'.
 			break;
 		case 0x0b:		// ?? 2 parms, 1st one < 0.
 			{		// Loop(offset, cnt).
