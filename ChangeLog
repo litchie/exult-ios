@@ -1,3 +1,11 @@
+2003-02-15  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/chunks.cc (Chunk_cache): Rewrote 'blocking' code.  Now a
+	0-3 element count is maintained.
+
+	* usecode/intrinsics.cc: Mark object as deleted before putting it
+	back in the world.
+
 2003-02-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/iregobjs.cc,gamemap.cc: Use 'invisible' flag from quality
