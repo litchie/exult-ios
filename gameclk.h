@@ -32,6 +32,7 @@ public:
 		{ return day; }
 	void set_day(int d)
 		{ day = d; }
+	void set_palette();		// Set palette for current hour.
 	void increment(int num_minutes);// Increment clock.
 	virtual void handle_event(unsigned long curtime, long udata);
 	void fake_next_period();	// For debugging.

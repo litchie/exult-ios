@@ -686,6 +686,15 @@ static void Handle_keystroke
 		}
 		shape_showcase(current_file, current_shape, current_frame);
 		break;
+	case SDLK_r:
+		if (ctrl)		// Restore from 'gamedat'.
+			{
+			if (gwin->read())
+				cout << "Restore from 'gamedat' successful\n";
+			gwin->paint();
+			break;
+			}
+		break;
 	case SDLK_s:
 		if (ctrl)		// Save to 'gamedat'.
 			{
