@@ -679,19 +679,29 @@ Shape_frame *Shape::reflect
 		return (0);
 	framenum |= 32;			// Put back 'reflect' flag.
 	if (framenum >= frames_size - 1)// Expand list if necessary.
-		{
-		Shape_frame **newframes = new Shape_frame *[framenum + 1];
-		int i;
-		for (i = 0; i < frames_size; i++)
-			newframes[i] = frames[i];
-		frames_size = framenum + 1;
-		for ( ; i < frames_size; i++)
-			newframes[i] = 0;
-		delete [] frames;
-		frames = newframes;
-		}
+		enlarge(framenum + 1);
 	frames[framenum] = reflected;	// Store new frame.
 	return reflected;
+	}
+
+/*
+ *	Resize list upwards.
+ */
+
+void Shape::enlarge
+	(
+	int newsize
+	)
+	{
+	Shape_frame **newframes = new Shape_frame *[newsize];
+	int i;
+	for (i = 0; i < frames_size; i++)
+		newframes[i] = frames[i];
+	frames_size = newsize;
+	for ( ; i < frames_size; i++)
+		newframes[i] = 0;
+	delete [] frames;
+	frames = newframes;
 	}
 
 /*
@@ -910,9 +920,45 @@ void Shape::set_frame
 	int framenum
 	)
 	{
-	assert (framenum < frames_size);
+	assert (framenum < num_frames);
 	delete frames[framenum];	// Delete existing.
 	frames[framenum] = frame;
+	}
+
+/*
+ *	Add/insert a frame.
+ */
+
+void Shape::add_frame
+	(
+	Shape_frame *frame,		// Must be allocated.
+	int framenum			// Insert here.
+	)
+	{
+	assert (framenum <= num_frames);// Can append.
+	enlarge(frames_size + 1);	// Make room.
+	for (int i = frames_size - 1; i > framenum; i--)
+		frames[i] = frames[i - 1];
+	frames[framenum] = frame;
+	num_frames++;
+	}
+
+/*
+ *	Delete a frame.
+ */
+
+void Shape::del_frame
+	(
+	int framenum
+	)
+	{
+	assert (framenum < num_frames);
+	delete frames[framenum];
+					// Shift down.
+	for (int i = framenum + 1; i < frames_size; i++)
+		frames[i - 1] = frames[i];
+	frames[frames_size - 1] = 0;	// Last spot is now free.
+	num_frames--;
 	}
 
 /*

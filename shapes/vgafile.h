@@ -110,6 +110,7 @@ protected:
 	unsigned char num_frames;	// # of frames (not counting reflects).
 					// Create reflected frame.
 	Shape_frame *reflect(DataSource* shapes, int shnum, int frnum);
+	void enlarge(int newsize);	// Increase 'frames'.
 	void create_frames_list(int nframes);
 					// Read in shape/frame.
 	Shape_frame *read(DataSource* shapes, int shnum, int frnum, 
@@ -140,6 +141,9 @@ public:
 						? frames[framenum] : 0L; }
 					// Set frame.
 	void set_frame(Shape_frame *f, int framenum);
+					// Add/insert frame.
+	void add_frame(Shape_frame *f, int framenum);
+	void del_frame(int framenum);
 	};
 
 /*
