@@ -197,7 +197,10 @@ void Actor::stop
 	)
 	{
 	if (action)
+		{
 		action->stop(this);
+//++++++++++++Try this.		Game_window::get_game_window()->add_dirty(this);
+		}
 	frame_time = 0;
 	}
 

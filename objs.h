@@ -422,7 +422,7 @@ public:
 
 /*
  *	An object that cycles through its frames, or wiggles if just one
- *	frame.
+ *	frame.  The base class is for non-Ireg ones.
  */
 class Animated_object : public Game_object, public Time_sensitive
 	{
@@ -430,12 +430,13 @@ class Animated_object : public Game_object, public Time_sensitive
 	unsigned char animating;	// 1 if animation turned on.
 	unsigned char deltax, deltay;	// If wiggling, deltas from
 					//   original position.
+	unsigned char ireg;		// 1 if we should write out to Ireg.
 public:
 	Animated_object(unsigned char l, unsigned char h, 
-				unsigned int shapex,
-				unsigned int shapey, unsigned int lft = 0);
+				unsigned int shapex, unsigned int shapey, 
+				unsigned int lft = 0, unsigned char ir = 0);
 	Animated_object(int shapenum, int framenum, unsigned int tilex, 
-				unsigned int tiley, unsigned int lft = 0);
+	       unsigned int tiley, unsigned int lft = 0, unsigned char ir = 0);
 	virtual ~Animated_object();
 					// Render.
 	virtual void paint(Game_window *gwin);
@@ -445,6 +446,8 @@ public:
 	virtual Tile_coord get_original_tile_coord()
 		{ return get_abs_tile_coord() + 
 					Tile_coord(-deltax, -deltay, 0); }
+					// Write out to IREG file.
+	virtual void write_ireg(ostream& out);
 	};
 
 /*

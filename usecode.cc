@@ -1611,10 +1611,12 @@ USECODE_INTRINSIC(create_new_object)
 	if (!at)
 		at = gwin->get_main_actor();
 	Shape_info& info = gwin->get_info(shapenum);
-	Game_object *obj = (info.is_animated()) ?
-			new Animated_object(shapenum, 0,
-			  at->get_tx(), at->get_ty(), at->get_lift())
-			:new Game_object(shapenum, 0,
+	Game_object *obj;		// Create to be written to Ireg.
+	if (info.is_animated())
+		obj = new Animated_object(shapenum, 0,
+			  at->get_tx(), at->get_ty(), at->get_lift(), 1);
+	else
+		obj = new Ireg_game_object(shapenum, 0,
 			  at->get_tx(), at->get_ty(), at->get_lift());
 	gwin->get_objects(at->get_cx(), at->get_cy())->add(obj);
 	gwin->show();

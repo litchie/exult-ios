@@ -634,13 +634,8 @@ void Game_window::read_ireg_objects
 			quality = entry[5];
 			Shape_info& info = shapes.get_info(shapeid);
 			if (info.is_animated())
-				{
-//+++++++Need Animated_ireg_object.  Let's see what these are.
-				cout << "Reading animated IREG object " <<
-					shapeid << '\n';
 				obj = new Animated_object(
-				   entry[2], entry[3], tilex, tiley, lift);
-				}
+				   entry[2], entry[3], tilex, tiley, lift, 1);
 			else
 				obj = new Ireg_game_object(
 				   entry[2], entry[3], tilex, tiley, lift);
@@ -715,6 +710,24 @@ void Game_window::get_superchunk_objects
 	get_ifix_objects(schunk);	// Get objects from ifix.
 	get_ireg_objects(schunk);	// Get moveable objects.
 	schunk_read[schunk] = 1;	// Done this one now.
+	}
+
+/*
+ *	Save game by writing out to the 'gamedat' directory.
+ *
+ *	Output:	0 if error, already reported.
+ */
+
+int Game_window::write
+	(
+	)
+	{
+					// Write each superchunk to Iregxx.
+	for (int i = 0; i < 12*12 - 1; i++)
+		if (!write_ireg_objects(i))
+			return (0);
+	// +++++Write npc.dat, party,  +++++Write global flags to???
+	return (1);
 	}
 
 /*
@@ -1073,31 +1086,7 @@ void Game_window::stop_actor
 	)
 	{
 	main_actor->stop();		// Stop and set resting state.
-	paint();
-	}
-
-/*
- *	Find a "roof" in the given chunk.
- *
- *	Output: 1 if found, else 0.
- */
-
-int Game_window::find_roof
-	(
-	int cx, int cy			// Absolute chunk coords.
-	)
-	{
-	Chunk_object_list *olist = objects[cx][cy];
-	if (!olist)
-		return (0);
-	return (olist->is_roof());
-#if 0
-	Game_object *obj;
-	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
-		if (obj->get_lift() >= 5)
-			return (1);	// Found one.
-	return (0);
-#endif
+	paint();	// ++++++Necessary?
 	}
 
 /*
