@@ -27,6 +27,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 
 /*
+ *	Create appropriate animator.
+ */
+
+Animator *Animator::create
+	(
+	Game_object *ob			// Animated object.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int frames = gwin->get_shape_num_frames(ob->get_shapenum());
+	if (frames > 1)
+		return new Frame_animator(ob, 1);
+	else
+		return new Wiggle_animator(ob);
+	}
+
+
+/*
  *	When we delete, better remove from queue.
  */
 
@@ -139,17 +157,10 @@ Animated_object::Animated_object
 	unsigned char l, unsigned char h, 
 	unsigned int shapex,
 	unsigned int shapey,
-	unsigned int lft,
-	unsigned char ir		// 1 if from/to Ireg file.
-	) : Game_object(l, h, shapex, shapey, lft), ireg(ir)
+	unsigned int lft
+	) : Game_object(l, h, shapex, shapey, lft)
 	{
-	Game_window *gwin = Game_window::get_game_window();
-	int shapenum = get_shapenum();
-	int frames = gwin->get_shape_num_frames(shapenum);
-	if (frames > 1)
-		animator = new Frame_animator(this, ir);
-	else
-		animator = new Wiggle_animator(this);
+	animator = Animator::create(this);
 	}
 
 /*
@@ -161,16 +172,10 @@ Animated_object::Animated_object
 	int shapenum, 
 	int framenum, 
 	unsigned int tilex, unsigned int tiley, 
-	unsigned int lft,
-	unsigned char ir		// 1 if from/to Ireg file.
-	) : Game_object(shapenum, framenum, tilex, tiley, lft), ireg(ir)
+	unsigned int lft
+	) : Game_object(shapenum, framenum, tilex, tiley, lft)
 	{
-	Game_window *gwin = Game_window::get_game_window();
-	int frames = gwin->get_shape_num_frames(shapenum);
-	if (frames > 1)
-		animator = new Frame_animator(this, ir);
-	else
-		animator = new Wiggle_animator(this);
+	animator = Animator::create(this);
 	}
 
 /*
@@ -198,16 +203,68 @@ void Animated_object::paint
 	}
 
 /*
+ *	Create an animated object.
+ */
+
+Animated_ireg_object::Animated_ireg_object
+	(
+	unsigned char l, unsigned char h, 
+	unsigned int shapex,
+	unsigned int shapey,
+	unsigned int lft
+	) : Ireg_game_object(l, h, shapex, shapey, lft)
+	{
+	animator = Animator::create(this);
+	}
+
+/*
+ *	Create at given position.
+ */
+
+Animated_ireg_object::Animated_ireg_object
+	(
+	int shapenum, 
+	int framenum, 
+	unsigned int tilex, unsigned int tiley, 
+	unsigned int lft
+	) : Ireg_game_object(shapenum, framenum, tilex, tiley, lft)
+	{
+	animator = Animator::create(this);
+	}
+
+/*
+ *	When we delete, better remove from queue.
+ */
+
+Animated_ireg_object::~Animated_ireg_object
+	(
+	)
+	{
+	delete animator;
+	}
+
+/*
+ *	Render.
+ */
+
+void Animated_ireg_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	Game_object::paint(gwin);
+	animator->want_animation();	// Be sure animation is on.
+	}
+
+/*
  *	Write out.  (Same as Ireg_game_object::write_ireg().)
  */
 
-void Animated_object::write_ireg
+void Animated_ireg_object::write_ireg
 	(
 	ostream& out
 	)
 	{
-	if (!ireg)
-		return;			// Not from an Ireg file.
 	unsigned char buf[7];		// 6-byte entry + length-byte.
 	buf[0] = 6;
 	write_common_ireg(&buf[1]);

@@ -1299,6 +1299,9 @@ int Container_game_object::add
 	obj->set_owner(this);		// Set us as the owner.
 					// Append to chain.
 	objects = obj->append_to_chain(objects);
+					// Guessing:
+	if (get_flag(okay_to_take))
+		obj->set_flag(okay_to_take);
 	return 1;
 	}
 
@@ -1644,8 +1647,10 @@ void Container_game_object::write_ireg
 	int quant = (npc >= 0 && npc <= 127) ? (npc + 0x80) : 0;
 	*ptr++ = quant&0xff;		// "Quantity".
 	*ptr++ = (get_lift()&15)<<4;
-	*ptr++ = 0;			// Resistance+++++
-	*ptr++ = 0;			// Flags++++++
+	*ptr++ = resistance;		// Resistance.
+					// Flags:  B0=invis. B3=okay_to_take.
+	*ptr++ = get_flag(Game_object::invisible) +
+		 (get_flag(Game_object::okay_to_take) << 3);
 	out.write((char*)buf, sizeof(buf));
 	write_contents(out);		// Write what's contained within.
 	}

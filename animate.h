@@ -42,6 +42,7 @@ protected:
 public:
 	Animator(Game_object *o) : obj(o), deltax(0), deltay(0), animating(0)
 		{  }
+	static Animator *create(Game_object *ob);
 	~Animator();
 	void want_animation()		// Want animation on.
 		{
@@ -86,14 +87,37 @@ public:
 class Animated_object : public Game_object
 	{
 	Animator *animator;		// Controls animation.
-	unsigned char ireg;		// 1 if from an IREG file.
 public:
 	Animated_object(unsigned char l, unsigned char h, 
 				unsigned int shapex, unsigned int shapey, 
-				unsigned int lft = 0, unsigned char ir = 0);
+				unsigned int lft = 0);
 	Animated_object(int shapenum, int framenum, unsigned int tilex, 
-	       unsigned int tiley, unsigned int lft = 0, unsigned char ir = 0);
+	       unsigned int tiley, unsigned int lft = 0);
 	virtual ~Animated_object();
+					// Render.
+	virtual void paint(Game_window *gwin);
+					// +++++Needed on this one:
+					// Get coord. where this was placed.
+	virtual Tile_coord get_original_tile_coord() const
+		{ return get_abs_tile_coord() + 
+			Tile_coord(-animator->get_deltax(), 
+				   -animator->get_deltay(), 0); }
+	};
+
+/*
+ *	An object that cycles through its frames, or wiggles if just one
+ *	frame.  This is the IREG version.
+ */
+class Animated_ireg_object : public Ireg_game_object
+	{
+	Animator *animator;		// Controls animation.
+public:
+	Animated_ireg_object(unsigned char l, unsigned char h, 
+				unsigned int shapex, unsigned int shapey, 
+				unsigned int lft = 0);
+	Animated_ireg_object(int shapenum, int framenum, unsigned int tilex, 
+	       unsigned int tiley, unsigned int lft = 0);
+	virtual ~Animated_ireg_object();
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Get coord. where this was placed.
@@ -104,7 +128,6 @@ public:
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
 	};
-
 #endif
 
 
