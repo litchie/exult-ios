@@ -7,7 +7,7 @@
 *  http://ftp.se.kde.org/pub/vendor/microsoft/Softlib/MSLFILES/
 */
 
-#if defined(WIN32) && defined(USE_EXULTSTUDIO)
+#if defined(WIN32) && defined(USE_EXULTSTUDIO) && !defined(UNDER_CE)
 
 #include <iostream>
 

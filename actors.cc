@@ -70,6 +70,7 @@
 #include "servemsg.h"
 #endif
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -77,6 +78,7 @@ using std::memcpy;
 using std::rand;
 using std::string;
 using std::swap;
+#endif
 
 Actor *Actor::editing = 0;
 
@@ -3718,12 +3720,12 @@ Npc_actor::~Npc_actor
 
 void Npc_actor::set_schedules
 	(
-	Schedule_change *list, 
+	Schedule_change *sc_list, 
 	int cnt
 	)
 	{
 	delete [] schedules;
-	schedules = list;
+	schedules = sc_list;
 	num_schedules = cnt;
 	}
 
@@ -3831,11 +3833,11 @@ void Npc_actor::remove_schedule (int time)
 
 void Npc_actor::get_schedules
 	(
-	Schedule_change *&list, 
+	Schedule_change *&sc_list, 
 	int &cnt
 	)
 	{
-	list = schedules;
+	sc_list = schedules;
 	cnt = num_schedules;
 	}
 /*

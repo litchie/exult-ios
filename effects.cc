@@ -38,11 +38,13 @@
 
 #include "SDL_timer.h"
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::rand;
 using std::string;
 using std::strlen;
+#endif
 
 int Cloud::randcnt = 0;
 int Lightning_effect::active = 0;

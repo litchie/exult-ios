@@ -25,11 +25,13 @@
 #include "vgafile.h"
 #include "exceptions.h"
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::size_t;
 using std::string;
 using std::strncmp;
+#endif
 
 FontManager fontManager;
 

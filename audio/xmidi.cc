@@ -36,6 +36,7 @@
 #include "../conf/Configuration.h"
 extern	Configuration	*config;
 
+#ifndef UNDER_CE
 using std::atof;
 using std::atoi;
 using std::cerr;
@@ -45,6 +46,7 @@ using std::memcpy;
 using std::memset;
 using std::size_t;
 using std::string;
+#endif
 
 #include "gamma.h"
 
@@ -391,7 +393,7 @@ XMIDIEventList *XMIDI::GetEventList (uint32 track)
 {
 	if (!events)
 	{
-		cerr << "No midi data in loaded." << endl;
+		cerr << "No midi data in loaded." << std::endl;
 		return 0;
 	}
 

@@ -44,11 +44,13 @@
 #  include <cstring>
 #endif
 
+#ifndef UNDER_CE
 using std::abs;
 using std::rand;
 using std::strchr;
 using std::strlen;
 using std::toupper;
+#endif
 
 enum
 {

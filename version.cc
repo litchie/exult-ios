@@ -201,16 +201,23 @@ void getVersionInfo(std::ostream& out)
 		GetVersionEx (&info);
 
 		// Platform is NT
-		if (info.dwPlatformId == 2)
+		if (info.dwPlatformId == VER_PLATFORM_WIN32_NT)
 		{
 			if (info.dwMajorVersion < 4) out << "NT";
 			else if (info.dwMajorVersion == 4) out << "NT4";
 			else if (info.dwMajorVersion == 5 && info.dwMinorVersion == 0) out << 2000;
 			else if (info.dwMajorVersion == 5 && info.dwMinorVersion == 1) out << "XP";
+			else if (info.dwMajorVersion == 5 && info.dwMinorVersion == 2) out << 2003;
 			else out << "Unknown NT";
 
 			if (info.szCSDVersion[0]) out << " " << info.szCSDVersion;
 		}
+#ifdef VER_PLATFORM_WIN32_CE
+		else if (info.dwPlatformId == VER_PLATFORM_WIN32_CE)
+		{
+			out << "CE";
+		}
+#endif
 		else if (info.dwMajorVersion == 4 && info.dwMinorVersion == 0)
 		{
 			out << 95;

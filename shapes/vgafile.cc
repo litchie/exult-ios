@@ -36,6 +36,7 @@
 
 #include <cassert>
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -44,6 +45,7 @@ using std::ios;
 using std::memcpy;
 using std::memset;
 using std::ostream;
+#endif
 
 GL_manager *Shape_frame::glman = 0;
 Image_buffer8 *Shape_frame::scrwin = 0;

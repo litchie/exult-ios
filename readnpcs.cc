@@ -36,6 +36,7 @@
 #include "databuf.h"
 //#include "items.h"			/* Debugging only */
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -43,6 +44,7 @@ using std::ifstream;
 using std::ios;
 using std::memset;
 using std::ofstream;
+#endif
 
 /*
  *	Read in the NPC's, plus the monster info.

@@ -23,7 +23,9 @@
 #endif
 
 #ifdef WIN32
+#ifndef UNDER_CE
 #include <io.h>
+#endif
 #endif
 
 #ifndef ALPHA_LINUX_CXX
@@ -56,6 +58,7 @@
 #include "party.h"
 #include "version.h"
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -74,6 +77,7 @@ using std::strncpy;
 using std::time_t;
 using std::tm;
 using std::time_t;
+#endif
 
 // Save game compression level
 extern int save_compression;

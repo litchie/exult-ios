@@ -89,6 +89,7 @@
 #include "objserial.h"
 #endif
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -105,6 +106,7 @@ using std::string;
 using std::strlen;
 using std::srand;
 using std::vector;
+#endif
 
 					// THE game window:
 Game_window *Game_window::game_window = 0;
@@ -1783,20 +1785,20 @@ void Game_window::teleport_party
 
 int Game_window::get_party
 	(
-	Actor **list,			// Room for 9.
+	Actor **a_list,			// Room for 9.
 	int avatar_too			// 1 to include Avatar too.
 	)
 	{
 	int n = 0;
 	if (avatar_too && main_actor)
-		list[n++] = main_actor;
+		a_list[n++] = main_actor;
 	int cnt = party_man->get_count();
 	for (int i = 0; i < cnt; i++)
 		{
 		int party_member = party_man->get_member(i);
 		Actor *person = get_npc(party_member);
 		if (person)
-			list[n++] = person;
+			a_list[n++] = person;
 		}
 	return n;			// Return # actually stored.
 	}
@@ -2280,10 +2282,10 @@ void Game_window::remove_nearby_npc
 
 void Game_window::get_nearby_npcs
 	(
-	Actor_queue& list
+	Actor_queue& a_list
 	)
 	{
-	npc_prox->get_all(list);
+	npc_prox->get_all(a_list);
 	}
 
 /*

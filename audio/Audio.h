@@ -128,6 +128,7 @@ public:
 	}
 
 	int		get_sample_rate() { return actual.freq; }
+	bool	is_stereo() { return actual.channels == 2; }
 
 	MyMidiPlayer *get_midi() {return midi;}
 

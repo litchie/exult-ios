@@ -35,8 +35,10 @@
 #include "databuf.h"
 #include "ucsched.h"
 
+#ifndef UNDER_CE
 using std::rand;
 using std::ostream;
+#endif
 
 /*
  *	Delete all contents.

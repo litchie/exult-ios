@@ -57,11 +57,13 @@
 #include "stackframe.h"
 #include "party.h"
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::rand;
 using std::strchr;
+#endif
 
 Barge_object *Get_barge	(Game_object *obj);
 extern Usecode_value no_ret;

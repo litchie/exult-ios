@@ -22,7 +22,7 @@
 #  include <config.h>
 #endif
 
-#ifdef USE_EXULTSTUDIO
+#if defined(USE_EXULTSTUDIO) && !defined(WIN32)
 
 #include <iostream>			/* Debugging messages */
 #include <X11/X.h>

@@ -37,12 +37,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <map>
 #include <string>
 
+#ifndef UNDER_CE
 using std::map;
 using std::ostream;
 using std::rand;
-
 using std::endl;
 using std::cout;
+#endif
 
 
 
@@ -121,6 +122,7 @@ void Object_sfx::set_obj
 					// Start playing, and repeat.
 		sfx = Audio::get_ptr()->play_sound_effect(sfxnum, MIX_MAX_VOLUME, dir, -1);
 		if(sfx >= 0)
+
 			Mix_Volume(sfx, volume);
 		}
 	else				// Set new volume, position.

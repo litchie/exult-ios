@@ -137,7 +137,7 @@ private:
 	void					HandlePlay();
 	void					HandleStop();
 
-	uint32					GenerateSamples(uint32 count_required);
+	uint32					GenerateSamples(uint32 count_required, uint32 sample_rate);
 	void					GetSamples(uint32 samples);
 
 

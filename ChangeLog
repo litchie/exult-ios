@@ -1,3 +1,7 @@
+2004-05-21  Ryan Nunn  <colourles@users.sourceforge.net>
+	* various files: Some minor extremely changes that to compile for 
+	  PocketPC
+	  
 2004-05-10	Darke <darkepaw@users.sf.net>
 	* vec.h objs/objiter.h: gcc3.4 'fixes'.
 

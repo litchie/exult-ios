@@ -59,6 +59,7 @@
 #include "databuf.h"
 #include <fstream>
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -75,6 +76,7 @@ using std::string;
 using std::strlen;
 using std::srand;
 using std::vector;
+#endif
 
 /*
  *	Create a chunk.

@@ -39,9 +39,11 @@
 #include "ucscriptop.h"
 #include "monstinf.h"
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::rand;
+#endif
 
 /*
  *	Create. 
