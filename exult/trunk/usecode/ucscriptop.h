@@ -60,6 +60,7 @@ enum Ucscript_ops
 	speech =	0x56,		// Speech(track#).
 	sfx =		0x58,		// Sound_effect(#).
 	face_dir =	0x59,		// Face_dir(dir), dir=0-7, 0=north.
+	npc_frame =	0x61,		// 61-70:  Set frame, but w/ cur. dir.
 	hit =		0x78,		// Hit(hps, ??).  Item attacked.
 	/*
 	 *	These are (I think) not in the original: 
