@@ -279,7 +279,8 @@ void Audio::Init()
 
 Audio *Audio::self=0;
 
-Audio::Audio() : midi(0)
+Audio::Audio() : speech_enabled(true), music_enabled(true),
+			effects_enabled(false), midi(0)
 {
 	self=this;
 }
@@ -352,10 +353,13 @@ bool	Audio::playing(void)
 }
 
 
-void	Audio::start_music(int num,bool repetition, int bank)
+bool	Audio::start_music(int num,bool repetition, int bank)
 {
-	if(midi)
+	if(music_enabled && midi != 0) {
 		midi->start_music(num,repetition,bank);
+		return true;
+	} else
+		return false;
 }
 
 void	Audio::start_music(const char *fname,int num,bool repetition)
@@ -384,15 +388,18 @@ static void	load_buffer(char *buffer,const char *filename,size_t start,size_t le
 }
 #endif
 
-void	Audio::start_speech(int num,bool wait)
+bool	Audio::start_speech(int num,bool wait)
 {
+	if (!speech_enabled)
+		return false;
 	char	*buf=0;
 	size_t	len;
 	U7object	sample(U7SPEECH,num);
 	if(!sample.retrieve(&buf,len))
-		return;
+		return false;
 	play((Uint8*)buf,len,wait);
 	delete [] buf;
+	return true;
 }
 
 void	Audio::build_speech_vector(void)

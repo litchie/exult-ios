@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "mouse.h"
 #include "game.h"
+#include "Audio.h"
 
 /*
  *	Some gump shape numbers:
@@ -179,7 +180,8 @@ class Combat_gump_button : public Gump_button
 	{
 public:
 	Combat_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, Game::get_game()->get_shape("gumps/combat"), px, py)
+		: Gump_button(par, Game::get_game()->get_shape("gumps/combat"),
+			px, py)
 		{
 		pushed = Game_window::get_game_window()->in_combat();
 		}
@@ -224,7 +226,10 @@ class Yesno_gump_button : public Gump_button
 	int isyes;			// 1 for 'yes', 0 for 'no'.
 public:
 	Yesno_gump_button(Gump_object *par, int px, int py, int yes)
-		: Gump_button(par, yes ? Game::get_game()->get_shape("gumps/yesbtn") :  Game::get_game()->get_shape("gumps/nobtn"), px, py), isyes(yes)
+		: Gump_button(par, yes ? 
+			Game::get_game()->get_shape("gumps/yesbtn") 
+			: Game::get_game()->get_shape("gumps/nobtn"), px, py),
+		  isyes(yes)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -263,7 +268,8 @@ class Quit_gump_button : public Gump_button
 	{
 public:
 	Quit_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, Game::get_game()->get_shape("gumps/quitbtn"), px, py)
+		: Gump_button(par, 
+			Game::get_game()->get_shape("gumps/quitbtn"), px, py)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -275,9 +281,10 @@ public:
 class Sound_gump_button : public Gump_button
 	{
 public:
-	Sound_gump_button(Gump_object *par, int px, int py, int shapenum)
+	Sound_gump_button(Gump_object *par, int px, int py, int shapenum,
+								bool enabled)
 		: Gump_button(par, shapenum, px, py)
-		{  }
+		{ pushed = enabled ? 1 : 0; }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
 	};
@@ -588,7 +595,8 @@ void Sound_gump_button::activate
 	Game_window *gwin
 	)
 	{
-	//+++++++Later.
+	pushed = ((File_gump_object *) parent)->toggle_option(this);
+	parent->paint(gwin);
 	}
 
 /*
@@ -1704,14 +1712,17 @@ void Slider_gump_object::mouse_drag
 
 File_gump_object::File_gump_object
 	(
-	) : Modal_gump_object(0, Game::get_game()->get_shape("gumps/fileio")), pushed_text(0), focus(0), restored(0)
+	) : Modal_gump_object(0, Game::get_game()->get_shape("gumps/fileio")),
+				pushed_text(0), focus(0), restored(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	size_t i;
 	int ty = texty;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++, ty += texth)
 		{
-		names[i] = new Gump_text(this, Game::get_game()->get_shape("gumps/fntext"), textx, ty, 30, 12, 2);
+		names[i] = new Gump_text(this, 
+			Game::get_game()->get_shape("gumps/fntext"), 
+							textx, ty, 30, 12, 2);
 		names[i]->set_text(gwin->get_save_name(i));
 		}
 					// First row of buttons:
@@ -1719,12 +1730,14 @@ File_gump_object::File_gump_object
 	buttons[2] = new Quit_gump_button(this, btn_cols[2], btn_rows[0]);
 					// 2nd row.
 	buttons[3] = new Sound_gump_button(this, btn_cols[0], btn_rows[1], 
-					Game::get_game()->get_shape("gumps/musicbtn"));
+			Game::get_game()->get_shape("gumps/musicbtn"),
+						audio->is_music_enabled());
 	buttons[4] = new Sound_gump_button(this, btn_cols[1], btn_rows[1],
-					Game::get_game()->get_shape("gumps/speechbtn"));
+			Game::get_game()->get_shape("gumps/speechbtn"),
+						audio->is_speech_enabled());
 	buttons[5] = new Sound_gump_button(this, btn_cols[2], btn_rows[1],
-					Game::get_game()->get_shape("gumps/soundbtn"));
-					// +++++Init. the above.
+			Game::get_game()->get_shape("gumps/soundbtn"),
+						audio->are_effects_enabled());
 	}
 
 /*
@@ -1820,6 +1833,38 @@ void File_gump_object::quit
 		return;
 	quitting_time = 1;
 	done = 1;
+	}
+
+/*
+ *	One of the option toggle buttons was pressed.
+ *
+ *	Output:	New state of option (0 or 1).
+ */
+
+int File_gump_object::toggle_option
+	(
+	Gump_button *btn		// Button that was clicked.
+	)
+	{
+	if (btn == buttons[3])		// Music?
+		{
+		bool music = !audio->is_music_enabled();
+		audio->set_music_enabled(music);
+		return music ? 1 : 0;
+		}
+	if (btn == buttons[4])		// Speech?
+		{
+		bool speech = !audio->is_speech_enabled();
+		audio->set_speech_enabled(speech);
+		return speech ? 1 : 0;
+		}
+	if (btn == buttons[5])		// Sound effects?
+		{
+		bool effects = !audio->are_effects_enabled();
+		audio->set_effects_enabled(effects);
+		return effects ? 1 : 0;
+		}
+	return false;			// Shouldn't get here.
 	}
 
 /*

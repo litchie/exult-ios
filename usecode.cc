@@ -2364,10 +2364,11 @@ USECODE_INTRINSIC(restart_game)
 USECODE_INTRINSIC(start_speech)
 {
 	// Start_speech(num).  Also sets speech_track.
+	bool okay = false;
 	speech_track = parms[0].get_int_value();
 	if (speech_track >= 0)
-		audio->start_speech(speech_track);
-	return(Usecode_value(0));	// +++++For now, pretend it failed.
+		okay = audio->start_speech(speech_track);
+	return(Usecode_value(okay ? 1 : 0));
 }
 
 USECODE_INTRINSIC(run_endgame)

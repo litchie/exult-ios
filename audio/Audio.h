@@ -41,6 +41,7 @@ class Audio
 {
 private:
 	static	Audio	*self;
+	bool speech_enabled, music_enabled, effects_enabled;
 	Audio(const Audio &) { throw replication_error("Audio class cannot be duplicated"); };
 	Audio &operator=(const Audio &) { throw replication_error("Audio class cannot be duplicated"); return *this; };
 public:
@@ -60,12 +61,18 @@ public:
 	void	mixfile(const char *fname);
 	bool	playing(void);
 	void	clear(Uint8 *,int);
-	void	start_music(int num,bool continuous,int bank=0);
+	bool	start_music(int num,bool continuous,int bank=0);
 	void	start_music(const char *fname,int num,bool continuous);
 	void	stop_music();
-	void	start_speech(int num,bool wait=false);
+	bool	start_speech(int num,bool wait=false);
 	void	set_external_signal(int);
 	void	terminate_external_signal(void);
+	bool	is_speech_enabled() { return speech_enabled; }
+	void	set_speech_enabled(bool ena) { speech_enabled = ena; }
+	bool	is_music_enabled() { return music_enabled; }
+	void	set_music_enabled(bool ena) { music_enabled = ena; }
+	bool	are_effects_enabled() { return effects_enabled; }
+	void	set_effects_enabled(bool ena) { effects_enabled = ena; }
 
 	ProducerConsumerBuf	*Create_Audio_Stream(void) { return mixer->Create_Audio_Stream(); }
 	void    Destroy_Audio_Stream(Uint32 id) { mixer->Destroy_Audio_Stream(id); }
