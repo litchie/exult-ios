@@ -1285,9 +1285,9 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     722, -1,       Actor::ammo,      OT_Bow,  false, SF_PAPERDOL_VGA,      3,    2,      1, 0 },
 
 
-	// Musket **NEEDS ART**
-	{     278, -1,      Actor::lhand,   OT_Musket,  false, SF_PAPERDOL_VGA,     -1,     0 },
-	{     278, -1,Actor::back2h_spot,   OT_Musket,  false, SF_PAPERDOL_VGA,     -1,     1 },
+	// Musket
+	{     278, -1,      Actor::lhand,   OT_Musket,  false, SF_GAME_FLX,     EXULT_BG_FLX_MUSKET_SHP,     0 },
+	{     278, -1,Actor::back2h_spot,   OT_Musket,  false, SF_GAME_FLX,     EXULT_BG_FLX_MUSKET_SHP,     1 },
 	// Ammunition
 	{     581, -1,       Actor::ammo,   OT_Musket,  false, SF_GAME_FLX,     EXULT_BG_FLX_MUSKET_AMMO_SHP,    0,      1, 1 },
 
