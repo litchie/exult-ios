@@ -1,5 +1,6 @@
 2002-08-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gumps/*: backported unicode conversion for savegame gumps
+	* tools/Makefile.am: don't build ucdump anymore
 
 2002-07-28  Ryan Nunn  <triforce@merlin.net.au>
 	* pathfinder/path.cc : Fixed seriously broken non hash pathfinding (z 
