@@ -2070,6 +2070,11 @@ USECODE_INTRINSIC(set_item_flag)
 		{
 	case Obj_flags::dont_render:
 		obj->set_flag(flag);
+					// Get out of combat mode.
+		if (obj == gwin->get_main_actor() && 
+			Game::get_game_type() == SERPENT_ISLE &&
+							gwin->in_combat())
+			gwin->toggle_combat();
 					// Show change in status.
 		gwin->set_all_dirty();
 		break;
