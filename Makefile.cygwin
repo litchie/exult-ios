@@ -298,7 +298,7 @@ toolsclean:
 	rm -f $(UCXT_OBJS) ucxt.exe
 	rm -f $(UCC_OBJS) ucc.exe ucparse.cc ucparse.h uclex.cc
 	rm -f $(CONFREGRESS_OBJS) confregress.exe
-	rm -f head2data.exe data/u7bgintrinsics.data data/u7siintrinsics.data
+	rm -f head2data.o head2data.exe data/u7bgintrinsics.data data/u7siintrinsics.data
 
 toolsinstall: tools
 	mkdir -p $(U7PATH)/tools
