@@ -68,6 +68,7 @@
 #include "Flex.h"
 #include "Gump.h"
 #include "Gump_manager.h"
+#include "keys.h"
 #include "ucsched.h"			/* Only used to flush objects. */
 
 #include "cheat.h"
@@ -91,7 +92,8 @@ using std::srand;
 using std::vector;
 using std::snprintf;
 
-extern	Configuration *config;
+extern KeyBinder* keybinder;
+extern Configuration *config;
 					// THE game window:
 Game_window *Game_window::game_window = 0;
 
@@ -272,7 +274,7 @@ void Game_window::abort
 	}
 
 void Game_window::init_files()
-	{
+{
 	pal = new Palette();
 	clock.set_palette();		// Set palette for correct time.
 					// Get a bright green.
@@ -380,7 +382,26 @@ void Game_window::init_files()
 
 	}
 
+
+	// initialize keybinder
+	if (keybinder)
+		delete keybinder;
+	keybinder = new KeyBinder();
+
+	std::string d, keyfilename;
+	d = "config/disk/game/"+Game::get_gametitle()+"/keys";
+	config->value(d.c_str(),keyfilename,"(default)");
+	if (keyfilename == "(default)") {
+	  config->set(d.c_str(), keyfilename, true);
+	  keybinder->LoadDefaults();
+	} else {
+	  keybinder->LoadFromFile(keyfilename.c_str());
 	}
+
+	// initialize .wav SFX pack
+	Audio::get_ptr()->Init_sfx();
+
+}
 	
 
 Map_chunk *Game_window::get_chunk(Game_object *obj)
