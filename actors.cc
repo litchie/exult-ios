@@ -2838,7 +2838,7 @@ void Npc_actor::move
 							get_cx(), get_cy());
 					// Move it.
 	Game_object::move(newtx, newty, newlift);
-	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
+	Chunk_object_list *nlist = gwin->get_objects_safely(get_cx(), get_cy());
 	if (nlist != olist)
 		switched_chunks(olist, nlist);
 	}
