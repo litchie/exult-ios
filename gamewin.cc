@@ -1748,11 +1748,19 @@ cout << "Clicked at tile (" << get_scrolltx() + x/tilesize << ", " <<
 		return (0);		// Nothing found.
 					// Find 'best' one.
 	Game_object *obj = found[cnt - 1];
-	for (int i = 0; i < cnt - 1; i++)
-		if (obj->lt(*found[i]) == 1 ||
 					// Try to avoid 'transparent' objs.
-		    shapes.get_info(obj->get_shapenum()).is_transparent())
-			obj = found[i];
+	int trans = shapes.get_info(obj->get_shapenum()).is_transparent();
+	for (int i = 0; i < cnt - 1; i++)
+		if (obj->lt(*found[i]) == 1 || trans)
+			{
+			int ftrans = shapes.get_info(found[i]->get_shapenum()).
+							is_transparent();
+			if (!ftrans || trans)
+				{
+				obj = found[i];
+				trans = ftrans;
+				}
+			}
 	return (obj);
 	}
 
