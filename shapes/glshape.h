@@ -25,6 +25,7 @@
 
 #ifdef HAVE_OPENGL
 
+class Xform_palette;
 class Shape_frame;
 class GL_texshape;
 class Image_buffer8;
@@ -41,10 +42,12 @@ class GL_texshape
 					// Least-recently used chain:
 	GL_texshape *lru_next, *lru_prev;
 					// Create from this source.
-	void create(Image_buffer8 *src, unsigned char *pal);
+	void create(Image_buffer8 *src, unsigned char *pal, 
+				Xform_palette *xforms = 0, int xfcnt = 0);
 public:
 	friend class GL_manager;
-	GL_texshape(Shape_frame *f, unsigned char *pal);
+	GL_texshape(Shape_frame *f, unsigned char *pal, 
+				Xform_palette *xforms = 0, int xfcnt = 0);
 	GL_texshape(Image_buffer8 *src, unsigned char *pal);
 	~GL_texshape();
 	void paint(int px, int py);	// Render at given position.
@@ -57,6 +60,7 @@ class GL_manager
 	{
 	static GL_manager *instance;	// One one of these.
 	int scale;			// Scale for drawing.
+	int max_texsize;		// Largest size allowed.
 	GL_texshape *shapes;		// Shapes in LRU chain.
 	int num_shapes;
 	unsigned char *palette;		// 3*256 bytes (rgb).
@@ -76,7 +80,8 @@ public:
 	void resized(int new_width, int new_height, int new_scale);
 					// Paint a shape & create GL_shape
 					//   for it if necessary.
-	void paint(Shape_frame *frame, int px, int py);
+	void paint(Shape_frame *frame, int px, int py,
+				Xform_palette *xforms = 0, int xfcnt = 0);
 	};
 
 

@@ -46,26 +46,27 @@ const unsigned char transp = 255;	// Transparent pixel.
 void GL_texshape::create
 	(
 	Image_buffer8 *src,		// Source image.
-	unsigned char *pal		// 3*256 bytes (rgb).
+	unsigned char *pal,		// 3*256 bytes (rgb).
+	Xform_palette *xforms,		// Transforms translucent colors if !0.
+	int xfcnt			// Number of xforms.
 	)
 	{
 	assert(pal != 0);
-#if 0	/* +++++Testing */
-	Image_buffer8 test(128, 128);
-	for (int r = 0; r < 16; r++)
-	for (int c = 0; c < 16; c++)
-		test.fill8(16*r + c, 8, 8, c*8, r*8);
-	unsigned char *pixels = test.rgba(pal, transp);
-#else
+	const int xfstart = 0xff - xfcnt;
 					// Convert to rgba.
-	unsigned char *pixels = src->rgba(pal, transp);
-#endif
+	unsigned char *pixels = xforms ? 
+			src->rgba(pal, transp, xfstart, 0xfe, xforms)
+			: src->rgba(pal, transp);
 	GLuint tex;
 	glGenTextures(1, &tex);		// Generate (empty) texture.
 	texture = tex;
 	glBindTexture(GL_TEXTURE_2D, texture);
+					// +++++Might want GL_RGBA, depending
+					//   on video card.
+					// Need translucency?
+	GLint iformat = xforms ? GL_RGBA4 : GL_RGB5_A1;
 //	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texsize, texsize, 0, GL_RGBA,
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB5_A1,texsize, texsize, 0, GL_RGBA,
+	glTexImage2D(GL_TEXTURE_2D, 0, iformat, texsize, texsize, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, pixels);
 	delete pixels;
 					// Linear filtering.
@@ -86,7 +87,9 @@ void GL_texshape::create
 GL_texshape::GL_texshape
 	(
 	Shape_frame *f,
-	unsigned char *pal		// 3*256 bytes (rgb).
+	unsigned char *pal,		// 3*256 bytes (rgb).
+	Xform_palette *xforms,		// Transforms translucent colors if !0.
+	int xfcnt			// Number of xforms.
 	) : frame(f), lru_next(0), lru_prev(0)
 	{
 	int w = frame->get_width(), h = frame->get_height();
@@ -100,7 +103,7 @@ GL_texshape::GL_texshape
 					// ++++Guessing a bit on the offset:
 	frame->paint(&buf8, texsize - frame->get_xright() - 1,
 					texsize - frame->get_ybelow() - 1);
-	create(&buf8, pal);
+	create(&buf8, pal, xforms, xfcnt);
 	}
 
 /*
@@ -181,6 +184,9 @@ GL_manager::GL_manager
 	{
 	assert (instance == 0);		// Should only be one.
 	instance = this;
+	GLint max_size;
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_size);
+	max_texsize = max_size;
 	glShadeModel(GL_SMOOTH);	// Smooth shading.
 	glClearColor(1, 1, 1, 0);	// Background is white.
 	glClearDepth(1);
@@ -296,18 +302,22 @@ static void Paint_image
 void GL_manager::paint
 	(
 	Shape_frame *frame,
-	int px, int py			// 'Pixel' position from top-left.
+	int px, int py,			// 'Pixel' position from top-left.
+	Xform_palette *xforms,		// Transforms translucent colors if !0.
+	int xfcnt			// Number of xforms.
 	)
 	{
 	GL_texshape *tex = frame->glshape;
 	if (!tex)			// Need to create texture?
 		{
-		if (frame->get_width() > 256 || frame->get_height() > 256)
+		if (frame->get_width() > max_texsize || 
+		    frame->get_height() > max_texsize)
 			{		// Too big?  Just paint it now.
 			Paint_image(frame, px, py, palette, scale);
 			return;
 			}
-		frame->glshape = tex = new GL_texshape(frame, palette);
+		frame->glshape = tex = new GL_texshape(frame, palette, 
+							xforms, xfcnt);
 		num_shapes++;
 		//++++++When 'too many', we'll free LRU here.
 		}

@@ -96,7 +96,9 @@ public:
 
 	void paint_rle (int xoff, int yoff, unsigned char *in);
 					// Convert to 32-bit rgba.
-	unsigned char *rgba(unsigned char *pal, unsigned char transp);
+	unsigned char *rgba(unsigned char *pal, unsigned char transp, 
+		int first_translucent = 256,
+		int last_translucent = 256, Xform_palette *xforms = 0);
 	};
 
 #endif

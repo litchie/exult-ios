@@ -645,7 +645,6 @@ void Image_window::opengl_fill_translucent8
 	Xform_palette& xform		// Transform table.
 	)
 	{
-#if 0	/* +++++I think this is what it should be */
 	glDisable(GL_TEXTURE_2D);	// Disable texture-mapping.
 	int x = destx;			// Left edge.
 	int y = -(desty + srch);
@@ -658,7 +657,6 @@ void Image_window::opengl_fill_translucent8
 		glVertex2i(x, y + srch);
 		}
 	glEnd();
-#endif
 	}
 
 #endif

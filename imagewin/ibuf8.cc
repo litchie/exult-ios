@@ -558,7 +558,12 @@ void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *inptr)
 unsigned char *Image_buffer8::rgba
 	(
 	unsigned char *pal,		// 3*256 bytes (rgbrgbrgb...).
-	unsigned char transp		// Transparent value.
+	unsigned char transp,		// Transparent value.
+	int first_translucent,		// Palette index of 1st trans. color.
+	int last_translucent,		// Index of last trans. color.
+	Xform_palette *xforms		// Transformers.  Need same # as
+					//   (last_translucent - 
+					//    first_translucent + 1).
 	)
 	{
 	int cnt = line_width*height;	// Allocate destination buffer.
@@ -569,21 +574,25 @@ unsigned char *Image_buffer8::rgba
 		{
 		unsigned char pix = *pixels++;
 		if (pix == transp)	// Transparent?  Store Alpha=0.
+			{
 			*ptr32++ = 0;
+			continue;
+			}
+		unsigned char r,g,b,a;	// Pieces of the color.
+		if (pix >= first_translucent && pix <= last_translucent)
+			{		// Get actual color & alpha from tbl.
+			Xform_palette& xf = xforms[pix - first_translucent];
+			r = xf.r; g = xf.g; b = xf.b; a = xf.a;
+			}
 		else
-			*ptr32++ = 
-#if 0
-				(static_cast<uint32>(pal[3*pix])<<24) +
-				(static_cast<uint32>(pal[3*pix + 1]) << 16) +
-				(static_cast<uint32>(pal[3*pix + 2]) << 8) +
-				   0xff;	// Alpha = opaque.
-#else
-				(static_cast<uint32>(pal[3*pix + 0])<<0) +
-				(static_cast<uint32>(pal[3*pix + 1]) << 8) +
-				(static_cast<uint32>(pal[3*pix + 2]) << 16) +
-					// Alpha = opaque.
-				(static_cast<uint32>(0xff) << 24);
-#endif
+			{
+			r = pal[3*pix]; g = pal[3*pix+1]; b = pal[3*pix + 2];
+			a = 255;
+			}
+		*ptr32++ = 	(static_cast<uint32>(r)<<0) +
+				(static_cast<uint32>(g) << 8) +
+				(static_cast<uint32>(b) << 16) +
+				(static_cast<uint32>(a) << 24);
 		}
 	return reinterpret_cast<unsigned char *>(buf32);
 	}
