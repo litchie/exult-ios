@@ -28,7 +28,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include "../autoconfig.h"
 #endif
 
-#include "../alpha_kludges.h"
+#ifdef ALPHA_LINUX_CXX
+#  include "../alpha_kludges.h"
+#endif
 
 #include <vector>
 #include "SDL_mapping.h"
@@ -99,7 +101,7 @@ public:
 	void    Destroy_Audio_Stream(uint32 id) { if(mixer) mixer->Destroy_Audio_Stream(id); }
 	bool	is_playing(uint32 id) { return !mixer?0:mixer->is_playing(id); }
 
-	static	const	unsigned int	ringsize=3000;
+//	static	const	unsigned int	ringsize=3000;
 //	static	const	int	samplerate=11025;
 //	static	const	int	persecond=2;
 //	static	const	int	buffering_unit=1024;

@@ -42,10 +42,11 @@ private:
 	typedef std::list<ProducerConsumerBuf *>	pcb_list;
 	Mixer(const Mixer &m);	// Cannot call me
 	pcb_list	audio_streams;
+	uint8*		temp_buffer;
 public:
-	Mixer();
+	//Mixer();
 	Mixer(uint32, uint32, uint8);
-	Mixer(size_t ringsize,size_t bufferlength);
+	//Mixer(size_t ringsize,size_t bufferlength);
 	~Mixer();
 
 	size_t	buffer_length;

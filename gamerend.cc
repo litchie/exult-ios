@@ -75,21 +75,21 @@ int Game_window::paint_map
 	int light_sources = 0;		// Count light sources found.
 					// Get chunks to start with, starting
 					//   1 tile left/above.
-	int start_chunkx = (scrolltx + x/tilesize - 1)/tiles_per_chunk;
+	int start_chunkx = (scrolltx + x/c_tilesize - 1)/c_tiles_per_chunk;
 	if (start_chunkx < 0)
 		start_chunkx = 0;
-	int start_chunky = (scrollty + y/tilesize - 1)/tiles_per_chunk;
+	int start_chunky = (scrollty + y/c_tilesize - 1)/c_tiles_per_chunk;
 	if (start_chunky < 0)
 		start_chunky = 0;
 					// End 8 tiles to right.
-	int stop_chunkx = 1 + (scrolltx + (x + w + tilesize - 2)/tilesize + 
-					tiles_per_chunk/2)/tiles_per_chunk;
-	int stop_chunky = 1 + (scrollty + (y + h + tilesize - 2)/tilesize + 
-					tiles_per_chunk/2)/tiles_per_chunk;
-	if (stop_chunkx > num_chunks)
-		stop_chunkx = num_chunks;
-	if (stop_chunky > num_chunks)
-		stop_chunky = num_chunks;
+	int stop_chunkx = 1 + (scrolltx + (x + w + c_tilesize - 2)/c_tilesize + 
+					c_tiles_per_chunk/2)/c_tiles_per_chunk;
+	int stop_chunky = 1 + (scrollty + (y + h + c_tilesize - 2)/c_tilesize + 
+					c_tiles_per_chunk/2)/c_tiles_per_chunk;
+	if (stop_chunkx > c_num_chunks)
+		stop_chunkx = c_num_chunks;
+	if (stop_chunky > c_num_chunks)
+		stop_chunky = c_num_chunks;
 
 	int cx, cy;			// Chunk #'s.
 					// Paint all the flat scenery.
@@ -164,9 +164,9 @@ inline void Game_window::paint_tile
 	if (!id.is_invalid())
 		{			// Draw flat.
 		Shape_frame *shape = get_shape(id);
-		win->copy8(shape->data, tilesize, tilesize, 
-					xoff + tilex*tilesize,
-					yoff + tiley*tilesize);
+		win->copy8(shape->data, c_tilesize, c_tilesize, 
+					xoff + tilex*c_tilesize,
+					yoff + tiley*c_tilesize);
 		}
 	}
 
@@ -179,15 +179,15 @@ void Game_window::paint_chunk_flats
 	int cx, int cy			// Chunk coords (0 - 12*16).
 	)
 	{
-	int xoff = (cx*tiles_per_chunk - get_scrolltx())*tilesize;
-	int yoff = (cy*tiles_per_chunk - get_scrollty())*tilesize;
+	int xoff = (cx*c_tiles_per_chunk - get_scrolltx())*c_tilesize;
+	int yoff = (cy*c_tiles_per_chunk - get_scrollty())*c_tilesize;
 	Chunk_object_list *olist = get_objects(cx, cy);
 					// Go through array of tiles.
-	for (int tiley = 0; tiley < tiles_per_chunk; tiley++)
-		for (int tilex = 0; tilex < tiles_per_chunk; tilex++)
+	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
+		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			paint_tile(olist, tilex, tiley, xoff, yoff);
 
-	Flat_object_iterator next(olist);// Now do flat RLE objects.
+	Flat_object_iterator next(olist->get_objects(), olist->get_first_nonflat());// Now do flat RLE objects.
 	Game_object *obj;
 	while ((obj = next.get_next()) != 0)
 		obj->paint(this);
@@ -202,26 +202,26 @@ void Game_window::paint_dungeon_chunk_flats
 	int cx, int cy			// Chunk coords (0 - 12*16).
 	)
 	{
-	int xoff = (cx*tiles_per_chunk - get_scrolltx())*tilesize;
-	int yoff = (cy*tiles_per_chunk - get_scrollty())*tilesize;
+	int xoff = (cx*c_tiles_per_chunk - get_scrolltx())*c_tilesize;
+	int yoff = (cy*c_tiles_per_chunk - get_scrollty())*c_tilesize;
 	Chunk_object_list *olist = get_objects(cx, cy);
 	if (!olist->has_dungeon())	// No dungeon in this chunk?
 		{
-		const int w = tilesize*tiles_per_chunk;
+		const int w = c_tilesize*c_tiles_per_chunk;
 		win->fill8(0, w, w, xoff, yoff);
 		return;
 		}
 					// Go through array of tiles.
-	for (int tiley = 0; tiley < tiles_per_chunk; tiley++)
-		for (int tilex = 0; tilex < tiles_per_chunk; tilex++)
+	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
+		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			if (olist->in_dungeon(tilex, tiley))
 				paint_tile(olist, tilex, tiley, xoff, yoff);
 			else		// Paint black if outside dungeon.
-				win->fill8(0, tilesize, tilesize, 
-					xoff + tilex*tilesize,
-					yoff + tiley*tilesize);
+				win->fill8(0, c_tilesize, c_tilesize, 
+					xoff + tilex*c_tilesize,
+					yoff + tiley*c_tilesize);
 
-	Flat_object_iterator next(olist);// Now do flat RLE objects.
+	Flat_object_iterator next(olist->get_objects(), olist->get_first_nonflat());// Now do flat RLE objects.
 	Game_object *obj;
 	while ((obj = next.get_next()) != 0)
 		if (olist->in_dungeon(obj))
@@ -249,7 +249,7 @@ int Game_window::paint_chunk_objects
 	int save_skip = skip_lift;
 	if (skip_above_actor < skip_lift)
 		skip_lift = skip_above_actor;
-	Nonflat_object_iterator next(olist);
+	Nonflat_object_iterator next(olist->get_objects(), olist->get_first_nonflat());
 	if (in_dungeon)
 		{
 		while ((obj = next.get_next()) != 0)

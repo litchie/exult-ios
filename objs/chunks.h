@@ -6,7 +6,7 @@
  **/
 
 /*
-Copyright (C) 2000 The Exult Team
+Copyright (C) 2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,10 +23,24 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef INCL_CHUNKS
-#define INCL_CHUNKS	1
+#ifndef CHUNKS_H
+#define CHUNKS_H
 
-#include "objs.h"
+#include "objlist.h"
+
+
+#include "exult_constants.h"
+#include "rect.h"
+#include "shapeid.h"
+#include "tiles.h"
+#include "vec.h"
+
+class Chunk_object_list;
+class Egg_object;
+class Game_object;
+class Npc_actor;
+
+class Npc_actor;
 
 /*
  *	Data cached for a chunk to speed up processing, but which doesn't need
@@ -65,13 +79,13 @@ class Chunk_cache
 					// Set blocked tile's bits.
 	void set_blocked_tile(int tx, int ty, int lift, int ztiles)
 		{
-		blocked[ty*tiles_per_chunk + tx] |= 
+		blocked[ty*c_tiles_per_chunk + tx] |= 
 						(((1 << ztiles) - 1) << lift);
 		}
 					// Clear blocked tile's bits.
 	void clear_blocked_tile(int tx, int ty, int lift, int ztiles)
 		{
-		blocked[ty*tiles_per_chunk + tx] &= 
+		blocked[ty*c_tiles_per_chunk + tx] &= 
 					~(((1 << ztiles) - 1) << lift);
 		}
 					// Get highest lift blocked below a
@@ -91,8 +105,8 @@ class Chunk_cache
 			int tx, int ty, int tz, int from_tx, int from_ty)
 		{
 		unsigned short eggbits = eggs[
-			(ty%tiles_per_chunk)*tiles_per_chunk + 
-							(tx%tiles_per_chunk)];
+			(ty%c_tiles_per_chunk)*c_tiles_per_chunk + 
+							(tx%c_tiles_per_chunk)];
 		if (eggbits)
 			activate_eggs(obj, chunk, tx, ty, tz,
 						from_tx, from_ty,  eggbits);
@@ -122,10 +136,6 @@ class Chunk_object_list
 					class Ordering_info& newinfo);
 public:
 	friend class Npc_actor;
-	friend class Object_iterator;
-	friend class Flat_object_iterator;
-	friend class Nonflat_object_iterator;
-	friend class Object_iterator_backwards;
 	Chunk_object_list(int chunkx, int chunky);
 	~Chunk_object_list();		// Delete everything in chunk.
 	void add(Game_object *obj);	// Add an object.
@@ -136,6 +146,12 @@ public:
 	static void gravity(Rectangle area, int lift);
 					// Is there a roof? Returns height
 	int is_roof(int tx, int ty, int lift);
+
+	Object_list& get_objects()
+		{ return objects; }
+	Game_object* get_first_nonflat() const
+		{ return first_nonflat; }
+
 	int get_cx() const
 		{ return cx; }
 	int get_cy() const
@@ -203,11 +219,11 @@ public:
 					//   called if has_dungeon()==1.
 	int in_dungeon(int tx, int ty)	// Is object within dungeon?
 		{
-		int tnum = ty*tiles_per_chunk + tx;
+		int tnum = ty*c_tiles_per_chunk + tx;
 		return dungeon_bits[tnum/8] & (1 << (tnum%8));
 		}
-	int in_dungeon(Game_object *obj)// Is object within dungeon?
-		{ return in_dungeon(obj->get_tx(), obj->get_ty()); }
+	int in_dungeon(Game_object *obj); // Is object within dungeon?
+
 	};
 
 #endif

@@ -17,7 +17,9 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include "../alpha_kludges.h"
+#ifdef ALPHA_LINUX_CXX
+#  include "../alpha_kludges.h"
+#endif
 
 #include "files/utils.h"
 

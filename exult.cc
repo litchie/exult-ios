@@ -527,8 +527,8 @@ inline void Set_mouse_and_speed
 	if (barge)
 		{			// Use center of barge.
 		gwin->get_shape_location(barge, ax, ay);
-		ax -= barge->get_xtiles()*(tilesize/2);
-		ay -= barge->get_ytiles()*(tilesize/2);
+		ax -= barge->get_xtiles()*(c_tilesize/2);
+		ay -= barge->get_ytiles()*(c_tilesize/2);
 		}
 	else				
 		gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
@@ -1240,7 +1240,7 @@ static void Try_key
 		{
 		Actor *act = party[i];
 		Game_object_vector keys;		// Get keys.
-		if (act->get_objects(keys, 641, qual, -359))
+		if (act->get_objects(keys, 641, qual, c_any_framenum))
 			{
 			keys[0]->activate(gwin->get_usecode());
 			return;
@@ -1431,7 +1431,8 @@ void make_screenshot (bool silent)
 	// look for the next available exult???.pcx file
 	for (i = 0; i < 1000 && !namefound; i++) {
 		sprintf(fn, "exult%03i.pcx", i);
-		if (f = fopen(fn, "rb")) {
+		f = fopen(fn, "rb");
+		if (f) {
 			fclose(f);
 		} else {
 			namefound = true;

@@ -36,6 +36,11 @@ It has been partly rewritten to use an SDL surface as input.
 #include "SDL_endian.h"
 #include <iostream>
 
+using std::cout;
+using std::endl;
+using std::free;
+using std::malloc;
+
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 #define qtohl(x) (x)
 #define qtohs(x) (x)
@@ -131,7 +136,7 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
   Uint8 *cmap = 0;
   Uint8 *pixels;
   Uint8 tmp;
-  int offset_x, offset_y, width, height, pitch;
+  int width, height, pitch;
   int colors, i;
   PCX_Header header;
 

@@ -113,18 +113,18 @@ void Stats_gump::paint
 					// Now show atts. at bottom.
 	const int attsy = 130, attsx0 = 29;
 	int attsx = attsx0;
-	if (act->get_flag(Actor::asleep))
+	if (act->get_flag(Obj_flags::asleep))
 		attsx += Show_atts(gwin, x + attsx, y + attsy, ASLEEP);
-	if (act->get_flag(Actor::poisoned))
+	if (act->get_flag(Obj_flags::poisoned))
 		attsx += Show_atts(gwin, x + attsx, y + attsy, POISONED);
-	if (act->get_flag(Actor::charmed))
+	if (act->get_flag(Obj_flags::charmed))
 		attsx += Show_atts(gwin, x + attsx, y + attsy, CHARMED);
 	if (act->get_property((int) Actor::food_level) <= 4)
 		attsx += Show_atts(gwin, x + attsx, y + attsy, HUNGRY);
-	if (act->get_flag(Actor::protection))
+	if (act->get_flag(Obj_flags::protection))
 		attsx += Show_atts(gwin, x + attsx, y + attsy, PROTECTED);
-	if (act->get_flag(Actor::cursed))
+	if (act->get_flag(Obj_flags::cursed))
 		attsx += Show_atts(gwin, x + attsx, y + attsy, CURSED);
-	if (act->get_flag(Actor::paralyzed))
+	if (act->get_flag(Obj_flags::paralyzed))
 		attsx += Show_atts(gwin, x + attsx, y + attsy, PARALYZED);
 }

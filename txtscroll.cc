@@ -189,7 +189,7 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 		next_time += 120;
 		looping = looping && !wait_delay(0);
 		if(!looping)
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 		starty --;
 	}
 }

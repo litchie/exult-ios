@@ -49,7 +49,7 @@ void Time_queue::clear
 
 void Time_queue::add
 	(
-	unsigned long t,		// When entry is to be activated.
+	uint32 t,		// When entry is to be activated.
 	Time_sensitive *obj,		// Object to be added.
 	long ud				// User data.
 	)
@@ -136,7 +136,7 @@ int Time_queue::find
 
 void Time_queue::activate0
 	(
-	unsigned long curtime		// Current time.
+	uint32 curtime		// Current time.
 	)
 	{
 	if(data.size()==0)

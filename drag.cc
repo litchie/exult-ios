@@ -268,14 +268,14 @@ void Game_window::drop
 	extern int Prompt_for_number(int, int, int, int);
 					// Get orig. loc. info.
 	int oldcx = dragging->get_cx(), oldcy = dragging->get_cy();
-	int oldtx = oldcx*tiles_per_chunk + dragging->get_tx(),
-	    oldty = oldcy*tiles_per_chunk + dragging->get_ty(),
+	int oldtx = oldcx*c_tiles_per_chunk + dragging->get_tx(),
+	    oldty = oldcy*c_tiles_per_chunk + dragging->get_ty(),
 	    oldtz = dragging->get_lift();
 	bool dropped = false;			// 1 when dropped.
 	bool dropped_in_something = false;	// For detecting theft.
 	Game_object *to_drop = dragging;// If quantity, split it off.
-	int okay_to_take = to_drop->get_flag(Game_object::okay_to_take),
-	    okay_to_move = to_drop->get_flag(Game_object::okay_to_move);
+	int okay_to_take = to_drop->get_flag(Obj_flags::okay_to_take),
+	    okay_to_move = to_drop->get_flag(Obj_flags::okay_to_move);
 					// Save original footprint.
 	Rectangle old_foot(0, 0, 0, 0);
 	if (!dragging_gump)		// Get old footprint, top in world.
@@ -380,10 +380,10 @@ bool Game_window::drop_at_lift
 	{
 	x += at_lift*4 - 1;		// Take lift into account, round.
 	y += at_lift*4 - 1;
-	int tx = scrolltx + x/tilesize;
-	int ty = scrollty + y/tilesize;
-	int cx = (scrolltx + x/tilesize)/tiles_per_chunk;
-	int cy = (scrollty + y/tilesize)/tiles_per_chunk;
+	int tx = scrolltx + x/c_tilesize;
+	int ty = scrollty + y/c_tilesize;
+	int cx = (scrolltx + x/c_tilesize)/c_tiles_per_chunk;
+	int cy = (scrollty + y/c_tilesize)/c_tiles_per_chunk;
 	Chunk_object_list *chunk = get_objects(cx, cy);
 	int lift;			// Can we put it here?
 	Shape_info& info = shapes.get_info(to_drop->get_shapenum());
@@ -398,7 +398,7 @@ bool Game_window::drop_at_lift
 		{
 #if 0
 //		to_drop->set_lift(lift);
-//		int rtx = tx%tiles_per_chunk, rty = ty%tiles_per_chunk;
+//		int rtx = tx%c_tiles_per_chunk, rty = ty%c_tiles_per_chunk;
 //		to_drop->set_shape_pos(rtx, rty);
 //		chunk->add(to_drop);
 #else

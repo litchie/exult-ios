@@ -138,7 +138,7 @@ void ExultMenu::setup()
 		pal.apply();
 		int entry = menu.handle_events(gwin,menu_mouse);
 		if(entry==ok_button) {
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			gwin->clear_screen();
 			// Palette fades
 			gwin->set_fades_enabled(palfades->get_choice()==1);
@@ -161,7 +161,7 @@ void ExultMenu::setup()
 			calc_win();
 			return;
 		} else if (entry==cancel_button) {
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			gwin->clear_screen();
 			return;
 		}
@@ -179,7 +179,7 @@ Exult_Game ExultMenu::run()
 	
 	gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 0));
 	pal.load("<DATA>/exult.flx",5);
-	pal.fade_in(30);
+	pal.fade_in(c_fade_in_time);
 	wait_delay(2000);
 	MenuList *menu = new MenuList();
 		
@@ -198,25 +198,25 @@ Exult_Game ExultMenu::run()
 		switch(menu->handle_events(gwin, menu_mouse)) {
 		case 5:
 		case -1: // Exit
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
-			exit(0);
+			std::exit(0);
 		case 0: // Black Gate
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			sel_game = BLACK_GATE;
 			break;
 		case 1: // Serpent Isle
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			sel_game = SERPENT_ISLE;
 			break;
 		case 2: // Setup
-			pal.fade_out(30);
+			pal.fade_out(c_fade_out_time);
 			setup();
 			pal.apply();
 			break;
 		case 3: // Exult Credits
 			{
-				pal.fade_out(30);
+				pal.fade_out(c_fade_out_time);
 				TextScroller credits("<DATA>/exult.flx", 0x03, 
 						     fontManager.get_font("CREDITS_FONT"),
 						     exult_flx.extract_shape(0x13));
@@ -227,7 +227,7 @@ Exult_Game ExultMenu::run()
 			break;
 		case 4: // Exult Quotes
 			{
-				pal.fade_out(30);
+				pal.fade_out(c_fade_out_time);
 				TextScroller quotes("<DATA>/exult.flx", 0x02, 
 						    fontManager.get_font("CREDITS_FONT"),
 			     			    exult_flx.extract_shape(0x13));

@@ -37,7 +37,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "barge.h"
 #include "ucmachine.h"
 #include "gamewin.h"
-#include "objs.h"
 #include "delobjs.h"
 #include "animate.h"
 #include "vec.h"
@@ -586,7 +585,7 @@ Usecode_value Usecode_machine::find_nearby
 	(
 	Usecode_value& objval,		// Find them near this.
 	Usecode_value& shapeval,	// Shape to find, or -1 for any,
-					//  -359 for any npc.
+					//  c_any_shapenum for any npc.
 	Usecode_value& distval,		// Distance in tiles?
 	Usecode_value& mval		// Some kind of mask?  Guessing:
 					//   4 == party members only.
@@ -598,14 +597,14 @@ Usecode_value Usecode_machine::find_nearby
 	Game_object_vector vec;			// Gets list.
 					// It might be (tx, ty, tz).
 	int arraysize = objval.get_array_size();
-	if (arraysize >= 3 && objval.get_elem(0).get_int_value() < num_tiles)
+	if (arraysize >= 3 && objval.get_elem(0).get_int_value() < c_num_tiles)
 		{
 					// Qual is 4th if there.
 		int qual = arraysize == 5 ? objval.get_elem(3).get_int_value()
-							: -359;
+							: c_any_qual;
 					// Frame is 5th if there.
 		int frnum = arraysize == 5 ? objval.get_elem(4).get_int_value()
-							: -359;
+							: c_any_framenum;
 		Game_object::find_nearby(vec,
 			Tile_coord(objval.get_elem(0).get_int_value(),
 				   objval.get_elem(1).get_int_value(),
@@ -701,9 +700,9 @@ Usecode_value Usecode_machine::find_direction
 Usecode_value Usecode_machine::count_objects
 	(
 	Usecode_value& objval,		// The container, or -357 for party.
-	Usecode_value& shapeval,	// Object shape to count (-359=any).
-	Usecode_value& qualval,		// Quality (-359=any).
-	Usecode_value& frameval		// Frame (-359=any).
+	Usecode_value& shapeval,	// Object shape to count (c_any_shapenum=any).
+	Usecode_value& qualval,		// Quality (c_any_qual=any).
+	Usecode_value& frameval		// Frame (c_any_framenum=any).
 	)
 	{
 	long oval = objval.get_int_value();
@@ -737,9 +736,9 @@ Usecode_value Usecode_machine::count_objects
 Usecode_value Usecode_machine::get_objects
 	(
 	Usecode_value& objval,		// The container.
-	Usecode_value& shapeval,	// Object shape to get or -359 for any.
-	Usecode_value& qualval,		// Quality (-359=any).
-	Usecode_value& frameval		// Frame (-359=any).
+	Usecode_value& shapeval,	// Object shape to get or c_any_shapenum for any.
+	Usecode_value& qualval,		// Quality (c_any_qual=any).
+	Usecode_value& frameval		// Frame (c_any_framenum=any).
 	)
 	{
 	Game_object *obj = get_item(objval);
@@ -881,8 +880,8 @@ Usecode_value Usecode_machine::click_on_item
 	if (!Get_click(x, y, Mouse::greenselect))
 		return Usecode_value(0);
 					// Get abs. tile coords. clicked on.
-	int tx = gwin->get_scrolltx() + x/tilesize;
-	int ty = gwin->get_scrollty() + y/tilesize;
+	int tx = gwin->get_scrolltx() + x/c_tilesize;
+	int ty = gwin->get_scrollty() + y/c_tilesize;
 	int tz = 0;
 					// Look for obj. in open gump.
 	Gump *gump = gwin->find_gump(x, y);

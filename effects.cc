@@ -103,8 +103,8 @@ void Sprites_effect::paint
 	)
 	{
 	int lp = pos.tz/2;		// Account for lift.
-	gwin->paint_sprite((pos.tx - lp - gwin->get_scrolltx())*tilesize,
-		(pos.ty - lp - gwin->get_scrollty())*tilesize, 
+	gwin->paint_sprite((pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
+		(pos.ty - lp - gwin->get_scrollty())*c_tilesize, 
 						sprite_num, frame_num);
 	}
 
@@ -122,7 +122,7 @@ Explosion_effect::~Explosion_effect
 		explode->remove_this();
 		}
 	Game_object_vector vec;			// Find objects near explosion.
-	Game_object::find_nearby(vec, pos, -359, 3, 0);
+	Game_object::find_nearby(vec, pos, c_any_shapenum, 3, 0);
 	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		(**it).attacked(0, 704, 0);
@@ -245,10 +245,10 @@ inline void Projectile_effect::add_dirty
 		return;			// Already at destination.
 	Shape_frame *shape = gwin->get_shape(shape_num, frame_num);
 					// Force repaint of prev. position.
-	int liftpix = pos.tz*tilesize/2;
+	int liftpix = pos.tz*c_tilesize/2;
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
-			(pos.tx - gwin->get_scrolltx())*tilesize - liftpix,
-	    (pos.ty - gwin->get_scrollty())*tilesize - liftpix).enlarge(4)));
+			(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
+	    (pos.ty - gwin->get_scrollty())*c_tilesize - liftpix).enlarge(4)));
 	}
 
 /*
@@ -314,9 +314,9 @@ void Projectile_effect::paint
 	{
 	if (pos.tx == -1 || frame_num == -1)
 		return;			// Already at destination.
-	int liftpix = pos.tz*tilesize/2;
-	gwin->paint_shape((pos.tx - gwin->get_scrolltx())*tilesize - liftpix,
-		(pos.ty - gwin->get_scrollty())*tilesize - liftpix, 
+	int liftpix = pos.tz*c_tilesize/2;
+	gwin->paint_shape((pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
+		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix, 
 		shape_num, frame_num);
 	}
 
@@ -346,9 +346,9 @@ void Text_effect::handle_event
 	{
 	Game_window *gwin = (Game_window *) udata;
 					// Repaint slightly bigger rectangle.
-	Rectangle rect((tx - gwin->get_scrolltx() - 1)*tilesize,
-		       (ty - gwin->get_scrollty() - 1)*tilesize,
-			width + 2*tilesize, height + 2*tilesize);
+	Rectangle rect((tx - gwin->get_scrolltx() - 1)*c_tilesize,
+		       (ty - gwin->get_scrollty() - 1)*c_tilesize,
+			width + 2*c_tilesize, height + 2*c_tilesize);
 					// Intersect with screen.
 	rect = gwin->clip_to_win(rect);
 	gwin->remove_effect(this);	// Remove & delete this.
@@ -372,8 +372,8 @@ void Text_effect::paint
 	int len = strlen(ptr);
 	if (ptr[len - 1] == '@')
 		len--;
-	gwin->paint_text(0, ptr, len, (tx - gwin->get_scrolltx())*tilesize,
-				(ty - gwin->get_scrollty())*tilesize);
+	gwin->paint_text(0, ptr, len, (tx - gwin->get_scrolltx())*c_tilesize,
+				(ty - gwin->get_scrollty())*c_tilesize);
 	}
 
 /*
@@ -403,8 +403,8 @@ inline void Raindrop::paint
 	Xform_palette xform		// Transform array.
 	)
 	{
-	uint32 ascrollx = scrolltx*(uint32)tilesize,
-		      ascrolly = scrollty*(uint32)tilesize;
+	uint32 ascrollx = scrolltx*(uint32)c_tilesize,
+		      ascrolly = scrollty*(uint32)c_tilesize;
 	int x = ax - ascrollx, y = ay - ascrolly;
 	if (x < 0 || y < 0 || 
 			x >= iwin->get_width() || y >= iwin->get_height())
@@ -426,8 +426,8 @@ inline void Raindrop::next
 	int w, int h			// Dims. of window.
 	)
 	{
-	uint32 ascrollx = scrolltx*(uint32)tilesize,
-		      ascrolly = scrollty*(uint32)tilesize;
+	uint32 ascrollx = scrolltx*(uint32)c_tilesize,
+		      ascrolly = scrollty*(uint32)c_tilesize;
 	int x = ax - ascrollx, y = ay - ascrolly;
 					// Still on screen?  Restore pix.
 	if (x >= 0 && y >= 0 && x < w && y < h && oldpix != 255)
@@ -699,8 +699,8 @@ inline void Cloud::next
 	if (curtime < start_time)
 		return;			// Not yet.
 					// Get top-left world pos.
-	long scrollx = gwin->get_scrolltx()*tilesize;
-	long scrolly = gwin->get_scrollty()*tilesize;
+	long scrollx = gwin->get_scrolltx()*c_tilesize;
+	long scrolly = gwin->get_scrollty()*c_tilesize;
 	Shape_frame *shape = gwin->get_sprite_shape(CLOUD, frame);
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(
 			shape, wx - scrollx, wy - scrolly).enlarge(4)));
@@ -738,8 +738,8 @@ void Cloud::paint
 	)
 	{
 	if (count > 0)			// Might not have been started.
-		gwin->paint_sprite(wx - gwin->get_scrolltx()*tilesize, 
-			wy - gwin->get_scrollty()*tilesize, CLOUD, frame);
+		gwin->paint_sprite(wx - gwin->get_scrolltx()*c_tilesize, 
+			wy - gwin->get_scrollty()*c_tilesize, CLOUD, frame);
 	}
 
 /*

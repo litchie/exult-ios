@@ -31,35 +31,34 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <cstdarg>
 #  include <cstdio>
 #endif
-#include "gamewin.h"
-#include "game.h"
-#include "egg.h"
-#include "virstone.h"
-#include "animate.h"
-#include "items.h"
-#include "utils.h"
-#include "fnames.h"
-#include "ucmachine.h"
-#include "npcnear.h"
-#include "effects.h"
-#include "segfile.h"
+#include "Astar.h"
 #include "Audio.h"
+#include "Configuration.h"
+#include "actions.h"
+#include "actors.h"
+#include "animate.h"
+#include "barge.h"
+#include "chunks.h"
+#include "dir.h"
+#include "effects.h"
+#include "egg.h"
 #include "files/U7file.h"
 #include "flic/playfli.h"
-#include "Configuration.h"
-#include "schedule.h"
-#include "game.h"
-#include "barge.h"
-#include "actors.h"
-#include "dir.h"
-#include "actions.h"
-#include "paths.h"
-#include "Astar.h"
-#include "chunks.h"
-#include "spellbook.h"
-#include "objiter.h"
-#include "mouse.h"
+#include "fnames.h"
 #include "fontvga.h"
+#include "game.h"
+#include "gamewin.h"
+#include "items.h"
+#include "mouse.h"
+#include "npcnear.h"
+#include "objiter.h"
+#include "paths.h"
+#include "schedule.h"
+#include "segfile.h"
+#include "spellbook.h"
+#include "ucmachine.h"
+#include "utils.h"
+#include "virstone.h"
 
 #include "Actor_gump.h"
 #include "Paperdoll_gump.h"
@@ -218,8 +217,8 @@ void Game_window::init_files()
 		tqueue->add(timer, &clock, (long) this);
 						// Clear object lists, flags.
 #if 1
-		for (int i1 = 0; i1 < num_chunks; i1++)
-			for (int i2 = 0; i2 < num_chunks; i2++)
+		for (int i1 = 0; i1 < c_num_chunks; i1++)
+			for (int i2 = 0; i2 < c_num_chunks; i2++)
 				objects[i1][i2] = 0;
 #else	/* Old way +++++++*/
 		memset((char *) objects, 0, sizeof(objects));
@@ -239,6 +238,11 @@ void Game_window::init_files()
 
 	}
 	
+
+Chunk_object_list *Game_window::get_objects(Game_object *obj)
+{
+	return get_objects(obj->get_cx(), obj->get_cy());
+}
 
 /*
  *	Set/unset barge mode.
@@ -386,9 +390,9 @@ void Game_window::set_scroll_bounds
 					// Let's try 2x2 tiles.
 	scroll_bounds.w = scroll_bounds.h = 2;
 	scroll_bounds.x = scrolltx + 
-			(get_width()/tilesize - scroll_bounds.w)/2;
+			(get_width()/c_tilesize - scroll_bounds.w)/2;
 	scroll_bounds.y = scrollty + 
-			(get_height()/tilesize - scroll_bounds.h)/2;
+			(get_height()/c_tilesize - scroll_bounds.h)/2;
 	}
 
 /*
@@ -404,8 +408,8 @@ void Game_window::clear_world
 	tqueue->clear();		// Remove all entries.
 	clear_dirty();
 					// Delete all chunks (& their objs).
-	for (int y = 0; y < num_chunks; y++)
-		for (int x = 0; x < num_chunks; x++)
+	for (int y = 0; y < c_num_chunks; y++)
+		for (int x = 0; x < c_num_chunks; x++)
 			{
 			delete objects[x][y];
 			objects[x][y] = 0;
@@ -435,17 +439,17 @@ void Game_window::center_view
 	)
 	{
 					// Figure in tiles.
-	int tw = get_width()/tilesize, th = get_height()/tilesize;
+	int tw = get_width()/c_tilesize, th = get_height()/c_tilesize;
 	scrolltx = t.tx - tw/2;
 	scrollty = t.ty - th/2;
 	if (scrolltx < 0)
 		scrolltx = 0;
 	if (scrollty < 0)
 		scrollty = 0;
-	if (scrolltx + tw > num_chunks*tiles_per_chunk)
-		scrolltx = num_chunks*tiles_per_chunk - tw - 1;
-	if (scrollty + th > num_chunks*tiles_per_chunk)
-		scrollty = num_chunks*tiles_per_chunk - th - 1;
+	if (scrolltx + tw > c_num_chunks*c_tiles_per_chunk)
+		scrolltx = c_num_chunks*c_tiles_per_chunk - tw - 1;
+	if (scrollty + th > c_num_chunks*c_tiles_per_chunk)
+		scrollty = c_num_chunks*c_tiles_per_chunk - th - 1;
 	set_scroll_bounds();		// Set scroll-control.
 	Barge_object *old_active_barge = moving_barge;
 	read_map_data();		// This pulls in objects.
@@ -466,9 +470,9 @@ void Game_window::center_view
 	set_in_dungeon(nlist->has_dungeon() && nlist->in_dungeon(tx, ty));
 	paint();
 					// See who's nearby.
-	add_nearby_npcs(scrolltx/tiles_per_chunk, scrollty/tiles_per_chunk,
-		(scrolltx + get_width()/tilesize)/tiles_per_chunk,
-		(scrollty + get_height()/tilesize)/tiles_per_chunk);
+	add_nearby_npcs(scrolltx/c_tiles_per_chunk, scrollty/c_tiles_per_chunk,
+		(scrolltx + get_width()/c_tilesize)/c_tiles_per_chunk,
+		(scrollty + get_height()/c_tilesize)/c_tiles_per_chunk);
 	}
 
 /*
@@ -518,10 +522,41 @@ void Game_window::show_game_location
 	int x, int y			// Point on screen.
 	)
 	{
-	x = get_scrolltx() + x/tilesize;
-	y = get_scrollty() + y/tilesize;
+	x = get_scrolltx() + x/c_tilesize;
+	y = get_scrollty() + y/c_tilesize;
 	cout << "Game location is (" << x << ", " << y << ")"<<endl;
 	}
+
+
+Shape_info& Game_window::get_info(const Game_object *obj)
+{
+	return get_info(obj->get_shapenum());
+}
+
+
+/*
+ *	Get screen area used by object.
+ */
+
+Rectangle Game_window::get_shape_rect(const Game_object *obj)
+{
+	Shape_frame *s = get_shape(*obj);
+	if(!s)
+	{
+		// This is probably fatal.
+#if DEBUG
+		std::cerr << "DEATH! get_shape() returned a NULL pointer: " << __FILE__ << ":" << __LINE__ << std::endl;
+		std::cerr << "Betcha it's a little doggie." << std::endl;
+#endif
+		return Rectangle(0,0,0,0);
+	}
+	int tx, ty, tz;		// Get tile coords.
+	obj->get_abs_tile(tx, ty, tz);
+	int lftpix = 4*tz;
+	return get_shape_rect(s,
+		(tx + 1 - get_scrolltx())*c_tilesize - 1 - lftpix,
+		(ty + 1 - get_scrollty())*c_tilesize - 1 - lftpix);
+}
 
 /*
  *	Get screen area used by a gump.
@@ -531,13 +566,26 @@ Rectangle Game_window::get_gump_rect
 	(
 	Gump *gump
 	)
-	{
+{
 	Shape_frame *s = get_gump_shape (gump->get_shapenum(), gump->get_framenum(), gump->is_paperdoll());
 		
 	return Rectangle(gump->get_x() - s->xleft, 
 			gump->get_y() - s->yabove,
 					s->get_width(), s->get_height());
-	}
+}
+
+/*
+ *	Get screen loc. of object.
+ */
+
+void Game_window::get_shape_location(Game_object *obj, int& x, int& y)
+{
+	int tx, ty, tz;		// Get tile coords.
+	obj->get_abs_tile(tx, ty, tz);
+	int lft = 4*tz;
+	x = (tx + 1 - scrolltx)*c_tilesize - 1 - lft;
+	y = (ty + 1 - scrollty)*c_tilesize - 1 - lft;
+}
 
 /*
  *	Get the map objects and scenery for a superchunk.
@@ -582,8 +630,8 @@ void Game_window::get_chunk_objects
 					// Get list we'll store into.
 	Chunk_object_list *olist = get_objects(cx, cy);
 					// A chunk is 16x16 tiles.
-	for (int tiley = 0; tiley < tiles_per_chunk; tiley++)
-		for (int tilex = 0; tilex < tiles_per_chunk; tilex++)
+	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
+		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			{
 			ShapeID id(data[0], (unsigned char) (data[1]&0x7f));
 			Shape_frame *shape = get_shape(id);
@@ -722,7 +770,7 @@ void Game_window::write_ireg_objects
 							       scy + cy);
 			Game_object *obj;
 					// Restore original order (sort of).
-			Object_iterator_backwards next(chunk);
+			Object_iterator_backwards next(chunk->get_objects(), chunk->get_first_nonflat());
 			while ((obj = next.get_next()) != 0)
 				obj->write_ireg(ireg);
 			Write2(ireg, 0);// End with 2 0's.
@@ -854,7 +902,7 @@ void Game_window::read_ireg_objects
 			obj->set_high_shape (entry[3] >> 7);
 			if (!container && // Special case:  food.
 			    shnum == 377)
-				oflags &= ~(1<<Game_object::okay_to_take);
+				oflags &= ~(1<<Obj_flags::okay_to_take);
 			}
 		else if (entlen == 12)	// Container?
 			{
@@ -862,8 +910,8 @@ void Game_window::read_ireg_objects
 			lift = entry[9] >> 4;
 			quality = entry[7];
 			oflags =	// Override flags (I think).
-			    ((entry[11]&1) << Game_object::invisible) |
-			    (((entry[11]>>3)&1) << Game_object::okay_to_take);
+			    ((entry[11]&1) << Obj_flags::invisible) |
+			    (((entry[11]>>3)&1) << Obj_flags::okay_to_take);
 			if (shnum == 330)// Virtue stone?
 				{
 				Virtue_stone_object *v = 
@@ -1144,9 +1192,9 @@ void Game_window::read
 		usecode->read();		// Usecode.dat (party, global flags).
 
 		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-			main_actor->clear_flag(Actor::dont_render);
+			main_actor->clear_flag(Obj_flags::dont_render);
 		else
-			main_actor->set_flag(Actor::dont_render);
+			main_actor->set_flag(Obj_flags::dont_render);
 	}
 	catch(...)
 	{
@@ -1229,13 +1277,13 @@ void Game_window::read_map_data
 	int scrolltx = get_scrolltx(), scrollty = get_scrollty();
 	int w = get_width(), h = get_height();
 					// Start one tile to left.
-	int firstsx = (scrolltx - 1)/tiles_per_schunk, 
-	    firstsy = (scrollty - 1)/tiles_per_schunk;
+	int firstsx = (scrolltx - 1)/c_fade_out_time, 
+	    firstsy = (scrollty - 1)/c_fade_out_time;
 					// End 8 tiles to right.
-	int lastsx = (scrolltx + (w + tilesize - 2)/tilesize + 
-					tiles_per_chunk/2)/tiles_per_schunk;
-	int lastsy = (scrollty + (h + tilesize - 2)/tilesize + 
-					tiles_per_chunk/2)/tiles_per_schunk;
+	int lastsx = (scrolltx + (w + c_tilesize - 2)/c_tilesize + 
+					c_tiles_per_chunk/2)/c_fade_out_time;
+	int lastsy = (scrollty + (h + c_tilesize - 2)/c_tilesize + 
+					c_tiles_per_chunk/2)/c_fade_out_time;
 	if (lastsx >= 12)		// Don't go past end.
 		lastsx = 11;
 	if (lastsy >= 12)
@@ -1354,11 +1402,11 @@ void Game_window::view_right
 	(
 	)
 	{
-	if (scrolltx + get_width()/tilesize >= num_chunks*tiles_per_chunk - 1)
+	if (scrolltx + get_width()/c_tilesize >= c_num_chunks*c_tiles_per_chunk - 1)
 		return;
 	int w = get_width(), h = get_height();
 					// Get current rightmost chunk.
-	int old_rcx = (scrolltx + (w - 1)/tilesize)/tiles_per_chunk;
+	int old_rcx = (scrolltx + (w - 1)/c_tilesize)/c_tiles_per_chunk;
 	scrolltx++;			// Increment offset.
 	scroll_bounds.x++;
 	if (mode == gump)		// Gump on screen?
@@ -1368,18 +1416,18 @@ void Game_window::view_right
 		}
 	read_map_data();		// Be sure objects are present.
 					// Shift image to left.
-	win->copy(tilesize, 0, w - tilesize, h, 0, 0);
-	dirty.x -= tilesize;		// Shift dirty rect.
+	win->copy(c_tilesize, 0, w - c_tilesize, h, 0, 0);
+	dirty.x -= c_tilesize;		// Shift dirty rect.
 	dirty = clip_to_win(dirty);
 					// Paint 1 column to right.
-//	add_dirty(Rectangle(w - tilesize, 0, tilesize, h));
-	paint(w - tilesize, 0, tilesize, h);
+//	add_dirty(Rectangle(w - c_tilesize, 0, c_tilesize, h));
+	paint(w - c_tilesize, 0, c_tilesize, h);
 					// Find newly visible NPC's.
-	int new_rcx = (scrolltx + (w - 1)/tilesize)/tiles_per_chunk;
+	int new_rcx = (scrolltx + (w - 1)/c_tilesize)/c_tiles_per_chunk;
 	if (new_rcx != old_rcx)
-		add_nearby_npcs(new_rcx, scrollty/tiles_per_chunk, 
+		add_nearby_npcs(new_rcx, scrollty/c_tiles_per_chunk, 
 			new_rcx + 1, 
-		    (scrollty + (h + tilesize - 1)/tilesize)/tiles_per_chunk);
+		    (scrollty + (h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk);
 	}
 void Game_window::view_left
 	(
@@ -1395,28 +1443,28 @@ void Game_window::view_left
 		return;
 		}
 	read_map_data();		// Be sure objects are present.
-	win->copy(0, 0, get_width() - tilesize, get_height(), tilesize, 0);
-	dirty.x += tilesize;		// Shift dirty rect.
+	win->copy(0, 0, get_width() - c_tilesize, get_height(), c_tilesize, 0);
+	dirty.x += c_tilesize;		// Shift dirty rect.
 	dirty = clip_to_win(dirty);
 	int h = get_height();
-//	add_dirty(Rectangle(0, 0, tilesize, h));
-	paint(0, 0, tilesize, h);
+//	add_dirty(Rectangle(0, 0, c_tilesize, h));
+	paint(0, 0, c_tilesize, h);
 					// Find newly visible NPC's.
-	int new_lcx = scrolltx/tiles_per_chunk;
-	if (new_lcx != (scrolltx + 1)/tiles_per_chunk)
-		add_nearby_npcs(new_lcx, scrollty/tiles_per_chunk, 
+	int new_lcx = scrolltx/c_tiles_per_chunk;
+	if (new_lcx != (scrolltx + 1)/c_tiles_per_chunk)
+		add_nearby_npcs(new_lcx, scrollty/c_tiles_per_chunk, 
 			new_lcx + 1, 
-		    (scrollty + (h + tilesize - 1)/tilesize)/tiles_per_chunk);
+		    (scrollty + (h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk);
 	}
 void Game_window::view_down
 	(
 	)
 	{
-	if (scrollty + get_height()/tilesize >= num_chunks*tiles_per_chunk - 1)
+	if (scrollty + get_height()/c_tilesize >= c_num_chunks*c_tiles_per_chunk - 1)
 		return;
 	int w = get_width(), h = get_height();
 					// Get current bottomost chunk.
-	int old_bcy = (scrollty + (h - 1)/tilesize)/tiles_per_chunk;
+	int old_bcy = (scrollty + (h - 1)/c_tilesize)/c_tiles_per_chunk;
 	scrollty++;
 	scroll_bounds.y++;
 	if (mode == gump)		// Gump on screen?
@@ -1425,16 +1473,16 @@ void Game_window::view_down
 		return;
 		}
 	read_map_data();		// Be sure objects are present.
-	win->copy(0, tilesize, w, h - tilesize, 0, 0);
-	dirty.y -= tilesize;		// Shift dirty rect.
+	win->copy(0, c_tilesize, w, h - c_tilesize, 0, 0);
+	dirty.y -= c_tilesize;		// Shift dirty rect.
 	dirty = clip_to_win(dirty);
-//	add_dirty(Rectangle(0, h - tilesize, w, tilesize));
-	paint(0, h - tilesize, w, tilesize);
+//	add_dirty(Rectangle(0, h - c_tilesize, w, c_tilesize));
+	paint(0, h - c_tilesize, w, c_tilesize);
 					// Find newly visible NPC's.
-	int new_bcy = (scrollty + (h - 1)/tilesize)/tiles_per_chunk;
+	int new_bcy = (scrollty + (h - 1)/c_tilesize)/c_tiles_per_chunk;
 	if (new_bcy != old_bcy)
-	add_nearby_npcs(scrolltx/tiles_per_chunk, new_bcy, 
-		    (scrolltx + (w + tilesize - 1)/tilesize)/tiles_per_chunk,
+	add_nearby_npcs(scrolltx/c_tiles_per_chunk, new_bcy, 
+		    (scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk,
 			new_bcy + 1);
 	}
 void Game_window::view_up
@@ -1452,16 +1500,16 @@ void Game_window::view_up
 		}
 	read_map_data();		// Be sure objects are present.
 	int w = get_width();
-	win->copy(0, 0, w, get_height() - tilesize, 0, tilesize);
-	dirty.y += tilesize;		// Shift dirty rect.
+	win->copy(0, 0, w, get_height() - c_tilesize, 0, c_tilesize);
+	dirty.y += c_tilesize;		// Shift dirty rect.
 	dirty = clip_to_win(dirty);
-//	add_dirty(Rectangle(0, 0, w, tilesize));
-	paint(0, 0, w, tilesize);
+//	add_dirty(Rectangle(0, 0, w, c_tilesize));
+	paint(0, 0, w, c_tilesize);
 					// Find newly visible NPC's.
-	int new_tcy = scrollty/tiles_per_chunk;
-	if (new_tcy != (scrollty + 1)/tiles_per_chunk)
-		add_nearby_npcs(scrolltx/tiles_per_chunk, new_tcy,
-		    (scrolltx + (w + tilesize - 1)/tilesize)/tiles_per_chunk,
+	int new_tcy = scrollty/c_tiles_per_chunk;
+	if (new_tcy != (scrollty + 1)/c_tiles_per_chunk)
+		add_nearby_npcs(scrolltx/c_tiles_per_chunk, new_tcy,
+		    (scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk,
 								new_tcy + 1);
 	}
 
@@ -1487,8 +1535,8 @@ void Game_window::start_actor_alt
 	for (dir = 0; dir < 8; dir++)
 	{
 		Tile_coord dest = start.get_neighbor(dir);
-		int cx = dest.tx/tiles_per_chunk, cy = dest.ty/tiles_per_chunk;
-		int tx = dest.tx%tiles_per_chunk, ty = dest.ty%tiles_per_chunk;
+		int cx = dest.tx/c_tiles_per_chunk, cy = dest.ty/c_tiles_per_chunk;
+		int tx = dest.tx%c_tiles_per_chunk, ty = dest.ty%c_tiles_per_chunk;
 
 		Chunk_object_list *clist = get_objects_safely(cx, cy);
 		clist->setup_cache();
@@ -1521,7 +1569,7 @@ void Game_window::start_actor_alt
 			}
 	}
 
-	const int delta = 8*tilesize;	// Trying to avoid 'chicken dance'.
+	const int delta = 8*c_tilesize;	// Trying to avoid 'chicken dance'.
 	switch (dir)
 		{
 		case north:
@@ -1571,8 +1619,8 @@ void Game_window::start_actor_alt
 
 	int lift = main_actor->get_lift();
 	int liftpixels = 4*lift;	// Figure abs. tile.
-	int tx = get_scrolltx() + (ax + liftpixels)/tilesize,
-	    ty = get_scrollty() + (ay + liftpixels)/tilesize;
+	int tx = get_scrolltx() + (ax + liftpixels)/c_tilesize,
+	    ty = get_scrollty() + (ay + liftpixels)/c_tilesize;
 
 	main_actor->walk_to_tile(tx, ty, lift, speed, 0);
 	main_actor->get_followers();
@@ -1588,13 +1636,13 @@ void Game_window::start_actor
 	int speed			// Msecs. between frames.
 	)
 	{
-	if (main_actor->Actor::get_flag(Actor::asleep))
+	if (main_actor->Actor::get_flag(Obj_flags::asleep))
 		return;			// Zzzzz....
 	teleported = 0;
 	int lift = main_actor->get_lift();
 	int liftpixels = 4*lift;	// Figure abs. tile.
-	int tx = get_scrolltx() + (winx + liftpixels)/tilesize,
-	    ty = get_scrollty() + (winy + liftpixels)/tilesize;
+	int tx = get_scrolltx() + (winx + liftpixels)/c_tilesize,
+	    ty = get_scrollty() + (winy + liftpixels)/c_tilesize;
 	if (moving_barge)
 		{			// Want to move center there.
 		Tile_coord atile = moving_barge->get_center(),
@@ -1615,7 +1663,7 @@ void Game_window::start_actor
 		int sched = main_actor->get_schedule_type();
 		if (sched != Schedule::follow_avatar &&
 						sched != Schedule::combat &&
-		    !main_actor->get_flag(Actor::asleep))
+		    !main_actor->get_flag(Obj_flags::asleep))
 			main_actor->set_schedule_type(Schedule::follow_avatar);
 		// Going to use the alternative function for this at the moment
 		start_actor_alt (winx, winy, speed);
@@ -1718,7 +1766,7 @@ void Game_window::activate_item
 	for (int i = 0; i < cnt; i++)
 		{
 		Actor *person = party[i];
-		Game_object *obj = person->find_item(shnum, -359, -359);
+		Game_object *obj = person->find_item(shnum, c_any_qual, c_any_framenum);
 		if (obj)
 			{
 			Game_mode savemode = mode;
@@ -1791,8 +1839,8 @@ Game_object *Game_window::find_object
 	int x, int y			// Pos. on screen.
 	)
 	{
-cout << "Clicked at tile (" << get_scrolltx() + x/tilesize << ", " <<
-		get_scrollty() + y/tilesize << ")"<<endl;
+cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
+		get_scrollty() + y/c_tilesize << ")"<<endl;
 	Game_object *found[100];
 	int cnt = 0;
 	int actor_lift = main_actor->get_lift();
@@ -1840,9 +1888,9 @@ int Game_window::find_objects
 	{
 					// Figure chunk #'s.
 	int start_cx = (get_scrolltx() + 
-				(x + 4*lift)/tilesize)/tiles_per_chunk;
+				(x + 4*lift)/c_tilesize)/c_tiles_per_chunk;
 	int start_cy = (get_scrollty() + 
-				(y + 4*lift)/tilesize)/tiles_per_chunk;
+				(y + 4*lift)/c_tilesize)/c_tiles_per_chunk;
 	Game_object *obj;
 	int cnt = 0;			// Count # found.
 					// Check 1 chunk down & right too.
@@ -1855,7 +1903,7 @@ int Game_window::find_objects
 			Chunk_object_list *olist = objects[cx][cy];
 			if (!olist)
 				continue;
-			Object_iterator next(olist);
+			Object_iterator next(olist->get_objects());
 			while ((obj = next.get_next()) != 0)
 				{
 				if (obj->get_lift() != lift)
@@ -1918,19 +1966,19 @@ void Game_window::show_items
 			obj->get_quality() << ", low lift = " <<
 			obj->get_low_lift() << ", high shape = " <<
 			obj->get_high_shape () << ", okay_to_take = " <<
-			(int) obj->get_flag(Game_object::okay_to_take) << endl;
+			(int) obj->get_flag(Obj_flags::okay_to_take) << endl;
 		cout << "Volume = " << info.get_volume() << endl;
 		cout << "obj = " << (void *) obj << endl;
-		if (obj->get_flag(Game_object::asleep))
+		if (obj->get_flag(Obj_flags::asleep))
 			cout << "ASLEEP" << endl;
 		}
 	else				// Obj==0
 		{
-		int tx = get_scrolltx() + x/tilesize;
-		int ty = get_scrollty() + y/tilesize;
-		int cx = tx/tiles_per_chunk, cy = ty/tiles_per_chunk;
-		tx = tx%tiles_per_chunk;
-		ty = ty%tiles_per_chunk;
+		int tx = get_scrolltx() + x/c_tilesize;
+		int ty = get_scrollty() + y/c_tilesize;
+		int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
+		tx = tx%c_tiles_per_chunk;
+		ty = ty%c_tiles_per_chunk;
 		Chunk_object_list *chunk = get_objects(cx, cy);
 		ShapeID id = chunk->get_flat(tx, ty);
 		shnum = id.get_shapenum();
@@ -1977,7 +2025,7 @@ void Game_window::add_text
 				return;	// Already have text on this.
 
 	Text_effect *txt = new Text_effect(msg, item,
-		get_scrolltx() + x/tilesize, get_scrollty() + y/tilesize,
+		get_scrolltx() + x/c_tilesize, get_scrollty() + y/c_tilesize,
 				8 + get_text_width(0, msg),
 				8 + get_text_height(0));
 	txt->paint(this);		// Draw it.
@@ -2159,7 +2207,7 @@ void Game_window::double_clicked
 		if (mode == conversation)
 			{
 			// We had a conversation with an NPC, set the met flag true (BG Only)
-			if (Game::get_game_type() == BLACK_GATE && obj->get_npc_num() != -1) obj->set_flag (Actor::met);
+			if (Game::get_game_type() == BLACK_GATE && obj->get_npc_num() != -1) obj->set_flag (Obj_flags::met);
 			mode = savemode;
 			paint();
 			}
@@ -2364,7 +2412,7 @@ void Game_window::theft
 		theft_warnings = 0;
 		}
 	Actor_vector npcs;			// See if someone is nearby.
-	main_actor->find_nearby_actors(npcs, -359, 12);
+	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12);
 	Actor *closest_npc = 0;
 	int best_dist = 5000;
 	for (Actor_vector::const_iterator it = npcs.begin(); it != npcs.end();++it)
@@ -2462,9 +2510,9 @@ void Game_window::setup_game
 				Usecode_machine::have_trinsic_password, 1);
 					// Should Avatar be visible?
 	if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-		main_actor->clear_flag(Actor::dont_render);
+		main_actor->clear_flag(Obj_flags::dont_render);
 	else
-		main_actor->set_flag(Actor::dont_render);
+		main_actor->set_flag(Obj_flags::dont_render);
 
 	clock.set_palette();		// Set palette for time-of-day.
 	set_all_dirty();		// Force entire repaint.

@@ -271,8 +271,8 @@ void Egg_object::set_area
 		}
 		}
 					// Don't go outside the world.
-	Rectangle world(0, 0, num_chunks*tiles_per_chunk,
-						num_chunks*tiles_per_chunk);
+	Rectangle world(0, 0, c_num_chunks*c_tiles_per_chunk,
+						c_num_chunks*c_tiles_per_chunk);
 	area = area.intersect(world);
 	}
 
@@ -490,7 +490,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				else
 					chunk->add(nobj);
 				gwin->add_dirty(nobj);
-				nobj->set_flag(okay_to_take);
+				nobj->set_flag(Obj_flags::okay_to_take);
 				}
 			break;
 			}
@@ -532,9 +532,9 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			if (get_quality() == 255)
 				{	// Jump to coords.
 				int schunk = data1 >> 8;
-				pos = Tile_coord((schunk%12)*tiles_per_schunk +
+				pos = Tile_coord((schunk%12)*c_fade_out_time +
 								(data2&0xff), 
-					(schunk/12)*tiles_per_schunk +
+					(schunk/12)*c_fade_out_time +
 								(data2>>8), 0);
 				}
 			else
@@ -733,12 +733,12 @@ void Field_object::field_effect
 		{
 	case poison_field:
 		if (rand()%2)
-			actor->set_flag(Actor::poisoned);
+			actor->set_flag(Obj_flags::poisoned);
 		break;
 	case sleep_field:
 		if (rand()%2)
 			{
-			actor->set_flag(Actor::asleep);
+			actor->set_flag(Obj_flags::asleep);
 //+++No longer needed...	actor->need_timers()->start_sleep();
 			}
 		break;

@@ -3,6 +3,16 @@
 	* usecode/conversation.cc: Included alpha_kludges.h
 	* audio/xmidi.cc: Moved xmidi.h into non-Alpha block
 
+2000-01-08  Max Horn  <max@quendi.de>
+	* exult_constants.h: changed constants to be prefixed by c_
+	* exult_constants.h: added some new constants (esp. for those -359 values!)
+	* lots-o-files: updated to reflect changes to exult_constants.h
+	* removed some dependencies on objs.h (most importantly, from gamewin.h!)
+	* objs/flags.h: added, contains item flags
+	* objs/objlist.h: added, contains Object_list -> enables us to remove more dependencies
+	* audio/Mixer.cc: made temp_buffer (from fill_audio_func) a class member and pre-allocate it
+	  two reasons for this: 1) more efficient 2) no more crash on MacOS
+	
 2001-01-08  Tristan Tarrant <nadir@users.sourceforge.net>
 	* NEWS: updated
 	* audio/midi_drivers/Timidity_binary.cc: tiny useless fixes

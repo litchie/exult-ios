@@ -70,7 +70,7 @@ static void Activate_cached
 		return;			// ++++Since we're not sure about it.
 	const int dist = 16;
 	Egg_vector vec;			// Find all usecode eggs.
-	Game_object::find_nearby(vec, pos, 275, dist, 16, -359, 7);
+	Game_object::find_nearby(vec, pos, 275, dist, 16, c_any_qual, 7);
 	for (Egg_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Egg_object *egg = *it;
