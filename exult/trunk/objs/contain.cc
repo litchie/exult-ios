@@ -25,6 +25,7 @@
 
 #include "contain.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "objiter.h"
 #include "game.h"
 #include "ucmachine.h"
@@ -594,7 +595,7 @@ void Container_game_object::write_ireg
 	out.write((char*)buf, sizeof(buf));
 	write_contents(out);		// Write what's contained within.
 					// Write scheduled usecode.
-	Game_window::write_scheduled(out, this);	
+	Game_map::write_scheduled(out, this);	
 	}
 
 /*

@@ -26,6 +26,7 @@
 #  include <cstring>
 #endif
 #include "gamewin.h"
+#include "gamemap.h"
 #include "game.h"
 #include "monsters.h"
 #include "utils.h"
@@ -371,10 +372,10 @@ void Actor::read
 					//   possibly empty.
 	bool has_contents = fix_first ? (iflag1 && iflag2) : (iflag1&1);
 	if (has_contents)		// Inventory?  Read.
-		gwin->read_ireg_objects(nfile, scx, scy, this);
+		gwin->get_map()->read_ireg_objects(nfile, scx, scy, this);
 	if (!fix_first &&		// Read in scheduled usecode.
 	    (iflag1&2))
-		gwin->read_special_ireg(nfile, this);
+		gwin->get_map()->read_special_ireg(nfile, this);
 	int cx = locx >> 4;		// Get chunk indices within schunk.
 	int cy = locy >> 4;
 					// Get tile #'s.
@@ -614,7 +615,7 @@ void Actor::write
 	write_contents(nfile);		// Write what he holds.
 	namebuf[16] = 0;
 					// Write scheduled usecode.
-	Game_window::write_scheduled(nfile, this, true);
+	Game_map::write_scheduled(nfile, this, true);
 	}
 
 /*

@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "contain.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "chunks.h"
 #include "cheat.h"
 
@@ -132,5 +133,5 @@ void Ireg_game_object::write_ireg
 	buf[7] = (get_flag(Obj_flags::is_temporary) != 0);
 	out.write((char*)buf, sizeof(buf));
 					// Write scheduled usecode.
-	Game_window::write_scheduled(out, this);	
+	Game_map::write_scheduled(out, this);	
 	}

@@ -28,6 +28,7 @@
 #include "objiter.h"
 #include "egg.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "actors.h"
 #include "ucmachine.h"
 #include "items.h"
@@ -243,13 +244,14 @@ void Game_object::move
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
-	Map_chunk *newchunk = gwin->get_chunk_safely(newcx, newcy);
+	Map_chunk *newchunk = gmap->get_chunk_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
 					// Remove from old.
-	Map_chunk *oldchunk = gwin->get_chunk_safely(cx, cy);
+	Map_chunk *oldchunk = gmap->get_chunk_safely(cx, cy);
 	if (oldchunk)
 		{
 		gwin->add_dirty(this);	// Want to repaint old area.
@@ -412,11 +414,12 @@ int Game_object::find_nearby
 		mask = 0;
 	int vecsize = vec.size();
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 	Rectangle tiles(pos.tx - delta, pos.ty - delta, 1 + 2*delta, 1 + 
 								2*delta);
 					// Stay within world.
 	Rectangle world(0, 0, c_num_chunks*c_tiles_per_chunk, 
-						c_num_chunks*c_tiles_per_chunk);
+					c_num_chunks*c_tiles_per_chunk);
 	tiles = tiles.intersect(world);
 					// Figure range of chunks.
 	int start_cx = tiles.x/c_tiles_per_chunk,
@@ -427,7 +430,7 @@ int Game_object::find_nearby
 	for (int cy = start_cy; cy <= end_cy; cy++)
 		for (int cx = start_cx; cx <= end_cx; cx++)
 			{		// Go through objects.
-			Map_chunk *chunk = gwin->get_chunk(cx, cy);
+			Map_chunk *chunk = gmap->get_chunk(cx, cy);
 			Object_iterator next(chunk->get_objects());
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)

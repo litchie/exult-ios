@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "spellbook.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "utils.h"
 #include "game.h"
 #include "Gump_manager.h"
@@ -107,6 +108,6 @@ void Spellbook_object::write_ireg
 	Write4(ptr, flags);
 	out.write((char*)buf, sizeof(buf));
 					// Write scheduled usecode.
-	Game_window::write_scheduled(out, this);	
+	Game_map::write_scheduled(out, this);	
 	}
 
