@@ -1982,13 +1982,12 @@ void Actor::set_type_flags
  *	Call usecode function for an object that's readied/unreadied.
  */
 
-inline void Call_readied_usecode
+void Actor::call_readied_usecode
 	(
 	Game_window *gwin,
-	Actor *npc,
 	int index,
 	Game_object *obj,
-	Usecode_machine::Usecode_events eventid
+	int eventid
 	)
 	{
 	if (index != Actor::rfinger && index != Actor::lfinger && 
@@ -2000,9 +1999,9 @@ inline void Call_readied_usecode
 	if (obj->get_shapenum() == 297)	// Fix special case:  ring of protect.
 		{
 		if (eventid == Usecode_machine::readied)
-			npc->Actor::set_flag(Obj_flags::protection);
+			Actor::set_flag(Obj_flags::protection);
 		else
-			npc->Actor::clear_flag(Obj_flags::protection);
+			Actor::clear_flag(Obj_flags::protection);
 		return;
 		}
 	Shape_info& info = gwin->get_info(obj);
@@ -2011,7 +2010,7 @@ inline void Call_readied_usecode
 		Ready_type type = (Ready_type) info.get_ready_type();
 		if (type != other)
 			gwin->get_usecode()->call_usecode(obj->get_shapenum(),
-					obj, eventid);
+			    obj, (Usecode_machine::Usecode_events) eventid);
 		}
 	}
 
@@ -2025,28 +2024,28 @@ void Actor::init_readied
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	if (spots[lfinger])
-		Call_readied_usecode(gwin, this, lfinger, spots[lfinger],
+		call_readied_usecode(gwin, lfinger, spots[lfinger],
 						Usecode_machine::readied);
 	if (spots[rfinger])
-		Call_readied_usecode(gwin, this, rfinger, spots[rfinger],
+		call_readied_usecode(gwin, rfinger, spots[rfinger],
 						Usecode_machine::readied);
 	if (spots[belt])
-		Call_readied_usecode(gwin, this, belt, spots[belt],
+		call_readied_usecode(gwin, belt, spots[belt],
 						Usecode_machine::readied);
 	if (spots[neck])
-		Call_readied_usecode(gwin, this, neck, spots[neck],
+		call_readied_usecode(gwin, neck, spots[neck],
 						Usecode_machine::readied);
 	if (spots[head])
-		Call_readied_usecode(gwin, this, head, spots[head],
+		call_readied_usecode(gwin, head, spots[head],
 						Usecode_machine::readied);
 	if (spots[hands2_spot])
-		Call_readied_usecode(gwin, this, hands2_spot, 
+		call_readied_usecode(gwin, hands2_spot, 
 				spots[hands2_spot], Usecode_machine::readied);
 	if (spots[lhand])
-		Call_readied_usecode(gwin, this, lhand, spots[lhand],
+		call_readied_usecode(gwin, lhand, spots[lhand],
 						Usecode_machine::readied);
 	if (spots[rhand])
-		Call_readied_usecode(gwin, this, rhand, spots[rhand],
+		call_readied_usecode(gwin, rhand, spots[rhand],
 						Usecode_machine::readied);
 	}
 
@@ -2061,10 +2060,12 @@ void Actor::remove
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int index = Actor::find_readied(obj);	// Remove from spot.
-					// Don't call if doing this from UC.
+					// Note:  gwin->drop() also does this,
+					//   but it needs to be done before
+					//   removal too.
 	if (!gwin->get_usecode()->in_usecode())
-		Call_readied_usecode(gwin, this, index,
-					obj, Usecode_machine::unreadied);
+		call_readied_usecode(gwin, index, obj,
+						Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
 	if (index >= 0)
 		{			// Update light-source count.
@@ -2122,9 +2123,7 @@ int Actor::add
 	spots[index] = obj;		// Store in correct spot.
 	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
 	Game_window *gwin = Game_window::get_game_window();
-	if (!dont_check)		// Watch for initialization.
-		Call_readied_usecode(gwin, this, index, obj,
-						Usecode_machine::readied);
+					// (Readied usecode now in drop().)
 	if (gwin->get_info(obj).is_light_source())
 		light_sources++;
 	return (1);
@@ -2179,10 +2178,10 @@ int Actor::add_readied
 
 	Game_window *gwin = Game_window::get_game_window();
 
-	// Usecode?
-	if (!dont_check)
-		Call_readied_usecode(gwin, this, index, obj,
-						Usecode_machine::readied);
+	// Usecode?  NOTE:  Done in gwin->drop() now.
+//	if (!dont_check)
+//		call_readied_usecode(gwin, index, obj,
+//						Usecode_machine::readied);
 
 	// Lightsource?
 	if (gwin->get_info(obj).is_light_source()) light_sources++;

@@ -1842,7 +1842,8 @@ USECODE_INTRINSIC(path_run_usecode)
 USECODE_INTRINSIC(close_gumps)
 {
 	// Guessing+++++ close all gumps.
-	gwin->get_gump_man()->close_all_gumps();
+	if (!gwin->is_dragging())	// NOT while dragging stuff.
+		gwin->get_gump_man()->close_all_gumps();
 	return(no_ret);
 }
 

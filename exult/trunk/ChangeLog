@@ -1,5 +1,10 @@
 2001-08-06  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* drag.cc,actors.cc: Readied/unreadied Usecode is now called at
+	end of drag.  (Unreadied is also still called in Actor::remove()).
+
+	* usecode/intrinsics.cc: Don't close gumps if dragging something.
+
 	* objs/objs.cc: Modified ::lt() so buttons on pillars show up in
 	Test of Purity.
 
