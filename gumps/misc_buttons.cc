@@ -103,7 +103,7 @@ Combat_button::Combat_button(Gump *par, int px, int py)
 	: Gump_button(par, game->get_shape("gumps/combat"),
 		px, py)
 {
-	pushed = Game_window::get_instance()->in_combat();
+	pushed = gwin->in_combat();
 }
 
 /*
@@ -219,6 +219,6 @@ void Cstats_button::activate
 	Game_window *gwin
 	)
 {
-	int cnt = gwin->get_usecode()->get_party_count();
+	int cnt = ucmachine->get_party_count();
 	gwin->get_gump_man()->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }

@@ -188,8 +188,8 @@ void Newfile_Textbutton::activate(Game_window *gwin)
 
 Newfile_gump::Newfile_gump
 	(
-	) : Modal_gump(0, Game_window::get_instance()->get_width()/2-160,
-			Game_window::get_instance()->get_height()/2-100,
+	) : Modal_gump(0, gwin->get_width()/2-160,
+			gwin->get_height()/2-100,
 			EXULT_FLX_SAVEGUMP_SHP, SF_EXULT_FLX),
 		restored(0), games(0), num_games(0), first_free(0),
 		cur_shot(0), cur_details(0), cur_party(0),
@@ -202,7 +202,6 @@ Newfile_gump::Newfile_gump
 
 	newname[0] = 0;
 
-	Game_window *gwin = Game_window::get_instance();
 	gwin->get_tqueue()->pause(SDL_GetTicks());
 	back = gwin->get_win()->create_buffer(gwin->get_width(), gwin->get_height());
 	gwin->get_win()->get(back, 0, 0);
@@ -231,7 +230,6 @@ Newfile_gump::~Newfile_gump
 	(
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
 	gwin->get_tqueue()->resume(SDL_GetTicks());
 	size_t i;
 	for (i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
@@ -252,7 +250,6 @@ void Newfile_gump::load()
 	if (selected == -2 || selected == -3)
 		return;	
 
-	Game_window *gwin = Game_window::get_instance();
 
 	// Aborts if unsuccessful.
 	if (selected != -1) gwin->restore_gamedat(games[selected].num);
@@ -280,8 +277,8 @@ void Newfile_gump::load()
 	//Reread save game details (quick save gets overwritten)
 	//FreeSaveGameDetails();
 	//LoadSaveGameDetails();
-	//paint(Game_window::get_instance());
-	//Game_window::get_instance()->set_painted();
+	//paint(gwin);
+	//gwin->set_painted();
 }
 
 /*
@@ -294,7 +291,6 @@ void Newfile_gump::save()
 	if (!strlen(newname) || selected == -3)
 		return;	
 
-	Game_window *gwin = Game_window::get_instance();
 
 	// Already a game in this slot? If so ask to delete
 	if (selected != -2) if (!Yesno_gump::ask("Okay to write over existing saved game?"))
@@ -321,8 +317,8 @@ void Newfile_gump::save()
 
 	FreeSaveGameDetails();
 	LoadSaveGameDetails();
-	paint(Game_window::get_instance());
-	Game_window::get_instance()->set_painted();
+	paint(gwin);
+	gwin->set_painted();
 }
 
 /*
@@ -335,7 +331,6 @@ void Newfile_gump::delete_file()
 	if (selected == -1 || selected == -2 || selected == -3)
 		return;	
 
-	Game_window *gwin = Game_window::get_instance();
 
 	// Ask to delete
 	if (!Yesno_gump::ask("Okay to delete saved game?"))
@@ -359,8 +354,8 @@ void Newfile_gump::delete_file()
 
 	FreeSaveGameDetails();
 	LoadSaveGameDetails();
-	paint(Game_window::get_instance());
-	Game_window::get_instance()->set_painted();
+	paint(gwin);
+	gwin->set_painted();
 }
 
 /*
@@ -381,8 +376,8 @@ void Newfile_gump::scroll_line(int dir)
 	cout << "New list position " << list_position << endl;
 #endif
 
-	paint(Game_window::get_instance());
-	Game_window::get_instance()->set_painted();
+	paint(gwin);
+	gwin->set_painted();
 }
 
 /*
@@ -396,7 +391,6 @@ void Newfile_gump::scroll_page(int dir)
 
 void Newfile_gump::PaintSaveName (int line)
 {
-	Game_window *gwin = Game_window::get_instance();
 
 	int	actual_game = line+list_position;
 
@@ -472,7 +466,7 @@ void Newfile_gump::paint
 
 	// Need to ensure that the avatar's shape actually exists
 	if (party && party[0].shape_file == SF_BG_SISHAPES_VGA && 
-		!Shape_manager::get_instance()->can_use_multiracial())
+		!sman->can_use_multiracial())
 	{
 		party[0].shape_file = SF_SHAPES_VGA;
 
@@ -585,7 +579,6 @@ void Newfile_gump::mouse_down
 {
 	slide_start = -1;
 
-	Game_window *gwin = Game_window::get_instance();
 	pushed = Gump::on_button(gwin, mx, my);
 				// Try buttons at bottom.
 	if (!pushed) for (size_t i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
@@ -743,7 +736,6 @@ void Newfile_gump::mouse_up
 {
 	slide_start = -1;
 
-	Game_window *gwin = Game_window::get_instance();
 	if (pushed)			// Pushing a button?
 	{
 		pushed->unpush(gwin);
@@ -808,7 +800,7 @@ void Newfile_gump::mouse_drag
 	if (new_pos != list_position)
 	{
 		list_position = new_pos;
-		paint(Game_window::get_instance());
+		paint(gwin);
 	}
 }
 
@@ -828,7 +820,6 @@ void Newfile_gump::key_down
 	if (selected == -3)
 		return;
 
-	Game_window *gwin = Game_window::get_instance();
 
 	switch (chr) {
 
@@ -977,7 +968,7 @@ int Newfile_gump::AddCharacter(char c)
 	strcat (text, newname+cursor);
 
 	//Now check the width of the text
-	if (Game_window::get_instance()->get_text_width(2, text) >= textw)
+	if (gwin->get_text_width(2, text) >= textw)
 		return 0;
 
 	cursor++;
@@ -989,7 +980,6 @@ void Newfile_gump::LoadSaveGameDetails()
 {
 	int		i;
 
-	Game_window *gwin = Game_window::get_instance();
 
 	// Gamedat Details
 	gwin->get_saveinfo(gd_shot, gd_details, gd_party);
@@ -1003,12 +993,10 @@ void Newfile_gump::LoadSaveGameDetails()
 
 	gwin->get_win()->put(back, 0, 0);
 
-	Usecode_machine *uc = gwin->get_usecode();
-
 	if (gd_details) cur_details->save_count = gd_details->save_count;
 	else cur_details->save_count = 0;
 
-	cur_details->party_size = uc->get_party_count()+1;
+	cur_details->party_size = ucmachine->get_party_count()+1;
 	cur_details->game_day = gwin->get_total_hours() / 24;;
 	cur_details->game_hour = gwin->get_hour();
 	cur_details->game_minute = gwin->get_minute();
@@ -1031,7 +1019,7 @@ void Newfile_gump::LoadSaveGameDetails()
 		if (i == 0)
 			npc = gwin->get_main_actor();
 		else
-			npc = (Npc_actor *) gwin->get_npc( uc->get_party_member(i-1));
+			npc = (Npc_actor *) gwin->get_npc( ucmachine->get_party_member(i-1));
 
 		strncpy (cur_party[i].name, npc->get_npc_name().c_str(), 18);
 		cur_party[i].shape = npc->get_shapenum();

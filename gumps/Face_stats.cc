@@ -66,7 +66,6 @@ Stat_bar::Stat_bar (Gump *par, int px, int py, Actor *a, int s, int m, unsigned 
 	: Gump_button(par, EXULT_FLX_HP_BAR_SHP, px, py, SF_EXULT_FLX),
 	actor(a), prop(s), prop_max(m), colour(c), val(-256), max_val(-256)
 {
-	Game_window *gwin = Game_window::get_instance();
 
 	gwin->add_dirty(get_rect());
 	val = actor->get_property(prop);
@@ -164,7 +163,7 @@ Portrait_button::Portrait_button(Gump *par, int px, int py, Actor *a)
 	pois = actor->get_flag(Obj_flags::poisoned);
 	prot = actor->get_flag(Obj_flags::protection);
 
-	Game_window::get_instance()->add_dirty(get_rect());
+	gwin->add_dirty(get_rect());
 }
 
 Portrait_button::~Portrait_button()
@@ -288,7 +287,7 @@ Face_stats::Face_stats() : Gump(0, 0, 0, 0, SF_GUMPS_VGA)
 	}
 
 
-	create_buttons(Game_window::get_instance());
+	create_buttons(gwin);
 
 	self = this;
 }
@@ -297,7 +296,7 @@ Face_stats::~Face_stats()
 {
 	delete_buttons();
 
-	Game_window::get_instance()->set_all_dirty();
+	gwin->set_all_dirty();
 	self = 0;
 }
 
@@ -349,12 +348,11 @@ bool Face_stats::has_changed(Game_window *gwin)
 	if (resx != gwin->get_width() || resy != gwin->get_height())
 		return true;
 
-	Usecode_machine *uc = gwin->get_usecode();
-
-	if (party_size != uc->get_party_count()) return true;
+	if (party_size != ucmachine->get_party_count()) return true;
 
 	for (int i = 0; i < party_size; i++)
-		if (npc_nums[i+1] != uc->get_party_member(i)) return true;
+		if (npc_nums[i+1] != ucmachine->get_party_member(i)) 
+			return true;
 
 	return false;
 }
@@ -362,7 +360,7 @@ bool Face_stats::has_changed(Game_window *gwin)
 // Delete all the buttons
 void Face_stats::delete_buttons()
 {
-	Game_window::get_instance()->add_dirty(get_rect());
+	gwin->add_dirty(get_rect());
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -389,14 +387,13 @@ void Face_stats::create_buttons(Game_window *gwin)
 	x = 0;
 	y = resy;
 
-	Usecode_machine *uc = gwin->get_usecode();
-	party_size = uc->get_party_count();
+	party_size = ucmachine->get_party_count();
 
 	int num_to_paint = 0;
 
 	// In BG only Npc's 0 to 10 have paperdolls/gumps
 	for (i = 0; i < party_size; i++) {
-		int num = uc->get_party_member(i);
+		int num = ucmachine->get_party_member(i);
 		if (GAME_SI || (num >= 0 && num <=10)) ++num_to_paint;
 	}
 
@@ -414,7 +411,7 @@ void Face_stats::create_buttons(Game_window *gwin)
 
 	for (i = 0; i < party_size; i++)
 	{
-		npc_nums[i+1] = uc->get_party_member(i);
+		npc_nums[i+1] = ucmachine->get_party_member(i);
 		// In BG only Npc's 0 to 10 have paperdolls/gumps
 		if (GAME_SI || (npc_nums[i+1] >= 0 && npc_nums[i+1] <=10)) {
 			pos += width;
@@ -437,7 +434,6 @@ void Face_stats::create_buttons(Game_window *gwin)
 
 bool Face_stats::has_point(int x, int y)
 {
-	Game_window *gwin = Game_window::get_instance();
 
 	for (int i = 0; i < 8; i++)
 		if (party[i] && party[i]->on_button(gwin, x, y)) return true;
@@ -465,7 +461,6 @@ int Face_stats::add
 {
 	if (sx < 0 && sy < 0 && my < 0 && mx < 0) return 0;
 
-	Game_window *gwin = Game_window::get_instance();
 
 	for (int i = 0; i < 8; i++)
 		if (party[i] && party[i]->on_button(gwin, mx, my))
@@ -477,7 +472,6 @@ int Face_stats::add
 
 Container_game_object *Face_stats::find_actor(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_instance();
 
 	for (int i = 0; i < 8; i++) if (party[i] && party[i]->on_button(gwin, mx, my))
 		return party[i]->get_actor();
@@ -496,14 +490,14 @@ void Face_stats::CreateGump()
 	if (!self)
 	{
 		new Face_stats();
-		Game_window::get_instance()->get_gump_man()->add_gump(self);
+		gwin->get_gump_man()->add_gump(self);
 	}
 }
 
 // Removes is exists
 void Face_stats::RemoveGump()
 {
-	if (self) Game_window::get_instance()->get_gump_man()->close_gump(self);
+	if (self) gwin->get_gump_man()->close_gump(self);
 	//delete self;
 }
 

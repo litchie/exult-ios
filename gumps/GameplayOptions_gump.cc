@@ -212,7 +212,6 @@ void GameplayOptions_gump::build_buttons()
 
 void GameplayOptions_gump::load_settings()
 {
-	Game_window *gwin = Game_window::get_instance();
 	fastmouse = gwin->get_fastmouse();
 	mouse3rd = gwin->get_mouse3rd();
 	walk_after_teleport = gwin->get_walk_after_teleport();
@@ -221,7 +220,7 @@ void GameplayOptions_gump::load_settings()
 	doubleclick = 0;
 	paperdolls = false;
 	string pdolls;
-	paperdolls = Shape_manager::get_instance()->get_bg_paperdolls();
+	paperdolls = sman->get_bg_paperdolls();
 	doubleclick = gwin->get_double_click_closes_gumps();
 	rightclick_close = gwin->get_gump_man()->can_right_click_close();
 	text_bg = gwin->get_text_bg()+1;
@@ -275,7 +274,6 @@ GameplayOptions_gump::~GameplayOptions_gump()
 
 void GameplayOptions_gump::save_settings()
 {
-	Game_window *gwin = Game_window::get_instance();
 	gwin->set_text_bg(text_bg-1);
 	config->set("config/gameplay/textbackground", text_bg-1, true);
 	int fps = framerates[frames];
@@ -298,7 +296,6 @@ void GameplayOptions_gump::save_settings()
 	while (facestats != Face_stats::get_state() + 1)
 		Face_stats::AdvanceState();
 	Face_stats::save_config(config);
-	Shape_manager *sman = Shape_manager::get_instance();
 	if (GAME_BG && sman->can_use_paperdolls())
 		sman->set_bg_paperdolls(paperdolls!=false);
 	config->set("config/gameplay/bg_paperdolls", 
@@ -329,7 +326,6 @@ void GameplayOptions_gump::paint(Game_window* gwin)
 
 void GameplayOptions_gump::mouse_down(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_instance();
 	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
@@ -349,7 +345,6 @@ void GameplayOptions_gump::mouse_down(int mx, int my)
 
 void GameplayOptions_gump::mouse_up(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_instance();
 	if (pushed)			// Pushing a button?
 	{
 		pushed->unpush(gwin);
