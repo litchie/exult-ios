@@ -1,14 +1,15 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 08 August 2003(GMT)
+last changed: 24 August 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 08 August 2003
-0.2. - 21 July 2003
-0.3. - 04 May 2003
-0.4. - 04 March 2003
+0.1. - 24 August 2003
+0.2. - 08 August 2003
+0.3. - 21 July 2003
+0.4. - 04 May 2003
+0.5. - 04 March 2003
 
 1. Introduction
 1.1. Important Notice
@@ -84,19 +85,26 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 08 August 2003
-* Why are there now two different snapshots? was deleted as we no longer have two sanpshots.
+0.1. - 24 August 2003
+* Some spell checking done.
+* 1.6. But isn't Pentagram some kind of Exult for U8? changed location of snapshots.
+* 1.11. What is the latest version of Exult? is now 1.1.beta3.
+
+
+
+0.2. - 08 August 2003
+* Why are there now two different snapshots? was deleted as we no longer have two snapshots.
 * 1.11. What is the latest version of Exult? is now 1.1.beta2.
 * 4.4. Known Issues item descriptions in SI standalone.
 
 
 
-0.2. - 21 July 2003
+0.3. - 21 July 2003
 * 1.11. What is the latest version of Exult? is now 1.1.beta1.
 
 
 
-0.3. - 04 May 2003
+0.4. - 04 May 2003
 * 2.7. Do Exult savegames work on all Operating Systems? don't use 1.1.x saves with 1.0.
 * 3.6. Why is the party formation different? Jeff changed the behaviour of it.
 * 5.4. Why can't I talk to the mayor of Skara Brae (BG)? added.
@@ -105,7 +113,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.4. - 04 March 2003
+0.5. - 04 March 2003
 * 1.1. Important Notice this faq is for 1.1.x and not for 1.0 anymore.
 * 1.6. But isn't Pentagram some kind of Exult for U8? here is the link to Pentagram and some more info.
 * 2.7. Do Exult savegames work on all Operating Systems? Savegames are platform independent.
@@ -132,7 +140,7 @@ I'd like to point out that "exult" is also an English verb that means "to rejoic
 
 
 1.3. Is Exult free ?
-Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exult's components and publicly redistribute your work you are required to make the source freely available in turn. Obviously the Exult team would be very grateful if any modifications you make are contributed back to the main code, so that everyone can benefit from them. If you want to work on Exult just send an e-mail to the team. More information on the GNU GPL at http://www.gnu.org/copyleft/gpl.html.
+Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exults components and publicly redistribute your work you are required to make the source freely available in turn. Obviously the Exult team would be very grateful if any modifications you make are contributed back to the main code, so that everyone can benefit from them. If you want to work on Exult just send an e-mail to the team. More information on the GNU GPL at http://www.gnu.org/copyleft/gpl.html.
 
 
 1.4. Does Origin support Exult?
@@ -147,7 +155,7 @@ Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any 
 
 1.6. But isn't Pentagram some kind of Exult for U8?
 Pentagram is a pet project by some members of the Exult team (currently mostly Willem, Colourless, Fingolfin and Darke). It is a map and shapes viewer and nothing more (although the team does indeed invest some time to disassemble the Usecode of U8). It isn't meant to be something similar to Exult. It is rather a clever plan to stir up interest in other coders to carry this basic work further. Any developer is welcome to take a look and contact us.
-Seriously Pentagram is slowly progressing and you can find snapshots of the code and Win32 binaries for it on the Exultdownload page.
+Seriously Pentagram is slowly progressing and you can find snapshots of the code and Win32 binaries for it on the Pentagramsnapshots page.
 On the official Pentagram homepage at http://pentagram.sourceforge.net/ you might find more information on this project in the future. For now you can find some nice screenshots of the map viewer in action.
 
 
@@ -381,7 +389,7 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 * We don't know what all the data in 'weapons.dat' and 'ammo.dat' means, so hit points and damage don't work as well as in the original game.
 * If you run a resolution higher than the original (320x200) some NPCs that are further away from the Avatar may seem to disappear and reappear when you get away or closer to them.
 * With scalers enabled you might encounter slow downs of the game.
-* The speech in the intro is out of synch with the lips animation. But now it matches the speed of the text.
+* The speech in the intro is out of sync with the lips animation. But now it matches the speed of the text.
 * There are reported problems with digital sound effects or speech when using Vortex series sound cards (like the Diamond MX 300) under Win9x/ME. Exult is triggering a bug in the drivers.
 * There is also a problem involving Win9x/ME, C-Media soundcard chipsets and MIDI music. We suggest you first upgrade your drivers to the newest ones. Get them at http://www.cmedia.com.tw/. If that doesn't help, please contact us.
 * Nvidia 40.x reference drivers have issues with all SDL based programs. Use either a later or earlier version of the Nvidia reference drivers.
@@ -443,7 +451,7 @@ The Serpent Staff in SI is a very important item. It doesn't seem like it but it
 
 
 5.10. How to break the plot by doubleclicking some pillars (SI-SS)
-In the dining hall of the fort in the add-on Silver Seed you can doubleclick the pillars. This teleports you to the test in the gargoyle city. If you haven't done this test yet this breaks that plot later on and if you already have it is still a nuissance. So better don't do it.
+In the dining hall of the fort in the add-on Silver Seed you can doubleclick the pillars. This teleports you to the test in the gargoyle city. If you haven't done this test yet this breaks that plot later on and if you already have it is still a nuisance. So better don't do it.
 Obviously a slight oversight of the add-on designers. Could be fixed by changing the usecode and the map slightly.
 
 

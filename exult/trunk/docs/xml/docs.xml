@@ -173,7 +173,7 @@
 					is not well tested.
 				</para>
 				<para>
-					Okay, the default file looks like this (do not copy the **and following
+					The default file looks like this (do not copy the **and following
 					- these are my remarks).
 				</para>
 				<para>
@@ -1415,7 +1415,7 @@
 					The # is the root's prompt. The "exit" command will stop the "su"
 					command and make you return to the "zaurus" user. It is now time to
 					edit the .exult.cfg. A fast way to do it:<br/>
-					<kbd>$ sed -e 's/root/zaurus/' ~/.exult.cfg ~/.exult.cfg_new</kbd><br/>
+					<kbd>$ sed -e 's/root/zaurus/' &gt;~/.exult.cfg ~/.exult.cfg_new</kbd><br/>
 					<kbd>$ mv ~/.exult.cfg_new ~/.exult.cfg</kbd>
 				</para>
 				<para>

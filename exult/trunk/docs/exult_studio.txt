@@ -148,8 +148,8 @@ Of course the terms explained in ReadMe.txt are also used in this Documentation 
 2. Configurations
 2.1. Installation
 * You need Exult and you need to install it properly (see ReadMe.txt). Also make sure that you are using the latest snapshot of the 1.1.x branch of Exult. Exult Studio only works with the latest snapshot, not the latest release.
-* For U*ix platforms you need to build Exult Studio from the source avilable from our source snapshot at http://exult.sourceforge.net/download.php. You will also need the GTK+ library installed as well as libglade.
-* For Win32 platforms (Win9x,ME,2k,XP) you need to download http://exult.sourceforge.net/snapshots/2.0/ExultStudio.exe and install it in the same directory where you installed Exult.
+* For U*ix platforms you need to build Exult Studio from the source available from our source snapshot at http://exult.sourceforge.net/download.php. You will also need the GTK+ library installed as well as libglade.
+* For Win32 platforms (Win9x,ME,2k,XP) you need to download http://exult.sourceforge.net/snapshots/ExultStudio.exe and install it in the same directory where you installed Exult.
 
 
 
@@ -170,12 +170,12 @@ You can also reconnect by selecting File-Connect in Exult Studio's menus.
 
 2.3. Step-by-step instructions to run Exult Studio
 The above instructions may still be too technical for everybody. You have to make sure all these steps are taken care of before you're going to get very far with your world building.
-1. While it is not explicitly needed it is usefull to have a working copy of either BG or SI properly installed onto your computer.
+1. While it is not explicitly needed it is useful to have a working copy of either BG or SI properly installed onto your computer.
 2. Next, you need to have the Exult 1.1x snapshot and the SDL mixer installed properly onto your computer and working correctly. If you are currently playing either BG or SI on your machine this is probably done right. To make sure you have the correct version, ensure that it says 1.10 CVS during Exult's start-up screen.
 3. You need to make sure the newest version of Exult Studio is installed properly onto your computer as well. Exult Studio should be installed in the same directory as the Exult 1.10x snapshot.
 4. You need to set up the path for the patch to save any changes to existing games. See 2.4. What you can do at the moment on how to change exult.cfg accordingly.
 5. In order for Exult Studio to work properly, you need to have Exult running in windowed mode. If you can see your desktop while playing, then you're doing it right.
-6. Make sure you have Cheats enabled. This can be enabled int eh Gameplay options of the Game menu.
+6. Make sure you have Cheats enabled. This can be enabled in the Gameplay options of the Game menu.
 7. While running Exult in windowed mode, hit 'ctrl+alt+m' to enter map-editing mode. Exult Studio should open up if you did everything correctly. In map-editing mode the world is frozen, but you are still able to move your characters around in order to place objects. You're now ready to start your world editing. You should be seeing something like this:
 
 
@@ -269,7 +269,7 @@ Shapes are the basic graphical elements of the game. Each shape has one or more 
 When the selected file contains shapes that have names in their info you can also use the find option to find shapes that have that name (e.g. in shapes.vga you can search for 'door' to find all shapes that have door frames). You can search down or up in the selected file.
 When viewing shapes you can press the button 'Frames' in the lower right corner of Exult Studio to show all the frames of a shape next to each others.
 Shape files also have a special right-click-menu. See 5.1. The shape editor.
-Typicall shape files are:
+Typical shape files are:
 * Sprites.vga displays all the animations that can be used to overlay the screen.
 * Shapes.vga displays the objects that can be placed onto the world.
 * Fonts.vga displays all text graphics used throughout the game.
@@ -422,10 +422,10 @@ An egg in its simplest form is an object that is placed in the world, but is inv
 Currently Exult Studio supports the following types of eggs (more details follow):
 * Monster(spawning) allows for the creation of a creature when certain conditions are met, usually when your character gets within a certain distance of the egg. It also allows for the creation of simple objects like walls or furniture to appear when the Avatar gets near. This could make for some interesting effects.
 * Jukebox sets the background music when the character enters a certain area.
-* Sound Effectand Voice will play a selected sound or voice when the character meets the required values set in the egg creation menu.
+* Sound Effect and Voice will play a selected sound or voice when the character meets the required values set in the egg creation menu.
 * Usecode allows for the activation of custom usecode when an egg's requirements are met. The creation of custom usecode is discussed (though not in depth) at 5.3..
 * Missile create interesting objects like flamethrower traps.
-* Teleport transportthe avatar anywhere on the map when certain conditions are met.
+* Teleport transport the avatar anywhere on the map when certain conditions are met.
 * Weather temporarily set the in-game weather.
 * Path set the destination of a teleport egg to a specific object.
 * Button is used to activate eggs in the vicinity that are set to external
@@ -433,7 +433,7 @@ Currently Exult Studio supports the following types of eggs (more details follow
 
 
 6.3. Add, remove and edit eggs
-The most convenient way to create an egg is to select Create new egg from the edit menu. This will pop up the Exult Egg window. Here you can select the type of egg you wish to create and the properties you are going to give it. When you are happy with the egg press apply and then enter Exult and place the egg wherever you like. To remove an egg, select it while in map-edit mode and press 'ctrl+x' to cut the egg. ou can still paste it elsewhere if you like. To edit an egg, double click it in map editing mode. This will bring up the egg window where you will be able to change an existing egg's attributes.
+The most convenient way to create an egg is to select Create new egg from the edit menu. This will pop up the Exult Egg window. Here you can select the type of egg you wish to create and the properties you are going to give it. When you are happy with the egg press apply and then enter Exult and place the egg wherever you like. To remove an egg, select it while in map-edit mode and press 'ctrl+x' to cut the egg. You can still paste it elsewhere if you like. To edit an egg, double click it in map editing mode. This will bring up the egg window where you will be able to change an existing egg's attributes.
 
 
 6.4. Properties of eggs
@@ -461,7 +461,7 @@ When setting a monster spawn you will most like want to use one of the following
 * Shy Creatures given this setting are afraid of the main character and will slowly wander away from the Avatar.
 * Waiter Give a creature this schedule and watch him run back and forth around a crowded area like he has a purpose.
 * Graze An awful lot like loiter except the character seems to stay a little more to one area.
-* Duel Doesn't do a whole lot by itself, but put two neutral creatures with these settings beside each other and its rumble time. This also works by placing them near training dummies or archery targets. For an extra laugh place 10 spawns each set for 31 guards to appear in duelling mode.
+* Duel Doesn't do a whole lot by itself, but put two neutral creatures with these settings beside each other and its rumble time. This also works by placing them near training dummies or archery targets. For an extra laugh place 10 spawns each set for 31 guards to appear in dueling mode.
 * Patrol A creature given this setting will very slowly wander from place to place.
 
 
