@@ -1225,3 +1225,36 @@ void Game_map::abort_terrain_edits
 			chunk_terrains[i]->abort_edits();
 	}
 
+/*
+ *	Find all unused shapes in game.  This can take a while!!
+ */
+
+void Game_map::find_unused_shapes
+	(
+	)
+	{
+	unsigned char found[1024];	// All possible shapes (for now).
+	memset(found, 0, sizeof(found));
+					// Read in EVERYTHING!
+	for (int sc = 0; sc < c_num_schunks*c_num_schunks; sc++)
+		if (!schunk_read[sc])
+			get_superchunk_objects(sc);
+					// Go through chunks.
+	for (int cy = 0; cy < c_num_chunks; cy++)
+		for (int cx = 0; cx < c_num_chunks; cx++)
+			{
+			Map_chunk *chunk = get_chunk(cx, cy);
+			Recursive_object_iterator all(chunk->get_objects());
+			Game_object *obj;
+			while ((obj = all.get_next()) != 0)
+				{
+				int shnum = obj->get_shapenum();
+				if (shnum >= 0 && shnum < sizeof(found))
+					found[shnum] = 1;
+				}
+			}
+//++++NOTE:  Got to get possible monster shapes.
+	for (int i = 0; i < sizeof(found); i++)
+		if (!found[i])
+			cout << "Shape " << i << " not found in game" << endl;
+	}
