@@ -41,16 +41,37 @@ using std::cout;
 using std::endl;
 
 /*
+ *	Create for a given (newly created) object.
+ */
+
+Dragging_info::Dragging_info
+	(
+	Game_object *newobj		// Object NOT in world.  This is
+					//   dropped, or deleted.
+	) : obj(newobj), is_new(true), gump(0), button(0), old_pos(-1, -1, -1),
+	    old_foot(0, 0, 0, 0), old_lift(-1), quantity(obj->get_quantity()),
+	    paintx(-1000), painty(-1000),
+	    readied_index(-1), mousex(-1), mousey(-1), rect(0, 0, 0, 0),
+	    save(0), okay(true), possible_theft(false)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	rect = gwin->get_shape_rect(obj);
+	rect.enlarge(8);		// Make a little bigger.
+					// Create buffer to backup background.
+	save = gwin->get_win()->create_buffer(rect.w, rect.h);
+	}
+
+/*
  *	Begin a possible drag.
  */
 
 Dragging_info::Dragging_info
 	(
 	int x, int y			// Mouse position.
-	) : obj(0), gump(0), button(0), old_pos(-1, -1, -1),
-	    old_foot(0, 0, 0, 0), quantity(0),
+	) : obj(0), is_new(false), gump(0), button(0), old_pos(-1, -1, -1),
+	    old_foot(0, 0, 0, 0), old_lift(-1), quantity(0),
 	    readied_index(-1), mousex(x), mousey(y), rect(0, 0, 0, 0),
-	    save(0), okay(false)
+	    save(0), okay(false), possible_theft(false)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// First see if it's a gump.
@@ -93,7 +114,11 @@ Dragging_info::Dragging_info
 		old_foot = obj->get_footprint();
 		}
 	if (obj)
+		{
 		quantity = obj->get_quantity();
+					// Save original lift.
+		old_lift = obj->get_outermost()->get_lift();
+		}
 	okay = true;
 	}
 
@@ -144,8 +169,6 @@ bool Dragging_info::start
 				return (false);
 				}
 			}
-		else			// Inside something else?  Set lift.
-			obj->set_lift(owner->get_lift());
 		}
 					// Store original pos. on screen.
 	rect = gump ? (obj ? gump->get_shape_rect(obj) : gump->get_dirty())
@@ -160,17 +183,10 @@ bool Dragging_info::start
 			}
 		else
 			gwin->get_gump_man()->remove_gump(gump);
-	else {			// +++++Really should remove_this(1),
-//		gwin->get_chunk(old_pos.tx/c_tiles_per_chunk,
-//				old_pos.ty/c_tiles_per_chunk)->remove(obj);
+	else
 		obj->remove_this(true);	// This SHOULD work (jsf 21-12-01).
-	}
 					// Make a little bigger.
-	int pad = obj ? 8 : 12;
-	rect.x -= pad;		
-	rect.y -= pad;
-	rect.w += 2*pad;
-	rect.h += 2*pad;
+	rect.enlarge(obj ? 8 : 12);
 	Rectangle crect = gwin->clip_to_win(rect);
 	gwin->paint(crect);		// Paint over obj's. area.
 					// Create buffer to backup background.
@@ -226,7 +242,7 @@ bool Dragging_info::moved
  *		(by buttonpress, drag)
  */
 
-bool Dragging_info::mouse_up
+bool Dragging_info::drop
 	(
 	int x, int y,			// Mouse pos.
 	bool moved			// has mouse moved from starting pos?
@@ -299,9 +315,98 @@ void Dragging_info::put_back
 	if (gump)			// Put back remaining/orig. piece.
 					// And don't check for volume!
 		gump->add(obj, -2, -2, -2, -2, true);
-	else
+	else if (is_new)
+		{
+		obj->set_invalid();	// It's not in the world.
+		obj->remove_this();
+		}
+	else				// Normal object.  Put it back.
 		obj->move(old_pos);
 	obj = 0;			// Just to be safe.
+	is_new = false;
+	}
+
+/*
+ *	Drop object on a gump.
+ *
+ *	Output:	False if not (all) of object was dropped.
+ */
+
+bool Dragging_info::drop_on_gump
+	(
+	int x, int y,			// Mouse position.
+	Game_object *to_drop,		// == obj if whole thing.
+	Gump *on_gump			// Gump to drop it on.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (!Check_weight(gwin, to_drop, on_gump->get_cont_or_actor(x,y)))
+		return false;
+	if (on_gump != gump)		// Not moving within same gump?
+		possible_theft = true;
+					// Add, and allow to combine.
+	if (!on_gump->add(to_drop, x, y, paintx, painty, false, true))
+		{			// Failed.
+		if (to_drop != obj)
+			{		// Watch for partial drop.
+			int nq = to_drop->get_quantity();
+			if (nq < quantity)
+				obj->modify_quantity(quantity - nq);
+			}
+		Mouse::mouse->flash_shape(Mouse::wontfit);
+		return false;
+		}
+	return true;
+	}
+
+/*
+ *	Drop object onto the map.
+ *
+ *	Output:	False if not (all) of object was dropped.
+ */
+
+bool Dragging_info::drop_on_map
+	(
+	int x, int y,			// Mouse position.
+	Game_object *to_drop		// == obj if whole thing.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int max_lift = cheat.in_hack_mover() ? 13 :
+					gwin->get_main_actor()->get_lift() + 4;
+					// Drop where we last painted it.
+	int posx = paintx, posy = painty;
+	if (posx == -1000)		// Unless we never painted.
+		{ posx = x; posy = y; }
+	int lift;
+					// Was it dropped on something?
+	Game_object *found = gwin->find_object(x, y);
+	bool dropped = false;	// 1 when dropped.
+	if (found && found != obj)
+		{
+		if (!Check_weight(gwin, to_drop, found))
+			return false;
+		if (found->drop(to_drop))
+			dropped = possible_theft = true;
+					// Try to place on 'found'.
+		else if ((lift = found->get_lift() +
+			     gwin->get_info(found).get_3d_height()) <= 
+								max_lift)
+			dropped = gwin->drop_at_lift(to_drop,posx, posy, lift);
+		}
+					// Find where to drop it.
+	for (lift = old_lift; !dropped && lift <= max_lift; lift++)
+		dropped = gwin->drop_at_lift(to_drop, posx, posy, lift);
+	if (!dropped)
+		{
+		Mouse::mouse->flash_shape(Mouse::blocked);
+		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(76));
+		return false;
+		}
+					// Moved more than 2 tiles.
+	if (!gump && to_drop->get_tile().distance(old_pos) > 2)
+		possible_theft = true;
+	return true;
 	}
 
 /*
@@ -323,7 +428,6 @@ bool Dragging_info::drop
 					// Get orig. loc. info.
 	int oldcx = old_pos.tx/c_tiles_per_chunk, 
 	    oldcy = old_pos.ty/c_tiles_per_chunk;
-	bool dropped_in_something = false;	// For detecting theft.
 	Game_object *to_drop = obj;	// If quantity, split it off.
 					// Being liberal about taking stuff:
 	int okay_to_move = to_drop->get_flag(Obj_flags::okay_to_take);
@@ -343,57 +447,10 @@ bool Dragging_info::drop
 		if (okay_to_move)	// Make sure copy is okay to take.
 			to_drop->set_flag(Obj_flags::okay_to_take);
 		}
-	if (on_gump)			// Dropping on a gump?
-		{
-		if (!Check_weight(gwin, to_drop, 
-					on_gump->get_cont_or_actor(x,y)))
-			return false;
-					// Add, and allow to combine.
-		if (!on_gump->add(to_drop, x, y, paintx, painty, false, true))
-			{
-			if (to_drop != obj)
-				{	// Watch for partial drop.
-				int nq = to_drop->get_quantity();
-				if (nq < quantity)
-					obj->modify_quantity(quantity - nq);
-				}
-			Mouse::mouse->flash_shape(Mouse::wontfit);
-			return false;
-			}
-		}
-	else
-		{			// Was it dropped on something?
-		int max_lift = cheat.in_hack_mover() ? 13 :
-					gwin->get_main_actor()->get_lift() + 4;
-		int lift;
-		Game_object *found = gwin->find_object(x, y);
-		bool dropped = false;	// 1 when dropped.
-		if (found && found != obj)
-			{
-			if (!Check_weight(gwin, to_drop, found))
-				return false;
-			if (found->drop(to_drop))
-				dropped = dropped_in_something = true;
-					// Try to place on 'found'.
-			else if ((lift = found->get_lift() +
-				     gwin->get_info(found).get_3d_height()) <= 
-								max_lift)
-				dropped = gwin->drop_at_lift(to_drop, 
-							paintx, painty, lift);
-			}
-					// Find where to drop it.
-		for (lift = obj->get_outermost()->get_lift(); 
-					!dropped && lift <= max_lift; lift++)
-			dropped = gwin->drop_at_lift(to_drop, paintx, 
-								painty, lift);
-		if (!dropped)
-			{
-			Mouse::mouse->flash_shape(Mouse::blocked);
-			Audio::get_ptr()->play_sound_effect(
-							Audio::game_sfx(76));
-			return false;
-			}
-		}
+					// Drop it.
+	if (!(on_gump ? drop_on_gump(x, y, to_drop, on_gump)
+			  : drop_on_map(x, y, to_drop)))
+		return false;
 	if (!gump)			// Do eggs where it came from.
 		gwin->get_chunk(oldcx, oldcy)->activate_eggs(obj,
 			    old_pos.tx, old_pos.ty, old_pos.tz, 
@@ -415,10 +472,7 @@ bool Dragging_info::drop
 	if (barge)
 		barge->set_to_gather();	// Refigure what's on barge.
 					// Check for theft.
-	if (!okay_to_move && !cheat.in_hack_mover() &&
-		    (gump != on_gump || dropped_in_something ||
-					// Moving:
-		     (!gump && to_drop->get_tile().distance(old_pos) > 2)))
+	if (!okay_to_move && !cheat.in_hack_mover() && possible_theft)
 		gwin->theft();			
 	if (to_drop == obj)		// Whole thing?
 		{			// Watch for stuff on top of it.
@@ -480,7 +534,7 @@ bool Game_window::drop_dragged
 	{
 	if (!dragging)
 		return false;
-	bool handled = dragging->mouse_up(x, y, moved);
+	bool handled = dragging->drop(x, y, moved);
 	delete dragging;
 	dragging = 0;
 	return handled;
