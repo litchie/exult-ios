@@ -111,7 +111,7 @@ bool Game_window::drag
 			return (false);	// Wait for greater motion.
 		if (dragging)
 			{		// Don't want to move walls.
-			if (!cheat.in_hack_mover() && !dragging->is_dragable())	
+			if (!cheat.in_map_editor() && !dragging->is_dragable())	
 				{
 				Mouse::mouse->flash_shape(Mouse::tooheavy);
 				dragging = 0;
@@ -120,7 +120,7 @@ bool Game_window::drag
 			Game_object *owner = dragging->get_outermost();
 			if (owner == dragging)
 				{
-			    	if (!cheat.in_hack_mover() && !Fast_pathfinder_client::is_grabable(
+			    	if (!cheat.in_map_editor() && !Fast_pathfinder_client::is_grabable(
 					main_actor->get_abs_tile_coord(),
 					dragging->get_abs_tile_coord()))
 					{
@@ -239,7 +239,7 @@ static bool Check_weight
 	Game_object *owner		// Who the new owner will be.
 	)
 	{
-	if (cheat.in_hack_mover())		// hack_mover -> no weight checking
+	if (cheat.in_map_editor())	// map-editor  -> no weight checking
 		return true;
 
 	if (!owner)
@@ -341,7 +341,7 @@ void Game_window::drop
 			get_objects(oldcx, oldcy)->activate_eggs(dragging,
 			    oldtx, oldty, dragging->get_lift(), oldtx, oldty);
 					// Check for theft.
-		if (!okay_to_take && !cheat.in_hack_mover() &&
+		if (!okay_to_take && !cheat.in_map_editor() &&
 		    (dragging_gump != on_gump || dropped_in_something ||
 					// Moving:
 		     (!dragging_gump && !okay_to_move &&
@@ -391,7 +391,7 @@ bool Game_window::drop_at_lift
 					// Allow drop up to 5.
 	if (!Chunk_object_list::is_blocked(info.get_3d_height(), at_lift,
 		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, 
-			lift, MOVE_FLY, 5) && (cheat.in_hack_mover() ||
+			lift, MOVE_FLY, 5) && (cheat.in_map_editor() ||
 					// Check for path to location.
 	    Fast_pathfinder_client::is_grabable(
 		main_actor->get_abs_tile_coord(), Tile_coord(tx, ty, lift))))

@@ -937,8 +937,8 @@ static void Handle_keystroke
 				}
 				break;
 			case 'm':
-				if (ctrl && alt) {  		// Ctrl-Alt-m : hack mover
-					cheat.toggle_hack_mover();
+				if (ctrl && alt) {  		// Ctrl-Alt-m : map editor mode
+					cheat.toggle_map_editor();
 
 				} else if (ctrl && !alt) {	// Ctrl-m : 100 gold coins
 					cheat.create_coins();
@@ -1503,7 +1503,7 @@ void show_cheat_help (void)
 			"alt-i - Toggle infravision\n"
 			"ctrl-l - Level up party\n"
 			"ctrl-m - Get 100 gold coins\n"
-			"ctrl-alt-m - Toggle Hack-Mover\n"
+			"ctrl-alt-m - Toggle Map-Editor mode\n"
 			"ctrl-t - Next time period\n"
 			"alt-t  - Teleport\n"
 			"ctrl-alt-t - Map Teleport\n"
@@ -1539,8 +1539,8 @@ static void Drop_dragged_shape
 	int x, int y			// Mouse coords. within window.
 	)
 	{
-	if (!cheat.in_hack_mover())	// Get into editing mode.
-		cheat.toggle_hack_mover();
+	if (!cheat.in_map_editor())	// Get into editing mode.
+		cheat.toggle_map_editor();
 	x = (x >> scale);		// Watch for scaled window.
 	y = (y >> scale);
 	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;

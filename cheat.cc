@@ -43,7 +43,7 @@ Cheat::Cheat() {
 
   god_mode = false;
   wizard_mode = false;
-  hack_mover = false;
+  map_editor = false;
   infravision = false;
 
   browser = NULL;
@@ -103,14 +103,14 @@ void Cheat::toggle_wizard (void) {
     gwin->center_text("Archwizard Mode Disabled");
 }
 
-void Cheat::toggle_hack_mover (void) {
+void Cheat::toggle_map_editor (void) {
   if (!enabled) return;
 
-  hack_mover = !hack_mover;
-  if (hack_mover)
-    gwin->center_text("Hack-mover Enabled");
+  map_editor = !map_editor;
+  if (map_editor)
+    gwin->center_text("Map Editor Mode Enabled");
   else
-    gwin->center_text("Hack-mover Disabled");			
+    gwin->center_text("Map Editor Mode Disabled");			
 }
 
 void Cheat::toggle_infravision (void) {
@@ -286,7 +286,6 @@ void Cheat::create_coins (void) const {
   gwin->center_text("Added 100 gold coins");
 }
 
-
 void Cheat::create_last_shape (void) const {
   if (!enabled) return;
 
@@ -298,7 +297,6 @@ void Cheat::create_last_shape (void) const {
   } else
     gwin->center_text("Can only create from 'shapes.vga'");
 }
-
 
 void Cheat::delete_object (void) const {
   if (!enabled) return;
