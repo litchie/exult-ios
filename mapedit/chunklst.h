@@ -61,7 +61,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	GtkWidget *chunk_scroll;	// Vertical scrollbar.
 	int num_chunks;			// Total # of chunks.
 					// List of chunks we've read in.
-	vector<unsigned char *> chunklist;
+	std::vector<unsigned char *> chunklist;
 	int chunknum0;			// Chunk # of leftmost in
 					//   displayed list.
 	Chunk_info *info;		// An entry for each chunk drawn.
