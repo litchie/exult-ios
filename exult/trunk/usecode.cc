@@ -207,7 +207,7 @@ void Usecode_value::print
 	switch ((Val_type) type)
 		{
 	case int_type:
-		out << value.intval; break;
+		out << (value.intval&0xffff); break;
 	case string_type:
 		out << '"' << value.str << '"'; break;
 	case array_type:
