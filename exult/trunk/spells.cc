@@ -30,6 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #include "mouse.h"
 
+extern bool wizard_mode;
+
 const int REAGANTS = 842;		// Shape #.
 
 /*
@@ -236,7 +238,7 @@ Spellbook_gump::Spellbook_gump
 		int spindex = c*8;
 		unsigned char cflags = book->circles[c];
 		for (int s = 0; s < 8; s++)
-			if (cflags & (1<<s))
+			if ((cflags & (1<<s)) || wizard_mode)
 				spells[spindex + s] = new Spell_button(this,
 					s < 4 ? object_area.x +
 						spshape->get_xleft()
@@ -273,10 +275,12 @@ void Spellbook_gump::do_spell
 	int spell
 	)
 	{
-	if (spells[spell] && avail[spell])
+	if ((spells[spell] && avail[spell]) || wizard_mode)
 		{
 		Game_window *gwin = Game_window::get_game_window();
 		int circle = spell/8;	// Figure/subtract mana.
+		if (wizard_mode)
+			circle = 0;
 		int mana = gwin->get_main_actor()->get_property(Actor::mana);
 		if (mana < circle)	// Not enough?
 			{
@@ -287,12 +291,14 @@ void Spellbook_gump::do_spell
 		gwin->get_main_actor()->set_property(Actor::mana, mana-circle);
 					// Figure what we used.
 		unsigned char flags = reagants[spell];
+
+		if (!wizard_mode) {
 					// Go through bits.
-		for (int r = 0; flags; r++, flags = flags >> 1)
+			for (int r = 0; flags; r++, flags = flags >> 1)
 					// Remove 1 of each required reagant.
-			if (flags&1)
-				book_owner->remove_quantity(1, REAGANTS,
-								-359, r);
+				if (flags&1)
+					book_owner->remove_quantity(1, REAGANTS, -359, r);
+		}
 		gwin->end_gump_mode();
 		gwin->get_usecode()->call_usecode(Get_usecode(spell),
 			gwin->get_main_actor(), Usecode_machine::double_click);
@@ -400,7 +406,7 @@ void Spellbook_gump::paint
 		paint_button(gwin, rightpage);
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Paint spells.
-		if (spells[spindex + s])
+		if (spells[spindex + s] || wizard_mode)
 			{
 			Gump_button *spell = spells[spindex + s];
 			paint_button(gwin, spell);
