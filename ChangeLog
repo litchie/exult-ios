@@ -1,5 +1,17 @@
+2000-12-01  Max Horn  <max@quendi.de>
+	* list.cc: removed class Slist & consorts
+	* list.h: added class Exult_queue and Actor_queue which replace Slist & consorts
+	* combat.*, schedule.*: use Actor_queue instead of Slist
+	* vec.h: renamed FeatureVector -> Exult_vector; GOVector -> Game_object_vector; etc.
+	  to match the naming conventions used throughout exult
+	* various files: update to match class name changes
+	* chunks.cc: fixed delete -> delete []
+	* AUTHORS: added Ryan Nunn, he was missing for whatever reasons
+	* args.*: added proper GPL header
+	* various files: added missing "using std::xyz" statments
+	* expack.cc: don't use strdup anymore
+	
 2000-11-30  Jeff Freedman  <jeff@amy.nerble.net>
-
 	* Broke off chunks.{cc,h} and ordinfo.h from objs.{cc,h}.
 
 2000-11-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
@@ -12,7 +24,6 @@
 	* audio/xmidi.cc: Fixed potential rare memory leak.
 
 2000-11-29  Jeff Freedman  <jeff@amy.nerble.net>
-
 	* Font-handling move to shapes directory.
 
 2000-11-29  Tristan Tarrant  <nadir@users.sourceforge.net>

@@ -1,3 +1,21 @@
+/*
+Copyright (C) 2000 The Exult Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
 #include <iostream>
 
 #include "args.h"
@@ -70,11 +88,11 @@ void	Args::declare(const char *s,unsigned long *b,unsigned long defval)
 void	Args::process(int argc,char **argv)
 {
 	for(int i=1;i<argc;i++)
-		{
+	{
 		for(unsigned int j=0;j<options.size();j++)
-			{
+		{
 			switch(options[j].valuetype)
-				{
+			{
 				case Opts::no_type:
 					continue;
 				case Opts::type_bool:
@@ -82,51 +100,51 @@ void	Args::process(int argc,char **argv)
 						*(options[j].bval)=options[j].dbval;
 					break;
 				case Opts::type_string:
-					{
+				{
 					if(options[j].option==argv[i])
-						{
+					{
 						// We want the _next_ argument
 						if(++i>=argc)
-							{
+						{
 							cerr << "Data not specified for argument '" << options[j].option <<"'. Using default." << endl;
 							break;
-							}
+						}
 						*(options[j].sval)=argv[i];
-						}
-					break;
 					}
+					break;
+				}
 				case Opts::type_int:
-					{
+				{
 //					char buf[64];
 					if(options[j].option==argv[i])
-						{
+					{
 						// We want the _next_ argument
 						if(++i>=argc)
-							{
+						{
 							cerr << "Data not specified for argument '" << options[j].option <<"'. Using default." << endl;
 							break;
-							}
+						}
 						*(options[j].ival)=strtol(argv[i],0,10);
-						}
-					break;
 					}
+					break;
+				}
 				case Opts::type_unsigned:
-					{
+				{
 //					char buf[64];
 					if(options[j].option==argv[i])
-						{
+					{
 						// We want the _next_ argument
 						if(++i>=argc)
-							{
+						{
 							cerr << "Data not specified for argument '" << options[j].option <<"'. Using default." << endl;
 							break;
-							}
-						*(options[j].uval)=strtoul(argv[i],0,10);
 						}
-					break;
+						*(options[j].uval)=strtoul(argv[i],0,10);
 					}
+					break;
 				}
 			}
 		}
+	}
 
 }

@@ -575,9 +575,9 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		case button:		// Set off all in given area.
 			{
 			int dist = data1&0xff;
-			EggVector eggs;
+			Egg_vector eggs;
 			find_nearby_eggs(eggs, 275, dist);
-			for (EggVector::const_iterator it = eggs.begin();
+			for (Egg_vector::const_iterator it = eggs.begin();
 					it != eggs.end(); ++it)
 				{
 				Egg_object *egg = *it;

@@ -1173,7 +1173,7 @@ static void Try_key
 	for (int i = 0; i < party_cnt; i++)
 		{
 		Actor *act = party[i];
-		GOVector keys;		// Get keys.
+		Game_object_vector keys;		// Get keys.
 		if (act->get_objects(keys, 641, qual, -359))
 			{
 			keys[0]->activate(gwin->get_usecode());
@@ -1367,7 +1367,8 @@ void show_about (void)
 	scroll->add_text("http://exult.sourceforge.net\n");
 
 	scroll->paint(gwin);
-	do {
+	do
+	{
 		int x, y;
 		Get_click(x,y, Mouse::hand);
 	} while (scroll->show_next_page(gwin));
@@ -1397,7 +1398,8 @@ void show_help (void)
 	scroll->add_text("ctrl-h - Cheat Commands\n");
 
 	scroll->paint(gwin);
-	do {
+	do
+	{
 		int x, y;
 		Get_click(x,y, Mouse::hand);
 	} while (scroll->show_next_page(gwin));
@@ -1405,7 +1407,8 @@ void show_help (void)
 	delete scroll;
 }
 
-void show_cheat_help (void) {
+void show_cheat_help (void)
+{
 	Scroll_gump *scroll;
 	scroll = new Scroll_gump();
 
@@ -1427,15 +1430,16 @@ void show_cheat_help (void) {
 	scroll->add_text("ctrl-alt-t - Map Teleport\n");
 	scroll->add_text("alt-w - Archwizard mode~");
 	if(Game::get_game_type() == SERPENT_ISLE)
-		{
+	{
 		scroll->add_text("SI-only keys~");
 		scroll->add_text("alt-n - Toggle Naked flag\n");
 		scroll->add_text("alt-p - Toggle Petra mode\n");
 		scroll->add_text("alt-s - Change skin color\n");
-		}
+	}
 
 	scroll->paint(gwin);
-	do {
+	do
+	{
 		int x, y;
 		Get_click(x,y, Mouse::hand);
 	} while (scroll->show_next_page(gwin));

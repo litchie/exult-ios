@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define GAMEWIN_H
 
 #include "iwin8.h"
+#include "lists.h"
 #include "objs.h"
 #include "shapevga.h"
 #include "gameclk.h"
@@ -43,7 +44,6 @@ class Chunk_object_list;
 class Gump;
 class Gump_button;
 class Special_effect;
-class Slist;
 class Usecode_machine;
 class Actor;
 class Time_queue;
@@ -578,7 +578,7 @@ public:
 	void add_nearby_npcs(int from_cx, int from_cy,
 						int stop_cx, int stop_cy);
 					// Get all nearby NPC's.
-	void get_nearby_npcs(Slist& list);
+	void get_nearby_npcs(Actor_queue& list);
 					// Update NPCs' schedules.
 	void schedule_npcs(int hour3, int backwards = 0);
 	void theft();			// Handle thievery.

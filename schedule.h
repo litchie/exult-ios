@@ -137,7 +137,7 @@ public:
  */
 class Patrol_schedule : public Schedule
 	{
-	GOVector paths;			// Each 'path' object.
+	Game_object_vector paths;			// Each 'path' object.
 	int pathnum;			// # of next we're heading towards.
 public:
 	Patrol_schedule(Actor *n)
@@ -177,7 +177,7 @@ public:
  */
 class Kid_games_schedule : public Loiter_schedule
 	{
-	Slist kids;			// Other kids playing.
+	Actor_queue kids;			// Other kids playing.
 public:
 	Kid_games_schedule(Actor *n) : Loiter_schedule(n, 10)
 		{  }
@@ -254,9 +254,9 @@ class Waiter_schedule : public Schedule
 	int first;			// 1 if first 'what_next()' called.
 	Tile_coord startpos;		// Starting position.
 	Actor *customer;		// Current customer.
-	Slist customers;		// List of customers.
-	GOVector prep_tables;		// Prep. tables.
-	GOVector eating_tables;		// Tables with chairs around them.
+	Actor_queue customers;		// List of customers.
+	Game_object_vector prep_tables;		// Prep. tables.
+	Game_object_vector eating_tables;		// Tables with chairs around them.
 	void get_customer();
 	void find_tables(int shapenum);
 	int find_serving_spot(Tile_coord& spot);

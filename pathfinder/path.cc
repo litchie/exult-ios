@@ -250,7 +250,7 @@ public:
  */
 class A_star_queue
 	{
-	FeatureVector<Search_node*> open;// Nodes to be done, by priority. Each
+	Exult_vector<Search_node*> open;// Nodes to be done, by priority. Each
 					//   is a ->last node in chain.
 	int best;			// Index of 1st non-null ent. in open.
 					// For finding each tile's node:

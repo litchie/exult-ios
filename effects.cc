@@ -119,9 +119,9 @@ Explosion_effect::~Explosion_effect
 		Game_window::get_game_window()->add_dirty(explode);
 		explode->remove_this();
 		}
-	GOVector vec;			// Find objects near explosion.
+	Game_object_vector vec;			// Find objects near explosion.
 	Game_object::find_nearby(vec, pos, -359, 3, 0);
-	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		(**it).attacked(0, 704, 0);
 		}

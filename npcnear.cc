@@ -13,7 +13,6 @@
 #include "ucmachine.h"
 #include "schedule.h"
 #include "items.h"
-#include "lists.h"
 
 using std::rand;
 
@@ -109,12 +108,12 @@ void Npc_proximity_handler::wait
 
 void Npc_proximity_handler::get_all
 	(
-	Slist& list			// They're appended to this.
+	Actor_queue& list			// They're appended to this.
 	)
 	{
 	Time_queue_iterator next(gwin->get_tqueue(), this);
 	Time_sensitive *obj;
 	long data;			// NPC is the data.
 	while (next(obj, data))
-		list.append((Npc_actor *) data);
+		list.push((Npc_actor *) data);
 	}

@@ -1,5 +1,23 @@
-#ifndef	__ARGS___H___
-#define	__ARGS___H___
+/*
+Copyright (C) 2000 The Exult Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+#ifndef	_ARGS_H_
+#define	_ARGS_H_
 
 // Handy argument processor. I'm certain the implementation could be better
 // but it suffices quite well at the moment.
@@ -8,9 +26,9 @@
 #include <vector>
 
 class	Args
-	{
+{
 	struct Opts
-		{
+	{
 		std::string	option;
 		bool	*bval;
 		std::string  *sval;
@@ -24,7 +42,7 @@ class	Args
 		enum { no_type=0,type_bool,type_string,type_int,type_unsigned } valuetype;
 		Opts() :option(""),valuetype(no_type) {};
 		~Opts() {};
-		};
+	};
 	std::vector<Opts> options;
 	public:
 	Args() {};
@@ -34,6 +52,6 @@ class	Args
 	void	declare(const char *s,int *b,int defval=0);
 	void	declare(const char *s,unsigned long *b,unsigned long defval=0);
 	void	process(int argc,char **argv);
-	};
+};
 
 #endif

@@ -50,6 +50,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::memcpy;
 using std::rand;
 using std::string;
 using std::swap;
@@ -114,10 +115,10 @@ int Actor::ready_ammo
 	Game_object *aobj = get_readied(Actor::ammo);
 	if (aobj && Ammo_info::is_in_family(aobj->get_shapenum(), ammo))
 		return 1;		// Already readied.
-	GOVector vec(50);		// Get list of all possessions.
+	Game_object_vector vec(50);		// Get list of all possessions.
 	get_objects(vec, -359, -359, -359);
 	Game_object *found = 0;
-	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
 		if (Ammo_info::is_in_family(obj->get_shapenum(), ammo))
@@ -149,12 +150,12 @@ void Actor::ready_best_weapon
 		return;			// Already have one.
 		}
 	Game_window *gwin = Game_window::get_game_window();
-	GOVector vec(50);		// Get list of all possessions.
+	Game_object_vector vec(50);		// Get list of all possessions.
 	get_objects(vec, -359, -359, -359);
 	Game_object *best = 0;
 	int best_damage = -20;
 	Ready_type wtype=other;
-	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
 		Shape_info& info = gwin->get_info(obj);
@@ -1661,7 +1662,7 @@ static int Is_draco
 	Actor *dragon
 	)
 	{
-	GOVector vec;		// Gets list.
+	Game_object_vector vec;		// Gets list.
 						// Should have a special scroll.
 	int cnt = dragon->get_objects(vec, 797, 241, 4);
 	return cnt > 0;
@@ -1714,7 +1715,7 @@ void Actor::die
 	body->move(pos);
 	body->set_flag(okay_to_take);	// Okay to take its contents.
 	Game_object *item;		// Move all the items.
-	GOVector tooheavy;		// Some shouldn't be moved.
+	Game_object_vector tooheavy;		// Some shouldn't be moved.
 	while ((item = objects.get_first()) != 0)
 		{
 		remove(item);
@@ -1724,7 +1725,7 @@ void Actor::die
 			tooheavy.push_back(item);
 		}
 					// Put the heavy ones back.
-	for (GOVector::const_iterator it = tooheavy.begin(); 
+	for (Game_object_vector::const_iterator it = tooheavy.begin(); 
 						it != tooheavy.end(); ++it)
 		add(*it, 1);
 	gwin->add_dirty(body);
