@@ -28,7 +28,7 @@
 
 #include <string.h>
 
-#include <gtk/gtk.h>
+#include <gtk.h>	// gtk-config --cflags
 #include <stdio.h>
 
 static char *folder[] =

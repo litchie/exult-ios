@@ -52,10 +52,10 @@ public:
 private:
 	pthread_t midi_thread;
 	pthread_t sfx_thread;
-	string	filename;
+	std::string	filename;
 	bool	do_repeat;
 	bool	stop_music_flag;
-	string	sfxname;
+	std::string	sfxname;
 	UNREPLICATABLE_CLASS(Timidity_binary);
 };
 #endif

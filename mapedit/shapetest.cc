@@ -35,6 +35,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Flex.h"
 #include "u7drag.h"
 
+#include <iostream>
+using	std::cerr;
+using	std::endl;
+
 
 Vga_file *ifile = 0;
 char **names = 0;
@@ -73,7 +77,7 @@ int main
 	ifile = new Vga_file("static/shapes.vga");
 	if (!ifile->is_good())
 		{
-		cerr << "Error opening image file 'shapes.vga'.\n";
+		cerr << "Error opening image file 'shapes.vga'." << endl;
 		return (1);
 		}
 					// Read in shape names.
