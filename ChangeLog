@@ -1,3 +1,6 @@
+2002-01-18  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* mapedit/Makefile.am: removed shapetest_LDADD
+
 2002-01-18  Patrick Burke  <takhisisii@yahoo.com.au>
 	* shapes/shapewrite.cc: Added missing using declaration, and fixed
 	what looks like a problem with a lack of a cast. It seems to work from
