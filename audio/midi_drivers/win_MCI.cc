@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 
 UINT MCI_Command(LPCTSTR lpszCommand, LPTSTR lpszReturnString, 
-		 UINT cchReturn, HANDLE hWndCallBack)
+		 UINT cchReturn, HWND hWndCallBack)
 {
   DWORD code = mciSendString(lpszCommand, lpszReturnString, cchReturn, hWndCallBack);
   if (code) {
