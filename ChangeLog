@@ -1,3 +1,8 @@
+2002-07-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc (Game_window): Set singleton after creating pal.
+	* Various:  Merged in activate() fixes from 1.00 branch.
+
 2002-07-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs.cc: fixes to SI item names (thanks sb-x)
 	* objnames.cc: moved naming code to separate file

@@ -133,7 +133,7 @@ public:
 	virtual bool edit();		// Edit in ExultStudio.
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
-	virtual void activate(Game_object *obj, int must = 0);
+	virtual void activate(Game_object *obj, bool must = false);
 	void print_debug();
 	static void set_weather(int weather, int len = 15,
 						Game_object *egg = 0);
@@ -196,8 +196,7 @@ public:
 		{  }
 					// Run usecode function.
 	virtual void activate(int event = 1);
-	virtual void activate(Game_object *obj,
-							int must = 0);
+	virtual void activate(Game_object *obj, bool must = false);
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
 				// Get size of IREG. Returns -1 if can't write to buffer
@@ -216,9 +215,7 @@ public:
 
 					// Run usecode function.
 	virtual void activate(int event = 1);
-
-	virtual void activate(Game_object *obj,
-							int must = 0);
+	virtual void activate(Game_object *obj, bool must = false);
 
 					// Can it be activated?
 	virtual int is_active(Game_object *obj,
