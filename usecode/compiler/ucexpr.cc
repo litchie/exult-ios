@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 #include "ucexpr.h"
+#include "utils.h"
+#include "opcodes.h"
 
 /*
  *	Default assignment generation.
@@ -48,7 +50,32 @@ void Uc_binary_expression::gen_value
 	{
 	left->gen_value(out);		// First the left.
 	right->gen_value(out);		// Then the right.
-	out << (char) opcode;
+	out.put((char) opcode);
 	}
 
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_unary_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	operand->gen_value(out);
+	out.put((char) opcode);
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_int_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	out.put((char) UC_PUSHI);
+	Write2(out, value);
+	}
 
