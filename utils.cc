@@ -142,6 +142,24 @@ int U7open
 	}
 
 /*
+ *	Open a file with the access rights specified in mode,
+ *	works just like fopen but in a system independant fashion.  
+ *
+ *	Output: A pointer to a FILE
+ */
+
+std::FILE* U7open
+	(
+	const char *fname,			// May be converted to upper-case.
+	const char *mode			// File access mode.
+	)
+	{
+	char name[512];
+	Switch_slash(name, fname);
+	return std::fopen(name, mode);
+	}
+	
+/*
  *	Take log2 of a number.
  *
  *	Output:	Log2 of n (0 if n==0).

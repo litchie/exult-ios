@@ -2,6 +2,7 @@
 #include "Flex.h"
 #include "IFF.h"
 #include "Table.h"
+#include "utils.h"
 #include <cstdio>
 #include <iostream>
 
@@ -11,7 +12,6 @@ using std::cerr;
 using std::endl;
 using std::size_t;
 using std::FILE;
-using std::fopen;
 using std::fclose;
 using std::fwrite;
 
@@ -89,7 +89,7 @@ int	U7object::retrieve(char **buf,size_t &len)
 
 int	U7object::retrieve(const char *fname)
 {
-	FILE	*fp=fopen(fname,"wb");
+	FILE	*fp=U7open(fname,"wb");
 	if(!fp)
 		return 0;
 
