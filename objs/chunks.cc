@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 
 using std::memset;
+using std::rand;
 
 /*
  *	Create the cached data storage for a chunk.
