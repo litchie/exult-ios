@@ -1,0 +1,13 @@
+*.bat
+*.exe
+*.o
+*.BKP
+usecode
+usecode.old
+usecode.si
+usecode.bg
+obj
+junk
+del
+*.GDT
+*.GPR
