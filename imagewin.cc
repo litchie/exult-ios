@@ -26,8 +26,12 @@ Boston, MA  02111-1307, USA.
 
 #include "imagewin.h"
 #include <string.h>
-#include <iostream.h>
+#include <stdlib.h>
+#include <iostream>
 #include <string>
+
+using std::cout;
+using std::endl;
 
 /*
  *	Clip to current clip rectangle.
@@ -848,7 +852,7 @@ void Image_window::create_surface
 	{
 	ibuf->width = w;
 	ibuf->height = h;
-	int flags = (fullscreen?SDL_FULLSCREEN:0) |
+	Uint32 flags = (fullscreen?SDL_FULLSCREEN:0) |
 					SDL_SWSURFACE |  SDL_HWPALETTE;
 	show_scaled = 0;
 	surface = scaled_surface = 0;

@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern char **item_names;		// The game items' names.
 
-void Setup_item_names (ifstream& items);
+void Setup_item_names (std::ifstream& items);
 
 /*
  *	Some offsets in text.flx:

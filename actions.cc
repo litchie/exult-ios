@@ -110,7 +110,7 @@ int Path_walking_actor_action::handle_event
 	if (blocked)
 		{
 #if DEBUG
-cout << "Actor " << actor->get_name() << " blocked.  Retrying." << endl;
+std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::endl;
 #endif
 		if (actor->step(blocked_tile, blocked_frame))
 			{		// Successful?
@@ -119,7 +119,7 @@ cout << "Actor " << actor->get_name() << " blocked.  Retrying." << endl;
 			}
 					// Wait up to 1.6 secs.
 		return (blocked++ > max_blocked ? 0 
-					: 100 + blocked*(rand()%500));
+					: 100 + blocked*(std::rand()%500));
 		}
 	speed = actor->get_frame_time();// Get time between frames.
 	if (!speed)
@@ -145,7 +145,7 @@ cout << "Actor " << actor->get_name() << " blocked.  Retrying." << endl;
 	blocked = 1;
 	blocked_tile = tile;
 	blocked_frame = frame;
-	return (100 + rand()%500);	// Wait .1 to .6 seconds.
+	return (100 + std::rand()%500);	// Wait .1 to .6 seconds.
 	}
 
 /*
@@ -317,7 +317,7 @@ Frames_actor_action::Frames_actor_action
 	) : cnt(c), index(0), speed(spd)
 	{
 	frames = new char[cnt];
-	memcpy(frames, f, cnt);
+	std::memcpy(frames, f, cnt);
 	}
 
 /*

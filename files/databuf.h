@@ -18,6 +18,7 @@
 #define DATA_H
 
 #include <stdio.h>
+#include <string.h>
 #ifdef MACOS
   #include <cassert>
 #endif
@@ -55,15 +56,15 @@ public:
 class StreamDataSource: public DataSource
 {
 private:
-	ifstream *in;
-	ofstream *out;
+	std::ifstream *in;
+	std::ofstream *out;
 public:
-	StreamDataSource(ifstream *data_stream)
+	StreamDataSource(std::ifstream *data_stream)
 	{
 		in = data_stream;
 	};
 	
-	StreamDataSource(ofstream *data_stream)
+	StreamDataSource(std::ofstream *data_stream)
 	{
 		out = data_stream;
 	};
@@ -157,12 +158,12 @@ public:
 	
 	virtual void seek(unsigned int pos) { in->seekg(pos); };
 	
-	virtual void skip(int pos) { in->seekg(pos, ios::cur); };
+	virtual void skip(int pos) { in->seekg(pos, std::ios::cur); };
 	
 	virtual unsigned int getSize()
 	{
 		long pos = in->tellg();
-		in->seekg(0, ios::end);
+		in->seekg(0, std::ios::end);
 		long len = in->tellg();
 		in->seekg(pos);
 		return len;

@@ -89,7 +89,7 @@ private:
 	unsigned char protect_pixel;	// For rendering protected actors.
 	unsigned char teleported;	// 1 if just teleported.
 	unsigned char in_dungeon;	// 1 if inside a dungeon.
-	ifstream chunks;		// "u7chunks" file.
+	std::ifstream chunks;		// "u7chunks" file.
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
@@ -98,7 +98,7 @@ private:
 	Shape_file *extra_fonts[5];	// extra font shapes
 	Vga_file sprites;		// "sprites.vga" file.
 	Vga_file mainshp;
-	ifstream u7map;			// "u7map" file.
+	std::ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
 	Xform_palette invis_xform;	// For showing invisible NPC's.
@@ -109,7 +109,7 @@ private:
 	Actor **npcs;			// List of NPC's + the Avatar.
 	int num_monsters;		// Number of monster types.
 	Monster_info *monster_info;	// Array from 'monsters.dat'.
-	vector<Egg_object *> path_eggs;	// Path eggs, indexed by 'quality'.
+	std::vector<Egg_object *> path_eggs;	// Path eggs, indexed by 'quality'.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
@@ -135,7 +135,7 @@ private:
 	int theft_warnings;		// # times warned in current chunk.
 	short theft_cx, theft_cy;	// Chunk where warnings occurred.
 					// Open a U7 file.
-	int u7open(ifstream& in, const char *fname, int dont_abort = 0);
+	int u7open(std::ifstream& in, const char *fname, int dont_abort = 0);
 	void set_scroll_bounds();	// Set scroll-controller.
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
@@ -329,8 +329,8 @@ public:
 			{
 			// This is probably fatal.
 #if DEBUG
-			cerr << "DEATH! get_shape() returned a NULL pointer: " << __FILE__ << ":" << __LINE__ << endl;
-			cerr << "Betcha it's a little doggie." << endl;
+			std::cerr << "DEATH! get_shape() returned a NULL pointer: " << __FILE__ << ":" << __LINE__ << std::endl;
+			std::cerr << "Betcha it's a little doggie." << std::endl;
 #endif
 			return Rectangle(0,0,0,0);
 			}
@@ -364,7 +364,7 @@ public:
 		{
 		if (!shape)
 			{
-				cout << "NULL SHAPE!!!" << endl;
+				std::cout << "NULL SHAPE!!!" << std::endl;
 				return;
 			}
 		if (!shape->rle)	// Not RLE?
@@ -430,7 +430,7 @@ public:
 					// Get "ifix" objects for a superchunk.
 	void get_ifix_objects(int schunk);
 					// Get "ifix" objs. for given chunk.
-	void get_ifix_chunk_objects(ifstream& ifix, long filepos, int cnt,
+	void get_ifix_chunk_objects(std::ifstream& ifix, long filepos, int cnt,
 							int cx, int cy);
 					// Get iregxx name.
 	static char *get_ireg_name(int schunk, char *fname);
@@ -438,7 +438,7 @@ public:
 	int write_ireg_objects(int schunk);
 					// Get moveable objects.
 	void get_ireg_objects(int schunk);
-	void read_ireg_objects(istream& ireg, int scx, int scy,
+	void read_ireg_objects(std::istream& ireg, int scx, int scy,
 					Game_object *container = 0,
 			unsigned long flags = (1<<Game_object::okay_to_take));
 	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
@@ -562,7 +562,7 @@ public:
 	void clear_text_pending();	// Don't need to prompt.
 					// Show what Avatar can say.
 	void show_avatar_choices(int num_choices, char **choices);
-	void show_avatar_choices(vector<string> &choices);
+	void show_avatar_choices(std::vector<std::string> &choices);
 					// User clicked on a choice.
 	int conversation_choice(int x, int y);
 	void show_gump(Game_object *obj, int shapenum);
