@@ -40,10 +40,9 @@ new_island_egg0 0x740 ()
 		npc = party[UI_get_random(party_cnt)];
 	if (npc)
 		{
-		UI_show_npc_face(npc);
-		say("Do I detect . . .~",
+		npc->say("Do I detect . . .~",
 			". . . the smell of Usecode?");
-		UI_remove_npc_face(npc);
+		npc->hide();
 		}
 	}
 
@@ -59,16 +58,15 @@ DrCode 0x564 ()
 		}
 	else if (event != 1)
 		return;
-	UI_show_npc_face(item);
 	var answers;
 	if (gflags[TALKED_DRCODE])
 		{
-		say("I knew you would return!");
+		item->say("I knew you would return!");
 		answers = "How??";
 		}
 	else
 		{
-		say("Hello!  How may I help you?");
+		item->say("Hello!  How may I help you?");
 		gflags[TALKED_DRCODE] = true;
 		answers = ["Name", "Job"];
 		}
@@ -80,34 +78,31 @@ DrCode 0x564 ()
 		say("I'm DrCode");
 	case "Job" (remove):
 		say("I search...");
-		UI_add_answer("Search for what?");
+		add("Search for what?");
 	case "Search for what?" (remove):
 		say("... for Usecode!!");
-		UI_add_answer("Usecode");
+		add("Usecode");
 	case "How??" (remove):
 		say("I felt a great disturbance in the Usecode...");
 		if (gflags[WILL_FIND_FAQ] &&
 		    UI_get_npc_object(AMY) in UI_get_party_list())
 			{
-			UI_show_npc_face(AMY);
-			say("Say, Dr. Code...");
-			say("You certainly have a lot of papers and books ",
+			AMY->say("Say, Dr. Code...~",
+			    "You certainly have a lot of papers and books ",
 						"strewn about");
-			UI_show_npc_face(item);
-			say("Er, yes, I suppose I do.");
-			UI_show_npc_face(AMY);
-			say("Are you sure the FAQ isn't somewhere amongst ",
-							"them?");
-			UI_remove_npc_face(AMY);
+			item->say("Er, yes, I suppose I do.");
+			AMY->say("Are you sure the FAQ isn't somewhere ",
+							"amongst them?");
+			AMY->hide();
 			say("Dr.Code looks away from Amy as he hides his ",
 					"shaking hands in his pockets.");
-			UI_add_answer("FAQ");
+			add("FAQ");
 			}
 	case "Usecode" (remove):
 		say("Usecode is a mythical force.~",
 		"Some believe it controls the fate of all in our world. ",
 		"And to control it would give one ultimate power. ");
-		UI_add_answer("Power");
+		add("Power");
 	case "Power":
 		say("It MUST not fall into evil hands.~",
 				"I can not let it...~",
@@ -118,20 +113,18 @@ DrCode 0x564 ()
 		break;
 	case "FAQ" (remove):
 		say("I don't know what you are talking about!");
-		UI_show_npc_face(AMY);
-		say("Are you sure?");
-		UI_remove_npc_face(AMY);
+		AMY->say("Are you sure?");
+		AMY->hide();
 		say("YES!  I can stand the guilt no more!");
 		say("But... I only meant to borrow it.  I, er, hoped that it ",
 			"would help me with my research into Usecode.");
 		say("Dominik was asleep, and I planned to return it before he",
 							" awoke");
-		UI_show_npc_face(AVATAR);
-		say("May we have it back then?");
-		UI_remove_npc_face(AVATAR);
+		AVATAR->say("May we have it back then?");
+		AVATAR->hide();
 		say("I'm afraid to tell you...~ ...it's gone!");
 		}
-	UI_remove_npc_face(item);
+	item->hide();
 	}
 
 /*
@@ -159,8 +152,7 @@ Dominik 0x565 ()
 		}
 	if (event != 1)
 		return;
-	UI_show_npc_face(item);
-	say("I'm very busy, so please be brisk!");
+	item->say("I'm very busy, so please be brisk!");
 	var answers;
 	if (gflags[ASKED_ABOUT_PYRO])
 		answers = ["Name", "Job", "Where is Pyro-X?"];
@@ -179,7 +171,7 @@ Dominik 0x565 ()
 		if (faqcnt == 1)
 			{
 			say("Please see the FAQ.");
-			UI_add_answer("FAQ");
+			add("FAQ");
 			}
 		else if (faqcnt == 2)
 			say("I said:  See the FAQ.");
@@ -190,16 +182,16 @@ Dominik 0x565 ()
 	case "FAQ" (remove):
 		say("All of life's answers may be found there.~",
 			"Though... there are some who think otherwise.");
-		UI_add_answer("Otherwise?");
+		add("Otherwise?");
 		if (!gflags[LOST_FAQ])
-			UI_add_answer("May I see it?");
+			add("May I see it?");
 		else if (!gflags[WILL_FIND_FAQ])
-			UI_add_answer("Find");
+			add("Find");
 	case "Otherwise?" (remove):
 		say("There is a crackpot who wanders this island.  ",
 		"He calls himself 'DrCode', and mutters incessantly about ",
 				"something called 'Usecode'");
-		UI_add_answer("Usecode?");
+		add("Usecode?");
 	case "Usecode?" (remove):
 		say("Don't bother me with that silly prattle! ",
 				"I must work on the FAQ.~", "Begone!");
@@ -230,12 +222,12 @@ Dominik 0x565 ()
 				"  Thank you, Avatar!");
 	case "Where is Pyro-X?" (remove):
 		say("As I wrote in the FAQ you have to ask Colourless!");
-		UI_add_answer("Who is Colourless?");
+		add("Who is Colourless?");
 		gflags[ASKED_WHERE_PYRO] = true;
 	case "Who is Colourless?" (remove):
 		say("Read the FAQ!!!");
 		}
-	UI_remove_npc_face(item);
+	item->hide();
 	}
 /*
  *	'Willem' on island.
@@ -260,11 +252,10 @@ Willem 0x566 ()
 		}
 	if (event != 1)
 		return;
-	UI_show_npc_face(item);
-	say("Hello Avatar!");
-		UI_add_answer("Name");
-		UI_add_answer("Job");
-		UI_add_answer("Bye");	
+	item->say("Hello Avatar!");
+		add("Name");
+		add("Job");
+		add("Bye");	
 		converse
 		{
 		if (response == "Bye")
@@ -277,14 +268,14 @@ Willem 0x566 ()
 		else if (response == "Job")
 			{
 			say("I work on Pentagram!");
-			UI_add_answer("What is Pentagram?");
+			add("What is Pentagram?");
 			}
 		else if (response == "What is Pentagram?")
 			{
 			say("Pentagram is a magical device that lets you travel to another world. ",
 			"To the world of Pagan!");
 			UI_remove_answer("What is Pentagram?");
-			UI_add_answer("Tell me about Pagan");
+			add("Tell me about Pagan");
 			}
 		else if (response == "Tell me about Pagan")
 			{
@@ -292,7 +283,7 @@ Willem 0x566 ()
 			UI_remove_answer("Tell me about Pagan");
 			}
 		}
-	UI_remove_npc_face(item);
+	item->hide();
 	}
 /*
  *	'Fingolfin' on island.
@@ -317,11 +308,10 @@ Fingolfin 0x567 ()
 		}
 	if (event != 1)
 		return;
-	UI_show_npc_face(item);
-	say("Hello Avatar!");
-		UI_add_answer("Name");
-		UI_add_answer("Job");
-		UI_add_answer("Bye");	
+	item->say("Hello Avatar!");
+		add("Name");
+		add("Job");
+		add("Bye");	
 		converse
 		{
 		if (response == "Bye")
@@ -334,7 +324,7 @@ Fingolfin 0x567 ()
 		else if (response == "Job")
 			{
 			say("I work on Pentagram!");
-			UI_add_answer("What is Pentagram?");
+			add("What is Pentagram?");
 			}
 		else if (response == "What is Pentagram?")
 			{
@@ -342,7 +332,7 @@ Fingolfin 0x567 ()
 			UI_remove_answer("What is Pentagram?");
 			}
 		}
-	UI_remove_npc_face(item);
+	item->hide();
 	}
 /*
  *	'Amy' on island.
@@ -371,14 +361,10 @@ Amy 0x568 ()
 		{			// First time.
 		say("You see a young lady with blonde hair.",
 			"  She looks a bit annoyed.");
-		UI_show_npc_face(item);
-		say("And what are you after?");
+		item->say("And what are you after?");
 		}
 	else
-		{
-		UI_show_npc_face(item);
-		say("Hello again Avatar!");
-		}
+		item->say("Hello again Avatar!");
 	var answers = "Name";
 	var party = UI_get_party_list();
 	if (item in party)
@@ -395,9 +381,9 @@ Amy 0x568 ()
 	case "Job" (remove):
 		say("I don't have a job. I'm just hanging out here and 
 			 give information about the people on this island");
-		UI_add_answer("What is the name of this Island?");
-		UI_add_answer("Who lives on this Island?");
-		UI_add_answer("Are you happy here?");
+		add("What is the name"*);
+		add("Who lives"*);
+		add("Are you happy here?");
 	case "What is the name of this Island?" (remove):
 		say("It is called SourceForge Island. To remember the ",
 			"smithy who provided them with their tools");
@@ -461,7 +447,7 @@ Amy 0x568 ()
 			break;
 			}
 		}
-	UI_remove_npc_face(item);
+	item->hide();
 	}
 
 /*
@@ -489,20 +475,19 @@ Colourless 0x569 ()
 		}
 	if (event != 1)
 		return;
-	UI_show_npc_face(item);
-	say("You shouldn't be able to see me");
+	item->say("You shouldn't be able to see me");
 	if (gflags[ASKED_WHERE_PYRO])
 		{
-		UI_add_answer("Name");
-		UI_add_answer("Job");		
-		UI_add_answer("Do you know Pyro-X?");
+		add("Name");
+		add("Job");		
+		add("Do you know Pyro-X?");
 		}
 		else
 		{
-		UI_add_answer("Name");
-		UI_add_answer("Job");
+		add("Name");
+		add("Job");
 		}
-		UI_add_answer("Bye");	
+		add("Bye");	
 		converse
 		{
 		if (response == "Bye")
@@ -515,13 +500,13 @@ Colourless 0x569 ()
 		else if (response == "Job")
 			{
 			say("I work with Darke, Willem and Fingolfin on Pentagram.");
-			UI_add_answer("Pentagram?");
+			add("Pentagram?");
 			}
 		else if (response == "Pentagram?")
 			{
 			say("You better ask Willem about this.");
 			UI_remove_answer("Pentagram?");
-			UI_add_answer("Willem?");
+			add("Willem?");
 			}
 		else if (response == "Willem?")
 			{
@@ -537,7 +522,7 @@ Colourless 0x569 ()
 			UI_remove_answer("Do you know Pyro-X?");
 		}
 		}
-	UI_remove_npc_face(item);
+	item->hide();
 	}
 
 /*
@@ -565,12 +550,11 @@ Darke 0x56A ()
 		}
 	if (event != 1)
 		return;
-	UI_show_npc_face(item);
-	say("Beware of my sharp teeth!");
-		UI_add_answer("Sharp teeth?");
-		UI_add_answer("Name");
-		UI_add_answer("Job");
-		UI_add_answer("Bye");	
+	item->say("Beware of my sharp teeth!");
+		add("Sharp teeth?");
+		add("Name");
+		add("Job");
+		add("Bye");	
 		converse
 		{
 		if (response == "Bye")
@@ -583,7 +567,7 @@ Darke 0x56A ()
 		else if (response == "Job")
 			{
 			say("I make USECODE");
-			UI_add_answer("Usecode?");
+			add("Usecode?");
 			}
 		else if (response == "Sharp teeth?")
 			{
@@ -595,7 +579,7 @@ Darke 0x56A ()
 			{
 			say("Ask that deranged Dr.Code");
 			UI_remove_answer("Usecode?");
-			UI_add_answer("Dr.Code?");
+			add("Dr.Code?");
 			}
 		else if (response == "Dr.Code?")
 			{
@@ -605,7 +589,7 @@ Darke 0x56A ()
 			break;
 			}
 		}
-	UI_remove_npc_face(item);
+	item->hide();
 	}
 /*
  *	'EsBee_Ex' on island.
@@ -632,19 +616,18 @@ EsBee_Ex 0x56B ()
 		}
 	if (event != 1)
 		return;
-	UI_show_npc_face(item);
 	if (gflags[ASKED_KNOW_PYRO])
 		{
-		say("Ah, did you find my twin?");
-		UI_add_answer("You are Pyro-X!");
+		item->say("Ah, did you find my twin?");
+		add("You are Pyro-X!");
 		}
 	else
 		{
- 		say("Hello, did you see my evil twin?!");
-		UI_add_answer("Evil twin?");
-		UI_add_answer("Name");
-		UI_add_answer("Job");
-		UI_add_answer("Bye");
+ 		item->say("Hello, did you see my evil twin?!");
+		add("Evil twin?");
+		add("Name");
+		add("Job");
+		add("Bye");
 		}	
 		converse
 		{
@@ -663,7 +646,7 @@ EsBee_Ex 0x56B ()
 			{
 			say("Yes, my evil twin called Pyro-X.");
 			UI_remove_answer("Evil twin?");
-			UI_add_answer("Pyro-X");
+			add("Pyro-X");
 			}
 		else if (response == "Pyro-X")
 			{
@@ -685,6 +668,6 @@ EsBee_Ex 0x56B ()
 			break;
 			}
 		}
-	UI_remove_npc_face(item);
+	item->hide();
 	}
 

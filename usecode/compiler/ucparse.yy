@@ -79,7 +79,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 %token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR INT CONST STRING
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
-%token SCRIPT AFTER TICKS
+%token ADD HIDE SCRIPT AFTER TICKS
 
 /*
  *	Script keywords:
@@ -123,10 +123,11 @@ static Uc_function *function = 0;	// Current function being parsed.
 %type <strvec> identifier_list opt_identifier_list
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
+%type <stmt> special_method_call_statement
 %type <stmt> array_loop_statement var_decl var_decl_list declaration
 %type <stmt> break_statement converse_statement converse2_statement
 %type <stmt> converse_case script_statement
-%type <stmt> label_statement goto_statement
+%type <stmt> label_statement goto_statement answer_statement
 %type <block> statement_list converse_case_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
@@ -201,6 +202,7 @@ statement:
 	| while_statement
 	| array_loop_statement
 	| function_call_statement
+	| special_method_call_statement
 	| return_statement
 	| statement_block
 	| converse_statement
@@ -213,6 +215,7 @@ statement:
 		{ $$ = new Uc_say_statement($3); }
 	| MESSAGE '(' opt_expression_list ')' ';'
 		{ $$ = new Uc_message_statement($3); }
+	| answer_statement
 	| ';'				/* Null statement */
 		{ $$ = 0; }
 	;
@@ -368,6 +371,26 @@ start_for:
 function_call_statement:
 	function_call ';'
 		{ $$ = new Uc_call_statement($1);  }
+	;
+
+special_method_call_statement:
+					/* Have 'primary' say something.*/
+	primary POINTS SAY '(' opt_expression_list ')' ';'
+		{
+		Uc_block_statement *stmts = new Uc_block_statement();
+					/* Set up 'show' call.		*/
+		stmts->add(new Uc_call_statement(
+			new Uc_call_expression(Uc_function::get_show_face(),
+				new Uc_array_expression($1), function)));
+		stmts->add(new Uc_say_statement($5));
+		$$ = stmts;
+		}
+	| primary POINTS HIDE '(' ')' ';'
+		{
+		$$ = new Uc_call_statement(
+			new Uc_call_expression(Uc_function::get_remove_face(),
+				new Uc_array_expression($1), function));
+		}
 	;
 
 return_statement:
@@ -568,6 +591,21 @@ goto_statement:
 		{ $$ = new Uc_goto_statement($2); }
 	;
 
+answer_statement:
+	ADD '(' expression_list ')' ';'
+		{
+		$$ = new Uc_call_statement(
+			new Uc_call_expression(Uc_function::get_add_answer(),
+								$3, function));
+		}
+	| REMOVE '(' expression_list ')' ';'
+		{
+		$$ = new Uc_call_statement(new Uc_call_expression(
+					Uc_function::get_remove_answer(),
+								$3, function));
+		}
+	;
+
 expression:
 	primary
 		{ $$ = $1; }
@@ -660,8 +698,8 @@ function_call:
 	| method_call
 	;
 
-method_call:				/* Really a way to do CALLE.	*/
-	primary POINTS routine_call
+method_call:
+	primary POINTS routine_call	/* Really a way to do CALLE.	*/
 		{
 		$3->set_itemref($1);
 		$$ = $3;	

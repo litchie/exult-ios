@@ -257,6 +257,8 @@ class Uc_array_expression : public Uc_expression
 		std::vector<Uc_expression*> exprs;
 public:
 	Uc_array_expression() {  }
+	Uc_array_expression(Uc_expression *e0)
+		{ add(e0); }		// Create with 1st expression.
 	~Uc_array_expression();
 	void add(Uc_expression *e)	// Append an expression.
 		{ exprs.push_back(e); }

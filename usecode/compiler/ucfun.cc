@@ -39,7 +39,8 @@ using std::memcpy;
 Uc_scope Uc_function::globals(0);	// Stores intrinic symbols.
 vector<Uc_intrinsic_symbol *> Uc_function::intrinsics;
 int Uc_function::add_answer = -1, Uc_function::remove_answer = -1,
-	Uc_function::push_answers = -1, Uc_function::pop_answers = -1;
+	Uc_function::push_answers = -1, Uc_function::pop_answers = -1,
+	Uc_function::show_face = -1, Uc_function::remove_face = -1;
 
 /*
  *	Create function, and add to global symbol table.
@@ -459,6 +460,8 @@ void Uc_function::set_intrinsics
 		push_answers = 0xe;
 		pop_answers = 0xf;
 		}
+	show_face = 3;
+	remove_face = 4;
 	intrinsics.resize(cnt);
 	for (int i = 0; i < cnt; i++)
 		{
