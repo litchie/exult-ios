@@ -43,6 +43,7 @@
 #define U7SPEECH	"static/u7speech.spc"
 #define XFORMTBL       	"static/xform.tbl"
 #define MONSTERS	"static/monsters.dat"
+#define READY		"static/ready.dat"
 #define IDENTITY	"gamedat/identity"
 
 #endif
@@ -76,6 +77,7 @@
 #define U7SPEECH	"static\\u7speech.spc"
 #define XFORMTBL       	"static\\xform.tbl"
 #define MONSTERS	"static\\monsters.dat"
+#define READY		"static\\ready.dat"
 #define IDENTITY	"gamedat\\identity"
 
 #endif
