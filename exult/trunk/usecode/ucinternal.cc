@@ -967,7 +967,7 @@ Usecode_value Usecode_internal::find_nearest
 	int dist = distval.get_int_value();
 	int shnum = shapeval.get_int_value();
 					// Kludge for Test of Courage:
-	if (cur_function->id == 0x70a && shnum == 0x9a && dist == 0)
+	if (frame->function->id == 0x70a && shnum == 0x9a && dist == 0)
 		dist = 16;		// Mage may have wandered.
 	obj->find_nearby(vec, shnum, dist, 0);
 	Game_object *closest = 0;
@@ -1631,7 +1631,7 @@ Usecode_machine *Usecode_machine::create
 
 Usecode_internal::Usecode_internal
 	(
-	) : Usecode_machine(), cur_function(0),
+	) : Usecode_machine(),
 	    book(0), caller_item(0),
 	    path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),
@@ -1755,7 +1755,6 @@ void Clearbreak()
 
 int Usecode_internal::run()
 {
-	Stack_frame *frame;
 	bool aborted = false;
 	bool initializing_loop = false;
 
@@ -1769,7 +1768,6 @@ int Usecode_internal::run()
 
 		// set some variables for use in other member functions
 		caller_item = frame->caller_item;
-		cur_function = frame->function;
 
 		/*
 		 *	Main loop.
@@ -2471,6 +2469,31 @@ int Usecode_internal::run()
 				int paramnames = Read2(frame->ip);
 				break;
 			}
+			case 0x50:		// PUSH static.
+				offset = Read2(frame->ip);
+				if (offset < 0) // Global static.
+					if (-offset < statics.size())
+						push(statics[-offset]);
+					else
+						pushi(0);
+				else if (offset <
+					    frame->function->statics.size())
+					push(frame->function->statics[offset]);
+				else
+					pushi(0);
+				break;
+			case 0x51:		// POP static.
+			{
+				offset = Read2(frame->ip);
+				// Get value.
+				Usecode_value val = pop();
+				if (offset < 0)
+					statics.put(-offset, val);
+				else
+					frame->function->statics.put(
+								offset, val);
+			}
+				break;
 			case 0xcd: // 32 bit debugging function init
 			{
 				int funcname = (sint32)Read4(frame->ip);
