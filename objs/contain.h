@@ -73,7 +73,7 @@ public:
 	virtual int add_quantity(int delta, int shapenum, int qual = c_any_qual,
 				int framenum = c_any_framenum, int dontcreate = 0);
 	virtual int create_quantity(int delta, int shapenum, int qual,
-							int framenum);
+					int framenum, bool temporary = false);
 	virtual int remove_quantity(int delta, int shapenum, int qual,
 								int framenum);
 	virtual Game_object *find_item(int shapenum, int qual, int framenum);
