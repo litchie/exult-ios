@@ -671,12 +671,14 @@ void Actor::set_schedule_type
 			schedule = new Waiter_schedule(this);
 			break;
 		case Schedule::kid_games:
-			break;		//+++++++
+			schedule = new Kid_games_schedule(this);
+			break;
 		case Schedule::eat_at_inn:
 			schedule = new Eat_at_inn_schedule(this);
 			break;
 		case Schedule::duel:
-			break;		//+++++++
+			schedule = new Duel_schedule(this);
+			break;
 		case Schedule::preach:
 			schedule = new Preach_schedule(this);
 			break;
@@ -1341,6 +1343,8 @@ void Actor::attacked
 	int ammo_shape			// Also may be 0.
 	)
 	{
+	if (attacker && attacker->get_schedule_type() == Schedule::duel)
+		return;			// Just play-fighting.
 	figure_hit_points(attacker, weapon_shape, ammo_shape);
 	if (is_dead_npc())
 		{
