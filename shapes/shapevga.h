@@ -51,11 +51,15 @@ public:
 	void write_info(bool bg);	// Write them back out.
 	Shape_info& get_info(int shapenum)
 	{
+#if 0	/* This can go away.  Done in Shape_manager::read_shape_info().	*/
 		// Shapes 1024 -> 1035 in SI are alternative player chars.
 		// Odd are female, even are male.
 		return shapenum>=1024&&shapenum<=1035&&shapenum%2 ? info[989]:
 			shapenum>=1024&&shapenum<=1035 ? info[721]:
 			info[shapenum];
+#else
+		return info[shapenum];
+#endif
 	}
 };
 

@@ -85,6 +85,29 @@ Shape_manager::Shape_manager
 	}
 
 /*
+ *	Read in shape-file info.
+ */
+
+void Shape_manager::read_shape_info
+	(
+	)
+	{
+	shapes.init();
+	shapes.read_info(GAME_BG);	// Read in shape dimensions.
+	if (GAME_SI)			// Fixup Avatar shapes 1024-1035.
+		{
+		// Odd are female, even are male.
+		Shape_info& male = shapes.get_info(721);
+		Shape_info& female = shapes.get_info(989);
+		for (int i = 1024; i <= 1035; ++i)
+			{
+			Shape_info& info = shapes.get_info(i);
+			info.copy_shallow((i%2) ? female : male);
+			}
+		}
+	}
+
+/*
  *	Load files.
  */
 
@@ -106,8 +129,7 @@ void Shape_manager::load
 					// Red for hit in battle.
 	special_pixels[HIT_PIXEL] = pal.find_color(63, 4, 4);
 
-	shapes.init();
-	shapes.read_info(GAME_BG);	// Read in shape dimensions.
+	read_shape_info();
 	files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS);
 
 	if (Game::get_game_type()==SERPENT_ISLE)
@@ -206,8 +228,7 @@ void Shape_manager::reload_shapes
 	switch (dragtype)
 		{
 	case U7_SHAPE_SHAPES:
-		shapes.init();		// Reread .vga file.
-		shapes.read_info(GAME_BG);	//+++++Needs work.
+		read_shape_info();
 					// ++++Reread text?
 		break;
 	case U7_SHAPE_GUMPS:

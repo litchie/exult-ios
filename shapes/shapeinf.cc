@@ -155,6 +155,28 @@ Shape_info::~Shape_info()
 	}
 
 /*
+ *	Copy the non-allocated fields.
+ */
+
+void Shape_info::copy_shallow
+	(
+	Shape_info& inf2
+	)
+	{
+	for (int i = 0; i < 3; ++i)
+		{
+		tfa[i] = inf2.tfa[i];
+		dims[i] = inf2.dims[i];
+		}
+	weight = inf2.weight;
+	volume = inf2.volume;
+	shpdims[0] = inf2.shpdims[0];
+	shpdims[1] = inf2.shpdims[1];
+	ready_type = inf2.ready_type;
+	occludes_flag = inf2.occludes_flag;
+	}
+
+/*
  *	Create/delete 'info' for weapons, ammo, etc.
  *
  *	Output: Possibly updated ->info .
