@@ -747,6 +747,20 @@ USECODE_INTRINSIC(npc_nearby)
 	return(u);
 }
 
+USECODE_INTRINSIC(npc_nearby2)
+{	// Guessing wildly (SI).  Handles start of Moonshade trial where
+	//   companions are a fair distance away.
+
+	Game_object *npc = get_item(parms[0]);
+	int is_near = (npc != 0 && 
+		npc->get_tile().distance(gwin->get_main_actor()->get_tile()) 
+								< 40 &&
+					// FALSE if asleep.
+		!npc->get_flag(Obj_flags::asleep));
+	Usecode_value u(is_near);
+	return(u);
+}
+
 USECODE_INTRINSIC(find_nearby_avatar)
 {
 	// Find objs. with given shape near Avatar?
