@@ -110,15 +110,19 @@ void Npc_proximity_handler::handle_event
 		 (rand()%2 == 1 || npc->get_shapenum() == 811)  &&
 					// And not for party members.
 			npc->get_party_id() < 0 &&
-					// And not for patrollers in SI.
-		 (npc->get_schedule_type() != (int) Schedule::patrol ||
-				Game::get_game_type() != SERPENT_ISLE))
+					// And not for patrollers/monsters
+					//  in SI. !!Guessing.
+		 (Game::get_game_type() != SERPENT_ISLE ||
+			(npc->get_schedule_type() != (int) Schedule::patrol &&
+			 !npc->is_monster())))
+				
 		{
 		int ucfun = npc->get_usecode();
 		ucfun = ucfun == -1 ? npc->get_shapenum() : ucfun;
 		gwin->get_usecode()->call_usecode(ucfun, npc,
 					Usecode_machine::npc_proximity);
 		extra_delay += 3;
+		curtime = SDL_GetTicks();// Time may have passed.
 		}
 	add(curtime, npc, extra_delay);	// Add back for next time.
 	}
