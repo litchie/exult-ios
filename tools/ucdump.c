@@ -83,6 +83,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 /*
  Opcode flags
  Just a 16bit word
