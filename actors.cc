@@ -2226,19 +2226,15 @@ int Actor::figure_hit_points
 					// A little oomph.
 		if (instant_death)
 			say("\"Cheater!\"");
+					// Goblin?
+		else if (Game::get_game_type() == SERPENT_ISLE &&
+			 (get_shapenum() == 0x1de ||
+			  get_shapenum() == 0x2b3 ||
+			  get_shapenum() == 0x2d5 ||
+			  get_shapenum() == 0x2e8))
+			say(0x4d2, 0x4da);
 		else
 			say(first_ouch, last_ouch);
-#if 0
-	if (Game::get_game_type() == SERPENT_ISLE &&
-	    (get_flag(Obj_flags::zombie) ||	// Can't kill zombies.
-					// A guess for SI's Cantra-vs-Batlin.
-					// (+++++Probably wrong, but fixes
-					//  crystal-ball scene for now!)
-	    (this == gwin->get_camera_actor() && 
-					this != gwin->get_main_actor())))
-		if (newhp < 1)		// Don't go < 1.
-			hp = oldhealth - 1;
-#endif
 	reduce_health(hp);
 	cout << "Attack damage was " << hp << " hit points, leaving " << 
 		properties[(int) health] << " remaining" << endl;
