@@ -1324,11 +1324,6 @@ void Sit_schedule::now_what
 		if (!barge)
 			return;
 		int usefun = 0x634;	// I hate using constants like this.
-		Game_object_vector fman;// See if Ferryman nearby.
-		if (chair->find_nearby(fman, 155, 8, 0) == 1)
-			{
-			usefun = 0x61c;
-			}
 		did_barge_usecode = true;
 					// Special usecode for barge pieces:
 					// (Call with item=Avatar to avoid

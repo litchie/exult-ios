@@ -66,6 +66,9 @@ using std::strchr;
 Barge_object *Get_barge	(Game_object *obj);
 extern Usecode_value no_ret;
 
+static Game_object *sailor = 0;		// The current barge captain.  Maybe
+					//   this needs to be saved/restored.
+
 #define PARTY_MAX (sizeof(party)/sizeof(party[0]))
 
 #define	USECODE_INTRINSIC(NAME)	Usecode_value	Usecode_internal:: UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
@@ -2162,6 +2165,9 @@ USECODE_INTRINSIC(get_item_flag)
 	else if (fnum == (int) Obj_flags::in_dungeon)
 		return Usecode_value(obj == gwin->get_main_actor() &&
 					gwin->is_in_dungeon());
+	else if (fnum == 0x14)		// Must be the sailor, as this is used
+					//   to check for Ferryman.
+		return Usecode_value(sailor);
 	Usecode_value u(obj->get_flag(fnum) != 0);
 	return(u);
 }
@@ -2192,6 +2198,8 @@ USECODE_INTRINSIC(set_item_flag)
 			gwin->add_dirty(obj);
 			}
 		break;
+	case 0x14:			// The sailor (Ferryman).
+		sailor = obj;
 	default:
 		obj->set_flag(flag);
 		if (Is_moving_barge_flag(flag))
@@ -2224,6 +2232,8 @@ USECODE_INTRINSIC(clear_item_flag)
 			if (barge && barge == gwin->get_moving_barge())
 				gwin->set_moving_barge(0);
 			}
+		else if (flag == 0x14)		// Handles Ferryman
+			sailor = 0;
 		}
 	return(no_ret);
 }
