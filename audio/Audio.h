@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <SDL_audio.h>
 #include "Mixer.h"
 #include "Midi.h"
+#include "../utils.h"
 
 //---- Audio -----------------------------------------------------------
 
@@ -40,6 +41,8 @@ class Audio
 {
 private:
 	static	Audio	*self;
+	Audio(const Audio &) { throw replication_error("Audio class cannot be duplicated"); };
+	Audio &operator=(const Audio &) { throw replication_error("Audio class cannot be duplicated"); return *this; };
 public:
     Audio();
     void	Init(void);

@@ -319,7 +319,7 @@ void Actor::follow
 	if (pos.distance(leaderpos) >= 8 && get_party_id() >= 0)
 		{			// A little stuck?
 		static long lasttime = 0;
-		long curtime;
+		long curtime=0;
 					// Leader stopped?
 		if (!leader->is_moving() ||
 					// Or 3 seconds since last time?

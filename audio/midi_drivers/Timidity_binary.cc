@@ -123,7 +123,7 @@ static	pid_t	sub_process(const char *midi_file_name,bool repeat)
 }
 
 
-Timidity_binary::Timidity_binary() :forked_job(-1)
+Timidity_binary::Timidity_binary() : forked_job(-1)
 	{
 		// Figure out if the binary is where we expect it to be.
 		
