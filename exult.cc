@@ -1040,7 +1040,8 @@ static void Handle_keystroke
 			gwin->paint_shape(x, y, map, 1);
 			gwin->show(1);
 			int xx, yy;
-			Get_click(xx, yy, Mouse::greenselect);
+			if (!Get_click(xx, yy, Mouse::greenselect))
+				break;
 			
 			int tx, ty;
 			
