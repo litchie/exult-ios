@@ -287,8 +287,8 @@ static void Paint_image
 					//++++CHeck py too?
 //	float x = static_cast<float>(px);
 //	float y = static_cast<float>(py);
-	glRasterPos2f(px, py);
-	glPixelZoom(scale, scale);
+	glPixelZoom(scale, -scale);	// Get right side up.
+	glRasterPos2f(px, py + h);
 	glDrawPixels(w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 	glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
