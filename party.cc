@@ -409,6 +409,8 @@ static Actor *Find_member_blocking
 	for (int i = first; i < count; i++)
 		{
 		Actor *npc = gwin->get_npc(pman->get_member(i));
+		pos.tz = npc->get_lift();// Use NPC's, since it might be up/dn
+					//   by a step.
 		if (npc->blocks(pos))
 			return npc;	// Found.
 		}
@@ -430,21 +432,35 @@ inline int Get_dir_from
 	}
 
 /*
- *	Is the next tile towards the leader one we can step onto?
+ *	Is the straight path to the leader clear, and less than 5 tiles?
  */
 
-inline bool Is_next_free
+inline bool Clear_to_leader
 	(
 	Actor *npc,
 	Actor *leader,
-	Tile_coord& from		// Start from here.
+	Tile_coord from			// Start from here.
 	)
 	{
-	int dir = Get_dir_from(leader, from);
-	Tile_coord next = from.get_neighbor(dir);
-	if (npc->is_blocked(next) && !Find_member_blocking(next, 0))
-		return false;		// Blocked by non-party-member.
-	return true;
+	Tile_coord dest = leader->get_tile();
+	int dist = dest.distance(from);
+	if (dist > 4)
+		return false;		// Too far.
+	while (--dist)			// Check tiles up to there.
+		{
+		int dir = Get_dir_from(leader, from);
+		Tile_coord next = from.get_neighbor(dir);
+		if (npc->is_blocked(next, &from))
+			{
+			Actor *bnpc = Find_member_blocking(next, 0);
+			if (!bnpc)
+				return false;	// Blocked by non-party-member.
+			next.tz = bnpc->get_lift();
+			}
+		from = next;
+		}
+	int difftz = from.tz - dest.tz;	// Check diff. in z-coords.
+	return difftz*difftz <= 1;	// Can't be more than 2.
 	}
 
 /*
@@ -489,7 +505,7 @@ static int Get_cost
 	cost += difftz*difftz + xydist2;
 	if (xydist2 > 2)		// More than 1 tile away?
 		{			// Check 1 more tile towards leader.
-		if (!Is_next_free(npc, leader, to))
+		if (!Clear_to_leader(npc, leader, to))
 			cost += 16;	// If blocked, try to avoid.
 		}
 	return cost;
@@ -510,8 +526,7 @@ static bool Take_best_step
 	int dir				// Direction we want to go.
 	)
 	{
-//++++Not sure	static int deltadir[8] = {0, 1, 7, 2, 6, 3, 5, 4};
-	static int deltadir[8] = {0, 1, 7, 2, 6};
+	static int deltadir[] = {0, 1, 7, 2, 6, 3, 5};
 	const int cnt = sizeof(deltadir)/sizeof(deltadir[0]);
 
 	int best_cost = max_cost + 8;
@@ -564,7 +579,7 @@ inline bool Is_step_okay
 	int dist = to.distance(leader->get_tile());
 	if (dist == 1)
 		return (difftz <= 1);	// 1 tile away, so want dz <= 1.
-	if (!Is_next_free(npc, leader, to))
+	if (!Clear_to_leader(npc, leader, to))
 		return false;		// Couldn't take a 2nd step.
 	return true;
 	}
