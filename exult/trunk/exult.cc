@@ -214,7 +214,7 @@ int main
 	parameters.declare("--si",&run_si,true);
 	parameters.declare("-v",&showversion,true);
 	parameters.declare("--version",&showversion,true);
-	//	parameters.declare("-game",&arg_gamename,"default");
+	parameters.declare("--game",&arg_gamename,"default");
 	parameters.declare("--buildmap",&arg_buildmap,-1);
 	parameters.declare("--nocrc",&ignore_crc,true);
 

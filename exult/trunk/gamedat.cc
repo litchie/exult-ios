@@ -102,9 +102,19 @@ void Game_window::restore_gamedat
 	setup_load_palette();
 #endif
 
-	U7open(in, fname);		// Open file; throws an exception 
-					// in case of an error.
 	U7mkdir(GAMEDAT, 0755);		// Create dir. if not already there.
+	try
+		{
+		U7open(in, fname);	// Open file; throws an exception 
+		}
+	catch(const file_exception & f)
+		{
+		if (!Game::is_editing())	// Ok if map-editing.
+			throw f;
+		std::cerr << "Warning (map-editing): Couldn't open '" << 
+							fname << "'" << endl;
+		return;
+		}
 
 	U7remove (USEDAT);
 	U7remove (U7NBUF_DAT);
@@ -830,8 +840,14 @@ bool Game_window::restore_gamedat_zip
 	)
 	{
 	// If a flex, so can't read it
-	if (Flex::is_flex(fname)) return false;
-
+	try
+		{
+		if (Flex::is_flex(fname)) return false;
+		}
+	catch(const file_exception & f)
+		{
+		return false;		// Ignore if not found.
+		}
 #ifdef RED_PLASMA
 	// Display red plasma during load...
 	setup_load_palette();

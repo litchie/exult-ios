@@ -441,8 +441,16 @@ void Game_map::get_ifix_objects
 					// First check for patch.
 	    U7exists(get_schunk_file_name(PATCH_U7IFIX, schunk, fname)))
 		U7open(ifix, fname);
-	else
+	else try
+		{
 		U7open(ifix, get_schunk_file_name(U7IFIX, schunk, fname));
+		}
+		catch(const file_exception & f)
+		{
+		if (!Game::is_editing())	// Ok if map-editing.
+			throw f;
+		return;
+		}
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.

@@ -35,6 +35,8 @@ exult_SOURCES =	\
 	combat.h	\
 	delobjs.cc	\
 	delobjs.h	\
+	devgame.cc	\
+	devgame.h	\
 	dir.cc		\
 	dir.h		\
 	drag.cc		\

@@ -25,7 +25,8 @@ LIBS=$(SDL_LIBS) -lmidi -lbe -lz
 EXEC=exult
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	args.o bggame.o browser.o cheat.o \
-	combat.o delobjs.o dir.o drag.o effects.o exult.o exultmenu.o \
+	combat.o delobjs.o devgame.o \
+	dir.o drag.o effects.o exult.o exultmenu.o \
 	game.o gameclk.o gamedat.o gamemap.o \
 	gamerend.o gamewin.o keys.o keyactions.o \
 	menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
