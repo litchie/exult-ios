@@ -327,11 +327,8 @@ public:
 			(tx + 1 - get_scrolltx())*tilesize - 1 - lftpix,
 			(ty + 1 - get_scrollty())*tilesize - 1 - lftpix);
 		}
-	Shape_frame *get_gump_shape(int shapenum, int framenum)
-		{
-		if (shapenum & 0x1000) return paperdolls.get_shape(shapenum & 0xFFF, framenum);
-		return gumps.get_shape(shapenum, framenum);
-		}
+	Shape_frame *get_gump_shape(int shapenum, int framenum, bool paperdoll = false)
+		{ return paperdoll ? paperdolls.get_shape(shapenum, framenum) : gumps.get_shape(shapenum, framenum); }
 					// Get screen area of a gump.
 					//   for painting it.
 	Rectangle get_gump_rect(Gump_object *gump);
@@ -389,13 +386,10 @@ public:
 			paint_shape(xoff, yoff, shape);
 		}
 					// A "gump" is an open container.
-	void paint_gump(int xoff, int yoff, int shapenum, int framenum)
+	void paint_gump(int xoff, int yoff, int shapenum, int framenum, bool paperdoll = false)
 		{
-		Shape_frame *shape;
-		if (shapenum & 0x1000)
-			shape = paperdolls.get_shape(shapenum & 0xFFF, framenum);
-		else
-			shape = gumps.get_shape(shapenum, framenum);
+		Shape_frame *shape = paperdoll ? paperdolls.get_shape(shapenum & 0xFFF, framenum) :
+				gumps.get_shape(shapenum, framenum);
 		if (shape)
 			paint_shape(xoff, yoff, shape);
 		}

@@ -35,12 +35,6 @@ extern Configuration *config;
 /*
  *	Some gump shape numbers:
  */
-const int HALO = 7;
-const int COMBATMODE = 12;
-const int SLIDER = 14;
-const int SLIDERDIAMOND = 15;
-const int SLIDERRIGHT = 16;
-const int SLIDERLEFT = 17;
 const int ASLEEP = 0, POISONED = 1, CHARMED = 2, HUNGRY = 3,
 		  PROTECTED = 4, CURSED = 5, PARALYZED = 6;
 
@@ -78,6 +72,19 @@ short File_gump_object::textx = 237, File_gump_object::texty = 14,
 short Yesno_gump_object::yesx = 63;
 short Yesno_gump_object::yesnoy = 45;
 short Yesno_gump_object::nox = 84;
+
+short Paperdoll_gump_object::diskx = 123, Paperdoll_gump_object::disky = 137;
+short Paperdoll_gump_object::heartx = 98, Paperdoll_gump_object::hearty = 137;
+short Paperdoll_gump_object::combatx = 51, Paperdoll_gump_object::combaty = 142;
+short Paperdoll_gump_object::cstatx = 73, Paperdoll_gump_object::cstaty = 137;
+short Paperdoll_gump_object::coords[24] = {
+	114, 10,	/* head */	115, 24,	/* back */
+	115, 37,	/* belt */	115, 55,	/* lhand */
+	115, 71,	/* lfinger */	114, 85,	/* legs */
+	76, 98,		/* feet */	35, 70,		/* rfinger */
+	37, 56,		/* rhand */	37, 37,		/* torso */
+	37, 24,		/* neck */	37, 11		/* ammo */
+	};
 
 
 /*
@@ -197,7 +204,7 @@ class Halo_gump_button : public Gump_button
 	{
 public:
 	Halo_gump_button(Gump_object *par, int px, int py)
-		: Gump_button(par, HALO, px, py)
+		: Gump_button(par, Game::get_game()->get_shape("gumps/halo"), px, py)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -211,7 +218,7 @@ class Combat_mode_gump_button : public Gump_button
 	Actor *actor;			// Who this represents.
 public:
 	Combat_mode_gump_button(Gump_object *par, int px, int py, Actor *a)
-		: Gump_button(par, COMBATMODE, px, py), actor(a)
+		: Gump_button(par, Game::get_game()->get_shape("gumps/combatmode	"), px, py), actor(a)
 		{
 		framenum = (int) actor->get_attack_mode();
 		}
@@ -547,6 +554,7 @@ void Combat_mode_gump_button::activate
 	gwin->set_painted();
 	}
 
+
 /*
  *	Handle 'yes' or 'no' button.
  */
@@ -619,9 +627,15 @@ void Gump_object::initialize
 	(
 	)
 	{
+
+	if (is_paperdoll())
+		{
+		initialize2();
+		return;
+		}
+		
 	int checkx = 8, checky = 64;	// Default.
 	int shnum = get_shapenum();
-	cout << "New Gump Shapenum " << shnum << endl;
 	if(shnum==Game::get_game()->get_shape("gumps/yesnobox"))
 		{
 		object_area = Rectangle(8, 8, 112, 24);
@@ -685,7 +699,7 @@ void Gump_object::initialize
 		object_area = Rectangle(36, 12, 70, 26);
 		checkx = 8; checky = 46;
         	}
-        else if(shnum==SLIDER)
+        else if(shnum==Game::get_game()->get_shape("gumps/slider"))
 	        {
 		object_area = Rectangle(0, 0, 0, 0);
 		checkx = 6; checky = 30;
@@ -707,11 +721,30 @@ void Gump_object::initialize
 		object_area = Rectangle(36, 46, 84, 40);
 		checkx = 8; checky = 70;
 	        }
-        else if (shnum == (123|0x1000) || (shnum >= 57 && shnum <= 68 && Game::get_game_type() == BLACK_GATE))
+        else if ((shnum >= 57 && shnum <= 68 && Game::get_game_type() == BLACK_GATE))
 		{		// Character pictures:
 				// Want whole rectangle.
 		object_area = Rectangle(26, 0, 104, 132);
 		checkx = 6; checky = 136;
+		}
+	else
+		object_area = Rectangle(52, 22, 60, 40);
+
+	checkx += 16; checky -= 12;
+	check_button = new Checkmark_gump_button(this, checkx, checky);
+	}
+
+void Gump_object::initialize2
+	(
+	)
+	{
+	int checkx = 8, checky = 64;	// Default.
+	int shnum = get_shapenum();
+	if (shnum == 123)
+		{		// Character pictures:
+				// Want whole rectangle.
+		object_area = Rectangle(26, 0, 104, 140);
+		checkx = 6; checky = 145;
 		}
 	else
 		object_area = Rectangle(52, 22, 60, 40);
@@ -728,8 +761,10 @@ Gump_object::Gump_object
 	(
 	Container_game_object *cont,	// Container it represents.
 	int initx, int inity, 		// Coords. on screen.
-	int shnum			// Shape #.
-	) : ShapeID(shnum, 0), container(cont), x(initx), y(inity)
+	int shnum,			// Shape #.
+	bool pdoll			// Use the shapes from paperdoll.flx
+	) : ShapeID(shnum, 0), container(cont), x(initx), y(inity),
+	paperdoll_shape (pdoll)
 	{
 	initialize();
 	}
@@ -742,10 +777,9 @@ Gump_object::Gump_object
 	(
 	Container_game_object *cont,	// Container it represents.
 	int shnum			// Shape #.
-	) : ShapeID(shnum, 0), container(cont)
+	) : ShapeID(shnum, 0), container(cont), paperdoll_shape (false)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	cout << "The shape is " << shnum << endl;
 	Shape_frame *shape = gwin->get_gump_shape(shnum, 0);
 	x = (gwin->get_width() - shape->get_width())/2;
 	y = (gwin->get_height() - shape->get_height())/2;
@@ -902,7 +936,7 @@ void Gump_object::paint_button
 	Gump_button *btn
 	)
 	{
-	gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, 
+	if (btn) gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, 
 					btn->framenum + btn->pushed);
 	}
 
@@ -976,8 +1010,7 @@ void Gump_object::paint
 	)
 	{
 					// Paint the gump itself.
-//	cout << get_shapenum() << endl;
-	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+	gwin->paint_gump(x, y, get_shapenum(), get_framenum(), is_paperdoll());
 					// Paint red "checkmark".
 	paint_button(gwin, check_button);
 	if (!container)
@@ -1080,28 +1113,20 @@ Actor_gump_object::Actor_gump_object
 	int shnum			// Shape #.
 	) : Gump_object(cont, initx, inity, shnum)
 	{
-	cout << "It's " << shnum << endl;
 	heart_button = new Heart_gump_button(this, heartx, hearty);
-	disk_button = new Disk_gump_button(this, diskx, disky);
-	combat_button = new Combat_gump_button(this, combatx, combaty);
+	if (cont->get_npc_num() == 0) disk_button = new Disk_gump_button(this, diskx, disky);
+	else disk_button = NULL;
+	if (cont->get_npc_num() == 0) combat_button = new Combat_gump_button(this, combatx, combaty);
+	else combat_button = NULL;
 	halo_button = new Halo_gump_button(this, halox, haloy);
-	cmode_button = new Combat_mode_gump_button(this, cmodex, cmodey,
-							(Actor *) cont);
+	cmode_button = new Combat_mode_gump_button(this, cmodex, cmodey, (Actor *) cont);
+							
 	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 		{			// Set object coords.
 		Game_object *obj = container->get_readied(i);
 		if (obj)
 			set_to_spot(obj, i);
 		}
-	}
-
-Paperdoll_gump_object::Paperdoll_gump_object
-	(
-	Container_game_object *cont,	// Container it represents.
-	int initx, int inity, 		// Coords. on screen.
-	int shnum			// Shape #.
-	) : Actor_gump_object(cont, initx, inity, (123|0x1000))
-	{
 	}
 
 /*
@@ -1112,11 +1137,11 @@ Actor_gump_object::~Actor_gump_object
 	(
 	)
 	{
-	delete heart_button;
-	delete disk_button;
-	delete combat_button;
-	delete halo_button;
-	delete cmode_button;
+	if (heart_button) delete heart_button;
+	if (disk_button) delete disk_button;
+	if (combat_button) delete combat_button;
+	if (halo_button) delete halo_button;
+	if (cmode_button) delete cmode_button;
 	}
 
 /*
@@ -1134,15 +1159,15 @@ Gump_button *Actor_gump_object::on_button
 	Gump_button *btn = Gump_object::on_button(gwin, mx, my);
 	if (btn)
 		return btn;
-	else if (heart_button->on_button(gwin, mx, my))
+	else if (heart_button && heart_button->on_button(gwin, mx, my))
 		return heart_button;
-	else if (disk_button->on_button(gwin, mx, my))
+	else if (disk_button && disk_button->on_button(gwin, mx, my))
 		return disk_button;
-	else if (combat_button->on_button(gwin, mx, my))
+	else if (combat_button && combat_button->on_button(gwin, mx, my))
 		return combat_button;
-	else if (halo_button->on_button(gwin, mx, my))
+	else if (halo_button && halo_button->on_button(gwin, mx, my))
 		return halo_button;
-	else if (cmode_button->on_button(gwin, mx, my))
+	else if (cmode_button && cmode_button->on_button(gwin, mx, my))
 		return cmode_button;
 	return 0;
 	}
@@ -1229,11 +1254,11 @@ void Actor_gump_object::paint
 		}
 	Gump_object::paint(gwin);	// Paint gump & objects.
 					// Paint buttons.
-	paint_button(gwin, heart_button);
-	paint_button(gwin, disk_button);
-	paint_button(gwin, combat_button);
-	paint_button(gwin, halo_button);
-	paint_button(gwin, cmode_button);
+	if (heart_button) paint_button(gwin, heart_button);
+	if (disk_button) paint_button(gwin, disk_button);
+	if (combat_button) paint_button(gwin, combat_button);
+	if (halo_button) paint_button(gwin, halo_button);
+	if (cmode_button) paint_button(gwin, cmode_button);
 	}
 
 /*
@@ -1591,14 +1616,14 @@ Slider_gump_object::Slider_gump_object
 	int mival, int mxval,		// Value range.
 	int step,			// Amt. to change by.
 	int defval			// Default value.
-	) : Modal_gump_object(0, SLIDER),
+	) : Modal_gump_object(0, Game::get_game()->get_shape("gumps/slider")),
 	    min_val(mival), max_val(mxval), step_val(step),
 	    val(defval), dragging(0), prev_dragx(0)
 	{
 cout << "Slider:  " << min_val << " to " << max_val << " by " << step << endl;
-	left_arrow = new Slider_gump_button(this, leftbtnx, btny, SLIDERLEFT);
+	left_arrow = new Slider_gump_button(this, leftbtnx, btny, Game::get_game()->get_shape("gumps/slider_left"));
 	right_arrow = new Slider_gump_button(this, rightbtnx, btny, 
-								SLIDERRIGHT);
+								Game::get_game()->get_shape("gumps/slider_right"));
 					// Init. to middle value.
 	set_val(defval);
 	}
@@ -1661,7 +1686,7 @@ void Slider_gump_object::paint
 	paint_button(gwin, left_arrow);
 	paint_button(gwin, right_arrow);
 					// Paint slider diamond.
-	gwin->paint_gump(x + diamondx, y + diamondy, SLIDERDIAMOND, 0);
+	gwin->paint_gump(x + diamondx, y + diamondy, Game::get_game()->get_shape("gumps/slider_diamond"), 0);
 					// Print value.
   	Paint_num(gwin, val, x + textx, y + texty);
 	gwin->set_painted();
@@ -1693,7 +1718,7 @@ void Slider_gump_object::mouse_down
 		return;
 		}
 					// See if on diamond.
-	Shape_frame *diamond = gwin->get_gump_shape(SLIDERDIAMOND, 0);
+	Shape_frame *diamond = gwin->get_gump_shape(Game::get_game()->get_shape("gumps/slider_diamond"), 0);
 	if (diamond->has_point(mx - (x + diamondx), my - (y + diamondy)))
 		{			// Start to drag it.
 		dragging = 1;
@@ -2235,5 +2260,221 @@ int Yesno_gump_object::ask
 		answer = dlg->get_answer();
 	delete dlg;
 	return (answer);
+	}
+
+/*
+ *
+ *	SERPENT ISLE GUMPS
+ *
+ */
+
+/*
+ *	The Combat Stats Button.
+ */
+class Cstats_gump_button : public Gump_button
+	{
+public:
+	Cstats_gump_button(Gump_object *par, int px, int py)
+		: Gump_button(par, Game::get_game()->get_shape("gumps/combat_stats"), px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	Handle click on a combat stats button
+ */
+
+void Cstats_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+					// ++++++Later.
+	}
+
+
+/*
+ *	Find the index of the closest 'spot' to a mouse point.
+ *
+ *	Output:	Index, or -1 if unsuccessful.
+ */
+
+int Paperdoll_gump_object::find_closest
+	(
+	int mx, int my,			// Mouse point in window.
+	int only_empty			// Only allow empty spots.
+	)
+	{
+	mx -= x; my -= y;		// Get point rel. to us.
+	long closest_squared = 1000000;	// Best distance squared.
+	int closest = -1;		// Best index.
+	for (size_t i = 0; i < sizeof(coords)/(2*sizeof(coords[0])); i++)
+		{
+		int dx = mx - spotx(i), dy = my - spoty(i);
+		long dsquared = dx*dx + dy*dy;
+					// Better than prev.?
+		if (dsquared < closest_squared && (!only_empty ||
+						!container->get_readied(i)))
+			{
+			closest_squared = dsquared;
+			closest = i;
+			}
+		}
+	return (closest);
+	}
+
+/*
+ *	Create the gump display for an actor.
+ */
+
+Paperdoll_gump_object::Paperdoll_gump_object
+	(
+	Container_game_object *cont,	// Container it represents.
+	int initx, int inity, 		// Coords. on screen.
+	int shnum			// Shape #.
+	) : Gump_object(cont, initx, inity, 123, true)
+	{
+	heart_button = new Heart_gump_button(this, heartx, hearty);
+	if (cont->get_npc_num() == 0) disk_button = new Disk_gump_button(this, diskx, disky);
+	else disk_button = NULL;
+	if (cont->get_npc_num() == 0) combat_button = new Combat_gump_button(this, combatx, combaty);
+	else combat_button = NULL;
+	cstats_button = new Cstats_gump_button(this, cstatx, cstaty);
+							
+	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
+		{			// Set object coords.
+		Game_object *obj = container->get_readied(i);
+		if (obj)
+			set_to_spot(obj, i);
+		}
+	}
+
+/*
+ *	Delete actor display.
+ */
+
+Paperdoll_gump_object::~Paperdoll_gump_object
+	(
+	)
+	{
+	if (heart_button) delete heart_button;
+	if (disk_button) delete disk_button;
+	if (combat_button) delete combat_button;
+	if (cstats_button) delete cstats_button;
+	}
+
+/*
+ *	Is a given screen point on one of our buttons?
+ *
+ *	Output: ->button if so.
+ */
+
+Gump_button *Paperdoll_gump_object::on_button
+	(
+	Game_window *gwin,
+	int mx, int my			// Point in window.
+	)
+	{
+	Gump_button *btn = Gump_object::on_button(gwin, mx, my);
+	if (btn)
+		return btn;
+	else if (heart_button && heart_button->on_button(gwin, mx, my))
+		return heart_button;
+	else if (disk_button && disk_button->on_button(gwin, mx, my))
+		return disk_button;
+	else if (combat_button && combat_button->on_button(gwin, mx, my))
+		return combat_button;
+	else if (cstats_button && cstats_button->on_button(gwin, mx, my))
+		return cstats_button;
+	return 0;
+	}
+
+/*
+ *	Add an object.
+ *
+ *	Output:	0 if cannot add it.
+ */
+
+int Paperdoll_gump_object::add
+	(
+	Game_object *obj,
+	int mx, int my,			// Screen location of mouse.
+	int sx, int sy			// Screen location of obj's hotspot.
+	)
+	{
+					// Find index of closest spot.
+	int index = find_closest(mx, my);
+	if (!container->add_readied(obj, index))
+		{			// Can't add it there?
+					// Try again for an empty spot.
+		index = find_closest(mx, my, 1);
+		if (index < 0 || !container->add_readied(obj, index))
+					// Just try to add it.
+			if (!container->add(obj))
+				return (0);
+		}
+					// In case it went in another obj:
+	index = container->find_readied(obj);
+	if (index >= 0)
+		set_to_spot(obj, index);// Set obj. coords.
+	return (1);
+	}
+
+/*
+ *	Set object's coords. to given spot.
+ */
+
+void Paperdoll_gump_object::set_to_spot
+	(
+	Game_object *obj,
+	int index			// Spot index.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Get shape info.
+	Shape_frame *shape = gwin->get_shape(*obj);
+	int w = shape->get_width(), h = shape->get_height();
+					// Set object's position.
+	obj->set_chunk(spotx(index) + shape->get_xleft() - w/2 - object_area.x,
+		spoty(index) + shape->get_yabove() - h/2 - object_area.y);
+					// Shift if necessary.
+	int x0 = obj->get_cx() - shape->get_xleft(), 
+	    y0 = obj->get_cy() - shape->get_yabove();
+	int newcx = obj->get_cx(), newcy = obj->get_cy();
+	if (x0 < 0)
+		newcx -= x0;
+	if (y0 < 0)
+		newcy -= y0;
+	int x1 = x0 + w, y1 = y0 + h;
+	if (x1 > object_area.w)
+		newcx -= x1 - object_area.w;
+	if (y1 > object_area.h)
+		newcy -= y1 - object_area.h;
+	obj->set_chunk(newcx, newcy);
+	}
+
+/*
+ *	Paint on screen.
+ */
+
+void Paperdoll_gump_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+					// Watch for any newly added objs.
+	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
+		{			// Set object coords.
+		Game_object *obj = container->get_readied(i);
+		if (obj && !obj->get_cx() && !obj->get_cy())
+			set_to_spot(obj, i);
+		}
+	Gump_object::paint(gwin);	// Paint gump & objects.
+					// Paint buttons.
+	if (heart_button) paint_button(gwin, heart_button);
+	if (disk_button) paint_button(gwin, disk_button);
+	if (combat_button) paint_button(gwin, combat_button);
+	if (cstats_button) paint_button(gwin, cstats_button);
 	}
 

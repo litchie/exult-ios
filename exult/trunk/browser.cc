@@ -54,9 +54,9 @@ void ShapeBrowser::browse_shapes()
 	{
 		
 		Game_window *gwin = Game_window::get_game_window();
-		Image_window8 *win = gwin->get_win();
-		int topx = (gwin->get_width()-320)/2;
-		int topy = (gwin->get_height()-200)/2;
+		//Image_window8 *win = gwin->get_win();
+		//int topx = (gwin->get_width()-320)/2;
+		//int topy = (gwin->get_height()-200)/2;
 		int centerx = gwin->get_width()/2;
 		int centery = gwin->get_height()/2;
 		Palette pal;
@@ -71,7 +71,7 @@ void ShapeBrowser::browse_shapes()
 		bool looping = true;
 		bool redraw = true;
 		SDL_Event event;
-		int active;
+		//int active;
 		
 		do {
  		        if (redraw) {
@@ -108,7 +108,7 @@ void ShapeBrowser::browse_shapes()
 			if(event.type==SDL_KEYDOWN) {
                			redraw = true;
 				int shift = event.key.keysym.mod & KMOD_SHIFT;
-				int ctrl = event.key.keysym.mod & KMOD_CTRL;
+				//int ctrl = event.key.keysym.mod & KMOD_CTRL;
 				switch(event.key.keysym.sym) {
 				case SDLK_ESCAPE:
 					looping = false;

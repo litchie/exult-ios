@@ -29,6 +29,7 @@ BG_Game::BG_Game()
 		add_shape("gumps/fntext",4);
 		add_shape("gumps/loadbtn",5);
 		add_shape("gumps/savebtn",6);
+		add_shape("gumps/halo",7);
 		add_shape("gumps/disk",24);
 		add_shape("gumps/heart",25);
 		add_shape("gumps/statatts",28);
@@ -44,6 +45,11 @@ BG_Game::BG_Game()
 		add_shape("gumps/nobtn",71);
 		add_shape("gumps/book",32);
 		add_shape("gumps/scroll",55);
+		add_shape("gumps/combatmode",12);
+		add_shape("gumps/slider",14);
+		add_shape("gumps/slider_diamond",15);
+		add_shape("gumps/slider_right",16);
+		add_shape("gumps/slider_left",17);
 
 		add_shape("gumps/box", 0);
 		add_shape("gumps/crate", 1);
@@ -344,7 +350,7 @@ void BG_Game::end_game(bool success)
 			vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x15);
 			clear_screen();
 			pal.load("<STATIC>/intropal.dat",0);
-			for(int i=0; i<text->size(); i++) {
+			for(uint32 i=0; i<text->size(); i++) {
 				show_text_line(topx, topx+320, topy+20+i*12, (*text)[i]);
 			}
 			

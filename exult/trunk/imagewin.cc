@@ -929,7 +929,7 @@ void Image_window::resized
 	(
 	unsigned int neww, 
 	unsigned int newh,
-	unsigned int newsc
+	int newsc
 	)
 	{
 	if (surface)

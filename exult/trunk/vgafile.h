@@ -221,7 +221,7 @@ public:
 		shapenum = shnum;
 		family_shape = family;
 		}
-	static Ammo_info *get_ammo(unsigned int i)
+	static Ammo_info *get_ammo(int i)
 		{ return i < count ? &ammo[i] : 0; }
 	int get_shapenum()
 		{ return shapenum; }

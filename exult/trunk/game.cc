@@ -305,7 +305,7 @@ vector<char *> *Game::load_text(const char *archive, int index)
 
 void Game::destroy_text(vector<char *> *text)
 {
-	for(int i=0; i<text->size(); i++)
+	for(uint32 i=0; i<text->size(); i++)
 		delete [] (*text)[i];
 	delete text;
 }
@@ -319,14 +319,14 @@ int Game::center_text(int font, const char *s, int x, int y)
 void Game::scroll_text(vector<char *> *text)
 {
 	int endy = topy+200;
-	int starty = endy;
-	int startline = 0;
+	uint32 starty = endy;
+	uint32 startline = 0;
 	unsigned int maxlines = text->size();
 	bool looping = true;
-	int next_time = SDL_GetTicks() + 200;
+	uint32 next_time = SDL_GetTicks() + 200;
 	while(looping) {
 		int ypos = starty;
-		int curline = startline;
+		uint32 curline = startline;
 		clear_screen();
 		do {
 			if(curline==maxlines)

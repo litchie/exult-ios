@@ -504,12 +504,7 @@ Rectangle Game_window::get_gump_rect
 	Gump_object *gump
 	)
 	{
-	int shnum = gump->get_shapenum();
-	Shape_frame *s;
-	if (shnum & 0x1000)
-		s = paperdolls.get_shape(shnum & 0xFFF, gump->get_framenum());
-	else
-		s = gumps.get_shape(shnum, gump->get_framenum());
+	Shape_frame *s = get_gump_shape (gump->get_shapenum(), gump->get_framenum(), gump->is_paperdoll());
 		
 	return Rectangle(gump->get_x() - s->xleft, 
 			gump->get_y() - s->yabove,
@@ -1704,13 +1699,10 @@ Gump_object *Game_window::find_gump
 		Rectangle box = get_gump_rect(gmp);
 		if (box.has_point(x, y))
 			{		// Check the shape itself.
-			Shape_frame *s;
-			int shnum = gmp->get_shapenum();
-			if (shnum & 0x1000)
-				s = paperdolls.get_shape(shnum & 0xFFF, gmp->get_framenum());
-			else
-				s = gumps.get_shape(shnum, gmp->get_framenum());
-				
+			Shape_frame *s = get_gump_shape (gmp->get_shapenum(),
+						gmp->get_framenum(),
+						gmp->is_paperdoll());
+
 			if (s->has_point(x - gmp->get_x(), y - gmp->get_y()))
 				found = gmp;
 			}
@@ -2101,7 +2093,7 @@ void Game_window::double_clicked
 		if (mode == conversation)
 			{
 			// We had a conversation with an NPC, set the met flag true (BG Only)
-			if (Game::get_game_type() == BLACK_GATE) obj->set_flag (Actor::met);
+			if (Game::get_game_type() == BLACK_GATE && obj->get_npc_num() != -1) obj->set_flag (Actor::met);
 			mode = savemode;
 			paint();
 			}
@@ -2466,9 +2458,13 @@ void Game_window::show_gump
 	int shapenum			// Shape # in 'gumps.vga'.
 	)
 	{
-	int paperdoll = (shapenum >= ACTOR_FIRST_GUMP &&
-					shapenum <= ACTOR_LAST_GUMP);
-	if (Game::get_game_type() == SERPENT_ISLE && paperdoll) paperdoll=2;
+	int paperdoll = (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP);
+
+	if (Game::get_game_type() == SERPENT_ISLE && paperdoll)
+	{
+		shapenum = 123;
+		paperdoll=2;
+	}
 	
 	// overinde for avatar
 	// Messes up other gumps
@@ -2493,7 +2489,10 @@ void Game_window::show_gump
 		}
 	int x = (1 + cnt)*get_width()/10, 
 	    y = (1 + cnt)*get_height()/10;
-	Shape_frame *shape = get_gump_shape(shapenum, 0);
+	
+    	Shape_frame *shape = paperdoll == 2 ? get_gump_shape(shapenum, 0, true) :
+					get_gump_shape(shapenum, 0, false);
+		
 	if (x + shape->get_xright() > get_width() ||
 	    y + shape->get_ybelow() > get_height())
 		{
@@ -2503,7 +2502,7 @@ void Game_window::show_gump
 		}
 	Gump_object *new_gump = paperdoll == 2 ?
 				new Paperdoll_gump_object(
-					(Container_game_object *) obj, x, y, shapenum)
+					(Container_game_object *) obj, x, y, obj->get_npc_num())
 			: paperdoll ?
 				new Actor_gump_object(
 					(Container_game_object *) obj, x, y, shapenum)
