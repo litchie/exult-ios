@@ -367,9 +367,21 @@ void ExultStudio::del_group
 	(
 	)
 	{
-//	GtkCList *clist = GTK_CLIST(
-//				glade_xml_get_widget(app_xml, "group_list"));
+	if (!curfile)
+		return;
+	Shape_group_file *groups = curfile->get_groups();
+	GtkCList *clist = GTK_CLIST(
+				glade_xml_get_widget(app_xml, "group_list"));
+	GList *list = clist->selection; 
+	if (list)			// Selection?
+		{
+		int row = (int) list->data;
+		string msg("Delete ");
+		msg += groups->get((int) list->data)->get_name();
+		msg += "?";
+		int choice = prompt2(msg.c_str(), "Yes", "No");
 	//++++++++++
+		}
 	}
 
 /*
