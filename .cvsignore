@@ -40,3 +40,4 @@ config.sub
 missing
 mkinstalldirs
 install-sh
+ltmain.sh
