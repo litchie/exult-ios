@@ -1,3 +1,6 @@
+2002-07-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* monstinf.*: armur? armour! ;-)
+
 2002-07-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* combat.cc: Call ready_ammo() if NPC needs it.
