@@ -114,79 +114,82 @@ Actor *Combat_schedule::find_foe
 	(
 	int mode			// Mode to use.
 	)
-{
+	{
 	cout << "'" << npc->get_name() << "' is looking for a foe" << endl;
 	if (opponents.empty())	// No more from last scan?
 		find_opponents();	// Find all nearby.
 	Actor *new_opponent = 0;
 //	Slist_iterator next(opponents);	// For going through list.
 	switch ((Actor::Attack_mode) mode)
-	{
-		case Actor::weakest:
 		{
-			int str, least_str = 100;
-			for (Actor_queue::const_iterator it = opponents.begin(); it != opponents.end(); ++it)
+	case Actor::weakest:
+		{
+		int str, least_str = 100;
+		for (Actor_queue::const_iterator it = opponents.begin(); 
+					it != opponents.end(); ++it)
 			{
-				Actor *opp = *it;
-				str = opp->get_property(Actor::strength);
-				if (str < least_str)
+			Actor *opp = *it;
+			str = opp->get_property(Actor::strength);
+			if (str < least_str)
 				{
-					least_str = str;
-					new_opponent = opp;
+				least_str = str;
+				new_opponent = opp;
 				}
 			}
-			break;
+		break;
 		}
-		case Actor::strongest:
+	case Actor::strongest:
 		{
-			int str, best_str = -100;
-			for (Actor_queue::const_iterator it = opponents.begin(); it != opponents.end(); ++it)
+		int str, best_str = -100;
+		for (Actor_queue::const_iterator it = opponents.begin(); 
+						it != opponents.end(); ++it)
 			{
-				Actor *opp = *it;
-				str = opp->get_property(Actor::strength);
-				if (str > best_str)
+			Actor *opp = *it;
+			str = opp->get_property(Actor::strength);
+			if (str > best_str)
 				{
-					best_str = str;
-					new_opponent = opp;
+				best_str = str;
+				new_opponent = opp;
 				}
 			}
-			break;
+		break;
 		}
-		case Actor::nearest:
+	case Actor::nearest:
 		{
-			int dist, best_dist = 4*c_tiles_per_chunk;
-			for (Actor_queue::const_iterator it = opponents.begin(); it != opponents.end(); ++it)
+		int dist, best_dist = 4*c_tiles_per_chunk;
+		for (Actor_queue::const_iterator it = opponents.begin(); 
+						it != opponents.end(); ++it)
 			{
-				Actor *opp = *it;
-				if ((dist = npc->distance(opp)) < best_dist)
+			Actor *opp = *it;
+			if ((dist = npc->distance(opp)) < best_dist)
 				{
-					best_dist = dist;
-					new_opponent = opp;
+				best_dist = dist;
+				new_opponent = opp;
 				}
 			}
-			break;
+		break;
 		}
-		case Actor::protect:		// ++++++For now, do random.
-		case Actor::random:
-		default:		// Default to random.
-			new_opponent = opponents.empty() ? 0 : opponents.front();
-			break;
-	}
+	case Actor::protect:		// ++++++For now, do random.
+	case Actor::random:
+	default:			// Default to random.
+		new_opponent = opponents.empty() ? 0 : opponents.front();
+		break;
+		}
 	if (new_opponent)
-	{
+		{
 		opponents.remove(new_opponent);
 		unsigned long curtime = SDL_GetTicks();
 					// .5 minute since last start?
 		if (!started_battle && curtime - battle_time >= 30000)
-		{
-			Audio::get_ptr()->start_music_combat(rand()%2 ? CSAttacked1 : CSAttacked2,
-									0);
+			{
+			Audio::get_ptr()->start_music_combat(rand()%2 ? 
+					CSAttacked1 : CSAttacked2, 0);
 			battle_time = curtime;
-		}
+			}
 		started_battle = 1;
-	}
+		}
 	return new_opponent;
-}
+	}
 
 /*
  *	Find a foe.
