@@ -86,3 +86,8 @@
 \C"Anybody home? Exultbot?"
 \C"Ah, well, guess I'm in the wrong timezone"
 \L - Jeff on ##exult
+
+\C"We leave it any longer,
+\Cand I could become more difficult"
+\L - Ryan,
+\L on world-wrapping
