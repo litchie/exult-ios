@@ -67,6 +67,9 @@
 /* Do we have zlib? (for compressed savegames) */
 #undef HAVE_ZIP_SUPPORT
 
+/* OpenGL? */
+#undef HAVE_OPENGL
+
 @BOTTOM@
 
 #ifdef ALPHA_LINUX_CXX
