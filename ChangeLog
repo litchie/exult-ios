@@ -1,3 +1,10 @@
+2002-07-23  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* keyactions.*: renamed functions to use north/south/east/west and
+	  added diagonals (north-west, etc.), implemented running
+	* data/bg/defaultkeys.txt data/si/defaultkeys.txt: added mapping
+	  keypad keys for all 8 directions, added shift-arrows and
+	  shift-keypad for running
+
 2002-07-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* imagewin/iwin8.h,etc:  fill8() works in OpenGL.
