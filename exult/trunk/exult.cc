@@ -1176,12 +1176,13 @@ int Get_click
 
 void Wait_for_arrival
 	(
-	Actor *actor			// Whom to wait for.
+	Actor *actor,			// Whom to wait for.
+	Tile_coord dest			// Where he's going.
 	)
 	{
 	unsigned char os = Mouse::mouse->is_onscreen();
 	uint32 last_repaint = 0;		// For insuring animation repaints.
-	while (actor->is_moving())
+	while (actor->is_moving() && actor->get_abs_tile_coord() != dest)
 		{
 		Delay();		// Wait a fraction of a second.
 

@@ -84,7 +84,7 @@ using std::vector;
 
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 extern	bool intrinsic_trace,usecode_trace,usecode_debugging;
-extern void Wait_for_arrival(Actor *actor);
+extern void Wait_for_arrival(Actor *actor, Tile_coord dest);
 
 #if USECODE_DEBUGGER
 std::vector<int> intrinsic_breakpoints;
@@ -982,7 +982,7 @@ int Usecode_machine::path_run_usecode
 		cout << "Failed to find path" << endl;
 		return 0;
 		}
-	Wait_for_arrival(npc);
+	Wait_for_arrival(npc, dest);
 	Game_object *obj = get_item(itemval);
 	if (obj)
 		{

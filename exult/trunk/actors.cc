@@ -965,9 +965,11 @@ void Actor::set_schedule_type
 		case Schedule::miner:	// Use a pick.
 			schedule = new Tool_schedule(this, 624);
 			break;
+		case Schedule::hound:
+			schedule = new Hound_schedule(this);
+			break;
 		case Schedule::loiter:
-		case Schedule::hound:	// For now.
-		case Schedule::graze:
+		case Schedule::graze:	// For now.
 			schedule = new Loiter_schedule(this);
 			break;
 		case Schedule::wander:
@@ -991,8 +993,8 @@ void Actor::set_schedule_type
 		case Schedule::sew:
 			break;		//+++++++
 		case Schedule::shy:
-			schedule = new Loiter_schedule(this);
-			break;		//+++++++
+			schedule = new Shy_schedule(this);
+			break;
 		case Schedule::lab:
 			break;		//+++++++
 		case Schedule::thief:		// Just face north, for now.
