@@ -50,8 +50,8 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DWIN32"
 		AC_MSG_RESULT(Win32)
 		EXE_TARGET="exult.exe"
-		SYSLIBS="-lwinmm"
-		ICON_FILE="exultico.o"
+		SYSLIBS="-lwinmm -lstdc++"
+		ICON_FILE="win32/exultico.o"
 		enable_kmid="no"
 		enable_timidity="no"
 		;;
