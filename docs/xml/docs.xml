@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="14 August 2004(GMT)">
+<readme title="Exult" changed="14 March 2005(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="14032005">
+			<header>- 14 March 2005</header>
+			<body>
+				<ul>
+				<li><section_ref target="Zaurus Guide"/> Newest ROM instructions updated.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="14082004">
 			<header>- 14 August 2004</header>
 			<body>
@@ -1332,16 +1340,16 @@
 			<header>Zaurus SL5x00 and ROMs</header>
 			<body>
 				<para>
-					Sharp occasionnally releases new versions of its ROM for
-					Zaurus. Consider a new ROM like a new Linux distribution: new
-					packages, new look, new kernel etc. It is possible to update the ROM
-					thanks to information found on the Zaurus web site mentioned earlier.
-					The current <Exult/> package for the Zaurus is created for the stock
-					SL-5500 ROM v2.12. It has been reported to work on the SL5000-D (the
-					earlier and less capable version). However, it has been reported that
-					the package will not run properly using the latest ROM (no matter what
-					version of the Zaurus you use). More detailed information on how to
-					fix this problem will be found further down this document.
+					Sharp occasionnally releases new versions of its ROM for Zaurus. Consider a new 
+					ROM like a new Linux distribution: new packages, new look, new kernel etc. It is 
+					possible to update the ROM thanks to information found on the Zaurus web site 
+					mentioned earlier. The current <Exult/> package for the Zaurus is created for 
+					the stock SL-5500 ROM v2.12, but will work with some modifications on more recent 
+					ROMs. It has been reported to work on the SL5000-D (the earlier and less capable 
+					version). The package will not run of-the-shelf using the latest ROM (no matter 
+					what version of the Zaurus you use) unless you make a couple of changes. More 
+					detailed information on how to fix this problem will be found further down this 
+					document. 
 				</para>
 			</body>
 		</sub>
@@ -1363,16 +1371,14 @@
 			<header>Installing new packages</header>
 			<body>
 				<para>
-					The first step to install a new package is to have the package
-					downloaded and accessible from your Zaurus. I use a method I am
-					comfortable with. If you have your own method and if it works, please
-					keep using it! To copy packages on my Zaurus, I plug the cradle via
-					USB to my Linux machine (Mandrake 8.2). I've changed the
-					modules.usbmap file so that inserting the Zaurus on the cradle will
-					automatically use the usbdnet module to access the Zaurus via
-					USB-over-ethernet. Search the net to find out how. Once the
-					connection is done, I upload the file via FTP to
-					/mnt/cf/Documents/application/ipkg/. Then I start the add/remove
+					The first step to install a new package is to have the package downloaded 
+					and accessible from your Zaurus. I use a method I am comfortable with. If 
+					you have your own method and if it works, please keep using it! To copy packages 
+					on my Zaurus, I plug the cradle via USB to my Linux machine (Mandrake 10.1). 
+					Inserting the Zaurus on the cradle will automatically use the usbnet module to 
+					access the Zaurus via USB-over-ethernet. I then assign an IP to the net device 
+					usb0. Search the net to find out how. Once the connection is done, I upload the 
+					file via FTP to /mnt/cf/Documents/application/ipkg/. Then I start the add/remove 
 					package, select add new package and choose the file I just uploaded.
 				</para>
 			</body>
@@ -1381,15 +1387,16 @@
 			<header>Using the standard ROM</header>
 			<body>
 				<para>
-					If like me you still use the standard ROM, simply install the SDL,
-					SDL-mixer and <Exult/> packages. You will also have to transfer the U7
-					data files to the Zaurus. I chose to install the data files on my
-					Compact Flash card (/mnt/cf/) on the /mnt/cf/exult-data/si/static
-					directory. Simply copy the content of your U7's static/ dir to this
-					dir and you'll be done. The previous example is for Serpent Isle ("si"
-					as you can see in the file path). For Black Gate, you would put "bg"
-					instead of "si". Only the static dir is relevant. You can copy
-					everything if you want to but it will space for nothing.
+					Using the standard ROM has lead people to some issues. I recommend you install a 
+					newer version, in particular v3.10 (at this time of writing). All the current 
+					package for <Exult/> and SDL will work fine. Simply install the SDL, SDL-mixer 
+					and <Exult/> packages. You will also have to transfer the U7 data files to the 
+					Zaurus. I chose to install the data files on my Compact Flash card (/mnt/cf/) on 
+					the /mnt/cf/exult-data/si/static directory. Simply copy the content of your U7's 
+					static/ dir to this dir and you'll be done. The previous example is for Serpent Isle 
+					("si" as you can see in the file path). For Black Gate, you would put "bg" instead of 
+					"si". Only the static dir is relevant. You can copy everything if you want to but it 
+					will take space for nothing.
 				</para>
 			</body>
 		</sub>
@@ -1408,19 +1415,17 @@
 			<header>Using the latest ROM</header>
 			<body>
 				<para>
-					As mentioned earlier, <Exult/> won't run properly on the latest ROM
-					(v3.10 as of 20030801). There are a few reason why. First, since I
-					haven't installed this ROM, I cannot test it. Then, I know they have
-					changed the default user to be "zaurus" instead of "root", which mess
-					up the paths and the config file. Indeed, by default, <Exult/> reads its
-					config file on ~/.exult.cfg which gets expanded to
-					/home/root/.exult.cfg on the default ROM but to
-					/home/zaurus/.exult.cfg on the newest ROM. Since the package installs
-					all user-related files to /home/root, <Exult/> won't find them on the
-					latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/
-					which contains the gamedat (current runing game) and the
-					savegames. Finally, the files' owner is set to "root" so the user
-					"zaurus" won't be able to alter files and directories.
+					As mentioned earlier, <Exult/> won't run properly on the latest ROM 
+					(v3.10 as of 20030801) without some changes. There are a few reason why. 
+					I know they have changed the default user to be "zaurus" instead of "root", 
+					which mess up the paths and the config file. Indeed, by default, <Exult/> 
+					reads its config file on ~/.exult.cfg which gets expanded to /home/root/.exult.cfg 
+					on the default ROM but to /home/zaurus/.exult.cfg on the newest ROM. Since 
+					the package installs all user-related files to /home/root, <Exult/> won't find 
+					them on the latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/ 
+					which contains the gamedat (current runing game) and the savegames. Finally, the 
+					files' owner is set to "root" so the user "zaurus" won't be able to alter files 
+					and directories.
 				</para>
 			</body>
 		</sub>
@@ -1428,16 +1433,13 @@
 			<header>Solving the problems with the latest ROM</header>
 			<body>
 				<para>
-					In order to play, you'll have to change the location of the files
-					installed by the package to /home/zaurus/ instead of /home/root/. I
-					have not done this, but I expect you'd have to "su" to be able to
-					change it. "su" is a command to become superuser (root).<br/>
-					Not only you want to move the files ~/.exult.cfg and ~/.exult/ to
-					/home/zaurus/ but you also want to edit the ~/.exult.cfg so that every
-					occurence of /home/root/ is replaced with /home/zaurus.<br/>
-					Please remember I have not done nor tested this, but here are the
-					commands I suppose you'd have to type. First, open a terminal (install
-					one if you don't have one).
+					In order to play, you'll have to change the location of the files installed by the 
+					package to /home/zaurus/ instead of /home/root/. You'll have to type "su" to be able 
+					to change it. "su" is a command to become superuser (root).<br/>
+					Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but 
+					you also want to edit the ~/.exult.cfg so that every occurence of /home/root/ is 
+					replaced with /home/zaurus.<br/>
+					First, open a terminal (install one if you don't have one).
 				</para>
 				<para>
 					From the terminal, verify who you are by typing ($ is the prompt):<br/>
@@ -1472,6 +1474,9 @@
 				<para>
 					Normally, you should be able to start and play the game normally.
 					Let me know if I am missing anything.
+				</para>
+				<para>
+					Updated packages will come up soon so that no additional work will be required.
 				</para>
 			</body>
 		</sub>
