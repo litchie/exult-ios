@@ -744,8 +744,10 @@ AudioID	Audio::play_sound_effect (int num, int volume, int dir, bool repeat)
 	// Where sort of sfx are we using????
 	if (sfx_file != 0)		// Digital .wav's?
 		return play_wave_sfx(num, volume, dir, repeat);
+#ifdef ENABLE_MIDISFX
 	else if (midi != 0) 
 		midi->start_sound_effect(num);
+#endif
 	return AudioID(0, 0);
 }
 
@@ -841,8 +843,10 @@ void Audio::stop_sound_effects
 	{
 	if (sfx_file != 0)		// .Wav's?
 		mixer->Destroy_Audio_Stream(Mixer_Sample_Magic_Number);
+#ifdef ENABLE_MIDISFX
 	else if (midi)
 		midi->stop_sound_effects();
+#endif
 	}
 
 void Audio::set_audio_enabled(bool ena)
