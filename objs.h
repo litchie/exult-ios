@@ -816,13 +816,12 @@ class Text_object : public Time_sensitive
 	{
 	Text_object *next, *prev;	// All of them are chained together.
 	char *msg;			// What to print.
-	int cx, cy;			// Chunk coords of upper-left corner.
-	unsigned char sx, sy;		// Tile coords. within chunk.
+	short tx, ty;			// Tile coords. within world of upper-
+					//   left corner.
 	short width, height;		// Dimensions of rectangle.
 public:
 	friend class Game_window;
-	Text_object(const char *m, int c_x, int c_y, 
-					int s_x, int s_y, int w, int h);
+	Text_object(const char *m, int t_x, int t_y, int w, int h);
 	virtual ~Text_object()
 		{ delete msg; }
 					// At timeout, remove from screen.

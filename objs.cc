@@ -334,11 +334,20 @@ void Game_object::paint
 	Game_window *gwin
 	)
 	{
+	int tx, ty, tz;
+	get_abs_tile(tx, ty, tz);
+	int liftpix = 4*tz;
+	gwin->paint_shape(
+		(tx + 1 - gwin->get_scrolltx())*tilesize - 1 - liftpix,
+		(ty + 1 - gwin->get_scrollty())*tilesize - 1 - liftpix,
+					get_shapenum(), get_framenum());
+#if 0	/* OLD WAY++++++++++++ */
 	int xoff = (cx - gwin->get_chunkx())*chunksize;
 	int yoff = (cy - gwin->get_chunky())*chunksize;
 	gwin->paint_shape(xoff + (1 + get_tx())*tilesize - 1 - 4*lift, 
 				yoff + (1 + get_ty())*tilesize - 1 - 4*lift,
 					get_shapenum(), get_framenum());
+#endif
 	}
 
 /*
@@ -1991,11 +2000,9 @@ int Sprite::next_frame
 Text_object::Text_object
 	(
 	const char *m, 			// A copy is made.
-	int c_x, int c_y, 
-	int s_x, int s_y, 
+	int t_x, int t_y, 		// Abs. tile coords.
 	int w, int h
-	) : msg(strdup(m)), cx(c_x), cy(c_y), sx(s_x), sy(s_y),
-		  width(w), height(h)
+	) : msg(strdup(m)), tx(t_x), ty(t_y), width(w), height(h)
 	{
 	}
 
@@ -2011,10 +2018,8 @@ void Text_object::handle_event
 	{
 	Game_window *gwin = (Game_window *) udata;
 					// Repaint slightly bigger rectangle.
-	Rectangle rect((cx - gwin->get_chunkx())*chunksize +
-				sx*tilesize - tilesize,
-		       (cy - gwin->get_chunky())*chunksize +
-				sy*tilesize - tilesize,
+	Rectangle rect((tx - gwin->get_scrolltx() - 1)*tilesize,
+		       (ty - gwin->get_scrollty() - 1)*tilesize,
 			width + 2*tilesize, height + 2*tilesize);
 					// Intersect with screen.
 	rect = gwin->clip_to_win(rect);

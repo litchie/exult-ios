@@ -1220,8 +1220,8 @@ Usecode_value Usecode_machine::click_on_item
 	if (!Get_click(x, y, Mouse::greenselect))
 		return Usecode_value(0);
 					// Get abs. tile coords. clicked on.
-	int tx = gwin->get_chunkx()*tiles_per_chunk + x/tilesize;
-	int ty = gwin->get_chunky()*tiles_per_chunk + y/tilesize;
+	int tx = gwin->get_scrolltx() + x/tilesize;
+	int ty = gwin->get_scrollty() + y/tilesize;
 	int tz = 0;
 					// Look for obj. in open gump.
 	Gump_object *gump = gwin->find_gump(x, y);

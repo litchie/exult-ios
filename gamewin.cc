@@ -268,8 +268,8 @@ void Game_window::show_game_location
 	int x, int y			// Point on screen.
 	)
 	{
-	x = chunkx*tiles_per_chunk + x/tilesize;
-	y = chunky*tiles_per_chunk + y/tilesize;
+	x = get_scrolltx() + x/tilesize;
+	y = get_scrollty() + y/tilesize;
 	cout << "Game location is (" << x << ", " << y << ")\n";
 	}
 
@@ -820,8 +820,8 @@ int Game_window::write_gwin
 	if (!U7open(gout, GWINDAT))	// Gamewin.dat.
 		return (0);
 					// Start with scroll coords (in tiles).
-	Write2(gout, chunkx*tiles_per_chunk);
-	Write2(gout, chunky*tiles_per_chunk);
+	Write2(gout, get_scrolltx());
+	Write2(gout, get_scrollty());
 					// Write clock.
 	Write2(gout, clock.get_day());
 	Write2(gout, clock.get_hour());
@@ -991,9 +991,8 @@ void Game_window::paint_text_object
 	int len = strlen(msg);
 	if (msg[len - 1] == '@')
 		len--;
-	paint_text(0, msg, len,
-			(txt->cx - chunkx)*chunksize + txt->sx*tilesize,
-		        (txt->cy - chunky)*chunksize + txt->sy*tilesize);
+	paint_text(0, msg, len, (txt->tx - get_scrolltx())*tilesize,
+				(txt->ty - get_scrollty())*tilesize);
 	painted = 1;
 	}
 
@@ -1345,8 +1344,8 @@ Game_object *Game_window::find_object
 	int x, int y			// Pos. on screen.
 	)
 	{
-cout << "Clicked at tile (" << chunkx*tiles_per_chunk + x/tilesize << ", " <<
-		chunky*tiles_per_chunk + y/tilesize << ")\n";
+cout << "Clicked at tile (" << get_scrolltx() + x/tilesize << ", " <<
+		get_scrollty() + y/tilesize << ")\n";
 	Game_object *found[100];
 	int cnt = 0;
 	int actor_lift = main_actor->get_lift();
@@ -1497,8 +1496,8 @@ void Game_window::show_items
 		}
 	else				// Obj==0
 		{
-		int tx = chunkx*tiles_per_chunk + x/tilesize;
-		int ty = chunky*tiles_per_chunk + y/tilesize;
+		int tx = get_scrolltx() + x/tilesize;
+		int ty = get_scrollty() + y/tilesize;
 		int cx = tx/tiles_per_chunk, cy = ty/tiles_per_chunk;
 		tx = tx%tiles_per_chunk;
 		ty = ty%tiles_per_chunk;
@@ -1519,8 +1518,7 @@ void Game_window::add_text
 	)
 	{
 	Text_object *txt = new Text_object(msg,
-		chunkx + x/chunksize, chunky + y/chunksize,
-		(x%chunksize)/tilesize, (y%chunksize)/tilesize,
+		get_scrolltx() + x/tilesize, get_scrollty() + y/tilesize,
 				8 + get_text_width(0, msg),
 				8 + get_text_height(0));
 	paint_text_object(txt);		// Draw it.
