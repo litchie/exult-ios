@@ -278,14 +278,15 @@ Sprites_effect::Sprites_effect
 	(
 	int num,			// Index.
 	Tile_coord p,			// Position within world.
-	int dx, int dy			// Add to offset for each frame.
+	int dx, int dy,			// Add to offset for each frame.
+	int delay			// Delay (msecs) before starting.
 	) : sprite(num, 0, SF_SPRITES_VGA), item(0), pos(p), xoff(0), yoff(0),
 						deltax(dx), deltay(dy)
 	{
 	Game_window *gwin = Game_window::get_instance();
 	frames = sprite.get_num_frames();
-					// Start immediately.
-	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
+					// Start.
+	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, 0L);
 	}
 
 /*
@@ -384,16 +385,10 @@ void Sprites_effect::paint
 Explosion_effect::Explosion_effect
 	(
 	Tile_coord p, 
-	Game_object *exp
-	) : Sprites_effect(1, p), explode(exp)
+	Game_object *exp,
+	int delay			// Delay before starting (msecs).
+	) : Sprites_effect(1, p, 0, 0, delay), explode(exp)
 {
-	Game_window *gwin = Game_window::get_instance();
-	Tile_coord apos = gwin->get_main_actor()->get_tile();
-	int dir = Get_direction16(apos.ty - p.ty, p.tx - apos.tx);
-					// Max. volume, with stereo position.
-	Audio::get_ptr()->play_sound_effect(
-		Audio::game_sfx(9), SDL_MIX_MAXVOLUME, dir);
-
 	if (exp && exp->get_shapenum() == 704) { // powderkeg
 		exp->set_quality(1); // mark as detonating
 	}
@@ -405,8 +400,17 @@ void Explosion_effect::handle_event
 	unsigned long curtime,		// Current time of day.
 	long udata
 	)
-{
-	if (sprite.get_framenum()== frames/4) {
+	{
+	int frnum = sprite.get_framenum();
+	if (!frnum)			// Max. volume, with stereo position.
+		{
+		Tile_coord apos = gwin->get_main_actor()->get_tile();
+		int dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
+
+		Audio::get_ptr()->play_sound_effect(
+				Audio::game_sfx(9), SDL_MIX_MAXVOLUME, dir);
+		}
+	if (frnum == frames/4) {
 		// this was in ~Explosion_effect before
 		if (explode)
 			{
@@ -606,6 +610,7 @@ void Projectile_effect::handle_event
 					// If missile egg, detect target.
 			(!target && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
+		int delay = 0;		// For explosions.
 		switch (projectile_shape)
 			{
 		case 287:		// Swordstrike.
@@ -621,12 +626,13 @@ void Projectile_effect::handle_event
 			eman->add_effect(new Death_vortex(target, epos));
 			target = 0;	// Takes care of attack.
 			break;
-		case 78:		// Explosion.
 		case 82:		// Delayed explosion.
 		case 621:		//    "       "
+			delay = 3000;	// Wait 3 secs.  FALL THROUGH!
+		case 78:		// Explosion.
 		case 702:		// Cannon.
 		case 704:		// Powder keg.
-			eman->add_effect(new Explosion_effect(epos, 0));
+			eman->add_effect(new Explosion_effect(epos, 0, delay));
 			target = 0;	// Takes care of attack.
 			break;
 			}

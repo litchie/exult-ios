@@ -99,7 +99,8 @@ protected:
 	int deltax, deltay;		// Add to xoff, yoff on each frame.
 	void add_dirty(int frnum);
 public:
-	Sprites_effect(int num, Tile_coord p, int dx = 0, int dy = 0);
+	Sprites_effect(int num, Tile_coord p, int dx = 0, int dy = 0, 
+							int delay = 0);
 	Sprites_effect(int num, Game_object *it, 
 					int xf, int yf, int dx, int dy);
 					// For Time_sensitive:
@@ -115,7 +116,7 @@ class Explosion_effect : public Sprites_effect
 	{
 	Game_object *explode;		// What's exploding, or 0.
 public:
-	Explosion_effect(Tile_coord p, Game_object *exp);
+	Explosion_effect(Tile_coord p, Game_object *exp, int delay = 0);
 	virtual void handle_event(unsigned long time, long udata);
 	};
 
