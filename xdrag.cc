@@ -67,12 +67,13 @@ Xdnd::Xdnd
 	Display *d,
 	Window xw,			// Window-manager window.
 	Window xgw,			// Game's display window in xw.
+	Move_shape_handler_fun movefun,
 	Drop_shape_handler_fun shapefun,
 	Drop_chunk_handler_fun cfun
 	) : display(d), xwmwin(xw), xgamewin(xgw),
 		num_types(0), lastx(-1), lasty(-1),
 		file(-1), shape(-1), frame(-1), chunknum(-1), 
-		data_valid(false),
+		data_valid(false), move_handler(movefun),
 		shape_handler(shapefun), chunk_handler(cfun)
 	{
 	shapeid_atom = XInternAtom(display, U7_TARGET_SHAPEID_NAME, 0);
@@ -163,15 +164,17 @@ void Xdnd::client_msg
 		xev.xclient.data.l[4] = xdnd_copy;
 		XSendEvent(display, drag_win, false, 0, &xev);
 					// Save mouse position.
-		lastx = ((cev.data.l[2]>>16)&0xffff) - winx;
-		lasty = (cev.data.l[2]&0xffff) - winy;
+		int x = ((cev.data.l[2]>>16)&0xffff) - winx;
+		int y = (cev.data.l[2]&0xffff) - winy;
 					// Get timestamp.
 		unsigned long time = 0;	//????++++++++++++++++
 		if (!data_valid)	// Tell owner we want data.
 			XConvertSelection(display, xdnd_selection, 
 				drag_types[i], xdnd_selection, xwmwin, time);
-		else
-			;		// +++++++Show where it will go.
+		else if (file == U7_SHAPE_SHAPES)
+			(*move_handler)(shape, frame, x, y, lastx, lasty);
+		lastx = x;
+		lasty = y;
 		}
 	else if (cev.message_type == xdnd_leave)
 		{
