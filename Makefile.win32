@@ -25,11 +25,11 @@ LFLAGS=-g -mwindows
 LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
 
 EXEC=exult2.exe
-MAIN_OBJS=actions.o actorio.o actors.o args.o \
-	delobjs.o drag.o effects.o egg.o exult.o \
+MAIN_OBJS=actions.o actorio.o actors.o alloc.o args.o \
+	combat.o delobjs.o dir.o drag.o effects.o egg.o exult.o \
 	gameclk.o gamedat.o gametxt.o gamewin.o \
-	gumps.o imagewin.o items.o lists.o mouse.o \
-	npcnear.o objs.o paths.o readnpcs.o schedule.o \
+	gumps.o imagescl.o imagewin.o items.o lists.o mouse.o \
+	npcnear.o objs.o paths.o readnpcs.o scale.o schedule.o \
 	segfile.o spells.o tqueue.o usecode.o \
         useval.o utils.o vec.o vgafile.o
 # unused: npctest.o
