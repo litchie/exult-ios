@@ -118,7 +118,14 @@ char*	U7object::retrieve(size_t &len)
 
 void	U7object::retrieve(const char *fname)
 {
-	FILE	*fp=U7open(fname,"wb");
+	FILE *fp;
+	try {
+		fp=U7open(fname,"wb");
+	} catch (const file_open_exception &e)
+	{
+		cerr << e.what() << ". exiting." << endl;
+		exit(1);
+	}
 
 	char	*n;
 	size_t	l;

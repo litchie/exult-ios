@@ -231,7 +231,13 @@ void Configuration::write_back(void)
 		return;	// Don't write back if not from a file
 	
 	std::ofstream ofile;
+	try {
 	U7open(ofile, filename.c_str(), true);
+	} catch (const file_open_exception &e)
+	{
+		std::perror("Failed to write configuration file");
+		return;
+	}
 	if(ofile.fail())
 	{
 		std::perror("Failed to write configuration file");
