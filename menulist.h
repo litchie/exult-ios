@@ -22,11 +22,12 @@
 class Game_window;
 class Shape_frame;
 class Font;
+class Mouse;
 
 class MenuObject {
 public:
 	Shape_frame *frame_on, *frame_off;
-	int x, y, width, height;
+	int x, y, x1, y1, x2, y2;
 	bool selected;
 
 	MenuObject() { };
@@ -34,6 +35,8 @@ public:
 	
 	void set_selected(bool sel) { selected = sel; }
 	bool is_selected() { return selected; }
+	bool is_mouse_over(int mx, int my) 
+		{ return ((mx>=x1)&&(mx<=x2)&&(my>=y1)&&(my<=y2)); };
 	
 	virtual void paint(Game_window *gwin) =0;
 	virtual bool handle_event(SDL_Event& event) =0;
@@ -74,9 +77,10 @@ public:
 	~MenuList();
 	void add_entry(MenuObject *entry) { entries->push_back(entry); }
 	void paint(Game_window *gwin);
-	int handle_events(Game_window *gwin);
+	int handle_events(Game_window *gwin, Mouse *mouse);
 	int get_selected() { return selected; }
 	void set_selected(int sel);
+	bool set_selected(int x, int y);
 };
 
 #endif

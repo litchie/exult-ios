@@ -54,9 +54,12 @@ class Mouse
 	static short short_combat_arrows[8];	// Short red arrows
 	static short med_combat_arrows[8];	// Medium red arrows
 	void set_shape0(int framenum);	// Set shape without checking first.
+	void Init();
 public:
 	Mouse(Game_window *gw);
+	Mouse(Game_window *gw, DataSource& shapes);
 	~Mouse();
+	
 	enum Mouse_shapes {		// List of shapes' frame #'s.
 		dontchange = 1000,	// Flag to not change.
 		hand = 0,

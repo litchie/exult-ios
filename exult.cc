@@ -297,7 +297,7 @@ static void Init
 	//(for MIDI repeats)
 	//SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif //WIN32
-
+	SDL_SetEventFilter(0);
 	// Show the banner
 	ExultMenu exult_menu(gwin);
 	Exult_Game mygame = exult_menu.run();
