@@ -229,7 +229,8 @@ void Game_window::drop
 			else
 				{	// Find where to drop it.
 				int max_lift = main_actor->get_lift() + 4;
-				for (int lift = dragging->get_lift(); 
+				Game_object *outer = dragging->get_outermost();
+				for (int lift = outer->get_lift(); 
 					!dropped && lift < max_lift; lift++)
 					dropped = drop_at_lift(to_drop, lift);
 				}

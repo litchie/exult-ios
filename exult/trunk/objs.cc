@@ -366,6 +366,23 @@ int Game_object::is_closed_door
 	}
 
 /*
+ *	Get the topmost owner of this object.
+ *
+ *	Output:	->topmost owner, or the object itself.
+ */
+
+Game_object *Game_object::get_outermost
+	(
+	)
+	{
+	Game_object *top = this;
+	Game_object *above;
+	while ((above = top->get_owner()) != 0)
+		top = above;
+	return top;
+	}
+
+/*
  *	Paint at given spot in world.
  */
 
