@@ -1496,11 +1496,13 @@ void CheatScreen::FlagMenu (Actor *actor)
 	if (actor->get_party_id() != -1 || !actor->get_npc_num())
 	{
 		// Temp
-		std::snprintf (buf, 512, "[Y] Temp: %02i", 0);
+		std::snprintf (buf, 512, "[Y] Temp: %02i", 
+						actor->get_temperature());
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-54, 8);
 
 		// Conjured
-		std::snprintf (buf, 512, "Warmth: %04i", 0);
+		std::snprintf (buf, 512, "Warmth: %04i", 
+						actor->figure_warmth());
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-45, 8);
 	}
 
