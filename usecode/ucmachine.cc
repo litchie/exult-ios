@@ -2005,6 +2005,9 @@ int Usecode_machine::call_usecode
 	int ret = call_usecode_function(id, event, 0);
 	set_book(0);
 	caller_item = prev_item;
+					// Left hanging (BG)?
+	if (conv->get_num_faces_on_screen() > 0)
+		gwin->set_all_dirty();	// Force repaint.
 	return ret;
 	}
 
