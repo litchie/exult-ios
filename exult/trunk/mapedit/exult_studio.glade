@@ -3609,6 +3609,7 @@ Coordinates</property>
 
 		  <child>
 		    <widget class="GtkFrame" id="frame41">
+		      <property name="width_request">64</property>
 		      <property name="visible">True</property>
 		      <property name="label_xalign">0</property>
 		      <property name="label_yalign">0.5</property>
