@@ -91,7 +91,7 @@ Projectile_effect::Projectile_effect
 	Game_object *to,		// End here, then run usecode on it.
 	int ufun,			// Usecode function to run.
 	int shnum			// Shape # in 'shapes.vga'.
-	) : shape_num(shnum), frame_num(0), usefun(ufun)
+	) : usefun(ufun), shape_num(shnum), frame_num(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_shape_num_frames(shnum);
