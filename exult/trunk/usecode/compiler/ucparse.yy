@@ -80,7 +80,7 @@ static int enum_val = -1;		// Keeps track of enum elements.
 %token IF ELSE RETURN WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
-%token ADD HIDE SCRIPT AFTER TICKS STATIC_
+%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL
 
 /*
  *	Script keywords:
@@ -118,6 +118,7 @@ static int enum_val = -1;		// Keeps track of enum elements.
 %type <expr> expression primary declared_var_value opt_script_delay item
 %type <expr> script_command
 %type <intval> opt_int eventid direction int_literal converse_options
+%type <intval> opt_original
 %type <sym> declared_sym
 %type <var> declared_var
 %type <funsym> function_proto function_decl
@@ -764,7 +765,7 @@ hierarchy_tok:
 	;
 
 routine_call:
-	IDENTIFIER '(' opt_expression_list ')'
+	IDENTIFIER opt_original '(' opt_expression_list ')'
 		{ 
 		Uc_symbol *sym = function->search_up($1);
 		if (!sym)
@@ -775,8 +776,16 @@ routine_call:
 			$$ = 0;
 			}
 		else
-			$$ = new Uc_call_expression(sym, $3, function);
+			$$ = new Uc_call_expression(sym, $4, function,
+							$2 ? true : false);
 		}
+	;
+
+opt_original:
+	ORIGINAL
+		{ $$ = 1; }
+	|
+		{ $$ = 0; }
 	;
 
 opt_identifier_list:

@@ -60,5 +60,6 @@ const char UC_POPEVENTID = 0x4b;
 					// Added for Exult:
 const char UC_PUSHSTATIC = 0x50;	// Push static.
 const char UC_POPSTATIC = 0x51;		// Pop static.
+const char UC_CALLO = 0x52;		// Call original.
 
 #endif

@@ -1,3 +1,8 @@
+2003-09-17  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucinternal.cc: New opcode 0x52, CALLO, calls original
+	usecode function if a version from patch replaced it.
+
 2003-09-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucsched.cc (Usecode_script): Finish some scripts before

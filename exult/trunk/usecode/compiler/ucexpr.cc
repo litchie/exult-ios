@@ -524,7 +524,8 @@ void Uc_call_expression::gen_value
 	{
 	if (!sym)
 		return;			// Already failed once.
-	if (!sym->gen_call(out, function, itemref,  parms, return_value))
+	if (!sym->gen_call(out, function, original, itemref,  
+							parms, return_value))
 		{
 		char buf[150];
 		sprintf(buf, "'%s' isn't a function or intrinsic",

@@ -63,9 +63,10 @@ int main
 	char *src;
 	char outbuf[256];
 	char *outname = 0;
-	static char *optstring = "o:I:";
+	static char *optstring = "o:I:s";
 	extern int optind, opterr, optopt;
 	extern char *optarg;
+	Uc_function::Intrinsic_type ty = Uc_function::bg;
 	opterr = 0;			// Don't let getopt() print errs.
 	int optchr;
 	while ((optchr = getopt(argc, argv, optstring)) != -1)
@@ -76,6 +77,9 @@ int main
 			break;
 		case 'I':		// Include dir.
 			include_dirs.push_back(optarg);
+			break;
+		case 's':
+			ty = Uc_function::si;
 			break;
 			}
 	if (optind < argc)		// Filename?
@@ -101,7 +105,7 @@ int main
 		}
 	Uc_location::set_cur(src, 0);
 					// For now, use black gate.
-	Uc_function::set_intrinsics(Uc_function::bg);
+	Uc_function::set_intrinsics(ty);
 #if 0
 //++++TESTING
 	int tok;
