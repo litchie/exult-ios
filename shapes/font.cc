@@ -200,14 +200,15 @@ int Font::paint_text
 	int x = xoff;
 	int chr;
 	yoff += get_text_baseline();
-	while ((chr = *text++) != 0)
-		{
-		Shape_frame *shape = font_shapes->get_frame(chr);
-		if (!shape)
-			continue;
-		shape->paint_rle(x, yoff);
-		x += shape->get_width() + hor_lead;
-		}
+	if (font_shapes)
+		while ((chr = *text++) != 0)
+			{
+			Shape_frame *shape = font_shapes->get_frame(chr);
+			if (!shape)
+				continue;
+			shape->paint_rle(x, yoff);
+			x += shape->get_width() + hor_lead;
+			}
 	return (x - xoff);
 	}
 
@@ -227,14 +228,16 @@ int Font::paint_text
 	{
 	int x = xoff;
 	yoff += get_text_baseline();
-	while (textlen--)
-		{
-		Shape_frame *shape = font_shapes->get_frame((int) *text++);
-		if (!shape)
-			continue;
-		shape->paint_rle(x, yoff);
-		x += shape->get_width() + hor_lead;
-		}
+	if (font_shapes)
+		while (textlen--)
+			{
+			Shape_frame *shape = font_shapes->get_frame((int)
+								*text++);
+			if (!shape)
+				continue;
+			shape->paint_rle(x, yoff);
+			x += shape->get_width() + hor_lead;
+			}
 	return (x - xoff);
 	}
 
@@ -432,11 +435,12 @@ int Font::get_text_width
 	{
 	int width = 0;
 	short chr;
-	while ((chr = *text++) != 0) {
-		Shape_frame* shape = font_shapes->get_frame(chr);
-		if (shape)
-			width += shape->get_width() + hor_lead;
-	}
+	if (font_shapes)
+		while ((chr = *text++) != 0) {
+			Shape_frame* shape = font_shapes->get_frame(chr);
+			if (shape)
+				width += shape->get_width() + hor_lead;
+		}
 	return (width);
 	}
 
@@ -451,11 +455,12 @@ int Font::get_text_width
 	)
 	{
 	int width = 0;
-	while (textlen--) {
-		Shape_frame* shape = font_shapes->get_frame(*text++);
-		if (shape)
-			width += shape->get_width() + hor_lead;
-	}
+	if (font_shapes)
+		while (textlen--) {
+			Shape_frame* shape = font_shapes->get_frame(*text++);
+			if (shape)
+				width += shape->get_width() + hor_lead;
+		}
 	return (width);
 	}
 
