@@ -305,6 +305,7 @@ void Game::show_menu()
 	pal.fade_out(c_fade_out_time);
 	delete menu;
 	gwin->clear_screen();
+	gwin->show(1);
 	Audio::get_ptr()->stop_music();
 	delete menu_mouse;
 }

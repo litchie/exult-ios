@@ -172,12 +172,14 @@ void ExultMenu::setup()
 	
 	menu.set_selection(0);
 	gwin->clear_screen();
+	gwin->show(1);
 	for(;;) {
 		pal.apply();
 		int entry = menu.handle_events(gwin,menu_mouse);
 		if(entry==ok_button) {
 			pal.fade_out(c_fade_out_time);
 			gwin->clear_screen();
+			gwin->show(1);
 			// Scaling Method
 			if(scalemethod->get_choice()!=gwin->get_win()->get_scaler()) {
 				gwin->resized(
@@ -238,6 +240,7 @@ void ExultMenu::setup()
 		} else if (entry==cancel_button) {
 			pal.fade_out(c_fade_out_time);
 			gwin->clear_screen();
+			gwin->show(1);
 			return;
 		}
 	}
@@ -304,6 +307,7 @@ Exult_Game ExultMenu::run()
 						     exult_flx.extract_shape(0x13));
 				credits.run(gwin,pal);
 				gwin->clear_screen();
+				gwin->show(1);
 				pal.apply();
 			}
 			break;
@@ -315,6 +319,7 @@ Exult_Game ExultMenu::run()
 			     			    exult_flx.extract_shape(0x13));
 				quotes.run(gwin,pal);
 				gwin->clear_screen();
+				gwin->show(1);
 				pal.apply();
 			}
 			break;
