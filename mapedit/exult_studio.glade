@@ -406,6 +406,19 @@
 
 	  <widget>
 	    <class>GtkRadioMenuItem</class>
+	    <name>pick_for_combo1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_pick_for_combo1_activate</handler>
+	      <last_modification_time>Sun, 28 Apr 2002 04:56:13 GMT</last_modification_time>
+	    </signal>
+	    <label>Pick for combo</label>
+	    <active>False</active>
+	    <always_show_toggle>True</always_show_toggle>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioMenuItem</class>
 	    <name>select1</name>
 	    <signal>
 	      <name>activate</name>
