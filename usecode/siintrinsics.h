@@ -144,7 +144,7 @@
 	USECODE_INTRINSIC_PTR(add_spell),			// 0x66     AddSpellToBook (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x67     ShowWizardEye (ucdump.c)
 	USECODE_INTRINSIC_PTR(sprite_effect),			// 0x68 ExecuteSprite (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x69  ++++Explode???
+	USECODE_INTRINSIC_PTR(explode),				// 0x69 
 
 
 	USECODE_INTRINSIC_PTR(book_mode),			// 0x6a - Known
