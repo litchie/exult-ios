@@ -546,7 +546,7 @@ int Chunk_cache::is_blocked
 void Chunk_cache::activate_eggs
 	(
 	Game_object *obj,		// Object (actor) that's near.
-	Map_chunk *chunk,	// Chunk this is attached to.
+	Map_chunk *chunk,		// Chunk this is attached to.
 	int tx, int ty, int tz,		// Tile (absolute).
 	int from_tx, int from_ty,	// Tile walked from.
 	unsigned short eggbits,		// Eggs[tile].
@@ -561,7 +561,11 @@ void Chunk_cache::activate_eggs
 		if ((eggbits&1) && i < egg_objects.size() &&
 		    (egg = egg_objects[i]) &&
 		    egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
+			{
 			egg->activate(obj, now);
+			if (chunk->get_cache() != this)
+				return;	// A teleport could have deleted us!
+			}
 		}
 	if (eggbits)			// Check 15th bit.
 		{			// DON'T use an iterator here, since
