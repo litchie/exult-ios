@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	DEBUGFLEX 1
 
 #include "IFF.h"
+#include "utils.h"
 
 #include <cstdio>
 #include <iostream>
@@ -36,7 +37,6 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::FILE;
-using std::fopen;
 using std::fread;
 using std::memcmp;
 using std::memset;
@@ -61,23 +61,21 @@ long ntohl(long x) {
 
 
 
-IFF::IFF(const char *n) : U7file(n)
+IFF::IFF(const char *n) : U7file(std::string(n))
 {
 	IndexIFFFile();
 }
 
-IFF::IFF(const string &n) : U7file(n.c_str())
+IFF::IFF(const string &n) : U7file(n)
 {
 	IndexIFFFile();
 }
 
 void	IFF::IndexIFFFile(void)
 {
-	IFF	&ret=*this;
 	FILE	*fp;
-	const 	char *name=ret.filename.c_str();
 	char	ckid[4];
-	fp=fopen(name,"rb");
+	fp=U7open(filename.c_str(),"rb");
 	if(!fp)
 		{
 		throw 0;
@@ -153,7 +151,7 @@ int     IFF::retrieve(int objnum,char **buf,size_t *len)
 		cerr << "objnum too large in read_object()" << endl;
 		return 0;
 		}
-	FILE	*fp=fopen(filename.c_str(),"rb");
+	FILE	*fp=U7open(filename.c_str(),"rb");
 	if(!fp)
 		{
 		cerr << "File open failed in read_object" << endl;
