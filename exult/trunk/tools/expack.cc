@@ -32,6 +32,7 @@
 #include <vector>
 #include <string>
 #include "U7file.h"
+#include "Flex.h"
 #include "utils.h"
 #include "databuf.h"
 #include "crc.h"
@@ -377,7 +378,6 @@ int main(int argc, char **argv)
 				cerr << e.what() << endl;
 				exit(1);
 			}
-			StreamDataSource fs(&flex);
 
 			char hline[1024];
 			ofstream header;
@@ -394,37 +394,8 @@ int main(int argc, char **argv)
 				exit(1);
 			}
 
-			std::vector<int>	file_sizes;
-			for(std::vector<string>::const_iterator X = file_names.begin(); X != file_names.end(); ++X)
-				file_sizes.push_back(get_file_size(X->c_str()));
-			
 			// The FLEX title
-			char title[0x50];
-			snprintf(title,0x50,"Exult Archive");
-			fs.write(title, 0x50);
-			// The FLEX magic
-			fs.write4(0xFFFF1A00);
-			// The archive size
-			fs.write4(file_names.size());
-			// More FLEX magic :-)
-			fs.write4(0xCC);
-			// Some blank stuff ???
-			for(int i=0; i<9; i++)
-				fs.write4(0x0);
-			// The reference table
-			int data_start = 128+8*file_names.size();
-				{
-				for(std::vector<int>::const_iterator X = file_sizes.begin(); X != file_sizes.end(); ++X) {
-					if(*X) {
-						fs.write4(data_start);
-						fs.write4(*X);
-						data_start += *X;
-					} else {
-						fs.write4(0x0);
-						fs.write4(0x0);
-					}
-				}
-			}
+			Flex_writer writer(flex, "Exult Archive", file_names.size());
 
 			// The beginning of the header
 			header << "// Header for \"" << fname << "\" Created by expack" << std::endl << std::endl;
@@ -435,7 +406,8 @@ int main(int argc, char **argv)
 			// The files
 				{
 				for(int i=0; i<file_names.size(); i++) {
-					if(file_sizes[i]) {
+					int fsize = get_file_size(file_names[i].c_str());
+					if(fsize) {
 						ifstream infile;
 						try {
 							U7open(infile, file_names[i].c_str(), is_text_file(file_names[i].c_str()));
@@ -444,9 +416,9 @@ int main(int argc, char **argv)
 							exit(1);
 						}
 						StreamDataSource ifs(&infile);
-						char *buf = new char[file_sizes[i]];
-						ifs.read(buf, file_sizes[i]);
-						fs.write(buf, file_sizes[i]);
+						char *buf = new char[fsize];
+						ifs.read(buf, fsize);
+						flex.write(buf, fsize);
 						delete [] buf;
 						infile.close();
 
@@ -456,9 +428,11 @@ int main(int argc, char **argv)
 						make_uppercase(hline);
 						header << "#define\t" << hprefix << "_" << hline << "\t\t" << i << std::endl;
 					}
+				writer.mark_section_done();
 				}
 			}
-			flex.close();
+			if (!writer.close())
+				cerr << "Error writing " << fname << endl;
 
 			uint32 crc32val = crc32_syspath(fname);
 			header << std::endl << "#define\t" << hprefix << "_CRC32\t0x";
