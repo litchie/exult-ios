@@ -63,14 +63,15 @@ protected:
 	int sprite_num;			// Which one.
 	int frame_num;			// Current frame.
 	int frames;			// # frames.
-	Actor *actor;			// Follows this around if not null.
+	Game_object *item;		// Follows this around if not null.
 	Tile_coord pos;			// Position within world.
 	int xoff, yoff;			// Offset from position in pixels.
 	int deltax, deltay;		// Add to xoff, yoff on each frame.
 	void add_dirty(Game_window *gwin, int frnum);
 public:
 	Sprites_effect(int num, Tile_coord p, int dx = 0, int dy = 0);
-	Sprites_effect(int num, Actor *a, int xf, int yf, int dx, int dy);
+	Sprites_effect(int num, Game_object *it, 
+					int xf, int yf, int dx, int dy);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.

@@ -64,7 +64,7 @@ Sprites_effect::Sprites_effect
 	int num,			// Index.
 	Tile_coord p,			// Position within world.
 	int dx, int dy			// Add to offset for each frame.
-	) : sprite_num(num), frame_num(0), actor(0), pos(p), xoff(0), yoff(0),
+	) : sprite_num(num), frame_num(0), item(0), pos(p), xoff(0), yoff(0),
 						deltax(dx), deltay(dy)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -74,19 +74,19 @@ Sprites_effect::Sprites_effect
 	}
 
 /*
- *	Create an animation on an actor.
+ *	Create an animation on an object.
  */
 
 Sprites_effect::Sprites_effect
 	(
 	int num,			// Index.
-	Actor *a,			// Actor.
+	Game_object *it,		// Item to put effect by.
 	int xf, int yf,			// Offset from actor in pixels.
 	int dx, int dy			// Add to offset on each frame.
-	) : sprite_num(num), frame_num(0), actor(a), xoff(xf), 
+	) : sprite_num(num), frame_num(0), item(it), xoff(xf), 
 					yoff(yf), deltax(dx), deltay(dy)
 	{
-	pos = actor->get_abs_tile_coord();
+	pos = item->get_abs_tile_coord();
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_sprite_num_frames(num);
 					// Start immediately.
@@ -135,8 +135,8 @@ void Sprites_effect::handle_event
 		}
 	add_dirty(gwin, frame_num - 1);	// Clear out old.
 	gwin->set_painted();
-	if (actor)			// Following actor?
-		pos = actor->get_abs_tile_coord();
+	if (item)			// Following actor?
+		pos = item->get_abs_tile_coord();
 	xoff += deltax;			// Add deltas.
 	yoff += deltay;
 	add_dirty(gwin, frame_num);	// Want to paint new frame.
