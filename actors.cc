@@ -777,17 +777,15 @@ void Actor::follow
 			}
 		}
 	uint32 curtime = SDL_GetTicks();
-	if (((dist2lead >= 5 && curtime >= next_path_time) ||
+	if ((dist2lead >= 5 ||
 	     (dist2lead >= 4 && !leader->is_moving()) || leaderpath) && 
-	      get_party_id() >= 0 && 
+	      get_party_id() >= 0 && curtime >= next_path_time && 
 	      (!is_moving() || !action || !action->following_smart_path()))
 		{			// A little stuck?
 #ifdef DEBUG
 		cout << get_name() << " at distance " << dist2lead 
 				<< " trying to catch up." << endl;
 #endif
-					// Don't try again for a second.
-		next_path_time = SDL_GetTicks() + 1000;
 					// Find a free spot within 3 tiles.
 		Map_chunk::Find_spot_where where = Map_chunk::anywhere;
 					// And try to be inside/outside.
@@ -798,6 +796,7 @@ void Actor::follow
 		if (goal.tx == -1)	// No free spot?  Give up.
 			{
 			cout << "... but is blocked." << endl;
+			next_path_time = SDL_GetTicks() + 1000;
 			return;
 			}
 		if (walk_path_to_tile(goal, speed - speed/4, 0))
@@ -806,13 +805,16 @@ void Actor::follow
 			{
 			cout << "... but failed to find path." << endl;
 					// On screen (roughly)?
+			bool ok;
 			if (wrect.has_point(pos.tx - pos.tz/2,
 							pos.ty - pos.tz/2))
 					// Try walking off-screen.
-				walk_path_to_tile(Tile_coord(-1, -1, -1),
+				ok = walk_path_to_tile(Tile_coord(-1, -1, -1),
 							speed - speed/4, 0);
 			else		// Off screen already?
-				approach_another(leader);
+				ok = approach_another(leader);
+			if (!ok)	// Failed? Don't try again for a bit.
+				next_path_time = SDL_GetTicks() + 1000;
 			return;
 			}
 		}

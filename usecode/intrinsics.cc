@@ -972,7 +972,7 @@ USECODE_INTRINSIC(move_object)
 USECODE_INTRINSIC(remove_npc)
 {
 	// Remove_npc(npc) - Remove npc from world.
-	Game_object *npc = get_item(parms[0]);
+	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
 		{
 					// Don't want him/her coming back!
@@ -1757,6 +1757,8 @@ USECODE_INTRINSIC(start_speech)
 	speech_track = parms[0].get_int_value();
 	if (speech_track >= 0)
 		okay = Audio::get_ptr()->start_speech(speech_track);
+	if (!okay)			// Failed?  Clear faces.  (Fixes SI).
+		init_conversation();
 	return(Usecode_value(okay ? 1 : 0));
 }
 

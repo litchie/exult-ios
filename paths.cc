@@ -258,8 +258,9 @@ int Offscreen_pathfinder_client::at_goal
 	Tile_coord& goal
 	)
 	{
-	return !screen.has_point(tile.tx - tile.tz/2, tile.ty - tile.tz/2) &&
-		(goal.tz == -1 || tile.tz == goal.tz);
+	return !screen.has_point(tile.tx - tile.tz/2, tile.ty - tile.tz/2);//&&
+					// Z-coord shouldn't matter.
+//		(goal.tz == -1 || tile.tz == goal.tz);
 	}
 
 /*

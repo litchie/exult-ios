@@ -498,12 +498,11 @@ static void Handle_events
 				{
 				int ms = SDL_GetMouseState(&x, &y);
 				if ((SDL_BUTTON(3) & ms) &&
-						(Game::get_game_type() == SERPENT_ISLE ||
-						gwin->get_usecode()->get_global_flag(
-							Usecode_machine::did_first_scene)))
-					gwin->start_actor(x / scale, 
-							  y / scale, 
-							  Mouse::mouse->avatar_speed);
+				    (Game::get_game_type() == SERPENT_ISLE ||
+					gwin->get_usecode()->get_global_flag(
+					   Usecode_machine::did_first_scene)))
+					gwin->start_actor(x/scale, y/scale, 
+						Mouse::mouse->avatar_speed);
 				}
 			}
 
@@ -549,8 +548,8 @@ static void Handle_event
 	switch (event.type)
 		{
 	case SDL_MOUSEBUTTONDOWN:
-        if (dont_move_mode)
-            break;
+        	if (dont_move_mode)
+        		break;
 		if (event.button.button == 1)
 			{
 			dragging = gwin->start_dragging(
@@ -611,7 +610,8 @@ static void Handle_event
 		break;
 	case SDL_MOUSEMOTION:
 		{
-		Mouse::mouse->move(event.motion.x / scale, event.motion.y / scale);
+		Mouse::mouse->move(event.motion.x / scale, 
+						event.motion.y / scale);
 		Mouse::mouse->set_speed_cursor();
 		Mouse::mouse_update = true;	// Need to blit mouse.
 
