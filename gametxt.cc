@@ -121,7 +121,7 @@ int Game_window::paint_text_box
 			curx = x;
 			text++;
 			cur_line++;
-			if (cur_line == max_lines)
+			if (cur_line >= max_lines)
 				break;	// No more room.
 			continue;
 		case ' ':		// Space.
@@ -142,6 +142,9 @@ int Game_window::paint_text_box
 			break;
 			}
 			}
+
+		if (cur_line >= max_lines)
+			break;
 					// Pass word & get its width.
 		const char *ewrd = Pass_word(text);
 		int width = get_text_width(fontnum, text, ewrd - text);
@@ -149,9 +152,10 @@ int Game_window::paint_text_box
 			{		// Word-wrap.
 			curx = x;
 			cur_line++;
-			if (cur_line == max_lines)
+			if (cur_line >= max_lines)
 				break;	// No more room.
 			}
+
 					// Store word.
 		lines[cur_line].append(text, ewrd - text);
 		curx += width;
