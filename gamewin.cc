@@ -1248,16 +1248,27 @@ void Game_window::read_ireg_objects
 				obj = new Jawbone_object(shnum, frnum,
 					tilex, tiley, lift, entry[10]);
 				}
-			else if (quality == 1 && entry[8] >= 0x80)
-				{		// NPC's body.
-				obj = new Dead_body(
-				    shnum, frnum, tilex, tiley, lift,
-						entry[8] - 0x80);
-				bodies[entry[8] - 0x80] = obj;
+			else if (Game::get_game_type() == SERPENT_ISLE && 
+					 shnum == 400 && frnum == 8 && quality == 1)
+				// Gwenno. Ugly hack to fix bug without having to start
+				// a new game. Remove someday... (added 20010820)
+				{
+					obj = new Dead_body(400, 8, tilex, tiley, lift, 149);
+					bodies[149] = obj;
 				}
-			else if (Is_body(shnum))
+			else if (quality == 1 && 
+					 (entry[8] >= 0x80 || 
+					  Game::get_game_type() == SERPENT_ISLE)) 
+				{		// NPC's body.
+					int npc_num = (entry[8] - 0x80) & 0xFF;
+					obj = new Dead_body(shnum, frnum, tilex, tiley, lift,
+										npc_num);
+					bodies[npc_num] = obj;
+				}
+			else if (Is_body(shnum)) {
 				obj = new Dead_body(
 				    shnum, frnum, tilex, tiley, lift, -1);
+			}
 			else
 				obj = new Container_game_object(
 				    shnum, frnum, tilex, tiley, lift,
