@@ -357,10 +357,10 @@ int Path_walking_actor_action::open_door
 	if (past.tx != -1)		// Succeeded.  Walk past and close it.
 		{
 		cout << "Path_walking_actor_action::open_door()" << endl;
-		char frames[2];
+		signed char frames[2];
 		frames[0] = actor->get_dir_framenum(dir, Actor::standing);
 		frames[1] = actor->get_dir_framenum(dir, 3);
-		char standframe = frames[0];
+		signed char standframe = frames[0];
 		set_subseq(create_action_sequence(actor, past,
 			new Sequence_actor_action(
 				new Frames_actor_action(frames, 
@@ -696,13 +696,13 @@ int Usecode_actor_action::handle_event
 
 Frames_actor_action::Frames_actor_action
 	(
-	char *f,			// Frames.  -1 means don't change.
+	signed char *f,			// Frames.  -1 means don't change.
 	int c,				// Count.
 	int spd,			// Frame delay in 1/1000 secs.
 	Game_object *o
 	) : cnt(c), index(0), speed(spd), obj(o)
 	{
-	frames = new char[cnt];
+	frames = new signed char[cnt];
 	std::memcpy(frames, f, cnt);
 	}
 

@@ -143,7 +143,7 @@ public:
 		{ return step_index; }
 					// Get attack frames.
 	int get_attack_frames(int weapon, bool projectile,
-						int dir, char *frames) const;
+						int dir, signed char *frames) const;
 	enum Alignment {		// Describes alignment field.
 		neutral = 0,
 		friendly = 1,

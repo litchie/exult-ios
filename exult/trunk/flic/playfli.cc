@@ -193,13 +193,14 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 					{
 						int skip_count = fli_data->read1();
 						pixpos += skip_count;
-						char size_count = fli_data->read1();
-						if (size_count < 0)
+						uint8 size_count = fli_data->read1();
+						if (size_count > 127)
 						{
+							size_count = 256 - size_count;
 							unsigned char data = fli_data->read1();
-							memset(pixbuf, data, -size_count);
-							if (fli_buf) fli_buf->copy8(pixbuf,-size_count,1,pixpos,skip_lines+line);
-								pixpos -= size_count;
+							memset(pixbuf, data, size_count);
+							if (fli_buf) fli_buf->copy8(pixbuf,size_count,1,pixpos,skip_lines+line);
+								pixpos += size_count;
 				    
 						}
 						else
