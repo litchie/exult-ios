@@ -208,8 +208,8 @@ public:
 	 */
 	enum Shape_class {
 		unusable = 0,		// Trees.
-		has_quality = 2,
-		has_quantity = 3,	// Can have more than 1:  coins, arrs.
+		quality = 2,
+		quantity = 3,		// Can have more than 1:  coins, arrs.
 		has_hp = 4,         // Breakable items (if hp != 0, that is)
 //		wearable = 5,		// Includes wieldable weapons, food,
 					//   table, curtain??
@@ -228,6 +228,21 @@ public:
 		{
 		Shape_class c = get_shape_class();
 		return c == human || c == monster;
+		}
+	bool has_quantity()
+		{ return get_shape_class() == quantity; }
+	bool has_quality()
+		{
+		static bool qual[16] = 	// Ugly, but quick.
+		//			quality
+		      { false,	false,	true,	false,	false, 	false,
+		//	ctainer	egg				virtue stone
+			true,	true,	false,	false,	false,	true,
+		//	monst	human
+			true,	true,	false,	false };
+
+		Shape_class c = get_shape_class();
+		return qual[(int) c];
 		}
 	bool occludes() const
 		{ return occludes_flag; }
