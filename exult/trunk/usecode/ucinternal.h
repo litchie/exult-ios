@@ -106,6 +106,7 @@ class Usecode_internal : public Usecode_machine
 					//   conversation option?
 	Tile_coord saved_pos;		// For a couple SI intrinsics.
 	char *String;			// The single string register.
+	int telekenesis_fun;		// For next Usecode call from spell.
 	void append_string(const char *txt);	// Append to string.
 	void show_pending_text();	// Make sure user's seen all text.
 	void show_book();		// "Say" book/scroll text.
@@ -355,11 +356,13 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(set_temperature);
 //	USECODE_INTRINSIC_DECL(add_removed_npc);
 	USECODE_INTRINSIC_DECL(approach_avatar);
+	USECODE_INTRINSIC_DECL(telekenesis);
 	USECODE_INTRINSIC_DECL(a_or_an);
 	USECODE_INTRINSIC_DECL(add_to_keyring);
 	USECODE_INTRINSIC_DECL(is_on_keyring);
 	USECODE_INTRINSIC_DECL(save_pos);
 	USECODE_INTRINSIC_DECL(teleport_to_saved_pos);
+	USECODE_INTRINSIC_DECL(get_item_usability);
 
 	/*
 	 *	Other private methods:

@@ -2690,6 +2690,13 @@ USECODE_INTRINSIC(approach_avatar)
 	return Usecode_value(1);
 	}
 
+USECODE_INTRINSIC(telekenesis)
+{
+	// telekenesis(fun#) - Save item for executing Usecode on.
+	telekenesis_fun = parms[0].get_int_value();
+	return no_ret;
+}
+
 USECODE_INTRINSIC(a_or_an)
 {
 	// a_or_an (word)
@@ -2787,3 +2794,14 @@ USECODE_INTRINSIC(teleport_to_saved_pos)
 		}
 	return no_ret;
 }
+
+USECODE_INTRINSIC(get_item_usability)
+{
+	// Complete guess:  Returns 1 for grabbable items (for fetch spell).
+	Game_object *obj = get_item(parms[0]);
+	if (!obj || !obj->is_dragable())
+		return Usecode_value(0);
+	else
+		return Usecode_value(1);// Only 1 I'm pretty sure of.
+}
+

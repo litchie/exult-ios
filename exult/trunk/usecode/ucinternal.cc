@@ -1422,7 +1422,7 @@ Usecode_internal::Usecode_internal
 	    path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),
 	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
-		temp_to_be_deleted(0)
+		temp_to_be_deleted(0), telekenesis_fun(-1)
 	{
 	ifstream file;                // Read in usecode.
         U7open(file, USECODE);
