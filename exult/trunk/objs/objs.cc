@@ -1253,8 +1253,15 @@ int Game_object::get_weight
 	    (Game::get_game_type() == SERPENT_ISLE &&
 					// Monetari/guilders/filari:
 	     (shnum == 951 || shnum == 952 || shnum == 948)))
+	{
 		wt /= 10;
-	return wt > 0 ? wt : 1;
+		if (wt <= 0) wt = 1;
+	}
+
+	if (Has_quantity(shnum))
+		if (wt <= 0) wt = 1;
+
+	return wt;
 	}
 
 /* 
