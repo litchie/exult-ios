@@ -13,9 +13,9 @@ CPPFLAGS=-DVERSION=\"0.90alpha1\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
 	-DNO_INTRO -DAUTOCONFIGURED -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
 	$(SDL_INCLUDES)
-CXXFLAGS=-g -Wall
+CXXFLAGS=-O2 -Wall
 
-LFLAGS=-g
+LFLAGS=
 LIBS=$(SDL_LIBS) -lmidi -lbe
 
 EXEC=exult
@@ -64,8 +64,9 @@ EXULT_FLX_OBJECTS = \
 	data/midi_conversion.shp \
 	data/sfx_conversion.shp
 
-$(EXEC) : Makefile data/exult.flx $(OBJS)
+$(EXEC) : Makefile data/exult.flx $(OBJS) beos/exult.rsrc
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
+	xres -o $(EXEC) beos/exult.rsrc
 
 tools/expack : tools/expack.o $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o tools/expack tools/expack.o $(FILE_OBJS) $(LIBS)
