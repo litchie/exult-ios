@@ -844,7 +844,7 @@ void Egg_object::move
 		return;			// Bad loc.
 	remove_this(1);			// Remove from old.
 	set_lift(newlift);		// Set new values.
-	shape_pos = ((newtx%c_tiles_per_chunk) << 4) + newty%c_tiles_per_chunk;
+	set_shape_pos(newtx%c_tiles_per_chunk, newty%c_tiles_per_chunk);
 	newchunk->add_egg(this);	// Updates cx, cy.
 	gwin->add_dirty(this);		// And repaint new area.
 	}
@@ -862,7 +862,6 @@ void Egg_object::remove_this
 		get_owner()->remove(this);
 	else
 		{
-		Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
 	 	if (chunk)
 			{
 			gwin->add_dirty(this);	// (Make's ::move() simpler.).

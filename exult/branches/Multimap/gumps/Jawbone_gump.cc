@@ -139,7 +139,7 @@ void Jawbone_gump::set_to_spot(Game_object *obj, int sx, int sy)
 	int w = shape->get_width(), h = shape->get_height();
 	
 	// Set object's position.
-	obj->set_chunk(sx + shape->get_xleft() - w/2,
+	obj->set_shape_pos(sx + shape->get_xleft() - w/2,
 		sy + shape->get_yabove() - h/2);
 }
 

@@ -60,9 +60,15 @@ class Game_object : public ShapeID
 	{
 protected:
 	static Game_object *editing;	// Obj. being edited by ExultStudio.
-	unsigned char shape_pos;	// (X,Y) of shape within chunk.
+	Map_chunk *chunk;		// Chunk we're in, or NULL.
+	unsigned char tx, ty;		// (X,Y) of shape within chunk, or if
+					//   in a container, coords. within
+					//   gump's rectangle.
+
 	unsigned char lift;		// Raise by 4* this number.
 	short quality;			// Some sort of game attribute.
+	int get_cxi() const;
+	int get_cyi() const;
 private:
 	Game_object *next, *prev;	// ->next in chunk list or container.
 	Game_object_vector dependencies;// Objects which must be painted before
@@ -72,15 +78,13 @@ private:
 public:
 	uint32 render_seq;		// Render sequence #.
 protected:
-	unsigned char cx, cy;		// (Absolute) chunk coords., or if this
-					//   is in a container, coords. within
-					//   gump's rectangle.
 					// Handle attack on an object.
 	int attack_object(Actor *attacker, int weapon_shape, int ammo_shape);
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
-			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
-			  lift(ifix[1] & 0xf), quality(0), cx(255), cy(255)
+			: ShapeID(ifix[2], ifix[3]), 
+			  tx((ifix[0]>>4)&0xf), ty(ifix[0]&0xf),
+			  lift(ifix[1] & 0xf), quality(0), chunk(0)
 		{  }
 public:
 	friend class T_Object_list<Game_object *>;
@@ -91,30 +95,25 @@ public:
 	friend class Map_chunk;
 	Game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
-		: ShapeID(shapenum, framenum),
-				shape_pos((tilex << 4) + tiley),
-			lift(lft), quality(0), cx(255), cy(255)
+		: ShapeID(shapenum, framenum), tx(tilex), ty(tiley),
+			lift(lft), quality(0), chunk(0)
 		{  }
 					// Copy constructor.
 	Game_object(const Game_object& obj2)
-		: ShapeID(obj2), shape_pos(obj2.shape_pos), lift(obj2.lift),
-		  quality(obj2.quality), cx(obj2.cx), cy(obj2.cy)
+		: ShapeID(obj2), tx(obj2.tx), ty(obj2.ty), lift(obj2.lift),
+		  quality(obj2.quality), chunk(obj2.chunk)
 		{  }
 	Game_object() : ShapeID()	// Create fake entry.
 		{  }
 	virtual ~Game_object()
 		{  }
 	int get_tx() const		// Get tile (0-15) within chunk.
-		{ return (shape_pos >> 4) & 0xf; }
+		{ return tx; }
 	int get_ty() const
-		{ return shape_pos & 0xf; }
+		{ return ty; }
 	int get_lift() const
 		{ return lift; }
-	Tile_coord get_tile() const	// Get location in abs. tiles.
-		{
-		return Tile_coord(cx*c_tiles_per_chunk + get_tx(),
-				cy*c_tiles_per_chunk + get_ty(), lift);
-		}
+	Tile_coord get_tile() const;	// Get location in abs. tiles.
 					// Get distance to another object.
 	int distance(Game_object *o2) const
 		{ return get_tile().distance(
@@ -122,7 +121,10 @@ public:
 					// Get direction to another object.
 	int get_direction(Game_object *o2) const;
 	int get_direction(Tile_coord t2) const;
-	Map_chunk *get_chunk();		// Get chunk this is in.
+	Map_chunk *get_chunk() const	// Get chunk this is in.
+		{ return chunk; }
+	int get_cx() const;
+	int get_cy() const;
 	int get_quality() const
 		{ return quality; }
 	void set_quality(int q)
@@ -135,7 +137,7 @@ public:
 	int modify_quantity(int delta, bool *del = 0);
 					// Set shape coord. within chunk.
 	void set_shape_pos(unsigned int shapex, unsigned int shapey)
-		{ shape_pos = (shapex << 4) + shapey; }
+		{ tx = shapex&0xf; ty = shapey&0xf; }
 	void set_lift(int l)
 		{ lift = l; }
 	Game_object *get_next()
@@ -145,17 +147,12 @@ public:
 					// Compare for render order.
 	static int compare(class Ordering_info& inf1, Game_object *obj2);
 	int lt(Game_object& obj2);	// Is this less than another in pos.?
-					// Return chunk coords.
-	int get_cx() const
-		{ return cx; }
-	int get_cy() const
-		{ return cy; }
 	void set_invalid()		// Set to invalid position.
-		{ cx = cy = 255; }
+		{ chunk = 0; }
 	bool is_pos_invalid() const
-		{ return cx >= c_num_chunks || cy >= c_num_chunks; }
-	void set_chunk(int newcx, int newcy)
-		{ cx = newcx; cy = newcy; }
+		{ return chunk == 0; }
+	void set_chunk(Map_chunk *c)
+		{ chunk = c; }
 					// Get frame for desired direction.
 	int get_dir_framenum(int dir, int frnum) const
 		{ return (frnum&0xf) + rotate[dir]; }
