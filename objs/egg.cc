@@ -43,6 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objserial.h"
 #include "mouse.h"
 #include "servemsg.h"
+#include "cheat.h"
 #endif
 
 using std::cout;
@@ -384,7 +385,8 @@ void Egg_object::activate
 	)
 	{
 #ifdef XWIN
-	if (client_socket >= 0)		// Talking to ExultStudio?
+	if (client_socket >= 0 &&	// Talking to ExultStudio?
+	    cheat.in_map_editor())
 		{
 		editing = 0;
 		Tile_coord t = get_abs_tile_coord();
