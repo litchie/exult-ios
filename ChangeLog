@@ -1,3 +1,8 @@
+2001-10-21  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc,intrinsics.cc: Skip egg-activation if teleported via
+	egg that exits Mountains of Freedom.
+
 2001-10-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* ucinternal.cc:  Major 'global flag' kludge for SI/Monk Isle endlessly 

@@ -612,7 +612,7 @@ public:
 	void start_actor(int winx, int winy, int speed = 125);
 	void start_actor_along_path(int winx, int winy, int speed = 125);
 	void stop_actor();		// Stop main actor.
-	void teleport_party(Tile_coord t);
+	void teleport_party(Tile_coord t, bool skip_eggs = false);
 					// Get ->party members.
 	int get_party(Actor **list, int avatar_too = 0);
 	void activate_item(int shnum, int frnum=c_any_framenum,
