@@ -37,7 +37,7 @@ content that needs to be moved to data files:
 	D.  Dead bodies:  Shape #'s currently are hard-coded in
 	bodies.cc.
 
-	E.  Spells and reagants:  A fair amount of work is here.
+	E.  Spells and reagents:  A fair amount of work is here.
 
 	F.  Quantity frames:  Need to specify what frame to show for
 	"quantity" objects.
@@ -55,6 +55,11 @@ content that needs to be moved to data files:
 	possible to create new, custom schedules written in Usecode.
 
 	**** There are probably lots more. ****
+	
+Actually entire "Exult Games" should be described by some kind of XML 
+descriptor. Each descriptor can then be used to add entries in the main menu.
+We need to distribute the BG and SI descriptors with Exult, and new games
+created with Exult Studio should come with their descriptor.
 
 2.  Expand world
     ------------
@@ -81,9 +86,28 @@ also make it possible to support more NPC frames during animation.
 While Exult will still have to interpret the text as it's encoded in
 U7's data files, we should add support for Unicode (UTF8) so games,
 including U7, can be translated into non-Latin languages.  We could
-probably use the Pango and Freetype2 packages for this.
+probably use the Pango and Freetype2 packages for this or SDL_ttf,
+which already handles UTF-8 display of TTF's.
 
 5.  Journal
     -------
 
 Could just be in the form of a book that you can write in.
+Also an automatic Journal containing all conversations the player has had with 
+NPCs. Could be the same, with user notes in one colour and automatic notes in
+another colour. Automatic logging should be an option.
+
+6.  Scripted intro/endings
+    ----------------------
+   
+Provide a description mechanism for the intros/endings, instead of the 
+hardcoded bggame.cc and sigame.cc code.
+Colourless has some ideas on this ?
+
+7.  Complete configuration via Exult
+    --------------------------------
+    
+Currently it is not possible to set the paths in exult.cfg. It would be neat
+if it allowed browsing for the BG/SI data files, additional wave packs, etc.
+On 1st run the user should get a configuration wizard.
+
