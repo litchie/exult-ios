@@ -7,5 +7,8 @@ LPRODUCTS :=
 
 #u7audiotool_OBJ := u7audiotool.o
 
+#midi_drivers_SRC := $(wildcard $(LPATH)/midi_drivers/*.cc)
+#midi_drivers_OBJ := $(patsubst %.cc,../%.o,$(filter %.cc,$(midi_drivers_SRC)))
+
 # Common rules
-#include common.mk
+include common.mk
