@@ -69,6 +69,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	int info_cnt;			// # entries in info.
 	int selected;			// Index of user-selected entry.
 	int locate_cx, locate_cy;	// Last chunk found by 'locate'.
+	bool drop_enabled;		// So we only do it once.
 					// Various controls.
 	GtkWidget *loc_chunk_down, *loc_chunk_up, *insert_chunk_dup,
 		  *move_chunk_down, *move_chunk_up;
@@ -122,6 +123,12 @@ public:
 				GdkEventSelection *event, gpointer data);
 	static gint drag_begin(GtkWidget *widget, GdkDragContext *context,
 							gpointer data);
+					// Handler for drop.
+	static void drag_data_received(GtkWidget *widget, 
+		GdkDragContext *context, gint x, gint y, 
+		GtkSelectionData *selection_data, guint info, guint time,
+		gpointer udata);
+	void enable_drop();
 					// Handle scrollbar.
 	static void scrolled(GtkAdjustment *adj, gpointer data);
 	void locate(bool upwards);	// Locate terrain on game map.
