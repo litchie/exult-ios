@@ -8,12 +8,15 @@ enum Isleflags
 	ASKED_WHERE_PYRO,
 	ASKED_KNOW_PYRO,
 	LOST_FAQ,			// Talked to Dom about lost FAQ.
-	WILL_FIND_FAQ
+	WILL_FIND_FAQ,
+	RABBIT_TRACKS,
+	CHURCH_CARROTS
 	};
 
 /*
  *	Item flags.  ++++These should be in an 'include' file.
  */
+const int IN_PARTY = 6;
 const int IF_MET = 28;
 
 /*
@@ -364,6 +367,7 @@ Amy 0x568 ()
 		AVATAR->say("Yes?  What hast thou found?");
 		item->say("There are some strange marks on the ground.");
 		item->say("Perhaps they were made by a rabbit.");
+		gflags[RABBIT_TRACKS] = true;
 		AVATAR->hide();
 		item->hide();
 		return;
@@ -564,10 +568,12 @@ Darke 0x56A ()
 	if (event != 1)
 		return;
 	item->say("Beware of my sharp teeth!");
-		add("Sharp teeth?");
-		add("Name");
-		add("Job");
-		add("Bye");	
+	add("Sharp teeth?");
+	add("Name");
+	add("Job");
+	if (gflags[WILL_FIND_FAQ])
+		add("FAQ");
+	add("Bye");	
 		converse
 		{
 		if (response == "Bye")
@@ -587,6 +593,37 @@ Darke 0x56A ()
 			say("I'm a cute bunny with sharp teeth.",
 			"Don't anger me!");
 			UI_remove_answer("Sharp teeth?");
+			}
+		else if (response == "FAQ")
+			{
+			say("I'm frequently asked that question!");
+			if (gflags[CHURCH_CARROTS])
+				say("I've already told you about the ",
+					"carrots.");
+			else if (gflags[RABBIT_TRACKS] && 
+					UI_get_item_flag(AMY, IN_PARTY))
+				{
+				AMY->say("We're those your tracks",
+					" over by the shrine?");
+				AMY->hide();
+				item->say("Perhaps....");
+				item->say("Am I in trouble?");
+				AVATAR->say("Not if you help us.");
+				item->say("I was looking for carrots, ",
+					" but all I found was a discarded ",
+					"book among the bushes.");
+				item->say("It had lots of information, ",
+					" but nothing about where to find ",
+					"carrots.  So I didn't care ",
+					"much for it.");
+				AVATAR->say("Well, where is it now?");
+				item->say("Uh, er, I, er, uh...");
+				AVATAR->hide();
+				item->say("...I don't know!",
+					"  But I did find some nice carrots ",
+					" behind that church.");
+				gflags[CHURCH_CARROTS] = true;
+				}
 			}
 		else if (response == "Usecode?")
 			{
