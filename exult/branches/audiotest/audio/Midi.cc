@@ -101,12 +101,12 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 			{
 				//Convert credit/quote tracks
 				if(num == 30)
-					s = get_system_path("<DATA>/mp3/") + "endcr01.ogg";
+					s = get_system_path("<DATA>/music/") + "endcr01.ogg";
 				else
-					s = get_system_path("<DATA>/mp3/") + "endcr02.ogg";
+					s = get_system_path("<DATA>/music/") + "endcr02.ogg";
 			}
 			else
-				s = get_system_path("<DATA>/mp3/") + bgconvmusic[num] + ".ogg";
+				s = get_system_path("<DATA>/music/") + bgconvmusic[num] + ".ogg";
 
 			strcpy(filename, s.c_str());
 		}
@@ -120,12 +120,12 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 			{
 				//Convert credit/quotes tracks
 				if(num == 4)
-					s = get_system_path("<DATA>/mp3/") + "endcr01.ogg";
+					s = get_system_path("<DATA>/music/") + "endcr01.ogg";
 				else
-					s = get_system_path("<DATA>/mp3/") + "endcr02.ogg";
+					s = get_system_path("<DATA>/music/") + "endcr02.ogg";
 			}
 			else
-				s = get_system_path("<DATA>/mp3/%02dbg.ogg");
+				s = get_system_path("<DATA>/music/%02dbg.ogg");
 
 			strcpy(outputstr, s.c_str());
 			sprintf(filename, outputstr, num);
@@ -220,7 +220,7 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 			return;
 
 		string s2 = filename;
-		s2 = get_system_path("<DATA>/mp3/" + s2);
+		s2 = get_system_path("<DATA>/music/" + s2);
 		strcpy(filename, s2.c_str());
 
 	    oggmusic = Mix_LoadMUS(filename);
