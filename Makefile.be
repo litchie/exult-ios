@@ -36,8 +36,11 @@ FILE_OBJS=U7file.o Flex.o IFF.o Table.o
 # unused: test.o
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS)
 
-$(EXEC) : $(OBJS)
+$(EXEC) : Makefile $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
+
+Makefile: Makefile.be
+	cp Makefile.be Makefile
 
 clean:
 	rm -f $(OBJS) $(EXEC)
