@@ -364,5 +364,16 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
+/*
+ *	A fire field that dies out after a few seconds.
+ */
+class Fire_field_effect : public Special_effect
+	{
+	Game_object *field;		// What we create.
+public:
+	Fire_field_effect(Tile_coord t);
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
 #endif
 

@@ -180,6 +180,7 @@ public:
 		{ return Ireg_game_object::is_findable(); }
 					// Run usecode function.
 	virtual void activate(int event = 1);
+	void stop_animation();
 	};
 
 /*
