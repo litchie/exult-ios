@@ -28,6 +28,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 #include <iostream>
 
+Table::Table(const char *n)
+{
+        filename=n;
+        IndexTableFile();
+}
+
+Table::Table(const string &n)
+{
+        filename=n;
+        IndexTableFile();
+}
+
+
 void	Table::IndexTableFile(void)
 {
 	Table	&ret=*this;
@@ -55,6 +68,16 @@ void	Table::IndexTableFile(void)
 	fclose(fp);
 	return;
 }
+
+
+int     Table::retrieve(int objnum,char **,size_t *len)
+{ return 0; }
+
+int     Table::retrieve(int objnum,const char *)
+{ return 0; }
+
+
+Table::~Table() {}
 
 #if 0
 char	*Table::read_object(int objnum,uint32 &length)

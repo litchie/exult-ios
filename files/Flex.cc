@@ -28,15 +28,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 #include <iostream>
 
-Flex::Flex(const char *n) 
+Flex::Flex(const char *n) : U7file(n)
 {
-	filename=n;
 	IndexFlexFile();
 }
 
-Flex::Flex(const string &n)
+Flex::Flex(const string &n) : U7file(n.c_str())
 {
-	filename=n;
 	IndexFlexFile();
 }
 
@@ -78,6 +76,15 @@ void	Flex::IndexFlexFile(void)
 		}
 	fclose(fp);
 }
+
+int     Flex::retrieve(int objnum,char **,size_t *len)
+{ return 0; }
+
+int     Flex::retrieve(int objnum,const char *)
+{ return 0; }
+
+
+Flex::~Flex() {}
 
 #if 0
 char	*Flex::read_object(int objnum,uint32 &length)
