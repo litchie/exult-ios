@@ -575,7 +575,8 @@ public:
 	void remove_effect(Special_effect *txt);
 	void remove_all_effects();
 	void remove_text_effects();
-	void remove_weather_effects();	// Remove just the weather.
+					// Remove just the weather.
+	void remove_weather_effects(int dist = 0);
 	int get_weather();		// Get # of last weather added.
 					// Handle a double-click in window.
 	void double_clicked(int x, int y);

@@ -2470,13 +2470,19 @@ void Game_window::remove_text_effects
 
 void Game_window::remove_weather_effects
 	(
+	int dist			// Only remove those from eggs at
+					//   least this far away.
 	)
 	{
+	Tile_coord apos = main_actor ? main_actor->get_abs_tile_coord()
+				: Tile_coord(-1, -1, -1);
 	Special_effect *each = effects;
 	while (each)
 		{
 		Special_effect *next = each->next;
-		if (each->is_weather())
+					// See if we're far enough away.
+		if (each->is_weather() && (!dist ||
+		    ((Weather_effect *) each)->out_of_range(apos, dist)))
 			{
 			tqueue->remove(each);
 			remove_effect(each);
@@ -2997,6 +3003,8 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 	if (oldx != -1 && oldy != -1 && newsx == oldsx && newsy == oldsy)
 		return;
 
+	remove_weather_effects(120);	// Cancel weather from eggs that are
+					//   far away.
 
 	// Which schunks need changing
 	char	schunks[c_num_schunks][c_num_schunks];

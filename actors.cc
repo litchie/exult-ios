@@ -132,6 +132,7 @@ const char sea_serpent_attack_frames[] = {13, 12, 11, 0, 1, 2, 3, 11, 12,
 const char reaper_attack_frames[] = {7, 8, 9};
 const char bee_attack_frames[] = {2, 9};
 const char drake_attack_frames[] = {3, 8, 9};
+const char scorpion_attack_frames[] = {7, 8, 9};
 // inline int Is_attack_frame(int i) { return i >= 3 && i <= 9; }
 inline int Is_attack_frame(int i) { return i == 6 || i == 9; }
 inline int Get_dir_from_frame(int i)
@@ -468,6 +469,10 @@ int Actor::get_attack_frames
 	case 525:			// Sea serpent.
 		which = sea_serpent_attack_frames;
 		cnt = sizeof(sea_serpent_attack_frames);
+		break;
+	case 706:			// Scorpion.
+		which = scorpion_attack_frames;
+		cnt = sizeof(scorpion_attack_frames);
 		break;
 	default:
 		which = attack_frames1;
