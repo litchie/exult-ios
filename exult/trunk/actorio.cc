@@ -222,7 +222,11 @@ Actor::Actor
 		name = namebuf;		// Store copy of it.
 
 
-	cout << name << " (" << num << ") flags ";
+	if (num != -1) cout << name;
+	else cout << get_name();
+
+	cout << " (" << num << ") flags ";
+
 	if (get_type_flag(tf_fly)) cout << "fly ";
 	if (get_type_flag(tf_swim)) cout << "swim ";
 	if (get_type_flag(tf_walk)) cout << "walk ";
