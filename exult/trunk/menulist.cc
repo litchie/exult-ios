@@ -158,7 +158,7 @@ bool MenuList::set_selected(int x, int y)
 			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
@@ -233,3 +233,4 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 	mouse->hide();
 	return selected;
 }
+
