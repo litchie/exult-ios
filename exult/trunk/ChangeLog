@@ -1,3 +1,6 @@
+2001-07-09  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/faq/readme.txt: instructions on how to build FAQ
+
 2001-07-09  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keys.cc: renamed 'SI intro' to 'alternate SI intro'
 	* useval.*: added an undefined state to fix various display issues
