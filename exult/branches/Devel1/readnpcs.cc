@@ -119,7 +119,7 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		actor->set_initial_location(scx + cx, scy + cy, olist,
 				shapex, shapey, (shape[1]>>2) & 0x1f, lift);
 #endif
-		actor->move(scx + cx, scy + cy, olist,
+		actor->move(0, scx + cx, scy + cy, olist,
 				shapex, shapey, (shape[1]>>2) & 0x1f, lift);
 					// Put in chunk's NPC list.
 		if (npc_actor)

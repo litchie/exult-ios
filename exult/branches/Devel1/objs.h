@@ -221,6 +221,11 @@ public:
 		{ return cy; }
 					// Move to new abs. location.
 	void move(int newtx, int newty, int newlift);
+					// Move and change shape/frame.
+	void move(Chunk_object_list *old_chunk, int new_cx, int new_cy, 
+			Chunk_object_list *new_chunk, 
+			int new_sx, int new_sy, int new_frame, 
+			int new_lift = -1);
 	int get_dependency_count()	// Get objs. to paint first.
 		{ return dependencies.get_cnt(); }
 	Game_object *get_dependency(int i)
@@ -654,7 +659,6 @@ public:
  */
 class Sprite : public Container_game_object, public Time_sensitive
 	{
-	Chunk_object_list *chunk;	// The chunk list we're on.
 	int major_frame_incr;		// # of pixels to move
 					//   along major axis for each frame.
 	Frames_sequence *frames[8];	// A frame sequence for each dir.
@@ -692,23 +696,6 @@ public:
 		}
 	int get_frame_time()		// Return frame time if moving.
 		{ return is_walking() ? frame_time : 0; }
-					// Move to new chunk, shape coords.
-	void move(int new_cx, int new_cy, Chunk_object_list *new_chunk, 
-			int new_sx, int new_sy, int new_frame, 
-			int new_lift = -1)
-		{
-		if (chunk)		// Remove from current chunk.
-			chunk->remove(this);
-		chunk = new_chunk;	// Add to new one.
-		set_shape_pos(new_sx, new_sy);
-		if (new_frame >= 0)
-			set_frame(new_frame);
-		if (new_lift >= 0)
-			set_lift(new_lift);
-		chunk->add(this);
-		}
-					// Move to abs. location.
-	void move(int newtx, int newty, int newlift);
 	int is_walking()
 		{ return major_dir != 0; }
 	void stop();			// Stop motion.
@@ -722,7 +709,7 @@ public:
 	int next_frame(int& new_cx, int& new_cy, int& new_tx, int& new_ty,
 		int& new_frame);
 					// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
+	virtual void handle_event(unsigned long time, long udata) = 0;
 	};
 /*
  *	A rectangle:
@@ -796,5 +783,27 @@ public:
 					// At timeout, remove from screen.
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
+
+/*
+ *	Move an object, and possibly change its shape too.
+ */
+inline void Game_object::move
+	(
+	Chunk_object_list *old_chunk, 
+	int new_cx, int new_cy, 
+	Chunk_object_list *new_chunk, 
+	int new_sx, int new_sy, int new_frame, 
+	int new_lift
+	)
+	{
+	if (old_chunk)			// Remove from current chunk.
+		old_chunk->remove(this);
+	set_shape_pos(new_sx, new_sy);
+	if (new_frame >= 0)
+		set_frame(new_frame);
+	if (new_lift >= 0)
+		set_lift(new_lift);
+	new_chunk->add(this);
+	}
 
 #endif
