@@ -327,12 +327,17 @@ class File_gump_object : public Modal_gump_object
 	Gump_button *buttons[6];	// 2 rows, 3 cols of buttons.
 	Gump_text *pushed_text;		// Text mouse is down on.
 	Gump_text *focus;		// Text line that has focus.
+	unsigned char restored;		// Set to 1 if we restored a game.
 public:
 	File_gump_object();
 	~File_gump_object();
+					// Find savegame index of text field.
+	int get_save_index(Gump_text *txt);
 	void load();			// 'Load' was clicked.
 	void save();			// 'Save' was clicked.
 	void quit();			// 'Quit' was clicked.
+	int restored_game()		// 1 if user restored.
+		{ return restored; }
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	virtual void close(Game_window *gwin)
