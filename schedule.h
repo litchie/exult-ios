@@ -303,8 +303,6 @@ class Walk_to_schedule : public Schedule
 	int new_schedule;		// Schedule to set when we get there.
 	int retries;			// # failures at finding path.
 	int legs;			// # times restarted walk.
-					// Open door blocking NPC.
-	void open_door(Game_object *door);
 					// Set to walk off screen.
 	void walk_off_screen(Rectangle& screen, Tile_coord& goal);
 public:

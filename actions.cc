@@ -62,6 +62,40 @@ Actor_action *Actor_action::walk_to_tile
 	}
 
 /*
+ *	Set up an action to get an actor to a location (via pathfinding), and
+ *	then execute another action when he gets there.
+ */
+
+Actor_action *Actor_action::create_action_sequence
+	(
+	Actor *actor,			// Whom to activate.
+	Tile_coord dest,		// Where to walk to.
+	Actor_action *when_there,	// What to do when he gets there.
+	int from_off_screen		// Have actor walk from off-screen.
+	)
+	{
+	Actor_action *act = when_there;
+	Tile_coord actloc = actor->get_abs_tile_coord();
+	if (from_off_screen)
+		actloc.tx = actloc.ty = -1;
+	if (dest != actloc)		// Get to destination.
+		{
+		Actor_action *w = new Path_walking_actor_action(new Astar());
+		Actor_action *w2 = w->walk_to_tile(actloc, dest, 
+						actor->get_type_flags());
+		if (w2 != w)
+			delete w;
+		if (!w2)		// Failed?  Teleport.
+			w2 = new Move_actor_action(dest);
+					// And teleport if blocked walking.
+		Actor_action *tel = new Move_actor_action(dest);
+					// Walk there, then do whatever.
+		act = new Sequence_actor_action(w2, tel, act);
+		}
+	return act;
+	}
+
+/*
  *	Null action.
  */
 
@@ -81,7 +115,7 @@ Path_walking_actor_action::Path_walking_actor_action
 	(
 	PathFinder *p,			// Already set to path.
 	int maxblk			// Max. retries when blocked.
-	) : path(p), frame_index(0), from_offscreen(false),
+	) : path(p), frame_index(0), from_offscreen(false), subseq(0),
 	    blocked(0), max_blocked(maxblk)
 	{
 	Tile_coord src = p->get_src(), dest = p->get_dest();
@@ -111,6 +145,14 @@ int Path_walking_actor_action::handle_event
 	Actor *actor
 	)
 	{
+	if (subseq)			// Going through a door?
+		{
+		int delay = subseq->handle_event(actor);
+		if (delay)
+			return delay;	// Still going.
+		set_subseq(0);
+		return speed;		// Come back in a moment.
+		}
 	Tile_coord tile;
 	if (blocked)
 		{
@@ -144,6 +186,20 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		}
 	else if (actor->step(tile, frame))	// Successful.
 		return speed;
+	Game_window *gwin = Game_window::get_game_window();
+					// Blocked by a door?
+	if (actor->get_abs_tile_coord().distance(tile) == 1 &&
+					// But not a party member.
+	    (actor != gwin->get_main_actor() && actor->get_party_id() < 0))
+		{
+		Game_object *door = Game_object::find_blocking(tile);
+		if (door != 0 && door->is_closed_door())
+					// Try to open it.
+			{
+			if (open_door(actor, door))
+				return speed;
+			}
+		}
 	if (!max_blocked ||		// No retries allowed?
 	    actor->is_dormant())	// Or actor off-screen?
 		return 0;
@@ -151,6 +207,79 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	blocked_tile = tile;
 	blocked_frame = frame;
 	return (100 + std::rand()%500);	// Wait .1 to .6 seconds.
+	}
+
+/*
+ *	Open door that's blocking the NPC, and set action to walk past and
+ *	close it.
+ *
+ *	Output:	1 if successful.
+ */
+
+int Path_walking_actor_action::open_door
+	(
+	Actor *actor,
+	Game_object *door
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord cur = actor->get_abs_tile_coord();
+					// Get door's footprint in tiles.
+	Rectangle foot = door->get_footprint();
+					// Open it.
+	door->activate(gwin->get_usecode());
+	Tile_coord past;		// Tile on other side of door.
+	past.tz = cur.tz;
+	int dir;			// Get dir to face door afterwards.
+	if (foot.w > foot.h)		// Horizontal?
+		{
+		past.tx = foot.x + foot.w/2;
+		if (cur.ty <= foot.y)	// N. of door?
+			{
+			past.ty = foot.y + foot.h;
+			dir = 0;
+			}
+		else			// S. of door?
+			{
+			past.ty = foot.y - 1;
+			dir = 4;
+			}
+		}
+	else				// Vertical.
+		{
+		past.ty = foot.y + foot.h/2;
+		if (cur.tx <= foot.x)	// W. of door?
+			{
+			past.tx = foot.x + foot.w;
+			dir = 6;
+			}
+		else			// E. of door?
+			{
+			past.tx = foot.x - 1;
+			dir = 2;
+			}
+		}
+	Tile_coord tmp = Game_object::find_unblocked_tile(past, 0, 3);
+	if (tmp.tx != -1)
+		past = tmp;
+	else
+		past = Game_object::find_unblocked_tile(past, 1, 3);
+	if (past.tx != -1)		// Succeeded.  Walk past and close it.
+		{
+		cout << "Path_walking_actor_action::open_door()" << endl;
+		char frames[2];
+		frames[0] = actor->get_dir_framenum(dir, Actor::standing);
+		frames[1] = actor->get_dir_framenum(dir, 3);
+		char standframe = frames[0];
+		set_subseq(create_action_sequence(actor, past,
+			new Sequence_actor_action(
+				new Frames_actor_action(frames, 
+							sizeof(frames)),
+				new Activate_actor_action(door),
+				new Frames_actor_action(&standframe, 1))));
+		return 1;
+		}
+	return 0;
 	}
 
 /*

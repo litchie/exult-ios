@@ -45,7 +45,13 @@ public:
 	virtual void stop(Actor *actor)	// Stop moving.
 		{  }
 					// Set simple path to destination.
-	virtual Actor_action *walk_to_tile(Tile_coord src, Tile_coord dest, int move_flags);
+	virtual Actor_action *walk_to_tile(Tile_coord src, 
+					Tile_coord dest, int move_flags);
+					// Set action to walk to dest, then
+					//   exec. another action when there.
+	static Actor_action *create_action_sequence(Actor *actor, 
+			Tile_coord dest,
+			Actor_action *when_there, int from_off_screen = 0);
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest)
 		{ return 0; }
@@ -73,19 +79,27 @@ class Path_walking_actor_action : public Actor_action
 	int original_dir;		// From src. to dest. (0-7).
 	int frame_index;		// Index within frame sequence.
 	int speed;			// Time between frames.
-	bool from_offscreen;	// Walking from offscreen.
+	bool from_offscreen;		// Walking from offscreen.
+	Actor_action *subseq;		// For opening doors.
 	unsigned char blocked;		// Blocked-tile retries.
 	unsigned char max_blocked;	// Try this many times.
 	unsigned char blocked_frame;	// Frame for blocked tile.
 	Tile_coord blocked_tile;	// Tile to retry.
+	void set_subseq(Actor_action *sub)
+		{
+		delete subseq;
+		subseq = sub;
+		}
 public:
 	Path_walking_actor_action(PathFinder *p, int maxblk = 3);
 	virtual ~Path_walking_actor_action();
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
+	int open_door(Actor *actor, Game_object *door);
 	virtual void stop(Actor *actor);// Stop moving.
 					// Set simple path to destination.
-	virtual Actor_action *walk_to_tile(Tile_coord src, Tile_coord dest, int move_flags);
+	virtual Actor_action *walk_to_tile(Tile_coord src, 
+					Tile_coord dest, int move_flags);
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest);
 					// Check for Astar.

@@ -44,8 +44,8 @@ int Actor_pathfinder_client::get_max_cost
 	{
 	int max_cost = 3*cost_to_goal;
 	Game_window *gwin = Game_window::get_game_window();
-					// Do at least 2 screens width.
-	int min_max_cost = (gwin->get_width()/c_tilesize)*2*2;
+					// Do at least 3 screens width.
+	int min_max_cost = (gwin->get_width()/c_tilesize)*2*3;
 	return max_cost > min_max_cost ? max_cost : min_max_cost;
 	}
 
@@ -83,6 +83,16 @@ int Actor_pathfinder_client::get_step_cost
 					// Can't get past locked doors.
 		    block->get_framenum()%4 >= 2)
 			return -1;
+					// Can't be either end of door.
+		Rectangle foot = block->get_footprint();
+		if (foot.h == 1 && (to.tx == foot.x || to.tx == foot.x +
+							foot.w - 1))
+			return -1;
+		else if (foot.w == 1 && (to.ty == foot.y || to.ty == foot.y + 
+							foot.h - 1))
+			return -1;
+		if (foot.has_point(from.tx, from.ty))
+			return -1;	// Don't walk within doorway.
 		new_lift = to.tz;	// We can open doors.
 		cost++;			// But try to avoid them.
 		}
