@@ -51,7 +51,7 @@ Game_window::Game_window
 	    tqueue(new Time_queue()), clock(tqueue),
 		npc_prox(new Npc_proximity_handler(this)),
 	    main_actor(0),
-	    conv_choices(0), texts(0), num_faces(0),
+	    conv_choices(0), texts(0), num_faces(0), last_face_shown(-1),
 	    main_actor_inside(0), mode(intro), npcs(0),
 	    shapes(SHAPES_VGA),
 	    faces(FACES_VGA),
@@ -1384,10 +1384,12 @@ cout << "Object name is " << obj->get_name() << '\n';
 class Npc_face_info
 	{
 	int shape;			// NPC's shape #.
+	unsigned char text_pending;	// Text has been written, but user
+					//   has not yet been prompted.
 	Rectangle face_rect;		// Rectangle where face is shown.
 	Rectangle text_rect;		// Rectangle NPC statement is shown in.
 	friend class Game_window;
-	Npc_face_info(int sh) : shape(sh)
+	Npc_face_info(int sh) : shape(sh), text_pending(0)
 		{  }
 	};
 
@@ -1405,6 +1407,7 @@ void Game_window::init_faces
 		face_info[i] = 0;
 		}
 	num_faces = 0;
+	last_face_shown = -1;
 	}
 
 /*
@@ -1432,6 +1435,7 @@ void Game_window::show_face
 		if (face_info[i]->shape == shape)
 			{
 			info = face_info[i];
+			last_face_shown = i;
 			break;
 			}
 //++++++Really should look for empty slot & use it.
@@ -1440,6 +1444,7 @@ void Game_window::show_face
 					// Get last one shown.
 		Npc_face_info *prev = num_faces ? face_info[num_faces - 1] : 0;
 		info = new Npc_face_info(shape);
+		last_face_shown = num_faces;
 		face_info[num_faces++] = info;
 					// Get screen rectangle.
 		Rectangle sbox = get_win_rect();
@@ -1453,9 +1458,9 @@ void Game_window::show_face
 		info->face_rect = actbox;
 					// This is where NPC text will go.
 		info->text_rect = Rectangle(actbox.x + actbox.w + 16,
-				actbox.y + 8,
+				actbox.y,
 				sbox.w - actbox.x - actbox.w - 32,
-				6*text_height);
+				8*text_height);
 		}
 	else
 		actbox = info->face_rect;
@@ -1482,11 +1487,15 @@ void Game_window::remove_face
 			break;
 	if (i == num_faces)
 		return;			// Not found.
-	paint(face_info[i]->face_rect);
-	paint(face_info[i]->text_rect);
+	Npc_face_info *info = face_info[i];
+	paint(info->face_rect.x - 8, info->face_rect.y - 8,
+		info->face_rect.w + 16, info->face_rect.h + 16);
+	paint(info->text_rect);
 	delete face_info[i];
 	face_info[i] = 0;
 	num_faces--;
+	if (last_face_shown == i)	// Just in case.
+		last_face_shown == num_faces - 1;
 	}
 
 /*
@@ -1498,14 +1507,30 @@ void Game_window::show_npc_message
 	char *msg
 	)
 	{
-	if (!num_faces)
+	if (last_face_shown == -1)
 		return;
-	Rectangle& box = face_info[num_faces - 1]->text_rect;
+	Npc_face_info *info = face_info[last_face_shown];
+	Rectangle& box = info->text_rect;
 	paint(box);			// Clear what was there before.
 	win->draw_text_box(font12, msg, box.x, box.y,
 					box.w, box.h);
+	info->text_pending = 1;
 	painted = 1;
 	show();
+	}
+
+/*
+ *	Is there NPC text that the user hasn't had a chance to read?
+ */
+
+int Game_window::is_npc_text_pending
+	(
+	)
+	{
+	for (int i = 0; i < num_faces; i++)
+		if (face_info[i]->text_pending)
+			return (1);
+	return (0);
 	}
 
 /*
@@ -1560,6 +1585,8 @@ void Game_window::show_avatar_choices
 		}
 					// Terminate the list.
 	conv_choices[num_choices] = Rectangle(0, 0, 0, 0);
+	for (int i = 0; i < num_faces; i++)	// Clear 'pending' flags.
+		face_info[i]->text_pending = 0;
 	}
 
 /*
