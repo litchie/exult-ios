@@ -55,7 +55,7 @@ exult_studio_LDADD = \
 	../imagewin/libimagewin.la	\
 	../shapes/libshapes.la 		\
 	../server/libserver.la		\
-	-lpng $(GTK_LIBS) $(SYSLIBS) $(x_libraries) \
+	-lpng $(GTK_LIBS) $(FREETYPE2_LIBS) $(SYSLIBS) $(x_libraries) \
 	$(LIBGLADE_LIBS)
 
 exult_studio_CFLAGS = $(LIBGLADE_INCLUDES)
