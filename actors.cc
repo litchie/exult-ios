@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdlib.h>
 #include <string.h>
 #include "gamewin.h"
+#include "actors.h"
 #include "imagewin.h"
 #include "usecode.h"
 #include "actions.h"
@@ -296,23 +297,6 @@ int Actor::walk_path_to_tile
 		}
 	frame_time = 0;			// Not moving.
 	return (0);
-	}
-
-/*
- *	Walk to destination point.
- */
-
-void Actor::walk_to_point
-	(
-					// Point in world:
-	unsigned long destx, unsigned long desty,
-	int speed			// Delay between frames.
-	)
-	{
-	int liftpixels = 4*get_lift();
-	int tx = (destx + liftpixels)/tilesize, 
-	    ty = (desty + liftpixels)/tilesize;
-	walk_to_tile(tx, ty, get_lift(), speed, 0);
 	}
 
 /*

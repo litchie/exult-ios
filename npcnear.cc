@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include "npcnear.h"
 #include "gamewin.h"
+#include "actors.h"
 #include "usecode.h"
 #include "schedule.h"
 #include "items.h"
