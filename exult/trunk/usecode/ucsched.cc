@@ -357,6 +357,15 @@ void Usecode_script::handle_event
 			delay = gwin->get_std_delay()*delayval.get_int_value();
 			break;		
 			}
+		case delay_hours:	// 1 parm., game hours.
+			{
+			Usecode_value& delayval = code->get_elem(++i);
+			delay = delayval.get_int_value();
+					// Convert to real seconds.
+			delay = (delay*3600)/time_factor;
+			delay *= 1000;	// Then to msecs.
+			break;
+			}
 #if 0
 		case finish:		// Quit if there's already scheduled
 					//   code for item?

@@ -34,6 +34,7 @@ enum Ucscript_ops
 	nop =		0x21,		// Not sure about this.
 	dont_halt =	0x23,		// Not right?
 	delay_ticks =	0x27,		// Delay(ticks).
+	delay_hours =	0x29,		// Delay nn game hours.
 	finish =	0x2c,		// Finish script if killed.
 	remove =	0x2d,		// Remove item & halt.
 	step_n = 	0x30,		// Step in given direction.
