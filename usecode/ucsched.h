@@ -92,6 +92,8 @@ public:
 					// Activate itemref eggs.
 	void activate_eggs(Usecode_machine *usecode);
 	virtual void handle_event(unsigned long curtime, long udata);
+					// Move object in given direction.
+	void step(Usecode_machine *usecode, int dir);
 	};
 
 

@@ -110,6 +110,18 @@ public:
 	};
 
 /*
+ *	A 'do nothing' schedule.
+ */
+class Wait_schedule : public Schedule
+	{
+	bool start;
+public:
+	Wait_schedule(Actor *n) : Schedule(n), start(true)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	A schedule for pacing between two points:
  */
 class Pace_schedule : public Schedule

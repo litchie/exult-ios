@@ -19,6 +19,7 @@
 #include "ucmachine.h"
 #include "schedule.h"
 #include "items.h"
+#include "game.h"
 
 #include "SDL_timer.h"
 
@@ -106,7 +107,10 @@ void Npc_proximity_handler::handle_event
 					//   a rabbit (SI start).
 		 (rand()%2 == 1 || npc->get_shapenum() == 811)  &&
 					// And not for party members.
-			npc->get_party_id() < 0)
+			npc->get_party_id() < 0 &&
+					// And not for patrollers in SI.
+		 (npc->get_schedule_type() != (int) Schedule::patrol ||
+				Game::get_game_type() != SERPENT_ISLE))
 		{
 		int ucfun = npc->get_usecode();
 		ucfun = ucfun == -1 ? npc->get_shapenum() : ucfun;

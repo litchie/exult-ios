@@ -1128,6 +1128,7 @@ void Actor::set_schedule_type
 			schedule = new Sleep_schedule(this);
 			break;
 		case Schedule::wait:
+			schedule = new Wait_schedule(this);
 			break;
 		case Schedule::eat:		// For now.
 		case Schedule::sit:

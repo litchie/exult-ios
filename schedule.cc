@@ -228,6 +228,29 @@ void Street_maintenance_schedule::now_what
 	}
 
 /*
+ *	Waiting...
+ */
+
+void Wait_schedule::now_what
+	(
+	)
+	{
+#if 0	/* ++++Bah.  Looks like this isn't needed. */
+	if (Game::get_game_type() != SERPENT_ISLE)
+		return;			// I think this isn't needed for BG.
+	if (start)			// First time?
+		start = false;
+	else				// SI?  Call proximity usecode.
+		{
+		Game_window *gwin = Game_window::get_game_window();
+		npc->activate(gwin->get_usecode(), 0);
+		}
+					// Again in a few seconds.
+	npc->start(200, 4000 + rand()%2000);
+#endif
+	}
+
+/*
  *	Create a horizontal pace schedule.
  */
 
@@ -388,6 +411,7 @@ void Patrol_schedule::now_what
 	pathnum++;			// Find next path.
 					// Already know its location?
 	Game_object *path =  pathnum < paths.size() ? paths[pathnum] : 0;
+	bool at_end = false;
 	if (!path)			// No, so look around.
 		{
 		Game_object_vector nearby;
@@ -408,6 +432,7 @@ void Patrol_schedule::now_what
 		if (!path)		// Turn back if at end.
 			{
 			pathnum = 0;
+			at_end = true;
 			path = paths.size() ? paths[0] : 0;
 			}
 		if (!path)
@@ -427,16 +452,24 @@ void Patrol_schedule::now_what
 			return;
 			}
 		}
-					// Delay up to 2 secs.
-					// Serpent Isle needs path-following.
-	if (Game::get_game_type() == BLACK_GATE ||
-	    !npc->walk_path_to_tile(path->get_abs_tile_coord(), 250, 
-								rand()%2000))
+	bool usepath = false;		// Serpent Isle needs path-following.
+	if (Game::get_game_type() == SERPENT_ISLE)
+		{
+		Tile_coord d = path->get_abs_tile_coord();
+		usepath = true;
+	    	if (!npc->walk_path_to_tile(d, 250, rand()%1000))
+			{		// Look for free tile within 1 square.
+			d = Game_object::find_unblocked_tile(d, 1, 4);
+			if (d.tx == -1 || !npc->walk_path_to_tile(d, 250,
+								rand()%1000))
+				usepath = false;
+			}
+		}
+	if (!usepath)
 		{
 					// This works for passion play:
 	// +++++++Try using walk_path_to_tile() for BG & get rid of this!+++++
-		if (Game::get_game_type() == BLACK_GATE)
-			npc->set_lift(path->get_lift());
+		npc->set_lift(path->get_lift());
 		npc->walk_to_tile(path->get_abs_tile_coord(), 250, rand()%2000);
 		}
 	Game_window *gwin = Game_window::get_game_window();
@@ -450,7 +483,9 @@ void Patrol_schedule::now_what
 				npc->activate(gwin->get_usecode(), 0);
 			}
 		else if (!pathnum)	// At start/end?
-			npc->activate(gwin->get_usecode(), 0);
+					// Do cat at both start and end.
+			if (npc->get_shapenum() == 0x1ef || at_end)
+				npc->activate(gwin->get_usecode(), 0);
 		}
 	}
 
