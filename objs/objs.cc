@@ -701,9 +701,13 @@ void Game_object::activate
 		gwin->get_gump_man()->add_gump(this, 65);
 		return;
 		}
-					// !!!Special case:  books in BG.
-	if (usefun == 0x282 && get_quality() >= 100)
-		usefun = Game::get_game_type() == BLACK_GATE ? 0x638 : 0x63b;
+					// !!!Special case:  books
+	if (usefun == 0x282 && get_quality() >= 100 && get_quality() < 180)
+		usefun = 0x638;
+	else if (usefun == 0x282 && get_quality() >= 180 && 
+			 Game::get_game_type() == SERPENT_ISLE )
+		usefun = 0x63b;
+
 	umachine->call_usecode(usefun, this,
 			(Usecode_machine::Usecode_events) event);
 	}
