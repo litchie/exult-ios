@@ -1,3 +1,6 @@
+2001-03-19  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* gumps/gump_utils.h: added a few includes for OpenBSD
+
 2001-03-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SFX's:  'SFX objects' sounds implemented (such as fountains,
