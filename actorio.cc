@@ -85,6 +85,7 @@ Actor::Actor
 					// Guessing:  !!  (Want to get signed.)
 	int health_val = (int) (char) Read1(nfile);
 	set_property((int) Actor::health, health_val);
+	dead = is_dying();
 	nfile.seekg(3, ios::cur);	// Skip 3 bytes.
 	int iflag2 = Read2(nfile);	// Another inventory flag.
 
@@ -147,9 +148,9 @@ Actor::Actor
 	int intel_val = Read1(nfile);
 
 	set_property((int) Actor::intelligence, intel_val & 0x1F);
-	if ((intel_val << 5) & 1) set_siflag (Actor::read);
-	if ((intel_val << 6) & 1) set_siflag (Actor::tournament);
-	if ((intel_val << 7) & 1) set_siflag (Actor::polymorph);
+	if ((intel_val >> 5) & 1) set_siflag (Actor::read);
+	if ((intel_val >> 6) & 1) set_siflag (Actor::tournament);
+	if ((intel_val >> 7) & 1) set_siflag (Actor::polymorph);
 
 
 	// Combat skill (0-6), Petra (7)
@@ -188,8 +189,7 @@ Actor::Actor
 		if ((mana_val >> 0) & 1) set_flag (Obj_flags::met);
 		if ((mana_val >> 1) & 1) set_siflag (Actor::no_spell_casting);
 		if ((mana_val >> 2) & 1) 
-//			set_siflag (Actor::zombie);
-			set_flag(Obj_flags::zombie);
+			set_siflag (Actor::zombie);
 	}
 
 
@@ -288,7 +288,7 @@ Actor::Actor
 	Chunk_object_list *olist = gwin->get_objects_safely(
 							scx + cx, scy + cy);
 					// Put into chunk list.
-	if (!is_dead_npc())
+	if (!is_dead())
 		if (olist)
 			olist->add(this);
 		else
@@ -419,8 +419,7 @@ void Actor::write
 		magic_val = get_ident() & 0x1F;
 		if (get_flag (Obj_flags::met)) mana_val |= 1;
 		if (get_siflag (Actor::no_spell_casting)) mana_val |= 1 << 1;
-//		if (get_siflag (Actor::zombie)) mana_val |= 1 << 2;
-		if (get_flag (Obj_flags::zombie)) mana_val |= 1 << 2;
+		if (get_siflag (Actor::zombie)) mana_val |= 1 << 2;
 	}
 
 	// Tempertures
@@ -543,7 +542,7 @@ void Monster_actor::write
 	ostream& nfile			// Generally 'npc.dat'.
 	)
 	{
-	if (Actor::is_dead_npc())	// Not alive?
+	if (Actor::is_dead())		// Not alive?
 		return;
 	Actor::write(nfile);		// Now write.
 	}

@@ -261,8 +261,6 @@ public:
 		{  }
 	virtual int get_property(int prop) const
 		{ return 0; }
-	virtual int is_dead_npc() const
-		{ return 0; }
 					// Get/set 'alignment'.
 	virtual int get_alignment() const
 		{ return 0; }

@@ -752,8 +752,8 @@ USECODE_INTRINSIC(give_last_created)
 USECODE_INTRINSIC(is_dead)
 {
 	// Return 1 if parm0 is a dead NPC.
-	Game_object *npc = get_item(parms[0]);
-	Usecode_value u(npc->is_dead_npc());
+	Actor *npc = as_actor(get_item(parms[0]));
+	Usecode_value u(npc && npc->is_dead());
 	return(u);
 }
 
@@ -1235,7 +1235,7 @@ USECODE_INTRINSIC(armageddon)
 		{			// Leave LB, Batlin, Hook.
 		Actor *npc = gwin->get_npc(i);
 		if (npc && i != 26 && i != 23 && npc->get_shapenum() != 506 &&
-		    !npc->is_dead_npc())
+		    !npc->is_dead())
 			{
 			const char *text[] = {"Aiiiieee!", "Noooo!", "#!?*#%!"};
 			const int numtext = sizeof(text)/sizeof(text[0]);
