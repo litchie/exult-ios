@@ -40,12 +40,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include <Audio.h>
 #include <iomanip>
+#ifdef XWIN
+#include <signal.h>
+#endif
+#if USECODE_DEBUGGER
+#include <algo.h>       // STL function things
+#endif
+
 
 // External globals..
 
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 extern void Wait_for_arrival(Actor *actor);
-extern	bool	usecode_trace;
+extern	bool	usecode_trace,usecode_debugging;
+
+#if USECODE_DEBUGGER
+vector<int> intrinsic_breakpoints;
+#endif
 
 /*
  *	Earthquakes.
@@ -1421,6 +1432,18 @@ static Usecode_value	no_ret;
 
 Usecode_value Usecode_machine::Execute_Intrinsic(UsecodeIntrinsicFn func,const char *name,int event,int intrinsic,int num_parms,Usecode_value parms[12])
 {
+#ifdef XWIN
+#if USECODE_DEBUGGER
+	if(usecode_debugging)
+		{
+		// Examine the list of intrinsics for function breakpoints.
+		if(find(intrinsic_breakpoints.begin(),intrinsic_breakpoints.end(),intrinsic)!=intrinsic_breakpoints.end())
+			{
+			raise(SIGIO);	// Breakpoint
+			}
+		}
+#endif
+#endif
 	if(usecode_trace)
 		{
 		Usecode_Trace(name,intrinsic,num_parms,parms);
