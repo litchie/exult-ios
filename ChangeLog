@@ -1,3 +1,10 @@
+2001-12-21  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* drag.cc (Dragging_info): Use remove_this(true) to remove obj.
+	* paths.cc (Offscreen_pathfinder_client): Fast_pathfinder checks lift.
+	* actors.cc: remove_this(): Don't delete schedule.
+	* actors.cc: move():  If entering world, set dormant.
+
 2001-12-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/*.shp, Makefile.*, flx.in: removed text button shapes
 	* gumps/Enabled_button.*: Text button for picking enabled/disabled
