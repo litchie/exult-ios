@@ -69,7 +69,7 @@ private:
 	Shape_file_info		*facefile;	// 'faces.vga'.
 	std::vector<char *>	names;
 	Object_browser		*browser;
-	unsigned char 		*palbuf;
+	unsigned char 		*palbuf;	// 3*256 rgb's, each 0-63.
 					// Egg editor:
 	GtkWidget		*eggwin;// Egg window.
 	Shape_draw		*egg_monster_draw;
@@ -126,6 +126,8 @@ public:
 		{ return files; }
 	Object_browser *get_browser()
 		{ return browser; }
+	unsigned char *get_palbuf()
+		{ return palbuf; }
 	Shape_file_info *get_vgafile()	// 'shapes.vga'.
 		{ return vgafile; }
 	Combo_editor *get_combowin()
