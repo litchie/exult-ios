@@ -44,7 +44,7 @@ U7file  *U7FileManager::get_file_object(const string &s)
 
 	// Failed
 	if (!uf)
-		cout << "Unable to find/open U7file " << s << endl;
+		std::cerr << "Unable to find/open U7file " << s << endl;
 
 	return uf;
 }
