@@ -124,8 +124,13 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 // debugging printf("nbytes=%d, coffset=%d\n", nbytes, coffset);
 		break;
 	case SLOOP:  /* WJP */
-		printf("\t[%04X], %04X\n", *(unsigned short*)( ptrc + nbytes - 4 ),
+		printf("\t[%04X], [%04X], [%04X], [%04X], %04X\n", 
+			   *(unsigned short*)( ptrc + nbytes - 10 ),
+			   *(unsigned short*)( ptrc + nbytes - 8 ),
+			   *(unsigned short*)( ptrc + nbytes - 6 ),
+			   *(unsigned short*)( ptrc + nbytes - 4 ),
 			   *(short*)( ptrc + nbytes - 2) + (short)coffset + nbytes);
+		break;
 	case IMMED_AND_RELATIVE_JUMP:	/* JSF */
 		printf("\t%04XH, %04X\n", *(unsigned short*)( ptrc + 1 ),
 				*(short*)( ptrc + 3 ) + (short)coffset + 5);
@@ -137,7 +142,7 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 			if( ( func < funsize ) &&
 				 func_table[func] )
 				// Known function
-				printf("\t_%s@%d\t\t; %04X\n", func_table[func], ptrc[3], func);
+				printf("\t_%s@%d (%04X)\n", func_table[func], ptrc[3], func);
 			else
 				// Unknown function
 				printf("\t%04X, %d\n", func, ptrc[3]);
