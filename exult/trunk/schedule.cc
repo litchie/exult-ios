@@ -327,7 +327,8 @@ void Talk_schedule::now_what
 			Tile_coord(dx, -dx, 0), 300, 500);
 					// Wait til conversation is over.
 		if (gwin->get_usecode()->get_num_faces_on_screen() == 0)
-			phase++;
+//			phase++;
+			phase = 3;
 		return;
 		}
 	case 3:				// Talk.

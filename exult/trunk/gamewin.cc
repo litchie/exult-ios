@@ -2493,16 +2493,26 @@ void Game_window::theft
 	}
 
 /*
- *	Gain focus.
+ *	Gain/lose focus.
  */
 
 void Game_window::get_focus
 	(
 	)
 	{
+	cout << "Game resumed" << endl;
 	focus = 1; 
-	npc_prox->wait(4);		// Delay "barking" for 4 secs.
+	tqueue->resume(SDL_GetTicks());
 	}
+void Game_window::lose_focus
+	(
+	)
+	{
+	cout << "Game paused" << endl;
+	focus = false; 
+	tqueue->pause(SDL_GetTicks());
+	}
+
 
 /*
  *	Prepare for game
