@@ -97,7 +97,9 @@ class Usecode_machine
 	Usecode_function *cur_function;	// Current function being executed.
 	unsigned char gflags[1024];	// Global flags.
 	unsigned long timers[20];	// Each has time in hours when set.
+public:					//++++++This goes away:
 	Tile_coord virtue_stones[8];	// Location 'marked' for each stone.
+private:
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
 	int speech_track;		// Set/read by some intrinsics.
