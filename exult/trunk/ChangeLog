@@ -1,3 +1,8 @@
+2001-11-17  Max Horn  <max@quendi.de>
+
+	* Makefile.am, configure.in: made sure MacOS X specific Makefile changes
+	are really only used on MacOS X
+
 2001-11-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/egg.cc (Animated_egg_object): Remove poison/sleep field
