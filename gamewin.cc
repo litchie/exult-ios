@@ -2570,6 +2570,7 @@ void Game_window::setup_game
 			main_actor->set_flag(Obj_flags::dont_render);
 	}
 
+	faded_out = 0;
 	clock.set_palette();		// Set palette for time-of-day.
 	set_all_dirty();		// Force entire repaint.
 
