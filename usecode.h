@@ -37,9 +37,9 @@ class Vector;
 
 #define UTRACE(NAME) Usecode_Trace(NAME,intrinsic,num_parms,parms)
 #define	USECODE_RETURN(A) Usecode_TraceReturn(A); return (A)
-#define	USECODE_FUNCTION(NAME)	Usecode_value	Usecode_machine::UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12]) { UTRACE(#NAME);
-#define	USECODE_FUNCTION_DECL(NAME)	Usecode_value	UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
-#define	USECODE_FUNCTION_PTR(NAME)	&Usecode_machine::UI_ ## NAME
+#define	USECODE_INTRINSIC(NAME)	Usecode_value	Usecode_machine::UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12]) { UTRACE(#NAME);
+#define	USECODE_INTRINSIC_DECL(NAME)	Usecode_value	UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
+#define	USECODE_INTRINSIC_PTR(NAME)	&Usecode_machine::UI_ ## NAME
 
 /*
  *	A value that we store can be an integer, string, or array.
@@ -254,75 +254,75 @@ public:
          *	Embedded intrinsics
 	 */
 
-	USECODE_FUNCTION_DECL(NOP);
-	USECODE_FUNCTION_DECL(UNKNOWN);
-	USECODE_FUNCTION_DECL(get_random);
-	USECODE_FUNCTION_DECL(execute_usecode_array);
-	USECODE_FUNCTION_DECL(delayed_execute_usecode_array);
-	USECODE_FUNCTION_DECL(show_npc_face);
-	USECODE_FUNCTION_DECL(remove_npc_face);
-	USECODE_FUNCTION_DECL(add_answer);
-	USECODE_FUNCTION_DECL(remove_answer);
-	USECODE_FUNCTION_DECL(push_answers);
-	USECODE_FUNCTION_DECL(pop_answers);
-	USECODE_FUNCTION_DECL(select_from_menu);
-	USECODE_FUNCTION_DECL(select_from_menu2);
-	USECODE_FUNCTION_DECL(input_numeric_value);
-	USECODE_FUNCTION_DECL(set_item_shape);
-	USECODE_FUNCTION_DECL(die_roll);
-	USECODE_FUNCTION_DECL(get_item_shape);
-	USECODE_FUNCTION_DECL(get_item_frame);
-	USECODE_FUNCTION_DECL(set_item_frame);
-	USECODE_FUNCTION_DECL(get_item_quality);
-	USECODE_FUNCTION_DECL(set_item_quality);
-        USECODE_FUNCTION_DECL(count_npc_inventory);
-        USECODE_FUNCTION_DECL(set_npc_inventory_count);
-        USECODE_FUNCTION_DECL(get_object_position);
-        USECODE_FUNCTION_DECL(find_direction);
-        USECODE_FUNCTION_DECL(get_npc_object);
-        USECODE_FUNCTION_DECL(get_schedule_type);
-        USECODE_FUNCTION_DECL(set_schedule_type);
-        USECODE_FUNCTION_DECL(add_to_party);
-        USECODE_FUNCTION_DECL(remove_from_party);
-        USECODE_FUNCTION_DECL(get_npc_prop);
-        USECODE_FUNCTION_DECL(set_npc_prop);
-        USECODE_FUNCTION_DECL(get_avatar_ref);
-        USECODE_FUNCTION_DECL(get_party_list);
-        USECODE_FUNCTION_DECL(create_new_object);
-        USECODE_FUNCTION_DECL(mystery_1);
-        USECODE_FUNCTION_DECL(update_last_created);
-        USECODE_FUNCTION_DECL(get_npc_name);
-        USECODE_FUNCTION_DECL(count_objects);
-        USECODE_FUNCTION_DECL(get_cont_items);
-        USECODE_FUNCTION_DECL(remove_items);
-        USECODE_FUNCTION_DECL(add_items);
-        USECODE_FUNCTION_DECL(play_music);
-        USECODE_FUNCTION_DECL(npc_in_party);
-        USECODE_FUNCTION_DECL(display_runes);
-        USECODE_FUNCTION_DECL(click_on_item);
-        USECODE_FUNCTION_DECL(find_nearby);
-        USECODE_FUNCTION_DECL(game_hour);
-        USECODE_FUNCTION_DECL(game_minute);
-	USECODE_FUNCTION_DECL(get_npc_number);
-	USECODE_FUNCTION_DECL(part_of_day);
-	USECODE_FUNCTION_DECL(item_say);
-	USECODE_FUNCTION_DECL(get_lift);
-	USECODE_FUNCTION_DECL(set_lift);
-	USECODE_FUNCTION_DECL(display_map);
-	USECODE_FUNCTION_DECL(is_pc_female);
-	USECODE_FUNCTION_DECL(run_endgame);
-	USECODE_FUNCTION_DECL(get_array_size);
-	USECODE_FUNCTION_DECL(is_pc_inside);
-	USECODE_FUNCTION_DECL(mouse_exists);
-	USECODE_FUNCTION_DECL(mystery_2);
-	USECODE_FUNCTION_DECL(remove_item);
-	USECODE_FUNCTION_DECL(get_equipment_list);
-	USECODE_FUNCTION_DECL(advance_time);
-	USECODE_FUNCTION_DECL(direction_from);
-	USECODE_FUNCTION_DECL(get_npc_flag);
-	USECODE_FUNCTION_DECL(set_npc_flag);
-	USECODE_FUNCTION_DECL(clear_npc_flag);
-	USECODE_FUNCTION_DECL(get_party_list2);
+	USECODE_INTRINSIC_DECL(NOP);
+	USECODE_INTRINSIC_DECL(UNKNOWN);
+	USECODE_INTRINSIC_DECL(get_random);
+	USECODE_INTRINSIC_DECL(execute_usecode_array);
+	USECODE_INTRINSIC_DECL(delayed_execute_usecode_array);
+	USECODE_INTRINSIC_DECL(show_npc_face);
+	USECODE_INTRINSIC_DECL(remove_npc_face);
+	USECODE_INTRINSIC_DECL(add_answer);
+	USECODE_INTRINSIC_DECL(remove_answer);
+	USECODE_INTRINSIC_DECL(push_answers);
+	USECODE_INTRINSIC_DECL(pop_answers);
+	USECODE_INTRINSIC_DECL(select_from_menu);
+	USECODE_INTRINSIC_DECL(select_from_menu2);
+	USECODE_INTRINSIC_DECL(input_numeric_value);
+	USECODE_INTRINSIC_DECL(set_item_shape);
+	USECODE_INTRINSIC_DECL(die_roll);
+	USECODE_INTRINSIC_DECL(get_item_shape);
+	USECODE_INTRINSIC_DECL(get_item_frame);
+	USECODE_INTRINSIC_DECL(set_item_frame);
+	USECODE_INTRINSIC_DECL(get_item_quality);
+	USECODE_INTRINSIC_DECL(set_item_quality);
+        USECODE_INTRINSIC_DECL(count_npc_inventory);
+        USECODE_INTRINSIC_DECL(set_npc_inventory_count);
+        USECODE_INTRINSIC_DECL(get_object_position);
+        USECODE_INTRINSIC_DECL(find_direction);
+        USECODE_INTRINSIC_DECL(get_npc_object);
+        USECODE_INTRINSIC_DECL(get_schedule_type);
+        USECODE_INTRINSIC_DECL(set_schedule_type);
+        USECODE_INTRINSIC_DECL(add_to_party);
+        USECODE_INTRINSIC_DECL(remove_from_party);
+        USECODE_INTRINSIC_DECL(get_npc_prop);
+        USECODE_INTRINSIC_DECL(set_npc_prop);
+        USECODE_INTRINSIC_DECL(get_avatar_ref);
+        USECODE_INTRINSIC_DECL(get_party_list);
+        USECODE_INTRINSIC_DECL(create_new_object);
+        USECODE_INTRINSIC_DECL(mystery_1);
+        USECODE_INTRINSIC_DECL(update_last_created);
+        USECODE_INTRINSIC_DECL(get_npc_name);
+        USECODE_INTRINSIC_DECL(count_objects);
+        USECODE_INTRINSIC_DECL(get_cont_items);
+        USECODE_INTRINSIC_DECL(remove_items);
+        USECODE_INTRINSIC_DECL(add_items);
+        USECODE_INTRINSIC_DECL(play_music);
+        USECODE_INTRINSIC_DECL(npc_in_party);
+        USECODE_INTRINSIC_DECL(display_runes);
+        USECODE_INTRINSIC_DECL(click_on_item);
+        USECODE_INTRINSIC_DECL(find_nearby);
+        USECODE_INTRINSIC_DECL(game_hour);
+        USECODE_INTRINSIC_DECL(game_minute);
+	USECODE_INTRINSIC_DECL(get_npc_number);
+	USECODE_INTRINSIC_DECL(part_of_day);
+	USECODE_INTRINSIC_DECL(item_say);
+	USECODE_INTRINSIC_DECL(get_lift);
+	USECODE_INTRINSIC_DECL(set_lift);
+	USECODE_INTRINSIC_DECL(display_map);
+	USECODE_INTRINSIC_DECL(is_pc_female);
+	USECODE_INTRINSIC_DECL(run_endgame);
+	USECODE_INTRINSIC_DECL(get_array_size);
+	USECODE_INTRINSIC_DECL(is_pc_inside);
+	USECODE_INTRINSIC_DECL(mouse_exists);
+	USECODE_INTRINSIC_DECL(mystery_2);
+	USECODE_INTRINSIC_DECL(remove_item);
+	USECODE_INTRINSIC_DECL(get_equipment_list);
+	USECODE_INTRINSIC_DECL(advance_time);
+	USECODE_INTRINSIC_DECL(direction_from);
+	USECODE_INTRINSIC_DECL(get_npc_flag);
+	USECODE_INTRINSIC_DECL(set_npc_flag);
+	USECODE_INTRINSIC_DECL(clear_npc_flag);
+	USECODE_INTRINSIC_DECL(get_party_list2);
 
 
 
