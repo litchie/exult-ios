@@ -38,6 +38,8 @@ public:
 	Tile_coord() { }
 	int operator==(Tile_coord t2)
 		{ return t2.tx == tx && t2.ty == ty && t2.tz == tz; }
+	int operator!=(Tile_coord t2)
+		{ return !(*this == t2); }
 	int distance(Tile_coord t2)	// Distance to another tile?
 		{
 		int dy = t2.ty - ty;

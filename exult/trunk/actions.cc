@@ -197,15 +197,15 @@ int Path_walking_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	Tile_coord t;
-	if (!path->GetNextStep(t))
+	Tile_coord tile;
+	if (!path->GetNextStep(tile))
 		return (0);
 	Tile_coord cur = actor->get_abs_tile_coord();
-	int newdir = (int) Get_direction4(cur.ty - t.ty, t.tx - cur.tx);
+	int newdir = (int) Get_direction4(cur.ty - tile.ty, tile.tx - cur.tx);
 	Frames_sequence *frames = actor->get_frames(newdir);
 					// Get frame (updates frame_index).
 	int frame = frames->get_next(frame_index);
-	return actor->step(t, frame);
+	return actor->step(tile, frame);
 	}
 
 /*
