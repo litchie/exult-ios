@@ -131,10 +131,12 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 #ifdef ENABLE_MIDISFX
 	} else if (btn == buttons[6]) { // sfx conversion
 		if (state == 1) {
-			((AudioToggle*)buttons[6])->framenum = 4;
+			buttons[6]->set_frame(4);
+//			((AudioToggle*)buttons[6])->framenum = 4;
 			sfx_conversion = XMIDI_CONVERT_GS127_TO_GS;
 		} else {
-			((AudioToggle*)buttons[6])->framenum = 0;
+			buttons[6]->set_frame(0);
+//			((AudioToggle*)buttons[6])->framenum = 0;
 			sfx_conversion = XMIDI_CONVERT_NOCONVERSION;
 		}
 #endif

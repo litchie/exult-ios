@@ -22,6 +22,7 @@
 #ifndef USEVAL_H
 #define USEVAL_H	1
 
+#include <cassert>
 #include <iostream>
 
 #include <vector>	// STL container

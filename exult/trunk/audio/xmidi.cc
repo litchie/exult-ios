@@ -328,8 +328,7 @@ XMIDI::XMIDI(DataSource *source, int pconvert) : events(NULL),timing(NULL),
 						convert_type(pconvert),fixed(NULL),
 						do_reverb(false), do_chorus(false)
 {
-	int i = 16;
-	while (i--) bank127[i] = 0;
+	std::memset(bank127,0,sizeof(bank127));
 	
 	ExtractTracks (source);
 }

@@ -1,27 +1,29 @@
 /*
-Copyright (C) 2000-2001 The Exult Team
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
-
-// Gump manager
+ *  Gump_manager.cc - Object that manages all available gumps
+ *
+ *  Copyright (C) 2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
 
+#include "Configuration.h"
+#include "exult.h"
 #include "Gump.h"
 #include "Gump_manager.h"
 #include "gamewin.h"
@@ -36,6 +38,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "game.h"
 #include "Audio.h"
+
+
+Gump_manager::Gump_manager()
+	: open_gumps(0), dbl_click_close_gump(false)
+{
+	// Check if user wants U8-style gump closing (i.e., on double click)
+	config->value("config/gameplay/double_click_closes_gumps", dbl_click_close_gump);
+}
 
 
 /*
@@ -326,6 +336,11 @@ bool Gump_manager::double_clicked
 			Game_window *gwin = Game_window::get_game_window();
 		 	Gump_button *btn = gump->on_button(gwin, x, y);
 			if (btn) btn->double_clicked(gwin, x, y);
+			else if (dbl_click_close_gump)
+			{
+				gump->close(gwin);
+				gwin->paint();
+			}
 		}
 		return true;
 	}

@@ -1,4 +1,6 @@
 /*
+ *	mac_midi.h - QuickTime based midi player for MacOS.
+ *
  *  Copyright (C) 2000-2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -37,10 +39,7 @@ public:
 
 	// Event based methods
 	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat);
-//	virtual void	start_sfx(midi_event *evntlist, int ppqn) { };
-	
 	virtual void	stop_track(void);
-	virtual void	stop_sfx(void);
 	virtual bool	is_playing(void);
 	virtual const char *copyright(void);
 

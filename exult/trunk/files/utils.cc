@@ -128,6 +128,13 @@ void to_uppercase(string &str)
 	}
 }
 
+string to_uppercase(const std::string &str)
+{
+	string s(str);
+	to_uppercase(s);
+	return s;
+}
+
 /*
  *	Convert just the last 'count' parts of a filename to uppercase.
  *  returns false if there are less than 'count' parts
