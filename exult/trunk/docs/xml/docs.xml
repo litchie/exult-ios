@@ -192,6 +192,10 @@
 							data
 							<comment>**see <ref target="path_config"/> for pathsettings</comment>
 							</configtag>
+							<configtag name="music_path">
+							data/music
+							<comment>**optional. Location of digital music. See also <ref target="music"/></comment>
+							</configtag>
 							<configtag name="game">
 								<configtag name="blackgate">
 									<configtag name="title">
