@@ -1,6 +1,6 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES **** V?.0 ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.4 $ ****
 
-This is a list of all the U7 files I have studied while developping U7Wizard.
+This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
  files. 
 Each time you see a "?" in this file, this means I was unable to find the
@@ -25,11 +25,16 @@ No reverse-engineering of machine code was involved in this process.
  from Origin Systems, Inc.
 
 Olivier Marcoux
-
+-----------------------------------------------------------------------
+I decided to leave Olivier's notes at the top. He's done much more than
+myself in figuring things out and assembling information. However, I need
+a document for my own purposes...so, I'm making notes here as I find out
+more and making the odd correction
 -----------------------------------------------------------------------
 HISTORY
 
-1.0       First public release
+1.0       First public release (Olivier, we owe you one)
+...       <- You are here
 ?.?       An ongoing voyage of discovery. We'll get back to you
 
 -----------------------------------------------------------------------
@@ -39,13 +44,13 @@ Simple data types used in the description of the formats:
   char    = unsigned 8 bits representing a character
   shortint= signed 8 bits
   byte    = unsigned 8 bits
-  integer = signed 16 bits
-  word    = unsigned 16 bits
+  uint16 = signed 16 bits
+  int16    = unsigned 16 bits
   longint = signed 32 bits
 
 When describing the format of the data, i will use the following conventions:
-A = word [b0=.. bF=..]
-  means that A is a word (b0..bF are the description of each byte)
+A = int16 [b0=.. bF=..]
+  means that A is a int16 (b0..bF are the description of each byte)
 A = nn B
   means that A is composed by nn times B
 A = B, C, D
@@ -57,7 +62,7 @@ A = B | C
 xx        (2 hex digits)
   means a byte constant
 xxxx      (4 hex digits)
-  means a word constant
+  means a int16 constant
 xxxxxxxx  (8 hex digits)
   means a longint constant
 
@@ -143,7 +148,7 @@ A table file is a collection of object of the same type. It is composed of:
   offset  = longint (relative to the beginning of the file)
 -the objects entries (in the same order as declared in the table)
   entry   = size, data
-  size    = word (including the size word)
+  size    = int16 (including the size int16)
   data    = the data of the object
 
 U7 games use also enumeration files.
@@ -182,13 +187,13 @@ Format:
   offset  = longint (one for each frame, relative to beginning of shape)
   frame   = rightX, leftX, leftY, rightY, set of slice
     (coordinates are positive distance from the hot spot of the shape)
-  slice   = word=0000   (if end of frame)
+  slice   = int16=0000   (if end of frame)
           | slength, offsetX, offsetY, scontent
     (a slice represents several pixels on the same line)
-  slength = word [b0    =type of slice (0=standard, 1=compressed)
+  slength = int16 [b0    =type of slice (0=standard, 1=compressed)
                   b1..bF=length in pixel]
-  offsetX = integer (relative to hot spot)
-  offsetY = integer (relative to hot spot)
+  offsetX = uint16 (relative to hot spot)
+  offsetY = uint16 (relative to hot spot)
   scontent= set of pixel  (if standard slice)
           | set of block  (if compressed slice)
   block   = blength, bcontent
@@ -265,10 +270,10 @@ Here is a description of the files found in the STATIC directory:
 
 U7MAP:        12x12 regions
   region  = 16x16 chunkID
-  chunkID = word (0..$C00-1)
+  chunkID = int16 (0..$C00-1)
 U7CHUNKS:     $C00 chunks
   chunk   = 16x16 shapeID
-  shapeID = word [b0..b9=shapeType  (0..$400-1)
+  shapeID = int16 [b0..b9=shapeType  (0..$400-1)
                   bA..bE=shapeFrame (0..$20-1)
                   bF=? ]
 SHPDIMS.DAT:  $400-$96 shpdims  (one for each Game Shape)
@@ -349,13 +354,13 @@ INITGAME.DAT: flex file with archived files
   filename      = 13 characters giving the filename (filled with 00s)
   data          = the remaining is the file content
 SISPEECH.SPC: flex file with vocal speech
-ADLIBMUS.DAT: flex file with xmi music (for Adlib sound card)
-MT32MUS.DAT:  flex file with xmi music (for Roland MT32 sound card)
-ADLIBSFX.DAT: flex file with xmi special effects (for Adlib sound card)
-MT32SFX.DAT:  flex file with xmi special effects (for Roland MT32 sound card)
+ADLIBMUS.DAT: flex file with midi music (for Adlib sound card)
+MT32MUS.DAT:  flex file with midi music (for Roland MT32 sound card)
+ADLIBSFX.DAT: flex file with xmi?midi? special effects (for Adlib sound card) ?? Instrument voices? What?
+MT32SFX.DAT:  flex file with xmi?midi? special effects (for Roland MT32 sound card) ?? More questions, as above
 MAINMENU.TIM: flex file with instrument timbres (for the main menu)
-  (This is used by the main menu. Format unknown?)
-MAINMENU.DRV: flex file with drivers (for the main menu)
+  (This is used by the main menu. Format unknown?) [ NOT IN TBG ]
+MAINMENU.DRV: flex file with drivers (for the main menu) [ NOT IN TBG ]
 SNDDRVRS.DAT: flex file with drivers (for each type of supported sound cards)
 XFORM.TBL:    flex file with shape transform tables
   These are matrix used to transform the color of pixels that are seen
@@ -364,8 +369,14 @@ XFORM.TBL:    flex file with shape transform tables
   new_color = byte  (the new color index to use)
 POINTERS.SHP: shape file
   (contains the mouse cursors used in the game)
+ENDSCORE.DAT: A RIFF file containing what _appears_ to be some kind of midi data, but not in the usual midi format. Could it be the XMI format that much of the rest of this file refers to? In most instances so far, this document incorrectly describes regular midi files as XMI files.
 INTRO.DAT / ENDGAME.DAT: iff file with intro/endgame animation data
   (contains FLIC animations, font, shape, speeches)
+INTROADM.DAT: MIDI file containing 6 midi tracks for the introductory sequence.
+	I suspect this to be a flex file, and further suspect it to be for the
+	adlib sound card.
+INTRORDM.DAT: The same, but I'm guessing that this is for the roland MT32.
+INTROSND.DAT: VOC file. The Guardian's chilling initial announcement.
 ADLIB.ADV:    driver for the Adlib sound card
 MT32MPU.ADV:  driver for the Adlib sound card
 SBDIG.ADV:    driver for the SoundBlaster sound card
@@ -374,26 +385,26 @@ XMIDI.AD:     table file with data relative to midi music
 XMIDI.MT:     table file with data relative to midi instruments
 WIHH.DAT:     wihh entries for the game shapes
   table   = $400 offset
-  offset  = word  (0 if no object associated with the shape)
+  offset  = int16  (0 if no object associated with the shape)
   (the offsets are relative to the beginning of the file and point to objects:)
-  object  = 32 words (meaning? one per shape frame?)
+  object  = 32 int16's (meaning? one per shape frame?)
 WEAPONS.DAT:  weapons enumeration
   weapon    = 21 bytes (meaning?)
 AMMO.DAT:     ammunitions enumeration
   ammunition= type, family, type2, id, flags
-  type      = word (shape type)
-  family    = word (shape type of the base ammunition eg: lucky arrow->arrow)
-  type2     = word (always same as type)
+  type      = int16 (shape type)
+  family    = int16 (shape type of the base ammunition eg: lucky arrow->arrow)
+  type2     = int16 (always same as type)
   id        = byte (meaning?)
   flags     = 6 bytes (meaning?)
 ARMOR.DAT:    armors enumeration
   armor     = type, defence, flags
-  type      = word (shape type)
+  type      = int16 (shape type)
   defence   = byte (points of damage removed from a successful attack)
   flags     = 7 bytes (meaning? always 0s except for kite shield)
 MONSTERS.DAT: monsters enumeration
   monster   = type, str, dex, int, com, ar, unknown
-  type      = word (shape type)
+  type      = int16 (shape type)
   str       = byte (strength,     divided by 4 for display)
   dex       = byte (dexterity,    divided by 4 for display)
   int       = byte (intelligence, divided by 4 for display)
@@ -407,27 +418,27 @@ READY.DAT:  weapon ready enumeration
 SCHEDULE.DAT: schedule file
   schedules = count, activities, sched_types
   count     = longint (number of activities = number of npc with schedule)
-  activity  = word (index of the type of schedule)
-  sched_type= word (meaning?)
+  activity  = int16 (index of the type of schedule)
+  sched_type= int16 (meaning?)
 USECODE     = usecode functions list
   function  = number, size, dseg, cseg
-  number    = word (number of the usecode function, sometimes linked to shape type)
-  size      = word (size of the data & code segments)
+  number    = int16 (number of the usecode function, sometimes linked to shape type)
+  size      = int16 (size of the data & code segments)
   dseg      = dsize, data (data segment)
-  dsize     = word (size of the data)
+  dsize     = int16 (size of the data)
   data      = texts/data used by the codes (strings are zero-terminated)
   cseg      = args, locals, links, usecodes
-  args      = word (number of arguments)
-  locals    = word (number of local variables)
+  args      = int16 (number of arguments)
+  locals    = int16 (number of local variables)
   links     = count, link, ..., link
-  count     = word (number of link)
-  link      = word (number of a usecode function that will be called by this function)
+  count     = int16 (number of link)
+  link      = int16 (number of a usecode function that will be called by this function)
   usecodes  = <you will need a usecode disassembler>
 LINKDEP1 = usecode functions link dependencies
   (one dependency for each usecode function number plus one, even if the function is not defined in USECODE)
   dependency= index, size
-  index     = word (index of first pointer for this function in LINKDEP2, starting from 0)
-  size      = word (size in bytes taken by all functions linked to this function, FFFF if no function)
+  index     = int16 (index of first pointer for this function in LINKDEP2, starting from 0)
+  size      = int16 (size in bytes taken by all functions linked to this function, FFFF if no function)
 LINKDEP2 = linked functions pointer list
   list      = pointer, ..., pointer
   pointer   = longint (offset of usecode function inside the USECODE file)
@@ -447,7 +458,7 @@ U7IFIXnn    = flex file with fixed items list
                   b4..b7=X coord inside chunk]
   lift    = byte [b0..b3=lift level
                   b4..b7=0]
-  shapeID = word [b0..b9=shapeType  (0..$400-1)
+  shapeID = int16 [b0..b9=shapeType  (0..$400-1)
                   bA..bE=shapeFrame (0..$20-1)
                   bF=0]
 
@@ -459,10 +470,10 @@ Here is a description of the files found in the GAMEDAT directory:
 
 MAPCOORDS.DAT = coordinates of the avatar
   coords  = X, Y, d1, d2, d3, d4
-  X       = word (X coordinate 0..3071)
-  Y       = word (Y coordinate 0..3071)
+  X       = int16 (X coordinate 0..3071)
+  Y       = int16 (Y coordinate 0..3071)
   d1,d2,d3= byte (meaning?)
-  d4      = word (meaning?)
+  d4      = int16 (meaning?)
 
 IDENTITY  = text file containing the name of the world
   one single line, followed by RC LF (0D 0A)
@@ -485,7 +496,7 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   extra     = 12, XY, shapeID, extradata
     (content is present if shapeID represents a container and type not null)
   content   = item, item, ..., item, 01
-  shapeID   = word [b0..b9=shapeType  (0..$400-1)
+  shapeID   = int16 [b0..b9=shapeType  (0..$400-1)
                     bA..bE=shapeFrame (0..$20-1)
                     bF=0]
   lift      = byte [b0..b3=? (inside:6, outside:0..3 - same for all items in region)
@@ -499,7 +510,7 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
 
   for inside items: (item in content)
   XY        = referent of the parent container
-  referent  = word (offset of the data inside U7IBUF.DAT)
+  referent  = int16 (offset of the data inside U7IBUF.DAT)
 
   for containers:
   type      = referent of the first item in the container (0000 if empty)
@@ -540,7 +551,7 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
                         b1F=?]
 
   for all egg items: (if shapeID represents an Egg)
-  type      = word [b0..b3=egg type
+  type      = int16 [b0..b3=egg type
                     b4..b6=criteria
                     b7=nocturnal
                     b8=once ever
@@ -556,7 +567,7 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   mode      = byte [b0..b1:alignment
                     b2..b7:number]
   workType  = byte
-  data2     = word (type of creature)
+  data2     = int16 (type of creature)
 
   for jukebox egg (2):
   data1     = score, flags
@@ -581,10 +592,10 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   data1     = quality, quantity
   quality   = byte
   quantity  = byte
-  data2     = word (usecode function number)
+  data2     = int16 (usecode function number)
 
   for missile egg (6): (must be verified?)
-  data1     = word (missile type)
+  data1     = int16 (missile type)
   data2     = direction, frequency
   direction = byte
   frequency = byte
@@ -621,21 +632,21 @@ ITEMNODE.DAT:
   itemnode = first_free, free_count, 0000?, chunks1, ..., chunks4,
              region1, .., region4, region1?
   first_free = referent (of first free block inside U7IBUF.DAT)
-  free_count = word (number of free blocks)
+  free_count = int16 (number of free blocks)
   chunksN  = 16x16 referent (of first visible shape in each chunk)
   regionN  = byte (region number corresponding to chunksN)
 
 U7IBUF.DAT: Cache file for objects in use (inventories, visible map shapes,...)
-  It is composed with 8-bytes blocks that can be referenced by their offset (word).
+  It is composed with 8-bytes blocks that can be referenced by their offset (int16).
   Here is cached all NPC shape & content, all game items from cached regions
    (see ITEMNODE.DAT), all fixed items & chunk items from 2 chunks around
    the Avatar position
   block = next, XY, shapeID, info
   next    = referent (of next item, 0000 when no more item)
-  offset = word
+  offset = int16
   XY = X, Y     (for outside items)
      | referent (of parent container)
-  shapeID = word
+  shapeID = int16
   info = lift, quality  (for standard items)
        | referent (of additionnal infos for extended items)
 
@@ -656,8 +667,8 @@ U7NBUF.DAT: Cache file for NPCs in use
               DAM, 3-bytes?, status2, index2, 2-bytes?, exper, training, primary,
               secondary, oppressor, I-Vr, S-Vr, status3, 5-bytes?, acty?, SN, V1,
               V2, 29-bytes?, food, 7-bytes?, name
-  index     = word (meaning? 1-based?)
-  status    = word [b0: ?
+  index     = int16 (meaning? 1-based?)
+  status    = int16 [b0: ?
                     b1..b2: Heading direction (N,E,S,W)
                     b3..b4: Follow/Alignment (Neutral,Good,Evil,Chaotic)
                     b5,b6: ?
@@ -683,7 +694,7 @@ U7NBUF.DAT: Cache file for NPCs in use
                     b7: Petra]
   activity  = byte (should be 0..31)
   DAM       = byte (default attack mode 0..9)
-  status2   = word [b0..b4: Maximum Magic Points (for NPC#0)
+  status2   = int16 [b0..b4: Maximum Magic Points (for NPC#0)
                     b0..b4: ID#
                     b5..b7: Temperature (high 3 bits)
                     b8..bC: Mana, Current Magic Points (for NPC#0)
@@ -695,13 +706,13 @@ U7NBUF.DAT: Cache file for NPCs in use
   index2    = byte (meaning? 0-based? face from FACES.VGA ?)
   exper     = longint (experience points)
   training  = byte (training points)
-  primary   = integer (primary target NPC#)
-  secondary = integer (secondary target NPC#)
-  oppressor = integer (oppressor NPC#)
+  primary   = uint16 (primary target NPC#)
+  secondary = uint16 (secondary target NPC#)
+  oppressor = uint16 (oppressor NPC#)
   I-Vr      = vector (called "I-Vr" in cheat menu, means?)
   S-Vr      = vector (location where the NPC is supposed to be for his schedule)
-  vector    = integer, integer
-  status3   = word [b0..b2: D/R (called "D/R" in cheat menu, means?)
+  vector    = uint16, uint16
+  status3   = int16 [b0..b2: D/R (called "D/R" in cheat menu, means?)
                     b3: ?
                     b4: Fly
                     b5: Walk
@@ -717,8 +728,8 @@ U7NBUF.DAT: Cache file for NPCs in use
                     bF: Summonned]
   food      = byte (food level)
   SN        = byte (meaning?)
-  V1        = word (meaning?)
-  V2        = word (meaning?)
+  V1        = int16 (meaning?)
+  V2        = int16 (meaning?)
   name      = 16-chars (zero-terminated string)
 
 NPC.DAT: Initial NPC definition (taken from INITGAME.DAT)
@@ -747,7 +758,7 @@ argument size description
 <jump>     2  offset inside the code segment, relative to beginning of the next opcode
 <data>     2  offset of a string inside the data segment
 <byte>     1  immediate 8-bits value
-<word>     2  immediate 16-bits value
+<int16>     2  immediate 16-bits value
 <link>     2  zero-based index of a usecode function inside the links array
 <function> 2  number of a usecode function
 <native>   2  index of an external function native to the game engine
@@ -765,7 +776,7 @@ LOOP        02 <local1> <local2> <local3> <local4> <jump>: beginning of a loop
 JTRUE/JNZ   04 <jump>: pop a boolean/integer, <jump> if it's true/non-zero  (need to be verified)
 JFALSE/JZ   05 <jump>: pop a boolean/integer, <jump> if it's false/zero
 JMP         06 <jump>: do an immediate <jump>
-CMPS        07 <word> <jump>: ? (need to be verified)
+CMPS        07 <int16> <jump>: ? (need to be verified)
 ?           08
 ADD         09: pop 2 integers, add them and push the result
 SUB         0A: pop 2 integers, substract 1st from 2nd and push the result
@@ -788,8 +799,8 @@ TEST !=     1A: pop 2 integers, test if they are different, push the boolean res
 ?           1B
 CONCAT      1C <data>: concatenate the given string to the string register
 PUSH        1D <data>: push the given string
-ARRAY       1E <word>: pop the given number of value, create an array with them and push the result
-PUSH        1F <word>: push the immediate 16-bits value
+ARRAY       1E <int16>: pop the given number of value, create an array with them and push the result
+PUSH        1F <int16>: push the immediate 16-bits value
 ?           20
 PUSH LOCAL[]21 <local>: push the value of the given <local>
 TEST ==     22: pop 2 integers, test if they are equal, push the boolean result
