@@ -31,6 +31,8 @@
 #include "ibuf8.h"
 #include "vgafile.h"
 #include "databuf.h"
+#include "Flex.h"
+#include "exceptions.h"
 
 using std::cerr;
 using std::cout;
@@ -905,6 +907,30 @@ void Shape::reset()
 				<< (int) frames_size << endl;
 	}
 
+/*
+ *	Load all frames for a single shape.  (Assumes RLE-type shape.)
+ */
+
+void Shape::load
+	(
+	DataSource* shape_source		// datasource.
+	)
+	{
+	reset();
+	Shape_frame *frame = new Shape_frame();
+	uint32 shapelen = shape_source->read4();
+					// Read frame 0 & get frame count.
+	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
+	store_frame(frame, 0);
+					// Get the rest.
+	for (int i = 1; i < num_frames; i++)
+		{
+		frame = new Shape_frame();
+		frame->read(shape_source, 0L, shapelen, i);
+		store_frame(frame, i);
+		}
+	}
+
 Shape::~Shape()
 	{
 	reset();
@@ -992,22 +1018,11 @@ void Shape_file::load
 	)
 	{
 	ifstream file;
-	reset();			// Allow reuse of object
 	U7open(file, nm);
-	Shape_frame *frame = new Shape_frame();
 	StreamDataSource shape_source(&file);
-	uint32 shapelen = shape_source.read4();
-					// Read frame 0 & get frame count.
-	create_frames_list(frame->read(&shape_source, 0L, shapelen, 0));
-	store_frame(frame, 0);
-					// Get the rest.
-	for (int i = 1; i < num_frames; i++)
-		{
-		frame = new Shape_frame();
-		frame->read(&shape_source, 0L, shapelen, i);
-		store_frame(frame, i);
-		}
+	Shape::load(&shape_source);
 	}
+
 /*
  *	Read in all shapes from a single-shape file.
  */
@@ -1017,27 +1032,7 @@ Shape_file::Shape_file
 	DataSource* shape_source		// datasource.
 	) : Shape()
 	{
-		load(shape_source);
-	}
-
-void Shape_file::load
-	(
-	DataSource* shape_source		// datasource.
-	)
-	{
-	reset();
-	Shape_frame *frame = new Shape_frame();
-	uint32 shapelen = shape_source->read4();
-					// Read frame 0 & get frame count.
-	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
-	store_frame(frame, 0);
-					// Get the rest.
-	for (int i = 1; i < num_frames; i++)
-		{
-		frame = new Shape_frame();
-		frame->read(shape_source, 0L, shapelen, i);
-		store_frame(frame, i);
-		}
+		Shape::load(shape_source);
 	}
 
 
@@ -1088,7 +1083,7 @@ Vga_file::Vga_file
 	int u7drag			// # from u7drag.h, or -1.
 	) : shape_source(0), shape_source2(0),
 	    num_shapes(0), num_shapes1(0), num_shapes2(0), 
-	    shapes(0), u7drag_type(u7drag)
+	    shapes(0), u7drag_type(u7drag), flex(true)
 	{
 	load(nm);
 	}
@@ -1097,7 +1092,7 @@ Vga_file::Vga_file
 	(
 	) : shape_source(0), shape_source2(0),
 	    num_shapes(0), num_shapes1(0), num_shapes2(0), 
-	    shapes(0), u7drag_type(-1)
+	    shapes(0), u7drag_type(-1), flex(true)
 	{
 		// Nothing to see here !!!
 	}
@@ -1109,20 +1104,39 @@ Vga_file::Vga_file
 
 void Vga_file::load
 	(
-	const char *nm,			// Path to file.
-	const char *nm2			// Path to patch file.
+	const char *nm,			// Path to file (required).
+	const char *nm2			// Path to patch file (optional).
 	)
 	{
 	reset();
-	U7open(file, nm);		// throws an error if it fails
-	shape_source = new StreamDataSource(&file);
-	shape_source->seek(0x54);		// Get # of shapes.
-	num_shapes = num_shapes1 = shape_source->read4();
-
+	if (U7exists(nm))
+	{
+		U7open(file, nm);
+		shape_source = new StreamDataSource(&file);
+		flex = Flex::is_flex(file);
+	}
 	if (nm2 && U7exists(nm2))
 	{
 		U7open(file2, nm2);		// throws an error if it fails
 		shape_source2 = new StreamDataSource(&file2);
+		flex = Flex::is_flex(file2);
+	}
+	if (!shape_source && !shape_source2)
+		throw file_open_exception(get_system_path(nm));
+	if (!flex)			// Just one shape, which we preload.
+		{
+		num_shapes = num_shapes1 = num_shapes2 = 1;
+		shapes = new Shape[1];
+		shapes[0].load(shape_source2 ? shape_source2 : shape_source);
+		return;
+		}
+	if (shape_source)
+		{
+		shape_source->seek(0x54);	// Get # of shapes.
+		num_shapes = num_shapes1 = shape_source->read4();
+		}
+	if (shape_source2)
+	{
 		shape_source2->seek(0x54);		// Get # of shapes.
 		num_shapes2 = shape_source2->read4();
 		if (num_shapes2 > num_shapes) num_shapes = num_shapes2;
@@ -1177,6 +1191,8 @@ Shape *Vga_file::new_shape
 		}
 	else				// Enlarge list.
 		{
+		if (!flex)
+			return 0;	// 1-shape file.
 		Shape *newshapes = new Shape[shapenum + 1];
 		if (num_shapes)
 			memcpy(newshapes, shapes, num_shapes*sizeof(Shape));

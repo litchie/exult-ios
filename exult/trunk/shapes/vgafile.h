@@ -126,6 +126,7 @@ public:
 	Shape(int n);			// Create with given #frames.	
 	virtual ~Shape();
 	void reset();
+	void load(DataSource* shape_source);
 	void write(std::ostream& out);	// Write out.
 	Shape_frame *get(DataSource* shapes, int shnum, int frnum, 
 		DataSource *shapes2 = 0, int count1 = -1, int count2 = -1)
@@ -159,7 +160,8 @@ public:
 	Shape_file();
 	virtual ~Shape_file() {}
 	void load(const char *nm);
-	void load(DataSource* shape_source);
+	void load(DataSource* shape_source)
+		{ Shape::load(shape_source); }
 	int get_size();
 	void save(DataSource* shape_source);
 	};
@@ -174,6 +176,11 @@ class Vga_file
 	std::ifstream file2;
 	DataSource *shape_source2;
 	int u7drag_type;		// # from u7drag.h, or -1.
+	bool flex;			// This is the normal case (all .vga
+					//   files).  If false, file is a
+					//   single shape, like 'pointers.shp'.
+					// In this case, all frames are pre-
+					//   loaded.
 protected:
 	int num_shapes;			// Total # of shapes.
 	int num_shapes1;		// Total # of shapes in file 1.
@@ -187,20 +194,23 @@ public:
 	void load(const char *nm, const char *nm2 = 0);
 	void reset();
 	virtual ~Vga_file();
-	int get_num_shapes()
+	int get_num_shapes() const
 	{ return num_shapes>num_shapes2?num_shapes:num_shapes2; }
-	int is_good()
+	int is_good() const
 		{ return (num_shapes != 0); }
+	bool is_flex() const
+		{ return flex; }
 					// Get shape.
 	Shape_frame *get_shape(int shapenum, int framenum = 0)
 		{
 		assert(shapes!=0);	// Because if shapes is NULL
-					// here, we won't die on the dereference
+					// here, we won't die on the deref
 					// but we will return rubbish.
 		// I've put this assert in _before_ you know...
 		// So this isn't the first time we've had trouble here
 		Shape_frame *r=(shapes[shapenum].get(shape_source, shapenum, 
 			framenum, shape_source2, num_shapes1, num_shapes2));
+#if 0	/* Occurs normally in ExultStudio. */
 		if(!r)
 			{
 #ifdef DEBUG
@@ -209,6 +219,7 @@ public:
 					framenum << ") -> NULL" << std::endl;
 #endif
 			}
+#endif
 		return r;
 		}
 		
