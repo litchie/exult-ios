@@ -45,6 +45,7 @@
 
 using std::cerr;
 using std::string;
+using std::ios;
 
 // Function prototypes
 
@@ -497,8 +498,8 @@ void U7copy
 	while (filesize > 0)		// Copy.
 		{
 		int toread = bufsize < filesize ? bufsize : filesize;
-		in.read(buf, toread);
-		out.write(buf, toread);
+		in.read(reinterpret_cast<char *>(buf), toread);
+		out.write(reinterpret_cast<char *>(buf), toread);
 		filesize -= toread;
 		}
 	out.flush();
