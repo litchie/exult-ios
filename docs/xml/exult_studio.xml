@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="19 May 2002(GMT)">
-	<section title="Changes to the Documentation">		
+<studiodoc title="Exult" changed="22 May 2002(GMT)">
+	<section title="Changes to the Documentation">
+		<sub name="22052002">
+			<header>22 May 2002</header>
+			<body>
+				<ul>
+					<li><ref1 target="tools"/> Jeff started documenting ucc.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="19052002">
 			<header>19 May 2002</header>
 			<body>
@@ -666,22 +674,28 @@
 				<ul>
 					<li><strong>expack</strong>:<br/>
 						lets you extract and create Flex files. 
-						See <extref target="http://exult.sourceforge.net/expack.txt">manual</extref>.</li>
+						See the 
+						<extref target="http://exult.sourceforge.net/expack.txt">manual</extref>.</li>
 					<li><strong>ipack</strong>:<br/>
 						a tool for creating and updating Exult and U7 image archives,  such as 'shapes.vga'. 
-						See <extref target="http://exult.sourceforge.net/ipack.txt">manual</extref>.</li>
+						See the 
+						<extref target="http://exult.sourceforge.net/ipack.txt">manual</extref>.</li>
 					<li><strong>shp2pcx</strong>:<br/>
 						converts all frames contained in a Shape file into PCX-format image files. 
-						See <extref target="http://exult.sourceforge.net/shp2pcx.txt">manual</extref>.</li>
+						See the 
+						<extref target="http://exult.sourceforge.net/shp2pcx.txt">manual</extref>.</li>
 					<li><strong>splitshp</strong>:<br/>
 						can be used to combine frames of a Shape file into one file, or split a Shape 
 						file into its component frames. 
-						See <extref target="http://exult.sourceforge.net/splitshp.txt">manual</extref>.</li>
+						See the 
+						<extref target="http://exult.sourceforge.net/splitshp.txt">manual</extref>.</li>
 					<li><strong>textpack</strong>:<br/>
 						can be used edit text flex files. 
 						See <extref target="http://exult.sourceforge.net/textpack.txt">manual</extref>.</li>
 					<li><strong>ucc</strong>:<br/>
-						can be used to create custom usecode (see <ref target="usecode_edit"/>).</li>
+						can be used to create custom usecode (see <ref target="usecode_edit"/>).<br/>
+						See the 
+						<extref target="http://exult.sourceforge.net/ucc.txt">manual</extref>.</li>
 					<li><strong>The GIMP Plug-in</strong>:<br/>
 						can be used for editing shapes in the GIMP. Handles multiframe Shape files. 
 						See <extref target="http://www.gimp.org"/> for inormation on the GIMP.</li>
