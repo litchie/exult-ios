@@ -1435,12 +1435,11 @@ void Actor::set_schedule_type
 		case Schedule::lab:
 			schedule = new Lab_schedule(this);
 			break;
-		case Schedule::thief:		// Just face north, for now.
+		case Schedule::thief:
 			gwin->add_dirty(this);
 			unready_weapon(lhand);	// For Krieg in Empath Abbey.
 			unready_weapon(rhand);
-			set_frame(get_dir_framenum(0, Actor::standing));
-			gwin->add_dirty(this);
+			schedule = new Thief_schedule(this);
 			break;
 		case Schedule::waiter:
 			schedule = new Waiter_schedule(this);

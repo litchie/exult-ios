@@ -42,6 +42,7 @@ const int last_move_aside = 0x402;
 const int first_preach = 0x403, last_preach = 0x407;
 const int first_preach2 = 0x408, last_preach2 = 0x40b;
 const int first_amen = 0x40c, last_amen = 0x40f;
+const int first_thief = 0x410, last_thief = 0x413;
 const int first_waiter_ask = 0x41b, last_waiter_ask = 0x41f;
 const int first_more_food = 0x420, last_more_food = 0x424;
 const int first_munch = 0x425, last_munch = 0x428;

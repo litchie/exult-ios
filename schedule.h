@@ -377,6 +377,19 @@ public:
 	};
 
 /*
+ *	Be a thief.
+ */
+class Thief_schedule : public Schedule
+	{
+	unsigned long next_steal_time;	// Next time we can try to steal.
+	void steal(Actor *from);
+public:
+	Thief_schedule(Actor *n) : Schedule(n), next_steal_time(0)
+		{  }
+	virtual void now_what();
+	};
+
+/*
  *	Wait tables.
  */
 class Waiter_schedule : public Schedule

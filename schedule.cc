@@ -1853,6 +1853,73 @@ void Shy_schedule::now_what
 		npc->start(250, 500 + rand()%1000);
 	}
 
+/*
+ *	Steal.
+ */
+
+void Thief_schedule::steal
+	(
+	Actor *from
+	)
+	{
+	npc->say(first_thief, last_thief);
+	int shnum = rand()%3;		// Gold coin, nugget, bar.
+	Game_object *obj = 0;
+	for (int i = 0; !obj && i < 3; ++i)
+		{
+		obj = from->find_item(644+shnum, c_any_qual, c_any_framenum);
+		shnum = (shnum + 1)%3;
+		}
+	if (obj)
+		{
+		obj->remove_this(true);
+		npc->add(obj, false);
+		}
+	}
+
+/*
+ *	Next decision for thief.
+ */
+
+void Thief_schedule::now_what
+	(
+	)
+	{
+	unsigned long curtime = SDL_GetTicks();
+	if (curtime < next_steal_time)
+		{			// Not time?  Wander.
+		Tile_coord center = gwin->get_main_actor()->get_tile();
+		const int dist = 6;
+		int newx = center.tx - dist + rand()%(2*dist);
+		int newy = center.ty - dist + rand()%(2*dist);
+					// Wait a bit.
+		npc->walk_to_tile(newx, newy, center.tz, 
+				2*gwin->get_std_delay(), rand()%4000);
+		return;
+		}
+	if (npc->distance(gwin->get_main_actor()) <= 1)
+		{			// Next to Avatar.
+		if (rand()%3)
+			steal(gwin->get_main_actor());
+
+		next_steal_time = curtime+8000+rand()%8000;
+		npc->start(250, 1000 + rand()%2000);
+		}
+	else
+		{			// Get within 1 tile of Avatar.
+		Tile_coord dest = gwin->get_main_actor()->get_tile();
+		Monster_pathfinder_client cost(npc, dest, 1);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+						npc->get_tile(), dest, cost);
+		if (pact)		// Found path?
+			{
+			npc->set_action(pact);
+			npc->start(gwin->get_std_delay(), 1000 + rand()%1000);
+			}
+		else			// Try again in a couple secs.
+			npc->start(250, 2000 + rand()%2000);
+		}
+	}
 
 /*
  *	Create a 'waiter' schedule.
