@@ -92,9 +92,11 @@ void Shape_manager::read_shape_info
 	(
 	)
 	{
-	shapes.init();
+	// Want space for extra shapes if BG multiracial enabled.
+	shapes.init(bg_multiracial_allowed ? 1036 : -1);
 	shapes.read_info(GAME_BG);	// Read in shape dimensions.
-	if (GAME_SI)			// Fixup Avatar shapes 1024-1035.
+	if (GAME_SI ||			// Fixup Avatar shapes 1024-1035.
+	    bg_multiracial_allowed)
 		{
 		// Odd are female, even are male.
 		Shape_info& male = shapes.get_info(721);
@@ -129,7 +131,6 @@ void Shape_manager::load
 					// Red for hit in battle.
 	special_pixels[HIT_PIXEL] = pal.find_color(63, 4, 4);
 
-	read_shape_info();
 	files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS);
 
 	if (Game::get_game_type()==SERPENT_ISLE)
@@ -171,6 +172,7 @@ void Shape_manager::load
 	files[SF_SPRITES_VGA].load(SPRITES_VGA, PATCH_SPRITES);
 	files[SF_FACES_VGA].load(FACES_VGA, PATCH_FACES);
 	files[SF_EXULT_FLX].load("<DATA>/exult.flx");
+	read_shape_info();
 	const char* gamedata = game->get_resource("files/gameflx").str;
 	std::cout << "Loading " << gamedata << "..." << std::endl;
 	files[SF_GAME_FLX].load(gamedata);

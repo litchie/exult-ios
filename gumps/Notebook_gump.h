@@ -25,26 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::vector;
 
-class One_note
-{
-	int day, hour, minute;		// Game time when note was written.
-	int lat, lng;			// Latitute, longitude where written.
-	char *text;			// Text, 0-delimited.
-	int textlen;			// Length, not counting ending NULL.
-	int textmax;			// Max. space.
-public:
-	friend class Notebook_gump;
-	One_note() : day(0), hour(0), minute(0), lat(0), lng(0), 
-					text(0), textlen(0), textmax(0)
-		{  }
-	void set(int d, int h, int m, int la, int ln, char *txt = 0);
-	One_note(int d, int h, int m, int la, int ln, char *txt = 0) : text(0)
-		{ set(d, h, m, la, ln, txt); }
-	~One_note()
-		{ delete [] text; }
-	void insert(int chr, int offset);	// Insert text.
-	bool del(int offset);			// Delete text.
-};
+class One_note;
 
 /*
  *	Info. for top of a page.
@@ -76,6 +57,7 @@ class Notebook_gump : public Gump
 	Gump_button *leftpage, *rightpage;
 
 	static void initialize();
+	void add_new();			// Add new note.
 	int paint_page(Rectangle box, One_note *note, int start, int pagenum);
 public:
 	Notebook_gump();
