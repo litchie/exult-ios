@@ -54,13 +54,20 @@ AC_PROG_INSTALL
 
 echo "Wondering what our windowing system is... "
 
-
+dnl this is for win32 for now at least
+AC_ARG_ENABLE(win32, [  --enable-win32          force exult build for windows [default no]],,enable_win32=no)
+if test x$enable_win32 = xno; then
+  WINDOWING_SYSTEM=""
 if test -d "/etc/X11" ; then
 	WINDOWING_SYSTEM="-DXWIN"
 fi
 if test -d "/usr/X11" ; then
 	WINDOWING_SYSTEM="-DXWIN"
 fi
+else
+  WINDOWING_SYSTEM="-DWIN32"
+fi
+
 if test "$WINDOWING_SYSTEM" = "-DXWIN"; then
 	echo "Smells like X11"
 	TOP_LEVEL_SUBDIRS="audio conf"
