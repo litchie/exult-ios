@@ -1047,8 +1047,7 @@ static void Import_png_tiles
 	const char *fname,		// Filename.
 	Shape_file_info *finfo,		// What we're updating.
 	int shapenum,
-	int tiles,			// If #0, write all frames as tiles,
-					//   this many in each row (col).
+	int tiles,			// #tiles per row/col.
 	bool bycols			// Write tiles columns-first.
 	)
 	{
@@ -1094,7 +1093,15 @@ static void Import_png_tiles
 		else
 			{ x = frnum%dim0_cnt; y = frnum/dim0_cnt; }
 		unsigned char *src = pixels + w*8*y + 8*x;
-		shape->set_frame(new Shape_frame(src, 8, 8, 8, 8, false), 
+		unsigned char buf[8*8];	// Move tile to buffer.
+		unsigned char *ptr = &buf[0];
+		for (int row = 0; row < 8; row++)
+			{		// Write it out.
+			memcpy(ptr, src, 8);
+			ptr += 8;
+			src += w;
+			}
+		shape->set_frame(new Shape_frame(&buf[0], 8, 8, 8, 8, false), 
 									frnum);
 		}
 	delete pixels;
@@ -1291,12 +1298,12 @@ void Shape_chooser::new_shape
 	int shstart;			// Find an unused shape.
 	for (shstart = shnum; shstart <= adj->upper; shstart++)
 		if (shstart >= ifile->get_num_shapes() ||
-		    !ifile->extract_shape(shstart))
+		    !ifile->get_num_frames(shstart))
 			break;		
 	if (shstart > adj->upper)
 		{
 		for (shstart = shnum - 1; shstart >= 0; shstart--)
-			if (!ifile->extract_shape(shstart))
+			if (!ifile->get_num_frames(shstart))
 				break;
 		if (shstart < 0)
 			shstart = shnum;
@@ -1330,7 +1337,7 @@ void Shape_chooser::create_new_shape
 	else if (nframes > 256)
 		nframes = 256;
 	Vga_file *ifile = file_info->get_ifile();
-	if (shnum < ifile->get_num_shapes() && ifile->extract_shape(shnum))
+	if (shnum < ifile->get_num_shapes() && ifile->get_num_frames(shnum))
 		{
 		if (Prompt("Replace existing shape?", "Yes", "No") != 0)
 			return;
