@@ -900,6 +900,43 @@ void Shape_chooser::clear_editing_files
 	}
 
 /*
+ *	Export current frame.
+ */
+
+void Shape_chooser::export_frame
+	(
+	char *fname,
+	gpointer user_data
+	)
+	{
+	Shape_chooser *ed = (Shape_chooser *) user_data;
+	if (U7exists(fname))
+		{
+		char *msg = g_strdup_printf(
+			"'%s' already exists.  Overwrite?", fname);
+		int answer = ExultStudio::get_instance()->prompt(msg,
+					"Yes", "No");
+		g_free(msg);
+		if (answer != 0)
+			return;
+		}
+	//++++++++++++++++++
+	}
+
+/*
+ *	Import current frame.
+ */
+
+void Shape_chooser::import_frame
+	(
+	char *fname,
+	gpointer user_data
+	)
+	{
+	Shape_chooser *ed = (Shape_chooser *) user_data;
+//++++++++
+	}
+/*
  *	Someone wants the dragged shape.
  */
 
@@ -1183,6 +1220,31 @@ void Shape_chooser::on_shapes_popup_edit_activate
 	((Shape_chooser *) udata)->edit_shape();
 	}
 
+static void on_shapes_popup_import
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	GtkFileSelection *fsel = Create_file_selection(
+		"Import frame from a .png file", 
+			(File_sel_okay_fun) Shape_chooser::import_frame, 
+							udata);
+	gtk_widget_show(GTK_WIDGET(fsel));
+	}
+static void on_shapes_popup_export
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	GtkFileSelection *fsel = Create_file_selection(
+		"Export frame to a .png file",
+			(File_sel_okay_fun) Shape_chooser::export_frame, 
+							udata);
+	gtk_widget_show(GTK_WIDGET(fsel));
+	}
+
 /*
  *	Handle a shape dropped on our draw area.
  */
@@ -1323,6 +1385,22 @@ GtkWidget *Shape_chooser::create_popup
 		gtk_menu_append(GTK_MENU(popup), mitem);
 		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
 			GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate), this);
+					// Separator.
+		mitem = gtk_menu_item_new();
+		gtk_widget_show(mitem);
+		gtk_menu_append(GTK_MENU(popup), mitem);
+		gtk_widget_set_sensitive(mitem, FALSE);
+					// Export/import.
+		mitem = gtk_menu_item_new_with_label("Export frame...");
+		gtk_widget_show(mitem);
+		gtk_menu_append(GTK_MENU(popup), mitem);
+		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+			GTK_SIGNAL_FUNC(on_shapes_popup_export), this);
+		mitem = gtk_menu_item_new_with_label("Import frame...");
+		gtk_widget_show(mitem);
+		gtk_menu_append(GTK_MENU(popup), mitem);
+		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+			GTK_SIGNAL_FUNC(on_shapes_popup_import), this);
 		}
 	return popup;
 	}

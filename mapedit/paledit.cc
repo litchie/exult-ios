@@ -477,32 +477,6 @@ void Palette_edit::palnum_changed
 	}
 
 /*
- *	Create a modal file selector.
- */
-
-GtkFileSelection *Create_file_selection
-	(
-	char *title,
-	GtkSignalFunc ok_handler,
-	gpointer user_data
-	)
-	{
-	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_file_selection_new(
-								title));
-	gtk_window_set_modal(GTK_WINDOW(fsel), true);
-	gtk_signal_connect(GTK_OBJECT(fsel->ok_button), "clicked",
-				ok_handler, user_data);
-					// Destroy when done.
-	gtk_signal_connect_object(GTK_OBJECT(fsel->ok_button), "clicked",
-				GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-						GTK_OBJECT(fsel));
-	gtk_signal_connect_object(GTK_OBJECT(fsel->cancel_button), "clicked",
-				GTK_SIGNAL_FUNC(gtk_widget_destroy), 
-						GTK_OBJECT(fsel));
-	return fsel;
-	}	
-
-/*
  *	Callbacks for buttons:
  */
 void
@@ -511,7 +485,7 @@ on_exportbtn_clicked                   (GtkButton       *button,
 {
 	GtkFileSelection *fsel = Create_file_selection(
 		"Export palette to text format", 
-			GTK_SIGNAL_FUNC(Palette_edit::export_palette), 
+			(File_sel_okay_fun) Palette_edit::export_palette, 
 							user_data);
 	gtk_widget_show(GTK_WIDGET(fsel));
 }
@@ -522,7 +496,7 @@ on_importbtn_clicked                   (GtkButton       *button,
 {
 	GtkFileSelection *fsel = Create_file_selection(
 		"Import palette from text format", 
-			GTK_SIGNAL_FUNC(Palette_edit::import_palette), 
+			(File_sel_okay_fun) Palette_edit::import_palette, 
 							user_data);
 	gtk_widget_show(GTK_WIDGET(fsel));
 }
@@ -1058,16 +1032,11 @@ void Palette_edit::remove_palette
 
 void Palette_edit::export_palette
 	(
-	GtkButton *btn,
+	char *fname,
 	gpointer user_data
 	)
 	{
 	Palette_edit *ed = (Palette_edit *) user_data;
-	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_widget_get_toplevel(
-					GTK_WIDGET(btn)));
-	char *fname = gtk_file_selection_get_filename(fsel);
-	if (!fname || !*fname)
-		return;
 	if (U7exists(fname))
 		{
 		char *msg = g_strdup_printf(
@@ -1104,16 +1073,11 @@ void Palette_edit::export_palette
 
 void Palette_edit::import_palette
 	(
-	GtkButton *btn,
+	char *fname,
 	gpointer user_data
 	)
 	{
 	Palette_edit *ed = (Palette_edit *) user_data;
-	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_widget_get_toplevel(
-					GTK_WIDGET(btn)));
-	char *fname = gtk_file_selection_get_filename(fsel);
-	if (!fname || !*fname)
-		return;
 	char *msg = g_strdup_printf(
 			"Overwrite current palette from '%s'?", fname);
 	int answer = ExultStudio::get_instance()->prompt(msg, "Yes", "No");
