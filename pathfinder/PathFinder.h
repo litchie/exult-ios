@@ -71,6 +71,7 @@ public:
 		{ return 0; }		// Default: Can't do it.
 	virtual int following_smart_path()	// Astar?
 		{ return 0; }
+	virtual int get_num_steps() = 0;// # of steps left to take.
 	virtual ~PathFinder();
 	};
 

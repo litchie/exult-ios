@@ -1,3 +1,10 @@
+2002-06-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actions.cc:  Wrote (not tested) Approach_actor_action for use in
+	combat to.
+	* npcnear.cc: Hostile monsters don't wait as long to get activated.
+	* pathfinder/Astar.cc,etc:  Get_num_steps.
+
 2002-06-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Commented out add_nearby_npcs().  I think it's not
