@@ -35,3 +35,8 @@ config.h.in
 confdefs.h
 gamedat
 exult.spec
+config.guess
+config.sub
+missing
+mkinstalldirs
+install-sh
