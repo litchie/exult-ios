@@ -54,6 +54,8 @@ class Actor : public Container_game_object, public Time_sensitive
 	void paint_weapon(Game_window *gwin);
 protected:
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
+	Schedule *schedule;		// Current schedule.
+	unsigned char dormant;		// I.e., off-screen.
 	Game_object *spots[12];		// Where things can go.  See 'Spots'
 					//   below for description.
 	unsigned char two_handed;	// Carrying a two-handed item.
@@ -159,8 +161,13 @@ public:
 					// Start animation.
 	void start(int speed = 250, int delay = 0);
 	void stop();			// Stop animation.
+	void follow(Actor *leader);	// Follow the leader.
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
+					// Set new schedule.
+	virtual void set_schedule_type(int new_schedule_type);
+	virtual int get_schedule_type() const
+		{ return schedule_type; }
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
@@ -290,9 +297,7 @@ class Npc_actor : public Actor
 	unsigned char nearby;		// Queued as a 'nearby' NPC.  This is
 					//   to avoid being added twice.
 protected:
-	unsigned char dormant;		// I.e., off-screen.
 	unsigned char num_schedules;	// # entries below.
-	Schedule *schedule;		// Current schedule.
 	Schedule_change *schedules;	// List of schedule changes.
 	short alignment;		// 'Feelings' towards Avatar.
 public:
@@ -317,17 +322,12 @@ public:
 		{ alignment = a; }
 					// Update schedule for new 3-hour time.
 	void update_schedule(Game_window *gwin, int hour3);
-					// Set new schedule.
-	virtual void set_schedule_type(int new_schedule_type);
-	virtual int get_schedule_type() const
-		{ return schedule_type; }
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
-	void follow(Actor *leader);	// Follow the leader.
 					// Update chunks after NPC moved.
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);

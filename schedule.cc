@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Pace_schedule *Pace_schedule::create_horiz
 	(
-	Npc_actor *n
+	Actor *n
 	)
 	{
 	int tx, ty, tz;			// Get his position.
@@ -50,7 +50,7 @@ Pace_schedule *Pace_schedule::create_horiz
 
 Pace_schedule *Pace_schedule::create_vert
 	(
-	Npc_actor *n
+	Actor *n
 	)
 	{
 	int tx, ty, tz;			// Get his position.
@@ -174,7 +174,7 @@ void Talk_schedule::now_what
 
 Loiter_schedule::Loiter_schedule
 	(
-	Npc_actor *n,
+	Actor *n,
 	int d				// Distance in tiles to roam.
 	) : Schedule(n), center(n->get_abs_tile_coord()), dist(d)
 	{
@@ -200,7 +200,7 @@ void Loiter_schedule::now_what
 
 Sleep_schedule::Sleep_schedule
 	(
-	Npc_actor *n
+	Actor *n
 	) : Schedule(n)
 	{
 	}
@@ -227,8 +227,7 @@ void Sleep_schedule::now_what
 	Shape_info& info = Game_window::get_game_window()->get_info(bed);
 	Tile_coord bedloc = bed->get_abs_tile_coord();
 					// Put NPC on top of bed.
-	npc->Npc_actor::move(
-		bedloc.tx, bedloc.ty, bedloc.tz + info.get_3d_height() + 1);
+	npc->move(bedloc.tx, bedloc.ty, bedloc.tz + info.get_3d_height() + 1);
 	}
 
 /*
@@ -237,7 +236,7 @@ void Sleep_schedule::now_what
 
 Sit_schedule::Sit_schedule
 	(
-	Npc_actor *n,
+	Actor *n,
 	Game_object *ch			// Chair, or null to find one.
 	) : Schedule(n), chair(ch)
 	{
@@ -353,7 +352,7 @@ void Walk_to_schedule::walk_off_screen
 
 Walk_to_schedule::Walk_to_schedule
 	(
-	Npc_actor *n,
+	Actor *n,
 	Tile_coord d,			// Destination.
 	int new_sched			// Schedule when we get there.
 	) : Schedule(n), dest(d), new_schedule(new_sched), retries(0), legs(0)
@@ -377,7 +376,7 @@ void Walk_to_schedule::now_what
 		}
 	if (legs >= 8 || retries >= 2)	// Trying too hard?
 		{			// Going to jump there.
-		npc->Npc_actor::move(dest.tx, dest.ty, dest.tz);
+		npc->move(dest.tx, dest.ty, dest.tz);
 		npc->set_schedule_type(new_schedule);
 		return;
 		}

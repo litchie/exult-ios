@@ -33,7 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define Rectangle RECTX
 #endif
 
-class Npc_actor;
 class Game_object;
 class Actor;
 class Rectangle;
@@ -44,10 +43,10 @@ class Rectangle;
 class Schedule
 	{
 protected:
-	Npc_actor *npc;			// Who this controls.
+	Actor *npc;			// Who this controls.
 	Tile_coord blocked;		// Tile where actor was blocked.
 public:
-	Schedule(Npc_actor *n) : npc(n), blocked(-1, -1, -1)
+	Schedule(Actor *n) : npc(n), blocked(-1, -1, -1)
 		{  }
 	void set_blocked(Tile_coord b)
 		{ blocked = b; }
@@ -86,12 +85,12 @@ class Pace_schedule : public Schedule
 	Tile_coord p1;			// Point 1 tile coords.
 	char which;			// Which he's going to (0 or 1).
 public:
-	Pace_schedule(Npc_actor *n, Tile_coord pt0, Tile_coord pt1)
+	Pace_schedule(Actor *n, Tile_coord pt0, Tile_coord pt1)
 		: Schedule(n), p0(pt0), p1(pt1), which(0)
 		{  }
 					// Create common schedules:
-	static Pace_schedule *create_horiz(Npc_actor *n);
-	static Pace_schedule *create_vert(Npc_actor *n);
+	static Pace_schedule *create_horiz(Actor *n);
+	static Pace_schedule *create_vert(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	};
 
@@ -103,7 +102,7 @@ class Patrol_schedule : public Schedule
 	Vector paths;			// Each 'path' object.
 	int pathnum;			// # of next we're heading towards.
 public:
-	Patrol_schedule(Npc_actor *n)
+	Patrol_schedule(Actor *n)
 		: Schedule(n), pathnum(-1)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
@@ -117,7 +116,7 @@ class Talk_schedule : public Schedule
 	{
 	int phase;			// 0=walk to Av., 1=talk, 2=done.
 public:
-	Talk_schedule(Npc_actor *n) : Schedule(n), phase(0)
+	Talk_schedule(Actor *n) : Schedule(n), phase(0)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	};
@@ -131,7 +130,7 @@ class Loiter_schedule : public Schedule
 	int dist;			// Distance in tiles to roam in each
 					//   dir.
 public:
-	Loiter_schedule(Npc_actor *n, int d = 12);
+	Loiter_schedule(Actor *n, int d = 12);
 	virtual void now_what();	// Now what should NPC do?
 	};
 
@@ -141,7 +140,7 @@ public:
 class Sleep_schedule : public Schedule
 	{
 public:
-	Sleep_schedule(Npc_actor *n);
+	Sleep_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	};
 
@@ -152,7 +151,7 @@ class Sit_schedule : public Schedule
 	{
 	Game_object *chair;		// What to sit in.
 public:
-	Sit_schedule(Npc_actor *n, Game_object *ch = 0);
+	Sit_schedule(Actor *n, Game_object *ch = 0);
 	virtual void now_what();	// Now what should NPC do?
 	static void set_action(Actor *actor, Game_object *chairobj);
 	};
@@ -172,7 +171,7 @@ class Walk_to_schedule : public Schedule
 					// Set to walk off screen.
 	void walk_off_screen(Rectangle& screen, Tile_coord& goal);
 public:
-	Walk_to_schedule(Npc_actor *n, Tile_coord d, int new_sched);
+	Walk_to_schedule(Actor *n, Tile_coord d, int new_sched);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void im_dormant();	// Just went dormant.
 	};
