@@ -55,8 +55,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Audio *audio;
 Configuration *config;
 
-#define MOUSE 1
-
 /*
  *	Globals:
  */
@@ -187,9 +185,8 @@ int main
 	
 	mouse = new Mouse(gwin);
 	mouse->set_shape(Mouse::hand);
-#ifdef MOUSE
+
 	SDL_ShowCursor(0);
-#endif
 	
 	int result = Play();		// start game
 //	delete config;			// free configuration object
@@ -424,10 +421,10 @@ static void Handle_events
 		{
 		int rotate = 0;		// 1 to rotate colors.
 		Delay();		// Wait a fraction of a second.
-#ifdef MOUSE
+
 		mouse->hide();		// Turn off mouse.
 		mouse_update = 0;
-#endif
+
 		SDL_Event event;
 		while (!*stop && SDL_PollEvent(&event))
 			Handle_event(event);
@@ -457,9 +454,9 @@ static void Handle_events
 					}
 				}
 			}
-#ifdef MOUSE
+
 		mouse->show();		// Re-display mouse.
-#endif
+
 		if (rotate)
 			{		// (Blits in simulated 8-bit mode.)
 			gwin->get_win()->rotate_colors(0xf0, 4, 0);
@@ -606,7 +603,7 @@ static void Handle_event
 	case SDL_ACTIVEEVENT:
 					// Get scale factor for mouse.
 		scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
-#ifdef MOUSE
+
 		if (event.active.state & SDL_APPMOUSEFOCUS)
 			{
 			if (event.active.gain)
@@ -617,7 +614,7 @@ static void Handle_event
 				}
 			gwin->set_painted();
 			}
-#endif
+
 		if (event.active.state & SDL_APPINPUTFOCUS)
 			{
 			if (event.active.gain)
@@ -842,16 +839,6 @@ static void Handle_keystroke
 			audio->start_music(--mnum, 0);
 		else
 			audio->start_music(mnum++, 0);
-#if 0
-#ifdef MOUSE
-		static int mcur = 0;
-		mouse->set_shape(++mcur);
-		gwin->set_painted();
-#if DEBUG
-		cout << "Mouse cursor:  " << mcur << endl;
-#endif
-#endif
-#endif
 		break;
 		}
 	case SDLK_l:			// Decrement skip_lift.
@@ -1015,10 +1002,10 @@ static int Get_click
 		{
 		SDL_Event event;
 		Delay();		// Wait a fraction of a second.
-#ifdef MOUSE
+
 		mouse->hide();		// Turn off mouse.
 		mouse_update = 0;
-#endif
+
 		while (SDL_PollEvent(&event))
 			switch (event.type)
 				{
@@ -1031,17 +1018,10 @@ static int Get_click
 					}
 				break;
 			case SDL_MOUSEMOTION:
-#ifdef MOUSE
 				mouse->move(event.motion.x >> scale, 
 						event.motion.y >> scale);
 				mouse_update = 1;
-#endif
 				break;
-#if 0
-			case SDL_QUIT:
-				if (Okay_to_quit())
-					return (0);
-#endif
 			case SDL_KEYDOWN:
 				{
 				int c = event.key.keysym.sym;
@@ -1057,9 +1037,9 @@ static int Get_click
 				break;
 				}
 				}
-#ifdef MOUSE
+
 		mouse->show();		// Turn on mouse.
-#endif
+
 		if (!gwin->show() &&	// Blit to screen if necessary.
 		    mouse_update)
 			mouse->blit_dirty();
@@ -1107,20 +1087,18 @@ void Wait_for_arrival
 	while (actor->is_moving())
 		{
 		Delay();		// Wait a fraction of a second.
-#ifdef MOUSE
+
 		mouse->hide();		// Turn off mouse.
 		mouse_update = 0;
-#endif
+
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 			switch (event.type)
 				{
 			case SDL_MOUSEMOTION:
-#ifdef MOUSE
 				mouse->move(event.motion.x >> scale,
 						 event.motion.y >> scale);
 				mouse_update = 1;
-#endif
 				break;
 				}
 					// Get current time, & animate.
@@ -1133,9 +1111,8 @@ void Wait_for_arrival
 			gwin->paint_dirty();
 			last_repaint = ticks;
 			}
-#ifdef MOUSE
+
 		mouse->show();		// Re-display mouse.
-#endif
 		if (!gwin->show() &&	// Blit to screen if necessary.
 		    mouse_update)	// If not, did mouse change?
 			mouse->blit_dirty();
@@ -1172,10 +1149,8 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
 						event.button.y >> scale);
 		break;
 	case SDL_MOUSEMOTION:
-#ifdef MOUSE
 		mouse->move(event.motion.x >> scale, event.motion.y >> scale);
 		mouse_update = 1;
-#endif
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
 			gump->mouse_drag(event.motion.x >> scale,
@@ -1235,9 +1210,7 @@ int Modal_gump
 	box = gwin->clip_to_win(box);
 					// Create buffer to backup background.
 	Image_buffer *back = gwin->get_win()->create_buffer(box.w, box.h);
-#ifdef MOUSE
 	mouse->hide();			// Turn off mouse.
-#endif
 					// Save background.
 	gwin->get_win()->get(back, box.x, box.y);
 	gump->paint(gwin);		// Paint gump.
@@ -1246,16 +1219,12 @@ int Modal_gump
 	do
 		{
 		Delay();		// Wait a fraction of a second.
-#ifdef MOUSE
 		mouse->hide();		// Turn off mouse.
 		mouse_update = 0;
-#endif
 		SDL_Event event;
 		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
 			escaped = !Handle_gump_event(gump, event);
-#ifdef MOUSE
 		mouse->show();		// Re-display mouse.
-#endif
 		if (!gwin->show() &&	// Blit to screen if necessary.
 		    mouse_update)	// If not, did mouse change?
 			mouse->blit_dirty();
