@@ -481,6 +481,8 @@ bool Dragging_info::drop
 	if (!(on_gump ? drop_on_gump(x, y, to_drop, on_gump)
 			  : drop_on_map(x, y, to_drop)))
 		return false;
+					// Make a 'dropped' sound.
+	Audio::get_ptr()->play_sound_effect(Audio::game_sfx(74));
 	if (!gump)			// Do eggs where it came from.
 		gmap->get_chunk(oldcx, oldcy)->activate_eggs(obj,
 			    old_pos.tx, old_pos.ty, old_pos.tz, 
