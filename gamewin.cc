@@ -236,6 +236,7 @@ Game_window::~Game_window
 	(
 	)
 	{
+    gump_man->close_all_gumps(true);
 	clear_world();			// Delete all objects, chunks.
 	int i;	// Blame MSVC
 	for (i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
@@ -454,6 +455,16 @@ bool Game_window::is_moving
 	return moving_barge ? moving_barge->is_moving()
 			    : main_actor->is_moving();
 	}
+
+/*
+ *  Are we in dont_move mode?
+ */
+
+bool Game_window::main_actor_dont_move()
+    { 
+    return main_actor->get_siflag(Actor::dont_move)
+            || main_actor->get_flag(Obj_flags::dont_render);
+    }
 
 /*
  *	Add time for a light spell.
@@ -2051,8 +2062,7 @@ void Game_window::start_actor
 	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
 	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
-	if (main_actor->get_siflag(Actor::dont_move) ||
-	    main_actor->Actor::get_flag(Obj_flags::dont_render))
+	if (main_actor_dont_move())
 		{
 //		stop_actor();  Causes problems in animations.
 		return;
@@ -2108,8 +2118,7 @@ void Game_window::start_actor_along_path
 	    moving_barge)		// For now, don't do barges.
 		return;			// Zzzzz....
 					// Animation in progress?
-	if (main_actor->get_siflag(Actor::dont_move) ||
-	    main_actor->Actor::get_flag(Obj_flags::dont_render))
+	if (main_actor_dont_move())
 		return;
 	teleported = 0;
 	int lift = main_actor->get_lift();
@@ -2664,8 +2673,7 @@ void Game_window::double_clicked
 	)
 	{
 					// Animation in progress?
-	if (main_actor->get_siflag(Actor::dont_move) ||
-	    main_actor->Actor::get_flag(Obj_flags::dont_render))
+	if (main_actor_dont_move())
 		return;
 					// Nothing going on?
 	if (!Usecode_script::get_count())
