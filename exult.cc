@@ -181,6 +181,7 @@ static bool run_bg = false;		// skip menu and run bg
 static bool run_si = false;		// skip menu and run si
 
 static string arg_gamename = "default";	// cmdline arguments
+static string arg_configfile = "";
 static int arg_buildmap = -1;
 
 /*
@@ -232,22 +233,25 @@ int main
 	parameters.declare("--game",&arg_gamename,"default");
 	parameters.declare("--buildmap",&arg_buildmap,-1);
 	parameters.declare("--nocrc",&ignore_crc,true);
+	parameters.declare("-c",&arg_configfile,"");
 
 	// Process the args
 	parameters.process(argc,argv);
 
 	if(needhelp)
 	{
-		cerr << "Usage: exult [--help|-h] [-v|--version] [--bg|--si] [--buildmap 0|1|2] [--nocrc]" << endl <<
-			"--help\t\tShow this information" << endl <<
-			"--bg\t\tSkip menu and run Black Gate" << endl <<
-			"--si\t\tSkip menu and run Serpent Isle" << endl <<
-			"--version\tShow version info" << endl <<
-			"--buildmap\tCreate a fullsize map of the game world in u7map??.pcx" << endl <<
-			"\t\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl <<
-			"\t\tonly valid when used together with -bg or -si" << endl <<
-			"\t\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl <<
-			"--nocrc\t\tDon't check crc's of .flx files" << endl;
+		cerr << "Usage: exult [--help|-h] [-v|--version] [-c configfile]"<<endl
+			 << "[--bg|--si] [--buildmap 0|1|2] [--nocrc]" << endl 
+			 <<	"--help\t\tShow this information" << endl
+			 << "--version\tShow version info" << endl
+			 << " -c configfile\tSpecify alternate config file" << endl
+			 << "--bg\t\tSkip menu and run Black Gate" << endl
+			 << "--si\t\tSkip menu and run Serpent Isle" << endl
+			 << "--buildmap\tCreate a fullsize map of the game world in u7map??.pcx" << endl
+			 << "\t\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl
+			 << "\t\tonly valid when used together with -bg or -si" << endl
+			 << "\t\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl
+			 << "--nocrc\t\tDon't check crc's of .flx files" << endl;
 			
 		exit(1);
 	}
@@ -298,7 +302,12 @@ int exult_main(const char *runpath)
 
 	// Read in configuration file
 	config = new Configuration;
-	config->read_config_file(USER_CONFIGURATION_FILE);
+
+	if (arg_configfile != "") {
+		config->read_abs_config_file(arg_configfile);
+	} else {
+		config->read_config_file(USER_CONFIGURATION_FILE);
+	}
 
 	// Setup virtual directories
 	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
