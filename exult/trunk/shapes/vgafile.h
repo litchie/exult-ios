@@ -108,7 +108,8 @@ class Shape
 	{
 protected:
 	Shape_frame **frames;		// List of ->'s to frames.
-	unsigned char num_frames;	// # of frames.
+	unsigned char frames_size;	// Size of 'frames' (incl. reflects).
+	unsigned char num_frames;	// # of frames (not counting reflects).
 					// Create reflected frame.
 	Shape_frame *reflect(DataSource& shapes, int shnum, int frnum);
 	void create_frames_list(int nframes);
@@ -119,7 +120,7 @@ protected:
 public:
 	friend class Vga_file;
 	
-	Shape() : frames(0), num_frames(0)
+	Shape() : frames(0), frames_size(0), num_frames(0)
 		{  }
 	Shape(Shape_frame* fr);
 	
@@ -127,13 +128,13 @@ public:
 	void reset();
 	Shape_frame *get(DataSource& shapes, int shnum, int frnum)
 		{ 
-		return (frames && frnum < num_frames && frames[frnum]) ? 
+		return (frames && frnum < frames_size && frames[frnum]) ? 
 			frames[frnum] : read(shapes, shnum, frnum); 
 		}
 	int get_num_frames()
 		{ return num_frames; }
 	Shape_frame *get_frame(int framenum)
-		{ return framenum < num_frames ? frames[framenum] : 0; }
+		{ return framenum < frames_size ? frames[framenum] : 0; }
 	};
 
 /*
