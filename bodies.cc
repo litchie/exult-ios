@@ -61,7 +61,7 @@ short Body_lookup::table[] = {
 	259,	400,	20,	// fighter
 	509,	892,	26,	// fish
 	510,	892,	27,	// fox
-	883,	762,	1,	// wingless Gargoyle
+	883,	762,	1,	// Gargoyle, wingless
 	511,	762,	2,	// gazer
 	337,	762,	0,	// ghost	(invisible).
 	299,	762,	0,	// ghost
@@ -74,7 +74,7 @@ short Body_lookup::table[] = {
 	532,	762,	5,	// harpie
 	514,	762,	6,	// headless
 	727,	778,	1,	// horse
-	381,	778,	3,	// three headed hydra
+	381,	778,	3,	// hydra, three headed
 	382,	414,	7,	// Kissme
 	517,	892,	15,	// insects
 	354,	762,	8,	// liche
@@ -104,6 +104,10 @@ short Body_lookup::table[] = {
 				// NCPs:
 	318,	400,	5,	// Sage.
 	319,	400,	9,	// Male peasant.
+#	403,	892,	3,	// Batlin.
+	403,	414,	16,	// Batlin.
+#	482,	892,	3,	// Batlin.
+	403,	414,	16,	// Batlin.
 	451,	400,	13,	// Male noble.
 	452,	400,	10,	// Female peasant.
 	454,	400,	12,	// Female shopkeeper.
@@ -121,15 +125,11 @@ short Body_lookup::table[] = {
 	468,	400,	25,	// Male entertainer.
 	469,	400,	26,	// Female entertainer.
 	489,	414,	21,	// Spark.
-	720,	400,	23,	// Guard.
-	882,	892,	1,	// Abraham.
-	881,	892,	2,	// Elizabeth.
-#	403,	892,	3,	// Batlin.
-	403,	414,	16,	// Batlin.
-#	482,	892,	3,	// Batlin.
-	403,	414,	16,	// Batlin.
-	805,	892,	4,	// Forksis.
 	506,	892,	19	// Hook.
+	720,	400,	23,	// Guard.
+	805,	892,	4,	// Forksis.
+	881,	892,	2,	// Elizabeth.
+	882,	892,	1,	// Abraham.
 	};
 
 /*
