@@ -24,7 +24,17 @@ EXULT_FLX_OBJECTS = \
 	sfx_conversion.shp	\
 	palette_fades.shp	\
 	defaultkeys.txt		\
-	scaling_method.shp
+	scaling_method.shp	\
+	savegump.shp		\
+	sav_load.shp		\
+	sav_save.shp		\
+	sav_delete.shp		\
+	sav_cancel.shp		\
+	sav_downdown.shp	\
+	sav_down.shp		\
+	sav_up.shp		\
+	sav_upup.shp		\
+	sav_slider.shp
 
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in			\
