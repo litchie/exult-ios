@@ -155,10 +155,10 @@ Shape_info::~Shape_info()
 	}
 
 /*
- *	Copy the non-allocated fields.
+ *	Copy.
  */
 
-void Shape_info::copy_shallow
+void Shape_info::copy
 	(
 	Shape_info& inf2
 	)
@@ -174,6 +174,17 @@ void Shape_info::copy_shallow
 	shpdims[1] = inf2.shpdims[1];
 	ready_type = inf2.ready_type;
 	occludes_flag = inf2.occludes_flag;
+	// Allocated fields.
+	delete [] weapon_offsets;
+	if (inf2.weapon_offsets)
+		{
+		weapon_offsets = new unsigned char[64];
+		memcpy(weapon_offsets, inf2.weapon_offsets, 64);
+		}
+	else
+		inf2.weapon_offsets = 0;
+	// NOT NEEDED YET:
+	assert (!inf2.armor && !inf2.weapon && !inf2.ammo && !inf2.monstinf);
 	}
 
 /*
