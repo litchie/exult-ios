@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#if defined( AMIGA ) || defined( __MORPHOS__ )
+
 #define NO_PPCINLINE_STDARG
 #include <proto/exec.h>
 #include "amiga_midi.h"
@@ -117,3 +119,4 @@ const	char *AmigaMIDI::copyright(void)
 #endif
 }
 
+#endif

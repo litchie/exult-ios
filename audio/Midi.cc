@@ -90,9 +90,8 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	{
 		buffer = track.retrieve(size);
 	}
-	catch( const std::exception & err )
+	catch( const std::exception & /*err*/)
 	{
-		err;	// stops a warning
 		return;
 	}
 
@@ -427,9 +426,8 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	{
 		buffer = track.retrieve(size);
 	}
-	catch( const std::exception & err )
+	catch( const std::exception & /*err*/ )
 	{
-		err;	// stops a warning
 		return;
 	}
 
