@@ -32,8 +32,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <unistd.h>
 
-#include "Midi.h"
-
 #ifndef PENTAGRAM
 #include "fnames.h"
 #include "exult.h"
@@ -43,8 +41,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../files/U7file.h"
 #include "../files/utils.h"
+#include "Midi.h"
 #include "xmidi.h"
 #include "conv.h"
+#include "convmusic.h"
 
 #include "../conf/Configuration.h"
 extern	Configuration	*config;
@@ -53,6 +53,10 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::string;
+using std::strcpy;
+
+
+static Mix_Music *mp3music;
 
 
 void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
@@ -74,14 +78,74 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	current_track = num;
 	repeating = repeat;
 
+	if (music_conversion == XMIDI_CONVERT_MP3)
+	{
+	    char filename[255] ;
+
+		//Free previous music, may not have been properly stopped
+		if(mp3music)
+		{
+			Mix_FreeMusic(mp3music);
+			mp3music = NULL;
+		}
+
+
+		if(Game::get_game_type()==SERPENT_ISLE)
+		{
+			if(bank == 2 && num == 28)	//Convert title track number only in SI
+				num = 70;
+
+			string s = midi_bank[bank];
+			to_uppercase(s);
+			if((num == 30 || num == 32) && s.find("MAINSHP") != std::string::npos)
+			{
+				//Convert credit/quote tracks
+				if(num == 30)
+					s = get_system_path("<DATA>/mp3/") + "endcr01.ogg";
+				else
+					s = get_system_path("<DATA>/mp3/") + "endcr02.ogg";
+			}
+			else
+				s = get_system_path("<DATA>/mp3/") + bgconvmusic[num] + ".ogg";
+
+			strcpy(filename, s.c_str());
+		}
+		else
+		{
+			char outputstr[255];
+
+			string s = midi_bank[bank];
+			to_uppercase(s);
+			if((num == 4 || num == 5) && s.find("INTRORDM") != std::string::npos)
+			{
+				//Convert credit/quotes tracks
+				if(num == 4)
+					s = get_system_path("<DATA>/mp3/") + "endcr01.ogg";
+				else
+					s = get_system_path("<DATA>/mp3/") + "endcr02.ogg";
+			}
+			else
+				s = get_system_path("<DATA>/mp3/%02dbg.ogg");
+
+			strcpy(outputstr, s.c_str());
+			sprintf(filename, outputstr, num);
+		}
+
+		if(repeat)
+			repeat = 2;		//Convert repeats to repeat 2 times only
+	    mp3music = Mix_LoadMUS(filename);
+	    Mix_PlayMusic(mp3music, repeat);
+		Mix_VolumeMusic(MIX_MAX_VOLUME);
+
+#ifdef DEBUG
+       	cout << "Audio MP3: Music track " << filename << endl;
+#endif
+
+		return;		//We don't want to continue with Midi conversions!!
+	}
+
 	U7object	track(midi_bank[bank].c_str(),num);
 
-//Not needed anymore
-//#ifdef WIN32
-//	//stop track before writing to temp. file
-//	midi_device->stop_track();
-//#endif
-	
 	char		*buffer;
 	size_t		size;
 	DataSource 	*mid_data;
@@ -90,7 +154,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	{
 		buffer = track.retrieve(size);
 	}
-	catch( const std::exception & /*err*/)
+	catch( const std::exception & /*err*/ )
 	{
 		return;
 	}
@@ -129,19 +193,51 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 		return;
 	}
 
-// Not Needed anymore
-//#ifdef WIN32
-//	//stop track before writing to temp. file
-//	midi_device->stop_track();
-//#endif
-	        
+	//Only called from the endgame sequences  
+	if (music_conversion == XMIDI_CONVERT_MP3)
+	{
+	    char filename[255] ;
+
+		//Free previous music, may not have been properly stopped
+		if(mp3music)
+		{
+			Mix_FreeMusic(mp3music);
+			mp3music = NULL;
+		}
+
+		string s = fname;
+		to_uppercase(s);
+
+		if(s.find("ENDSCORE") != std::string::npos && Game::get_game_type()!=SERPENT_ISLE)
+		{
+		    sprintf(filename, "end%02dbg.ogg", num);
+		}
+		else if(s.find("R_SINTRO") != std::string::npos && Game::get_game_type()==SERPENT_ISLE)
+			strcpy(filename, "si01.ogg");		//SI introduction sequence
+		else if(s.find("R_SEND") != std::string::npos && Game::get_game_type()==SERPENT_ISLE)
+			strcpy(filename, "si13.ogg");		//SI end sequence
+		else
+			return;
+
+		string s2 = filename;
+		s2 = get_system_path("<DATA>/mp3/" + s2);
+		strcpy(filename, s2.c_str());
+
+	    mp3music = Mix_LoadMUS(filename);
+	    Mix_PlayMusic(mp3music, repeat);
+		Mix_VolumeMusic(MIX_MAX_VOLUME);
+
+		return;		//We don't want to continue with Midi conversions!!
+	}
+
+
 	FILE		*mid_file;
 	DataSource	*mid_data;
 	
 
 	// Read the data into the XMIDI class
 
-	mid_file = U7open(fname, "rb"); // DARKE FIXME
+	mid_file = U7open(fname, "rb");  //DARKE FIXME
 	mid_data = new FileDataSource(mid_file);
 
 	XMIDI		midfile(mid_data, music_conversion);
@@ -250,6 +346,9 @@ void MyMidiPlayer::set_music_conversion(int conv)
 	case XMIDI_CONVERT_MT32_TO_GS127:
 		config->set("config/audio/midi/convert","gs127",true);
 		break;
+	case XMIDI_CONVERT_MP3:
+		config->set("config/audio/midi/convert","mp3",true);
+		break;
 	default:
 		config->set("config/audio/midi/convert","gm",true);
 		break;
@@ -309,6 +408,8 @@ bool MyMidiPlayer::init_device(void)
 		music_conversion = XMIDI_CONVERT_NOCONVERSION;
 	else if (s == "gs127")
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS127;
+	else if (s == "mp3")
+		music_conversion = XMIDI_CONVERT_MP3;
 	else if (s == "gs127drum")
 	{
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS;
@@ -343,6 +444,20 @@ bool MyMidiPlayer::init_device(void)
 		return false;
 	}
 
+
+	//MP3 is initialised differently to the other MIDI devices, due to it
+	//not actually being a midi device. Just set the midi_device to something
+	//to stop the other code breaking, much is dependant on this class existing
+	if (music_conversion == XMIDI_CONVERT_MP3)
+	{
+		midi_device=new MP3_MIDI();
+		no_device=false;       
+		mp3music = NULL;
+		Mix_HookMusicFinished(music_complete_callback);
+		Mix_VolumeMusic(MIX_MAX_VOLUME);
+	}
+	else
+	{
 #ifdef WIN32
 //	TRY_MIDI_DRIVER(Windows_MCI)
 	TRY_MIDI_DRIVER(Windows_MidiOut)
@@ -365,6 +480,7 @@ bool MyMidiPlayer::init_device(void)
 #if defined(__MORPHOS__) || defined(AMIGA)
   TRY_MIDI_DRIVER(AmigaMIDI)
 #endif
+	}
 
 	initialized = true;
 
@@ -377,6 +493,18 @@ bool MyMidiPlayer::init_device(void)
 		
 	return true;
 }
+
+
+//Clean up last track played, freeing memory each time
+void MyMidiPlayer::music_complete_callback(void)
+{
+	if(mp3music)
+	{
+		Mix_FreeMusic(mp3music);
+		mp3music = NULL;
+	}
+}
+
 
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),repeating(false),
 				  midi_device(0), initialized(false),
@@ -451,3 +579,38 @@ void    MyMidiPlayer::stop_sound_effects()
 	if (midi_device)
 		midi_device->stop_sfx();
 }
+
+
+void MP3_MIDI::start_track(XMIDIEventList *, bool repeat)
+{
+}
+
+void MP3_MIDI::stop_track(void)
+{
+	Mix_HaltMusic();
+	if(mp3music)
+	{
+		Mix_FreeMusic(mp3music);
+		mp3music = NULL;
+	}
+}
+
+void MP3_MIDI::start_sfx(XMIDIEventList *)
+{
+}
+
+void MP3_MIDI::stop_sfx(void)
+{
+}
+
+bool MP3_MIDI::is_playing(void)
+{
+	return Mix_PlayingMusic();
+}
+
+const char * MP3_MIDI::copyright(void)
+{
+  return "Internal mp3 NULL device";
+}
+
+
