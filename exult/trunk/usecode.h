@@ -176,6 +176,7 @@ class Usecode_machine
 	Vector *funs;			// I'th entry contains funs for ID's
 					//    256*i + n.
 	int call_depth;			// How far deep we are.
+	Usecode_function *cur_function;	// Current function being executed.
 	unsigned char gflags[1024];	// Global flags.
 	unsigned long timers[20];	// Each has time in hours when set.
 	int party[8];			// NPC #'s of party members.
@@ -332,6 +333,7 @@ public:
 	USECODE_INTRINSIC_DECL(set_alignment);
 	USECODE_INTRINSIC_DECL(move_object);
 	USECODE_INTRINSIC_DECL(item_say);
+	USECODE_INTRINSIC_DECL(projectile_effect);
 	USECODE_INTRINSIC_DECL(get_lift);
 	USECODE_INTRINSIC_DECL(set_lift);
 	USECODE_INTRINSIC_DECL(sit_down);

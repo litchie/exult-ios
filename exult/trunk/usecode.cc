@@ -2160,6 +2160,21 @@ USECODE_INTRINSIC(item_say)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(projectile_effect)
+{
+	// animate(fromitem, toitem, anim_shape_in_shapesdotvga).
+	// ???? When it reaches toitem, caller usecode is called again with
+	//   itemref = toitem, eventid=4.  Returns??}
+	Game_object *from = get_item(parms[0]),
+		    *to = get_item(parms[1]);
+	if (!from || !to)
+		return Usecode_value(0);
+	gwin->add_effect(new Projectile_effect(from, to, cur_function->id,
+						parms[2].get_int_value()));
+
+	return Usecode_value(0);	// Not sure what this should be.
+}
+
 USECODE_INTRINSIC(get_lift)
 {
 	// ?? Guessing rets. lift(item).
@@ -2619,10 +2634,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f  +++++++Vanish NPC?
                      // (according to ucdump.c)
 	USECODE_INTRINSIC_PTR(item_say),	// 0x40
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x41 ++++++++++++Know it:
-	// animate(fromitem, toitem, anim_shape_in_shapesdotvga).
-	// ???? When it reaches toitem, caller usecode is called again with
-	//   itemref = toitem, eventid=4.  Returns??
+	USECODE_INTRINSIC_PTR(projectile_effect),	// 0x41
 	USECODE_INTRINSIC_PTR(get_lift),	// 0x42
 	USECODE_INTRINSIC_PTR(set_lift),	// 0x43
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x44++++Get_something() (0-3)
@@ -2935,7 +2947,7 @@ Usecode_machine::Usecode_machine
 	(
 	istream& file,
 	Game_window *gw
-	) : gwin(gw), call_depth(0), book(0), caller_item(0),
+	) : gwin(gw), call_depth(0), book(0), caller_item(0), cur_function(0),
 	    last_created(0), removed(new Deleted_objects()), user_choice(0),
 	    String(0), stack(new Usecode_value[1024])
 	{
@@ -3011,11 +3023,9 @@ void Usecode_machine::run
 		printf("Running usecode %04x with event %d\n", fun->id, event);
 #endif
 	Usecode_value *save_sp = sp;	// Save TOS, last-created.
-#if 0
-	Answers save_answers;		// Save answers list.
-	save_answers = answers;
-	answers.clear();
-#endif
+					// Save/set function.
+	Usecode_function *save_fun = cur_function;
+	cur_function = fun;
 	unsigned char *ip = fun->code;	// Instruction pointer.
 					// Where it ends.
 	unsigned char *endp = ip + fun->len;
@@ -3420,15 +3430,11 @@ void Usecode_machine::run
 			}
 		}
 	delete [] locals;
-#if 0
-					// Restore list of answers.
-	answers = save_answers;
-	last_created = save_lc;
-#endif
 #if DEBUG
 	if (debug >= 1)
 		printf("RETurning from usecode %04x\n", fun->id);
 #endif
+	cur_function = save_fun;
 	call_depth--;
 	}
 

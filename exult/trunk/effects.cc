@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "effects.h"
 #include "gamewin.h"
+#include "Zombie.h"
 
 /*
  *	Create an animation from the 'sprites.vga' file.
@@ -78,6 +79,86 @@ void Sprites_effect::paint
 	{
 	gwin->paint_sprite((tx - gwin->get_scrolltx())*tilesize,
 		(ty - gwin->get_scrollty())*tilesize, sprite_num, frame_num);
+	}
+
+/*
+ *	Create a projectile animation.
+ */
+
+Projectile_effect::Projectile_effect
+	(
+	Game_object *from,		// Start here.
+	Game_object *to,		// End here, then run usecode on it.
+	int ufun,			// Usecode function to run.
+	int shnum			// Shape # in 'shapes.vga'.
+	) : shape_num(shnum), frame_num(0), usefun(ufun)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	frames = gwin->get_shape_num_frames(shnum);
+					// Get starting position.
+	pos = from->get_abs_tile_coord();
+	path = new Zombie();		// Create simple pathfinder.
+					// Find path.  Should never fail.
+	path->NewPath(pos, to->get_abs_tile_coord(), 0);
+					// Start immediately.
+	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+	}
+
+/*
+ *	Delete.
+ */
+
+Projectile_effect::~Projectile_effect
+	(
+	)
+	{
+	delete path;
+	}
+
+/*
+ *	Animation.
+ */
+
+void Projectile_effect::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata
+	)
+	{
+	const int delay = 50;		// Delay between frames.
+	Game_window *gwin = Game_window::get_game_window();
+	if (frame_num == frames)	// Last frame?
+		frame_num = 0;
+	if (!path->GetNextStep(pos))	// Get next spot.
+		{			// Done? 
+		pos.tx = -1;		// Signal we're done.
+//++++++++++++ Run usecode.
+		gwin->remove_effect(this);
+		gwin->paint();
+		return;
+		}
+	Projectile_effect::paint(gwin);	// Render.
+	gwin->set_painted();
+	frame_num++;			// Next frame.
+					// Add back to queue for next time.
+	gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
+ *	Render.
+ */
+
+void Projectile_effect::paint
+	(
+	Game_window *gwin
+	)
+	{
+	if (pos.tx == -1)
+		return;			// Already at destination.
+	int liftpix = pos.tz*tilesize/2;
+	gwin->paint_shape((pos.tx - gwin->get_scrolltx())*tilesize - liftpix,
+		(pos.ty - gwin->get_scrollty())*tilesize - liftpix, 
+		shape_num, frame_num);
 	}
 
 /*
