@@ -893,9 +893,15 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 	case 0x5e:			// Returns size of array (arr).
 		return Usecode_value(parms[0].get_array_size());
+	case 0x62:			// Are we inside (under a roof)?
+		return Usecode_value(gwin->is_main_actor_inside());
 	case 0x68:			// Returns 1 if mouse exists.
 		return Usecode_value(1);
-	case 0x88:		// Get npc flag(item, flag#).
+	case 0x6e:			// Takes itemref, returns obj???
+					// Maybe it's obj's container???
+		Unhandled(intrinsic, num_parms, parms);
+		break;
+	case 0x88:			// Get npc flag(item, flag#).
 		{
 		Game_object *obj = get_item(parms[0].get_int_value());
 		return Usecode_value(obj ? 
