@@ -16,8 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef	__Table_h_
-#define	__Table_h_
+#ifndef	_TABLE_H_
+#define	_TABLE_H_
 
 #if !AUTOCONFIGURED
 #include "../autoconfig.h"
@@ -26,11 +26,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 #include <string>
 #include "U7file.h"
-#include "common_types.h"
+#include "exult_types.h"
 
 
-class	Table : public	virtual	U7file
-	{
+class Table : public U7file
+{
 protected:
 	struct Reference
 		{
@@ -49,14 +49,12 @@ public:
 		return *this;
 		}
 
-        virtual int     number_of_objects(const char *) { return object_list.size(); };
-        virtual void     retrieve(int objnum,char **,std::size_t *len); // To a memory block
-	virtual const char *get_archive_type() { return "TABLE"; };
+		virtual uint32	number_of_objects(void) { return object_list.size(); };
+		virtual char *	retrieve(uint32 objnum,std::size_t &len); // To a memory block
+		virtual const char *get_archive_type() { return "TABLE"; };
 private:
 	void IndexTableFile(void);
 	Table();
-	};
-
-extern Table AccessTableFile(const char *);
+};
 
 #endif

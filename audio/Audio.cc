@@ -75,7 +75,7 @@ Audio::~Audio()
 }
 
 
-static	void resample(Uint8 *sourcedata,Uint8 **destdata,size_t sourcelen,size_t *destlen,int current_rate,int wanted_rate)
+static	void resample(uint8 *sourcedata,uint8 **destdata,size_t sourcelen,size_t *destlen,int current_rate,int wanted_rate)
 {
 	// I have no idea what I'm doing here - Dancer
 	// This is really Breshenham's line-drawing algorithm in
@@ -87,11 +87,11 @@ static	void resample(Uint8 *sourcedata,Uint8 **destdata,size_t sourcelen,size_t 
 		{
 		// Least work
 		*destlen=sourcelen;
-		*destdata=new Uint8[sourcelen];
+		*destdata=new uint8[sourcelen];
 		memcpy(*destdata,sourcedata,sourcelen);
 		return;
 		}
-	*destdata=new Uint8[*destlen];
+	*destdata=new uint8[*destlen];
 	size_t last=0;
 	for(size_t i=0;i<sourcelen;i++)
 		{
@@ -105,7 +105,7 @@ static	void resample(Uint8 *sourcedata,Uint8 **destdata,size_t sourcelen,size_t 
 				unsigned int x=(unsigned char)sourcedata[i];
 				unsigned int y=(unsigned char)sourcedata[i-1];
 				x=(x+y)/2;
-				(*destdata)[j]=(Uint8) x;
+				(*destdata)[j]=(uint8) x;
 				}
 		last=pos;
 		}
@@ -120,23 +120,23 @@ void	Audio::mix_audio(void)
 {
 }
 
-void	Audio::clear(Uint8 *buf,int len)
+void	Audio::clear(uint8 *buf,int len)
 {
 	memset(buf,actual.silence,len);
 }
 
-extern void fill_audio(void *udata, Uint8 *stream, int len);
+extern void fill_audio(void *udata, uint8 *stream, int len);
 
 struct	Chunk
 	{
 	size_t	length;
-	Uint8	*data;
+	uint8	*data;
 	Chunk() : length(0),data(0) {}
 	};
 
-static	Uint8 *chunks_to_block(vector<Chunk> &chunks)
+static	uint8 *chunks_to_block(vector<Chunk> &chunks)
 {
-	Uint8 *unified_block;
+	uint8 *unified_block;
 	size_t	aggregate_length=0;
 	size_t	working_offset=0;
 	
@@ -145,7 +145,7 @@ static	Uint8 *chunks_to_block(vector<Chunk> &chunks)
 		{
 		aggregate_length+=it->length;
 		}
-	unified_block=new Uint8[aggregate_length];
+	unified_block=new uint8[aggregate_length];
 	for(vector<Chunk>::iterator it=chunks.begin();
 		it!=chunks.end(); ++it)
 		{
@@ -157,12 +157,12 @@ static	Uint8 *chunks_to_block(vector<Chunk> &chunks)
 	return unified_block;
 }
 
-Uint8 *Audio::convert_VOC(Uint8 *old_data,unsigned int &visible_len)
+uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 {
 	vector<Chunk> chunks;
 	size_t	data_offset=0x1a;
 	bool	last_chunk=false;
-	Uint16	sample_rate;
+	uint16	sample_rate;
 	size_t  l=0;
 	size_t	chunk_length;
 	
@@ -227,7 +227,7 @@ Uint8 *Audio::convert_VOC(Uint8 *old_data,unsigned int &visible_len)
 		// Quick rendering to stereo
 		// Halve the frequency while we're at it
 		l-=(TRAILING_VOC_SLOP+LEADING_VOC_SLOP);
-		Uint8 *stereo_data=new Uint8[l*4];
+		uint8 *stereo_data=new uint8[l*4];
 		for(size_t i=LEADING_VOC_SLOP,j=0;i<l+LEADING_VOC_SLOP;i++)
 			{
 			stereo_data[j++]=old_data[i];
@@ -238,7 +238,7 @@ Uint8 *Audio::convert_VOC(Uint8 *old_data,unsigned int &visible_len)
 		l*=4;
 #else
 		// Resample to the current rate
-		Uint8 *new_data;
+		uint8 *new_data;
 		size_t new_len;
 		l-=(TRAILING_VOC_SLOP+LEADING_VOC_SLOP);
 		resample(old_data+LEADING_VOC_SLOP,&new_data,l,&new_len,sample_rate,actual.freq);
@@ -246,7 +246,7 @@ Uint8 *Audio::convert_VOC(Uint8 *old_data,unsigned int &visible_len)
 		cerr << "Have " << l << " bytes of resampled data" << endl;
 
 		// And convert to stereo
-		Uint8 *stereo_data=new Uint8[l*2];
+		uint8 *stereo_data=new uint8[l*2];
 		for(size_t i=0,j=0;i<l;i++)
 			{
 			stereo_data[j++]=new_data[i];
@@ -263,13 +263,13 @@ Uint8 *Audio::convert_VOC(Uint8 *old_data,unsigned int &visible_len)
 		data_offset+=chunk_length;
 		}
 	cerr << "Turn chunks to block" << endl;
-	Uint8 *single_buffer=chunks_to_block(chunks);
+	uint8 *single_buffer=chunks_to_block(chunks);
 	visible_len=l;
 	return single_buffer;
 }
 
 		
-void	Audio::play(Uint8 *sound_data,Uint32 len,bool wait)
+void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 {
 	string s;
 	config->value("config/audio/speech/enabled",s,"yes");
@@ -300,15 +300,15 @@ void	Audio::cancel_streams(void)
 		mixer->cancel_streams();
 }
 
-void	Audio::mix(Uint8 *sound_data,Uint32 len)
+void	Audio::mix(uint8 *sound_data,uint32 len)
 {
 	if(mixer)
 		mixer->play(sound_data,len);
 }
 
-static	size_t calc_sample_buffer(Uint16 _samplerate)
+static	size_t calc_sample_buffer(uint16 _samplerate)
 {
-	Uint32 _buffering_unit=1;
+	uint32 _buffering_unit=1;
 	while(_buffering_unit<_samplerate/10U)
 		_buffering_unit<<=1;
 	// _buffering_unit=128;
@@ -333,7 +333,7 @@ Audio::Audio() : speech_enabled(true), music_enabled(true),
 void Audio::Init(int _samplerate,int _channels)	
 {
 	// Initialise the speech vectors
-	Uint32 _buffering_unit=calc_sample_buffer(_samplerate);
+	uint32 _buffering_unit=calc_sample_buffer(_samplerate);
 	build_speech_vector();
 	if(midi)
 		{
@@ -402,7 +402,7 @@ void	Audio::playfile(const char *fname,bool wait)
 		fclose(fp);
 		return;
 		}
-	Uint8 *buf=new Uint8[len];
+	uint8 *buf=new uint8[len];
 	fread(buf,len,1,fp);
 	fclose(fp);
 	play(buf,len,wait);
@@ -473,13 +473,13 @@ bool	Audio::start_speech(int num,bool wait)
 	U7object	sample(U7SPEECH,num);
 	try
 	{
-		sample.retrieve(&buf,len);
+		buf = sample.retrieve(len);
 	}
 	catch( const std::exception & err )
 	{
 		return false;
 	}
-	play((Uint8*)buf,len,wait);
+	play((uint8*)buf,len,wait);
 	delete [] buf;
 	return true;
 }

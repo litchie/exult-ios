@@ -23,8 +23,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef INCL_UTILS
-#define INCL_UTILS	1
+#ifndef _UTILS_H_
+#define _UTILS_H_
+
+
 #ifdef MACOS
   #include <iostream>
   // it is not sufficient to #include <iosfwd> here since Read1() etc.
@@ -37,6 +39,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef MACOS
   using Metrowerks::hash_map;
 #endif
+#include "exult_types.h"
+
 
 /*
  *	Hash function for strings:
@@ -67,12 +71,12 @@ struct eqstr
  *	Read a 1-byte value.
  */
 
-inline unsigned char Read1
+inline uint8 Read1
 	(
 	std::istream& in
 	)
 	{
-	unsigned char c;
+	uint8 c;
 	in.get((char&) c);
 	return (c);
 	}
@@ -81,12 +85,12 @@ inline unsigned char Read1
  *	Read a 2-byte value, lsb first.
  */
 
-inline unsigned int Read2
+inline uint16 Read2
 	(
 	std::istream& in
 	)
 	{
-	unsigned char b0, b1;
+	uint8 b0, b1;
 	in.get((char&) b0);
 	in.get((char&) b1);
 	return (b0 + (b1 << 8));
@@ -96,13 +100,13 @@ inline unsigned int Read2
  *	Read a 2-byte value from a buffer.
  */
 
-inline unsigned int Read2
+inline uint16 Read2
 	(
-	unsigned char *& in
+	uint8 *& in
 	)
 	{
-	unsigned char b0 = *in++;
-	unsigned char b1 = *in++;
+	uint8 b0 = *in++;
+	uint8 b1 = *in++;
 	return (b0 + (b1 << 8));
 	}
 
@@ -111,14 +115,14 @@ inline unsigned int Read2
  *	Read a 2-byte value from a file.
  */
 
-inline unsigned int Read2
+inline uint16 Read2
 	(
 	std::FILE* in
 	)
 	{
-	unsigned char b0, b1;
-	fread(&b0,sizeof(unsigned char),1,in);
-	fread(&b1,sizeof(unsigned char),1,in);
+	uint8 b0, b1;
+	fread(&b0,sizeof(uint8),1,in);
+	fread(&b1,sizeof(uint8),1,in);
 	return (b0 + (b1 << 8));
 	}
 #endif
@@ -127,12 +131,12 @@ inline unsigned int Read2
  *	Read a 2-byte value, hsb first.
  */
 
-inline unsigned int Read2high
+inline uint16 Read2high
 	(
 	std::istream& in
 	)
 	{
-	unsigned char b0, b1;
+	uint8 b0, b1;
 	in.get((char&) b0);
 	in.get((char&) b1);
 	return ((b0 << 8) + b1);
@@ -142,13 +146,13 @@ inline unsigned int Read2high
  *	Read a 2-byte value from a buffer.
  */
 
-inline unsigned int Read2high
+inline uint16 Read2high
 	(
-	unsigned char *& in
+	uint8 *& in
 	)
 	{
-	unsigned char b0 = *in++;
-	unsigned char b1 = *in++;
+	uint8 b0 = *in++;
+	uint8 b1 = *in++;
 	return ((b0 << 8) + b1);
 	}
 
@@ -157,14 +161,14 @@ inline unsigned int Read2high
  *	Read a 2-byte value from a file.
  */
 
-inline unsigned int Read2high
+inline uint16 Read2high
 	(
 	std::FILE* in
 	)
 	{
-	unsigned char b0, b1;
-	fread(&b0,sizeof(unsigned char),1,in);
-	fread(&b1,sizeof(unsigned char),1,in);
+	uint8 b0, b1;
+	fread(&b0,sizeof(uint8),1,in);
+	fread(&b1,sizeof(uint8),1,in);
 	return ((b0 << 8) + b1);
 	}
 #endif
@@ -173,12 +177,12 @@ inline unsigned int Read2high
  *	Read a 4-byte long value, lsb first.
  */
 
-inline unsigned long Read4
+inline uint32 Read4
 	(
 	std::istream& in
 	)
 	{
-	unsigned char b0, b1, b2, b3;
+	uint8 b0, b1, b2, b3;
 	in.get((char&) b0);
 	in.get((char&) b1);
 	in.get((char&) b2);
@@ -190,15 +194,15 @@ inline unsigned long Read4
  *	Read a 4-byte value from a buffer.
  */
 
-inline unsigned long Read4
+inline uint32 Read4
 	(
-	unsigned char *& in
+	uint8 *& in
 	)
 	{
-	unsigned char b0 = *in++;
-	unsigned char b1 = *in++;
-	unsigned char b2 = *in++;
-	unsigned char b3 = *in++;
+	uint8 b0 = *in++;
+	uint8 b1 = *in++;
+	uint8 b2 = *in++;
+	uint8 b3 = *in++;
 	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	}
 
@@ -207,16 +211,16 @@ inline unsigned long Read4
  *	Read a 4-byte value from a file.
  */
 
-inline unsigned long Read4
+inline uint32 Read4
 	(
 	std::FILE* in
 	)
 	{
-	unsigned char b0, b1, b2, b3;
-	fread(&b0,sizeof(unsigned char),1,in);
-	fread(&b1,sizeof(unsigned char),1,in);
-	fread(&b2,sizeof(unsigned char),1,in);
-	fread(&b3,sizeof(unsigned char),1,in);
+	uint8 b0, b1, b2, b3;
+	fread(&b0,sizeof(uint8),1,in);
+	fread(&b1,sizeof(uint8),1,in);
+	fread(&b2,sizeof(uint8),1,in);
+	fread(&b3,sizeof(uint8),1,in);
 	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	}
 #endif
@@ -224,12 +228,12 @@ inline unsigned long Read4
  *	Read a 4-byte long value, hsb first.
  */
 
-inline unsigned long Read4high
+inline uint32 Read4high
 	(
 	std::istream& in
 	)
 	{
-	unsigned char b0, b1, b2, b3;
+	uint8 b0, b1, b2, b3;
 	in.get((char&) b0);
 	in.get((char&) b1);
 	in.get((char&) b2);
@@ -241,15 +245,15 @@ inline unsigned long Read4high
  *	Read a 4-byte value from a buffer.
  */
 
-inline unsigned long Read4high
+inline uint32 Read4high
 	(
-	unsigned char *& in
+	uint8 *& in
 	)
 	{
-	unsigned char b0 = *in++;
-	unsigned char b1 = *in++;
-	unsigned char b2 = *in++;
-	unsigned char b3 = *in++;
+	uint8 b0 = *in++;
+	uint8 b1 = *in++;
+	uint8 b2 = *in++;
+	uint8 b3 = *in++;
 	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
 	}
 
@@ -258,16 +262,16 @@ inline unsigned long Read4high
  *	Read a 4-byte value from a file.
  */
 
-inline unsigned long Read4high
+inline uint32 Read4high
 	(
 	std::FILE* in
 	)
 	{
-	unsigned char b0, b1, b2, b3;
-	fread(&b0,sizeof(unsigned char),1,in);
-	fread(&b1,sizeof(unsigned char),1,in);
-	fread(&b2,sizeof(unsigned char),1,in);
-	fread(&b3,sizeof(unsigned char),1,in);
+	uint8 b0, b1, b2, b3;
+	fread(&b0,sizeof(uint8),1,in);
+	fread(&b1,sizeof(uint8),1,in);
+	fread(&b2,sizeof(uint8),1,in);
+	fread(&b3,sizeof(uint8),1,in);
 	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
 	}
 #endif
@@ -279,7 +283,7 @@ inline unsigned long Read4high
 inline void Write2
 	(
 	std::ostream& out,
-	int val
+	uint16 val
 	)
 	{
 	out.put((char) (val&0xff));
@@ -292,8 +296,8 @@ inline void Write2
 
 inline void Write2
 	(
-	unsigned char *& out,		// Write here and update.
-	int val
+	uint8 *& out,		// Write here and update.
+	uint16 val
 	)
 	{
 	*out++ = val & 0xff;
@@ -307,7 +311,7 @@ inline void Write2
 inline void Write4
 	(
 	std::ostream& out,
-	int val
+	uint32 val
 	)
 	{
 	out.put((char) (val&0xff));
@@ -322,8 +326,8 @@ inline void Write4
 
 inline void Write4
 	(
-	unsigned char *& out,		// Write here and update.
-	int val
+	uint8 *& out,		// Write here and update.
+	uint32 val
 	)
 	{
 	*out++ = val & 0xff;
@@ -360,7 +364,7 @@ int U7exists(
 
 int Log2
 	(
-	unsigned int n
+	uint32 n
 	);
 
 void add_system_path(const std::string& key, const std::string& value);

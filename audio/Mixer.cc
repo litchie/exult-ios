@@ -67,18 +67,18 @@ Mixer::~Mixer()
      len:     The length (in bytes) of the audio buffer
  */
  
-void fill_audio(void *udata, Uint8 *stream, int len)
+void fill_audio(void *udata, uint8 *stream, int len)
  {
 	// cerr << "fill_audio: " << len << endl;
 	 Audio::get_ptr()->mixer->fill_audio_func(udata,stream,len);
 }
 
-void	compress_audio_sample(Uint8 *buf,int len)
+void	compress_audio_sample(uint8 *buf,int len)
 {
 	return;
-	Uint8	*dbuf=new Uint8[len*2];
-	Uint8	*source=buf;
-	Uint8	*dest=dbuf;
+	uint8	*dbuf=new uint8[len*2];
+	uint8	*source=buf;
+	uint8	*dest=dbuf;
 	while(len>0)
 		{
 		// Left channel
@@ -100,7 +100,7 @@ void Mixer::cancel_raw(void)
 	Audio::get_ptr()->Destroy_Audio_Stream(Mixer_Sample_Magic_Number);
 }
 
-void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
+void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 {
 #if 0
 	cout << "fill_audio_func: " << len << endl;
@@ -129,7 +129,7 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 				if((*it)->size()<buffer_length)
 					continue;
 #endif
-				Uint8	*temp_buffer=new Uint8[len];
+				uint8	*temp_buffer=new uint8[len];
 				int	ret=0;
 				size_t	sofar=0;
 				memset(temp_buffer,silence,len);
@@ -177,7 +177,7 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 #endif
 }
 
-void	Mixer::play(Uint8 *sound_data,Uint32 len)
+void	Mixer::play(uint8 *sound_data,uint32 len)
 {
 	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
 	audiostream->id=Mixer_Sample_Magic_Number;
@@ -185,7 +185,7 @@ void	Mixer::play(Uint8 *sound_data,Uint32 len)
 	audiostream->end_production();
 }
 
-Mixer::Mixer(Uint32 __buffer_size,Uint32 ringsize,Uint8 silence_value) : audio_streams(),stream_mutex(SDL_CreateMutex())
+Mixer::Mixer(uint32 __buffer_size,uint32 ringsize,uint8 silence_value) : audio_streams(),stream_mutex(SDL_CreateMutex())
 {
 	buffer_length=__buffer_size;
 	silence=silence_value;
@@ -220,7 +220,7 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(void)
 	return pcb;
 }
 
-void	Mixer::Destroy_Audio_Stream(Uint32 id)
+void	Mixer::Destroy_Audio_Stream(uint32 id)
 {
 	if(id==0)
 		return;	// We don't honour id 0
@@ -241,7 +241,7 @@ void	Mixer::Destroy_Audio_Stream(Uint32 id)
 	SDL::PauseAudio(0);
 }
 
-bool	Mixer::is_playing(Uint32 id)
+bool	Mixer::is_playing(uint32 id)
 {
 	if(id==0)
 		return false; // We don't honor id 0

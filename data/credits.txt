@@ -32,8 +32,8 @@
 
 \CMax Horn
 \C<max@quendi.de>
-\CPorting to MacOS, the webpage,
-\CC++ standard lib conformance
+\CPorting to MacOS, error handling,
+\CC++ standard police, the webpage
 
 
 \CCoder Infidel

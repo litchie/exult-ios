@@ -42,23 +42,24 @@ using std::size_t;
 
 Flat::Flat(const string &n) : U7file(n)
 {
-	// Making it safe
+	// Make sure the file exists and is readable
 	FILE *fp=U7open(filename.c_str(),"rb");
-
-	fclose (fp);
+	fclose(fp);
 }
 
 
-void     Flat::retrieve(int objnum,char **c,size_t *len)
+char *	Flat::retrieve(uint32 objnum, size_t &len)
 { 
 	FILE	*fp;
+	char	*buffer;
 	fp=U7open(filename.c_str(),"rb");
 
 	fseek(fp,0,SEEK_END);
-	*len = ftell(fp);
+	len = ftell(fp);
+	buffer = new char[len];
 	fseek(fp,0,SEEK_SET);
-	char * buf = new char[*len];
-	fread(buf,*len,1,fp);
-	*c = buf;
+	fread(buffer,len,1,fp);
 	fclose(fp);
+	
+	return buffer;
 }

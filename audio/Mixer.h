@@ -17,8 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _Mixer_h_
-#define _Mixer_h_
+#ifndef _MIXER_H_
+#define _MIXER_H_
 
 #if (__GNUG__ >= 2) && (!defined WIN32)
 #  pragma interface
@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
 #include "pcb.h"
-#include <list>
+#include "exult_types.h"
 
 //---- Mixer -----------------------------------------------------------
 
@@ -43,22 +43,22 @@ private:
 	std::list<ProducerConsumerBuf *>	audio_streams;
 public:
 	Mixer();
-	Mixer(unsigned int, unsigned int, unsigned char);
+	Mixer(uint32, uint32, uint8);
 	Mixer(size_t ringsize,size_t bufferlength);
 	~Mixer();
 
 	size_t	buffer_length;
-	Uint8	silence;
+	uint8	silence;
 	SDL_mutex	*stream_mutex;
 	void	stream_lock(void) { SDL_mutexP(stream_mutex); };
 	void	stream_unlock(void) { SDL_mutexV(stream_mutex); };
 	void	cancel_raw(void);
-	void fill_audio_func(void *, Uint8 *, int);
-	void play(Uint8 *, unsigned int);
+	void fill_audio_func(void *, uint8 *, int);
+	void play(uint8 *, uint32);
 	ProducerConsumerBuf *Create_Audio_Stream(void);
-	void	Destroy_Audio_Stream(Uint32 id);
+	void	Destroy_Audio_Stream(uint32 id);
 	void	cancel_streams(void);
-	bool	is_playing(Uint32 id);
+	bool	is_playing(uint32 id);
 
 	// void	set_auxilliary_audio(int);
 	// int	auxilliary_audio;

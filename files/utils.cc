@@ -262,7 +262,7 @@ int U7exists
 
 int Log2
 	(
-	unsigned int n
+	uint32 n
 	)
 {
 	int result = 0;

@@ -78,7 +78,7 @@ int Font::load(const char *fname, int index, int hlead, int vlead)
 	char *font_buf;
 	size_t len;
 	U7object font_obj(fname, index);
-	font_obj.retrieve(&font_buf, len);
+	font_buf = font_obj.retrieve(len);
 	if(!strncmp(font_buf,"font",4))	// If it's an IFF archive...
 		font_buf += 8;		// Skip first 8 bytes
 	BufferDataSource *font_data = new BufferDataSource(font_buf, len);

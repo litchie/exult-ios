@@ -77,7 +77,7 @@ void	Table::IndexTableFile(void)
 }
 
 
-void     Table::retrieve(int objnum,char **,size_t *len)
+char*	Table::retrieve(uint32 objnum,size_t &len)
 { throw exult_exception("Illegal call to Table::retrieve()"); }
 
 #if 0

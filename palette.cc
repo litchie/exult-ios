@@ -43,13 +43,13 @@ void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 	U7object pal(fname, index);
 	size_t len;
 	char *buf;
-	pal.retrieve(&buf, len);	// this may throw an exception
+	buf = pal.retrieve(len);	// this may throw an exception
 	if(len==768) {	// Simple palette
 		if (xindex >= 0) {	// Get xform table.
 			U7object xform(xfname, xindex);
 			char *xbuf; size_t xlen;
 			try {
-				xform.retrieve(&xbuf, xlen);
+				xbuf = xform.retrieve( xlen);
 				for (int i = 0; i < 256; i++) {
 					int ix = xbuf[i];
 					pal1[3*i] = buf[3*ix];

@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 				break;
 			U7FileManager fm;
 			U7file *f = fm.get_file_object(fname);
-			int count = f->number_of_objects(0);
+			int count = f->number_of_objects();
 			cout << "Archive: " << fname << endl;
 			cout << "Type: " << f->get_archive_type() << endl;
 			cout << "Size: " << count << endl;
@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 				char *buf;
 				size_t len;
 		
-				f->retrieve(i, &buf, &len);
+				buf = f->retrieve(i, len);
 				cout << i << "\t" << len << endl;
 				delete [] buf;
 			}
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 			} else {
 				U7FileManager fm;
 				U7file *f = fm.get_file_object(fname);
-				int count = f->number_of_objects(0);
+				int count = f->number_of_objects();
 				for(index=0; index<count; index++) {
 					U7object o(fname,index);
 					char outfile[32];

@@ -56,13 +56,13 @@ public:
 
 	void	cancel_raw(void);	// Cancel mixed samples
 	void	cancel_streams(void);	// Dump any audio streams
-	void	play(Uint8 *sound_data,Uint32 len,bool);
+	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,bool);
 	void	mix_audio(void);
-	void	mix(Uint8 *sound_data,Uint32 len);
+	void	mix(uint8 *sound_data,uint32 len);
 	void	mixfile(const char *fname);
 	bool	playing(void);
-	void	clear(Uint8 *,int);
+	void	clear(uint8 *,int);
 	bool	start_music(int num,bool continuous,int bank=0);
 	void	start_music(const char *fname,int num,bool continuous);
 	void	start_music(XMIDI *midfile,bool continuous);
@@ -79,8 +79,8 @@ public:
 	void	set_effects_enabled(bool ena) { effects_enabled = ena; }
 
 	ProducerConsumerBuf	*Create_Audio_Stream(void) { return !mixer?0:mixer->Create_Audio_Stream(); }
-	void    Destroy_Audio_Stream(Uint32 id) { if(mixer) mixer->Destroy_Audio_Stream(id); }
-	bool	is_playing(Uint32 id) { return !mixer?0:mixer->is_playing(id); }
+	void    Destroy_Audio_Stream(uint32 id) { if(mixer) mixer->Destroy_Audio_Stream(id); }
+	bool	is_playing(uint32 id) { return !mixer?0:mixer->is_playing(id); }
 
 	static	const	unsigned int	ringsize=3000;
 //	static	const	int	samplerate=11025;
@@ -91,7 +91,7 @@ public:
 
 	SDL_AudioSpec actual;
 private:
-	Uint8 * convert_VOC(Uint8 *,unsigned int &);
+	uint8 * convert_VOC(uint8 *,uint32 &);
 	SDL_AudioSpec wanted;
 	MyMidiPlayer	*midi;
 

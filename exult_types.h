@@ -1,11 +1,5 @@
-/**
- **	Handle access to to a data file consisting of segments.
- **
- **	Written: 2/25/00 - JSF
- **/
-
 /*
-Copyright (C) 2000  Jeffrey S. Freedman
+Copyright (C) 2000  Dancer A.L Vesperman
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,30 +16,18 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _SEGFILE_H_
-#define _SEGFILE_H_
+#ifndef	_EXULT_TYPES_H_
+#define	_EXULT_TYPES_H_
 
-#include <fstream>
-#include <string>
 
-#include "exult_types.h"
+typedef	unsigned char	uint8;
+typedef	unsigned short	uint16;
+typedef	unsigned long	uint32;
 
-/*
- *	A class for accessing any 'segmented' file:
- */
-class Segment_file
-{
-	std::string		filename;
-	std::ifstream	file;			// For reading.
-	uint32			num_segments;
-public:
-	Segment_file(std::string nm);
-	int get_num_segments()
-		{ return num_segments; }
-	int is_good()
-		{ return (num_segments != 0); }
-					// Return allocated buffer with data.
-	char* retrieve(uint32 index, std::size_t& len);
-};
+typedef	signed char		sint8;
+typedef	signed short	sint16;
+typedef	signed long		sint32;
+
 
 #endif
+
