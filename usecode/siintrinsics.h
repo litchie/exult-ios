@@ -88,8 +88,9 @@
 
 	USECODE_INTRINSIC_PTR(find_nearby),			// 0x41 - Known
 	
+	// Yes, these both seem to be 'give_last_created':
 	USECODE_INTRINSIC_PTR(give_last_created),		// 0x42
-	USECODE_INTRINSIC_PTR(is_dead),				// 0x43
+	USECODE_INTRINSIC_PTR(give_last_created),		// 0x43
 	USECODE_INTRINSIC_PTR(game_hour),			// 0x44
 	USECODE_INTRINSIC_PTR(game_minute),			// 0x45
 	

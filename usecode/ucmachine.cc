@@ -1915,7 +1915,8 @@ int Usecode_machine::call_usecode
 	)
 	{
 					// Avoid these when already execing.
-	if (call_depth && event == npc_proximity)
+	if (call_depth && event == npc_proximity && Game::get_game_type() ==
+								BLACK_GATE)
 		return (0);
 	Game_object *prev_item = caller_item;
 	caller_item = obj;
