@@ -1263,7 +1263,7 @@ USECODE_INTRINSIC(NOP)
 }
 
 USECODE_INTRINSIC(UNKNOWN)
-	Unhandled(intrinsic, num_parms, parms);
+//	Unhandled(intrinsic, num_parms, parms);
 	USECODE_RETURN(no_ret);
 }
 
