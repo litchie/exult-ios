@@ -192,6 +192,13 @@ on_save_groups1_activate               (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
+on_save_combos1_activate               (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->save_combos();
+}
+
+C_EXPORT void
 on_preferences_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
