@@ -472,7 +472,12 @@ public:
 	void set_polymorph_default();	// Set the default shape
 					// Get the polymorph shape
 	int get_polymorph () { return shape_save; }
-	int get_shape_real();		// Get the non polymorph shape
+					// Get the non polymorph shape (note, doesn't returned skin coloured shapes)
+					// For usecode
+	int get_shape_real();	
+					// This does the same, but will return skin coloured shapes
+					// For paperdolls/face stats
+	int get_sexed_coloured_shape() { return shape_save!=-1?shape_save:get_shapenum(); }	
 
 	// Set schedule list.
 	virtual void set_schedules(Schedule_change *list, int cnt) { }

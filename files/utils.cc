@@ -486,7 +486,7 @@ void U7remove
  *	See if a file exists.
  */
 
-int U7exists
+bool U7exists
 	(
 	const char *fname		  // May be converted to upper-case.
 	)
