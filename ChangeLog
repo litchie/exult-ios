@@ -1,3 +1,6 @@
+2001-07-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc: palette-cycle 244-247 too
+
 2001-07-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: read() now calls setup_game(), removing some
