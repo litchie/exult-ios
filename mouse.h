@@ -69,12 +69,30 @@ public:
 		blocked = 49
 	};
 
-	// Avatar speed (frame delay in 1/1000 secs.)
-	enum Avatar_Speeds
+	/* Avatar speed, relative to standard delay:
+	 * avatar_speed = standard_delay * 100 / avatar_speed_factor
+	 *
+	 *
+	 * Experimental results, Serpent Isle
+	 *
+	 * "short" arrow within central 0.4 of screen in each dimension
+	 * "middle" arrow within central 0.8 of screen in each dimension
+	 * "long" arrow (non-combat, non-threat only) outside 
+	 *
+	 * relative speeds:
+         * (movement type           - time for a certain dist. - rel. speed)
+	 *  non-combat short arrow  -          8               -   1
+	 *  non-combat medium arrow -          4               -   2
+	 *  non-combat long arrow   -          2               -   4
+	 *  combat short arrow      -          8               -   1
+	 *  combat medium arrow     -          6               -   4/3
+	 */
+	enum Avatar_Speed_Factors
 	{
-		slow_speed	= 166,
-		medium_speed	= 100,
-		fast_speed	= 50
+		slow_speed_factor          = 100,
+		medium_combat_speed_factor = 133,
+		medium_speed_factor        = 200,
+		fast_speed_factor          = 400
 	};
 	int avatar_speed;
 

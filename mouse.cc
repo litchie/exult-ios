@@ -32,6 +32,9 @@
 #include "barge.h"
 #include "actors.h"
 #include "cheat.h"
+#include "schedule.h" /* To get Schedule::combat */
+
+using std::max;
 
 short Mouse::short_arrows[8] = {8, 9, 10, 11, 12, 13, 14, 15};
 short Mouse::med_arrows[8] = {16, 17, 18, 19, 20, 21, 22, 23};
@@ -50,7 +53,7 @@ bool Mouse::mouse_update = false;
 Mouse::Mouse
 	(
 	Game_window *gw			// Where to draw.
-	) : gwin(gw), iwin(gwin->get_win()),backup(0),box(0,0,0,0),dirty(0,0,0,0), cur_framenum(0),cur(0),avatar_speed(slow_speed)
+	) : gwin(gw), iwin(gwin->get_win()),backup(0),box(0,0,0,0),dirty(0,0,0,0), cur_framenum(0),cur(0),avatar_speed(100*gwin->get_std_delay()/slow_speed_factor)
 {
 	SDL_GetMouseState(&mousex, &mousey);
 	mousex /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
@@ -67,7 +70,7 @@ Mouse::Mouse
 	(
 	Game_window *gw,		// Where to draw.
 	DataSource &shapes
-	) : gwin(gw), iwin(gwin->get_win()),backup(0),box(0,0,0,0),dirty(0,0,0,0),cur_framenum(0),cur(0),avatar_speed(slow_speed) 
+	) : gwin(gw), iwin(gwin->get_win()),backup(0),box(0,0,0,0),dirty(0,0,0,0),cur_framenum(0),cur(0),avatar_speed(100*gwin->get_std_delay()/slow_speed_factor)
 {
 	SDL_GetMouseState(&mousex, &mousey);
 	mousex /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
@@ -281,33 +284,58 @@ void Mouse::set_speed_cursor()
     
         int dy = ay - mousey, dx = mousex - ax;
         Direction dir = Get_direction(dy, dx);
-        int dist = dy*dy + dx*dx;
-        if (dist < 40*40)
+	Rectangle gamewin_dims = gwin->get_win_rect();
+	float speed_section = max( max( -static_cast<float>(dx)/ax, static_cast<float>(dx)/(gamewin_dims.w-ax)), max(static_cast<float>(dy)/ay, -static_cast<float>(dy)/(gamewin_dims.h-ay)) );
+
+	/* If there is a hostile NPC nearby, the avatar isn't allowed to
+	 * move very fast
+	 * Note that the range at which this occurs in the original is
+	 * less than the "potential target" range- that is, if I go into
+	 * combat mode, even when I'm allowed to run at full speed,
+	 * I'll sometime charge off to kill someone "too far away"
+	 * to affect a speed limit.
+	 * I don't know whether this is taken into account by 
+	 * get_nearby_npcs, but on the other hand, its a negligible point.
+	 */
+	Actor_queue nearby;
+	gwin->get_nearby_npcs( nearby );
+
+	bool nearby_hostile = false;
+	for( Actor_queue::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
+		Actor *actor = *it;
+
+		if( actor->get_alignment() >= Npc_actor::hostile && actor->get_schedule_type() == Schedule::combat && !actor->is_dead() ) {
+			/* TODO- I think invisibles still trigger the
+			 * slowdown, verify this. */
+			nearby_hostile = true;
+			break; /* No need to bother checking the rest :P */
+		}
+	}
+
+        if( speed_section < 0.4 )
         {
-            if(gwin->in_combat())
-                cursor = get_short_combat_arrow(dir);
+            if( gwin->in_combat() )
+                cursor = get_short_combat_arrow( dir );
             else
-                cursor = get_short_arrow(dir);
-//            avatar_speed = slow_speed;
-	    avatar_speed = gwin->get_std_delay();
+                cursor = get_short_arrow( dir );
+            avatar_speed = 100*gwin->get_std_delay()/slow_speed_factor;
         }
-        else if (dist < 75*75)
+        else if( speed_section < 0.8 || gwin->in_combat() || nearby_hostile )
         {
-            if(gwin->in_combat())
-                cursor = get_medium_combat_arrow(dir);
+            if( gwin->in_combat() )
+                cursor = get_medium_combat_arrow( dir );
             else
-                cursor = get_medium_arrow(dir);
-//            avatar_speed = medium_speed;
-	    avatar_speed = gwin->get_std_delay()/2;
+                cursor = get_medium_arrow( dir );
+            if( gwin->in_combat() || nearby_hostile )
+                avatar_speed = 100*gwin->get_std_delay()/medium_combat_speed_factor;
+            else
+                avatar_speed = 100*gwin->get_std_delay()/medium_speed_factor;
         }
-        else
-        {		// No long arrow in combat: use medium
-            if(gwin->in_combat())
-                cursor = get_medium_combat_arrow(dir);
-            else
-                cursor = get_long_arrow(dir);
-//            avatar_speed = fast_speed;
-	    avatar_speed = gwin->get_std_delay()/4;
+        else /* Fast - NB, we can't get here in combat mode; there is no
+              * long combat arrow, nor is there a fast combat speed. */
+        {           
+	    cursor = get_long_arrow( dir );
+            avatar_speed = 100*gwin->get_std_delay()/fast_speed_factor;
         }
     }
     
