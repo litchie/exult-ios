@@ -150,6 +150,8 @@ public:
 		{ return cy; }
 	void set_invalid()		// Set to invalid position.
 		{ cx = cy = 255; }
+	bool is_pos_invalid() const
+		{ return cx >= c_num_chunks || cy >= c_num_chunks; }
 	void set_chunk(int newcx, int newcy)
 		{ cx = newcx; cy = newcy; }
 					// Get frame for desired direction.
