@@ -2278,6 +2278,7 @@ int Chunk_object_list::is_blocked
 	Game_window *gwin = Game_window::get_game_window();
 	Chunk_object_list *chunk = gwin->get_objects(
 			tile.tx/tiles_per_chunk, tile.ty/tiles_per_chunk);
+	chunk->setup_cache();		// Be sure cache is present.
 	int new_lift;			// Check it within chunk.
 	if (chunk->is_blocked(height, tile.tz, tile.tx%tiles_per_chunk,
 				tile.ty%tiles_per_chunk, new_lift))
