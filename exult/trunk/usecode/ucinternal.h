@@ -347,6 +347,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(teleport_to_saved_pos);
 	USECODE_INTRINSIC_DECL(get_item_usability);
 	USECODE_INTRINSIC_DECL(get_skin_colour);
+	USECODE_INTRINSIC_DECL(printf);
 
 	/*
 	 *	Other private methods:
