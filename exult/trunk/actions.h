@@ -34,12 +34,16 @@ class Pathfinder_client;
  */
 class Actor_action
 	{
+	static long seqcnt;		// Sequence # to check for deletion.
+protected:
+	long seq;			// 'unique' sequence #.
 public:
 	virtual ~Actor_action() { }
+	int handle_event_safely(Actor *actor, bool& deleted);
 					// Handle time event.
 	virtual int handle_event(Actor *actor) = 0;
 	virtual void stop(Actor *actor)	// Stop moving.
-		{  }
+		{ seq = ++seqcnt;  }
 					// Set simple path to destination.
 	virtual Actor_action *walk_to_tile(Tile_coord src, 
 					Tile_coord dest, int move_flags);
