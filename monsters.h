@@ -67,7 +67,8 @@ public:
 							bool combine = false);
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
-	virtual Weapon_info *get_weapon(int& points, int& shape);
+	virtual Weapon_info *get_weapon(int& points, int& shape,
+							Game_object *& obj);
 	virtual int is_monster()
 		{ return 1; }
 	virtual void die(Actor *attacker);		// We're dead.

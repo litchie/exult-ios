@@ -422,12 +422,12 @@ int Monster_actor::get_armor_points
 Weapon_info *Monster_actor::get_weapon
 	(
 	int& points,
-	int& shape
+	int& shape,
+	Game_object *& obj		// ->weapon itself returned, or 0.
 	)
 	{
-	Monster_info *inf = get_info().get_monster_info();
 					// Kind of guessing here.
-	Weapon_info *winf = Actor::get_weapon(points, shape);
+	Weapon_info *winf = Actor::get_weapon(points, shape, obj);
 	if (!winf)			// No readied weapon?
 		{			// Look up monster itself.
 		shape = 0;
@@ -437,8 +437,12 @@ Weapon_info *Monster_actor::get_weapon
 			shape = get_shapenum();
 			points = winf->get_damage();
 			}
-		else if (inf)		// Builtin (claws?):
-			points = inf->weapon;
+		else 			// Builtin (claws?):
+			{
+			Monster_info *inf = get_info().get_monster_info();
+			if (inf)	
+				points = inf->weapon;
+			}
 		}
 	return winf;
 	}
