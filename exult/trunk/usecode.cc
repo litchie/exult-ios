@@ -603,7 +603,7 @@ void Answers::_remove_answer(const char *str)
 
 void Answers::remove_answer
 	(
-	Usecode_value& val		// String.
+	Usecode_value& val		// String or array of strings
 	)
 	{
 #if 0
@@ -617,7 +617,7 @@ void Answers::remove_answer
 		int size = val.get_array_size();
 		for (int i=0; i < size; i++) {
 			str = val.get_elem(i).get_str_value();
-			_remove_answer(str);
+			if (str) _remove_answer(str);
 		}
 	} else {
 		str = val.get_str_value();
