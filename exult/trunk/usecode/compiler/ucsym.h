@@ -96,6 +96,20 @@ public:
 	};
 
 /*
+ *	A static (persistent) variable.
+ */
+class Uc_static_var_symbol : public Uc_var_symbol
+	{
+public:
+	Uc_static_var_symbol(char *nm, int off) : Uc_var_symbol(nm, offset)
+		{  }
+					// Gen. code to put result on stack.
+	virtual int gen_value(vector<char>& out);
+					// Gen. to assign from stack.
+	virtual int gen_assign(vector<char>& out);
+	};
+
+/*
  *	A constant integer variable.
  */
 class Uc_const_int_symbol : public Uc_symbol
