@@ -118,7 +118,8 @@ private:
 	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
 	int user_brightness;		// User's setting for brightness.
-	bool faded_out;	// 1 if faded palette to black.
+	bool fades_enabled;
+	bool faded_out;			// 1 if faded palette to black.
 	unsigned long special_light;	// Game minute when light spell ends.
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
@@ -193,6 +194,8 @@ public:
 		{ clock.increment(num_minutes); }
 	void fake_next_period()		// For debugging.
 		{ clock.fake_next_period(); }
+	void set_fades_enabled(bool f) { fades_enabled = f; }		
+	bool get_fades_enabled() const { return fades_enabled; }
 	void set_palette()		// Set for time, flags, lighting.
 		{ clock.set_palette(); }
 	int is_chunk_read(int cx, int cy)
