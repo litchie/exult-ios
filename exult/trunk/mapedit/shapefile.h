@@ -33,6 +33,7 @@ class Shape_group_file;
 class ifstream;
 class Object_browser;
 class Shape_group;
+class Shape;
 
 /*
  *	A shape file:
@@ -69,6 +70,8 @@ public:
 	Object_browser *create_browser(Shape_file_info *vgafile, char **names,
 				unsigned char *palbuf, Shape_group *g = 0);
 	void flush();			// Write if modified.
+	static void write_file(const char *pathname, Shape **shapes,
+						int nshapes, bool single);
 	};
 
 /*

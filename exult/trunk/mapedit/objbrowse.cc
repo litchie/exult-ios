@@ -131,7 +131,7 @@ void File_selector_ok
 
 GtkFileSelection *Create_file_selection
 	(
-	char *title,
+	const char *title,
 	File_sel_okay_fun ok_handler,
 	gpointer user_data
 	)
