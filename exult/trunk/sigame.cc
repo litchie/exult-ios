@@ -209,6 +209,9 @@ void SI_Game::play_intro()
 
 		if (wait_delay (0))
 			return;
+
+		gwin->clear_screen(true);
+
 		
 		// Castle Outside
 		// No sound... yet, can't decode it :(
