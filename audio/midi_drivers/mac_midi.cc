@@ -174,13 +174,13 @@ void	Mac_QT_midi::start_track(XMIDIEventList *elist, bool repeat)
 #endif
 	
 	// Free the event list
-	XMIDI::DeleteEventList (evntlist);
+	XMIDI::DeleteEventList (elist);
 
 	return;
 	
 bail:
 	// Free the event list
-	XMIDI::DeleteEventList (evntlist);
+	XMIDI::DeleteEventList (elist);
 
 	// This disposes of the allocated tune header/sequence
 	stop_track();
