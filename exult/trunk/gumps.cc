@@ -1235,9 +1235,9 @@ void Stats_gump_object::paint
 					// Paint red "checkmark".
 	paint_button(gwin, check_button);
 	Actor *act = get_actor();	// Show statistics.
-	const char *nm = act->get_name().c_str();
-	gwin->paint_text(2, nm, x + namex +
-			(namew - gwin->get_text_width(2, nm))/2, y + namey);
+	std::string nm = act->get_name();
+	gwin->paint_text(2, nm.c_str(), x + namex +
+			(namew - gwin->get_text_width(2, nm.c_str()))/2, y + namey);
 	Paint_num(gwin, act->get_property(Actor::strength),
 						x + textx, y + texty[0]);
 	Paint_num(gwin, act->get_property(Actor::dexterity),
