@@ -41,6 +41,12 @@ using std::size_t;
 
 Flat::Flat(const string &n) : U7file(n)
 {
+	// Making it safe
+	FILE *fp=U7open(filename.c_str(),"rb");
+	if(!fp)
+		throw 0;
+
+	fclose (fp);
 }
 
 
