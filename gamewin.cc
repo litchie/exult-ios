@@ -783,6 +783,47 @@ void Game_window::toggle_combat
 	}
 
 /*
+ *	Add an NPC.
+ */
+
+void Game_window::add_npc
+	(
+	Actor *npc,
+	int num				// Number.  Has to match npc->num.
+	)
+	{
+	assert(num == npc->get_npc_num());
+	assert(num <= npcs.size());
+	if (num == npcs.size())		// Add at end.
+		npcs.append(npc);
+	else
+		{			// Better be unused.
+		assert(!npcs[num] || npcs[num]->is_unused());
+		delete npcs[num];
+		npcs[num] = npc;
+		}
+	}
+
+/*
+ *	Find first unused NPC #.
+ */
+
+int Game_window::get_unused_npc
+	(
+	)
+	{
+	int cnt = npcs.size();		// Get # in list.
+	for (int i = 0; i < cnt; i++)
+		{
+		if (!npcs[i])
+			return i;	// (Don't think this happens.)
+		if (npcs[i]->is_unused())
+			return i;
+		}
+	return cnt;			// First free one is past the end.
+	}
+
+/*
  *	Resize event occurred.
  */
 

@@ -1784,9 +1784,8 @@ void Actor::update_from_studio
 			delete npc;
 			return;
 			}
-		npc->npc_num = gwin->add_npc(npc);
-		if (npc->npc_num != npc_num)
-			cerr << "New NPC was assigned a different #" << endl;
+		npc->npc_num = npc_num;
+		gwin->add_npc(npc, npc_num);
 		if (client_socket >= 0)
 			Exult_server::Send_data(client_socket, Exult_server::user_responded);
 		}
@@ -4017,6 +4016,8 @@ void Npc_actor::remove_this
 	Actor::remove_this(1);	// Remove, but don't ever delete an NPC
 	Npc_actor::switched_chunks(olist, 0);
 	cx = cy = 0xff;			// Set to invalid chunk coords.
+	if (npc_num > 0)
+		unused = true;		// Mark unused if a numbered NPC.
 	}
 
 /*
