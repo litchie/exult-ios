@@ -328,17 +328,13 @@ int XMIDI::PutVLQ(DataSource *dest, uint32 value)
 		buffer |= ((value & 0x7F) | 0x80);
 		i++;
 	}
-
 	if (!dest) return i;
-	for (int j = 0; j < 4; j++)
+	for (int j = 0; j < i; j++)
 	{
 		dest->write1(buffer & 0xFF);
-		if (buffer & 0x80)
-			buffer >>= 8;
-		else
-			break;
-		j++;
+		buffer >>= 8;
 	}
+	
 	return i;
 }
 
