@@ -554,18 +554,18 @@ int Main_actor::step
 		return (0);
 		}
 					// Check for scrolling.
-	int chunkx = gwin->get_chunkx(), chunky = gwin->get_chunky();
+	int scrolltx = gwin->get_scrolltx(), scrollty = gwin->get_scrollty();
 					// At left?
-	if (cx - chunkx <= 0 && tx < 6)
+	if (t.tx - scrolltx < 6)
 		gwin->view_left();
 					// At right?
-	else if ((cx - chunkx)*16 + tx >= gwin->get_width()/8 - 4)
+	else if (t.tx - scrolltx >= gwin->get_width()/tilesize - 4)
 		gwin->view_right();
 					// At top?
-	if (cy - chunky <= 0 && ty < 6)
+	if (t.ty - scrollty < 6)
 		gwin->view_up();
 					// At bottom?
-	else if ((cy - chunky)*16 + ty >= gwin->get_height()/8 - 4)
+	else if (t.ty - scrollty >= gwin->get_height()/tilesize - 4)
 		gwin->view_down();
 	gwin->add_dirty(this);		/// Set to update old location.
 					// Get old chunk.
@@ -987,10 +987,7 @@ void Walk_to_schedule::now_what
 		return;
 		}
 					// Get screen rect. in tiles.
-	Rectangle screen(gwin->get_chunkx()*tiles_per_chunk,
-			gwin->get_chunky()*tiles_per_chunk,
-			1 + gwin->get_width()/tilesize,
-			1 + gwin->get_height()/tilesize);
+	Rectangle screen = gwin->get_win_tile_rect();
 	screen.enlarge(1);		// Enlarge in all dirs.
 					// Might do part of it first.
 	Tile_coord from = npc->get_abs_tile_coord(),

@@ -41,11 +41,10 @@ void Npc_proximity_handler::handle_event
 	{
 	Npc_actor *npc = (Npc_actor *) udata;
 					// See if still on visible screen.
-	Rectangle vchunks(gwin->get_chunkx(), gwin->get_chunky(),
-		(gwin->get_width() + (chunksize - 1))/chunksize,
-		(gwin->get_height() + (chunksize - 1))/chunksize);
-					// No longer visible?
-	if (!vchunks.has_point(npc->get_cx(), npc->get_cy()))
+	Rectangle tiles = gwin->get_win_tile_rect();
+	int tx, ty, tz;
+	npc->get_abs_tile(tx, ty, tz);
+	if (!tiles.has_point(tx, ty))	// No longer visible?
 		{
 		npc->clear_nearby();
 		return;
