@@ -669,8 +669,12 @@ int Barge_object::step
 	Tile_coord cur = get_abs_tile_coord();
 					// Blocked? (Assume ht.=4, for now.)
 	int move_type;
-	if (boat) move_type = MOVE_SWIM;
-	else if (cur.tz >= 11) move_type = MOVE_LEVITATE;
+	if (cur.tz >= 11)
+		{			// Definitely a carpet.
+		move_type = MOVE_LEVITATE;
+		boat = 0;
+		}
+	else if (boat) move_type = MOVE_SWIM;
 	else move_type = MOVE_WALK;
        	if (Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
 						4, cur, t, move_type, 0))
