@@ -25,6 +25,59 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_VEC
 #define INCL_VEC 1
 
+#include	<vector>
+
+template <class T>
+class FeatureVector : public std::vector<T>
+{
+private:
+	typedef	std::vector<T>	baseClass;
+	typedef typename		baseClass::size_type       size_type;
+public:
+	FeatureVector<T>() : baseClass()
+		{}
+	FeatureVector<T>(size_type n) : baseClass()
+		{ reserve(n); }
+	
+	size_type	find( const T obj ) const
+		{
+			size_type pos = 0;
+			for(const_iterator X = begin(); X != end(); ++X, ++pos)
+			{
+				if( *X == obj )
+					return pos;
+			}
+			return -1;
+		}
+
+	size_type	append( T const obj )
+		{
+			push_back( obj );
+			return size() - 1;
+		}
+
+	void		remove( const T obj )
+		{
+			for(iterator X = begin(); X != end(); ++X)
+				if( *X == obj )
+				{
+					erase(X);
+					return;
+				}
+		}
+};
+
+
+class	Game_object;
+class	Egg_object;
+class	Actor;
+
+typedef	FeatureVector<Game_object*>	GOVector;
+typedef	FeatureVector<Egg_object*>	EggVector;
+typedef	FeatureVector<Actor*>		ActorVector;
+
+
+#if 1
 /*
  *	Here's a vector that resizes itself.
  */
@@ -81,5 +134,6 @@ public:
 		return (i);
 		}
 	};
+#endif
 
 #endif
