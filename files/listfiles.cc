@@ -16,6 +16,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdlib>
 #  include <cctype>
@@ -99,7 +103,7 @@ int U7ListFiles(const char *p, char **& files, int& count)
 int U7ListFiles(const char *p, char **& files, int& count)
 {
         glob_t globres;
-	string path(get_system_path(string(p)));
+		string path(get_system_path(string(p)));
         int err = glob(path.c_str(), GLOB_NOSORT, 0, &globres);
 
 
@@ -129,6 +133,3 @@ void U7FreeFileList(char **files, int count)
         }
         free(files);
 }
-
-
-

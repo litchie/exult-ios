@@ -423,24 +423,6 @@ bool Image_window::screenshot(SDL_RWops *dst)
 	return SavePCX_RW(unscaled_surface, dst, true);
 }
 
-unsigned char* Image_window::mini_screenshot()
-{
-	if (!surface) return 0;
-
-	unsigned char* pixels = ibuf->get_bits();
-	int pitch = ibuf->get_line_width();
-	unsigned char* buf = new Uint8[96*60];
-	const int w = 3*96, h = 3*60;
-
-	for (int y = 0; y < h; y+=3)
-		for (int x = 0; x < w; x+=3)
-			buf[y*w/9 + x/3] = pixels[
-				pitch * (y + (get_height()-h)/2) +
-				x + (get_width()-w)/2 ];
-
-	return buf;
-}
-
 void Image_window::set_title(const char *title)
 {
 	SDL_WM_SetCaption(title, 0);
