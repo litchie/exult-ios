@@ -733,11 +733,15 @@ void Actor::paint
 		{
 		Container_game_object::paint(gwin);
 		paint_weapon(gwin);
-		if (flags & (1L << poisoned))
+		if (flags & ((1L<<protection) | (1L << poisoned)))
 			{
 			int xoff, yoff;
 			gwin->get_shape_location(this, xoff, yoff);
-			gwin->paint_outline(xoff, yoff,
+			if (flags & (1L << poisoned))
+				gwin->paint_poison_outline(xoff, yoff,
+					get_shapenum(), get_framenum());
+			else
+				gwin->paint_protect_outline(xoff, yoff,
 					get_shapenum(), get_framenum());
 			}
 		}
@@ -940,14 +944,15 @@ void Actor::set_flag
 		flags |= ((unsigned long) 1 << flag);
 	else if (flag >= 32 && flag < 64)
 		flags2 |= ((unsigned long) 1 << (flag-32));
+	Game_window *gwin = Game_window::get_game_window();
 					// Check sched. to avoid waking
 					//   Penumbra.
 	if (flag == asleep && schedule_type != Schedule::sleep)
 		{			// Set timer to wake in a few secs.
 		need_timers()->start_sleep();
-		if ((get_framenum()&0xf) != Actor::sleep_frame)
+		if ((get_framenum()&0xf) != Actor::sleep_frame &&
+		    get_shapenum() > 0)	// (Might not be initialized yet.)
 			{		// Lie down.
-			Game_window *gwin = Game_window::get_game_window();
 			gwin->add_dirty(this);
 			set_frame(Actor::sleep_frame + ((rand()%4)<<4));
 			gwin->add_dirty(this);
@@ -956,7 +961,13 @@ void Actor::set_flag
 		}
 	if (flag == poisoned)
 		need_timers()->start_poison();
-
+	if (flag == protection)
+		need_timers()->start_protection();
+	if (flag == invisible)
+		{
+		need_timers()->start_invisibility();
+		gwin->set_palette();
+		}
 	set_actor_shape();
 	}
 
@@ -996,11 +1007,8 @@ void Actor::clear_flag
 		flags &= ~((unsigned long) 1 << flag);
 	else if (flag >= 32 && flag < 64)
 		flags2 &= ~((unsigned long) 1 << (flag-32));
-
-#if 0
-	if (flag == asleep)
-		set_schedule_type(Schedule::stand);
-#endif
+	if (flag == invisible)		// Restore normal palette.
+		Game_window::get_game_window()->set_palette();
 	set_actor_shape();
 	}
 
@@ -1387,7 +1395,8 @@ int Actor::figure_hit_points
 			attacker->get_property((int) dexterity)) : 20) -
 			get_property((int) dexterity) +
 			wpoints - armor;
-
+	if (get_flag(Actor::protection))// Defender is protected?
+		prob -= (40 + rand()%20);
 	if (instant_death)
 		prob = 200;	// always hits
 

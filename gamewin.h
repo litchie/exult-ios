@@ -86,6 +86,7 @@ private:
 	unsigned char painted;		// 1 if we updated image buffer.
 	unsigned char focus;		// Do we have focus?
 	unsigned char poison_pixel;	// For rendering poisoned actors.
+	unsigned char protect_pixel;	// For rendering protected actors.
 	unsigned char teleported;	// 1 if just teleported.
 	unsigned char in_dungeon;	// 1 if inside a dungeon.
 	ifstream chunks;		// "u7chunks" file.
@@ -189,6 +190,8 @@ public:
 		{ clock.increment(num_minutes); }
 	void fake_next_period()		// For debugging.
 		{ clock.fake_next_period(); }
+	void set_palette()		// Set for time, flags, lighting.
+		{ clock.set_palette(); }
 	int is_chunk_read(int cx, int cy)
 		{ return schunk_read[12*(cy/chunks_per_schunk) +
 						cx/chunks_per_schunk]; }
@@ -379,13 +382,18 @@ public:
 				shapes.get_info(shapenum).has_translucency());
 		}
 					// Paint outline around a shape.
-	void paint_outline(int xoff, int yoff, int shapenum, int framenum)
+	void paint_outline(int xoff, int yoff, int shapenum, int framenum,
+								int pix)
 		{
 		Shape_frame *shape = get_shape(shapenum, framenum);
 		if (shape)
 			shape->paint_rle_outline(win->get_ib8(), 
-					xoff, yoff, poison_pixel);
+					xoff, yoff, pix);
 		}
+	void paint_poison_outline(int xoff, int yoff, int shnum, int frnum)
+		{ paint_outline(xoff, yoff, shnum, frnum, poison_pixel); }
+	void paint_protect_outline(int xoff, int yoff, int shnum, int frnum)
+		{ paint_outline(xoff, yoff, shnum, frnum, protect_pixel); }
 					// A "face" is used in conversations.
 	void paint_face(int xoff, int yoff, int shapenum, int framenum)
 		{
