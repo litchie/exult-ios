@@ -66,7 +66,7 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 {
 	//The texts used in the main menu contains backslashed sequences that
 	//indicates the output format of the lines:
-	// \Px   include picture number x (frame of MAINSHP.FLX shape 14h)
+	// \Px   include picture number x (frame nr. of shape passed to constructor)
 	// \C    center line
 	// \L    left aligned to right center line
 	// \R	 right aligned to left center line
