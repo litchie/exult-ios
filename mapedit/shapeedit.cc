@@ -37,6 +37,27 @@ using	std::cout;
 using	std::endl;
 
 /*
+ *	Equip window's Okay, Apply buttons.
+ */
+C_EXPORT void on_equip_okay_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->save_equip_window();
+	ExultStudio::get_instance()->close_equip_window();
+	}
+C_EXPORT void on_equip_apply_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->save_equip_window();
+	}
+
+/*
  *	Equip window's Cancel button.
  */
 C_EXPORT void on_equip_cancel_clicked
@@ -284,6 +305,27 @@ void ExultStudio::close_equip_window
 	{
 	if (equipwin)
 		gtk_widget_hide(equipwin);
+	}
+
+/*
+ *	Shape window's Okay, Apply buttons.
+ */
+C_EXPORT void on_shinfo_okay_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->save_shape_window();
+	ExultStudio::get_instance()->close_shape_window();
+	}
+C_EXPORT void on_shinfo_apply_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->save_shape_window();
 	}
 
 /*
@@ -540,7 +582,7 @@ void ExultStudio::init_shape_notebook
 		}
 	gtk_widget_show(book);
 	}
-#if 0
+
 /*
  *	Save the shape-editing notebook.
  */
@@ -622,7 +664,7 @@ void ExultStudio::save_shape_notebook
 	else
 		{
 		Ammo_info *ainfo = info.set_ammo_info(true);
-		ainfo->set_family_shape(get_spin("shinfo_ammo_family");
+		ainfo->set_family_shape(get_spin("shinfo_ammo_family"));
 		ainfo->set_damage(get_spin("shinfo_ammo_damage"),
 				get_optmenu("shinfo_ammo_type"));
 		static char *powers[] = {
@@ -646,7 +688,7 @@ void ExultStudio::save_shape_notebook
 					"shinfo_armor_immun2",
 					"shinfo_armor_immun3" };
 		arinfo->set_prot(get_spin("shinfo_armor_value"));
-		arinfo->set_immun(get_bit_toggles(&immun[0], 
+		arinfo->set_immune(get_bit_toggles(&immun[0], 
 					sizeof(immun)/sizeof(immun[0])));
 		}
 	if (!get_toggle("shinfo_monster_check"))
@@ -691,7 +733,6 @@ void ExultStudio::save_shape_notebook
 					sizeof(flags)/sizeof(flags[0])));
 		}
 	}
-#endif
 
 /*
  *	Open the shape-editing window.
@@ -737,6 +778,23 @@ void ExultStudio::open_shape_window
 		gtk_widget_hide(notebook);
 	gtk_widget_show(shapewin);
 	show_shinfo_shape();		// Be sure picture is updated.
+	}
+
+/*
+ *	Save the shape-editing window.
+ */
+
+void ExultStudio::save_shape_window
+	(
+	)
+	{
+	int shnum = get_num_entry("shinfo_shape");
+	int frnum = get_num_entry("shinfo_frame");
+	Shape_info *info = (Shape_info *)
+			gtk_object_get_user_data(GTK_OBJECT(shapewin));
+	//+++++++Save origin, name?
+	if (info)
+		save_shape_notebook(*info, shnum, frnum);
 	}
 
 /*

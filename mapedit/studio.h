@@ -93,6 +93,7 @@ public:
 	void set_static_path(const char *path);
 	void write_map();
 	void read_map();
+	void write_shape_info();
 	void reload_usecode();
 	void set_play(gboolean play);
 	void set_tile_grid(gboolean grid);
@@ -132,6 +133,7 @@ public:
 	void save_shape_notebook(Shape_info& info, int shnum, int frnum);
 	void open_shape_window(int shnum, int frnum, Vga_file *ifile,
 					char *shname, Shape_info *info = 0);
+	void save_shape_window();
 	void close_shape_window();
 	void show_shinfo_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 
