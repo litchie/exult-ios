@@ -277,6 +277,9 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 #if defined(MACOS) || defined(MACOSX)
   #include "midi_drivers/mac_midi.h"
 #endif
+#if defined( __MORPHOS__ ) || defined( AMIGA )
+	#include "midi_drivers/amiga_midi.h"
+#endif
 
 #define	TRY_MIDI_DRIVER(CLASS_NAME)	\
 	if(no_device) {	\
@@ -405,6 +408,9 @@ bool MyMidiPlayer::init_device(void)
 #endif
 #if defined(MACOS) || defined(MACOSX)
 	TRY_MIDI_DRIVER(Mac_QT_midi)
+#endif
+#if defined(__MORPHOS__) || defined(AMIGA)
+  TRY_MIDI_DRIVER(AmigaMIDI)
 #endif
 
 	initialized = true;
