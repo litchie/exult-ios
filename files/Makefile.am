@@ -1,6 +1,8 @@
 INCLUDES = -I$(srcdir)/.. $(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 		$(DEBUG_FLAGS) $(CPPFLAGS)
 
+SUBDIRS = zip
+
 noinst_LTLIBRARIES = libu7file.la
 
 if HAVE_SNPRINTF

@@ -1,3 +1,7 @@
+2001-11-10  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* */Makefile.am, configure.in, acconfig.h: updated for the minizip lib
+	* files/zip/(un)?zip.c: include config.h
+	
 2001-11-09  Ryan Nunn  <triforce@merlin.net.au>
 	* gumps/Newfile_gump.* : Added "File" field to Save game info display.
 	  Fixed crash on delete.

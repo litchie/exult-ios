@@ -110,11 +110,13 @@ EXULTLIBS = \
 	objs/libobjs.la \
 	gumps/libgumps.la \
 	server/libserver.la \
-	files/libu7file.la
+	files/libu7file.la \
+	files/zip/libminizip.la
 
-exult_LDADD = 			\
+exult_LDADD = \
 	$(EXULTLIBS) \
-	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE)
+	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE) \
+	$(ZLIB_LIBS)
 
 exult_DEPENDENCIES = $(ICON_FILE) $(EXULTLIBS)
 

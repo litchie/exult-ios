@@ -7,6 +7,10 @@
 */
 
 /* Added by Ryan Nunn */
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #ifdef HAVE_ZIP_SUPPORT
 
 #include <stdio.h>
