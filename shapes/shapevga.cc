@@ -114,12 +114,6 @@ void Shapes_vga_file::read_info
 			info[i].set_tfa_data();
 			}
 
-	if (bg) {
-		// set Spark to translucent. Otherwise his pant will palette-cycle
-		info[489].tfa[2] |= (1<<7);
-		info[489].set_tfa_data();
-	}
-
 	ifstream ready;
 	if (U7open2(ready, patch_name(PATCH_READY), READY, editing))
 		{
