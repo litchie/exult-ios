@@ -343,6 +343,9 @@ Object_browser *ExultStudio::create_shape_browser(const char *fname)
 		abort();
 	}
 	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64);
+					// Fonts?  Show 'A' as the default.
+	if (strcasecmp(fname, "fonts.vga") == 0)
+		chooser->set_framenum0('A');
 	if(u7drag_type == U7_SHAPE_SHAPES) {
 		// Read in shape names.
 		int num_names = ifile->get_num_shapes();
@@ -388,7 +391,7 @@ Object_browser *ExultStudio::create_chunk_browser(const char *fname)
 	delete_chunk_browser();
 					// Get file for this path.
 	char *fullname = g_strdup_printf("%s%s", static_path, fname);	
-	chunkfile = new std::ifstream(fullname, std::ios::binary);
+	chunkfile = new std::ifstream(fullname, std::ios::in|std::ios::binary);
 	g_free(fullname);
 	if (!chunkfile->good()) {
 		cerr << "Error opening file '" << fname << "'.\n";
