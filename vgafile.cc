@@ -333,7 +333,7 @@ void Shape_frame::get_rle_shape
 	(
 	ifstream& shapes,		// "Shapes.vga" file to read.
 	long filepos,			// Position in file.
-	long len			// Length of frame data.
+	long len			// Length of entire frame data.
 	)
 	{
 	shapes.seekg(filepos);		// Get to extents.
@@ -342,6 +342,7 @@ void Shape_frame::get_rle_shape
 	xleft = Read2(shapes);
 	yabove = Read2(shapes);
 	ybelow = Read2(shapes);
+	len -= 8;			// Subtract what we just read.
 	data = new unsigned char[len + 2];	// Allocate and read data.
 	shapes.read(data, len);
 	Check_file(shapes);

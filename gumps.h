@@ -194,10 +194,8 @@ public:
 class Actor_gump_spot
 	{
 	friend class Actor_gump_object;
-	short x, y;			// Location rel. to gump.
 	Game_object *obj;		// Object that is here.
-	int usecode_id;			// ID # used in intrinsic 0x72.
-	Actor_gump_spot() : x(0), y(0), obj(0)
+	Actor_gump_spot() : obj(0)
 		{  }
 	};
 
@@ -210,6 +208,9 @@ class Actor_gump_object : public Gump_object
 	Disk_gump_button *disk_button;	// For bringing up 'save' box.
 //+++++++Move this info to Actor!!
 	Actor_gump_spot spots[12];	// Where things can go.
+	static short coords[24];	// Coords. of where to draw things.
+	static int spotx(int i) { return coords[2*i]; }
+	static int spoty(int i) { return coords[2*i + 1]; }
 	enum Spots {			// Index of each spot, starting at
 					//   upper, rt., going clkwise.
 		head = 0,

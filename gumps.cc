@@ -31,6 +31,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 short Actor_gump_object::diskx = 122, Actor_gump_object::disky = 132;
 short Actor_gump_object::heartx = 122, Actor_gump_object::hearty = 114;
+short Actor_gump_object::coords[24] = {
+	114, 10,	/* head */	115, 24,	/* chest */
+	115, 37,	/* belt */	115, 55,	/* lhand */
+	115, 71,	/* lfinger */	114, 85,	/* legs */
+	76, 98,		/* feet */	35, 70,		/* rfinger */
+	37, 56,		/* rhand */	37, 37,		/* arms */
+	37, 24,		/* neck */	37, 11		/* back */
+	};
 short Stats_gump_object::textx = 123;
 short Stats_gump_object::texty[10] = {17, 26, 35, 46, 55, 67, 76, 86,
 							95, 104};
@@ -474,7 +482,7 @@ int Actor_gump_object::find_closest
 	int closest = -1;		// Best index.
 	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
 		{
-		int dx = mx - spots[i].x, dy = my - spots[i].y;
+		int dx = mx - spotx(i), dy = my - spoty(i);
 		long dsquared = dx*dx + dy*dy;
 					// Better than prev.?
 		if (dsquared < closest_squared && (!only_empty ||
@@ -500,20 +508,6 @@ Actor_gump_object::Actor_gump_object
 	{
 	heart_button = new Heart_gump_button(this, heartx, hearty);
 	disk_button = new Disk_gump_button(this, diskx, disky);
-					// Set spot locations.
-					// +++++Should be static.
-	spots[(int) head].x = 114; spots[(int) head].y = 10;
-	spots[(int) chest].x = 115; spots[(int) chest].y = 24;
-	spots[(int) belt].x = 115; spots[(int) belt].y = 37;
-	spots[(int) lhand].x = 115; spots[(int) lhand].y = 55;
-	spots[(int) lfinger].x = 115; spots[(int) lfinger].y = 71;
-	spots[(int) legs].x = 114; spots[(int) legs].y = 85;
-	spots[(int) feet].x = 76; spots[(int) feet].y = 98;
-	spots[(int) rfinger].x = 35; spots[(int) rfinger].y = 70;
-	spots[(int) rhand].x = 37; spots[(int) rhand].y = 56;
-	spots[(int) arms].x = 37; spots[(int) arms].y = 37;
-	spots[(int) neck].x = 37; spots[(int) neck].y = 24;
-	spots[(int) back].x = 37; spots[(int) back].y = 11;
 					// Store objs. in their spots.
 	Game_object *last_object = container->get_last_object();
 	if (!last_object)
@@ -600,8 +594,8 @@ void Actor_gump_object::add_to_spot
 	Shape_frame *shape = gwin->get_shape(*obj);
 	int w = shape->get_width(), h = shape->get_height();
 					// Set object's position.
-	obj->cx = spot->x + shape->get_xleft() - w/2 - object_area.x;
-	obj->cy = spot->y + shape->get_yabove() - h/2 - object_area.y;
+	obj->cx = spotx(index) + shape->get_xleft() - w/2 - object_area.x;
+	obj->cy = spoty(index) + shape->get_yabove() - h/2 - object_area.y;
 					// Shift if necessary.
 	int x0 = obj->cx - shape->get_xleft(), 
 	    y0 = obj->cy - shape->get_yabove();
