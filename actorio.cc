@@ -87,7 +87,7 @@ Actor::Actor
 	char namebuf[17];
 	nfile.read(namebuf, 16);
 	namebuf[16] = 0;		// Be sure it's 0-delimited.
-	name = strdup(namebuf);		// Store copy of it.
+	name = namebuf;		// Store copy of it.
 	Game_window *gwin = Game_window::get_game_window();
 					// Get abs. chunk. coords. of schunk.
 	int scy = 16*(schunk/12);
