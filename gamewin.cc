@@ -54,9 +54,8 @@ Game_window::Game_window
 	    conv_choices(0), texts(0), num_faces(0), last_face_shown(-1),
 	    open_gumps(0),
 	    main_actor_inside(0), mode(intro), npcs(0),
-	    shapes(),
-	    faces(FACES_VGA),
-	    gumps(GUMPS_VGA)
+	    shapes(), dragging(0),
+	    faces(FACES_VGA), gumps(GUMPS_VGA)
 	{
 	game_window = this;		// Set static ->.
 	if (!shapes.is_good())
@@ -1056,6 +1055,30 @@ int Game_window::find_roof
 	}
 
 /*
+ *	Find objects that can be selected, dragged, or activated.
+ *	The last one in the list is the 'highest' in terms of lift, with
+ *	objects visible in a 'gump' the highest.
+ *
+ *	Output:	# of objects stored.
+ */
+
+int Game_window::find_objects
+	(
+	int x, int y,			// Pos. on screen.
+	Game_object **list		// Objects found are stored here.
+	)
+	{
+	int cnt = 0;
+	int actor_lift = main_actor->get_lift();
+	int start = actor_lift > 0 ? -1 : 0;
+					// See what was clicked on.
+	for (int lift = start; lift < 3; lift++)
+		cnt += find_objects(actor_lift + lift, x, y, &list[cnt]);
+//+++++++++Look in gumps.
+	return (cnt);
+	}
+
+/*
  *	Find objects at a given position on the screen with a given lift.
  *
  *	Output: # of objects, stored in list.
@@ -1107,12 +1130,8 @@ void Game_window::show_items
 	int x, int y			// Coords. in window.
 	)
 	{
-	Game_object *found[100];
-	int cnt = 0;
-					// See what was clicked on.
-	for (int lift = 0; lift < 3; lift++)
-		cnt += find_objects(main_actor->get_lift() + lift, 
-							x, y, &found[cnt]);
+	Game_object *found[100];	// See what was clicked on.
+	int cnt = find_objects(x, y, found);
 #if 0
 	for (int i = 0; i < cnt; i++)	// Go through them.
 		{
@@ -1221,12 +1240,8 @@ void Game_window::double_clicked
 	int x, int y			// Coords in window.
 	)
 	{
-	Game_object *found[100];
-	int cnt = 0;
-					// See what was clicked on.
-	for (int lift = 0; lift < 3; lift++)
-		cnt += find_objects(main_actor->get_lift() + lift, 
-							x, y, &found[cnt]);
+	Game_object *found[100];	// See what was clicked on.
+	int cnt = find_objects(x, y, found);
 //	cout << cnt << " objects found.\n";
 	remove_all_text();		// Remove text msgs. from screen.
 	for (int i = 0; i < cnt; i++)	// Go through them.
