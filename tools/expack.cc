@@ -72,6 +72,46 @@ void set_mode(Arch_mode &mode, Arch_mode new_mode)
 		mode = new_mode;
 }
 
+// Converts all .'s to _'s
+void make_header_name(char *filename)
+{
+	int i = strlen (filename);
+
+	while (i--) if (filename[i] == '.') filename[i] = '_';
+		else if (filename[i] == '/' || filename[i] == '\\' || filename[i] == ':') break;
+}
+
+// Makes a name uppercase
+void make_uppercase (char *name)
+{
+	int i = strlen (name);
+
+	while (i--) if (name[i] >= 'a' && name[i] <= 'z') name[i] -= 'a' - 'A';
+}
+
+// strips a path from a filename
+void strip_path (char *filename)
+{
+	int i = strlen (filename);
+
+	while (i--)
+	{
+		if (filename[i] == '\\' || filename[i] == '/' || filename[i] == ':')
+			break;
+	}
+
+	// Has a path
+	if (i >= 0)
+	{
+		int j = 0;
+
+		for (i++, j = 0; filename[j+i]; j++)
+			filename[j] = filename[j+i];
+
+		filename[j] = 0;
+	}
+}
+
 long get_file_size(const char *fname)
 {
 	if (is_null_entry(fname)) 
@@ -142,6 +182,8 @@ int main(int argc, char **argv)
 {
 	Arch_mode mode = NONE;
 	char fname[1024];
+	char hname[1024];
+	char hprefix[1024];
 	char ext[] = "u7o";
 	int index;
 	vector<string>	file_names;
@@ -171,6 +213,15 @@ int main(int argc, char **argv)
 					respfile.getline(temp, 1024);
 					strncpy(fname, path_prefix, 1024);
 					strncat(fname, temp, 1024);
+
+					// Header file name
+					strncpy (hprefix, temp, 1024);
+					make_header_name(hprefix);
+					strncpy (hname, path_prefix, 1024);
+					strncat (hname, hprefix, 1024);
+					strncat (hname, ".h", 1024);
+					strip_path (hprefix);
+					make_uppercase (hprefix);
 
 					while(!respfile.eof()) {
 						respfile.getline(temp, 1024);
@@ -262,6 +313,10 @@ int main(int argc, char **argv)
 			ofstream flex;
 			U7open(flex, fname);
 			StreamDataSource fs(&flex);
+
+			char hline[1024];
+			ofstream header;
+			U7open(header, hname, true);
 			
 			std::vector<int>	file_sizes;
 			for(std::vector<string>::const_iterator X = file_names.begin(); X != file_names.end(); ++X)
@@ -294,6 +349,13 @@ int main(int argc, char **argv)
 					}
 				}
 			}
+
+			// The beginning of the header
+			header << "// Header for \"" << fname << "\" Created by expack" << std::endl << std::endl;
+			header << "// DO NOT MODIFY" << std::endl << std::endl;
+			header << "#ifndef " << hprefix << "_INCLUDED" << std::endl;
+			header << "#define " << hprefix << "_INCLUDED" << std::endl << std::endl;
+
 			// The files
 				{
 				for(int i=0; i<file_names.size(); i++) {
@@ -306,10 +368,17 @@ int main(int argc, char **argv)
 						fs.write(buf, file_sizes[i]);
 						delete [] buf;
 						infile.close();
+
+						strncpy (hline, file_names[i].c_str(), 1024);
+						make_header_name(hline);
+						make_uppercase(hline);
+						header << "#define\t" << hprefix << "_" << hline << "\t\t" << i << std::endl;
 					}
 				}
 			}
+			header  << std::endl << "#endif" << std::endl << std::endl;
 			flex.close();
+			header.close();
 			
 		}
 		break;
