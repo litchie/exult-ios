@@ -118,6 +118,7 @@ toolsinstall: tools
 	cp usecode/ucxt/data/events.data $(U7PATH)/data
 	cp usecode/ucxt/data/flags.data $(U7PATH)/data
 	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/data
+	cp usecode/ucxt/data/u7opcodes.data $(U7PATH)/data
 	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data
 	cp data/u7bgintrinsics.data $(U7PATH)/data
 	cp data/u7siintrinsics.data $(U7PATH)/data
@@ -145,6 +146,7 @@ toolsdist: tools
 	cp usecode/ucxt/data/events.data $(TOOLSPATH)/data
 	cp usecode/ucxt/data/flags.data $(TOOLSPATH)/data
 	cp usecode/ucxt/data/opcodes.txt $(TOOLSPATH)/data
+	cp usecode/ucxt/data/u7opcodes.data $(TOOLSPATH)/data
 	cp usecode/ucxt/data/u7misc.data $(TOOLSPATH)/data
 	cp data/u7bgintrinsics.data $(TOOLSPATH)/data
 	cp data/u7siintrinsics.data $(TOOLSPATH)/data
