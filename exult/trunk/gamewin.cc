@@ -1067,7 +1067,12 @@ Gump_object *Game_window::find_gump
 		{
 		Rectangle box = get_gump_rect(gmp);
 		if (box.has_point(x, y))
-			found = gmp;
+			{		// Check the shape itself.
+			Shape_frame *s = gumps.get_shape(gmp->get_shapenum(),
+							gmp->get_framenum());
+			if (s->has_point(x - gmp->get_x(), y - gmp->get_y()))
+				found = gmp;
+			}
 		}
 	return (found);
 	}
@@ -1131,7 +1136,13 @@ int Game_window::find_objects
 				if (obj->get_lift() != lift)
 					continue;
 				Rectangle r = get_shape_rect(obj);
-				if (r.has_point(x, y))
+				if (!r.has_point(x, y))
+					continue;
+					// Check the shape itself.
+				Shape_frame *s = get_shape(*obj);
+				int ox, oy;
+				get_shape_location(obj, ox, oy);
+				if (s->has_point(x - ox, y - oy))
 					list[cnt++] = obj;
 				}
 			}

@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Handle access to one of the xxx.vga files.
  **
  **	Written: 4/29/99 - JSF
@@ -150,21 +151,18 @@ void Shape_frame::get_rle_shape
 	rle = 1;
 	}
 
-#if 0
 /*
- *	Find the point in the shape which is first leftmost, and then bottom-
- *	most.  (This is for placing the checkmark in gumps.)
+ *	See if a point, relative to the shape's 'origin', actually within the
+ *	shape.
  */
 
-void Shape_frame::find_left_bottom
+int Shape_frame::has_point
 	(
-	int& left, int& bottom		// (X,Y) coord. returned.
+	int x, int y			// Relative to origin of shape.
 	)
 	{
 	unsigned char *in = data; 	// Point to data.
 	int scanlen;
-	left = 15000;
-	bottom = -15000;
 	while ((scanlen = Read2(in)) != 0)
 		{
 					// Get length of scan line.
@@ -172,15 +170,29 @@ void Shape_frame::find_left_bottom
 		scanlen = scanlen>>1;
 		short scanx = Read2(in);
 		short scany = Read2(in);
-		if (scanx < left || (scanx == left && scany > bottom))
+					// Be liberal by 1 pixel.
+		if (y == scany && x >= scanx - 1 && x <= scanx + scanlen)
+			return (1);
+		if (!encoded)		// Raw data?
 			{
-			left = scanx;
-			bottom = scany;
+			in += scanlen;
+			continue;
 			}
-		in += scanlen;
+		for (int b = 0; b < scanlen; )
+			{
+			unsigned char bcnt = *in++;
+					// Repeat next char. if odd.
+			int repeat = bcnt&1;
+			bcnt = bcnt>>1; // Get count.
+			if (repeat)
+				in++;	// Skip pixel to repeat.
+			else		// Skip that # of bytes.
+				in += bcnt;
+			b += bcnt;
+			}
 		}
+	return (0);			// Never found it.
 	}
-#endif
 
 /*
  *	Read in a frame.
