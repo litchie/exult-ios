@@ -63,6 +63,7 @@ private:
 	static std::string gametitle;
 	static unsigned int ticks;
 protected:
+	static bool editing_flag;
 	int topx, topy, centerx, centery;
 	Vga_file menushapes;
 	bool	jive;
@@ -78,6 +79,7 @@ public:
 
 	static void set_new_game() { new_game_flag = true; }
 	static bool is_new_game() { return new_game_flag; }
+	static bool is_editing() { return editing_flag; }
 	static char *get_game_identity(const char *savename);
 	static Game *create_game(Exult_Game mygame, const char *title = 0);
 	static Exult_Game get_game_type()

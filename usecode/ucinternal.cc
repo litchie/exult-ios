@@ -1470,13 +1470,24 @@ Usecode_internal::Usecode_internal
 	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
 		temp_to_be_deleted(0), telekenesis_fun(-1)
 	{
-	ifstream file;                // Read in usecode.
-        U7open(file, USECODE);
-	sp = stack;
 					// Clear timers.
 	memset((char *) &timers[0], 0, sizeof(timers));
-	read_usecode(file);
-	file.close();
+	sp = stack;
+	ifstream file;                // Read in usecode.
+	try
+		{
+	        U7open(file, USECODE);
+		read_usecode(file);
+		file.close();
+		}
+	catch(const file_exception & f)
+		{
+		if (!Game::is_editing())	// Ok if map-editing.
+			throw f;
+		std::cerr << "Warning (map-editing): Couldn't open '" << 
+							USECODE << "'" << endl;
+		}
+
 					// Get custom usecode functions.
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_USECODE))
 		{
