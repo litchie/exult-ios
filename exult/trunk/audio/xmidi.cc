@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <stdio.h>
+#include <iostream>
 #include "utils.h"
 #include "../files/U7file.h"
 #include "xmidi.h"
