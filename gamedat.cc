@@ -365,9 +365,12 @@ void Game_window::write_saveinfo()
 		SaveGame_Details details;
 		ifstream in;
 		U7open(in, GSAVEINFO);		// Open file; throws an exception 
-		in.read((char *) &details, sizeof (details));
+
+		// The Game Time that the save was done at
+		in.seekg(10, ios::cur);	// Skip 10 bytes.
+		save_count += Read2(in);
+
 		in.close();
-		save_count += details.save_count;
 	}
 	catch(const file_exception & f)
 	{
