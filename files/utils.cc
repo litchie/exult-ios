@@ -43,6 +43,7 @@
 #include <windows.h>
 #endif
 
+#include <exception>
 #include "exceptions.h"
 #include "utils.h"
 
@@ -307,7 +308,10 @@ void U7open
 
 	int uppercasecount = 0;
 	do {
-		in.open(name.c_str(), mode);		// Try to open
+		try {
+			in.open(name.c_str(), mode);		// Try to open
+		} catch (std::exception &e)
+		{}
 		if (in.good())
 			return; // found it!
 		in.clear();	// Must do this again

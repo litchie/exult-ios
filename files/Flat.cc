@@ -47,7 +47,14 @@ using std::size_t;
 Flat::Flat(const string &n) : U7file(n)
 {
 	// Make sure the file exists and is readable
-	FILE *fp=U7open(filename.c_str(),"rb");
+	FILE *fp;
+	try {
+	fp=U7open(filename.c_str(),"rb");
+	} catch (const file_open_exception &e)
+	{
+		cerr << e.what() << ". exiting." << endl;
+		exit(1);
+	}
 	fclose(fp);
 }
 
@@ -56,7 +63,13 @@ char *	Flat::retrieve(uint32 objnum, size_t &len)
 { 
 	FILE	*fp;
 	char	*buffer;
+	try {
 	fp=U7open(filename.c_str(),"rb");
+	} catch (const file_open_exception &e)
+	{
+		cerr << e.what() << ". exiting." << endl;
+		exit(1);
+	}
 
 	fseek(fp,0,SEEK_END);
 	len = ftell(fp);

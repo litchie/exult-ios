@@ -523,7 +523,7 @@ void	Audio::playfile(const char *fname,bool wait)
 	size_t	len;
 	uint8	*buf;
 	
-	fp = U7open(fname,"r");
+	fp = U7open(fname,"r"); // DARKE FIXME
 	if(!fp)
 	{
 		perror(fname);
