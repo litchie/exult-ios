@@ -1,3 +1,8 @@
+2000-11-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+
+	* menulist.cc/h: only redraw changed items (huge speedup), 
+	  make mouse disappear on keypress.
+
 2000-11-22  Max Horn  <max@quendi.de>
 
 	* added a lot of C++ std namespace code
