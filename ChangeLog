@@ -1,3 +1,9 @@
+2002-05-15  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/contain.cc (Container_game_object): Auto-add keys to SI
+	keyring.  Also ignore frame when combining some items (coins,
+	arrows, etc.)
+
 2002-05-14  Ryan Nunn  <triforce@merlin.net.au>
 	* cheat.*, gamerend.cc, objs/objs.h : Fixing Namespace, and forcing int
 	  to bool problems.
