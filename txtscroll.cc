@@ -90,9 +90,11 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 			int pix = *(ptr+2)-'0';
 			ptr +=3;
 			Shape_frame *frame = shapes->get_frame(pix);
-			gwin->paint_shape(center-frame->get_width()/2,
-					  ypos, frame);
-			ypos += frame->get_height()+vspace;
+			if (frame) {
+			        gwin->paint_shape(center-frame->get_width()/2,
+						  ypos, frame);
+				ypos += frame->get_height()+vspace;
+			}
 		} else if(!strncmp(ptr,"\\C",2)) {
 			ptr += 2;
 			align = 0;
