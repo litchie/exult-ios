@@ -1,7 +1,7 @@
 
 OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o \
 	vgafile.o utils.o readnpcs.o gamedat.o usecode.o \
-	imagetxt.o text.o items.o lists.o
+	tqueue.o gameclk.o imagetxt.o text.o items.o lists.o
 
 ifdef DOS
 CXX = dos-g++
