@@ -2810,8 +2810,8 @@ bool Actor::figure_hit_points
 			(attacker->party_id != -1 || attacker->npc_num == 0);
 	bool instant_death = (cheat.in_god_mode() && theyre_party);
 					// Modify using combat difficulty.
-	int bias = were_party ? gwin->combat_difficulty :
-			(theyre_party ? -gwin->combat_difficulty : 0);
+	int bias = were_party ? Combat::difficulty :
+			(theyre_party ? -Combat::difficulty : 0);
 	int armor = get_armor_points() - bias;
 	int wpoints;
 	Weapon_info *winf;
@@ -2968,7 +2968,13 @@ bool Actor::figure_hit_points
 			say(first_ouch, last_ouch);
 
 	bool defeated = reduce_health(hp, attacker);
-	
+	if (Combat::show_hits)
+		{
+		eman->remove_text_effect(this);
+		char hpmsg[50];
+		sprintf(hpmsg, "-%d(%d)", hp, newhp);
+		eman->add_text(hpmsg, this);
+		}
 	string name = "<trap>";
 	if (attacker)
 		name = attacker->get_name();
