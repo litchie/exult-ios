@@ -1,3 +1,7 @@
+2001-12-26  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*: Added opcodes 4C and 4D. Also added option to load
+	a specific usecode file to ucxt.
+
 2001-12-26  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* tools/uctools.h, usecode/ucinternal.cc: added opcodes 4C and 4D,
 	spanish SI works now
