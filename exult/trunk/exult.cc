@@ -46,6 +46,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 #include "mouse.h"
 #include "gumps.h"
+#include "effects.h"
 #include "args.h"
 
 
@@ -827,6 +828,19 @@ static void Handle_keystroke
 			mouse->set_shape(Mouse::hand);
 		break;
 		}
+	case SDLK_w:			// Test weather.
+		if (ctrl)		// Duration is 4*number secs.
+			{
+			static int wcnt = 0, wmax = 2;
+			if (wcnt == 0)
+				gwin->get_tqueue()->add(SDL_GetTicks() + 10,
+						new Rain_effect(4), 0);
+			else if (wcnt == 1)
+				gwin->get_tqueue()->add(SDL_GetTicks() + 10,
+						new Lightning_effect(2), 0);
+			wcnt = (wcnt + 1)%wmax;
+			}
+		break;
 	case SDLK_x:			// Alt-x means quit.
 		if (alt && Yesno_gump_object::ask(
 						"Do you really want to quit?"))

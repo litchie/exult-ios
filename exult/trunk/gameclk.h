@@ -10,6 +10,12 @@
 #include "tqueue.h"
 
 /*
+ *	Time passes 15 times faster in game than in real-life, so
+ *	1 real minute = 15 game minutes.
+ */
+const int time_factor = 15;
+
+/*
  *	Keep track of time, and of the palette for a given time.
  */
 class Game_clock : public Time_sensitive
