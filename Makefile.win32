@@ -196,6 +196,9 @@ $(EXULT_SI_FLX): expack.exe $(EXULT_SI_FLX_OBJECTS)
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres --include-dir win32 win32/exultico.rc exultico.o
 
+cmanip.exe : cmanip.o $(CONF_OBJS) $(FILE_OBJS)
+	$(CXX) $(LFLAGS) -o cmanip.exe cmanip.o $(CONF_OBJS) $(FILE_OBJS) -mconsole
+
 IPACK_OBJS=ipack.o U7file.o Flex.o IFF.o Table.o Flat.o utils.o imagebuf.o ibuf8.o ibuf16.o vgafile.o pngio.o
 
 ipack.exe : $(IPACK_OBJS)
@@ -225,7 +228,7 @@ wud.exe : wud.o uctools.h bgintrinsics.h siintrinsics.h
 wuc.exe : wuc.o
 	$(CXX) $(LFLAGS) -o wuc.exe wuc.o -mconsole
 
-UCXT_OBJS=Configuration.o XMLEntity.o utils.o ucdata.o ucxt.o ucfunc.o opcodes.o
+UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o opcodes.o
 
 ucxt.exe : $(UCXT_OBJS)
 	$(CXX) $(LFLAGS) -o ucxt.exe $(UCXT_OBJS) -mconsole
@@ -243,7 +246,7 @@ uclex.cc:
 	flex usecode/compiler/uclex.ll 
 	ren lex.yy.c uclex.cc
 
-CONFREGRESS_OBJS=Configuration.o XMLEntity.o xmain.o utils.o
+CONFREGRESS_OBJS=$(CONF_OBJS) xmain.o utils.o
 
 conf/confregress.exe  : $(CONFREGRESS_OBJS)
 	$(CXX) $(LFLAGS) -o confregress.exe $(CONFREGRESS_OBJS) -mconsole
@@ -292,10 +295,11 @@ dist:   $(EXEC)
 	copy SDL\README-SDL.txt $(U7PATH)\Exult
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult
 
-tools:  expack.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
+tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
 toolsclean:
 	del expack.o expack.exe $(FILE_OBJS)
+	del cmanip.exe cmanip.o
 	del ipack.o ipack.exe $(IPACK_OBJS)
 	del mklink.o mklink.exe 
 	del rip.o rip.exe
@@ -313,6 +317,7 @@ toolsclean:
 toolsinstall: tools
 	if not exist $(U7PATH)\tools md $(U7PATH)\tools
 	strip expack.exe -o $(U7PATH)\tools\expack.exe
+	strip cmanip.exe -o $(U7PATH)\tools\cmanip.exe
 	strip ipack.exe -o $(U7PATH)\tools\ipack.exe
 	strip mklink.exe -o $(U7PATH)\tools\mklink.exe
 	strip rip.exe -o $(U7PATH)\tools\rip.exe
@@ -336,6 +341,7 @@ toolsdist: tools
 	if not exist $(TOOLSPATH) md $(TOOLSPATH)
 	if not exist $(TOOLSPATH)\tools md $(TOOLSPATH)\tools
 	strip expack.exe -o $(TOOLSPATH)\tools\expack.exe
+	strip cmanip.exe -o $(TOOLSPATH)\tools\cmanip.exe
 	strip ipack.exe -o $(TOOLSPATH)\tools\ipack.exe
 	strip mklink.exe -o $(TOOLSPATH)\tools\mklink.exe
 	strip rip.exe -o $(TOOLSPATH)\tools\rip.exe

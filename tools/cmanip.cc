@@ -58,7 +58,9 @@ bool			verbose=false; // dump verbose output to cerr
 void usage(unsigned int i)
 {
 	cout << "cmanip - simple commandline, conf/ file manipulator" << endl
+	#ifdef HAVE_CONFIG_H
 	     << "    compiled with " << PACKAGE << " " << VERSION << endl
+	#endif
 	     << endl
 	     << "usage:" << endl
 	     << "\tcmanip <conffile> [option [parameters]] ..." << endl
