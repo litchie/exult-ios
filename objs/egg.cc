@@ -325,7 +325,9 @@ int Egg_object::is_active
 	case avatar_near:
 		if (obj != gwin->get_main_actor())
 			return 0;
+#ifdef DEBUG
 		print_debug();
+#endif
 		// fall through
 	case party_near:		// Avatar or party member.
 		if (!obj->get_flag(Obj_flags::in_party))

@@ -151,14 +151,18 @@ bool Usecode_internal::call_function(int funcid,
 	Usecode_function *fun = index < slot.size() ? slot[index] : 0;
 	if (!fun)
 	{
+#ifdef DEBUG
 		cout << "Usecode " << funcid << " not found." << endl;
+#endif
 		return false;
 	}
 	if (orig)
 		if (!(fun = fun->orig))
 		{
+#ifdef DEBUG
 			cout << "Original usecode " << funcid << " not found."
 								<< endl;
+#endif
 			return false;
 		}
 
@@ -1468,6 +1472,7 @@ Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func,const 
 		}
 #endif
 #endif
+#ifdef DEBUG
 	if(intrinsic_trace)
 		{
 		Usecode_Trace(name,intrinsic,num_parms,parms);
@@ -1477,6 +1482,7 @@ Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func,const 
 		return (u);
 		}
 	else
+#endif
 		return ((*this).*func)(event,intrinsic,num_parms,parms);
 }
 
