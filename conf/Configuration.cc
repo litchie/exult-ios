@@ -227,7 +227,7 @@ void	Configuration::write_back(void)
 }
 
 
-vector<string>	Configuration::listkeys(string &key)
+vector<string>	Configuration::listkeys(string &key,bool longformat)
 {
 	vector<string>	vs;
 	XMLnode *sub;
@@ -241,6 +241,8 @@ vector<string>	Configuration::listkeys(string &key)
 		{
 		string	s=key;
 		s+="/";
+		if(!longformat)
+			s="";
 		s+=it->entity.id;
 		vs.push_back(s);
 		}
@@ -248,9 +250,9 @@ vector<string>	Configuration::listkeys(string &key)
 	return vs;
 }
 
-vector<string>	Configuration::listkeys(const char *key)
+vector<string>	Configuration::listkeys(const char *key,bool longformat)
 {
 	string s(key);
-	return listkeys(s);
+	return listkeys(s,longformat);
 }
 
