@@ -1155,7 +1155,15 @@ void Game_window::read_gwin
 	)
 	{
 	ifstream gin;
-	U7open(gin, GWINDAT);	// Gamewin.dat.
+	try
+	{
+		U7open(gin, GWINDAT);	// Gamewin.dat.
+	} catch (const file_open_exception& e)
+	{
+		return;
+	}
+	
+
 					// Start with scroll coords (in tiles).
 	scrolltx = Read2(gin);
 	scrollty = Read2(gin);
