@@ -264,6 +264,8 @@ public:
 	void start(int speed = 250, int delay = 0);
 	void stop();			// Stop animation.
 	void follow(Actor *leader);	// Follow the leader.
+					// Approach another from offscreen.
+	int approach_another(Actor *other, bool wait = false);
 					// Get info. about tile to step onto.
 	static void get_tile_info(Actor *actor,
 		Game_window *gwin, Chunk_object_list *nlist,
