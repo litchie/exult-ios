@@ -62,7 +62,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  */
 %token IF ELSE RETURN WHILE FOR IN
 %token VAR STRING
-%token SAY MESSAGE EVENT FLAG ITEM
+%token SAY MESSAGE EVENT FLAG ITEM UCTRUE UCFALSE
 
 /*
  *	Other tokens:
@@ -282,6 +282,14 @@ primary:
 	| declared_var '[' expression ']'
 		{ $$ = new Uc_arrayelem_expression($1, $3); }
 	| function_call
+	| UCTRUE
+		{ $$ = new Uc_bool_expression(true); }
+	| UCFALSE
+		{ $$ = new Uc_bool_expression(false); }
+	| EVENT
+		{ $$ = new Uc_event_expression(); }
+	| ITEM
+		{ $$ = new Uc_item_expression(); }
 	| '(' expression ')'
 		{ $$ = $2; }
 	;

@@ -18,5 +18,7 @@ adder 0x480 (a, b)
 				// This is nonsense:
 	c = a[7];
 	a[13] = 46;
+	c = UcItem;
+	UcEvent = UcEvent + 7;
 	return c;
 	}

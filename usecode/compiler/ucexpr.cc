@@ -187,6 +187,57 @@ void Uc_int_expression::gen_value
  *	Generate code to evaluate expression and leave result on stack.
  */
 
+void Uc_bool_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	if (tf)
+		out.put((char) UC_PUSHTRUE);
+	else
+		out.put((char) UC_PUSHFALSE);
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_event_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	out.put((char) UC_PUSHEVENTID);
+	}
+
+/*
+ *	Generate assignment to this variable.
+ */
+
+void Uc_event_expression::gen_assign
+	(
+	ostream& out
+	)
+	{
+	out.put((char) UC_POPEVENTID);
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_item_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	out.put((char) UC_PUSHITEMREF);
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
 void Uc_string_expression::gen_value
 	(
 	ostream& out

@@ -43,6 +43,8 @@ for		return FOR;
 in		return IN;
 var		return VAR;
 string		return STRING;
+true		return UCTRUE;
+false		return UCFALSE;
 
 UcSay		return SAY;
 UcMessage	return MESSAGE;
