@@ -47,6 +47,7 @@ using std::endl;
 using std::rand;
 
 unsigned long Combat_schedule::battle_time = 0;
+unsigned long Combat_schedule::battle_end_time = 0;
 
 bool Combat::paused = false;
 int Combat::difficulty = 0;
@@ -84,8 +85,40 @@ void Combat_schedule::start_battle
 		Audio::get_ptr()->start_music_combat(rand()%2 ? 
 					CSAttacked1 : CSAttacked2, 0);
 		battle_time = curtime;
+		battle_end_time = curtime - 1;
 		}
 	started_battle = true;
+	}
+
+/*
+ *	This (static) method is called when a monster dies.  It checks to
+ *	see if there are still hostile NPC's around.  If not, it plays
+ *	'victory' music.
+ */
+
+void Combat_schedule::monster_died
+	(
+	)
+	{
+	if (battle_end_time >= battle_time)// Battle raging?
+		return;			// No, it's over.
+	Actor_queue nearby;		// Get all nearby NPC's.
+	gwin->get_nearby_npcs(nearby);
+	for (Actor_queue::const_iterator it = nearby.begin(); 
+						it != nearby.end(); ++it)
+		{
+		Actor *actor = *it;
+		if (!actor->is_dead() && 
+			actor->get_attack_mode() != Actor::flee &&
+				actor->get_alignment() >= Npc_actor::hostile)
+			return;		// Still possible enemies.
+		}
+	battle_end_time = Game::get_ticks();
+					// Figure #seconds battle lasted.
+	unsigned long len = (battle_end_time - battle_time)/1000;
+	bool hard = len > 15 && (rand()%60 < len);
+	Audio::get_ptr()->start_music_combat (hard ? CSBattle_Over
+							: CSVictory, 0);
 	}
 
 /*

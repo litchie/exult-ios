@@ -1,3 +1,8 @@
+2003-02-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* combat.cc (Combat): Only play victory music when there are no
+	more enemies around.  Also, play one of two pieces.
+
 2003-02-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* conversation.cc: don't use BG multiracial hack if not in BG
 
