@@ -1,3 +1,6 @@
+2002-03-18  Dominik Reichardt <gigdr@tesionmail.de>
+	* mapedit/gimpwin32.txt: added to provide a small guide for install/usage
+
 2002-03-17 Darke <darkepaw@users.sourceforge.net>
 	* mapedit/paledit.[cc,h], mapedit/shapefile.cc, shapes/vgafile.[cc,h],
 	tools/ipack.cc, tools/textpack.cc, usecode/ucxt/src/ucxt.cc: fixed
