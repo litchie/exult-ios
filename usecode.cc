@@ -1003,6 +1003,7 @@ USECODE_INTRINSIC(pop_answers)
 		answers=answer_stack.front();
 		answer_stack.pop_front();
 		}
+	user_choice = 0;		// Seems like a good idea.
 	USECODE_RETURN(no_ret);
 }
 
@@ -1024,10 +1025,19 @@ USECODE_INTRINSIC(select_from_menu2)
 
 USECODE_INTRINSIC(input_numeric_value)
 	// Ask for # (min, max, step, default).
-	// (Show slider.)
-	//+++++++++++++
-	Usecode_value u(parms[0].get_int_value() + 1);
-	USECODE_RETURN(u);
+	extern int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
+					// Want to center it.
+	Shape_frame *shape = gwin->get_shape(SLIDER, 0);
+	Slider_gump_object *slider = new Slider_gump_object(
+		(gwin->get_width() - shape->get_width())/2,
+		(gwin->get_height() - shape->get_height())/2,
+		parms[0].get_int_value(), parms[1].get_int_value(),
+		parms[2].get_int_value(), parms[3].get_int_value());
+	int ok = Modal_gump(slider, Mouse::hand);
+	Usecode_value ret(!ok ? 0 : slider->get_val());
+	delete slider;
+	gwin->clear_text_pending();	// Answered a question.
+	USECODE_RETURN(ret);
 }
 
 USECODE_INTRINSIC(set_item_shape)
@@ -1948,9 +1958,11 @@ void Usecode_machine::run
 #endif
 	Usecode_value *save_sp = sp;	// Save TOS, last-created.
 	Game_object *save_lc = last_created;	// Guessing we should save it.
+#if 0
 	Answers save_answers;		// Save answers list.
 	save_answers = answers;
 	answers.clear();
+#endif
 	unsigned char *ip = fun->code;	// Instruction pointer.
 					// Where it ends.
 	unsigned char *endp = ip + fun->len;
@@ -1967,7 +1979,6 @@ void Usecode_machine::run
 		{
 		Usecode_value val = pop();
 		locals[num_args - i - 1] = val;
-//		locals[i] = val; //+++++I think the above is correct.
 		}
 	int num_externs = Read2(ip);	// # of external refs. following.
 	unsigned char *externals = ip;	// Save -> to them.
@@ -2312,9 +2323,11 @@ void Usecode_machine::run
 			}
 		}
 	delete [] locals;
+#if 0
 					// Restore list of answers.
 	answers = save_answers;
 	last_created = save_lc;
+#endif
 #if DEBUG
 	if (debug >= 1)
 		printf("RETurning from usecode %04x\n", fun->id);
@@ -2360,7 +2373,6 @@ int main(int argc, char **argv)
 	ifstream ufile("static/usecode");
 	Usecode_machine interp(ufile);
 	Usecode_value parm(0);		// They all seem to take 1 parm.
-//	interp.call_usecode(0x9b, &parm);	// Try function #2.
 	int id;
 	if (argc > 1)
 		{
