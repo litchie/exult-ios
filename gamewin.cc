@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "animate.h"
 #include "barge.h"
 #include "chunks.h"
+#include "chunkter.h"
 #include "dir.h"
 #include "effects.h"
 #include "egg.h"
@@ -177,7 +178,7 @@ Game_window::Game_window
 	    teleported(false), in_dungeon(false), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0),
-	    monster_info(0), 
+	    monster_info(0), chunk_terrains(0),
 	    palette(-1), brightness(100), user_brightness(100), 
 	    faded_out(false), fades_enabled(true),
 	    special_light(0), last_restore_hour(6),
@@ -328,13 +329,9 @@ void Game_window::init_files()
 					// Force clock to start.
 	tqueue->add(timer, &clock, (long) this);
 					// Clear object lists, flags.
-#if 1
 	for (int i1 = 0; i1 < c_num_chunks; i1++)
 		for (int i2 = 0; i2 < c_num_chunks; i2++)
 			objects[i1][i2] = 0;
-#else	/* Old way +++++++*/
-	memset((char *) objects, 0, sizeof(objects));
-#endif
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
 
 		// Go to starting chunk
@@ -582,6 +579,10 @@ void Game_window::clear_world
 			delete objects[x][y];
 			objects[x][y] = 0;
 			}
+	int cnt = chunk_terrains.size();
+	for (int i = 0; i < cnt; i++)
+		delete chunk_terrains[i];
+	chunk_terrains.resize(0);
 	Monster_actor::delete_all();	// To be safe, del. any still around.
 	main_actor = 0;
 	camera_actor = 0;
@@ -842,7 +843,7 @@ void Game_window::get_map_objects
 	}
 
 /*
- *	Read in graphics data into window's image.
+ *	Read in terrain graphics data into window's image.
  */
 
 void Game_window::get_chunk_objects
@@ -851,25 +852,27 @@ void Game_window::get_chunk_objects
 	int chunk_num			// Desired chunk # within file.
 	)
 	{
-	chunks.seekg(chunk_num * 512);	// Get to desired chunk.
-	unsigned char buf[16*16*2];	// Read in 16x16 2-byte shape #'s.
-	chunks.read((char*)buf, sizeof(buf));
-	unsigned char *data = &buf[0];
 					// Get list we'll store into.
-	Chunk_object_list *olist = get_objects(cx, cy);
-					// A chunk is 16x16 tiles.
+	Chunk_object_list *chunk = get_objects(cx, cy);
+					// Already have this one?
+	Chunk_terrain *ter = chunk_num < chunk_terrains.size() ?
+					chunk_terrains[chunk_num] : 0;
+	if (!ter)			// No?  Got to read it.
+		{			// Read in 16x16 2-byte shape #'s.
+		chunks.seekg(chunk_num * 512);
+		unsigned char buf[16*16*2];	
+		chunks.read((char*)buf, sizeof(buf));
+		ter = new Chunk_terrain(&buf[0]);
+		chunk_terrains.put(chunk_num, ter);
+		}
+	chunk->set_terrain(ter);
+					// Get RLE objects in chunk.
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			{
-			ShapeID id(data[0], (unsigned char) (data[1]&0x7f));
+			ShapeID id = ter->get_flat(tilex, tiley);
 			Shape_frame *shape = get_shape(id);
-			if (!shape)
-				{
-				cout << "Chunk shape is null!"<<endl;
-				data += 2;
-				continue;
-				}
-			if (shape->rle)
+			if (shape && shape->rle)
 				{
 				int shapenum = id.get_shapenum(),
 				    framenum = id.get_framenum();
@@ -879,11 +882,8 @@ void Game_window::get_chunk_objects
 					    	framenum, tilex, tiley)
 					: new Game_object(shapenum,
 					    	framenum, tilex, tiley);
-				olist->add(obj);
+				chunk->add(obj);
 				}
-			else		// Flat.
-				olist->set_flat(tilex, tiley, id);
-			data += 2;
 			}
 	}
 
@@ -3223,8 +3223,6 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 				(old_minx + x)%c_num_chunks,
 				(old_miny + y)%c_num_chunks);
 			if (!list) continue;
-					// Free pre-rendered landscape.
-			list->free_rendered_flats();
 			Object_iterator it(list->get_objects());
 			Game_object *each;
 			while ((each = it.get_next()) != 0)

@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "shapeid.h"
 
+class Image_buffer8;
+
 /*
  *	The flat landscape, 16x16 tiles:
  */
@@ -45,12 +47,12 @@ class Chunk_terrain
 	static int queue_size;
 	Chunk_terrain *render_queue_next, *render_queue_prev;
 					//   Kept only for nearby chunks.
-	bool rendered_dungeon;		// True if rendered_flats in dungeon.
 	void insert_in_queue();		// Queue methods.
 	void remove_from_queue();
 					// Create rendered_flats.
 	void paint_tile(int tilex, int tiley);
-	Image_buffer8 *render_flats(bool in_dungeon);
+	Image_buffer8 *render_flats();
+	void free_rendered_flats();
 public:
 					// Create from 16x16x2 data:
 	Chunk_terrain(unsigned char *data);
@@ -66,15 +68,14 @@ public:
 					// Get tile's shape ID.
 	ShapeID get_flat(int tilex, int tiley) const
 		{ return shapes[16*tiley + tilex]; }
-	Image_buffer8 *get_rendered_flats(bool in_dungeon)
+	Image_buffer8 *get_rendered_flats()
 		{
 		if (render_queue != this)// Not already first in queue?
 					// Move to front of queue.
 			insert_in_queue();
-		return rendered_flats && rendered_dungeon == in_dungeon 
-			? rendered_flats : render_flats(in_dungeon);
+		return rendered_flats
+			? rendered_flats : render_flats();
 		}
-	void free_rendered_flats();
 					// Write out to chunk.
 	void write_flats(unsigned char *chunk_data);
 	};

@@ -1,3 +1,7 @@
+2001-07-07  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Chunkter.{cc,h}: First use of Chunk_terrain seems to work.
+
 2001-07-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* ibuf8.cc, Makefile.am: include utils.h
 
