@@ -73,6 +73,20 @@ like:
  </audio>
 </config>
 
+Scaling:  An experimental 2X-scaled mode with antialiasing has been added to
+version 0.35.  Your screen should be set to 16-bit color mode, and you need to
+add the following to the <video> section of .exult.cfg:
+
+   <width>
+   320
+   </width>
+   <height>
+   200
+   </height>
+   <scale>
+   2
+   </scale>
+
 
 AUDIO
 -----
