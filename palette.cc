@@ -74,24 +74,28 @@ void Palette::brighten(int percent)
 void Palette::fade_in(int cycles)
 	{
 		unsigned char fade_pal[768];
+		unsigned int ticks = SDL_GetTicks() + 20;
 		for (int i = 0; i <= cycles; i++) {
 			for(int c=0; c < 768; c++)
 				fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
 				win->set_palette(fade_pal, 63);
 				win->show();
-				SDL_Delay(20);
+				while (ticks >= SDL_GetTicks());
+				ticks+= 20;
 		}
 	}
 
 void Palette::fade_out(int cycles)
 	{
 		unsigned char fade_pal[768];
+		unsigned int ticks = SDL_GetTicks() + 20;
 		for (int i = cycles; i >= 0; i--) {
 			for(int c=0; c < 768; c++)
 				fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
 				win->set_palette(fade_pal, 63);
 				win->show();
-				SDL_Delay(20);
+				while (ticks >= SDL_GetTicks());
+				ticks+= 20;
 		}
 	}
 
