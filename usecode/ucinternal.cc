@@ -87,10 +87,11 @@ using std::vector;
 
 // External globals..
 
-extern bool intrinsic_trace,usecode_debugging;
+extern bool intrinsic_trace
 extern int usecode_trace;
 
-#if USECODE_DEBUGGER
+#if 0 && USECODE_DEBUGGER
+extern bool usecode_debugging;
 std::vector<int> intrinsic_breakpoints;
 
 void	initialise_usecode_debugger(void)
@@ -1291,7 +1292,7 @@ Usecode_value no_ret;
 Usecode_value Usecode_internal::Execute_Intrinsic(UsecodeIntrinsicFn func,const char *name,int event,int intrinsic,int num_parms,Usecode_value parms[12])
 {
 #ifdef XWIN
-#if USECODE_DEBUGGER
+#if 0 && USECODE_DEBUGGER
 	if(usecode_debugging)
 		{
 		// Examine the list of intrinsics for function breakpoints.
