@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Gamewin.h - X-windows Ultima7 map browser.
  **
  **	Written: 7/22/98 - JSF

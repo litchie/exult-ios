@@ -24,6 +24,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 #include <string.h>
 #include <sys/stat.h>
+#if !defined(XWIN)
+#include <dir.h>
+#endif
 #include "gamewin.h"
 #include "fnames.h"
 #include "utils.h"
@@ -41,7 +44,11 @@ void Game_window::write_gamedat
 	{
 	ifstream in;
 	u7open(in, savename);		// Open file & abort if error.
+#if defined(XWIN)
 	mkdir("gamedat", 0755);		// Create dir. if not already there.
+#else
+	mkdir("gamedat");
+#endif
 	in.seekg(0x54);			// Get to where file count sits.
 	int numfiles = Read4(in);
 	in.seekg(0x80);			// Get to file info.
