@@ -81,7 +81,7 @@ public:
 					//   with its last task.
 	virtual void im_dormant()	// Npc calls this when it goes from
 		{  }			//   being active to dormant.
-	virtual void ending()		// Switching to another schedule.
+	virtual void ending(int newtype)// Switching to another schedule.
 		{  }
 					// Set opponent in combat.
 	virtual void set_opponent(Game_object *)
@@ -155,7 +155,7 @@ class Sleep_schedule : public Schedule
 public:
 	Sleep_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
-	virtual void ending();		// Switching to another schedule.
+	virtual void ending(int newtype);// Switching to another schedule.
 	};
 
 /*
