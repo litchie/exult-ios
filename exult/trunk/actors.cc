@@ -32,6 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actions.h"
 #include "ready.h"
 
+Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+
 /*
  *	Create character.
  */
@@ -45,7 +47,8 @@ Actor::Actor
 	) : Sprite(shapenum), npc_num(num), party_id(-1),
 	    usecode(uc), flags(0), action(0), usecode_dir(0), two_handed(0)
 	{
-	set_default_frames();
+	if (!frames[(int) north])
+		set_default_frames();
 	name = nm == 0 ? 0 : strdup(nm);
 	for (int i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
 		properties[i] = 0;
@@ -77,14 +80,12 @@ void Actor::set_default_frames
 					// These are rough guesses.
 	static unsigned char 	north_frames[3] = {0, 1, 2},
 				south_frames[3] = {16, 17, 18},
-//				east_frames[3] = {7, 8, 9},
 				east_frames[3] = {48, 49, 50},
-//				west_frames[3] = {23, 24, 25};
 				west_frames[3] = {32, 33, 34};
-	set_frame_sequence(north, 3, north_frames);
-	set_frame_sequence(south, 3, south_frames);
-	set_frame_sequence(east, 3, east_frames);
-	set_frame_sequence(west, 3, west_frames);
+	frames[(int) north] = new Frames_sequence(3, north_frames);
+	frames[(int) south] = new Frames_sequence(3, south_frames);
+	frames[(int) east] = new Frames_sequence(3, east_frames);
+	frames[(int) west] = new Frames_sequence(3, west_frames);
 	}
 
 /*
