@@ -36,6 +36,8 @@ using std::atof;
 using std::atoi;
 using std::cerr;
 using std::endl;
+using std::free;
+using std::malloc;
 using std::memcmp;
 using std::memcpy;
 using std::snprintf;
@@ -804,7 +806,7 @@ void XMIDI::DuplicateAndMerge (int num)
 		
 		if (current->len)
 		{
-			current->buffer = new unsigned char[current->len];
+			current->buffer = (unsigned char *) malloc(current->len);
 			memcpy (current->buffer, track[i]->buffer, current->len);
 		}
 		else
@@ -939,9 +941,13 @@ int XMIDI::ConvertSystemMessage (const int time, const unsigned char status, Dat
 
 	i += GetVLQ (source, current->len);
 
-	if (!current->len) return i;
-
-	current->buffer = new unsigned char[current->len];	
+	if (!current->len)
+	{
+		current->buffer = NULL;
+		return i;
+	}
+	
+	current->buffer = (unsigned char *) malloc(current->len);
 
 	source->read ((char *) current->buffer, current->len);
 

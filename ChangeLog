@@ -1,3 +1,11 @@
+2001-06-18  Max Horn  <max@quendi.de>
+	* files/listfiles.cc: changed interface of U7ListFiles and removed U7FreeFileList;
+	  implemented MacOS version of U7ListFiles
+	* gumps/Newfile_gump.cc: std:: namespace police; applied changes to match new interface of U7ListFiles
+	* audio/xmidi.cc: std:: namespace police; fixed wrong use of new [] instead of malloc()
+	* tools/expack.cc: added exult_si.flx
+	* updated MacOS project files
+
 2001-06-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* contain.cc: fixed spellbook-creation bug
 	* Makefile.am: fixed build order (server before mapedit)

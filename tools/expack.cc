@@ -108,6 +108,15 @@ int main()
 		};
 		
 	mac_main( mac_argc, mac_argv2 );
+
+	char	*mac_argv3[mac_argc] =
+		{
+			"expack",
+			"-i",
+			"si/flx.in"
+		};
+		
+	mac_main( mac_argc, mac_argv3 );
 }
 
 
