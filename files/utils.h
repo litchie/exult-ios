@@ -104,6 +104,50 @@ inline unsigned int Read2
 	}
 
 /*
+ *	Read a 2-byte value, hsb first.
+ */
+
+inline unsigned int Read2high
+	(
+	std::istream& in
+	)
+	{
+	unsigned char b0, b1;
+	in.get((char&) b0);
+	in.get((char&) b1);
+	return ((b0 << 8) + b1);
+	}
+
+/*
+ *	Read a 2-byte value from a buffer.
+ */
+
+inline unsigned int Read2high
+	(
+	unsigned char *& in
+	)
+	{
+	unsigned char b0 = *in++;
+	unsigned char b1 = *in++;
+	return ((b0 << 8) + b1);
+	}
+
+/*
+ *	Read a 2-byte value from a file.
+ */
+
+inline unsigned int Read2high
+	(
+	std::FILE* in
+	)
+	{
+	unsigned char b0, b1;
+	fread(&b0,sizeof(unsigned char),1,in);
+	fread(&b1,sizeof(unsigned char),1,in);
+	return ((b0 << 8) + b1);
+	}
+
+/*
  *	Read a 4-byte long value, lsb first.
  */
 
@@ -151,6 +195,56 @@ inline unsigned long Read4
 	fread(&b2,sizeof(unsigned char),1,in);
 	fread(&b3,sizeof(unsigned char),1,in);
 	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	}
+
+/*
+ *	Read a 4-byte long value, hsb first.
+ */
+
+inline unsigned long Read4high
+	(
+	std::istream& in
+	)
+	{
+	unsigned char b0, b1, b2, b3;
+	in.get((char&) b0);
+	in.get((char&) b1);
+	in.get((char&) b2);
+	in.get((char&) b3);
+	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
+	}
+
+/*
+ *	Read a 4-byte value from a buffer.
+ */
+
+inline unsigned long Read4high
+	(
+	unsigned char *& in
+	)
+	{
+	unsigned char b0 = *in++;
+	unsigned char b1 = *in++;
+	unsigned char b2 = *in++;
+	unsigned char b3 = *in++;
+	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
+	}
+
+/*
+ *	Read a 4-byte value from a file.
+ */
+
+inline unsigned long Read4high
+	(
+	std::FILE* in
+	)
+	{
+	unsigned char b0, b1, b2, b3;
+	fread(&b0,sizeof(unsigned char),1,in);
+	fread(&b1,sizeof(unsigned char),1,in);
+	fread(&b2,sizeof(unsigned char),1,in);
+	fread(&b3,sizeof(unsigned char),1,in);
+	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
 	}
 
 /*
