@@ -42,7 +42,7 @@ protected:
 public:
 	Animator(Game_object *o) : obj(o), deltax(0), deltay(0), animating(0)
 		{  }
-	static Animator *create(Game_object *ob);
+	static Animator *create(Game_object *ob, int ireg);
 	~Animator();
 	void want_animation()		// Want animation on.
 		{
