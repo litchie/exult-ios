@@ -20,7 +20,7 @@ LIBS=$(SDL_LIBS) -lmidi -lbe
 
 EXEC=exult
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
-	args.o barge.o bodies.o browser.o\
+	args.o barge.o bodies.o browser.o cheat.o\
 	combat.o delobjs.o dir.o drag.o effects.o egg.o\
 	exult.o gameclk.o gamedat.o gamerend.o \
 	gametxt.o gamewin.o gumps.o imagescl.o imagewin.o items.o \
