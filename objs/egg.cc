@@ -614,11 +614,15 @@ void Egg_object::activate
 #ifdef DEBUG
 	print_debug();
 #endif
+					// Flag it as done.
+	flags |= (1 << (int) hatched);
+/*	+++++ I just move the 'hatched' line here from below the 'return' in
+an effort to fix the 'monsters spawning too often' bug.   NEED to see if this
+breaks anything!  */
+
 	int roll = must ? 0 : 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
-					// Flag it as done.
-	flags |= (1 << (int) hatched);
 	switch(type)
 		{
 	case jukebox:
