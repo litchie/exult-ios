@@ -23,7 +23,7 @@
 #  include <config.h>
 #endif
 
-#include <stdio.h>
+#include <cstdio>
 
 using std::snprintf;
 
