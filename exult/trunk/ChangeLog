@@ -1,3 +1,7 @@
+2000-11-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Broke off chunks.{cc,h} and ordinfo.h from objs.{cc,h}.
+
 2000-11-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* quotes.txt: new quote
 
