@@ -189,7 +189,7 @@ void Main_actor::handle_event
 	Game_window *gwin = (Game_window *) udata;
 	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
 	int frame;
-	if (next_frame(curtime, cx, cy, sx, sy, frame))
+	if (next_frame(cx, cy, sx, sy, frame))
 		{
 		Chunk_object_list *olist = gwin->get_objects(cx, cy);
 		olist->setup_cache();
@@ -454,6 +454,83 @@ void Npc_actor::paint
 		}
 	}
 
+#if 0	/*  +++++Working on this. */
+
+void Npc_actor::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata			// Ignored.
+	)
+	{
+	if (!action)			// Not doing anything?
+		dormant = 1;
+	else
+		{			// Do what we should.
+		int delay = action->handle_event(curtime, this);
+		if (delay)		// Keep going with same action.
+			gwin->get_tqueue()->add(curtime + delay,
+							this, udata);
+		else
+			{
+			delete action;
+			action = 0;
+			if (!dormant && schedule)
+				schedule->now_what();
+			}
+		}
+	}
+
+/*
+ *	Walk in current direction.
+ *
+ *	Output:	Delay for next frame, or 0 to stop.
+ *		Dormant is set if off screen.
+ */
+
+int Npc_actor::walk
+	(
+	)
+	{
+					// Store old chunk.
+	int old_cx = get_cx(), old_cy = get_cy();
+	Game_window *gwin = Game_window::get_game_window();
+	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
+	int frame;
+	if (next_frame(cx, cy, sx, sy, frame))
+		{
+					// Get ->new chunk.
+		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+		nlist->setup_cache();
+		int new_lift;		// Might climb/descend.
+		if (nlist->is_blocked(get_lift(), sx, sy, new_lift) ||
+		    at_destination())
+			{
+			stop();
+			return (0);	// Done.
+			}
+		gwin->add_dirty(this);	// Set to repaint old area.
+					// Move it.
+		move(cx, cy, nlist, sx, sy, frame, new_lift);
+					// In new chunk?
+		if (cx != old_cx || cy != old_cy)
+			{
+			Chunk_object_list *olist = 
+				gwin->get_objects(old_cx, old_cy);
+			switched_chunks(olist, nlist);
+			}
+		if (!gwin->add_dirty(this))
+			{		// No longer on screen.
+			stop();
+			dormant = 1;
+			return (0);
+			}
+		return (frame_time);	// Add back to queue for next time.
+		}
+	dormant = 1;			// Not moving.
+	return (0);
+	}
+#endif	
+
 /*
  *	Animation.  An NPC stops when it reaches the destination specified in
  *	start().
@@ -470,7 +547,7 @@ void Npc_actor::handle_event
 	Game_window *gwin = (Game_window *) udata;
 	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
 	int frame;
-	if (next_frame(curtime, cx, cy, sx, sy, frame))
+	if (next_frame(cx, cy, sx, sy, frame))
 		{
 					// Get ->new chunk.
 		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
@@ -585,7 +662,7 @@ int Area_actor::next_frame
 	{
 					// See if we should change motion.
 	if (time < next_change)
-		return (Actor::next_frame(time, new_cx, new_cy,
+		return (Actor::next_frame(new_cx, new_cy,
 						new_sx, new_sy, next_frame));
 	if (is_moving())
 		{
