@@ -1,5 +1,6 @@
 2001-12-08  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamewin.cc: Get guard shapes for SI.
 	* mapedit/studio.cc: Try to reconnect to Exult automatically.
 	* gamewin.cc: A 'patch' initgame.dat is NOT a new game, in the
 	sense that it has the original U7 structure.
