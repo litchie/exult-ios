@@ -355,7 +355,7 @@ void Game_window::init_files()
 		catch (exult_exception e)
 		{
 			cerr << "Exception attempting to load Serpent Isle 'paperdol.vga' or 'gumps.vga" << endl <<
-				"Do you have Serpent Isle and is an absolute path set in the config for Serpent Isle?" << endl <<
+				"Do you have Serpent Isle and is the correcct path set in the config for Serpent Isle?" << endl <<
 				"Support for 'Serpent Isle' Paperdolls in 'Black Gate' DISABLED." << endl;
 		}
 
