@@ -905,14 +905,15 @@ string demunge_ocstring(const string &asmstr, const vector<string> &param_types,
 	strstream str;
 	str << setfill('0') << setbase(16);
 	str.setf(ios::uppercase);
+	size_t	len=asmstr.length();
 
-	if(asmstr.size()==0) return string(); // for the degenerate case
+	if(len==0) return string(); // for the degenerate case
 
 	bool finished=false; // terminating details are at end-of-while
   unsigned int i=0; // istr index
 	unsigned int width=0; // width value for setw()
 
-	while(!finished)
+	while(!finished&&i<len)
 	{
 		char c = asmstr[i];
 		switch(c)

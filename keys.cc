@@ -47,6 +47,18 @@ using std::string;
 using std::strlen;
 using std::vector;
 
+static	class Chardata	// ctype-like character lists
+	{
+	public:
+	std::string	whitespace;
+	Chardata()
+		{
+		for(size_t i=0;i<256;i++)
+			if(isspace(i))
+				whitespace+=(char)i;
+		}
+	} chardata;
+
 typedef void(*ActionFunc)(int*);
 
 const struct Action {
@@ -348,9 +360,11 @@ void KeyBinder::ParseText(char *text, int len)
 }
 
 static void skipspace(string &s) {
-	while (s.length() && isspace(s[0]))
-		s.erase(0,1);
+	size_t i=s.find_first_not_of(chardata.whitespace);
+	if(i&&i!=string::npos)
+		s.erase(0,i);
 }
+
 
 void KeyBinder::ParseLine(char *line)
 {
@@ -389,11 +403,10 @@ void KeyBinder::ParseLine(char *line)
 			s.erase(0,6); u.erase(0,6);
 		} else {
 			
-			for (i = 0; i < s.length() && !isspace(s[i]); i++)
-				;
-			
+			i=s.find_first_of(chardata.whitespace);
+
 			keycode = s.substr(0, i); s.erase(0, i);
-			string t = keycode;
+			string t(keycode);
 			to_uppercase(t);
 			
 			if (t.length() == 0) {
@@ -431,8 +444,7 @@ void KeyBinder::ParseLine(char *line)
 	// get function
 	skipspace(s);
 	
-	for (i = 0; i < s.length() && !isspace(s[i]); i++)
-		;
+	i=s.find_first_of(chardata.whitespace);
 	string t = s.substr(0, i); s.erase(0, i);
 	to_uppercase(t);
 	
@@ -450,8 +462,7 @@ void KeyBinder::ParseLine(char *line)
 	
 	int np = 0;
 	while (s.length() && s[0] != '#' && np < c_maxparams) {
-		for (i = 0; i < s.length() && !isspace(s[i]); i++)
-			;
+		i=s.find_first_of(chardata.whitespace);
 		string t = s.substr(0, i);
 		s.erase(0, i);
 		skipspace(s);
