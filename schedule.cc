@@ -486,14 +486,14 @@ void Preach_schedule::now_what
 	case find_podium:
 		{
 		Game_object_vector vec;
-		if (!npc->find_nearby(vec, 697, 8, 0))
+		if (!npc->find_nearby(vec, 697, 17, 0))
 			{
 			npc->set_schedule_type(loiter);
 			return;
 			}
 		Game_object *podium = vec[0];
 		Tile_coord pos = podium->get_tile();
-		static int deltas[4][2] = {{-2, 0},{1, 0},{0, -2},{0, 1}};
+		static int deltas[4][2] = {{-1, 0},{1, 0},{0, -2},{0, 1}};
 		int frnum = podium->get_framenum()%4;
 		pos.tx += deltas[frnum][0];
 		pos.ty += deltas[frnum][1];
@@ -543,16 +543,38 @@ void Preach_schedule::now_what
 			{
 			Usecode_script *scr = new Usecode_script(member);
 			scr->add(Ucscript::delay_ticks, 3);
+			scr->add(Ucscript::face_dir, member->get_dir_facing());
+			scr->add(Ucscript::npc_frame + Actor::standing);
 			scr->add(Ucscript::say, item_names[first_amen +
 					rand()%(last_amen - first_amen + 1)]);
+			scr->add(Ucscript::delay_ticks, 2);
+			scr->add(Ucscript::npc_frame + Actor::sit_frame);
 			scr->start();	// Start next tick.
 			}
 		return;
 		}
 	case visit:
-		// ++++++Later.
-		state = at_podium;	// +++Change to find_podium.
-		npc->start(250, 1000 + rand()%2000);
+		{
+		state = find_podium;
+		npc->start(gwin->get_std_delay(), 1000 + rand()%2000);
+		Actor *member = Find_congregant(npc);
+		if (!member)
+			return;
+		Tile_coord pos = member->get_tile();
+		Actor_pathfinder_client cost(npc, 1);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+			npc->get_tile(), pos, cost);
+		if (!pact)
+			return;
+		npc->set_action(new Sequence_actor_action(pact,
+				new Face_pos_actor_action(member, 200)));
+		state = talk_member;
+		return;
+		}
+	case talk_member:
+		state = find_podium;
+		npc->say(first_preach2, last_preach2);
+		npc->start(250, 2000);
 		return;
 	default:
 		state = find_podium;
