@@ -37,6 +37,9 @@
 /* Compiling on OpenBSD */
 #undef OPENBSD
 
+/* Compiling on MacOSX */
+#undef MACOSX
+
 /* Compiling in Cygwin */
 #undef CYGWIN
 
