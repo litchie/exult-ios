@@ -2009,6 +2009,13 @@ USECODE_INTRINSIC(in_usecode)
 	return Usecode_value(Usecode_script::find(obj) != 0);
 }
 
+USECODE_INTRINSIC(call_guards)
+{
+	// Attack thieving Avatar.
+	gwin->call_guards();
+	return no_ret;
+}
+
 USECODE_INTRINSIC(attack_avatar)
 {
 	// Attack thieving Avatar.

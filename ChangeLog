@@ -1,3 +1,8 @@
+2003-03-22  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* bgintrinsics.h,intrinsics.cc,gamewin.cc:  Implemented
+	'call_guards()' usecode intrinsic.
+
 2003-03-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamemap.cc: Quality 'okay-to-take' flag should override default,
