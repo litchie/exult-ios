@@ -3,6 +3,7 @@
 	* objnames.cc: fixed SI-without-SS object names
 	* files/utils.cc: made U7remove() case-insensitive
 	* various: cleaning up output
+	* CombatOptions_gump.cc: made buttons wide enough for text
 
 2004-01-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: fix check for original gamedat
