@@ -22,6 +22,7 @@
 
 #include "exult_constants.h"
 #include "Configuration.h"
+#include "exceptions.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
