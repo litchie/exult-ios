@@ -1476,13 +1476,15 @@ USECODE_INTRINSIC(in_usecode)
 USECODE_INTRINSIC(attack_avatar)
 {
 	// Attack thieving Avatar.
-	Actor_vector npcs;			// See if someone is nearby.
+	Actor_vector npcs;		// See if someone is nearby.
 	gwin->get_main_actor()->find_nearby_actors(npcs, c_any_shapenum, 12);
 	for (Actor_vector::const_iterator it = npcs.begin(); it != npcs.end();++it)
 		{
 		Actor *npc = (Actor *) *it;
-		if (!npc->is_monster() && npc != gwin->get_main_actor() &&
-		    npc->get_party_id() <= 0)
+					// No monsters, except guards.
+		if ((npc->get_shapenum() == 0x3b2 || !npc->is_monster()) && 
+		    npc != gwin->get_main_actor() &&
+		    npc->get_party_id() < 0)
 			npc->set_opponent(gwin->get_main_actor());
 		}
 	return no_ret;
