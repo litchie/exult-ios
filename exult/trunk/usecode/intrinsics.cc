@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "rect.h"
 #include "actions.h"
 #include "keyring.h"
+#include "cheat.h"
 
 using std::cerr;
 using std::cout;
@@ -1554,6 +1555,8 @@ static int Get_spot(int ucspot)
 		spot = Actor::rhand; break;
 	case 3:
 		spot = Actor::neck; break;
+	case 5:
+		spot = Actor::hands2_spot; break;
 	case 6:
 		spot = Actor::lfinger; break;
 	case 7:
@@ -2526,8 +2529,16 @@ USECODE_INTRINSIC(infravision)
 	Game_object *npc = get_item(parms[0]);
 	if (npc == gwin->get_main_actor())
 		{
-		bool wanton = parms[0].get_int_value() != 0;
-		//+++++++++++Finish.  It's in cheat.h.
+		if (parms[1].get_int_value())
+			{		// On?
+			cheat.set_infravision(true);
+			gwin->set_palette(0);
+			}
+		else
+			{
+			cheat.set_infravision(false);
+			gwin->set_palette();
+			}
 		}
 	return no_ret;
 }
