@@ -264,7 +264,7 @@ static void Write_frame
 	cout << "Writing " << fullname << endl;
 	int w = frame->get_width(), h = frame->get_height();
 	Image_buffer8 img(w, h);	// Render into a buffer.
-	unsigned char transp = 0;	// Gimp prefers this?? S.B. 255.
+	unsigned char transp = 255;
 	img.fill8(transp);		// Fill with transparent pixel.
 	frame->paint(&img, frame->get_xleft(), frame->get_yabove());
 	int xoff = 0, yoff = 0;
