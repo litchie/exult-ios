@@ -3,6 +3,8 @@
 	  (based on patch #1088000)
 	* exult.cc: wait for possible dblclick before showing item info when
 	  not in map-edit mode (based on patch #1088157)
+	* exult.cc: don't accept click/dblclick when mouse moved too far
+	  (based on patches #1088144 and #1088230)
 
 2004-12-01    <jeff@mini.nerble.net>
 
