@@ -910,6 +910,10 @@ SOURCE=..\shapes\Makefile.am
 # End Source File
 # Begin Source File
 
+SOURCE=..\shapes\monstinf.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\shapes\shapeinf.cc
 # End Source File
 # Begin Source File

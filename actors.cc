@@ -856,7 +856,8 @@ void Actor::get_tile_info
 		Game_object *boots;	// Check for swamp/swamp boots.
 		if (poison && actor && 
 		    (boots = actor->Actor::get_readied(Actor::feet)) != 0 &&
-		    boots->get_shapenum() == 588)
+		    ((boots->get_shapenum() == 588 && Game::get_game_type() == BLACK_GATE) ||
+		    (boots->get_shapenum() == 587 && boots->get_framenum() == 6 && Game::get_game_type() == SERPENT_ISLE)))
 			poison = 0;
 		}
 	}
