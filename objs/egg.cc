@@ -133,10 +133,9 @@ void Egglike_game_object::paint
 
 int Egglike_game_object::is_findable
 	(
-	Game_window *gwin
 	)
 	{
-	return gwin->paint_eggs && Ireg_game_object::is_findable(gwin);
+	return gwin->paint_eggs && Ireg_game_object::is_findable();
 	}
 
 /*
@@ -382,12 +381,11 @@ void Egg_object::paint
 
 void Egg_object::activate
 	(
-	Usecode_machine *umachine,
 	int /* event */
 	)
 	{
 	if (!edit())
-		activate(umachine, 0, 0);
+		activate(0, 0);
 	}
 
 /*
@@ -594,7 +592,6 @@ void Egg_object::activate_teleport
 
 void Egg_object::activate
 	(
-	Usecode_machine *umachine,
 	Game_object *obj,		// Object (actor) that came near it.
 	int must			// If 1, skip dice roll.
 	)
@@ -616,7 +613,7 @@ void Egg_object::activate
 			Audio::get_ptr()->start_music((data1)&0xff,(data1>>8)&0x01);
 			break;
 		case voice:
-			umachine->do_speech(data1&0xff);
+			ucmachine->do_speech(data1&0xff);
 			break;
 		case monster:		// Also creates other objects.
 			{
@@ -660,7 +657,7 @@ void Egg_object::activate
 		case usecode:
 			{		// Data2 is the usecode function.
 			if (must)	// From script?  Do immediately.
-				umachine->call_usecode(data2, this,
+				ucmachine->call_usecode(data2, this,
 					Usecode_machine::egg_proximity);
 			else		// Do on next animation frame.
 				{
@@ -700,7 +697,7 @@ void Egg_object::activate
 			break;
 		case weather:
 			{
-			set_weather(gwin, data1&0xff, data1>>8, this);
+			set_weather(data1&0xff, data1>>8, this);
 			break;
 			}
 		case button:		// Set off all in given area.
@@ -715,7 +712,7 @@ void Egg_object::activate
 				if (egg != this &&
 				    egg->criteria == external_criteria && 
 				    !(egg->flags & (1 << (int) hatched))) // Experimental attempting to fix problem in Silver Seed
-					egg->activate(umachine, obj, 0);
+					egg->activate(obj, 0);
 				}
 			break;
 			}
@@ -751,7 +748,6 @@ void Egg_object::print_debug
 
 void Egg_object::set_weather
 	(
-	Game_window *gwin,
 	int weather,			// 0-6.
 	int len,			// In game minutes (I think).
 	Game_object *egg		// Egg this came from, or null.
@@ -947,11 +943,10 @@ void Animated_egg_object::paint
 
 void Animated_egg_object::activate
 	(
-	Usecode_machine *umachine,
 	int event
 	)
 	{
-	Egg_object::activate(umachine, event);
+	Egg_object::activate(event);
 	flags &= ~(1 << (int) hatched);	// Moongate:  reset always.
 	}
 
@@ -1018,11 +1013,10 @@ bool Field_object::field_effect
 
 void Field_object::activate
 	(
-	Usecode_machine *umachine,
 	int event
 	)
 	{
-	Ireg_game_object::activate(umachine, event);
+	Ireg_game_object::activate(event);
 	}
 
 /*
@@ -1031,7 +1025,6 @@ void Field_object::activate
 
 void Field_object::activate
 	(
-	Usecode_machine *umachine,
 	Game_object *obj,		// Object (actor) that came near it.
 	int /* must */			// If 1, skip dice roll.
 	)
@@ -1073,12 +1066,12 @@ Mirror_object::Mirror_object(int shapenum, int framenum, unsigned int tilex,
 	solid_area = 1;
 }
 
-void Mirror_object::activate(Usecode_machine *umachine, int event)
+void Mirror_object::activate(int event)
 {
-	Ireg_game_object::activate(umachine, event);
+	Ireg_game_object::activate(event);
 }
 
-void Mirror_object::activate(Usecode_machine *umachine, Game_object *obj, int must)
+void Mirror_object::activate(Game_object *obj, int must)
 {
 	// These are broken, so dont touch
 	if ((get_framenum()%3) == 2)  return;

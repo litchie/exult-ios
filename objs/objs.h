@@ -76,8 +76,7 @@ protected:
 					//   is in a container, coords. within
 					//   gump's rectangle.
 					// Handle attack on an object.
-	int attack_object(Game_window *gwin, Actor *attacker, int weapon_shape,
-							int ammo_shape);
+	int attack_object(Actor *attacker, int weapon_shape, int ammo_shape);
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
@@ -211,10 +210,10 @@ public:
 					// Make this class abstract.
 	virtual void paint_terrain() = 0;
 					// Can this be clicked on?
-	virtual int is_findable(Game_window *gwin)
+	virtual int is_findable()
 		{ return 1; }
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual void activate(int event = 1);
 	virtual bool edit();		// Edit in ExultStudio.
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);

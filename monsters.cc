@@ -295,14 +295,14 @@ int Monster_actor::step
 		}
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
-	add_dirty(gwin);		// Set to repaint old area.
+	add_dirty();			// Set to repaint old area.
 					// Get old chunk.
 	Map_chunk *olist = gmap->get_chunk(old_cx, old_cy);
 					// Move it.
 					// Get rel. tile coords.
 	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
 	movef(olist, nlist, tx, ty, frame, t.tz);
-	if (!add_dirty(gwin, 1) &&
+	if (!add_dirty(1) &&
 					// And > a screenful away?
 	    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize)
 		{			// No longer on screen.

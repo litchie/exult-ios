@@ -313,7 +313,6 @@ void Actor::unready_weapon
  */
 int Actor::add_dirty
 	(
-	Game_window *gwin,
 	int figure_rect			// Recompute weapon rectangle.
 	)
 	{
@@ -357,9 +356,9 @@ void Actor::change_frame
 	int frnum
 	)
 	{
-	add_dirty(gwin);		// Set to repaint old area.
+	add_dirty();			// Set to repaint old area.
 	set_frame(frnum);
-	add_dirty(gwin, 1);		// Set to repaint new.
+	add_dirty(1);			// Set to repaint new.
 	}
 
 /*
@@ -796,7 +795,7 @@ void Actor::stop
 	if (action)
 		{
 		action->stop(this);
-		add_dirty(gwin);
+		add_dirty();
 		}
 	frame_time = 0;
 	}
@@ -1619,7 +1618,6 @@ int Actor::figure_weapon_pos
  */
 void Actor::activate
 	(
-	Usecode_machine *umachine,
 	int event
 	)
 	{
@@ -1650,13 +1648,13 @@ void Actor::activate
 					// Failed copy-protection?
 	else if (serpent &&
 		 gwin->get_main_actor()->get_flag(Obj_flags::confused))
-		umachine->call_usecode(0x63d, this,
+		ucmachine->call_usecode(0x63d, this,
 			(Usecode_machine::Usecode_events) event);	
 	else if (usecode == -1)
-		umachine->call_usecode(get_shapenum(), this,
+		ucmachine->call_usecode(get_shapenum(), this,
 			(Usecode_machine::Usecode_events) event);
 	else if (party_id >= 0 || !gwin->is_time_stopped())
-		umachine->call_usecode(usecode, this, 
+		ucmachine->call_usecode(usecode, this, 
 			(Usecode_machine::Usecode_events) event);
 	
 	}
@@ -1776,9 +1774,9 @@ void Actor::update_from_studio
 		}
 	else				// Old.
 		{
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 		npc->set_shape(shape, frame);
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 		npc->usecode = usecode;
 		npc->usecode_assigned = true;
 		npc->set_npc_name(name.c_str());
@@ -1949,7 +1947,7 @@ void Clear_hit::handle_event(unsigned long curtime, long udata)
 	{ 
 	Actor *a = reinterpret_cast<Actor*>(udata);
 	a->hit = false;
-	a->add_dirty(Game_window::get_instance());
+	a->add_dirty();
 	delete this;
 	}
 
@@ -1987,7 +1985,7 @@ bool Actor::reduce_health
 	else
 		{
 		hit = true;		// Flash red outline.
-		add_dirty(gwin);
+		add_dirty();
 		Clear_hit *c = new Clear_hit();
 		gwin->get_tqueue()->add(Game::get_ticks() + 200, c, reinterpret_cast<long>(this));
 		}
@@ -2276,7 +2274,6 @@ int Actor::get_max_weight
 
 void Actor::call_readied_usecode
 	(
-	Game_window *gwin,
 	int index,
 	Game_object *obj,
 	int eventid
@@ -2336,28 +2333,28 @@ void Actor::init_readied
 	)
 	{
 	if (spots[lfinger])
-		call_readied_usecode(gwin, lfinger, spots[lfinger],
+		call_readied_usecode(lfinger, spots[lfinger],
 						Usecode_machine::readied);
 	if (spots[rfinger])
-		call_readied_usecode(gwin, rfinger, spots[rfinger],
+		call_readied_usecode(rfinger, spots[rfinger],
 						Usecode_machine::readied);
 	if (spots[belt])
-		call_readied_usecode(gwin, belt, spots[belt],
+		call_readied_usecode(belt, spots[belt],
 						Usecode_machine::readied);
 	if (spots[neck])
-		call_readied_usecode(gwin, neck, spots[neck],
+		call_readied_usecode(neck, spots[neck],
 						Usecode_machine::readied);
 	if (spots[head])
-		call_readied_usecode(gwin, head, spots[head],
+		call_readied_usecode(head, spots[head],
 						Usecode_machine::readied);
 	if (spots[hands2_spot])
-		call_readied_usecode(gwin, hands2_spot, 
+		call_readied_usecode(hands2_spot, 
 				spots[hands2_spot], Usecode_machine::readied);
 	if (spots[lhand])
-		call_readied_usecode(gwin, lhand, spots[lhand],
+		call_readied_usecode(lhand, spots[lhand],
 						Usecode_machine::readied);
 	if (spots[rhand])
-		call_readied_usecode(gwin, rhand, spots[rhand],
+		call_readied_usecode(rhand, spots[rhand],
 						Usecode_machine::readied);
 	}
 
@@ -2376,7 +2373,7 @@ void Actor::remove
 					//   removal too.
 					// Definitely DO NOT call if dead!
 	if (!ucmachine->in_usecode() && !is_dead())
-		call_readied_usecode(gwin, index, obj,
+		call_readied_usecode(index, obj,
 						Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
 	if (index >= 0)
@@ -2514,7 +2511,7 @@ int Actor::add_readied
 
 	// Usecode?  NOTE:  Done in gwin->drop() now.
 //	if (!dont_check)
-//		call_readied_usecode(gwin, index, obj,
+//		call_readied_usecode(index, obj,
 //						Usecode_machine::readied);
 
 	// Lightsource?
@@ -3072,7 +3069,7 @@ void Actor::die
 		add(*it, 1);
 	if (body)
 		gwin->add_dirty(body);
-	add_dirty(gwin);		// Want to repaint area.
+	add_dirty();			// Want to repaint area.
 	delete_contents();		// remove what's left of inventory
 					// Move party member to 'dead' list.
 	ucmachine->update_party_status(this);
@@ -3269,13 +3266,13 @@ int Main_actor::step
 		Actor::set_flag(static_cast<int>(Obj_flags::poisoned));
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
-	add_dirty(gwin);		/// Set to update old location.
+	add_dirty();			// Set to update old location.
 					// Get old chunk, old tile.
 	Map_chunk *olist = gmap->get_chunk(get_cx(), get_cy());
 	Tile_coord oldtile = get_tile();
 					// Move it.
 	Actor::movef(olist, nlist, tx, ty, frame, t.tz);
-	add_dirty(gwin, 1);		// Set to update new.
+	add_dirty(1);			// Set to update new.
 					// In a new chunk?
 	if (olist != nlist)
 		Main_actor::switched_chunks(olist, nlist);
@@ -3734,7 +3731,6 @@ int Npc_actor::find_schedule_change
 
 void Npc_actor::update_schedule
 	(
-	Game_window *gwin,
 	int hour3,			// 0=midnight, 1=3am, etc.
 	int backwards,			// Extra periods to look backwards.
 	int delay			// Delay in msecs, or -1 for random.
@@ -3787,14 +3783,13 @@ void Npc_actor::paint
  */
 void Npc_actor::activate
 	(
-	Usecode_machine *umachine,
 	int event
 	)
 	{
 	if (is_dead())
 		return;
 					// Converse, etc.
-	Actor::activate(umachine, event);
+	Actor::activate(event);
 	//++++++ This might no longer be needed.  Need to test.++++++ (jsf)
 					// Want to get BG actors from start
 					//   to their regular schedules:
@@ -3808,7 +3803,7 @@ void Npc_actor::activate
 		return;
 	cout << "Setting '" << get_name() << "' to 1st schedule" << endl;
 					// Maybe a delay here?  Okay for now.
-	update_schedule(gwin, gwin->get_hour()/3);
+	update_schedule(gwin->get_hour()/3);
 	}
 
 /*
@@ -3895,7 +3890,7 @@ int Npc_actor::step
 		Actor::set_flag(static_cast<int>(Obj_flags::poisoned));
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
-	add_dirty(gwin);		// Set to repaint old area.
+	add_dirty();			// Set to repaint old area.
 					// Get old chunk.
 	Map_chunk *olist = gmap->get_chunk(old_cx, old_cy);
 					// Move it.
@@ -3906,7 +3901,7 @@ int Npc_actor::step
 	nlist->activate_eggs(this, t.tx, t.ty, t.tz, oldtile.tx, oldtile.ty);
 
 					// Offscreen, but not in party?
-	if (!add_dirty(gwin, 1) && party_id < 0 &&
+	if (!add_dirty(1) && party_id < 0 &&
 					// And > a screenful away?
 	    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize &&
 			//++++++++Try getting rid of the 'talk' line:

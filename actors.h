@@ -126,7 +126,7 @@ public:
 	void ready_best_weapon();	// Find best weapon and ready it.
 	void unready_weapon(int spot);	// Try to sheath weapon.
 					// Force repaint of area taken.
-	int add_dirty(Game_window *gwin, int figure_rect = 0);
+	int add_dirty(int figure_rect = 0);
 	void change_frame(int frnum);	// Change frame & set to repaint.
 	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
 	void use_food();		// Decrement food level.
@@ -324,13 +324,13 @@ public:
 	virtual void switched_chunks(Map_chunk *, Map_chunk *)
 		{  }
 					// Update schedule for new 3-hour time.
-	virtual void update_schedule(Game_window *gwin, int hour3, 
+	virtual void update_schedule(int hour3, 
 					int backwards = 0, int delay = -1)
 		{  }
 					// Render.
 	virtual void paint();
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual void activate(int event = 1);
 	virtual bool edit();		// Edit in ExultStudio.
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
@@ -407,7 +407,7 @@ public:
 			index < (int)(sizeof(spots)/sizeof(spots[0])) ? 
 				spots[index] : 0; 
 		}
-	virtual void call_readied_usecode(Game_window *gwin, int index,
+	virtual void call_readied_usecode(int index,
 					Game_object *obj, int eventid);
 	virtual int get_max_weight();	// Get max. weight allowed.
 					// Change member shape.
@@ -539,12 +539,12 @@ public:
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
 					// Update schedule for new 3-hour time.
-	virtual void update_schedule(Game_window *gwin, int hour3, 
+	virtual void update_schedule(int hour3, 
 					int backwards = 0, int delay = -1);
 					// Render.
 	virtual void paint();
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual void activate(int event = 1);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Step onto an (adjacent) tile.

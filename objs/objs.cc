@@ -650,7 +650,6 @@ void Game_object::paint
 
 void Game_object::activate
 	(
-	Usecode_machine *umachine,
 	int event
 	)
 	{
@@ -672,7 +671,7 @@ void Game_object::activate
 	else if (usefun == 0x2c1 && get_quality() >= 213 &&
 			 Game::get_game_type() == SERPENT_ISLE )
 		usefun = 0x62a;
-	umachine->call_usecode(usefun, this,
+	ucmachine->call_usecode(usefun, this,
 			(Usecode_machine::Usecode_events) event);
 	}
 
@@ -1434,7 +1433,6 @@ int Game_object::get_rotated_frame
 
 int Game_object::attack_object
 	(
-	Game_window *gwin,
 	Actor *attacker,
 	int weapon_shape,		// Weapon shape, or 0 to use readied.
 	int ammo_shape
@@ -1473,8 +1471,7 @@ Game_object *Game_object::attacked
 	int ammo_shape
 	)
 	{
-	int wpoints = attack_object(gwin,
-					attacker, weapon_shape, ammo_shape);
+	int wpoints = attack_object(attacker, weapon_shape, ammo_shape);
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
 

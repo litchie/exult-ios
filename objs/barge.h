@@ -53,7 +53,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	void swap_dims();
 	void set_center();
 	int okay_to_rotate(Tile_coord pos);
-	void add_dirty(Game_window *gwin);
+	void add_dirty();
 					// Finish up move/rotate operation.
 	void finish_move(Tile_coord *positions);
 public:

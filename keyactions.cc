@@ -304,7 +304,7 @@ void ActionTryKeys(int *params)
 		if (act->get_objects(keys, 641, qual, c_any_framenum)) {
 			// intercept the click_on_item call made by the key-usecode
 			gwin->get_usecode()->intercept_click_on_item(obj);
-			keys[0]->activate(gwin->get_usecode());
+			keys[0]->activate();
 			return;
 		}
 	}
