@@ -132,7 +132,7 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 				{
 				
 				Uint8	*temp_buffer=new Uint8[len];
-				int	ret;
+				int	ret=0;
 				size_t	sofar=0;
 				memset(temp_buffer,silence,len);
 				while((len-sofar))
