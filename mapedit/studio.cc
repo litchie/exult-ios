@@ -191,7 +191,8 @@ extern "C" gboolean on_monst_shape_focus_out_event
 
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	vgafile(0), eggwin(0), server_socket(-1), server_input_tag(-1), 
-	static_path(0), browser(0), palbuf(0), egg_monster_draw(0)
+	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), egg_ctx(0),
+	waiting_for_server(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -489,7 +490,15 @@ void ExultStudio::open_egg_window
 			egg_monster_draw->enable_drop(Egg_monster_dropped,
 								this);
 			}
+		egg_ctx = gtk_statusbar_get_context_id(
+			GTK_STATUSBAR(glade_xml_get_widget(
+				app_xml, "egg_status")), "Egg Editor");
 		}
+					// Init. egg address to null.
+	gtk_object_set_user_data(GTK_OBJECT(eggwin), 0);
+					// Make 'apply' sensitive.
+	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
+						"egg_apply_btn"), true);
 	if (data)
 		if (!init_egg_window(data, datalen))
 			return;
@@ -658,6 +667,23 @@ static void Set_entry
 	}
 
 /*
+ *	Set statusbar.
+ */
+
+static void Set_statusbar
+	(
+	GladeXML *app_xml,
+	char *name,
+	int context,
+	char *msg
+	)
+	{
+	GtkWidget *sbar = glade_xml_get_widget(app_xml, name);
+	if (sbar)
+		gtk_statusbar_push(GTK_STATUSBAR(sbar), context, msg);
+	}
+
+/*
  *	Init. the egg editor with data from Exult.
  *
  *	Output:	0 if error (reported).
@@ -769,6 +795,23 @@ int ExultStudio::init_egg_window
 	}
 
 /*
+ *	Callback for when user clicked where egg should be inserted.
+ */
+
+static void Egg_response
+	(
+	int id,
+	unsigned char *data,
+	int datalen
+	)
+	{
+	Exult_server::Msg_type mid = (Exult_server::Msg_type) id;
+	if (mid == Exult_server::user_responded)
+		ExultStudio::get_instance()->close_egg_window();
+	//+++++cancel??
+	}
+
+/*
  *	Send updated egg info. back to Exult.
  *
  *	Output:	0 if error (reported).
@@ -780,6 +823,7 @@ int ExultStudio::save_egg_window
 	{
 	cout << "In save_egg_window()" << endl;
 	unsigned char data[Exult_server::maxlength];
+					// Get egg (null if creating new).
 	unsigned long addr = (unsigned long) gtk_object_get_user_data(
 							GTK_OBJECT(eggwin));
 	int tx = -1, ty = -1, tz = -1;	// +++++For now.
@@ -856,14 +900,24 @@ int ExultStudio::save_egg_window
 		cout << "Unknown egg type" << endl;
 		return 0;
 		}
-	if (!Egg_object_out(server_socket, addr, tx, ty, tz,
-			shape, frame, type, criteria, probability, distance,
-			nocturnal, once, hatched, auto_reset, data1, data2))
+	if (Egg_object_out(server_socket, addr, tx, ty, tz,
+		shape, frame, type, criteria, probability, distance,
+		nocturnal, once, hatched, auto_reset, data1, data2) == -1)
 		{
 		cout << "Error sending egg data to server" <<endl;
 		return 0;
 		}
 	cout << "Sent egg data to server" << endl;
+	if (!addr)
+		{
+		Set_statusbar(app_xml, "egg_status", egg_ctx,
+					"Click on map at place to insert egg");
+					// Make 'apply' insensitive.
+		gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
+						"egg_apply_btn"), false);
+		waiting_for_server = Egg_response;
+		return 1;		// Leave window open.
+		}
 	close_egg_window();
 	return 1;
 	}
@@ -933,7 +987,7 @@ void ExultStudio::read_from_server
 	Exult_server::Msg_type id;
 	int datalen = Exult_server::Receive_data(server_socket, id, data,
 							sizeof(data));
-	if (!datalen)
+	if (datalen < 0)
 		{
 		cout << "Error reading from server" << endl;
 		if (server_socket == -1)// Socket closed?
@@ -947,6 +1001,13 @@ void ExultStudio::read_from_server
 	cout << "ID = " << (int) id << endl;
 	if (id == Exult_server::egg)
 		open_egg_window(data, datalen);
+	else if (id == Exult_server::user_responded ||
+		 id == Exult_server::cancel)
+		{			// Send msg. to callback.
+		if (waiting_for_server)
+			waiting_for_server((int) id, data, datalen);
+		waiting_for_server = 0;
+		}
 	}
 
 /*

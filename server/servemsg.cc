@@ -37,7 +37,7 @@ namespace Exult_server
 /*
  *	Send data.
  *
- *	Output:	0 if error.
+ *	Output:	-1 if error.
  */
 
 int Send_data
@@ -56,13 +56,13 @@ int Send_data
 	buf[4] = id;
 	std::memcpy(&buf[5], data, datalen);	// The data itself.
 	int len = datalen + hdrlength;
-	return (write(socket, buf, len) == len);
+	return (write(socket, buf, len) == len ? 0 : -1);
 	}
 
 /*
  *	Read message from client.
  *
- *	Output:	Length of data, else 0.
+ *	Output:	Length of data, else -1.
  */
 
 int Receive_data
@@ -79,20 +79,20 @@ int Receive_data
 		{
 		close(socket);
 		socket = -1;
-		return 0;
+		return -1;
 		}
 	if (len == -1)			// Nothing available?
-		return 0;
+		return -1;
 	int magic = buf[0] + (buf[1]<<8);
 	if (magic != Exult_server::magic)
 		{
 		cout << "Bad magic read" << endl;
-		return 0;
+		return -1;
 		}
 	if (read(socket, buf, 3) != 3)
 		{
 		cout << "Couldn't read length+type" << endl;
-		return 0;
+		return -1;
 		}
 	int dlen = buf[0] | (buf[1]<<8);
 					// Message type.
@@ -101,13 +101,13 @@ int Receive_data
 		{
 		cout << "Length " << datalen << " exceeds max" << endl;
 		//+++++++++Eat the chars.
-		return 0;
+		return -1;
 		}
 	datalen = read(socket, data, dlen);	// Read data.
 	if (datalen < dlen)
 		{
 		cout << "Failed to read all " << dlen << " bytes" << endl;
-		return 0;
+		return -1;
 		}
 	return datalen;
 	}
