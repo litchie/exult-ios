@@ -80,15 +80,10 @@ using std::min;
 using std::max;
 #endif
 
-#if defined(WIN32) && !defined(FORCE_44KHZ)
-/* 44100 caused the freeze upon exit in Win! */
-#define SAMPLERATE	22050
-#else
 //SDL_mixer doesn't like mixing different rates when using OGG
 //This should match the same as the SFX and OGG Music which is 22khz
-//#define SAMPLERATE	44100
 #define SAMPLERATE	22050
-#endif
+
 
 #define	TRAILING_VOC_SLOP 32
 #define	LEADING_VOC_SLOP 32
@@ -361,10 +356,6 @@ Audio::~Audio()
 	self = 0;
 }
 
-//void	Audio::clear(uint8 *buf,int len)
-//{
-//	memset(buf,actual.silence,len);
-//}
 
 uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 {
@@ -539,14 +530,6 @@ void 	Audio::resume_audio(void)
 }
 
 
-//void	Audio::mix(uint8 *sound_data,uint32 len)
-//{
-//	if (!audio_enabled) return;
-//	if(mixer)
-//		mixer->play(sound_data,len);
-//}
-	
-
 void	Audio::playfile(const char *fname,bool wait)
 {
 	if (!audio_enabled)
@@ -577,44 +560,6 @@ void	Audio::playfile(const char *fname,bool wait)
 	play(buf,len,wait);
 	delete [] buf;
 }
-
-/*
- *	Play a wave file.
- */
-//void	Audio::playwave(const char *fname, bool wait)
-//{
-//	if (!audio_enabled) return;
-//
-//	uint8 *buf;
-//	Uint32 len;
-//	SDL_AudioSpec src;
-//	SDL_AudioCVT cvt;		// Got to convert.
-//
-//	if (!SDL_LoadWAV(fname, &src, &buf, &len))
-//	{
-//		CERR("Couldn't play file '" << fname << "'");
-//		return;
-//	}
-//
-//	if (SDL_BuildAudioCVT(&cvt, src.format, src.channels, src.freq,
-//			actual.format, actual.channels, actual.freq) < 0)
-//	{
-//		CERR("Couldn't convert wave data");
-//		return;
-//	}
-//	cvt.len = len;
-//	cvt.buf = new uint8[len*cvt.len_mult];
-//	memcpy(cvt.buf, buf, len);
-//	SDL_FreeWAV(buf);
-//	SDL_ConvertAudio(&cvt);
-//	if(mixer)
-//		mixer->play(cvt.buf,cvt.len_cvt);
-//	delete[] cvt.buf;
-//}
-
-//void	Audio::mixfile(const char *fname)
-//{
-//}
 
 
 bool	Audio::playing(void)
