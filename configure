@@ -2594,7 +2594,7 @@ EOF
 
 
 
-DEBUG_FLAGS="-O2"
+DEBUG_FLAGS="-O2 -fno-default-inline"
 # Check whether --enable-debug or --disable-debug was given.
 if test "${enable_debug+set}" = set; then
   enableval="$enable_debug"
@@ -2611,7 +2611,7 @@ if test x$enable_debug = xyes; then
 #define DEBUG 1
 EOF
 
-  DEBUG_FLAGS="-O -g"
+  DEBUG_FLAGS="-O -g -fno-default-inline"
 else
   echo "$ac_t""no" 1>&6
 fi
