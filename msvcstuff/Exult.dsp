@@ -44,7 +44,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /Zi /O2 /Ob0 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /Zi /O1 /Ob0 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"Release\Exult.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.99 /subsystem:windows /debug /machine:I386 /nodefaultlib:"libc.lib"
+# ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.991 /subsystem:windows /debug /machine:I386 /nodefaultlib:"libc.lib"
 # SUBTRACT LINK32 /pdb:none /incremental:yes
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
@@ -78,7 +78,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo /o"debug\Exult.bsc"
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.99 /subsystem:console /debug /machine:I386 /nodefaultlib:"libc.lib" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.991 /subsystem:console /debug /machine:I386 /nodefaultlib:"libc.lib" /pdbtype:sept
 # SUBTRACT LINK32 /incremental:no /map
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
@@ -96,7 +96,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G6 /MD /W3 /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O1 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -105,7 +105,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.99 /subsystem:windows /pdb:none /machine:I386 /nodefaultlib:"libc.lib"
+# ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.991 /subsystem:windows /pdb:none /machine:I386 /nodefaultlib:"libc.lib"
 # SUBTRACT LINK32 /debug
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
 TargetPath=\UC\exult\Exult.exe
@@ -142,7 +142,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /incremental:no /map
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.99 /subsystem:console /debug /machine:I386 /nodefaultlib:"libc.lib" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.991 /subsystem:console /debug /machine:I386 /nodefaultlib:"libc.lib" /pdbtype:sept
 # SUBTRACT LINK32 /incremental:no /map
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
 TargetPath=\UC\exult\Exult.exe
@@ -334,14 +334,14 @@ SOURCE=..\audio\Audio.cc
 
 !IF  "$(CFG)" == "Exult - Win32 Release"
 
-# ADD CPP /Ze /O2
+# ADD CPP /O1
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
 
 # ADD BASE CPP /Ze /O2
-# ADD CPP /Ze /O2
+# ADD CPP /Ze /O1
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
 
@@ -403,19 +403,6 @@ SOURCE=..\actions.cc
 # Begin Source File
 
 SOURCE=..\actorio.cc
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# ADD CPP /O1
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -576,138 +563,34 @@ SOURCE=..\windrag.cc
 # Begin Source File
 
 SOURCE=..\files\crc.cc
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\Flat.cc
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\Flex.cc
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\IFF.cc
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\listfiles.cc
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\Table.cc
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\U7file.cc
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
 SOURCE=..\files\utils.cc
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# ADD CPP /O2
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-!ENDIF 
-
 # End Source File
 # End Group
 # Begin Group "flic"
@@ -871,10 +754,6 @@ SOURCE=..\imagewin\iwin8.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\imagewin\Makefile.am
-# End Source File
-# Begin Source File
-
 SOURCE=..\imagewin\savepcx.cc
 # End Source File
 # Begin Source File
@@ -945,19 +824,6 @@ SOURCE=..\objs\mappatch.cc
 # Begin Source File
 
 SOURCE=..\objs\objiter.cc
-
-!IF  "$(CFG)" == "Exult - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
-
-# ADD CPP /Ob0
-
-!ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -1302,10 +1168,6 @@ SOURCE=..\lists.h
 # Begin Source File
 
 SOURCE=..\menulist.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\mingw_kludges.h
 # End Source File
 # Begin Source File
 
@@ -1949,6 +1811,10 @@ SOURCE=..\conf\Makefile.am
 # End Source File
 # Begin Source File
 
+SOURCE=..\data\Makefile.am
+# End Source File
+# Begin Source File
+
 SOURCE=..\files\Makefile.am
 # End Source File
 # Begin Source File
@@ -2002,11 +1868,7 @@ SOURCE=..\INSTALL
 # End Source File
 # Begin Source File
 
-SOURCE=..\Makefile
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\Makefile.am
+SOURCE=..\imagewin\Makefile.am
 # End Source File
 # Begin Source File
 

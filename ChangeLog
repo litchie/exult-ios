@@ -1,3 +1,17 @@
+2002-06-05  Ryan Nunn  <triforce@merlin.net.au>
+	* actors.cc : Removed the allow any item in back slot code.
+	* gumps/Paperdoll_gump.cc : Fixed bug where items were in wrong places.
+	* gumps/Paperdoll_gump_info.cc : Allow bags, barrels, boxes, crates,
+	  chests and baskets to be placed in the back slot in BG.
+	* cheat.cc : Fixing a few a warning, and adding missing header include
+	* exult.cc, server/servemsg.cc : Getting win32 versions to build
+	  without #define USE_EXULTSTUDIO
+	* Makefile.win32, Makefile.cygwin, win32/*.*, msvcstuff/*.* : Updating
+	  Win32 version numbers.
+	* Makefile.am, audio/midi_drivers/Makefile.am, server/Makefile.am :
+	  Added a few missing files so building the source dist will include
+	  all the files (as far as I know)
+
 2002-06-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* NEWS, configure.in, Makefile.be, Makefile.MorphOS: 0.99.1RC2
 	* keyactions.cc: changed version string (copyright -2002)
