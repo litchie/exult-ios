@@ -1550,8 +1550,7 @@ USECODE_INTRINSIC(recall_virtue_stone)
 		{
 		gwin->get_gump_man()->close_all_gumps();
 					// Pick it up if necessary.
-		Game_object *owner = obj->get_outermost();
-		if (owner != gwin->get_main_actor() && !npc_in_party(owner))
+		if (!obj->get_owner())
 			{		// Go through whole party.
 			obj->remove_this(1);
 			Usecode_value party = get_party();
@@ -2783,8 +2782,8 @@ USECODE_INTRINSIC(remove_from_area)
 USECODE_INTRINSIC(infravision)
 {
 	// infravision(npc, onoff)
-	Game_object *npc = get_item(parms[0]);
-	if (npc && (npc == gwin->get_main_actor() || npc->get_party_id() >= 0))
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc && npc->is_in_party())
 		{
 		if (parms[1].get_int_value())
 			{		// On?

@@ -158,7 +158,7 @@ void Npc_proximity_handler::handle_event
 					//   a rabbit (SI start).
 		 (rand()%2 == 1 || npc->get_shapenum() == 811)  &&
 					// And not for party members.
-			npc->get_party_id() < 0 &&
+			!npc->is_in_party() &&
 					// And not for patrollers/monsters
 					//  in SI. !!Guessing.
 		 (Game::get_game_type() != SERPENT_ISLE ||
