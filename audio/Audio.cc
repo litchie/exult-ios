@@ -283,6 +283,11 @@ Audio::Audio() : speech_enabled(true), music_enabled(true),
 			effects_enabled(false), midi(0)
 {
 	self=this;
+	string s;
+	config->value("config/audio/speech/enabled",s,"yes");
+	speech_enabled = (s!="no");
+	config->value("config/audio/midi/enabled",s,"---");
+	music_enabled = (s!="no");
 }
 
 void Audio::Init(int _samplerate,int _channels)	
