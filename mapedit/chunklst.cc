@@ -182,6 +182,11 @@ unsigned char *Chunk_chooser::get_chunk
 		chunklist[chunknum] = data;
 		chunkfile.seekg(chunknum*512);
 		chunkfile.read(reinterpret_cast<char *>(data), 512);
+		if (!chunkfile.good())
+			{
+			memset(data, 0, 512);
+			cout << "Error reading chunk file" << endl;
+			}
 		}
 	else
 		set_chunk(buf, datalen);
