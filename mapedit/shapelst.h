@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "objbrowse.h"
+#include "shapedraw.h"
 #include "rect.h"
 
 class Vga_file;
@@ -50,15 +51,8 @@ class Shape_info
 /*
  *	This class manages a list of shapes from an image file.
  */
-class Shape_chooser: public Object_browser
+class Shape_chooser: public Object_browser, public Shape_draw
 	{
-	Vga_file *ifile;		// Where the shapes come from.
-	int num_shapes;			// Total # shapes in ifile.
-	char **names;			// Names of shapes (or null).
-	GtkWidget *draw;		// GTK draw area to display them in.
-	GdkGC *drawgc;			// For drawing in 'draw'.
-	Image_buffer8 *iwin;		// What we render into.
-	GdkRgbCmap *palette;		// For gdk_draw_indexed_image().
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
 	GtkWidget *fspin;		// Spin button for frame #.
@@ -74,13 +68,12 @@ class Shape_chooser: public Object_browser
 	void show()
 		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
 	void select(int new_sel);	// Show new selection.
-	void render();			// Draw list.
+	virtual void render();		// Draw list.
 	void scroll(int newindex);	// Scroll.
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h);
 	virtual ~Shape_chooser();
 	
-	void set_shape_names(char **nms);
 					// Turn off selection.
 	void unselect(bool need_render = true);
 	int is_selected()		// Is a shape selected?
