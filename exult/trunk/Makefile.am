@@ -57,6 +57,7 @@ exult_SOURCES =	\
 	mouse.h		\
 	npcnear.cc	\
 	npcnear.h	\
+	objiter.h	\
 	objs.cc		\
 	objs.h		\
 	palette.cc	\

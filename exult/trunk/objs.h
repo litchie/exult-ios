@@ -45,6 +45,7 @@ class Rectangle;
 class Container_game_object;
 class Egg_object;
 class PathFinder;
+class Actor;
 
 /*
  *	Sizes:
@@ -67,7 +68,7 @@ class Game_object : public ShapeID
 	unsigned char shape_pos;	// (X,Y) of shape within chunk.
 	unsigned char lift;		// Raise by 4* this number.
 	short quality;			// Some sort of game attribute.
-	Game_object *next;		// ->next in chunk list or container.
+	Game_object *next, *prev;	// ->next in chunk list or container.
 	Vector dependencies;		// Objects which must be painted before
 					//   this can be rendered.
 	static unsigned char rotate[8];	// For getting rotated frame #.
@@ -79,10 +80,12 @@ protected:
 					//   gump's rectangle.
 public:
 	friend class Chunk_object_list;
+#if 0
 	friend class Barge_object;
 	friend class Gump_object;
 	friend class Actor;
 	friend class Actor_gump_object;
+#endif
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
@@ -154,8 +157,30 @@ public:
 		{ lift = l; }
 	Game_object *get_next()
 		{ return next; }
-	void set_next(Game_object *obj) // Set next in list.
-		{ next = obj; }
+	Game_object *get_prev()
+		{ return prev; }
+					// Insert, and return new first.
+	Game_object *insert_in_chain(Game_object *first)
+		{
+		if (!first)		// First one.
+			next = prev = this;
+		else
+			{
+			next = first;
+			prev = first->prev;
+			first->prev->next = this;
+			first->prev = this;
+			}
+		return this;
+		}
+					// Append, and return new first.
+	Game_object *append_to_chain(Game_object *first)
+		{ return insert_in_chain(first)->next; }
+	void remove_from_chain()
+		{
+		next->prev = prev;
+		prev->next = next;
+		}
 	int lt(Game_object& obj2) const;// Is this less than another in pos.?
 					// Return chunk coords.
 	int get_cx() const
@@ -164,6 +189,8 @@ public:
 		{ return cy; }
 	void set_invalid()		// Set to invalid position.
 		{ cx = cy = 255; }
+	void set_chunk(int newcx, int newcy)
+		{ cx = newcx; cy = newcy; }
 					// Get frame for desired direction.
 	int get_dir_framenum(int dir, int frnum) const
 		{ return (frnum&0xf) + rotate[dir]; }
@@ -201,9 +228,6 @@ public:
 	Tile_coord find_unblocked_tile(int dist, int height = 1);
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
-#if 0
-	Game_object *find_beneath();	// Find highest object beneath us.
-#endif
 	int is_closed_door() const;	// Checking for a closed door.
 	Game_object *get_outermost();	// Get top 'owner' of this object.
 	void say(char *text);		// Put text up by item.
@@ -378,7 +402,7 @@ class Container_game_object : public Ireg_game_object
 	{
 	int volume_used;		// Amount of volume occupied.
 protected:
-	Game_object *last_object;	// ->last obj., which pts. to first.
+	Game_object *objects;		// ->first object.
 	int get_max_volume() const	// Max. we'll hold. (0 == infinite).
 		{ return 4*get_volume(); }
 public:
@@ -386,19 +410,17 @@ public:
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
 		: Ireg_game_object(l, h, shapex, shapey, lft),
-		  volume_used(0), last_object(0)
+		  volume_used(0), objects(0)
 		{  }
 	Container_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
-		  volume_used(0), last_object(0)
+		  volume_used(0), objects(0)
 		{  }
-	Container_game_object() : volume_used(0), last_object(0) {  }
+	Container_game_object() : volume_used(0), objects(0) {  }
 	virtual ~Container_game_object();
-	Game_object *get_last_object()
-		{ return last_object; }
 	Game_object *get_first_object()	// Get first inside.
-		{ return last_object ? last_object->get_next() : 0; }
+		{ return objects; }
 					// For when an obj's quantity changes:
 	void modify_volume_used(int delta)
 		{ volume_used += delta; }
@@ -531,6 +553,8 @@ class Chunk_object_list
 	unsigned char cx, cy;		// Absolute chunk coords. of this.
 public:
 	friend class Npc_actor;
+	friend class Object_iterator;
+	friend class Object_iterator_backwards;
 	Chunk_object_list(int chunkx, int chunky);
 	~Chunk_object_list();		// Delete everything in chunk.
 	void add(Game_object *obj);	// Add an object.
@@ -551,11 +575,6 @@ public:
 		{ flats[16*tiley + tilex] = id; }
 	ShapeID get_flat(int tilex, int tiley) const
 		{ return flats[16*tiley + tilex]; }
-	Game_object *get_first()	// Return first object.
-		{ return objects; }
-					// Return next object.
-	Game_object *get_next(Game_object *obj)
-		{ return obj->next; }
 					// Get/create cache.
 	Chunk_cache *need_cache()
 		{ 
@@ -623,26 +642,4 @@ public:
 		return frames[index];
 		}
 	};
-#if 0
-/*
- *	Move an object, and possibly change its shape too.
- */
-inline void Game_object::move
-	(
-	Chunk_object_list *old_chunk, 
-	Chunk_object_list *new_chunk, 
-	int new_sx, int new_sy, int new_frame, 
-	int new_lift
-	)
-	{
-	if (old_chunk)			// Remove from current chunk.
-		old_chunk->remove(this);
-	set_shape_pos(new_sx, new_sy);
-	if (new_frame >= 0)
-		set_frame(new_frame);
-	if (new_lift >= 0)
-		set_lift(new_lift);
-	new_chunk->add(this);
-	}
-#endif
 #endif

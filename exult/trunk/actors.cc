@@ -863,7 +863,7 @@ int Actor::add
 		index = lfinger;
 		}
 	spots[index] = obj;		// Store in correct spot.
-	obj->cx = obj->cy = 0;		// Clear coords. (set by gump).
+	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
 	if (Game_window::get_game_window()->get_info(obj).is_light_source())
 		light_sources++;
 	return (1);
@@ -897,7 +897,7 @@ int Actor::add_readied
 		if (!Container_game_object::add(obj))
 			return (0);	// No room, or too heavy.
 		spots[index] = obj;
-		obj->cx = obj->cy = 0;	// Clear coords. (set by gump).
+		obj->set_chunk(0, 0);	// Clear coords. (set by gump).
 		if (best_index == lrhand)
 			two_handed = 1;	// Must be a two-handed weapon.
 		if (best_index == lrfinger)
