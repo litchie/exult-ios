@@ -31,11 +31,6 @@ Boston, MA  02111-1307, USA.
 #include "ibuf8.h"
 #include "SDL_types.h"
 
-// No no no! the typedef way is the correct one, since SDL_Color is typedef "in reality", too
-// the other one will fail on standard conforming compilers
-typedef struct SDL_Color SDL_Color;
-//struct SDL_Color;
-
 template <class T> class GammaTable;
 
 
@@ -44,7 +39,7 @@ template <class T> class GammaTable;
  */
 class Image_window8 : public Image_window
 	{
-	SDL_Color *colors;		// Palette.
+	unsigned char colors[768];	// Palette.
 	Image_buffer8 *ib8;		// Cast to 8-bit buffer.
 
 	static GammaTable<unsigned char>	GammaRed;

@@ -51,13 +51,11 @@ Image_window8::Image_window8(unsigned int w, unsigned int h,
 	: Image_window(new Image_buffer8(w, h, (Image_buffer *) 0), 
 	  scl, fs)
 {
-	colors = new SDL_Color[256];
 	ib8 = (Image_buffer8 *) ibuf;
 }
 
 Image_window8::~Image_window8()
 {
-	delete[] colors;
 }
 
 
@@ -101,16 +99,17 @@ void Image_window8::set_palette
 	int maxval,			// Highest val. for each color.
 	int brightness			// Brightness control (100 = normal).
 	)
-	{
+{
 					// Get the colors.
+	SDL_Color colors2[256];
 	for (int i = 0; i < 256; i++)
-		{
-		colors[i].r = GammaRed[Get_color8(rgbs[3*i], maxval, brightness)];
-		colors[i].g = GammaGreen[Get_color8(rgbs[3*i + 1], maxval, brightness)];
-		colors[i].b = GammaBlue[Get_color8(rgbs[3*i + 2], maxval, brightness)];
-		}
-	SDL_SetColors(surface, colors, 0, 256);
+	{
+		colors2[i].r = colors[i*3] = GammaRed[Get_color8(rgbs[3*i], maxval, brightness)];
+		colors2[i].g = colors[i*3+1]  = GammaGreen[Get_color8(rgbs[3*i + 1], maxval, brightness)];
+		colors2[i].b = colors[i*3+2]  = GammaBlue[Get_color8(rgbs[3*i + 2], maxval, brightness)];
 	}
+	SDL_SetColors(surface, colors2, 0, 256);
+}
 
 /*
  *	Rotate a range of colors.
@@ -122,12 +121,27 @@ void Image_window8::rotate_colors
 	int num,			// # in range.
 	int upd				// 1 to update hardware palette.
 	)
-	{
-	int cnt = num - 1;		// Shift downward.
-	SDL_Color c0 = colors[first+num-1];
-	memmove(colors+first+1,colors+first,sizeof(SDL_Color)*cnt);
+{
+	first *= 3;
+	num *= 3;
+	int cnt = num - 3;		// Shift downward.
+	unsigned char c0 = colors[first+num-3];
+	unsigned char c1 = colors[first+num-2];
+	unsigned char c2 = colors[first+num-1];
+	memmove(colors+first+3,colors+first,cnt);
 	colors[first ] = c0;	// Shift 1st to end.
+	colors[first+1] = c1;	// Shift 1st to end.
+	colors[first+2] = c2;	// Shift 1st to end.
 	if (upd)			// Take effect now?
-		SDL_SetColors(surface, colors, 0, 256);
+	{
+		SDL_Color colors2[256];
+		for (int i = 0; i < 256; i++)
+		{
+			colors2[i].r = colors[i*3];
+			colors2[i].g = colors[i*3+1];
+			colors2[i].b = colors[i*3+2];
+		}
+		SDL_SetColors(surface, colors2, 0, 256);
 	}
+}
 
