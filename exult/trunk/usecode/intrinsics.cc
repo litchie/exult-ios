@@ -50,6 +50,7 @@
 #include "monstinf.h"
 #include "actions.h"
 #include "ucscriptop.h"
+#include "ucfunction.h"
 
 using std::cerr;
 using std::cout;

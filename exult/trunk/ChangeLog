@@ -1,3 +1,6 @@
+2002-06-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* usecode/*: merged in new non-recursive usecode machine
+
 2002-06-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* cheat.cc,drag.cc,drag.h:  Use Dragging_info for Paste so items
