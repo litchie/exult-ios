@@ -65,6 +65,7 @@ void Game_window::read_npcs
 	memset(npcs, 0, num_npcs*sizeof(npcs[0]));
 					// Create main actor.
 	camera_actor = npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
+#if 0
 	if (Game::get_game_type() == BLACK_GATE)
 		{
 		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
@@ -72,6 +73,7 @@ void Game_window::read_npcs
 		else
 			main_actor->set_flag(Obj_flags::dont_render);
 		}
+#endif
 	int i;
 
 	// Don't like it... no i don't.
