@@ -88,24 +88,6 @@ int Weapon_info::read
 	hitsfx = Read2(ptr) + sfx_delta;
 	if (hitsfx == 123 && !bg)	// SerpentIsle:  Does not sound right.
 		hitsfx = 61;		// Sounds more like a weapon.
-					// Last 2 bytes unknown/unused.
-#if 0
-		cout << "Damage = " << damage << ", flags0 = " << hex
-			<< " 0x" << setfill('0') << 
-			setw(2) << flags0 << ", use = " << use <<
-			", range = " <<
-			hex << "0x" << range << hex << ", unk1 = " << setw(2)
-			<< "0x" << unk1 << endl;
-		cout << "Special flags = " << "0x" << special <<
-			", usecode = 0x" << usecode << endl;
-		cout << dec << "Sfx = " << usesfx << ", hitsfx = " <<
-				hitsfx << endl;
-		cout << "Unknown at end:  ";
-		for (int i = 0; i < sizeof(unk2); i++)
-			cout << setw(2) << setfill('0') <<
-						(short) unk2[i] << ' ';
-		cout << dec << endl << endl;
-#endif
 	return shapenum;
 	}
 

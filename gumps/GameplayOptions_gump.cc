@@ -133,10 +133,6 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 		paperdolls = state;
 	else if (btn == buttons[6])
 		text_bg = state;
-#if 0	/* ++++No longer needed */
-	else if (btn == buttons[7])
-		walk_after_teleport = state;
-#endif
 	else if (btn == buttons[8])
 		frames = state;
 	else if (btn == buttons[11])
@@ -198,11 +194,6 @@ void GameplayOptions_gump::build_buttons()
 	if (GAME_BG)
 		buttons[5] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59,
 											   paperdolls);
-#if 0	/* ++++++Option no longer needed. */
-	else if (GAME_SI)
-		buttons[7] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59, 
-											   walk_after_teleport);
-#endif
 	buttons[1] = new GameplayEnabledToggle(this, colx[3], rowy[3],
 										   59, fastmouse);
 	buttons[2] = new GameplayEnabledToggle(this, colx[3], rowy[4],
@@ -327,10 +318,6 @@ void GameplayOptions_gump::paint()
 	sman->paint_text(2, "Text Background:", x + colx[0], y + rowy[1] + 1);
 	if (GAME_BG)
 		sman->paint_text(2, "Paperdolls:", x + colx[0], y + rowy[2] + 1);
-#if 0
-	else if (GAME_SI)
-		sman->paint_text(2, "Walk after Teleport:", x + colx[0], y + rowy[2] + 1);
-#endif
 	sman->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[3] + 1);
 	sman->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
 	sman->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);

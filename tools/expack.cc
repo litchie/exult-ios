@@ -365,12 +365,6 @@ int main(int argc, char **argv)
 	case RESPONSE:
 	case CREATE:
 		{
-#if 0	/* Why not allow an empty flex? */
-			if(file_names.size()<1) {
-				cerr << "No files specified" << endl;
-				exit(1);
-			}
-#endif
 			ofstream flex;
 			try {
 				U7open(flex, fname);

@@ -236,11 +236,6 @@ void Shape_manager::reload_shapes
 Shape_manager::~Shape_manager()
 	{
 	delete fonts;
-#if 0	/* +++No longer needed. */
-	int nxforms = sizeof(xforms)/sizeof(xforms[0]);
-	for (int i = 0; i < nxforms; i++)
-		delete [] xforms[nxforms - 1 - i];
-#endif
 	assert(this == instance);
 	instance = 0;
 	}

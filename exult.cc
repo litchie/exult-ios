@@ -1905,31 +1905,6 @@ static void Drop_dragged_shape
 	Game_object *newobj = Create_object(shape, frame, ireg);
 	Dragging_info drag(newobj);
 	drag.drop(x, y, true);		// (Dels if it fails.)
-
-#if 0
-					// First see if it's a gump.
-	Gump *on_gump = ireg ? gwin->get_gump_man()->find_gump(x, y) : 0;
-	if (on_gump)
-		{
-		if (!on_gump->add(newobj, x, y, x, y))
-			delete newobj;
-		else
-			on_gump->paint(gwin);
-		}
-	else				// Try to drop at increasing hts.
-		{
-		int edit_lift = cheat.get_edit_lift();
-		for (int lift = edit_lift; lift <= 11; lift++)
-			if (gwin->drop_at_lift(newobj, x, y, lift))
-				{	// Success.
-				cheat.append_selected(newobj);
-				gwin->set_all_dirty();	// For now, until we
-					//    clear out grid we're painting.
-				return;
-				}
-		delete newobj;	// Failed.
-		}
-#endif
 	}
 
 /*

@@ -138,14 +138,6 @@ static void Filelist_selection(GtkTreeView *treeview, GtkTreePath *path)
 	g_free(text);
 }                                     
 
-#if 0
-C_EXPORT void on_filelist_tree_select_row(GtkTreeView *treeview, 
-		GtkTreePath *path, GtkTreeViewColumn *column, gpointer data)
-{
-	Filelist_selection(treeview, path);
-}
-#endif
-
 C_EXPORT void on_filelist_tree_cursor_changed(GtkTreeView *treeview)
 {
 	GtkTreePath *path;
