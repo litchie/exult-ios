@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <glib.h>
+#include <unistd.h>
 #include "shapelst.h"
 #include "paledit.h"
 #include "vgafile.h"
@@ -188,8 +189,10 @@ Object_browser *ExultStudio::create_palette_browser(const char *fname)
 
 void ExultStudio::choose_static_path()
 {
+	char cwd[1024];
+	getcwd(cwd, 1024);
 	GtkWidget *dirbrowser = xmms_create_dir_browser("Select static directory",
-							".", GTK_SELECTION_SINGLE,
+							cwd, GTK_SELECTION_SINGLE,
 							on_choose_directory);
 	gtk_signal_connect(GTK_OBJECT(dirbrowser), "destroy", GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dirbrowser);
         gtk_window_set_transient_for(GTK_WINDOW(dirbrowser), GTK_WINDOW(app));

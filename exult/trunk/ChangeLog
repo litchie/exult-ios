@@ -1,3 +1,6 @@
+2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* mapedit/studio.cc: set current dir in directory browser
+
 2001-02-13  Ryan Nunn  <triforce@merlin.net.au>
 	* cheat_screen.cc : Fixed text issue in Schedule screen
 
