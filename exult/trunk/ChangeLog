@@ -1,3 +1,6 @@
+2000-12-02  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
+	* File_gump.cc: fixed initial state of sound buttons
+
 2000-12-01  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Create 'objs' subdirectory.
