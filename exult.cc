@@ -6,7 +6,7 @@
 
 /*
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -215,7 +215,7 @@ int main
 	parameters.declare("-v",&showversion,true);
 	parameters.declare("--version",&showversion,true);
 	//	parameters.declare("-game",&arg_gamename,"default");
-	parameters.declare("--buildmap",&arg_buildmap,-1);
+	parameters.declare("--buildmap",&arg_buildmap,0);
 	parameters.declare("--nocrc",&ignore_crc,true);
 
 	// Process the args
@@ -1309,7 +1309,8 @@ void BuildGameMap()
 		else if (run_si)
 			gametype = SERPENT_ISLE;
 		else {
-			cerr << "You have to specify -bg or -si when using -buildmap" << endl;
+			cerr << "You have to specify --bg or --si when using -buildmap" << endl;
+			exit(1);
 		}
 
 		h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
