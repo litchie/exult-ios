@@ -1104,8 +1104,8 @@ Usecode_value Usecode_machine::call_intrinsic
 		gwin->show();		// ??
 		return Usecode_value(1);// ??
 		}
-	case 0x27:			// Get player name.
-		{
+	case 0x27:			// Get NPC name.
+		{	// +++++Make this work on array of NPC's.
 		static char *unknown = "player";
 		Game_object *obj = get_item(parms[0].get_int_value());
 		return Usecode_value(obj ? obj->get_name() : unknown);
@@ -1204,6 +1204,16 @@ Usecode_value Usecode_machine::call_intrinsic
 //+++++++++++++++
 		Unhandled(intrinsic, num_parms, parms);
 		break;
+	case 0x72:			// Wearing? (npc, where, itemshape, 
+					//   frame (-359=any)).
+					// Where = (1=weapon hand, 
+					//   2=other hand,
+					//   6=one finger?, 
+					//   7=other finger?,
+					//   9=head).
+		Unhandled(intrinsic, num_parms, parms);
+		//+++++++++++++++++++++
+		break;
 	case 0x87:			// ?Direction from parm[0] -> parm[1].
 					// Rets. 0-7.  Is 0 north?
 					// Same as 0x1a??
@@ -1230,6 +1240,10 @@ Usecode_value Usecode_machine::call_intrinsic
 			obj->clear_flag(parms[1].get_int_value());
 		break;
 		}
+	case 0x8d:		// ?? Returns party?
+//+++++++++++++++++++++
+		Unhandled(intrinsic, num_parms, parms);
+		break;
 	default:
 		Unhandled(intrinsic, num_parms, parms);
 		break;
