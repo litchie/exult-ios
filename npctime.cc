@@ -334,7 +334,8 @@ void Npc_hunger_timer::handle_event
 					// No longer a party member?
 	if ((npc != gwin->get_main_actor() && npc->get_party_id() < 0) ||
 					//   or no longer hungry?
-	    npc->get_property(static_cast<int>(Actor::food_level)) >= 0)
+	    npc->get_property(static_cast<int>(Actor::food_level)) >= 0 ||
+	    npc->is_dead())		// Obviously.
 		{
 		delete this;
 		return;
@@ -392,7 +393,8 @@ void Npc_poison_timer::handle_event
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||	// Long enough?  Or cured?
-	    npc->get_flag(Obj_flags::poisoned) == 0)
+	    npc->get_flag(Obj_flags::poisoned) == 0 ||
+	    npc->is_dead())		// Obviously.
 		{
 		npc->clear_flag(Obj_flags::poisoned);
 		delete this;
@@ -425,7 +427,8 @@ void Npc_sleep_timer::handle_event
 	    npc->get_flag(Obj_flags::asleep) == 0)
 		{
 					// Avoid waking Penumbra.
-		if (npc->get_schedule_type() != Schedule::sleep)
+		if (npc->get_schedule_type() != Schedule::sleep &&
+		    !npc->is_dead())	// Don't wake the dead.
 			{
 			npc->clear_flag(Obj_flags::asleep);
 			int frnum = npc->get_framenum();
@@ -484,7 +487,8 @@ void Npc_invisibility_timer::handle_event
 	    npc->get_flag(Obj_flags::invisible) == 0)
 		{
 		npc->clear_flag(Obj_flags::invisible);
-		gwin->add_dirty(npc);
+		if (!npc->is_dead())
+			gwin->add_dirty(npc);
 		delete this;
 		return;
 		}
@@ -513,7 +517,8 @@ void Npc_protection_timer::handle_event
 	    npc->get_flag(Obj_flags::protection) == 0)
 		{
 		npc->clear_flag(Obj_flags::protection);
-		gwin->add_dirty(npc);
+		if (!npc->is_dead())
+			gwin->add_dirty(npc);
 		delete this;
 		return;
 		}
