@@ -113,6 +113,39 @@ void Palette_edit::select
 	}
 
 /*
+ *	Load/reload from file.
+ */
+
+void Palette_edit::load
+	(
+	)
+	{
+					// Free old.
+	for (vector<GdkRgbCmap*>::iterator it = palettes.begin();
+					it != palettes.end(); ++it)
+		gdk_rgb_cmap_free(*it);
+	int cnt = flex_info->size();
+	palettes.resize(cnt);		// Set size of list.
+	if (!cnt)			// No palettes?
+		new_palette();		// Create 1 blank palette.
+	else
+		{
+		for (int pnum = 0; pnum < cnt; pnum++)
+			{
+			size_t len;
+			unsigned char *buf = (unsigned char *)
+						flex_info->get(pnum, len);
+			assert(len = 3*256);
+			guint32 colors[256];
+			for (int i = 0; i < 256; i++)
+				colors[i] = (buf[3*i]<<16)*4 + 
+					(buf[3*i+1]<<8)*4 + buf[3*i+2]*4;
+			palettes[pnum] = gdk_rgb_cmap_new(colors, 256);
+			}
+		}
+	}
+
+/*
  *	Draw the palette.  This need only be called when it changes.
  */
 
@@ -366,6 +399,9 @@ gint Palette_edit::mouse_press
 			break;
 			}
 #endif
+	if (event->button == 3)
+		gtk_menu_popup(GTK_MENU(paled->create_popup()), 
+				0, 0, 0, 0, event->button, event->time);
 	return (TRUE);
 	}
 
@@ -797,28 +833,11 @@ void Palette_edit::update_flex
 Palette_edit::Palette_edit
 	(
 	Flex_file_info *flinfo		// Flex-file info.
-	) : flex_info(flinfo), image(0), width(0), height(0),
+	) : Object_browser(0, flinfo),
+		flex_info(flinfo), image(0), width(0), height(0),
 		colorsel(0), cur_pal(0)
 	{
-	int cnt = flex_info->size();
-	if (!cnt)			// No palettes?
-		new_palette();		// Create 1 blank palette.
-	else
-		{
-		palettes.resize(cnt);	// Set size of list.
-		for (int pnum = 0; pnum < cnt; pnum++)
-			{
-			size_t len;
-			unsigned char *buf = (unsigned char *)
-						flex_info->get(pnum, len);
-			assert(len = 3*256);
-			guint32 colors[256];
-			for (int i = 0; i < 256; i++)
-				colors[i] = (buf[3*i]<<16)*4 + 
-					(buf[3*i+1]<<8)*4 + buf[3*i+2]*4;
-			palettes[pnum] = gdk_rgb_cmap_new(colors, 256);
-			}
-		}
+	load();				// Load from file.
 	setup();
 	}
 

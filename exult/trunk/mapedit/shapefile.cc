@@ -124,7 +124,7 @@ bool Image_file_info::revert
 	{
 	if (modified)
 		{
-		ifile->reset();
+		ifile->load(pathname.c_str());
 		modified = false;
 		}
 	return true;

@@ -185,6 +185,7 @@ void Object_browser::on_browser_file_revert
 		EStudio::Alert("Revert not yet implemented for this file");
 	else
 		{
+		chooser->load();	// Reload from file.
 		chooser->render();	// Repaint.
 		chooser->show();
 		}

@@ -44,6 +44,8 @@ public:
 		{ return group; }
 	int get_selected()		// Return index of selected item.
 		{ return selected; }	// (-1 if none.)
+	virtual void load()		// Load from file data.
+		{  }
 	virtual void render() = 0;
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h) = 0;
