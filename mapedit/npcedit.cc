@@ -403,7 +403,7 @@ int ExultStudio::init_npc_window
 	std::string name;
 	short npc_num, ident;
 	int usecode;
-	short properties[12];
+	int properties[12];
 	short attack_mode, alignment;
 	unsigned long oflags;		// Object flags.
 	unsigned long siflags;		// Extra flags for SI.
@@ -537,7 +537,7 @@ int ExultStudio::save_npc_window
 						GTK_TOGGLE_BUTTON(cbox)))
 				*bits |= (1<<fnum);
 		}
-	short properties[12];		// Get properties.
+	int properties[12];		// Get properties.
 	GtkTable *ptable = GTK_TABLE(
 			glade_xml_get_widget(app_xml, "npc_props_table"));
 	for (GList *list = g_list_first(ptable->children); list; 

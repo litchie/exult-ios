@@ -54,7 +54,7 @@ protected:
 	short npc_num;			// # in Game_window::npcs list, or -1.
 	short face_num;			// Which shape for conversations.
 	short party_id;			// Index in party, or -1.
-	short properties[12];		// Properties set/used in 'usecode'.
+	int properties[12];		// Properties set/used in 'usecode'.
 	unsigned char temperature;	// Measure of coldness (0-63).
 	short shape_save;		// Our old shape, or -1.
 	short oppressor;		// NPC ID (>= 0) of oppressor, or -1.
