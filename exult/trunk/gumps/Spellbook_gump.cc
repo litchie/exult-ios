@@ -298,15 +298,17 @@ void Spellbook_gump::change_page
 		}
 	ShapeID shape(TURNINGPAGE, 0, SF_GUMPS_VGA);
 	int nframes = shape.get_num_frames();
+	int i;
 	turning_frame = turning_page == 1 ? 0 : nframes - 1;
-	while (nframes--)		// Animate.
+	for (int i = 0; i < nframes; i++)	// Animate.
 		{
+		if (i == nframes/2)
+			page += delta;	// Change page halfway through.
 		gwin->add_dirty(get_rect());
 		gwin->paint_dirty();
 		gwin->show();
 		SDL_Delay(50);		// 1/20 sec.
 		}
-	page += delta;
 	paint();
 }
 
@@ -428,13 +430,17 @@ void Spellbook_gump::paint
 		sman->paint_text(5, circ, x + 92 +
 			(44 - sman->get_text_width(4, circ))/2, y + 20);
 	}
-	if (book->bookmark >= 0 &&	// Bookmark?
-	    book->bookmark/8 == page)
+	if (book->bookmark >= 0)	// Bookmark?
 	{
+		int bmpage = book->bookmark/8;	// Bookmark's page.
 		int s = book->bookmark%8;// Get # within circle.
-		int bx = s < 4 ? object_area.x + spwidth/2
+					// Which side for bookmark?
+		bool left = bmpage == page ? (s < 4) : bmpage < page;
+		int bx = left ? object_area.x + spwidth/2
 			: object_area.x + object_area.w - spwidth/2 - 2;
-		ShapeID bm(BOOKMARK, 1 + s%4, SF_GUMPS_VGA);
+					// On visible page?
+		int frame = bmpage == page ? (1 + s%4) : 0;
+		ShapeID bm(BOOKMARK, frame, SF_GUMPS_VGA);
 		Shape_frame *bshape = bm.get_shape();
 		bx += bshape->get_xleft();
 		int by = object_area.y - 14 + bshape->get_yabove();
