@@ -175,7 +175,6 @@ short Body_lookup::bg_table[] = {	// BLACK GATE.
 	};
 
 short Body_lookup::si_table[] = {	// SERPENT_ISLE.
-#if 0
  /*
  Artaxerxes
 
@@ -374,9 +373,6 @@ short Body_lookup::si_table[] = {	// SERPENT_ISLE.
 //1034, 0, 0, // naked blonde male avatar
 //1035, 0, 0, // naked blonde female avatar
 
-#endif
-  537, 892, 7,				// Wolf.
-  805, 402, 4				// Fighter.
 	};
 
 #ifndef DONT_HAVE_HASH_SET
