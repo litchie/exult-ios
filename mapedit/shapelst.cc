@@ -805,7 +805,7 @@ void Shape_chooser::edit_shape
 	STARTUPINFO		si;
 	std::memset (&si, 0, sizeof(si));
 	si.cb = sizeof(si);
-	int ret = CreateProcess (NULL, cmd.c_str(), NULL, NULL, FALSE, 0,
+	int ret = CreateProcess (NULL, const_cast<char *>(cmd.c_str()), NULL, NULL, FALSE, 0,
 				NULL, NULL, &si, &pi);
 	if (!ret) cout << "Couldn't run image-editor" << endl;
 #endif
