@@ -121,7 +121,7 @@ BG_Game::BG_Game()
 		add_resource("xforms/18", "<STATIC>/xform.tbl", 18);
 		add_resource("xforms/19", "<STATIC>/xform.tbl", 19);
 		
-		fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 2);
+		fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 1);
 		fontManager.add_font("END2_FONT", "<STATIC>/endgame.dat", 4, 0);
 		fontManager.add_font("END3_FONT", "<STATIC>/endgame.dat", 5, 0);
 	}
@@ -913,7 +913,9 @@ void BG_Game::show_quotes()
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)
 			    );
+		pal.load("<STATIC>/intropal.dat",6);
 		quotes.run(gwin,pal);
+		pal.load("<STATIC>/intropal.dat",0);
 	}
 
 void BG_Game::show_credits()
@@ -924,7 +926,9 @@ void BG_Game::show_credits()
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)
 			    );
+		pal.load("<STATIC>/intropal.dat",6);
 		credits.run(gwin,pal);
+		pal.load("<STATIC>/intropal.dat",0);
 	}
 
 bool BG_Game::new_game(Vga_file &shapes)
