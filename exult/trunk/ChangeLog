@@ -1,5 +1,8 @@
 2001-11-05  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* effects.cc,combat.cc: Handle boomerangs, magic axes correctly.
+	* shapes/shapeinf.h: 'returns' flag added.
+
 	* actors.cc,schedule.cc:  Tell schedule when weapons changed.
 
 2001-11-05  Dominik Reichardt <gigdr@tesionmail.de>

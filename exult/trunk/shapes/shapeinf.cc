@@ -79,13 +79,15 @@ int Weapon_info::read
 	if (projectile == shapenum || projectile < 0)
 		projectile = 0;		// Means no projectile thrown.
 	damage = *ptr++;
-	unsigned short flags0 = *ptr++;
+	unsigned char flags0 = *ptr++;
 	m_explodes = (flags0>>1)&1;
 	damage_type = (flags0>>4)&15;
 	range = *ptr++;
 	uses = (range>>1)&3;		// Throwable, etc.:
 	range = range>>3;
-	unsigned short unk1 = Read2(ptr);
+	unsigned char flags1 = *ptr++;
+	m_returns = (flags1&1);
+	unsigned char unk1 = *ptr++;
 	powers = *ptr++;
 	*ptr++;				// Skip (0).
 	usecode = Read2(ptr);

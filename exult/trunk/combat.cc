@@ -533,7 +533,8 @@ void Combat_schedule::set_weapon
 	{
 	int points;
 	Weapon_info *info = npc->get_weapon(points, weapon_shape);
-	if (!info)			// No weapon?  Look in inventory.
+	if (!info &&			// No weapon?  Look in inventory.
+	    state != wait_return)	// And not waiting for boomerang.
 		{
 		npc->ready_best_weapon();
 		info = npc->get_weapon(points, weapon_shape);
@@ -543,7 +544,7 @@ void Combat_schedule::set_weapon
 		projectile_shape = ammo_shape = 0;
 		projectile_range = 0;
 		strike_range = 1;	// Can always bite.
-		is_thrown = false;
+		is_thrown = returns = false;
 		}
 	else
 		{
@@ -552,6 +553,7 @@ void Combat_schedule::set_weapon
 		strike_range = info->get_striking_range();
 		projectile_range = info->get_projectile_range();
 
+		returns = info->returns();
 		is_thrown = info->is_thrown();
 		}
 	max_range = projectile_range > strike_range ? projectile_range
@@ -612,6 +614,7 @@ static int Use_ammo
 	return ammo == proj ? actual_ammo : proj;
 	}
 
+#if 0
 /*
  *	Does this weapon come back?
  */
@@ -629,6 +632,7 @@ static bool Boomerangs
 	else
 		return false;
 	}
+#endif
 
 /*
  *	Create.
@@ -745,31 +749,42 @@ void Combat_schedule::now_what
 		break;
 	case fire:			// Range weapon.
 		{
-		int ashape = 0;
+		state = approach;
+					// Save shape (it might change).
+		int ashape = ammo_shape, wshape = weapon_shape,
+		    pshape = projectile_shape;
+		int delay = strange ? 6*gwin->get_std_delay() 
+				: gwin->get_std_delay();
 		if (is_thrown)		// Throwing the weapon?
 			{
-			if (Boomerangs(weapon_shape))
-				ashape = weapon_shape;
-			else if (npc->remove_quantity(1, weapon_shape,
+			if (returns)	// Boomerang?
+				{
+				ashape = wshape;
+				delay = (1 + npc->distance(opponent))*
+							gwin->get_std_delay();
+				state = wait_return;
+				}
+			if (npc->remove_quantity(1, wshape,
 					c_any_qual, c_any_framenum) == 0)
 				{
-				ashape = weapon_shape;
+				npc->add_dirty(gwin);
+				ashape = wshape;
 				Combat_schedule::set_weapon();
 				}
 			}
 		else			// Ammo required?
-			ashape = ammo_shape ? Use_ammo(
-					npc, ammo_shape, projectile_shape)
-				: (projectile_shape ? projectile_shape
-					: weapon_shape);
+			ashape = ashape ? Use_ammo(npc, ashape, pshape)
+				: (pshape ? pshape : wshape);
 		if (ashape > 0)
 			gwin->add_effect(new Projectile_effect(npc, opponent,
-				ashape, weapon_shape));
-		state = approach;
-		npc->start(gwin->get_std_delay(), strange 
-			? 6*gwin->get_std_delay() : gwin->get_std_delay());
+				ashape, wshape));
+		npc->start(gwin->get_std_delay(), delay);
 		break;
 		}
+	case wait_return:		// Boomerang should have returned.
+		state = approach;
+		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
+		break;
 	default:
 		break;
 		}

@@ -106,15 +106,17 @@ class Projectile_effect : public Special_effect
 	int frames;			// # frames.
 	PathFinder *path;		// Determines path.
 	Tile_coord pos;			// Current position.
+	bool return_path;		// Returning a boomerang.
 					// Add dirty rectangle.
 	void add_dirty(Game_window *gwin);
 	void init(Tile_coord s, Tile_coord t);
 public:
 	Projectile_effect(Actor *att, Game_object *to, int shnum,
-							int weap = 0);
+								int weap = 0);
 					// For missile traps:
 	Projectile_effect(Tile_coord s, Tile_coord d, int shnum, int weap);
-	Projectile_effect(Tile_coord s, Game_object *to, int shnum, int weap);
+	Projectile_effect(Tile_coord s, Game_object *to, int shnum, int weap,
+							bool retpath = false);
 	~Projectile_effect();
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
