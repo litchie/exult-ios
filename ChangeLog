@@ -1,4 +1,5 @@
 2000-05-26  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
+
 	* Configuration.cc: added a temp. BeOS config file section
 	* Configuration.cc: is_file set to true, even if file not found
 
