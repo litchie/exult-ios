@@ -349,6 +349,8 @@ public:
 			}
 		return false;
 		}
+					// Locate shape (for EStudio).
+	bool locate_shape(int shapenum, bool upwards);
 	void send_location();		// Send our location to EStudio.
 					// Set view (upper-left).
 	void set_scrolls(int newscrolltx, int newscrollty);

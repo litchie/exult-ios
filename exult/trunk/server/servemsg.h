@@ -71,6 +71,7 @@ enum Msg_type
 	hide_lift = 22,			// Lift passed: 1-16.
 	reload_shapes = 23,		// Reload a .vga file.
 	unused_shapes = 24,		// Find unused shapes in game.
+	locate_shape = 25,		// Find shape in world.
 	usecode_debugging = 128
 	};
 

@@ -54,6 +54,7 @@
 #include "gamewin.h"	/* With some work, could get rid of this. */
 #include "bodies.h"
 #include "game.h"
+#include "objiter.h"
 #include <fstream>
 
 using std::cerr;
@@ -1287,4 +1288,84 @@ void Game_map::find_unused_shapes
 	for (i = 0x96; i < maxbits; i++)	// Ignore flats (<0x96).
 		if (!(found[i/8]&(1<<(i%8))))
 			cout << "Shape " << i << " not found in game" << endl;
+	}
+
+/*
+ *	Look throughout the map for a given shape.  The search starts at
+ *	the first currently-selected shape, if possible.
+ *
+ *	Output:	->object if found, else 0.
+ */
+
+Game_object *Game_map::locate_shape
+	(
+	int shapenum,			// Desired shape.
+	bool upwards,			// If true, search upwards.
+	Game_object *start		// Start here if !0.
+	)
+	{
+	int cx = -1, cy = 0;		// Before chunk to search.
+	int dir = 1;			// Direction to increment.
+	int stop = c_num_chunks;
+	if (upwards)
+		{
+		dir = -1;
+		stop = -1;
+		cx = c_num_chunks;	// Past last chunk.
+		cy = c_num_chunks - 1;
+		}
+	Game_object *obj = 0;
+	if (start)			// Start here.
+		{
+		Game_object *owner = start->get_outermost();
+		cx = owner->get_cx();
+		cy = owner->get_cy();
+		if (upwards)
+			{
+			Recursive_object_iterator_backwards next(start);
+			while ((obj = next.get_next()) != 0)
+				if (obj->get_shapenum() == shapenum)
+					break;
+			}
+		else
+			{
+			Recursive_object_iterator next(start);
+			while ((obj = next.get_next()) != 0)
+				if (obj->get_shapenum() == shapenum)
+					break;
+			}
+		}
+	while (!obj)			// Not found yet?
+		{
+		cx++;			// Next chunk.
+		if (cx == stop)		// Past (either) end?
+			{
+			cy += dir;
+			if (cy == stop)
+				break;	// All done.
+			cx -= dir*c_num_chunks;
+			}
+		Map_chunk *chunk = get_chunk(cx, cy);
+					// Make sure objs. are read.
+		int sx = cx/c_chunks_per_schunk, sy = cy/c_chunks_per_schunk;
+		int schunk = sy*c_num_schunks + sx;
+		if (!schunk_read[schunk])
+			get_superchunk_objects(schunk);
+		if (upwards)
+			{
+			Recursive_object_iterator_backwards next(
+							chunk->get_objects());
+			while ((obj = next.get_next()) != 0)
+				if (obj->get_shapenum() == shapenum)
+					break;
+			}
+		else
+			{
+			Recursive_object_iterator next(chunk->get_objects());
+			while ((obj = next.get_next()) != 0)
+				if (obj->get_shapenum() == shapenum)
+					break;
+			}
+		}
+	return obj;
 	}

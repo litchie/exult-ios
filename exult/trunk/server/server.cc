@@ -296,8 +296,8 @@ static void Handle_client_message
 		Write2(ptr, cy);
 		ptr++;			// Skip 'up' flag.
 		*ptr++ = okay ? 1 : 0;
-		Exult_server::Send_data(client_socket, Exult_server::locate_terrain, data,
-							ptr - data);
+		Exult_server::Send_data(client_socket, 
+			Exult_server::locate_terrain, data, ptr - data);
 		break;
 		}
 	case Exult_server::swap_terrain:
@@ -305,8 +305,8 @@ static void Handle_client_message
 		int tnum = Read2(ptr);
 		bool okay = gwin->get_map()->swap_terrains(tnum);
 		*ptr++ = okay ? 1 : 0;
-		Exult_server::Send_data(client_socket, Exult_server::swap_terrain, data,
-							ptr - data);
+		Exult_server::Send_data(client_socket,
+			Exult_server::swap_terrain, data, ptr - data);
 		break;
 		}
 	case Exult_server::insert_terrain:
@@ -402,6 +402,18 @@ static void Handle_client_message
 		gwin->get_map()->find_unused_shapes(data, sz);
 		Exult_server::Send_data(client_socket, 
 				Exult_server::unused_shapes, data, sz);
+		break;
+		}
+	case Exult_server::locate_shape:
+		{
+		int shnum = Read2(ptr);
+		bool up = *ptr++ ? true : false;
+		bool okay = gwin->locate_shape(shnum, up);
+		ptr = &data[2];		// Send back reply.
+		ptr++;			// Skip 'up' flag.
+		*ptr++ = okay ? 1 : 0;
+		Exult_server::Send_data(client_socket, 
+			Exult_server::locate_shape, data, ptr - data);
 		break;
 		}
 #ifdef USECODE_DEBUGGER

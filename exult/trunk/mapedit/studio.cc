@@ -2107,6 +2107,7 @@ void ExultStudio::read_from_server
 	case Exult_server::locate_terrain:
 	case Exult_server::swap_terrain:
 	case Exult_server::insert_terrain:
+	case Exult_server::locate_shape:
 		if (waiting_for_server)	// Send msg. to callback.
 			{
 			waiting_for_server(id, data, datalen, waiting_client);
