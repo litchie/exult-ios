@@ -650,24 +650,28 @@ void Map_chunk::add
 					// First this chunk.
 		add_dependencies(newobj, ord);
 		if (from_below)		// Overlaps from below?
-			add_outside_dependencies(cx, cy + 1, newobj, ord);
+			add_outside_dependencies(cx, INCR_CHUNK(cy), 
+							newobj, ord);
 		if (from_right)		// Overlaps from right?
-			add_outside_dependencies(cx + 1, cy, newobj, ord);
+			add_outside_dependencies(INCR_CHUNK(cx), cy, 
+								newobj, ord);
 		if (from_below_right)
-			add_outside_dependencies(cx + 1, cy + 1, newobj, ord);
+			add_outside_dependencies(INCR_CHUNK(cx), 
+					INCR_CHUNK(cy), newobj, ord);
 					// See if newobj extends outside.
 		bool ext_left = (newobj->get_tx() - ord.xs) < -1 && cx > 0;
 		bool ext_above = (newobj->get_ty() - ord.ys) < -1 && cy > 0;
 		if (ext_left)
 			{
-			add_outside_dependencies(cx - 1, cy, 
+			add_outside_dependencies(DECR_CHUNK(cx), cy, 
 						newobj, ord)->from_right++;
 			if (ext_above)
-				add_outside_dependencies(cx - 1, cy - 1,
+				add_outside_dependencies(DECR_CHUNK(cx), 
+							 DECR_CHUNK(cy),
 					newobj, ord)->from_below_right++;
 			}
 		if (ext_above)
-			add_outside_dependencies(cx, cy - 1,
+			add_outside_dependencies(cx, DECR_CHUNK(cy),
 					newobj, ord)->from_below++;
 		first_nonflat = newobj;	// Inserted before old first_nonflat.
 		}
