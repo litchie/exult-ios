@@ -187,6 +187,7 @@ public:
 	void set_entry(char *name, const char *val, bool sensitive = true);
 	void set_statusbar(char *name, int context, char *msg);
 	void set_visible(char *name, bool vis);
+	void set_sensitive(char *name, bool vis);
 };
 
 #endif
