@@ -284,7 +284,8 @@ void Notebook_gump::add_new
 
 Notebook_gump::Notebook_gump
 	(
-	) : Gump(0, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curpage(0)
+	) : Gump(0, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curpage(0),
+	    curnote(0)
 	{
 	handles_kbd = true;
 	cursor.offset = 0;
@@ -347,6 +348,7 @@ int Notebook_gump::paint_page
 	int pagenum
 	)
 {
+	bool in_curnote = (note == notes[curnote]);
 	if (start == 0)			// Print note info. at start.
 		{
 		char buf[60];
@@ -365,19 +367,24 @@ int Notebook_gump::paint_page
 		}
 	int textheight = sman->get_text_height(font) + vlead;
 	char *str = note->text + start;
+	cursor.offset -= start;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
 			y + box.y, box.w, box.h, vlead,
-			0, -1, pagenum == curpage ? &cursor : 0);
+			0, -1, in_curnote? &cursor : 0);
+	cursor.offset += start;
 	if (endoff > 0)			// All painted?
 		{			// Value returned is height.
 		str = note->text + note->textlen;
 		}
 	else				// Out of room.
 		str += -endoff;
-	if (pagenum == curpage && cursor.x >= 0)
+	if (in_curnote && cursor.x >= 0)
+		{
 		gwin->get_win()->fill8(sman->get_special_pixel(POISON_PIXEL), 
 			1, 
 			sman->get_text_height(font), cursor.x-1, cursor.y-1);
+		curpage = pagenum;
+		}
 	return (str - note->text);	// Return offset past end.
 }
 
@@ -397,6 +404,7 @@ void Notebook_gump::change_page
 		if (nxt >= page_info.size())
 			return;
 		curpage = nxt;
+		curnote = page_info[curpage].notenum;
 		cursor.offset = 0;
 		}
 	else if (delta < 0)
@@ -404,6 +412,7 @@ void Notebook_gump::change_page
 		if (topleft == 0)
 			return;
 		curpage = topleft - 2;
+		curnote = page_info[curpage].notenum;
 		cursor.offset = 0;
 		}
 	paint();
@@ -429,17 +438,18 @@ Gump_button *Notebook_gump::on_button
 	else if (rightpage->on_button(mx, my))
 		return rightpage;
 	int topleft = curpage & ~1;
-	int curnote = page_info[topleft].notenum;
-	if (curnote < 0)
+	int notenum = page_info[topleft].notenum;
+	if (notenum < 0)
 		return 0;
 	int offset = page_info[topleft].offset;
 	Rectangle box = Get_text_area(false, offset == 0);	// Left page.
-	One_note *note = notes[curnote];
+	One_note *note = notes[notenum];
 	int coff = sman->find_cursor(font, note->text + offset, x + box.x,
 			y + box.y, box.w, box.h, mx, my, vlead);
 	if (coff >= 0)			// Found it?
 		{
 		curpage = topleft;
+		curnote = page_info[curpage].notenum;
 		cursor.offset = offset + coff;
 		paint();
 		}
@@ -448,9 +458,9 @@ Gump_button *Notebook_gump::on_button
 		offset += -coff;		// New offset.
 		if (offset >= note->textlen)
 			{
-			if (curnote == notes.size() - 1)
+			if (notenum == notes.size() - 1)
 				return 0;	// No more.
-			note = notes[++curnote];
+			note = notes[++notenum];
 			offset = 0;
 			}
 		box = Get_text_area(true, offset == 0);	// Right page.
@@ -459,6 +469,7 @@ Gump_button *Notebook_gump::on_button
 		if (coff >= 0)			// Found it?
 			{
 			curpage = curpage | 1;
+			curnote = page_info[curpage].notenum;
 			cursor.offset = offset + coff;
 			paint();
 			}
@@ -478,41 +489,41 @@ void Notebook_gump::paint
 	if (curpage > 0)		// Not the first?
 		leftpage->paint();
 	int topleft = curpage & ~1;
-	int curnote = page_info[topleft].notenum;
-	if (curnote < 0)
+	int notenum = page_info[topleft].notenum;
+	if (notenum < 0)
 		return;
 	int offset = page_info[topleft].offset;
-	One_note *note = notes[curnote];
+	One_note *note = notes[notenum];
 					// Paint left page.
 	offset = paint_page(Get_text_area(false, offset == 0), 
 						note, offset, topleft);
 	if (offset >= note->textlen)	// Finished note?
 		{
-		if (curnote == notes.size() - 1)
+		if (notenum == notes.size() - 1)
 			return;
-		++curnote;
-		note = notes[curnote];
+		++notenum;
+		note = notes[notenum];
 		offset = 0;
 		}
 	if (topleft + 1 >= page_info.size())	// Store right-page info.
 		page_info.resize(topleft + 2);
-	page_info[topleft + 1].notenum = curnote;
+	page_info[topleft + 1].notenum = notenum;
 	page_info[topleft + 1].offset = offset;
 					// Paint right page.
 	offset = paint_page(Get_text_area(true, offset == 0), 
 						note, offset, topleft + 1);
 	if (offset >= note->textlen)	// Finished note?
 		{
-		if (curnote == notes.size() - 1)
+		if (notenum == notes.size() - 1)
 			return;		// No more.
-		++curnote;
+		++notenum;
 		offset = 0;
 		}
 	rightpage->paint();
 	int nxt = topleft + 2;		// For next pair of pages.
 	if (nxt >= page_info.size())
 		page_info.resize(nxt + 1);
-	page_info[nxt].notenum = curnote;
+	page_info[nxt].notenum = notenum;
 	page_info[nxt].offset = offset;
 }
 
