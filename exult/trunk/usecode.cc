@@ -1044,15 +1044,19 @@ Usecode_value Usecode_machine::find_nearby
 	int arraysize = objval.get_array_size();
 	if (arraysize >= 3 && objval.get_elem(0).get_int_value() < num_tiles)
 		{
-					// Qual may be 4th.  5th is frame???.
+					// Qual is 4th if there.
 		int qual = arraysize == 5 ? objval.get_elem(3).get_int_value()
+							: -359;
+					// Frame is 5th if there.
+		int frnum = arraysize == 5 ? objval.get_elem(4).get_int_value()
 							: -359;
 		cnt = Game_object::find_nearby(vec,
 			Tile_coord(objval.get_elem(0).get_int_value(),
 				   objval.get_elem(1).get_int_value(),
 				   objval.get_elem(2).get_int_value()),
 			shapeval.get_int_value(),
-			distval.get_int_value(), mval.get_int_value(), qual);
+			distval.get_int_value(), mval.get_int_value(), 
+			qual, frnum);
 		}
 	else
 		{
@@ -1825,6 +1829,9 @@ USECODE_INTRINSIC(update_last_created)
 		last_created->move(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
 			  arr.get_elem(2).get_int_value());
+				// Taking a guess here:
+	else if (parms[0].get_int_value() == -358)
+		last_created->remove_this();
 #if DEBUG
 	else
 		{

@@ -231,7 +231,8 @@ int Game_object::find_nearby
 					//   -359=any NPC.
 	int delta,			// # tiles to look in each direction.
 	int mask,			// Not used yet++++
-	int qual			// Quality, or -359 for any.
+	int qual,			// Quality, or -359 for any.
+	int framenum			// Frame #, or -359 for any.
 	)
 	{
 	if (delta < 0)			// +++++Until we check all old callers.
@@ -268,6 +269,9 @@ int Game_object::find_nearby
 						 obj != gwin->get_main_actor())
 					continue;
 				if (qual != -359 && obj->get_quality() != qual)
+					continue;
+				if (framenum !=  -359 &&
+					obj->get_framenum() != framenum)
 					continue;
 				int tx, ty, tz;
 				obj->get_abs_tile(tx, ty, tz);
