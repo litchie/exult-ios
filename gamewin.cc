@@ -203,19 +203,19 @@ Game_window::Game_window
 
 	set_window_size(width, height, scale, scaler);
 	pal = new Palette();
-	string mousestr;
-	config->value("config/gameplay/mouse3rd", mousestr, "no");
-	if (mousestr == "yes")
+	string str;
+	config->value("config/gameplay/mouse3rd", str, "no");
+	if (str == "yes")
 		mouse3rd = true;
-	config->set("config/gameplay/mouse3rd", mousestr, true);
-	config->value("config/gameplay/fastmouse", mousestr, "no");
-	if (mousestr == "yes")
+	config->set("config/gameplay/mouse3rd", str, true);
+	config->value("config/gameplay/fastmouse", str, "no");
+	if (str == "yes")
 		fastmouse = true;
-	config->set("config/gameplay/fastmouse", mousestr, true);
-	config->value("config/gameplay/bg_paperdolls", mousestr, "no");
-	if (mousestr == "yes")
+	config->set("config/gameplay/fastmouse", str, true);
+	config->value("config/gameplay/bg_paperdolls", str, "no");
+	if (str == "yes")
 		bg_paperdolls = true;
-	config->set("config/gameplay/bg_paperdolls", mousestr, true);
+	config->set("config/gameplay/bg_paperdolls", str, true);
 	}
 
 void Game_window::set_window_size(int width, int height, int scale, int scaler)
@@ -407,7 +407,6 @@ void Game_window::init_files(bool cycle)
 			{
 				cout << "Found Serpent Isle 'paperdol.vga' and 'gumps.vga'." << endl << "Support for 'Serpent Isle' Paperdolls in 'Black Gate' ENABLED." << endl;
 				bg_paperdolls_allowed = true;
-				bg_paperdolls = true;
 			}
 			else
 				cout << "Found Serpent Isle 'paperdol.vga' and 'gumps.vga' but one was bad." << endl << "Support for 'Serpent Isle' Paperdolls in 'Black Gate' DISABLED." << endl;

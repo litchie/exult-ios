@@ -140,10 +140,7 @@ void GameplayOptions_gump::load_settings()
 	doubleclick = 0;
 	paperdolls = false;
 	string pdolls;
-	config->value("config/gameplay/bg_paperdolls", pdolls, "no");
-	if (pdolls == "yes")
-		paperdolls = true;
-	config->set("config/gameplay/bg_paperdolls", pdolls, true);
+	paperdolls = gwin->get_bg_paperdolls();
 //	config->value("config/gameplay/double_click_closes_gumps", doubleclick);
 }
 
