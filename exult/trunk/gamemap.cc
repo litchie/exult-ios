@@ -1525,20 +1525,22 @@ void Game_map::cache_out_schunk(int schunk)
 #ifdef DEBUG
 	std::cout << "Killing superchunk: " << schunk << std::endl;
 #endif
-	schunk_read[schunk] = false;
-
 	// Go through chunks and get all the items
 	for (cy = 0; cy < 16; cy++) for (cx = 0; cx < 16; cx++) {
 
 		int size = objects[scx + cx][scy + cy]->get_obj_actors(removes, actors);
 
 		if (size < 0) {
+#ifdef DEBUG
 			std::cerr << "Failed attempting to kill superchunk" << std::endl;
+#endif
 			return;
 		}
 
 		buf_size += size + 2;
 	}
+
+	schunk_read[schunk] = false;
 
 #ifdef DEBUG
 	std::cout << "Buffer size of " << buf_size << " bytes required to store super chunk" << std::endl;
