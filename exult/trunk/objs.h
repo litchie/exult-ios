@@ -162,6 +162,8 @@ public:
 	virtual int get_property(int prop)
 		{ return 0; }
 	virtual int is_dragable();	// Can this be dragged?
+					// Drop another onto this.
+	virtual int drop(Game_object *obj);
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag) { }
 	virtual void clear_flag(int flag) { }
@@ -204,6 +206,8 @@ public:
 		{ objects.remove(obj); }
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
+					// Drop another onto this.
+	virtual int drop(Game_object *obj);
 	};
 
 /*

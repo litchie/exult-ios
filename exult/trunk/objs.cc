@@ -65,6 +65,20 @@ int Game_object::is_dragable
 	}
 
 /*
+ *	Drop another onto this.
+ *
+ *	Output:	0 to reject, 1 to accept.
+ */
+
+int Game_object::drop
+	(
+	Game_object *obj
+	)
+	{
+	return (0);
+	}
+
+/*
  *	Can this be dragged?
  */
 
@@ -123,6 +137,20 @@ void Container_game_object::activate
 				Usecode_machine::double_click);
 	}
 
+/*
+ *	Drop another onto this.
+ *
+ *	Output:	0 to reject, 1 to accept.
+ */
+
+int Container_game_object::drop
+	(
+	Game_object *obj
+	)
+	{
+	add(obj);			// We'll take it.
+	return (1);
+	}
 
 /*
  *	Run usecode when double-clicked or when activated by proximity.
