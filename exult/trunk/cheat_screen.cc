@@ -559,14 +559,18 @@ void CheatScreen::NormalMenu ()
 	// NPC Tool
 	font->paint_text_fixedwidth(ibuf, "[N]PC Tool", 160, maxy-99, 8);
 
-	// Teleport
-	font->paint_text_fixedwidth(ibuf, "[T]eleport", 160, maxy-90, 8);
-
-	// Create Item
-	font->paint_text_fixedwidth(ibuf, "[C]reate Item", 160, maxy-81, 8);
-
 	// Global Flag Modify
-	font->paint_text_fixedwidth(ibuf, "[F]lag Modifier", 160, maxy-72, 8);
+	font->paint_text_fixedwidth(ibuf, "[F]lag Modifier", 160, maxy-90, 8);
+
+#if 0
+	// Teleport
+	font->paint_text_fixedwidth(ibuf, "[T]eleport", 160, maxy-81, 8);
+#endif
+
+#if 0
+	// Create Item
+	font->paint_text_fixedwidth(ibuf, "[C]reate Item", 160, maxy-72, 8);
+#endif
 
 	// eXit
 	font->paint_text_fixedwidth(ibuf, "[X]it", 160, maxy-36, 8);
@@ -624,10 +628,12 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 			clock->set_time_rate (clock->get_time_rate()+1);
 		break;
 
+#if 0
 		// Teleport
 		case 't':
 		mode = CP_NotAvail;
 		break;
+#endif
 
 		// NPC Tool
 		case 'n':
@@ -637,10 +643,12 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 		else mode = NPCLoop(npc);
 		break;
 
+#if 0
 		// Create
 		case 'c':
 		mode = CP_NotAvail;
 		break;
+#endif
 
 		// Global Flag Editor
 		case 'f':
@@ -1111,26 +1119,30 @@ void CheatScreen::NPCMenu (Actor *actor, int &num)
 {
 	// Left Column
 
+#if 0
 	// Attack Mode
 	if (actor) font->paint_text_fixedwidth(ibuf, "[A]ttack Mode", 0, maxy-99, 8);
+#endif
 
 	// Business Activity
-	if (actor) font->paint_text_fixedwidth(ibuf, "[B]usiness Activity", 0, maxy-90, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[B]usiness Activity", 0, maxy-99, 8);
 
 	// Change Shape
-	if (actor) font->paint_text_fixedwidth(ibuf, "[C]hange Shape", 0, maxy-81, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[C]hange Shape", 0, maxy-90, 8);
 
 	// XP
-	if (actor) font->paint_text_fixedwidth(ibuf, "[E]xperience", 0, maxy-72, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[E]xperience", 0, maxy-81, 8);
 
 	// NPC Flags
-	if (actor) font->paint_text_fixedwidth(ibuf, "[N]pc Flags", 0, maxy-63, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[N]pc Flags", 0, maxy-72, 8);
 
 	// Name
-	if (actor) font->paint_text_fixedwidth(ibuf, "[\\]ame", 0, maxy-54, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[\\]ame", 0, maxy-63, 8);
 
+#if 0
 	// Pop Weapon
 	if (actor) font->paint_text_fixedwidth(ibuf, "[P]op Weapon", 0, maxy-45, 8);
+#endif
 
 	// eXit
 	font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy-36, 8);
@@ -1141,14 +1153,16 @@ void CheatScreen::NPCMenu (Actor *actor, int &num)
 	// Stats
 	if (actor) font->paint_text_fixedwidth(ibuf, "[S]tats", 160, maxy-99, 8);
 
+#if 0
 	// Target
 	if (actor) font->paint_text_fixedwidth(ibuf, "[T]arget", 160, maxy-90, 8);
+#endif
 
 	// Training Points
-	if (actor) font->paint_text_fixedwidth(ibuf, "[~]raining Points", 160, maxy-81, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[~]raining Points", 160, maxy-90, 8);
 
 	// Teleport
-	if (actor) font->paint_text_fixedwidth(ibuf, "[']eleport", 160, maxy-72, 8);
+	if (actor) font->paint_text_fixedwidth(ibuf, "[']eleport", 160, maxy-81, 8);
 
 	// Change NPC
 	font->paint_text_fixedwidth(ibuf, "[*] Change NPC", 160, maxy-45, 8);
@@ -1183,9 +1197,11 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 	}
 	else if (actor) switch (command)
 	{
+#if 0
 		case 'a':	// Attack mode
 		mode = CP_NotAvail;
 		break;
+#endif
 
 		case 'b':	// Business
 		BusinessLoop(actor);
@@ -1195,17 +1211,21 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		FlagLoop(actor);
 		break;
 
+#if 0
 		case 'p':	// pop weapon
 		mode = CP_NotAvail;
 		break;
+#endif
 
 		case 's':	// stats
 		StatLoop(actor);
 		break;
 
+#if 0
 		case 't':	// Target
 		mode = CP_NotAvail;
 		break;
+#endif
 
 		case '\'':	// Teleport
 		Game_window::get_instance()->teleport_party(actor->get_tile());
