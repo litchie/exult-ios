@@ -340,6 +340,9 @@ void Titles::end_game(bool success)
 		int	centerx = gwin->get_width() /2;
 		int 	topy = (gwin->get_height()-200)/2;
 
+		if (!gwin->setup_endgame_fonts())
+			gwin->abort ("Unable to setup fonts from 'endgame.dat' file.");
+
 		// Audio buffer
 		size_t	size;
 		Uint8	*buffer;

@@ -1,4 +1,9 @@
 2000-07-28 Tristan Tarrant  <tarrant_tristan@emc.com>
+	
+	* gamewin.cc, gametxt.cc, titles.cc: move initialization of endgame
+	fonts to endgame.
+
+2000-07-28 Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* exult.cc: Implement "Home" key which recenters view on Avatar.
 	Useful if you've been scrolling around with the arrow keys.
