@@ -510,7 +510,6 @@ if test x$enable_tools = xno; then
 	AM_CONDITIONAL(BUILD_TOOLS, false)
 	enable_gtk_interface=no
 	enable_gimp_plugin=no
-	enable_data=no
 	enable_compiler=no
 else
 	AM_CONDITIONAL(BUILD_TOOLS, true)
