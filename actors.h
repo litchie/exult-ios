@@ -518,8 +518,7 @@ class Monster_actor : public Npc_actor
 	Monster_actor *next_monster, *prev_monster;
 	Monster_info *info;		// Info. about this monster.
 	Animator *animator;		// For wounded men.
-					// Are new tiles blocked?
-	int is_blocked(int destx, int desty);
+	int is_blocked(Tile_coord& t);	// Are new tiles blocked?
 	void set_info(Monster_info *i = 0);
 	Monster_info *get_info()
 		{
