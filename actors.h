@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Image_window;
 class Game_window;
 class Npc_actor;
+class Actor_action;
 					// The range of actors' rect. gumps:
 const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
 
@@ -46,11 +47,11 @@ class Actor : public Sprite
 	short properties[12];		// Properties set/used in 'usecode'.
 protected:
 	unsigned long flags;		// 32 flags used in 'usecode'.
+	Actor_action *action;		// Controls current animation.
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
-	~Actor()
-		{ delete name; }
+	~Actor();
 	enum Item_flags {		// Bit #'s of flags:
 		poisoned = 8,
 		dont_render = 16	// Completely invisible.
@@ -71,10 +72,16 @@ public:
 		{ return npc_num; }	// It's the NPC's #.
 	int get_usecode()
 		{ return usecode; }
+					// Set new action.
+	void set_action(Actor_action *newact);
 					// Walk to a desired spot.
-	void walk_to_tile(int tx, int ty, int tz);
-	void walk_to_tile(Tile_coord p)
-		{ walk_to_tile(p.tx, p.ty, p.tz); }
+	void walk_to_tile(int tx, int ty, int tz, int speed = 250, 
+							int delay = 0);
+	void walk_to_tile(Tile_coord p, int speed, int delay)
+		{ walk_to_tile(p.tx, p.ty, p.tz, speed, delay); }
+					// Walk to desired point.
+	void walk_to_point(unsigned long destx, unsigned long desty, 
+								int speed);
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
@@ -116,6 +123,11 @@ public:
 		initial_location.lift=new_lift;
 		};
 #endif
+	virtual int walk()		// Walk towards a direction.
+		{ return 0; }
+					// Step onto an (adjacent) tile.
+	virtual int step(Tile_coord t)
+		{ return 0; }
 	};
 
 /*
@@ -152,78 +164,8 @@ public:
 		}
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
+	virtual int walk();		// Walk towards a direction.
 	};
-
-#if 0	/* +++++++Not sure about this yet. */
-/*
- *	This class controls the current actions of an actor:
- */
-class Actor_action
-	{
-public:
-					// Handle time event.
-	virtual int handle_event(unsigned long curtime, Actor *actor) = 0;
-	};
-
-/*
- *	Walk an actor towards a goal.
- */
-class Walking_actor_action : public Actor_animator
-	{
-public:
-	virtual ~Walking_actor_action()
-		{  }
-					// Handle time event.
-	virtual int handle_event(unsigned long curtime, Actor *actor)
-		{ return actor->walk(); }
-	};
-
-/*
- *	Follow a path.
- */
-class Path_walking_actor_action : public Actor_animator
-	{
-	Tile_coord *path;		// Path to follow (allocated).  End of
-					//   path is (-1, -1, -1).
-	int index;			// Index into path.
-public:
-	Path_walking_actor_animator(Tile_coord *p) : path(p), index(0)
-		{  }
-	~Path_walking_actor_animator()
-		{ delete [] path; }
-					// Handle time event.
-	virtual int handle_event(unsigned long curtime, Actor *actor)
-		{ return actor->step(path[index++]); }
-	};
-
-/*
- *	Do a sequence of actions.
- */
-class Sequence_actor_action : public Actor_action
-	{
-	Actor_action **actions		// List of actions, ending with null.
-	int index;			// Index into list.
-public:
-	Sequence_actor_action(Actor_action **act) : actions(act), index(0)
-		{  }
-	~Sequence_actor_action();
-					// Handle time event.
-	virtual int handle_event(unsigned long curtime, Actor *actor)
-		{
-		if (!actions[index])	// Done?
-			return (0);
-					// Do current action.
-		int delay = actions[index]->handle_event(curtime, actor);
-		if (!delay)
-			{
-			index++;	// That one's done now.
-			delay = 100;	// 1/10 second.
-			}
-		return (delay);
-		}
-	};
-
-#endif
 
 /*
  *	A Schedule controls the NPC it is assigned to.
@@ -362,6 +304,7 @@ public:
 	virtual void paint(Game_window *gwin);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
+	virtual int walk();		// Walk towards a direction.
 					// Update chunks after NPC moved.
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);
