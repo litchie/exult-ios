@@ -70,7 +70,7 @@ std::string Game::gametitle;
 
 unsigned int Game::ticks = 0;
 
-Game::Game() : menushapes()
+Game::Game() : menushapes(), xml(0)
 {
 	try {				// Okay to fail if development game.
 		menushapes.load(MAINSHP_FLX);
@@ -211,6 +211,9 @@ void Game::play_midi(int track,bool repeat)
 	else if (game_type == SERPENT_ISLE) Audio::get_ptr()->start_music(track,repeat,2);
 }
 
+const char *xml_root = "Game_config";
+
+
 void Game::add_shape(const char *name, int shapenum) 
 {
 	shapes[name] = shapenum;
@@ -218,7 +221,15 @@ void Game::add_shape(const char *name, int shapenum)
 
 int Game::get_shape(const char *name)
 {
-	return shapes[name];
+	if (xml)
+		{
+		string key = string(xml_root) + "/shapes/" + name;
+		int ret;
+		xml->value(key, ret, 0);
+		return ret;
+		}
+	else
+		return shapes[name];
 }
 
 void Game::add_resource(const char *name, const char *str, int num) 
@@ -229,7 +240,19 @@ void Game::add_resource(const char *name, const char *str, int num)
 
 str_int_pair Game::get_resource(const char *name)
 {
-	return resources[name];
+	if (xml)
+		{
+		string key = string(xml_root) + "/resources/" + name;
+		str_int_pair ret;
+		string str;
+		xml->value(key, str, "");
+		ret.str = str.c_str();
+		key += "/num";
+		xml->value(key, ret.num, 0);
+		return ret;
+		}
+	else
+		return resources[name];
 }
 
 /*	
@@ -242,7 +265,7 @@ void Game::write_game_xml()
 	U7mkdir("<PATCH>", 0755);	// Create dir. if not already there.
 	if (U7exists(name))
 		U7remove(name.c_str());
-	string root = "Game_config";
+	string root = xml_root;
 	Configuration xml(name, root);
 	for (rsc_map::iterator it1 = resources.begin(); it1 != resources.end();
 								++it1)
@@ -269,6 +292,31 @@ void Game::write_game_xml()
 		}
 	xml.write_back();
 }
+
+/*	
+ *	Read in game resources/shapes.  First try 'name1', then
+ *	"exultgame.xml" in the "patch" and "static" directories.
+ *	Output:	true if successful.
+ */
+bool Game::read_game_xml(const char *name1)
+{
+	const char *nm;
+
+	if (name1 && U7exists(name1))
+		nm = name1;
+	else if (!U7exists(nm = "<PATCH>/exultgame.xml"))
+		{
+		if (!U7exists(nm = "<STATIC>/exultgame.xml"))
+			return false;
+		}
+	xml = new Configuration;
+	string namestr = get_system_path(nm);
+	xml->read_abs_config_file(namestr);
+	std::cout << "Reading game configuration from '" << namestr.c_str() <<
+			"'." << std::endl;
+	return true;
+}
+
 
 bool Game::show_menu(bool skip)
 {
