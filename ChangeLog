@@ -1,3 +1,10 @@
+2002-07-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* schedule.cc (Street_maintenance_schedule): Don't follow Avatar
+	if Avatar is under Usecode control.
+	* intrinsics.cc:  update_last_created() no longer checks for a spot.
+	* sigame.cc:  Added a patch to move Neyobi on top of the pelt.
+
 2002-07-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/greentop.shp: new paperdoll art. Thanks sbx!
 	* usecode/ucxt/Makefile.am: fixed --disable-tools
@@ -8,6 +15,7 @@
 2002-07-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Spellbook_gump.cc: fixed up offsets; fixed NULL shape error
 
+>>>>>>> 1.1524.2.42
 2002-07-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/egg.cc (Egg_object): Fixed bug that was corrupting

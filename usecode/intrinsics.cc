@@ -556,6 +556,10 @@ USECODE_INTRINSIC(update_last_created)
 		Tile_coord dest(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
 			  sz == 3 ? arr.get_elem(2).get_int_value() : 0);
+#if 0
+//+++++++I don't remember why I put this in, but it screws up the mirror room
+//in SI when fake Avatars are created where the mirrors exist.
+//++++++++
 		Tile_coord pos = dest;
 					// Skip 'blocked' check if it looks
 					//   structural. (For SI maze).
@@ -577,6 +581,7 @@ USECODE_INTRINSIC(update_last_created)
 				dest.tz++;
 				pos.tz = dest.tz;
 				}
+#endif
 		obj->move(dest.tx, dest.ty, dest.tz);
 		if (GAME_BG) {
 			Usecode_value u(1);
