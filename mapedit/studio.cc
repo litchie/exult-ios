@@ -1553,6 +1553,32 @@ void ExultStudio::set_button
 	}
 
 /*
+ *	Add a menu item to a menu.
+ *
+ *	Output:	Menu item.
+ */
+
+GtkWidget *ExultStudio::add_menu_item
+	(
+	GtkWidget *menu,		// Menu to add to.
+	const char *label,		// What to put.  NULL for separator.
+	GtkSignalFunc func,		// Handle menu choice.
+	gpointer func_data		// Data passed to func().
+	)
+	{
+	GtkWidget *mitem = label ? gtk_menu_item_new_with_label(label) :
+				gtk_menu_item_new();
+	gtk_widget_show(mitem);
+	gtk_menu_append(GTK_MENU(menu), mitem);
+	if (!label)			// Want separator?
+		gtk_widget_set_sensitive(mitem, FALSE);
+	if (func)			// Function?
+		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+				GTK_SIGNAL_FUNC(func), func_data);
+	return mitem;
+	}
+
+/*
  *	Show/hide a widget.
  */
 

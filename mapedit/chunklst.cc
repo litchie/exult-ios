@@ -56,23 +56,6 @@ const int border = 2;			// Border at bottom, sides of each
 					//   chunk.
 
 /*
- *	Set up popup menu for chunk browser.
- *
- *	Output:	->popup menu created.
- */
-
-static GtkWidget *Create_browser_popup
-	(
-	Chunk_chooser *chooser
-	)
-	{
-					// Create popup menu.
-	GtkWidget *popup = gtk_menu_new();
-	chooser->add_group_submenu(popup);
-	return popup;
-	}
-
-/*
  *	Blit onto screen.
  */
 
@@ -436,16 +419,9 @@ gint Chunk_chooser::mouse_press
 				(*chooser->sel_changed)();
 			break;
 			}
-	if (event->button == 3 && chooser->selected >= 0)
-		{
-					// Clean out old.
-		if (chooser->popup)
-			gtk_widget_destroy(chooser->popup);
-		GtkWidget *popup = Create_browser_popup(chooser);
-		chooser->popup = popup;
-		gtk_menu_popup(GTK_MENU(popup), 0, 0, 0, 0, event->button,
-							event->time);
-		}
+	if (event->button == 3)
+		gtk_menu_popup(GTK_MENU(chooser->create_popup()), 0, 0, 0, 0, 
+					event->button, event->time);
 	return (TRUE);
 	}
 

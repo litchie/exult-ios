@@ -708,7 +708,7 @@ gint Shape_chooser::mouse_press
 		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
 			chooser->edit_shape_info();
 		}
-	if (event->button == 3 && chooser->selected >= 0)
+	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(chooser->create_popup()), 
 				0, 0, 0, 0, event->button, event->time);
 	return (TRUE);
@@ -1004,10 +1004,9 @@ gint Shape_chooser::check_editing_files
 		read_back_edited(ed);
 		modified = true;	// Did one.
 		}
-	if (modified)			// Write out changed files.
+	if (modified)			// Repaint if modified.
 		{
 		ExultStudio *studio = ExultStudio::get_instance();
-		studio->get_files()->flush();
 		Object_browser *browser = studio->get_browser();
 		if (browser)
 			{		// Repaint main window.
@@ -2100,72 +2099,38 @@ GtkWidget *Shape_chooser::create_popup
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-	if (popup)			// Clean out old.
-		gtk_widget_destroy(popup);
-	popup = gtk_menu_new();		// Create popup menu.
-	GtkWidget *mitem = gtk_menu_item_new_with_label("Info...");
-	gtk_widget_show(mitem);
-	gtk_menu_append(GTK_MENU(popup), mitem);
-	gtk_signal_connect (GTK_OBJECT (mitem), "activate",
-		GTK_SIGNAL_FUNC(on_shapes_popup_info_activate), this);
-	add_group_submenu(popup);
+	Object_browser::create_popup();	// Create popup with groups, files.
+	studio->add_menu_item(popup, "Info...",
+			GTK_SIGNAL_FUNC(on_shapes_popup_info_activate), this);
 	if (selected >= 0)		// Add editing choices.
 		{
 		if (studio->get_image_editor())
 			{
-			mitem = gtk_menu_item_new_with_label("Edit...");
-			gtk_widget_show(mitem);
-			gtk_menu_append(GTK_MENU(popup), mitem);
-			gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+			studio->add_menu_item(popup, "Edit...",
 				GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate),
 								 this);
 			if (info[selected].shapenum < 0x96 && 
 					file_info == studio->get_vgafile())
-				{
-				mitem = gtk_menu_item_new_with_label(
-							"Edit tiled...");
-				gtk_widget_show(mitem);
-				gtk_menu_append(GTK_MENU(popup), mitem);
-				gtk_signal_connect(GTK_OBJECT(mitem), 
-					"activate", GTK_SIGNAL_FUNC(
-					on_shapes_popup_edtiles_activate),
-								this);
-				}
+				studio->add_menu_item(popup, "Edit tiled...",
+				    GTK_SIGNAL_FUNC(
+				    on_shapes_popup_edtiles_activate), this);
 			}
 					// Separator.
-		mitem = gtk_menu_item_new();
-		gtk_widget_show(mitem);
-		gtk_menu_append(GTK_MENU(popup), mitem);
-		gtk_widget_set_sensitive(mitem, FALSE);
+		studio->add_menu_item(popup);
 					// Add/del.
-		mitem = gtk_menu_item_new_with_label("New frame");
-		gtk_widget_show(mitem);
-		gtk_menu_append(GTK_MENU(popup), mitem);
-		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+		studio->add_menu_item(popup, "New frame",
 			GTK_SIGNAL_FUNC(on_shapes_popup_new_frame), this);
 					// Export/import.
-		mitem = gtk_menu_item_new_with_label("Export frame...");
-		gtk_widget_show(mitem);
-		gtk_menu_append(GTK_MENU(popup), mitem);
-		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+		studio->add_menu_item(popup, "Export frame...",
 			GTK_SIGNAL_FUNC(on_shapes_popup_export), this);
-		mitem = gtk_menu_item_new_with_label("Import frame...");
-		gtk_widget_show(mitem);
-		gtk_menu_append(GTK_MENU(popup), mitem);
-		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+		studio->add_menu_item(popup, "Import frame...",
 			GTK_SIGNAL_FUNC(on_shapes_popup_import), this);
 		}
 	if (ifile->is_flex())		// Multiple-shapes file (.vga)?
 		{
 					// Separator.
-		mitem = gtk_menu_item_new();
-		gtk_widget_show(mitem);
-		gtk_menu_append(GTK_MENU(popup), mitem);
-		gtk_widget_set_sensitive(mitem, FALSE);
-		mitem = gtk_menu_item_new_with_label("New shape");
-		gtk_widget_show(mitem);
-		gtk_menu_append(GTK_MENU(popup), mitem);
-		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+		studio->add_menu_item(popup);
+		studio->add_menu_item(popup, "New shape",
 			GTK_SIGNAL_FUNC(on_shapes_popup_new_shape), this);
 		}
 	return popup;

@@ -72,6 +72,8 @@ public:
 		{ return 0; }
 	virtual void flush()		// Write if modified.
 		{ modified = false; }
+	virtual bool revert()
+		{ return false; }	// Means 'not supported'.
 	};
 
 /*
@@ -92,6 +94,7 @@ public:
 	virtual Object_browser *create_browser(Shape_file_info *vgafile,
 				unsigned char *palbuf, Shape_group *g = 0);
 	virtual void flush();		// Write if modified.
+	virtual bool revert();
 	static void write_file(const char *pathname, Shape **shapes,
 						int nshapes, bool single);
 	};
@@ -145,6 +148,7 @@ public:
 	virtual Object_browser *create_browser(Shape_file_info *vgafile,
 				unsigned char *palbuf, Shape_group *g = 0);
 	virtual void flush();		// Write if modified.
+	virtual bool revert();
 	};
 
 /*
