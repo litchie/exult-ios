@@ -884,6 +884,37 @@ static void Paint_with_chunk
 	int chnum = cheat.get_edit_chunknum();
 	Drop_dragged_chunk(chnum, event.button.x, event.button.y, 0);
 	}
+
+/*
+ *	Select chunks.
+ */
+
+static void Select_chunks
+	(
+	SDL_Event& event,
+	bool dragging,			// Painting terrain.
+	bool toggle
+	)
+	{
+	static int lastcx = -1, lastcy = -1;
+	int scale = gwin->get_win()->get_scale();
+	int x = event.button.x/scale, y = event.button.y/scale;
+	int cx = (gwin->get_scrolltx() + x/c_tilesize)/c_tiles_per_chunk;
+	int cy = (gwin->get_scrollty() + y/c_tilesize)/c_tiles_per_chunk;
+	if (dragging)			// See if moving to a new chunk.
+		{
+		if (cx == lastcx && cy == lastcy)
+			return;
+		}
+	lastcx = cx; lastcy = cy;
+	Map_chunk *chunk = gwin->get_map()->get_chunk(cx, cy);
+	if (toggle)
+		chunk->set_selected(!chunk->is_selected());
+	else
+		chunk->set_selected(true);
+	gwin->set_all_dirty();
+	}
+
 #endif
 
 /*
@@ -1031,6 +1062,13 @@ static void Handle_event
 				  cheat.get_edit_mode() == Cheat::paint_chunks)
 					{
 					Paint_with_chunk(event, false);
+					break;
+					}
+				else if (cheat.get_edit_mode() ==
+							Cheat::select_chunks)
+					{
+					Select_chunks(event, false,
+						SDL_GetModState()&KMOD_CTRL);
 					break;
 					}
 					// Don't drag if not in 'move' mode.
@@ -1184,6 +1222,13 @@ static void Handle_event
 				  cheat.get_edit_mode() == Cheat::paint_chunks)
 					{
 					Paint_with_chunk(event, true);
+					break;
+					}
+				else if (cheat.get_edit_mode() ==
+							Cheat::select_chunks)
+					{
+					Select_chunks(event, true,
+						SDL_GetModState()&KMOD_CTRL);
 					break;
 					}
 				}
