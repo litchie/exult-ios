@@ -7,3 +7,4 @@ playflic
 *.la
 *.lo
 .deps
+.libs
