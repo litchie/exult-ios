@@ -131,10 +131,13 @@ int Game_object::get_volume
 	(
 	) const
 	{
+	int vol = Game_window::get_game_window()->get_info(this).get_volume();
+	return vol;			// I think U7 ignores quantity!
+#if 0
 	int quant = get_quantity();
 	quant = 1 + (quant - 1)/8;	// Be liberal about multiples.
-	return (quant *
-		Game_window::get_game_window()->get_info(this).get_volume());
+	return (quant*vol);
+#endif
 	}
 
 /*
