@@ -2267,7 +2267,8 @@ void Game_window::clear_text_pending
 	)
 	{
 	for (int i = 0; i < num_faces; i++)	// Clear 'pending' flags.
-		face_info[i]->text_pending = 0;
+		if (face_info[i])
+			face_info[i]->text_pending = 0;
 	}
 
 /*
