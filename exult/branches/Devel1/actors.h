@@ -238,6 +238,18 @@ public:
 	};
 
 /*
+ *	Talk to avatar.
+ */
+class Talk_schedule : public Schedule
+	{
+	int phase;			// 0=walk to Av., 1=talk, 2=done.
+public:
+	Talk_schedule(Npc_actor *n) : Schedule(n), phase(0)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	An NPC schedule change:
  */
 class Schedule_change

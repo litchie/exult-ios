@@ -678,8 +678,6 @@ protected:
 	int frame_time;			// Time between frames in msecs.
 public:
 	Sprite(int shapenum);
-	int in_world()			// Do we really exist?
-		{ return chunk != 0; }
 					// Set a frame seq. for a direction.
 	void set_frame_sequence(Direction dir, int cnt, unsigned char *seq)
 		{
@@ -709,6 +707,8 @@ public:
 			set_lift(new_lift);
 		chunk->add(this);
 		}
+					// Move to abs. location.
+	void move(int newtx, int newty, int newlift);
 	int is_walking()
 		{ return major_dir != 0; }
 	void stop();			// Stop motion.

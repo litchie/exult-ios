@@ -299,7 +299,7 @@ public:
         USECODE_INTRINSIC_DECL(remove_party_items);
         USECODE_INTRINSIC_DECL(add_party_items);
         USECODE_INTRINSIC_DECL(play_music);
-        USECODE_INTRINSIC_DECL(npc_in_party);
+        USECODE_INTRINSIC_DECL(npc_nearby);
         USECODE_INTRINSIC_DECL(find_nearby_avatar);
         USECODE_INTRINSIC_DECL(is_npc);
         USECODE_INTRINSIC_DECL(display_runes);
@@ -362,7 +362,8 @@ public:
 		};
 	enum Global_flag_names {
 		did_first_scene = 0x3b,	// Went through 1st scene with Iolo.
-		have_trinsic_password = 0x3d
+		have_trinsic_password = 0x3d,
+		found_stable_key = 0x48
 		};
 	int get_global_flag(int i)	// Get/set ith flag.
 		{ return gflags[i]; }
@@ -372,6 +373,8 @@ public:
 		{ return party_count; }
 	int get_party_member(int i)	// Get npc# of i'th party member.
 		{ return party[i]; }
+	int in_usecode()		// Currently in a usecode function?
+		{ return call_depth > 0; }
 					// Call desired function.
 	int call_usecode(int id, Game_object *obj, Usecode_events event)
 		{

@@ -395,6 +395,8 @@ public:
 					// Show a "face" on the screen.
 	void show_face(int shape, int frame);
 	void remove_face(int shape);	// Remove "face" from screen.
+	int get_num_faces_on_screen()	// # of faces on screen.
+		{ return num_faces; }
 					// Show what NPC said.
 	void show_npc_message(char *msg);
 	int is_npc_text_pending();	// Need to prompt user?

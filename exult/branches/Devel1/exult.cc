@@ -541,7 +541,7 @@ static void Handle_keystroke
 	int shift
 	)
 	{
-	static int shape_cnt = 626, shape_frame = 0;
+	static int shape_cnt = 0x21e, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = -1, gump_frame = 0;
 	static int font_cnt = -1, font_frame = 0;
