@@ -170,6 +170,8 @@ public:
 		{ return tfa[i]; }
 	int has_sfx()			// Has a sound effect (guessing).
 		{ return (tfa[0] & (1<<0)) != 0; }
+	int has_strange_movement()	// Slimes, sea monsters.
+		{ return (tfa[0] & (1<<1)) != 0; }
 	int is_animated()
 		{ return (tfa[0] & (1<<2)) != 0; }
 	int is_solid()			// Guessing.  Means can't walk through.
@@ -196,7 +198,6 @@ public:
 		{ return (shpdims[0] & 1) != 0; }
 	/*
 	 *	TFA[1][b0-b3] seems to indicate object types:
-	 *	+++++++Just guessing for now.
 	 */
 	enum Shape_class {
 		unusable = 0,		// Trees.
@@ -205,16 +206,22 @@ public:
 //		shutters = 4,		// Also mirrors.
 //		wearable = 5,		// Includes wieldable weapons, food,
 					//   table, curtain??
-		container = 6,		// Includes NPC's.
+		container = 6,
 		hatchable = 7,		// Eggs, traps, moongates.
 		spellbook = 8,
 		barge = 9,
 		virtue_stone = 11,
-					// 12, 13 for some NPC's.
+		monster = 12,		// Non-human's.
+		human = 13,		// Human NPC's.
 		building = 14		// Roof, window, mountain.
 		};
-	Shape_class get_shape_class()
+	Shape_class get_shape_class() const
 		{ return (Shape_class) (tfa[1]&15); }
+	bool is_npc() const
+		{
+		Shape_class c = get_shape_class();
+		return c == human || c == monster;
+		}
 	unsigned char get_ready_type()
 		{ return ready_type; }
 	// Sets x to 255 if there is no weapon offset
