@@ -586,8 +586,8 @@ void Gump_object::initialize
 					// No checkmark.
 		break;
 	case SPELLBOOK:
-		checkx = 8; checky = 66;
-		object_area = Rectangle(36, 46, 84, 40);	//++++++
+		checkx = 7; checky = 54;
+		object_area = Rectangle(36, 26, 102, 66);
 		break;
 	default:
 					// Character pictures:
@@ -717,6 +717,8 @@ Game_object *Gump_object::find_object
 	{
 	int cnt = 0;
 	Game_object *list[100];
+	if (!container)
+		return (0);
 	Game_object *last_object = container->get_last_object();
 	if (!last_object)
 		return (0);
@@ -775,7 +777,7 @@ int Gump_object::add
 	int sx, int sy			// Screen location of obj's hotspot.
 	)
 	{
-	if (!container->has_room(obj))
+	if (!container || !container->has_room(obj))
 		return (0);		// Full.
 					// Dropping on same thing?
 	Game_object *onobj = find_object(mx, my);

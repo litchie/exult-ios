@@ -364,6 +364,8 @@ public:
 		unsigned int shapey, unsigned int lft, unsigned char *c,
 		unsigned long f);
 	int add_spell(int spell);	// Add a spell.
+					// Run usecode function.
+	virtual void activate(Usecode_machine *umachine);
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
 	};
