@@ -62,7 +62,12 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/faces2.shp			\
 	bg/amulets.shp			\
 	bg/bgfiredoom.shp		\
-	bg/fellowshipstaff.shp
+	bg/fellowshipstaff.shp		\
+	bg/BGmap.shp
+
+EXULT_SI_FLX_OBJECTS = \
+	si/flx.in			\
+	si/SImap.shp
 
 
 flexdir = $(datadir)/exult
@@ -70,19 +75,25 @@ flexdir = $(datadir)/exult
 if DATA_FILES
 EXULT_FLX = exult.flx
 EXULT_BG_FLX = exult_bg.flx
+EXULT_SI_FLX = exult_si.flx
 else
 EXULT_FLX =
 EXULT_BG_FLX =
+EXULT_SI_FLX =
 endif
 
-flex_DATA = $(EXULT_FLX) $(EXULT_BG_FLX) midisfx.flx
+flex_DATA = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX) midisfx.flx
 
-CLEANFILES = exult.flx exult_bg.flx *~
+CLEANFILES = exult.flx exult_bg.flx exult_si.flx *~
 
-EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) $(EXULT_BG_FLX_OBJECTS) midisfx.flx
+EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) $(EXULT_BG_FLX_OBJECTS) \
+	$(EXULT_SI_FLX_OBJECTS) midisfx.flx
 
 exult.flx: $(EXULT_FLX_OBJECTS)
 	../tools/expack -i $(srcdir)/flx.in
 
 exult_bg.flx: $(EXULT_BG_FLX_OBJECTS)
 	../tools/expack -i $(srcdir)/bg/flx.in
+
+exult_si.flx: $(EXULT_SI_FLX_OBJECTS)
+	../tools/expack -i $(srcdir)/si/flx.in

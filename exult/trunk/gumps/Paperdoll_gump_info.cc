@@ -625,22 +625,22 @@ Paperdoll_gump::Paperdoll_npc Paperdoll_gump::Characters_BG[] = {
 	{  488, false, paperdoll,  14,  0, 124,  0,  1,   7,  1,  3,  5 },
 
 	// Jaana
-	{  490,  true,exultbg_flx, 13,  0,  7,  0,  1,   7,  0,  2,  4 },
+	{  490,  true,gameflx,     13,  0,   7,  0,  1,   7,  0,  2,  4 },
 
 	// Sentri
-	{  462, false,exultbg_flx, 14,  0,  8,  0,  1,   7,  1,  3,  5 },
+	{  462, false,gameflx,     14,  0,   8,  0,  1,   7,  1,  3,  5 },
 
 	// Julia
-	{  454,  true,exultbg_flx, 13,  0,  7,  2,  3,   7,  0,  2,  4 },
+	{  454,  true,gameflx,     13,  0,   7,  2,  3,   7,  0,  2,  4 },
 
 	// Katrina
-	{  452,  true,exultbg_flx, 13,  0,  7,  4,  5,   7,  0,  2,  4 },
+	{  452,  true,gameflx,     13,  0,   7,  4,  5,   7,  0,  2,  4 },
 
 	// Tseramed
-	{  460, false,exultbg_flx, 14,  0,  8,  2,  3,   7,  1,  3,  5 },
+	{  460, false,gameflx,     14,  0,   8,  2,  3,   7,  1,  3,  5 },
 
 	// Spark
-	{  489, false,exultbg_flx, 14,  0,  8,  4,  5,   7,  1,  3,  5 },
+	{  489, false,gameflx,     14,  0,   8,  4,  5,   7,  1,  3,  5 },
 
 
 	// For Pick pocket mode
@@ -799,15 +799,15 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Leather Collar **NEEDS ART**
 	{     582,  9,       Actor::neck,   OT_Normal,  false, paperdoll,    -1,     0 },
 	// Gorget
-	{     586,  0,       Actor::neck,   OT_Normal,  false, exultbg_flx,   4,     0 },
+	{     586,  0,       Actor::neck,   OT_Normal,  false, gameflx,       4,     0 },
 	// Magic Gorget
-	{     843,  0,       Actor::neck,   OT_Normal,  false, exultbg_flx,   5,     0 },
+	{     843,  0,       Actor::neck,   OT_Normal,  false, gameflx,       5,     0 },
 	// Ankh
 	{     955,  0,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     0 },
 	// Fellowship
 	{     955,  1,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     4 },
 	// White Heart
-	{     955,  2,       Actor::neck,   OT_Normal,  false, exultbg_flx,   9,     0 },
+	{     955,  2,       Actor::neck,   OT_Normal,  false, gameflx,       9,     0 },
 	// Amulet of Protection???
 	{     955,  3,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     3 },
 	// Amulet of ???
@@ -876,7 +876,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Crested Helm
 	{     542, 0,        Actor::head,     OT_Helm,   true, paperdoll,    31,     0 },
 	// Caddellite Helmet
-	{     638, 0,        Actor::head,     OT_Helm,   true, exultbg_flx,   1,     0 },
+	{     638, 0,        Actor::head,     OT_Helm,   true, gameflx,       1,     0 },
 	// Leather Helm
 	{    1004, 0,        Actor::head,     OT_Helm,   true, paperdoll,    59,     0 },
 
@@ -984,8 +984,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     549, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    62,     0 },
 	{     549, -1,       Actor::belt,   OT_Single,  false, paperdoll,    62,     1 },
 	// Magic Boomerang
-	{     550, -1,      Actor::lhand,   OT_Single,  false, exultbg_flx,   2,     0 },
-	{     550, -1,       Actor::belt,   OT_Single,  false, exultbg_flx,   2,     1 },
+	{     550, -1,      Actor::lhand,   OT_Single,  false, gameflx,       2,     0 },
+	{     550, -1,       Actor::belt,   OT_Single,  false, gameflx,       2,     1 },
 	// Fire Sword
 	{     551, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    41,     0 },
 	{     551, -1,       Actor::belt,   OT_Single,  false, paperdoll,    41,     1 },
@@ -999,8 +999,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     559, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    67,     0},
 	{     559, -1,       Actor::belt,   OT_Single,  false, paperdoll,    67,     1},
 	// Great Dagger
-	{     561, -1,      Actor::lhand,   OT_Single,  false, exultbg_flx,   3,     0 },
-	{     561, -1,       Actor::belt,   OT_Single,  false, exultbg_flx,   3,     1 },
+	{     561, -1,      Actor::lhand,   OT_Single,  false, gameflx,       3,     0 },
+	{     561, -1,       Actor::belt,   OT_Single,  false, gameflx,       3,     1 },
 	// Blowgun
 	{     563, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    12,     0 },
 	{     563, -1,       Actor::belt,   OT_Single,  false, paperdoll,    12,     1 },
@@ -1044,8 +1044,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     608, -1,      Actor::lhand,   OT_Single,  false, paperdoll,   109,     0 },
 	{     608, -1,       Actor::belt,   OT_Single,  false, paperdoll,   109,     1 },
 	// Cleaver
-	{     614, -1,      Actor::lhand,   OT_Single,  false, exultbg_flx,   6,     0 },
-	{     614, -1,       Actor::belt,   OT_Single,  false, exultbg_flx,   6,     1 },
+	{     614, -1,      Actor::lhand,   OT_Single,  false, gameflx,       6,     0 },
+	{     614, -1,       Actor::belt,   OT_Single,  false, gameflx,       6,     1 },
 	// Knives **NEEDS ART**
 	{     615, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    -1,     0 },
 	{     615, -1,       Actor::belt,   OT_Single,  false, paperdoll,    -1,     1 },
@@ -1090,11 +1090,11 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// WEAPONS 2H
 
 	// Hoe of Destruction
-	{     548, -1,      Actor::lhand,    OT_Staff,  false, exultbg_flx,   0,     0 },
-	{     548, -1,Actor::back2h_spot,    OT_Staff,  false, exultbg_flx,   0,     1 },
+	{     548, -1,      Actor::lhand,    OT_Staff,  false, gameflx,       0,     0 },
+	{     548, -1,Actor::back2h_spot,    OT_Staff,  false, gameflx,       0,     1 },
 	// Firedoom Staff
-	{     553, -1,      Actor::lhand,    OT_Staff,  false, exultbg_flx,  10,     0 },
-	{     553, -1,Actor::back2h_spot,    OT_Staff,  false, exultbg_flx,  10,     1 },
+	{     553, -1,      Actor::lhand,    OT_Staff,  false, gameflx,      10,     0 },
+	{     553, -1,Actor::back2h_spot,    OT_Staff,  false, gameflx,      10,     1 },
 	// Juggernaught Hammer
 	{     557, -1,      Actor::lhand,   OT_Double,  false, paperdoll,    53,     0 },
 	{     557, -1,Actor::back2h_spot,   OT_Double,  false, paperdoll,    53,     1 },
@@ -1138,8 +1138,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     707, -1,      Actor::lhand,   OT_Double,  false, paperdoll,   139,     0 },
 	{     707, -1,Actor::back2h_spot,   OT_Double,  false, paperdoll,   139,     1 },
 	// Fallowship Staff
-	{     885, -1,      Actor::lhand,    OT_Staff,  false, exultbg_flx,  11,     0 },
-	{     885, -1,Actor::back2h_spot,    OT_Staff,  false, exultbg_flx,  11,     1 },
+	{     885, -1,      Actor::lhand,    OT_Staff,  false, gameflx,      11,     0 },
+	{     885, -1,Actor::back2h_spot,    OT_Staff,  false, gameflx,      11,     1 },
 
 
 	// CROSSBOWS & BOLTS

@@ -136,6 +136,9 @@ BG_Game::BG_Game()
 	add_shape("gumps/goldsign", 51);
 	add_shape("gumps/body", 53);
 
+	add_shape("sprites/map", 22);
+	add_shape("sprites/cheatmap", 12);
+
 	add_resource("files/shapes/count", 0, 9);
 	add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
 	add_resource("files/shapes/1", "<STATIC>/faces.vga", 0);
@@ -146,6 +149,8 @@ BG_Game::BG_Game()
 	add_resource("files/shapes/6", "<STATIC>/fonts.vga", 0);
 	add_resource("files/shapes/7", "<DATA>/exult.flx", 0);
 	add_resource("files/shapes/8", "<DATA>/exult_bg.flx", 0);
+
+	add_resource("files/gameflx", "<DATA>/exult_bg.flx", 0);
 
 	add_resource("palettes/count", 0, 18);
 	add_resource("palettes/0", "<STATIC>/palettes.flx", 0);

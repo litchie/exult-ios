@@ -74,3 +74,4 @@ rm -rf $RPM_BUILD_ROOT
 %{prefix}/share/exult/exult.flx
 %{prefix}/share/exult/midisfx.flx
 %{prefix}/share/exult/exult_bg.flx
+%{prefix}/share/exult/exult_si.flx

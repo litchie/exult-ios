@@ -34,23 +34,17 @@ Face_button::Face_button(Gump *par, int px, int py, Actor *a)
 	shapenum = npcinfo->head_shape;
 	framenum = npcinfo->head_frame;
 
-	enum Paperdoll_file
-	{
-		paperdoll = 0,
-		exult_flx = 1,
-		exultbg_flx = 2,
-		shapes = 3
-	};
+	Paperdoll_gump::Paperdoll_file npcinfofile = npcinfo->file;
 
-	switch (npcinfo->file) {
-	case paperdoll:
+	switch (npcinfofile) {
+	case Paperdoll_gump::paperdoll:
 		shapefile = GSF_PAPERDOL_VGA; break;
-	case exult_flx:
+	case Paperdoll_gump::exult_flx:
 		shapefile = GSF_EXULT_FLX; break;
-	case exultbg_flx:
+	case Paperdoll_gump::gameflx:
 		//+++++ NOT YET
 		break;
-	case shapes:
+	case Paperdoll_gump::shapes:
 		//+++++ NOT YET
 		break;
 	}
