@@ -36,6 +36,7 @@ class Actor;
  */
 class Combat_schedule : public Schedule
 	{
+protected:
 	static unsigned long battle_time;// Time when battle started.
 	enum Phase			// We'll be a finite-state-machine.
 		{
@@ -58,7 +59,7 @@ class Combat_schedule : public Schedule
 	unsigned char started_battle;	// 1st opponent targeted.
 	unsigned char fleed;		// Set 1st time fleeing.
 	int failures;			// # failures to find opponent.
-	void find_opponents();
+	virtual void find_opponents();
 	Actor *find_foe(int mode);	// Find a new opponent.
 	Actor *find_foe();
 	void approach_foe();		// Approach foe.
@@ -76,6 +77,20 @@ public:
 					// Set opponent in combat.
 	virtual void set_opponent(Game_object *obj);
 	virtual Game_object *get_opponent();	// Get opponent.
+	};
+
+/*
+ *	Dueling is like combat, but nobody gets hurt.
+ */
+
+class Duel_schedule : public Combat_schedule
+	{
+	Tile_coord start;		// Starting position.
+	int attacks;			// Count strikes.
+	virtual void find_opponents();
+public:
+	Duel_schedule(Actor *n);
+	virtual void now_what();
 	};
 
 #endif

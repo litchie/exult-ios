@@ -173,6 +173,18 @@ public:
 	};
 
 /*
+ *	Kid games.
+ */
+class Kid_games_schedule : public Loiter_schedule
+	{
+	Slist kids;			// Other kids playing.
+public:
+	Kid_games_schedule(Actor *n) : Loiter_schedule(n, 10)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	Dance.
  */
 class Dance_schedule : public Loiter_schedule
