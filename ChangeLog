@@ -2,6 +2,9 @@
 	* files/util.*, gumps/gump_util.*: moved newstrdup to files/util.cc
 	* audio/xmidi.cc, conf/Configuration.cc, conf/XMLEntity.cc, game.cc,
 	  gamemap.h, sigame.cc: fixed namespace issues, added #include cassert, cleanup
+	* version.cc: fixed version output for MetroWerks CodeWarrior
+	* tools/expack.cc: fixed incorrect usage of crc32, now uses crc32_syspath
+	* files/crc.cc: specify std::ios::in when opening file
 
 2002-03-08  Dominik Reichardt <gigdr@tesionmail.de>
 	* FAQ, ReadMe updated
