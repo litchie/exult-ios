@@ -66,12 +66,7 @@ Cheat::~Cheat() {
 }
 
 void Cheat::init (void) {
-  std::string cheating;
-
-  config->value("config/gameplay/cheat",cheating,"yes");
-  enabled = true;
-  if (cheating == "no")
-    enabled = false;
+  enabled = false;
 }
 
 void Cheat::finish_init (void) {
@@ -80,6 +75,11 @@ void Cheat::finish_init (void) {
   browser = new ShapeBrowser();
   tester = new SoundTester();
   cscreen = new CheatScreen();
+  
+  std::string cheating;
+  config->value("config/gameplay/cheat",cheating,"yes");
+  if (cheating == "yes")
+    enabled = true;
 
   if (enabled)
     cout << "Cheats enabled." << endl;
