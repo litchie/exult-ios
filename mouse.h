@@ -53,7 +53,8 @@ class Mouse
 public:
 	Mouse(Game_window *gw);
 	~Mouse();
-	enum Mouse_shapes {		// List of shapes.
+	enum Mouse_shapes {		// List of shapes' frame #'s.
+		dontchange = 1000,	// Flag to not change.
 		hand = 0,
 		redx = 1,
 		greenselect = 2,	// For modal select.
@@ -79,6 +80,10 @@ public:
 		if (framenum != cur_framenum)
 			set_shape0(framenum);
 		}
+	void set_shape(Mouse_shapes shape)
+		{ set_shape((int) shape); }
+	Mouse_shapes get_shape()
+		{ return (Mouse_shapes) cur_framenum; }
 	void move(int x, int y)		// Move to new location (mouse motion).
 		{
 		mousex = x;
