@@ -614,19 +614,14 @@ enum Direction
 	southwest = 5,
 	west = 6,
 	northwest = 7
-#if 0
-	east = 0,
-	northeast = 1,
-	north = 2,
-	northwest = 3,
-	west = 4,
-	southwest = 5,
-	south = 6,
-	southeast = 7
-#endif
 	};
 
 Direction Get_direction
+	(
+	int deltay,
+	int deltax
+	);
+Direction Get_direction4
 	(
 	int deltay,
 	int deltax
@@ -637,7 +632,8 @@ Direction Get_direction
  */
 class Frames_sequence
 	{
-	unsigned char *frames;		// Last one is 0xff.
+	unsigned char *frames;
+	int num_frames;
 public:
 	Frames_sequence(int cnt, unsigned char *f);
 	~Frames_sequence()
@@ -648,8 +644,9 @@ public:
 					//   with index = 0 for first one.
 	unsigned char get_next(int& index)
 		{
-		unsigned char frame = frames[++index];
-		return frame == 0xff ? frames[index = 1] : frame;
+		if (++index >= num_frames)
+			index = 1;
+		return frames[index];
 		}
 	};
 
@@ -657,6 +654,8 @@ public:
  *	A sprite is a game object which can change shape and move around.
  *	++++++So far, this base class is never invoked, so we might not need
  *	the Time_sensitive part.+++++++
+ *	++++++And it might go away altogether once Path_walking_actor_action is
+ *	tested with Zombie.
  */
 class Sprite : public Container_game_object, public Time_sensitive
 	{

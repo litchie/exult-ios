@@ -1516,11 +1516,10 @@ Frames_sequence::Frames_sequence
 	(
 	int cnt,			// # of frames.
 	unsigned char *f		// List of frames.
-	)
+	) : num_frames(cnt)
 	{
-	frames = new unsigned char[cnt + 1];
+	frames = new unsigned char[cnt];
 	memcpy(frames, f, cnt);		// Copy in the list.
-	frames[cnt] = 0xff;		// Terminate it.
 	}
 
 /*
@@ -1725,7 +1724,9 @@ void Text_object::handle_event
 	}
 
 /*
- *	Return the direction for a given slope.
+ *	Return the direction for a given slope (0-7).
+ *	NOTE:  Assumes cartesian coords, NOT screen coords. (which have y
+ *		growing downwards).
  */
 
 Direction Get_direction
@@ -1751,6 +1752,26 @@ Direction Get_direction
 		else			// Top-left?
 			return dydx >= -424 ? west : dydx >= -2472 ? northwest
 								: north;
+	}
+
+/*
+ *	Return the direction for a given slope (0-7), rounded to NSEW.
+ *	NOTE:  Assumes cartesian coords, NOT screen coords. (which have y
+ *		growing downwards).
+ */
+
+Direction Get_direction4
+	(
+	int deltay,
+	int deltax
+	)
+	{
+	if (deltax >= 0)		// Right side?
+		return (deltay > deltax ? north : deltay < -deltax ? south
+								: east);
+	else				// Left side.
+		return (deltay > -deltax ? north : deltay < deltax ? south
+								: west);
 	}
 
 /*

@@ -46,6 +46,8 @@ class Actor : public Sprite
 	short npc_num;			// # in Game_window::npcs list, or -1.
 	short party_id;			// Index in party, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
+					// A frame sequence for each dir.:
+	static Frames_sequence *frames[8];
 protected:
 	Game_object *spots[12];		// Where things can go.  See 'Spots'
 					//   below for description.
@@ -57,6 +59,9 @@ public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
 	~Actor();
+					// Get frame seq. for given dir.
+	static Frames_sequence *get_frames(int dir)
+		{ return frames[dir]; }
 					// Spots where items are carried.
 	enum Spots {			// Index of each spot, starting at
 					//   upper, rt., going clkwise.
