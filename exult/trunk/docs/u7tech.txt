@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.6 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.7 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -386,7 +386,7 @@ ENDSHAPE.FLX: flex file with various objects used in intro (Black Gate only)
   $3        Right moongate
   $4        Bottom left moongate
   $5        Bottom right moongate
-  $6        ???
+  $6        Cloth map (2)
   $7        Top right computer
   $8        Bottom right computer
   $9        Top left computer
