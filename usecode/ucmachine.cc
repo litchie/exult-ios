@@ -49,7 +49,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "barge.h"
 #include "chunks.h"
 #include "conversation.h"
-#include "delobjs.h"
 #include "game.h"
 #include "gamewin.h"
 #include "mouse.h"
@@ -520,10 +519,7 @@ void Usecode_machine::remove_item
 		}
 	else
 		gwin->add_dirty(obj);
-	obj->remove_this(1);		// Remove from world or container, but
-					//   don't delete.
-	obj->set_invalid();		// Set to invalid chunk.
-	removed->insert(obj);		// Add to pool instead.
+	gwin->delete_object(obj);
 	}
 
 #define PARTY_MAX (sizeof(party)/sizeof(party[0]))
@@ -1274,7 +1270,7 @@ Usecode_machine::Usecode_machine
 	Game_window *gw
 	) : gwin(gw), call_depth(0), cur_function(0),
 	    speech_track(-1), book(0),  caller_item(0),
-	    last_created(0), removed(new Deleted_objects()), user_choice(0),
+	    last_created(0), user_choice(0),
 	    String(0), stack(new Usecode_value[1024])
 	{
 	_init_(file);
@@ -1284,7 +1280,7 @@ Usecode_machine::Usecode_machine
 	(
 	Game_window *gw
 	) : gwin(gw), call_depth(0), cur_function(0), book(0), caller_item(0),
-	    last_created(0), removed(new Deleted_objects()), user_choice(0),
+	    last_created(0), user_choice(0),
 	    String(0), stack(new Usecode_value[1024])
 	{
 	ifstream file;                // Read in usecode.
@@ -1345,7 +1341,6 @@ Usecode_machine::~Usecode_machine
 	{
 	delete [] stack;
 	delete [] String;
-	delete removed;
 	delete conv;
 //	int num_slots = funs->get_cnt();
 	int num_slots = sizeof(funs)/sizeof(funs[0]);
@@ -1935,9 +1930,6 @@ int Usecode_machine::call_usecode_function
 	int stack_elems			// # elems. on stack at call.
 	)
 	{
-					// Nothing going on?
-	if (!call_depth && !Scheduled_usecode::get_count())
-		removed->flush();	// Flush removed objects.
 					// Look up in table.
 	vector<Usecode_function*>& slot = funs[id/0x100];
 	size_t index = id%0x100;

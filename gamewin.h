@@ -51,6 +51,7 @@ class Palette;
 class Special_effect;
 class Time_queue;
 class Usecode_machine;
+class Deleted_objects;
 
 /*
  *	The main game window:
@@ -110,6 +111,7 @@ private:
 	std::vector<Egg_object *> path_eggs;	// Path eggs, indexed by 'quality'.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[c_num_chunks][c_num_chunks];
+	Deleted_objects *removed;	// List of 'removed' objects.
 	bool schunk_read[144]; 		// Flag for reading in each "ifix".
 	int scrolltx, scrollty;		// Top-left tile of screen.
 	Actor *camera_actor;		// What to center view around.
@@ -558,6 +560,8 @@ public:
 	Game_object *find_object(int x, int y);
 	int find_objects(int lift, int x, int y, Game_object **list);
 	void show_items(int x, int y);	// Show names of items clicked on.
+					// Schedule object for deletion.
+	void delete_object(Game_object *obj);
 					// Add text item.
 	void add_text(const char *msg, int x, int y, Game_object *item = 0);
 	void center_text(const char *msg);
