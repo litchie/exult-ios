@@ -1420,6 +1420,7 @@ void Main_actor::die
 	Game_window *gwin = Game_window::get_game_window();
 	if (gwin->in_combat())
 		gwin->toggle_combat();	// Hope this is safe....
+	gwin->end_gump_mode();		// Obviously.
 					// Special function for dying:
 	gwin->get_usecode()->call_usecode(
 				0x60e, this, Usecode_machine::weapon);
