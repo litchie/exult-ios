@@ -111,6 +111,7 @@ public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
 	~Actor();
+	int ready_ammo();		// Find and ready appropriate ammo.
 	void ready_best_weapon();	// Find best weapon and ready it.
 	void use_food();		// Decrement food level.
 					// Get frame seq. for given dir.

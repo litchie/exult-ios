@@ -1904,7 +1904,7 @@ void File_gump_object::save
 	Game_window *gwin = Game_window::get_game_window();
 	if (*gwin->get_save_name(num))	// Already a game in this slot?
 		if (!Yesno_gump_object::ask(
-			"Okay to overwrite existing saved game?"))
+			"Okay to write over existing saved game?"))
 			return;
 	if (gwin->write() &&		// First flush to 'gamedat'.
 	    gwin->save_gamedat(num, focus->get_text()))

@@ -222,26 +222,36 @@ public:
  */
 class Ammo_info
 	{
-	static Ammo_info *ammo;		// All entries.
-	static int count;		// # of entries.
+	static class Ammo_table *table;	// For looking up by shape #.
 	int shapenum;			// Ammo's shape.
 	int family_shape;		// I.e., burst-arrow's is 'arrow'.
-//	unsigned char id;		// ??
+	unsigned char damage;		// Extra damage points.
 //	unsigned char unknown[6];	// ??
 public:
 	friend class Shapes_vga_file;
-	Ammo_info() {  }
-	void set(int shnum, int family)
+	Ammo_info() : shapenum(0)
+		{  }
+	Ammo_info(int shnum, int family, unsigned char dmge)
 		{
 		shapenum = shnum;
 		family_shape = family;
+		damage = dmge;
 		}
-	static Ammo_info *get_ammo(int i)
-		{ return i < count ? &ammo[i] : 0; }
 	int get_shapenum()
 		{ return shapenum; }
 	int get_family_shape()
 		{ return family_shape; }
+	int get_damage()
+		{ return damage; }
+	static Ammo_info *find(int shnum);// Find given ammo's entry.
+					// Is given shape in desired family.
+	static int is_in_family(int shnum, int family)
+		{
+		Ammo_info *ainf;
+		return (shnum == family) ||
+			((ainf = find(shnum)) != 0 && 
+					ainf->family_shape == family);
+		}
 	};
 
 /*

@@ -260,8 +260,13 @@ static int Swap_weapons
 	if (!winf)
 		return 0;		// Not a weapon.
 	int ammo = winf->get_ammo();
-	if (ammo && !npc->find_item(ammo, -359, -359))
-		return 0;		// No ammo.
+	if (ammo)			// Check for readied ammo.
+		{
+		Game_object *aobj = npc->get_readied(Actor::ammo);
+		if (!aobj || !Ammo_info::is_in_family(aobj->get_shapenum(),
+								ammo))
+			return 0;
+		}
 	if (info.get_ready_type() == two_handed_weapon &&
 	    npc->get_readied(Actor::rhand) != 0)
 		return 0;		// Needs two free hands.
@@ -285,7 +290,11 @@ void Combat_schedule::start_strike
 	{
 	if (ammo_shape)			// Firing?
 		{
-		if (ammo_consumed && !npc->find_item(ammo_shape, -359, -359))
+		Game_object *aobj;
+		if (ammo_consumed &&
+		    (!(aobj = npc->get_readied(Actor::ammo)) ||
+			!Ammo_info::is_in_family(aobj->get_shapenum(), 
+								ammo_shape)))
 			{		// Out of ammo.
 			if (Swap_weapons(npc))
 				set_weapon_info();
@@ -377,6 +386,29 @@ inline Rectangle Get_tiles
 	}
 
 /*
+ *	Use one unit of ammo.
+ *
+ *	Output:	0 if failed.
+ */
+
+static int Use_ammo
+	(
+	Actor *npc,
+	int ammo			// Ammo family shape.
+	)
+	{
+	Game_object *aobj = npc->get_readied(Actor::ammo);
+	if (!aobj || !Ammo_info::is_in_family(aobj->get_shapenum(), ammo))
+		return 0;
+	npc->remove(aobj);		// Remove all.
+	int quant = aobj->get_quantity();
+	aobj->modify_quantity(-1);	// Reduce amount.
+	if (quant > 1)			// Still some left?  Put back.
+		npc->add_readied(aobj, Actor::ammo);
+	return 1;
+	}
+
+/*
  *	Previous action is finished.
  */
 
@@ -428,8 +460,7 @@ void Combat_schedule::now_what
 		npc->start(200);	// Back into queue.
 		break;
 	case fire:			// Range weapon.
-		if (!ammo_consumed ||
-		    npc->remove_quantity(1, ammo_shape, -359, -359) == 0)
+		if (!ammo_consumed || Use_ammo(npc, ammo_shape))
 			gwin->add_effect(new Projectile_effect(npc, opponent,
 						ammo_shape, weapon_shape));
 		state = approach;
