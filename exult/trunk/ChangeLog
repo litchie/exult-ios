@@ -1,3 +1,6 @@
+2000-12-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* savepcx.cc: fixed 8 bit output (RGB <-> BGR)
+
 2000-12-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* savepcx.cc: unsigned long -> Uint32, unsigned short -> Uint16
 	* configure.in: removed a few crosscompiling-related warnings
