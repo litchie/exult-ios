@@ -1984,6 +1984,7 @@ bool Actor::reduce_health
 	    rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
 		{			// Create blood where actor stands.
 		Game_object *bobj = gwin->create_ireg_object(blood, 0);
+		bobj->set_flag(Obj_flags::is_temporary);
 		bobj->move(get_tile());
 		}
 	if (Actor::is_dying())
@@ -3010,6 +3011,8 @@ void Actor::die
 	properties[static_cast<int>(health)] = -50;
 	Shape_info& info = gwin->get_info(get_shapenum());
 	Monster_info *minfo = info.get_monster_info();
+	remove_this(1);			// Remove (but don't delete this).
+	set_invalid();
 	Dead_body *body;		// See if we need a body.
 	if (!minfo || !minfo->has_no_body())
 		{
@@ -3019,6 +3022,8 @@ void Actor::die
 			shnum = 400;
 			frnum = 3;
 			}
+					// Reflect if NPC reflected.
+		frnum |= (get_framenum()&32);
 		body = new Dead_body(shnum, frnum, 0, 0, 0, 
 					npc_num > 0 ? npc_num : -1);
 		if (npc_num > 0)
@@ -3031,15 +3036,11 @@ void Actor::die
 			body->set_flag(Obj_flags::is_temporary);
 					// Okay to take its contents.
 		body->set_flag_recursively(Obj_flags::okay_to_take);
-					// Better be a spot for it.
-		pos = Map_chunk::find_spot(pos, 5, shnum, frnum, 2);
-		if (pos.tx != -1)
-			body->move(pos);
-		else
-			{
-			body->remove_this();
-			body = 0;
-			}
+					// Find a spot within 1 tile.
+		Tile_coord bp = Map_chunk::find_spot(pos, 1, shnum, frnum, 2);
+		if (bp.tx == -1)
+			bp = pos;	// Default to NPC pos, even if blocked.
+		body->move(bp);
 		}
 	else
 		body = 0;
@@ -3059,7 +3060,7 @@ void Actor::die
 		else			// No body?  Drop on ground.
 			{
 			item->set_flag_recursively(Obj_flags::okay_to_take);
-			Tile_coord pos = Map_chunk::find_spot(get_tile(), 5,
+			Tile_coord pos = Map_chunk::find_spot(pos, 5,
 				item->get_shapenum(), item->get_framenum(), 1);
 			if (pos.tx != -1)
 				item->move(pos);
@@ -3077,8 +3078,6 @@ void Actor::die
 	delete_contents();		// remove what's left of inventory
 					// Move party member to 'dead' list.
 	gwin->get_usecode()->update_party_status(this);
-	remove_this(1);			// Remove (but don't delete this).
-	set_invalid();
 	}
 
 /*
