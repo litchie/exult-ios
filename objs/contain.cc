@@ -68,35 +68,52 @@ void Container_game_object::remove
  *		0 if not enough space.
  */
 
-int Container_game_object::add
+bool Container_game_object::add
 	(
 	Game_object *obj,
-	int dont_check			// 1 to skip volume/recursion check.
+	bool dont_check,		// 1 to skip volume/recursion check.
+	bool combine			// True to try to combine obj.  MAY
+					//   cause obj to be deleted.
 	)
 	{
 	if (obj->get_shapenum() == get_shapenum() && !dont_check)
-		return (0);		// Can't put a bag in a bag.
+		return false;		// Can't put a bag in a bag.
 
 	// ugly hack for SI urn (shouldn't be a container)
 	if (Game::get_game_type() == SERPENT_ISLE && get_shapenum() == 914) {
-		return 0;
+		return false;
 	}
-
-	int objvol = obj->get_volume();
 
 	// Always check this. ALWAYS!
 	Game_object *parent = this;
-	do			// Watch for snake eating itself.
+	do				// Watch for snake eating itself.
 		if (obj == parent)
-			return 0;
+			return false;
 	while ((parent = parent->get_owner()) != 0);
 
+	if (combine)			// Should we try to combine?
+		{
+		Game_window *gwin = Game_window::get_game_window();
+		Shape_info& info = gwin->get_info(obj->get_shapenum());
+		int quant = obj->get_quantity();
+		int newquant = add_quantity(quant, obj->get_shapenum(),
+			info.has_quality() ? obj->get_quality() : c_any_qual,
+						obj->get_framenum(), false);
+		if (newquant == 0)	// All added?
+			{
+			obj->remove_this();
+			return true;
+			}
+		else if (newquant < quant)	// Partly successful.
+			obj->modify_quantity(newquant - quant);
+		}
+	int objvol = obj->get_volume();
 	if (!dont_check)
 		{
 		int maxvol = get_max_volume();
 		// maxvol = 0 means infinite (ship's hold, hollow tree, etc...)
 		if (maxvol > 0 && objvol + volume_used > maxvol)
-			return (0);	// Doesn't fit.
+			return false;	// Doesn't fit.
 		}
 	volume_used += objvol;
 	obj->set_owner(this);		// Set us as the owner.
@@ -104,7 +121,7 @@ int Container_game_object::add
 					// Guessing:
 	if (get_flag(Obj_flags::okay_to_take))
 		obj->set_flag(Obj_flags::okay_to_take);
-	return 1;
+	return true;
 	}
 
 /*
@@ -478,12 +495,12 @@ int Container_game_object::get_weight
 
 int Container_game_object::drop
 	(
-	Game_object *obj
+	Game_object *obj		// May be deleted if combined.
 	)
 	{
 	if (!get_owner())		// Only accept if inside another.
 		return (0);
-	return (add(obj));		// We'll take it.
+	return (add(obj, false, true));	// We'll take it, and try to combine.
 	}
 
 /*

@@ -228,7 +228,9 @@ int Gump::add
 	Game_object *obj,
 	int mx, int my,			// Mouse location.
 	int sx, int sy,			// Screen location of obj's hotspot.
-	bool dont_check			// Skip volume check.
+	bool dont_check,		// Skip volume check.
+	bool combine			// True to try to combine obj.  MAY
+					//   cause obj to be deleted.
 	)
 {
 	if (!container || (!dont_check && !container->has_room(obj)))
@@ -240,7 +242,7 @@ int Gump::add
 	if (onobj && onobj != obj && onobj->drop(obj))
 		return (1);
 
-	if (!container->add(obj, dont_check))
+	if (!container->add(obj, dont_check))	// DON'T combine here.
 		return (0);
 
 					// Not a valid spot?

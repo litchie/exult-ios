@@ -1878,12 +1878,12 @@ int Actor::inventory_shapenum()
 
 int Actor::drop
 	(
-	Game_object *obj
+	Game_object *obj		// MAY be deleted (if combined).
 	)
 	{
 	if (get_party_id() >= 0 ||	// In party?
 	    this == Game_window::get_game_window()->get_main_actor())
-		return (add(obj));	// We'll take it.
+		return (add(obj, false, true));	// We'll take it, and combine.
 	else
 		return 0;
 	}
@@ -2437,11 +2437,13 @@ void Actor::remove
  *		0 if not enough space.
  */
 
-int Actor::add
+bool Actor::add
 	(
 	Game_object *obj,
-	int dont_check			// 1 to skip volume check (AND also
+	bool dont_check,		// 1 to skip volume check (AND also
 					//   to skip usecode call).
+	bool combine			// True to try to combine obj.  MAY
+					//   cause obj to be deleted.
 	)
 	{
 	int index, a; 
@@ -2451,35 +2453,35 @@ int Actor::add
 		
 	if (index < 0)			// No free spot?  Look for a bag.
 	{
-		if (spots[back] && spots[back]->drop(obj))
-			return (1);
-		if (spots[belt] && spots[belt]->drop(obj))
-			return (1);
-		if (spots[lhand] && spots[lhand]->drop(obj))
-			return (1);
-		if (spots[rhand] && spots[rhand]->drop(obj))
-			return (1);
+		if (spots[back] && spots[back]->add(obj, false, combine))
+			return true;
+		if (spots[belt] && spots[belt]->add(obj, false, combine))
+			return true;
+		if (spots[lhand] && spots[lhand]->add(obj, false, combine))
+			return true;
+		if (spots[rhand] && spots[rhand]->add(obj, false, combine))
+			return true;
 		if (!dont_check)
-			return 0;
+			return false;
 
 		// try again without checking volume/weight
-		if (spots[back] && spots[back]->add(obj, 1))
-			return (1);
-		if (spots[belt] && spots[belt]->add(obj, 1))
-			return (1);
-		if (spots[lhand] && spots[lhand]->add(obj, 1))
-			return (1);
-		if (spots[rhand] && spots[rhand]->add(obj, 1))
-			return (1);
+		if (spots[back] && spots[back]->add(obj, true, combine))
+			return true;
+		if (spots[belt] && spots[belt]->add(obj, true, combine))
+			return true;
+		if (spots[lhand] && spots[lhand]->add(obj, true, combine))
+			return true;
+		if (spots[rhand] && spots[rhand]->add(obj, true, combine))
+			return true;
 
 		if (party_id != -1 || npc_num==0) {
 			CERR("Warning: adding object (" << obj << ", sh. " << obj->get_shapenum() << ", " << obj->get_name() << ") to actor container (npc " << npc_num << ")"); 
 		}
-		return Container_game_object::add(obj, dont_check);
+		return Container_game_object::add(obj, dont_check, combine);
 	}
 					// Add to ourself.
-	if (!Container_game_object::add(obj, 1))
-		return (0);
+	if (!Container_game_object::add(obj, true, combine))
+		return false;
 
 	if (type == FIS_2Hand)		// Two-handed?
 		two_handed = true;
@@ -2494,7 +2496,7 @@ int Actor::add
 					// (Readied usecode now in drop().)
 	if (gwin->get_info(obj).is_light_source())
 		light_sources++;
-	return (1);
+	return true;
 	}
 
 /*
@@ -2517,7 +2519,9 @@ int Actor::add_readied
 		return (0);		
 
 	// Already something there? Try to drop into it.
-	if (spots[index]) return (spots[index]->drop(obj));
+	// +++++Danger:  drop() can potentially delete the object.
+//	if (spots[index]) return (spots[index]->drop(obj));
+	if (spots[index]) return (spots[index]->add(obj));
 
 	int prefered;
 	int alternate;

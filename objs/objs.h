@@ -305,8 +305,9 @@ public:
 						int framenum)
 		{ return 0; }
 					// Add an object.
-	virtual int add(Game_object *obj, int dont_check = 0)
-		{ return 0; }
+	virtual bool add(Game_object *obj, bool dont_check = false,
+							bool combine = false)
+		{ return false; }
 					// Add to NPC 'ready' spot.
 	virtual int add_readied(Game_object *obj, int index, int dont_check = 0, int force_pos = 0)
 		{ return add(obj, dont_check); }

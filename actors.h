@@ -378,7 +378,8 @@ public:
 					// Remove an object.
 	virtual void remove(Game_object *obj);
 					// Add an object.
-	virtual int add(Game_object *obj, int dont_check = 0);
+	virtual bool add(Game_object *obj, bool dont_check = false,
+							bool combine = false);
 					// Add to NPC 'readied' spot.
 	virtual int add_readied(Game_object *obj, int index, int dont_check = 0, int force_pos = 0);
 	virtual int find_readied(Game_object *obj);

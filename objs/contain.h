@@ -57,7 +57,8 @@ public:
 					// Remove an object.
 	virtual void remove(Game_object *obj);
 					// Add an object.
-	virtual int add(Game_object *obj, int dont_check = 0);
+	virtual bool add(Game_object *obj, bool dont_check = false,
+							bool combine = false);
 					// Change member shape.
 	virtual void change_member_shape(Game_object *obj, int newshape);
 					// Find object's spot.

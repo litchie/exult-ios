@@ -459,7 +459,9 @@ int Face_stats::add
 	Game_object *obj,
 	int mx, int my,			// Mouse location.
 	int sx, int sy,			// Screen location of obj's hotspot.
-	bool dont_check			// Skip volume check.
+	bool dont_check,		// Skip volume check.
+	bool combine			// True to try to combine obj.  MAY
+					//   cause obj to be deleted.
 	)
 {
 	if (sx < 0 && sy < 0 && my < 0 && mx < 0) return 0;
@@ -468,7 +470,8 @@ int Face_stats::add
 
 	for (int i = 0; i < 8; i++)
 		if (party[i] && party[i]->on_button(gwin, mx, my))
-			return party[i]->get_actor()->add(obj, dont_check);
+			return party[i]->get_actor()->add(obj, dont_check,
+								combine);
 
 	return (0);
 }
