@@ -244,6 +244,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		}
 	Tile_coord cur = actor->get_tile();
 	int newdir = static_cast<int>(Get_direction4(cur.ty - tile.ty, tile.tx - cur.tx));
+	actor->Actor::set_usecode_dir(newdir);
 	Frames_sequence *frames = actor->get_frames(newdir);
 	if (!frame_index)		// First time?  Init.
 		frame_index = frames->find_unrotated(actor->get_framenum());
