@@ -72,6 +72,7 @@ public:
 	virtual uint32	number_of_objects(void) { return object_list.size(); };
 					// To a memory block
    	virtual	char *	retrieve(uint32 objnum,std::size_t &len); 
+	uint32 	get_entry_info(uint32 objnum, size_t &len);
 	virtual const char *get_archive_type() { return "FLEX"; };
 					// Write header for a Flex file.
 	static void write_header(DataSource* out, const char *title, int count,

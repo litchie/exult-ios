@@ -589,6 +589,8 @@ void Game_map::get_ifix_objects
 								endl;
 		return;
 		}
+	Flex flex(fname);
+	int vers = (int) flex.get_vers();
 	StreamDataSource ifix(&ifix_stream);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
@@ -598,14 +600,11 @@ void Game_map::get_ifix_objects
 			{
 					// Get to index entry for chunk.
 			int chunk_num = cy*16 + cx;
-			ifix.seek(0x80 + chunk_num*8);
-					// Get location, length.
-			long shapesoff = ifix.read4();
-			if (!shapesoff) // Nothing there?
-				continue;
-			unsigned long shapeslen = ifix.read4();
-			get_ifix_chunk_objects(&ifix, shapesoff, shapeslen/4,
-				scx + cx, scy + cy);
+			size_t len;
+			uint32 offset = flex.get_entry_info(chunk_num, len);
+			if (len)
+				get_ifix_chunk_objects(&ifix, vers, offset, 
+						len, scx + cx, scy + cy);
 			}
 	}
 
@@ -616,34 +615,53 @@ void Game_map::get_ifix_objects
 void Game_map::get_ifix_chunk_objects
 	(
 	DataSource* ifix,
-	long filepos,			// Where chunk's data lies.
-	int cnt,			// # entries (objects).
+	int vers,			// Flex file vers.
+	long filepos,			// Offset in file.
+	int len,			// Length of data.
 	int cx, int cy			// Absolute chunk #'s.
 	)
 	{
+	Ifix_game_object *obj;
 	Game_window *gwin = Game_window::get_instance();
 	ifix->seek(filepos);		// Get to actual shape.
 					// Get buffer to hold entries' indices.
-	unsigned char *entries = new unsigned char[4*cnt];
+	unsigned char *entries = new unsigned char[len];
 	unsigned char *ent = entries;	// Read them in.
-	ifix->read(reinterpret_cast<char*>(entries), 4*cnt);
+	ifix->read(reinterpret_cast<char*>(entries), len);
 					// Get object list for chunk.
 	Map_chunk *olist = get_chunk(cx, cy);
-	for (int i = 0; i < cnt; i++, ent += 4)
+	if ((Flex::Flex_vers)vers == Flex::orig)
 		{
-		Ifix_game_object *obj;
-		int tx = (ent[0]>>4)&0xf, ty = ent[0]&0xf, lift = ent[1] & 0xf;
-		int shnum = ent[2]+256*(ent[3]&3);
-		int frnum = ent[3]>>2;
-		Shape_info& info = ShapeID::get_info(shnum);
-		if (info.is_animated() || info.has_sfx())
-			obj = new Animated_ifix_object(shnum, frnum, tx, ty,
-									lift);
-		else
-			obj = new Ifix_game_object(shnum, frnum, tx, ty, lift);
-
-		olist->add(obj);
+		int cnt = len/4;
+		for (int i = 0; i < cnt; i++, ent += 4)
+			{
+			int tx = (ent[0]>>4)&0xf, ty = ent[0]&0xf, 
+				tz = ent[1] & 0xf;
+			int shnum = ent[2]+256*(ent[3]&3), frnum = ent[3]>>2;
+			Shape_info& info = ShapeID::get_info(shnum);
+			obj = (info.is_animated() || info.has_sfx()) ?
+			    new Animated_ifix_object(shnum, frnum,tx, ty, tz)
+			  : new Ifix_game_object(shnum, frnum, tx, ty, tz);
+			olist->add(obj);
+			}
 		}
+	else if ((Flex::Flex_vers)vers == Flex::exult_v2)
+		{	// b0 = tx,ty, b1 = lift, b2-3 = shnum, b4=frnum
+		int cnt = len/5;
+		for (int i = 0; i < cnt; i++, ent += 5)
+			{
+			int tx = (ent[0]>>4)&0xf, ty = ent[0]&0xf, 
+				tz = ent[1] & 0xf;
+			int shnum = ent[2]+256*ent[3], frnum = ent[4];
+			Shape_info& info = ShapeID::get_info(shnum);
+			obj = (info.is_animated() || info.has_sfx()) ?
+			    new Animated_ifix_object(shnum, frnum,tx, ty, tz)
+			  : new Ifix_game_object(shnum, frnum, tx, ty, tz);
+			olist->add(obj);
+			}
+		}
+	else
+		assert(0);
 	delete[] entries;		// Done with buffer.
 	olist->setup_dungeon_levels();	// Should have all dungeon pieces now.
 	}

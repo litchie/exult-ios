@@ -1,3 +1,8 @@
+2004-09-05    <jeff@mini.nerble.net>
+
+	* gamemap.cc: Added code to read Vers.2 entries (although we don't
+	write them yet).
+
 2004-08-29    <jeff@mini.nerble.net>
 
 	* shapes/shapevga.cc (Shapes_vga_file): Resize 'info' list when a
