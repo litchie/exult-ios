@@ -59,7 +59,9 @@ public:
 	~MyMidiPlayer();
 	MyMidiPlayer(const char *flexfile);
 	void	start_music(int num,bool continuous=false,int bank=0);
+	void	start_music(const char *fname,int num,bool continuous=false);
 	void	start_track(int num,bool continuous=false,int bank=0);
+	void	start_track(const char *fname,int num,bool continuous=false);
 
 	bool	add_midi_bank(const char *s);
 
