@@ -90,6 +90,7 @@ USECODE_INTRINSIC(get_random)
 USECODE_INTRINSIC(execute_usecode_array)
 {
 	COUT("Executing intrinsic 1");
+#if 0	/* Old way. */
 					// 9/17/00:  New guess to make it
 					//   possible to heat Black sword.
 	Game_object *item = get_item(parms[0]);
@@ -97,6 +98,7 @@ USECODE_INTRINSIC(execute_usecode_array)
 	if (item && (uc = Usecode_script::find(item)) != 0 &&
 	    uc->is_activated())
 		uc->halt();		// Stop current one.
+#endif
 					// Start on next tick.
 	create_script(parms[0], parms[1], 1);
 
@@ -1455,15 +1457,9 @@ USECODE_INTRINSIC(armageddon)
 USECODE_INTRINSIC(halt_scheduled)
 {
 	// Halt_scheduled(item)
-#if 1	/* May be okay with no_halt flag enabled. */
 	Game_object *obj = get_item(parms[0]);
-	if (!obj)
-		return(no_ret);
-					// Taking a >complete< guess here:
-	Usecode_script *uc;
-	if ((uc = Usecode_script::find(obj)) != 0)
-		uc->halt();
-#endif
+	if (obj)
+		Usecode_script::terminate(obj);
 	return(no_ret);
 }
 
