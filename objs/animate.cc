@@ -329,7 +329,8 @@ void Frame_animator::Initialize()
 			else
 			{
 				first_frame = 6;
-				frames = last_frame-6;
+				frames = 6;
+				// frames = last_frame-6;   //causes div. by 0 if last_frame==6
 			}
 			break;
 
