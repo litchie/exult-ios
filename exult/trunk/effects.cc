@@ -882,6 +882,8 @@ void Text_effect::init
 	(
 	)
 	{
+	set_always(true);		// Always execute in time queue, even
+					//   when paused.
 	Game_window *gwin = Game_window::get_instance();
 	width = 8 + sman->get_text_width(0, msg.c_str());
 	height = 8 + sman->get_text_height(0);
