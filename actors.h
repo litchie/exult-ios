@@ -55,6 +55,7 @@ class Actor : public Container_game_object, public Time_sensitive
 	short party_id;			// Index in party, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
 	short shape_save;		// Our old shape, or -1.
+	short oppressor;		// NPC ID (>= 0) of oppressor, or -1.
 public:
 	enum Attack_mode {		// Setting from gump.+++++Save/restore.
 		nearest = 0,
@@ -80,7 +81,8 @@ private:
 protected:
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Tile_coord schedule_loc;	// Location (x,y) of Shedule
-	unsigned char next_schedule;	// Used so correct schedule type will be saved
+	unsigned char next_schedule;	// Used so correct schedule type 
+					//   will be saved
 	Schedule *schedule;		// Current schedule.
 	bool dormant;			// I.e., off-screen.
 	bool dead;
@@ -88,7 +90,7 @@ protected:
 	Game_object *spots[18];		// Where things can go.  See 'Spots'
 					//   below for description.
 	bool two_handed;		// Carrying a two-handed item.
-	bool two_fingered;			// Carrying gauntlets (both fingers)
+	bool two_fingered;		// Carrying gauntlets (both fingers)
 	unsigned char light_sources;	// # of light sources readied.
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 	unsigned siflags:32;	// 32 flags used in 'usecode'.
@@ -146,7 +148,8 @@ public:
 		torso = 9,
 		neck = 10,
 		ammo = 11,
-		back2h_spot = 12,	// SI (2 Handed weapons, Bedroll, Bodies)
+		back2h_spot = 12,	// SI (2 Handed weapons, Bedroll, 
+					//   Bodies)
 		shield_spot = 13,	// SI (Sheild behind Backpack)
 		ears_spot = 14,		// SI
 		cloak_spot = 15,	// SI
@@ -173,6 +176,10 @@ public:
 		{ return attack_mode; }
 	void set_attack_mode(Attack_mode amode)
 		{ attack_mode = amode; }
+	int get_oppressor() const
+		{ return oppressor; }
+	void set_oppressor(int opp)
+		{ oppressor = opp; }
 	// This is not even a guess, it's a place holder
 	enum Serpent_flags {		// Bit #'s of flags:
 		freeze = 0,
