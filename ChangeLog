@@ -1,3 +1,6 @@
+2002-03-22  Ryan Nunn  <triforce@merlin.net.au>
+	* usecode/ucinternal.cc : Added break in opcode 0xCD.
+
 2002-03-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* headers/exceptions.h: fixed typo
 
