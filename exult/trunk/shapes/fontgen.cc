@@ -35,14 +35,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vgafile.h"
 
 /*
- *	Create a shape with each frame containing the glyph for its ASCII
+ *	Fill a shape with each frame containing the glyph for its ASCII
  *	code.  The shape has 128 frames.
  *
- *	Output:	->new Shape, or 0 if error.
+ *	Output:	True if successful, false if error.
  */
 
-Shape *Gen_font_shape
+bool Gen_font_shape
 	(
+	Shape *shape,			// Shape to set frames.
 	const char *fontfile,		// Filename of font.
 	int pixels_ht,			// Desired height in pixels.
 	unsigned char fg,		// Foreground color index.
@@ -52,17 +53,17 @@ Shape *Gen_font_shape
 	FT_Library library;		// Initialize.
 	int error = FT_Init_FreeType(&library);
 	if (error)
-		return 0;
+		return false;
 	FT_Face face;			// Gets the font.
 	error = FT_New_Face(library, fontfile, 0, &face);
 	if (error)
-		return 0;
+		return false;
 	error = FT_Set_Pixel_Sizes(face, 0, pixels_ht);
 					// Glyphs are rendered here:
 	FT_GlyphSlot glyph = face->glyph;
 	if (error)
-		return 0;
-	Shape *shape = new Shape(128);
+		return false;
+	shape->resize(128);		// Make it big enough.
 	for (int chr = 0; chr < 128; chr++)
 		{			// Get each glyph.
 		error = FT_Load_Char(face, chr, 
@@ -89,7 +90,7 @@ Shape *Gen_font_shape
 		shape->set_frame(frame, chr);
 		}
 	FT_Done_FreeType(library);
-	return shape;
+	return true;
 	}
 
 #endif	/* HAVE_FREETYPE2 */
