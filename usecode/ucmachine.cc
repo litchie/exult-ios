@@ -2108,13 +2108,22 @@ void Usecode_machine::link_party
 	for (int i = 0; i < party_count; i++)
 		{
 		Actor *npc = gwin->get_npc(party[i]);
-		if (npc)
-			{
-			npc->set_party_id(i);
-			npc->set_schedule_type(Schedule::follow_avatar);
-					// We can use all his/her items.
-			npc->set_flag_recursively(Obj_flags::okay_to_take);
+		int oldid;
+		if (!npc ||		// Shouldn't happen!
+					// But this has happened:
+		    (oldid = npc->get_party_id()) >= 0 && oldid < i)
+			{		// Remove bad entry.
+			for (int j = i + 1; j < party_count; j++)
+				party[j - 1] = party[j];
+			party_count--;
+			i--;		// Just shifted downwards.
+			party[party_count] = 0;
+			continue;
 			}
+		npc->set_party_id(i);
+		npc->set_schedule_type(Schedule::follow_avatar);
+					// We can use all his/her items.
+		npc->set_flag_recursively(Obj_flags::okay_to_take);
 		}
 	}
 
