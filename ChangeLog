@@ -1,3 +1,7 @@
+2001-03-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/faces2.shp: the rest of the faces by Philip G.
+	* gumps/Paperdoll_gump_info.cc, data/flx.in, Makefile*: include art
+
 2001-03-16  Ryan Nunn <triforce@merlin.net.au>
 	* exult.cc: Video Gamma correction is now written to the config file.
 	  Also fixed problem with gamma up making the screen darker and gamma

@@ -628,7 +628,7 @@ Paperdoll_gump::Paperdoll_npc Paperdoll_gump::Characters_BG[] = {
 	{  490,  true, exult_flx,  13,  0,  32,  0,  1,   7,  0,  2,  4 },
 
 	// Sentri
-	{  462, false, paperdoll,  14,  0, 158,  0,  1,   7,  1,  3,  5 },
+	{  462, false, exult_flx,  14,  0,  33,  0,  1,   7,  1,  3,  5 },
 
 	// Julia
 	{  454,  true, exult_flx,  13,  0,  32,  2,  3,   7,  0,  2,  4 },
@@ -637,10 +637,10 @@ Paperdoll_gump::Paperdoll_npc Paperdoll_gump::Characters_BG[] = {
 	{  452,  true, exult_flx,  13,  0,  32,  4,  5,   7,  0,  2,  4 },
 
 	// Tseramed
-	{  460, false, paperdoll,  14,  0, 156,  0,  1,   7,  1,  3,  5 },
+	{  460, false, exult_flx,  14,  0,  33,  2,  3,   7,  1,  3,  5 },
 
 	// Spark
-	{  489, false, paperdoll,  14,  0, 158,  0,  1,   7,  1,  3,  5 },
+	{  489, false, exult_flx,  14,  0,  33,  4,  5,   7,  1,  3,  5 },
 
 
 	// For Pick pocket mode
