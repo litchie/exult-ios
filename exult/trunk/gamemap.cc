@@ -849,11 +849,16 @@ void Game_map::read_ireg_objects
 
 					// Wierd use of flag:
 			if (info.has_quantity())
+				{
 				if (!(quality&0x80))
 					oflags &= 
 						~(1<<Obj_flags::okay_to_take);
 				else
 					quality &= 0x7f;
+				}
+			else if (info.has_quality_flags())
+				if (quality&(1<<3))
+					oflags |= (1<<Obj_flags::okay_to_take);
 			}
 		else if (entlen == 12)	// Container?
 			{
