@@ -1,13 +1,14 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 21 July 2003(GMT)
+last changed: 08 August 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 21 July 2003
-0.2. - 04 May 2003
-0.3. - 04 March 2003
+0.1. - 08 August 2003
+0.2. - 21 July 2003
+0.3. - 04 May 2003
+0.4. - 04 March 2003
 
 1. Introduction
 1.1. Important Notice
@@ -19,10 +20,9 @@ The latest version of this document can be found at http://exult.sourceforge.net
 1.7. Will there be a multiplayer Exult?
 1.8. Where do I find Exult?
 1.9. What is a snapshot? Are these screenshots or what?
-1.10. Why are there now two different snapshots?
-1.11. How do I compile a source code snapshot for my OS?
-1.12. What is the latest version of Exult?
-1.13. On what platform does Exult run?
+1.10. How do I compile a source code snapshot for my OS?
+1.11. What is the latest version of Exult?
+1.12. On what platform does Exult run?
 
 2. Exult and Ultima 7
 2.1. Do I need Ultima 7?
@@ -84,12 +84,19 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 21 July 2003
-* 1.12. What is the latest version of Exult? is now 1.1.beta1.
+0.1. - 08 August 2003
+* Why are there now two different snapshots? was deleted as we no longer have two sanpshots.
+* 1.11. What is the latest version of Exult? is now 1.1.beta2.
+* 4.4. Known Issues item descriptions in SI standalone.
 
 
 
-0.2. - 04 May 2003
+0.2. - 21 July 2003
+* 1.11. What is the latest version of Exult? is now 1.1.beta1.
+
+
+
+0.3. - 04 May 2003
 * 2.7. Do Exult savegames work on all Operating Systems? don't use 1.1.x saves with 1.0.
 * 3.6. Why is the party formation different? Jeff changed the behaviour of it.
 * 5.4. Why can't I talk to the mayor of Skara Brae (BG)? added.
@@ -98,7 +105,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 04 March 2003
+0.4. - 04 March 2003
 * 1.1. Important Notice this faq is for 1.1.x and not for 1.0 anymore.
 * 1.6. But isn't Pentagram some kind of Exult for U8? here is the link to Pentagram and some more info.
 * 2.7. Do Exult savegames work on all Operating Systems? Savegames are platform independent.
@@ -153,7 +160,7 @@ Note however that Exult is open source. If you want a multiplayer U7 no one hold
 
 
 1.8. Where do I find Exult?
-The latest official version is found on http://exult.sourceforge.net/ Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree can be found at http://exult.sourceforge.net/download.php. A BeOS binary snapshot can be found at http://digilander.iol.it/burton666/exult-beos.zip. Jack Burton provides this weekly or whenever it compiles for him. Thanks! There is also a version available for AmigaOS/MorphOS at http://www.muenster.de/~tomjoad/exult.html. Please see 1.13. for some more information on this port.
+The latest official version is found on http://exult.sourceforge.net/ Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree can be found at http://exult.sourceforge.net/download.php. A BeOS binary snapshot can be found at http://digilander.iol.it/burton666/exult-beos.zip. Jack Burton provides this weekly or whenever it compiles for him. Thanks! There is also a version available for AmigaOS/MorphOS at http://www.muenster.de/~tomjoad/exult.html. Please see 1.12. for some more information on this port.
 
 
 1.9. What is a snapshot? Are these screenshots or what?
@@ -162,23 +169,16 @@ The snapshot is the newest source code of the program. It is updated almost dail
 Also this FAQ mainly addresses the snapshots as people use them and ask question. And all the new features and improvements are found in those!
 
 
-1.10. Why are there now two different snapshots?
-If you checked our download page recently, you may have noticed that we have two sets of development snapshots now: a 1.0.x (stable) snapshot, and a 1.1.x (unstable) snapshot.
-The 1.0.x branch has developed into our 1.0 release and we will mainly be fixing any remaining bugs in this branch. We recommend using the 1.0.x snapshots for playing and testing Exult.
-The 1.1.x branch is meant mostly as a 'developer playground' at the moment. We are making some very destabilizing changes to this branch, like a rewritten usecode interpreter and new audio code. We do not recommend using the 1.1.x snapshots for normal playing.
-This also means that the documentation and the FAQ needs to be different. You will find the description of the 1.1.x branch features only in the snapshot and the source and not on our homepage.
-
-
-1.11. How do I compile a source code snapshot for my OS?
+1.10. How do I compile a source code snapshot for my OS?
 The source code snapshots contain a file called "README.OS" (like Readme.win32, Readme.MacOS) that explains everything.
 
 
-1.12. What is the latest version of Exult?
-The current official release is V1.1beta1 See also 1.8. to learn where to get the latest version.
+1.11. What is the latest version of Exult?
+The current official release is V1.1beta2 See also 1.8. to learn where to get the latest version.
 To find out which version you are running, press 'v' while in game.
 
 
-1.13. On what platform does Exult run?
+1.12. On what platform does Exult run?
 Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher), OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP).
 Ruediger Hanke's ported Exult to MorphOS and AmigaOS. You can get this version at http://www.muenster.de/~tomjoad/exult.html.
 Recently Artaxerxes started working on a port for Zaurus, a Linux/ARM based PDA. It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://exult.sourceforge.net/download.php.
@@ -374,6 +374,7 @@ Exult often behaves and works differently than the original Ultima 7. These beha
 
 
 4.4. Known Issues
+* Recently we found out that item descriptions in SI without SS may be a bit off the mark. This is most likely caused by some little differences between the versions and effects both the English and Spanish version.
 * There might be a bug when you have any of the games installed in a path with spaces in it (see ReadMe.txt).
 * Stealing and killing innocent NPCs doesn't work yet like it does in the original
 * Movement is sometimes jerky or slow.
