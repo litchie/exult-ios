@@ -765,6 +765,20 @@ int Game_object::is_dragable
 	}
 
 /*
+ *	Get weight in 1/10 stones.  0 means infinite.
+ */
+
+int Game_object::get_weight
+	(
+	)
+	{
+	int quant = get_quantity();
+//	quant = 1 + (quant - 1)/8;	// Be liberal about multiples.
+	return (quant *
+		Game_window::get_game_window()->get_info(this).get_weight());
+	}
+
+/*
  *	Drop another onto this.
  *
  *	Output:	0 to reject, 1 to accept.
@@ -1729,6 +1743,22 @@ void Container_game_object::activate
 					// Try to run normal usecode fun.
 	umachine->call_usecode(shnum, this,
 				(Usecode_machine::Usecode_events) event);
+	}
+
+/*
+ *	Get (total) weight.
+ */
+
+int Container_game_object::get_weight
+	(
+	)
+	{
+	int wt = Game_object::get_weight();
+	Game_object *obj;
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
+		wt += obj->get_weight();
+	return wt;
 	}
 
 /*

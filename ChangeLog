@@ -1,3 +1,7 @@
+2000-10-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs.cc: Compute/show weight carried (but don't check yet).
+
 2000-10-01  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Working on theft.  Also messed with pathfinding.
