@@ -83,7 +83,7 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0 },						// 2b
 	{ "db 2c\t???", 0, 0 },					// 2c
 	{ "setr", 0, 0 },					// 2d
-	{ "sloop", 0, 0 },					// 4e
+	{ "sloop", 11, RELATIVE_JUMP },				// 4e
 	{ "addsv", 2, VARREF },					// 2f
 	{ "in", 0, 0 },						// 30
 	{ NULL, 0, 0 },						// 31
