@@ -321,10 +321,6 @@ public:
 		unsigned char index = eggs[sy*16 + sx];
 		return (index < num_eggs ? egg_objects[index] : 0);
 		}
-	void set(Game_object *objs)	// Set to (already sorted) list.
-		{
-		objects = objs;
-		}
 	int is_roof()			// Is there a roof?
 		{ return roof; }
 	int get_cx()
