@@ -575,10 +575,10 @@ void Lightning_effect::handle_event
 			gwin->remove_effect(this);
 			return;
 			}
-		if (r%5 < 2)		// Occassionally flash again.
+		if (r%5 == 0)		// Occassionally flash again.
 			delay = (1 + r%7)*40;
 		else			// Otherwise, wait several secs.
-			delay = (4000 + r%4);
+			delay = (4000 + r%3000);
 		}
 	else if (!gwin->is_in_dungeon() && !active)// Time to flash.
 		{
@@ -586,7 +586,7 @@ void Lightning_effect::handle_event
 		save_brightness = gwin->get_brightness();
 		gwin->set_palette(-1, 400);
 		gwin->show(1);
-		delay = (1 + r%3)*50;
+		delay = (1 + r%2)*50;
 		}
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
@@ -624,7 +624,7 @@ void Storm_effect::handle_event
 		{
 		start = 0;
 					// Darken sky.
-		int brightness = gwin->get_brightness();
+		int brightness = gwin->get_users_brightness();
 		brightness -= 20 + rand()%30;
 		if (brightness < 20)
 			brightness = 20;
@@ -645,7 +645,7 @@ Storm_effect::~Storm_effect
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->restore_users_brightness();
+	gwin->set_palette(-1, gwin->get_users_brightness());
 	}
 
 /*
