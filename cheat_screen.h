@@ -60,6 +60,7 @@ private:
 		CP_XCoord = 23,
 		CP_YCoord = 24,
 		CP_Lift = 25,
+		CP_GFlagNum = 26,
 
 		CP_Name = 32
 	};
@@ -82,6 +83,8 @@ private:
 
 	void ActivityDisplay ();
 
+	Cheat_Prompt GlobalFlagLoop(int num);
+
 	Cheat_Prompt TimeSetLoop();
 
 	Cheat_Prompt NPCLoop(int num);
@@ -100,6 +103,12 @@ private:
 	void BusinessMenu(Actor *actor);
 	void BusinessActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor, int &time, int &prev);
 	bool BusinessCheck (char *input, int &command, Cheat_Prompt &mode, bool &activate, Actor *actor, int &time);
+
+	void StatLoop(Actor *actor);
+	void StatMenu(Actor *actor);
+	void StatActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor);
+	bool StatCheck (char *input, int &command, Cheat_Prompt &mode, bool &activate, Actor *actor);
+
 };
 
 #endif
