@@ -36,7 +36,7 @@ CXX=g++
 CFLAGS= -O2 -mms-bitfields
 CC=gcc
 
-LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -lole32 -lpng -luuid -lz -mwindows
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -liberty -lole32 -lpng -luuid -lz -mwindows
 EXEC=exult_studio.exe
 EXP_FILE=exult_studio.exp
 
@@ -44,7 +44,7 @@ SERVER_OBJS=objserial.o servemsg.o servewin32.o
 
 MAPEDIT_OBJS=chunklst.o combo.o dirbrowser.o eggedit.o compile.o execbox.o exult_studio.o locator.o npcedit.o \
 	objbrowse.o objedit.o paledit.o shapedraw.o shapefile.o shapegroup.o \
-	shapeedit.o shapelst.o studio.o args.o
+	shapeedit.o shapelst.o studio.o
 
 FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o Table.o U7file.o utils.o
 
