@@ -1270,7 +1270,9 @@ USECODE_INTRINSIC(set_oppressor)
 			npc->set_oppressor(opp->get_npc_num());
 					// Need this for SI ListField training:
 		npc->set_target(opp);
+#if 0	/* +++++But this causes Avatar to attack wrong person. */
 		opp->set_target(npc);
+#endif
 		}
 	return no_ret;
 }
