@@ -256,7 +256,7 @@
 	USECODE_INTRINSIC_PTR(a_or_an),				// 0xb2 Return correct article for argument ('a' or 'an')
 	USECODE_INTRINSIC_PTR(set_polymorph),		// 0xb3 Set Polymorph
 	USECODE_INTRINSIC_PTR(revert_schedule),		// 0xb4 Reverts to static schedule
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb5
+	USECODE_INTRINSIC_PTR(modify_schedule),			// 0xb5 Updates the schedule at a specific time
 	USECODE_INTRINSIC_PTR(set_new_schedules),		// 0xb6 Set New Schedules
 	USECODE_INTRINSIC_PTR(run_schedule),			// 0xb7 Run the scheduled activity
 	USECODE_INTRINSIC_PTR(get_temperature),			// 0xb8
