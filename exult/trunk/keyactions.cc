@@ -40,6 +40,7 @@
 #include "Gamemenu_gump.h"
 #include "Newfile_gump.h"
 #include "Face_stats.h"
+#include "Notebook_gump.h"
 #include "Gump_manager.h"
 #include "effects.h"
 #include "palette.h"
@@ -777,6 +778,15 @@ void ActionPetra(int *params)
 void ActionSkinColour(int *params)
 {
 	cheat.change_skin();
+}
+
+//   { ActionNotebook, 0, "Show notebook", true, false, NONE, false },
+void ActionNotebook(int *params)
+{
+	Notebook_gump *notes = Notebook_gump::create();
+	Game_window *gwin = Game_window::get_instance();
+	gwin->get_gump_man()->add_gump(notes);
+	gwin->paint();
 }
 
 //  { ActionSoundTester, 0, "Sound tester", false, true, NONE }

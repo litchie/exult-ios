@@ -208,8 +208,8 @@ Gump_button *Gump::on_button
 	int mx, int my			// Point in window.
 	)
 {
-	return (check_button->on_button(mx, my) ?
-			check_button : 0);
+	return (check_button ? 
+		(check_button->on_button(mx, my) ? check_button : 0) : 0);
 }
 
 /*
@@ -296,6 +296,7 @@ void Gump::paint
 {
 		// Paint the gump itself.
 	paint_shape(x, y);
+	gwin->set_painted();
 		
 		// Paint red "checkmark".
 	if (check_button) check_button->paint();

@@ -186,6 +186,8 @@ const struct Action {
 	  ActionPetra, 0, "Toggle Petra mode", true, true, SERPENT_ISLE, false },
 	{ "CHANGE_SKIN",
 	  ActionSkinColour, 0, "Change skin colour", true, true, NONE, false },
+	{ "NOTEBOOK", ActionNotebook, 0, "Show notebook", true, false, 
+								NONE, false },
 	{ "SOUND_TESTER",
 	  ActionSoundTester, 0, "Sound tester", false, true, NONE, false },
 	{ "TEST", ActionTest, 0, "Test", false, false, NONE, false },
