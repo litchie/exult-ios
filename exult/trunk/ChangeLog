@@ -1,3 +1,8 @@
+2001-08-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/chunks.cc: Enabled new render compare() method.  Time to hide.
+	* objs/objs.cc: Fixed goof in new render compare() method.
+
 2001-08-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Makefile.*: added Text_button.cc
 	* Text_button.cc: added legal header, include config.h and Gump.h
