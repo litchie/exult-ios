@@ -40,7 +40,7 @@ class Weapon_info;
 class Dead_body;
 class Npc_timer_list;
 class Frames_sequence;
-
+class Animator;
 					// The range of actors' rect. gumps:
 const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
 
@@ -512,6 +512,7 @@ class Monster_actor : public Npc_actor
 					// Links for 'in_world' list.
 	Monster_actor *next_monster, *prev_monster;
 	Monster_info *info;		// Info. about this monster.
+	Animator *animator;		// For wounded men.
 					// Are new tiles blocked?
 	int is_blocked(int destx, int desty);
 	void set_info(Monster_info *i = 0);
@@ -521,17 +522,11 @@ class Monster_actor : public Npc_actor
 			set_info();
 		return info;
 		}
+	void init();			// For constructors.
 public:
 	friend class Monster_info;
-	Monster_actor(const std::string &nm, int shapenum, int fshape = -1, int uc = -1)
-		: Npc_actor(nm, shapenum, fshape, uc), prev_monster(0), info(0)
-		{
-		if (in_world)
-			in_world->prev_monster = this;
-		next_monster = in_world;
-		in_world = this;
-		in_world_cnt++;
-		}
+	Monster_actor(const std::string &nm, int shapenum, int fshape = -1, 
+							int uc = -1);
 					// Read from file.
 	Monster_actor(std::istream& nfile, int num, int has_usecode);
 	virtual ~Monster_actor();
@@ -545,6 +540,8 @@ public:
 	static void delete_all();	// Delete all monsters.
 	virtual int move_aside(Actor* for_actor, int dir)
 		{ return 0; }		// Monsters don't move aside.
+					// Render.
+	virtual void paint(Game_window *gwin);
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
 					// Add an object.
@@ -555,7 +552,7 @@ public:
 	virtual int is_monster()
 		{ return 1; }
 	virtual void die();		// We're dead.
-	void write(std::ostream& nfile);	// Write out (to 'monsnpc.dat').
+	void write(std::ostream& nfile);// Write out (to 'monsnpc.dat').
 	};
 
 /*

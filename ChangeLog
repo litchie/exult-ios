@@ -1,3 +1,8 @@
+2001-03-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Desk_schedule.
+	* Animate wounded men at healers'.
+
 2001-03-01  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.cc (Sew_schedule): Finished it.
