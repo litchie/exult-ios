@@ -426,7 +426,7 @@ static void Create
 	const char *title		// For storing in Flex file.
 	)
 	{
-	if (U7exists(palname))		// Palette?
+	if (palname && U7exists(palname))		// Palette?
 		{
 		cout << "Palette file '" << palname << 
 			"' exists, so we won't overwrite it" << endl;
@@ -466,7 +466,7 @@ static void Update
 	const char *title		// For storing in Flex file.
 	)
 	{
-	if (U7exists(palname))		// Palette?
+	if (palname && U7exists(palname))		// Palette?
 		{
 		cout << "Palette file '" << palname << 
 			"' exists, so we won't overwrite it" << endl;
@@ -523,6 +523,11 @@ static void Extract
 	Shape_specs& specs		// List of things to extract.
 	)
 	{
+	if (!palname)
+		{
+		cerr << "No palette name (i.e., 'palettes.flx') given" << endl;
+		exit(1);
+		}
 	U7object pal(palname, 0);	// Get palette 0.
 	size_t len;
 	unsigned char *palbuf = (unsigned char *)
@@ -593,11 +598,6 @@ int main
 	if (!imagename)
 		{
 		cerr << "No archive name (i.e., 'shapes.vga') given" << endl;
-		exit(1);
-		}
-	if (!palname)
-		{
-		cerr << "No palette name (i.e., 'palettes.flx') given" << endl;
 		exit(1);
 		}
 	specin.close();
