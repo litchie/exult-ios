@@ -207,6 +207,9 @@ static void Handle_client_message
 	case Exult_server::write_map:
 		gwin->write_map();	// Send feedback?+++++
 		break;
+	case Exult_server::read_map:
+		gwin->read_map();
+		break;
 	case Exult_server::map_editing_mode:
 		{
 		unsigned char *ptr = &data[0];
@@ -215,6 +218,9 @@ static void Handle_client_message
 			cheat.toggle_map_editor();
 		break;
 		}
+	case Exult_server::reload_usecode:
+		gwin->reload_usecode();
+		break;
 		}
 	}
 

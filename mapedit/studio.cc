@@ -95,6 +95,20 @@ on_save_map_menu_activate              (GtkMenuItem     *menuitem,
 }
 
 extern "C" void
+on_read_map_menu_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->read_map();
+}
+
+extern "C" void
+on_reload_usecode_menu_activate        (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->reload_usecode();
+}
+
+extern "C" void
 on_play_button_clicked			(GtkToggleButton *button,
 					 gpointer	  user_data)
 {
@@ -447,6 +461,30 @@ void ExultStudio::write_map
 	)
 	{
 	if (Send_data(server_socket, Exult_server::write_map) == -1)
+		cerr << "Error sending to server" << endl;
+	}
+
+/*
+ *	Read in map.
+ */
+
+void ExultStudio::read_map
+	(
+	)
+	{
+	if (Send_data(server_socket, Exult_server::read_map) == -1)
+		cerr << "Error sending to server" << endl;
+	}
+
+/*
+ *	Reload usecode.
+ */
+
+void ExultStudio::reload_usecode
+	(
+	)
+	{
+	if (Send_data(server_socket, Exult_server::reload_usecode) == -1)
 		cerr << "Error sending to server" << endl;
 	}
 
