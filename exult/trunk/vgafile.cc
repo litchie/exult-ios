@@ -283,6 +283,7 @@ unsigned char Shape_frame::read
 	{
 	int framenum = frnum;
 	rle = 0;
+	if (!shapelen && !shapeoff) return 0;
 					// Get to actual shape.
 	shapes.seek(shapeoff);
 	unsigned long datalen = shapes.read4();
