@@ -1092,7 +1092,10 @@ static void Handle_keystroke
 		if(!cheat)
 			break;
 		{
-			Game::get_game()->end_game(true);
+			Game::get_game()->end_game(shift==0);
+			gwin->set_palette(0);
+			gwin->paint();
+			gwin->fade_palette (50, 1, 0);
 		}
 		break;
 	default:

@@ -291,7 +291,29 @@ void BG_Game::end_game(bool success)
 
 		
 		if(!success) {
-			// FIXME: show text for failure
+			vector<char *> *text = load_text("static/mainshp.flx", 0x15);
+			clear_screen();
+			pal.load("static/intropal.dat",0);
+			for(int i=0; i<text->size(); i++) {
+				show_text_line(topx, topx+320, topy+20+i*12, (*text)[i]);
+			}
+			
+			pal.fade_in(30);
+			wait_delay(10000);
+			pal.fade_out(30);
+			
+			clear_screen();
+			center_text(MAINSHP_FONT1, "The end of Ultima VII", centerx, centery-10);
+			pal.fade_in(30);
+			wait_delay(4000);
+			pal.fade_out(30);
+			
+			clear_screen();
+			center_text(MAINSHP_FONT1, "The end of Britannia as you know it!", centerx, centery-10);
+			pal.fade_in(30);
+			wait_delay(4000);
+			pal.fade_out(30);
+
 			return;
 		}
 
