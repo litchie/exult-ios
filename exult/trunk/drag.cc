@@ -149,7 +149,7 @@ void Game_window::drag
 	dragging_paintx += deltax;
 	dragging_painty += deltay;
 	if (dragging)
-		paint_shape(win, dragging_paintx, dragging_painty, 
+		paint_shape(dragging_paintx, dragging_painty, 
 			dragging->get_shapenum(), dragging->get_framenum());
 	else				// Dragging whole gump.
 		{

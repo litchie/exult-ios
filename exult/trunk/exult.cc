@@ -375,8 +375,7 @@ static void Handle_keystroke
 		cout << ", # frames = " << 
 			gwin->get_shape_num_frames(shape_cnt) << '\n';
 		gwin->paint();
-		gwin->paint_shape(gwin->get_win(),
-			200, 200, shape_cnt, shape_frame);
+		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
 #else
 		gump_frame = 0;
 		if (++gump_cnt == gwin->get_num_gumps())
@@ -393,18 +392,15 @@ static void Handle_keystroke
 			shape_cnt = gwin->get_num_shapes() - 1;
 		cout << "Painting shape " << shape_cnt << '\n';
 		gwin->paint();
-		gwin->paint_shape(gwin->get_win(),
-			200, 200, shape_cnt, shape_frame);
+		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
 		break;
 	case SDLK_f:			// Show next frame.
 		cout << "Frame # " << ++shape_frame << '\n';
 		gwin->paint();
 #if 1
-		gwin->paint_shape(gwin->get_win(),
-			200, 200, shape_cnt, shape_frame);
+		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
 #else
-		gwin->paint_shape(gwin->get_win(),
-			200, 200, face_cnt, face_frame);
+		gwin->paint_shape(200, 200, face_cnt, face_frame);
 #endif
 		break;
 	case SDLK_RIGHT:
