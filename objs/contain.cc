@@ -142,10 +142,11 @@ int Container_game_object::add_quantity
 	if (!objects.is_empty())
 		{			// First try existing items.
 		Object_iterator next(objects);
-		while ((obj = next.get_next()) != 0)
+		while (todo && (obj = next.get_next()) != 0)
 			{
 			if (obj->get_shapenum() == shapenum &&
-		    	 (framenum == c_any_framenum || obj->get_framenum() == framenum))
+		    	 (framenum == c_any_framenum || 
+					obj->get_framenum() == framenum))
 					// ++++++Quality???
 				{
 				int used = 
@@ -181,7 +182,8 @@ int Container_game_object::create_quantity
 	bool temporary			// Create temporary quantity
 	)
 	{
-	Shape_info& shp_info=Game_window::get_game_window()->get_info(shapenum);
+	Shape_info& shp_info=Game_window::get_game_window()->get_info(
+								shapenum);
 					// Get volume of 1 object.
 	int objvol = shp_info.get_volume();
 	int maxvol = get_max_volume();	// 0 means anything (NPC's?).

@@ -1347,6 +1347,7 @@ Ireg_game_object *Game_window::create_ireg_object
 	if (shnum == 607)		// Path.
 		return new Egglike_game_object(
 					shnum, frnum, tilex, tiley, lift);
+#if 0
 	else if (shnum == 330)		// +++++For fixing pre-alpha savegames.
 		{			// +++++Should go away during Alpha.
 		Virtue_stone_object *v = new Virtue_stone_object(shnum, frnum,
@@ -1355,6 +1356,7 @@ Ireg_game_object *Game_window::create_ireg_object
 			v->set_pos(usecode->virtue_stones[frnum]);
 		return v;
 		}
+#endif
 	else if (shnum == 761)		// Spellbook.
 		{
 		static unsigned char circles[9] = {0};
@@ -1362,6 +1364,9 @@ Ireg_game_object *Game_window::create_ireg_object
 				shnum, frnum, tilex, tiley, lift,
 				&circles[0], 0L);
 		}
+	else if (info.get_shape_class() == Shape_info::container)
+		return new Container_game_object(shnum, frnum, tilex, tiley,
+									lift);
 	else
 		return new Ireg_game_object(shnum, frnum, tilex, tiley, lift);
 	}
