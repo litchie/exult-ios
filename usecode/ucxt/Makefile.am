@@ -5,7 +5,7 @@ INCLUDES = -I$(srcdir)/../include -I$(srcdir)/../../../conf -I$(srcdir)/../.. \
         $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\" $(WARNINGS)
 
 if BUILD_TOOLS
-noinst_PROGRAMS = head2data head2data.test
+noinst_PROGRAMS = head2data
 endif
 
 head2data_SOURCES = head2data.cc head2data.test

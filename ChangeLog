@@ -1,3 +1,7 @@
+2002-02-03  Max Horn  <max@quendi.de>
+	* audio, conf, files: replaced local versions with those from common module
+	* usecode/ucxt/Makefile.am: fixed (head2data.test isn't an app target)
+
 2002-02-03  Darke  <darkepaw@users.sourceforge.net>
 	* audio/Audio.cc, mapedit/shapelst.h: Namespaces.
 	* usecode/ucxt/*: Code cleanup & optimisations.
