@@ -253,9 +253,9 @@ public:
 		{  }
 	virtual int get_property(int prop)
 		{ return 0; }
-	virtual int get_allignment()	// Get/set 'allignment'.
+	virtual int get_alignment()	// Get/set 'alignment'.
 		{ return 0; }
-	virtual void set_allignment(short)
+	virtual void set_alignment(short)
 		{  }
 	virtual Container_game_object *get_owner()
 		{ return 0; }
