@@ -617,6 +617,9 @@ public:
 					// Old entry:
 	int is_blocked(int lift, int tx, int ty, int& new_lift)
 		{ return cache->is_blocked(1, lift, tx, ty, new_lift); }
+					// Check range.
+	static int is_blocked(int height, int lift, int startx, int starty,
+					int xtiles, int ytiles, int& new_lift);
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles)
 		{ need_cache()->set_egged(egg, tiles); }
@@ -830,4 +833,9 @@ inline void Game_object::move
 	new_chunk->add(this);
 	}
 
+extern int Get_cost
+	(
+	int tx, int ty, int& tz		// The tile we're going to.  The 'tz'
+					//   field may be modified.
+	);
 #endif

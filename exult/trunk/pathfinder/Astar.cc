@@ -7,10 +7,10 @@
  *	Output:	1 if successful, else 0.
  */
 int Astar::NewPath(int sx,int sy,int sz,int dx,int dy,int dz,
-					int (*tileclassifier)(int,int,int))
+					int (*tileclassifier)(int,int,int&))
 {
 	extern Tile_coord *Find_path(Tile_coord, Tile_coord,
-					int (*tileclassifier)(int, int, int));
+					int (*tileclassifier)(int, int, int&));
 
 	delete [] path;			// Clear out old path, if there.
 	path = Find_path(Tile_coord(sx, sy, sz), Tile_coord(dx, dy, dz),
