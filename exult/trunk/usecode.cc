@@ -873,17 +873,17 @@ static void Unhandled
 	}
 
 static Usecode_value	no_ret;
-Usecode_value	UI_NOP( Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+Usecode_value	Usecode_machine::UI_NOP( int event,int intrinsic,Usecode_value parms[12])
 {
 	return no_ret;
 }
 
-Usecode_value	UI_UNKNOWN(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+Usecode_value	Usecode_machine::UI_UNKNOWN(int event,int intrinsic,Usecode_value parms[12])
 {
 	return no_ret;
 }
 
-Usecode_value	UI_get_random(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+Usecode_value	Usecode_machine::UI_get_random(int event,int intrinsic,Usecode_value parms[12])
 {
 	int range = parms[0].get_int_value();
 	if (range == 0)
@@ -891,68 +891,84 @@ Usecode_value	UI_get_random(Usecode_machine *umachine,int event,int intrinsic,Us
 	return Usecode_value(1 + (rand() % range));
 }
 
-Usecode_value	UI_execute_usecode_array(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+Usecode_value	Usecode_machine::UI_execute_usecode_array(int event,int intrinsic,Usecode_value parms[12])
 {
 	cout << "Executing intrinsic 1\n";
-	umachine->exec_array(parms[0], parms[1]);
+	exec_array(parms[0], parms[1]);
 	return no_ret;
 }
 
-Usecode_value	UI_delayed_execute_usecode_array(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+Usecode_value	Usecode_machine::UI_delayed_execute_usecode_array(int event,int intrinsic,Usecode_value parms[12])
 {			// Delay = .20 sec.?
 	int delay = parms[2].get_int_value();
-	umachine->gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
+	gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
 		new Scheduled_usecode(parms[0], parms[1]),
-							(long) umachine);
+							(long) this);
 	cout << "Executing intrinsic 2\n";
 	return no_ret;
 }
 
-Usecode_value	UI_show_npc_face(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+Usecode_value	Usecode_machine::UI_show_npc_face(int event,int intrinsic,Usecode_value parms[12])
 {
-	umachine->show_npc_face(parms[0], parms[1]);
+	show_npc_face(parms[0], parms[1]);
 	return no_ret;
 }
 
-Usecode_value	UI_remove_npc_face(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+Usecode_value	Usecode_machine::UI_remove_npc_face(int event,int intrinsic,Usecode_value parms[12])
 {
-	umachine->remove_npc_face(parms[0]);
+	remove_npc_face(parms[0]);
 	return no_ret;
 }
 
-Usecode_value	UI_add_answer(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+Usecode_value	Usecode_machine::UI_add_answer(int event,int intrinsic,Usecode_value parms[12])
 {
-	umachine->answers.add_answer(parms[0]);
+	answers.add_answer(parms[0]);
 	return no_ret;
 }
-Usecode_value	UI_remove_answer(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
+Usecode_value	Usecode_machine::UI_remove_answer(int event,int intrinsic,Usecode_value parms[12])
 {
-	umachine->answers.remove_answer(parms[0]);
-	return no_ret;
-}
-
-Usecode_value	UI_save_answers(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12])
-{
-	umachine->answer_stack[umachine->saved_answers] = new Answers;
-	*(umachine->answer_stack[umachine->saved_answers++]) = umachine->answers;
-	umachine->answers.num_answers = 0;
+	answers.remove_answer(parms[0]);
 	return no_ret;
 }
 
-struct	{
-	Usecode_value	(*func)(Usecode_machine *umachine,int event,int intrinsic,Usecode_value parms[12]);
+Usecode_value	Usecode_machine::UI_save_answers(int event,int intrinsic,Usecode_value parms[12])
+{
+	answer_stack[saved_answers] = new Answers;
+	*(answer_stack[saved_answers++]) = answers;
+	answers.num_answers = 0;
+	return no_ret;
+}
+
+#if 0
+struct	_intrinsic_table {
+	Usecode_value	(Usecode_machine::*func);
 	} intrinsic_table[] =
 	{
-	UI_get_random,	// 0
-	UI_execute_usecode_array, // 1
-	UI_delayed_execute_usecode_array, // 2
-	UI_show_npc_face, // 3
-	UI_remove_npc_face, // 4
-	UI_add_answer, // 5
-	UI_remove_answer, // 6
+	Usecode_machine::UI_get_random,	// 0
+	Usecode_machine::UI_execute_usecode_array, // 1
+	Usecode_machine::UI_delayed_execute_usecode_array, // 2
+	Usecode_machine::UI_show_npc_face, // 3
+	Usecode_machine::UI_remove_npc_face, // 4
+	Usecode_machine::UI_add_answer, // 5
+	Usecode_machine::UI_remove_answer, // 6
 	};
-	
-int	max_bundled_intrinsics=4;
+#endif
+
+typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,Usecode_value parms[12]);
+
+#include <vector>
+UsecodeIntrinsicFn intrinsic_table[]=
+	{
+	&Usecode_machine::UI_get_random,	// 0
+	&Usecode_machine::UI_execute_usecode_array, // 1
+	&Usecode_machine::UI_delayed_execute_usecode_array, // 2
+	&Usecode_machine::UI_show_npc_face, // 3
+	&Usecode_machine::UI_remove_npc_face, // 4
+	&Usecode_machine::UI_add_answer, // 5
+	&Usecode_machine::UI_remove_answer, // 6
+	};
+
+int	max_bundled_intrinsics=6;
 
 /*
  *	Call an intrinsic function.
@@ -973,7 +989,8 @@ Usecode_value Usecode_machine::call_intrinsic
 		}
 	if(intrinsic<=max_bundled_intrinsics)
 		{
-		return intrinsic_table[intrinsic].func(this,event,intrinsic,parms);
+		UsecodeIntrinsicFn func=intrinsic_table[intrinsic];
+		return ((*this).*func)(event,intrinsic,parms);
 		}
 	else
 	switch (intrinsic)
