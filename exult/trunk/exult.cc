@@ -401,8 +401,8 @@ int Get_click
 	{
 	while (1)
 		{
-		Delay();		// Wait a fraction of a second.
 		SDL_Event event;
+		Delay();		// Wait a fraction of a second.
 		while (SDL_PollEvent(&event))
 			switch (event.type)
 				{
@@ -427,6 +427,85 @@ int Get_click
 	return (0);			// Shouldn't get here.
 	}
 
+#if 0	/* +++++Trying top-down for a change. */
+
+/*
+ *	Handle events in 'gump' mode.  (A 'gump' is an opened bag, chest,
+ *	etc.)
+ */
+
+void Gump_events
+	(
+	)
+	{
+	static void Handle_gump_event(SDL_Event&);
+	while (1)
+		{
+		SDL_Event event;
+		Delay();		// Wait a fraction of a second.
+		while (SDL_PollEvent(&event))
+			Handle_gump_event(event);
+					// Get current time.
+		unsigned long ticks = SDL_GetTicks();
+					// Animate unless dormant.
+		if (gwin->have_focus())
+			gwin->get_tqueue()->activate(ticks);
+		gwin->show();		// Blit to screen if necessary.
+		}
+	}
+
+/*
+ *	Handle a single gump event.
+ */
+
+static void Handle_gump_event
+	(
+	SDL_Event& event
+	)
+	{
+					// Object or gump being moved.
+	static Game_object *dragging = 0;
+	static int dragged = 0;		// Flag for when obj. moved.
+	switch (event.type)
+		{
+	case SDL_MOUSEBUTTONDOWN:
+		if (event.button.button == 1)
+			{
+			dragging = gwin->start_dragging(event.button.x,
+							event.button.y);
+			dragged = 0;
+			}
+		break;
+	case SDL_MOUSEBUTTONUP:
+					// Done if nothing chosen.???
+		if (event.button.button == 1)
+			{
+			if (!dragging && !dragged)
+				return;
+			gwin->drop_dragged(event.button.x, event.button.y);
+			if (!dragged)
+					// Identify item(s) clicked on.
+				gwin->show_items(event.button.x,
+							event.button.y);
+			}
+		break;
+	case SDL_MOUSEMOTION:		// Moving with left button down.
+		if (event.button.button == 1 && event.motion.state != 0)
+			{
+			gwin->drag(event.button.x, event.button.y);
+			dragged = 1;
+			}
+		break;
+	case SDL_QUIT:
+		quitting_time = 1;
+		return;
+	case SDL_KEYDOWN:
+		if (event.key.keysym.sym == SDLK_ESCAPE)
+			return;
+		break;
+		}
+	}
+#endif
 
 #if 0
 // The old win32 code.
