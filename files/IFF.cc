@@ -30,7 +30,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 // For ntohl and friends
+#ifndef WIN32
 #include <netinet/in.h>
+#else
+#include <winsock.h>
+#endif
 
 
 IFF::IFF(const char *n) : U7file(n)
