@@ -635,7 +635,10 @@ const char* bg_func_table[] =
 map<unsigned int, string> bg_uc_intrinsics;
 map<unsigned int, string> si_uc_intrinsics;
 
-void init_usecodetables()
+/* constructs the static usecode tables from other include files in the /exult hierachy,
+   static by compilation.
+*/
+void init_static_usecodetables()
 {
 	#define	USECODE_INTRINSIC_PTR(NAME)	string(__STRING(NAME))
 	string bgut[] = 
@@ -653,6 +656,12 @@ void init_usecodetables()
 	
 	for(unsigned int i=0; i<0x100; i++)
 		si_uc_intrinsics.insert(pair<unsigned int, string>(si_uc_intrinsics.size(), siut[i]));
+}
+
+/* constructs the usecode tables from datafiles in the /ucxt hierachy */
+void init_usecodetables()
+{
+
 }
 
 vector<string> str2vec(const string &s)

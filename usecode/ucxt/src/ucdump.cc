@@ -116,9 +116,14 @@ int main(int argc, char** argv)
 	UCData uc;
 
 	cout << "Ultima 7 usecode disassembler v0.6.1" << endl << endl;
+	
+	// Tends to make life easier
 	cout << setfill('0') << setbase(16);
 	cout.setf(ios::uppercase);
 	
+	// init the compile time tables
+	init_static_usecodetables();
+	// init the run time tables
 	init_usecodetables();
 	
 	uc.parse_params(argc, argv);
@@ -152,8 +157,7 @@ int main(int argc, char** argv)
 		else
 		{
 			cerr << "Error: uc.game() was not set to GAME_U7 or GAME_SI this can't happen" << endl;
-			assert(false);
-			return 1; // just incase someone decides to compile without asserts;
+			assert(false); return 1; // just incase someone decides to compile without asserts;
 		}
 		
 		if(uc.fail())
@@ -169,7 +173,7 @@ int main(int argc, char** argv)
 //  int func_table_size = sizeof(bg_func_table);
 
 
-	if( uc.mode() == MODE_DISASSEMBLY )
+	if     ( uc.mode() == MODE_DISASSEMBLY )
 	{
 		uc.disassamble(func_table);
 	}
@@ -177,11 +181,11 @@ int main(int argc, char** argv)
 	{
 		uc.disassamble_all(func_table);
 	}
-	else if(uc.mode()== MODE_FLAG_DUMP)
+	else if( uc.mode() == MODE_FLAG_DUMP )
 	{
 		uc.dump_flags(func_table);
 	}
-	else if(uc.mode()==MODE_LIST)
+	else if( uc.mode() ==MODE_LIST )
 	{
 		uc.list_funcs(func_table);
 	}

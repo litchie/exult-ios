@@ -8,11 +8,12 @@
 #include <string>
 #include "ucc.h"
 #include "opcodec.h"
+#include <fstream>
 
 class FlagData
 {
   public:
-    //enum { SETFLAG=false, GETFLAG=true };
+    enum { SETFLAG=false, GETFLAG=true };
     /* SETFLAG=UCC_POPF, GETFLAG=UCC_PUSHF */
     enum { POP=false, PUSH=true};
 
@@ -77,17 +78,17 @@ class SortFlagDataLessFunc
 class UCFunc
 {
   public:
-    UCFunc() : _opcode_count(256), _unknown_opcode_count(256, 0), _unknown_intrinsic_count(256, 0) {};
+    UCFunc() : _opcode_count(256, 0), _unknown_opcode_count(256, 0), _unknown_intrinsic_count(256, 0) {};
     ~UCFunc();
-    void process_old(FILE* f, long func, int* found,
-                          unsigned char* intrinsic_buf,
+    void process_old(ifstream *f, long func, int* found,
+                          vector<unsigned char> &intrinsic_buf,
                           bool scan_mode,
                           unsigned long opcode,
                           unsigned long intrinsic,
                           unsigned int &uc_funcid,
                           const char** func_table);
     void process_data_seg();
-    void process_code_seg(unsigned char* intrinsic_buf, int mute,
+    void process_code_seg(vector<unsigned char> &intrinsic_buf, int mute,
                           int count_all_opcodes,
                           int count_all_intrinsic,
                           const char** func_table);
@@ -95,7 +96,7 @@ class UCFunc
                             unsigned char* pdataseg,
                             unsigned short* pextern,
                             unsigned short externsize,
-                            unsigned char* intrinsic_buf,
+                            vector<unsigned char> &intrinsic_buf,
                             int mute,
                             int count_all_opcodes,
                             int count_all_intrinsic,
@@ -104,7 +105,7 @@ class UCFunc
                             unsigned char* pdataseg,
                             unsigned short* pextern,
                             unsigned short externsize,
-                            unsigned char* intrinsic_buf,
+                            vector<unsigned char> &intrinsic_buf,
                             int mute,
                             int count_all_opcodes,
                             int count_all_intrinsic,
@@ -154,10 +155,13 @@ class UCFunc
     // /decompiling functions
 
     // temp file manipulation functions
-    long ftell() const { return ::ftell(_file); };
-    int fseek(const long offset, const int mode) { return ::fseek(_file, offset, mode); };
-    bool eof() const { return feof(_file); };
-    int get() { return getc(_file); };
+		void fseekbeg(const streampos &pos) { _file->seekg(pos, ios::beg); };
+		void fseekcur(const streampos &pos) { _file->seekg(pos, ios::cur); };
+		streampos ftell() const { return _file->tellg(); };
+		
+    //int fseek(const long offset, const int mode) { return ::fseek(_file, offset, mode); };
+    bool eof() const { return _file->eof();/*feof(_file);*/ };
+    int get() { return _file->get();/*getc(_file);*/ };
 
     // /temp file manipulation functions
 
@@ -168,10 +172,10 @@ class UCFunc
     unsigned int _argc; // number of function parameters
     unsigned int _localc; // number of local variables
 
-    long           _offset;
+    streampos      _offset;
     long           _code_offset; // offset to start of code segment in file
 
-    FILE          *_file;
+    ifstream *_file;
 
     vector<FlagData *>   _flagcount;
     vector<Opcode *>     _raw_opcodes;
