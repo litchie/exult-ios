@@ -734,22 +734,25 @@ GtkWidget *Chunk_chooser::create_controls
 	GtkWidget *frame = gtk_frame_new ("Locate");
 	gtk_widget_show(frame);
 	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
-	GtkWidget *hbuttonbox = gtk_hbutton_box_new ();
-	gtk_widget_show (hbuttonbox);
-	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
-							GTK_BUTTONBOX_START);
-	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
+	GtkWidget *bbox = gtk_hbox_new(TRUE, 0);
+	gtk_widget_show (bbox);
+	gtk_container_add (GTK_CONTAINER (frame), bbox);
 
-	loc_chunk_down = gtk_button_new_with_label ("Down");
+	loc_chunk_down = gtk_button_new();
 	gtk_widget_show (loc_chunk_down);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), loc_chunk_down);
+	gtk_box_pack_start (GTK_BOX (bbox), loc_chunk_down, FALSE, FALSE, 0);
 	GTK_WIDGET_SET_FLAGS (loc_chunk_down, GTK_CAN_DEFAULT);
+	GtkWidget *arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	gtk_widget_show(arrow);
+	gtk_container_add(GTK_CONTAINER(loc_chunk_down), arrow);
 
-	loc_chunk_up = gtk_button_new_with_label ("Up");
+	loc_chunk_up = gtk_button_new();
 	gtk_widget_show (loc_chunk_up);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), loc_chunk_up);
+	gtk_box_pack_start (GTK_BOX (bbox), loc_chunk_up, FALSE, FALSE, 0);
 	GTK_WIDGET_SET_FLAGS (loc_chunk_up, GTK_CAN_DEFAULT);
+	arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_OUT);
+	gtk_widget_show(arrow);
+	gtk_container_add(GTK_CONTAINER(loc_chunk_up), arrow);
 	gtk_signal_connect (GTK_OBJECT (loc_chunk_down), "clicked",
                       GTK_SIGNAL_FUNC (on_loc_chunk_down_clicked),
                       this);
@@ -765,12 +768,12 @@ GtkWidget *Chunk_chooser::create_controls
 	frame = gtk_frame_new ("Insert");
 	gtk_widget_show(frame);
 	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
-	hbuttonbox = gtk_hbutton_box_new ();
-	gtk_widget_show (hbuttonbox);
-	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
+	GtkWidget *hbuttonbox = gtk_hbutton_box_new();
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
 							GTK_BUTTONBOX_START);
 	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
+	gtk_widget_show (hbuttonbox);
+	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
 
 	GtkWidget *insert_chunk_new = gtk_button_new_with_label ("New");
 	gtk_widget_show (insert_chunk_new);
@@ -793,22 +796,25 @@ GtkWidget *Chunk_chooser::create_controls
 	frame = gtk_frame_new ("Move");
 	gtk_widget_show(frame);
 	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
-	hbuttonbox = gtk_hbutton_box_new ();
-	gtk_widget_show (hbuttonbox);
-	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
-							GTK_BUTTONBOX_START);
-	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
+	bbox = gtk_hbox_new(TRUE, 0);
+	gtk_widget_show (bbox);
+	gtk_container_add (GTK_CONTAINER (frame), bbox);
 
-	move_chunk_down = gtk_button_new_with_label ("Down");
+	move_chunk_down = gtk_button_new();
 	gtk_widget_show (move_chunk_down);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_down);
+	gtk_box_pack_start (GTK_BOX (bbox), move_chunk_down, FALSE, FALSE, 0);
 	GTK_WIDGET_SET_FLAGS (move_chunk_down, GTK_CAN_DEFAULT);
+	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	gtk_widget_show(arrow);
+	gtk_container_add(GTK_CONTAINER(move_chunk_down), arrow);
 
-	move_chunk_up = gtk_button_new_with_label ("Up");
+	move_chunk_up = gtk_button_new();
 	gtk_widget_show (move_chunk_up);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_up);
+	gtk_box_pack_start (GTK_BOX (bbox), move_chunk_up, FALSE, FALSE, 0);
 	GTK_WIDGET_SET_FLAGS (move_chunk_up, GTK_CAN_DEFAULT);
+	arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_OUT);
+	gtk_widget_show(arrow);
+	gtk_container_add(GTK_CONTAINER(move_chunk_up), arrow);
 	gtk_signal_connect (GTK_OBJECT (move_chunk_down), "clicked",
 			GTK_SIGNAL_FUNC (on_move_chunk_down_clicked),
 			this);
