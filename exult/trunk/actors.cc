@@ -942,6 +942,8 @@ void Npc_actor::update_schedule
 			schedule = new Walk_to_schedule(this, 
 						schedules[i].get_pos(),
 						schedules[i].get_type());
+			dormant = 0;
+			schedule->now_what();
 			return;
 			}
 	}
