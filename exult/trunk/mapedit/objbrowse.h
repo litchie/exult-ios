@@ -47,6 +47,7 @@ protected:
 	int config_width, config_height;// For storing prev. dims.
 
 	void set_widget(GtkWidget *w);
+	static bool search_name(const char *nm, const char *srch);
 public:
 	Object_browser(Shape_group *grp = 0, Shape_file_info *fi = 0);
 	virtual ~Object_browser();

@@ -2085,7 +2085,7 @@ int Shape_chooser::get_count
 
 void Shape_chooser::search
 	(
-	char *srch,			// What to search for.
+	const char *srch,		// What to search for.
 	int dir				// 1 or -1.
 	)
 	{
@@ -2104,7 +2104,7 @@ void Shape_chooser::search
 		{
 		int shnum = group ? (*group)[i] : i;
 		char *nm = studio->get_shape_name(shnum);
-		if (nm && strstr(nm, srch))
+		if (nm && search_name(nm, srch))
 			break;		// Found it.
 		}
 	if (i == stop)
