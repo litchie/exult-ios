@@ -172,7 +172,7 @@ void Patrol_schedule::now_what
 			return;
 			}
 		}
-					//++++Testing.  Works for passion play.
+					// This works for passion play:
 	npc->set_lift(path->get_lift());
 					// Delay up to 2 secs.
 	npc->walk_to_tile(path->get_abs_tile_coord(), 250, rand()%2000);
@@ -451,10 +451,10 @@ void Waiter_schedule::get_customer
 			}
 		customer = (Actor *) customers.remove_first();
 		}
-	if (tables.get_cnt())		// Walk to a 'prep' table.
+	if (prep_tables.get_cnt())	// Walk to a 'prep' table.
 		{
 		Game_object *table = (Game_object *)
-					tables.get(rand()%tables.get_cnt());
+				prep_tables.get(rand()%prep_tables.get_cnt());
 		Tile_coord pos = table->find_unblocked_tile(1, 3);
 		if (pos.tx != -1 &&
 		    npc->walk_path_to_tile(pos, 200, rand()%2000))
@@ -467,23 +467,28 @@ void Waiter_schedule::get_customer
 	}
 
 /*
- *	Find tables that don't have chairs around them.
+ *	Find tables and categorize them.
  */
 
-void Waiter_schedule::find_prep_table
+void Waiter_schedule::find_tables
 	(
 	int shapenum
 	)
 	{
 	Vector vec;
 	int cnt = npc->find_nearby(vec, shapenum, 32, 0);
+	int floor = npc->get_lift()/5;	// Make sure it's on same floor.
 	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *table = (Game_object *) vec.get(i);
+		if (table->get_lift()/5 != floor)
+			continue;
 		Vector chairs;		// No chairs by it?
 		if (!table->find_nearby(chairs, 873, 3, 0) &&
 		    !table->find_nearby(chairs, 292, 3, 0))
-			tables.append(table);
+			prep_tables.append(table);
+		else
+			eating_tables.append(table);
 		}
 	}
 
@@ -498,7 +503,33 @@ int Waiter_schedule::find_serving_spot
 	Tile_coord& spot
 	)
 	{
-	return 0;			//+++++++Later.
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord cpos = customer->get_abs_tile_coord();
+	int cnt = eating_tables.get_cnt();
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *table = (Game_object *) eating_tables.get(i);
+		Rectangle foot = table->get_footprint();
+		if (foot.distance(cpos.tx, cpos.ty) <= 2)
+			{		// Found it.
+			spot = cpos;	// Start here.
+					// East/West of table?
+			if (cpos.ty >= foot.y && cpos.ty < foot.y + foot.h)
+				spot.tx = cpos.tx <= foot.x ? foot.x
+							: foot.x + foot.w - 1;
+			else		// North/south.
+				spot.ty = cpos.ty <= foot.y ? foot.y
+							: foot.y + foot.h - 1;
+			if (foot.has_point(spot.tx, spot.ty))
+				{	// Passes test.
+				Shape_info& info = gwin->get_info(table);
+				spot.tz = table->get_lift() +
+						info.get_3d_height();
+				return 1;
+				}
+			}
+		}
+	return 0;			// Failed.
 	}
 
 /*
@@ -511,14 +542,14 @@ void Waiter_schedule::now_what
 	{
 	if (first)			// First time?
 		{
-		first = 0;		// Find tables without nearby chairs.
-		find_prep_table(971);
-		find_prep_table(633);
-		find_prep_table(847);
-		find_prep_table(1003);
-		find_prep_table(1018);
-		find_prep_table(890);
-		find_prep_table(964);
+		first = 0;		// Find tables.
+		find_tables(971);
+		find_tables(633);
+		find_tables(847);
+		find_tables(1003);
+		find_tables(1018);
+		find_tables(890);
+		find_tables(964);
 		}
 		
 	if (!customer)			// Need a new customer?
@@ -541,7 +572,7 @@ void Waiter_schedule::now_what
 			}
 		else			// Needs food.
 			{
-			Game_object *food = npc->get_readied(Actor::rhand);
+			Game_object *food = npc->get_readied(Actor::lhand);
 			Tile_coord spot;
 			if (food && food->get_shapenum() == 377 &&
 			    find_serving_spot(spot))
@@ -562,13 +593,13 @@ void Waiter_schedule::now_what
 		return;
 		}
 					// Walk to customer with food.
-	if (!npc->get_readied(Actor::rhand))
+	if (!npc->get_readied(Actor::lhand))
 		{			// Acquire some food.
 		Game_window *gwin = Game_window::get_game_window();
 		int nfoods = gwin->get_shape_num_frames(377);
 		int frame = rand()%nfoods;
 		Game_object *food = new Ireg_game_object(377, frame, 0, 0, 0);
-		npc->add_readied(food, Actor::rhand);
+		npc->add_readied(food, Actor::lhand);
 		}
 	for (int i = 1; i < 3; i++)
 		{

@@ -86,6 +86,14 @@ public:					// Let's make it all public.
 		x -= delta; y -= delta; w += 2*delta; h += 2*delta; 
 		return *this;
 		}
+	int distance(int px, int py)	// Get distance from a point (max.
+					//   dist. along x or y coord.)
+		{
+		int xdist = px <= x ? (x - px) : (px - x - w + 1);
+		int ydist = py <= y ? (y - py) : (py - y - h + 1);
+		int dist = xdist > ydist ? xdist : ydist;
+		return dist < 0 ? 0 : dist;
+		}
 	};
 
 #endif
