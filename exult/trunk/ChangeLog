@@ -1,3 +1,6 @@
+2001-07-26  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* ucinternal.cc: fixed AIDX opcode (keyring works again)
+
 2001-07-26  Patrick Burke <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*.[cc|h]: integration with exult .xml config file;
 	proto-integration with opcodes.txt data file; replaced all legacy

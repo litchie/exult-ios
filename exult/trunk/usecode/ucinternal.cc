@@ -1675,7 +1675,15 @@ int Usecode_internal::run
 				break;
 				}
 			Usecode_value& val = locals[offset];
-			push(val.get_elem(sval));
+
+			if (val.is_array()) {
+				push(val.get_elem(sval));
+			} else if (sval == 0) {
+				push(val); // needed for SS keyring (among others, probably)
+			} else {
+				Usecode_value zero(0); // guessing... probably unnecessary
+				push(zero);
+			}
 			break;
 			}
 		case 0x2c:		// Another kind of return?
