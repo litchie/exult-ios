@@ -62,6 +62,7 @@ class Notebook_gump : public Gump
 public:
 	Notebook_gump();
 	~Notebook_gump();
+	static void clear();
 	static Notebook_gump *create();
 	static Notebook_gump *get_instance() { return instance; }
 	void change_page(int delta);	// Page forward/backward.
@@ -70,6 +71,7 @@ public:
 	virtual void paint();		// Paint it and its contents.
 	virtual bool handle_kbd_event(void *ev);
 	static void write();		// Write it out to gamedat.
+	static void read();		// Read it in.
 };
 
 #endif
