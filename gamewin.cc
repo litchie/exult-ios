@@ -146,7 +146,13 @@ Game_window::Game_window
 					// Force clock to start.
 	tqueue->add(timer, &clock, (long) this);
 					// Clear object lists, flags.
+#if 1
+	for (int i1 = 0; i1 < num_chunks; i1++)
+		for (int i2 = 0; i2 < num_chunks; i2++)
+			objects[i1][i2] = 0;
+#else	/* Old way +++++++*/
 	memset((char *) objects, 0, sizeof(objects));
+#endif
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
 	clock.set_palette();		// Set palette for correct time.
 	brighten(20);			// Brighten 20%.
