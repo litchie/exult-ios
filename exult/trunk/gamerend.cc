@@ -78,39 +78,46 @@ int Game_window::paint_map
 					// Get chunks to start with, starting
 					//   1 tile left/above.
 	int start_chunkx = (scrolltx + x/c_tilesize - 1)/c_tiles_per_chunk;
-	if (start_chunkx < 0)
-		start_chunkx = 0;
+					// Wrap around.
+	start_chunkx = (start_chunkx + c_num_chunks)%c_num_chunks;
 	int start_chunky = (scrollty + y/c_tilesize - 1)/c_tiles_per_chunk;
-	if (start_chunky < 0)
-		start_chunky = 0;
+	start_chunky = (start_chunky + c_num_chunks)%c_num_chunks;
 					// End 8 tiles to right.
 	int stop_chunkx = 1 + (scrolltx + (x + w + c_tilesize - 2)/c_tilesize + 
 					c_tiles_per_chunk/2)/c_tiles_per_chunk;
 	int stop_chunky = 1 + (scrollty + (y + h + c_tilesize - 2)/c_tilesize + 
 					c_tiles_per_chunk/2)/c_tiles_per_chunk;
-	if (stop_chunkx > c_num_chunks)
-		stop_chunkx = c_num_chunks;
-	if (stop_chunky > c_num_chunks)
-		stop_chunky = c_num_chunks;
+					// Wrap around the world:
+	stop_chunkx = (stop_chunkx + c_num_chunks)%c_num_chunks;
+	stop_chunky = (stop_chunky + c_num_chunks)%c_num_chunks;
 
 	int cx, cy;			// Chunk #'s.
 					// Paint all the flat scenery.
-	for (cy = start_chunky; cy < stop_chunky; cy++)
-		for (cx = start_chunkx; cx < stop_chunkx; cx++)
+	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
+		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
 			if (in_dungeon)
 				paint_dungeon_chunk_flats(cx, cy);
 			else
 				paint_chunk_flats(cx, cy);
 					// Draw the chunks' objects
 					//   diagonally NE.
-	for (cy = start_chunky; cy < stop_chunky; cy++)
+	int tmp_stopy = DECR_CHUNK(start_chunky);
+	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
+		{
 		for (int dx = start_chunkx, dy = cy;
-			dx < stop_chunkx && dy >= start_chunky; dx++, dy--)
+			dx != stop_chunkx && dy != tmp_stopy; 
+				dx = INCR_CHUNK(dx), dy = DECR_CHUNK(dy))
 			light_sources += paint_chunk_objects(dx, dy);
-	for (cx = start_chunkx + 1; cx < stop_chunkx; cx++)
-		for (int dx = cx, dy = stop_chunky - 1; 
-			dx < stop_chunkx && dy >= start_chunky; dx++, dy--)
+		}
+	for (cx = (start_chunkx + 1)%c_num_chunks; cx != stop_chunkx; 
+							cx = INCR_CHUNK(cx))
+		{
+		for (int dx = cx, 
+			dy = (stop_chunky - 1 + c_num_chunks)%c_num_chunks; 
+			dx != stop_chunkx && dy != tmp_stopy; 
+				dx = INCR_CHUNK(dx), dy = DECR_CHUNK(dy))
 			light_sources += paint_chunk_objects(dx, dy);
+		}
 	painted = 1;
 	return light_sources;
 	}
@@ -173,6 +180,30 @@ inline void Game_window::paint_tile
 	}
 
 /*
+ *	Figure offsets on screen.
+ */
+
+inline void Figure_screen_offsets
+	(
+	int cx, int cy,			// Chunk.
+	int scrolltx, int scrollty,	// Top-left tile of screen.
+	int& xoff, int& yoff		// Offsets returned.
+	)
+	{
+					// Watch for wrapping.
+	int tx = cx*c_tiles_per_chunk - scrolltx;
+	if (tx < -c_num_tiles/2)
+		tx += c_num_tiles;
+	tx %= c_num_tiles;
+	int ty = cy*c_tiles_per_chunk - scrollty;
+	if (ty < -c_num_tiles/2)
+		ty += c_num_tiles;
+	ty %= c_num_tiles;
+	xoff = tx*c_tilesize;
+	yoff = ty*c_tilesize;
+	}
+
+/*
  *	Paint the flat (non-rle) shapes in a chunk.
  */
 
@@ -181,8 +212,9 @@ void Game_window::paint_chunk_flats
 	int cx, int cy			// Chunk coords (0 - 12*16).
 	)
 	{
-	int xoff = (cx*c_tiles_per_chunk - get_scrolltx())*c_tilesize;
-	int yoff = (cy*c_tiles_per_chunk - get_scrollty())*c_tilesize;
+	int xoff, yoff;
+	Figure_screen_offsets(cx, cy, get_scrolltx(), get_scrollty(),
+						xoff, yoff);
 	Chunk_object_list *olist = get_objects(cx, cy);
 					// Go through array of tiles.
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
@@ -204,8 +236,9 @@ void Game_window::paint_dungeon_chunk_flats
 	int cx, int cy			// Chunk coords (0 - 12*16).
 	)
 	{
-	int xoff = (cx*c_tiles_per_chunk - get_scrolltx())*c_tilesize;
-	int yoff = (cy*c_tiles_per_chunk - get_scrollty())*c_tilesize;
+	int xoff, yoff;
+	Figure_screen_offsets(cx, cy, get_scrolltx(), get_scrollty(),
+						xoff, yoff);
 	Chunk_object_list *olist = get_objects(cx, cy);
 	if (!olist->has_dungeon())	// No dungeon in this chunk?
 		{
