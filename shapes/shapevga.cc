@@ -27,6 +27,7 @@
 #include "shapevga.h"
 #include "monstinf.h"
 #include "utils.h"
+#include "game.h"
 
 using std::ifstream;
 using std::ios;
@@ -107,6 +108,8 @@ void Shapes_vga_file::read_info
 	if (patch_exists(PATCH_WEAPONS)) U7open(weapon, PATCH_WEAPONS);
 	else U7open(weapon, WEAPONS);
 	cnt = Read1(weapon);
+					// BG:  Subtract 1 from each sfx.
+	int sfx_delta = Game::get_game_type() == BLACK_GATE ? -1 : 0;
 	for (i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(weapon);
@@ -133,8 +136,8 @@ void Shapes_vga_file::read_info
 		unsigned short special = Read1(weapon);
 		Read1(weapon);		// Skip (0).
 		short usecode = Read2(weapon);
-		short usesfx = Read2(weapon) - 1;
-		short hitsfx = Read2(weapon) - 1;
+		short usesfx = Read2(weapon) + sfx_delta;
+		short hitsfx = Read2(weapon) + sfx_delta;
 		unsigned char unk2[2];
 		weapon.read((char *)unk2, sizeof(unk2));
 #if 0

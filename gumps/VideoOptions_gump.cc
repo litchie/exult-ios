@@ -217,7 +217,10 @@ void VideoOptions_gump::save_settings()
 	gwin->resized(resx,resy,scaling+1,scaler);
 	if(((fullscreen==0)&&(gwin->get_win()->is_fullscreen()))||
 	   ((fullscreen==1)&&(!gwin->get_win()->is_fullscreen())))
+		{
 		gwin->get_win()->toggle_fullscreen();
+		gwin->paint();
+		}
 	gwin->set_painted();
 }
 
