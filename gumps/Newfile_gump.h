@@ -43,8 +43,10 @@ struct SaveGame_Details
 	unsigned short	save_count;	// 12
 	unsigned short	party_size;	// 14
 
+	char		real_second;	// 15
+
 	//Incase we want to add more later
-	short		reserved0;	// 16
+	char		reserved0;	// 16
 	unsigned char	reserved1[48];	// 64
 };
 
