@@ -112,13 +112,25 @@ public:
 	};
 
 /*
+ *	For following the Avatar (by party members):
+ */
+class Follow_avatar_schedule : public Schedule
+	{
+	unsigned long next_path_time;	// Next time we're allowed to use
+					//   pathfinding to follow leader.
+public:
+	Follow_avatar_schedule(Actor *n) : Schedule(n), next_path_time(0)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	A 'do nothing' schedule.
  */
 class Wait_schedule : public Schedule
 	{
-	bool start;
 public:
-	Wait_schedule(Actor *n) : Schedule(n), start(true)
+	Wait_schedule(Actor *n) : Schedule(n)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	};
