@@ -92,6 +92,11 @@ void Actor::read
 	set_property(static_cast<int>(Actor::health), health_val);
 	nfile.seekg(3, ios::cur);	// Skip 3 bytes.
 	int iflag2 = Read2(nfile);	// Another inventory flag.
+//+++++++TESTING
+//	if (iflag2 == 0)
+//		cout << "NPC #" << num << " has iflag2 == 0" << endl;
+//^^^^^^^^^I think this (iflag2), if 0, means this NPC should not be
+//   created.   Need to check with the original BG & SI.
 
 	// Read first set of flags
 	const int rflags = Read2(nfile);
