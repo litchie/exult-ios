@@ -709,8 +709,7 @@ public:
 		{ return major_distance <= 0; }
 	virtual int is_dragable();	// Can this be dragged?
 					// Figure next frame location.
-	int next_frame(unsigned long time,
-		int& new_cx, int& new_cy, int& new_tx, int& new_ty,
+	int next_frame(int& new_cx, int& new_cy, int& new_tx, int& new_ty,
 		int& new_frame);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
