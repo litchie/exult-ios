@@ -179,6 +179,8 @@ int Object_sfx::get_shape_sfx
 					// Moongates:
 		table[776] = 77;
 		table[777] = 77;
+		if (GAME_BG)
+			table[786] = 79;	// Vortex cube.
 
 		// Grandfather clock tick tock, only in the SQSFX files,
 		 if (Audio::get_ptr()->get_sfx_file() != 0)
