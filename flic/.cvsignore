@@ -4,3 +4,6 @@ Makefile
 *~
 *.a
 playflic
+*.la
+*.lo
+.deps

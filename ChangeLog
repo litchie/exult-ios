@@ -1,3 +1,12 @@
+2000-05-22  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* */Makefile.am, configure.in, etc...: Rehauled build mechanism,
+	no need to regenerate dependencies by hand, gcc dynamically does
+	that, Makefile.am files are now much nicer and easier to maintain
+	and this is the proper GNU way. Maybe I've broken Win32 builds...
+	Removed old files as they can be found in CVS's attic.
+	Made 'make dist' work (try it)
+
 2000-05-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc: added default case to key switch (kill warning)
 	* objs.cc, imagewin.cc, actors.cc, gamewin.cc, gumps.cc,
