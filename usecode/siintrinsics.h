@@ -185,8 +185,8 @@
 	USECODE_INTRINSIC_PTR(mouse_exists),			// 0x7d
 	USECODE_INTRINSIC_PTR(get_speech_track),		// 0x7e
 	USECODE_INTRINSIC_PTR(flash_mouse),			// 0x7f
-	USECODE_INTRINSIC_PTR(get_item_frame),			// 0x80 Guessing++++
-	USECODE_INTRINSIC_PTR(set_item_frame),			// 0x81 Guessing++++
+	USECODE_INTRINSIC_PTR(get_item_frame_rot),		// 0x80 Guess
+	USECODE_INTRINSIC_PTR(set_item_frame_rot),		// 0x81 Guess
 	USECODE_INTRINSIC_PTR(on_barge),			// 0x82 Guess
 	USECODE_INTRINSIC_PTR(get_container),			// 0x83
 
@@ -194,8 +194,8 @@
 
 	USECODE_INTRINSIC_PTR(remove_item),			// 0x84 - Known
 
-	USECODE_INTRINSIC_PTR(init_conversation),		// 0x85 ??
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x86
+	USECODE_INTRINSIC_PTR(init_conversation),		// 0x85 Guess
+	USECODE_INTRINSIC_PTR(end_conversation),		// 0x86 Guess
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x87++++ Increments experience??
 	USECODE_INTRINSIC_PTR(is_readied),			// 0x88
 	USECODE_INTRINSIC_PTR(restart_game),			// 0x89
