@@ -545,9 +545,10 @@ int Main_actor::step
 					// Get rel. tile coords.
 	int tx = t.tx%tiles_per_chunk, ty = t.ty%tiles_per_chunk;
 	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+	int old_lift = get_lift();
 	int new_lift;			// Might climb/descend.
 					// Just assume height==3.
-	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift))
+	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift))
 		{
 		stop();
 		return (0);
@@ -566,8 +567,6 @@ int Main_actor::step
 					// At bottom?
 	else if ((cy - chunky)*16 + ty >= gwin->get_height()/8 - 4)
 		gwin->view_down();
-					// Get old rectangle.
-//	Rectangle oldrect = gwin->get_shape_rect(this);
 	gwin->add_dirty(this);		/// Set to update old location.
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
@@ -581,12 +580,18 @@ int Main_actor::step
 	if (olist != nlist)
 		{
 		switched_chunks(olist, nlist);
+#if 1	/* +++++++OLD */
 		if (gwin->check_main_actor_inside())
-			{		// Repaint all.
-			gwin->clear_dirty();
-			gwin->paint();
-			}
+#else	/* +++++++NEW */
+		if (set_above_main_actor(nlist->is_roof(), new_lift))
+#endif
+			gwin->paint();	// Repaint all.
 		}
+#if 0	/* NEW+++++++ */
+	else if (old_lift != new_lift &&
+		 set_above_main_actor(nlist->is_roof(), new_lift))
+			gwin->paint();
+#endif
 	return (frame_time);		// Add back to queue for next time.
 	}
 

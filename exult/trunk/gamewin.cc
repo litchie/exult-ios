@@ -59,7 +59,7 @@ Game_window::Game_window
 	    main_actor(0), monster_info(0),
 	    conv_choices(0), texts(0), num_faces(0), last_face_shown(-1),
 	    open_gumps(0),
-	    main_actor_inside(0), mode(splash), npcs(0),
+	    main_actor_inside(0), skip_above_actor(31), mode(splash), npcs(0),
 	    shapes(), dragging(0), dragging_save(0),
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
 	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
@@ -1039,6 +1039,7 @@ void Game_window::paint_chunk_objects
 	Game_object *obj;
 	Chunk_object_list *olist = get_objects(cx, cy);
 	int save_skip = skip_lift;	// ++++Clean this stuff up.
+#if 1	/* ++++++Old way */
 					// If inside, figure height above
 	if (main_actor_inside)		//   actor's head.
 		{
@@ -1047,6 +1048,9 @@ void Game_window::paint_chunk_objects
 					// Round up to nearest 5.
 		skip_lift = ((skip_lift + 4)/5)*5;
 		}
+#else	/* ++++++++New way */
+	skip_lift = skip_above_actor;
+#endif
 					// +++++Clear flag.
 	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
 		obj->rendered = 0;
