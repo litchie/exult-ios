@@ -1,0 +1,153 @@
+U7BG - External call list
+
+callis	0000, 1
+callis	0001, 2
+callis	0002, 3
+calli	_SwitchTalkTo@2			; 0003
+calli	_HideNPC@1			; 0004
+calli	_AddAnswer@1			; 0005
+calli	_RemoveAnswer@1			; 0006
+calli	_SaveAnswers@0			; 0007
+calli	_RestoreAnswers@0		; 0008
+calli	0009, 0
+callis	GetAnswer@0			; 000A
+callis	000B, 0
+callis	_AskNumber@4			; 000C
+calli	_SetItemType@2			; 000D
+callis	000E, 3
+calli	000F, 1
+callis	_Random2@2			; 0010
+callis	_GetItemType@1			; 0011
+callis	_GetItemFrame@1			; 0012
+calli	_SetItemFrame@2			; 0013
+callis	_GetItemQuality@1		; 0014
+callis	0015, 2
+callis	0016, 2
+callis	0017, 2
+callis	0018, 1
+callis	0019, 2
+callis	001A, 2
+callis	001B, 1
+callis	001C, 1
+calli	001D, 2
+calli	001E, 1
+calli	001F, 1
+callis	_GetNPCProperty@2		; 0020
+callis	_SetNPCProperty@3		; 0021
+callis	0022, 0
+callis	GetPartyMembers@0		; 0023
+callis	0024, 1
+callis	0025, 1
+callis	0026, 1
+callis	GetPlayerName@1			; 0027
+callis	0028, 4
+callis	0029, 4
+callis	_GetContainerItems@4		; 002A
+callis	002B, 5
+callis	002C, 5
+					; 002D - Not found
+calli	_PlayMusic@2			; 002E
+callis	NPCInParty@1			; 002F
+callis	0030, 1
+callis	0031, 1
+calli	DisplaySign@2			; 0032
+callis	_ItemSelectModal@0		; 0033
+					; 0034 - Not found
+callis	0035, 4
+callis	0036, 1
+callis	0037, 1
+callis	GetTimeHour@0			; 0038
+callis	GetTimeMinute@0			; 0039
+callis	003A, 1
+callis	003B, 0
+callis	003C, 1
+calli	003D, 2
+calli	003E, 2
+calli	003F, 1
+calli	_ItemSay@2			; 0040
+callis	0041, 3
+callis	0042, 1
+calli	0043, 2
+callis	0044, 0
+calli	0045, 1
+calli	0046, 2
+callis	0047, 2
+callis	0048, 0
+calli	0049, 1
+callis	004A, 2
+calli	004B, 2
+calli	004C, 2
+callis	004D, 1
+					; 004E - Not found
+calli	004F, 1
+calli	0050, 2
+callis	0051, 1
+callis	0052, 3
+calli	0053, 7
+callis	0054, 3
+calli	0055, 1
+calli	0056, 1
+calli	0057, 1
+callis	0058, 1
+calli	0059, 1
+callis	_IsPlayerFemale@0		; 005A
+calli	005B, 0
+calli	005C, 1
+calli	_StartEndgame@0			; 005D
+callis	_ArraySize@1			; 005E
+calli	005F, 1
+calli	0060, 1
+callis	0061, 4
+callis	0062, 0
+calli	0063, 2
+					; 0064 - Not found
+callis	0065, 1
+calli	0066, 1
+callis	0067, 0
+callis	_DetectMouse@0			; 0068
+callis	0069, 0
+calli	006A, 1
+callis	006B, 1
+callis	006D, 0
+calli	006C, 2
+callis	006E, 1
+calli	006F, 1
+calli	0070, 0
+calli	0071, 3
+callis	0072, 4
+calli	0073, 0
+callis	0074, 1
+calli	0075, 1
+calli	0076, 6
+calli	0077, 1
+calli	0078, 1
+callis	0079, 1
+calli	007A, 0
+calli	007B, 8
+calli	007C, 0
+callis	007D, 4
+calli	007E, 0
+calli	007F, 2
+calli	0080, 1
+callis	0081, 0
+calli	0082, 2
+calli	0083, 0
+calli	0084, 0
+callis	0085, 3
+calli	0086, 2
+callis	0087, 2
+callis	0088, 2
+calli	0089, 2
+calli	008A, 2
+calli	008B, 3
+calli	008C, 3
+callis	008D, 0
+callis	008E, 0
+callis	008F, 1
+callis	0090, 1
+calli	0091, 0
+calli	0092, 1
+callis	0093, 1
+calli	0094, 1
+calli	0095, 1
+callis	0096, 1

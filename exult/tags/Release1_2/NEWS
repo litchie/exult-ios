@@ -1,0 +1,461 @@
+06/10/04	v1.2
+
+		Official release with all the improvements and bug fixes from
+		the last two years.
+
+02/29/04	v1.1.10rc2
+
+		Fixed a number of crashes
+		Fixed some Windows-only problems, including resurrection
+		Added more Black Gate paperdoll art
+
+01/27/04	v1.1.9rc1
+
+		Cleaned up non-MIDI music driver support
+		Cleaned up diagnostic output
+		Fixed various schedule and pathfinding bugs
+		Worked around Serpent Staff bug from original SI
+		Lots of minor bugfixes
+
+10/18/03	v1.1 Beta3
+
+		Fixed item duplication
+		Fixed missing NPCs
+		Fixed disappearing items
+		Fixed cosmetic bug in 2xSaI scaler
+		Fixed resurrection
+		Improved SFX handling for items
+		Improved schedule support
+
+
+08/08/03	v1.1 Beta2
+
+		Fixed missing item descriptions in Windows
+		Fixed missing exultmsg.txt on some platforms
+
+
+07/20/03	v1.1 Beta1
+
+		Party Formation
+		Improved combat system with pausing, hit display and targeting
+		Spellbook improvements
+		Exult Studio improvements and porting to GTK+2
+		Support for arrow/keypad walking and running
+		OGG Vorbis music system
+		FM Synth emulator
+		Additional paperdoll art (SB-X, Oblivious)
+		Scale2X scaler (Andrea Mazzoleni)
+		Ported to the Zaurus (Artaxerxes)
+		Experimental OpenGL scaling/rendering
+		Tons of bugfixes (see ChangeLog for details)
+
+06/05/02	v0.99 RC 2
+
+		Support for 32 bit usecode (for large usecode functions)
+		Many changes to Exult Studio (tiles, combos, freetype fonts, etc.)
+		Improvements to UCC (conversations, etc.)
+		SFX improvements (thanks to Simon Quinn)
+		Tons of bugfixes (see ChangeLog for details)
+
+03/12/02	v0.98 RC 1
+
+		UCC, Exult's Usecode compiler works again
+		UCXT, Exult's Usecode decompiler, is now included
+		Subpackages for Linux distributions can be built (RPM, Debian)
+		Exult's data files have a CRC now, so it is easier to 
+		detect a mismatch between them and the main executable
+		Gumps can be dragged even in target mode
+		SI's intro and ending are complete
+		Music looping is user-configurable
+		New scaler from Kreed: BilinearPlus
+		Configurable combat difficulty
+		Tons of bugfixes (see ChangeLog for details)
+		
+
+11/26/01	v0.96 beta 1
+
+		It is now possible to complete both BG and SI
+
+		Savegames are now compressed. They are now actually zip files,
+		so you can use your favourite tool to open them. This should 
+		make things easier especially when submitting bugs to 
+		SourceForge which has a size restriction on attachments.
+	
+		Gameplay Options Dialog has been implemented together with a 
+		slew of extra features that can be configured
+
+		The speed of the party may be configured
+		
+		Middle mouse button support
+
+		Fast mouse in full-screen modes
+
+		Tinted background behind text in conversations
+
+		Wheelmouse support for slider gumps
+
+		You can now freeze in SI
+
+		Multiracial Avatar support in BG (requires SI)
+
+		The currently playing music track is stored within savegames
+		so that it started again on load
+
+		Scheduled usecode is now retained between save/load
+
+		Endgame and Quotes entries in the menus are now only visible
+		when appropriate
+
+		Allow choice of MIDI device in Win32
+
+		Many broken animations were fixed (especially in SI)
+
+		Show SFX icon next to BG/SI to show that support for digital
+		sfx is enabled.
+
+		Tons of bugfixes (see ChangeLog for details)
+
+08/25/01	v0.94 alpha 5
+
+		Colourless' amazing stats display (press "r" to toggle the 
+		various modes)
+
+		Lots of work on performance improvements (faster scalers,
+		faster renderer, etc.)
+
+		Near-perfect dungeon renderer
+
+		Lots of work on MacOS by Fingolfin (both Classic and MacOS X),
+		including MIDI support.
+
+		Return to menu option in BG and SI game menus
+
+		Detect incorrect/incomplete path settings in the configuration
+		file and show only valid entries (BG/SI) in the main menu.
+		If neither game is available, a warning is displayed.
+
+		Video Options in-game menu (still incomplete)
+
+		Text/speech synch in BG intro and near-perfect butterfly 
+		animation
+
+		Support for scale > 2 in Point and Interlaced scalers
+
+		Exult now compiles with MS Visual C++
+
+		Tons of bugfixes (see ChangeLog for details)
+
+06/28/01	v0.93 alpha 4
+
+		There is a new in-game menu (invoked with ESC) from which 
+		various setup actions can be performed. Currently this 
+		includes a nice audio configurator.
+
+		The save gump has been improved greatly with support for a
+		mini-screenshot, save-game details and infinite savegames.
+
+		World wrapping has been implemented
+
+		Lots of work on SI (spell scrolls, spellbook, jawbone and 
+		combat gumps, keyring, general fixes)
+
+		We now have Near Pixel Perfect Maps (tm) which are displayed
+		when using the teleport cheats.
+
+		MIDI SFX are unsupported now by default. The use of digital 
+		SFX is strongly encouraged, even though there are still a few
+		problems. See the FAQ for details.
+
+		Combat has been improved: NPCs now flash red when they are
+		hit, Protection mode is supported and many bugs have been 
+		fixed
+
+		Win32 SMP-safeness
+
+		More work on ExultStudio (Linux only for now)
+
+		Tons of bugfixes (see the ChangeLog for details)
+
+04/11/01	v0.92 alpha 3
+
+		Savegame names have been changed to exultXXbg.sav for the
+		Black Gate, and exultXXsi.sav for the Serpent Isle.
+		(The savegames themselves have not changed, so you can rename
+		them to make them work again.)
+
+		Multiple scalers can now be used. Use config/video/scale_method
+		set to either "2xSaI", "bilinear", "point", "interlaced" and
+		"SuperEagle". "2xSaI" is the new scaler, "bilinear" is the old
+		one, "point" duplicates the pixels, "interlaced" is the same 
+		as "point" except misses every other line, "SuperEagle" is
+		another scaler by Derek (the author of 2xSaI).
+
+		New cheat screen (F2) similar to the originals'.
+		Currently allows for some level of NPC editing.
+
+		Pick Pocket cheat (Ctrl-Alt-P). Forces all actors to display
+		inventory.
+
+		Grab Actor cheat (Ctrl-Alt-G). Default Enabled. When enabled
+		clicking on a NPC will make it the default NPC in the cheat
+		screen. The default NPC is edited by not entering a npc number.
+
+		NPC Numbers cheat (Ctrl-N). When enabled, clicking an a NPC
+		will display their number instead of their name.
+
+		More NPC schedules (sew, lab-work, etc.) implemented.
+
+		Many bugs (especially combat/weapons and audio) fixed.
+
+		Black Gate paperdoll art by Adam Delman and Philip Gottschalk
+
+02/08/01	v0.91 alpha 2
+
+		Dynamic keybindings. Use config/disk/game/(gametitle)/keys
+		to specify a keybinding-file. See data/default.key for an
+		example.
+
+		Can now use the Serpent Isle paperdolls while playing
+		The Black Gate. To use, the Serpent Isle path in the 
+		config file must be filled in with an absolute path.
+		Paperdolls may be a little buggy.
+
+		Massive code restructuring and cleanup (use STL wherever
+		possible, pervasive use of namespaces, more portable C++
+		conformance, etc.) These changes have the side effect of
+		improving stability.
+
+		Gamma correction (use + and -)
+
+		More schedules support
+
+		Improved, easier to use shape browser
+
+		Serpent Isle paperdolls
+
+		Improved weapons support
+
+		Support for the French version of BG (Frederic Wagner)
+	
+		Alpha/Linux cxx support (Christoph Reichenbach)
+
+		Allow for disabling/enabling of palette fades
+
+		Improved BG intro (plasma screen, animations, etc)
+
+		New cheats (Heal, Resurrect, Max Party Level)
+
+		Sound Tester (Alt-1)
+
+		Screen Shots (Ctrl-Alt-S)
+
+		Reworked audio subsystem (including MIDI repeat support for 
+		Timidity)
+
+		Loads of bug fixes (Read ChangeLog for details)
+
+
+11/20/00:	v0.90 alpha 1
+
+		New scaling code contributed by Derek Liauw Kie Fa 
+		(2xSaI filter)
+
+		Exult logo & menu at startup & mouse support in menu
+
+		Many more cheats (ArchWizard, Hack-mover, ...)
+	
+		Key ring for BG (same as original SI)
+
+		Improved help
+	
+		About box
+
+		GIMP plugin is functional (load & save)
+
+		Better SI support (not playable yet)
+
+		Midi Sound Effects (Windows & Timidity only)
+
+		Tons and tons of fixes (magic, schedules, weights, dungeons,
+		missile eggs, explosions, invisibility, protection, ...)
+
+		More quotes & credits :-)
+
+8/22/00:	v0.40
+		Note:  ALL save games from before this update are now broken.
+		Games must be restarted.
+
+		Better introduction sequence. Can be interrupted by
+		keypress.
+
+		Main menu implemented.
+
+		Proper instruments in MIDI music and XMI support.
+		
+		Cheating mode: any keys which enable additional features can
+		be disabled/enabled from the config file
+
+		'God mode' (alt-G) and teleport (ctrl-alt-t) cheat added.
+
+		Support for barges (Flying carpet, ships, carts...)
+
+		Teleports.
+
+		Combat:  Monsters attack, and the music plays.
+
+		More shortcuts:  'f', 'w', 'm', 'b'.
+
+		Serpent Isle awareness (not useful yet)
+
+		Better shape browser.
+
+		The usual slew of bug-fixes.
+
+
+7/6/00:		V0.35
+		Scrolling works like the original.  Same for conversations.
+
+		First attempt at combat:  You can attack/kill monsters, but
+		generally (with a few exceptions), they don't fight back.
+
+		Spellbook and magic (some spells at least) work.
+
+		Weather:  Storms, clouds.
+
+		Scaling:  2X scaling with antialiasing.  See README for
+		details.
+
+6/2/00:		V0.30
+		Save/load implemented.
+
+		MIDI improvements in Windows version.
+
+		More animations:  You can see the weapons being carried.
+
+		Better object identification and inventory management.
+
+		View the endgame movie by hitting F10.
+
+		NPC schedules/pathfinding improved.
+
+		Moongates work.
+
+		Sleeping works (but animation not done).
+
+5/8/00:		V0.26
+		MIDI in Windows version!!
+
+		Correct Avatar/NPC animation frames (finally), and improvements
+		to 'seashore' animations.
+
+		Inventory improved:  Armor, etc. goes where it's supposed to
+		(although there are still a few things to be fixed).
+
+		You can now read signs, books, and scrolls.
+
+		Much improved shape browser (a development aid).
+
+		Many bug fixes.
+
+		New pathfinding framework.
+
+		New object access API for some data-objects
+
+4/25/00:	V0.25
+		Improved midi support using the timidity binary and patchsets
+		under linux.
+
+		Earthquakes (except in Win32 version)!
+
+		In-game scripted introduction.
+
+		More animated objects.
+
+		Some NPC schedules now implemented.
+
+		Lighting and transparency.
+
+		Better USECODE support. You can solve the Trinsic murder, and
+		then answer the mayor's copy-protection questions to get the
+		password.  Also speed, compilation and debugging improvements.
+
+		Improved inventory support.  You can buy items, and feed
+		Iolo.
+
+		Better support for building win32 targets.
+
+		Improved rendering pipeline. Still not perfect, but definitely
+		a vast improvement.
+
+3/23/00:	V0.20
+		Speech and midi support from Dancer Vesperman, as well as
+		automatic configuration.
+
+		Inventory partly working.  You can open bags and boxes, and
+		drag items in/out of them.
+
+		Mouse pointers and fonts from Ultima7 are now used.
+
+		Animated objects (like fountains and flags) supported.
+
+2/29/00:	V0.12
+		Fixed crashes at start and after initial conversation, thanks
+		to Richard Wesley.
+
+		Added obstacle detection.  You now need to open doors to get
+		through them, and you can climb up/down stairs.
+
+		Replaced XLib and Win32 code with the SDL library.  Should make
+		porting to Windows far easier.
+
+2/20/00:	V0.11
+		Loads of improvements to the USECODE interpreter, especially
+		with conversations.
+
+2/10/00:	V0.10
+		Added USECODE interpreter.  
+		Removed my previous conversation engine (which I'll use in
+		another project).
+		Exult creates the "gamedat" directory and files automatically.
+		Moved web site to exult.sourceforge.com.
+
+7/5/99:		W.J. Palenstijn's WIN32 port!
+
+6/10/99:	First attempt at obstacle avoidance.
+
+5/28/99:	Wrote a script compiler for NPC's.
+
+5/24/99:	Modified conversation engine to handle the notion of a
+		conversation "topic".  Also show character "portraits".
+
+4/23/99:	From Tristan Tarrant:  Read item names from "text.flx" instead
+		of trying to enumerate them in the code.
+
+4/14/99:	V0.07
+		First implementation of an NPC conversation engine.
+
+12/21/98:	V0.06
+		Startup memory requirements are reduced dramatically.
+		A port to MSDOS (320x200 VGA) is added.
+
+12/4/98:	V0.05
+		Added text rendering using the FreeType package and the
+		"avatar.ttf" font.  Left-clicking on many of the game items
+		now causes their names to show on the screen.
+
+11/5/98:	V0.04
+		2 other characters walk around randomly.
+		Double-click on doors and shutters to open/shut them.
+		Program exits gracefully when window is closed.
+
+10/14/98:	V0.03
+		Avatar now walks around using the right-mouse button.
+
+10/6/98:	V0.02
+		Show moveable objects from "ireg" files.
+		Read in all objects shown.  Improves display performance.
+		Attempt (with partial success) to show objects in proper
+		z-order.
+
+9/25/98:	V0.01
+		Try to open files first lower-case, then upper (u7open()).

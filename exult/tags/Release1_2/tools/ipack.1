@@ -1,0 +1,145 @@
+.\" -*- nroff -*-
+.TH ipack 1 2002-03-24 Exult
+
+.SH NAME
+ipack \- Manipulate Flex files containing Shapes
+
+.SH SYNOPSIS
+.B ipack -c
+.I SCRIPT
+
+.B ipack -x
+.I SCRIPT
+
+.B ipack -u
+.I SCRIPT
+
+.SH DESCRIPTION
+Flex files containing Shapes are used for the storage visual elements
+by the games
+.I Exult
+supports. While
+.BR expack (1)
+can operate on such files, using
+.B ipack
+is more comfortable. It can extract images from the Flex file
+directly into PNG-format, and create or update Flex files from a list
+of PNG files.
+
+The first parameter determines the mode of operation:
+
+.TP
+.BR -c " Creation"
+New Flex and palette files are created according to the instructions
+contained in the
+.I SCRIPT
+file.
+
+.TP
+.BR -u " Update"
+Works like Creation, but updates an existing Flex file.
+
+.TP
+.BR -x " Extraction"
+The contents of the Flex file described in the
+.I SCRIPT
+file are extracted as PNG is dissected into its contents, as described in this script file.
+
+.SS Script File Format
+Empty lines, and lines starting with a pound sign
+.RB ( # )
+are ignored.
+
+The names of the associated Flex archive and palette files are
+given in lines containing optional whitespace, one of the tokens
+.BR archive " or " palette ,
+whitespace, and the filename.
+
+Other lines define one shape each, and must begin with an image slot
+number, followed by a slash
+.RB ( / ),
+the number of frames, a colon
+.RB ( : ),
+and finally the PNG file specification.
+The numbers may be given either in
+decimal, in octal prefixed with
+.BR 0 ;
+or in hexadecimal prefixed with
+.BR 0x .
+The file specification consists of the filename
+.IR PREFIX ,
+optionally
+followed by a number and direction in brackets, optionally followed by
+whitespace and the word
+.BR flat .
+
+Per default, each shape corresponds to a number of PNG files (one for
+each frame) named
+.IB PREFIXnn .png
+with
+.I nn
+replaced by the frame number. If the optional bracket expression is
+used in the specification the Shape corresponds to a single PNG file
+instead. This file contains all frames, each of which is 8 by 8 pixels
+in size, arranged next to each other in a rectangular grid. The number
+in the bracket expression gives the size of this grid in the direction
+indicated. The direction can be either
+.B down
+or
+.BR across .
+
+.SH EXAMPLES
+.TP
+.B ipack -c island.scr
+Creates a Flex file and a palette file as specified by
+.BR island.scr .
+
+.TP
+.B ipack -x island.scr
+Extracts all components described in
+.B island.scr
+from the Flex file given therein.
+
+.SS Example script
+# script file for island.flx
+.br
+archive island.flx
+.br
+# put the palette into this file
+.br
+palette island.pal
+.br
+# the zeroth image has 32 frames in the files
+.br
+# zero00.png to zero31.png
+.br
+0/32:zero
+.br
+# image 5 consists of 22 frames stored in file
+.br
+# five.png in a grid 5 frames across (which means
+.br
+# 5 rows of which the last holds only 2 frames)
+.br
+5/22:five(5 across) flat
+.br
+# image 4 consists of 12 frames stored in file
+.br
+# four.png in a 3 by 4 grid
+.br
+4/12:four(4 down) flat
+.br
+# images 1 to 3 are unspecified
+
+.SH BUGS
+Tiled Shapes are currently extracted into multiple PNG files, not a
+single file as expected during Create/Update.
+
+.SH AUTHOR
+This manpage was written by Robert Bihlmeyer. It may be freely
+redistributed and modified under the terms of the GNU General Public
+License version 2 or higher.
+
+.SH SEE ALSO
+.BR expack "(1), " exult (6)
+

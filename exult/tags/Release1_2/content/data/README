@@ -1,0 +1,3 @@
+This dir holds our custom data for the patche(s). Use the script files with ipack to build the files 
+(e.g. "ipack -c faces" builds faces.vga). Never overwrite your existing files in the /static dir
+with these flex files. Only put them into the /patch dir.

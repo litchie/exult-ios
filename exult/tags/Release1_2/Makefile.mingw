@@ -1,0 +1,171 @@
+# Exult makefile for use in Windows with mingw using gcc 3.2 and msys shell
+# It may require a little tweaking. (paths)
+
+# Where is Ultima 7 installed
+U7PATH=C:/Ultima7
+#Only used for snapshots
+TOOLSPATH=C:/U7Tools
+
+# Base of the exult source
+SRC=.
+
+### Modify these paths
+SDL_CFLAGS=-I$(SRC)/sdl/include
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDLmain -lSDL
+SDL_IMAGE_LIBS=-L$(SRC)/sdl/lib -lmingw32 -lSDLmain -lSDL_image -lSDL -lpng -ljpeg -lz
+
+### Uncomment these 2 lines, and comment out the 2 above if you want to build
+### Exult as a console Win32 application. This is unsupported and is somewhat
+### of a hack.
+#SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDL -mconsole
+#SDL_CFLAGS=-I$(SRC)/sdl/include -DSDL_main=main
+
+### Zip File support. Comment out if ZLib isn't installed
+### Modify paths, if required
+ZIP_CFLAGS=-I$(SRC)/zlib -DHAVE_ZIP_SUPPORT 
+ZIP_LIBS=-L$(SRC)/zlib -lz
+
+# Leave this option empty
+EXTRA_OPTIONS=
+
+CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" \
+	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
+	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
+	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
+	$(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
+
+CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DHAVE_SNPRINTF -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -DUSE_FMOPL_MIDI
+CXX=g++
+
+LFLAGS=
+LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid -mwindows
+
+EXEC=Exult.exe
+EXEEXT=.exe
+
+MIDI_DRV_OBJS=fmopl.o fmopl_midi.o fmopldrv.o win_midiout.o
+# unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o 
+SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
+OBJS	= exultico.o
+
+include Makefile.common
+
+exultico.o: win32/exultico.rc win32/exult.ico
+	windres --include-dir win32 win32/exultico.rc exultico.o
+
+install: $(EXEC)
+	mkdir -p $(U7PATH)
+	strip $(EXEC) -o $(U7PATH)/$(EXEC)
+	mkdir -p $(U7PATH)/data
+	cp data/exult.flx $(U7PATH)/data
+	cp data/exult_bg.flx $(U7PATH)/data
+	cp data/exult_si.flx $(U7PATH)/data
+	cp data/exultmsg.txt $(U7PATH)/data
+	cp SDL/lib/SDL.dll $(U7PATH)
+	cp SDL/lib/SDL_mixer.dll $(U7PATH)
+
+
+dist:   $(EXEC)
+	mkdir -p $(U7PATH)
+	mkdir -p $(U7PATH)/Exult
+	strip $(EXEC) -o $(U7PATH)/Exult/$(EXEC)
+	mkdir -p $(U7PATH)/Exult/Data
+	cp data/exult.flx $(U7PATH)/Exult/Data
+	cp data/exult_bg.flx $(U7PATH)/Exult/Data
+	cp data/exult_si.flx $(U7PATH)/Exult/Data
+	cp data/exultmsg.txt $(U7PATH)/Exult/Data
+	cp AUTHORS $(U7PATH)/Exult/AUTHORS.txt
+	cp ChangeLog $(U7PATH)/Exult/ChangeLog.txt
+	cp COPYING $(U7PATH)/Exult/COPYING.txt
+	cp FAQ $(U7PATH)/Exult/FAQ.txt
+	cp docs/faq.html $(U7PATH)/Exult
+	mkdir -p $(U7PATH)/Exult/images
+	cp docs/images/*.gif $(U7PATH)/Exult/images
+	cp docs/images/docs*.png $(U7PATH)/Exult/images
+	cp NEWS $(U7PATH)/Exult/NEWS.txt
+	cp README $(U7PATH)/Exult/README.txt
+	cp README.1ST $(U7PATH)/Exult/README.1ST.txt
+	cp docs/ReadMe.html $(U7PATH)/Exult
+	cp README.win32 $(U7PATH)/Exult/README.win32.txt
+	cp data/bg/defaultkeys.txt $(U7PATH)/Exult/bgdefaultkeys.txt
+	cp data/si/defaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
+	cp SDL/README-SDL.txt $(U7PATH)/Exult
+	cp SDL/README-SDL_mixer.txt $(U7PATH)/Exult
+	cp SDL/lib/SDL.dll $(U7PATH)/Exult
+	cp SDL/lib/SDL_mixer.dll $(U7PATH)/Exult
+	u2d $(U7PATH)/Exult/*.txt
+
+toolsinstall: tools
+	mkdir -p $(U7PATH)
+	mkdir -p $(U7PATH)/tools
+	strip expack.exe -o $(U7PATH)/tools/expack.exe
+	strip cmanip.exe -o $(U7PATH)/tools/cmanip.exe
+	strip ipack.exe -o $(U7PATH)/tools/ipack.exe
+	strip mklink.exe -o $(U7PATH)/tools/mklink.exe
+	strip mockup.exe -o $(U7PATH)/tools/mockup.exe
+	strip rip.exe -o $(U7PATH)/tools/rip.exe
+	strip shp2pcx.exe -o $(U7PATH)/tools/shp2pcx.exe
+	strip smooth.exe -o $(U7PATH)/tools/smooth.exe
+	strip splitshp.exe -o $(U7PATH)/tools/splitshp.exe
+	strip textpack.exe -o $(U7PATH)/tools/textpack.exe
+	strip u7voice2syx.exe -o $(U7PATH)/tools/u7voice2syx.exe
+	strip ucc.exe -o $(U7PATH)/tools/ucc.exe
+	strip wuc.exe -o $(U7PATH)/tools/wuc.exe
+	strip wud.exe -o $(U7PATH)/tools/wud.exe
+	strip ucxt.exe -o $(U7PATH)/ucxt.exe
+	mkdir -p $(U7PATH)/data
+	cp usecode/ucxt/data/events.data $(U7PATH)/data
+	cp usecode/ucxt/data/flags.data $(U7PATH)/data
+	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/data
+	cp usecode/ucxt/data/u7opcodes.data $(U7PATH)/data
+	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data
+	cp data/u7bgintrinsics.data $(U7PATH)/data
+	cp data/u7siintrinsics.data $(U7PATH)/data
+	cp SDL/lib/SDL.dll $(U7PATH)/tools
+
+toolsdist: tools
+	mkdir -p $(TOOLSPATH)
+	mkdir -p $(TOOLSPATH)/tools
+	strip expack.exe -o $(TOOLSPATH)/tools/expack.exe
+	strip cmanip.exe -o $(TOOLSPATH)/tools/cmanip.exe
+	strip ipack.exe -o $(TOOLSPATH)/tools/ipack.exe
+	strip mklink.exe -o $(TOOLSPATH)/tools/mklink.exe
+	strip mockup.exe -o $(TOOLSPATH)/tools/mockup.exe
+	strip rip.exe -o $(TOOLSPATH)/tools/rip.exe
+	strip shp2pcx.exe -o $(TOOLSPATH)/tools/shp2pcx.exe
+	strip smooth.exe -o $(TOOLSPATH)/tools/smooth.exe
+	strip splitshp.exe -o $(TOOLSPATH)/tools/splitshp.exe
+	strip textpack.exe -o $(TOOLSPATH)/tools/textpack.exe
+	strip u7voice2syx.exe -o $(TOOLSPATH)/tools/u7voice2syx.exe
+	strip ucc.exe -o $(TOOLSPATH)/tools/ucc.exe
+	strip wuc.exe -o $(TOOLSPATH)/tools/wuc.exe
+	strip wud.exe -o $(TOOLSPATH)/tools/wud.exe
+	strip ucxt.exe -o $(TOOLSPATH)/ucxt.exe
+	mkdir -p $(TOOLSPATH)/data
+	cp usecode/ucxt/data/events.data $(TOOLSPATH)/data
+	cp usecode/ucxt/data/flags.data $(TOOLSPATH)/data
+	cp usecode/ucxt/data/opcodes.txt $(TOOLSPATH)/data
+	cp usecode/ucxt/data/u7opcodes.data $(TOOLSPATH)/data
+	cp usecode/ucxt/data/u7misc.data $(TOOLSPATH)/data
+	cp data/u7bgintrinsics.data $(TOOLSPATH)/data
+	cp data/u7siintrinsics.data $(TOOLSPATH)/data
+	cp tools/expack.txt $(TOOLSPATH)/tools
+	cp tools/intrins1.txt $(TOOLSPATH)/tools
+	cp tools/intrins2.txt $(TOOLSPATH)/tools
+	cp tools/ipack.txt $(TOOLSPATH)/tools
+	cp tools/shp2pcx.txt $(TOOLSPATH)/tools
+	cp tools/splitshp.txt $(TOOLSPATH)/tools
+	cp tools/textpack.txt $(TOOLSPATH)/tools
+	cp tools/u7bgflag.txt $(TOOLSPATH)/tools
+	cp tools/u7siflag.txt $(TOOLSPATH)/tools
+	cp tools/ucformat.txt $(TOOLSPATH)/tools
+	u2d $(TOOLSPATH)/tools/*.txt
+	cp SDL/lib/SDL.dll $(TOOLSPATH)/tools
+
+allclean: clean toolsclean
+
+allinstall: install toolsinstall
+
+run:
+	start $(EXEC)

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="Exult_flx"
+	SccProjectName=""
+	SccLocalPath=""
+	Keyword="MakeFileProj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\Exult_flx___Win32_Debug"
+			IntermediateDirectory=".\Exult_flx___Win32_Debug"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx.bat ..\data"
+				ReBuildCommandLine="$(SolutionDir)\buildflx.bat ..\data "
+				CleanCommandLine="del ..\data\exult_flx.h ..\data\exult.flx"
+				Output="..\data\exult_flx.h;..\data\exult.flx"/>
+		</Configuration>
+		<Configuration
+			Name="Debug Install|Win32"
+			OutputDirectory=".\Exult_flx___Win32_Debug_Install"
+			IntermediateDirectory=".\Exult_flx___Win32_Debug_Install"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data . ..\data\exult.flx data"
+				ReBuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data . ..\data\exult.flx data "
+				CleanCommandLine="del ..\data\exult_flx.h ..\data\exult.flx"
+				Output="..\data\exult_flx.h;..\data\exult.flx"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\Exult_flx___Win32_Release"
+			IntermediateDirectory=".\Exult_flx___Win32_Release"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx.bat ..\data"
+				ReBuildCommandLine="$(SolutionDir)\buildflx.bat ..\data "
+				CleanCommandLine="del ..\data\exult_flx.h ..\data\exult.flx"
+				Output="..\data\exult_flx.h;..\data\exult.flx"/>
+		</Configuration>
+		<Configuration
+			Name="Release Install|Win32"
+			OutputDirectory=".\Exult_flx___Win32_Release_Install"
+			IntermediateDirectory=".\Exult_flx___Win32_Release_Install"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data . ..\data\exult.flx data"
+				ReBuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data . ..\data\exult.flx data "
+				CleanCommandLine="del ..\data\exult_flx.h ..\data\exult.flx"
+				Output="..\data\exult_flx.h;..\data\exult.flx"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Misc"
+			Filter="">
+			<File
+				RelativePath="..\data\credits.txt">
+			</File>
+			<File
+				RelativePath="..\data\exult0.pal">
+			</File>
+			<File
+				RelativePath="..\data\meditown.mid">
+			</File>
+			<File
+				RelativePath="..\data\quotes.txt">
+			</File>
+		</Filter>
+		<Filter
+			Name="Shapes"
+			Filter="shp">
+			<File
+				RelativePath="..\data\audiooptions.shp">
+			</File>
+			<File
+				RelativePath="..\data\black_gate.shp">
+			</File>
+			<File
+				RelativePath="..\data\cancel.shp">
+			</File>
+			<File
+				RelativePath="..\data\cheating.shp">
+			</File>
+			<File
+				RelativePath="..\data\exit.shp">
+			</File>
+			<File
+				RelativePath="..\data\extras.shp">
+			</File>
+			<File
+				RelativePath="..\data\exult_credits.shp">
+			</File>
+			<File
+				RelativePath="..\data\exult_logo.shp">
+			</File>
+			<File
+				RelativePath="..\data\exult_quotes.shp">
+			</File>
+			<File
+				RelativePath="..\data\font.shp">
+			</File>
+			<File
+				RelativePath="..\data\full_screen.shp">
+			</File>
+			<File
+				RelativePath="..\data\gamemenu.shp">
+			</File>
+			<File
+				RelativePath="..\data\hp_bar.shp">
+			</File>
+			<File
+				RelativePath="..\data\midi_conversion.shp">
+			</File>
+			<File
+				RelativePath="..\data\ok.shp">
+			</File>
+			<File
+				RelativePath="..\data\palette_fades.shp">
+			</File>
+			<File
+				RelativePath="..\data\play_1st_scene.shp">
+			</File>
+			<File
+				RelativePath="..\data\play_intro.shp">
+			</File>
+			<File
+				RelativePath="..\data\pointers.shp">
+			</File>
+			<File
+				RelativePath="..\data\sav_down.shp">
+			</File>
+			<File
+				RelativePath="..\data\sav_downdown.shp">
+			</File>
+			<File
+				RelativePath="..\data\sav_selected.shp">
+			</File>
+			<File
+				RelativePath="..\data\sav_slider.shp">
+			</File>
+			<File
+				RelativePath="..\data\sav_up.shp">
+			</File>
+			<File
+				RelativePath="..\data\sav_upup.shp">
+			</File>
+			<File
+				RelativePath="..\data\savegump.shp">
+			</File>
+			<File
+				RelativePath="..\data\scaling_method.shp">
+			</File>
+			<File
+				RelativePath="..\data\serpent_isle.shp">
+			</File>
+			<File
+				RelativePath="..\data\setup.shp">
+			</File>
+			<File
+				RelativePath="..\data\sfx_conversion.shp">
+			</File>
+			<File
+				RelativePath="..\data\videooptions.shp">
+			</File>
+		</Filter>
+		<File
+			RelativePath="..\data\Makefile.am">
+		</File>
+		<File
+			RelativePath="..\data\README">
+		</File>
+		<File
+			RelativePath="..\data\flx.in">
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

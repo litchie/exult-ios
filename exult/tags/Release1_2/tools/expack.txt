@@ -1,0 +1,117 @@
+Expack Documentation
+====================
+   
+NAME
+====
+
+expack - manipulate Flex files 
+  
+
+SYNOPSIS
+========
+
+expack -a FLEXFILE FILE... 
+expack -c FLEXFILE FILE... 
+expack -x FLEXFILE [INDEX] 
+expack -i MANIFEST 
+expack -l FLEXFILE 
+  
+
+DESCRIPTION
+===========
+
+expack is a command-line utility that lets you extract and create Flex files. 
+Flex files are archives (which means that they act as containers for other 
+files, somewhat like directories) used by Ultima 7 to store most of its data. 
+Note that the names of the original files are not stored in the Flex --- files 
+are only retrievable by their index. 
+
+  
+Modes of operation
+==================
+
+
+  -a Add 
+  --NOT IMPLEMENTED YET.  FUTURE ENHANCEMENT--
+  This command adds one or more FILEs to the end of FLEXFILE. 
+
+  -c Create 
+  This command takes one or more FILEs and bundles them into FLEXFILE, 
+  overwriting it in the process. 
+
+  -x Extract 
+  Lets you extract the files contained within FLEXFILE. If INDEX is given only 
+  the file at this position will be unpacked, otherwise all files are extracted. 
+  The created files will be named index.u7o. 
+
+  -i Input 
+  Similar to "Create", this command creates FLEXFILE from a number of input 
+  files. However, "Input" takes the names of the input files from MANIFEST 
+  instead of the command line. 
+  MANIFEST must be a list of file names, one per line. The first name is that of 
+  the Flex file that is to be created, the rest are the input files used in 
+  building it. 
+
+  -l List 
+  This command lists the contents of a FLEXFILE. It gives you the number of 
+  files contained within the Flex file, as well as the length of each file. 
+
+  
+EXAMPLES
+========
+
+  expack -a animals.flx bee.wav 
+  Adds bee.wav to the Flex file animals.flx.
+ 
+  expack -a animals.flx hamster.wav snake.wav donkey.wav 
+  Adds hamster.wav, snake.wav, and donkey.wav to the Flex file animals.flx.
+ 
+  expack -c animals.flx duck.wav cat.wav cow.wav dog.wav 
+  Creates a new Flex file animals.flx containing duck.wav, cat.wav, cow.wav, and 
+  dog.wav.
+ 
+  expack -x text.flx 17 
+  Extracts the file at position 17fromtext.flxinto17.u7o.
+ 
+  expack -x text.flx 
+  Extracts all files from text.flx into files named 0.u7o, 1.u7o, 2.u7o, etc. 
+  expack -i wavlist 
+  With wavlist reading: 
+  jmsfx.flx 
+  ant.wav 
+  bee.wav 
+  cat.wav 
+  will create a new Flex file jmsfx.flx consisting of ant.wav, bee.wav, 
+  andcat.wav. 
+
+  expack -l text.flx 
+  Lists the number and lenghts of files contained in text.flx. 
+  
+
+BUGS
+====
+
+The "Add" command (-a) does not work yet. 
+  
+
+AUTHOR
+======
+
+This manpage was written by Robert Bihlmeyer based on a text by Marc Winterrowd. 
+It may be freely redistributed and modified under the terms of the GNU General 
+Public License version 2 or higher. 
+
+
+ 
+Index
+  NAME
+  SYNOPSIS
+  DESCRIPTION
+    Modes of operation
+  EXAMPLES
+  BUGS
+  AUTHOR
+
+
+This document was created by man2html, using the manual pages.
+Time: GMT, April 05, 2002 

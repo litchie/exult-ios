@@ -1,0 +1,232 @@
+Documentation for the bugs in usecode and the corrections that can be made
+Started by: Artaxerxes (artaxerxes@users.sf.net)
+
+Forewords:
+every action on usecode should be done on the _disassembled_ usecode. Please
+use "rip" and "wud" to disassemble usecode appropriately. Once the changes are
+made, re-assemble using "wuc" and "rip". Those tools can be found on Exult's
+download page.
+
+Unfixed bugs:
+=================
+
+(SI) Pillars in Silver Seed fort teleport to Gargoyle test
+==========================================================
+
+A slight mistake of the add-on designers. The cool looking pillars in the dining
+hall of the Silver Seed fort start the gargoyle city test and teleport the Avatar
+to it.
+This could be fixed by
+- change the usecode to only trigger in the right area
+- change the pillars (i.e., change their frame)
+- give the 'real' pillar a quality and check for that
+
+
+
+(SI) Resurrecting possessed party:
+===================================
+Author: Clock Nova
+Date:   04-21-03 08:36
+
+On the other hand, I would not have thought of using the Hourglass after
+releasing the Banes had I not read about it elsewhere. If you use it in the
+room where you fought Selena, your companions get "resurrected" so they can
+fight themselves later on. Oops!
+
+
+(BG) Pocketwatch AM/PM confusion:
+==================================
+Author: MagicMop
+Date:   12-14-01 10:12
+
+1. Between 12 and 1 o clock in the afternoon, the time is listed as 'am' not
+'pm'
+
+[Note: this has been fixed in SI's usecode.]
+
+
+(BG,french) Dupre accent confusion:
+====================================
+
+The French BG's usecode mixes up Dupre with and without an accent on the e.
+This way some conversation options are unreachable.
+
+[Note: fixed by jhoeksma. Need to disassemble fix to include here.]
+
+(BG) liquer conversation bug:
+==============================
+
+BG has a conversation in which there are two conversation options named
+'liquer'. This prevents the second one from being chosen.
+
+[Note: fixed by jhoeksma. Need to disassemble fix to include here.]
+
+
+(SI) disappearing pikeman:
+===========================
+
+The first part of the banquet usecode in Monitor accidently deletes the
+List Field's pikeman egg when you're too close to that egg.
+
+
+
+
+Fixed bugs:
+==================
+
+(SI) Gwenno and the Diamond Necklace:
+======================================
+
+No matter who has the diamond necklace, Iolo is going to say he's lost it
+during the adventures to find Gwenno. This is due to an error in the usecode
+function that checks whether you have the diamond or not. It is looking for
+the wrong item (the wrong shape actually).
+
+Usecode function: 0495
+
+Code to replace:
+01A5: 1F 05 00 		pushi	0005H			; 5
+01A8: 1F 99 FE 		pushi	FE99H			; -359
+01AB: 1F BB 03 		pushi	03BBH			; 955
+01AE: 1F 01 00 		pushi	0001H			; 1
+01B1: 1F 9B FE 		pushi	FE9BH			; -357
+01B4: 24 05 00 		call	[0005]			; 097DH
+
+Replace it with:
+01A5: 1F 05 00 		pushi	0005H			; 5
+01A8: 1F 99 FE 		pushi	FE99H			; -359
+01AB: 1F BB 03 		pushi	03BBH			; 955
+01AE: 1F 08 00 		pushi	0008H			; 8
+01B1: 1F 9B FE 		pushi	FE9BH			; -357
+01B4: 24 05 00 		call	[0005]			; 097DH
+
+Code to replace:
+01C3: 1F 05 00 		pushi	0005H			; 5
+01C6: 1F 99 FE 		pushi	FE99H			; -359
+01C9: 1F BB 03 		pushi	03BBH			; 955
+01CC: 1F 01 00 		pushi	0001H			; 1
+01CF: 1F 6B FF 		pushi	FF6BH			; -149
+01D2: 1F FD FF 		pushi	FFFDH			; -3
+01D5: 24 06 00 		call	[0006]			; 0996H
+
+Replace it with:
+01C3: 1F 05 00 		pushi	0005H			; 5
+01C6: 1F 99 FE 		pushi	FE99H			; -359
+01C9: 1F BB 03 		pushi	03BBH			; 955
+01CC: 1F 01 00 		pushi	0008H			; 8
+01CF: 1F 6B FF 		pushi	FF6BH			; -149
+01D2: 1F FD FF 		pushi	FFFDH			; -3
+01D5: 24 06 00 		call	[0006]			; 0996H
+
+===============================
+
+
+(SI) Shamino's exchanged-items list
+====================================
+
+In the beginning Shamino talks about preparing a list of exchanged 
+objects but at a first look at that list his own objects are missing. This 
+gets normally corrected in the game at the latest when Dupre or Iolo join.
+You might also change usecode function 0402 like this:
+
+Usecode Function 0402:
+
+Code to replace:
+025D: 24 0A 00          call    [000A]                  ; 092BH
+0260: 13                push    true
+0261: 43 A2 02          popf    flag:[02A2]
+0264: 1F 00 00          pushi   0000H                   ; 0
+0267: 1D 84 03          pushs   L0384                   ; @Such 
+strangeness!@
+026A: 1F FE FF          pushi   FFFEH                   ; -2
+026D: 24 09 00          call    [0009]                  ; 097FH
+0270: 24 0B 00          call    [000B]                  ; 09AAH
+0273: 1F FE FF          pushi   FFFEH                   ; -2
+0276: 39 26 00 01       calli   _add_to_party@1 (0026)
+
+Replace with:
+025D: 13                push    true
+025E: 43 A2 02          popf    flag:[02A2]
+0261: 1F 00 00          pushi   0000H                   ; 0
+0264: 1D 84 03          pushs   L0384                   ; @Such 
+strangeness!@
+0267: 1F FE FF          pushi   FFFEH                   ; -2
+026A: 24 09 00          call    [0009]                  ; 097FH
+026D: 24 0B 00          call    [000B]                  ; 09AAH
+0270: 1F FE FF          pushi   FFFEH                   ; -2
+0273: 39 26 00 01       calli   _add_to_party@1 (0026)
+0277: 24 0A 00          call    [000A]
+
+This checks for the exchanged items in the party _after_ Shamino joins.
+
+
+===============================
+
+
+(SI) Silk stockings missing from exchanged item list.
+=======================================================
+
+Usecode function 092B checks for silk stockings in inventory but sets 
+wrong flag (not harmful, sets flag 27A which has already been set by the same 
+code call for another object (pinecone)).
+
+Usecode Function 092B
+
+Code to replace:
+
+00DC: 43 7A 02          popf    flag:[027A]
+
+Replace with:
+
+00DC: 43 7B 02          popf    flag:[027B]
+
+
+
+===============================
+
+(SI) Filari in exchanged item list. 
+
+On the exchanged items list there should also be the filari in your 
+inventory. This is either due to a wrong handling of count_objects by 
+exult or a wrong parameter in the usecode. This is the only instance of 
+using count_objects like this so I think its probably a bug in usecode. 
+count_objects gets called with shapenum 3B4 (filari), quality 14h and 
+framenum 0. Normally quality and framenum FE99 (any) is used if 
+money is counted, only not in this case. The result is that the 
+parameters do not match the characteristics of the filari in your 
+inventory (quality=87dec, framenum=7) and are ignored.
+
+Usecode Function 092C:
+
+replace:
+
+0057: 1F 14 00          pushi   0014H                   ; 20
+with: 
+0057: 1F 99 FE          pushi   FE99H                   ; -359
+
+
+and
+
+0087: 1F 00 00          pushi   0000H                   ; 0
+with
+0087: 1F 99 FE          pushi   FE99H                   ; -359
+
+
+(SI) Resurrecting Gwenno:
+==========================
+
+Gwennos activity flag gets set to 3 (talk) by the resurrect function (She 
+is even handled especially). This
+triggers an automatic conversation when the Avatar stands near her (event 
+== 0 or 9 I assume) and skips the function that checks for her 
+status: (!UI_get_item_flag(0xFF6B, 0x001E). When you stand far enough 
+apart this should not happen anyway. 
+
+Usecode function 08FE:
+
+replace 
+0109: 1F 03 00          pushi   0003H                   ; 3
+with 
+0109: 1F 0C 00          pushi   000CH                   ; 12
+
+(0C = wander) and this should not happen.

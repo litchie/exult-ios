@@ -1,0 +1,7 @@
+
+NEW OPCODES:
+
+* Make an array out of 'n' number of data segments, whose
+  offsets are on the stack
+
+
