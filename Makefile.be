@@ -85,6 +85,7 @@ EXULT_FLX_OBJECTS = \
 	data/magicgorget.shp \
 	data/cleaver.shp \
 	data/faces.shp \
+	data/faces2.shp \
 	data/flx.in
 
 $(EXEC) : Makefile data/exult.flx $(OBJS) beos/exult.rsrc
