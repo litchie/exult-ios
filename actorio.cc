@@ -168,7 +168,7 @@ Actor::Actor
 					// Tournament.
 	if ((intel_val >> 6) & 1) 
 		set_flag (Obj_flags::si_tournament);
-	if ((intel_val >> 7) & 1) set_siflag (Actor::polymorph);
+	if ((intel_val >> 7) & 1) set_flag (Obj_flags::polymorph);
 
 
 	// Combat skill (0-6), Petra (7)
@@ -267,7 +267,7 @@ Actor::Actor
 	{
 		set_shape(shnum);		// 16 Bit Shape Number
 		shnum = (sint16) Read2(nfile);	// 16 Bit Polymorph Shape Number
-		if (get_siflag (polymorph)) set_polymorph(shnum);
+		if (get_flag (Obj_flags::polymorph)) set_polymorph(shnum);
 
 
 	}
@@ -476,7 +476,7 @@ void Actor::write
 	if (get_flag (Obj_flags::read)) iout |= 1 << 5;
 					// Tournament
 	if (get_flag (Obj_flags::si_tournament)) iout |= 1 << 6;
-	if (get_siflag (Actor::polymorph)) iout |= 1 << 7;
+	if (get_flag (Obj_flags::polymorph)) iout |= 1 << 7;
 	nfile.put(iout);
 
 
@@ -549,7 +549,7 @@ void Actor::write
 	Write2(nfile,0);	// Skip 2
 
 	// 16 Bit Shapes
-	if (get_siflag (polymorph))
+	if (get_flag (Obj_flags::polymorph))
 	{
 		Write2 (nfile, shape_save);	// 16 Bit Shape Num
 		Write2 (nfile, get_shapenum());	// 16 Bit Polymorph Shape

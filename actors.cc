@@ -3034,7 +3034,7 @@ void Main_actor::die
  */
 void Actor::set_actor_shape()
 {
-	if (get_npc_num() != 0 || get_siflag (polymorph))
+	if (get_npc_num() != 0 || get_flag (Obj_flags::polymorph))
 		return;
 
 	int sn;
@@ -3094,21 +3094,22 @@ void Actor::set_polymorph (int shape)
 	{
 		set_shape (shape_save);
 		shape_save = -1;
-		clear_siflag(polymorph);
+		clear_flag(Obj_flags::polymorph);
 		return;
 	}
 	if (shape_save == -1) shape_save = get_shapenum();
 //	set_shape (shape, get_framenum());
 					// ++++Taking a guess for SI amulet:
 	set_shape (shape, get_dir_framenum(Actor::standing));
-	set_siflag (polymorph);
+	set_flag (Obj_flags::polymorph);
 }
 
 // Sets polymorph shape to defaults based on flags and npc num
 void Actor::set_polymorph_default()
 {
 	// Polymorph is only SI
-	if (Game::get_game_type() != SERPENT_ISLE || !get_siflag(polymorph)
+	if (Game::get_game_type() != SERPENT_ISLE || 
+					!get_flag(Obj_flags::polymorph)
 				|| (get_npc_num() != 0 && get_npc_num() != 28))
 		return;
 
