@@ -1338,7 +1338,7 @@ int Actor::figure_hit_points
 
 void Actor::attacked
 	(
-	Actor *attacker,
+	Actor *attacker,		// 0 if from a trap.
 	int weapon_shape,		// Weapon shape, or 0 to use readied.
 	int ammo_shape			// Also may be 0.
 	)

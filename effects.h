@@ -82,7 +82,7 @@ public:
 class Projectile_effect : public Special_effect
 	{
 	Actor *attacker;		// Source of attack/spell.
-	Game_object *dest;		// Destination of path.
+	Game_object *target;		// Target of path.
 	int shape_num;			// Shape # in 'shapes.vga' of projec.
 					//   or spell to 'attack' with.
 	int weapon;			// Shape # of firing weapon, or 0.
@@ -92,9 +92,12 @@ class Projectile_effect : public Special_effect
 	Tile_coord pos;			// Current position.
 					// Add dirty rectangle.
 	void add_dirty(Game_window *gwin);
+	void init(Tile_coord s, Tile_coord t);
 public:
 	Projectile_effect(Actor *att, Game_object *to, int shnum,
 							int weap = 0);
+					// For missile traps:
+	Projectile_effect(Tile_coord s, Tile_coord d, int shnum);
 	~Projectile_effect();
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
