@@ -14,8 +14,18 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "font.h"
 #include "gamewin.h"
 #include "menulist.h"
+
+MenuEntry::MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos)
+{
+	frame_on = on;
+	frame_off = off;
+	x = xpos;
+	y = ypos;
+	selected = false;
+}	
 
 void MenuEntry::paint(Game_window *gwin)
 {
@@ -27,11 +37,70 @@ void MenuEntry::paint(Game_window *gwin)
 	gwin->paint_shape(x-shape->get_width()/2, y, shape);
 }
 
+bool MenuEntry::handle_event(SDL_Event& event)
+{
+	return(event.key.keysym.sym == SDLK_RETURN);
+}
+
+
+MenuChoice::MenuChoice(Shape_frame *on, Shape_frame *off, int xpos, int ypos, Font *fnt)
+{
+	frame_on = on;
+	frame_off = off;
+	x = xpos;
+	y = ypos;
+	selected = false;
+	choice = -1;
+	font = fnt;
+	max_choice_width = 0;
+	choices = new Vector();
+}
+
+void MenuChoice::add_choice(char *s)
+{
+	choices->append(s);
+	int len = font->get_text_width(s);
+	max_choice_width = (len>max_choice_width)?len:max_choice_width;
+}
+
+void MenuChoice::paint(Game_window *gwin)
+{
+	Shape_frame *shape;
+	if(selected)
+		shape = frame_on;
+	else
+		shape = frame_off;
+	gwin->paint_shape(x-shape->get_width(), y, shape);
+	if(choice>=0) {
+		gwin->get_win()->fill8(0, x+32+max_choice_width, y+font->get_text_height(), x+32, y);
+		font->draw_text(gwin, x+32, y, (char *)choices->get(choice));
+	}
+}
+
+bool MenuChoice::handle_event(SDL_Event& event)
+{
+	switch(event.key.keysym.sym) {
+	case SDLK_LEFT:
+		choice--;
+		if(choice<0)
+			choice = choices->get_cnt()-1;
+		break;
+	case SDLK_RIGHT:
+		choice++;
+		if(choice==choices->get_cnt())
+			choice = 0;
+		break;
+	default:
+		break;
+	}
+	return false;
+}
+
 MenuList::~MenuList()
 {
-	MenuEntry *entry;
+	MenuObject *entry;
 	for(int i=0; i<entries->get_cnt(); i++) {
-		MenuEntry *entry = (MenuEntry *)entries->get(i);
+		MenuObject *entry = (MenuObject *)entries->get(i);
 		delete entry;
 	}
 	delete entries;
@@ -39,15 +108,15 @@ MenuList::~MenuList()
 
 void MenuList::set_selected(int sel)
 {
-	MenuEntry *entry;
+	MenuObject *entry;
 	// deselect the previous entry
 	if(selected>=0) {
-		entry = (MenuEntry *)entries->get(selected);
+		entry = (MenuObject *)entries->get(selected);
 		entry->set_selected(false);
 	}
 	// select the new one
 	selected = sel;
-	entry = (MenuEntry *)entries->get(selected);
+	entry = (MenuObject *)entries->get(selected);
 	entry->set_selected(true);
 }
 
@@ -60,7 +129,7 @@ int MenuList::handle_events(Game_window *gwin)
 	do {
 		if (redraw) {
 			for(int i=0; i<count; i++) {
-				MenuEntry *entry = (MenuEntry *)entries->get(i);
+				MenuObject *entry = (MenuObject *)entries->get(i);
 				entry->paint(gwin);
 			}
 			gwin->get_win()->show();
@@ -73,7 +142,6 @@ int MenuList::handle_events(Game_window *gwin)
 			case SDLK_x:
 				if(event.key.keysym.mod & KMOD_ALT) {
 					return -1;
-					
 				}
 				break;
 			case SDLK_UP:
@@ -88,10 +156,11 @@ int MenuList::handle_events(Game_window *gwin)
 				else
 					set_selected(selected+1);
 				continue;
-			case SDLK_RETURN:
-				exit_loop = true;
-				break;
 			default:
+				{
+					MenuObject *entry = (MenuObject *)entries->get(selected);
+					exit_loop = entry->handle_event(event);
+				}
 				break;
 			}
 		}

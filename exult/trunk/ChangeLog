@@ -1,3 +1,11 @@
+2000-11-07  Tristan Tarrant <nadir@users.sourceforge.net>
+
+	* cheat.cc, cheat.h: implement set_enabled() which saves into config
+	* exult.cc: the all-important about scroll (ctrl-v), resolution
+	  things
+	* game.cc: beginnings of setup menu
+	* data/*.shp: some new shapes for the menu
+
 2000-11-06  Tristan Tarrant <nadir@users.sourceforge.net>
 	
 	* font.cc, font.h: beginnings of independent font class and font 

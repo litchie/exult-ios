@@ -26,9 +26,13 @@
 #include "font.h"
 #include "txtscroll.h"
 #include "menulist.h"
+#include "cheat.h"
 
 Game *game = 0;
 extern Configuration *config;
+extern Cheat cheat;
+extern bool get_play_intro(void);
+extern void set_play_intro(bool);
 static Exult_Game game_type = BLACK_GATE;
 
 static char av_name[17] = "";
@@ -348,25 +352,114 @@ bool wait_delay(int ms)
 	return false;
 }
 
-
-Exult_Game exult_menu(Game_window *gwin)
+ExultMenu::ExultMenu(Game_window *gw)
 {
-	Image_window8 *win = gwin->get_win();
-	int topx = (gwin->get_width()-320)/2;
-	int topy = (gwin->get_height()-200)/2;
-	int centerx = gwin->get_width()/2;
-	int centery = gwin->get_height()/2;
-	int menuy = topy+120;
-	Palette pal;
+	gwin = gw;
+	calc_win();
+	fontManager.add_font("CREDITS_FONT", "<DATA>/exult.flx", 9, 1);
+	exult_flx.load("<DATA>/exult.flx");
+}
+
+ExultMenu::~ExultMenu()
+{
+}
+
+void ExultMenu::calc_win()
+{
+	topx = (gwin->get_width()-320)/2;
+	topy = (gwin->get_height()-200)/2;
+	centerx = gwin->get_width()/2;
+	centery = gwin->get_height()/2;
+	menuy = topy+120;
+}
+
+
+void ExultMenu::setup()
+{
+	Font *font = fontManager.get_font("CREDITS_FONT");
+	MenuList menu;
+	
+	MenuChoice *playintro = new MenuChoice(exult_flx.get_shape(0x0B,1),
+			      exult_flx.get_shape(0x0B,0),
+			      centerx, menuy, font);
+	playintro->add_choice("Off");
+	playintro->add_choice("On");
+	if(get_play_intro())
+		playintro->set_choice(1);
+	else
+		playintro->set_choice(0);
+	menu.add_entry(playintro);
+
+	MenuChoice *fullscreen = new MenuChoice(exult_flx.get_shape(0x0C,1),
+			      exult_flx.get_shape(0x0C,0),
+			      centerx, menuy+11, font);
+	fullscreen->add_choice("Off");
+	fullscreen->add_choice("On");
+	if(gwin->get_win()->is_fullscreen())
+		fullscreen->set_choice(1);
+	else
+		fullscreen->set_choice(0);
+	menu.add_entry(fullscreen);
+	
+	MenuChoice *cheating = new MenuChoice(exult_flx.get_shape(0x0D,1),
+				      exult_flx.get_shape(0x0D,0),
+				      centerx, menuy+22, font);
+	cheating->add_choice("Off");
+	cheating->add_choice("On");
+	if(cheat())
+		cheating->set_choice(1);
+	else
+		cheating->set_choice(0);
+	menu.add_entry(cheating);
+	
+	MenuEntry *ok = new MenuEntry(exult_flx.get_shape(0x0E,1),
+		      exult_flx.get_shape(0x0E,0),
+		      centerx-64, menuy+44);
+	menu.add_entry(ok);
+	
+	MenuEntry *cancel = new MenuEntry(exult_flx.get_shape(0x0F,1),
+			 exult_flx.get_shape(0x0F,0),
+			 centerx+64, menuy+44);
+	menu.add_entry(cancel);
+	
+	menu.set_selected(0);
+	gwin->clear_screen();
+	for(;;) {
+		pal.apply();
+		switch(menu.handle_events(gwin)) {
+		case 3: // Ok
+			pal.fade_out(30);
+			gwin->clear_screen();
+			// Play Intro
+			set_play_intro(playintro->get_choice()==1);
+			// Full screen
+			if(((fullscreen->get_choice()==0)&&(gwin->get_win()->is_fullscreen()))||
+			   ((fullscreen->get_choice()==1)&&(!gwin->get_win()->is_fullscreen())))
+				gwin->get_win()->toggle_fullscreen();
+			config->set("config/video/fullscreen",gwin->get_win()->is_fullscreen()?"yes":"no",true);
+			// Cheating
+			cheat.set_enabled(cheating->get_choice()==1);
+			calc_win();
+			return;
+		case 4: // Cancel
+			pal.fade_out(30);
+			gwin->clear_screen();
+			return;
+		default:
+			break;
+		}
+	}
+}
+
+Exult_Game ExultMenu::run()
+{
 	char *mid_buf;
 	size_t len;
-	fontManager.add_font("CREDITS_FONT", "<DATA>/exult.flx", 9, 1);
 	U7object banner_midi("<DATA>/exult.flx", 8);
 	banner_midi.retrieve(&mid_buf, len);
 	BufferDataSource *midi_data = new BufferDataSource(mid_buf, len);
 	XMIDI midfile(midi_data, XMIDI_CONVERT_NOCONVERSION);
 	audio->start_music(&midfile, true);
-	Vga_file exult_flx("<DATA>/exult.flx");
 	
 	gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 0));
 	pal.load("<DATA>/exult.flx",5);
@@ -374,13 +467,13 @@ Exult_Game exult_menu(Game_window *gwin)
 	wait_delay(2000);
 	MenuList *menu = new MenuList();
 		
-	int menuchoices[] = { 0x06, 0x07, 0x01, 0x00 };
+	int menuchoices[] = { 0x06, 0x07, 0x0A, 0x01, 0x00 };
 	int num_choices = sizeof(menuchoices)/sizeof(int);
 		
 	for(int i=0; i<num_choices; i++) {
 		menu->add_entry(new MenuEntry(exult_flx.get_shape(menuchoices[i],1),
 					      exult_flx.get_shape(menuchoices[i],0),
-					      centerx, menuy+i*11));
+					      centerx, menuy+i*11+(i<2?0:11)));
 	}
 	menu->set_selected(0);
 	Exult_Game sel_game = NONE;
@@ -398,7 +491,12 @@ Exult_Game exult_menu(Game_window *gwin)
 			pal.fade_out(30);
 			sel_game = SERPENT_ISLE;
 			break;
-		case 2: // Exult Credits
+		case 2: // Setup
+			pal.fade_out(30);
+			setup();
+			pal.apply();
+			break;
+		case 3: // Exult Credits
 			{
 				pal.fade_out(30);
 				TextScroller credits("<DATA>/exult.flx", 0x03, 
@@ -409,7 +507,7 @@ Exult_Game exult_menu(Game_window *gwin)
 				pal.apply();
 			}
 			break;
-		case 3: // Exult Quotes
+		case 4: // Exult Quotes
 			{
 				pal.fade_out(30);
 				TextScroller quotes("<DATA>/exult.flx", 0x02, 

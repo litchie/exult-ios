@@ -60,6 +60,16 @@ void Cheat::init (void) {
     cout << "Cheats enabled." << endl;
 }
 
+void Cheat::set_enabled (bool en) {
+  enabled = en;
+  std::string cheating;
+  if(enabled)
+    cheating = "yes";
+  else
+    cheating = "no";
+  config->set("config/gameplay/cheat",cheating,true);
+}
+
 void Cheat::toggle_god (void) {
   if (!enabled) return;
 

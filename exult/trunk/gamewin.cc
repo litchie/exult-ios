@@ -334,11 +334,14 @@ void Game_window::resized
 	)
 	{			
 	win->resized(neww, newh, newsc);
-	center_view(get_main_actor()->get_abs_tile_coord());
-	paint();
-	char msg[80];
-	sprintf(msg, "%dx%dx%d", neww, newh, newsc);
-	center_text(msg);
+	// Do the following only if in game (not for menus)
+	if(usecode) {
+		center_view(get_main_actor()->get_abs_tile_coord());
+		paint();
+		char msg[80];
+		sprintf(msg, "%dx%dx%d", neww, newh, newsc);
+		center_text(msg);
+	}
 	}
 
 /*
