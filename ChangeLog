@@ -1,3 +1,6 @@
+2000-12-05  Max Horn  <max@quendi.de>
+	* ucmachine.h: fixed delete -> delete []
+
 2000-12-05  Tristan Tarrant <nadir@users.sourceforge.net>
 	* audio/pcb.h: Fix possible race condition in produce()
 	* audio/midi_drivers/Timidity_binary.*: use pthreads instead of SDL's
