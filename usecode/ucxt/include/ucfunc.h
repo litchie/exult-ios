@@ -9,6 +9,19 @@
 #include <fstream>
 #include "ucc.h"
 
+using std::vector;
+using std::string;
+using std::map;
+using std::pair;
+using std::ostream;
+using std::ifstream;
+using std::cout;
+using std::endl;
+using std::streampos;
+using std::ios;
+using std::cout;
+using std::cerr;
+
 class UCFuncSet
 {
 	public:
@@ -218,7 +231,7 @@ class UCFunc
 		
 		unsigned short _datasize;    // the size of the data block
 		
-		map<unsigned int, string, less<unsigned int> > _data;
+		map<unsigned int, string, std::less<unsigned int> > _data;
 			// contains the entire data segment in offset from start of segment, and string data pairs
 		
 		streampos      _codeoffset; // the offset to the start of the code segment

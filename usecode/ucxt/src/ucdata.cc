@@ -101,7 +101,7 @@ void UCData::disassamble()
 {
 	load_funcs();
 
-	if(verbose()) cout << "Looking for function number " << setw(8) << _search_func << endl << endl;
+	if(verbose()) cout << "Looking for function number " << std::setw(8) << _search_func << endl << endl;
 
 	if(output_list())
 		cout << "Function       offset    size  data  code" << (ucdebug() ? " funcname" : "") << endl;
@@ -143,7 +143,7 @@ void UCData::disassamble()
 	}
 
 	if(output_list())
-	  cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
+	  cout << endl << "Functions: " << std::setbase(10) << _funcs.size() << std::setbase(16) << endl;
 }
 
 /* FIXME: Need to remove the hard coded opcode numbers (0x42 and 0x43) and replace them
@@ -170,19 +170,19 @@ void UCData::dump_flags(ostream &o)
     		flags.push_back(FlagData((*func)->_funcid, op->_offset, op->_params_parsed[0], FlagData::SETFLAG));
 	}
 		
-	o << "Number of flags found: " << setbase(10) << flags.size() << endl << endl;
+	o << "Number of flags found: " << std::setbase(10) << flags.size() << endl << endl;
 
   // output per function
   {
     sort(flags.begin(), flags.end(), SortFlagDataLessFunc());
 
-    cout << setbase(16) << setfill('0');
+    cout << std::setbase(16) << std::setfill('0');
     int currfunc = -1;
     for(unsigned int i=0; i<flags.size(); i++)
     {
       if(currfunc!=flags[i].func())
       {
-        cout << "Function: " << setw(4) << flags[i].func() << endl;
+        cout << "Function: " << std::setw(4) << flags[i].func() << endl;
         currfunc=flags[i].func();
         cout << "              flag  offset" << endl;
       }
@@ -192,21 +192,21 @@ void UCData::dump_flags(ostream &o)
         cout << "push  ";
       else if(flags[i].access()==FlagData::SETFLAG)
         cout << "pop   ";
-      cout << setw(4) << flags[i].flag()   << "  "
-           << setw(4) << flags[i].offset() << endl;
+      cout << std::setw(4) << flags[i].flag()   << "  "
+           << std::setw(4) << flags[i].offset() << endl;
     }
   }
   // output per flag
   {
     sort(flags.begin(), flags.end(), SortFlagDataLessFlag());
 
-    cout << setbase(16) << setfill('0');
+    cout << std::setbase(16) << std::setfill('0');
     unsigned int currflag = (unsigned int)-1;
     for(unsigned int i=0; i<flags.size(); i++)
     {
       if(currflag!=flags[i].flag())
       {
-        cout << "Flag: " << setw(4) << flags[i].flag() << endl;
+        cout << "Flag: " << std::setw(4) << flags[i].flag() << endl;
         currflag=flags[i].flag();
         cout << "              func  offset" << endl;
       }
@@ -216,8 +216,8 @@ void UCData::dump_flags(ostream &o)
         cout << "push  ";
       else if(flags[i].access()==FlagData::SETFLAG)
         cout << "pop   ";
-      cout << setw(4) << flags[i].func()   << "  "
-           << setw(4) << flags[i].offset() << endl;
+      cout << std::setw(4) << flags[i].func()   << "  "
+           << std::setw(4) << flags[i].offset() << endl;
     }
   }
   // don't need to delete "flags" the pointers are already owned.
@@ -239,7 +239,7 @@ void UCData::load_funcs()
 /*    if( ( ( uc._search_func == -1 )
         || ( uc.mode() == MODE_OPCODE_SCAN ) )
        && ( uc._search_opcode == -1 ) && ( uc._search_intrinsic == -1 ) )
-      cout << "#" << setbase(10) << setw(3) << func.size() * current function number* << setbase(16) << ": ";*/
+      cout << "#" << std::setbase(10) << std::setw(3) << func.size() * current function number* << std::setbase(16) << ": ";*/
 
 		readbin_UCFunc(_file, *ucfunc);
 		

@@ -6,6 +6,8 @@
 #include <string>
 
 class UCc;
+using std::vector;
+using std::string;
 
 class UCc
 {
