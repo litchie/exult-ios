@@ -63,28 +63,30 @@ void	xmldump(string &s,XMLnode *x,int depth)
 	s+="<";
 	s+=x->entity.id;
 	s+=">\n";
-	
-	for(vector<XMLnode>::iterator it=x->nodelist.begin();
-		it!=x->nodelist.end();
-		++it)
+	if(x->entity.id[x->entity.id.length()-1]!='/')
 		{
-		xmldump(s,it,depth+1);
-		}
+		for(vector<XMLnode>::iterator it=x->nodelist.begin();
+			it!=x->nodelist.end();
+			++it)
+			{
+			xmldump(s,it,depth+1);
+			}
 
-	if(x->entity.content.length())
-		{
+		if(x->entity.content.length())
+			{
+			s+=indent(depth);
+			s+=encode_entity(x->entity.content);
+			}
+		if(x->entity.id[0]=='?')
+			{
+			return;
+			}
+		if(x->entity.content.length())
+			s+="\n";
+
 		s+=indent(depth);
-		s+=encode_entity(x->entity.content);
+		s+="</";
+		s+=x->entity.id;
+		s+=">\n";
 		}
-	if(x->entity.id[0]=='?')
-		{
-		return;
-		}
-	if(x->entity.content.length())
-		s+="\n";
-
-	s+=indent(depth);
-	s+="</";
-	s+=x->entity.id;
-	s+=">\n";
 }
