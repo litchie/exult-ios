@@ -186,14 +186,14 @@ void Combat_schedule::approach_foe
 	Tile_coord pos = npc->get_abs_tile_coord();
 					// Time to run?
 	if (mode == Actor::flee || 
-	    (mode != Actor::beserk && npc->get_property(Actor::health) < 3))
+	    (mode != Actor::beserk && 
+		npc != Game_window::get_game_window()->get_main_actor() &&
+					npc->get_property(Actor::health) < 3))
 		{
 		if (!fleed)
 			{
 			fleed = 1;
-			if (npc == 
-			    Game_window::get_game_window()->get_main_actor())
-				audio->start_music(RUN_AWAY, 0);
+			audio->start_music(RUN_AWAY, 0);
 			}
 		int rx = rand();	// Get random position away from here.
 		int ry = rand();
@@ -252,7 +252,8 @@ void Combat_schedule::start_strike
 	npc->start();			// Get back into time queue.
 					// Have them attack back.
 	Actor *opp = dynamic_cast<Actor *> (opponent);
-	if (opp && !opp->get_opponent())
+					// But only if it's a monster.
+	if (opp && !opp->get_opponent() && opp->is_monster())
 		opp->set_opponent(npc);
 	}
 

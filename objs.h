@@ -241,7 +241,8 @@ public:
 							quality, mask); }
 	Game_object *find_closest(int *shapenums, int num_shapes);
 					// Find nearby unblocked tile.
-	Tile_coord find_unblocked_tile(int dist, int height = 1);
+	Tile_coord find_unblocked_tile(int dist, int height = 1,
+				const int move_flags = MOVE_WALK);
 	Rectangle get_footprint();	// Get tile footprint.
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
@@ -574,7 +575,7 @@ class Chunk_cache
 	int get_lowest_blocked(int lift, int tx, int ty);
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift,
-							const int move_flags, int max_drop = 1);
+				const int move_flags, int max_drop = 1);
 					// Activate eggs nearby.
 	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
 			int tx, int ty, int tz,
@@ -658,18 +659,19 @@ public:
 		{ return need_cache()->get_lowest_blocked(lift, tx, ty); }
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift,
-							const int move_flags, int max_drop = 1)
+					const int move_flags, int max_drop = 1)
 		{ return cache->is_blocked(height, lift, tx, ty, new_lift,
-								move_flags, max_drop); }
+						move_flags, max_drop); }
 					// Check range.
 	static int is_blocked(int height, int lift, int startx, int starty,
-		int xtiles, int ytiles, int& new_lift, const int move_flags, int max_drop = 1);
+		int xtiles, int ytiles, int& new_lift, const int move_flags, 
+							int max_drop = 1);
 					// Check absolute tile.
 	static int is_blocked(Tile_coord& tile, int height = 1,
-							const int move_flags = MOVE_ALL_TERRAIN, int max_drop = 1);
+		const int move_flags = MOVE_ALL_TERRAIN, int max_drop = 1);
 					// Check for > 1x1 object.
 	static int is_blocked(int xtiles, int ytiles, int ztiles,
-				Tile_coord from, Tile_coord to, const int move_flags);
+			Tile_coord from, Tile_coord to, const int move_flags);
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles, int add)
 		{ need_cache()->set_egged(egg, tiles, add); }

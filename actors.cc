@@ -401,6 +401,9 @@ void Actor::follow
 	Actor *leader
 	)
 	{
+	static char *catchup_phrases[3] = { "Thou shan't lose me so easily!",
+					"Ah, there thou art!",
+					"Found ye!" };
 	if (Actor::is_dead_npc())
 		return;			// Not when dead.
 	int delay = 0;
@@ -442,10 +445,17 @@ void Actor::follow
 		Game_window *gwin = Game_window::get_game_window();
 		if (pixels > gwin->get_width() + 16)
 			{
-			move(goal.tx, goal.ty, goal.tz);
-			say("Thou shan't lose me so easily!");
-			gwin->paint();
-			return;
+					// Find a free spot.
+			goal = leader->find_unblocked_tile(2, 3);
+			if (goal.tx != -1)
+				{
+				move(goal.tx, goal.ty, goal.tz);
+				int phrase = rand()%6;
+				if (phrase < 3)
+					say(catchup_phrases[phrase]);
+				gwin->paint();
+				return;
+				}
 			}
 		}
 	unsigned long curtime = SDL_GetTicks();
@@ -1410,21 +1420,25 @@ int Main_actor::step
 	get_tile_info(gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 	Game_object *block;		// Just assume height==3.
-	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift, get_type_flags()) &&
+	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift, 
+							get_type_flags()) &&
 	   (!(block = Game_object::find_blocking(t)) || block == this
 					// Try to get blocker to move aside.
 	                     || !block->move_aside(get_direction(block)) ||
 					// If okay, try one last time.
-   			nlist->is_blocked(3, old_lift, tx, ty, new_lift, get_type_flags())))
+   		nlist->is_blocked(3, old_lift, tx, ty, new_lift, 
+							get_type_flags())))
 		{
 		stop();
 		return (0);
 		}
+#if 0
 	if (water && new_lift == 0)
 		{
 		stop();
 		return (0);
 		}
+#endif
 	if (poison)
 		Actor::set_flag((int) Actor::poisoned);
 					// Check for scrolling.
@@ -1782,7 +1796,8 @@ int Npc_actor::step
 	get_tile_info(gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 					// Just assume height==3.
-	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift, get_type_flags()))
+	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift, 
+							get_type_flags()))
 		{
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);
