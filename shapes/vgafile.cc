@@ -45,6 +45,9 @@ using std::memcpy;
 using std::memset;
 using std::ostream;
 
+GL_manager *Shape_frame::glman = 0;
+Image_buffer8 *Shape_frame::scrwin = 0;
+
 #if 1	/* For debugging. */
 #include <iomanip>
 #include "items.h"

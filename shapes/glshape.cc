@@ -24,8 +24,9 @@
 #  include <config.h>
 #endif
 
-#define HAVE_OPENGL 1	/* +++++++TESTING */
 #ifdef HAVE_OPENGL
+
+#include <GL/gl.h>
 
 #include "glshape.h"
 #include "vgafile.h"
