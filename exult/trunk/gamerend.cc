@@ -267,6 +267,7 @@ int Game_render::paint_map
 					// Paint tile grid if desired.
 	if (cheat.in_map_editor() && cheat.show_tile_grid())
 		Paint_grid(gwin, sman->get_xform(10));
+
 	return light_sources;
 	}
 

@@ -257,20 +257,22 @@ void Background_noise::handle_event
 }
 
 /*
- *	Set/unset opengl mode.
+ *	Set renderer (OpenGL or normal SDL).
  */
 
-static void Set_opengl
+static void Set_renderer
 	(
 	Image_window8 *win,
 	Palette *pal
 	)
 	{
+	GL_manager *glman = GL_manager::get_instance();
 #ifdef HAVE_OPENGL
-	delete GL_manager::get_instance();
+	delete glman;
+	glman = 0;
 	if (win->get_scaler() == Image_window::OpenGL)
 		{
-		GL_manager *glman = new GL_manager();
+		glman = new GL_manager();
 					// +++++Hope this is okay to do:
 		pal->load(PALETTES_FLX, 0);	// Main palette.
 					// This should be elsewhere, I think:
@@ -282,9 +284,12 @@ static void Set_opengl
 			newpal[3*i+2] = 4*pal->get_blue(i);
 			}
 		glman->set_palette(newpal);
-		glman->resized(win->get_width(), win->get_height());
+		glman->resized(win->get_width(), win->get_height(), 
+							win->get_scale());
 		}
 #endif
+					// Tell shapes how to render.
+	Shape_frame::set_to_render(win->get_ib8(), glman);
 	}
 
 /*
@@ -295,7 +300,7 @@ Game_window::Game_window
 	(
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
-	    win(0), map(new Game_map()),
+	    win(0), map(new Game_map()), pal(0),
 	    usecode(0), combat(false), armageddon(false),
             tqueue(new Time_queue()), time_stopped(0),
 	    std_delay(c_std_delay),
@@ -321,11 +326,16 @@ Game_window::Game_window
 	game_window = this;		// Set static ->.
 	clock = new Game_clock(tqueue);
 	shape_man = new Shape_manager();// Create the single instance.
-
-	set_window_size(width, height, scale, scaler);
+					// Create window.
+	string	fullscreenstr;		// Check config. for fullscreen mode.
+	config->value("config/video/fullscreen",fullscreenstr,"no");
+	bool	fullscreen = (fullscreenstr=="yes");
+	config->set("config/video/fullscreen",fullscreenstr,true);
+	win = new Image_window8(width, height, scale, fullscreen, scaler);
+	win->set_title("Exult Ultima7 Engine");
 	pal = new Palette();
 	Game_singletons::init(this);	// Everything but 'usecode' exists.
-	Set_opengl(win, pal);
+	Set_renderer(win, pal);
 
 	string str;
 	config->value("config/gameplay/textbackground", text_bg, -1);
@@ -349,23 +359,9 @@ Game_window::Game_window
 	config->set("config/audio/disablepause", str, true);
 	}
 
-void Game_window::set_window_size(int width, int height, int scale, int scaler)
-{
-	if(win) {
-		delete win;
-		delete pal;	
-	}
-	string	fullscreenstr;		// Check config. for fullscreen mode.
-	bool	fullscreen=false;
-	config->value("config/video/fullscreen",fullscreenstr,"no");
-	if(fullscreenstr=="yes")
-		fullscreen=true;
-	config->set("config/video/fullscreen",fullscreenstr,true);
-	win = new Image_window8(width, height, scale, fullscreen, scaler);
-	win->set_title("Exult Ultima7 Engine");
-	shape_man->set_ibuf(win->get_ib8());
-}
-
+/*
+ *	Blank out screen.
+ */
 void Game_window::clear_screen(bool update)
 {
 	win->fill8(0,get_width(),get_height(),0,0);
@@ -699,7 +695,7 @@ void Game_window::resized
 	)
 	{			
 	win->resized(neww, newh, newsc, newsclr);
-	Set_opengl(win, pal);
+	Set_renderer(win, pal);
 	// Do the following only if in game (not for menus)
 	if(usecode) {
 		center_view(get_main_actor()->get_tile());
@@ -1339,13 +1335,19 @@ void Game_window::view_right
 		return;
 		}
 	map->read_map_data();		// Be sure objects are present.
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())	// OpenGL?  Just repaint all.
+		paint();
+	else
+#endif
+		{
 					// Shift image to left.
-	win->copy(c_tilesize, 0, w - c_tilesize, h, 0, 0);
-	dirty.x -= c_tilesize;		// Shift dirty rect.
-	dirty = clip_to_win(dirty);
+		win->copy(c_tilesize, 0, w - c_tilesize, h, 0, 0);
 					// Paint 1 column to right.
-//	add_dirty(Rectangle(w - c_tilesize, 0, c_tilesize, h));
-	paint(w - c_tilesize, 0, c_tilesize, h);
+		paint(w - c_tilesize, 0, c_tilesize, h);
+		}
+	dirty.x -= c_tilesize;	// Shift dirty rect.
+	dirty = clip_to_win(dirty);
 					// New chunk?
 	int new_rcx = ((scrolltx + (w - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks;
@@ -1366,12 +1368,19 @@ void Game_window::view_left
 		return;
 		}
 	map->read_map_data();		// Be sure objects are present.
-	win->copy(0, 0, get_width() - c_tilesize, get_height(), c_tilesize, 0);
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())	// OpenGL?  Just repaint all.
+		paint();
+	else
+#endif
+		{
+		win->copy(0, 0, get_width() - c_tilesize, get_height(), 
+								c_tilesize, 0);
+		int h = get_height();
+		paint(0, 0, c_tilesize, h);
+		}
 	dirty.x += c_tilesize;		// Shift dirty rect.
 	dirty = clip_to_win(dirty);
-	int h = get_height();
-//	add_dirty(Rectangle(0, 0, c_tilesize, h));
-	paint(0, 0, c_tilesize, h);
 					// New chunk?
 	int new_lcx = (scrolltx/c_tiles_per_chunk)%c_num_chunks;
 	if (new_lcx != old_lcx)
@@ -1393,11 +1402,17 @@ void Game_window::view_down
 		return;
 		}
 	map->read_map_data();		// Be sure objects are present.
-	win->copy(0, c_tilesize, w, h - c_tilesize, 0, 0);
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())	// OpenGL?  Just repaint all.
+		paint();
+	else
+#endif
+		{
+		win->copy(0, c_tilesize, w, h - c_tilesize, 0, 0);
+		paint(0, h - c_tilesize, w, c_tilesize);
+		}
 	dirty.y -= c_tilesize;		// Shift dirty rect.
 	dirty = clip_to_win(dirty);
-//	add_dirty(Rectangle(0, h - c_tilesize, w, c_tilesize));
-	paint(0, h - c_tilesize, w, c_tilesize);
 					// New chunk?
 	int new_bcy = ((scrollty + (h - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks;
@@ -1418,12 +1433,18 @@ void Game_window::view_up
 		return;
 		}
 	map->read_map_data();		// Be sure objects are present.
-	int w = get_width();
-	win->copy(0, 0, w, get_height() - c_tilesize, 0, c_tilesize);
+#ifdef HAVE_OPENGL
+	if (GL_manager::get_instance())	// OpenGL?  Just repaint all.
+		paint();
+	else
+#endif
+		{
+		int w = get_width();
+		win->copy(0, 0, w, get_height() - c_tilesize, 0, c_tilesize);
+		paint(0, 0, w, c_tilesize);
+		}
 	dirty.y += c_tilesize;		// Shift dirty rect.
 	dirty = clip_to_win(dirty);
-//	add_dirty(Rectangle(0, 0, w, c_tilesize));
-	paint(0, 0, w, c_tilesize);
 					// New chunk?
 	int new_tcy = (scrollty/c_tiles_per_chunk)%c_num_chunks;
 	if (new_tcy != old_tcy)

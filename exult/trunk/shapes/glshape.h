@@ -56,10 +56,12 @@ public:
 class GL_manager
 	{
 	static GL_manager *instance;	// One one of these.
+	int scale;			// Scale for drawing.
 	GL_texshape *shapes;		// Shapes in LRU chain.
 	int num_shapes;
 	unsigned char *palette;		// 3*256 bytes (rgb).
 public:
+	friend class GL_texshape;
 	GL_manager();
 	~GL_manager();
 	static GL_manager *get_instance()
@@ -71,7 +73,7 @@ public:
 	GL_texshape *create(Image_buffer8 *src)
 		{ return new GL_texshape(src, palette); }
 					// Window was resized.
-	void resized(int new_width, int new_height);
+	void resized(int new_width, int new_height, int new_scale);
 					// Paint a shape & create GL_shape
 					//   for it if necessary.
 	void paint(Shape_frame *frame, int px, int py);

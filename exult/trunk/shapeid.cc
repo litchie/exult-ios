@@ -90,7 +90,6 @@ void Shape_manager::load
 	(
 	)
 	{
-	ibuf = gwin->get_win()->get_ib8();// Assume this exists now.
 	// Determine some colors based on the default palette
 	Palette *pal = gwin->get_pal();
 	pal->load(PALETTES_FLX, 0);	// could throw!
