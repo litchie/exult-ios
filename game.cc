@@ -113,9 +113,10 @@ void Game::play_audio(const char *archive, int index)
 	audio->playfile("speech.voc", false);
 }
 
-void Game::play_midi(int track)
+void Game::play_midi(int track,bool repeat)
 {
-	audio->start_music(track,0,1);
+	if (game_type == BLACK_GATE) audio->start_music(track,repeat,1);
+	else if (game_type == SERPENT_ISLE) audio->start_music(track,repeat,2);
 }
 
 void Game::refresh_screen ()
@@ -185,9 +186,9 @@ int Game::show_text_line(int left, int right, int y, const char *s)
 			if(*(ptr+1)==0)
 				if(*ptr!='|') {
 					*txtptr++ = *ptr;
-					add_line = true;
-				} else
 					add_line = false;
+				} else
+					add_line = true;
 			*txtptr = 0;
 			
 			if(align<0)
@@ -195,11 +196,18 @@ int Game::show_text_line(int left, int right, int y, const char *s)
 			else if(align==0)
 				xpos = center-gwin->get_text_width(MAINSHP_FONT1, txt)/2;
 			else
-				xpos = right-gwin->get_text_width(MAINSHP_FONT1, txt);
+				xpos = center;//right-gwin->get_text_width(MAINSHP_FONT1, txt);
 			gwin->paint_text(MAINSHP_FONT1,txt,xpos,ypos);
 			ypos += gwin->get_text_height(MAINSHP_FONT1)+vspace;
 			txtptr = txt;	// Go to beginning of string
 			++ptr;
+		} else if(*ptr=='#') {
+			ptr++;
+			char numerical[4] = {0,0,0,0};
+			char *num = numerical;
+			while (*ptr >= '0' && *ptr <= '9')
+				*num++ = *ptr++;
+			*txtptr++ = atoi(numerical);
 		} else
 			*txtptr++ = *ptr++;
 	}
@@ -276,10 +284,10 @@ void Game::scroll_text(vector<char *> *text)
 			}
 		} while (ypos<endy);
 		pal.apply();
-		looping = looping && !wait_delay(70);
+		looping = looping && !wait_delay(100);
 		if(!looping)
 			pal.fade_out(30);
-		starty -= 2;
+		starty --;
 	}
 }
 
