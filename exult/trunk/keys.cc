@@ -561,7 +561,7 @@ void KeyBinder::LoadDefaults()
 }
 
 // codes used in keybindings-files. (use uppercase here)
-static void KeyBinder::FillParseMaps()
+void KeyBinder::FillParseMaps()
 {
   for (int i = 0; strlen(SDLKeyStringTable[i].s) > 0; i++)
     keys[SDLKeyStringTable[i].s] = SDLKeyStringTable[i].k;
