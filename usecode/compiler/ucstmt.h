@@ -33,7 +33,9 @@ class Uc_call_expression;
 class Uc_function;
 class Uc_var_symbol;
 
-#include <iosfwd>
+#ifndef ALPHA_LINUX_CXX
+#  include <iosfwd>
+#endif
 
 /*
  *	A statement:
