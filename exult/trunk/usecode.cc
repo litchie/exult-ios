@@ -2148,6 +2148,12 @@ USECODE_INTRINSIC(mouse_exists)
 	return(u);
 }
 
+USECODE_INTRINSIC(guardian_speech)
+{
+	// Mystery.  Returns # from 1 to 0x1d.
+	return Usecode_value(1);	// Best message for when sleeping.
+}
+
 USECODE_INTRINSIC(flash_mouse)
 {
 	// flash_mouse(mouse_shape).
@@ -2497,7 +2503,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(set_timer),	// 0x66
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x67
 	USECODE_INTRINSIC_PTR(mouse_exists),	// 0x68
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x69     GetSpeechTrack (ucdump.c)
+	USECODE_INTRINSIC_PTR(guardian_speech), // 0x69 GetSpeech (ucdump.c)
 	USECODE_INTRINSIC_PTR(flash_mouse),	// 0x6a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6c +++??set_xxx(item, val).

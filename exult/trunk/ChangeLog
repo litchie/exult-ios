@@ -1,3 +1,7 @@
+2000-06-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Death and resurrection.
+
 2000-06-25  Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* Makefile.am, exult.cc: use VERSION instead of RELNUM
