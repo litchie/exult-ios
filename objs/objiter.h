@@ -83,7 +83,7 @@ class T_Nonflat_object_iterator : public T_Object_iterator<T>
 	T nonflats;
 public:
 	void reset()
-		{ cur = nonflats; stop = 0; }
+		{ this->cur = nonflats; this->stop = 0; }
 	T_Nonflat_object_iterator(L chunk)
 		: T_Object_iterator<T>(chunk->get_objects()), nonflats(chunk->get_first_nonflat())
 		{ reset(); }
