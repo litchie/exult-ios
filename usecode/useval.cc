@@ -484,11 +484,10 @@ int Usecode_value::save
 
 bool Usecode_value::restore
 	(
-	unsigned char *buf,
+	unsigned char *& ptr,		// Ptr. to data.  Updated past it.
 	int buflen
 	)
 	{
-	uint8 *ptr = buf;
 	type = (Val_type) *ptr++;
 	switch (type)
 		{

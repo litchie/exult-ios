@@ -91,6 +91,8 @@ public:
 	int remove(Time_sensitive *obj);
 	int remove(Time_sensitive *obj, long udata);
 	int find(Time_sensitive *obj);	// Find an entry.
+					// Find delay when obj. is due.
+	long find_delay(Time_sensitive *obj, uint32 curtime);
 					// Activate entries that are 'due'.
 	inline void activate(uint32 curtime)
 		{
