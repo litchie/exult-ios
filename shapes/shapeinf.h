@@ -252,6 +252,7 @@ public:
 		dims[0] = dims[1] = dims[2] = 0;
 		}
 	virtual ~Shape_info();
+	void copy_shallow(Shape_info& inf2);
 	int get_weight()		// Get weight, volume.
 		{ return weight; }
 	int get_volume()

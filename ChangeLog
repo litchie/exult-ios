@@ -1,3 +1,9 @@
+2004-08-28    <jeff@mini.nerble.net>
+
+	* shapeid.cc (Shape_manager): Set up shape info. entries for the
+	SI Avatar shapes here.
+	* shapes/shapevga.h:  No longer have to check for the SI Avatar shapes.
+
 2004-08-27    <jeff@mini.nerble.net>
 
 	* gamemap.cc, objs/*:  Save/restore ireg. objs. with shape # >= 1024.
