@@ -13,7 +13,7 @@ public:
 		std::string	what_;
 		public:
 		 range_error (const std::string& what_arg): what_ (what_arg) { }
-		 const char *what(void) { return what_.c_str(); }
+		 const char *what(void) const { return what_.c_str(); }
 		};
 	autoarray() : size_(0), data_(0) 
 		{  }
