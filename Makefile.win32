@@ -49,7 +49,7 @@ AUDIO_OBJS=Audio.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o soundtest.o $(MIDI
 
 FLIC_OBJS=playfli.o
 
-FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o filelist.o
+FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o
 
 GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	gump_utils.o  Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
