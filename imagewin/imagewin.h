@@ -98,7 +98,8 @@ protected:
 	SDL_Surface *scaled_surface;	// 2X surface if scaling, else 0. (only used when scaling)
 	SDL_Surface *unscaled_surface;	// Unscaled surface (used for screenshots only)
 					// Method to blit scaled:
-	void (Image_window::*show_scaled)(int x, int y, int w, int h);
+	typedef void (Image_window::*scalefun)(int x, int y, int w, int h);
+	scalefun show_scaled;
 	/*
 	 *	Scaled blits:
 	 */
@@ -133,6 +134,8 @@ protected:
 					// Create new SDL surface.
 	void create_surface(unsigned int w, unsigned int h);
 	void free_surface();		// Free it.
+	bool create_2x_surfaces(int w, int h, uint32 flags,
+	    scalefun fun565, scalefun fun555, scalefun fun16, scalefun fun32);
 	bool try_scaler(int w, int h, uint32 flags);
 public:
 					// Create with given buffer.

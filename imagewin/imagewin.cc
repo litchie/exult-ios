@@ -146,8 +146,67 @@ void Image_window::create_surface
 	ibuf->line_width = surface->pitch/ibuf->pixel_size;
 	}
 
+/*
+ *	Set up surfaces for 2X scaling.
+ *	Output:	False if error (reported).
+ */
+
+bool Image_window::create_2x_surfaces(int w, int h, uint32 flags,
+	scalefun fun565, scalefun fun555, scalefun fun16, scalefun fun32)
+	{
+	int hwdepth;
+		
+	if ( SDL_VideoModeOK(w, h, 32, flags))
+		hwdepth = 32;
+	else if ( SDL_VideoModeOK(w, h, 16, flags))
+		hwdepth = 16;
+	else
+		hwdepth = Get_best_depth();
+	if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8) 
+		{
+		cout << "Doubling from " << ibuf->depth << "bits to "
+				<< hwdepth << " not yet supported." << endl;
+		return false;
+		}
+	else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
+						hwdepth, flags)) != 0 &&
+		 (unscaled_surface = surface = 
+			SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
+							8, 0, 0, 0, 0)) != 0)
+		{			// Get color mask info.
+		SDL_PixelFormat *fmt = scaled_surface->format;
+		uint32 r = fmt->Rmask, g=fmt->Gmask, b=fmt->Bmask;
+		if (hwdepth == 16)
+			{
+			show_scaled = (r == 0xf800 && g == 0x7e0 &&b == 0x1f) ?
+								fun565
+			   : (r == 0x7c00 && g == 0x3e0 && b == 0x1f) ? 
+								fun555
+			   : fun16;
+			}
+		else
+			show_scaled = fun32;
+		uses_palette = false;
+		return true;
+		}
+	else
+		{
+		cout << "Couldn't create scaled surface" << endl;
+		delete surface;
+		delete scaled_surface;
+		surface = scaled_surface = 0;
+		return false;
+		}
+	}
+
+/*
+ *	Set up surfaces and scaler to call.
+ */
+
 bool Image_window::try_scaler(int w, int h, uint32 flags)
 {
+	int hwfmt;
+
 	// OpenGL
 	if (scaler ==OpenGL)
 		{
@@ -201,214 +260,43 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 	// 2xSaI scaler
 	else if (scale == 2 && scaler ==  SaI)
 	{
-		int hwdepth;
-		
-		if ( SDL_VideoModeOK(w, h, 32, flags))
-			hwdepth = 32;
-		else if ( SDL_VideoModeOK(w, h, 16, flags))
-			hwdepth = 16;
-		else
-			hwdepth = Get_best_depth();
-
-		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
-			cout << "Doubling from " << ibuf->depth << "bits to "
-				<< hwdepth << " not yet supported." << endl;
-		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
-						hwdepth, flags)) != 0 &&
-			 (unscaled_surface = surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
-							8, 0, 0, 0, 0)) != 0)
-		{			// Get color mask info.
-			SDL_PixelFormat *fmt = scaled_surface->format;
-			uint32 r = fmt->Rmask, g=fmt->Gmask, b=fmt->Bmask;
-			if (hwdepth == 16)
-			{
-				show_scaled = (r == 0xf800 && g == 0x7e0 &&b == 0x1f) ? 
-					&Image_window::show_scaled8to565_2xSaI
-				   : (r == 0x7c00 && g == 0x3e0 && b == 0x1f) ?
-					&Image_window::show_scaled8to555_2xSaI
-				   : &Image_window::show_scaled8to16_2xSaI;
-			}
-			else
-			    	show_scaled = &Image_window::show_scaled8to32_2xSaI;
-
-			uses_palette = false;
-		}
-		else
-		{
-			cout << "Couldn't create scaled surface" << endl;
-			delete surface;
-			delete scaled_surface;
-			surface = scaled_surface = 0;
-		}
+		create_2x_surfaces(w, h, flags, 
+				&Image_window::show_scaled8to565_2xSaI,
+				&Image_window::show_scaled8to555_2xSaI,
+				&Image_window::show_scaled8to16_2xSaI,
+				&Image_window::show_scaled8to32_2xSaI);
 	}
 	else if (scale == 2 && scaler == bilinear)	// Bilinear scaler
 	{
-		int hwdepth;
-		
-		if ( SDL_VideoModeOK(w, h, 32, flags))
-			hwdepth = 32;
-		else if ( SDL_VideoModeOK(w, h, 16, flags))
-			hwdepth = 16;
-		else
-			hwdepth = Get_best_depth();
-
-		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
-			cout << "Doubling from " << ibuf->depth << "bits to "
-				<< hwdepth << " not yet supported." << endl;
-		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
-						hwdepth, flags)) != 0 &&
-			 (unscaled_surface = surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
-							8, 0, 0, 0, 0)) != 0)
-		{			// Get color mask info.
-			SDL_PixelFormat *fmt = scaled_surface->format;
-			uint32 r = fmt->Rmask, g=fmt->Gmask, b=fmt->Bmask;
-			if (hwdepth == 16)
-			{
-				show_scaled = (r == 0xf800 && g == 0x7e0 &&b == 0x1f) ? 
-					&Image_window::show_scaled8to565_bilinear
-				   : (r == 0x7c00 && g == 0x3e0 && b == 0x1f) ?
-					&Image_window::show_scaled8to555_bilinear
-				   : &Image_window::show_scaled8to16_bilinear;
-			}
-			else
-			    	show_scaled = &Image_window::show_scaled8to32_bilinear;
-
-			uses_palette = false;
-		}
-		else
-		{
-			cout << "Couldn't create scaled surface" << endl;
-			delete surface;
-			delete scaled_surface;
-			surface = scaled_surface = 0;
-		}
+		create_2x_surfaces(w, h, flags, 
+				&Image_window::show_scaled8to565_bilinear,
+				&Image_window::show_scaled8to555_bilinear,
+				&Image_window::show_scaled8to16_bilinear,
+				&Image_window::show_scaled8to32_bilinear);
 	}
 	else if (scale == 2 && scaler == BilinearPlus)	// Bilinear Plus scaler
 	{
-		int hwdepth;
-		
-		if ( SDL_VideoModeOK(w, h, 32, flags))
-			hwdepth = 32;
-		else if ( SDL_VideoModeOK(w, h, 16, flags))
-			hwdepth = 16;
-		else
-			hwdepth = Get_best_depth();
-
-		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
-			cout << "Doubling from " << ibuf->depth << "bits to "
-				<< hwdepth << " not yet supported." << endl;
-		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
-						hwdepth, flags)) != 0 &&
-			 (unscaled_surface = surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
-							8, 0, 0, 0, 0)) != 0)
-		{			// Get color mask info.
-			SDL_PixelFormat *fmt = scaled_surface->format;
-			uint32 r = fmt->Rmask, g=fmt->Gmask, b=fmt->Bmask;
-			if (hwdepth == 16)
-			{
-				show_scaled = (r == 0xf800 && g == 0x7e0 &&b == 0x1f) ? 
-					&Image_window::show_scaled8to565_BilinearPlus
-				   : (r == 0x7c00 && g == 0x3e0 && b == 0x1f) ?
-					&Image_window::show_scaled8to555_BilinearPlus
-				   : &Image_window::show_scaled8to16_BilinearPlus;
-			}
-			else
-			    	show_scaled = &Image_window::show_scaled8to32_BilinearPlus;
-
-			uses_palette = false;
-		}
-		else
-		{
-			cout << "Couldn't create scaled surface" << endl;
-			delete surface;
-			delete scaled_surface;
-			surface = scaled_surface = 0;
-		}
-
+		create_2x_surfaces(w, h, flags, 
+				&Image_window::show_scaled8to565_BilinearPlus,
+				&Image_window::show_scaled8to555_BilinearPlus,
+				&Image_window::show_scaled8to16_BilinearPlus,
+				&Image_window::show_scaled8to32_BilinearPlus);
 	}
 	else if (scale == 2 && scaler == SuperEagle)
 	{
-		int hwdepth;
-		
-		if ( SDL_VideoModeOK(w, h, 32, flags))
-			hwdepth = 32;
-		else if ( SDL_VideoModeOK(w, h, 16, flags))
-			hwdepth = 16;
-		else
-			hwdepth = Get_best_depth();
-
-		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
-			cout << "Doubling from " << ibuf->depth << "bits to "
-				<< hwdepth << " not yet supported." << endl;
-		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
-						hwdepth, flags)) != 0 &&
-			 (unscaled_surface = surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
-							8, 0, 0, 0, 0)) != 0)
-		{			// Get color mask info.
-			SDL_PixelFormat *fmt = scaled_surface->format;
-			uint32 r = fmt->Rmask, g=fmt->Gmask, b=fmt->Bmask;
-			if (hwdepth == 16)
-			{
-				show_scaled = (r == 0xf800 && g == 0x7e0 &&b == 0x1f) ? 
-					&Image_window::show_scaled8to565_SuperEagle
-				   : (r == 0x7c00 && g == 0x3e0 && b == 0x1f) ?
-					&Image_window::show_scaled8to555_SuperEagle
-				   : &Image_window::show_scaled8to16_SuperEagle;
-			}
-			else
-			    	show_scaled = &Image_window::show_scaled8to32_SuperEagle;
-
-			uses_palette = false;
-		}
-		else
-		{
-			cout << "Couldn't create scaled surface" << endl;
-			delete surface;
-			delete scaled_surface;
-			surface = scaled_surface = 0;
-		}
+		create_2x_surfaces(w, h, flags, 
+				&Image_window::show_scaled8to565_SuperEagle,
+				&Image_window::show_scaled8to555_SuperEagle,
+				&Image_window::show_scaled8to16_SuperEagle,
+				&Image_window::show_scaled8to32_SuperEagle);
 	}
 	else if (scale == 2 && scaler == Super2xSaI)
 	{
-		int hwdepth;
-		
-		if ( SDL_VideoModeOK(w, h, 32, flags))
-			hwdepth = 32;
-		else if ( SDL_VideoModeOK(w, h, 16, flags))
-			hwdepth = 16;
-		else
-			hwdepth = Get_best_depth();
-
-		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
-			cout << "Doubling from " << ibuf->depth << "bits to "
-				<< hwdepth << " not yet supported." << endl;
-		else if ((scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
-						hwdepth, flags)) != 0 &&
-			 (unscaled_surface = surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
-							8, 0, 0, 0, 0)) != 0)
-		{			// Get color mask info.
-			SDL_PixelFormat *fmt = scaled_surface->format;
-			uint32 r = fmt->Rmask, g=fmt->Gmask, b=fmt->Bmask;
-			if (hwdepth == 16)
-			{
-				show_scaled = (r == 0xf800 && g == 0x7e0 &&b == 0x1f) ? 
-					&Image_window::show_scaled8to565_Super2xSaI
-				   : (r == 0x7c00 && g == 0x3e0 && b == 0x1f) ?
-					&Image_window::show_scaled8to555_Super2xSaI
-				   : &Image_window::show_scaled8to16_Super2xSaI;
-			}
-			else
-			    	show_scaled = &Image_window::show_scaled8to32_Super2xSaI;
-
-			uses_palette = false;
-		}
-		else
-		{
-			cout << "Couldn't create scaled surface" << endl;
-			delete surface;
-			delete scaled_surface;
-			surface = scaled_surface = 0;
-		}
+		create_2x_surfaces(w, h, flags, 
+				&Image_window::show_scaled8to565_Super2xSaI,
+				&Image_window::show_scaled8to555_Super2xSaI,
+				&Image_window::show_scaled8to16_Super2xSaI,
+				&Image_window::show_scaled8to32_Super2xSaI);
 	}
 	else if (scale >= 2 && scaler == interlaced)
 	{
