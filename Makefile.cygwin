@@ -4,7 +4,7 @@
 
 # Base of the exult source (I'm building in a subdir called 'debug')
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/imagewin
+VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes
 
 ### Modify these paths
 SDL_INCLUDES=-I$(SRC)/sdl/include
@@ -13,7 +13,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw32 automatically defines WIN32
 CPPFLAGS=-DVERSION=\"0.90alpha1\" -DEXULT_DATADIR=\"data\" -g3 -DDEBUG -DAUTOCONFIGURED -DNO_INTRO -I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/files \
-	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/gumps -I$(SRC)/pathfinder \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/gumps -I$(SRC)/pathfinder -I$(SRC)/:$(SRC)/usecode \
 	$(SDL_INCLUDES)
 
 CXXFLAGS=-mwindows -O2 -finline-functions -funroll-loops -funroll-all-loops -fstrict-aliasing
@@ -24,13 +24,12 @@ LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
 
 EXEC=exult2.exe
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
-	args.o barge.o bggame.o browser.o cheat.o\
+	args.o barge.o bggame.o browser.o cheat.o
 	combat.o delobjs.o dir.o drag.o effects.o egg.o exult.o font.o \
 	game.o gameclk.o gamedat.o gamerend.o gametxt.o gamewin.o \
-	gumps.o lists.o menulist.o mouse.o \
-	npcnear.o npctime.o objs.o palette.o paths.o readnpcs.o schedule.o \
-	segfile.o sigame.o spells.o tqueue.o txtscroll.o usecode.o \
-    useval.o virstone.o exultico.o
+	lists.o menulist.o mouse.o npcnear.o npctime.o objs.o palette.o \
+	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
+    virstone.o exultico.o
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
