@@ -181,7 +181,7 @@ AC_HEADER_TIME
 AC_STRUCT_TM
 
 AC_MSG_CHECKING(for getaddrinfo())
-AC_TRY_COMPILE([
+AC_TRY_LINK([
 #if HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -189,7 +189,7 @@ AC_TRY_COMPILE([
 #include <sys/socket.h>
 #endif
 #if HAVE_NETDB_H
-#include <sys/socket.h>
+#include <sys/netdb.h>
 #endif
 ],
 [
@@ -203,7 +203,7 @@ if test x$ac_cv_func_getaddrinfo = xyes ; then
 fi
 
 AC_MSG_CHECKING(for mkstemp())
-AC_TRY_COMPILE([
+AC_TRY_LINK([
 #if HAVE_UNISTD_H
 #include <unistd.h>
 #endif
