@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Zombie.h"
 #include "citerate.h"
 #include "dir.h"
+#include "objiter.h"
 
 /*
  *	Rotate a point 90 degrees to the right around a point.
@@ -206,8 +207,9 @@ void Barge_object::gather
 	while (next_chunk.get_next(tiles, cx, cy))
 		{
 		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
-		for (Game_object *obj = chunk->get_first(); obj;
-						obj = chunk->get_next(obj))
+		Game_object *obj;
+		Object_iterator next(chunk);
+		while ((obj = next.get_next()) != 0)
 			{		// Look at each object.
 			if (obj == this)
 				continue;

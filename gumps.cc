@@ -792,8 +792,8 @@ Rectangle Gump_object::get_shape_rect
 	)
 	{
 	Shape_frame *s = Game_window::get_game_window()->get_shape(*obj);
-	return Rectangle(x + object_area.x + obj->cx - s->get_xleft(), 
-			 y + object_area.y + obj->cy - s->get_yabove(), 
+	return Rectangle(x + object_area.x + obj->get_cx() - s->get_xleft(), 
+			 y + object_area.y + obj->get_cy() - s->get_yabove(), 
 				 s->get_width(), s->get_height());
 	}
 
@@ -807,8 +807,8 @@ void Gump_object::get_shape_location
 	int& ox, int& oy
 	)
 	{
-	ox = x + object_area.x + obj->cx,
-	oy = y + object_area.y + obj->cy;
+	ox = x + object_area.x + obj->get_cx(),
+	oy = y + object_area.y + obj->get_cy();
 	}
 
 /*
@@ -826,18 +826,18 @@ Game_object *Gump_object::find_object
 	Game_object *list[100];
 	if (!container)
 		return (0);
-	Game_object *last_object = container->get_last_object();
-	if (!last_object)
+	Game_object *objects = container->get_first_object();
+	if (!objects)
 		return (0);
-	Game_object *obj = last_object;
+	Game_object *obj = objects;
 	do
 		{
-		obj = obj->get_next();
 		Rectangle box = get_shape_rect(obj);
 		if (box.has_point(mx, my))
 			list[cnt++] = obj;
+		obj = obj->get_next();
 		}
-	while (obj != last_object);
+	while (obj != objects);
 					// ++++++Return top item.
 	return (cnt ? list[cnt - 1] : 0);
 	}
@@ -907,7 +907,7 @@ int Gump_object::add
 					// Not a valid spot?
 	if (sx == -1 && sy == -1 && mx == -1 && my == -1)
 					// Let paint() set spot.
-		obj->cx = obj->cy = 255;
+		obj->set_chunk(255, 255);
 					// -2's mean cx, cy are already set.
 	else if (sx != -2 && sy != -2 && mx != -2 && my != -2)
 		{			// Put it where desired.
@@ -924,8 +924,7 @@ int Gump_object::add
 			sy = shape->get_yabove();
 		else if (sy + shape->get_ybelow() > object_area.h)
 			sy = object_area.h - shape->get_ybelow();
-		obj->cx = sx;
-		obj->cy = sy;
+		obj->set_chunk(sx, sy);
 		}
 	return (1);
 	}
@@ -957,21 +956,22 @@ void Gump_object::paint
 	paint_button(gwin, check_button);
 	if (!container)
 		return;			// Empty.
-	Game_object *last_object = container->get_last_object();
-	if (!last_object)
+	Game_object *objects = container->get_first_object();
+	if (!objects)
 		return;			// Empty.
 	Rectangle box = object_area;	// Paint objects inside.
 	box.shift(x, y);		// Set box to screen location.
 	int cury = 0, curx = 0;
 	int endy = box.h, endx = box.w;
 	int loop = 0;			// # of times covering container.
-	Game_object *obj = last_object;
+	Game_object *obj = objects;
 	do				// First try is really rough.+++++
 		{
-		obj = obj->get_next();
 		Shape_frame *shape = gwin->get_shape(*obj);
-		int objx = obj->cx - shape->get_xleft() + 1 + object_area.x;
-		int objy = obj->cy - shape->get_yabove() + 1 + object_area.y;
+		int objx = obj->get_cx() - shape->get_xleft() + 
+							1 + object_area.x;
+		int objy = obj->get_cy() - shape->get_yabove() + 
+							1 + object_area.y;
 					// Does obj. appear to be placed?
 		if (!object_area.has_point(objx, objy) ||
 		    !object_area.has_point(objx + shape->get_xright() - 1,
@@ -983,8 +983,8 @@ void Gump_object::paint
 				px = endx;
 			if (py > endy)
 				py = endy;
-			obj->cx = px - shape->get_xright();
-			obj->cy = py - shape->get_ybelow();
+			obj->set_chunk(px - shape->get_xright(),
+					py - shape->get_ybelow());
 			curx += 8;
 			if (curx >= endx)
 				{
@@ -994,10 +994,11 @@ void Gump_object::paint
 					cury = 2*(++loop);
 				}
 			}
-		gwin->paint_shape(box.x + obj->cx, box.y + obj->cy, 
+		gwin->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy(), 
 				obj->get_shapenum(), obj->get_framenum());
+		obj = obj->get_next();
 		}
-	while (obj != last_object);
+	while (obj != objects);
 	}
 
 /*
@@ -1156,20 +1157,22 @@ void Actor_gump_object::set_to_spot
 	Shape_frame *shape = gwin->get_shape(*obj);
 	int w = shape->get_width(), h = shape->get_height();
 					// Set object's position.
-	obj->cx = spotx(index) + shape->get_xleft() - w/2 - object_area.x;
-	obj->cy = spoty(index) + shape->get_yabove() - h/2 - object_area.y;
+	obj->set_chunk(spotx(index) + shape->get_xleft() - w/2 - object_area.x,
+		spoty(index) + shape->get_yabove() - h/2 - object_area.y);
 					// Shift if necessary.
-	int x0 = obj->cx - shape->get_xleft(), 
-	    y0 = obj->cy - shape->get_yabove();
+	int x0 = obj->get_cx() - shape->get_xleft(), 
+	    y0 = obj->get_cy() - shape->get_yabove();
+	int newcx = obj->get_cx(), newcy = obj->get_cy();
 	if (x0 < 0)
-		obj->cx -= x0;
+		newcx -= x0;
 	if (y0 < 0)
-		obj->cy -= y0;
+		newcy -= y0;
 	int x1 = x0 + w, y1 = y0 + h;
 	if (x1 > object_area.w)
-		obj->cx -= x1 - object_area.w;
+		newcx -= x1 - object_area.w;
 	if (y1 > object_area.h)
-		obj->cy -= y1 - object_area.h;
+		newcy -= y1 - object_area.h;
+	obj->set_chunk(newcx, newcy);
 	}
 
 /*

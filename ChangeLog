@@ -1,5 +1,7 @@
 2000-07-29  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* Added 'prev' field to Game_object, and added iterators.
+
 	* Fixed nasty stack bug in Usecode.  Penumbra/blackrock now works.
 
 2000-07-28 Tristan Tarrant  <tarrant_tristan@emc.com>
