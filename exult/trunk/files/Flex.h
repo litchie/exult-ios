@@ -91,13 +91,17 @@ private:
 class Flex_writer
 	{
 	std::ofstream *out;		// What we're writing to.
+	DataSource *dout;		// Or this, if non-0.
 	int count;			// # entries.
 	int index;			// Current index.
 	long cur_start;			// Start of cur. entry being written.
 	uint8 *table;			// Table of offsets & lengths.
 	uint8 *tptr;			// ->into table.
 public:
-	Flex_writer(std::ofstream &o, const char *title, int cnt);
+	Flex_writer(std::ofstream &o, const char *title, int cnt,
+					Flex::Flex_vers vers = Flex::orig);
+	Flex_writer(DataSource* o, const char *title, int cnt,
+					Flex::Flex_vers vers = Flex::orig);
 	~Flex_writer();
 	void mark_section_done();	// Finished writing out a section.
 	bool close();			// All done.

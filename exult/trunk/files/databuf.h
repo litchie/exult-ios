@@ -56,6 +56,8 @@ public:
 	virtual unsigned int getSize() =0;
 	virtual unsigned int getPos() =0;
 	virtual bool eof() =0;
+	virtual void flush() { }
+	virtual bool good() { return true; }
 };
 
 class StreamDataSource: public DataSource
@@ -129,6 +131,8 @@ public:
 	virtual unsigned int getPos() { return in?in->tellg():out->tellp(); };
 	
 	virtual bool eof() { return in->eof(); }
+	virtual void flush() { if (out) out->flush(); }
+	virtual bool good() { return in ? in->good() : out->good(); }
 };
 
 class FileDataSource: public DataSource
