@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 #include "ucloc.h"
 
+using std::vector;
+
 class Uc_symbol;
 class Uc_var_symbol;
 class Uc_function;
