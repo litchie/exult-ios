@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="11 September 2002(GMT)">
+<readme title="Exult" changed="24 October 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="24102002">
+			<header>- 24 October 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="music"/> rewrote the FM synth emulation part a bit.</li>
+				<li><ref1 target="zaurus_install"/> quick guide where the necessary files can be found.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="11092002">
 			<header>- 11 September 2002</header>
 			<body>
@@ -330,8 +339,9 @@
 					<line>&lt;/gumps_dont_pause_game&gt;</line>
 					<line>&lt;step_tile_delta&gt;</line>
 					<line>8
-						<comment>**this affects how the party follows the Avatar. 
-						Bigger # avoids jerkiness, but may cause other problems.
+						<comment>**Controls how far the Avatar will move before Exult recalculates the 
+						Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other 
+						problems.
 						</comment></line>
 					<line>&lt;/step_tile_delta&gt;</line>
 					<line>&lt;allow_double_right_move&gt;</line>
@@ -613,9 +623,9 @@
         				directory. This does not use MIDI but plays the music digitally through 
         				any soundcard.</li>
       				<li><strong>fmsynth</strong><br/>
-      					This emulates FM synth. Has a 'dual'mode for stereo sound. Use 
-      					"config/audio/midi/dual_opl" set to "yes" or "no" to 
-      					enable/disable it. Default is "yes".<br/>
+      					This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib). It has 
+      					a 'dual'mode for stereo sound. Use "config/audio/midi/dual_opl" set to "yes" or "no" 
+      					to enable/disable it. Default is "yes".<br/>
       					<strong>You have to restart Exult if you change this in the game.</strong></li>
       				<li><strong>none</strong><br/>
         				This option will output the music with nothing changed. Because
@@ -1161,6 +1171,23 @@
 		</sub>								
 	</section>	  	
   	<section title="OS specific notes">		
+		<sub name="zaurus_install">
+			<header>How to get the Zaurus port working</header>
+			<body>	
+				<para>
+					Some people were confused where to put the <Exult/> and U7 files and
+					this is a quick guide.
+				</para>
+				<ul>
+					<li>BG and SI are expected to be installed in <strong>/mnt/cf/exult-data/bg</strong>
+						and <strong>/mnt/cf/exult-data/si</strong></li>
+					<li><Exult/> binary is in <strong>/opt/QtPalmtop/bin/</strong></li>
+					<li>the shared files (like exult_bg.flx) go into 
+						<strong>/opt/QtPalmtop/share/exult/</strong></li>
+					<li>exult.cfg is can be found as <strong>/home/root/.exult.cfg</strong></li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="error_log">
 			<header>Error Log</header>
 			<body>	
