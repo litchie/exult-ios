@@ -51,7 +51,7 @@ void Shapes_vga_file::write_info
 	// Starts at 0x96'th shape.
 	ofstream shpdims;
 	U7open(shpdims, PATCH_SHPDIMS);
-	for (i = 0x96; i < num_shapes; i++)
+	for (i = c_first_obj_shape; i < num_shapes; i++)
 		{
 		shpdims.put((char&) info[i].shpdims[0]);
 		shpdims.put((char&) info[i].shpdims[1]);
