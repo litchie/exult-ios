@@ -489,7 +489,7 @@ public:
 	bool drag(int x, int y);	// During dragging.
 	bool drop_dragged(int x, int y, bool moved);// Done dragging.
 	bool is_dragging() const { return dragging != 0; }
-	bool drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
+	int drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
 	Gump *get_dragging_gump();
 	// Create a mini-screenshot (96x60)
 	Shape_file* create_mini_screenshot ();
