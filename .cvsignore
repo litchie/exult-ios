@@ -3,6 +3,7 @@
 exult
 Makefile
 Makefile.in
+autoconfig.h.in
 autoconfig.h
 aclocal.m4
 config.cache
