@@ -359,6 +359,9 @@ toolsdist: tools
 	copy tools\intrins1.txt $(TOOLSPATH)\tools
 	copy tools\intrins2.txt $(TOOLSPATH)\tools
 	copy tools\ipack.txt $(TOOLSPATH)\tools
+	copy tools\shp2pcx.txt $(TOOLSPATH)\tools
+	copy tools\splitshp.txt $(TOOLSPATH)\tools
+	copy tools\textpack.txt $(TOOLSPATH)\tools
 	copy tools\u7bgflag.txt $(TOOLSPATH)\tools
 	copy tools\u7siflag.txt $(TOOLSPATH)\tools
 	copy tools\ucformat.txt $(TOOLSPATH)\tools
