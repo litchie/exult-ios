@@ -23,7 +23,6 @@
 #define HAVE_OPENGL
 #define FUDGE_SAMPLE_RATES
 #define USE_FMOPL_MIDI
-#define WANT_MAP_CACHE_OUT	1
 
 // No GDI
 #define NOGDI
