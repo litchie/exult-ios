@@ -1,0 +1,53 @@
+# Exult Studio makefile for use in Windows with cygwin
+# Where is Exult Studio will be installed
+STUDIOPATH=C:/Studio
+
+SRC=..
+VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server
+
+# If this doesn't work, insert output of 'gtk-config --cflags' manually
+GTK_INCLUDES = `gtk-config --cflags`
+# If this doesn't work, insert output of 'gtk-config --libs' manually
+GTK_LIBS = `gtk-config --libs`
+
+# If this doesn't work, insert output of 'libglade-config --cflags' manually
+LIBGLADE_INCLUDES = `libglade-config --cflags`
+# If this doesn't work, insert output of 'libglade-config --libs' manually
+LIBGLADE_LIBS = `libglade-config --libs`
+
+INCLUDES = -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
+	-I$(SRC)/files -I(SRC)/server $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
+
+CPPFLAGS = -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 $(INCLUDES)
+
+CXXFLAGS = -fnative-struct
+
+CXX=g++
+
+LFLAGS=
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS)
+EXEC=exult_studio.exe
+
+SERVER_OBJS=server.o servemsg.o objserial.o 
+
+MAPEDIT_OBJS=dirbrowser.o studio.o exult_studio.o objbrowse.o shapelst.o \
+	paledit.o chunklst.o eggedit.o npcedit.o
+
+FILES_OBJS=Flat.o Flex.o Table.o IFF.o U7file.o utils.o listfiles.o
+
+IMAGEWIN_OBJS=ibuf8.o imagebuf.o
+
+SHAPES_OBJS=font.o fontvga.o items.o shapeinf.o shapevga.o u7drag.o vgafile.o
+
+OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS)
+
+$(EXEC): $(OBJS)
+	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(EXEC)
+
+install: $(EXEC)
+	mkdir -p $(STUDIOPATH)
+	strip $(EXEC) -o  $(STUDIOPATH)/$(EXEC)
+	cp exult_studio.glade $(STUDIOPATH)
