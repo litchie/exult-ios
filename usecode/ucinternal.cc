@@ -715,6 +715,25 @@ void Usecode_internal::set_item_frame
 	}
 
 /*
+ *	Set to repaint an object.
+ */
+
+void Usecode_internal::add_dirty
+	(
+	Game_object *obj
+	)
+	{
+	if (obj->get_owner())		// Inside a container?
+		{			// Paint gump if open.
+		Gump *gump = gumpman->find_gump(obj);
+		if (gump)
+			gwin->add_dirty(gump->get_shape_rect(obj));
+		}
+	else
+		gwin->add_dirty(obj);
+	}
+
+/*
  *	Remove an item from the world.
  */
 
@@ -727,15 +746,7 @@ void Usecode_internal::remove_item
 		return;
 	if (!last_created.empty() && obj == last_created.back())
 		last_created.pop_back();
-	if (obj->get_owner())		// Inside a container?
-		{			// Paint gump if open.
-		Gump *gump = gumpman->find_gump(obj);
-		if (gump)
-			gump->paint();
-		}
-	else
-		gwin->add_dirty(obj);
-
+	add_dirty(obj);
 	obj->remove_this();
 	}
 
