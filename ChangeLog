@@ -1,4 +1,8 @@
-2001-12-10  Patrick Burke  <takhisisii@yahoo.com.au
+2001-12-11  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/ucfunc.cc: Code cleanup
+	* usecode/ucxt/data/opcodes.txt: Assembler comment output tidying
+
+2001-12-10  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/: Added intrinsic 'name' output under -fa rather then
 	  the original intrinsic number for the opcodes 'callis' and 'calli'.
 
