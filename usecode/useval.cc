@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "useval.h"
 #include "gump_utils.h"
+#include "utils.h"
 
 using std::cout;
 using std::endl;
@@ -396,3 +397,87 @@ Usecode_value Usecode_value::operator+(const Usecode_value& v2)
 	}
 	return sum;
 }
+
+/*
+ *	Serialize out.
+ *
+ *	Output:	# bytes stored, or -1 if error.
+ */
+
+int Usecode_value::save
+	(
+	unsigned char *buf,
+	int buflen
+	)
+	{
+	unsigned char *ptr = buf;
+	switch ((Val_type) type)
+		{
+	case int_type:
+		if (buflen < 5)
+			return -1;
+		*ptr++ = type;
+		Write4(ptr, value.intval);
+		break;
+	case pointer_type:
+		return -1;		// Can't serialize this.
+	case string_type:
+		{
+		int len = strlen(value.str);
+		if (buflen < len + 3)
+			return -1;
+		*ptr++ = type;
+		Write2(ptr, len);
+		memcpy(ptr, value.str, len);
+		ptr += len;
+		break;
+		}
+	case array_type:
+		return -1;		// Not supported/needed for now.
+	default:
+		return -1;
+		}
+	return (ptr - buf);
+	}
+
+/*
+ *	Serialize in.  Assumes 'this' contains no data yet.
+ *
+ *	Output:	False if error.
+ */
+
+bool Usecode_value::restore
+	(
+	unsigned char *buf,
+	int buflen
+	)
+	{
+	unsigned char *ptr = buf;
+	type = (Val_type) *ptr++;
+	switch (type)
+		{
+	case int_type:
+		if (buflen < 5)
+			return false;
+		value.intval = Read4(ptr);
+		return true;
+	case pointer_type:
+		return false;		// Can't serialize this.
+	case string_type:
+		{
+		int len = Read2(ptr);
+		if (buflen < len + 3)
+			return false;
+		value.str = new char[len + 1];
+		memcpy(value.str, ptr, len);
+		value.str[len] = 0;
+		ptr += len;
+		return true;
+		}
+	case array_type:
+		return false;		// Not supported/needed for now.
+	default:
+		return false;
+		}
+	}
+

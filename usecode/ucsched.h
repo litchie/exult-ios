@@ -42,10 +42,13 @@ class Scheduled_usecode : public Time_sensitive
 	int i;				// Current index.
 	int frame_index;		// For taking steps.
 	int no_halt;			// 1 to ignore halt().
+	int delay;			// Used for restoring.
+					// For restore:
+	Scheduled_usecode(Game_object *item, Usecode_value& aval, int findex,
+						int nhalt, int del);
 public:
 	Scheduled_usecode(Usecode_internal *usecode,
 				Usecode_value& oval, Usecode_value& aval);
-					// Execute when due.
 	virtual ~Scheduled_usecode()
 		{
 		count--;
@@ -70,11 +73,16 @@ public:
 		{ return count; }
 					// Find for given item.
 	static Scheduled_usecode *find(Game_object *srch);
+	static void clear();		// Delete all.
 					// Activate itemref eggs.
 	void activate_eggs(Usecode_internal *usecode);
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Move object in given direction.
 	void step(Usecode_internal *usecode, int dir);
+					// Save/restore.
+	int save(unsigned char *buf, int buflen);
+	static Scheduled_usecode *restore(Game_object *item,
+					unsigned char *buf, int buflen);
 	};
 
 
