@@ -30,6 +30,8 @@ char *item_names[1024];			// Names of U7 items.
 
 /*
  *	Set up names of items.
+ *
+ *	Frame names start at entry 0x500 (reagents,medallions,food,etc.).
  */
 
 void Setup_item_names (ifstream& items) {

@@ -39,7 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "gumps.h"
 
-Audio audio;
+Audio *audio;
 Configuration *config;
 
 #define MOUSE 1
@@ -86,8 +86,9 @@ int main
 	cout << "Low level graphics use the 'SDL' library.\n";
 
         config = new Configuration;	// Create configuration object
-
 	config->read_config_file(USER_CONFIGURATION_FILE);
+	audio = new Audio;
+
 	string	data_directory, tracing;
 	config->value("config/disk/u7path",data_directory,".");
 	if(data_directory==".")
@@ -165,7 +166,7 @@ static void Init
 		exit(-1);
 		}
 	atexit(SDL_Quit);
-	audio.Init(9615*2,2);
+	audio->Init(9615*2,2);
 	SDL_SysWMinfo info;		// Get system info.
 	SDL_VERSION(&info.version);
 					// Ignore clicks until splash done.

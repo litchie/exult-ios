@@ -223,7 +223,7 @@ void Game_window::drop
 	else
 		{			// Was it dropped on something?
 		Game_object *found = find_object(x, y);
-		if (found && found->drop(dragging))
+		if (found && found != dragging && found->drop(dragging))
 			return;
 					// Find where to drop it.
 		int max_lift = main_actor->get_lift() + 4;

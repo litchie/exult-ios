@@ -1477,7 +1477,7 @@ USECODE_INTRINSIC(play_music)
 	cout << "0: " << ((parms[0].get_int_value()>>8)&0xff) << " " <<  ((parms[0].get_int_value())&0xff) << endl;
 	cout << "1: " << ((parms[1].get_int_value()>>8)&0xff) << " " <<  ((parms[1].get_int_value())&0xff) << endl;
 #endif
-	audio.start_music(parms[0].get_int_value()&0xff,(parms[0].get_int_value()>>8)&0xff);
+	audio->start_music(parms[0].get_int_value()&0xff,(parms[0].get_int_value()>>8)&0xff);
 	USECODE_RETURN(no_ret);
 }
 
@@ -1862,7 +1862,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8c
 	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8e
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8e  In_combat().
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8f
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x90
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91
