@@ -1582,6 +1582,24 @@ int Npc_actor::step
 	}
 
 /*
+ *	Remove an object from its container, or from the world.
+ *	The object is deleted.
+ */
+
+void Npc_actor::remove_this
+	(
+	int nodel			// 1 to not delete.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Store old chunk list.
+	Chunk_object_list *olist = gwin->get_objects_safely(
+							get_cx(), get_cy());
+	Actor::remove_this(nodel);	// Remove.
+	switched_chunks(olist, 0);
+	}
+
+/*
  *	Update chunks' npc lists after this has moved.
  */
 
@@ -1808,6 +1826,7 @@ int Monster_actor::step
 	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
 	nlist->setup_cache();		// Setup cache if necessary.
 					// Blocked.
+//Try is_blocked(t.tx, t.ty)+++++++
 	if (is_blocked(cx*tiles_per_chunk + tx, cy*tiles_per_chunk + ty))
 		{
 		if (schedule)		// Tell scheduler.

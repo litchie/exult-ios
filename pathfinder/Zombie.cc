@@ -89,17 +89,16 @@ int Zombie::GetNextStep(Tile_coord& n)
 {
 	if (major_distance <= 0)
 		return (0);
-	const int major_frame_incr = 1;	// For now, move 1 tile/frame.
 					// Subtract from distance to go.
 	major_distance -= major_frame_incr;
 					// Accumulate change.
 	sum += major_frame_incr * minor_delta;
 					// Figure change in slower axis.
-	int new_minor = sum/major_delta;
+	int minor_frame_incr = sum/major_delta;
 	sum = sum % major_delta;	// Remove what we used.
 					// Update coords. within world.
 	*major_coord += major_dir*major_frame_incr;
-	*minor_coord += minor_dir*new_minor;
+	*minor_coord += minor_dir*minor_frame_incr;
 	n = cur;			// Return new tile.
 					// ++++++For now, ignore tz.
 	return (1);

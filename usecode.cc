@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 #include "useval.h"
 #include "titles.h"
+#include "barge.h"
 #include <iomanip>
 #ifdef XWIN
 #include <signal.h>

@@ -18,8 +18,11 @@ exult_SOURCES =	\
 	args.cc		\
 	args.h		\
 	autoarray.h	\
+	barge.cc	\
+	barge.h		\
 	bodies.cc	\
 	bodies.h	\
+	citerate.h	\
 	combat.cc	\
 	combat.h	\
 	delobjs.cc	\
