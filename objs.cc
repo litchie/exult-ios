@@ -192,6 +192,81 @@ int Ireg_game_object::is_dragable
 	return gwin->get_shapes().get_info(get_shapenum()).get_weight() > 0;
 	}
 
+#if 1
+/*
+ *	Create an animated object.
+ */
+
+Animated_object::Animated_object
+	(
+	unsigned char l, unsigned char h, 
+	unsigned int shapex,
+	unsigned int shapey,
+	unsigned int lft
+	) : Ireg_game_object(l, h, shapex, shapey, lft), cycles(0),
+		cycle_num(0)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int delay = 100;		// Delay between frames.
+	frames = gwin->get_shape_num_frames(get_shapenum());
+	}
+
+/*
+ *	Render.
+ */
+
+void Animated_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	Ireg_game_object::paint(gwin);
+	if (!animating)			// Turn on animation.
+		{
+		gwin->get_tqueue()->add(SDL_GetTicks() + 100, 
+							this, (long) gwin);
+		animating = 1;
+		}
+	}
+
+/*
+ *	Animation.
+ */
+
+void Animated_object::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata			// Game window.
+	)
+	{
+	int delay = 100;		// Delay between frames.
+	Game_window *gwin = (Game_window *) udata;
+					// Get area we're taking.
+	Rectangle rect = gwin->get_shape_rect(this);
+	rect.enlarge(4);
+	rect = gwin->clip_to_win(rect);
+	if (rect.w <= 0 || rect.h <= 0)	// No longer on screen?
+		{
+		animating = 0;
+		return;
+		}
+					// Get next frame.
+	int framenum = get_framenum() + 1;
+	if (framenum >= frames)		// End of cycle?
+		{
+		framenum = 0;
+		if (cycles && ++cycle_num >= cycles)
+			animating = 0;
+		}
+	set_frame(framenum);		// Set new frame.
+	gwin->paint(rect);		// Paint.
+					// Add back to queue for next time.
+	if (animating)
+		gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+#endif
+
 /*
  *	Is a given tile within this egg's influence?
  */
@@ -988,71 +1063,6 @@ void Sprite::handle_event
 		gwin->repaint_sprite(this, oldrect);
 		}
 	}
-
-#if 0
-/*
- *	Create a cyclic sprite.
- */
-
-Frame_cycle_sprite::Frame_cycle_sprite
-	(
-	Game_window *gwin,
-	int shnum, 
-	int tx, int ty, 		// Abs. tile coords.
-	int lft,			// Lift.
-	int ncycs			// Num. cycles to do, or 0.
-	) : cycles(ncycs), cycle_num(0), 
-	    Game_object(shnum, 0, tx%tiles_per_chunk, ty%tiles_per_chunk, lft)
-	{
-	int delay = 100;		// Delay between frames.
-	frames = gwin->get_shape_num_frames(shnum);
-	gwin->get_objects(tx/tiles_per_chunk, ty/tiles_per_chunk)->add(this);
-	gwin->get_tqueue()->add(SDL_GetTicks() + delay, this, (long) gwin);
-	Rectangle rect = gwin->get_shape_rect(this);
-	rect.enlarge(4);
-	rect = gwin->clip_to_win(rect);
-	gwin->paint(rect);
-	}
-
-/*
- *	Animation.
- */
-
-void Frame_cycle_sprite::handle_event
-	(
-	unsigned long curtime,		// Current time of day.
-	long udata			// Game window.
-	)
-	{
-	int delay = 100;		// Delay between frames.
-	Game_window *gwin = (Game_window *) udata;
-					// Get area we're taking.
-	Rectangle rect = gwin->get_shape_rect(this);
-	rect.enlarge(4);
-	rect = gwin->clip_to_win(rect);
-					// Get next frame.
-	int framenum = get_framenum() + 1;
-	if (framenum >= frames)		// End of cycle?
-		{
-		if (!cycles || ++cycle_num < cycles)
-			framenum = 0;
-		else
-			{		// All done.
-#if 1	/* ++++Not sure yet. */
-			gwin->get_objects(get_cx(), get_cy())->remove(this);
-			delete this;
-			gwin->paint(rect);
-			return;
-#endif
-//			framenum = 0;
-			}
-		}
-	set_frame(framenum);		// Set new frame.
-	gwin->paint(rect);		// Paint.
-					// Add back to queue for next time.
-	gwin->get_tqueue()->add(curtime + delay, this, udata);
-	}
-#endif
 
 /*
  *	Remove from screen.

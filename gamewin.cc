@@ -484,8 +484,12 @@ void Game_window::read_ireg_objects
 			type = 0;
 			lift = entry[4] >> 4;
 			quality = entry[5];
-			obj = new Ireg_game_object(
-				entry[2], entry[3], shapex, shapey, lift);
+			Shape_info& info = shapes.get_info(shapeid);
+			obj = (info.is_animated()) ?
+				new Animated_object(
+				   entry[2], entry[3], shapex, shapey, lift)
+				: new Ireg_game_object(
+				   entry[2], entry[3], shapex, shapey, lift);
 			}
 		else if (entlen == 12)	// Container?
 			{
