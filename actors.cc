@@ -60,6 +60,8 @@
 #include "monsters.h"
 #include "effects.h"
 #include "palette.h"
+#include "ucsched.h"
+#include "ucscriptop.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -3292,14 +3294,23 @@ Actor *Actor::resurrect
 	body->remove_this();		// Remove and delete body.
 	move(pos);			// Move back to life.
 					// Restore health to max.
-	properties[static_cast<int>(health)] = properties[static_cast<int>(strength)];
+	properties[static_cast<int>(health)] = 
+					properties[static_cast<int>(strength)];
 	Actor::clear_flag(Obj_flags::dead);
+	Actor::clear_flag(Obj_flags::poisoned);
+	Actor::clear_flag(Obj_flags::paralyzed);
 	Actor::clear_flag(Obj_flags::asleep);
 					// Restore to party if possible.
 	partyman->update_party_status(this);
 					// Give a reasonable schedule.
 	set_schedule_type(is_in_party() ? Schedule::follow_avatar
 					: Schedule::loiter);
+					// Stand up.
+	Usecode_script *scr = new Usecode_script(this);
+	(*scr) << (Ucscript::npc_frame + Actor::sleep_frame)
+		<< (Ucscript::npc_frame + Actor::kneel_frame)
+		<< (Ucscript::npc_frame + Actor::standing);
+	scr->start(1);
 	return (this);
 	}
 

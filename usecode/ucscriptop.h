@@ -65,7 +65,8 @@ enum Ucscript_ops
 	/*
 	 *	These are (I think) not in the original: 
 	 */
-	usecode2 =	0x80		// Call usecode(fun, eventid).
+	usecode2 =	0x80,		// Call usecode(fun, eventid).
+	resurrect =	0x81		// Parm. is body.
 	};
 }
 #endif

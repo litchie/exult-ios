@@ -1,3 +1,8 @@
+2003-08-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucsched.cc, usecode/ucscriptop.h, actors.cc:  Schedule
+	'resurrection' instead of doing it immediately.
+
 2003-08-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/shapeinf.cc: Kludge:  Don't use sfx 123 for weapons in
