@@ -490,6 +490,9 @@ public:
 			Shape_file *&map,
 			SaveGame_Details *&details,
 			SaveGame_Party *& party);
+	void read_saveinfo(std::ifstream &in,
+			SaveGame_Details *&details,
+			SaveGame_Party *& party);
 	void write_saveinfo();		// Write the save info to gamedat
 
 	void clear_dirty()		// Clear dirty rectangle.
