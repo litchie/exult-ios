@@ -1,4 +1,8 @@
 2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* cheat.cc: repeat with me: "I will test my fixes before
+	  committing them".
+
+2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* audio/xmidi.cc: cut & paste can be fatal :)
 	  make sure that if chorus values are out of range we change them,
 	  not reverb

@@ -67,6 +67,10 @@ Cheat::~Cheat() {
 
 void Cheat::init (void) {
   enabled = false;
+  std::string cheating;
+  config->value("config/gameplay/cheat",cheating,"yes");
+  if (cheating == "yes")
+    enabled = true;
 }
 
 void Cheat::finish_init (void) {
@@ -75,11 +79,6 @@ void Cheat::finish_init (void) {
   browser = new ShapeBrowser();
   tester = new SoundTester();
   cscreen = new CheatScreen();
-  
-  std::string cheating;
-  config->value("config/gameplay/cheat",cheating,"yes");
-  if (cheating == "yes")
-    enabled = true;
 
   if (enabled)
     cout << "Cheats enabled." << endl;
@@ -422,7 +421,7 @@ void Cheat::toggle_grab_actor (void) {
 }
 
 void Cheat::set_grabbed_actor (Actor *actor) const {
-	if (!enabled) return;
+	if (!enabled||!cscreen) return;
 
 	cscreen->SetGrabbedActor(actor);	
 }
