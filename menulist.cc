@@ -53,12 +53,12 @@ MenuChoice::MenuChoice(Shape_frame *on, Shape_frame *off, int xpos, int ypos, Fo
 	choice = -1;
 	font = fnt;
 	max_choice_width = 0;
-	choices = new FeatureVector<char*>();
+	choices = new std::vector<std::string>();
 }
 
 void MenuChoice::add_choice(char *s)
 {
-	choices->append(s);
+	choices->push_back(std::string(s));
 	int len = font->get_text_width(s);
 	max_choice_width = (len>max_choice_width)?len:max_choice_width;
 }
@@ -73,7 +73,7 @@ void MenuChoice::paint(Game_window *gwin)
 	gwin->paint_shape(x-shape->get_width(), y, shape);
 	if(choice>=0) {
 		gwin->get_win()->fill8(0, x+32+max_choice_width, y+font->get_text_height(), x+32, y);
-		font->draw_text(gwin, x+32, y, choices->at(choice));
+		font->draw_text(gwin, x+32, y, choices->at(choice).c_str());
 	}
 }
 
@@ -87,7 +87,7 @@ bool MenuChoice::handle_event(SDL_Event& event)
 		break;
 	case SDLK_RIGHT:
 		choice++;
-		if(choice==choices->size())
+		if(choice>=choices->size())
 			choice = 0;
 		break;
 	default:
