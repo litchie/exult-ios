@@ -49,6 +49,7 @@ public:
 
 	Gump *find_gump(int x, int y);			// Find gump x,y is in
 	Gump *find_gump(Game_object *obj);		// Find gump that object is in
+	Gump *find_gump(Game_object *obj, int shapenum);	// Find gump for object obj
 
 	void update_gumps(Game_window *gwin);
 	void paint(Game_window *gwin);
