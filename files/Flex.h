@@ -45,7 +45,6 @@ protected:
 		};
 	std::vector<Reference> object_list;
 public:
-	Flex(const char *fname);
 	Flex(const std::string &fname);
 	Flex(const Flex &f) : magic1(f.magic1),count(f.count),magic2(f.magic2),object_list(f.object_list)
 		{ std::memcpy(title,f.title,sizeof(title));

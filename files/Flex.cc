@@ -39,12 +39,7 @@ using std::fread;
 using std::size_t;
 
 
-Flex::Flex(const char *n) : U7file(n)
-{
-	IndexFlexFile();
-}
-
-Flex::Flex(const string &n) : U7file(n.c_str())
+Flex::Flex(const string &n) : U7file(n)
 {
 	IndexFlexFile();
 }
@@ -61,16 +56,16 @@ void	Flex::IndexFlexFile(void)
 		return;
 		}
 	fread(ret.title,sizeof(ret.title),1,fp);
-	fread(&ret.magic1,sizeof(uint32),1,fp);
-	fread(&ret.count,sizeof(uint32),1,fp);
-	fread(&ret.magic2,sizeof(uint32),1,fp);
+	ret.magic1 = Read4(fp);
+	ret.count = Read4(fp);
+	ret.magic2 = Read4(fp);
 	if(magic1!=0xffff1a00UL)
 		{
 		cerr << "Magic number is not a flex file" << endl;
 		throw 0;	// Not a flex file
 		}
 	for(int i=0;i<9;i++)
-		fread(&ret.padding[i],sizeof(uint32),1,fp);
+		ret.padding[i] = Read4(fp);
 #if DEBUGFLEX
 	cout << "Title: " << ret.title << endl;
 	cout << "Count: " << ret.count << endl;
@@ -81,8 +76,8 @@ void	Flex::IndexFlexFile(void)
 	for(unsigned int i=0;i<ret.count;i++)
 		{
 		Flex::Reference f;
-		fread(&f.offset,sizeof(uint32),1,fp);
-		fread(&f.size,sizeof(uint32),1,fp);
+		f.offset = Read4(fp);
+		f.size = Read4(fp);
 #if DEBUGFLEX
 		cout << "Item " << i << ": " << f.size << " bytes @ " << f.offset << endl;
 #endif
