@@ -3,6 +3,7 @@
 	* GameplayOptions_gump.cc: cleaned up loading of bg_paperdolls setting
 	* cheat_screen.cc: save paperdoll setting here too
 	* gamewin.cc: fixed loading of bg_paperdoll setting
+	* gamewin.h: added some const's
 
 2001-10-12  Tristan Tarrant <nadir@users.sourceforge.net>
 	More patches from Christian Ohm <chr.ohm@gmx.net>
