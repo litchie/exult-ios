@@ -1945,5 +1945,9 @@ SOURCE=..\README.MacOS
 SOURCE=..\README.win32
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\pocket.txt
+# End Source File
 # End Target
 # End Project

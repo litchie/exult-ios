@@ -1721,6 +1721,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		
 		// Value
 		case 'v':	// ID
+		if (i < -1) mode = CP_InvalidValue;
+		else if (i > 63) mode = CP_InvalidValue;
+		else if (i == -1 || !input[0]) mode = CP_Canceled;
+		else actor->set_ident(i);
 		break;
 		
 		case '1':	// Skin
@@ -1869,8 +1873,8 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 		// Value
 		case 'v':	// ID
 		if (!actor->get_npc_num()) command = 0;
-		else mode = CP_NotAvail;
-		input[0] = command;
+		else mode = CP_EnterValue;
+		input[0] = 0; 
 		break;
 
 		// NPC Flag Editor
