@@ -21,9 +21,12 @@
 
 #include "mouse.h"
 
+class Actor;
 class Cheat;
 class Configuration;
+class Game_window;
 class KeyBinder;
+class Tile_coord;
 
 /*
  *	Get a click, or, optionally, a keyboard char.
