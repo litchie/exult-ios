@@ -1,3 +1,6 @@
+2000-12-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc, cheat.h/cc: added ctrl-alt-h = resurrect and heal party.
+
 2000-12-03  Max Horn  <max@quendi.de>
 	* various files: added missing using std::
 	* xmlparse.cc: made handling of XML entities more efficient and support all 5 required XML entities

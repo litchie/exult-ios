@@ -63,6 +63,7 @@ public:
   void change_skin (void) const;
 
   void levelup_party (void) const;
+  void heal_party (void) const;
 
   void fake_time_period (void) const;
   void dec_skip_lift (void) const;

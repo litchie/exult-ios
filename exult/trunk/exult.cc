@@ -884,6 +884,8 @@ static void Handle_keystroke
 				
 				} else if (ctrl && !alt) {	// Ctrl-h : cheat help
 					show_cheat_help();
+				} else if (ctrl && alt) {	// Ctrl-Alt-h : heal party
+					cheat.heal_party();
 				}
 				break;
 			case 'i':
@@ -1433,6 +1435,7 @@ void show_cheat_help (void)
 	scroll->add_text("e - Toggle Egg display\n");
 	scroll->add_text("alt-g - Toggle God Mode\n");
 	scroll->add_text("g - Change Avatar gender\n");
+	scroll->add_text("ctrl-alt-h - Heal party\n");
 	scroll->add_text("alt-i - Toggle infravision\n");
 	scroll->add_text("ctrl-l - Level up party\n");
 	scroll->add_text("ctrl-m - Get 100 gold coins\n");
