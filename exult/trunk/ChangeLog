@@ -1,3 +1,6 @@
+2001-04-14  Willem Jan Palenstijn <palenstijn@wandoo.nl>
+	* gumps/gump_utils.h: include unistd.h by default, not just on *BSD
+
 2001-04-12  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in: a few minor changes for solaris
 

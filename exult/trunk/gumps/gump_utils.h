@@ -25,9 +25,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef OPENBSD
 #include <sys/types.h>
-#include <unistd.h>
 #endif
 
+#include <unistd.h>
 #include "mouse.h"
 
 #ifndef XWIN
