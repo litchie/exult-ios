@@ -1,3 +1,9 @@
+2000-05-03  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* exult.cc: you can now press 'i' to show the npc's inventories just
+	like the real U7. Needs improvement.
+	Also 'q' quits and ESC only closes gumps.
+
 2000-05-02  Jeff Freedman  <jeff@patches.simutech.com>
 
 	* Use data from 'ready.dat' to place objects on Actor.

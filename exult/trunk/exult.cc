@@ -546,6 +546,7 @@ static void Handle_keystroke
 	static int gump_cnt = -1, gump_frame = 0;
 	static int font_cnt = -1, font_frame = 0;
 	static int sprite_cnt = -1, sprite_frame = 0;
+	static int inventory_page = -1;
 	switch (sym)
 		{
 	case SDLK_PLUS:			// Brighten.
@@ -557,6 +558,20 @@ static void Handle_keystroke
 	case SDLK_b:
 		Breakpoint();
 		break;
+	case SDLK_i:
+		// Show Inventory
+		if(inventory_page<gwin->get_usecode()->get_party_count()) {
+			++inventory_page;
+			int npc_num = 0; // Default to Avatar
+			if(inventory_page>0)
+				npc_num = gwin->get_usecode()->get_party_member(inventory_page-1);
+			Actor *actor = gwin->get_npc(npc_num);
+			actor->activate(gwin->get_usecode());
+		}
+		break;
+	case SDLK_c:
+		// Go into combat mode
+		break;
 	case SDLK_h:
 		{
 		char buf[512];
@@ -566,6 +581,7 @@ static void Handle_keystroke
 			"e - Toggle eggs visibility\n"
 			"fF - Show next-previous frame\n"
 			"g - Show next gump\n"
+			"i - Show inventory\n"
 			"l - Decrement lift\n"
 			"m - Change mouse shape\n"
 			"oO - Show next-previous sprite\n"
@@ -580,7 +596,10 @@ static void Handle_keystroke
 		break;
 		}
 	case SDLK_q:
+		quitting_time = 1;
+		break;
 	case SDLK_ESCAPE:		// ESC key.
+		inventory_page = -1;
 		if (gwin->get_mode() == Game_window::gump)
 			gwin->end_gump_mode();
 		else			// For now, quit.
@@ -660,9 +679,6 @@ static void Handle_keystroke
 		sprite_frame = 0;
 		if (++sprite_cnt == gwin->get_num_sprites())
 		    sprite_cnt = 0;
-		/*if(sprite_cnt==22)
-		    ++sprite_cnt;*/
-		sprite_cnt=22;
 	    }
 	  cout << "Painting sprite " << sprite_cnt << "/" << gwin->get_num_sprites() << '\n';
 	  cout << "Frames = " << gwin->get_sprite_num_frames(sprite_cnt) << '\n';

@@ -1354,7 +1354,7 @@ void Game_window::double_clicked
 	remove_all_text();		// Remove text msgs. from screen.
 	if (obj)
 		{
-cout << "Object name is " << obj->get_name() << '\n';
+		cout << "Object name is " << obj->get_name() << '\n';
 		init_faces();		// Be sure face list is empty.
 		Game_mode savemode = mode;
 		obj->activate(usecode);
@@ -1458,9 +1458,6 @@ void Game_window::show_face
 	else
 		actbox = info->face_rect;
 					// Draw whom we're talking to.
-					// Put a black box w/ white bdr.
-	//win->fill8(1, actbox.w + 4, actbox.h + 4, actbox.x - 2, actbox.y - 2);
-	//win->fill8(0, actbox.w, actbox.h, actbox.x, actbox.y);
 	paint_shape(actbox.x + actbox.w - 2, 
 			actbox.y + actbox.h - 2, face);
 	}
