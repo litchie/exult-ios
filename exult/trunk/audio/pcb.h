@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <new>
 #include "SDL_mapping.h"
+#include "exult_types.h"
 
 class ByteBuffer
 {
@@ -317,6 +318,7 @@ private:
 	SDL_mutex	*mutex;
 	size_t	window;
 	bool	producing,consuming;
+	uint32	id;
 	inline 	void	lock(void)
 		{
 		if(SDL_mutexP(mutex)!=0)
@@ -367,8 +369,9 @@ public:
 		unlock();
 		return l?l:(producing?0:-1);
 		}
-	void init()			// Initialize prior to use/reuse.
+	void init(uint32 i)		// Initialize prior to use/reuse.
 		{
+		id = i;
 		lock();
 		producing = consuming = true;
 		Buffer.clear();
@@ -376,7 +379,8 @@ public:
 		}
 
 	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),
-			window(32768),producing(false),consuming(false)
+			window(32768),producing(false),consuming(false),
+			id(0)
 		{
 #if DEBUG
 		mycounter=++counter;
@@ -390,6 +394,8 @@ public:
 #endif
 		SDL_DestroyMutex(mutex);
 		}
+	uint32	get_id(void) const
+		{ return id; }
 	void	end_production(void)
 		{
 #if DEBUG
