@@ -14,7 +14,8 @@ using EStudio::Create_arrow_button;
 
 Object_browser::Object_browser(Shape_group *grp, Shape_file_info *fi) 
 	: group(grp), file_info(fi), popup(0),
-	selected(-1), find_text(0), loc_down(0), loc_up(0),
+	selected(-1), vscroll(0), hscroll(0), find_text(0), 
+	loc_down(0), loc_up(0),
 	move_down(0), move_up(0)
 {
 	widget = 0;
@@ -30,6 +31,48 @@ void Object_browser::set_widget(GtkWidget *w)
 {
 	widget = w;
 }
+
+/*
+ *	Save current position in 'file' this came from.
+ */
+
+void Object_browser::save_pos
+	(
+	)
+	{
+	if (file_info)
+		{
+		int vvalue = 0;		// Get vertical scroll.
+		if (vscroll)
+			{
+			GtkAdjustment *adj = gtk_range_get_adjustment(
+						GTK_RANGE(vscroll));
+			vvalue = (int) adj->value;
+			}
+		file_info->set_save_pos(selected, vvalue);
+		}
+	}
+
+/*
+ *	Restore position from the last time.
+ */
+
+void Object_browser::restore_pos
+	(
+	)
+	{
+	if (!file_info)
+		return;
+	int vvalue;			// Get prev. values.
+	file_info->get_save_pos(selected, vvalue);
+	if (vscroll)			// Restore vertical scroll.
+		{
+		GtkAdjustment *adj = gtk_range_get_adjustment(
+						GTK_RANGE(vscroll));
+		gtk_adjustment_set_value(adj, vvalue);
+		}
+	}
+
 
 bool Object_browser::server_response(int , unsigned char *, int )
 {

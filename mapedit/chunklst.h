@@ -59,7 +59,6 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 					//   256 shape ID's = 512 bytes).
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
-	GtkWidget *chunk_scroll;	// Vertical scrollbar.
 	int num_chunks;			// Total # of chunks.
 					// List of chunks we've read in.
 	std::vector<unsigned char *> chunklist;
