@@ -139,9 +139,9 @@ void Combat_schedule::find_opponents
 	    npc != gwin->get_main_actor())
 	{
 		Game_object *opp = gwin->get_main_actor()->get_target();
-		if (opp && opp != npc && (opp->get_npc_num() > 0 ||
-					opp->is_monster()))
-			opponents.push((Actor *)opp);
+		Actor *oppnpc = dynamic_cast<Actor *>(opp);
+		if (oppnpc && oppnpc != npc)
+			opponents.push(oppnpc);
 	}
 }		
 

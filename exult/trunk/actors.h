@@ -303,17 +303,17 @@ public:
 	int get_prev_schedule_type();	// Get previous schedule.
 	void restore_schedule();	// Set schedule after reading in.
 					// Set new schedule.
-	virtual void set_schedule_type(int new_schedule_type, 
+	void set_schedule_type(int new_schedule_type, 
 						Schedule *newsched = 0);
 					// Change to new schedule at loc
 	virtual void set_schedule_and_loc(int new_schedule_type, 
 					Tile_coord dest, int delay = -1);
-	virtual int get_schedule_type() const
+	int get_schedule_type() const
 		{ return schedule_type; }
 					// Get/set 'alignment'.
-	virtual int get_alignment() const
+	int get_alignment() const
 		{ return alignment; }
-	virtual void set_alignment(short a)
+	void set_alignment(short a)
 		{ alignment = a; }
 					// Update chunks after NPC moved.
 	virtual void switched_chunks(Map_chunk *, Map_chunk *)
@@ -322,6 +322,7 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual bool edit();		// Edit in ExultStudio.
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
 					// Drop another onto this.
@@ -329,10 +330,10 @@ public:
 	virtual std::string get_name() const;
 	std::string get_npc_name() const;
 	void set_npc_name(const char *n);
-	virtual void set_property(int prop, int val);
+	void set_property(int prop, int val);
 					// Lose HP's and check for death.
 	bool reduce_health(int delta, Actor *attacker = 0);
-	virtual int get_property(int prop) const
+	int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
 	bool is_dying() const		// Dead when health below -1/3 str.
 		{ return properties[(int) health] < 
@@ -368,7 +369,7 @@ public:
 	void set_unused(bool tf)
 		{ unused = tf; }
 
-	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
+	int get_npc_num() const		// Get its ID (1-num_npcs).
 		{ return npc_num; }
 					// Get/set index within party.
 	virtual int get_party_id() const

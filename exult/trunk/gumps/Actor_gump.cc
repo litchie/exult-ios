@@ -87,26 +87,25 @@ int Actor_gump::find_closest
 
 Actor_gump::Actor_gump
 	(
-	Container_game_object *cont,	// Container it represents.
+	Container_game_object *cont,	// Container it represents.  MUST
+					//   be an Actor.
 	int initx, int inity, 		// Coords. on screen.
 	int shnum			// Shape #.
 	) : Gump(cont, initx, inity, shnum)
 {
 	set_object_area(Rectangle(26, 0, 104, 132), 6, 136);
-
+	Actor *npc = dynamic_cast<Actor *>(cont);
 	heart_button = new Heart_button(this, heartx, hearty);
-	if (cont->get_npc_num() == 0)
+	if (npc->get_npc_num() == 0)
 		disk_button = new Disk_button(this, diskx, disky);
 	else
 		disk_button = NULL;
-	if (cont->get_npc_num() == 0)
+	if (npc->get_npc_num() == 0)
 		combat_button = new Combat_button(this, combatx, combaty);
 	else
 		combat_button = NULL;
-	halo_button = new Halo_button(this, halox, haloy,
-							(Actor *) cont);
-	cmode_button = new Combat_mode_button(this, cmodex, cmodey, 
-							(Actor *) cont);
+	halo_button = new Halo_button(this, halox, haloy, npc);
+	cmode_button = new Combat_mode_button(this, cmodex, cmodey, npc);
 							
 	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 	{			// Set object coords.
