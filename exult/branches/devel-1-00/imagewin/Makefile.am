@@ -19,4 +19,4 @@ libimagewin_la_SOURCES = \
 	savepcx.cc
 
 EXTRA_DIST = \
-	scale.cc \
+	scale.cc

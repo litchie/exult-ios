@@ -53,6 +53,10 @@ ExultStudio: a GTK+-based environment for editing Exult worlds
 
 %changelog
 
+* Fri Jun 07 2002  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+
+- updated ucxt data files
+
 * Wed Dec 05 2001  Tristan Tarrant <nadir@users.sourceforge.net>
 
 - subpackages are here !!!
@@ -115,7 +119,6 @@ rm -rf $RPM_BUILD_ROOT
 %{bindir}/exult
 %{datadir}/exult/exult_bg.flx
 %{datadir}/exult/exult_si.flx
-%{datadir}/exult/midisfx.flx
 %{datadir}/exult/exult.flx
 
 %files tools
@@ -126,7 +129,10 @@ rm -rf $RPM_BUILD_ROOT
 %{bindir}/ucc
 %{bindir}/splitshp
 %{bindir}/shp2pcx
-%{datadir}/exult/opcodes.txt
+%{datadir}/exult/u7bgintrinsics.data
+%{datadir}/exult/u7siintrinsics.data
+%{datadir}/exult/u7misc.data
+%{datadir}/exult/u7opcodes.data
 
 %files gimp-plugin
 %defattr(-, root, root)
