@@ -1,5 +1,10 @@
 2001-08-23  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* shapes/shapevga.cc: Only subtract 1 from weapon-strike SFX if in
+	Black Gate.
+
+	* actors.cc:  Observe bounds when setting food level.
+
 	* objs/objs.cc: Flat shapes always get rendered first.  Fixes
 	funny rug in New Magincia.
 	* actors.cc (Npc_actor): Fixed remove_schedule() crash.
