@@ -1,3 +1,7 @@
+2002-01-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamemap.cc,shapes/shapeinf.h: quality_flags, okay_to_take.
+
 2002-01-11  Patrick Burke  <takhisisii@yahoo.com.au>
 	* conf/*: Added basic comment support to the configuration files using
 	<!-- stuff --> style comments. Currently it's only possible to add them

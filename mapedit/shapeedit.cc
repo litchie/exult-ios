@@ -90,8 +90,8 @@ void ExultStudio::init_shape_notebook
 	)
 	{
 //	static int classes[] = {0, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14};
-	static int classes[] = {0, 0, 1, 2, 3, 0, 4, 5, 6, 7, 0, 
-							8, 9, 10, 11, 0};
+	static int classes[] = {0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 0, 
+							9, 10, 11, 12, 0};
 	const int numclasses = sizeof(classes)/sizeof(classes[0]);
 	int shclass = (unsigned int) info.get_shape_class();
 	set_optmenu("shinfo_shape_class", shclass < numclasses ?
