@@ -132,7 +132,7 @@ int Game_window::drag
 					// Store original pos. on screen.
 		dragging_rect = dragging_gump ?
 			(dragging ? dragging_gump->get_shape_rect(dragging)
-				  : get_gump_rect(dragging_gump))
+				  : dragging_gump->get_dirty())
 			: get_shape_rect(dragging);
 					// Remove from actual position.
 		if (dragging_gump)

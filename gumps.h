@@ -141,6 +141,7 @@ public:
 	void get_shape_location(Game_object *obj, int& ox, int& oy);
 					// Find obj. containing mouse point.
 	Game_object *find_object(int mx, int my);
+	Rectangle get_dirty();		// Get dirty rect. for gump+contents.
 	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
