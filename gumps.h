@@ -189,6 +189,13 @@ public:
 	virtual void paint(Game_window *gwin);
 	};
 
+class Paperdoll_gump_object : public Actor_gump_object 
+	{
+public:
+	Paperdoll_gump_object(Container_game_object *cont, int initx, int inity, 
+								int shnum);
+	};
+
 /*
  *	A rectangular area showing a character's statistics:
  */

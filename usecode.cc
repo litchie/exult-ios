@@ -1269,6 +1269,31 @@ Usecode_value Usecode_machine::add_party_items
 	}
 
 /*
+ *	Add a quantity of an item to a container
+ *
+ *	Output:	None
+ */
+
+void Usecode_machine::add_cont_items
+	(
+	Usecode_value& container,	// What do we add to
+	Usecode_value& quantval,	// Quantity to add.
+	Usecode_value& shapeval,	// Shape.
+	Usecode_value& qualval,		// Quality.
+	Usecode_value& frameval,	// Frame.
+	Usecode_value& flagval		// Flag??
+	)
+	{
+	int quantity = quantval.get_int_value();
+	int shapenum = shapeval.get_int_value();
+	int framenum = frameval.get_int_value();
+	unsigned int quality = (unsigned int) qualval.get_int_value();
+
+	Game_object *obj = get_item(container);
+	if (obj) obj->add_quantity(quantity, shapenum, quality, framenum);
+	}
+
+/*
  *	Have the user choose an object/spot with the mouse.
  *
  *	Output:	4-elem array:  (Ref. to item, or 0; tx, ty, tz)
@@ -2908,6 +2933,16 @@ USECODE_INTRINSIC(set_npc_id)
 	Actor *obj = (Actor *) get_item(parms[0]);
 	if (obj)
 		obj->set_ident(parms[1].get_int_value());
+
+	return(no_ret);
+}
+
+
+USECODE_INTRINSIC(add_cont_items)
+{
+	// Add items(num, item, ??quality?? (-359), frame (or -359), T/F).
+	add_cont_items(parms[0], parms[1], parms[2],
+					parms[3], parms[4], parms[5]);
 	return(no_ret);
 }
 
@@ -2972,7 +3007,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(get_cont_items), // 0x2a
 	USECODE_INTRINSIC_PTR(remove_party_items), // 0x2b
 	USECODE_INTRINSIC_PTR(add_party_items), // 0x2c
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x2d UNUSED.
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x2d UNUSED. - add_cont_items??? - GUESS
 	USECODE_INTRINSIC_PTR(play_music), // 0x2e
 	USECODE_INTRINSIC_PTR(npc_nearby), // 0x2f
 	USECODE_INTRINSIC_PTR(find_nearby_avatar), // 0x30
@@ -3261,7 +3296,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(get_cont_items), // 0x33
 	USECODE_INTRINSIC_PTR(remove_party_items), // 0x34
 	USECODE_INTRINSIC_PTR(add_party_items), // 0x35
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x36 UNUSED.
+	USECODE_INTRINSIC_PTR(add_cont_items), // 0x36
 
 	// Packing
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x37
@@ -3291,13 +3326,13 @@ struct Usecode_machine::IntrinsicTableEntry
 	
 	USECODE_INTRINSIC_PTR(get_npc_number),	// 0x46
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4c
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x47
 
-	USECODE_INTRINSIC_PTR(part_of_day),	// 0x47
-	USECODE_INTRINSIC_PTR(get_alignment),	// 0x48
-	USECODE_INTRINSIC_PTR(set_alignment),	// 0x49
-	USECODE_INTRINSIC_PTR(move_object),	// 0x4a
-	USECODE_INTRINSIC_PTR(remove_npc),	// 0x4b
+	USECODE_INTRINSIC_PTR(part_of_day),	// 0x48
+	USECODE_INTRINSIC_PTR(get_alignment),	// 0x49
+	USECODE_INTRINSIC_PTR(set_alignment),	// 0x4a
+	USECODE_INTRINSIC_PTR(move_object),	// 0x4b
+	USECODE_INTRINSIC_PTR(remove_npc),	// 0x4c
 
 	
 	USECODE_INTRINSIC_PTR(item_say),	// 0x4d
@@ -3310,36 +3345,40 @@ struct Usecode_machine::IntrinsicTableEntry
 
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52++++Get_something() (0-3)
 	// 3==can't do magic here?         GetWeather (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x53++++SetWeather(0-3) (ucdump.c)
+	
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x53, set Weather
 
 	USECODE_INTRINSIC_PTR(sit_down),// 0x54 - Known
-	
-	USECODE_INTRINSIC_PTR(summon),	// 0x55     SummonCreature (ucdump.c)
-	USECODE_INTRINSIC_PTR(display_map),	// 0x56
-	USECODE_INTRINSIC_PTR(kill_npc),// 0x57
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x58
-	USECODE_INTRINSIC_PTR(set_attack_mode),	// 0x59
-	USECODE_INTRINSIC_PTR(set_opponent),	// 0x5a
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b     CloneNPC (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5c UNUSED
-	USECODE_INTRINSIC_PTR(display_area),	// 0x5d ++++called when you dbl-click
-                         	// on FoV gem. (gift from LB) display area???
-                                // ShowCrystalBall  (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5e     ShowWizardEye (ucdump.c)
-	USECODE_INTRINSIC_PTR(resurrect),// 0x5f     ResurrectNPC (ucdump.c)
-	USECODE_INTRINSIC_PTR(add_spell),// 0x60     AddSpellToBook (ucdump.c)
-	USECODE_INTRINSIC_PTR(sprite_effect),// 0x61 ExecuteSprite (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x62  ++++Explode???
 
 	// Packing
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x64
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x65
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x66
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x67
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x68
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x69
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x55
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x57
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x58
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x59
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b
 	// End pack
+
+
+	USECODE_INTRINSIC_PTR(summon),	// 0x5c     SummonCreature (ucdump.c)
+	USECODE_INTRINSIC_PTR(display_map),	// 0x5d
+	USECODE_INTRINSIC_PTR(kill_npc),// 0x5e
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5f
+	USECODE_INTRINSIC_PTR(set_attack_mode),	// 0x60
+	USECODE_INTRINSIC_PTR(set_opponent),	// 0x61
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x62     CloneNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63 UNUSED
+	USECODE_INTRINSIC_PTR(display_area),	// 0x64 ++++called when you dbl-click
+                         	// on FoV gem. (gift from LB) display area???
+                                // ShowCrystalBall  (ucdump.c)
+
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x65     ShowWizardEye (ucdump.c)
+	USECODE_INTRINSIC_PTR(resurrect),// 0x66     ResurrectNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(add_spell),// 0x67     AddSpellToBook (ucdump.c)
+	USECODE_INTRINSIC_PTR(sprite_effect),// 0x68 ExecuteSprite (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x69  ++++Explode???
+
 
 
 	USECODE_INTRINSIC_PTR(book_mode),// 0x6a - Known
@@ -3748,7 +3787,7 @@ Usecode_machine::~Usecode_machine
 	}
 
 #if DEBUG
-int debug = 1;				// 2 for more stuff.
+int debug = 0;				// 2 for more stuff.
 static int ucbp_fun = -1, ucbp_ip = -1;	// Breakpoint.
 void Setbreak(int fun, int ip)
 	{ ucbp_fun = fun; ucbp_ip = ip; }
@@ -4252,6 +4291,7 @@ int Usecode_machine::run
 	if (debug >= 1)
 		printf("RETurning from usecode %04x\n", fun->id);
 #endif
+	cout.flush();
 	cur_function = save_fun;
 	call_depth--;
 	return (abort == 0);		// Return 0 if ABRT.

@@ -91,6 +91,7 @@ private:
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
+	Vga_file paperdolls;	// "paperdoll.vga" - paperdolls in SI
 	Vga_file fonts;			// "fonts.vga" file.
 	Shape_file *extra_fonts[5];	// extra font shapes
 	Vga_file sprites;		// "sprites.vga" file.
@@ -317,7 +318,10 @@ public:
 			(ty + 1 - get_scrollty())*tilesize - 1 - lftpix);
 		}
 	Shape_frame *get_gump_shape(int shapenum, int framenum)
-		{ return gumps.get_shape(shapenum, framenum); }
+		{
+		if (shapenum & 0x1000) return paperdolls.get_shape(shapenum & 0xFFF, framenum);
+		return gumps.get_shape(shapenum, framenum);
+		}
 					// Get screen area of a gump.
 					//   for painting it.
 	Rectangle get_gump_rect(Gump_object *gump);
@@ -377,7 +381,11 @@ public:
 					// A "gump" is an open container.
 	void paint_gump(int xoff, int yoff, int shapenum, int framenum)
 		{
-		Shape_frame *shape = gumps.get_shape(shapenum, framenum);
+		Shape_frame *shape;
+		if (shapenum & 0x1000)
+			shape = paperdolls.get_shape(shapenum & 0xFFF, framenum);
+		else
+			shape = gumps.get_shape(shapenum, framenum);
 		if (shape)
 			paint_shape(xoff, yoff, shape);
 		}

@@ -197,6 +197,14 @@ void Game_window::init_files()
 		// Go to starting chunk
 		scrolltx = Game::get_game()->get_start_tile_x();
 		scrollty = Game::get_game()->get_start_tile_y();
+		
+		if (Game::get_game_type()==SERPENT_ISLE)
+		{
+			paperdolls.load(PAPERDOL);
+			if (!paperdolls.is_good())
+				abort("Can't open 'paperdol.vga' file.");
+		}
+
 	}
 	
 
@@ -476,8 +484,13 @@ Rectangle Game_window::get_gump_rect
 	Gump_object *gump
 	)
 	{
-	Shape_frame *s = gumps.get_shape(gump->get_shapenum(),
-						gump->get_framenum());
+	int shnum = gump->get_shapenum();
+	Shape_frame *s;
+	if (shnum & 0x1000)
+		s = paperdolls.get_shape(shnum & 0xFFF, gump->get_framenum());
+	else
+		s = gumps.get_shape(shnum, gump->get_framenum());
+		
 	return Rectangle(gump->get_x() - s->xleft, 
 			gump->get_y() - s->yabove,
 					s->get_width(), s->get_height());
@@ -1667,8 +1680,13 @@ Gump_object *Game_window::find_gump
 		Rectangle box = get_gump_rect(gmp);
 		if (box.has_point(x, y))
 			{		// Check the shape itself.
-			Shape_frame *s = gumps.get_shape(gmp->get_shapenum(),
-							gmp->get_framenum());
+			Shape_frame *s;
+			int shnum = gmp->get_shapenum();
+			if (shnum & 0x1000)
+				s = paperdolls.get_shape(shnum & 0xFFF, gmp->get_framenum());
+			else
+				s = gumps.get_shape(shnum, gmp->get_framenum());
+				
 			if (s->has_point(x - gmp->get_x(), y - gmp->get_y()))
 				found = gmp;
 			}
@@ -2059,7 +2077,7 @@ void Game_window::double_clicked
 		if (mode == conversation)
 			{
 			// We had a conversation with an NPC, set the met flag true (BG Only)
-			obj->set_flag (Actor::met);
+			if (Game::get_game_type() == BLACK_GATE) obj->set_flag (Actor::met);
 			mode = savemode;
 			paint();
 			}
@@ -2426,31 +2444,12 @@ void Game_window::show_gump
 	{
 	int paperdoll = (shapenum >= ACTOR_FIRST_GUMP &&
 					shapenum <= ACTOR_LAST_GUMP);
+	if (Game::get_game_type() == SERPENT_ISLE && paperdoll) paperdoll=2;
+	
 	// overinde for avatar
-// Messes up other gumps	if (obj->get_npc_num() == 0)  How about:
+	// Messes up other gumps
 	if (paperdoll && obj == main_actor)
-	{
-		if (main_actor->get_flag(Actor::petra)) // Petra
-		{
-//			shapenum =
-		}
-		else if (main_actor->get_skin_color() == 0) // WH
-		{
-//			shapenum =;
-		}
-		else if (main_actor->get_skin_color() == 1) // BN
-		{
-//			shapenum =;
-		}
-		else if (main_actor->get_skin_color() == 2) // BK
-		{
-//			shapenum= ;
-		}
-		else // None
-		{
-			shapenum += main_actor->get_type_flag(Actor::tf_sex);
-		}
-	}
+		shapenum += main_actor->get_type_flag(Actor::tf_sex);
 	
 	static int cnt = 0;		// For staggering them.
 	Gump_object *gmp;		// See if already open.
@@ -2478,9 +2477,12 @@ void Game_window::show_gump
 		x = get_width()/10;
 		y = get_width()/10;
 		}
-	Gump_object *new_gump = paperdoll ?
-			new Actor_gump_object((Container_game_object *) obj, 
-							x, y, shapenum)
+	Gump_object *new_gump = paperdoll == 2 ?
+				new Paperdoll_gump_object(
+					(Container_game_object *) obj, x, y, shapenum)
+			: paperdoll ?
+				new Actor_gump_object(
+					(Container_game_object *) obj, x, y, shapenum)
 			: shapenum == Game::get_game()->get_shape("gumps/statsdisplay") ?
 				new Stats_gump_object(
 					(Container_game_object *) obj, x, y)
