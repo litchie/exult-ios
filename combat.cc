@@ -46,7 +46,7 @@ using std::cout;
 using std::endl;
 using std::rand;
 
-unsigned long Combat_schedule::battle_time = 0;
+unsigned long Combat_schedule::battle_time = (unsigned long) (-30000);
 unsigned long Combat_schedule::battle_end_time = 0;
 
 bool Combat::paused = false;
