@@ -19,9 +19,9 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 CPPFLAGS=-DVERSION=\\\"0.35\\\" -DDEBUG -DAUTOCONFIGURED -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
 	$(SDL_INCLUDES)
-CXXFLAGS=-g -mwindows -Wall
+CXXFLAGS= -O2 -mwindows -Wall
 
-LFLAGS=-g -mwindows
+LFLAGS= -mwindows
 LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
 
 EXEC=exult2.exe
