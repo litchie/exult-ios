@@ -28,6 +28,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 #include <iostream>
 
+Flex::Flex(const char *n) 
+{
+	filename=n;
+	IndexFlexFile();
+}
+
+Flex::Flex(const string &n)
+{
+	filename=n;
+	IndexFlexFile();
+}
+
 void	Flex::IndexFlexFile(void)
 {
 	Flex	&ret=*this;

@@ -1,4 +1,7 @@
 
+#ifndef	_u7file_h_
+#define	_u7file_h_
+
 #include <string>
 #include <map>
 
@@ -38,3 +41,5 @@ public:
 	U7object(const char *file,int objnum);
 	virtual	~U7object();
 	};
+
+#endif
