@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 #include "segfile.h"
 #include "Audio.h"
-
+#include "ready.h"
 					// THE game window:
 Game_window *Game_window::game_window = 0;
 
@@ -80,6 +80,9 @@ Game_window::Game_window
 	ifstream textflx;	
   	u7open(textflx, TEXT_FLX);
 	Setup_item_names(textflx);	// Set up list of item names.
+					// Read in info. about how objects are
+					//   'readied'.
+	ready_info = new Ready_info(READY);
 					// Read in shape dimensions.
 	if (!shapes.read_info())
 		abort(
