@@ -128,7 +128,7 @@ public:
 					// Get an array element, or *this.
 	inline Usecode_value& get_elem(int i) const
 		{
-		return (type == array_type) ? value.array[i] : *this;
+		return (type == array_type) ? value.array[i] : (Usecode_value &)*this;
 		}
 	inline bool is_false() const	// Represents a FALSE value?
 		{
