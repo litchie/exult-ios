@@ -5,9 +5,12 @@
 Makefile
 Makefile.in
 .deps
-*.asp
+*.aps
 *.ncb
 *.opt
+*.exp
+*.pdb
+*.bsc
 buildflx.bat
 buildflx_inst.bat
 Debug

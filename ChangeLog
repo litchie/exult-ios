@@ -1,4 +1,10 @@
 2001-09-21  Ryan Nunn <triforce@merlin.net.au>
+	* msvcstuff/.cvsignore : Fixed some problems added more files
+	* msvcstuff/Exult.dsw : Forgot to re-add this ages ago.
+	* msvcstuff/exconfig/* : Files for exconfig helper dll used with the
+	  new windows installer.
+
+2001-09-21  Ryan Nunn <triforce@merlin.net.au>
 	* objs/animate.cc : Fixing bubbles
 
 2001-09-21  Max Horn  <max@quendi.de>
