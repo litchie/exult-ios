@@ -228,6 +228,9 @@ static int Check_weight
 	Game_object *owner		// Who the new owner will be.
 	)
 	{
+	if (hack_mover)		// hack_mover -> no weight checking
+		return 1;
+
 	if (!owner)
 		return 1;
 	owner = owner->get_outermost();
