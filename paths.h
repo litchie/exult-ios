@@ -48,10 +48,6 @@ public:
 	virtual int get_step_cost(Tile_coord from, Tile_coord& to);
 					// Estimate cost between two points.
 	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
-	
-#ifdef BEOS
-	virtual int at_goal(Tile_coord &tile, Tile_coord &goal) { return 0; }
-#endif
 	};
 
 /*
