@@ -1,5 +1,6 @@
 2001-06-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* tools/splitshp.cc: implemented merging shapes
+	* mapedit/PhotoshopShapePlugin.zip: .shp plugin for Adobe Photoshop
 
 2001-06-28  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* NEWS, Makefile.*, configure.in, README.*: updated for release
