@@ -59,7 +59,8 @@ class Notebook_gump : public Gump
 
 	static void initialize();
 	void add_new();			// Add new note.
-	int paint_page(Rectangle box, One_note *note, int start, int pagenum);
+	bool paint_page(Rectangle box, One_note *note, int& offset, 
+								int pagenum);
 public:
 	Notebook_gump();
 	~Notebook_gump();

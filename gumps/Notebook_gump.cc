@@ -337,19 +337,19 @@ Notebook_gump::~Notebook_gump
 /*
  *	Paint a page and find where its text ends.
  *
- *	Output:	Index past end of displayed page.
+ *	Output:	True if finished entire note.
  */
 
-int Notebook_gump::paint_page
+bool Notebook_gump::paint_page
 	(
 	Rectangle box,			// Display box rel. to gump.
 	One_note *note,			// Note to print.
-	int start,			// Starting offset into text.
+	int& offset,			// Starting offset into text.  Updated.
 	int pagenum
 	)
 {
 	bool in_curnote = (note == notes[curnote]);
-	if (start == 0)			// Print note info. at start.
+	if (offset == 0)		// Print note info. at start.
 		{
 		char buf[60];
 		char *ampm = "am";
@@ -366,12 +366,12 @@ int Notebook_gump::paint_page
 			box.w, 1, x + box.x, y + box.y - 3);
 		}
 	int textheight = sman->get_text_height(font) + vlead;
-	char *str = note->text + start;
-	cursor.offset -= start;
+	char *str = note->text + offset;
+	cursor.offset -= offset;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
 			y + box.y, box.w, box.h, vlead,
 			0, -1, in_curnote? &cursor : 0);
-	cursor.offset += start;
+	cursor.offset += offset;
 	if (endoff > 0)			// All painted?
 		{			// Value returned is height.
 		str = note->text + note->textlen;
@@ -385,7 +385,9 @@ int Notebook_gump::paint_page
 			sman->get_text_height(font), cursor.x-1, cursor.y-1);
 		curpage = pagenum;
 		}
-	return (str - note->text);	// Return offset past end.
+	offset = str - note->text;	// Return offset past end.
+					// Watch for exactly filling page.
+	return (endoff > 0 && endoff < box.h);
 }
 
 /*
@@ -464,8 +466,11 @@ Gump_button *Notebook_gump::on_button
 			offset = 0;
 			}
 		box = Get_text_area(true, offset == 0);	// Right page.
-		coff = sman->find_cursor(font, note->text + offset, x + box.x,
-			y + box.y, box.w, box.h, mx, my, vlead);
+		box.shift(x, y);		// Window area.
+		coff = box.has_point(mx, my) ?
+			sman->find_cursor(font, note->text + offset, box.x,
+				box.y, box.w, box.h, mx, my, vlead)
+			: -1;
 		if (coff >= 0)			// Found it?
 			{
 			curpage = curpage | 1;
@@ -495,10 +500,9 @@ void Notebook_gump::paint
 	int offset = page_info[topleft].offset;
 	One_note *note = notes[notenum];
 					// Paint left page.
-	offset = paint_page(Get_text_area(false, offset == 0), 
-						note, offset, topleft);
-	if (offset >= note->textlen)	// Finished note?
-		{
+	if (paint_page(Get_text_area(false, offset == 0), 
+						note, offset, topleft))
+		{			// Finished note?
 		if (notenum == notes.size() - 1)
 			return;
 		++notenum;
@@ -510,10 +514,9 @@ void Notebook_gump::paint
 	page_info[topleft + 1].notenum = notenum;
 	page_info[topleft + 1].offset = offset;
 					// Paint right page.
-	offset = paint_page(Get_text_area(true, offset == 0), 
-						note, offset, topleft + 1);
-	if (offset >= note->textlen)	// Finished note?
-		{
+	if (paint_page(Get_text_area(true, offset == 0), 
+						note, offset, topleft + 1))
+		{			// Finished note?
 		if (notenum == notes.size() - 1)
 			return;		// No more.
 		++notenum;
