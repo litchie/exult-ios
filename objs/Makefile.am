@@ -37,6 +37,7 @@ libobjs_la_SOURCES = \
 	virstone.cc \
 	virstone.h \
 	jawbone.cc \
-	jawbone.h
+	jawbone.h \
+	objnames.cc
 
 CLEANFILES = *~
