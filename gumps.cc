@@ -76,10 +76,10 @@ short Slider_gump_object::diamondy = 6;
 short Slider_gump_object::xmin = 35;	// Min., max. positions of diamond.
 short Slider_gump_object::xmax = 93;
 
-short File_gump_object::btn_rows[2] = {50, 60};	//++++++++++Guessing blind.
-short File_gump_object::btn_cols[3] = {10, 40, 70};
-short File_gump_object::textx = 4, File_gump_object::texty = 4,
-      File_gump_object::texth = 10;
+short File_gump_object::btn_rows[2] = {143, 156};
+short File_gump_object::btn_cols[3] = {94, 163, 232};
+short File_gump_object::textx = 237, File_gump_object::texty = 14,
+      File_gump_object::texth = 13;
 
 /*
  *	An editable text field:
@@ -89,17 +89,22 @@ class Gump_text : public Gump_widget
 	char *text;			// Holds text, 0-delimited.
 	int max_size;			// Size (max) of text.
 	int length;			// Current # chars.
-	int textx, texty;		// Where to show text rel. to this.
+	int textx, texty;		// Where to show text rel. to parent.
 	int cursor;			// Index of char. cursor is before.
 	int focus;			// Use frame 1 if focused, else 0.
 public:
 	Gump_text(Gump_object *par, int shnum, int px, int py, int maxsz,
 						int tx, int ty)
 		: Gump_widget(par, shnum, px, py), text(new char[maxsz + 1]),
-		  max_size(maxsz), length(0), textx(tx), texty(ty),
+		  max_size(maxsz), length(0), textx(x + tx), texty(y + ty),
 		  cursor(0), focus(0)
 		{
 		text[0] = 0;
+		Shape_frame *shape = Game_window::get_game_window()->
+			get_gump_shape(shnum, 0);
+					// Want text coords. rel. to parent.
+		textx -= shape->get_xleft();
+		texty -= shape->get_yabove();
 		}
 	~Gump_text()
 		{ delete text; }
@@ -235,13 +240,13 @@ void Gump_text::paint
 	gwin->paint_gump(parent->get_x() + x, 
 					parent->get_y() + y, shapenum, focus);
 					// Show text.
-	gwin->paint_text(2, text, parent->get_x() + x + textx,
-						parent->get_y() + y + texty);
+	gwin->paint_text(2, text, parent->get_x() + textx,
+						parent->get_y() + texty);
 	if (focus)			// Focused?  Show cursor.
 		gwin->get_win()->fill8(0, 1, gwin->get_text_height(2),
-			parent->get_x() + x + textx +
+			parent->get_x() + textx +
 					gwin->get_text_width(2, text, cursor),
-				parent->get_y() + y + texty);
+				parent->get_y() + texty + 1);
 	gwin->set_painted();
 	}
 
@@ -257,11 +262,9 @@ int Gump_text::mouse_clicked
 	int mx, int my			// Mouse position on screen.
 	)
 	{
-	mx -= parent->get_x() + x;	// Get point rel. to this.
-	my -= parent->get_y() + y;
-	Shape_frame *cshape = gwin->get_gump_shape(shapenum, 0);
-	if (!cshape->has_point(mx, my))
+	if (!on_widget(gwin, mx, my))	// Not in our area?
 		return (0);
+	mx -= textx;			// Get pt. rel. to text area.
 	if (!focus)			// Gaining focus?
 		{
 		focus = 1;		// We have focus now.
@@ -270,7 +273,7 @@ int Gump_text::mouse_clicked
 	else
 		{
 		for (cursor = 0; cursor <= length; cursor++)
-			if (gwin->get_text_width(2, text, cursor) > mx - textx)
+			if (gwin->get_text_width(2, text, cursor) > mx)
 				{
 				if (cursor > 0)
 					cursor--;
@@ -297,6 +300,7 @@ void Gump_text::insert
 		memmove(text + cursor + 1, text + cursor, length - cursor);
 	text[cursor++] = chr;		// Store, and increment cursor.
 	length++;
+	text[length] = 0;
 	paint();
 	}
 
@@ -433,6 +437,9 @@ void Gump_object::initialize
 	case 1:				// Crate.
 		object_area = Rectangle(50, 20, 80, 24);
 		checkx = 8; checky = 64;
+		break;
+	case 3:				// Load/save.
+		checkx = 8, checky = 150;
 		break;
 	case 8:				// Barrel.
 		object_area = Rectangle(32, 32, 40, 40);
@@ -698,6 +705,8 @@ void Gump_object::paint
 	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
 					// Paint red "checkmark".
 	paint_button(gwin, check_button);
+	if (!container)
+		return;			// Empty.
 	Game_object *last_object = container->get_last_object();
 	if (!last_object)
 		return;			// Empty.
@@ -1411,18 +1420,18 @@ File_gump_object::File_gump_object
 	) : Modal_gump_object(0, FILEIO), pushed_text(0), focus(0)
 	{
 	int i;
-	int ty = texty, texth;
+	int ty = texty;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++, ty += texth)
-		names[i] = new Gump_text(this, FNTEXT, textx, ty, 20, 6, 2);
+		names[i] = new Gump_text(this, FNTEXT, textx, ty, 36, 12, 2);
 					// First row of buttons:
 	buttons[0] = buttons[1] = 0;	// No load/save until name chosen.
-	buttons[2] = new Quit_gump_button(this, btn_rows[0], btn_cols[2]);
+	buttons[2] = new Quit_gump_button(this, btn_cols[2], btn_rows[0]);
 					// 2nd row.
-	buttons[3] = new Sound_gump_button(this, btn_rows[1], btn_cols[0],
+	buttons[3] = new Sound_gump_button(this, btn_cols[0], btn_rows[1], 
 					MUSICBTN);
-	buttons[4] = new Sound_gump_button(this, btn_rows[1], btn_cols[2],
+	buttons[4] = new Sound_gump_button(this, btn_cols[1], btn_rows[1],
 					SPEECHBTN);
-	buttons[5] = new Sound_gump_button(this, btn_rows[1], btn_cols[3],
+	buttons[5] = new Sound_gump_button(this, btn_cols[2], btn_rows[1],
 					SOUNDBTN);
 					// +++++Init. the above.
 	}
@@ -1557,7 +1566,8 @@ void File_gump_object::mouse_up
 		}
 	else if (pushed_text && pushed_text->mouse_clicked(gwin, mx, my))
 		{			// Clicked on text.
-		if (focus)		// Another had focus?
+		if (focus && focus != pushed_text)
+					// Another had focus.
 			focus->lose_focus();
 		focus = pushed_text;
 					// Need load/save buttons?
@@ -1565,9 +1575,9 @@ void File_gump_object::mouse_up
 		if (focus->get_length() && !have_ls)
 			{
 			buttons[0] = new Load_save_gump_button(this,
-				btn_rows[0], btn_cols[0], LOADBTN);
+				btn_cols[0], btn_rows[0], LOADBTN);
 			buttons[1] = new Load_save_gump_button(this,
-				btn_rows[0], btn_cols[1], SAVEBTN);
+				btn_cols[1], btn_rows[0], SAVEBTN);
 			}
 		else if (!focus->get_length() && have_ls)
 			{		// No name yet.
