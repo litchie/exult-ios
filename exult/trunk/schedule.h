@@ -53,6 +53,8 @@ protected:
 public:
 	Schedule(Actor *n) : npc(n), blocked(-1, -1, -1)
 		{  }
+	virtual ~Schedule()
+		{  }
 	void set_blocked(Tile_coord b)
 		{ blocked = b; }
 	enum Schedule_types {

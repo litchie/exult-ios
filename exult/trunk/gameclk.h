@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Gameclk.h - Keep track of time.
  **
  **	Written: 2/16/00 - JSF
@@ -27,6 +28,7 @@ class Game_clock : public Time_sensitive
 	int in_dungeon;			// 1 if in a dungeon.
 	void set_time_palette();
 	void set_light_source_level(int lev);
+	void check_hunger();
 public:
 	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0),
 			light_source_level(0), in_dungeon(0)

@@ -93,6 +93,7 @@ public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
 	~Actor();
+	void use_food();		// Decrement food level.
 					// Get frame seq. for given dir.
 	static Frames_sequence *get_frames(int dir)
 		{ return frames[dir]; }
