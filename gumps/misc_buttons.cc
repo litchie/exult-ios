@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000 The Exult Team
+Copyright (C) 2000-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gamemenu_gump.h"
 #include "game.h"
 #include "gamewin.h"
-#include "gump_utils.h"
 #include "misc_buttons.h"
 #include "Modal_gump.h"
 #include "mouse.h"
@@ -88,7 +87,7 @@ void Disk_button::activate
 	)
 {
 	Gamemenu_gump *menu = new Gamemenu_gump();
-	Do_Modal_gump(menu, Mouse::hand);
+	gwin->get_gump_man()->Do_Modal_gump(menu, Mouse::hand);
 	delete menu;
 }
 

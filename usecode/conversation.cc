@@ -363,6 +363,7 @@ void Conversation::show_npc_message(const char *msg)
 	Npc_face_info *info = face_info[last_face_shown];
 	Rectangle& box = info->text_rect;
 	gwin->paint(box);		// Clear what was there before.
+	paint();
 	int height;			// Break at punctuation.
 	while ((height = sman->paint_text_box(0, msg, box.x,box.y,box.w,box.h, 
 								-1, 1, gwin->get_text_bg())) < 0)

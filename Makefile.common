@@ -29,7 +29,7 @@ FILE_OBJS+=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o
 ZIP_OBJS=zip.o unzip.o
 
 GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
-	gump_utils.o  Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
+	Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
 	Paperdoll_gump_info.o Scroll_gump.o Sign_gump.o  Slider_gump.o \
 	Spellbook_gump.o Stats_gump.o Text_gump.o  Yesno_gump.o \
 	Gamemenu_gump.o Newfile_gump.o Gump_ToggleButton.o \

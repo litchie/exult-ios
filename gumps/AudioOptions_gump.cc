@@ -32,7 +32,6 @@
 #include "exult.h"
 #include "exult_flx.h"
 #include "gamewin.h"
-#include "gump_utils.h"
 #include "mouse.h"
 #include "xmidi.h"
 #include "Enabled_button.h"
