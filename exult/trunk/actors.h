@@ -83,6 +83,8 @@ private:
 	void paint_weapon(Game_window *gwin);
 protected:
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
+	Tile_coord schedule_loc;	// Location (x,y) of Shedule
+	unsigned char next_schedule;	// Used so correct schedule type will be saved
 	Schedule *schedule;		// Current schedule.
 	bool dormant;			// I.e., off-screen.
 	bool dead;
@@ -270,6 +272,8 @@ public:
 					// Set new schedule.
 	virtual void set_schedule_type(int new_schedule_type, 
 						Schedule *newsched = 0);
+					// Change to new schedule at loc
+	virtual void set_schedule_and_loc(int new_schedule_type, Tile_coord dest);
 	virtual int get_schedule_type() const
 		{ return schedule_type; }
 					// Get/set 'alignment'.

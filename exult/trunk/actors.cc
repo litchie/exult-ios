@@ -1172,11 +1172,19 @@ void Actor::set_schedule_type
 		case Schedule::desk_work:
 			schedule = new Desk_schedule(this);
 			break;
+		case Schedule::walk_to_schedule:
+			cerr << "Attempted to set a \"walk to schedule\" activity for NPC "<< get_npc_num() << endl;
+			break;
 		default:
 			break;
 			}
 					// Set AFTER creating new schedule.
 	schedule_type = new_schedule_type;
+
+	// Reset Next Schedule
+	schedule_loc = Tile_coord(0,0,0);
+	next_schedule = 255;
+
 	if (!gwin->is_chunk_read(get_cx(), get_cy()))
 		dormant = true;		// Chunk hasn't been read in yet.
 	else if (schedule)		// Try to start it.
@@ -1185,6 +1193,39 @@ void Actor::set_schedule_type
 		schedule->now_what();
 		}
 	}
+
+/*
+ *	Set new schedule by type AND location.
+ */
+
+void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest)
+{
+	Game_window *gwin = Game_window::get_game_window();
+	if (!gwin->get_objects_safely(get_cx(), get_cy()))
+		return;			// Not on the map.
+
+	stop();				// Stop moving.
+	if (schedule)			// End prev.
+		schedule->ending(new_schedule_type);
+
+	if (!gwin->is_chunk_read(get_cx(), get_cy()) &&
+	    !gwin->is_chunk_read(dest.tx/c_tiles_per_chunk,
+						dest.ty/c_tiles_per_chunk))
+		{			// Src, dest. are off the screen.
+		cout <<"Grrr" << endl;
+		move(dest.tx, dest.ty, dest.tz);
+		set_schedule_type(new_schedule_type);
+		return;
+		}
+					// Going to walk there.
+	schedule_loc = dest; 
+	next_schedule = new_schedule_type;
+	schedule_type = Schedule::walk_to_schedule;
+	delete schedule;
+	schedule = new Walk_to_schedule(this, dest, next_schedule);
+	dormant = false;
+	schedule->now_what();
+}
 
 /*
  *	Render.
@@ -2814,24 +2855,8 @@ void Npc_actor::update_schedule
 		//if (schedule_type == schedules[i].get_type())
 		//	return;		// Already in it.
 		}
-	stop();				// Stop moving.
-	if (schedule)			// End prev.
-		schedule->ending(schedules[i].get_type());
-	Tile_coord dest = schedules[i].get_pos();
-	if (!gwin->is_chunk_read(get_cx(), get_cy()) &&
-	    !gwin->is_chunk_read(dest.tx/c_tiles_per_chunk,
-						dest.ty/c_tiles_per_chunk))
-		{			// Src, dest. are off the screen.
-		move(dest.tx, dest.ty, dest.tz);
-		set_schedule_type(schedules[i].get_type());
-		return;
-		}
-					// Going to walk there.
-	schedule_type = Schedule::walk_to_schedule;
-	delete schedule;
-	schedule = new Walk_to_schedule(this, dest, schedules[i].get_type());
-	dormant = false;
-	schedule->now_what();
+
+	set_schedule_and_loc (schedules[i].get_type(), schedules[i].get_pos());
 	}
 
 /*

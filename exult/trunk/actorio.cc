@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "egg.h"
 #include "chunks.h"
+#include "schedule.h"
 
 using std::ios;
 using std::cout;
@@ -53,7 +54,8 @@ Actor::Actor
 	int num,			// NPC #, or -1.
 	int has_usecode			// 1 if a 'type1' NPC.
 	) : Container_game_object(), npc_num(num), party_id(-1), shape_save(-1),
-	    attack_mode(nearest), schedule(0), dormant(1), alignment(0),
+	    attack_mode(nearest), schedule(0), schedule_loc(0,0,0),
+	    next_schedule(255), dormant(1), alignment(0),
 	    two_handed(0),
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
 	    light_sources(0),
@@ -209,8 +211,8 @@ Actor::Actor
 
 	nfile.seekg (4, ios::cur);	//I-Vr ??? (refer to U7tech.txt)
 
-	nfile.seekg (4, ios::cur);	//S-Vr Where npc is supposed to 
-					//   be for schedule)
+	schedule_loc.tx = Read2(nfile);	//S-Vr Where npc is supposed to 
+	schedule_loc.ty = Read2(nfile);	//be for schedule)
 	
 	// Type flags 2
 	int tflags = Read2 (nfile);
@@ -235,7 +237,7 @@ Actor::Actor
 
 	nfile.seekg (5, ios::cur);	// Unknown
 
-	nfile.seekg (1, ios::cur);	// Acty ????? what is this??
+	next_schedule = Read1(nfile);	// Acty ????? what is this??
 
 	nfile.seekg (1, ios::cur);	// SN ????? (refer to U7tech.txt)
 	nfile.seekg (2, ios::cur);	// V1 ????? (refer to U7tech.txt)
@@ -443,15 +445,18 @@ void Actor::write
 	Write2(nfile, 0);
 	Write2(nfile, 0);
 
-	Write4(nfile, 0);	// Skip 2*4
-	Write4(nfile, 0);
+	Write4(nfile, 0);	// Skip 2*2
+	
+	Write2(nfile, schedule_loc.tx);	//S-Vr Where npc is supposed to 
+	Write2(nfile, schedule_loc.ty);	//be for schedule)
+	//Write4(nfile, 0);
 
 	Write2(nfile, get_type_flags());	// Typeflags
 	
 	Write4(nfile, 0);	// Skip 5
 	nfile.put(0);
 
-	nfile.put(0);		// Skip 1
+	nfile.put(next_schedule);	// Acty ????? what is this??
 
 	nfile.put(0);		// Skip 1
 	Write2(nfile,0);	// Skip 2
@@ -516,7 +521,12 @@ Npc_actor::Npc_actor
 		switched_chunks(0, olist);	// Put in chunk's NPC list.
 					// Activate schedule if not in party.
 		if (Npc_actor::get_party_id() < 0)
-			set_schedule_type(schedule_type);
+			{
+			if (next_schedule != 255 && schedule_type == Schedule::walk_to_schedule)
+				set_schedule_and_loc(next_schedule, schedule_loc);
+			else
+				set_schedule_type(schedule_type);
+			}
 		}
 	}
 
