@@ -27,11 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
-#if defined(MACOS)
-  #include <stat.h>
-#else
-  #include <sys/stat.h>
-#endif
 #include "gamewin.h"
 #include "game.h"
 #include "egg.h"
@@ -968,14 +963,14 @@ void Game_window::init_actors
 
 bool Game_window::init_gamedat(bool create)
 	{
-	struct stat sbuf;		// Create gamedat files 1st time.
+					// Create gamedat files 1st time.
 	if (create)
 		{
 		cout << "Creating 'gamedat' files."<<endl;
 		restore_gamedat(INITGAME);
 
 		}
-	else if (stat(U7NBUF_DAT, &sbuf) != 0 && stat(NPC_DAT, &sbuf) != 0)
+	else if (!U7exists(U7NBUF_DAT) && !U7exists(NPC_DAT))
 		{
 		return false;
 		}
