@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <vector>
+#include <sys/types.h>
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
 #include "Flex.h"
