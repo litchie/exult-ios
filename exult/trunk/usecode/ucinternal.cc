@@ -58,6 +58,8 @@
 #include "useval.h"
 #include "utils.h"
 #include "vec.h"
+#include "actors.h"
+#include "egg.h"
 
 using std::cerr;
 using std::cout;
@@ -481,15 +483,13 @@ void Usecode_internal::set_item_shape
 
 void Usecode_internal::set_item_frame
 	(
-	Usecode_value& item_arg,
-	Usecode_value& frame_arg,
+	Game_object *item,
+	int frame,
 	int check_empty			// If 1, don't set empty frame.
 	)
 	{
-	Game_object *item = get_item(item_arg);
 	if (!item)
 		return;
-	int frame = frame_arg.get_int_value();
 	if (frame == item->get_framenum())
 		return;			// Already set to that.
 					// Check for empty frame.
@@ -1077,6 +1077,39 @@ int Usecode_internal::path_run_usecode
 		return 1;	// Success.
 		}
 	return 0;
+	}
+
+/*
+ *	Schedule a script.
+ */
+
+void Usecode_internal::create_script
+	(
+	Usecode_value& objval,
+	Usecode_value& codeval,
+	long delay			// Delay from current time.
+	)
+	{
+	Game_object *obj = get_item(objval);
+					// Pure kludge for SI wells:
+	if (objval.get_array_size() == 2 && 
+	    Game::get_game_type() == SERPENT_ISLE &&
+	    obj && obj->get_shapenum() == 470 && obj->get_lift() == 0)
+		{			// We want the TOP of the well.
+		Usecode_value v2 = objval.get_elem(1);
+		Game_object *o2 = get_item(v2);
+		if (o2->get_shapenum() == obj->get_shapenum() && 
+		    o2->get_lift() == 2)
+			{
+			objval = v2;
+			obj = o2;
+			}
+		}
+	//++++Need to check for array of objects???
+					// ++++Better to 'steal' array; this
+					//   ends up making a copy.
+	Usecode_value *code = new Usecode_value(codeval);
+	(new Usecode_script(this, obj, code))->start(delay);
 	}
 
 /*

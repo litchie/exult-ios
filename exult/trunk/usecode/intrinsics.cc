@@ -45,6 +45,8 @@
 #include "ucsched.h"
 #include "useval.h"
 #include "virstone.h"
+#include "actors.h"
+#include "egg.h"
 
 using std::cerr;
 using std::cout;
@@ -88,13 +90,12 @@ USECODE_INTRINSIC(execute_usecode_array)
 					// 9/17/00:  New guess to make it
 					//   possible to heat Black sword.
 	Game_object *item = get_item(parms[0]);
-	Scheduled_usecode *uc;
-	if (item && (uc = Scheduled_usecode::find(item)) != 0 &&
+	Usecode_script *uc;
+	if (item && (uc = Usecode_script::find(item)) != 0 &&
 	    uc->is_activated())
 		uc->halt();		// Stop current one.
-
-	gwin->get_tqueue()->add(SDL_GetTicks() + 1,
-		new Scheduled_usecode(this, parms[0], parms[1]), (long) this);
+					// Start on next tick.
+	create_script(parms[0], parms[1], 1);
 	return(no_ret);
 }
 
@@ -107,9 +108,7 @@ USECODE_INTRINSIC(delayed_execute_usecode_array)
 	    parms[1].get_elem(2).get_int_value() == 0x6f7)
 		return(no_ret);
 	int delay = parms[2].get_int_value();
-	gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
-		new Scheduled_usecode(this, parms[0], parms[1]),
-							(long) this);
+	create_script(parms[0], parms[1], delay*c_std_delay);
 	COUT("Executing intrinsic 2");
 	return(no_ret);
 }
@@ -241,7 +240,7 @@ USECODE_INTRINSIC(get_item_frame)
 
 USECODE_INTRINSIC(set_item_frame)
 {
-	set_item_frame(parms[0], parms[1]);
+	set_item_frame(get_item(parms[0]), parms[1].get_int_value());
 	return(no_ret);
 }
 
@@ -1412,8 +1411,8 @@ USECODE_INTRINSIC(halt_scheduled)
 	if (!obj)
 		return(no_ret);
 					// Taking a >complete< guess here:
-	Scheduled_usecode *uc;
-	if ((uc = Scheduled_usecode::find(obj)) != 0)
+	Usecode_script *uc;
+	if ((uc = Usecode_script::find(obj)) != 0)
 		uc->halt();
 #endif
 	return(no_ret);
@@ -1817,7 +1816,7 @@ USECODE_INTRINSIC(in_usecode)
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return Usecode_value(0);
-	return Usecode_value(Scheduled_usecode::find(obj) != 0);
+	return Usecode_value(Usecode_script::find(obj) != 0);
 }
 
 USECODE_INTRINSIC(attack_avatar)
@@ -2019,7 +2018,7 @@ USECODE_INTRINSIC(run_usecode)
 	int ucfun = parms[0].get_int_value();
 #if 1	/* ++++++++Another guess to try to fix SI problems. */
 	if (obj && Game::get_game_type() == SERPENT_ISLE &&
-	    Scheduled_usecode::find(obj))	// Usecode scheduled?
+	    Usecode_script::find(obj))	// Usecode scheduled?
 		return no_ret;
 #endif
 	if (obj)
