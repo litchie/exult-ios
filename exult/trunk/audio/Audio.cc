@@ -27,8 +27,6 @@
 #endif
 
 
-#include <malloc.h>
-
 #include <SDL_audio.h>
 #include <SDL_timer.h>
 //#include "SDL_mapping.h"
@@ -223,8 +221,6 @@ void Audio::Init(int _samplerate,int _channels)
 		return;
 		}
 
-	int actfreq, actchannels;
-	Uint16 actformat;
 	Mix_QuerySpec((int *) &actual.freq,(Uint16 *) &actual.format, (int *)&actual.channels);
 #ifdef DEBUG
 	cout << "Audio requested frequency " << _samplerate << ", channels " << _channels << endl;
@@ -264,7 +260,7 @@ void Audio::channel_complete_callback(int chan)
 
 	//Must be freed after the Mix_FreeChunk
 	if(chunkbuf)
-		free(chunkbuf);
+		std::free(chunkbuf);
 }
 
 bool	Audio::can_sfx(const std::string &game) const
@@ -480,7 +476,6 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 {
 	Mix_Chunk *wavechunk;
-	SDL_RWops *rwsrc;
 
 	if (!audio_enabled || !speech_enabled) return;
 
@@ -755,8 +750,6 @@ int Audio::play_wave_sfx
 	SFX_cached *each = sfxs, *prev = 0;
 	int cnt = 0;
 	size_t wavlen;			// Read .wav file.
-	Uint8 *buf;
-	Uint32 len;
 	SDL_RWops *rwsrc;
 	bool foundcache=false;
 	unsigned char *wavbuf;
