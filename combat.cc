@@ -526,7 +526,11 @@ static int Swap_weapons
 	{
 	Game_object *bobj = npc->get_readied(Actor::belt);
 	if (!bobj)
-		return 0;
+		{
+		bobj = npc->get_readied(Actor::back2h_spot);
+		if (!bobj)
+			return 0;
+		}
 	Shape_info& info = bobj->get_info();
 	Weapon_info *winf = info.get_weapon_info();
 	if (!winf)
