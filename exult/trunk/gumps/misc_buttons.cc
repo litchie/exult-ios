@@ -121,6 +121,19 @@ void Combat_button::activate
 }
 
 /*
+ *	Check combat mode before painting.
+ */
+
+void Combat_button::paint
+	(
+	Game_window *gwin
+	)
+	{
+	pushed = gwin->in_combat();
+	Gump_button::paint(gwin);
+	}
+
+/*
  *	The halo button.
  */
 

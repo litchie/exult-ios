@@ -1858,6 +1858,7 @@ USECODE_INTRINSIC(nap_time)
 			Game_object *npc = *it;
 			int zdiff = npc->get_lift() - bed->get_lift();
 			if (npc != gwin->get_main_actor() &&
+			    (npc->get_framenum()&0xf) == Actor::sleep_frame &&
 						zdiff <= 2 && zdiff >= -2)
 				break;	// Found one.
 			}
@@ -1875,8 +1876,10 @@ USECODE_INTRINSIC(nap_time)
 			return no_ret;
 			}
 		}
-					// Give him a chance to get there.
-	Wait_for_arrival(gwin->get_main_actor(), bed->get_abs_tile_coord());
+					// Give him a chance to get there (at
+					//   most 5 seconds.)
+	Wait_for_arrival(gwin->get_main_actor(), bed->get_abs_tile_coord(),
+								5000);
 	call_usecode(0x622, bed, double_click);
 	return(no_ret);
 }

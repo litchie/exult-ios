@@ -934,6 +934,7 @@ void Sleep_schedule::now_what
 		}
 	case 1:				// Go to bed.
 		{
+		npc->stop();		// Just to be sure.
 		int dir = bed->get_shapenum() == 696 ? west : north;
 		npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
 					// Get bed info.
@@ -968,20 +969,27 @@ void Sleep_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
-	if (new_type == static_cast<int>(wait) ||	// Needed for Skara Brae.
-	    new_type == static_cast<int>(sleep))	// Not time to get up, Penumbra!
+					// Needed for Skara Brae.
+	if (new_type == static_cast<int>(wait) ||	
+					// Not time to get up, Penumbra!
+	    new_type == static_cast<int>(sleep))
 		return;			// ++++Does this leave NPC's stuck?++++
 	if (bed &&			// Locate free spot.
 	    (npc->get_framenum()&0xf) == Actor::sleep_frame)
 
 		{
 		if (floorloc.tx == -1)
-			{		// Want spot on floor.
-			Tile_coord pos = npc->get_abs_tile_coord();
-			pos.tz -= pos.tz%5;
-			floorloc = Map_chunk::find_spot(pos, 6,
-				npc->get_shapenum(), static_cast<int>(Actor::standing), 0);
-			}
+					// Want spot on floor.
+			floorloc = npc->get_abs_tile_coord();
+		floorloc.tz -= floorloc.tz%5;
+		Tile_coord pos = Map_chunk::find_spot(floorloc, 
+				6, npc->get_shapenum(), 
+				static_cast<int>(Actor::standing), 0);
+		if (pos.tx == -1)	// Failed?  Allow change in lift.
+			pos = Map_chunk::find_spot(floorloc,
+				6, npc->get_shapenum(), 
+				static_cast<int>(Actor::standing), 1);
+		floorloc = pos;
 					// Make bed.
 		int frnum = bed->get_framenum();
 		Actor_vector occ;	// Unless there's another occupant.
@@ -994,6 +1002,7 @@ void Sleep_schedule::ending
 	npc->set_frame(Actor::standing);
 	Game_window *gwin = Game_window::get_game_window();
 	gwin->set_all_dirty();		// Update all, since Av. stands up.
+	state = 0;			// In case we go back to sleep.
 	}
 
 /*
