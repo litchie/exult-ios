@@ -50,8 +50,8 @@ class Palette_edit: public Object_browser
 	GtkWidget *sbar;		// Status bar.
 	GtkAdjustment *palnum_adj;	// Spin btn. for palette #.
 	guint sbar_sel;			// Status bar context for selection.
-	int selected;			// Index of user-selected entry.
 	Rectangle selected_box;		// Location of selected color.
+	GtkWidget *insert_btn, *remove_btn, *up_btn, *down_btn;
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
 	virtual void show()
@@ -66,6 +66,8 @@ class Palette_edit: public Object_browser
 	static void color_okay(GtkWidget *widget, gpointer data);
 	void double_clicked();		// Handle double-click on a color.
 	GtkWidget *create_controls();	// Controls at bottom of browser.
+	void enable_controls();		// Enable/disable controls after sel.
+					//   has changed.
 	void setup();			// Setup box.
 public:
 	Palette_edit(const char *bname);

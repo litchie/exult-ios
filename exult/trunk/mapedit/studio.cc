@@ -526,13 +526,23 @@ void ExultStudio::set_static_path(const char *path)
 	char *patch_path = g_strdup_printf("%s../%s", static_path, "patch");
 	add_system_path("<PATCH>", patch_path);
 	g_free(patch_path);
-	char *palname = g_strdup_printf("%s%s", static_path, "palettes.flx");
-	U7object pal(palname, 0);
-	g_free(palname);
-	size_t len;
 	delete palbuf;			// Delete old.
+	string palname("<PATCH>/");	// 1st look in patch for palettes.
+	palname += "palettes.flx";
+	size_t len;
+	if (!U7exists(palname.c_str()))
+		(palname = "<STATIC>/") += "palettes.flx";
+	if (!U7exists(palname.c_str()))
+		{			// No palette file, so create fake.
+		palbuf = new unsigned char[3*256];	// How about all white?
+		memset(palbuf, (63<<16)|(63<<8)|63, 3*256);
+		}
+	else
+		{
+		U7object pal(palname.c_str(), 0);
 					// this may throw an exception
-	palbuf = (unsigned char *) pal.retrieve(len);
+		palbuf = (unsigned char *) pal.retrieve(len);
+		}
 	if(names) {			// Delete old names.
 		int num_shapes = vgafile->get_ifile()->get_num_shapes();
 		for (int i = 0; i < num_shapes; i++)
