@@ -621,7 +621,8 @@ public:
 	Chunk_object_list(int chunkx, int chunky);
 	~Chunk_object_list();		// Delete everything in chunk.
 	void add(Game_object *obj);	// Add an object.
-	void add_egg(Egg_object *egg);	// Add an egg.
+	void add_egg(Egg_object *egg);	// Add/remove an egg.
+	void remove_egg(Egg_object *egg);
 	void remove(Game_object *obj);	// Remove an object.
 	int is_roof() const		// Is there a roof?
 		{ return roof; }

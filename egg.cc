@@ -69,7 +69,7 @@ void Egg_object::set_area
 	int tx, ty, tz;			// Get absolute tile coords.
 	get_abs_tile(tx, ty, tz);
 					// Set up active area.
-	if (!distance || get_criteria() == avatar_footpad)
+	if (!distance || criteria == avatar_footpad)
 		{
 		Shape_info& info = gwin->get_info(this);
 		int xtiles = info.get_3d_xtiles(), 
@@ -78,8 +78,12 @@ void Egg_object::set_area
 							xtiles, ytiles);
 		}
 	else
+		{
 		area = Rectangle(tx - distance, ty - distance, 
 					2*distance + 1, 2*distance + 1);
+		if (criteria == avatar_far)
+			area.enlarge(1);// Hot area is outside.
+		}
 					// Don't go outside the world.
 	Rectangle world(0, 0, num_chunks*tiles_per_chunk,
 						num_chunks*tiles_per_chunk);
@@ -104,8 +108,14 @@ int Egg_object::is_active
 	case party_footpad:
 		return area.has_point(tx, ty);
 	case avatar_far:		// New tile is outside, old is inside.
-		return !area.has_point(tx, ty) && 
-					area.has_point(from_tx, from_ty);
+		{
+		if (!area.has_point(tx, ty))
+			return (0);
+		Rectangle inside(area.x + 1, area.y + 1, 
+						area.w - 2, area.h - 2);
+		return inside.has_point(from_tx, from_ty) &&
+			!inside.has_point(tx, ty);
+		}
 	case avatar_near:		// New tile is in, old is out.
 	case party_near:
 	default:
@@ -187,6 +197,8 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	if (roll > probability)
 		return;			// Out of luck.
 	flags |= (1 << (int) hatched);	// Flag it as done.
+					// Flag to delete.
+	int del = flags & (1 << (int) once);
 	Game_window *gwin = Game_window::get_game_window();
 	switch(type)
 		{
@@ -198,16 +210,18 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			break;
 		case voice:
 			audio->start_speech((data1)&0xff);
+			del = 1;	// Just do these once.
 			break;
 		case monster:
 			{
 			Monster_info *inf = gwin->get_monster_info(data2&1023);
 			if (inf)
 				{
-				Npc_actor *monster = inf->create(get_cx(),
+				Monster_actor *monster = inf->create(get_cx(),
 					get_cy(), get_tx(), get_ty(),
 								get_lift());
 				monster->set_alignment(data1&3);
+				monster->set_creator(this);
 				gwin->add_dirty(monster);
 				}
 			break;
@@ -227,7 +241,27 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		default:
 			cout << "Egg not actioned" << endl;
                 }
+	if (del)
+		remove_this();		// All done, so go away.
+	}
 
+/*
+ *	Remove an object from the world.
+ *	The object is deleted.
+ */
+
+void Egg_object::remove_this
+	(
+	int nodel			// 1 to not delete.
+	)
+	{
+	Chunk_object_list *chunk = 
+			Game_window::get_game_window()->get_objects_safely(
+								cx, cy);
+	if (chunk)
+		chunk->remove_egg(this);
+	if (!nodel)
+		delete this;
 	}
 
 /*

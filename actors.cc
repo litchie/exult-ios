@@ -1297,7 +1297,7 @@ int Monster_actor::step
  *	Create an instance of a monster.
  */
 
-Npc_actor *Monster_info::create
+Monster_actor *Monster_info::create
 	(
 	int chunkx, int chunky,		// Chunk to place it in.
 	int tilex, int tiley,		// Tile within chunk.
