@@ -203,6 +203,7 @@ public:
 		{ ibuf->put(src, destx, desty); }
 
 	bool screenshot(SDL_RWops *dst);
+	unsigned char* mini_screenshot();
 	};
 
 

@@ -636,6 +636,9 @@ public:
 
 	void plasma(int w, int h, int x, int y, int startc, int endc);
 	
+	// Create a mini-screenshot (96x60)
+	Shape_file* create_mini_screenshot ();
+
 	bool get_frame_skipping()	// This needs doing
 	{ return true; }
 
