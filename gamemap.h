@@ -25,6 +25,9 @@
 #include "exult_constants.h"
 #include "vec.h"
 #include "flags.h"
+#ifndef ALPHA_LINUX_CXX
+#  include <cassert>
+#endif
 #include <string>	// STL string
 #include <iostream>
 #include <fstream>

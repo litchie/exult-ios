@@ -26,6 +26,7 @@
 #include "utils.h"
 
 #ifndef ALPHA_LINUX_CXX
+#  include <cassert>
 #  include <cstdio>
 #endif
 #include <iostream>
@@ -120,7 +121,7 @@ bool	Configuration::read_config_string(const std::string &s)
 {
 	std::string	sbuf(s);
 	std::size_t	nn=0;
-	while(isspace(s[nn])) ++nn;
+	while(std::isspace(s[nn])) ++nn;
 	
 	assert(s[nn]=='<');
 	++nn;
