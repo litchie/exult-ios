@@ -80,7 +80,7 @@ public:
 					// Set actor to walk somewhere, then
 					//   do something.
 	static void set_action_sequence(Actor *actor, Tile_coord dest,
-			Actor_action *when_there, int from_off_screen = 0,
+		Actor_action *when_there, bool from_off_screen = false,
 							int delay = 0);
 	int try_street_maintenance();	// Handle street-lamps, shutters.
 	virtual void now_what() = 0;	// Npc calls this when it's done

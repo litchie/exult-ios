@@ -2904,7 +2904,8 @@ void Game_window::theft
 				new Frames_actor_action(frames, 2),
 				new Usecode_actor_action(0x625, main_actor,
 					Usecode_machine::double_click));
-			Schedule::set_action_sequence(guard, dest, action, 1);
+			Schedule::set_action_sequence(guard, dest, action, 
+									true);
 			}
 		}
 	}

@@ -1870,11 +1870,17 @@ USECODE_INTRINSIC(run_usecode)
 	// run_usecode(fun, itemref, eventid)
 	Game_object *obj = get_item(parms[1]);
 	int ucfun = parms[0].get_int_value();
+#if 1	/* ++++++++Another guess to try to fix SI problems. */
+	if (obj && Game::get_game_type() == SERPENT_ISLE &&
+	    Scheduled_usecode::find(obj))	// Usecode scheduled?
+		return no_ret;
+#else
 					// ++++++To fix tattooing in SI, since
 					// there's something we don't under-
 					// stand about this.+++++++++
 	if (ucfun == 0x28c && Game::get_game_type() == SERPENT_ISLE)
 		return no_ret;
+#endif
 	if (obj)
 		call_usecode(ucfun, obj, 
 				(Usecode_events) parms[2].get_int_value());
@@ -2084,9 +2090,45 @@ USECODE_INTRINSIC(sprite_effect2)
 USECODE_INTRINSIC(si_path_run_usecode)
 {
 	// exec(npc, loc(x,y,z)?, eventid, itemref, usecode#, ??true/false).
-	// Npc should walk to loc and then execute usecode.
-	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2],
-						parms[5].get_int_value());
+	// Schedule Npc to walk to loc and then execute usecode.
+	Actor *npc = as_actor(get_item(parms[0]));
+	Game_object *obj = get_item(parms[3]);
+	int sz = parms[1].get_array_size();
+	if (!npc || !obj || sz != 3)
+		{
+		cout << "Si_path_run_usecode: bad inputs" << endl;
+		return no_ret;		// Bad data.
+		}
+	Tile_coord src = npc->get_abs_tile_coord();
+	Tile_coord dest(parms[1].get_elem(0).get_int_value(),
+			parms[1].get_elem(1).get_int_value(),
+			parms[1].get_elem(2).get_int_value());
+	Tile_coord start = dest;
+	if (dest != src)
+		{
+		dest.tx = -1;		// Look outwards (with npc ht=4).
+		for (int i = 0; dest.tx == -1 && i < 4; i++)
+			dest = Game_object::find_unblocked_tile(start, i, 4);
+		}
+	if (dest.tx == -1)
+		{			// Try again at npc's level.
+		start.tz = src.tz;
+		for (int i = 0; dest.tx == -1 && i < 4; i++)
+			dest = Game_object::find_unblocked_tile(start, i, 4);
+		if (dest.tx == -1)
+			{
+			cout << "Couldn't find free tile" << endl;
+			return no_ret;
+			}
+		}
+					// Walk there and execute.
+		//++++++Wrong!  Mustn't teleport if no path!
+	npc->set_action(Actor_action::create_action_sequence(
+			npc, dest, new Usecode_actor_action(
+					parms[4].get_int_value(), 
+					obj, parms[2].get_int_value()),
+			false, true));	// Don't teleport if path not found.
+	npc->start(200, 0);		// Get into time queue.
 	return no_ret;
 }
 

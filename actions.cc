@@ -75,7 +75,8 @@ Actor_action *Actor_action::create_action_sequence
 	Actor *actor,			// Whom to activate.
 	Tile_coord dest,		// Where to walk to.
 	Actor_action *when_there,	// What to do when he gets there.
-	int from_off_screen		// Have actor walk from off-screen.
+	bool from_off_screen,		// Have actor walk from off-screen.
+	bool no_teleport		// Don't teleport if no path found.
 	)
 	{
 	Actor_action *act = when_there;
@@ -90,7 +91,11 @@ Actor_action *Actor_action::create_action_sequence
 		if (w2 != w)
 			delete w;
 		if (!w2)		// Failed?  Teleport.
+			{
+			if (no_teleport)// Or, just do action here.
+				return act;
 			w2 = new Move_actor_action(dest);
+			}
 					// And teleport if blocked walking.
 		Actor_action *tel = new Move_actor_action(dest);
 					// Walk there, then do whatever.
