@@ -400,6 +400,7 @@ static void Handle_keystroke
 	static int shape_cnt = 270, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = -1, gump_frame = 0;
+	static int font_cnt = -1, font_frame = 0;
 	gwin->end_intro();
 	switch (sym)
 		{
@@ -476,12 +477,13 @@ static void Handle_keystroke
 		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
 		break;
 	case SDLK_f:			// Show next frame.
-		cout << "Frame # " << ++shape_frame << '\n';
+		cout << "Frame # " << ++font_frame << '\n';
 		gwin->paint();
 #if 1
 		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
 #else
-		gwin->paint_shape(200, 200, face_cnt, face_frame);
+		gwin->paint_font(gwin->get_width()/2,
+				gwin->get_height()/2, font_cnt, font_frame);
 #endif
 		break;
 	case SDLK_RIGHT:
