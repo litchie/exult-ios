@@ -22,6 +22,9 @@
 #  include <config.h>
 #endif
 
+#include <iostream>
+using std::istream;
+
 #include "ucfunction.h"
 #include "utils.h"
 

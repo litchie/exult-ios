@@ -93,7 +93,7 @@ using std::strcmp;
 using std::strcpy;
 using std::strlen;
 using std::vector;
-
+using std::ostream;
 
 // External globals..
 

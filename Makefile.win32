@@ -40,7 +40,7 @@ CPPFLAGS=-DVERSION=\"0.99.1RC2\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
 	$(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
-CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DNEED_SNPRINTF_ONLY -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET
+CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DNEED_SNPRINTF_ONLY -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -finline-limit-1000
 CXX=g++
 
 LFLAGS=-mwindows
@@ -95,7 +95,7 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 	contain.o egg.o iregobjs.o mappatch.o objs.o objiter.o \
 	spellbook.o virstone.o jawbone.o
 
-USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o \
+USECODE_OBJS=stackframe.o ucfunction.o ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 	useval.o conversation.o keyring.o ucdisasm.o
 
 SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
