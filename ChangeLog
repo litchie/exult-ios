@@ -1,3 +1,16 @@
+2001-05-29  Dancer Vesperman <dancer@users.sourceforge.net>
+	- Code Nazi
+	* Timidity_binary.cc: std::strcpy
+	* gumps/Newfile_gump.cc: std::strcpy,std::strcat,std::memcpy,std::memset
+	* tools/shp2pcx.cc: std::memset
+	* tools/splitshp.cc: std:: strcpy/strrchr/memcpy/strlen
+	* usecode/compiler/ucparse.yy: std::strlen,std::strcpy,std::strcat
+	* usecode/compiler/ucmain.cc: std::strlen,std::strcpy,std::strrchr
+	* usecode/compiler/ucfun.cc: std::strlen,std::memcpy
+	* usecode/compiler/ucloc.cc: std::strlen,std::strcpy,std::strlen
+	* usecode/compiler/ucsym.cc: std::strcmp
+	* ... you get the idea ...
+
 2001-05-29  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: DON'T close all gumps when casting a spell.

@@ -29,6 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 #include "ucloc.h"
 
+using std::strcmp;
+using std::strcpy;
+using std::strlen;
+
+
 std::vector<char *> Uc_location::source_names;
 char *Uc_location::cur_source = 0;
 int Uc_location::cur_line = 0;
