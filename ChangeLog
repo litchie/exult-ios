@@ -1,3 +1,7 @@
+2002-15-12  Aurelien Marchand  <artaxerxes@users.sf.net>
+
+	* audio/Audio.cc: corrected cast error to prevent bus error on Zaurus
+
 2002-08-12  Aurelien Marchand  <artaxerxes@users.sf.net>
 
 	* shapes/fontgen.cc: prevent freetype if building for Zaurus.
