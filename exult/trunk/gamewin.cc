@@ -1838,8 +1838,7 @@ void Game_window::show_items
 	if (gump)
 	{
 		obj = gump->find_object(x, y);
-		if (!obj) obj = gump->find_actor(x, y);
-		if (!obj) obj = gump->get_container();
+		if (!obj) obj = gump->get_cont_or_actor(x, y);
 	}
 	else				// Search rest of world.
 		obj = find_object(x, y);
@@ -1912,6 +1911,7 @@ void Game_window::show_items
 			shnum << ':' << id.get_framenum() << endl;
 
 #ifdef CHUNK_OBJ_DUMP
+		Map_chunk *chunk = get_chunk_safely(x/c_tiles_per_chunk, y/c_tiles_per_chunk);
 		Object_iterator it(chunk->get_objects());
 		Game_object *each;
 		cout << "Chunk Contents: " << endl;

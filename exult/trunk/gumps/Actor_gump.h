@@ -65,7 +65,7 @@ public:
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 
-	virtual Game_object *find_actor(int mx, int my);
+	virtual Container_game_object *find_actor(int mx, int my);
 };
 
 #endif

@@ -64,13 +64,20 @@ public:
 	void set_pos();			// Set centered.
 	Container_game_object *get_container()
 		{ return container; }
+	virtual Container_game_object *find_actor(int mx, int my)
+		{ return 0; }
+	inline Container_game_object *get_cont_or_actor(int mx, int my)
+	{
+		Container_game_object *ret = find_actor(mx, my);
+		if (ret) return ret;
+		return get_container();
+	}
 					// Get screen rect. of obj. in here.
 	Rectangle get_shape_rect(Game_object *obj);
 					// Get screen loc. of object.
 	void get_shape_location(Game_object *obj, int& ox, int& oy);
 					// Find obj. containing mouse point.
 	virtual Game_object *find_object(int mx, int my);
-	virtual Game_object *find_actor(int mx, int my) { return 0; }
 	virtual Rectangle get_dirty();		// Get dirty rect. for gump+contents.
 	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?

@@ -54,7 +54,7 @@
 #include "gamewin.h"	/* With some work, could get rid of this. */
 #include "bodies.h"
 #include "game.h"
-#include <fstream.h>
+#include <fstream>
 
 using std::cerr;
 using std::cout;

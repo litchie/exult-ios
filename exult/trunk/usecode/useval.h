@@ -174,6 +174,6 @@ public:
 	};
 
 
-ostream& operator<<(ostream& out, Usecode_value& val);
+std::ostream& operator<<(std::ostream& out, Usecode_value& val);
 
 #endif
