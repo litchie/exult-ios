@@ -4,7 +4,7 @@
 	xmlns="http://www.w3.org/1999/xhtml">
 
 <xsl:output method="xml"
-	indent="no"/>
+	indent="no" omit-xml-declaration="yes"/>
 
 <!-- Keys -->
 <xsl:key name="sub_ref" match="sub" use="@name"/>
@@ -310,34 +310,33 @@
 <!-- Config Table Templates -->
 <xsl:template match="configdesc">
 	<table border="0" cellpadding="0" cellspacing="0">
-		<xsl:apply-templates select="line"/>
+		<xsl:apply-templates select="configtag"/>
 	</table>
 </xsl:template>
 
+<xsl:template match="configtag">
+	<xsl:param name="indent">0</xsl:param>
 
-<xsl:template match="line">
-	<tr>
 	<xsl:choose>
-		<xsl:when test="count(child::comment)>0">
-			<td width="150">
-				<xsl:value-of select="text()"/>
-			</td>
-			<xsl:apply-templates select="comment"/>
+		<xsl:when test="count(child::configtag)>0">
+			<tr><td style="text-indent:{$indent}pt">&lt;<xsl:value-of select="@name"/>&gt;</td></tr>
+			<xsl:apply-templates select="configtag">
+				<xsl:with-param name="indent"><xsl:value-of select="$indent+20"/></xsl:with-param>
+			</xsl:apply-templates>
 		</xsl:when>
 		<xsl:otherwise>
-			<td colspan="2"><xsl:value-of select="."/></td>
+			<tr><td style="text-indent:{$indent}pt">&lt;<xsl:value-of select="@name"/>&gt;</td>
+			<td rowspan="3"><xsl:apply-templates select="comment"/></td></tr>
+			<tr><td style="text-indent:{$indent}pt"><xsl:value-of select="text()"/></td></tr>
 		</xsl:otherwise>
 	</xsl:choose>
-	</tr>
+	<xsl:if test="@closing-tag='yes'">
+		<tr><td style="text-indent:{$indent}pt">&lt;/<xsl:value-of select="@name"/>&gt;</td></tr>
+	</xsl:if>
 </xsl:template>
-
 
 <xsl:template match="comment">
-	<td rowspan="2">
-		<xsl:apply-templates/>
-	</td>
+	<xsl:apply-templates/>
 </xsl:template>
-
-
 
 </xsl:stylesheet>

@@ -181,318 +181,279 @@
 					Note: yes means enabled, no means disabled
 				</para>
 				<configdesc>
-					<line>&lt;config&gt;</line>
-					<line>&lt;disk&gt;</line>
-					<line>&lt;save_compression_level&gt;</line>
-					<line>1
-						<comment>**save games are now compressed as zip files. 0 disables compression,
-						1 enables it, 2 compresses even a bit better. Default is 1.
-						</comment></line>
-					<line>&lt;/save_compression_level&gt;</line>
-					<line>&lt;data_path&gt;</line>
-					<line>data
-						<comment>**see <ref target="path_config"/> for pathsettings
-						</comment></line>
-					<line>&lt;/data_path&gt;</line>
-					<line>&lt;game&gt;</line>
-					<line>&lt;blackgate&gt;</line>
-					<line>&lt;title&gt;</line>
-					<line>blackgate</line>
-					<line>&lt;/title&gt;</line>
-					<line>&lt;path&gt;</line>
-					<line>./blackgate</line>
-					<line>&lt;/path&gt;</line>
-					<line>&lt;savegame_path&gt;</line>
-					<line>./blackgate
-						<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.
-						Also see <ref target="dir_config"/> before changing it.
-						</comment></line>
-					<line>&lt;/savegame_path&gt;</line>
-					<line>&lt;static_path&gt;</line>
-					<line>./blackgate/static
-						<comment>**optional. See <ref target="dir_config"/> before changing it.
-						</comment></line>
-					<line>&lt;/static_path&gt;</line>
-					<line>&lt;gamedat_path&gt;</line>
-					<line>./blackgate/gamedat
-						<comment>**optional. See <ref target="dir_config"/> before changing it.
-						</comment></line>
-					<line>&lt;/gamedat_path&gt;</line>
-					<line>&lt;keys&gt;</line>
-					<line>(default)
-						<comment>**configure custom key bindings or leave the (default)
-						- see <ref target="exult_keys"/>
-						</comment></line>
-					<line>&lt;/keys&gt;</line>
-					<line>&lt;waves&gt;</line>
-					<line>jmsfx.flx
-						<comment>**optional setting see <ref target="wave_sfx"/> for configuration
-						</comment></line>
-					<line>&lt;/waves&gt;</line>
-					<line>&lt;/blackgate&gt;</line>
-					<line>&lt;serpentisle&gt;</line>
-					<line>&lt;path&gt;</line>
-					<line>./serpentisle</line>
-					<line>&lt;/path&gt;</line>
-					<line>&lt;savegame_path&gt;</line>
-					<line>./serpentisle
-						<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.
-						Also see <ref target="dir_config"/> before changing it.
-						</comment></line>
-					<line>&lt;/savegame_path&gt;</line>
-					<line>&lt;static_path&gt;</line>
-					<line>./serpentisle/static
-						<comment>**optional. See <ref target="dir_config"/> before changing it.
-						</comment></line>
-					<line>&lt;/static_path&gt;</line>
-					<line>&lt;gamedat_path&gt;</line>
-					<line>./serpentisle/gamedat
-						<comment>**optional. See <ref target="dir_config"/> before changing it.
-						</comment></line>
-					<line>&lt;/gamedat_path&gt;</line>
-					<line>&lt;keys&gt;</line>
-					<line>(default)</line>
-					<line>&lt;/keys&gt;</line>
-					<line>&lt;waves&gt;</line>
-					<line>jmsisfx.flx
-						<comment>**optional setting see <ref target="wave_sfx"/> for configuration
-						</comment></line>
-					<line>&lt;/waves&gt;</line>
-					<line>&lt;/serpentisle&gt;</line>
-					<line>&lt;/game&gt;</line>
-					<line>&lt;/disk&gt;</line>
-					<line>&lt;debug&gt;</line>
-					<line>&lt;trace&gt;</line>
-					<line>&lt;usecode&gt;</line>
-					<line>no
-						<comment>**options are yes/no/verbose. This is used to trace the
-						executed Usecode (you shouldn't need this unless you are a programmer).
-						</comment></line>
-					<line>&lt;/usecode&gt;</line>
-					<line>&lt;/trace&gt;</line>
-					<line>&lt;/debug&gt;</line>
-					<line>&lt;gameplay&gt;</line>
-					<line>&lt;double_click_closes_gumps&gt;</line>
-					<line>no
-						<comment>**doesn't need an explanation, right?
-						</comment></line>
-					<line>&lt;double_click_closes_gumps&gt;</line>
-					<line>&lt;right_click_closes_gumps&gt;</line>
-					<line>no
-						<comment>**same as above
-						</comment></line>
-					<line>&lt;right_click_closes_gumps&gt;</line>
-					<line>&lt;cheat&gt;</line>
-					<line>yes
-						<comment>**enable/disable cheats for that
-						</comment></line>
-					<line>&lt;/cheat&gt;</line>
-					<line>&lt;skip_intro&gt;</line>
-					<line>no
-						<comment>**this skips the intro in BG when you started a new game; Iolo talks to
-						Peter, the Avatar appears, Iolo talks to you, the mayor talks to you and so on.
-						</comment></line>
-					<line>&lt;/skip_intro&gt;</line>
-					<line>&lt;skip_splash&gt;</line>
-					<line>no
-						<comment>**this skips the splash screen, the intro before you get to the
-						game menu, disabling it brings you straight to the game menu
-						</comment></line>
-					<line>&lt;/skip_splash&gt;</line>
-					<line>&lt;facestats&gt;</line>
-					<line>0
-						<comment>**activates the status faces and the position on the screen.
-						-1 disable,0 right, 1 middle, 2 right.
-						</comment></line>
-					<line>&lt;/facestats&gt;</line>
-					<line>&lt;mouse3rd&gt;</line>
-					<line>no
-						<comment>**yes enables using of the middle mouse button.
-						</comment></line>
-					<line>&lt;/mouse3rd&gt;</line>
-					<line>&lt;fastmouse&gt;</line>
-					<line>no
-						<comment>**yes enables faster cursor movement in full screen mode.
-						</comment></line>
-					<line>&lt;/fastmouse&gt;</line>
-					<line>&lt;bg_paperdolls&gt;</line>
-					<line>no
-						<comment>**yes enables SI style paperdolls in BG.
-						</comment></line>
-					<line>&lt;/bg_paperdolls&gt;</line>
-					<line>&lt;combat&gt;</line>
-					<line>&lt;difficulty&gt;</line>
-					<line>0
-						<comment>**0 is default, negative values make combat easier, positive makes it
-						harder. It affects the chance of a hit, and the HP's lost if a hit occurs.
-						Ranges from -3 to 3 (easiest to hardest)
-						</comment></line>
-					<line>&lt;/difficulty&gt;</line>
-					<line>&lt;mode&gt;</line>
-					<line>original
-						<comment>**original or keypause. On keypause the game pauses when you hit space
-						so you can make changes in combat.
-						</comment></line>
-					<line>&lt;/mode&gt;</line>
-					<line>&lt;show_hits&gt;</line>
-					<line>no
-						<comment>**no is default. With yes you see the hitpoints of NPCs in brackets
-						after their name.
-						</comment></line>
-					<line>&lt;/show_hits&gt;</line>
-					<line>&lt;/combat&gt;</line>
-					<line>&lt;gumps_dont_pause_game&gt;</line>
-					<line>no
-						<comment>**yes doesn't pause the game when gumps are shown.
-						</comment></line>
-					<line>&lt;/gumps_dont_pause_game&gt;</line>
-					<line>&lt;step_tile_delta&gt;</line>
-					<line>8
-						<comment>**Controls how far the Avatar will move before Exult recalculates the
-						Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other
-						problems.
-						</comment></line>
-					<line>&lt;/step_tile_delta&gt;</line>
-					<line>&lt;allow_double_right_move&gt;</line>
-					<line>yes
-						<comment>**double right-click lets the Avatar walk automatically
-						to where you clicked.
-						</comment></line>
-					<line>&lt;/allow_double_right_move&gt;</line>
-					<line>&lt;formation&gt;</line>
-					<line>no
-						<comment>**yes forces the party to walk in a formation similar to the
-						original game.
-						</comment></line>
-					<line>&lt;/formation&gt;</line>
-					<line>&lt;/gameplay&gt;</line>
-					<line>&lt;audio&gt;</line>
-					<line>&lt;enabled&gt;</line>
-					<line>yes
-						<comment>**enable/disable all audio - this takes precedence over the
-						other audio settings (you can change this in game via
-						<key>Esc</key> - the setting is saved)
-						</comment></line>
-					<line>&lt;/enabled&gt;</line>
-					<line>&lt;disablepause&gt;</line>
-					<line>no
-						<comment>**enable/disable the pausing of SFX and digital music when the
-						game pauses (e.g. not the focused window). MIDI music is currently not paused.
-						</comment></line>
-					<line>&lt;/disablepause&gt;</line>
-					<line>&lt;force_waveout&gt;</line>
-					<line>no
-						<comment>**yes forces Exult to use waveout instead of directsound. This may
-						fix problems some people have with Exult and sound in Windows
-						(it's a Windows-only option)
-						</comment></line>
-					<line>&lt;/force_waveou&gt;</line>
-					<line>&lt;effects&gt;</line>
-					<line>&lt;enabled&gt;</line>
-					<line>yes
-						<comment>**enable/disable sound effects (you can change this in game via
-						<key>Esc</key> - the setting is saved)
-						</comment></line>
-					<line>&lt;/enabled&gt;</line>
-					<line>&lt;/effects&gt;</line>
-					<line>&lt;driver&gt;</line>
-					<line>normal
-						<comment>**choose your music driver between normal, digital, fmsynth. See <ref target="music"/> for details.
-						</comment></line>
-					<line>&lt;/driver&gt;</line>
-					<line>&lt;midi&gt;</line>
-					<line>&lt;enabled&gt;</line>
-					<line>yes
-						<comment>**enable/disable MIDI effects (you can change this in game via
-						<key>Esc</key> - the setting is saved)
-						</comment></line>
-					<line>&lt;/enabled&gt;</line>
-					<line>&lt;convert&gt;</line>
-					<line>gm
-						<comment>**see <ref target="music"/>
-						</comment></line>
-					<line>&lt;/convert&gt;</line>
-					<line>&lt;volume_curve&gt;</line>
-   					<line>1.000000
-   						<comment>**set volume (kind of at least, best don't change)
-   						</comment></line>
-   					<line>&lt;/volume_curve&gt;</line>
-   					<line>&lt;win32_device&gt;</line>
-   					<line>-1
-   						<comment>**choose the Windows MIDI Device. See <ref target="win32_device"/>
-   						</comment></line>
-   					<line>&lt;/win32_device&gt;</line>
-   					<line>&lt;looping&gt;</line>
-   					<line>Yes
-   						<comment>**No disables music looping. See <ref target="audio_gump"/>
-   						</comment></line>
-   					<line>&lt;/looping&gt;</line>
-   					<line>&lt;dual_opl&gt;</line>
-   					<line>Yes
-   						<comment>**No disables 'dual' mode for stereo sound when &lt;driver&gt; is set to fmsynth.
-   						</comment></line>
-   					<line>&lt;/dual_opl&gt;</line>
-					<line>&lt;/midi&gt;</line>
-					<line>&lt;speech&gt;</line>
-					<line>&lt;enabled&gt;</line>
-					<line>yes
-						<comment>**enable/disable speech (you can change this in game via
-						<key>Esc</key> - the setting is saved)
-						</comment></line>
-					<line>&lt;/enabled&gt;</line>
-					<line>&lt;/speech&gt;</line>
-					<line>&lt;/audio&gt;</line>
-					<line>&lt;video&gt;</line>
-					<line>&lt;width&gt;</line>
-					<line>320
-						<comment>**here you choose your resolution, it can be as big as your
-						monitor allows. 320x200 is the resolution of the original.
-						</comment></line>
-					<line>&lt;/width&gt;</line>
-					<line>&lt;height&gt;</line>
-					<line>200</line>
-					<line>&lt;/height&gt;</line>
-					<line>&lt;scale&gt;</line>
-					<line>2
-						<comment>**2 enables / 1 disables scaling, some scalers support higher values.
-						See <ref target="scaler"/>.
-						</comment></line>
-					<line>&lt;/scale&gt;</line>
-					<line>&lt;fullscreen&gt;</line>
-					<line>yes
-						<comment>**do you want to play full screen?
-						</comment></line>
-					<line>&lt;/fullscreen&gt;</line>
-					<line>&lt;disable_fades&gt;</line>
-					<line>no
-						<comment>**"no" enables fading between different menu points
-						</comment></line>
-					<line>&lt;/disable_fades&gt;</line>
-					<line>&lt;scale_method&gt;</line>
-					<line>SuperEagle
-						<comment>**choose different scalers here - see <ref target="scaler"/>
-						</comment></line>
-					<line>&lt;/scale_method&gt;</line>
-					<line>&lt;gamma&gt;
-						<comment>**set gamma levels to adjust brightness, same as +/- in game
-						</comment></line>
-					<line>&lt;red&gt;</line>
-   					<line>1</line>
-   					<line>&lt;/red&gt;</line>
-   					<line>&lt;green&gt;</line>
-   					<line>1</line>
-   					<line>&lt;/green&gt;</line>
-   					<line>&lt;blue&gt;</line>
-   					<line>1</line>
-   					<line>&lt;/blue&gt;</line>
-  					<line>&lt;/gamma&gt;</line>
-  					<line>&lt;fps&gt;</line>
-   					<line>10
-   						<comment>**Speed setting. Might help when the game seems too slow or too fast.
-   						</comment></line>
-   					<line>&lt;/fps&gt;</line>
-					<line>&lt;/video&gt;</line>
-					<line>&lt;/config&gt;</line>
+					<configtag name="config">
+						<configtag name="disk">
+							<configtag name="save_compression_level">
+							1
+							<comment>**save games are now compressed as zip files. 0 disables compression,</comment>
+							<comment>1 enables it, 2 compresses even a bit better. Default is 1.</comment>
+							</configtag>
+							<configtag name="data_path">
+							data
+							<comment>**see <ref target="path_config"/> for pathsettings</comment>
+							</configtag>
+							<configtag name="game">
+								<configtag name="blackgate">
+									<configtag name="title">
+									blackgate
+									</configtag>
+									<configtag name="path">
+									./blackgate
+									</configtag>
+									<configtag name="savegame_path">
+									./blackgate
+									<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.</comment>
+									<comment>Also see <ref target="dir_config"/> before changing it.</comment>
+									</configtag>
+									<configtag name="static_path">
+									./blackgate/static
+									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
+									</configtag>
+									<configtag name="gamedat_path">
+									./blackgate/gamedat
+									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
+									</configtag>
+									<configtag name="keys">
+									(default)
+									<comment>**configure custom key bindings or leave the (default)</comment>
+									<comment>- see <ref target="exult_keys"/></comment>
+									</configtag>
+									<configtag name="waves">
+									jmsfx.flx
+									<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment>
+									</configtag>
+								</configtag>
+								<configtag name="serpentisle">
+									<configtag name="title">
+									serpentisle
+									</configtag>
+									<configtag name="path">
+									./serpentisle
+									</configtag>
+									<configtag name="savegame_path">
+									./serpentisle
+									<comment>**optional. Default is the same as &lt;path&gt;, change to whatever you like.</comment>
+									<comment>Also see <ref target="dir_config"/> before changing it.</comment>
+									</configtag>
+									<configtag name="static_path">
+									./serpentisle/static
+									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
+									</configtag>
+									<configtag name="gamedat_path">
+									./serpentisle/gamedat
+									<comment>**optional. See <ref target="dir_config"/> before changing it.</comment>
+									</configtag>
+									<configtag name="keys">
+									(default)
+									<comment>**configure custom key bindings or leave the (default)</comment>
+									<comment>- see <ref target="exult_keys"/></comment>
+									</configtag>
+									<configtag name="waves">
+									jmsisfx.flx
+									<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment>
+									</configtag>
+								</configtag>
+							</configtag>
+						</configtag>
+						<configtag name="debug">
+							<configtag name="trace">
+								<configtag name="usecode">
+								no
+								<comment>**options are yes/no/verbose. This is used to trace the</comment>
+								<comment>executed Usecode. (You shouldn't need this unless you are a programmer.)</comment>
+								</configtag>
+								<configtag name="intrinsics">
+								no
+								<comment>**options are yes/no. Used to trace intrinsics.</comment>
+								<comment>(You shouldn't need this unless you are a programmer.)</comment>
+								</configtag>
+							</configtag>
+						</configtag>
+						<configtag name="gameplay">
+							<configtag name="double_click_closes_gumps">
+							no
+							</configtag>
+							<configtag name="right_click_closes_gumps">
+							no
+							</configtag>
+							<configtag name="cheat">
+							yes
+							<comment>**enable/disable cheats</comment>
+							</configtag>
+							<configtag name="skip_intro">
+							no
+							<comment>**this skips the in-game intro in BG; Iolo talks to Petre, the Avatar appears,</comment>
+							<comment>Iolo talks to you, the mayor talks to you and so on.</comment>
+							</configtag>
+							<configtag name="skip_splash">
+							no
+							<comment>**this skips the splash screen, the intro before you get to the</comment>
+							<comment>game menu. Disabling it brings you straight to the game menu.</comment>
+							</configtag>
+							<configtag name="facestats">
+							0
+							<comment>**activates the status faces and the position on the screen.</comment>
+							<comment>-1 disable,0 right, 1 middle, 2 right.</comment>
+							</configtag>
+							<configtag name="mouse3rd">
+							no
+							<comment>**yes enables using of the middle mouse button.</comment>
+							</configtag>
+							<configtag name="fastmouse">
+							no
+							<comment>**yes enables faster cursor movement in full screen mode.</comment>
+							</configtag>
+							<configtag name="bg_paperdolls">
+							no
+							<comment>**yes enables SI style paperdolls in BG.</comment>
+							</configtag>
+							<configtag name="combat">
+								<configtag name="difficulty">
+								0
+								<comment>**0 is default, negative values make combat easier, positive makes it</comment>
+								<comment>harder. It affects the chance of a hit, and the HP's lost if a hit occurs.</comment>
+								<comment>Ranges from -3 to 3 (easiest to hardest).</comment>
+								</configtag>
+								<configtag name="mode">
+								original
+								<comment>**original or keypause. On keypause the game pauses when you hit space</comment>
+								<comment>so you can make changes in combat.</comment>
+								</configtag>
+								<configtag name="show_hits">
+								no
+								<comment>**no is default. With yes you see the hitpoints of NPCs</comment>
+								<comment>in brackets after their name.</comment>
+								</configtag>
+							</configtag>
+							<configtag name="gumps_dont_pause_game">
+							no
+							<comment>**yes doesn't pause the game when gumps are shown.</comment>
+							</configtag>
+							<configtag name="step_tile_delta">
+							8
+							<comment>**Controls how far the Avatar will move before Exult recalculates the</comment>
+							<comment>Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other</comment>
+							<comment>problems.</comment>
+							</configtag>
+							<configtag name="allow_double_right_move">
+							yes
+							<comment>**double right-click lets the Avatar walk automatically</comment>
+							<comment>to where you clicked.</comment>
+							</configtag>
+							<configtag name="formation">
+							no
+							<comment>**yes forces the party to walk in a formation similar to the original game.</comment>
+							</configtag>
+						</configtag>
+						<configtag name="audio">
+							<configtag name="enabled">
+							yes
+							<comment>**enable/disable all audio - this takes precedence over the</comment>
+							<comment>other audio settings. (You can change this in game via</comment>
+							<comment><key>Esc</key> - the setting is saved.)</comment>
+							</configtag>
+							<configtag name="disablepause">
+							no
+							<comment>**enable/disable the pausing of SFX and digital music when the</comment>
+							<comment>game pauses (e.g. not the focused window). MIDI music is currently not paused.</comment>
+							</configtag>
+							<configtag name="force_waveout">
+							no
+							<comment>**yes forces Exult to use waveout instead of directsound. This may</comment>
+							<comment>fix problems some people have with Exult and sound in Windows.</comment>
+							<comment>(This is a Windows-only option.)</comment>
+							</configtag>
+							<configtag name="effects">
+								<configtag name="enabled">
+								yes
+								<comment>**enable/disable sound effects. (You can change this in game via</comment>
+								<comment><key>Esc</key> - the setting is saved.)</comment>
+								</configtag>
+							</configtag>
+							<configtag name="driver">
+							normal
+							<comment>**choose your music driver between normal, digital, fmsynth.</comment>
+							<comment>See <ref target="music"/> for details.</comment>
+							</configtag>
+							<configtag name="midi">
+								<configtag name="enabled">
+								yes
+								<comment>**enable/disable MIDI effects. (You can change this in game via</comment>
+								<comment><key>Esc</key> - the setting is saved.)</comment>
+								</configtag>
+								<configtag name="convert">
+								gm
+								<comment>**see <ref target="music"/></comment>
+								</configtag>
+								<configtag name="volume_curve">
+								1.000000
+								<comment>**set volume (kind of at least, best don't change)</comment>
+								</configtag>
+								<configtag name="win32_device">
+								-1
+								<comment>**choose the Windows MIDI Device. See <ref target="win32_device"/></comment>
+								</configtag>
+								<configtag name="looping">
+								yes
+								<comment>**No disables music looping. See <ref target="audio_gump"/></comment>
+								</configtag>
+								<configtag name="dual_opl">
+								yes
+								<comment>**No disables 'dual' mode for stereo sound when &lt;driver&gt; is set to fmsynth.</comment>
+								</configtag>
+							</configtag>
+							<configtag name="speech">
+								<configtag name="enabled">
+								yes
+								<comment>**enable/disable speech. (You can change this in game via</comment>
+								<comment><key>Esc</key> - the setting is saved.)</comment>
+								</configtag>
+							</configtag>
+						</configtag>
+						<configtag name="video">
+							<configtag name="width">
+							320
+							<comment>**here you choose your resolution, it can be as big as your</comment>
+							<comment>monitor allows. 320x200 is the resolution of the original.</comment>
+							</configtag>
+							<configtag name="height">
+							200
+							</configtag>
+							<configtag name="scale">
+							2
+							<comment>**2 enables / 1 disables scaling, some scalers support higher values.</comment>
+							<comment>See <ref target="scaler"/>.</comment>
+							</configtag>
+							<configtag name="fullscreen">
+							yes
+							<comment>**do you want to play full screen?</comment>
+							</configtag>
+							<configtag name="disable_fades">
+							no
+							<comment>**"no" enables fading between different menu points</comment>
+							</configtag>
+							<configtag name="scale_method">
+							SuperEagle
+							<comment>**choose different scalers here - see <ref target="scaler"/></comment>
+							</configtag>
+							<configtag name="gamma">
+								<configtag name="red">
+								1
+								<comment>**set gamma levels to adjust brightness, same as +/- in game</comment>
+								</configtag>
+								<configtag name="green">
+								1
+								</configtag>
+								<configtag name="blue">
+								1
+								</configtag>
+							</configtag>
+							<configtag name="fps">
+							10
+							<comment>**Speed setting. Might help when the game seems too slow or too fast.</comment>
+							</configtag>
+						</configtag>
+					</configtag>
 				</configdesc>
 			</body>
 		</sub>
@@ -518,26 +479,31 @@
 					Now you have to edit the exult.cfg file like this:
 				</para>
 				<configdesc>
-					<line>&lt;disk&gt;</line>
-					<line>&lt;data_path&gt;</line>
-					<line>data</line>
-					<line>&lt;/data_path&gt;</line>
-					<line>&lt;game&gt;</line>
-					<line>&lt;blackgate&gt;</line>
-					<line>&lt;title&gt;</line>
-					<line>blackgate</line>
-					<line>&lt;/title&gt;</line>
-					<line>&lt;path&gt;</line>
-					<line>./blackgate</line>
-					<line>&lt;/path&gt;</line>
-					<line>&lt;/blackgate&gt;</line>
-					<line>&lt;serpentisle&gt;</line>
-					<line>&lt;path&gt;</line>
-					<line>./serpentisle</line>
-					<line>&lt;/path&gt;</line>
-					<line>&lt;/serpentisle&gt;</line>
-					<line>&lt;/game&gt;</line>
-					<line>&lt;/disk&gt;</line>
+					<configtag name="config" closing-tag="no">
+						<configtag name="disk">
+							<configtag name="data_path">
+							data
+							</configtag>
+							<configtag name="game">
+								<configtag name="blackgate">
+									<configtag name="title">
+									blackgate
+									</configtag>
+									<configtag name="path">
+									./blackgate
+									</configtag>
+								</configtag>
+								<configtag name="serpentisle">
+									<configtag name="title">
+									serpentisle
+									</configtag>
+									<configtag name="path">
+									./serpentisle
+									</configtag>
+								</configtag>
+							</configtag>
+						</configtag>
+					</configtag>
 				</configdesc>
 				<para>
 				    You can either use the relative (e.g. ./blackgate) or absolute (e.g. c:\ultima\blackgate) path
@@ -579,28 +545,32 @@
 					My recommendations and example for BG (for SI use the same syntax) are:
 				</para>
 				<configdesc>
-					<line>&lt;disk&gt;</line>
-					<line>&lt;data_path&gt;</line>
-					<line>data</line>
-					<line>&lt;/data_path&gt;</line>
-					<line>&lt;game&gt;</line>
-					<line>&lt;blackgate&gt;</line>
-					<line>&lt;title&gt;</line>
-					<line>blackgate</line>
-					<line>&lt;/title&gt;</line>
-					<line>&lt;path&gt;</line>
-					<line>./blackgate</line>
-					<line>&lt;/path&gt;</line>
-					<line>&lt;savegame_path&gt;</line>
-					<line>./blackgate/savegames</line>
-					<line>&lt;/savegame_path&gt;</line>
-					<line>&lt;static_path&gt;</line>
-					<line>./blackgate/static</line>
-					<line>&lt;/static_path&gt;</line>
-					<line>&lt;gamedat_path&gt;</line>
-					<line>./blackgate/gamedat</line>
-					<line>&lt;/gamedat_path&gt;</line>
-					<line>&lt;/blackgate&gt;</line>
+					<configtag name="config" closing-tag="no">
+						<configtag name="disk" closing-tag="no">
+							<configtag name="data_path">
+							data
+							</configtag>
+							<configtag name="game" closing-tag="no">
+								<configtag name="blackgate">
+									<configtag name="title">
+									blackgate
+									</configtag>
+									<configtag name="path">
+									./blackgate
+									</configtag>
+									<configtag name="savegame_path">
+									./blackgate
+									</configtag>
+									<configtag name="static_path">
+									./blackgate/static
+									</configtag>
+									<configtag name="gamedat_path">
+									./blackgate/gamedat
+									</configtag>
+								</configtag>
+							</configtag>
+						</configtag>
+					</configtag>
 				</configdesc>
 			</body>
 		</sub>
@@ -749,9 +719,9 @@
 					To change the MIDI Device open exult.cfg and change
 				 </para>
 				 <configdesc>
-					<line>&lt;win32_device&gt;</line>
-   					<line>-1</line>
-   					<line>&lt;/win32_device&gt;</line>
+				 	<configtag name="win32_device">
+					-1
+					</configtag>
 				</configdesc>
 				<para>
 					with the device you want to use.
@@ -809,16 +779,16 @@
 					An example of how the relevant part of exult.cfg looks with these packs:
 				</para>
 				<configdesc>
-					<line>&lt;blackgate&gt;</line>
-					<line>&lt;waves&gt;</line>
-					<line>jmsfx.flx</line>
-					<line>&lt;/waves&gt;</line>
-					<line>&lt;/blackgate&gt;</line>
-					<line>&lt;serpentisle&gt;</line>
-					<line>&lt;waves&gt;</line>
-					<line>jmsisfx.flx</line>
-					<line>&lt;/waves&gt;</line>
-					<line>&lt;/serpentisle&gt;</line>
+					<configtag name="blackgate">
+						<configtag name="waves">
+						jmsfx.flx
+						</configtag>
+					</configtag>
+					<configtag name="serpentisle">
+						<configtag name="waves">
+						jmsisfx.flx
+						</configtag>
+					</configtag>
 				</configdesc>
 			</body>
 		</sub>

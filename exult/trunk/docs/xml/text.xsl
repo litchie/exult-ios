@@ -1,7 +1,14 @@
 <?xml version="1.0"?>
+<!DOCTYPE stylesheet [
+<!ENTITY space "<xsl:text> </xsl:text>">
+<!ENTITY cr "<xsl:text>
+</xsl:text>">
+<!ENTITY tab "<xsl:text>	</xsl:text>">
+]>
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns="http://www.w3.org/1999/xhtml">
+
 
 <!-- FIX ME - <br> is translated but then immediatly filtered out again.
  |   Furthermore, indention of list entries etc. is not done at all. We should
@@ -251,9 +258,7 @@
 </xsl:template>
 
 
-<xsl:template match="key">
-	'<xsl:value-of select="."/>'
-</xsl:template>
+<xsl:template match="key">'<xsl:value-of select="."/>'</xsl:template>
 
 
 <xsl:template match="Exult">
@@ -302,29 +307,36 @@
 <!--========================-->
 <xsl:template match="configdesc">
 	<table border="0" cellpadding="0" cellspacing="0">
-		<xsl:apply-templates select="line"/>
+		<xsl:apply-templates select="configtag"/>
 	</table>
 </xsl:template>
 
+<xsl:strip-space elements="configtag"/>
 
-<xsl:template match="line">
+<xsl:template match="configtag">
+	<xsl:param name="indent"></xsl:param>
+	<xsl:value-of select="$indent"/><xsl:text>&lt;</xsl:text><xsl:value-of select="@name"/><xsl:text>&gt;</xsl:text>&cr;
 	<xsl:choose>
-		<xsl:when test="count(child::comment)>0">
-			<xsl:value-of select="text()"/>
-			<xsl:apply-templates select="comment"/>
+		<xsl:when test="count(child::configtag)>0">
+			<xsl:apply-templates select="configtag">
+				<xsl:with-param name="indent"><xsl:value-of select="$indent"/>&space;&space;</xsl:with-param>
+			</xsl:apply-templates>
 		</xsl:when>
 		<xsl:otherwise>
-			<xsl:value-of select="."/>
+			<xsl:value-of select="$indent"/><xsl:value-of select="normalize-space(text())"/>
+			&cr;
+			<xsl:apply-templates select="comment"/>
 		</xsl:otherwise>
 	</xsl:choose>
-	<xsl:text>&#xA;</xsl:text>
+	<xsl:if test="@closing-tag='yes'">
+		<xsl:value-of select="$indent"/><xsl:text>&lt;/</xsl:text><xsl:value-of select="@name"/><xsl:text>&gt;</xsl:text>&cr;
+	</xsl:if>
 </xsl:template>
 
 
 <xsl:template match="comment">
-	<td rowspan="2">
-		<xsl:value-of select="."/>
-	</td>
+	&tab;&tab;&tab;&tab;<xsl:apply-templates/>
+	&cr;
 </xsl:template>
 
 <!-- Clone template. Allows one to use any XHTML in the source file -->
