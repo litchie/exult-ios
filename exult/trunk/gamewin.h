@@ -574,7 +574,8 @@ public:
 						int stop_cx, int stop_cy);
 					// Get all nearby NPC's.
 	void get_nearby_npcs(Slist& list);
-	void schedule_npcs(int hour3);	// Update NPCs' schedules.
+					// Update NPCs' schedules.
+	void schedule_npcs(int hour3, int backwards = 0);
 	void theft();			// Handle thievery.
 	void get_focus();		// Get/lose focus.
 	inline void lose_focus()

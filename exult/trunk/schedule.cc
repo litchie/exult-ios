@@ -1055,7 +1055,7 @@ void Walk_to_schedule::now_what
 		npc->set_schedule_type(new_schedule);
 		return;
 		}
-	if (legs >= 8 || retries >= 2)	// Trying too hard?
+	if (legs >= 12 || retries >= 2)	// Trying too hard?
 		{			// Going to jump there.
 		npc->move(dest.tx, dest.ty, dest.tz);
 		npc->set_schedule_type(new_schedule);

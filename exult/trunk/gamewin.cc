@@ -2655,12 +2655,14 @@ void Game_window::get_nearby_npcs
 
 void Game_window::schedule_npcs
 	(
-	int hour3			// 0=midnight, 1=3am, 2=6am, etc.
+	int hour3,			// 0=midnight, 1=3am, 2=6am, etc.
+	int backwards			// Extra periods to look backwards.
 	)
 	{
 					// Go through npc's.
 	for (int i = 1; i < num_npcs; i++)
-		((Npc_actor *) npcs[i])->update_schedule(this, hour3);
+		((Npc_actor *) npcs[i])->update_schedule(this, hour3, 
+								backwards);
 	paint();			// Repaint all.
 	}
 
