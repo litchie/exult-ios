@@ -62,10 +62,17 @@ extern const std::string c_empty_string;
 #define MOVE_MAPEDIT (1<<8)
 
 //	Wrapping:
-#define INCR_CHUNK(x) ((x + 1)%c_num_chunks)
-#define DECR_CHUNK(x) ((x - 1 + c_num_chunks)%c_num_chunks)
-#define INCR_TILE(x) ((x + 1)%c_num_tiles)
-#define DECR_TILE(x) ((x - 1 + c_num_tiles)%c_num_tiles)
+#define INCR_CHUNK(x) (((x) + 1)%c_num_chunks)
+#define DECR_CHUNK(x) (((x) - 1 + c_num_chunks)%c_num_chunks)
+#define INCR_TILE(x) (((x) + 1)%c_num_tiles)
+#define DECR_TILE(x) (((x) - 1 + c_num_tiles)%c_num_tiles)
+				// Return x - y with wrapping.
+inline int SUB_TILE(int x, int y)
+	{
+	int delta = x - y;
+	return delta < -c_num_tiles/2 ? delta + c_num_tiles :
+	       delta >= c_num_tiles/2 ? delta - c_num_tiles : delta;
+	}
 
 // Debug
 #ifdef DEBUG
