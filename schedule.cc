@@ -342,7 +342,9 @@ void Sleep_schedule::ending
 			floorloc = npc->find_unblocked_tile(dist, 4);
 					// Make bed.
 		int frnum = bed->get_framenum();
-		if (frnum >= 4 && frnum <= 16 && !(frnum%2))
+		Vector occ;		// Unless there's another occupant.
+		if (frnum >= 4 && frnum <= 16 && !(frnum%2) &&
+				bed->find_nearby(occ, -359, 0, 0) < 2)
 			bed->set_frame(frnum - 1);
 		}
 	if (floorloc.tx >= 0)		// Get back on floor.
