@@ -13,6 +13,12 @@ VPATH=$(SRC):$(SRC)/files:$(SRC)/files/zip:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)
 SDL_CFLAGS=-I$(SRC)/sdl/include
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
+### Uncomment these 2 lines, and comment out the 2 above if you want to build
+### Exult as a console Win32 application. This is unsupported and is somewhat
+### of a hack.
+#SDL_LIBS=-L$(SRC)/sdl/lib -lSDL -mconsole
+#SDL_CFLAGS=-I$(SRC)/sdl/include -DSDL_main=main
+
 ### Zip File support. Comment out if ZLib isn't installed
 ### Modify paths, if required
 ZIP_CFLAGS=-I$(SRC)/zlib-1.1.3 -DHAVE_ZIP_SUPPORT 
