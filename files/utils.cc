@@ -63,6 +63,15 @@ void add_system_path(const string& key, const string& value)
 }
 
 /*
+ *	Has a path been entered?
+ */
+bool is_system_path_defined(const char *path)
+	{
+	const string s(path);
+	return path_map.find(s) != path_map.end();
+	}
+
+/*
  *  Convert an exult path (e.g. "<DATA>/exult.flx") into a system path
  */
 

@@ -149,6 +149,13 @@ Game *Game::create_game(Exult_Game mygame)
 	add_system_path("<GAMEDAT>", gamedat_dir.c_str());
 	add_system_path("<SAVEGAME>", data_directory.c_str());
 
+					// A patch directory is optional.
+	d = "config/disk/game/"+gametitle+"/patch";
+	string patch_directory;
+	config->value(d.c_str(), patch_directory, "");
+	if (patch_directory != "")
+		add_system_path("<PATCH>", patch_directory.c_str());
+
 	// Discover the game we are running (BG, SI, ...)
 	// We do this, because we don't really trust config :-)
 	char *static_identity = get_game_identity(INITGAME);

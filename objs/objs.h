@@ -385,6 +385,10 @@ public:
 					// Create from ifix record.
 	Ifix_game_object(unsigned char *ifix) : Game_object(ifix)
 		{  }
+	Ifix_game_object(int shapenum, int framenum, unsigned int tilex, 
+				unsigned int tiley, unsigned int lft = 0)
+		: Game_object(shapenum, framenum, tilex, tiley, lft)
+		{  }
 	virtual void write_ifix(std::ostream& ifix);
 	};
 

@@ -204,6 +204,9 @@ static void Handle_client_message
 							ptr - data);
 		break;
 		}
+	case Exult_server::write_map:
+		gwin->write_map();	// Send feedback?+++++
+		break;
 		}
 	}
 

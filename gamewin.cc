@@ -317,12 +317,18 @@ void Game_window::init_files()
 	mainshp.load(MAINSHP_FLX);
 	shapes.init();
 
-	U7open(chunks, U7CHUNKS);
+	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_U7CHUNKS))
+		U7open(chunks, PATCH_U7CHUNKS);
+	else
+		U7open(chunks, U7CHUNKS);
 	chunks.seekg(0, ios::end);	// Get to end so we can get length.
 					// 2 bytes/tile.
 	num_chunk_terrains = chunks.tellg()/(c_tiles_per_chunk*2);
 	std::ifstream u7map;		// Read in map.
-	U7open(u7map, U7MAP);
+	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_U7MAP))
+		U7open(u7map, PATCH_U7MAP);
+	else
+		U7open(u7map, U7MAP);
 	for (int schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
 		{			// Read in the chunk #'s.
 		unsigned char buf[16*16*2];
@@ -931,7 +937,7 @@ void Game_window::write_ifix_objects
 	{
 	char fname[128];		// Set up name.
 	ofstream ifix;			// There it is.
-	U7open(ifix, get_schunk_file_name(U7IFIX, schunk, fname));
+	U7open(ifix, get_schunk_file_name(PATCH_U7IFIX, schunk, fname));
 					// +++++Use game title.
 	const int count = c_chunks_per_schunk*c_chunks_per_schunk;
 	Flex::write_header(ifix, "Exult",  count);
@@ -975,7 +981,12 @@ void Game_window::get_ifix_objects
 	{
 	char fname[128];		// Set up name.
 	ifstream ifix;			// There it is.
-	U7open(ifix, get_schunk_file_name(U7IFIX, schunk, fname));
+	if (is_system_path_defined("<PATCH>") &&
+					// First check for patch.
+	    U7exists(get_schunk_file_name(PATCH_U7IFIX, schunk, fname)))
+		U7open(ifix, fname);
+	else
+		U7open(ifix, get_schunk_file_name(U7IFIX, schunk, fname));
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.
@@ -1619,18 +1630,18 @@ void Game_window::write_map
 	(
 	)
 	{
-	U7mkdir(STATICDAT, 0755);	// Create dir if not already there.
-		// ++++Okay to have this open twice?  Or should we close
-		// 'chunks', then reopen after writing?
+	U7mkdir(PATCHDAT, 0755);	// Create dir if not already there.
 	int schunk;			// Write each superchunk to 'static'.
 	for (schunk = 0; schunk < 12*12 - 1; schunk++)
 					// Only write what we've read.
 		if (schunk_read[schunk])
 			write_ifix_objects(schunk);
+#if 0	/* +++++Finish later. Don't delete this! */
 	ofstream ochunks;		// Open file for chunks data.
-	U7open(ochunks, U7CHUNKS);
+	U7open(ochunks, PATCH_U7CHUNKS);
 	int cnt = chunk_terrains.size();
 	for (int i = 0; i < cnt; i++)
+			// +++Won't work.  Write out as a FLEX file??
 		{			// Write modified ones.
 		Chunk_terrain *ter = chunk_terrains[i];
 		if (ter && ter->is_modified())
@@ -1644,8 +1655,9 @@ void Game_window::write_map
 	if (!ochunks.good())
 		throw file_write_exception(U7CHUNKS);
 	ochunks.close();
+#endif
 	std::ofstream u7map;		// Write out map.
-	U7open(u7map, U7MAP);
+	U7open(u7map, PATCH_U7MAP);
 	for (schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
 		{
 		int scy = 16*(schunk/12);// Get abs. chunk coords.
