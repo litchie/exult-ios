@@ -1,0 +1,153 @@
+Exult instructions for Windows
+------------------------------------
+
+
+To play
+---------
+Copy exult.exe into your Ultima 7 directory.
+If you are currently playing a game of Ultima 7, be sure 
+ to remove the gamedat directory. (don't forget to back
+ it up first...)
+Run exult.exe
+Have fun!
+
+
+Notes
+------
+* Exult generates the files 'stdout.txt' and 'stderr.txt'.
+These may give you some idea of what is going on
+under the hood. When Exult suddenly quits, sometimes
+these files can help.
+
+* If you're interested in building Exult for windows yourself, 
+there are two sections below describing how.
+
+
+To build in Windows using MinGW
+-----------------------------------
+(Thanks to Travis Howell)
+
+Download MinGW 1.0 or later from:
+http://prdownloads.sourceforge.net/mingw/MinGW-1.1.tar.gz
+
+Extract the files to a mingw directory in root directory of drive
+(ie C:\mingw\ )
+
+Get the zlib binaries & headers from:
+http://exult.sourceforge.net/snapshots/exult_zlib_win32.zip
+Unzip this file into the MinGW directory. 
+
+Get the SDL binaries & headers from:
+http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
+Unzip this file into the Exult directory. (it should add a SDL subdirectory)
+
+If you want to compile the Exult Tools get the bison, flex and libpng binaries & headers from:
+http://exult.sourceforge.net/snapshots/exult_bison_win32.zip
+http://exult.sourceforge.net/snapshots/exult_flex_win32.zip
+http://exult.sourceforge.net/snapshots/exult_libpng_win32.zip
+Unzip these files into the MinGW directory.
+
+If you want to compile Exult Studio get the libglade, libpng and freetype binaries & headers from:
+http://exult.sourceforge.net/snapshots/exult_libglade_win32.zip
+http://exult.sourceforge.net/snapshots/exult_libpng_win32.zip
+Then get the pkconfig, glib, gtk+, libiconv and libintl binaries & headers from http://www.gimp.org/~tml/gimp/win32/new-downloads.html :
+http://www.gimp.org/~tml/gimp/win32/pkgconfig-0.11-20020310.zip
+http://www.gimp.org/~tml/gimp/win32/glib-2.0.0-20020316.zip
+http://www.gimp.org/~tml/gimp/win32/glib-dev-2.0.0-20020310.zip
+http://www.gimp.org/~tml/gimp/win32/gtk+-1.3.0-20020313.zip
+http://www.gimp.org/~tml/gimp/win32/gtk+-dev-1.3.0-20020310.zip
+http://www.gimp.org/~tml/gimp/win32/libiconv-1.7.zip
+http://www.gimp.org/~tml/gimp/win32/libiconv-dev-1.7.zip
+http://www.gimp.org/~tml/gimp/win32/libintl-0.10.40-20020101.zip
+http://www.gimp.org/~tml/gimp/win32/freetype-2.0.5-20011117.zip
+http://www.gimp.org/~tml/gimp/win32/freetype-dev-2.0.5-20011117.zip
+Unzip these files into the MinGW directory.
+Download the MinGW work around required for compiling Exlt Studio from:
+http://exult.sourceforge.net/snapshots/exult_hack_win32.zip
+Unzip this file into the main directory of exult source code
+
+Open Command Prompt or MS-DOS Prompt
+
+Type 'PATH=drive:\mingw\bin;drive:\mingw\lib;%PATH%' where drive is the letter of the hard disk you installed MinGW on to, without quotes to add MinGW to the path
+(ie PATH=C:\mingw\bin;C:\mingw\lib;%PATH% )
+
+Change to the directory where you unpacked the Exult source code.
+(cd C:\exult\)
+
+Open makefile.win32 from the Exult directory in a text editor and change C:\\Ultima7 to the directory you want Exult to be installed to.
+(ie C:\\Games\\Ultima7 )
+
+If you are compiling Exult Studio, open makefile.studio.mingw from the Exult directory in a text editor and change C:\\Ultima7 to the directory you want Exult Studio to be installed to. 
+(It must be the same directory that Exult is installed into to!)
+(ie C:\\Games\\Ultima7 )
+
+Type 'make -f makefile.win32 install' without quotes to compile and install Exult for Windows
+
+Type 'make -f makefile.win32 toolsinstall' without quotes to compile and install the Exult Tools for Windows
+
+Type 'make_studio' without quotes to compile and install Exult Studio for Windows
+Then copy over the required library files (*.dll) from the lib directory of MinGW to the installation directory of Exult Studio
+
+Once compile has finished and been installed exit the Command Prompt or MS-DOS Prompt
+
+Run Exult.exe and enjoy the game :-)
+
+
+To build in Windows using MSVC 6.0
+----------------------------------
+
+1) Download SDL and ZLib for Win32/MSVC6. Add their Include and Library
+directories to MSVC's Search Directories (Tools->Options->Directories).
+
+SDL: http://www.libsdl.org/
+ZLib: http://www.gzip.org/zlib/
+
+2) Set The environment variable EXULT_INSTALL_PATH to the directory where you
+want the Exult binaries to be copied to when doing an Install Build. This is
+optional and is only required for when doing an Install build.
+
+3) Load the Exult Project Workspace "msvcstuff/Exult.dsw" in MSVC 6.0
+(File->Load Workspace)
+
+4) If required, enter the correct "Working Directory" in the "Debug tab" of the
+Exult project settings for all Configurations.
+
+5) Select and Build Exult using one of the 4 Configuration (Win32 Debug,
+Win32 Release, Win32 Debug Install or Win32 Release Install).
+
+6) Have Fun!
+
+
+To cross-build from Linux
+---------------------------
+(Note: this hasn't been tested recently, and may or may not work)
+
+Exult is originally a Linux project, using a platform
+independent API called SDL. (Simple DirectMedia Layer)
+
+Because of this, the Windows version has been built in
+Linux, using the cross-compiler Mingw32.
+
+Please note it is not necessary to build Exult yourself,
+since the Windows executable is already included.
+
+1) get and install Mingw32 and SDL.
+
+SDL: http://www.devolution.com/~slouken/SDL/
+
+Mingw32: http://www.devolution.com/~slouken/SDL/Xmingw32/
+
+Installation instructions can be found on the same pages.
+(make sure to get the DirectX headers, and build SDL for the cross compiler)
+
+2) build exult:
+
+configure --host=i386-linux --target=i386-mingw32 --enable-win32
+make
+
+3) copy exult.exe to your U7 directory, and run it from windows
+If you are currently playing a game of Ultima 7, be sure
+to make a backup of the gamedat directory.
+ 
+4) Have fun :-)
+
