@@ -1294,10 +1294,10 @@ static void Try_key
 	for (int i = 0; i < party_cnt; i++)
 		{
 		Actor *act = party[i];
-		Vector keys;		// Get keys.
+		GOVector keys;		// Get keys.
 		if (act->get_objects(keys, 641, qual, -359))
 			{
-			((Game_object *) keys.get(0))->activate(
+			((Game_object *) keys.at(0))->activate(
 						gwin->get_usecode());
 			return;
 			}
@@ -1510,10 +1510,13 @@ void show_cheat_help (void) {
 	scroll->add_text("alt-t  - Teleport\n");
 	scroll->add_text("ctrl-alt-t - Map Teleport\n");
 	scroll->add_text("alt-w - Archwizard mode~");
-	scroll->add_text("SI-only keys~");
-	scroll->add_text("alt-n - Toggle Naked flag\n");
-	scroll->add_text("alt-p - Toggle Petra mode\n");
-	scroll->add_text("alt-s - Change skin color\n");
+	if(Game::get_game_type() == SERPENT_ISLE)
+		{
+		scroll->add_text("SI-only keys~");
+		scroll->add_text("alt-n - Toggle Naked flag\n");
+		scroll->add_text("alt-p - Toggle Petra mode\n");
+		scroll->add_text("alt-s - Change skin color\n");
+		}
 
 	scroll->paint(gwin);
 	do {
