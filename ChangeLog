@@ -1,4 +1,7 @@
 2002-06-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.cc: typo
+
+2002-06-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* *: merged audiotest branch back into main tree:
 
 > 2002-06-06 Simon Quinn <email@simonquinn.co.uk>
