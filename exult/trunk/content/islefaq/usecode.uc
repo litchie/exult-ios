@@ -242,7 +242,7 @@ Dominik 0x565 ()
 		say("You wait while he looks on his desk.");
 		say("You wait a bit more while he hastily pulls out the drawers and peers in each.");
 		say("Finally, he turns back, looking markedly upset.");
-		say("It's gone!!  Where can it be?~",  
+		say("It's gone!!  Where can it be?~",
 							"He turns to you.");
 		say("Avatar!  It's vital that the FAQ be recovered.",
 				"  Our users will be lost without it!");
@@ -307,7 +307,7 @@ Willem 0x566 ()
 	item.say("Hello Avatar!");
 		add("Name");
 		add("Job");
-		add("Bye");	
+		add("Bye");
 		converse
 		{
 		if (response == "Bye")
@@ -363,7 +363,7 @@ Fingolfin 0x567 ()
 	item.say("Hello Avatar!");
 		add("Name");
 		add("Job");
-		add("Bye");	
+		add("Bye");
 		converse
 		{
 		if (response == "Bye")
@@ -542,7 +542,7 @@ Colourless 0x569 ()
 	if (gflags[ASKED_WHERE_PYRO])
 		{
 		add("Name");
-		add("Job");		
+		add("Job");
 		add("Do you know Pyro-X?");
 		}
 		else
@@ -550,7 +550,7 @@ Colourless 0x569 ()
 		add("Name");
 		add("Job");
 		}
-		add("Bye");	
+		add("Bye");
 		converse
 		{
 		if (response == "Bye")
@@ -619,7 +619,7 @@ Darke 0x56A ()
 	add("Job");
 	if (gflags[WILL_FIND_FAQ])
 		add("FAQ");
-	add("Bye");	
+	add("Bye");
 		converse
 		{
 		if (response == "Bye")
@@ -631,7 +631,8 @@ Darke 0x56A ()
 			}
 		else if (response == "Job")
 			{
-			say("I make USECODE");
+			say("Annoying dragons, of course. And sometimes I make USECODE");
+			add("Dragons?");
 			add("Usecode?");
 			}
 		else if (response == "Sharp teeth?")
@@ -646,7 +647,7 @@ Darke 0x56A ()
 			if (gflags[CHURCH_CARROTS])
 				say("I've already told you about the ",
 					"carrots.");
-			else if (gflags[RABBIT_TRACKS] && 
+			else if (gflags[RABBIT_TRACKS] &&
 					UI_get_item_flag(AMY, IN_PARTY))
 				{
 				AMY.say("We're those your tracks",
@@ -681,7 +682,76 @@ Darke 0x56A ()
 			{
 			say("He got mad because he looked at the evil Usecode!",
 			"  Don't believe what he says!");
-			UI_remove_answer("Dr.Code");
+			UI_remove_answer("Dr.Code?");
+			}
+		else if (response == "Dragons?")
+			{
+			say("You know, those big, scaly things with wings.",
+			" One dragon I tend to annoy in particular.");
+			UI_remove_answer("Dragons?");
+			add("Big?");
+			add("Annoy?");
+			}
+		else if (response == "Big?")
+			{
+			say("Large? Huge? Think that size. Although a number are quite a bit smaller for some reason.",
+			" Maybe a genetic defect.");
+			UI_remove_answer("Big?");
+			}
+		else if (response == "Annoy?")
+			{
+			say("Annoy? Well I generally harass with buckets of paint more then annoy, per se.",
+			" The silly thing thinks it's 'Colourless', but everyone knows it's just transparent.");
+			UI_remove_answer("Annoy?");
+			add("Colourless?");
+			}
+		else if (response == "Colourless?")
+			{
+			say("One of those dragon things. Rather puny in size in comparison to his racial cousins,",
+			" but generally non-threatening, although he does tend to threaten and bluster a lot.",
+			" Especially when I paint him in fluro colours.");
+			UI_remove_answer("Colourless?");
+			add("Threaten?");
+			}
+		else if (response == "Threaten?")
+			{
+			say("More of a bluster and intimidation really. Just general gripes like,",
+			" 'don't do that' and _continual_ complaints about my colour pallete choices",
+			" when I'm decorating him.",
+			" He's such an incredibly picky dragon.");
+			UI_remove_answer("Threaten?");
+			add("Decorating?");
+			}
+		else if (response == "Decorating?")
+			{
+			say("Nothing fancy, just adding a few dashes of colour to an otherwise drab",
+			" and dreary 'transparent'coloured dragon");
+			UI_remove_answer("Decorating?");
+			add("Drab?");
+			}
+		else if (response == "Drab?")
+			{
+			say("Well he's just a little dull and monotonous, no real differences in his",
+			" colour over his entire body.",
+			" I think giving him say, yellow wings, green paws, and a red muzzle would look rather cute.");
+			UI_remove_answer("Drab?");
+			add("Cute?");
+			}
+		else if (response == "Cute?")
+			{
+			say("Well... really it's more close to 'handsome' then 'cute'.",
+			" But since he lacks a nice coat of fur, he can't really be handsome,",
+			" so cute in a",
+			" pet-iguana-that's-rather-larger-then-",
+			"an-iguana-and-doesn't-eat-insects",
+			" kind of way, he's rather stuck at.");
+			UI_remove_answer("Cute?");
+			add("Fur?");
+			}
+		else if (response == "Fur?")
+			{
+			say("Unfortunately I must heed the call of sleep now. Goodnight.");
+			UI_remove_answer("Fur?");
 			break;
 			}
 		}
@@ -724,7 +794,7 @@ EsBee_Ex 0x56B ()
 		add("Name");
 		add("Job");
 		add("Bye");
-		}	
+		}
 		converse
 		{
 		if (response == "Bye")
@@ -746,12 +816,12 @@ EsBee_Ex 0x56B ()
 			}
 		else if (response == "Pyro-X")
 			{
-			say("I've never seen him before, ", 
+			say("I've never seen him before, ",
 			"but people blame him for all sorts of explosions ",
 			"and burnt houses. People say ",
 			"it's me but I say it is my evil twin.");
 			gflags[ASKED_ABOUT_PYRO] = true;
-			UI_remove_answer("Pyro-X");			
+			UI_remove_answer("Pyro-X");
 			}
 		else if (response == "You are Pyro-X!")
 			{
@@ -875,7 +945,7 @@ Kirben 0x56D ()
 		}
 	if (event != 1)
 		return;
-	if (!UI_get_item_flag(item, IF_MET))		
+	if (!UI_get_item_flag(item, IF_MET))
 		{			// First time.
 		say("You see a scribe with many different scrolls around him.");
 		item.say("Welcome to the Open Church of SourceForge Island!");
@@ -901,7 +971,7 @@ Kirben 0x56D ()
 				" Ask her for more information.");
 		case "Open Church?" (remove):
 			say("In the Open Church of Sourceforge Island everyone ",
-				"can preach his beliefs as long as he makes them freely available ", 
+				"can preach his beliefs as long as he makes them freely available ",
 				"to everyone. ");
 			say("Do you want to know more?");
 			if (Ask_yesno())
@@ -943,12 +1013,12 @@ BillyG 0x56E ()
 		}
 	if (event != 1)
 		return;
-	if (!UI_get_item_flag(item, IF_MET))		
+	if (!UI_get_item_flag(item, IF_MET))
 		{			// First time.
 		say("You see a pathetic man with huge round glasses in his face.");
 		item.say("Hello Avatar!");
 		}
-	else 
+	else
 		item.say("Hello again!");
 		var answers;
 		answers = ["Name", "Job"];
@@ -973,7 +1043,7 @@ BillyG 0x56E ()
 		case "Open Church of fools?" (remove):
 			say("They stand in my way and try to resist me. ",
 				"They think they can order me around to wash their windows but",
-				" soon they will be mine."); 
+				" soon they will be mine.");
 		case "How?" (remove):
 			say("Pretty simple. I'm going to save my money and ",
 				" soon I'll have enough to buy every window on this island.");
