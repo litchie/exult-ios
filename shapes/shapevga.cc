@@ -173,7 +173,7 @@ void Shapes_vga_file::read_info
 	ifstream wihh;
 	unsigned short offsets[1024];
 	if (U7open2(wihh, patch_name(PATCH_WIHH), WIHH, editing))
-		cnt = 1024;
+		cnt = num_shapes <= 1024 ? num_shapes : 1024;
 	else
 		cnt = 0;
 	for (i = 0; i < cnt; i++)
