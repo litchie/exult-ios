@@ -2,6 +2,7 @@
 .libs
 *.o
 *.h
+*.flx
 Makefile
 Makefile.in
 .deps

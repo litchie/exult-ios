@@ -12,7 +12,7 @@
 
 
 \CDancer Vesperman <dancer@zeor.simegen.com>
-\CMusic, sounds, XML configuration, Usecode stuff...
+\CMusic, sounds, XML configuration, usecode...
 \Cwhat more could you possibly ask for ?
 
 
@@ -22,8 +22,8 @@
 
 
 \CTristan Tarrant <nadir@users.sourceforge.net>
-\CIntro, ending, menus, autoconf/automake, makes
-\Csure that everyone follows CVS conventions...
+\CIntro, ending, menus, autoconf/automake, 
+\CGIMP plugin, FLEX packing, CVS police
 
 
 \CMax Horn <max@quendi.de>
@@ -36,9 +36,12 @@
 
 
 \CRyan "Colourless" Nunn <triforce@merlin.net.au>
-\CXMIDI meister, endings, SI intro, roof removalist,
-\CNPC flag IO, Avatar identity
+\CXMIDI meister, endings, roof removalist,
+\CSI Intro, NPC flag IO, Avatar identity
 
+
+\CDerek Liauw Kie Fa
+\C2xSaI Scaling code
 
 
 \COTHER CONTRIBUTORS
@@ -61,8 +64,6 @@
 \CWouter Dijkslag
 
 \COlivier Marcoux
-
-
 
 \CTHANKS
 

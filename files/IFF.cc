@@ -21,9 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
-
-#define	DEBUGFLEX 1
-
 #include "IFF.h"
 
 #include <cstdio>
@@ -63,10 +60,14 @@ void	IFF::IndexIFFFile(void)
 		// Not an IFF file we recognise
 		throw 0;
 		}
+#if DEBUG
 	cout << "Okay. It looks like an IFF file chunk" << endl;
+#endif
 	long	full_length;
 	full_length = Read4high(fp);
+#if DEBUG
 	cout << "length looks like: " << full_length << endl;
+#endif
 	fseek(fp,4,SEEK_CUR);	// We don't really need to know what the general data type is
 
 
@@ -104,8 +105,9 @@ void	IFF::IndexIFFFile(void)
 		
 		if(r.size==0||r.offset==0)
 			break;
-			
+#if DEBUG	
 		cout << "Object type: " << type << " at position " << r.offset << " with length of " << r.size << endl;
+#endif
 		object_list.push_back(r);
 		fseek(fp,r.offset+r.size,SEEK_SET);
 		}

@@ -108,25 +108,22 @@ void SI_Game::play_intro()
 		playfli fli0(fli_b+8, flisize-8);
 		fli0.info();
 
-		const char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
-				"Willem Jan Palenstijn, Tristan Tarrant,", 
-				"Max Horn, Luke Dunstan, Ryan Nunn, Derek Liauw Kie Fa",
+		const char *txt_msg[] = { "with help from",
+				"The Exult Team", 
 				"Driven by the Exult game engine V" VERSION };
 
 		for (j = 0; j < 20; j++)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
-			for(i=0; i<3; i++) {
-				gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
-			}
+			center_text(0, txt_msg[0], centerx, centery+50);
+			center_text(0, txt_msg[1], centerx, centery+65);
 			win->show();
 		}
 
 
 		next = fli0.play(win, 0, 0, next, 100);
-		for(i=0; i<3; i++) {
-			gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
-		}
+		center_text(0, txt_msg[0], centerx, centery+50);
+		center_text(0, txt_msg[1], centerx, centery+65);
 		win->show();
 
 		SDL_Delay (3000);
@@ -134,9 +131,8 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
-			for(i=0; i<3; i++) {
-				gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
-			}
+			center_text(0, txt_msg[0], centerx, centery+50);
+			center_text(0, txt_msg[1], centerx, centery+65);
 			win->show();
 		}
 
@@ -734,13 +730,13 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
-			gwin->paint_text(7, txt_msg[3], centerx-gwin->get_text_width(7, txt_msg[3])/2, centery+75);
+			center_text(7, txt_msg[2], centerx, centery+75);
 			win->show();
 		}
 
 
 		next = fli8.play(win, 0, 0, next, 100);
-		gwin->paint_text(7, txt_msg[3], centerx-gwin->get_text_width(7, txt_msg[3])/2, centery+75);
+		center_text(7, txt_msg[2], centerx, centery+75);
 		win->show();
 
 		for (i = 0; i < 300; i++)
@@ -754,7 +750,7 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
-			gwin->paint_text(7, txt_msg[3], centerx-gwin->get_text_width(7, txt_msg[3])/2, centery+75);
+			center_text(7, txt_msg[2], centerx, centery+75);
 			win->show();
 		}
 

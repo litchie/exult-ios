@@ -1,0 +1,11 @@
+This file describes the contents of the "exult.flx" file.
+It is a very good idea to add things, rather than change them, because this
+would require substantial changes to the code.
+
+Entry		File
+0		"Exult Quotes" shape
+1		"Exult Credits" shape
+2		Quotes
+3		Credits
+4		Exult Logo shape
+5		Exult Palette 0

@@ -1,3 +1,19 @@
+??/??/00:	v0.50
+		Note: Saved-games are still useable; but you won't see any 
+		hostile NPC's until you start a new game.
+
+		New scaling code contributed by Derek Liauw Kie Fa 
+		(2xSaI filter)
+
+		Exult logo at startup
+
+		GIMP plugin is functional
+
+		Better SI support
+
+		...
+
+
 8/22/00:	v0.40
 		Note:  ALL save games from before this update are now broken.
 		Games must be restarted.
