@@ -1,0 +1,19 @@
+
+This file is currently a random pile of useful information... someday it'll
+be ordered in a coherent format.
+
+
+* Error: "Failed to locate usecode file. Exiting."
+	ucxt hunts for the usecode file under the following filenames:
+		usecode
+		usecode.u7
+		usecode.si
+		ultima7/static/usecode
+		serpent/static/usecode
+		ULTIMA7/STATIC/USECODE
+		SERPENT/STATIC/USECODE
+	Relative to the directory it is run in, and in that order, fixing it
+	so it works nicer is on my "TODO" list. Integrating ucxt into the main
+	config file would probably be a good idea.
+
+

@@ -1,0 +1,152 @@
+# Yet another Random Datafile format: only lines with '>' in the
+# 0th column are considered data, the rest is comments.
+# Probabially wants to be .xml-ed sometime in the future.
+
+# Column 1: hex opcode
+# Column 2: assembler opcode nmonic
+# Column 3: scriptfunction name
+# Column 3: number of data bytes
+# Column 4: data types of bytes
+
+# DataType Notes: dataoffset = varoffset == offset == short == 2 bytes
+
+# A "false" value is defined as integer 0, a null string, or an empty array.
+# (stateing obvious) Logically a "true" value would be the opposite of this.
+
+> 0x00	NULL	"null"	0	{}
+
+> 0x01	NULL	"null"	0	{}
+
+> 0x02	NEXT	"next"	10	{}
+
+TODO: To be done... when I get to 0x2E
+
+> 0x03	NULL	"null"	0	{}
+
+> 0x04	ASK	"ask"	2	{offset}
+
+TODO: Currently under consideration.
+
+> 0x05	JNE	"jne"	2	{offset}
+
+Pops a value from the stack, tests if it's false, if it's false jumps to the relative offset.
+
+> 0x06	JMP	"jmp"	2	{offset}
+
+Jumps to the relative offset provided.
+
+> 0x07	CMPS	"cmps"	4	{short,offset}
+
+Pop (short) number of values from the stack, compare each one to the
+last responce from the user, and jumps to the offset if it's not found,
+else continue as normal.
+NOTE: As a side effect gets a conversation input responce from the user.
+
+
+> 0x08	NULL	"null"	0	{}
+
+> 0x09	ADD	"add"	0	{}
+
+Pops two values from the stack (pop v2, then pop v1), adds them together
+(v1 + v2), and then pushes the result on the stack. Integers are added,
+strings are concatenated, collections are appended.
+
+> 0x0A	SUB	"sub"	0	{}
+
+Pops two values from the stack (pop v2, then pop v1), subtracts them
+from each other (v1 - v2) then pushes the result to the stack. Only works
+with integers.
+
+> 0x0B	DIV	"div"	0	{}
+
+Pops two values from the stack (pop v2, then pop v1), divides v1 by v2
+(v1 / v2), then pushes the result to the stack. Only works with integers.
+
+> 0x0C	MUL	"mul"	0	{}
+
+Pops two elements from the stack, multiplies them and pushes them back on the stack (multiplication is commutative). Only works with integers.
+
+> 0x0D	MOD	"mod"	0	{}
+
+Pops two elements from the stack (pop v2, then pop v1), mods v1 by v2
+(v1 % v2), then pushes the result on the stack. Only works with integers.
+
+> 0x0E	AND	"and"	0	{}
+
+Pops two elements from the stack, converts them to true/false, logically
+"and"s the values, and pushes the resulting truth value back on the stack
+as a 1/0(true/false).
+
+> 0x0F	OR	"or"	0	{}
+
+The "logical or" counterpart the the "logical and" (opcode 0x0E). Refer to that opcode for more information.
+
+> 0x10	NOT	"not"	0	{}
+
+Pops one element from the stack converts it to a truth value, logically "not"s
+it, and then pushes the result on the stack. (Pushed value is 1/0(true/false)).
+
+> 0x11	NULL	"null"	0	{}
+
+> 0x12	POP	"pop"	1	{varoffset}
+
+Pops one element from the stack and assigns it to the local varitable pointed
+to by varoffset. assert(varoffset>=0 && varoffset<num_local_variables);
+
+> 0x13	PUSH_T	"push_t"	0	{}
+
+Pushes true (1) onto the stack.
+
+> 0x14	PUSH_F	"push_f"	0	{}
+
+Pushes false(0) onto the stack.
+
+> 0x15	NULL	"null"	0	{}
+
+> 0x16	CMPGT	"cmpgt"	0	{}
+
+Pops two values from the stack (pop v2, then pop v1), perform the logical
+comparison "greater then" on them (v1 > v2), and push the resultant truth value (1/0(true/false)) back on the stack. Only works with integers.
+
+> 0x17	CMPLT	"cmplt"	0	{}
+
+As CMPGT, except using the "less than" comparison (<).
+
+> 0x18	CMPGE	"cmpge"	0	{}
+
+As CMPGT, except using the "greater then or equal to" comparison (>=).
+
+> 0x19	CMPLE	"cmple"	0	{}
+
+As CMPLE, except using the "less then or equal to" comparison (<=).
+
+> 0x1A	CMPNE	"cmpne"	0	{}
+
+As CMPNE, except using the "not equal to" comparison (!=).
+
+> 0x1B	NULL	"null"	0	{}
+
+> 0x1C	ADDSI	"addsi"	2	{dataoffset}
+
+Appends a string from the data segment (dataoffset) to the string register.
+
+> 0x1D	PUSHS	"pushs"	2	{dataoffset}
+
+Pushes the string at dataoffset onto the stack.
+
+> 0x1E	ARRC	"arrc"	2	{short}
+
+Pops count(short) number of elements from the stack, and creates an array of
+them, first off the stack is the first appended to the end of the array
+(ie. the elements were appended originally to the stack in the order 3, 2,
+1 would create an array of the form {1, 2, 3}). The created array is then
+appended to the stack.
+
+> 0x1F	PUSHI	"pushi"	2	{short}
+
+Pushes the element (short) to the stack as an unsigned 16bit integer.
+REMEMBER: _unsigned_.
+
+> 0x20	NULL	"null"	0	{}
+
+
