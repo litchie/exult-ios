@@ -261,7 +261,9 @@ int Game_window::drop_at_lift
 	Chunk_object_list *chunk = get_objects(cx, cy);
 	chunk->setup_cache();		// Be sure cache is set up.
 	int lift;			// Can we put it here?
-	if (!chunk->is_blocked(dragging->get_lift(), tx, ty, lift))
+	Shape_info& info = shapes.get_info(dragging->get_shapenum());
+	if (!chunk->is_blocked(info.get_3d_height(),
+				dragging->get_lift(), tx, ty, lift))
 		{
 		dragging->set_lift(lift);
 		dragging->set_shape_pos(tx, ty);

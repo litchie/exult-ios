@@ -30,7 +30,9 @@ class istream;
 class ostream;
 class Game_window;
 class Game_object;
+class Text_gump;
 class Vector;
+
 #include <vector>	// STL container
 #include <deque>	// STL container
 #include <string>	// STL string
@@ -177,11 +179,14 @@ struct Usecode_machine
 	unsigned char gflags[1024];	// Global flags.
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
+	Text_gump *book;		// Book/scroll being displayed.
 	Game_object *caller_item;	// Item this is being called on.
 	Game_object *last_created;	// Last item created with intrins. x24.
 	const char *user_choice;	// String user clicked on.
 	char *String;			// The single string register.
 	void append_string(const char *txt);	// Append to string.
+	void show_pending_text();	// Make sure user's seen all text.
+	void show_book();		// "Say" book/scroll text.
 	void say_string();		// "Say" the string.
 	Usecode_value *stack;		// Stack.
 	Usecode_value *sp;		// Stack ptr.  Grows upwards.
@@ -279,6 +284,7 @@ public:
         USECODE_INTRINSIC_DECL(count_npc_inventory);
         USECODE_INTRINSIC_DECL(set_npc_inventory_count);
         USECODE_INTRINSIC_DECL(get_object_position);
+	USECODE_INTRINSIC_DECL(get_distance);
         USECODE_INTRINSIC_DECL(find_direction);
         USECODE_INTRINSIC_DECL(get_npc_object);
         USECODE_INTRINSIC_DECL(get_schedule_type);
@@ -290,7 +296,7 @@ public:
         USECODE_INTRINSIC_DECL(get_avatar_ref);
         USECODE_INTRINSIC_DECL(get_party_list);
         USECODE_INTRINSIC_DECL(create_new_object);
-        USECODE_INTRINSIC_DECL(mystery_1);
+        USECODE_INTRINSIC_DECL(set_last_created);
         USECODE_INTRINSIC_DECL(update_last_created);
         USECODE_INTRINSIC_DECL(get_npc_name);
         USECODE_INTRINSIC_DECL(count_objects);
@@ -298,20 +304,24 @@ public:
         USECODE_INTRINSIC_DECL(remove_party_items);
         USECODE_INTRINSIC_DECL(add_party_items);
         USECODE_INTRINSIC_DECL(play_music);
-        USECODE_INTRINSIC_DECL(npc_in_party);
+        USECODE_INTRINSIC_DECL(npc_nearby);
         USECODE_INTRINSIC_DECL(find_nearby_avatar);
         USECODE_INTRINSIC_DECL(is_npc);
         USECODE_INTRINSIC_DECL(display_runes);
         USECODE_INTRINSIC_DECL(click_on_item);
         USECODE_INTRINSIC_DECL(find_nearby);
+        USECODE_INTRINSIC_DECL(give_last_created);
         USECODE_INTRINSIC_DECL(game_hour);
         USECODE_INTRINSIC_DECL(game_minute);
 	USECODE_INTRINSIC_DECL(get_npc_number);
 	USECODE_INTRINSIC_DECL(part_of_day);
+	USECODE_INTRINSIC_DECL(get_alignment);
+	USECODE_INTRINSIC_DECL(set_alignment);
 	USECODE_INTRINSIC_DECL(item_say);
 	USECODE_INTRINSIC_DECL(get_lift);
 	USECODE_INTRINSIC_DECL(set_lift);
 	USECODE_INTRINSIC_DECL(display_map);
+	USECODE_INTRINSIC_DECL(book_mode);
 	USECODE_INTRINSIC_DECL(earthquake);
 	USECODE_INTRINSIC_DECL(is_pc_female);
 	USECODE_INTRINSIC_DECL(run_endgame);
@@ -338,6 +348,7 @@ public:
 					// Call instrinsic function.
 	Usecode_value call_intrinsic(int event, int intrinsic, int num_parms);
 	void click_to_continue();	// Wait for user to click.
+	void set_book(Text_gump *b);	// Set book/scroll to display.
 	const char *get_user_choice();	// Get user's choice.
 	int get_user_choice_num();
 					// Run the function.
@@ -358,12 +369,19 @@ public:
 		};
 	enum Global_flag_names {
 		did_first_scene = 0x3b,	// Went through 1st scene with Iolo.
-		have_trinsic_password = 0x3d
+		have_trinsic_password = 0x3d,
+		found_stable_key = 0x48
 		};
 	int get_global_flag(int i)	// Get/set ith flag.
 		{ return gflags[i]; }
 	void set_global_flag(int i, int val = 1)
 		{ gflags[i] = (val == 1); }
+	int get_party_count()		// Get # party members.
+		{ return party_count; }
+	int get_party_member(int i)	// Get npc# of i'th party member.
+		{ return party[i]; }
+	int in_usecode()		// Currently in a usecode function?
+		{ return call_depth > 0; }
 					// Call desired function.
 	int call_usecode(int id, Game_object *obj, Usecode_events event)
 		{
@@ -375,6 +393,7 @@ public:
 		answers.clear();
 		Usecode_value parm(0);	// They all seem to take 1 parm.
 		int ret = call_usecode_function(id, event, &parm);
+		set_book(0);
 		caller_item = prev_item;
 		return ret;
 		}

@@ -29,6 +29,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objs.h"
 
 /*
+ *	+++++Debugging
+ */
+inline void Check_file
+	(
+	ifstream& shapes
+	)
+	{
+	if (!shapes.good())
+		{
+		cout << "VGA file is bad!\n";
+		shapes.clear();
+		}
+	}
+
+/*
  *	Read in a desired shape.
  *
  *	Output:	# of frames.
@@ -46,6 +61,7 @@ unsigned char Shape_frame::read
 	rle = 0;
 					// Get to actual shape.
 	shapes.seekg(shapeoff);
+	Check_file(shapes);
 	unsigned long datalen = Read4(shapes);
 	unsigned long hdrlen = Read4(shapes);
 	if (datalen == shapelen)
@@ -53,17 +69,27 @@ unsigned char Shape_frame::read
 		int nframes = (hdrlen - 4)/4;
 		if (framenum >= nframes)// Bug out if bad frame #.
 			return (nframes);
-					// Get frame offset.
-		unsigned long frameoff;
+					// Get frame offset, lengeth.
+		unsigned long frameoff, framelen;
 		if (framenum == 0)
-			frameoff = hdrlen + 8;
+			{
+			frameoff = hdrlen;
+			framelen = nframes > 1 ? Read4(shapes) - frameoff :
+						datalen - frameoff;
+			}
 		else
 			{
 			shapes.seekg((framenum - 1) * 4, ios::cur);
-			frameoff = 8 + Read4(shapes);
+			frameoff = Read4(shapes);
+					// Last frame?
+			if (framenum == nframes - 1)
+				framelen = datalen - frameoff;
+			else
+				framelen = Read4(shapes) - frameoff;
 			}
+		Check_file(shapes);
 					// Get compressed data.
-		get_rle_shape(shapes, shapeoff + frameoff);
+		get_rle_shape(shapes, shapeoff + frameoff, framelen);
 					// Return # frames.
 		return (nframes);
 		}
@@ -72,6 +98,7 @@ unsigned char Shape_frame::read
 	shapes.seekg(shapeoff + framenum*64);
 	data = new unsigned char[64];	// Read in 8x8 pixels.
 	shapes.read((char *) data, 64);
+	Check_file(shapes);
 	return (shapelen/64);		// That's how many frames.
 	}
 
@@ -82,69 +109,21 @@ unsigned char Shape_frame::read
 void Shape_frame::get_rle_shape
 	(
 	ifstream& shapes,		// "Shapes.vga" file to read.
-	long filepos			// Position in file.
+	long filepos,			// Position in file.
+	long len			// Length of frame data.
 	)
 	{
-	shapes.seekg(filepos - 8);	// Get to extents.
+	shapes.seekg(filepos);		// Get to extents.
+	Check_file(shapes);
 	xright = Read2(shapes);
 	xleft = Read2(shapes);
 	yabove = Read2(shapes);
 	ybelow = Read2(shapes);
-	unsigned char bbuf[16000];
-	unsigned char *out = &bbuf[0];	// ->where to store.
-	unsigned char *end = &bbuf[sizeof(bbuf)];
-	int scanlen;
-#if 0
-	int minx = 20000, miny = 20000;	// ++++++++DEBUGGING.
-	int maxx = -20000, maxy = -20000;
-#endif
-	do
-		{
-		shapes.read(out, 2);	// Get length of scan line.
-		scanlen = out[0] + (out[1] << 8);
-		out += 2;
-		if (!scanlen)
-			break;		// All done.
-		int encoded = scanlen&1;// Is it encoded?
-		scanlen = scanlen>>1;
-		shapes.read(out, 4);	// Get x, y offsets.
-		short scanx = out[0] + (out[1] << 8);
-		short scany = out[2] + (out[3] << 8);
-		out += 4;
-		if (!encoded)		// Raw data?
-			{
-			if (out + scanlen > end)
-				break;	// Shouldn't happen.
-			shapes.read(out, scanlen);
-			out += scanlen;
-			continue;
-			}
-		for (int b = 0; b < scanlen; )
-			{
-			unsigned char bcnt;
-			shapes.get((char&) bcnt);
-			*out++ = bcnt;
-					// Repeat next char. if odd.
-			int repeat = bcnt&1;
-			bcnt = bcnt>>1;	// Get count.
-			if (repeat)
-				{
-				unsigned char pix;
-				shapes.get((char&)pix);
-				*out++ = pix;
-				}
-			else		// Get that # of bytes.
-				{
-				shapes.read(out, bcnt);
-				out += bcnt;
-				}
-			b += bcnt;
-			}
-		}
-	while (out + 64 <= end);	// Leave space for next.
-	int len = out - &bbuf[0];
-	data = new unsigned char[len];	// Store data.
-	memcpy(data, bbuf, len);
+	data = new unsigned char[len + 2];	// Allocate and read data.
+	shapes.read(data, len);
+	Check_file(shapes);
+	data[len] = 0;			// 0-delimit.
+	data[len + 1] = 0;
 	rle = 1;
 	}
 
@@ -211,7 +190,13 @@ Shape_frame *Shape::read
 	shapeoff = Read4(shapes);
 	unsigned long shapelen = Read4(shapes);
 					// Read it in and get frame count.
-	num_frames = frame->read(shapes, shapeoff, shapelen, framenum);
+	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
+	if (!num_frames)		// 1st time?
+		num_frames = nframes;
+#if 0
+	else if (nframes != num_frames)	// DEBUGGING.
+		cout << "New num_frames??\n";
+#endif
 	return store_frame(frame, framenum);
 	}
 

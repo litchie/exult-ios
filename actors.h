@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_ACTORS	1
 
 #include "objs.h"
+#include "utils.h"
 
 class Image_window;
 class Game_window;
 class Npc_actor;
+class Actor_action;
 					// The range of actors' rect. gumps:
 const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
 
@@ -41,15 +43,16 @@ class Actor : public Sprite
 	{
 	char *name;			// Its name.
 	int usecode;			// # of usecode function.
-	int npc_num;			// # in Game_window::npcs list, or -1.
+	short npc_num;			// # in Game_window::npcs list, or -1.
+	short party_id;			// Index in party, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
 protected:
 	unsigned long flags;		// 32 flags used in 'usecode'.
+	Actor_action *action;		// Controls current animation.
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
-	~Actor()
-		{ delete name; }
+	~Actor();
 	enum Item_flags {		// Bit #'s of flags:
 		poisoned = 8,
 		dont_render = 16	// Completely invisible.
@@ -70,10 +73,16 @@ public:
 		{ return npc_num; }	// It's the NPC's #.
 	int get_usecode()
 		{ return usecode; }
+					// Set new action.
+	void set_action(Actor_action *newact);
 					// Walk to a desired spot.
-	void walk_to_tile(int tx, int ty, int tz);
-	void walk_to_tile(Tile_coord p)
-		{ walk_to_tile(p.tx, p.ty, p.tz); }
+	void walk_to_tile(int tx, int ty, int tz, int speed = 250, 
+							int delay = 0);
+	void walk_to_tile(Tile_coord p, int speed, int delay)
+		{ walk_to_tile(p.tx, p.ty, p.tz, speed, delay); }
+					// Walk to desired point.
+	void walk_to_point(unsigned long destx, unsigned long desty, 
+								int speed);
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
@@ -86,12 +95,18 @@ public:
 		}
 	virtual int get_property(int prop)
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
+	int get_level()			// Get experience level.
+		{ return 1 + Log2(get_property(exp)/50); }
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag);
 	virtual void clear_flag(int flag);
 	virtual int get_flag(int flag);
 	virtual int get_npc_num()	// Get its ID (1-num_npcs).
 		{ return npc_num; }
+	virtual int get_party_id()	// Get/set index within party.
+		{ return party_id; }
+	virtual void set_party_id(int i)
+		{ party_id = i; }
 #if 0	/* ++++++ Trying to init. 1st-day schedules in gameclk.cc. */
 	struct	{
 		int cx;
@@ -113,6 +128,11 @@ public:
 		initial_location.lift=new_lift;
 		};
 #endif
+	virtual int walk()		// Walk towards a direction.
+		{ return 0; }
+					// Step onto an (adjacent) tile.
+	virtual int step(Tile_coord t)
+		{ return 0; }
 	};
 
 /*
@@ -145,12 +165,15 @@ class Main_actor : public Actor
 public:
 	Main_actor(char *nm, int shapenum, int num = -1, int uc = -1)
 		: Actor(nm, shapenum, num, uc)
-		{ 
-		}
+		{  }
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
+	void get_followers();		// Get party to follow.
+	virtual int walk();		// Walk towards a direction.
+					// Update chunks after NPC moved.
+	void switched_chunks(Chunk_object_list *olist,
+					Chunk_object_list *nlist);
 	};
-
 
 /*
  *	A Schedule controls the NPC it is assigned to.
@@ -214,6 +237,30 @@ public:
 		: Schedule(n), pathnum(-1)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
+	virtual ~Patrol_schedule();
+	};
+
+/*
+ *	Talk to avatar.
+ */
+class Talk_schedule : public Schedule
+	{
+	int phase;			// 0=walk to Av., 1=talk, 2=done.
+public:
+	Talk_schedule(Npc_actor *n) : Schedule(n), phase(0)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
+ *	Loiter within a rectangle.
+ */
+class Loiter_schedule : public Schedule
+	{
+	Tile_coord center;		// Center of rectangle.
+public:
+	Loiter_schedule(Npc_actor *n);
+	virtual void now_what();	// Now what should NPC do?
 	};
 
 /*
@@ -244,7 +291,7 @@ public:
 	};
 
 /*
- *	A non-player-character that one can converse with:
+ *	A non-player-character that one can converse (or fight) with:
  */
 class Npc_actor : public Actor
 	{
@@ -252,10 +299,12 @@ class Npc_actor : public Actor
 	unsigned char nearby;		// Queued as a 'nearby' NPC.  This is
 					//   to avoid being added twice.
 	unsigned char dormant;		// I.e., off-screen.
+	unsigned char no_climbing;	// For horses, etc.
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	unsigned char num_schedules;	// # entries below.
 	Schedule *schedule;		// Current schedule.
 	Schedule_change *schedules;	// List of schedule changes.
+	short alignment;		// 'Feelings' towards Avatar.
 public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
 	~Npc_actor();
@@ -267,6 +316,8 @@ public:
 		{ nearby = 0; }
 	int is_nearby()
 		{ return nearby != 0; }
+	void set_no_climbing()
+		{ no_climbing = 1; }
 					// Set schedule list.
 	void set_schedules(Schedule_change *list, int cnt)
 		{
@@ -274,6 +325,10 @@ public:
 		schedules = list;
 		num_schedules = cnt;
 		}
+	virtual int get_alignment()	// Get/set 'alignment'.
+		{ return alignment; }
+	virtual void set_alignment(short a)
+		{ alignment = a; }
 					// Update schedule for new 3-hour time.
 	void update_schedule(Game_window *gwin, int hour3);
 					// Set new schedule.
@@ -284,10 +339,42 @@ public:
 	virtual void paint(Game_window *gwin);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
+	virtual int walk();		// Walk towards a direction.
+	void follow(Actor *leader);	// Follow the leader.
 					// Update chunks after NPC moved.
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);
 	};
+
+/*
+ *	Monster info. from 'monsters.dat':
+ */
+class Monster_info
+	{
+	int shapenum;			// Shape #.
+	unsigned char strength;		// Attributes.
+	unsigned char dexterity;
+	unsigned char intelligence;
+	unsigned char combat;
+	unsigned char armor;
+public:
+	Monster_info() {  }
+	int get_shapenum()
+		{ return shapenum; }
+	void set(int sh, int str, int dex, int intel, int comb, int ar)
+		{
+		shapenum = sh;
+		strength = str;
+		dexterity = dex;
+		intelligence = intel;
+		combat = comb;
+		armor = ar;
+		}
+					// Create an instance.
+	Npc_actor *create(int chunkx, int chunky, int tilex, int tiley, 
+								int lift);
+	};
+
 #if 0
 /*
  *	Here's an actor that's just hanging around an area.

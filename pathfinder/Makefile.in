@@ -67,26 +67,25 @@ CPP = @CPP@
 CXX = @CXX@
 DEBUG_FLAGS = @DEBUG_FLAGS@
 DLLTOOL = @DLLTOOL@
-EXEEXT = @EXEEXT@
 EXE_TARGET = @EXE_TARGET@
 FREETYPE_DIR = @FREETYPE_DIR@
 HAVE_SDL_CONFIG = @HAVE_SDL_CONFIG@
 HAVE_TIMIDITY_BIN = @HAVE_TIMIDITY_BIN@
 KMID_INCLUDES = @KMID_INCLUDES@
 KMID_LIBS = @KMID_LIBS@
+LD = @LD@
 LIBTOOL = @LIBTOOL@
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 LN_S = @LN_S@
 MAKEINFO = @MAKEINFO@
+NM = @NM@
 OBJDUMP = @OBJDUMP@
-OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PEDANTIC = @PEDANTIC@
 RANLIB = @RANLIB@
 RELNUM = @RELNUM@
 SDL_INCLUDES = @SDL_INCLUDES@
 SDL_LIBS = @SDL_LIBS@
-STRIP = @STRIP@
 SYSLIBS = @SYSLIBS@
 TOP_LEVEL_SUBDIRS = @TOP_LEVEL_SUBDIRS@
 VERSION = @VERSION@
@@ -134,7 +133,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
