@@ -2,6 +2,7 @@
 	* Makefile.*, data/bg/flx.in, data/bg/*.shp, docs/art.txt: new art
 	by Oblivious
 	* intrinsics.cc: fixed Tseramed join crash
+	* VideoOptions_gump.*: fixed display glitch when cancelling
 
 2001-10-23  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* gumps/GameplayOptions_gump.*, gamewin.*: allow choice of text

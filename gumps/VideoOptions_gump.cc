@@ -88,6 +88,10 @@ public:
 };
 void VideoOptions_gump::close(Game_window* gwin)
 {
+	if (resolution != old_resolution) {
+		restore_background = false;
+	}
+
 	save_settings();
 
 	// have to repaint everything in case resolution changed
@@ -104,10 +108,8 @@ void VideoOptions_gump::cancel()
 
 void VideoOptions_gump::toggle(Gump_button* btn, int state)
 {
-	if(btn==buttons[0]) {
-		restore_background = false;
+	if(btn==buttons[0])
 		resolution = state;
-	}
 	else if(btn==buttons[1])
 		scaling = state;
 	else if(btn==buttons[2])
@@ -143,6 +145,8 @@ void VideoOptions_gump::load_settings()
 	for(resolution=0; res_array[resolution]>0 && res_array[resolution]!=pixels; resolution++)
 	if(res_array[resolution]<0)
 		resolution = 0;
+
+	old_resolution = resolution;
 	scaling = gwin->get_win()->get_scale()-1;
 	scaler = gwin->get_win()->get_scaler();
 	fullscreen = gwin->get_win()->is_fullscreen()?1:0;
