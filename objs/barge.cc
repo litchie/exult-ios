@@ -689,14 +689,16 @@ void Barge_object::remove
  *	Output:	0, meaning object should also be added to chunk.
  */
 
-int Barge_object::add
+bool Barge_object::add
 	(
 	Game_object *obj,
-	int dont_check
+	bool dont_check,
+	bool combine			// True to try to combine obj.  MAY
+					//   cause obj to be deleted.
 	)
 	{
 	objects.append(obj);		// Add to list.
-	return (0);			// We want it added to the chunk.
+	return (false);			// We want it added to the chunk.
 	}
 
 /*

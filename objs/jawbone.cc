@@ -24,14 +24,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 
 // Add an object.
-int Jawbone_object::add(Game_object *obj, int dont_check)
+bool Jawbone_object::add(Game_object *obj, bool dont_check, bool combine)
 {
 	if (obj->get_shapenum() != 559)
-		return 0; // not a serpent tooth
+		return false; // not a serpent tooth
 
 	find_teeth();
 	if (teeth[obj->get_framenum()])
-		return 0; // already have this one
+		return false; // already have this one
 
 	if (Container_game_object::add(obj, dont_check)) {
 		
@@ -41,10 +41,10 @@ int Jawbone_object::add(Game_object *obj, int dont_check)
 
 		update_frame();
 
-		return 1;
+		return true;
 	} 
 
-	return 0;
+	return false;
 }
 
 // Remove an object.
