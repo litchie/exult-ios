@@ -1,3 +1,8 @@
+2001-01-19  Tristan Tarrant <nadir@users.sourceforge.net>
+	* tools/u7shp.c: renamed. As per Ryan's request, the plugin now uses 
+	  guides to identify the hotspot. Caveat: only the hotspot of the first 
+	  frame is considered
+
 2001-01-19  Ryan Nunn <triforce@merlin.net.au>
 	* actors.*, exult.cc, gamewin.*, NEWS, gumps/*.* :
 	  SI paperdolls in BG

@@ -7,7 +7,7 @@ UCC=
 endif
 
 if GIMP_PLUGIN
-GIMP_PLUGINS=u7shpload
+GIMP_PLUGINS=u7shp
 else
 GIMP_PLUGINS=
 endif
@@ -49,12 +49,12 @@ uccparse.o: ucclex.c uccparse.c
 ucc: uccparse.o
 	$(LINK) uccparse.o
 
-u7shpload: u7shpload.c
+u7shp: u7shp.c
 	gimptool --build $<
 
 if GIMP_PLUGIN
 install-exec-local:
-	gimptool --install-admin-bin u7shpload
+	gimptool --install-admin-bin u7shp
 endif
 
 EXTRA_DIST = \
@@ -65,4 +65,4 @@ EXTRA_DIST = \
 	u7siflag.txt \
 	ucformat.txt
 
-CLEANFILES = *~ u7shpload
+CLEANFILES = *~ u7shp
