@@ -410,8 +410,7 @@ void Combat_schedule::start_strike
 		 !ptiles.enlarge(projectile_range).intersects(opptiles))
 		{
 		state = approach;
-		npc->set_target(0);	// Look for new opponent.
-		npc->start(200, 200);
+		approach_foe();		// Get a path.
 		return;
 		}
 	else

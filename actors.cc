@@ -1772,15 +1772,18 @@ void Actor::reduce_health
 	{
 	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
 		return;
+	Game_window *gwin = Game_window::get_game_window();
+	Monster_info *inf = gwin->get_info(this).get_monster_info();
+	if (inf && inf->cant_die())	// In BG, this is Batlin/LB.
+		return;
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
-	    Game_window::get_game_window()->get_info(this).has_translucency())
+				gwin->get_info(this).has_translucency())
 		return;
 	int oldhp = properties[(int) health];
 	int maxhp = properties[(int) strength];
 	int val = oldhp - delta;
 	properties[(int) health] = val;
-	Game_window *gwin = Game_window::get_game_window();
 	if (this == gwin->get_main_actor() && val < maxhp/8 &&
 					// Flash red if Avatar badly hurt.
 	    rand()%2)
@@ -2382,10 +2385,13 @@ int Actor::figure_hit_points
 	// godmode effects:
 	if (((party_id != -1) || (npc_num == 0)) && cheat.in_god_mode())
 		return 0;
+	Game_window *gwin = Game_window::get_game_window();
+	Monster_info *inf = gwin->get_info(this).get_monster_info();
+	if (inf && inf->cant_die())	// In BG, this is Batlin/LB.
+		return 0;
 	bool instant_death = (cheat.in_god_mode() && attacker &&
 		((attacker->party_id != -1) || (attacker->npc_num == 0)));
 
-	Game_window *gwin = Game_window::get_game_window();
 	int armor = get_armor_points();
 	int wpoints;
 	Weapon_info *winf;

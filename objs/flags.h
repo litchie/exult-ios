@@ -35,6 +35,7 @@ namespace  Obj_flags
 		on_moving_barge = 10,	// ??Guessing.
 		okay_to_take = 11,	// Okay to take??
 		tremor = 12,		// ??Earthquake??
+		cant_die = 14,		// Test flag in Monster_info.
 		dancing = 15,		// ??Not sure.
 		dont_render = 16,	// Completely invisible.
 		si_on_moving_barge = 17,// SI's version of 10?

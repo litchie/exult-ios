@@ -58,8 +58,8 @@ int Monster_info::read
 	intelligence = (*ptr++ >> 2) & 63;	// Byte 4.
 	alignment = *ptr & 3;		// Byte 5.
 	combat = (*ptr++ >> 2) & 63;
-	splits = (*ptr & 1) != 0;	// Byte 6 (slimes).
-	cant_die = (*ptr & 2) != 0;
+	m_splits = (*ptr & 1) != 0;	// Byte 6 (slimes).
+	m_cant_die = (*ptr & 2) != 0;
 	armor = (*ptr++ >> 4) & 15;
 	ptr++;				// Unknown.
 	reach = *ptr && 15;		// Byte 8 - weapon reach.
@@ -85,7 +85,7 @@ const Monster_info *Monster_info::get_default
 		default_info.intelligence = 
 		default_info.combat = 4;
 		default_info.alignment = 0;		// Neutral.
-		default_info.splits = default_info.cant_die = false;
+		default_info.m_splits = default_info.m_cant_die = false;
 		default_info.armor = 
 		default_info.weapon = default_info.reach = 0;
 		default_info.flags = (1<<(int) walk);
