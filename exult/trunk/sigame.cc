@@ -476,7 +476,7 @@ void SI_Game::play_intro()
 		const char *indeed[2] = { "Indeed.",
 					"Put it on the table." };
 
-		const char *iree = { "Iree. Slap it down there!" };
+		const char *iree = "Iree. Slap it down there!";
 
 		if (speech && !jive)
 		{
