@@ -1,3 +1,8 @@
+2002-01-16  Patrick Burke  <takhisisii@yahoo.com.au>
+	* conf/Configuration.cc: Altered file loading so that loading from an
+	absolute path has the same effect as loading from a relative "./" path
+	that is, the filename isn't munged.
+
 2002-01-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/*:  Ammo is now a field in Shape_info instead of in a
