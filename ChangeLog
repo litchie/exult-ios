@@ -1,3 +1,8 @@
+2001-07-22  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Call usecode for sleep arrow hit.
+	* intrinsics.cc: click_on_item special case for weapon.
+
 2001-07-21 Ryan Nunn <triforce@merlin.net.au>
 	* Makefile.cygwin, Makefile.win32: Create Flexes and Flex headers first
 

@@ -763,8 +763,41 @@ USECODE_INTRINSIC(click_on_item)
 {
 	// Doesn't ret. until user single-
 	//   clicks on an item.  Rets. item.
-	Usecode_value u(click_on_item());
-	return(u);
+	Game_object *obj;
+	int tx, ty, tz;
+					// Special case for weapon hit:
+	if (event == weapon && caller_item)
+		{
+		obj = caller_item;
+		obj->get_abs_tile(tx, ty, tz);
+		}
+	else
+		{
+		int x, y;
+		if (!Get_click(x, y, Mouse::greenselect))
+			return Usecode_value(0);
+					// Get abs. tile coords. clicked on.
+		tx = gwin->get_scrolltx() + x/c_tilesize;
+		ty = gwin->get_scrollty() + y/c_tilesize;
+		tz = 0;
+					// Look for obj. in open gump.
+		Gump *gump = gwin->find_gump(x, y);
+		if (gump)
+			obj = gump->find_object(x, y);
+		else			// Search rest of world.
+			{
+			obj = gwin->find_object(x, y);
+			if (obj)	// Found object?  Use its coords.
+				obj->get_abs_tile(tx, ty, tz);
+			}
+		}
+	Usecode_value oval(obj);	// Ret. array with obj as 1st elem.
+	Usecode_value ret(4, &oval);
+	Usecode_value xval(tx), yval(ty), zval(tz);
+	ret.put_elem(1, xval);
+	ret.put_elem(2, yval);
+	ret.put_elem(3, zval);
+	return (ret);
 }
 
 USECODE_INTRINSIC(find_nearby)
