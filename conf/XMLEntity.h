@@ -29,13 +29,14 @@ protected:
 	std::string				id;
 	std::string				content;
 	std::vector<XMLnode*>	nodelist;
-
+	bool					no_close;
+	
 public:
 	XMLnode()
 		{  }
-	XMLnode(const std::string &i) : id(i)
+	XMLnode(const std::string &i) : id(i), no_close(false)
 		{  }
-	XMLnode(const XMLnode &n) : id(n.id),content(n.content),nodelist(n.nodelist)
+	XMLnode(const XMLnode &n) : id(n.id),content(n.content),nodelist(n.nodelist), no_close(false)
 		{  }
 	~XMLnode();
 	

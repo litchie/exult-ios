@@ -60,6 +60,8 @@ void	test1(void)
 	int	n;
 	std::string	r;
 	
+	cout << config.dump() << endl;
+	
 	std::string test_device("config/audio/midi/device");
 	config.value(test_device, n, -1);
 	cout << "Returned from reference, \"" << test_device << "\". Got '" << n << "'" << endl;
@@ -83,10 +85,10 @@ void	test1(void)
 	std::vector<std::string> vs;
 
 	vs=config.listkeys("config");
-	dump_stringvec(vs,5);
+	dump_stringvec(vs,6);
 
 	vs=config.listkeys("config/audio");
-	dump_stringvec(vs,3);
+	dump_stringvec(vs,4);
 
 	vs=config.listkeys("config/something",false);
 	dump_stringvec(vs,1);
@@ -115,7 +117,7 @@ void	test1(void)
 	
 	for(Configuration::KeyTypeList::iterator i=ktl.begin(); i!=ktl.end(); i++)
 		cout << "Key:\t" << i->first << endl << "Value:\t" << i->second << endl;
-	assert(ktl.size()==7);
+	assert(ktl.size()==8);
 	
 }
 
