@@ -65,7 +65,11 @@ int Monster_info::read
 	reach = *ptr && 15;		// Byte 8 - weapon reach.
 	weapon = (*ptr++ >> 4) & 15;
 	flags = *ptr++;			// Byte 9.
-	ptr += 4;			// Unknown (more flags?).
+	ptr += 2;			// Unknown (more flags?).
+	m_cant_yell = (*ptr & (1<<5)) != 0;
+	m_cant_bleed = (*ptr & (1<<6)) != 0;
+	ptr++;
+	ptr++;				// Unknown.
 	equip_offset = *ptr++;		// Byte 13.
 	return shapenum;
 	}
