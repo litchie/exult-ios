@@ -81,9 +81,11 @@ void Npc_proximity_handler::handle_event
 		npc->clear_nearby();
 		return;
 		}
+	Schedule::Schedule_types sched = (Schedule::Schedule_types)
+						npc->get_schedule_type();
 					// Sleep schedule?
 	if (npc->get_schedule() &&
-	    npc->get_schedule_type() == (int) Schedule::sleep &&
+	    sched == Schedule::sleep &&
 					// But not under a sleep spell?
 	    !npc->get_flag(Obj_flags::asleep) &&
 	    gwin->is_main_actor_inside() &&
@@ -91,16 +93,16 @@ void Npc_proximity_handler::handle_event
 		{
 					// Trick:  Stand, but stay in
 					//   sleep_schedule.
-		npc->get_schedule()->ending((int) Schedule::stand);
+		npc->get_schedule()->ending(Schedule::stand);
 		npc->say(first_awakened, last_awakened);
 		}
 					// Hostile monster?  ATTACK!
 	else if (npc->get_alignment() == Npc_actor::hostile &&
 		npc->is_monster() &&
-		npc->get_schedule_type() != (int) Schedule::combat &&
+		sched != Schedule::combat &&
 					// jsf-Trying to fix mage in
 					// Test of Courage:
-		npc->get_schedule_type() != (int) Schedule::wait)
+		sched != Schedule::wait)
 		{
 		npc->set_schedule_type(Schedule::combat);
 		}
@@ -114,8 +116,10 @@ void Npc_proximity_handler::handle_event
 					// And not for patrollers/monsters
 					//  in SI. !!Guessing.
 		 (Game::get_game_type() != SERPENT_ISLE ||
-			(npc->get_schedule_type() != (int) Schedule::patrol &&
-			 npc->get_schedule_type() != (int) Schedule::wait &&
+			(sched != Schedule::patrol &&
+			 sched != Schedule::wait &&
+			 sched != Schedule::horiz_pace &&
+			 sched != Schedule::vert_pace &&
 			 !npc->is_monster())))
 				
 		{
