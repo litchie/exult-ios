@@ -696,12 +696,48 @@ void Shape_frame::set_offset
 	int new_xright, int new_ybelow
 	)
 	{
+	if (!rle)
+		return;			// Can do it for 8x8 tiles.
 	int w = get_width(), h = get_height();
+	if (new_xright > w)		// Limit to left edge.
+		new_xright = w;
+	if (new_ybelow > h)
+		new_ybelow = h;
+	int deltax = new_xright - xright;	// Get changes.
+	int deltay = new_ybelow - ybelow;
 	xright = new_xright;
 	ybelow = new_ybelow;
-					// Update other dims.
-	xleft = w - xright - 1;
+	xleft = w - xright - 1;		// Update other dims.
 	yabove = h - ybelow - 1;
+	uint8 *in = data;		// Got to update all scan lines!
+	int scanlen;
+	while ((scanlen = Read2(in)) != 0)
+		{
+					// Get length of scan line.
+		int encoded = scanlen&1;// Is it encoded?
+		scanlen = scanlen>>1;
+		short scanx = Read2(in);
+		in -= 2;
+		Write2(in, scanx + deltax);
+		short scany = Read2(in);
+		in -= 2;
+		Write2(in, scany + deltay);
+					// Just need to scan past EOL.
+		if (!encoded)		// Raw data?
+			in += scanlen;
+		else for (int b = 0; b < scanlen; )
+			{
+			unsigned char bcnt = *in++;
+					// Repeat next char. if odd.
+			int repeat = bcnt&1;
+			bcnt = bcnt>>1; // Get count.
+			if (repeat)
+				in++;	// Skip pixel to repeat.
+			else		// Skip that # of bytes.
+				in += bcnt;
+			b += bcnt;
+			}
+		}
 	}
 
 /*
