@@ -1201,6 +1201,9 @@ void Game_window::read_gwin
 	(
 	)
 	{
+	if (!clock->in_queue())		// Be sure clock is running.
+		tqueue->add(Game::get_ticks(), clock, 
+					reinterpret_cast<long>(this));
 	ifstream gin_stream;
 	try
 	{
@@ -1219,9 +1222,6 @@ void Game_window::read_gwin
 	clock->set_day(gin.read2());
 	clock->set_hour(gin.read2());
 	clock->set_minute(gin.read2());
-	if (!clock->in_queue())		// Be sure clock is running.
-		tqueue->add(Game::get_ticks(), clock, 
-					reinterpret_cast<long>(this));
 	if (!gin_stream.good())		// Next ones were added recently.
 		throw file_read_exception(GWINDAT);
 	special_light = gin.read4();
