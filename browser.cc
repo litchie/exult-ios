@@ -30,6 +30,8 @@ ShapeBrowser::ShapeBrowser()
 		shapes = 0;
 		num_palettes = Game::get_game()->get_resource("palettes/count").num;
 		current_palette = 0;
+		num_xforms = Game::get_game()->get_resource("xforms/count").num;
+		current_xform = -1;
 	}
 
 ShapeBrowser::~ShapeBrowser()
@@ -61,7 +63,7 @@ void ShapeBrowser::browse_shapes()
 		int centery = gwin->get_height()/2;
 		Palette pal;
 		char buf[255];
-		str_int_pair pal_tuple;
+		str_int_pair pal_tuple, xform_tuple;
 		char *fname;
 		
 		sprintf(buf,"files/shapes/%d",current_file);
@@ -78,7 +80,19 @@ void ShapeBrowser::browse_shapes()
 			        Game::get_game()->clear_screen();
 			        sprintf(buf,"palettes/%d",current_palette);
 				pal_tuple = Game::get_game()->get_resource(buf);
-				pal.load(pal_tuple.str,pal_tuple.num);
+				char xfrsc[256];
+				if (current_xform > 0)
+					{
+					sprintf(xfrsc, "xforms/%d", 
+							current_xform);
+					xform_tuple = Game::get_game()->
+						get_resource(xfrsc);
+					pal.load(pal_tuple.str, pal_tuple.num,
+						xform_tuple.str, 
+						xform_tuple.num);
+					}
+				else
+					pal.load(pal_tuple.str,pal_tuple.num);
 				sprintf(buf,"VGA File: '%s'", fname);
 				gwin->paint_text(MAINSHP_FONT1, buf, 0, 170);
 				num_shapes = shapes->get_num_shapes();
@@ -139,6 +153,11 @@ void ShapeBrowser::browse_shapes()
 					break;
 				case SDLK_p:
 					handle_key(shift, current_palette, num_palettes);
+					current_xform = -1;
+					break;
+				case SDLK_x:
+					handle_key(shift, current_xform,
+							num_xforms);
 					break;
 				case SDLK_s:
 					handle_key(shift, current_shape, num_shapes);

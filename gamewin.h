@@ -101,6 +101,7 @@ private:
 	ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
+	Xform_palette invis_xform;	// For showing invisible NPC's.
 	Barge_object *moving_barge;	// ->cart/ship that's moving, or 0.
 	Main_actor *main_actor;		// Main sprite to move around.
 	int skip_above_actor;		// Level above actor to skip rendering.
@@ -352,8 +353,8 @@ public:
 		int tx, ty, tz;		// Get tile coords.
 		obj->get_abs_tile(tx, ty, tz);
 		int lft = 4*tz;
-		x = (tx + 1 - get_scrolltx())*tilesize - 1 - lft;
-		y = (ty + 1 - get_scrollty())*tilesize - 1 - lft;
+		x = (tx + 1 - scrolltx)*tilesize - 1 - lft;
+		y = (ty + 1 - scrollty)*tilesize - 1 - lft;
 		}
 					// Paint shape in window.
 	void paint_shape(int xoff, int yoff, Shape_frame *shape,
@@ -376,10 +377,15 @@ public:
 		}
 	void paint_shape(int xoff, int yoff, int shapenum, int framenum)
 		{
+		paint_shape(xoff, yoff, get_shape(shapenum, framenum),
+				shapes.get_info(shapenum).has_translucency());
+		}
+	void paint_invisible(int xoff, int yoff, int shapenum, int framenum)
+		{
 		Shape_frame *shape = get_shape(shapenum, framenum);
 		if (shape)
-			paint_shape(xoff, yoff, shape, 
-				shapes.get_info(shapenum).has_translucency());
+			shape->paint_rle_transformed(win->get_ib8(),
+						xoff, yoff, invis_xform);
 		}
 					// Paint outline around a shape.
 	void paint_outline(int xoff, int yoff, int shapenum, int framenum,

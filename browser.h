@@ -27,10 +27,12 @@ class ShapeBrowser
 		int current_frame;
 		int current_file;
 		int current_palette;
+		int current_xform;
 		int num_shapes;
 		int num_frames;
 		int num_files;
 		int num_palettes;
+		int num_xforms;
 public:
 		ShapeBrowser();
 		~ShapeBrowser();

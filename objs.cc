@@ -535,6 +535,7 @@ void Game_object::paint
 	Game_window *gwin
 	)
 	{
+#if 0	/* +++++Old way */
 	int tx, ty, tz;
 	get_abs_tile(tx, ty, tz);
 	int liftpix = 4*tz;
@@ -542,6 +543,11 @@ void Game_object::paint
 		(tx + 1 - gwin->get_scrolltx())*tilesize - 1 - liftpix,
 		(ty + 1 - gwin->get_scrollty())*tilesize - 1 - liftpix,
 					get_shapenum(), get_framenum());
+#else
+	int x, y;
+	gwin->get_shape_location(this, x, y);
+	gwin->paint_shape(x, y, get_shapenum(), get_framenum());
+#endif
 	}
 
 /*

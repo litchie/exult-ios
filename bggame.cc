@@ -94,6 +94,27 @@ BG_Game::BG_Game()
 		add_resource("palettes/16", "<STATIC>/intropal.dat", 4);
 		add_resource("palettes/17", "<STATIC>/intropal.dat", 5);
 		
+		add_resource("xforms/count", 0, 20);
+		add_resource("xforms/0", "<STATIC>/xform.tbl", 0);
+		add_resource("xforms/1", "<STATIC>/xform.tbl", 1);
+		add_resource("xforms/2", "<STATIC>/xform.tbl", 2);
+		add_resource("xforms/3", "<STATIC>/xform.tbl", 3);
+		add_resource("xforms/4", "<STATIC>/xform.tbl", 4);
+		add_resource("xforms/5", "<STATIC>/xform.tbl", 5);
+		add_resource("xforms/6", "<STATIC>/xform.tbl", 6);
+		add_resource("xforms/7", "<STATIC>/xform.tbl", 7);
+		add_resource("xforms/8", "<STATIC>/xform.tbl", 8);
+		add_resource("xforms/9", "<STATIC>/xform.tbl", 9);
+		add_resource("xforms/10", "<STATIC>/xform.tbl", 10);
+		add_resource("xforms/11", "<STATIC>/xform.tbl", 11);
+		add_resource("xforms/12", "<STATIC>/xform.tbl", 12);
+		add_resource("xforms/13", "<STATIC>/xform.tbl", 13);
+		add_resource("xforms/14", "<STATIC>/xform.tbl", 14);
+		add_resource("xforms/15", "<STATIC>/xform.tbl", 15);
+		add_resource("xforms/16", "<STATIC>/xform.tbl", 16);
+		add_resource("xforms/17", "<STATIC>/xform.tbl", 17);
+		add_resource("xforms/18", "<STATIC>/xform.tbl", 18);
+		add_resource("xforms/19", "<STATIC>/xform.tbl", 19);
 	}
 
 BG_Game::~BG_Game()
