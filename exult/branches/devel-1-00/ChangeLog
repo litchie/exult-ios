@@ -1,3 +1,7 @@
+2002-07-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/chunks.cc: Fixed bug where cart could get stuck on a step.
+
 2002-07-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* orangedress.shp, bluedress.shp: new paperdoll art by sbx
 
