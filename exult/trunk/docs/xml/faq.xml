@@ -750,9 +750,7 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
-					<li>Recently we found out that item descriptions in SI without SS may be a
-						bit off the mark. This is most likely caused by some little differences
-						between the versions and effects both the English and Spanish version.</li>
+					<li>Some item descriptions will be wrong if you have SI without SS.</li>
 					<li>There might be a bug when you have any of the games installed in a
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>
