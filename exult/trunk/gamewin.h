@@ -435,8 +435,9 @@ public:
 					// Get text width.
 	int get_text_width(int fontnum, const char *text);
 	int get_text_width(int fontnum, const char *text, int textlen);
-					// Get text height.
+					// Get text height, baseline.
 	int get_text_height(int fontnum);
+	int get_text_baseline(int fontnum);
 private:
 	void drop(int x, int y);
 	int drop_at_lift(int at_lift);
