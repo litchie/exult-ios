@@ -26,6 +26,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef OBJSERIAL_H
 #define OBJSERIAL_H	1
 
+extern int Egg_object_out
+	(
+	int fd,				// Socket.
+	unsigned long addr,		// Address.
+	int tx, int ty, int tz,	// Absolute tile coords.
+	int shape, int frame,
+	int criteria,
+	int probability,
+	int distance,
+	bool nocturnal,
+	bool once,
+	bool auto_reset
+	);
 
 #endif
 

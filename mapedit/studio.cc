@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "u7drag.h"
 #include "studio.h"
 #include "dirbrowser.h"
+#include "servemsg.h"
 
 ExultStudio *ExultStudio::self = 0;
 
@@ -144,7 +145,8 @@ extern "C" gboolean on_egg_window_delete_event
 	}
 
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
-	eggwin(0), server_socket(-1), static_path(0), browser(0)
+	eggwin(0), server_socket(-1), server_input_tag(-1), 
+	static_path(0), browser(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -210,6 +212,8 @@ ExultStudio::~ExultStudio()
 	eggwin = 0;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
+	if (server_input_tag >= 0)
+		gdk_input_remove(server_input_tag);
 	if (server_socket >= 0)
 		close(server_socket);
 	self = 0;
@@ -422,6 +426,45 @@ void ExultStudio::run()
 }
 
 /*
+ *	Input from server is available.
+ */
+
+static void Read_from_server
+	(
+	gpointer data,			// ->ExultStudio.
+	gint socket,
+	GdkInputCondition condition
+	)
+	{
+	ExultStudio *studio = (ExultStudio *) data;
+	studio->read_from_server();
+	}
+
+void ExultStudio::read_from_server
+	(
+	)
+	{
+	unsigned char data[Exult_server::maxlength];
+	Exult_server::Msg_type id;
+	int datalen = Exult_server::Receive_data(server_socket, id, data,
+							sizeof(data));
+	if (!datalen)
+		{
+		cout << "Error reading from server" << endl;
+		if (server_socket == -1)// Socket closed?
+			{
+			gdk_input_remove(server_input_tag);
+			server_input_tag = -1;
+			}
+		return;
+		}
+	cout << "Read " << datalen << " bytes from server" << endl;
+	cout << "ID = " << (int) id << endl;
+	if (id == Exult_server::egg)
+		open_egg_window();	//+++++++Set data!!!!
+	}
+
+/*
  *	Try to connect to the Exult game.
  */
 void ExultStudio::connect_to_server
@@ -431,8 +474,11 @@ void ExultStudio::connect_to_server
 	if (!static_path)
 		return;			// No place to go.
 	if (server_socket >= 0)		// Close existing socket.
+		{
 		close(server_socket);
-	server_socket = -1;
+		gdk_input_remove(server_input_tag);
+		}
+	server_socket = server_input_tag = -1;
 	struct sockaddr_un addr;
 	addr.sun_family = AF_UNIX;
 					// Set up path to gamedat.
@@ -468,7 +514,11 @@ void ExultStudio::connect_to_server
 		server_socket = -1;
 		}
 	else
+		{
+		server_input_tag = gdk_input_add(server_socket,
+			GDK_INPUT_READ, Read_from_server, this);
 		cout << "Connected to server" << endl;
+		}
 	}
 
 

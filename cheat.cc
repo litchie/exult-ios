@@ -102,7 +102,13 @@ void Cheat::toggle_god (void) {
 
   god_mode = !god_mode;
   if (god_mode)
-    gwin->center_text("God Mode Enabled");
+	{
+    	gwin->center_text("God Mode Enabled");
+	Actor *party[9];		// Set attack mode to 'nearest'.
+	int cnt = gwin->get_party(party, 1);
+	for (int i = 0; i < cnt; i++)
+		party[i]->set_attack_mode(Actor::nearest);
+	}
   else
     gwin->center_text("God Mode Disabled");
 }
@@ -125,6 +131,11 @@ void Cheat::toggle_map_editor (void) {
     {
     gwin->center_text("Map Editor Mode Enabled");
 #ifdef XWIN			/* Launch ExultStudio! */
+    if (!gwin->paint_eggs)	// Show eggs too.
+	{
+	gwin->paint_eggs = 1;
+	gwin->paint();
+	}
     static bool launched = false;
     if (!launched && !gwin->get_win()->is_fullscreen())
 	{
