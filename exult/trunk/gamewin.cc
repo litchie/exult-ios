@@ -1879,7 +1879,7 @@ void Game_window::double_clicked
 		obj = find_object(x, y);
 	if (obj)
 		{
-		if (combat && !gump)
+		if (combat && !gump && obj != main_actor)
 			{		// In combat mode.
 			obj->attacked(main_actor);
 			return;
