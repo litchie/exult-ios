@@ -564,6 +564,28 @@ static void Handle_keystroke
 	case SDLK_b:
 		Breakpoint();
 		break;
+	case SDLK_h:
+		{
+		char buf[512];
+		sprintf(buf, "EXULT - Keyboard commands\n\n"
+			"Arrow keys - scroll map\n"
+			"Plus-Minus - Increment-decrement brightness\n"
+			"e - Toggle eggs visibility\n"
+			"fF - Show next-previous frame\n"
+			"g - Show next gump\n"
+			"l - Decrement lift\n"
+			"m - Change mouse shape\n"
+			"oO - Show next-previous sprite\n"
+			"p - Repaint screen\n"
+			"q - Exit\n"
+			"sS - Show next-previous shape\n"
+			"t - Fake time period change\n"
+		);
+			
+		gwin->paint_text_box(0, buf, 
+			15, 15, 300, 400);
+		break;
+		}
 	case SDLK_q:
 	case SDLK_ESCAPE:		// ESC key.
 		if (gwin->get_mode() == Game_window::gump)
