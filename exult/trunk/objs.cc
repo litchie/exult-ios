@@ -1902,6 +1902,8 @@ void Chunk_cache::update_egg
 	Game_window *gwin = Game_window::get_game_window();
 					// Get footprint with abs. tiles.
 	Rectangle foot = egg->get_area();
+	if (!foot.w)
+		return;			// Empty (probability = 0).
 	Rectangle crect;		// Gets tiles within each chunk.
 	int cx, cy;
 	if (egg->is_solid_area())

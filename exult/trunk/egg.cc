@@ -89,6 +89,11 @@ void Egg_object::set_area
 	(
 	)
 	{
+	if (!probability)		// No chance of normal activation?
+		{
+		area = Rectangle(0, 0, 0, 0);
+		return;
+		}
 	Game_window *gwin = Game_window::get_game_window();
 	int tx, ty, tz;			// Get absolute tile coords.
 	get_abs_tile(tx, ty, tz);
@@ -150,7 +155,8 @@ int Egg_object::is_active
 	int from_tx, int from_ty	// Tile stepped from.
 	)
 	{
-	if (flags & (1 << (int) hatched))
+	if (flags & (1 << (int) hatched) && //+++++Testing
+	    criteria != cached_in)
 		return (0);		// For now... Already hatched.
 	Game_window *gwin = Game_window::get_game_window();
 	if (flags & (1 << (int) nocturnal))
@@ -248,8 +254,12 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	((flags & (1<<(int)auto_reset)) != 0) << ", data1 = " << data1
 		<< ", data2 = " << data2 << '\n';
 #endif
-					// Guessing:  Cached_in always works??
-	int roll = (must /* || criteria == cached_in */ ) ? 0 : 1 + rand()%100;
+#if 0
+					// Don't recreate monster if not reset.
+	if (type == monster && (flags & (1 << (int) hatched)))
+		return;
+#endif
+	int roll = must ? 0 : 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
 	if ((flags & (1 << (int) auto_reset)) == 0)
@@ -331,15 +341,6 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 					obj->get_party_id() >= 0))
 					// Teleport everyone!!!
 				gwin->teleport_party(pos);
-#if 0
-			Usecode_value tmp(pos.tx);
-			Usecode_value u(1,&tmp);
-			u.push_back(pos.ty);
-			u.push_back(0);
-#endif
-			// Now we want to call the intrinsic move_object
-			// with obj's objnum, and the array we just built as
-			// the target coordinates
 					// Can keep doing it.
 			flags &= ~((1 << (int) hatched));
 			break;
@@ -368,7 +369,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
                 }
 	if (flags & (1 << (int) once))
 		remove_this();		// All done, so go away.
-	else if (criteria == cached_in && solid_area)
+	else if (criteria == cached_in && solid_area && type == monster)
 		{			// Replace solid area with outline.
 		Chunk_object_list *chk = gwin->get_objects(get_cx(), get_cy());
 		chk->remove_egg(this);	// Remove from chunk.

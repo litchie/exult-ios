@@ -133,9 +133,10 @@ public:
 		if (!no_halt)
 			i = cnt;
 		}
-	void activate_egg(Usecode_machine *usecode, Game_object *e)
+	void activate_egg(Usecode_machine *usecode, Game_object *e, int type)
 		{
-		if (e->is_egg())
+		if (e && e->is_egg() && (type == -1 || 
+				((Egg_object *) e)->get_type() == type))
 			((Egg_object *) e)->activate(usecode,
 				usecode->gwin->get_main_actor(), 1);
 		}
@@ -143,6 +144,8 @@ public:
 		{ return count; }
 					// Find for given item.
 	static Scheduled_usecode *find(Game_object *srch);
+					// Activate itemref eggs.
+	void activate_eggs(Usecode_machine *usecode);
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
@@ -164,6 +167,34 @@ Scheduled_usecode *Scheduled_usecode::find
 		if (each->obj == srch)
 			return each;	// Found it.
 	return (0);
+	}
+
+/*
+ *	Execute eggs.
+ */
+
+void Scheduled_usecode::activate_eggs
+	(
+	Usecode_machine *usecode
+	)
+	{
+	int size = objval.get_array_size();
+	if (!size)			// Not an array?
+		{
+		activate_egg(usecode, obj, -1);
+		return;
+		}
+	int i;
+	for (i = 0; i < size; i++)	// First do monsters.
+		{
+		activate_egg(usecode, usecode->get_item(objval.get_elem(i)),
+						(int) Egg_object::monster);
+		Usecode_value z(0);
+		objval.put_elem(i, z);
+		}
+	for (i = 0; i < size; i++)	// Do the rest.
+		activate_egg(usecode, usecode->get_item(objval.get_elem(i)),
+									-1);
 	}
 
 /*
@@ -266,21 +297,8 @@ void Scheduled_usecode::handle_event
 			break;
 			}
 		case 0x48:		// Guessing:  activate egg.
-			{
-			int size = objval.get_array_size();
-			if (size)	// An array?
-				for (int i = 0; i < size; i++)
-					{
-					Game_object *egg = 
-						usecode->get_item(
-							objval.get_elem(i));
-					if (egg)
-						activate_egg(usecode, egg);
-					}
-			else
-				activate_egg(usecode, obj);
+			activate_eggs(usecode);
 			break;
-			}
 		case 0x4e:		// Show next frame.
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
@@ -1374,7 +1392,7 @@ USECODE_INTRINSIC(get_random)
 USECODE_INTRINSIC(execute_usecode_array)
 {
 	cout << "Executing intrinsic 1" << endl;
-	gwin->get_tqueue()->add(SDL_GetTicks() + 100,
+	gwin->get_tqueue()->add(SDL_GetTicks() + 1,
 		new Scheduled_usecode(this, parms[0], parms[1]), (long) this);
 	return(no_ret);
 }
@@ -2280,18 +2298,10 @@ USECODE_INTRINSIC(halt_scheduled)
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return(no_ret);
+					// Taking a >complete< guess here:
 	Scheduled_usecode *uc;
-#if 0
-	while ((uc = Scheduled_usecode::find(obj)) != 0)
-		{
-		uc->halt();		// Tell it to stop.
-					// Give it a chance.
-		gwin->get_tqueue()->activate(SDL_GetTicks());
-		}
-#else
 	if ((uc = Scheduled_usecode::find(obj)) != 0)
 		uc->halt();
-#endif
 #endif
 	return(no_ret);
 }
@@ -3033,14 +3043,10 @@ void Usecode_machine::click_to_continue
 	Answers save_answers;		// Save answers list.
 	save_answers = answers;
 	answers.clear();
-#if 0	/* Handy for debugging. */
-	answers.add_answer("Continue");
-	get_user_choice_num();
-#else
 	int xx, yy;
-	Get_click(xx, yy, Mouse::hand);
+	if (!gwin->is_palette_faded_out())// If black screen, skip!
+		Get_click(xx, yy, Mouse::hand);
 	gwin->clear_text_pending();
-#endif
 	user_choice = 0;		// Clear it.
 	answers = save_answers;
 	}

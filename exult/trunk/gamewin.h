@@ -456,6 +456,8 @@ public:
 	void paint_object(Game_object *obj);
 					// Fade palette in/out.
 	void fade_palette(int cycles, int inout, int pal_num = -1);
+	int is_palette_faded_out()
+		{ return faded_out; }
 	void flash_palette_red();	// Flash red for a moment.
 					// Set desired palette.
 	void set_palette(int pal_num, int new_brightness = -1);
