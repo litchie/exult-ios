@@ -1,26 +1,22 @@
-/**
- **	Path.cc - Pathfinding algorithms.
- **
- **	Written: 4/7/2000 - JSF
- **/
-
 /*
-Copyright (C) 2000-2001 The Exult Team
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *	path.cc - Pathfinding algorithms.
+ *
+ *  Copyright (C) 2000-2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -49,6 +45,15 @@ using std::hash_set;
 using std::cout;
 using std::endl;
 using std::size_t;
+
+Tile_coord *Find_path
+	(
+	Tile_coord start,		// Where to start from.
+	Tile_coord goal,		// Where to end up.
+	Pathfinder_client *client,	// Provides costs.
+	int& pathlen			// Length of path returned.
+	);
+
 
 /*
  *	Iterate through neighbors of a tile (in 2 dimensions).

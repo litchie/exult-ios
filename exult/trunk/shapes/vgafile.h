@@ -26,11 +26,7 @@
 #include <fstream>
 #include <iostream>
 #include <cassert>
-#ifdef MACOS
-#  include "exult_types.h"
-#else
-#  include "../exult_types.h"
-#endif
+#include "exult_types.h"
 #include "imagebuf.h"
 
 class DataSource;
