@@ -585,11 +585,94 @@ void Actor::check_temperature
 	}
 
 /*
+ *	Get the 4 base frames for striking/shooting/throwing a weapon.
+ */
+
+static void Get_weapon_frames
+	(
+	Game_object *weapon,		// Weapon, or 0.
+	bool projectile,		// Shooting/throwing.
+	bool two_handed,		// Held in both hands.
+	char *frames			// Four frames stored here.
+	) 
+	{
+					// Frames for swinging.
+	const char swing_frames1[3] = {Actor::raise1_frame, 
+					Actor::reach1_frame,
+					Actor::strike1_frame};
+	const char swing_frames2[3] = {Actor::raise2_frame, 
+					Actor::reach2_frame,
+					Actor::strike2_frame};
+	unsigned char frame_flags;	// Get Actor_frame flags.
+	Weapon_info *winfo;
+	if (weapon && (winfo = weapon->get_info().get_weapon_info()) != 0)
+		frame_flags = winfo->get_actor_frames(projectile);
+	else				// Default to normal swing.
+		frame_flags = projectile ? 0 : Weapon_info::raise|
+							Weapon_info::reach;
+					// Use frames for weapon type.
+	const char *swing_frames = two_handed ? swing_frames2 : swing_frames1;
+	frames[0] = Actor::ready_frame;
+					// Do 'swing' frames.
+	frames[1] = (frame_flags&Weapon_info::raise) ? swing_frames[0]
+							: Actor::ready_frame;
+	frames[2] = (frame_flags&Weapon_info::reach) ? swing_frames[1]
+							: Actor::ready_frame;
+	frames[3] = swing_frames[2];// Always do the 'strike'.
+	}
+
+/*
  *	Get sequence of frames for an attack.
  *
  *	Output:	# of frames stored.
  */
 
+#if 0	/* ++++++My new version. */
+++++++Remove old attack_frames arrays near top of file.+++++++++++
+int Actor::get_attack_frames
+	(
+	Game_object *weapon,		// Weapon, or 0.
+	bool projectile,		// Shooting/throwing.
+	int dir,			// 0-7 (as in dir.h).
+	char *frames			// Frames stored here.
+	) const
+	{
+	char baseframes[4];
+	const char *which = baseframes;
+	int cnt = 4;
+	switch (get_shapenum())		// Special cases.
+		{
+	case 525:			// Sea serpent.
+		which = sea_serpent_attack_frames;
+		cnt = sizeof(sea_serpent_attack_frames);
+		break;
+	case 529:			// Slimes.
+		return 0;		// None, I believe.
+	default:
+		Get_weapon_frames(weapon, projectile, two_handed, baseframes);
+		break;
+		}
+					// If empty, the other usually isn't.
+		which = two_handed ? attack_frames1 : attack_frames2;
+	for (int i = 0; i < cnt; i++)	// Copy frames with correct dir.
+		{
+		int frame = get_dir_framenum(dir, *which++);
+					// Check for empty shape.
+		ShapeID id(get_shapenum(), frame, get_shapefile());
+		Shape_frame *shape = id.get_shape();
+		if (!shape || shape->is_empty())
+			{		// Swap 1hand <=> 2hand frames.
+			frame = visible_frames[frame&15];
+			id.set_frame(frame);
+			if (!(shape = id.get_shape()) || shape->is_empty())
+				frame = Actor::standing;
+			}
+		*frames++ = frame;
+		}
+	return (cnt);
+	}		
+
+#else	/* ++++++Old version.   To go away. */
 int Actor::get_attack_frames
 	(
 	int dir,			// 0-7 (as in dir.h).
@@ -645,6 +728,7 @@ int Actor::get_attack_frames
 		*frames++ = get_dir_framenum(dir, *which++);
 	return (cnt);
 	}		
+#endif
 
 /*
  *	Set default set of frames.
