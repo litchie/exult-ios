@@ -5,9 +5,6 @@
 // no autoconf on macintosh, thus "emulate" it
 #include	"mac_autoconfig.h"
 
-// missing defines:
-#define		RELNUM	35
-
 
 // missing functions:
 #define		isascii(x)	(!((x) & 0x80))

@@ -1,14 +1,5 @@
-#include <string>
-
-
 #include <stdlib.h>
 #include <string.h>
-
-#include <vector>
-
-
-
-
 
 
 char*	strdup( const char *x )
