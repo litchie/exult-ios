@@ -113,7 +113,7 @@ public:
 		dont_render = 16	// Completely invisible.
 		};
 	enum Item_properties {		// Trying to figure out properties.
-		strength = 0,		// Or is max_health 0????
+		strength = 0,		// This is also max. health.
 		dexterity = 1,
 		intelligence = 2,
 		health = 3,
@@ -246,6 +246,8 @@ public:
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
 	virtual int get_weapon_points();	
+					// Hit-point algorithm:
+	int figure_hit_points(Actor *attacker);
 					// Under attack.
 	virtual void attacked(Actor *attacker);
 	virtual void die();		// We're dead.
