@@ -1,5 +1,6 @@
 2004-02-11  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gumps/AudioOptions_gump.cc: only display midi settings when relevant
+	* audio/Midi.cc: label music player id output
 
 2004-02-11 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/docs.xml: updated and added screenshots
