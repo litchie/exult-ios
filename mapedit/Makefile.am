@@ -65,6 +65,8 @@ libmapedit_la_SOURCES = \
 	paledit.h \
 	shapedraw.cc \
 	shapedraw.h \
+	shapegroup.cc \
+	shapegroup.h \
 	shapelst.cc \
 	shapelst.h
 
