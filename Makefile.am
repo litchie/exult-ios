@@ -8,7 +8,7 @@ OBJECTS = args.o actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o \
 	tqueue.o gameclk.o mouse.o items.o lists.o vec.o
 
 HFILES = args.h acconfig.h actions.h actors.h autoconfig.h fnames.h gameclk.h \
-	gamewin.h gumps.h ready.h \
+	gamewin.h gumps.h ready.h tiles.h \
 	imagewin.h items.h lists.h mouse.h npcnear.h objs.h segfile.h \
 	tqueue.h usecode.h utils.h vec.h vgafile.h
 
