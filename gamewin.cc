@@ -2702,8 +2702,12 @@ void Game_window::schedule_npcs
 	{
 					// Go through npc's.
 	for (int i = 1; i < num_npcs; i++)
-		((Npc_actor *) npcs[i])->update_schedule(this, hour3, 
-								backwards);
+		{
+		Npc_actor *npc = (Npc_actor *) npcs[i];
+					// Don't want companions leaving.
+		if (npc->get_schedule_type() != Schedule::wait)
+			npc->update_schedule(this, hour3, backwards);
+		}
 	paint();			// Repaint all.
 	}
 
