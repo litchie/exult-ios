@@ -41,11 +41,14 @@ class Editing_file;
 class Shape_entry
 	{
 	friend class Shape_chooser;
+	int index;			// Index in list.  Equals shapenum if
+					//   not showing a 'group'.
 	int shapenum, framenum;		// The given shape/frame.
 	Rectangle box;			// Box where drawn.
 	Shape_entry() {  }
-	void set(int shnum, int frnum, int rx, int ry, int rw, int rh)
+	void set(int ind, int shnum, int frnum, int rx, int ry, int rw, int rh)
 		{
+		index = ind;
 		shapenum = shnum; framenum = frnum;
 		box = Rectangle(rx, ry, rw, rh);
 		}
