@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <fstream.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #if (defined(XWIN) || defined(BEOS))
@@ -34,8 +36,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #elif defined(MACOS)
 #include <stat.h>
 #endif
-
-#include <stdio.h>
 
 #include "exceptions.h"
 #include "fnames.h"
@@ -107,7 +107,7 @@ void Game_window::restore_gamedat
 		char *buf = new char[len];
 		in.read(buf, len);
 		out.write(buf, len);	// Then write it out.
-		delete buf;
+		delete [] buf;
 		if (!out.good())
 			abort("Error writing '%s'.", fname);
 		out.close();
@@ -173,9 +173,9 @@ static long Savefile
 	char *buf = new char[len];	// Get it all at once.
 	in.read(buf, len);
 	out.write(buf, len);
-	delete buf;
+	delete [] buf;
 	if (!in.good())
-		cerr << "Exult: Error reading '" << fname << "'"<<endl;
+		throw file_read_exception(fname);
 	return len + 13;		// Include filename.
 	}
 
@@ -249,7 +249,7 @@ void Game_window::save_gamedat
 	char fname[50];			// Set up name.
 	sprintf(fname, SAVENAME, num);
 	save_gamedat(fname, savename);
-	delete save_names[num];		// Update name.
+	free((void*) save_names[num]);		// Update name.
 	save_names[num] = strdup(savename);
 	}
 

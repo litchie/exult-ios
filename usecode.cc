@@ -585,7 +585,7 @@ void Usecode_machine::append_string
 	if (String)
 		{
 		strcpy(newstr, String);
-		delete String;
+		delete [] String;
 		String = strcat(newstr, str);
 		}
 	else
@@ -734,7 +734,7 @@ void Usecode_machine::show_book
 	{
 	char *str = String;
 	book->add_text(str);
-	delete String;
+	delete [] String;
 	String = 0;
 	}
 
@@ -773,7 +773,7 @@ void Usecode_machine::say_string
 		if (*str == '~')
 			str++;		// 2 in a row.
 		}
-	delete String;
+	delete [] String;
 	String = 0;
 	}
 
@@ -3885,7 +3885,7 @@ Usecode_machine::~Usecode_machine
 	)
 	{
 	delete [] stack;
-	delete String;
+	delete [] String;
 	delete removed;
 //	int num_slots = funs->get_cnt();
 	int num_slots = sizeof(funs)/sizeof(funs[0]);
