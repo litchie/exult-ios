@@ -1,3 +1,7 @@
+2002-01-16  Ryan Nunn  <triforce@merlin.net.au>
+	* mapedit/Makefile.mingw : Use $(SRC) instead of .. when compiling the
+	  icon. Also other updates
+
 2002-01-16  Patrick Burke  <takhisisii@yahoo.com.au>
 	* shapes/monstinf.h: Added missing #include <cassert>.
 	* conf/*.cc: Fixed 'special character' (&amp; etc.) encoding/decoding.
