@@ -99,10 +99,15 @@ exult_LDADD = 			\
 	flic/libflic.la		\
 	conf/libconf.la		\
 	files/libu7file.la	\
-	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries)
+	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE)
+
+exult_DEPENDENCIES = $(ICON_FILE)
 
 EXTRA_DIST = 	\
 	README.win32 \
 	Makefile.win32 \
 	Makefile.be \
 	exult.spec
+
+exultico.o: win32/exultico.rc win32/exult.ico
+	windres win32/exultico.rc exultico.o

@@ -80,6 +80,7 @@ if test "$WINDOWING_SYSTEM" = "-DXWIN"; then
 	echo "Smells like X11"
 	EXE_TARGET="exult"
 	SYSLIBS=""
+	ICON_FILE=""
 else
 	echo "Umm. Doesn't seem to be X11."
 	echo "Let's assume it's Windows as an alternative."
@@ -87,6 +88,7 @@ else
 	EXE_TARGET="exult.exe"
 	disable_kmid="yes"
 	SYSLIBS="-lwinmm"
+	ICON_FILE="exultico.o"
 fi
 
 dnl this is for win32 for now at least
@@ -183,6 +185,7 @@ AC_SUBST(PEDANTIC)
 AC_SUBST(HAVE_TIMIDITY_BIN)
 AC_SUBST(EXE_TARGET)
 AC_SUBST(SYSLIBS)
+AC_SUBST(ICON_FILE)
 AC_SUBST(CPPFLAGS)
 
 if test x$x_libraries = xNONE; then
