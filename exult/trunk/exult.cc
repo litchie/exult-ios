@@ -386,11 +386,6 @@ static void Init
 	if (disable_fades == "yes")
 		gwin->set_fades_enabled(false);
 
-#ifdef WIN32
-	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
-	//(for MIDI repeats)
-	//SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
-#endif //WIN32
 	SDL_SetEventFilter(0);
 	// Show the banner
 	ExultMenu exult_menu(gwin);
