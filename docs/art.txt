@@ -45,7 +45,7 @@ Shoes			585		-
 Spiked Shield		578		Oblivious
 Magic boomerang		550		Willem Jan
 Fire sword		551		Oblivious
-Hawk			555		-
+Hawk			555		Willem Jan
 Great dagger		561		Willem Jan
 Star bursts		565		Willem Jan	(belt-only)
 Main gauche		591		-		(left & right hand)
