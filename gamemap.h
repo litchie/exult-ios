@@ -36,6 +36,7 @@ class Map_chunk;
 class Chunk_terrain;
 class Map_patch_collection;
 class Ireg_game_object;
+class Ifix_game_object;
 class Egg_object;
 class Shape_info;
 class Shapes_vga_file;
@@ -150,6 +151,7 @@ public:
 	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
 			int frnum, int tilex, int tiley, int lift);
 	Ireg_game_object *create_ireg_object(int shnum, int frnum);
+	Ifix_game_object *create_ifix_object(int shnum, int frnum);
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
 					// Locate chunk with desired terrain.

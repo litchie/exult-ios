@@ -1,3 +1,11 @@
+2004-01-10    <jeff@mini.nerble.net>
+
+	* gamemap.cc: create_ifix_object() added to create the right type
+	of object.
+	* files/utils.cc: Clone_system_path should check that entry
+	exists.
+	* exult.cc: Always set <PATCH>, defaulting to datadir/patch.
+
 2004-01-06    <jeff@mini.nerble.net>
 
 	* usecode/intrinsics.cc: Yet another intrinsic:  set_barge_dir().

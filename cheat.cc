@@ -579,7 +579,7 @@ static Game_object *Create_object
 		newobj = gwin->get_map()->create_ireg_object(info, 
 						shape, frame, 0, 0, 0);
 	else
-		newobj = new Ifix_game_object(shape, frame, 0, 0, 0);
+		newobj = gwin->get_map()->create_ifix_object(shape, frame);
 	return newobj;
 	}
 
