@@ -1,5 +1,6 @@
 2001-06-28  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* NEWS, Makefile.*, configure.in, README.*: updated for release
+	* exult.cc: clarified "exult.flx not found" error msg a bit
 
 2001-06-28  Ryan Nunn <triforce@merlin.net.au>
 	* objs/animate.cc: Fix for pennant flag animation in SI.
