@@ -2289,8 +2289,10 @@ void Game_window::theft
 		}
 	Actor_vector npcs;			// See if someone is nearby.
 	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12);
-	Actor *closest_npc = 0;
-	int best_dist = 5000;
+	Actor *closest_npc = 0;		// Look for closest NPC.
+	int closest_dist = 5000;
+	Actor *witness = 0;		// And closest facing us.
+	int closest_witness_dist = 5000;
 	for (Actor_vector::const_iterator it = npcs.begin(); 
 							it != npcs.end();++it)
 		{
@@ -2300,28 +2302,43 @@ void Game_window::theft
 		    npc->get_npc_num() >= num_npcs1)
 			continue;
 		int dist = npc->distance(main_actor);
-		if (dist < best_dist && Fast_pathfinder_client::is_grabable(
-			npc->get_tile(),
-			main_actor->get_tile()))
+		if (dist >= closest_witness_dist ||
+		    !Fast_pathfinder_client::is_grabable(
+				npc->get_tile(), main_actor->get_tile()))
+			continue;
+					// Looking toward Avatar?
+		int dir = npc->get_direction(main_actor);
+		int facing = npc->get_dir_facing();
+		int dirdiff = (dir - facing + 8)%8;
+		if (dirdiff < 3 || dirdiff > 5)
+			{		// Yes.
+			witness = npc;
+			closest_witness_dist = dist;
+			}
+		else if (dist < closest_dist)
 			{
 			closest_npc = npc;
-			best_dist = dist;
+			closest_dist + dist;
 			}
 		}
-	if (!closest_npc)
+	if (!witness)
+		{
+		if (closest_npc && rand()%2)
+			closest_npc->say(item_names[heard_something]);
 		return;			// Didn't get caught.
-	int dir = closest_npc->get_direction(main_actor);
+		}
+	int dir = witness->get_direction(main_actor);
 					// Face avatar.
-	closest_npc->change_frame(closest_npc->get_dir_framenum(dir,
+	witness->change_frame(witness->get_dir_framenum(dir,
 							Actor::standing));
 	theft_warnings++;
-	if (theft_warnings < 3 + rand()%3)
+	if (theft_warnings < 2 + rand()%3)
 		{			// Just a warning this time.
-		closest_npc->say(first_theft, last_theft);
+		witness->say(first_theft, last_theft);
 		return;
 		}
 	gump_man->close_all_gumps();	// Get gumps off screen.
-	closest_npc->say(first_call_guards, last_call_guards);
+	witness->say(first_call_guards, last_call_guards);
 					// Show guard running up.
 	int gshape = Get_guard_shape(main_actor->get_tile());
 					// Create it off-screen.
