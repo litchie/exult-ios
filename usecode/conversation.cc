@@ -228,11 +228,8 @@ void Conversation::show_face(int shape, int frame, int slot)
 	if (!info)			// New one?
 		{
 		if (num_faces == max_faces)
-			{
-			cout << "Can't show more than " << max_faces << 
-							" faces" << endl;
-			return;
-			}
+					// None free?  Steal last one.
+			remove_slot_face(max_faces - 1);
 		info = new Npc_face_info(shape);
 		if (slot == -1)		// Want next one?
 			slot = num_faces;

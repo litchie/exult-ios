@@ -36,7 +36,7 @@ class Conversation {
  private:
   Game_window *gwin;
 
-  Npc_face_info *face_info[3];	// NPC's on-screen faces in convers.
+  Npc_face_info *face_info[2];	// NPC's on-screen faces in convers.
   int num_faces;
   int last_face_shown;		// Index of last npc face shown.
   Rectangle avatar_face;		// Area take by Avatar in conversation.

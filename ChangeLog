@@ -1,3 +1,8 @@
+2001-08-22  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* conversation.cc: Limit to two spots, & replace 2nd if no room.
+	* actions.cc: 'handle_event_safely()' checks for being deleted.
+
 2001-08-21  Ryan Nunn <triforce@merlin.net.au>
 	* gamedat.cc : Fixed endian issue with save counts.
 
