@@ -335,7 +335,7 @@ public:
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual void paint_terrain() {  }
-	virtual void write_ifix(DataSource* ifix, bool v2);
+	virtual void write_ifix(DataSource* ifix, bool v2); 
 	};
 
 #endif
