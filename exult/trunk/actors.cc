@@ -2406,7 +2406,10 @@ Monster_actor *Monster_info::create
 	Chunk_object_list *olist = gwin->get_objects(chunkx, chunky);
 	monster->movef(0, olist, tilex, tiley, 0, lift);
 					// ++++++For now:
-	monster->set_schedule_type(Schedule::loiter);
+	if (flags & ((1<<walk)|(1<<fly)|(1<<swim)|(1<<ethereal)))
+		monster->set_schedule_type(Schedule::loiter);
+	else				// For the wounded men in bed:
+		monster->set_schedule_type(Schedule::wait);
 					// Get equipment.
 	if (!equip_offset || equip_offset - 1 >= equip_cnt)
 		return (monster);	// Out of range.
