@@ -1,5 +1,9 @@
 2000-11-02  Tristan Tarrant  <nadir@users.sourceforge.net>
 
+	* tools/u7shpload.c: Require latest gimp include files (>=1.1.26)
+
+2000-11-02  Tristan Tarrant  <nadir@users.sourceforge.net>
+
 	* tools/u7shpload.c: Beginnings of tile (8x8) support
 	* data/marketpl.mid: MIDI for intro menu
 	* audio/Audio.*, audio/Midi.*: add methods for loading generic MIDI
