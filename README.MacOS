@@ -18,23 +18,14 @@ Now run ExultMac, and have fun!
 
 Notes
 ------
-* so far, only BlackGate (BG) plust Forge of Virtue (FoV)
-are supported by exult. We are working heavily on getting 
-Serpent Island and The Silver Seed to work as well, though.
-Please be patient
-
 * Exult Mac has no Audio/Midi support yet (exult in general
-has it, though). It will be added eventually when I have time.
+has it, though).
 
 * Exult generates the files 'stdout.txt' and 'stderr.txt'.
 These may give you some idea of what is going on
 under the hood. When Exult suddenly quits, sometimes
 these files can help.
 
-* If you're brave, you can try and twiddle with exult.cfg,
-but be carefuly you could cause .
-
-* You can build exult from the source yourself if you want.
-I will add here a section explaining how to do that in the
-next release. If you really want to build it yourself now,
-contact me at <max@quendi.de>
+* You can build exult from the source yourself if you want, provided
+you own a copy of CodeWarrior for MacOS. If you need help with that,
+feel free to contact me at <mailto:max@quendi.de>

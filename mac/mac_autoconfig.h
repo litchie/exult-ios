@@ -22,15 +22,12 @@
 /* Do we have a version of libkmidi that we can compile against? */
 /* #undef HAVE_LIBKMIDI */
 
-/* Do we have a version of freetype that we can compile against? */
-#define HAVE_FREETYPE 1
-
       
 
 // missing defines:
 #define PACKAGE "exult"
-#define MAJOR	"0.91"
-#define	RELNUM	"alpha2"
+#define MAJOR	"0.92"
+#define	RELNUM	"alpha3"
 #define VERSION MAJOR RELNUM
 
 /* Was debugging selected from configure? */
