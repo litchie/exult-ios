@@ -3489,7 +3489,7 @@ void Actor::set_polymorph (int shape)
 #endif
 	
 	// Want to set to Avatar
-	if (shape == 721)
+	if (shape == 721 || shape == 989)
 	{
 		Actor *avatar = Game_window::get_game_window()->get_main_actor();
 		if (!avatar) return;
