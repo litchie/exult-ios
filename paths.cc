@@ -394,6 +394,8 @@ int Fast_pathfinder_client::get_step_cost
 				return 1;
 		return -1;
 		}
+	to.tz = new_lift;		// (I don't think we should do this
+					//    above...)
 	return 1;
 	}
 
