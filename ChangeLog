@@ -1,3 +1,8 @@
+2001-12-26  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/data/opcodes.txt: Cleaned up callis and calli output
+	under -fz. Fixed a 'bug' with the output of the binary math/comparison
+	output functions' parameters' being around the wrong way. 
+
 2001-12-25  Patrick Burke  <takhisisi@yahoo.com.au>
 	* usecode/ucxt/*: Added 'return' flag to opcodes.txt, better error
 	messages to handle badly edited opcodes.txt files, and correct RTS
