@@ -24,11 +24,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>
 #include <string.h>
+
+#ifndef MACOS
 #include <sys/stat.h>
+#endif
+
 #include <stdio.h>
-#if defined(WIN32)
+
+#ifdef WIN32
 #include <dir.h>
 #endif
+
 #include "gamewin.h"
 #include "fnames.h"
 #include "utils.h"
@@ -208,7 +214,7 @@ int Game_window::save_gamedat
 		Write4(tptr, len);
 		}
 	out.seekp(0x80, ios::beg);	// Write table.
-	out.write(table, 2*count*4);
+	out.write((char*)table, 2*count*4);
 	delete [] table;
 	out.flush();
 	int result = out.good();
