@@ -1256,10 +1256,15 @@ void Game_window::view_right
 	{
 	if (chunkx + get_width()/chunksize >= num_chunks - 1)
 		return;
+	chunkx++;			// Increment offset.
+	if (mode == gump)		// Gump on screen?
+		{
+		paint();
+		return;
+		}
 	int w = get_width(), h = get_height();
 					// Shift image to left.
 	win->copy(chunksize, 0, w - chunksize, h, 0, 0);
-	chunkx++;			// Increment offset.
 					// Paint 1 column to right.
 	paint(w - chunksize, 0, chunksize, h);
 					// Find newly visible NPC's.
@@ -1273,8 +1278,13 @@ void Game_window::view_left
 	{
 	if (chunkx <= 0)
 		return;
-	win->copy(0, 0, get_width() - chunksize, get_height(), chunksize, 0);
 	chunkx--;
+	if (mode == gump)		// Gump on screen?
+		{
+		paint();
+		return;
+		}
+	win->copy(0, 0, get_width() - chunksize, get_height(), chunksize, 0);
 	int h = get_height();
 	paint(0, 0, chunksize, h);
 					// Find newly visible NPC's.
@@ -1287,9 +1297,14 @@ void Game_window::view_down
 	{
 	if (chunky + get_height()/chunksize >= num_chunks - 1)
 		return;
+	chunky++;
+	if (mode == gump)		// Gump on screen?
+		{
+		paint();
+		return;
+		}
 	int w = get_width(), h = get_height();
 	win->copy(0, chunksize, w, h - chunksize, 0, 0);
-	chunky++;
 	paint(0, h - chunksize, w, chunksize);
 					// Find newly visible NPC's.
 	int from_cy = chunky + (h + chunksize - 1)/chunksize - 1;
@@ -1303,9 +1318,14 @@ void Game_window::view_up
 	{
 	if (chunky <= 0)
 		return;
+	chunky--;
+	if (mode == gump)		// Gump on screen?
+		{
+		paint();
+		return;
+		}
 	int w = get_width();
 	win->copy(0, 0, w, get_height() - chunksize, 0, chunksize);
-	chunky--;
 	paint(0, 0, w, chunksize);
 					// Find newly visible NPC's.
 	add_nearby_npcs(chunkx, chunky, 
