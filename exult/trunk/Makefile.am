@@ -163,29 +163,26 @@ EXTRA_DIST = 	\
 	mac/mac_autoconfig.h \
 	mac/mac_prefix.h \
 	macosx/exult.icns \
-	msvcstuff/All.dsp \
-	msvcstuff/expack.dsp \
-	msvcstuff/Exult.dsp \
-	msvcstuff/Exult.dsw \
-	msvcstuff/Exult_bg_flx.dsp \
-	msvcstuff/Exult_flx.dsp \
-	msvcstuff/Exult_si_flx.dsp \
-	msvcstuff/Exult_Tools.dsp \
-	msvcstuff/Flexes.dsp \
-	msvcstuff/mklink.dsp \
+	msvcstuff/expack.vcproj \
+	msvcstuff/Exult.vcproj \
+	msvcstuff/Exult.sln \
+	msvcstuff/Exult_bg_flx.vcproj \
+	msvcstuff/Exult_flx.vcproj \
+	msvcstuff/Exult_si_flx.vcproj \
+	msvcstuff/mklink.vcproj \
 	msvcstuff/msvc_kludges.cc \
 	msvcstuff/msvc_kludges.h \
-	msvcstuff/rip.dsp \
-	msvcstuff/shp2pcx.dsp \
-	msvcstuff/splitshp.dsp \
-	msvcstuff/ucdump.dsp \
+	msvcstuff/rip.vcproj \
+	msvcstuff/shp2pcx.vcproj \
+	msvcstuff/splitshp.vcproj \
+	msvcstuff/ucdump.vcproj \
 	msvcstuff/unistd.h \
-	msvcstuff/wuc.dsp \
-	msvcstuff/wud.dsp \
-	msvcstuff/Zip.dsp \
+	msvcstuff/wuc.vcproj \
+	msvcstuff/wud.vcproj \
+	msvcstuff/Zip.vcproj \
 	msvcstuff/exconfig/exconfig.cpp \
 	msvcstuff/exconfig/exconfig.def \
-	msvcstuff/exconfig/exconfig.dsp \
+	msvcstuff/exconfig/exconfig.vcproj \
 	msvcstuff/exconfig/exconfig.h \
 	msvcstuff/exconfig/exconfig.rc \
 	msvcstuff/exconfig/resource.h \
