@@ -54,6 +54,7 @@ Schedule::Schedule
 	prev_type = npc ? npc->get_schedule_type() : -1;
 	}
 
+
 /*
  *	Set up an action to get an actor to a location (via pathfinding), and
  *	then execute another action when he gets there.
@@ -68,25 +69,8 @@ void Schedule::set_action_sequence
 	int delay			// Msecs. to delay.
 	)
 	{
-	Actor_action *act = when_there;
-	Tile_coord actloc = actor->get_abs_tile_coord();
-	if (from_off_screen)
-		actloc.tx = actloc.ty = -1;
-	if (dest != actloc)		// Get to destination.
-		{
-		Actor_action *w = new Path_walking_actor_action(new Astar());
-		Actor_action *w2 = w->walk_to_tile(actloc, dest, 
-						actor->get_type_flags());
-		if (w2 != w)
-			delete w;
-		if (!w2)		// Failed?  Teleport.
-			w2 = new Move_actor_action(dest);
-					// And teleport if blocked walking.
-		Actor_action *tel = new Move_actor_action(dest);
-					// Walk there, then do whatever.
-		act = new Sequence_actor_action(w2, tel, act);
-		}
-	actor->set_action(act);
+	actor->set_action(Actor_action::create_action_sequence(
+			actor, dest, when_there, from_off_screen));
 	actor->start(250, delay);	// Get into time queue.
 	}
 
@@ -1035,72 +1019,6 @@ void Waiter_schedule::ending
 		obj->remove_this();
 	}
 
-
-
-/*
- *	Open door that's blocking the NPC, and set action to walk past and
- *	close it.
- */
-
-void Walk_to_schedule::open_door
-	(
-	Game_object *door
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord cur = npc->get_abs_tile_coord();
-					// Get door's footprint in tiles.
-	Rectangle foot = door->get_footprint();
-	Tile_coord past;		// Tile on other side of door.
-	past.tz = cur.tz;
-	int dir;			// Get dir to face door afterwards.
-	if (foot.w > foot.h)		// Horizontal?
-		{
-		past.tx = foot.x + foot.w/2;
-		if (cur.ty <= foot.y)	// N. of door?
-			{
-			past.ty = foot.y + foot.h;
-			dir = 0;
-			}
-		else			// S. of door?
-			{
-			past.ty = foot.y - 1;
-			dir = 4;
-			}
-		}
-	else				// Vertical.
-		{
-		past.ty = foot.y + foot.h/2;
-		if (cur.tx <= foot.x)	// W. of door?
-			{
-			past.tx = foot.x + foot.w;
-			dir = 6;
-			}
-		else			// E. of door?
-			{
-			past.tx = foot.x - 1;
-			dir = 2;
-			}
-		}
-	past = Game_object::find_unblocked_tile(past, 1, 3);
-					// Open it.
-	door->activate(gwin->get_usecode());
-	if (past.tx != -1)		// Succeeded.  Walk past and close it.
-		{
-		char frames[2];
-		frames[0] = npc->get_dir_framenum(dir, Actor::standing);
-		frames[1] = npc->get_dir_framenum(dir, 3);
-		set_action_sequence(npc, past,
-			new Sequence_actor_action(
-				new Frames_actor_action(frames, 
-							sizeof(frames)),
-				new Activate_actor_action(door)));
-
-		}
-	else
-		npc->start();		// Else just put back in queue.
-	}
-
 /*
  *	Modify goal to walk off the screen.
  */
@@ -1181,7 +1099,7 @@ void Walk_to_schedule::now_what
 		if (!screen.has_point(from.tx, from.ty))
 			{		// Force teleport on next tick.
 			retries = 100;
-			npc->walk_to_tile(dest, 200, 100);
+			npc->start(200, 100);
 			return;
 			}
 					// Modify 'dest'. to walk off.
@@ -1190,19 +1108,6 @@ void Walk_to_schedule::now_what
 	else if (!screen.has_point(from.tx, from.ty))
 					// Modify src. to walk from off-screen.
 		walk_off_screen(screen, from);
-					// Blocked by a door?
-	if (legs > 0 && !retries &&
-	    npc->get_abs_tile_coord().distance(blocked) == 1)
-		{
-		Game_object *door = Game_object::find_blocking(blocked);
-		if (door != 0 && door->is_closed_door())
-					// Try to open it.
-			{
-			open_door(door);
-			blocked = Tile_coord(-1, -1, -1);
-			return;		// Action is set.
-			}
-		}
 	blocked = Tile_coord(-1, -1, -1);
 	cout << "Finding path to schedule for " << npc->get_name() << endl;
 					// Create path to dest., delaying
