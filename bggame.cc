@@ -1386,6 +1386,8 @@ void BG_Game::show_credits()
 
 bool BG_Game::new_game(Vga_file &shapes)
 {
+	SDL_EnableUNICODE(1);
+
 	int menuy = topy+110;
 	Font *font = fontManager.get_font("MENU_FONT");
 
@@ -1550,12 +1552,15 @@ bool BG_Game::new_game(Vga_file &shapes)
 				break;
 			default:
 				{
-					int c = event.key.keysym.sym;
-					if(selected==0 && c>=SDLK_SPACE && c<=SDLK_z)
+					if (selected == 0) // on the text input field?
 					{
 						int len = strlen(npc_name);
-						char chr = (event.key.keysym.mod & KMOD_SHIFT) ? toupper(c) : c;
-						if(len<max_name_len)
+						char chr = 0;
+
+						if ((event.key.keysym.unicode & 0xFF80) == 0)
+							chr = event.key.keysym.unicode & 0x7F;
+
+						if (chr >= ' ' && len < max_name_len)
 						{
 							npc_name[len] = chr;
 							npc_name[len+1] = 0;
@@ -1585,6 +1590,8 @@ bool BG_Game::new_game(Vga_file &shapes)
 		ok =gwin->init_gamedat(true);
 	}
 	win->fill8(0,gwin->get_width(),90,0,menuy);
+
+	SDL_EnableUNICODE(0);
 
 	return ok;
 }
