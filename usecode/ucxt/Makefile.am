@@ -14,5 +14,5 @@ head2data_LDADD = \
         ../../files/libu7file.la
 
 head2data.test: ../bgintrinsics.h ../siintrinsics.h
-	head2data data/u7bgintrinsics.data data/u7siintrinsics.data
+	./head2data data/u7bgintrinsics.data data/u7siintrinsics.data
 

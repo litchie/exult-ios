@@ -56,6 +56,7 @@ class UCOptions
 		              ucdebug(false), basic(false),
 		              output_list(false), output_asm(false),
 		              output_ucs(false), output_flag(false),
+		              output_trans_table(false),
 		              mode_all(false), mode_dis(false),
 		              _game(GAME_BG)
 		{};
@@ -78,6 +79,7 @@ class UCOptions
 		bool output_asm;
 		bool output_ucs;
 		bool output_flag;
+		bool output_trans_table;
 		
 		bool mode_all;
 		bool mode_dis;

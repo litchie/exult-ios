@@ -55,7 +55,7 @@ private:
 	char 			*static_path;
 	static ExultStudio	*self;
 	Shape_file_set		*files;		// All the shape files.
-	vector<GtkWindow*>	group_windows;	// All 'group' windows.
+	std::vector<GtkWindow*>	group_windows;	// All 'group' windows.
 	Shape_file_info		*curfile;	// Current browser file info.
 	Shape_file_info		*vgafile;	// Main 'shapes.vga'.
 	Shape_file_info		*facefile;	// 'faces.vga'.

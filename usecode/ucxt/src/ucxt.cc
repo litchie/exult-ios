@@ -367,6 +367,7 @@ void usage()
 	     << "\t\t-fa\t- output using \"assembler\" format (default)" << endl
 	     << "\t\t-fs\t- output using \"exult script\" format" << endl
 	     << "\t\t-fz\t- output using \"exult script\" format" << endl
+	     << "\t\t-ftt\t- output using the translation table xml format" << endl
 	     << "\t\t-ff\t- outputs all flags referenced in the usecode file" << endl
 	     << "\t\t\t  sorted both by \"flags within a function\" and" << endl
 	     << "\t\t\t  \"functions using flag\"" << endl
