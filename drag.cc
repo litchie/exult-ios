@@ -428,6 +428,7 @@ bool Dragging_info::drop
 		barge->set_to_gather();	// Refigure what's on barge.
 					// Check for theft.
 	if (!okay_to_move && !cheat.in_hack_mover() &&
+	    !gwin->is_in_dungeon() &&
 		    (gump != on_gump || dropped_in_something ||
 					// Moving:
 		     (!gump && to_drop->get_tile().distance(old_pos) > 2)))

@@ -2112,6 +2112,9 @@ USECODE_INTRINSIC(get_item_flag)
 					//   blocked gangplank. What is it?????
 	else if (fnum == 0x18 && Game::get_game_type() == BLACK_GATE)
 		return Usecode_value(1);
+	else if (fnum == (int) Obj_flags::in_dungeon)
+		return Usecode_value(obj == gwin->get_main_actor() &&
+					gwin->is_in_dungeon());
 
 	Usecode_value u(obj->get_flag(fnum) != 0);
 	return(u);
