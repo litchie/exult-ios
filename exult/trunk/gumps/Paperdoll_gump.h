@@ -51,7 +51,7 @@ public:
 	{
 		paperdoll = 0,
 		exult_flx = 1,
-		ex_pdolls = 2,
+		exultbg_flx = 2,
 		shapes = 3
 	};
 

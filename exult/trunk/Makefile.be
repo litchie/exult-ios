@@ -77,18 +77,22 @@ EXULT_FLX_OBJECTS = \
 	data/sfx_conversion.shp \
 	data/palette_fades.shp \
 	data/defaultkeys.txt \
-	data/hoe_of_destruction.shp \
-	data/caddellite_helmet.shp \
-	data/great_dagger.shp \
-	data/magic_boomerang.shp \
-	data/gorget.shp \
-	data/magicgorget.shp \
-	data/cleaver.shp \
-	data/faces.shp \
-	data/faces2.shp \
-	data/amulets.shp \
-	data/bgfiredoom.shp \
 	data/flx.in
+
+EXULT_BG_FLX_OBJECTS = \
+	data/bg/hoe_of_destruction.shp \
+	data/bg/caddellite_helmet.shp \
+	data/bg/great_dagger.shp \
+	data/bg/magic_boomerang.shp \
+	data/bg/gorget.shp \
+	data/bg/magicgorget.shp \
+	data/bg/cleaver.shp \
+	data/bg/faces.shp \
+	data/bg/faces2.shp \
+	data/bg/amulets.shp \
+	data/bg/bgfiredoom.shp \
+	data/bg/flx.in
+
 
 $(EXEC) : Makefile data/exult.flx $(OBJS) beos/exult.rsrc
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
@@ -99,6 +103,10 @@ tools/expack : tools/expack.o $(FILE_OBJS)
 
 data/exult.flx: tools/expack data/flx.in $(EXULT_FLX_OBJECTS)
 	tools/expack -i data/flx.in
+
+data/exult_bg.flx: tools/expack $(EXULT_BG_FLX_OBJECTS)
+	tools/expack -i data/bg/flx.in
+
 
 imagescl.o: imagewin/imagescl.cc scale.cc
 	$(CXX) $(CPPFLAGS) -O3 -c imagewin/imagescl.cc -o imagescl.o

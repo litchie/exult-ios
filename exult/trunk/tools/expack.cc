@@ -138,6 +138,10 @@ int main(int argc, char **argv)
 					respfile.getline(temp, 1024);
 					strncpy(fname, path_prefix, 1024);
 					strncat(fname, temp, 1024);
+
+					string tempstr = fname;
+					switch_slashes(tempstr);
+					strncpy(fname, tempstr.c_str(), 1024);
 					
 					while(!respfile.eof()) {
 						respfile.getline(temp, 1024);
@@ -145,6 +149,9 @@ int main(int argc, char **argv)
 							char temp2[1024];
 							strncpy(temp2, path_prefix,1024);
 							strncat(temp2, temp, 1024);
+							tempstr = temp2;
+							switch_slashes(tempstr);
+							strncpy(temp2, tempstr.c_str(), 1024);
 							file_names.push_back(temp2);
 						}
 					}
