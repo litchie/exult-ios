@@ -39,7 +39,6 @@ class Actor;
 class Time_queue;
 class Npc_proximity_handler;
 class Npc_face_info;
-class Ready_info;
 
 /*
  *	The main game window:
@@ -78,7 +77,6 @@ private:
 	ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
-	Ready_info *ready_info;		// ->info. from 'ready.dat'.
 	Main_actor *main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
 	int num_npcs;			// Number of NPC's.
@@ -134,8 +132,6 @@ public:
 		{ return win; }
 	Time_queue *get_tqueue()
 		{ return tqueue; }
-	Ready_info *get_ready_info()	// ->info. from 'ready.dat'.
-		{ return ready_info; }
 	int get_hour()			// Get current time.
 		{ return clock.get_hour(); }
 	int get_minute()
