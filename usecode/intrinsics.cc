@@ -859,10 +859,13 @@ USECODE_INTRINSIC(give_last_created)
 	int ret = 0;
 	if (cont && !last_created.empty())
 		{
+					// Get object, but don't pop yet.
 		Game_object *obj = last_created.back();
-		last_created.pop_back();
-					// Don't check.  Causes failures.
+					// Don't check vol.  Causes failures.
 		ret = cont->add(obj, 1);
+		if (ret)		// Pop only if added.  Fixes chest/
+					//   tooth bug in SI.
+			last_created.pop_back();
 		}
 	Usecode_value u(ret);
 	return(u);
