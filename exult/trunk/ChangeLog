@@ -1,3 +1,8 @@
+2002-04-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* drag.cc (Dragging_info): If quantity-object is okay_to_take,
+	make sure the part that's split off also is.
+
 2002-04-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/vgafile.cc (Shape): Reset() sets frames=0, fixing a crash
