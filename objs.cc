@@ -502,7 +502,7 @@ void Chunk_cache::update_object
 	int shnum = obj->get_shapenum();
 	Shape_info& info = shapes.get_info(shnum);
 	int ztiles = info.get_3d_height(); 
-	if (!ztiles)
+	if (!ztiles || !info.is_solid())
 		return;			// Skip if not an obstacle.
 					// Get chunk coords.
 	int cx = chunk->get_cx(), cy = chunk->get_cy();

@@ -166,6 +166,8 @@ public:
 		{ return (tfa[1] & (1<<7)) != 0; }
 	int has_transparency()
 		{ return (tfa[2] & (1<<7)) != 0; }
+	int is_solid()			// Guessing.  Means can't walk through.
+		{ return (tfa[0] & (1<<3)) != 0; }
 	int is_xobstacle()		// Obstacle in x-dir.???
 		{ return (shpdims[1] & 1) != 0; }
 	int is_yobstacle()		// Obstacle in y-dir.???
