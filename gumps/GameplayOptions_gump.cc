@@ -133,8 +133,10 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 		paperdolls = state;
 	else if (btn == buttons[6])
 		text_bg = state;
+#if 0	/* ++++No longer needed */
 	else if (btn == buttons[7])
 		walk_after_teleport = state;
+#endif
 	else if (btn == buttons[8])
 		frames = state;
 	else if (btn == buttons[11])
@@ -192,9 +194,11 @@ void GameplayOptions_gump::build_buttons()
 	if (GAME_BG)
 		buttons[5] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59,
 											   paperdolls);
+#if 0	/* ++++++Option no longer needed. */
 	else if (GAME_SI)
 		buttons[7] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59, 
 											   walk_after_teleport);
+#endif
 	buttons[1] = new GameplayEnabledToggle(this, colx[3], rowy[3],
 										   59, fastmouse);
 	buttons[2] = new GameplayEnabledToggle(this, colx[3], rowy[4],
@@ -213,7 +217,6 @@ void GameplayOptions_gump::load_settings()
 {
 	fastmouse = gwin->get_fastmouse();
 	mouse3rd = gwin->get_mouse3rd();
-	walk_after_teleport = gwin->get_walk_after_teleport();
 	cheats = cheat();
 	facestats = Face_stats::get_state() + 1;
 	doubleclick = 0;
@@ -282,9 +285,6 @@ void GameplayOptions_gump::save_settings()
 	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", true);
 	gwin->set_mouse3rd(mouse3rd!=false);
 	config->set("config/gameplay/mouse3rd", mouse3rd ? "yes" : "no", true);
-	gwin->set_walk_after_teleport(walk_after_teleport!=false);
-	config->set("config/gameplay/walk_after_teleport", 
-				walk_after_teleport ? "yes" : "no", true);
 	gwin->set_double_click_closes_gumps(doubleclick!=false);
 	config->set("config/gameplay/double_click_closes_gumps", 
 				doubleclick ? "yes" : "no", true);
