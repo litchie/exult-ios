@@ -59,6 +59,7 @@ class Audio
 {
 private:
 	static	Audio	*self;
+        bool truthful_;
 	bool speech_enabled, music_enabled, effects_enabled;
 	bool SDL_open;
 	UNREPLICATABLE_CLASS(Audio);
@@ -71,6 +72,7 @@ public:
 	static	Audio	*get_ptr(void);
 	Mixer	*mixer;
 
+	void	honest_sample_rates(void) { truthful_=true; }
 	void	cancel_raw(void);	// Cancel mixed samples
 	void	cancel_streams(void);	// Dump any audio streams
 	void	play(uint8 *sound_data,uint32 len,bool);
