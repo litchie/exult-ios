@@ -520,7 +520,7 @@ Exult_Game ExultMenu::run()
 				pal.fade_out(30);
 				TextScroller credits("<DATA>/exult.flx", 0x03, 
 						     fontManager.get_font("CREDITS_FONT"),
-						     0);
+						     exult_flx.extract_shape(0x13));
 				credits.run(gwin,pal);
 				gwin->clear_screen();
 				pal.apply();
@@ -531,7 +531,7 @@ Exult_Game ExultMenu::run()
 				pal.fade_out(30);
 				TextScroller quotes("<DATA>/exult.flx", 0x02, 
 						    fontManager.get_font("CREDITS_FONT"),
-			     			    0);
+			     			    exult_flx.extract_shape(0x13));
 				quotes.run(gwin,pal);
 				gwin->clear_screen();
 				pal.apply();
