@@ -89,8 +89,7 @@
 	USECODE_INTRINSIC_PTR(sprite_effect),// 0x53 ExecuteSprite (ucdump.c)
 	USECODE_INTRINSIC_PTR(explode),	// 0x54
 	USECODE_INTRINSIC_PTR(book_mode),// 0x55
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.
-                           // StopTime (ucdump.c)
+	USECODE_INTRINSIC_PTR(stop_time),	// 0x56
 	USECODE_INTRINSIC_PTR(cause_light),	// 0x57 CauseLight (ucdump.c)
 	USECODE_INTRINSIC_PTR(get_barge),// 0x58
 	USECODE_INTRINSIC_PTR(earthquake),	// 0x59

@@ -49,6 +49,7 @@ const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
  */
 class Actor : public Container_game_object, public Time_sensitive
 	{
+protected:
 	std::string name;			// Its name.
 	int usecode;			// # of usecode function.
 	short npc_num;			// # in Game_window::npcs list, or -1.
@@ -69,7 +70,7 @@ public:
 		random = 8,		// Choose target at random.
 		manual = 9
 		};
-private:
+protected:
 					// Party positions
 	const static short party_pos[4][10][2];
 
@@ -78,7 +79,6 @@ private:
 	static Frames_sequence *frames[8];
 					// Draw weapon in hand
 	void paint_weapon(Game_window *gwin);
-protected:
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Tile_coord schedule_loc;	// Location (x,y) of Shedule
 	unsigned char next_schedule;	// Used so correct schedule type 
