@@ -1,6 +1,8 @@
 2000-05-25  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
 	* objs.cc: treat bones as containers
 	* usecode.cc: make remove_answer accept arrays too
+	* usecode.cc: added a _lot_ of intrinsic descriptions from ucdump.c
+	* usecode.dis.bz2: a new usecode dump with all known intrinsics
 
 2000-05-25  Coder Infidel  <coder_infidel@hotmail.com>
 
