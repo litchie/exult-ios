@@ -438,4 +438,5 @@ desktop/Makefile \
 objs/Makefile \
 imagewin/Makefile \
 shapes/Makefile \
-usecode/Makefile )
+usecode/Makefile 
+mapedit/Makefile)
