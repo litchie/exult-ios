@@ -42,9 +42,9 @@ const std::string c_empty_string;
 char *config_defaults[] =
 {
 	"config/disk/game/blackgate/keys",	"(default)",
-	"config/disk/game/blackgate/waves",	"data/jmsfx.flx",
+	"config/disk/game/blackgate/waves",	"jmsfx.flx",
 	"config/disk/game/serpentisle/keys",	"(default)",
-	"config/disk/game/serpentisle/waves",	"data/jmsfxsi.flx",
+	"config/disk/game/serpentisle/waves",	"jmsisfx.flx",
 	"config/audio/enabled",			"yes",
 	"config/audio/effects/enabled",		"yes",
 	"config/audio/effects/convert",		"gs",
@@ -334,6 +334,24 @@ EXCONFIG_API LONG APIENTRY WriteConfig(HWND hwnd, LPLONG lpIValue, LPSTR lpszVal
 		{
 			config.value(config_defaults[i], s, "");
 			if (s.empty()) config.set(config_defaults[i], config_defaults[i+1], true);
+		}
+
+		// Fix broken SI SFX stuff
+		config.value("config/disk/game/serpentisle/waves", s, "");
+
+		const char *si_sfx = s.c_str();
+		int slen = std::strlen(si_sfx);
+		slen -= std::strlen ("jmsfxsi.flx");
+
+		if (slen >= 0 && !std::strcmp(si_sfx+slen, "jmsfxsi.flx"))
+		{
+			char *fixed = new char[slen+1];
+			std::strncpy (fixed, si_sfx, slen);
+			fixed[slen] = 0;
+			s = fixed;
+			s += "jmsisfx.flx";
+
+			config.set("config/disk/game/serpentisle/waves", s, true);
 		}
 
 		config.write_back();
