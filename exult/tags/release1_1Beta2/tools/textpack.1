@@ -1,0 +1,106 @@
+.\" -*- nroff -*-
+.TH textpack 1 2002-03-24 Exult
+
+.SH NAME
+textpack \- Pack and unpack Flex files containing text
+
+.SH SYNOPSIS
+.B textpack -c
+.I FLEXFILE
+.RI [ TEXTFILE ]
+
+.B textpack -x
+.I FLEXFILE
+.RI [ TEXTFILE ]
+
+.SH DESCRIPTION
+Text Flex files are used for the storage of strings by the games
+.I Exult
+supports. While
+.BR expack (1)
+can operate on such files, using
+.B textpack
+to pack and unpack them is more comfortable.
+
+The first parameter determines the mode of operation,
+.B -c
+stands for creation,
+.B -x
+for extraction.
+
+.SS Creation
+.I TEXTFILE
+(or stdin if it is missing) is read and must conform to the file
+format (see below).
+.I FLEXFILE
+will be created containing the strings from this input.
+
+.SS Extraction
+The strings contained in
+.I FLEXFILE
+are extracted and written to
+.I TEXTFILE
+(if given, stdout otherwise) in the file format documented below.
+
+.SS File Format
+Empty lines, and lines starting with a pound sign
+.RB ( # )
+are ignored. Other lines must begin with a number, followed by a colon
+.RB ( : ).
+The number is the index of the string and may be given either in
+decimal, in octal prefixed with
+.BR 0 ;
+or in hexadecimal prefixed with
+.BR 0x .
+Anything following the colon belongs to the string and gets stored in
+the Flex verbatim. Lines are limited in length to 1024 characters.
+
+.SH EXAMPLES
+.TP
+.B textpack -x text.flx
+Writes all the strings contained in
+.B text.flx
+to stdout in the format discussed above.
+
+.TP
+.B textpack -c text.flx strings.list
+Reads
+.B strings.list
+and puts its contents into the Flex file
+.B text.flx
+
+.SS Example text file
+# An example
+.br
+0:the zeroth string
+.br
+# strings may be empty
+.br
+1:
+.br
+# holes are allowed, strings 2 to 16 will be empty
+.br
+17:string seventeen
+.br
+# 13 hexadecimal == 19 decimal, 24 octal == 20 decimal
+.br
+0x13:nineteen
+.br
+024:twenty
+.br
+# numbers need not go up
+.br
+18:eighteen
+.br
+# this will overwrite the definition from above
+.br
+19:overwritten
+
+.SH AUTHOR
+This manpage was written by Robert Bihlmeyer. It may be freely
+redistributed and modified under the terms of the GNU General Public
+License version 2 or higher.
+
+.SH SEE ALSO
+.BR expack "(1), " exult (6)
+

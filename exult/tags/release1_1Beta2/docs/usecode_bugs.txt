@@ -1,0 +1,133 @@
+Documentation for the bugs in usecode and the corrections that can be made
+Started by: Artaxerxes (artaxerxes@users.sf.net)
+
+Forewords:
+every action on usecode should be done on the _disassembled_ usecode. Please
+use "rip" and "wud" to disassemble usecode appropriately. Once the changes are
+made, re-assemble using "wuc" and "rip". Those tools can be found on Exult's
+download page.
+
+Unfixed bugs:
+=================
+
+(SI) Pillars in Silver Seed fort teleport to Gargoyle test
+==========================================================
+
+A slight mistake of the add-on designers. The cool looking pillars in the dining
+hall of the Silver Seed fort start the gargoyle city test and teleport the Avatar
+to it.
+This could be fixed by
+- change the usecode to only trigger in the right area
+- change the pillars (i.e., change their frame)
+- give the 'real' pillar a quality and check for that
+
+
+(SI) Resurrecting Gwenno:
+==========================
+Author: Clock Nova
+Date:   04-20-03 19:31
+
+Immediately after freeing Gwenno from the ice, I used the Hourglass and the
+female Monk came and resurrected her. Gwenno immediately began a conversation
+with me, talking to me as though she were already on Monk Isle. After breaking
+off conversation, she lapsed into her 'twisted soul' mode.
+
+
+(SI) Resurrecting possessed party:
+===================================
+Author: Clock Nova
+Date:   04-21-03 08:36
+
+On the other hand, I would not have thought of using the Hourglass after
+releasing the Banes had I not read about it elsewhere. If you use it in the
+room where you fought Selena, your companions get "resurrected" so they can
+fight themselves later on. Oops!
+
+
+(BG) Pocketwatch AM/PM confusion:
+==================================
+Author: MagicMop
+Date:   12-14-01 10:12
+
+1. Between 12 and 1 o clock in the afternoon, the time is listed as 'am' not
+'pm'
+
+[Note: this has been fixed in SI's usecode.]
+
+
+(BG,french) Dupre accent confusion:
+====================================
+
+The French BG's usecode mixes up Dupre with and without an accent on the e.
+This way some conversation options are unreachable.
+
+[Note: fixed by jhoeksma. Need to disassemble fix to include here.]
+
+(BG) liquer conversation bug:
+==============================
+
+BG has a conversation in which there are two conversation options named
+'liquer'. This prevents the second one from being chosen.
+
+[Note: fixed by jhoeksma. Need to disassemble fix to include here.]
+
+
+(SI) disappearing pikeman:
+===========================
+
+The first part of the banquet usecode in Monitor accidently deletes the
+List Field's pikeman egg when you're too close to that egg.
+
+
+
+
+Fixed bugs:
+==================
+
+(SI) Gwenno and the Diamond Necklace:
+======================================
+
+No matter who has the diamond necklace, Iolo is going to say he's lost it
+during the adventures to find Gwenno. This is due to an error in the usecode
+function that checks whether you have the diamond or not. It is looking for
+the wrong item (the wrong shape actually).
+
+Usecode function: 0495
+
+Code to replace:
+01A5: 1F 05 00 		pushi	0005H			; 5
+01A8: 1F 99 FE 		pushi	FE99H			; -359
+01AB: 1F BB 03 		pushi	03BBH			; 955
+01AE: 1F 01 00 		pushi	0001H			; 1
+01B1: 1F 9B FE 		pushi	FE9BH			; -357
+01B4: 24 05 00 		call	[0005]			; 097DH
+
+Replace it with:
+01A5: 1F 05 00 		pushi	0005H			; 5
+01A8: 1F 99 FE 		pushi	FE99H			; -359
+01AB: 1F BB 03 		pushi	03BBH			; 955
+01AE: 1F 08 00 		pushi	0008H			; 8
+01B1: 1F 9B FE 		pushi	FE9BH			; -357
+01B4: 24 05 00 		call	[0005]			; 097DH
+
+Code to replace:
+01C3: 1F 05 00 		pushi	0005H			; 5
+01C6: 1F 99 FE 		pushi	FE99H			; -359
+01C9: 1F BB 03 		pushi	03BBH			; 955
+01CC: 1F 01 00 		pushi	0001H			; 1
+01CF: 1F 6B FF 		pushi	FF6BH			; -149
+01D2: 1F FD FF 		pushi	FFFDH			; -3
+01D5: 24 06 00 		call	[0006]			; 0996H
+
+Replace it with:
+01C3: 1F 05 00 		pushi	0005H			; 5
+01C6: 1F 99 FE 		pushi	FE99H			; -359
+01C9: 1F BB 03 		pushi	03BBH			; 955
+01CC: 1F 01 00 		pushi	0008H			; 8
+01CF: 1F 6B FF 		pushi	FF6BH			; -149
+01D2: 1F FD FF 		pushi	FFFDH			; -3
+01D5: 24 06 00 		call	[0006]			; 0996H
+
+===============================
+
+
