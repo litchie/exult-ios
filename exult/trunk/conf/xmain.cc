@@ -31,7 +31,7 @@ int	main(int argc,char **argv)
 	config.read_config_file("config.xml");
 
 	int	n;
-	config.value("config/audio/midi_device",n);
+	config.value("config/audio/midi_device",n,-1);
 	cout << "Returned from reference. Got '" << n << "'" << endl;
 
 	return 0;
