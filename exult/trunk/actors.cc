@@ -1501,7 +1501,7 @@ void Actor::activate
 	
 	bool show_party_inv = gwin->get_gump_man()->showing_gumps(true) || 
 							gwin->in_combat();
-	Schedule::Schedule_types sched = get_schedule_type();
+	Schedule::Schedule_types sched = (Schedule::Schedule_types) get_schedule_type();
 	if (!npc_num ||		// Avatar
 			(show_party_inv && get_party_id() >= 0 && // Party
 			(serpent || (npc_num >= 1 && npc_num <= 10))) ||
