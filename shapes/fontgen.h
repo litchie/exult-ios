@@ -30,7 +30,8 @@ class Shape;
 
 bool Gen_font_shape(Shape *shape, const char *fontfile, 
 				int nframes, int pixels_ht,
-				unsigned char fg, unsigned char bg);
+				unsigned char fg, unsigned char bg,
+				int shadow = -1);
 
 #endif	/* HAVE_FREETYPE2 */
 #endif	/* INCL_FONTGEN */
