@@ -43,6 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // External globals..
 
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
+extern void Wait_for_arrival(Actor *actor);
 extern	bool	usecode_trace;
 
 /*
@@ -1876,13 +1877,31 @@ USECODE_INTRINSIC(advance_time)
 
 USECODE_INTRINSIC(run_usecode)
 	// exec(loc(x,y,z)?, usecode#, itemref, eventid).
+	//++++++Think it should have Avatar walk path to loc, return 0
+	//  if he can't get there (and return), 1 if he can.
 	Usecode_value u(0);
+	Usecode_value& loc = parms[0];
+	int sz = loc.get_array_size();
+	if (sz == 3)			// Looks like tile coords.
+					// ++++++Should use pathfinding here.
+					// ++++Don't want NPC's following.
+		gwin->get_main_actor()->walk_to_tile(
+			loc.get_elem(0).get_int_value(),
+			loc.get_elem(1).get_int_value(), 
+			loc.get_elem(2).get_int_value());
+	else
+		{	//++++++Not sure about this.
+		cout << "0x7d Location not a 3-int array\n";
+		USECODE_RETURN(u);	// Return 0.
+		}
+	Wait_for_arrival(gwin->get_main_actor());
 	Game_object *obj = get_item(parms[2]);
 	if (obj)
 		{			// +++For now.  Real return from fun?
 		int ret = call_usecode(parms[1].get_int_value(), obj, 
 				(Usecode_events) parms[3].get_int_value());
-		u = Usecode_value(ret);
+//		u = Usecode_value(ret);
+		u = Usecode_value(1);	// +++++For now.
 		}
 	USECODE_RETURN(u);
 }
@@ -2656,7 +2675,11 @@ void Usecode_machine::run
 			push(val.get_elem(sval));
 			break;
 			}
-		case 0x2c:		// Unknown.
+		case 0x2c:		// Another kind of return?
+					// Experimenting...
+			show_pending_text();
+			sp = save_sp;		// Restore stack.
+			ip = endp;	// End the loop.
 			break;
 		case 0x2d:		// Set return value (SETR).
 					// But 1st takes precedence.
