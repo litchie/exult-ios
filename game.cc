@@ -361,7 +361,7 @@ bool wait_delay(int ms, int startcol, int ncol)
 	int loops;
 
 	int loopinterval = (ncol == 0) ? 50 : 10;
-
+	if (!ms) ms = 1;
 	if(ms <= 2*loopinterval) {
 		delay = ms;
 		loops = 1;
