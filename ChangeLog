@@ -1,3 +1,6 @@
+2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* configure.in: fixed most (hopefully all) configure options
+
 2000-11-25  Max Horn  <max@quendi.de>
 	* Configuration.cc: some cleanup
 	* exceptions.h: exult_exception now saves errno when it is thrown
