@@ -1,3 +1,8 @@
+2001-02-11  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* data/black_gate.shp, data/serpent_isle.shp: updated menu entries 
+	  like someone requested a loooong time ago
+	* exultmenu.cc: updated for above
+
 2001-02-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* browser.cc, soundtest.cc: you can now take screenshots in the shape browser and sound tester
 
