@@ -106,7 +106,9 @@ public:
 	void move(int x, int y);	// Move to new location (mouse motion).
 	void blit_dirty()		// Blit dirty area.
 		{ 			// But not in OpenGL.
+#ifdef HAVE_OPENGL
 		if (!GL_manager::get_instance())
+#endif
 			iwin->show(dirty.x - 1, dirty.y - 1, dirty.w + 2, 
 							dirty.h + 2); 
 		}
