@@ -2,7 +2,7 @@
 # The shell IS required! 
 
 # Where is Exult Studio will be installed. 
-U7PATH=C:\\Ultima7
+U7PATH=C:/Ultima7
 # Only used for snapshots
 STUDIOPATH=C:/Studio
 TOOLSPATH=C:/GimpPlugin
@@ -30,13 +30,13 @@ INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
 
 CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_PNG_H -DHAVE_FREETYPE2 $(INCLUDES)
 
-CXXFLAGS= -O2 -mms-bitfields -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM
+CXXFLAGS= -O2 -mms-bitfields -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET
 CXX=g++
 
-CFLAGS= -O2 -mms-bitfields
+CFLAGS= -mms-bitfields
 CC=gcc
 
-LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -liberty -lole32 -lpng -luuid -lz -mwindows
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -lole32 -lpng -luuid -lz -mwindows
 EXEC=exult_studio.exe
 EXP_FILE=exult_studio.exp
 
@@ -77,10 +77,10 @@ clean:
 	del $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
 
 install: $(EXEC)
-	if not exist $(U7PATH) md $(U7PATH)
-	strip $(EXEC) -o $(U7PATH)\\$(EXEC)
-	if not exist $(U7PATH)\data md $(U7PATH)\data
-	copy mapedit\exult_studio.glade $(U7PATH)\data
+	mkdir -p $(U7PATH)
+	strip $(EXEC) -o $(U7PATH)/$(EXEC)
+	mkdir -p $(U7PATH)\data
+	cp mapedit/exult_studio.glade $(U7PATH)/data
 
 tools: u7shp.exe
 
