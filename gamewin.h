@@ -253,6 +253,9 @@ public:
 		skip_above_actor = lift;
 		return true;
 		}
+	int get_render_skip_lift() const	// Skip rendering here.
+		{ return skip_above_actor < skip_lift ?
+					skip_above_actor : skip_lift; }
 	bool main_actor_dont_move();
 	inline bool set_in_dungeon(unsigned int lift)
 		{ 

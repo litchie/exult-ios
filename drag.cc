@@ -395,6 +395,9 @@ bool Dragging_info::drop_on_map
 	{
 	int max_lift = cheat.in_hack_mover() ? 13 :
 					gwin->get_main_actor()->get_lift() + 5;
+	int skip = gwin->get_render_skip_lift();
+	if (max_lift >= skip)		// Don't drop where we cannot see.
+		max_lift = skip - 1;
 					// Drop where we last painted it.
 	int posx = paintx, posy = painty;
 	if (posx == -1000)		// Unless we never painted.
@@ -593,7 +596,7 @@ bool Game_window::drop_at_lift
 	Shape_info& info = to_drop->get_info();
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
 	int max_drop, move_flags;
-	if (cheat.in_map_editor())
+	if (cheat.in_hack_mover())
 		{
 		max_drop = at_lift - cheat.get_edit_lift();
 //		max_drop = max_drop < 0 ? 0 : max_drop;
