@@ -161,6 +161,8 @@ public:
 	Game_object *get_prev()
 		{ return prev; }
 	static int lt(class Ordering_info& inf1, Game_object *obj2);
+					// ++++Experimental:
+	static int compare(class Ordering_info& inf1, Game_object *obj2);
 	int lt(Game_object& obj2) const;// Is this less than another in pos.?
 					// Return chunk coords.
 	int get_cx() const
