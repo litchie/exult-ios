@@ -103,7 +103,7 @@ void UCData::disassamble()
 	cout << "Looking for function number " << setw(8) << _search_func << endl << endl;
 
 	if(output_list())
-		cout << "Function     offset    size  data  code" << endl;
+		cout << "Function       offset    size  data  code" << (ucdebug() ? " funcname" : "") << endl;
 
 	bool _foundfunc=false; //did we find and print the function?
 	for(unsigned int i=0; i<_funcs.size(); i++)
@@ -130,7 +130,8 @@ void UCData::disassamble()
 
 			if(output_list())
 			{
-			    cout << "#" << setbase(10) << setw(3) << i << setbase(16) << ": "
+			    cout << "#" << setbase(10) << setw(4) << i << setbase(16) << ": "
+			         << (_funcs[i]->_return_var ? '&' : ' ')
 			         << setw(4) << _funcs[i]->_funcid   << "H  "
 			         << setw(8) << _funcs[i]->_offset   << "  "
 			         << setw(4) << _funcs[i]->_funcsize << "  "

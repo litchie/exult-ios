@@ -231,7 +231,7 @@ TODO: NOTE: This opcode has been changed... need to redocument.
 
 Yet Another Return. Exult implements this identically to the RET opcode (0x25).
 
-> 0x2D	SETR	"setr"	""	"setr()"	0	{}	1	0	0	0
+> 0x2D	SETR	"setr"	""	"rr = %p1"	0	{}	1	0	0	0
 
 Pops the top most element off the stack and stores it in the return register.
 
