@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Npctime.cc - Timed-even handlers for NPC's.
  **
  **	Written: 8/4/00 - JSF

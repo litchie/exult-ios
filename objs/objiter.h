@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Objiter.h - Game objects iterator.
  **
  **	Written: 7/29/2000 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Xdrag.h - Drag-and-drop under X.
  **
  **	Written: 12/23/2000 - JSF

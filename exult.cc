@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Exult.cc - Multiplatform Ultima 7 game engine
  **
  **	Written: 7/22/98 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Iregobjs.cc - Ireg (moveable) game objects.
  **
  **	Written: 10/1/98 - JSF

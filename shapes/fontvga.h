@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
-**
+/**
  **	Fontvga.h - Handle the 'fonts.vga' file and text rendering.
  **
  **	Written: 4/29/99 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Server.h - Server functions.
  **
  **	Written: 5/3/2001 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Ibuf8.cc - 8-bit image buffer.
  **
  **	Written: 8/13/98 - JSF

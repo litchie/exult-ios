@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Readnpcs.cc - Read in NPC's from npc.dat & schedule.dat.  Also writes
  **		npc.dat back out.
  **

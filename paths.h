@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Paths.h - Various pathfinding clients.
  **
  **	Written: 6/12/2000 - JSF

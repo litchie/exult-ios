@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Delobjs.cc - Game objects that have been removed, but need deleting.
  **
  **	Written: 5/25/2000 - JSF

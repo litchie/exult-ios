@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Imagewin.h - A window to blit images into.
  **
  **	Written: 8/13/98 - JSF

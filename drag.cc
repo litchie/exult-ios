@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Drag.cc - Dragging objects in Game_window.
  **
  **	Written: 3/2/2000 - JSF

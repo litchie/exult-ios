@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Combat.h - Combat scheduling.
  **
  **	Written: 6/20/2000 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Chunks.h - Chunks (16x16 tiles) on the map.
  **
  **	Written: 10/1/98 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
-**
+/**
  **	Shapevga.cc - Handle the 'shapes.vga' file and associated info.
  **
  **	Written: 4/29/99 - JSF

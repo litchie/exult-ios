@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Dir.h - Directions.
  **
  **	Written: 10/1/98 - JSF

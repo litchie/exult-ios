@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Useval.cc - Usecode-interpreter values.
  **
  **	Written: 8/12/99 - JSF

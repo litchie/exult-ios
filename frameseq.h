@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Actors.h - Game actors.
  **
  **	Written: 11/3/98 - JSF
