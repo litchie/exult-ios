@@ -355,7 +355,7 @@ int Area_actor::next_frame
 	(
 	unsigned long time,		// Current time.
 	int& new_cx, int& new_cy,	// New chunk coords. returned.
-	int& new_sx, int& new_sy,	// New shape coords. returned.
+	int& new_sx, int& new_sy,	// New shape (tile) coords. returned.
 	int& next_frame			// Next frame # returned.
 	)
 	{
@@ -368,8 +368,8 @@ int Area_actor::next_frame
 		stop();
 		new_cx = get_cx();
 		new_cy = get_cy();
-		new_sx = get_shape_pos_x();
-		new_sy = get_shape_pos_y();
+		new_sx = get_tx();
+		new_sy = get_ty();
 		next_frame = get_framenum();
 					// Wait 0 to 5 seconds.
 		next_change.tv_sec = time.tv_sec +

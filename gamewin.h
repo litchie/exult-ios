@@ -204,10 +204,10 @@ public:
 		int lft = 4*obj->get_lift();
 		return Rectangle(
 			(cx - chunkx)*chunksize +
-				obj->get_shape_pos_x()*tilesize + 
+				obj->get_tx()*tilesize + 
 						tilesize - s->xleft - lft,
 			(cy - chunky)*chunksize +
-				obj->get_shape_pos_y()*tilesize + 
+				obj->get_ty()*tilesize + 
 						tilesize - s->yabove - lft,
 			s->get_width(),
 			s->get_height()
@@ -222,10 +222,10 @@ public:
 	void get_shape_location(Game_object *obj, int& x, int& y)
 		{
 		x = (obj->get_cx() - chunkx)*chunksize +
-				(1 + obj->get_shape_pos_x())*tilesize
+				(1 + obj->get_tx())*tilesize
 						- 4*obj->get_lift();
 		y = (obj->get_cy() - chunky)*chunksize +
-				(1 + obj->get_shape_pos_y())*tilesize
+				(1 + obj->get_ty())*tilesize
 						- 4*obj->get_lift();
 		}
 					// Paint shape in window.
