@@ -49,7 +49,7 @@ shapetest_LDADD = \
 	$(GTK_LIBS) $(SYSLIBS) $(x_libraries)
 
 exult_studio_LDADD = $(shapetest_LDADD) $(LIBGLADE_LIBS)
-exult_studio_CFLAGS = $(LIBGLADE_CFLAGS)
+exult_studio_CFLAGS = $(LIBGLADE_INCLUDES)
 
 mapeditdir = $(datadir)/exult
 
