@@ -1,3 +1,8 @@
+2002-02-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Spark is NOT a ghost.
+	* actors.cc,gamewin.cc:  Combat_difficulty used.
+
 2002-02-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/egg.cc: Delete missile-launcher in remove_this();

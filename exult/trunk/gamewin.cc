@@ -231,6 +231,10 @@ Game_window::Game_window
 	if (str == "yes")
 		walk_after_teleport = true;
 	config->set("config/gameplay/walk_after_teleport", str, true);
+	config->value("config/gameplay/combat/difficulty",
+							combat_difficulty, 0);
+	config->set("config/gameplay/combat/difficulty",
+						combat_difficulty, true);
 	}
 
 void Game_window::set_window_size(int width, int height, int scale, int scaler)
