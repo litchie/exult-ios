@@ -17,7 +17,7 @@
 <xsl:template name="TOC">
 	<xsl:for-each select="section">
 		<p>
-		<a href="#{generate-id(key('section_ref',@title))}">
+		<a><xsl:attribute name="href">#<xsl:value-of select="@title"/></xsl:attribute>
 			<xsl:number level="multiple"
 						count="section"
 						format="1. "
@@ -26,7 +26,7 @@
 		</a>
 		<br/>
 		<xsl:for-each select="sub">
-			<a href="#{generate-id(key('sub_ref',@name))}">
+			   <a><xsl:attribute name="href">#<xsl:value-of select="@name"/></xsl:attribute> 
 				<xsl:number level="multiple"
 							count="section|sub"
 							format="1."
@@ -178,7 +178,7 @@
 	<hr width="100%"/>
 	<table width="100%">
 		<tr><th align="left">
-			<a name="{generate-id()}">
+			<a><xsl:attribute name="name"><xsl:value-of select="@title"/></xsl:attribute>
 				<xsl:number format="1. "
 				value="position() -1"/>
 				<xsl:value-of select="@title"/>
@@ -200,7 +200,7 @@
 	</xsl:variable> 
 	<tr><td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td></tr>
 	<tr><td><strong>
-		<a name="{generate-id()}">
+		<a><xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
 			<xsl:value-of select="$num_idx"/>
 			<xsl:apply-templates select="header"/>
 		</a>
@@ -221,7 +221,7 @@
 
 <!-- Internal Link Templates -->
 <xsl:template match="ref">
-	<a href="#{generate-id(key('sub_ref',@target))}">
+	<a><xsl:attribute name="href">#<xsl:value-of select="@target"/></xsl:attribute> 
 	<xsl:choose>
 		<xsl:when test="count(child::node())>0">
 				<xsl:value-of select="."/>
@@ -238,7 +238,7 @@
 
 
 <xsl:template match="ref1">		
-	<a href="#{generate-id(key('sub_ref',@target))}">		
+	<a><xsl:attribute name="href">#<xsl:value-of select="@target"/></xsl:attribute>		
 		<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)"/>
 		<xsl:text>.</xsl:text>
 		<xsl:value-of select="count(key('sub_ref',@target)/preceding-sibling::sub)+1"/>
@@ -249,7 +249,7 @@
 
 
 <xsl:template match="ref2">		
-	<a href="#{generate-id(key('section_ref',@target))}">		
+	<a><xsl:attribute name="href">#<xsl:value-of select="@target"/></xsl:attribute>		
 		<xsl:value-of select="count(key('section_ref',@target)/preceding-sibling::section)"/>
 		<xsl:text>. </xsl:text>
   		<xsl:apply-templates select="key('section_ref',@target)/@title"/>  		
