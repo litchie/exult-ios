@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "mouse.h"
 #include "browser.h"
+#include "soundtest.h"
 
 using std::cout;
 using std::endl;
@@ -292,3 +293,13 @@ void Cheat::shape_browser (void) const {
   gwin->paint();
   gwin->set_palette(-1,-1);
 }
+
+void Cheat::sound_tester (void) const {
+  if (!enabled) return;
+
+  SoundTester tester;
+
+  tester.test_sound();
+  gwin->paint();
+}
+
