@@ -37,6 +37,19 @@ public:
 		char    form_magic[4];
 		uint32  size;
 		char    data_type[4];
+		IFFhdr() {  }
+		IFFhdr(const IFFhdr &i) : size(i.size)
+			{
+			memcpy(form_magic,i.form_magic,sizeof(form_magic));
+			memcpy(data_type,i.data_type,sizeof(data_type));
+			}
+		IFFhdr &operator=(const IFFhdr &i)
+			{
+			size=i.size;
+			memcpy(form_magic,i.form_magic,sizeof(form_magic));
+			memcpy(data_type,i.data_type,sizeof(data_type));
+			return *this;
+			}
 		};
 	struct  IFFobject
 		{
@@ -61,6 +74,14 @@ protected:
 public:
         IFF(const char *fname);
         IFF(const string &fname);
+	IFF(const IFF &i) : header(i.header),object_list(i.object_list)
+		{  }
+	IFF operator=(const IFF &i)
+		{
+		header=i.header;
+		object_list=i.object_list;
+		return *this;
+		}
         ~IFF();
 
         // char *read_object(int objnum,uint32 &length);
