@@ -28,7 +28,7 @@ class GameplayOptions_gump : public Modal_gump
 	UNREPLICATABLE_CLASS_I(GameplayOptions_gump,Modal_gump(0,0,0,0));
 
  private:
-	Gump_button* buttons[10];
+	Gump_button* buttons[11];
 
 	int facestats;
 	int fastmouse;
@@ -38,8 +38,10 @@ class GameplayOptions_gump : public Modal_gump
 	int cheats;
 	int paperdolls;
 	int text_bg;
+	int frames;
 	std::string *stats;
 	std::string *textbgcolor;
+	std::string *framenums;
 
  public:
 	GameplayOptions_gump();
