@@ -335,7 +335,7 @@ void ActionCombatStats(int* params)
 //  { ActionJawbone, 0, "Show Jawbone", true, false, SERPENT_ISLE }
 void ActionJawbone(int *params)
 {
-	gwin->activate_item(555, 0);
+	gwin->activate_item(555);
 	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
 		Mouse::mouse->set_shape(Mouse::hand);
 	
