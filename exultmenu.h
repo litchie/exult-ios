@@ -31,7 +31,7 @@ private:
 	Game_window *gwin;
 	Image_buffer8 *ibuf;
 	Vga_file exult_flx;
-	Palette pal;
+	//	Palette pal;
 	int topx, topy, centerx, centery, menuy;
 	void calc_win();
 	Mouse *menu_mouse;

@@ -68,6 +68,7 @@ void ExultMenu::calc_win()
 
 void ExultMenu::setup()
 {
+	Palette *gpal = gwin->get_pal();
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	MenuList menu;
 
@@ -176,10 +177,10 @@ void ExultMenu::setup()
 	menu.set_selection(0);
 	gwin->clear_screen(true);
 	for(;;) {
-		pal.apply();
+		gpal->apply();
 		int entry = menu.handle_events(gwin,menu_mouse);
 		if(entry==ok_button) {
-			pal.fade_out(c_fade_out_time);
+			gpal->fade_out(c_fade_out_time);
 			gwin->clear_screen(true);
 			// Scaling Method
 			int scaler = scalemethod->get_choice();
@@ -194,7 +195,6 @@ void ExultMenu::setup()
 					config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),true);
 			}
 			// Palette fades
-			Palette *gpal = gwin->get_pal();
 			gpal->set_fades_enabled(
 						palfades->get_choice()==1);
 			config->set("config/video/disable_fades",
@@ -226,7 +226,7 @@ void ExultMenu::setup()
 			calc_win();
 			return;
 		} else if (entry==cancel_button) {
-			pal.fade_out(c_fade_out_time);
+			gpal->fade_out(c_fade_out_time);
 			gwin->clear_screen(true);
 			return;
 		}
@@ -235,6 +235,8 @@ void ExultMenu::setup()
 
 Exult_Game ExultMenu::run()
 {
+	Palette *gpal = gwin->get_pal();
+
 	Shape_manager *sman = Shape_manager::get_instance();
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	// Check for the games in the designated directories.
@@ -242,7 +244,7 @@ Exult_Game ExultMenu::run()
 	bool si_installed = SI_Game::is_installed();
 
 	if(!bg_installed && !si_installed) {
-		pal.load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
+		gpal->load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
 		font->center_text(gwin->get_win()->get_ib8(),
 				  centerx, topy+20, "WARNING");
 		font->center_text(gwin->get_win()->get_ib8(),
@@ -253,7 +255,7 @@ Exult_Game ExultMenu::run()
 				  centerx, topy+60, "Please edit the configuration file");
 		font->center_text(gwin->get_win()->get_ib8(),
 				  centerx, topy+70, "and restart Exult");
-		pal.apply();
+		gpal->apply();
 		while(!wait_delay(200))
 			;	
 		throw quit_exception(1);
@@ -275,8 +277,8 @@ Exult_Game ExultMenu::run()
 	menu_mouse = new Mouse(gwin, mouse_data);
 	
 	sman->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0));
-	pal.load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
-	pal.fade_in(c_fade_in_time);
+	gpal->load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
+	gpal->fade_in(c_fade_in_time);
 	wait_delay(2000);
 	MenuList *menu = new MenuList();
 		
@@ -324,42 +326,42 @@ Exult_Game ExultMenu::run()
 		switch(choice<0?choice:menuentries[choice]) {
 		case 5:
 		case -1: // Exit
-			pal.fade_out(c_fade_out_time);
+			gpal->fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
 			throw quit_exception();
 		case 0: // Black Gate
-			pal.fade_out(c_fade_out_time);
+			gpal->fade_out(c_fade_out_time);
 			sel_game = BLACK_GATE;
 			break;
 		case 1: // Serpent Isle
-			pal.fade_out(c_fade_out_time);
+			gpal->fade_out(c_fade_out_time);
 			sel_game = SERPENT_ISLE;
 			break;
 		case 2: // Setup
-			pal.fade_out(c_fade_out_time);
+			gpal->fade_out(c_fade_out_time);
 			setup();
-			pal.apply();
+			gpal->apply();
 			break;
 		case 3: // Exult Credits
 			{
-				pal.fade_out(c_fade_out_time);
+				gpal->fade_out(c_fade_out_time);
 				TextScroller credits("<DATA>/exult.flx", EXULT_FLX_CREDITS_TXT, 
 						     fontManager.get_font("CREDITS_FONT"),
 						     exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
-				credits.run(gwin,pal);
+				credits.run(gwin);
 				gwin->clear_screen(true);
-				pal.apply();
+				gpal->apply();
 			}
 			break;
 		case 4: // Exult Quotes
 			{
-				pal.fade_out(c_fade_out_time);
+				gpal->fade_out(c_fade_out_time);
 				TextScroller quotes("<DATA>/exult.flx", EXULT_FLX_QUOTES_TXT, 
 						    fontManager.get_font("CREDITS_FONT"),
 			     			    exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
-				quotes.run(gwin,pal);
+				quotes.run(gwin);
 				gwin->clear_screen(true);
-				pal.apply();
+				gpal->apply();
 			}
 			break;
 		default:

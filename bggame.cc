@@ -272,7 +272,7 @@ void BG_Game::play_intro()
 	}
 	
 	// Fade out the palette...
-	pal.fade_out(c_fade_out_time);
+	pal->fade_out(c_fade_out_time);
 	
 	// ... and clean the screen.
 	gwin->clear_screen(true);
@@ -289,17 +289,17 @@ void BG_Game::scene_lord_british()
 			"The Exult Team"};
 
 	// Lord British presents...  (sh. 0x11)
-	pal.load("<STATIC>/intropal.dat",3);
+	pal->load("<STATIC>/intropal.dat",3);
 	sman->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
 	
 	// insert our own intro text
 	font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
 	font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
 
-	pal.fade_in(c_fade_in_time);
+	pal->fade_in(c_fade_in_time);
 	if(1 == wait_delay(2000))
 		throw UserBreakException();
-	pal.fade_out(c_fade_out_time);
+	pal->fade_out(c_fade_out_time);
 	gwin->clear_screen(true);
 }
 
@@ -371,7 +371,7 @@ void BG_Game::scene_butterfly()
 	
 	try
 	{
-		pal.load("<STATIC>/intropal.dat",4);
+		pal->load("<STATIC>/intropal.dat",4);
 
 		// Load the butterfly shape
 		butterfly = shapes.get_shape(butterfly_shp,0);
@@ -391,7 +391,7 @@ void BG_Game::scene_butterfly()
 		WAITDELAY(3500);
 
 		// Finally fade in
-		pal.fade_in(c_fade_in_time);
+		pal->fade_in(c_fade_in_time);
 		WAITDELAY(12500);
 
 		// clear 'Exult' text
@@ -496,9 +496,9 @@ void BG_Game::scene_guardian()
 		gwin->plasma(gwin->get_width(), gwin->get_height(), 0, 0, 16, 16+76);
 		win->get(plasma, 0, 0);
 
-		pal.load("<STATIC>/intropal.dat",2);
-		pal.set_color(1,0,0,0); //UGLY hack... set font background to black
-		pal.apply();
+		pal->load("<STATIC>/intropal.dat",2);
+		pal->set_color(1,0,0,0); //UGLY hack... set font background to black
+		pal->apply();
 
 		//play static SFX
 		Audio::get_ptr()->play_sound_effect(115, MIX_MAX_VOLUME, 0, 0);
@@ -758,8 +758,8 @@ void BG_Game::scene_desk()
 		play_midi(home_song_midi);
 		
 		gwin->clear_screen();
-		pal.load("<STATIC>/intropal.dat",1);
-		pal.apply();
+		pal->load("<STATIC>/intropal.dat",1);
+		pal->apply();
 
 		// draw monitor (sh. 0x07, 0x08, 0x09, 0x0A: various parts of monitor)
 		sman->paint_shape(centerx, centery, shapes.get_shape(0x07,0));
@@ -868,8 +868,8 @@ void BG_Game::scene_moongate()
 	int i;
 		
 	gwin->clear_screen();
-	pal.load("<STATIC>/intropal.dat",5);
-	pal.apply();
+    pal->load("<STATIC>/intropal.dat",5);
+	pal->apply();
 
 	// "Behind your house is the circle of stones"
 	sman->paint_shape(centerx, centery+50, shapes.get_shape(0x19,0));
@@ -922,13 +922,13 @@ void BG_Game::top_menu()
 	play_midi(menu_midi, true);
 		
 	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-	pal.load("<STATIC>/intropal.dat",0);
-	pal.fade_in(60);	
+	pal->load("<STATIC>/intropal.dat",0);
+	pal->fade_in(60);	
 }
 
 void BG_Game::show_journey_failed()
 {
-	pal.fade_out(50);
+	pal->fade_out(50);
 	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	journey_failed_text();
 }
@@ -945,26 +945,26 @@ void BG_Game::end_game(bool success)
 		TextScroller text(MAINSHP_FLX, 0x15,
 				  font,0);
 		gwin->clear_screen();
-		pal.load("<STATIC>/intropal.dat",0);
+		pal->load("<STATIC>/intropal.dat",0);
 		for(uint32 i=0; i<text.get_count(); i++) {
 			text.show_line(gwin, topx, topx+320, topy+20+i*12, i);
 		}
 		
-		pal.fade_in(c_fade_in_time);
+		pal->fade_in(c_fade_in_time);
 		wait_delay(10000);
-		pal.fade_out(c_fade_out_time);
+		pal->fade_out(c_fade_out_time);
 		
 		gwin->clear_screen();
 		font->center_text(ibuf, centerx, centery-10, "The end of Ultima VII");
-		pal.fade_in(c_fade_in_time);
+		pal->fade_in(c_fade_in_time);
 		wait_delay(4000);
-		pal.fade_out(c_fade_out_time);
+	    pal->fade_out(c_fade_out_time);
 		
 		gwin->clear_screen();
 		font->center_text(ibuf, centerx, centery-10, "The end of Britannia as you know it!");
-		pal.fade_in(c_fade_in_time);
+		pal->fade_in(c_fade_in_time);
 		wait_delay(4000);
-		pal.fade_out(c_fade_out_time);
+		pal->fade_out(c_fade_out_time);
 		gwin->clear_screen(true);
 		return;
 	}
@@ -1130,9 +1130,8 @@ void BG_Game::end_game(bool success)
 	
 	normal->draw_text (ibuf, width, height, message);
 
-	Palette *gpal = gwin->get_pal();
 	// Fade in for 1 sec (50 cycles)
-	gpal->fade (50, 1, 0);
+	pal->fade (50, 1, 0);
 
 	// Display text for 3 seconds
 	for (i = 0; i < 30; i++)
@@ -1148,7 +1147,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gpal->fade (50, 0, 0);
+	pal->fade (50, 0, 0);
 
 	
 	// Now the second text message
@@ -1164,7 +1163,7 @@ void BG_Game::end_game(bool success)
 	normal->draw_text (ibuf, width, height, message);
 
 	// Fade in for 1 sec (50 cycles)
-	gpal->fade (50, 1, 0);
+	pal->fade (50, 1, 0);
 
 	// Display text for approx 3 seonds
 	for (i = 0; i < 30; i++)
@@ -1180,7 +1179,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gpal->fade (50, 0, 0);
+	pal->fade (50, 0, 0);
 
 	next = fli3.play(win, 0, 0, next);
 	pal = fli3.get_palette();
@@ -1294,7 +1293,7 @@ void BG_Game::end_game(bool success)
 		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen1[i])/2, starty+normal->get_text_height()*i, txt_screen1[i]);
 
 	// Fade in for 1 sec (50 cycles)
-	gpal->fade (50, 1, 0);
+	pal->fade (50, 1, 0);
 
 	// Display text for 20 seonds (only 10 at the moment)
 	for (i = 0; i < 100; i++)
@@ -1310,7 +1309,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gpal->fade (50, 0, 0);
+	pal->fade (50, 0, 0);
 
 	if (wait_delay (10))
 	{
@@ -1342,7 +1341,7 @@ void BG_Game::end_game(bool success)
 
 
 	// Fade in for 1 sec (50 cycles)
-	gpal->fade (50, 1, 0);
+	pal->fade (50, 1, 0);
 
 	// Display text for 20 seonds (only 8 at the moment)
 	for (i = 0; i < 80; i++)
@@ -1358,7 +1357,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gpal->fade (50, 0, 0);
+	pal->fade (50, 0, 0);
 
 
 	if (wait_delay (10))
@@ -1391,7 +1390,7 @@ void BG_Game::end_game(bool success)
 		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen3[i])/2, starty+normal->get_text_height()*i, txt_screen3[i]);
 
 	// Fade in for 1 sec (50 cycles)
-	gpal->fade (50, 1, 0);
+	pal->fade (50, 1, 0);
 
 	// Display text for 20 seonds (only 8 at the moment)
 	for (i = 0; i < 80; i++)
@@ -1407,7 +1406,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gpal->fade (50, 0, 0);
+	pal->fade (50, 0, 0);
 
 
 	if (wait_delay (10))
@@ -1439,7 +1438,7 @@ void BG_Game::end_game(bool success)
 
 
 	// Fade in for 1 sec (50 cycles)
-	gpal->fade (50, 1, 0);
+	pal->fade (50, 1, 0);
 
 	// Display text for 10 seonds (only 5 at the moment)
 	for (i = 0; i < 50; i++)
@@ -1455,7 +1454,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gpal->fade (50, 0, 0);
+	pal->fade (50, 0, 0);
 
 
 	gwin->clear_screen(true);
@@ -1471,9 +1470,9 @@ void BG_Game::show_quotes()
 			fontManager.get_font("MENU_FONT"),
 			menushapes.extract_shape(0x14)
 			);
-	pal.load("<STATIC>/intropal.dat",6);
-	quotes.run(gwin,pal);
-	pal.load("<STATIC>/intropal.dat",0);
+	gwin->get_pal()->load("<STATIC>/intropal.dat",6);
+	quotes.run(gwin);
+	gwin->get_pal()->load("<STATIC>/intropal.dat",0);
 }
 
 void BG_Game::show_credits()
@@ -1484,14 +1483,14 @@ void BG_Game::show_credits()
 			fontManager.get_font("MENU_FONT"),
 			menushapes.extract_shape(0x14)
 			);
-	pal.load("<STATIC>/intropal.dat",6);
-	if(credits.run(gwin,pal)) {	// Watched through the entire sequence?
+	gwin->get_pal()->load("<STATIC>/intropal.dat",6);
+	if(credits.run(gwin)) {	// Watched through the entire sequence?
 		std::ofstream quotesflg;
 		U7open(quotesflg, "<SAVEGAME>/quotes.flg");
 		quotesflg.close();
 	}
 		
-	pal.load("<STATIC>/intropal.dat",0);
+	gwin->get_pal()->load("<STATIC>/intropal.dat",0);
 }
 
 bool BG_Game::new_game(Vga_file &shapes)
@@ -1515,7 +1514,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 	int sex = 0;
 	int selected = 0;
 	int num_choices = 4;
-	pal.load("<STATIC>/intropal.dat",6);
+	gwin->get_pal()->load("<STATIC>/intropal.dat",6);
 	SDL_Event event;
 	bool editing = true;
 	bool redraw = true;
@@ -1557,7 +1556,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 			else
 				snprintf(disp_name, max_name_len+2, "%s", npc_name);
 			font->draw_text(ibuf, topx+60, menuy+10, disp_name);
-			pal.apply();
+			gwin->get_pal()->apply();
 			redraw = false;
 		}
 		SDL_WaitEvent(&event);
@@ -1690,7 +1689,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 		set_avskin(3-(sex/2));
 		set_avname (npc_name);
 		set_avsex (sex%2);
-		pal.fade_out(c_fade_out_time);
+		gwin->get_pal()->fade_out(c_fade_out_time);
 		gwin->clear_screen(true);	
 		ok =gwin->init_gamedat(true);
 	}

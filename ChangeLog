@@ -1,3 +1,7 @@
+2002-06-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* singles.h, shapeid.cc: added pal = gwin->get_pal() to singles
+	* *game.*, txtscroll.*: got rid of extra Palette objects
+
 2002-06-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.h (public): Game_clock is now a pointer.
