@@ -383,7 +383,10 @@ void Game_window::init_files(bool cycle)
 	shapes.init();
 
 	ifstream textflx;	
-  	U7open(textflx, TEXT_FLX);
+	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_TEXT))
+		U7open(textflx, PATCH_TEXT);
+	else
+  		U7open(textflx, TEXT_FLX);
 	Setup_item_names(textflx);	// Set up list of item names.
 					// Read in shape dimensions.
 	shapes.read_info(GAME_BG);
