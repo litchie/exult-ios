@@ -523,7 +523,8 @@ void Actor::follow
 	Actor *leader
 	)
 	{
-	static const char *catchup_phrases[3] = { "Thou shan't lose me so easily!",
+	static const char *catchup_phrases[3] = { 
+					"Thou shan't lose me so easily!",
 					"Ah, there thou art!",
 					"Found ye!" };
 	if (Actor::is_dead_npc())
@@ -548,8 +549,8 @@ void Actor::follow
 		goal.ty += 1 - rand()%3;
 		}
 					// Already aiming along a path?
-	if (is_moving() && action && action->following_smart_path() &&
-						goal.distance(get_dest()) <= 3)
+	if (is_moving() && action && action->following_smart_path() /* &&
+					goal.distance(get_dest()) <= 3 */ )
 		return;
 					// Tiles to goal.
 	int goaldist = goal.distance(pos);
@@ -562,11 +563,9 @@ void Actor::follow
 	if (!speed)			// Not moving?
 		speed = 100;
 	if (goaldist < leaderdist)	// Closer than leader?
-		{			// Delay a bit.
+					// Delay a bit.
 		delay = (1 + leaderdist - goaldist)*100;
-//		speed += 10;		// And slow a bit.
-		}
-	else if (goaldist - leaderdist > 5)
+	else if (goaldist - leaderdist >= 5)
 		speed -= 20;		// Speed up if too far.
 	if (goaldist > 32 &&		// Getting kind of far away?
 	    get_party_id() >= 0)	// And a member of the party.
@@ -590,7 +589,7 @@ void Actor::follow
 		}
 	uint32 curtime = SDL_GetTicks();
 	int dist2lead;
-	if ((((dist2lead = pos.distance(leaderpos)) >= 8 &&
+	if ((((dist2lead = pos.distance(leaderpos)) >= 5 &&
 						curtime >= next_path_time) ||
 	     (dist2lead >= 4 && !leader->is_moving())) && 
 	      get_party_id() >= 0 && 
@@ -598,11 +597,13 @@ void Actor::follow
 		{			// A little stuck?
 		cout << get_name() << " at distance " << dist2lead 
 				<< " trying to catch up." << endl;
-					// Don't try again for a few seconds.
-		next_path_time = SDL_GetTicks() + 4000;
+					// Don't try again for a second.
+		next_path_time = SDL_GetTicks() + 1000;
 		if (Chunk_object_list::is_blocked(goal, 3, get_type_flags()))
 					// Find a free spot.
 			goal = leader->find_unblocked_tile(1, 3);
+		if (goal.tx == -1)	//+++++Testing
+			cout << "... but is blocked." << endl;
 		if (goal.tx == -1 ||	// No free spot?  Give up.
 		    walk_path_to_tile(goal, speed - speed/4, 0))
 			return;
