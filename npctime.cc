@@ -420,7 +420,7 @@ void Npc_protection_timer::handle_event
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *npc = list->npc;
-	if (Wearing_ring(npc, 296))
+	if (Wearing_ring(npc, 297))
 		{			// Wearing protection ring.
 		delete this;		// Don't need timer.
 		return;

@@ -1085,10 +1085,19 @@ void Actor::set_type_flags
 inline void Call_readied_usecode
 	(
 	Game_window *gwin,
+	Actor *npc,
 	Game_object *obj,
 	Usecode_machine::Usecode_events eventid
 	)
 	{
+	if (obj->get_shapenum() == 297)	// Fix special case:  ring of protect.
+		{
+		if (eventid == Usecode_machine::readied)
+			npc->Actor::set_flag(Actor::protection);
+		else
+			npc->Actor::clear_flag(Actor::protection);
+		return;
+		}
 	Shape_info& info = gwin->get_info(obj);
 	if (info.get_shape_class() != Shape_info::container)
 		{
@@ -1110,7 +1119,7 @@ void Actor::remove
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Call_readied_usecode(gwin, obj, Usecode_machine::unreadied);
+	Call_readied_usecode(gwin, this, obj, Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
 	int index = Actor::find_readied(obj);	// Remove from spot.
 	if (index >= 0)
@@ -1167,7 +1176,7 @@ int Actor::add
 	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
 	Game_window *gwin = Game_window::get_game_window();
 	if (!dont_check)		// Watch for initialization.
-		Call_readied_usecode(gwin, obj, Usecode_machine::readied);
+		Call_readied_usecode(gwin, this, obj,Usecode_machine::readied);
 	if (gwin->get_info(obj).is_light_source())
 		light_sources++;
 	return (1);
@@ -1232,7 +1241,7 @@ int Actor::add_readied
 		if (best_index == lrfinger)
 			two_fingered = 1;	// Must be gloves
 		Game_window *gwin = Game_window::get_game_window();
-		Call_readied_usecode(gwin, obj, Usecode_machine::readied);
+		Call_readied_usecode(gwin, this, obj,Usecode_machine::readied);
 		if (gwin->get_info(obj).is_light_source())
 			light_sources++;
 		return (1);
