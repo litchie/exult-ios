@@ -931,6 +931,21 @@ void ExultStudio::set_statusbar
 	}
 
 /*
+ *	Set a button's text.
+ */
+
+void ExultStudio::set_button
+	(
+	char *name,
+	const char *text
+	)
+	{
+	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
+	GtkLabel *label = GTK_LABEL(GTK_BIN(btn)->child);
+	gtk_label_set_text(label, text);
+	}
+
+/*
  *	Show/hide a widget.
  */
 
@@ -965,6 +980,53 @@ void ExultStudio::set_sensitive
 		gtk_widget_set_sensitive(widg, tf);
 	}
 
+/*
+ *	Handle 'prompt' dialogs:
+ */
+static int prompt_choice = 0;		// Gets prompt choice.
+
+C_EXPORT void
+on_prompt2_yes_clicked			(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	prompt_choice = 0;
+}
+C_EXPORT void
+on_prompt2_no_clicked			(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	prompt_choice = 1;
+}
+
+
+/*
+ *	Prompt for one of two answers.
+ *
+ *	Output:	0 for 1st choice, 1 for 2nd.
+ */
+
+int ExultStudio::prompt2
+	(
+	const char *msg,		// Question to ask.
+	const char *choice0,		// 1st choice.
+	const char *choice1		// 2nd choice
+	)
+	{
+	GtkWidget *dlg = glade_xml_get_widget(app_xml, "prompt2_dialog");
+	gtk_label_set_text(
+		GTK_LABEL(glade_xml_get_widget(app_xml, "prompt2_label")),
+								msg);
+	set_button("prompt2_yes", choice0);
+	set_button("prompt2_no", choice1);
+	prompt_choice = -1;
+	gtk_window_set_modal(GTK_WINDOW(dlg), true);
+	gtk_widget_show(dlg);		// Should be modal.
+	while (prompt_choice == -1)	// Spin.
+		gtk_main_iteration();	// (Blocks).
+	gtk_widget_hide(dlg);
+	assert(prompt_choice == 0 || prompt_choice == 1);
+	return prompt_choice;
+	}
 
 void ExultStudio::run()
 {
