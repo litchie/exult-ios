@@ -63,6 +63,7 @@ clean:
 	rm -f $(OBJS) expack.o $(EXEC) expack.exe data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
 
 install: $(EXEC)
+	mkdir -p $(U7PATH)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
 	cp data/exult.flx $(U7PATH)/data/exult.flx
@@ -70,6 +71,7 @@ install: $(EXEC)
 	cp data/exult_si.flx $(U7PATH)/data/exult_si.flx
 
 dist:   $(EXEC)
+	mkdir -p $(U7PATH)
 	mkdir -p $(U7PATH)/Exult
 	strip $(EXEC) -o $(U7PATH)/Exult/$(EXEC)
 	mkdir -p $(U7PATH)/Exult/Data
@@ -115,6 +117,7 @@ toolsclean:
 	rm -f head2data.o head2data.exe data/u7bgintrinsics.data data/u7siintrinsics.data
 
 toolsinstall: tools
+	mkdir -p $(U7PATH)
 	mkdir -p $(U7PATH)/tools
 	strip expack.exe -o $(U7PATH)/tools/expack.exe
 	strip cmanip.exe -o $(U7PATH)/tools/cmanip.exe
