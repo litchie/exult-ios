@@ -56,6 +56,7 @@ const char *Image_window::ScalerNames[] =  {
 		"2xSaI",
 		"SuperEagle",
 		"Super2xSaI",
+		"OpenGL",
 		0
 };
 
@@ -153,6 +154,43 @@ void Image_window::create_surface
 
 bool Image_window::try_scaler(int w, int h, uint32 flags)
 {
+#ifdef HAVE_OPENGL
+	// OpenGL
+	if (scaler ==OpenGL)
+		{
+					// Get info. about video.
+		const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
+		if (!vinfo)
+			{
+			cout << "SDL_GetVideoInfo() failed: " << SDL_GetError()
+							<< endl;
+			return false;
+			}
+					// Set up SDL video flags.
+		int video_flags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER |
+				SDL_HWPALETTE | SDL_RESIZABLE;
+					// Can surface be in video RAM?
+		if (vinfo->hw_available)
+			video_flags |= SDL_HWSURFACE;
+		else
+			video_flags |= SDL_SWSURFACE;
+		if (vinfo->blit_hw)	// Hardware blits?
+			video_flags |= SDL_HWACCEL;
+					// Want double-buffering.
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+					// Allocate surface.
+		int hwdepth = vinfo->vfmt->BitsPerPixel;
+		surface = SDL_SetVideoMode(w, h, hwdepth, video_flags);
+		if (!surface)
+			{
+			cerr << "Couldn't allocate surface: " << 
+					SDL_GetError() << endl;
+			return false;
+			}
+		show_scaled = &Image_window::show_scaledOpenGL;
+		return true;
+		}
+#endif
 	// 2xSaI scaler
 	if (scale == 2 && scaler ==  SaI)
 	{
