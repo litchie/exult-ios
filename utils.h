@@ -28,6 +28,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <fstream>
 
+#ifdef BEOS
+#include <cstdio>  //for std::FILE
+#endif
+
 #include <exception>
 #include <string>
         class replication_error : public std::exception
