@@ -1205,7 +1205,11 @@ void Usecode_internal::create_script
 			obj = o2;
 			}
 		}
-	//++++Need to check for array of objects???
+	if (!obj)
+		{
+		cerr << "Can't create script for NULL object" << endl;
+		return;
+		}
 					// ++++Better to 'steal' array; this
 					//   ends up making a copy.
 	Usecode_value *code = new Usecode_value(codeval);

@@ -65,15 +65,26 @@ void Game_window::read_npcs
 
 	// Don't like it... no i don't.
 	center_view(main_actor->get_tile());
-					// SI: 231-255 are bogus automatons(?).
-	int skip1 = Game::get_game_type() == SERPENT_ISLE ? 233 : 10000;
+					// Set ranges to skip.
+	int skip1f, skip1t, skip2f, skip2t;
+	if (Game::get_game_type() == SERPENT_ISLE)
+		{			// SI: 231-255 are bogus automatons(?).
+		skip1f = 233; skip1t = 256;
 					// SI: 296-355 are bogus trappers.
-	int skip2 = Game::get_game_type() == SERPENT_ISLE ? 296 : 10000;
+		skip2f = 296; skip2t = 356;
+		}
+	else if (Game::get_game_type() == BLACK_GATE)
+		{			// BG: 293-297 are extra mages.
+		skip1f = 293; skip1t = 298;
+		skip2f = skip2t = 10000;
+		}
+	else
+		skip1f = skip1t = skip2f = skip2t = 10000;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 	{
 		npcs[i] = new Npc_actor("", 0);
 		npcs[i]->read(nfile, i, i < num_npcs1);
-		if ((i >= skip1 && i < 256) || (i >= skip2 && i < 356))
+		if ((i >= skip1f && i < skip1t) || (i >= skip2f && i < skip2t))
 			{
 			npcs[i]->remove_this(1);
 			npcs[i]->set_schedule_type(Schedule::wait);
