@@ -18,7 +18,8 @@ EXULT_FLX_OBJECTS = \
 	cancel.shp		\
 	pointers.shp		\
 	exit.shp		\
-	play_1st_scene.shp
+	play_1st_scene.shp	\
+	extras.shp
 
 flexdir = $(datadir)/exult
 
