@@ -28,13 +28,14 @@ class AudioOptions_gump : public Modal_gump
 	UNREPLICATABLE_CLASS_I(AudioOptions_gump,Modal_gump(0,0,0,0));
 
  private:
-	Gump_button* buttons[10];
+	Gump_button* buttons[11];
 
 	int audio_enabled;
 	int midi_enabled;
 	int midi_conversion;
 	int midi_reverb;
 	int midi_chorus;
+	int midi_looping;
 	int sfx_enabled;
 	int sfx_conversion;
 	int speech_enabled;

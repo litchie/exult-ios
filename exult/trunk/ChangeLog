@@ -1,3 +1,11 @@
+2001-12-14  Tristan Tarrant <nadir@users.sourceforge.net>
+	* data/audiooptions.shp: made 10 pixels taller
+	* audio/Audio.*: allow user-configurable music looping
+	* gumps/AudioOptions_gump.*: UI for above
+	* Makefile.am: alpha_kludges.h and mingw_kludges.h should be in 
+	noinst_HEADERS, not in EXTRA_DIST
+	* debian/.cvsignore: usual stuff
+
 2001-12-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* combat.cc (Duel_schedule): Look for practice targets.

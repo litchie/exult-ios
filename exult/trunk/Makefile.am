@@ -123,6 +123,10 @@ exult_LDADD = \
 
 exult_DEPENDENCIES = $(ICON_FILE) $(EXULTLIBS)
 
+noinst_HEADERS = \
+	alpha_kludges.h \
+	mingw_kludges.h 
+
 EXTRA_DIST = 	\
 	README.1ST \
 	README \
@@ -135,7 +139,6 @@ EXTRA_DIST = 	\
 	Makefile.win32 \
 	Makefile.be \
 	Makefile.cygwin \
-	alpha_kludges.h mingw_kludges.h \
 	Info.plist.in \
 	exult.spec \
 	win32/exult.ico \
