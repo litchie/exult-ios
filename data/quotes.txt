@@ -115,3 +115,6 @@
 \C"There are two types of people. 
 \CExult Developers and everyone else"
 \L - Colourless
+
+\C"I love freedman"
+\L - Fingolfin on #exult
