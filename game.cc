@@ -323,7 +323,7 @@ bool Game::show_menu()
 		}
 	} while(!menu || menu->get_selection()!=2);
 
-	if (menu->get_selection() != 2) {
+	if (!play) {
 		pal.fade_out(c_fade_out_time);
 		gwin->clear_screen(true);
 	}
