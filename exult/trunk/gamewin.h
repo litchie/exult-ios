@@ -28,8 +28,8 @@
 #include "lists.h"
 #include "rect.h"
 #include "tiles.h"
-#include "shapeid.h"
 #include "gameclk.h"
+#include "shapeid.h"
 
 #include <string>	// STL string
 #include "vec.h"
@@ -69,6 +69,10 @@ class Map_patch_collection;
 class Dragging_info;
 class Game_map;
 
+					// Special pixels.
+enum Pixel_colors {POISON_PIXEL = 0, PROTECT_PIXEL, CURSED_PIXEL, HIT_PIXEL,
+			NPIXCOLORS};
+
 /*
  *	The main game window:
  */
@@ -91,10 +95,7 @@ class Game_window
 	unsigned long render_seq;	// For marking rendered objects.
 	bool painted;			// true if we updated image buffer.
 	bool focus;			// Do we have focus?
-	unsigned char poison_pixel;	// For rendering poisoned actors.
-	unsigned char protect_pixel;	// For rendering protected actors.
-	unsigned char cursed_pixel;	// For the cursed.
-	unsigned char hit_pixel;	// For rendering 'hit' actors.
+	unsigned char special_pixels[NPIXCOLORS];	// Special colors.
 	bool teleported;		// true if just teleported.
 	unsigned int in_dungeon;	// true if inside a dungeon.
 	bool ice_dungeon;		// true if inside ice dungeon
@@ -293,8 +294,6 @@ public:
 		{ return npcs.size(); }
 	int get_unused_npc();		// Find first unused NPC #.
 	void add_npc(Actor *npc, int num);	// Add new one.
-	int get_num_shapes()
-		{ return shape_man->get_shapes().get_num_shapes(); }
 	inline int in_combat()		// In combat mode?
 		{ return combat; }
 	void toggle_combat();
@@ -331,11 +330,6 @@ public:
 					// Show abs. location of mouse.
 	void show_game_location(int x, int y);
 #endif
-	inline Shapes_vga_file& get_shapes()	// Get 'shapes.vga' file.
-		{ return shape_man->get_shapes(); }
-	//+++++Gets replaced by one in shape_man.:
-	Shape_info& get_info(int shnum)	// Get shape info.
-		{ return shape_man->get_info(shnum); }
 					// Get screen area of shape at pt.
 	Rectangle get_shape_rect(const Shape_frame *s, int x, int y) const
 		{
@@ -376,25 +370,17 @@ public:
 		}
 
 					// Paint outline around a shape.
-	inline void paint_outline(int xoff, int yoff, Shape_frame *shape, int pix)
+	inline void paint_outline(int xoff, int yoff, Shape_frame *shape, 
+							Pixel_colors pix)
 		{
 		if (shape) shape->paint_rle_outline(win->get_ib8(), 
-					xoff, yoff, pix);
+					xoff, yoff, special_pixels[(int) pix]);
 		}
-	inline void paint_poison_outline(int xoff, int yoff, Shape_frame *shape)
-		{ paint_outline(xoff, yoff, shape, poison_pixel); }
-	inline void paint_protect_outline(int xoff, int yoff, Shape_frame *shape)
-		{ paint_outline(xoff, yoff, shape, protect_pixel); }
-	inline void paint_cursed_outline(int xoff, int yoff, Shape_frame *shape)
-		{ paint_outline(xoff, yoff, shape, cursed_pixel); }
-	inline void paint_hit_outline(int xoff, int yoff, Shape_frame *shape)
-		{ paint_outline(xoff, yoff, shape, hit_pixel); }
-
+	unsigned char get_special_pixel(Pixel_colors pix)
+		{ return special_pixels[(int) pix]; }
 	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
 			int frnum, int tilex, int tiley, int lift);
-	Ireg_game_object *create_ireg_object(int shnum, int frnum)
-		{ return create_ireg_object(get_info(shnum), shnum, frnum,
-						0, 0, 0); 	}
+	Ireg_game_object *create_ireg_object(int shnum, int frnum);
 	void write();// Write out to 'gamedat'.
 	void read();			// Read in 'gamedat'.
 	void write_gwin();		// Write gamedat/gamewin.dat.
@@ -594,11 +580,6 @@ public:
 	bool emulate_is_move_allowed(int tx, int ty);
 	// Swapping a superchunk to disk emulation
 	void emulate_swapout (int scx, int scy);
-
-	unsigned char get_poison_pixel() { return poison_pixel;}
-	unsigned char get_protect_pixel() { return protect_pixel; }
-	unsigned char get_hit_pixel() { return hit_pixel; }
-
 	inline Gump_manager *get_gump_man() { return gump_man; }
 	Gump *get_dragging_gump();
 	inline Npc_proximity_handler *get_npc_prox()  { return npc_prox; }

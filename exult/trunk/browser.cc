@@ -146,7 +146,7 @@ void ShapeBrowser::browse_shapes()
 						font->paint_text_fixedwidth(ibuf, buf, 2, 22, 8);
 
 						Shape_info& info = 
-							Game_window::get_instance()->get_info(current_shape);
+							ShapeID::get_info(current_shape);
 
 					        snprintf(buf,255,"class: %2i  ready_type: 0x%02x", info.get_shape_class(), info.get_ready_type());
 					        font->paint_text_fixedwidth(ibuf, buf, 2, 12, 8);

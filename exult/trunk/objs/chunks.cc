@@ -1025,7 +1025,7 @@ Tile_coord Map_chunk::find_spot
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info = gwin->get_info(shapenum);
+	Shape_info& info = ShapeID::get_info(shapenum);
 	int xs = info.get_3d_xtiles(framenum);
 	int ys = info.get_3d_ytiles(framenum);
 	int zs = info.get_3d_height();

@@ -476,7 +476,7 @@ USECODE_INTRINSIC(create_new_object)
 	int shapenum = parms[0].get_int_value();
 
 	Game_object *obj;		// Create to be written to Ireg.
-	Monster_info *inf = gwin->get_info(shapenum).get_monster_info();
+	Monster_info *inf = ShapeID::get_info(shapenum).get_monster_info();
 
 	if (inf)
 	{
@@ -1101,7 +1101,7 @@ USECODE_INTRINSIC(summon)
 	// summon(shape, flag??).  Create monster of desired shape.
 
 	int shapenum = parms[0].get_int_value();
-	Monster_info *info = gwin->get_info(shapenum).get_monster_info();
+	Monster_info *info = ShapeID::get_info(shapenum).get_monster_info();
 	if (!info)
 		return Usecode_value(0);
 	Tile_coord start = gwin->get_main_actor()->get_tile();
@@ -2007,7 +2007,7 @@ USECODE_INTRINSIC(is_not_blocked)
 	int shapenum = parms[1].get_int_value();
 	int framenum = parms[2].get_int_value();
 					// Find out about given shape.
-	Shape_info& info = gwin->get_info(shapenum);
+	Shape_info& info = ShapeID::get_info(shapenum);
 	Rectangle footprint(
 		tile.tx - info.get_3d_xtiles(framenum) + 1,
 		tile.ty - info.get_3d_ytiles(framenum) + 1,

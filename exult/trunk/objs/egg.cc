@@ -634,7 +634,7 @@ void Egg_object::activate
 			int shnum = data2&1023;
 			int frnum = data2>>10;
 			Monster_info *inf = 
-			      gwin->get_info(shnum).get_monster_info();
+			      ShapeID::get_info(shnum).get_monster_info();
 			if (inf)
 				{	// Armageddon spell cast?
 				if (gwin->armageddon)
@@ -650,7 +650,7 @@ void Egg_object::activate
 				}
 			else		// Create item.
 				{
-				Shape_info& info = gwin->get_info(shnum);
+				Shape_info& info = ShapeID::get_info(shnum);
 				Game_object *nobj =
 					gwin->create_ireg_object(info,
 						shnum, frnum, get_tx(),
@@ -692,7 +692,7 @@ void Egg_object::activate
 			int weapon = data1, dir = data2&0xff, delay = data2>>8;
 			cout << "Missile egg:  " << item_names[weapon]
 				<< endl;
-			Shape_info& info = gwin->get_info(weapon);
+			Shape_info& info = ShapeID::get_info(weapon);
 			Weapon_info *winf = info.get_weapon_info();
 			int proj;
 			if (winf && winf->get_projectile())

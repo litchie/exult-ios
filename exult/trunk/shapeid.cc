@@ -156,13 +156,5 @@ int ShapeID::get_num_frames() const
 	return 0;
 }
 
-/*
- *	Get info about shape # (in main shapes.vga file).
- */
-Shape_info& ShapeID::get_info
-	(
-	) const
-	{
-	return Game_window::get_instance()->get_shapes().get_info(shapenum);
-	}
+
 

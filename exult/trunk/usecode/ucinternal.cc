@@ -642,7 +642,7 @@ void Usecode_internal::set_item_shape
 		return;
 					// See if light turned on/off.
 	int light_changed = item->get_info().is_light_source() !=
-			    gwin->get_info(shape).is_light_source();
+			    ShapeID::get_info(shape).is_light_source();
 	if (item->get_owner())		// Inside something?
 		{
 		item->get_owner()->change_member_shape(item, shape);
@@ -1198,7 +1198,7 @@ Usecode_value Usecode_internal::add_party_items
 				shapenum, framenum, 2);
 		if (pos.tx == -1)	// Hope this rarely happens.
 			break;
-		Shape_info& info = gwin->get_info(shapenum);
+		Shape_info& info = ShapeID::get_info(shapenum);
 					// Create and place.
 		Game_object *newobj = gwin->create_ireg_object(
 					info, shapenum, framenum, 0, 0, 0);
