@@ -1,3 +1,7 @@
+2002-06-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* NEWS, configure.in, Makefile.be, Makefile.MorphOS: 0.99.1RC2
+	* keyactions.cc: changed version string (copyright -2002)
+
 2002-06-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* cheat.cc (public): Cut/copy/paste added to Exult & EStudio.
