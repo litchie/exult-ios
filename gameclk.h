@@ -22,10 +22,16 @@ public:
 		{ }
 	int get_hour()
 		{ return hour; }
+	void set_hour(int h)
+		{ hour = h; }
 	int get_minute()
 		{ return minute; }
+	void set_minute(int m)
+		{ minute = m; }
 	int get_day()
 		{ return day; }
+	void set_day(int d)
+		{ day = d; }
 	void increment(int num_minutes);// Increment clock.
 	virtual void handle_event(unsigned long curtime, long udata);
 	void fake_next_period();	// For debugging.
