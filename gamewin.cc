@@ -122,6 +122,7 @@ Game_window::Game_window
 				{
 					cout << " GOOD" << endl;
 				}
+			delete[] static_identity;
 		}
 					// Create window.
 	win = new Image_window(width, height); //<- error in timer
