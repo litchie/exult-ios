@@ -764,7 +764,7 @@ Look at 3. Audio to see explanation on the settings.
 
 
 6.6. Combat Options
-As many people think that the U7 combat engine is far too easy, too hard or just can't the real-time-combat Jeff put in some options to make combat more interesting.
+As many people think that the U7 combat engine is far too easy, too hard or just can't stand the real-time-combat Jeff put in some options to make combat more interesting.
 * Difficulty Ranges from Easiest (-3) to Hardest (3). It affects the chance of a hit, and the HP's lost if a hit occurs.
 * ShowHits With this enabled you can see the hitpoints of NPCs in brackets after their name when you left-click on them.
 * Mode choose between Original and SpacePauses. SpacePauses gives you a little more control of combat. When you hit space the game pauses and you can direct a party member by right-clicking, then clicking on a target to attack. Or change weapons, choose a favourite spell.
