@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 playfli::playfli(const char *fli_name)
 {
     U7open(fli_stream, fli_name);
-    fli_stream.seekg(4);
+    fli_stream.seekg(8);
     fli_size = Read4(fli_stream);
     fli_magic = Read2(fli_stream);
     fli_frames = Read2(fli_stream);

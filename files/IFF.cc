@@ -43,20 +43,10 @@ using std::memset;
 using std::size_t;
 
 
-//Own implementation of ntohl.
-//convert MSB -> LSB
-long ntohl(long x) {
-  static unsigned long _test_=0x01020304;
-  if(*(char *)&_test_==0x01)
-	{
-	// We are big-endian
-	return x;
-	}
-  else
-	{
-	  return ((x & 0xFF) << 24) | ((x & 0xFF00) << 8) |
-	    ((x & 0xFF0000) >> 8) | ((x & 0xFF000000) >> 24);
-	}
+// Used to swap the length
+long longswap(long x) {
+  return ((x & 0xFF) << 24) | ((x & 0xFF00) << 8) |
+    ((x & 0xFF0000) >> 8) | ((x & 0xFF000000) >> 24);
 }
 
 
@@ -84,8 +74,7 @@ void	IFF::IndexIFFFile(void)
 		}
 	cout << "Okay. It looks like an IFF file chunk" << endl;
 	long	full_length;
-	fread(&full_length,sizeof(full_length),1,fp);
-	full_length=ntohl(full_length);
+	full_length = longswap(Read4(fp));
 	cout << "length looks like: " << full_length << endl;
 	fseek(fp,4,SEEK_CUR);	// We don't really need to know what the general data type is
 
@@ -107,10 +96,8 @@ void	IFF::IndexIFFFile(void)
 	while(ftell(fp)<full_length)
 		{
 		Reference	r;
-		size_t	len;
-		char	type[5],name[9];
+		char	type[5];
 		memset(type,0,sizeof(type));
-		memset(name,0,sizeof(name));
 //		bool	even=false;
 
 		fread(type,4,1,fp);	// 4 bytes of type
@@ -120,19 +107,16 @@ void	IFF::IndexIFFFile(void)
 			fseek(fp,-3,SEEK_CUR);
 			continue;
 			}
-		len = Read4(fp);	// 4 bytes of length
-//		fread(&len,4,1,fp);	// 4 bytes of length
-		size_t	n=ftell(fp);	// If it's not an even fileposition, advance one byte
-		if(n%2)
-			fseek(fp,1,SEEK_CUR);	// Advance one byte
-		fread(name,4,1,fp);	// data name is 4 bytes
+			
+		r.size=longswap(Read4(fp));	// 4 bytes for len
 		r.offset=ftell(fp);
-		r.size=ntohl(len);
+		
 		if(r.size==0||r.offset==0)
 			break;
-		cout << "Object type: " << type << " (" << name <<") at position " << r.offset << " with length of " << r.size << endl;
+			
+		cout << "Object type: " << type << " at position " << r.offset << " with length of " << r.size << endl;
 		object_list.push_back(r);
-		fseek(fp,r.offset+r.size-(2+object_list.size()),SEEK_SET);
+		fseek(fp,r.offset+r.size,SEEK_SET);
 		}
 
 	fclose(fp);
