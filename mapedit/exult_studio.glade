@@ -72,6 +72,11 @@
     <handler>on_main_window_destroy_event</handler>
     <last_modification_time>Mon, 07 May 2001 05:07:27 GMT</last_modification_time>
   </signal>
+  <signal>
+    <name>focus_in_event</name>
+    <handler>on_main_window_focus_in_event</handler>
+    <last_modification_time>Sun, 07 Apr 2002 09:02:57 GMT</last_modification_time>
+  </signal>
   <title>ExultStudio</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -6799,7 +6804,7 @@ Manual
 	  <class>GtkTable</class>
 	  <name>table7</name>
 	  <rows>2</rows>
-	  <columns>3</columns>
+	  <columns>2</columns>
 	  <homogeneous>True</homogeneous>
 	  <row_spacing>0</row_spacing>
 	  <column_spacing>0</column_spacing>
@@ -6920,9 +6925,9 @@ Manual
 
 	  <widget>
 	    <class>GtkFrame</class>
-	    <name>frame63</name>
+	    <name>frame64</name>
 	    <border_width>4</border_width>
-	    <label>Num. Frames</label>
+	    <label>Origin (x,y)</label>
 	    <label_xalign>0</label_xalign>
 	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	    <child>
@@ -6933,47 +6938,6 @@ Manual
 	      <xpad>0</xpad>
 	      <ypad>0</ypad>
 	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>True</yfill>
-	    </child>
-
-	    <widget>
-	      <class>GtkSpinButton</class>
-	      <name>shinfo_num_frames</name>
-	      <can_focus>True</can_focus>
-	      <climb_rate>1</climb_rate>
-	      <digits>0</digits>
-	      <numeric>False</numeric>
-	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
-	      <snap>False</snap>
-	      <wrap>False</wrap>
-	      <value>0</value>
-	      <lower>0</lower>
-	      <upper>100</upper>
-	      <step>1</step>
-	      <page>4</page>
-	      <page_size>4</page_size>
-	    </widget>
-	  </widget>
-
-	  <widget>
-	    <class>GtkFrame</class>
-	    <name>frame64</name>
-	    <border_width>4</border_width>
-	    <label>Origin (x,y)</label>
-	    <label_xalign>0</label_xalign>
-	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	    <child>
-	      <left_attach>2</left_attach>
-	      <right_attach>3</right_attach>
-	      <top_attach>0</top_attach>
-	      <bottom_attach>1</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>True</xexpand>
 	      <yexpand>False</yexpand>
 	      <xshrink>False</xshrink>
 	      <yshrink>False</yshrink>
@@ -7030,81 +6994,6 @@ Manual
 		  <padding>0</padding>
 		  <expand>True</expand>
 		  <fill>True</fill>
-		</child>
-	      </widget>
-	    </widget>
-	  </widget>
-
-	  <widget>
-	    <class>GtkFrame</class>
-	    <name>frame65</name>
-	    <border_width>4</border_width>
-	    <label>Frame Pos.</label>
-	    <label_xalign>0</label_xalign>
-	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	    <child>
-	      <left_attach>2</left_attach>
-	      <right_attach>3</right_attach>
-	      <top_attach>1</top_attach>
-	      <bottom_attach>2</bottom_attach>
-	      <xpad>0</xpad>
-	      <ypad>0</ypad>
-	      <xexpand>False</xexpand>
-	      <yexpand>False</yexpand>
-	      <xshrink>False</xshrink>
-	      <yshrink>False</yshrink>
-	      <xfill>True</xfill>
-	      <yfill>True</yfill>
-	    </child>
-
-	    <widget>
-	      <class>GtkHBox</class>
-	      <name>hbox15</name>
-	      <homogeneous>True</homogeneous>
-	      <spacing>0</spacing>
-
-	      <widget>
-		<class>GtkArrow</class>
-		<name>shinfo_frame_up</name>
-		<arrow_type>GTK_ARROW_UP</arrow_type>
-		<shadow_type>GTK_SHADOW_OUT</shadow_type>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkArrow</class>
-		<name>shinfo_frame_down</name>
-		<arrow_type>GTK_ARROW_DOWN</arrow_type>
-		<shadow_type>GTK_SHADOW_OUT</shadow_type>
-		<xalign>0.5</xalign>
-		<yalign>0.5</yalign>
-		<xpad>0</xpad>
-		<ypad>0</ypad>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
-		</child>
-	      </widget>
-
-	      <widget>
-		<class>GtkButton</class>
-		<name>button30</name>
-		<can_focus>True</can_focus>
-		<label>Del</label>
-		<relief>GTK_RELIEF_NORMAL</relief>
-		<child>
-		  <padding>0</padding>
-		  <expand>False</expand>
-		  <fill>False</fill>
 		</child>
 	      </widget>
 	    </widget>

@@ -59,7 +59,6 @@ private:
 	char			*default_game;
 	guint32			background_color;
 	static ExultStudio	*self;
-	bool			exiting;	// In destructor.++++Needed?
 						// Modified one of the .dat's?
 	bool			shape_info_modified;
 	Shape_file_set		*files;		// All the shape files.
@@ -126,8 +125,6 @@ public:
 		{ return browser; }
 	Shape_file_info *get_vgafile()	// 'shapes.vga'.
 		{ return vgafile; }
-	bool is_exiting() const
-		{ return exiting; }
 	Shape_group_file *get_cur_groups();
 	void set_browser(const char *name, Object_browser *obj);
 	bool has_focus();		// Any of our windows has focus?
