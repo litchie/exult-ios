@@ -272,7 +272,7 @@ int Container_game_object::remove_quantity
 Game_object *Container_game_object::find_item
 	(
 	int shapenum,			// Shape #.
-	int qual,			// Quality, or c_any_qual for any. ???+++++
+	int qual,			// Quality, or c_any_qual for any.
 	int framenum			// Frame, or c_any_framenum for any.
 	)
 	{
@@ -283,8 +283,9 @@ Game_object *Container_game_object::find_item
 	while ((obj = next.get_next()) != 0)
 		{
 		if (obj->get_shapenum() == shapenum &&
-		    (framenum == c_any_framenum || obj->get_framenum() == framenum))
-					// ++++++Quality???
+		    (framenum == c_any_framenum || 
+					obj->get_framenum() == framenum) &&
+		    (qual == c_any_qual || obj->get_quality() == qual))
 			return (obj);
 
 					// Do it recursively.
