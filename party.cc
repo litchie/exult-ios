@@ -291,24 +291,27 @@ void Party_manager::move_followers
 	int dir4 = dir/2;		// 0-3 now.
 	Actor *lnpc = lnum == -1 ? 0 : gwin->get_npc(lnum);
 	Actor *rnpc = rnum == -1 ? 0 : gwin->get_npc(rnum);
+	bool lmoved = false, rmoved = false;
 					// Have each take a step.
 	if (lnpc)
-		step(lnpc, dir, pos + Tile_coord(
+		lmoved = step(lnpc, dir, pos + Tile_coord(
 			left_offsets[dir4][0], left_offsets[dir4][1], 0));
 	if (rnpc)
-		step(rnpc, dir, pos + Tile_coord(
+		rmoved = step(rnpc, dir, pos + Tile_coord(
 			right_offsets[dir4][0], right_offsets[dir4][1], 0));
-	if (lnpc)
+	if (lmoved)
 		move_followers(lnpc, dir);
-	if (rnpc)
+	if (rmoved)
 		move_followers(rnpc, dir);
 	}
 
 /*
  *	Move one follower to its destination (if possible).
+ *
+ *	Output:	True if he moved.
  */
 
-void Party_manager::step
+bool Party_manager::step
 	(
 	Actor *npc,
 	int dir,			// Direction we're walking (0-7).
@@ -340,7 +343,7 @@ void Party_manager::step
 			dest.ty = pos.ty;
 		}
 	if (pos == dest)
-		return;			// Stay pat.
+		return false;		// Stay pat.
 	Frames_sequence *frames = npc->get_frames(dir);
 	int& step_index = npc->get_step_index();
 	if (!step_index)		// First time?  Init.
@@ -348,8 +351,9 @@ void Party_manager::step
 					// Get next (updates step_index).
 	int frame = frames->get_next(step_index);
 	if (npc->step(dest, frame))
-		return;			// Succeeded.
+		return true;		// Succeeded.
 	//+++++Obviously, we should work around obstacles.
 	frames->decrement(step_index);	// We didn't take the step.
+	return false;
 	}
 
