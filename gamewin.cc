@@ -143,7 +143,7 @@ void Background_noise::handle_event
 	    Game::get_game_type() == BLACK_GATE)
 		{
 		int sound;		// BG SFX #.
-		static unsigned char bgnight[] = {61, 103, 110},
+		static unsigned char bgnight[] = {61, 255, 255}, 
 				     bgday[] = {82, 85, 85};
 		if (repeats > 0)	// Repeating?
 			sound = last_sound;
