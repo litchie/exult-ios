@@ -14,5 +14,5 @@
 		<u7path>/home/dancer/projects/u7/</u7path>
 	</disk>
 	<newform option="something">newstuff</newform>
-
+	<debugging/>
 </config>

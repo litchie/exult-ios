@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include "exult_constants.h"
 
+using std::string;
+
 const std::string c_empty_string;
 
 Configuration	config;
@@ -56,15 +58,24 @@ void	test1(void)
 	config.read_config_file("./config.xml");
 
 	int	n;
-	config.value("config/audio/midi/device",n,-1);
-	cout << "Returned from reference. Got '" << n << "'" << endl;
-	assert(n==5);
 	std::string	r;
-	config.value("config/audio/midi/enabled",r,"--nil--");
-	cout << "Returned from reference. Got '" << r << "'" << endl;
+	
+	std::string test_device("config/audio/midi/device");
+	config.value(test_device, n, -1);
+	cout << "Returned from reference, \"" << test_device << "\". Got '" << n << "'" << endl;
+	assert(n==5);
+	
+	std::string test_enabled("config/audio/midi/enabled");
+	config.value(test_enabled, r, "--nil--");
+	cout << "Returned from reference, \"" << test_enabled << "\". Got '" << r << "'" << endl;
 	assert(r=="yes");
 
-	config.set("config/something/something/else","wibble",false);
+	/*std::string test_debug("config/debugging/");
+	config.value(test_debug, r, "--nil--");
+	cout << "Returned from reference, \"" << test_debug << "\". Got '" << r << "'" << endl;
+	assert(r=="yes");*/
+	
+	config.set("config/something/something/else", "wibble", false);
 
 	std::string	out=config.dump();
 	cout << out << endl;
@@ -72,7 +83,7 @@ void	test1(void)
 	std::vector<std::string> vs;
 
 	vs=config.listkeys("config");
-	dump_stringvec(vs,4);
+	dump_stringvec(vs,5);
 
 	vs=config.listkeys("config/audio");
 	dump_stringvec(vs,3);
@@ -83,6 +94,29 @@ void	test1(void)
 	vs=config.listkeys("config/somenonexistantthing");
 	dump_stringvec(vs,0);
 
+	config.clear();
+	//cout << endl << config.dump() << endl;
+	assert(config.dump()=="<config>\n</config>\n");
+	
+	Configuration config_slash(string(""), string("root"));
+	//cout << endl << config_slash.dump() << endl;
+	assert(config_slash.dump()=="<root>\n</root>\n");
+	
+	config.clear("foo");
+	assert(config.dump()=="<foo>\n</foo>\n");
+	
+	Configuration confnew("./config.xml", "config");
+	
+	Configuration::KeyTypeList ktl;
+	string basekey("config/audio");
+	confnew.getpairs(ktl, basekey);
+	
+	cout << endl;
+	
+	for(Configuration::KeyTypeList::iterator i=ktl.begin(); i!=ktl.end(); i++)
+		cout << "Key:\t" << i->first << endl << "Value:\t" << i->second << endl;
+	assert(ktl.size()==7);
+	
 }
 
 void test2(void)

@@ -46,6 +46,12 @@ public:
 	const std::string &value(void) const
 		{ return content; }
 	
+	typedef std::pair<std::string, std::string> KeyType;
+	typedef std::vector<KeyType> KeyTypeList;
+	
+	void searchpairs(KeyTypeList &ktl, const std::string &basekey, const std::string currkey, const unsigned int pos);
+	void selectpairs(KeyTypeList &ktl, const std::string currkey);
+	
 	std::string dump(int depth = 0);
 	void	xmlassign(std::string &key,std::string &value);
 	void	xmlparse(std::string &s,std::size_t &pos);

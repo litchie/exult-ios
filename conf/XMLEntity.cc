@@ -294,10 +294,13 @@ void	XMLnode::xmlparse(string &s,std::size_t &pos)
 			}
 			case '>':
 				// End of tag
-				if((s[pos-1]=='/') && (s[pos-2]=='<'))
+				if(s[pos-1]=='/')
 				{
-					++pos;
-					return; // An empty tag
+					if(s[pos-2]=='<')
+					{
+						++pos;
+						return; // An empty tag
+					}
 				}
 				++pos;
 				intag = false;
@@ -316,4 +319,30 @@ void	XMLnode::xmlparse(string &s,std::size_t &pos)
 	}
 	trim(content);
 }
+
+void XMLnode::searchpairs(KeyTypeList &ktl, const string &basekey, const string currkey, const unsigned int pos)
+{
+	//std::cout << basekey << std::endl << '\t' << currkey + id << std::endl << "\t\t" << content << std::endl;
+	
+	if(basekey==currkey+id)
+		for(vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
+			(*i)->selectpairs(ktl, "");
+	else
+		for(vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
+			(*i)->searchpairs(ktl, basekey, currkey + id + '/', pos);
+}
+
+void XMLnode::selectpairs(KeyTypeList &ktl, const std::string currkey)
+{
+	//std::cout << '>' << currkey + id << std::endl << '\t' << content << std::endl;
+	
+	ktl.push_back(KeyType(currkey + id, content));
+	
+	for(vector<XMLnode *>::iterator i=nodelist.begin(); i!=nodelist.end(); i++)
+		(*i)->selectpairs(ktl, currkey + id + '/');
+}
+
+
+
+
 
