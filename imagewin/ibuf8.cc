@@ -316,7 +316,7 @@ void Image_buffer8::fill_line_translucent8
 	unsigned char val,		// Ignored for this method.
 	int srcw,
 	int destx, int desty,
-	Xform_palette xform		// Transform table.
+	Xform_palette& xform		// Transform table.
 	)
 	{
 	int srcx = 0;
@@ -341,7 +341,7 @@ void Image_buffer8::fill_translucent8
 	unsigned char /* val */,	// Not used.
 	int srcw, int srch,
 	int destx, int desty,
-	Xform_palette xform		// Transform table.
+	Xform_palette& xform		// Transform table.
 	)
 	{
 	int srcx = 0, srcy = 0;

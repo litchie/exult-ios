@@ -1,3 +1,8 @@
+2002-07-23  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* imagewin/imagebuf.h (public): Xform_palette is now a class
+	containing the color that's being blended.
+
 2002-07-23  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* keyactions.*: renamed functions to use north/south/east/west and
 	  added diagonals (north-west, etc.), implemented running

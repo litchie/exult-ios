@@ -61,7 +61,7 @@ class Shape_manager : public Game_singletons
 	Fonts_vga_file *fonts;		// "fonts.vga" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
-	Xform_palette invis_xform;	// For showing invisible NPC's.
+	Xform_palette *invis_xform;	// For showing invisible NPC's.
 	unsigned char special_pixels[NPIXCOLORS];	// Special colors.
 	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
 					//   is found when playing BG
@@ -80,7 +80,7 @@ public:
 		{ return files[(int) f]; };
 	Shapes_vga_file& get_shapes()
 		{ return shapes; }
-	inline Xform_palette get_xform(int i) const
+	inline Xform_palette& get_xform(int i)
 		{ return xforms[i]; }
 	// BG Only
 	inline bool can_use_paperdolls() const
@@ -113,7 +113,7 @@ public:
 	inline void paint_invisible(int xoff, int yoff, Shape_frame *shape)
 		{
 		if (shape) shape->paint_rle_transformed(
-						xoff, yoff, invis_xform);
+						xoff, yoff, *invis_xform);
 		}
 					// Paint outline around a shape.
 	inline void paint_outline(int xoff, int yoff, Shape_frame *shape, 

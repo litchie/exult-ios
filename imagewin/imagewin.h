@@ -210,12 +210,12 @@ public:
 				first_translucent, last_translucent, xforms); }
 					// Apply translucency to a line.
 	void fill_line_translucent8(unsigned char val,
-			int srcw, int destx, int desty, Xform_palette xform)
+			int srcw, int destx, int desty, Xform_palette& xform)
 		{ ibuf->fill_line_translucent8(val, srcw, destx, desty,
 								xform); }
 					// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch, 
-				int destx, int desty, Xform_palette xform)
+				int destx, int desty, Xform_palette& xform)
 		{ IF_OPENGL(opengl_fill_translucent8(val, srcw, srch,
 			destx, desty, xform), ibuf->fill_translucent8(val, 
 					srcw, srch, destx, desty, xform)); }
@@ -232,7 +232,7 @@ public:
 	void opengl_fill8(unsigned char val, int srcw, int srch,
 						int destx, int desty);
 	virtual void opengl_fill_translucent8(unsigned char val, 
-		int srcw, int srch, int destx, int desty, Xform_palette xform);
+	    int srcw, int srch, int destx, int desty, Xform_palette& xform);
 #endif
 	/*
 	 *	Depth-independent methods:

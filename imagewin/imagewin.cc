@@ -623,7 +623,7 @@ void Image_window::opengl_fill8
 	glTranslatef(x, y, 0);
 	glBegin(GL_QUADS);
 		{
-		glColor3f(color.r/255.0, color.g/255.0, color.b/255.0);
+		glColor3ub(color.r, color.g, color.b);
 		glVertex3i(0, 0, 0);
 		glVertex3i(srcw, 0, 0);
 		glVertex3i(srcw, srch, 0);
@@ -642,10 +642,23 @@ void Image_window::opengl_fill_translucent8
 	unsigned char /* val */,	// Not used.
 	int srcw, int srch,
 	int destx, int desty,
-	Xform_palette xform		// Transform table.
+	Xform_palette& xform		// Transform table.
 	)
 	{
-	//++++++++++Later.
+#if 0	/* +++++I think this is what it should be */
+	glDisable(GL_TEXTURE_2D);	// Disable texture-mapping.
+	int x = destx;			// Left edge.
+	int y = -(desty + srch);
+	glBegin(GL_QUADS);
+		{
+		glColor4ub(xform.r, xform.g, xform.b, xform.a);
+		glVertex2i(x, y);
+		glVertex2i(x + srcw, y);
+		glVertex2i(x + srcw, y + srch);
+		glVertex2i(x, y + srch);
+		}
+	glEnd();
+#endif
 	}
 
 #endif
