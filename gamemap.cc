@@ -54,7 +54,7 @@
 #include "gamewin.h"	/* With some work, could get rid of this. */
 #include "bodies.h"
 #include "game.h"
-#include "objiter.h"
+#include "objiter.cc"	/* Yes we #include the .cc here on purpose! Please don't "fix" this */
 #include <fstream>
 
 using std::cerr;
