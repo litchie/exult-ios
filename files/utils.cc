@@ -26,6 +26,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream>
 #include <hash_map>
 #include <cctype>
+#if defined(MACOS)
+  #include <stat.h>
+#else
+  #include <sys/stat.h>
+#endif
 
 #include "utils.h"
 
@@ -237,8 +242,24 @@ void U7remove
 	remove(name);
 	}
 
+/*
+ *	See if a file exists.
+ */
 
+int U7exists
+	(
+	const char *fname			// May be converted to upper-case.
+	)
+	{
+	char * filename = get_system_path((char *)fname);
 	
+	char name[512];
+	Switch_slash(name, filename);
+	free(filename);
+	struct stat sbuf;
+	return (stat(name, &sbuf) == 0);
+	}
+
 /*
  *	Take log2 of a number.
  *
