@@ -942,7 +942,7 @@ void Shape_chooser::edit_shape
 #endif
 	if (check_editing_timer == -1)	// Monitor files every 6 seconds.
 		check_editing_timer = gtk_timeout_add(6000,
-				Shape_chooser::check_editing_files, 0L);
+				Shape_chooser::check_editing_files_cb, 0L);
 	}
 
 /*
@@ -952,7 +952,7 @@ void Shape_chooser::edit_shape
  *	Output:	1 always.
  */
 
-gint Shape_chooser::check_editing_files
+gint Shape_chooser::check_editing_files_cb
 	(
 	gpointer
 	)
