@@ -209,7 +209,9 @@ void Game_window::paint_chunk_flats
 	Chunk_object_list *olist = get_objects(cx, cy);
 					// Paint flat tiles.
 	Image_buffer8 *cflats = olist->get_rendered_flats();
-	win->copy8(cflats->get_bits(), c_chunksize, c_chunksize, xoff, yoff);
+	if (cflats)
+		win->copy8(cflats->get_bits(), c_chunksize, c_chunksize, 
+								xoff, yoff);
 
 	Flat_object_iterator next(olist);// Now do flat RLE objects.
 	Game_object *obj;
@@ -236,7 +238,9 @@ void Game_window::paint_dungeon_chunk_flats
 		}
 					// Paint flat tiles.
 	Image_buffer8 *cflats = olist->get_rendered_flats();
-	win->copy8(cflats->get_bits(), c_chunksize, c_chunksize, xoff, yoff);
+	if (cflats)
+		win->copy8(cflats->get_bits(), c_chunksize, c_chunksize, 
+								xoff, yoff);
 					// Paint tiles outside dungeon black.
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
