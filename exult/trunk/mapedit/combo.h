@@ -38,12 +38,12 @@ class Flex;
  */
 class Combo_member
 	{
-	int tx, ty, tz;			// Location (tile) rel. to top-left.
-	int shapenum, framenum;		// Object in shapes.vga.
+	short tx, ty, tz;		// Location (tile) rel. to top-left.
+	short shapenum, framenum;	// Object in shapes.vga.
 public:
 	friend class Combo;
 	friend class Combo_editor;
-	Combo_member(int x, int y, int z, int sh, int fr)
+	Combo_member(short x, short y, short z, short sh, short fr)
 		: tx(x), ty(y), tz(z), shapenum(sh), framenum(fr)
 		{  }
 	};
@@ -55,10 +55,10 @@ class Combo
 	{
 	Shapes_vga_file *shapes_file;	// Where shapes come from.
 	vector<Combo_member *> members;	// Members of this combination.
-	int hot_index;			// Index of obj. whose 'hot spot' we'll
+	short hot_index;		// Index of obj. whose 'hot spot' we'll
 					//   use.
-	int starttx, startty;		// Offset represented by top-left.
-	int xtiles, ytiles, ztiles;	// Dimensions.
+	short starttx, startty;		// Offset represented by top-left.
+	short xtiles, ytiles, ztiles;	// Dimensions.
 public:
 	friend class Combo_editor;
 	Combo(Shapes_vga_file *svga);
@@ -72,6 +72,9 @@ public:
 	void draw(Shape_draw *draw, int selected = -1, 
 						int xoff = 0, int yoff = 0);
 	int find(int mx, int my);	// Find at mouse position.
+					// Serialize:
+	unsigned char *write(int& datalen);
+	unsigned char *read(unsigned char *buf, int bufsize);
 	};
 
 /*
