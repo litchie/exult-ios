@@ -296,7 +296,6 @@ char *Game_window::get_game_identity
 	in.seekg(finfo[2*i]);	// Get to it.
 	char fname[50];		// Set up name.
 	in.read(&fname, 13);
-	int namelen = strlen(fname);
 	if (!strcmp("identity",fname))
 	    {
       	      game_identity = new char[len];

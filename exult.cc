@@ -411,8 +411,6 @@ static void Handle_event
 	{
 					// For detecting double-clicks.
 	static unsigned long last_b1_click = 0;
-	unsigned int mask;
-	char keybuf[10];
 //cout << "Event " << (int) event.type << " received\n";
 	switch (event.type)
 		{

@@ -91,7 +91,7 @@ void	Args::process(int argc,char **argv)
 					}
 				case Opts::type_int:
 					{
-					char buf[64];
+//					char buf[64];
 					if(options[j].option==argv[i])
 						{
 						// We want the _next_ argument
@@ -106,7 +106,7 @@ void	Args::process(int argc,char **argv)
 					}
 				case Opts::type_unsigned:
 					{
-					char buf[64];
+//					char buf[64];
 					if(options[j].option==argv[i])
 						{
 						// We want the _next_ argument

@@ -50,7 +50,7 @@ public:
 
 void Setup_item_names (ifstream& items) {
 	items.seekg(0x54);
-	int num_items = Read4(items);
+//	int num_items = Read4(items);
 	for(int i=0; i<1024; i++) {
 		items.seekg(0x80+i*8);
 		int itemoffs = Read4(items);

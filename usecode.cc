@@ -224,10 +224,12 @@ void Scheduled_usecode::handle_event
 					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode <= 0x38)
 				{	// Step in dir. opcode&7.????
+#if 0
 				static short offsets[16] = {
 					-1,0, -1,1, 1,0, 1,-1, 0,-1,
 					-1,-1, -1,0, -1,1 };
 //++++++++++++
+#endif
 				}
 			else
 				printf("Unhanded sched. opcode %02x\n",opcode);
@@ -860,7 +862,7 @@ void Usecode_machine::remove_item
 		return;
 	if (obj == last_created)
 		last_created = 0;
-	obj->remove();			// Remove from world or container.
+	obj->remove_this();		// Remove from world or container.
 	gwin->paint();
 	}
 
@@ -1509,7 +1511,6 @@ USECODE_INTRINSIC(get_object_position)
 {
 	// Takes itemref.  ?Think it rets.
 	//  hotspot coords: (x, y, z).
-	int tx, ty, tz;		// Get tile coords.
 	Game_object *obj = get_item(parms[0]);
 	Tile_coord c(0, 0, 0);
 	if (obj)		// (Watch for animated objs' wiggles.)
@@ -1662,7 +1663,6 @@ USECODE_INTRINSIC(update_last_created)
 		}
 	Usecode_value& arr = parms[0];
 	int sz = arr.get_array_size();
-	Game_object *obj = 0;
 	if (sz == 3)
 		last_created->move(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
@@ -1830,7 +1830,7 @@ USECODE_INTRINSIC(give_last_created)
 	int ret = 0;
 	if (npc && last_created)
 		{			// Remove, but don't delete, last.
-		last_created->remove(1);
+		last_created->remove_this(1);
 		ret = npc->add(last_created);
 		}
 	Usecode_value u(ret);
@@ -1957,7 +1957,6 @@ USECODE_INTRINSIC(book_mode)
 USECODE_INTRINSIC(earthquake)
 {
 	int len = parms[0].get_int_value();
-	Earthquake *quake = new Earthquake(gwin, len);
 	gwin->get_tqueue()->add(SDL_GetTicks() + 10,
 		new Earthquake(gwin, len), (long) this);
 	return(no_ret);
@@ -2609,7 +2608,6 @@ void Usecode_machine::run
 		printf("Running usecode %04x with event %d\n", fun->id, event);
 #endif
 	Usecode_value *save_sp = sp;	// Save TOS, last-created.
-	Game_object *save_lc = last_created;	// Guessing we should save it.
 #if 0
 	Answers save_answers;		// Save answers list.
 	save_answers = answers;

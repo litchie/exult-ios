@@ -314,7 +314,6 @@ void Image_buffer8::copy_line8
 	)
 	{
 	int srcx = 0, srcy = 0, srch = 1;
-	int src_width = srcw;		// Save full source width.
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
@@ -340,7 +339,6 @@ void Image_buffer8::copy_line_translucent8
 	)
 	{
 	int srcx = 0, srcy = 0, srch = 1;
-	int src_width = srcw;		// Save full source width.
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
@@ -700,7 +698,6 @@ void Image_buffer16::copy_line8
 	)
 	{
 	int srcx = 0, srcy = 0, srch = 1;
-	int src_width = srcw;		// Save full source width.
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
