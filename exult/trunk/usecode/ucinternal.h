@@ -270,6 +270,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(set_oppressor);
 	USECODE_INTRINSIC_DECL(get_weapon);
 	USECODE_INTRINSIC_DECL(display_area);
+	USECODE_INTRINSIC_DECL(wizard_eye);
 	USECODE_INTRINSIC_DECL(resurrect);
 	USECODE_INTRINSIC_DECL(get_body_npc);
 	USECODE_INTRINSIC_DECL(add_spell);

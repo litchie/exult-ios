@@ -100,7 +100,7 @@
 	USECODE_INTRINSIC_PTR(clone),	// 0x4d     CloneNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e UNUSED
 	USECODE_INTRINSIC_PTR(display_area), // 0x4f// ShowCrystalBall(ucdump)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50     ShowWizardEye (ucdump.c)
+	USECODE_INTRINSIC_PTR(wizard_eye),	// 0x50
 	USECODE_INTRINSIC_PTR(resurrect),// 0x51     ResurrectNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(add_spell),// 0x52     AddSpellToBook (ucdump.c)
 	USECODE_INTRINSIC_PTR(sprite_effect),// 0x53 ExecuteSprite (ucdump.c)
