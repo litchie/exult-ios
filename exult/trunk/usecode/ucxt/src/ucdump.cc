@@ -142,6 +142,7 @@ int main(int argc, char** argv)
 	// ICK! Don't try this at home kids...
 	// done because for some reason it started crashing upon piping or redirection to file... wierd.
 	// yes, it's a hack to fix an eldritch bug I could't find... it seems appropriate
+	// FIXME: Problem nolonger exists. Probably should put some 'nice' code in it's place.
 	std::ofstream outputstream;
 	std::streambuf *coutbuf=0;
 	if(uc.output_redirect().size())

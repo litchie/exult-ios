@@ -183,6 +183,5 @@ extern std::map<unsigned int, std::string> si_uc_intrinsics;
 void init_static_usecodetables();
 void init_usecodetables(const Configuration &config, const UCOptions &options);
 
-
 #endif
 

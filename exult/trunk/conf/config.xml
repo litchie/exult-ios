@@ -15,6 +15,7 @@
 	<disk>
 		<!-- Yet a third comment -->
 		<u7path>/home/dancer/projects/u7/</u7path>
+		<u7path_with_spaces> d:\ultima series\ultima vii - the serpent isle </u7path_with_spaces>
 	</disk>
 	<newform option="something">newstuff</newform>
 	<debugging/>
