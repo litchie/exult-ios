@@ -1,5 +1,6 @@
-#include "args.h"
 #include <iostream>
+
+#include "args.h"
 
 
 void	Args::declare(const char *s,bool *b,bool defval)

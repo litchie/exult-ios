@@ -44,7 +44,6 @@ class Game_window;
 class Npc_actor;
 class Rectangle;
 class Container_game_object;
-class ostream;
 
 /*
  *	Sizes:

@@ -26,8 +26,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_UTILS
 #define INCL_UTILS	1
 
+#ifdef MACOS
+#include <fstream>
+#else
 class ifstream;
 class ofstream;
+#endif
 
 /*
  *	Read a 1-byte value.

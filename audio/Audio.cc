@@ -38,8 +38,12 @@ extern	Configuration *config;
 #include <SDL_audio.h>
 #include <SDL_timer.h>
 #include <csignal>
-#include <sys/types.h>
-#include <sys/stat.h>
+#if defined(MACOS)
+  #include <stat.h>
+#else
+  #include <sys/stat.h>
+  #include <sys/types.h>
+#endif
 #include <fcntl.h>
 
 

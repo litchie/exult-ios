@@ -181,7 +181,7 @@ void Game_window::read_npcs
 		for (i = 0; i < num_monsters; i++)
 			{
 			int shape = Read2(mfile);
-			mfile.read(monster, 23);// Get the rest.
+			mfile.read((char*)monster, 23);// Get the rest.
 					// Point to flags.
 			unsigned char *ptr = &monster[7];
 			unsigned short flags = Read2(ptr);
@@ -294,7 +294,7 @@ void Game_window::read_schedules
 		for (int j = 0; j < cnt; j++)
 			{
 			unsigned char ent[4];
-			sfile.read(ent, 4);
+			sfile.read((char*)ent, 4);
 			schedules[j].set(ent);
 #if 0
 			cout << "    " << sched->get_type() << 

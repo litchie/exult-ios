@@ -263,7 +263,7 @@ void Shape_frame::create_rle
 	int datalen = out - buf;	// Create buffer of correct size.
 #ifdef DEBUG
 	if(datalen > w*h*2 + 16*h)
-		cerr << "create_rle: datalen: " << datalen << " w: " << w
+		cout << "create_rle: datalen: " << datalen << " w: " << w
 			<< " h: " << h << endl;
 #endif
 	delete [] data;			// Delete old data if there.
@@ -350,7 +350,7 @@ void Shape_frame::get_rle_shape
 	ybelow = Read2(shapes);
 	len -= 8;			// Subtract what we just read.
 	data = new unsigned char[len + 2];	// Allocate and read data.
-	shapes.read(data, len);
+	shapes.read((char*)data, len);
 	Check_file(shapes);
 	data[len] = 0;			// 0-delimit.
 	data[len + 1] = 0;
@@ -586,7 +586,7 @@ int Shapes_vga_file::read_info
 		return (0);
 	for (int i = 0; i < num_shapes; i++)
 		{
-		tfa.read(&info[i].tfa[0], 3);
+		tfa.read((char*)&info[i].tfa[0], 3);
 		info[i].set_tfa_data();
 		}
 	ifstream ready;

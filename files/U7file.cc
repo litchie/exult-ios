@@ -3,6 +3,7 @@
 #include "IFF.h"
 #include "Table.h"
 #include <cstdio>
+#include <iostream>
 
 #define	TRY_FILE_TYPE(uf,CLASS_NAME)	\
 	if(!uf) \

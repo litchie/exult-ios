@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <unistd.h>
 #include <csignal>
+#include <iostream>
 #include "../fnames.h"
 #include "../files/U7file.h"
 
@@ -69,9 +70,12 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 	return true;
 }
 
+
 #include "midi_drivers/Timidity_binary.h"
 #include "midi_drivers/KMIDI.h"
+#ifndef MACOS
 #include "midi_drivers/forked_player.h"
+#endif
 #include "midi_drivers/win_MCI.h"
 #include "midi_drivers/be_midi.h"
 
