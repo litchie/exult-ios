@@ -1,5 +1,6 @@
 #include "U7file.h"
 #include "Flex.h"
+#include "IFF.h"
 #include "Table.h"
 #include <cstdio>
 
@@ -25,6 +26,7 @@ U7file  *U7FileManager::get_file_object(const string &s)
 		}
 	// Not in our cache. Attempt to figure it out.
 	
+	TRY_FILE_TYPE(uf,IFF);
 	TRY_FILE_TYPE(uf,Flex);
 	TRY_FILE_TYPE(uf,Table);
 
