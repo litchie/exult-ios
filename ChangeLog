@@ -1,3 +1,10 @@
+2001-02-06  Christoph Reichenbach  <jameson@linuxgames.com>
+
+	* vast amount of files: "Fixed" alpha_kludges.h includes. I'll get
+	nightmares from the sheer ugliness I introduced again.
+	
+	* actorio.cc: Fixed typo (?) in line 296: Game::Game::get_avname()
+
 2001-02-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keys.cc/h: moved some declarations from .h to .cc
 
