@@ -128,7 +128,6 @@ EXULT_FLX_OBJECTS = \
 	data/vid_left.shp \
 	data/vid_resolution.shp \
 	data/vid_right.shp \
-	data/vid_scaler.shp \
 	data/vid_scaling.shp \
 	data/videooptions.shp \
 	data/flx.in

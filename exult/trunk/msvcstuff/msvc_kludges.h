@@ -26,6 +26,7 @@
 // Disable some warnings
 #pragma warning (disable: 4786)	// Debug Len > 255
 #pragma warning (disable: 4355)	// 'this' : used in base member initializer list
+#pragma warning (disable: 4101) // unreferenced local variable
 
 // Define size_t, but don't define tm, we'll define that later
 #define _TM_DEFINED

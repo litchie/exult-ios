@@ -284,6 +284,85 @@ void Image_window::show_scaled8to32_2xSaI
 	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
+
+//
+// Super2xSaI Filtering
+//
+void Image_window::show_scaled8to16_Super2xSaI
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
+	Manip8to16 manip(surface->format->palette->colors,
+						scaled_surface->format);
+	Scale_Super2xSaI<unsigned char, uint16, Manip8to16>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (uint16 *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	}
+
+void Image_window::show_scaled8to555_Super2xSaI
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
+	Manip8to555 manip(surface->format->palette->colors);
+	Scale_Super2xSaI<unsigned char, uint16, Manip8to555>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (uint16 *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	}
+
+void Image_window::show_scaled8to565_Super2xSaI
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
+	Manip8to565 manip(surface->format->palette->colors);
+	Scale_Super2xSaI<unsigned char, uint16, Manip8to565>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (uint16 *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	}
+
+void Image_window::show_scaled8to32_Super2xSaI
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	increase_area(x,y,w,h, 2,2,1,1, ibuf->width, ibuf->height);
+
+	Manip8to32 manip(surface->format->palette->colors,
+						scaled_surface->format);
+	Scale_Super2xSaI<unsigned char, uint32, Manip8to32>
+		(ibuf->get_bits(), x, y, w, h,
+			ibuf->line_width, ibuf->height, 
+			(uint32 *) scaled_surface->pixels,
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+								manip);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	}
+
+
 //
 // SuperEagle Filtering
 //

@@ -46,7 +46,8 @@ public:
 		bilinear = 1,
 		interlaced = 2,
 		SaI = 3,
-		SuperEagle = 4
+		SuperEagle = 4,
+		Super2xSaI = 5
 	};
 protected:
 	Image_buffer *ibuf;		// Where the data is actually stored.
@@ -66,6 +67,11 @@ protected:
 	void show_scaled8to555_2xSaI(int x, int y, int w, int h);
 	void show_scaled8to565_2xSaI(int x, int y, int w, int h);
 	void show_scaled8to32_2xSaI(int x, int y, int w, int h);	
+	void show_scaled8to16_Super2xSaI(int x, int y, int w, int h);
+	void show_scaled8to555_Super2xSaI(int x, int y, int w, int h);
+	void show_scaled8to565_Super2xSaI(int x, int y, int w, int h);
+	void show_scaled8to32_Super2xSaI(int x, int y, int w, int h);	
+
 	void show_scaled8to16_bilinear(int x, int y, int w, int h);
 	void show_scaled8to555_bilinear(int x, int y, int w, int h);
 	void show_scaled8to565_bilinear(int x, int y, int w, int h);

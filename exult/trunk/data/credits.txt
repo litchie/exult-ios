@@ -70,6 +70,7 @@
 \CDerek Liauw Kie Fa
 \C2xSaI scaler
 \CSuperEagle scaler
+\CSuper2xSaI scaler
 
 
 \COTHER CONTRIBUTORS

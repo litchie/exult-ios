@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001 The Exult Team
+Copyright (C) 2000 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -16,31 +16,28 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
 
-#include "Gump_ToggleButton.h"
-#include "gamewin.h"
-#include "Gump.h"
+#include "Gump_button.h"
+#include <string>
 
-void Gump_ToggleButton::activate(Game_window *gwin)
+class Text_button : public Gump_button
 {
-	set_frame(get_framenum() + 2);
-	if (get_framenum() >= 2*numselections) set_frame(0);
-	toggle(get_framenum()/2);
-	paint(gwin);
-	gwin->set_painted();
-}
+protected:
+	std::string	text;
+	int		text_x;
+	int		text_y;
+	int		width;
+	int		height;
 
+	void init();
 
-void Gump_ToggleTextButton::activate(Game_window *gwin)
-{
-	set_frame(get_framenum() + 1);
-	if (get_framenum() >= numselections) set_frame(0);
-	text = selections[get_framenum()];
-	init();
-	toggle(get_framenum());
-	paint(gwin);
-	gwin->set_painted();
-}
+public:
+	Text_button(Gump *p, std::string str, int x, int y, int w = 0, int h = 0);
+	virtual void paint(Game_window *gwin);
+
+	virtual int on_widget(Game_window *gwin, int mx, int my);
+
+	virtual int on_button(Game_window *gwin, int mx, int my)
+	{ return on_widget (gwin, mx, my); }
+	
+};
