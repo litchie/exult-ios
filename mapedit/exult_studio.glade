@@ -12091,6 +12091,11 @@ Random
 	  <widget>
 	    <class>GtkDrawingArea</class>
 	    <name>combo_draw</name>
+	    <signal>
+	      <name>expose_event</name>
+	      <handler>on_combo_draw_expose_event</handler>
+	      <last_modification_time>Sat, 27 Apr 2002 22:46:19 GMT</last_modification_time>
+	    </signal>
 	  </widget>
 	</widget>
       </widget>
@@ -12343,7 +12348,7 @@ Random
 	  <signal>
 	    <name>clicked</name>
 	    <handler>gtk_widget_hide</handler>
-	    <object>combo_window</object>
+	    <object>combo_win</object>
 	    <last_modification_time>Sat, 27 Apr 2002 21:40:55 GMT</last_modification_time>
 	  </signal>
 	  <label>cancel</label>

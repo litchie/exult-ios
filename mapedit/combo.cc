@@ -28,10 +28,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "studio.h"
 #include "combo.h"
-#include "shapedraw.h"
 #include "exult_constants.h"
 #include "shapevga.h"
-
+#include "shapefile.h"
+#include "ibuf8.h"
 
 /*
  *	Open combo window.
@@ -44,12 +44,39 @@ C_EXPORT void on_new_combo1_activate
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-//	studio->open_locator_window();
+	studio->open_combo_window();
+	}
+void ExultStudio::open_combo_window
+	(
+	)
+	{
+	if (!vgafile)
+		{
+		EStudio::Alert("'shapes.vga' file isn't present");
+		return;
+		}
+	Shapes_vga_file *svga = (Shapes_vga_file *) vgafile->get_ifile();
+	delete combowin;		// Delete old (svga may have changed).
+	combowin = new Combo_editor(svga, palbuf);
+	combowin->show(true);
 	}
 
 /*
  *	Callbacks for "Combo" creation window.
  */
+C_EXPORT gint on_combo_draw_expose_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventExpose *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	combo->render(&event->area);
+	return TRUE;
+	}
+
 C_EXPORT void
 on_combo_apply_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
@@ -169,7 +196,8 @@ void Combo::remove
 
 void Combo::draw
 	(
-	Shape_draw *draw
+	Shape_draw *draw,
+	int selected			// Index of 'selected' item, or -1.
 	)
 	{
 	for (vector<Combo_member *>::iterator it = members.begin();
@@ -184,5 +212,92 @@ void Combo::draw
 		int x = mtx*c_tilesize - lft,
 		    y = mty*c_tilesize - lft;
 		draw->draw_shape(m->shapenum, m->framenum, x, y);
+		if (it - members.begin() == selected)
+					// Outline selected.
+					// FOR NOW, use color #1 ++++++++
+			draw->draw_shape_outline(m->shapenum, m->framenum,
+						x, y, 1);
 		}
+	}
+
+/*
+ *	Create combo editor.
+ */
+
+Combo_editor::Combo_editor
+	(
+	Shapes_vga_file *svga,		// File containing shapes.
+	unsigned char *palbuf		// Palette for drawing shapes.
+	) : Shape_draw(svga, palbuf, glade_xml_get_widget(
+		ExultStudio::get_instance()->get_xml(), "combo_draw")),
+	    selected(-1)
+	{
+	static bool first = true;
+	combo = new Combo(svga);
+	GladeXML *app_xml = ExultStudio::get_instance()->get_xml();
+	win = glade_xml_get_widget(app_xml, "combo_win");
+	gtk_object_set_user_data(GTK_OBJECT(win), this);
+	if (first)			// Indicate the events we want.
+		{
+		gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | 
+			GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
+		    GDK_BUTTON1_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
+		first = false;
+		}
+			//++++++++++Testing:
+	combo->add(3, 3, 0, 162, 0);
+	combo->add(5, 5, 0, 161, 0);
+	selected = 1;
+	}
+
+/*
+ *	Clean up.
+ */
+
+Combo_editor::~Combo_editor
+	(
+	)
+	{
+	}
+
+/*
+ *	Show/hide.
+ */
+
+void Combo_editor::show
+	(
+	bool tf
+	)
+	{
+	if (tf)
+		gtk_widget_show(win);
+	else
+		gtk_widget_hide(win);
+	}
+
+/*
+ *	Display.
+ */
+
+void Combo_editor::render
+	(
+	GdkRectangle *area		// 0 for whole draw area.
+	)
+	{
+	Shape_draw::configure();	// Setup the first time.
+					// Get dims.
+	int draww = draw->allocation.width,
+	    drawh = draw->allocation.height;
+	GdkRectangle all;
+	if (!area)
+		{
+		all.x = all.y = 0;
+		all.width = draww;
+		all.height = drawh;
+		area = &all;
+		}
+	gdk_gc_set_clip_rectangle(drawgc, area);
+	iwin->fill8(255);		// Fill with background color.
+	combo->draw(this, selected);	// Draw shapes.
+	Shape_draw::show(area->x, area->y, area->width, area->height);
 	}
