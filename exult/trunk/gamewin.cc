@@ -1510,6 +1510,8 @@ void Game_window::start_actor
 	int speed			// Msecs. between frames.
 	)
 	{
+	if (main_actor->Actor::get_flag(Actor::asleep))
+		return;			// Zzzzz....
 	teleported = 0;
 	int lift = main_actor->get_lift();
 	int liftpixels = 4*lift;	// Figure abs. tile.
@@ -1837,6 +1839,8 @@ void Game_window::show_items
 			(int) obj->get_flag(Game_object::okay_to_take) << endl;
 		cout << "Volume = " << info.get_volume() << endl;
 		cout << "obj = " << (void *) obj << endl;
+		if (obj->get_flag(Game_object::asleep))
+			cout << "ASLEEP" << endl;
 		}
 	else				// Obj==0
 		{
