@@ -572,3 +572,175 @@ const char* bg_func_table[] =
 };
 ----------------------------------------------------------------------------------
 
+***** Opcode Table from ucdump.cc Follows. *****
+----------------------------------------------------------------------------------
+/* Opcode table - common to BG & SI */
+const opcode_desc opcode_table[] =
+{
+  { NULL, 0, 0 },           /* 00 */
+  { NULL, 0, 0 },           /* 01 */
+  /* Next iteration of For Each-style loop
+    Operands are 1,2, <current>, <array variable>, <jump>
+    <current> is set to next value from <array variable>
+    Jumps to <jump> if array ended
+    ??? what are 1,2? Are they used?
+  */
+  { "next", 10, EFF_RELATIVE_JUMP },         /* 02 */
+  { NULL, 0, 0 },           /* 03 */
+  /* Asks user to select one the talk answers
+    Jumps where specified if no answer available
+  */
+  { "ask", 2, EFF_RELATIVE_JUMP },        /* 04 */
+  /* Pops a value from the top of stack, jump if false, zero or empty array */
+  { "jne", 2, EFF_RELATIVE_JUMP },        /* 05 */
+  /* jump */
+  { "jmp", 2, EFF_RELATIVE_JUMP },        /* 06 */
+  /* Pops the top-of-stack string & jumps if the string is NOT the last talk answer
+    ??? first operand seems to be always 1
+  */
+  { "jmpa", 4, EFF_RELATIVE_JUMP },      /* 07 */
+  { NULL, 0, 0 },           /* 08 */
+  /* Adds two values on the stack, popping them & pushing result
+    Can be used to add integer to string - in this case integer is converted to string
+    and 2 strings are concatenated */
+  { "add", 0, EFF_BIMATH },          /* 09 */
+  /* Decrements second value of the stack by first value, popping them & pushing result */
+  { "sub", 0, EFF_BIMATH },          /* 0a */
+  /* Divides second value of the stack by first value, popping them & pushing result */
+  { "div", 0, EFF_BIMATH },          /* 0b */
+  /* Multiplies two values on the stack, popping them & pushing result */
+  { "mul", 0, EFF_BIMATH },          /* 0c */
+  /* Divides second value of the stack by first value, popping them & pushing reminder */
+  { "mod", 0, EFF_BIMATH },          /* 0d */
+  /* Boolean AND on two values on stack, popping them & pushing result
+    Top-of-stack variable is the left one in case of string addition */
+  { "and", 0, EFF_BIMATH },          /* 0e */
+  /* Boolean OR on two values on stack, popping them & pushing result */
+  { "or", 0, EFF_BIMATH },           /* 0f */
+  /* Inverts a boolean value on top of stack */
+  { "not", 0, EFF_UNIMATH },          /* 10 */
+  { NULL, 0, 0 },           /* 11 */
+  /* Pops a stack value to given local variable */
+  { "pop", 2, EFF_POP },         /* 12 */
+  /* Pushes a TRUE boolean value on the stack */
+  { "push\ttrue", 0, EFF_PUSH },         /* 13 */
+  /* Pushes a FALSE boolean value on the stack */
+  { "push\tfalse", 0, EFF_PUSH },        /* 14 */
+  { NULL, 0, 0 },           /* 15 */
+  /* Pops 2 values from the stack, pushes boolean value -
+    TRUE if second value "?" then first
+    (where "?" can be greater, greater or equal etc...)
+  */
+  { "cmpgt", 0, EFF_CMP },          /* 16 */
+  { "cmplt", 0, EFF_CMP },          /* 17 */
+  { "cmpge", 0, EFF_CMP },          /* 18 */
+  { "cmple", 0, EFF_CMP },          /* 19 */
+  { "cmpne", 0, EFF_CMP },          /* 1a */
+  { NULL, 0, 0 },         /* 1b */
+  /* Adds a string from data segment to string register current contents */
+  { "addsi", 2, EFF_STUPIDEFF },        /* 1c */
+  /* Pushes a string value given by 16bit string offset in data segment to stack */
+  { "pushs", 2, EFF_STUPIDEFF },        /* 1d */
+  /* Pops specified number of values from stack, builds an array from them
+    & pushes it on the stack
+    Pushes the empty array to top of the stack if operand is 0
+  */
+  { "arrc", 2, EFF_STUPIDEFF },         /* 1e */
+  /* Pushes immediate 16bit integer to stack */
+  { "pushi", 2, EFF_PUSH },          /* 1f */
+  { NULL, 0, 0 },           /* 20 */
+  /* Pushes a local variable on stack */
+  { "push", 2, EFF_PUSH },          /* 21 */
+  /* Compares 2 values on the stack, pops them & pushes TRUE if they are equal */
+  { "cmpeq", 0, EFF_CMP },          /* 22 */
+  { NULL, 0, 0 },           /* 23 */
+  /* Calls a usecode function - function number is 0-based index to externs array */
+  { "call", 2, EFF_SINGLELINE },          /* 24 */
+  /* Return from function without result returned on the stack */
+  { "ret", 0, EFF_SINGLELINE },          /* 25 */
+  /* Uses the top-of-stack value to index (1-based) the array variable,
+    pops index & pushes result - the value from the array */
+  { "aget", 2, EFF_SINGLELINE },          /* 26 */
+  { NULL, 0, 0 },           /* 27 */
+  { NULL, 0, 0 },           /* 28 */
+  { NULL, 0, 0 },           /* 29 */
+  { NULL, 0, 0 },           /* 2a */
+  { NULL, 0, 0 },           /* 2b */
+  /* ??? Looks like to be the same as "exit"
+    ??? Suggestion: maybe "exit" is for functions, while "exit2" is for event handlers? */
+  { "exit2", 0, EFF_EXIT | EFF_SINGLELINE },          /* 2c */
+  /* Pop the top-of-stack value & sets it as a return value */
+  { "popr", 0, EFF_STUPIDEFF },         /* 2d */
+  /* Opens a new For Each-style enumeration loop.
+    Always followed by "next" opcode??? */
+  { "enum", 0, 0 },           /* 2e */
+  /* Adds local variable's string value to string register current contents */
+  { "addsv", 2, EFF_STUPIDEFF },         /* 2f */
+  /* If (top-of-stack - 1) value is in top-of-stack array, pushes true,
+    otherwise pushes false - after popping array & value */
+  { "in", 0, EFF_STUPIDEFF },           /* 30 */
+  /* Something strange with 2 varrefs (???) as operands
+    Appears in BG only - in talk to Raymundo in the Theatre - trying to sing a song
+    I -am- the Avatar (function: 08D1H)
+  */
+  { "???", 4, 0 },            /* 31 */
+  /* Return with a result returned on the stack */
+  { "retr", 0, EFF_STUPIDEFF },         /* 32 */
+  /* Displays the string register value (to current talk, sign, scroll or book),
+    string register emptied */
+  { "say", 0, EFF_STUPIDEFF },          /* 33 */
+  { NULL, 0, 0 },           /* 34 */
+  { NULL, 0, 0 },           /* 35 */
+  { NULL, 0, 0 },           /* 36 */
+  { NULL, 0, 0 },           /* 37 */
+  /* Calls engine's intrinsic function with specified number of parameters
+    (popping them). The return value remains on stack */
+  { "callis", 3, EFF_STUPIDEFF },          /* 38 */
+  /* Calls engine's intrinsic function with specified number of parameters
+    (popping them). No return value  */
+  { "calli", 3, EFF_SINGLELINE },         /* 39 */
+  { NULL, 0, 0 },           /* 3a */
+  { NULL, 0, 0 },           /* 3b */
+  { NULL, 0, 0 },           /* 3c */
+  { NULL, 0, 0 },           /* 3d */
+  /* Pushes identifier of the item ( for which the usecode event handler is called )
+    on the stack */
+  { "push\titemref", 0, EFF_PUSH },        /* 3e */
+  /* Aborts the function & all usecode execution, returning to the engine */
+  { "exit", 0, EFF_SINGLELINE },         /* 3f */
+  /* Removes all answers from the current talk */
+  { "cla", 0, 0 },            /* 40 */
+  { NULL, 0, 0 },           /* 41 */
+  /* Pushes game flag's value (boolean) on the stack */
+  { "pushf", 2, EFF_PUSH },         /* 42 */
+  /* Pops the stack value to the game flag (boolean) */
+  { "popf", 2, EFF_POP },          /* 43 */
+  /* Pushes an immediate byte to the stack */
+  { "pushbi", 1, EFF_PUSH },        /* 44 */
+  { NULL, 0, 0 },           /* 45 */
+  /* Uses the top-of-stack value to index (1-based) the array variable, (top-of-stack - 1)  as
+    the new value, and updates a value in the array slot (local variable specified
+    in the operand) */
+  { "aput", 2, EFF_ARRAY | EFF_SINGLELINE },          /* 46 */
+  /* Call of usecode function - function # is the operand
+    ???Suggestion: functions are divided into event handlers (called by external code
+    and the usecode) and functions (called by usecode only). "calle" is used to
+    call the event handler from the usecode, while "call" is used to call a function
+  */
+  { "calle", 2, 0 },          /* 47 */
+  /* Pushes the cause of usecode event handler call on the stack */
+  /*  (double-click on item is be 1, NPC death seems to be 7 in SI and 2 in BG ) */
+  { "push\teventid", 0, EFF_PUSH },        /* 48 */
+  { NULL, 0, 0 },           /* 49 */
+  /* Pops the value from the stack and adds it to array on the top of stack */
+  /*  or pops both values from the stack, builds an array from them */
+  /*  & pushes it on the stack if neither of them are arrays */
+  { "arra", 0, EFF_STUPIDEFF },         /* 4a */
+  /* Pops the top-of-stack value & sets the cause of usecode event handler to it
+    (double-click on item is be 1, NPC death seems to be 7 in SI and 2 in BG )
+    Used to call event handlers from the usecode
+  */
+  { "pop\teventid", 0, 0 },         /* 4b */
+};
+----------------------------------------------------------------------------------
+

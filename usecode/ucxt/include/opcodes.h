@@ -11,15 +11,15 @@
 #define MAX_NO_OPCODES 256
 
 /* Opcode descriptor */
-typedef struct _opcode_desc
-{
+//typedef struct _opcode_desc
+//{
   /* Mnemonic - NULL if not known yet */
-  char* mnemonic;
+//  char* mnemonic;
   /* Number of operand bytes */
-  int nbytes;
+//  int nbytes;
   /* Type flags */
-  unsigned long effect;
-} opcode_desc;
+//  unsigned long effect;
+//} opcode_desc;
 
 #define EFF_RELATIVE_JUMP 0x0001
 #define EFF_PUSH          0x0002
@@ -102,7 +102,7 @@ typedef struct _opcode_desc
 #define UCC_STRING       0xFFFA
 
 //76, 113
-extern const opcode_desc opcode_table[76];
+//extern const opcode_desc opcode_table[76];
 //extern const char* bg_func_table[113];
 
 vector<string> qnd_ocsplit(const string &s);
@@ -111,7 +111,7 @@ class UCOpcodeData
 {
 	public:
 		UCOpcodeData() : opcode(0x00), num_bytes(0) {};
-		UCOpcodeData(const vector<string> &v)
+		UCOpcodeData(const vector<string> &v)// : effect(0)
 		{
 			#if 0 // debugging
 			if((v.size()==8)==false)
@@ -139,6 +139,9 @@ class UCOpcodeData
 		string         ucs_nmo;
 		unsigned int   num_bytes;
 		vector<string> param_types;
+		
+		// temp for (effect? <grin>) _opcode_desc.
+		//unsigned long effect;
 };
 
 extern vector<UCOpcodeData> opcode_table_data;
