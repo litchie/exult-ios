@@ -23,25 +23,51 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <stdio.h>
+#include <string>
 
+extern int uc_line_num;			// Counts lines.
+extern string uc_source;		// Source filename.
+
+/*
+ *	MAIN.
+ */
 
 int main
 	(
-	char **argv,
-	int argc
+	int argc,
+	char **argv
 	)
 	{
 	extern int yyparse();
 	extern FILE *yyin;
 	if (argc > 1)
+		{
+		uc_source = argv[1];
 		yyin = fopen(argv[1], "r");
+		}
 	else
+		{
+		uc_source = "<stdin>";
 		yyin = stdin;
+		}
+#if 0
 //++++TESTING
 	int tok;
 	extern int yylex();
 	while ((tok = yylex()) != EOF)
 		printf("%d\n", tok);
-//	int result = yyparse();
-//	return result;
+#endif
+	int result = yyparse();
+	return result;
+	}
+
+/*
+ *	Report error.
+ */
+void yyerror
+	(
+	char *s
+	)
+	{
+	cout << uc_source << ':' << uc_line_num + 1 << ": " << s << endl;
 	}
