@@ -60,10 +60,13 @@ install: $(EXEC)
 	mkdir -p $(U7PATH)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
-	cp data/exult.flx $(U7PATH)/data/exult.flx
-	cp data/exult_bg.flx $(U7PATH)/data/exult_bg.flx
-	cp data/exult_si.flx $(U7PATH)/data/exult_si.flx
-	cp data/exultmsg.txt $(U7PATH)/data/exultmsg.txt
+	cp data/exult.flx $(U7PATH)/data
+	cp data/exult_bg.flx $(U7PATH)/data
+	cp data/exult_si.flx $(U7PATH)/data
+	cp data/exultmsg.txt $(U7PATH)/data
+	cp SDL/lib/SDL.dll $(U7PATH)
+	cp SDL/lib/SDL_mixer.dll $(U7PATH)
+
 
 dist:   $(EXEC)
 	mkdir -p $(U7PATH)
@@ -91,6 +94,7 @@ dist:   $(EXEC)
 	cp data/si/defaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 	cp SDL/README-SDL.txt $(U7PATH)/Exult
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult
+	cp SDL/lib/SDL_mixer.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
 
 tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe wuc.exe wud.exe ucc.exe ucxt.exe head2data.exe head2data.test
