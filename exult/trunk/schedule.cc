@@ -3172,7 +3172,8 @@ void Walk_to_schedule::now_what
 		npc->set_schedule_type(new_schedule);
 		return;
 		}
-	if (legs >= 30 || retries >= 2)	// Trying too hard?
+	if (legs >= 40 || retries >= 2)	// Trying too hard?  (Following
+	  				//   Patterson takes about 30.)
 		{			// Going to jump there.
 		npc->move(dest.tx, dest.ty, dest.tz);
 		npc->set_schedule_type(new_schedule);
@@ -3180,7 +3181,7 @@ void Walk_to_schedule::now_what
 		}
 					// Get screen rect. in tiles.
 	Rectangle screen = gwin->get_win_tile_rect();
-	screen.enlarge(4);		// Enlarge in all dirs.
+	screen.enlarge(6);		// Enlarge in all dirs.
 					// Might do part of it first.
 	Tile_coord from = npc->get_tile(),
 		   to = dest;
@@ -3193,8 +3194,12 @@ void Walk_to_schedule::now_what
 			npc->start(200, 100);
 			return;
 			}
+					// Don't walk off screen if close, or
+					//   if lots of legs, indicating that
+					//   Avatar is following this NPC.
+		if (from.distance(to) > 80 || legs < 10)
 					// Modify 'dest'. to walk off.
-		walk_off_screen(screen, to);
+			walk_off_screen(screen, to);
 		}
 	else if (!screen.has_point(from.tx, from.ty))
 					// Modify src. to walk from off-screen.
@@ -3202,9 +3207,9 @@ void Walk_to_schedule::now_what
 	blocked = Tile_coord(-1, -1, -1);
 	cout << "Finding path to schedule for " << npc->get_name() << endl;
 					// Create path to dest., delaying
-					//   0 to 2 seconds.
+					//   0 to 1 seconds.
 	if (!npc->walk_path_to_tile(from, to, gwin->get_std_delay(),
-						first_delay + rand()%2000))
+						first_delay + rand()%1000))
 		{			// Wait 1 sec., then try again.
 #ifdef DEBUG
 		cout << "Failed to find path for " << npc->get_name() << endl;
