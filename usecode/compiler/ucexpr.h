@@ -125,6 +125,8 @@ public:
 		{  }
 					// Gen. code to put result on stack.
 	virtual void gen_value(std::ostream& out);
+					// Evaluate constant.
+	virtual bool eval_const(int& val);
 	};
 
 /*
