@@ -54,7 +54,7 @@ Uc_var_symbol *Uc_expression::need_var
 	{
 	static int cnt = 0;
 	char buf[50];
-	sprintf(buf, "_tmp_%d", cnt++);
+	sprintf(buf, "_tmpval_%d", cnt++);
 					// Create a 'tmp' variable.
 	Uc_var_symbol *var = fun->add_symbol(buf);
 	if (!var)

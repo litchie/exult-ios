@@ -32,6 +32,7 @@ class ostream;
 class Uc_expression;
 class Uc_call_expression;
 class Uc_function;
+class Uc_var_symbol;
 
 /*
  *	A statement:
@@ -106,6 +107,32 @@ public:
 		: expr(e), stmt(s)
 		{  }
 	~Uc_while_statement();
+					// Generate code.
+	virtual void gen(ostream& out, Uc_function *fun);
+	};
+
+/*
+ *	An array loop statement:
+ */
+class Uc_arrayloop_statement : public Uc_statement
+	{
+	Uc_var_symbol *var;		// Loop variable.
+	Uc_var_symbol *array;		// Array to loop over.
+	Uc_var_symbol *index;		// Counter.
+	Uc_var_symbol *array_size;	// Symbol holding array size.
+	Uc_statement *stmt;		// What to execute.
+public:
+	Uc_arrayloop_statement(Uc_var_symbol *v, Uc_var_symbol *a)
+		: var(v), array(a), index(0), array_size(0), stmt(0)
+		{  }
+	~Uc_arrayloop_statement();
+	void set_statement(Uc_statement *s)
+		{ stmt = s; }
+	void set_index(Uc_var_symbol *i)
+		{ index = i; }
+	void set_array_size(Uc_var_symbol *as)
+		{ array_size = as; }
+	void finish(Uc_function *fun);	// Create tmps. if necessary.
 					// Generate code.
 	virtual void gen(ostream& out, Uc_function *fun);
 	};
