@@ -27,7 +27,7 @@ public:
 	Image_window8 *win;
 
 	Game();
-	~Game();
+	virtual ~Game();
 	
 	static Game *get_game(const char *identity);
 	

@@ -25,7 +25,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
 	gametxt.o gamewin.o gumps.o imagescl.o imagewin.o items.o lists.o mouse.o \
 	npcnear.o objs.o palette.o paths.o readnpcs.o scale.o schedule.o \
 	segfile.o spells.o titles.o tqueue.o usecode.o \
-	useval.o utils.o vec.o vgafile.o
+	useval.o utils.o vec.o vgafile.o game.o sigame.o bggame.o
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
@@ -35,7 +35,7 @@ MIDI_DRV_OBJS=be_midi.o
 AUDIO_OBJS=Audio.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 FLIC_OBJS=playfli.o
-FILE_OBJS=U7file.o Flex.o IFF.o Table.o
+FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o
 # unused: test.o
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS)
 
