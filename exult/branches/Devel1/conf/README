@@ -1,7 +1,7 @@
 What the hell am I?
 
 I'm a simple XML syntax parser. Not a real XML parser. Nothing to do with DTD's.
-Really speaking, what we do here is not XML. If it's anything it's DDL (Data
+Really speaking, what we do here is not XML. If it's anything it's a DDL (Data
 Description Language).
 
 In short the base syntactical rules are the same as XML, giving us a
@@ -18,3 +18,8 @@ Just at the moment, I'm not supporting:
 
 * XML empty tags (I did, but I'm not right now)
 * Spaces,tabs,carriage returns, line-feeds inside entities (just because)
+	- Update: I'm now supporting whitespace within the entity, but not
+		leading or trailing whitespace
+
+* The only supported entity encodings are &amp; &gt; and &lt;
+
