@@ -27,7 +27,7 @@
 #endif
 #include "gamewin.h"
 #include "game.h"
-#include "actors.h"
+#include "monsters.h"
 #include "utils.h"
 #include "egg.h"
 #include "chunks.h"
@@ -44,22 +44,14 @@ using std::ostream;
  *	Read in actor from a given file.
  */
 
-Actor::Actor
+void Actor::read
 	(
 	istream& nfile,			// 'npc.dat', generally.
 	int num,			// NPC #, or -1.
 	int has_usecode			// 1 if a 'type1' NPC.
-	) : Container_game_object(), npc_num(num), party_id(-1), 
-	    shape_save(-1), oppressor(-1), target(0),
-	    attack_mode(nearest), schedule(0), schedule_loc(0,0,0),
-	    next_schedule(255), dormant(true), hit(false),
-	    alignment(0), two_handed(0),
-	    two_fingered(0),		//+++++ Added this. Correct? -WJP
-	    light_sources(0),
-	    usecode_dir(0), siflags(0), type_flags(0), ident(0),
-	    action(0), frame_time(0), next_path_time(0), timers(0),
-	    weapon_rect(0, 0, 0, 0)
+	)
 	{
+	npc_num = num;
 
 	// This is used to get around parts of the files that we don't know
 	// what the uses are. 'fix_first' is used fix issues in the originals
@@ -72,7 +64,8 @@ Actor::Actor
 					// Read & set shape #, frame #.
 	unsigned short shnum = Read2(nfile);
 
-	if (num == 0 && Game::get_game_type() != BLACK_GATE && (shnum & 0x3ff) < 12)
+	if (num == 0 && Game::get_game_type() != BLACK_GATE && 
+						(shnum & 0x3ff) < 12)
 		set_shape((shnum & 0x3ff) | 0x400);
 	else
 		set_shape(shnum & 0x3ff);
@@ -361,10 +354,12 @@ Actor::Actor
 	int tilex = locx & 0xf;
 	int tiley = locy & 0xf;
 	set_shape_pos(tilex, tiley);
-	Map_chunk *olist = gwin->get_chunk_safely(
-							scx + cx, scy + cy);
+	Map_chunk *olist = gwin->get_chunk_safely(scx + cx, scy + cy);
 	if (olist && !is_dead())	// Put into chunk list.
+		{
 		olist->add(this);
+		switched_chunks(0, olist);	// Put in chunk's NPC list.
+		}
 	else
 		set_invalid();		// Or set to invalid chunk.
 
@@ -591,57 +586,6 @@ void Actor::write
 	namebuf[16] = 0;
 					// Write scheduled usecode.
 	Game_window::write_scheduled(nfile, this, true);
-	}
-
-/*
- *	Read in main actor from a given file.
- */
-
-Main_actor::Main_actor
-	(
-	istream& nfile,			// 'npc.dat', generally.
-	int num,			// NPC #.
-	int has_usecode			// 1 if a 'type1' NPC.
-	) : Actor(nfile, num, has_usecode)
-	{
-	Map_chunk *olist = Game_window::get_game_window()->
-				get_chunk_safely(get_cx(), get_cy());
-	if (olist)
-		switched_chunks(0, olist);
-	}
-
-/*
- *	Read in npc actor from a given file.
- */
-
-Npc_actor::Npc_actor
-	(
-	istream& nfile,			// 'npc.dat', generally.
-	int num,			// NPC #.
-	int has_usecode			// 1 if a 'type1' NPC.
-	) : Actor(nfile, num, has_usecode), nearby(0),
-		num_schedules(0),  force_update(false),
-		schedules(0)
-	{
-	Map_chunk *olist = Game_window::get_game_window()->
-				get_chunk_safely(get_cx(), get_cy());
-	if (olist)			// Might be invalide (a bug).
-		switched_chunks(0, olist);	// Put in chunk's NPC list.
-	}
-
-/*
- *	Read in monster actor from a given file.
- */
-
-Monster_actor::Monster_actor
-	(
-	istream& nfile,			// 'monster.dat', generally.
-	int num,			// MONSTER #.
-	int has_usecode			// 1 if a 'type1' MONSTER.
-	) : prev_monster(0), Npc_actor(nfile, num, has_usecode),
-	    animator(0)
-	{
-	init();
 	}
 
 /*

@@ -28,7 +28,7 @@
 #endif
 #include "gamewin.h"
 #include "game.h"
-#include "actors.h"
+#include "monsters.h"
 #include "ucmachine.h"
 #include "utils.h"
 #include "fnames.h"
@@ -59,7 +59,8 @@ void Game_window::read_npcs
 	npcs.resize(num_npcs);
 	bodies.resize(num_npcs);
 					// Create main actor.
-	camera_actor = npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
+	camera_actor = npcs[0] = main_actor = new Main_actor("", 0);
+	main_actor->read(nfile, 0, 0);
 	int i;
 
 	// Don't like it... no i don't.
@@ -70,7 +71,8 @@ void Game_window::read_npcs
 	int skip2 = Game::get_game_type() == SERPENT_ISLE ? 296 : 10000;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 	{
-		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
+		npcs[i] = new Npc_actor("", 0);
+		npcs[i]->read(nfile, i, i < num_npcs1);
 		if ((i >= skip1 && i < 256) || (i >= skip2 && i < 356))
 			{
 			npcs[i]->remove_this(1);
@@ -91,13 +93,17 @@ void Game_window::read_npcs
 		int okay = nfile.good();
 		nfile.seekg(-1, ios::cur);
 		while (okay && cnt--)
-		{		// (Placed automatically.)
-			Monster_actor *act = new Monster_actor(nfile, -1, 1);
-					// Watch for corrupted file.
-			if (get_shape_num_frames(act->get_shapenum()) < 16)
-				act->remove_this();
-			else
-				act->restore_schedule();
+		{
+					// Read ahead to get shape.
+			nfile.seekg(2, ios::cur);
+			unsigned short shnum = Read2(nfile)&0x3ff;
+			okay = nfile.good();
+			nfile.seekg(-4, ios::cur);
+			if (!okay || get_shape_num_frames(shnum) < 16)
+				break;	// Watch for corrupted file.
+			Monster_actor *act = Monster_actor::create(shnum);
+			act->read(nfile, -1, 1);
+			act->restore_schedule();
 			CYCLE_RED_PLASMA();
 		}
 	}

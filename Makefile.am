@@ -66,6 +66,8 @@ exult_SOURCES =	\
 	lists.h		\
 	menulist.cc	\
 	menulist.h	\
+	monsters.cc	\
+	monsters.h	\
 	mouse.cc	\
 	mouse.h		\
 	npcnear.cc	\

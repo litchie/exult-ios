@@ -45,7 +45,7 @@
 #include "ucsched.h"
 #include "useval.h"
 #include "virstone.h"
-#include "actors.h"
+#include "monsters.h"
 #include "egg.h"
 #include "monstinf.h"
 #include "actions.h"
