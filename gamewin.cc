@@ -2365,8 +2365,8 @@ void Game_window::teleport_party
 	Tile_coord oldpos = main_actor->get_abs_tile_coord();
 	main_actor->set_action(0);	// I think this is right.
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
-	paint();			// Show first.
-	show();
+	set_all_dirty();
+
 	int cnt = usecode->get_party_count();
 	for (int i = 0; i < cnt; i++)
 		{
