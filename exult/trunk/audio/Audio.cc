@@ -283,8 +283,16 @@ void Audio::Init(int _samplerate,int _channels)
 		audio_enabled = false;	// Prevent crashes.
 		return;
 		}
+	int art_freq;
+	Uint16 art_format;
+	int art_channels;
+	
+	Mix_QuerySpec(&art_freq,&art_format,&art_channels);
 
-	Mix_QuerySpec((int *) &actual.freq,(Uint16 *) &actual.format, (int *)&actual.channels);
+	actual.freq = art_freq;
+	actual.format = art_format;
+	actual.channels = art_channels;
+	
 #ifdef DEBUG
 	cout << "Audio requested frequency " << _samplerate << ", channels " << _channels << endl;
 	cout << "Audio actual frequency " << actual.freq << ", channels " << (int) actual.channels << endl;
