@@ -428,10 +428,10 @@ bool Game_window::drop_at_lift
 	{
 	x += at_lift*4 - 1;		// Take lift into account, round.
 	y += at_lift*4 - 1;
-	int tx = scrolltx + x/c_tilesize;
-	int ty = scrollty + y/c_tilesize;
-	int cx = (scrolltx + x/c_tilesize)/c_tiles_per_chunk;
-	int cy = (scrollty + y/c_tilesize)/c_tiles_per_chunk;
+	int tx = (scrolltx + x/c_tilesize)%c_num_tiles;
+	int ty = (scrollty + y/c_tilesize)%c_num_tiles;
+	int cx = tx/c_tiles_per_chunk;
+	int cy = ty/c_tiles_per_chunk;
 	Map_chunk *chunk = get_chunk(cx, cy);
 	int lift;			// Can we put it here?
 	Shape_info& info = shapes.get_info(to_drop->get_shapenum());
