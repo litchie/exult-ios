@@ -1716,7 +1716,8 @@ int Actor::add
 			return (1);
 		if (spots[rhand] && spots[rhand]->drop(obj))
 			return (1);
-		return (0);
+		return dont_check ? Container_game_object::add(obj, dont_check)
+					: 0;
 		}
 					// Add to ourself.
 	if (!Container_game_object::add(obj, dont_check))
@@ -2157,11 +2158,16 @@ void Actor::die
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	int shnum = get_shapenum();
 					// Special case:  Hook, Dracothraxus.
-	if ((shnum == 0x1fa || (shnum == 0x1f8 && Is_draco(this))) && 
-	    Game::get_game_type() == BLACK_GATE)
+	if (((shnum == 0x1fa || (shnum == 0x1f8 && Is_draco(this))) && 
+	    Game::get_game_type() == BLACK_GATE) ||
+	    (Game::get_game_type() == SERPENT_ISLE && usecode >= 0))
 		{			// Exec. usecode before dying.
-		gwin->get_usecode()->call_usecode(
-				shnum, this, Usecode_machine::internal_exec);
+		if (Game::get_game_type() == BLACK_GATE)
+			gwin->get_usecode()->call_usecode(shnum, this, 
+					Usecode_machine::internal_exec);
+		else
+			gwin->get_usecode()->call_usecode(usecode, this,
+					Usecode_machine::died);
 					// Restore mode.
 		gwin->set_mode(Game_window::normal);
 		if (get_cx() == 255)	// Invalid now?

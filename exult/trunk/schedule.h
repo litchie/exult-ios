@@ -102,7 +102,7 @@ public:
 class Street_maintenance_schedule : public Schedule
 	{
 	Game_object *obj;		// Lamp/shutters.
-	int shapenum;			// Save original shapenum.
+	int shapenum, framenum;		// Save original shapenum.
 	Actor_action *paction;		// Path to follow to get there.
 public:
 	Street_maintenance_schedule(Actor *n, Actor_action *p, Game_object *o);

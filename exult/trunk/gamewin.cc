@@ -939,6 +939,8 @@ int Is_body
 	case 778:
 	case 892:
 		return 1;
+	case 402:
+		return Game::get_game_type() == SERPENT_ISLE;
 	default:
 		return 0;
 		}

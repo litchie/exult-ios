@@ -362,6 +362,7 @@ void Container_game_object::activate
 		return;
 
 		case 400:			// Bodies.
+		case 402:
 		case 414:
 		case 762:
 		case 778:
