@@ -142,13 +142,15 @@ string		return STRING;
 extern		return EXTERN;
 true		return UCTRUE;
 false		return UCFALSE;
+break		return BREAK;
 
-UcSay		return SAY;
-UcMessage	return MESSAGE;
-UcResponse	return RESPONSE;
-UcEvent		return EVENT;
-UcFlag		return FLAG;
-UcItem		return ITEM;
+converse	return CONVERSE;
+say		return SAY;
+message		return MESSAGE;
+response	return RESPONSE;
+event		return EVENT;
+gflags		return FLAG;
+item		return ITEM;
 
 "&&"		return AND;
 "||"		return OR;

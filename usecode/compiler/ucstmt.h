@@ -48,7 +48,7 @@ public:
 		{  }
 	virtual ~Uc_statement() {  }
 					// Generate code.
-	virtual void gen(std::ostream& out, Uc_function *fun) = 0;
+	virtual void gen(vector<char>& out, Uc_function *fun) = 0;
 	};
 
 /*
@@ -64,7 +64,7 @@ public:
 	void add(Uc_statement *stmt)
 		{ statements.push_back(stmt); }
 					// Generate code.
-	virtual void gen(std::ostream& out, Uc_function *fun);
+	virtual void gen(vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -79,7 +79,7 @@ public:
 		{  }
 	~Uc_assignment_statement();
 					// Generate code.
-	virtual void gen(std::ostream& out, Uc_function *fun);
+	virtual void gen(vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -96,7 +96,7 @@ public:
 		{  }
 	~Uc_if_statement();
 					// Generate code.
-	virtual void gen(std::ostream& out, Uc_function *fun);
+	virtual void gen(vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -112,7 +112,7 @@ public:
 		{  }
 	~Uc_while_statement();
 					// Generate code.
-	virtual void gen(std::ostream& out, Uc_function *fun);
+	virtual void gen(vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -138,7 +138,7 @@ public:
 		{ array_size = as; }
 	void finish(Uc_function *fun);	// Create tmps. if necessary.
 					// Generate code.
-	virtual void gen(std::ostream& out, Uc_function *fun);
+	virtual void gen(vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -152,7 +152,34 @@ public:
 		{  }
 	~Uc_return_statement();
 					// Generate code.
-	virtual void gen(std::ostream& out, Uc_function *fun);
+	virtual void gen(vector<char>& out, Uc_function *fun);
+	};
+
+/*
+ *	BREAK statement:
+ */
+class Uc_break_statement : public Uc_statement
+	{
+public:
+	Uc_break_statement() {  }
+					// Generate code.
+	virtual void gen(vector<char>& out, Uc_function *fun);
+	};
+
+/*
+ *	A CONVERSE statement is a loop that prompts for a user response at
+ *	the top, or exits the loop if there are no possible answers.
+ */
+class Uc_converse_statement : public Uc_statement
+	{
+	Uc_statement *stmt;		// What to execute.
+public:
+	Uc_converse_statement(Uc_statement *s)
+		: stmt(s)
+		{  }
+	~Uc_converse_statement();
+					// Generate code.
+	virtual void gen(vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -164,7 +191,7 @@ class Uc_message_statement : public Uc_statement
 public:
 	Uc_message_statement(Uc_array_expression *m) : msgs(m) {  }
 					// Generate code.
-	virtual void gen(std::ostream& out, Uc_function *fun);
+	virtual void gen(vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -176,7 +203,7 @@ public:
 	Uc_say_statement(Uc_array_expression *m) : Uc_message_statement(m) 
 		{  }
 					// Generate code.
-	virtual void gen(std::ostream& out, Uc_function *fun);
+	virtual void gen(vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -189,7 +216,7 @@ public:
 	Uc_call_statement(Uc_call_expression *f);
 	~Uc_call_statement();
 					// Generate code.
-	virtual void gen(std::ostream& out, Uc_function *fun);
+	virtual void gen(vector<char>& out, Uc_function *fun);
 	};
 
 #endif

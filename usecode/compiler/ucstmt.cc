@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <stdio.h>
-#include <strstream.h>
 #include "ucstmt.h"
 #include "ucexpr.h"
 #include "ucsym.h"
@@ -55,7 +54,7 @@ Uc_block_statement::~Uc_block_statement
 
 void Uc_block_statement::gen
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun
 	)
 	{
@@ -87,7 +86,7 @@ Uc_assignment_statement::~Uc_assignment_statement
 
 void Uc_assignment_statement::gen
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function * /* fun */
 	)
 	{
@@ -101,10 +100,33 @@ void Uc_assignment_statement::gen
 
 void Uc_if_statement::gen
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun
 	)
 	{
+#if 1
+					// Gen JNE (or CMPS) past IF code.
+	int jne_offset = expr->gen_jmp_if_false(out, 0);
+	if (if_stmt)
+		if_stmt->gen(out, fun);
+	int jmp_past_else_offset = -1;	// Where following JMP offset is.
+	if (else_stmt)			// JMP past ELSE code.
+		{
+		out.push_back((char) UC_JMP);
+		jmp_past_else_offset = out.size();
+		Write2(out, 0);		// Write place-holder for offset.
+		}
+	int if_end = out.size();
+					// Fixup JNE at start.
+	Write2(out, jne_offset, if_end - (jne_offset + 2));
+	if (else_stmt)			// Generate ELSE.
+		{
+		else_stmt->gen(out, fun);
+		int else_end = out.size();
+		Write2(out, jmp_past_else_offset,
+					else_end - (jmp_past_else_offset + 2));
+		}
+#else
 	int elselen = 0;		// Get ELSE code.
 	char *elsestr = 0;
 	if (else_stmt)
@@ -130,6 +152,7 @@ void Uc_if_statement::gen
 	out.write(elsestr, elselen);	// Then the ELSE code.
 	delete elsestr;
 	delete ifstr;
+#endif
 	}
 
 /*
@@ -163,28 +186,31 @@ Uc_while_statement::~Uc_while_statement
 
 void Uc_while_statement::gen
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun
 	)
 	{
-	long top = out.tellp();		// Get current position.
+	int top = out.size();		// Get current position.
 	expr->gen_value(out);		// Generate expr. value.
-	ostrstream stmt_code;
+	vector<char> stmt_code;
+	stmt_code.reserve(4000);
+	fun->start_breakable(this);
 	if (stmt)
 		stmt->gen(stmt_code, fun);	// Generate statement's code.
-	int stmtlen = stmt_code.pcount();
+	int stmtlen = stmt_code.size();
 					// Get distance back to top, including
 					//   a JNE and a JMP.
-	long dist = stmtlen + (out.tellp() - top) + 3 + 3;
-	stmt_code.put((char) UC_JMP);	// Generate JMP back to top.
+	long dist = stmtlen + (out.size() - top) + 3 + 3;
+					// Generate JMP back to top.
+	stmt_code.push_back((char) UC_JMP);
 	Write2(stmt_code, -dist);
-	stmtlen = stmt_code.pcount();	// Get total length.
-					// Get -> to code.
-	char *stmtstr = stmt_code.str();
-	out.put((char) UC_JNE);		// Put cond. jmp. after test.
+	stmtlen = stmt_code.size();	// Get total length.
+	fun->end_breakable(this, stmt_code);
+	out.push_back((char) UC_JNE);	// Put cond. jmp. after test.
 	Write2(out, stmtlen);		// Skip around body if false.
-	out.write(stmtstr, stmtlen);	// Write out body.
-	delete stmtstr;			// We own this.
+//	out.append(stmt_code);
+					// Append code to end.
+	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
 	}
 
 /*
@@ -226,33 +252,34 @@ void Uc_arrayloop_statement::finish
 
 void Uc_arrayloop_statement::gen
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun
 	)
 	{
 	if (!stmt)
 		return;			// Nothing useful to do.
-	out.put((char) UC_LOOP);	// Start of loop.
-	int top = out.tellp();		// This is where to jump back to.
-	out.put((char) UC_LOOPTOP);
+	out.push_back((char) UC_LOOP);	// Start of loop.
+	int top = out.size();		// This is where to jump back to.
+	out.push_back((char) UC_LOOPTOP);
 	Write2(out, index->get_offset());// Counter, total-count variables.
 	Write2(out, array_size->get_offset());
 	Write2(out, var->get_offset());	// Loop variable, than array.
 	Write2(out, array->get_offset());
 					// Still need to write offset to end.
-	int testlen = (int)out.tellp() + 2 - top;
-	ostrstream stmt_code;
+	int testlen = out.size() + 2 - top;
+	vector<char> stmt_code;
+	stmt_code.reserve(4000);
+	fun->start_breakable(this);
 	stmt->gen(stmt_code, fun);	// Generate statement's code.
 					// Back to top includes JMP at end.
-	int dist = testlen + stmt_code.pcount() + 3;
-	stmt_code.put((char) UC_JMP);	// Generate JMP back to top.
+	int dist = testlen + stmt_code.size() + 3;
+	stmt_code.push_back((char) UC_JMP);	// Generate JMP back to top.
 	Write2(stmt_code, -dist);
-	int stmtlen = stmt_code.pcount();// Get total length.
+	int stmtlen = stmt_code.size();	// Get total length.
 	Write2(out, stmtlen);		// Finally, offset past loop stmt.
-					// Get -> to code.
-	char *stmtstr = stmt_code.str();
-	out.write(stmtstr, stmtlen);	// Write out body.
-	delete stmtstr;			// We own this.
+	fun->end_breakable(this, stmt_code);
+					// Write out body.
+	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
 	}
 
 /*
@@ -272,18 +299,78 @@ Uc_return_statement::~Uc_return_statement
 
 void Uc_return_statement::gen
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun
 	)
 	{
 	if (expr)			// Returning something?
 		{
 		expr->gen_value(out);	// Put value on stack.
-		out.put((char) UC_SETR);// Pop into ret_value.
-		out.put((char) UC_RTS);
+		out.push_back((char) UC_SETR);// Pop into ret_value.
+		out.push_back((char) UC_RTS);
 		}
 	else
-		out.put((char) UC_RET);
+		out.push_back((char) UC_RET);
+	}
+
+
+/*
+ *	Generate code.
+ */
+
+void Uc_break_statement::gen
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+	{
+//++++++++NOOOOO.  The location isn't right, since it might be inside
+//   and IF block.
+	fun->add_break(out.size());	// Store our location.
+	out.push_back((char) UC_JMP);
+	Write2(out, 0);			// To be filled in at end of loop.
+	}
+
+
+/*
+ *	Delete.
+ */
+
+Uc_converse_statement::~Uc_converse_statement
+	(
+	)
+	{
+	delete stmt;
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_converse_statement::gen
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+	{
+	long top = out.size();		// Get current position.
+	vector<char> stmt_code;
+	fun->start_breakable(this);
+	if (stmt)
+		stmt->gen(stmt_code, fun);	// Generate statement's code.
+	int stmtlen = stmt_code.size();
+					// Get distance back to top, including
+					//   a CONVERSE & JMP back to top.
+	long dist = stmtlen + 3 + 3;
+	stmt_code.push_back((char) UC_JMP);	// Generate JMP back to top.
+	Write2(stmt_code, -dist);
+	stmtlen = stmt_code.size();	// Get total length.
+	fun->end_breakable(this, stmt_code);
+	out.push_back((char) UC_CONVERSE);	// Put CONVERSE at top.
+	Write2(out, stmtlen);		// Skip around body if no choices.
+					// Write out body.
+	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
+	out.push_back((char) UC_CONVERSELOC);	// Past CONVERSE loop.
 	}
 
 /*
@@ -292,7 +379,7 @@ void Uc_return_statement::gen
 
 void Uc_message_statement::gen
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun
 	)
 	{
@@ -307,7 +394,7 @@ void Uc_message_statement::gen
 		int offset = msg->get_string_offset();
 		if (offset >= 0)
 			{
-			out.put((char) UC_ADDSI);
+			out.push_back((char) UC_ADDSI);
 			Write2(out, offset);
 			}
 		else
@@ -315,7 +402,7 @@ void Uc_message_statement::gen
 			Uc_var_symbol *var = msg->need_var(out, fun);
 			if (var)	// Shouldn't fail.
 				{
-				out.put((char) UC_ADDSV);
+				out.push_back((char) UC_ADDSV);
 				Write2(out, var->get_offset());
 				}
 			}
@@ -328,13 +415,13 @@ void Uc_message_statement::gen
 
 void Uc_say_statement::gen
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun
 	)
 	{
 					// Add the messages.
 	Uc_message_statement::gen(out, fun);
-	out.put((char) UC_SAY);		// Show on screen.
+	out.push_back((char) UC_SAY);		// Show on screen.
 	}
 
 /*
@@ -346,7 +433,8 @@ Uc_call_statement::Uc_call_statement
 	Uc_call_expression *f
 	) : function_call(f)
 	{
-	function_call->set_no_return();
+	if (function_call)
+		function_call->set_no_return();
 	}
 
 /*
@@ -366,7 +454,7 @@ Uc_call_statement::~Uc_call_statement
 
 void Uc_call_statement::gen
 	(
-	std::ostream& out,
+	vector<char>& out,
 	Uc_function *fun
 	)
 	{
