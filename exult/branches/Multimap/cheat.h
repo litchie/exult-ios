@@ -137,6 +137,7 @@ public:
 
   void map_teleport (void) const;
   void cursor_teleport (void) const;
+  void next_map_teleport (void) const;
 
   void create_coins (void) const;
   void create_last_shape (void) const;

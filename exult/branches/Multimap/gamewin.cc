@@ -531,6 +531,38 @@ void Game_window::init_files(bool cycle)
 }
 
 /*
+ *	Read any map.  (This is for "multimap" games, not U7.)
+ */
+
+Game_map *Game_window::get_map
+	(
+	int num				// Should be > 0.
+	)
+	{
+	if (num >= maps.size() || maps[num] == 0)
+		{
+		maps[num] = new Game_map(num);
+		maps[num]->init();
+		}
+	return maps[num];
+	}
+
+/*
+ *	Set current map to given #.
+ */
+
+void Game_window::set_map
+	(
+	int num
+	)
+	{
+	map = get_map(num);
+	if (!map)
+		abort("Map #d doesn't exist", num);
+	Game_singletons::gmap = map;
+	}
+
+/*
  *	Get map patch list.
  */
 Map_patch_collection *Game_window::get_map_patches()
@@ -1359,23 +1391,6 @@ void Game_window::read_map
 	}
 
 /*
- *	Read any map.  (This is for "multimap" games, not U7.)
- */
-
-Game_map *Game_window::get_map
-	(
-	int num				// Should be > 0.
-	)
-	{
-	if (num >= maps.size() || maps[num] == 0)
-		{
-		maps[num] = new Game_map(num);
-		maps[num]->init();
-		}
-	return maps[num];
-	}
-
-/*
  *	Reload (patched) usecode.
  */
 
@@ -1771,19 +1786,33 @@ void Game_window::stop_actor
 void Game_window::teleport_party
 	(
 	Tile_coord t,			// Where to go.
-	bool skip_eggs			// Don't activate eggs at dest.
+	bool skip_eggs,			// Don't activate eggs at dest.
+	int new_map			// New map #, or -1 for same map.
 	)
 	{
 	Tile_coord oldpos = main_actor->get_tile();
 	main_actor->set_action(0);	// Definitely need this, or you may
 					//   step back to where you came from.
 	moving_barge = 0;		// Calling 'done()' could be risky...
+	int i, cnt = party_man->get_count();
+	if (new_map != -1)
+		{			// Remove all from old map.
+		main_actor->remove_this(true);
+		for (i = 0; i < cnt; i++)
+			{
+			int party_member=party_man->get_member(i);
+			Actor *person = get_npc(party_member);
+			if (person && !person->is_dead() && 
+			    person->get_schedule_type() != Schedule::wait)
+				person->remove_this(true);
+			}
+		set_map(new_map);
+		}
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
 	center_view(t);			// Bring pos. into view, and insure all
 					//   objs. exist.
 
-	int cnt = party_man->get_count();
-	for (int i = 0; i < cnt; i++)
+	for (i = 0; i < cnt; i++)
 		{
 		int party_member=party_man->get_member(i);
 		Actor *person = get_npc(party_member);
