@@ -625,17 +625,7 @@ void Usecode_internal::item_say
 	Game_object *obj = get_item(objval);
 	const char *str = strval.get_str_value();
 	if (obj && str && *str)
-		{
-					// See if it's in a gump.
-		Gump *gump = gwin->get_gump_man()->find_gump(obj);
-		Rectangle box;
-		if (gump)
-			box = gump->get_shape_rect(obj);
-		else
-			box = gwin->get_shape_rect(obj->get_outermost());
-		gwin->add_text(str, box.x, box.y, obj);
-//		gwin->show();		// Not sure.+++++testing.
-		}
+		gwin->add_text(str, obj);
 	}
 
 /*

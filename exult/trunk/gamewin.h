@@ -606,7 +606,8 @@ public:
 					// Schedule object for deletion.
 	void delete_object(Game_object *obj);
 					// Add text item.
-	void add_text(const char *msg, int x, int y, Game_object *item = 0);
+	void add_text(const char *msg, Game_object *item);
+	void add_text(const char *msg, int x, int y);
 	void center_text(const char *msg);
 	void add_effect(Special_effect *effect);
 	void remove_text_effect(Game_object *item);

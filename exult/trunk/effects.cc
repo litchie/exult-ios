@@ -31,6 +31,7 @@
 #include "Audio.h"
 #include "Gump_manager.h"
 #include "game.h"
+#include "Gump.h"
 
 #include "SDL_timer.h"
 
@@ -517,21 +518,86 @@ void Death_vortex::paint
 	}
 
 /*
+ *	Figure text position.
+ */
+
+static inline Tile_coord Figure_text_pos
+	(
+	Game_object *item
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Rectangle box;
+					// See if it's in a gump.
+	Gump *gump = gwin->get_gump_man()->find_gump(item);
+	if (gump)
+		box = gump->get_shape_rect(item);
+	else
+		box = gwin->get_shape_rect(item);
+	return Tile_coord(gwin->get_scrolltx() + box.x/c_tilesize, 
+			  gwin->get_scrollty() + box.y/c_tilesize, 0);
+	}
+
+/*
+ *	Add dirty rectangle for current position.
+ */
+
+void Text_effect::add_dirty
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Repaint slightly bigger rectangle.
+	Rectangle rect((pos.tx - gwin->get_scrolltx() - 1)*c_tilesize,
+		       (pos.ty - gwin->get_scrollty() - 1)*c_tilesize,
+			width + 2*c_tilesize, height + 2*c_tilesize);
+	gwin->add_dirty(gwin->clip_to_win(rect));
+	}
+
+/*
+ *	Initialize.
+ */
+
+void Text_effect::init
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	width = 8 + gwin->get_text_width(0, msg.c_str());
+	height = 8 + gwin->get_text_height(0);
+	add_dirty();			// Force first paint.
+					// Start immediately.
+	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
+	}
+
+/*
+ *	Create a text effect for a given object.
+ */
+
+Text_effect::Text_effect
+	(
+	const string &m, 		// A copy is made.
+	Game_object *it			// Item text is on, or null.
+	) : msg(m), item(it), pos(Figure_text_pos(it)), num_ticks(0)
+	{
+	init();
+	}
+
+/*
  *	Create a text object.
  */
 
 Text_effect::Text_effect
 	(
-	const string &m, 			// A copy is made.
-	Game_object *it,		// Item text is on, or null.
-	int t_x, int t_y, 		// Abs. tile coords.
-	int w, int h
-	) : msg(m), item(it), tx(t_x), ty(t_y), width(w), height(h)
+	const string &m, 		// A copy is made.
+	int t_x, int t_y		// Abs. tile coords.
+	) : msg(m), item(0), pos(t_x, t_y, 0), num_ticks(0)
 	{
+	init();
 	}
 
 /*
- *	Remove from screen.
+ *	Reposition if necessary.
  */
 
 void Text_effect::handle_event
@@ -540,18 +606,25 @@ void Text_effect::handle_event
 	long udata			// Ignored.
 	)
 	{
-	Game_window *gwin = (Game_window *) udata;
-					// Repaint slightly bigger rectangle.
-	Rectangle rect((tx - gwin->get_scrolltx() - 1)*c_tilesize,
-		       (ty - gwin->get_scrollty() - 1)*c_tilesize,
-			width + 2*c_tilesize, height + 2*c_tilesize);
-					// Intersect with screen.
-	rect = gwin->clip_to_win(rect);
-	gwin->remove_effect(this);	// Remove & delete this.
-	if (rect.w > 0 && rect.h > 0)	// Watch for negatives.
-					// +++++Should this be add_dirty()?
-		gwin->paint(rect.x, rect.y, rect.w, rect.h);
-
+	Game_window *gwin = Game_window::get_game_window();
+	if (++num_ticks == 10)		// About 1-2 seconds.
+		{			// All done.
+		add_dirty();
+		gwin->remove_effect(this);// Remove & delete this.
+		return;
+		}
+					// Back into queue.
+	gwin->get_tqueue()->add(Game::get_ticks() + gwin->get_std_delay(), 
+								this, 0L);
+	if (!item)			// Nothing to move?
+		return;
+					// See if moved.
+	Tile_coord npos = Figure_text_pos(item);
+	if (npos == pos)		// No change?
+		return;
+	add_dirty();			// Force repaint of old area.
+	pos = npos;			// Then set to repaint new.
+	add_dirty();
 	}
 
 /*
@@ -569,16 +642,9 @@ void Text_effect::paint
 	int len = strlen(ptr);
 	if (ptr[len - 1] == '@')
 		len--;
-#if 0	/* ++++++Got to save old rectangle */
-	if (item && !item->get_owner())	// Reposition for object.
-		{
-		Rectangle box = gwin->get_shape_rect(item);
-		tx = gwin->get_scrolltx() + box.x/c_tilesize;
-		ty = gwin->get_scrollty() + box.y/c_tilesize;
-		}
-#endif
-	gwin->paint_text(0, ptr, len, (tx - gwin->get_scrolltx())*c_tilesize,
-				(ty - gwin->get_scrollty())*c_tilesize);
+	gwin->paint_text(0, ptr, len, 
+		(pos.tx - gwin->get_scrolltx())*c_tilesize,
+				(pos.ty - gwin->get_scrollty())*c_tilesize);
 	}
 
 /*
