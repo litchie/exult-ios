@@ -37,13 +37,32 @@ class Serial_out
 public:
 	Serial_out(unsigned char *& b) : buf(b)
 		{  }
-	void trans(int v)
-		{ Write4(buf, v); }
-	void trans(unsigned long v)
-		{ Write4(buf, v); }
-	void trans(bool v)
-		{ *buf++ = (v ? 1 : 0); }
+	Serial_out& operator<<(int v)
+		{ Write4(buf, v); return *this; }
+	Serial_out& operator<<(unsigned long v)
+		{ Write4(buf, v); return *this; }
+	Serial_out& operator<<(short v)
+		{ Write2(buf, v); return *this; }
+	Serial_out& operator<<(bool v)
+		{ *buf++ = (v ? 1 : 0); return *this; }
+	Serial_out& operator<<(string& s);
 	};
+
+/*
+ *	Write out a string.
+ */
+Serial_out& Serial_out::operator<<
+	(
+	string& s
+	)
+	{
+	const char *str = s.c_str();
+	int len = strlen(str);		// Get length.
+	*this << len;			// First the length.
+	memcpy(buf, str, len);		// Then the bytes.
+	buf += len;
+	return *this;
+	}
 
 /*
  *	Decode.
@@ -54,13 +73,31 @@ class Serial_in
 public:
 	Serial_in(unsigned char *& b) : buf(b)
 		{  }
-	void trans(int& v)
-		{ v = Read4(buf); }
-	void trans(unsigned long& v)
-		{ v = Read4(buf); }
-	void trans(bool &v)
-		{ v = *buf++ ? true : false; }
+	Serial_in& operator<<(int& v)
+		{ v = Read4(buf); return *this; }
+	Serial_in& operator<<(unsigned long& v)
+		{ v = Read4(buf); return *this; }
+	Serial_in& operator<<(short v)
+		{ v = Read2(buf); return *this; }
+	Serial_in& operator<<(bool &v)
+		{ v = *buf++ ? true : false; return *this; }
+	Serial_in& operator<<(string& s);
 	};
+
+/*
+ *	Read in a string.
+ */
+Serial_in& Serial_in::operator<<
+	(
+	string& s
+	)
+	{
+	int len;
+	(*this) << len;			// Get length.
+	s.assign((char *) buf, len);	// Set string.
+	buf += len;
+	return *this;
+	}
 
 /*
  *	Read/write out data common to all objects.
@@ -77,12 +114,7 @@ void Common_obj_io
 	int& shape, int& frame
 	)
 	{
-	io.trans(addr);
-	io.trans(tx);
-	io.trans(ty);
-	io.trans(tz);
-	io.trans(shape);
-	io.trans(frame);
+	io << addr << tx << ty << tz << shape << frame;
 	}
 
 /*
@@ -111,16 +143,41 @@ void Egg_object_io
 	{
 	Serial io(buf);
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
-	io.trans(type);
-	io.trans(criteria);
-	io.trans(probability);
-	io.trans(distance);
-	io.trans(nocturnal);
-	io.trans(once);
-	io.trans(hatched);
-	io.trans(auto_reset);
-	io.trans(data1);
-	io.trans(data2);
+	io << type << criteria << probability << distance << 
+		nocturnal << once << hatched << auto_reset << data1 << data2;
+	}
+
+/*
+ *	Low-level serialization for use both by Exult and ExultStudio (so
+ *	don't put in anything that will pull in all of Exult).
+ *
+ *	Output:	1 if successful, else 0.
+ */
+template <class Serial> 
+void Npc_actor_io
+	(
+	unsigned char *& buf,		// Where to store data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	std::string& name,
+	short& ident,
+	int& usecode,
+	short properties[12],
+	short& attack_mode,
+	short& alignment,
+	long& oflags,			// Object flags.
+	long& siflags,			// Extra flags for SI.
+	long& type_flags		// Movement flags.
+	//+++++++++Schedule changes.
+	)
+	{
+	Serial io(buf);
+	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
+	io << name << ident << usecode;
+	for (int i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
+		io << properties[i];
+	io << attack_mode << alignment << oflags << siflags << type_flags;
 	}
 
 /*
