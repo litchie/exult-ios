@@ -478,13 +478,13 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items[] =
 	// Pick
 	{     624, -1,      Actor::lhand,   OT_Double,  false, paperdoll,    83,     0 },
 	{     624, -1,Actor::back2h_spot,   OT_Double,  false, paperdoll,    83,     1 },
-	// Jugganaught Hammer
+	// Juggernaught Hammer
 	{     557, -1,      Actor::lhand,   OT_Double,  false, paperdoll,    53,     0 },
 	{     557, -1,Actor::back2h_spot,   OT_Double,  false, paperdoll,    53,     1 },
 	// Hoe
 	{     626, -1,      Actor::lhand,    OT_Staff,  false, paperdoll,    52,     0 },
 	{     626, -1,Actor::back2h_spot,    OT_Staff,  false, paperdoll,    52,     1 },
-	// Hailbred
+	// Halberd
 	{     603, -1,      Actor::lhand,    OT_Staff,  false, paperdoll,    49,     0 },
 	{     603, -1,Actor::back2h_spot,    OT_Staff,  false, paperdoll,    49,     1 },
 	// Fishing Rod
@@ -806,7 +806,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     955,  0,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     0 },
 	// Fellowship
 	{     955,  1,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     1 },
-	// White Heart???
+	// White Heart
 	{     955,  2,       Actor::neck,   OT_Normal,  false, exultbg_flx,   9,     0 },
 	// Amulet of Protection???
 	{     955,  3,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     3 },
@@ -816,13 +816,13 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     955,  5,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     9 },
 	// Amulet of ???
 	{     955,  6,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     3 },
-	// Forge Amluet **NEEDS ART**???
+	// Forge Amulet **NEEDS ART**???
 	{     955,  7,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     6 },
-	// Forge Amluet **NEEDS ART**???
+	// Forge Amulet **NEEDS ART**???
 	{     955,  8,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     6 },
-	// Forge Amluet **NEEDS ART**???
+	// Forge Amulet **NEEDS ART**???
 	{     955,  9,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     6 },
-	// Forge Amluet **NEEDS ART**???
+	// Forge Amulet **NEEDS ART**???
 	{     955, 10,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     6 },
 
 
@@ -918,7 +918,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 
 	// RINGS
 
-	// Invisibilty Ring
+	// Invisibility Ring
 	{     296, 0,      Actor::lfinger,   OT_Normal,  false, paperdoll,   120,     0,      2,   4 },
 	{     296, 0,      Actor::rfinger,   OT_Normal,  false, paperdoll,   120,     1,      3,   5 },
 	// Ring of Protection
@@ -1061,7 +1061,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Fire Wand
 	{     630, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    42,     0 },
 	{     630, -1,       Actor::belt,   OT_Single,  false, paperdoll,    42,     1 },
-	// Dragon Slayer Sword
+	// Custom sword **NEEDS ART** ??? (currently Dragon Slayer Sword)
 	{     635, -1,      Actor::lhand,   OT_Single,  false, paperdoll,   143,     0 },
 	{     635, -1,       Actor::belt,   OT_Single,  false, paperdoll,   143,     1 },
 	// Serpentine Dagger
@@ -1095,7 +1095,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Firedoom Staff
 	{     553, -1,      Actor::lhand,    OT_Staff,  false, exultbg_flx,  10,     0 },
 	{     553, -1,Actor::back2h_spot,    OT_Staff,  false, exultbg_flx,  10,     1 },
-	// Jugganaught Hammer
+	// Juggernaught Hammer
 	{     557, -1,      Actor::lhand,   OT_Double,  false, paperdoll,    53,     0 },
 	{     557, -1,Actor::back2h_spot,   OT_Double,  false, paperdoll,    53,     1 },
 	// Death Scythe **NEEDS ART**
@@ -1113,7 +1113,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Two Handed Sword
 	{     602, -1,      Actor::lhand,   OT_Double,  false, paperdoll,   108,     0 },
 	{     602, -1,Actor::back2h_spot,   OT_Double,  false, paperdoll,   108,     1 },
-	// Hailbred
+	// Halberd
 	{     603, -1,      Actor::lhand,    OT_Staff,  false, paperdoll,    49,     0 },
 	{     603, -1,Actor::back2h_spot,    OT_Staff,  false, paperdoll,    49,     1 },
 	// Scythe
@@ -1137,7 +1137,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// The Black Sword
 	{     707, -1,      Actor::lhand,   OT_Double,  false, paperdoll,   139,     0 },
 	{     707, -1,Actor::back2h_spot,   OT_Double,  false, paperdoll,   139,     1 },
-	// Fallowship Staff **NEEDS ART**
+	// Fallowship Staff
 	{     885, -1,      Actor::lhand,    OT_Staff,  false, exultbg_flx,  11,     0 },
 	{     885, -1,Actor::back2h_spot,    OT_Staff,  false, exultbg_flx,  11,     1 },
 
