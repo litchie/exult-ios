@@ -1271,7 +1271,7 @@ External
 	      <class>GtkCheckButton</class>
 	      <name>nocturnal</name>
 	      <can_focus>True</can_focus>
-	      <label>Nocturnal	</label>
+	      <label>Nocturnal</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <child>
@@ -1413,7 +1413,7 @@ External
       <show_tabs>True</show_tabs>
       <show_border>True</show_border>
       <tab_pos>GTK_POS_TOP</tab_pos>
-      <scrollable>True</scrollable>
+      <scrollable>False</scrollable>
       <tab_hborder>2</tab_hborder>
       <tab_vborder>2</tab_vborder>
       <popup_enable>False</popup_enable>
@@ -7911,7 +7911,7 @@ LR Hand
 	      <class>GtkCheckButton</class>
 	      <name>shinfo_occludes_check</name>
 	      <can_focus>True</can_focus>
-	      <label>Occludes	</label>
+	      <label>Occludes</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <child>
