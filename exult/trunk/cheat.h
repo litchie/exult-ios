@@ -54,9 +54,13 @@ public:
   bool in_infravision (void) const { return infravision; }
   
   void toggle_god (void);
+  void set_god (bool god) { god_mode = god; }
   void toggle_wizard (void);
+  void set_wizard (bool wizard) { wizard_mode = wizard; }
   void toggle_map_editor (void);
+  void set_map_editor (bool map) { map_editor = map; }
   void toggle_infravision (void);
+  void set_infravision (bool infra) { infravision = infra; }
 
   void toggle_eggs (void) const;
   void change_gender (void) const;
@@ -70,6 +74,7 @@ public:
 
   void fake_time_period (void) const;
   void dec_skip_lift (void) const;
+  void set_skip_lift (int skip) const;
 
   void map_teleport (void) const;
   void cursor_teleport (void) const;

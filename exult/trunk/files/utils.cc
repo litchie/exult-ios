@@ -94,7 +94,7 @@ string get_system_path(const string &path)
  *	Output: ->original buffer, changed to upper case.
  */
 
-static void to_uppercase
+void to_uppercase
 	(
 	string &str
 	)

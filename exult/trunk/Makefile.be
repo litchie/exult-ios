@@ -25,7 +25,7 @@ EXEC=exult
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	args.o bggame.o browser.o cheat.o \
 	combat.o delobjs.o dir.o drag.o effects.o exult.o exultmenu.o \
-	game.o gameclk.o gamedat.o gamerend.o gamewin.o \
+	game.o gameclk.o gamedat.o gamerend.o gamewin.o keys.o keyactions.o \
 	menulist.o mouse.o npcnear.o npctime.o palette.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o
 # unused: npctest.o
