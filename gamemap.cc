@@ -1122,6 +1122,9 @@ void Game_map::read_ireg_objects
 				continue;
 			else if (container->add(obj, 1))
 				continue;
+			else		// Fix tx, ty.
+				obj->set_shape_pos(obj->get_tx()&0xf,
+						   obj->get_ty()&0xf);
 			}
 		Map_chunk *chunk = get_chunk(scx + cx, scy + cy);
 		if (is_egg)
