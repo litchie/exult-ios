@@ -13,13 +13,5 @@ libu7file_la_SOURCES =	\
 	U7file.cc	\
 	U7file.h
 
-noinst_PROGRAMS = filetest
-
-filetest_SOURCES =	\
-	test.cc
-
-filetest_LDADD =	\
-	libu7file.la
-
 EXTRA_DIST = 		\
 	README
