@@ -1434,6 +1434,54 @@ gint Combo_chooser::expose
 	return (TRUE);
 	}
 
+#ifdef WIN32
+
+/*
+ *	Dragging in win32.
+ */
+static bool win32_button = false;
+
+gint Shape_chooser::win32_drag_motion
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventMotion *event,
+	gpointer data			// ->Combo_chooser.
+	)
+	{
+	  if (win32_button)
+	  {
+		win32_button = false;
+
+		// prepare the dragged data
+		windragdata wdata;
+
+		// This call allows us to recycle the data transfer initialization code.
+		//  It's clumsy, but far easier to maintain.
+		drag_data_get(NULL, NULL, (GtkSelectionData *) &wdata,
+		  U7_TARGET_COMBOID, 0, data);
+
+		POINT pnt;
+		GetCursorPos(&pnt);
+
+		LPDROPSOURCE idsrc = (LPDROPSOURCE) new Windropsource(0, 
+		  pnt.x, pnt.y);
+		LPDATAOBJECT idobj = (LPDATAOBJECT) new Winstudioobj(wdata);
+		DWORD dndout;
+
+		HRESULT res = DoDragDrop(idobj, idsrc, DROPEFFECT_COPY, &dndout);
+		if (FAILED(res)) {
+		  g_warning ("Oops! Something is wrong with OLE2 DnD..");
+		}
+
+		delete idsrc;
+		idobj->Release();	// Not sure if we really need this. However, it doesn't hurt either.
+	  }
+
+	return true;
+	};
+
+#endif
+
 /*
  *	Handle a mouse button press event.
  */
