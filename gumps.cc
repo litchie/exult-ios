@@ -1432,7 +1432,9 @@ void Sign_gump::paint
 	Game_window *gwin
 	)
 	{
-	const int font = 1;		// Runes.
+	int font = 1;			// Normal runes.
+	if (get_shapenum() == 0x33)
+		font = 6;		// Embossed.
 					// Get height of 1 line.
 	int lheight = gwin->get_text_height(font);
 					// Get space between lines.
