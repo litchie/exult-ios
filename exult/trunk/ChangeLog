@@ -1,3 +1,6 @@
+2001-04-17  Dancer Vesperman <dancer@users.sourceforge.net>
+	* keyactions.cc: Honour std namespace
+
 2001-04-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* schedule.*, actors.cc: added Bake_schedule
 
