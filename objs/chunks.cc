@@ -366,36 +366,43 @@ int Chunk_cache::is_blocked
 	unsigned short tflags = blocked[ty*tiles_per_chunk + tx];
 
 	int new_high;
-					// Something there? and not flying
-	if (tflags & (1 << lift) && !(move_flags & MOVE_FLY))		
-	{
-		new_lift = lift + 1;	// Maybe we can step up.
-		new_high = get_lowest_blocked (new_lift, tflags);
-		if (new_lift > 15)
-			return (1);	// In sky
-		else if (tflags & (1 << new_lift))
-			return (1);	// Next step up also blocked
-		else if (new_high != -1 && new_high < (new_lift + height))
-			return (1);	// Blocked by something above
-	}
-	else if (tflags & (1 << lift))
-	{
-		new_lift = lift;
-		while (tflags & (1 << new_lift) && new_lift <= lift+max_drop)
-		{
-			new_lift++;		// Maybe we can step up.
+	if (tflags & (1 << lift))	// Something there?
+		{			// Not flying?
+		if (!(move_flags & MOVE_FLY))		
+			{
+			new_lift = lift + 1;	// Maybe we can step up.
 			new_high = get_lowest_blocked (new_lift, tflags);
 			if (new_lift > 15)
 				return (1);	// In sky
-			else if (new_high != -1 && new_high < 
-							(new_lift + height))
+			else if (tflags & (1 << new_lift))
+				return (1);	// Next step up also blocked
+			else if (new_high != -1 && 
+					new_high < (new_lift + height))
 				return (1);	// Blocked by something above
+			}
+		else			// Flying.
+			{
+			new_lift = lift;
+			while (tflags & (1 << new_lift) && 
+						new_lift <= lift+max_drop)
+				{
+				new_lift++;	// Maybe we can step up.
+				new_high = get_lowest_blocked(
+							new_lift, tflags);
+				if (new_lift > 15)
+					return (1);	// In sky
+				else if (new_high != -1 && new_high < 
+							(new_lift + height))
+					// Blocked by something above
+					return (1);
+				}
+			}
 		}
-	}
 	else
-	{
-					// See if we're going down.
-		new_lift = get_highest_blocked(lift, tflags) + 1;
+		{			// Not blocked.
+					// See if going down if not flying.
+		new_lift =  (move_flags & MOVE_FLY) ? lift :
+				get_highest_blocked(lift, tflags) + 1;
 		new_high = get_lowest_blocked (new_lift, tflags);
 	
 		// Make sure that where we want to go is tall enough for us
@@ -403,7 +410,7 @@ int Chunk_cache::is_blocked
 	
 					// Don't allow fall of > max_drop.
 		if (lift - new_lift > max_drop) return 1;
-	}
+		}
 		
 	
 	// Found a new place to go, lets test if we can actually move there
@@ -740,7 +747,8 @@ int Chunk_object_list::is_blocked
 	int xtiles, int ytiles, int ztiles,
 	Tile_coord from,		// Stepping from here.
 	Tile_coord to,			// Stepping to here.
-	const int move_flags
+	const int move_flags,
+	int max_drop			// Max drop allowed.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -791,7 +799,7 @@ int Chunk_object_list::is_blocked
 			olist->setup_cache();
 			int rtx = x%tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
-							new_lift, move_flags) ||
+					new_lift, move_flags, max_drop) ||
 			    new_lift != from.tz)
 				return (1);
 			}
@@ -808,7 +816,7 @@ int Chunk_object_list::is_blocked
 			olist->setup_cache();
 			int rty = y%tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
-						new_lift, move_flags) ||
+					new_lift, move_flags, max_drop) ||
 			    new_lift != from.tz)
 				return (1);
 			}
