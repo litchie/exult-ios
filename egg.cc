@@ -32,7 +32,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "useval.h"
 #include "effects.h"
 
-#include <math.h>
+// #include <math.h>
+
+/*
+ *	Paint at given spot in world.
+ */
+
+void Egglike_game_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	if(gwin->paint_eggs)
+		Game_object::paint(gwin);
+	}
 
 /*
  *	Create an egg from IREG data.
@@ -46,7 +59,7 @@ Egg_object::Egg_object
 	unsigned short itype,
 	unsigned char prob, 
 	short d1, short d2
-	) : Game_object(l, h, shapex, shapey, lft),
+	) : Egglike_game_object(l, h, shapex, shapey, lft),
 	    probability(prob), data1(d1), data2(d2),
 	    area(Rectangle(0, 0, 0, 0))
 	{
@@ -190,19 +203,6 @@ static	inline int	distance_between_points(int ax,int ay,int bx,int by)
 	return	(int)sqrt(float(dx*dx+dy*dy));			// the cast to float is required to prevent ambiguity!
 }
 
-
-/*
- *	Paint at given spot in world.
- */
-
-void Egg_object::paint
-	(
-	Game_window *gwin
-	)
-	{
-	if(gwin->paint_eggs)
-		Game_object::paint(gwin);
-	}
 
 /*
  *	Run usecode when double-clicked.
