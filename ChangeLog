@@ -1,3 +1,6 @@
+2001-07-24  Tristan Tarrant <nadir@users.sourceforge.net>
+	* usecode/useval.h: add a cast to get_elem() to make it compile
+
 2001-07-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/useval.cc (Usecode_value): Operator== compares array
