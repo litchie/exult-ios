@@ -2,7 +2,6 @@ AUTOMAKE_OPTIONS=foreign
 
 all-local:	libpathfinder.a 
 
-INCDIRS += -I..
 CXXFLAGS += $(INCDIRS) -Wall
 CXXFLAGS += $(WINDOWING_SYSTEM)
 CXXFLAGS += $(DEBUG_FLAGS)

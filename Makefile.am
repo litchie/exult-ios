@@ -18,7 +18,6 @@ EXTRA_DIST =
 
 SUFFIXES=.cc .h
 
-INCLUDES += -I.
 INCLUDES += $(AUDIO_INCLUDES)
 INCLUDES += -Iconf
 INCLUDES += -Ipathfinder
