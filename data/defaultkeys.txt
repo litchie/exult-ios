@@ -30,6 +30,7 @@ Ctrl-H		cheat_help
 Ctrl-Alt-H	party_heal
 Alt-I		toggle_infravision
 I		inventory
+J		jawbone
 K		try_keys
 Ctrl-L		party_increase_level
 Alt-L		skiplift_decrement

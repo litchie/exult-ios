@@ -45,6 +45,7 @@ void ActionInventory(int* params);
 void ActionTryKeys(int* params);
 void ActionStats(int* params);
 void ActionCombatStats(int* params);
+void ActionJawbone(int* params);
 
 void ActionSIIntro(int* params);
 void ActionEndgame(int* params);
