@@ -121,6 +121,7 @@ public:
 	friend class Chunk_object_list;
 	friend class Barge_object;
 	friend class Gump_object;
+	friend class Actor;
 	friend class Actor_gump_object;
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)

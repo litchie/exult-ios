@@ -608,6 +608,13 @@ void Actor_gump_object::paint
 	Game_window *gwin
 	)
 	{
+					// Watch for any newly added objs.
+	for (int i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
+		{			// Set object coords.
+		Game_object *obj = container->get_readied(i);
+		if (obj && !obj->get_cx() && !obj->get_cy())
+			set_to_spot(obj, i);
+		}
 	Gump_object::paint(gwin);	// Paint gump & objects.
 					// Paint buttons.
 	paint_button(gwin, heart_button);
