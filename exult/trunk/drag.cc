@@ -216,7 +216,7 @@ void Game_window::drop
 					// First see if it's a gump.
 	Gump_object *on_gump = find_gump(x, y);
 	if (on_gump)
-		{			// +++++++++Watch for failure!!
+		{
 		if (on_gump->add(dragging, x, y))
 			return;
 		}
