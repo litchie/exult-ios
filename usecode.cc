@@ -2227,9 +2227,7 @@ USECODE_INTRINSIC(earthquake)
 USECODE_INTRINSIC(is_pc_female)
 {
 	// Is player female?
-	int shapenum = gwin->get_main_actor()->get_shapenum();
-					// This works for Black Gate:
-	Usecode_value u(shapenum != 721);
+	Usecode_value u(gwin->get_main_actor()->get_type_flag(Actor::tf_sex));
 	return(u);
 }
 
