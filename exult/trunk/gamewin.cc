@@ -292,10 +292,12 @@ Game_window::Game_window
 	game_window = this;		// Set static ->.
 	clock = new Game_clock(tqueue);
 	shape_man = new Shape_manager();// Create the single instance.
-	Game_singletons::init(this);	// Everything but 'usecode' exists.
+	Game_singletons::init(this);	// Everything but 'usecode', 'pal' exists.
 
 	set_window_size(width, height, scale, scaler);
 	pal = new Palette();
+
+	Game_singletons::pal = pal;
 
 	string str;
 	config->value("config/gameplay/textbackground", text_bg, -1);

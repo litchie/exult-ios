@@ -32,6 +32,7 @@ protected:
 	static class Shape_manager *sman;
 	static class Usecode_machine *ucmachine;
 	static class Game_clock *gclock;
+	static class Palette *pal;
 public:
 	static void init(Game_window *g);
 	};

@@ -271,11 +271,11 @@ bool Game::show_menu(bool skip)
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch(choice<0?choice:menuentries[choice]) {
 		case -1: // Exit
-			pal.fade_out(c_fade_out_time);
+			pal->fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
 			throw quit_exception();
 		case 0: // Intro
-			pal.fade_out(c_fade_out_time);
+			pal->fade_out(c_fade_out_time);
 			play_intro();
 			gwin->clear_screen(true);
 			top_menu();
@@ -304,19 +304,19 @@ bool Game::show_menu(bool skip)
 			play = true;
 			break;
 		case 3: // Credits
-			pal.fade_out(c_fade_out_time);
+			pal->fade_out(c_fade_out_time);
 			show_credits();
 			delete menu;
 			menu = 0;
 			top_menu();
 			break;
 		case 4: // Quotes
-			pal.fade_out(c_fade_out_time);
+			pal->fade_out(c_fade_out_time);
 			show_quotes();
 			top_menu();
 			break;
 		case 5: // End Game
-			pal.fade_out(c_fade_out_time);
+			pal->fade_out(c_fade_out_time);
 			end_game(true);
 			top_menu();
 			break;
@@ -331,7 +331,7 @@ bool Game::show_menu(bool skip)
 	} while(!exitmenu);
 
 	if (fadeout) {
-		pal.fade_out(c_fade_out_time);
+		pal->fade_out(c_fade_out_time);
 		gwin->clear_screen(true);
 	}
 	delete menu;
@@ -345,10 +345,10 @@ void Game::journey_failed_text()
 {
 	Font *font = fontManager.get_font("MENU_FONT");
 	font->center_text(ibuf, centerx, centery+30,  "You must start a new game first.");
-	pal.fade_in(50);
+	pal->fade_in(50);
 	while (!wait_delay(10))
 		;
-	pal.fade_out(50);
+	pal->fade_out(50);
 }
 	
 const char *Game::get_avname ()
