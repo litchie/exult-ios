@@ -153,6 +153,7 @@ int Time_queue_iterator::operator()
 		return (0);
 	obj = (*iter).handler;		// Return fields.
 	data = (*iter).udata;
+	++iter;				// On to the next.
 	return (1);
 	}
 
