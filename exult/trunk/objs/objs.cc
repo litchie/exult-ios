@@ -227,7 +227,8 @@ int Game_object::modify_quantity
 	int new_frame = newquant - 1;
 	if (new_frame > 7)		// Range is 0-7.
 		new_frame = 7;
-	if (shapenum == 565)		// Starbursts are special.
+	if (shapenum == 565 ||		// Starbursts are special.
+	    shapenum == 636)		// So are serpentine daggers.
 		set_frame(0);		// (Fixes messed-up games.)
 	else if (shapenum != 842)	// Leave reagants alone.
 					// Guessing:  Works for ammo, arrows.
