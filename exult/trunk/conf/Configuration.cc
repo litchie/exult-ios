@@ -137,39 +137,52 @@ bool	Configuration::read_config_string(const std::string &s)
 
 bool	Configuration::read_config_file(const string input_filename, const string root)
 {
+	std::string fname;
+
 	CTRACE("Configuration::read_config_file");
 	
-	clear(root);
-	
-	filename=input_filename;
+	fname=input_filename;
 	// Don't frob the filename if it starts with a dot and
 	// a slash.
 	// Or if it's not a relative path.
-	if((filename.find("./")!=0) && (filename[0]!='/'))
+	if((fname.find("./")!=0) && (fname[0]!='/'))
 	{
 #if ((defined XWIN) || (defined BEOS))
 		const char *f1=getenv("HOME");
 		if(f1)
 		{
 			// User has a home directory
-			filename=f1;
+			fname=f1;
 #ifndef BEOS
-			filename+="/.";
+			fname+="/.";
 #else
-			filename+="/config/settings/";
+			fname+="/config/settings/";
 #endif
-			filename+=input_filename;
+			fname+=input_filename;
 		}
 		else
-			filename=input_filename;
+			fname=input_filename;
 #else
-		// Probably something to do with deteriming the username
+		// Probably something to do with determining the username
 		// and generating a filename in their personal setup area.
 
 		// For now, just read file from current directory
-		filename=input_filename;
+		fname=input_filename;
 #endif
 	}
+
+	return read_abs_config_file(fname, root);
+}
+
+
+// read config from file, without pre-processing the filename
+bool Configuration::read_abs_config_file(const string input_filename, const string root)
+{
+	filename = input_filename;
+
+	CTRACE("Configuration::read_abs_config_file");
+
+	clear(root);
 
 	is_file=true; // set to file, even if file not found
 
