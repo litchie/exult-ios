@@ -61,6 +61,7 @@ private:
 	Text_object *texts;		// Text snippets shown on screen.
 	Npc_face_info *face_info[3];	// NPC's on-screen faces in convers.
 	int num_faces;			// # of faces.
+	int last_face_shown;		// Index of last npc face shown.
 	Rectangle *conv_choices;	// Choices during a conversation.
 	unsigned char painted;		// 1 if we updated image buffer.
 	unsigned char focus;		// Do we have focus?
@@ -308,6 +309,7 @@ public:
 	void remove_face(int shape);	// Remove "face" from screen.
 					// Show what NPC said.
 	void show_npc_message(char *msg);
+	int is_npc_text_pending();	// Need to prompt user?
 					// Show what Avatar can say.
 	void show_avatar_choices(int num_choices, char **choices);
 					// User clicked on a choice.
