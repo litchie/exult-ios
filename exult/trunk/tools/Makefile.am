@@ -1,5 +1,5 @@
 INCLUDES = -I$(srcdir)/../files -I$(srcdir)/../usecode -I$(srcdir)/.. \
-		$(DEBUG_FLAGS) $(CPPFLAGS)
+		$(DEBUG_FLAGS) $(CPPFLAGS) $(SDL_INCLUDES)
 
 if LEXYACC
 UCC= ucc
