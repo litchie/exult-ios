@@ -1,3 +1,8 @@
+2002-07-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.h,actors.cc:  All NPC's except Avatar get 4-frame
+	(smooth) walking.  This matches the original U7.
+
 2002-07-10  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* Lots:  Added gumpman to Singletons class.
