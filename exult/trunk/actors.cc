@@ -3501,7 +3501,7 @@ void Npc_actor::get_schedules
  *	Move and change frame.
  */
 
-inline void Npc_actor::movef
+void Npc_actor::movef
 	(
 	Map_chunk *old_chunk,
 	Map_chunk *new_chunk, 
