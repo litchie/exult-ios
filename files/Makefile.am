@@ -20,3 +20,5 @@ libu7file_la_SOURCES =	\
 
 EXTRA_DIST = 		\
 	README
+
+CLEANFILES = *~

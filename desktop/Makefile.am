@@ -9,3 +9,5 @@ endif
 EXTRA_DIST = \
 	exult.png \
 	exult.desktop
+
+CLEANFILES = *~

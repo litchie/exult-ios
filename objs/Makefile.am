@@ -27,6 +27,4 @@ libobjs_la_SOURCES = \
 	virstone.cc \
 	virstone.h
 
-
-
-
+CLEANFILES = *~
