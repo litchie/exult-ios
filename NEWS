@@ -1,3 +1,11 @@
+01/27/04	v1.1.9rc1
+
+		Cleaned up non-MIDI music driver support
+		Cleaned up diagnostic output
+		Fixed various schedule and pathfinding bugs
+		Worked around Serpent Staff bug from original SI
+		Lots of minor bugfixes
+
 10/18/03	v1.1 Beta3
 
 		Fixed item duplication
