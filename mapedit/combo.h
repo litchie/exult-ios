@@ -144,10 +144,9 @@ class Combo_info
 class Combo_chooser: public Object_browser, public Shape_draw
 	{
 	Flex_file_info *flex_info;	// Where file data is stored.
-	std::vector<Combo *> combos;		// List of all combination-objects.
+	std::vector<Combo *> combos;	// List of all combination-objects.
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
-	GtkWidget *combo_scroll;	// Vertical scrollbar.
 	int index0;			// Index (combo) # of leftmost in
 					//   displayed list.
 	Combo_info *info;		// An entry for each combo drawn.

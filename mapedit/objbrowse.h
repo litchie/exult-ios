@@ -31,6 +31,8 @@ private:
 	GtkWidget *widget;
 protected:
 	int selected;			// Index of user-selected entry.
+	GtkWidget *vscroll;		// Vertical scrollbar.
+	GtkWidget *hscroll;		// Horizontal scrollbar.
 	Shape_group *group;		// Non-null to use filter.
 	GtkWidget *popup;		// Popup menu in draw area.
 	Shape_file_info *file_info;	// Our creator (or null).
@@ -45,6 +47,8 @@ public:
 	virtual ~Object_browser();
 	
 	GtkWidget *get_widget();
+	void save_pos();		// Save scroll/selection.
+	void restore_pos();
 	Shape_group *get_group()
 		{ return group; }
 	int get_selected()		// Return index of selected item.
