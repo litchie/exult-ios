@@ -74,6 +74,8 @@ public:
 					//   with its last task.
 	virtual void im_dormant()	// Npc calls this when it goes from
 		{  }			//   being active to dormant.
+	virtual void ending()		// Switching to another schedule.
+		{  }
 	};
 
 /*
@@ -139,9 +141,11 @@ public:
  */
 class Sleep_schedule : public Schedule
 	{
+	Tile_coord floorloc;		// Where NPC was standing before.
 public:
 	Sleep_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
+	virtual void ending();		// Switching to another schedule.
 	};
 
 /*

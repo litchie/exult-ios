@@ -203,6 +203,7 @@ Sleep_schedule::Sleep_schedule
 	Actor *n
 	) : Schedule(n)
 	{
+	floorloc.tx = -1;		// Set to invalid loc.
 	}
 
 /*
@@ -226,8 +227,24 @@ void Sleep_schedule::now_what
 					// Get bed info.
 	Shape_info& info = Game_window::get_game_window()->get_info(bed);
 	Tile_coord bedloc = bed->get_abs_tile_coord();
+	floorloc = npc->get_abs_tile_coord();
 					// Put NPC on top of bed.
 	npc->move(bedloc.tx, bedloc.ty, bedloc.tz + info.get_3d_height() + 1);
+	}
+
+/*
+ *	Wakeup time.
+ */
+
+void Sleep_schedule::ending
+	(
+	)
+	{
+	if (floorloc.tx >= 0)		// Get back on floor.
+		{
+		npc->move(floorloc);
+		npc->set_frame(Actor::standing);
+		}
 	}
 
 /*
