@@ -41,6 +41,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "actors.h"
 
+#if 0
+#include <iostream>
+using std::cout;
+using std::endl;
+#endif
+
 using std::memset;
 using std::rand;
 
@@ -67,6 +73,81 @@ Chunk_cache::~Chunk_cache
 	}
 
 /*
+ *	This mask gives the low bits (b0) for a given # of ztiles.
+ */
+unsigned long tmasks[16] = {		0x0L,
+				        0x1L,
+				        0x5L,
+				       0x15L,
+				       0x55L,
+				      0x155L,
+				      0x555L,
+				     0x1555L,
+				     0x5555L,
+				    0x15555L,
+				    0x55555L,
+				   0x155555L,
+				   0x555555L,
+				  0x1555555L,
+				  0x5555555L,
+				 0x15555555L
+			};
+
+/*
+ *	Set (actually, increment count) for a given tile.
+ *	Want:	00 => 01,	01 => 10,
+ *		10 => 11,	11 => 11.
+ *	So:	newb0 = !b0 OR b1,
+ *		newb1 =  b1 OR b0
+ */
+inline void Set_blocked_tile
+	(
+	unsigned long *blocked,		// 16x16 flags,
+	int tx, int ty,			// Tile #'s (0-15).
+	int lift,			// Starting lift to set.
+	int ztiles			// # tiles along z-axis.
+	)
+	{
+	unsigned long& val = blocked[ty*c_tiles_per_chunk + tx];
+					// Get mask for the bit0's:
+	unsigned long mask0 = tmasks[ztiles]<<2*lift;
+	unsigned long mask1 = mask0<<1;	// Mask for the bit1's.
+	unsigned long val0s = val&mask0;
+	unsigned long Nval0s = (~val)&mask0;
+	unsigned long val1s = val&mask1;
+	unsigned long newval = val1s | (val0s<<1) | Nval0s | (val1s>>1);
+					// Replace old values with new.
+	val = (val&~(mask0|mask1)) | newval;
+	}
+
+/*
+ *	Clear (actually, decrement count) for a given tile.
+ *	Want:	00 => 00,	01 => 00,
+ *		10 => 01,	11 => 10.
+ *	So:	newb0 =  b1 AND !b0
+ *		newb1 =  b1 AND  b0
+ */
+inline void Clear_blocked_tile
+	(
+	unsigned long *blocked,		// 16x16 flags,
+	int tx, int ty,			// Tile #'s (0-15).
+	int lift,			// Starting lift to set.
+	int ztiles			// # tiles along z-axis.
+	)
+	{
+	unsigned long& val = blocked[ty*c_tiles_per_chunk + tx];
+					// Get mask for the bit0's:
+	unsigned long mask0 = tmasks[ztiles]<<2*lift;
+	unsigned long mask1 = mask0<<1;	// Mask for the bit1's.
+	unsigned long val0s = val&mask0;
+	unsigned long Nval0s = (~val)&mask0;
+	unsigned long val1s = val&mask1;
+	unsigned long newval = (val1s & (val0s<<1)) | ((val1s>>1) & Nval0s);
+					// Replace old values with new.
+	val = (val&~(mask0|mask1)) | newval;
+	}
+
+/*
  *	Set/unset the blocked flags in a region.
  */
 
@@ -82,13 +163,13 @@ void Chunk_cache::set_blocked
 		{
 		for (int y = starty; y <= endy; y++)
 			for (int x = startx; x <= endx; x++)
-				set_blocked_tile(x, y, lift, ztiles);
+				Set_blocked_tile(blocked, x, y, lift, ztiles);
 		}
 	else
 		{
 		for (int y = starty; y <= endy; y++)
 			for (int x = startx; x <= endx; x++)
-				clear_blocked_tile(x, y, lift, ztiles);
+				Clear_blocked_tile(blocked,x, y, lift, ztiles);
 		}
 	}
 
@@ -117,9 +198,9 @@ void Chunk_cache::update_object
 	if (xtiles == 1 && ytiles == 1)	// Simplest case?
 		{
 		if (add)
-			set_blocked_tile(endx, endy, lift, ztiles);
+			Set_blocked_tile(blocked, endx, endy, lift, ztiles);
 		else
-			clear_blocked_tile(endx, endy, lift, ztiles);
+			Clear_blocked_tile(blocked, endx, endy, lift, ztiles);
 		return;
 		}
 	Rectangle footprint = obj->get_footprint();
@@ -258,11 +339,11 @@ void Chunk_cache::setup
 inline int Chunk_cache::get_highest_blocked
 	(
 	int lift,			// Look below this lift.
-	unsigned short tflags		// Flags for desired tile.
+	unsigned long tflags		// Flags for desired tile.
 	)
 	{
 	int i;				// Look downwards.
-	for (i = lift - 1; i >= 0 && !(tflags & (1<<i)); i--)
+	for (i = lift - 1; i >= 0 && !(tflags & (3<<(2*i))); i--)
 		;
 	return i;
 	}
@@ -291,11 +372,11 @@ int Chunk_cache::get_highest_blocked
 inline int Chunk_cache::get_lowest_blocked
 	(
 	int lift,			// Look above this lift.
-	unsigned short tflags		// Flags for desired tile.
+	unsigned long tflags		// Flags for desired tile.
 	)
 	{
 	int i;				// Look upward.
-	for (i = lift; i < 16 && !(tflags & (1<<i)); i++)
+	for (i = lift; i < 16 && !(tflags & (3<<(2*i))); i++)
 		;
 	if (i == 16) return -1;
 	return i;
@@ -371,7 +452,7 @@ int Chunk_cache::is_blocked
 		return 0;
 	}
 					// Get bits.
-	unsigned short tflags = blocked[ty*c_tiles_per_chunk + tx];
+	unsigned long tflags = blocked[ty*c_tiles_per_chunk + tx];
 					// Figure max lift allowed.
 	if (max_rise == -1)
 		max_rise = (move_flags & MOVE_FLY) ? max_drop : 1;
@@ -380,7 +461,7 @@ int Chunk_cache::is_blocked
 		max_lift = 15;		// As high as we can go.
 	for (new_lift = lift; new_lift <= max_lift; new_lift++)
 		{
-		if ((tflags & (1 << new_lift)) == 0)
+		if ((tflags & (3 << (2*new_lift))) == 0)
 			{		// Not blocked?
 			int new_high = get_lowest_blocked(new_lift, tflags);
 					// Not blocked above?

@@ -552,6 +552,7 @@ USECODE_INTRINSIC(update_last_created)
 		}
 	Game_object *obj = last_created.back();
 	last_created.pop_back();
+	obj->set_invalid();		// It's already been removed.
 	Usecode_value& arr = parms[0];
 	int sz = arr.get_array_size();
 	if (sz == 3 || sz == 2)
@@ -559,32 +560,6 @@ USECODE_INTRINSIC(update_last_created)
 		Tile_coord dest(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
 			  sz == 3 ? arr.get_elem(2).get_int_value() : 0);
-#if 0
-//+++++++I don't remember why I put this in, but it screws up the mirror room
-// in SI when fake Avatars are created where the mirrors exist.
-//++++++++
-		Tile_coord pos = dest;
-					// Skip 'blocked' check if it looks
-					//   structural. (For SI maze).
-		Shape_info& info = obj->get_info();
-		if (info.get_3d_height() < 5 &&
-					// Weed out drawbridge, etc:
-		    info.get_3d_xtiles() + info.get_3d_ytiles() < 8 &&
-					// And skip if BG.  Causes FoV probs.
-		    Game::get_game_type() != BLACK_GATE)
-			while (Map_chunk::is_blocked(pos, 1,
-					MOVE_ALL_TERRAIN | MOVE_NODROP, 1))
-				{	// Try up to ceiling.
-				if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
-					{
-//					cerr << " Failed to find space"<< endl;
-					obj->remove_this(0);
-					return Usecode_value(0);
-					}
-				dest.tz++;
-				pos.tz = dest.tz;
-				}
-#endif
 		obj->move(dest.tx, dest.ty, dest.tz);
 		if (GAME_BG) {
 			Usecode_value u(1);
