@@ -75,18 +75,23 @@ free account for. Matching versions of the GNU binutils should be available
 in a more official way from Compaq somewhere; please contact me if you're found
 a place that carries them.
 
-If you got a new ld, you will need to replace yours with the new one. Remember to
-make a backup first!
+If you got a new ld, you will need to replace yours with the new one. Remember
+to make a backup first!
 
 
 4. Compiling
 ------------
 
-./configure --with-cxx="cxx -O5 -D__inline__=inline"
+./configure --enable-long-long-warnings --with-cxx="cxx -O5 -D__inline__=inline"
 
 should do it for normal compiles. If you want to debug, you should use "-g3"
 instead of "-O5", or an appropriate combination of both (refer to the cxx
 man page for details).
+
+The --enable-long-long-warnings is required because cxx passes the
+-Wno-long-long option on to the linker, which chokes on it. Therefore,
+-Wno-long-long must not be used for compiles, which is enforced by the
+--enable-long-long-warnings option.
 
 If everything went well, your system should be set up for compilation. Run
 "make" and (as superuser) "make install". Some sort of "make install" or
