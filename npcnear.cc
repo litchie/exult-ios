@@ -46,6 +46,19 @@ void Npc_proximity_handler::add
 	}
 
 /*
+ *	Remove entry for an npc.
+ */
+
+void Npc_proximity_handler::remove
+	(
+	Npc_actor *npc
+	)
+	{
+	npc->clear_nearby();
+	gwin->get_tqueue()->remove(this, (long) npc); 
+	}
+
+/*
  *	Run proximity usecode function for the NPC now.
  */
 

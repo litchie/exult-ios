@@ -2470,6 +2470,19 @@ void Game_window::add_nearby_npc
 	}
 
 /*
+ *	Remove an NPC from the nearby list.
+ */
+
+void Game_window::remove_nearby_npc
+	(
+	Npc_actor *npc
+	)
+	{
+	if (npc->is_nearby())
+		npc_prox->remove(npc);
+	}
+
+/*
  *	Add NPC's in a given range of chunk to the queue for nearby NPC's.
  */
 
