@@ -38,6 +38,7 @@ public:
 		void fade_in(int cycles);
 		void fade_out(int cycles);
 		int find_color(int r, int g, int b);
+		void show();
 	};
 	
 

@@ -190,3 +190,11 @@ int Palette::find_color(int r, int g, int b) {
 	}
 	return best_index;
 }
+
+void Palette::show() {
+	for (int x = 0; x < 16; x++) {
+		for (int y = 0; y < 16; y++) {
+			win->fill8(y*16+x, 8, 8, x*8, y*8);
+		}
+	} 
+}
