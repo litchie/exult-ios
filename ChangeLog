@@ -1,3 +1,7 @@
+2001-12-03  Ryan Nunn <triforce@merlin.net.au>
+	* msvcstuff/exconfig/exconfig.cpp : Updated installer stuff
+	* msvcstuff/exconfig/exconfig.rc, win32/exultico.rc : 0.97cvs
+
 2001-12-03  Tristan Tarrant <nadir@users.sourceforge.net>
 	* configure.in, Makefile.win32, Makefile.cygwin, Makefile.be,
 	  msvcstuff/Exult.dsp, msvcstuff/msvc_kludges.h, mac/mac_autoconfig.h:

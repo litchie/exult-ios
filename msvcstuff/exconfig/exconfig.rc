@@ -44,13 +44,18 @@ BEGIN
     BEGIN
         BLOCK "0c0904b0"
         BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "\0"
             VALUE "FileDescription", "Exult Config Helper DLL for InstallShield\0"
             VALUE "FileVersion", "1, 0, 0, 1\0"
             VALUE "InternalName", "exconfig\0"
             VALUE "LegalCopyright", "Copyright © 2001\0"
+            VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", "exconfig.dll\0"
+            VALUE "PrivateBuild", "\0"
             VALUE "ProductName", "Exult\0"
-            VALUE "ProductVersion", "0, 9, 4, 0\0"
+            VALUE "ProductVersion", "0.97cvs\0"
+            VALUE "SpecialBuild", "\0"
         END
     END
     BLOCK "VarFileInfo"
