@@ -265,9 +265,9 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		}
 	else if (actor->step(tile, frame))	// Successful.
 		{
-		if (get_party)
+		if (get_party)		// MUST be the Avatar.
 			Game_window::get_instance()->get_party_man()->
-						move_followers(actor, newdir);
+						get_followers(newdir);
 		if (done)		// Was this the last step?
 			return (0);
 		return cur_speed;
