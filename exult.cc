@@ -1047,7 +1047,7 @@ static void Handle_keystroke
 			gwin->get_main_actor()->get_abs_tile(tx, ty, z);
 	
 			//the 5 and 10 below are the map-borders, 3072 dimensions of the world
-			//the +1 _seems_ to improve location, maybe something to do with "/ 3072"
+			//the +1 _seems_ to improve location, maybe something to do with "/ 3072"?
 			xx = ((tx * (map->get_width() - 10)) / 3072) + (5 + x - map->get_xleft()) + 1;
 			yy = ((ty * (map->get_height() - 10)) / 3072) + (5 + y - map->get_yabove()) + 1;
 			gwin->get_win()->fill8(0, 1, 5, xx, yy - 2); // black isn't the correct colour,
