@@ -312,8 +312,8 @@ public:
 							int framenum = -359)
 		{ return 0; }
 					// Get contained objs.
-	virtual int get_objects(Vector& vec, int shapenum, 
-						int framenum = -359)
+	virtual int get_objects(Vector& vec, int shapenum, int qual,
+						int framenum)
 		{ return 0; }
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0)
@@ -519,8 +519,8 @@ public:
 	virtual int count_objects(int shapenum, int qual = -359,
 							int framenum = -359);
 					// Get contained objs.
-	virtual int get_objects(Vector& vec, int shapenum, 
-							int framenum = -359);
+	virtual int get_objects(Vector& vec, int shapenum, int qual,
+						int framenum);
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
 					// Write contents in IREG format.

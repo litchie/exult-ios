@@ -1138,7 +1138,7 @@ Usecode_value Usecode_machine::get_objects
 	(
 	Usecode_value& objval,		// The container.
 	Usecode_value& shapeval,	// Object shape to get or -359 for any.
-	Usecode_value& qualval,		// Quality (ignored, for now).
+	Usecode_value& qualval,		// Quality (-359=any).
 	Usecode_value& frameval		// Frame (-359=any).
 	)
 	{
@@ -1147,8 +1147,9 @@ Usecode_value Usecode_machine::get_objects
 		return Usecode_value(0);
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
+	int qual = qualval.get_int_value();
 	Vector vec;			// Gets list.
-	int cnt = obj->get_objects(vec, shapenum, framenum);
+	int cnt = obj->get_objects(vec, shapenum, qual, framenum);
 
 //	cout << "Container objects found:  " << cnt << << endl;
 	Usecode_value within(cnt, 0);	// Create return array.
