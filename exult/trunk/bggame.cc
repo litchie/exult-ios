@@ -59,41 +59,6 @@ void create_static(Image_buffer8* ib, int w, int h, int x, int y,
 	}
 }
 
-#if 0
-bool wait_delay_cycle(int ms, int startcol, int ncol)
-{
-	SDL_Event event;
-	int delay;
-	int loops;
-	if(ms<=20) {
-		delay = ms;
-		loops = 1;
-	} else {
-		delay = 10;
-		loops = ms/delay;
-	}
-	for(i=0; i<loops; i++) {
-		unsigned long ticks1 = SDL_GetTicks();
-	        // this may be a bit risky... How fast can events be generated?
-		while(SDL_PollEvent(&event)) {
-			if ((event.type==SDL_KEYDOWN) || 
-			    (event.type==SDL_MOUSEBUTTONUP))
-				return true;
-		}
-		Game_window::get_game_window()->get_win()
-		  ->rotate_colors(startcol, ncol, 1);
-		if (ms > 250)
-			Game_window::get_game_window()->get_win()->show();
-		unsigned long ticks2 = SDL_GetTicks();
-		if (ticks2 - ticks1 > delay)
-			i+= (ticks2 - ticks1) / delay - 1;
-		else
-			SDL_Delay(delay - (ticks2 - ticks1));
-	}
-	return false;
-}
-#endif
-
 BG_Game::BG_Game()
 {
 	add_shape("gumps/check",2);
@@ -284,7 +249,7 @@ void BG_Game::play_intro()
 	pal.load("<STATIC>/intropal.dat",4);
 	pal.fade_in(c_fade_in_time);
 
-	WAITDELAY(10000);
+	WAITDELAY(12500);
 
 	// clear 'Exult' text
 	gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
@@ -298,13 +263,13 @@ void BG_Game::play_intro()
 	// But to get there quickly
 
 	for(i=0; i<10; i++) {
-		win->get(backup,topx+(i*3) - s->get_xleft(), 
+		win->get(backup,topx+i*3 - s->get_xleft(), 
 			 centery-(i*3)/5 - s->get_yabove());
-		gwin->paint_shape(topx+(i*3), centery-(i*3)/5,
+		gwin->paint_shape(topx+i*3, centery-(i*3)/5,
 				  shapes.get_shape(0x0E, i%4));
 		win->show();
 		WAITDELAY(50);
-		win->put(backup,topx+(i*3) - s->get_xleft(),
+		win->put(backup,topx+i*3 - s->get_xleft(),
 			 centery-(i*3)/5 - s->get_yabove());		
 	}
 	// And wait.....
@@ -338,7 +303,7 @@ void BG_Game::play_intro()
 		win->put(backup, 270 - s->get_xleft(),
 			 centery-54 - s->get_yabove());
 	}
-	WAITDELAY(2000);
+	WAITDELAY(4500);
 	delete backup; backup = 0;
 
 	// Enter guardian
@@ -464,41 +429,51 @@ void BG_Game::play_intro()
 		 centery-49 - s3->get_yabove());
        	gwin->paint_shape(centerx,centery-49,s3); // forehead isn't animated
 
+	int speech_delay[] = { 29, 71, 59, 47, 47, 62, 79, 
+			       55, 90, 104, 80, 65, 55, 120 };
 	// start speech
-	for(i=0; i<14*20; i++) {
-		// convoluted mess to get eye movement acceptable
-		gwin->paint_shape(centerx,centery-12, shapes.get_shape(0x20,
-	           1 + 3*((i/12) % 4) + ((i%50>47&&(i/12)%4!=3)?i%50-47:0)));
+	for(int speech_item=0; speech_item<14; speech_item++) {
+		unsigned long ticks = SDL_GetTicks();
+		unsigned long end_ticks = ticks+speech_delay[speech_item]*50;
+		i=0;
+		do {
+			// convoluted mess to get eye movement acceptable
+			gwin->paint_shape(centerx,centery-12, shapes.get_shape(0x20,
+				1 + 3*((i/12) % 4) + ((i%50>47&&(i/12)%4!=3)?i%50-47:0)));
+	
+			gwin->paint_shape(centerx,centery,
+					  shapes.get_shape(0x1E,1 + i % 13));
+	
+			if (i == 0) {
+				txt_ptr = next_txt;
+				txt_end = strchr(txt_ptr, '\r');
+				*txt_end = '\0';
+	
+				next_txt = txt_end+2;
+			}
 
-		gwin->paint_shape(centerx,centery,
-				  shapes.get_shape(0x1E,1 + i % 13));
-
-		if ((i % 20) == 0) {
-			txt_ptr = next_txt;
-			txt_end = strchr(txt_ptr, '\r');
-			*txt_end = '\0';
-
-			next_txt = txt_end+2;
-		}
-
-		font->center_text(win->get_ib8(), centerx, txt_ypos, txt_ptr);
-
-		win->show();
-		if(wait_delay(50, 16, 95)) {
-			pal.fade_out(c_fade_out_time);
-			delete [] txt;
-			delete backup; delete backup2; delete backup3;
-			delete cbackup; delete cbackup2; delete cbackup3;
-			Audio::get_ptr()->cancel_streams();
-			return;	
-		}
-
-		win->put(backup3, 0, txt_ypos);
-		win->put(backup, centerx - s->get_xleft(),
+			font->center_text(win->get_ib8(), centerx, txt_ypos, txt_ptr);
+	
+			win->show();
+			if(wait_delay(50, 16, 95)) {
+				pal.fade_out(c_fade_out_time);
+				delete [] txt;
+				delete backup; delete backup2; delete backup3;
+				delete cbackup; delete cbackup2; delete cbackup3;
+				Audio::get_ptr()->cancel_streams();
+				return;	
+			}
+	
+			win->put(backup3, 0, txt_ypos);
+			win->put(backup, centerx - s->get_xleft(),
 				     centery - s->get_yabove());
-		win->put(backup2, centerx - s2->get_xleft(),
+			win->put(backup2, centerx - s2->get_xleft(),
 				     centery-12 - s2->get_yabove());
+			ticks = SDL_GetTicks();
+			++i;
+		} while (ticks<end_ticks);
 	}
+
 	win->put(backup3, 0, txt_ypos);
 	win->put(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
 	win->put(cbackup2, centerx - s2->get_xleft(), 
