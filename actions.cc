@@ -347,8 +347,10 @@ int Frames_actor_action::handle_event
 	int frnum = frames[index++];	// Get frame.
 	if (frnum >= 0)
 		{
+		Game_window *gwin = Game_window::get_game_window();
+		gwin->add_dirty(actor);
 		actor->set_frame(frnum);
-		Game_window::get_game_window()->add_dirty(actor);
+		gwin->add_dirty(actor);
 		}
 	return (speed);
 	}

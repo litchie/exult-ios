@@ -587,6 +587,7 @@ class Chunk_object_list
 					//   (Managed by Npc_actor class.)
 	Chunk_cache *cache;		// Data for chunks near player.
 	unsigned char roof;		// 1 if a roof present.
+	unsigned char light_sources;	// # light sources in chunk.
 	unsigned char cx, cy;		// Absolute chunk coords. of this.
 public:
 	friend class Npc_actor;
@@ -603,6 +604,8 @@ public:
 		{ return cy; }
 	Npc_actor *get_npcs()		// Get ->first npc in chunk.
 		{ return npcs; }
+	int get_light_sources()		// Get #lights.
+		{ return light_sources; }
 					// Set/get flat shape.
 	void set_flat(int tilex, int tiley, ShapeID id)
 		{ flats[16*tiley + tilex] = id; }
