@@ -327,7 +327,8 @@ on_edit_terrain_button_toggled		(GtkToggleButton *button,
 				gtk_toggle_button_get_active(button));
 }
 
-void on_choose_directory               (gchar *dir)
+void on_choose_directory               (gchar *dir,
+					gpointer	user_data)
 {
 	ExultStudio::get_instance()->set_game_path(dir);
 }
@@ -817,6 +818,7 @@ void ExultStudio::choose_game_path()
 			return;
 			}
 		}
+#if 0
 	GtkWidget *dirbrowser = xmms_create_dir_browser(
 					"Select game directory",
 					cwd, GTK_SELECTION_SINGLE,
@@ -825,6 +827,13 @@ void ExultStudio::choose_game_path()
 		GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dirbrowser);
         gtk_window_set_transient_for(GTK_WINDOW(dirbrowser), GTK_WINDOW(app));
 	gtk_widget_show (dirbrowser);
+#else
+	GtkFileSelection *fsel = Create_file_selection(
+					"Select game directory",
+			(File_sel_okay_fun) on_choose_directory, 0L);
+	gtk_file_selection_set_filename(fsel, cwd);
+	gtk_widget_show(GTK_WIDGET(fsel));
+#endif
 	delete [] cwd;	// Prevent leakage
 }
 
