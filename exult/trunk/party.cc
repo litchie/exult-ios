@@ -438,7 +438,8 @@ static bool Take_best_step
 	int dir				// Direction we want to go.
 	)
 	{
-	static int deltadir[8] = {0, 1, 7, 2, 6, 3, 5, 4};
+//++++Not sure	static int deltadir[8] = {0, 1, 7, 2, 6, 3, 5, 4};
+	static int deltadir[8] = {0, 1, 7, 2, 6};
 	const int cnt = sizeof(deltadir)/sizeof(deltadir[0]);
 
 	int best_cost = max_cost + 8;
@@ -511,7 +512,7 @@ inline int Get_dir_from
 /*
  *	Move one follower to its destination (if possible).
  *
- *	Output:	Direction (0-7) moved, or -1 if unsuccessful.
+ *	Output:	Direction (0-7) moved (or given 'dir' if we don't move).
  */
 
 int Party_manager::step
@@ -525,7 +526,7 @@ int Party_manager::step
 	Tile_coord pos = npc->get_tile();	// Current position.
 	Tile_coord to = Get_step_tile(pos, dest, dir);
 	if (to.tx == pos.tx && to.ty == pos.ty)
-		return -1;		// Not moving.
+		return dir;		// Not moving.
 	Frames_sequence *frames = npc->get_frames(dir);
 	int& step_index = npc->get_step_index();
 	if (!step_index)		// First time?  Init.
@@ -535,17 +536,20 @@ int Party_manager::step
 					// Want dz<=1, dx<=2, dy<=2.
 	if (Is_step_okay(npc, leader, to) && npc->step(to, frame))
 		{
+#if 0	/* ++++++Not sure... */
 		if (to.tx != dest.tx || to.ty != dest.ty)
 			{		// Take a 2nd step (w/ same frame).
 			to = Get_step_tile(npc->get_tile(), dest, dir);
 			npc->step(to, frame);
 			}
+#endif
 		}
 	else if (!Take_best_step(npc, leader, pos, frame, 	
 						npc->get_direction(dest)))
 		{			// Failed to take a step.
+		cout << npc->get_name() << " failed to take a step" << endl;
 		frames->decrement(step_index);
-		return -1;
+		return dir;
 		}
 	return Get_dir_from(npc, pos);
 	}
