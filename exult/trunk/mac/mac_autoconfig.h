@@ -29,8 +29,8 @@
 
 // missing defines:
 #define PACKAGE "exult"
-#define MAJOR	"0.90"
-#define	RELNUM	"alpha1"
+#define MAJOR	"0.91"
+#define	RELNUM	"alpha2"
 #define VERSION MAJOR RELNUM
 
 /* Was debugging selected from configure? */
