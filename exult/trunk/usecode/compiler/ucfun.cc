@@ -32,6 +32,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucstmt.h"
 #include "utils.h"
 
+using std::strlen;
+using std::memcpy;
+
 Uc_scope Uc_function::globals(0);	// Stores intrinic symbols.
 
 /*

@@ -35,6 +35,10 @@ using std::cout;
 using std::endl;
 using std::cerr;
 using std::string;
+using std::strlen;
+using std::strrchr;
+using std::strcpy;
+using std::memcpy;
 
 struct u7frame {
 	uint32 datalen;

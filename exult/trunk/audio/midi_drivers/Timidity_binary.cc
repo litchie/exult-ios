@@ -115,7 +115,7 @@ int	timidity_play(std::string filename, bool repeat, std::string &newfilename, p
 {
 #if HAVE_MKSTEMP
         char newfn[128];
-        strcpy(newfn,"/tmp/u7_midi_fileXXXXXX");
+        std::strcpy(newfn,"/tmp/u7_midi_fileXXXXXX");
         int     dfh=mkstemp(newfn);
         if(dfh==-1)
                 {
