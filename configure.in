@@ -196,8 +196,9 @@ AC_SUBST(EXE_TARGET)
 AC_SUBST(SYSLIBS)
 AC_SUBST(CPPFLAGS)
 
-if test x$x_libraries = x; then
+if test x$x_libraries = xNONE; then
 	echo "No special X library path"
+	unset x_libraries
 else
 	x_libraries="-L$x_libraries -lX11 -lXext"
 	AC_SUBST(x_libraries)
