@@ -2088,7 +2088,7 @@ USECODE_INTRINSIC(si_path_run_usecode)
 	Actor *npc = as_actor(get_item(parms[0]));
 	Game_object *obj = get_item(parms[3]);
 	int sz = parms[1].get_array_size();
-	if (!npc || !obj || sz != 3)
+	if (!npc || !obj || sz < 2)
 		{
 		cout << "Si_path_run_usecode: bad inputs" << endl;
 		return no_ret;		// Bad data.
@@ -2096,7 +2096,7 @@ USECODE_INTRINSIC(si_path_run_usecode)
 	Tile_coord src = npc->get_abs_tile_coord();
 	Tile_coord dest(parms[1].get_elem(0).get_int_value(),
 			parms[1].get_elem(1).get_int_value(),
-			parms[1].get_elem(2).get_int_value());
+			sz == 3 ? parms[1].get_elem(2).get_int_value() : 0);
 	Tile_coord start = dest;
 	if (dest != src)
 		{

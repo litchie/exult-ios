@@ -442,6 +442,10 @@ int Move_actor_action::handle_event
 	if (dest.tx < 0 || actor->get_abs_tile_coord() == dest)
 		return (0);		// Done.
 	actor->move(dest);		// Zip right there.
+	Game_window *gwin = Game_window::get_game_window();
+	if (actor == gwin->get_main_actor())
+					// Teleported Avatar?
+		gwin->center_view(dest);
 	dest.tx = -1;			// Set to stop.
 	return (100);			// Wait 1/10 sec.
 	}
