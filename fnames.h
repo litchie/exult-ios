@@ -62,10 +62,13 @@
 #define WEAPONS		"static/weapons.dat"
 #define PAPERDOL	"static/paperdol.vga"
 
-#define ENDGAME_FONT1	32
-#define ENDGAME_FONT2	33
-#define ENDGAME_FONT3	34
-#define ENDGAME_FONT4	35
+#define EXTRA_FONTS     32
+#define ENDGAME_FONT1	(EXTRA_FONTS)
+#define ENDGAME_FONT2	(EXTRA_FONTS+1)
+#define ENDGAME_FONT3	(EXTRA_FONTS+2)
+#define ENDGAME_FONT4	(EXTRA_FONTS+3)
+#define MAINSHP_FONT1	(EXTRA_FONTS+4)
+#define NUM_FONTS	(MAINSHP_FONT1+1)
 
 #endif
 

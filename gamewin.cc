@@ -89,6 +89,7 @@ Game_window::Game_window
 	// Discover the game we are running (BG, SI, ...)
 	char *static_identity = get_game_identity(INITGAME);
 	Game *game = Game::create_game(static_identity);
+	delete[] static_identity;
 
 	// Go to starting chunk
 	scrolltx = game->get_start_tile_x();
@@ -120,34 +121,8 @@ Game_window::Game_window
 	for (int i = 0; i < nxforms; i++)
 		if (!xf.read_segment(i, xforms[nxforms - 1 - i], len))
 			abort("Error reading %s.", XFORMTBL);
-	struct stat sbuf;		// Create gamedat files 1st time.
-	if (stat(U7NBUF_DAT, &sbuf) != 0 &&
-	    stat(NPC_DAT, &sbuf) != 0)
-		{
-		cout << "Creating 'gamedat' files."<<endl;
-		restore_gamedat(INITGAME);
-		}
-	else
-		{
-			ifstream identity_file;
-			u7open(identity_file, IDENTITY);
-			char gamedat_identity[256];
-			identity_file.read(gamedat_identity, 256);
-			char *ptr = gamedat_identity;
-			for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
-				;
-			*ptr = 0;
-			cout << "Gamedat identity " << gamedat_identity << endl;
-			if(strcmp(static_identity, gamedat_identity))
-				{
-					cout << "Creating 'gamedat' files."<<endl;
-					restore_gamedat(INITGAME);
-				}
-			read_gwin();	// Read in 'gamewin.dat' to set clock,
-					//   scroll coords.
-		}
-	read_save_names();		// Read in saved-game names.
-	delete[] static_identity;
+
+	
 
 	
 
@@ -224,6 +199,7 @@ void Game_window::abort
 	delete this;
 	exit(-1);
 	}
+	
 
 /*
  *	Set/unset barge mode.
@@ -900,6 +876,49 @@ void Game_window::init_actors
 		return;
 	read_npcs();			// Read in all U7 NPC's.
 	}
+	
+/*
+ *	Create initial 'gamedat' directory if needed
+ *
+ */
+
+bool Game_window::init_gamedat(bool force)
+	{
+	bool created = false;
+	struct stat sbuf;		// Create gamedat files 1st time.
+	if (force ||((stat(U7NBUF_DAT, &sbuf) != 0 &&
+	    stat(NPC_DAT, &sbuf) != 0)))
+		{
+		cout << "Creating 'gamedat' files."<<endl;
+		restore_gamedat(INITGAME);
+		created = true;
+		}
+	else
+		{
+			ifstream identity_file;
+			u7open(identity_file, IDENTITY);
+			char gamedat_identity[256];
+			identity_file.read(gamedat_identity, 256);
+			char *ptr = gamedat_identity;
+			for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
+				;
+			*ptr = 0;
+			cout << "Gamedat identity " << gamedat_identity << endl;
+			char *static_identity = get_game_identity(INITGAME);
+			if(strcmp(static_identity, gamedat_identity))
+				{
+					cout << "Creating 'gamedat' files."<<endl;
+					restore_gamedat(INITGAME);
+					created = true;
+				}
+			delete [] static_identity;
+			read_gwin();	// Read in 'gamewin.dat' to set clock,
+					//   scroll coords.
+		}
+	read_save_names();		// Read in saved-game names.	
+	return created;
+	}
+
 
 /*
  *	Save game by writing out to the 'gamedat' directory.

@@ -95,7 +95,7 @@ void Palette::fade_out(int cycles)
 		}
 	}
 
-//	Find index (0-255) of closesest color (r,g,b < 64).
+//	Find index (0-255) of closest color (r,g,b < 64).
 int Palette::find_color(int r, int g, int b) {
 	int best_index = -1;
 	long best_distance = 0xfffffff;

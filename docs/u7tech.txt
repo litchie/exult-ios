@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.13 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.14 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -451,7 +451,10 @@ XFORM.TBL:    flex file with shape transform tables
   new_color = byte  (the new color index to use)
 POINTERS.SHP: shape file
   (contains the mouse cursors used in the game)
-ENDSCORE.DAT: A RIFF file containing what _appears_ to be some kind of midi data, but not in the usual midi format. Could it be the XMI format that much of the rest of this file refers to? In most instances so far, this document incorrectly describes regular midi files as XMI files.
+ENDSCORE.DAT: A RIFF file containing what _appears_ to be some kind of midi 
+  data, but not in the usual midi format. Could it be the XMI format that much
+  of the rest of this file refers to? In most instances so far, this document 
+  incorrectly describes regular midi files as XMI files.
 INTRO.DAT / ENDGAME.DAT: iff file with intro/endgame animation data
   (contains FLIC animations, font, shape, speeches)
 INTROADM.DAT: MIDI file containing 6 midi tracks for the introductory sequence.
@@ -593,7 +596,7 @@ MAPCOORDS.DAT = coordinates of the avatar
 IDENTITY  = text file containing the name of the world
   one single line, followed by RC LF (0D 0A)
   can also be followed by EOF (1A)
-  it "ULTIMA7", "SERPENT ISLE", "FORGE"
+  it "ULTIMA7", "FORGE", "SERPENT ISLE", "SILVER SEED"
 
 RANDSEED  = current value of the seed used by the random number generator
   seed    = longint

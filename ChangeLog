@@ -1,3 +1,9 @@
+2000-08-03  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* bggame.cc, sigame.cc: Implement main menu (SI's is incomplete)
+	* gamewin.cc: move creation of 'gamedat' to separate function to 
+	be invoked by main menu
+
 2000-08-01  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Dead bodies decay after several game-clock hours.
@@ -6,14 +12,14 @@
 
 	* game.h, gamewin.cc: if in BG we show ENDSHAPE.FLX, if in SI we show 
 	PAPERDOL.VGA
-	* exult.cc: Default resolution is 320x200 with 2x filter. This is to be as
-	close as possible to the original.
+	* exult.cc: Default resolution is 320x200 with 2x filter. This is to 
+	be as close as possible to the original.
 
 2000-08-01  Tristan Tarrant  <tarrant_tristan@emc.com>
 
-	* gamewin.*, exult.cc, usecode.cc: decided to not store the Game object inside
-	gamewin, but use the static get_game of the Game class instead. "There can be
-	only one" (TM)
+	* gamewin.*, exult.cc, usecode.cc: decided to not store the Game 
+	object inside gamewin, but use the static get_game of the Game 
+	class instead. "There can be only one" (TM)
 
 2000-08-01  Tristan Tarrant  <tarrant_tristan@emc.com>
 
