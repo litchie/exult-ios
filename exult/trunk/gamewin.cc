@@ -3222,7 +3222,6 @@ void Game_window::setup_game
 	}
 	faded_out = 0;
 	time_stopped = 0;
-	Audio::get_ptr()->cancel_streams();
 //+++++The below wasn't prev. done by ::read(), so maybe it should be
 //+++++controlled by a 'first-time' flag.
 				// Want to activate first egg.
