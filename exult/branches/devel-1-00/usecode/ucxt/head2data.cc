@@ -61,7 +61,7 @@ void bg_out(const string &fname)
 void si_out(const string &fname)
 {
 	ofstream o;
-	o.open(fname.c_str()));
+	o.open(fname.c_str());
 	
 	if(o.fail())
 	{
