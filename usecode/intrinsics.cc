@@ -1684,7 +1684,7 @@ USECODE_INTRINSIC(in_usecode)
 USECODE_INTRINSIC(attack_avatar)
 {
 	// Attack thieving Avatar.
-	attack_avatar();
+	gwin->attack_avatar();
 	return no_ret;
 }
 
