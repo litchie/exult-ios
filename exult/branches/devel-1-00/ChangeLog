@@ -1,3 +1,8 @@
+2002-07-05  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* actors.cc: Magic boots keep you from getting poisoned in swamp
+	(in SI).
+
 2002-07-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: fixed --buildmap
 

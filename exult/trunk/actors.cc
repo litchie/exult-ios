@@ -1110,7 +1110,9 @@ void Actor::get_tile_info
 		    	    ((boots->get_shapenum() == 588 && 
 					Game::get_game_type() == BLACK_GATE) ||
 		    	     (boots->get_shapenum() == 587 && 
-				boots->get_framenum() == 6 && 
+					// SI:  Swamp/magic boots save you.
+				(boots->get_framenum() == 6 ||
+				 boots->get_framenum() == 1) && 
 				Game::get_game_type() == SERPENT_ISLE)))
 				poison = 0;
 			else
