@@ -551,6 +551,24 @@ void Notebook_gump::prev_page
 	}
 
 /*
+ *	Move to next page.
+ */
+
+void Notebook_gump::next_page
+	(
+	)
+	{
+	if (curpage >= page_info.size())
+		return;
+	One_note *note = notes[curnote];
+	++curpage;
+	Notebook_top &pinfo = page_info[curpage];
+	curnote = pinfo.notenum;
+	if (!pinfo.offset)		// Goint to new note?
+		cursor.offset = 0;
+	}
+
+/*
  *	Handle keystroke.
  */
 bool Notebook_gump::handle_kbd_event
@@ -574,6 +592,11 @@ bool Notebook_gump::handle_kbd_event
 		note->insert('\n', cursor.offset);
 		++cursor.offset;
 		paint();		// (Not very efficient...)
+		if (need_next_page())
+			{
+			next_page();
+			paint();
+			}
 		break;		
 	case SDLK_BACKSPACE:
 		if (note->del(cursor.offset - 1))
@@ -600,6 +623,11 @@ bool Notebook_gump::handle_kbd_event
 			{
 			++cursor.offset;
 			paint();
+			if (need_next_page())
+				{
+				next_page();
+				paint();
+				}
 			}
 		break;
 	case SDLK_UP:
@@ -631,6 +659,11 @@ bool Notebook_gump::handle_kbd_event
 		note->insert(chr, cursor.offset);
 		++cursor.offset;
 		paint();		// (Not very efficient...)
+		if (need_next_page())
+			{
+			next_page();
+			paint();
+			}
 		break;		
 	}
 	// ++++++Finish.
