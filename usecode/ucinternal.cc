@@ -271,7 +271,7 @@ Tile_coord Usecode_internal::get_position
 	Game_object *obj;		// An object?
 	if ((itemval.get_array_size() == 1 || !itemval.get_array_size()) && 
 						(obj = get_item(itemval)))
-			return obj->get_outermost()->get_abs_tile_coord();
+			return obj->get_outermost()->get_tile();
 	else if (itemval.get_array_size() == 3)
 					// An array of coords.?
 		return Tile_coord(itemval.get_elem(0).get_int_value(),
@@ -284,7 +284,7 @@ Tile_coord Usecode_internal::get_position
 				itemval.get_elem(2).get_int_value(),
 				itemval.get_elem(3).get_int_value());
 	else				// Else assume caller_item.
-		return caller_item->get_abs_tile_coord();
+		return caller_item->get_tile();
 	}
 
 /*
@@ -666,8 +666,8 @@ class Object_reverse_sorter
 public:
 	bool operator()(const Game_object *o1, const Game_object *o2)
 		{
-		Tile_coord t1 = o1->get_abs_tile_coord(),
-			   t2 = o2->get_abs_tile_coord();
+		Tile_coord t1 = o1->get_tile(),
+			   t2 = o2->get_tile();
 		if (t1.ty > t2.ty)
 			return true;
 		else if (t1.ty == t2.ty)
@@ -779,14 +779,13 @@ Usecode_value Usecode_internal::find_nearest
 	obj->find_nearby(vec, shnum, dist, 0);
 	Game_object *closest = 0;
 	uint32 bestdist = 100000;// Distance-squared in tiles.
-	int x1, y1, z1;
-	obj->get_abs_tile(x1, y1, z1);
-	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	Tile_coord t1 = obj->get_tile();
+	for (Game_object_vector::const_iterator it = vec.begin(); 
+							it != vec.end(); ++it)
 		{
 		Game_object *each = *it;
-		int x2, y2, z2;
-		each->get_abs_tile(x2, y2, z2);
-		int dx = x1 - x2, dy = y1 - y2, dz = z1 - z2;
+		Tile_coord t2 = each->get_tile();
+		int dx = t1.tx - t2.tx, dy = t1.ty - t2.ty, dz = t1.tz - t2.tz;
 		uint32 dist = dx*dx + dy*dy + dz*dz;
 		if (dist < bestdist)
 			{
@@ -977,7 +976,7 @@ Usecode_value Usecode_internal::add_party_items
 	while (todo > 0)
 		{
 		Tile_coord pos = Map_chunk::find_spot(
-			gwin->get_main_actor()->get_abs_tile_coord(), 3,
+			gwin->get_main_actor()->get_tile(), 3,
 				shapenum, framenum, 2);
 		if (pos.tx == -1)	// Hope this rarely happens.
 			break;
@@ -1111,7 +1110,7 @@ int Usecode_internal::path_run_usecode
 		CERR("Path_run_usecode: bad inputs");
 		return 0;
 		}
-	Tile_coord src = npc->get_abs_tile_coord();
+	Tile_coord src = npc->get_tile();
 	Tile_coord dest(locval.get_elem(0).get_int_value(),
 			locval.get_elem(1).get_int_value(),
 			sz == 3 ? locval.get_elem(2).get_int_value() : 0);

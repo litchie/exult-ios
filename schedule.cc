@@ -105,7 +105,7 @@ int Schedule::try_street_maintenance
 		shapes = bg ? &night[0] : &sinight[0];
 	else
 		return 0;		// Dusk or dawn.
-	Tile_coord npcpos = npc->get_abs_tile_coord();
+	Tile_coord npcpos = npc->get_tile();
 					// Look at screen + 1/2.
 	Rectangle winrect = gwin->get_win_tile_rect();
 	winrect.enlarge(winrect.w/4);
@@ -131,7 +131,7 @@ int Schedule::try_street_maintenance
 					(obj->get_framenum() <= 3))
 					continue;
 			if ((pact = Path_walking_actor_action::create_path(
-			    npcpos, obj->get_abs_tile_coord(), cost)) != 0)
+			    npcpos, obj->get_tile(), cost)) != 0)
 				{
 				found = obj;
 				break;
@@ -276,10 +276,9 @@ Pace_schedule *Pace_schedule::create_horiz
 	Actor *n
 	)
 	{
-	int tx, ty, tz;			// Get his position.
-	n->get_abs_tile(tx, ty, tz);
-	return (new Pace_schedule(n, Tile_coord(tx - 4, ty, tz),
-					Tile_coord(tx + 4, ty, tz)));
+	Tile_coord t = n->get_tile();	// Get his position.
+	return (new Pace_schedule(n, Tile_coord(t.tx - 4, t.ty, t.tz),
+					Tile_coord(t.tx + 4, t.ty, t.tz)));
 	}
 
 /*
@@ -291,10 +290,9 @@ Pace_schedule *Pace_schedule::create_vert
 	Actor *n
 	)
 	{
-	int tx, ty, tz;			// Get his position.
-	n->get_abs_tile(tx, ty, tz);
-	return (new Pace_schedule(n, Tile_coord(tx, ty - 4, tz),
-					Tile_coord(tx, ty + 4, tz)));
+	Tile_coord t = n->get_tile();	// Get his position.
+	return (new Pace_schedule(n, Tile_coord(t.tx, t.ty - 4, t.tz),
+					Tile_coord(t.tx, t.ty + 4, t.tz)));
 	}
 
 /*
@@ -390,7 +388,7 @@ void Preach_schedule::now_what
 		if (npc->find_nearby(vec, 697, 5, 0))
 			{
 			Game_object *podium = vec[0];
-			npc->walk_to_tile(podium->get_abs_tile_coord());
+			npc->walk_to_tile(podium->get_tile());
 			return;
 			}
 		}
@@ -551,7 +549,7 @@ void Patrol_schedule::now_what
 		if (!path)		// Still failed?
 			{
 					// Wiggle a bit.
-			Tile_coord pos = npc->get_abs_tile_coord();
+			Tile_coord pos = npc->get_tile();
 			int dist = failures + 2;
 			Tile_coord delta = Tile_coord(rand()%dist - dist/2,
 					rand()%dist - dist, 0);
@@ -562,7 +560,7 @@ void Patrol_schedule::now_what
 			return;
 			}
 		}
-	Tile_coord d = path->get_abs_tile_coord();
+	Tile_coord d = path->get_tile();
     	if (!npc->walk_path_to_tile(d, gwin->get_std_delay(), rand()%1000))
 		{			// Look for free tile within 1 square.
 		d = Map_chunk::find_spot(d, 1, npc->get_shapenum(),
@@ -604,8 +602,8 @@ void Talk_schedule::now_what
 					// Aim for within 5 tiles.
 		Actor_pathfinder_client cost(npc, 5);
 		Actor_action *pact = Path_walking_actor_action::create_path(
-			npc->get_abs_tile_coord(),
-			gwin->get_main_actor()->get_abs_tile_coord(), cost);
+			npc->get_tile(),
+			gwin->get_main_actor()->get_tile(), cost);
 		if (!pact)
 			{
 #ifdef DEBUG
@@ -628,7 +626,7 @@ void Talk_schedule::now_what
 	case 2:
 		{
 		int dx = 1 - 2*(rand()%2);
-		npc->walk_to_tile(npc->get_abs_tile_coord() +
+		npc->walk_to_tile(npc->get_tile() +
 			Tile_coord(dx, -dx, 0), 300, 500);
 					// Wait til conversation is over.
 //		if (gwin->get_usecode()->get_num_faces_on_screen() == 0)
@@ -639,8 +637,8 @@ void Talk_schedule::now_what
 	case 3:				// Talk.
 					// Got to be reachable.
 		if (!Fast_pathfinder_client::is_grabable(
-			npc->get_abs_tile_coord(),
-			gwin->get_main_actor()->get_abs_tile_coord()))
+			npc->get_tile(),
+			gwin->get_main_actor()->get_tile()))
 			{
 			phase = 0;
 			npc->start(250, 1000);
@@ -677,7 +675,7 @@ Loiter_schedule::Loiter_schedule
 	(
 	Actor *n,
 	int d				// Distance in tiles to roam.
-	) : Schedule(n), center(n->get_abs_tile_coord()), dist(d)
+	) : Schedule(n), center(n->get_tile()), dist(d)
 	{
 	}
 
@@ -708,7 +706,7 @@ void Kid_games_schedule::now_what
 	(
 	)
 	{
-	Tile_coord pos = npc->get_abs_tile_coord();
+	Tile_coord pos = npc->get_tile();
 	Actor *kid = 0;			// Get a kid to chase.
 					// But don't run too far.
 	while (!kids.empty())
@@ -723,7 +721,7 @@ void Kid_games_schedule::now_what
 	{
 		Fast_pathfinder_client cost(1);
 		Actor_action *pact = Path_walking_actor_action::create_path(
-				pos, kid->get_abs_tile_coord(), cost);
+				pos, kid->get_tile(), cost);
 		if (pact)
 		{
 			npc->set_action(pact);
@@ -757,7 +755,7 @@ void Dance_schedule::now_what
 	Tile_coord dest = center;	// Pick new spot to walk to.
 	dest.tx += -dist + rand()%(2*dist);
 	dest.ty += -dist + rand()%(2*dist);
-	Tile_coord cur = npc->get_abs_tile_coord();
+	Tile_coord cur = npc->get_tile();
 	int dir = static_cast<int>(Get_direction4(cur.ty - dest.ty, dest.tx - cur.tx));
 	char frames[4];
 	for (int i = 0; i < 4; i++)
@@ -827,8 +825,8 @@ void Hound_schedule::now_what
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *av = gwin->get_main_actor();
-	Tile_coord avpos = av->get_abs_tile_coord(),
-		   npcpos = npc->get_abs_tile_coord();
+	Tile_coord avpos = av->get_tile(),
+		   npcpos = npc->get_tile();
 					// How far away is Avatar?
 	int dist = npcpos.distance(avpos);
 	if (dist > 16 || dist < 3)	// Too far, or close enough?
@@ -862,7 +860,7 @@ void Wander_schedule::now_what
 	if (rand() % 2)			// 1/2 time, check for lamps, etc.
 		if (try_street_maintenance())
 			return;		// We no longer exist.
-	Tile_coord pos = npc->get_abs_tile_coord();
+	Tile_coord pos = npc->get_tile();
 	const int legdist = 32;
 					// Go a ways from current pos.
 	pos.tx += -legdist + rand()%(2*legdist);
@@ -951,7 +949,7 @@ void Sleep_schedule::now_what
 				break;
 				}
 			}
-		Tile_coord bloc = bed->get_abs_tile_coord();
+		Tile_coord bloc = bed->get_tile();
 		bloc.tz -= bloc.tx%5;	// Round down to floor level.
 		Shape_info& info = gwin->get_info(bed);
 		bloc.tx -= info.get_3d_xtiles(bed->get_framenum())/2;
@@ -959,7 +957,7 @@ void Sleep_schedule::now_what
 					// Get within 3 tiles.
 		Actor_pathfinder_client cost(npc, 3);
 		Actor_action *pact = Path_walking_actor_action::create_path(
-				npc->get_abs_tile_coord(), bloc, cost);
+				npc->get_tile(), bloc, cost);
 		if (pact)
 			npc->set_action(pact);
 		npc->start(200);	// Start walking.
@@ -972,8 +970,8 @@ void Sleep_schedule::now_what
 		npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
 					// Get bed info.
 		Shape_info& info = gwin->get_info(bed);
-		Tile_coord bedloc = bed->get_abs_tile_coord();
-		floorloc = npc->get_abs_tile_coord();
+		Tile_coord bedloc = bed->get_tile();
+		floorloc = npc->get_tile();
 		int bedframe = bed->get_framenum();// Unmake bed.
 		if (bedframe >= spread0 && bedframe < spread1 && (bedframe%2))
 			{
@@ -1013,7 +1011,7 @@ void Sleep_schedule::ending
 		{
 		if (floorloc.tx == -1)
 					// Want spot on floor.
-			floorloc = npc->get_abs_tile_coord();
+			floorloc = npc->get_tile();
 		floorloc.tz -= floorloc.tz%5;
 		Tile_coord pos = Map_chunk::find_spot(floorloc, 
 				6, npc->get_shapenum(), 
@@ -1131,7 +1129,7 @@ class Sit_actor_action : public Frames_actor_action
 					return true;
 				}
 #if 1	/* Seems to work.  Added Nov. 2, 2001 */
-		if (actor->get_abs_tile_coord() == sitloc)
+		if (actor->get_tile() == sitloc)
 			return false;	// We're standing there.
 					// See if spot is blocked.
 		Game_window *gwin = Game_window::get_game_window();
@@ -1150,7 +1148,7 @@ public:
 	Sit_actor_action(Game_object *o, Actor *actor) : chair(o),
 			Frames_actor_action(init(o, actor), 2)
 		{
-		sitloc = chairloc = o->get_abs_tile_coord();
+		sitloc = chairloc = o->get_tile();
 					// Frame 0 faces N, 1 E, etc.
 		int nsew = o->get_framenum()%4;
 		sitloc.tx += offsets[2*nsew];
@@ -1161,7 +1159,7 @@ public:
 	static bool is_occupied(Game_object *chair, Actor *actor)
 		{
 		int dir = 2*(chair->get_framenum()%4);
-		return is_occupied(chair->get_abs_tile_coord() +
+		return is_occupied(chair->get_tile() +
 			Tile_coord(offsets[dir], offsets[dir + 1], 0), actor);
 		}
 					// Handle time event.
@@ -1184,7 +1182,7 @@ int Sit_actor_action::handle_event
 		{
 		if (is_occupied(sitloc, actor))
 			return 0;	// Abort.
-		if (chair->get_abs_tile_coord() != chairloc)
+		if (chair->get_tile() != chairloc)
 			{		// Chair was moved!
 			static char *msgs[] = {"Put that chair back!",
 					"Thief!!", "Thou scoundrel!!",
@@ -1395,7 +1393,7 @@ void Lab_schedule::init
 					// Book on table?
 		if (!book && (book = table->find_closest(642, 4)) != 0)
 			{
-			Tile_coord p = book->get_abs_tile_coord();
+			Tile_coord p = book->get_tile();
 			if (!foot.has_point(p.tx, p.ty))
 				book = 0;
 			}
@@ -1425,7 +1423,7 @@ void Lab_schedule::now_what
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord npcpos = npc->get_abs_tile_coord();
+	Tile_coord npcpos = npc->get_tile();
 	int delay = 100;		// 1/10 sec. to next action.
 					// Often want to get within 1 tile.
 	Actor_pathfinder_client cost(npc, 1);
@@ -1454,7 +1452,7 @@ void Lab_schedule::now_what
 		if (!cauldron)
 			break;
 		Actor_action *pact = Path_walking_actor_action::create_path(
-				npcpos, cauldron->get_abs_tile_coord(), cost);
+				npcpos, cauldron->get_tile(), cost);
 		if (pact)
 			{
 			npc->set_action(new Sequence_actor_action(pact,
@@ -1578,8 +1576,8 @@ void Shy_schedule::now_what
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *av = gwin->get_main_actor();
-	Tile_coord avpos = av->get_abs_tile_coord(),
-		   npcpos = npc->get_abs_tile_coord();
+	Tile_coord avpos = av->get_tile(),
+		   npcpos = npc->get_tile();
 					// How far away is Avatar?
 	int dist = npcpos.distance(avpos);
 	if (dist > 10)			// Far enough?
@@ -1624,7 +1622,7 @@ void Shy_schedule::now_what
 Waiter_schedule::Waiter_schedule
 	(
 	Actor *n
-	) : Schedule(n), first(1), startpos(n->get_abs_tile_coord()), customer(0)
+	) : Schedule(n), first(1), startpos(n->get_tile()), customer(0)
 		
 	{
 	}
@@ -1658,7 +1656,7 @@ void Waiter_schedule::get_customer
 	{
 		Game_object *table = prep_tables[rand()%prep_tables.size()];
 		Tile_coord pos = Map_chunk::find_spot(
-			table->get_abs_tile_coord(), 1, npc);
+			table->get_tile(), 1, npc);
 		if (pos.tx != -1 &&
 		    npc->walk_path_to_tile(pos, gwin->get_std_delay(), 
 							1000 + rand()%1000))
@@ -1720,13 +1718,13 @@ int Waiter_schedule::find_serving_spot
 		Game_object *plate = *it;
 		if (plate->get_lift()/5 == floor)
 			{
-			spot = plate->get_abs_tile_coord();
+			spot = plate->get_tile();
 			spot.tz++;	// Just above plate.
 			return 1;
 			}
 		}
 	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord cpos = customer->get_abs_tile_coord();
+	Tile_coord cpos = customer->get_tile();
 	
 	// Blame MSVC
 	{
@@ -1838,7 +1836,7 @@ void Waiter_schedule::now_what
 		Game_object *food = new Ireg_game_object(377, frame, 0, 0, 0);
 		npc->add_readied(food, Actor::lhand);
 		}
-	Tile_coord dest = Map_chunk::find_spot(customer->get_abs_tile_coord(),
+	Tile_coord dest = Map_chunk::find_spot(customer->get_tile(),
 					3, npc);
 	if (dest.tx != -1 && npc->walk_path_to_tile(dest,
 					gwin->get_std_delay(), rand()%1000))
@@ -1887,7 +1885,7 @@ void Sew_schedule::now_what
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord npcpos = npc->get_abs_tile_coord();
+	Tile_coord npcpos = npc->get_tile();
 					// Often want to get within 1 tile.
 	Actor_pathfinder_client cost(npc, 1);
 	switch (state)
@@ -1909,12 +1907,12 @@ void Sew_schedule::now_what
 			break;
 			}
 		Actor_action *pact = Path_walking_actor_action::create_path(
-				npcpos, bale->get_abs_tile_coord(), cost);
+				npcpos, bale->get_tile(), cost);
 		if (pact)
 			npc->set_action(new Sequence_actor_action(pact,
 				new Pickup_actor_action(bale, 250),
 				new Pickup_actor_action(bale,
-					bale->get_abs_tile_coord(), 250)));
+					bale->get_tile(), 250)));
 		state = sit_at_wheel;
 		break;
 		}
@@ -1941,7 +1939,7 @@ void Sew_schedule::now_what
 	case get_thread:
 		{
 		Tile_coord t = Map_chunk::find_spot(
-				spinwheel->get_abs_tile_coord(), 1, 654, 0);
+				spinwheel->get_tile(), 1, 654, 0);
 		if (t.tx != -1)		// Space to create thread?
 			{
 			spindle = new Ireg_game_object(654, 0, 0, 0);
@@ -1964,7 +1962,7 @@ void Sew_schedule::now_what
 			state = get_wool;
 			break;
 			}
-		Tile_coord lpos = loom->get_abs_tile_coord() +
+		Tile_coord lpos = loom->get_tile() +
 						Tile_coord(-1, 0, 0);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 				npcpos, lpos, cost);
@@ -1978,7 +1976,7 @@ void Sew_schedule::now_what
 		}
 	case get_cloth:
 		{
-		Tile_coord t = Map_chunk::find_spot(loom->get_abs_tile_coord(),
+		Tile_coord t = Map_chunk::find_spot(loom->get_tile(),
 							1, 851, 0);
 		if (t.tx != -1)		// Space to create it?
 			{
@@ -1999,7 +1997,7 @@ void Sew_schedule::now_what
 			state = get_wool;
 			break;
 			}
-		Tile_coord tpos = work_table->get_abs_tile_coord() +
+		Tile_coord tpos = work_table->get_tile() +
 						Tile_coord(1, -2, 0);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 					npcpos, tpos, cost);
@@ -2058,7 +2056,7 @@ void Sew_schedule::now_what
 		else if (sew_clothes_cnt == 5)
 			{
 			gwin->add_dirty(cloth);
-			Tile_coord pos = cloth->get_abs_tile_coord();
+			Tile_coord pos = cloth->get_tile();
 			cloth->remove_this(1);
 					// Top or pants.
 			int shnum = rand()%2 ? 738 : 249;
@@ -2075,7 +2073,7 @@ void Sew_schedule::now_what
 		{
 		Game_object *shears = npc->get_readied(Actor::lhand);
 		if (shears) {
-			Tile_coord pos = cloth->get_abs_tile_coord();
+			Tile_coord pos = cloth->get_tile();
 			npc->set_action(new Sequence_actor_action(
 								  new Pickup_actor_action(cloth, 250),
 								  new Pickup_actor_action(shears, pos, 250)));
@@ -2097,7 +2095,7 @@ void Sew_schedule::now_what
 			cloth = 0;
 			break;
 			}
-		Tile_coord tpos = wares_table->get_abs_tile_coord() +
+		Tile_coord tpos = wares_table->get_tile() +
 						Tile_coord(1, -2, 0);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 					npcpos, tpos, cost);
@@ -2171,7 +2169,7 @@ Bake_schedule::Bake_schedule(Actor *n) : Schedule(n),
 void Bake_schedule::now_what()
 {
 	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord npcpos = npc->get_abs_tile_coord();
+	Tile_coord npcpos = npc->get_tile();
 	Actor_pathfinder_client cost(npc, 1);
 	int delay = 100;
 
@@ -2191,7 +2189,7 @@ void Bake_schedule::now_what()
 		int nr = rand()%items.size();
 		flourbag = items[nr];
 
-		Tile_coord tpos = flourbag->get_abs_tile_coord();
+		Tile_coord tpos = flourbag->get_tile();
 		Actor_action *pact = Path_walking_actor_action::create_path(
 					npcpos, tpos, cost);
 		if (pact) {
@@ -2333,7 +2331,7 @@ void Bake_schedule::now_what()
 		dough_in_oven->set_frame(rand()%7);
 		gwin->add_dirty(dough_in_oven);
 
-		Tile_coord tpos = oven->get_abs_tile_coord() + 
+		Tile_coord tpos = oven->get_tile() + 
 						Tile_coord(1, 1, 0);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 					npcpos, tpos, cost);
@@ -2365,7 +2363,7 @@ void Bake_schedule::now_what()
 
 		baked_count++;
 
-		Tile_coord tpos = displaytable->get_abs_tile_coord();
+		Tile_coord tpos = displaytable->get_tile();
 		Actor_action *pact = Path_walking_actor_action::create_path(
 					npcpos, tpos, cost);
 					// Find where to put cloth.
@@ -2409,7 +2407,7 @@ void Bake_schedule::now_what()
 			break;
 		}
 
-		Tile_coord tpos = dough->get_abs_tile_coord();
+		Tile_coord tpos = dough->get_tile();
 		Actor_action *pact = Path_walking_actor_action::create_path(
 					npcpos, tpos, cost);
 		if (pact) {
@@ -2444,7 +2442,7 @@ void Bake_schedule::now_what()
 			break;
 		}
 
-		Tile_coord tpos = oven->get_abs_tile_coord() + 
+		Tile_coord tpos = oven->get_tile() + 
 						Tile_coord(1, 1, 0);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 					npcpos, tpos, cost);
@@ -2505,7 +2503,7 @@ void Forge_schedule::now_what
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord npcpos = npc->get_abs_tile_coord();
+	Tile_coord npcpos = npc->get_tile();
 					// Often want to get within 1 tile.
 	Actor_pathfinder_client cost(npc, 1);
 
@@ -2527,7 +2525,7 @@ void Forge_schedule::now_what
 			return;
 		}
 
-		Tile_coord tpos = firepit->get_abs_tile_coord();
+		Tile_coord tpos = firepit->get_tile();
 		Actor_action *pact = Path_walking_actor_action::create_path(
 				npcpos, tpos, cost);
 
@@ -2557,7 +2555,7 @@ void Forge_schedule::now_what
 			return;
 		}
 
-		Tile_coord tpos = bellows->get_abs_tile_coord() +
+		Tile_coord tpos = bellows->get_tile() +
 					Tile_coord(3,0,0);
 		Actor_action *pact = Path_walking_actor_action::create_path(
 				npcpos, tpos, cost);
@@ -2633,10 +2631,10 @@ void Forge_schedule::now_what
 			return;
 		}
 
-		Tile_coord tpos = firepit->get_abs_tile_coord();
+		Tile_coord tpos = firepit->get_tile();
 		Actor_action *pact = Path_walking_actor_action::create_path(
 				npcpos, tpos, cost);
-		Tile_coord tpos2 = anvil->get_abs_tile_coord() + 
+		Tile_coord tpos2 = anvil->get_tile() + 
 					Tile_coord(0,1,0);
 		Actor_action *pact2 = Path_walking_actor_action::create_path(
 				tpos, tpos2, cost);
@@ -2730,7 +2728,7 @@ void Forge_schedule::now_what
 		}
 
 		if (trough->get_framenum() == 0) {
-			Tile_coord tpos = trough->get_abs_tile_coord() +
+			Tile_coord tpos = trough->get_tile() +
 						Tile_coord(0,2,0);
 			Actor_action *pact = Path_walking_actor_action::
 					create_path(npcpos, tpos, cost);
@@ -2793,12 +2791,12 @@ void Forge_schedule::now_what
 			return;
 		}
 		
-		Tile_coord tpos = anvil->get_abs_tile_coord() +
+		Tile_coord tpos = anvil->get_tile() +
 				Tile_coord(0,1,0);
 		Actor_action *pact = Path_walking_actor_action::
 				create_path(npcpos, tpos, cost);
 
-		Tile_coord tpos2 = trough->get_abs_tile_coord() +
+		Tile_coord tpos2 = trough->get_tile() +
 				Tile_coord(0,2,0);
 		Actor_action *pact2 = Path_walking_actor_action::
 				create_path(tpos, tpos2, cost);
@@ -2945,7 +2943,7 @@ void Walk_to_schedule::now_what
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	if (npc->get_abs_tile_coord().distance(dest) <= 3)
+	if (npc->get_tile().distance(dest) <= 3)
 		{			// Close enough!
 		npc->set_schedule_type(new_schedule);
 		return;
@@ -2960,7 +2958,7 @@ void Walk_to_schedule::now_what
 	Rectangle screen = gwin->get_win_tile_rect();
 	screen.enlarge(4);		// Enlarge in all dirs.
 					// Might do part of it first.
-	Tile_coord from = npc->get_abs_tile_coord(),
+	Tile_coord from = npc->get_tile(),
 		   to = dest;
 					// Destination off the screen?
 	if (!screen.has_point(to.tx, to.ty))

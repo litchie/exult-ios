@@ -383,7 +383,7 @@ int Actor::is_blocked
 		return blocked;
 		}
 	return Map_chunk::is_blocked(xtiles, ytiles, ztiles,
-			f ? *f : get_abs_tile_coord(), t, get_type_flags());
+			f ? *f : get_tile(), t, get_type_flags());
 	}
 
 /*
@@ -686,7 +686,7 @@ Tile_coord Actor::get_dest
 	if (action && action->get_dest(dest))
 		return dest;
 	else
-		return get_abs_tile_coord();
+		return get_tile();
 	}
 
 /*
@@ -703,7 +703,7 @@ void Actor::walk_to_tile
 	{
 	if (!action)
 		action = new Path_walking_actor_action(new Zombie());
-	set_action(action->walk_to_tile(this, get_abs_tile_coord(), dest));
+	set_action(action->walk_to_tile(this, get_tile(), dest));
 	if (action)			// Successful at setting path?
 		start(speed, delay);
 	else
@@ -811,8 +811,8 @@ void Actor::follow
 		return;			// Not when dead.
 	int delay = 0;
 	int dist;			// How close to aim for.
-	Tile_coord leaderpos = leader->get_abs_tile_coord();
-	Tile_coord pos = get_abs_tile_coord();
+	Tile_coord leaderpos = leader->get_tile();
+	Tile_coord pos = get_tile();
 	Tile_coord goal;
 	if (leader->is_moving())	// Figure where to aim.
 		{			// Aim for leader's dest.
@@ -875,7 +875,7 @@ void Actor::follow
 			return;
 					// Find a free spot.
 		goal = Map_chunk::find_spot(
-				leader->get_abs_tile_coord(), 2, this);
+				leader->get_tile(), 2, this);
 		if (goal.tx != -1)
 			{
 			move(goal.tx, goal.ty, goal.tz);
@@ -946,7 +946,7 @@ int Actor::approach_another
 	bool wait			// If true, game hangs until arrival.
 	)
 	{
-	Tile_coord dest = other->get_abs_tile_coord();
+	Tile_coord dest = other->get_tile();
 #if 0
 	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
 	for (int i = 2; dest.tx == -1 && i < 8; i++)
@@ -957,7 +957,7 @@ int Actor::approach_another
 	if (dest.tx == -1)
 		return 0;
 					// Where are we now?
-	Tile_coord src = get_abs_tile_coord();
+	Tile_coord src = get_tile();
 	Game_window *gwin = Game_window::get_game_window();
 	if (!gwin->get_win_tile_rect().has_point(src.tx - src.tz/2, 
 							src.ty - src.tz/2))
@@ -1636,7 +1636,7 @@ void Actor::activate
 	    cheat.in_map_editor())
 		{
 		editing = 0;
-		Tile_coord t = get_abs_tile_coord();
+		Tile_coord t = get_tile();
 		unsigned long addr = reinterpret_cast<unsigned long>(this);
 		int num_schedules;	// Set up schedule-change list.
 		Schedule_change *changes;
@@ -1988,7 +1988,7 @@ bool Actor::reduce_health
 	    rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
 		{			// Create blood where actor stands.
 		Game_object *bobj = gwin->create_ireg_object(blood, 0);
-		bobj->move(get_abs_tile_coord());
+		bobj->move(get_tile());
 		}
 	if (Actor::is_dying())
 		{
@@ -2119,7 +2119,7 @@ void Actor::clear_flag
 			set_schedule_type(Schedule::stand);
 		else if ((get_framenum()&0xf) == Actor::sleep_frame)
 			{		// Find spot to stand.
-			Tile_coord pos = get_abs_tile_coord();
+			Tile_coord pos = get_tile();
 			pos.tz -= pos.tz%5;	// Want floor level.
 			pos = Map_chunk::find_spot(pos, 6, get_shapenum(),
 				Actor::standing, 0);
@@ -2560,7 +2560,7 @@ int Actor::move_aside
 	int dir				// Direction to avoid (0-7).
 	)
 	{
-	Tile_coord cur = get_abs_tile_coord();
+	Tile_coord cur = get_tile();
 	int opp = (dir + 4)%8;		// Don't go in opposite dir. either.
 	Tile_coord to(-1, -1, -1);
 	int i;
@@ -2580,7 +2580,7 @@ int Actor::move_aside
 		return swap_positions(for_actor);
 					// Step, and face direction.
 	step(to, get_dir_framenum(stepdir,static_cast<int>(Actor::standing)));
-	Tile_coord newpos = get_abs_tile_coord();
+	Tile_coord newpos = get_tile();
 	return (newpos.tx == to.tx && newpos.ty == to.ty);
 	}
 
@@ -2954,7 +2954,7 @@ void Actor::die
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Get location.
-	Tile_coord pos = get_abs_tile_coord();
+	Tile_coord pos = get_tile();
 	set_action(0);
 	delete schedule;
 	schedule = 0;
@@ -3035,7 +3035,7 @@ Monster_actor *Actor::clone
 					// Base distance on greater dim.
 	int xs = info.get_3d_xtiles(), ys = info.get_3d_ytiles();
 					// Find spot.
-	Tile_coord pos = Map_chunk::find_spot(get_abs_tile_coord(), 
+	Tile_coord pos = Map_chunk::find_spot(get_tile(), 
 		xs > ys ? xs : ys, get_shapenum(), 0, 1);
 	if (pos.tx < 0)
 		return 0;		// Failed.
@@ -3107,7 +3107,7 @@ Actor *Actor::resurrect
 		add(item, 1);		// Always succeed at adding.
 		}
 	gwin->add_dirty(body);		// Need to repaint here.
-	Tile_coord pos = body->get_abs_tile_coord();
+	Tile_coord pos = body->get_tile();
 	body->remove_this();		// Remove and delete body.
 	move(pos);			// Move back to life.
 					// Restore health to max.
@@ -3207,7 +3207,7 @@ int Main_actor::step
 					// Try to get blocker to move aside.
 	        !block->move_aside(this, get_direction(block)) ||
 					// (May have swapped places.)
-		(t != get_abs_tile_coord() &&
+		(t != get_tile() &&
 					// If okay, try one last time.
 		 is_blocked(t))))
 		{
@@ -3221,7 +3221,7 @@ int Main_actor::step
 	add_dirty(gwin);		/// Set to update old location.
 					// Get old chunk, old tile.
 	Map_chunk *olist = gwin->get_chunk(get_cx(), get_cy());
-	Tile_coord oldtile = get_abs_tile_coord();
+	Tile_coord oldtile = get_tile();
 					// Move it.
 	Actor::movef(olist, nlist, tx, ty, frame, t.tz);
 	add_dirty(gwin, 1);		// Set to update new.

@@ -107,7 +107,7 @@ inline Tile_coord Rotate90r
 	)
 	{
 					// Rotate hot spot.
-	Tile_coord r = Rotate90r(obj->get_abs_tile_coord(), c);
+	Tile_coord r = Rotate90r(obj->get_tile(), c);
 					// New hotspot is what used to be the
 					//   upper-right corner.
 	r.tx = (r.tx + ytiles + c_num_tiles)%c_num_tiles;
@@ -129,7 +129,7 @@ inline Tile_coord Rotate90l
 	)
 	{
 					// Rotate hot spot.
-	Tile_coord r = Rotate90l(obj->get_abs_tile_coord(), c);
+	Tile_coord r = Rotate90l(obj->get_tile(), c);
 					// New hot-spot is old lower-left.
 	r.ty = (r.ty + xtiles + c_num_tiles)%c_num_tiles;
 	r.tx = (r.tx + c_num_tiles)%c_num_tiles;
@@ -150,7 +150,7 @@ inline Tile_coord Rotate180
 	)
 	{
 					// Rotate hot spot.
-	Tile_coord r = Rotate180(obj->get_abs_tile_coord(), c);
+	Tile_coord r = Rotate180(obj->get_tile(), c);
 					// New hotspot is what used to be the
 					//   upper-left corner.
 	r.tx = (r.tx + xtiles + c_num_tiles)%c_num_tiles;
@@ -179,7 +179,7 @@ Rectangle Barge_object::get_tile_footprint
 	(
 	)
 	{
-	Tile_coord pos = get_abs_tile_coord();
+	Tile_coord pos = get_tile();
 	int xts = get_xtiles(), yts = get_ytiles();
 	Rectangle foot((pos.tx - xts + 1 + c_num_tiles)%c_num_tiles, 
 		(pos.ty - yts + 1 + c_num_tiles)%c_num_tiles, xts, yts);
@@ -194,7 +194,7 @@ inline void Barge_object::set_center
 	(
 	)
 	{
-	center = get_abs_tile_coord();
+	center = get_tile();
 	center.tx = (center.tx - xtiles/2 + c_num_tiles)%c_num_tiles;
 	center.ty = (center.ty - ytiles/2 + c_num_tiles)%c_num_tiles;
 	}
@@ -288,7 +288,7 @@ void Barge_object::gather
 				continue;
 			if (obj->is_egg()) // don't pick up eggs
 				continue;
-			Tile_coord t = obj->get_abs_tile_coord();
+			Tile_coord t = obj->get_tile();
 			Shape_info& info = gwin->get_info(obj);
 					// Above barge, within 5-tiles up?
 			if (foot.has_point(t.tx, t.ty) &&
@@ -414,12 +414,12 @@ void Barge_object::travel_to_tile
 	if (!path)
 		path = new Zombie();
 					// Set up new path.
-	if (path->NewPath(get_abs_tile_coord(), dest, 0))
+	if (path->NewPath(get_tile(), dest, 0))
 		{
 		frame_time = speed;
 		Game_window *gwin = Game_window::get_game_window();
 					// Figure new direction.
-		Tile_coord cur = get_abs_tile_coord();
+		Tile_coord cur = get_tile();
 		int dy = Tile_coord::delta(cur.ty, dest.ty),
 		    dx = Tile_coord::delta(cur.tx, dest.tx);
 		int ndir = Get_direction4(-dy, dx);
@@ -630,7 +630,7 @@ void Barge_object::move
 					// Want to repaint old position.
 	add_dirty(Game_window::get_game_window());
 					// Get current location.
-	Tile_coord old = get_abs_tile_coord();
+	Tile_coord old = get_tile();
 					// Move the barge itself.
 	Game_object::move(newtx, newty, newlift);
 					// Get deltas.
@@ -642,11 +642,12 @@ void Barge_object::move
 	for (i = 0; i < cnt; i++)
 		{
 		Game_object *obj = get_object(i);
-		int ox, oy, oz;
-		obj->get_abs_tile(ox, oy, oz);
+		Tile_coord ot = obj->get_tile();
 					// Watch for world-wrapping.
-		positions[i] = Tile_coord((ox + dx + c_num_tiles)%c_num_tiles,
-				(oy + dy + c_num_tiles)%c_num_tiles, oz + dz);
+		positions[i] = Tile_coord(
+				(ot.tx + dx + c_num_tiles)%c_num_tiles,
+				(ot.ty + dy + c_num_tiles)%c_num_tiles, 
+				ot.tz + dz);
 		obj->remove_this(1);	// Remove object from world.
 		obj->set_invalid();	// So it gets added back right.
 					// Animate a few shapes.
@@ -737,7 +738,7 @@ int Barge_object::step
 	{
 	if (!gathered)			// Happens in SI with turtle.
 		gather();
-	Tile_coord cur = get_abs_tile_coord();
+	Tile_coord cur = get_tile();
 					// Blocked? (Assume ht.=4, for now.)
 	int move_type;
 	if (cur.tz >= 10)

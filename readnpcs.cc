@@ -64,7 +64,7 @@ void Game_window::read_npcs
 	int i;
 
 	// Don't like it... no i don't.
-	center_view(main_actor->get_abs_tile_coord());
+	center_view(main_actor->get_tile());
 					// SI: 231-255 are bogus automatons(?).
 	int skip1 = Game::get_game_type() == SERPENT_ISLE ? 233 : 10000;
 					// SI: 296-355 are bogus trappers.
@@ -119,7 +119,7 @@ void Game_window::read_npcs
 		set_moving_barge(b);
 	}
 	read_schedules();		// Now get their schedules.
-	center_view(main_actor->get_abs_tile_coord());
+	center_view(main_actor->get_tile());
 }
 
 /*

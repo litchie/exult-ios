@@ -78,7 +78,7 @@ inline bool Off_screen
 	)
 	{
 					// See if off screen.
-	Tile_coord t = npc->get_abs_tile_coord();
+	Tile_coord t = npc->get_tile();
 	Rectangle screen = gwin->get_win_tile_rect().enlarge(2);
 	return (!screen.has_point(t.tx, t.ty));
 	}
@@ -308,8 +308,8 @@ void Combat_schedule::approach_foe
 	PathFinder *path = new Astar();
 					// Try this for now:
 	Monster_pathfinder_client cost(npc, max_range, opponent);
-	Tile_coord pos = npc->get_abs_tile_coord();
-	if (!path->NewPath(pos, opponent->get_abs_tile_coord(), &cost))
+	Tile_coord pos = npc->get_tile();
+	if (!path->NewPath(pos, opponent->get_tile(), &cost))
 		{			// Failed?  Try nearest opponent.
 		failures++;
 		bool retry_ok = false;
@@ -323,7 +323,7 @@ void Combat_schedule::approach_foe
 				Monster_pathfinder_client cost(npc, max_range, 
 								opponent);
 				retry_ok = (opponent != 0 && path->NewPath(
-				  pos, opponent->get_abs_tile_coord(), &cost));
+				  pos, opponent->get_tile(), &cost));
 				}
 			}
 		if (!retry_ok)
@@ -331,7 +331,7 @@ void Combat_schedule::approach_foe
 			delete path;	// Really failed.  Try again in 
 					//  after wandering.
 					// Just try to walk somewhere.
-			Tile_coord pos = opponent->get_abs_tile_coord();
+			Tile_coord pos = opponent->get_tile();
 			if (rand()%3 == 0)
 				pos = pos + Tile_coord(rand()%12 - 6,
 							rand()%12 - 6, 0);
@@ -456,8 +456,8 @@ void Combat_schedule::start_strike
 			npc->start(200, 500);
 			return;
 			}
-		Tile_coord pos = npc->get_abs_tile_coord();
-		Tile_coord opos = opponent->get_abs_tile_coord();
+		Tile_coord pos = npc->get_tile();
+		Tile_coord opos = opponent->get_tile();
 		if (opos.tx < pos.tx)	// Going left?
 			pos.tx = npctiles.x;
 		if (opos.ty < pos.ty)	// Going north?
@@ -511,7 +511,7 @@ void Combat_schedule::run_away
 	int ry = rand();
 	int dirx = 2*(rx%2) - 1;	// Get 1 or -1.
 	int diry = 2*(ry%2) - 1;
-	Tile_coord pos = npc->get_abs_tile_coord();
+	Tile_coord pos = npc->get_tile();
 	pos.tx += dirx*(8 + rx%8);
 	pos.ty += diry*(8 + ry%8);
 	npc->walk_to_tile(pos, 100, 0);
@@ -784,7 +784,7 @@ void Combat_schedule::now_what
 		if (npc->get_party_id() >= 0)
 			{		// Party member.
 			npc->walk_to_tile(
-				gwin->get_main_actor()->get_abs_tile_coord());
+				gwin->get_main_actor()->get_tile());
 					// WARNING:  Destroys ourself.
 			npc->set_schedule_type(Schedule::follow_avatar);
 			}
@@ -838,12 +838,12 @@ void Combat_schedule::ending
 		{			// See if being a coward.
 		find_opponents();
 		bool found = false;	// Find a close-by enemy.
-		Tile_coord pos = npc->get_abs_tile_coord();
+		Tile_coord pos = npc->get_tile();
 		for (Actor_queue::const_iterator it = opponents.begin(); 
 						it != opponents.end(); ++it)
 			{
 			Actor *opp = *it;
-			Tile_coord opppos = opp->get_abs_tile_coord();
+			Tile_coord opppos = opp->get_tile();
 			if (opppos.distance(pos) < (300/2)/c_tilesize &&
 			    Fast_pathfinder_client::is_grabable(pos, opppos))
 				{
@@ -865,7 +865,7 @@ void Combat_schedule::ending
 Duel_schedule::Duel_schedule
 	(
 	Actor *n
-	) : Combat_schedule(n, duel), start(n->get_abs_tile_coord()),
+	) : Combat_schedule(n, duel), start(n->get_tile()),
 		attacks(0)
 	{
 	started_battle = true;		// Avoid playing music.

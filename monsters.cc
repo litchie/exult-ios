@@ -412,7 +412,7 @@ int Find_neighbor
 	Tile_coord *neighbors		// Neighboring spots to check.
 	)
 	{
-	Tile_coord pos = slime->get_abs_tile_coord();
+	Tile_coord pos = slime->get_tile();
 	for (int dir = 0; dir < 4; dir++)
 		if (pos == neighbors[dir])
 			return dir;
@@ -506,10 +506,10 @@ int Slime_actor::step
 	)
 	{
 					// Save old pos.
-	Tile_coord oldpos = get_abs_tile_coord();
+	Tile_coord oldpos = get_tile();
 	int ret = Monster_actor::step(t, -1);
 					// Update surrounding frames (& this).
-	Tile_coord newpos = get_abs_tile_coord();
+	Tile_coord newpos = get_tile();
 	update_frames(oldpos, newpos);
 	Game_object_vector blood;	// Place blood in old spot.
 	if (newpos != oldpos && rand()%9 == 0 &&
@@ -534,7 +534,7 @@ void Slime_actor::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	Tile_coord pos = get_abs_tile_coord();
+	Tile_coord pos = get_tile();
 	Monster_actor::remove_this(nodel);
 					// Update surrounding slimes.
 	update_frames(pos, Tile_coord(-1, -1, -1));
@@ -553,10 +553,10 @@ void Slime_actor::move
 	)
 	{
 					// Save old pos.
-	Tile_coord pos = get_abs_tile_coord();
+	Tile_coord pos = get_tile();
 	if (get_cx() == 255)		// Invalid?
 		pos = Tile_coord(-1, -1, -1);
 	Monster_actor::move(newtx, newty, newlift);
 					// Update surrounding frames (& this).
-	update_frames(pos, get_abs_tile_coord());
+	update_frames(pos, get_tile());
 	}

@@ -274,7 +274,7 @@ public:
 				int speed = 250, int delay = 0, int dist = 0);
 	int walk_path_to_tile(Tile_coord dest, 
 				int speed = 250, int delay = 0, int dist = 0)
-		{ return walk_path_to_tile(get_abs_tile_coord(), dest,
+		{ return walk_path_to_tile(get_tile(), dest,
 							speed, delay, dist); }
 					// Start animation.
 	void start(int speed = 250, int delay = 0);

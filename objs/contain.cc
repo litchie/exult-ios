@@ -635,7 +635,7 @@ bool Container_game_object::extract_contents()
 				obj->remove_this(0);
 				status = false;
 			} else {
-				obj->move(get_abs_tile_coord());
+				obj->move(get_tile());
 			}
 		}
 	}
