@@ -39,6 +39,7 @@ class Npc_actor;
 class Usecode_machine;
 class Conversation;
 class Usecode_value;
+class Keyring;
 
 #ifdef MACOS
 // With Metrowerks Codewarrior, we *have* to include useval.h, otherwise this will fail to compile:
@@ -93,7 +94,9 @@ class Usecode_machine
 	unsigned long timers[20];	// Each has time in hours when set.
 public:					//++++++This goes away:
 	Tile_coord virtue_stones[8];	// Location 'marked' for each stone.
+	Keyring* getKeyring() const { return keyring; }
 private:
+	Keyring* keyring;
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
 	int speech_track;		// Set/read by some intrinsics.
@@ -341,6 +344,8 @@ private:
 //	USECODE_INTRINSIC_DECL(add_removed_npc);
 	USECODE_INTRINSIC_DECL(approach_avatar);
 	USECODE_INTRINSIC_DECL(a_or_an);
+	USECODE_INTRINSIC_DECL(add_to_keyring);
+	USECODE_INTRINSIC_DECL(is_on_keyring);
 
 	/*
 	 *	Other private methods:

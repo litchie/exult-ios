@@ -18,6 +18,8 @@ libusecode_la_SOURCES = \
 	useval.cc	\
 	useval.h	\
 	conversation.cc \
-	conversation.h
+	conversation.h	\
+	keyring.cc	\
+	keyring.h
 
 CLEANFILES = *~
