@@ -582,7 +582,7 @@ void Paperdoll_gump::paint_object
 	if (item->gender && !info->is_female) f++;
  
 	ShapeID s(item->shape, f, item->file);
-	gwin->paint_shape(box.x + sx, box.y + sy, s);
+	gwin->paint_shape(box.x + sx, box.y + sy, s, 1);
 }
 
 /*
