@@ -517,6 +517,25 @@ void ExultStudio::set_entry
 	}
 
 /*
+ *	Set text field.
+ */
+
+void ExultStudio::set_entry
+	(
+	char *name,
+	const char *val,
+	bool sensitive
+	)
+	{
+	GtkWidget *field = glade_xml_get_widget(app_xml, name);
+	if (field)
+		{
+		gtk_entry_set_text(GTK_ENTRY(field), val);
+		gtk_widget_set_sensitive(field, sensitive);
+		}
+	}
+
+/*
  *	Set statusbar.
  */
 

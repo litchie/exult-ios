@@ -55,6 +55,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Paperdoll_gump.h"
 #include "animate.h"
 
+#ifdef XWIN
+#include "server.h"
+#include "objserial.h"
+#include "mouse.h"
+#include "servemsg.h"
+#endif
+
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -1463,9 +1470,28 @@ void Actor::activate
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-
+#ifdef XWIN
+	if (client_socket >= 0)		// Talking to ExultStudio?
+		{
+//+++		editing = 0;
+		Tile_coord t = get_abs_tile_coord();
+		unsigned long addr = (unsigned long) this;
+		if (Npc_actor_out(client_socket, addr, t.tx, t.ty, t.tz,
+			get_shapenum(), get_framenum(), 
+			name, ident, usecode, properties, attack_mode,
+			alignment, flags, siflags, type_flags) != -1)
+			{
+			cout << "Sent npc data to ExultStudio" << endl;
+//++++Later			editing = this;
+			}
+		else
+			cout << "Error sending npc data to ExultStudio" <<endl;
+		return;
+		}
+#endif
 	// We are serpent if we can use serpent isle paperdolls
-	bool serpent = Game::get_game_type()==SERPENT_ISLE||(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
+	bool serpent = Game::get_game_type()==SERPENT_ISLE||
+		(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
 	
 	bool show_party_inv = gwin->showing_gumps() || gwin->in_combat();
 

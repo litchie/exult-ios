@@ -60,6 +60,7 @@ private:
 	int get_num_entry(char *name);
 	void set_entry(char *name, int val, bool hex = false,
 						bool sensitive = true);
+	void set_entry(char *name, const char *val, bool sensitive = true);
 	void set_statusbar(char *name, int context, char *msg);
 public:
 	ExultStudio(int argc, char **argv);
