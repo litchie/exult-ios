@@ -1,14 +1,15 @@
 ExultF.A.Q. (frequently asked questions)
-last changed: 28 Octobre 2001(GMT)
+last changed: 06 November 2001(GMT)
 
 A html version can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 28 Octobre 2001
-0.2. - 03 Septembre 2001
-0.3. - 10 August 2001
-0.4. - 19 July 2001
+0.1. - 06 November 2001
+0.2. - 28 October 2001
+0.3. - 03 September 2001
+0.4. - 10 August 2001
+0.5. - 19 July 2001
 
 1. Introduction
 1.1. Why is it called Exult - what is the meaning of this name?
@@ -26,19 +27,18 @@ A html version can be found at http://exult.sourceforge.net/faq.php
 2.1. Do I need Ultima 7?
 2.2. Does Exult work on all versions of the game?
 2.3. How about Serpent Isle?
-2.4. Do the Add-Ons work?
+2.4. Do the Add-ons work?
 2.5. Can you play through U7 yet?
 2.6. Do savegames from the original work in Exult?
 2.7. Where do I find Ultima 7 on the net to download?
 
 3. Miscellaneous
-3.1. Do the various cheat rooms work?
-3.2. Where Do I find them
-3.3. Do the carriages, ships and the magic carpet work?
-3.4. Why is the party formation different?
-3.5. What are the improvements in Exult over the original Ultima 7?
-3.6. How do I disable all improvements?
-3.7. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.1. Where do I find a walkthrough?
+3.2. Do the carriages, ships and the magic carpet work?
+3.3. Why is the party formation different?
+3.4. What are the improvements in Exult over the original Ultima 7?
+3.5. How do I disable all improvements?
+3.6. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
 
 4. Exult Studio
 4.1. What is it?
@@ -53,9 +53,10 @@ A html version can be found at http://exult.sourceforge.net/faq.php
 5. Bugs, known issues and not yet implemented features
 5.1. Bugs
 5.2. How do I submit a proper bug report?
-5.3. Known Issues
-5.4. Known Compile Issues
-5.5. Not yet implemented
+5.3. Broken by Design
+5.4. Known Issues
+5.5. Known Compile Issues
+5.6. Not yet implemented
 
 6. Questions and Answers
 6.1. How can I get answers concerning Ultima 7/Exult?
@@ -69,34 +70,45 @@ A html version can be found at http://exult.sourceforge.net/faq.php
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 28 Octobre 2001
+0.1. - 06 November 2001
+* a lot of spelling checked and corrected.
+* 2.7. Where do I find Ultima 7 on the net to download? nicely asked people not to bother us.
+* 3.1. Where do I find a walkthrough? for people who need help with the game itself.
+* 3.4. What are the improvements in Exult over the original Ultima 7? added wheelmouse support.
+* 5.2. How do I submit a proper bug report? some more information how to do it properly.
+* 5.3. Broken by Design added as suggested by Patrick Burke. This lists features that differ from the way that BG/SI works.
+* 5.4. Known Issues added bug with C-Media sound cards and MIDI music.
+
+
+
+0.2. - 28 October 2001
 * 1.6. Where do I find Exult? added Jack Burtons BeOS binary snapshot link.
 * 2.3. How about Serpent Isle? mentioned that I could finish it and that it will probably be playable with the next version
-* 3.5. What are the improvements in Exult over the original Ultima 7? total overhaul of that one
-* 3.6. How do I disable all improvements? changed a bit to reflect the Gameplay Options.
-* 5.3. Known Issues deleted some that have been fixed recently
+* 3.4. What are the improvements in Exult over the original Ultima 7? total overhaul of that one
+* 3.5. How do I disable all improvements? changed a bit to reflect the Gameplay Options.
+* 5.4. Known Issues deleted some that have been fixed recently
 
 
 
-0.2. - 03 Septembre 2001
+0.3. - 03 September 2001
 * 1.9. What is the latest version of Exult? Version updated
-* 5.3. Known Issues added note about stealing, killing NPCs
-* 5.4. Known Compile Issues added this with information on compiling in Unix and the bug with the flex bundled with some Linux systems.
+* 5.4. Known Issues added note about stealing, killing NPCs
+* 5.5. Known Compile Issues added this with information on compiling in UNIX and the bug with the flex bundled with some Linux systems.
 
 
 
-0.3. - 10 August 2001
+0.4. - 10 August 2001
 * 1.3. Does Origin support Exult? noted praise from LB and Ken Demarest.
 * 1.5. Will there be a multiplayer Exult? this gets asked quite often.
 * 1.7. What is a snapshot? Are these screenshots or what? added some more information.
-* 1.8. How do I compile a source code snapshot for my OS? made this gnereic for all the OS'.
+* 1.8. How do I compile a source code snapshot for my OS? made this generic for all the OS'.
 * 1.10. On what platform does Exult run? added OSX.
-* 2.4. Do the Add-Ons work? reported both as bug-free.
+* 2.4. Do the Add-ons work? reported both as bug-free.
 * 5.2. How do I submit a proper bug report? not that anyone reads the FAQ anyway. But it should get all the alpha testers on the right track.
 
 
 
-0.4. - 19 July 2001
+0.5. - 19 July 2001
 * With the updated Documentation parts of the FAQ are no longer necessary and thus left out. So see the Documentation for all your configuration problems
 
 
@@ -118,20 +130,20 @@ Exult is more than free: it's Free (notice the caps). Exult is released under th
 
 
 1.3. Does Origin support Exult?
-First of all, Origin has been owned by EA for a long time now and from recent developements it seems that Origin only exists now to maintain Ultima Online. Furthermore, Origin and/or people that worked for Origin claim that the source code for Ultima 7 (BG/SI) has been lost for some time. So there is no chance for the Exult team to have a look at the actual code.
+First of all, Origin has been owned by EA for a long time now and from recent developments it seems that Origin only exists now to maintain Ultima Online. Furthermore, Origin and/or people that worked for Origin claim that the source code for Ultima 7 (BG/SI) has been lost for some time. So there is no chance for the Exult team to have a look at the actual code.
 Also the team tried to contact some people from Origin earlier but got no positive or negative response on the Exult project. So far it seems that both Origin and EA have decided to ignore Exult.
 On the other hand former Origin employees contacted the team and congratulated the team on their effort. Most noticeable are Lord British himself and Ken Demarest (Programming Manager of Ultima 7)(hint:spell his name backwards).
 
 
 1.4. Will Exult support other Ultimas?
-Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any other Ultima nor do members of the team plan to develop something similar. The reasons for this are that no other Ultima is similar to Ultima 7 in the internal workings and also the team is quite sick of reverse engineering a game allready.
+Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any other Ultima nor do members of the team plan to develop something similar. The reasons for this are that no other Ultima is similar to Ultima 7 in the internal workings and also the team is quite sick of reverse engineering a game already.
 
 
 1.5. Will there be a multiplayer Exult?
 No.
 
 Jeff on the Forum:
-The question is 'why?'. I continue working on Exult, in large part, because nobody makes games like Ultima7 anymore. While I think a multi-player game would be technically interesting, I don't see the need. There are lots of them already, and many experienced people working on new ones.
+The question is 'why?'. I continue working on Exult, in large part, because nobody makes games like Ultima7 anymore. While I think a multiplayer game would be technically interesting, I don't see the need. There are lots of them already, and many experienced people working on new ones.
 Note however that Exult is open source. If you want a multiplayer U7 no one holds you back to code it in.
 
 
@@ -167,9 +179,9 @@ Yes. Exult won't work without the original files.
 
 
 2.2. Does Exult work on all versions of the game?
-It seems to run most of the available versions of the game. The most common ones nowadays with the included Add-Ons (Forge of Virtue and Silver Seed) runs for sure.
+It seems to run most of the available versions of the game. The most common ones nowadays with the included Add-ons (Forge of Virtue and Silver Seed) runs for sure.
 However there are reported problems with the localized versions of the game (French, German and Spanish). Conversation threads don't seem to skip to the next line in the proper places and therefore are unreadable in some cases. SI was only published in English so no localization problems with that one.
-V0.91 Alpha2 adds fixes for the french version, which should work now. If you are running a Spanish or German version Black Gate and you notice problems please contact us.
+V0.91 Alpha2 adds fixes for the French version, which should work now. If you are running a Spanish or German version Black Gate and you notice problems please contact us.
 
 
 2.3. How about Serpent Isle?
@@ -183,8 +195,8 @@ Jeff:
 My feelings about SI are the same as Colourless, who has done all the work so far on it. I'd much prefer to add enhancements to BG (which would apply to SI as well), and perhaps write a new RPG. Now, if EA would provide us with information about SI's internals, that would change things. And also, since Exult is open-source, it would be fine if anyone wants to volunteer to work on SI.
 
 
-2.4. Do the Add-Ons work?
-"Forge of Virtue" (Add-On to Black Gate) and the "The Silver Seed" (Add-On to Serpent Isle) are bug-free now.
+2.4. Do the Add-ons work?
+"Forge of Virtue" (Add-on to Black Gate) and the "The Silver Seed" (Add-on to Serpent Isle) are bug-free now.
 
 
 2.5. Can you play through U7 yet?
@@ -197,57 +209,58 @@ Savegames that were made with the original Ultima 7 or U7Run don't work with Exu
 
 2.7. Where do I find Ultima 7 on the net to download?
 Don't! You may be able to find it on the net but it would be pirating the game and the Exult team doesn't support pirates. Look for the Ultima Collection in stores or on Ebay (http://www.ebay.com).
-Don't ask the team for copies.
+Don't ask the team for copies. Don't ask on the forum for copies, your post and the entire thread will be deleted. And please don't ask for the answers to the copyright questions.
 
 
 
 --------------------------------------------------------------------------------
 
 3. Miscellaneous
-3.1. Do the various cheat rooms work?
-Yes.
+3.1. Where do I find a walkthrough?
+If you need help with the game itself, like walktrhoughs, hints, location of Npcs items take a look at the following sites:
+* http://members.aol.com/UltimaWrld/ultima07.html The Ultima 7 section of Excalibur's World of Ultima site.
+* http://homepages.ihug.co.nz/~paulryan/Ultima/Ultima7.htm Paulon Dragons selection of notes and information on Ultima 7.
+* http://homepages.ihug.co.nz/~paulryan/Ultima/FAQ2.htm#U7 The Ultima 7 section of Paulon Dragons Ultima games FAQ.
 
 
-3.2. Where Do I find them
-Just keep on looking for them :-)
+
+3.2. Do the carriages, ships and the magic carpet work?
+Yes. The sail of ships look odd sometimes but otherwise these means of transportation work quite well.
 
 
-3.3. Do the carriages, ships and the magic carpet work?
-Yes. The sail of ships look odd sometimes but otherwise these means of transportations work quite well.
-
-
-3.4. Why is the party formation different?
+3.3. Why is the party formation different?
 In Exult the party (the Avatar and his companions) move quite differently than they do in the original. This is actually not a bug but a disliking of the old style.
 
 Jeff:
 It's not a bug, it's a feature! I like it that way. Everyone is sensitive to different things, and I always though the formation-walking in the original U7 looked really stupid. Eventually, someone may add the original type of walking to Exult, probably as an option.
 
 
-3.5. What are the improvements in Exult over the original Ultima 7?
+3.4. What are the improvements in Exult over the original Ultima 7?
 * Many more keyboard shortcuts than the original had. Including in BG the 'k' key that checks if you have the right key for a lock in your inventory. The list of keys can be found in the Documentation.
-* A new worked over Game menu. This menu is explained in detail in the Documentation and many of the following improvements and Video/Audio options can be accessed via this menu. Open this Game Menu by preesing 'Esc' in the game.
+* A new worked over Game menu. This menu is explained in detail in the Documentation and many of the following improvements and Video/Audio options can be accessed via this menu. Open this Game Menu by pressing 'Esc' in the game.
 * SI style paperdoll (inventory screen) in BG. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see the Documentation) and activate it in the Gameplay Options This new inventory screen acts sometimes a little buggy, so if an item seems to have disappeared disable the paperdolls in the Game Options.
-* A beatuifull new savegame box. This allows you much more savegames than the original (you should run out of disc space before you run out of savegame slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The save game box is opened either via the game menu or the 's' key.
-* Face status bars at the bottom of the screen that show your health (and that of your party mambers) as well as your mana. Doubleclicking on the face opens the inventory and doubleclicking on the bars shows the status screen.
-* Middle mouse button support. In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't'). for modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. the escape function is also available during most other actions like selecting a target or conversations.
+* A beautiful new savegame box. This allows you much more savegames than the original (you should run out of disc space before you run out of savegame slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The save game box is opened either via the game menu or the 's' key.
+* Face status bars at the bottom of the screen that show your health (and that of your party members) as well as your mana. Doubleclicking on the face opens the inventory and doubleclicking on the bars shows the status screen.
+* Middle mouse button support. In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't'). for modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations.
+* Wheelmouse support. If you have a wheelmouse some features are auto-enabled in Exult. In slider gumps (e.g. how much gold you want to drop), scrolling the mouse up/down, moves the slider either left or right. Holding down 'Alt' while using the wheel scrolls 10 steps. The savegame menu scrolls one line, while pressing 'Alt' it scrolls pages. You can also scroll the map of the game up or down and while pressing 'Alt' you scroll left or right.
 * Fast Mouse which makes the mouse cursor move faster in fullscreen mode.
-* multiracial Avatar in BG. As with the paperdoll support you need to have SI installed and the path set in exult.cfg.
+* Multiracial Avatar in BG. As with the paperdoll support you need to have SI installed and the path set in exult.cfg.
 * Higher resolutions than the original. You can set the resolution as high as your computer supports. But there are some issues with it and it is considered cheating.
 
 
 
-3.6. How do I disable all improvements?
+3.5. How do I disable all improvements?
 To get an Ultima 7 that looks and behaves as close to the original as possible there are several things to do (though I wonder why you'd want to do that):
 * make custom keybindings files (see Documentation) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. Since the Alpha 4 release you have to assign 's' to old_file_gump to enable the old savegame menu (the line in your custom keybindings file should look like: S old_file_gump)
 * Edit the exult.cfg file to point to those custom keys.
-* Disable SI-style paperdolls for BG in exult.cfg (see the documantation for that).
+* Disable SI-style paperdolls for BG in exult.cfg (see the documentation for that).
 * Alternatively click on the disk icon and disable the paperdolls in the Gameplay Options.
 * Edit the exult.cfg to use the resolution of 320x200, to run in full screen and disable scalers.
 * The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot be altered. Sorry!
 
 
 
-3.7. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.6. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
 Work has begun on "" which is aimed to be an editor for all kinds of files that are used by Ultima 7. As of now there is already a Gimp plug-in to edit shapes.
 For much more information "" see 4. Exult Studio.
 
@@ -268,7 +281,7 @@ Tristan
 
 
 4.3. What do you need to run it?
-Currently, you need to be running Exult on X (Linux, Unix, etc.), with Exult set to run in a window (not fullscreen). You also need the GTK+ library installed.
+Currently, you need to be running Exult on X (Linux, UNIX, etc.), with Exult set to run in a window (not fullscreen). You also need the GTK+ library installed.
 
 
 4.4. When will it be ported to other platforms?
@@ -324,36 +337,50 @@ To see a list of open bugs and bugreports go to http://sourceforge.net/bugs/?gro
 
 
 5.2. How do I submit a proper bug report?
-1. Read the Documentation and this FAQ to see if that is not allready covered and you have all set up correctly.
-2. Before you report a bug to the bug tracker please try the latest snapshot. If the bug still occurs make sure that no one else allready reported the bug.
-3. If you are not a sourceforge member please include your e-mail address this is important so we can get back to you. If you are a sourceforge member please log in before submitting a bug.
+1. Read the Documentation and this FAQ to see if that is not already covered and you have all set up correctly.
+2. Before you report a bug to the bug tracker please try the latest snapshot. If the bug still occurs make sure that no one else already reported the bug (in the bug tracker).
+3. If you are not a Sourceforge member please include your e-mail address this is important so we can get back to you. If you are a Sourceforge member please log in before submitting a bug. If you are a member of Sourceforge you will also get notified of follow ups on your bug automatically by E-mail.
 4. Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more sense. Sadly the space for the topics is limited. Explain the topic in "Detailed Description".
-5. State which Operating System you use (Windows 9X, Linux, ...).
-6. Please include a savegame (use common sense if it is really needed). You will find those in the game directories you put in the exult.cfg. They are called exult**bg.sav (** is a number) for BG and exult**si.sav for SI. Zip it (important as Sourceforge seems to have a size limit). As some parts of the game may require you to complete other quests or stuff before you get to the bug you want to report it's much easier for the team to look at the problem (speeds the process up a bit as they are much more likely you take a look at the problem this way).
+5. Include information on what version of Exult you are using. You should have used the latest snapshot but please tell us the date of the snapshot.
+6. State which Operating System you use (Windows 9X, Linux, ...).
+7. Please include a savegame (use common sense if it is really needed). You will find those in the game directories you put in the exult.cfg. They are called exult**bg.sav (** is a number) for BG and exult**si.sav for SI. Zip it (important as Sourceforge seems to have a size limit for attached files). As some parts of the game may require you to complete other quests or stuff before you get to the bug you want to report it's much easier for the team to look at the problem (speeds the process up a bit as they are much more likely you take a look at the problem this way).
+8. One bug per subject please.
 
+You can also use our forum to report bugs. But if you do please follow the guidelines mentioned above (you can't include a savegame of course). Though be aware that bugs submitted to the bug tracker are more likely to get attention than bugs submitted to the forum.
 So if you want to have a bug fixed follow these steps!
 
 
-5.3. Known Issues
+5.3. Broken by Design
+Exult often behaves and works differently than the original Ultima 7. These behaviors are sometimes features that just differ from the way the original worked. Some are bugs that the development team consider to have almost no detrimental effect to the enjoyment/running of the game, but would require a large amount of time and effort to fix. Please don't bother the team about those as some of these will be fixed in the future, others will only be fixed when someone who thinks it should be done differently sits down and codes it. The following are such 'features' of Exult:
+* Birds and animals open doors and such, like the human and sentient creatures of Britannia do.
+* Party members don't walk lockstep with the Avatar like they do in BG/SI. Please see 3.3. Why is the party formation different?.
+* The way the Avatar and the companions walk. Is it 2 frames or 3 frames? This has been changed a lot as this is disputed almost every four weeks. Currently Exult is coded using 2 frames.
+* Combat works differently. We don't have any hard data or formulae that tell us how combat worked in BG/SI, so DrCode (IIRC) put something together. If you have any information you've worked out related to this, please tell either the forum or the exult-general mailing list.
+* Negative health and unconsciousness. Yes, it may look weird to have people walking around with negative health, but that's the way it currently works.
+
+
+
+5.4. Known Issues
 * Stealing and killing innocent NPCs doesn't work yet like it does in the original
 * Movement is sometimes jerky or slow.
 * We don't know what all the data in 'weapons.dat' and 'ammo.dat' means, so hit points and damage don't work as well as in the original game.
 * If you run a resolution higher than the original (320x200) some NPCs that are further away from the Avatar may seem to disappear and reappear when you get away or closer to them.
 * With scalers enabled you might encounter slow downs of the game. The team is working on this right now and it is already a lot faster.
-* The speech in the intro is out of synch with the lips animations. But now it matches the speed of the text.
+* The speech in the intro is out of synch with the lips animation. But now it matches the speed of the text.
 * There are reported problems with digital sound effects or speech when using Vortex series sound cards (like the Diamond MX 300) under Win9x/ME. Exult is triggering a bug in the drivers. No workaround for now.
+* There is also a problem involving Win9x/ME, C-Media soundcard chipsets and MIDI music. We suggest you first upgrade your drivers to the newest ones. Get them at http://www.cmedia.com.tw/. If that doesn't help, please contact us.
 
 
 
-5.4. Known Compile Issues
-* Max is working to make Exult compile like it does on all Unix systems but currently it requires the not-yet released SDL 1.2.3.
+5.5. Known Compile Issues
+* Max is working to make Exult compile like it does on all UNIX systems but currently it requires the not-yet released SDL 1.2.3.
 * There is a bug/incompatibility with the flex bundled Linux distributions (RH7.0, for example) that breaks compilation. Upgrading to a more recent version of flex should fix it.
 
 
 
-5.5. Not yet implemented
+5.6. Not yet implemented
 * A few magic spells don't work yet.
-* stealing, killing innocent NPCs doesn't work yet correctly
+* Stealing, killing innocent NPCs doesn't work yet correctly
 
 
 
@@ -369,7 +396,7 @@ Some Exult developers like to hang out on IRC on irc.openprojects.net, channel #
 
 
 6.2. How do I contact the author of this FAQ?
-This FAQ is maintained by Dominus Dragon of the UDIC aka Dominik Reichardt. Feel free to contact me with improvements or complaints regarding the FAQ. I recently became part of the Exult Team though I only write the FAQ and don't code at all.
+This FAQ is maintained by Dominus Dragon of the UDIC AKA Dominik Reichardt. Feel free to contact me with improvements or complaints regarding the FAQ. I recently became part of the Exult Team though I only write the FAQ and don't code at all.
 
 
 
