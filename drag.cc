@@ -34,6 +34,7 @@
 #include "Audio.h"
 #include "Gump_manager.h"
 #include "ucmachine.h"
+#include "barge.h"
 
 using std::cout;
 using std::endl;
@@ -389,6 +390,10 @@ void Game_window::drop
 				owner->call_readied_usecode(this, index,
 					dragging, Usecode_machine::readied);
 			}
+					// On a barge?
+		Barge_object *barge = get_moving_barge();
+		if (barge)
+			barge->gather();// Refigure what's on barge.
 		if (!okay_to_move && !cheat.in_hack_mover() &&
 		    (dragging_gump != on_gump || dropped_in_something ||
 					// Moving:
