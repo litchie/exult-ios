@@ -26,3 +26,5 @@ Entry		File
 0x14		"Midi conversion"
 0x15		"SFX conversion"
 0x16		"Palette Fades"
+0x17		defaultkeys.txt
+0x18		"Scaling Method" shape

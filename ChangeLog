@@ -1,4 +1,8 @@
 2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* data/scaling_method.shp: new shape for menu entry
+	* exultmenu.cc: implement choosing scaler from setup
+
+2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* cheat.cc: when we postpone initialization of the cheat stuff,
 	  really POSTPONE ALL initialization. This fixes a crash when
 	  set_grabbed_actor() is invoked before finish_init().

@@ -67,6 +67,16 @@ void ExultMenu::setup()
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	MenuList menu;
 	
+	MenuChoice *scalemethod = new MenuChoice(exult_flx.get_shape(0x18,1),
+			      exult_flx.get_shape(0x18,0),
+			      centerx, menuy-44, font);
+	scalemethod->add_choice("Point");
+	scalemethod->add_choice("Bilinear");
+	scalemethod->add_choice("Interlaced");
+	scalemethod->add_choice("2xSaI");
+	scalemethod->set_choice(gwin->get_win()->get_scaler());
+	menu.add_entry(scalemethod);
+	
 	MenuChoice *palfades = new MenuChoice(exult_flx.get_shape(0x16,1),
 			      exult_flx.get_shape(0x16,0),
 			      centerx, menuy-33, font);
@@ -144,6 +154,29 @@ void ExultMenu::setup()
 		if(entry==ok_button) {
 			pal.fade_out(c_fade_out_time);
 			gwin->clear_screen();
+			// Scaling Method
+			if(scalemethod->get_choice()!=gwin->get_win()->get_scaler()) {
+				gwin->resized(
+					gwin->get_win()->get_width(),
+					gwin->get_win()->get_height(),
+					gwin->get_win()->get_scale(),
+					scalemethod->get_choice()
+				);
+				switch(scalemethod->get_choice()) {
+				case 0:
+					config->set("config/video/scale_method","point",true);
+					break;
+				case 1:
+					config->set("config/video/scale_method","bilinear",true);
+					break;
+				case 2:
+					config->set("config/video/scale_method","interlaced",true);
+					break;
+				default:
+					config->set("config/video/scale_method","2xSaI",true);
+					break;
+				}
+			}
 			// Palette fades
 			gwin->set_fades_enabled(palfades->get_choice()==1);
 			config->set("config/video/disable_fades",gwin->get_fades_enabled()?"no":"yes",true);
