@@ -61,6 +61,8 @@ class Notebook_gump : public Gump
 	void add_new();			// Add new note.
 	bool paint_page(Rectangle box, One_note *note, int& offset, 
 								int pagenum);
+	void prev_page();
+	void next_page();
 public:
 	Notebook_gump();
 	~Notebook_gump();
