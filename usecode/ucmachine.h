@@ -255,9 +255,14 @@ private:
 	USECODE_INTRINSIC_DECL(sit_down);
 	USECODE_INTRINSIC_DECL(summon);
 	USECODE_INTRINSIC_DECL(display_map);
+	USECODE_INTRINSIC_DECL(si_display_map);
 	USECODE_INTRINSIC_DECL(kill_npc);
 	USECODE_INTRINSIC_DECL(set_attack_mode);
+	USECODE_INTRINSIC_DECL(get_attack_mode);
 	USECODE_INTRINSIC_DECL(set_opponent);
+	USECODE_INTRINSIC_DECL(get_oppressor);
+	USECODE_INTRINSIC_DECL(set_oppressor);
+	USECODE_INTRINSIC_DECL(get_weapon);
 	USECODE_INTRINSIC_DECL(display_area);
 	USECODE_INTRINSIC_DECL(resurrect);
 	USECODE_INTRINSIC_DECL(add_spell);
@@ -286,6 +291,7 @@ private:
 	USECODE_INTRINSIC_DECL(remove_item);
 	USECODE_INTRINSIC_DECL(reduce_health);
 	USECODE_INTRINSIC_DECL(is_readied);
+	USECODE_INTRINSIC_DECL(get_readied);
 	USECODE_INTRINSIC_DECL(restart_game);
 	USECODE_INTRINSIC_DECL(start_speech);
 	USECODE_INTRINSIC_DECL(run_endgame);

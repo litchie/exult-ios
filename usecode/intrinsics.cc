@@ -998,6 +998,14 @@ USECODE_INTRINSIC(display_map)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(si_display_map)
+{
+	// display_map(frame#)
+	// +++++++++++++++++++
+	cout << " IMPLEMENT this!" << endl;
+	return no_ret;
+}
+
 USECODE_INTRINSIC(kill_npc)
 {
 	// kill_npc(npc).
@@ -1018,6 +1026,15 @@ USECODE_INTRINSIC(set_attack_mode)
 	return (no_ret);
 }
 
+USECODE_INTRINSIC(get_attack_mode)
+{
+	// get_attack_mode(npc).
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc)
+		return Usecode_value((int) npc->get_attack_mode());
+	return Usecode_value(0);
+}
+
 USECODE_INTRINSIC(set_opponent)
 {
 	// set_opponent(npc, new_opponent).
@@ -1026,6 +1043,40 @@ USECODE_INTRINSIC(set_opponent)
 	if (npc && opponent)
 		npc->set_opponent(opponent);
 	return (no_ret);
+}
+
+USECODE_INTRINSIC(get_oppressor)
+{
+	// get_oppressor(npc) Returns 0-n, NPC # (0=avatar).
+	Actor *npc = as_actor(get_item(parms[0]));
+//+++++IMPLEMENT	if (npc)
+//		return npc->get_oppressor();
+	cout << " IMPLEMENT this!!" << endl;
+	return Usecode_value(0);
+}
+
+USECODE_INTRINSIC(set_oppressor)
+{
+	// set_oppressor(npc, opp)
+	Actor *npc = as_actor(get_item(parms[0]));
+	Actor *opp = as_actor(get_item(parms[1]));
+//+++++IMPLEMENT	if (npc && opp)
+//		npc->set_oppressor(opponent);
+	cout << " IMPLEMENT this!!" << endl;
+	return no_ret;
+}
+
+USECODE_INTRINSIC(get_weapon)
+{
+	// get_weapon(npc).  Returns shape.
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc)
+		{
+		int shape, points;
+		if (npc->get_weapon(points, shape))
+			return Usecode_value(shape);
+		}
+	return Usecode_value(0);
 }
 
 USECODE_INTRINSIC(display_area)
@@ -1352,6 +1403,33 @@ USECODE_INTRINSIC(reduce_health)
 	return no_ret;
 }
 
+/*
+ *	Convert Usecode spot # to ours (or -1 if not found).
+ */
+
+static int Get_spot(int ucspot)
+	{
+	int spot;
+	switch (ucspot)
+		{
+	case 1:
+		spot = Actor::lhand; break;
+	case 2:
+		spot = Actor::rhand; break;
+	case 6:
+		spot = Actor::lfinger; break;
+	case 7:
+		spot = Actor::rfinger; break;
+	case 9:
+		spot = Actor::head; break; 
+	default:
+		cerr << "Readied: spot #" << ucspot <<
+						" not known yet" << endl;
+		spot = -1;
+		}
+	return spot;
+	}
+
 USECODE_INTRINSIC(is_readied)
 {
 	// is_readied(npc, where, itemshape, frame (-359=any)).
@@ -1369,25 +1447,8 @@ USECODE_INTRINSIC(is_readied)
 	int where = parms[1].get_int_value();
 	int shnum = parms[2].get_int_value();
 	int frnum = parms[3].get_int_value();
-	int spot;			// Spot defined in Actor class.
-	switch(where)
-		{
-	case 1:
-		spot = Actor::lhand; break;
-	case 2:
-		spot = Actor::rhand; break;
-	case 6:
-		spot = Actor::lfinger; break;
-	case 7:
-		spot = Actor::rfinger; break;
-	case 9:
-		spot = Actor::head; break; 
-	default:
-		cerr << "Is_readied: spot #" << where <<
-						" not known yet" << endl;
-		spot = -1;
-		break;
-		}
+					// Spot defined in Actor class.
+	int spot = Get_spot(where);
 	if (spot >= 0)
 		{			// See if it's the right one.
 		Game_object *obj = npc->get_readied(spot);
@@ -1395,6 +1456,28 @@ USECODE_INTRINSIC(is_readied)
 		    (frnum == c_any_framenum || obj->get_framenum() == frnum))
 			return Usecode_value(1);
 		}
+	return Usecode_value(0);
+}
+
+USECODE_INTRINSIC(get_readied)
+{
+	// get_readied(npc, where)
+	// Where:
+	//   1=weapon hand, 
+	//   2=other hand,
+	//   6=one finger, 
+	//   7=other finger,
+	//   9=head
+	//  20=???
+
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (!npc)
+		return Usecode_value(0);
+	int where = parms[1].get_int_value();
+					// Spot defined in Actor class.
+	int spot = Get_spot(where);
+	if (spot >= 0)
+		return Usecode_value(npc->get_readied(spot));
 	return Usecode_value(0);
 }
 
