@@ -1504,7 +1504,7 @@ gint Combo_chooser::drag_motion
 	)
 	{
 	Combo_chooser *chooser = (Combo_chooser *) data;
-	if (!chooser->dragging)
+	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_COMBOID_NAME, 
 			U7_TARGET_COMBOID, (GdkEvent *) event);
 	return true;
@@ -1536,8 +1536,8 @@ gint Combo_chooser::mouse_press
 
 
 	int old_selected = chooser->selected;
-					// Search through entries.
-	for (int i = 0; i < chooser->info_cnt; i++)
+	int i;				// Search through entries.
+	for (i = 0; i < chooser->info_cnt; i++)
 		if (chooser->info[i].box.has_point(
 					(int) event->x, (int) event->y))
 			{		// Found the box?
@@ -1558,7 +1558,9 @@ gint Combo_chooser::mouse_press
 				(*chooser->sel_changed)();
 			break;
 			}
-	if (chooser->selected == old_selected && old_selected >= 0)
+	if (i == chooser->info_cnt && event->button == 1)
+		chooser->unselect(true);	// Nothing under mouse.
+	else if (chooser->selected == old_selected && old_selected >= 0)
 		{			// Same square.  Check for dbl-click.
 		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
 			chooser->edit();

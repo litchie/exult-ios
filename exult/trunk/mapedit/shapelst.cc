@@ -686,7 +686,7 @@ gint Shape_chooser::drag_motion
 	)
 	{
 	Shape_chooser *chooser = (Shape_chooser *) data;
-	if (!chooser->dragging)
+	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_SHAPEID_NAME, 
 			U7_TARGET_SHAPEID, (GdkEvent *) event);
 	return true;
@@ -699,61 +699,69 @@ gint Shape_chooser::drag_motion
 gint Shape_chooser::mouse_press
 	(
 	GtkWidget *widget,		// The view window.
-	GdkEventButton *event,
-	gpointer data			// ->Shape_chooser.
+	GdkEventButton *event
 	)
 	{
 	gtk_widget_grab_focus(widget);
-	Shape_chooser *chooser = (Shape_chooser *) data;
 
-    if (event->button == 4) {
-        if (chooser->row0 > 0)
-            chooser->scroll_vertical(chooser->row0-1);
-        return(TRUE);
-    } else if (event->button == 5) {
-        chooser->scroll_vertical(chooser->row0+1);
-        return(TRUE);
-    }        
+	if (event->button == 4) {
+        	if (row0 > 0)
+            		scroll_vertical(row0-1);
+        	return(TRUE);
+    	} else if (event->button == 5) {
+        	scroll_vertical(row0+1);
+        	return(TRUE);
+	}
 
-	int old_selected = chooser->selected;
-					// Search through entries.
-	for (int i = 0; i < chooser->info_cnt; i++)
-		if (chooser->info[i].box.has_point(
+	int old_selected = selected;
+	int i;				// Search through entries.
+	for (i = 0; i < info_cnt; i++)
+		if (info[i].box.has_point(
 					(int) event->x, (int) event->y))
 			{		// Found the box?
-//			if (i == old_selected)
-//				return TRUE;
-					// Indicate we can dra.
+					// Indicate we can drag.
 #ifdef WIN32
 // Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
 // usually stucks outside the program window. I think it's because
 // the dragged shape only receives mouse motion events when the new mouse pointer
 // position is *still* inside the shape. So if you move the mouse too fast,
 // we are stuck.
-			 win32_button = true;
+			win32_button = true;
 #endif
-			chooser->selected = i;
-			chooser->render();
-			chooser->show();
+			selected = i;
+			render();
+			show();
 					// Tell client.
-			if (chooser->sel_changed)
-				(*chooser->sel_changed)();
+			if (sel_changed)
+				(*sel_changed)();
 			break;
 			}
-	if (chooser->selected == old_selected && old_selected >= 0)
+	if (i == info_cnt && event->button == 1)
+		unselect(true);		// No selection.
+	else if (selected == old_selected && old_selected >= 0)
 		{			// Same square.  Check for dbl-click.
 		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
-			chooser->edit_shape_info();
+			edit_shape_info();
 		}
 	if (event->button == 3)
-		gtk_menu_popup(GTK_MENU(chooser->create_popup()), 
+		gtk_menu_popup(GTK_MENU(create_popup()), 
 				0, 0, 0, 0, event->button, event->time);
 	return (TRUE);
 	}
 
 /*
- *	Handle a mouse button-release event.
+ *	Handle mouse button press/release events.
  */
+static gint Mouse_press
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventButton *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	Shape_chooser *chooser = (Shape_chooser *) data;
+	return chooser->mouse_press(widget, event);
+	}
 static gint Mouse_release
 	(
 	GtkWidget *widget,		// The view window.
@@ -1763,7 +1771,6 @@ gint Shape_chooser::drag_begin
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	if (chooser->selected < 0)
 		return FALSE;		// ++++Display a halt bitmap.
-	//+++++Check that cursor is still on selected shape.+++++++++++
 					// Get ->shape.
 	Shape_entry& shinfo = chooser->info[chooser->selected];
 	Shape_frame *shape = chooser->ifile->get_shape(shinfo.shapenum, 
@@ -2230,7 +2237,7 @@ Shape_chooser::Shape_chooser
 	GTK_WIDGET_SET_FLAGS(draw, GTK_CAN_FOCUS);
 					// Set mouse click handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "button_press_event",
-				GTK_SIGNAL_FUNC(mouse_press), this);
+				GTK_SIGNAL_FUNC(Mouse_press), this);
 	gtk_signal_connect(GTK_OBJECT(draw), "button_release_event",
 				GTK_SIGNAL_FUNC(Mouse_release), this);
 					// Mouse motion.
