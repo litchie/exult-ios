@@ -85,7 +85,9 @@ void Npc_proximity_handler::handle_event
 					// And not for party members.
 			npc->get_party_id() < 0)
 		{
-		gwin->get_usecode()->call_usecode(npc->get_usecode(), npc,
+		int ucfun = npc->get_usecode();
+		ucfun = ucfun == -1 ? npc->get_shapenum() : ucfun;
+		gwin->get_usecode()->call_usecode(ucfun, npc,
 					Usecode_machine::npc_proximity);
 		extra_delay = 3;
 		}
