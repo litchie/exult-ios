@@ -37,6 +37,8 @@ class Schedule;
 class Schedule_change;
 class Monster_info;
 class Weapon_info;
+class Dead_body;
+
 					// The range of actors' rect. gumps:
 const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
 
@@ -283,6 +285,7 @@ public:
 					// Under attack.
 	virtual void attacked(Actor *attacker, int weapon_shape = 0);
 	virtual void die();		// We're dead.
+	Actor *resurrect(Dead_body *body);// Bring back to life.
 					// Don't write out to IREG file.
 	virtual void write_ireg(ostream& out)
 		{  }
@@ -387,6 +390,25 @@ public:
 		if (old_chunk != new_chunk)	// In new chunk?
 			switched_chunks(old_chunk, new_chunk);
 		}
+	};
+
+/*
+ *	An actor's dead body:
+ */
+class Dead_body : public Container_game_object
+	{
+	short npc_num;			// # of NPC it came from, or -1.
+public:
+	Dead_body(unsigned char l, unsigned char h, unsigned int shapex,
+				unsigned int shapey, unsigned int lft, int n)
+		: Container_game_object(l, h, shapex, shapey, lft), npc_num(n)
+		{  }
+	Dead_body(int shapenum, int framenum, unsigned int tilex, 
+				unsigned int tiley, unsigned int lft, int n)
+		: Container_game_object(shapenum, framenum, tilex, tiley, lft),
+			npc_num(n)
+		{  }
+	virtual int get_live_npc_num();
 	};
 
 /*
