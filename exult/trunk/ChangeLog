@@ -1,3 +1,6 @@
+2002-11-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mapedit/execbox.*: don't compile this for win32
+
 2002-11-04  Max Horn  <max@quendi.de>
 	* conf/Configuration.*, conf/XMLEntity.*: some cleanup (in function args,
 	  using 'const string &' instead of just 'string' or 'const string' is more
