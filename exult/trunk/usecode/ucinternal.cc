@@ -2687,7 +2687,8 @@ void Usecode_internal::read
 		U7open(in, USEDAT);
 	}
 	catch(exult_exception &e) {
-		return;		// Not an error if no saved game yet.
+		link_party();		// Still need to do this.
+		return;			// Not an error if no saved game yet.
 	}
 	party_count = Read2(in);	// Read party.
 	size_t i;	// Blame MSVC
