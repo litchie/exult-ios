@@ -1,3 +1,14 @@
+2001-03-20  Max Horn  <max@quendi.de>
+	* acconfig.h: added MACOSX
+	* animate.cc: added missing using std::map;
+	* configure.in: added MacOS X
+	* audio/Audio.cc: fixed Audio::play_wave_sfx which returned nothing
+	  instead of an AudioID (this did break compilation on multiple systems)
+	* conf/Makefile.am: added $(SYSLIBS) to confregress target
+	* tools/shp2pcx.cc: fixed some type mistakes (used Uint32 instead
+	  of uint32 which broke compilation on MacOS X)
+	* tools/Makefile.am: added $(SYSLIBS) to expack & shp2pcx target
+
 2001-03-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SI fixes:  Claw works in Knight's test.  Dead wolf gets correct
@@ -20,7 +31,6 @@
 2001-03-17  Christoph Reichenbach  <jameson@linuxgames.com>
 
 	* game.cc (get_game_identity): long -> sint32 fix
-
 	* cheat_screen.cc: 
 	  tools/shp2pcx.cc: Appropriate #ifndefs for Alpha/Linux/cxx
 

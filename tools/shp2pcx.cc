@@ -36,13 +36,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define qtohs(x) (x)
 #else
 #define qtohl(x) \
-        ((Uint32)((((Uint32)(x) & 0x000000ffU) << 24) | \
-                  (((Uint32)(x) & 0x0000ff00U) <<  8) | \
-                  (((Uint32)(x) & 0x00ff0000U) >>  8) | \
-                  (((Uint32)(x) & 0xff000000U) >> 24)))
+        ((uint32)((((uint32)(x) & 0x000000ffU) << 24) | \
+                  (((uint32)(x) & 0x0000ff00U) <<  8) | \
+                  (((uint32)(x) & 0x00ff0000U) >>  8) | \
+                  (((uint32)(x) & 0xff000000U) >> 24)))
 #define qtohs(x) \
-        ((Uint16)((((Uint16)(x) & 0x00ff) << 8) | \
-                  (((Uint16)(x) & 0xff00) >> 8)))
+        ((uint16)((((uint16)(x) & 0x00ff) << 8) | \
+                  (((uint16)(x) & 0xff00) >> 8)))
 #endif
 #define htoql(x) qtohl(x)
 #define htoqs(x) qtohs(x)
