@@ -1,3 +1,9 @@
+2002-02-08  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Removed old bug fixup.
+	* readnpcs.cc: Handle case where 'npc.dat' and/or 'schedule.dat'
+	don't yet exist.
+
 2002-02-08  Ryan Nunn  <triforce@merlin.net.au>
 	* server/servewin32.cc : Fixed the GetLongPathName issue. Exult and
 	  Exult Studio both need to be recompiled, because this effects 
