@@ -693,6 +693,11 @@ imagewin/Makefile
 shapes/Makefile
 usecode/Makefile
 usecode/compiler/Makefile
+usecode/ucxt/Makefile
+usecode/ucxt/Docs/Makefile
+usecode/ucxt/data/Makefile
+usecode/ucxt/include/Makefile
+usecode/ucxt/src/Makefile
 mapedit/Makefile
 server/Makefile
 ])

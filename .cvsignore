@@ -42,3 +42,4 @@ mkinstalldirs
 install-sh
 ltmain.sh
 exult*.tar.gz
+nadirconf
